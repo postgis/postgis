@@ -31,7 +31,9 @@ steps:
       - make postgis_revision.h
       - xmllint --version
     when:
-      path: *when_path_full
+      - event: push
+      - event: pull_request
+        path: *when_path_full
   check-xml:
     image: *test_image
     pull: true
@@ -39,7 +41,9 @@ steps:
     commands:
       - make -C build-docs/doc check
     when:
-      path: *when_path
+      - event: push
+      - event: pull_request
+        path: *when_path
   build-images:
     image: *test_image
     pull: true
@@ -47,7 +51,9 @@ steps:
     commands:
       - make -C build-docs/doc images
     when:
-      path: *when_path_full
+      - event: push
+      - event: pull_request
+        path: *when_path_full
   build-html:
     image: *test_image
     pull: true
@@ -55,7 +61,9 @@ steps:
     commands:
       - make -C build-docs/doc html
     when:
-      path: *when_path
+      - event: push
+      - event: pull_request
+        path: *when_path
   build-cheatsheets:
     image: *test_image
     pull: true
@@ -63,7 +71,9 @@ steps:
     commands:
       - make -C build-docs/doc/ cheatsheets
     when:
-      path: *when_path
+      - event: push
+      - event: pull_request
+        path: *when_path
   build-chunked-html:
     image: *test_image
     pull: true
@@ -71,7 +81,9 @@ steps:
     commands:
       - make -C build-docs/doc html
     when:
-      path: *when_path
+      - event: push
+      - event: pull_request
+        path: *when_path
   build-pdf:
     image: *test_image
     pull: true
@@ -79,7 +91,9 @@ steps:
     commands:
       - make -C build-docs/doc/ pdf
     when:
-      path: *when_path
+      - event: push
+      - event: pull_request
+        path: *when_path
 
   # DO NOT EDIT PAST THIS LINE, use update-docs-localized.sh to update #
 ### TARGET check-xml
