@@ -101,7 +101,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/it_IT/*.po"  check-xml-pt_BR:
+            - "doc/po/it_IT/*.po"
+        
+  check-xml-pt_BR:
     image: *test_image
     pull: true
     commands:
@@ -111,7 +113,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/pt_BR/*.po"  check-xml-fr:
+            - "doc/po/pt_BR/*.po"
+        
+  check-xml-fr:
     image: *test_image
     pull: true
     commands:
@@ -121,7 +125,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/fr/*.po"  check-xml-es:
+            - "doc/po/fr/*.po"
+        
+  check-xml-es:
     image: *test_image
     pull: true
     commands:
@@ -131,7 +137,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/es/*.po"  check-xml-pl:
+            - "doc/po/es/*.po"
+        
+  check-xml-pl:
     image: *test_image
     pull: true
     commands:
@@ -141,7 +149,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/pl/*.po"  check-xml-ko_KR:
+            - "doc/po/pl/*.po"
+        
+  check-xml-ko_KR:
     image: *test_image
     pull: true
     commands:
@@ -151,7 +161,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ko_KR/*.po"  check-xml-de:
+            - "doc/po/ko_KR/*.po"
+        
+  check-xml-de:
     image: *test_image
     pull: true
     commands:
@@ -161,7 +173,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/de/*.po"  check-xml-ja:
+            - "doc/po/de/*.po"
+        
+  check-xml-ja:
     image: *test_image
     pull: true
     commands:
@@ -171,7 +185,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ja/*.po"  check-xml-ru:
+            - "doc/po/ja/*.po"
+        
+  check-xml-ru:
     image: *test_image
     pull: true
     commands:
@@ -181,7 +197,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ru/*.po"  check-xml-zh_Hans:
+            - "doc/po/ru/*.po"
+        
+  check-xml-zh_Hans:
     image: *test_image
     pull: true
     commands:
@@ -191,7 +209,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/zh_Hans/*.po"  check-xml-ro:
+            - "doc/po/zh_Hans/*.po"
+        
+  check-xml-ro:
     image: *test_image
     pull: true
     commands:
@@ -201,7 +221,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ro/*.po"  check-xml-uk:
+            - "doc/po/ro/*.po"
+        
+  check-xml-uk:
     image: *test_image
     pull: true
     commands:
@@ -211,7 +233,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/uk/*.po"### TARGET html
+            - "doc/po/uk/*.po"
+        
+### TARGET html
   html-it_IT:
     image: *test_image
     pull: true
@@ -222,7 +246,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/it_IT/*.po"  html-pt_BR:
+            - "doc/po/it_IT/*.po"
+        
+  html-pt_BR:
     image: *test_image
     pull: true
     commands:
@@ -232,7 +258,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/pt_BR/*.po"  html-fr:
+            - "doc/po/pt_BR/*.po"
+        
+  html-fr:
     image: *test_image
     pull: true
     commands:
@@ -242,7 +270,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/fr/*.po"  html-es:
+            - "doc/po/fr/*.po"
+        
+  html-es:
     image: *test_image
     pull: true
     commands:
@@ -252,7 +282,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/es/*.po"  html-pl:
+            - "doc/po/es/*.po"
+        
+  html-pl:
     image: *test_image
     pull: true
     commands:
@@ -262,7 +294,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/pl/*.po"  html-ko_KR:
+            - "doc/po/pl/*.po"
+        
+  html-ko_KR:
     image: *test_image
     pull: true
     commands:
@@ -272,7 +306,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ko_KR/*.po"  html-de:
+            - "doc/po/ko_KR/*.po"
+        
+  html-de:
     image: *test_image
     pull: true
     commands:
@@ -282,7 +318,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/de/*.po"  html-ja:
+            - "doc/po/de/*.po"
+        
+  html-ja:
     image: *test_image
     pull: true
     commands:
@@ -292,7 +330,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ja/*.po"  html-ru:
+            - "doc/po/ja/*.po"
+        
+  html-ru:
     image: *test_image
     pull: true
     commands:
@@ -302,7 +342,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ru/*.po"  html-zh_Hans:
+            - "doc/po/ru/*.po"
+        
+  html-zh_Hans:
     image: *test_image
     pull: true
     commands:
@@ -312,7 +354,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/zh_Hans/*.po"  html-ro:
+            - "doc/po/zh_Hans/*.po"
+        
+  html-ro:
     image: *test_image
     pull: true
     commands:
@@ -322,7 +366,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ro/*.po"  html-uk:
+            - "doc/po/ro/*.po"
+        
+  html-uk:
     image: *test_image
     pull: true
     commands:
@@ -332,7 +378,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/uk/*.po"### TARGET cheatsheets
+            - "doc/po/uk/*.po"
+        
+### TARGET cheatsheets
   cheatsheets-it_IT:
     image: *test_image
     pull: true
@@ -343,7 +391,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/it_IT/*.po"  cheatsheets-pt_BR:
+            - "doc/po/it_IT/*.po"
+        
+  cheatsheets-pt_BR:
     image: *test_image
     pull: true
     commands:
@@ -353,7 +403,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/pt_BR/*.po"  cheatsheets-fr:
+            - "doc/po/pt_BR/*.po"
+        
+  cheatsheets-fr:
     image: *test_image
     pull: true
     commands:
@@ -363,7 +415,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/fr/*.po"  cheatsheets-es:
+            - "doc/po/fr/*.po"
+        
+  cheatsheets-es:
     image: *test_image
     pull: true
     commands:
@@ -373,7 +427,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/es/*.po"  cheatsheets-pl:
+            - "doc/po/es/*.po"
+        
+  cheatsheets-pl:
     image: *test_image
     pull: true
     commands:
@@ -383,7 +439,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/pl/*.po"  cheatsheets-ko_KR:
+            - "doc/po/pl/*.po"
+        
+  cheatsheets-ko_KR:
     image: *test_image
     pull: true
     commands:
@@ -393,7 +451,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ko_KR/*.po"  cheatsheets-de:
+            - "doc/po/ko_KR/*.po"
+        
+  cheatsheets-de:
     image: *test_image
     pull: true
     commands:
@@ -403,7 +463,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/de/*.po"  cheatsheets-ja:
+            - "doc/po/de/*.po"
+        
+  cheatsheets-ja:
     image: *test_image
     pull: true
     commands:
@@ -413,7 +475,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ja/*.po"  cheatsheets-ru:
+            - "doc/po/ja/*.po"
+        
+  cheatsheets-ru:
     image: *test_image
     pull: true
     commands:
@@ -423,7 +487,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ru/*.po"  cheatsheets-zh_Hans:
+            - "doc/po/ru/*.po"
+        
+  cheatsheets-zh_Hans:
     image: *test_image
     pull: true
     commands:
@@ -433,7 +499,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/zh_Hans/*.po"  cheatsheets-ro:
+            - "doc/po/zh_Hans/*.po"
+        
+  cheatsheets-ro:
     image: *test_image
     pull: true
     commands:
@@ -443,7 +511,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ro/*.po"  cheatsheets-uk:
+            - "doc/po/ro/*.po"
+        
+  cheatsheets-uk:
     image: *test_image
     pull: true
     commands:
@@ -453,7 +523,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/uk/*.po"### TARGET check-cheatsheets
+            - "doc/po/uk/*.po"
+        
+### TARGET check-cheatsheets
   check-cheatsheets-it_IT:
     image: *test_image
     pull: true
@@ -464,7 +536,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/it_IT/*.po"  check-cheatsheets-pt_BR:
+            - "doc/po/it_IT/*.po"
+        
+  check-cheatsheets-pt_BR:
     image: *test_image
     pull: true
     commands:
@@ -474,7 +548,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/pt_BR/*.po"  check-cheatsheets-fr:
+            - "doc/po/pt_BR/*.po"
+        
+  check-cheatsheets-fr:
     image: *test_image
     pull: true
     commands:
@@ -484,7 +560,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/fr/*.po"  check-cheatsheets-es:
+            - "doc/po/fr/*.po"
+        
+  check-cheatsheets-es:
     image: *test_image
     pull: true
     commands:
@@ -494,7 +572,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/es/*.po"  check-cheatsheets-pl:
+            - "doc/po/es/*.po"
+        
+  check-cheatsheets-pl:
     image: *test_image
     pull: true
     commands:
@@ -504,7 +584,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/pl/*.po"  check-cheatsheets-ko_KR:
+            - "doc/po/pl/*.po"
+        
+  check-cheatsheets-ko_KR:
     image: *test_image
     pull: true
     commands:
@@ -514,7 +596,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ko_KR/*.po"  check-cheatsheets-de:
+            - "doc/po/ko_KR/*.po"
+        
+  check-cheatsheets-de:
     image: *test_image
     pull: true
     commands:
@@ -524,7 +608,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/de/*.po"  check-cheatsheets-ja:
+            - "doc/po/de/*.po"
+        
+  check-cheatsheets-ja:
     image: *test_image
     pull: true
     commands:
@@ -534,7 +620,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ja/*.po"  check-cheatsheets-ru:
+            - "doc/po/ja/*.po"
+        
+  check-cheatsheets-ru:
     image: *test_image
     pull: true
     commands:
@@ -544,7 +632,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ru/*.po"  check-cheatsheets-zh_Hans:
+            - "doc/po/ru/*.po"
+        
+  check-cheatsheets-zh_Hans:
     image: *test_image
     pull: true
     commands:
@@ -554,7 +644,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/zh_Hans/*.po"  check-cheatsheets-ro:
+            - "doc/po/zh_Hans/*.po"
+        
+  check-cheatsheets-ro:
     image: *test_image
     pull: true
     commands:
@@ -564,7 +656,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ro/*.po"  check-cheatsheets-uk:
+            - "doc/po/ro/*.po"
+        
+  check-cheatsheets-uk:
     image: *test_image
     pull: true
     commands:
@@ -574,7 +668,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/uk/*.po"### TARGET pdf
+            - "doc/po/uk/*.po"
+        
+### TARGET pdf
   pdf-it_IT:
     image: *test_image
     pull: true
@@ -585,7 +681,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/it_IT/*.po"  pdf-pt_BR:
+            - "doc/po/it_IT/*.po"
+        
+  pdf-pt_BR:
     image: *test_image
     pull: true
     commands:
@@ -595,7 +693,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/pt_BR/*.po"  pdf-fr:
+            - "doc/po/pt_BR/*.po"
+        
+  pdf-fr:
     image: *test_image
     pull: true
     commands:
@@ -605,7 +705,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/fr/*.po"  pdf-es:
+            - "doc/po/fr/*.po"
+        
+  pdf-es:
     image: *test_image
     pull: true
     commands:
@@ -615,7 +717,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/es/*.po"  pdf-pl:
+            - "doc/po/es/*.po"
+        
+  pdf-pl:
     image: *test_image
     pull: true
     commands:
@@ -625,7 +729,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/pl/*.po"  pdf-ko_KR:
+            - "doc/po/pl/*.po"
+        
+  pdf-ko_KR:
     image: *test_image
     pull: true
     commands:
@@ -635,7 +741,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ko_KR/*.po"  pdf-de:
+            - "doc/po/ko_KR/*.po"
+        
+  pdf-de:
     image: *test_image
     pull: true
     commands:
@@ -645,7 +753,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/de/*.po"  pdf-ja:
+            - "doc/po/de/*.po"
+        
+  pdf-ja:
     image: *test_image
     pull: true
     commands:
@@ -655,7 +765,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ja/*.po"  pdf-ru:
+            - "doc/po/ja/*.po"
+        
+  pdf-ru:
     image: *test_image
     pull: true
     commands:
@@ -665,7 +777,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ru/*.po"  pdf-zh_Hans:
+            - "doc/po/ru/*.po"
+        
+  pdf-zh_Hans:
     image: *test_image
     pull: true
     commands:
@@ -675,7 +789,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/zh_Hans/*.po"  pdf-ro:
+            - "doc/po/zh_Hans/*.po"
+        
+  pdf-ro:
     image: *test_image
     pull: true
     commands:
@@ -685,7 +801,9 @@ steps:
       - event: push
         path:
           include:
-            - "doc/po/ro/*.po"  pdf-uk:
+            - "doc/po/ro/*.po"
+        
+  pdf-uk:
     image: *test_image
     pull: true
     commands:
@@ -696,3 +814,4 @@ steps:
         path:
           include:
             - "doc/po/uk/*.po"
+        
