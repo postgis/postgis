@@ -5,7 +5,8 @@
       - make -C build-docs/doc/po/@LANG@ local-@TARGET@
     depends_on: @DEP@
     when:
-      - event: [push, pull_request]
-      - path:
-        include:
+      - event: push
+      - event: pull_request
+        path:
+         include:
           - "doc/po/@LANG@/*.po"
