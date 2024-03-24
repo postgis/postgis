@@ -119,7 +119,7 @@ steps:
 
   upgradecheck-pg12:
     image: *test-image
-    depends_on: build-pg12
+    depends_on: installcheck-pg12
     environment:
       - PGVER=12
     commands:
@@ -130,7 +130,7 @@ steps:
 
   upgradecheck-pg15:
     image: *test-image
-    depends_on: build-pg15
+    depends_on: installcheck-pg15
     environment:
       - PGVER=15
     commands:
