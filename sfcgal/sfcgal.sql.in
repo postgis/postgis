@@ -45,12 +45,22 @@ CREATE OR REPLACE FUNCTION postgis_sfcgal_noop(geometry)
         LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
         COST 1;
 
--- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_3DIntersection(geom1 geometry, geom2 geometry)
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_3DIntersection(geom1 geometry, geom2 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_intersection3D'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
+
+-- Availability: 2.1.0
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_3DIntersection(geometry, geometry)
+RETURNS geometry AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_3DIntersection', 'CG_3DIntersection', '3.5.0');
+	SELECT @extschema@.CG_3DIntersection($1, $2);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_Intersection(geom1 geometry, geom2 geometry)
@@ -73,13 +83,23 @@ CREATE OR REPLACE FUNCTION CG_Intersects(geom1 geometry, geom2 geometry)
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
-
--- Availability: 2.2
-CREATE OR REPLACE FUNCTION ST_3DDifference(geom1 geometry, geom2 geometry)
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_3DDifference(geom1 geometry, geom2 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_difference3D'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
+
+
+-- Availability: 2.2
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_3DDifference(geometry, geometry)
+RETURNS geometry AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_3DDifference', 'CG_3DDifference', '3.5.0');
+	SELECT @extschema@.CG_3DDifference($1, $2);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_Difference(geom1 geometry, geom2 geometry)
@@ -88,19 +108,37 @@ CREATE OR REPLACE FUNCTION CG_Difference(geom1 geometry, geom2 geometry)
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
--- Availability: 2.2
-CREATE OR REPLACE FUNCTION ST_3DUnion(geom1 geometry, geom2 geometry)
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_3DUnion(geom1 geometry, geom2 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_union3D'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
--- Availability: 3.3.0
-CREATE AGGREGATE ST_3DUnion(geometry) (
-       sfunc = ST_3DUnion,
+
+-- Availability: 3.5.0
+CREATE AGGREGATE CG_3DUnion(geometry) (
+       sfunc = CG_3DUnion,
        stype = geometry,
        parallel = safe
 );
+
+-- Availability: 3.3.0
+CREATE AGGREGATE ST_3DUnion(geometry) (
+       sfunc = CG_3DUnion,
+       stype = geometry,
+       parallel = safe
+);
+
+-- Availability: 2.2
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_3DUnion(geometry, geometry)
+RETURNS geometry AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_3DUnion', 'CG_3DUnion', '3.5.0');
+	SELECT @extschema@.CG_3DUnion($1, $2);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_Union(geom1 geometry, geom2 geometry)
@@ -116,12 +154,22 @@ CREATE AGGREGATE CG_Union(geometry) (
        parallel = safe
 );
 
--- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_Tesselate(geometry)
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_Tesselate(geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_tesselate'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
+
+-- Availability: 2.1.0
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_Tesselate(geometry)
+RETURNS geometry AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_Tesselate', 'CG_Tesselate', '3.5.0');
+	SELECT @extschema@.CG_Tesselate($1);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_Triangulate(geometry)
@@ -130,12 +178,22 @@ CREATE OR REPLACE FUNCTION CG_Triangulate(geometry)
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
--- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_3DArea(geometry)
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_3DArea(geometry)
        RETURNS FLOAT8
        AS 'MODULE_PATHNAME','sfcgal_area3D'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
+
+-- Availability: 2.1.0
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_3DArea(geometry)
+RETURNS FLOAT8 AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_3DArea', 'CG_3DArea', '3.5.0');
+	SELECT @extschema@.CG_3DArea($1);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_Area(geom1 geometry)
@@ -158,33 +216,73 @@ CREATE OR REPLACE FUNCTION CG_Distance(geometry, geometry)
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
--- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_Extrude(geometry, float8, float8, float8)
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_Extrude(geometry, float8, float8, float8)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_extrude'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
 -- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_ForceLHR(geometry)
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_Extrude(geometry, float8, float8, float8)
+RETURNS geometry AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_Extrude', 'CG_Extrude', '3.5.0');
+	SELECT @extschema@.CG_Extrude($1, $2, $3, $4);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_ForceLHR(geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_force_lhr'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
 -- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_Orientation(geometry)
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_ForceLHR(geometry)
+RETURNS geometry AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_ForceLHR', 'CG_ForceLHR', '3.5.0');
+	SELECT @extschema@.CG_ForceLHR($1);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_Orientation(geometry)
        RETURNS INT4
        AS 'MODULE_PATHNAME','sfcgal_orientation'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
 -- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_MinkowskiSum(geometry, geometry)
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_Orientation(geometry)
+RETURNS INT4 AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_Orientation', 'CG_Orientation', '3.5.0');
+	SELECT @extschema@.CG_Orientation($1);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_MinkowskiSum(geometry, geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_minkowski_sum'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
+
+-- Availability: 2.1.0
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_MinkowskiSum(geometry, geometry)
+RETURNS geometry AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_MinkowskiSum', 'CG_MinkowsikSum', '3.5.0');
+	SELECT @extschema@.CG_MinkowskiSum($1, $2);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_StraightSkeleton(geometry, use_m_as_distance boolean DEFAULT false)
@@ -203,8 +301,8 @@ RETURNS geometry AS $$
 $$
 LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
 
--- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_ApproximateMedialAxis(geometry)
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_ApproximateMedialAxis(geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_approximate_medial_axis'
        LANGUAGE 'c'
@@ -212,60 +310,150 @@ CREATE OR REPLACE FUNCTION ST_ApproximateMedialAxis(geometry)
        COST 100;
 
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_IsPlanar(geometry)
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_ApproximateMedialAxis(geometry)
+RETURNS geometry AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_ApproximateMedialAxis', 'CG_ApproximateMedialAxis', '3.5.0');
+	SELECT @extschema@.CG_ApproximateMedialAxis($1);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_IsPlanar(geometry)
        RETURNS boolean
        AS 'MODULE_PATHNAME','sfcgal_is_planar'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
--- Availability: 2.2
-CREATE OR REPLACE FUNCTION ST_Volume(geometry)
+-- Availability: 2.2.0
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_IsPlanar(geometry)
+RETURNS boolean AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_IsPlanar', 'CG_IsPlanar', '3.5.0');
+	SELECT @extschema@.CG_IsPlanar($1);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_Volume(geometry)
        RETURNS FLOAT8
        AS 'MODULE_PATHNAME','sfcgal_volume'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
 -- Availability: 2.2
-CREATE OR REPLACE FUNCTION ST_MakeSolid(geometry)
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_Volume(geometry)
+RETURNS FLOAT8 AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_Volume', 'CG_Volume', '3.5.0');
+	SELECT @extschema@.CG_Volume($1);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_MakeSolid(geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_make_solid'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
 -- Availability: 2.2
-CREATE OR REPLACE FUNCTION ST_IsSolid(geometry)
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_MakeSolid(geometry)
+RETURNS geometry AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_MakeSolid', 'CG_MakeSolid', '3.5.0');
+	SELECT @extschema@.CG_MakeSolid($1);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_IsSolid(geometry)
        RETURNS boolean
        AS 'MODULE_PATHNAME','sfcgal_is_solid'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
--- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION ST_ConstrainedDelaunayTriangles(geometry)
+-- Availability: 2.2
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_IsSolid(geometry)
+RETURNS boolean AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_IsSolid', 'CG_IsSolid', '3.5.0');
+	SELECT @extschema@.CG_IsSolid($1);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_ConstrainedDelaunayTriangles(geometry)
        RETURNS geometry
-       AS 'MODULE_PATHNAME', 'ST_ConstrainedDelaunayTriangles'
+       AS 'MODULE_PATHNAME', 'sfcgal_constrained_delaunay_triangles'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
--- Availability: 3.3.0
-CREATE OR REPLACE FUNCTION ST_3DConvexHull(geometry)
+-- Availability: 3.0.0
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_ConstrainedDelaunayTriangles(geometry)
+RETURNS geometry AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_ConstrainedDelaunayTriangles', 'CG_ConstrainedDelaunayTriangles', '3.5.0');
+	SELECT @extschema@.CG_ConstrainedDelaunayTriangles($1);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_3DConvexHull(geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME', 'sfcgal_convexhull3D'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
 -- Availability: 3.3.0
-CREATE OR REPLACE FUNCTION ST_AlphaShape(g1 geometry, alpha float8 DEFAULT 1.0, allow_holes boolean DEFAULT false)
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_3DConvexHull(geometry)
+RETURNS geometry AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_3DConvexHull', 'CG_3DConvexHull', '3.5.0');
+	SELECT @extschema@.CG_3DConvexHull($1);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_AlphaShape(g1 geometry, alpha float8 DEFAULT 1.0, allow_holes boolean DEFAULT false)
        RETURNS geometry
        AS 'MODULE_PATHNAME', 'sfcgal_alphashape'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
 -- Availability: 3.3.0
-CREATE OR REPLACE FUNCTION ST_OptimalAlphaShape(g1 geometry, allow_holes boolean DEFAULT false, nb_components int DEFAULT 1)
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_AlphaShape(g1 geometry, alpha float8 DEFAULT 1.0, allow_holes boolean DEFAULT false)
+RETURNS geometry AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_AlphaShape', 'CG_AlphaShape', '3.5.0');
+	SELECT @extschema@.CG_AlphaShape($1, $2, $3);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_OptimalAlphaShape(g1 geometry, allow_holes boolean DEFAULT false, nb_components int DEFAULT 1)
        RETURNS geometry
        AS 'MODULE_PATHNAME', 'sfcgal_optimalalphashape'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
+
+-- Availability: 3.3.0
+-- Deprecation in 3.5.0
+CREATE OR REPLACE FUNCTION ST_OptimalAlphaShape(g1 geometry, allow_holes boolean DEFAULT false, nb_components int DEFAULT 1)
+RETURNS geometry AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_OptimalAlphaShape', 'CG_OptimalAlphaShape', '3.5.0');
+	SELECT @extschema@.CG_OptimalAlphaShape($1, $2, $3);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_YMonotonePartition(g1 geometry)

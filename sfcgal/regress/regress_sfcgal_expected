@@ -1,4 +1,5 @@
 postgis_sfcgal_version|1
+postgis_sfcgal_noop|33
 ST_Tesselate|GEOMETRYCOLLECTION(POINT(4 4),TIN(((0 1,1 0,1 1,0 1)),((0 1,0 0,1 0,0 1))))
 ST_3DArea|1
 ST_Extrude_point|LINESTRING Z (0 0 0,1 0 0)
@@ -8,13 +9,25 @@ ST_ForceLHR|POLYGON((0 0,1 0,1 1,0 1,0 0))
 ST_Orientation_1|-1
 ST_Orientation_2|1
 ST_MinkowskiSum|MULTIPOLYGON(((0 0,1 0,5 0,5 1,4 1,0 1,0 0)))
-CG_StraightSkeleton|MULTILINESTRING((1 1,1.5 1.5),(2 1,1.5 1.5),(2 2,1.5 1.5),(1 2,1.5 1.5))
-CG_StraightSkeletonUseMDistance|MULTILINESTRING M ((0 0 0,0.5 0.5 0.5),(1 0 0,0.5 0.5 0.5),(1 1 0,0.5 0.5 0.5),(0 1 0,0.5 0.5 0.5))
 ST_ConstrainedDelaunayTriangles|TIN(((4 0,2 2,2 -2,4 0)),((2 2,0 0,2 -2,2 2)))
-postgis_sfcgal_noop|33
 ST_3DConvexHull|80.9227
 ST_3DUnion|t
 ST_3DUnion (aggregate)|t
+CG_Tesselate|GEOMETRYCOLLECTION(POINT(4 4),TIN(((0 1,1 0,1 1,0 1)),((0 1,0 0,1 0,0 1))))
+CG_3DArea|1
+CG_Extrude_point|LINESTRING Z (0 0 0,1 0 0)
+CG_Extrude_line|POLYHEDRALSURFACE Z (((0 0 0,1 0 0,1 1 0,0 1 0,0 0 0)))
+CG_Extrude_surface|POLYHEDRALSURFACE Z (((1 1 0,1 0 0,0 1 0,1 1 0)),((0 1 1,1 0 1,1 1 1,0 1 1)),((1 0 0,0 0 0,0 1 0,1 0 0)),((0 1 1,0 0 1,1 0 1,0 1 1)),((1 0 0,1 1 0,1 1 1,1 0 1,1 0 0)),((1 1 0,0 1 0,0 1 1,1 1 1,1 1 0)),((0 1 0,0 0 0,0 0 1,0 1 1,0 1 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)))
+CG_ForceLHR|POLYGON((0 0,1 0,1 1,0 1,0 0))
+CG_Orientation_1|-1
+CG_Orientation_2|1
+CG_MinkowskiSum|MULTIPOLYGON(((0 0,1 0,5 0,5 1,4 1,0 1,0 0)))
+CG_ConstrainedDelaunayTriangles|TIN(((4 0,2 2,2 -2,4 0)),((2 2,0 0,2 -2,2 2)))
+CG_3DConvexHull|80.9227
+CG_3DUnion|t
+CG_3DUnion (aggregate)|t
+CG_StraightSkeleton|MULTILINESTRING((1 1,1.5 1.5),(2 1,1.5 1.5),(2 2,1.5 1.5),(1 2,1.5 1.5))
+CG_StraightSkeletonUseMDistance|MULTILINESTRING M ((0 0 0,0.5 0.5 0.5),(1 0 0,0.5 0.5 0.5),(1 1 0,0.5 0.5 0.5),(0 1 0,0.5 0.5 0.5))
 CG_Distance|5
 CG_3DDistance|1
 CG_Area|23
