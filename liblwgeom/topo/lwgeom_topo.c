@@ -5408,6 +5408,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   lwpoint_free(start_point); /* too late if lwt_AddPoint calls lwerror */
   if ( nid[0] == -1 ) return -1; /* lwerror should have been called */
   moved += mm;
+  LWDEBUGF(1, "start point added or found as being %" LWTFMT_ELEMID " (moved ? %d)", nid[1], mm);
 
 
   end_point = lwline_get_lwpoint(edge, edge->points->npoints-1);
@@ -5420,9 +5421,10 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   nid[1] = _lwt_AddPoint( topo, end_point,
                           _lwt_minTolerance(lwpoint_as_lwgeom(end_point)),
                           handleFaceSplit, &mm );
-  moved += mm;
   lwpoint_free(end_point); /* too late if lwt_AddPoint calls lwerror */
   if ( nid[1] == -1 ) return -1; /* lwerror should have been called */
+  moved += mm;
+  LWDEBUGF(1, "end point added or found as being %" LWTFMT_ELEMID " (moved ? %d)", nid[1], mm);
 
   /*
     -- Added endpoints may have drifted due to tolerance, so
@@ -5430,6 +5432,8 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   */
   if ( moved )
   {
+
+    LWDEBUG(1, "One or both line endpoints moved by snap, updating line");
 
     nn = nid[0] == nid[1] ? 1 : 2;
     node = lwt_be_getNodeById( topo, nid, &nn,
@@ -5463,8 +5467,12 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
 
     if ( nn ) _lwt_release_nodes(node, nn);
 
+    LWDEBUGG(2, lwline_as_lwgeom(edge), "Snapped after drifted endpoints snap");
+
     /* make valid, after snap (to handle collapses) */
     tmp = lwgeom_make_valid(lwline_as_lwgeom(edge));
+
+    LWDEBUGG(2, tmp, "Made-valid after snap to drifted endpoints");
 
     col = lwgeom_as_lwcollection(tmp);
     if ( col )
@@ -5504,6 +5512,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
         return 0;
       }
     }
+
   }
 
   /* check if the so-snapped edge _now_ exists */
