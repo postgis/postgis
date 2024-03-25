@@ -52,17 +52,28 @@
                 __FILE__, __func__, __LINE__, __VA_ARGS__); \
         } while (0);
 
+#ifdef POSTGIS_DEBUG_GEOMETRY_WKB
 /* Display a notice and a WKT representation of a geometry
+ * at the given debug level */
+#define LWDEBUGG(level, geom, msg) \
+  if (POSTGIS_DEBUG_LEVEL >= level) \
+  do { \
+    char *wkt = lwgeom_to_hexwkb_buffer(geom, WKB_EXTENDED); \
+    LWDEBUGF(level, msg ": %s", wkt); \
+    lwfree(wkt); \
+  } while (0);
+#else
+/* Display a notice and an HEXWKB representation of a geometry
  * at the given debug level */
 #define LWDEBUGG(level, geom, msg) \
   if (POSTGIS_DEBUG_LEVEL >= level) \
   do { \
     size_t sz; \
     char *wkt = lwgeom_to_wkt(geom, WKT_EXTENDED, 15, &sz); \
-    /* char *wkt = lwgeom_to_hexwkb(geom, WKT_EXTENDED, &sz); */ \
     LWDEBUGF(level, msg ": %s", wkt); \
     lwfree(wkt); \
   } while (0);
+#endif
 
 /* Display a formatted notice and a WKT representation of a geometry
  * at the given debug level */
