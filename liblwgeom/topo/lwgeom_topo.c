@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2015-2022 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2015-2024 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -5441,7 +5441,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   lwpoint_free(start_point); /* too late if lwt_AddPoint calls lwerror */
   if ( nid[0] == -1 ) return -1; /* lwerror should have been called */
   moved += mm;
-  LWDEBUGF(1, "start point added or found as being %" LWTFMT_ELEMID " (moved ? %d)", nid[1], mm);
+  LWDEBUGF(1, "node for start point added or found to be %" LWTFMT_ELEMID " (moved ? %d)", nid[0], mm);
 
 
   end_point = lwline_get_lwpoint(edge, edge->points->npoints-1);
@@ -5457,7 +5457,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   lwpoint_free(end_point); /* too late if lwt_AddPoint calls lwerror */
   if ( nid[1] == -1 ) return -1; /* lwerror should have been called */
   moved += mm;
-  LWDEBUGF(1, "end point added or found as being %" LWTFMT_ELEMID " (moved ? %d)", nid[1], mm);
+  LWDEBUGF(1, "node for end point added or found to be %" LWTFMT_ELEMID " (moved ? %d)", nid[1], mm);
 
   /*
     -- Added endpoints may have drifted due to tolerance, so
