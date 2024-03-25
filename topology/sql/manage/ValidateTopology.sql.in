@@ -747,7 +747,7 @@ BEGIN
       e2.edge_id as id2,
       e1.geom as g1,
       e2.geom as g2,
-      ST_Relate(e1.geom, e2.geom) as im
+      ST_Relate(e1.geom, e2.geom, 2) as im
     FROM
       edge e1,
       edge e2
@@ -771,51 +771,9 @@ BEGIN
       )
   LOOP --{
 
-    IF ST_RelateMatch(rec.im, 'FF1F**1*2') THEN
-      CONTINUE; -- no interior intersection
-
-    --
-    -- Closed lines have no boundary, so endpoint
-    -- intersection would be considered interior
-    -- See http://trac.osgeo.org/postgis/ticket/770
-    -- See also full explanation in topology.AddEdge
-    --
-
-    ELSIF ST_RelateMatch(rec.im, 'FF10F01F2') THEN
-      -- first line (g1) is open, second (g2) is closed
-      -- first boundary has puntual intersection with second interior
-      --
-      -- compute intersection, check it equals second endpoint
-      IF ST_Equals(ST_Intersection(rec.g2, rec.g1),
-                   ST_StartPoint(rec.g2))
-      THEN
-        CONTINUE;
-      END IF;
-
-    ELSIF ST_RelateMatch(rec.im, 'F01FFF102') THEN
-      -- second line (g2) is open, first (g1) is closed
-      -- second boundary has puntual intersection with first interior
-      --
-      -- compute intersection, check it equals first endpoint
-      IF ST_Equals(ST_Intersection(rec.g2, rec.g1),
-                   ST_StartPoint(rec.g1))
-      THEN
-        CONTINUE;
-      END IF;
-
-    ELSIF ST_RelateMatch(rec.im, '0F1FFF1F2') THEN
-      -- both lines are closed (boundary intersects nothing)
-      -- they have puntual intersection between interiors
-      --
-      -- compute intersection, check it's a single point
-      -- and equals first StartPoint _and_ second StartPoint
-      IF ST_Equals(ST_Intersection(rec.g1, rec.g2),
-                   ST_StartPoint(rec.g1)) AND
-         ST_Equals(ST_StartPoint(rec.g1), ST_StartPoint(rec.g2))
-      THEN
-        CONTINUE;
-      END IF;
-
+    IF ST_RelateMatch(rec.im, 'FF*F*****') THEN
+      -- no interior-interior or interior-boundary intersections
+      CONTINUE;
     END IF;
 
     retrec.error = 'edge crosses edge';
