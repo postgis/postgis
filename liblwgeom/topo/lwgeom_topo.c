@@ -26,12 +26,14 @@
 
 #include "../postgis_config.h"
 
-/*#define POSTGIS_DEBUG_LEVEL 2*/
-#define POSTGIS_DEBUG_GEOMETRY_WKB 1
+//#define POSTGIS_DEBUG_LEVEL 1
+//#define POSTGIS_DEBUG_GEOMETRY_WKB 1
 #include "lwgeom_log.h"
 
 #include "liblwgeom_internal.h"
 #include "liblwgeom_topo_internal.h"
+#include "lwt_node_edges.h"
+#include "lwt_edgeend_star.h"
 #include "lwgeom_geos.h"
 
 /*********************************************************************
@@ -219,7 +221,7 @@ lwt_be_getFaceById(LWT_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *numelems
   CBT3(topo, getFaceById, ids, numelems, fields);
 }
 
-static LWT_ISO_EDGE *
+LWT_ISO_EDGE *
 lwt_be_getEdgeByNode(LWT_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *numelems, int fields)
 {
   CBT3(topo, getEdgeByNode, ids, numelems, fields);
@@ -1426,10 +1428,10 @@ typedef struct edgeend_t {
  * @param from vertex index to start from (will really start from "from"+dir)
  * @param dir  1 to go forward
  *            -1 to go backward
- * @return 0 if edge is collapsed (no distinct points)
+ * @return 1 on success, 0 if edge is collapsed (no distinct points)
  */
 static int
-_lwt_FirstDistinctVertex2D(const POINTARRAY* pa, POINT2D *ref, int from, int dir, POINT2D *op)
+_lwt_FirstDistinctVertex2D(const POINTARRAY* pa, const POINT2D *ref, int from, int dir, POINT2D *op)
 {
   int i, toofar, inc;
   POINT2D fp;
@@ -1460,12 +1462,11 @@ _lwt_FirstDistinctVertex2D(const POINTARRAY* pa, POINT2D *ref, int from, int dir
   return 0;
 }
 
-
 /*
  * Return non-zero on failure (lwerror is invoked in that case)
  * Possible failures:
  *  -1 no two distinct vertices exist
- *  -2 azimuth computation failed for first edge end
+ *  -2 azimuth computation failed
  */
 static int
 _lwt_InitEdgeEndByLine(edgeend *fee, edgeend *lee, LWLINE *edge,
@@ -1517,7 +1518,7 @@ _lwt_InitEdgeEndByLine(edgeend *fee, edgeend *lee, LWLINE *edge,
  * around a node, starting from the given azimuth, and take
  * note of the face on the both sides.
  *
- * @param topo the topology to act upon
+ * @param topo the topology to load edges from
  * @param node the identifier of the node to analyze
  * @param data input (myaz) / output (nextCW, nextCCW) parameter
  * @param other edgeend, if also incident to given node (closed edge).
@@ -4966,334 +4967,6 @@ compare_scored_pointer(const void *si1, const void *si2)
 		return 0;
 }
 
-/*
- * @param findFace if non-zero the code will determine which face
- *        contains the given point (unless it is known to be NOT
- *        isolated)
- * @param moved if not-null will be set to 0 if the point was added
- *              w/out any snapping or 1 otherwise.
- */
-static LWT_ELEMID
-_lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
-              findFace, int *moved)
-{
-	uint64_t num, i;
-	double mindist = FLT_MAX;
-	LWT_ISO_NODE *nodes, *nodes2;
-	LWT_ISO_EDGE *edges, *edges2;
-	LWGEOM *pt = lwpoint_as_lwgeom(point);
-	int flds;
-	LWT_ELEMID id = 0;
-	scored_pointer *sorted;
-
-	/* Get tolerance, if 0 was given */
-	if (!tol)
-		tol = _LWT_MINTOLERANCE(topo, pt);
-
-	LWDEBUGG(1, pt, "Adding point");
-
-	/*
-	-- 1. Check if any existing node is closer than the given precision
-	--    and if so pick the closest
-	TODO: use WithinBox2D
-	*/
-	flds = LWT_COL_NODE_NODE_ID | LWT_COL_NODE_GEOM;
-	nodes = lwt_be_getNodeWithinDistance2D(topo, point, tol, &num, flds, 0);
-	if (num == UINT64_MAX)
-	{
-		PGTOPO_BE_ERROR();
-		return -1;
-	}
-  if ( num )
-  {
-    LWDEBUGF(1, "New point is within %.15g units of %d nodes", tol, num);
-    /* Order by distance if there are more than a single return */
-    if ( num > 1 )
-    {{
-      sorted= lwalloc(sizeof(scored_pointer)*num);
-      for (i=0; i<num; ++i)
-      {
-        sorted[i].ptr = nodes+i;
-        sorted[i].score = lwgeom_mindistance2d(lwpoint_as_lwgeom(nodes[i].geom), pt);
-        LWDEBUGF(1, "Node %" LWTFMT_ELEMID " distance: %.15g",
-          ((LWT_ISO_NODE*)(sorted[i].ptr))->node_id, sorted[i].score);
-      }
-      qsort(sorted, num, sizeof(scored_pointer), compare_scored_pointer);
-      nodes2 = lwalloc(sizeof(LWT_ISO_NODE)*num);
-      for (i=0; i<num; ++i)
-      {
-        nodes2[i] = *((LWT_ISO_NODE*)sorted[i].ptr);
-      }
-      lwfree(sorted);
-      lwfree(nodes);
-      nodes = nodes2;
-    }}
-
-    for ( i=0; i<num; ++i )
-    {
-      LWT_ISO_NODE *n = &(nodes[i]);
-      LWGEOM *g = lwpoint_as_lwgeom(n->geom);
-      double dist = lwgeom_mindistance2d(g, pt);
-      /* TODO: move this check in the previous sort scan ... */
-      /* must be closer than tolerated, unless distance is zero */
-      if ( dist && dist >= tol ) continue;
-      if ( ! id || dist < mindist )
-      {
-        id = n->node_id;
-        mindist = dist;
-      }
-    }
-    if ( id )
-    {
-      /* found an existing node */
-      if ( nodes ) _lwt_release_nodes(nodes, num);
-      if ( moved ) *moved = mindist == 0 ? 0 : 1;
-      return id;
-    }
-  }
-
-  initGEOS(lwnotice, lwgeom_geos_error);
-
-  /*
-  -- 2. Check if any existing edge falls within tolerance
-  --    and if so split it by a point projected on it
-  TODO: use WithinBox2D
-  */
-  flds = LWT_COL_EDGE_EDGE_ID|LWT_COL_EDGE_GEOM;
-  edges = lwt_be_getEdgeWithinDistance2D(topo, point, tol, &num, flds, 0);
-  if (num == UINT64_MAX)
-  {
-    PGTOPO_BE_ERROR();
-    return -1;
-  }
-  if ( num )
-  {
-  LWDEBUGF(1, "New point is within %.15g units of %d edges", tol, num);
-
-  /* Order by distance if there are more than a single return */
-  if ( num > 1 )
-  {{
-    int j;
-    sorted = lwalloc(sizeof(scored_pointer)*num);
-    for (i=0; i<num; ++i)
-    {
-      sorted[i].ptr = edges+i;
-      sorted[i].score = lwgeom_mindistance2d(lwline_as_lwgeom(edges[i].geom), pt);
-      LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " distance: %.15g",
-        ((LWT_ISO_EDGE*)(sorted[i].ptr))->edge_id, sorted[i].score);
-    }
-    qsort(sorted, num, sizeof(scored_pointer), compare_scored_pointer);
-    edges2 = lwalloc(sizeof(LWT_ISO_EDGE)*num);
-    for (j=0, i=0; i<num; ++i)
-    {
-      if ( sorted[i].score == sorted[0].score )
-      {
-        edges2[j++] = *((LWT_ISO_EDGE*)sorted[i].ptr);
-      }
-      else
-      {
-        lwline_free(((LWT_ISO_EDGE*)sorted[i].ptr)->geom);
-      }
-    }
-    num = j;
-    lwfree(sorted);
-    lwfree(edges);
-    edges = edges2;
-  }}
-
-  for (i=0; i<num; ++i)
-  {
-    /* The point is on or near an edge, split the edge */
-    LWT_ISO_EDGE *e = &(edges[i]);
-    LWGEOM *g = lwline_as_lwgeom(e->geom);
-    LWGEOM *prj;
-    int contains;
-    LWT_ELEMID edge_id = e->edge_id;
-
-    LWDEBUGF(1, "Splitting edge %" LWTFMT_ELEMID, edge_id);
-
-    /* project point to line, split edge by point */
-    prj = lwgeom_closest_point(g, pt);
-    if ( moved ) *moved = lwgeom_same(prj,pt) ? 0 : 1;
-    if ( lwgeom_has_z(pt) )
-    {{
-      /*
-      -- This is a workaround for ClosestPoint lack of Z support:
-      -- http://trac.osgeo.org/postgis/ticket/2033
-      */
-      LWGEOM *tmp;
-      double z;
-      POINT4D p4d;
-      LWPOINT *prjpt;
-      /* add Z to "prj" */
-      tmp = lwgeom_force_3dz(prj, 0);
-      prjpt = lwgeom_as_lwpoint(tmp);
-      getPoint4d_p(point->point, 0, &p4d);
-      z = p4d.z;
-      getPoint4d_p(prjpt->point, 0, &p4d);
-      p4d.z = z;
-      ptarray_set_point4d(prjpt->point, 0, &p4d);
-      lwgeom_free(prj);
-      prj = tmp;
-    }}
-    const POINT2D *pt = getPoint2d_cp(lwgeom_as_lwpoint(prj)->point, 0);
-    contains = ptarray_contains_point_partial(e->geom->points, pt, 0, NULL) == LW_BOUNDARY;
-    if ( ! contains )
-    {{
-      double snaptol;
-      LWGEOM *snapedge;
-      LWLINE *snapline;
-      POINT4D p1, p2;
-
-      LWDEBUGF(1, "Edge %" LWTFMT_ELEMID
-                  " does not contain projected point to it",
-                  edge_id);
-
-      /* In order to reduce the robustness issues, we'll pick
-       * an edge that contains the projected point, if possible */
-      if ( i+1 < num )
-      {
-        LWDEBUG(1, "But there's another to check");
-        lwgeom_free(prj);
-        continue;
-      }
-
-      /*
-      -- The tolerance must be big enough for snapping to happen
-      -- and small enough to snap only to the projected point.
-      -- Unfortunately ST_Distance returns 0 because it also uses
-      -- a projected point internally, so we need another way.
-      */
-      snaptol = _lwt_minTolerance(prj);
-      snapedge = _lwt_toposnap(g, prj, snaptol);
-      snapline = lwgeom_as_lwline(snapedge);
-
-      LWDEBUGF(1, "Edge snapped with tolerance %g", snaptol);
-
-      /* TODO: check if snapping did anything ? */
-#if POSTGIS_DEBUG_LEVEL > 0
-      {
-      size_t sz;
-      char *wkt1 = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &sz);
-      char *wkt2 = lwgeom_to_wkt(snapedge, WKT_EXTENDED, 15, &sz);
-      LWDEBUGF(1, "Edge %s snapped became %s", wkt1, wkt2);
-      lwfree(wkt1);
-      lwfree(wkt2);
-      }
-#endif
-
-
-      /*
-      -- Snapping currently snaps the first point below tolerance
-      -- so may possibly move first point. See ticket #1631
-      */
-      getPoint4d_p(e->geom->points, 0, &p1);
-      getPoint4d_p(snapline->points, 0, &p2);
-      LWDEBUGF(1, "Edge first point is %g %g, "
-                  "snapline first point is %g %g",
-                  p1.x, p1.y, p2.x, p2.y);
-      if ( p1.x != p2.x || p1.y != p2.y )
-      {
-        LWDEBUG(1, "Snapping moved first point, re-adding it");
-        if ( LW_SUCCESS != ptarray_insert_point(snapline->points, &p1, 0) )
-        {
-          lwgeom_free(prj);
-          lwgeom_free(snapedge);
-          _lwt_release_edges(edges, num);
-          lwerror("GEOS exception on Contains: %s", lwgeom_geos_errmsg);
-          return -1;
-        }
-#if POSTGIS_DEBUG_LEVEL > 0
-        {
-        size_t sz;
-        char *wkt1 = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &sz);
-        LWDEBUGF(1, "Tweaked snapline became %s", wkt1);
-        lwfree(wkt1);
-        }
-#endif
-      }
-#if POSTGIS_DEBUG_LEVEL > 0
-      else {
-        LWDEBUG(1, "Snapping did not move first point");
-      }
-#endif
-
-      if ( -1 == lwt_ChangeEdgeGeom( topo, edge_id, snapline ) )
-      {
-        /* TODO: should have invoked lwerror already, leaking memory */
-        lwgeom_free(prj);
-        lwgeom_free(snapedge);
-        _lwt_release_edges(edges, num);
-        lwerror("lwt_ChangeEdgeGeom failed");
-        return -1;
-      }
-      lwgeom_free(snapedge);
-    }}
-#if POSTGIS_DEBUG_LEVEL > 0
-    else
-    {{
-      size_t sz;
-      char *wkt1 = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &sz);
-      char *wkt2 = lwgeom_to_wkt(prj, WKT_EXTENDED, 15, &sz);
-      LWDEBUGF(1, "Edge %s contains projected point %s", wkt1, wkt2);
-      lwfree(wkt1);
-      lwfree(wkt2);
-    }}
-#endif
-
-    /* TODO: pass 1 as last argument (skipChecks) ? */
-    id = lwt_ModEdgeSplit( topo, edge_id, lwgeom_as_lwpoint(prj), 0 );
-    if ( -1 == id )
-    {
-      /* TODO: should have invoked lwerror already, leaking memory */
-      lwgeom_free(prj);
-      _lwt_release_edges(edges, num);
-      lwerror("lwt_ModEdgeSplit failed");
-      return -1;
-    }
-
-    lwgeom_free(prj);
-
-    /*
-     * TODO: decimate the two new edges with the given tolerance ?
-     *
-     * the edge identifiers to decimate would be: edge_id and "id"
-     * The problem here is that decimation of existing edges
-     * may introduce intersections or topological inconsistencies,
-     * for example:
-     *
-     *  - A node may end up falling on the other side of the edge
-     *  - The decimated edge might intersect another existing edge
-     *
-     */
-
-    break; /* we only want to snap a single edge */
-  }
-  _lwt_release_edges(edges, num);
-  }
-  else
-  {
-    /* The point is isolated, add it as such */
-    /* TODO: pass 1 as last argument (skipChecks) ? */
-    id = _lwt_AddIsoNode(topo, -1, point, 0, findFace);
-    if ( moved ) *moved = 0;
-    if ( -1 == id )
-    {
-      /* should have invoked lwerror already, leaking memory */
-      lwerror("lwt_AddIsoNode failed");
-      return -1;
-    }
-  }
-
-  return id;
-}
-
-LWT_ELEMID
-lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
-{
-  return _lwt_AddPoint(topo, point, tol, 1, NULL);
-}
-
 /* Return identifier of an equal edge, 0 if none or -1 on error
  * (and lwerror gets called on error)
  *
@@ -5398,6 +5071,1572 @@ _lwt_GetEqualEdge( LWT_TOPOLOGY *topo, LWLINE *edge, int *forward )
   }
 
   return 0;
+}
+
+static int
+_lwt_SnapEdgeToExistingNode(
+  LWT_TOPOLOGY* topo,
+  LWT_ISO_NODE *node,
+  LWT_ISO_EDGE *edge, /* known to require an update from DB for the edge linking and face labelling - geometry is fine */
+  double tol
+)
+{
+  LWGEOM *prj = lwpoint_as_lwgeom(node->geom);
+  const POINT2D *pt = getPoint2d_cp(lwgeom_as_lwpoint(prj)->point, 0);
+
+  LWDEBUGF(1, "Experimental handling of within-tolerance edge %" LWTFMT_ELEMID, edge->edge_id);
+  LWGEOM *snapE = lwgeom_snap(lwline_as_lwgeom(edge->geom), prj, tol);
+
+  /* TODO: check if an endpoint moved */
+
+  LWGEOM *splitE = lwgeom_split(snapE, prj);
+  LWDEBUGG(1, splitE, "Splitted edge");
+
+  LWCOLLECTION *splitC = lwgeom_as_lwcollection(splitE);
+  if ( splitC->ngeoms != 2 )
+  {
+    lwerror("Split of edge resulted in %d components", splitC->ngeoms);
+    return -1;
+  }
+
+  LWT_NODE_EDGES *firstNodeEdges = lwt_nodeEdges_loadFromDB(topo, edge->start_node, LWT_COL_EDGE_ALL );
+  if ( ! firstNodeEdges ) {
+    lwerror("No edges found in DB to be incident to split edge's first node");
+    return -1;
+  }
+  LWT_NODE_EDGES *lastNodeEdges = lwt_nodeEdges_loadFromDB(topo, edge->end_node, LWT_COL_EDGE_ALL );
+  if ( ! lastNodeEdges ) {
+    lwerror("No edges found in DB to be incident to split edge's last node");
+    return -1;
+  }
+  LWT_NODE_EDGES *splitNodeEdges = lwt_nodeEdges_loadFromDB(topo, node->node_id, LWT_COL_EDGE_ALL);
+  if ( ! splitNodeEdges ) {
+    lwerror("No edges found in DB to be incident to split node first node");
+    return -1;
+  }
+
+  LWDEBUGF(1, "Split edge %"
+      LWTFMT_ELEMID " (pre-modEdgeSplit) next_right:%"
+      LWTFMT_ELEMID ", next_left:%"
+      LWTFMT_ELEMID ", face_right:%"
+      LWTFMT_ELEMID ", face_left:%"
+      LWTFMT_ELEMID ", start_node:%"
+      LWTFMT_ELEMID ", end_node:%"
+      LWTFMT_ELEMID,
+      edge->edge_id,
+      edge->next_right,
+      edge->next_left,
+      edge->face_right,
+      edge->face_left,
+      edge->start_node,
+      edge->end_node
+  );
+
+  /* Update split edge reference as it was possibly changed by previous call */
+  for ( int t=0; t<firstNodeEdges->numEdges; t++ )
+  {
+    if ( firstNodeEdges->edges[t].edge_id == edge->edge_id )
+    {
+      edge = &(firstNodeEdges->edges[t]);
+      break;
+    }
+  }
+
+  LWDEBUGF(1, "Split edge %"
+      LWTFMT_ELEMID " (post-modEdgeSplit) next_right:%"
+      LWTFMT_ELEMID ", next_left:%"
+      LWTFMT_ELEMID ", face_right:%"
+      LWTFMT_ELEMID ", face_left:%"
+      LWTFMT_ELEMID ", start_node:%"
+      LWTFMT_ELEMID ", end_node:%"
+      LWTFMT_ELEMID,
+      edge->edge_id,
+      edge->next_right,
+      edge->next_left,
+      edge->face_right,
+      edge->face_left,
+      edge->start_node,
+      edge->end_node
+  );
+
+  int ret;
+
+  uint64_t n;
+  LWT_ELEMID replacedBy[2];
+  LWT_ISO_EDGE *existingEdges[2];
+  //int replacedByForward[2];
+  edgeend splitNodeEdgeEnds[2];
+  for ( n=0; n<2; ++n)
+  {
+    int forward;
+    /* TODO: directly get full existing edge rather than just id * */
+    LWT_ELEMID existingEdgeId = _lwt_GetEqualEdge( topo, lwgeom_as_lwline(splitC->geoms[n]), &forward );
+    if ( existingEdgeId == -1 )
+    {
+      /* probably too late, due to internal lwerror */
+      return -1;
+    }
+    existingEdges[n] = NULL;
+    if ( existingEdgeId == 0 )
+    {
+      LWDEBUGF(1, "Split component %d is a new edge, computing edgeEndInfo", n);
+      {
+        // Compute nextCW and nextCCW of the split edge now
+        // incident to the split point
+
+        POINT2D op; /* other point */
+        if ( n == 1 ) {
+          ret = _lwt_FirstDistinctVertex2D(
+            lwgeom_as_lwline(splitC->geoms[1])->points, //const POINTARRAY* pa,
+            pt, //POINT2D *ref,
+            0, // int from,
+            1, // int dir,
+            &op // POINT2D *op
+          );
+          if (!ret)
+          {
+            lwerror("No distinct vertices found on second part of split edge");
+            return -1; /* lwerror should have been raised */
+          }
+        } else {
+          const POINTARRAY *pa = lwgeom_as_lwline(splitC->geoms[0])->points;
+          ret = _lwt_FirstDistinctVertex2D(
+            pa, //const POINTARRAY* pa,
+            pt, //POINT2D *ref,
+            pa->npoints-1, // int from,
+            -1, // int dir,
+            &op // POINT2D *op
+          );
+          if (!ret)
+          {
+            lwerror("No distinct vertices found on first part of split edge");
+            return -1; /* lwerror should have been raised */
+          }
+        }
+        if ( ! azimuth_pt_pt(pt, &op, &(splitNodeEdgeEnds[n].myaz)) ) {
+          lwerror("error computing azimuth of split endpoint [%.15g %.15g,%.15g %.15g]",
+                  op.x, op.y,
+                  pt->x, pt->y
+          );
+          return -1;
+        }
+        LWDEBUGF(1, "Azimuth of split component %d edgeend [%.15g %.15g,%.15g %.15g] is %.15g",
+          n, op.x, op.y, pt->x, pt->y, splitNodeEdgeEnds[n].myaz);
+        ret = _lwt_FindAdjacentEdges( topo, node->node_id, &(splitNodeEdgeEnds[n]), NULL, -1 );
+        if ( ! ret ) {
+            lwerror("Unexpected backend return: _lwt_FindAdjacentEdges(%d) found no edges when we previously splitted edge %d on it",
+              node->node_id, edge->edge_id);
+            return -1;
+        }
+        LWDEBUGF(1, "Component %d of split edge %d next CW is %d, next CCW is %d",
+          n, edge->edge_id, splitNodeEdgeEnds[n].nextCW, splitNodeEdgeEnds[n].nextCCW);
+      }
+    }
+    else
+    {
+      LWDEBUGF(1, "Split component %d matches existing edge %" LWTFMT_ELEMID
+        " (%s)", n, existingEdgeId, forward ? "forward" : "backward" );
+      /* Get existing edge */
+      for ( int t=0; t<splitNodeEdges->numEdges; t++ )
+      {
+        if ( splitNodeEdges->edges[t].edge_id == existingEdgeId )
+        {
+          existingEdges[n] = &(splitNodeEdges->edges[t]);
+          break;
+        }
+      }
+      if (existingEdges[n] == NULL)
+      {
+        lwerror("could not find edge %" LWTFMT_ELEMID " in database, but _lwt_GetEqualEdges said it was there", existingEdgeId );
+        return -1;
+      }
+    }
+
+    replacedBy[n] = existingEdgeId;
+  }
+
+
+  LWT_ISO_EDGE updatedEdge;
+  int updateFlags;
+  LWT_ISO_EDGE selEdge;
+
+  if ( ( replacedBy[0] != 0 && replacedBy[1] == 0 ) ||
+       ( replacedBy[1] != 0 && replacedBy[0] == 0 ) )
+  {
+    LWT_ISO_EDGE *existingEdge;
+    edgeend *splitNodeEdgeEndInfo;
+    LWLINE *newSplitEdgeLine;
+    int splitNodeNewEdgeOutgoing; // The new split edge goes out of the split node
+
+    if ( replacedBy[1] == 0 )
+    /* First part of edge is the existing edge */
+    {
+      existingEdge = existingEdges[0];
+      newSplitEdgeLine = lwgeom_as_lwline(splitC->geoms[1]);
+      splitNodeEdgeEndInfo = &(splitNodeEdgeEnds[1]);
+      splitNodeNewEdgeOutgoing = 1;
+    }
+    else
+    /* Second part of edge is the existing edge */
+    {
+      existingEdge = existingEdges[1];
+      newSplitEdgeLine = lwgeom_as_lwline(splitC->geoms[0]);
+      splitNodeEdgeEndInfo = &(splitNodeEdgeEnds[0]);
+      splitNodeNewEdgeOutgoing = 0;
+    }
+
+    /* TODO: check that newSplitEdgeLine part does not crosses any other edge ? */
+
+    LWDEBUGF(1, "Existing edge %"
+        LWTFMT_ELEMID " (post-modEdgeSplit) next_right:%"
+        LWTFMT_ELEMID ", next_left:%"
+        LWTFMT_ELEMID ", face_right:%"
+        LWTFMT_ELEMID ", face_left:%"
+        LWTFMT_ELEMID,
+        existingEdge->edge_id,
+        existingEdge->next_right,
+        existingEdge->next_left,
+        existingEdge->face_right,
+        existingEdge->face_left
+    );
+
+    /*****
+     *
+     * Update edge linking
+     *
+     */
+
+    /*
+     * Update next CW / CCW edges on split node
+     * (fix linking on split node)
+     */
+
+    /* Update next CCW edge */
+    {
+      LWT_ELEMID nextEdge, sideFace;
+      if ( splitNodeNewEdgeOutgoing ) {
+        nextEdge = edge->edge_id;
+        sideFace = edge->face_left;
+      } else {
+        nextEdge = -edge->edge_id;
+        sideFace = edge->face_right;
+      }
+
+      LWDEBUGF(1, "Setting nextEdge/sideFace of CCW edge %" LWTFMT_ELEMID
+        " to %d/%d",
+        splitNodeEdgeEndInfo->nextCCW,
+        nextEdge, sideFace
+      );
+
+      if ( splitNodeEdgeEndInfo->nextCCW > 0 )
+      {
+        selEdge.edge_id = splitNodeEdgeEndInfo->nextCCW;
+        updatedEdge.next_right = nextEdge;
+        updatedEdge.face_right = sideFace;
+        updateFlags = LWT_COL_EDGE_NEXT_RIGHT|
+                      LWT_COL_EDGE_FACE_RIGHT;
+        LWDEBUGF(1, "Will update next_right/face_right of outgoing CCW edge %" LWTFMT_ELEMID
+          " to %d/%d",
+          selEdge.edge_id,
+          nextEdge, sideFace
+        );
+      }
+      else
+      {
+        selEdge.edge_id = -splitNodeEdgeEndInfo->nextCCW;
+        updatedEdge.next_left = nextEdge;
+        updatedEdge.face_left = sideFace;
+        updateFlags = LWT_COL_EDGE_NEXT_LEFT|
+                      LWT_COL_EDGE_FACE_LEFT;
+        LWDEBUGF(1, "Will update next_left/face_left of incoming CCW edge %" LWTFMT_ELEMID
+          " to %d/%d",
+          selEdge.edge_id,
+          nextEdge, sideFace
+        );
+      }
+
+      ret = lwt_be_updateEdges(topo,
+        &selEdge, LWT_COL_EDGE_EDGE_ID,
+        &updatedEdge, updateFlags,
+        NULL, 0);
+      if ( ret == -1 ) {
+        PGTOPO_BE_ERROR();
+        return -1;
+      } else if ( ret == 0 ) {
+        lwerror("Edge %" LWTFMT_ELEMID " disappeared during operations", selEdge.edge_id);
+        return -1;
+      } else if ( ret > 1 ) {
+        lwerror("More than a single edge found with edge_id %d ! (corrupted topology?)", selEdge.edge_id);
+        return -1;
+      }
+    }
+
+    /* Update next CW edge on split node */
+    {
+      LWT_ELEMID sideFace;
+      if ( splitNodeNewEdgeOutgoing ) {
+        sideFace = edge->face_right;
+      } else {
+        sideFace = edge->face_left;
+      }
+
+      LWDEBUGF(1, "Setting sideFace of CW edge %" LWTFMT_ELEMID
+        " to %d",
+        splitNodeEdgeEndInfo->nextCW, sideFace
+      );
+
+      if ( splitNodeEdgeEndInfo->nextCW > 0 )
+      {
+        selEdge.edge_id = splitNodeEdgeEndInfo->nextCW;
+        updatedEdge.face_left = sideFace;
+        updateFlags = LWT_COL_EDGE_FACE_LEFT;
+        LWDEBUGF(1, "Updating left_face of edge %" LWTFMT_ELEMID
+          ", outgoing next CW of new split edge on split node",
+          selEdge.edge_id);
+      }
+      else
+      {
+        selEdge.edge_id = -splitNodeEdgeEndInfo->nextCW;
+        updatedEdge.face_right = sideFace;
+        updateFlags = LWT_COL_EDGE_FACE_RIGHT;
+        LWDEBUGF(1, "Updating right_face of edge %" LWTFMT_ELEMID
+          ", incoming next CW of new split edge on split node",
+          selEdge.edge_id);
+      }
+
+      ret = lwt_be_updateEdges(topo,
+        &selEdge, LWT_COL_EDGE_EDGE_ID,
+        &updatedEdge, updateFlags,
+        NULL, 0);
+      if ( ret == -1 ) {
+        PGTOPO_BE_ERROR();
+        return -1;
+      } else if ( ret == 0 ) {
+        lwerror("Edge %" LWTFMT_ELEMID " disappeared during operations", selEdge.edge_id);
+        return -1;
+      } else if ( ret > 1 ) {
+        lwerror("More than a single edge found with edge_id %d ! (corrupted topology?)", selEdge.edge_id);
+        return -1;
+      }
+    }
+
+    /*
+     * Update links to now-disappeared edgeend
+     * on the node originally in common with
+     * the existing node
+     */
+
+    LWT_ISO_EDGE *nextCCWEdge = NULL;
+    int nextCCWEdgeIsIncoming = 0;
+    int collapsedEdgeIsIncoming;
+
+    LWT_ELEMID commonNodeID;
+
+    LWT_NODE_EDGES *commonNodeEdges;
+    if ( replacedBy[0] ) {
+      commonNodeEdges = firstNodeEdges;
+      commonNodeID = edge->start_node;
+      collapsedEdgeIsIncoming = 0;
+    } else {
+      commonNodeEdges = lastNodeEdges;
+      commonNodeID = edge->end_node;
+      collapsedEdgeIsIncoming = 1;
+    }
+
+
+    // Update next CCW edge
+    {
+      LWT_ELEMID signedCollapsedEdgeID = collapsedEdgeIsIncoming ?  -edge->edge_id: edge->edge_id;
+
+      LWDEBUGF(1, "Looking for next CCW edge of split edge %"
+          LWTFMT_ELEMID " on common node %" LWTFMT_ELEMID
+          " having %d attached edges",
+          edge->edge_id,
+          commonNodeID, commonNodeEdges->numEdges
+      );
+
+      /* Find next CCW edge */
+      for ( int t=0; t<commonNodeEdges->numEdges; t++ )
+      {
+        LWT_ISO_EDGE *et = &(commonNodeEdges->edges[t]);
+
+        LWDEBUGF(1, "common node edge %"
+            LWTFMT_ELEMID " has next_left:%" LWTFMT_ELEMID
+            " next_right:%" LWTFMT_ELEMID,
+            et->edge_id,
+            et->next_left,
+            et->next_right
+        );
+
+        if ( et->start_node == commonNodeID )
+        {
+          if ( et->next_right == signedCollapsedEdgeID )
+          {
+            nextCCWEdge = et;
+            nextCCWEdgeIsIncoming = 0;
+            break;
+          }
+        }
+        else if ( et->end_node == commonNodeID )
+        {
+          if ( et->next_left == signedCollapsedEdgeID )
+          {
+            nextCCWEdge = et;
+            nextCCWEdgeIsIncoming = 1;
+            break;
+          }
+        }
+      }
+      if ( ! nextCCWEdge )
+      {
+        lwerror("Could not find nextCCW edge on common node %" LWTFMT_ELEMID,
+             commonNodeID
+        );
+        return -1;
+      }
+
+      LWDEBUGF(1, "Next CCW edge of split edge %"
+          LWTFMT_ELEMID " on common node %" LWTFMT_ELEMID
+          " is (%s) %" LWTFMT_ELEMID,
+          edge->edge_id,
+          commonNodeID,
+          nextCCWEdgeIsIncoming ? "incoming" : "outgoing",
+          nextCCWEdge->edge_id
+      );
+
+      if ( nextCCWEdge->edge_id == existingEdge->edge_id )
+      {
+        LWDEBUG(1, "Next CCW edge is existing/collapse edge, will not update here");
+      }
+      else
+      {
+        /*
+         *  TODO: the nextCCW is only of interest IFF the collapse
+         *        happened clockwise!
+         *
+         *  just update to the split edge id (positive or negative
+         *  depending on whether it was outgoing or incoming in the
+         *  common node)
+         */
+        LWT_ELEMID newNextEdge = existingEdge->start_node == commonNodeID ?
+          existingEdge->edge_id :
+          -existingEdge->edge_id;
+
+        selEdge.edge_id = nextCCWEdge->edge_id;
+        if ( nextCCWEdgeIsIncoming ) {
+          updatedEdge.next_left = newNextEdge;
+          updateFlags = LWT_COL_EDGE_NEXT_LEFT;
+          LWDEBUGF(1, "Updating next_left of incoming next CCW edge %"
+              LWTFMT_ELEMID
+              " to %" LWTFMT_ELEMID,
+              selEdge.edge_id,
+              newNextEdge
+          );
+        } else {
+          updatedEdge.next_right = newNextEdge;
+          updateFlags = LWT_COL_EDGE_NEXT_RIGHT;
+          LWDEBUGF(1, "Updating next_right of outgoing next CCW edge %"
+              LWTFMT_ELEMID
+              " to %" LWTFMT_ELEMID,
+              selEdge.edge_id,
+              newNextEdge
+          );
+        }
+        ret = lwt_be_updateEdges(topo,
+          &selEdge, LWT_COL_EDGE_EDGE_ID,
+          &updatedEdge, updateFlags,
+          NULL, 0);
+        if ( ret == -1 ) {
+          PGTOPO_BE_ERROR();
+          return -1;
+        } else if ( ret == 0 ) {
+          lwerror("Edge %" LWTFMT_ELEMID " disappeared during operations", selEdge.edge_id);
+          return -1;
+        } else if ( ret > 1 ) {
+          lwerror("More than a single edge found with next_left %d ! (corrupted topology?)", selEdge.next_left);
+          return -1;
+        }
+      }
+    }
+
+    /*****
+     *
+     * Update the existing edge our split edge collapsed to
+     *
+     */
+
+    selEdge.edge_id = existingEdge->edge_id;
+    updateFlags = 0;
+    if ( existingEdge->next_left == edge->edge_id )
+    {
+      updatedEdge.next_left = edge->next_right;
+      updateFlags |= LWT_COL_EDGE_NEXT_LEFT;
+      LWDEBUGF(1, "Will update next_left of existing edge %"
+        LWTFMT_ELEMID " to %" LWTFMT_ELEMID,
+        selEdge.edge_id,
+        updatedEdge.next_left
+      );
+    }
+    if ( existingEdge->next_right == edge->edge_id )
+    {
+      updatedEdge.next_right = edge->next_right;
+      updateFlags |= LWT_COL_EDGE_NEXT_RIGHT;
+      LWDEBUGF(1, "Will update next_right of existing edge %"
+        LWTFMT_ELEMID " to %" LWTFMT_ELEMID,
+        selEdge.edge_id,
+        updatedEdge.next_right
+      );
+    }
+    if ( existingEdge->next_left == -edge->edge_id )
+    {
+      updatedEdge.next_left = edge->next_left;
+      updateFlags |= LWT_COL_EDGE_NEXT_LEFT;
+      LWDEBUGF(1, "Will update next_left of existing edge %"
+        LWTFMT_ELEMID " to %" LWTFMT_ELEMID,
+        selEdge.edge_id,
+        updatedEdge.next_left
+      );
+    }
+    if ( existingEdge->next_right == -edge->edge_id )
+    {
+      updatedEdge.next_right = edge->next_left;
+      updateFlags |= LWT_COL_EDGE_NEXT_RIGHT;
+      LWDEBUGF(1, "Will update next_right of existing edge %"
+        LWTFMT_ELEMID " to %" LWTFMT_ELEMID,
+        selEdge.edge_id,
+        updatedEdge.next_right
+      );
+    }
+    if ( updateFlags )
+    {
+      ret = lwt_be_updateEdges(topo,
+        &selEdge, LWT_COL_EDGE_EDGE_ID,
+        &updatedEdge, updateFlags,
+        NULL, 0);
+      if ( ret == -1 ) {
+        PGTOPO_BE_ERROR();
+        return -1;
+      } else if ( ret == 0 ) {
+        lwerror("Edge being split (%d) disappeared during operations?", selEdge.edge_id);
+        return -1;
+      } else if ( ret > 1 ) {
+        lwerror("More than a single edge found with id %d !", selEdge.edge_id);
+        return -1;
+      }
+    }
+
+    /*****
+     *
+     * Update the splitted edge
+     *
+     */
+
+    selEdge.edge_id = edge->edge_id;
+    updatedEdge.geom = newSplitEdgeLine;
+    updateFlags = LWT_COL_EDGE_GEOM;
+    if ( splitNodeNewEdgeOutgoing ) {
+      updatedEdge.start_node = node->node_id;
+      updatedEdge.next_right = splitNodeEdgeEndInfo->nextCW;
+      updateFlags |= LWT_COL_EDGE_START_NODE;
+      updateFlags |= LWT_COL_EDGE_NEXT_RIGHT;
+      LWDEBUGF(1, "Updating split edge %" LWTFMT_ELEMID
+        " start node to %" LWTFMT_ELEMID
+        " and next_right to %" LWTFMT_ELEMID,
+        selEdge.edge_id,
+        updatedEdge.start_node,
+        updatedEdge.next_right
+      );
+    } else {
+      updatedEdge.end_node = node->node_id;
+      updatedEdge.next_left = splitNodeEdgeEndInfo->nextCW;
+      updateFlags |= LWT_COL_EDGE_END_NODE;
+      updateFlags |= LWT_COL_EDGE_NEXT_LEFT;
+      LWDEBUGF(1, "Updating split edge %" LWTFMT_ELEMID
+        " end node to %" LWTFMT_ELEMID
+        " and next_left to %" LWTFMT_ELEMID
+        ,
+        selEdge.edge_id,
+        updatedEdge.end_node
+        , updatedEdge.next_left
+      );
+    }
+
+    ret = lwt_be_updateEdges(topo,
+      &selEdge, LWT_COL_EDGE_EDGE_ID,
+      &updatedEdge, updateFlags,
+      NULL, 0);
+    if ( ret == -1 ) {
+      PGTOPO_BE_ERROR();
+      return -1;
+    } else if ( ret == 0 ) {
+      lwerror("Edge being split (%d) disappeared during operations?", selEdge.edge_id);
+      return -1;
+    } else if ( ret > 1 ) {
+      lwerror("More than a single edge found with id %d !", selEdge.edge_id);
+      return -1;
+    }
+
+    /************
+     *
+     * Update split-edge collapsed side face MBR, if needed
+     *
+     */
+
+    if ( edge->face_left != edge->face_right )
+    {
+      /* TODO: update a single face ? */
+      LWT_ISO_FACE updface;
+      updface.face_id = edge->face_right;
+      if ( updface.face_id != 0 )
+      {
+        /* We only need to update the MBR if the shrinked face is
+         * not the universe face */
+        LWGEOM *fg = lwt_GetFaceGeometry(topo, updface.face_id);
+        if ( ! fg )
+        {
+          lwerror("Could not get geometry of face %" LWTFMT_ELEMID, updface.face_id);
+          return -1;
+        }
+        updface.mbr = (GBOX *)lwgeom_get_bbox(fg);
+        if ( updface.mbr )
+        {
+          int ret = lwt_be_updateFacesById( topo, &updface, 1 );
+          if ( ret == -1 )
+          {
+            PGTOPO_BE_ERROR();
+            return -1;
+          }
+          lwgeom_free(fg);
+        }
+        else
+        {
+          lwerror("Programmatic error ? Geometry of face %" LWTFMT_ELEMID " is empty!", updface.face_id);
+        }
+      }
+      updface.face_id = edge->face_left;
+      if ( updface.face_id != 0 )
+      {
+        /* We only need to update the MBR if the shrinked face is
+         * not the universe face */
+        LWGEOM *fg = lwt_GetFaceGeometry(topo, updface.face_id);
+        if ( ! fg )
+        {
+          lwerror("Could not get geometry of face %" LWTFMT_ELEMID, updface.face_id);
+          return -1;
+        }
+        updface.mbr = (GBOX *)lwgeom_get_bbox(fg);
+        if ( updface.mbr )
+        {
+          int ret = lwt_be_updateFacesById( topo, &updface, 1 );
+          if ( ret == -1 )
+          {
+            PGTOPO_BE_ERROR();
+            return -1;
+          }
+          lwgeom_free(fg);
+        }
+        else
+        {
+          lwerror("Programmatic error ? Geometry of face %" LWTFMT_ELEMID " is empty!", updface.face_id);
+        }
+      }
+    }
+
+    /************
+     *
+     * Update TopoGeometries composition
+     *
+     */
+
+    LWDEBUGF(1, "Updating lineal TopoGeometry composition to add edge %" LWTFMT_ELEMID
+      " to features composed by edge %" LWTFMT_ELEMID,
+      existingEdge->edge_id, edge->edge_id
+    );
+    ret = lwt_be_updateTopoGeomEdgeSplit(topo, edge->edge_id, existingEdge->edge_id, -1);
+    if ( ! ret ) {
+      PGTOPO_BE_ERROR();
+      return -1;
+    }
+
+    return 0;
+  }
+  else if ( replacedBy[0] == 0 && replacedBy[1] == 0 )
+  {
+    /* New edge is the outgoing one, by design */
+    LWT_ISO_EDGE newEdge;
+    newEdge.edge_id = lwt_be_getNextEdgeId( topo );
+    if ( newEdge.edge_id == -1 ) {
+      PGTOPO_BE_ERROR();
+      return -1;
+    }
+    newEdge.geom = lwgeom_as_lwline(splitC->geoms[1]);
+    newEdge.end_node = edge->end_node;
+    newEdge.start_node = node->node_id;
+    newEdge.next_right = -updatedEdge.edge_id; // to be assigned later, if needed
+    if ( edge->next_left == -edge->edge_id ) {
+      newEdge.next_left = -newEdge.edge_id;
+    } else {
+      newEdge.next_left = edge->next_left; // unchanged
+    }
+    newEdge.face_left = edge->face_left; // to be changed later
+    newEdge.face_right = edge->face_right; // to be changed later
+
+    /* Updated edge is the incoming one, by design */
+    updatedEdge.edge_id = edge->edge_id;
+    updatedEdge.geom = lwgeom_as_lwline(splitC->geoms[0]);
+    updatedEdge.end_node = node->node_id;
+    updatedEdge.next_left = newEdge.edge_id; // to be re-assigned later, if needed
+
+
+    LWT_EDGEEND_STAR *nodeStar = lwt_edgeEndStar_init( node->node_id );
+    for ( int t=0; t<splitNodeEdges->numEdges; t++ )
+    {
+      lwt_edgeEndStar_addEdge( nodeStar, &(splitNodeEdges->edges[t]) );
+    }
+    lwt_edgeEndStar_addEdge( nodeStar, &updatedEdge );
+    lwt_edgeEndStar_addEdge( nodeStar, &newEdge );
+
+    /* There cannot be anything in the middle of the two components,
+     * so both sides will give the same nextCCW and same nextCW */
+
+    lwt_EdgeEndStar_debugPrint( nodeStar );
+
+    const LWT_EDGEEND *ee0 = lwt_edgeEndStar_getNextCW( nodeStar, &updatedEdge, 0); // incoming
+    LWDEBUGF(1, "* NextCW of incoming snap-edge component is %s %d",
+      ee0->outgoing ? "outgoing" : "incoming", ee0->edge->edge_id);
+    if ( ee0->outgoing ) {
+      updatedEdge.next_left = ee0->edge->edge_id;
+    } else  {
+      updatedEdge.next_left = -ee0->edge->edge_id;
+    }
+    int splitFaceOnLeft = 1;
+    if ( ee0->edge->edge_id == newEdge.edge_id )
+    {
+      splitFaceOnLeft = 0;
+    }
+
+    const LWT_EDGEEND *ee1 = lwt_edgeEndStar_getNextCW( nodeStar, &newEdge, 1); // outgoing
+    LWDEBUGF(1, "* NextCW of outgoing snap-edge component is %s %d",
+      ee1->outgoing ? "outgoing" : "incoming", ee1->edge->edge_id);
+    if ( ee1->outgoing ) {
+      newEdge.next_right = ee1->edge->edge_id;
+    } else  {
+      newEdge.next_right = -ee1->edge->edge_id;
+    }
+
+    int ret = lwt_be_insertEdges(topo, &newEdge, 1);
+    if (ret != 1)
+    {
+	    PGTOPO_BE_ERROR();
+	    return -1;
+    }
+
+    /* Updating the first portion of the edge */
+    selEdge.edge_id = edge->edge_id;
+    ret = lwt_be_updateEdges(topo,
+      &selEdge, LWT_COL_EDGE_EDGE_ID,
+      &updatedEdge, LWT_COL_EDGE_NEXT_LEFT|LWT_COL_EDGE_GEOM|LWT_COL_EDGE_END_NODE,
+      NULL, 0);
+    if ( ret == -1 ) {
+      PGTOPO_BE_ERROR();
+      return -1;
+    } else if ( ret == 0 ) {
+      lwerror("Edge being split (%d) disappeared during operations?", selEdge.edge_id);
+      return -1;
+    } else if ( ret > 1 ) {
+      lwerror("More than a single edge found with id %d !", selEdge.edge_id);
+      return -1;
+    }
+
+    /* Update CCW edges if needed */
+    ee0 = lwt_edgeEndStar_getNextCCW( nodeStar, &updatedEdge, 0); // incoming
+    LWDEBUGF(1, "* NextCCW of incoming snap-edge component is %s %d",
+      ee0->outgoing ? "outgoing" : "incoming", ee0->edge->edge_id);
+    if ( ee0->edge->edge_id != newEdge.edge_id )
+    {
+      selEdge.edge_id = ee0->edge->edge_id;
+      if ( ee0->outgoing ) {
+        updatedEdge.next_right = -edge->edge_id;
+        updateFlags = LWT_COL_EDGE_NEXT_RIGHT;
+      } else {
+        updatedEdge.next_left = -edge->edge_id;
+        updateFlags = LWT_COL_EDGE_NEXT_LEFT;
+      }
+
+      LWDEBUGF(1, "Updating edge %d, %s nextCCW of incoming snap-edge",
+        selEdge.edge_id, ee0->outgoing ? "outgoing" : "incoming");
+      ret = lwt_be_updateEdges(topo,
+        &selEdge, LWT_COL_EDGE_EDGE_ID,
+        &updatedEdge, updateFlags,
+        NULL, 0);
+      if ( ret == -1 ) {
+        PGTOPO_BE_ERROR();
+        return -1;
+      } else if ( ret == 0 ) {
+        lwerror("Edge being split (%d) disappeared during operations?", selEdge.edge_id);
+        return -1;
+      } else if ( ret > 1 ) {
+        lwerror("More than a single edge found with id %d !", selEdge.edge_id);
+        return -1;
+      }
+    }
+
+    /* Update CCW edge of outgoing portion if needed */
+    ee1 = lwt_edgeEndStar_getNextCCW( nodeStar, &newEdge, 1); // outgoing
+    LWDEBUGF(1, "* NextCCW of outgoing snap-edge component is %s %d",
+      ee1->outgoing ? "outgoing" : "incoming", ee1->edge->edge_id);
+    if ( ee1->edge->edge_id != edge->edge_id )
+    {
+      selEdge.edge_id = ee1->edge->edge_id;
+      if ( ee1->outgoing ) {
+        updatedEdge.next_right = newEdge.edge_id;
+        updateFlags = LWT_COL_EDGE_NEXT_RIGHT;
+      } else {
+        updatedEdge.next_left = newEdge.edge_id;
+        updateFlags = LWT_COL_EDGE_NEXT_LEFT;
+      }
+
+      LWDEBUGF(1, "Updating edge %d, %s nextCCW of outgoing snap-edge",
+        selEdge.edge_id, ee1->outgoing ? "outgoing" : "incoming");
+      ret = lwt_be_updateEdges(topo,
+        &selEdge, LWT_COL_EDGE_EDGE_ID,
+        &updatedEdge, updateFlags,
+        NULL, 0);
+      if ( ret == -1 ) {
+        PGTOPO_BE_ERROR();
+        return -1;
+      } else if ( ret == 0 ) {
+        lwerror("Edge being split (%d) disappeared during operations?", selEdge.edge_id);
+        return -1;
+      } else if ( ret > 1 ) {
+        lwerror("More than a single edge found with id %d !", selEdge.edge_id);
+        return -1;
+      }
+    }
+
+    /* If any edge was connected to the end node of the split edge, we
+     * need to update its link to us */
+    updateFlags = 0;
+    for ( int t=0; t<lastNodeEdges->numEdges; t++ )
+    {
+      const LWT_ISO_EDGE *in = &(lastNodeEdges->edges[t]);
+      if ( in->next_right == -edge->edge_id )
+      {
+        if ( in->edge_id != edge->edge_id ) {
+          selEdge.edge_id = in->edge_id;
+          updatedEdge.next_right = -newEdge.edge_id;
+          updateFlags = LWT_COL_EDGE_NEXT_RIGHT;
+        }
+        break;
+      }
+      if ( in->next_left == -edge->edge_id )
+      {
+        if ( in->edge_id != edge->edge_id ) {
+          selEdge.edge_id = in->edge_id;
+          updatedEdge.next_left = -newEdge.edge_id;
+          updateFlags = LWT_COL_EDGE_NEXT_LEFT;
+        }
+        break;
+      }
+    }
+    if ( updateFlags != 0 )
+    {
+      LWDEBUGF(1, "Updating edge %d, %s nextCCW of outgoing snap-edge",
+        selEdge.edge_id,
+        updateFlags & LWT_COL_EDGE_NEXT_LEFT ?  "incoming" : "outgoing");
+      ret = lwt_be_updateEdges(topo,
+        &selEdge, LWT_COL_EDGE_EDGE_ID,
+        &updatedEdge, updateFlags,
+        NULL, 0);
+      if ( ret == -1 ) {
+        PGTOPO_BE_ERROR();
+        return -1;
+      } else if ( ret == 0 ) {
+        lwerror("Edge being split (%d) disappeared during operations?", selEdge.edge_id);
+        return -1;
+      } else if ( ret > 1 ) {
+        lwerror("More than a single edge found with id %d !", selEdge.edge_id);
+        return -1;
+      }
+    }
+
+    /* Handle face split */
+    LWT_ELEMID newFaceId1 = 0;
+    LWT_ELEMID newFaceId2 = 0;
+    LWT_ELEMID oldFaceId;
+    if ( splitFaceOnLeft ) {
+
+      oldFaceId = edge->face_left;
+
+      LWDEBUGF(1, "Adding face split for left side of new edge %" LWTFMT_ELEMID, newEdge.edge_id);
+      newFaceId1 = _lwt_AddFaceSplit( topo, newEdge.edge_id, oldFaceId, 0 );
+      LWDEBUGF(1, "_lwt_AddFaceSplit(%d) returned %d", newEdge.edge_id, newFaceId1);
+
+      // TODO: retain oldFaceID rather than creating a new one, if a
+      // new one was already created for the new edge ring !
+      LWDEBUGF(1, "Adding face split for left side of updated edge %" LWTFMT_ELEMID, edge->edge_id);
+      newFaceId2 = _lwt_AddFaceSplit( topo, edge->edge_id, oldFaceId, 0 );
+      LWDEBUGF(1, "_lwt_AddFaceSplit(%d) returned %d", edge->edge_id, newFaceId2);
+
+
+    } else {
+
+      oldFaceId = edge->face_right;
+
+      LWDEBUGF(1, "Adding face split for right side of new edge %" LWTFMT_ELEMID, newEdge.edge_id);
+      newFaceId1 = _lwt_AddFaceSplit( topo, -newEdge.edge_id, oldFaceId, 0 );
+      LWDEBUGF(1, "_lwt_AddFaceSplit(%d) returned %d", -newEdge.edge_id, newFaceId1);
+
+      // TODO: retain oldFaceID rather than creating a new one, if a
+      // new one was already created on the new edge ring !
+      LWDEBUGF(1, "Adding face split for right side of updated edge %" LWTFMT_ELEMID, edge->edge_id);
+      newFaceId2 = _lwt_AddFaceSplit( topo, -edge->edge_id, oldFaceId, 0 );
+      LWDEBUGF(1, "_lwt_AddFaceSplit(%d) returned %d", -edge->edge_id, newFaceId2);
+
+    }
+
+    /************
+     *
+     * Update TopoGeometries composition
+     *
+     */
+
+    ret = lwt_be_updateTopoGeomEdgeSplit(topo, edge->edge_id, newEdge.edge_id, -1);
+    if ( ! ret ) {
+      PGTOPO_BE_ERROR();
+      return -1;
+    }
+
+    LWDEBUGF(1, "New faces %d and %d split from from old face %d", newFaceId1, newFaceId2, oldFaceId);
+    if ( newFaceId1 || newFaceId2 )
+    {
+      ret = lwt_be_updateTopoGeomFaceSplit(
+        topo, oldFaceId,
+        newFaceId1 ? newFaceId1 : oldFaceId,
+        newFaceId2 ? newFaceId2 : oldFaceId
+      );
+      if ( ! ret ) {
+        PGTOPO_BE_ERROR();
+        return -1;
+      }
+
+      if ( newFaceId1 && newFaceId2 )
+      {
+        LWDEBUGF(1, "Deleting fully replaced face %" LWTFMT_ELEMID, oldFaceId);
+        int nids = 1;
+        ret = lwt_be_deleteFacesById(topo, &oldFaceId, nids);
+        if ( ret == -1 ) {
+          PGTOPO_BE_ERROR();
+          return -1;
+        }
+      }
+    }
+
+    return 0;
+  }
+  else if ( replacedBy[0] != 0 && replacedBy[1] != 0 )
+  {
+    // Edge was replaced with two existing edges
+
+    // Sanity check
+    if ( edge->face_right == edge->face_left )
+    {
+      lwerror("Unexpectedly, dangling edge %d was replaced by "
+        "edges %d and %d when snap to node %d",
+        edge->edge_id, replacedBy[0], replacedBy[1], node->node_id);
+      return -1;
+    }
+
+    LWT_ELEMID collapsedFace = 0;
+    LWT_ELEMID replacingFace = 0;
+
+    if ( abs(edge->next_right) == replacedBy[0] ) {
+      /* Face on the right of the removed edge disappeared */
+      // We need to update nextCW on first node and nextCCW on last node
+      collapsedFace = edge->face_right;
+      replacingFace = edge->face_left;
+    } else {
+      /* Face on the left of the removed edge disappeared */
+      // We need to update nextCCW on first node and nextCW on last node
+      collapsedFace = edge->face_left;
+      replacingFace = edge->face_right;
+    }
+
+    //const LWT_ISO_EDGE *sp_nextCCW = 0;
+    //const LWT_ISO_EDGE *ep_nextCCW = 0;
+
+    // Update CCW edge on first node
+    updateFlags = 0;
+    for ( int t=0; t<firstNodeEdges->numEdges; t++ )
+    {
+      const LWT_ISO_EDGE *in = &(firstNodeEdges->edges[t]);
+      if ( in->edge_id == edge->edge_id ) continue;
+      if ( in->next_right == edge->edge_id )
+      {
+        selEdge.edge_id = in->edge_id;
+        updatedEdge.next_right = edge->next_right;
+        updateFlags = LWT_COL_EDGE_NEXT_RIGHT;
+        if ( in->face_right == collapsedFace ) {
+          updatedEdge.face_right = replacingFace;
+          updateFlags |= LWT_COL_EDGE_FACE_RIGHT;
+        }
+        //sp_nextCCW = in;
+        break;
+      }
+      if ( in->next_left == edge->edge_id )
+      {
+        selEdge.edge_id = in->edge_id;
+        updatedEdge.next_left = edge->next_right;
+        updateFlags = LWT_COL_EDGE_NEXT_LEFT;
+        if ( in->face_left == collapsedFace ) {
+          updatedEdge.face_left = replacingFace;
+          updateFlags |= LWT_COL_EDGE_FACE_LEFT;
+        }
+        //sp_nextCCW = in;
+        break;
+      }
+    }
+    if ( updateFlags != 0 )
+    {
+      LWDEBUGF(1, "Updating edge %d, %s nextCCW of outgoing snap-edge",
+        selEdge.edge_id,
+        updateFlags & LWT_COL_EDGE_NEXT_LEFT ?  "incoming" : "outgoing");
+      ret = lwt_be_updateEdges(topo,
+        &selEdge, LWT_COL_EDGE_EDGE_ID,
+        &updatedEdge, updateFlags,
+        NULL, 0);
+      if ( ret == -1 ) {
+        PGTOPO_BE_ERROR();
+        return -1;
+      } else if ( ret == 0 ) {
+        lwerror("Edge being split (%d) disappeared during operations?", selEdge.edge_id);
+        return -1;
+      } else if ( ret > 1 ) {
+        lwerror("More than a single edge found with id %d !", selEdge.edge_id);
+        return -1;
+      }
+    }
+
+    // Update CCW edge on last node
+    updateFlags = 0;
+    for ( int t=0; t<lastNodeEdges->numEdges; t++ )
+    {
+      const LWT_ISO_EDGE *in = &(lastNodeEdges->edges[t]);
+      if ( in->edge_id == edge->edge_id ) continue;
+      if ( in->next_right == -edge->edge_id )
+      {
+        selEdge.edge_id = in->edge_id;
+        updatedEdge.next_right = edge->next_left;
+        updateFlags = LWT_COL_EDGE_NEXT_RIGHT;
+        if ( in->face_right == collapsedFace ) {
+          updatedEdge.face_right = replacingFace;
+          updateFlags |= LWT_COL_EDGE_FACE_RIGHT;
+        }
+        break;
+      }
+      if ( in->next_left == -edge->edge_id )
+      {
+        selEdge.edge_id = in->edge_id;
+        updatedEdge.next_left = edge->next_left;
+        updateFlags = LWT_COL_EDGE_NEXT_LEFT;
+        if ( in->face_left == collapsedFace ) {
+          updatedEdge.face_left = replacingFace;
+          updateFlags |= LWT_COL_EDGE_FACE_LEFT;
+        }
+        break;
+      }
+    }
+    if ( updateFlags != 0 )
+    {
+      LWDEBUGF(1, "Updating edge %d, %s nextCCW of incoming snap-edge",
+        selEdge.edge_id,
+        updateFlags & LWT_COL_EDGE_NEXT_LEFT ?  "incoming" : "outgoing");
+      ret = lwt_be_updateEdges(topo,
+        &selEdge, LWT_COL_EDGE_EDGE_ID,
+        &updatedEdge, updateFlags,
+        NULL, 0);
+      if ( ret == -1 ) {
+        PGTOPO_BE_ERROR();
+        return -1;
+      } else if ( ret == 0 ) {
+        lwerror("Edge being split (%d) disappeared during operations?", selEdge.edge_id);
+        return -1;
+      } else if ( ret > 1 ) {
+        lwerror("More than a single edge found with id %d !", selEdge.edge_id);
+        return -1;
+      }
+    }
+
+    if ( collapsedFace == edge->face_right )
+    {
+      // We need to update side face of nextCW on first node and nextCCW on last node
+      // nextCCW on last node was done already, supposedly so we need to do nextCW
+      // on first
+      if ( edge->next_right < 0 ) {
+        selEdge.edge_id = -edge->next_right;
+        updatedEdge.face_right = replacingFace;
+        updateFlags = LWT_COL_EDGE_FACE_RIGHT;
+      } else {
+        selEdge.edge_id = edge->next_right;
+        updatedEdge.face_left = replacingFace;
+        updateFlags = LWT_COL_EDGE_FACE_LEFT;
+      }
+      LWDEBUGF(1, "Updating %s face of edge %d, %s nextCW of outgoing snap-edge",
+        updateFlags & LWT_COL_EDGE_FACE_LEFT ?  "left" : "right",
+        selEdge.edge_id,
+        updateFlags & LWT_COL_EDGE_FACE_RIGHT ? "incoming" : "outgoing");
+      ret = lwt_be_updateEdges(topo,
+        &selEdge, LWT_COL_EDGE_EDGE_ID,
+        &updatedEdge, updateFlags,
+        NULL, 0);
+      if ( ret == -1 ) {
+        PGTOPO_BE_ERROR();
+        return -1;
+      } else if ( ret == 0 ) {
+        lwerror("Edge being split (%d) disappeared during operations?", selEdge.edge_id);
+        return -1;
+      } else if ( ret > 1 ) {
+        lwerror("More than a single edge found with id %d !", selEdge.edge_id);
+        return -1;
+      }
+    }
+    else
+    {
+      // We need to update side face of nextCCW on first node and nextCW on last node
+      // nextCCW on first node was done already, supposedly so we need to do nextCW
+      // on last
+      if ( edge->next_left < 0 ) {
+        selEdge.edge_id = -edge->next_left;
+        updatedEdge.face_right = replacingFace;
+        updateFlags = LWT_COL_EDGE_FACE_RIGHT;
+      } else {
+        selEdge.edge_id = edge->next_left;
+        updatedEdge.face_left = replacingFace;
+        updateFlags = LWT_COL_EDGE_FACE_LEFT;
+      }
+      LWDEBUGF(1, "Updating %s face of edge %d, %s nextCW of incoming snap-edge",
+        updateFlags & LWT_COL_EDGE_FACE_LEFT ?  "left" : "right",
+        selEdge.edge_id,
+        updateFlags & LWT_COL_EDGE_FACE_RIGHT ? "incoming" : "outgoing");
+      ret = lwt_be_updateEdges(topo,
+        &selEdge, LWT_COL_EDGE_EDGE_ID,
+        &updatedEdge, updateFlags,
+        NULL, 0);
+      if ( ret == -1 ) {
+        PGTOPO_BE_ERROR();
+        return -1;
+      } else if ( ret == 0 ) {
+        lwerror("Edge being split (%d) disappeared during operations?", selEdge.edge_id);
+        return -1;
+      } else if ( ret > 1 ) {
+        lwerror("More than a single edge found with id %d !", selEdge.edge_id);
+        return -1;
+      }
+    }
+
+    /* Delete the old edge */
+    selEdge.edge_id = edge->edge_id;
+    LWDEBUGF(1, "Deleting edge %" LWTFMT_ELEMID, selEdge.edge_id);
+    ret = lwt_be_deleteEdges(topo, &selEdge, LWT_COL_EDGE_EDGE_ID);
+    if ( ret == -1 ) {
+      PGTOPO_BE_ERROR();
+      return -1;
+    }
+
+    /* Delete collapsed face */
+    LWDEBUGF(1, "Deleting collapsed face %" LWTFMT_ELEMID, collapsedFace);
+    int nids = 1;
+    ret = lwt_be_deleteFacesById(topo, &collapsedFace, nids);
+    if ( ret == -1 ) {
+      PGTOPO_BE_ERROR();
+      return -1;
+    }
+
+    /* Delete the collapsed face from composition of TopoGeometries */
+    if ( ! lwt_be_updateTopoGeomFaceHeal( topo, collapsedFace, -1, -1) )
+    {
+      PGTOPO_BE_ERROR();
+      return -1;
+    }
+
+    return 0;
+  }
+
+  //LWDEBUGF(1, "Not handling within-tolerance edge %" LWTFMT_ELEMID, edge->edge_id);
+  lwerror("Don't know how to deal with edge %" LWTFMT_ELEMID
+          " replaced by edges %" LWTFMT_ELEMID
+          " and %" LWTFMT_ELEMID, edge->edge_id, replacedBy[0], replacedBy[1]);
+
+  return -1;
+}
+
+/*
+ *
+ * Move the given point as close as possible to the
+ * closest edge, snap all edges within tolerance to
+ * it and split them accordingly.
+ *
+ * @param edges array of ISO edges with all attributes
+ * @param num number of items in edges
+ * @param point the point of the new node
+ * @param moved if not-null will be set to 0 if the point was added
+ *              w/out any snapping or 1 otherwise.
+ *
+ * @return id of the new node or -1 on error
+ *
+ */
+static LWT_ELEMID
+_lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY* topo, LWT_ISO_EDGE *edges, uint64_t num, LWPOINT *point, double tol, int *moved)
+{
+	uint64_t i, j;
+	scored_pointer *sorted = lwalloc(sizeof(scored_pointer)*num);
+  LWT_ISO_EDGE *edges2 = NULL;
+  LWT_ISO_NODE node;
+  node.node_id = 0; /* unneeded, but hushes a compiler warning */
+  LWGEOM *prj; /* incoming point projected to nearest node or edge */
+  const POINT2D *pt = NULL; /* projected 2d point */
+  LWGEOM *lwpoint = lwpoint_as_lwgeom(point);
+
+  j = 0;
+  for (i=0; i<num; ++i)
+  {
+    double dist;
+    LWT_ISO_EDGE *e = edges+i;
+    /* TODO: use square distance */
+    dist = lwgeom_mindistance2d(lwline_as_lwgeom(edges[i].geom), lwpoint_as_lwgeom(point));
+    LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " distance: %.15g", e->edge_id, dist);
+    if ( dist >= tol ) continue;
+    sorted[j].ptr = e;
+    sorted[j++].score = dist;
+  }
+  num = j;
+  qsort(sorted, num, sizeof(scored_pointer), compare_scored_pointer);
+  edges2 = lwalloc(sizeof(LWT_ISO_EDGE)*num);
+  for (j=0, i=0; i<num; ++i)
+  {
+    if ( sorted[i].score == sorted[0].score )
+    {
+      edges2[j++] = *((LWT_ISO_EDGE*)sorted[i].ptr);
+    }
+    else
+    {
+      edges2[j++] = *((LWT_ISO_EDGE*)sorted[i].ptr);
+      //lwline_free(((LWT_ISO_EDGE*)sorted[i].ptr)->geom);
+    }
+  }
+  num = j;
+  lwfree(sorted);
+  edges = edges2;
+
+  /* project point to closest edge */
+  prj = lwgeom_closest_point(lwline_as_lwgeom(edges[0].geom), lwpoint);
+  if ( moved ) *moved = lwgeom_same(prj, lwpoint) ? 0 : 1;
+  if ( lwgeom_has_z(lwpoint) )
+  {{
+    /*
+    -- This is a workaround for ClosestPoint lack of Z support:
+    -- http://trac.osgeo.org/postgis/ticket/2033
+    */
+    LWGEOM *tmp;
+    double z;
+    POINT4D p4d;
+    LWPOINT *prjpt;
+    /* add Z to "prj" */
+    tmp = lwgeom_force_3dz(prj, 0);
+    prjpt = lwgeom_as_lwpoint(tmp);
+    getPoint4d_p(point->point, 0, &p4d);
+    z = p4d.z;
+    getPoint4d_p(prjpt->point, 0, &p4d);
+    p4d.z = z;
+    ptarray_set_point4d(prjpt->point, 0, &p4d);
+    lwgeom_free(prj);
+    prj = tmp;
+  }}
+
+  LWDEBUGG(1, prj, "Projected point");
+  node.geom = lwgeom_as_lwpoint(prj);
+  node.containing_face = -1; /* means not-isolated */
+
+  for (i=0; i<num; ++i)
+  {
+    /* The point is on or near one or more edges,
+     * project it to closest edge and then split all
+     * edges to it
+     */
+
+    LWT_ISO_EDGE *e = &(edges[i]);
+    LWGEOM *g = lwline_as_lwgeom(e->geom);
+    int contains;
+    LWT_ELEMID edge_id = e->edge_id;
+
+    if ( i )
+    {{
+      int ret = _lwt_SnapEdgeToExistingNode( topo, &node, e, tol );
+      if ( ret != 0 ) {
+        lwerror("Something went wrong with _lwt_SnapEdgeToExistingNode");
+        return -1;
+      }
+      continue;
+    }}
+
+    LWDEBUGF(1, "Splitting closest edge %" LWTFMT_ELEMID, edge_id);
+
+    pt = getPoint2d_cp(lwgeom_as_lwpoint(prj)->point, 0);
+    contains = ptarray_contains_point_partial(e->geom->points, pt, 0, NULL) == LW_BOUNDARY;
+    if ( ! contains )
+    {{
+      LWGEOM *snapedge;
+      LWLINE *snapline;
+      POINT4D p1, p2;
+
+      LWDEBUGF(1, "Edge %" LWTFMT_ELEMID
+                  " does not contain projected point to it",
+                  edge_id);
+
+#if 0
+      /* In order to reduce the robustness issues, we'll pick
+       * an edge that contains the projected point, if possible */
+      if ( i+1 < num )
+      {
+        LWDEBUG(1, "But there's another to check");
+        //lwgeom_free(prj);
+        continue;
+      }
+#endif
+
+      snapedge = _lwt_toposnap(g, prj, tol);
+      snapline = lwgeom_as_lwline(snapedge);
+
+      LWDEBUGF(1, "Edge snapped with tolerance %g", tol);
+
+      /* TODO: check if snapping did anything ? */
+#if POSTGIS_DEBUG_LEVEL > 0
+      {
+      size_t sz;
+      char *wkt1 = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &sz);
+      char *wkt2 = lwgeom_to_wkt(snapedge, WKT_EXTENDED, 15, &sz);
+      LWDEBUGF(1, "Edge %s snapped became %s", wkt1, wkt2);
+      lwfree(wkt1);
+      lwfree(wkt2);
+      }
+#endif
+
+
+      /*
+      -- Snapping currently snaps the first point below tolerance
+      -- so may possibly move first point. See ticket #1631
+      */
+      getPoint4d_p(e->geom->points, 0, &p1);
+      getPoint4d_p(snapline->points, 0, &p2);
+      LWDEBUGF(1, "Edge first point is %g %g, "
+                  "snapline first point is %g %g",
+                  p1.x, p1.y, p2.x, p2.y);
+      if ( p1.x != p2.x || p1.y != p2.y )
+      {
+        LWDEBUG(1, "Snapping moved first point, re-adding it");
+        if ( LW_SUCCESS != ptarray_insert_point(snapline->points, &p1, 0) )
+        {
+          lwgeom_free(prj);
+          lwgeom_free(snapedge);
+          lwerror("GEOS exception on Contains: %s", lwgeom_geos_errmsg);
+          return -1;
+        }
+#if POSTGIS_DEBUG_LEVEL > 0
+        {
+        size_t sz;
+        char *wkt1 = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &sz);
+        LWDEBUGF(1, "Tweaked snapline became %s", wkt1);
+        lwfree(wkt1);
+        }
+#endif
+      }
+#if POSTGIS_DEBUG_LEVEL > 0
+      else {
+        LWDEBUG(1, "Snapping did not move first point");
+      }
+#endif
+
+      if ( -1 == lwt_ChangeEdgeGeom( topo, edge_id, snapline ) )
+      {
+        /* TODO: should have invoked lwerror already, leaking memory */
+        lwgeom_free(prj);
+        lwgeom_free(snapedge);
+        lwerror("lwt_ChangeEdgeGeom failed");
+        return -1;
+      }
+      lwgeom_free(snapedge);
+    }}
+#if POSTGIS_DEBUG_LEVEL > 0
+    else
+    {{
+      size_t sz;
+      char *wkt1 = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &sz);
+      char *wkt2 = lwgeom_to_wkt(prj, WKT_EXTENDED, 15, &sz);
+      LWDEBUGF(1, "Edge %s contains projected point %s", wkt1, wkt2);
+      lwfree(wkt1);
+      lwfree(wkt2);
+    }}
+#endif
+
+    /* TODO: pass 1 as last argument (skipChecks) ? */
+    node.node_id = lwt_ModEdgeSplit( topo, edge_id, node.geom, 0 );
+    if ( -1 == node.node_id )
+    {
+      /* TODO: should have invoked lwerror already, leaking memory */
+      lwgeom_free(prj);
+      lwerror("lwt_ModEdgeSplit failed");
+      return -1;
+    }
+
+    /*
+     * TODO: decimate the two new edges with the given tolerance ?
+     *
+     * the edge identifiers to decimate would be: edge_id and "id"
+     * The problem here is that decimation of existing edges
+     * may introduce intersections or topological inconsistencies,
+     * for example:
+     *
+     *  - A node may end up falling on the other side of the edge
+     *  - The decimated edge might intersect another existing edge
+     *
+     */
+
+  }
+
+  lwgeom_free(prj);
+
+  if ( edges2 ) lwfree(edges2);
+  return node.node_id;
+}
+
+/*
+ * @param findFace if non-zero the code will determine which face
+ *        contains the given point (unless it is known to be NOT
+ *        isolated)
+ * @param moved if not-null will be set to 0 if the point was added
+ *              w/out any snapping or 1 otherwise.
+ */
+static LWT_ELEMID
+_lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
+              findFace, int *moved)
+{
+	uint64_t num, i;
+	double mindist = FLT_MAX;
+	LWT_ISO_NODE *nodes, *nodes2;
+	LWT_ISO_EDGE *edges;
+	LWGEOM *pt = lwpoint_as_lwgeom(point);
+	scored_pointer *sorted;
+	int flds;
+	LWT_ELEMID id = 0;
+
+	/* Get tolerance, if 0 was given */
+	if (!tol)
+		tol = _LWT_MINTOLERANCE(topo, pt);
+
+	LWDEBUGG(1, pt, "Adding point");
+
+	/*
+	-- 1. Check if any existing node is closer than the given precision
+	--    and if so pick the closest
+	TODO: use WithinBox2D
+	*/
+	flds = LWT_COL_NODE_NODE_ID | LWT_COL_NODE_GEOM;
+	nodes = lwt_be_getNodeWithinDistance2D(topo, point, tol, &num, flds, 0);
+	if (num == UINT64_MAX)
+	{
+		PGTOPO_BE_ERROR();
+		return -1;
+	}
+  if ( num )
+  {
+    LWDEBUGF(1, "New point is within %.15g units of %d nodes", tol, num);
+    /* Order by distance if there are more than a single return */
+    if ( num > 1 )
+    {{
+      sorted = lwalloc(sizeof(scored_pointer)*num);
+      for (i=0; i<num; ++i)
+      {
+        sorted[i].ptr = nodes+i;
+        sorted[i].score = lwgeom_mindistance2d(lwpoint_as_lwgeom(nodes[i].geom), pt);
+        LWDEBUGF(1, "Node %" LWTFMT_ELEMID " distance: %.15g",
+          ((LWT_ISO_NODE*)(sorted[i].ptr))->node_id, sorted[i].score);
+      }
+      qsort(sorted, num, sizeof(scored_pointer), compare_scored_pointer);
+      nodes2 = lwalloc(sizeof(LWT_ISO_NODE)*num);
+      for (i=0; i<num; ++i)
+      {
+        nodes2[i] = *((LWT_ISO_NODE*)sorted[i].ptr);
+      }
+      lwfree(sorted);
+      lwfree(nodes);
+      nodes = nodes2;
+    }}
+
+    for ( i=0; i<num; ++i )
+    {
+      LWT_ISO_NODE *n = &(nodes[i]);
+      LWGEOM *g = lwpoint_as_lwgeom(n->geom);
+      double dist = lwgeom_mindistance2d(g, pt);
+      /* TODO: move this check in the previous sort scan ... */
+      /* must be closer than tolerated, unless distance is zero */
+      if ( dist && dist >= tol ) continue;
+      if ( ! id || dist < mindist )
+      {
+        id = n->node_id;
+        mindist = dist;
+      }
+    }
+    if ( id )
+    {
+      /* found an existing node */
+      if ( nodes ) _lwt_release_nodes(nodes, num);
+      if ( moved ) *moved = mindist == 0 ? 0 : 1;
+      return id;
+    }
+  }
+
+  initGEOS(lwnotice, lwgeom_geos_error);
+
+  /*
+  -- 2. Check if any existing edge falls within tolerance
+  --    and if so split it by a point projected on it
+  TODO: use WithinBox2D
+  */
+  flds = LWT_COL_EDGE_ALL; /* EDGE_ID|LWT_COL_EDGE_GEOM;*/
+  edges = lwt_be_getEdgeWithinDistance2D(topo, point, tol, &num, flds, 0);
+  if (num == UINT64_MAX)
+  {
+    PGTOPO_BE_ERROR();
+    return -1;
+  }
+  LWDEBUGF(1, "New point is within %.15g units of %d edges", tol, num);
+  if ( num )
+  {
+    id = _lwt_SplitAllEdgesToNewNode(topo, edges, num, lwgeom_as_lwpoint(pt), tol, moved);
+    _lwt_release_edges(edges, num);
+  }
+  else
+  {
+    /* The point is isolated, add it as such */
+    /* TODO: pass 1 as last argument (skipChecks) ? */
+    id = _lwt_AddIsoNode(topo, -1, point, 0, findFace);
+    if ( moved ) *moved = 0;
+    if ( -1 == id )
+    {
+      /* should have invoked lwerror already, leaking memory */
+      _lwt_release_edges(edges, num);
+      lwerror("lwt_AddIsoNode failed");
+      return -1;
+    }
+  }
+
+  return id;
+}
+
+LWT_ELEMID
+lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
+{
+  return _lwt_AddPoint(topo, point, tol, 1, NULL);
 }
 
 /*

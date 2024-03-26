@@ -124,6 +124,9 @@ SA_OBJS = \
 	lwgeom_geos_split.o \
 	topo/lwgeom_topo.o \
 	topo/lwgeom_topo_polygonizer.o \
+	topo/lwt_edgeend.o \
+	topo/lwt_edgeend_star.o \
+	topo/lwt_node_edges.o \
 	lwgeom_transform.o \
 	lwgeom_wrapx.o \
 	lwunionfind.o \
@@ -157,6 +160,9 @@ SA_HEADERS = \
 	lwgeodetic_tree.h \
 	topo/liblwgeom_topo.h \
 	topo/liblwgeom_topo_internal.h \
+	topo/lwt_edgeend.h \
+	topo/lwt_edgeend_star.h \
+	topo/lwt_node_edges.h \
 	lwgeom_log.h \
 	lwgeom_geos.h \
 	lwgeom_log.h \

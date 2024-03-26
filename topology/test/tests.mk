@@ -73,7 +73,9 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/topoelementarray_agg.sql \
 	$(top_srcdir)/topology/test/regress/topoelement.sql \
 	$(top_srcdir)/topology/test/regress/topogeo_addlinestring.sql \
+	$(top_srcdir)/topology/test/regress/topogeo_addlinestring_robust.sql \
 	$(top_srcdir)/topology/test/regress/topogeo_addpoint.sql \
+	$(top_srcdir)/topology/test/regress/topogeo_addpoint_merge_edges.sql \
 	$(top_srcdir)/topology/test/regress/topogeo_addpolygon.sql \
 	$(top_srcdir)/topology/test/regress/topogeo_loadgeometry.sql \
 	$(top_srcdir)/topology/test/regress/topogeom_addtopogeom.sql \
