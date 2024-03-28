@@ -72,9 +72,18 @@ if [ -z "${RD}" ]; then
 fi
 
 cd ${RD}
-check_enabled topology/test/tests.mk regress &&
-check_enabled regress/loader/tests.mk &&
-check_enabled regress/dumper/tests.mk &&
-check_enabled sfcgal/regress/tests.mk.in &&
-check_enabled regress/core/tests.mk.in &&
+err=0
+check_enabled topology/test/tests.mk regress
+err=$(($err+$?))
+check_enabled regress/loader/tests.mk
+err=$(($err+$?))
+check_enabled regress/dumper/tests.mk
+err=$(($err+$?))
+check_enabled sfcgal/regress/tests.mk.in
+err=$(($err+$?))
+check_enabled regress/core/tests.mk.in
+err=$(($err+$?))
 check_enabled raster/test/regress/tests.mk
+err=$(($err+$?))
+
+exit $err
