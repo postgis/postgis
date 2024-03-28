@@ -23,7 +23,7 @@ SELECT c, ST_Centroid(g::geography) FROM
 ) AS u(c, g);
 
 -- test supported geometry types
-SELECT c, ST_Centroid(g::geography) FROM
+SELECT c, ST_AsText(ST_Centroid(g::geography), 10) FROM
 ( VALUES
     ('geog_centroid_sup_pt', 'POINT (23 42)'),
     ('geog_centroid_sup_line', 'LINESTRING(-20 35, 8 46)'),
