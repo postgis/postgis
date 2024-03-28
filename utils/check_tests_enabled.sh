@@ -21,7 +21,7 @@ check_enabled() {
   suffix=$2
   bd=`dirname ${mk}`/${suffix}
 
-  #cho "MK file: ${mk}"
+  #echo "MK file: ${mk}"
   #echo "Suffix: ${suffix}"
   #echo "Basedir: ${bd}"
 
@@ -32,15 +32,12 @@ check_enabled() {
 
   #cat ${TMPDIR}/enabled_tests
 
-  find ${bd} -name '*.sql' |
-    grep -v '\-post.sql' | grep -v '\-pre.sql' |
-    sed 's|\.select.sql$||' |
-    sed 's|//|/|' |
-    sed 's|\.sql$||' > ${TMPDIR}/available_tests
+  find ${bd} -name '*_expected' |
+    sed 's|_expected$||' > ${TMPDIR}/available_tests
 
   #cat ${TMPDIR}/available_tests
 
-  MISSING=`grep -vf ${TMPDIR}/enabled_tests ${TMPDIR}/available_tests`
+  MISSING=`grep -vwf ${TMPDIR}/enabled_tests ${TMPDIR}/available_tests`
   if test -n "${MISSING}"; then
     (
     echo "The following tests are available but not enabled in:"
@@ -76,9 +73,18 @@ if [ -z "${RD}" ]; then
 fi
 
 cd ${RD}
-check_enabled topology/test/tests.mk regress &&
-check_enabled regress/loader/tests.mk &&
-check_enabled regress/dumper/tests.mk &&
-check_enabled sfcgal/regress/tests.mk.in &&
-check_enabled regress/core/tests.mk.in &&
+err=0
+check_enabled topology/test/tests.mk regress
+err=$(($err+$?))
+check_enabled regress/loader/tests.mk
+err=$(($err+$?))
+check_enabled regress/dumper/tests.mk
+err=$(($err+$?))
+check_enabled sfcgal/regress/tests.mk.in
+err=$(($err+$?))
+check_enabled regress/core/tests.mk.in
+err=$(($err+$?))
 check_enabled raster/test/regress/tests.mk
+err=$(($err+$?))
+
+exit $err
