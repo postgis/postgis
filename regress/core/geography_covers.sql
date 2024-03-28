@@ -41,7 +41,7 @@ SELECT c, ST_Covers(g::geography, g::geography) FROM
     ('geog_covers_self_point', 'POINT (0 20)'),
     ('geog_covers_self_line', 'LINESTRING (35 35, 35 15, 15 15)'),
     ('geog_covers_self_polygon', 'POLYGON((0 40, 40 40, 40 0, 0 0, 0 40))')
-) AS u(c, g)
+) AS u(c, g);
 
 -- donut covers
 SELECT 'geog_covers_donut', ST_Covers(
