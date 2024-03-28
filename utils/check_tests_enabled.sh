@@ -20,7 +20,7 @@ check_enabled() {
   suffix=$2
   bd=`dirname ${mk}`/${suffix}
 
-  #cho "MK file: ${mk}"
+  #echo "MK file: ${mk}"
   #echo "Suffix: ${suffix}"
   #echo "Basedir: ${bd}"
 
@@ -31,15 +31,12 @@ check_enabled() {
 
   #cat ${TMPDIR}/enabled_tests
 
-  find ${bd} -name '*.sql' |
-    grep -v '\-post.sql' | grep -v '\-pre.sql' |
-    sed 's|\.select.sql$||' |
-    sed 's|//|/|' |
-    sed 's|\.sql$||' > ${TMPDIR}/available_tests
+  find ${bd} -name '*_expected' |
+    sed 's|_expected$||' > ${TMPDIR}/available_tests
 
   #cat ${TMPDIR}/available_tests
 
-  MISSING=`grep -vf ${TMPDIR}/enabled_tests ${TMPDIR}/available_tests`
+  MISSING=`grep -vwf ${TMPDIR}/enabled_tests ${TMPDIR}/available_tests`
   if test -n "${MISSING}"; then
     (
     echo "The following tests are available but not enabled in:"
