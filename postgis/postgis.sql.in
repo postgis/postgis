@@ -6988,4 +6988,14 @@ CREATE OR REPLACE FUNCTION ST_3DLineInterpolatePoint(geometry, float8)
 #include "postgis_spgist.sql.in"
 #include "postgis_letters.sql"
 
+
+-----------------------------------------------------------------------
+-- ST_RemoveSmallParts
+-----------------------------------------------------------------------
+-- Availability: 3.1.5
+CREATE OR REPLACE FUNCTION ST_RemoveSmallParts(geometry, double precision, double precision)
+RETURNS geometry
+AS 'MODULE_PATHNAME','ST_RemoveSmallParts'
+LANGUAGE 'c' VOLATILE STRICT; 
+
 COMMIT;
