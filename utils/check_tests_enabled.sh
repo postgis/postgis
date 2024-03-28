@@ -30,10 +30,10 @@ check_enabled() {
       sed 's|\\||' |
       sed 's|\.sql\>||' > ${TMPDIR}/enabled_tests
 
-  find ${bd} -name '*.sql' |
-    sed 's|\.sql$||' > ${TMPDIR}/available_tests
+  find ${bd} -name '*_expected' |
+    sed 's|_expected$||' > ${TMPDIR}/available_tests
 
-  MISSING=`grep -vf ${TMPDIR}/enabled_tests ${TMPDIR}/available_tests`
+  MISSING=`grep -vwf ${TMPDIR}/enabled_tests ${TMPDIR}/available_tests`
   if test -n "${MISSING}"; then
     (
     echo "The following tests are available but not enabled in:"
@@ -47,9 +47,18 @@ check_enabled() {
   fi
 }
 
-check_enabled topology/test/tests.mk regress &&
-check_enabled regress/loader/tests.mk &&
-check_enabled regress/dumper/tests.mk &&
-check_enabled sfcgal/regress/tests.mk &&
-check_enabled regress/core/tests.mk.in &&
+err=0
+check_enabled topology/test/tests.mk regress
+err=$(($err+$?))
+check_enabled regress/loader/tests.mk
+err=$(($err+$?))
+check_enabled regress/dumper/tests.mk
+err=$(($err+$?))
+check_enabled sfcgal/regress/tests.mk
+err=$(($err+$?))
+check_enabled regress/core/tests.mk.in
+err=$(($err+$?))
 check_enabled raster/test/regress/tests.mk
+err=$(($err+$?))
+
+exit $err
