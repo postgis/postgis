@@ -78,4 +78,5 @@ TESTS += \
 	$(topsrcdir)/topology/test/regress/topojson.sql \
 	$(topsrcdir)/topology/test/regress/topologysummary.sql \
 	$(topsrcdir)/topology/test/regress/totopogeom.sql \
-	$(topsrcdir)/topology/test/regress/validatetopology.sql
+	$(topsrcdir)/topology/test/regress/validatetopology.sql \
+	$(topsrcdir)/topology/test/regress/validatetopologyrelation.sql

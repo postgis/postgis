@@ -45,6 +45,8 @@ TESTS += \
 	$(topsrcdir)/regress/core/forcecurve \
 	$(topsrcdir)/regress/core/flatgeobuf \
 	$(topsrcdir)/regress/core/geography \
+	$(topsrcdir)/regress/core/geography_centroid \
+	$(topsrcdir)/regress/core/geography_covers \
 	$(topsrcdir)/regress/core/geometric_median \
   $(topsrcdir)/regress/core/geos_noop \
 	$(topsrcdir)/regress/core/hausdorff \
