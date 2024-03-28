@@ -6988,4 +6988,14 @@ CREATE OR REPLACE FUNCTION ST_3DLineInterpolatePoint(geometry, float8)
 #include "postgis_spgist.sql.in"
 #include "postgis_letters.sql"
 
+
+-----------------------------------------------------------------------
+-- ST_RemoveIrrelevantPointsForView
+-----------------------------------------------------------------------
+-- Availability: 3.1.5
+CREATE OR REPLACE FUNCTION ST_RemoveIrrelevantPointsForView(geometry, box2d)
+RETURNS geometry
+AS 'MODULE_PATHNAME','ST_RemoveIrrelevantPointsForView'
+LANGUAGE 'c' VOLATILE STRICT; 
+
 COMMIT;

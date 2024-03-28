@@ -1745,6 +1745,92 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
           </refsection>
     </refentry>
 
+	<refentry xml:id="ST_RemoveIrrelevantPointsForView">
+	  <refnamediv>
+		<refname>ST_RemoveIrrelevantPointsForView</refname>
+		<refpurpose>Removes points that are irrelevant for rendering a specific rectangluar view of a geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RemoveIrrelevantPointsForView</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a <xref linkend="geometry"/> without points being irrelevant for rendering the geometry within a given rectangluar view.</para>
+		<para>This function can be used to preprocess geometries that should be rendered only within certain bounds.</para>
+		<para>Only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING of dimension 2 are evaluated. Other geometries keep unchanged.</para>
+		<para>In contrast to <code>St_Intersection()</code> this function only sort out points instead of computing new intersection points, leading to higher performance. The visual result of rendering the geometry within the specified view is the same.</para>
+		
+        <warning><para>For polygons, this function does currently not ensure that the result is valid.
+        This situation can be checked with <xref linkend="ST_IsValid"/> and repaired with <xref linkend="ST_MakeValid"/>.
+        </para></warning>
+
+        <para>
+            <informalfigure>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="images/st_removeirrelevantpointsforview.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Example: ST_RemoveIrrelevantPointsForView() applied to a polygon. Blue points remain, the rendering result (light-blue area) within the grey view box remains as well.</para>
+                    </caption>
+                </mediaobject>
+            </informalfigure>
+        </para>
+		
+		<para role="availability" conformance="3.1.5">Availability: 3.1.5</para>
+		
+		
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('MULTIPOLYGON(((10 10, 20 10, 30 10, 40 10, 20 20, 10 20, 10 10)),((10 10, 20 10, 20 20, 10 20, 10 10)))'),
+		    box2d(ST_GeomFromText('POLYGON((12 12, 18 12, 18 18, 12 18, 12 12))'))));
+		
+		st_astext
+		---------
+		    MULTIPOLYGON(((10 10,40 10,20 20,10 20,10 10)),((10 10,20 10,20 20,10 20,10 10)))
+		</programlisting>
+		
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('MULTILINESTRING((0 0, 10 0,20 0,30 0), (0 15, 5 15, 10 15, 15 15, 20 15, 25 15, 30 15, 40 15), (13 13,15 15,17 17))'),
+		        box2d(ST_GeomFromText('POLYGON((12 12, 18 12, 18 18, 12 18, 12 12))'))));
+		
+		st_astext
+		---------
+			MULTILINESTRING((0 15,10 15,15 15,20 15,40 15),(13 13,15 15,17 17))
+		</programlisting>
+		
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('LINESTRING(0 0, 10 0,20 0,30 0)'),
+		        box2d(ST_GeomFromText('POLYGON((12 12, 18 12, 18 18, 12 18, 12 12))'))));
+		
+		st_astext
+		---------
+		    LINESTRING EMPTY
+		</programlisting>
+
+	  </refsection>
+
+	</refentry>
+
 	<refentry xml:id="ST_Reverse">
 	  <refnamediv>
 		<refname>ST_Reverse</refname>
