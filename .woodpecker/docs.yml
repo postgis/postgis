@@ -2,7 +2,8 @@ steps:
   build:
     image: docker.osgeo.org/postgis/build-test:trisquel3
     when:
-      path: "doc/*"
+      - event: push
+        path: "doc/*"
     commands:
       - ./autogen.sh
       - mkdir -p build-docs && cd build-docs
