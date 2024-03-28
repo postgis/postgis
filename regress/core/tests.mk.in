@@ -46,6 +46,8 @@ TESTS += \
 	$(top_srcdir)/regress/core/frechet \
 	$(top_srcdir)/regress/core/generate_points \
 	$(top_srcdir)/regress/core/geography \
+	$(top_srcdir)/regress/core/geography_centroid \
+	$(top_srcdir)/regress/core/geography_covers \
 	$(top_srcdir)/regress/core/geometric_median \
 	$(top_srcdir)/regress/core/geos_noop \
 	$(top_srcdir)/regress/core/geos38 \

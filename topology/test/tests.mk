@@ -84,4 +84,5 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/topologysummary.sql \
 	$(top_srcdir)/topology/test/regress/totopogeom.sql \
 	$(top_srcdir)/topology/test/regress/validatetopology.sql \
+	$(top_srcdir)/topology/test/regress/validatetopologyrelation.sql \
 	$(top_srcdir)/topology/test/regress/topoelement_cast.sql
