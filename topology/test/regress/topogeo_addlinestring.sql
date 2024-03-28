@@ -280,6 +280,7 @@ SELECT 't3280', 'L1b' || l
  FROM (SELECT * FROM bug3280.edge where edge_id = 1) AS e
     CROSS JOIN LATERAL topology.TopoGeo_AddLinestring('bug3280', geom) AS l
  ORDER BY 2;
+SELECT 't3280', 'invalidity', * FROM validatetopology('bug3280');
 SELECT 't3280.end', topology.DropTopology('bug3280');
 
 -- See http://trac.osgeo.org/postgis/ticket/3380
