@@ -1,18 +1,19 @@
 
 -- check for pole crossing
-SELECT c, ST_Centroid(g::geography) FROM
+SELECT c, ST_AsText(ST_Centroid(g::geography),6) FROM
 ( VALUES
     ('geog_centroid_mpt_pole_north', 'MULTIPOINT ( 90 80, -90 80)'),
     ('geog_centroid_mpt_pole_south', 'MULTIPOINT ( 90 -80, -90 -80)')
 ) AS u(c, g);
 
 -- check for IDL crossing
-SELECT c, ST_Centroid(g::geography) FROM
+SELECT c,  ST_X(gc.geom)::numeric(12,6) AS x, ST_Y(gc.geom)::numeric(12,6) AS y
+FROM
 ( VALUES
     ('geog_centroid_mpt_idl_1', 'MULTIPOINT ( 179 0, -179 0)'),
     ('geog_centroid_mpt_idl_2', 'MULTIPOINT ( 178 0, -179 0)'),
     ('geog_centroid_mpt_idl_3', 'MULTIPOINT ( 179 0, -178 0)')
-) AS u(c, g);
+) AS u(c, g), geometry(ST_Centroid(g::geography)) AS gc(geom);
 
 -- point should return itself
 SELECT c, ST_Centroid(g::geography) FROM
