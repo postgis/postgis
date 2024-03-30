@@ -78,7 +78,7 @@ PG_FUNCTION_INFO_V1(ST_RemoveSmallParts);
 Datum ST_RemoveSmallParts(PG_FUNCTION_ARGS) {
 
     double mindx = 0, mindy = 0;
-    int i, j, iw, jw;
+    unsigned int i, j, iw, jw;
 
     // gserialized logic see for example in /postgis/lwgeom_functions_basic.c,
     // type definitions see /liblwgeom/liblwgeom.h(.in)
@@ -175,7 +175,7 @@ Datum ST_RemoveSmallParts(PG_FUNCTION_ARGS) {
 		    else {
 				if (!i) {
 				    // exterior ring too small, free and skip all rings
-				    int k;
+				    unsigned int k;
 				    for (k=0; k<polygon->nrings; k++) {
 						lwfree(polygon->rings[k]);
 				    }
@@ -208,7 +208,7 @@ Datum ST_RemoveSmallParts(PG_FUNCTION_ARGS) {
 				else {
 				    if (!i) {
 						// exterior ring too small, free and skip all rings
-						int k;
+						unsigned int k;
 						for (k=0; k<polygon->nrings; k++) {
 						    lwfree(polygon->rings[k]);
 						}
