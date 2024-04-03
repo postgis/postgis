@@ -38,7 +38,8 @@
 // which removes points being irrelevant for rendering the geometry within
 // a view specified by rectangular bounds.
 // ===============================================================================
-static void ptarray_remove_helper(POINTARRAY *points, GBOX *bounds, int minpoints) {
+void ptarray_remove_helper(POINTARRAY *points, GBOX *bounds, int minpoints);
+void ptarray_remove_helper(POINTARRAY *points, GBOX *bounds, int minpoints) {
 
     double x1=bounds->xmin;
     double y1=bounds->ymin;
