@@ -37,8 +37,7 @@
 // helper function for polygon and polyline POINTARRAY's
 // which removes small parts given by dx and dy.
 // ===============================================================================
-void ptarray_remove_dim_helper(POINTARRAY *points, double mindx, double mindy);
-void ptarray_remove_dim_helper(POINTARRAY *points, double mindx, double mindy) {
+static void ptarray_remove_dim_helper(POINTARRAY *points, double mindx, double mindy) {
 
     int r;
     double xmin = 0, ymin = 0, xmax = 0, ymax = 0;
