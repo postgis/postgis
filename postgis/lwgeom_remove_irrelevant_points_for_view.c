@@ -34,64 +34,103 @@
 #include "liblwgeom_internal.h"
 
 // ===============================================================================
-// helper function for polygon and polyline POINTARRAY's
-// which removes points being irrelevant for rendering the geometry within
-// a view specified by rectangular bounds.
+// Encode location of value related to min and max. Returns
+// - 0x1 for value < min
+// - 0x2 for min <= value <= max
+// - 0x4 for value > max
 // ===============================================================================
-static void ptarray_remove_helper(POINTARRAY *points, GBOX *bounds, int minpoints) {
+static int encodeToBits(double value, double min, double max) {
+	return value < min ? 0x1 : value <= max ? 0x2 : 0x4;
+}
 
-    double x1=bounds->xmin;
-    double y1=bounds->ymin;
-    double x2=bounds->xmax;
-    double y2=bounds->ymax;
+// ===============================================================================
+// Helper function for polygon and polyline POINTARRAY's.
+// Removes points being irrelevant for rendering the geometry
+// within a view specified by rectangular bounds.
+// ===============================================================================
+static void removePoints(POINTARRAY *points, GBOX *bounds, bool closed) {
 
-    int r, w=0;
-    int vx, vy, vx1=0, vx2=0, vy1=0, vy2=0,vxall=0, vyall=0;
+	int npoints, minpoints;
+	double xmin, ymin, xmax, ymax;
+
+    int i, next, w;
+    int vx, vy, vx0, vy0, vx1, vy1, vxall, vyall;
     bool sameX, sameY, insideX, insideY, inside, skip, clear;
+    POINT4D p, p0, p1;  // current, previous, next; point read/write see ptarray_flip_coordinates
 
-    double x, y;
-    POINT4D point;
+	// point number check
+    npoints = points->npoints;
+    minpoints = closed ? 4 : 2; // min points for each polygon ring or linestring
+	if (npoints < minpoints) {
+		// clear if not expected minimum number of points
+	    points->npoints = 0;
+	    return;
+	}
 
-    int npoints = points->npoints;
-    for (r=0; r < npoints; r++) {
+    xmin = bounds->xmin;
+    ymin = bounds->ymin;
+    xmax = bounds->xmax;
+    ymax = bounds->ymax;
 
-		getPoint4d_p(points, r, &point); // point read/write see ptarray_flip_coordinates
+	// get previous point [i-1]
+	if (closed) {
+		getPoint4d_p(points, 0, &p);
+		getPoint4d_p(points, npoints - 1, &p0);
+       	if (p.x != p0.x || p.y != p0.y) return; // requirement for polygons: startpoint equals endpoint. Leave untouched of not met.
+		npoints--; // remove double here, and re-add at the end
+		getPoint4d_p(points, npoints - 1, &p0);
+	}
+	else {
+		getPoint4d_p(points, 0, &p0);  // for linestrings reuse start point
+	}
+	vx0 = encodeToBits(p0.x, xmin, xmax);
+	vy0 = encodeToBits(p0.y, ymin, ymax);
 
-		x = point.x;
-		y = point.y;
+	// for all points
+	w = 0;
+	vxall = 0;
+	vyall = 0;
+    for (i = 0; i < npoints; i++) {
 
-	    if (x<x1) vx=0x01;
-	    else if (x<x2) vx=0x02;
-	    else vx=0x04;
+		// get current point [i]
+		getPoint4d_p(points, i, &p);
+		vx = encodeToBits(p.x, xmin, xmax);
+		vy = encodeToBits(p.y, ymin, ymax);
 
-	    if (y<y1) vy=0x01;
-	    else if (y<y2) vy=0x02;
-	    else vy=0x04;
+		// get subsequent point [i+1]
+		next = i + 1;
+		if (next == npoints) {
+			if (closed) next = points -> npoints-1; // for polygons, same as original start point which may be overwritten
+			else next = i;  // for linestrings reuse end point
+		}
+		getPoint4d_p(points, next, &p1);
+		vx1 = encodeToBits(p1.x, xmin, xmax);
+		vy1 = encodeToBits(p1.y, ymin, ymax);
 
-	    sameX = vx == vx1 && vx == vx2;
-	    sameY = vy == vy1 && vy == vy2;
+		sameX = vx == vx1 && vx == vx0;
+		sameY = vy == vy1 && vy == vy0;
 	    insideX = vx == 0x02;
 	    insideY = vy == 0x02;
 	    inside = insideX && insideY;
 
-	    skip = sameX && sameY && !inside;	// three consecutive points in same outside quarter
-	    skip |= sameX && !insideX;			// three consecutive points in same outside area (left or right)
-	    skip |= sameY && !insideY;			// three consecutive points in same outside area (top or buttom)
+	    skip = sameX && sameY && !inside;	// three consecutive points in same outside quarter, leave out central one
+	    skip |= sameX && !insideX;			// three consecutive points in same outside area (left or right), leave out central one
+	    skip |= sameY && !insideY;			// three consecutive points in same outside area (top or buttom), leave out central one
 
-	    // overwrite previous point if irrelevant
-	    if (skip) w--;
-	    else {
-		    vx2 = vx1;
-		    vy2 = vy1;
-		}
-	    vx1 = vx;
-	    vy1 = vy;
+        if (skip) continue;
 
-	    vxall |= vx;
-	    vyall |= vy;
+        // save current point at [w <= i]
+        ptarray_set_point4d(points, w++, &p);
+	    vx0 = vx;
+	    vy0 = vy;
+        vxall |= vx;
+        vyall |= vy;
+    }
 
-		ptarray_set_point4d(points, w, &point);
-		w++;
+    if (closed && w > 0) {
+	    // re-add first new point at the end if closed
+		getPoint4d_p(points, 0, &p);
+        ptarray_set_point4d(points, w++, &p);
     }
 
     // eval empty cases
@@ -181,7 +220,7 @@ Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
     if (geom->type == LINETYPE) {
 
 		LWLINE* line = (LWLINE*)geom;
-		ptarray_remove_helper(line->points, bbox, 2);
+		removePoints(line->points, bbox, false);
     }
 
     if (geom->type == MULTILINETYPE) {
@@ -190,7 +229,7 @@ Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 		iw = 0;
         for (i=0; i<mline->ngeoms; i++) {
 		    LWLINE* line = mline->geoms[i];
-		    ptarray_remove_helper(line->points, bbox, 2);
+		    removePoints(line->points, bbox, false);
 
 		    if (line->points->npoints) {
 		    	// keep (reduced) line
@@ -209,7 +248,7 @@ Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 		LWPOLY* polygon = (LWPOLY*)geom;
 		iw = 0;
 		for (i=0; i<polygon->nrings; i++) {
-		    ptarray_remove_helper(polygon->rings[i], bbox, 4);
+		    removePoints(polygon->rings[i], bbox, true);
 
 		    if (polygon->rings[i]->npoints) {
 		    	// keep (reduced) ring
@@ -242,7 +281,7 @@ Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 		    LWPOLY* polygon = mpolygon->geoms[j];
 		    iw = 0;
 		    for (i=0; i<polygon->nrings; i++) {
-				ptarray_remove_helper(polygon->rings[i], bbox, 4);
+				removePoints(polygon->rings[i], bbox, true);
 
 				if (polygon->rings[i]->npoints) {
 		    		// keep (reduced) ring

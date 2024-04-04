@@ -1767,7 +1767,14 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 		<para>Returns a <xref linkend="geometry"/> without points being irrelevant for rendering the geometry within a given rectangluar view.</para>
 		<para>This function can be used to preprocess geometries that should be rendered only within certain bounds.</para>
 		<para>Only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING of dimension 2 are evaluated. Other geometries keep unchanged.</para>
-		<para>In contrast to <code>St_Intersection()</code> this function only sort out points instead of computing new intersection points, leading to higher performance. The visual result of rendering the geometry within the specified view is the same.</para>
+		<para>In contrast to <code>ST_ClipByBox2D()</code> this function
+	        <itemizedlist>
+	        <listitem><para>sorts out points without computing new intersection points which avoids rounding errors and usually increases performance,</para></listitem>
+	        <listitem><para>returns a geometry with a equal or smaller point number,</para></listitem>
+	        <listitem><para>leads to the same rendering result within the specified view, and</para></listitem>
+	        <listitem><para>may introduce self-intersections which would make the resulting geometry invalid.</para></listitem>
+	        </itemizedlist>
+		</para>
 		
         <warning><para>For polygons, this function does currently not ensure that the result is valid.
         This situation can be checked with <xref linkend="ST_IsValid"/> and repaired with <xref linkend="ST_MakeValid"/>.
@@ -1798,7 +1805,7 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 			SELECT ST_AsText(
 			ST_RemoveIrrelevantPointsForView(
 			ST_GeomFromText('MULTIPOLYGON(((10 10, 20 10, 30 10, 40 10, 20 20, 10 20, 10 10)),((10 10, 20 10, 20 20, 10 20, 10 10)))'),
-		    box2d(ST_GeomFromText('POLYGON((12 12, 18 12, 18 18, 12 18, 12 12))'))));
+			ST_MakeEnvelope(12,12,18,18)));
 		
 		st_astext
 		---------
@@ -1809,18 +1816,18 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 			SELECT ST_AsText(
 			ST_RemoveIrrelevantPointsForView(
 			ST_GeomFromText('MULTILINESTRING((0 0, 10 0,20 0,30 0), (0 15, 5 15, 10 15, 15 15, 20 15, 25 15, 30 15, 40 15), (13 13,15 15,17 17))'),
-		        box2d(ST_GeomFromText('POLYGON((12 12, 18 12, 18 18, 12 18, 12 12))'))));
+			ST_MakeEnvelope(12,12,18,18)));
 		
 		st_astext
 		---------
-			MULTILINESTRING((0 15,10 15,15 15,20 15,40 15),(13 13,15 15,17 17))
+			MULTILINESTRING((10 15,15 15,20 15),(13 13,15 15,17 17))
 		</programlisting>
 		
 		<programlisting>
 			SELECT ST_AsText(
 			ST_RemoveIrrelevantPointsForView(
 			ST_GeomFromText('LINESTRING(0 0, 10 0,20 0,30 0)'),
-		        box2d(ST_GeomFromText('POLYGON((12 12, 18 12, 18 18, 12 18, 12 12))'))));
+			ST_MakeEnvelope(12,12,18,18)));
 		
 		st_astext
 		---------
@@ -1828,6 +1835,11 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 		</programlisting>
 
 	  </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_ClipByBox2D"/>, <xref linkend="ST_Intersection"/></para>
+      </refsection>
 
 	</refentry>
 
