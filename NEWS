@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Release temporary allocations in the shapefile loader and dumper (Laurențiu Nicola)
  - #5605, Normalize buffer regression output across GEOS versions (Regina Obe)
  - #5278, Free address standardizer rules once after allocation failure (Regina Obe)
  - Skip comments on the retired two-argument cluster function (Sandro Santilli)
