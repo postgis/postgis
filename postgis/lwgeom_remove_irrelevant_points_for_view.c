@@ -178,8 +178,8 @@ Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 
     // dimension check (only 2d geometry types are supported yet)
     if (gserialized_ndims(serialized_in) < 2) {
-		// z or m present, leave untouched
-        PG_RETURN_POINTER(serialized_in);
+		// no x and y present, leave untouched
+		PG_RETURN_POINTER(serialized_in);
     }
 
     // type check (only polygon and line types are supported yet)
