@@ -3,6 +3,7 @@ xxxx/xx/xx
 
 * Bug Fixes and Enhancements *
 
+ - #5709, Fix loose mbr in topology.face on ST_ChangeEdgeGeom (Sandro Santilli)
  - #5698, Fix robustness issue splitting line by vertex very close to endpoints,
           affecting topology population functions (Sandro Santilli)
  - #5649, ST_Value should return NULL on missing band (Paul Ramsey)
