@@ -3487,8 +3487,12 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   --       would be larger than the old face MBR...
   --
   */
-  const GBOX* oldbox = lwgeom_get_bbox(lwline_as_lwgeom(oldedge->geom));
-  const GBOX* newbox = lwgeom_get_bbox(lwline_as_lwgeom(geom));
+  LWGEOM *oldgeom = lwline_as_lwgeom(oldedge->geom);
+  LWGEOM *newgeom = lwline_as_lwgeom(geom);
+  lwgeom_refresh_bbox(oldgeom); /* Ensure we use a fit mbr, see #5709 -- TODO: fix this at lower level */
+  lwgeom_refresh_bbox(newgeom); /* Ensure we use a fit mbr, see #5709 -- TODO: fix this at lower level */
+  const GBOX* oldbox = lwgeom_get_bbox(oldgeom);
+  const GBOX* newbox = lwgeom_get_bbox(newgeom);
   if ( ! gbox_same(oldbox, newbox) )
   {
     GBOX* updatedBox;
