@@ -12,7 +12,7 @@ export MSYS2_ARG_CONV_EXCL=/config/tags
 
 if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.12.1
-	export GDAL_VER=3.7.1
+	export GDAL_VER=3.8.5
 	export PROJ_VER=8.2.1
 	export SFCGAL_VER=1.5.1
 	export CGAL_VER=5.6
