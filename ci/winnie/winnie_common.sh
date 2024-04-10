@@ -13,7 +13,7 @@ export XML_CATALOG_FILES="/projects/docbook/docbook-5.0.1/catalog.xml"
 
 if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.13
-	export GDAL_VER=3.7.1
+	export GDAL_VER=3.8.5
 	export PROJ_VER=8.2.1
 	export SFCGAL_VER=1.5.1
 	export CGAL_VER=5.6.1
