@@ -1468,7 +1468,7 @@ An existing edge may be split by the snapped point.
                 <para>
 Adds a linestring to an existing topology and returns a set of edge identifiers forming it up.
 The given line will snap to existing nodes or edges within given tolerance.
-Existing edges and faces may be split by the line.
+Existing edges and faces may be split by the line.  New nodes and faces may be added.
                 </para>
 
                 <note><para>
@@ -3144,14 +3144,15 @@ nodeid
 			</refsynopsisdiv>
 
 			<refsection>
-                <title>Description</title>
+					<title>Description</title>
 
-                <para>Adds an edge to the edge table and associated nodes to the nodes table of the specified <varname>toponame</varname> schema using the specified linestring geometry and returns the edgeid of the new or existing record.
-                The newly added edge has "universe" face on both sides and links to itself.</para>
-                <note><para>If the <varname>aline</varname> geometry crosses, overlaps, contains or is contained by an existing linestring edge, then an error is thrown and the edge is not added.</para></note>
-                <note><para>The geometry of <varname>aline</varname> must have the same <varname>srid</varname> as defined for the topology otherwise an invalid spatial reference sys error will be thrown.</para></note>
-                <para>Performed by the GEOS module.</para>
-                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+					<para>Adds an edge to the edge table and associated nodes to the nodes table of the specified <varname>toponame</varname> schema using the specified linestring geometry and returns the edgeid of the new or existing record.
+					The newly added edge has "universe" face on both sides and links to itself.</para>
+					<note><para>If the <varname>aline</varname> geometry crosses, overlaps, contains or is contained by an existing linestring edge, then an error is thrown and the edge is not added.</para></note>
+					<note><para>The geometry of <varname>aline</varname> must have the same <varname>srid</varname> as defined for the topology otherwise an invalid spatial reference sys error will be thrown.</para></note>
+					<para>Performed by the GEOS module.</para>
+					<warning><para><xref linkend="AddEdge"/> is deprecated as of 3.5.0. Use <xref linkend="TopoGeo_AddLineString"/> instead.</para></warning>
+					<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			</refsection>
 
 			<refsection>
