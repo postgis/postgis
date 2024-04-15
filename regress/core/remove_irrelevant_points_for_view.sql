@@ -12,3 +12,13 @@ SELECT 2, ST_AsText(
     ST_RemoveIrrelevantPointsForView(
     ST_GeomFromText('LINESTRING(0 0, 10 0,20 0,30 0)'),
 	ST_MakeEnvelope(12,12,18,18)));
+
+SELECT 3, ST_AsText(
+    ST_RemoveIrrelevantPointsForView(
+    ST_GeomFromText('MULTIPOLYGON Z(((10 10 1, 20 10 2, 30 10 3, 40 10 4, 20 20 5, 10 20 6, 10 10 1)),((10 10 1, 20 10 2, 20 20 3, 10 20 4, 10 10 5)))'),
+	ST_MakeEnvelope(12,12,18,18)));
+
+SELECT 4, ST_AsText(
+    ST_RemoveIrrelevantPointsForView(
+    ST_GeomFromText('LINESTRING Z(0 0 1, 10 0 2,20 0 3,30 0 1)'),
+	ST_MakeEnvelope(12,12,18,18)));
