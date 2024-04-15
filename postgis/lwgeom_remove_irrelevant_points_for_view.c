@@ -56,7 +56,7 @@ static void removePoints(POINTARRAY *points, GBOX *bounds, bool closed) {
 	int i, next, w;
 	int vx, vy, vx0, vy0, vx1, vy1, vxall, vyall;
 	bool sameX, sameY, insideX, insideY, inside, skip, clear;
-	POINT4D p, p0, p1;  // current, previous, next; point read/write see ptarray_flip_coordinates
+	POINT4D p, p0, p1;  // current, previous, next;
 
 	// point number check
 	npoints = points->npoints;
@@ -186,7 +186,7 @@ Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 		PG_RETURN_POINTER(serialized_in);
 	}
 
-	// deserialize geom and copy coordinates (based on flip_coordinates, no clone_deep)
+	// deserialize geom and copy coordinates (no clone_deep)
 	geom = lwgeom_from_gserialized(serialized_in);
 
 	// bbox checks
