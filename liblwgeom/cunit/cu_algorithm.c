@@ -1813,6 +1813,20 @@ static void test_trim_bits(void)
 	lwline_free(line);
 }
 
+static void test_ptarray_simplify(void)
+{
+	LWGEOM *geom1 = lwgeom_from_wkt("LINESTRING (2 2,3 2,4 1,3 2, 4 4)", LW_PARSER_CHECK_NONE);
+	LWGEOM *geom2 = lwgeom_from_wkt("LINESTRING (2 2,3 2,4 1,3 2, 4 4)", LW_PARSER_CHECK_NONE);
+	LWLINE *line1 = (LWLINE*)geom1;
+	double tolerance = 0.0;
+	int minpts = 2;
+	ptarray_simplify_in_place(line1->points, tolerance, minpts);
+	ASSERT_LWGEOM_EQUAL(geom1, geom2);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+}
+
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -1820,6 +1834,7 @@ void algorithms_suite_setup(void);
 void algorithms_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("algorithm", init_cg_suite, clean_cg_suite);
+	PG_ADD_TEST(suite,test_ptarray_simplify);
 	PG_ADD_TEST(suite,test_lw_segment_side);
 	PG_ADD_TEST(suite,test_lw_segment_intersects);
 	PG_ADD_TEST(suite,test_lwline_crossing_short_lines);
