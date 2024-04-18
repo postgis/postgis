@@ -1765,33 +1765,46 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 		<title>Description</title>
 
 		<para>Returns a <xref linkend="geometry"/> without points being irrelevant for rendering the geometry within a given rectangluar view.</para>
-		<para>This function can be used to preprocess geometries that should be rendered only within certain bounds.</para>
-		<para>Only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING of dimension 2 are evaluated. Other geometries keep unchanged.</para>
+		<para>This function can be used to quickly preprocess geometries that should be rendered only within certain bounds.</para>
+		<para>Only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING are evaluated. Other geometries keep unchanged.</para>
 		<para>In contrast to <code>ST_ClipByBox2D()</code> this function
-	        <itemizedlist>
-	        <listitem><para>sorts out points without computing new intersection points which avoids rounding errors and usually increases performance,</para></listitem>
-	        <listitem><para>returns a geometry with a equal or smaller point number,</para></listitem>
-	        <listitem><para>leads to the same rendering result within the specified view, and</para></listitem>
-	        <listitem><para>may introduce self-intersections which would make the resulting geometry invalid.</para></listitem>
-	        </itemizedlist>
+			<itemizedlist>
+				<listitem><para>sorts out points without computing new intersection points which avoids rounding errors and usually increases performance,</para></listitem>
+				<listitem><para>returns a geometry with equal or similar point number,</para></listitem>
+				<listitem><para>leads to the same rendering result within the specified view, and</para></listitem>
+				<listitem><para>may introduce self-intersections which would make the resulting geometry invalid (see example below).</para></listitem>
+			</itemizedlist>
 		</para>
 		
-        <warning><para>For polygons, this function does currently not ensure that the result is valid.
-        This situation can be checked with <xref linkend="ST_IsValid"/> and repaired with <xref linkend="ST_MakeValid"/>.
-        </para></warning>
+		<warning><para>For polygons, this function does currently not ensure that the result is valid.
+		This situation can be checked with <xref linkend="ST_IsValid"/> and repaired with <xref linkend="ST_MakeValid"/>.
+		</para></warning>
 
-        <para>
-            <informalfigure>
-                <mediaobject>
-                    <imageobject>
-                        <imagedata fileref="images/st_removeirrelevantpointsforview.png"/>
-                    </imageobject>
-                    <caption>
-                        <para>Example: ST_RemoveIrrelevantPointsForView() applied to a polygon. Blue points remain, the rendering result (light-blue area) within the grey view box remains as well.</para>
-                    </caption>
-                </mediaobject>
-            </informalfigure>
-        </para>
+		<para>
+			<informalfigure>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/st_removeirrelevantpointsforview.png"/>
+					</imageobject>
+					<caption>
+						<para>Example: ST_RemoveIrrelevantPointsForView() applied to a polygon. Blue points remain, the rendering result (light-blue area) within the grey view box remains as well.</para>
+					</caption>
+				</mediaobject>
+			</informalfigure>
+		</para>
+		
+		<para>
+			<informalfigure>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/st_removeirrelevantpointsforview_crossing.png"/>
+					</imageobject>
+					<caption>
+						<para>Example: Due to the fact that points are just sorted out and no new points are computed, the result of ST_RemoveIrrelevantPointsForView() may contain self-intersections.</para>
+					</caption>
+				</mediaobject>
+			</informalfigure>
+		</para>
 		
 		<para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
 		
