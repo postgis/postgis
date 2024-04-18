@@ -187,6 +187,7 @@ main (int argc, char **argv)
 			break;
 
 		case 'W':
+			free(config->encoding);
 			config->encoding = strdup(pgis_optarg);
 			break;
 
@@ -453,12 +454,9 @@ main (int argc, char **argv)
 	ShpLoaderDestroy(state);
 
 	/* Free configuration variables */
-	if (config->schema)
-		free(config->schema);
-	if (config->table)
-		free(config->table);
-	if (config->encoding)
-		free(config->encoding);
+	free(config->schema);
+	free(config->table);
+	free(config->encoding);
 	free(config);
 
 	return 0;

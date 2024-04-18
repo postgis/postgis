@@ -789,7 +789,12 @@ _lwt_CheckFacesExist(LWT_TOPOLOGY *topo)
 	  PGTOPO_BE_ERROR();
 	  return -1;
   }
-  if ( faces ) _lwt_release_faces(faces, nelems);
+  if ( faces )
+  {
+    /* we do not call _lwt_release_faces because we are not asking
+     * for the MBR so there are no nested objects to release */
+    lwfree(faces);
+  }
   return nelems;
 }
 
