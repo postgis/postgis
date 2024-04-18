@@ -47,7 +47,7 @@ static void ptarray_remove_dim_helper(POINTARRAY *points, double mindx, double m
     int npoints = points->npoints;
     for (r=0; r < npoints; r++) {
 
-		getPoint4d_p(points, r, &point); // point read/write see ptarray_flip_coordinates
+		getPoint4d_p(points, r, &point);
 
 		x = point.x;
 		y = point.y;
@@ -125,7 +125,7 @@ Datum ST_RemoveSmallParts(PG_FUNCTION_ARGS) {
 		PG_RETURN_POINTER(serialized_in);
     }
 
-    // deserialize geom and copy coordinates (based on flip_coordinates, no clone_deep)
+    // deserialize geom and copy coordinates (no clone_deep)
     geom = lwgeom_from_gserialized(serialized_in);
 
     if (geom->type == LINETYPE) {
