@@ -100,8 +100,8 @@ static void removePoints(POINTARRAY *points, GBOX *bounds, bool closed) {
 		// get subsequent point [i+1]
 		next = i + 1;
 		if (next == npoints) {
-			if (closed) next = points -> npoints-1; // for polygons, same as original start point which may be overwritten
-			else next = i;  // for linestrings reuse end point
+			if (closed) next = 0; // for polygons, use (new) start point as end point
+			else next = i;  // for linestrings reuse last point as end point
 		}
 		getPoint4d_p(points, next, &p1);
 		vx1 = encodeToBits(p1.x, xmin, xmax);
