@@ -94,12 +94,6 @@ Datum ST_RemoveSmallParts(PG_FUNCTION_ARGS) {
 
     serialized_in = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 
-    // dimension check (only 2d geometry types are supported yet)
-    if (gserialized_ndims(serialized_in) < 2) {
-		// no x and y present, leave untouched
-		PG_RETURN_POINTER(serialized_in);
-    }
-
     if (PG_NARGS() == 3) {
 
 		if (PG_ARGISNULL(1) || PG_ARGISNULL(2)) {

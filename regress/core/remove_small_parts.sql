@@ -6,8 +6,12 @@ SELECT 0, ST_AsText(
 	((50 110, 70 110, 70 130, 50 130, 50 110)))'),
 	50, 50));
 
-
 SELECT 1, ST_AsText(
     ST_RemoveSmallParts(
     ST_GeomFromText('LINESTRING(10 10, 20 20)'),
+    50, 50));
+
+SELECT 2, ST_AsText(
+    ST_RemoveSmallParts(
+    ST_GeomFromText('LINESTRING(10 10 10, 20 20 20)'),
     50, 50));

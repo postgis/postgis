@@ -1767,7 +1767,7 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 
 		<para>Returns a <xref linkend="geometry"/> without small parts (polygon rings or linestrings).</para>
 		<para>It can be used as preprocessing step for creating simplified maps, e. g. to remove small islands or holes.</para>
-		<para>Only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING of dimension 2 are evaluated. Other geometries keep unchanged.</para>
+		<para>Only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING are evaluated. Other geometries keep unchanged.</para>
 		<para>If <parameter>minSizeX</parameter> is higher than 0, parts are sorted out if their width is smaller than <parameter>minSizeX</parameter>.</para>
 		<para>If <parameter>minSizeY</parameter> is higher than 0, parts are sorted out if their height is smaller than <parameter>minSizeY</parameter>.</para>
 		<para>For polygon types, evaluation is done separately for each ring which can lead to one of the following results:
