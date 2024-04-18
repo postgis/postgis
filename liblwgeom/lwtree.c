@@ -82,7 +82,7 @@ rect_tree_free(RECT_NODE *node)
 }
 
 static int
-rect_leaf_node_intersects(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2)
+rect_leaf_node_intersects(RECT_NODE_LEAF *n1, RECT_NODE_LEAF *n2)
 {
 	const POINT2D *p1, *p2, *p3, *q1, *q2, *q3;
 	DISTPTS dl;
@@ -196,7 +196,7 @@ rect_leaf_node_intersects(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2)
 * Returns 1 if segment is to the right of point.
 */
 static inline int
-rect_leaf_node_segment_side(const RECT_NODE_LEAF *node, const POINT2D *q, int *on_boundary)
+rect_leaf_node_segment_side(RECT_NODE_LEAF *node, const POINT2D *q, int *on_boundary)
 {
 	const POINT2D *p1, *p2, *p3;
 	switch (node->seg_type)
@@ -311,7 +311,7 @@ rect_leaf_node_segment_side(const RECT_NODE_LEAF *node, const POINT2D *q, int *o
 * be on both sides, and will have a zero return sum.
 */
 static int
-rect_tree_ring_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_boundary)
+rect_tree_ring_contains_point(RECT_NODE *node, const POINT2D *pt, int *on_boundary)
 {
 	/* Only test nodes that straddle our stabline vertically */
 	/* and might be to the right horizontally */
@@ -341,7 +341,7 @@ rect_tree_ring_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_
 * (multiply contained by interior rings?)
 */
 static int
-rect_tree_area_contains_point(const RECT_NODE *node, const POINT2D *pt)
+rect_tree_area_contains_point(RECT_NODE *node, const POINT2D *pt)
 {
 	/* Can't do anything with a leaf node, makes no sense */
 	if (rect_node_is_leaf(node))
@@ -381,7 +381,7 @@ rect_tree_area_contains_point(const RECT_NODE *node, const POINT2D *pt)
 * Simple containment test for node/point inputs
 */
 static int
-rect_node_bounds_point(const RECT_NODE *node, const POINT2D *pt)
+rect_node_bounds_point(RECT_NODE *node, const POINT2D *pt)
 {
 	if (pt->y < node->ymin || pt->y > node->ymax ||
 		pt->x < node->xmin || pt->x > node->xmax)
@@ -395,7 +395,7 @@ rect_node_bounds_point(const RECT_NODE *node, const POINT2D *pt)
 * and false otherwise.
 */
 int
-rect_tree_contains_point(const RECT_NODE *node, const POINT2D *pt)
+rect_tree_contains_point(RECT_NODE *node, const POINT2D *pt)
 {
 	int i, c;
 
@@ -762,10 +762,6 @@ rect_tree_from_lwpoly(const LWGEOM *lwgeom)
 			nodes[j++] = node;
 		}
 	}
-	/* Put the top nodes in a z-order curve for a spatially coherent */
-	/* tree after node merge */
-	qsort(nodes, j, sizeof(RECT_NODE*), rect_node_cmp);
-
 	tree = rect_nodes_merge(nodes, j);
 	tree->geom_type = lwgeom->type;
 	lwfree(nodes);
@@ -852,9 +848,7 @@ rect_tree_from_lwcollection(const LWGEOM *lwgeom)
 	/* Note: CompoundCurve has edges already spatially organized, no */
 	/* sorting needed */
 	if (lwgeom->type != COMPOUNDTYPE)
-	{
 		qsort(nodes, j, sizeof(RECT_NODE*), rect_node_cmp);
-	}
 
 	tree = rect_nodes_merge(nodes, j);
 
@@ -939,7 +933,7 @@ rect_node_to_str(const RECT_NODE *n)
 * that intersect. Prune branches that do not intersect.
 */
 static int
-rect_tree_intersects_tree_recursive(const RECT_NODE *n1, const RECT_NODE *n2)
+rect_tree_intersects_tree_recursive(RECT_NODE *n1, RECT_NODE *n2)
 {
 	int i, j;
 #if POSTGIS_DEBUG_LEVEL >= 4
@@ -993,7 +987,7 @@ rect_tree_intersects_tree_recursive(const RECT_NODE *n1, const RECT_NODE *n2)
 
 
 int
-rect_tree_intersects_tree(const RECT_NODE *n1, const RECT_NODE *n2)
+rect_tree_intersects_tree(RECT_NODE *n1, RECT_NODE *n2)
 {
 	/*
 	* It is possible for an area to intersect another object
@@ -1020,12 +1014,24 @@ rect_tree_intersects_tree(const RECT_NODE *n1, const RECT_NODE *n2)
 	return rect_tree_intersects_tree_recursive(n1, n2);
 }
 
+/*
+* For slightly more speed when doing distance comparisons,
+* where we only care if d1 < d2 and not what the actual value
+* of d1 or d2 is, we use the squared distance and avoid the
+* sqrt()
+*/
 static inline double
-distance(double x1, double y1, double x2, double y2)
+distance_sq(double x1, double y1, double x2, double y2)
 {
 	double dx = x1-x2;
 	double dy = y1-y2;
-	return sqrt(dx*dx + dy*dy);
+	return dx*dx + dy*dy;
+}
+
+static inline double
+distance(double x1, double y1, double x2, double y2)
+{
+	return sqrt(distance_sq(x1, y1, x2, y2));
 }
 
 /*
@@ -1216,8 +1222,72 @@ rect_leaf_node_distance(const RECT_NODE_LEAF *n1, const RECT_NODE_LEAF *n2, RECT
 }
 
 
+static int
+rect_tree_node_sort_cmp(const void *a, const void *b)
+{
+	RECT_NODE *n1 = *(RECT_NODE**)a;
+	RECT_NODE *n2 = *(RECT_NODE**)b;
+	if (n1->d < n2->d) return -1;
+	else if (n1->d > n2->d) return 1;
+	else return 0;
+}
+
+/* Calculate the center of a node */
+static inline void
+rect_node_to_p2d(const RECT_NODE *n, POINT2D *pt)
+{
+	pt->x = (n->xmin + n->xmax)/2;
+	pt->y = (n->ymin + n->ymax)/2;
+}
+
+/*
+* (If necessary), sort the children of each node in
+* order of their distance from the enter of the other node.
+*/
+static void
+rect_tree_node_sort(RECT_NODE *n1, RECT_NODE *n2)
+{
+	int i;
+	RECT_NODE *n;
+	POINT2D c1, c2, c;
+	if (!rect_node_is_leaf(n1) && ! n1->i.sorted)
+	{
+		rect_node_to_p2d(n2, &c2);
+		/* Distance of each child from center of other node */
+		for (i = 0; i < n1->i.num_nodes; i++)
+		{
+			n = n1->i.nodes[i];
+			rect_node_to_p2d(n, &c);
+			n->d = distance2d_sqr_pt_pt(&c2, &c);
+		}
+		/* Sort the children by distance */
+		n1->i.sorted = 1;
+		qsort(n1->i.nodes,
+		         n1->i.num_nodes,
+		         sizeof(RECT_NODE*),
+		         rect_tree_node_sort_cmp);
+	}
+	if (!rect_node_is_leaf(n2) && ! n2->i.sorted)
+	{
+		rect_node_to_p2d(n1, &c1);
+		/* Distance of each child from center of other node */
+		for (i = 0; i < n2->i.num_nodes; i++)
+		{
+			n = n2->i.nodes[i];
+			rect_node_to_p2d(n, &c);
+			n->d = distance2d_sqr_pt_pt(&c1, &c);
+		}
+		/* Sort the children by distance */
+		n2->i.sorted = 1;
+		qsort(n2->i.nodes,
+		         n2->i.num_nodes,
+		         sizeof(RECT_NODE*),
+		         rect_tree_node_sort_cmp);
+	}
+}
+
 static double
-rect_tree_distance_tree_recursive(const RECT_NODE *n1, const RECT_NODE *n2, RECT_TREE_DISTANCE_STATE *state)
+rect_tree_distance_tree_recursive(RECT_NODE *n1, RECT_NODE *n2, RECT_TREE_DISTANCE_STATE *state)
 {
 	double min, max;
 
@@ -1249,6 +1319,7 @@ rect_tree_distance_tree_recursive(const RECT_NODE *n1, const RECT_NODE *n2, RECT
 	{
 		int i, j;
 		double d_min = FLT_MAX;
+		rect_tree_node_sort(n1, n2);
 		if (rect_node_is_leaf(n1) && !rect_node_is_leaf(n2))
 		{
 			for (i = 0; i < n2->i.num_nodes; i++)
@@ -1280,7 +1351,7 @@ rect_tree_distance_tree_recursive(const RECT_NODE *n1, const RECT_NODE *n2, RECT
 	}
 }
 
-double rect_tree_distance_tree(const RECT_NODE *n1, const RECT_NODE *n2, double threshold)
+double rect_tree_distance_tree(RECT_NODE *n1, RECT_NODE *n2, double threshold)
 {
 	double distance;
 	RECT_TREE_DISTANCE_STATE state;

@@ -1685,7 +1685,11 @@ ptarray_simplify_in_place_tolerance0(POINTARRAY *pa)
 		double dot_ac_ab = ca_x * ba_x + ca_y * ba_y;
 		double s_numerator = ca_x * ba_y - ca_y * ba_x;
 
-		if (dot_ac_ab < 0.0 || dot_ac_ab > ab_length_sqr || s_numerator != 0)
+		if (p2d_same(kept_pt, next_pt) ||
+			dot_ac_ab < 0.0 ||
+			dot_ac_ab > ab_length_sqr ||
+			s_numerator != 0)
+
 		{
 			kept_it++;
 			kept_pt = curr_pt;

@@ -63,7 +63,7 @@ stringlist_create_with_size(size_t size)
 {
 	stringlist_t *s = lwalloc(sizeof(stringlist_t));
 	memset(s, 0, sizeof(stringlist_t));
-	stringlist_init(s);
+	stringlist_init_with_size(s, size);
 	return s;
 }
 
