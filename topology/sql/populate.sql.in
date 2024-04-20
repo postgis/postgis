@@ -93,6 +93,7 @@ DECLARE
 	nodeid int;
 	rec RECORD;
   containing_face int;
+  seq_name_node text;
 BEGIN
 	--
 	-- Atopology and apoint are required
@@ -152,10 +153,16 @@ BEGIN
 	--
 	-- Get new node id from sequence
 	--
-	FOR rec IN EXECUTE 'SELECT nextval(' ||
-		quote_literal(
-			quote_ident(atopology) || '.node_node_id_seq'
-		) || ')'
+  EXECUTE FORMAT(
+    $fmt$
+    SELECT column_default
+    FROM information_schema.columns
+    WHERE table_schema = %1$L AND table_name='node' AND column_name = 'node_id'
+    $fmt$,
+    atopology
+  ) INTO seq_name_node;
+
+	FOR rec IN EXECUTE 'SELECT ' || seq_name_node
 	LOOP
 		nodeid = rec.nextval;
 	END LOOP;
@@ -205,6 +212,7 @@ DECLARE
 	edgeid int;
 	rec RECORD;
   ix geometry;
+  seq_name_edge_data text;
 BEGIN
 	--
 	-- Atopology and apoint are required
@@ -333,11 +341,16 @@ BEGIN
 	--
 	-- Get new edge id from sequence
 	--
-	FOR rec IN EXECUTE 'SELECT nextval(' ||
-		quote_literal(
-			quote_ident(atopology) || '.edge_data_edge_id_seq'
-		) || ')'
-	LOOP
+  EXECUTE FORMAT(
+    $fmt$
+    SELECT column_default
+    FROM information_schema.columns
+    WHERE table_schema = %1$L AND table_name='edge_data' AND column_name = 'edge_id'
+    $fmt$,
+    atopology
+  ) INTO seq_name_edge_data;
+
+  FOR rec IN EXECUTE 'SELECT ' || seq_name_edge_data	LOOP
 		edgeid = rec.nextval;
 	END LOOP;
 
@@ -446,6 +459,7 @@ DECLARE
   loc float8;
   segnum int;
   numsegs int;
+  seq_name_face text;
 BEGIN
   --
   -- Atopology and apoly are required
@@ -605,10 +619,16 @@ BEGIN
   --
   -- Get new face id from sequence
   --
-  FOR rec IN EXECUTE 'SELECT nextval(' ||
-    quote_literal(
-      quote_ident(atopology) || '.face_face_id_seq'
-    ) || ')'
+  EXECUTE FORMAT(
+    $fmt$
+    SELECT column_default
+    FROM information_schema.columns
+    WHERE table_schema = %1$L AND table_name='face' AND column_name = 'face_id'
+    $fmt$,
+    atopology
+  ) INTO seq_name_face;
+
+  FOR rec IN EXECUTE 'SELECT ' || seq_name_face
   LOOP
     faceid = rec.nextval;
   END LOOP;

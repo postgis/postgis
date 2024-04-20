@@ -2137,8 +2137,14 @@ cb_getNextEdgeId( const LWT_BE_TOPOLOGY* topo )
   LWT_ELEMID edge_id;
 
   initStringInfo(sql);
-  appendStringInfo(sql, "SELECT nextval('\"%s\".edge_data_edge_id_seq')",
-                   topo->name);
+  appendStringInfo(sql, "SELECT nextval("
+       "SUBSTRING(column_default, "
+       "POSITION('(' IN column_default)+2, "
+       "(POSITION(':' IN column_default)-POSITION('(' IN column_default)-3))"
+       ") "
+       "FROM information_schema.columns "
+       "WHERE table_schema = '%s' AND table_name='edge_data' AND column_name = 'edge_id' \n",
+      topo->name);
   spi_result = SPI_execute(sql->data, false, 0);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT )

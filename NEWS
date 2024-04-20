@@ -44,6 +44,7 @@ Andreas Schild (German Team)
 
 * New Features *
 
+  - #5721, Allow sharing sequences between different topologies (Lars Opsahl)
   - #5667, TopoGeo_LoadGeometry (Sandro Santilli)
   - #5055, add explicit <> geometry operator to prevent non-unique
            error with <> and != (Paul Ramsey)
