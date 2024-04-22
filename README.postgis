@@ -16,8 +16,8 @@ Directory structure::
   ./doc         PostGIS Documentation
   ./extensions  Support for the PostgreSQL Extensions framework
   ./extras      Various pieces that didn't belong to mainstream
-                (package management specfiles, WFS_locks
-                  , sample WKB parser, postgis_tiger_geocoder)
+                (package management specfiles, sample WKB parser, 
+                postgis_tiger_geocoder)
   ./fuzzers     Google fuzz tests for liblwgeom
   ./liblwgeom   LWGEOM geometry library
   ./libpgcommon PostGIS library to bridge LWGEOM to PostgreSQL

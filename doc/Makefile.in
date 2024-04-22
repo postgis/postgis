@@ -193,7 +193,6 @@ XML_SOURCES = \
 	reference_sfcgal.xml \
 	reference_srs.xml \
 	reference_trajectory.xml \
-	reference_transaction.xml \
 	reference_transformation.xml \
 	reference_troubleshooting.xml \
 	reference_type.xml \

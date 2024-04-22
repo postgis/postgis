@@ -49,7 +49,6 @@
 <!ENTITY reference_lrs SYSTEM "reference_lrs.xml">
 <!ENTITY reference_srs SYSTEM "reference_srs.xml">
 <!ENTITY reference_trajectory SYSTEM "reference_trajectory.xml">
-<!ENTITY reference_transaction SYSTEM "reference_transaction.xml">
 <!ENTITY reference_transformation SYSTEM "reference_transformation.xml">
 <!ENTITY reference_misc SYSTEM "reference_misc.xml">
 <!ENTITY reference_troubleshooting SYSTEM "reference_troubleshooting.xml">
