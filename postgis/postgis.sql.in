@@ -6215,7 +6215,6 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
 
 /* Should we include the .sql directly here ? */
-#include "long_xact.sql.in"
 #include "geography.sql.in"
 
 -- Availability: 2.2.0

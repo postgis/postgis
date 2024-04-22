@@ -62,7 +62,6 @@ TESTS += \
 	$(top_srcdir)/regress/core/iscollection \
 	$(top_srcdir)/regress/core/legacy \
 	$(top_srcdir)/regress/core/letters \
-	$(top_srcdir)/regress/core/long_xact \
 	$(top_srcdir)/regress/core/lwgeom_regress \
 	$(top_srcdir)/regress/core/measures \
 	$(top_srcdir)/regress/core/minimum_bounding_circle \
