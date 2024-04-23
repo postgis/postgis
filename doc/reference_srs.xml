@@ -7,7 +7,7 @@
    </abstract>
     </info>
 
-    
+
 
   <refentry xml:id="ST_InverseTransformPipeline">
     <refnamediv>
@@ -429,7 +429,7 @@ CREATE INDEX idx_geom_26986_parcels
     <programlisting>
 -- Forward direction
 SELECT ST_AsText(ST_TransformPipeline('SRID=4326;POINT(2 49)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::16031') AS utm_geom);
+  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS utm_geom;
 
                   utm_geom
 --------------------------------------------
