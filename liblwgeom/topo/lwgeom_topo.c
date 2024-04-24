@@ -2225,9 +2225,8 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     lwfree(forward_edges);
     lwfree(backward_edges);
 
+    _lwt_release_edges(edges, numfaceedges);
   }
-
-  _lwt_release_edges(edges, numfaceedges);
 
   /* Update isolated nodes which are now in new face */
   uint64_t numisonodes = 1;
