@@ -1724,7 +1724,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
     since points do not have a boundary.</para>
 
     <para>In mathematical terms:
-    <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) ≠ ∅) ∧ (A ⋂ B ≠ ∅) </emphasis></para>
+    <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) = ∅) ∧ (A ⋂ B ≠ ∅) </emphasis></para>
 
     <para>This relationship holds if the DE-9IM Intersection Matrix for the two geometries matches one of:</para>
 
