@@ -3,6 +3,7 @@ xxxx/xx/xx
 
 * Bug Fixes and Enhancements *
 
+ - #5722, Improve robustness of adding lines to topology (Sandro Santilli)
  - #5709, Fix loose mbr in topology.face on ST_ChangeEdgeGeom (Sandro Santilli)
  - #5698, Fix robustness issue splitting line by vertex very close to endpoints,
           affecting topology population functions (Sandro Santilli)
@@ -16,7 +17,6 @@ xxxx/xx/xx
  - #5686, ST_NumInteriorRings and Triangle crash (Paul Ramsey)
  - #5671, Bug in ST_Area function with use_spheroid=false
           (Paul Ramsey, Regina Obe)
-
 
 PostGIS 3.3.6
 2024/02/07
