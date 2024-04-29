@@ -240,6 +240,23 @@ SELECT _postgis_drop_function_by_signature('st_distance_sphere(geometry, geometr
 SELECT _postgis_drop_function_by_signature('pgis_geometry_union_transfn(internal, geometry)');
 SELECT _postgis_drop_function_by_signature('pgis_geometry_union_finalfn(internal)');
 
+-- Long Xact support dropped in 3.5.0
+-- See https://trac.osgeo.org/postgis/ticket/5723
+SELECT _postgis_drop_function_by_signature('UnlockRows(text)');
+SELECT _postgis_drop_function_by_signature('LockRow(text, text, text, text, timestamp)');
+SELECT _postgis_drop_function_by_signature('LockRow(text, text, text, text)');
+SELECT _postgis_drop_function_by_signature('LockRow(text, text, text)');
+SELECT _postgis_drop_function_by_signature('LockRow(text, text, text, timestamp)');
+SELECT _postgis_drop_function_by_signature('AddAuth(text)');
+SELECT _postgis_drop_function_by_signature('CheckAuth(text, text, text)');
+SELECT _postgis_drop_function_by_signature('CheckAuth(text, text)');
+SELECT _postgis_drop_function_by_signature('CheckAuthTrigger()');
+SELECT _postgis_drop_function_by_signature('GetTransactionID()');
+SELECT _postgis_drop_function_by_signature('EnableLongTransactions()');
+SELECT _postgis_drop_function_by_signature('LongTransactionsEnabled()');
+SELECT _postgis_drop_function_by_signature('DisableLongTransactions()');
+
+
 -- #4394
 update pg_operator set oprcanhash = true, oprcanmerge = true where oprname = '=' and oprcode = 'geometry_eq'::regproc;
 
