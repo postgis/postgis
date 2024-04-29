@@ -5440,7 +5440,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
     return 0; /* must be empty */
   }
   nid[0] = _lwt_AddPoint( topo, start_point,
-                          tol,
+                          _lwt_minTolerance(lwpoint_as_lwgeom(start_point)),
                           handleFaceSplit, &mm );
   lwpoint_free(start_point); /* too late if lwt_AddPoint calls lwerror */
   if ( nid[0] == -1 ) return -1; /* lwerror should have been called */
@@ -5456,7 +5456,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
     return -1;
   }
   nid[1] = _lwt_AddPoint( topo, end_point,
-                          tol,
+                          _lwt_minTolerance(lwpoint_as_lwgeom(end_point)),
                           handleFaceSplit, &mm );
   lwpoint_free(end_point); /* too late if lwt_AddPoint calls lwerror */
   if ( nid[1] == -1 ) return -1; /* lwerror should have been called */
@@ -5989,13 +5989,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     }
 #endif
 
-    id = _lwt_AddLineEdge(
-      topo,
-      lwgeom_as_lwline(g),
-      _lwt_minTolerance(g), /* TODO: compute actual drift introduced by GEOS ? */
-      handleFaceSplit,
-      &forward
-    );
+    id = _lwt_AddLineEdge( topo, lwgeom_as_lwline(g), tol, handleFaceSplit, &forward );
     LWDEBUGF(1, "_lwt_AddLineEdge returned %" LWTFMT_ELEMID, id);
     if ( id < 0 )
     {
