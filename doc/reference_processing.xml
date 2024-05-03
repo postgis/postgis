@@ -1970,6 +1970,7 @@ key=value pairs to tweak operations as follows:
                 </para>
 
             <para>Performed by the GEOS module.</para>
+            <para role="changed">Behavior changed in GEOS 3.11 so offset curves now have the same direction as the input line, for both positive and negative offsets.</para>
             <para role="availability" conformance="2.0">Availability: 2.0</para>
             <para role="enhanced" conformance="2.5">Enhanced: 2.5 - added support for GEOMETRYCOLLECTION and MULTILINESTRING</para>
 
