@@ -3,6 +3,12 @@ xxxx/xx/xx
 
 To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
 
+Many thanks to our translation teams, in particular:
+
+Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)
+Teramoto Ikuhiro (Japanese Team)
+Andreas Schild (German Team)
+
 * Breaking Changes *
 
   - #5546, TopoGeometry <> TopoGeometry is now ambiguous, to get
