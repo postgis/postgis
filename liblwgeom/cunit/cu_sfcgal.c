@@ -80,7 +80,7 @@ test_sfcgal_noop(void)
 		out_ewkt = lwgeom_to_ewkt(geom_out);
 		if (strcmp(expected_ewkt[i], out_ewkt))
 			fprintf(stderr, "\nExp:   %s\nObt:  %s\n", expected_ewkt[i], out_ewkt);
-		CU_ASSERT_STRING_EQUAL(expected_ewkt[i], out_ewkt);
+		ASSERT_STRING_EQUAL(expected_ewkt[i], out_ewkt);
 		lwfree(out_ewkt);
 		lwgeom_free(geom_out);
 		lwgeom_free(geom_in);

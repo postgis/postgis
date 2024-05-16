@@ -31,7 +31,7 @@ test_lwpoint_to_latlon_assert_format(char *point_wkt, const char *format, const 
 		CU_FAIL();
 	}
 	num_old_failures = CU_get_number_of_failures();
-	CU_ASSERT_STRING_EQUAL(actual, expected);
+	ASSERT_STRING_EQUAL(actual, expected);
 	num_new_failures = CU_get_number_of_failures();
 	if (num_new_failures > num_old_failures)
 	{

@@ -280,7 +280,7 @@ static void test_lwgeom_from_gserialized(void)
 		out_ewkt = lwgeom_to_ewkt(geom2);
 
 		/* printf("\n in = %s\nout = %s\n", in_ewkt, out_ewkt); */
-		CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+		ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
 
 		/* either both or none of the bboxes are null */
 		CU_ASSERT( (geom->bbox != NULL) || (geom2->bbox == NULL) );
@@ -522,7 +522,7 @@ static void do_lwgeom_swap_ordinates(char *in, char *out)
 	if (strcmp(t, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, t, out);
 
-	CU_ASSERT_STRING_EQUAL(t, out)
+	ASSERT_STRING_EQUAL(t, out);
 
 	lwgeom_free(g);
 	lwfree(t);
@@ -731,7 +731,7 @@ static void test_lwgeom_clone(void)
 		out_ewkt = lwgeom_to_ewkt(cloned);
 		if (strcmp(in_ewkt, out_ewkt))
 			fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_ewkt, out_ewkt);
-		CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+		ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
 		lwfree(out_ewkt);
 		lwgeom_free(cloned);
 		lwgeom_free(geom);
@@ -757,7 +757,7 @@ static void test_lwgeom_force_clockwise(void)
 	out_ewkt = lwgeom_to_ewkt(geom);
 	if (strcmp(in_ewkt, out_ewkt))
 		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
-	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
 	lwfree(out_ewkt);
 	lwgeom_free(geom);
 
@@ -769,7 +769,7 @@ static void test_lwgeom_force_clockwise(void)
 	out_ewkt = lwgeom_to_ewkt(geom);
 	if (strcmp(in_ewkt, out_ewkt))
 		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
-	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
 	lwfree(out_ewkt);
 	lwgeom_free(geom);
 
@@ -781,7 +781,7 @@ static void test_lwgeom_force_clockwise(void)
 	out_ewkt = lwgeom_to_ewkt(geom);
 	if (strcmp(in_ewkt, out_ewkt))
 		fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_ewkt, out_ewkt);
-	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
 	lwfree(out_ewkt);
 	lwgeom_free(geom);
 
@@ -793,7 +793,7 @@ static void test_lwgeom_force_clockwise(void)
 	out_ewkt = lwgeom_to_ewkt(geom);
 	if (strcmp(in_ewkt, out_ewkt))
 		fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_ewkt, out_ewkt);
-	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
 	lwfree(out_ewkt);
 	lwgeom_free(geom);
 
@@ -962,7 +962,7 @@ static void test_lwgeom_as_curve(void)
 	out_ewkt = lwgeom_to_ewkt(geom2);
 	if (strcmp(in_ewkt, out_ewkt))
 		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
-	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
 	lwfree(out_ewkt);
 	lwgeom_free(geom);
 	lwgeom_free(geom2);
@@ -973,7 +973,7 @@ static void test_lwgeom_as_curve(void)
 	out_ewkt = lwgeom_to_ewkt(geom2);
 	if (strcmp(in_ewkt, out_ewkt))
 		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
-	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
 	lwfree(out_ewkt);
 	lwgeom_free(geom);
 	lwgeom_free(geom2);
@@ -984,7 +984,7 @@ static void test_lwgeom_as_curve(void)
 	out_ewkt = lwgeom_to_ewkt(geom2);
 	if (strcmp(in_ewkt, out_ewkt))
 		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
-	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
 	lwfree(out_ewkt);
 	lwgeom_free(geom);
 	lwgeom_free(geom2);
@@ -995,7 +995,7 @@ static void test_lwgeom_as_curve(void)
 	out_ewkt = lwgeom_to_ewkt(geom2);
 	if (strcmp(in_ewkt, out_ewkt))
 		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
-	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
 	lwfree(out_ewkt);
 	lwgeom_free(geom);
 	lwgeom_free(geom2);

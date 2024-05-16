@@ -40,7 +40,7 @@ test_lwgeom_delaunay_triangulation(void)
 	if (strcmp(wkt, exp_wkt))
 		fprintf(stderr, "\nExp:  %s\nObt:  %s\n", exp_wkt, wkt);
 
-	CU_ASSERT_STRING_EQUAL(wkt, exp_wkt);
+	ASSERT_STRING_EQUAL(wkt, exp_wkt);
 	lwfree(wkt);
 }
 

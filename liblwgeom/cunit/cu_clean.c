@@ -98,7 +98,7 @@ static void test_lwgeom_make_valid(void)
 	 TODO: This doesn't work on windows returns in different order.
 	 strk figure out why. For now will replace with normalized version
 	*/
-/*	CU_ASSERT_STRING_EQUAL(ewkt,
+/*	ASSERT_STRING_EQUAL(ewkt,
 "GEOMETRYCOLLECTION(POINT(0 0),MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5))),LINESTRING(10 0,10 10))");*/
 	gexp = lwgeom_from_wkt(
 "GEOMETRYCOLLECTION(MULTIPOLYGON(((5 5,10 10,10 0,5 5)),((0 0,0 10,5 5,0 0))),LINESTRING(10 0,10 10),POINT(0 0))",
@@ -122,7 +122,7 @@ static void test_lwgeom_make_valid(void)
 
 	ewkt = lwgeom_to_ewkt(gout);
 	/* printf("c = %s\n", ewkt); */
-	CU_ASSERT_STRING_EQUAL(ewkt,
+	ASSERT_STRING_EQUAL(ewkt,
 "MULTIPOINT(0 0,1 1,2 2)");
 	lwfree(ewkt);
 
@@ -141,7 +141,7 @@ static void test_lwgeom_make_valid(void)
 
 	ewkt = lwgeom_to_ewkt(gout);
 	/* printf("c = %s\n", ewkt); */
-	CU_ASSERT_STRING_EQUAL(ewkt,
+	ASSERT_STRING_EQUAL(ewkt,
 "POLYGON((10 22,10 32,20 32,20 22,10 22))");
 	lwfree(ewkt);
 

@@ -29,7 +29,7 @@ static void test_misc_simplify(void)
 	geom = lwgeom_from_wkt("LINESTRING(0 0,0 10,0 51,50 20,30 20,7 32)", LW_PARSER_CHECK_NONE);
 	geom2d = lwgeom_simplify(geom, 2, LW_FALSE);
 	wkt_out = lwgeom_to_ewkt(geom2d);
-	CU_ASSERT_STRING_EQUAL("LINESTRING(0 0,0 51,50 20,30 20,7 32)",wkt_out);
+	ASSERT_STRING_EQUAL("LINESTRING(0 0,0 51,50 20,30 20,7 32)",wkt_out);
 	lwgeom_free(geom);
 	lwgeom_free(geom2d);
 	lwfree(wkt_out);
@@ -37,7 +37,7 @@ static void test_misc_simplify(void)
 	geom = lwgeom_from_wkt("MULTILINESTRING((0 0,0 10,0 51,50 20,30 20,7 32))", LW_PARSER_CHECK_NONE);
 	geom2d = lwgeom_simplify(geom, 2, LW_FALSE);
 	wkt_out = lwgeom_to_ewkt(geom2d);
-	CU_ASSERT_STRING_EQUAL("MULTILINESTRING((0 0,0 51,50 20,30 20,7 32))",wkt_out);
+	ASSERT_STRING_EQUAL("MULTILINESTRING((0 0,0 51,50 20,30 20,7 32))",wkt_out);
 	lwgeom_free(geom);
 	lwgeom_free(geom2d);
 	lwfree(wkt_out);
@@ -45,7 +45,7 @@ static void test_misc_simplify(void)
 	geom = lwgeom_from_wkt("POLYGON((0 0,1 1,1 3,0 4,-2 3,-1 1,0 0))", LW_PARSER_CHECK_NONE);
 	geom2d = lwgeom_simplify(geom, 1, LW_FALSE);
 	wkt_out = lwgeom_to_ewkt(geom2d);
-	CU_ASSERT_STRING_EQUAL("POLYGON((0 0,0 4,-2 3,0 0))", wkt_out);
+	ASSERT_STRING_EQUAL("POLYGON((0 0,0 4,-2 3,0 0))", wkt_out);
 	lwgeom_free(geom);
 	lwgeom_free(geom2d);
 	lwfree(wkt_out);
@@ -129,7 +129,7 @@ static void test_misc_wkb(void)
 	static char *wkb = "010A0000000200000001080000000700000000000000000000C00000000000000000000000000000F0BF000000000000F0BF00000000000000000000000000000000000000000000F03F000000000000F0BF000000000000004000000000000000000000000000000000000000000000004000000000000000C00000000000000000010200000005000000000000000000F0BF00000000000000000000000000000000000000000000E03F000000000000F03F00000000000000000000000000000000000000000000F03F000000000000F0BF0000000000000000";
 	LWGEOM *geom = lwgeom_from_hexwkb(wkb, LW_PARSER_CHECK_ALL);
 	char *str = lwgeom_to_wkt(geom, WKB_ISO, 8, 0);
-	CU_ASSERT_STRING_EQUAL(str, "CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))");
+	ASSERT_STRING_EQUAL(str, "CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))");
 	lwfree(str);
 	lwgeom_free(geom);
 
@@ -149,7 +149,7 @@ static void test_grid(void)
 
 	geomgrid = lwgeom_grid(geom, &grid);
 	str = lwgeom_to_ewkt(geomgrid);
-	CU_ASSERT_STRING_EQUAL(str, "MULTIPOLYGON EMPTY");
+	ASSERT_STRING_EQUAL(str, "MULTIPOLYGON EMPTY");
 	lwfree(str);
 	lwgeom_free(geom);
 	lwgeom_free(geomgrid);
@@ -284,9 +284,9 @@ static void test_optionlist(void)
 
 	value = option_list_search(olist, "key1");
 	// printf("value: %s\n", value);
-	CU_ASSERT_STRING_EQUAL("value1", value);
+	ASSERT_STRING_EQUAL("value1", value);
 	value = option_list_search(olist, "key2");
-	CU_ASSERT_STRING_EQUAL("value2", value);
+	ASSERT_STRING_EQUAL("value2", value);
 	value = option_list_search(olist, "key3");
 	CU_ASSERT_EQUAL(NULL, value);
 
@@ -310,8 +310,8 @@ static void test_optionlist(void)
 	option_list_gdal_parse(input, olist);
 	sz = option_list_length(olist);
 	CU_ASSERT_EQUAL(2, sz);
-	CU_ASSERT_STRING_EQUAL("key1=value1", olist[0]);
-	CU_ASSERT_STRING_EQUAL("key2='value2 value3'", olist[1]);
+	ASSERT_STRING_EQUAL("key1=value1", olist[0]);
+	ASSERT_STRING_EQUAL("key2='value2 value3'", olist[1]);
 }
 
 
@@ -325,11 +325,11 @@ static void test_stringlist(void)
 	stringlist_add_string_nosort(&s, "second string");
 	stringlist_add_string_nosort(&s, "third string");
 	CU_ASSERT_EQUAL(stringlist_length(&s), 3);
-	CU_ASSERT_STRING_EQUAL(stringlist_get(&s, 0), "first string");
+	ASSERT_STRING_EQUAL(stringlist_get(&s, 0), "first string");
 	stringlist_add_string_nosort(&s, "an initial string");
 	stringlist_sort(&s);
-	CU_ASSERT_STRING_EQUAL(stringlist_get(&s, 0), "an initial string");
-	CU_ASSERT_STRING_EQUAL(stringlist_find(&s, "third string"), "third string");
+	ASSERT_STRING_EQUAL(stringlist_get(&s, 0), "an initial string");
+	ASSERT_STRING_EQUAL(stringlist_find(&s, "third string"), "third string");
 	CU_ASSERT_EQUAL(stringlist_find(&s, "nothing_matches"), NULL);
 	stringlist_add_string_nosort(&s, "fourth string");
 	stringlist_add_string_nosort(&s, "fifth string");
@@ -337,7 +337,7 @@ static void test_stringlist(void)
 	stringlist_add_string_nosort(&s, "seventh string");
 	stringlist_add_string_nosort(&s, "eighth string");
 	stringlist_sort(&s);
-	CU_ASSERT_STRING_EQUAL(stringlist_find(&s, "fifth string"), "fifth string");
+	ASSERT_STRING_EQUAL(stringlist_find(&s, "fifth string"), "fifth string");
 	stringlist_release(&s);
 }
 

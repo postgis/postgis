@@ -27,7 +27,7 @@ static void do_test_filterm(char *geom_txt,char *expected, double min, double ma
 	out_txt = lwgeom_to_wkt(geom_out, WKT_EXTENDED, 3, NULL);
 	if(strcmp(expected, out_txt))
 		printf("%s is not equal to %s\n", expected, out_txt);
-	CU_ASSERT_STRING_EQUAL(expected, out_txt)
+	ASSERT_STRING_EQUAL(expected, out_txt);
 	lwfree(out_txt);
 	lwgeom_free(geom_in);
 	lwgeom_free(geom_out);

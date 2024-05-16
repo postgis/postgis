@@ -79,7 +79,7 @@ static void test_wkt_in_point(void)
 {
 	s = "POINT(1 2) foobar";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL("parse error - invalid geometry", r);
+	ASSERT_STRING_EQUAL("parse error - invalid geometry", r);
 	lwfree(r);
 
 	s = "POINT(1e700 0)";
@@ -89,23 +89,23 @@ static void test_wkt_in_point(void)
 
 	s = "POINT(0 0)";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "POINT EMPTY";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "POINT M EMPTY";
 	r = cu_wkt_in(s, WKT_ISO);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "point(nan 10)";
 	r = cu_wkt_in(s, WKT_ISO);
 	cu_strtolower(r);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	// printf("\nIN:  %s\nOUT: %s\n",s,r);
@@ -115,42 +115,42 @@ static void test_wkt_in_linestring(void)
 {
 	s = "LINESTRING EMPTY";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "LINESTRING(0 0,1 1)";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "LINESTRING(0 0 0,1 1 1)";
 	r = cu_wkt_in(s, WKT_EXTENDED);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "LINESTRING M (0 0 0,1 1 1)";
 	r = cu_wkt_in(s, WKT_ISO);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "LINESTRING ZM (0 0 0 1,1 1 1 1,2 2 2 2,0.141231 4 5 4)";
 	r = cu_wkt_in(s, WKT_ISO);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "LINESTRINGM(0 0 0,1 1 1)";
 	r = cu_wkt_in(s, WKT_EXTENDED);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "LINESTRING ZM EMPTY";
 	r = cu_wkt_in(s, WKT_ISO);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "LINESTRING Z (0 0 0 1, 0 1 0 1)";
 	r = cu_wkt_in(s, WKT_EXTENDED);
-	CU_ASSERT_STRING_EQUAL(r,"can not mix dimensionality in a geometry");
+	ASSERT_STRING_EQUAL(r,"can not mix dimensionality in a geometry");
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 
@@ -160,17 +160,17 @@ static void test_wkt_in_polygon(void)
 {
 	s = "POLYGON((0 0,0 1,1 1,0 0))";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "POLYGON Z ((0 0,0 10,10 10,10 0,0 0),(1 1 1,1 2 1,2 2 1,2 1 1,1 1 1))";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(r,"can not mix dimensionality in a geometry");
+	ASSERT_STRING_EQUAL(r,"can not mix dimensionality in a geometry");
 	lwfree(r);
 
 	s = "POLYGON Z ((0 0,0 10,10 10,10 0,0 0),(1 1,1 2,2 2,2 1,1 1))";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(r,"can not mix dimensionality in a geometry");
+	ASSERT_STRING_EQUAL(r,"can not mix dimensionality in a geometry");
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 }
@@ -183,19 +183,19 @@ static void test_wkt_in_multipoint(void)
 	*/
 	// s = "MULTIPOINT(-1 -2 -3,5.4 6.6 7.77,-5.4 -6.6 -7.77,1000000 1e-06 -1000000,-1.3e-06 -1.4e-05 0)";
 	// r = cu_wkt_in(s, WKT_EXTENDED);
-	// CU_ASSERT_STRING_EQUAL(r,s);
+	// ASSERT_STRING_EQUAL(r,s);
 	// printf("\nIN:  %s\nOUT: %s\n",s,r);
 	// lwfree(r);
 
 	s = "MULTIPOINT(0 0)";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 
 	s = "MULTIPOINT(0 0,1 1)";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 }
@@ -204,7 +204,7 @@ static void test_wkt_in_multilinestring(void)
 {
 	s = "MULTILINESTRING((0 0,1 1),(1 1,2 2),(3 3,3 3,3 3,2 2,2 1))";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 
@@ -214,19 +214,19 @@ static void test_wkt_in_multipolygon(void)
 {
 	s = "MULTIPOLYGON(((0 0,0 1,1 1,0 0)))";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 
 	s = "MULTIPOLYGON(((0 0,0 10,10 10,0 0),(1 1,1 2,2 2,1 1)),((-10 -10,-10 -5,-5 -5,-10 -10)))";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 
 	s = "SRID=4;MULTIPOLYGON(((0 0,0 1,1 1,0 0)))";
 	r = cu_wkt_in(s, WKT_EXTENDED);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 
@@ -237,32 +237,32 @@ static void test_wkt_in_collection(void)
 	s = "SRID=5;GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(1 0,0 0),CIRCULARSTRING(0 0,0 1,1 1,0 1,2 2))";
 	r = cu_wkt_in(s, WKT_EXTENDED);
  	//printf("\nIN:  %s\nOUT: %s\n",s,r);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "GEOMETRYCOLLECTION(POINT(0 0),POINT EMPTY,LINESTRING(1 0,0 0),POLYGON EMPTY,CIRCULARSTRING(0 0,0 1,1 1,0 1,2 2))";
 	r = cu_wkt_in(s, WKT_SFSQL);
  	//printf("\nIN:  %s\nOUT: %s\n",s,r);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "GEOMETRYCOLLECTION Z (POINT Z (0 0 0))";
 	r = cu_wkt_in(s, WKT_ISO);
  	//printf("\nIN:  %s\nOUT: %s\n",s,r);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	s = "GEOMETRYCOLLECTION M (MULTILINESTRING M ((0 0 5,2 0 5),(1 1 5,2 2 5)))";
 	r = cu_wkt_in(s, WKT_ISO);
  	//printf("\nIN:  %s\nOUT: %s\n",s,r);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
 	/* See http://trac.osgeo.org/postgis/ticket/1455#comment:3 */
 	s = "GEOMETRYCOLLECTION Z (MULTILINESTRING Z ((0 0 5,2 0 5),(1 1 5,2 2 5)))";
 	r = cu_wkt_in(s, WKT_ISO);
  	//printf("\nIN:  %s\nOUT: %s\n",s,r);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 }
 
@@ -271,7 +271,7 @@ static void test_wkt_in_circularstring(void)
 	s = "CIRCULARSTRING(0 0,0 1,1 1,0 1,2 2)";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 }
 
@@ -279,13 +279,13 @@ static void test_wkt_in_compoundcurve(void)
 {
 	s = "SRID=4326;COMPOUNDCURVEM(CIRCULARSTRINGM(0 0 2,1 1 2,1 0 2),(1 0 2,0 1 2))";
 	r = cu_wkt_in(s, WKT_EXTENDED);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 
 	s = "COMPOUNDCURVE Z (CIRCULARSTRING Z (0 0 0,0 1 0,1 1 0,0 0 0,2 2 0),(2 2 0,0 0 1,1 1 1,2 2 1))";
 	r = cu_wkt_in(s, WKT_ISO);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 }
@@ -294,7 +294,7 @@ static void test_wkt_in_curvpolygon(void)
 {
 	s = "CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,0 1,1 1,2 2,0 0),(0 0,1 1,2 2)),CIRCULARSTRING(0 0,0 1,1 1,0 0,2 2),(0 0,1 1,2 1))";
 	r = cu_wkt_in(s, WKT_ISO);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 }
@@ -303,7 +303,7 @@ static void test_wkt_in_multicurve(void)
 {
 	s = "SRID=4326;MULTICURVE(COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1)))";
 	r = cu_wkt_in(s, WKT_EXTENDED);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 }
@@ -312,7 +312,7 @@ static void test_wkt_in_multisurface(void)
 {
 	s = "SRID=4326;MULTICURVE(COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1)))";
 	r = cu_wkt_in(s, WKT_EXTENDED);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 }
@@ -321,7 +321,7 @@ static void test_wkt_in_tin(void)
 {
 	s = "TIN(((0 1 2,3 4 5,6 7 8,0 1 2)),((0 1 2,3 4 5,6 7 8,9 10 11,0 1 2)))";
 	r = cu_wkt_in(s, WKT_EXTENDED);
-	CU_ASSERT_STRING_EQUAL(r,"triangle must have exactly 4 points");
+	ASSERT_STRING_EQUAL(r,"triangle must have exactly 4 points");
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 }
@@ -330,19 +330,19 @@ static void test_wkt_in_polyhedralsurface(void)
 {
 	s = "POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))";
 	r = cu_wkt_in(s, WKT_EXTENDED);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 
 	s = "POLYHEDRALSURFACE Z (((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))";
 	r = cu_wkt_in(s, WKT_ISO);
-	CU_ASSERT_STRING_EQUAL(r,s);
+	ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 
 	s = "POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7,0 1 2)))";
 	r = cu_wkt_in(s, WKT_ISO);
-	CU_ASSERT_STRING_EQUAL(r,"can not mix dimensionality in a geometry");
+	ASSERT_STRING_EQUAL(r,"can not mix dimensionality in a geometry");
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 
@@ -411,13 +411,13 @@ static void test_wkt_leak(void)
 	/* OSS-FUZZ: https://trac.osgeo.org/postgis/ticket/4537 */
 	char *wkt = "TINEMPTY,";
 	char *err = cu_wkt_in(wkt, WKT_EXTENDED);
-	CU_ASSERT_STRING_EQUAL(err, "parse error - invalid geometry");
+	ASSERT_STRING_EQUAL(err, "parse error - invalid geometry");
 	lwfree(err);
 
 	/* OSS-FUZZ: https://trac.osgeo.org/postgis/ticket/4545 */
 	wkt = "GEOMeTRYCOLLECTION(POLYHEDRALSURFACEEMPTY ";
 	err = cu_wkt_in(wkt, WKT_EXTENDED);
-	CU_ASSERT_STRING_EQUAL(err, "parse error - invalid geometry");
+	ASSERT_STRING_EQUAL(err, "parse error - invalid geometry");
 	lwfree(err);
 }
 

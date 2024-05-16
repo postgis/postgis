@@ -98,101 +98,101 @@ static void test_twkb_in_point(void)
 {
 	cu_twkb_in("POINT(0 0 0 0)");
 //	printf("old: %s\nnew: %s\n",hex_a, hex_b);
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("POINT(1 1)");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("POINT EMPTY");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
 static void test_twkb_in_linestring(void)
 {
 	cu_twkb_in("LINESTRING(0 0,1 1)");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("LINESTRING(0 0 1,1 1 2,2 2 3)");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("LINESTRING EMPTY");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
 static void test_twkb_in_polygon(void)
 {
 	cu_twkb_in("POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("POLYGON((0 0 0 1,0 1 0 2,1 1 0 3,1 0 0 4,0 0 0 5))");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("POLYGON((0 0 0 1,0 1 0 2,1 1 0 3,1 0 0 4,0 0 0 5))");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("POLYGON EMPTY");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
 static void test_twkb_in_multipoint(void)
 {
 	cu_twkb_in("MULTIPOINT Z EMPTY");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("MULTIPOINT(1 2, EMPTY, 5 6)");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 	// printf(" 1st: %s\n 2nd: %s\n", hex_a, hex_b);
 
 	cu_twkb_in("MULTIPOINT(0 0 0,0 1 0,1 1 0,1 0 0,0 0 1)");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("MULTIPOINT(1 2 3, 1 2 3, 4 5 6, -3 -4 -5, -10 -5 -1)");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
 static void test_twkb_in_multilinestring(void)
 {
 	cu_twkb_in("MULTILINESTRING((0 0,0 1),(1 1, 10 10))");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("MULTILINESTRING((0 0,0 1),EMPTY,(1 1, 10 10))");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("MULTILINESTRING((0 0 200000,0 1 10),(1 100000000 23, 10 10 45))");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 	// printf(" 1st: %s\n 2nd: %s\n", hex_a, hex_b);
 
 	cu_twkb_in("MULTILINESTRING EMPTY");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
 static void test_twkb_in_multipolygon(void)
 {
 	cu_twkb_in("MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)))");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 	//printf("old: %s\nnew: %s\n",hex_a, hex_b);
 
 	cu_twkb_in("MULTIPOLYGON EMPTY");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 	//printf("old: %s\nnew: %s\n",hex_a, hex_b);
 }
 
 static void test_twkb_in_collection(void)
 {
 	cu_twkb_in("GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))),POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POINT(1 1 1),LINESTRING(0 0 0, 1 1 1))");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("GEOMETRYCOLLECTION(POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POINT(1 1 1))");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("GEOMETRYCOLLECTION EMPTY");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("GEOMETRYCOLLECTION(POINT(1 2 3), LINESTRING EMPTY, POINT(4 5 6))");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_twkb_in("GEOMETRYCOLLECTION(POINT(1 2 3), POINT EMPTY, POINT(4 5 6))");
-	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
 /*
@@ -205,17 +205,17 @@ static void test_twkb_in_precision(void)
 	for ( precision = 1; precision <= 6; precision++ )
 	{
 		cu_twkb_in("MULTILINESTRING((0 0,0 1),EMPTY,(1 1, 10 10))");
-		CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+		ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 		cu_twkb_in("MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)))");
-		CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+		ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 		cu_twkb_in("GEOMETRYCOLLECTION(POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),POINT(1 1 1))");
-		CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+		ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 		cu_twkb_in("MULTILINESTRING((0 0 200000,0 1 10),(1 100000000 23, 10 10 45))");
 		// printf("old: %s\nnew: %s\n",hex_a, hex_b);
-		CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+		ASSERT_STRING_EQUAL(hex_a, hex_b);
 	}
 
 	/* Go back to default precision */

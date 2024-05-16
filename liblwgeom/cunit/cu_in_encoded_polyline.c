@@ -31,7 +31,7 @@ static void do_encoded_polyline_test(char * in, int precision, char * out)
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
 
-	CU_ASSERT_STRING_EQUAL(h, out);
+	ASSERT_STRING_EQUAL(h, out);
 
 	lwgeom_free(g);
 	if ( h ) lwfree(h);
