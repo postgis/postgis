@@ -167,7 +167,7 @@ static void do_grid_test(const char *wkt_in, const char *wkt_out, double size)
 	lwgeom_grid_in_place(g, &grid);
 	wkt_result = lwgeom_to_ewkt(g);
     // printf("%s ==%ld==> %s == %s\n", wkt_in, lround(size), wkt_result, wkt_out);
-	CU_ASSERT_STRING_EQUAL(wkt_result, wkt_norm);
+	ASSERT_STRING_EQUAL(wkt_result, wkt_norm);
 	lwfree(wkt_result);
 	lwfree(wkt_norm);
 	lwgeom_free(g);
