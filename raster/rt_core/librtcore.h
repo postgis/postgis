@@ -258,9 +258,9 @@ extern void rtdealloc(void* mem);
 /**
  * Wrappers used for reporting errors and info.
  **/
-void rterror(const char *fmt, ...);
-void rtinfo(const char *fmt, ...);
-void rtwarn(const char *fmt, ...);
+void rterror(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+void rtinfo(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+void rtwarn(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
 
 /**
  * Wrappers used for options
@@ -274,9 +274,9 @@ char* rtstrdup(const char *str);
 void * default_rt_allocator(size_t size);
 void * default_rt_reallocator(void * mem, size_t size);
 void default_rt_deallocator(void * mem);
-void default_rt_error_handler(const char * fmt, va_list ap);
-void default_rt_warning_handler(const char * fmt, va_list ap);
-void default_rt_info_handler(const char * fmt, va_list ap);
+void default_rt_error_handler(const char * fmt, va_list ap) __attribute__ ((format (printf, 1, 0)));
+void default_rt_warning_handler(const char * fmt, va_list ap) __attribute__ ((format (printf, 1, 0)));
+void default_rt_info_handler(const char * fmt, va_list ap) __attribute__ ((format (printf, 1, 0)));
 char * default_rt_options(const char* varname);
 
 /* Debugging macros */

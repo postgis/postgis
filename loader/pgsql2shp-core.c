@@ -71,6 +71,9 @@ static char * goodDBFValue(char *in, char fieldType);
 char *convert_bytes_to_hex(uint8_t *ewkb, size_t size);
 
 static char*
+core_asprintf(const char* format, ...) __attribute__ ((format (printf, 1, 2)));
+
+static char*
 core_asprintf(const char* format, ...)
 {
 	va_list ap;

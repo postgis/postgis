@@ -126,7 +126,7 @@
  * For debugging, use LWDEBUG() or LWDEBUGF().
  * @ingroup logging
  */
-void lwnotice(const char *fmt, ...);
+void lwnotice(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
 
 /**
  * Write a notice out to the error handler.
@@ -136,7 +136,7 @@ void lwnotice(const char *fmt, ...);
  * For debugging, use LWDEBUG() or LWDEBUGF().
  * @ingroup logging
  */
-void lwerror(const char *fmt, ...);
+void lwerror(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
 
 /**
  * Write a debug message out.
@@ -145,7 +145,7 @@ void lwerror(const char *fmt, ...);
  * efficiency.
  * @ingroup logging
  */
-void lwdebug(int level, const char *fmt, ...);
+void lwdebug(int level, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
 
 
 

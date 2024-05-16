@@ -45,7 +45,7 @@ int union_dbscan(LWGEOM **geoms, uint32_t num_geoms, UNIONFIND *uf, double eps, 
 POINTARRAY* ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d);
 
 extern char lwgeom_geos_errmsg[];
-extern void lwgeom_geos_error(const char* fmt, ...);
+extern void lwgeom_geos_error(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
 
 
 /*

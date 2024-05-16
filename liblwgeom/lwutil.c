@@ -46,13 +46,13 @@ lwreallocator lwrealloc_var = default_reallocator;
 lwfreeor lwfree_var = default_freeor;
 
 /* Default reporters */
-static void default_noticereporter(const char *fmt, va_list ap);
-static void default_errorreporter(const char *fmt, va_list ap);
+static void default_noticereporter(const char *fmt, va_list ap) __attribute__ ((format (printf, 1, 0)));
+static void default_errorreporter(const char *fmt, va_list ap) __attribute__ ((format (printf, 1, 0)));
 lwreporter lwnotice_var = default_noticereporter;
 lwreporter lwerror_var = default_errorreporter;
 
 /* Default logger */
-static void default_debuglogger(int level, const char *fmt, va_list ap);
+static void default_debuglogger(int level, const char *fmt, va_list ap) __attribute__ ((format (printf, 2, 0)));
 lwdebuglogger lwdebug_var = default_debuglogger;
 
 #define LW_MSG_MAXLEN 256
