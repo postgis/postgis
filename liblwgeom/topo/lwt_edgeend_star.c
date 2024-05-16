@@ -155,7 +155,7 @@ lwt_EdgeEndStar_debugPrint( const LWT_EDGEEND_STAR *star )
 {
   lwdebug(1, "Star around node %d has %d edgeEnds, %s",
     star->nodeID, star->numEdgeEnds, star->sorted ? "sorted" : "unsorted" );
-  for ( int i=0; i<star->numEdgeEnds; ++i )
+  for ( uint64_t i=0; i<star->numEdgeEnds; ++i )
   {
     LWT_EDGEEND *ee = star->edgeEnds[i];
     lwdebug(1, " EdgeEnd %d is %s edge %d, azimuth=%g",
@@ -170,7 +170,7 @@ lwt_edgeEndStar_getNextCW( LWT_EDGEEND_STAR *star, LWT_ISO_EDGE *edge, int outgo
 {
   lwt_edgeEndStar_ensureSorted( star );
 
-  int i=0;
+  uint64_t i=0;
   LWT_EDGEEND *thisEdgeEnd = NULL;
   for ( i=0; i<star->numEdgeEnds; ++i )
   {
@@ -193,7 +193,7 @@ lwt_edgeEndStar_getNextCCW( LWT_EDGEEND_STAR *star, LWT_ISO_EDGE *edge, int outg
 {
   lwt_edgeEndStar_ensureSorted( star );
 
-  int i=0;
+  uint64_t i=0;
   LWT_EDGEEND *thisEdgeEnd = NULL;
   for ( i=0; i<star->numEdgeEnds; ++i )
   {
