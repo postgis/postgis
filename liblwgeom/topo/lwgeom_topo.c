@@ -551,7 +551,7 @@ _lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
   {
     foundInFace = lwt_GetFaceContainingPoint(topo, pt); /*x*/
     if ( foundInFace == -1 ) {
-      PGTOPO_BE_ERRORF("lwt_GetFaceContainingPoint(%" LWTFMT_ELEMID ") returned -1", pt);
+      PGTOPO_BE_ERROR();
       return -1;
     }
     if ( foundInFace == -1 ) foundInFace = 0;
