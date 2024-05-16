@@ -5133,7 +5133,7 @@ _lwt_SnapEdgeToExistingNode(
   );
 
   /* Update split edge reference as it was possibly changed by previous call */
-  for ( int t=0; t<firstNodeEdges->numEdges; t++ )
+  for ( uint64_t t=0; t<firstNodeEdges->numEdges; t++ )
   {
     if ( firstNodeEdges->edges[t].edge_id == edge->edge_id )
     {
@@ -5237,7 +5237,7 @@ _lwt_SnapEdgeToExistingNode(
       LWDEBUGF(1, "Split component %d matches existing edge %" LWTFMT_ELEMID
         " (%s)", n, existingEdgeId, forward ? "forward" : "backward" );
       /* Get existing edge */
-      for ( int t=0; t<splitNodeEdges->numEdges; t++ )
+      for ( uint64_t t=0; t<splitNodeEdges->numEdges; t++ )
       {
         if ( splitNodeEdges->edges[t].edge_id == existingEdgeId )
         {
@@ -5456,7 +5456,7 @@ _lwt_SnapEdgeToExistingNode(
       );
 
       /* Find next CCW edge */
-      for ( int t=0; t<commonNodeEdges->numEdges; t++ )
+      for ( uint64_t t=0; t<commonNodeEdges->numEdges; t++ )
       {
         LWT_ISO_EDGE *et = &(commonNodeEdges->edges[t]);
 
@@ -5789,7 +5789,7 @@ _lwt_SnapEdgeToExistingNode(
 
 
     LWT_EDGEEND_STAR *nodeStar = lwt_edgeEndStar_init( node->node_id );
-    for ( int t=0; t<splitNodeEdges->numEdges; t++ )
+    for ( uint64_t t=0; t<splitNodeEdges->numEdges; t++ )
     {
       lwt_edgeEndStar_addEdge( nodeStar, &(splitNodeEdges->edges[t]) );
     }
@@ -5917,7 +5917,7 @@ _lwt_SnapEdgeToExistingNode(
     /* If any edge was connected to the end node of the split edge, we
      * need to update its link to us */
     updateFlags = 0;
-    for ( int t=0; t<lastNodeEdges->numEdges; t++ )
+    for ( uint64_t t=0; t<lastNodeEdges->numEdges; t++ )
     {
       const LWT_ISO_EDGE *in = &(lastNodeEdges->edges[t]);
       if ( in->next_right == -edge->edge_id )
@@ -6050,7 +6050,7 @@ _lwt_SnapEdgeToExistingNode(
     LWT_ELEMID collapsedFace = 0;
     LWT_ELEMID replacingFace = 0;
 
-    if ( abs(edge->next_right) == replacedBy[0] ) {
+    if ( FP_ABS(edge->next_right) == replacedBy[0] ) {
       /* Face on the right of the removed edge disappeared */
       // We need to update nextCW on first node and nextCCW on last node
       collapsedFace = edge->face_right;
@@ -6067,7 +6067,7 @@ _lwt_SnapEdgeToExistingNode(
 
     // Update CCW edge on first node
     updateFlags = 0;
-    for ( int t=0; t<firstNodeEdges->numEdges; t++ )
+    for ( uint64_t t=0; t<firstNodeEdges->numEdges; t++ )
     {
       const LWT_ISO_EDGE *in = &(firstNodeEdges->edges[t]);
       if ( in->edge_id == edge->edge_id ) continue;
@@ -6119,7 +6119,7 @@ _lwt_SnapEdgeToExistingNode(
 
     // Update CCW edge on last node
     updateFlags = 0;
-    for ( int t=0; t<lastNodeEdges->numEdges; t++ )
+    for ( uint64_t t=0; t<lastNodeEdges->numEdges; t++ )
     {
       const LWT_ISO_EDGE *in = &(lastNodeEdges->edges[t]);
       if ( in->edge_id == edge->edge_id ) continue;
