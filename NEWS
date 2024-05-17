@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - #5728, Use portable formats for geometry and topology diagnostics (Sandro Santilli)
  - #5500, [raster] Preserve views using ST_MapAlgebraFCT during upgrade (Sandro Santilli)
  - #5491, [raster] Preserve views using ST_Aspect during upgrade (Sandro Santilli)
  - #2850, GH-1020, Preserve fixed numeric DBF widths and scale in pgsql2shp (Darafei Praliaskouski)
