@@ -264,7 +264,7 @@ lwgeom_homogenize(const LWGEOM *geom)
 	}
 
 	/* Unknown type */
-	lwerror("lwgeom_homogenize: Geometry Type not supported (%i)",
+	lwerror("lwgeom_homogenize: Geometry Type not supported (%s)",
 	        lwtype_name(geom->type));
 
 	return NULL; /* Never get here! */

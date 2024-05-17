@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - #5728, Use portable format specifiers in geometry and topology diagnostics (Sandro Santilli)
   - Correct the documented default band for raster summary statistics (Martin Davis)
   - Check the topology backend result when healing edges (Paul Ramsey)
   - Honor --without-gui during configuration (Chris Mayo)

@@ -96,7 +96,7 @@ uint8_t* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 	uint32_t i;
 
 	if( hexsize % 2 )
-		lwerror("Invalid hex string, length (%d) has to be a multiple of two!", hexsize);
+		lwerror("Invalid hex string, length (%zu) has to be a multiple of two!", hexsize);
 
 	buf = lwalloc(hexsize/2);
 
