@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Use the correct argument widths in raster WKB diagnostics (Sandro Santilli)
   - Correct the ST_Touches predicate formula (Martin Davis)
   - Preserve non-ASCII characters when generating ChangeLog (Sandro Santilli)
   - Support source whitespace checks from out-of-tree builds (Sandro Santilli)

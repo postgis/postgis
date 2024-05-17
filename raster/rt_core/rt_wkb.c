@@ -31,6 +31,8 @@
 #include "librtcore_internal.h"
 #include "rt_serialize.h"
 
+#include <inttypes.h>
+
 /* Read band from WKB as at start of band */
 static rt_band
 rt_band_from_wkb(
@@ -298,7 +300,8 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
 
 	/* Check that wkbsize is >= sizeof(rt_raster_serialized) */
 	if (wkbsize < RT_WKB_HDR_SZ) {
-		rterror("rt_raster_from_wkb: wkb size (%d)  < min size (%d)",
+		rterror("rt_raster_from_wkb: wkb size (%" PRIu32
+			")  < min size (%zu)",
 			wkbsize, RT_WKB_HDR_SZ);
 		return NULL;
 	}
@@ -362,11 +365,11 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
 	if (!rast->numBands) {
 		/* Here ptr should have been left to right after last used byte */
 		if (ptr < wkbend) {
-			rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr);
+			rtwarn("%td bytes of WKB remained unparsed", wkbend - ptr);
 		}
 		else if (ptr > wkbend) {
 			/* Easier to get a segfault before I guess */
-			rtwarn("We parsed %d bytes more then available!", ptr - wkbend);
+			rtwarn("We parsed %td bytes more then available!", ptr - wkbend);
 		}
 
 		rast->bands = NULL;
@@ -404,11 +407,11 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
 
 	/* Here ptr should have been left to right after last used byte */
 	if (ptr < wkbend) {
-		rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr);
+		rtwarn("%td bytes of WKB remained unparsed", wkbend - ptr);
 	}
 	else if (ptr > wkbend) {
 		/* Easier to get a segfault before I guess */
-		rtwarn("We parsed %d bytes more then available!", ptr - wkbend);
+		rtwarn("We parsed %td bytes more then available!", ptr - wkbend);
 	}
 
 	return rast;
