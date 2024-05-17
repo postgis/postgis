@@ -150,7 +150,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 			lwpgerror("Minpoints must be a positive number", minpoints);
 		}
 
-		initGEOS(lwnotice, lwgeom_geos_error);
+		initGEOS(lwpgnotice, lwgeom_geos_error);
 		geoms = lwalloc(ngeoms * sizeof(LWGEOM*));
 		uf = UF_create(ngeoms);
 		for (i = 0; i < ngeoms; i++)
@@ -666,7 +666,7 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 				simplifyBoundary = DatumGetBool(d);
 		}
 
-		initGEOS(lwnotice, lwgeom_geos_error);
+		initGEOS(lwpgnotice, lwgeom_geos_error);
 
 		input = coverage_read_partition_into_collection(winobj, context);
 		if (!input)
