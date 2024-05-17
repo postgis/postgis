@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Use the correct argument widths in raster WKB diagnostics (Sandro Santilli)
  - #5749, Clarify the ST_IsSimple documentation (Regina Obe)
  - Support source whitespace checks from out-of-tree builds (Sandro Santilli)
  - Read tagged dollar quotes when generating function upgrades (Sandro Santilli)
