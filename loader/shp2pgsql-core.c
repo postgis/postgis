@@ -1467,7 +1467,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		{
 			stringbuffer_aprintf(sb, "\"%s\".",state->config->schema);
 		}
-		stringbuffer_aprintf(sb, "\"%s\" WHERE false;\n", state->config->table, state->geo_col);
+		stringbuffer_aprintf(sb, "\"%s\" WHERE false;\n", state->config->table);
 		/**out input data is going to be in different srid from target, so need to remove type constraint **/
 		stringbuffer_aprintf(sb, "ALTER TABLE \"pgis_tmp_%s\" ALTER COLUMN \"%s\" TYPE geometry USING ( (\"%s\"::geometry) ); \n", state->config->table,  state->geo_col, state->geo_col);
 	}
