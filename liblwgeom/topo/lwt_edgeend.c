@@ -81,7 +81,7 @@ lwt_edgeEnd_fromEdge( const LWT_ISO_EDGE *edge, int outgoing )
   );
   if (!ret)
   {
-    lwerror("No distinct vertices found in edge %d", edge->edge_id);
+    lwerror("No distinct vertices found in edge %" LWTFMT_ELEMID, edge->edge_id);
     return NULL;
   }
 

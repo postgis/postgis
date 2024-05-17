@@ -387,7 +387,7 @@ _lwt_BuildEdgeRing(__attribute__((__unused__)) LWT_TOPOLOGY *topo, LWT_ISO_EDGE_
     cur = _lwt_getIsoEdgeById(edges, next);
     if ( ! cur )
     {
-      lwerror("Could not find edge with id %d", next);
+      lwerror("Could not find edge with id %" LWTFMT_ELEMID, next);
       break;
     }
   } while (cur != edge || curside != side);

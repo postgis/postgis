@@ -447,9 +447,9 @@ void printPA(POINTARRAY *pa)
 	else mflag = "";
 
 	lwnotice("      POINTARRAY%s{", mflag);
-	lwnotice("                 ndims=%i,   ptsize=%i",
+	lwnotice("                 ndims=%i,   ptsize=%zu",
 	         FLAGS_NDIMS(pa->flags), ptarray_point_size(pa));
-	lwnotice("                 npoints = %i", pa->npoints);
+	lwnotice("                 npoints = %u", pa->npoints);
 
 	if (!pa)
 	{

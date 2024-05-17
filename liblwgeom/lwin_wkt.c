@@ -943,7 +943,7 @@ LWGEOM *lwgeom_from_wkt(const char *wkt, const char check)
 
 	if( LW_FAILURE == lwgeom_parse_wkt(&r, (char*)wkt, check) )
 	{
-		lwerror(r.message);
+		lwerror("%s", r.message);
 		return NULL;
 	}
 

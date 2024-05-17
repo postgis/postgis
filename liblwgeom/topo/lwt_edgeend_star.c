@@ -33,6 +33,8 @@
 #include "lwt_edgeend_star.h"
 #include "lwt_edgeend.h"
 
+#include <inttypes.h>
+
 LWT_EDGEEND_STAR *
 lwt_edgeEndStar_init( LWT_ELEMID nodeID )
 {
@@ -71,7 +73,8 @@ lwt_edgeEndStar_addEdge( LWT_EDGEEND_STAR *star, const LWT_ISO_EDGE *edge )
   {
     LWT_EDGEEND *ee = lwt_edgeEnd_fromEdge( edge, 1 );
     if ( ! ee ) {
-      lwerror("Could not construct outgoing EdgeEnd for edge %d", edge->edge_id);
+      lwerror("Could not construct outgoing EdgeEnd for edge %"
+        LWTFMT_ELEMID, edge->edge_id);
       return;
     }
     edgeEnds[numEdgeEnds++] = ee;
@@ -80,7 +83,8 @@ lwt_edgeEndStar_addEdge( LWT_EDGEEND_STAR *star, const LWT_ISO_EDGE *edge )
   {
     LWT_EDGEEND *ee = lwt_edgeEnd_fromEdge( edge, 0 );
     if ( ! ee ) {
-      lwerror("Could not construct outgoing incoming for edge %d", edge->edge_id);
+      lwerror("Could not construct outgoing incoming for edge %"
+        LWTFMT_ELEMID, edge->edge_id);
       return;
     }
     edgeEnds[numEdgeEnds++] = ee;
@@ -94,7 +98,8 @@ lwt_edgeEndStar_addEdge( LWT_EDGEEND_STAR *star, const LWT_ISO_EDGE *edge )
     return;
   }
 
-  LWDEBUGF(1, "Edge %d got %d ends incident to star node %d",
+  LWDEBUGF(1, "Edge %" LWTFMT_ELEMID
+    " got %" PRIu64 " ends incident to star node %" LWTFMT_ELEMID,
     edge->edge_id, numEdgeEnds, star->nodeID );
 
   newCapacity = star->numEdgeEnds + numEdgeEnds;
@@ -153,12 +158,12 @@ lwt_edgeEndStar_ensureSorted( LWT_EDGEEND_STAR *star )
 void
 lwt_EdgeEndStar_debugPrint( const LWT_EDGEEND_STAR *star )
 {
-  lwdebug(1, "Star around node %d has %d edgeEnds, %s",
+  lwdebug(1, "Star around node %" LWTFMT_ELEMID " has %" PRIu64 " edgeEnds, %s",
     star->nodeID, star->numEdgeEnds, star->sorted ? "sorted" : "unsorted" );
   for ( uint64_t i=0; i<star->numEdgeEnds; ++i )
   {
     LWT_EDGEEND *ee = star->edgeEnds[i];
-    lwdebug(1, " EdgeEnd %d is %s edge %d, azimuth=%g",
+    lwdebug(1, " EdgeEnd %" PRIu64 " is %s edge %" LWTFMT_ELEMID ", azimuth=%g",
       i, ee->outgoing ? "outgoing" : "incoming",
       ee->edge->edge_id, ee->azimuth
     );
@@ -181,7 +186,8 @@ lwt_edgeEndStar_getNextCW( LWT_EDGEEND_STAR *star, LWT_ISO_EDGE *edge, int outgo
     }
   }
   if ( ! thisEdgeEnd ) {
-    lwerror("Cound not find %s edge %d in the star", outgoing ?  "outgoing" : "incoming", edge->edge_id);
+    lwerror("Cound not find %s edge %" LWTFMT_ELEMID " in the star",
+      outgoing ?  "outgoing" : "incoming", edge->edge_id);
     return NULL;
   }
   LWT_EDGEEND *nextEdgeEnd = i < star->numEdgeEnds-1 ? star->edgeEnds[i+1] : star->edgeEnds[0];
@@ -204,7 +210,8 @@ lwt_edgeEndStar_getNextCCW( LWT_EDGEEND_STAR *star, LWT_ISO_EDGE *edge, int outg
     }
   }
   if ( ! thisEdgeEnd ) {
-    lwerror("Cound not find %s edge %d in the star", outgoing ?  "outgoing" : "incoming", edge->edge_id);
+    lwerror("Cound not find %s edge %" LWTFMT_ELEMID " in the star",
+      outgoing ?  "outgoing" : "incoming", edge->edge_id);
     return NULL;
   }
   LWT_EDGEEND *nextEdgeEnd = i > 0 ? star->edgeEnds[i-1] : star->edgeEnds[star->numEdgeEnds-1];

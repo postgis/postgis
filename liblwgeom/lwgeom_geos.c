@@ -1353,7 +1353,7 @@ lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle,
 
 	if (lwgeom_dimension(geom) != 1)
 	{
-		lwerror("%s: input is not linear", __func__, lwtype_name(geom->type));
+		lwerror("%s: input is not linear (type %s)", __func__, lwtype_name(geom->type));
 		return NULL;
 	}
 

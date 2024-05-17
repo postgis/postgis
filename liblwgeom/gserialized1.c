@@ -1132,7 +1132,7 @@ GSERIALIZED* gserialized1_from_lwgeom(LWGEOM *geom, size_t *size)
 
 	if ( expected_size != return_size ) /* Uh oh! */
 	{
-		lwerror("Return size (%d) not equal to expected size (%d)!", return_size, expected_size);
+		lwerror("Return size (%zu) not equal to expected size (%zu)!", return_size, expected_size);
 		return NULL;
 	}
 

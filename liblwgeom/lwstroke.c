@@ -135,7 +135,7 @@ static double angle_increment_using_segments_per_quad(double tol)
 	// error out if tol != perQuad ? (not-round)
 	if ( perQuad != tol )
 	{
-		lwerror("lwarc_linearize: segments per quadrant must be an integer value, got %.15g", tol, perQuad);
+		lwerror("lwarc_linearize: segments per quadrant must be an integer value, got %.15g", tol);
 		return -1;
 	}
 	if ( perQuad < 1 )

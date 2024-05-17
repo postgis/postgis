@@ -530,7 +530,7 @@ ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdims, uint32_t where)
 
 	if ( pdims < 2 || pdims > 4 )
 	{
-		lwerror("ptarray_addPoint: point dimension out of range (%d)",
+		lwerror("ptarray_addPoint: point dimension out of range (%zu)",
 		        pdims);
 		return NULL;
 	}
