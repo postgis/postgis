@@ -79,10 +79,9 @@ task:
         pkg-config
         postgresql@14
         proj
-        protobuf-c
         sfcgal
     - ./autogen.sh
-    - ./configure --without-gui --without-interrupt-tests --without-topology --without-raster  --with-sfcgal --with-address-standardizer --with-protobuf --with-pgconfig=/opt/homebrew/opt/postgresql@14/bin/pg_config
+    - ./configure --without-gui --without-interrupt-tests --without-topology --without-raster  --with-sfcgal --with-address-standardizer --without-protobuf --with-pgconfig=/opt/homebrew/opt/postgresql@14/bin/pg_config
     - brew services start postgresql@14
     - postgres -V
     - make -j8 || { brew services stop postgresql@14; exit 1;}
