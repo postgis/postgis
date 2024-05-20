@@ -111,13 +111,13 @@ garden: staged-install
 	psql -X -ad $(GARDENDB) < \
 		../doc/postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql \
 		> postgis_garden_result.txt 2>&1 || { \
-		tail postgis_garden_result.txt; false; }
-	tail postgis_garden_result.txt
+		tail -n 20 postgis_garden_result.txt; false; }
+	tail -n 20 postgis_garden_result.txt
 	@echo '-------------------------------------------------'
 	@echo 'PostGIS Raster garden tests in progress (it will take time)'
 	@echo '-------------------------------------------------'
 	psql -X -ad $(GARDENDB) < \
 		../doc/raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql \
 		> raster_garden_result.txt 2>&1 || { \
-		tail raster_garden_result.txt; false; }
-	tail raster_garden_result.txt
+		tail -n 20 raster_garden_result.txt; false; }
+	tail -n 20 raster_garden_result.txt
