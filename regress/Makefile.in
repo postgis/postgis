@@ -100,16 +100,24 @@ staged-install:
 	$(PERL) -pi -e 's,\$$libdir,$(REGRESS_INSTALLDIR)/lib,g' $(REGRESS_INSTALLDIR)/share/contrib/postgis/*.sql
 
 garden: staged-install
+	dropdb --if-exists $(GARDENDB)
 	createdb $(GARDENDB)
 	psql -qX -v ON_ERROR_STOP=true -d $(GARDENDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/postgis.sql
 	psql -qX -v ON_ERROR_STOP=true -d $(GARDENDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/spatial_ref_sys.sql
 	psql -qX -v ON_ERROR_STOP=true -d $(GARDENDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/rtpostgis.sql
 	@echo '-------------------------------------------------'
-	@echo 'Regression tests in progress (it will take time)'
-	@echo 'Result output: ./regress/postgis_garden_result.txt'
+	@echo 'PostGIS garden tests in progress (it will take time)'
 	@echo '-------------------------------------------------'
-	psql -X -ad $(GARDENDB) < ../doc/postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > postgis_garden_result.txt 2>&1
+	psql -X -ad $(GARDENDB) < \
+		../doc/postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql \
+		> postgis_garden_result.txt 2>&1 || { \
+		tail postgis_garden_result.txt; false; }
 	tail postgis_garden_result.txt
-	psql -X -ad $(GARDENDB) < ../doc/raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > raster_garden_result.txt 2>&1
+	@echo '-------------------------------------------------'
+	@echo 'PostGIS Raster garden tests in progress (it will take time)'
+	@echo '-------------------------------------------------'
+	psql -X -ad $(GARDENDB) < \
+		../doc/raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql \
+		> raster_garden_result.txt 2>&1 || { \
+		tail raster_garden_result.txt; false; }
 	tail raster_garden_result.txt
-	#dropdb $(GARDENDB)
