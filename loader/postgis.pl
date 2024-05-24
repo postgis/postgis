@@ -189,20 +189,29 @@ sub upgrade
 
   foreach my $db (@_)
   {
-    print "upgrading db $db\n";
-    my $LOG=`cat <<EOF | psql -qXtA ${db}
-BEGIN;
-UPDATE pg_catalog.pg_extension SET extversion = 'ANY'
- WHERE extname IN (
-			'postgis',
-			'postgis_raster',
-			'postgis_sfcgal',
-			'postgis_topology',
-			'postgis_tiger_geocoder'
-  );
-SELECT postgis_extensions_upgrade();
-COMMIT;
-EOF`;
+    print "upgrading db $db if needed\n";
+    open(my $SESSION, "| psql -qXtA ${db} |") || die "Could not connect to database ${db}";
+    print $SESSION <<'EOF';
+DO $BODY$
+BEGIN
+  IF EXISTS ( SELECT * FROM pg_proc where proname = 'postgis_extensions_upgrade' )
+  THEN
+    UPDATE pg_catalog.pg_extension SET extversion = 'ANY'
+    WHERE extname IN (
+      'postgis',
+      'postgis_raster',
+      'postgis_sfcgal',
+      'postgis_topology',
+      'postgis_tiger_geocoder'
+    );
+    PERFORM postgis_extensions_upgrade();
+  END IF;
+END;
+$BODY$ LANGUAGE 'plpgsql';
+EOF
+    @out = <$SESSION>;
+    print @out;
+    close($SESSION);
   }
 }
 
