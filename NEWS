@@ -44,6 +44,12 @@ Andreas Schild (German Team)
 
 * New Features *
 
+  - Improvements in the 'postgis' script:
+      - new command list-enabled
+      - new command list-all
+      - command upgrade upgrades all databases that need to be
+      - command status reports status of all databases
+    (Sandro Santilli)
   - #5721, Allow sharing sequences between different topologies (Lars Opsahl)
   - #5667, TopoGeo_LoadGeometry (Sandro Santilli)
   - #5055, add explicit <> geometry operator to prevent non-unique
