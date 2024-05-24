@@ -40,6 +40,11 @@ indent_size = 2
 indent_style = space
 indent_size = 4
 
+# Exception: loader/postgis.pl uses 2-spaces indent
+[loader/postgis.pl]
+indent_style = space
+indent_size = 2
+
 # SQL files want tab indentation
 [*.{sql,sql.in}]
 indent_style = tab
