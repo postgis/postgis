@@ -121,7 +121,7 @@ Release procedure
   - If debbie job succeeds:
 
     - Download tar ball from http://postgis.net/stuff/
-      $ wget debbie.postgis.net:/var/www/postgis_stuff/postgis-${rev}.tar.gz .
+      $ wget http://postgis.net/stuff/postgis-${rev}.tar.gz .
 
     - Test generated tarball (including extension upgrade)
 
