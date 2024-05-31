@@ -5,7 +5,6 @@ API=https://git.osgeo.org/gitea/api/v1
 DOWNLOAD_BASE=https://download.osgeo.org/postgis/source
 MD5_BASE=https://postgis.net/stuff
 OLDEST_MAJ=3
-OLDEST_MIN=0
 
 mkdir -p ${WORKDIR}
 cd ${WORKDIR}
@@ -16,7 +15,7 @@ else
   echo "Fetching list of supported releases"
   curl -s ${API}/repos/postgis/postgis/tags > tags.json
   jq -r .[].name tags.json |
-    grep "^${OLDEST_MAJ}\.${OLDEST_MIN}" |
+    grep "^${OLDEST_MAJ}\." |
     grep -v [a-z] > checked_releases.txt
 fi
 
