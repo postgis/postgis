@@ -173,7 +173,7 @@ Release procedure
 
 6. Spread the word
 
-  - Announce on e-mail
+  - Announce on e-mail, including MD5 checksum in the body of the email
     - postgis-users@lists.osgeo.org
     - postgis-devel@lists.osgeo.org
     - discuss@lists.osgeo.org
