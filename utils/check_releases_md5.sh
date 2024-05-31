@@ -10,11 +10,15 @@ OLDEST_MIN=0
 mkdir -p ${WORKDIR}
 cd ${WORKDIR}
 
-echo "Fetching list of supported releases"
-curl -s ${API}/repos/postgis/postgis/tags > tags.json
-jq -r .[].name tags.json |
-  grep "^${OLDEST_MAJ}\.${OLDEST_MIN}" |
-  grep -v [a-z] > checked_releases.txt
+if test -n '$@'; then
+  echo $@ | tr ' ' '\n' > checked_releases.txt
+else
+  echo "Fetching list of supported releases"
+  curl -s ${API}/repos/postgis/postgis/tags > tags.json
+  jq -r .[].name tags.json |
+    grep "^${OLDEST_MAJ}\.${OLDEST_MIN}" |
+    grep -v [a-z] > checked_releases.txt
+fi
 
 while read REL; do
   relname=postgis-${REL}.tar.gz
