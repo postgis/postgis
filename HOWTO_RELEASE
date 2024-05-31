@@ -138,7 +138,6 @@ Release procedure
       $ sh make_dist.sh $rev
 
     - Upload md5 file to https://postgis.net/stuff:
-      $ md5sum postgis-${rev}.tar.gz > postgis-${rev}.tar.gz.md5
       $ scp postgis-${rev}.tar.gz.md5 debbie.postgis.net:/var/www/postgis_stuff
 
     - Create the pdf and epub files:

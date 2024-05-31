@@ -137,5 +137,8 @@ fi
 echo "Generating $package file"
 tar czf "$package" "$outdir" || exit 1
 
+echo "Generating ${package}.md5 file"
+md5sum "${package}" > ${package}.md5
+
 #echo "Cleaning up"
 #rm -Rf "$outdir"
