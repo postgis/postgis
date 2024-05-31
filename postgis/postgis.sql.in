@@ -68,12 +68,19 @@ $$ LANGUAGE 'plpgsql';
 DO $$
 DECLARE
 	pgalog text;
+	pgvernum integer;
 BEGIN
+	SHOW server_version_num INTO pgvernum;
+	IF pgvernum >= 150000
+	THEN
+		RAISE DEBUG 'pgsql version % >= 150000, skipping pgaudit checks', pgvernum;
+		RETURN;
+	END IF;
 	SHOW pgaudit.log INTO pgalog;
 	RAISE DEBUG 'pgaudit is installed, pgaudit.log is set to ''%''', pgalog;
 	IF pg_catalog.lower(pgalog) != 'none'
 	THEN
-		RAISE EXCEPTION 'PostGIS installation stopped: pgaudit.log is set to ''%''. Set pgaudit.log to ''none'' before installing PostGIS. You may re-enable pgaudit after installation is complete.', pgalog;
+		RAISE EXCEPTION 'PostGIS installation stopped: pgaudit.log is set to ''%''. SET pgaudit.log = ''none'' before installing PostGIS. You may re-enable pgaudit after installation is complete.', pgalog;
 	END IF;
 EXCEPTION
 	WHEN undefined_object THEN
