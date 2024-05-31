@@ -62,26 +62,6 @@ END
 $$ LANGUAGE 'plpgsql';
 
 
--- Check that pgaudit is disabled or not installed
--- Running extension creation with pgaudit enabled will result in a
--- multi-gigabyte log storm for PgSQL <= 14
-DO $$
-DECLARE
-	pgalog text;
-BEGIN
-	SHOW pgaudit.log INTO pgalog;
-	RAISE DEBUG 'pgaudit is installed, pgaudit.log is set to ''%''', pgalog;
-	IF pg_catalog.lower(pgalog) != 'none'
-	THEN
-		RAISE EXCEPTION 'PostGIS installation stopped: pgaudit.log is set to ''%''. Set pgaudit.log to ''none'' before installing PostGIS. You may re-enable pgaudit after installation is complete.', pgalog;
-	END IF;
-EXCEPTION
-	WHEN undefined_object THEN
-		RAISE DEBUG 'pgaudit is not installed';
-END;
-$$;
-
-
 -- Let the user know about a deprecated signature and its new name, if any
 CREATE OR REPLACE FUNCTION _postgis_deprecate(oldname text, newname text, version text)
 RETURNS void AS
