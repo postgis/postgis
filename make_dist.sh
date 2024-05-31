@@ -62,11 +62,12 @@ rm -fv "$outdir"/make_dist.sh "$outdir"/HOWTO_RELEASE
 echo "Removing ci files"
 rm -rfv \
   "$outdir"/ci \
-  "$outdir"/.gitlab-ci.yml \
-  "$outdir"/.github \
-  "$outdir"/.dron*.yml \
   "$outdir"/.cirrus.yml \
   "$outdir"/.clang-format \
+  "$outdir"/.dron*.yml \
+  "$outdir"/.github \
+  "$outdir"/.gitlab-ci.yml \
+  "$outdir"/utils/check_releases_md5.sh \
   "$outdir"/.woodpecker
 
 # generating configure script and configuring
