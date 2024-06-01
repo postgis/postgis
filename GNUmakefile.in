@@ -163,7 +163,7 @@ config.status: configure
 	./configure
 
 ChangeLog:
-	git log --pretty --numstat --summary | git2cl > ChangeLog
+	git log --pretty --numstat --summary | PERL_UNICODE="IO" git2cl > ChangeLog
 
 raster-post-install-check:
 	$(MAKE) -C raster post-install-check
