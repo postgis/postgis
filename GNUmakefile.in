@@ -242,7 +242,7 @@ config.status: configure
 	./configure
 
 ChangeLog:
-	git log --pretty --numstat --summary | git2cl > ChangeLog
+	git log --pretty --numstat --summary | PERL_UNICODE="IO" git2cl > ChangeLog
 
 raster-sql:
 	$(MAKE) -C raster rtpostgis.sql
