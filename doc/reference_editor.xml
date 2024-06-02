@@ -1856,6 +1856,101 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 
 	</refentry>
 
+	<refentry xml:id="ST_RemoveSmallParts">
+	  <refnamediv>
+		<refname>ST_RemoveSmallParts</refname>
+		<refpurpose>Removes small parts (polygon rings or linestrings) of a geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RemoveSmallParts</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>double precision </type> <parameter>minSizeX</parameter></paramdef>
+			<paramdef><type>double precision </type> <parameter>minSizeY</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a <xref linkend="geometry"/> without small parts (exterior or interior polygon rings, or linestrings).</para>
+		<para>This function can be used as preprocessing step for creating simplified maps, e. g. to remove small islands or holes.</para>
+		<para>It evaluates only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING. Other geometries remain unchanged.</para>
+		<para>If <parameter>minSizeX</parameter> is greater than 0, parts are sorted out if their width is smaller than <parameter>minSizeX</parameter>.</para>
+		<para>If <parameter>minSizeY</parameter> is greater than 0, parts are sorted out if their height is smaller than <parameter>minSizeY</parameter>.</para>
+		<para>Both <parameter>minSizeX</parameter> and <parameter>minSizeY</parameter> are measured in coordinate system units of the geometry.</para>
+		<para>For polygon types, evaluation is done separately for each ring which can lead to one of the following results:
+            <itemizedlist>
+            <listitem><para>the original geometry,</para></listitem>
+			<listitem><para>a POLYGON with all rings with less vertices,</para></listitem>
+			<listitem><para>a POLYGON with a reduced number of interior rings (having possibly less vertices),</para></listitem> 
+			<listitem><para>a POLYGON EMPTY, or</para></listitem>
+			<listitem><para>a MULTIPOLYGON with a reduced number of polygons (having possibly less interior rings or vertices), or</para></listitem>
+			<listitem><para>a MULTIPOLYGON EMPTY.</para></listitem>
+			</itemizedlist>
+		</para>
+		<para>For linestring types, evaluation is done for each linestring which can lead to one of the following results:
+            <itemizedlist>
+            <listitem><para>the original geometry,</para></listitem>
+			<listitem><para>a LINESTRING with a reduced number of vertices,</para></listitem>
+			<listitem><para>a LINESTRING EMPTY,</para></listitem>
+			<listitem><para>a MULTILINESTRING with a reduced number of linestrings (having possibly less vertices), or</para></listitem>
+			<listitem><para>a MULTILINESTRING EMPTY.</para></listitem>
+			</itemizedlist>
+		</para>
+
+        <para>
+            <informalfigure>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="images/st_removesmallparts.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Example: ST_RemoveSmallParts() applied to a multi-polygon. Blue parts remain.</para>
+                    </caption>
+                </mediaobject>
+            </informalfigure>
+        </para>
+
+		<para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+		
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveSmallParts(
+			ST_GeomFromText('MULTIPOLYGON(
+				((60 160, 120 160, 120 220, 60 220, 60 160), (70 170, 70 210, 110 210, 110 170, 70 170)),
+				((85 75, 155 75, 155 145, 85 145, 85 75)),
+				((50 110, 70 110, 70 130, 50 130, 50 110)))'),
+				50, 50));
+		
+		st_astext
+		---------
+			MULTIPOLYGON(((60 160,120 160,120 220,60 220,60 160)),((85 75,155 75,155 145,85 145,85 75)))
+		</programlisting>
+
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveSmallParts(
+			ST_GeomFromText('LINESTRING(10 10, 20 20)'),
+				50, 50));
+		
+		st_astext
+		---------
+			LINESTRING EMPTY
+		</programlisting>
+			
+	  </refsection>
+
+	</refentry>
+
 	<refentry xml:id="ST_Reverse">
 	  <refnamediv>
 		<refname>ST_Reverse</refname>

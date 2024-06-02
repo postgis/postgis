@@ -6969,6 +6969,16 @@ CREATE OR REPLACE FUNCTION ST_3DLineInterpolatePoint(geometry, float8)
 
 
 -----------------------------------------------------------------------
+-- ST_RemoveSmallParts
+-----------------------------------------------------------------------
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_RemoveSmallParts(geometry, double precision, double precision)
+RETURNS geometry
+AS 'MODULE_PATHNAME','ST_RemoveSmallParts'
+LANGUAGE 'c' VOLATILE STRICT; 
+
+
+-----------------------------------------------------------------------
 -- ST_RemoveIrrelevantPointsForView
 -----------------------------------------------------------------------
 -- Availability: 3.5.0
