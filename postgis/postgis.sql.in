@@ -6975,6 +6975,7 @@ CREATE OR REPLACE FUNCTION ST_3DLineInterpolatePoint(geometry, float8)
 CREATE OR REPLACE FUNCTION ST_RemoveIrrelevantPointsForView(geometry, box2d)
 RETURNS geometry
 AS 'MODULE_PATHNAME','ST_RemoveIrrelevantPointsForView'
-LANGUAGE 'c' VOLATILE STRICT; 
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
 
 COMMIT;
