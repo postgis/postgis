@@ -66,8 +66,8 @@ Andreas Schild (German Team)
             CG_3DDistance, CG_Distance (Loïc Bartoletti)
   - #5687, Don't rely on search_path to determine postgis schema
            Fix for PG17 security change (Regina Obe)
-  - #5705, GH-767, Remove irrelevant points for view (Sam Peters)
-  - #5706, GH-768, Remove small parts (Sam Peters)
+  - #5705, GH-767, Remove irrelevant points for view: ST_RemoveIrrelevantPointsForView  (Sam Peters)
+  - #5706, GH-768, Remove small parts: ST_RemoveSmallParts (Sam Peters)
 
 * Enhancements *
 
