@@ -35,7 +35,7 @@ SHELL = @SHELL@
 INSTALL = @INSTALL@
 LIBTOOL = @LIBTOOL@
 
-LDFLAGS = @LDFLAGS@
+LDFLAGS = @LDFLAGS@ @PROJ_LDFLAGS@ @GEOS_LDFLAGS@
 
 # Filenames with extension as determined by the OS
 POSTGIS-CLI=postgis@EXESUFFIX@

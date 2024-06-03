@@ -761,6 +761,22 @@ CPPFLAGS="$GEOS_CPPFLAGS"
 AC_CHECK_HEADER([geos_c.h], [], [AC_MSG_ERROR([could not find geos_c.h - you may need to specify the directory of a geos-config file using --with-geosconfig])])
 CPPFLAGS="$CPPFLAGS_SAVE"
 
+#
+# MacOS with XCode > 15 now requires rpath entries for
+# libraries like GEOS/Proj that might be flexibly installed
+# with movability expected
+#
+case $host_os in
+    darwin*)
+                GEOS_RPATH=`echo $GEOS_LDFLAGS | $PERL -nle 'print "$1" if /\-L ?(\S+) /'`
+                AC_MSG_RESULT([checking for GEOS_RPATH under MacOS... $GEOS_RPATH])
+                if test "x$GEOS_RPATH" != "x"; then
+                  # Add the rpath setting to the LDFLAGS
+                    GEOS_LDFLAGS="$GEOS_LDFLAGS -Wl,-rpath,$GEOS_RPATH"
+                fi
+                ;;
+esac
+
 dnl Ensure we can link against libgeos_c
 LIBS_SAVE="$LIBS"
 LIBS="$GEOS_LDFLAGS"
@@ -906,6 +922,21 @@ else
 	PROJ_LDFLAGS="-lproj"
 fi
 
+#
+# MacOS with XCode > 15 now requires rpath entries for
+# libraries like GEOS/Proj that might be flexibly installed
+# with movability expected
+#
+case $host_os in
+    darwin*)
+                PROJ_RPATH=`echo $PROJ_LDFLAGS | $PERL -nle 'print "$1" if /\-L ?(\S+) /'`
+                AC_MSG_RESULT([checking for PROJ_RPATH under MacOS... $PROJ_RPATH])
+                    if test "x$PROJ_RPATH" != "x"; then
+                  # Add the rpath setting to the LDFLAGS
+                    PROJ_LDFLAGS="$PROJ_LDFLAGS -Wl,-rpath,$PROJ_RPATH"
+                fi
+                ;;
+esac
 
 dnl Check that we can find the proj_api.h header file
 CPPFLAGS_SAVE="$CPPFLAGS"
