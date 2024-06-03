@@ -1176,6 +1176,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			char tmp[MAXFIELDNAMELEN] = "__";
 			memcpy(tmp+2, name, MAXFIELDNAMELEN-2);
 			tmp[MAXFIELDNAMELEN-1] = '\0';
+			strncpy(name, tmp, MAXFIELDNAMELEN);
 		}
 
 		/* Avoid duplicating field names */
