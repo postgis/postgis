@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Set GEOS and PROJ loader search paths on macOS (Paul Ramsey)
  - #5749, Clarify the ST_IsSimple documentation (Regina Obe)
  - #5740, Avoid reusing a planar bounding box in ST_DistanceSpheroid (Paul Ramsey)
  - [tiger_geocoder] Treat address fragments literally during normalization
