@@ -24,6 +24,7 @@
 #include "lwgeodetic.h"
 #include "cu_tester.h"
 
+#define _GNU_SOURCE
 #define RANDOM_TEST 0
 
 /**
