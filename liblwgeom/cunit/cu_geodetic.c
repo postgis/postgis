@@ -24,7 +24,6 @@
 #include "lwgeodetic.h"
 #include "cu_tester.h"
 
-#define _GNU_SOURCE
 #define RANDOM_TEST 0
 
 /**
@@ -1621,14 +1620,13 @@ static void BOX3D_BOXLL_TEST(double xmin, double ymin, double xmax, double ymax)
 	LWGEOM *lwg;
 	GBOX gbox_gc;
 	GBOX gbox_ll;
-	char *wkt;
-	asprintf(&wkt, "LINESTRING(%g %g,%g %g)", xmin, ymin, xmax, ymax);
+	char wkt[256];
+	snprintf(wkt, 256, "LINESTRING(%f %f,%f %f)", xmin, ymin, xmax, ymax);
 	lwg = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox_gc);
 	lwgeom_free(lwg);
 	// printf("\n%s",wkt);
-	lwfree(wkt);
 
 	gbox_geocentric_get_gbox_cartesian(&gbox_gc, &gbox_ll);
 
