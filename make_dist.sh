@@ -134,8 +134,23 @@ fi
 if test "x$package" = "x"; then
     package="postgis-$version.tar.gz"
 fi
+
+echo "Tweaking timestamps"
+
+# Extract last commit date from git
+date=$(git log -1 --pretty=format:%cI HEAD)
+
+# Enforce timestamp on files to be included in the pacakge
+find "${outdir}" -exec touch -d "${date}" {} \;
+
 echo "Generating $package file"
-tar czf "$package" "$outdir" || exit 1
+
+# Create tar
+tar cf - --sort=name "$outdir" > ${package}.tar || exit 1
+
+# Compress
+gzip -n9 < ${package}.tar > ${package} || exit 1
+rm ${package}.tar
 
 echo "Generating ${package}.md5 file"
 md5sum "${package}" > ${package}.md5
