@@ -34,12 +34,12 @@ if [ "$MAKE" = "" ]; then
 fi
 
 # Extract tag from git or default to trunk
-tag=`git branch | grep \* | awk '{print $2}'`
+tag=$(git rev-parse HEAD)
 
 if [ -n "$1" ]; then
   if [ "$1" = "-b" ]; then
     shift
-    tag=svn-$1
+    tag=stable-$1
     branch=yes
   else
     tag=$1
@@ -54,7 +54,8 @@ if [ -d "$outdir" ]; then
 	exit 1
 fi
 
-git clone -b $tag . $outdir || exit 1
+git clone . $outdir || exit 1
+cd $outdir && git checkout $tag && cd -
 
 echo "Removing make_dist.sh and HOWTO_RELEASE"
 rm -fv "$outdir"/make_dist.sh "$outdir"/HOWTO_RELEASE
