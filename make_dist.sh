@@ -147,7 +147,7 @@ find "${outdir}" -exec touch -d "${date}" {} \;
 echo "Generating $package file"
 
 # Create tar
-tar cf - --sort=name "$outdir" > ${package}.tar || exit 1
+tar cf - --sort=name --mode=a+rwX --owner=0 --group=0 --numeric-owner "$outdir" > ${package}.tar || exit 1
 
 # Compress
 gzip -n9 < ${package}.tar > ${package} || exit 1
