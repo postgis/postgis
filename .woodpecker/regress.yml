@@ -1,7 +1,7 @@
 when:
   event: [push, pull_request, tag]
 variables:
-  test-image: &test-image docker.osgeo.org/postgis/build-test:trisquel3
+  test-image: &test-image repo.osgeo.org/postgis/build-test:trisquel11
   steps-env: &steps-env
     - export PATH=/usr/lib/postgresql/$${PGVER}/bin:$${PATH}
     - export PGPORT=$$(grep ^port /etc/postgresql/$${PGVER}/main/postgresql.conf | awk '{print $$3}')
