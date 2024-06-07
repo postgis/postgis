@@ -3598,6 +3598,12 @@ int gbox_geocentric_get_gbox_cartesian(const GBOX *gbox_geocentric, GBOX *gbox_p
 	double lat0, lat1;
 	GEOGRAPHIC_POINT cap_center_g;
 
+	if (!gbox_geocentric || !gbox_planar)
+	{
+		lwerror("Null pointer passed to %s", __func__);
+		return LW_FALSE;
+	}
+
 #define	CORNER_SET(ii, xx, yy, zz) { \
 	corners[ii].x = gbox_geocentric->xx; \
 	corners[ii].y = gbox_geocentric->yy; \
@@ -3685,6 +3691,11 @@ int gbox_geocentric_get_gbox_cartesian(const GBOX *gbox_geocentric, GBOX *gbox_p
 			double angle_A = asin(sin_a / sin_c);
 			lon0 = remainder(cap_center_g.lon - angle_A, 2 * M_PI);
 			lon1 = remainder(cap_center_g.lon + angle_A, 2 * M_PI);
+		}
+		else
+		{
+			lon0 = -M_PI;
+			lon1 =  M_PI;
 		}
 	}
 
