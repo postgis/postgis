@@ -1,5 +1,5 @@
 variables:
-  - &test_image 'docker.osgeo.org/postgis/build-test:trisquel3'
+  - &test_image 'docker.osgeo.org/postgis/build-test:trisquel11'
   - common_doc_paths: &common_doc_paths
       # related config files
       - ".woodpecker/docs.yml"
@@ -33,7 +33,7 @@ steps:
     when:
         - event: push
           path: *when_path_full
-          
+
   check-xml:
     image: *test_image
     pull: true
@@ -102,7 +102,7 @@ steps:
         path:
           include:
             - "doc/po/it_IT/*.po"
-        
+
   check-xml-pt_BR:
     image: *test_image
     pull: true
@@ -114,7 +114,7 @@ steps:
         path:
           include:
             - "doc/po/pt_BR/*.po"
-        
+
   check-xml-fr:
     image: *test_image
     pull: true
@@ -126,7 +126,7 @@ steps:
         path:
           include:
             - "doc/po/fr/*.po"
-        
+
   check-xml-es:
     image: *test_image
     pull: true
@@ -138,7 +138,7 @@ steps:
         path:
           include:
             - "doc/po/es/*.po"
-        
+
   check-xml-pl:
     image: *test_image
     pull: true
@@ -150,7 +150,7 @@ steps:
         path:
           include:
             - "doc/po/pl/*.po"
-        
+
   check-xml-ko_KR:
     image: *test_image
     pull: true
@@ -162,7 +162,7 @@ steps:
         path:
           include:
             - "doc/po/ko_KR/*.po"
-        
+
   check-xml-de:
     image: *test_image
     pull: true
@@ -174,7 +174,7 @@ steps:
         path:
           include:
             - "doc/po/de/*.po"
-        
+
   check-xml-ja:
     image: *test_image
     pull: true
@@ -186,7 +186,7 @@ steps:
         path:
           include:
             - "doc/po/ja/*.po"
-        
+
   check-xml-ru:
     image: *test_image
     pull: true
@@ -198,7 +198,7 @@ steps:
         path:
           include:
             - "doc/po/ru/*.po"
-        
+
   check-xml-zh_Hans:
     image: *test_image
     pull: true
@@ -210,7 +210,7 @@ steps:
         path:
           include:
             - "doc/po/zh_Hans/*.po"
-        
+
   check-xml-ro:
     image: *test_image
     pull: true
@@ -222,7 +222,7 @@ steps:
         path:
           include:
             - "doc/po/ro/*.po"
-        
+
   check-xml-uk:
     image: *test_image
     pull: true
@@ -234,7 +234,7 @@ steps:
         path:
           include:
             - "doc/po/uk/*.po"
-        
+
 ### TARGET html
   html-it_IT:
     image: *test_image
@@ -247,7 +247,7 @@ steps:
         path:
           include:
             - "doc/po/it_IT/*.po"
-        
+
   html-pt_BR:
     image: *test_image
     pull: true
@@ -259,7 +259,7 @@ steps:
         path:
           include:
             - "doc/po/pt_BR/*.po"
-        
+
   html-fr:
     image: *test_image
     pull: true
@@ -271,7 +271,7 @@ steps:
         path:
           include:
             - "doc/po/fr/*.po"
-        
+
   html-es:
     image: *test_image
     pull: true
@@ -283,7 +283,7 @@ steps:
         path:
           include:
             - "doc/po/es/*.po"
-        
+
   html-pl:
     image: *test_image
     pull: true
@@ -295,7 +295,7 @@ steps:
         path:
           include:
             - "doc/po/pl/*.po"
-        
+
   html-ko_KR:
     image: *test_image
     pull: true
@@ -307,7 +307,7 @@ steps:
         path:
           include:
             - "doc/po/ko_KR/*.po"
-        
+
   html-de:
     image: *test_image
     pull: true
@@ -319,7 +319,7 @@ steps:
         path:
           include:
             - "doc/po/de/*.po"
-        
+
   html-ja:
     image: *test_image
     pull: true
@@ -331,7 +331,7 @@ steps:
         path:
           include:
             - "doc/po/ja/*.po"
-        
+
   html-ru:
     image: *test_image
     pull: true
@@ -343,7 +343,7 @@ steps:
         path:
           include:
             - "doc/po/ru/*.po"
-        
+
   html-zh_Hans:
     image: *test_image
     pull: true
@@ -355,7 +355,7 @@ steps:
         path:
           include:
             - "doc/po/zh_Hans/*.po"
-        
+
   html-ro:
     image: *test_image
     pull: true
@@ -367,7 +367,7 @@ steps:
         path:
           include:
             - "doc/po/ro/*.po"
-        
+
   html-uk:
     image: *test_image
     pull: true
@@ -379,7 +379,7 @@ steps:
         path:
           include:
             - "doc/po/uk/*.po"
-        
+
 ### TARGET cheatsheets
   cheatsheets-it_IT:
     image: *test_image
@@ -392,7 +392,7 @@ steps:
         path:
           include:
             - "doc/po/it_IT/*.po"
-        
+
   cheatsheets-pt_BR:
     image: *test_image
     pull: true
@@ -404,7 +404,7 @@ steps:
         path:
           include:
             - "doc/po/pt_BR/*.po"
-        
+
   cheatsheets-fr:
     image: *test_image
     pull: true
@@ -416,7 +416,7 @@ steps:
         path:
           include:
             - "doc/po/fr/*.po"
-        
+
   cheatsheets-es:
     image: *test_image
     pull: true
@@ -428,7 +428,7 @@ steps:
         path:
           include:
             - "doc/po/es/*.po"
-        
+
   cheatsheets-pl:
     image: *test_image
     pull: true
@@ -440,7 +440,7 @@ steps:
         path:
           include:
             - "doc/po/pl/*.po"
-        
+
   cheatsheets-ko_KR:
     image: *test_image
     pull: true
@@ -452,7 +452,7 @@ steps:
         path:
           include:
             - "doc/po/ko_KR/*.po"
-        
+
   cheatsheets-de:
     image: *test_image
     pull: true
@@ -464,7 +464,7 @@ steps:
         path:
           include:
             - "doc/po/de/*.po"
-        
+
   cheatsheets-ja:
     image: *test_image
     pull: true
@@ -476,7 +476,7 @@ steps:
         path:
           include:
             - "doc/po/ja/*.po"
-        
+
   cheatsheets-ru:
     image: *test_image
     pull: true
@@ -488,7 +488,7 @@ steps:
         path:
           include:
             - "doc/po/ru/*.po"
-        
+
   cheatsheets-zh_Hans:
     image: *test_image
     pull: true
@@ -500,7 +500,7 @@ steps:
         path:
           include:
             - "doc/po/zh_Hans/*.po"
-        
+
   cheatsheets-ro:
     image: *test_image
     pull: true
@@ -512,7 +512,7 @@ steps:
         path:
           include:
             - "doc/po/ro/*.po"
-        
+
   cheatsheets-uk:
     image: *test_image
     pull: true
@@ -524,7 +524,7 @@ steps:
         path:
           include:
             - "doc/po/uk/*.po"
-        
+
 ### TARGET check-cheatsheets
   check-cheatsheets-it_IT:
     image: *test_image
@@ -537,7 +537,7 @@ steps:
         path:
           include:
             - "doc/po/it_IT/*.po"
-        
+
   check-cheatsheets-pt_BR:
     image: *test_image
     pull: true
@@ -549,7 +549,7 @@ steps:
         path:
           include:
             - "doc/po/pt_BR/*.po"
-        
+
   check-cheatsheets-fr:
     image: *test_image
     pull: true
@@ -561,7 +561,7 @@ steps:
         path:
           include:
             - "doc/po/fr/*.po"
-        
+
   check-cheatsheets-es:
     image: *test_image
     pull: true
@@ -573,7 +573,7 @@ steps:
         path:
           include:
             - "doc/po/es/*.po"
-        
+
   check-cheatsheets-pl:
     image: *test_image
     pull: true
@@ -585,7 +585,7 @@ steps:
         path:
           include:
             - "doc/po/pl/*.po"
-        
+
   check-cheatsheets-ko_KR:
     image: *test_image
     pull: true
@@ -597,7 +597,7 @@ steps:
         path:
           include:
             - "doc/po/ko_KR/*.po"
-        
+
   check-cheatsheets-de:
     image: *test_image
     pull: true
@@ -609,7 +609,7 @@ steps:
         path:
           include:
             - "doc/po/de/*.po"
-        
+
   check-cheatsheets-ja:
     image: *test_image
     pull: true
@@ -621,7 +621,7 @@ steps:
         path:
           include:
             - "doc/po/ja/*.po"
-        
+
   check-cheatsheets-ru:
     image: *test_image
     pull: true
@@ -633,7 +633,7 @@ steps:
         path:
           include:
             - "doc/po/ru/*.po"
-        
+
   check-cheatsheets-zh_Hans:
     image: *test_image
     pull: true
@@ -645,7 +645,7 @@ steps:
         path:
           include:
             - "doc/po/zh_Hans/*.po"
-        
+
   check-cheatsheets-ro:
     image: *test_image
     pull: true
@@ -657,7 +657,7 @@ steps:
         path:
           include:
             - "doc/po/ro/*.po"
-        
+
   check-cheatsheets-uk:
     image: *test_image
     pull: true
@@ -669,7 +669,7 @@ steps:
         path:
           include:
             - "doc/po/uk/*.po"
-        
+
 ### TARGET pdf
   pdf-it_IT:
     image: *test_image
@@ -682,7 +682,7 @@ steps:
         path:
           include:
             - "doc/po/it_IT/*.po"
-        
+
   pdf-pt_BR:
     image: *test_image
     pull: true
@@ -694,7 +694,7 @@ steps:
         path:
           include:
             - "doc/po/pt_BR/*.po"
-        
+
   pdf-fr:
     image: *test_image
     pull: true
@@ -706,7 +706,7 @@ steps:
         path:
           include:
             - "doc/po/fr/*.po"
-        
+
   pdf-es:
     image: *test_image
     pull: true
@@ -718,7 +718,7 @@ steps:
         path:
           include:
             - "doc/po/es/*.po"
-        
+
   pdf-pl:
     image: *test_image
     pull: true
@@ -730,7 +730,7 @@ steps:
         path:
           include:
             - "doc/po/pl/*.po"
-        
+
   pdf-ko_KR:
     image: *test_image
     pull: true
@@ -742,7 +742,7 @@ steps:
         path:
           include:
             - "doc/po/ko_KR/*.po"
-        
+
   pdf-de:
     image: *test_image
     pull: true
@@ -754,7 +754,7 @@ steps:
         path:
           include:
             - "doc/po/de/*.po"
-        
+
   pdf-ja:
     image: *test_image
     pull: true
@@ -766,7 +766,7 @@ steps:
         path:
           include:
             - "doc/po/ja/*.po"
-        
+
   pdf-ru:
     image: *test_image
     pull: true
@@ -778,7 +778,7 @@ steps:
         path:
           include:
             - "doc/po/ru/*.po"
-        
+
   pdf-zh_Hans:
     image: *test_image
     pull: true
@@ -790,7 +790,7 @@ steps:
         path:
           include:
             - "doc/po/zh_Hans/*.po"
-        
+
   pdf-ro:
     image: *test_image
     pull: true
@@ -802,7 +802,7 @@ steps:
         path:
           include:
             - "doc/po/ro/*.po"
-        
+
   pdf-uk:
     image: *test_image
     pull: true
@@ -814,4 +814,4 @@ steps:
         path:
           include:
             - "doc/po/uk/*.po"
-        
+

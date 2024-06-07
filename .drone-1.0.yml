@@ -4,7 +4,7 @@
 
 # See https://git.osgeo.org/gitea/postgis/postgis-docker
 # todo: add docker images from https://hub.docker.com/r/postgis/postgis-build-env/tags/
-test-image: &test-image docker.osgeo.org/postgis/build-test:trisquel3
+test-image: &test-image docker.osgeo.org/postgis/build-test:trisquel11
 clone: &clone
     image: plugins/git
     depth: 50
