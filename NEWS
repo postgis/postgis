@@ -50,6 +50,7 @@ Andreas Schild (German Team)
       - command upgrade upgrades all databases that need to be
       - command status reports status of all databases
     (Sandro Santilli)
+  - #5742, expose version of PROJ at compile time (Sandro Santilli)
   - #5721, Allow sharing sequences between different topologies (Lars Opsahl)
   - #5667, TopoGeo_LoadGeometry (Sandro Santilli)
   - #5055, add explicit <> geometry operator to prevent non-unique

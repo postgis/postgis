@@ -39,6 +39,7 @@ Datum transform(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
 Datum transform_pipeline_geom(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);
+Datum postgis_proj_version_compiled(PG_FUNCTION_ARGS);
 Datum LWGEOM_asKML(PG_FUNCTION_ARGS);
 
 /**
@@ -225,6 +226,23 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 #endif
 
 	PG_RETURN_POINTER(cstring_to_text(stringbuffer_getstring(&sb)));
+}
+
+PG_FUNCTION_INFO_V1(postgis_proj_compiled_version);
+Datum postgis_proj_compiled_version(PG_FUNCTION_ARGS)
+{
+  static char ver[64];
+  text *result;
+  sprintf(
+    ver,
+    "%d.%d.%d",
+    (POSTGIS_PROJ_VERSION/10000),
+    ((POSTGIS_GEOS_VERSION%10000)/100),
+    ((POSTGIS_GEOS_VERSION)%100)
+  );
+
+  result = cstring_to_text(ver);
+  PG_RETURN_POINTER(result);
 }
 
 /**

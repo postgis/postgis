@@ -3033,6 +3033,11 @@ CREATE OR REPLACE FUNCTION postgis_proj_version() RETURNS text
 	LANGUAGE 'c' IMMUTABLE
 	_COST_DEFAULT;
 
+CREATE OR REPLACE FUNCTION postgis_proj_compiled_version() RETURNS text
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' IMMUTABLE
+	_COST_DEFAULT;
+
 CREATE OR REPLACE FUNCTION postgis_wagyu_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE
@@ -3223,6 +3228,7 @@ DECLARE
 	libver text;
 	librev text;
 	projver text;
+	projver_compiled text;
 	geosver text;
 	geosver_compiled text;
 	sfcgalver text;
@@ -3248,6 +3254,7 @@ BEGIN
 	SELECT @extschema@.postgis_proj_version() INTO projver;
 	SELECT @extschema@.postgis_geos_version() INTO geosver;
 	SELECT @extschema@.postgis_geos_compiled_version() INTO geosver_compiled;
+	SELECT @extschema@.postgis_proj_compiled_version() INTO projver_compiled;
 	SELECT @extschema@.postgis_libjson_version() INTO json_lib_ver;
 	SELECT @extschema@.postgis_libprotobuf_version() INTO protobuf_lib_ver;
 	SELECT @extschema@.postgis_wagyu_version() INTO wagyu_lib_ver;
@@ -3346,6 +3353,10 @@ BEGIN
 
 	IF  projver IS NOT NULL THEN
 		fullver = fullver || ' PROJ="' || projver || '"';
+		IF (string_to_array(projver, '.'))[1:3] != (string_to_array(projver_compiled, '.'))[1:3]
+		THEN
+			fullver = format('%s (compiled against PROJ %s)', fullver, projver_compiled);
+		END IF;
 	END IF;
 
 	IF  gdalver IS NOT NULL THEN

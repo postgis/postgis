@@ -7,7 +7,7 @@
     </abstract>
     </info>
 
-	
+
 
 <refentry xml:id="PostGIS_Extensions_Upgrade">
 	  <refnamediv>
@@ -420,9 +420,63 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Full_Version"/>, <xref linkend="PostGIS_GEOS_Version"/>,  <xref linkend="PostGIS_Lib_Version"/>, <xref linkend="PostGIS_LibXML_Version"/>, <xref linkend="PostGIS_Version"/></para>
+		<para>
+<xref linkend="PostGIS_PROJ_Compiled_Version"/>,
+<xref linkend="PostGIS_Full_Version"/>,
+<xref linkend="PostGIS_GEOS_Version"/>,
+<xref linkend="PostGIS_Lib_Version"/>,
+<xref linkend="PostGIS_LibXML_Version"/>,
+<xref linkend="PostGIS_Version"/></para>
 	  </refsection>
 	</refentry>
+
+	<refentry xml:id="PostGIS_PROJ_Compiled_Version">
+	  <refnamediv>
+		<refname>PostGIS_PROJ_Compiled_Version</refname>
+
+		<refpurpose>Returns the version number of the PROJ
+		library against which PostGIS was built.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_PROJ_Compiled_Version</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the version number of the PROJ library, or
+		against which PostGIS was built.</para>
+
+		<para role="availability" conformance="3.4.0">Availability: 3.5.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_PROJ_Compiled_Version();
+ postgis_proj_compiled_version
+-------------------------------
+ 9.1.1
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+<xref linkend="PostGIS_PROJ_Version"/>,
+<xref linkend="PostGIS_Full_Version"/>
+        </para>
+	  </refsection>
+	</refentry>
+
 
 	<refentry xml:id="PostGIS_Wagyu_Version">
 	  <refnamediv>
