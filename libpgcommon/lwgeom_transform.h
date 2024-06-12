@@ -56,12 +56,6 @@ typedef struct srs_precision
 	int precision_m;
 } srs_precision;
 
-#if POSTGIS_PROJ_VERSION < 61
-/* Needs to call postgis_initialize_cache first */
-char *GetProj4String(int32_t srid);
-#endif
-
-
 /* Prototypes */
 PROJSRSCache* GetPROJSRSCache();
 int lwproj_lookup(int32_t srid_from, int32_t srid_to, LWPROJ **pj);

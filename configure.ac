@@ -987,11 +987,11 @@ CFLAGS="$CFLAGS_SAVE"
 
 
 dnl ===========================================================================
-dnl Detect the version of PROJ.4 installed
+dnl Detect the version of PROJ installed
 dnl ===========================================================================
 
 AC_ARG_WITH([projdir],
-	[AS_HELP_STRING([--with-projdir=PATH], [specify the PROJ.4 installation directory])],
+	[AS_HELP_STRING([--with-projdir=PATH], [specify the PROJ installation directory])],
 	[PROJDIR="$withval"], [PROJDIR=""])
 
 if test ! "x$PROJDIR" = "x"; then
@@ -1015,7 +1015,7 @@ elif test ! -z "$PKG_CONFIG"; then
 		[
 			PROJ_CPPFLAGS="$PROJ_CFLAGS"
 			PROJ_LDFLAGS="$PROJ_LIBS"
-			POSTGIS_PROJ_VERSION=`$PKG_CONFIG proj --modversion | $PERL -nle 'print "$1$2" if /(\d+)\.(\d+)\.(\d+)/'`
+			PROJ_VERSION=`$PKG_CONFIG proj --modversion`
 		],
 		[
 			PROJ_LDFLAGS="-lproj"
@@ -1054,19 +1054,21 @@ AC_CHECK_HEADER([proj_api.h],
 		)]
 	)
 
-dnl Return the PROJ.4 version number if not detected by pkg-config
-if test "x$POSTGIS_PROJ_VERSION" = "x"; then
-	AC_PROJ_VERSION([POSTGIS_PROJ_VERSION])
+dnl Find the PROJ version number if not detected via pkg-config
+if test "x$PROJ_VERSION" = "x"; then
+	AC_PROJ_VERSION()
 fi
-AC_DEFINE_UNQUOTED([POSTGIS_PROJ_VERSION], [$POSTGIS_PROJ_VERSION], [PROJ library version])
-AC_SUBST([POSTGIS_PROJ_VERSION])
 CPPFLAGS="$CPPFLAGS_SAVE"
+
+POSTGIS_PROJ_VERSION=`echo "${PROJ_VERSION}" | $PERL -nle 'printf "%d%02d%02d\n",$1,$2,$3 if /(\d+)\.(\d+)\.(\d+)/'`
 
 dnl Ensure that we are using PROJ >= 6.1.0 (requires pj_set_searchpath)
 if test ! "$POSTGIS_PROJ_VERSION" -ge 61; then
 	AC_MSG_ERROR([PostGIS requires PROJ >= 6.1.0])
 fi
 
+AC_DEFINE_UNQUOTED([POSTGIS_PROJ_VERSION], [$POSTGIS_PROJ_VERSION], [PROJ library version])
+AC_SUBST([POSTGIS_PROJ_VERSION])
 AC_SUBST([PROJ_CPPFLAGS])
 AC_SUBST([PROJ_LDFLAGS])
 
@@ -1958,7 +1960,7 @@ fi
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Dependencies -------------- ])
 AC_MSG_RESULT([  GEOS config:          ${GEOS_CONFIG_SRC}])
-AC_MSG_RESULT([  GEOS version:         ${GEOS_VERSION}])
+AC_MSG_RESULT([  GEOS version:         ${GEOS_VERSION} (${POSTGIS_GEOS_VERSION})])
 if test "x$RASTER" = "xraster"; then
     AC_MSG_RESULT([  GDAL config:          ${GDAL_CONFIG}])
     AC_MSG_RESULT([  GDAL version:         ${GDAL_FULL_VERSION}])
@@ -1973,7 +1975,7 @@ if test "x$SUPPORT_POSTGRESQL" = "xyes"; then
 else
   AC_MSG_RESULT([  PostgreSQL support:   DISABLED])
 fi
-AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
+AC_MSG_RESULT([  PROJ version:         ${PROJ_VERSION} (${POSTGIS_PROJ_VERSION})])
 AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
 AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])
 AC_MSG_RESULT([  JSON-C support:       ${HAVE_JSON}])

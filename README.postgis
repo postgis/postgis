@@ -16,7 +16,7 @@ Directory structure::
   ./doc         PostGIS Documentation
   ./extensions  Support for the PostgreSQL Extensions framework
   ./extras      Various pieces that didn't belong to mainstream
-                (package management specfiles, sample WKB parser, 
+                (package management specfiles, sample WKB parser,
                 postgis_tiger_geocoder)
   ./fuzzers     Google fuzz tests for liblwgeom
   ./liblwgeom   LWGEOM geometry library
@@ -57,9 +57,9 @@ For apt-based systems you can run this command to install the below dependencies
     protobuf-c-compiler \
     xsltproc
 
-* PROJ4 (Required, Version 6.1 or higher):
+* PROJ (Required, Version 6.1 or higher):
 
-  The PROJ4 catographic projection library is required if you want to use the
+  The PROJ catographic projection library is required if you want to use the
   ST_Transform() function to reproject features within the database.
 
     https://proj.org
@@ -150,7 +150,7 @@ and refuse to proceed. You can specify it using the
 
 PostGIS supports pkg-config for most dependencies.
 
-If PROJ4 has been installed but cannot be found, configure will complain and
+If PROJ has been installed but cannot be found, configure will complain and
 refuse to proceed. You can specify an alternative installation directory using
 the ``--with-projdir=DIR`` option.
 
