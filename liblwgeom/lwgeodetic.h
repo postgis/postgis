@@ -152,6 +152,7 @@ double spheroid_distance(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, c
 double spheroid_direction(const GEOGRAPHIC_POINT *r, const GEOGRAPHIC_POINT *s, const SPHEROID *spheroid);
 int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double distance, double azimuth, GEOGRAPHIC_POINT *g);
 
+int gbox_geocentric_get_gbox_cartesian(const GBOX *gbox_geocentric, GBOX *gbox_planar);
 
 #endif /* _LWGEODETIC_H */
 
