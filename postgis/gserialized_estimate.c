@@ -2381,7 +2381,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 		/* Fall back to reading the stats, if no index is found */
 
 		/* Estimated extent only returns 2D bounds, so use mode 2 */
-		nd_stats = pg_get_nd_stats_by_name(tbl_oid, col, 2, only_parent);
+		nd_stats = pg_get_nd_stats_by_name(tbl_oid, col, is_geography ? 3 : 2, only_parent);
 
 		/* Error out on no stats */
 		if ( ! nd_stats ) {
