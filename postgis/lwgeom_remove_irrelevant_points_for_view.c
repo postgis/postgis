@@ -128,8 +128,20 @@ static int encodeToBitsStraight(double xa, double ya, double xb, double yb, doub
 // outside points would be optimal to keep. Since this would introduce a lot
 // more code complexity and a backing array and would likely have
 // no real practical impact this step is skipped.
+//
+// Note on cartesian_hint:
+// - if false, the algorithm removes one or a sequence of points
+//   lying on "the same side" (either top, bottom, left or right) of the
+//   given bounds except the first and last point of that sequence.
+// - if true, the algorithm assumes that the coordinates are rendered in
+//   a cartesian coordinate system and tries to remove further points
+//   if the resulting connection lines do not cross the borders of
+//   the rectangular view given by the bounds.
+//   Please note that this option might produce rendering artifacts
+//   if the coordinates are used for rendering in a non-cartesian
+//   coordinate system.
 // ===============================================================================
-static void removePoints(POINTARRAY *points, GBOX *bounds, bool closed) {
+static void removePoints(POINTARRAY *points, GBOX *bounds, bool closed, bool cartesian_hint) {
 
 	int npoints, minpoints;
 	double xmin, ymin, xmax, ymax;
@@ -144,9 +156,6 @@ static void removePoints(POINTARRAY *points, GBOX *bounds, bool closed) {
 	double xa, ya, xb, yb;
 	bool cutting;
 	int crossingN;
-
-	bool optimize;
-	optimize = true;
 
 	// point number check
 	npoints = points->npoints;
@@ -217,7 +226,7 @@ static void removePoints(POINTARRAY *points, GBOX *bounds, bool closed) {
 
 		// check for irrelevant points that would introduce "diagonal"
 		// lines between different outside quadrants which may cross the bounds
-		if (optimize && !skip && !same && !inside && (vx0 | vy0) != 0x02 && (vx1 | vy1) != 0x02) {
+		if (cartesian_hint && !skip && !same && !inside && (vx0 | vy0) != 0x02 && (vx1 | vy1) != 0x02) {
 
 			vvx = 0;
 			vvy = 0;
@@ -271,7 +280,7 @@ static void removePoints(POINTARRAY *points, GBOX *bounds, bool closed) {
 	clear |= vyall == 0x04;		// completely bottom outside
 
 	// clear if everything is outside and not enclosing
-	if (optimize && !clear && !insideAll) { // not required if points inside bbox
+	if (cartesian_hint && !clear && !insideAll) { // not required if points inside bbox
 		cutting = false;
 		for (int r = 0; r < w - 1; r++) {
 
@@ -321,6 +330,7 @@ PG_FUNCTION_INFO_V1(ST_RemoveIrrelevantPointsForView);
 Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 
 	unsigned int i, j, iw, jw;
+	bool cartesian_hint;
 
 	// gserialized logic see for example in /postgis/lwgeom_functions_basic.c,
 	// type definitions see /liblwgeom/liblwgeom.h(.in)
@@ -342,6 +352,16 @@ Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 	if (PG_GETARG_POINTER(1) == NULL) {
 		// no BBOX given, leave untouched
 		PG_RETURN_POINTER(serialized_in);
+	}
+
+	// get (optional) cartesian_hint flag for advanced optimizations
+	// that assume the the coordinates can be seen as coordinates
+	// to be rendered in a cartesian coordinate system.
+	if (PG_NARGS() > 2 && (!PG_ARGISNULL(2))) {
+		cartesian_hint = PG_GETARG_BOOL(2);
+	}
+	else {
+		cartesian_hint = false;
 	}
 
 	// type check (only polygon and line types are supported yet)
@@ -382,7 +402,7 @@ Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 	if (geom->type == LINETYPE) {
 
 		LWLINE* line = (LWLINE*)geom;
-		removePoints(line->points, bbox, false);
+		removePoints(line->points, bbox, false, cartesian_hint);
 	}
 
 	if (geom->type == MULTILINETYPE) {
@@ -391,7 +411,7 @@ Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 		iw = 0;
 		for (i=0; i<mline->ngeoms; i++) {
 			LWLINE* line = mline->geoms[i];
-			removePoints(line->points, bbox, false);
+			removePoints(line->points, bbox, false, cartesian_hint);
 
 			if (line->points->npoints) {
 				// keep (reduced) line
@@ -410,7 +430,7 @@ Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 		LWPOLY* polygon = (LWPOLY*)geom;
 		iw = 0;
 		for (i=0; i<polygon->nrings; i++) {
-			removePoints(polygon->rings[i], bbox, true);
+			removePoints(polygon->rings[i], bbox, true, cartesian_hint);
 
 			if (polygon->rings[i]->npoints) {
 				// keep (reduced) ring
@@ -443,7 +463,7 @@ Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 			LWPOLY* polygon = mpolygon->geoms[j];
 			iw = 0;
 			for (i=0; i<polygon->nrings; i++) {
-				removePoints(polygon->rings[i], bbox, true);
+				removePoints(polygon->rings[i], bbox, true, cartesian_hint);
 
 				if (polygon->rings[i]->npoints) {
 					// keep (reduced) ring
