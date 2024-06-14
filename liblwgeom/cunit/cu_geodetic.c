@@ -1615,6 +1615,41 @@ static void test_gbox_to_string_truncated(void)
 	lwfree(c);
 }
 
+static void BOX3D_BOXLL_TEST(double xmin, double ymin, double xmax, double ymax)
+{
+	LWGEOM *lwg;
+	GBOX gbox_gc;
+	GBOX gbox_ll;
+	char wkt[256];
+	snprintf(wkt, 256, "LINESTRING(%f %f,%f %f)", xmin, ymin, xmax, ymax);
+	lwg = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
+
+	lwgeom_calculate_gbox_geodetic(lwg, &gbox_gc);
+	lwgeom_free(lwg);
+	// printf("\n%s",wkt);
+
+	gbox_geocentric_get_gbox_cartesian(&gbox_gc, &gbox_ll);
+
+	// printf("\nBOX(%g %g, %g %g)\n",
+	// 	gbox_ll.xmin, gbox_ll.ymin,
+	// 	gbox_ll.xmax, gbox_ll.ymax);
+
+	CU_ASSERT(gbox_ll.xmin <= xmin);
+	CU_ASSERT(gbox_ll.ymin <= ymin);
+	CU_ASSERT(gbox_ll.xmax >= xmax);
+	CU_ASSERT(gbox_ll.ymax >= ymax);
+}
+
+void test_gbox_geocentric_get_gbox_cartesian(void)
+{
+	BOX3D_BOXLL_TEST(-90,80, 90,80);
+	BOX3D_BOXLL_TEST(1,1, 2,2);
+	BOX3D_BOXLL_TEST(10,10, 20,20);
+	BOX3D_BOXLL_TEST(100,10, 120,10);
+	BOX3D_BOXLL_TEST(-100,10, 120,10);
+}
+
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -1645,4 +1680,5 @@ void geodetic_suite_setup(void)
 	PG_ADD_TEST(suite, test_ptarray_contains_point_sphere);
 	PG_ADD_TEST(suite, test_ptarray_contains_point_sphere_iowa);
 	PG_ADD_TEST(suite, test_gbox_to_string_truncated);
+	PG_ADD_TEST(suite, test_gbox_geocentric_get_gbox_cartesian);
 }
