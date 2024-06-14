@@ -116,6 +116,7 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h" /* For index common functions */
+#include "lwgeodetic.h"
 
 #include <math.h>
 #if HAVE_IEEEFP_H
@@ -2284,6 +2285,18 @@ Datum gserialized_gist_sel(PG_FUNCTION_ARGS)
 }
 
 
+static Oid
+get_attype_by_name(Oid tbl, const char *colname)
+{
+	AttrNumber attnum = get_attnum(tbl, colname);
+	if (attnum == InvalidAttrNumber)
+		elog(ERROR, "cannot find column \"%s\" in table \"%s\"",
+			colname,
+			get_rel_name(tbl));
+
+	return get_atttype(tbl, attnum);
+}
+
 
 /**
  * Return the estimated extent of the table
@@ -2303,6 +2316,8 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	bool only_parent = false;
 	int key_type, att_num;
 	size_t sz;
+	Oid atttypid;
+	bool is_geography = false;
 
 	/* We need to initialize the internal cache to access it later via postgis_oid() */
 	postgis_initialize_cache();
@@ -2346,8 +2361,11 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	/* Read the extent from the head of the spatial index, if there is one */
+	atttypid = get_attype_by_name(tbl_oid, text_to_cstring(col));
+	if (atttypid == postgis_oid(GEOGRAPHYOID))
+		is_geography = true;
 
+	/* Read the extent from the head of the spatial index, if there is one */
 	idx_oid = table_get_spatial_index(tbl_oid, col, &key_type, &att_num);
 	if (idx_oid)
 	{
@@ -2363,7 +2381,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 		/* Fall back to reading the stats, if no index is found */
 
 		/* Estimated extent only returns 2D bounds, so use mode 2 */
-		nd_stats = pg_get_nd_stats_by_name(tbl_oid, col, 2, only_parent);
+		nd_stats = pg_get_nd_stats_by_name(tbl_oid, col, is_geography ? 3 : 2, only_parent);
 
 		/* Error out on no stats */
 		if ( ! nd_stats ) {
@@ -2372,16 +2390,31 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 		}
 
 		/* Construct the box */
-		gbox = palloc(sizeof(GBOX));
-		FLAGS_SET_GEODETIC(gbox->flags, 0);
-		FLAGS_SET_Z(gbox->flags, 0);
-		FLAGS_SET_M(gbox->flags, 0);
+		gbox = gbox_new(0);
 		gbox->xmin = nd_stats->extent.min[0];
 		gbox->xmax = nd_stats->extent.max[0];
 		gbox->ymin = nd_stats->extent.min[1];
 		gbox->ymax = nd_stats->extent.max[1];
+		if (is_geography)
+		{
+			FLAGS_SET_Z(gbox->flags, 1);
+			gbox->zmin = nd_stats->extent.min[2];
+			gbox->zmax = nd_stats->extent.max[2];
+		}
+
 		pfree(nd_stats);
 	}
+
+	/* Convert geocentric geography box into a planar box */
+	/* that users understand */
+	if (is_geography)
+	{
+		GBOX *gbox_planar = gbox_new(0);
+		gbox_geocentric_get_gbox_cartesian(gbox, gbox_planar);
+		PG_RETURN_POINTER(gbox_planar);
+	}
+	else
+		PG_RETURN_POINTER(gbox);
 
 	PG_RETURN_POINTER(gbox);
 }
@@ -2556,10 +2589,13 @@ spatial_index_read_extent(Oid idx_oid, int key_type, int att_num)
 	}
 	else if (key_type == STATISTIC_KIND_ND && bounds_gidx)
 	{
+		lwflags_t flags = 0;
 		if (gidx_is_unknown(bounds_gidx))
 			return NULL;
-		gbox = gbox_new(0);
-		gbox_from_gidx(bounds_gidx, gbox, 0);
+		FLAGS_SET_Z(flags, GIDX_NDIMS(bounds_gidx) > 2);
+		FLAGS_SET_M(flags, GIDX_NDIMS(bounds_gidx) > 3);
+		gbox = gbox_new(flags);
+		gbox_from_gidx(bounds_gidx, gbox, flags);
 	}
 	else
 		return NULL;
