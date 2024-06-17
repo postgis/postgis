@@ -205,6 +205,7 @@ SELECT _postgis_drop_function_by_signature('ST_Distance(geography, geography)');
 SELECT _postgis_drop_function_by_signature('ST_Distance(geography, geography, float8, boolean)');
 SELECT _postgis_drop_function_by_signature('ST_Buffer(geometry, float8, cstring)');
 SELECT _postgis_drop_function_by_signature('ST_IsValidDetail(geometry)');
+SELECT _postgis_drop_function_by_signature('ST_RemoveIrrelevantPointsForView(geometry, box2d)');
 SELECT _postgis_drop_function_by_identity('ST_AsKML','int4, geometry, int4, text');
 SELECT _postgis_drop_function_by_identity('ST_AsGeoJson','int4, geometry, int4, int4');
 SELECT _postgis_drop_function_by_identity('_ST_AsGeoJson','int4, geometry, int4, int4');
