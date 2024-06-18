@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
-"PO-Revision-Date: 2024-06-18 12:16+0000\n"
+"PO-Revision-Date: 2024-06-18 12:19+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
@@ -41037,7 +41037,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Functions Reference"
-msgstr ""
+msgstr "Référence des fonctions SFCGAL"
 
 #. Tag: para
 #, no-c-format
@@ -41066,7 +41066,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Management Functions"
-msgstr ""
+msgstr "Fonctions de gestion de SFCGAL"
 
 #. Tag: para
 #, no-c-format
@@ -41074,6 +41074,8 @@ msgid ""
 "This section lists functions for determining version of SFCGAL and library "
 "dependencies you are running."
 msgstr ""
+"Cette section énumère les fonctions permettant de déterminer la version de "
+"SFCGAL et les dépendances de la bibliothèque que vous utilisez."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41121,7 +41123,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Accessors and Setters"
-msgstr ""
+msgstr "Accesseurs et fixateurs SFCGAL"
 
 #. Tag: para
 #, no-c-format
