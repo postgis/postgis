@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
 "PO-Revision-Date: 2024-06-18 12:39+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -29179,6 +29179,8 @@ msgstr ""
 #, no-c-format
 msgid "Simplifying a MultiPolygon. Polygonal results may be invalid."
 msgstr ""
+"Simplification d'un polygone multiple. Les résultats polygonaux peuvent être "
+"invalides."
 
 #. Tag: para
 #, no-c-format
@@ -29187,6 +29189,9 @@ msgid ""
 "linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, "
 "Topology <xref linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+"\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, Topologie "
+"<xref linkend=\"TP_ST_Simplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29194,6 +29199,8 @@ msgid ""
 "Returns a simplified and valid representation of a geometry, using the "
 "Douglas-Peucker algorithm."
 msgstr ""
+"Renvoie une représentation simplifiée et valide d'une géométrie, en "
+"utilisant l'algorithme de Douglas-Peucker."
 
 #. Tag: para
 #, no-c-format
@@ -29207,6 +29214,15 @@ msgid ""
 "are within the tolerance distance of the simplified linework, as long as "
 "topology is preserved. The result will be valid and simple if the input is."
 msgstr ""
+"Calcule une représentation simplifiée d'une géométrie en utilisant une "
+"variante de l'algorithme <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm\">Douglas-Peucker</link> qui "
+"limite la simplification pour s'assurer que le résultat a la même topologie "
+"que l'entrée. La <varname>tolérance</varname> de simplification est une "
+"valeur de distance, dans les unités du SRS d'entrée. La simplification "
+"supprime les sommets qui se trouvent à l'intérieur de la distance de "
+"tolérance du réseau simplifié, pour autant que la topologie soit préservée. "
+"Le résultat sera valide et simple si l'entrée est."
 
 #. Tag: para
 #, no-c-format
