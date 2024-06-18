@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
 "PO-Revision-Date: 2024-06-18 12:33+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -42110,7 +42110,7 @@ msgstr "Calcule un squelette (straight skeleton) à partir d'une géométrie"
 #. Tag: para
 #, no-c-format
 msgid "Requires SFCGAL &gt;= 1.3.8 for option use_distance_as_m"
-msgstr ""
+msgstr "Requiert SFCGAL &gt;= 1.3.8 pour l'option use_distance_as_m"
 
 #. Tag: para
 #, no-c-format
