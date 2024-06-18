@@ -41345,7 +41345,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "NOTE: this function returns a geometry."
-msgstr ""
+msgstr "NOTE : cette fonction renvoie une géométrie."
 
 #. Tag: para
 #, no-c-format
@@ -41397,7 +41397,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the minimum distance between two geometries"
-msgstr ""
+msgstr "Calcul de la distance minimale entre deux géométries"
 
 #. Tag: para
 #, no-c-format
