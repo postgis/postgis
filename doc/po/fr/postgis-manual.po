@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
 "PO-Revision-Date: 2024-06-18 12:26+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -41410,13 +41410,13 @@ msgid ""
 "NOTE: this function returns a double precision value representing the "
 "distance."
 msgstr ""
-"NOTE : cette fonction renvoie une valeur de double précision représentant la "
+"NOTE : cette fonction renvoie une valeur double précision représentant la "
 "distance."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Distance\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Distance\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
