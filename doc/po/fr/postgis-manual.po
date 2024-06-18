@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
-"PO-Revision-Date: 2024-06-18 12:33+0000\n"
+"PO-Revision-Date: 2024-06-18 12:35+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
@@ -29148,6 +29148,11 @@ msgid ""
 "linkend=\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure "
 "validity."
 msgstr ""
+"La géométrie renvoyée peut perdre sa simplicité (voir <xref linkend="
+"\"ST_IsSimple\"/>), la topologie peut ne pas être préservée et les résultats "
+"polygonaux peuvent être invalides (voir <xref linkend=\"ST_IsValid\"/>). "
+"Utilisez <xref linkend=\"ST_SimplifyPreserveTopology\"/> pour préserver la "
+"topologie et garantir la validité."
 
 #. Tag: para
 #, no-c-format
@@ -42183,13 +42188,15 @@ msgstr "Trianguler une géométrie polygonale"
 #. Tag: para
 #, no-c-format
 msgid "Triangulates a polygonal geometry."
-msgstr ""
+msgstr "Triangule une géométrie polygonale."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "NOTE: this function returns a geometry representing the triangulated result."
 msgstr ""
+"NOTE : cette fonction renvoie une géométrie représentant le résultat de la "
+"triangulation."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -51705,7 +51712,7 @@ msgstr "Nécessite GEOS (3.9,3.10,3.11,3.12) ou une version plus récente"
 #. Tag: para
 #, no-c-format
 msgid "Requires SFCGAL 1.5 or higher"
-msgstr ""
+msgstr "Nécessite SFCGAL 1.5 ou une version plus récente"
 
 #. Tag: para
 #, no-c-format
