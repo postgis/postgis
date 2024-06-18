@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
 "PO-Revision-Date: 2024-06-18 12:19+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -41131,6 +41131,9 @@ msgid ""
 "These functions access or set properties of geometries. Geometries primarily "
 "supported by these functions are TINS and Polyhedral Surfaces."
 msgstr ""
+"Ces fonctions permettent d'accéder aux propriétés des géométries ou de les "
+"définir. Les géométries principalement prises en charge par ces fonctions "
+"sont les TINS et les surfaces polyédriques."
 
 #. Tag: refpurpose
 #, no-c-format
