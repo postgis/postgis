@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
-"PO-Revision-Date: 2024-06-18 09:32+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-06-18 09:37+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -13179,6 +13179,8 @@ msgid ""
 "Return the number of component curves in a CompoundCurve, zero for an empty "
 "CompoundCurve, or NULL for a non-CompoundCurve input."
 msgstr ""
+"Renvoie le nombre de courbes composantes d'une CompoundCurve, zéro pour une "
+"CompoundCurve vide, ou NULL pour une entrée qui n'est pas une CompoundCurve."
 
 #. Tag: para
 #, no-c-format
@@ -13186,11 +13188,13 @@ msgid ""
 ", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
 "linkend=\"ST_NumInteriorRings\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 msgstr ""
+", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
+"linkend=\"ST_NumInteriorRings\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the Nth component curve geometry of a CompoundCurve."
-msgstr ""
+msgstr "Renvoie la Nième courbe composante d'une CompoundCurve."
 
 #. Tag: para
 #, no-c-format
@@ -13282,7 +13286,7 @@ msgid ""
 "a single element."
 msgstr ""
 "Cette fonction analyse le type de la géométrie. Renvoie <varname>TRUE</"
-"varname> pour les collections vides ou ne contenant q'un seul élément."
+"varname> pour les collections vides ou ne contenant qu'un seul élément."
 
 #. Tag: refpurpose
 #, no-c-format
