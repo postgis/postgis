@@ -41123,7 +41123,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Accessors and Setters"
-msgstr "Accesseurs et fixateurs SFCGAL"
+msgstr "Fonctions d'accès et de modifications SFCGAL"
 
 #. Tag: para
 #, no-c-format
