@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
-"PO-Revision-Date: 2024-06-18 12:43+0000\n"
+"PO-Revision-Date: 2024-06-18 12:44+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
@@ -29425,6 +29425,12 @@ msgid ""
 "validity. <xref linkend=\"ST_CoverageSimplify\"/> also preserves topology "
 "and validity."
 msgstr ""
+"La géométrie renvoyée peut perdre sa simplicité (voir <xref linkend="
+"\"ST_IsSimple\"/>), la topologie peut ne pas être préservée et les résultats "
+"polygonaux peuvent être invalides (voir <xref linkend=\"ST_IsValid\"/>). "
+"Utilisez <xref linkend=\"ST_SimplifyPreserveTopology\"/> pour préserver la "
+"topologie et garantir la validité. <xref linkend=\"ST_CoverageSimplify\"/> "
+"préserve également la topologie et la validité."
 
 #. Tag: para
 #, no-c-format
@@ -29437,16 +29443,17 @@ msgstr ""
 #, no-c-format
 msgid "A LineString is simplified with a minimum-area tolerance of 30."
 msgstr ""
+"Une LineString est simplifiée avec une tolérance de surface minimale de 30."
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a line."
-msgstr ""
+msgstr "Simplification d'une ligne."
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a polygon."
-msgstr ""
+msgstr "Simplifier un polygone."
 
 #. Tag: para
 #, no-c-format
