@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
 "PO-Revision-Date: 2024-06-18 12:53+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -35171,11 +35171,17 @@ msgid ""
 "xlink:href=\"https://www.mass.gov/info-details/massgis-data-20082009-aerial-"
 "imagery\">MassGIS Aerial Orthos</link>."
 msgstr ""
+"Les exemples présentés ici utilisent les données aériennes du Massachusetts "
+"disponibles sur le site de MassGIS <link xlink:href=\"https://www.mass.gov/"
+"info-details/massgis-data-20082009-aerial-imagery\">MassGIS Aerial "
+"Orthos</link>."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Comparing selecting all touched vs. not all touched"
 msgstr ""
+"Exemples : Comparaison entre la sélection de toutes les personnes touchées "
+"et la sélection de toutes les personnes non touchées"
 
 #. Tag: title
 #, no-c-format
