@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
 "PO-Revision-Date: 2024-06-18 12:28+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -41501,7 +41501,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the union of two geometries"
-msgstr ""
+msgstr "Calcul de l'union de deux géométries"
 
 #. Tag: para
 #, no-c-format
