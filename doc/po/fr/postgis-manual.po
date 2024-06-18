@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
-"PO-Revision-Date: 2024-06-18 12:26+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-06-18 12:27+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -41421,7 +41421,7 @@ msgstr ", <xref linkend=\"ST_Distance\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the minimum 3D distance between two geometries"
-msgstr "Calcul de la distance 3D minimale entre deux géométries"
+msgstr "Calcule la distance 3D minimale entre deux géométries"
 
 #. Tag: para
 #, no-c-format
