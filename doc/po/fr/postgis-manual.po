@@ -2,13 +2,14 @@
 # Automatically generated, 2023.
 #
 # Thomas Muguet <thomas.muguet@oslandia.com>, 2024.
+# DeepL <noreply-mt-deepl@weblate.org>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
 "PO-Revision-Date: 2024-06-18 09:30+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -12739,6 +12740,9 @@ msgid ""
 "represent the linear segments of the supplied geometry, while the "
 "<varname>CIRCULARSTRING</varname>s represent the arc segments."
 msgstr ""
+"le champ <parameter>geom</parameter> <varname> LINESTRING</varname>s "
+"représente les segments linéaires de la géométrie fournie, tandis que les "
+"<varname>CIRCULARSTRING</varname>s représentent les segments d'arc."
 
 #. Tag: para
 #, no-c-format
