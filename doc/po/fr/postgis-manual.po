@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
-"PO-Revision-Date: 2024-06-18 12:36+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-06-18 12:39+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -29172,8 +29172,8 @@ msgstr "Un cercle trop simplifié devient un triangle, moyennement un octogone,"
 #, no-c-format
 msgid "Simplifying a set of lines. Lines may intersect after simplification."
 msgstr ""
-"Simplification d'un ensemble de lignes. Les lignes peuvent se croiser après "
-"simplification."
+"Simplification d'un ensemble de lignes. Les lignes peuvent s'intersecter "
+"après simplification."
 
 #. Tag: para
 #, no-c-format
