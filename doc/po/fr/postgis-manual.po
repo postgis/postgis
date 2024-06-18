@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
 "PO-Revision-Date: 2024-06-18 09:37+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -13203,6 +13203,9 @@ msgid ""
 "starts at 1. Returns NULL if the geometry is not a CompoundCurve or the "
 "index is out of range."
 msgstr ""
+"Renvoie la Nième géométrie de courbe composante d'une CompoundCurve. L'index "
+"commence à 1. Renvoie NULL si la géométrie n'est pas une CompoundCurve ou si "
+"l'index est hors limites."
 
 #. Tag: refpurpose
 #, no-c-format
