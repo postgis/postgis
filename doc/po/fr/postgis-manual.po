@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
-"PO-Revision-Date: 2024-06-18 12:28+0000\n"
+"PO-Revision-Date: 2024-06-18 12:29+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
@@ -41506,12 +41506,12 @@ msgstr "Calcul de l'union de deux géométries"
 #. Tag: para
 #, no-c-format
 msgid "Computes the union of two geometries."
-msgstr ""
+msgstr "Calcule l'union de deux géométries."
 
 #. Tag: para
 #, no-c-format
 msgid "NOTE: this function returns a geometry representing the union."
-msgstr ""
+msgstr "NOTE : cette fonction renvoie une géométrie représentant l'union."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41724,7 +41724,7 @@ msgstr "Disponibilité : 3.5.0 - nécessite SFCGAL &gt;= 1.5.0."
 #. Tag: para
 #, no-c-format
 msgid "Requires SFCGAL &gt;= 1.5.0"
-msgstr ""
+msgstr "Requiert SFCGAL &gt;= 1.5.0"
 
 #. Tag: para
 #, no-c-format
