@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
-"PO-Revision-Date: 2024-06-18 12:42+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-06-18 12:43+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -29272,14 +29272,15 @@ msgstr ""
 #, no-c-format
 msgid "Simplifying a MultiPolygon, preserving topology of shells and holes."
 msgstr ""
-"Simplification d'un multipolygone, en préservant la topologie des coques et "
-"des trous."
+"Simplification d'un multipolygone, en préservant la topologie des coquilles "
+"et des trous."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
