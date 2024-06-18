@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
-"PO-Revision-Date: 2024-06-18 12:20+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-06-18 12:22+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -41207,13 +41207,13 @@ msgstr "Réalisé par le module SFCGAL"
 msgid ""
 "NOTE: this function returns a double precision value representing the area."
 msgstr ""
-"NOTE : cette fonction renvoie une valeur de double précision représentant la "
+"NOTE : cette fonction renvoie une valeur en double précision représentant la "
 "surface."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Area\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Area\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
