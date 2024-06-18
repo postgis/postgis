@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
 "PO-Revision-Date: 2024-06-18 12:25+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -41350,7 +41350,7 @@ msgstr "NOTE : cette fonction renvoie une géométrie."
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Difference\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Difference\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
