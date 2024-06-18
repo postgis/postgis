@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
 "PO-Revision-Date: 2024-06-18 12:22+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -41281,7 +41281,7 @@ msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Processing and Relationship Functions"
-msgstr ""
+msgstr "Fonctions de traitement et de relation du SFCGAL"
 
 #. Tag: refpurpose
 #, no-c-format
