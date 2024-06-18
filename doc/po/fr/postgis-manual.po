@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
-"PO-Revision-Date: 2024-06-18 12:11+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-06-18 12:15+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -40862,8 +40862,8 @@ msgstr ""
 #, no-c-format
 msgid "Tests if a geometry is entirely inside a distance of another"
 msgstr ""
-"Teste si une géométrie se trouve entièrement à l'intérieur d'une distance "
-"d'une autre géométrie."
+"Teste si une géométrie se trouve entièrement à une distance d'une autre "
+"géométrie."
 
 #. Tag: para
 #, no-c-format
