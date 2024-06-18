@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
-"PO-Revision-Date: 2024-06-18 11:45+0000\n"
+"PO-Revision-Date: 2024-06-18 12:07+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
@@ -35112,7 +35112,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Examples: 1 band clipping (not touched)"
-msgstr ""
+msgstr "Exemples : 1 bande d'écrêtage (non touchée)"
 
 #. Tag: para
 #, no-c-format
