@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
-"PO-Revision-Date: 2024-06-18 12:53+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-06-18 14:45+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -4436,7 +4436,8 @@ msgid ""
 "type: 1:[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection"
 msgstr ""
 "<varname>type</varname> un entier entre 1 et 4 qui définit le type de la "
-"géométrie : 1:[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection"
+"géométrie : 1 : [multi]point, 2 : [multi]line, 3 : [multi]poly, 4 : "
+"collection"
 
 #. Tag: title
 #, no-c-format
@@ -35179,9 +35180,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Examples: Comparing selecting all touched vs. not all touched"
-msgstr ""
-"Exemples : Comparaison entre la sélection de toutes les personnes touchées "
-"et la sélection de toutes les personnes non touchées"
+msgstr "Exemples : Comparaison entre la sélection des pixels intersectés et non"
 
 #. Tag: title
 #, no-c-format
@@ -40937,7 +40936,7 @@ msgstr ""
 msgid "Tests if a geometry is entirely inside a distance of another"
 msgstr ""
 "Teste si une géométrie se trouve entièrement à une distance d'une autre "
-"géométrie."
+"géométrie"
 
 #. Tag: para
 #, no-c-format
@@ -47462,8 +47461,8 @@ msgid ""
 msgstr ""
 "Dans certaines situations, il est souhaitable de corriger automatiquement la "
 "géométrie non valide. Utilisez la fonction <xref linkend=\"ST_MakeValid\"/> "
-"pour ce faire. (<code>ST_MakeValid</code> est un exemple de fonction "
-"spatiale qui <emphasis>doit</emphasis> permettre une entrée non valide!)"
+"pour cela. (<code>ST_MakeValid</code> est un exemple de fonction spatiale "
+"qui <emphasis>doit</emphasis> permettre une entrée non valide !)"
 
 #. Tag: para
 #, no-c-format
