@@ -2044,7 +2044,7 @@ double lwgeom_length_2d(const LWGEOM *geom)
 		return lwcircstring_length_2d((LWCIRCSTRING*)geom);
 	else if ( type == COMPOUNDTYPE )
 		return lwcompound_length_2d((LWCOMPOUND*)geom);
-	else if ( lwgeom_is_collection(geom) )
+	else if ( type != CURVEPOLYTYPE && lwgeom_is_collection(geom) )
 	{
 		double length = 0.0;
 		uint32_t i;
