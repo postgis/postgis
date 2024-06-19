@@ -39,7 +39,7 @@ Datum transform(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
 Datum transform_pipeline_geom(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);
-Datum postgis_proj_version_compiled(PG_FUNCTION_ARGS);
+Datum postgis_proj_compiled_version(PG_FUNCTION_ARGS);
 Datum LWGEOM_asKML(PG_FUNCTION_ARGS);
 
 /**
