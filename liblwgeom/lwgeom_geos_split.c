@@ -422,7 +422,7 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWGEOM* blade_in)
 		GEOSGeom_destroy(g1_bounds);
 		GEOSGeom_destroy((GEOSGeometry*)vgeoms[0]);
 		GEOSGeom_destroy(polygons);
-		lwerror("%s [%s] Unexpected return from GEOSpolygonize", __FILE__, __LINE__);
+		lwerror("%s [%d] Unexpected return from GEOSpolygonize", __FILE__, __LINE__);
 		return 0;
 	}
 #endif
