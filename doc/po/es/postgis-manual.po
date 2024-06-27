@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-14 17:56+0000\n"
+"POT-Creation-Date: 2024-06-27 05:26+0000\n"
 "PO-Revision-Date: 2023-09-22 19:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -4612,12 +4612,8 @@ msgid ""
 "Adds a linestring to an existing topology and returns a set of edge "
 "identifiers forming it up. The given line will snap to existing nodes or "
 "edges within given tolerance. Existing edges and faces may be split by the "
-"line."
+"line. New nodes and faces may be added."
 msgstr ""
-"Agrega una cadena de línea a una topología existente y devuelve un conjunto "
-"de identificadores de borde que la forman. La línea dada se ajustará a los "
-"nodos o aristas existentes dentro de la tolerancia dada. Las aristas y caras "
-"existentes se pueden dividir por la línea."
 
 #. Tag: para
 #, no-c-format
@@ -5886,6 +5882,13 @@ msgstr ""
 "La geometría de <varname>aline</varname> debe tener el mismo <varname>srid</"
 "varname> que el definido para la topología de lo contrario se lanzará un "
 "error de sistema de referencia espacial no válido."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"TopoGeo_AddLineString\"/> "
+"instead."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -9071,6 +9074,11 @@ msgstr "Dane Springmeyer"
 
 #. Tag: member
 #, no-c-format
+msgid "Dapeng Wang"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Daryl Herzmann"
 msgstr ""
 
@@ -9431,6 +9439,11 @@ msgstr ""
 
 #. Tag: member
 #, no-c-format
+msgid "Sam Peters"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Sebastiaan Couwenberg"
 msgstr ""
 
@@ -9527,6 +9540,11 @@ msgstr ""
 #. Tag: member
 #, no-c-format
 msgid "Volf Tomáš"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Zuo Chenwei"
 msgstr ""
 
 #. Tag: term
@@ -9631,6 +9649,11 @@ msgstr ""
 #. Tag: link
 #, no-c-format
 msgid "Geographic Data BC"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "HighGo"
 msgstr ""
 
 #. Tag: simpara
@@ -10568,8 +10591,7 @@ msgid ""
 "&reference_relationship; &reference_measure; &reference_overlay; "
 "&reference_processing; &reference_coverage; &reference_transformation; "
 "&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
-"&reference_transaction; &reference_version; &reference_guc; "
-"&reference_troubleshooting;"
+"&reference_version; &reference_guc; &reference_troubleshooting;"
 msgstr ""
 
 #. Tag: title
@@ -15355,6 +15377,215 @@ msgstr ""
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Repeated point removal with a "
 "distance tolerance."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Removes points that are irrelevant for rendering a specific rectangluar view "
+"of a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a <xref linkend=\"geometry\"/> without points being irrelevant for "
+"rendering the geometry within a given rectangluar view."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This function can be used to quickly preprocess geometries that should be "
+"rendered only within certain bounds."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING are evaluated. "
+"Other geometries keep unchanged."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "In contrast to <code>ST_ClipByBox2D()</code> this function"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"sorts out points without computing new intersection points which avoids "
+"rounding errors and usually increases performance,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "returns a geometry with equal or similar point number,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "leads to the same rendering result within the specified view, and"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"may introduce self-intersections which would make the resulting geometry "
+"invalid (see example below)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For polygons, this function does currently not ensure that the result is "
+"valid. This situation can be checked with <xref linkend=\"ST_IsValid\"/> and "
+"repaired with <xref linkend=\"ST_MakeValid\"/>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Example: ST_RemoveIrrelevantPointsForView() applied to a polygon. Blue "
+"points remain, the rendering result (light-blue area) within the grey view "
+"box remains as well."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Example: Due to the fact that points are just sorted out and no new points "
+"are computed, the result of ST_RemoveIrrelevantPointsForView() may contain "
+"self-intersections."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Intersection\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Removes small parts (polygon rings or linestrings) of a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a <xref linkend=\"geometry\"/> without small parts (exterior or "
+"interior polygon rings, or linestrings)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This function can be used as preprocessing step for creating simplified "
+"maps, e. g. to remove small islands or holes."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"It evaluates only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING. "
+"Other geometries remain unchanged."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If <parameter>minSizeX</parameter> is greater than 0, parts are sorted out "
+"if their width is smaller than <parameter>minSizeX</parameter>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If <parameter>minSizeY</parameter> is greater than 0, parts are sorted out "
+"if their height is smaller than <parameter>minSizeY</parameter>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Both <parameter>minSizeX</parameter> and <parameter>minSizeY</parameter> are "
+"measured in coordinate system units of the geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For polygon types, evaluation is done separately for each ring which can "
+"lead to one of the following results:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "the original geometry,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "a POLYGON with all rings with less vertices,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"a POLYGON with a reduced number of interior rings (having possibly less "
+"vertices),"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "a POLYGON EMPTY, or"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"a MULTIPOLYGON with a reduced number of polygons (having possibly less "
+"interior rings or vertices), or"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "a MULTIPOLYGON EMPTY."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For linestring types, evaluation is done for each linestring which can lead "
+"to one of the following results:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "a LINESTRING with a reduced number of vertices,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "a LINESTRING EMPTY,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"a MULTILINESTRING with a reduced number of linestrings (having possibly less "
+"vertices), or"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "a MULTILINESTRING EMPTY."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Example: ST_RemoveSmallParts() applied to a multi-polygon. Blue parts remain."
 msgstr ""
 
 #. Tag: refpurpose
@@ -24051,6 +24282,13 @@ msgstr ""
 msgid ""
 "'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). "
 "'miter_limit' is also accepted as a synonym for 'mitre_limit'."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Behavior changed in GEOS 3.11 so offset curves now have the same direction "
+"as the input line, for both positive and negative offsets."
 msgstr ""
 
 #. Tag: para
@@ -33045,7 +33283,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"In mathematical terms: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) ≠ ∅) ∧ "
+"In mathematical terms: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) = ∅) ∧ "
 "(A ⋂ B ≠ ∅) </emphasis>"
 msgstr ""
 
@@ -33458,13 +33696,6 @@ msgstr ""
 msgid "Check if a surface is or not planar"
 msgstr ""
 
-#. Tag: para
-#, no-c-format
-msgid ""
-"Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
-"out in 2.1 release."
-msgstr ""
-
 #. Tag: refpurpose
 #, no-c-format
 msgid "Test if the geometry is a solid. No validity check is performed."
@@ -33536,8 +33767,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
-"linkend=\"ST_Area\"/>"
+", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>, <xref "
+"linkend=\"CG_Area\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -33545,6 +33776,76 @@ msgstr ""
 msgid ""
 "Computes the volume of a 3D solid. If applied to surface (even closed) "
 "geometries will return 0."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as CG_3DVolume)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When closed surfaces are created with WKT, they are treated as areal rather "
+"than solid. To make them solid, you need to use <xref "
+"linkend=\"CG_MakeSolid\"/>. Areal geometries have no volume. Here is an "
+"example to demonstrate."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_ForceLHR\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_IsPlanar\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
+"out in 2.1 release."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_IsSolid\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_MakeSolid\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_Orientation\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DArea\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
+"linkend=\"ST_Area\"/>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Volume\"/> instead."
 msgstr ""
 
 #. Tag: para
@@ -33584,11 +33885,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "NOTE: this function returns a geometry representing the intersection."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_Intersection\"/>"
 msgstr ""
 
 #. Tag: para
@@ -33639,6 +33935,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DDifference\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Returns that part of geom1 that is not part of geom2."
 msgstr ""
 
@@ -33664,8 +33966,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
-"linkend=\"ST_3DUnion\"/>"
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
+"linkend=\"CG_3DUnion\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -33687,7 +33989,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_Distance\"/>"
+msgid ", <xref linkend=\"CG_Distance\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -33719,6 +34021,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DConvexHull\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Original geometry overlaid with 3D convex hull"
 msgstr ""
 
@@ -33730,6 +34038,12 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Perform 3D intersection"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DIntersection\"/> instead."
 msgstr ""
 
 #. Tag: para
@@ -33786,6 +34100,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DUnion\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Availability: 3.3.0 aggregate variant was added"
 msgstr ""
 
@@ -33794,6 +34113,16 @@ msgstr ""
 msgid ""
 "<emphasis role=\"bold\">Aggregate variant:</emphasis> returns a geometry "
 "that is the 3D union of a rowset of geometries. The ST_3DUnion() function is "
+"an \"aggregate\" function in the terminology of PostgreSQL. That means that "
+"it operates on rows of data, in the same way the SUM() and AVG() functions "
+"do and like most aggregates, it also ignores NULL geometries."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<emphasis role=\"bold\">Aggregate variant:</emphasis> returns a geometry "
+"that is the 3D union of a rowset of geometries. The CG_3DUnion() function is "
 "an \"aggregate\" function in the terminology of PostgreSQL. That means that "
 "it operates on rows of data, in the same way the SUM() and AVG() functions "
 "do and like most aggregates, it also ignores NULL geometries."
@@ -33812,13 +34141,19 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
-"linkend=\"ST_3DDifference\"/>"
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
+"linkend=\"CG_3DDifference\"/>"
 msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes an Alpha-shape enclosing a geometry"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_AlphaShape\"/> instead."
 msgstr ""
 
 #. Tag: para
@@ -33870,21 +34205,21 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1."
+msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.4.1."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Alpha-shape of a MultiPoint (same example As <xref "
-"linkend=\"ST_OptimalAlphaShape\"/>)"
+"linkend=\"CG_OptimalAlphaShape\"/>)"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
-"linkend=\"ST_OptimalAlphaShape\"/>)"
+"linkend=\"CG_OptimalAlphaShape\"/>)"
 msgstr ""
 
 #. Tag: para
@@ -33896,7 +34231,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
+msgid ", <xref linkend=\"CG_OptimalAlphaShape\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -33962,6 +34297,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_ApproximateMedialAxis\"/> "
+"instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "Return an approximate medial axis for the areal input based on its straight "
 "skeleton. Uses an SFCGAL specific API when built against a capable version "
 "(1.2.0+). Otherwise the function is just a wrapper around "
@@ -33982,6 +34324,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"is deprecated as of 3.5.0. Use <xref "
+"linkend=\"CG_ConstrainedDelaunayTriangles\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "Return a <link xlink:href=\"https://en.wikipedia.org/wiki/"
 "Constrained_Delaunay_triangulation\">Constrained Delaunay triangulation</"
 "link> around the vertices of the input geometry. Output is a TIN."
@@ -33989,7 +34338,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "ST_ConstrainedDelaunayTriangles of 2 polygons"
+msgid "CG_ConstrainedDelaunayTriangles of 2 polygons"
 msgstr ""
 
 #. Tag: para
@@ -34000,13 +34349,18 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"ST_Tesselate\"/"
+", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"CG_Tesselate\"/"
 ">, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
 msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Extrude a surface to a related volume"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Extrude\"/> instead."
 msgstr ""
 
 #. Tag: para
@@ -34054,7 +34408,7 @@ msgid ""
 "fall down to the contour edges (the roof's border), regardless of where it "
 "falls on the roof. The function computes this extrusion aka \"roof\" on a "
 "polygon. If the argument body_height > 0, so the polygon is extruded like "
-"with ST_Extrude(polygon, 0, 0, body_height). The result is an union of these "
+"with CG_Extrude(polygon, 0, 0, body_height). The result is an union of these "
 "polyhedralsurfaces."
 msgstr ""
 
@@ -34087,6 +34441,12 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Performs Minkowski sum"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_MinkowskiSum\"/> instead."
 msgstr ""
 
 #. Tag: para
@@ -34160,6 +34520,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_OptimalAlphaShape\"/> "
+"instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "Computes the \"optimal\" alpha-shape of the points in a geometry. The alpha-"
 "shape is computed using a value of α chosen so that:"
 msgstr ""
@@ -34185,21 +34552,26 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 "Optimal alpha-shape of a MultiPoint (same example as <xref "
-"linkend=\"ST_AlphaShape\"/>)"
+"linkend=\"CG_AlphaShape\"/>)"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref "
-"linkend=\"ST_AlphaShape\"/>)"
+"linkend=\"CG_AlphaShape\"/>)"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_AlphaShape\"/>"
+msgid ", <xref linkend=\"CG_AlphaShape\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -34252,11 +34624,24 @@ msgstr ""
 msgid "Straight Skeleton of polygon"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_StraightSkeleton\"/> "
+"instead."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Perform surface Tesselation of a polygon or polyhedralsurface and returns as "
 "a TIN or collection of TINS"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_Tesselate\"/> instead."
 msgstr ""
 
 #. Tag: para
@@ -34937,196 +35322,6 @@ msgid ""
 ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
 "linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""
-
-#. Tag: title
-#, fuzzy, no-c-format
-msgid "Long Transaction Support"
-msgstr "Soporte para transacciones grandes"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"These functions implement a row locking mechanism to support long "
-"transactions. They are provided primarily for implementors of the <link "
-"xlink:href=\"http://www.opengeospatial.org/standards/wfs\">Web Feature "
-"Service</link> specification."
-msgstr ""
-"Este módulo y las funciones asociadas pl/pgsql se han implementado para "
-"proporcionar soporte a bloqueos extensos que son requeridos por la "
-"especificación <link xlink:href=\"http://www.opengeospatial.org/standards/"
-"wfs\">Web Feature Service</link>"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"For the locking mechanism to operate correctly the <emphasis "
-"role=\"bold\">serializable</emphasis> <link xlink:href=\"http://www."
-"postgresql.org/docs/current/static/transaction-iso.html\"> transaction "
-"isolation level</link> must be used."
-msgstr ""
-"Los usuarios deben usar <link xlink:href=\"http://www.postgresql.org/docs/"
-"current/static/transaction-iso.html\">el nivel de transacción en serie</"
-"link> sino se rompería el mecanismo de bloqueo."
-
-#. Tag: refpurpose
-#, fuzzy, no-c-format
-msgid ""
-"<refpurpose>Adds an authorization token to be used in the current "
-"transaction.</refpurpose>"
-msgstr ""
-"<refpurpose>Agrega un testigo de autorización para usarlo en la transacción "
-"actual.</refpurpose>"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<para>Adds an authorization token to be used in the current transaction.</"
-"para>"
-msgstr ""
-"<para>Agrega un testigo de autorización para usarlo en la transacción actual."
-"</para>"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Adds the current transaction identifier and authorization token to a "
-"temporary table called <varname>temp_lock_have_table</varname>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 1.1.3"
-msgstr "Disponibilidad: 1.1.3"
-
-#. Tag: refpurpose
-#, fuzzy, no-c-format
-msgid ""
-"Creates a trigger on a table to prevent/allow updates and deletes of rows "
-"based on authorization token."
-msgstr ""
-"Crea un disparador sobre una tabla para prevenir/permitir actualizaciones y "
-"borrados de filas basados en el testigo de autorización."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"Creates trigger on a table to prevent/allow updates and deletes of rows "
-"based on an authorization token. Identify rows using &lt;rowid_col&gt; "
-"column."
-msgstr ""
-"Crea un disparador sobre una tabla para prevenir/permitir actualizaciones y "
-"borrado de filas basado en el testigo de autorizaciones. Identifica filas "
-"usando la columna &lt;rowid_col&gt; ."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If a_schema_name is not passed in, then searches for table in current schema."
-msgstr ""
-"Si no se le pasa un nombre de esquema, a_schema_name, busca la tabla en el "
-"esquema actual."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If an authorization trigger already exists on this table function errors."
-msgstr ""
-"Si ya existe un disparador de autorización sobre esta tabla la función da "
-"error."
-
-#. Tag: para
-#, no-c-format
-msgid "If Transaction support is not enabled, function throws an exception."
-msgstr ""
-"Si no está habilitado el soporte de transacciones, la función lanza una "
-"excepción."
-
-#. Tag: refpurpose
-#, fuzzy, no-c-format
-msgid "Disables long transaction support."
-msgstr "DisableLongTransactions"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"Disables long transaction support. This function removes the long "
-"transaction support metadata tables, and drops all triggers attached to lock-"
-"checked tables."
-msgstr ""
-"Deshabilita el soporte de transacciones grandes. Esta función elimina las "
-"tablas de metadatos para soporte de transacciones grandes, y borra todos los "
-"disparadores vinculados a las tablas de comprobación de bloqueos."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Drops meta table called <varname>authorization_table</varname> and a view "
-"called <varname>authorized_tables</varname> and all triggers called "
-"<varname>checkauthtrigger</varname>"
-msgstr ""
-"Elimina la meta tabla llamada <varname>authorization_table</varname> y una "
-"vista llamada <varname>authorized_tables</varname> y todos los disparadores "
-"llamados <varname>checkauthtrigger</varname>"
-
-#. Tag: refpurpose
-#, fuzzy, no-c-format
-msgid "Enables long transaction support."
-msgstr "EnableLongTransactions"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"Enables long transaction support. This function creates the required "
-"metadata tables. It must be called once before using the other functions in "
-"this section. Calling it twice is harmless."
-msgstr ""
-"Habilita el soporte de transacciones grandes. Esta función crea las tablas "
-"de metadatos requeridas, necesita ser llamada una vez antes de usar las "
-"otras funciones en esta sección. Llamarla más de una vez no produce "
-"problemas."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Creates a meta table called <varname>authorization_table</varname> and a "
-"view called <varname>authorized_tables</varname>"
-msgstr ""
-"Crea una meta tabla llamada <varname>authorization_table</varname> y una "
-"vista llamada <varname>authorized_tables</varname>"
-
-#. Tag: refpurpose
-#, fuzzy, no-c-format
-msgid "Sets lock/authorization for a row in a table."
-msgstr "Configura el bloqueo/autorización para una fila específica de la tabla"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Sets lock/authorization for a specific row in a table. "
-"<varname>an_auth_token</varname> is a text value. <varname>expire_dt</"
-"varname> is a timestamp which defaults to <emphasis>now() + 1 hour</"
-"emphasis>. Returns 1 if lock has been assigned, 0 otherwise (i.e. row is "
-"already locked by another auth.)"
-msgstr ""
-"Establece el bloqueo/autorización para una fila específica de una tabla. "
-"<varname>an_auth_token</varname> es un valor de texto. <varname>expire_dt</"
-"varname> es una marca de tiempo que por defecto es <emphasis>now() + 1 hora</"
-"emphasis>. Devuelve 1 si se ha asignado el bloqueo, 0 en caso contrario (es "
-"decir, la fila ya está bloqueada por otro auth.)"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Removes all locks held by an authorization token."
-msgstr ""
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"Removes all locks held by specified authorization token. Returns the number "
-"of locks released."
-msgstr ""
-"Retira todos los bloqueos mantenidos por el id de la autorización "
-"especificada. Devuelve el número de bloqueos liberados."
 
 #. Tag: title
 #, no-c-format
@@ -36206,9 +36401,24 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
-"linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/"
-">, <xref linkend=\"PostGIS_Version\"/>"
+", <xref linkend=\"PostGIS_Full_Version\"/>, <xref "
+"linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, "
+"<xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Returns the version number of the PROJ library against which PostGIS was "
+"built."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the version number of the PROJ library, or against which PostGIS was "
+"built."
 msgstr ""
 
 #. Tag: refpurpose
@@ -36240,6 +36450,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "<para>Returns build date of the PostGIS scripts.</para>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
+"linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/"
+">, <xref linkend=\"PostGIS_Version\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -41914,6 +42132,179 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "Adds a linestring to an existing topology and returns a set of edge "
+#~ "identifiers forming it up. The given line will snap to existing nodes or "
+#~ "edges within given tolerance. Existing edges and faces may be split by "
+#~ "the line."
+#~ msgstr ""
+#~ "Agrega una cadena de línea a una topología existente y devuelve un "
+#~ "conjunto de identificadores de borde que la forman. La línea dada se "
+#~ "ajustará a los nodos o aristas existentes dentro de la tolerancia dada. "
+#~ "Las aristas y caras existentes se pueden dividir por la línea."
+
+#, fuzzy, no-c-format
+#~ msgid "Long Transaction Support"
+#~ msgstr "Soporte para transacciones grandes"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "These functions implement a row locking mechanism to support long "
+#~ "transactions. They are provided primarily for implementors of the <link "
+#~ "xlink:href=\"http://www.opengeospatial.org/standards/wfs\">Web Feature "
+#~ "Service</link> specification."
+#~ msgstr ""
+#~ "Este módulo y las funciones asociadas pl/pgsql se han implementado para "
+#~ "proporcionar soporte a bloqueos extensos que son requeridos por la "
+#~ "especificación <link xlink:href=\"http://www.opengeospatial.org/standards/"
+#~ "wfs\">Web Feature Service</link>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "For the locking mechanism to operate correctly the <emphasis "
+#~ "role=\"bold\">serializable</emphasis> <link xlink:href=\"http://www."
+#~ "postgresql.org/docs/current/static/transaction-iso.html\"> transaction "
+#~ "isolation level</link> must be used."
+#~ msgstr ""
+#~ "Los usuarios deben usar <link xlink:href=\"http://www.postgresql.org/docs/"
+#~ "current/static/transaction-iso.html\">el nivel de transacción en serie</"
+#~ "link> sino se rompería el mecanismo de bloqueo."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<refpurpose>Adds an authorization token to be used in the current "
+#~ "transaction.</refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>Agrega un testigo de autorización para usarlo en la "
+#~ "transacción actual.</refpurpose>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<para>Adds an authorization token to be used in the current transaction.</"
+#~ "para>"
+#~ msgstr ""
+#~ "<para>Agrega un testigo de autorización para usarlo en la transacción "
+#~ "actual.</para>"
+
+#, no-c-format
+#~ msgid "Availability: 1.1.3"
+#~ msgstr "Disponibilidad: 1.1.3"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Creates a trigger on a table to prevent/allow updates and deletes of rows "
+#~ "based on authorization token."
+#~ msgstr ""
+#~ "Crea un disparador sobre una tabla para prevenir/permitir actualizaciones "
+#~ "y borrados de filas basados en el testigo de autorización."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Creates trigger on a table to prevent/allow updates and deletes of rows "
+#~ "based on an authorization token. Identify rows using &lt;rowid_col&gt; "
+#~ "column."
+#~ msgstr ""
+#~ "Crea un disparador sobre una tabla para prevenir/permitir actualizaciones "
+#~ "y borrado de filas basado en el testigo de autorizaciones. Identifica "
+#~ "filas usando la columna &lt;rowid_col&gt; ."
+
+#, no-c-format
+#~ msgid ""
+#~ "If a_schema_name is not passed in, then searches for table in current "
+#~ "schema."
+#~ msgstr ""
+#~ "Si no se le pasa un nombre de esquema, a_schema_name, busca la tabla en "
+#~ "el esquema actual."
+
+#, no-c-format
+#~ msgid ""
+#~ "If an authorization trigger already exists on this table function errors."
+#~ msgstr ""
+#~ "Si ya existe un disparador de autorización sobre esta tabla la función da "
+#~ "error."
+
+#, no-c-format
+#~ msgid "If Transaction support is not enabled, function throws an exception."
+#~ msgstr ""
+#~ "Si no está habilitado el soporte de transacciones, la función lanza una "
+#~ "excepción."
+
+#, fuzzy, no-c-format
+#~ msgid "Disables long transaction support."
+#~ msgstr "DisableLongTransactions"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Disables long transaction support. This function removes the long "
+#~ "transaction support metadata tables, and drops all triggers attached to "
+#~ "lock-checked tables."
+#~ msgstr ""
+#~ "Deshabilita el soporte de transacciones grandes. Esta función elimina las "
+#~ "tablas de metadatos para soporte de transacciones grandes, y borra todos "
+#~ "los disparadores vinculados a las tablas de comprobación de bloqueos."
+
+#, no-c-format
+#~ msgid ""
+#~ "Drops meta table called <varname>authorization_table</varname> and a view "
+#~ "called <varname>authorized_tables</varname> and all triggers called "
+#~ "<varname>checkauthtrigger</varname>"
+#~ msgstr ""
+#~ "Elimina la meta tabla llamada <varname>authorization_table</varname> y "
+#~ "una vista llamada <varname>authorized_tables</varname> y todos los "
+#~ "disparadores llamados <varname>checkauthtrigger</varname>"
+
+#, fuzzy, no-c-format
+#~ msgid "Enables long transaction support."
+#~ msgstr "EnableLongTransactions"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Enables long transaction support. This function creates the required "
+#~ "metadata tables. It must be called once before using the other functions "
+#~ "in this section. Calling it twice is harmless."
+#~ msgstr ""
+#~ "Habilita el soporte de transacciones grandes. Esta función crea las "
+#~ "tablas de metadatos requeridas, necesita ser llamada una vez antes de "
+#~ "usar las otras funciones en esta sección. Llamarla más de una vez no "
+#~ "produce problemas."
+
+#, no-c-format
+#~ msgid ""
+#~ "Creates a meta table called <varname>authorization_table</varname> and a "
+#~ "view called <varname>authorized_tables</varname>"
+#~ msgstr ""
+#~ "Crea una meta tabla llamada <varname>authorization_table</varname> y una "
+#~ "vista llamada <varname>authorized_tables</varname>"
+
+#, fuzzy, no-c-format
+#~ msgid "Sets lock/authorization for a row in a table."
+#~ msgstr ""
+#~ "Configura el bloqueo/autorización para una fila específica de la tabla"
+
+#, no-c-format
+#~ msgid ""
+#~ "Sets lock/authorization for a specific row in a table. "
+#~ "<varname>an_auth_token</varname> is a text value. <varname>expire_dt</"
+#~ "varname> is a timestamp which defaults to <emphasis>now() + 1 hour</"
+#~ "emphasis>. Returns 1 if lock has been assigned, 0 otherwise (i.e. row is "
+#~ "already locked by another auth.)"
+#~ msgstr ""
+#~ "Establece el bloqueo/autorización para una fila específica de una tabla. "
+#~ "<varname>an_auth_token</varname> es un valor de texto. "
+#~ "<varname>expire_dt</varname> es una marca de tiempo que por defecto es "
+#~ "<emphasis>now() + 1 hora</emphasis>. Devuelve 1 si se ha asignado el "
+#~ "bloqueo, 0 en caso contrario (es decir, la fila ya está bloqueada por "
+#~ "otro auth.)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Removes all locks held by specified authorization token. Returns the "
+#~ "number of locks released."
+#~ msgstr ""
+#~ "Retira todos los bloqueos mantenidos por el id de la autorización "
+#~ "especificada. Devuelve el número de bloqueos liberados."
 
 #, no-c-format
 #~ msgid ""

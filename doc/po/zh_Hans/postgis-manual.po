@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-14 17:56+0000\n"
+"POT-Creation-Date: 2024-06-27 05:26+0000\n"
 "PO-Revision-Date: 2023-12-28 09:45+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -5068,10 +5068,8 @@ msgid ""
 "Adds a linestring to an existing topology and returns a set of edge "
 "identifiers forming it up. The given line will snap to existing nodes or "
 "edges within given tolerance. Existing edges and faces may be split by the "
-"line."
+"line. New nodes and faces may be added."
 msgstr ""
-"将线串添加到现有拓扑并返回组成它的一组边标识符。 给定的线将捕捉到给定公差内的"
-"现有节点或边。 现有的边和面可能会被线分割。"
 
 #. Tag: para
 #, no-c-format
@@ -6230,6 +6228,13 @@ msgid ""
 msgstr ""
 "<varname>aline </varname>的几何形状必须具有与为拓扑定义的相同的 "
 "<varname>srid</varname>，否则将引发无效的空间参考系统错误。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"TopoGeo_AddLineString\"/> "
+"instead."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -9479,6 +9484,11 @@ msgstr "Dane Springmeyer"
 
 #. Tag: member
 #, no-c-format
+msgid "Dapeng Wang"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Daryl Herzmann"
 msgstr "Daryl Herzmann"
 
@@ -9839,6 +9849,11 @@ msgstr "Ron Mayer"
 
 #. Tag: member
 #, no-c-format
+msgid "Sam Peters"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Sebastiaan Couwenberg"
 msgstr "Sebastiaan Couwenberg"
 
@@ -9936,6 +9951,11 @@ msgstr "Vincent Picavet"
 #, no-c-format
 msgid "Volf Tomáš"
 msgstr "Volf Tomáš"
+
+#. Tag: member
+#, no-c-format
+msgid "Zuo Chenwei"
+msgstr ""
 
 #. Tag: term
 #, no-c-format
@@ -10039,6 +10059,11 @@ msgstr "Faunalia"
 #, no-c-format
 msgid "Geographic Data BC"
 msgstr "Geographic Data BC"
+
+#. Tag: link
+#, no-c-format
+msgid "HighGo"
+msgstr ""
 
 #. Tag: simpara
 #, no-c-format
@@ -10985,17 +11010,8 @@ msgid ""
 "&reference_relationship; &reference_measure; &reference_overlay; "
 "&reference_processing; &reference_coverage; &reference_transformation; "
 "&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
-"&reference_transaction; &reference_version; &reference_guc; "
-"&reference_troubleshooting;"
+"&reference_version; &reference_guc; &reference_troubleshooting;"
 msgstr ""
-"&reference_type; &reference_management; &reference_constructor; "
-"&reference_accessor; &reference_editor; &reference_validation; "
-"&reference_srs; &reference_input; &reference_output; &reference_operator; "
-"&reference_relationship; &reference_measure; &reference_overlay; "
-"&reference_processing; &reference_coverage; &reference_transformation; "
-"&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
-"&reference_transaction; &reference_version; &reference_guc; "
-"&reference_troubleshooting;"
 
 #. Tag: title
 #, no-c-format
@@ -16060,6 +16076,215 @@ msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Repeated point removal with a "
 "distance tolerance."
 msgstr "<emphasis role=\"bold\">示例:</emphasis> 删除在容差距离内的重复点。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Removes points that are irrelevant for rendering a specific rectangluar view "
+"of a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a <xref linkend=\"geometry\"/> without points being irrelevant for "
+"rendering the geometry within a given rectangluar view."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This function can be used to quickly preprocess geometries that should be "
+"rendered only within certain bounds."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING are evaluated. "
+"Other geometries keep unchanged."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "In contrast to <code>ST_ClipByBox2D()</code> this function"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"sorts out points without computing new intersection points which avoids "
+"rounding errors and usually increases performance,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "returns a geometry with equal or similar point number,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "leads to the same rendering result within the specified view, and"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"may introduce self-intersections which would make the resulting geometry "
+"invalid (see example below)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For polygons, this function does currently not ensure that the result is "
+"valid. This situation can be checked with <xref linkend=\"ST_IsValid\"/> and "
+"repaired with <xref linkend=\"ST_MakeValid\"/>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Example: ST_RemoveIrrelevantPointsForView() applied to a polygon. Blue "
+"points remain, the rendering result (light-blue area) within the grey view "
+"box remains as well."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Example: Due to the fact that points are just sorted out and no new points "
+"are computed, the result of ST_RemoveIrrelevantPointsForView() may contain "
+"self-intersections."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Intersection\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Removes small parts (polygon rings or linestrings) of a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a <xref linkend=\"geometry\"/> without small parts (exterior or "
+"interior polygon rings, or linestrings)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This function can be used as preprocessing step for creating simplified "
+"maps, e. g. to remove small islands or holes."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"It evaluates only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING. "
+"Other geometries remain unchanged."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If <parameter>minSizeX</parameter> is greater than 0, parts are sorted out "
+"if their width is smaller than <parameter>minSizeX</parameter>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If <parameter>minSizeY</parameter> is greater than 0, parts are sorted out "
+"if their height is smaller than <parameter>minSizeY</parameter>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Both <parameter>minSizeX</parameter> and <parameter>minSizeY</parameter> are "
+"measured in coordinate system units of the geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For polygon types, evaluation is done separately for each ring which can "
+"lead to one of the following results:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "the original geometry,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "a POLYGON with all rings with less vertices,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"a POLYGON with a reduced number of interior rings (having possibly less "
+"vertices),"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "a POLYGON EMPTY, or"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"a MULTIPOLYGON with a reduced number of polygons (having possibly less "
+"interior rings or vertices), or"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "a MULTIPOLYGON EMPTY."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For linestring types, evaluation is done for each linestring which can lead "
+"to one of the following results:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "a LINESTRING with a reduced number of vertices,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "a LINESTRING EMPTY,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"a MULTILINESTRING with a reduced number of linestrings (having possibly less "
+"vertices), or"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "a MULTILINESTRING EMPTY."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Example: ST_RemoveSmallParts() applied to a multi-polygon. Blue parts remain."
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -25738,6 +25963,13 @@ msgid ""
 msgstr ""
 "'mitre_limit=#.#' ：斜接比率限制（仅影响斜接连接样式）。 “miter_limit”也被接"
 "受为“mitre_limit”的同义词。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Behavior changed in GEOS 3.11 so offset curves now have the same direction "
+"as the input line, for both positive and negative offsets."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -36489,11 +36721,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"In mathematical terms: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) ≠ ∅) ∧ "
+"In mathematical terms: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) = ∅) ∧ "
 "(A ⋂ B ≠ ∅) </emphasis>"
 msgstr ""
-"用数学术语来说： <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) ≠ ∅) ∧ (A ⋂ B "
-"≠ ∅)</emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -36958,13 +37188,6 @@ msgstr "强制 LHR 方向"
 msgid "Check if a surface is or not planar"
 msgstr "检查表面是否平坦"
 
-#. Tag: para
-#, no-c-format
-msgid ""
-"Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
-"out in 2.1 release."
-msgstr "可用性：2.2.0：这在 2.1.0 中已记录，但在 2.1 版本中意外遗漏。"
-
 #. Tag: refpurpose
 #, no-c-format
 msgid "Test if the geometry is a solid. No validity check is performed."
@@ -37042,11 +37265,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
-"linkend=\"ST_Area\"/>"
+", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>, <xref "
+"linkend=\"CG_Area\"/>"
 msgstr ""
-", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
-"linkend=\"ST_Area\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37054,6 +37275,78 @@ msgid ""
 "Computes the volume of a 3D solid. If applied to surface (even closed) "
 "geometries will return 0."
 msgstr "计算 3D 实体的体积。 如果应用于表面（甚至闭合）几何图形将返回 0。"
+
+#. Tag: para
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as CG_3DVolume)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When closed surfaces are created with WKT, they are treated as areal rather "
+"than solid. To make them solid, you need to use <xref "
+"linkend=\"CG_MakeSolid\"/>. Areal geometries have no volume. Here is an "
+"example to demonstrate."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_ForceLHR\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_IsPlanar\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
+"out in 2.1 release."
+msgstr "可用性：2.2.0：这在 2.1.0 中已记录，但在 2.1 版本中意外遗漏。"
+
+#. Tag: para
+#, no-c-format
+msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_IsSolid\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_MakeSolid\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_Orientation\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DArea\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
+"linkend=\"ST_Area\"/>"
+msgstr ""
+", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
+"linkend=\"ST_Area\"/>"
+
+#. Tag: para
+#, no-c-format
+msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Volume\"/> instead."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -37095,11 +37388,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "NOTE: this function returns a geometry representing the intersection."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_Intersection\"/>"
 msgstr ""
 
 #. Tag: para
@@ -37150,6 +37438,12 @@ msgstr "执行 3D 差异"
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DDifference\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Returns that part of geom1 that is not part of geom2."
 msgstr "返回 geom1 中不属于 geom2 的部分。"
 
@@ -37178,11 +37472,9 @@ msgstr "删除geom2后还剩下什么"
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
-"linkend=\"ST_3DUnion\"/>"
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
+"linkend=\"CG_3DUnion\"/>"
 msgstr ""
-", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
-"linkend=\"ST_3DUnion\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37203,7 +37495,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_Distance\"/>"
+msgid ", <xref linkend=\"CG_Distance\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -37235,6 +37527,12 @@ msgstr "计算几何体的 3D 凸包。"
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DConvexHull\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Original geometry overlaid with 3D convex hull"
 msgstr "原始几何体覆盖 3D 凸包"
 
@@ -37247,6 +37545,12 @@ msgstr ", <xref linkend=\"ST_AsX3D\"/>"
 #, no-c-format
 msgid "Perform 3D intersection"
 msgstr "执行 3D 相交"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DIntersection\"/> instead."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -37302,6 +37606,11 @@ msgstr "执行 3D 联合。"
 
 #. Tag: para
 #, no-c-format
+msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DUnion\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Availability: 3.3.0 aggregate variant was added"
 msgstr "可用性：3.3.0 添加了聚合函数格式"
 
@@ -37321,6 +37630,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"<emphasis role=\"bold\">Aggregate variant:</emphasis> returns a geometry "
+"that is the 3D union of a rowset of geometries. The CG_3DUnion() function is "
+"an \"aggregate\" function in the terminology of PostgreSQL. That means that "
+"it operates on rows of data, in the same way the SUM() and AVG() functions "
+"do and like most aggregates, it also ignores NULL geometries."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Original 3D geometries overlaid. geom2 is the one with transparency."
 msgstr "原始 3D 几何图形叠加。 geom2是具有透明度的。"
 
@@ -37332,16 +37651,20 @@ msgstr "geom1 和 geom2 的并集"
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
-"linkend=\"ST_3DDifference\"/>"
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
+"linkend=\"CG_3DDifference\"/>"
 msgstr ""
-", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
-"linkend=\"ST_3DDifference\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes an Alpha-shape enclosing a geometry"
 msgstr "计算包围几何体的 Alpha 形状"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_AlphaShape\"/> instead."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -37409,26 +37732,22 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1."
-msgstr "可用性：3.3.0 - 需要 SFCGAL &gt;= 1.4.1。"
+msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.4.1."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Alpha-shape of a MultiPoint (same example As <xref "
-"linkend=\"ST_OptimalAlphaShape\"/>)"
+"linkend=\"CG_OptimalAlphaShape\"/>)"
 msgstr ""
-"MultiPoint 的 Alpha 形状（与 <xref linkend=\"ST_OptimalAlphaShape\"/> 相同的"
-"示例）"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
-"linkend=\"ST_OptimalAlphaShape\"/>)"
+"linkend=\"CG_OptimalAlphaShape\"/>)"
 msgstr ""
-"MultiPoint 的 Alpha 形状，允许有孔（与 <xref "
-"linkend=\"ST_OptimalAlphaShape\"/>相同的示例）"
 
 #. Tag: para
 #, no-c-format
@@ -37441,8 +37760,8 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
-msgstr ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
+msgid ", <xref linkend=\"CG_OptimalAlphaShape\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37519,6 +37838,13 @@ msgstr "计算几何区域的近似中轴。"
 #. Tag: para
 #, no-c-format
 msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_ApproximateMedialAxis\"/> "
+"instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "Return an approximate medial axis for the areal input based on its straight "
 "skeleton. Uses an SFCGAL specific API when built against a capable version "
 "(1.2.0+). Otherwise the function is just a wrapper around "
@@ -37539,6 +37865,13 @@ msgstr "返回围绕给定输入几何体的约束 Delaunay 三角剖分。"
 #. Tag: para
 #, no-c-format
 msgid ""
+"is deprecated as of 3.5.0. Use <xref "
+"linkend=\"CG_ConstrainedDelaunayTriangles\"/> instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "Return a <link xlink:href=\"https://en.wikipedia.org/wiki/"
 "Constrained_Delaunay_triangulation\">Constrained Delaunay triangulation</"
 "link> around the vertices of the input geometry. Output is a TIN."
@@ -37549,8 +37882,8 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "ST_ConstrainedDelaunayTriangles of 2 polygons"
-msgstr "2 个多边形的ST_ConstrainedDelaunayTriangles"
+msgid "CG_ConstrainedDelaunayTriangles of 2 polygons"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -37560,16 +37893,19 @@ msgstr "2 个多边形。 三角形边与多边形边界相交。"
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"ST_Tesselate\"/"
+", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"CG_Tesselate\"/"
 ">, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
 msgstr ""
-", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"ST_Tesselate\"/"
-">, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Extrude a surface to a related volume"
 msgstr "将曲面挤出到相关体积"
+
+#. Tag: para
+#, no-c-format
+msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Extrude\"/> instead."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -37616,15 +37952,9 @@ msgid ""
 "fall down to the contour edges (the roof's border), regardless of where it "
 "falls on the roof. The function computes this extrusion aka \"roof\" on a "
 "polygon. If the argument body_height > 0, so the polygon is extruded like "
-"with ST_Extrude(polygon, 0, 0, body_height). The result is an union of these "
+"with CG_Extrude(polygon, 0, 0, body_height). The result is an union of these "
 "polyhedralsurfaces."
 msgstr ""
-"或许是直线骨架的最早应用案例之一：给定一个多边形屋顶，直线骨架直接提供了每个"
-"建筑物的布局。如果将每个骨架边沿其偏移距离从平面抬升到相应的高度，得到的屋顶"
-"是“正确”的，因为水将始终流向轮廓边缘（屋顶的边界），无论它在屋顶的哪个位置下"
-"落。该函数计算多边形的这种挤出，又称“屋顶”。如果参数 body_height > 0，则多边"
-"形就像使用 ST_Extrude(polygon, 0, 0, body_height) 一样挤出。结果是这些多面体"
-"表面的并集。"
 
 #. Tag: para
 #, no-c-format
@@ -37661,6 +37991,12 @@ msgstr ""
 #, no-c-format
 msgid "Performs Minkowski sum"
 msgstr "执行 Minkowski sum"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_MinkowskiSum\"/> instead."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -37742,6 +38078,13 @@ msgstr "使用“最佳”alpha 值计算包围几何体的 Alpha 形状。"
 #. Tag: para
 #, no-c-format
 msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_OptimalAlphaShape\"/> "
+"instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "Computes the \"optimal\" alpha-shape of the points in a geometry. The alpha-"
 "shape is computed using a value of α chosen so that:"
 msgstr ""
@@ -37770,26 +38113,27 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1."
+msgstr "可用性：3.3.0 - 需要 SFCGAL &gt;= 1.4.1。"
+
+#. Tag: para
+#, no-c-format
 msgid ""
 "Optimal alpha-shape of a MultiPoint (same example as <xref "
-"linkend=\"ST_AlphaShape\"/>)"
+"linkend=\"CG_AlphaShape\"/>)"
 msgstr ""
-"MultiPoint 的最佳 alpha 形状（与 <xref linkend=\"ST_AlphaShape\"/> 相同的示"
-"例）"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref "
-"linkend=\"ST_AlphaShape\"/>)"
+"linkend=\"CG_AlphaShape\"/>)"
 msgstr ""
-"MultiPoint 的最佳 alpha 形状（与<xref linkend=\"ST_AlphaShape\"/> 相同的示"
-"例）"
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_AlphaShape\"/>"
-msgstr ", <xref linkend=\"ST_AlphaShape\"/>"
+msgid ", <xref linkend=\"CG_AlphaShape\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37849,12 +38193,25 @@ msgstr ""
 msgid "Straight Skeleton of polygon"
 msgstr "多边形的直骨架"
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_StraightSkeleton\"/> "
+"instead."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Perform surface Tesselation of a polygon or polyhedralsurface and returns as "
 "a TIN or collection of TINS"
 msgstr "对多边形或多面体表面执行曲面细分，并以 TIN 或 TINS 集合的形式返回"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"is deprecated as of 3.5.0. Use <xref linkend=\"CG_Tesselate\"/> instead."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -38649,178 +39006,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
 "linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
-
-#. Tag: title
-#, no-c-format
-msgid "Long Transaction Support"
-msgstr "长事务支持"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"These functions implement a row locking mechanism to support long "
-"transactions. They are provided primarily for implementors of the <link "
-"xlink:href=\"http://www.opengeospatial.org/standards/wfs\">Web Feature "
-"Service</link> specification."
-msgstr ""
-"这些函数实现行锁定机制来支持长事务。 它们主要是为 <link xlink:href=\"http://"
-"www.opengeospatial.org/standards/wfs\">Web 要素服务</link>规范的实现者提供"
-"的。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"For the locking mechanism to operate correctly the <emphasis "
-"role=\"bold\">serializable</emphasis> <link xlink:href=\"http://www."
-"postgresql.org/docs/current/static/transaction-iso.html\"> transaction "
-"isolation level</link> must be used."
-msgstr ""
-"为了使锁定机制正确运行，必须使用<emphasis role=\"bold\">可序列化</"
-"emphasis><link xlink:href=\"http://www.postgresql.org/docs/current/static/"
-"transaction-iso.html\">事务隔离级别</link>。"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"<refpurpose>Adds an authorization token to be used in the current "
-"transaction.</refpurpose>"
-msgstr "<refpurpose>添加要在当前事务中使用的授权令牌。</refpurpose>"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<para>Adds an authorization token to be used in the current transaction.</"
-"para>"
-msgstr "<para>添加要在当前事务中使用的授权令牌。</para>"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Adds the current transaction identifier and authorization token to a "
-"temporary table called <varname>temp_lock_have_table</varname>."
-msgstr ""
-"将当前事务标识符和授权令牌添加到名为 <varname>temp_lock_have_table </varname>"
-"的临时表中。"
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 1.1.3"
-msgstr "可用性：1.1.3"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Creates a trigger on a table to prevent/allow updates and deletes of rows "
-"based on authorization token."
-msgstr "在表上创建触发器，以根据授权令牌阻止/允许更新和删除行。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Creates trigger on a table to prevent/allow updates and deletes of rows "
-"based on an authorization token. Identify rows using &lt;rowid_col&gt; "
-"column."
-msgstr ""
-"在表上创建触发器以防止/允许基于授权令牌更新和删除行。 使用 &lt;rowid_col&gt; "
-"列标识行。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If a_schema_name is not passed in, then searches for table in current schema."
-msgstr "如果未传入a_schema_name，则在当前模式中搜索表。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If an authorization trigger already exists on this table function errors."
-msgstr "如果该表上已存在授权触发器，则函数会出错。"
-
-#. Tag: para
-#, no-c-format
-msgid "If Transaction support is not enabled, function throws an exception."
-msgstr "如果未启用事务支持，函数将引发异常。"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Disables long transaction support."
-msgstr "禁用长事务支持。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Disables long transaction support. This function removes the long "
-"transaction support metadata tables, and drops all triggers attached to lock-"
-"checked tables."
-msgstr ""
-"禁用长事务支持。 此函数删除长事务支持元数据表，并删除附加到锁定检查表的所有触"
-"发器。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Drops meta table called <varname>authorization_table</varname> and a view "
-"called <varname>authorized_tables</varname> and all triggers called "
-"<varname>checkauthtrigger</varname>"
-msgstr ""
-"删除名为<varname>authorization_table</varname>的元表和名为"
-"<varname>authorized_tables</varname>的视图以及名为<varname>checkauthtrigger</"
-"varname>的所有触发器"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Enables long transaction support."
-msgstr "启用长事务支持。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Enables long transaction support. This function creates the required "
-"metadata tables. It must be called once before using the other functions in "
-"this section. Calling it twice is harmless."
-msgstr ""
-"启用长事务支持。 该函数创建所需的元数据表。 在使用本节中的其他函数之前必须调"
-"用它一次。 调用两次是无害的。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Creates a meta table called <varname>authorization_table</varname> and a "
-"view called <varname>authorized_tables</varname>"
-msgstr ""
-"创建一个名为<varname>authorization_table</varname>的元表和一个名为"
-"<varname>authorized_tables</varname>的视图"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Sets lock/authorization for a row in a table."
-msgstr "为表中的行设置锁定/授权。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Sets lock/authorization for a specific row in a table. "
-"<varname>an_auth_token</varname> is a text value. <varname>expire_dt</"
-"varname> is a timestamp which defaults to <emphasis>now() + 1 hour</"
-"emphasis>. Returns 1 if lock has been assigned, 0 otherwise (i.e. row is "
-"already locked by another auth.)"
-msgstr ""
-"为表中的特定行设置锁定/授权。 <varname>an_auth_token</varname> 是一个文本"
-"值。 <varname>expiredt</varname> 是一个时间戳，默认为 <emphasis>now() +1 小时"
-"</emphasis>。 如果已分配锁，则返回 1，否则返回 0（即行已被另一个身份验证锁"
-"定。）"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Removes all locks held by an authorization token."
-msgstr "删除授权令牌持有的所有锁。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Removes all locks held by specified authorization token. Returns the number "
-"of locks released."
-msgstr "删除指定授权令牌持有的所有锁。 返回释放的锁的数量。"
 
 #. Tag: title
 #, no-c-format
@@ -40042,13 +40227,25 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
-"linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/"
-">, <xref linkend=\"PostGIS_Version\"/>"
+", <xref linkend=\"PostGIS_Full_Version\"/>, <xref "
+"linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, "
+"<xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_Version\"/>"
 msgstr ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
-"linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/"
-">, <xref linkend=\"PostGIS_Version\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Returns the version number of the PROJ library against which PostGIS was "
+"built."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the version number of the PROJ library, or against which PostGIS was "
+"built."
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40086,6 +40283,17 @@ msgstr "<refpurpose>返回 PostGIS 脚本的构建日期。</refpurpose>"
 #, no-c-format
 msgid "<para>Returns build date of the PostGIS scripts.</para>"
 msgstr "<para>返回 PostGIS 脚本的构建日期。</para>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
+"linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/"
+">, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ""
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
+"linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/"
+">, <xref linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -46334,6 +46542,284 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
+
+#, no-c-format
+#~ msgid ""
+#~ "Adds a linestring to an existing topology and returns a set of edge "
+#~ "identifiers forming it up. The given line will snap to existing nodes or "
+#~ "edges within given tolerance. Existing edges and faces may be split by "
+#~ "the line."
+#~ msgstr ""
+#~ "将线串添加到现有拓扑并返回组成它的一组边标识符。 给定的线将捕捉到给定公差"
+#~ "内的现有节点或边。 现有的边和面可能会被线分割。"
+
+#, no-c-format
+#~ msgid ""
+#~ "&reference_type; &reference_management; &reference_constructor; "
+#~ "&reference_accessor; &reference_editor; &reference_validation; "
+#~ "&reference_srs; &reference_input; &reference_output; &reference_operator; "
+#~ "&reference_relationship; &reference_measure; &reference_overlay; "
+#~ "&reference_processing; &reference_coverage; &reference_transformation; "
+#~ "&reference_cluster; &reference_bbox; &reference_lrs; "
+#~ "&reference_trajectory; &reference_transaction; &reference_version; "
+#~ "&reference_guc; &reference_troubleshooting;"
+#~ msgstr ""
+#~ "&reference_type; &reference_management; &reference_constructor; "
+#~ "&reference_accessor; &reference_editor; &reference_validation; "
+#~ "&reference_srs; &reference_input; &reference_output; &reference_operator; "
+#~ "&reference_relationship; &reference_measure; &reference_overlay; "
+#~ "&reference_processing; &reference_coverage; &reference_transformation; "
+#~ "&reference_cluster; &reference_bbox; &reference_lrs; "
+#~ "&reference_trajectory; &reference_transaction; &reference_version; "
+#~ "&reference_guc; &reference_troubleshooting;"
+
+#, no-c-format
+#~ msgid ""
+#~ "In mathematical terms: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) ≠ ∅) "
+#~ "∧ (A ⋂ B ≠ ∅) </emphasis>"
+#~ msgstr ""
+#~ "用数学术语来说： <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) ≠ ∅) ∧ (A "
+#~ "⋂ B ≠ ∅)</emphasis>"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> "
+#~ "<xref linkend=\"ST_3DUnion\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> "
+#~ "<xref linkend=\"ST_3DUnion\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> "
+#~ "<xref linkend=\"ST_3DDifference\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> "
+#~ "<xref linkend=\"ST_3DDifference\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "Alpha-shape of a MultiPoint (same example As <xref "
+#~ "linkend=\"ST_OptimalAlphaShape\"/>)"
+#~ msgstr ""
+#~ "MultiPoint 的 Alpha 形状（与 <xref linkend=\"ST_OptimalAlphaShape\"/> 相同"
+#~ "的示例）"
+
+#, no-c-format
+#~ msgid ""
+#~ "Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
+#~ "linkend=\"ST_OptimalAlphaShape\"/>)"
+#~ msgstr ""
+#~ "MultiPoint 的 Alpha 形状，允许有孔（与 <xref "
+#~ "linkend=\"ST_OptimalAlphaShape\"/>相同的示例）"
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
+#~ msgstr ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
+
+#, no-c-format
+#~ msgid "ST_ConstrainedDelaunayTriangles of 2 polygons"
+#~ msgstr "2 个多边形的ST_ConstrainedDelaunayTriangles"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref "
+#~ "linkend=\"ST_Tesselate\"/>, <xref linkend=\"ST_ConcaveHull\"/>, <xref "
+#~ "linkend=\"ST_Dump\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref "
+#~ "linkend=\"ST_Tesselate\"/>, <xref linkend=\"ST_ConcaveHull\"/>, <xref "
+#~ "linkend=\"ST_Dump\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "Perhaps the first (historically) use-case of straight skeletons: given a "
+#~ "polygonal roof, the straight skeleton directly gives the layout of each "
+#~ "tent. If each skeleton edge is lifted from the plane a height equal to "
+#~ "its offset distance, the resulting roof is \"correct\" in that water will "
+#~ "always fall down to the contour edges (the roof's border), regardless of "
+#~ "where it falls on the roof. The function computes this extrusion aka "
+#~ "\"roof\" on a polygon. If the argument body_height > 0, so the polygon is "
+#~ "extruded like with ST_Extrude(polygon, 0, 0, body_height). The result is "
+#~ "an union of these polyhedralsurfaces."
+#~ msgstr ""
+#~ "或许是直线骨架的最早应用案例之一：给定一个多边形屋顶，直线骨架直接提供了每"
+#~ "个建筑物的布局。如果将每个骨架边沿其偏移距离从平面抬升到相应的高度，得到的"
+#~ "屋顶是“正确”的，因为水将始终流向轮廓边缘（屋顶的边界），无论它在屋顶的哪个"
+#~ "位置下落。该函数计算多边形的这种挤出，又称“屋顶”。如果参数 body_height > "
+#~ "0，则多边形就像使用 ST_Extrude(polygon, 0, 0, body_height) 一样挤出。结果"
+#~ "是这些多面体表面的并集。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Optimal alpha-shape of a MultiPoint (same example as <xref "
+#~ "linkend=\"ST_AlphaShape\"/>)"
+#~ msgstr ""
+#~ "MultiPoint 的最佳 alpha 形状（与 <xref linkend=\"ST_AlphaShape\"/> 相同的"
+#~ "示例）"
+
+#, no-c-format
+#~ msgid ""
+#~ "Optimal alpha-shape of a MultiPoint, allowing holes (same example as "
+#~ "<xref linkend=\"ST_AlphaShape\"/>)"
+#~ msgstr ""
+#~ "MultiPoint 的最佳 alpha 形状（与<xref linkend=\"ST_AlphaShape\"/> 相同的示"
+#~ "例）"
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"ST_AlphaShape\"/>"
+#~ msgstr ", <xref linkend=\"ST_AlphaShape\"/>"
+
+#, no-c-format
+#~ msgid "Long Transaction Support"
+#~ msgstr "长事务支持"
+
+#, no-c-format
+#~ msgid ""
+#~ "These functions implement a row locking mechanism to support long "
+#~ "transactions. They are provided primarily for implementors of the <link "
+#~ "xlink:href=\"http://www.opengeospatial.org/standards/wfs\">Web Feature "
+#~ "Service</link> specification."
+#~ msgstr ""
+#~ "这些函数实现行锁定机制来支持长事务。 它们主要是为 <link xlink:"
+#~ "href=\"http://www.opengeospatial.org/standards/wfs\">Web 要素服务</link>规"
+#~ "范的实现者提供的。"
+
+#, no-c-format
+#~ msgid ""
+#~ "For the locking mechanism to operate correctly the <emphasis "
+#~ "role=\"bold\">serializable</emphasis> <link xlink:href=\"http://www."
+#~ "postgresql.org/docs/current/static/transaction-iso.html\"> transaction "
+#~ "isolation level</link> must be used."
+#~ msgstr ""
+#~ "为了使锁定机制正确运行，必须使用<emphasis role=\"bold\">可序列化</"
+#~ "emphasis><link xlink:href=\"http://www.postgresql.org/docs/current/static/"
+#~ "transaction-iso.html\">事务隔离级别</link>。"
+
+#, no-c-format
+#~ msgid ""
+#~ "<refpurpose>Adds an authorization token to be used in the current "
+#~ "transaction.</refpurpose>"
+#~ msgstr "<refpurpose>添加要在当前事务中使用的授权令牌。</refpurpose>"
+
+#, no-c-format
+#~ msgid ""
+#~ "<para>Adds an authorization token to be used in the current transaction.</"
+#~ "para>"
+#~ msgstr "<para>添加要在当前事务中使用的授权令牌。</para>"
+
+#, no-c-format
+#~ msgid ""
+#~ "Adds the current transaction identifier and authorization token to a "
+#~ "temporary table called <varname>temp_lock_have_table</varname>."
+#~ msgstr ""
+#~ "将当前事务标识符和授权令牌添加到名为 <varname>temp_lock_have_table </"
+#~ "varname>的临时表中。"
+
+#, no-c-format
+#~ msgid "Availability: 1.1.3"
+#~ msgstr "可用性：1.1.3"
+
+#, no-c-format
+#~ msgid ""
+#~ "Creates a trigger on a table to prevent/allow updates and deletes of rows "
+#~ "based on authorization token."
+#~ msgstr "在表上创建触发器，以根据授权令牌阻止/允许更新和删除行。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Creates trigger on a table to prevent/allow updates and deletes of rows "
+#~ "based on an authorization token. Identify rows using &lt;rowid_col&gt; "
+#~ "column."
+#~ msgstr ""
+#~ "在表上创建触发器以防止/允许基于授权令牌更新和删除行。 使用 &lt;"
+#~ "rowid_col&gt; 列标识行。"
+
+#, no-c-format
+#~ msgid ""
+#~ "If a_schema_name is not passed in, then searches for table in current "
+#~ "schema."
+#~ msgstr "如果未传入a_schema_name，则在当前模式中搜索表。"
+
+#, no-c-format
+#~ msgid ""
+#~ "If an authorization trigger already exists on this table function errors."
+#~ msgstr "如果该表上已存在授权触发器，则函数会出错。"
+
+#, no-c-format
+#~ msgid "If Transaction support is not enabled, function throws an exception."
+#~ msgstr "如果未启用事务支持，函数将引发异常。"
+
+#, no-c-format
+#~ msgid "Disables long transaction support."
+#~ msgstr "禁用长事务支持。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Disables long transaction support. This function removes the long "
+#~ "transaction support metadata tables, and drops all triggers attached to "
+#~ "lock-checked tables."
+#~ msgstr ""
+#~ "禁用长事务支持。 此函数删除长事务支持元数据表，并删除附加到锁定检查表的所"
+#~ "有触发器。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Drops meta table called <varname>authorization_table</varname> and a view "
+#~ "called <varname>authorized_tables</varname> and all triggers called "
+#~ "<varname>checkauthtrigger</varname>"
+#~ msgstr ""
+#~ "删除名为<varname>authorization_table</varname>的元表和名为"
+#~ "<varname>authorized_tables</varname>的视图以及名为"
+#~ "<varname>checkauthtrigger</varname>的所有触发器"
+
+#, no-c-format
+#~ msgid "Enables long transaction support."
+#~ msgstr "启用长事务支持。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Enables long transaction support. This function creates the required "
+#~ "metadata tables. It must be called once before using the other functions "
+#~ "in this section. Calling it twice is harmless."
+#~ msgstr ""
+#~ "启用长事务支持。 该函数创建所需的元数据表。 在使用本节中的其他函数之前必须"
+#~ "调用它一次。 调用两次是无害的。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Creates a meta table called <varname>authorization_table</varname> and a "
+#~ "view called <varname>authorized_tables</varname>"
+#~ msgstr ""
+#~ "创建一个名为<varname>authorization_table</varname>的元表和一个名为"
+#~ "<varname>authorized_tables</varname>的视图"
+
+#, no-c-format
+#~ msgid "Sets lock/authorization for a row in a table."
+#~ msgstr "为表中的行设置锁定/授权。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Sets lock/authorization for a specific row in a table. "
+#~ "<varname>an_auth_token</varname> is a text value. <varname>expire_dt</"
+#~ "varname> is a timestamp which defaults to <emphasis>now() + 1 hour</"
+#~ "emphasis>. Returns 1 if lock has been assigned, 0 otherwise (i.e. row is "
+#~ "already locked by another auth.)"
+#~ msgstr ""
+#~ "为表中的特定行设置锁定/授权。 <varname>an_auth_token</varname> 是一个文本"
+#~ "值。 <varname>expiredt</varname> 是一个时间戳，默认为 <emphasis>now() +1 "
+#~ "小时</emphasis>。 如果已分配锁，则返回 1，否则返回 0（即行已被另一个身份验"
+#~ "证锁定。）"
+
+#, no-c-format
+#~ msgid "Removes all locks held by an authorization token."
+#~ msgstr "删除授权令牌持有的所有锁。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Removes all locks held by specified authorization token. Returns the "
+#~ "number of locks released."
+#~ msgstr "删除指定授权令牌持有的所有锁。 返回释放的锁的数量。"
 
 #, no-c-format
 #~ msgid ""
