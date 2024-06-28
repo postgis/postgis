@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-27 05:26+0000\n"
-"PO-Revision-Date: 2024-06-28 22:08+0000\n"
+"PO-Revision-Date: 2024-06-28 23:45+0000\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ka/>\n"
@@ -24,7 +24,7 @@ msgstr "&database_tuning;"
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Administration"
-msgstr ""
+msgstr "postGIS-ის ადმინისტრაცია"
 
 #. Tag: title
 #, no-c-format
@@ -543,7 +543,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Performance Tuning"
-msgstr ""
+msgstr "წარმადობის მორგება"
 
 #. Tag: para
 #, no-c-format
@@ -823,7 +823,7 @@ msgstr ""
 #. Tag: term
 #, no-c-format
 msgid "Country code"
-msgstr ""
+msgstr "ქვეყნის კოდი"
 
 #. Tag: para
 #, no-c-format
@@ -1603,7 +1603,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "ასევე იხილეთ"
 
 #. Tag: para
 #, no-c-format
@@ -1926,7 +1926,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Design:"
-msgstr ""
+msgstr "დიზაინი:"
 
 #. Tag: para
 #, no-c-format
@@ -2291,7 +2291,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&gt;"
-msgstr ""
+msgstr "&gt;"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -3073,7 +3073,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Topology"
-msgstr ""
+msgstr "ტოპოლოგია"
 
 #. Tag: para
 #, no-c-format
@@ -3252,17 +3252,17 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "Behavior"
-msgstr ""
+msgstr "ქცევა"
 
 #. Tag: entry
 #, no-c-format
 msgid "geometry"
-msgstr ""
+msgstr "geometry"
 
 #. Tag: entry
 #, no-c-format
 msgid "automatic"
-msgstr ""
+msgstr "ავტომატური"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -3603,22 +3603,22 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "Error"
-msgstr ""
+msgstr "შეცდომა"
 
 #. Tag: entry
 #, no-c-format
 msgid "<entry>id1</entry>"
-msgstr ""
+msgstr "<entry>id1</entry>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<entry>id2</entry>"
-msgstr ""
+msgstr "<entry>id2</entry>"
 
 #. Tag: entry
 #, no-c-format
 msgid "Meaning"
-msgstr ""
+msgstr "მნიშვნელობა"
 
 #. Tag: entry
 #, no-c-format
@@ -5915,7 +5915,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #, no-c-format
@@ -6099,7 +6099,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Short Version"
-msgstr ""
+msgstr "მოკლე ვერსია"
 
 #. Tag: para
 #, no-c-format
@@ -6247,7 +6247,7 @@ msgstr ""
 #. Tag: emphasis
 #, no-c-format
 msgid "Required"
-msgstr ""
+msgstr "საჭირო"
 
 #. Tag: para
 #, no-c-format
@@ -6340,7 +6340,7 @@ msgstr ""
 #. Tag: emphasis
 #, no-c-format
 msgid "Optional"
-msgstr ""
+msgstr "არასავალდებულო"
 
 #. Tag: para
 #, no-c-format
@@ -6638,7 +6638,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Building"
-msgstr ""
+msgstr "აგება"
 
 #. Tag: para
 #, no-c-format
@@ -6837,7 +6837,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Testing"
-msgstr ""
+msgstr "ტესტირება"
 
 #. Tag: para
 #, no-c-format
@@ -6914,7 +6914,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Installation"
-msgstr ""
+msgstr "დაყენება"
 
 #. Tag: para
 #, no-c-format
@@ -7488,7 +7488,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Introduction"
-msgstr ""
+msgstr "შესავალი"
 
 #. Tag: para
 #, no-c-format
@@ -7820,7 +7820,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Other Contributors"
-msgstr ""
+msgstr "სხვა მოხალისეები"
 
 #. Tag: term
 #, no-c-format
@@ -8442,7 +8442,7 @@ msgstr ""
 #. Tag: link
 #, no-c-format
 msgid "Aiven"
-msgstr ""
+msgstr "Aiven"
 
 #. Tag: link
 #, no-c-format
@@ -8760,7 +8760,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Problem description"
-msgstr ""
+msgstr "პრობლემის აღწერა"
 
 #. Tag: para
 #, no-c-format
@@ -8820,7 +8820,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Workarounds"
-msgstr ""
+msgstr "შემოვლები"
 
 #. Tag: para
 #, no-c-format
@@ -9259,7 +9259,7 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "Function"
-msgstr ""
+msgstr "ფუნქცია"
 
 #. Tag: entry
 #, no-c-format
@@ -9279,7 +9279,7 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "Curves"
-msgstr ""
+msgstr "მრუდები"
 
 #. Tag: entry
 #, no-c-format
@@ -13204,7 +13204,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Example"
-msgstr ""
+msgstr "მაგალითი"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17839,7 +17839,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Operators"
-msgstr ""
+msgstr "ოპერატორები"
 
 #. Tag: title
 #, no-c-format
@@ -19040,7 +19040,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Basic"
-msgstr ""
+msgstr "საწყისი"
 
 #. Tag: para
 #, no-c-format
@@ -20081,7 +20081,7 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "POINT"
-msgstr ""
+msgstr "წერტილი"
 
 #. Tag: entry
 #, no-c-format
@@ -23955,7 +23955,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "black circle"
-msgstr ""
+msgstr "შავი წრე"
 
 #. Tag: para
 #, no-c-format
@@ -25735,12 +25735,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Bilinear"
-msgstr ""
+msgstr "ორხაზოვანი"
 
 #. Tag: para
 #, no-c-format
 msgid "Cubic"
-msgstr ""
+msgstr "კუბური"
 
 #. Tag: para
 #, no-c-format
@@ -25750,7 +25750,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Lanczos"
-msgstr ""
+msgstr "ლანცოში"
 
 #. Tag: para
 #, no-c-format
@@ -27637,7 +27637,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "original"
-msgstr ""
+msgstr "ორიგინალი"
 
 #. Tag: para
 #, no-c-format
@@ -34387,12 +34387,12 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Appendix"
-msgstr ""
+msgstr "დანართი"
 
 #. Tag: subtitle
 #, no-c-format
 msgid "Release Notes"
-msgstr ""
+msgstr "გამოცემის შენიშვნები"
 
 #. Tag: title
 #, no-c-format
@@ -34457,7 +34457,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "New features"
-msgstr ""
+msgstr "ახალი ფუნქციები"
 
 #. Tag: para
 #, no-c-format
@@ -35001,7 +35001,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Point"
-msgstr ""
+msgstr "წერტილი"
 
 #. Tag: para
 #, no-c-format
@@ -35043,7 +35043,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Polygon"
-msgstr ""
+msgstr "მრავალკუთხედი"
 
 #. Tag: para
 #, no-c-format
@@ -35114,7 +35114,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Triangle"
-msgstr ""
+msgstr "სამკუთხედი"
 
 #. Tag: para
 #, no-c-format
@@ -39477,7 +39477,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Aggregate"
-msgstr ""
+msgstr "შეკოწიწება"
 
 #. Tag: para
 #, no-c-format
