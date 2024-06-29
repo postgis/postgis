@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-27 05:26+0000\n"
-"PO-Revision-Date: 2024-06-29 05:45+0000\n"
+"PO-Revision-Date: 2024-06-29 07:45+0000\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ka/>\n"
@@ -9395,17 +9395,17 @@ msgstr "&sfs_compliant;"
 #. Tag: para
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: para
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -9515,7 +9515,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&M_support;"
-msgstr ""
+msgstr "&M_support;"
 
 #. Tag: para
 #, no-c-format
@@ -10159,17 +10159,17 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "GEOMETRYCOLLECTION"
-msgstr ""
+msgstr "GEOMETRYCOLLECTION"
 
 #. Tag: para
 #, no-c-format
 msgid "MULTI{POINT,POLYGON,LINESTRING,CURVE,SURFACE}"
-msgstr ""
+msgstr "MULTI{POINT,POLYGON,LINESTRING,CURVE,SURFACE}"
 
 #. Tag: para
 #, no-c-format
 msgid "COMPOUNDCURVE"
-msgstr ""
+msgstr "COMPOUNDCURVE"
 
 #. Tag: para
 #, no-c-format
@@ -10356,7 +10356,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant;"
-msgstr ""
+msgstr "&sqlmm_compliant;"
 
 #. Tag: para
 #, no-c-format
@@ -12700,7 +12700,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Coverages"
-msgstr ""
+msgstr "დაფარვები"
 
 #. Tag: para
 #, no-c-format
@@ -13521,7 +13521,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "<para>,</para>"
-msgstr ""
+msgstr "<para>,</para>"
 
 #. Tag: refpurpose
 #, no-c-format
