@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-27 05:26+0000\n"
-"PO-Revision-Date: 2024-06-28 23:45+0000\n"
+"PO-Revision-Date: 2024-06-29 05:45+0000\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ka/>\n"
@@ -8457,37 +8457,37 @@ msgstr ""
 #. Tag: link
 #, no-c-format
 msgid "AusVet"
-msgstr ""
+msgstr "AusVet"
 
 #. Tag: simpara
 #, no-c-format
 msgid "Avencia"
-msgstr ""
+msgstr "Avencia"
 
 #. Tag: link
 #, no-c-format
 msgid "Azavea"
-msgstr ""
+msgstr "Azavea"
 
 #. Tag: link
 #, no-c-format
 msgid "Boundless"
-msgstr ""
+msgstr "Boundless"
 
 #. Tag: link
 #, no-c-format
 msgid "Cadcorp"
-msgstr ""
+msgstr "Cadcorp"
 
 #. Tag: link
 #, no-c-format
 msgid "Camptocamp"
-msgstr ""
+msgstr "Camptocamp"
 
 #. Tag: link
 #, no-c-format
 msgid "Carto"
-msgstr ""
+msgstr "Carto"
 
 #. Tag: link
 #, no-c-format
@@ -8522,7 +8522,7 @@ msgstr ""
 #. Tag: link
 #, no-c-format
 msgid "Faunalia"
-msgstr ""
+msgstr "Faunalia"
 
 #. Tag: link
 #, no-c-format
@@ -8532,7 +8532,7 @@ msgstr ""
 #. Tag: link
 #, no-c-format
 msgid "HighGo"
-msgstr ""
+msgstr "HighGo"
 
 #. Tag: simpara
 #, no-c-format
@@ -8542,7 +8542,7 @@ msgstr ""
 #. Tag: link
 #, no-c-format
 msgid "INIA-CSIC"
-msgstr ""
+msgstr "INIA-CSIC"
 
 #. Tag: link
 #, no-c-format
@@ -8552,7 +8552,7 @@ msgstr ""
 #. Tag: link
 #, no-c-format
 msgid "Kontur"
-msgstr ""
+msgstr "Kontur"
 
 #. Tag: link
 #, no-c-format
@@ -8562,7 +8562,7 @@ msgstr ""
 #. Tag: link
 #, no-c-format
 msgid "LISAsoft"
-msgstr ""
+msgstr "LISAsoft"
 
 #. Tag: simpara
 #, no-c-format
@@ -8572,7 +8572,7 @@ msgstr ""
 #. Tag: simpara
 #, no-c-format
 msgid "Maponics"
-msgstr ""
+msgstr "Maponics"
 
 #. Tag: link
 #, no-c-format
@@ -8597,12 +8597,12 @@ msgstr ""
 #. Tag: link
 #, no-c-format
 msgid "OSGeo"
-msgstr ""
+msgstr "OSGeo"
 
 #. Tag: link
 #, no-c-format
 msgid "Oslandia"
-msgstr ""
+msgstr "Oslandia"
 
 #. Tag: link
 #, no-c-format
@@ -9002,7 +9002,7 @@ msgstr ""
 #. Tag: section
 #, no-c-format
 msgid "&list_aggregates;"
-msgstr ""
+msgstr "&list_aggregates;"
 
 #. Tag: para
 #, no-c-format
@@ -9020,7 +9020,7 @@ msgstr ""
 #. Tag: section
 #, no-c-format
 msgid "&list_window_functions;"
-msgstr ""
+msgstr "&list_window_functions;"
 
 #. Tag: para
 #, no-c-format
@@ -9039,7 +9039,7 @@ msgstr ""
 #. Tag: section
 #, no-c-format
 msgid "&list_sqlmm_functions;"
-msgstr ""
+msgstr "&list_sqlmm_functions;"
 
 #. Tag: para
 #, no-c-format
@@ -9075,7 +9075,7 @@ msgstr ""
 #. Tag: section
 #, no-c-format
 msgid "&list_geography_functions;"
-msgstr ""
+msgstr "&list_geography_functions;"
 
 #. Tag: title
 #, no-c-format
@@ -9093,7 +9093,7 @@ msgstr ""
 #. Tag: section
 #, no-c-format
 msgid "&list_raster_functions;"
-msgstr ""
+msgstr "&list_raster_functions;"
 
 #. Tag: title
 #, no-c-format
@@ -9103,7 +9103,7 @@ msgstr ""
 #. Tag: section
 #, no-c-format
 msgid "&list_dump_functions;"
-msgstr ""
+msgstr "&list_dump_functions;"
 
 #. Tag: para
 #, no-c-format
@@ -9130,7 +9130,7 @@ msgstr ""
 #. Tag: section
 #, no-c-format
 msgid "&list_box_functions;"
-msgstr ""
+msgstr "&list_box_functions;"
 
 #. Tag: title
 #, no-c-format
@@ -9140,7 +9140,7 @@ msgstr ""
 #. Tag: section
 #, no-c-format
 msgid "&list_3d_functions;"
-msgstr ""
+msgstr "&list_3d_functions;"
 
 #. Tag: para
 #, no-c-format
@@ -9157,7 +9157,7 @@ msgstr ""
 #. Tag: section
 #, no-c-format
 msgid "&list_curved_geometry_functions;"
-msgstr ""
+msgstr "&list_curved_geometry_functions;"
 
 #. Tag: para
 #, no-c-format
@@ -9174,7 +9174,7 @@ msgstr ""
 #. Tag: section
 #, no-c-format
 msgid "&list_polyhedral_geometry_functions;"
-msgstr ""
+msgstr "&list_polyhedral_geometry_functions;"
 
 #. Tag: para
 #, no-c-format
@@ -9264,17 +9264,17 @@ msgstr "ფუნქცია"
 #. Tag: entry
 #, no-c-format
 msgid "geom"
-msgstr ""
+msgstr "geom"
 
 #. Tag: entry
 #, no-c-format
 msgid "geog"
-msgstr ""
+msgstr "geog"
 
 #. Tag: entry
 #, no-c-format
 msgid "2.5D"
-msgstr ""
+msgstr "2.5D"
 
 #. Tag: entry
 #, no-c-format
@@ -9289,22 +9289,22 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "<entry>PS</entry>"
-msgstr ""
+msgstr "<entry>PS</entry>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<entry>T</entry>"
-msgstr ""
+msgstr "<entry>T</entry>"
 
 #. Tag: tgroup
 #, no-c-format
 msgid "&table_body_function_support_matrix;"
-msgstr ""
+msgstr "&table_body_function_support_matrix;"
 
 #. Tag: section
 #, no-c-format
 msgid "&list_new_functions;"
-msgstr ""
+msgstr "&list_new_functions;"
 
 #. Tag: title
 #, no-c-format
@@ -9390,7 +9390,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant;"
-msgstr ""
+msgstr "&sfs_compliant;"
 
 #. Tag: para
 #, no-c-format
