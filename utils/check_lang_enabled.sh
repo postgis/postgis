@@ -46,8 +46,16 @@ do
     continue
   }
 
+  # Check that the language dir is enabled in doc/Makefile.in
   echo "${ENABLED_TRANSLATIONS}" | grep -qw "${LANG}" || {
     echo "FAIL: ${LANG} is not enabled in ${RD}/doc/Makefile.in (translations)"
+    fail=$((fail+1))
+    continue
+  }
+
+  # Check that the language check is enabled for woodie
+  grep -qw "${LANG}" ${RD}/.woodpecker/docs.yml || {
+    echo "FAIL: ${LANG} is not enabled in ${RD}/.woodpecker/docs.yml"
     fail=$((fail+1))
     continue
   }
