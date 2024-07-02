@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-27 05:26+0000\n"
-"PO-Revision-Date: 2024-06-04 02:45+0000\n"
+"PO-Revision-Date: 2024-07-02 11:45+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5398,6 +5398,10 @@ msgid ""
 "edges within given tolerance. Existing edges and faces may be split by the "
 "line. New nodes and faces may be added."
 msgstr ""
+"既存のトポロジにラインストリングを追加し、それを構成するエッジ識別番号の集合"
+"を返します。与えられたラインは、与えられた許容値内にある既存のノードかエッジ"
+"にスナップします。既存のエッジとフェイスはラインで分割される場合があります。"
+"新しいノードとフェイスが追加される場合があります。"
 
 #. Tag: para
 #, no-c-format
@@ -6698,7 +6702,8 @@ msgstr ""
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"TopoGeo_AddLineString\"/> "
 "instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"TopoGeo_AddLineString\""
+"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
@@ -10158,7 +10163,7 @@ msgstr "Dane Springmeyer"
 #. Tag: member
 #, no-c-format
 msgid "Dapeng Wang"
-msgstr ""
+msgstr "Dapeng Wang"
 
 #. Tag: member
 #, no-c-format
@@ -10523,7 +10528,7 @@ msgstr "Ron Mayer"
 #. Tag: member
 #, no-c-format
 msgid "Sam Peters"
-msgstr ""
+msgstr "Sam Peters"
 
 #. Tag: member
 #, no-c-format
@@ -10628,7 +10633,7 @@ msgstr "Volf Tomáš"
 #. Tag: member
 #, no-c-format
 msgid "Zuo Chenwei"
-msgstr ""
+msgstr "Zuo Chenwei"
 
 #. Tag: term
 #, no-c-format
@@ -10737,7 +10742,7 @@ msgstr "Geographic Data BC"
 #. Tag: link
 #, no-c-format
 msgid "HighGo"
-msgstr ""
+msgstr "HighGo"
 
 #. Tag: simpara
 #, no-c-format
@@ -11724,6 +11729,13 @@ msgid ""
 "&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
 "&reference_version; &reference_guc; &reference_troubleshooting;"
 msgstr ""
+"&reference_type; &reference_management; &reference_constructor; "
+"&reference_accessor; &reference_editor; &reference_validation; "
+"&reference_srs; &reference_input; &reference_output; &reference_operator; "
+"&reference_relationship; &reference_measure; &reference_overlay; "
+"&reference_processing; &reference_coverage; &reference_transformation; "
+"&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
+"&reference_version; &reference_guc; &reference_troubleshooting;"
 
 #. Tag: title
 #, no-c-format
@@ -39416,6 +39428,8 @@ msgid ""
 ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>, <xref "
 "linkend=\"CG_Area\"/>"
 msgstr ""
+", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>, <xref "
+"linkend=\"CG_Area\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39442,17 +39456,17 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>"
 
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_ForceLHR\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_ForceLHR\"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_IsPlanar\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_IsPlanar\"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
@@ -39466,24 +39480,24 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_IsSolid\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_IsSolid\"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_MakeSolid\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_MakeSolid\"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Orientation\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_Orientation\"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DArea\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_3DArea\"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
@@ -39497,7 +39511,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Volume\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_Volume\"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
@@ -39597,7 +39611,8 @@ msgstr "3次元の差分を計算します。"
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DDifference\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_3DDifference\""
+"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
@@ -39632,6 +39647,8 @@ msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
 "linkend=\"CG_3DUnion\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
+"linkend=\"CG_3DUnion\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39653,7 +39670,7 @@ msgstr "ご注意: この関数は、距離を表現する倍精度浮動小数�
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_Distance\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_Distance\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39686,7 +39703,8 @@ msgstr "ジオメトリの3次元の凸包を計算します。"
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DConvexHull\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_3DConvexHull\""
+"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
@@ -39707,7 +39725,8 @@ msgstr "3次元のインタセクトした (共有する)部分を計算しま�
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DIntersection\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_3DIntersection\""
+"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
@@ -39764,7 +39783,7 @@ msgstr "3次元の結合を計算します。"
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DUnion\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_3DUnion\"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
@@ -39811,6 +39830,8 @@ msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
 "linkend=\"CG_3DDifference\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
+"linkend=\"CG_3DDifference\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39892,7 +39913,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.4.1."
-msgstr ""
+msgstr "Availability: 3.5.0 - SFCGAL &gt;= 1.4.1 が必要です。"
 
 #. Tag: para
 #, no-c-format
@@ -39920,7 +39941,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_OptimalAlphaShape\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_OptimalAlphaShape\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40000,7 +40021,8 @@ msgstr "面ジオメトリの近似的な中心軸を計算します。"
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_ApproximateMedialAxis\"/> "
 "instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_ApproximateMedialAxis\""
+"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
@@ -40031,6 +40053,8 @@ msgid ""
 "is deprecated as of 3.5.0. Use <xref "
 "linkend=\"CG_ConstrainedDelaunayTriangles\"/> instead."
 msgstr ""
+"は3.5.0では非推奨です。<xref linkend=\"CG_ConstrainedDelaunayTriangles\""
+"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
@@ -40059,6 +40083,8 @@ msgid ""
 ", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"CG_Tesselate\"/"
 ">, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
 msgstr ""
+", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"CG_Tesselate\"/"
+">, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40068,7 +40094,7 @@ msgstr "関連するボリュームにサーフェスを押し出します。"
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Extrude\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_Extrude\"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
@@ -40159,7 +40185,8 @@ msgstr "ミンコフスキー和を求めます。"
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_MinkowskiSum\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_MinkowskiSum\""
+"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
@@ -40248,7 +40275,8 @@ msgstr ""
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_OptimalAlphaShape\"/> "
 "instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_OptimalAlphaShape\""
+"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
@@ -40304,7 +40332,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_AlphaShape\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_AlphaShape\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40369,7 +40397,8 @@ msgstr "ポリゴンのストレートスケルトン"
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_StraightSkeleton\"/> "
 "instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_StraightSkeleton\""
+"/>を代わりに使います。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40384,7 +40413,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Tesselate\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。<xref linkend=\"CG_Tesselate\"/>を代わりに使います。"
 
 #. Tag: para
 #, no-c-format
@@ -42495,6 +42524,9 @@ msgid ""
 "<xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
 "linkend=\"PostGIS_Version\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Full_Version\"/>, <xref linkend="
+"\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref "
+"linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
