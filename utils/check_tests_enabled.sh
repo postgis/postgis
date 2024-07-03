@@ -1,4 +1,3 @@
-
 #!/bin/sh
 
 usage() {
@@ -33,6 +32,7 @@ check_enabled() {
   #cat ${TMPDIR}/enabled_tests
 
   find ${bd} -name '*_expected' |
+    sed 's|//|/|' |
     sed 's|_expected$||' > ${TMPDIR}/available_tests
 
   #cat ${TMPDIR}/available_tests
