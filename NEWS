@@ -1,7 +1,7 @@
-PostGIS 3.5.0dev
-xxxx/xx/xx
+PostGIS 3.5.0alpha1
+2024/07/04
 
-To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
+To take advantage of all SFCGAL features, SFCGAL 1.5.0+ is needed.
 
 Many thanks to our translation teams, in particular:
 
@@ -51,8 +51,8 @@ Andreas Schild (German Team)
       - command status reports status of all databases
     (Sandro Santilli)
   - #5742, expose version of PROJ at compile time (Sandro Santilli)
-  - #5721, Allow sharing sequences between different topologies (Lars Opsahl)
-  - #5667, TopoGeo_LoadGeometry (Sandro Santilli)
+  - #5721, postgis_topology: Allow sharing sequences between different topologies (Lars Opsahl)
+  - #5667, postgis_topology: TopoGeo_LoadGeometry (Sandro Santilli)
   - #5055, add explicit <> geometry operator to prevent non-unique
            error with <> and != (Paul Ramsey)
   - Add ST_HasZ/ST_HasM (Loïc Bartoletti)
@@ -61,7 +61,7 @@ Andreas Schild (German Team)
             (Loïc Bartoletti)
   - GT-156, postgis_sfcgal: CG_Visibility (Loïc Bartoletti)
   - GT-157, postgis_sfcgal: Add ST_ExtrudeStraightSkeleton (Loïc Bartoletti)
-  - #5496, ST_Clip support for touched (Regina Obe)
+  - #5496, postgis_raster: ST_Clip support for touched (Regina Obe)
   - GH-760, postgis_sfcgal: CG_Intersection, CG_3DIntersects, CG_Intersects,
             CG_Difference, CG_Union (and aggregate), CG_Triangulate, CG_Area,
             CG_3DDistance, CG_Distance (Loïc Bartoletti)
@@ -72,8 +72,8 @@ Andreas Schild (German Team)
 
 * Enhancements *
 
-  - #3587, faster load of big lines in topologies (Sandro Santilli)
-  - #5670, faster ST_CreateTopoGeo (Sandro Santilli)
+  - #3587, postgis_topology: faster load of big lines in topologies (Sandro Santilli)
+  - #5670, postgis_topology: faster ST_CreateTopoGeo (Sandro Santilli)
   - #5531, documentation format upgraded to DocBook 5 (Sandro Santilli)
   - #5543, allow building without documentation (Sandro Santilli)
   - #5596, GH-749, Allow promoting column as an id
