@@ -1,6 +1,11 @@
 PostGIS 3.3.7
 xxxx/xx/xx
 
+This version requires PostgreSQL 11-17, GEOS 3.6 or higher, and Proj 4.9+
+Additional features are enabled if you are running GEOS 3.9+
+(and ST_MakeValid enhancements with 3.10+), Proj 6.1+,
+and PostgreSQL 15+.
+
 * Bug Fixes and Enhancements *
 
  - #5709, Fix loose mbr in topology.face on ST_ChangeEdgeGeom (Sandro Santilli)
@@ -16,6 +21,8 @@ xxxx/xx/xx
  - #5686, ST_NumInteriorRings and Triangle crash (Paul Ramsey)
  - #5671, Bug in ST_Area function with use_spheroid=false
           (Paul Ramsey, Regina Obe)
+ - #5687, #5756 Support for PostgreSQL 17, revise postgis_get_full_version_schema()
+          to not rely on search_path
 
 
 PostGIS 3.3.6
