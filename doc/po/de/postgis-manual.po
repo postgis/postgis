@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 05:26+0000\n"
+"POT-Creation-Date: 2024-07-05 06:17+0000\n"
 "PO-Revision-Date: 2024-02-26 08:45+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -8476,15 +8476,12 @@ msgstr ""
 "json-c/json-c/releases/</link> bezogen werden."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"GDAL, version 2+ is required 3+ is preferred. This is required for raster "
-"support. <link xlink:href=\"https://gdal.org/download.html\">https://gdal."
-"org/download.html</link>."
+"GDAL, version 3+ is preferred. This is required for raster support. <link "
+"xlink:href=\"https://gdal.org/download.html\">https://gdal.org/download."
+"html</link>."
 msgstr ""
-"GDAL, Version 2+ ist erforderlich 3+ wird bevorzugt. Dies ist für die "
-"Rasterunterstützung erforderlich. <link xlink:href=\"https://gdal.org/"
-"download.html\">https://gdal.org/download.html</link>."
 
 #. Tag: para
 #, no-c-format
@@ -8525,32 +8522,20 @@ msgstr ""
 "link> ."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"SFCGAL, version 1.3.1 (or higher), 1.4.1 or higher is recommended and "
-"required to be able to use all functionality. SFCGAL can be used to provide "
-"additional 2D and 3D advanced analysis functions to PostGIS cf <xref "
-"linkend=\"reference_sfcgal\"/>. And also allow to use SFCGAL rather than "
-"GEOS for some 2D functions provided by both backends (like ST_Intersection "
-"or ST_Area, for instance). A PostgreSQL configuration variable <code>postgis."
-"backend</code> allow end user to control which backend he want to use if "
-"SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.2 require at least "
-"CGAL 4.3 and Boost 1.54 (cf: <link xlink:href=\"https://sfcgal.org\">https://"
-"sfcgal.org</link>) <link xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/"
-"\">https://gitlab.com/sfcgal/SFCGAL/</link>."
+"SFCGAL, 1.4.1 or higher is required and 1.5.0+ is needed to be able to use "
+"all functionality. SFCGAL can be used to provide additional 2D and 3D "
+"advanced analysis functions to PostGIS cf <xref linkend=\"reference_sfcgal\"/"
+">. And also allow to use SFCGAL rather than GEOS for some 2D functions "
+"provided by both backends (like ST_Intersection or ST_Area, for instance). A "
+"PostgreSQL configuration variable <code>postgis.backend</code> allow end "
+"user to control which backend he want to use if SFCGAL is installed (GEOS by "
+"default). Nota: SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: "
+"<link xlink:href=\"https://sfcgal.org\">https://sfcgal.org</link>) <link "
+"xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/"
+"SFCGAL/</link>."
 msgstr ""
-"SFCGAL, Version 1.3.1 (oder höher), 1.4.1 oder höher wird empfohlen und "
-"benötigt, um alle Funktionen nutzen zu können. SFCGAL kann verwendet werden, "
-"um zusätzliche 2D- und 3D-Analysefunktionen für PostGIS cf <xref "
-"linkend=\"reference_sfcgal\"/> bereitzustellen. Außerdem kann SFCGAL "
-"anstelle von GEOS für einige 2D-Funktionen verwendet werden, die von beiden "
-"Backends bereitgestellt werden (z. B. ST_Intersection oder ST_Area). Eine "
-"PostgreSQL-Konfigurationsvariable <code>postgis.backend</code> erlaubt es "
-"dem Endbenutzer zu kontrollieren, welches Backend er verwenden möchte, wenn "
-"SFCGAL installiert ist (GEOS als Standard). Hinweis: SFCGAL 1.2 benötigt "
-"mindestens CGAL 4.3 und Boost 1.54 (vgl. <link xlink:href=\"https://sfcgal."
-"org\">https://sfcgal.org</link>) <link xlink:href=\"https://gitlab.com/"
-"sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/SFCGAL/</link>."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -45140,39 +45125,32 @@ msgid "Release Notes"
 msgstr "Anmerkungen zur Release"
 
 #. Tag: title
-#, fuzzy, no-c-format
-msgid "PostGIS 3.4.0"
-msgstr "PostGIS 3.4.0"
+#, no-c-format
+msgid "PostGIS 3.5.0"
+msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "2023/08/15"
-msgstr "2023/08/15"
+#, no-c-format
+msgid "2024/xx/xx"
+msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+. "
+"This version requires PostgreSQL 12-17, GEOS 3.8 or higher, and Proj 6.1+. "
 "To take advantage of all features, GEOS 3.12+ is needed. To take advantage "
-"of all SFCGAL featurs, SFCGAL 1.4.1+ is needed."
+"of all SFCGAL featurs, SFCGAL 1.5.0+ is needed."
 msgstr ""
-"Diese Version benötigt PostgreSQL 12-16, GEOS 3.6 oder höher, und Proj 6.1+. "
-"Um alle Funktionen nutzen zu können, ist GEOS 3.12+ erforderlich. Um alle "
-"SFCGAL-Funktionen nutzen zu können, ist SFCGAL 1.4.1+ erforderlich."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"NOTE: GEOS 3.12.0 details at <link xlink:href=\"https://libgeos.org/"
-"posts/2023-06-27-geos-3-12-released/\">GEOS 3.12.0 release notes</link>"
-msgstr ""
-"HINWEIS: GEOS 3.12.0 Details unter <link xlink:href=\"https://libgeos.org/"
-"posts/2023-06-27-geos-3-12-released/\">GEOS 3.12.0 Release Notes</link>"
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "Many thanks to our translation teams, in particular:"
 msgstr "Vielen Dank insbesondere an unsere Übersetzungsteams:"
+
+#. Tag: para
+#, no-c-format
+msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -45184,31 +45162,104 @@ msgstr "Teramoto Ikuhiro (Japanische Mannschaft)"
 msgid "Vincent Bre (French Team)"
 msgstr "Vincent Bre (Französische Mannschaft)"
 
-#. Tag: para
+#. Tag: title
 #, fuzzy, no-c-format
-msgid "There are 2 new ./configure switches:"
-msgstr "Es gibt 2 neue Schalter ./configure:"
+msgid "Breaking Changes"
+msgstr "Wechselnde Änderungen"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"--disable-extension-upgrades-install, will skip installing all the extension "
-"upgrade scripts except for the ANY--currentversion. If you use this, you can "
-"install select upgrades using the postgis commandline tool"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5546\">#5546</"
+"link>, TopoGeometry &lt;&gt; TopoGeometry is now ambiguous, to get the old "
+"behaviour, assuming your TopoGeometry objects are named tg1 and tg2, use: "
+"( id(tg1) &lt;&gt; id(tg2) OR topology_id(tg1) &lt;&gt; topology_id(tg2) OR "
+"layer_id(tg1) &lt;&gt; layer_id(tg2) OR type(tg1) &lt;&gt; type(tg2) ) "
+"(Sandro Santilli)"
 msgstr ""
-"--disable-extension-upgrades-install, überspringt die Installation aller "
-"Erweiterungs-Upgrade-Skripte mit Ausnahme von ANY--currentversion. Wenn Sie "
-"dies verwenden, können Sie ausgewählte Upgrades mit dem postgis-"
-"Kommandozeilen-Tool installieren"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"--without-pgconfig, will build just the commandline tools raster2pgsql and "
-"shp2pgsql even if PostgreSQL is not installed"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5536\">#5536</"
+"link>, comments are not anymore included in PostGIS extensions (Sandro "
+"Santilli)"
 msgstr ""
-"--without-pgconfig, erstellt nur die Kommandozeilen-Tools raster2pgsql und "
-"shp2pgsql, auch wenn PostgreSQL nicht installiert ist"
+
+#. Tag: para
+#, no-c-format
+msgid "xmllint is now required to build comments (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "DocBook5 XSL is now required to build html (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5602\">#5602</"
+"link>, Drop support for GEOS 3.6 and 3.7 (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5571\">#5571</"
+"link>, Improve ST_GeneratePoints performance, but old seeded pseudo random "
+"points will need to be regenerated."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5596\">#5596</"
+"link>, GH-749, Allow promoting column as an id in ST_AsGeoJson(record,..). "
+"Views and materialized views that use the ST_AsGeoJSON(record ..) will need "
+"rebuilding to upgrade to new signature (Jan Tojnar)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5496\">#5496</"
+"link>, ST_Clip all variants replaced, will require rebuilding of "
+"materialized views that use them (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5659\">#5659</"
+"link>, ST_DFullyWithin behaviour has changed to be ST_Contains(ST_Buffer(A, "
+"R), B) (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Remove the WFS_locks extra package. (Paul Ramsey)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Deprecated signatures"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/761\">GH-761</"
+"link>, ST_StraightSkeleton => CG_StraightSkeleton (Loïc Bartoletti)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/189\">GH-189</link>, All SFCGAL functions now use the prefix CG_, with "
+"the old ones using ST_ being deprecated. (Loïc Bartoletti)"
+msgstr ""
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -45216,166 +45267,113 @@ msgid "New features"
 msgstr "Neue Funktionen"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</link>, "
-"complete manual internationalization (Sandro Santilli)"
+"Improvements in the 'postgis' script: <itemizedlist> <listitem><para>new "
+"command list-enabled</para></listitem> <listitem><para>new command list-all</"
+"para></listitem> <listitem><para>command upgrade upgrades all databases that "
+"need to be</para></listitem> <listitem><para>command status reports status "
+"of all databases</para></listitem> </itemizedlist> (Sandro Santilli)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</link>, "
-"vollständige manuelle Internationalisierung (Sandro Santilli)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5052\">5052</link>, "
-"target version support in postgis_extensions_upgrade (Sandro Santilli)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5742\">#5742</"
+"link>, expose version of PROJ at compile time (Sandro Santilli)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5052\">5052</link>, "
-"Unterstützung der Zielversion in postgis_extensions_upgrade (Sandro Santilli)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</link>, "
-"expose version of GEOS at compile time (Sandro Santilli)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5721\">#5721</"
+"link>, postgis_topology: Allow sharing sequences between different "
+"topologies (Lars Opsahl)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</link>, "
-"legt die Version von GEOS zur Kompilierzeit offen (Sandro Santilli)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"New install-extension-upgrades command in postgis script (Sandro Santilli)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5667\">#5667</"
+"link>, postgis_topology: TopoGeo_LoadGeometry (Sandro Santilli)"
 msgstr ""
-"Neuer Befehl install-extension-upgrades im Postgis-Skript (Sandro Santilli)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5257\">5257</link>, "
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5261\">5261</link>, "
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5277\">5277</link>, "
-"Support changes for PostgreSQL 16 (Regina Obe)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5055\">#5055</"
+"link>, add explicit &lt;&gt; geometry operator to prevent non-unique error "
+"with &lt;&gt; and &#x21;= (Paul Ramsey)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5257\">5257</link>, "
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5261\">5261</link>, "
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5277\">5277</link>, "
-"Änderungen der Unterstützung für PostgreSQL 16 (Regina Obe)"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5006\">5006</link>, "
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/705\">705</link>, "
-"ST_Transform: Support PROJ pipelines (Robert Coup, Koordinates)"
+#, no-c-format
+msgid "Add ST_HasZ/ST_HasM (Loïc Bartoletti)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5006\">5006</link>, "
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/705\">705</link>, "
-"ST_Transform: Unterstützung von PROJ-Pipelines (Robert Coup, Koordinates)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5283\">5283</link>, "
-"[postgis_topology] RenameTopology (Sandro Santilli)"
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/123\">GT-123</link>, postgis_sfcgal: CG_YMonotonePartition, "
+"CG_ApproxConvexPartition, CG_GreeneApproxConvexPartition and "
+"CG_OptimalConvexPartition (Loïc Bartoletti)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5283\">5283</link>, "
-"[postgis_topology] RenameTopology (Sandro Santilli)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5286\">5286</link>, "
-"[postgis_topology] RenameTopoGeometryColumn (Sandro Santilli)"
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/156\">GT-156</link>, postgis_sfcgal: CG_Visibility (Loïc Bartoletti)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5286\">5286</link>, "
-"[postgis_topology] RenameTopoGeometryColumn (Sandro Santilli)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/703\">703</link>, "
-"[postgis_raster] Add min/max resampling as options (Christian Schroeder)"
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/157\">GT-157</link>, postgis_sfcgal: Add ST_ExtrudeStraightSkeleton "
+"(Loïc Bartoletti)"
 msgstr ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/703\">703</link>, "
-"[postgis_raster] Min/Max-Resampling als Optionen hinzufügen (Christian "
-"Schroeder)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5336\">5336</link>, "
-"[postgis_topology] topogeometry cast to topoelement support (Regina Obe)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5496\">#5496</"
+"link>, postgis_raster: ST_Clip support for touched (Regina Obe)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5336\">5336</link>, "
-"[postgis_topology] topogeometry cast to topoelement support (Regina Obe)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"Allow singleton geometry to be inserted into Geometry(Multi*) columns (Paul "
-"Ramsey)"
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/760\">GH-760</"
+"link>, postgis_sfcgal: CG_Intersection, CG_3DIntersects, CG_Intersects, "
+"CG_Difference, CG_Union (and aggregate), CG_Triangulate, CG_Area, "
+"CG_3DDistance, CG_Distance (Loïc Bartoletti)"
 msgstr ""
-"Einfügen von Singleton-Geometrie in Geometry(Multi*)-Spalten erlauben (Paul "
-"Ramsey)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/721\">721</link>, "
-"New window-based ST_ClusterWithinWin and ST_ClusterIntersectingWin (Paul "
-"Ramsey)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5687\">#5687</"
+"link>, Don't rely on search_path to determine postgis schema Fix for PG17 "
+"security change (Regina Obe)"
 msgstr ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/721\">721</link>, "
-"Neue fensterbasierte ST_ClusterWithinWin und ST_ClusterIntersectingWin (Paul "
-"Ramsey)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5397\">5397</link>, "
-"[address_standardizer] debug_standardize_address function (Regina Obe)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5705\">#5705</"
+"link>, <link xlink:href=\"https://github.com/postgis/postgis/"
+"pull/767\">GH-767</link>, ST_RemoveIrrelevantPointsForView (Sam Peters)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5397\">5397</link>, "
-"[address_standardizer] debug_standardize_address Funktion (Regina Obe)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5373\">5373</"
-"link>ST_LargestEmptyCircle, exposes extra semantics on circle finding. Geos "
-"3.9+ required(Martin Davis)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5706\">#5706</"
+"link>, <link xlink:href=\"https://github.com/postgis/postgis/"
+"pull/768\">GH-768</link>, ST_RemoveSmallParts (Sam Peters)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5373\">5373</"
-"link>ST_LargestEmptyCircle, zeigt zusätzliche Semantik bei der Kreisfindung. "
-"Geos 3.9+ erforderlich (Martin Davis)"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</link>, "
-"ST_Project signature for geometry, and two-point signature (Paul Ramsey)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</link>, "
-"ST_Project-Signatur für Geometrie und Zweipunktsignatur (Paul Ramsey)"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</link>, "
-"ST_LineExtend for extending linestrings (Paul Ramsey)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</link>, "
-"ST_LineExtend zum Verlängern von Linienstrings (Paul Ramsey)"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"New coverage functions ST_CoverageInvalidEdges, ST_CoverageSimplify, "
-"ST_CoverageUnion (Paul Ramsey)"
-msgstr ""
-"Neue Deckungsfunktionen ST_CoverageInvalidEdges, ST_CoverageSimplify, "
-"ST_CoverageUnion (Paul Ramsey)"
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -45383,204 +45381,77 @@ msgid "Enhancements"
 msgstr "Erweiterungen"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5194\">5194</link>, "
-"do not update system catalogs from postgis_extensions_upgrade (Sandro "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3587\">#3587</"
+"link>, postgis_topology: faster load of big lines in topologies (Sandro "
 "Santilli)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5194\">5194</link>, "
-"Systemkataloge nicht aus postgis_extensions_upgrade aktualisieren (Sandro "
-"Santilli)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</link>, "
-"reduce number of upgrade paths installed on system (Sandro Santilli)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5670\">#5670</"
+"link>, postgis_topology: faster ST_CreateTopoGeo (Sandro Santilli)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</link>, "
-"Anzahl der im System installierten Upgrade-Pfade reduzieren (Sandro Santilli)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/635\">635</link>, "
-"honour --bindir (and --prefix) configure switch for executables (Sandro "
-"Santilli)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5531\">#5531</"
+"link>, documentation format upgraded to DocBook 5 (Sandro Santilli)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/635\">635</link>, "
-"honoriere --bindir (und --prefix) configure-Schalter für ausführbare Dateien "
-"(Sandro Santilli)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"Honour --mandir (and --prefix) configure switch for man pages install path "
-"(Sandro Santilli)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5543\">#5543</"
+"link>, allow building without documentation (Sandro Santilli)"
 msgstr ""
-"Den --mandir (und --prefix) configure-Schalter für den Installationspfad der "
-"Manualseiten berücksichtigen (Sandro Santilli)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"Honour --htmldir (and --docdir and --prefix) configure switch for html pages "
-"install path (Sandro Santilli)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5596\">#5596</"
+"link>, <link xlink:href=\"https://github.com/postgis/postgis/"
+"pull/749\">GH-749</link>, Allow promoting column as an id in "
+"ST_AsGeoJson(record,..). (Jan Tojnar)"
 msgstr ""
-"Den --htmldir (und --docdir und --prefix) Konfigurationsschalter für den "
-"Installationspfad von HTML-Seiten berücksichtigen (Sandro Santilli)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5447\">5447</link> "
-"Manual pages added for postgis and postgis_restore utilities (Sandro "
-"Santilli)"
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/744\">GH-744</"
+"link>, Don't create docbook.css for the HTML manual, use style.css instead "
+"(Chris Mayo)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5447\">5447</link> "
-"Handbuchseiten für postgis und postgis_restore Dienstprogramme hinzugefügt "
-"(Sandro Santilli)"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"[postgis_topology] Speed up check of topology faces without edges (Sandro "
-"Santilli)"
+#, no-c-format
+msgid "Faster implementation of point-in-poly cached index (Paul Ramsey)"
 msgstr ""
-"[postgis_topology] Beschleunigung der Prüfung von Topologieflächen ohne "
-"Kanten (Sandro Santilli)"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"[postgis_topology] Speed up coincident nodes check in topology validation "
-"(Sandro Santilli)"
+#, no-c-format
+msgid "Improve performance of ST_GeneratePoints (Paul Ramsey)"
 msgstr ""
-"[postgis_topology] Beschleunigung der Prüfung auf übereinstimmende Knoten "
-"bei der Topologievalidierung (Sandro Santilli)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/718\">718</link>, "
-"ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5361\">#5361</"
+"link>, ST_CurveN, ST_NumCurves and consistency in accessors on curved "
+"geometry (Paul Ramsey)"
 msgstr ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/718\">718</link>, "
-"ST_QuantizeCoordinates(): Beschleunigte Implementierung (Even Rouault)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"Repair spatial planner stats to use computed selectivity for contains/within "
-"queries (Paul Ramsey)"
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/761\">GH-761</"
+"link>, postgis_sfcgal: Add an optional parameter to CG_StraightSkeleton (was "
+"ST_StraightSkeleton) to use m as a distance in result (Hannes Janetzek, Loïc "
+"Bartoletti)"
 msgstr ""
-"Reparatur der Raumplaner-Statistiken zur Verwendung der berechneten "
-"Selektivität für \"contains/within\"-Abfragen (Paul Ramsey)"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/734\">734</link>, "
-"Additional metadata on Proj installation in postgis_proj_version (Paul "
-"Ramsey)"
-msgstr ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/734\">734</link>, "
-"Zusätzliche Metadaten zur Proj-Installation in postgis_proj_version (Paul "
-"Ramsey)"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</link>, "
-"Allow building tools without PostgreSQL server headers. Respect prefix/bin "
-"for tools install (Sandro Santilli)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</link>, "
-"Erlaubt die Erstellung von Tools ohne PostgreSQL Server Header. Präfix/bin "
-"für die Installation von Tools respektieren (Sandro Santilli)"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"ST_Project signature for geometry, and two-point signature (Paul Ramsey)"
-msgstr "ST_Projektsignatur für Geometrie und Zweipunktsignatur (Paul Ramsey)"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4913\">4913</link>, "
-"ST_AsSVG support for curve types CircularString, CompoundCurve, MultiCurve, "
-"and MultiSurface (Regina Obe)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4913\">4913</link>, "
-"ST_AsSVG Unterstützung für die Kurventypen CircularString, CompoundCurve, "
-"MultiCurve, und MultiSurface (Regina Obe)"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</link>, "
-"ST_ClosestPoint, ST_ShortestLine, ST_LineSubString support for geography "
-"type (MobilityDB Esteban Zimanyi, Maxime Schoemans, Paul Ramsey)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</link>, "
-"ST_ClosestPoint, ST_ShortestLine, ST_LineSubString Unterstützung für "
-"geographische Typen (MobilityDB Esteban Zimanyi, Maxime Schoemans, Paul "
-"Ramsey)"
-
-#. Tag: title
-#, fuzzy, no-c-format
-msgid "Breaking Changes"
-msgstr "Wechselnde Änderungen"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</link>, "
-"Drop support for Proj &lt; 6.1 and PG 11 (Regina Obe)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</link>, "
-"Unterstützung für Proj &lt; 6.1 und PG 11 einstellen (Regina Obe)"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</link>, "
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/734\">734</link>, "
-"postgis_full_version() and postgis_proj_version() now output more "
-"information about proj network configuration and data paths. GEOS compile-"
-"time version also shown if different from run-time (Paul Ramsey, Sandro "
-"Santilli)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</link>, "
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/734\">734</link>, "
-"postgis_full_version() und postgis_proj_version() geben nun mehr "
-"Informationen über die proj-Netzwerkkonfiguration und Datenpfade aus. GEOS "
-"Kompilierzeitversion wird auch angezeigt, wenn sie sich von der "
-"Laufzeitversion unterscheidet (Paul Ramsey, Sandro Santilli)"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/5447\">5447</"
-"link>, postgis_restore.pl renamed to postgis_restore (Sandro Santilli)"
-msgstr ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/5447\">5447</"
-"link>, postgis_restore.pl umbenannt in postgis_restore (Sandro Santilli)"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"Utilities now installed in OS bin or user specified --bindir and --prefix "
-"instead of postgresql bin and extension stripped except on windows (postgis, "
-"postgis_restore, shp2pgsql, raster2pgsql, pgsql2shp, pgtopo_import, "
-"pgtopo_export)"
-msgstr ""
-"Dienstprogramme werden jetzt in OS bin oder in den vom Benutzer angegebenen "
-"--bindir und --prefix installiert, statt in postgresql bin und ohne "
-"Erweiterung, außer unter Windows (postgis, postgis_restore, shp2pgsql, "
-"raster2pgsql, pgsql2shp, pgtopo_import, pgtopo_export)"
 
 #. Tag: title
 #, no-c-format
@@ -52084,6 +51955,434 @@ msgstr "2.5/3D-Unterstützung"
 #, fuzzy, no-c-format
 msgid "Supports geography"
 msgstr "Unterstützt Geographie"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "GDAL, version 2+ is required 3+ is preferred. This is required for raster "
+#~ "support. <link xlink:href=\"https://gdal.org/download.html\">https://gdal."
+#~ "org/download.html</link>."
+#~ msgstr ""
+#~ "GDAL, Version 2+ ist erforderlich 3+ wird bevorzugt. Dies ist für die "
+#~ "Rasterunterstützung erforderlich. <link xlink:href=\"https://gdal.org/"
+#~ "download.html\">https://gdal.org/download.html</link>."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "SFCGAL, version 1.3.1 (or higher), 1.4.1 or higher is recommended and "
+#~ "required to be able to use all functionality. SFCGAL can be used to "
+#~ "provide additional 2D and 3D advanced analysis functions to PostGIS cf "
+#~ "<xref linkend=\"reference_sfcgal\"/>. And also allow to use SFCGAL rather "
+#~ "than GEOS for some 2D functions provided by both backends (like "
+#~ "ST_Intersection or ST_Area, for instance). A PostgreSQL configuration "
+#~ "variable <code>postgis.backend</code> allow end user to control which "
+#~ "backend he want to use if SFCGAL is installed (GEOS by default). Nota: "
+#~ "SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: <link xlink:"
+#~ "href=\"https://sfcgal.org\">https://sfcgal.org</link>) <link xlink:"
+#~ "href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/"
+#~ "SFCGAL/</link>."
+#~ msgstr ""
+#~ "SFCGAL, Version 1.3.1 (oder höher), 1.4.1 oder höher wird empfohlen und "
+#~ "benötigt, um alle Funktionen nutzen zu können. SFCGAL kann verwendet "
+#~ "werden, um zusätzliche 2D- und 3D-Analysefunktionen für PostGIS cf <xref "
+#~ "linkend=\"reference_sfcgal\"/> bereitzustellen. Außerdem kann SFCGAL "
+#~ "anstelle von GEOS für einige 2D-Funktionen verwendet werden, die von "
+#~ "beiden Backends bereitgestellt werden (z. B. ST_Intersection oder "
+#~ "ST_Area). Eine PostgreSQL-Konfigurationsvariable <code>postgis.backend</"
+#~ "code> erlaubt es dem Endbenutzer zu kontrollieren, welches Backend er "
+#~ "verwenden möchte, wenn SFCGAL installiert ist (GEOS als Standard). "
+#~ "Hinweis: SFCGAL 1.2 benötigt mindestens CGAL 4.3 und Boost 1.54 (vgl. "
+#~ "<link xlink:href=\"https://sfcgal.org\">https://sfcgal.org</link>) <link "
+#~ "xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/"
+#~ "sfcgal/SFCGAL/</link>."
+
+#, fuzzy, no-c-format
+#~ msgid "PostGIS 3.4.0"
+#~ msgstr "PostGIS 3.4.0"
+
+#, fuzzy, no-c-format
+#~ msgid "2023/08/15"
+#~ msgstr "2023/08/15"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj "
+#~ "6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
+#~ "advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed."
+#~ msgstr ""
+#~ "Diese Version benötigt PostgreSQL 12-16, GEOS 3.6 oder höher, und Proj "
+#~ "6.1+. Um alle Funktionen nutzen zu können, ist GEOS 3.12+ erforderlich. "
+#~ "Um alle SFCGAL-Funktionen nutzen zu können, ist SFCGAL 1.4.1+ "
+#~ "erforderlich."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "NOTE: GEOS 3.12.0 details at <link xlink:href=\"https://libgeos.org/"
+#~ "posts/2023-06-27-geos-3-12-released/\">GEOS 3.12.0 release notes</link>"
+#~ msgstr ""
+#~ "HINWEIS: GEOS 3.12.0 Details unter <link xlink:href=\"https://libgeos.org/"
+#~ "posts/2023-06-27-geos-3-12-released/\">GEOS 3.12.0 Release Notes</link>"
+
+#, fuzzy, no-c-format
+#~ msgid "There are 2 new ./configure switches:"
+#~ msgstr "Es gibt 2 neue Schalter ./configure:"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "--disable-extension-upgrades-install, will skip installing all the "
+#~ "extension upgrade scripts except for the ANY--currentversion. If you use "
+#~ "this, you can install select upgrades using the postgis commandline tool"
+#~ msgstr ""
+#~ "--disable-extension-upgrades-install, überspringt die Installation aller "
+#~ "Erweiterungs-Upgrade-Skripte mit Ausnahme von ANY--currentversion. Wenn "
+#~ "Sie dies verwenden, können Sie ausgewählte Upgrades mit dem postgis-"
+#~ "Kommandozeilen-Tool installieren"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "--without-pgconfig, will build just the commandline tools raster2pgsql "
+#~ "and shp2pgsql even if PostgreSQL is not installed"
+#~ msgstr ""
+#~ "--without-pgconfig, erstellt nur die Kommandozeilen-Tools raster2pgsql "
+#~ "und shp2pgsql, auch wenn PostgreSQL nicht installiert ist"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</"
+#~ "link>, complete manual internationalization (Sandro Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</"
+#~ "link>, vollständige manuelle Internationalisierung (Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5052\">5052</"
+#~ "link>, target version support in postgis_extensions_upgrade (Sandro "
+#~ "Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5052\">5052</"
+#~ "link>, Unterstützung der Zielversion in postgis_extensions_upgrade "
+#~ "(Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</"
+#~ "link>, expose version of GEOS at compile time (Sandro Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</"
+#~ "link>, legt die Version von GEOS zur Kompilierzeit offen (Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "New install-extension-upgrades command in postgis script (Sandro Santilli)"
+#~ msgstr ""
+#~ "Neuer Befehl install-extension-upgrades im Postgis-Skript (Sandro "
+#~ "Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5257\">5257</"
+#~ "link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+#~ "ticket/5261\">5261</link>, <link xlink:href=\"https://trac.osgeo.org/"
+#~ "postgis/ticket/5277\">5277</link>, Support changes for PostgreSQL 16 "
+#~ "(Regina Obe)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5257\">5257</"
+#~ "link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+#~ "ticket/5261\">5261</link>, <link xlink:href=\"https://trac.osgeo.org/"
+#~ "postgis/ticket/5277\">5277</link>, Änderungen der Unterstützung für "
+#~ "PostgreSQL 16 (Regina Obe)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5006\">5006</"
+#~ "link>, <link xlink:href=\"https://github.com/postgis/postgis/"
+#~ "pull/705\">705</link>, ST_Transform: Support PROJ pipelines (Robert Coup, "
+#~ "Koordinates)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5006\">5006</"
+#~ "link>, <link xlink:href=\"https://github.com/postgis/postgis/"
+#~ "pull/705\">705</link>, ST_Transform: Unterstützung von PROJ-Pipelines "
+#~ "(Robert Coup, Koordinates)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5283\">5283</"
+#~ "link>, [postgis_topology] RenameTopology (Sandro Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5283\">5283</"
+#~ "link>, [postgis_topology] RenameTopology (Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5286\">5286</"
+#~ "link>, [postgis_topology] RenameTopoGeometryColumn (Sandro Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5286\">5286</"
+#~ "link>, [postgis_topology] RenameTopoGeometryColumn (Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/703\">703</"
+#~ "link>, [postgis_raster] Add min/max resampling as options (Christian "
+#~ "Schroeder)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/703\">703</"
+#~ "link>, [postgis_raster] Min/Max-Resampling als Optionen hinzufügen "
+#~ "(Christian Schroeder)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5336\">5336</"
+#~ "link>, [postgis_topology] topogeometry cast to topoelement support "
+#~ "(Regina Obe)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5336\">5336</"
+#~ "link>, [postgis_topology] topogeometry cast to topoelement support "
+#~ "(Regina Obe)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Allow singleton geometry to be inserted into Geometry(Multi*) columns "
+#~ "(Paul Ramsey)"
+#~ msgstr ""
+#~ "Einfügen von Singleton-Geometrie in Geometry(Multi*)-Spalten erlauben "
+#~ "(Paul Ramsey)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/721\">721</"
+#~ "link>, New window-based ST_ClusterWithinWin and ST_ClusterIntersectingWin "
+#~ "(Paul Ramsey)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/721\">721</"
+#~ "link>, Neue fensterbasierte ST_ClusterWithinWin und "
+#~ "ST_ClusterIntersectingWin (Paul Ramsey)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5397\">5397</"
+#~ "link>, [address_standardizer] debug_standardize_address function (Regina "
+#~ "Obe)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5397\">5397</"
+#~ "link>, [address_standardizer] debug_standardize_address Funktion (Regina "
+#~ "Obe)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5373\">5373</"
+#~ "link>ST_LargestEmptyCircle, exposes extra semantics on circle finding. "
+#~ "Geos 3.9+ required(Martin Davis)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5373\">5373</"
+#~ "link>ST_LargestEmptyCircle, zeigt zusätzliche Semantik bei der "
+#~ "Kreisfindung. Geos 3.9+ erforderlich (Martin Davis)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</"
+#~ "link>, ST_Project signature for geometry, and two-point signature (Paul "
+#~ "Ramsey)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</"
+#~ "link>, ST_Project-Signatur für Geometrie und Zweipunktsignatur (Paul "
+#~ "Ramsey)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</"
+#~ "link>, ST_LineExtend for extending linestrings (Paul Ramsey)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</"
+#~ "link>, ST_LineExtend zum Verlängern von Linienstrings (Paul Ramsey)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "New coverage functions ST_CoverageInvalidEdges, ST_CoverageSimplify, "
+#~ "ST_CoverageUnion (Paul Ramsey)"
+#~ msgstr ""
+#~ "Neue Deckungsfunktionen ST_CoverageInvalidEdges, ST_CoverageSimplify, "
+#~ "ST_CoverageUnion (Paul Ramsey)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5194\">5194</"
+#~ "link>, do not update system catalogs from postgis_extensions_upgrade "
+#~ "(Sandro Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5194\">5194</"
+#~ "link>, Systemkataloge nicht aus postgis_extensions_upgrade aktualisieren "
+#~ "(Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</"
+#~ "link>, reduce number of upgrade paths installed on system (Sandro "
+#~ "Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</"
+#~ "link>, Anzahl der im System installierten Upgrade-Pfade reduzieren "
+#~ "(Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/635\">635</"
+#~ "link>, honour --bindir (and --prefix) configure switch for executables "
+#~ "(Sandro Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/635\">635</"
+#~ "link>, honoriere --bindir (und --prefix) configure-Schalter für "
+#~ "ausführbare Dateien (Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Honour --mandir (and --prefix) configure switch for man pages install "
+#~ "path (Sandro Santilli)"
+#~ msgstr ""
+#~ "Den --mandir (und --prefix) configure-Schalter für den Installationspfad "
+#~ "der Manualseiten berücksichtigen (Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Honour --htmldir (and --docdir and --prefix) configure switch for html "
+#~ "pages install path (Sandro Santilli)"
+#~ msgstr ""
+#~ "Den --htmldir (und --docdir und --prefix) Konfigurationsschalter für den "
+#~ "Installationspfad von HTML-Seiten berücksichtigen (Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5447\">5447</"
+#~ "link> Manual pages added for postgis and postgis_restore utilities "
+#~ "(Sandro Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5447\">5447</"
+#~ "link> Handbuchseiten für postgis und postgis_restore Dienstprogramme "
+#~ "hinzugefügt (Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "[postgis_topology] Speed up check of topology faces without edges (Sandro "
+#~ "Santilli)"
+#~ msgstr ""
+#~ "[postgis_topology] Beschleunigung der Prüfung von Topologieflächen ohne "
+#~ "Kanten (Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "[postgis_topology] Speed up coincident nodes check in topology validation "
+#~ "(Sandro Santilli)"
+#~ msgstr ""
+#~ "[postgis_topology] Beschleunigung der Prüfung auf übereinstimmende Knoten "
+#~ "bei der Topologievalidierung (Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/718\">718</"
+#~ "link>, ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/718\">718</"
+#~ "link>, ST_QuantizeCoordinates(): Beschleunigte Implementierung (Even "
+#~ "Rouault)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Repair spatial planner stats to use computed selectivity for contains/"
+#~ "within queries (Paul Ramsey)"
+#~ msgstr ""
+#~ "Reparatur der Raumplaner-Statistiken zur Verwendung der berechneten "
+#~ "Selektivität für \"contains/within\"-Abfragen (Paul Ramsey)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/734\">734</"
+#~ "link>, Additional metadata on Proj installation in postgis_proj_version "
+#~ "(Paul Ramsey)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/734\">734</"
+#~ "link>, Zusätzliche Metadaten zur Proj-Installation in "
+#~ "postgis_proj_version (Paul Ramsey)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</"
+#~ "link>, Allow building tools without PostgreSQL server headers. Respect "
+#~ "prefix/bin for tools install (Sandro Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</"
+#~ "link>, Erlaubt die Erstellung von Tools ohne PostgreSQL Server Header. "
+#~ "Präfix/bin für die Installation von Tools respektieren (Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "ST_Project signature for geometry, and two-point signature (Paul Ramsey)"
+#~ msgstr ""
+#~ "ST_Projektsignatur für Geometrie und Zweipunktsignatur (Paul Ramsey)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4913\">4913</"
+#~ "link>, ST_AsSVG support for curve types CircularString, CompoundCurve, "
+#~ "MultiCurve, and MultiSurface (Regina Obe)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4913\">4913</"
+#~ "link>, ST_AsSVG Unterstützung für die Kurventypen CircularString, "
+#~ "CompoundCurve, MultiCurve, und MultiSurface (Regina Obe)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</"
+#~ "link>, ST_ClosestPoint, ST_ShortestLine, ST_LineSubString support for "
+#~ "geography type (MobilityDB Esteban Zimanyi, Maxime Schoemans, Paul Ramsey)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</"
+#~ "link>, ST_ClosestPoint, ST_ShortestLine, ST_LineSubString Unterstützung "
+#~ "für geographische Typen (MobilityDB Esteban Zimanyi, Maxime Schoemans, "
+#~ "Paul Ramsey)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</"
+#~ "link>, Drop support for Proj &lt; 6.1 and PG 11 (Regina Obe)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</"
+#~ "link>, Unterstützung für Proj &lt; 6.1 und PG 11 einstellen (Regina Obe)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</"
+#~ "link>, <link xlink:href=\"https://github.com/postgis/postgis/"
+#~ "pull/734\">734</link>, postgis_full_version() and postgis_proj_version() "
+#~ "now output more information about proj network configuration and data "
+#~ "paths. GEOS compile-time version also shown if different from run-time "
+#~ "(Paul Ramsey, Sandro Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</"
+#~ "link>, <link xlink:href=\"https://github.com/postgis/postgis/"
+#~ "pull/734\">734</link>, postgis_full_version() und postgis_proj_version() "
+#~ "geben nun mehr Informationen über die proj-Netzwerkkonfiguration und "
+#~ "Datenpfade aus. GEOS Kompilierzeitversion wird auch angezeigt, wenn sie "
+#~ "sich von der Laufzeitversion unterscheidet (Paul Ramsey, Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/5447\">5447</"
+#~ "link>, postgis_restore.pl renamed to postgis_restore (Sandro Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/5447\">5447</"
+#~ "link>, postgis_restore.pl umbenannt in postgis_restore (Sandro Santilli)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Utilities now installed in OS bin or user specified --bindir and --prefix "
+#~ "instead of postgresql bin and extension stripped except on windows "
+#~ "(postgis, postgis_restore, shp2pgsql, raster2pgsql, pgsql2shp, "
+#~ "pgtopo_import, pgtopo_export)"
+#~ msgstr ""
+#~ "Dienstprogramme werden jetzt in OS bin oder in den vom Benutzer "
+#~ "angegebenen --bindir und --prefix installiert, statt in postgresql bin "
+#~ "und ohne Erweiterung, außer unter Windows (postgis, postgis_restore, "
+#~ "shp2pgsql, raster2pgsql, pgsql2shp, pgtopo_import, pgtopo_export)"
 
 #, no-c-format
 #~ msgid ""
