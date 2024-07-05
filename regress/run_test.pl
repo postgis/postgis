@@ -1915,7 +1915,7 @@ sub upgrade_spatial_extensions
     }
 
     # Handle raster split if coming from pre-split extension
-    # and going to splitted raster
+    # and going to split raster
     if ( $OPT_UPGRADE_FROM &&
          ( not $OPT_UPGRADE_FROM =~ /^unpackaged/ ) &&
          has_split_raster_ext($OPT_UPGRADE_TO) &&

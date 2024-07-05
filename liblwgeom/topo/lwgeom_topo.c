@@ -2301,8 +2301,8 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
 
 /**
  * @param modFace can be
- *    0 - have two new faces replace a splitted face
- *    1 - modify a splitted face, adding a new one
+ *    0 - have two new faces replace a spli face
+ *    1 - modify a split face, adding a new one
  *   -1 - do not check at all for face splitting
  *
  */
@@ -5231,7 +5231,7 @@ _lwt_SnapEdgeToExistingNode(
         ret = _lwt_FindAdjacentEdges( topo, node->node_id, &(splitNodeEdgeEnds[n]), NULL, -1 );
         if ( ! ret ) {
             lwerror("Unexpected backend return: _lwt_FindAdjacentEdges(%"
-              LWTFMT_ELEMID ") found no edges when we previously splitted edge %"
+              LWTFMT_ELEMID ") found no edges when we previously split edge %"
               LWTFMT_ELEMID "d on it",
               node->node_id, edge->edge_id);
             return -1;
@@ -5639,7 +5639,7 @@ _lwt_SnapEdgeToExistingNode(
 
     /*****
      *
-     * Update the splitted edge
+     * Update the split edge
      *
      */
 

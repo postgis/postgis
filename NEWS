@@ -1,7 +1,12 @@
-PostGIS 3.5.0
+PostGIS 3.5.0alpha2
 2024/xx/xx
 
+Changes since alpha1
+
+#5760, postgis_topology: Fix spelling errors (Bas Couwenberg)
+
 To take advantage of all SFCGAL features, SFCGAL 1.5.0+ is needed.
+PostgreSQL 12-17 supported
 
 Many thanks to our translation teams, in particular:
 
