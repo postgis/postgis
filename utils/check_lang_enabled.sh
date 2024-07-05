@@ -21,9 +21,9 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "${RD}" ]; then
-  RD=`dirname $0`/..
+  RD=$(cd $(dirname $0)/..; pwd)
 fi
-test ${RD}/doc/po || {
+test -d ${RD}/doc/po || {
   echo "ERROR: Source dir ${RD} does not contain a doc/po directory" >&2
   exit 1
 }
@@ -32,6 +32,13 @@ ENABLED_TRANSLATIONS=$(grep ^translations ${RD}/doc/Makefile.in | cut -d= -f2)
 fail=0
 
 CORRECTLY_ENABLED=
+CHECK_WOODIE=no
+
+if test -d ${RD}/.woodpecker; then
+  CHECK_WOODIE=yes
+else
+  echo "SKIP: woodpecker config not checked as ${RD}/.woodpecker dir is not present"
+fi
 
 # Available languages are those for which we have at least a .po file
 for LANG in $(
@@ -54,11 +61,13 @@ do
   }
 
   # Check that the language check is enabled for woodie
-  grep -qw "${LANG}" ${RD}/.woodpecker/docs.yml || {
-    echo "FAIL: ${LANG} is not enabled in ${RD}/.woodpecker/docs.yml"
-    fail=$((fail+1))
-    continue
-  }
+  if test "${CHECK_WOODIE}" = "yes"; then
+    grep -qw "${LANG}" ${RD}/.woodpecker/docs.yml || {
+      echo "FAIL: ${LANG} is not enabled in ${RD}/.woodpecker/docs.yml"
+      fail=$((fail+1))
+      continue
+    }
+  fi
 
   echo "PASS: ${LANG} is correctly enabled"
 
