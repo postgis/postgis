@@ -2301,7 +2301,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
 
 /**
  * @param modFace can be
- *    0 - have two new faces replace a spli face
+ *    0 - have two new faces replace a split face
  *    1 - modify a split face, adding a new one
  *   -1 - do not check at all for face splitting
  *
