@@ -1,10 +1,5 @@
-PostGIS 3.5.0alpha2
-2024/07/06
-
-Changes since alpha1
-
-#5760, postgis_topology: Fix spelling errors (Bas Couwenberg)
-#5759, 3.5.0-alpha1 fails to build due to test failures (Sandro Santilli) 
+PostGIS 3.5.0
+2024/xx/xx
 
 To take advantage of all postgis_sfcgal extension features SFCGAL 1.5 is needed.
 PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
