@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-05 06:17+0000\n"
-"PO-Revision-Date: 2024-07-02 11:45+0000\n"
+"PO-Revision-Date: 2024-07-08 04:45+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8061,6 +8061,9 @@ msgid ""
 "xlink:href=\"https://gdal.org/download.html\">https://gdal.org/download."
 "html</link>."
 msgstr ""
+"GDAL バージョン3以上が推奨されます。ラスタ機能に必要です。<link xlink:href="
+"\"https://gdal.org/download.html\">https://gdal.org/download."
+"html</link>にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -8114,6 +8117,17 @@ msgid ""
 "xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/"
 "SFCGAL/</link>."
 msgstr ""
+"SFCGAL 1.4.1 以上が必要ですが、全ての機能を使用できるようにするためには、1.5."
+"0以上が必要です。SFCGALは、<xref linkend=\"reference_sfcgal\"/>のような、追加"
+"の2次元、3次元の高度な解析機能をPostGISに提供するために使います。また、"
+"両方のバックエンドから提供されている2次元関数 (ST_IntersectionやST_Areaなど)"
+"に、GEOSでなくSFCGALを使用することができるようになります。PostgreSQLのコンフ"
+"ィギュレーション変数である<code>postgis.backend</code>によって、SFCGALがイン"
+"ストールされている場合にエンドユーザがどのバックエンドを使うかを制御すること"
+"ができるようになります (デフォルトはGEOS)。ご注意: SFCGAL "
+"1.2は少なくともCGAL 4.3とBoost 1.54 が必要です (<link xlink:href=\"https"
+"://sfcgal.org/\">https://sfcgal.org/</link> 参照) <link xlink:href=\"https"
+"://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/SFCGAL/</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -17090,57 +17104,62 @@ msgstr ""
 msgid ""
 "Removes points that are irrelevant for rendering a specific rectangluar view "
 "of a geometry."
-msgstr ""
+msgstr "指定した矩形表示範囲での描画に関係のないジオメトリのポイントを削除します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Returns a <xref linkend=\"geometry\"/> without points being irrelevant for "
 "rendering the geometry within a given rectangluar view."
-msgstr ""
+msgstr "指定した矩形表示範囲での描画に関係のないポイントを外した<xref linkend="
+"\"geometry\"/>を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This function can be used to quickly preprocess geometries that should be "
 "rendered only within certain bounds."
-msgstr ""
+msgstr "この関数を使用すると、特定の範囲内のみで描画する必要があるジオメトリに対して"
+"素早い前処理を実行できます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING are evaluated. "
 "Other geometries keep unchanged."
-msgstr ""
+msgstr "(MULTI)POLYGONと(MULTI)LINESTRINGのタイプのジオメトリだけが評価されます。他の"
+"ジオメトリは変更されません。"
 
 #. Tag: para
 #, no-c-format
 msgid "In contrast to <code>ST_ClipByBox2D()</code> this function"
-msgstr ""
+msgstr "この関数は次の点において<code>ST_ClipByBox2D()</code>と対照的です"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "sorts out points without computing new intersection points which avoids "
 "rounding errors and usually increases performance,"
-msgstr ""
+msgstr "この関数は、新しいインタセクトするポイントを計算することなくポイントの並べ替"
+"えを行うので、丸め誤差が回避され、通常は効率が向上し、"
 
 #. Tag: para
 #, no-c-format
 msgid "returns a geometry with equal or similar point number,"
-msgstr ""
+msgstr "ポイント数が同じ又は近いジオメトリを返し、"
 
 #. Tag: para
 #, no-c-format
 msgid "leads to the same rendering result within the specified view, and"
-msgstr ""
+msgstr "指定した描画範囲内では同じ描画結果になり、"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "may introduce self-intersections which would make the resulting geometry "
 "invalid (see example below)."
-msgstr ""
+msgstr "自己交差を発生させ、結果ジオメトリを不正にする可能性があります "
+"(下の例をご覧下さい)。"
 
 #. Tag: para
 #, no-c-format
@@ -17149,6 +17168,9 @@ msgid ""
 "valid. This situation can be checked with <xref linkend=\"ST_IsValid\"/> and "
 "repaired with <xref linkend=\"ST_MakeValid\"/>."
 msgstr ""
+"ポリゴンに対しては、この関数は現在は結果の妥当性を保証しません。"
+"この状況は<xref linkend=\"ST_IsValid\"/>で確認でき、<xref linkend="
+"\"ST_MakeValid\"/>で修復することができます。"
 
 #. Tag: para
 #, no-c-format
@@ -17157,6 +17179,8 @@ msgid ""
 "points remain, the rendering result (light-blue area) within the grey view "
 "box remains as well."
 msgstr ""
+"例: ST_RemoveIrrelevantPointsForView()をポリゴンに適用しています。青いポイン"
+"トが残り、灰色の描画範囲も残したうえで、結果の描画を行います (薄青の領域)。"
 
 #. Tag: para
 #, no-c-format
@@ -17165,6 +17189,9 @@ msgid ""
 "are computed, the result of ST_RemoveIrrelevantPointsForView() may contain "
 "self-intersections."
 msgstr ""
+"例: ポイントが並べ替えられただけで、新しいポイントが計算されなかったという事"
+"実のため、ST_RemoveIrrelevantPointsForView()の結果に自己交差が含まれることが"
+"あります。"
 
 #. Tag: para
 #, no-c-format
@@ -17174,28 +17201,32 @@ msgstr ", <xref linkend=\"ST_Intersection\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Removes small parts (polygon rings or linestrings) of a geometry."
-msgstr ""
+msgstr "ジオメトリの全ての小さな部位 "
+"(ポリゴンのリングまたはラインストリング)を削除します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Returns a <xref linkend=\"geometry\"/> without small parts (exterior or "
 "interior polygon rings, or linestrings)."
-msgstr ""
+msgstr "小さい部位 (外側リングや内側リングやラインストリング)を持たない<xref linkend="
+"\"geometry\"/>を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This function can be used as preprocessing step for creating simplified "
 "maps, e. g. to remove small islands or holes."
-msgstr ""
+msgstr "この関数は、地図の簡略化における、小さい島や穴を削除するたといった前処理段階"
+"で使います。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "It evaluates only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING. "
 "Other geometries remain unchanged."
-msgstr ""
+msgstr "(MULTI)POLYGONと(MULTI)LINESTRINGのタイプのジオメトリだけが評価されます。他の"
+"ジオメトリは変更されません。"
 
 #. Tag: para
 #, no-c-format
@@ -17203,6 +17234,8 @@ msgid ""
 "If <parameter>minSizeX</parameter> is greater than 0, parts are sorted out "
 "if their width is smaller than <parameter>minSizeX</parameter>."
 msgstr ""
+"<parameter>minSizeX</parameter>が0より大きい場合には、<parameter>minSizeX</pa"
+"rameter>より小さい幅の部位が分けられます。"
 
 #. Tag: para
 #, no-c-format
@@ -17210,6 +17243,8 @@ msgid ""
 "If <parameter>minSizeY</parameter> is greater than 0, parts are sorted out "
 "if their height is smaller than <parameter>minSizeY</parameter>."
 msgstr ""
+"<parameter>minSizeY</parameter>が0より大きい場合には、<parameter>minSizeY</pa"
+"rameter>より小さい高さの部位が分けられます。"
 
 #. Tag: para
 #, no-c-format
@@ -17217,82 +17252,88 @@ msgid ""
 "Both <parameter>minSizeX</parameter> and <parameter>minSizeY</parameter> are "
 "measured in coordinate system units of the geometry."
 msgstr ""
+"<parameter>minSizeX</parameter>と<parameter>minSizeY</parameter>は、ともにジ"
+"オメトリの座標系の単位で計測されます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "For polygon types, evaluation is done separately for each ring which can "
 "lead to one of the following results:"
-msgstr ""
+msgstr "ポリゴンタイプの場合には、評価はリングごとに個別に行われ、次の結果のいずれか"
+"が導かれます:"
 
 #. Tag: para
 #, no-c-format
 msgid "the original geometry,"
-msgstr ""
+msgstr "元のジオメトリ"
 
 #. Tag: para
 #, no-c-format
 msgid "a POLYGON with all rings with less vertices,"
-msgstr ""
+msgstr "全てのリングで頂点が減ったPOLYGON、"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "a POLYGON with a reduced number of interior rings (having possibly less "
 "vertices),"
-msgstr ""
+msgstr "内側リングの数が減ったPOLYGON (さらに頂点が減っている場合あり)、"
 
 #. Tag: para
 #, no-c-format
 msgid "a POLYGON EMPTY, or"
-msgstr ""
+msgstr "POLYGON EMPTY、"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "a MULTIPOLYGON with a reduced number of polygons (having possibly less "
 "interior rings or vertices), or"
-msgstr ""
+msgstr "要素ポリゴン数が減ったMULTIPOLYGON "
+"(さらに内側リング数や頂点数が減っている場合あり)、"
 
 #. Tag: para
 #, no-c-format
 msgid "a MULTIPOLYGON EMPTY."
-msgstr ""
+msgstr "MULTIPOLYGON EMPTY。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "For linestring types, evaluation is done for each linestring which can lead "
 "to one of the following results:"
-msgstr ""
+msgstr "ラインストリングタイプの場合には、ラインストリングごとに評価が行われるので、"
+"次のような結果が導かれます:"
 
 #. Tag: para
 #, no-c-format
 msgid "a LINESTRING with a reduced number of vertices,"
-msgstr ""
+msgstr "頂点数の減ったLINESTRING、"
 
 #. Tag: para
 #, no-c-format
 msgid "a LINESTRING EMPTY,"
-msgstr ""
+msgstr "LINESTRING EMPTY、"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "a MULTILINESTRING with a reduced number of linestrings (having possibly less "
 "vertices), or"
-msgstr ""
+msgstr "要素ラインストリング数の減ったMULTILINESTRING "
+"(さらに頂点が減っている場合あり)、"
 
 #. Tag: para
 #, no-c-format
 msgid "a MULTILINESTRING EMPTY."
-msgstr ""
+msgstr "MULTILINESTRING EMPTY。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Example: ST_RemoveSmallParts() applied to a multi-polygon. Blue parts remain."
-msgstr ""
+msgstr "例: マルチポリゴンを適用したST_RemoveSmallParts()。青い領域が残った領域です。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -27517,7 +27558,8 @@ msgstr ""
 msgid ""
 "Behavior changed in GEOS 3.11 so offset curves now have the same direction "
 "as the input line, for both positive and negative offsets."
-msgstr ""
+msgstr "GEOS 3.11 では動作が変更され、正と負の両方のオフセットで、オフセット曲線が入"
+"力ラインと同じ方向になりました。"
 
 #. Tag: para
 #, no-c-format
@@ -38836,6 +38878,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) = ∅) ∧ "
 "(A ⋂ B ≠ ∅) </emphasis>"
 msgstr ""
+"数学用語では: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) = ∅) ∧ (A ⋂ B ≠ "
+"∅) </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -39428,7 +39472,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as CG_3DVolume)"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (CG_3DVolumeと同じ)"
 
 #. Tag: para
 #, no-c-format
@@ -39438,6 +39482,9 @@ msgid ""
 "linkend=\"CG_MakeSolid\"/>. Areal geometries have no volume. Here is an "
 "example to demonstrate."
 msgstr ""
+"WKTで閉じた面を生成した時、それは立体でなく面として扱われるます。"
+"立体にするには<xref linkend=\"CG_MakeSolid\""
+"/>を使います。面ジオメトリは体積を持ちません。例を挙げます。"
 
 #. Tag: para
 #, no-c-format
@@ -39810,6 +39857,10 @@ msgid ""
 "it operates on rows of data, in the same way the SUM() and AVG() functions "
 "do and like most aggregates, it also ignores NULL geometries."
 msgstr ""
+"<emphasis role=\"bold\">集約関数形式:</emphasis> ジオメトリの行集合を結合した"
+"3次元ジオメトリを返します。CG_3DUnion()関数は、PostgreSQL用語で言うところの「"
+"集約関数」です。つまり、SUM()やMEAN()と同じ方法で複数のデータ行の操作を行い、"
+"他のほとんどの集約関数と同じようにNULLジオメトリを無視します。"
 
 #. Tag: para
 #, no-c-format
@@ -39839,7 +39890,7 @@ msgstr "ジオメトリを囲むアルファシェイプを計算します。"
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_AlphaShape\"/> instead."
-msgstr ""
+msgstr "は3.5.0では非推奨です。代わりに<xref linkend=\"CG_AlphaShape\"/>を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -39917,7 +39968,8 @@ msgstr "Availability: 3.5.0 - SFCGAL &gt;= 1.4.1 が必要です。"
 msgid ""
 "Alpha-shape of a MultiPoint (same example As <xref "
 "linkend=\"CG_OptimalAlphaShape\"/>)"
-msgstr ""
+msgstr "MULTIPOINTOのアルファシェイプ (<xref linkend=\"CG_OptimalAlphaShape\""
+"/>と同じ)"
 
 #. Tag: para
 #, no-c-format
@@ -39925,6 +39977,8 @@ msgid ""
 "Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
 "linkend=\"CG_OptimalAlphaShape\"/>)"
 msgstr ""
+"穴を許容したMULTIPOINTOのアルファシェイプ (<xref linkend="
+"\"CG_OptimalAlphaShape\"/>と同じ)"
 
 #. Tag: para
 #, no-c-format
@@ -40068,7 +40122,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "CG_ConstrainedDelaunayTriangles of 2 polygons"
-msgstr ""
+msgstr "二つのポリゴンのCG_ConstrainedDelaunayTriangles"
 
 #. Tag: para
 #, no-c-format
@@ -40143,6 +40197,14 @@ msgid ""
 "with CG_Extrude(polygon, 0, 0, body_height). The result is an union of these "
 "polyhedralsurfaces."
 msgstr ""
+"ストレートスケルトンの (歴史上の)最初の使用例は、おそらく、ポリゴンの屋根を与"
+"えて、ストレートスケルトンでテントの配置を得るというものだったでしょう。スケ"
+"ルトンの個々のエッジは平面からオフセット距離分引き上げられ、水が、屋根のどこ"
+"に落ちるか関係なく、常に輪郭のエッジ (屋根の境界線)に落ちるという点で、結果の"
+"屋根は「正しい」ものになります。この関数はこのポリゴンの押出し、別名「屋根」"
+"を計算します。引数のbody_height が body_height > 0 "
+"となる場合には、ポリゴンはCG_Extrude(polygon, 0, 0, body_height)で押し出され"
+"るようになります。結果はこれらの多面体サーフェスの結合となります。"
 
 #. Tag: para
 #, no-c-format
@@ -40321,14 +40383,15 @@ msgstr "Availability: 3.3.0 - SFCGAL &gt;= 1.4.1 が必要です。"
 msgid ""
 "Optimal alpha-shape of a MultiPoint (same example as <xref "
 "linkend=\"CG_AlphaShape\"/>)"
-msgstr ""
+msgstr "MULTIPOINTの最適アルファシェイプ (<xref linkend=\"CG_AlphaShape\"/>と同じ)"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref "
 "linkend=\"CG_AlphaShape\"/>)"
-msgstr ""
+msgstr "穴を許したMULTIPOINTの最適アルファシェイプ (<xref linkend=\"CG_AlphaShape\""
+"/>と同じ)"
 
 #. Tag: para
 #, no-c-format
@@ -42537,14 +42600,15 @@ msgstr ""
 msgid ""
 "Returns the version number of the PROJ library against which PostGIS was "
 "built."
-msgstr ""
+msgstr "PostGISのビルドに使われたPROJライブラリのバージョン番号を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Returns the version number of the PROJ library, or against which PostGIS was "
 "built."
-msgstr ""
+msgstr "PROJライブラリのバージョンを返しますが、PostGISのビルドに使われたもののバージ"
+"ョン番号です。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -42712,7 +42776,7 @@ msgstr "リリースノート"
 #. Tag: title
 #, no-c-format
 msgid "PostGIS 3.5.0"
-msgstr ""
+msgstr "PostGIS 3.5.0"
 
 #. Tag: para
 #, no-c-format
@@ -42726,6 +42790,9 @@ msgid ""
 "To take advantage of all features, GEOS 3.12+ is needed. To take advantage "
 "of all SFCGAL featurs, SFCGAL 1.5.0+ is needed."
 msgstr ""
+"このバージョンにはPostgreSQL 12-17、GEOS 3.8以上、Proj 6.1以上が必要です。"
+"全ての機能を利用するにはGEOS 3.12以上が必要です。"
+"全てのSFCGAL機能を使用するにはSFCGAL 1.5.0以上が必要です。"
 
 #. Tag: para
 #, no-c-format
@@ -42735,7 +42802,7 @@ msgstr "翻訳チームに感謝します、特に次の方々です:"
 #. Tag: para
 #, no-c-format
 msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
-msgstr ""
+msgstr "HighGoのDapeng Wangさん、Zuo Chenweiさん (中国語チーム)"
 
 #. Tag: para
 #, no-c-format
@@ -42762,6 +42829,12 @@ msgid ""
 "layer_id(tg1) &lt;&gt; layer_id(tg2) OR type(tg1) &lt;&gt; type(tg2) ) "
 "(Sandro Santilli)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5546\">#5546</"
+"link>, TopoGeometry &lt;&gt; TopoGeometryが現在ではあいまいです。古いふるまい"
+"で動作させるには、TopoGeometryオブジェクトがtg1とtg2とするなら、次のようにし"
+"ないといけません: ( id(tg1) &lt;&gt; id(tg2) OR topology_id(tg1) &lt;&gt; "
+"topology_id(tg2) OR layer_id(tg1) &lt;&gt; layer_id(tg2) OR type(tg1) "
+"&lt;&gt; type(tg2) ) (Sandro Santilliさん)"
 
 #. Tag: para
 #, no-c-format
@@ -42770,16 +42843,19 @@ msgid ""
 "link>, comments are not anymore included in PostGIS extensions (Sandro "
 "Santilli)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5536\">#5536</"
+"link>, コメントがPostGISエクステンションに含まれなくなりました (Sandro "
+"Santilliさん)"
 
 #. Tag: para
 #, no-c-format
 msgid "xmllint is now required to build comments (Sandro Santilli)"
-msgstr ""
+msgstr "xmllintは、今ではコメントの作成が必須になっています (Sandro Santilliさん)"
 
 #. Tag: para
 #, no-c-format
 msgid "DocBook5 XSL is now required to build html (Sandro Santilli)"
-msgstr ""
+msgstr "DocBook5 XSLはHTMLのビルドが必須になりました (Sandro Santilliさん)"
 
 #. Tag: para
 #, no-c-format
@@ -42787,6 +42863,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5602\">#5602</"
 "link>, Drop support for GEOS 3.6 and 3.7 (Regina Obe)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5602\">#5602</"
+"link>, GEOS 3.6と3.7の対応トを終了しました (Regina Obeさん)"
 
 #. Tag: para
 #, no-c-format
@@ -42812,6 +42890,10 @@ msgid ""
 "link>, ST_Clip all variants replaced, will require rebuilding of "
 "materialized views that use them (Regina Obe)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5496\">#5496</"
+"link>, 全ての形式のST_Clipを入れ替えました。"
+"使用する場合にはマテリアライズドビューの再構築が必要になります (Regina "
+"Obeさん)"
 
 #. Tag: para
 #, no-c-format
@@ -42820,16 +42902,19 @@ msgid ""
 "link>, ST_DFullyWithin behaviour has changed to be ST_Contains(ST_Buffer(A, "
 "R), B) (Paul Ramsey)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5659\">#5659</"
+"link>, ST_DFullyWithinのふるまいがST_Contains(ST_Buffer(A, R), B)"
+"に変更されました (Paul Ramseyさん)"
 
 #. Tag: para
 #, no-c-format
 msgid "Remove the WFS_locks extra package. (Paul Ramsey)"
-msgstr ""
+msgstr "外部パッケージWFS_locksの削除 (Paul Ramseyさん)"
 
 #. Tag: title
 #, no-c-format
 msgid "Deprecated signatures"
-msgstr ""
+msgstr "非推奨の関数シグネチャ"
 
 #. Tag: para
 #, no-c-format
@@ -42837,6 +42922,8 @@ msgid ""
 "<link xlink:href=\"https://github.com/postgis/postgis/pull/761\">GH-761</"
 "link>, ST_StraightSkeleton => CG_StraightSkeleton (Loïc Bartoletti)"
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/761\">GH-761</"
+"link>, ST_StraightSkeleton => CG_StraightSkeleton (Loïc Bartolettiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -42845,6 +42932,9 @@ msgid ""
 "pulls/189\">GH-189</link>, All SFCGAL functions now use the prefix CG_, with "
 "the old ones using ST_ being deprecated. (Loïc Bartoletti)"
 msgstr ""
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/189\""
+">GH-189</link>, 全てのSFCGAL関数のプレフィクスをCG_にしていて、ST_を使う古い"
+"関数名は非推奨です。(Loïc Bartolettiさん)"
 
 #. Tag: title
 #, no-c-format
@@ -42894,7 +42984,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Add ST_HasZ/ST_HasM (Loïc Bartoletti)"
-msgstr ""
+msgstr "ST_HasZ/ST_HasMの追加 (Loïc Bartolettiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -43019,7 +43109,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Improve performance of ST_GeneratePoints (Paul Ramsey)"
-msgstr ""
+msgstr "ST_GeneratePointsの効率改善 (Paul Ramseyさん)"
 
 #. Tag: para
 #, no-c-format
