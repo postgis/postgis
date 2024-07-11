@@ -112,7 +112,7 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  strip postgis/postgis-*.dll
  strip raster/rt_pg/postgis_raster-*.dll
  strip sfcgal/*.dll
- cp topology/*.dll ${PGPATHEDB}/lib
+ #cp topology/*.dll ${PGPATHEDB}/lib
  cp postgis/postgis*.dll ${PGPATHEDB}/lib
  cp sfcgal/*.dll ${PGPATHEDB}/lib
  cp raster/rt_pg/postgis_raster-*.dll ${PGPATHEDB}/lib
