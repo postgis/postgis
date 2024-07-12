@@ -13,11 +13,11 @@
 #
 
 #$| = 1;
-use File::Basename;
+use File::Basename(dirname,fileparse,basename);
 use File::Temp 'tempdir';
 use Time::HiRes qw(time);
 use File::Copy;
-use File::Path;
+use File::Path(mkpath);
 use Cwd 'abs_path';
 use Getopt::Long;
 use strict;
