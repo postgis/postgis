@@ -32,7 +32,7 @@
 #include "lwgeom_log.h"
 #include "liblwgeom.h"
 
-#if POSTGIS_PGSQL_VERSION < 180
+#if POSTGIS_PGSQL_VERSION < 190
 typedef enum					/* type categories for datum_to_json */
 {
 	JSONTYPE_NULL,				/* null, so we didn't bother to identify */
@@ -69,7 +69,7 @@ static void composite_to_json(Datum composite, StringInfo result,
 static void datum_to_json(Datum val, bool is_null, StringInfo result,
 						  JsonTypeCategory tcategory, Oid outfuncoid,
 						  bool key_scalar);
-#if POSTGIS_PGSQL_VERSION < 180
+#if POSTGIS_PGSQL_VERSION < 190
 static void json_categorize_type(Oid typoid,
 								 JsonTypeCategory *tcategory,
 								 Oid *outfuncoid);
@@ -283,7 +283,7 @@ composite_to_geojson(FunctionCallInfo fcinfo,
  * output function OID.  If the returned category is JSONTYPE_CAST, we
  * return the OID of the type->JSON cast function instead.
  */
-#if POSTGIS_PGSQL_VERSION < 180
+#if POSTGIS_PGSQL_VERSION < 190
 static void
 json_categorize_type(Oid typoid,
 					 JsonTypeCategory *tcategory,

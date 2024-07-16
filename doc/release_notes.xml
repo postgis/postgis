@@ -3,82 +3,103 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
         <section>
-            <title>PostGIS 3.4.0</title>
-            <para>2023/08/15</para>
-            <para>This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+.
+            <title>PostGIS 3.5.0</title>
+            <para>2024/xx/xx</para>
+            <para>This version requires PostgreSQL 12-17, GEOS 3.8 or higher, and Proj 6.1+.
             To take advantage of all features, GEOS 3.12+ is needed.
-            To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.</para>
-            <para>NOTE: GEOS 3.12.0 details at <link xlink:href="https://libgeos.org/posts/2023-06-27-geos-3-12-released/">GEOS 3.12.0 release notes</link></para>
+            To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.</para>
+
             <para>Many thanks to our translation teams, in particular:</para>
+            <para>Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)</para>
             <para>Teramoto Ikuhiro (Japanese Team)</para>
             <para>Vincent Bre (French Team)</para>
 
-            <para>There are 2 new ./configure switches:</para>
-            <itemizedlist><listitem><para>--disable-extension-upgrades-install, will skip installing all the extension upgrade scripts except for the ANY--currentversion.  If you use this, you can install select upgrades using the postgis commandline tool</para></listitem>
-                <listitem><para>--without-pgconfig, will build just the commandline tools raster2pgsql and shp2pgsql even if PostgreSQL is not installed</para></listitem>
-            </itemizedlist>
+            <simplesect>
+                <title>Breaking Changes</title>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5546">#5546</link>, TopoGeometry &lt;&gt; TopoGeometry is now ambiguous, to get
+           the old behaviour, assuming your TopoGeometry objects
+           are named tg1 and tg2, use: (
+              id(tg1) &lt;&gt; id(tg2) OR
+              topology_id(tg1) &lt;&gt; topology_id(tg2) OR
+              layer_id(tg1) &lt;&gt; layer_id(tg2) OR
+              type(tg1) &lt;&gt; type(tg2)
+           ) (Sandro Santilli)</para>
+<para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5536">#5536</link>, comments are not anymore included in PostGIS extensions
+           (Sandro Santilli)</para>
+<para>xmllint is now required to build comments (Sandro Santilli)</para>
+<para>DocBook5 XSL is now required to build html (Sandro Santilli)</para>
+<para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5602">#5602</link>, Drop support for GEOS 3.6 and 3.7 (Regina Obe)</para>
+<para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5571">#5571</link>, Improve ST_GeneratePoints performance, but old
+           seeded pseudo random points will need to be regenerated.</para>
+<para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5596">#5596</link>, GH-749, Allow promoting column as an id
+           in ST_AsGeoJson(record,..).
+           Views and materialized views that use the ST_AsGeoJSON(record ..)
+           will need rebuilding to upgrade to new signature
+           (Jan Tojnar)</para>
+<para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5496">#5496</link>, ST_Clip all variants replaced, will require
+           rebuilding of materialized views that use them (Regina Obe)</para>
+<para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5659">#5659</link>, ST_DFullyWithin behaviour has changed to
+           be ST_Contains(ST_Buffer(A, R), B) (Paul Ramsey)</para>
+<para>Remove the WFS_locks extra package. (Paul Ramsey)</para>
+            </simplesect>
+
+            <simplesect><title>Deprecated signatures</title>
+                <para><link xlink:href="https://github.com/postgis/postgis/pull/761">GH-761</link>, ST_StraightSkeleton => CG_StraightSkeleton (Loïc Bartoletti)</para>
+            <para><link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/189">GH-189</link>, All SFCGAL functions now use the prefix CG_, with the old ones using
+            ST_ being deprecated. (Loïc Bartoletti)</para>
+            </simplesect>
 
             <simplesect>
                 <title>New features</title>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5055">5055</link>, complete manual internationalization (Sandro Santilli)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5052">5052</link>, target version support in postgis_extensions_upgrade
+                <para>Improvements in the 'postgis' script:
+                    <itemizedlist>
+                        <listitem><para>new command list-enabled</para></listitem>
+                        <listitem><para>new command list-all</para></listitem>
+                        <listitem><para>command upgrade upgrades all databases that need to be</para></listitem>
+                        <listitem><para>command status reports status of all databases</para></listitem>
+                    </itemizedlist>
                     (Sandro Santilli)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5306">5306</link>, expose version of GEOS at compile time (Sandro Santilli)</para>
-                <para>New install-extension-upgrades command in postgis script (Sandro Santilli)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5257">5257</link>, <link xlink:href="https://trac.osgeo.org/postgis/ticket/5261">5261</link>, <link xlink:href="https://trac.osgeo.org/postgis/ticket/5277">5277</link>, Support changes for PostgreSQL 16 (Regina Obe)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5006">5006</link>, <link xlink:href="https://github.com/postgis/postgis/pull/705">705</link>, ST_Transform: Support PROJ pipelines (Robert Coup, Koordinates)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5283">5283</link>, [postgis_topology] RenameTopology (Sandro Santilli)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5286">5286</link>, [postgis_topology] RenameTopoGeometryColumn (Sandro Santilli)</para>
-                <para><link xlink:href="https://github.com/postgis/postgis/pull/703">703</link>, [postgis_raster] Add min/max resampling as options (Christian Schroeder)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5336">5336</link>, [postgis_topology] topogeometry cast to topoelement support (Regina Obe)</para>
-                <para>Allow singleton geometry to be inserted into Geometry(Multi*) columns (Paul Ramsey)</para>
-                <para><link xlink:href="https://github.com/postgis/postgis/pull/721">721</link>, New window-based ST_ClusterWithinWin and ST_ClusterIntersectingWin (Paul Ramsey)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5397">5397</link>, [address_standardizer] debug_standardize_address function (Regina Obe)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5373">5373</link>ST_LargestEmptyCircle, exposes extra semantics on circle finding. Geos 3.9+ required(Martin Davis)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5267">5267</link>, ST_Project signature for geometry, and two-point signature (Paul Ramsey)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5267">5267</link>, ST_LineExtend for extending linestrings (Paul Ramsey)</para>
-                <para>New coverage functions ST_CoverageInvalidEdges, ST_CoverageSimplify, ST_CoverageUnion (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5742">#5742</link>, expose version of PROJ at compile time (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5721">#5721</link>, postgis_topology: Allow sharing sequences between different topologies (Lars Opsahl)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5667">#5667</link>, postgis_topology: TopoGeo_LoadGeometry (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5055">#5055</link>, add explicit &lt;&gt; geometry operator to prevent non-unique
+                        error with &lt;&gt; and &#x21;= (Paul Ramsey)</para>
+                <para>Add ST_HasZ/ST_HasM (Loïc Bartoletti)</para>
+                <para><link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/123">GT-123</link>, postgis_sfcgal: CG_YMonotonePartition, CG_ApproxConvexPartition,
+                            CG_GreeneApproxConvexPartition and CG_OptimalConvexPartition
+                            (Loïc Bartoletti)</para>
+                <para><link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/156">GT-156</link>, postgis_sfcgal: CG_Visibility (Loïc Bartoletti)</para>
+                <para><link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/157">GT-157</link>, postgis_sfcgal: Add ST_ExtrudeStraightSkeleton (Loïc Bartoletti)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5496">#5496</link>, postgis_raster: ST_Clip support for touched (Regina Obe)</para>
+                <para><link xlink:href="https://github.com/postgis/postgis/pull/760">GH-760</link>, postgis_sfcgal: CG_Intersection, CG_3DIntersects, CG_Intersects,
+                            CG_Difference, CG_Union (and aggregate), CG_Triangulate, CG_Area,
+                            CG_3DDistance, CG_Distance (Loïc Bartoletti)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5687">#5687</link>, Don't rely on search_path to determine postgis schema
+                        Fix for PG17 security change (Regina Obe)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5705">#5705</link>, <link xlink:href="https://github.com/postgis/postgis/pull/767">GH-767</link>, ST_RemoveIrrelevantPointsForView  (Sam Peters)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5706">#5706</link>, <link xlink:href="https://github.com/postgis/postgis/pull/768">GH-768</link>, ST_RemoveSmallParts (Sam Peters)</para>
             </simplesect>
 
             <simplesect>
                 <title>Enhancements</title>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5194">5194</link>, do not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5092">5092</link>, reduce number of upgrade paths installed on system (Sandro Santilli)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/635">635</link>, honour --bindir (and --prefix) configure switch for executables (Sandro Santilli)</para>
-                <para>Honour --mandir (and --prefix) configure switch for man pages install path (Sandro Santilli)</para>
-                <para>Honour --htmldir (and --docdir and --prefix) configure switch for
-                    html pages install path (Sandro Santilli)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5447">5447</link> Manual pages added for postgis and postgis_restore utilities
-    (Sandro Santilli)</para>
-                <para>[postgis_topology] Speed up check of topology faces without edges (Sandro Santilli)</para>
-                <para>[postgis_topology] Speed up coincident nodes check in topology validation  (Sandro Santilli)</para>
-                <para><link xlink:href="https://github.com/postgis/postgis/pull/718">718</link>, ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)</para>
-                <para>Repair spatial planner stats to use computed selectivity for contains/within queries (Paul Ramsey)</para>
-                <para><link xlink:href="https://github.com/postgis/postgis/pull/734">734</link>, Additional metadata on Proj installation in postgis_proj_version (Paul Ramsey)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5177">5177</link>, Allow building tools without PostgreSQL server headers.
-           Respect prefix/bin for tools install (Sandro Santilli)</para>
-                <para>ST_Project signature for geometry, and two-point signature (Paul Ramsey)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/4913">4913</link>, ST_AsSVG support for curve types CircularString, CompoundCurve, MultiCurve,
-                        and MultiSurface (Regina Obe)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5266">5266</link>, ST_ClosestPoint, ST_ShortestLine, ST_LineSubString support for geography type (MobilityDB Esteban Zimanyi, Maxime Schoemans, Paul Ramsey)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/3587">#3587</link>, postgis_topology: faster load of big lines in topologies (Sandro Santilli)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5670">#5670</link>, postgis_topology: faster ST_CreateTopoGeo (Sandro Santilli)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5531">#5531</link>, documentation format upgraded to DocBook 5 (Sandro Santilli)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5543">#5543</link>, allow building without documentation (Sandro Santilli)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5596">#5596</link>, <link xlink:href="https://github.com/postgis/postgis/pull/749">GH-749</link>, Allow promoting column as an id
+                            in ST_AsGeoJson(record,..). (Jan Tojnar)</para>
+                    <para><link xlink:href="https://github.com/postgis/postgis/pull/744">GH-744</link>, Don't create docbook.css for the HTML manual,
+                                use style.css instead (Chris Mayo)</para>
+                    <para>Faster implementation of point-in-poly cached index (Paul Ramsey)</para>
+                    <para>Improve performance of ST_GeneratePoints (Paul Ramsey)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5361">#5361</link>, ST_CurveN, ST_NumCurves and consistency in
+                            accessors on curved geometry (Paul Ramsey)</para>
+                    <para><link xlink:href="https://github.com/postgis/postgis/pull/761">GH-761</link>, postgis_sfcgal: Add an optional parameter to CG_StraightSkeleton
+                                (was ST_StraightSkeleton) to use m as a distance in result (Hannes Janetzek, Loïc Bartoletti)</para>
+
             </simplesect>
 
-            <simplesect>
-                <title>Breaking Changes</title>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5229">5229</link>, Drop support for Proj &lt; 6.1 and PG 11 (Regina Obe)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5306">5306</link>, <link xlink:href="https://github.com/postgis/postgis/pull/734">734</link>, postgis_full_version() and postgis_proj_version()
-                    now output more information about proj network configuration
-                    and data paths. GEOS compile-time version
-                    also shown if different from run-time (Paul Ramsey, Sandro Santilli)</para>
-                <para><link xlink:href="https://github.com/postgis/postgis/pull/5447">5447</link>, postgis_restore.pl renamed to postgis_restore
-           (Sandro Santilli)</para>
-                <para>Utilities now installed in OS bin or
-   user specified --bindir and --prefix
-   instead of postgresql bin
-   and extension stripped except on windows
-   (postgis, postgis_restore, shp2pgsql, raster2pgsql, pgsql2shp,
-    pgtopo_import, pgtopo_export)</para>
-            </simplesect>
+
     </section>
 
 </appendix>

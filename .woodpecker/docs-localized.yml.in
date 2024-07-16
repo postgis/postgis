@@ -9,4 +9,4 @@
         path:
           include:
             - "doc/po/@LANG@/*.po"
-        
+
