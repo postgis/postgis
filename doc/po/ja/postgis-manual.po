@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-05 06:17+0000\n"
-"PO-Revision-Date: 2024-07-08 08:45+0000\n"
+"PO-Revision-Date: 2024-07-16 10:45+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -42781,7 +42781,7 @@ msgstr "PostGIS 3.5.0"
 #. Tag: para
 #, no-c-format
 msgid "2024/xx/xx"
-msgstr ""
+msgstr "2024/xx/xx"
 
 #. Tag: para
 #, no-c-format
