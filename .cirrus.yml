@@ -1,5 +1,5 @@
 task:
-  only_if: true
+  only_if: $CIRRUS_BRANCH =~ 'pull/.*'
   name: FreeBSD
   alias: test-freebsd
   #env:
