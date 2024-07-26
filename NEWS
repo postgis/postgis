@@ -7,6 +7,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
 
 * Bug Fixes *
 
+ - #5766, Always report invalid non-null MBR of universal face (Sandro Santilli)
  - #5709, Fix loose mbr in topology.face on ST_ChangeEdgeGeom (Sandro Santilli)
  - #5698, Fix robustness issue splitting line by vertex very close to endpoints,
           affecting topology population functions (Sandro Santilli)
@@ -26,7 +27,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
            Fix for PG17 security change (Regina Obe)
  - #5695, [address_standardizer_data_us] standardize_address
           incorrect handling of directionals (Regina Obe)
- - #5653, Do not simplify away points when linestring doubles back on 
+ - #5653, Do not simplify away points when linestring doubles back on
           itself (Paul Ramsey)
  - #5720, Correctly mangle special column names in shp2pgsql (Paul Ramsey)
  - #5734, Estimate geography extent more correctly (Paul Ramsey)
