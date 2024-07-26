@@ -14,6 +14,8 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+-- #define POSTGIS_TOPOLOGY_DEBUG 1
+
 --
 -- Type returned by ValidateTopology
 --
@@ -24,8 +26,7 @@ CREATE TYPE topology.ValidateTopology_ReturnType AS (
 );
 
 --{
--- Return the exterior ring of a topology face
---
+-- Return the outermost ring of a topology face
 --
 CREATE OR REPLACE FUNCTION topology._ValidateTopologyGetFaceShellMaximalEdgeRing(atopology varchar, aface int)
 RETURNS GEOMETRY AS
@@ -33,6 +34,7 @@ $BODY$
 DECLARE
   sql TEXT;
   outsidePoint GEOMETRY;
+  leftmostEdge INT;
   shell GEOMETRY;
 BEGIN
 
@@ -51,42 +53,46 @@ BEGIN
   );
   EXECUTE sql USING aface INTO outsidePoint;
 
+  RAISE NOTICE 'Outside point of face %: %', aface, ST_AsText(outsidePoint);
+
+  IF outsidePoint IS NULL THEN
+    RETURN NULL;
+  END IF;
+
+  sql := format(
+    $$
+      SELECT
+        CASE WHEN left_face = $1
+        THEN
+          edge_id
+        ELSE
+          -edge_id
+        END ring_id
+      FROM %1$I.edge
+      WHERE left_face = $1 or right_face = $1
+      ORDER BY
+        geom <-> $2
+      LIMIT 1
+    $$,
+    atopology
+  );
+  EXECUTE sql USING aface, outsidePoint INTO leftmostEdge;
+
+  RAISE NOTICE 'Leftmost edge of face %: %', aface, leftmostEdge;
+
+  IF leftmostEdge IS NULL THEN
+    RETURN NULL;
+  END IF;
+
   sql := format(
     $$
       WITH
-      outside_point AS (
-        SELECT ST_Translate(
-          ST_StartPoint( ST_BoundingDiagonal(mbr) ),
-          -1,
-          -1
-        )
-        FROM %1$I.face
-        WHERE face_id = $1
-      ),
-      leftmost_edge AS (
-        SELECT
-          CASE WHEN left_face = $1
-          THEN
-            edge_id
-          ELSE
-            -edge_id
-          END ring_id
-        FROM %1$I.edge
-        WHERE left_face = $1 or right_face = $1
-        ORDER BY
-#if POSTGIS_PGSQL_VERSION < 95
-          ST_Distance(geom, $2)
-#else
-          geom <-> $2
-#endif
-        LIMIT 1
-      ),
       edgering AS (
         SELECT *
         FROM
           topology.GetRingEdges(
             %1$L,
-            (SELECT ring_id FROM leftmost_edge)
+            $1
           )
       )
       SELECT
@@ -104,9 +110,9 @@ BEGIN
     atopology
   );
 
-  --RAISE DEBUG 'SQL: %', sql;
+  RAISE DEBUG 'SQL: %', sql;
 
-  EXECUTE sql USING aface, outsidePoint
+  EXECUTE sql USING leftmostEdge
   INTO shell;
 
   -- TODO: check if the ring is not closed
@@ -489,20 +495,15 @@ BEGIN
 
     found_rings := found_rings + 1;
 
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Ring % - faces:[%]',
-      rec.ring_id,
-      array_to_string(rec.side_faces, ',')
-    ;
-#endif /* POSTGIS_TOPOLOGY_DEBUG */
-
     -- Check that there's a single face advertised
     IF array_upper(rec.side_faces,1) != 1
     THEN --{
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'Side faces found on ring %: %', rec.ring_id,
-       rec.side_faces;
+    RAISE DEBUG 'Ring % - mixed side faces:[%]',
+      rec.ring_id,
+      array_to_string(rec.side_faces, ',')
+    ;
 #endif /* POSTGIS_TOPOLOGY_DEBUG */
       retrec.error = 'mixed face labeling in ring';
       retrec.id1 = rec.ring_id;
@@ -540,6 +541,14 @@ BEGIN
         is_shell := true;
       END IF;
     END IF;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Ring % - side faces:[%] - %',
+      rec.ring_id,
+      array_to_string(rec.side_faces, ','),
+      CASE WHEN is_shell THEN 'shell (will end in shell_check)' ELSE 'hole' END
+    ;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
 
     IF is_shell THEN --{ It's a shell (CCW)
       -- Check that a single face is ever used
@@ -935,29 +944,47 @@ BEGIN
     f.face_id = sc.face_id
   ;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  GET DIAGNOSTICS affected_rows = ROW_COUNT;
+  RAISE DEBUG 'Constructed geometries of % faces (found shells)',
+    affected_rows;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
+
   DROP TABLE pg_temp.shell_check;
 
+  --
+  -- Add to face_check any missing face whose mbr overlaps
+  -- the given one.
+  --
+  -- This is done to still be able to check MBR consistency
+  -- See https://trac.osgeo.org/postgis/ticket/5766#comment:6
+  --
+  INSERT INTO pg_temp.face_check
+  SELECT face_id,
+    CASE WHEN face_id = 0 THEN
+      NULL
+    ELSE
+      topology._ValidateTopologyGetFaceShellMaximalEdgeRing(toponame, face_id)
+    END as real_shell,
+    mbr
+  FROM face
+  WHERE ( bbox IS NULL OR mbr && bbox )
+  AND (
+    CASE WHEN invalid_faces IS NOT NULL THEN
+      NOT face_id = ANY(invalid_faces)
+    ELSE
+      TRUE
+    END
+  )
+  AND face_id NOT IN (
+    SELECT face_id FROM pg_temp.face_check
+  );
 
-  IF bbox IS NOT NULL
-  THEN --{
-    INSERT INTO pg_temp.face_check
-    SELECT face_id,
-      topology._ValidateTopologyGetFaceShellMaximalEdgeRing(toponame, face_id),
-      mbr
-    FROM face
-    WHERE mbr && bbox
-    AND (
-      CASE WHEN invalid_faces IS NOT NULL THEN
-        NOT face_id = ANY(invalid_faces)
-      ELSE
-        TRUE
-      END
-    )
-    AND face_id NOT IN (
-      SELECT face_id FROM pg_temp.face_check
-    )
-    ;
-  END IF; --}
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  GET DIAGNOSTICS affected_rows = ROW_COUNT;
+  RAISE DEBUG 'Added % missing faces in face_check table',
+    affected_rows;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
 
   -- Build a gist index on geom
   CREATE INDEX ON face_check USING gist (shell);
@@ -975,26 +1002,53 @@ BEGIN
 
     affected_rows := affected_rows + 1;
 
-    IF rec.shell IS NULL OR ST_IsEmpty(rec.shell)
-    THEN
-      -- Face missing !
-      retrec.error := 'face has no rings';
-      retrec.id1 := rec.face_id;
-      retrec.id2 := NULL;
-      RETURN NEXT retrec;
-    END IF;
+    IF rec.face_id != 0 THEN -- {
 
-    IF NOT ST_Equals(rec.mbr, ST_Envelope(rec.shell))
-    THEN
+      -- Real face need have rings and matching MBR
+
+      IF rec.shell IS NULL OR ST_IsEmpty(rec.shell)
+      THEN
+        -- Face missing !
+        retrec.error := 'face has no rings';
+        retrec.id1 := rec.face_id;
+        retrec.id2 := NULL;
+        RETURN NEXT retrec;
+      END IF;
+
+      IF NOT ST_Equals(rec.mbr, ST_Envelope(rec.shell))
+      THEN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'MBR expected:% obtained:%', ST_AsEWKT(ST_Envelope(rec.shell)), ST_AsEWKT(ST_Envelope(rec.mbr));
+        RAISE DEBUG 'MBR expected:% obtained:%', ST_AsEWKT(ST_Envelope(rec.shell)), ST_AsEWKT(ST_Envelope(rec.mbr));
 #endif /* POSTGIS_TOPOLOGY_DEBUG */
-      -- Inconsistent MBR!
-      retrec.error := 'face has wrong mbr';
-      retrec.id1 := rec.face_id;
-      retrec.id2 := NULL;
-      RETURN NEXT retrec;
-    END IF;
+        -- Inconsistent MBR!
+        retrec.error := 'face has wrong mbr';
+        retrec.id1 := rec.face_id;
+        retrec.id2 := NULL;
+        RETURN NEXT retrec;
+      END IF;
+
+    ELSE --}{
+
+      -- Universal face need have no shell rings and NULL MBR
+
+      IF rec.shell IS NOT NULL OR NOT ST_IsEmpty(rec.shell)
+      THEN
+        retrec.error := 'universal face has shell rings';
+        retrec.id1 := rec.face_id;
+        retrec.id2 := NULL;
+        RETURN NEXT retrec;
+      END IF;
+
+      IF rec.mbr IS NOT NULL
+      THEN
+        -- TODO: make the message more specific about universal face ?
+        retrec.error := 'face has wrong mbr';
+        retrec.id1 := rec.face_id;
+        retrec.id2 := NULL;
+        RETURN NEXT retrec;
+      END IF;
+
+    END IF; --}
 
   END LOOP; --}
 

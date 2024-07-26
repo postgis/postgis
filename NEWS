@@ -8,6 +8,7 @@ and PostgreSQL 15+.
 
 * Bug Fixes and Enhancements *
 
+ - #5766, Always report invalid non-null MBR of universal face (Sandro Santilli)
  - #5709, Fix loose mbr in topology.face on ST_ChangeEdgeGeom (Sandro Santilli)
  - #5698, Fix robustness issue splitting line by vertex very close to endpoints,
           affecting topology population functions (Sandro Santilli)
@@ -23,7 +24,6 @@ and PostgreSQL 15+.
           (Paul Ramsey, Regina Obe)
  - #5687, #5756 Support for PostgreSQL 17, revise postgis_get_full_version_schema()
           to not rely on search_path
-
 
 PostGIS 3.3.6
 2024/02/07
