@@ -2080,13 +2080,13 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	type2 = lwgeom2->type;
 
 	/* Make sure we have boxes */
-	if ( lwgeom1->bbox )
+	if ( FLAGS_GET_GEODETIC(lwgeom1->flags) && lwgeom1->bbox )
 		gbox1 = *(lwgeom1->bbox);
 	else
 		lwgeom_calculate_gbox_geodetic(lwgeom1, &gbox1);
 
 	/* Make sure we have boxes */
-	if ( lwgeom2->bbox )
+	if ( FLAGS_GET_GEODETIC(lwgeom2->flags) && lwgeom2->bbox )
 		gbox2 = *(lwgeom2->bbox);
 	else
 		lwgeom_calculate_gbox_geodetic(lwgeom2, &gbox2);
