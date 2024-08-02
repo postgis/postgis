@@ -770,11 +770,11 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 			/* Node 2 is a point */
 			else
 			{
-				geographic_point_init(n2->p1->x, n2->p1->y, &gp1);
+				geographic_point_init(n2->p1->x, n2->p1->y, &gp2);
 				geographic_point_init(n1->p1->x, n1->p1->y, &(e.start));
 				geographic_point_init(n1->p2->x, n1->p2->y, &(e.end));
-				close1 = gp1;
-				d = edge_distance_to_point(&e, &gp1, &close2);
+				close2 = gp2;
+				d = edge_distance_to_point(&e, &gp2, &close1);
 			}
 			LWDEBUGF(4, "  got distance %g", d);
 		}
