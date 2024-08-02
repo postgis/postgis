@@ -521,6 +521,8 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 	/* We are going to be calculating geodetic distances */
 	lwgeom_set_geodetic(lwgeom1, LW_TRUE);
 	lwgeom_set_geodetic(lwgeom2, LW_TRUE);
+	lwgeom_refresh_bbox(lwgeom1);
+	lwgeom_refresh_bbox(lwgeom2);
 
 	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, sphere, 0.0);
 
