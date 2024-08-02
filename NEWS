@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #5740, Avoid reusing a planar bounding box in ST_DistanceSpheroid (Paul Ramsey)
  - [tiger_geocoder] Treat address fragments literally during normalization
    (Darafei Praliaskouski)
  - Apply the WKB recursion limit to curve polygon rings (Even Rouault)
