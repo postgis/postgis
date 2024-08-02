@@ -419,6 +419,27 @@ static void test_tree_circ_distance_threshold(void)
 
 }
 
+static void test_geography_tree_closestpoint(void)
+{
+	LWGEOM *lwg1, *lwg2, *lwg3;
+	LWPOINT *lwpt;
+	POINT2D pt;
+
+	/* Simple case */
+	lwg1 = lwgeom_from_wkt("LINESTRING (18 9, 18 1)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POINT (16 4)", LW_PARSER_CHECK_NONE);
+	lwg3 = geography_tree_closestpoint(lwg1, lwg2, 0.1);
+	lwpt = (LWPOINT *)lwg3;
+
+	lwpoint_getPoint2d_p(lwpt, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 18, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, 4.0024302, 0.0001);
+
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+	lwgeom_free(lwg3);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -431,4 +452,5 @@ void tree_suite_setup(void)
 	PG_ADD_TEST(suite, test_tree_circ_pip2);
 	PG_ADD_TEST(suite, test_tree_circ_distance);
 	PG_ADD_TEST(suite, test_tree_circ_distance_threshold);
+	PG_ADD_TEST(suite, test_geography_tree_closestpoint);
 }

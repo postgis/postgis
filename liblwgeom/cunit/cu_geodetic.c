@@ -1593,6 +1593,7 @@ static void test_lwgeom_area_sphere(void)
 	/* end #3393 */
 }
 
+
 static void test_gbox_to_string_truncated(void)
 {
 	GBOX g = {
