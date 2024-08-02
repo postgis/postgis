@@ -24,6 +24,8 @@ and PostgreSQL 15+.
           (Paul Ramsey, Regina Obe)
  - #5687, #5756 Support for PostgreSQL 17, revise postgis_get_full_version_schema()
           to not rely on search_path
+ - #5740, ST_DistanceSpheroid(geometry) incorrectly handles polygons (Paul Ramsey)
+
 
 PostGIS 3.3.6
 2024/02/07
