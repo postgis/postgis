@@ -31,6 +31,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
           itself (Paul Ramsey)
  - #5720, Correctly mangle special column names in shp2pgsql (Paul Ramsey)
  - #5734, Estimate geography extent more correctly (Paul Ramsey)
+ - #5752, ST_ClosestPoint(geography) error (Paul Ramsey)
 
 PostGIS 3.4.2
 2024/02/08
