@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-05 06:17+0000\n"
-"PO-Revision-Date: 2024-07-16 10:45+0000\n"
-"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"PO-Revision-Date: 2024-08-03 09:45+0000\n"
+"Last-Translator: Yoichi Kayama <yoichi.kayama@gmail.com>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
 "Language: ja\n"
@@ -52,11 +52,10 @@ msgid ""
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
 "PostGIS 2.1.3以降では、データベース外ラスタと全てのラスタドライバは、デフォル"
-"トでは無効になっています。これらを有効にするには、サーバ上で、環境変数 "
-"<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname>と"
-"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>を設定します。PostGIS 2.2で"
-"は、<xref linkend=\"PostGIS_GUC\"/>に従って設定する、クロスプラットフォームな"
-"手法があります。"
+"トでは無効になっています。これらを有効にするには、サーバ上で、環境変数 <varna"
+"me>POSTGIS_GDAL_ENABLED_DRIVERS</varname>と<varname>POSTGIS_ENABLE_OUTDB_RAST"
+"ERS</varname>を設定します。PostGIS 2.2では、<xref linkend=\"PostGIS_GUC\""
+"/>に従って設定する、クロスプラットフォームな手法があります。"
 
 #. Tag: para
 #, no-c-format
@@ -66,30 +65,27 @@ msgstr "データベース外ラスタを有効にするには次のようにし
 #. Tag: para
 #, no-c-format
 msgid "Any other setting or no setting at all will disable out of db rasters."
-msgstr ""
-"他の値を入れたり、値を入れない場合には、データベース外ラスタは無効になりま"
-"す。"
+msgstr "他の値を入れたり、値を入れない場合には、データベース外ラスタは無効になります"
+"。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
-msgstr ""
-"インストールしたGDALのドライバを有効にするには、次の環境変数を設定します:"
+msgstr "インストールしたGDALのドライバを有効にするには、次の環境変数を設定します:"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
-msgstr ""
-"一部のドライバのみ有効にしたい場合には、環境変数を次のように設定します:"
+msgstr "一部のドライバのみ有効にしたい場合には、環境変数を次のように設定します:"
 
 #. Tag: para
 #, no-c-format
 msgid "If you are on windows, do not quote the driver list"
-msgstr "Windows上の場合は、ドライバリストに引用符をつけないで下さい"
+msgstr "Windows環境の場合は、ドライバリストに引用符をつけないで下さい"
 
 #. Tag: para
 #, no-c-format
@@ -100,11 +96,11 @@ msgid ""
 "<replaceable>main</replaceable>/environment</filename> where 10 refers to "
 "version of PostgreSQL and main refers to the cluster."
 msgstr ""
-"環境変数の設定はOSによって異なります。UbuntuまたはDebian上でapt-postgresqlを"
-"経由したPostgreSQLのインストールについては、<filename>/etc/postgresql/"
-"<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</"
-"filename>を編集するのが好ましい方法です。 ここで、10はPostgreSQLのバージョン"
-"を指し、mainはクラスタを指します。"
+"環境変数の設定はOSによって異なります。UbuntuまたはDebian上でapt-"
+"postgresqlを経由したPostgreSQLのインストールについては、<filename>/etc/"
+"postgresql/<replaceable>10</replaceable>/<replaceable>main</replaceable>/envi"
+"ronment</filename>を編集するのが好ましい方法です。 "
+"ここで、10はPostgreSQLのバージョンを指し、mainはクラスタを指します。"
 
 #. Tag: para
 #, no-c-format
@@ -117,19 +113,18 @@ msgid ""
 "Variables</emphasis> and adding new system variables."
 msgstr ""
 "Windowsでサービスとして実行している場合には、システム変数で設定します。"
-"Windows 7では、コンピュータを右クリックしてプロパティをクリックするか、エクス"
-"プローラの検索バーに<varname>コントロール パネル\\すべてのコントロール パネル"
-"項目\\システム</varname>を指定します。 それから、<emphasis>システムの詳細設"
-"定 -&gt; 詳細設定 -&gt; 環境変数 </emphasis>を順にクリックして、新しいシステ"
-"ム環境変数を追加します。"
+"Windows 7では、コンピュータを右クリックしてプロパティをクリックするか、"
+"エクスプローラの検索バーに<varname>コントロール パネル\\すべてのコントロール "
+"パネル項目\\システム</varname>を指定します。 それから、"
+"<emphasis>システムの詳細設定 -&gt; 詳細設定 -&gt; 環境変数 "
+"</emphasis>を順にクリックして、新しいシステム環境変数を追加します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "After you set the environment variables, you'll need to restart your "
 "PostgreSQL service for the changes to take effect."
-msgstr ""
-"環境変数を設定した後は、設定を反映させるために、PostgreSQLサービスの再起動が"
+msgstr "環境変数を設定した後は、設定を反映させるために、PostgreSQLサービスの再起動が"
 "必要です。"
 
 #. Tag: title
