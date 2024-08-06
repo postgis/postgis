@@ -6,6 +6,7 @@ xxxx/xx/xx
  - #5589, ST_3DDistance error for shared first point (Paul Ramsey)
  - #5686, ST_NumInteriorRings and Triangle crash (Paul Ramsey)
  - #5765, Handle nearly co-linear edges with slightly less slop (Paul Ramsey)
+ - #5745, St_AsLatLonText rounding errors (Paul Ramsey)
 
 
 PostGIS 3.1.11
