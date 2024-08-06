@@ -332,10 +332,16 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 		{
 			/* See if the formatted seconds round up to 60. If so, increment minutes and reset seconds. */
 			round_pow = pow(10, sec_dec_digits);
-			if (floorf(seconds * round_pow) / round_pow >= 60)
+			if (lround(seconds * round_pow) >= 60 * round_pow)
 			{
 				minutes += 1;
 				seconds = 0;
+				/* See if the formatted minutes round up to 60. If so, increment degrees and reset seconds. */
+				if (lround(minutes * round_pow) >= 60 * round_pow)
+				{
+					degrees += 1;
+					minutes = 0;
+				}
 			}
 		}
 	}
