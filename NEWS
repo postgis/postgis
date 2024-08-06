@@ -25,6 +25,7 @@ and PostgreSQL 15+.
  - #5687, #5756 Support for PostgreSQL 17, revise postgis_get_full_version_schema()
           to not rely on search_path
  - #5740, ST_DistanceSpheroid(geometry) incorrectly handles polygons (Paul Ramsey)
+ - #5765, Handle nearly co-linear edges with slightly less slop (Paul Ramsey)
 
 
 PostGIS 3.3.6
