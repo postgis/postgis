@@ -34,6 +34,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
  - #5752, ST_ClosestPoint(geography) error (Paul Ramsey)
  - #5740, ST_DistanceSpheroid(geometry) incorrectly handles polygons (Paul Ramsey)
  - #5765, Handle nearly co-linear edges with slightly less slop (Paul Ramsey)
+ - #5745, St_AsLatLonText rounding errors (Paul Ramsey)
 
 PostGIS 3.4.2
 2024/02/08
