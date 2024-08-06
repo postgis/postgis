@@ -873,27 +873,27 @@ void circ_tree_print(const CIRC_NODE* node, int depth)
 
 	if (circ_node_is_leaf(node))
 	{
-		printf("%*s[%d] C(%.5g %.5g) R(%.5g) ((%.5g %.5g),(%.5g,%.5g))",
+		printf("%*s[%d] C(%.8g %.8g) R(%.8g) ((%.8g %.8g),(%.8g,%.8g))",
 		  3*depth + 6, "NODE", node->edge_num,
 		  node->center.lon, node->center.lat,
 		  node->radius,
 		  node->p1->x, node->p1->y,
 		  node->p2->x, node->p2->y
 		);
-  		if ( node->geom_type )
-  		{
-  			printf(" %s", lwtype_name(node->geom_type));
-  		}
-  		if ( node->geom_type == POLYGONTYPE )
-  		{
-  			printf(" O(%.5g %.5g)", node->pt_outside.x, node->pt_outside.y);
-  		}
-  		printf("\n");
+		if ( node->geom_type )
+		{
+			printf(" %s", lwtype_name(node->geom_type));
+		}
+		if ( node->geom_type == POLYGONTYPE )
+		{
+			printf(" O(%.8g %.8g)", node->pt_outside.x, node->pt_outside.y);
+		}
+		printf("\n");
 
 	}
 	else
 	{
-		printf("%*s C(%.5g %.5g) R(%.5g)",
+		printf("%*s C(%.8g %.8g) R(%.8g)",
 		  3*depth + 6, "NODE",
 		  node->center.lon, node->center.lat,
 		  node->radius
@@ -902,10 +902,10 @@ void circ_tree_print(const CIRC_NODE* node, int depth)
 		{
 			printf(" %s", lwtype_name(node->geom_type));
 		}
-  		if ( node->geom_type == POLYGONTYPE )
-  		{
-  			printf(" O(%.15g %.15g)", node->pt_outside.x, node->pt_outside.y);
-  		}
+		if ( node->geom_type == POLYGONTYPE )
+		{
+			printf(" O(%.15g %.15g)", node->pt_outside.x, node->pt_outside.y);
+		}
 		printf("\n");
 	}
 	for ( i = 0; i < node->num_nodes; i++ )
