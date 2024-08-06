@@ -182,6 +182,34 @@ static void test_tree_circ_distance(void)
 
 	spheroid_init(&s, 1.0, 1.0);
 
+	/* Ticket 5765 */
+	/* Two very close segments (1.64m) with mid-line points */
+	lwg1 = lwgeom_from_wkt("LINESTRING (-1.7485638876537 52.477970467863,-1.7485727216213 52.477970486617)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("LINESTRING (-1.7486648265496 52.477955848635,-1.7485639721184 52.477955634571)", LW_PARSER_CHECK_NONE);
+	c1 = lwgeom_calculate_circ_tree(lwg1);
+	c2 = lwgeom_calculate_circ_tree(lwg2);
+	d1 = circ_tree_distance_tree(c1, c2, &s, threshold);
+	d2 = lwgeom_distance_spheroid(lwg1, lwg2, &s, threshold);
+	e1 = d1 * WGS84_RADIUS;
+	e2 = d2 * WGS84_RADIUS;
+
+	// printf("\nRadians (tree and brute force)\n");
+	// printf("  d1 = %g r   d2 = %g r\n", d1, d2);
+	// printf("\nMeters (tree and brute force)\n");
+	// printf("  e1 = %g m   e2 = %g m\n\n", e1, e2);
+	// printf("linestring a\n");
+	// circ_tree_print(c1, 0);
+	// printf("linestring b\n");
+	// circ_tree_print(c2, 0);
+
+	circ_tree_free(c1);
+	circ_tree_free(c2);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+	CU_ASSERT_DOUBLE_EQUAL(e1, e2, 0.0001);
+
+	return;
+
 	/* Ticket #4223 */
 	/* tall skinny rectangle */
 	lwg1 = lwgeom_from_wkt("POLYGON((58.5112113206308 0,58.5112113200772 0.000901937525203378,58.511300910044 0.000901937636668872,58.5113009105976 0,58.5112113206308 0))", LW_PARSER_CHECK_NONE);
@@ -193,12 +221,6 @@ static void test_tree_circ_distance(void)
 	d2 = lwgeom_distance_spheroid(lwg1, lwg2, &s, threshold);
 	e1 = d1 * WGS84_RADIUS;
 	e2 = d2 * WGS84_RADIUS;
-	// printf("d1 = %g   d2 = %g\n", d1, d2);
-	// printf("e1 = %g   e2 = %g\n", e1, e2);
-	// printf("polygon a\n");
-	// circ_tree_print(c1, 0);
-	// printf("polygon b\n");
-	// circ_tree_print(c2, 0);
 	circ_tree_free(c1);
 	circ_tree_free(c2);
 	lwgeom_free(lwg1);
@@ -213,11 +235,6 @@ static void test_tree_circ_distance(void)
 	c2 = lwgeom_calculate_circ_tree(lwg2);
 	d1 = circ_tree_distance_tree(c1, c2, &s, threshold);
 	d2 = lwgeom_distance_spheroid(lwg1, lwg2, &s, threshold);
-//	printf("d1 = %g   d2 = %g\n", d1 * WGS84_RADIUS, d2 * WGS84_RADIUS);
-//	printf("line\n");
-//	circ_tree_print(c1, 0);
-//	printf("poly\n");
-//	circ_tree_print(c2, 0);
 	circ_tree_free(c1);
 	circ_tree_free(c2);
 	lwgeom_free(lwg1);
