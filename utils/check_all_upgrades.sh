@@ -113,7 +113,7 @@ EOF
   # Drop patch-level number from PostgreSQL version
   minsupported=`grep ^${pgver}: ${supportfile} | cut -d: -f2`
   test -n "${minsupported}" || {
-    echo "Cannot detemine minimum supported PostGIS version for PostgreSQL major version ${pgver}" >&2
+    echo "Cannot determine minimum supported PostGIS version for PostgreSQL major version ${pgver}" >&2
     exit 1
   }
   echo "${minsupported}"

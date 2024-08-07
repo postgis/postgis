@@ -13,7 +13,7 @@
 -- rast   - Raster to be tiled.
 -- width  - Width of the tiles.
 -- height - Height of the tiles
--- padwithnodata - If TRUE, the produced tiles are strictly width x heigth pixels.
+-- padwithnodata - If TRUE, the produced tiles are strictly width x height pixels.
 --                 Pixels outside the extent of the passed raster are filled with
 --                 nodata value. When FALSE out of bound tiles are clipped to the
 --                 extent of the raster. Default to FALSE.
@@ -112,7 +112,7 @@ CREATE OR REPLACE FUNCTION ST_Tile(rast raster, width integer, height integer, p
 -- rast   - Raster to be tiled.
 -- width  - Width of the tiles.
 -- height - Height of the tiles
--- padwithnodata - If TRUE, the produced tiles are strictly width x heigth pixels.
+-- padwithnodata - If TRUE, the produced tiles are strictly width x height pixels.
 --                 Pixels outside the extent of the passed raster are filled with
 --                 nodata value. When FALSE out of bound tiles are clipped to the
 --                 extent of the raster. Default to FALSE.

@@ -1191,7 +1191,7 @@ extern int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring);
 
 /**
 * Add a component, allocating extra space if necessary. The compoundcurve
-* takes owership of the passed geometry.
+* takes ownership of the passed geometry.
 */
 extern int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom);
 
@@ -1697,7 +1697,7 @@ LWCOLLECTION* lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, d
  */
 /** For GML3 only, include srsDimension attribute in output */
 #define LW_GML_IS_DIMS     (1<<0)
-/** For GML3 only, declare that datas are lat/lon. Swaps axis order */
+/** For GML3 only, declare that data are lat/lon. Swaps axis order */
 #define LW_GML_IS_DEGREE   (1<<1)
 /** For GML3, use <LineString> rather than <Curve> for lines */
 #define LW_GML_SHORTLINE   (1<<2)

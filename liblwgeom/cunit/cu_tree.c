@@ -92,7 +92,7 @@ static void test_tree_circ_pip(void)
 	circ_tree_free(c);
 	lwline_free(g);
 
-	/* Point outside "w" thing, stab passing through vertexes and grazing pointy thing */
+	/* Point outside "w" thing, stab passing through vertices and grazing pointy thing */
 	pt.x = 2.0;
 	pt.y = 0.0;
 	g = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING(-1 -1,0 -1,1 -1,1 0,1 1,0 0,-1 1,-1 0,-1 -1)", LW_PARSER_CHECK_NONE));
@@ -102,7 +102,7 @@ static void test_tree_circ_pip(void)
 	//printf("rv %d\n", rv);
 	CU_ASSERT_EQUAL(rv, 0);
 
-	/* Point inside "w" thing, stab passing through vertexes and grazing pointy thing */
+	/* Point inside "w" thing, stab passing through vertices and grazing pointy thing */
 	pt.x = 0.8;
 	pt.y = 0.0;
 	rv = circ_tree_contains_point(c, &pt, &pt_outside, 0, &on_boundary);

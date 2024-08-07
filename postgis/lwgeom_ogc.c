@@ -585,7 +585,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 
 	if ( type == LINETYPE || type == CIRCSTRINGTYPE )
 	{
-		/* OGC index starts at one, so we substract first. */
+		/* OGC index starts at one, so we subtract first. */
 		lwpoint = lwline_get_lwpoint((LWLINE*)lwgeom, where - 1);
 	}
 	else if ( type == COMPOUNDTYPE )

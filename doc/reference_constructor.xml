@@ -939,7 +939,7 @@ SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
 
 			<para>Creates a rectangular Polygon
             giving the extent of a tile in the <link xlink:href="https://en.wikipedia.org/wiki/Tiled_web_map">XYZ tile system</link>.
-            The tile is specifed by the zoom level Z and the XY index of the tile in the grid at that level.
+            The tile is specified by the zoom level Z and the XY index of the tile in the grid at that level.
             Can be used to define the tile bounds required by <xref linkend="ST_AsMVTGeom"/> to convert geometry
             into the MVT tile coordinate space.
             </para>

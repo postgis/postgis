@@ -21,7 +21,7 @@
 --  cell required to cover the given geometry
 --
 --
--- A pragmatic test conducted using algoritm shown here:
+-- A pragmatic test conducted using algorithm shown here:
 -- http://stackoverflow.com/questions/7408407/generate-next-largest-or-smallest-representable-floating-point-number-without-bi
 -- showed the "tolerance" growing by an order of magnitude proportionally
 -- with the order of magnitude of the input, starting with something like
@@ -72,7 +72,7 @@ $$ LANGUAGE 'plpgsql' STABLE STRICT;
 -- Add a node primitive to a topology and get its identifier.
 -- Returns an existing node at the same location, if any.
 --
--- When adding a _new_ node it checks for the existance of any
+-- When adding a _new_ node it checks for the existence of any
 -- edge crossing the given point, raising an exception if found.
 --
 -- The newly added nodes have no containing face.
@@ -587,7 +587,7 @@ BEGIN
 #endif
 
   --
-  -- Check that all edges found, taken togheter,
+  -- Check that all edges found, taken together,
   -- fully match the ring boundary and nothing more
   --
   -- If the test fail either we need to add more edges

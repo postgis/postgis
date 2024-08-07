@@ -715,7 +715,7 @@ Usage: $0 [<options>] <testname> [<testname>]
 Options:
   -v, --verbose   be verbose about failures
   --nocreate      do not create the regression database on start
-  --upgrade       upgrade db before runnign tests, can be passed
+  --upgrade       upgrade db before running tests, can be passed
                   multiple times to perform multiple upgrades.
   --upgrade-path  upgrade path, format <from>--<to>.
                   <from> can be specified as "unpackaged<version>"

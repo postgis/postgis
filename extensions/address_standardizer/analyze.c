@@ -629,7 +629,7 @@ int evaluator(STAND_PARAM *__stand_param__)
 <summary>
 <function name='analyze.c (first_composition)'/>
 <called-by> <functionref='analyze.c (evaluator)'/>
-<remarks> Called by Evaluator to intialize __best_output__ and __sym_sel__ -
+<remarks> Called by Evaluator to initialize __best_output__ and __sym_sel__ -
 	also sets up lex_sym, save_defs and __num_defs__ from the
     definitions in the LexVector  </remarks>
 </summary>
@@ -1126,7 +1126,7 @@ static void save_current_composition(STAND_PARAM *__stand_param__,SEG *__segment
 	SEG *__seg__ ;
 	int *__sym_sel__ = __stand_param__->cur_sym_sel ;
 
-	/*-- <remarks> Get the definitions selected from save_defs - needed for outputing
+	/*-- <remarks> Get the definitions selected from save_defs - needed for outputting
 		the lexemes. Different definitions may give a different
 		standardization for the same input - the letter W may be standardized
 		as W if a SINGLE or WEST if a DIRECT </remarks> --*/

@@ -633,7 +633,7 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize) {
 			default:
 				rterror("rt_raster_to_wkb: Fatal error caused by unknown pixel type. Aborting.");
 				rtdealloc(wkb);
-				abort(); /* shoudn't happen */
+				abort(); /* shouldn't happen */
 				return 0;
 		}
 

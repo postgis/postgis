@@ -29,7 +29,7 @@
 
 			<note>
 			  <para>Bounding boxes are automatically added to geometries so in general this is not needed
-				unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes.  Then you need to drop the old and readd.</para>
+				unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes.  Then you need to drop the old and re-add.</para>
 			</note>
 
 			<para>&curve_support;</para>
@@ -78,8 +78,8 @@
 			<note>
 			  <para>Bounding boxes are automatically added to geometries and improve speed of queries so in general this is not needed
 				unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes.
-				Then you need to drop the old and readd.  This kind of corruption has been observed in 8.3-8.3.6 series whereby cached bboxes were not always recalculated when a geometry changed and upgrading to a newer version without a dump reload will not
-				correct already corrupted boxes.  So one can manually correct using below and readd the bbox or do a dump reload.</para>
+				Then you need to drop the old and re-add.  This kind of corruption has been observed in 8.3-8.3.6 series whereby cached bboxes were not always recalculated when a geometry changed and upgrading to a newer version without a dump reload will not
+				correct already corrupted boxes.  So one can manually correct using below and re-add the bbox or do a dump reload.</para>
 			</note>
 
 			<para>&curve_support;</para>

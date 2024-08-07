@@ -102,15 +102,15 @@ static void test_twkb_out_point(void)
 	ASSERT_STRING_EQUAL(s,"0101000000000000");
 	// printf("TWKB: %s\n",s);
 
-	/* Adding a size paramters to X/Y */
+	/* Adding a size parameters to X/Y */
 	cu_twkb("POINT(0 0)", 0, 0, 0, TWKB_SIZE);
 	ASSERT_STRING_EQUAL(s,"0102020000");
 
-	/* Adding a size paramters to X/Y/M */
+	/* Adding a size parameters to X/Y/M */
 	cu_twkb("POINTM(0 0 0)", 0, 0, 0, TWKB_SIZE);
 	ASSERT_STRING_EQUAL(s,"010A0203000000");
 
-	/* Adding a size paramters to X/Y/Z/M */
+	/* Adding a size parameters to X/Y/Z/M */
 	cu_twkb("POINT(0 0 0 0)", 0, 0, 0, TWKB_SIZE);
 	ASSERT_STRING_EQUAL(s,"010A030400000000");
 

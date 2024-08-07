@@ -103,7 +103,7 @@ geometry coordinates.
 OPTIONAL ELEMENTS (V2)
 ----------------------
 
-The v2 serialization has a lot more flag space, and therefor a lot of
+The v2 serialization has a lot more flag space, and therefore a lot of
 extra room to flag potential optional elements in the serialization.
 
 In order to keep the double coordinates in the geometry section

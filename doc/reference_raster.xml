@@ -584,7 +584,7 @@ VALUES (1,
             <listitem><para><varname>blocksize</varname> sets both X and Y blocksize</para></listitem>
             <listitem><para><varname>blocksize_x</varname> sets X tile (width in pixels of each tile)</para></listitem>
             <listitem><para><varname>blocksize_y</varname> sets Y tile (height in pixels of each tile)</para></listitem>
-            <listitem><para><varname>extent</varname> computes extent of whole table and applys constraint all rasters must be within that extent</para></listitem>
+            <listitem><para><varname>extent</varname> computes extent of whole table and applies constraint all rasters must be within that extent</para></listitem>
 
             <listitem><para><varname>num_bands</varname> number of bands</para></listitem>
             <listitem><para><varname>pixel_types</varname> reads array of pixel types for each band ensure all band n have same pixel type</para></listitem>
@@ -1203,7 +1203,7 @@ WHERE short_name = 'JPEG') As g;
 --------------------+---------+-------------------------------------------------
  PROGRESSIVE        | boolean | whether to generate a progressive JPEG
  QUALITY            | int     | good=100, bad=0, default=75
- WORLDFILE          | boolean | whether to geneate a worldfile
+ WORLDFILE          | boolean | whether to generate a worldfile
  INTERNAL_MASK      | boolean | whether to generate a validity mask
  COMMENT            | string  | Comment
  SOURCE_ICC_PROFILE | string  | ICC profile encoded in Base64
@@ -2098,7 +2098,7 @@ SELECT ST_AsPNG(
 
                 <para>Returns one or more bands of an existing raster as a new raster.  Useful for building new rasters from existing rasters or export of only selected
                 bands of a raster or rearranging the order of bands in a raster. If no band is specified or any of specified bands does not exist in the raster, then all bands are returned. Used as a helper function in various functions such as for deleting a band. </para>
-                <warning><para>For the <code>nbands</code> as text variant of function, the default delimiter is <code>,</code> which means you can ask for <code>'1,2,3'</code> and if you wanted to use a different delimeter you would do <code>ST_Band(rast, '1@2@3', '@')</code>.  For asking for multiple bands, we strongly suggest you use the array form of this function e.g. <code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> list of bands form may be removed in future versions of PostGIS.</para></warning>
+                <warning><para>For the <code>nbands</code> as text variant of function, the default delimiter is <code>,</code> which means you can ask for <code>'1,2,3'</code> and if you wanted to use a different delimiter you would do <code>ST_Band(rast, '1@2@3', '@')</code>.  For asking for multiple bands, we strongly suggest you use the array form of this function e.g. <code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> list of bands form may be removed in future versions of PostGIS.</para></warning>
 
                  <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
             </refsection>
@@ -10362,7 +10362,7 @@ FROM (
                             <term><varname>nband, nband1, nband2</varname></term>
                             <listitem>
                                 <para>
-                                    Band numbers of the raster to be evaluated. nband can be an integer or integer[] denoting the bands. nband1 is band on rast1 and nband2 is band on rast2 for hte 2 raster/2band case.
+                                    Band numbers of the raster to be evaluated. nband can be an integer or integer[] denoting the bands. nband1 is band on rast1 and nband2 is band on rast2 for the 2 raster/2band case.
                                 </para>
                             </listitem>
                         </varlistentry>
@@ -10706,7 +10706,7 @@ SELECT 'mask only consider neighbors, exclude center' AS title, ST_MapAlgebra(ra
 FROM foo
 
 UNION ALL
-SELECT 'mask weighted only consider neighbors, exclude center multi otehr pixel values by 2' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::regprocedure,
+SELECT 'mask weighted only consider neighbors, exclude center multi other pixel values by 2' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::regprocedure,
     '{{2,2,2}, {2,0,2}, {2,2,2}}'::double precision[], true) As rast
 FROM foo;
                     </programlisting>
@@ -12249,7 +12249,7 @@ SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
                                                         <imagedata fileref="images/st_mapalgebrafctngb02.png"/>
                                                     </imageobject>
                                                     <caption>
-                                                        <para>new raster after averaging pixels withing 4x4 pixels of each other</para>
+                                                        <para>new raster after averaging pixels within 4x4 pixels of each other</para>
                                                     </caption>
                                                 </mediaobject>
                                             </informalfigure>

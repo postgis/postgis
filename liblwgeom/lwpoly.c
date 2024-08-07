@@ -352,7 +352,7 @@ lwpoly_same(const LWPOLY *p1, const LWPOLY *p2)
 /*
  * Construct a polygon from a LWLINE being
  * the shell and an array of LWLINE (possibly NULL) being holes.
- * Pointarrays from intput geoms are cloned.
+ * Pointarrays from input geoms are cloned.
  * SRID must be the same for each input line.
  * Input lines must have at least 4 points, and be closed.
  */

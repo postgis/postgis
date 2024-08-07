@@ -5499,7 +5499,7 @@ CREATE OR REPLACE FUNCTION st_rastfromwkb(bytea)
     AS 'MODULE_PATHNAME', 'RASTER_fromWKB'
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
--- expectes input to be Hex WKB
+-- expects input to be Hex WKB
 CREATE OR REPLACE FUNCTION st_rastfromhexwkb(text)
     RETURNS raster
     AS 'MODULE_PATHNAME', 'RASTER_fromHexWKB'
@@ -5951,7 +5951,7 @@ CREATE OR REPLACE FUNCTION st_iscoveragetile(rast raster, coverage raster, tilew
 		max[0] := ceil(_covmeta.width::double precision / tilewidth::double precision)::integer;
 		max[1] := ceil(_covmeta.height::double precision / tileheight::double precision)::integer;
 
-		-- tile # of rast in coverge
+		-- tile # of rast in coverage
 		tile[0] := (cr.columnx / tilewidth) + 1;
 		tile[1] := (cr.rowy / tileheight) + 1;
 
@@ -7392,7 +7392,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_regular_blocking(rastschema n
 		covtile boolean;
 		spunique boolean;
 	BEGIN
-		-- check existance of constraints
+		-- check existence of constraints
 		-- coverage tile constraint
 		covtile := COALESCE( @extschema@._raster_constraint_info_coverage_tile($1, $2, $3), FALSE);
 

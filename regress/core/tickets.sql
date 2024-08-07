@@ -908,7 +908,7 @@ SELECT '#3355',  ST_Intersects(
          'LINESTRING(124.983539 1.419224,91.181596 29.647798)'::geography
        , ST_Segmentize('LINESTRING(124.983539 1.419224,91.181596 29.647798)'::geography, 47487290)::geography);
 /** NOTE: change seems crazy but PG16s ordering of parenthesis is different from prior versions
-so to accomodate had to add and remove superfluous spaces **/
+so to accommodate had to add and remove superfluous spaces **/
 SELECT '#3356', ST_Summary(wkt::geometry) As wkt_geom,
    ST_Summary(wkt::geography) As wkt_geog,
    ST_Summary(wkt::geometry::geography) As geom_geog

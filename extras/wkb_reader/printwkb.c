@@ -11,12 +11,12 @@
 
 
 // unsupported debugging function.
-// given a wkb input thats a geometrycollection, returns its size and prints out
+// given a wkb input that's a geometrycollection, returns its size and prints out
 // its contents
 //
 //  Its really messy - dont even think about using this for anything
 //
-// you shouldnt call this function; just call decode_wkb() and it will
+// you shouldn't call this function; just call decode_wkb() and it will
 // call this function
 
 //#define DEBUG 1

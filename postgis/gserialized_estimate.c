@@ -28,7 +28,7 @@
  THEORY OF OPERATION
 
 The ANALYZE command hooks to a callback (gserialized_analyze_nd) that
-calculates (compute_gserialized_stats_mode) two histograms of occurances of
+calculates (compute_gserialized_stats_mode) two histograms of occurrences of
 features, once for the 2D domain (and the && operator) one for the
 ND domain (and the &&& operator).
 
@@ -242,7 +242,7 @@ typedef struct ND_IBOX_T
 
 /**
 * N-dimensional statistics structure. Well, actually
-* four-dimensional, but set up to handle arbirary dimensions
+* four-dimensional, but set up to handle arbitrary dimensions
 * if necessary (really, we just want to get the 2,3,4-d cases
 * into one shared piece of code).
 */
@@ -771,7 +771,7 @@ nd_box_ratio(const ND_BOX *b1, const ND_BOX *b2, int ndims)
 #define BIN_MIN_SIZE 10
 
 /**
-* Calculate how much a set of boxes is homogenously distributed
+* Calculate how much a set of boxes is homogeneously distributed
 * or contentrated within one dimension, returning the range_quintile of
 * of the overlap counts per cell in a uniform
 * partition of the extent of the dimension.
@@ -989,8 +989,8 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode, bool only_par
 * Pull the stats object from the PgSQL system catalogs. The
 * debugging functions are taking human input (table names)
 * and columns, so we have to look those up first.
-* In case of parent tables whith INHERITS, when "only_parent"
-* is true this function only searchs for stats in the parent
+* In case of parent tables with INHERITS, when "only_parent"
+* is true this function only searches for stats in the parent
 * table ignoring any statistic collected from the children.
 */
 static ND_STATS*
@@ -1594,7 +1594,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	 * So, we instead calculate how much features overlap
 	 * each other in their dimension to figure out which
 	 *  dimensions have useful selectivity characteristics (more
-	 * variability in density) and therefor would find
+	 * variability in density) and therefore would find
 	 * more cells useful (to distinguish between dense places and
 	 * homogeneous places).
 	 */
@@ -1743,7 +1743,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		}
 
 		/*
-		 * Move through all the overlaped histogram cells values and
+		 * Move through all the overlapped histogram cells values and
 		 * add the box overlap proportion to them.
 		 */
 		do
@@ -2631,7 +2631,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	if (!tbl_oid)
 		elog(ERROR, "cannot lookup table %s", nsp_tbl);
 
-    /* Get the attribute number and type from the colum name */
+    /* Get the attribute number and type from the column name */
     col = text_to_cstring(coltxt);
     if (!get_attnum_attypid(tbl_oid, col, &attnum, &atttypid))
         elog(ERROR, "column %s.\"%s\" does not exist", nsp_tbl, col);

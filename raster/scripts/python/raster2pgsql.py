@@ -59,7 +59,7 @@ g_rt_version = 0
 # and option -e, --endian is ignored, if specified.
 g_rt_endian = NDR
 
-# Default name of column, overriden with -f, --field option.
+# Default name of column, overridden with -f, --field option.
 g_rt_column = 'rast'
 
 g_rt_catalog = ''
@@ -256,7 +256,7 @@ def pt2fmt(pt):
 
 
 def fmt2printfmt(fmt):
-    """Returns printf-like formatter for given binary data type sepecifier."""
+    """Returns printf-like formatter for given binary data type specifier."""
     fmttypes = {
         'B': '%d', # PT_8BUI
         'h': '%d', # PT_16BSI
@@ -690,7 +690,7 @@ def wkblify_raster_header(options, ds, level, ulp, xsize = None, ysize = None):
 
     # Burn input raster as WKTRaster WKB format
     hexwkb = ''
-    ### Endiannes
+    ### Endianness
     hexwkb += wkblify('B', options.endian)
     ### Version
     hexwkb += wkblify('H', options.version)

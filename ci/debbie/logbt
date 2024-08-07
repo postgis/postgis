@@ -172,7 +172,7 @@ function generic_signal_handler() {
   echo "[logbt] received signal:${code} (${sig})"
   echo "[logbt] sending SIGTERM to ${program} (${child_pid})"
   # sleep here to help the stdout show in the right
-  # order (accounts for an intermittant case where the above lines print after
+  # order (accounts for an intermittent case where the above lines print after
   # the child outputs stdout during shutdown)
   sleep 1
   KILL_RETURN=0
@@ -245,7 +245,7 @@ function launch_and_wait() {
   # in order to get the PID
   if [[ ${LD_PRELOAD:-} ]] && [[ ${PLATFORM_UNAME} == 'Darwin' ]]; then
       # on os x DYLD_INSERT_LIBRARIES is blocked from being inherited
-      # so we accept LD_PRELOAD and foreward along
+      # so we accept LD_PRELOAD and forward along
       DYLD_INSERT_LIBRARIES=${LD_PRELOAD} LOGBT_PID=$$ "$@" & CHILD_PID=$!
   else
       LOGBT_PID=$$ "$@" & CHILD_PID=$!

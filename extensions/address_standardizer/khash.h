@@ -293,7 +293,7 @@ static inline khint_t __ac_X31_hash_string(const char *s)
 #define kh_size(h) ((h)->size)
 #define kh_n_buckets(h) ((h)->n_buckets)
 
-/* More conenient interfaces */
+/* More convenient interfaces */
 
 #define KHASH_SET_INIT_INT(name)										\
 	KHASH_INIT(name, uint32_t, char, 0, kh_int_hash_func, kh_int_hash_equal)

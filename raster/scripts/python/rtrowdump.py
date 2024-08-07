@@ -4,7 +4,7 @@
 # Brute-force dump of single row from WKT Raster table as GeoTIFF.
 # This utility is handy for debugging purposes.
 #
-# WARNING: Tha main purpose of this program is to test and
+# WARNING: The main purpose of this program is to test and
 # debug WKT Raster implementation. It is NOT supposed to be an
 # efficient performance killer, by no means.
 #

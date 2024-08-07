@@ -156,7 +156,7 @@ void char_append( const char *div ,
                   int max_wid ) {
    if ( *src == SENTINEL )
       return ;
-   /* -- skip the delimitor if dest is empty -- */
+   /* -- skip the delimiter if dest is empty -- */
    if ( *dest == SENTINEL ) {
       append_string_to_max( dest ,
                             ( char * ) src ,
@@ -230,19 +230,19 @@ void parse_file_name( const char *input_path_name ,
    /* -- find the file name part first -- */
    /* -- move to end of the pathname -- */
 	for ( end_ptr = input_path_name ; *end_ptr != SENTINEL ; end_ptr++ ) ;
-	/* -- find the last directory delimitor -- */
+	/* -- find the last directory delimiter -- */
 	while ( ( end_ptr > input_path_name ) && NOT_PATH_DELIMITOR(*end_ptr) ) {
 		end_ptr -- ;
 	}
 	/* ---------------------------------------------------------------
-	either end_ptr has the last delimitor or it is at string start.
+	either end_ptr has the last delimiter or it is at string start.
 		If the first case, we need to increment to get the filename and
 		need to copy everything up to and including for the path.
 	-----------------------------------------------------------------*/
 	/* -- copy from beg to endptr to output path -- */
 	dest = output_head ;
 	src = input_path_name ;
-	/* if end_ptr points to a path delimitor, copy everything up but not
+	/* if end_ptr points to a path delimiter, copy everything up but not
 	including it into the output_head (if output_head isn't NULL) */
 	if ( IS_PATH_DELIMITOR( *end_ptr ) ) {
 		while ( src < end_ptr ) {
@@ -257,7 +257,7 @@ void parse_file_name( const char *input_path_name ,
 	if ( dest != NULL ) {
 		BLANK_STRING(dest) ;
 	}
-	/* copy everything after the delimitor up to the sentinel
+	/* copy everything after the delimiter up to the sentinel
 	into the output_tail */
 	if ( ( dest = output_tail ) != NULL ) {
 		while ( TRUE ) {

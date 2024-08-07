@@ -866,7 +866,7 @@ FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programl
 								</listitem>
 
 								<listitem>
-								  <para>16: Declare that datas are lat/lon (e.g srid=4326). Default is to assume that data are planars.
+								  <para>16: Declare that data are lat/lon (e.g srid=4326). Default is to assume that data are planars.
 								  This option is useful for GML 3.1.1 output only, related to axis order. So if you set it, it will swap the coordinates
 								  so order is lat lon instead of database lon lat.</para>
 								</listitem>
@@ -1254,7 +1254,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
         <refsection>
             <title>Examples</title>
 
-            <para>Converting a <varname>POINT</varname> to MARC21/XML formated as hdddmmss (default)</para>
+            <para>Converting a <varname>POINT</varname> to MARC21/XML formatted as hdddmmss (default)</para>
             <programlisting><![CDATA[
 
 
@@ -1276,7 +1276,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 
 ]]></programlisting>
 
-            <para>Converting a <varname>POLYGON</varname> to MARC21/XML formated in decimal degrees</para>
+            <para>Converting a <varname>POLYGON</varname> to MARC21/XML formatted in decimal degrees</para>
             <programlisting><![CDATA[
 
 
@@ -1296,7 +1296,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 
 ]]></programlisting>
 
-            <para>Converting a <varname>GEOMETRYCOLLECTION</varname> to MARC21/XML formated in decimal minutes. The geometries order in the MARC21/XML output correspond to their order in the collection.</para>
+            <para>Converting a <varname>GEOMETRYCOLLECTION</varname> to MARC21/XML formatted in decimal minutes. The geometries order in the MARC21/XML output correspond to their order in the collection.</para>
             <programlisting><![CDATA[
 
 

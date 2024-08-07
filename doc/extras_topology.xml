@@ -116,7 +116,7 @@ and <varname>GetNodeEdges</varname> functions.
                 <orderedlist>
                   <listitem>
                     <para><varname>error</varname> is varchar:  Denotes type of error. </para>
-                    <para>Current error descriptors are: coincident nodes, edge crosses node, edge not simple, edge end node geometry mis-match, edge start node geometry mismatch, face overlaps face,face within face,  </para>
+                    <para>Current error descriptors are: coincident nodes, edge crosses node, edge not simple, edge end node geometry mismatch, edge start node geometry mismatch, face overlaps face,face within face,  </para>
                   </listitem>
                   <listitem>
                     <para><varname>id1</varname> is an integer: Denotes identifier of edge / face / nodes in error.</para>
@@ -735,7 +735,7 @@ See <xref linkend="ST_Relate"/>.
                                     </entry>
                             </row>
                             <row>
-                                    <entry>edge start node geometry mis-match</entry>
+                                    <entry>edge start node geometry mismatch</entry>
                                     <entry>Identifier of the edge.</entry>
                                     <entry>
 Identifier of the indicated start node.
@@ -747,7 +747,7 @@ See <xref linkend="ST_StartPoint"/>.
                                     </entry>
                             </row>
                             <row>
-                                    <entry>edge end node geometry mis-match</entry>
+                                    <entry>edge end node geometry mismatch</entry>
                                     <entry>Identifier of the edge.</entry>
                                     <entry>
 Identifier of the indicated end node.
@@ -4576,7 +4576,7 @@ linking all TopoGeometry values to their correct topology.
 
         <para>
 By default <filename>pgtopo_import</filename> reads the dump
-from the standard input so that it can be used in conjuction
+from the standard input so that it can be used in conjunction
 with <filename>pgtopo_export</filename> in a pipeline.
 You can optionally specify an input filename with the
 <code>-f</code> commandline switch.

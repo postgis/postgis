@@ -241,7 +241,7 @@ BEGIN
     RAISE EXCEPTION 'The topology.layer table cannot be updated';
   END IF;
 
-  -- Check for existance of any feature column referencing
+  -- Check for existence of any feature column referencing
   -- this layer
   FOR rec IN SELECT * FROM pg_namespace n, pg_class c, pg_attribute a
     WHERE text(n.nspname) = OLD.schema_name
@@ -300,7 +300,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 --{
 -- Layer table.
--- Stores topology layer informations
+-- Stores topology layer information
 --
 CREATE TABLE topology.layer (
   topology_id INTEGER NOT NULL
@@ -656,7 +656,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- Every element of the array is either a Topology element represented by
 -- (id, type) or a TopoGeometry element represented by (id, layer).
 -- The actual semantic depends on the TopoGeometry layer, either at
--- level 0 (elements are topological primitives) or higer (elements
+-- level 0 (elements are topological primitives) or higher (elements
 -- are TopoGeoms from child layer).
 --
 -- @param toponame Topology name
@@ -1413,7 +1413,7 @@ CREATE OR REPLACE FUNCTION topology.postgis_topology_scripts_installed() RETURNS
 -- Make sure topology is in database search path --
 SELECT topology.AddToSearchPath('topology');
 
--- Make metadata tables publically visible
+-- Make metadata tables publicly visible
 -- See https://trac.osgeo.org/postgis/ticket/4575
 GRANT SELECT ON topology.topology TO PUBLIC;
 GRANT SELECT ON topology.layer TO PUBLIC;

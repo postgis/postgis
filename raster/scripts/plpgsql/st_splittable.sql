@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------------------------------------------------
 -- ST_SplitTable
 -- Split a table into a series of table which names are composed of the concatenation of a prefix
--- and the value of a column. This function is usefull when loading many raster in one operation but
+-- and the value of a column. This function is useful when loading many raster in one operation but
 -- still wanting to split them in different tables afterward. They must have been loaded with the -F
 -- raster2pgsql option so that different rasters are identifiable by a column.
 --

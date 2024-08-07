@@ -34,7 +34,7 @@
  *  generator [-v] [-s <width>x<height>] <source_wktfile> [<output_pngfile>]
  *
  * -v - show generated Imagemagick commands
- * -s - output dimention, if omitted defaults to 200x200
+ * -s - output dimension, if omitted defaults to 200x200
  *
  * If <output_pngfile> is omitted the output image PNG file has the
  * same name as the source file

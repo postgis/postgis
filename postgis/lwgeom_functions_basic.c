@@ -293,7 +293,7 @@ Datum ST_Area(PG_FUNCTION_ARGS)
  *  	length2d(point) = 0
  *  	length2d(line) = length of line
  *  	length2d(polygon) = 0  -- could make sense to return sum(ring perimeter)
- *  	uses euclidian 2d length (even if input is 3d)
+ *  	uses euclidean 2d length (even if input is 3d)
  */
 PG_FUNCTION_INFO_V1(LWGEOM_length2d_linestring);
 Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS)
@@ -311,7 +311,7 @@ Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS)
  *  	length(point) = 0
  *  	length(line) = length of line
  *  	length(polygon) = 0  -- could make sense to return sum(ring perimeter)
- *  	uses euclidian 3d/2d length depending on input dimensions.
+ *  	uses euclidean 3d/2d length depending on input dimensions.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_length_linestring);
 Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS)
@@ -329,7 +329,7 @@ Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS)
  *  	perimeter(point) = 0
  *  	perimeter(line) = 0
  *  	perimeter(polygon) = sum of ring perimeters
- *  	uses euclidian 3d/2d computation depending on input dimension.
+ *  	uses euclidean 3d/2d computation depending on input dimension.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_perimeter_poly);
 Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS)
@@ -348,7 +348,7 @@ Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS)
  *  	perimeter(point) = 0
  *  	perimeter(line) = 0
  *  	perimeter(polygon) = sum of ring perimeters
- *  	uses euclidian 2d computation even if input is 3d
+ *  	uses euclidean 2d computation even if input is 3d
  */
 PG_FUNCTION_INFO_V1(LWGEOM_perimeter2d_poly);
 Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS)
@@ -480,7 +480,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	/* deserialize into lwgeoms[0] */
 	lwgeom = lwgeom_from_gserialized(geom);
 
-	/* alread a multi*, just make it a collection */
+	/* already a multi*, just make it a collection */
 	if (lwgeom_is_collection(lwgeom))
 	{
 		lwgeom->type = COLLECTIONTYPE;

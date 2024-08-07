@@ -74,7 +74,7 @@ static void test_lwgeom_make_valid(void)
 	lwgeom_free(gin);
 
 	/* We're really only interested in avoiding memory problems.
-   * Convertion to ewkt ensures full scan of coordinates thus
+   * Conversion to ewkt ensures full scan of coordinates thus
    * triggering the error, if any
    */
 	ewkt = lwgeom_to_ewkt(gout);

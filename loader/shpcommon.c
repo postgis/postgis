@@ -348,7 +348,7 @@ codepage2encoding(const char *cpg)
 }
 
 /*
-* In the case where data is coming out of the database in some wierd encoding
+* In the case where data is coming out of the database in some weird encoding
 * we want to look up the appropriate code page entry to feed to DBFCreateEx
 *
 * Return null on error (cannot allocate memory)

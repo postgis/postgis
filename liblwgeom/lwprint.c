@@ -456,7 +456,7 @@ char* lwpoint_to_latlon(const LWPOINT * pt, const char *format)
  *
  * The function will write at most OUT_DOUBLE_BUFFER_SIZE bytes, including the
  * terminating NULL.
- * It returns the number of bytes written (exluding the final NULL)
+ * It returns the number of bytes written (excluding the final NULL)
  *
  */
 int

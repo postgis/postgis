@@ -542,7 +542,7 @@ into includes in the future for easier maintenance.</para></listitem>
 						</varlistentry>
 						<varlistentry><term><varname>seq</varname></term>
 							<listitem>
-								<para>integer: definition number? - identifer used for that instance of the word</para>
+								<para>integer: definition number? - identifier used for that instance of the word</para>
 							</listitem>
 						</varlistentry>
 						<varlistentry><term><varname>word</varname></term>
@@ -710,7 +710,7 @@ into includes in the future for easier maintenance.</para></listitem>
 		<refsection>
 			<title>Examples</title>
 
-			<para>Single Addresss</para>
+			<para>Single Address</para>
 			<programlisting>SELECT num, street, city, zip, zipplus
 	FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234') AS a;</programlisting>
 <screen>

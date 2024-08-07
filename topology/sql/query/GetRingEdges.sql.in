@@ -27,7 +27,7 @@
 -- Edge ids are signed, they are negative if traversed backward.
 -- Sequence numbers start with 1.
 --
--- Use a negative starting_edge to follow its rigth face rather than
+-- Use a negative starting_edge to follow its right face rather than
 -- left face (to start traversing it in reverse).
 --
 -- Optionally pass a limit on the number of edges to traverse. This is a

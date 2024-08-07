@@ -13,7 +13,7 @@
 --
 -- This drops extension helper functions
 -- and should be called at the end of the extension upgrade file
--- removes all postgis_topology functions from postgis_topology extension since they will be readded
+-- removes all postgis_topology functions from postgis_topology extension since they will be read
 -- during upgrade
 SELECT postgis_extension_remove_objects('postgis_tiger_geocoder', 'FUNCTION');
 SELECT postgis_extension_remove_objects('postgis_tiger_geocoder', 'AGGREGATE');

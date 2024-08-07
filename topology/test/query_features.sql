@@ -32,7 +32,7 @@ SELECT a.feature_name, id(a.feature) as tg_id,
 	ST_AsText(ST_Normalize(topology.Geometry(a.feature)) ) as geom
 FROM features.city_streets a;
 
--- Query hierarchical feautures
+-- Query hierarchical features
 SELECT feature_name, ST_AsText(ST_Normalize(topology.geometry(feature)))
 FROM features.big_signs;
 

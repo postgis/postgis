@@ -24,7 +24,7 @@
  **********************************************************************/
 
 /*
-*  GSERIALIZED verison 2 includes an optional extended flags uint64_t
+*  GSERIALIZED version 2 includes an optional extended flags uint64_t
 *  before the optional bounding box. There may be other optional
 *  components before the data area, but they all must be double
 *  aligned to that the ordinates remain double aligned.
@@ -1605,7 +1605,7 @@ GSERIALIZED* gserialized2_set_gbox(GSERIALIZED *g, GBOX *gbox)
 
 	/* Move bounds to nearest float values */
 	gbox_float_round(gbox);
-	/* Now write the float box values into the memory segement */
+	/* Now write the float box values into the memory segment */
 	fbox = (float*)(g_out->data);
 	/* Copy in X/Y */
 	fbox[fbox_pos++] = gbox->xmin;

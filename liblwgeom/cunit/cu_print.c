@@ -507,7 +507,7 @@ test_lwprint(void)
 	assert_lwprint_equal(2.9802322387695312E-8, OUT_MAX_DIGITS, "0.000000029802322387695312"); /* Trailing zeros */
 }
 
-/* Macro to test rountrip of lwprint_double when using enough precision digits (OUT_MAX_DIGITS) */
+/* Macro to test roundtrip of lwprint_double when using enough precision digits (OUT_MAX_DIGITS) */
 #define assert_lwprint_roundtrip(d) \
 	{ \
 		char s[OUT_DOUBLE_BUFFER_SIZE] = {0}; \

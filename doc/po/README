@@ -43,7 +43,7 @@ Translations made via Weblate will automatically be pushed
 to the master branch of the official repository.
 
 Translation directly pushed to the master branch of the
-official reporitory will be automatically pulled by Weblate,
+official repository will be automatically pulled by Weblate,
 as well as changes to the templates (.pot files).
 Pulling is triggered by a webhook, see
 https://git.osgeo.org/gitea/postgis/postgis/settings/hooks

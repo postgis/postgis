@@ -57,7 +57,7 @@ described in main postgis manual.
 Topology data are stored in named SCHEMAs, where the topology
 name is the name of the SCHEMA containing its data.
 
-A catalogue of avalable topologies is kept under the
+A catalogue of available topologies is kept under the
 "topology"."topology" table.
 
 ==Creating a topology
@@ -113,7 +113,7 @@ The next_*_edge of an edge is the edge you encounter next while going
 around the specified face (right or left) in counterclockwise order
 (so that the face is on your left). Note that due to this definition
 the edge being considered is traversed in reverse order when traversing
-its "right" face. The values are signed to indicate wheter the next edge
+its "right" face. The values are signed to indicate whether the next edge
 will be traversed in its original or reversed orientation.
 
 More details on semantic are contained in the SQL/MM specification, which
@@ -217,7 +217,7 @@ given Face on the left or right side. This reduces the number
 of SQL queries to 1, but makes it hard to detect any
 inconsistency in the underlying topology.
 Also, the polygonize() function does not use *any* of the
-metadata informations in the Edge table, so replacing it
+metadata information in the Edge table, so replacing it
 with a more topology-aware function could speed it up.
 
 ==ValidateTopology() performance

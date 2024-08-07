@@ -114,7 +114,7 @@ struct rtpg_nmapalgebra_arg_t {
 
 	int distance[2]; /* distance in X and Y axis */
 
-	rt_extenttype extenttype; /* ouput raster's extent type */
+	rt_extenttype extenttype; /* output raster's extent type */
 	rt_pgraster *pgcextent; /* custom extent of type rt_pgraster */
 	rt_raster cextent; /* custom extent of type rt_raster */
         rt_mask mask; /* mask for the nmapalgebra operation */
@@ -4767,7 +4767,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
             PG_RETURN_NULL();
         };
 
-        /* Execute the expresion into newval */
+        /* Execute the expression into newval */
         ret = SPI_execute(initexpr, FALSE, 0);
 
         if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {

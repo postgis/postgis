@@ -481,7 +481,7 @@ AC_CHECK_FUNCS([iconvctl libiconvctl],[],[])
 LDFLAGS="$LDFLAGS_SAVE"
 CFLAGS="$CFLAGS_SAVE"
 
-dnl Only define HAVE_ICONV in postgis_config.h if we detect iconv sucessfully
+dnl Only define HAVE_ICONV in postgis_config.h if we detect iconv successfully
 if test "x$HAVE_ICONV" != "x"; then
 	AC_DEFINE_UNQUOTED([HAVE_ICONV], [$HAVE_ICONV], [Defined if libiconv headers and library are present])
 fi

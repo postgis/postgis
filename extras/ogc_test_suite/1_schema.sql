@@ -65,7 +65,7 @@
 --
 --//////////////////////////////////////////////////////////////////////////////
 --
--- Create the neccessary feature and geometry tables(views) and metadata tables
+-- Create the necessary feature and geometry tables(views) and metadata tables
 -- (views) to load and query the "Blue Lake" test data for OpenGIS Simple
 -- Features for SQL (Types and Functions) test.
 --

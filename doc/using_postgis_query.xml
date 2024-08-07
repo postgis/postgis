@@ -652,7 +652,7 @@ PRINCE GEORGE               | 694.37554369147
 
 			<para>This query takes a while, because every road in the table is
 			summarized into the final result (about 250K roads for the
-			example table). For smaller datsets (several thousand
+			example table). For smaller datasets (several thousand
 			records on several hundred) the response can be very fast.</para>
 		  </answer>
 		</qandaentry>

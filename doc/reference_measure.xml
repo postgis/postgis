@@ -835,7 +835,7 @@ The current implementation supports only vertices as the discrete locations. Thi
 		</note>
 		<note>
 			<para>
-The smaller densifyFrac we specify, the more acurate Fréchet distance we get. But, the computation time and the memory usage increase with the square of the number of subsegments.
+The smaller densifyFrac we specify, the more accurate Fréchet distance we get. But, the computation time and the memory usage increase with the square of the number of subsegments.
 			</para>
 		</note>
 		<para>Performed by the GEOS module.</para>
@@ -1608,7 +1608,7 @@ SELECT ST_3DMaxDistance(
             </listitem>
             <listitem>
                 <para>
-                    No vertex is closer than <varname>e</varname> to a line segement of which it is not an endpoint.
+                    No vertex is closer than <varname>e</varname> to a line segment of which it is not an endpoint.
                 </para>
             </listitem>
         </itemizedlist>

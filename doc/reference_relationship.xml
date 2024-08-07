@@ -753,7 +753,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
     </informaltable>
 
     <para>To determine a list of roads that cross a highway, use a query
-    similiar to:</para>
+    similar to:</para>
 
     <para><informalexample>
       <programlisting>SELECT roads.id
@@ -1483,7 +1483,7 @@ FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
       <note><para>It is better to use a named relationship function if available,
             since they automatically use a spatial index where one exists.
             Also, they may implement performance optimizations which are not available
-            with full relate evalation.
+            with full relate evaluation.
                 </para></note>
 
       <para><emphasis role="bold">Variant 2:</emphasis> Returns the DE-9IM matrix string for the

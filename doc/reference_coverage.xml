@@ -142,7 +142,7 @@ SELECT true = ALL (
 
       <para>A window function which simplifies the edges of polygons in a polygonal coverage.
       The simplification preserves the coverage topology.
-      This means the simplified output polygons are consisent along shared edges, and still form a valid coverage.
+      This means the simplified output polygons are consistent along shared edges, and still form a valid coverage.
       </para>
 
       <para>The simplification uses a variant of the <link xlink:href="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam–Whyatt algorithm</link>.

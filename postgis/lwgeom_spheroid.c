@@ -102,7 +102,7 @@ Datum ellipsoid_in(PG_FUNCTION_ARGS)
 
 	if (nitems != 3)
 	{
-		elog(ERROR,"SPHEROID parser - couldnt parse the spheroid");
+		elog(ERROR,"SPHEROID parser - couldn't parse the spheroid");
 		pfree(sphere);
 		PG_RETURN_NULL();
 	}
@@ -441,7 +441,7 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
  *
  *  Parts taken from PROJ - geodetic_to_geocentric() (for calculating Rn)
  *
- *  remember that lat1/long1/lat2/long2 are comming in a *RADIANS* not degrees.
+ *  remember that lat1/long1/lat2/long2 are coming in a *RADIANS* not degrees.
  *
  * By Patricia Tozer and Dave Blasby
  *

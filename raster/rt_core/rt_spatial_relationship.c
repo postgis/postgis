@@ -32,7 +32,7 @@
 
 /*
  * Return ES_ERROR if error occurred in function.
- * Paramter aligned returns non-zero if two rasters are aligned
+ * Parameter aligned returns non-zero if two rasters are aligned
  *
  * @param rast1 : the first raster for alignment test
  * @param rast2 : the second raster for alignment test
