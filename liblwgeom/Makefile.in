@@ -134,7 +134,8 @@ SA_OBJS = \
 	lwchaikins.o \
 	lwmval.o \
 	lwkmeans.o \
-	varint.o
+	varint.o \
+	lwgeom_remove_irrelevant_points_for_view_helpers.o
 
 NM_OBJS = \
 	lwspheroid.o
@@ -177,7 +178,8 @@ SA_HEADERS = \
 	measures3d.h \
 	measures.h \
 	stringbuffer.h \
-	varint.h
+	varint.h \
+	lwgeom_remove_irrelevant_points_for_view_helpers.h
 
 all: liblwgeom.la
 
