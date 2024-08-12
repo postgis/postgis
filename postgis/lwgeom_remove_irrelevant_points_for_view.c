@@ -39,17 +39,12 @@
 PG_FUNCTION_INFO_V1(ST_RemoveIrrelevantPointsForView);
 Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 
-	unsigned int i, j, iw, jw;
-	bool cartesian_hint;
-
-	// gserialized logic see for example in /postgis/lwgeom_functions_basic.c,
-	// type definitions see /liblwgeom/liblwgeom.h(.in)
-
 	GSERIALIZED *serialized_in;
 	GSERIALIZED *serialized_out;
 
 	LWGEOM *geom;
 	GBOX *bbox;
+	bool cartesian_hint;
 
 	// geom input check
 	if (PG_GETARG_POINTER(0) == NULL) {
@@ -109,103 +104,8 @@ Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 		PG_RETURN_POINTER(serialized_in);
 	}
 
-	if (geom->type == LINETYPE) {
-
-		LWLINE* line = (LWLINE*)geom;
-		removePoints(line->points, bbox, false, cartesian_hint);
-	}
-
-	if (geom->type == MULTILINETYPE) {
-
-		LWMLINE* mline = (LWMLINE*)geom;
-		iw = 0;
-		for (i=0; i<mline->ngeoms; i++) {
-			LWLINE* line = mline->geoms[i];
-			removePoints(line->points, bbox, false, cartesian_hint);
-
-			if (line->points->npoints) {
-				// keep (reduced) line
-				mline->geoms[iw++] = line;
-			}
-			else {
-				// discard current line
-				lwfree(line);
-			}
-		}
-		mline->ngeoms = iw;
-	}
-
-	if (geom->type == POLYGONTYPE) {
-
-		LWPOLY* polygon = (LWPOLY*)geom;
-		iw = 0;
-		for (i=0; i<polygon->nrings; i++) {
-			removePoints(polygon->rings[i], bbox, true, cartesian_hint);
-
-			if (polygon->rings[i]->npoints) {
-				// keep (reduced) ring
-				polygon->rings[iw++] = polygon->rings[i];
-			}
-			else {
-				if (!i) {
-					// exterior ring outside, free and skip all rings
-					unsigned int k;
-					for (k=0; k<polygon->nrings; k++) {
-						lwfree(polygon->rings[k]);
-					}
-					break;
-				}
-				else {
-					// free and remove current interior ring
-					lwfree(polygon->rings[i]);
-				}
-			}
-		}
-		polygon->nrings = iw;
-	}
-
-	if (geom->type == MULTIPOLYGONTYPE) {
-
-		LWMPOLY* mpolygon = (LWMPOLY*)geom;
-		jw = 0;
-		for (j=0; j<mpolygon->ngeoms; j++) {
-
-			LWPOLY* polygon = mpolygon->geoms[j];
-			iw = 0;
-			for (i=0; i<polygon->nrings; i++) {
-				removePoints(polygon->rings[i], bbox, true, cartesian_hint);
-
-				if (polygon->rings[i]->npoints) {
-					// keep (reduced) ring
-					polygon->rings[iw++] = polygon->rings[i];
-				}
-				else {
-					if (!i) {
-						// exterior ring outside, free and skip all rings
-						unsigned int k;
-						for (k=0; k<polygon->nrings; k++) {
-							lwfree(polygon->rings[k]);
-						}
-						break;
-					}
-					else {
-						// free and remove current interior ring
-						lwfree(polygon->rings[i]);
-					}
-				}
-			}
-			polygon->nrings = iw;
-
-			if (iw) {
-				mpolygon->geoms[jw++] = polygon;
-			}
-			else {
-				// free and remove polygon from multipolygon
-				lwfree(polygon);
-			}
-		}
-		mpolygon->ngeoms = jw;
-	}
+	// now reduce points if possible
+	lwgeom_remove_irrelevant_points_for_view(geom, bbox, cartesian_hint);
 
 	// recompute bbox if computed previously (may result in NULL)
 	lwgeom_drop_bbox(geom);

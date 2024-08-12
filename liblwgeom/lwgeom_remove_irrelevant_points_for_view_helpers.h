@@ -25,6 +25,4 @@
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"
 
-int encodeToBits(double value, double min, double max);
-int encodeToBitsStraight(double xa, double ya, double xb, double yb, double xmin, double ymin, double xmax, double ymax, int straightPosition);
-void removePoints(POINTARRAY *points, GBOX *bounds, bool closed, bool cartesian_hint);
+void lwgeom_remove_irrelevant_points_for_view(LWGEOM *geom, GBOX *bbox, bool cartesian_hint);
