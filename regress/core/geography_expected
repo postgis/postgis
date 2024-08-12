@@ -66,4 +66,4 @@ lrs_llp_2|0.00
 lrs_llp_3|1.00
 ERROR:  geography_line_locate_point: 2st arg is not a point
 lrs_substr_1|LINESTRING(9.28 23.25,18.97 25.93)
-lrs_sl_1|LINESTRING(25 40,25 42.79)
+lrs_sl_1|LINESTRING(25 42.79,25 40)

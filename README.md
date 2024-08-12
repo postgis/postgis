@@ -4,8 +4,8 @@
 | **Debbie** | **Winnie** | **Dronie** |
 | ---------  | ---------- | ---------  |
 | [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_trunk)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_trunk/) | [![Build Status](https://winnie.postgis.net/buildStatus/icon?job=PostGIS_trunk)](https://winnie.postgis.net/view/PostGIS/job/PostGIS_trunk/) | [![Build Status](https://dronie.osgeo.org/api/badges/postgis/postgis/status.svg?branch=master)](https://dronie.osgeo.org/postgis/postgis?branch=master) ||
-| **Bessie** | **Bessie32** | **Cirrus-CI** |
-|  [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run%2Flabel%3Dbessie)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie/) |  [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run%2Flabel%3Dbessie32)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie32/) |  [![Build Status](https://api.cirrus-ci.com/github/postgis/postgis.svg?branch=master)](http://cirrus-ci.com/github/postgis/postgis) |
+| **Bessie** | **Bessie32** |
+|  [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run%2Flabel%3Dbessie)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie/) |  [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run%2Flabel%3Dbessie32)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie32/) |
 | **Berrie** | **Berrie64** |
 |  [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=berrie&build=last:${params.reference=refs/heads/master})](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie/) |  [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=berrie64&build=last:${params.reference=refs/heads/master})](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie64/) | ||
 | **GitHub** | **Woodie** | **GitLab**

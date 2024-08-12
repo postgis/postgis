@@ -37,8 +37,10 @@ Andreas Schild (German Team)
   - #5659, ST_DFullyWithin behaviour has changed to
            be ST_Contains(ST_Buffer(A, R), B) (Paul Ramsey)
   - Remove the WFS_locks extra package. (Paul Ramsey)
+  - #5747, GH-776, ST_Length: Return 0 for CurvePolygon (Dan Baston)
 
 * Deprecated signatures *
+
   - GH-761, ST_StraightSkeleton => CG_StraightSkeleton (Loïc Bartoletti)
   - GT-189, All SFCGAL functions now use the prefix CG_, with the old onesusing
             ST_ being deprecated. (Loïc Bartoletti)
@@ -73,6 +75,7 @@ Andreas Schild (German Team)
 
 * Enhancements *
 
+  - #5550, Fix upgrades from 2.x in sandboxed systems (Sandro Santilli)
   - #3587, postgis_topology: faster load of big lines in topologies (Sandro Santilli)
   - #5670, postgis_topology: faster ST_CreateTopoGeo (Sandro Santilli)
   - #5531, documentation format upgraded to DocBook 5 (Sandro Santilli)

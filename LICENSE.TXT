@@ -37,6 +37,8 @@ These are under a BSD-3-Clause license - refer to doc/xsl/LICENSE file
 
 -- liblwgeom/lookup3.c is released under Public Domain by Bob Jenkins, May 2006.
 
+-- extensions/address_goecoder is released under MIT License by Stephen Woodbridge & Walter Bruce Sinclair, 2006-2013
+
 -- deps/ryu (see LICENSE in folder) is released under the Apache 2.0 license;
 alternatively, in can be used under the Boost 1.0 license. Copyrighted by Ulf
 Adams and contributors.

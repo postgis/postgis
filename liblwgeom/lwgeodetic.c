@@ -2088,13 +2088,13 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	type2 = lwgeom2->type;
 
 	/* Make sure we have boxes */
-	if ( lwgeom1->bbox )
+	if ( FLAGS_GET_GEODETIC(lwgeom1->flags) && lwgeom1->bbox )
 		gbox1 = *(lwgeom1->bbox);
 	else
 		lwgeom_calculate_gbox_geodetic(lwgeom1, &gbox1);
 
 	/* Make sure we have boxes */
-	if ( lwgeom2->bbox )
+	if ( FLAGS_GET_GEODETIC(lwgeom2->flags) && lwgeom2->bbox )
 		gbox2 = *(lwgeom2->bbox);
 	else
 		lwgeom_calculate_gbox_geodetic(lwgeom2, &gbox2);
@@ -3400,7 +3400,14 @@ edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const P
 	/* Are A-plane and B-plane basically the same? */
 	ab_dot = dot_product(&AN, &BN);
 
-	if ( FP_EQUALS(fabs(ab_dot), 1.0) )
+	/*
+	* https://trac.osgeo.org/postgis/ticket/5765
+	* Failure because the colinearity check was
+	* triggering due to an overly loose equality
+	* check here.
+	* if ( FP_EQUALS(fabs(ab_dot), 1.0) )
+	*/
+	if ( 1.0 - fabs(ab_dot) <= 10e-16 )
 	{
 		/* Co-linear case */
 		if ( point_in_cone(A1, A2, B1) || point_in_cone(A1, A2, B2) ||

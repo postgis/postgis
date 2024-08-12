@@ -40,3 +40,9 @@
 #5403.0|1
 #5548.0|1
 #5548.1|face without edges|1|
+#5766.1|no bbox|("face has wrong mbr",0,)
+#5766.1|overlapping bbox|("face has wrong mbr",0,)
+#5766.1|disjoint bbox|
+#5766.2|no bbox|("face has wrong mbr",0,)
+#5766.2|overlapping bbox|("face has wrong mbr",0,)
+#5766.2|disjoint bbox|

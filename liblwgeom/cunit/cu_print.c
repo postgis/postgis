@@ -204,6 +204,11 @@ test_lwpoint_to_latlon_format_orders(void)
 static void
 test_lwpoint_to_latlon_optional_format(void)
 {
+	test_lwpoint_to_latlon_assert_format("POINT(21.9999999 1)",
+		"D-M-S-C", "1-0-0-N 22-0-0-E");
+	test_lwpoint_to_latlon_assert_format("POINT(21.99999999999 1)",
+		"D-M-S-C", "1-0-0-N 22-0-0-E");
+
 	test_lwpoint_to_latlon_assert_format("POINT(-45.4545 -12.34567)", "DD.DDD", "-12.346 -45.455");
 	test_lwpoint_to_latlon_assert_format("POINT(-45.4545 -12.34567)", "DD.DDD C", "12.346 S 45.455 W");
 	test_lwpoint_to_latlon_assert_format(

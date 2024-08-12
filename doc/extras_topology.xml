@@ -1448,7 +1448,9 @@ An existing edge may be split by the snapped point.
 			<refnamediv>
 				<refname>TopoGeo_AddLineString</refname>
 
-				<refpurpose>Adds a linestring to an existing topology using a tolerance and possibly splitting existing edges/faces. Returns edge identifiers.</refpurpose>
+				<refpurpose>
+Adds a linestring to an existing topology using a tolerance and possibly splitting existing edges/faces.
+				</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -1466,7 +1468,9 @@ An existing edge may be split by the snapped point.
                 <title>Description</title>
 
                 <para>
-Adds a linestring to an existing topology and returns a set of edge identifiers forming it up.
+Adds a linestring to an existing topology and returns a set of signed edge identifiers forming it up
+(negative identifies mean the edge goes in the opposite direction of
+the input linestring).
 The given line will snap to existing nodes or edges within given tolerance.
 Existing edges and faces may be split by the line.  New nodes and faces may be added.
                 </para>
@@ -1478,6 +1482,7 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+                <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 added support for returning signed identifier.</para>
 			</refsection>
 
 
