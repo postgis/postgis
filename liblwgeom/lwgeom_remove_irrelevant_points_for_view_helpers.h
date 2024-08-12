@@ -25,4 +25,9 @@
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"
 
+/**
+ * remove points that are irrelevant for rendering the geometry within
+ * a view specified by rectangular bounds.
+ * 2D-(MULTI)POLYGONs and (MULTI)LINESTRINGs are evaluated, others keep untouched.
+ */
 void lwgeom_remove_irrelevant_points_for_view(LWGEOM *geom, GBOX *bbox, bool cartesian_hint);

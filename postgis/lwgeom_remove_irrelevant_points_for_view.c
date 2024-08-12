@@ -44,7 +44,7 @@ Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 
 	LWGEOM *geom;
 	GBOX *bbox;
-	bool cartesian_hint;
+	bool cartesian_hint = false;
 
 	// geom input check
 	if (PG_GETARG_POINTER(0) == NULL) {
@@ -62,12 +62,7 @@ Datum ST_RemoveIrrelevantPointsForView(PG_FUNCTION_ARGS) {
 	// get (optional) cartesian_hint flag for advanced optimizations
 	// that assume the the coordinates can be seen as coordinates
 	// to be rendered in a cartesian coordinate system.
-	if (PG_NARGS() > 2 && (!PG_ARGISNULL(2))) {
-		cartesian_hint = PG_GETARG_BOOL(2);
-	}
-	else {
-		cartesian_hint = false;
-	}
+	cartesian_hint = (PG_NARGS() > 2 && !PG_ARGISNULL(2)) ? PG_GETARG_BOOL(2) : false;
 
 	// type check (only polygon and line types are supported yet)
 	if (gserialized_get_type(serialized_in) != POLYGONTYPE &&
