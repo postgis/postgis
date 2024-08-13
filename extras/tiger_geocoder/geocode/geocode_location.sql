@@ -24,7 +24,7 @@ BEGIN
         zip.zip as zip,
         ST_Centroid(zcta5.the_geom) as address_geom,
         stusps as state,
-        100::integer + coalesce(levenshtein_ignore_case(coalesce(zip.city), parsed.location),0) as in_rating
+        100::integer + coalesce( tiger.levenshtein_ignore_case(coalesce(zip.city), parsed.location),0) as in_rating
     FROM
       zip_lookup_base zip
       JOIN zcta5 ON (zip.zip = zcta5.zcta5ce AND zip.statefp = zcta5.statefp)
@@ -32,7 +32,7 @@ BEGIN
     WHERE
       parsed.zip = zip.zip OR
       (soundex(zip.city) = soundex(parsed.location) and zip.statefp = in_statefp)
-    ORDER BY levenshtein_ignore_case(coalesce(zip.city), parsed.location), zip.zip
+    ORDER BY tiger.levenshtein_ignore_case(coalesce(zip.city), parsed.location), zip.zip
   LOOP
     ADDY.location := result.place;
     ADDY.stateAbbrev := result.state;
@@ -58,11 +58,11 @@ BEGIN
        || ' pl.name as place, '
        || ' state.stusps as stateAbbrev, '
        || ' ST_Centroid(pl.the_geom) as address_geom, '
-       || ' 100::integer + levenshtein_ignore_case(coalesce(pl.name), ' || quote_literal(coalesce(parsed.location,'')) || ') as in_rating '
+       || ' 100::integer + tiger.levenshtein_ignore_case(coalesce(pl.name), ' || quote_literal(coalesce(parsed.location,'')) || ') as in_rating '
        || ' FROM (SELECT * FROM place WHERE statefp = ' ||  quote_literal(coalesce(in_statefp,'')) || ' ' || COALESCE(' AND ST_Intersects(' || quote_literal(restrict_geom::text) || '::geometry, the_geom)', '') || ') AS pl '
        || ' INNER JOIN state ON(pl.statefp = state.statefp)'
        || ' WHERE soundex(pl.name) = soundex(' || quote_literal(coalesce(parsed.location,'')) || ') and pl.statefp = ' || quote_literal(COALESCE(in_statefp,''))
-       || ' ORDER BY levenshtein_ignore_case(coalesce(pl.name), ' || quote_literal(coalesce(parsed.location,'')) || ');'
+       || ' ORDER BY tiger.levenshtein_ignore_case(coalesce(pl.name), ' || quote_literal(coalesce(parsed.location,'')) || ');'
        ;
 
   IF var_debug THEN

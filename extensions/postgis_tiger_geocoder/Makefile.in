@@ -1,5 +1,6 @@
 include @srcdir@/../upgradeable_versions.mk
 
+POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 EXTENSION    = postgis_tiger_geocoder
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = 2011.@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
@@ -50,8 +51,15 @@ expected:
 sql:
 	mkdir -p $@
 
+
+## PostgreSQL < 16 doesn't understand new @extschema:extname@ syntax, so strip it
+ifeq ($(shell expr "$(POSTGIS_PGSQL_VERSION)" "<" 160),1)
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
+	$(PERL) -lpe "s/\@extschema:[a-z]+\@\./ /g" < $< > $@
+else
+ sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
 	cp $< $@
+endif
 
 expected/test-normalize_address.out: sql_bits/test_tuples_only_unaligned.sql.in ../../extras/tiger_geocoder/regress/normalize_address_regress | expected
 	cat $^ > $@
@@ -66,10 +74,15 @@ sql/test-normalize_address.sql: sql_bits/test_tuples_only_unaligned.sql.in ../..
 sql/test-upgrade.sql: | sql
 	echo 'ALTER EXTENSION ${EXTENSION} UPDATE TO "ANY"; ALTER EXTENSION ${EXTENSION} UPDATE TO "$(EXTVERSION)"' > $@
 
+## no_relocate clause is only availabe in PostgreSQL 16 and above, so strip it for lower
+ifeq ($(shell expr "$(POSTGIS_PGSQL_VERSION)" "<" 160),1)
 %.control: %.control.in Makefile
-	cat $< \
-		| $(PERL) -lpe "s'@EXTVERSION@'$(EXTVERSION)'g" \
-		> $@
+	$(PERL) -lpe 's/^no_relocate.*//g; s/\@EXTVERSION\@/$(EXTVERSION)/g'  < "$<" > "$@"
+else
+%.control: %.control.in Makefile
+	$(PERL) -lpe "s'@EXTVERSION@'$(EXTVERSION)'g" \
+		  < "$<" > "$@"
+endif
 
 expected/test-upgrade.out: sql/test-upgrade.sql | expected
 	cp $< $@

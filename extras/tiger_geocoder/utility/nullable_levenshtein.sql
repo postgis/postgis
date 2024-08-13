@@ -20,7 +20,7 @@ BEGIN
   END IF;
 
   IF $2 IS NOT NULL AND $2 != '' THEN
-    result := levenshtein_ignore_case(given_string, $2);
+    result := @extschema:fuzzystrmatch@.levenshtein_ignore_case_ignore_case(given_string, $2);
   END IF;
 
   RETURN result;

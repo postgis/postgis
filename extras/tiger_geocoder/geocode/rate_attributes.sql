@@ -14,7 +14,7 @@ DECLARE
   var_verbose BOOLEAN := FALSE;
 BEGIN
   IF locationA IS NOT NULL AND locationB IS NOT NULL THEN
-    result := levenshtein_ignore_case(locationA, locationB);
+    result := tiger.levenshtein_ignore_case(locationA, locationB);
   ELSE
     IF var_verbose THEN
       RAISE NOTICE 'rate_attributes() - Location names cannot be null!';
@@ -41,7 +41,7 @@ DECLARE
   typeWeight INTEGER := 5;
   var_verbose BOOLEAN := false;
 BEGIN
-  result := result + levenshtein_ignore_case(cull_null($1), cull_null($2)) * directionWeight;
+  result := result + tiger.levenshtein_ignore_case(cull_null($1), cull_null($2)) * directionWeight;
   IF var_verbose THEN
     RAISE NOTICE 'streetNameA: %, streetNameB: %', streetNameA, streetNameB;
   END IF;
@@ -52,15 +52,15 @@ BEGIN
         IF prequalabr IS NOT NULL THEN
             -- If the reference address (streetNameB) has a prequalabr streetNameA (prequalabr) - note: streetNameB usually comes thru without prequalabr
             -- and the input street (streetNameA) is lacking the prequal -- only penalize a little
-            result := (result + levenshtein_ignore_case( trim( trim( lower(streetNameA),lower(prequalabr) ) ), trim( trim( lower(streetNameB),lower(prequalabr) ) ) )*nameWeight*0.75 + levenshtein_ignore_case(trim(streetNameA),prequalabr || ' ' ||  streetNameB) * nameWeight*0.25)::integer;
+            result := (result + tiger.levenshtein_ignore_case( trim( trim( lower(streetNameA),lower(prequalabr) ) ), trim( trim( lower(streetNameB),lower(prequalabr) ) ) )*nameWeight*0.75 + tiger.levenshtein_ignore_case(trim(streetNameA),prequalabr || ' ' ||  streetNameB) * nameWeight*0.25)::integer;
         ELSE
-            result := result + levenshtein_ignore_case(streetNameA, streetNameB) * nameWeight;
+            result := result + tiger.levenshtein_ignore_case(streetNameA, streetNameB) * nameWeight;
         END IF;
     ELSE
     -- Penalize for numeric streets if one is completely numeric and the other is not
     -- This is to minimize on highways like 3A being matched with numbered streets since streets are usually number followed by 2 characters e.g nth ave and highways are just number with optional letter for name
         IF  (streetNameB ~ E'[a-zA-Z]{2,10}' AND NOT (streetNameA ~ E'[a-zA-Z]{2,10}') ) OR (streetNameA ~ E'[a-zA-Z]{2,10}' AND NOT (streetNameB ~ E'[a-zA-Z]{2,10}') ) THEN
-            result := result + levenshtein_ignore_case(streetNameA, streetNameB) * nameWeight;
+            result := result + tiger.levenshtein_ignore_case(streetNameA, streetNameB) * nameWeight;
         END IF;
     END IF;
   ELSE
@@ -69,9 +69,9 @@ BEGIN
     END IF;
     RETURN NULL;
   END IF;
-  result := result + levenshtein_ignore_case(cull_null(streetTypeA), cull_null(streetTypeB)) *
+  result := result + tiger.levenshtein_ignore_case(cull_null(streetTypeA), cull_null(streetTypeB)) *
       typeWeight;
-  result := result + levenshtein_ignore_case(cull_null(dirsA), cull_null(dirsB)) *
+  result := result + tiger.levenshtein_ignore_case(cull_null(dirsA), cull_null(dirsB)) *
       directionWeight;
   return result;
 END;

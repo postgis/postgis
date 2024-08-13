@@ -19,6 +19,9 @@ Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)
   - GT-252, ST_NumGeometries/ST_GeometryN treat TIN and PolyhedralSurface as unitary geometries,
     use ST_NumPatches/ST_PatchN for patch access (Loïc Bartoletti)
   - #3110, GT-242 [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)
+  - #5359, #5897, GT-260 [tiger_geocoder] Use @extschema:extension@ for PG >= 16
+    to schema qualify dependent extensions, switch to use typmod for tiger tables
+    (Regina Obe)
 
 * Deprecated / Removed signatures * 
 

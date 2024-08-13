@@ -802,7 +802,7 @@ INSERT INTO place_lookup
     JOIN state_lookup sl ON (pl.state = lpad(sl.st_code,2,'0'))
   GROUP BY pl.state, sl.abbrev, pl.placefp, pl.name;
 **/
-CREATE INDEX place_lookup_name_idx ON place_lookup (soundex(name));
+CREATE INDEX place_lookup_name_idx ON place_lookup ( @extschema:fuzzystrmatch@.soundex(name) );
 CREATE INDEX place_lookup_state_idx ON place_lookup (state);
 
 DROP TABLE IF EXISTS tiger.county_lookup;
@@ -826,7 +826,7 @@ INSERT INTO county_lookup
     JOIN state_lookup sl ON (co.state = lpad(sl.st_code,2,'0'))
   GROUP BY co.state, sl.abbrev, co.county, co.name;
 **/
-CREATE INDEX county_lookup_name_idx ON county_lookup (soundex(name));
+CREATE INDEX county_lookup_name_idx ON county_lookup ( @extschema:fuzzystrmatch@.soundex(name) );
 CREATE INDEX county_lookup_state_idx ON county_lookup (state);
 
 DROP TABLE IF EXISTS tiger.countysub_lookup;
@@ -855,7 +855,7 @@ INSERT INTO countysub_lookup
     JOIN county_lookup cl ON (cs.state = lpad(cl.st_code,2,'0') AND cs.county = cl.co_code)
   GROUP BY cs.state, sl.abbrev, cs.county, cl.name, cs.cousubfp, cs.name;
 **/
-CREATE INDEX countysub_lookup_name_idx ON countysub_lookup (soundex(name));
+CREATE INDEX countysub_lookup_name_idx ON countysub_lookup ( @extschema:fuzzystrmatch@.soundex(name) );
 CREATE INDEX countysub_lookup_state_idx ON countysub_lookup (state);
 
 DROP TABLE IF EXISTS tiger.zip_lookup_all;
@@ -982,12 +982,9 @@ CREATE TABLE county
   awater  double precision,
   intptlat character varying(11),
   intptlon character varying(12),
-  the_geom geometry,
+  the_geom @extschema:postgis@.geometry(MULTIPOLYGON,4269),
   CONSTRAINT uidx_county_gid UNIQUE (gid),
-  CONSTRAINT pk_tiger_county PRIMARY KEY (cntyidfp),
-  CONSTRAINT enforce_dims_geom CHECK (st_ndims(the_geom) = 2),
-  CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
-  CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4269)
+  CONSTRAINT pk_tiger_county PRIMARY KEY (cntyidfp)
 );
 CREATE INDEX idx_tiger_county ON county USING btree (countyfp);
 
@@ -1008,13 +1005,10 @@ CREATE TABLE state
   awater bigint,
   intptlat character varying(11),
   intptlon character varying(12),
-  the_geom geometry,
+  the_geom @extschema:postgis@.geometry(MULTIPOLYGON,4269),
   CONSTRAINT uidx_tiger_state_stusps UNIQUE (stusps),
   CONSTRAINT uidx_tiger_state_gid UNIQUE (gid),
-  CONSTRAINT pk_tiger_state PRIMARY KEY (statefp),
-  CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
-  CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
-  CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269)
+  CONSTRAINT pk_tiger_state PRIMARY KEY (statefp)
 );
 CREATE INDEX idx_tiger_state_the_geom_gist ON state USING gist(the_geom);
 
@@ -1039,11 +1033,8 @@ CREATE TABLE place
   awater bigint,
   intptlat character varying(11),
   intptlon character varying(12),
-  the_geom geometry,
-  CONSTRAINT uidx_tiger_place_gid UNIQUE (gid),
-  CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
-  CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
-  CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269)
+  the_geom @extschema:postgis@.geometry(MULTIPOLYGON,4269),
+  CONSTRAINT uidx_tiger_place_gid UNIQUE (gid)
 );
 CREATE INDEX tiger_place_the_geom_gist ON place USING gist(the_geom);
 
@@ -1088,11 +1079,8 @@ CREATE TABLE cousub
   awater numeric(14),
   intptlat character varying(11),
   intptlon character varying(12),
-  the_geom geometry,
-  CONSTRAINT uidx_cousub_gid UNIQUE (gid),
-  CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
-  CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
-  CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269)
+  the_geom @extschema:postgis@.geometry(MULTIPOLYGON,4269),
+  CONSTRAINT uidx_cousub_gid UNIQUE (gid)
 );
 
 CREATE INDEX tige_cousub_the_geom_gist ON cousub USING gist(the_geom);
@@ -1132,10 +1120,7 @@ CREATE TABLE edges
   offsetr character varying(1),
   tnidf numeric(10),
   tnidt numeric(10),
-  the_geom geometry,
-  CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
-  CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'MULTILINESTRING'::text OR the_geom IS NULL),
-  CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269)
+  the_geom @extschema:postgis@.geometry(MULTILINESTRING,4269)
 );
 CREATE INDEX idx_edges_tlid ON edges USING btree(tlid);
 CREATE INDEX idx_tiger_edges_countyfp ON edges USING btree(countyfp);
@@ -1168,10 +1153,7 @@ CREATE TABLE addrfeat
   rtotyp character varying(1),
   offsetl character varying(1),
   offsetr character varying(1),
-  the_geom geometry,
-  CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
-  CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'LINESTRING'::text OR the_geom IS NULL),
-  CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269)
+  the_geom @extschema:postgis@.geometry(LINESTRING,4329)
 );
 CREATE INDEX idx_addrfeat_geom_gist ON addrfeat USING gist(the_geom );
 CREATE INDEX idx_addrfeat_tlid ON addrfeat USING btree(tlid);
@@ -1250,10 +1232,7 @@ gid serial NOT NULL PRIMARY KEY,
   atotal double precision,
   intptlat varchar(11),
   intptlon varchar(12),
-  the_geom geometry,
-  CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
-  CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
-  CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269)
+  the_geom @extschema:postgis@.geometry(MULTIPOLYGON,4269)
 );
 CREATE INDEX idx_tiger_faces_tfid ON faces USING btree (tfid);
 CREATE INDEX idx_tiger_faces_countyfp ON faces USING btree(countyfp);
@@ -1284,7 +1263,7 @@ CREATE TABLE featnames
   CONSTRAINT featnames_pkey PRIMARY KEY (gid)
 );
 ALTER TABLE featnames ADD COLUMN statefp character varying(2);
-CREATE INDEX idx_tiger_featnames_snd_name ON featnames USING btree (soundex(name));
+CREATE INDEX idx_tiger_featnames_snd_name ON featnames USING btree ( @extschema:fuzzystrmatch@.soundex(name) );
 CREATE INDEX idx_tiger_featnames_lname ON featnames USING btree (lower(name));
 CREATE INDEX idx_tiger_featnames_tlid_statefp ON featnames USING btree (tlid,statefp);
 
@@ -1324,10 +1303,6 @@ CREATE TABLE zcta5
   intptlat character varying(11),
   intptlon character varying(12),
   partflg character varying(1),
-  the_geom geometry,
-  CONSTRAINT uidx_tiger_zcta5_gid UNIQUE (gid),
-  CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
-  CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
-  CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269),
+  the_geom @extschema:postgis@.geometry(MULTIPOLYGON, 4269),
   CONSTRAINT pk_tiger_zcta5_zcta5ce PRIMARY KEY (zcta5ce,statefp)
  );

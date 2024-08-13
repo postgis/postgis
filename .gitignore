@@ -27,6 +27,7 @@ doc/html/postgis-*
 doc/images
 doc/html/images/generator
 doc/html/images/Makefile
+regression.out
 
 # PNG images under doc/html/images
 # should be either symlinks or generated

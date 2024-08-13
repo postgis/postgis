@@ -5,3 +5,4 @@ relocatable = false
 schema = tiger
 requires = 'postgis,fuzzystrmatch'
 superuser= false
+no_relocate = 'postgis,fuzzystrmatch'

@@ -22,7 +22,7 @@ var_temp := tiger.SetSearchPathForInstall('tiger');
 IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND column_name = 'tract_id' AND table_name = 'tract')  THEN
 	-- census block group/tracts parent tables not created yet or an older version -- drop old if not in use, create new structure
 	DROP TABLE IF EXISTS tiger.tract;
-	CREATE TABLE tract
+	CREATE TABLE tiger.tract
 	(
 	  gid serial NOT NULL,
 	  statefp varchar(2),
@@ -44,7 +44,7 @@ IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_sche
 	);
 
 	DROP TABLE IF EXISTS tiger.tabblock;
-	CREATE TABLE tabblock
+	CREATE TABLE tiger.tabblock
 	(
 	  gid serial NOT NULL,
 	  statefp varchar(2),
@@ -68,7 +68,7 @@ IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_sche
 	);
 
 	DROP TABLE IF EXISTS tiger.bg;
-	CREATE TABLE bg
+	CREATE TABLE tiger.bg
 	(
 	  gid serial NOT NULL,
 	  statefp varchar(2),
