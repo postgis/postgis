@@ -23,6 +23,15 @@
  *
  **********************************************************************/
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
+#if defined(__STDC_VERSION__)
+    #pragma message ("__STDC_VERSION__ is " TOSTRING(__STDC_VERSION__))
+#else
+    #pragma message ("__STDC_VERSION__ is not defined")
+#endif
+
 #if POSTGIS_GEOS_VERSION < 31300
 /* See https://github.com/libgeos/geos/pull/1097 */
 typedef void (*GEOSMessageHandler)(const char *fmt, ...) __attribute__ (( format(printf, 1, 2) ));
