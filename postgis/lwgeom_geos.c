@@ -88,6 +88,22 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 ** Prototypes end
 */
 
+PG_FUNCTION_INFO_V1(postgis_geos_version);
+Datum postgis_geos_version(PG_FUNCTION_ARGS)
+{
+    const char *ver = lwgeom_geos_version();
+    text *result = cstring_to_text(ver);
+    PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(postgis_geos_compiled_version);
+Datum postgis_geos_compiled_version(PG_FUNCTION_ARGS)
+{
+    const char *ver = lwgeom_geos_compiled_version();
+    text *result = cstring_to_text(ver);
+    PG_RETURN_POINTER(result);
+}
+
 /**
  *  @brief Compute the Hausdorff distance thanks to the corresponding GEOS function
  *  @example ST_HausdorffDistance {@link #hausdorffdistance} - SELECT ST_HausdorffDistance(
