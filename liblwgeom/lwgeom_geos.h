@@ -24,10 +24,8 @@
  **********************************************************************/
 
 #if POSTGIS_GEOS_VERSION < 31300
-#if __STDC_VERSION__ >= 201112L
 /* See https://github.com/libgeos/geos/pull/1097 */
 typedef void (*GEOSMessageHandler)(const char *fmt, ...) __attribute__ (( format(printf, 1, 0) ));
-#endif
 #endif
 
 #include "geos_c.h"
