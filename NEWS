@@ -7,7 +7,7 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
 Many thanks to our translation teams, in particular:
 
 Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)
-Teramoto Ikuhiro (Japanese Team)
+Teramoto Ikuhiro (Japanese Team) 
 Andreas Schild (German Team)
 
 * Breaking Changes *
