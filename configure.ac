@@ -855,11 +855,6 @@ else
 	AC_MSG_ERROR([PostGIS requires GEOS >= $GEOS_MIN_VERSION])
 fi
 
-dnl Turn off attribute warnings for GEOS < 3.13
-if test "$POSTGIS_GEOS_VERSION" -lt "31300"; then
-	_LT_COMPILER_OPTION([if $compiler supports -Wno-suggest-attribute=format], [_cv_nosuggestattribute], [-Wno-suggest-attribute=format], [], [CFLAGS="$CFLAGS -Wno-suggest-attribute=format"], [])
-fi
-
 #
 # MacOS with XCode > 15 now requires rpath entries for
 # libraries like GEOS/Proj that might be flexibly installed
