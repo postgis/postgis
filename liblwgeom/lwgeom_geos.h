@@ -33,8 +33,6 @@ typedef void (*GEOSMessageHandler)(const char *fmt, ...) __attribute__ (( format
 #include "liblwgeom.h"
 #include "lwunionfind.h"
 
-
-
 /*
 ** Public prototypes for GEOS utility functions.
 */

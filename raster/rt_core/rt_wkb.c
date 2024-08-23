@@ -353,7 +353,7 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
 	if (!rast->numBands) {
 		/* Here ptr should have been left to right after last used byte */
 		if (ptr < wkbend) {
-			rtwarn("%" PRIu64 " bytes of WKB remained unparsed", wkbend - ptr);
+			rtwarn("%zu bytes of WKB remained unparsed", wkbend - ptr);
 		}
 		else if (ptr > wkbend) {
 			/* Easier to get a segfault before I guess */

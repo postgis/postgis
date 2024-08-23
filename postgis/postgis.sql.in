@@ -4492,8 +4492,8 @@ CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry, integer)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
--- PostGIS equivalent function: relate(geom1 geometry, geom2 geometry,text)
-CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry,text)
+-- PostGIS equivalent function: relate(geom1 geometry, geom2 geometry, text)
+CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry, text)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','relate_pattern'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE

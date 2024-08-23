@@ -2061,6 +2061,11 @@ extern int gbox_overlaps_2d(const GBOX *g1, const GBOX *g2);
 extern int  gbox_contains_2d(const GBOX *g1, const GBOX *g2);
 
 /**
+* Return #LW_TRUE if the first #GBOX is within the second on the 2d plane, #LW_FALSE otherwise.
+*/
+extern int  gbox_within_2d(const GBOX *g1, const GBOX *g2);
+
+/**
 * Copy the values of original #GBOX into duplicate.
 */
 extern void gbox_duplicate(const GBOX *original, GBOX *duplicate);
