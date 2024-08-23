@@ -12407,10 +12407,10 @@ msgstr ""
 msgid ""
 "Creates a rectangular Polygon giving the extent of a tile in the <link xlink:"
 "href=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ tile system</link>. "
-"The tile is specified by the zoom level Z and the XY index of the tile in the "
-"grid at that level. Can be used to define the tile bounds required by <xref "
-"linkend=\"ST_AsMVTGeom\"/> to convert geometry into the MVT tile coordinate "
-"space."
+"The tile is specified by the zoom level Z and the XY index of the tile in "
+"the grid at that level. Can be used to define the tile bounds required by "
+"<xref linkend=\"ST_AsMVTGeom\"/> to convert geometry into the MVT tile "
+"coordinate space."
 msgstr ""
 
 #. Tag: para
@@ -19369,10 +19369,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"16: Declare that data are lat/lon (e.g srid=4326). Default is to assume "
-"that data are planars. This option is useful for GML 3.1.1 output only, "
-"related to axis order. So if you set it, it will swap the coordinates so "
-"order is lat lon instead of database lon lat."
+"16: Declare that data are lat/lon (e.g srid=4326). Default is to assume that "
+"data are planars. This option is useful for GML 3.1.1 output only, related "
+"to axis order. So if you set it, it will swap the coordinates so order is "
+"lat lon instead of database lon lat."
 msgstr ""
 
 #. Tag: para
@@ -19656,9 +19656,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Converting a <varname>GEOMETRYCOLLECTION</varname> to MARC21/XML formatted in "
-"decimal minutes. The geometries order in the MARC21/XML output correspond to "
-"their order in the collection."
+"Converting a <varname>GEOMETRYCOLLECTION</varname> to MARC21/XML formatted "
+"in decimal minutes. The geometries order in the MARC21/XML output correspond "
+"to their order in the collection."
 msgstr ""
 
 #. Tag: refpurpose
@@ -21044,8 +21044,8 @@ msgid ""
 "The optional third parameter controls the buffer accuracy and style. The "
 "accuracy of circular arcs in the buffer is specified as the number of line "
 "segments used to approximate a quarter circle (default is 8). The buffer "
-"style can be specified by providing a list of blank-separated key=value pairs "
-"as follows:"
+"style can be specified by providing a list of blank-separated key=value "
+"pairs as follows:"
 msgstr ""
 
 #. Tag: para
@@ -31022,7 +31022,8 @@ msgstr ""
 msgid ""
 "It is better to use a named relationship function if available, since they "
 "automatically use a spatial index where one exists. Also, they may implement "
-"performance optimizations which are not available with full relate evaluation."
+"performance optimizations which are not available with full relate "
+"evaluation."
 msgstr ""
 
 #. Tag: para
@@ -32536,8 +32537,8 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Perform surface Tessellation of a polygon or polyhedralsurface and returns as "
-"a TIN or collection of TINS"
+"Perform surface Tessellation of a polygon or polyhedralsurface and returns "
+"as a TIN or collection of TINS"
 msgstr ""
 
 #. Tag: para
