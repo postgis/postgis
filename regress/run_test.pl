@@ -291,10 +291,6 @@ if ( $ENV{'PGIS_REG_TMPDIR'} )
 {
 	$TMPDIR = $ENV{'PGIS_REG_TMPDIR'};
 }
-elsif ( -d "/tmp/" && -w "/tmp/" )
-{
-	$TMPDIR = "/tmp/pgis_reg";
-}
 else
 {
 	$TMPDIR = tempdir( CLEANUP => 0 );
