@@ -584,11 +584,11 @@ if test "x$SUPPORT_POSTGRESQL" = "xyes"; then dnl {
 
   dnl Extract the include flags for the backend (libpgcommon)
   PGSRV_INC=`"$PG_CONFIG" --includedir-server`
-  PGSQL_BE_CPPFLAGS="-I${PGSRV_INC}"
+  PGSQL_BE_CPPFLAGS="-isystem${PGSRV_INC}"
   dnl Add $PGSRV_INC/port/win32 to MinGW build to pick up netdb.h
   case $host in
     *mingw32*)
-      PGSQL_BE_CPPFLAGS="${PGSQL_BE_CPPFLAGS} -I${PGSRV_INC}/port/win32"
+      PGSQL_BE_CPPFLAGS="${PGSQL_BE_CPPFLAGS} -isystem${PGSRV_INC}/port/win32"
       ;;
   esac
 
