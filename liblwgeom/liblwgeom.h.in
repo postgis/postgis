@@ -288,7 +288,7 @@ extern void lwgeom_cancel_interrupt(void);
  * the callback, if you want (see lwgeom_request_interrupt).
  *
  */
-typedef void (lwinterrupt_callback)();
+typedef void (lwinterrupt_callback)(void);
 extern lwinterrupt_callback *lwgeom_register_interrupt_callback(lwinterrupt_callback *);
 
 

@@ -62,7 +62,7 @@ extern postgisConstants *POSTGIS_CONSTANTS;
 
 /* Infer the install location of postgis, and thus the namespace to use
  * when looking up the type name, and cache oids */
-void postgis_initialize_cache();
+void postgis_initialize_cache(void);
 
 /* Useful if postgis_initialize_cache() has been called before.
  * Otherwise it tries to do a bare lookup */
@@ -72,7 +72,7 @@ Oid postgis_oid(postgisType typ);
  * Note that it's length can be up to strlen(schema) + "." + strlen("spatial_ref_sys") + NULL, i.e: 80 bytes
  * Only useful if postgis_initialize_cache has been called before. Otherwise returns "spatial_ref_sys"
  */
-const char *postgis_spatial_ref_sys();
+const char *postgis_spatial_ref_sys(void);
 
 /****************************************************************************************/
 
