@@ -586,7 +586,7 @@ CallerFInfoFunctionCall3(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum
 
     /* Check for null result, since caller is clearly not expecting one */
     if (fcinfo->isnull)
-        elog(ERROR, "function %p returned NULL", (void *) func);
+        elog(ERROR, "function %p returned NULL", (void *)&func);
 
     return result;
 }
