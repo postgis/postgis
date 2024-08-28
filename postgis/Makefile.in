@@ -145,7 +145,7 @@ OBJS=$(PG_OBJS)
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
 # older version of PostGIS, rather than with the static liblwgeom.a
 # supplied with newer versions of PostGIS
-PG_CPPFLAGS += -I@top_srcdir@/liblwgeom -I@top_builddir@/liblwgeom @CFLAGS@ -I@top_srcdir@/libpgcommon $(FLATGEOBUF_INCLUDE) $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) @CPPFLAGS@ @PICFLAGS@
+PG_CPPFLAGS += -I@top_srcdir@/liblwgeom -I@top_builddir@/liblwgeom @CFLAGS@ -I@top_srcdir@/libpgcommon @PGSQL_BE_CPPFLAGS@ $(FLATGEOBUF_INCLUDE) $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) @CPPFLAGS@ @PICFLAGS@
 SHLIB_LINK_F = $(WAYGU_LIB) $(FLATGEOBUF_LIB) ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
 
 # Extra files to remove during 'make clean'
