@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Report the invalid values supplied to clustering functions (Sandro Santilli)
  - Remove the obsolete bounding-box KNN operator from the manual (Regina Obe)
  - Correct street type and unit terminology in the Address Standardizer manual (Mike Taves)
  - Regenerate topology SQL when layer or topology creation changes (Sandro Santilli)
