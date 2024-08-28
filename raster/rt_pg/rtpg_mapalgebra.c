@@ -122,7 +122,7 @@ struct rtpg_nmapalgebra_arg_t {
 	rtpg_nmapalgebra_callback_arg	callback;
 };
 
-static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init() {
+static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init(void) {
 	rtpg_nmapalgebra_arg arg = NULL;
 
 	arg = palloc(sizeof(struct rtpg_nmapalgebra_arg_t));
@@ -2933,7 +2933,7 @@ struct rtpg_clip_arg_t {
 	rtpg_clip_band band;
 };
 
-static rtpg_clip_arg rtpg_clip_arg_init() {
+static rtpg_clip_arg rtpg_clip_arg_init(void) {
 	rtpg_clip_arg arg = NULL;
 
 	arg = palloc(sizeof(struct rtpg_clip_arg_t));
@@ -4014,7 +4014,7 @@ struct rtpg_colormap_arg_t {
 };
 
 static rtpg_colormap_arg
-rtpg_colormap_arg_init() {
+rtpg_colormap_arg_init(void) {
 	rtpg_colormap_arg arg = NULL;
 
 	arg = palloc(sizeof(struct rtpg_colormap_arg_t));
