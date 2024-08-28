@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Report the invalid values supplied to clustering functions (Sandro Santilli)
  - Remove the obsolete bounding-box KNN operator from the manual (Regina Obe)
  - Correct street type and unit terminology in the Address Standardizer manual (Mike Taves)
  - Keep the segmentize regression running until it can be interrupted (Sandro Santilli)
