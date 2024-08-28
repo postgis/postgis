@@ -252,9 +252,9 @@ Datum LWGEOM_getBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS);
 
-void lwpgerror(const char *fmt, ...);
-void lwpgnotice(const char *fmt, ...);
-void lwpgwarning(const char *fmt, ...);
+void lwpgerror(const char *fmt, ...) __attribute (( format(printf, 1, 2) ));
+void lwpgnotice(const char *fmt, ...) __attribute (( format(printf, 1, 2) ));
+void lwpgwarning(const char *fmt, ...) __attribute (( format(printf, 1, 2) ));
 
 Datum CallerFInfoFunctionCall3(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2, Datum arg3);
 

@@ -1525,7 +1525,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
     else
     {
       lwpgwarning("liblwgeom-topo invoked 'getNodeWithinDistance2D' "
-                  "backend callback with limit=%d and no fields",
+                  "backend callback with limit=%ld and no fields",
                   elems_requested);
       appendStringInfo(sql, "*");
     }

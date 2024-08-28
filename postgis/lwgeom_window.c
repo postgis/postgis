@@ -142,12 +142,12 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		/* Validate input parameters */
 		if (tolerance_is_null || tolerance < 0)
 		{
-			lwpgerror("Tolerance must be a positive number", tolerance);
+			lwpgerror("Tolerance must be a positive number, got %g", tolerance);
 			PG_RETURN_NULL();
 		}
 		if (minpoints_is_null || minpoints < 0)
 		{
-			lwpgerror("Minpoints must be a positive number", minpoints);
+			lwpgerror("Minpoints must be a positive number, got %d", minpoints);
 		}
 
 		initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -228,7 +228,7 @@ Datum ST_ClusterWithinWin(PG_FUNCTION_ARGS)
 		/* Validate input parameters */
 		if (tolerance_is_null || tolerance < 0)
 		{
-			lwpgerror("Tolerance must be a positive number", tolerance);
+			lwpgerror("Tolerance must be a positive number, got %g", tolerance);
 			PG_RETURN_NULL();
 		}
 
