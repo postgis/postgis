@@ -51,7 +51,7 @@ int encodeToBits(double value, double min, double max) {
 // Returns
 // - 0x1 if xs < xmin (top or bottom), or ys < ymin (left or right)
 // - 0x2 if xmin <= xs < xmax (top or bottom), or ymin <= ys < ymax (left or right)
-// - 0x4 if xs >= xmax (top or buttom), or ys >= ymax (left or right)
+// - 0x4 if xs >= xmax (top or bottom), or ys >= ymax (left or right)
 // - 0x0 if no cutting point can be determined (if S and L are parallel or straightPosition is not valid)
 // ===============================================================================
 int encodeToBitsStraight(double xa, double ya, double xb, double yb, double xmin, double ymin, double xmax, double ymax, int straightPosition) {
@@ -214,7 +214,7 @@ void removePoints(POINTARRAY *points, GBOX *bounds, bool closed, bool cartesian_
 
 		skip = sameX && sameY && !inside;	// three consecutive points in same outside quarter, leave out central one
 		skip |= sameX && !insideX;			// three consecutive points in same outside area (left or right), leave out central one
-		skip |= sameY && !insideY;			// three consecutive points in same outside area (top or buttom), leave out central one
+		skip |= sameY && !insideY;			// three consecutive points in same outside area (top or bottom), leave out central one
 
 		// check for irrelevant points that would introduce "diagonal"
 		// lines between different outside quadrants which may cross the bounds
