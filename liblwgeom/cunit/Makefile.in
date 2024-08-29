@@ -79,7 +79,7 @@ OBJS=	\
 	cu_varint.o \
 	cu_unionfind.o \
 	cu_wrapx.o \
-	cu_remove_irrelevant_points_for_view_helpers.o \
+	cu_remove_irrelevant_points_for_view.o \
 	cu_tester.o
 
 ifeq (@SFCGAL@,sfcgal)

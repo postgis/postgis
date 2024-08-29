@@ -30,7 +30,7 @@
 #include "utils/numeric.h"
 #include "access/htup_details.h"
 
-#include "lwgeom_remove_irrelevant_points_for_view_helpers.h"
+#include "lwgeom_remove_irrelevant_points_for_view.h"
 
 // ===============================================================================
 // remove points that are irrelevant for rendering the geometry within

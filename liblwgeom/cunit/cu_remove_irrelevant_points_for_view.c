@@ -13,10 +13,10 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-#include "lwgeom_remove_irrelevant_points_for_view_helpers.h"
+#include "lwgeom_remove_irrelevant_points_for_view.h"
 
 // test case for lwgeom_remove_irrelevant_points_for_view()
-static void test_lwgeom_remove_irrelevant_points_for_view_helpers(void)
+static void test_lwgeom_remove_irrelevant_points_for_view(void)
 {
 	LWGEOM *geom;
 	char *wkt, *in_wkt;
@@ -41,10 +41,10 @@ static void test_lwgeom_remove_irrelevant_points_for_view_helpers(void)
 	lwfree(bbox);
 }
 
-void remove_irrelevant_points_for_view_helpers_suite_setup(void);
+void remove_irrelevant_points_for_view_suite_setup(void);
 void
-remove_irrelevant_points_for_view_helpers_suite_setup(void)
+remove_irrelevant_points_for_view_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("remove_irrelevant_points_for_view_helpers", NULL, NULL);
-	PG_ADD_TEST(suite, test_lwgeom_remove_irrelevant_points_for_view_helpers);
+	CU_pSuite suite = CU_add_suite("remove_irrelevant_points_for_view", NULL, NULL);
+	PG_ADD_TEST(suite, test_lwgeom_remove_irrelevant_points_for_view);
 }

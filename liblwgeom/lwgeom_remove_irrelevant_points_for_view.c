@@ -22,7 +22,7 @@
  *
  **********************************************************************/
 
-#include "lwgeom_remove_irrelevant_points_for_view_helpers.h"
+#include "lwgeom_remove_irrelevant_points_for_view.h"
 
 // ===============================================================================
 // Encodes the location of a value related to min and max.
