@@ -80,7 +80,7 @@
 /* PostGIS build date */
 #undef POSTGIS_BUILD_DATE
 
-/* SFCGAL library version at buil time */
+/* SFCGAL library version at build time */
 #undef POSTGIS_SFCGAL_VERSION
 
 /* GDAL library version */

@@ -559,7 +559,7 @@ lwgeom_clone_deep(const LWGEOM *lwgeom)
 
 
 /**
- * Return an alloced string
+ * Return an allocated string
  */
 char*
 lwgeom_to_ewkt(const LWGEOM *lwgeom)
@@ -571,7 +571,7 @@ lwgeom_to_ewkt(const LWGEOM *lwgeom)
 
 	if ( ! wkt )
 	{
-		lwerror("Error writing geom %p to WKT", lwgeom);
+		lwerror("Error writing geom %p to WKT", (void *)lwgeom);
 	}
 
 	return wkt;
@@ -1870,7 +1870,7 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 				{
 					if (i == 0)
 					{
-						/* If the outter ring is dropped, all can be dropped */
+						/* If the outer ring is dropped, all can be dropped */
 						for (i = 0; i < g->nrings; i++)
 						{
 							pa = g->rings[i];
@@ -2065,7 +2065,7 @@ lwgeom_affine(LWGEOM *geom, const AFFINE *affine)
 
 	switch(type)
 	{
-		/* Take advantage of fact tht pt/ln/circ/tri have same memory structure */
+		/* Take advantage of fact that pt/ln/circ/tri have same memory structure */
 		case POINTTYPE:
 		case LINETYPE:
 		case CIRCSTRINGTYPE:
@@ -2119,7 +2119,7 @@ lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
 
 	switch(type)
 	{
-		/* Take advantage of fact tht pt/ln/circ/tri have same memory structure */
+		/* Take advantage of fact that pt/ln/circ/tri have same memory structure */
 		case POINTTYPE:
 		case LINETYPE:
 		case CIRCSTRINGTYPE:
@@ -2582,7 +2582,7 @@ static double trim_preserve_decimal_digits(double d, int32_t decimal_digits)
 	/* (x * 851 + 255) / 256 == 1 + (int)(x * log2(10)) for x in [0,30] */
 	int bits_needed = 1 + exponent + (decimal_digits * 851 + 255) / 256;
 	/* for negative values, (x * 851 + 255) / 256 == (int)(x * log2(10)), so */
-	/* substract one */
+	/* subtract one */
 	if (decimal_digits < 0)
 		bits_needed --;
 

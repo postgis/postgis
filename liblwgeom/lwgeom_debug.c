@@ -49,7 +49,7 @@ lwgeom_flagchars(LWGEOM *lwg)
 }
 
 /*
- * Returns an alloced string containing summary for the LWGEOM object
+ * Returns an allocated string containing summary for the LWGEOM object
  */
 static char *
 lwpoint_summary(LWPOINT *point, int offset)

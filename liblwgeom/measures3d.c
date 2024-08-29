@@ -786,7 +786,7 @@ lw_dist3d_point_poly(const LWPOINT *point, const LWPOLY *poly, DISTPTS3D *dl)
 	if (dl->mode == DIST_MAX)
 		return lw_dist3d_pt_ptarray(&p, poly->rings[0], dl);
 
-	/* Find the plane of the polygon, the "holes" have to be on the same plane. so we only care about the boudary */
+	/* Find the plane of the polygon, the "holes" have to be on the same plane. so we only care about the boundary */
 	if (!define_plane(poly->rings[0], &plane))
 	{
 		/* Polygon does not define a plane: Return distance point -> line */
@@ -1037,9 +1037,9 @@ lw_dist3d_pt_seg(const POINT3DZ *p, const POINT3DZ *A, const POINT3DZ *B, DISTPT
 	    ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y) + (B->z - A->z) * (B->z - A->z));
 
 	/*This is for finding the 3Dmaxdistance.
-	the maxdistance have to be between two vertexes,
+	the maxdistance have to be between two vertices,
 	compared to mindistance which can be between
-	two vertexes vertex.*/
+	two vertices vertex.*/
 	if (dl->mode == DIST_MAX)
 	{
 		if (r >= 0.5)
@@ -1128,7 +1128,7 @@ lw_dist3d_ptarray_ptarray(const POINTARRAY *l1, const POINTARRAY *l2, DISTPTS3D 
 	LWDEBUGF(2, "lw_dist3d_ptarray_ptarray called (points: %d-%d)", l1->npoints, l2->npoints);
 
 	if (dl->mode == DIST_MAX) /*If we are searching for maxdistance we go straight to point-point calculation since
-				     the maxdistance have to be between two vertexes*/
+				     the maxdistance have to be between two vertices*/
 	{
 		for (t = 0; t < l1->npoints; t++) /*for each segment in L1 */
 		{
@@ -1222,7 +1222,7 @@ lw_dist3d_seg_seg(const POINT3DZ *s1p1, const POINT3DZ *s1p2, const POINT3DZ *s2
 	{ /* the lines are almost parallel*/
 		s1k =
 		    0.0;   /*If the lines are parallel we try by using the startpoint of first segment. If that gives a
-			      projected point on the second line outside segment 2 it wil be found that s2k is >1 or <0.*/
+			      projected point on the second line outside segment 2 it will be found that s2k is >1 or <0.*/
 		if (b > c) /* use the largest denominator*/
 			s2k = d / b;
 		else

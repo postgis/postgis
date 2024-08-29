@@ -724,7 +724,7 @@ rt_raster_get_geotransform_matrix(rt_raster raster,
  * Set raster's geotransform using 6-element array
  *
  * @param raster : the raster to set matrix of
- * @param gt : intput parameter, 6-element geotransform matrix
+ * @param gt : input parameter, 6-element geotransform matrix
  *
  */
 void
@@ -1782,7 +1782,7 @@ rt_raster_to_gdal(
 		rtn_drv,
 		"/vsimem/out.dat", /* should be fine assuming this is in a process */
 		src_ds,
-		FALSE, /* should copy be strictly equivelent? */
+		FALSE, /* should copy be strictly equivalent? */
 		options, /* format options */
 		NULL, /* progress function */
 		NULL /* progress data */

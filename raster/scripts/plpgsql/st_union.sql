@@ -5,7 +5,7 @@
 --
 ----------------------------------------------------------------------
 
--- Note: The functions provided in this script are in developement. Do not use.
+-- Note: The functions provided in this script are in development. Do not use.
 
 DROP TYPE IF EXISTS rastexpr CASCADE;
 CREATE TYPE rastexpr AS (

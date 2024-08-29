@@ -1328,7 +1328,7 @@ void rt_raster_get_geotransform_matrix(rt_raster raster,
  * Set raster's geotransform using 6-element array
  *
  * @param raster : the raster to set matrix of
- * @param gt : intput parameter, 6-element geotransform matrix
+ * @param gt : input parameter, 6-element geotransform matrix
  *
  */
 void rt_raster_set_geotransform_matrix(rt_raster raster,
@@ -2070,7 +2070,7 @@ rt_errorstate rt_raster_fully_within_distance(
 
 /*
  * Return ES_ERROR if error occurred in function.
- * Paramter aligned returns non-zero if two rasters are aligned
+ * Parameter aligned returns non-zero if two rasters are aligned
  *
  * @param rast1 : the first raster for alignment test
  * @param rast2 : the second raster for alignment test

@@ -16,7 +16,7 @@ CATEGORY: Simple Features Revision Proposal
 OpenGIS document 99-402r2 introduces semantic and well-known
 representations for Z-geometries. This proposal extend the well-known
 representations to optionally also hold a measure (M) and a SRID.
-Misures, as Z values, are attributes of 2D vertexes, but their
+Measures, as Z values, are attributes of 2D vertices, but their
 semantic is unspecified in this document, as they could be used
 for any kind 'misurement'. SRID is an attribute of the whole feature.
 

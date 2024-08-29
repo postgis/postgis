@@ -2516,7 +2516,7 @@ int lwpoly_covers_lwpoly(const LWPOLY *poly1, const LWPOLY *poly2)
 		}
 	}
 
-	/* no abort condition found, so the poly2 should be completly inside poly1 */
+	/* no abort condition found, so the poly2 should be completely inside poly1 */
 	return LW_TRUE;
 }
 
@@ -3329,7 +3329,7 @@ point_in_cone(const POINT3D *A1, const POINT3D *A2, const POINT3D *P)
 		/* If the projection of the candidate is larger than */
 		/* the projection of the start point, the candidate */
 		/* must be closer to the center than the start, so */
-		/* therefor inside the cone */
+		/* therefore inside the cone */
 		if (similarity > min_similarity)
 		{
 			return LW_TRUE;

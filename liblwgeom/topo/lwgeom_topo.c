@@ -1935,7 +1935,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   /*
    * Construct a polygon using edges of the ring
    *
-   * NOTE: this possibily includes dangling edges
+   * NOTE: this possibly includes dangling edges
    *
    */
   LWPOLY *shell = _lwt_MakeRingShell(topo, signed_edge_ids,
@@ -2059,7 +2059,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
 
   /* We want the new face to be on the left, if possible */
   if ( face != 0 && ! isccw ) { /* ring is clockwise in a real face */
-    /* face shrinked, must update all non-contained edges and nodes */
+    /* face shrunk, must update all non-contained edges and nodes */
     LWDEBUG(1, "New face is on the outside of the ring, updating rings in former shell");
     newface_outside = 1;
     /* newface is outside */
@@ -5096,7 +5096,7 @@ _lwt_SnapEdgeToExistingNode(
   /* TODO: check if an endpoint moved */
 
   LWGEOM *splitE = lwgeom_split(snapE, prj);
-  LWDEBUGG(1, splitE, "Splitted edge");
+  LWDEBUGG(1, splitE, "Split edge");
 
   LWCOLLECTION *splitC = lwgeom_as_lwcollection(splitE);
   if ( splitC->ngeoms != 2 )
@@ -5702,7 +5702,7 @@ _lwt_SnapEdgeToExistingNode(
       updface.face_id = edge->face_right;
       if ( updface.face_id != 0 )
       {
-        /* We only need to update the MBR if the shrinked face is
+        /* We only need to update the MBR if the shrunk face is
          * not the universe face */
         LWGEOM *fg = lwt_GetFaceGeometry(topo, updface.face_id);
         if ( ! fg )
@@ -5729,7 +5729,7 @@ _lwt_SnapEdgeToExistingNode(
       updface.face_id = edge->face_left;
       if ( updface.face_id != 0 )
       {
-        /* We only need to update the MBR if the shrinked face is
+        /* We only need to update the MBR if the shrunk face is
          * not the universe face */
         LWGEOM *fg = lwt_GetFaceGeometry(topo, updface.face_id);
         if ( ! fg )
@@ -7099,13 +7099,13 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     LWDEBUGG(1, iedges, "Collected edges");
 
     LWDEBUGF(1, "Diffing noded, with srid=%d "
-                "and interesecting edges, with srid=%d",
+                "and intersecting edges, with srid=%d",
                 noded->srid, iedges->srid);
     diff = lwgeom_difference(noded, iedges);
     LWDEBUGG(1, diff, "Differenced");
 
     LWDEBUGF(1, "Intersecting noded, with srid=%d "
-                "and interesecting edges, with srid=%d",
+                "and intersecting edges, with srid=%d",
                 noded->srid, iedges->srid);
     xset = lwgeom_intersection(noded, iedges);
     LWDEBUGG(1, xset, "Intersected");

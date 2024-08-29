@@ -149,7 +149,7 @@ BEGIN
   --  polygon OR ( is end_node or start_node of any edge
   --  of any polygon face ).
   --
-  --  We assume the Node-in-Face check is faster becasue
+  --  We assume the Node-in-Face check is faster because
   --  there will be less Faces then Edges in any polygon.
   --
   --

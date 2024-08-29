@@ -3310,7 +3310,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	gtk_window_set_default_size(GTK_WINDOW(window_main), 180, 500);
 
 	/* Connect the destroy event of the window with our pgui_quit function
-	*  When the window is about to be destroyed we get a notificaiton and
+	*  When the window is about to be destroyed we get a notification and
 	*  stop the main GTK loop
 	*/
 	g_signal_connect(G_OBJECT(window_main), "destroy", G_CALLBACK(pgui_quit), NULL);

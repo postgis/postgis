@@ -64,6 +64,6 @@ lrs_lip_5|MULTIPOINT((7.27 51.73),(10.29 52.54),(13.43 53.27),(16.67 53.91),(20 
 lrs_llp_1|0.50
 lrs_llp_2|0.00
 lrs_llp_3|1.00
-ERROR:  geography_line_locate_point: 2st arg is not a point
+ERROR:  geography_line_locate_point: 2nd arg is not a point
 lrs_substr_1|LINESTRING(9.28 23.25,18.97 25.93)
 lrs_sl_1|LINESTRING(25 42.79,25 40)

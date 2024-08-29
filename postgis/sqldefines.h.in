@@ -46,7 +46,7 @@
 #ifdef POSTGIS_REVISION
 /*
 * Insert the PostGIS revision.  This is immensely goofy because FreeBSD doesn't recognized
-* PostGIS_REVISION as a variable if anything like ` or $rev$ (sql dollar quoting) abutts it so we need to leave a space on both sides
+* PostGIS_REVISION as a variable if anything like ` or $rev$ (sql dollar quoting) abuts it so we need to leave a space on both sides
 * which means we need to then trim it to get rid of the extra spaces we added.
 * Maybe someone smarter can come up with a less goofy solution that makes all OS happy
 */

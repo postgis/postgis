@@ -116,7 +116,7 @@ Given a geometry collection, returns a multi-geometry containing only elements o
             <listitem><para>3 == POLYGON</para></listitem>
             </itemizedlist>
 
-            <para>For atomic geometry inputs, the geometry is retured unchanged
+            <para>For atomic geometry inputs, the geometry is returned unchanged
             if the input type matches the requested type.
             Otherwise, the result is an EMPTY geometry of the specified type.
             If required, these can be converted to multi-geometries using <xref linkend="ST_Multi"/>.
@@ -1551,7 +1551,7 @@ SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
 				<code>ST_QuantizeCoordinates</code> sets the 22 insignificant
 				bits to zero. For a long coordinate sequence this creates a
 				pattern of blocks of consecutive zeros that is compressed
-				by PostgreSQL more effeciently.
+				by PostgreSQL more efficiently.
 			</para>
 
 			<note>
@@ -2000,7 +2000,7 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 	  <refsection>
 		<title>Description</title>
 
-		<para>Can be used on any geometry and reverses the order of the vertexes.</para>
+		<para>Can be used on any geometry and reverses the order of the vertices.</para>
 
 		<para role="enhanced" conformance="2.4.0">Enhanced: 2.4.0 support for curves was introduced.</para>
 		<para>&Z_support;</para>

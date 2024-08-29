@@ -50,7 +50,7 @@ lwflags_t gserialized_get_lwflags(const GSERIALIZED *g)
 		return gserialized2_get_lwflags(g);
 	else
 		return gserialized1_get_lwflags(g);
-};
+}
 
 /**
 * Copy a new bounding box into an existing gserialized.
@@ -167,9 +167,9 @@ int32_t gserialized_get_srid(const GSERIALIZED *g)
 void gserialized_set_srid(GSERIALIZED *g, int32_t srid)
 {
 	if (GFLAGS_GET_VERSION(g->gflags))
-		return gserialized2_set_srid(g, srid);
+		gserialized2_set_srid(g, srid);
 	else
-		return gserialized1_set_srid(g, srid);
+		gserialized1_set_srid(g, srid);
 }
 
 /**

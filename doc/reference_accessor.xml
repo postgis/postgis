@@ -2086,7 +2086,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;
 		<para>Returns true if this Geometry has no anomalous geometric
 				points, such as self-intersection or self-tangency. For more
 			information on the OGC's definition of geometry simplicity and validity, refer
-			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliancy of geometries"</link></para>
+			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliance of geometries"</link></para>
 
 		<note>
 			<para>SQL-MM defines the result of ST_IsSimple(NULL) to be 0,
@@ -2569,7 +2569,7 @@ GROUP BY gid, field1,field2;
 		<title>Description</title>
 
 		<para>Return the number of points in an ST_LineString or
-		  ST_CircularString value. Prior to 1.4 only works with linestrings as the specs state.  From 1.4 forward this is an alias for ST_NPoints which returns number of vertexes for
+		  ST_CircularString value. Prior to 1.4 only works with linestrings as the specs state.  From 1.4 forward this is an alias for ST_NPoints which returns number of vertices for
 		  not just linestrings.
 		  Consider using ST_NPoints instead which is multi-purpose
 		  and works with many geometry types.</para>

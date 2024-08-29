@@ -347,7 +347,7 @@ clamp_srid(int32_t srid)
 		}
 	} else if ( srid > SRID_MAXIMUM ) {
     newsrid = SRID_USER_MAXIMUM + 1 +
-      /* -1 is to reduce likelyhood of clashes */
+      /* -1 is to reduce likelihood of clashes */
       /* NOTE: must match implementation in postgis_restore.pl */
       ( srid % ( SRID_MAXIMUM - SRID_USER_MAXIMUM - 1 ) );
 		lwnotice("SRID value %d > SRID_MAXIMUM converted to %d", srid, newsrid);

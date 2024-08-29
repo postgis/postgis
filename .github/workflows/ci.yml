@@ -17,7 +17,7 @@ jobs:
       matrix:
         ci:
         # Use the last stable releases to run more tests
-        - { tag: pg17-geosmain-gdal39-proj921, mode: coverage }
+        - { tag: pg17-geosmain-gdal39-proj94, mode: coverage }
         - { tag: pg16-geos312-gdal37-proj921, mode: coverage }
         - { tag: pg15-geos311-gdal35-proj90, mode: coverage }
         - { tag: pg15-clang-geos311-gdal35-proj90, mode: usan_clang }

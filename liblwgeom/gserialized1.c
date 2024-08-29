@@ -1548,7 +1548,7 @@ GSERIALIZED* gserialized1_set_gbox(GSERIALIZED *g, GBOX *gbox)
 
 	/* Move bounds to nearest float values */
 	gbox_float_round(gbox);
-	/* Now write the float box values into the memory segement */
+	/* Now write the float box values into the memory segment */
 	fbox = (float*)(g_out->data);
 	/* Copy in X/Y */
 	fbox[fbox_pos++] = gbox->xmin;

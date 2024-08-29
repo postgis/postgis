@@ -272,7 +272,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 	/* get state */
 	state = funcctx->user_fctx;
 
-	/* Loop trough polygon rings */
+	/* Loop through polygon rings */
 	while (state->ringnum < state->poly->nrings )
 	{
 		LWPOLY* poly = state->poly;

@@ -288,7 +288,7 @@ extern void lwgeom_cancel_interrupt(void);
  * the callback, if you want (see lwgeom_request_interrupt).
  *
  */
-typedef void (lwinterrupt_callback)();
+typedef void (lwinterrupt_callback)(void);
 extern lwinterrupt_callback *lwgeom_register_interrupt_callback(lwinterrupt_callback *);
 
 
@@ -1191,7 +1191,7 @@ extern int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring);
 
 /**
 * Add a component, allocating extra space if necessary. The compoundcurve
-* takes owership of the passed geometry.
+* takes ownership of the passed geometry.
 */
 extern int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom);
 
@@ -1697,7 +1697,7 @@ LWCOLLECTION* lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, d
  */
 /** For GML3 only, include srsDimension attribute in output */
 #define LW_GML_IS_DIMS     (1<<0)
-/** For GML3 only, declare that datas are lat/lon. Swaps axis order */
+/** For GML3 only, declare that data are lat/lon. Swaps axis order */
 #define LW_GML_IS_DEGREE   (1<<1)
 /** For GML3, use <LineString> rather than <Curve> for lines */
 #define LW_GML_SHORTLINE   (1<<2)
@@ -2059,6 +2059,11 @@ extern int gbox_overlaps_2d(const GBOX *g1, const GBOX *g2);
 * Return #LW_TRUE if the first #GBOX contains the second on the 2d plane, #LW_FALSE otherwise.
 */
 extern int  gbox_contains_2d(const GBOX *g1, const GBOX *g2);
+
+/**
+* Return #LW_TRUE if the first #GBOX is within the second on the 2d plane, #LW_FALSE otherwise.
+*/
+extern int  gbox_within_2d(const GBOX *g1, const GBOX *g2);
 
 /**
 * Copy the values of original #GBOX into duplicate.

@@ -1683,7 +1683,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"integer: definition number? - identifer used for that instance of the word"
+"integer: definition number? - identifier used for that instance of the word"
 msgstr "정수형: 정의 번호? - 단어의 해당 인스턴스에 쓰이는 식별자"
 
 #. Tag: title
@@ -1813,7 +1813,7 @@ msgstr "2.2.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
 #, no-c-format
-msgid "Single Addresss"
+msgid "Single Address"
 msgstr "단일 주소"
 
 #. Tag: para
@@ -3228,7 +3228,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<varname>parsed</varname> boolean - denotes if addess was formed from "
+"<varname>parsed</varname> boolean - denotes if address was formed from "
 "normalize process. The normalize_address function sets this to true before "
 "returning the address."
 msgstr ""
@@ -3992,12 +3992,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Current error descriptors are: coincident nodes, edge crosses node, edge not "
-"simple, edge end node geometry mis-match, edge start node geometry mismatch, "
+"simple, edge end node geometry mismatch, edge start node geometry mismatch, "
 "face overlaps face,face within face,"
 msgstr ""
 "현재 오류 설명자(descriptor)는 다음과 같습니다: coincident nodes(일치하는 노"
 "드들), edge crosses node(노드를 가로지르는 경계선), edge not simple(단순하지 "
-"않은 경계선), edge end node geometry mis-match(경계선의 종단 노드 도형 불일"
+"않은 경계선), edge end node geometry mismatch(경계선의 종단 노드 도형 불일"
 "치), edge start node geometry mismatch(경계선의 시작 노드 도형 불일치), face "
 "overlaps face(표면 중첩 표면), face within face(표면 내부 표면)"
 
@@ -4471,7 +4471,7 @@ msgstr ""
 
 #. Tag: entry
 #, no-c-format
-msgid "edge start node geometry mis-match"
+msgid "edge start node geometry mismatch"
 msgstr "edge start node geometry mismatch(경계선의 시작 노드 도형 불일치)"
 
 #. Tag: entry
@@ -4489,8 +4489,8 @@ msgstr ""
 
 #. Tag: entry
 #, no-c-format
-msgid "edge end node geometry mis-match"
-msgstr "edge end node geometry mis-match(경계선의 종단 노드 도형 불일치)"
+msgid "edge end node geometry mismatch"
+msgstr "edge end node geometry mismatch(경계선의 종단 노드 도형 불일치)"
 
 #. Tag: entry
 #, no-c-format
@@ -7144,7 +7144,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "By default <filename>pgtopo_import</filename> reads the dump from the "
-"standard input so that it can be used in conjuction with "
+"standard input so that it can be used in conjunction with "
 "<filename>pgtopo_export</filename> in a pipeline. You can optionally specify "
 "an input filename with the <code>-f</code> commandline switch."
 msgstr ""
@@ -7280,7 +7280,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For GEOS functionality, when you install PostgresSQL you may need to "
+"For GEOS functionality, when you install PostgreSQL you may need to "
 "explicitly link PostgreSQL against the standard C++ library:"
 msgstr ""
 "GEOS 기능성을 위해 PostgreSQL설치 시 표준 C++ 라이브러리를 명확하게 링크해야 "
@@ -9056,7 +9056,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "SFCGAL enhancments and maintenance and ci support"
+msgid "SFCGAL enhancements and maintenance and ci support"
 msgstr ""
 
 #. Tag: term
@@ -10030,7 +10030,7 @@ msgstr ""
 
 #. Tag: simpara
 #, no-c-format
-msgid "Norwegian Forest and Landscape Institue"
+msgid "Norwegian Forest and Landscape Institute"
 msgstr ""
 
 #. Tag: link
@@ -12014,13 +12014,13 @@ msgid ""
 "Returns true if this Geometry has no anomalous geometric points, such as "
 "self-intersection or self-tangency. For more information on the OGC's "
 "definition of geometry simplicity and validity, refer to <link "
-"linkend=\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
+"linkend=\"OGC_Validity\">\"Ensuring OpenGIS compliance of geometries\"</link>"
 msgstr ""
 "해당 도형이 자체 교차하거나 자체 접촉하는 이례적인 도형 포인트를 가지고 있지 "
 "않을 경우 <varname>TRUE</varname> 를 반환합니다. 도형 단순성 및 유효성에 대"
 "한 OGC의 정의를 더 자세히 알고 싶다면, <link "
 "linkend=\"OGC_Validity\">\"OpenGIS의 도형 준수성 확인(Ensuring OpenGIS "
-"compliancy of geometries)\"</link> 을 참조하십시오."
+"compliance of geometries)\"</link> 을 참조하십시오."
 
 #. Tag: para
 #, no-c-format
@@ -12283,7 +12283,7 @@ msgstr ""
 msgid ""
 "Return the number of points in an ST_LineString or ST_CircularString value. "
 "Prior to 1.4 only works with linestrings as the specs state. From 1.4 "
-"forward this is an alias for ST_NPoints which returns number of vertexes for "
+"forward this is an alias for ST_NPoints which returns number of vertices for "
 "not just linestrings. Consider using ST_NPoints instead which is multi-"
 "purpose and works with many geometry types."
 msgstr ""
@@ -14205,10 +14205,10 @@ msgstr ""
 msgid ""
 "Creates a rectangular Polygon giving the extent of a tile in the <link xlink:"
 "href=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ tile system</link>. "
-"The tile is specifed by the zoom level Z and the XY index of the tile in the "
-"grid at that level. Can be used to define the tile bounds required by <xref "
-"linkend=\"ST_AsMVTGeom\"/> to convert geometry into the MVT tile coordinate "
-"space."
+"The tile is specified by the zoom level Z and the XY index of the tile in "
+"the grid at that level. Can be used to define the tile bounds required by "
+"<xref linkend=\"ST_AsMVTGeom\"/> to convert geometry into the MVT tile "
+"coordinate space."
 msgstr ""
 
 #. Tag: para
@@ -14638,7 +14638,7 @@ msgstr ""
 msgid ""
 "A window function which simplifies the edges of polygons in a polygonal "
 "coverage. The simplification preserves the coverage topology. This means the "
-"simplified output polygons are consisent along shared edges, and still form "
+"simplified output polygons are consistent along shared edges, and still form "
 "a valid coverage."
 msgstr ""
 
@@ -14804,7 +14804,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For atomic geometry inputs, the geometry is retured unchanged if the input "
+"For atomic geometry inputs, the geometry is returned unchanged if the input "
 "type matches the requested type. Otherwise, the result is an EMPTY geometry "
 "of the specified type. If required, these can be converted to multi-"
 "geometries using <xref linkend=\"ST_Multi\"/>."
@@ -15555,7 +15555,7 @@ msgid ""
 "these inputs. As we can set these bits to any value, "
 "<code>ST_QuantizeCoordinates</code> sets the 22 insignificant bits to zero. "
 "For a long coordinate sequence this creates a pattern of blocks of "
-"consecutive zeros that is compressed by PostgreSQL more effeciently."
+"consecutive zeros that is compressed by PostgreSQL more efficiently."
 msgstr ""
 
 #. Tag: para
@@ -15848,7 +15848,7 @@ msgstr "꼭짓점들의 순서가 반대인 도형을 반환합니다."
 
 #. Tag: para
 #, no-c-format
-msgid "Can be used on any geometry and reverses the order of the vertexes."
+msgid "Can be used on any geometry and reverses the order of the vertices."
 msgstr "어떤 도형도 입력받을 수 있으며, 꼭짓점들의 순서를 반전시킵니다."
 
 #. Tag: para
@@ -16279,7 +16279,7 @@ msgid ""
 "Bounding boxes are automatically added to geometries so in general this is "
 "not needed unless the generated bounding box somehow becomes corrupted or "
 "you have an old install that is lacking bounding boxes. Then you need to "
-"drop the old and readd."
+"drop the old and re-add."
 msgstr ""
 "경계 상자는 도형에 자동적으로 추가되기 때문에 일반적으로 이 함수가 필요하지"
 "는 않습니다. 생성된 경계 상자에 어떤 이유로든 오류가 발생했거나, 또는 경계 상"
@@ -16317,11 +16317,11 @@ msgid ""
 "Bounding boxes are automatically added to geometries and improve speed of "
 "queries so in general this is not needed unless the generated bounding box "
 "somehow becomes corrupted or you have an old install that is lacking "
-"bounding boxes. Then you need to drop the old and readd. This kind of "
+"bounding boxes. Then you need to drop the old and re-add. This kind of "
 "corruption has been observed in 8.3-8.3.6 series whereby cached bboxes were "
 "not always recalculated when a geometry changed and upgrading to a newer "
 "version without a dump reload will not correct already corrupted boxes. So "
-"one can manually correct using below and readd the bbox or do a dump reload."
+"one can manually correct using below and re-add the bbox or do a dump reload."
 msgstr ""
 "경계 상자는 도형에 자동적으로 추가되어 쿼리의 속도를 향상시키기 때문에 일반적"
 "으로는 이 함수가 필요하지 않습니다. 생성된 경계 상자에 어떤 이유로든 오류가 "
@@ -19610,7 +19610,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The smaller densifyFrac we specify, the more acurate Fréchet distance we "
+"The smaller densifyFrac we specify, the more accurate Fréchet distance we "
 "get. But, the computation time and the memory usage increase with the square "
 "of the number of subsegments."
 msgstr ""
@@ -20097,7 +20097,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"No vertex is closer than <varname>e</varname> to a line segement of which it "
+"No vertex is closer than <varname>e</varname> to a line segment of which it "
 "is not an endpoint."
 msgstr ""
 "종단점이 아닌 한 어떤 꼭짓점도 라인 선분에 <varname>e</varname> 보다 가까이 "
@@ -22054,10 +22054,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"16: Declare that datas are lat/lon (e.g srid=4326). Default is to assume "
-"that data are planars. This option is useful for GML 3.1.1 output only, "
-"related to axis order. So if you set it, it will swap the coordinates so "
-"order is lat lon instead of database lon lat."
+"16: Declare that data are lat/lon (e.g srid=4326). Default is to assume that "
+"data are planars. This option is useful for GML 3.1.1 output only, related "
+"to axis order. So if you set it, it will swap the coordinates so order is "
+"lat lon instead of database lon lat."
 msgstr ""
 "16: 데이터가 위도/경도(예: srid=4326)라고 선언합니다. 기본적으로는 데이터가 "
 "평면 좌표라고 가정합니다. 이 옵션은 축의 순서(axis order)와 관련돼 있어, GML "
@@ -22360,23 +22360,23 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Converting a <varname>POINT</varname> to MARC21/XML formated as hdddmmss "
+"Converting a <varname>POINT</varname> to MARC21/XML formatted as hdddmmss "
 "(default)"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Converting a <varname>POLYGON</varname> to MARC21/XML formated in decimal "
+"Converting a <varname>POLYGON</varname> to MARC21/XML formatted in decimal "
 "degrees"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Converting a <varname>GEOMETRYCOLLECTION</varname> to MARC21/XML formated in "
-"decimal minutes. The geometries order in the MARC21/XML output correspond to "
-"their order in the collection."
+"Converting a <varname>GEOMETRYCOLLECTION</varname> to MARC21/XML formatted "
+"in decimal minutes. The geometries order in the MARC21/XML output correspond "
+"to their order in the collection."
 msgstr ""
 
 #. Tag: refpurpose
@@ -23843,8 +23843,8 @@ msgid ""
 "The optional third parameter controls the buffer accuracy and style. The "
 "accuracy of circular arcs in the buffer is specified as the number of line "
 "segments used to approximate a quarter circle (default is 8). The buffer "
-"style can be specifed by providing a list of blank-separated key=value pairs "
-"as follows:"
+"style can be specified by providing a list of blank-separated key=value "
+"pairs as follows:"
 msgstr ""
 
 #. Tag: para
@@ -24204,7 +24204,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The result has interpolated values for the Z and M dimenions when present."
+"The result has interpolated values for the Z and M dimensions when present."
 msgstr ""
 
 #. Tag: para
@@ -24775,7 +24775,7 @@ msgid ""
 "input geometry. The circle center is the point in the interior of the "
 "boundary which has the farthest distance from the obstacles. The circle "
 "itself is provided by the center point and a nearest point lying on an "
-"obstacle detemining the circle radius."
+"obstacle determining the circle radius."
 msgstr ""
 
 #. Tag: para
@@ -24856,7 +24856,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"To compute two points lying on the mimimum circle (the \"maximum diameter\") "
+"To compute two points lying on the minimum circle (the \"maximum diameter\") "
 "use <xref linkend=\"ST_LongestLine\"/>."
 msgstr ""
 
@@ -25585,7 +25585,7 @@ msgstr ""
 msgid ""
 "Sets the effective area for each vertex, using the Visvalingam-Whyatt "
 "algorithm. The effective area is stored as the M-value of the vertex. If the "
-"optional \"theshold\" parameter is used, a simplified geometry will be "
+"optional \"threshold\" parameter is used, a simplified geometry will be "
 "returned, containing only vertices with an effective area greater than or "
 "equal to the threshold value."
 msgstr ""
@@ -26247,7 +26247,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<varname>extent</varname> computes extent of whole table and applys "
+"<varname>extent</varname> computes extent of whole table and applies "
 "constraint all rasters must be within that extent"
 msgstr ""
 "<varname>extent</varname> 는 전체 테이블의 범위를 계산하고 제약조건을 적용합"
@@ -27077,7 +27077,7 @@ msgstr ""
 msgid ""
 "For the <code>nbands</code> as text variant of function, the default "
 "delimiter is <code>,</code> which means you can ask for <code>'1,2,3'</code> "
-"and if you wanted to use a different delimeter you would do "
+"and if you wanted to use a different delimiter you would do "
 "<code>ST_Band(rast, '1@2@3', '@')</code>. For asking for multiple bands, we "
 "strongly suggest you use the array form of this function e.g. "
 "<code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> "
@@ -31300,7 +31300,7 @@ msgstr ""
 msgid ""
 "Band numbers of the raster to be evaluated. nband can be an integer or "
 "integer[] denoting the bands. nband1 is band on rast1 and nband2 is band on "
-"rast2 for hte 2 raster/2band case."
+"rast2 for the 2 raster/2band case."
 msgstr ""
 "평가할 래스터의 밴드 개수입니다. nband는 밴드를 나타내는 정수 또는 정수 배열"
 "이 될 수 있습니다. nband1은 rast1에 있는 밴드이며 nband2는 래스터 2개/밴드 2"
@@ -32437,7 +32437,7 @@ msgstr "래스터의 첫 번째 밴드"
 
 #. Tag: para
 #, no-c-format
-msgid "new raster after averaging pixels withing 4x4 pixels of each other"
+msgid "new raster after averaging pixels within 4x4 pixels of each other"
 msgstr "각각 서로의 4x4 픽셀 거리 안에 있는 픽셀들을 평균낸 후의 새 래스터"
 
 #. Tag: para
@@ -35003,7 +35003,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"To determine a list of roads that cross a highway, use a query similiar to:"
+"To determine a list of roads that cross a highway, use a query similar to:"
 msgstr ""
 
 #. Tag: para
@@ -35472,7 +35472,8 @@ msgstr ""
 msgid ""
 "It is better to use a named relationship function if available, since they "
 "automatically use a spatial index where one exists. Also, they may implement "
-"performance optimizations which are not available with full relate evalation."
+"performance optimizations which are not available with full relate "
+"evaluation."
 msgstr ""
 
 #. Tag: para
@@ -37032,10 +37033,10 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Perform surface Tesselation of a polygon or polyhedralsurface and returns as "
-"a TIN or collection of TINS"
+"Perform surface Tessellation of a polygon or polyhedralsurface and returns "
+"as a TIN or collection of TINS"
 msgstr ""
-"폴리곤 또는 다면체 표면의 표면 다듬기(tesselation) 작업을 수행한 다음 TIN 또"
+"폴리곤 또는 다면체 표면의 표면 다듬기(tessellation) 작업을 수행한 다음 TIN 또"
 "는 TIN 집합으로 반환합니다."
 
 #. Tag: para
@@ -37072,12 +37073,12 @@ msgstr "ST_AsText 출력물:"
 
 #. Tag: para
 #, no-c-format
-msgid "Tesselated Cube with triangles colored"
+msgid "Tessellated Cube with triangles colored"
 msgstr "삼각형을 색으로 구분한 다듬어진 정육면체"
 
 #. Tag: para
 #, no-c-format
-msgid "Tesselated Polygon"
+msgid "Tessellated Polygon"
 msgstr "다듬어진 폴리곤"
 
 #. Tag: para
@@ -37569,14 +37570,14 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Return metadata records for projected coordinate systems that have areas of "
-"useage that fully contain the bounds parameter."
+"usage that fully contain the bounds parameter."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Return a set of metadata records for projected coordinate systems that have "
-"areas of useage that fully contain the bounds parameter. Each record will "
+"areas of usage that fully contain the bounds parameter. Each record will "
 "have the <varname>auth_name</varname>, <varname>auth_srid</varname>, "
 "<varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</"
 "varname>, and the corners of the area of usage, <varname>point_sw</varname> "
@@ -37941,7 +37942,7 @@ msgid ""
 "The three-geometry variant allows a \"false origin\" for the scaling to be "
 "passed in. This allows \"scaling in place\", for example using the centroid "
 "of the geometry as the false origin. Without a false origin, scaling takes "
-"place relative to the actual origin, so all coordinates are just multipled "
+"place relative to the actual origin, so all coordinates are just multiplied "
 "by the scale factor."
 msgstr ""
 
@@ -38162,7 +38163,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The representation contains the values <varname>xmin, ymin, zmin, xmax, "
-"ymax, zmax</varname>. These are the minimum and maxium values of the X, Y "
+"ymax, zmax</varname>. These are the minimum and maximum values of the X, Y "
 "and Z extents."
 msgstr ""
 
@@ -38959,7 +38960,7 @@ msgstr ""
 msgid ""
 "This version requires PostgreSQL 12-17, GEOS 3.8 or higher, and Proj 6.1+. "
 "To take advantage of all features, GEOS 3.12+ is needed. To take advantage "
-"of all SFCGAL featurs, SFCGAL 1.5.0+ is needed."
+"of all SFCGAL features, SFCGAL 1.5.0+ is needed."
 msgstr ""
 
 #. Tag: para
@@ -40849,7 +40850,7 @@ msgstr ""
 msgid ""
 "the polygon boundary rings (the exterior shell ring and interior hole rings) "
 "are <emphasis>simple</emphasis> (do not cross or self-touch). Because of "
-"this a polygon cannnot have cut lines, spikes or loops. This implies that "
+"this a polygon cannot have cut lines, spikes or loops. This implies that "
 "polygon holes must be represented as interior rings, rather than by the "
 "exterior ring self-touching (a so-called \"inverted hole\")."
 msgstr ""
@@ -43319,7 +43320,7 @@ msgstr ""
 msgid ""
 "This query takes a while, because every road in the table is summarized into "
 "the final result (about 250K roads for the example table). For smaller "
-"datsets (several thousand records on several hundred) the response can be "
+"datasets (several thousand records on several hundred) the response can be "
 "very fast."
 msgstr ""
 

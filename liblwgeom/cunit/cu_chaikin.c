@@ -36,7 +36,7 @@ static void do_test_chaikin(char *geom_txt,char *expected, int n_iterations, int
 
 static void do_test_chaikin_lines(void)
 {
-	/*Simpliest test*/
+	/*Simplest test*/
 	do_test_chaikin("LINESTRING(0 0,8 8,16 0)","LINESTRING(0 0,6 6,10 6,16 0)", 1, 1);
 	/*2 iterations*/
 	do_test_chaikin("LINESTRING(0 0,8 8,16 0)","LINESTRING(0 0,4.5 4.5,7 6,9 6,11.5 4.5,16 0)", 2, 1);
@@ -47,7 +47,7 @@ static void do_test_chaikin_lines(void)
 
 static void do_test_chaikin_polygons(void)
 {
-	/*Simpliest test*/
+	/*Simplest test*/
 	do_test_chaikin("POLYGON((0 0,8 8,16 0,0 0))","POLYGON((0 0,6 6,10 6,14 2,12 0,0 0))", 1, 1);
 	/*2 iterations*/
 	do_test_chaikin("POLYGON((0 0,8 8,16 0,0 0))","POLYGON((0 0,4.5 4.5,7 6,9 6,11 5,13 3,13.5 1.5,12.5 0.5,9 0,0 0))", 2, 1);

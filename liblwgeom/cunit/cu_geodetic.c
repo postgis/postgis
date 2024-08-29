@@ -949,7 +949,7 @@ static void test_ptarray_contains_point_sphere(void)
 	CU_ASSERT_EQUAL(result, LW_FALSE);
 	lwgeom_free(lwg);
 
-	/* Point on ring between vertexes case */
+	/* Point on ring between vertices case */
 	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 1.1;
@@ -1324,7 +1324,7 @@ static void test_spheroid_distance(void)
 #endif
 	CU_ASSERT_DOUBLE_EQUAL(d, 1113194.9079327357264771, epsilon);
 
-	/* One horizonal degree
+	/* One horizontal degree
 	$ GeodSolve -E -i -p 16 --input-string "0 -1 0 0" */
 	point_set(-1.0, 0.0, &g1);
 	point_set(0.0, 0.0, &g2);

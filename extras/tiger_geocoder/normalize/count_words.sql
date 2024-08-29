@@ -1,5 +1,5 @@
 -- Determine the number of words in a string.  Words are allowed to
--- be seperated only by spaces, but multiple spaces between
+-- be separated only by spaces, but multiple spaces between
 -- words are allowed.
 CREATE OR REPLACE FUNCTION count_words(VARCHAR) RETURNS INTEGER
 AS $_$

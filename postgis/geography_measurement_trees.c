@@ -273,7 +273,7 @@ geography_dwithin_cache(FunctionCallInfo fcinfo,
 	/* threshold shortcircuit (stopping a calculation before the spheroid distance is actually */
 	/* below the threshold. Lower in the code line, we actually reduce the threshold a little to */
 	/* avoid this. */
-	/* Correct fix: propogate the spheroid information all the way to the bottom of the calculation */
+	/* Correct fix: propagate the spheroid information all the way to the bottom of the calculation */
 	/* so the "right thing" can be done in all cases. */
 	if ( LW_SUCCESS == geography_distance_cache_tolerance(fcinfo, g1, g2, s, tolerance, &distance) )
 	{

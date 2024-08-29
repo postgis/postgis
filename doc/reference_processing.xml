@@ -69,7 +69,7 @@ Computes a geometry covering all points within a given distance from a geometry.
             <para>The optional third parameter controls the buffer accuracy and style.
 The accuracy of circular arcs in the buffer is specified as the number of line segments
 used to approximate a quarter circle (default is 8).
-The buffer style can be specifed by
+The buffer style can be specified by
 providing a list of blank-separated key=value pairs as follows:
 <itemizedlist>
 <listitem>
@@ -687,7 +687,7 @@ POINT(0.5 1)
         </para></note>
 
 
-        <para>The result has interpolated values for the Z and M dimenions when present.</para>
+        <para>The result has interpolated values for the Z and M dimensions when present.</para>
 
         <para>&Z_support;</para>
         <para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
@@ -1647,7 +1647,7 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
 
       <refsection>
         <title>Description</title>
-        <para>Finds the largest circle which does not overlap a set of point and line obstacles. (Polygonal geometries may be included as obstacles, but only their boundary lines are used.) The center of the circle is constrained to lie inside a polygonal boundary, which by default is the convex hull of the input geometry. The circle center is the point in the interior of the boundary which has the farthest distance from the obstacles. The circle itself is provided by the center point and a nearest point lying on an obstacle detemining the circle radius.</para>
+        <para>Finds the largest circle which does not overlap a set of point and line obstacles. (Polygonal geometries may be included as obstacles, but only their boundary lines are used.) The center of the circle is constrained to lie inside a polygonal boundary, which by default is the convex hull of the input geometry. The circle center is the point in the interior of the boundary which has the farthest distance from the obstacles. The circle itself is provided by the center point and a nearest point lying on an obstacle determining the circle radius.</para>
         <para>The circle center is determined to a given  accuracy specified by a distance tolerance, using an iterative algorithm. If the accuracy distance is not specified a reasonable default is used.</para>
         <para>Returns a record with fields:</para>
 
@@ -1740,7 +1740,7 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
 
         <para>Use with <xref linkend="ST_Collect"/> to get the minimum bounding circle of a set of geometries.</para>
 
-        <para>To compute two points lying on the mimimum circle (the "maximum diameter") use <xref linkend="ST_LongestLine"/>.
+        <para>To compute two points lying on the minimum circle (the "maximum diameter") use <xref linkend="ST_LongestLine"/>.
         </para>
 
         <para>The ratio of the area of a polygon divided by the area of its Minimum Bounding Circle
@@ -1813,7 +1813,7 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
 
         <para>Use with <xref linkend="ST_Collect"/> to get the minimum bounding circle of a set of geometries.</para>
 
-        <para>To compute two points lying on the mimimum circle (the "maximum diameter") use <xref linkend="ST_LongestLine"/>.
+        <para>To compute two points lying on the minimum circle (the "maximum diameter") use <xref linkend="ST_LongestLine"/>.
         </para>
 
         <para role="availability" conformance="2.3.0">Availability - 2.3.0</para>
@@ -2866,7 +2866,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) AS geom) AS t;
         <para>The reduction in vertex count is controlled by the <varname>vertex_fraction</varname> parameter,
         which is a number in the range 0 to 1.
         Lower values produce simpler results, with smaller vertex count and less concaveness.
-        For both outer and inner hulls a vertex fraction of 1.0 produces the orginal geometry.
+        For both outer and inner hulls a vertex fraction of 1.0 produces the original geometry.
         For outer hulls a value of 0.0 produces the convex hull (for a single polygon);
         for inner hulls it produces a triangle.</para>
 
@@ -3052,7 +3052,7 @@ LINESTRING(5 2,7 25,10 10)
         <para>
             Sets the effective area for each vertex, using the Visvalingam-Whyatt algorithm.
             The effective area is stored as the M-value of the vertex.
-            If the optional "theshold" parameter is used, a simplified geometry will be returned, containing only vertices with an effective area
+            If the optional "threshold" parameter is used, a simplified geometry will be returned, containing only vertices with an effective area
             greater than or equal to the threshold value.
             </para><para>
             This function can be used for server-side simplification when a threshold is specified.  Another option is to use a threshold value of zero.

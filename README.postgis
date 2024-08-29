@@ -36,7 +36,7 @@ Directory structure::
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 11 and above.
+PostGIS is compatible with PostgreSQL 12 and above.
 
 You *must* have the full PostgreSQL - including server headers - installed for
 this to work.
@@ -333,4 +333,4 @@ usage.
 PostGIS Topology support
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-See topology/README for more informations about topology support.
+See topology/README for more information about topology support.

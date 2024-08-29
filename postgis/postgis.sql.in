@@ -2079,7 +2079,7 @@ CREATE OR REPLACE FUNCTION ST_DumpRings(geometry)
 -----------------------------------------------------------------------
 -- ST_DumpPoints()
 -----------------------------------------------------------------------
--- This function mimicks that of ST_Dump for collections, but this function
+-- This function mimics that of ST_Dump for collections, but this function
 -- that returns a path and all the points that make up a particular geometry.
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry)
@@ -2114,7 +2114,7 @@ CREATE TABLE spatial_ref_sys (
 -- views in the database that contain geometry columns. This function
 -- is a simple wrapper for populate_geometry_columns(oid).  In essence,
 -- this function ensures every geometry column in the database has the
--- appropriate spatial contraints (for tables) and exists in the
+-- appropriate spatial constraints (for tables) and exists in the
 -- geometry_columns table.
 -- Availability: 1.4.0
 -- Revised: 2.0.0 -- no longer deletes from geometry_columns
@@ -2197,7 +2197,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 -- If the provided oid is for a table, this function tries to determine
 -- the srid, dimension, and geometry type of the all geometries
--- in the table, adding contraints as necessary to the table.  If
+-- in the table, adding constraints as necessary to the table.  If
 -- successful, an appropriate row is inserted into the geometry_columns
 -- table, otherwise, the exception is caught and an error notice is
 -- raised describing the problem. (This is so the wrapper function
@@ -2348,8 +2348,8 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 -- Geometry types (except GEOMETRY) are checked for consistency using a CHECK constraint.
 -- Uses an ALTER TABLE command to add the geometry column to the table.
--- Addes a row to geometry_columns.
--- Addes a constraint on the table that all the geometries MUST have the same
+-- Adds a row to geometry_columns.
+-- Adds a constraint on the table that all the geometries MUST have the same
 -- SRID. Checks the coord_dimension to make sure its between 0 and 3.
 -- Should also check the precision grid (future expansion).
 --
@@ -3155,7 +3155,7 @@ BEGIN
 							SELECT 1 FROM pg_catalog.pg_type
 							WHERE typname = 'raster' ) )
 
-				 -- PostGIS SFCGAL is availble if
+				 -- PostGIS SFCGAL is available if
 				 -- 'postgis_sfcgal_version' function exists
 				 OR ( rec.name = 'postgis_sfcgal' AND EXISTS (
 							SELECT 1 FROM pg_catalog.pg_proc
@@ -3967,7 +3967,7 @@ CREATE OR REPLACE FUNCTION ST_MakeValid(geom geometry, params text)
 --	- Obeying the RHR (if polygonal)
 --	- Simplified of consecutive duplicated points
 -- Ensuring:
---	- No input vertexes are discarded (except consecutive repeated ones)
+--	- No input vertices are discarded (except consecutive repeated ones)
 --	- Output geometry type matches input
 --
 -- Returns NULL on failure.
@@ -4492,8 +4492,8 @@ CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry, integer)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
--- PostGIS equivalent function: relate(geom1 geometry, geom2 geometry,text)
-CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry,text)
+-- PostGIS equivalent function: relate(geom1 geometry, geom2 geometry, text)
+CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry, text)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','relate_pattern'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -6864,7 +6864,7 @@ $$
 			var_cent := @extschema@.ST_Centroid(var_param_geom);
 			IF (@extschema@.ST_XMax(var_enline) - @extschema@.ST_XMin(var_enline) ) > var_buf AND (@extschema@.ST_YMax(var_enline) - @extschema@.ST_YMin(var_enline) ) > var_buf THEN
 					IF @extschema@.ST_Dwithin(@extschema@.ST_Centroid(var_convhull) , @extschema@.ST_Centroid(@extschema@.ST_Envelope(var_param_geom)), var_buf/2) THEN
-				-- If the geometric dimension is > 1 and the object is symettric (cutting at centroid will not work -- offset a bit)
+				-- If the geometric dimension is > 1 and the object is symmetric (cutting at centroid will not work -- offset a bit)
 						var_cent := @extschema@.ST_Translate(var_cent, (@extschema@.ST_XMax(var_enline) - @extschema@.ST_XMin(var_enline))/1000,  (@extschema@.ST_YMAX(var_enline) - @extschema@.ST_YMin(var_enline))/1000);
 					ELSE
 						-- uses closest point on geometry to centroid. I can't explain why we are doing this

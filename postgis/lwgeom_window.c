@@ -142,12 +142,12 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		/* Validate input parameters */
 		if (tolerance_is_null || tolerance < 0)
 		{
-			lwpgerror("Tolerance must be a positive number", tolerance);
+			lwpgerror("Tolerance must be a positive number, got %g", tolerance);
 			PG_RETURN_NULL();
 		}
 		if (minpoints_is_null || minpoints < 0)
 		{
-			lwpgerror("Minpoints must be a positive number", minpoints);
+			lwpgerror("Minpoints must be a positive number, got %d", minpoints);
 		}
 
 		initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -228,7 +228,7 @@ Datum ST_ClusterWithinWin(PG_FUNCTION_ARGS)
 		/* Validate input parameters */
 		if (tolerance_is_null || tolerance < 0)
 		{
-			lwpgerror("Tolerance must be a positive number", tolerance);
+			lwpgerror("Tolerance must be a positive number, got %g", tolerance);
 			PG_RETURN_NULL();
 		}
 
@@ -371,7 +371,7 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 		int       *r;
 		Datum argdatum;
 
-		/* What is K? If it's NULL or invalid, we can't procede */
+		/* What is K? If it's NULL or invalid, we can't proceed */
 		argdatum = WinGetFuncArgCurrent(winobj, 1, &isnull);
 		k = DatumGetInt32(argdatum);
 		if (isnull || k <= 0)
@@ -652,7 +652,7 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 			PG_RETURN_NULL();
 		}
 
-		/* Get the tolerance argument from second postition */
+		/* Get the tolerance argument from second position */
 		d = WinGetFuncArgCurrent(winobj, 1, &isnull);
 		if (!isnull)
 			tolerance = DatumGetFloat8(d);
@@ -706,7 +706,7 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 	if (context->isnull)
 		PG_RETURN_NULL();
 
-	/* Propogate the null entries */
+	/* Propagate the null entries */
 	if (context->idx[curpos] < 0)
 		PG_RETURN_NULL();
 

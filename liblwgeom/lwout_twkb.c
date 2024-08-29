@@ -470,7 +470,7 @@ static int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWK
 		/* Reset bbox calculation */
 		child_state.bbox_max[i] = INT64_MIN;
 		child_state.bbox_min[i] = INT64_MAX;
-		/* Reset acumulated delta values to get absolute values on next point */
+		/* Reset accumulated delta values to get absolute values on next point */
 		child_state.accum_rels[i] = 0;
 	}
 

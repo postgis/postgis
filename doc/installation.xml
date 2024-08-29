@@ -60,7 +60,7 @@ in each individual database you want to use it in.
 
 	<note>
 	  <para>
-		For GEOS functionality, when you install PostgresSQL you may need to
+		For GEOS functionality, when you install PostgreSQL you may need to
 		explicitly link PostgreSQL against the standard C++ library:
 	  </para>
 

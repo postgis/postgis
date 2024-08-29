@@ -3,7 +3,7 @@
  * Copyright (C) 2011-2016 Regina Obe and Leo Hsu (Paragon Corporation)
  **/
 -- This function given two roadways, state and optional city, zip
--- Will return addresses that are at the intersecton of those roadways
+-- Will return addresses that are at the intersection of those roadways
 -- The address returned will be the address on the first road way
 -- Use case example an address at the intersection of 2 streets:
 -- SELECT pprint_addy(addy), st_astext(geomout),rating FROM geocode_intersection('School St', 'Washington St', 'MA', 'Boston','02117');

@@ -382,7 +382,7 @@ LWGEOM* wkt_parser_linestring_new(POINTARRAY *pa, char *dimensionality)
 /**
 * Create a new circularstring. Null point array implies empty. Null dimensionality
 * implies no specified dimensionality in the WKT.
-* Circular strings are just like linestrings, except with slighty different
+* Circular strings are just like linestrings, except with slightly different
 * validity rules (minpoint == 3, numpoints % 2 == 1).
 */
 LWGEOM* wkt_parser_circularstring_new(POINTARRAY *pa, char *dimensionality)

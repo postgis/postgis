@@ -33,7 +33,7 @@
 
 /*------------------------------------------------------------------------------------------------------------
 Initializing functions
-The functions starting the distance-calculation processses
+The functions starting the distance-calculation processes
 --------------------------------------------------------------------------------------------------------------*/
 
 LWGEOM *
@@ -741,7 +741,7 @@ lw_dist2d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS *dl)
 	POINTARRAY *pa = line->points;
 	const POINT2D *pt = getPoint2d_cp(pa, 0);
 
-	/* Line has a pount outside poly. Check distance to outer ring only. */
+	/* Line has a point outside poly. Check distance to outer ring only. */
 	if (ptarray_contains_point(poly->rings[0], pt) == LW_OUTSIDE || dl->mode == DIST_MAX)
 		return lw_dist2d_ptarray_ptarray(pa, poly->rings[0], dl);
 
@@ -775,7 +775,7 @@ lw_dist2d_line_curvepoly(LWLINE *line, LWCURVEPOLY *poly, DISTPTS *dl)
 {
 	const POINT2D *pt = getPoint2d_cp(line->points, 0);
 
-	/* Line has a pount outside curvepoly. Check distance to outer ring only. */
+	/* Line has a point outside curvepoly. Check distance to outer ring only. */
 	if (lwgeom_contains_point(poly->rings[0], pt) == LW_OUTSIDE)
 		return lw_dist2d_recursive((LWGEOM *)line, poly->rings[0], dl);
 
@@ -912,7 +912,7 @@ lw_dist2d_tri_curvepoly(LWTRIANGLE *tri, LWCURVEPOLY *poly, DISTPTS *dl)
 	if (dl->mode == DIST_MAX)
 		return lw_dist2d_recursive((LWGEOM *)tri, poly->rings[0], dl);
 
-	/* Line has a pount outside curvepoly. Check distance to outer ring only. */
+	/* Line has a point outside curvepoly. Check distance to outer ring only. */
 	if (lwgeom_contains_point(poly->rings[0], pt) == LW_OUTSIDE)
 	{
 		if (lw_dist2d_recursive((LWGEOM *)tri, poly->rings[0], dl))
@@ -1010,7 +1010,7 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 			return lw_dist2d_ptarray_ptarray(poly1->rings[0], poly2->rings[i], dl);
 
 	/*5	If we have come all the way here we know that the first point of one of them is inside the other ones
-	 * outer ring and not in holes so we check wich one is inside.*/
+	 * outer ring and not in holes so we check which one is inside.*/
 	pt = getPoint2d_cp(poly1->rings[0], 0);
 	if (ptarray_contains_point(poly2->rings[0], pt) != LW_OUTSIDE)
 	{
@@ -1215,7 +1215,7 @@ lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2, DISTPTS *dl)
 	LWDEBUGF(2, "lw_dist2d_ptarray_ptarray called (points: %d-%d)", l1->npoints, l2->npoints);
 
 	/*	If we are searching for maxdistance we go straight to point-point calculation since the maxdistance have
-	 * to be between two vertexes*/
+	 * to be between two vertices*/
 	if (dl->mode == DIST_MAX)
 	{
 		for (t = 0; t < l1->npoints; t++) /*for each segment in L1 */
@@ -2329,7 +2329,7 @@ lw_dist2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B, DISTPTS *
 	    ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
 
 	/*This is for finding the maxdistance.
-	the maxdistance have to be between two vertexes, compared to mindistance which can be between two vertexes.*/
+	the maxdistance have to be between two vertices, compared to mindistance which can be between two vertices.*/
 	if (dl->mode == DIST_MAX)
 	{
 		if (r >= 0.5)

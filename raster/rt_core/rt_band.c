@@ -725,7 +725,7 @@ rt_band_get_isnodata_flag(rt_band band) {
  *
  * @param band : the band to set nodata value to
  * @param val : the nodata value
- * @param converted : if non-zero, value was truncated/clamped/coverted
+ * @param converted : if non-zero, value was truncated/clamped/converted
  *
  * @return ES_NONE or ES_ERROR
  */
@@ -1779,7 +1779,7 @@ uint32_t rt_band_get_nearest_pixel(
 			}
 		}
 
-		/* distance threshholds met */
+		/* distance thresholds met */
 		if (_d[0] >= distance[0] && _d[1] >= distance[1])
 			break;
 		else if (d0 && count)

@@ -207,7 +207,7 @@ stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 	len = vsnprintf(s->str_end, maxlen, fmt, ap2);
 	va_end(ap2);
 
-	/* Propogate errors up */
+	/* Propagate errors up */
 	if ( len < 0 )
 		#if defined(__MINGW64_VERSION_MAJOR)
 		va_copy(ap2, ap);

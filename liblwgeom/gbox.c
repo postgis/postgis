@@ -346,6 +346,18 @@ gbox_contains_2d(const GBOX *g1, const GBOX *g2)
 	return LW_TRUE;
 }
 
+
+int
+gbox_within_2d(const GBOX *g1, const GBOX *g2)
+{
+	if ( ( g1->xmin < g2->xmin ) || ( g1->xmax > g2->xmax ) ||
+	     ( g1->ymin < g2->ymin ) || ( g1->ymax > g2->ymax ) )
+	{
+		return LW_FALSE;
+	}
+	return LW_TRUE;
+}
+
 int
 gbox_contains_point2d(const GBOX *g, const POINT2D *p)
 {

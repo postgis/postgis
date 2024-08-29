@@ -1373,7 +1373,7 @@ Datum geography_line_locate_point(PG_FUNCTION_ARGS)
 	}
 	if ( gserialized_get_type(gs2) != POINTTYPE )
 	{
-		elog(ERROR,"%s: 2st arg is not a point", __func__);
+		elog(ERROR,"%s: 2nd arg is not a point", __func__);
 		PG_RETURN_NULL();
 	}
 

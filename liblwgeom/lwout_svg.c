@@ -312,7 +312,7 @@ assvg_polygon(stringbuffer_t* sb, const LWPOLY *poly, int relative, int precisio
 
 	for (i = 0; i<poly->nrings; i++)
 	{
-		if (i) stringbuffer_append(sb, " ");	/* Space beetween each ring */
+		if (i) stringbuffer_append(sb, " ");	/* Space between each ring */
 		stringbuffer_append(sb, "M ");		/* Start path with SVG MoveTo */
 
 		if (relative)

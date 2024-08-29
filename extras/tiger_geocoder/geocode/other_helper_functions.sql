@@ -2,7 +2,7 @@
  *
  * Copyright (C) 2011 Regina Obe and Leo Hsu (Paragon Corporation)
  **/
--- Note we are wrapping this in a function so we can make it immutable and thus useable in an index
+-- Note we are wrapping this in a function so we can make it immutable and thus usable in an index
 -- It also allows us to shorten and possibly better cache the repetitive pattern in the code
 -- greatest(to_number(b.fromhn,''99999999''),to_number(b.tohn,''99999999''))
 -- and least(to_number(b.fromhn,''99999999''),to_number(b.tohn,''99999999''))
@@ -13,7 +13,7 @@ $$ SELECT least(to_number( CASE WHEN trim($1) ~ '^[0-9]+$' THEN $1 ELSE '0' END,
   COST 200;
 
 -- Note we are wrapping this in a function so we can make it immutable (for some reason least and greatest aren't considered immutable)
--- and thu useable in an index or cacheable for multiple calls
+-- and thu usable in an index or cacheable for multiple calls
 CREATE OR REPLACE FUNCTION greatest_hn(fromhn varchar, tohn varchar)
   RETURNS integer AS
 $$ SELECT greatest(to_number( CASE WHEN trim($1) ~ '^[0-9]+$' THEN $1 ELSE '0' END,'99999999'),to_number(CASE WHEN trim($2) ~ '^[0-9]+$' THEN $2 ELSE '0' END,'99999999') )::integer;  $$

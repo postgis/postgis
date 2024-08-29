@@ -17,9 +17,9 @@
 # ENVIRONMENT VARIABLES:
 #
 #   CONFIGURE_ARGS    passed to ./configure call
-#   MAKE              useed for builds (defaults to "make")
-#   newoutdir  this variable can be overriden to control the outdir and package name.
-#              package name will be set to {newoutdir}.tar.gz if this variabe is overridden
+#   MAKE              used for builds (defaults to "make")
+#   newoutdir  this variable can be overridden to control the outdir and package name.
+#              package name will be set to {newoutdir}.tar.gz if this variable is overridden
 #
 
 version=dev
@@ -141,7 +141,7 @@ echo "Tweaking timestamps"
 # Extract last commit date from git
 date=$(git log -1 --pretty=format:%cI HEAD)
 
-# Enforce timestamp on files to be included in the pacakge
+# Enforce timestamp on files to be included in the package
 find "${outdir}" -exec touch -d "${date}" {} \;
 
 echo "Generating $package file"

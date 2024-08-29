@@ -303,7 +303,7 @@ expandFunctionOid(Oid geotype, Oid callingfunc)
 /*
 * For functions that we want enhanced with spatial
 * index lookups, add this support function to the
-* SQL function defintion, for example:
+* SQL function definition, for example:
 *
 * CREATE OR REPLACE FUNCTION ST_Intersects(g1 geometry, g2 geometry)
 *	RETURNS boolean

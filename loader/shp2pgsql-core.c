@@ -465,7 +465,7 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		double area = 0.0;
 		Ring *ring;
 
-		/* Set start and end vertexes */
+		/* Set start and end vertices */
 		if (pi == obj->nParts - 1)
 			ve = obj->nVertices;
 		else
@@ -473,7 +473,7 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 
 		vs = obj->panPartStart[pi];
 
-		/* Compute number of vertexes */
+		/* Compute number of vertices */
 		nv = ve - vs;
 
 		/* Allocate memory for a ring */
@@ -483,7 +483,7 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		ring->next = NULL;
 		ring->linked = 0;
 
-		/* Iterate over ring vertexes */
+		/* Iterate over ring vertices */
 		for (vi = vs; vi < ve; vi++)
 		{
 			int vn = vi+1; /* next vertex for area */
@@ -1725,7 +1725,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 
 done_cell:
 
-		/* Only put in delimeter if not last field or a shape will follow */
+		/* Only put in delimiter if not last field or a shape will follow */
 		if (state->config->readshape == 1 || i < DBFGetFieldCount(state->hDBFHandle) - 1)
 		{
 			if (state->config->dump_format)

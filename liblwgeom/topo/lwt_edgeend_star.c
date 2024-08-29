@@ -186,7 +186,7 @@ lwt_edgeEndStar_getNextCW( LWT_EDGEEND_STAR *star, LWT_ISO_EDGE *edge, int outgo
     }
   }
   if ( ! thisEdgeEnd ) {
-    lwerror("Cound not find %s edge %" LWTFMT_ELEMID " in the star",
+    lwerror("Could not find %s edge %" LWTFMT_ELEMID " in the star",
       outgoing ?  "outgoing" : "incoming", edge->edge_id);
     return NULL;
   }
@@ -210,7 +210,7 @@ lwt_edgeEndStar_getNextCCW( LWT_EDGEEND_STAR *star, LWT_ISO_EDGE *edge, int outg
     }
   }
   if ( ! thisEdgeEnd ) {
-    lwerror("Cound not find %s edge %" LWTFMT_ELEMID " in the star",
+    lwerror("Could not find %s edge %" LWTFMT_ELEMID " in the star",
       outgoing ?  "outgoing" : "incoming", edge->edge_id);
     return NULL;
   }

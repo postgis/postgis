@@ -6,7 +6,7 @@
 -- and in the event of failure, a word-by-word fuzzy match is attempted.
 --
 -- The result is the state as given in the input string, and the approved
--- state abbreviation, seperated by a colon.
+-- state abbreviation, separated by a colon.
 CREATE OR REPLACE FUNCTION state_extract(rawInput VARCHAR) RETURNS VARCHAR
 AS $_$
 DECLARE

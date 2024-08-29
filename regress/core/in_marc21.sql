@@ -244,7 +244,7 @@ ST_GeomFromMARC21('
 	  </datafield>
 	</record>');
 
--- ERROR: + sign betwee numbers in subfield "f"
+-- ERROR: + sign between numbers in subfield "f"
 SELECT '+_between_numbers',
 ST_GeomFromMARC21('
 	<record>

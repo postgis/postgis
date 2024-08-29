@@ -246,7 +246,7 @@ kmeans_init(POINT4D *objs, uint32_t n, POINT4D *centers, uint32_t k)
 				if (distances[j] < 0)
 					continue;
 
-				/* update minimal distance with previosuly accepted cluster */
+				/* update minimal distance with previously accepted cluster */
 				double current_distance = distance3d_sqr_pt4d_pt4d(&objs[j], &centers[i - 1]);
 				if (current_distance < distances[j])
 					distances[j] = current_distance;

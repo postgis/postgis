@@ -188,7 +188,7 @@ BEGIN
             --     var_addy.location := var_place;
             -- END IF;
 
-            -- This is a cross streets - only add if not the primary adress street
+            -- This is a cross streets - only add if not the primary address street
             IF var_redge.fullname > '' AND var_redge.fullname <> var_primary_fullname THEN
                 street := array_append(street, (CASE WHEN include_strnum_range THEN COALESCE(var_redge.fromhn::varchar, '')::varchar || COALESCE(' - ' || var_redge.tohn::varchar,'')::varchar || ' '::varchar  ELSE '' END::varchar ||  COALESCE(var_redge.fullname::varchar,''))::varchar);
             END IF;

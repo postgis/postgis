@@ -228,7 +228,7 @@ lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt)
 			}
 		}
 
-		/* Propogate boundary condition */
+		/* Propagate boundary condition */
 		if ( result == LW_BOUNDARY )
 			return LW_BOUNDARY;
 

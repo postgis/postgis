@@ -2005,7 +2005,7 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 		/*
 		* Transform NULL numbers to '0'
 		* This is because the shapelib
-		* won't easly take care of setting
+		* won't easily take care of setting
 		* nulls unless paying the acquisition
 		* of a bug in long integer values
 		*/

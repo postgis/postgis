@@ -179,6 +179,12 @@ BOX3D(220227 150406 1,220268 150415 1)
 		    </para>
         </note>
 
+        <note>
+            <para>
+            Escaping names for tables and/or namespaces that include special characters and quotes may require special handling. A user notes: "For schemas and tables, use identifier escaping rules to produce a double-quoted string, and afterwards remove the first and last double-quote character. For geometry column pass as is."
+            </para>
+        </note>
+
     <para role="availability" conformance="1.0.0">Availability: 1.0.0</para>
     <para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Estimated_Extent.</para>
 

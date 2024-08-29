@@ -607,7 +607,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 --  ValidateTopology(toponame, [bbox])
 --
 --  Return a Set of ValidateTopology_ReturnType containing
---  informations on all topology inconsistencies
+--  information on all topology inconsistencies
 --
 -- Availability: 1.0.0
 -- Changed: 3.2.0 - add bbox optional parameter
@@ -795,7 +795,7 @@ BEGIN
     RETURN NEXT retrec;
   END LOOP; --}
 
-  -- Check for edge start_node geometry mis-match
+  -- Check for edge start_node geometry mismatch
   -- TODO: move this in the first edge table scan
   RAISE NOTICE 'Checking for edges start_node mismatch';
   FOR rec IN
@@ -810,13 +810,13 @@ BEGIN
       OR e.geom && bbox
     )
   LOOP --{
-    retrec.error = 'edge start node geometry mis-match';
+    retrec.error = 'edge start node geometry mismatch';
     retrec.id1 = rec.id1;
     retrec.id2 = rec.id2;
     RETURN NEXT retrec;
   END LOOP; --}
 
-  -- Check for edge end_node geometry mis-match
+  -- Check for edge end_node geometry mismatch
   -- TODO: move this in the first edge table scan
   RAISE NOTICE 'Checking for edges end_node mismatch';
   FOR rec IN
@@ -831,7 +831,7 @@ BEGIN
       OR e.geom && bbox
     )
   LOOP --{
-    retrec.error = 'edge end node geometry mis-match';
+    retrec.error = 'edge end node geometry mismatch';
     retrec.id1 = rec.id1;
     retrec.id2 = rec.id2;
     RETURN NEXT retrec;

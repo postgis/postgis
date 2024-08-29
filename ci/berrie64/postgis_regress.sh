@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-# Berrie64 is a 64-bit Rasberry Pi Arm managed by Bruce Rindahl
+# Berrie64 is a 64-bit Raspberry Pi Arm managed by Bruce Rindahl
 ## BRANCH is passed in via jenkins which is set via gitea web hook
 #export BRANCH=618a67b1d6fc223dd5a4c0b02c824939f21dbd65
 ## label is set by jenkins

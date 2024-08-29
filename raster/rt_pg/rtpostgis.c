@@ -68,7 +68,7 @@
  * automatically free'd at the end of the function. If you want some data to
  * live between function calls, you have 2 options:
  *
- * - Use fcinfo->flinfo->fn_mcxt contex to store the data (by pointing the
+ * - Use fcinfo->flinfo->fn_mcxt context to store the data (by pointing the
  *   data you want to keep with fcinfo->flinfo->fn_extra)
  * - Use SRF funcapi, and storing the data at multi_call_memory_ctx (by pointing
  *   the data you want to keep with funcctx->user_fctx. funcctx is created by

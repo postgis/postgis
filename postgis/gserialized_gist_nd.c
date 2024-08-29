@@ -513,7 +513,7 @@ gserialized_datum_predicate(Datum gs1, Datum gs2, gidx_predicate predicate)
 
 	POSTGIS_DEBUG(3, "entered function");
 
-	/* Must be able to build box for each arguement (ie, not empty geometry)
+	/* Must be able to build box for each argument (ie, not empty geometry)
 	   and predicate function to return true. */
 	if ((gserialized_datum_get_gidx_p(gs1, gidx1) == LW_SUCCESS) &&
 	    (gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) && predicate(gidx1, gidx2))
@@ -533,7 +533,7 @@ gserialized_datum_predicate_gidx_geom(GIDX *gidx1, Datum gs2, gidx_predicate pre
 
 	POSTGIS_DEBUG(3, "entered function");
 
-	/* Must be able to build box for gs2 arguement (ie, not empty geometry)
+	/* Must be able to build box for gs2 argument (ie, not empty geometry)
 	   and predicate function to return true. */
 	if ((gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) && predicate(gidx1, gidx2))
 	{
@@ -552,7 +552,7 @@ gserialized_datum_predicate_geom_gidx(Datum gs1, GIDX *gidx2, gidx_predicate pre
 
 	POSTGIS_DEBUG(3, "entered function");
 
-	/* Must be able to build box for gs2 arguement (ie, not empty geometry)
+	/* Must be able to build box for gs2 argument (ie, not empty geometry)
 	   and predicate function to return true. */
 	if ((gserialized_datum_get_gidx_p(gs1, gidx1) == LW_SUCCESS) && predicate(gidx1, gidx2))
 	{

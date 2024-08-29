@@ -20,7 +20,7 @@ PROPOSAL
 --------
 My proposed fix is to change how and where these basic validations are performed.  Instead of tracking the validation requirements in global variable they will be handled by the parser.  By adding calls to validation methods as the parser closes each geometry or sub-geometry we know the proper context and can evaluate the geometry as a whole.
 
-To pick an example, the parser will call a method 'void check_linestring(void)' before popping a parsed linestrings tuple from the stack.  This method will currently implement the minpoints check.  In the case of a closed linestring, an aditional method 'void check_geometry_closed(void)' will be called.  With this process, the point arrays themselves have no validation, since point arrays have no 
+To pick an example, the parser will call a method 'void check_linestring(void)' before popping a parsed linestrings tuple from the stack.  This method will currently implement the minpoints check.  In the case of a closed linestring, an additional method 'void check_geometry_closed(void)' will be called.  With this process, the point arrays themselves have no validation, since point arrays have no 
 
 nonempty_linestring :
 	{ alloc_linestring(); } linestring_1 { check_linestring(); pop(); } 
@@ -32,6 +32,6 @@ This is a change in paradigm for how we currently validate geometries.  The prev
 
 This solution requires traversing the tuple chain from the geometry into point array tuples and in some cases sub-geometries.  While this won't have a large effect on linestrings it can be expected to have a negative performance impact on polygons, as each point needs to be fully traversed in order to validate it.  Compound curves have a similar problem, but under the current mechanism are simply not fully validated.
 
-The other negative impact of this changes is the invalidity reporting.  Because validation is performed at the end of the geometry, it is not simple to identify where in the WKT string an error occured.  For example, if a polygon consists of several rings, one of which is not closed, the Hint provided to the user will indicate the end of the polygon, not the end of the unclosed point array.  I have yet to resolve this issue.
+The other negative impact of this changes is the invalidity reporting.  Because validation is performed at the end of the geometry, it is not simple to identify where in the WKT string an error occurred.  For example, if a polygon consists of several rings, one of which is not closed, the Hint provided to the user will indicate the end of the polygon, not the end of the unclosed point array.  I have yet to resolve this issue.
 
 The advantages here are the proper support of compound curves and curve polygons and the validation mechanism is much more clear and flexible.

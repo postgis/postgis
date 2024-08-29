@@ -35,7 +35,7 @@ void dump_bytes( char *a, int numb)
 }
 
 
-// need to find the OID coresponding to the GEOMETRY type
+// need to find the OID corresponding to the GEOMETRY type
 //
 // select OID from pg_type where typname = 'wkb';
 
@@ -54,13 +54,13 @@ int	find_WKB_typeid(PGconn 	*conn)
 
 	if (PQresultStatus(dbresult) != PGRES_TUPLES_OK)
 	{
-		fprintf(stderr, "couldnt execute query to find oid of geometry type");
+		fprintf(stderr, "couldn't execute query to find oid of geometry type");
 		exit_nicely(conn);	//command failed
 	}
 
 	if ( PQntuples(dbresult) != 1)
 	{
-		fprintf(stderr, "query to find oid of geometry didnt return 1 row!");
+		fprintf(stderr, "query to find oid of geometry didn't return 1 row!");
 		exit_nicely(conn);
 	}
 

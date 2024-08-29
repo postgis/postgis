@@ -752,7 +752,7 @@ static POINTARRAY* parse_gml_coord(xmlNodePtr xnode, bool *hasz)
 			xmlFree(c);
 		}
 	}
-	/* Check dimension consistancy */
+	/* Check dimension consistency */
 	if (!x || !y) gml_lwpgerror("invalid GML representation", 24);
 	if (!z) *hasz = false;
 
@@ -902,7 +902,7 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
  * Parse data coordinates
  *
  * There's several ways to encode data coordinates, who could be mixed
- * inside a single geometrie:
+ * inside a single geometry:
  *  - gml:pos element
  *  - gml:posList element
  *  - gml:pointProperty

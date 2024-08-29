@@ -980,7 +980,7 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
             <para><varname>zip</varname> varchar 5-digit zipcode. e.g. 02109.</para>
           </listitem>
           <listitem>
-            <para><varname>parsed</varname> boolean - denotes if addess was formed from normalize process. The normalize_address function sets this to true before returning the address.</para>
+            <para><varname>parsed</varname> boolean - denotes if address was formed from normalize process. The normalize_address function sets this to true before returning the address.</para>
           </listitem>
           <listitem>
             <para><varname>zip4</varname> last 4 digits of a 9 digit zip code. Availability: PostGIS 2.4.0.</para>
@@ -1084,7 +1084,7 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
             <para><varname>zip</varname> varchar 5-digit zipcode. e.g. 02109.</para>
           </listitem>
           <listitem>
-            <para><varname>parsed</varname> boolean - denotes if addess was formed from normalize process. The normalize_address function sets this to true before returning the address.</para>
+            <para><varname>parsed</varname> boolean - denotes if address was formed from normalize process. The normalize_address function sets this to true before returning the address.</para>
           </listitem>
           <listitem>
             <para><varname>zip4</varname> last 4 digits of a 9 digit zip code. Availability: PostGIS 2.4.0.</para>

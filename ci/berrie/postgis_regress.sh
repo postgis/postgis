@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-#bessie is a 32-bit Rasberry Pi managed by Bruce Rindahl
+#bessie is a 32-bit Raspberry Pi managed by Bruce Rindahl
 ## BRANCH is passed in via jenkins which is set via gitea web hook
 #export BRANCH=618a67b1d6fc223dd5a4c0b02c824939f21dbd65
 ## label is set by jenkins

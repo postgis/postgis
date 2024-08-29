@@ -2688,7 +2688,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         <refnamediv>
             <refname>ST_Tesselate</refname>
 
-            <refpurpose>Perform surface Tesselation of a polygon or polyhedralsurface and returns as a TIN or collection of TINS</refpurpose>
+            <refpurpose>Perform surface Tessellation of a polygon or polyhedralsurface and returns as a TIN or collection of TINS</refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
@@ -2723,7 +2723,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         <refnamediv>
             <refname>CG_Tesselate</refname>
 
-            <refpurpose>Perform surface Tesselation of a polygon or polyhedralsurface and returns as a TIN or collection of TINS</refpurpose>
+            <refpurpose>Perform surface Tessellation of a polygon or polyhedralsurface and returns as a TIN or collection of TINS</refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
@@ -2784,7 +2784,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                                 <imageobject>
                                     <imagedata fileref="images/st_tesselate02.png"/>
                                 </imageobject>
-                                <caption><para>Tesselated Cube with triangles colored</para></caption>
+                                <caption><para>Tessellated Cube with triangles colored</para></caption>
                             </mediaobject>
                     </informalfigure></para>
                 </entry>
@@ -2815,7 +2815,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                         <imageobject>
                             <imagedata fileref="images/st_tesselate04.png"/>
                         </imageobject>
-                        <caption><para>Tesselated Polygon</para></caption>
+                        <caption><para>Tessellated Polygon</para></caption>
                     </mediaobject>
             </informalfigure></para>
         </entry>
