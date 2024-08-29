@@ -1757,6 +1757,7 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 			<funcdef>geometry <function>ST_RemoveIrrelevantPointsForView</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 			<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef>
+			<paramdef choice="opt"><type>boolean </type><parameter>cartesian_hint = false</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -1774,6 +1775,14 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 				<listitem><para>leads to the same rendering result within the specified view, and</para></listitem>
 				<listitem><para>may introduce self-intersections which would make the resulting geometry invalid (see example below).</para></listitem>
 			</itemizedlist>
+		</para>
+
+		<para>If <code>cartesian_hint</code> is set to <code>true</code>,
+			the algorithm applies additional optimizations involving cartesian math
+			to further reduce the resulting point number.
+			Please note that using this option might introduce rendering artifacts
+			if the resulting coordinates are projected into another (non-cartesian)
+			coordinate system before rendering.
 		</para>
 		
 		<warning><para>For polygons, this function does currently not ensure that the result is valid.
@@ -1818,7 +1827,7 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 			SELECT ST_AsText(
 			ST_RemoveIrrelevantPointsForView(
 			ST_GeomFromText('MULTIPOLYGON(((10 10, 20 10, 30 10, 40 10, 20 20, 10 20, 10 10)),((10 10, 20 10, 20 20, 10 20, 10 10)))'),
-			ST_MakeEnvelope(12,12,18,18)));
+			ST_MakeEnvelope(12,12,18,18), true));
 		
 		st_astext
 		---------
@@ -1829,7 +1838,7 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 			SELECT ST_AsText(
 			ST_RemoveIrrelevantPointsForView(
 			ST_GeomFromText('MULTILINESTRING((0 0, 10 0,20 0,30 0), (0 15, 5 15, 10 15, 15 15, 20 15, 25 15, 30 15, 40 15), (13 13,15 15,17 17))'),
-			ST_MakeEnvelope(12,12,18,18)));
+			ST_MakeEnvelope(12,12,18,18), true));
 		
 		st_astext
 		---------
@@ -1840,13 +1849,35 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 			SELECT ST_AsText(
 			ST_RemoveIrrelevantPointsForView(
 			ST_GeomFromText('LINESTRING(0 0, 10 0,20 0,30 0)'),
-			ST_MakeEnvelope(12,12,18,18)));
+			ST_MakeEnvelope(12,12,18,18), true));
 		
 		st_astext
 		---------
 		    LINESTRING EMPTY
 		</programlisting>
 
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('POLYGON((0 30, 15 30, 30 30, 30 0, 0 0, 0 30))'),
+			ST_MakeEnvelope(12,12,18,18), true));
+		
+		st_astext
+		---------
+		    POLYGON((15 30,30 0,0 0,15 30))
+		</programlisting>
+
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('POLYGON((0 30, 15 30, 30 30, 30 0, 0 0, 0 30))'),
+			ST_MakeEnvelope(12,12,18,18)));
+		
+		st_astext
+		---------
+		    POLYGON((0 30,30 30,30 0,0 0,0 30))
+		</programlisting>
+		
 	  </refsection>
 
       <refsection>
