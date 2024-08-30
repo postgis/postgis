@@ -107,6 +107,8 @@ minimum_postgis_version_for_postgresql_major_version()
 13:3.0
 14:3.1
 15:3.2
+16:3.3
+17:3.3
 EOF
   fi
 
