@@ -35,7 +35,7 @@ static void test_lwgeom_remove_irrelevant_points_for_view(void)
 	wkt = lwgeom_to_ewkt(geom);
 	in_wkt = "POLYGON((15 30,30 0,0 0,15 30))";
 	ASSERT_STRING_EQUAL(wkt, in_wkt);
-	
+
 	lwfree(wkt);
 	lwgeom_free(geom);
 	lwfree(bbox);
