@@ -54,7 +54,7 @@ CREATE OR REPLACE FUNCTION CG_3DIntersection(geom1 geometry, geom2 geometry)
 
 -- Availability: 2.1.0
 -- Deprecation in 3.5.0
-CREATE OR REPLACE FUNCTION ST_3DIntersection(geometry, geometry)
+CREATE OR REPLACE FUNCTION ST_3DIntersection(geom1 geometry, geom2 geometry)
 RETURNS geometry AS $$
 	SELECT @extschema@._postgis_deprecate(
 		'ST_3DIntersection', 'CG_3DIntersection', '3.5.0');
