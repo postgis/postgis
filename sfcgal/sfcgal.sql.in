@@ -93,7 +93,7 @@ CREATE OR REPLACE FUNCTION CG_3DDifference(geom1 geometry, geom2 geometry)
 
 -- Availability: 2.2
 -- Deprecation in 3.5.0
-CREATE OR REPLACE FUNCTION ST_3DDifference(geometry, geometry)
+CREATE OR REPLACE FUNCTION ST_3DDifference(geom1 geometry, geom2 geometry)
 RETURNS geometry AS $$
 	SELECT @extschema@._postgis_deprecate(
 		'ST_3DDifference', 'CG_3DDifference', '3.5.0');
@@ -132,7 +132,7 @@ CREATE AGGREGATE ST_3DUnion(geometry) (
 
 -- Availability: 2.2
 -- Deprecation in 3.5.0
-CREATE OR REPLACE FUNCTION ST_3DUnion(geometry, geometry)
+CREATE OR REPLACE FUNCTION ST_3DUnion(geom1 geometry, geom2 geometry)
 RETURNS geometry AS $$
 	SELECT @extschema@._postgis_deprecate(
 		'ST_3DUnion', 'CG_3DUnion', '3.5.0');
