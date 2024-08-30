@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Support source whitespace checks from out-of-tree builds (Sandro Santilli)
   - Read tagged dollar quotes when generating function upgrades (Sandro Santilli)
   - [tiger_geocoder] Treat address fragments literally during normalization
     (Darafei Praliaskouski)
