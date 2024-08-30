@@ -195,6 +195,9 @@ fi
 if test -f postgis_raster--${to_version}.sql; then
   INSTALLED_EXTENSIONS="$INSTALLED_EXTENSIONS postgis_raster"
 fi
+if test -f postgis_sfcgal--${to_version}.sql; then
+  INSTALLED_EXTENSIONS="$INSTALLED_EXTENSIONS postgis_sfcgal"
+fi
 
 echo "INFO: installed extensions: $INSTALLED_EXTENSIONS"
 
@@ -216,7 +219,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
   elif test "${EXT}" = "postgis_raster"; then
     REGDIR=${BUILDDIR}/raster/test/regress
   elif test "${EXT}" = "postgis_sfcgal"; then
-    REGDIR=${BUILDDIR}/sfcgal/test/regress
+    REGDIR=${BUILDDIR}/sfcgal/regress
   else
     echo "SKIP: don't know where to find regress tests for extension ${EXT}"
   fi
