@@ -90,7 +90,7 @@ check-unit check-regress: all
 check-regress: export POSTGIS_REGRESS_DB ?= postgis_reg-$(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION)
 
 check-no-trailing-blanks:
-	! find . -name '*.c' -o -name '*.h' -o -name '*.proto' | \
+	! find $(top_srcdir) -name '*.c' -o -name '*.h' -o -name '*.proto' | \
 		grep -v lwin_wkt_lex.c | \
 		grep -v lwin_wkt_parse | \
 		grep -v lookup3 | \
