@@ -83,7 +83,7 @@ AC_SUBST([PICFLAGS])
 
 _LT_COMPILER_OPTION([if $compiler supports -fno-math-errno], [_cv_nomatherrno], [-fno-math-errno], [], [CFLAGS="$CFLAGS -fno-math-errno"], [])
 _LT_COMPILER_OPTION([if $compiler supports -fno-signed-zeros], [_cv_nosignedzeros], [-fno-signed-zeros], [], [CFLAGS="$CFLAGS -fno-signed-zeros"], [])
-_LT_COMPILER_OPTION([if $compiler supports -std=gnu11], [_cv_std], -std=gnu11, [], [CFLAGS="-std=gnu11 $CFLAGS"], [])
+_LT_COMPILER_OPTION([if $compiler supports -std=c11], [_cv_std], -std=c11, [], [CFLAGS="-std=c11 $CFLAGS"], [])
 
 
 dnl
