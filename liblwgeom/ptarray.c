@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <strings.h> /* for bzero */
 
 #include "../postgis_config.h"
 /*#define POSTGIS_DEBUG_LEVEL 4*/
