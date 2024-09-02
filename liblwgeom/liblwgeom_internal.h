@@ -72,6 +72,13 @@
 #define STR_IEQUALS(A, B) (strcasecmp((A), (B)) == 0)
 #define STR_ISTARTS(A, B) (strncasecmp((A), (B), strlen((B))) == 0)
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+#ifndef M_PI_2
+# define M_PI_2 1.57079632679489661923
+#endif
+
 
 /*
 * this will change to NaN when I figure out how to
