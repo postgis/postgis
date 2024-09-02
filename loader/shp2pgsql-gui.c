@@ -30,8 +30,10 @@
 #define GUI_RCSID "shp2pgsql-gui $Revision$"
 #define SHAPEFIELDMAXWIDTH 60
 
-static void pgui_log_va(const char *fmt, va_list ap);
-static void pgui_seterr_va(const char *fmt, va_list ap);
+static void pgui_log_va(const char *fmt, va_list ap) __attribute__ (( format(printf, 1, 0) ));
+static void pgui_seterr_va(const char *fmt, va_list ap) __attribute__ (( format(printf, 1, 0) ));
+static void pgui_logf(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+static void pgui_seterr(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
 
 static void update_conn_ui_from_conn_config(void);
 
@@ -244,7 +246,7 @@ pgui_log_va(const char *fmt, va_list ap)
 /*
 ** Write a message to the Import Log text area.
 */
-static void
+void
 pgui_logf(const char *fmt, ...)
 {
 	va_list ap;
@@ -264,7 +266,7 @@ pgui_seterr_va(const char *fmt, va_list ap)
 	pgui_errmsg[GUIMSG_LINE_MAXLEN] = '\0';
 }
 
-static void
+void
 pgui_seterr(const char *fmt, ...)
 {
 	va_list ap;
