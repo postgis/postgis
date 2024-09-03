@@ -8,7 +8,7 @@ PGVER=`pg_config --version | awk '{print $2}'`
 PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//' | sed 's/\(alpha\|beta\|rc\).*//' )
 SKIP_LABEL_REGEXP=
 echo "INFO: PostgreSQL version: ${PGVER} [${PGVER_MAJOR}]"
-
+MAKE=$(which gmake make | head -1)
 BUILDDIR=$PWD # TODO: allow override ?
 
 cd $(dirname $0)/..
@@ -252,7 +252,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     fi
     echo "Testing ${test_label}"
     RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-    make -C ${REGDIR} check ${MAKE_ARGS} && {
+    ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
       echo "PASS: ${test_label}"
     } || {
       echo "FAIL: ${test_label}"
@@ -286,7 +286,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     fi
     echo "Testing ${test_label}"
     RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-    make -C ${REGDIR} check ${MAKE_ARGS} && {
+    ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
       echo "PASS: ${test_label}"
     } || {
       echo "FAIL: ${test_label}"
@@ -295,7 +295,8 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
   done
 
   # Check unpackaged->unpackaged upgrades (if target version == current version)
-  CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
+#  CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
+  CURRENTVERSION=$(grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | tr '\n' '.')
 
   if test "${to_version}" != "${CURRENTVERSION}"; then #{
     echo "SKIP: ${EXT} script-based upgrades (${to_version_param} [${to_version}] does not match built version ${CURRENTVERSION})"
@@ -315,7 +316,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     if kept_label "${test_label}"; then #{
       echo "Testing ${test_label}"
       RUNTESTFLAGS="-v --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-      make -C ${REGDIR} check ${MAKE_ARGS} && {
+      ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
         echo "PASS: ${test_label}"
       } || {
         echo "FAIL: ${test_label}"
@@ -327,7 +328,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     if kept_label "${test_label}"; then #{
       echo "Testing ${test_label}"
       RUNTESTFLAGS="-v --dumprestore --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-      make -C ${REGDIR} check ${MAKE_ARGS} && {
+      ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
         echo "PASS: ${test_label}"
       } || {
         echo "FAIL: ${test_label}"
