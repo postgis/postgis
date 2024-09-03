@@ -80,7 +80,7 @@ Release procedure
 
   - Edit NEWS: set release date and check all notable changes have been reported
     (extract from git log and trac tickets for milestone).
-  - Create milestone for next verison in Trac.
+  - Create milestone for next version in Trac.
   - Push all the open tickets in Trac milestone to future and Fund Me milestones.
 
 4. Update code.

@@ -24,7 +24,7 @@
  **********************************************************************/
 
 /*
-*  GSERIALIZED verison 2 includes an optional extended flags uint64_t
+*  GSERIALIZED version 2 includes an optional extended flags uint64_t
 *  before the optional bounding box. There may be other optional
 *  components before the data area, but they all must be double
 *  aligned to that the ordinates remain double aligned.
