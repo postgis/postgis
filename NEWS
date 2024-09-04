@@ -8,10 +8,6 @@ PostGIS 3.4.4
 PostGIS 3.4.3
 2024/09/04
 
-This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+.
-To take advantage of all features, GEOS 3.12+ is needed.
-To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
-
 * Bug Fixes *
 
  - #5766, Always report invalid non-null MBR of universal face (Sandro Santilli)
