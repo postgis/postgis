@@ -127,7 +127,6 @@ TESTS += \
 	$(top_srcdir)/regress/core/unaryunion \
 	$(top_srcdir)/regress/core/union \
 	$(top_srcdir)/regress/core/clean \
-	$(top_srcdir)/regress/core/relate_bnr \
 	$(top_srcdir)/regress/core/delaunaytriangles \
 	$(top_srcdir)/regress/core/clipbybox2d \
 	$(top_srcdir)/regress/core/subdivide \
@@ -188,6 +187,11 @@ endif
 ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31200),1)
 	TESTS += \
 		$(top_srcdir)/regress/core/geos312
+endif
+
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" "<=" 31200),1)
+	TESTS += \
+		$(top_srcdir)/regress/core/relate_bnr
 endif
 
 ifeq ($(INTERRUPTTESTS),yes)
