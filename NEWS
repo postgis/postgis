@@ -1,5 +1,5 @@
 PostGIS 3.4.3
-xxxx/xx/xx
+2024/09/04
 
 This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.12+ is needed.
