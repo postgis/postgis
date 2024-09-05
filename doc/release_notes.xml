@@ -3,6 +3,27 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
         <sect1>
+            <title>PostGIS 3.3.7</title>
+            <para>2024/09/05</para>
+            <simplesect>
+                <title>Bug Fixes</title>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5766">5766</ulink>, Always report invalid non-null MBR of universal face (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5709">5709</ulink>, Fix loose mbr in topology.face on ST_ChangeEdgeGeom (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5698">5698</ulink>, Fix robustness issue splitting line by vertex very close to endpoints, affecting topology population functions (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5649">5649</ulink>, ST_Value should return NULL on missing band (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5677">5677</ulink>, ST_Union(geom[]) should unary union single entry arrays (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5679">5679</ulink>, Remove spurious COMMIT statements from sfcgal script (Sandro Santilli, Loïc Bartoletti)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5680">5680</ulink>, Fix populate_topology_layer with standard_conforming_strings set to off (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5589">5589</ulink>, ST_3DDistance error for shared first point (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5686">5686</ulink>, ST_NumInteriorRings and Triangle crash (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5671">5671</ulink>, Bug in ST_Area function with use_spheroid=false (Paul Ramsey, Regina Obe)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5687">5687</ulink>, #5756 Support for PostgreSQL 17, revise postgis_get_full_version_schema() to not rely on search_path</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5740">5740</ulink>, ST_DistanceSpheroid(geometry) incorrectly handles polygons (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5765">5765</ulink>, Handle nearly co-linear edges with slightly less slop (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5745">5745</ulink>, St_AsLatLonText rounding errors (Paul Ramsey)</para>
+            </simplesect>
+        </sect1>
+        <sect1>
             <title>PostGIS 3.3.6</title>
             <para>2024/02/07</para>
             <para>This version requires PostgreSQL 11-16, GEOS 3.6 or higher, and Proj 4.9+. Additional features are enabled if you are running GEOS 3.9+ (and ST_MakeValid enhancements with 3.10+), Proj 6.1+, and PostgreSQL 15+.</para>
