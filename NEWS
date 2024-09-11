@@ -1,7 +1,9 @@
-PostGIS 3.4.4
+PostGIS 3.4.4dev
 2024/xx/xx
 
 * Bug Fixes *
+
+  - Quote-protect output paths of pgtopo_export (Sandro Santilli)
 
 
 

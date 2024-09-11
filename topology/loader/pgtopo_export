@@ -213,7 +213,7 @@ fi # }
 
   cd ${DUMPDIR}/.. || exit 1
   echo "Archiving..." >&4
-  tar czf ${OFILE} ${DUMPNAME} || exit 1
+  tar czf "${OFILE}" "${DUMPNAME}" || exit 1
 )
 
 exit 0
