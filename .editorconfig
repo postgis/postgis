@@ -57,6 +57,7 @@ indent_size = 2
 # topology C files want space indentation
 [liblwgeom/topo/**.{c,h}]
 indent_style = space
+indent_size = 2
 
 [liblwgeom/lwgeom_log.h]
 indent_style = space
