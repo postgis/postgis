@@ -4,10 +4,11 @@
 #
 #-----------------------------------------------------
 
-SUBDIRS = liblwgeom @RASTER@ loader
+SUBDIRS = liblwgeom
 ifeq (@SUPPORT_POSTGRESQL@,yes)
 SUBDIRS += @DEPS_SUBDIR@ libpgcommon postgis regress @TOPOLOGY@ @SFCGAL@ utils doc @EXTENSIONS@
 endif
+SUBDIRS += @RASTER@ loader
 
 HAVE_SFCGAL=@HAVE_SFCGAL@
 CAN_BUILD_COMMENTS=@CAN_BUILD_COMMENTS@
