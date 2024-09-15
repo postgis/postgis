@@ -12,8 +12,8 @@ export MSYS2_ARG_CONV_EXCL=/config/tags
 export XML_CATALOG_FILES="/projects/docbook/docbook-5.0.1/catalog.xml"
 
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.13
-	export GDAL_VER=3.8.5
+	export GEOS_VER=3.13.0
+	export GDAL_VER=3.9.2
 	export PROJ_VER=8.2.1
 	export SFCGAL_VER=1.5.1
 	export CGAL_VER=5.6.1
@@ -46,6 +46,13 @@ fi;
 
 echo "ICON_VER ${ICON_VER}"
 
+if  [[ "${LZ4_VER}" == '' ]] ; then
+  export LZ4_VER=1.9.3
+fi;
+
+echo "LZ4_VER ${LZ4_VER}"
+
+
 #set to something even if override is on but not set
 if  [[ "${ZLIB_VER}" == '' ]] ; then
   export ZLIB_VER=1.2.13
@@ -53,7 +60,7 @@ fi;
 
 #set to something even if override is on but not set
 if  [[ "${LIBXML_VER}" == '' ]] ; then
-  export LIBXML_VER=2.9.14
+  export LIBXML_VER=2.12.5
 fi;
 
 #set to something even if override is on but not set
