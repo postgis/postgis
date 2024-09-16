@@ -60,11 +60,6 @@ sh autogen.sh
 # excluding topology cause it's erroring out on some tests
 EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --without-topology"
 
-if [ $PG_VER == "17" ]; then
-  #skipping raster cause it's failing on cunit when building with new chain
-  EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --without-raster"
-fi;
-
 if [ -n "$PCRE_VER" ]; then
     export PATH="${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/include:${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
 fi
