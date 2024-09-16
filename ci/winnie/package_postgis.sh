@@ -53,7 +53,7 @@ mkdir $outdir/bin/postgisgui/lib
 mkdir $outdir/utils
 cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin/postgisgui
 
-cp ${PGPATHEDB}/bin/libpq.dll  $outdir/bin/postgisgui
+cp ${PGPATH}/bin/libpq.dll  $outdir/bin/postgisgui
 #cp ${PGPATHEDB}/bin/libiconv2.dll  $outdir/bin/postgisgui
 cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
 cp ${PGPATHEDB}/bin/libintl*.dll $outdir/bin/postgisgui

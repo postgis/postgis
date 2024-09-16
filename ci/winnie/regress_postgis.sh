@@ -69,7 +69,7 @@ if [ -n "$PCRE_VER" ]; then
     export PATH="${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/include:${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
 fi
 
-if [$INCLUDE_MINOR_LIB == "1"]; then
+if [ $INCLUDE_MINOR_LIB == "1" ]; then
   EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --with-library-minor-version"
 fi
 
