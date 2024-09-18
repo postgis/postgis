@@ -1407,7 +1407,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         <refnamediv>
             <refname>CG_3DUnion</refname>
 
-            <refpurpose>Perform 3D union.</refpurpose>
+            <refpurpose>Perform 3D union using postgis_sfcgal.</refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>

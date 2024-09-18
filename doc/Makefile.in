@@ -217,7 +217,8 @@ XSL_GENERATED_SOURCES = \
 	list_raster_functions.xsl.xml \
 	list_sqlmm_functions.xsl.xml \
 	list_window_functions.xsl.xml \
-	table_body_function_support_matrix.xsl.xml
+	table_body_function_support_matrix.xsl.xml \
+	list_polyhedral_functions.xsl.xml
 
 TAG_GENERATED_SOURCES = \
 	address_standardizer_required.tag \
