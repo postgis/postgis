@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - #5778, Display function names in the 3D and SQL/MM reference links (Regina Obe)
   - Correct the PAGC regression result for a directional street name (wangdapeng)
   - Release temporary allocations in the shapefile loader and dumper (Laurențiu Nicola)
   - Use the SQL argument name k in the ST_ClusterKMeans synopsis (Dan Levy)

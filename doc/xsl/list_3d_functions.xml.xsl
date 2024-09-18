@@ -26,12 +26,13 @@
 					<xsl:variable name="refid">
 						<xsl:value-of select="@id" />
 					</xsl:variable>
+					<xsl:variable name="refname" select="refnamediv/refname"/>
 
 			<!-- For each section if there is note that it supports 3d catalog it -->
 						<xsl:for-each select="refsection">
 							<xsl:choose>
 								<xsl:when test="descendant::node()[@conformance='3d']">
-									<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
+									<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 								</xsl:when>
 							</xsl:choose>
 						</xsl:for-each>
