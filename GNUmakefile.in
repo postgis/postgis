@@ -7,13 +7,15 @@
 SUBDIRS = liblwgeom
 
 ifeq (@SUPPORT_POSTGRESQL@,yes)
-SUBDIRS += @DEPS_SUBDIR@ libpgcommon postgis regress @TOPOLOGY@ @SFCGAL@ doc @EXTENSIONS@
+SUBDIRS += @DEPS_SUBDIR@ libpgcommon postgis regress @TOPOLOGY@ @SFCGAL@ doc
 endif
 SUBDIRS += @RASTER@ loader
 ifeq (@SUPPORT_POSTGRESQL@,yes)
 # NOTE: utils need be built after raster
 # See https://trac.osgeo.org/postgis/ticket/5779
-SUBDIRS += utils
+# NOTE: extension need be built after raster
+# See https://trac.osgeo.org/postgis/ticket/5780
+SUBDIRS += utils @EXTENSIONS@
 endif
 
 HAVE_SFCGAL=@HAVE_SFCGAL@
