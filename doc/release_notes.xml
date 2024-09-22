@@ -41,6 +41,17 @@
 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5659">#5659</link>, ST_DFullyWithin behaviour has changed to
            be ST_Contains(ST_Buffer(A, R), B) (Paul Ramsey)</para>
 <para>Remove the WFS_locks extra package. (Paul Ramsey)</para>
+<para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5747">5747</link>, <link xlink:href="https://github.com/postgis/postgis/pull/776">GH-776</link>, ST_Length: Return 0 for CurvePolygon (Dan Baston)</para>
+<para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5770">5770</link>, support for GEOS 3.13 and RelateNG. Most functionality
+           remains the same, but new GEOS predicate implementation
+           has a few small changes.</para>
+      <para>Boundary Node Rule relate matrices might be different when
+        using the "multi-valent end point" rule.</para>
+      <para>Relate matrices for situations with invalid MultiPolygons
+        with shared boundaries might be different. Run ST_MakeValid
+        to get valid inputs to feed to the calculation.</para>
+      <para>Zero length LineStrings are treated as if they are the
+        equivalent Point object.</para>
             </simplesect>
 
             <simplesect><title>Deprecated signatures</title>
@@ -82,6 +93,7 @@
 
             <simplesect>
                 <title>Enhancements</title>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5550">5550</link>, Fix upgrades from 2.x in sandboxed systems (Sandro Santilli)</para>
                     <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/3587">#3587</link>, postgis_topology: faster load of big lines in topologies (Sandro Santilli)</para>
                     <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5670">#5670</link>, postgis_topology: faster ST_CreateTopoGeo (Sandro Santilli)</para>
                     <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5531">#5531</link>, documentation format upgraded to DocBook 5 (Sandro Santilli)</para>

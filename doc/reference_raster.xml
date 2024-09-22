@@ -9364,7 +9364,7 @@ FROM dummy_rast WHERE rid=2;
             <refentry xml:id="RT_ST_Clip">
                 <refnamediv>
                     <refname>ST_Clip</refname>
-                    <refpurpose>Returns the raster clipped by the input geometry.  If band number not is specified, all bands are processed. If <varname>crop</varname> is not specified or TRUE, the output raster is cropped.</refpurpose>
+                    <refpurpose>Returns the raster clipped by the input geometry.  If band number is not specified, all bands are processed. If <varname>crop</varname> is not specified or TRUE, the output raster is cropped. If <varname>touched</varname> is set to TRUE, then touched pixels are included, otherwise only if the center of the pixel is in the geometry it is included.</refpurpose>
                 </refnamediv>
 
                 <refsynopsisdiv>
