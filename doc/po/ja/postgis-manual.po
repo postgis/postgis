@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-05 06:17+0000\n"
+"POT-Creation-Date: 2024-09-22 00:49+0000\n"
 "PO-Revision-Date: 2024-09-18 10:06+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5384,23 +5384,18 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Adds a linestring to an existing topology using a tolerance and possibly "
-"splitting existing edges/faces. Returns edge identifiers."
+"splitting existing edges/faces."
 msgstr ""
-"許容差を使って既存のトポロジにラインストリングを追加し、可能ならエッジ/フェイ"
-"スを分割します。エッジ識別番号を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Adds a linestring to an existing topology and returns a set of edge "
-"identifiers forming it up. The given line will snap to existing nodes or "
-"edges within given tolerance. Existing edges and faces may be split by the "
-"line. New nodes and faces may be added."
+"Adds a linestring to an existing topology and returns a set of signed edge "
+"identifiers forming it up (negative identifies mean the edge goes in the "
+"opposite direction of the input linestring). The given line will snap to "
+"existing nodes or edges within given tolerance. Existing edges and faces may "
+"be split by the line. New nodes and faces may be added."
 msgstr ""
-"既存のトポロジにラインストリングを追加し、それを構成するエッジ識別番号の集合"
-"を返します。与えられたラインは、与えられた許容値内にある既存のノードかエッジ"
-"にスナップします。既存のエッジとフェイスはラインで分割される場合があります。"
-"新しいノードとフェイスが追加される場合があります。"
 
 #. Tag: para
 #, no-c-format
@@ -5410,6 +5405,11 @@ msgid ""
 msgstr ""
 "この関数を介してロードされたトポロジの統計情報の更新は呼び出し元次第です。"
 "<xref linkend=\"Topology_StatsManagement\"/>をご覧下さい。"
+
+#. Tag: para
+#, no-c-format
+msgid "Enhanced: 3.2.0 added support for returning signed identifier."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -6417,9 +6417,8 @@ msgid ""
 "Order of edges follows a left-hand-rule (bound face is on the left of each "
 "directed edge)."
 msgstr ""
-"各リングエッジの列挙は、識別番号が最も小さいものから始まります。"
-"エッジの順序は左手の法則に従います "
-"(境界フェイスは各有向辺の左側にあるようにします)。"
+"各リングエッジの列挙は、識別番号が最も小さいものから始まります。エッジの順序"
+"は左手の法則に従います (境界フェイスは各有向辺の左側にあるようにします)。"
 
 #. Tag: para
 #, no-c-format
@@ -13804,6 +13803,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"Escaping names for tables and/or namespaces that include special characters "
+"and quotes may require special handling. A user notes: \"For schemas and "
+"tables, use identifier escaping rules to produce a double-quoted string, and "
+"afterwards remove the first and last double-quote character. For geometry "
+"column pass as is.\""
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Estimated_Extent."
 msgstr "Changed: 2.1.0 2.0.xまではST_Estimated_Extentと呼ばれていました。"
 
@@ -17166,6 +17175,16 @@ msgid ""
 msgstr ""
 "自己交差を発生させ、結果ジオメトリを不正にする可能性があります (下の例をご覧"
 "下さい)。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If <code>cartesian_hint</code> is set to <code>true</code>, the algorithm "
+"applies additional optimizations involving cartesian math to further reduce "
+"the resulting point number. Please note that using this option might "
+"introduce rendering artifacts if the resulting coordinates are projected "
+"into another (non-cartesian) coordinate system before rendering."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -24025,6 +24044,11 @@ msgstr "3次元ジオメトリへの対応:"
 
 #. Tag: para
 #, no-c-format
+msgid "Options argument can be used to add BBOX and CRS in GeoJSON output:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
@@ -28102,15 +28126,15 @@ msgid ""
 "The reduction in vertex count is controlled by the <varname>vertex_fraction</"
 "varname> parameter, which is a number in the range 0 to 1. Lower values "
 "produce simpler results, with smaller vertex count and less concaveness. For "
-"both outer and inner hulls a vertex fraction of 1.0 produces the orginal "
+"both outer and inner hulls a vertex fraction of 1.0 produces the original "
 "geometry. For outer hulls a value of 0.0 produces the convex hull (for a "
 "single polygon); for inner hulls it produces a triangle."
 msgstr ""
 "頂点数の減少は<varname>vertex_fraction</varname>パラメータで制御できます。0か"
-"ら1の範囲を取ります。小さい値では簡略化が進み、頂点数が減り、凹性が下がります"
-"。外側の凹包も内側の凹包も、vertex_fraction値が1."
-"0では、元のジオメトリが生成されます。0.0では、外側の凹包については凸包 "
-"(単一ポリゴンの場合)が生成され、内側の凹包については三角形が生成されます。"
+"ら1の範囲を取ります。小さい値では簡略化が進み、頂点数が減り、凹性が下がりま"
+"す。外側の凹包も内側の凹包も、vertex_fraction値が1.0では、元のジオメトリが生"
+"成されます。0.0では、外側の凹包については凸包 (単一ポリゴンの場合)が生成さ"
+"れ、内側の凹包については三角形が生成されます。"
 
 #. Tag: para
 #, no-c-format
@@ -33575,13 +33599,12 @@ msgstr "ラスタ処理: 地図代数"
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Returns the raster clipped by the input geometry. If band number not is "
+"Returns the raster clipped by the input geometry. If band number is not "
 "specified, all bands are processed. If <varname>crop</varname> is not "
-"specified or TRUE, the output raster is cropped."
+"specified or TRUE, the output raster is cropped. If <varname>touched</"
+"varname> is set to TRUE, then touched pixels are included, otherwise only if "
+"the center of the pixel is in the geometry it is included."
 msgstr ""
-"入力ジオメトリで切り取ったラスタを返します。バンドが指定されていない場合に"
-"は、全てのバンドが返されます。<varname>crop</varname>が指定されていない場合に"
-"は、TRUEと仮定され、出力ラスタをクロップします。"
 
 #. Tag: para
 #, no-c-format
@@ -39865,6 +39888,11 @@ msgstr ""
 "「集約関数」です。つまり、SUM()やMEAN()と同じ方法で複数のデータ行の操作を行"
 "い、他の集約関数と同じようにNULLジオメトリを無視します。"
 
+#. Tag: refpurpose
+#, no-c-format
+msgid "Perform 3D union using postgis_sfcgal."
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -42552,6 +42580,16 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
+msgid "Returns the version number of the libjson-c library."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Returns the version number of the LibJSON-C library."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
 msgid "<refpurpose>Returns build date of the PostGIS library.</refpurpose>"
 msgstr "<refpurpose>PostGISライブラリのビルド日付を返します。</refpurpose>"
 
@@ -42940,6 +42978,44 @@ msgstr ""
 msgid "Remove the WFS_locks extra package. (Paul Ramsey)"
 msgstr "外部パッケージWFS_locksの削除 (Paul Ramseyさん)"
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5747\">5747</link>, "
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/776\">GH-776</"
+"link>, ST_Length: Return 0 for CurvePolygon (Dan Baston)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5770\">5770</link>, "
+"support for GEOS 3.13 and RelateNG. Most functionality remains the same, but "
+"new GEOS predicate implementation has a few small changes."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Boundary Node Rule relate matrices might be different when using the \"multi-"
+"valent end point\" rule."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Relate matrices for situations with invalid MultiPolygons with shared "
+"boundaries might be different. Run ST_MakeValid to get valid inputs to feed "
+"to the calculation."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Zero length LineStrings are treated as if they are the equivalent Point "
+"object."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Deprecated signatures"
@@ -43124,6 +43200,13 @@ msgstr ""
 #, no-c-format
 msgid "Enhancements"
 msgstr "性能強化"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5550\">5550</link>, "
+"Fix upgrades from 2.x in sandboxed systems (Sandro Santilli)"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -49315,19 +49398,49 @@ msgstr "ジオグラフィ対応"
 
 #, no-c-format
 #~ msgid ""
+#~ "Adds a linestring to an existing topology using a tolerance and possibly "
+#~ "splitting existing edges/faces. Returns edge identifiers."
+#~ msgstr ""
+#~ "許容差を使って既存のトポロジにラインストリングを追加し、可能ならエッジ/"
+#~ "フェイスを分割します。エッジ識別番号を返します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Adds a linestring to an existing topology and returns a set of edge "
+#~ "identifiers forming it up. The given line will snap to existing nodes or "
+#~ "edges within given tolerance. Existing edges and faces may be split by "
+#~ "the line. New nodes and faces may be added."
+#~ msgstr ""
+#~ "既存のトポロジにラインストリングを追加し、それを構成するエッジ識別番号の集"
+#~ "合を返します。与えられたラインは、与えられた許容値内にある既存のノードか"
+#~ "エッジにスナップします。既存のエッジとフェイスはラインで分割される場合があ"
+#~ "ります。新しいノードとフェイスが追加される場合があります。"
+
+#, no-c-format
+#~ msgid ""
 #~ "The reduction in vertex count is controlled by the "
 #~ "<varname>vertex_fraction</varname> parameter, which is a number in the "
 #~ "range 0 to 1. Lower values produce simpler results, with smaller vertex "
 #~ "count and less concaveness. For both outer and inner hulls a vertex "
-#~ "fraction of 1.0 produces the original geometry. For outer hulls a value "
-#~ "of 0.0 produces the convex hull (for a single polygon); for inner hulls "
-#~ "it produces a triangle."
+#~ "fraction of 1.0 produces the orginal geometry. For outer hulls a value of "
+#~ "0.0 produces the convex hull (for a single polygon); for inner hulls it "
+#~ "produces a triangle."
 #~ msgstr ""
 #~ "頂点数の減少は<varname>vertex_fraction</varname>パラメータで制御できます。"
 #~ "0から1の範囲を取ります。小さい値では簡略化が進み、頂点数が減り、凹性が下が"
 #~ "ります。外側の凹包も内側の凹包も、vertex_fraction値が1.0では、元のジオメト"
 #~ "リが生成されます。0.0では、外側の凹包については凸包 (単一ポリゴンの場合)が"
 #~ "生成され、内側の凹包については三角形が生成されます。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns the raster clipped by the input geometry. If band number not is "
+#~ "specified, all bands are processed. If <varname>crop</varname> is not "
+#~ "specified or TRUE, the output raster is cropped."
+#~ msgstr ""
+#~ "入力ジオメトリで切り取ったラスタを返します。バンドが指定されていない場合に"
+#~ "は、全てのバンドが返されます。<varname>crop</varname>が指定されていない場"
+#~ "合には、TRUEと仮定され、出力ラスタをクロップします。"
 
 #, no-c-format
 #~ msgid ""

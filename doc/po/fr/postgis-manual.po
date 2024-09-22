@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-05 06:17+0000\n"
+"POT-Creation-Date: 2024-09-22 00:49+0000\n"
 "PO-Revision-Date: 2024-06-18 14:45+0000\n"
 "Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -5688,19 +5688,17 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Adds a linestring to an existing topology using a tolerance and possibly "
-"splitting existing edges/faces. Returns edge identifiers."
+"splitting existing edges/faces."
 msgstr ""
-"Ajoute une ligne à une topologie existante en utilisant une tolérance et en "
-"divisant éventuellement les arêtes/faces existantes. Retourne les "
-"identifiants des arêtes."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Adds a linestring to an existing topology and returns a set of edge "
-"identifiers forming it up. The given line will snap to existing nodes or "
-"edges within given tolerance. Existing edges and faces may be split by the "
-"line. New nodes and faces may be added."
+"Adds a linestring to an existing topology and returns a set of signed edge "
+"identifiers forming it up (negative identifies mean the edge goes in the "
+"opposite direction of the input linestring). The given line will snap to "
+"existing nodes or edges within given tolerance. Existing edges and faces may "
+"be split by the line. New nodes and faces may be added."
 msgstr ""
 
 #. Tag: para
@@ -5712,6 +5710,11 @@ msgstr ""
 "La mise à jour des statistiques sur les topologies chargées via cette "
 "fonction est du ressort de l'appelant, voir <xref "
 "linkend=\"Topology_StatsManagement\"/>."
+
+#. Tag: para
+#, no-c-format
+msgid "Enhanced: 3.2.0 added support for returning signed identifier."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -14411,6 +14414,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"Escaping names for tables and/or namespaces that include special characters "
+"and quotes may require special handling. A user notes: \"For schemas and "
+"tables, use identifier escaping rules to produce a double-quoted string, and "
+"afterwards remove the first and last double-quote character. For geometry "
+"column pass as is.\""
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Estimated_Extent."
 msgstr ""
 "Modifié : 2.1.0. Jusqu'à la version 2.0.x, cette fonction était appelée "
@@ -17988,6 +18001,16 @@ msgstr ""
 msgid ""
 "may introduce self-intersections which would make the resulting geometry "
 "invalid (see example below)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If <code>cartesian_hint</code> is set to <code>true</code>, the algorithm "
+"applies additional optimizations involving cartesian math to further reduce "
+"the resulting point number. Please note that using this option might "
+"introduce rendering artifacts if the resulting coordinates are projected "
+"into another (non-cartesian) coordinate system before rendering."
 msgstr ""
 
 #. Tag: para
@@ -25175,6 +25198,11 @@ msgstr "Les géométries 3D sont prises en charge :"
 
 #. Tag: para
 #, no-c-format
+msgid "Options argument can be used to add BBOX and CRS in GeoJSON output:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
@@ -29531,10 +29559,18 @@ msgid ""
 "The reduction in vertex count is controlled by the <varname>vertex_fraction</"
 "varname> parameter, which is a number in the range 0 to 1. Lower values "
 "produce simpler results, with smaller vertex count and less concaveness. For "
-"both outer and inner hulls a vertex fraction of 1.0 produces the orginal "
+"both outer and inner hulls a vertex fraction of 1.0 produces the original "
 "geometry. For outer hulls a value of 0.0 produces the convex hull (for a "
 "single polygon); for inner hulls it produces a triangle."
 msgstr ""
+"La réduction du nombre de sommets est contrôlée par le paramètre "
+"<varname>vertex_fraction</varname>, qui est un nombre compris entre 0 et 1. "
+"Les valeurs inférieures produisent des résultats plus simples, avec un "
+"nombre de vertex plus faible et une concavité moindre. Pour les enveloppes "
+"extérieures et intérieures, une fraction de sommet de 1,0 produit la "
+"géométrie originale. Pour les enveloppes extérieures, une valeur de 0,0 "
+"produit l'enveloppe convexe (pour un polygone unique) ; pour les enveloppes "
+"intérieures, elle produit un triangle."
 
 #. Tag: para
 #, no-c-format
@@ -35298,13 +35334,12 @@ msgstr "Traitement des données raster : algèbre cartographique"
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Returns the raster clipped by the input geometry. If band number not is "
+"Returns the raster clipped by the input geometry. If band number is not "
 "specified, all bands are processed. If <varname>crop</varname> is not "
-"specified or TRUE, the output raster is cropped."
+"specified or TRUE, the output raster is cropped. If <varname>touched</"
+"varname> is set to TRUE, then touched pixels are included, otherwise only if "
+"the center of the pixel is in the geometry it is included."
 msgstr ""
-"Retourne le raster coupé par la géométrie d'entrée. Si le numéro de bande "
-"n'est pas spécifié, toutes les bandes sont traitées. Si <varname>crop</"
-"varname> n'est pas spécifié ou est TRUE, le raster de sortie est recadré."
 
 #. Tag: para
 #, no-c-format
@@ -41901,6 +41936,11 @@ msgstr ""
 "fonctions SUM() et AVG() et, comme la plupart des agrégats, elle ignore les "
 "géométries NULL."
 
+#. Tag: refpurpose
+#, no-c-format
+msgid "Perform 3D union using postgis_sfcgal."
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -44725,6 +44765,16 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
+msgid "Returns the version number of the libjson-c library."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Returns the version number of the LibJSON-C library."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
 msgid "<refpurpose>Returns build date of the PostGIS library.</refpurpose>"
 msgstr ""
 "<refpurpose>Retourne la date de packaging de l'extension PostGIS.</"
@@ -45091,6 +45141,44 @@ msgstr ""
 msgid "Remove the WFS_locks extra package. (Paul Ramsey)"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5747\">5747</link>, "
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/776\">GH-776</"
+"link>, ST_Length: Return 0 for CurvePolygon (Dan Baston)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5770\">5770</link>, "
+"support for GEOS 3.13 and RelateNG. Most functionality remains the same, but "
+"new GEOS predicate implementation has a few small changes."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Boundary Node Rule relate matrices might be different when using the \"multi-"
+"valent end point\" rule."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Relate matrices for situations with invalid MultiPolygons with shared "
+"boundaries might be different. Run ST_MakeValid to get valid inputs to feed "
+"to the calculation."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Zero length LineStrings are treated as if they are the equivalent Point "
+"object."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Deprecated signatures"
@@ -45229,6 +45317,13 @@ msgstr ""
 #, no-c-format
 msgid "Enhancements"
 msgstr "Améliorations"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5550\">5550</link>, "
+"Fix upgrades from 2.x in sandboxed systems (Sandro Santilli)"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -51834,22 +51929,22 @@ msgstr "Prise en charge du type geography"
 
 #, no-c-format
 #~ msgid ""
-#~ "The reduction in vertex count is controlled by the "
-#~ "<varname>vertex_fraction</varname> parameter, which is a number in the "
-#~ "range 0 to 1. Lower values produce simpler results, with smaller vertex "
-#~ "count and less concaveness. For both outer and inner hulls a vertex "
-#~ "fraction of 1.0 produces the original geometry. For outer hulls a value "
-#~ "of 0.0 produces the convex hull (for a single polygon); for inner hulls "
-#~ "it produces a triangle."
+#~ "Adds a linestring to an existing topology using a tolerance and possibly "
+#~ "splitting existing edges/faces. Returns edge identifiers."
 #~ msgstr ""
-#~ "La réduction du nombre de sommets est contrôlée par le paramètre "
-#~ "<varname>vertex_fraction</varname>, qui est un nombre compris entre 0 et "
-#~ "1. Les valeurs inférieures produisent des résultats plus simples, avec un "
-#~ "nombre de vertex plus faible et une concavité moindre. Pour les "
-#~ "enveloppes extérieures et intérieures, une fraction de sommet de 1,0 "
-#~ "produit la géométrie originale. Pour les enveloppes extérieures, une "
-#~ "valeur de 0,0 produit l'enveloppe convexe (pour un polygone unique) ; "
-#~ "pour les enveloppes intérieures, elle produit un triangle."
+#~ "Ajoute une ligne à une topologie existante en utilisant une tolérance et "
+#~ "en divisant éventuellement les arêtes/faces existantes. Retourne les "
+#~ "identifiants des arêtes."
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns the raster clipped by the input geometry. If band number not is "
+#~ "specified, all bands are processed. If <varname>crop</varname> is not "
+#~ "specified or TRUE, the output raster is cropped."
+#~ msgstr ""
+#~ "Retourne le raster coupé par la géométrie d'entrée. Si le numéro de bande "
+#~ "n'est pas spécifié, toutes les bandes sont traitées. Si <varname>crop</"
+#~ "varname> n'est pas spécifié ou est TRUE, le raster de sortie est recadré."
 
 #, no-c-format
 #~ msgid ""

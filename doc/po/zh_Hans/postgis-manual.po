@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-05 06:17+0000\n"
+"POT-Creation-Date: 2024-09-22 00:49+0000\n"
 "PO-Revision-Date: 2023-12-28 09:45+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -5059,16 +5059,17 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Adds a linestring to an existing topology using a tolerance and possibly "
-"splitting existing edges/faces. Returns edge identifiers."
-msgstr "使用公差并可能分割现有边/面，将线串添加到现有拓扑。 返回边标识符。"
+"splitting existing edges/faces."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Adds a linestring to an existing topology and returns a set of edge "
-"identifiers forming it up. The given line will snap to existing nodes or "
-"edges within given tolerance. Existing edges and faces may be split by the "
-"line. New nodes and faces may be added."
+"Adds a linestring to an existing topology and returns a set of signed edge "
+"identifiers forming it up (negative identifies mean the edge goes in the "
+"opposite direction of the input linestring). The given line will snap to "
+"existing nodes or edges within given tolerance. Existing edges and faces may "
+"be split by the line. New nodes and faces may be added."
 msgstr ""
 
 #. Tag: para
@@ -5079,6 +5080,11 @@ msgid ""
 msgstr ""
 "更新有关通过此函数加载的拓扑的统计信息由调用者决定，请参阅<xref "
 "linkend=\"Topology_StatsManagement\"/>在拓扑编辑和填充期间维护统计信息。"
+
+#. Tag: para
+#, no-c-format
+msgid "Enhanced: 3.2.0 added support for returning signed identifier."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -12965,6 +12971,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"Escaping names for tables and/or namespaces that include special characters "
+"and quotes may require special handling. A user notes: \"For schemas and "
+"tables, use identifier escaping rules to produce a double-quoted string, and "
+"afterwards remove the first and last double-quote character. For geometry "
+"column pass as is.\""
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Estimated_Extent."
 msgstr "更改：2.1.0。 在 2.0.x 之前，这称为 ST_Estimated_Extent。"
 
@@ -16120,6 +16136,16 @@ msgstr ""
 msgid ""
 "may introduce self-intersections which would make the resulting geometry "
 "invalid (see example below)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If <code>cartesian_hint</code> is set to <code>true</code>, the algorithm "
+"applies additional optimizations involving cartesian math to further reduce "
+"the resulting point number. Please note that using this option might "
+"introduce rendering artifacts if the resulting coordinates are projected "
+"into another (non-cartesian) coordinate system before rendering."
 msgstr ""
 
 #. Tag: para
@@ -22580,6 +22606,11 @@ msgstr "支持 3D 几何形状："
 
 #. Tag: para
 #, no-c-format
+msgid "Options argument can be used to add BBOX and CRS in GeoJSON output:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
@@ -26453,14 +26484,10 @@ msgid ""
 "The reduction in vertex count is controlled by the <varname>vertex_fraction</"
 "varname> parameter, which is a number in the range 0 to 1. Lower values "
 "produce simpler results, with smaller vertex count and less concaveness. For "
-"both outer and inner hulls a vertex fraction of 1.0 produces the orginal "
+"both outer and inner hulls a vertex fraction of 1.0 produces the original "
 "geometry. For outer hulls a value of 0.0 produces the convex hull (for a "
 "single polygon); for inner hulls it produces a triangle."
 msgstr ""
-"顶点数的减少由<varname> vertex_fraction </varname>参数控制，该参数是 0 到 1 "
-"范围内的数字。值越低，结果越简单，顶点数越少，凹度也越小。 对于外壳和内壳，顶"
-"点分数 1.0 生成原始几何形状。 对于外壳，值 0.0 生成凸包（对于单个多边形）； "
-"对于内壳，它会生成一个三角形。"
 
 #. Tag: para
 #, no-c-format
@@ -31657,12 +31684,12 @@ msgstr "栅格处理：地图代数"
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Returns the raster clipped by the input geometry. If band number not is "
+"Returns the raster clipped by the input geometry. If band number is not "
 "specified, all bands are processed. If <varname>crop</varname> is not "
-"specified or TRUE, the output raster is cropped."
+"specified or TRUE, the output raster is cropped. If <varname>touched</"
+"varname> is set to TRUE, then touched pixels are included, otherwise only if "
+"the center of the pixel is in the geometry it is included."
 msgstr ""
-"返回由输入几何图形裁剪的栅格。 如果未指定波段号，则处理所有波段。 如果"
-"<varname>裁剪</varname>未指定或为 TRUE，则输出栅格将被裁剪。"
 
 #. Tag: para
 #, no-c-format
@@ -37617,6 +37644,11 @@ msgstr ""
 "着它对数据行进行操作，与 SUM() 和 AVG() 函数的操作方式相同，并且与大多数聚合"
 "一样，它也会忽略 NULL 几何图形。"
 
+#. Tag: refpurpose
+#, no-c-format
+msgid "Perform 3D union using postgis_sfcgal."
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -40162,6 +40194,16 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
+msgid "Returns the version number of the libjson-c library."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Returns the version number of the LibJSON-C library."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
 msgid "<refpurpose>Returns build date of the PostGIS library.</refpurpose>"
 msgstr "<refpurpose>返回 PostGIS 库的构建日期。</refpurpose>"
 
@@ -40509,6 +40551,44 @@ msgstr ""
 msgid "Remove the WFS_locks extra package. (Paul Ramsey)"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5747\">5747</link>, "
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/776\">GH-776</"
+"link>, ST_Length: Return 0 for CurvePolygon (Dan Baston)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5770\">5770</link>, "
+"support for GEOS 3.13 and RelateNG. Most functionality remains the same, but "
+"new GEOS predicate implementation has a few small changes."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Boundary Node Rule relate matrices might be different when using the \"multi-"
+"valent end point\" rule."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Relate matrices for situations with invalid MultiPolygons with shared "
+"boundaries might be different. Run ST_MakeValid to get valid inputs to feed "
+"to the calculation."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Zero length LineStrings are treated as if they are the equivalent Point "
+"object."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Deprecated signatures"
@@ -40647,6 +40727,13 @@ msgstr ""
 #, no-c-format
 msgid "Enhancements"
 msgstr "增强功能"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5550\">5550</link>, "
+"Fix upgrades from 2.x in sandboxed systems (Sandro Santilli)"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -46438,6 +46525,36 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
+
+#, no-c-format
+#~ msgid ""
+#~ "Adds a linestring to an existing topology using a tolerance and possibly "
+#~ "splitting existing edges/faces. Returns edge identifiers."
+#~ msgstr "使用公差并可能分割现有边/面，将线串添加到现有拓扑。 返回边标识符。"
+
+#, no-c-format
+#~ msgid ""
+#~ "The reduction in vertex count is controlled by the "
+#~ "<varname>vertex_fraction</varname> parameter, which is a number in the "
+#~ "range 0 to 1. Lower values produce simpler results, with smaller vertex "
+#~ "count and less concaveness. For both outer and inner hulls a vertex "
+#~ "fraction of 1.0 produces the orginal geometry. For outer hulls a value of "
+#~ "0.0 produces the convex hull (for a single polygon); for inner hulls it "
+#~ "produces a triangle."
+#~ msgstr ""
+#~ "顶点数的减少由<varname> vertex_fraction </varname>参数控制，该参数是 0 到 "
+#~ "1 范围内的数字。值越低，结果越简单，顶点数越少，凹度也越小。 对于外壳和内"
+#~ "壳，顶点分数 1.0 生成原始几何形状。 对于外壳，值 0.0 生成凸包（对于单个多"
+#~ "边形）； 对于内壳，它会生成一个三角形。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns the raster clipped by the input geometry. If band number not is "
+#~ "specified, all bands are processed. If <varname>crop</varname> is not "
+#~ "specified or TRUE, the output raster is cropped."
+#~ msgstr ""
+#~ "返回由输入几何图形裁剪的栅格。 如果未指定波段号，则处理所有波段。 如果"
+#~ "<varname>裁剪</varname>未指定或为 TRUE，则输出栅格将被裁剪。"
 
 #, no-c-format
 #~ msgid ""
