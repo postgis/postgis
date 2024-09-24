@@ -7767,7 +7767,8 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
     );
 
     closestSegmentSide = lw_segment_side(closestSegmentP0, closestSegmentP1, queryPoint);
-    LWDEBUGF(1, "Side of closest segment query point falls on: %d", closestSegmentSide);
+    LWDEBUGF(1, "Side of closest segment query point falls on: %d (%s)",
+      closestSegmentSide, closestSegmentSide == -1 ? "left" : closestSegmentSide == 1 ? "right" : "collinear" );
 
     if ( closestSegmentSide == -1 ) /* left */
     {
