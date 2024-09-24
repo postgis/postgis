@@ -149,30 +149,25 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
 
             <refsection>
                 <title>Examples</title>
-                <para>Set and reset <varname>postgis.gdal_enabled_drivers</varname></para>
-
-                <para>Sets backend for all new connections to database</para>
-                <programlisting>ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';</programlisting>
-
-                <para>Sets default enabled drivers for all new connections to server. Requires super user access and PostgreSQL 9.4+.
-                    Also note that database, session, and user settings override this.</para>
-                <programlisting>ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';
-SELECT pg_reload_conf();
-                </programlisting>
+                <para>To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current session</para>
 
                 <programlisting>
-SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';
+SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
 SET postgis.gdal_enabled_drivers = default;
                 </programlisting>
 
-                <para>Enable all GDAL Drivers</para>
-                <programlisting>
-SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
-                </programlisting>
+                <para>Set for all new connections to a specific database to specific drivers</para>
 
-                <para>Disable all GDAL Drivers</para>
+                <programlisting>ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';</programlisting>
+
+                <para>Setting for whole database cluster to enable all drivers. Requires super user access.
+                    Also note that database, session, and user settings override this.</para>
+
                 <programlisting>
-SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';
+ --writes to postgres.auto.conf
+ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';
+ --Reloads postgres conf
+SELECT pg_reload_conf();
                 </programlisting>
             </refsection>
 
@@ -234,16 +229,17 @@ SET postgis.enable_outdb_rasters = True;
 SET postgis.enable_outdb_rasters = False;
                 </programlisting>
 
-                <para>Set for specific database</para>
+                <para>Set for all new connections to a specific database</para>
 
                 <programlisting>
 ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;
                 </programlisting>
 
-                <para>Setting for whole database cluster. You need to reconnect to the database for changes to take effect.</para>
+                <para>Setting for whole database cluster. Requires super user access.
+                    Also note that database, session, and user settings override this.</para>
                 <programlisting>
  --writes to postgres.auto.conf
-ALTER SYSTEM postgis.enable_outdb_rasters = true;
+ALTER SYSTEM SET postgis.enable_outdb_rasters = true;
  --Reloads postgres conf
 SELECT pg_reload_conf();
                 </programlisting>
