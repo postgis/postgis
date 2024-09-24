@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Fix topology debug formatting for 64-bit counts and IDs (Sandro Santilli)
   - Correct spelling in the English function reference (Mike Taves)
   - Avoid an implicit dependency on Abseil in FlatGeobuf (Paul Ramsey)
   - Report the invalid values supplied to clustering functions (Sandro Santilli)
