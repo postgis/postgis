@@ -624,7 +624,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
   /* loop over each node within the edge's gbox */
   nodes = lwt_be_getNodeWithinBox2D( topo, edgebox, &num_nodes,
                                             LWT_COL_NODE_ALL, 0 );
-  LWDEBUGF(1, "lwt_be_getNodeWithinBox2D returned %d nodes", num_nodes);
+  LWDEBUGF(1, "lwt_be_getNodeWithinBox2D returned %" PRIu64 " nodes", num_nodes);
   if (num_nodes == UINT64_MAX)
   {
 	  lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
@@ -653,7 +653,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
 
   /* loop over each edge within the edge's gbox */
   edges = lwt_be_getEdgeWithinBox2D( topo, edgebox, &num_edges, LWT_COL_EDGE_ALL, 0 );
-  LWDEBUGF(1, "lwt_be_getEdgeWithinBox2D returned %d edges", num_edges);
+  LWDEBUGF(1, "lwt_be_getEdgeWithinBox2D returned %" PRIu64 " edges", num_edges);
   if (num_edges == UINT64_MAX)
   {
 	  GEOSGeom_destroy(edgegg);
@@ -684,7 +684,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
       return -1;
     }
 
-    LWDEBUGF(2, "Edge %d converted to GEOS", edge_id);
+    LWDEBUGF(2, "Edge %" LWTFMT_ELEMID " converted to GEOS", edge_id);
 
     /* check if the edge has a non-boundary-boundary intersection with our edge */
 
@@ -697,7 +697,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
       return -1;
     }
 
-    LWDEBUGF(2, "Edge %d relate pattern is %s", edge_id, relate);
+    LWDEBUGF(2, "Edge %" LWTFMT_ELEMID " relate pattern is %s", edge_id, relate);
 
     match = GEOSRelatePatternMatch(relate, "FF*F*****");
     if ( match ) {
@@ -787,12 +787,12 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
       return -1;
     }
 
-    LWDEBUGF(2, "Edge %d analisys completed, it does no harm", edge_id);
+    LWDEBUGF(2, "Edge %" LWTFMT_ELEMID " analisys completed, it does no harm", edge_id);
 
     GEOSFree(relate);
     GEOSGeom_destroy(eegg);
   }
-  LWDEBUGF(1, "No edge crossing detected among the %d candidate edges", num_edges);
+  LWDEBUGF(1, "No edge crossing detected among the %" PRIu64 " candidate edges", num_edges);
   if ( edges ) _lwt_release_edges(edges, num_edges);
               /* would be NULL if num_edges was 0 */
 
@@ -1542,7 +1542,8 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
     if ( azdif < 0 ) azdif += 2 * M_PI;
     minaz = maxaz = azdif;
     /* TODO: set nextCW/nextCCW/cwFace/ccwFace to other->something ? */
-    LWDEBUGF(1, "Other edge end has cwFace=%d and ccwFace=%d",
+    LWDEBUGF(1, "Other edge end has cwFace=%" LWTFMT_ELEMID
+                " and ccwFace=%" LWTFMT_ELEMID,
                 other->cwFace, other->ccwFace);
   } else {
     minaz = maxaz = -1;
@@ -2504,8 +2505,9 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
     span.was_isolated = 0;
     newedge.next_right = span.nextCW ? span.nextCW : -newedge.edge_id;
     prev_left = span.nextCCW ? -span.nextCCW : newedge.edge_id;
-    LWDEBUGF(1, "New edge %d is connected on start node, "
-                "next_right is %d, prev_left is %d",
+    LWDEBUGF(1, "New edge %" LWTFMT_ELEMID " is connected on start node, "
+                "next_right is %" LWTFMT_ELEMID
+                ", prev_left is %" LWTFMT_ELEMID,
                 newedge.edge_id, newedge.next_right, prev_left);
     if ( modFace != -1 )
     {
@@ -2520,8 +2522,9 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
     span.was_isolated = 1;
     newedge.next_right = isclosed ? -newedge.edge_id : newedge.edge_id;
     prev_left = isclosed ? newedge.edge_id : -newedge.edge_id;
-    LWDEBUGF(1, "New edge %d is isolated on start node, "
-                "next_right is %d, prev_left is %d",
+    LWDEBUGF(1, "New edge %" LWTFMT_ELEMID " is isolated on start node, "
+                "next_right is %" LWTFMT_ELEMID
+                ", prev_left is %" LWTFMT_ELEMID,
                 newedge.edge_id, newedge.next_right, prev_left);
   }
 
@@ -2531,8 +2534,9 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
     epan.was_isolated = 0;
     newedge.next_left = epan.nextCW ? epan.nextCW : newedge.edge_id;
     prev_right = epan.nextCCW ? -epan.nextCCW : -newedge.edge_id;
-    LWDEBUGF(1, "New edge %d is connected on end node, "
-                "next_left is %d, prev_right is %d",
+    LWDEBUGF(1, "New edge %" LWTFMT_ELEMID " is connected on end node, "
+                "next_left is %" LWTFMT_ELEMID
+                ", prev_right is %" LWTFMT_ELEMID,
                 newedge.edge_id, newedge.next_left, prev_right);
     if ( modFace != -1 )
     {
@@ -2565,8 +2569,9 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
     epan.was_isolated = 1;
     newedge.next_left = isclosed ? newedge.edge_id : -newedge.edge_id;
     prev_right = isclosed ? -newedge.edge_id : newedge.edge_id;
-    LWDEBUGF(1, "New edge %d is isolated on end node, "
-                "next_left is %d, prev_right is %d",
+    LWDEBUGF(1, "New edge %" LWTFMT_ELEMID " is isolated on end node, "
+                "next_left is %" LWTFMT_ELEMID
+                ", prev_right is %" LWTFMT_ELEMID,
                 newedge.edge_id, newedge.next_left, prev_right);
   }
 
@@ -5039,7 +5044,7 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
 	}
   if ( num )
   {
-    LWDEBUGF(1, "New point is within %.15g units of %d nodes", tol, num);
+    LWDEBUGF(1, "New point is within %.15g units of %" PRIu64 " nodes", tol, num);
     /* Order by distance if there are more than a single return */
     if ( num > 1 )
     {{
@@ -5101,7 +5106,7 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
   }
   if ( num )
   {
-  LWDEBUGF(1, "New point is within %.15g units of %d edges", tol, num);
+  LWDEBUGF(1, "New point is within %.15g units of %" PRIu64 " edges", tol, num);
 
   /* Order by distance if there are more than a single return */
   if ( num > 1 )
@@ -5786,7 +5791,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return NULL;
   }
-  LWDEBUGF(1, "Line has %d points, its bbox intersects %d edges bboxes",
+  LWDEBUGF(1, "Line has %u points, its bbox intersects %" PRIu64 " edges bboxes",
     line->points->npoints, numedges);
   if ( numedges )
   {{
@@ -5819,7 +5824,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return NULL;
   }
-  LWDEBUGF(1, "Line bbox intersects %d nodes bboxes", numnodes);
+  LWDEBUGF(1, "Line bbox intersects %" PRIu64 " nodes bboxes", numnodes);
   if ( numnodes )
   {{
     /* collect those whose distance from us is < tol */
@@ -5839,7 +5844,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
       /* must be closer than tolerated, unless distance is zero */
       if ( dist && dist >= tol )
       {
-        LWDEBUGF(1, "Node %d is %g units away, we tolerate only %g", n->node_id, dist, tol);
+        LWDEBUGF(1, "Node %" LWTFMT_ELEMID " is %g units away, we tolerate only %g", n->node_id, dist, tol);
         continue;
       }
       nearby[nearbyindex++] = g;
@@ -6074,7 +6079,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     {
       size_t sz;
       char *wkt1 = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &sz);
-      LWDEBUGF(1, "Component %d of split line is: %s", i, wkt1);
+      LWDEBUGF(1, "Component %" PRIu64 " of split line is: %s", i, wkt1);
       lwfree(wkt1);
     }
 #endif
@@ -6089,11 +6094,11 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     }
     if ( ! id )
     {
-      LWDEBUGF(1, "Component %d of split line collapsed", i);
+      LWDEBUGF(1, "Component %" PRIu64 " of split line collapsed", i);
       continue;
     }
 
-    LWDEBUGF(1, "Component %d of split line is %s edge %" LWTFMT_ELEMID,
+    LWDEBUGF(1, "Component %" PRIu64 " of split line is %s edge %" LWTFMT_ELEMID,
                   i, forward ? "forward" : "backward", id);
     ids[num++] = forward ? id : -id; /* TODO: skip duplicates */
   }
@@ -7292,10 +7297,10 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
 
   if ( closestNode != 0 )
   {
-    LWDEBUGF(1, "Closest point is node %d", closestNode);
+    LWDEBUGF(1, "Closest point is node %" LWTFMT_ELEMID, closestNode);
     if ( dist == 0 )
     {
-      LWDEBUGF(1, "Query point is node %d", closestNode);
+      LWDEBUGF(1, "Query point is node %" LWTFMT_ELEMID, closestNode);
       /* Query point is the node
        *
        * If all edges incident to the node are
