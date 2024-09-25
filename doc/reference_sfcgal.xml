@@ -913,12 +913,6 @@
     <refsection>
         <title>Description</title>
 
-        <warning>
-            <para>
-                <xref linkend="CG_3DDifference"/> is deprecated as of 3.5.0. Use <xref linkend="CG_3DDifference"/> instead.
-            </para>
-        </warning>
-
         <para>Returns that part of geom1 that is not part of geom2.</para>
         <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
         <para>&sfcgal_required;</para>
@@ -1427,13 +1421,6 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         <refsection>
             <title>Description</title>
 
-            <warning>
-                <para>
-                    <xref linkend="CG_3DUnion"/> is deprecated as of 3.5.0. Use <xref linkend="CG_3DUnion"/> instead.
-                </para>
-            </warning>
-
-
             <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
             <para>&sfcgal_required;</para>
             <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
@@ -1885,12 +1872,6 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 
         <refsection>
             <title>Description</title>
-
-            <warning>
-                <para>
-                    <xref linkend="CG_ConstrainedDelaunayTriangles"/> is deprecated as of 3.5.0. Use <xref linkend="CG_ConstrainedDelaunayTriangles"/> instead.
-                </para>
-            </warning>
 
             <para>
                 Return a <link xlink:href="https://en.wikipedia.org/wiki/Constrained_Delaunay_triangulation">Constrained Delaunay
