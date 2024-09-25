@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-09-22 00:49+0000\n"
-"PO-Revision-Date: 2024-09-18 10:06+0000\n"
+"PO-Revision-Date: 2024-09-25 03:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5385,7 +5385,8 @@ msgstr ""
 msgid ""
 "Adds a linestring to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces."
-msgstr ""
+msgstr "許容差を使って既存のトポロジにラインストリングを追加し、可能ならエッジ/フェイ"
+"スを分割します。"
 
 #. Tag: para
 #, no-c-format
@@ -5396,6 +5397,11 @@ msgid ""
 "existing nodes or edges within given tolerance. Existing edges and faces may "
 "be split by the line. New nodes and faces may be added."
 msgstr ""
+"許容差を使って既存のトポロジにラインストリングを追加し、"
+"それを形成する符号付きエッジ識別子 (負符号は入力ラインストリングの逆方向に進"
+"む場合に付きます)の集合を返します。与えられたリンは既存のノードまたはエッジに"
+"指定した許容値内でスナップします。既存のエッジやフェイスはラインで分割される"
+"可能性があります。新しいノードとフェイスが追加される可能性があります。"
 
 #. Tag: para
 #, no-c-format
@@ -5409,7 +5415,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.2.0 added support for returning signed identifier."
-msgstr ""
+msgstr "Enhanced: 3.2.0 符号付き識別子を返す機能が追加されました。"
 
 #. Tag: para
 #, no-c-format
@@ -13810,6 +13816,10 @@ msgid ""
 "afterwards remove the first and last double-quote character. For geometry "
 "column pass as is.\""
 msgstr ""
+"テーブルや名前空間の名前のうち特殊文字や引用符をエスケープすると、特別な処理"
+"が必要になる可能性があります。あるユーザは「スキーマとテーブルでは、識別子エ"
+"スケープ規則を使って、二重引用符を付けた文字列を生成して、その後最初と最後の"
+"二重引用符を削ります。ジオメトリカラムについてはそのまま渡します」"
 
 #. Tag: para
 #, no-c-format
@@ -17185,6 +17195,11 @@ msgid ""
 "introduce rendering artifacts if the resulting coordinates are projected "
 "into another (non-cartesian) coordinate system before rendering."
 msgstr ""
+"<code>cartesian_hint</code>を<code>TRUE</code>に設定した場合には、アルゴリズ"
+"ムは、結果のポイント数をさらに減らすために、デカルト数学を含む、追加の最適化"
+"を適用します。結果の座標が他の (非デカルト)座標系に投影変換される場合には、こ"
+"の任意引数を使用することで、描画の不自然な諧調やノイズが現れる可能性があるこ"
+"とに注意して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -24045,7 +24060,7 @@ msgstr "3次元ジオメトリへの対応:"
 #. Tag: para
 #, no-c-format
 msgid "Options argument can be used to add BBOX and CRS in GeoJSON output:"
-msgstr ""
+msgstr "Options引数は、GeoJSON出力でBBOXまたはCRSを追加するために使われます:"
 
 #. Tag: para
 #, no-c-format
@@ -33605,6 +33620,12 @@ msgid ""
 "varname> is set to TRUE, then touched pixels are included, otherwise only if "
 "the center of the pixel is in the geometry it is included."
 msgstr ""
+"入力ジオメトリで切り取ったラスタを返します。バンドが指定されていない場合には"
+"、全てのバンドが処理されます。<varname>crop</"
+"varname>が指定されていなかったりTRUE となっている場合には、出力ラスタは切り取"
+"られます。<varname>touched</varname>がTRUEの場合には、接触するピクセルは取り"
+"込まれ、TRUEでない場合には、中心がジオメトリ内にあるピクセルだけが取り込まれ"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -39891,7 +39912,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Perform 3D union using postgis_sfcgal."
-msgstr ""
+msgstr "postgis_sfcgalを使用して3次元結合を実行します。"
 
 #. Tag: para
 #, no-c-format
@@ -42581,12 +42602,12 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the version number of the libjson-c library."
-msgstr ""
+msgstr "libjson-cライブラリのバージョン番号を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Returns the version number of the LibJSON-C library."
-msgstr ""
+msgstr "LibJSON-Cライブラリのバージョン番号を返します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -42985,6 +43006,9 @@ msgid ""
 "<link xlink:href=\"https://github.com/postgis/postgis/pull/776\">GH-776</"
 "link>, ST_Length: Return 0 for CurvePolygon (Dan Baston)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5747\">5747</link>, "
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/776\">GH-776</"
+"link>, ST_Length: 曲線ポリゴンで0を返す (Dan Bastonさん)"
 
 #. Tag: para
 #, no-c-format
@@ -42993,6 +43017,9 @@ msgid ""
 "support for GEOS 3.13 and RelateNG. Most functionality remains the same, but "
 "new GEOS predicate implementation has a few small changes."
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5770\">5770</link>, "
+"GEOS 3.13とRelateNGに対応しました。ほとんどの機能は同じですが、新しいGEOS述語"
+"の実装では若干の変更があります。"
 
 #. Tag: para
 #, no-c-format
@@ -43000,6 +43027,8 @@ msgid ""
 "Boundary Node Rule relate matrices might be different when using the \"multi-"
 "valent end point\" rule."
 msgstr ""
+"\"multi-valent end point\" 規則 (他のジオメトリの境界になっている終点も境界と"
+"する)を使う時、境界ノード規則の関係行列が異なる場合があります。"
 
 #. Tag: para
 #, no-c-format
@@ -43008,13 +43037,15 @@ msgid ""
 "boundaries might be different. Run ST_MakeValid to get valid inputs to feed "
 "to the calculation."
 msgstr ""
+"境界を共有する不正なマルチポリゴンの関係行列は異なる可能性があります。入力ジ"
+"オメトリをST_MakeValidで妥当なものにしてから計算に渡して下さい。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Zero length LineStrings are treated as if they are the equivalent Point "
 "object."
-msgstr ""
+msgstr "長さが0のラインストリングは、等価なポイントオブジェクトとして扱われます。"
 
 #. Tag: title
 #, no-c-format
@@ -43207,6 +43238,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5550\">5550</link>, "
 "Fix upgrades from 2.x in sandboxed systems (Sandro Santilli)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5550\">5550</link>, "
+"酸度ボックスシステムでの2.xからのアップグレードの修正 (Sandro Santilliさん)"
 
 #. Tag: para
 #, no-c-format
