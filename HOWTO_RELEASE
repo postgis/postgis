@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2022-08-08
+Date: 2022-09-25
 
 Versioning Scheme
 -----------------
@@ -86,7 +86,7 @@ Release procedure
 4. Update code.
 
   - Update the README.md to reflect new to be created buildbot badges
-	   (this should only be needed for trunk release)
+	   (this should only be needed for master release)
   - Edit README.postgis and set release date and version.
   - Add release notes in doc/release_notes.xml
   - Update Version.config to drop the "dev" suffix
