@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-22 00:49+0000\n"
+"POT-Creation-Date: 2024-09-25 17:55+0000\n"
 "PO-Revision-Date: 2024-09-25 03:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5385,7 +5385,8 @@ msgstr ""
 msgid ""
 "Adds a linestring to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces."
-msgstr "許容差を使って既存のトポロジにラインストリングを追加し、可能ならエッジ/フェイ"
+msgstr ""
+"許容差を使って既存のトポロジにラインストリングを追加し、可能ならエッジ/フェイ"
 "スを分割します。"
 
 #. Tag: para
@@ -5397,11 +5398,11 @@ msgid ""
 "existing nodes or edges within given tolerance. Existing edges and faces may "
 "be split by the line. New nodes and faces may be added."
 msgstr ""
-"許容差を使って既存のトポロジにラインストリングを追加し、"
-"それを形成する符号付きエッジ識別子 (負符号は入力ラインストリングの逆方向に進"
-"む場合に付きます)の集合を返します。与えられたリンは既存のノードまたはエッジに"
-"指定した許容値内でスナップします。既存のエッジやフェイスはラインで分割される"
-"可能性があります。新しいノードとフェイスが追加される可能性があります。"
+"許容差を使って既存のトポロジにラインストリングを追加し、それを形成する符号付"
+"きエッジ識別子 (負符号は入力ラインストリングの逆方向に進む場合に付きます)の集"
+"合を返します。与えられたリンは既存のノードまたはエッジに指定した許容値内でス"
+"ナップします。既存のエッジやフェイスはラインで分割される可能性があります。新"
+"しいノードとフェイスが追加される可能性があります。"
 
 #. Tag: para
 #, no-c-format
@@ -33620,12 +33621,11 @@ msgid ""
 "varname> is set to TRUE, then touched pixels are included, otherwise only if "
 "the center of the pixel is in the geometry it is included."
 msgstr ""
-"入力ジオメトリで切り取ったラスタを返します。バンドが指定されていない場合には"
-"、全てのバンドが処理されます。<varname>crop</"
-"varname>が指定されていなかったりTRUE となっている場合には、出力ラスタは切り取"
-"られます。<varname>touched</varname>がTRUEの場合には、接触するピクセルは取り"
-"込まれ、TRUEでない場合には、中心がジオメトリ内にあるピクセルだけが取り込まれ"
-"ます。"
+"入力ジオメトリで切り取ったラスタを返します。バンドが指定されていない場合に"
+"は、全てのバンドが処理されます。<varname>crop</varname>が指定されていなかった"
+"りTRUE となっている場合には、出力ラスタは切り取られます。<varname>touched</"
+"varname>がTRUEの場合には、接触するピクセルは取り込まれ、TRUEでない場合には、"
+"中心がジオメトリ内にあるピクセルだけが取り込まれます。"
 
 #. Tag: para
 #, no-c-format
@@ -42861,8 +42861,8 @@ msgstr "PostGIS 3.5.0"
 
 #. Tag: para
 #, no-c-format
-msgid "2024/xx/xx"
-msgstr "2024/xx/xx"
+msgid "2024/09/25"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -43045,7 +43045,8 @@ msgstr ""
 msgid ""
 "Zero length LineStrings are treated as if they are the equivalent Point "
 "object."
-msgstr "長さが0のラインストリングは、等価なポイントオブジェクトとして扱われます。"
+msgstr ""
+"長さが0のラインストリングは、等価なポイントオブジェクトとして扱われます。"
 
 #. Tag: title
 #, no-c-format
@@ -49428,6 +49429,10 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid "2024/xx/xx"
+#~ msgstr "2024/xx/xx"
 
 #, no-c-format
 #~ msgid ""
