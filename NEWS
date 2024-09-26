@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - Use current SFCGAL function names in regression tests (Loïc Bartoletti)
   - Correct spelling in the English function reference (Mike Taves)
   - Avoid an implicit dependency on Abseil in FlatGeobuf (Paul Ramsey)
   - Correct street type and unit terminology in the Address Standardizer manual (Mike Taves)
