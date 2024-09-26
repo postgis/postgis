@@ -1086,7 +1086,13 @@ BEGIN
         -- node is isolated and advertising a containing_face
         -- now let's check it's really in contained by it
         BEGIN
-          containing_face := topology.GetFaceContainingPoint(toponame, rec.geom);
+          SELECT face_id FROM pg_temp.face_check
+          WHERE ST_Contains(shell, rec.geom)
+          ORDER BY ST_Area(shell) ASC
+          LIMIT 1
+          INTO containing_face;
+          --containing_face := topology.GetFaceContainingPoint(toponame, rec.geom);
+          IF containing_face IS NULL THEN containing_face = 0; END IF;
         EXCEPTION WHEN OTHERS THEN
           RAISE NOTICE 'Got % (%)', SQLSTATE, SQLERRM;
           retrec.error := format('got exception trying to find face containing node: %s', SQLERRM);
