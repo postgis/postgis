@@ -8,3 +8,6 @@ PostGIS 3.6.0
 
 
 * New Features *
+
+#5784, GT-223 Export circ_tree_distance_tree_internal for mobilitydb use
+      (Maxime Schoemans)
