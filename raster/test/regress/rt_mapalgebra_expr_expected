@@ -18,6 +18,7 @@ T10.8.2|10|50
 T10.8.3|10|37
 T10.8.4|10|30
 ERROR:  division by zero
+ERROR:  rtpg_nmapalgebraexpr_callback: rast2 argument specified in single-raster invocation
 T11.1|10|2
 T11.2|10|2
 T12|t|t|t|t
