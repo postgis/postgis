@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-25 17:55+0000\n"
+"POT-Creation-Date: 2024-09-29 05:23+0000\n"
 "PO-Revision-Date: 2023-12-28 09:45+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -40436,376 +40436,12 @@ msgstr "发行说明"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.5.0"
+msgid "PostGIS 3.6.0"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2024/09/25"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This version requires PostgreSQL 12-17, GEOS 3.8 or higher, and Proj 6.1+. "
-"To take advantage of all features, GEOS 3.12+ is needed. To take advantage "
-"of all SFCGAL features, SFCGAL 1.5.0+ is needed."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Many thanks to our translation teams, in particular:"
-msgstr "非常感谢我们的翻译团队，特别是："
-
-#. Tag: para
-#, no-c-format
-msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Teramoto Ikuhiro (Japanese Team)"
-msgstr "Teramoto Ikuhiro (Japanese Team)"
-
-#. Tag: para
-#, no-c-format
-msgid "Vincent Bre (French Team)"
-msgstr "Vincent Bre (French Team)"
-
-#. Tag: title
-#, no-c-format
-msgid "Breaking Changes"
-msgstr "重大变化"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5546\">#5546</"
-"link>, TopoGeometry &lt;&gt; TopoGeometry is now ambiguous, to get the old "
-"behaviour, assuming your TopoGeometry objects are named tg1 and tg2, use: "
-"( id(tg1) &lt;&gt; id(tg2) OR topology_id(tg1) &lt;&gt; topology_id(tg2) OR "
-"layer_id(tg1) &lt;&gt; layer_id(tg2) OR type(tg1) &lt;&gt; type(tg2) ) "
-"(Sandro Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5536\">#5536</"
-"link>, comments are not anymore included in PostGIS extensions (Sandro "
-"Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "xmllint is now required to build comments (Sandro Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "DocBook5 XSL is now required to build html (Sandro Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5602\">#5602</"
-"link>, Drop support for GEOS 3.6 and 3.7 (Regina Obe)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5571\">#5571</"
-"link>, Improve ST_GeneratePoints performance, but old seeded pseudo random "
-"points will need to be regenerated."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5596\">#5596</"
-"link>, GH-749, Allow promoting column as an id in ST_AsGeoJson(record,..). "
-"Views and materialized views that use the ST_AsGeoJSON(record ..) will need "
-"rebuilding to upgrade to new signature (Jan Tojnar)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5496\">#5496</"
-"link>, ST_Clip all variants replaced, will require rebuilding of "
-"materialized views that use them (Regina Obe)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5659\">#5659</"
-"link>, ST_DFullyWithin behaviour has changed to be ST_Contains(ST_Buffer(A, "
-"R), B) (Paul Ramsey)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Remove the WFS_locks extra package. (Paul Ramsey)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5747\">5747</link>, "
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/776\">GH-776</"
-"link>, ST_Length: Return 0 for CurvePolygon (Dan Baston)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5770\">5770</link>, "
-"support for GEOS 3.13 and RelateNG. Most functionality remains the same, but "
-"new GEOS predicate implementation has a few small changes."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Boundary Node Rule relate matrices might be different when using the \"multi-"
-"valent end point\" rule."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Relate matrices for situations with invalid MultiPolygons with shared "
-"boundaries might be different. Run ST_MakeValid to get valid inputs to feed "
-"to the calculation."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Zero length LineStrings are treated as if they are the equivalent Point "
-"object."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Deprecated signatures"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/761\">GH-761</"
-"link>, ST_StraightSkeleton => CG_StraightSkeleton (Loïc Bartoletti)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/189\">GH-189</link>, All SFCGAL functions now use the prefix CG_, with "
-"the old ones using ST_ being deprecated. (Loïc Bartoletti)"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "New features"
-msgstr "新特性"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Improvements in the 'postgis' script: <itemizedlist> <listitem><para>new "
-"command list-enabled</para></listitem> <listitem><para>new command list-all</"
-"para></listitem> <listitem><para>command upgrade upgrades all databases that "
-"need to be</para></listitem> <listitem><para>command status reports status "
-"of all databases</para></listitem> </itemizedlist> (Sandro Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5742\">#5742</"
-"link>, expose version of PROJ at compile time (Sandro Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5721\">#5721</"
-"link>, postgis_topology: Allow sharing sequences between different "
-"topologies (Lars Opsahl)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5667\">#5667</"
-"link>, postgis_topology: TopoGeo_LoadGeometry (Sandro Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5055\">#5055</"
-"link>, add explicit &lt;&gt; geometry operator to prevent non-unique error "
-"with &lt;&gt; and &#x21;= (Paul Ramsey)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Add ST_HasZ/ST_HasM (Loïc Bartoletti)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/123\">GT-123</link>, postgis_sfcgal: CG_YMonotonePartition, "
-"CG_ApproxConvexPartition, CG_GreeneApproxConvexPartition and "
-"CG_OptimalConvexPartition (Loïc Bartoletti)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/156\">GT-156</link>, postgis_sfcgal: CG_Visibility (Loïc Bartoletti)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/157\">GT-157</link>, postgis_sfcgal: Add ST_ExtrudeStraightSkeleton "
-"(Loïc Bartoletti)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5496\">#5496</"
-"link>, postgis_raster: ST_Clip support for touched (Regina Obe)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/760\">GH-760</"
-"link>, postgis_sfcgal: CG_Intersection, CG_3DIntersects, CG_Intersects, "
-"CG_Difference, CG_Union (and aggregate), CG_Triangulate, CG_Area, "
-"CG_3DDistance, CG_Distance (Loïc Bartoletti)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5687\">#5687</"
-"link>, Don't rely on search_path to determine postgis schema Fix for PG17 "
-"security change (Regina Obe)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5705\">#5705</"
-"link>, <link xlink:href=\"https://github.com/postgis/postgis/"
-"pull/767\">GH-767</link>, ST_RemoveIrrelevantPointsForView (Sam Peters)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5706\">#5706</"
-"link>, <link xlink:href=\"https://github.com/postgis/postgis/"
-"pull/768\">GH-768</link>, ST_RemoveSmallParts (Sam Peters)"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Enhancements"
-msgstr "增强功能"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5550\">5550</link>, "
-"Fix upgrades from 2.x in sandboxed systems (Sandro Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3587\">#3587</"
-"link>, postgis_topology: faster load of big lines in topologies (Sandro "
-"Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5670\">#5670</"
-"link>, postgis_topology: faster ST_CreateTopoGeo (Sandro Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5531\">#5531</"
-"link>, documentation format upgraded to DocBook 5 (Sandro Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5543\">#5543</"
-"link>, allow building without documentation (Sandro Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5596\">#5596</"
-"link>, <link xlink:href=\"https://github.com/postgis/postgis/"
-"pull/749\">GH-749</link>, Allow promoting column as an id in "
-"ST_AsGeoJson(record,..). (Jan Tojnar)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/744\">GH-744</"
-"link>, Don't create docbook.css for the HTML manual, use style.css instead "
-"(Chris Mayo)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Faster implementation of point-in-poly cached index (Paul Ramsey)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Improve performance of ST_GeneratePoints (Paul Ramsey)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5361\">#5361</"
-"link>, ST_CurveN, ST_NumCurves and consistency in accessors on curved "
-"geometry (Paul Ramsey)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/761\">GH-761</"
-"link>, postgis_sfcgal: Add an optional parameter to CG_StraightSkeleton (was "
-"ST_StraightSkeleton) to use m as a distance in result (Hannes Janetzek, Loïc "
-"Bartoletti)"
+msgid "2025/xx/xx"
 msgstr ""
 
 #. Tag: title
@@ -46525,6 +46161,30 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
+
+#, no-c-format
+#~ msgid "Many thanks to our translation teams, in particular:"
+#~ msgstr "非常感谢我们的翻译团队，特别是："
+
+#, no-c-format
+#~ msgid "Teramoto Ikuhiro (Japanese Team)"
+#~ msgstr "Teramoto Ikuhiro (Japanese Team)"
+
+#, no-c-format
+#~ msgid "Vincent Bre (French Team)"
+#~ msgstr "Vincent Bre (French Team)"
+
+#, no-c-format
+#~ msgid "Breaking Changes"
+#~ msgstr "重大变化"
+
+#, no-c-format
+#~ msgid "New features"
+#~ msgstr "新特性"
+
+#, no-c-format
+#~ msgid "Enhancements"
+#~ msgstr "增强功能"
 
 #, no-c-format
 #~ msgid ""
