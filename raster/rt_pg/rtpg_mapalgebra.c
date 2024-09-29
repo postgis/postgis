@@ -1179,6 +1179,11 @@ static int rtpg_nmapalgebraexpr_callback(
 				if (idx < 1) continue;
 				idx--; /* 1-based now 0-based */
 
+				if (arg->rasters == 1 && i > 7) {
+					elog(ERROR, "rtpg_nmapalgebraexpr_callback: rast2 argument specified in single-raster invocation");
+					return 0;
+				}
+
 				switch (i) {
 					/* [rast.x] */
 					case 0:
