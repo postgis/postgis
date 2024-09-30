@@ -28,6 +28,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "../postgis_config.h"
+//#define POSTGIS_DEBUG_LEVEL 5
+
 #include "measures.h"
 #include "lwgeom_log.h"
 
@@ -344,8 +347,10 @@ lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 			{
 				if (!lw_dist2d_distribute_bruteforce(g1, g2, dl))
 					return LW_FALSE;
+				LWDEBUGF(2, "Distance so far: %.15g (%.15g tolerated)", dl->distance, dl->tolerance);
 				if (dl->distance <= dl->tolerance && dl->mode == DIST_MIN)
 					return LW_TRUE; /*just a check if the answer is already given*/
+				LWDEBUG(2, "Not below tolerance yet");
 			}
 		}
 	}
@@ -1133,8 +1138,12 @@ lw_dist2d_pt_ptarray(const POINT2D *p, POINTARRAY *pa, DISTPTS *dl)
 
 	start = getPoint2d_cp(pa, 0);
 
+	LWDEBUG(2, "lw_dist2d_pt_ptarray enter");
+
 	if (!lw_dist2d_pt_pt(p, start, dl))
 		return LW_FALSE;
+
+	LWDEBUGF(2, "lw_dist2d_pt_ptarray: distance from first point ? : %.15g", dl->distance);
 
 	for (uint32_t t = 1; t < pa->npoints; t++)
 	{
@@ -1142,6 +1151,8 @@ lw_dist2d_pt_ptarray(const POINT2D *p, POINTARRAY *pa, DISTPTS *dl)
 		end = getPoint2d_cp(pa, t);
 		if (!lw_dist2d_pt_seg(p, start, end, dl))
 			return LW_FALSE;
+
+		LWDEBUGF(2, "lw_dist2d_pt_ptarray: distance from seg %lu ? : %.15g", t, dl->distance);
 
 		if (dl->distance <= dl->tolerance && dl->mode == DIST_MIN)
 			return LW_TRUE; /*just a check if the answer is already given*/
@@ -2304,11 +2315,17 @@ To get this points it was necessary to change and it also showed to be about 10%
 int
 lw_dist2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B, DISTPTS *dl)
 {
-	POINT2D c;
 	double r;
+
+	LWDEBUG(2, "lw_dist2d_pt_seg called");
+
 	/*if start==end, then use pt distance */
 	if ((A->x == B->x) && (A->y == B->y))
+	{
+		LWDEBUG(2, "lw_dist2d_pt_seg found first and last segment points being the same");
 		return lw_dist2d_pt_pt(p, A, dl);
+	}
+
 
 	/*
 	 * otherwise, we use comp.graphics.algorithms
@@ -2327,6 +2344,8 @@ lw_dist2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B, DISTPTS *
 
 	r = ((p->x - A->x) * (B->x - A->x) + (p->y - A->y) * (B->y - A->y)) /
 	    ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
+
+	LWDEBUGF(2, "lw_dist2d_pt_seg found r = %.15g", r);
 
 	/*This is for finding the maxdistance.
 	the maxdistance have to be between two vertexes, compared to mindistance which can be between two vertexes.*/
@@ -2351,12 +2370,41 @@ lw_dist2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B, DISTPTS *
 		dl->p2 = *p;
 	}
 
-	/*If the projection of point p on the segment is between A and B
-	then we find that "point on segment" and send it to lw_dist2d_pt_pt*/
-	c.x = A->x + r * (B->x - A->x);
-	c.y = A->y + r * (B->y - A->y);
 
-	return lw_dist2d_pt_pt(p, &c, dl);
+	/*
+		(2)
+				  (Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay)
+			s = -----------------------------
+                    L^2
+
+			Then the distance from C to P = |s|*L.
+	*/
+
+	double s = ((A->y - p->y) * (B->x - A->x) - (A->x - p->x) * (B->y - A->y)) /
+	           ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
+
+	double dist = fabs(s) * sqrt(((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y)));
+	if ( dist < dl->distance )
+	{
+		dl->distance = dist;
+		{
+			POINT2D c;
+			c.x = A->x + r * (B->x - A->x);
+			c.y = A->y + r * (B->y - A->y);
+			if (dl->twisted > 0)
+			{
+				dl->p1 = *p;
+				dl->p2 = c;
+			}
+			else
+			{
+				dl->p1 = c;
+				dl->p2 = *p;
+			}
+		}
+	}
+
+	return LW_TRUE;
 }
 
 /** Compares incoming points and stores the points closest to each other or most far away from each other depending on
