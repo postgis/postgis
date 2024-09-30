@@ -290,3 +290,15 @@ SELECT '#4328.3', ST_Intersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'TRIANGLE(
 SELECT '#4328.4', ST_Intersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POLYGON((.1 .1, .2 .2, .2 .1, .1 .1))'::geometry), ST_3DIntersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POLYGON((.1 .1, .2 .2, .2 .1, .1 .1))'::geometry);
 SELECT '#4328.5', ST_Intersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1)'::geometry), ST_3DIntersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1)'::geometry);
 SELECT '#4328.6', ST_Intersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CURVEPOLYGON(CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1, 1.2 1.2, 1.1 1.1))'::geometry), ST_3DIntersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CURVEPOLYGON(CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1, 1.2 1.2, 1.1 1.1))'::geometry);
+
+-- #5782
+WITH inp AS (
+	SELECT
+	'LINESTRING(18.00678831099686 69.0404811833497,18.006784630996860 69.04045431334970,18.00677727099686 69.0404005833497)'::geometry a,
+	'LINESTRING(18.00677727099686 69.0404005833497,18.006780950996863 69.04042744334969,18.00678831099686 69.0404811833497)'::geometry b,
+	'POINT(18.006691126034692 69.04048768506776)'::geometry q
+)
+SELECT
+	'#5782',
+	ST_Distance(a,q) < ST_Distance(b,q)
+FROM inp;

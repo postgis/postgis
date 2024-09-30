@@ -1,4 +1,4 @@
-PostGIS 3.3.8
+PostGIS 3.3.8dev
 2024-xx-xx
 
 * Bug Fixes and Enhancements *
@@ -6,6 +6,9 @@ PostGIS 3.3.8
  - #5785, [raster] ST_MapAlgebra segfaults when expression references
           a supernumerary rast argument (Dian M Fay)
 
+* Enhancements *
+
+  - #5782, Improve robustness of min distance calculation (Sandro Santilli)
 
 PostGIS 3.3.7
 2024-09-05
