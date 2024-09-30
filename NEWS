@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #5782, Improve the precision of point-to-line distance comparisons (Sandro Santilli)
  - #5118, Clean up the topology relation when a layer sequence is missing (Sandro Santilli)
  - Repopulate topology layers when standard_conforming_strings is off (Sandro Santilli)
  - Clarify when ST_Split requires snapping the input (Martin Davis)
