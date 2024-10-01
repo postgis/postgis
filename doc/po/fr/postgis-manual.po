@@ -3,13 +3,14 @@
 #
 # Thomas Muguet <thomas.muguet@oslandia.com>, 2024.
 # DeepL <noreply-mt-deepl@weblate.org>, 2024.
+# Edouard Choinière <echoix@users.noreply.weblate.osgeo.org>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-09-29 05:23+0000\n"
 "PO-Revision-Date: 2024-10-01 02:16+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"Last-Translator: Edouard Choinière <echoix@users.noreply.weblate.osgeo.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -11223,7 +11224,7 @@ msgstr "Geographic Data BC"
 #. Tag: link
 #, no-c-format
 msgid "HighGo"
-msgstr "Haut de page"
+msgstr ""
 
 #. Tag: simpara
 #, no-c-format
