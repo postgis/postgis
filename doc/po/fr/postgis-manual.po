@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-09-29 05:23+0000\n"
-"PO-Revision-Date: 2024-10-01 02:16+0000\n"
-"Last-Translator: Edouard Choinière <echoix@users.noreply.weblate.osgeo.org>\n"
+"PO-Revision-Date: 2024-10-01 03:47+0000\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -18100,7 +18100,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "the original geometry,"
-msgstr ""
+msgstr "la géométrie d'origine,"
 
 #. Tag: para
 #, no-c-format
@@ -44772,7 +44772,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Returns the version number of the LibJSON-C library."
-msgstr ""
+msgstr "Renvoie le numéro de version de la bibliothèque LibJSON-C."
 
 #. Tag: refpurpose
 #, no-c-format
