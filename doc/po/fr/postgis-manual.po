@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-09-29 05:23+0000\n"
-"PO-Revision-Date: 2024-06-18 14:45+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
-"Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/fr/>\n"
+"PO-Revision-Date: 2024-10-01 02:13+0000\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10643,7 +10643,7 @@ msgstr "Dane Springmeyer"
 #. Tag: member
 #, no-c-format
 msgid "Dapeng Wang"
-msgstr ""
+msgstr "Dapeng Wang"
 
 #. Tag: member
 #, no-c-format
@@ -11008,7 +11008,7 @@ msgstr "Ron Mayer"
 #. Tag: member
 #, no-c-format
 msgid "Sam Peters"
-msgstr ""
+msgstr "Sam Peters"
 
 #. Tag: member
 #, no-c-format
@@ -11113,7 +11113,7 @@ msgstr "Volf Tomáš"
 #. Tag: member
 #, no-c-format
 msgid "Zuo Chenwei"
-msgstr ""
+msgstr "Zuo Chenwei"
 
 #. Tag: term
 #, no-c-format
@@ -11223,7 +11223,7 @@ msgstr "Geographic Data BC"
 #. Tag: link
 #, no-c-format
 msgid "HighGo"
-msgstr ""
+msgstr "Haut de page"
 
 #. Tag: simpara
 #, no-c-format
