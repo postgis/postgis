@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-09-29 05:23+0000\n"
-"PO-Revision-Date: 2024-10-01 02:13+0000\n"
+"PO-Revision-Date: 2024-10-01 02:16+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
@@ -17977,7 +17977,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "In contrast to <code>ST_ClipByBox2D()</code> this function"
-msgstr ""
+msgstr "Contrairement à <code>ST_ClipByBox2D()</code>, cette fonction"
 
 #. Tag: para
 #, no-c-format
