@@ -5,6 +5,8 @@ PostGIS 3.3.8dev
 
  - #5785, [raster] ST_MapAlgebra segfaults when expression references
           a supernumerary rast argument (Dian M Fay)
+ - #5787, Check that ST_ChangeEdgeGeom doesn't change winding of rings
+          (Sandro Santilli)
 
 * Enhancements *
 
