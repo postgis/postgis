@@ -1517,7 +1517,7 @@ _lwt_InitEdgeEndByLine(edgeend *fee, edgeend *lee, LWLINE *edge,
 /*
  * Find the first edges encountered going clockwise and counterclockwise
  * around a node, starting from the given azimuth, and take
- * note of the face on the both sides.
+ * note of the face on both sides.
  *
  * @param topo the topology to load edges from
  * @param node the identifier of the node to analyze
@@ -3269,6 +3269,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   POINT2D p1, p2, pt;
   uint64_t i;
   int isclosed = 0;
+  int leftRingIsCCW = -1;
 
   /* curve must be simple */
   if ( ! lwgeom_is_simple(lwline_as_lwgeom(geom)) )
@@ -3454,6 +3455,62 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
               span_pre.nextCW, span_pre.nextCCW,
               epan_pre.nextCW, epan_pre.nextCCW);
 
+  /* If the same edge is both on CW and CCW direction on both start
+   * and end points we need to verify winding of the left and right
+   * rings to verify we didn't twist.
+   * See https://trac.osgeo.org/postgis/ticket/5787
+   *
+   * NOTE: this could probably replace the "isclosed" test.
+   *
+   * NOTE: if either start or end node had different CW and CCW
+   *       edges a twist would be cought in the previous check.
+   */
+  if ( ! isclosed &&
+       oldedge->face_left != oldedge->face_right &&
+       span_pre.nextCW == span_pre.nextCCW &&
+       epan_pre.nextCW == epan_pre.nextCCW )
+  {{
+    uint64_t num_signed_edge_ids;
+    LWT_ELEMID *signed_edge_ids;
+    LWPOLY *shell;
+
+    lwnotice("Twist check before");
+    signed_edge_ids = lwt_be_getRingEdges(topo, edge_id, &num_signed_edge_ids, 0);
+    /* Get winding of left face ring */
+    if (!signed_edge_ids)
+    {
+      //PGTOPO_BE_ERRORF("no ring edges for edge %" LWTFMT_ELEMID, sedge);
+      PGTOPO_BE_ERROR();
+      return -1;
+    }
+    LWDEBUGF(1, "getRingEdges returned %d edges", num_signed_edge_ids);
+
+    shell = _lwt_MakeRingShell(topo, signed_edge_ids, num_signed_edge_ids);
+    if ( ! shell ) {
+      lwfree( signed_edge_ids );
+      /* ring_edges should be NULL */
+      lwerror("Could not create ring shell: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+
+    const POINTARRAY *pa = shell->rings[0];
+    if ( ! ptarray_is_closed_2d(pa) )
+    {
+      lwpoly_free(shell);
+      lwfree( signed_edge_ids );
+      lwerror("Corrupted topology: ring of edge %" LWTFMT_ELEMID
+              " is geometrically not-closed", edge_id);
+      return -1;
+    }
+
+    leftRingIsCCW = ptarray_isccw(pa);
+    lwpoly_free(shell);
+    lwfree( signed_edge_ids );
+
+    lwnotice("Ring of edge %" LWTFMT_ELEMID " is %sclockwise", edge_id, leftRingIsCCW ? "counter" : "");
+  }}
+
+
   /* update edge geometry */
   newedge.edge_id = edge_id;
   newedge.geom = geom;
@@ -3511,6 +3568,55 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
     lwerror("Edge changed disposition around end node %"
             LWTFMT_ELEMID, nid);
     return -1;
+  }}
+
+  /* Check winding of left face ring did not change */
+  if ( leftRingIsCCW != -1 )
+  {{
+    uint64_t num_signed_edge_ids;
+    LWT_ELEMID *signed_edge_ids;
+    LWPOLY *shell;
+    int isCCW;
+
+    lwnotice("Twist check after");
+    signed_edge_ids = lwt_be_getRingEdges(topo, edge_id, &num_signed_edge_ids, 0);
+    /* Get winding of left face ring */
+    if (!signed_edge_ids)
+    {
+      //PGTOPO_BE_ERRORF("no ring edges for edge %" LWTFMT_ELEMID, sedge);
+      PGTOPO_BE_ERROR();
+      return -1;
+    }
+    LWDEBUGF(1, "getRingEdges returned %d edges", num_signed_edge_ids);
+
+    shell = _lwt_MakeRingShell(topo, signed_edge_ids, num_signed_edge_ids);
+    if ( ! shell ) {
+      lwfree( signed_edge_ids );
+      /* ring_edges should be NULL */
+      lwerror("Could not create ring shell: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+
+    const POINTARRAY *pa = shell->rings[0];
+    if ( ! ptarray_is_closed_2d(pa) )
+    {
+      lwpoly_free(shell);
+      lwfree( signed_edge_ids );
+      lwerror("Corrupted topology: ring of edge %" LWTFMT_ELEMID
+              " is geometrically not-closed", edge_id);
+      return -1;
+    }
+
+    isCCW = ptarray_isccw(pa);
+    lwpoly_free(shell);
+    lwfree( signed_edge_ids );
+
+    if ( isCCW != leftRingIsCCW )
+    {
+      _lwt_release_edges(oldedge, 1);
+      lwerror("Edge ring changes winding");
+      return -1;
+    }
   }}
 
   /*
