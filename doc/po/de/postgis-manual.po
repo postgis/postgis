@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-09-29 05:23+0000\n"
-"PO-Revision-Date: 2024-02-26 08:45+0000\n"
+"PO-Revision-Date: 2024-10-02 12:47+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
-"Language-Team: German <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/de/>\n"
+"Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.3\n"
+"X-Generator: Weblate 5.4.3\n"
 
 #. Tag: chapter
 #, no-c-format
@@ -62,7 +62,7 @@ msgstr ""
 "Hilfe der entsprechenden <xref linkend=\"PostGIS_GUC\"/> verwenden."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "If you want to enable offline raster:"
 msgstr "Wenn Sie Offline-Raster aktivieren möchten:"
 
@@ -97,7 +97,7 @@ msgstr ""
 "Unter Windows darf die Treiberliste nicht unter Hochkomma gestellt werden"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Setting environment variables varies depending on OS. For PostgreSQL "
 "installed on Ubuntu or Debian via apt-postgresql, the preferred way is to "
@@ -105,12 +105,12 @@ msgid ""
 "<replaceable>main</replaceable>/environment</filename> where 10 refers to "
 "version of PostgreSQL and main refers to the cluster."
 msgstr ""
-"Das Setzen von Umgebungsvariablen variiert je nach Betriebssystem. Für "
-"PostgreSQL, das unter Ubuntu oder Debian über apt-postgresql installiert "
-"wurde, ist der bevorzugte Weg, <filename>/etc/postgresql/<replaceable>10</"
-"replaceable>/<replaceable>main</replaceable>/environment</filename> zu "
-"editieren, wobei sich 10 auf die Version von PostgreSQL und main auf den "
-"Cluster bezieht."
+"Das Setzen von Umgebungsvariablen variiert je nach Betriebssystem. Für eine "
+"PostgreSQL Installation unter Ubuntu oder Debian mit apt-postgresql, sollte "
+"<filename>/etc/postgresql/"
+"<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</"
+"filename> editiert werden, wobei sich 10 auf die PostgreSQL-Version und main "
+"auf den Cluster bezieht."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -131,53 +131,53 @@ msgstr ""
 "fügen Sie neue Systemvariablen hinzu."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "After you set the environment variables, you'll need to restart your "
 "PostgreSQL service for the changes to take effect."
 msgstr ""
-"Nachdem Sie die Umgebungsvariablen gesetzt haben, müssen Sie Ihren "
-"PostgreSQL-Dienst neu starten, damit die Änderungen wirksam werden."
+"Nachdem die Umgebungsvariablen gesetzt wurden, muss der PostgreSQL-Dienst "
+"neu gestartet werden, damit die Änderungen wirksam werden."
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Creating spatial databases"
 msgstr "Erstellung räumlicher Datenbanken"
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Spatially enable database using EXTENSION"
-msgstr "Datenbank mit EXTENSION räumlich aktivieren"
+msgstr "Die spatiale Datenbankerweiterung mittels EXTENSION aktivieren"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you are using PostgreSQL 9.1+ and have compiled and installed the "
 "extensions/postgis modules, you can turn a database into a spatial one using "
 "the EXTENSION mechanism."
 msgstr ""
-"Wenn Sie PostgreSQL 9.1+ verwenden und die Extensions/Postgis-Module "
-"kompiliert und installiert haben, können Sie eine Datenbank mit Hilfe des "
-"EXTENSION-Mechanismus in eine räumliche Datenbank verwandeln."
+"Wenn ab PostgreSQL 9.1 die Extensions/Postgis-Module installiert sind, kann "
+"die Datenbank mit Hilfe des EXTENSION-Mechanismus in eine spatiale Datenbank "
+"verwandelt werden."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Core postgis extension includes geometry, geography, spatial_ref_sys and all "
 "the functions and comments. Raster and topology are packaged as a separate "
 "extension."
 msgstr ""
-"Die Kern-Postgis-Erweiterung enthält Geometrie, Geographie, spatial_ref_sys "
-"und alle Funktionen und Kommentare. Raster und Topologie sind als separate "
-"Erweiterung verpackt."
+"Die Postgis-Erweiterung selbst enthält die Module geometry, geography, "
+"spatial_ref_sys inklusive aller Funktionen und Kommentare. Die Module raster "
+"und topology sind in separate Erweiterungen verpackt."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Run the following SQL snippet in the database you want to enable spatially:"
 msgstr ""
-"Führen Sie das folgende SQL-Snippet in der Datenbank aus, die Sie räumlich "
-"aktivieren möchten:"
+"Um die spatiale Erweiterung in einer Datenbank zu aktivieren, wird der "
+"folgende SQL Befehl ausgeführt:"
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -186,15 +186,15 @@ msgstr ""
 "Datenbank räumlich aktivieren, ohne EXTENSION zu verwenden (nicht empfohlen)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This is generally only needed if you cannot or don't want to get PostGIS "
 "installed in the PostgreSQL extension directory (for example during testing, "
 "development or in a restricted environment)."
 msgstr ""
-"Dies ist in der Regel nur notwendig, wenn Sie PostGIS nicht in das "
-"PostgreSQL-Erweiterungsverzeichnis installieren können oder wollen (z.B. "
-"beim Testen, bei der Entwicklung oder in einer eingeschränkten Umgebung)."
+"Dies ist in der Regel nur dann notwendig, wenn PostGIS nicht in das "
+"Erweiterungsverzeichnis von PostgreSQL installiert werden kann oder soll ("
+"wie in einer Test-, Entwicklungs- oder eingeschränkten Umgebung)."
 
 #. Tag: para
 #, fuzzy, no-c-format
