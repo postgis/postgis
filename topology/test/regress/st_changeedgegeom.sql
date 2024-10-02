@@ -186,3 +186,11 @@ AND NOT ST_Equals(
     )
   );
 SELECT NULL FROM topology.DropTopology('t5709');
+
+-- See https://trac.osgeo.org/postgis/ticket/5787
+SELECT NULL FROM topology.CreateTopology('t5787');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t5787', 'LINESTRING(0 0, 5 5, 10 0)');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t5787', 'LINESTRING(0 0, 10 0)');
+SELECT '#5787', 'unexpected success' FROM topology.ST_ChangeEdgeGeom('t5787', 1, 'LINESTRING(0 0, 5 -5, 10 0)');
+SELECT '#5787', 'unexpected invalidity', * FROM topology.ValidateTopology('t5787');
+SELECT NULL FROM topology.DropTopology('t5787');
