@@ -3472,7 +3472,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
     LWT_ELEMID *signed_edge_ids;
     LWPOLY *shell;
 
-    lwnotice("Twist check before");
+    LWDEBUG(1, "Twist check before");
     signed_edge_ids = lwt_be_getRingEdges(topo, edge_id, &num_signed_edge_ids, 0);
     /* Get winding of left face ring */
     if (!signed_edge_ids)
@@ -3504,7 +3504,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
     lwpoly_free(shell);
     lwfree( signed_edge_ids );
 
-    lwnotice("Ring of edge %" LWTFMT_ELEMID " is %sclockwise", edge_id, leftRingIsCCW ? "counter" : "");
+    LWDEBUGF(1, "Ring of edge %" LWTFMT_ELEMID " is %sclockwise", edge_id, leftRingIsCCW ? "counter" : "");
   }}
 
 
@@ -3575,7 +3575,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
     LWPOLY *shell;
     int isCCW;
 
-    lwnotice("Twist check after");
+    LWDEBUG(1, "Twist check after");
     signed_edge_ids = lwt_be_getRingEdges(topo, edge_id, &num_signed_edge_ids, 0);
     /* Get winding of left face ring */
     if (!signed_edge_ids)
