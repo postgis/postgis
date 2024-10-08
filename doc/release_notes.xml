@@ -37,7 +37,9 @@
            will need rebuilding to upgrade to new signature
            (Jan Tojnar)</para>
 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5496">#5496</link>, ST_Clip all variants replaced, will require
-           rebuilding of materialized views that use them (Regina Obe)</para>
+           rebuilding of materialized views that use them (funding from The National Institute for Agricultural
+            and Food Research and Technology (INIA-CSIC)), 
+            Regina Obe</para>
 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5659">#5659</link>, ST_DFullyWithin behaviour has changed to
            be ST_Contains(ST_Buffer(A, R), B) (Paul Ramsey)</para>
 <para>Remove the WFS_locks extra package. (Paul Ramsey)</para>

@@ -50,7 +50,10 @@ Andreas Schild (German Team)
            will need rebuilding to upgrade to new signature
            (Jan Tojnar)
   - #5496, ST_Clip all variants replaced, will require
-           rebuilding of materialized views that use them (Regina Obe)
+           rebuilding of materialized views that use them 
+           (funding from The National Institute for Agricultural
+            and Food Research and Technology (INIA-CSIC)), 
+            Regina Obe)
   - #5659, ST_DFullyWithin behaviour has changed to
            be ST_Contains(ST_Buffer(A, R), B) (Paul Ramsey)
   - Remove the WFS_locks extra package. (Paul Ramsey)
