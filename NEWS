@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Correct additional topology debug formats for 64-bit values (Sandro Santilli)
  - Fix topology debug formatting for 64-bit counts and IDs (Sandro Santilli)
  - #5332, Send PROJ diagnostics to the PostgreSQL debug log (Paul Ramsey)
  - Initialize regression counters before preparing the database (Sandro Santilli)

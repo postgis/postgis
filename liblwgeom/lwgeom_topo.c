@@ -981,7 +981,7 @@ _lwt_EdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, int skipISOChe
   LWDEBUGF(1, "lwt_be_getEdgeById returned %p", *oldedge);
   if ( ! *oldedge )
   {
-    LWDEBUGF(1, "lwt_be_getEdgeById returned NULL and set i=%d", i);
+    LWDEBUGF(1, "lwt_be_getEdgeById returned NULL and set i=%" PRIu64, i);
     if (i == UINT64_MAX)
     {
       lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
@@ -1560,7 +1560,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
 	  return 0;
   }
 
-  LWDEBUGF(1, "getEdgeByNode returned %d edges, minaz=%g, maxaz=%g",
+  LWDEBUGF(1, "getEdgeByNode returned %" PRIu64 " edges, minaz=%g, maxaz=%g",
               numedges, minaz, maxaz);
 
   /* For each incident edge-end (1 or 2): */
@@ -1823,7 +1823,7 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num
   for ( i=0; i<num_signed_edge_ids; ++i )
   {
     LWT_ELEMID eid = signed_edge_ids[i];
-    LWDEBUGF(2, "Edge %d in ring is edge %" LWTFMT_ELEMID, i, eid);
+    LWDEBUGF(2, "Edge %" PRIu64 " in ring is edge %" LWTFMT_ELEMID, i, eid);
     LWT_ISO_EDGE *edge = NULL;
     POINTARRAY *epa;
     for ( j=0; j<numedges; ++j )
@@ -1913,7 +1913,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
 			lwt_be_lastErrorMessage(topo->be_iface));
 		return -2;
 	}
-  LWDEBUGF(1, "getRingEdges returned %d edges", num_signed_edge_ids);
+  LWDEBUGF(1, "getRingEdges returned %" PRIu64 " edges", num_signed_edge_ids);
 
   /* You can't get to the other side of an edge forming a ring */
   for (i=0; i<num_signed_edge_ids; ++i) {
@@ -2080,7 +2080,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
 	  lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
 	  return -2;
   }
-  LWDEBUGF(1, "_lwt_AddFaceSplit: lwt_be_getEdgeByFace(%d) returned %d edges", face, numfaceedges);
+  LWDEBUGF(1, "_lwt_AddFaceSplit: lwt_be_getEdgeByFace(%" LWTFMT_ELEMID ") returned %" PRIu64 " edges", face, numfaceedges);
 
   if ( numfaceedges )
   {
@@ -2104,7 +2104,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
         if ( seid == e->edge_id )
         {
           /* IDEA: remove entry from signed_edge_ids, to speed next loop ? */
-          LWDEBUGF(1, "Edge %d is a known forward edge of the new ring", e->edge_id);
+          LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " is a known forward edge of the new ring", e->edge_id);
           forward_edges[forward_edges_count].edge_id = e->edge_id;
           forward_edges[forward_edges_count++].face_left = newface.face_id;
           found++;
@@ -2113,7 +2113,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
         else if ( -seid == e->edge_id )
         {
           /* IDEA: remove entry from signed_edge_ids, to speed next loop ? */
-          LWDEBUGF(1, "Edge %d is a known backward edge of the new ring", e->edge_id);
+          LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " is a known backward edge of the new ring", e->edge_id);
           backward_edges[backward_edges_count].edge_id = e->edge_id;
           backward_edges[backward_edges_count++].face_right = newface.face_id;
           found++;
@@ -2121,7 +2121,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
         }
       }
       if ( found ) continue;
-      LWDEBUGF(1, "Edge %d is not a known edge of the new ring", e->edge_id);
+      LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " is not a known edge of the new ring", e->edge_id);
 
       /* Check if the edge is now binding a different face */
 
@@ -2140,7 +2140,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
        *       shellbox to do it here */
       contains = ptarray_contains_point(pa, &ep);
 
-      LWDEBUGF(1, "Edge %d first point %s new ring",
+      LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " first point %s new ring",
           e->edge_id, (contains == LW_INSIDE ? "inside" :
            contains == LW_OUTSIDE ? "outside" : "on boundary of"));
 
@@ -2149,7 +2149,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       {
         if ( contains != LW_OUTSIDE )
         {
-          LWDEBUGF(1, "Edge %d not outside of the new ring, not updating it",
+          LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " not outside of the new ring, not updating it",
                       e->edge_id);
           continue;
         }
@@ -2158,7 +2158,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       {
         if ( contains != LW_INSIDE )
         {
-          LWDEBUGF(1, "Edge %d not inside the new ring, not updating it",
+          LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " not inside the new ring, not updating it",
                       e->edge_id);
           continue;
         }
@@ -2167,7 +2167,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       /* (2.3) push to forward_edges if left_face = oface */
       if ( e->face_left == face )
       {
-        LWDEBUGF(1, "Edge %d has new face on the left side", e->edge_id);
+        LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " has new face on the left side", e->edge_id);
         forward_edges[forward_edges_count].edge_id = e->edge_id;
         forward_edges[forward_edges_count++].face_left = newface.face_id;
       }
@@ -2175,7 +2175,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       /* (2.4) push to backward_edges if right_face = oface */
       if ( e->face_right == face )
       {
-        LWDEBUGF(1, "Edge %d has new face on the right side", e->edge_id);
+        LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " has new face on the right side", e->edge_id);
         backward_edges[backward_edges_count].edge_id = e->edge_id;
         backward_edges[backward_edges_count++].face_right = newface.face_id;
       }
@@ -2249,14 +2249,14 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       LWT_ISO_NODE *n = &(nodes[i]);
       const POINT2D *pt = getPoint2d_cp(n->geom->point, 0);
       int contains = ptarray_contains_point(pa, pt) == LW_INSIDE;
-      LWDEBUGF(1, "Node %d is %scontained in new ring, newface is %s",
+      LWDEBUGF(1, "Node %" LWTFMT_ELEMID " is %scontained in new ring, newface is %s",
                   n->node_id, contains ? "" : "not ",
                   newface_outside ? "outside" : "inside" );
       if ( newface_outside )
       {
         if ( contains )
         {
-          LWDEBUGF(1, "Node %d contained in an hole of the new face",
+          LWDEBUGF(1, "Node %" LWTFMT_ELEMID " contained in an hole of the new face",
                       n->node_id);
           continue;
         }
@@ -2265,7 +2265,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       {
         if ( ! contains )
         {
-          LWDEBUGF(1, "Node %d not contained in the face shell",
+          LWDEBUGF(1, "Node %" LWTFMT_ELEMID " not contained in the face shell",
                       n->node_id);
           continue;
         }
@@ -2273,7 +2273,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       updated_nodes[nodes_to_update].node_id = n->node_id;
       updated_nodes[nodes_to_update++].containing_face =
                                        newface.face_id;
-      LWDEBUGF(1, "Node %d will be updated", n->node_id);
+      LWDEBUGF(1, "Node %" LWTFMT_ELEMID " will be updated", n->node_id);
     }
     _lwt_release_nodes(nodes, numisonodes);
     if ( nodes_to_update )
@@ -2425,7 +2425,8 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
       }
     }
 
-    LWDEBUGF(1, "Node %d, with geom %p (looking for %d and %d)",
+    LWDEBUGF(1, "Node %" LWTFMT_ELEMID ", with geom %p (looking for %"
+             LWTFMT_ELEMID " and %" LWTFMT_ELEMID ")",
              node->node_id, node->geom, start_node, end_node);
     if ( node->node_id == start_node ) {
       start_node_geom = node->geom;
@@ -3278,7 +3279,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   if ( ! oldedge )
   {
     LWDEBUGF(1, "lwt_ChangeEdgeGeom: "
-                "lwt_be_getEdgeById returned NULL and set i=%d", i);
+                "lwt_be_getEdgeById returned NULL and set i=%" PRIu64, i);
     if (i == UINT64_MAX)
     {
       lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
@@ -3395,7 +3396,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   uint64_t numnodes;
   nodes = lwt_be_getNodeWithinBox2D(topo, &mbox, &numnodes,
                                           LWT_COL_NODE_ALL, 0);
-  LWDEBUGF(1, "lwt_be_getNodeWithinBox2D returned %d nodes", numnodes);
+  LWDEBUGF(1, "lwt_be_getNodeWithinBox2D returned %" PRIu64 " nodes", numnodes);
   if (numnodes == UINT64_MAX)
   {
 	  _lwt_release_edges(oldedge, 1);
@@ -3584,7 +3585,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
       faces[facestoupdate].face_id = oldedge->face_right;
       faces[facestoupdate++].mbr = nface2->bbox; /* ownership left to nface */
     }
-    LWDEBUGF(1, "%d faces to update", facestoupdate);
+    LWDEBUGF(1, "%" PRIu64 " faces to update", facestoupdate);
     if ( facestoupdate )
     {
 		uint64_t updatedFaces = lwt_be_updateFacesById(topo, &(faces[0]), facestoupdate);
@@ -4038,7 +4039,7 @@ _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
       return -1;
     }
   }
-  LWDEBUGF(1, "releasing %d updateable edges in %p", nedges, upd_edge);
+  LWDEBUGF(1, "releasing %" PRIu64 " updateable edges in %p", nedges, upd_edge);
   lwfree(upd_edge);
 
   /* Id of face that will take up all the space previously
