@@ -1,7 +1,9 @@
-PostGIS 3.0.12
+PostGIS 3.0.12dev
 2024/xx/xx
 
 * Bug Fixes *
+
+ - #5795, Fix ST_NewEdgesSplit can cause invalid topology (Björn Harrtell)
 
 
 PostGIS 3.0.11
