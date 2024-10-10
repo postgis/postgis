@@ -1350,7 +1350,7 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
     return -1;
   }
 
-  updedge.next_right = -newedges[0].edge_id;
+  updedge.next_right = -newedges[1].edge_id;
   seledge.next_right = -edge;
   seledge.start_node = oldedge->end_node;
   ret = lwt_be_updateEdges(topo,
@@ -1378,7 +1378,7 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
     return -1;
   }
 
-  updedge.next_left = -newedges[1].edge_id;
+  updedge.next_left = -newedges[0].edge_id;
   seledge.next_left = -edge;
   seledge.end_node = oldedge->end_node;
   ret = lwt_be_updateEdges(topo,
