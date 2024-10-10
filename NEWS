@@ -1,8 +1,9 @@
-PostGIS 3.1.12
+PostGIS 3.1.12dev
 xxxx/xx/xx
 
 * Bug Fixes *
 
+ - #5795, Fix ST_NewEdgesSplit can cause invalid topology (Björn Harrtell)
  - #5589, ST_3DDistance error for shared first point (Paul Ramsey)
  - #5686, ST_NumInteriorRings and Triangle crash (Paul Ramsey)
  - #5765, Handle nearly co-linear edges with slightly less slop (Paul Ramsey)
