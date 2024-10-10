@@ -143,3 +143,33 @@ DROP TABLE t;
 
 DROP FUNCTION check_changes();
 SELECT DropTopology('city_data');
+
+select '---';
+
+-- Regression test for ST_NewEdgesSplit can cause invalid topology
+-- See https://trac.osgeo.org/postgis/ticket/5795
+select '#5795|Regression test starting';
+select '#5795|Create t5795' from (select null from topology.createtopology('t5795', 0, 0)) q;
+select '#5795|N' || topology.st_addisonode('t5795', 0, st_geomfromtext('POINT(0 0)'));
+select '#5795|N' || topology.st_addisonode('t5795', 0, st_geomfromtext('POINT(10 10)'));
+select '#5795|E' || topology.st_addisoedge('t5795', 1, 2, st_geomfromtext('LINESTRING(0 0, 10 0, 10 10)'));
+select '#5795|E' || topology.st_addedgenewfaces('t5795', 2, 1, st_geomfromtext('LINESTRING(10 10, 0 10, 0 0)'));
+select '#5795|N' || topology.st_newedgessplit('t5795', 1, st_geomfromtext('POINT(5 0)'));
+select '#5795|E' || edge_id, next_left_edge, next_right_edge, left_face, right_face from t5795.edge_data order by edge_id;
+select '#5795|V1' ||topology.validatetopology('t5795');
+select '#5795|N' || topology.st_newedgessplit('t5795', 4, st_geomfromtext('POINT(10 5)'));
+select '#5795|E' || edge_id, next_left_edge, next_right_edge, left_face, right_face from t5795.edge_data order by edge_id;
+select '#5795|V2' ||topology.validatetopology('t5795');
+select '#5795|E' || topology.st_addedgenewfaces('t5795', 3, 4, st_geomfromtext('LINESTRING(5 0, 10 5)'));
+select '#5795|E' || edge_id, next_left_edge, next_right_edge, left_face, right_face from t5795.edge_data order by edge_id;
+select '#5795|V3' ||topology.validatetopology('t5795');
+select '#5795|N' || topology.st_newedgessplit('t5795', 7, st_geomfromtext('POINT(7.5 2.5)'));
+select '#5795|E' || edge_id, next_left_edge, next_right_edge, left_face, right_face from t5795.edge_data order by edge_id;
+select '#5795|V4' ||topology.validatetopology('t5795');
+select '#5795|N' || topology.st_newedgessplit('t5795', 5, st_geomfromtext('POINT(10 2.5)'));
+select '#5795|E' || edge_id, next_left_edge, next_right_edge, left_face, right_face from t5795.edge_data order by edge_id;
+select '#5795|V5' || topology.validatetopology('t5795');
+select '#5795|E' || topology.st_addedgenewfaces('t5795', 5, 6, st_geomfromtext('LINESTRING(7.5 2.5, 10 2.5)'));
+select topology.validatetopology('t5795');
+select '#5795|Drop t5795' from (select null from topology.droptopology('t5795')) q;
+select '#5795|Regression test finished';
