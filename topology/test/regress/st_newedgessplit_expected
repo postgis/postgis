@@ -36,11 +36,7 @@ seq_reset|1|1|1
 robust.1|E1|N3
 robust.2|t|t
 Topology 'city_data' dropped
-1
-1
-2
-1
-2
-3
-invalid next_right_edge|2|-4
+E2|3|-4|1|0
+E3|4|-2|1|0
+E4|2|-3|1|0
 Topology 'test_topo' dropped
