@@ -8,6 +8,8 @@ PostGIS 3.4.4dev
            a supernumerary rast argument (Dian M Fay)
   - #5787, Check that ST_ChangeEdgeGeom doesn't change winding of rings
            (Sandro Santilli)
+  - #5795, Fix ST_NewEdgesSplit can cause invalid topology
+          (Björn Harrtell
 
 * Enhancements *
 
