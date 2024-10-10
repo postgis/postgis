@@ -143,3 +143,14 @@ DROP TABLE t;
 
 DROP FUNCTION check_changes();
 SELECT DropTopology('city_data');
+
+-- Reproduction ST_NewEdgesSplit can cause invalid topology
+-- See https://trac.osgeo.org/postgis/ticket/5795
+select 1 from topology.createtopology('test_topo', 0, 0);
+select topology.st_addisonode('test_topo', 0, st_geomfromtext('POINT(0 0)'));
+select topology.st_addisonode('test_topo', 0, st_geomfromtext('POINT(10 10)'));
+select topology.st_addisoedge('test_topo', 1, 2, st_geomfromtext('LINESTRING(0 0, 10 0, 10 10)'));
+select topology.st_addedgenewfaces('test_topo', 2, 1, st_geomfromtext('LINESTRING(10 10, 0 10, 0 0)'));
+select topology.st_newedgessplit('test_topo', 1, st_geomfromtext('POINT(5 0)'));
+select * from topology.validatetopology('test_topo');
+select topology.droptopology('test_topo');
