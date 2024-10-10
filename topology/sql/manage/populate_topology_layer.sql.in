@@ -1,0 +1,47 @@
+-- {
+--
+-- populate_topology_layer
+--
+-- Register missing layers into topology.topology, looking at
+-- their constraints.
+--
+-- The function doesn't attempt to determine if a layer is
+-- hierarchical or primitive, but always assumes primitive.
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology.populate_topology_layer()
+	RETURNS TABLE(schema_name text, table_name text, feature_column text)
+AS
+$$
+  INSERT INTO topology.layer
+  WITH checks AS (
+  SELECT
+    n.nspname sch, r.relname tab,
+    replace(c.conname, 'check_topogeom_', '') col,
+    --c.consrc src,
+    regexp_matches(c.consrc,
+      E'\\.topology_id = (\\d+).*\\.layer_id = (\\d+).*\\.type = (\\d+)') inf
+  FROM (SELECT conname, connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+		    FROM pg_constraint) AS c, pg_class r, pg_namespace n
+  WHERE c.conname LIKE 'check_topogeom_%'
+    AND r.oid = c.conrelid
+    AND n.oid = r.relnamespace
+  ), newrows AS (
+    SELECT inf[1]::int as topology_id,
+           inf[2]::int as layer_id,
+          sch, tab, col, inf[3]::int as feature_type --, src
+    FROM checks c
+    WHERE NOT EXISTS (
+      SELECT * FROM topology.layer l
+      WHERE l.schema_name = c.sch
+        AND l.table_name = c.tab
+        AND l.feature_column = c.col
+    )
+  )
+  SELECT topology_id, layer_id, sch,
+         tab, col, feature_type,
+         0, NULL
+  FROM newrows RETURNING schema_name,table_name,feature_column;
+$$
+LANGUAGE 'sql' VOLATILE;
+--}

@@ -61,7 +61,6 @@ create:
 ifdef DBNAME
 	@echo "****** Creating database '$(DBNAME)'..."
 	@createdb --tablespace=tablespace2 $(DBNAME) > /dev/null $(ERROUT);
-	@createlang plpgsql $(DBNAME) > /dev/null $(ERROUT);
 	@echo "****** Loading PostGIS into '$(DBNAME)'..."
 	@psql -d $(DBNAME) -f $(POSTGIS)/postgis.sql > /dev/null $(ERROUT);
 	@psql -d $(DBNAME) -f $(POSTGIS)/spatial_ref_sys.sql > /dev/null $(ERROUT);

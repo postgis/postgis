@@ -31,6 +31,8 @@
 #include "librtcore_internal.h"
 #include "rt_serialize.h"
 
+#include <inttypes.h>
+
 /* Read band from WKB as at start of band */
 static rt_band
 rt_band_from_wkb(
@@ -41,8 +43,8 @@ rt_band_from_wkb(
 	rt_band band = NULL;
 	int pixbytes = 0;
 	uint8_t type = 0;
-	unsigned long sz = 0;
-	uint32_t v = 0;
+	size_t sz = 0;
+	size_t v = 0;
 
 	assert(NULL != ptr);
 	assert(NULL != end);
@@ -195,7 +197,7 @@ rt_band_from_wkb(
 	}
 
 	/* This is an on-disk band */
-	sz = width * height * pixbytes;
+	sz = (size_t)width * height * pixbytes;
 	if (((*ptr) + sz) > end) {
 		rterror("rt_band_from_wkb: Premature end of WKB on band data reading (%s:%d)",
 			__FILE__, __LINE__);
@@ -234,7 +236,7 @@ rt_band_from_wkb(
 			}
 
 			flipme = band->data.mem;
-			sz = width * height;
+			sz = (size_t)width * height;
 			for (v = 0; v < sz; ++v) {
 				flipper(flipme);
 				flipme += pixbytes;
@@ -250,7 +252,7 @@ rt_band_from_wkb(
 		uint8_t maxVal = band->pixtype == PT_1BB ? 1 : (band->pixtype == PT_2BUI ? 3 : 15);
 		uint8_t val;
 
-		sz = width*height;
+		sz = (size_t)width*height;
 		for (v = 0; v < sz; ++v) {
 			val = ((uint8_t*) band->data.mem)[v];
 			if (val > maxVal) {
@@ -286,7 +288,8 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
 
 	/* Check that wkbsize is >= sizeof(rt_raster_serialized) */
 	if (wkbsize < RT_WKB_HDR_SZ) {
-		rterror("rt_raster_from_wkb: wkb size (%d)  < min size (%d)",
+		rterror("rt_raster_from_wkb: wkb size (%" PRIu32
+			") < min size (%zu)",
 			wkbsize, RT_WKB_HDR_SZ);
 		return NULL;
 	}
@@ -350,11 +353,11 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
 	if (!rast->numBands) {
 		/* Here ptr should have been left to right after last used byte */
 		if (ptr < wkbend) {
-			rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr);
+			rtwarn("%zu bytes of WKB remained unparsed", wkbend - ptr);
 		}
 		else if (ptr > wkbend) {
 			/* Easier to get a segfault before I guess */
-			rtwarn("We parsed %d bytes more then available!", ptr - wkbend);
+			rtwarn("We parsed %zu bytes more then available!", ptr - wkbend);
 		}
 
 		rast->bands = NULL;
@@ -392,11 +395,11 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
 
 	/* Here ptr should have been left to right after last used byte */
 	if (ptr < wkbend) {
-		rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr);
+		rtwarn("%zu bytes of WKB remained unparsed", wkbend - ptr);
 	}
 	else if (ptr > wkbend) {
 		/* Easier to get a segfault before I guess */
-		rtwarn("We parsed %d bytes more then available!", ptr - wkbend);
+		rtwarn("We parsed %zu bytes more then available!", ptr - wkbend);
 	}
 
 	return rast;
@@ -630,7 +633,7 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize) {
 			default:
 				rterror("rt_raster_to_wkb: Fatal error caused by unknown pixel type. Aborting.");
 				rtdealloc(wkb);
-				abort(); /* shoudn't happen */
+				abort(); /* shouldn't happen */
 				return 0;
 		}
 

@@ -228,7 +228,7 @@ static void test_lwgeom_from_gserialized2(void)
 		out_ewkt = lwgeom_to_ewkt(geom2);
 
 		/* printf("\n in = %s\nout = %s\n", in_ewkt, out_ewkt); */
-		CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+		ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
 		g2 = gserialized2_from_lwgeom(geom2, &size2);
 		CU_ASSERT_EQUAL(g1->gflags, g2->gflags);
 

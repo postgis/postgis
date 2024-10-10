@@ -1,23 +1,24 @@
-# This file should be installed in each
-# language directory
+# This file should be included by the Makefile
+# of each language directory
 
 local-all: local-html comments
 
-local-html: symlinks
-	$(MAKE) html
+# We do not want to recurse in parent dir for the "clean" rule
+local-clean: local-html-clean local-pdf-clean local-epub-clean local-cheatsheet-clean
+	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
+	rm -f $(XML_INPUTS)
+	rm -f postgis-out.xml.in postgis-nospecial.xml.in
+	rm -rf xsl
 
-local-cheatsheets: symlinks
-	$(MAKE) cheatsheets
+# We do not want to recurse in parent dir here
+local-distclean:
+	rm -f Makefile
 
-local-pdf: symlinks
-	$(MAKE) pdf
+local-%: xsl
+	$(MAKE) $(patsubst local-%,%,$@) DOCSUFFIX=$(DOCSUFFIX)
 
-local-check: symlinks
-	$(MAKE) check
-
-symlinks:
-	rm -f html; ln -s ../../html html
-	rm -f xsl; ln -s $(srcdir)/../../xsl xsl
+xsl:
+	ln -sf $(srcdir)/../../xsl .
 
 # for XML_SOURCES
 include ../../Makefile
@@ -25,6 +26,7 @@ include ../../Makefile
 # XML gettext tools
 PO2XML=po2xml
 
-$(XML_SOURCES): %.xml: %.xml.po
-	$(PO2XML) $(srcdir)/../../$@ $< > $@
+$(XML_SOURCES): %.xml: postgis-manual.po $(abs_srcdir)/%.xml
+	$(PO2XML) $(abs_srcdir)/$@ $< > $@.tmp
+	mv $@.tmp $@
 

@@ -329,8 +329,6 @@ int rt_util_gdal_configured(void) {
 		return 0;
 	if (!rt_util_gdal_supported_sr("EPSG:3310"))
 		return 0;
-	if (!rt_util_gdal_supported_sr("EPSG:2163"))
-		return 0;
 
 	return 1;
 }

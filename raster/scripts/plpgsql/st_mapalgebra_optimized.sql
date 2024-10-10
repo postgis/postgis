@@ -5,7 +5,7 @@
 --
 ----------------------------------------------------------------------
 
--- Note: The functions provided in this script are in developement. Do not use.
+-- Note: The functions provided in this script are in development. Do not use.
 
 -- Note: this script is dependent on
 --   _MapAlgebraParts(r1x int, r1y int, r1w int, r1h int, r2x int, r2y int, r2w int, r2h int)

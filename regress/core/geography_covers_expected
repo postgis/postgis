@@ -17,3 +17,4 @@ geog_covered_poly_line_out|f
 geog_covers_self_point|t
 geog_covers_self_line|t
 geog_covers_self_polygon|t
+geog_covers_donut|t

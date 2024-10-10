@@ -464,7 +464,7 @@ typedef struct stand_param
 typedef struct attribute
 {
 	SYMB symbol ;
-	int comp_type ; /* -- The comparision type used in matching -- */
+	int comp_type ; /* -- The comparison type used in matching -- */
 	int check_dir ; /* -- TRUE if a non-blank reference field is read -- */
 	int num_redirects ;
 	DS_Score_t m_weight ; /* -- matching weights -- */

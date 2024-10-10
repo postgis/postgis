@@ -535,11 +535,11 @@ select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
 
 
 -- Crashes (#4767, #4768, #4771, #4772)
-SELECT st_mpointfromwkb('\x'::BYTEA);
-SELECT geometry('\x'::bytea);
-SELECT st_geomcollfromwkb('\x'::bytea);
-SELECT st_geomfromewkb('\x'::bytea);
-SELECT st_wkbtosql('\x');
-SELECT st_mpolyfromwkb('\x'::BYTEA);
-SELECT st_mlinefromwkb('\x'::bytea);
-SELECT st_mlinefromwkb('\x'::bytea,1);
+SELECT st_mpointfromwkb(E'\\x'::BYTEA);
+SELECT geometry(E'\\x'::bytea);
+SELECT st_geomcollfromwkb(E'\\x'::bytea);
+SELECT st_geomfromewkb(E'\\x'::bytea);
+SELECT st_wkbtosql(E'\\x');
+SELECT st_mpolyfromwkb(E'\\x'::BYTEA);
+SELECT st_mlinefromwkb(E'\\x'::bytea);
+SELECT st_mlinefromwkb(E'\\x'::bytea,1);

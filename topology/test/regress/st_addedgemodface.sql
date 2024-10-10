@@ -533,7 +533,13 @@ UPDATE city_data.edge_data
     abs_next_left_edge = 999999
   WHERE edge_id = 5; -- corrupt topology
 -- 2. Try to add an edge closing a ring involving edge 5
+DO $TEST$
+BEGIN
 SELECT ST_AddEdgeModFace('city_data', 5, 7, 'LINESTRING(36 38,41 40)');
+EXCEPTION WHEN OTHERS THEN
+  RAISE EXCEPTION '%', regexp_replace(SQLERRM, '[^]]*] ', '');
+END;
+$TEST$ LANGUAGE 'plpgsql';
 ROLLBACK; -- restores the topology
 
 ---------------------------------------------------------------------

@@ -266,6 +266,39 @@ lwpoint_same(const LWPOINT *p1, const LWPOINT *p2)
 	return ptarray_same(p1->point, p2->point);
 }
 
+/* check 2d coordinate equality  */
+char
+lwpoint_same2d(const LWPOINT *p1, const LWPOINT *p2)
+{
+	return ptarray_same2d(p1->point, p2->point);
+}
+
+LWPOINT *
+lwpoint_project_lwpoint(const LWPOINT* lwpoint1, const LWPOINT* lwpoint2, double distance)
+{
+	POINT4D p1, p2, p3;
+	int srid = lwgeom_get_srid((const LWGEOM*)lwpoint1);
+	int hasz = lwgeom_has_z((const LWGEOM*)lwpoint1);
+	int hasm = lwgeom_has_m((const LWGEOM*)lwpoint1);
+	lwpoint_getPoint4d_p(lwpoint1, &p1);
+	lwpoint_getPoint4d_p(lwpoint2, &p2);
+	project_pt_pt(&p1, &p2, distance, &p3);
+	return lwpoint_make(srid, hasz, hasm, &p3);
+}
+
+LWPOINT *
+lwpoint_project(const LWPOINT* lwpoint1, double distance, double azimuth)
+{
+	POINT4D p1, p2;
+	int srid = lwgeom_get_srid((const LWGEOM*)lwpoint1);
+	int hasz = lwgeom_has_z((const LWGEOM*)lwpoint1);
+	int hasm = lwgeom_has_m((const LWGEOM*)lwpoint1);
+	lwpoint_getPoint4d_p(lwpoint1, &p1);
+	lwpoint_getPoint4d_p(lwpoint1, &p2);
+	project_pt((POINT2D*)&p1, distance, azimuth, (POINT2D*)&p2);
+	return lwpoint_make(srid, hasz, hasm, &p2);
+}
+
 
 LWPOINT*
 lwpoint_force_dims(const LWPOINT *point, int hasz, int hasm, double zval, double mval)

@@ -1,5 +1,5 @@
 -- Runs the soundex function on the last word in the string provided.
--- Words are allowed to be seperated by space, comma, period, new-line
+-- Words are allowed to be separated by space, comma, period, new-line
 -- tab or form feed.
 CREATE OR REPLACE FUNCTION end_soundex(VARCHAR) RETURNS VARCHAR
 AS $_$

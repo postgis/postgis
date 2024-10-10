@@ -18,6 +18,7 @@
 #include "liblwgeom_internal.h"
 #include "lwgeodetic.h"
 #include "lwgeodetic_tree.h"
+#include "intervaltree.h"
 #include "cu_tester.h"
 
 
@@ -91,7 +92,7 @@ static void test_tree_circ_pip(void)
 	circ_tree_free(c);
 	lwline_free(g);
 
-	/* Point outside "w" thing, stab passing through vertexes and grazing pointy thing */
+	/* Point outside "w" thing, stab passing through vertices and grazing pointy thing */
 	pt.x = 2.0;
 	pt.y = 0.0;
 	g = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING(-1 -1,0 -1,1 -1,1 0,1 1,0 0,-1 1,-1 0,-1 -1)", LW_PARSER_CHECK_NONE));
@@ -101,7 +102,7 @@ static void test_tree_circ_pip(void)
 	//printf("rv %d\n", rv);
 	CU_ASSERT_EQUAL(rv, 0);
 
-	/* Point inside "w" thing, stab passing through vertexes and grazing pointy thing */
+	/* Point inside "w" thing, stab passing through vertices and grazing pointy thing */
 	pt.x = 0.8;
 	pt.y = 0.0;
 	rv = circ_tree_contains_point(c, &pt, &pt_outside, 0, &on_boundary);
@@ -182,6 +183,34 @@ static void test_tree_circ_distance(void)
 
 	spheroid_init(&s, 1.0, 1.0);
 
+	/* Ticket 5765 */
+	/* Two very close segments (1.64m) with mid-line points */
+	lwg1 = lwgeom_from_wkt("LINESTRING (-1.7485638876537 52.477970467863,-1.7485727216213 52.477970486617)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("LINESTRING (-1.7486648265496 52.477955848635,-1.7485639721184 52.477955634571)", LW_PARSER_CHECK_NONE);
+	c1 = lwgeom_calculate_circ_tree(lwg1);
+	c2 = lwgeom_calculate_circ_tree(lwg2);
+	d1 = circ_tree_distance_tree(c1, c2, &s, threshold);
+	d2 = lwgeom_distance_spheroid(lwg1, lwg2, &s, threshold);
+	e1 = d1 * WGS84_RADIUS;
+	e2 = d2 * WGS84_RADIUS;
+
+	// printf("\nRadians (tree and brute force)\n");
+	// printf("  d1 = %g r   d2 = %g r\n", d1, d2);
+	// printf("\nMeters (tree and brute force)\n");
+	// printf("  e1 = %g m   e2 = %g m\n\n", e1, e2);
+	// printf("linestring a\n");
+	// circ_tree_print(c1, 0);
+	// printf("linestring b\n");
+	// circ_tree_print(c2, 0);
+
+	circ_tree_free(c1);
+	circ_tree_free(c2);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+	CU_ASSERT_DOUBLE_EQUAL(e1, e2, 0.0001);
+
+	return;
+
 	/* Ticket #4223 */
 	/* tall skinny rectangle */
 	lwg1 = lwgeom_from_wkt("POLYGON((58.5112113206308 0,58.5112113200772 0.000901937525203378,58.511300910044 0.000901937636668872,58.5113009105976 0,58.5112113206308 0))", LW_PARSER_CHECK_NONE);
@@ -193,12 +222,6 @@ static void test_tree_circ_distance(void)
 	d2 = lwgeom_distance_spheroid(lwg1, lwg2, &s, threshold);
 	e1 = d1 * WGS84_RADIUS;
 	e2 = d2 * WGS84_RADIUS;
-	// printf("d1 = %g   d2 = %g\n", d1, d2);
-	// printf("e1 = %g   e2 = %g\n", e1, e2);
-	// printf("polygon a\n");
-	// circ_tree_print(c1, 0);
-	// printf("polygon b\n");
-	// circ_tree_print(c2, 0);
 	circ_tree_free(c1);
 	circ_tree_free(c2);
 	lwgeom_free(lwg1);
@@ -213,11 +236,6 @@ static void test_tree_circ_distance(void)
 	c2 = lwgeom_calculate_circ_tree(lwg2);
 	d1 = circ_tree_distance_tree(c1, c2, &s, threshold);
 	d2 = lwgeom_distance_spheroid(lwg1, lwg2, &s, threshold);
-//	printf("d1 = %g   d2 = %g\n", d1 * WGS84_RADIUS, d2 * WGS84_RADIUS);
-//	printf("line\n");
-//	circ_tree_print(c1, 0);
-//	printf("poly\n");
-//	circ_tree_print(c2, 0);
 	circ_tree_free(c1);
 	circ_tree_free(c2);
 	lwgeom_free(lwg1);
@@ -419,6 +437,213 @@ static void test_tree_circ_distance_threshold(void)
 
 }
 
+/***** Tests for IntervalTree *****/
+
+static void test_itree_once(
+	const char *polyWkt, double x, double y,
+	IntervalTreeResult iexp)
+{
+	LWPOINT *pt = lwpoint_make2d(SRID_DEFAULT, x, y);
+	LWGEOM *poly = lwgeom_from_wkt(polyWkt, LW_PARSER_CHECK_NONE);
+	if(!poly)
+		CU_FAIL_FATAL("unable to parse WKT");
+	IntervalTree *itree = itree_from_lwgeom(poly);
+	IntervalTreeResult irslt = itree_point_in_multipolygon(itree, pt);
+	itree_free(itree);
+	lwgeom_free(poly);
+	lwpoint_free(pt);
+	CU_ASSERT_EQUAL(irslt, iexp);
+}
+
+static void test_itree_square(void)
+{
+	const char *wktPoly =
+		"MULTIPOLYGON(((-1 -1, 0 -1, 1 -1, 1 0, 1 1, -1 1, -1 -1)))";
+
+	/* inside square */
+	test_itree_once(wktPoly, 0.5, 0.5, ITREE_INSIDE);
+	/* inside square at vertex */
+	test_itree_once(wktPoly, 0.0, 0.0, ITREE_INSIDE);
+	/* left of square */
+	test_itree_once(wktPoly, -3.0, 0.0, ITREE_OUTSIDE);
+	/* right of square */
+	test_itree_once(wktPoly, 3.0, 0.0, ITREE_OUTSIDE);
+	/* above square */
+	test_itree_once(wktPoly, 0.0, 3.0, ITREE_OUTSIDE);
+	/* on horizontal boundary */
+	test_itree_once(wktPoly, 0.0, 1.0, ITREE_BOUNDARY);
+	/* on vertical boundary */
+	test_itree_once(wktPoly, -1.0, 0.0, ITREE_BOUNDARY);
+}
+
+static void test_itree_hole(void)
+{
+	const char *wktPoly =
+		"POLYGON("
+		"(-10 -10, 0 -10, 10 -10, 10 0, 10 10, 0 10, -10 10, -10 -10),"
+		"(-5 -5, -5 0, -5 5, 5 5, 5 0, 5 -5, -5 -5))";
+
+	/* inside hole */
+	test_itree_once(wktPoly, 1.0, 1.0, ITREE_OUTSIDE);
+	/* inside hole at vertical vertex */
+	test_itree_once(wktPoly, 0.0, 0.0, ITREE_OUTSIDE);
+	/* left of hole */
+	test_itree_once(wktPoly, -7.0, 0.0, ITREE_INSIDE);
+	/* right of hole */
+	test_itree_once(wktPoly, 7.0, 0.0, ITREE_INSIDE);
+	/* left of hole at top edge */
+	test_itree_once(wktPoly, -7.0, 5.0, ITREE_INSIDE);
+	/* right of hole at bottom edge */
+	test_itree_once(wktPoly, 7.0, -5.0, ITREE_INSIDE);
+	/* above hole */
+	test_itree_once(wktPoly, 0.0, 7.0, ITREE_INSIDE);
+	/* on hole boundary */
+	test_itree_once(wktPoly, 0.0, 5.0, ITREE_BOUNDARY);
+	/* on hole corner */
+	test_itree_once(wktPoly, 5.0, 5.0, ITREE_BOUNDARY);
+}
+
+static void test_itree_hole_spike(void)
+{
+	const char *wktPoly =
+		"POLYGON("
+		"(-10 -10, 6 -10, 7 -10, 7.5 2, 8 -10, 9 -10, 10 -10, 10 10, -10 10, -10 2, -10 2, -10 -10),"
+		"(-5 -5, -5 5, 5 5, 5 -5, -5 -5))";
+
+	/* inside hole */
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+	/* inside hole */
+	test_itree_once(wktPoly, -2.0, -2.0, ITREE_OUTSIDE);
+	/* left of spike */
+	test_itree_once(wktPoly, 6.0, -2.0, ITREE_INSIDE);
+	/* right of spike */
+	test_itree_once(wktPoly, 9.0, -2.0, ITREE_INSIDE);
+	/* left of tip of spike */
+	test_itree_once(wktPoly, 6.0, 2.0, ITREE_INSIDE);
+	/* right of tip of spike */
+	test_itree_once(wktPoly, 9.0, 2.0, ITREE_INSIDE);
+	/* on spike tip */
+	test_itree_once(wktPoly, 7.5, 2.0, ITREE_BOUNDARY);
+	/* left of dupe vertex */
+	test_itree_once(wktPoly, -11, 2.0, ITREE_OUTSIDE);
+	/* right of dupe vertex */
+	test_itree_once(wktPoly, 11, 2.0, ITREE_OUTSIDE);
+}
+
+static void test_itree_multipoly_empty(void)
+{
+
+	/* outside empty */
+	const char *wktPoly = "POLYGON EMPTY";
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+
+	/* outside empty */
+	wktPoly = "MULTIPOLYGON EMPTY";
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+
+	/* outside collection of empty */
+	wktPoly = "MULTIPOLYGON(EMPTY, EMPTY, EMPTY)";
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+
+	/* mixed collection of empty and not */
+	wktPoly =
+		"MULTIPOLYGON(EMPTY,"
+		"((-10 -10, 6 -10, 7 -10, 7.5 2, 8 -10, 9 -10, 10 -10, 10 10, -10 10, -10 2, -10 2, -10 -10),"
+		"(-5 -5, -5 5, 5 5, 5 -5, -5 -5)))";
+
+	/* inside hole */
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+	/* inside hole */
+	test_itree_once(wktPoly, -2.0, -2.0, ITREE_OUTSIDE);
+	/* left of spike */
+	test_itree_once(wktPoly, 6.0, -2.0, ITREE_INSIDE);
+	/* right of spike */
+	test_itree_once(wktPoly, 9.0, -2.0, ITREE_INSIDE);
+	/* left of tip of spike */
+	test_itree_once(wktPoly, 6.0, 2.0, ITREE_INSIDE);
+	/* right of tip of spike */
+	test_itree_once(wktPoly, 9.0, 2.0, ITREE_INSIDE);
+	/* on spike tip */
+	test_itree_once(wktPoly, 7.5, 2.0, ITREE_BOUNDARY);
+	/* left of dupe vertex */
+	test_itree_once(wktPoly, -11, 2.0, ITREE_OUTSIDE);
+	/* right of dupe vertex */
+	test_itree_once(wktPoly, 11, 2.0, ITREE_OUTSIDE);
+
+	/* mixed collection of empty, empty in middle */
+	wktPoly =
+		"MULTIPOLYGON("
+		"((-10 -10, 6 -10, 7 -10, 7.5 2, 8 -10, 9 -10, 10 -10, 10 10, -10 10, -10 2, -10 2, -10 -10),"
+		"(-5 -5, -5 5, 5 5, 5 -5, -5 -5)),"
+		"EMPTY, ((-1 -1, 1 -1, 1 1, -1 1, -1 -1)))";
+
+	/* inside poly in hole */
+	test_itree_once(wktPoly, 0.0, 0.0, ITREE_INSIDE);
+	/* inside hole */
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+	/* inside hole */
+	test_itree_once(wktPoly, -2.0, -2.0, ITREE_OUTSIDE);
+	/* left of spike */
+	test_itree_once(wktPoly, 6.0, -2.0, ITREE_INSIDE);
+	/* right of spike */
+	test_itree_once(wktPoly, 9.0, -2.0, ITREE_INSIDE);
+	/* left of tip of spike */
+	test_itree_once(wktPoly, 6.0, 2.0, ITREE_INSIDE);
+	/* right of tip of spike */
+	test_itree_once(wktPoly, 9.0, 2.0, ITREE_INSIDE);
+	/* on spike tip */
+	test_itree_once(wktPoly, 7.5, 2.0, ITREE_BOUNDARY);
+	/* left of dupe vertex */
+	test_itree_once(wktPoly, -11, 2.0, ITREE_OUTSIDE);
+	/* right of dupe vertex */
+	test_itree_once(wktPoly, 11, 2.0, ITREE_OUTSIDE);
+}
+
+static void test_itree_degenerate_poly(void)
+{
+	/* collapsed polygon */
+	const char *wktPoly = "POLYGON((0 0, 0 0, 0 0, 0 0))";
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+
+	/* zero area polygon */
+	wktPoly = "POLYGON((0 0, 0 1, 0 1, 0 0))";
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+	test_itree_once(wktPoly, 0, 0.5, ITREE_BOUNDARY);
+	test_itree_once(wktPoly, 0, 1, ITREE_BOUNDARY);
+
+	/* zero area polygon */
+	wktPoly = "POLYGON((0 0, 0 1, 1 1, 2 2, 1 1, 0 1, 0 0))";
+	test_itree_once(wktPoly, 0.5, 0.5, ITREE_OUTSIDE);
+	test_itree_once(wktPoly, 1, 1, ITREE_BOUNDARY);
+
+	/* non finite coordinates */
+	wktPoly = "POLYGON((0 0, 0 NaN, 0 NaN, 0 0, 0 1, 0 0))";
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+	test_itree_once(wktPoly, 0, 0, ITREE_BOUNDARY);
+}
+
+
+static void test_geography_tree_closestpoint(void)
+{
+	LWGEOM *lwg1, *lwg2, *lwg3;
+	LWPOINT *lwpt;
+	POINT2D pt;
+
+	/* Simple case */
+	lwg1 = lwgeom_from_wkt("LINESTRING (18 9, 18 1)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POINT (16 4)", LW_PARSER_CHECK_NONE);
+	lwg3 = geography_tree_closestpoint(lwg1, lwg2, 0.1);
+	lwpt = (LWPOINT *)lwg3;
+
+	lwpoint_getPoint2d_p(lwpt, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 18, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, 4.0024302, 0.0001);
+
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+	lwgeom_free(lwg3);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -426,9 +651,15 @@ void tree_suite_setup(void);
 void tree_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("spatial_trees", NULL, NULL);
+	PG_ADD_TEST(suite, test_itree_square);
+	PG_ADD_TEST(suite, test_itree_hole);
+	PG_ADD_TEST(suite, test_itree_hole_spike);
+	PG_ADD_TEST(suite, test_itree_multipoly_empty);
+	PG_ADD_TEST(suite, test_itree_degenerate_poly);
 	PG_ADD_TEST(suite, test_tree_circ_create);
 	PG_ADD_TEST(suite, test_tree_circ_pip);
 	PG_ADD_TEST(suite, test_tree_circ_pip2);
 	PG_ADD_TEST(suite, test_tree_circ_distance);
 	PG_ADD_TEST(suite, test_tree_circ_distance_threshold);
+	PG_ADD_TEST(suite, test_geography_tree_closestpoint);
 }

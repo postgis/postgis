@@ -23,7 +23,16 @@ CC=@CC@
 CFLAGS=-I../liblwgeom @CFLAGS@
 LDFLAGS = @LDFLAGS@
 
-all: @RT_CORE_LIB@ @RT_PG_LIB@ @RT_LOADER@ @RT_POSTGIS_SQL@
+with_pg = @RT_PG_LIB@
+all:
+	$(MAKE) @RT_CORE_LIB@
+ifdef with_pg
+	$(MAKE) @RT_PG_LIB@
+endif
+	$(MAKE) @RT_LOADER@
+ifdef with_pg
+	$(MAKE) @RT_POSTGIS_SQL@
+endif
 
 corelib:
 	$(MAKE) -C rt_core
@@ -38,28 +47,36 @@ rtpostgis.sql:
 	$(MAKE) -C rt_pg rtpostgis.sql
 
 install: all
-	$(MAKE) -C rt_pg install
 	$(MAKE) -C loader install
+ifdef with_pg
+	$(MAKE) -C rt_pg install
 	$(MAKE) -C scripts install
+endif
 
 uninstall:
-	$(MAKE) -C rt_pg uninstall
 	$(MAKE) -C loader uninstall
+ifdef with_pg
+	$(MAKE) -C rt_pg uninstall
 	$(MAKE) -C scripts uninstall
+endif
 
 clean:
 	$(MAKE) -C rt_core $@
-	$(MAKE) -C rt_pg $@
 	$(MAKE) -C loader $@
 	$(MAKE) -C test $@
+ifdef with_pg
+	$(MAKE) -C rt_pg $@
 	$(MAKE) -C scripts $@
+endif
 
 distclean: clean
 	$(MAKE) -C rt_core $@
-	$(MAKE) -C rt_pg $@
 	$(MAKE) -C loader $@
 	$(MAKE) -C test $@
+ifdef with_pg
+	$(MAKE) -C rt_pg $@
 	$(MAKE) -C scripts $@
+endif
 	rm -f raster_config.h Makefile
 
 check check-unit check-regress core-check:

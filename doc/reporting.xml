@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<chapter>
+<!-- Converted by db4-upgrade version 1.1 -->
+<chapter xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0">
   <title>Reporting Problems</title>
 
-  <sect1>
+  <section>
     <title>Reporting Software Bugs</title>
 
     <para>Reporting bugs effectively is a fundamental way to help PostGIS
@@ -14,39 +14,36 @@
     version()</code> [for postgresql].</para>
 
     <para>If you aren't using the latest release, it's worth taking a look at
-    its <ulink url="https://git.osgeo.org/gitea/postgis/postgis/raw/branch/master/NEWS">release
-    changelog</ulink> first, to find out if your bug has already been
+    its <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/raw/branch/master/NEWS">release
+    changelog</link> first, to find out if your bug has already been
     fixed.</para>
 
-    <para>Using the <ulink
-    url="http://trac.osgeo.org/postgis/">PostGIS bug
-    tracker</ulink> will ensure your reports are not discarded, and will keep
+    <para>Using the <link xlink:href="http://trac.osgeo.org/postgis/">PostGIS bug
+    tracker</link> will ensure your reports are not discarded, and will keep
     you informed on its handling process. Before reporting a new bug please
     query the database to see if it is a known one, and if it is please add
     any new information you have about it.</para>
 
-    <para>You might want to read Simon Tatham's paper about <ulink
-    url="http://www.chiark.greenend.org.uk/~sgtatham/bugs.html">How to Report
-    Bugs Effectively</ulink> before filing a new report.</para>
-  </sect1>
+    <para>You might want to read Simon Tatham's paper about <link xlink:href="http://www.chiark.greenend.org.uk/~sgtatham/bugs.html">How to Report
+    Bugs Effectively</link> before filing a new report.</para>
+  </section>
 
-  <sect1>
+  <section>
     <title>Reporting Documentation Issues</title>
 
     <para>The documentation should accurately reflect the features and
     behavior of the software. If it doesn't, it could be because of a software
     bug or because the documentation is in error or deficient.</para>
 
-    <para>Documentation issues can also be reported to the <ulink
-    url="http://trac.osgeo.org/postgis">PostGIS bug
-    tracker</ulink>.</para>
+    <para>Documentation issues can also be reported to the <link xlink:href="http://trac.osgeo.org/postgis">PostGIS bug
+    tracker</link>.</para>
 
     <para>If your revision is trivial, just describe it in a new bug tracker
     issue, being specific about its location in the documentation.</para>
 
     <para>If your changes are more extensive, a patch is definitely
     preferred. This is a four step process on Unix (assuming you already have
-    <ulink url="https://git-scm.com/">git</ulink>
+    <link xlink:href="https://git-scm.com/">git</link>
     installed):</para>
 
     <orderedlist>
@@ -83,5 +80,5 @@
         <para>Attach the patch to a new issue in bug tracker.</para>
       </listitem>
     </orderedlist>
-  </sect1>
+  </section>
 </chapter>

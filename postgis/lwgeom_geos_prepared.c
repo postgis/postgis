@@ -280,7 +280,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	pghe = GetPrepGeomHashEntry(prepcache->context_callback);
 	if ( ! pghe )
 	{
-		lwpgerror("PrepGeomCacheBuilder failed to find hash entry for context %p", prepcache->context_callback);
+		lwpgerror("PrepGeomCacheBuilder failed to find hash entry for context %p", (void *)prepcache->context_callback);
 		return LW_FAILURE;
 	}
 

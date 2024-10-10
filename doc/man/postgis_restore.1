@@ -1,0 +1,52 @@
+.TH "postgis_restore" "1" "" "" "PostGIS"
+.SH "NAME"
+.LP
+postgis_restore - restore a PostGIS database from an archive file created by pg_dump
+
+.SH "SYNTAX"
+.LP
+postgis_restore [\fI-v\fR] [\fI-L TOC\fR] [\fI-s schema\fR] \fIdumpfile\fR
+
+.SH "DESCRIPTION"
+.LP
+The postgis_restore command allows extracting SQL statements to re-create objects
+found in a custom dump of a PostGIS-enabled database while skipping the PostGIS
+specific objects.
+
+This is only useful for dumps of databases in which PostGIS was enabled by
+loading the postgis.sql script. Dumps taken from databases in which PostGIS was
+enabled via \fICREATE EXTENSION\fR will not have PostGIS objects in them so can
+safely be restored directly using \fIpg_restore\fR.
+
+Note that this command only works with dumps using the custom format, which are
+those created with \fIpg_dump -Fc\fR.
+
+.SH "USAGE"
+.LP
+Usage information is printed when the script is invoked with no
+arguments.
+
+.SH "EXAMPLES"
+.LP
+
+Create a custom dump from \fIolddb\fR:
+
+	pg_dump -Fc olddb > olddb.dump
+
+Create a new database \fInewdb\fR:
+
+	createdb newdb
+
+PostGIS-enable the new database:
+
+	psql -c 'CREATE EXTENSION postgis' newdb
+
+Restore your data:
+
+	postgis_restore.pl olddb.dump | psql newdb
+
+.SH "AUTHORS"
+.LP
+Originally written by Sandro Santilli <strk@kbt.io>.
+
+More information is available at http://postgis.net

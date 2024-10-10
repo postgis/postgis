@@ -44,6 +44,8 @@ ab3|t
 eq1|t
 eq2|f
 eq3|f
+neq1|f
+neq2|t
 cd1|4
 bd1|0
 bd2|1

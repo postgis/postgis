@@ -81,3 +81,4 @@ minpoints issues - pass|01090000000100000001080000000300000000000000000000000000
 ERROR:  geometry requires more points
 ERROR:  geometry requires more points
 ERROR:  geometry requires more points
+curve accessors 01|1|ST_CompoundCurve|ST_LineString||3|ST_LineString|ST_CircularString|ST_LineString|||

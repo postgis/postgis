@@ -122,7 +122,7 @@ compareFloats(const void *a, const void *b)
  * box. This makes 256 octants in total.
  */
 static uint16_t
-getOctant(GIDX *centroid, GIDX *inBox)
+getOctant(const GIDX *centroid, const GIDX *inBox)
 {
 	uint16_t octant = 0, dim = 0x01;
 	int ndims, i;
@@ -314,7 +314,7 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 {
 	spgPickSplitIn *in = (spgPickSplitIn *)PG_GETARG_POINTER(0);
 	spgPickSplitOut *out = (spgPickSplitOut *)PG_GETARG_POINTER(1);
-	GIDX *box, *centroid;
+	GIDX *centroid;
 	float *lowXs, *highXs;
 	int ndims, maxdims = -1, count[GIDX_MAX_DIM], median, dim, tuple;
 
@@ -327,7 +327,7 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 	/* Calculate maxdims median of all ND coordinates */
 	for (tuple = 0; tuple < in->nTuples; tuple++)
 	{
-		box = (GIDX *)DatumGetPointer(in->datums[tuple]);
+		const GIDX *box = (const GIDX *)DatumGetPointer(in->datums[tuple]);
 		ndims = GIDX_NDIMS(box);
 		if (maxdims < ndims)
 			maxdims = ndims;

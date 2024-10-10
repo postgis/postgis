@@ -29,7 +29,7 @@
 struct LISTNODE
 {
 	struct LISTNODE* next;
-	void* item;
+	const void* item;
 };
 typedef struct LISTNODE LISTNODE;
 
@@ -50,7 +50,7 @@ struct LWPOINTITERATOR
 };
 
 static LISTNODE*
-prepend_node(void* g, LISTNODE* front)
+prepend_node(const void* g, LISTNODE* front)
 {
 	LISTNODE* n = lwalloc(sizeof(LISTNODE));
 	n->item = g;
@@ -68,7 +68,7 @@ pop_node(LISTNODE* i)
 }
 
 static int
-add_lwgeom_to_stack(LWPOINTITERATOR* s, LWGEOM* g)
+add_lwgeom_to_stack(LWPOINTITERATOR* s, const LWGEOM* g)
 {
 	if (lwgeom_is_empty(g))
 		return LW_FAILURE;
@@ -81,7 +81,7 @@ add_lwgeom_to_stack(LWPOINTITERATOR* s, LWGEOM* g)
  *  of a geometry.  Will not handle GeometryCollections.
  */
 static LISTNODE*
-extract_pointarrays_from_lwgeom(LWGEOM* g)
+extract_pointarrays_from_lwgeom(const LWGEOM* g)
 {
 	switch(lwgeom_get_type(g))
 	{
@@ -130,7 +130,7 @@ unroll_collection(LWPOINTITERATOR* s)
 
 	for (i = c->ngeoms - 1; i >= 0; i--)
 	{
-		LWGEOM* g = lwcollection_getsubgeom(c, i);
+		const LWGEOM* g = lwcollection_getsubgeom(c, i);
 
 		add_lwgeom_to_stack(s, g);
 	}
@@ -165,7 +165,7 @@ lwpointiterator_advance(LWPOINTITERATOR* s)
 	 * decompose it into its POINTARRARYs. */
 	if (!s->pointarrays)
 	{
-		LWGEOM* g;
+		const LWGEOM* g;
 		unroll_collections(s);
 
 		if (!s->geoms)
@@ -232,7 +232,8 @@ lwpointiterator_modify_next(LWPOINTITERATOR* s, const POINT4D* p)
 		return LW_FAILURE;
 	}
 
-	ptarray_set_point4d(s->pointarrays->item, s->i, p);
+	POINTARRAY *pa = (POINTARRAY *)(s->pointarrays->item);
+	ptarray_set_point4d(pa, s->i, p);
 
 	lwpointiterator_advance(s);
 	return LW_SUCCESS;

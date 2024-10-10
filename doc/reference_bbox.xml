@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="BBox_Functions">
-	  <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="BBox_Functions">
+	  <title>Bounding Box Functions</title><info>
 	    <abstract>
 			<para>These functions produce or operate on bounding boxes.
 			They can also provide and accept geometry values, by using automatic or explicit casts.
 			</para>
-			<para>See also <xref linkend="PostGIS_BoxFunctions" />.</para>
+			<para>See also <xref linkend="PostGIS_BoxFunctions"/>.</para>
     	</abstract>
-    </sect1info>
+    </info>
 
-	<title>Bounding Box Functions</title>
 
-	<refentry id="Box2D">
+
+	<refentry xml:id="Box2D">
 	  <refnamediv>
 		<refname>Box2D</refname>
 
@@ -30,9 +30,9 @@
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns a <xref linkend="box2d_type" /> representing the 2D extent of the geometry.</para>
+		<para>Returns a <xref linkend="box2d_type"/> representing the 2D extent of the geometry.</para>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -60,11 +60,11 @@ BOX(220186.984375 150406,220288.25 150506.140625)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="Box3D" />, <xref linkend="ST_GeomFromText" /></para>
+		<para><xref linkend="Box3D"/>, <xref linkend="ST_GeomFromText"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="Box3D">
+	<refentry xml:id="Box3D">
 	  <refnamediv>
 		<refname>Box3D</refname>
 
@@ -83,8 +83,8 @@ BOX(220186.984375 150406,220288.25 150506.140625)
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns a <xref linkend="box3d_type" /> representing the 3D extent of the geometry.</para>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>Returns a <xref linkend="box3d_type"/> representing the 3D extent of the geometry.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -114,11 +114,11 @@ BOX3D(220227 150406 1,220268 150415 1)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="Box2D" />, <xref linkend="ST_GeomFromEWKT" /></para>
+		<para><xref linkend="Box2D"/>, <xref linkend="ST_GeomFromEWKT"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_EstimatedExtent">
+	<refentry xml:id="ST_EstimatedExtent">
 	  <refnamediv>
 		<refname>ST_EstimatedExtent</refname>
 
@@ -154,11 +154,11 @@ BOX3D(220227 150406 1,220268 150415 1)
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the estimated extent of a spatial table as a <xref linkend="box2d_type" />.
+		<para>Returns the estimated extent of a spatial table as a <xref linkend="box2d_type"/>.
             The	current schema is used if not specified.
 			The estimated extent is taken from the geometry column's statistics.
             This is usually much faster than computing the exact extent of the table
-            using <xref linkend="ST_Extent" /> or <xref linkend="ST_3DExtent" />.
+            using <xref linkend="ST_Extent"/> or <xref linkend="ST_3DExtent"/>.
             </para>
         <para>
             The default behavior is to also use statistics collected from child tables (tables
@@ -179,8 +179,14 @@ BOX3D(220227 150406 1,220268 150415 1)
 		    </para>
         </note>
 
-    <para>Availability: 1.0.0</para>
-    <para>Changed: 2.1.0. Up to 2.0.x this was called ST_Estimated_Extent.</para>
+        <note>
+            <para>
+            Escaping names for tables and/or namespaces that include special characters and quotes may require special handling. A user notes: "For schemas and tables, use identifier escaping rules to produce a double-quoted string, and afterwards remove the first and last double-quote character. For geometry column pass as is."
+            </para>
+        </note>
+
+    <para role="availability" conformance="1.0.0">Availability: 1.0.0</para>
+    <para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Estimated_Extent.</para>
 
 		<para>&curve_support;</para>
 	  </refsection>
@@ -203,11 +209,11 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Extent" />, <xref linkend="ST_3DExtent" /></para>
+		<para><xref linkend="ST_Extent"/>, <xref linkend="ST_3DExtent"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Expand">
+	<refentry xml:id="ST_Expand">
 	  <refnamediv>
 		<refname>ST_Expand</refname>
 		<refpurpose>Returns a bounding box expanded from another bounding box or a geometry.</refpurpose>
@@ -271,24 +277,24 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 
 		<para>In addition to the version of ST_Expand accepting and returning a geometry, variants
 			are provided that accept and return
-            <xref linkend="box2d_type" /> and <xref linkend="box3d_type" /> data types.
+            <xref linkend="box2d_type"/> and <xref linkend="box3d_type"/> data types.
 		</para>
 
 		<para>Distances are in the units of the spatial reference system of the input.</para>
 
-		<para>ST_Expand is similar to <xref linkend="ST_Buffer" />,
+		<para>ST_Expand is similar to <xref linkend="ST_Buffer"/>,
 			except while buffering expands a geometry in all directions,
 			ST_Expand expands the bounding box along each axis.</para>
 
 		<note>
-		  <para>Pre version 1.3, ST_Expand was used in conjunction with <xref linkend="ST_Distance" /> to do indexable distance queries.  For example,
+		  <para>Pre version 1.3, ST_Expand was used in conjunction with <xref linkend="ST_Distance"/> to do indexable distance queries.  For example,
 			<code>geom &amp;&amp; ST_Expand('POINT(10 20)', 10) AND ST_Distance(geom, 'POINT(10 20)') &lt; 10</code>.
-			This has been replaced by the simpler and more efficient <xref linkend="ST_DWithin" /> function.</para>
+			This has been replaced by the simpler and more efficient <xref linkend="ST_DWithin"/> function.</para>
 		</note>
 
-        <para>Availability: 1.5.0 behavior changed to output double precision instead of float4 coordinates.</para>
-        <para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-        <para>Enhanced: 2.3.0 support was added to expand a box by different amounts in different dimensions.</para>
+        <para role="availability" conformance="1.5.0">Availability: 1.5.0 behavior changed to output double precision instead of float4 coordinates.</para>
+        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+        <para role="enhanced" conformance="2.3.0">Enhanced: 2.3.0 support was added to expand a box by different amounts in different dimensions.</para>
 
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -323,11 +329,11 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Buffer" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_SRID" /></para>
+		<para><xref linkend="ST_Buffer"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_SRID"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Extent">
+	<refentry xml:id="ST_Extent">
 	  <refnamediv>
 		<refname>ST_Extent</refname>
 		<refpurpose>Aggregate function that returns the bounding box of geometries.</refpurpose>
@@ -345,7 +351,7 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
 	  <refsection>
 		<title>Description</title>
 
-		<para>An aggregate function that returns a <xref linkend="box2d_type" /> bounding box
+		<para>An aggregate function that returns a <xref linkend="box2d_type"/> bounding box
         that bounds a set of geometries.
         </para>
 
@@ -355,16 +361,16 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
 
 		<note>
 		  <para>ST_Extent returns boxes with only X and Y ordinates even with 3D geometries.
-          To return XYZ ordinates use <xref linkend="ST_3DExtent" />.</para>
+          To return XYZ ordinates use <xref linkend="ST_3DExtent"/>.</para>
 		</note>
 
 		<note>
 		  <para>The returned <code>box3d</code> value does not include a SRID.
-            Use <xref linkend="ST_SetSRID" /> to convert it into a geometry with SRID metadata.
+            Use <xref linkend="ST_SetSRID"/> to convert it into a geometry with SRID metadata.
             The SRID is the same as the input geometries.</para>
 		</note>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 
@@ -406,14 +412,14 @@ SELECT ST_SetSRID(ST_Extent(geom),2249) as bextent FROM sometable;
 	  <refsection>
 		<title>See Also</title>
 		<para>
-            <xref linkend="ST_EstimatedExtent" />,
-            <xref linkend="ST_3DExtent" />,
-            <xref linkend="ST_SetSRID" />
+            <xref linkend="ST_EstimatedExtent"/>,
+            <xref linkend="ST_3DExtent"/>,
+            <xref linkend="ST_SetSRID"/>
 		</para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_3DExtent">
+	<refentry xml:id="ST_3DExtent">
 	  <refnamediv>
 		<refname>ST_3DExtent</refname>
 		<refpurpose>Aggregate function that returns the 3D bounding box of geometries.</refpurpose>
@@ -431,19 +437,19 @@ SELECT ST_SetSRID(ST_Extent(geom),2249) as bextent FROM sometable;
 	  <refsection>
 		<title>Description</title>
 
-		<para>An aggregate function that returns a <xref linkend="box3d_type" /> (includes Z ordinate) bounding box
+		<para>An aggregate function that returns a <xref linkend="box3d_type"/> (includes Z ordinate) bounding box
         that bounds a set of geometries.
         </para>
 		<para>The bounding box coordinates are in the spatial reference system of the input geometries.</para>
 
 		<note>
 		  <para>The returned <code>box3d</code> value does not include a SRID.
-            Use <xref linkend="ST_SetSRID" /> to convert it into a geometry with SRID metadata.
+            Use <xref linkend="ST_SetSRID"/> to convert it into a geometry with SRID metadata.
             The SRID is the same as the input geometries.</para>
 		</note>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-		<para>Changed: 2.0.0 In prior versions this used to be called ST_Extent3D</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions this used to be called ST_Extent3D</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
@@ -477,11 +483,11 @@ FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_Point(x,y),1)
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Extent" />, <xref linkend="ST_Force_3DZ" />, <xref linkend="ST_SetSRID" /></para>
+		<para><xref linkend="ST_Extent"/>, <xref linkend="ST_Force_3DZ"/>, <xref linkend="ST_SetSRID"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_MakeBox2D">
+	<refentry xml:id="ST_MakeBox2D">
 	  <refnamediv>
 		<refname>ST_MakeBox2D</refname>
 
@@ -501,7 +507,7 @@ FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_Point(x,y),1)
 	  <refsection>
 		<title>Description</title>
 
-		<para>Creates a <xref linkend="box2d_type" /> defined by two Point
+		<para>Creates a <xref linkend="box2d_type"/> defined by two Point
 			geometries.  This is useful for doing range queries.</para>
 	  </refsection>
 
@@ -509,24 +515,26 @@ FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_Point(x,y),1)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
+		<programlisting><![CDATA[
+
 --Return all features that fall reside or partly reside in a US national atlas coordinate bounding box
 --It is assumed here that the geometries are stored with SRID = 2163 (US National atlas equal area)
 SELECT feature_id, feature_name, geom
 FROM features
-WHERE geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625),
-	ST_Point(-987121.375 ,529933.1875)),2163)</programlisting>
+WHERE geom && ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625),
+	ST_Point(-987121.375 ,529933.1875)),2163)
+]]></programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Point" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+		<para><xref linkend="ST_Point"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_SRID"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_3DMakeBox">
+	<refentry xml:id="ST_3DMakeBox">
 	  <refnamediv>
 		<refname>ST_3DMakeBox</refname>
 
@@ -545,16 +553,16 @@ WHERE geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625
 	  <refsection>
 		<title>Description</title>
 
-		<para>Creates a <xref linkend="box3d_type" /> defined by two 3D Point
+		<para>Creates a <xref linkend="box3d_type"/> defined by two 3D Point
 			geometries. </para>
 
 		<!-- Optionally mention 3D support -->
 		<para><inlinemediaobject>
 			<imageobject>
-			  <imagedata fileref="images/check.png" />
+			  <imagedata fileref="images/check.png"/>
 			</imageobject>
 		  </inlinemediaobject> This function supports 3D and will not drop the z-index.</para>
-		 <para>Changed: 2.0.0 In prior versions this used to be called ST_MakeBox3D</para>
+		 <para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions this used to be called ST_MakeBox3D</para>
 	  </refsection>
 
 
@@ -575,11 +583,11 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+		<para><xref linkend="ST_MakePoint"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_SRID"/></para>
 	  </refsection>
 	</refentry>
 
-		<refentry id="ST_XMax">
+		<refentry xml:id="ST_XMax">
 	  <refnamediv>
 		<refname>ST_XMax</refname>
 
@@ -643,11 +651,11 @@ st_xmax
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_XMin" />, <xref linkend="ST_YMax" />, <xref linkend="ST_YMin" />, <xref linkend="ST_ZMax" />, <xref linkend="ST_ZMin" /></para>
+		<para><xref linkend="ST_XMin"/>, <xref linkend="ST_YMax"/>, <xref linkend="ST_YMin"/>, <xref linkend="ST_ZMax"/>, <xref linkend="ST_ZMin"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_XMin">
+	<refentry xml:id="ST_XMin">
 	  <refnamediv>
 		<refname>ST_XMin</refname>
 
@@ -711,11 +719,11 @@ st_xmin
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_XMax" />, <xref linkend="ST_YMax" />, <xref linkend="ST_YMin" />, <xref linkend="ST_ZMax" />, <xref linkend="ST_ZMin" /></para>
+		<para><xref linkend="ST_XMax"/>, <xref linkend="ST_YMax"/>, <xref linkend="ST_YMin"/>, <xref linkend="ST_ZMax"/>, <xref linkend="ST_ZMin"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_YMax">
+	<refentry xml:id="ST_YMax">
 	  <refnamediv>
 		<refname>ST_YMax</refname>
 
@@ -779,11 +787,11 @@ st_ymax
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_XMin" />, <xref linkend="ST_XMax" />, <xref linkend="ST_YMin" />, <xref linkend="ST_ZMax" />, <xref linkend="ST_ZMin" /></para>
+		<para><xref linkend="ST_XMin"/>, <xref linkend="ST_XMax"/>, <xref linkend="ST_YMin"/>, <xref linkend="ST_ZMax"/>, <xref linkend="ST_ZMin"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_YMin">
+	<refentry xml:id="ST_YMin">
 	  <refnamediv>
 		<refname>ST_YMin</refname>
 
@@ -847,11 +855,11 @@ st_ymin
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_XMin" />, <xref linkend="ST_XMax" />, <xref linkend="ST_YMax" />, <xref linkend="ST_ZMax" />, <xref linkend="ST_ZMin" /></para>
+		<para><xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_XMin"/>, <xref linkend="ST_XMax"/>, <xref linkend="ST_YMax"/>, <xref linkend="ST_ZMax"/>, <xref linkend="ST_ZMin"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_ZMax">
+	<refentry xml:id="ST_ZMax">
 	  <refnamediv>
 		<refname>ST_ZMax</refname>
 
@@ -915,11 +923,11 @@ st_zmax
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_XMin" />, <xref linkend="ST_XMax" />, <xref linkend="ST_YMax" />, <xref linkend="ST_YMin" />, <xref linkend="ST_ZMax" /></para>
+		<para><xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_XMin"/>, <xref linkend="ST_XMax"/>, <xref linkend="ST_YMax"/>, <xref linkend="ST_YMin"/>, <xref linkend="ST_ZMax"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_ZMin">
+	<refentry xml:id="ST_ZMin">
 	  <refnamediv>
 		<refname>ST_ZMin</refname>
 
@@ -983,8 +991,8 @@ st_zmin
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_XMin" />, <xref linkend="ST_XMax" />, <xref linkend="ST_YMax" />, <xref linkend="ST_YMin" />, <xref linkend="ST_ZMax" /></para>
+		<para><xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_GeomFromText"/>, <xref linkend="ST_XMin"/>, <xref linkend="ST_XMax"/>, <xref linkend="ST_YMax"/>, <xref linkend="ST_YMin"/>, <xref linkend="ST_ZMax"/></para>
 	  </refsection>
 	</refentry>
 
- </sect1>
+ </section>

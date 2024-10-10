@@ -1,13 +1,140 @@
-matrix:
-  PG_VERSION:
-    - 15
-    - 14
-    - 12
+when:
+  event: [push, pull_request, tag]
+variables:
+  test-image: &test-image repo.osgeo.org/postgis/build-test:trisquel11
+  steps-env: &steps-env
+    - export PATH=/usr/lib/postgresql/$${PGVER}/bin:$${PATH}
+    - export PGPORT=$$(grep ^port /etc/postgresql/$${PGVER}/main/postgresql.conf | awk '{print $$3}')
+    - export POSTGIS_REGRESS_DB_OWNER=postgis_reg_unprivileged_user
+    - export RUNTESTFLAGS="-v
+      --after-create-db-script $${CI_WORKSPACE}/regress/hooks/configure-pgextwlist.sql
+      --after-create-db-script $${CI_WORKSPACE}/regress/hooks/standard-conforming-strings-off.sql"
+    - export SRCDIR=$${CI_WORKSPACE}
+    - export BUILDDIR=$${SRCDIR}/build/pg$${PGVER}
+    - export CURRENTVERSION=$$(grep '^POSTGIS_' $${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.')
+    - pg_config --version
+  steps-start-postgresql: &steps-start-postgresql
+    - service postgresql start $${PGVER}
+    - psql -c 'select version()' template1
+  steps-pg-build: &steps-pg-build
+    - mkdir -p "$${BUILDDIR}"
+    - cd "$${BUILDDIR}"
+    - $${SRCDIR}/configure
+      --with-library-minor-version
+      --enable-lto
+      --enable-lto
+      CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror"
+    - make -j
+  steps-pg-test-preinstall: &steps-pg-test-preinstall
+    - cd build/pg$${PGVER}
+    - make check
+    - make check-double-upgrade
+    - make check-locked-upgrade
+  steps-pg-install: &steps-pg-install
+    - make -C build/pg$${PGVER} install
+  steps-pg-test-install: &steps-pg-test-install
+    - service postgresql start $${PGVER}
+    - make -C build/pg$${PGVER} installcheck
+  steps-pg-test-all-upgrades: &steps-pg-test-all-upgrades
+    - cd build/pg$${PGVER}
+    - mkfifo check.fifo
+    - tee check.log < check.fifo &
+    - $${SRCDIR}/utils/check_all_upgrades.sh -s $${CURRENTVERSION}! > check.fifo
+    - wait # for tee process to flush its buffers
+    - echo "-- Summary of upgrade tests --"
+    - egrep '(PASS|FAIL|SKIP|INFO|ERROR)' check.log
 
-pipeline:
-  build:
-    group: build
-    image: docker.osgeo.org/postgis/build-test:trisquel3
+clone:
+  git:
+    image: woodpeckerci/plugin-git
+    depth: 50
+
+steps:
+
+  autogen:
+    image: *test-image
+    pull: true
     commands:
-      - sh autogen.sh
-      - PGVER=${PG_VERSION} sh ci/dronie/postgis_regress.sh
+      - ./autogen.sh
+
+  build-pg12:
+    image: *test-image
+    depends_on: autogen
+    environment:
+      - PGVER=12
+    commands:
+      - <<: *steps-env
+      - <<: *steps-pg-build
+
+  build-pg15:
+    image: *test-image
+    depends_on: autogen
+    environment:
+      - PGVER=15
+    commands:
+      - <<: *steps-env
+      - <<: *steps-pg-build
+
+  check-pg12:
+    image: *test-image
+    depends_on: build-pg12
+    environment:
+      - PGVER=12
+    commands:
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - <<: *steps-pg-test-preinstall
+
+  check-pg15:
+    image: *test-image
+    depends_on: build-pg15
+    environment:
+      - PGVER=15
+    commands:
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - <<: *steps-pg-test-preinstall
+
+  installcheck-pg12:
+    image: *test-image
+    depends_on: build-pg12
+    environment:
+      - PGVER=12
+    commands:
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - <<: *steps-pg-install
+      - <<: *steps-pg-test-install
+
+  installcheck-pg15:
+    image: *test-image
+    depends_on: build-pg15
+    environment:
+      - PGVER=15
+    commands:
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - <<: *steps-pg-install
+      - <<: *steps-pg-test-install
+
+  upgradecheck-pg12:
+    image: *test-image
+    depends_on: installcheck-pg12
+    environment:
+      - PGVER=12
+    commands:
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - <<: *steps-pg-install
+      - <<: *steps-pg-test-all-upgrades
+
+  upgradecheck-pg15:
+    image: *test-image
+    depends_on: installcheck-pg15
+    environment:
+      - PGVER=15
+    commands:
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - <<: *steps-pg-install
+      - <<: *steps-pg-test-all-upgrades

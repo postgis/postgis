@@ -559,7 +559,7 @@ lwgeom_clone_deep(const LWGEOM *lwgeom)
 
 
 /**
- * Return an alloced string
+ * Return an allocated string
  */
 char*
 lwgeom_to_ewkt(const LWGEOM *lwgeom)
@@ -571,7 +571,7 @@ lwgeom_to_ewkt(const LWGEOM *lwgeom)
 
 	if ( ! wkt )
 	{
-		lwerror("Error writing geom %p to WKT", lwgeom);
+		lwerror("Error writing geom %p to WKT", (void *)lwgeom);
 	}
 
 	return wkt;
@@ -1100,7 +1100,48 @@ lwgeom_is_collection(const LWGEOM *geom)
 	return lwtype_is_collection(geom->type);
 }
 
-/** Return TRUE if the geometry may contain sub-geometries, i.e. it is a MULTI* or COMPOUNDCURVE */
+int
+lwgeom_is_unitary(const LWGEOM *geom)
+{
+	switch (geom->type)
+	{
+	case POINTTYPE:
+	case LINETYPE:
+	case POLYGONTYPE:
+	case CURVEPOLYTYPE:
+	case COMPOUNDTYPE:
+	case CIRCSTRINGTYPE:
+	case TRIANGLETYPE:
+		return LW_TRUE;
+		break;
+
+	default:
+		return LW_FALSE;
+	}
+}
+
+int
+lwgeom_has_rings(const LWGEOM *geom)
+{
+	switch (geom->type)
+	{
+	case POLYGONTYPE:
+	case CURVEPOLYTYPE:
+	case TRIANGLETYPE:
+		return LW_TRUE;
+		break;
+
+	default:
+		return LW_FALSE;
+	}
+}
+
+/**
+ * Return TRUE if the geometry is structured as a wrapper on a geoms/ngeoms
+ * list of sub-geometries.
+ * Use lwgeom_is_unitary to determine if the numgeometries/geometryn accessor
+ * pattery makes sense
+ */
 int
 lwtype_is_collection(uint8_t type)
 {
@@ -1264,10 +1305,10 @@ uint32_t lwgeom_count_vertices(const LWGEOM *geom)
 	case TRIANGLETYPE:
 	case CIRCSTRINGTYPE:
 	case LINETYPE:
-		result = lwline_count_vertices((LWLINE *)geom);
+		result = lwline_count_vertices((const LWLINE *)geom);
 		break;
 	case POLYGONTYPE:
-		result = lwpoly_count_vertices((LWPOLY *)geom);
+		result = lwpoly_count_vertices((const LWPOLY *)geom);
 		break;
 	case COMPOUNDTYPE:
 	case CURVEPOLYTYPE:
@@ -1279,7 +1320,7 @@ uint32_t lwgeom_count_vertices(const LWGEOM *geom)
 	case POLYHEDRALSURFACETYPE:
 	case TINTYPE:
 	case COLLECTIONTYPE:
-		result = lwcollection_count_vertices((LWCOLLECTION *)geom);
+		result = lwcollection_count_vertices((const LWCOLLECTION *)geom);
 		break;
 	default:
 		lwerror("%s: unsupported input geometry type: %s",
@@ -1575,7 +1616,12 @@ cmp_point_x(const void *pa, const void *pb)
 	const POINT2D *pt1 = getPoint2d_cp(p1->point, 0);
 	const POINT2D *pt2 = getPoint2d_cp(p2->point, 0);
 
-	return (pt1->x > pt2->x) ? 1 : ((pt1->x < pt2->x) ? -1 : 0);
+	if (pt1 && pt2)
+		return (pt1->x > pt2->x) ? 1 : ((pt1->x < pt2->x) ? -1 : 0);
+
+	if (pt1) return -1;
+	if (pt2) return 1;
+	return 0;
 }
 
 static int
@@ -1587,7 +1633,12 @@ cmp_point_y(const void *pa, const void *pb)
 	const POINT2D *pt1 = getPoint2d_cp(p1->point, 0);
 	const POINT2D *pt2 = getPoint2d_cp(p2->point, 0);
 
-	return (pt1->y > pt2->y) ? 1 : ((pt1->y < pt2->y) ? -1 : 0);
+	if (pt1 && pt2)
+		return (pt1->y > pt2->y) ? 1 : ((pt1->y < pt2->y) ? -1 : 0);
+
+	if (pt1) return -1;
+	if (pt2) return 1;
+	return 0;
 }
 
 int
@@ -1650,6 +1701,7 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 					continue;
 
 				const POINT2D *pti = getPoint2d_cp(mpt->geoms[i]->point, 0);
+				if (!pti) continue;
 
 				/* check upcoming points if they're within tolerance of current one */
 				for (uint32_t j = i + 1; j < mpt->ngeoms; j++)
@@ -1658,6 +1710,7 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 						continue;
 
 					const POINT2D *ptj = getPoint2d_cp(mpt->geoms[j]->point, 0);
+					if (!ptj) continue;
 
 					/* check that the point is in the strip of tolerance around the point */
 					if ((dim ? ptj->x - pti->x : ptj->y - pti->y) > tolerance)
@@ -1670,6 +1723,17 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 						mpt->geoms[j] = NULL;
 						geometry_modified = LW_TRUE;
 					}
+				}
+			}
+
+			/* null out empties */
+			for (uint32_t j = 0; j < mpt->ngeoms; j++)
+			{
+				if (mpt->geoms[j] && lwpoint_is_empty(mpt->geoms[j]))
+				{
+					lwpoint_free(mpt->geoms[j]);
+					mpt->geoms[j] = NULL;
+					geometry_modified = LW_TRUE;
 				}
 			}
 
@@ -1806,7 +1870,7 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 				{
 					if (i == 0)
 					{
-						/* If the outter ring is dropped, all can be dropped */
+						/* If the outer ring is dropped, all can be dropped */
 						for (i = 0; i < g->nrings; i++)
 						{
 							pa = g->rings[i];
@@ -1980,7 +2044,7 @@ double lwgeom_length_2d(const LWGEOM *geom)
 		return lwcircstring_length_2d((LWCIRCSTRING*)geom);
 	else if ( type == COMPOUNDTYPE )
 		return lwcompound_length_2d((LWCOMPOUND*)geom);
-	else if ( lwgeom_is_collection(geom) )
+	else if ( type != CURVEPOLYTYPE && lwgeom_is_collection(geom) )
 	{
 		double length = 0.0;
 		uint32_t i;
@@ -2001,7 +2065,7 @@ lwgeom_affine(LWGEOM *geom, const AFFINE *affine)
 
 	switch(type)
 	{
-		/* Take advantage of fact tht pt/ln/circ/tri have same memory structure */
+		/* Take advantage of fact that pt/ln/circ/tri have same memory structure */
 		case POINTTYPE:
 		case LINETYPE:
 		case CIRCSTRINGTYPE:
@@ -2055,7 +2119,7 @@ lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
 
 	switch(type)
 	{
-		/* Take advantage of fact tht pt/ln/circ/tri have same memory structure */
+		/* Take advantage of fact that pt/ln/circ/tri have same memory structure */
 		case POINTTYPE:
 		case LINETYPE:
 		case CIRCSTRINGTYPE:
@@ -2518,7 +2582,7 @@ static double trim_preserve_decimal_digits(double d, int32_t decimal_digits)
 	/* (x * 851 + 255) / 256 == 1 + (int)(x * log2(10)) for x in [0,30] */
 	int bits_needed = 1 + exponent + (decimal_digits * 851 + 255) / 256;
 	/* for negative values, (x * 851 + 255) / 256 == (int)(x * log2(10)), so */
-	/* substract one */
+	/* subtract one */
 	if (decimal_digits < 0)
 		bits_needed --;
 

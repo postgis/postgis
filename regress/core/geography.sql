@@ -124,3 +124,33 @@ select 'dwithin_poly_line_1', ST_DWithin('POLYGON((1 1, 2 2, 3 0, 1 1))'::geogra
 select 'dwithin_poly_poly_1', ST_DWithin('POLYGON((0 0, -2 -2, -3 0, 0 0))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 10);
 select 'dwithin_poly_poly_2', ST_DWithin('POLYGON((0 0, -2 -2, -3 0, 0 0))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 300000);
 select 'dwithin_poly_poly_3', ST_DWithin('POLYGON((1 1, -2 -2, -3 0, 1 1))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 300000);
+
+
+-- Linear Referencing functions
+-- #5456 garden crash
+SELECT '#5456' As ticket, ST_LineLocatePoint('0102000020E610000001000000000000000000F03F0000000000000040'::geography, 'POINT(-11.1111111 40)'::geography, false);
+SELECT 'lrs_empty_1', ST_LineInterpolatePoint(geography 'Linestring empty', 0.1);
+SELECT 'lrs_empty_2', ST_LineInterpolatePoints(geography 'Linestring empty', 0.1, true);
+SELECT 'lrs_empty_3', ST_LineLocatePoint(geography 'Linestring empty', 'Point(45 45)', true);
+SELECT 'lrs_empty_4', ST_LineSubstring(geography 'Linestring empty', 0.1, 0.2);
+SELECT 'lrs_empty_5', ST_ClosestPoint(geography 'Linestring empty', 'Point(45 45)', true);
+SELECT 'lrs_empty_6', ST_ShortestLine(geography 'Linestring empty', 'Point(45 45)', true);
+
+SELECT 'lrs_lip_1', ST_AsText(ST_LineInterpolatePoint(geography 'Linestring(4.35 50.85, 37.617222 55.755833)', 0.0), 2);
+SELECT 'lrs_lip_2', ST_AsText(ST_LineInterpolatePoints(geography 'Linestring(4.35 50.85, 37.617222 55.755833)', 0.0, true), 2);
+SELECT 'lrs_lip_3', ST_AsText(ST_LineInterpolatePoints(geography 'Linestring(4.35 50.85, 37.617222 55.755833)', 1.0, false), 2);
+SELECT 'lrs_lip_4', ST_AsText(ST_LineInterpolatePoints(geography 'Linestring(4.35 50.85, 37.617222 55.755833)', 0.1, true), 2);
+SELECT 'lrs_lip_5', ST_AsText(ST_LineInterpolatePoints(geography 'Linestring(4.35 50.85, 37.617222 55.755833)', 0.1, false), 2);
+
+SELECT 'lrs_llp_1', round(ST_LineLocatePoint(geography 'linestring(0 1, 50 1)', geography 'Point(25 0)')::numeric, 2);
+SELECT 'lrs_llp_2', round(ST_LineLocatePoint(geography 'linestring(0 1, 50 1)', geography 'Point(-5 0)')::numeric, 2);
+SELECT 'lrs_llp_3', round(ST_LineLocatePoint(geography 'linestring(0 1, 50 1)', geography 'Point(55 0)')::numeric, 2);
+SELECT 'lrs_llp_4', round(ST_LineLocatePoint(geography 'linestring(0 1, 50 1)', geography 'Linestring(25 0,26 1)')::numeric, 2);
+
+SELECT 'lrs_substr_1', ST_AsText(ST_LineSubstring(geography 'linestring(0 20, 100 20)', 0.1, 0.2),2);
+
+--SELECT 'lrs_cp_1', ST_AsText(ST_ClosestPoint(geography 'Linestring(0 20, 50 20)', 'Point(25 20)'), 3);
+--SELECT 'lrs_cp_2', ST_AsText(ST_ClosestPoint(geography 'Point(25 20)', geography 'Linestring(0 20, 50 20)'), 3);
+
+SELECT 'lrs_sl_1', ST_AsText(ST_ShortestLine(geography 'linestring(0 40, 50 40)', 'Point(25 40)', true), 2);
+

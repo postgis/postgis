@@ -67,7 +67,6 @@ Datum LWGEOM_closestpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_shortestline2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_dwithin(PG_FUNCTION_ARGS);
-Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_maxdistance3d(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS);
@@ -105,6 +104,9 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS);
 Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_azimuth(PG_FUNCTION_ARGS);
+Datum geometry_project_direction(PG_FUNCTION_ARGS);
+Datum geometry_project_geometry(PG_FUNCTION_ARGS);
+Datum geometry_line_extend(PG_FUNCTION_ARGS);
 Datum LWGEOM_angle(PG_FUNCTION_ARGS);
 Datum LWGEOM_affine(PG_FUNCTION_ARGS);
 Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS);
@@ -291,7 +293,7 @@ Datum ST_Area(PG_FUNCTION_ARGS)
  *  	length2d(point) = 0
  *  	length2d(line) = length of line
  *  	length2d(polygon) = 0  -- could make sense to return sum(ring perimeter)
- *  	uses euclidian 2d length (even if input is 3d)
+ *  	uses euclidean 2d length (even if input is 3d)
  */
 PG_FUNCTION_INFO_V1(LWGEOM_length2d_linestring);
 Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS)
@@ -309,7 +311,7 @@ Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS)
  *  	length(point) = 0
  *  	length(line) = length of line
  *  	length(polygon) = 0  -- could make sense to return sum(ring perimeter)
- *  	uses euclidian 3d/2d length depending on input dimensions.
+ *  	uses euclidean 3d/2d length depending on input dimensions.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_length_linestring);
 Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS)
@@ -327,7 +329,7 @@ Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS)
  *  	perimeter(point) = 0
  *  	perimeter(line) = 0
  *  	perimeter(polygon) = sum of ring perimeters
- *  	uses euclidian 3d/2d computation depending on input dimension.
+ *  	uses euclidean 3d/2d computation depending on input dimension.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_perimeter_poly);
 Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS)
@@ -346,7 +348,7 @@ Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS)
  *  	perimeter(point) = 0
  *  	perimeter(line) = 0
  *  	perimeter(polygon) = sum of ring perimeters
- *  	uses euclidian 2d computation even if input is 3d
+ *  	uses euclidean 2d computation even if input is 3d
  */
 PG_FUNCTION_INFO_V1(LWGEOM_perimeter2d_poly);
 Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS)
@@ -478,7 +480,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	/* deserialize into lwgeoms[0] */
 	lwgeom = lwgeom_from_gserialized(geom);
 
-	/* alread a multi*, just make it a collection */
+	/* already a multi*, just make it a collection */
 	if (lwgeom_is_collection(lwgeom))
 	{
 		lwgeom->type = COLLECTIONTYPE;
@@ -755,41 +757,6 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 	/*empty geometries cases should be right handled since return from underlying
 	 functions should be FLT_MAX which causes false as answer*/
 	PG_RETURN_BOOL(tolerance >= mindist);
-}
-
-/**
-Returns boolean describing if
-maximum 2d distance between objects in
-geom1 and geom2 is shorter than tolerance
-*/
-PG_FUNCTION_INFO_V1(LWGEOM_dfullywithin);
-Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
-{
-	double maxdist;
-	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
-	double tolerance = PG_GETARG_FLOAT8(2);
-	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
-	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-
-	if (tolerance < 0)
-	{
-		elog(ERROR, "Tolerance cannot be less than zero\n");
-		PG_RETURN_NULL();
-	}
-
-	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
-
-	maxdist = lwgeom_maxdistance2d_tolerance(lwgeom1, lwgeom2, tolerance);
-
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
-	/*If function is feed with empty geometries we should return false*/
-	if (maxdist > -1)
-		PG_RETURN_BOOL(tolerance >= maxdist);
-
-	PG_RETURN_BOOL(LW_FALSE);
 }
 
 /**
@@ -2192,8 +2159,8 @@ PG_FUNCTION_INFO_V1(ST_IsCollection);
 Datum ST_IsCollection(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_HEADER(0);
-	int type = gserialized_get_type(geom);
-	PG_RETURN_BOOL(lwtype_is_collection(type));
+	LWGEOM *lwg = lwgeom_from_gserialized(geom);
+	PG_RETURN_BOOL(!lwgeom_is_unitary(lwg));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_makepoint);
@@ -2456,12 +2423,6 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (!lwgeom_isfinite(lwg))
-	{
-		elog(ERROR, "Geometry contains invalid coordinate");
-		PG_RETURN_NULL();
-	}
-
 	if (which < 0)
 	{
 		/* Use backward indexing for negative values */
@@ -2572,6 +2533,121 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 
 	PG_RETURN_FLOAT8(result);
 }
+
+
+/**
+ * Project a new point from a start point, direction and distance.
+ * ST_Project(geometry, distance, azimuth)
+ * Azimuth is measured in radians, clockwise from north.
+ * Distance is in SRID units.
+ * Geometry must be point.
+ */
+PG_FUNCTION_INFO_V1(geometry_project_direction);
+Datum geometry_project_direction(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom1, *geom2;
+	LWPOINT *lwpoint1, *lwpoint2;
+	LWGEOM *lwgeom1, *lwgeom2;
+	double distance, azimuth;
+
+	geom1 = PG_GETARG_GSERIALIZED_P(0);
+	distance = PG_GETARG_FLOAT8(1);
+	azimuth = PG_GETARG_FLOAT8(2);
+	lwgeom1 = lwgeom_from_gserialized(geom1);
+	lwpoint1 = lwgeom_as_lwpoint(lwgeom1);
+
+	if (!lwpoint1)
+		lwpgerror("Argument must be POINT geometry");
+
+	if (lwgeom_is_empty(lwgeom1))
+		PG_RETURN_NULL();
+
+	lwpoint2 = lwpoint_project(lwpoint1, distance, azimuth);
+	lwgeom2 = lwpoint_as_lwgeom(lwpoint2);
+	geom2 = geometry_serialize(lwgeom2);
+	PG_RETURN_POINTER(geom2);
+}
+
+
+/**
+ * Project a new point from a start point, direction and distance.
+ * ST_Project(geometry, distance, azimuth)
+ * Azimuth is measured in radians, clockwise from north.
+ * Distance is in SRID units.
+ * Geometry must be point.
+ */
+PG_FUNCTION_INFO_V1(geometry_project_geometry);
+Datum geometry_project_geometry(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom1, *geom2, *geom3;
+	LWPOINT *lwpoint1, *lwpoint2, *lwpoint3;
+	LWGEOM *lwgeom1, *lwgeom2, *lwgeom3;
+	double distance;
+
+	geom1 = PG_GETARG_GSERIALIZED_P(0);
+	geom2 = PG_GETARG_GSERIALIZED_P(1);
+	distance = PG_GETARG_FLOAT8(2);
+
+	lwgeom1 = lwgeom_from_gserialized(geom1);
+	lwpoint1 = lwgeom_as_lwpoint(lwgeom1);
+	lwgeom2 = lwgeom_from_gserialized(geom2);
+	lwpoint2 = lwgeom_as_lwpoint(lwgeom2);
+
+	if (!(lwpoint1 && lwpoint2))
+		lwpgerror("Arguments must be POINT geometries");
+
+	if (lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2))
+		PG_RETURN_NULL();
+
+	if (lwpoint_same2d(lwpoint1, lwpoint2))
+		PG_RETURN_POINTER(geom2);
+
+	lwpoint3 = lwpoint_project_lwpoint(lwpoint1, lwpoint2, distance);
+	lwgeom3 = lwpoint_as_lwgeom(lwpoint3);
+	geom3 = geometry_serialize(lwgeom3);
+
+	PG_RETURN_POINTER(geom3);
+}
+
+
+
+/**
+ * Extend the ends of a line outwards from
+ * the end, the start, or both, a set positive distance.
+ * ST_LineExtent(linestring, distance_forward, distance_backward (default 0.0)
+ * Geometry must be linestring.
+ */
+PG_FUNCTION_INFO_V1(geometry_line_extend);
+Datum geometry_line_extend(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom1, *geom2;
+	LWLINE *lwline1, *lwline2;
+	LWGEOM *lwgeom1, *lwgeom2;
+	double distance_forward, distance_backward;
+
+	geom1 = PG_GETARG_GSERIALIZED_P(0);
+	distance_forward = PG_GETARG_FLOAT8(1);
+	distance_backward = PG_GETARG_FLOAT8(2);
+
+	lwgeom1 = lwgeom_from_gserialized(geom1);
+	lwline1 = lwgeom_as_lwline(lwgeom1);
+	if (!lwline1)
+		lwpgerror("Argument must be LINESTRING geometry");
+
+	if (lwline_is_empty(lwline1))
+		PG_RETURN_NULL();
+
+	if (lwline_length_2d(lwline1) <= 0.0)
+		PG_RETURN_POINTER(geom1);
+
+	lwline2 = lwline_extend(lwline1, distance_forward, distance_backward);
+	lwgeom2 = lwline_as_lwgeom(lwline2);
+	geom2 = geometry_serialize(lwgeom2);
+
+	PG_RETURN_POINTER(geom2);
+}
+
+
 
 /**
  * Compute the angle defined by 3 points or the angle between 2 vectors

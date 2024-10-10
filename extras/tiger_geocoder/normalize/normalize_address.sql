@@ -43,7 +43,7 @@
 -- handled properly, so long as both are given.  If the street type is
 -- omitted, the street names included type will be parsed as the street type.
 --
--- The output is currently a colon seperated list of values:
+-- The output is currently a colon separated list of values:
 -- InternalAddress:StreetAddress:DirectionPrefix:StreetName:StreetType:
 -- DirectionSuffix:Location:State:ZipCode
 -- This returns each element as entered.  It's mainly meant for debugging.
@@ -610,7 +610,7 @@ BEGIN
         -- a two word direction. eg extracting "East" from "North East"
         -- We do this by sorting by length, and taking the last direction
         -- in the results that is not included in an earlier one.
-        -- This wont be a problem it preDir is North East and postDir is
+        -- This won't be a problem it preDir is North East and postDir is
         -- East as the regex requires a space before the direction.  Only
         -- the East will return from the preDir.
         tempInt := 0;

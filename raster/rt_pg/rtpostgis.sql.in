@@ -5,7 +5,7 @@
 -- http://trac.osgeo.org/postgis/wiki/WKTRaster
 --
 -- Copyright (c) 2015-2017 Regina Obe <lr@pcorp.us>
--- Copyright (c) 2009-2012 Sandro Santilli <strk@kbt.io>
+-- Copyright (c) 2009-2023 Sandro Santilli <strk@kbt.io>
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 -- Copyright (c) 2009-2010 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 -- Copyright (c) 2009-2010 Mateusz Loskot <mateusz@loskot.net>
@@ -2349,6 +2349,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebraexpr(rast raster, pixeltype text, expres
     LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- All arguments supplied, use the C implementation.
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         pixeltype text, onerastuserfunc regprocedure, variadic args text[])
     RETURNS raster
@@ -2356,6 +2357,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
     LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
 -- Variant 1: missing user args
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         pixeltype text, onerastuserfunc regprocedure)
     RETURNS raster
@@ -2363,6 +2365,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
     LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Variant 2: missing pixeltype; default to pixeltype of rast
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         onerastuserfunc regprocedure, variadic args text[])
     RETURNS raster
@@ -2370,6 +2373,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
     LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Variant 3: missing pixeltype and user args; default to pixeltype of rast
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         onerastuserfunc regprocedure)
     RETURNS raster
@@ -2377,6 +2381,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
     LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Variant 4: missing band; default to band 1
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
         onerastuserfunc regprocedure, variadic args text[])
     RETURNS raster
@@ -2384,6 +2389,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
     LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Variant 5: missing band and user args; default to band 1
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
         onerastuserfunc regprocedure)
     RETURNS raster
@@ -2391,6 +2397,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
     LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Variant 6: missing band, and pixeltype; default to band 1, pixeltype of rast.
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, onerastuserfunc regprocedure,
         variadic args text[])
     RETURNS raster
@@ -2398,6 +2405,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, onerastuserfunc regproc
     LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Variant 7: missing band, pixeltype, and user args; default to band 1, pixeltype of rast.
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, onerastuserfunc regprocedure)
     RETURNS raster
     AS $$ SELECT @extschema@.ST_mapalgebrafct($1, 1, NULL, $2, NULL) $$
@@ -2430,6 +2438,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebraexpr(
 	AS $$ SELECT @extschema@.ST_mapalgebraexpr($1, 1, $2, 1, $3, $4, $5, $6, $7, $8) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 	rast1 raster, band1 integer,
 	rast2 raster, band2 integer,
@@ -2441,11 +2450,13 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 	AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra2'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 	rast1 raster,
 	rast2 raster,
 	tworastuserfunc regprocedure,
-	pixeltype text DEFAULT NULL, extenttype text DEFAULT 'INTERSECTION',
+	pixeltype text DEFAULT NULL,
+	extenttype text DEFAULT 'INTERSECTION',
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
@@ -3465,11 +3476,15 @@ CREATE OR REPLACE FUNCTION _st_slope4ma(value double precision[][][], pos intege
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION st_slope(
-	rast raster, nband integer,
+	rast raster,
+	nband integer,
 	customextent raster,
-	pixeltype text DEFAULT '32BF', units text DEFAULT 'DEGREES',
-	scale double precision DEFAULT 1.0,	interpolate_nodata boolean DEFAULT FALSE
+	pixeltype text DEFAULT '32BF',
+	units text DEFAULT 'DEGREES',
+	scale double precision DEFAULT 1.0,
+	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS raster
 	AS $$
@@ -3525,10 +3540,16 @@ CREATE OR REPLACE FUNCTION st_slope(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.0 added units, scale and interpolate_nodata
+-- Replaces st_slope(raster, integer, text) deprecated in 2.1.0
 CREATE OR REPLACE FUNCTION st_slope(
-	rast raster, nband integer DEFAULT 1,
-	pixeltype text DEFAULT '32BF', units text DEFAULT 'DEGREES',
-	scale double precision DEFAULT 1.0,	interpolate_nodata boolean DEFAULT FALSE
+	rast raster,
+	nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF',
+	units text DEFAULT 'DEGREES',
+	scale double precision DEFAULT 1.0,
+	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@.ST_slope($1, $2, NULL::@extschema@.raster, $3, $4, $5, $6) $$
@@ -3539,6 +3560,7 @@ CREATE OR REPLACE FUNCTION st_slope(
 -- http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works
 -----------------------------------------------------------------------
 
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION _st_aspect4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
 	RETURNS double precision
 	AS $$
@@ -3648,10 +3670,13 @@ CREATE OR REPLACE FUNCTION _st_aspect4ma(value double precision[][][], pos integ
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION st_aspect(
-	rast raster, nband integer,
+	rast raster,
+	nband integer,
 	customextent raster,
-	pixeltype text DEFAULT '32BF', units text DEFAULT 'DEGREES',
+	pixeltype text DEFAULT '32BF',
+	units text DEFAULT 'DEGREES',
 	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS raster
@@ -3703,9 +3728,14 @@ CREATE OR REPLACE FUNCTION st_aspect(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.0 changed nband parameter name, added units, interpolate_nodata and defaults
+-- Replaces st_aspect(raster, integer, text) deprecated in 2.1.0
 CREATE OR REPLACE FUNCTION st_aspect(
-	rast raster, nband integer DEFAULT 1,
-	pixeltype text DEFAULT '32BF', units text DEFAULT 'DEGREES',
+	rast raster,
+	nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF',
+	units text DEFAULT 'DEGREES',
 	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS raster
@@ -4622,6 +4652,10 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, x integer, y integer, exclude_n
     AS $$ SELECT st_value($1, 1::integer, $2, $3, $4) $$
     LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE _COST_MEDIUM;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.0 - renamed the boolean parameter name
+-- Replaces st_value(raster, geometry) deprecated in 2.0.0 (signature existed in WKTRaster)
+-- Replaces st_value(rast raster, pt geometry, hasnodata boolean) deprecated in 2.1.0
 CREATE OR REPLACE FUNCTION st_value(rast raster, pt geometry, exclude_nodata_value boolean DEFAULT TRUE)
     RETURNS float8
     AS $$ SELECT @extschema@.ST_value($1, 1::integer, $2, $3, 'nearest'::text) $$
@@ -5465,7 +5499,7 @@ CREATE OR REPLACE FUNCTION st_rastfromwkb(bytea)
     AS 'MODULE_PATHNAME', 'RASTER_fromWKB'
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
--- expectes input to be Hex WKB
+-- expects input to be Hex WKB
 CREATE OR REPLACE FUNCTION st_rastfromhexwkb(text)
     RETURNS raster
     AS 'MODULE_PATHNAME', 'RASTER_fromHexWKB'
@@ -5917,7 +5951,7 @@ CREATE OR REPLACE FUNCTION st_iscoveragetile(rast raster, coverage raster, tilew
 		max[0] := ceil(_covmeta.width::double precision / tilewidth::double precision)::integer;
 		max[1] := ceil(_covmeta.height::double precision / tileheight::double precision)::integer;
 
-		-- tile # of rast in coverge
+		-- tile # of rast in coverage
 		tile[0] := (cr.columnx / tilewidth) + 1;
 		tile[1] := (cr.rowy / tileheight) + 1;
 
@@ -6541,21 +6575,27 @@ CREATE AGGREGATE st_union(raster, text) (
 -----------------------------------------------------------------------
 
 -- Availability: 2.1.0
+-- Changed: 3.5.0 - added touched parameter
+-- Replaces _st_clip(raster, integer[], geometry, float8[], boolean) deprecated in 3.5.0
 CREATE OR REPLACE FUNCTION _st_clip(
 	rast raster, nband integer[],
 	geom geometry,
-	nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE
+	nodataval float8[] DEFAULT NULL, crop boolean DEFAULT TRUE, touched boolean DEFAULT false
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_clip'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 2.0.0
--- Changed: 2.1.0
+-- Changed: 2.1.0 - renamed the band parameter
+-- Changed: 3.5.0 - add touched parameter
+-- Replaces st_clip(raster, integer[], geometry, float8[], boolean) deprecated in 3.5.0
 CREATE OR REPLACE FUNCTION st_clip(
-	rast raster, nband integer[],
+	rast raster,
+	nband integer[],
 	geom geometry,
-	nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE
+	nodataval float8[],
+	crop boolean DEFAULT true, touched boolean DEFAULT false
 )
 	RETURNS raster
  	AS $$
@@ -6565,58 +6605,71 @@ CREATE OR REPLACE FUNCTION st_clip(
 			RETURN rast;
 		END IF;
 
-		RETURN @extschema@._ST_Clip($1, $2, $3, $4, $5);
+		RETURN @extschema@._ST_Clip(rast, nband, geom, nodataval, crop, touched);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 2.0.0
+-- Changed: 3.5.0 - added touched parameter
+-- Replaces st_clip(raster, integer, geometry, float8, boolean) deprecated in 3.5.0
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster, nband integer,
 	geom geometry,
-	nodataval double precision, crop boolean DEFAULT TRUE
+	nodataval float8, crop boolean DEFAULT true, touched boolean DEFAULT false
 )
 	RETURNS raster AS
-	$$ SELECT @extschema@.ST_Clip($1, ARRAY[$2]::integer[], $3, ARRAY[$4]::double precision[], $5) $$
+	$$ SELECT @extschema@.ST_Clip(rast, ARRAY[nband]::integer[], geom, ARRAY[nodataval]::float8[], crop, touched) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 2.0.0
+-- Changed: 2.1.0 -- renamed the band parameter
+-- Replaces st_clip(rast raster, band int, geom geometry, crop boolean) deprecated in 2.1.0
+-- Replaces st_clip(raster, integer, geometry, boolean) deprecated in 3.5.0
+-- Changed: 3.5.0 -- added touched parameter
 CREATE OR REPLACE FUNCTION st_clip(
-	rast raster, nband integer,
+	rast raster,
+	nband integer,
 	geom geometry,
-	crop boolean
+	crop boolean DEFAULT true, touched boolean DEFAULT false
 )
 	RETURNS raster AS
-	$$ SELECT @extschema@.ST_Clip($1, ARRAY[$2]::integer[], $3, null::double precision[], $4) $$
+	$$ SELECT @extschema@.ST_Clip(rast, ARRAY[nband]::integer[], geom, null::double precision[], crop, touched) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 2.0.0
+-- Changed: 3.5.0 - added touched parameter
+-- Replaces st_clip(raster, geometry, float8[], boolean) deprecated in 3.5.0 
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster,
 	geom geometry,
-	nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE
+	nodataval float8[] DEFAULT NULL, crop boolean DEFAULT true, touched boolean DEFAULT false
 )
 	RETURNS raster AS
-	$$ SELECT @extschema@.ST_Clip($1, NULL, $2, $3, $4) $$
+	$$ SELECT @extschema@.ST_Clip(rast, NULL, geom, nodataval, crop, touched) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 2.0.0
+-- Changed: 3.5.0 - added touched parameter
+-- Replaces st_clip(raster, geometry, float8, boolean) deprecated in 3.5.0
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster,
 	geom geometry,
-	nodataval double precision, crop boolean DEFAULT TRUE
+	nodataval double precision, crop boolean DEFAULT true, touched boolean DEFAULT false
 )
 	RETURNS raster AS
-	$$ SELECT @extschema@.ST_Clip($1, NULL, $2, ARRAY[$3]::double precision[], $4) $$
+	$$ SELECT @extschema@.ST_Clip(rast, NULL, geom, ARRAY[nodataval]::float8[], crop, touched) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 2.0.0
+-- Availability: 3.5.0 - added touched parameter
+-- Replaces st_clip(raster, geometry, boolean) deprecated in 3.5.0
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster,
 	geom geometry,
-	crop boolean
+	crop boolean, touched boolean DEFAULT false
 )
 	RETURNS raster AS
-	$$ SELECT @extschema@.ST_Clip($1, NULL, $2, null::double precision[], $3) $$
+	$$ SELECT @extschema@.ST_Clip(rast, NULL, geom, null::float8[], crop, touched) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -----------------------------------------------------------------------
@@ -6798,7 +6851,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_srid(rastschema name, rasttab
 	SELECT
 		regexp_replace(
 			split_part(s.consrc, ' = ', 2),
-			'[\(\)]', '', 'g'
+			E'[\\(\\)]', '', 'g'
 		)::integer
 	FROM pg_class c, pg_namespace n, pg_attribute a
 		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
@@ -6872,7 +6925,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_scale(rastschema name, rastta
 				),
 				'round(', ''
 			),
-			'[ ''''\(\)]', '', 'g'
+			E'[ ''''\\(\\)]', '', 'g'
 		)::text AS val
 	FROM pg_class c, pg_namespace n, pg_attribute a
 		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
@@ -6961,7 +7014,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_blocksize(rastschema name, ra
 			ELSE
 				regexp_replace(
 					split_part(s.consrc, '= ', 2),
-					'[\(\)]', '', 'g'
+					E'[\\(\\)]', '', 'g'
 				)::integer
 			END
 	FROM pg_class c, pg_namespace n, pg_attribute a
@@ -7339,7 +7392,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_regular_blocking(rastschema n
 		covtile boolean;
 		spunique boolean;
 	BEGIN
-		-- check existance of constraints
+		-- check existence of constraints
 		-- coverage tile constraint
 		covtile := COALESCE( @extschema@._raster_constraint_info_coverage_tile($1, $2, $3), FALSE);
 
@@ -7362,7 +7415,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_num_bands(rastschema name, ra
 	SELECT
 		regexp_replace(
 			split_part(s.consrc, ' = ', 2),
-			'[\(\)]', '', 'g'
+			E'[\\(\\)]', '', 'g'
 		)::integer
 	FROM pg_class c, pg_namespace n, pg_attribute a
 		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
@@ -7431,7 +7484,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_pixel_types(rastschema name, 
 			both '''' from split_part(
 				regexp_replace(
 					split_part(s.consrc, ' = ', 2),
-					'[\(\)]', '', 'g'
+					E'[\\(\\)]', '', 'g'
 				),
 				'::', 1
 			)
@@ -7518,7 +7571,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_nodata_values(rastschema name
 			split_part(
 				regexp_replace(
 					split_part(s.consrc, ' = ', 2),
-					'[\(\)]', '', 'g'
+					E'[\\(\\)]', '', 'g'
 				),
 				'::', 1
 			)
@@ -7611,7 +7664,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_out_db(rastschema name, rastt
 			both '''' from split_part(
 				regexp_replace(
 					split_part(s.consrc, ' = ', 2),
-					'[\(\)]', '', 'g'
+					E'[\\(\\)]', '', 'g'
 				),
 				'::', 1
 			)

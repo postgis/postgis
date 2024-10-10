@@ -1,11 +1,12 @@
+SET client_min_messages TO WARNING;
 SELECT E'--missing--\n' || TopologySummary('test');
 CREATE SCHEMA test;
 SELECT E'--empty--\n' || TopologySummary('test');
-CREATE TABLE test.node(id int);
+CREATE TABLE test.node(node_id int);
 SELECT E'--node--\n' || TopologySummary('test');
-CREATE TABLE test.edge(id int);
+CREATE TABLE test.edge(edge_id int);
 SELECT E'--node+edge--\n' || TopologySummary('test');
-CREATE TABLE test.face(id int);
+CREATE TABLE test.face(face_id int);
 SELECT E'--node+edge+face--\n' || TopologySummary('test');
 CREATE TABLE test.relation(id int);
 SELECT E'--node+edge+face+corrupted_relation--\n' || TopologySummary('test');
@@ -29,13 +30,11 @@ UPDATE test.t SET c.layer_id = 1, c.topology_id = topology_id(c)+1 WHERE layer_i
 SELECT E'--registered_layer_missing_topogeom_in_proper_topo--\n' || TopologySummary('test');
 UPDATE test.t SET c.topology_id = topology_id(c)-1 WHERE layer_id(c) = 1;
 SELECT E'--registered_layer--\n' || TopologySummary('test');
--- TODO: test hierarchical
-DROP TABLE test.t;
-DROP TABLE test.node;
-DROP TABLE test.edge;
-DROP TABLE test.face;
-DROP TABLE test.relation;
-DROP SCHEMA test;
+INSERT INTO test.face(face_id) VALUES (-1);
+SELECT E'--pivot face--\n' || TopologySummary('test');
+DROP SCHEMA test CASCADE;
 SELECT E'--registered+missing--\n' || TopologySummary('test');
 DELETE FROM topology.layer WHERE topology_id = 1;
 DELETE FROM topology.topology WHERE id = 1;
+
+-- TODO: test hierarchical

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<sect1 id="History_Table">
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="History_Table">
 	<title>History Tracking</title>
-	 <sect1info>
+	 <info>
 		<abstract>
 			<para>Suppose you have a table of data that represents the current state of a particular geographic feature.
 			A parcels table, or a roads table, or a fruit trees table, whatever.
@@ -10,7 +10,7 @@
 			<para>This <varname>history_table</varname> extra module provides some utility functions for creating and maintaining history.</para>
 		</abstract>
 
-     </sect1info>
+     </info>
      <note><para>The <varname>history_table</varname> was also packaged in PostGIS 1.5, but added to the documentation in PostGIS 2.0.  This package is written in plpgsql and located in the <varname>extras/history_table</varname> of PostGIS source tar balls and source repository.</para></note>
      <para>If you have a table 'roads', this module will maintain a 'roads_history' side table, which contains all the columns of the parent table, and the following additional columns:</para>
 <programlisting>history_id      | integer                     | not null default
@@ -36,11 +36,13 @@
 <programlisting>SELECT * FROM roads_history WHERE roads_pk = 111;</programlisting>
 
 <para>Or, to retrieve a view of the roads table at any point in the past:</para>
-<programlisting>SELECT * FROM roads_history
-    WHERE date_added &lt; 'January 1, 2001' AND
-        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL );</programlisting>
+<programlisting><![CDATA[
+SELECT * FROM roads_history
+    WHERE date_added < 'January 1, 2001' AND
+        ( date_deleted >= 'January 1, 2001' OR date_deleted IS NULL );
+]]></programlisting>
 
-        <refentry id="Postgis_Install_History">
+        <refentry xml:id="Postgis_Install_History">
 			<refnamediv>
 				<refname>Postgis_Install_History</refname>
 				<refpurpose>Creates a table that will hold some interesting values for managing history tables.</refpurpose>
@@ -62,7 +64,7 @@
 
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.5.0</para>
+                <para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
 			</refsection>
 
 
@@ -79,7 +81,7 @@
 			</refsection>
 		</refentry>
 
-		<refentry id="Postgis_Enable_History">
+		<refentry xml:id="Postgis_Enable_History">
 			<refnamediv>
 				<refname>Postgis_Enable_History</refname>
 				<refpurpose>Registers a table in the history_information table for tracking and also adds in side line history table and insert, update, delete rules on the table.</refpurpose>
@@ -104,7 +106,7 @@
                <note><para>This function currently relies on a geometry column being registered in <varname>geometry_columns</varname> and fails if the geometry column is not present in <varname>geometry_columns</varname> table.</para></note>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.5.0</para>
+                <para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
 			</refsection>
 
 
@@ -140,4 +142,4 @@ WHERE road_name = 'Test Street' ORDER BY date_added DESC;
 				<title>See Also</title>
 			</refsection>
 		</refentry>
-</sect1>
+</section>

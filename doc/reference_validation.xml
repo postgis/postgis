@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Geometry_Validation">
 
-  <sect1 id="Geometry_Validation">
-
-	  <sect1info>
+	  <title>Geometry Validation</title><info>
 	    <abstract>
 			<para>These functions test whether geometries are valid according to
 			the OGC SFS standard.
@@ -10,11 +9,11 @@
             There is also a function to create a valid geometry out of an invalid one.
 			</para>
    	</abstract>
-    </sect1info>
+    </info>
 
-	<title>Geometry Validation</title>
 
-	<refentry id="ST_IsValid">
+
+	<refentry xml:id="ST_IsValid">
 	  <refnamediv>
 		<refname>ST_IsValid</refname>
 
@@ -48,11 +47,11 @@
                 </para>
 		<para>
 For the version with the <varname>flags</varname> parameter,
-supported values are documented in <xref linkend="ST_IsValidDetail" />
+supported values are documented in <xref linkend="ST_IsValidDetail"/>
 This version does not print a NOTICE explaining invalidity.
 		</para>
 		<para>For more information on the definition of geometry validity, refer
-			to <xref linkend="OGC_Validity" />
+			to <xref linkend="OGC_Validity"/>
 		</para>
 		<note>
 			<para>SQL-MM defines the result of ST_IsValid(NULL) to be 0, while
@@ -93,15 +92,15 @@ NOTICE:  Self-intersection at or near point 0 0
 		<title>See Also</title>
 
 		<para>
-<xref linkend="ST_IsSimple" />,
-<xref linkend="ST_IsValidReason" />,
-<xref linkend="ST_IsValidDetail" />,
+<xref linkend="ST_IsSimple"/>,
+<xref linkend="ST_IsValidReason"/>,
+<xref linkend="ST_IsValidDetail"/>,
 </para>
 	  </refsection>
 	</refentry>
 
 
-	<refentry id="ST_IsValidDetail">
+	<refentry xml:id="ST_IsValidDetail">
 	  <refnamediv>
 		<refname>ST_IsValidDetail</refname>
 
@@ -126,7 +125,7 @@ NOTICE:  Self-intersection at or near point 0 0
         a varchar (<varname>reason</varname>) stating a reason why it is invalid
         and a geometry (<varname>location</varname>) pointing out where it is invalid.</para>
 
-		<para>Useful to improve on the combination of <xref linkend="ST_IsValid" /> and <xref linkend="ST_IsValidReason" /> to generate a detailed report of invalid geometries.</para>
+		<para>Useful to improve on the combination of <xref linkend="ST_IsValid"/> and <xref linkend="ST_IsValidReason"/> to generate a detailed report of invalid geometries.</para>
 
 		<para>
 The optional <varname>flags</varname> parameter is a bitfield. It can have the following values:
@@ -147,13 +146,14 @@ The optional <varname>flags</varname> parameter is a bitfield. It can have the f
 			</itemizedlist>
 		</para>
 		<para>Performed by the GEOS module.</para>
-		<para>Availability: 2.0.0</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
+		<programlisting><![CDATA[
+
 --First 3 Rejects from a successful quintuplet experiment
 SELECT gid, reason(ST_IsValidDetail(geom)), ST_AsText(location(ST_IsValidDetail(geom))) as location
 FROM
@@ -162,13 +162,13 @@ FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000
 	FROM generate_series(-4,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,8) z1
-	WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e
+	WHERE x1 > y1*0.5 AND z1 < x1*y1) As e
 	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) As line
 	FROM generate_series(-3,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,10) z1
-	WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f
-ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))
+	WHERE x1 > y1*0.75 AND z1 < x1*y1) As f
+ON (ST_Area(e.buff) > 78 AND ST_Contains(e.buff, f.line))
 GROUP BY gid, e.buff) As quintuplet_experiment
 WHERE ST_IsValid(geom) = false
 ORDER BY gid
@@ -187,7 +187,8 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 -------+--------+----------
  t     |        |
 
-		</programlisting>
+
+]]></programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -195,13 +196,13 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 		<title>See Also</title>
 
 		<para>
-<xref linkend="ST_IsValid" />,
-<xref linkend="ST_IsValidReason" />
+<xref linkend="ST_IsValid"/>,
+<xref linkend="ST_IsValidReason"/>
 </para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_IsValidReason">
+	<refentry xml:id="ST_IsValidReason">
 	  <refnamediv>
 		<refname>ST_IsValidReason</refname>
 
@@ -228,14 +229,14 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 
 		<para>Returns text stating if a geometry is valid, or if invalid a reason why.</para>
 
-		<para>Useful in combination with <xref linkend="ST_IsValid" /> to generate a detailed report of invalid geometries and reasons.</para>
+		<para>Useful in combination with <xref linkend="ST_IsValid"/> to generate a detailed report of invalid geometries and reasons.</para>
 
 		<para>
-Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />.
+Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail"/>.
 		</para>
 		<para>Performed by the GEOS module.</para>
-		<para>Availability: 1.4</para>
-		<para>Availability: 2.0 version taking flags.</para>
+		<para role="availability" conformance="1.4">Availability: 1.4</para>
+		<para role="availability" conformance="2.0">Availability: 2.0 version taking flags.</para>
 	  </refsection>
 	  <refsection>
 		<title>Examples</title>
@@ -248,7 +249,8 @@ validity_info
 --------------------------
 Self-intersection[150 150]
         </programlisting>
-		<programlisting>
+		<programlisting><![CDATA[
+
 --First 3 Rejects from a successful quintuplet experiment
 SELECT gid, ST_IsValidReason(geom) as validity_info
 FROM
@@ -257,13 +259,13 @@ FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000
 	FROM generate_series(-4,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,8) z1
-	WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e
+	WHERE x1 > y1*0.5 AND z1 < x1*y1) As e
 	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) As line
 	FROM generate_series(-3,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,10) z1
-	WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f
-ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))
+	WHERE x1 > y1*0.75 AND z1 < x1*y1) As f
+ON (ST_Area(e.buff) > 78 AND ST_Contains(e.buff, f.line))
 GROUP BY gid, e.buff) As quintuplet_experiment
 WHERE ST_IsValid(geom) = false
 ORDER BY gid
@@ -282,18 +284,19 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
 ------------------
  Valid Geometry
 
-		</programlisting>
+
+]]></programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_IsValid" />, <xref linkend="ST_Summary" /></para>
+		<para><xref linkend="ST_IsValid"/>, <xref linkend="ST_Summary"/></para>
 	  </refsection>
 	</refentry>
 
-    <refentry id="ST_MakeValid">
+    <refentry xml:id="ST_MakeValid">
       <refnamediv>
         <refname>ST_MakeValid</refname>
         <refpurpose>Attempts to make an invalid geometry valid without losing vertices.</refpurpose>
@@ -367,11 +370,11 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
 
     <para>Performed by the GEOS module.</para>
 
-    <para>Availability: 2.0.0</para>
-    <para>Enhanced: 2.0.1, speed improvements</para>
-    <para>Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT.</para>
-    <para>Enhanced: 3.1.0, added removal of Coordinates with NaN values.</para>
-    <para>Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure' which requires GEOS &gt;= 3.10.0.</para>
+    <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+    <para role="enhanced" conformance="2.0.1">Enhanced: 2.0.1, speed improvements</para>
+    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT.</para>
+    <para role="enhanced" conformance="3.1.0">Enhanced: 3.1.0, added removal of Coordinates with NaN values.</para>
+    <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure' which requires GEOS &gt;= 3.10.0.</para>
 
     <para>&Z_support;</para>
 
@@ -385,7 +388,7 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_makevalid01.png" />
+                                <imagedata fileref="images/st_makevalid01.png"/>
                               </imageobject>
                               <caption><para>before_geom: MULTIPOLYGON of 2 overlapping polygons</para></caption>
                             </mediaobject>
@@ -393,7 +396,7 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
                           <informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_makevalid02.png" />
+                                <imagedata fileref="images/st_makevalid02.png"/>
                               </imageobject>
                               <caption><para>after_geom: MULTIPOLYGON of 4 non-overlapping polygons</para>
                               </caption>
@@ -402,7 +405,7 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
                           <informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_makevalid05.png" />
+                                <imagedata fileref="images/st_makevalid05.png"/>
                               </imageobject>
                               <caption><para>after_geom_structure: MULTIPOLYGON of 1 non-overlapping polygon</para>
                               </caption>
@@ -424,19 +427,19 @@ FROM (SELECT 'MULTIPOLYGON(((186 194,187 194,188 195,189 195,190 195,
             <entry><para>
                 <informalfigure>
                 <mediaobject>
-                    <imageobject><imagedata fileref="images/st_makevalid03.png" /></imageobject>
+                    <imageobject><imagedata fileref="images/st_makevalid03.png"/></imageobject>
                     <caption><para>before_geom: MULTIPOLYGON of 6 overlapping polygons</para></caption>
                 </mediaobject>
                 </informalfigure>
                 <informalfigure>
                 <mediaobject>
-                    <imageobject><imagedata fileref="images/st_makevalid04.png" /></imageobject>
+                    <imageobject><imagedata fileref="images/st_makevalid04.png"/></imageobject>
                     <caption><para>after_geom: MULTIPOLYGON of 14 Non-overlapping polygons</para></caption>
                 </mediaobject>
                 </informalfigure>
                 <informalfigure>
                 <mediaobject>
-                    <imageobject><imagedata fileref="images/st_makevalid06.png" /></imageobject>
+                    <imageobject><imagedata fileref="images/st_makevalid06.png"/></imageobject>
                     <caption><para>after_geom_structure: MULTIPOLYGON of 1 Non-overlapping polygon</para></caption>
                 </mediaobject>
                 </informalfigure>
@@ -479,11 +482,11 @@ SELECT ST_AsText(ST_MakeValid(
           <refsection>
             <title>See Also</title>
             <para>
-                <xref linkend="ST_IsValid" />,
-                <xref linkend="ST_Collect" />,
-                <xref linkend="ST_CollectionExtract" />
+                <xref linkend="ST_IsValid"/>,
+                <xref linkend="ST_Collect"/>,
+                <xref linkend="ST_CollectionExtract"/>
             </para>
           </refsection>
     </refentry>
 
-  </sect1>
+  </section>

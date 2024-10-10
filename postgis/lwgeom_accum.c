@@ -56,6 +56,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS);
 Datum clusterintersecting_garray(PG_FUNCTION_ARGS);
 Datum cluster_within_distance_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
+Datum ST_CoverageUnion(PG_FUNCTION_ARGS);
 
 
 /**
@@ -329,6 +330,34 @@ pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS)
 
 	PG_RETURN_DATUM(result);
 }
+
+
+
+/**
+* The "coverage union" final function passes the geometry[] to a
+* GEOSCoverageUnion call before returning the result.
+*/
+PG_FUNCTION_INFO_V1(pgis_geometry_coverageunion_finalfn);
+Datum
+pgis_geometry_coverageunion_finalfn(PG_FUNCTION_ARGS)
+{
+	CollectionBuildState *p;
+	Datum result = 0;
+	Datum geometry_array = 0;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();   /* returns null iff no input values */
+
+	p = (CollectionBuildState*) PG_GETARG_POINTER(0);
+
+	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
+	result = PGISDirectFunctionCall1(ST_CoverageUnion, geometry_array);
+	if (!result)
+		PG_RETURN_NULL();
+
+	PG_RETURN_DATUM(result);
+}
+
 
 /**
 * A modified version of PostgreSQL's DirectFunctionCall1 which allows NULL results; this

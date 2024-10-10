@@ -1,0 +1,12 @@
+initial|1|x|f|g0|1|0|
+initial|2|x|f|g1|2|0|
+initial|3|x|f|g2|3|0|
+initial|4|x|f|g3|4|0|
+populate|x|f|g0
+populate|x|f|g1
+populate|x|f|g2
+populate|x|f|g3
+final|1|x|f|g0|1|0|
+final|2|x|f|g1|2|0|
+final|3|x|f|g2|3|0|
+final|4|x|f|g3|4|0|

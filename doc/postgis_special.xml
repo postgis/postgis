@@ -1,0 +1,141 @@
+<!-- Converted by db4-upgrade version 1.1 -->
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="PostGIS_Special_Functions_Index">
+  <title>PostGIS Special Functions Index</title>
+
+  <section xml:id="PostGIS_Aggregate_Functions">
+    <title>PostGIS Aggregate Functions</title>
+    <para>The functions below are spatial aggregate functions that are used in the same way as SQL aggregate function such as <code>sum</code> and <code>average</code>.</para>
+    &list_aggregates;
+  </section>
+
+  <section xml:id="PostGIS_Window_Functions">
+    <title>PostGIS Window Functions</title>
+    <para>The functions below are spatial window functions that are used in the same way as SQL window functions such as <code>row_number()</code>, <code>lead()</code>, and <code>lag()</code>. They must be followed by an <code>OVER()</code> clause.</para>
+    &list_window_functions;
+  </section>
+
+  <section xml:id="PostGIS_SQLMM_Functions">
+    <title>PostGIS SQL-MM Compliant Functions</title>
+    <para>The functions given below are PostGIS functions that conform to the SQL/MM 3 standard</para>
+    &list_sqlmm_functions;
+  </section>
+
+  <section xml:id="PostGIS_GeographyFunctions">
+    <title>PostGIS Geography Support Functions</title>
+    <para>The functions and operators given below are PostGIS functions/operators that take as input or return as output a <link linkend="PostGIS_Geography">geography</link> data type object.</para>
+    <note>
+      <para>Functions with a (T) are not native geodetic functions, and use a ST_Transform call to and from geometry to do the operation.  As a result, they may not behave as expected when going over dateline, poles,
+				and for large geometries or geometry pairs that cover more than one UTM zone. Basic transform - (favoring UTM, Lambert Azimuthal (North/South), and falling back on mercator in worst case scenario)</para>
+    </note>
+    &list_geography_functions;
+  </section>
+
+  <section xml:id="PostGIS_RasterFunctions">
+    <title>PostGIS Raster Support Functions</title>
+    <para>The functions and operators given below are PostGIS functions/operators that take as input or return as output a <xref linkend="raster"/> data type object. Listed
+			in alphabetical order.</para>
+    &list_raster_functions;
+  </section>
+
+  <section xml:id="PostGIS_Geometry_DumpFunctions">
+    <title>PostGIS Geometry / Geography / Raster Dump Functions</title>
+    <para>The functions given below are PostGIS functions that take as input or return as output a set of or single <link linkend="geometry_dump">geometry_dump</link> or  <link linkend="geomval">geomval</link> data type object.</para>
+    &list_dump_functions;
+  </section>
+
+  <section xml:id="PostGIS_BoxFunctions">
+    <title>PostGIS Box Functions</title>
+    <para>The functions given below are PostGIS functions that take as input or return as output the box* family of PostGIS spatial types.
+				The box family of types consists of <link linkend="box2d_type">box2d</link>, and <link linkend="box3d_type">box3d</link></para>
+    &list_box_functions;
+  </section>
+
+  <section xml:id="PostGIS_3D_Functions">
+    <title>PostGIS Functions that support 3D</title>
+    <para>The functions given below are PostGIS functions that do not throw away the Z-Index.</para>
+    &list_3d_functions;
+  </section>
+
+  <section xml:id="PostGIS_Curved_GeometryFunctions">
+    <title>PostGIS Curved Geometry Support Functions</title>
+    <para>The functions given below are PostGIS functions that can use CIRCULARSTRING, CURVEPOLYGON, and other curved geometry types</para>
+    &list_curved_geometry_functions;
+  </section>
+
+  <section xml:id="PostGIS_PS_GeometryFunctions">
+    <title>PostGIS Polyhedral Surface Support Functions</title>
+    <para>The functions given below are PostGIS functions that can use POLYHEDRALSURFACE, POLYHEDRALSURFACEM geometries</para>
+    &list_polyhedral_geometry_functions;
+  </section>
+
+  <section xml:id="PostGIS_TypeFunctionMatrix">
+    <title>PostGIS Function Support Matrix</title>
+    <para>Below is an alphabetical listing of spatial specific functions in PostGIS and the kinds of spatial
+				types they work with or OGC/SQL compliance they try to conform to.</para>
+    <para>
+      <itemizedlist>
+        <listitem>
+          <simpara>A <inlinemediaobject><imageobject><imagedata fileref="images/matrix_checkmark.png"/></imageobject></inlinemediaobject> means the function works with the type or subtype natively.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>A <inlinemediaobject><imageobject><imagedata fileref="images/matrix_transform.png"/></imageobject></inlinemediaobject> means it works but with a transform cast built-in using cast to geometry, transform to a "best srid" spatial ref and then cast back. Results may not be as expected for large areas or areas at poles
+						and may accumulate floating point junk.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>A <inlinemediaobject><imageobject><imagedata fileref="images/matrix_autocast.png"/></imageobject></inlinemediaobject> means the function works with the type because of a auto-cast to another such as to box3d rather than direct type support.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>A <inlinemediaobject><imageobject><imagedata fileref="images/matrix_sfcgal_required.png"/></imageobject></inlinemediaobject> means the function only available if PostGIS compiled with SFCGAL support.</simpara>
+        </listitem>
+        <listitem>
+          <simpara>geom - Basic 2D geometry support (x,y).</simpara>
+        </listitem>
+        <listitem>
+          <simpara>geog - Basic 2D geography support (x,y).</simpara>
+        </listitem>
+        <listitem>
+          <simpara>2.5D - basic 2D geometries in 3 D/4D space (has Z or M coord).</simpara>
+        </listitem>
+        <listitem>
+          <simpara>PS - Polyhedral surfaces</simpara>
+        </listitem>
+        <listitem>
+          <simpara>T - Triangles and Triangulated Irregular Network surfaces (TIN)</simpara>
+        </listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      <informaltable frame="all">
+        <tgroup cols="8" align="left" colsep="1" rowsep="1">
+          <colspec colname="function" align="left"/>
+          <colspec colname="geometry" align="center"/>
+          <colspec colname="geography" align="center"/>
+          <colspec colname="25D" align="center"/>
+          <colspec colname="Curves" align="center"/>
+          <colspec colname="SQLMM" align="center"/>
+          <colspec colname="PS" align="center"/>
+          <colspec colname="T" align="center"/>
+          <thead>
+            <row>
+              <entry>Function</entry>
+              <entry>geom</entry>
+              <entry>geog</entry>
+              <entry>2.5D</entry>
+              <entry>Curves</entry>
+              <entry>SQL MM</entry>
+              <entry>PS</entry>
+              <entry>T</entry>
+            </row>
+          </thead>
+
+          &table_body_function_support_matrix;
+        </tgroup>
+      </informaltable>
+    </para>
+  </section>
+
+  <section xml:id="NewFunctions">
+    <title>New, Enhanced or changed PostGIS Functions</title>
+    &list_new_functions;
+  </section>
+</chapter>

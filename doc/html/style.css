@@ -31,7 +31,9 @@ div.navfooter {
     color: white;
 }
 
-
+.remark {
+    background: none;
+}
 
 /* Phone width */
 @media (max-width: 40em) {
@@ -124,6 +126,12 @@ h5 {
 }
 table, td {
     border-collapse: collapse;
+}
+ul.toc {
+    padding-left: 0;
+}
+ul.toc li {
+    list-style-type: none;
 }
 
 
@@ -253,9 +261,7 @@ tr.question td {
 .caption p {
     font-style: italic;
 }
-.remark {
-    background: #ff0;
-}
+
 .equation {
     font-style: italic;
 }

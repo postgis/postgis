@@ -232,11 +232,11 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 	{
 		pa1->maxpoints = ncap > pa1->maxpoints*2 ?
 		                 ncap : pa1->maxpoints*2;
-		pa1->serialized_pointlist = lwrealloc(pa1->serialized_pointlist, ptsize * pa1->maxpoints);
+		pa1->serialized_pointlist = lwrealloc(pa1->serialized_pointlist, (size_t)ptsize * pa1->maxpoints);
 	}
 
 	memcpy(getPoint_internal(pa1, pa1->npoints),
-	       getPoint_internal(pa2, poff), ptsize * npoints);
+	       getPoint_internal(pa2, poff), (size_t)ptsize * npoints);
 
 	pa1->npoints = ncap;
 
@@ -497,6 +497,27 @@ ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
 	return LW_TRUE;
 }
 
+char
+ptarray_same2d(const POINTARRAY *pa1, const POINTARRAY *pa2)
+{
+	uint32_t i;
+
+	if ( FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags) ) return LW_FALSE;
+	LWDEBUG(5,"dimensions are the same");
+
+	if ( pa1->npoints != pa2->npoints ) return LW_FALSE;
+	LWDEBUG(5,"npoints are the same");
+
+	for (i=0; i<pa1->npoints; i++)
+	{
+		if ( memcmp(getPoint_internal(pa1, i), getPoint_internal(pa2, i), sizeof(POINT2D)) )
+			return LW_FALSE;
+		LWDEBUGF(5,"point #%d is the same",i);
+	}
+
+	return LW_TRUE;
+}
+
 POINTARRAY *
 ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdims, uint32_t where)
 {
@@ -509,7 +530,7 @@ ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdims, uint32_t where)
 
 	if ( pdims < 2 || pdims > 4 )
 	{
-		lwerror("ptarray_addPoint: point dimension out of range (%d)",
+		lwerror("ptarray_addPoint: point dimension out of range (%zu)",
 		        pdims);
 		return NULL;
 	}
@@ -557,20 +578,8 @@ ptarray_removePoint(POINTARRAY *pa, uint32_t which)
 
 	LWDEBUGF(3, "pa %x which %d", pa, which);
 
-#if PARANOIA_LEVEL > 0
-	if ( which > pa->npoints-1 )
-	{
-		lwerror("%s [%d] offset (%d) out of range (%d..%d)", __FILE__, __LINE__,
-		        which, 0, pa->npoints-1);
-		return NULL;
-	}
-
-	if ( pa->npoints < 3 )
-	{
-		lwerror("%s [%d] can't remove a point from a 2-vertex POINTARRAY", __FILE__, __LINE__);
-		return NULL;
-	}
-#endif
+	assert(which <= pa->npoints-1);
+	assert(pa->npoints >= 3);
 
 	ret = ptarray_construct(FLAGS_GET_Z(pa->flags),
 	                        FLAGS_GET_M(pa->flags), pa->npoints-1);
@@ -725,8 +734,10 @@ ptarray_is_closed_z(const POINTARRAY *in)
 }
 
 /**
-* Return 1 if the point is inside the POINTARRAY, -1 if it is outside,
-* and 0 if it is on the boundary.
+* Return LW_INSIDE if the point is inside the POINTARRAY,
+* LW_OUTSIDE if it is outside, and LW_BOUNDARY if it is on
+* the boundary.
+* LW_INSIDE == 1, LW_BOUNDARY == 0, LW_OUTSIDE == -1
 */
 int
 ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
@@ -734,6 +745,12 @@ ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 	return ptarray_contains_point_partial(pa, pt, LW_TRUE, NULL);
 }
 
+
+/*
+ * The following is based on the "Fast Winding Number Inclusion of a Point
+ * in a Polygon" algorithm by Dan Sunday.
+ * http://softsurfer.com/Archive/algorithm_0103/algorithm_0103.htm#Winding%20Number
+ */
 int
 ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int check_closed, int *winding_number)
 {
@@ -1579,7 +1596,7 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 
 /* Out of the points in pa [itfist .. itlast], finds the one that's farthest away from
  * the segment determined by pts[itfist] and pts[itlast].
- * Returns itfirst if no point was found futher away than max_distance_sqr
+ * Returns itfirst if no point was found further away than max_distance_sqr
  */
 static uint32_t
 ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t it_first, uint32_t it_last, double max_distance_sqr)
@@ -1668,7 +1685,11 @@ ptarray_simplify_in_place_tolerance0(POINTARRAY *pa)
 		double dot_ac_ab = ca_x * ba_x + ca_y * ba_y;
 		double s_numerator = ca_x * ba_y - ca_y * ba_x;
 
-		if (dot_ac_ab < 0.0 || dot_ac_ab > ab_length_sqr || s_numerator != 0)
+		if (p2d_same(kept_pt, next_pt) ||
+			dot_ac_ab < 0.0 ||
+			dot_ac_ab > ab_length_sqr ||
+			s_numerator != 0)
+
 		{
 			kept_it++;
 			kept_pt = curr_pt;
@@ -2109,9 +2130,14 @@ ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
 		}
 
 		/* Skip duplicates */
-		if (p_out && p_out->x == x && p_out->y == y && (ndims > 2 ? p_out->z == z : 1) &&
+		if (p_out &&
+		    p_out->x == x &&
+		    p_out->y == y &&
+		    (ndims > 2 ? p_out->z == z : 1) &&
 		    (ndims > 3 ? p_out->m == m : 1))
+		{
 			continue;
+		}
 
 		/* Write rounded values into the next available point */
 		p_out = (POINT4D *)(getPoint_internal(pa, j++));
@@ -2193,12 +2219,12 @@ ptarray_scroll_in_place(POINTARRAY *pa, const POINT4D *pt)
 	/* TODO: reduce allocations */
 	tmp = ptarray_construct(FLAGS_GET_Z(pa->flags), FLAGS_GET_M(pa->flags), pa->npoints);
 
-	bzero(getPoint_internal(tmp, 0), ptsize * pa->npoints);
+	bzero(getPoint_internal(tmp, 0), (size_t)ptsize * pa->npoints);
 	/* Copy the block from found point to last point into the output array */
 	memcpy(
 		getPoint_internal(tmp, 0),
 		getPoint_internal(pa, it),
-		ptsize * ( pa->npoints - it )
+		(size_t)ptsize * ( pa->npoints - it )
 	);
 
 	/* Copy the block from second point to the found point into the last portion of the
@@ -2206,14 +2232,14 @@ ptarray_scroll_in_place(POINTARRAY *pa, const POINT4D *pt)
 	memcpy(
 		getPoint_internal(tmp, pa->npoints - it),
 		getPoint_internal(pa, 1),
-		ptsize * ( it )
+		(size_t)ptsize * ( it )
 	);
 
 	/* Copy the resulting pointarray back to source one */
 	memcpy(
 		getPoint_internal(pa, 0),
 		getPoint_internal(tmp, 0),
-		ptsize * ( pa->npoints )
+		(size_t)ptsize * ( pa->npoints )
 	);
 
 	ptarray_free(tmp);

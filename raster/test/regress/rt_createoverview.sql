@@ -78,7 +78,7 @@ SET search_path to oschm,public;
 -- create overview with schema in search_path
 SELECT ST_CreateOverview('res1', 'r', 4)::text = 'o_4_res1';
 
--- Create overview for table in public schema with explict path
+-- Create overview for table in public schema with explicit path
 -- at same factor of schema table
 SELECT ST_CreateOverview('public.res1', 'r', 8)::text = 'public.o_8_res1';
 

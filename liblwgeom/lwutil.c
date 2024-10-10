@@ -46,13 +46,13 @@ lwreallocator lwrealloc_var = default_reallocator;
 lwfreeor lwfree_var = default_freeor;
 
 /* Default reporters */
-static void default_noticereporter(const char *fmt, va_list ap);
-static void default_errorreporter(const char *fmt, va_list ap);
+static void default_noticereporter(const char *fmt, va_list ap) __attribute__ ((format (printf, 1, 0)));
+static void default_errorreporter(const char *fmt, va_list ap) __attribute__ ((format (printf, 1, 0)));
 lwreporter lwnotice_var = default_noticereporter;
 lwreporter lwerror_var = default_errorreporter;
 
 /* Default logger */
-static void default_debuglogger(int level, const char *fmt, va_list ap);
+static void default_debuglogger(int level, const char *fmt, va_list ap) __attribute__ ((format (printf, 2, 0)));
 lwdebuglogger lwdebug_var = default_debuglogger;
 
 #define LW_MSG_MAXLEN 256
@@ -227,14 +227,20 @@ void *
 lwalloc(size_t size)
 {
 	void *mem = lwalloc_var(size);
-	LWDEBUGF(5, "lwalloc: %d@%p", size, mem);
+	return mem;
+}
+
+void *
+lwalloc0(size_t size)
+{
+	void *mem = lwalloc_var(size);
+	memset(mem, 0, size);
 	return mem;
 }
 
 void *
 lwrealloc(void *mem, size_t size)
 {
-	LWDEBUGF(5, "lwrealloc: %d@%p", size, mem);
 	return lwrealloc_var(mem, size);
 }
 
@@ -341,7 +347,7 @@ clamp_srid(int32_t srid)
 		}
 	} else if ( srid > SRID_MAXIMUM ) {
     newsrid = SRID_USER_MAXIMUM + 1 +
-      /* -1 is to reduce likelyhood of clashes */
+      /* -1 is to reduce likelihood of clashes */
       /* NOTE: must match implementation in postgis_restore.pl */
       ( srid % ( SRID_MAXIMUM - SRID_USER_MAXIMUM - 1 ) );
 		lwnotice("SRID value %d > SRID_MAXIMUM converted to %d", srid, newsrid);

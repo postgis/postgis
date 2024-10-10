@@ -9,7 +9,17 @@ export CXXFLAGS="-O2 -pipe  -fstack-protector-strong -Wl,-rpath=/usr/local/lib/g
 export CFLAGS="-Wall -Wmissing-prototypes -Wpointer-arith -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-trunc"
 export PATH=${PATH}:/usr/local:/usr/local/lib:/usr/local/bin
 sh autogen.sh
-./configure PKG_CONFIG=/usr/local/bin/pkgconf LDFLAGS="-L/usr/local/lib" --with-libiconv-prefix=/usr/local --without-gui --without-interrupt-tests --with-topology --with-raster --with-sfcgal=/usr/local/bin/sfcgal-config --with-address-standardizer --with-protobuf --with-wagyu
+./configure \
+  PKG_CONFIG=/usr/local/bin/pkgconf \
+  LDFLAGS="-L/usr/local/lib" \
+  --with-libiconv-prefix=/usr/local \
+  --without-gui \
+  --with-topology \
+  --with-raster \
+  --with-sfcgal=/usr/local/bin/sfcgal-config \
+  --with-address-standardizer \
+  --with-protobuf \
+  --with-wagyu
 
 #make distclean
 make

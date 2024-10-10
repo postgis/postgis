@@ -74,6 +74,7 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring);
 LWGEOM* wkt_parser_curvepolygon_finalize(LWGEOM *poly, char *dimensionality);
 LWGEOM* wkt_parser_compound_new(LWGEOM *element);
 LWGEOM* wkt_parser_compound_add_geom(LWGEOM *col, LWGEOM *geom);
+LWGEOM* wkt_parser_compound_finalize(LWGEOM *col, char *dimensionality);
 LWGEOM* wkt_parser_collection_new(LWGEOM *geom);
 LWGEOM* wkt_parser_collection_add_geom(LWGEOM *col, LWGEOM *geom);
 LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *col, char *dimensionality);

@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
- <sect1 id="Exceptional_Functions">
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Exceptional_Functions">
 	<title>Exceptional Functions</title>
 	<para>These functions are rarely used functions that should only be used if your data is corrupted in someway.  They are used for troubleshooting corruption
 		and also fixing things that should under normal circumstances, never happen.</para>
 
-	<refentry id="PostGIS_AddBBox">
+	<refentry xml:id="PostGIS_AddBBox">
 		  <refnamediv>
 			<refname>PostGIS_AddBBox</refname>
 
@@ -29,7 +29,7 @@
 
 			<note>
 			  <para>Bounding boxes are automatically added to geometries so in general this is not needed
-				unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes.  Then you need to drop the old and readd.</para>
+				unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes.  Then you need to drop the old and re-add.</para>
 			</note>
 
 			<para>&curve_support;</para>
@@ -48,11 +48,11 @@
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="PostGIS_DropBBox" />, <xref linkend="PostGIS_HasBBox" /></para>
+			<para><xref linkend="PostGIS_DropBBox"/>, <xref linkend="PostGIS_HasBBox"/></para>
 		  </refsection>
 	</refentry>
 
-	<refentry id="PostGIS_DropBBox">
+	<refentry xml:id="PostGIS_DropBBox">
 		  <refnamediv>
 			<refname>PostGIS_DropBBox</refname>
 
@@ -78,8 +78,8 @@
 			<note>
 			  <para>Bounding boxes are automatically added to geometries and improve speed of queries so in general this is not needed
 				unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes.
-				Then you need to drop the old and readd.  This kind of corruption has been observed in 8.3-8.3.6 series whereby cached bboxes were not always recalculated when a geometry changed and upgrading to a newer version without a dump reload will not
-				correct already corrupted boxes.  So one can manually correct using below and readd the bbox or do a dump reload.</para>
+				Then you need to drop the old and re-add.  This kind of corruption has been observed in 8.3-8.3.6 series whereby cached bboxes were not always recalculated when a geometry changed and upgrading to a newer version without a dump reload will not
+				correct already corrupted boxes.  So one can manually correct using below and re-add the bbox or do a dump reload.</para>
 			</note>
 
 			<para>&curve_support;</para>
@@ -108,12 +108,12 @@
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="PostGIS_AddBBox" />, <xref linkend="PostGIS_HasBBox" />, <xref linkend="Box2D" /></para>
+			<para><xref linkend="PostGIS_AddBBox"/>, <xref linkend="PostGIS_HasBBox"/>, <xref linkend="Box2D"/></para>
 		  </refsection>
 	</refentry>
 
 
-	<refentry id="PostGIS_HasBBox">
+	<refentry xml:id="PostGIS_HasBBox">
 	  <refnamediv>
 		<refname>PostGIS_HasBBox</refname>
 
@@ -133,7 +133,7 @@
 		<title>Description</title>
 
 		<para>Returns TRUE if the bbox of this geometry is cached, FALSE
-				otherwise. Use <xref linkend="PostGIS_AddBBox" /> and <xref linkend="PostGIS_DropBBox" /> to control caching.</para>
+				otherwise. Use <xref linkend="PostGIS_AddBBox"/> and <xref linkend="PostGIS_DropBBox"/> to control caching.</para>
 
 		<para>&curve_support;</para>
 	  </refsection>
@@ -150,8 +150,8 @@ FROM sometable WHERE PostGIS_HasBBox(geom) = false;</programlisting>
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_AddBBox" />, <xref linkend="PostGIS_DropBBox" /></para>
+		<para><xref linkend="PostGIS_AddBBox"/>, <xref linkend="PostGIS_DropBBox"/></para>
 	  </refsection>
 	</refentry>
 
- </sect1>
+ </section>

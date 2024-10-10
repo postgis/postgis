@@ -300,3 +300,22 @@ SELECT 'valid curve 6', encode(ST_AsBinary(ST_GeomFromText('CURVEPOLYGON(COMPOUN
 SELECT 'valid curve 7', encode(ST_AsBinary(ST_GeomFromText('CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),(4 3, 4 5, 1 4, 0 0)), (1.7 1, 1.4 0.4, 1.7 1) )'),'ndr'),'hex');
 SELECT 'valid curve 8', encode(ST_AsBinary(ST_GeomFromText('CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),(4 3, 0 0)), CIRCULARSTRING(1.7 1, 1.4 0.4, 1.7 1) )'),'ndr'),'hex');
 SELECT 'null response', ST_NumPoints(ST_GeomFromEWKT('CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),(4 3, 4 5, 1 4, 0 0)), CIRCULARSTRING(1.7 1, 1.4 0.4, 1.7 1) )'));
+
+-- https://trac.osgeo.org/postgis/ticket/5361
+WITH f(geom) AS (
+SELECT
+  'CURVEPOLYGON(COMPOUNDCURVE(
+    LINESTRING(2 2, 2.5 2.5),
+    CIRCULARSTRING(2.5 2.5, 4.5 2.5, 3.5 3.5),
+    LINESTRING(3.5 3.5, 2.5 4.5, 3 5, 2 2)),
+    LINESTRING(4 4, 4 5, 5 4, 4 4)
+    )'::geometry AS geom
+)
+SELECT 'curvepolygon accessors 01',
+  ST_NumGeometries(geom) AS num_geoms,
+  ST_NumInteriorRings(geom) AS num_irings,
+  ST_GeometryType(ST_GeometryN(geom,1)) AS geometryn_1,
+  ST_GeometryN(geom,2) AS geometryn_2,
+  ST_GeometryType(ST_InteriorRingN(geom, 1)) AS iringn_1,
+  ST_GeometryType(ST_ExteriorRing(geom)) AS exringn
+FROM f;

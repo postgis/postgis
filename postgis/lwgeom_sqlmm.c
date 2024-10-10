@@ -148,6 +148,36 @@ Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(ret);
 }
 
+PG_FUNCTION_INFO_V1(ST_NumCurves);
+Datum ST_NumCurves(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWCOMPOUND *lwcmp = lwgeom_as_lwcompound(lwgeom_from_gserialized(geom));
+	if (!lwcmp)
+		PG_RETURN_NULL();
+
+	PG_RETURN_INT32(lwcompound_num_curves(lwcmp));
+}
+
+PG_FUNCTION_INFO_V1(ST_CurveN);
+Datum ST_CurveN(PG_FUNCTION_ARGS)
+{
+	LWGEOM *subgeom;
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *ret = NULL;
+	int index = PG_GETARG_INT32(1);
+	LWCOMPOUND *lwcmp = lwgeom_as_lwcompound(lwgeom_from_gserialized(geom));
+	if (!lwcmp)
+		PG_RETURN_NULL();
+	if (index < 1 || (uint32_t)index > lwcmp->ngeoms)
+		PG_RETURN_NULL();
+	subgeom = lwgeom_clone(lwcollection_getsubcurve(lwcmp, index-1));
+	ret = geometry_serialize(subgeom);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(ret);
+}
+
+
 /*******************************************************************************
  * End PG_FUNCTIONs
  ******************************************************************************/

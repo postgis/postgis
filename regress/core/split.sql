@@ -107,4 +107,11 @@ select '86', ST_AsEWKT(ST_Split(
 select '87', ST_AsEWKT(ST_Split('SRID=4326;LINESTRING EMPTY', 'SRID=4326;POINT(0 1)'));
 
 
+-- https://trac.osgeo.org/postgis/ticket/5635 (split by nan input)
+SELECT '#5635a', ST_Split('LINESTRING Z (1 2 NaN,3 4 10,5 6 NaN)'::geometry
+					,'MULTIPOINT(EMPTY,2 1,2 4, 4 5)'::geometry);
+
+-- https://trac.osgeo.org/postgis/ticket/5635 (split by nan blade)
+SELECT '#5635b', ST_Split('LINESTRING Z (1 2 1,3 4 10,5 6 3)'::geometry
+					,'MULTIPOINT(1 NaN,2 1,2 4, 4 5)'::geometry);
 -- TODO: split line by collapsed line

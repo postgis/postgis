@@ -19,13 +19,13 @@ Adding new languages implies (relative to doc/ dir):
   - Adding the language to the `translations` variable
     in Makefile.in
 
-  - Re-running ./configure
+  - Adding a Makefile.in under the new language directory
+    (take the Makefile.in from another language as a template, change
+    the DOCSUFFIX)
+
+  - Re-running ./autogen.sh && ./configure
 
   - Running `make update-po`
-
-  - Adding a Makefile under the new language directory
-    (take the Makefile from another language as a template,
-    and only change the DOCSUFFIX)
 
   - Check the new language works:
     make -C po/<newlanguage>
@@ -43,7 +43,7 @@ Translations made via Weblate will automatically be pushed
 to the master branch of the official repository.
 
 Translation directly pushed to the master branch of the
-official reporitory will be automatically pulled by Weblate,
+official repository will be automatically pulled by Weblate,
 as well as changes to the templates (.pot files).
 Pulling is triggered by a webhook, see
 https://git.osgeo.org/gitea/postgis/postgis/settings/hooks

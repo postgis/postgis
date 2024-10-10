@@ -456,7 +456,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
 		sp.precision_m = PG_GETARG_INT32(3);
 
-	/* We don't permit ids for single geoemtries */
+	/* We don't permit ids for single geometries */
 	variant = variant & ~TWKB_ID;
 
 	/* If user wants registered twkb sizes */

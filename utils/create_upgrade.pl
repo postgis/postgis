@@ -4,7 +4,7 @@
 # PostGIS - Spatial Types for PostgreSQL
 # http://postgis.net
 #
-# Copyright (C) 2014-2021 Sandro Santilli <strk@kbt.io>
+# Copyright (C) 2014-2023 Sandro Santilli <strk@kbt.io>
 # Copyright (C) 2009-2010 Paul Ramsey <pramsey@opengeo.org>
 # Copyright (C) 2005 Refractions Research Inc.
 #
@@ -202,16 +202,79 @@ while(<INPUT>)
         {
             my ($name, $args, $ver) = @$replaced;
             $name = lc($name); # lowercase the name
+
+            # Check if there are argument names
+            my @argtypearray;
+            my @argnamearray;
+            my $numnamedargs = 0;
+            foreach my $a ( split ',', $args )
+            {
+                my $argtype = $a;
+
+                # NOTE: we should not consider OUT parameters
+                #print "-- ARG: [$argtype]\n";
+                if ( $argtype =~ / *([^ ]+)  *([^ ]+)/ ) {
+                    my $argname = $1;
+                    $argtype = $2;
+                    #print "-- ARGNAME: [$argname]\n";
+                    #print "-- ARGTYPE: [$argtype]\n";
+                    push @argnamearray, "'$argname'";
+                    $numnamedargs++;
+                }
+
+                push @argtypearray, "$argtype";
+            }
+            my $argnames = join ',', @argnamearray;
+            my $argtypes = join ',', @argtypearray;
+
             my $renamed = $name . '_deprecated_by_postgis_' . ${ver};
             my $replacement = "${renamed}(${args})";
             push @renamed_deprecated_functions, ${renamed};
             print <<"EOF";
--- Rename $name ( $args ) deprecated in PostGIS $ver
+-- Rename $name ( $args ) deprecated in PostGIS $ver, if needed
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 DECLARE
     detail TEXT;
+    argnames TEXT[];
 BEGIN
+
+    -- Check if the deprecated function exists
+    BEGIN
+
+        SELECT proargnames
+        FROM pg_catalog.pg_proc
+        WHERE oid = '$name($argtypes)'::regprocedure
+        INTO argnames;
+
+EOF
+            # Check for argument names match, if any argument name
+            # was given in the Replaces comment
+            if ( $numnamedargs )
+            {
+                print <<"EOF";
+        -- Check if the deprecated function has the expected $numnamedargs argument names
+        IF argnames[1:$numnamedargs] != ARRAY[$argnames]::text[]
+        THEN
+            RAISE DEBUG
+                'Function $name($argtypes) exist but has argnames % (not %)',
+                argnames, ARRAY[$argnames];
+            RETURN; -- nothing to do
+        END IF;
+EOF
+            }
+            print <<"EOF";
+
+    EXCEPTION
+    WHEN undefined_function THEN
+        RAISE DEBUG 'Replaced function $name($argtypes) does not exist';
+        RETURN; -- nothing to do
+    WHEN OTHERS THEN
+        GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
+        RAISE EXCEPTION 'Checking if replaced function $name($args) exists got % (%)', SQLERRM, SQLSTATE
+            USING DETAIL = detail;
+    END;
+
     -- Rename the replaced function, to avoid ambiguities.
     -- The renamed function will eventually be drop.
     BEGIN
@@ -602,173 +665,6 @@ EOF
 
     $comment = '';
 }
-
-# If any deprecated function still exist, drop it now
-my $deprecated_names = '{' . ( join ',', @renamed_deprecated_functions) . '}';
-print <<"EOF";
--- Drop deprecated functions if possible
-DO LANGUAGE 'plpgsql'
-\$postgis_proc_upgrade\$
-DECLARE
-    deprecated_functions regprocedure[];
-    new_name TEXT;
-    rewrote_as_wrapper BOOLEAN;
-    rec RECORD;
-    extrec RECORD;
-    procrec RECORD;
-    sql TEXT;
-    detail TEXT;
-    hint TEXT;
-BEGIN
-    -- Fetch a list of deprecated functions
-
-    SELECT array_agg(oid::regprocedure)
-    FROM pg_catalog.pg_proc
-    WHERE proname = ANY ('${deprecated_names}'::name[])
-    INTO deprecated_functions;
-
-    RAISE DEBUG 'Handling deprecated functions: %', deprecated_functions;
-
---    -- Rewrite views using deprecated functions
---    -- to improve the odds of being able to drop them
---
---    FOR rec IN
---        SELECT n.nspname AS schemaname,
---            c.relname AS viewname,
---            pg_catalog.pg_get_userbyid(c.relowner) AS viewowner,
---            pg_catalog.pg_get_viewdef(c.oid) AS definition,
---            CASE
---                WHEN 'check_option=cascaded' = ANY (c.reloptions) THEN 'WITH CASCADED CHECK OPTION'
---                WHEN 'check_option=local' = ANY (c.reloptions) THEN 'WITH LOCAL CHECK OPTION'
---                ELSE ''
---            END::text AS check_option
---        FROM pg_catalog.pg_class c
---        LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
---        WHERE c.relkind = 'v'
---        AND pg_catalog.pg_get_viewdef(c.oid) ~ 'deprecated_by_postgis'
---    LOOP
---        sql := pg_catalog.format('CREATE OR REPLACE VIEW %I.%I AS %s %s',
---            rec.schemaname,
---            rec.viewname,
---            pg_catalog.regexp_replace(rec.definition, '_deprecated_by_postgis_[^(]*', '', 'g'),
---            rec.check_option
---        );
---        RAISE NOTICE 'Updating view % to not use deprecated signatures', rec.viewname;
---        BEGIN
---            EXECUTE sql;
---        EXCEPTION
---        WHEN OTHERS THEN
---                GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
---                RAISE WARNING 'Could not rewrite view % using deprecated functions', rec.viewname
---                        USING DETAIL = pg_catalog.format('%s: %s', SQLERRM, detail);
---        END;
---    END LOOP;
-
-    -- Try to drop all deprecated functions, or rewrite those
-    -- who cannot be drop and rewrite them in SQL
-
-    FOR rec IN SELECT pg_catalog.unnest(deprecated_functions) as proc
-    LOOP --{
-
-        RAISE DEBUG 'Handling deprecated function %', rec.proc;
-
-        new_name := pg_catalog.regexp_replace(
-            rec.proc::text,
-            '_deprecated_by_postgis[^(]*\\(.*',
-            ''
-        );
-
-        sql := pg_catalog.format('DROP FUNCTION %s', rec.proc);
-        --RAISE DEBUG 'SQL: %', sql;
-        BEGIN
-            EXECUTE sql;
-        EXCEPTION
-        WHEN OTHERS THEN
-            hint = 'Resolve the issue';
-            GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
-            IF detail LIKE '%view % depends%' THEN
-                hint = pg_catalog.format(
-                    'Replace the view changing all occurrences of %s in its definition with %s',
-                    rec.proc,
-                    new_name
-                );
-            END IF;
-            hint = hint || ' and upgrade again';
-
-            RAISE WARNING 'Deprecated function % left behind: %',
-                rec.proc, SQLERRM
-            USING DETAIL = detail, HINT = hint;
-
-            --
-            -- Try to rewrite the function as an SQL WRAPPER
-            -- {
-            SELECT pg_get_functiondef(oid) def, pronargs
-            FROM pg_catalog.pg_proc WHERE oid = rec.proc
-            INTO procrec;
-            --
-            -- TODO: don't even try if it's an aggregate or windowing
-            --       function (procrec.prokind)
-            -- TODO: don't even try if it's a scripting language function
-            --       function (procrec.prokind)
-            --
-            -- Force LANGUAGE to be SQL
-            sql := pg_catalog.regexp_replace(procrec.def, 'LANGUAGE [^ \n]*', 'LANGUAGE sql');
-            --RAISE DEBUG 'SQL (LANGUAGE): %', sql;
-            -- Change body to be a wrapper
-            sql := pg_catalog.regexp_replace(
-                sql,
-                -- Find a stricted match here ?
-                'AS .*',
-                pg_catalog.format(
-                    -- TODO: have the function raise a warning too ?
-                    'AS \$\$ SELECT %s(%s) \$\$',
-                    new_name,
-                    (
-                        SELECT array_to_string(
-                            array_agg('\$' || x),
-                            ','
-                        )
-                        FROM generate_series(1, procrec.pronargs) x
-                    )
-                )
-            );
-            RAISE DEBUG 'SQL: %', sql;
-            rewrote_as_wrapper := false;
-            BEGIN
-                EXECUTE sql;
-                rewrote_as_wrapper := true;
-            EXCEPTION
-            WHEN OTHERS THEN
-                RAISE WARNING
-                    'Deprecated function % could not be rewritten as a wrapper: % (%)',
-                    rec.proc, SQLERRM, SQLSTATE;
-            END;
-            --
-            --}
-
-
-            -- Drop the function from any extension it is part of
-            -- so dump/reloads still work
-            FOR extrec IN
-                SELECT e.extname
-                FROM
-                    pg_catalog.pg_extension e,
-                    pg_catalog.pg_depend d
-                WHERE
-                    d.refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass AND
-                    d.refobjid = e.oid AND
-                    d.classid = 'pg_catalog.pg_proc'::pg_catalog.regclass AND
-                    d.objid = rec.proc::oid
-            LOOP
-                RAISE DEBUG 'Unpackaging % from extension %', rec.proc, extrec.extname;
-                sql := pg_catalog.format('ALTER EXTENSION %I DROP FUNCTION %s', extrec.extname, rec.proc);
-                EXECUTE sql;
-            END LOOP;
-        END;
-    END LOOP; --}
-END
-\$postgis_proc_upgrade\$;
-EOF
 
 close(INPUT);
 

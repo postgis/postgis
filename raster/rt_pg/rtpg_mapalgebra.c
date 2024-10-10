@@ -114,7 +114,7 @@ struct rtpg_nmapalgebra_arg_t {
 
 	int distance[2]; /* distance in X and Y axis */
 
-	rt_extenttype extenttype; /* ouput raster's extent type */
+	rt_extenttype extenttype; /* output raster's extent type */
 	rt_pgraster *pgcextent; /* custom extent of type rt_pgraster */
 	rt_raster cextent; /* custom extent of type rt_raster */
         rt_mask mask; /* mask for the nmapalgebra operation */
@@ -122,7 +122,7 @@ struct rtpg_nmapalgebra_arg_t {
 	rtpg_nmapalgebra_callback_arg	callback;
 };
 
-static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init() {
+static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init(void) {
 	rtpg_nmapalgebra_arg arg = NULL;
 
 	arg = palloc(sizeof(struct rtpg_nmapalgebra_arg_t));
@@ -1178,6 +1178,11 @@ static int rtpg_nmapalgebraexpr_callback(
 				idx = callback->expr[id].spi_argpos[i];
 				if (idx < 1) continue;
 				idx--; /* 1-based now 0-based */
+
+				if (arg->rasters == 1 && i > 7) {
+					elog(ERROR, "rtpg_nmapalgebraexpr_callback: rast2 argument specified in single-raster invocation");
+					return 0;
+				}
 
 				switch (i) {
 					/* [rast.x] */
@@ -2933,7 +2938,7 @@ struct rtpg_clip_arg_t {
 	rtpg_clip_band band;
 };
 
-static rtpg_clip_arg rtpg_clip_arg_init() {
+static rtpg_clip_arg rtpg_clip_arg_init(void) {
 	rtpg_clip_arg arg = NULL;
 
 	arg = palloc(sizeof(struct rtpg_clip_arg_t));
@@ -3013,6 +3018,10 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	rt_band output_band = NULL;
 	double value;
 	int isnodata;
+	/** Used to send to GDAL if ALL_TOUCHED rasterization is requested **/
+	char **options = NULL;
+	/** How many options we have currently.  Right now we'll have at most 1, but that could change in future **/
+	int options_len = 0;
 
 	POSTGIS_RT_DEBUG(3, "Starting...");
 
@@ -3284,6 +3293,20 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	wkb = lwgeom_to_wkb_varlena(geom, WKB_SFSQL);
 	lwgeom_free(geom);
 
+	/* we want to mark all pixels that are inside or touching the geometry - touched (5) */
+	if (!PG_ARGISNULL(5) && PG_GETARG_BOOL(5) == TRUE){
+			options_len = options_len + 1;
+			options = (char **) palloc(sizeof(char *) * options_len);
+			options[options_len - 1] = palloc(sizeof(char*) * (strlen("ALL_TOUCHED=TRUE") + 1));
+		 	strcpy(options[options_len - 1], "ALL_TOUCHED=TRUE");
+	}
+
+	if (options_len) {
+		options_len++;
+		options = (char **) repalloc(options, sizeof(char *) * options_len);
+		options[options_len - 1] = NULL;
+	}
+
 	/* rasterize geometry */
 	arg->mask = rt_raster_gdal_rasterize((unsigned char *)wkb->data,
 					     LWSIZE_GET(wkb->size) - LWVARHDRSZ,
@@ -3304,9 +3327,12 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 					     &(gt[3]),
 					     &(gt[2]),
 					     &(gt[4]),
-					     NULL);
+					     options);
 
 	pfree(wkb);
+
+	if (options_len) pfree(options);
+
 	if (arg->mask == NULL) {
 		rtpg_clip_arg_destroy(arg);
 		PG_FREE_IF_COPY(pgraster, 0);
@@ -3993,7 +4019,7 @@ struct rtpg_colormap_arg_t {
 };
 
 static rtpg_colormap_arg
-rtpg_colormap_arg_init() {
+rtpg_colormap_arg_init(void) {
 	rtpg_colormap_arg arg = NULL;
 
 	arg = palloc(sizeof(struct rtpg_colormap_arg_t));
@@ -4746,7 +4772,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
             PG_RETURN_NULL();
         };
 
-        /* Execute the expresion into newval */
+        /* Execute the expression into newval */
         ret = SPI_execute(initexpr, FALSE, 0);
 
         if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
@@ -5946,8 +5972,8 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
             width, height);
 
     /* Allocate room for the neighborhood. */
-    neighborData = (Datum *)palloc(winwidth * winheight * sizeof(Datum));
-    neighborNulls = (bool *)palloc(winwidth * winheight * sizeof(bool));
+    neighborData = (Datum *)palloc(sizeof(Datum) * winwidth * winheight);
+    neighborNulls = (bool *)palloc(sizeof(bool) * winwidth * winheight);
 
     /* The dimensions of the neighborhood array, for creating a multi-dimensional array. */
     neighborDims[0] = winwidth;

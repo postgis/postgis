@@ -380,7 +380,7 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 			lwgeom_as_multi() only does a shallow clone internally
 			so input and output geometries may share memory
 			hence the deep clone of the output geometry for returning
-			is the only way to guarentee the memory isn't shared
+			is the only way to guarantee the memory isn't shared
 		*/
 		if (rt_raster_get_convex_hull(raster, &tmp) != ES_NONE) {
 			rterror("rt_raster_surface: Could not get convex hull of raster");
@@ -413,7 +413,7 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 			lwgeom_as_multi() only does a shallow clone internally
 			so input and output geometries may share memory
 			hence the deep clone of the output geometry for returning
-			is the only way to guarentee the memory isn't shared
+			is the only way to guarantee the memory isn't shared
 		*/
 		if (rt_raster_get_convex_hull(raster, &tmp) != ES_NONE) {
 			rterror("rt_raster_surface: Could not get convex hull of raster");
@@ -551,7 +551,7 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 				lwgeom_as_multi() only does a shallow clone internally
 				so input and output geometries may share memory
 				hence the deep clone of the output geometry for returning
-				is the only way to guarentee the memory isn't shared
+				is the only way to guarantee the memory isn't shared
 			*/
 			mpoly = lwgeom_as_multi(tmp);
 			clone = lwgeom_clone_deep(mpoly);

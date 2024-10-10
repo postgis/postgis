@@ -23,3 +23,6 @@ Select ST_AsText(g) as geometry, postgis_getbbox(g) AS box from geom;
 -- #5241
 SELECT '#5241' AS t, ST_AsText(ST_SnapToGrid( ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)', 4326),  20.1, 20.1, 20.1, 20.1));
 SELECT '#5241' AS t, ST_AsText(ST_SnapToGrid( ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)', 4326), 1, 1, 1, 1));
+
+-- #5448, test with input with repeated points
+SELECT '#5448', ST_AsText(ST_SnapToGrid('LINESTRING(0 0,1 1,1 1,1 1)'::geometry, 0.001), 3);

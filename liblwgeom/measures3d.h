@@ -74,34 +74,33 @@ int lw_dist3d_distribute_fast(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D 
 /*
 Brute force functions
 */
-int lw_dist3d_pt_ptarray(POINT3DZ *p, POINTARRAY *pa, DISTPTS3D *dl);
-int lw_dist3d_point_point(LWPOINT *point1, LWPOINT *point2, DISTPTS3D *dl);
-int lw_dist3d_point_line(LWPOINT *point, LWLINE *line, DISTPTS3D *dl);
-int lw_dist3d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS3D *dl);
-int lw_dist3d_point_tri(LWPOINT *point, LWTRIANGLE *tri, DISTPTS3D *dl);
+int lw_dist3d_pt_ptarray(const POINT3DZ *p, const POINTARRAY *pa, DISTPTS3D *dl);
+int lw_dist3d_point_point(const LWPOINT *point1, const LWPOINT *point2, DISTPTS3D *dl);
+int lw_dist3d_point_line(const LWPOINT *point, const LWLINE *line, DISTPTS3D *dl);
+int lw_dist3d_point_poly(const LWPOINT *point, const LWPOLY *poly, DISTPTS3D *dl);
+int lw_dist3d_point_tri(const LWPOINT *point, const LWTRIANGLE *tri, DISTPTS3D *dl);
 
-int lw_dist3d_line_line(LWLINE *line1, LWLINE *line2, DISTPTS3D *dl);
-int lw_dist3d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS3D *dl);
-int lw_dist3d_line_tri(LWLINE *line, LWTRIANGLE *tri, DISTPTS3D *dl);
+int lw_dist3d_line_line(const LWLINE *line1, const LWLINE *line2, DISTPTS3D *dl);
+int lw_dist3d_line_poly(const LWLINE *line, const LWPOLY *poly, DISTPTS3D *dl);
+int lw_dist3d_line_tri(const LWLINE *line, const LWTRIANGLE *tri, DISTPTS3D *dl);
 
-int lw_dist3d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS3D *dl);
-int lw_dist3d_poly_tri(LWPOLY *poly, LWTRIANGLE *tri, DISTPTS3D *dl);
+int lw_dist3d_poly_poly(const LWPOLY *poly1, const LWPOLY *poly2, DISTPTS3D *dl);
+int lw_dist3d_poly_tri(const LWPOLY *poly, const LWTRIANGLE *tri, DISTPTS3D *dl);
 
-int lw_dist3d_tri_tri(LWTRIANGLE *tri1, LWTRIANGLE *tri2, DISTPTS3D *dl);
+int lw_dist3d_tri_tri(const LWTRIANGLE *tri1, const LWTRIANGLE *tri2, DISTPTS3D *dl);
 
-int lw_dist3d_pt_pt(POINT3DZ *p1, POINT3DZ *p2, DISTPTS3D *dl);
-int lw_dist3d_pt_seg(POINT3DZ *p, POINT3DZ *A, POINT3DZ *B, DISTPTS3D *dl);
-int lw_dist3d_pt_poly(POINT3DZ *p, LWPOLY *poly, PLANE3D *plane, POINT3DZ *projp, DISTPTS3D *dl);
-int lw_dist3d_pt_tri(POINT3DZ *p, LWTRIANGLE *tri, PLANE3D *plane, POINT3DZ *projp, DISTPTS3D *dl);
+int lw_dist3d_pt_pt(const POINT3DZ *p1, const POINT3DZ *p2, DISTPTS3D *dl);
+int lw_dist3d_pt_seg(const POINT3DZ *p, const POINT3DZ *A, const POINT3DZ *B, DISTPTS3D *dl);
+int lw_dist3d_pt_poly(const POINT3DZ *p, const LWPOLY *poly, PLANE3D *plane, POINT3DZ *projp, DISTPTS3D *dl);
+int lw_dist3d_pt_tri(const POINT3DZ *p, const LWTRIANGLE *tri, PLANE3D *plane, POINT3DZ *projp, DISTPTS3D *dl);
 
-int lw_dist3d_seg_seg(POINT3DZ *A, POINT3DZ *B, POINT3DZ *C, POINT3DZ *D, DISTPTS3D *dl);
+int lw_dist3d_seg_seg(const POINT3DZ *A, const POINT3DZ *B, const POINT3DZ *C, const POINT3DZ *D, DISTPTS3D *dl);
 
-int lw_dist3d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2, DISTPTS3D *dl);
-int lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, PLANE3D *plane, DISTPTS3D *dl);
-int lw_dist3d_ptarray_tri(POINTARRAY *pa, LWTRIANGLE *tri, PLANE3D *plane, DISTPTS3D *dl);
+int lw_dist3d_ptarray_ptarray(const POINTARRAY *l1, const POINTARRAY *l2, DISTPTS3D *dl);
+int lw_dist3d_ptarray_poly(const POINTARRAY *pa, const LWPOLY *poly, PLANE3D *plane, DISTPTS3D *dl);
+int lw_dist3d_ptarray_tri(const POINTARRAY *pa, const LWTRIANGLE *tri, PLANE3D *plane, DISTPTS3D *dl);
 
-double project_point_on_plane(POINT3DZ *p, PLANE3D *pl, POINT3DZ *p0);
-int define_plane(POINTARRAY *pa, PLANE3D *pl);
+int define_plane(const POINTARRAY *pa, PLANE3D *pl);
 int pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring, PLANE3D *plane);
 
 /*

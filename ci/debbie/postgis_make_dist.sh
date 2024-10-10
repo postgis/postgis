@@ -31,7 +31,6 @@ export newoutdir="postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${PO
 
 sh make_dist.sh
 export package=${newoutdir}.tar.gz
-md5sum ${package} > ${package}.md5
 echo "The package name is $package"
 
 cp $package $WEB_DIR

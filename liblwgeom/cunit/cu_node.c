@@ -30,33 +30,46 @@ static void test_lwgeom_node(void)
 	in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	out = lwgeom_node(in);
 	/* printf("%s\n", lwgeom_to_ewkt(out)); */
+	CU_ASSERT_FATAL(out != NULL);
 	CU_ASSERT(lwgeom_same(in, out));
 	lwgeom_free(out); lwgeom_free(in);
 
 	wkt = "MULTILINESTRING((0 0,0 5),(10 0, -10 5))";
 	in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	out = lwgeom_node(in);
+	CU_ASSERT_FATAL(out != NULL);
 	tmp = lwgeom_to_ewkt(out);
-	CU_ASSERT_STRING_EQUAL("MULTILINESTRING((0 2.5,-10 5),(0 0,0 2.5),(0 2.5,0 5),(10 0,0 2.5))", tmp)
+	ASSERT_STRING_EQUAL(tmp, "MULTILINESTRING((0 2.5,-10 5),(0 0,0 2.5),(0 2.5,0 5),(10 0,0 2.5))");
 	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
 
 	wkt = "MULTILINESTRING((0 0,5 5,10 0, 11 0, 20 0),(10 0, 12 0, 22 0))";
 	in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	out = lwgeom_node(in);
+	CU_ASSERT_FATAL(out != NULL);
 	tmp = lwgeom_to_ewkt(out);
 	/* printf("%s\n", tmp); */
-	CU_ASSERT_STRING_EQUAL("MULTILINESTRING((0 0,5 5,10 0),(10 0,11 0,12 0,20 0),(20 0,22 0))", tmp);
+	ASSERT_STRING_EQUAL(tmp, "MULTILINESTRING((0 0,5 5,10 0),(10 0,11 0,12 0,20 0),(20 0,22 0))");
 	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
 
 	wkt = "MULTILINESTRING((0 0,5 5,10 0, 11 0, 20 0),(22 0, 12 0, 10 0),(0 5, 5 0))";
 	in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	out = lwgeom_node(in);
+	CU_ASSERT_FATAL(out != NULL);
 	tmp = lwgeom_to_ewkt(out);
 	/* printf("%s\n", tmp); */
-	CU_ASSERT_STRING_EQUAL(
-"MULTILINESTRING((0 0,2.5 2.5),(0 5,2.5 2.5),(2.5 2.5,5 5,10 0),(10 0,11 0,12 0,20 0),(20 0,22 0),(2.5 2.5,5 0))",
-		tmp);
+	ASSERT_STRING_EQUAL(tmp,
+		"MULTILINESTRING((0 0,2.5 2.5),(0 5,2.5 2.5),(2.5 2.5,5 5,10 0),(10 0,11 0,12 0,20 0),(20 0,22 0),(2.5 2.5,5 0))"
+	);
 	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
+
+	/* See https://trac.osgeo.org/postgis/ticket/5685 */
+	wkt = "LINESTRING(0 0,0 0)";
+	in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
+	out = lwgeom_node(in);
+	/* printf("%s\n", lwgeom_to_ewkt(out)); */
+	CU_ASSERT_FATAL(out != NULL);
+	ASSERT_LWGEOM_EQUAL(in, out);
+	lwgeom_free(out); lwgeom_free(in);
 }
 
 static int

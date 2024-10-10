@@ -1,3 +1,6 @@
-DOCSUFFIX=-ja
 include @srcdir@/../Makefile.local
+DBLATEX_EXTRA_OPTIONS = -b xetex
+DOCSUFFIX=-ja
 srcdir=@srcdir@
+
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: texstyle.sty

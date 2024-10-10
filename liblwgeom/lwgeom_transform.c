@@ -28,7 +28,7 @@
 #include "lwgeom_log.h"
 #include <string.h>
 
-/** convert decimal degress to radians */
+/** convert decimal degrees to radians */
 static void
 to_rad(POINT4D *pt)
 {
@@ -36,7 +36,7 @@ to_rad(POINT4D *pt)
 	pt->y *= M_PI/180.0;
 }
 
-/** convert radians to decimal degress */
+/** convert radians to decimal degrees */
 static void
 to_dec(POINT4D *pt)
 {
@@ -206,6 +206,27 @@ lwgeom_transform_pipeline(LWGEOM *geom, const char* pipelinestr, bool is_forward
 }
 
 int
+box3d_transform(GBOX *gbox, LWPROJ *pj)
+{
+	POINT4D pt;
+	POINTARRAY *pa = ptarray_construct(0, 0, 4);
+	pt = (POINT4D){gbox->xmin, gbox->ymin, 0, 0};
+	ptarray_set_point4d(pa, 0, &pt);
+
+	pt = (POINT4D){gbox->xmax, gbox->ymin, 0, 0};
+	ptarray_set_point4d(pa, 1, &pt);
+
+	pt = (POINT4D){gbox->xmax, gbox->ymax, 0, 0};
+	ptarray_set_point4d(pa, 2, &pt);
+
+	pt = (POINT4D){gbox->xmin, gbox->ymax, 0, 0};
+	ptarray_set_point4d(pa, 3, &pt);
+
+	ptarray_transform(pa, pj);
+	return ptarray_calculate_gbox_cartesian(pa, gbox);
+}
+
+int
 ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 {
 	uint32_t i;
@@ -276,7 +297,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 
 		if (n_converted != n_points)
 		{
-			lwerror("ptarray_transform: converted (%d) != input (%d)", n_converted, n_points);
+			lwerror("ptarray_transform: converted (%zu) != input (%zu)", n_converted, n_points);
 			return LW_FAILURE;
 		}
 

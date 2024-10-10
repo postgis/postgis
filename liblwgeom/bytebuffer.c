@@ -65,7 +65,7 @@ bytebuffer_destroy_buffer(bytebuffer_t *s)
 }
 
 /**
-* If necessary, expand the bytebuffer_t internal buffer to accomodate the
+* If necessary, expand the bytebuffer_t internal buffer to accommodate the
 * specified additional size.
 */
 static inline void
@@ -296,7 +296,7 @@ bytebuffer_append_int(bytebuffer_t *buf, const int val, int swap)
 	/* Machine/request arch mismatch, so flip byte order */
 	if ( swap)
 	{
-		LWDEBUG(4,"Ok, let's do the swaping thing");
+		LWDEBUG(4,"Ok, let's do the swapping thing");
 		for ( i = 0; i < WKB_INT_SIZE; i++ )
 		{
 			*(buf->writecursor) = iptr[WKB_INT_SIZE - 1 - i];

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Berrie64 is a 64-bit Rasberry Pi Arm managed by Bruce Rindahl
+#Berrie64 is a 64-bit Raspberry Pi Arm managed by Bruce Rindahl
 #This is script to launch custom compiled PostgreSQL
 #export label=berrie64 #this is passed in via Jenkins
 SCRIPT=$(readlink -f "$0")

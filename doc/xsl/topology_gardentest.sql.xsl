@@ -173,7 +173,7 @@ CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, l
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />_output;
 CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMARY KEY, log_output xml);
 
-                <xsl:apply-templates select="/book/chapter[@id='Topology']" />
+                <xsl:apply-templates select="/db:book/db:chapter[@xml:id='Topology']" />
         </xsl:template>
 
 	<xsl:template match='chapter'>
@@ -283,10 +283,10 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 <!--End Test table creation, insert, drop  -->
 
 <!--Start test on operators  -->
-	<xsl:for-each select="sect1[contains(@id,'Operator') and not(contains($fnexclude,funcdef/function))]/refentry">
+	<xsl:for-each select="db:sect1[contains(@xml:id,'Operator') and not(contains($fnexclude,db:funcdef/db:function))]/db:refentry">
 		<xsl:sort select="@id"/>
-		<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
-			<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
+		<xsl:for-each select="db:refsynopsisdiv/db:funcsynopsis/db:funcprototype">
+			<xsl:variable name='fnname'><xsl:value-of select="db:funcdef/db:function"/></xsl:variable>
 			<xsl:variable name='fndef'><xsl:value-of select="." /></xsl:variable>
 			<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 			<!--Store first garden sql geometry from -->
@@ -336,19 +336,19 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 	</xsl:for-each>
 <!--End test on operators -->
 <!-- Start regular function checks excluding operators -->
-		<xsl:for-each select="sect1[not(contains(@id,'Operator'))]/refentry">
+		<xsl:for-each select="db:sect1[not(contains(@xml:id,'Operator'))]/db:refentry">
 		<xsl:sort select="@id"/>
 
-			<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
+			<xsl:for-each select="db:refsynopsisdiv/db:funcsynopsis/db:funcprototype">
 <!--Create dummy parameters to be used later -->
 				<xsl:variable name='fnfakeparams'><xsl:call-template name="replaceparams"><xsl:with-param name="func" select="." /></xsl:call-template></xsl:variable>
 				<xsl:variable name='fnargs'><xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template></xsl:variable>
-				<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
-				<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
-				<xsl:variable name='numparams'><xsl:value-of select="count(paramdef/parameter)" /></xsl:variable>
-				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') or contains(text(), 'bytea')]) + count(paramdef/parameter[contains(text(),'WKT')]) + count(paramdef/parameter[contains(text(),'geomgml')])" /></xsl:variable>
-				<xsl:variable name='numparamgeogs'><xsl:value-of select="count(paramdef/type[contains(text(),'geography')] )" /></xsl:variable>
-				<xsl:variable name='log_label'><xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)</xsl:variable>
+				<xsl:variable name='fnname'><xsl:value-of select="db:funcdef/db:function"/></xsl:variable>
+				<xsl:variable name='fndef'><xsl:value-of select="db:funcdef"/></xsl:variable>
+				<xsl:variable name='numparams'><xsl:value-of select="count(db:paramdef/parameter)" /></xsl:variable>
+				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(db:paramdef/db:type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') or contains(text(), 'bytea')]) + count(db:paramdef/parameter[contains(text(),'WKT')]) + count(db:paramdef/parameter[contains(text(),'geomgml')])" /></xsl:variable>
+				<xsl:variable name='numparamgeogs'><xsl:value-of select="count(db:paramdef/db:type[contains(text(),'geography')] )" /></xsl:variable>
+				<xsl:variable name='log_label'><xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnargs" />)</xsl:variable>
 
 				<xsl:variable name="geoftype">
 				  <!--Conditionally instantiate a value to be assigned to the variable -->
@@ -367,21 +367,21 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 				<!-- For each function prototype generate a test sql statement -->
 				<xsl:choose>
 <!--Test functions that take no arguments and take no geometries/geographies -->
-	<xsl:when test="($numparamgeoms = '0' and $numparamgeogs = '0') and not(contains($fnexclude,funcdef/function))">SELECT  'Starting <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
+	<xsl:when test="($numparamgeoms = '0' and $numparamgeogs = '0') and not(contains($fnexclude,db:funcdef/db:function))">SELECT  'Starting <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnargs" />)';
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, log_start, log_sql)
 			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" />','<xsl:value-of select="$fnname" />', clock_timestamp(),
 			  	    '<xsl:call-template name="escapesinglequotes">
- <xsl:with-param name="arg1">SELECT  <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnfakeparams" />) As output;</xsl:with-param></xsl:call-template>');
+ <xsl:with-param name="arg1">SELECT  <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnfakeparams" />) As output;</xsl:with-param></xsl:call-template>');
 
 BEGIN;
     <xsl:value-of select="$var_logresultsasxml" />
 	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
-SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
+SELECT  'Ending <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnargs" />)';
 	</xsl:when>
 <!--Start Test aggregate and unary functions for both geometry and geography -->
 <!-- put functions that take only one geometry/geography no need to cross with another geom collection, these are unary geom, aggregates, and so forth -->
-	<xsl:when test="($numparamgeoms = '1' or $numparamgeogs = '1')  and not(contains($fnexclude,funcdef/function))" >
+	<xsl:when test="($numparamgeoms = '1' or $numparamgeogs = '1')  and not(contains($fnexclude,db:funcdef/db:function))" >
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 		SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing';
 
@@ -400,7 +400,7 @@ COMMIT;
 	</xsl:when>
 
 <!--Functions more than 1 args not already covered this will cross every geometry type with every other -->
-	<xsl:when test="not(contains($fnexclude,funcdef/function))">
+	<xsl:when test="not(contains($fnexclude,db:funcdef/db:function))">
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 	<!--Store first garden sql geometry from -->
 			<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
@@ -457,7 +457,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 	<xsl:template name="replaceparams">
 		<xsl:param name="func" />
 		<xsl:for-each select="$func">
-			<xsl:for-each select="paramdef">
+			<xsl:for-each select="db:paramdef">
 				<xsl:choose>
 					<xsl:when test="contains(parameter, 'matrix') or contains(parameter, 'Matrix')">
 						<xsl:value-of select="$var_matrix" />
@@ -489,10 +489,10 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="(contains(parameter,'geomkml'))">
 						<xsl:text>ST_AsKML(foo1.the_geom)</xsl:text>
 					</xsl:when>
-					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
+					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/db:type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
 						<xsl:text>foo1.the_geom</xsl:text>
 					</xsl:when>
-					<xsl:when test="(type = 'geography' or type = 'geography ' or contains(type,'geography set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geography')]) = '1' )">
+					<xsl:when test="(type = 'geography' or type = 'geography ' or contains(type,'geography set')) and (position() = 1 or count($func/paramdef/db:type[contains(text(),'geography')]) = '1' )">
 						<xsl:text>geography(foo1.the_geom)</xsl:text>
 					</xsl:when>
 					<xsl:when test="contains(type,'box') or type = 'geometry' or type = 'geometry '">
@@ -501,7 +501,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="type = 'geography' or type = 'geography '">
 						<xsl:text>geography(foo2.the_geom)</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(type, 'geometry[]') and count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1'">
+					<xsl:when test="contains(type, 'geometry[]') and count($func/paramdef/db:type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1'">
 						ARRAY[foo1.the_geom]
 					</xsl:when>
 					<xsl:when test="contains(type, 'geometry[]')">
@@ -553,8 +553,8 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 	<xsl:template name="listparams">
 		<xsl:param name="func" />
 		<xsl:for-each select="$func">
-			<xsl:if test="count(paramdef/parameter) &gt; 0"> </xsl:if>
-			<xsl:for-each select="paramdef">
+			<xsl:if test="count(db:paramdef/parameter) &gt; 0"> </xsl:if>
+			<xsl:for-each select="db:paramdef">
 				<xsl:choose>
 					<xsl:when test="count(parameter) &gt; 0">
 						<xsl:value-of select="parameter" />

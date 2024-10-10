@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="SRS_Functions">
-    <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="SRS_Functions">
+    <title>Spatial Reference System Functions</title><info>
     <abstract>
   <para>These functions work with the Spatial Reference System of geometries
     as defined in the <varname>spatial_ref_sys</varname> table.</para>
    </abstract>
-    </sect1info>
+    </info>
 
-    <title>Spatial Reference System Functions</title>
 
-  <refentry id="ST_InverseTransformPipeline">
+
+  <refentry xml:id="ST_InverseTransformPipeline">
     <refnamediv>
     <refname>ST_InverseTransformPipeline</refname>
 
@@ -37,17 +37,17 @@
       using a defined coordinate transformation pipeline to go in the inverse direction.
       </para>
 
-      <para> Refer to <xref linkend="ST_TransformPipeline" /> for details on writing a transformation pipeline.</para>
+      <para> Refer to <xref linkend="ST_TransformPipeline"/> for details on writing a transformation pipeline.</para>
 
-    <para>Availability: 3.4.0</para>
+    <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
 
     <para>
     The SRID of the input geometry is ignored, and the SRID of the output geometry will be set to
     zero unless a value is provided via the optional <varname>to_srid</varname> parameter. When
-    using <xref linkend="ST_TransformPipeline" /> the pipeline is executed in a forward direction. Using
+    using <xref linkend="ST_TransformPipeline"/> the pipeline is executed in a forward direction. Using
     `ST_InverseTransformPipeline()` the pipeline is executed in the inverse direction.</para>
 
-    <para>Transforms using pipelines are a specialised version of <xref linkend="ST_Transform" />.
+    <para>Transforms using pipelines are a specialised version of <xref linkend="ST_Transform"/>.
     In most cases `ST_Transform` will choose the correct operations to convert between coordinate
     systems, and should be preferred.</para>
 
@@ -83,11 +83,11 @@ SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) A
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="ST_Transform" />, <xref linkend="ST_TransformPipeline" /></para>
+    <para><xref linkend="ST_Transform"/>, <xref linkend="ST_TransformPipeline"/></para>
     </refsection>
   </refentry>
 
-  <refentry id="ST_SetSRID">
+  <refentry xml:id="ST_SetSRID">
     <refnamediv>
     <refname>ST_SetSRID</refname>
 
@@ -141,12 +141,12 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
+    <para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_SRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
     </refsection>
 
   </refentry>
 
-  <refentry id="ST_SRID">
+  <refentry xml:id="ST_SRID">
     <refnamediv>
     <refname>ST_SRID</refname>
     <refpurpose>Returns the spatial reference identifier for a geometry.</refpurpose>
@@ -164,7 +164,7 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
     <refsection>
     <title>Description</title>
 
-    <para>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table. <xref linkend="spatial_ref_sys" /></para>
+    <para>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table. <xref linkend="spatial_ref_sys"/></para>
     <para><note><para>spatial_ref_sys
     table is a table that catalogs all spatial reference systems known to PostGIS and is used for transformations from one spatial
       reference system to another.  So verifying you have the right spatial reference system identifier is important if you plan to ever transform your geometries.</para></note></para>
@@ -185,11 +185,11 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" />, <xref linkend="RT_ST_SRID" />, <xref linkend="TG_ST_SRID" /></para>
+    <para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="RT_ST_SRID"/>, <xref linkend="TG_ST_SRID"/></para>
     </refsection>
   </refentry>
 
-  <refentry id="ST_Transform">
+  <refentry xml:id="ST_Transform">
     <refnamediv>
     <refname>ST_Transform</refname>
 
@@ -245,15 +245,15 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
       <varname>from_proj</varname>, input geometries must have a defined SRID.
     </para>
 
-    <para>ST_Transform is often confused with <xref linkend="ST_SetSRID" />.  ST_Transform actually changes the coordinates
+    <para>ST_Transform is often confused with <xref linkend="ST_SetSRID"/>.  ST_Transform actually changes the coordinates
     of a geometry from one spatial reference system to another, while ST_SetSRID() simply changes the SRID identifier of
     the geometry.</para>
 
     <para>ST_Transform automatically selects a suitable conversion pipeline given the source and target spatial
-    reference systems. To use a specific conversion method, use <xref linkend="ST_TransformPipeline" />.</para>
+    reference systems. To use a specific conversion method, use <xref linkend="ST_TransformPipeline"/>.</para>
 
     <note>
-      <para>Requires PostGIS be compiled with PROJ support.  Use <xref linkend="PostGIS_Full_Version" /> to confirm you have PROJ support compiled in.</para>
+      <para>Requires PostGIS be compiled with PROJ support.  Use <xref linkend="PostGIS_Full_Version"/> to confirm you have PROJ support compiled in.</para>
     </note>
 
     <note>
@@ -263,8 +263,8 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
 
     <note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
-    <para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
-    <para>Enhanced: 2.3.0 support for direct PROJ.4 text was introduced.</para>
+    <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+    <para role="enhanced" conformance="2.3.0">Enhanced: 2.3.0 support for direct PROJ.4 text was introduced.</para>
     <para>&sqlmm_compliant; SQL-MM 3: 5.1.6</para>
     <para>&curve_support;</para>
     <para>&P_support;</para>
@@ -351,11 +351,11 @@ CREATE INDEX idx_geom_26986_parcels
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" />, <xref linkend="UpdateGeometrySRID"/>, <xref linkend="ST_TransformPipeline" /></para>
+    <para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_SRID"/>, <xref linkend="UpdateGeometrySRID"/>, <xref linkend="ST_TransformPipeline"/></para>
     </refsection>
   </refentry>
 
-  <refentry id="ST_TransformPipeline">
+  <refentry xml:id="ST_TransformPipeline">
     <refnamediv>
     <refname>ST_TransformPipeline</refname>
 
@@ -409,15 +409,15 @@ CREATE INDEX idx_geom_26986_parcels
           </listitem>
         </itemizedlist>
     </para>
-    <para>Availability: 3.4.0</para>
+    <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
 
     <para>
     The SRID of the input geometry is ignored, and the SRID of the output geometry will be set to
     zero unless a value is provided via the optional <varname>to_srid</varname> parameter. When
     using `ST_TransformPipeline()` the pipeline is executed in a forward direction. Using
-   <xref linkend="ST_InverseTransformPipeline" /> the pipeline is executed in the inverse direction.</para>
+   <xref linkend="ST_InverseTransformPipeline"/> the pipeline is executed in the inverse direction.</para>
 
-    <para>Transforms using pipelines are a specialised version of <xref linkend="ST_Transform" />.
+    <para>Transforms using pipelines are a specialised version of <xref linkend="ST_Transform"/>.
     In most cases `ST_Transform` will choose the correct operations to convert between coordinate
     systems, and should be preferred.</para>
 
@@ -429,7 +429,7 @@ CREATE INDEX idx_geom_26986_parcels
     <programlisting>
 -- Forward direction
 SELECT ST_AsText(ST_TransformPipeline('SRID=4326;POINT(2 49)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::16031') AS utm_geom);
+  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS utm_geom;
 
                   utm_geom
 --------------------------------------------
@@ -485,8 +485,247 @@ SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="ST_Transform" />, <xref linkend="ST_InverseTransformPipeline" /></para>
+    <para><xref linkend="ST_Transform"/>, <xref linkend="ST_InverseTransformPipeline"/></para>
     </refsection>
   </refentry>
 
-  </sect1>
+
+  <refentry xml:id="postgis_srs_codes">
+    <refnamediv>
+    <refname>postgis_srs_codes</refname>
+
+    <refpurpose>Return the list of SRS codes associated with the given authority.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>setof text <function>postgis_srs_codes</function></funcdef>
+                <paramdef><type>text </type> <parameter>auth_name</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+      <para>Returns a set of all <varname>auth_srid</varname> for the given <varname>auth_name</varname>.</para>
+
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
+      <para>Proj version 6+</para>
+
+    </refsection>
+
+    <refsection>
+      <title>Examples</title>
+      <para>List the first ten codes associated with the EPSG authority.</para>
+      <programlisting>
+SELECT * FROM postgis_srs_codes('EPSG') LIMIT 10;
+
+ postgis_srs_codes
+-------------------
+ 2000
+ 20004
+ 20005
+ 20006
+ 20007
+ 20008
+ 20009
+ 2001
+ 20010
+ 20011
+    </programlisting>
+    </refsection>
+
+    <!-- Optionally add a "See Also" section -->
+    <refsection>
+    <title>See Also</title>
+    <para><xref linkend="postgis_srs"/>, <xref linkend="postgis_srs_all"/>, <xref linkend="postgis_srs_search"/></para>
+    </refsection>
+
+  </refentry>
+
+
+  <refentry xml:id="postgis_srs">
+    <refnamediv>
+    <refname>postgis_srs</refname>
+
+    <refpurpose>Return a metadata record for the requested authority and srid.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>setof record <function>postgis_srs</function></funcdef>
+                <paramdef><type>text </type> <parameter>auth_name</parameter></paramdef>
+                <paramdef><type>text </type> <parameter>auth_srid</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+      <para>Returns a metadata record for the requested <varname>auth_srid</varname> for the given <varname>auth_name</varname>. The record will have the <varname>auth_name</varname>, <varname>auth_srid</varname>, <varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</varname>, and the corners of the area of usage, <varname>point_sw</varname> and <varname>point_ne</varname>.</para>
+
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
+      <para>Proj version 6+</para>
+
+    </refsection>
+
+    <refsection>
+      <title>Examples</title>
+      <para>Get the metadata for EPSG:3005.</para>
+      <programlisting>
+SELECT * FROM postgis_srs('EPSG', '3005');
+
+auth_name | EPSG
+auth_srid | 3005
+srname    | NAD83 / BC Albers
+srtext    | PROJCS["NAD83 / BC Albers", ... ]]
+proj4text | +proj=aea +lat_0=45 +lon_0=-126 +lat_1=50 +lat_2=58.5 +x_0=1000000 +y_0=0 +datum=NAD83 +units=m +no_defs +type=crs
+point_sw  | 0101000020E6100000E17A14AE476161C00000000000204840
+point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40
+    </programlisting>
+    </refsection>
+
+    <!-- Optionally add a "See Also" section -->
+    <refsection>
+    <title>See Also</title>
+    <para><xref linkend="postgis_srs_codes"/>, <xref linkend="postgis_srs_all"/>, <xref linkend="postgis_srs_search"/></para>
+    </refsection>
+
+  </refentry>
+
+
+  <refentry xml:id="postgis_srs_all">
+    <refnamediv>
+    <refname>postgis_srs_all</refname>
+
+    <refpurpose>Return metadata records for every spatial reference system in the underlying Proj database.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>setof record <function>postgis_srs_all</function></funcdef>
+                <void/>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+      <para>Returns a set of all metadata records in the underlying Proj database. The records will have the <varname>auth_name</varname>, <varname>auth_srid</varname>, <varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</varname>, and the corners of the area of usage, <varname>point_sw</varname> and <varname>point_ne</varname>.</para>
+
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
+      <para>Proj version 6+</para>
+
+    </refsection>
+
+    <refsection>
+      <title>Examples</title>
+      <para>Get the first 10 metadata records from the Proj database.</para>
+      <programlisting>
+SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;
+
+ auth_name | auth_srid |                  srname
+-----------+-----------+------------------------------------------
+ EPSG      | 2000      | Anguilla 1957 / British West Indies Grid
+ EPSG      | 20004     | Pulkovo 1995 / Gauss-Kruger zone 4
+ EPSG      | 20005     | Pulkovo 1995 / Gauss-Kruger zone 5
+ EPSG      | 20006     | Pulkovo 1995 / Gauss-Kruger zone 6
+ EPSG      | 20007     | Pulkovo 1995 / Gauss-Kruger zone 7
+ EPSG      | 20008     | Pulkovo 1995 / Gauss-Kruger zone 8
+ EPSG      | 20009     | Pulkovo 1995 / Gauss-Kruger zone 9
+ EPSG      | 2001      | Antigua 1943 / British West Indies Grid
+ EPSG      | 20010     | Pulkovo 1995 / Gauss-Kruger zone 10
+ EPSG      | 20011     | Pulkovo 1995 / Gauss-Kruger zone 11    </programlisting>
+    </refsection>
+
+    <!-- Optionally add a "See Also" section -->
+    <refsection>
+    <title>See Also</title>
+    <para><xref linkend="postgis_srs_codes"/>, <xref linkend="postgis_srs"/>, <xref linkend="postgis_srs_search"/></para>
+    </refsection>
+
+  </refentry>
+
+
+
+
+  <refentry xml:id="postgis_srs_search">
+    <refnamediv>
+    <refname>postgis_srs_search</refname>
+
+    <refpurpose>Return metadata records for projected coordinate systems that have areas of usage that fully contain the bounds parameter.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>setof record <function>postgis_srs_search</function></funcdef>
+                <paramdef><type>geometry </type> <parameter>bounds</parameter></paramdef>
+                <paramdef choice="opt"><type>text </type> <parameter>auth_name=EPSG</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+      <para>Return a set of metadata records for projected coordinate systems that have areas of usage that fully contain the bounds parameter. Each record will have the <varname>auth_name</varname>, <varname>auth_srid</varname>, <varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</varname>, and the corners of the area of usage, <varname>point_sw</varname> and <varname>point_ne</varname>.
+      </para>
+
+      <para>The search only looks for projected coordinate systems, and is intended for users to explore the possible systems that work for the extent of their data.</para>
+
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
+      <para>Proj version 6+</para>
+
+    </refsection>
+
+    <refsection>
+      <title>Examples</title>
+      <para>Search for projected coordinate systems in Louisiana.</para>
+      <programlisting>
+SELECT auth_name, auth_srid, srname,
+  ST_AsText(point_sw) AS point_sw,
+  ST_AsText(point_ne) AS point_ne
+FROM postgis_srs_search('SRID=4326;LINESTRING(-90 30, -91 31)')
+LIMIT 3;
+
+ auth_name | auth_srid |                srname                |      point_sw       |      point_ne
+-----------+-----------+--------------------------------------+---------------------+---------------------
+ EPSG      | 2801      | NAD83(HARN) / Louisiana South        | POINT(-93.94 28.85) | POINT(-88.75 31.07)
+ EPSG      | 3452      | NAD83 / Louisiana South (ftUS)       | POINT(-93.94 28.85) | POINT(-88.75 31.07)
+ EPSG      | 3457      | NAD83(HARN) / Louisiana South (ftUS) | POINT(-93.94 28.85) | POINT(-88.75 31.07)
+</programlisting>
+
+      <para>Scan a table for max extent and find projected coordinate systems that might suit.</para>
+
+      <programlisting>
+WITH ext AS (
+  SELECT ST_Extent(geom) AS geom, Max(ST_SRID(geom)) AS srid
+  FROM foo
+)
+SELECT auth_name, auth_srid, srname,
+  ST_AsText(point_sw) AS point_sw,
+  ST_AsText(point_ne) AS point_ne
+FROM ext
+CROSS JOIN postgis_srs_search(ST_SetSRID(ext.geom, ext.srid))
+LIMIT 3;</programlisting>
+
+    </refsection>
+
+    <!-- Optionally add a "See Also" section -->
+    <refsection>
+    <title>See Also</title>
+    <para><xref linkend="postgis_srs_codes"/>, <xref linkend="postgis_srs_all"/>, <xref linkend="postgis_srs"/></para>
+    </refsection>
+
+  </refentry>
+
+
+
+  </section>

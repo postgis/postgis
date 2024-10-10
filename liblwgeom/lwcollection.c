@@ -92,6 +92,7 @@ LWCOLLECTION *
 lwcollection_construct_empty(uint8_t type, int32_t srid, char hasz, char hasm)
 {
 	LWCOLLECTION *ret;
+
 	if( ! lwtype_is_collection(type) )
 	{
 		lwerror("Non-collection type specified in collection constructor!");
@@ -110,10 +111,10 @@ lwcollection_construct_empty(uint8_t type, int32_t srid, char hasz, char hasm)
 	return ret;
 }
 
-LWGEOM *
-lwcollection_getsubgeom(LWCOLLECTION *col, int gnum)
+const LWGEOM *
+lwcollection_getsubgeom(LWCOLLECTION *col, uint32_t gnum)
 {
-	return (LWGEOM *)col->geoms[gnum];
+	return (const LWGEOM *)col->geoms[gnum];
 }
 
 /**
@@ -212,12 +213,11 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 	/* Allocate more space if we need it */
 	lwcollection_reserve(col, col->ngeoms + 1);
 
-#if PARANOIA_LEVEL > 1
+#ifndef NDEBUG
 	/* See http://trac.osgeo.org/postgis/ticket/2933 */
 	/* Make sure we don't already have a reference to this geom */
 	{
-		uint32_t i = 0;
-		for (i = 0; i < col->ngeoms; i++)
+		for (uint32_t i = 0; i < col->ngeoms; i++)
 		{
 			if (col->geoms[i] == geom)
 			{
@@ -497,7 +497,7 @@ lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm, double zval
 }
 
 
-uint32_t lwcollection_count_vertices(LWCOLLECTION *col)
+uint32_t lwcollection_count_vertices(const LWCOLLECTION *col)
 {
 	uint32_t i = 0;
 	uint32_t v = 0; /* vertices */

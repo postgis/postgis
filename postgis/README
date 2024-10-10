@@ -53,7 +53,7 @@ UPDATE <table> SET <geomcol> = DropBBOX(<geomcol>);
 UPDATE <table> SET <geomcol> = AddBBOX(<geomcol>);
 
 Note that if you don't cache a BBOX spatial operators will be much slower,
-as they'll need to compute all the boxes at every invokation.
+as they'll need to compute all the boxes at every invocation.
 If you use GiST indexes you will still note a slow down as a RECHECK
 clause is specified for GiST operators. Also, GiST index updating
 will be slower w/out a BBOX cache.

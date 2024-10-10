@@ -45,3 +45,10 @@ SELECT 'rp-3', ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 10));
 
 -- ST_MaximumInscribedCircle infinite check https://trac.osgeo.org/postgis/ticket/5318
 SELECT '#5318', ST_MaximumInscribedCircle('0106000020E61000000100000001030000000100000005000000000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F'::geometry) As result;
+
+-- ST_LargestEmptyCircle
+SELECT 'lec-1', round(radius::numeric,3),
+  ST_AsText(center,3) AS center,
+  ST_AsText(nearest,3) AS nearest
+FROM ST_LargestEmptyCircle(
+  'MULTIPOINT ((4 3), (7 6), (4 6))');

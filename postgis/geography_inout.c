@@ -271,9 +271,9 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 
 	if (VARSIZE_ANY_EXHDR(id_text) > 0)
 	{
-		id_buf = palloc(VARSIZE_ANY_EXHDR(id_text)+1);
+		id_buf = palloc(VARSIZE_ANY_EXHDR(id_text)+2);
 		memcpy(id_buf, VARDATA(id_text), VARSIZE_ANY_EXHDR(id_text));
-		prefix_buf[VARSIZE_ANY_EXHDR(id_text)+1] = '\0';
+		id_buf[VARSIZE_ANY_EXHDR(id_text)+1] = '\0';
 		id = id_buf;
 	}
 

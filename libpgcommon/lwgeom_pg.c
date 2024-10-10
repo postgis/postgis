@@ -100,23 +100,52 @@ postgis_get_extension_schema(Oid ext_oid)
 static Oid
 postgis_get_full_version_schema()
 {
-	const char* proname = "postgis_full_version";
+	const char* query =  "SELECT pronamespace "
+		" FROM pg_catalog.pg_proc "
+		" WHERE proname = 'postgis_full_version'";
+	int spi_result;
+	Oid funcNameSpaceOid;
 
-	#if POSTGIS_PGSQL_VERSION < 160
-	List* names = stringToQualifiedNameList(proname);
-	#else
-	List* names = stringToQualifiedNameList(proname, NULL);
-	#endif
-
-	#if POSTGIS_PGSQL_VERSION < 140
-	FuncCandidateList clist = FuncnameGetCandidates(names, -1, NIL, false, false, false);
-	#else
-	FuncCandidateList clist = FuncnameGetCandidates(names, -1, NIL, false, false, false, false);
-	#endif
-	if (!clist)
+	if (SPI_OK_CONNECT != SPI_connect())
+	{
+		elog(ERROR, "%s: could not connect to SPI manager", __func__);
 		return InvalidOid;
+	}
 
-	return get_func_namespace(clist->oid);
+	/* Execute the query, noting the readonly status of this SQL */
+	spi_result = SPI_execute(query, true, 0);
+
+	if (spi_result != SPI_OK_SELECT || SPI_tuptable == NULL){
+		elog(ERROR, "%s: error executing query %d", __func__, spi_result);
+		SPI_finish();
+		return InvalidOid;
+	}
+
+	/* Read back the OID of the function namespace, only if one result returned
+	  If more than one, then this install is f..cked.
+		If 0 then postgis is not installed at all */
+	if (SPI_processed == 1)
+	{
+		TupleDesc tupdesc;
+		SPITupleTable *tuptable = SPI_tuptable;
+		HeapTuple tuple;
+
+		tupdesc = SPI_tuptable->tupdesc;
+		tuptable = SPI_tuptable;
+		tuple = tuptable->vals[0];
+		funcNameSpaceOid = atoi(SPI_getvalue(tuple, tupdesc, 1));
+
+		if (SPI_tuptable) SPI_freetuptable(tuptable);
+		SPI_finish();
+	}
+	else
+	{
+		elog(ERROR, "Cannot determine install schema of postgis_full_version function.");
+		SPI_finish();
+		return InvalidOid;
+	}
+
+	return funcNameSpaceOid;
 }
 
 
@@ -321,6 +350,8 @@ pg_free(void *ptr)
 	pfree(ptr);
 }
 
+static void pg_error(const char *fmt, va_list ap) __attribute__ (( format(printf, 1, 0) ));
+
 static void
 pg_error(const char *fmt, va_list ap)
 {
@@ -331,6 +362,8 @@ pg_error(const char *fmt, va_list ap)
 	errmsg[PGC_ERRMSG_MAXLEN]='\0';
 	ereport(ERROR, (errmsg_internal("%s", errmsg)));
 }
+
+static void pg_warning(const char *fmt, va_list ap) __attribute__ (( format(printf, 1, 0) ));
 
 static void
 pg_warning(const char *fmt, va_list ap)
@@ -343,6 +376,8 @@ pg_warning(const char *fmt, va_list ap)
 	ereport(WARNING, (errmsg_internal("%s", errmsg)));
 }
 
+static void pg_notice(const char *fmt, va_list ap) __attribute__ (( format(printf, 1, 0) ));
+
 static void
 pg_notice(const char *fmt, va_list ap)
 {
@@ -353,6 +388,8 @@ pg_notice(const char *fmt, va_list ap)
 	errmsg[PGC_ERRMSG_MAXLEN]='\0';
 	ereport(NOTICE, (errmsg_internal("%s", errmsg)));
 }
+
+static void pg_debug(int level, const char *fmt, va_list ap) __attribute__ (( format(printf, 2, 0) ));
 
 static void
 pg_debug(int level, const char *fmt, va_list ap)
@@ -549,7 +586,7 @@ CallerFInfoFunctionCall3(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum
 
     /* Check for null result, since caller is clearly not expecting one */
     if (fcinfo->isnull)
-        elog(ERROR, "function %p returned NULL", (void *) func);
+        elog(ERROR, "function %p returned NULL", (void *)&func);
 
     return result;
 }

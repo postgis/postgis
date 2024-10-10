@@ -54,7 +54,7 @@ SELECT 't5',
 -- Ask for Point in a Node (2 or more faces)
 SELECT 'e1', topology.GetFaceByPoint('topo','POINT(1 5)', 0);
 
--- Ask for a Point with a tollerance too high (2 or more faces)
+-- Ask for a Point with a tolerance too high (2 or more faces)
 SELECT 'e2', topology.GetFaceByPoint('topo','POINT(6 13)', 1);
 
 SELECT NULL FROM topology.DropTopology('topo');

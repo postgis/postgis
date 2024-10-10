@@ -29,7 +29,7 @@ DO $$
 DECLARE
 	pgver text;
 BEGIN
-	SELECT pg_catalog.substring(pg_catalog.version(), 'PostgreSQL ([0-9\.]+)') INTO pgver;
+	SELECT pg_catalog.substring(pg_catalog.version(), E'PostgreSQL ([0-9\\.]+)') INTO pgver;
 
 	IF POSTGIS_PGSQL_VERSION::text != ( SELECT CASE
 		WHEN pg_catalog.split_part(s,'.',1)::integer > 9
@@ -37,7 +37,7 @@ BEGIN
 		ELSE
 			pg_catalog.split_part(s,'.', 1) || pg_catalog.split_part(s,'.', 2)
 		END
-		FROM pg_catalog.substring(pg_catalog.version(), 'PostgreSQL ([0-9\.]+)') AS s )
+		FROM pg_catalog.substring(pg_catalog.version(), E'PostgreSQL ([0-9\\.]+)') AS s )
 	THEN
 		RAISE EXCEPTION 'PostGIS built for PostgreSQL % cannot be loaded in PostgreSQL %',
 			POSTGIS_PGSQL_HR_VERSION, pgver;
@@ -60,26 +60,6 @@ BEGIN
   END LOOP;
 END
 $$ LANGUAGE 'plpgsql';
-
-
--- Check that pgaudit is disabled or not installed
--- Running extension creation with pgaudit enabled will result in a
--- multi-gigabyte log storm for PgSQL <= 14
-DO $$
-DECLARE
-	pgalog text;
-BEGIN
-	SHOW pgaudit.log INTO pgalog;
-	RAISE DEBUG 'pgaudit is installed, pgaudit.log is set to ''%''', pgalog;
-	IF pg_catalog.lower(pgalog) != 'none'
-	THEN
-		RAISE EXCEPTION 'PostGIS installation stopped: pgaudit.log is set to ''%''. Set pgaudit.log to ''none'' before installing PostGIS. You may re-enable pgaudit after installation is complete.', pgalog;
-	END IF;
-EXCEPTION
-	WHEN undefined_object THEN
-		RAISE DEBUG 'pgaudit is not installed';
-END;
-$$;
 
 
 -- Let the user know about a deprecated signature and its new name, if any
@@ -398,6 +378,12 @@ CREATE OR REPLACE FUNCTION geometry_eq(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_DEFAULT;
 
+CREATE OR REPLACE FUNCTION geometry_neq(geom1 geometry, geom2 geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'lwgeom_neq'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_DEFAULT;
+
 CREATE OR REPLACE FUNCTION geometry_cmp(geom1 geometry, geom2 geometry)
 	RETURNS integer
 	AS 'MODULE_PATHNAME', 'lwgeom_cmp'
@@ -431,7 +417,14 @@ CREATE OPERATOR <= (
 -- Availability: 0.9.0
 CREATE OPERATOR = (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_eq,
-	COMMUTATOR = '=', -- we might implement a faster negator here
+	COMMUTATOR = '=', NEGATOR = '<>',
+	RESTRICT = contsel, JOIN = contjoinsel, HASHES, MERGES
+);
+
+-- Availability: 3.5.0
+CREATE OPERATOR <> (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_neq,
+	COMMUTATOR = '<>', NEGATOR = '=',
 	RESTRICT = contsel, JOIN = contjoinsel, HASHES, MERGES
 );
 
@@ -1390,10 +1383,31 @@ CREATE OR REPLACE FUNCTION ST_azimuth(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_Project(geom1 geometry, distance float8, azimuth float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'geometry_project_direction'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_Project(geom1 geometry, geom2 geometry, distance float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'geometry_project_geometry'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_Angle(pt1 geometry, pt2 geometry, pt3 geometry, pt4 geometry default 'POINT EMPTY'::geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_angle'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineExtend(geom geometry, distance_forward float8, distance_backward float8 DEFAULT 0.0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'geometry_line_extend'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
@@ -1626,6 +1640,20 @@ CREATE OR REPLACE FUNCTION ST_NDims(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_DEFAULT;
 
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_HasZ(geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_hasz'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_DEFAULT;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_HasM(geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_hasm'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_DEFAULT;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsEWKT(geometry)
 	RETURNS TEXT
@@ -1828,6 +1856,7 @@ CREATE OR REPLACE FUNCTION ST_MakeEnvelope(float8, float8, float8, float8, integ
 
 -- Availability: 3.0.0
 -- Changed: 3.1.0 - add margin=0.0 parameter
+-- Replaces ST_TileEnvelope(zoom integer, x integer, y integer, bounds geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_TileEnvelope(zoom integer, x integer, y integer, bounds geometry DEFAULT 'SRID=3857;LINESTRING(-20037508.342789244 -20037508.342789244, 20037508.342789244 20037508.342789244)'::geometry, margin float8 DEFAULT 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_TileEnvelope'
@@ -1910,6 +1939,7 @@ CREATE OR REPLACE FUNCTION ST_LineMerge(geometry, boolean)
 	AS 'MODULE_PATHNAME', 'linemerge'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
+
 
 -----------------------------------------------------------------------------
 -- Affine transforms
@@ -2049,7 +2079,7 @@ CREATE OR REPLACE FUNCTION ST_DumpRings(geometry)
 -----------------------------------------------------------------------
 -- ST_DumpPoints()
 -----------------------------------------------------------------------
--- This function mimicks that of ST_Dump for collections, but this function
+-- This function mimics that of ST_Dump for collections, but this function
 -- that returns a path and all the points that make up a particular geometry.
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry)
@@ -2084,7 +2114,7 @@ CREATE TABLE spatial_ref_sys (
 -- views in the database that contain geometry columns. This function
 -- is a simple wrapper for populate_geometry_columns(oid).  In essence,
 -- this function ensures every geometry column in the database has the
--- appropriate spatial contraints (for tables) and exists in the
+-- appropriate spatial constraints (for tables) and exists in the
 -- geometry_columns table.
 -- Availability: 1.4.0
 -- Revised: 2.0.0 -- no longer deletes from geometry_columns
@@ -2167,7 +2197,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 -- If the provided oid is for a table, this function tries to determine
 -- the srid, dimension, and geometry type of the all geometries
--- in the table, adding contraints as necessary to the table.  If
+-- in the table, adding constraints as necessary to the table.  If
 -- successful, an appropriate row is inserted into the geometry_columns
 -- table, otherwise, the exception is caught and an error notice is
 -- raised describing the problem. (This is so the wrapper function
@@ -2318,8 +2348,8 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 -- Geometry types (except GEOMETRY) are checked for consistency using a CHECK constraint.
 -- Uses an ALTER TABLE command to add the geometry column to the table.
--- Addes a row to geometry_columns.
--- Addes a constraint on the table that all the geometries MUST have the same
+-- Adds a row to geometry_columns.
+-- Adds a constraint on the table that all the geometries MUST have the same
 -- SRID. Checks the coord_dimension to make sure its between 0 and 3.
 -- Should also check the precision grid (future expansion).
 --
@@ -2871,6 +2901,65 @@ CREATE OR REPLACE FUNCTION postgis_transform_geometry(geom geometry, text, text,
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
+------------------------------------------------------------------------
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION postgis_srs_codes(auth_name text)
+	RETURNS SETOF TEXT
+	AS 'MODULE_PATHNAME', 'postgis_srs_codes'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION postgis_srs(auth_name text, auth_srid text)
+	RETURNS TABLE(
+		auth_name TEXT,
+		auth_srid TEXT,
+		srname TEXT,
+		srtext TEXT,
+		proj4text TEXT,
+		point_sw GEOMETRY,
+		point_ne GEOMETRY
+		)
+	AS 'MODULE_PATHNAME', 'postgis_srs_entry'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION postgis_srs_all()
+	RETURNS TABLE(
+		auth_name TEXT,
+		auth_srid TEXT,
+		srname TEXT,
+		srtext TEXT,
+		proj4text TEXT,
+		point_sw GEOMETRY,
+		point_ne GEOMETRY
+		)
+	AS 'MODULE_PATHNAME', 'postgis_srs_entry_all'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION postgis_srs_search(
+		bounds geometry,
+		authname text DEFAULT 'EPSG')
+	RETURNS TABLE(
+		auth_name TEXT,
+		auth_srid TEXT,
+		srname TEXT,
+		srtext TEXT,
+		proj4text TEXT,
+		point_sw GEOMETRY,
+		point_ne GEOMETRY
+		)
+	AS 'MODULE_PATHNAME', 'postgis_srs_search'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+
+------------------------------------------------------------------------
+
 -- PostGIS equivalent of old function: transform(geometry,integer)
 CREATE OR REPLACE FUNCTION ST_Transform(geometry,integer)
 	RETURNS geometry
@@ -2940,6 +3029,11 @@ CREATE OR REPLACE FUNCTION postgis_liblwgeom_version() RETURNS text
 	_COST_DEFAULT;
 
 CREATE OR REPLACE FUNCTION postgis_proj_version() RETURNS text
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' IMMUTABLE
+	_COST_DEFAULT;
+
+CREATE OR REPLACE FUNCTION postgis_proj_compiled_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE
 	_COST_DEFAULT;
@@ -3015,7 +3109,7 @@ CREATE OR REPLACE FUNCTION _postgis_pgsql_version() RETURNS text
 AS $$
 	SELECT CASE WHEN pg_catalog.split_part(s,'.',1)::integer > 9 THEN pg_catalog.split_part(s,'.',1) || '0'
 	ELSE pg_catalog.split_part(s,'.', 1) || pg_catalog.split_part(s,'.', 2) END AS v
-	FROM pg_catalog.substring(version(), 'PostgreSQL ([0-9\.]+)') AS s;
+	FROM pg_catalog.substring(version(), E'PostgreSQL ([0-9\\.]+)') AS s;
 $$ LANGUAGE 'sql' STABLE;
 
 -- Availability: 2.5.0
@@ -3061,7 +3155,7 @@ BEGIN
 							SELECT 1 FROM pg_catalog.pg_type
 							WHERE typname = 'raster' ) )
 
-				 -- PostGIS SFCGAL is availble if
+				 -- PostGIS SFCGAL is available if
 				 -- 'postgis_sfcgal_version' function exists
 				 OR ( rec.name = 'postgis_sfcgal' AND EXISTS (
 							SELECT 1 FROM pg_catalog.pg_proc
@@ -3134,6 +3228,7 @@ DECLARE
 	libver text;
 	librev text;
 	projver text;
+	projver_compiled text;
 	geosver text;
 	geosver_compiled text;
 	sfcgalver text;
@@ -3159,6 +3254,7 @@ BEGIN
 	SELECT @extschema@.postgis_proj_version() INTO projver;
 	SELECT @extschema@.postgis_geos_version() INTO geosver;
 	SELECT @extschema@.postgis_geos_compiled_version() INTO geosver_compiled;
+	SELECT @extschema@.postgis_proj_compiled_version() INTO projver_compiled;
 	SELECT @extschema@.postgis_libjson_version() INTO json_lib_ver;
 	SELECT @extschema@.postgis_libprotobuf_version() INTO protobuf_lib_ver;
 	SELECT @extschema@.postgis_wagyu_version() INTO wagyu_lib_ver;
@@ -3257,6 +3353,10 @@ BEGIN
 
 	IF  projver IS NOT NULL THEN
 		fullver = fullver || ' PROJ="' || projver || '"';
+		IF (string_to_array(projver, '.'))[1:3] != (string_to_array(projver_compiled, '.'))[1:3]
+		THEN
+			fullver = format('%s (compiled against PROJ %s)', fullver, projver_compiled);
+		END IF;
 	END IF;
 
 	IF  gdalver IS NOT NULL THEN
@@ -3598,6 +3698,7 @@ CREATE OR REPLACE FUNCTION ST_Intersection(geom1 geometry, geom2 geometry, gridS
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+-- Replaces ST_Buffer(geometry, float8) deprecated in 3.0.0
 CREATE OR REPLACE FUNCTION ST_Buffer(geom geometry, radius float8, options text DEFAULT '')
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','buffer'
@@ -3733,6 +3834,12 @@ CREATE OR REPLACE FUNCTION ST_MaximumInscribedCircle(geometry, OUT center geomet
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LargestEmptyCircle(geom geometry, tolerance float8 DEFAULT 0.0, boundary geometry DEFAULT 'POINT EMPTY'::geometry, OUT center geometry, OUT nearest geometry, OUT radius double precision)
+	AS 'MODULE_PATHNAME', 'ST_LargestEmptyCircle'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
 -- PostGIS equivalent function: ST_difference(geom1 geometry, geom2 geometry)
 -- Changed: 3.1.0 to add gridSize default argument
 -- Replaces ST_Difference(geometry, geometry) deprecated in 3.1.0
@@ -3860,7 +3967,7 @@ CREATE OR REPLACE FUNCTION ST_MakeValid(geom geometry, params text)
 --	- Obeying the RHR (if polygonal)
 --	- Simplified of consecutive duplicated points
 -- Ensuring:
---	- No input vertexes are discarded (except consecutive repeated ones)
+--	- No input vertices are discarded (except consecutive repeated ones)
 --	- Output geometry type matches input
 --
 -- Returns NULL on failure.
@@ -4192,6 +4299,13 @@ CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(internal)
 	LANGUAGE 'c' PARALLEL SAFE
 	_COST_MEDIUM;
 
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION pgis_geometry_coverageunion_finalfn(internal)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' PARALLEL SAFE
+	_COST_MEDIUM;
+
 -- Availability: 3.3.0
 CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_transfn(internal, geometry)
 	RETURNS internal
@@ -4319,6 +4433,40 @@ CREATE AGGREGATE ST_MakeLine (geometry) (
 	FINALFUNC = pgis_geometry_makeline_finalfn
 	);
 
+
+-----------------------------------------------------------------------
+-- Polygonal coverage functions
+---------------------------------------------------------------------
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_CoverageUnion (geometry[])
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CoverageUnion'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.4.0
+CREATE AGGREGATE ST_CoverageUnion (geometry) (
+	SFUNC = pgis_geometry_accum_transfn,
+	STYPE = internal,
+	PARALLEL = safe,
+	FINALFUNC = pgis_geometry_coverageunion_finalfn
+	);
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_CoverageSimplify (geom geometry, tolerance float8, simplifyBoundary boolean default true)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CoverageSimplify'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_CoverageInvalidEdges (geom geometry, tolerance float8 default 0.0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CoverageInvalidEdges'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	_COST_HIGH;
+
 --------------------------------------------------------------------------------
 
 -- Availability: 2.3.0
@@ -4344,8 +4492,8 @@ CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry, integer)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
--- PostGIS equivalent function: relate(geom1 geometry, geom2 geometry,text)
-CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry,text)
+-- PostGIS equivalent function: relate(geom1 geometry, geom2 geometry, text)
+CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry, text)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','relate_pattern'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -4494,9 +4642,10 @@ CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(line1 geometry, line2 geomet
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
--- Availability: 1.3.4
--- Replaces ST_DWithin(text, text, float8) deprecated in 3.0.0
-CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry,float8)
+-- Availability: 1.3.0
+-- Changed: 2.0.0 added parameter names
+-- TODO: encode deprecation of the version with no parameter names ?
+CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry, float8)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_dwithin'
 	SUPPORT postgis_index_supportfn
@@ -4895,7 +5044,9 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits integer 
 	_COST_MEDIUM;
 
 -- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(r record, geom_column text DEFAULT '', maxdecimaldigits integer DEFAULT 9, pretty_bool bool DEFAULT false)
+-- Changed: 3.5.0 add id_column='' parameter
+-- Replaces ST_AsGeoJson(record, text, integer, bool) deprecated in 3.5.0
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(r record, geom_column text DEFAULT '', maxdecimaldigits integer DEFAULT 9, pretty_bool boolean DEFAULT false, id_column text DEFAULT '')
 	RETURNS text
 	AS 'MODULE_PATHNAME','ST_AsGeoJsonRow'
 	LANGUAGE 'c' STABLE STRICT PARALLEL SAFE
@@ -6055,7 +6206,6 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
 
 /* Should we include the .sql directly here ? */
-#include "long_xact.sql.in"
 #include "geography.sql.in"
 
 -- Availability: 2.2.0
@@ -6351,6 +6501,9 @@ CREATE OR REPLACE FUNCTION ST_CoordDim(Geometry geometry)
 --    1: Symmetric output (result in same vertices when inverting the curve)
 --
 -- Availability: 2.4.0
+-- Changed: 2.5.0 to add defaults
+-- Replaces ST_CurveToLine(geometry, integer) deprecated in 2.5.0
+-- Replaces ST_CurveToLine(geometry) deprecated in 2.5.0
 --
 CREATE OR REPLACE FUNCTION ST_CurveToLine(geom geometry, tol float8 DEFAULT 32, toltype integer DEFAULT 0, flags integer DEFAULT 0)
 	RETURNS geometry
@@ -6367,6 +6520,18 @@ CREATE OR REPLACE FUNCTION ST_HasArc(Geometry geometry)
 CREATE OR REPLACE FUNCTION ST_LineToCurve(Geometry geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_desegmentize'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+CREATE OR REPLACE FUNCTION ST_NumCurves(Geometry geometry)
+	RETURNS integer
+	AS 'MODULE_PATHNAME', 'ST_NumCurves'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+CREATE OR REPLACE FUNCTION ST_CurveN(Geometry geometry, i integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CurveN'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
@@ -6513,15 +6678,13 @@ CREATE OR REPLACE FUNCTION ST_SimplifyPolygonHull(geom geometry, vertex_fraction
 -- Availability: 2.0.0
 -- Changed: 2.5.0
 -- Enhanced: 3.3.0 implements it in C, if GEOS >= 3.10
+-- Replaces _st_concavehull(geometry) deprecated in 3.3.0-with-geos-3.11
 CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_ConcaveHull'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	PARALLEL SAFE
 	_COST_HIGH;
-
--- No longer needed with C language implementation
-DROP FUNCTION IF EXISTS _st_concavehull(geometry);
 
 #else
 
@@ -6701,7 +6864,7 @@ $$
 			var_cent := @extschema@.ST_Centroid(var_param_geom);
 			IF (@extschema@.ST_XMax(var_enline) - @extschema@.ST_XMin(var_enline) ) > var_buf AND (@extschema@.ST_YMax(var_enline) - @extschema@.ST_YMin(var_enline) ) > var_buf THEN
 					IF @extschema@.ST_Dwithin(@extschema@.ST_Centroid(var_convhull) , @extschema@.ST_Centroid(@extschema@.ST_Envelope(var_param_geom)), var_buf/2) THEN
-				-- If the geometric dimension is > 1 and the object is symettric (cutting at centroid will not work -- offset a bit)
+				-- If the geometric dimension is > 1 and the object is symmetric (cutting at centroid will not work -- offset a bit)
 						var_cent := @extschema@.ST_Translate(var_cent, (@extschema@.ST_XMax(var_enline) - @extschema@.ST_XMin(var_enline))/1000,  (@extschema@.ST_YMAX(var_enline) - @extschema@.ST_YMin(var_enline))/1000);
 					ELSE
 						-- uses closest point on geometry to centroid. I can't explain why we are doing this
@@ -6814,5 +6977,25 @@ CREATE OR REPLACE FUNCTION ST_3DLineInterpolatePoint(geometry, float8)
 -- moved to separate file cause its involved
 #include "postgis_spgist.sql.in"
 #include "postgis_letters.sql"
+
+-----------------------------------------------------------------------
+-- ST_RemoveIrrelevantPointsForView
+-----------------------------------------------------------------------
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_RemoveIrrelevantPointsForView(geometry, box2d, boolean default false)
+RETURNS geometry
+AS 'MODULE_PATHNAME','ST_RemoveIrrelevantPointsForView'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+-----------------------------------------------------------------------
+-- ST_RemoveSmallParts
+-----------------------------------------------------------------------
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_RemoveSmallParts(geometry, double precision, double precision)
+RETURNS geometry
+AS 'MODULE_PATHNAME','ST_RemoveSmallParts'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
 
 COMMIT;

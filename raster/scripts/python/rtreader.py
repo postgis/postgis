@@ -23,7 +23,7 @@
 #
 # Requirements: psycopg2
 #
-# WARNING: Tha main purpose of the RasterReader is to test and debug
+# WARNING: The main purpose of the RasterReader is to test and debug
 # WKT Raster implementation. It is not supposed to be an efficient
 # performance killer, by no means.
 #
@@ -85,7 +85,7 @@ class RasterReader(object):
         sep - if output_format=HEX, separates rid value from hex-encoded binary.
         """
         import os.path
-        filehex = file # No extension added, may be user-defiened
+        filehex = file # No extension added, may be user-defined
         with open(filehex, 'w') as f:
             select = "SELECT rid, encode(ST_As%s(%s), 'hex') As rt FROM %s" % (raster_format, self._column, self._table)
             if self._where is not None and len(self._where) > 0:
@@ -136,7 +136,7 @@ class RasterReader(object):
             if self._conn is None:
                 self._conn = psycopg2.connect(self._connstr)
         except Exception as e:
-            raise RasterError("Falied to connect to %s: %s" % (self._connstr, e))
+            raise RasterError("Failed to connect to %s: %s" % (self._connstr, e))
 
     def _query_single_row(self, sql):
         assert self._conn is not None
@@ -175,7 +175,7 @@ class RasterReader(object):
             self._sizes = self._query_single_row(sql)
 
         if self._sizes is None:
-            raise RasterError("Falied to query raster size of dim {} with force {}".format(dim, force))
+            raise RasterError("Failed to query raster size of dim {} with force {}".format(dim, force))
         return self._sizes[dim]
 
     def _query_pixel_types(self):

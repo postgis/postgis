@@ -134,7 +134,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 	{
 		/* Independent buffer to hold the coordinates, so we can put the npoints */
 		/* into the stream once we know how many points we actually have */
-		bytebuffer_init_with_size(&b, 3 * ndims * pa->npoints);
+		bytebuffer_init_with_size(&b, (size_t)3 * ndims * pa->npoints);
 		b_p = &b;
 	}
 	else
@@ -470,7 +470,7 @@ static int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWK
 		/* Reset bbox calculation */
 		child_state.bbox_max[i] = INT64_MIN;
 		child_state.bbox_min[i] = INT64_MAX;
-		/* Reset acumulated delta values to get absolute values on next point */
+		/* Reset accumulated delta values to get absolute values on next point */
 		child_state.accum_rels[i] = 0;
 	}
 

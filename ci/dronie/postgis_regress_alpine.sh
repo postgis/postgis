@@ -8,7 +8,8 @@ su - postgres -c "export PGDATA=/var/lib/postgresql/data && pg_ctl -o '-F' -l /v
 export PGPORT=5432
 psql --version
 ./autogen.sh
-./configure CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror" --without-interrupt-tests
+./configure \
+  CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror"
 make clean
 make -j
 # we should maybe wait for postgresql service to startup here...

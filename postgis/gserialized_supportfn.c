@@ -85,7 +85,7 @@ static const int16 GeometryStrategies[] = {
 	[ST_OVERLAPS_IDX]               = RTOverlapStrategyNumber,
 	[ST_COVERS_IDX]                 = RTContainsStrategyNumber,
 	[ST_CROSSES_IDX]                = RTOverlapStrategyNumber,
-	[ST_DFULLYWITHIN_IDX]           = RTOverlapStrategyNumber,
+	[ST_DFULLYWITHIN_IDX]           = RTContainsStrategyNumber,
 	[ST_3DDWITHIN_IDX]              = RTOverlapStrategyNumber,
 	[ST_3DDFULLYWITHIN_IDX]         = RTOverlapStrategyNumber,
 	[ST_LINECROSSINGDIRECTION_IDX]  = RTOverlapStrategyNumber,
@@ -303,7 +303,7 @@ expandFunctionOid(Oid geotype, Oid callingfunc)
 /*
 * For functions that we want enhanced with spatial
 * index lookups, add this support function to the
-* SQL function defintion, for example:
+* SQL function definition, for example:
 *
 * CREATE OR REPLACE FUNCTION ST_Intersects(g1 geometry, g2 geometry)
 *	RETURNS boolean

@@ -124,6 +124,10 @@ endif
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
+#
+# TODO: create an intermediate product with @extschema@ in place, to reduce rules duplications
+#       in the extension/ folder
+#
 %.sql: %.sql.in
 	$(SQLPP) -I@top_builddir@/postgis/ $< > $@.tmp
 	grep -v '^#' $@.tmp | \
@@ -151,7 +155,7 @@ $(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_revision.h
 rtpostgis_upgrade.sql.in: rtpostgis.sql ../../utils/create_upgrade.pl
 	$(PERL) @top_srcdir@/utils/create_upgrade.pl $< > $@
 
-rtpostgis_upgrade.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql.in rtpostgis_drop.sql
+rtpostgis_upgrade.sql: ../../postgis/common_before_upgrade.sql rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql.in rtpostgis_drop.sql ../../postgis/common_after_upgrade.sql
 	echo 'BEGIN;' > $@
 	cat $^ | sed -e 's/^BEGIN;$$//' -e 's/^COMMIT;$$//' >> $@
 	echo 'COMMIT;' >> $@

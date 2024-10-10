@@ -18,10 +18,14 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2011 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2011-2024 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
+#include "../postgis_config.h"
+
+/*#define POSTGIS_DEBUG_LEVEL 1*/
+#include "lwgeom_log.h"
 
 #include "lwgeom_geos.h"
 #include "liblwgeom_internal.h"
@@ -160,22 +164,54 @@ lwgeom_node(const LWGEOM* lwgeom_in)
 		lwerror("GEOSNode: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
+	LWDEBUGGEOS(1, gn, "Noded");
 
-	gm = GEOSLineMerge(gn);
-	GEOSGeom_destroy(gn);
-	if ( ! gm ) {
-		lwgeom_free(ep);
-		lwerror("GEOSLineMerge: %s", lwgeom_geos_errmsg);
-		return NULL;
+	nl = GEOSGetNumGeometries(gn);
+	if ( nl > 1 )
+	{
+		gm = GEOSLineMerge(gn);
+		GEOSGeom_destroy(gn);
+		if ( ! gm ) {
+			lwgeom_free(ep);
+			lwerror("GEOSLineMerge: %s", lwgeom_geos_errmsg);
+			return NULL;
+		}
+		LWDEBUGGEOS(1, gm, "LineMerged");
+		gn = gm;
+
+		lines = GEOS2LWGEOM(gn, FLAGS_GET_Z(lwgeom_in->flags));
+		GEOSGeom_destroy(gn);
+		if ( ! lines ) {
+			lwgeom_free(ep);
+			lwerror("Error during GEOS2LWGEOM");
+			return NULL;
+		}
+	}
+	else if ( nl == 1 )
+	{
+		const GEOSGeometry *gc = GEOSGetGeometryN(gn, 0);
+		lines = GEOS2LWGEOM(gc, FLAGS_GET_Z(lwgeom_in->flags));
+		GEOSGeom_destroy(gn);
+		if ( ! lines ) {
+			lwgeom_free(ep);
+			lwerror("Error during GEOS2LWGEOM");
+			return NULL;
+		}
+	}
+	else
+	{
+		/* No geometries, don't bother with re-adding endpoints */
+		lines = GEOS2LWGEOM(gn, FLAGS_GET_Z(lwgeom_in->flags));
+		GEOSGeom_destroy(gn);
+		if ( ! lines ) {
+			lwgeom_free(ep);
+			lwerror("Error during GEOS2LWGEOM");
+			return NULL;
+		}
+		lwgeom_set_srid(lines, lwgeom_in->srid);
+		return (LWGEOM*)lines;
 	}
 
-	lines = GEOS2LWGEOM(gm, FLAGS_GET_Z(lwgeom_in->flags));
-	GEOSGeom_destroy(gm);
-	if ( ! lines ) {
-		lwgeom_free(ep);
-		lwerror("Error during GEOS2LWGEOM");
-		return NULL;
-	}
 
 	/*
 	 * Reintroduce endpoints from input, using split-line-by-point.

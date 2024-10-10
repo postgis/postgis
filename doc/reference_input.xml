@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="Geometry_Inputs">
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Geometry_Inputs">
 
-    <sect1info>
+    <title>Geometry Input</title><info>
 			<abstract>
 			<para>These functions create geometry objects from various textual or binary formats.</para>
 			</abstract>
-			</sect1info>
+			</info>
 
-	  <title>Geometry Input</title>
 
-    <sect2>
+
+    <section>
       <title>Well-Known Text (WKT)</title>
 
-		<refentry id="ST_BdPolyFromText">
+		<refentry xml:id="ST_BdPolyFromText">
 		  <refnamediv>
 			<refname>ST_BdPolyFromText</refname>
 
@@ -46,7 +46,7 @@
 
 			 <para>&sfs_compliant; s3.2.6.2</para>
 			 <para>Performed by the GEOS module.</para>
-			 <para>Availability: 1.1.0</para>
+			 <para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
 		  </refsection>
 
 <!-->
@@ -58,11 +58,11 @@
 -->
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_BdMPolyFromText" /></para>
+			<para><xref linkend="ST_BuildArea"/>, <xref linkend="ST_BdMPolyFromText"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_BdMPolyFromText">
+		<refentry xml:id="ST_BdMPolyFromText">
 			<refnamediv>
 				<refname>ST_BdMPolyFromText</refname>
 				<refpurpose>Construct a MultiPolygon given an arbitrary collection of
@@ -90,16 +90,14 @@
 				<note>
 					 <para>Throws an error if WKT is not a MULTILINESTRING. Forces
 					MULTIPOLYGON output even when result is really only composed by a
-					single POLYGON; use <link
-					linkend="ST_BdPolyFromText">ST_BdPolyFromText</link> if you're sure a
-					single POLYGON will result from operation, or see <link
-					linkend="ST_BuildArea">ST_BuildArea()</link> for a postgis-specific
+					single POLYGON; use <link linkend="ST_BdPolyFromText">ST_BdPolyFromText</link> if you're sure a
+					single POLYGON will result from operation, or see <link linkend="ST_BuildArea">ST_BuildArea()</link> for a postgis-specific
 					approach.</para>
 				</note>
 
 				 <para>&sfs_compliant; s3.2.6.2</para>
 				 <para>Performed by the GEOS module.</para>
-				 <para>Availability: 1.1.0</para>
+				 <para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
 			</refsection>
 
 <!--
@@ -110,11 +108,11 @@
 -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_BdPolyFromText" /></para>
+				<para><xref linkend="ST_BuildArea"/>, <xref linkend="ST_BdPolyFromText"/></para>
 			</refsection>
 	</refentry>
 
-	<refentry id="ST_GeogFromText">
+	<refentry xml:id="ST_GeogFromText">
 		  <refnamediv>
 			<refname>ST_GeogFromText</refname>
 			<refpurpose>Return a specified geography value from Well-Known Text representation or extended (WKT). </refpurpose>
@@ -146,11 +144,11 @@ SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));
 		 </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AsText" />, <xref linkend="ST_GeographyFromText" /></para>
+			<para><xref linkend="ST_AsText"/>, <xref linkend="ST_GeographyFromText"/></para>
 		  </refsection>
 	</refentry>
 
-	<refentry id="ST_GeographyFromText">
+	<refentry xml:id="ST_GeographyFromText">
 		  <refnamediv>
 			<refname>ST_GeographyFromText</refname>
 			<refpurpose>Return a specified geography value from Well-Known Text representation or extended (WKT). </refpurpose>
@@ -170,11 +168,11 @@ SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeogFromText" />, <xref linkend="ST_AsText" /></para>
+			<para><xref linkend="ST_GeogFromText"/>, <xref linkend="ST_AsText"/></para>
 		  </refsection>
 	</refentry>
 
-	<refentry id="ST_GeomCollFromText">
+	<refentry xml:id="ST_GeomCollFromText">
 	  <refnamediv>
 		<refname>ST_GeomCollFromText</refname>
 
@@ -230,11 +228,11 @@ SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_SRID" /></para>
+		<para><xref linkend="ST_GeomFromText"/>, <xref linkend="ST_SRID"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_GeomFromEWKT">
+	<refentry xml:id="ST_GeomFromEWKT">
 	  <refnamediv>
 		<refname>ST_GeomFromEWKT</refname>
 		<refpurpose>Return a specified ST_Geometry value from Extended Well-Known Text representation (EWKT).</refpurpose>
@@ -256,7 +254,7 @@ SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));
 			<para>The EWKT format is not an OGC standard, but an PostGIS specific format that includes the spatial reference system (SRID)
 			identifier</para>
 		</note>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
@@ -315,11 +313,11 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" /></para>
+		<para><xref linkend="ST_AsEWKT"/>, <xref linkend="ST_GeomFromText"/></para>
 	  </refsection>
 	</refentry>
 
-    <refentry id="ST_GeomFromMARC21">
+    <refentry xml:id="ST_GeomFromMARC21">
         <refnamediv>
             <refname>ST_GeomFromMARC21</refname>
             <refpurpose>Takes MARC21/XML geographic data as input and returns a PostGIS geometry object. </refpurpose>
@@ -353,12 +351,12 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
                 LOC MARC21/XML versions supported:
                 <itemizedlist>
                     <listitem>
-                        <para><ulink url="https://www.loc.gov/standards/marcxml/">MARC21/XML 1.1</ulink></para>
+                        <para><link xlink:href="https://www.loc.gov/standards/marcxml/">MARC21/XML 1.1</link></para>
                     </listitem>
                 </itemizedlist>
             </para>
 
-            <para>Availability: 3.3.0, requires libxml2 2.6+</para>
+            <para role="availability" conformance="3.3.0">Availability: 3.3.0, requires libxml2 2.6+</para>
 
             <note>
                 <para>
@@ -380,10 +378,11 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
             <title>Examples</title>
 
             <para>Converting MARC21/XML geographic data containing a single <varname>POINT</varname> encoded as  <varname>hddd.dddddd</varname>  </para>
-            <programlisting>
+            <programlisting><![CDATA[
+
                 SELECT
                 ST_AsText(
-                    ST_GeomFromMARC21('<![CDATA[
+                    ST_GeomFromMARC21('
                         <record xmlns="http://www.loc.gov/MARC21/slim">
                             <leader>00000nz a2200000nc 4500</leader>
                             <controlfield tag="001">040277569</controlfield>
@@ -393,22 +392,23 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
                                 <subfield code="f">N054.250000</subfield>
                                 <subfield code="g">N054.250000</subfield>
                             </datafield>
-                        </record>']]>));
+                        </record>'));
 
                 st_astext
                 -------------------
                 POINT(-4.5 54.25)
                 (1 row)
 
-            </programlisting>
+            ]]></programlisting>
 
             <para>Converting MARC21/XML geographic data containing a single <varname>POLYGON</varname> encoded as <varname>hdddmmss</varname></para>
 
-            <programlisting>
+            <programlisting><![CDATA[
+
 
                 SELECT
                 ST_AsText(
-                    ST_GeomFromMARC21('<![CDATA[
+                    ST_GeomFromMARC21('
                         <record xmlns="http://www.loc.gov/MARC21/slim">
                             <leader>01062cem a2200241 a 4500</leader>
                             <controlfield tag="001">   84696781 </controlfield>
@@ -420,22 +420,23 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
                                 <subfield code="f">N0523900</subfield>
                                 <subfield code="g">N0522300</subfield>
                             </datafield>
-                        </record>']]>));
+                        </record>'));
 
                 st_astext
                 -----------------------------------------------------------------------------------------------------------------------
                 POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65))
                 (1 row)
 
-            </programlisting>
+            ]]></programlisting>
 
             <para>Converting MARC21/XML geographic data containing a <varname>POLYGON</varname> and a <varname>POINT</varname>:</para>
 
-            <programlisting>
+            <programlisting><![CDATA[
+
 
                 SELECT
                 ST_AsText(
-                    ST_GeomFromMARC21('<![CDATA[
+                    ST_GeomFromMARC21('
                 <record xmlns="http://www.loc.gov/MARC21/slim">
                     <datafield tag="034" ind1="1" ind2=" ">
                         <subfield code="a">a</subfield>
@@ -451,24 +452,24 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
                         <subfield code="f">N054.250000</subfield>
                         <subfield code="g">N054.250000</subfield>
                     </datafield>
-                </record>']]>));
+                </record>'));
                                                                                         st_astext
                 -------------------------------------------------------------------------------------------------------------------------------------------------------------
                 GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65)),POINT(-4.5 54.25))
                 (1 row)
-            </programlisting>
+            ]]></programlisting>
 
         </refsection>
 
         <refsection>
             <title>See Also</title>
             <para>
-                <xref linkend="ST_AsMARC21" />
+                <xref linkend="ST_AsMARC21"/>
             </para>
         </refsection>
     </refentry>
 
-	<refentry id="ST_GeometryFromText">
+	<refentry xml:id="ST_GeometryFromText">
 		  <refnamediv>
 			<refname>ST_GeometryFromText</refname>
 			<refpurpose>Return a specified ST_Geometry value from Well-Known Text representation (WKT).  This is an alias name for ST_GeomFromText</refpurpose>
@@ -493,11 +494,11 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromText" /></para>
+			<para><xref linkend="ST_GeomFromText"/></para>
 		  </refsection>
 	</refentry>
 
-	<refentry id="ST_GeomFromText">
+	<refentry xml:id="ST_GeomFromText">
 		  <refnamediv>
 			<refname>ST_GeomFromText</refname>
 			<refpurpose>Return a specified ST_Geometry value from Well-Known Text representation (WKT).</refpurpose>
@@ -532,8 +533,8 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 			<para>&sfs_compliant; s3.2.6.2 - option SRID is from the conformance suite.</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.40</para>
 			<para>&curve_support;</para>
-            <note><para>While not OGC-compliant, <xref linkend="ST_MakePoint" /> is faster than ST_GeomFromText and ST_PointFromText. It is also easier to use for numeric coordinate values. <xref linkend="ST_Point" /> is another option similar in speed to <xref linkend="ST_MakePoint" /> and is OGC-compliant, but doesn't support anything but 2D points.</para></note>
-			<warning><para>Changed: 2.0.0 In prior versions of PostGIS ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed.  This is now illegal in PostGIS 2.0.0 to better conform with SQL/MM standards. This should now be
+            <note><para>While not OGC-compliant, <xref linkend="ST_MakePoint"/> is faster than ST_GeomFromText and ST_PointFromText. It is also easier to use for numeric coordinate values. <xref linkend="ST_Point"/> is another option similar in speed to <xref linkend="ST_MakePoint"/> and is OGC-compliant, but doesn't support anything but 2D points.</para></note>
+			<warning><para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions of PostGIS ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed.  This is now illegal in PostGIS 2.0.0 to better conform with SQL/MM standards. This should now be
 			    written as ST_GeomFromText('GEOMETRYCOLLECTION EMPTY')</para></warning>
 
 		  </refsection>
@@ -579,12 +580,12 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_SRID" /></para>
+			<para><xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_GeomFromWKB"/>, <xref linkend="ST_SRID"/></para>
 		  </refsection>
 	</refentry>
 
 
-	<refentry id="ST_LineFromText">
+	<refentry xml:id="ST_LineFromText">
 	  <refnamediv>
 		<refname>ST_LineFromText</refname>
 
@@ -644,11 +645,11 @@ aline                            | null_return
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromText" /></para>
+		<para><xref linkend="ST_GeomFromText"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_MLineFromText">
+	<refentry xml:id="ST_MLineFromText">
 	  <refnamediv>
 		<refname>ST_MLineFromText</refname>
 
@@ -704,11 +705,11 @@ aline                            | null_return
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromText" /></para>
+		<para><xref linkend="ST_GeomFromText"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_MPointFromText">
+	<refentry xml:id="ST_MPointFromText">
 	  <refnamediv>
 		<refname>ST_MPointFromText</refname>
 
@@ -766,11 +767,11 @@ SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 42.1223))', 43
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromText" /></para>
+		<para><xref linkend="ST_GeomFromText"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_MPolyFromText">
+	<refentry xml:id="ST_MPolyFromText">
 	  <refnamediv>
 		<refname>ST_MPolyFromText</refname>
 
@@ -830,11 +831,11 @@ SELECt ST_MPolyFromText('MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.976
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_SRID" /></para>
+		<para><xref linkend="ST_GeomFromText"/>, <xref linkend="ST_SRID"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_PointFromText">
+	<refentry xml:id="ST_PointFromText">
 		  <refnamediv>
 			<refname>ST_PointFromText</refname>
 			<refpurpose>Makes a point Geometry from WKT with the given SRID. If SRID is
@@ -871,7 +872,7 @@ SELECt ST_MPolyFromText('MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.976
 
 			<note>
 				<para>If you are absolutely sure all your WKT geometries are points, don't use this function.
-					It is slower than ST_GeomFromText since it adds an additional validation step.  If you are building points from long lat coordinates and care more about performance and accuracy than OGC compliance, use <xref linkend="ST_MakePoint" /> or OGC compliant alias <xref linkend="ST_Point" />.   </para>
+					It is slower than ST_GeomFromText since it adds an additional validation step.  If you are building points from long lat coordinates and care more about performance and accuracy than OGC compliance, use <xref linkend="ST_MakePoint"/> or OGC compliant alias <xref linkend="ST_Point"/>.   </para>
 			</note>
 
 			<para>&sfs_compliant; s3.2.6.2 - option SRID is from the conformance suite.</para>
@@ -887,11 +888,11 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_Point" />, <xref linkend="ST_SRID" /></para>
+			<para><xref linkend="ST_GeomFromText"/>, <xref linkend="ST_MakePoint"/>, <xref linkend="ST_Point"/>, <xref linkend="ST_SRID"/></para>
 		  </refsection>
 	</refentry>
 
-	<refentry id="ST_PolygonFromText">
+	<refentry xml:id="ST_PolygonFromText">
 	  <refnamediv>
 		<refname>ST_PolygonFromText</refname>
 
@@ -951,11 +952,11 @@ t
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromText" /></para>
+		<para><xref linkend="ST_GeomFromText"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_WKTToSQL">
+	<refentry xml:id="ST_WKTToSQL">
 		  <refnamediv>
 			<refname>ST_WKTToSQL</refname>
 			<refpurpose>Return a specified ST_Geometry value from Well-Known Text representation (WKT).  This is an alias name for ST_GeomFromText</refpurpose>
@@ -974,17 +975,17 @@ t
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromText" /></para>
+			<para><xref linkend="ST_GeomFromText"/></para>
 		  </refsection>
 	</refentry>
 
-    </sect2>
+    </section>
 	<!-- ==============================================================================  -->
 
-    <sect2>
+    <section>
       <title>Well-Known Binary (WKB)</title>
 
-	<refentry id="ST_GeogFromWKB">
+	<refentry xml:id="ST_GeogFromWKB">
 	  <refnamediv>
 		<refname>ST_GeogFromWKB</refname>
 		<refpurpose>Creates a geography instance from a Well-Known Binary geometry
@@ -1031,11 +1032,11 @@ ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\
 	   <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeogFromText" />, <xref linkend="ST_AsBinary" /></para>
+		<para><xref linkend="ST_GeogFromText"/>, <xref linkend="ST_AsBinary"/></para>
 	  </refsection>
 </refentry>
 
-	<refentry id="ST_GeomFromEWKB">
+	<refentry xml:id="ST_GeomFromEWKB">
 	  <refnamediv>
 		<refname>ST_GeomFromEWKB</refname>
 		<refpurpose>Return a specified ST_Geometry value from Extended Well-Known Binary representation (EWKB).</refpurpose>
@@ -1057,7 +1058,7 @@ ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\
 			<para>The EWKB format is not an OGC standard, but a PostGIS specific format that includes the spatial reference system (SRID)
 			identifier</para>
 		</note>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
@@ -1085,11 +1086,11 @@ SELECT ST_GeomFromEWKB('\001\002\000\000 \255\020\000\000\003\000\000\000\344J=\
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_GeomFromWKB" /></para>
+		<para><xref linkend="ST_AsBinary"/>, <xref linkend="ST_AsEWKB"/>, <xref linkend="ST_GeomFromWKB"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_GeomFromWKB">
+	<refentry xml:id="ST_GeomFromWKB">
 	  <refnamediv>
 		<refname>ST_GeomFromWKB</refname>
 		<refpurpose>Creates a geometry instance from a Well-Known Binary geometry
@@ -1156,11 +1157,11 @@ SELECT
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_WKBToSQL" />, <xref linkend="ST_AsBinary" />, <xref linkend="ST_GeomFromEWKB" /></para>
+		<para><xref linkend="ST_WKBToSQL"/>, <xref linkend="ST_AsBinary"/>, <xref linkend="ST_GeomFromEWKB"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_LineFromWKB">
+	<refentry xml:id="ST_LineFromWKB">
 	  <refnamediv>
 		<refname>ST_LineFromWKB</refname>
 
@@ -1202,8 +1203,8 @@ SELECT
 
 		<note>
 		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, its more
-		  efficient to just use <xref linkend="ST_GeomFromWKB" />.  This function just
-		  calls <xref linkend="ST_GeomFromWKB" /> and adds additional validation that
+		  efficient to just use <xref linkend="ST_GeomFromWKB"/>.  This function just
+		  calls <xref linkend="ST_GeomFromWKB"/> and adds additional validation that
 		  it returns a linestring.</para>
 		</note>
 
@@ -1229,11 +1230,11 @@ aline                            | null_return
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_LinestringFromWKB" /></para>
+		<para><xref linkend="ST_GeomFromWKB"/>, <xref linkend="ST_LinestringFromWKB"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_LinestringFromWKB">
+	<refentry xml:id="ST_LinestringFromWKB">
 	  <refnamediv>
 		<refname>ST_LinestringFromWKB</refname>
 
@@ -1266,7 +1267,7 @@ aline                            | null_return
 
 	  <para>If an SRID is not specified, it defaults to 0.  <varname>NULL</varname> is
 		returned if the input <varname>bytea</varname> does not represent a
-		<varname>LINESTRING</varname> geometry. This an alias for <xref linkend="ST_LineFromWKB" />.</para>
+		<varname>LINESTRING</varname> geometry. This an alias for <xref linkend="ST_LineFromWKB"/>.</para>
 
 		<note>
 		  <para>OGC SPEC 3.2.6.2 - optional SRID is from the conformance suite.</para>
@@ -1274,8 +1275,8 @@ aline                            | null_return
 
 		<note>
 		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, it's more
-		  efficient to just use <xref linkend="ST_GeomFromWKB" />.  This function just calls
-		  <xref linkend="ST_GeomFromWKB" /> and adds additional validation that it returns a
+		  efficient to just use <xref linkend="ST_GeomFromWKB"/>.  This function just calls
+		  <xref linkend="ST_GeomFromWKB"/> and adds additional validation that it returns a
 		  <varname>LINESTRING</varname>.</para>
 		</note>
 
@@ -1302,11 +1303,11 @@ aline                            | null_return
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_LineFromWKB" /></para>
+		<para><xref linkend="ST_GeomFromWKB"/>, <xref linkend="ST_LineFromWKB"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_PointFromWKB">
+	<refentry xml:id="ST_PointFromWKB">
 	  <refnamediv>
 		<refname>ST_PointFromWKB</refname>
 
@@ -1376,11 +1377,11 @@ SELECT
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_LineFromWKB" /></para>
+		<para><xref linkend="ST_GeomFromWKB"/>, <xref linkend="ST_LineFromWKB"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_WKBToSQL">
+	<refentry xml:id="ST_WKBToSQL">
 		  <refnamediv>
 			<refname>ST_WKBToSQL</refname>
 			<refpurpose>Return a specified ST_Geometry value from Well-Known Binary representation (WKB).  This is an alias name for ST_GeomFromWKB that takes no srid</refpurpose>
@@ -1399,18 +1400,18 @@ SELECT
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromWKB" /></para>
+			<para><xref linkend="ST_GeomFromWKB"/></para>
 		  </refsection>
 	</refentry>
 
-    </sect2>
+    </section>
 
 	<!-- ==============================================================================  -->
 
-    <sect2>
+    <section>
       <title>Other Formats</title>
 
-		<refentry id="ST_Box2dFromGeoHash">
+		<refentry xml:id="ST_Box2dFromGeoHash">
 	  <refnamediv>
 		<refname>ST_Box2dFromGeoHash</refname>
 
@@ -1436,12 +1437,12 @@ SELECT
 
 		<para>If <varname>precision</varname> is specified ST_Box2dFromGeoHash will use that many characters from the GeoHash to create the BOX2D. Lower precision values results in larger BOX2Ds and larger values increase the precision.</para>
 
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0');
+		<programlisting>SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0');
 
                 st_geomfromgeohash
 --------------------------------------------------
@@ -1457,18 +1458,18 @@ SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);
                             st_box2dfromgeohash
 ---------------------------------------------------------------------------
  BOX(-115.17282128334 36.1146408319473,-115.172810554504 36.1146461963654)
-		]]>
+
 		</programlisting>
 	  </refsection>
 	 <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeoHash" />, <xref linkend="ST_GeomFromGeoHash" />, <xref linkend="ST_PointFromGeoHash" /></para>
+		<para><xref linkend="ST_GeoHash"/>, <xref linkend="ST_GeomFromGeoHash"/>, <xref linkend="ST_PointFromGeoHash"/></para>
 	  </refsection>
 	</refentry>
 
 
-	<refentry id="ST_GeomFromGeoHash">
+	<refentry xml:id="ST_GeomFromGeoHash">
 	  <refnamediv>
 		<refname>ST_GeomFromGeoHash</refname>
 
@@ -1494,12 +1495,12 @@ SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);
 
 		<para>If <varname>precision</varname> is specified ST_GeomFromGeoHash will use that many characters from the GeoHash to create the polygon.</para>
 
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
+		<programlisting>SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
                                                         st_astext
 --------------------------------------------------------------------------------------------------------------------------
  POLYGON((-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646))
@@ -1513,17 +1514,17 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
                                                                                        st_astext
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  POLYGON((-115.17282128334 36.1146408319473,-115.17282128334 36.1146461963654,-115.172810554504 36.1146461963654,-115.172810554504 36.1146408319473,-115.17282128334 36.1146408319473))
-		]]>
+
 		</programlisting>
 	  </refsection>
 	 <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeoHash" />,<xref linkend="ST_Box2dFromGeoHash" />, <xref linkend="ST_PointFromGeoHash" /></para>
+		<para><xref linkend="ST_GeoHash"/>,<xref linkend="ST_Box2dFromGeoHash"/>, <xref linkend="ST_PointFromGeoHash"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_GeomFromGML">
+	<refentry xml:id="ST_GeomFromGML">
 	  <refnamediv>
 		<refname>ST_GeomFromGML</refname>
 		<refpurpose>Takes as input GML representation of geometry and outputs a PostGIS geometry object</refpurpose>
@@ -1560,12 +1561,12 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 				  <para>GML 2.1.2</para>
 				</listitem>
 			</itemizedlist>
-			OGC GML standards, cf: <ulink url="http://www.opengeospatial.org/standards/gml">http://www.opengeospatial.org/standards/gml</ulink>:
+			OGC GML standards, cf: <link xlink:href="http://www.opengeospatial.org/standards/gml">http://www.opengeospatial.org/standards/gml</link>:
 		</para>
 
-		<para>Availability: 1.5, requires libxml2 1.6+</para>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
-		<para>Enhanced: 2.0.0 default srid optional parameter added.</para>
+		<para role="availability" conformance="1.5">Availability: 1.5, requires libxml2 1.6+</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 default srid optional parameter added.</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -1582,36 +1583,44 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 
 	  <refsection>
 		<title>Examples - A single geometry with srsName</title>
-		<programlisting>SELECT ST_GeomFromGML('<![CDATA[
-		<gml:LineString srsName="EPSG:4269">
-			<gml:coordinates>
-				-71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932
-			</gml:coordinates>
-		</gml:LineString>']]>);
+		<programlisting><![CDATA[
+SELECT ST_GeomFromGML($$
+    <gml:LineString xmlns:gml="http://www.opengis.net/gml"
+			srsName="EPSG:4269">
+        <gml:coordinates>
+            -71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932
+        </gml:coordinates>
+    </gml:LineString>
+$$);
+]]>
 		</programlisting>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples - XLink usage</title>
-		<programlisting>SELECT <![CDATA[ST_GeomFromGML('
-		<gml:LineString xmlns:gml="http://www.opengis.net/gml"
-				xmlns:xlink="http://www.w3.org/1999/xlink"
-				srsName="urn:ogc:def:crs:EPSG::4269">
-			<gml:pointProperty>
-				<gml:Point gml:id="p1"><gml:pos>42.258729 -71.16028</gml:pos></gml:Point>
-			</gml:pointProperty>
-			<gml:pos>42.259112 -71.160837</gml:pos>
-			<gml:pointProperty>
-				<gml:Point xlink:type="simple" xlink:href="#p1"/>
-			</gml:pointProperty>
-		</gml:LineString>');]]>);
+		<programlisting><![CDATA[
+SELECT ST_GeomFromGML($$
+    <gml:LineString xmlns:gml="http://www.opengis.net/gml"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            srsName="urn:ogc:def:crs:EPSG::4269">
+        <gml:pointProperty>
+            <gml:Point gml:id="p1"><gml:pos>42.258729 -71.16028</gml:pos></gml:Point>
+        </gml:pointProperty>
+        <gml:pos>42.259112 -71.160837</gml:pos>
+        <gml:pointProperty>
+            <gml:Point xlink:type="simple" xlink:href="#p1"/>
+        </gml:pointProperty>
+    </gml:LineString>
+$$);
+]]>
 		</programlisting>
 	  </refsection>
 
 	 <refsection>
 		<title>Examples - Polyhedral Surface</title>
-		<programlisting>SELECT ST_AsEWKT(<![CDATA[ST_GeomFromGML('
-<gml:PolyhedralSurface>
+		<programlisting><![CDATA[
+SELECT ST_AsEWKT(ST_GeomFromGML('
+<gml:PolyhedralSurface xmlns:gml="http://www.opengis.net/gml">
 <gml:polygonPatches>
   <gml:PolygonPatch>
     <gml:exterior>
@@ -1644,7 +1653,7 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
     </gml:exterior>
   </gml:PolygonPatch>
 </gml:polygonPatches>
-</gml:PolyhedralSurface>']]>));
+</gml:PolyhedralSurface>'));
 
 -- result --
  POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
@@ -1653,17 +1662,17 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
  ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
  ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
  ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)))
-		</programlisting>
+		]]></programlisting>
 	  </refsection>
 
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="installation_configuration" />, <xref linkend="ST_AsGML" />, <xref linkend="ST_GMLToSQL" /></para>
+		<para><xref linkend="installation_configuration"/>, <xref linkend="ST_AsGML"/>, <xref linkend="ST_GMLToSQL"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_GeomFromGeoJSON">
+	<refentry xml:id="ST_GeomFromGeoJSON">
 	  <refnamediv>
 		<refname>ST_GeomFromGeoJSON</refname>
 		<refpurpose>Takes as input a geojson representation of a geometry and outputs a PostGIS geometry object</refpurpose>
@@ -1694,11 +1703,11 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<para>Constructs a PostGIS geometry object from the GeoJSON representation.</para>
 		<para>ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an error if you try to use it on a whole JSON document.</para>
 
-		<para>Enhanced: 3.0.0 parsed geometry defaults to SRID=4326 if not specified otherwise.</para>
-		<para>Enhanced: 2.5.0 can now accept json and jsonb as inputs.</para>
-		<para>Availability: 2.0.0 requires - JSON-C &gt;= 0.9</para>
+		<para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 parsed geometry defaults to SRID=4326 if not specified otherwise.</para>
+		<para role="enhanced" conformance="2.5.0">Enhanced: 2.5.0 can now accept json and jsonb as inputs.</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0 requires - JSON-C &gt;= 0.9</para>
 		<note><para>If you do not have JSON-C enabled, support you will get an error notice instead of seeing an output.
-			To enable JSON-C, run configure --with-jsondir=/path/to/json-c.  See <xref linkend="installation_configuration" /> for details.</para></note>
+			To enable JSON-C, run configure --with-jsondir=/path/to/json-c.  See <xref linkend="installation_configuration"/> for details.</para></note>
 		<para>&Z_support;</para>
 	  </refsection>
 
@@ -1721,11 +1730,11 @@ LINESTRING(1 2,4 5,7 8)
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsText" />, <xref linkend="ST_AsGeoJSON" />, <xref linkend="installation_configuration" /></para>
+		<para><xref linkend="ST_AsText"/>, <xref linkend="ST_AsGeoJSON"/>, <xref linkend="installation_configuration"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_GeomFromKML">
+	<refentry xml:id="ST_GeomFromKML">
 	  <refnamediv>
 		<refname>ST_GeomFromKML</refname>
 		<refpurpose>Takes as input KML representation of geometry and outputs a PostGIS geometry object</refpurpose>
@@ -1751,10 +1760,10 @@ LINESTRING(1 2,4 5,7 8)
 				  <para>KML 2.2.0 Namespace</para>
 				</listitem>
 			</itemizedlist>
-			OGC KML standards, cf: <ulink url="http://www.opengeospatial.org/standards/kml">http://www.opengeospatial.org/standards/kml</ulink>:
+			OGC KML standards, cf: <link xlink:href="http://www.opengeospatial.org/standards/kml">http://www.opengeospatial.org/standards/kml</link>:
 		</para>
 
-		<para>Availability: 1.5, requires libxml2 2.6+</para>
+		<para role="availability" conformance="1.5">Availability: 1.5, requires libxml2 2.6+</para>
 		<para>&Z_support;</para>
 		<note>
 			<para>ST_GeomFromKML function not support SQL/MM curves geometries.</para>
@@ -1764,24 +1773,27 @@ LINESTRING(1 2,4 5,7 8)
 
 	  <refsection>
 		<title>Examples - A single geometry with srsName</title>
-		<programlisting>SELECT ST_GeomFromKML('<![CDATA[
-		<LineString>
-			<coordinates>-71.1663,42.2614
-				-71.1667,42.2616</coordinates>
-		</LineString>']]>);
-		</programlisting>
+		<programlisting><![CDATA[
+SELECT ST_GeomFromKML($$
+    <LineString>
+        <coordinates>-71.1663,42.2614
+            -71.1667,42.2616</coordinates>
+    </LineString>
+$$);
+]]>
+        </programlisting>
 	  </refsection>
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="installation_configuration" />, <xref linkend="ST_AsKML" /></para>
+		<para><xref linkend="installation_configuration"/>, <xref linkend="ST_AsKML"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_GeomFromTWKB">
+	<refentry xml:id="ST_GeomFromTWKB">
 	  <refnamediv>
 		<refname>ST_GeomFromTWKB</refname>
-		<refpurpose>Creates a geometry instance from a TWKB ("<ulink url="https://github.com/TWKB/Specification/blob/master/twkb.md">Tiny Well-Known Binary</ulink>") geometry
+		<refpurpose>Creates a geometry instance from a TWKB ("<link xlink:href="https://github.com/TWKB/Specification/blob/master/twkb.md">Tiny Well-Known Binary</link>") geometry
 		representation.</refpurpose>
 	  </refnamediv>
 
@@ -1797,7 +1809,7 @@ LINESTRING(1 2,4 5,7 8)
 	  <refsection>
 		<title>Description</title>
 
-		<para>The <varname>ST_GeomFromTWKB</varname> function, takes a a TWKB ("<ulink url="https://github.com/TWKB/Specification/blob/master/twkb.md">Tiny Well-Known Binary</ulink>") geometry representation (WKB) and creates an instance of the appropriate
+		<para>The <varname>ST_GeomFromTWKB</varname> function, takes a a TWKB ("<link xlink:href="https://github.com/TWKB/Specification/blob/master/twkb.md">Tiny Well-Known Binary</link>") geometry representation (WKB) and creates an instance of the appropriate
 		geometry type.</para>
 
 	  </refsection>
@@ -1826,12 +1838,12 @@ LINESTRING(-113.98 39.198,-113.981 39.195)
 	  </refsection>
 	   <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsTWKB" /></para>
+		<para><xref linkend="ST_AsTWKB"/></para>
 	  </refsection>
     </refentry>
 
 
-	<refentry id="ST_GMLToSQL">
+	<refentry xml:id="ST_GMLToSQL">
 		  <refnamediv>
 			<refname>ST_GMLToSQL</refname>
 			<refpurpose>Return a specified ST_Geometry value from GML representation.  This is an alias name for ST_GeomFromGML</refpurpose>
@@ -1852,18 +1864,18 @@ LINESTRING(-113.98 39.198,-113.981 39.195)
 		  <refsection>
 			<title>Description</title>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support).</para>
-			<para>Availability: 1.5, requires libxml2 1.6+</para>
-		        <para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
-		        <para>Enhanced: 2.0.0 default srid optional parameter added.</para>
+			<para role="availability" conformance="1.5">Availability: 1.5, requires libxml2 1.6+</para>
+		        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+		        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 default srid optional parameter added.</para>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="installation_configuration" />, <xref linkend="ST_GeomFromGML" />, <xref linkend="ST_AsGML" /></para>
+			<para><xref linkend="installation_configuration"/>, <xref linkend="ST_GeomFromGML"/>, <xref linkend="ST_AsGML"/></para>
 		  </refsection>
 	</refentry>
 
 
-  <refentry id="ST_LineFromEncodedPolyline">
+  <refentry xml:id="ST_LineFromEncodedPolyline">
     <refnamediv>
     <refname>ST_LineFromEncodedPolyline</refname>
 
@@ -1887,7 +1899,7 @@ LINESTRING(-113.98 39.198,-113.981 39.195)
 		<para>Optional <varname>precision</varname> specifies how many decimal places will be preserved in Encoded Polyline. Value should be the same on encoding and decoding, or coordinates will be incorrect.</para>
 
     <para>See http://developers.google.com/maps/documentation/utilities/polylinealgorithm</para>
-    <para>Availability: 2.2.0</para>
+    <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
     </refsection>
 
     <refsection>
@@ -1911,11 +1923,11 @@ SRID=4326;LINESTRING(-12.02 3.85,-12.095 4.07,-12.6453 4.3252)
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="ST_AsEncodedPolyline" /></para>
+    <para><xref linkend="ST_AsEncodedPolyline"/></para>
     </refsection>
   </refentry>
 
-		<refentry id="ST_PointFromGeoHash">
+		<refentry xml:id="ST_PointFromGeoHash">
 	  <refnamediv>
 		<refname>ST_PointFromGeoHash</refname>
 
@@ -1941,12 +1953,12 @@ SRID=4326;LINESTRING(-12.02 3.85,-12.095 4.07,-12.6453 4.3252)
 
 		<para>If <varname>precision</varname> is specified ST_PointFromGeoHash will use that many characters from the GeoHash to create the point.</para>
 
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
+		<programlisting>SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
           st_astext
 ------------------------------
  POINT(-115.172816 36.114646)
@@ -1960,17 +1972,17 @@ SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
                  st_astext
 -------------------------------------------
  POINT(-115.172815918922 36.1146435141563)
-		]]>
+
 		</programlisting>
 	  </refsection>
 	 <refsection>
 		<title>See Also</title>
 
-		<para> <xref linkend="ST_GeoHash" />, <xref linkend="ST_Box2dFromGeoHash" />, <xref linkend="ST_GeomFromGeoHash" /></para>
+		<para> <xref linkend="ST_GeoHash"/>, <xref linkend="ST_Box2dFromGeoHash"/>, <xref linkend="ST_GeomFromGeoHash"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_FromFlatGeobufToTable">
+	<refentry xml:id="ST_FromFlatGeobufToTable">
 	  <refnamediv>
 		<refname>ST_FromFlatGeobufToTable</refname>
 
@@ -1991,18 +2003,18 @@ SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<title>Description</title>
 
 		<para>
-			Creates a table based on the structure of FlatGeobuf data. (<ulink url="http://flatgeobuf.org">http://flatgeobuf.org</ulink>).
+			Creates a table based on the structure of FlatGeobuf data. (<link xlink:href="http://flatgeobuf.org">http://flatgeobuf.org</link>).
 		</para>
 
 		<para><varname>schema</varname> Schema name.</para>
 		<para><varname>table</varname> Table name.</para>
 		<para><varname>data</varname> Input FlatGeobuf data.</para>
 
-		<para>Availability: 3.2.0</para>
+		<para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_FromFlatGeobuf">
+	<refentry xml:id="ST_FromFlatGeobuf">
 	  <refnamediv>
 		<refname>ST_FromFlatGeobuf</refname>
 
@@ -2022,7 +2034,7 @@ SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<title>Description</title>
 
 		<para>
-			Reads FlatGeobuf data (<ulink url="http://flatgeobuf.org">http://flatgeobuf.org</ulink>).
+			Reads FlatGeobuf data (<link xlink:href="http://flatgeobuf.org">http://flatgeobuf.org</link>).
 
 			NOTE: PostgreSQL bytea cannot exceed 1GB.
 		</para>
@@ -2030,10 +2042,10 @@ SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<para><varname>tabletype</varname> reference to a table type.</para>
 		<para><varname>data</varname> input FlatGeobuf data.</para>
 
-		<para>Availability: 3.2.0</para>
+		<para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
 	  </refsection>
 	</refentry>
 
-	    </sect2>
+	    </section>
 
-  </sect1>
+  </section>

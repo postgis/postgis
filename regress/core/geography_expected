@@ -49,3 +49,21 @@ dwithin_poly_line_1|t
 dwithin_poly_poly_1|f
 dwithin_poly_poly_2|t
 dwithin_poly_poly_3|t
+#5456|0
+lrs_empty_1|
+lrs_empty_2|
+lrs_empty_3|
+lrs_empty_4|
+lrs_empty_5|
+lrs_empty_6|
+lrs_lip_1|POINT(4.35 50.85)
+lrs_lip_2|POINT(4.35 50.85)
+lrs_lip_3|POINT(37.62 55.76)
+lrs_lip_4|MULTIPOINT((7.27 51.73),(10.3 52.54),(13.43 53.27),(16.67 53.91),(20 54.47),(23.42 54.93),(26.9 55.29),(30.44 55.55),(34.02 55.7),(37.62 55.76))
+lrs_lip_5|MULTIPOINT((7.27 51.73),(10.29 52.54),(13.43 53.27),(16.67 53.91),(20 54.46),(23.42 54.92),(26.9 55.29),(30.44 55.55),(34.02 55.7),(37.62 55.76))
+lrs_llp_1|0.50
+lrs_llp_2|0.00
+lrs_llp_3|1.00
+ERROR:  geography_line_locate_point: 2nd arg is not a point
+lrs_substr_1|LINESTRING(9.28 23.25,18.97 25.93)
+lrs_sl_1|LINESTRING(25 42.79,25 40)

@@ -1,0 +1,12 @@
+  @TARGET@-@LANG@:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/@LANG@ local-@TARGET@
+    depends_on: @DEP@
+    when:
+      - event: push
+        path:
+          include:
+            - "doc/po/@LANG@/*.po"
+

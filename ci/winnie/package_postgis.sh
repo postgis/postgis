@@ -3,90 +3,13 @@
 ## PostgreSQL, OS_BUILD denote the last build to be packaged
 ## and are passed in by the jenkins job process
 ###
-#export OS_BUILD=64
-#export PGPORT=8442
 
-#export OS_BUILD=32
+. $(dirname $0)/winnie_common.sh
 
-#export GCC_TYPE=
-#if no override is set - use these values
-#otherwise use the ones jenkins passes thru
-#!/usr/bin/env bash
-if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.10.3
-	export GDAL_VER=3.4.2
-	export PROJ_VER=7.2.1
-	export SFCGAL_VER=1.4.1
-	export CGAL_VER=5.3
-	export ICON_VER=1.16
-	export ZLIB_VER=1.2.11
-  export PROTOBUF_VER=3.2.0
-	export PROTOBUFC_VER=1.2.1
-	export JSON_VER=0.12
-	export PROJSO=libproj-19.dll
-	export CURL_VER=7.73
-fi;
-
-export PROTOBUF_VER=3.2.0
-export PROTOBUFC_VER=1.2.1
-export JSON_VER=0.12
-export PCRE_VER=8.33
-
-if  [[ "${ICON_VER}" == '' ]] ; then
-  export ICON_VER=1.15
-fi;
-
-echo "ICON_VER ${ICON_VER}"
-
-if  [[ "${CURL_VER}" == '' ]] ; then
-  export CURL_VER=7.73
-fi;
-
-echo "CURL_VER ${CURL_VER}"
-
-#set to something even if override is on but not set
-if  [[ "${ZLIB_VER}" == '' ]] ; then
-  export ZLIB_VER=1.2.11
-fi;
-
-
-#set to something even if override is on but not set
-if  [[ "${LIBXML_VER}" == '' ]] ; then
-  export LIBXML_VER=2.9.9
-fi;
-
-#set to something even if override is on but not set
-if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=5.3
-fi;
-
-echo "ZLIB_VER $ZLIB_VER"
-echo "PROJ_VER $PROJ_VER"
-echo "LIBXML_VER $LIBXML_VER"
-echo "CGAL_VER $CGAL_VER"
-
-
-export PROJECTS=/projects
-export PROJECTS=/projects
-export PATHOLD=$PATH
-
-
-export PGHOST=localhost
-
-export PGUSER=postgres
-
-export PATHOLD=$PATH
 WEB=/home/www/postgis/htdocs
 DWN=${WEB}/download
 
-export PATHOLD="/mingw/bin:/mingw/include:/c/Windows/system32:/c/Windows:.:/bin:/include:/usr/local/bin"
 #export PG_VER=9.2beta2
-
-echo PATH BEFORE: $PATH
-
-export PGPATH=${PROJECTS}/postgresql/rel/pg${PG_VER}w${OS_BUILD}${GCC_TYPE}
-export PGPATHEDB=${PGPATH}edb
-#export PROJSO=libproj-13.dll
 
 if [ -n "$SOURCE_FOLDER" ]; then
   export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
@@ -112,15 +35,12 @@ export REL_PGVER=${PG_VER//./} #strip the period
 
 export RELDIR=${PROJECTS}/postgis/builds/${POSTGIS_MINOR_VER}
 export RELVERDIR=postgis-pg${REL_PGVER}-binaries-${POSTGIS_MICRO_VER}w${OS_BUILD}${GCC_TYPE}
-export PATH="${PATHOLD}:${PGPATH}/bin:${PGPATH}/lib"
-export PCRE_VER=8.33
-#PATH="${PGPATH}/bin:${PGPATH}/lib:${PROJECTS}/xsltproc:${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/gtkw${OS_BUILD}/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include:${PROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin:${PATH}"
-#echo PATH AFTER: $PATH
+
 outdir="${RELDIR}/${RELVERDIR}"
 package="${RELDIR}/${RELVERDIR}.zip"
 verfile="${RELDIR}/${RELVERDIR}/version.txt"
 rm -rf $outdir
-rm $package
+rm -f $package
 mkdir -p $outdir
 mkdir -p $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}
 mkdir -p $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}/proj
@@ -133,15 +53,15 @@ mkdir $outdir/bin/postgisgui/lib
 mkdir $outdir/utils
 cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin/postgisgui
 
-cp ${PGPATHEDB}/bin/libpq.dll  $outdir/bin/postgisgui
+cp ${PGPATH}/bin/libpq.dll  $outdir/bin/postgisgui
 #cp ${PGPATHEDB}/bin/libiconv2.dll  $outdir/bin/postgisgui
 cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
 cp ${PGPATHEDB}/bin/libintl*.dll $outdir/bin/postgisgui
 
-cp ${PGPATHEDB}/bin/ssleay32.dll $outdir/bin/postgisgui
-cp ${PGPATHEDB}/bin/libeay32.dll $outdir/bin/postgisgui
-cp ${PGPATHEDB}/bin/libcrypto-1_1-x64.dll $outdir/bin/postgisgui
-cp ${PGPATHEDB}/bin/libssl-1_1-x64.dll $outdir/bin/postgisgui
+#cp ${PGPATHEDB}/bin/ssleay32.dll $outdir/bin/postgisgui
+#cp ${PGPATHEDB}/bin/libeay32.dll $outdir/bin/postgisgui
+#cp ${PGPATHEDB}/bin/libcrypto-1_1-x64.dll $outdir/bin/postgisgui
+#cp ${PGPATHEDB}/bin/libssl-1_1-x64.dll $outdir/bin/postgisgui
 
 #pg 15 is shipping with newer ssl
 cp ${PGPATHEDB}/bin/libcrypto-3-x64.dll $outdir/bin/postgisgui
@@ -159,12 +79,13 @@ cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/gtk-2.0 $outdir/bin/postgisgui/
 cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin/postgisgui/lib
 cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/gdk-pixbuf-2.0 $outdir/bin/postgisgui/lib
 
+# proj
+cp ${PROJ_LIB}/* $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}/proj
+cp ${PROJ_PATH}/bin/*.dll $outdir/bin
+cp ${PROJ_PATH}/bin/*.dll $outdir/bin/postgisgui
 
-cp ${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/share/proj/* $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}/proj
-cp ${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
+# geos
 cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
-
-cp ${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 
 #for protobuf
@@ -193,7 +114,7 @@ if [ -n "$SFCGAL_VER"  ]; then
 	echo "GMP VERSION: ${GMP_VER} https://gmplib.org" >> $verfile
 	echo "MPFR VERSION: ${MPFR_VER} http://www.mpfr.org" >> $verfile
 
-	cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
+	#cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
 	cp -p ${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin
 	# cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 	# cp -p ${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin/postgisgui
@@ -209,7 +130,7 @@ cd ${POSTGIS_SRC}
 strip postgis/*.dll
 strip sfcgal/*.dll
 strip raster/rt_pg/*.dll
-strip liblwgeom/.libs/*.dll
+#strip liblwgeom/.libs/*.dll
 
 cp postgis/*.dll ${RELDIR}/${RELVERDIR}/lib
 cp sfcgal/*.dll ${RELDIR}/${RELVERDIR}/lib
@@ -221,7 +142,7 @@ cp raster/rt_pg/*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MIN
 cp utils/*.pl ${RELDIR}/${RELVERDIR}/utils
 
 cp raster/loader/.libs/raster2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
-cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin
+#cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin
 cp loader/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/pgsql2shp.exe ${RELDIR}/${RELVERDIR}/bin
@@ -236,7 +157,7 @@ cp topology/loader/* ${RELDIR}/${RELVERDIR}/bin
 cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
 cp spatial_ref_sys.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp topology/topology.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
-cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
+#cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 #cp topology/README* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 #cp utils/* ${RELDIR}/${RELVERDIR}/utils
 #cp extras/* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}/extras
@@ -291,7 +212,7 @@ echo "LIBICONV VERSION: ${ICON_VER} http://ftp.gnu.org/gnu/libiconv/libiconv-${I
 if [ -n "$SFCGAL_VER"  ]; then
     echo "CGAL VERSION: ${CGAL_VER} http://www.cgal.org" >> $verfile
     echo "BOOST VERSION: ${BOOST_VER} http://www.boost.org" >> $verfile
-    echo "SFCGAL VERSION: ${SFCGAL_VER} http://www.sfcgal.org https://github.com/Oslandia/SFCGAL" >> $verfile
+    echo "SFCGAL VERSION: ${SFCGAL_VER} http://www.sfcgal.org https://gitlab.com/sfcgal/SFCGAL" >> $verfile
 fi;
 
 if [ -f ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/gdal_depends.txt ]; then

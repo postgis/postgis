@@ -18,18 +18,17 @@ if [ "$1" = "prepare" ]; then
 	echo ""
 
 	createdb > /dev/null
-	createlang plpgsql > /dev/null
 	psql -f ../lwpostgis.sql > /dev/null 2>&1
 
-	psql -f regress_lots_of_points.sql 
-	psql -c "CREATE INDEX quick_gist on test using gist (the_geom)" 
+	psql -f regress_lots_of_points.sql
+	psql -c "CREATE INDEX quick_gist on test using gist (the_geom)"
 else
 if [ "$1" = "run" ]; then
 	# Concurrent clients:
 	psql -c "update test set num=-num WHERE the_geom && 'BOX3D(125 125,135 135)'::box3d"  &
 	psql -c "update test set num=-num WHERE the_geom && 'BOX3D(125 125,135 135)'::box3d"  &
 	psql -c "update test set num=-num WHERE the_geom && 'BOX3D(125 125,135 135)'::box3d"  &
-	 
+
 	wait
 else
 if [ "$1" = "drop" ]; then

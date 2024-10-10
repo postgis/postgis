@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<sect1 id="Temporal">
-    <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Temporal">
+    <title>Trajectory Functions</title><info>
     <abstract>
 			<para>These functions support working with trajectories.
 			A trajectory is a linear geometry with increasing measures (M value) on each coordinate.
@@ -8,10 +8,10 @@
 			as the measure values.
 			</para>
     </abstract>
-    </sect1info>
- 	  <title>Trajectory Functions</title>
+    </info>
+ 	  
 
-		<refentry id="ST_IsValidTrajectory">
+		<refentry xml:id="ST_IsValidTrajectory">
 
 		  <refnamediv>
 			<refname>ST_IsValidTrajectory</refname>
@@ -37,9 +37,9 @@ The measure values must increase from each vertex to the next.
 			</para>
 			<para>
 Valid trajectories are expected as input to spatio-temporal functions
-like <xref linkend="ST_ClosestPointOfApproach" />
+like <xref linkend="ST_ClosestPointOfApproach"/>
 			</para>
-			<para>Availability: 2.2.0</para>
+			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
@@ -66,12 +66,12 @@ NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
 		  <refsection>
 			<title>See Also</title>
 			<para>
-<xref linkend="ST_ClosestPointOfApproach" />
+<xref linkend="ST_ClosestPointOfApproach"/>
 			</para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_ClosestPointOfApproach">
+		<refentry xml:id="ST_ClosestPointOfApproach">
 
 		  <refnamediv>
 			<refname>ST_ClosestPointOfApproach</refname>
@@ -95,20 +95,19 @@ Returns a measure at the closest point of approach of two trajectories.
 
 			<para>
 Returns the smallest measure at which points interpolated along the given
-trajectories are at the smallest distance.
+trajectories are the least distance apart.
       </para>
 			<para>
 Inputs must be valid trajectories as
-checked by <xref linkend="ST_IsValidTrajectory" />. Null is returned if
+checked by <xref linkend="ST_IsValidTrajectory"/>. Null is returned if
 the trajectories do not overlap in their M ranges.
 			</para>
 
 			<para>
-See <xref linkend="ST_LocateAlong" /> for getting the actual points at
-the given measure.
+To obtain the actual points at the computed measure use <xref linkend="ST_LocateAlong"/> .
 			</para>
 
-			<para>Availability: 2.2.0</para>
+			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
@@ -129,32 +128,33 @@ WITH inp AS ( SELECT
 ), cpa AS (
   SELECT ST_ClosestPointOfApproach(a,b) m FROM inp
 ), points AS (
-  SELECT ST_Force3DZ(ST_GeometryN(ST_LocateAlong(a,m),1)) pa,
-         ST_Force3DZ(ST_GeometryN(ST_LocateAlong(b,m),1)) pb
+  SELECT ST_GeometryN(ST_LocateAlong(a,m),1) pa,
+         ST_GeometryN(ST_LocateAlong(b,m),1) pb
   FROM inp, cpa
 )
 SELECT to_timestamp(m) t,
-       ST_Distance(pa,pb) distance
+       ST_Distance(pa,pb) distance,
+       ST_AsText(pa, 2) AS pa, ST_AsText(pb, 2) AS pb
 FROM points, cpa;
 
-               t               |     distance
--------------------------------+------------------
- 2015-05-26 10:45:31.034483+02 | 1.96036833151395
-</programlisting>
+               t               |      distance      |                  pa                  |                   pb                   
+-------------------------------+--------------------+--------------------------------------+----------------------------------------
+ 2015-05-26 10:45:31.034483-07 | 1.9603683315139542 | POINT ZM (7.59 0 3.79 1432662331.03) | POINT ZM (9.1 1.24 3.93 1432662331.03)
+ </programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 			<para>
-<xref linkend="ST_IsValidTrajectory" />,
-<xref linkend="ST_DistanceCPA" />,
-<xref linkend="ST_LocateAlong" />,
-<xref linkend="ST_AddMeasure" />
+<xref linkend="ST_IsValidTrajectory"/>,
+<xref linkend="ST_DistanceCPA"/>,
+<xref linkend="ST_LocateAlong"/>,
+<xref linkend="ST_AddMeasure"/>
 			</para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_DistanceCPA">
+		<refentry xml:id="ST_DistanceCPA">
 
 		  <refnamediv>
 			<refname>ST_DistanceCPA</refname>
@@ -177,15 +177,15 @@ Returns the distance between the closest point of approach of two trajectories.
 			<title>Description</title>
 
 			<para>
-Returns the minimum distance two moving objects have ever been each other.
+Returns the distance (in 2D) between two trajectories at their closest point of approach.
       </para>
 			<para>
 Inputs must be valid trajectories as checked by
-<xref linkend="ST_IsValidTrajectory" />.
+<xref linkend="ST_IsValidTrajectory"/>.
 Null is returned if the trajectories do not overlap in their M ranges.
 			</para>
 
-			<para>Availability: 2.2.0</para>
+			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
@@ -215,15 +215,15 @@ SELECT ST_DistanceCPA(a,b) distance FROM inp;
 		  <refsection>
 			<title>See Also</title>
 			<para>
-<xref linkend="ST_IsValidTrajectory" />,
-<xref linkend="ST_ClosestPointOfApproach" />,
-<xref linkend="ST_AddMeasure" />,
-<xref linkend="geometry_distance_cpa" />
+<xref linkend="ST_IsValidTrajectory"/>,
+<xref linkend="ST_ClosestPointOfApproach"/>,
+<xref linkend="ST_AddMeasure"/>,
+<xref linkend="geometry_distance_cpa"/>
 			</para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_CPAWithin">
+		<refentry xml:id="ST_CPAWithin">
 
 		  <refnamediv>
 			<refname>ST_CPAWithin</refname>
@@ -252,11 +252,11 @@ Tests whether two moving objects have ever been closer than the specified distan
       </para>
 			<para>
 Inputs must be valid trajectories as checked by
-<xref linkend="ST_IsValidTrajectory" />.
+<xref linkend="ST_IsValidTrajectory"/>.
 False is returned if the trajectories do not overlap in their M ranges.
 			</para>
 
-			<para>Availability: 2.2.0</para>
+			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
@@ -286,12 +286,12 @@ SELECT ST_CPAWithin(a,b,2), ST_DistanceCPA(a,b) distance FROM inp;
 		  <refsection>
 			<title>See Also</title>
 			<para>
-<xref linkend="ST_IsValidTrajectory" />,
-<xref linkend="ST_ClosestPointOfApproach" />,
-<xref linkend="ST_DistanceCPA" />,
-<xref linkend="geometry_distance_cpa" />
+<xref linkend="ST_IsValidTrajectory"/>,
+<xref linkend="ST_ClosestPointOfApproach"/>,
+<xref linkend="ST_DistanceCPA"/>,
+<xref linkend="geometry_distance_cpa"/>
 			</para>
 		  </refsection>
 		</refentry>
 
-  </sect1>
+  </section>

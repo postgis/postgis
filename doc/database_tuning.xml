@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<sect1 id="database_tuning_configuration">
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="database_tuning_configuration">
   <title>Performance Tuning</title>
 
   <para>Tuning for PostGIS performance is much like tuning for any PostgreSQL workload.
   The only additional consideration is that geometries and rasters are usually large,
   so memory-related optimizations generally have more of an impact on PostGIS than other types of PostgreSQL queries.</para>
 
-  <para>For general details about optimizing PostgreSQL, refer to <ulink url="https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server">Tuning your PostgreSQL Server</ulink>.</para>
+  <para>For general details about optimizing PostgreSQL, refer to <link xlink:href="https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server">Tuning your PostgreSQL Server</link>.</para>
 
   <para>For PostgreSQL 9.4+ configuration can be set at the server level without touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</code>
   by using the <code>ALTER SYSTEM</code> command.</para>
@@ -18,9 +17,9 @@ SELECT pg_reload_conf();
 -- use SHOW ALL to see all settings
 SHOW work_mem;</programlisting>
 
-<para>In addition to the Postgres settings, PostGIS has some custom settings which are listed in <xref linkend="PostGIS_GUC" />.</para>
+<para>In addition to the Postgres settings, PostGIS has some custom settings which are listed in <xref linkend="PostGIS_GUC"/>.</para>
 
-    <sect2>
+    <section>
       <title>Startup</title>
 
       <para>
@@ -28,7 +27,7 @@ SHOW work_mem;</programlisting>
       </para>
 
       <para>
-         <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-query.html#GUC-CONSTRAINT-EXCLUSION">constraint_exclusion</ulink>
+         <link xlink:href="http://www.postgresql.org/docs/current/static/runtime-config-query.html#GUC-CONSTRAINT-EXCLUSION">constraint_exclusion</link>
       </para>
 
       <itemizedlist>
@@ -47,7 +46,7 @@ SHOW work_mem;</programlisting>
       </itemizedlist>
 
       <para>
-         <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-SHARED-BUFFERS">shared_buffers</ulink>
+         <link xlink:href="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-SHARED-BUFFERS">shared_buffers</link>
       </para>
 
       <itemizedlist>
@@ -65,7 +64,7 @@ SHOW work_mem;</programlisting>
 
 
      <para>
-        <ulink url="https://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-WORKER-PROCESSES">max_worker_processes</ulink>
+        <link xlink:href="https://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-WORKER-PROCESSES">max_worker_processes</link>
         This setting is only available for PostgreSQL 9.4+.  For PostgreSQL 9.6+ this setting has additional importance in that it controls the
         max number of processes you can have for parallel queries.
       </para>
@@ -84,13 +83,13 @@ SHOW work_mem;</programlisting>
           </para>
         </listitem>
       </itemizedlist>
-    </sect2>
+    </section>
 
-    <sect2>
+    <section>
       <title>Runtime</title>
 
       <para>
-        <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-WORK-MEM">work_mem</ulink>
+        <link xlink:href="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-WORK-MEM">work_mem</link>
          - sets the size of memory used for sort operations and complex queries
       </para>
 
@@ -119,7 +118,7 @@ SHOW work_mem;</programlisting>
       </itemizedlist>
 
       <para>
-        <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM">maintenance_work_mem</ulink>
+        <link xlink:href="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM">maintenance_work_mem</link>
         - the memory size used for VACUUM, CREATE INDEX, etc.
       </para>
 
@@ -144,7 +143,7 @@ SHOW work_mem;</programlisting>
       </itemizedlist>
 
       <para>
-        <ulink url="https://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-PARALLEL-WORKERS-PER-GATHER">max_parallel_workers_per_gather</ulink>
+        <link xlink:href="https://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-PARALLEL-WORKERS-PER-GATHER">max_parallel_workers_per_gather</link>
       </para>
       <para>
         This setting is only available for PostgreSQL 9.6+ and will only affect PostGIS 2.3+, since only PostGIS 2.3+ supports parallel queries.
@@ -174,6 +173,6 @@ SHOW work_mem;</programlisting>
         </listitem>
       </itemizedlist>
 
-    </sect2>
+    </section>
 
-</sect1>
+</section>

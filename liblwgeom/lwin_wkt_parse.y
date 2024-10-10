@@ -379,13 +379,13 @@ ring :
 
 compoundcurve :
 	COMPOUNDCURVE_TOK LBRACKET_TOK compound_list RBRACKET_TOK
-		{ $$ = wkt_parser_collection_finalize(COMPOUNDTYPE, $3, NULL); WKT_ERROR(); } |
+		{ $$ = wkt_parser_compound_finalize($3, NULL); WKT_ERROR(); } |
 	COMPOUNDCURVE_TOK DIMENSIONALITY_TOK LBRACKET_TOK compound_list RBRACKET_TOK
-		{ $$ = wkt_parser_collection_finalize(COMPOUNDTYPE, $4, $2); WKT_ERROR(); } |
+		{ $$ = wkt_parser_compound_finalize($4, $2); WKT_ERROR(); } |
 	COMPOUNDCURVE_TOK DIMENSIONALITY_TOK EMPTY_TOK
-		{ $$ = wkt_parser_collection_finalize(COMPOUNDTYPE, NULL, $2); WKT_ERROR(); } |
+		{ $$ = wkt_parser_compound_finalize(NULL, $2); WKT_ERROR(); } |
 	COMPOUNDCURVE_TOK EMPTY_TOK
-		{ $$ = wkt_parser_collection_finalize(COMPOUNDTYPE, NULL, NULL); WKT_ERROR(); } ;
+		{ $$ = wkt_parser_compound_finalize(NULL, NULL); WKT_ERROR(); } ;
 
 compound_list :
 	compound_list COMMA_TOK circularstring

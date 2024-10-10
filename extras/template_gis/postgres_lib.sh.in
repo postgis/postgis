@@ -81,14 +81,11 @@ function template_mk()
 	    if [ -n "$GRID" ]; then
 			psql -d $TDB -c "UPDATE pg_database SET datdba = $GRID WHERE datname = '$TDB';" 2>&1 | cat > /dev/null
 	    fi
-		if [ -x @bindir@/createlang ]; then
-			@bindir@/createlang plpgsql $TDB 2>&1 | cat > /dev/null
-		fi
 		for script in $SCRIPTS ; do
 			psql -d $TDB -f $script 2>&1 | cat > /dev/null
 		done
 		#pseudo tables for postgresql 7.2 and 7.4. feel free to add more, for other postgresql versions
-		PSEUDO_TABLES="'pg_xactlock', 'sql_features', 'sql_implementation_info', 'sql_languages', 
+		PSEUDO_TABLES="'pg_xactlock', 'sql_features', 'sql_implementation_info', 'sql_languages',
 					   'sql_packages', 'sql_sizing', 'sql_sizing_profiles'"
 		TABLES=`psql -d $TDB -At -c "select tablename from pg_tables where tablename not in ($PSEUDO_TABLES);"`
 	    if [ -n "$GRID" ]; then

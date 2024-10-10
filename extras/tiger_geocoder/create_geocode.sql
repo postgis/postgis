@@ -81,5 +81,5 @@ CREATE TYPE norm_addy AS (
 COMMIT;
 
 -- Tiger to PostGIS Topology
--- only useable if you have topology installed
+-- only usable if you have topology installed
 \i topology/tiger_topology_loader.sql

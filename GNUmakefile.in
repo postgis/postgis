@@ -5,17 +5,28 @@
 #-----------------------------------------------------
 
 SUBDIRS = liblwgeom
-ifeq (@LIBLWGEOM_ONLY@,no)
-SUBDIRS += libpgcommon postgis regress @RASTER@ @TOPOLOGY@ @SFCGAL@ loader utils doc @EXTENSIONS@ @DEPS_SUBDIR@
+
+ifeq (@SUPPORT_POSTGRESQL@,yes)
+SUBDIRS += @DEPS_SUBDIR@ libpgcommon postgis regress @TOPOLOGY@ @SFCGAL@ doc
+endif
+SUBDIRS += @RASTER@ loader
+ifeq (@SUPPORT_POSTGRESQL@,yes)
+# NOTE: utils need be built after raster
+# See https://trac.osgeo.org/postgis/ticket/5779
+# NOTE: extension need be built after raster
+# See https://trac.osgeo.org/postgis/ticket/5780
+SUBDIRS += utils @EXTENSIONS@
 endif
 
 HAVE_SFCGAL=@HAVE_SFCGAL@
+CAN_BUILD_COMMENTS=@CAN_BUILD_COMMENTS@
 
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 POSTGIS_FULL_VERSION=$(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION).$(POSTGIS_MICRO_VERSION)
 
+CTAGS = ctags
 PERL = @PERL@
 top_srcdir = @top_srcdir@
 top_builddir = @top_builddir@
@@ -53,9 +64,11 @@ endif
 
 all: postgis_revision.h
 
-ifeq (@LIBLWGEOM_ONLY@,no)
-install: all comments-install
-uninstall: docs-uninstall comments-uninstall
+ifeq (@SUPPORT_POSTGRESQL@,yes)
+ifeq ($(CAN_BUILD_COMMENTS),yes)
+install: comments-install
+uninstall: comments-uninstall
+endif
 endif
 
 clean: docs-clean clean-local
@@ -65,7 +78,15 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: check-no-trailing-blanks check-unit check-regress docs-check check-news check-tests-enabled
+check: check-unit docs-check check-lint
+
+ifeq (@SUPPORT_POSTGRESQL@,yes)
+check: check-regress
+endif
+
+# The "lint" tests do not depend on specific code configurations
+# but solely on the source code state
+check-lint: check-no-trailing-blanks check-news check-tests-enabled check-lang-enabled
 
 staged-install: all
 	$(MAKE) -C regress staged-install
@@ -78,7 +99,7 @@ check-unit check-regress: all
 check-regress: export POSTGIS_REGRESS_DB ?= postgis_reg-$(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION)
 
 check-no-trailing-blanks:
-	! find . -name '*.c' -o -name '*.h' -o -name '*.proto' | \
+	! find $(top_srcdir) -name '*.c' -o -name '*.h' -o -name '*.proto' | \
 		grep -v lwin_wkt_lex.c | \
 		grep -v lwin_wkt_parse | \
 		grep -v lookup3 | \
@@ -135,12 +156,28 @@ distclean-local: clean-local
 	fi
 	if test -z "@SFCGAL@"; then \
 		$(MAKE) -C sfcgal distclean; \
-		rm -f raster/Makefile; \
+		rm -f sfcgal/Makefile; \
 	fi
+
+# GNU Coding Standards wants capitalized TAGS:
+# https://www.gnu.org/prep/standards/html_node/Standard-Targets.html
+# But for ctags a lowercase is normally used:
+# https://git.savannah.gnu.org/cgit/bash.git/tree/Makefile.in#n823
+.PHONY: tags
+tags:
+	cd $(top_srcdir) && $(CTAGS) \
+		--exclude=build \
+		--exclude=ci \
+		--exclude=doc \
+		--exclude=.git \
+		--exclude=regress \
+		--exclude=utils \
+		--recurse=yes
 
 maintainer-clean-local: distclean-local
 	rm -f configure
 	rm -Rf build-aux
+	rm -f tags
 
 maintainer-clean:
 	@echo '------------------------------------------------------'
@@ -214,7 +251,7 @@ config.status: configure
 	./configure
 
 ChangeLog:
-	git log --pretty --numstat --summary | git2cl > ChangeLog
+	git log --pretty --numstat --summary | PERL_UNICODE="IO" git2cl > ChangeLog
 
 raster-sql:
 	$(MAKE) -C raster rtpostgis.sql
@@ -257,6 +294,10 @@ check-regress: staged-install check-regress-deps
 
 check-tests-enabled:
 	$(top_srcdir)/utils/check_tests_enabled.sh $(top_srcdir)
+
+check-lang-enabled:
+	$(top_srcdir)/utils/check_lang_enabled.sh $(top_srcdir)
+
 
 check-regress-deps:
 ifeq (@TOPOLOGY@,topology)

@@ -382,7 +382,7 @@ LWGEOM* wkt_parser_linestring_new(POINTARRAY *pa, char *dimensionality)
 /**
 * Create a new circularstring. Null point array implies empty. Null dimensionality
 * implies no specified dimensionality in the WKT.
-* Circular strings are just like linestrings, except with slighty different
+* Circular strings are just like linestrings, except with slightly different
 * validity rules (minpoint == 3, numpoints % 2 == 1).
 */
 LWGEOM* wkt_parser_circularstring_new(POINTARRAY *pa, char *dimensionality)
@@ -788,6 +788,41 @@ LWGEOM* wkt_parser_compound_add_geom(LWGEOM *col, LWGEOM *geom)
 }
 
 
+LWGEOM* wkt_parser_compound_finalize(LWGEOM *compound, char *dimensionality)
+{
+	lwflags_t flags = wkt_dimensionality(dimensionality);
+	int flagdims = FLAGS_NDIMS(flags);
+
+	/* No geometry means it is empty */
+	if ( ! compound )
+	{
+		return lwcompound_as_lwgeom(lwcompound_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(flags), FLAGS_GET_M(flags)));
+	}
+
+	if ( flagdims > 2 )
+	{
+		/* If the number of dimensions are not consistent, we have a problem. */
+		if( flagdims != FLAGS_NDIMS(compound->flags) )
+		{
+			lwgeom_free(compound);
+			SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
+			return NULL;
+		}
+
+		/* Harmonize the flags in the sub-components with the wkt flags */
+		if( LW_FAILURE == wkt_parser_set_dims(compound, flags) )
+		{
+			lwgeom_free(compound);
+			SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+			return NULL;
+		}
+	}
+	compound->type = COMPOUNDTYPE;
+	return compound;
+}
+
+
+
 LWGEOM* wkt_parser_collection_add_geom(LWGEOM *col, LWGEOM *geom)
 {
 	LWDEBUG(4,"entered");
@@ -908,7 +943,7 @@ LWGEOM *lwgeom_from_wkt(const char *wkt, const char check)
 
 	if( LW_FAILURE == lwgeom_parse_wkt(&r, (char*)wkt, check) )
 	{
-		lwerror(r.message);
+		lwerror("%s", r.message);
 		return NULL;
 	}
 

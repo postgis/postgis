@@ -37,3 +37,4 @@ void geography_valid_type(uint8_t type);
 /* Expand the embedded bounding box in a #GSERIALIZED */
 GSERIALIZED* gserialized_expand(GSERIALIZED *g, double distance);
 
+

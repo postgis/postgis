@@ -3,7 +3,7 @@
 -- Compute statistics of a value weighted by the area of the corresponding geometry.
 -- Specially written to be used with ST_Intersection(raster, geometry)
 --
--- Exemple
+-- Example
 -- SELECT gt.id,
 --        (aws).count,
 --        (aws).distinctcount,

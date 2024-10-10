@@ -12,7 +12,7 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 --{
---  AddTopoGeometryColumn(toponame, schema, table, colum, type, [child])
+--  AddTopoGeometryColumn(toponame, schema, table, column, type, [child])
 --
 --  Add a TopoGeometry column to a table, making it a topology layer.
 --  Returns created layer id.

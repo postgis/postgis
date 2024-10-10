@@ -330,24 +330,30 @@ SELECT DISTINCT 'unexpected probin', proname || ':' || probin
 FROM pg_proc
 WHERE probin like '%postgis%'
   AND
-regexp_replace(probin, '(rt)?postgis(_[^-]*)?(-[0-9.]*)$', '\3')
+regexp_replace(probin, '(rt)?postgis(_[^-]*)?(-[0-9.]*)$', E'\\3')
 	!=
 (
 	SELECT
-regexp_replace(probin, '(rt)?postgis(_[^-]*)?(-[0-9.]*)$', '\3')
+regexp_replace(probin, '(rt)?postgis(_[^-]*)?(-[0-9.]*)$', E'\\3')
 	FROM pg_proc WHERE proname = 'postgis_lib_version'
 )
 ORDER BY 2;
 
 -- Make sure all postgis functions are owned by the
 -- same role as postgis_lib_version
-SELECT DISTINCT 'unexpected ownership', oid::regprocedure,  proowner::regrole
-FROM pg_proc
+SELECT DISTINCT
+	'unexpected ownership: ' || oid::regprocedure ||
+	' is owned by ' ||  proowner::regrole ||
+	' instead of ' || (
+			SELECT proowner::regrole FROM pg_proc
+			WHERE proname = 'postgis_lib_version'
+	)
+	FROM pg_proc
 WHERE (
 	probin like '%postgis%'
   OR (
 		probin is null and
-		oid::regprocedure::text like 'st\_%' or
+		oid::regprocedure::text like E'st\\_%' or
 		oid::regprocedure::text like 'postgis_%'
 	)
 )
@@ -357,7 +363,7 @@ AND proowner !=
 	proowner
 	FROM pg_proc WHERE proname = 'postgis_lib_version'
 )
-ORDER BY 2;
+ORDER BY 1;
 
 -- Make sure all postgis functions are SECURITY INVOKER
 SELECT DISTINCT 'unexpected security definer', oid::regprocedure, prosecdef
@@ -366,7 +372,7 @@ WHERE (
 	probin like '%postgis%'
   OR (
 		probin is null and
-		oid::regprocedure::text like 'st\_%' or
+		oid::regprocedure::text like E'st\\_%' or
 		oid::regprocedure::text like 'postgis_%'
 	)
 )

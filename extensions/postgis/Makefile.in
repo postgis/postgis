@@ -41,7 +41,6 @@ DATA_built = \
 # NOTE: order matters
 EXTENSION_SCRIPTS = \
 	sql/postgis_for_extension.sql \
-	../../doc/postgis_comments.sql \
 	sql/spatial_ref_sys_config_dump.sql \
 	sql/spatial_ref_sys.sql
 
@@ -51,7 +50,6 @@ EXTENSION_UPGRADE_SCRIPTS = \
 	../postgis_extension_helper.sql \
 	sql/raster_unpackage.sql \
 	sql/postgis_upgrade.sql \
-	../../doc/postgis_comments.sql \
 	sql/spatial_ref_sys.sql \
 	sql/spatial_ref_sys_config_dump.sql \
 	../postgis_extension_helper_uninstall.sql
@@ -110,13 +108,11 @@ sql:
 sql/spatial_ref_sys.sql: ../../spatial_ref_sys.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
-../../doc/postgis_comments.sql:
-	$(MAKE) -C ../../doc comments
-
 sql/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl | sql
 	$(PERL) @top_srcdir@/utils/create_spatial_ref_sys_config_dump.pl $< > $@
 
-sql/postgis_upgrade_for_extension.sql: ../../postgis/postgis_before_upgrade.sql sql/postgis_upgrade_for_extension.sql.in ../../postgis/postgis_after_upgrade.sql | sql
+#this keeps the @extschema@. in place since extension machinery will replace during install
+sql/postgis_upgrade_for_extension.sql: ../../postgis/common_before_upgrade.sql ../../postgis/postgis_before_upgrade.sql sql/postgis_upgrade_for_extension.sql.in ../../postgis/postgis_after_upgrade.sql ../../postgis/common_after_upgrade.sql | sql
 	#strip BEGIN/COMMIT since these are not allowed in extensions
 	# WARNING: we should make sure these are not internal to function bodies
 	cat $^ | $(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' > $@
@@ -149,6 +145,13 @@ PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 PERL = @PERL@
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+
+
+ifneq (@MKDIR_P@,)
+	MKDIR_P = @MKDIR_P@
+endif
 
 VPATH = @srcdir@
 

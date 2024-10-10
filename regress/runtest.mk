@@ -22,7 +22,7 @@ check-regress:
 	@echo "RUNTESTFLAGS: $(RUNTESTFLAGS)"
 	@echo "RUNTESTFLAGS_INTERNAL: $(RUNTESTFLAGS_INTERNAL)"
 
-	POSTGIS_TOP_BUILD_DIR=$(abs_top_builddir) $(PERL) $(top_srcdir)/regress/run_test.pl $(RUNTESTFLAGS) $(RUNTESTFLAGS_INTERNAL) $(TESTS)
+	@POSTGIS_TOP_BUILD_DIR=$(abs_top_builddir) $(PERL) $(top_srcdir)/regress/run_test.pl $(RUNTESTFLAGS) $(RUNTESTFLAGS_INTERNAL) $(TESTS)
 
 	@if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
 		echo "Running upgrade test as RUNTESTFLAGS did not contain that"; \
@@ -38,3 +38,17 @@ check-regress:
 check-long:
 	$(PERL) $(top_srcdir)/regress/run_test.pl $(RUNTESTFLAGS) $(TESTS) $(TESTS_SLOW)
 
+
+.PHONY: check-double-upgrade
+check-double-upgrade:
+	$(MAKE) check-regress \
+    RUNTESTFLAGS='$(RUNTESTFLAGS) --upgrade --upgrade' \
+    TESTS=$(top_srcdir)/regress/core/regress.sql
+
+.PHONY: check-locked-upgrade
+check-locked-upgrade:
+	$(MAKE) check-regress \
+    RUNTESTFLAGS="$(RUNTESTFLAGS) --upgrade \
+      --before-upgrade-script $(top_srcdir)/regress/hooks/use-all-functions.sql \
+      --after-upgrade-script $(top_srcdir)/regress/hooks/hook-after-upgrade.sql " \
+    TESTS=$(top_srcdir)/regress/core/regress.sql

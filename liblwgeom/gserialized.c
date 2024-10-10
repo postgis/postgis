@@ -1,3 +1,32 @@
+/**********************************************************************
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.net
+ *
+ * PostGIS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * PostGIS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with PostGIS.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ **********************************************************************
+ *
+ * Copyright 2022 Loïc Bartoletti <loic.bartoletti@oslandia.com>
+ * Copyright 2019 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2019-2020 Raúl Marín <git@rmr.ninja>
+ * Copyright 2019 Regina Obe <lr@pcorp.us>
+ * Copyright 2019 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright 2004-2024 Sandro Santilli <strk@kbt.io>
+ *
+ **********************************************************************/
+
 #include "liblwgeom_internal.h"
 #include "gserialized1.h"
 #include "gserialized2.h"
@@ -21,7 +50,7 @@ lwflags_t gserialized_get_lwflags(const GSERIALIZED *g)
 		return gserialized2_get_lwflags(g);
 	else
 		return gserialized1_get_lwflags(g);
-};
+}
 
 /**
 * Copy a new bounding box into an existing gserialized.
@@ -138,9 +167,9 @@ int32_t gserialized_get_srid(const GSERIALIZED *g)
 void gserialized_set_srid(GSERIALIZED *g, int32_t srid)
 {
 	if (GFLAGS_GET_VERSION(g->gflags))
-		return gserialized2_set_srid(g, srid);
+		gserialized2_set_srid(g, srid);
 	else
-		return gserialized1_set_srid(g, srid);
+		gserialized1_set_srid(g, srid);
 }
 
 /**

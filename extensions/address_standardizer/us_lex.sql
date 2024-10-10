@@ -2955,7 +2955,8 @@ WITH t(seq,word,stdword,token) AS ( VALUES (1, '#', '#', 16),
 (1, 'ZNJA', 'ZANJA', 1) )
 SELECT seq, word, stdword, token
 FROM t
-WHERE NOT EXISTS(SELECT 1 FROM us_lex AS t2 WHERE t2.seq = t.seq AND t2.word = t.word AND t2.stdword = t.stdword AND t2.token = t.token );
+WHERE NOT EXISTS(SELECT 1 FROM us_lex AS t2 WHERE t2.seq = t.seq AND t2.word = t.word AND t2.stdword = t.stdword AND t2.token = t.token )
+ORDER BY word, seq, token, stdword;
 
 -- needed set default back to original
 ALTER TABLE us_lex ALTER COLUMN is_custom SET DEFAULT true;

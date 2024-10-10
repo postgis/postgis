@@ -121,7 +121,7 @@
 #include <float.h> /* for FLT_EPSILON, DBL_EPSILON and float type limits */
 #include <limits.h> /* for integer type limits */
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 
 #include "gdal.h"
 #include "gdalgrid.h" /* for ParseAlgorithmAndOptions */
@@ -258,9 +258,9 @@ extern void rtdealloc(void* mem);
 /**
  * Wrappers used for reporting errors and info.
  **/
-void rterror(const char *fmt, ...);
-void rtinfo(const char *fmt, ...);
-void rtwarn(const char *fmt, ...);
+void rterror(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+void rtinfo(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+void rtwarn(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
 
 /**
  * Wrappers used for options
@@ -274,9 +274,9 @@ char* rtstrdup(const char *str);
 void * default_rt_allocator(size_t size);
 void * default_rt_reallocator(void * mem, size_t size);
 void default_rt_deallocator(void * mem);
-void default_rt_error_handler(const char * fmt, va_list ap);
-void default_rt_warning_handler(const char * fmt, va_list ap);
-void default_rt_info_handler(const char * fmt, va_list ap);
+void default_rt_error_handler(const char * fmt, va_list ap) __attribute__ ((format (printf, 1, 0)));
+void default_rt_warning_handler(const char * fmt, va_list ap) __attribute__ ((format (printf, 1, 0)));
+void default_rt_info_handler(const char * fmt, va_list ap) __attribute__ ((format (printf, 1, 0)));
 char * default_rt_options(const char* varname);
 
 /* Debugging macros */
@@ -1328,7 +1328,7 @@ void rt_raster_get_geotransform_matrix(rt_raster raster,
  * Set raster's geotransform using 6-element array
  *
  * @param raster : the raster to set matrix of
- * @param gt : intput parameter, 6-element geotransform matrix
+ * @param gt : input parameter, 6-element geotransform matrix
  *
  */
 void rt_raster_set_geotransform_matrix(rt_raster raster,
@@ -2070,7 +2070,7 @@ rt_errorstate rt_raster_fully_within_distance(
 
 /*
  * Return ES_ERROR if error occurred in function.
- * Paramter aligned returns non-zero if two rasters are aligned
+ * Parameter aligned returns non-zero if two rasters are aligned
  *
  * @param rast1 : the first raster for alignment test
  * @param rast2 : the second raster for alignment test
@@ -2333,6 +2333,13 @@ rt_util_gdal_driver_registered(const char *drv);
 */
 GDALDatasetH
 rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared);
+
+
+/*
+    Callback for GDAL functions to hook into interrupt system
+*/
+int
+rt_util_gdal_progress_func(double dfComplete, const char *pszMessage, void *pProgressArg);
 
 
 void

@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-  <sect1 id="Geometry_Accessors">
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Geometry_Accessors">
 	<title>Geometry Accessors</title>
 
-	<refentry id="GeometryType">
+	<refentry xml:id="GeometryType">
 	  <refnamediv>
 		<refname>GeometryType</refname>
 
@@ -34,7 +33,7 @@
 		  <para>This function also indicates if the geometry is measured,
 		  by returning a string of the form 'POINTM'.</para>
 		</note>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&sfs_compliant;</para>
 		<para>&curve_support;</para>
 		<para>&Z_support;</para>
@@ -83,11 +82,11 @@
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_GeometryType" /></para>
+		<para><xref linkend="ST_GeometryType"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Boundary">
+	<refentry xml:id="ST_Boundary">
 	  <refnamediv>
 		<refname>ST_Boundary</refname>
 
@@ -121,8 +120,8 @@
 		<para>&sfs_compliant; OGC SPEC s2.1.1.1</para>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17</para>
 		<para>&Z_support;</para>
-		<para>Enhanced: 2.1.0 support for Triangle was introduced</para>
-		<para>Changed: 3.2.0 support for TIN, does not use geos, does not linearize curves</para>
+		<para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 support for Triangle was introduced</para>
+		<para role="changed" conformance="3.2.0">Changed: 3.2.0 support for TIN, does not use geos, does not linearize curves</para>
 	  </refsection>
 
 	  <refsection>
@@ -135,7 +134,7 @@
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_boundary01.png" />
+								<imagedata fileref="images/st_boundary01.png"/>
 							  </imageobject>
 							  <caption><para>Linestring with boundary points overlaid</para></caption>
 							</mediaobject>
@@ -143,7 +142,10 @@
 				<programlisting>SELECT ST_Boundary(geom)
 FROM (SELECT 'LINESTRING(100 150,50 60, 70 80, 160 170)'::geometry As geom) As f;
 				</programlisting>
-<screen>-- ST_AsText output
+<screen>
+<lineannotation>
+ST_AsText output
+</lineannotation>
 MULTIPOINT((100 150),(160 170))
 </screen>
 						  </para></entry>
@@ -151,7 +153,7 @@ MULTIPOINT((100 150),(160 170))
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_boundary02.png" />
+								<imagedata fileref="images/st_boundary02.png"/>
 							  </imageobject>
 							  <caption><para>polygon holes with boundary multilinestring</para></caption>
 							</mediaobject>
@@ -161,7 +163,10 @@ FROM (SELECT
 'POLYGON (( 10 130, 50 190, 110 190, 140 150, 150 80, 100 10, 20 40, 10 130 ),
 	( 70 40, 100 50, 120 80, 80 110, 50 90, 70 40 ))'::geometry As geom) As f;
 				</programlisting>
-<screen>-- ST_AsText output
+<screen>
+<lineannotation>
+ST_AsText output
+</lineannotation>
 MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),
 	(70 40,100 50,120 80,80 110,50 90,70 40))
 </screen>
@@ -200,11 +205,11 @@ MULTIPOINT((-1 1 1),(1 1 0.75))
 		<refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_AsText" />, <xref linkend="ST_ExteriorRing" />, <xref linkend="ST_MakePolygon" /></para>
+			<para><xref linkend="ST_AsText"/>, <xref linkend="ST_ExteriorRing"/>, <xref linkend="ST_MakePolygon"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_BoundingDiagonal">
+	<refentry xml:id="ST_BoundingDiagonal">
 		  <refnamediv>
 			<refname>ST_BoundingDiagonal</refname>
 
@@ -251,7 +256,7 @@ will be formally invalid (no interior).
 The result is still topologically valid.
 			</para></note>
 
-			<para>Availability: 2.2.0</para>
+			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 			<para>&M_support;</para>
 		</refsection>
@@ -272,18 +277,18 @@ SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
 	  <refsection>
 		<title>See Also</title>
 		<para>
-<xref linkend="ST_StartPoint" />,
-<xref linkend="ST_EndPoint" />,
-<xref linkend="ST_X" />,
-<xref linkend="ST_Y" />,
-<xref linkend="ST_Z" />,
-<xref linkend="ST_M" />,
-<xref linkend="ST_Envelope" />
+<xref linkend="ST_StartPoint"/>,
+<xref linkend="ST_EndPoint"/>,
+<xref linkend="ST_X"/>,
+<xref linkend="ST_Y"/>,
+<xref linkend="ST_Z"/>,
+<xref linkend="ST_M"/>,
+<xref linkend="ST_Envelope"/>
 		</para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_CoordDim">
+	<refentry xml:id="ST_CoordDim">
 	  <refnamediv>
 		<refname>ST_CoordDim</refname>
 
@@ -304,7 +309,7 @@ SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
 
 		<para>Return the coordinate dimension of the ST_Geometry value.</para>
 
-		<para>This is the MM compliant alias name for <xref linkend="ST_NDims" /></para>
+		<para>This is the MM compliant alias name for <xref linkend="ST_NDims"/></para>
 
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.3</para>
@@ -333,11 +338,11 @@ SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_NDims" /></para>
+		<para><xref linkend="ST_NDims"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Dimension">
+	<refentry xml:id="ST_Dimension">
 	  <refnamediv>
 		<refname>ST_Dimension</refname>
 
@@ -366,7 +371,7 @@ SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
 		</para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.2</para>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TINs was introduced. No longer throws an exception if given empty geometry.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TINs was introduced. No longer throws an exception if given empty geometry.</para>
 		<note> <para>Prior to 2.0.0, this function throws an exception if used with empty geometry. </para></note>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -384,11 +389,11 @@ ST_Dimension
 		<refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_NDims" /></para>
+			<para><xref linkend="ST_NDims"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_Dump">
+	<refentry xml:id="ST_Dump">
 	  <refnamediv>
 		<refname>ST_Dump</refname>
 		<refpurpose>Returns a set of <varname>geometry_dump</varname> rows for the components of a geometry.</refpurpose>
@@ -407,7 +412,7 @@ ST_Dimension
 		<title>Description</title>
 			<para>A set-returning function (SRF) that extracts the components of a geometry.
             It returns a set of
-			<xref linkend="geometry_dump" /> rows,
+			<xref linkend="geometry_dump"/> rows,
             each containing a geometry (<parameter>geom</parameter> field)
             and an array of integers (<parameter>path</parameter> field).
             </para>
@@ -420,11 +425,11 @@ ST_Dimension
 			position of the component inside the collection.</para>
 
 			<para>ST_Dump is useful for expanding geometries. It is the
-			inverse of a <xref linkend="ST_Collect" /> / GROUP BY, in that it creates new rows.
+			inverse of a <xref linkend="ST_Collect"/> / GROUP BY, in that it creates new rows.
             For example it can be use to expand MULTIPOLYGONS into POLYGONS.</para>
 
-			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-			<para>Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher.</para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+			<para role="availability" conformance="1.0.0">Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher.</para>
 
 			<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
@@ -496,11 +501,11 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="geometry_dump" />, <xref linkend="PostGIS_Geometry_DumpFunctions" />, <xref linkend="ST_Collect" />, <xref linkend="ST_GeometryN" /></para>
+		<para><xref linkend="geometry_dump"/>, <xref linkend="PostGIS_Geometry_DumpFunctions"/>, <xref linkend="ST_Collect"/>, <xref linkend="ST_GeometryN"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_DumpPoints">
+	<refentry xml:id="ST_DumpPoints">
 		<refnamediv>
 			<refname>ST_DumpPoints</refname>
 			<refpurpose>Returns a set of <varname>geometry_dump</varname> rows for the coordinates in a geometry.</refpurpose>
@@ -519,7 +524,7 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
 			<title>Description</title>
 			<para>A set-returning function (SRF) that extracts the coordinates (vertices) of a geometry.
             It returns a set of
-			    <xref linkend="geometry_dump" /> rows,
+			    <xref linkend="geometry_dump"/> rows,
                 each containing a geometry (<parameter>geom</parameter> field)
                 and an array of integers (<parameter>path</parameter> field).
             </para>
@@ -545,12 +550,12 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
             </itemizedlist>
 
             <para>
-            To obtain a single geometry containing the coordinates use <xref linkend="ST_Points" />.
+            To obtain a single geometry containing the coordinates use <xref linkend="ST_Points"/>.
             </para>
 
-            <para>Enhanced: 2.1.0 Faster speed. Reimplemented as native-C.</para>
-            <para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-            <para>Availability: 1.5.0</para>
+            <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Faster speed. Reimplemented as native-C.</para>
+            <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+            <para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
             <para>&curve_support;</para>
             <para>&P_support;</para>
             <para>&T_support;</para>
@@ -580,7 +585,7 @@ FROM (SELECT 1 As edge_id
 			<informalfigure>
 				<mediaobject>
 					<imageobject>
-						<imagedata fileref="images/st_dumppoints01.png" />
+						<imagedata fileref="images/st_dumppoints01.png"/>
 					</imageobject>
 				</mediaobject>
 			</informalfigure>
@@ -735,12 +740,12 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
 		</refsection>
 			<refsection>
 			<title>See Also</title>
-			<para><xref linkend="geometry_dump" />, <xref linkend="PostGIS_Geometry_DumpFunctions" />,
-            <xref linkend="ST_Dump" />, <xref linkend="ST_DumpRings" />, <xref linkend="ST_Points" /></para>
+			<para><xref linkend="geometry_dump"/>, <xref linkend="PostGIS_Geometry_DumpFunctions"/>,
+            <xref linkend="ST_Dump"/>, <xref linkend="ST_DumpRings"/>, <xref linkend="ST_Points"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_DumpSegments">
+	<refentry xml:id="ST_DumpSegments">
 		<refnamediv>
 			<refname>ST_DumpSegments</refname>
 			<refpurpose>Returns a set of <varname>geometry_dump</varname> rows for the segments in a geometry.</refpurpose>
@@ -759,7 +764,7 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
 			<title>Description</title>
 			<para>A set-returning function (SRF) that extracts the segments of a geometry.
             It returns a set of
-			    <xref linkend="geometry_dump" /> rows,
+			    <xref linkend="geometry_dump"/> rows,
                 each containing a geometry (<parameter>geom</parameter> field)
                 and an array of integers (<parameter>path</parameter> field).
             </para>
@@ -767,7 +772,7 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
             <itemizedlist>
             <listitem>
                 <para>the <parameter>geom</parameter> field
-                    <varname>LINESTRING</varname>s represent the segments of the supplied geometry.
+                    <varname>LINESTRING</varname>s represent the linear segments of the supplied geometry, while the <varname>CIRCULARSTRING</varname>s represent the arc segments.
                 </para>
             </listitem>
             <listitem>
@@ -784,7 +789,7 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
             </listitem>
             </itemizedlist>
 
-            <para>Availability: 3.2.0</para>
+            <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
             <para>&T_support;</para>
             <para>&Z_support;</para>
 		</refsection>
@@ -865,12 +870,12 @@ FROM (
 		</refsection>
 			<refsection>
 			<title>See Also</title>
-			<para><xref linkend="geometry_dump" />, <xref linkend="PostGIS_Geometry_DumpFunctions" />,
-            <xref linkend="ST_Dump" />, <xref linkend="ST_DumpRings" /></para>
+			<para><xref linkend="geometry_dump"/>, <xref linkend="PostGIS_Geometry_DumpFunctions"/>,
+            <xref linkend="ST_Dump"/>, <xref linkend="ST_DumpRings"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_DumpRings">
+	<refentry xml:id="ST_DumpRings">
 	  <refnamediv>
 		<refname>ST_DumpRings</refname>
 
@@ -891,7 +896,7 @@ FROM (
 		<title>Description</title>
 
         <para>A set-returning function (SRF) that extracts the rings of a polygon.
-            It returns a set of <xref linkend="geometry_dump" /> rows,
+            It returns a set of <xref linkend="geometry_dump"/> rows,
             each containing a geometry (<parameter>geom</parameter> field)
             and an array of integers (<parameter>path</parameter> field).
         </para>
@@ -902,7 +907,7 @@ FROM (
         </para>
 
 		<note><para>This only works for POLYGON geometries. It does not work for MULTIPOLYGONS</para></note>
-		<para>Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher.</para>
+		<para role="availability" conformance="1.1.3.">Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher.</para>
 		<para>&Z_support;</para>
 	  </refsection>
 
@@ -937,11 +942,11 @@ FROM polyTable;
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="geometry_dump" />, <xref linkend="PostGIS_Geometry_DumpFunctions" />, <xref linkend="ST_Dump" />, <xref linkend="ST_ExteriorRing" />, <xref linkend="ST_InteriorRingN" /></para>
+		<para><xref linkend="geometry_dump"/>, <xref linkend="PostGIS_Geometry_DumpFunctions"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_ExteriorRing"/>, <xref linkend="ST_InteriorRingN"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_EndPoint">
+	<refentry xml:id="ST_EndPoint">
 	  <refnamediv>
 		<refname>ST_EndPoint</refname>
 
@@ -971,7 +976,7 @@ FROM polyTable;
 		<para>&Z_support;</para>
 	  <para>&curve_support;</para>
 
-		<note><para>Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
+		<note><para role="changed" conformance="2.0.0">Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
 	  versions of PostGIS a single-line MultiLineString would work with this
 	  function and return the end point.  In 2.0.0 it returns NULL like any other MultiLineString.
 	  The old behavior was an undocumented feature, but people who assumed they had their data stored as LINESTRING
@@ -1018,12 +1023,11 @@ SELECT ST_AsText(ST_EndPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 3)':
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_PointN" />, <xref
-		linkend="ST_StartPoint" /></para>
+		<para><xref linkend="ST_PointN"/>, <xref linkend="ST_StartPoint"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Envelope">
+	<refentry xml:id="ST_Envelope">
 		  <refnamediv>
 			<refname>ST_Envelope</refname>
 
@@ -1057,7 +1061,7 @@ SELECT ST_AsText(ST_EndPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 3)':
 			lower dimension than <varname>POLYGON</varname>, ie.
 			<varname>POINT</varname> or <varname>LINESTRING</varname>.</para>
 
-			<para>Availability: 1.5.0 behavior changed to output double precision instead of float4</para>
+			<para role="availability" conformance="1.5.0">Availability: 1.5.0 behavior changed to output double precision instead of float4</para>
 			<para>&sfs_compliant; s2.1.1.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.19</para>
 		</refsection>
@@ -1099,7 +1103,7 @@ SELECT Box3D(geom), Box2D(geom), ST_AsText(ST_Envelope(geom)) As envelopewkt
 		<informalfigure>
 	  <mediaobject>
 		<imageobject>
-		  <imagedata fileref="images/st_envelope01.png" />
+		  <imagedata fileref="images/st_envelope01.png"/>
 		</imageobject>
 		<caption><para>Envelope of a point and linestring.</para></caption>
 	  </mediaobject>
@@ -1117,11 +1121,11 @@ POLYGON((20 75,20 150,125 150,125 75,20 75))</programlisting>
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="Box2D" />, <xref linkend="Box3D" />, <xref linkend="ST_OrientedEnvelope" /></para>
+		<para><xref linkend="Box2D"/>, <xref linkend="Box3D"/>, <xref linkend="ST_OrientedEnvelope"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_ExteriorRing">
+	<refentry xml:id="ST_ExteriorRing">
 	  <refnamediv>
 		<refname>ST_ExteriorRing</refname>
 
@@ -1146,7 +1150,7 @@ POLYGON((20 75,20 150,125 150,125 75,20 75))</programlisting>
 
 		<note>
 		  <para>This function does not support MULTIPOLYGONs.
-          For MULTIPOLYGONs use in conjunction with <xref linkend="ST_GeometryN" /> or <xref linkend="ST_Dump" /> </para>
+          For MULTIPOLYGONs use in conjunction with <xref linkend="ST_GeometryN"/> or <xref linkend="ST_Dump"/> </para>
         </note>
 
 		<para>&sfs_compliant; 2.1.5.1</para>
@@ -1186,14 +1190,14 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		<title>See Also</title>
 
 		<para>
-<xref linkend="ST_InteriorRingN" />,
-<xref linkend="ST_Boundary" />,
-<xref linkend="ST_NumInteriorRings" />
+<xref linkend="ST_InteriorRingN"/>,
+<xref linkend="ST_Boundary"/>,
+<xref linkend="ST_NumInteriorRings"/>
 		</para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_GeometryN">
+	<refentry xml:id="ST_GeometryN">
 	  <refnamediv>
 		<refname>ST_GeometryN</refname>
 
@@ -1223,10 +1227,10 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		</note>
 
 		<note>
-		  <para>To extract all elements of a geometry, <xref linkend="ST_Dump" /> is more efficient and works for atomic geometries.</para>
+		  <para>To extract all elements of a geometry, <xref linkend="ST_Dump"/> is more efficient and works for atomic geometries.</para>
 		</note>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-		<para>Changed: 2.0.0 Prior versions would return NULL for singular geometries.  This was changed to return the geometry for ST_GeometryN(..,1) case.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 Prior versions would return NULL for singular geometries.  This was changed to return the geometry for ST_GeometryN(..,1) case.</para>
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 9.1.5</para>
 		<para>&Z_support;</para>
@@ -1240,14 +1244,15 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 	  <refsection>
 		<title>Standard Examples</title>
 
-		<programlisting>--Extracting a subset of points from a 3d multipoint
+		<programlisting><![CDATA[
+--Extracting a subset of points from a 3d multipoint
 SELECT n, ST_AsEWKT(ST_GeometryN(geom, n)) As geomewkt
 FROM (
 VALUES (ST_GeomFromEWKT('MULTIPOINT((1 2 7), (3 4 7), (5 6 7), (8 9 10))') ),
 ( ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 11, 12 11))') )
 	)As foo(geom)
 	CROSS JOIN generate_series(1,100) n
-WHERE n &lt;= ST_NumGeometries(geom);
+WHERE n <= ST_NumGeometries(geom);
 
  n |               geomewkt
 ---+-----------------------------------------
@@ -1262,7 +1267,8 @@ WHERE n &lt;= ST_NumGeometries(geom);
 --Extracting all geometries (useful when you want to assign an id)
 SELECT gid, n, ST_GeometryN(geom, n)
 FROM sometable CROSS JOIN generate_series(1,100) n
-WHERE n &lt;= ST_NumGeometries(geom);</programlisting>
+WHERE n <= ST_NumGeometries(geom);
+]]></programlisting>
 	  </refsection>
 
 <refsection><title>Polyhedral Surfaces, TIN and Triangle Examples</title>
@@ -1309,11 +1315,11 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Dump" />, <xref linkend="ST_NumGeometries" /></para>
+		<para><xref linkend="ST_Dump"/>, <xref linkend="ST_NumGeometries"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_GeometryType">
+	<refentry xml:id="ST_GeometryType">
 		<refnamediv>
 			<refname>ST_GeometryType</refname>
 			<refpurpose>Returns the SQL-MM type of a geometry as text.</refpurpose>
@@ -1332,7 +1338,7 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 
 			<para>Returns the type of the geometry as a string. EG: 'ST_LineString', 'ST_Polygon','ST_MultiPolygon' etc. This function differs from GeometryType(geometry) in the case of the string and ST in front that is returned, as well as the fact that it will not indicate whether the geometry is measured.</para>
 
-			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 			<para>&sqlmm_compliant;	SQL-MM 3: 5.1.4</para>
 			<para>&Z_support;</para>
 			<para>&P_support;</para>
@@ -1383,11 +1389,11 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 		<refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="GeometryType" /></para>
+			<para><xref linkend="GeometryType"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_HasArc">
+	<refentry xml:id="ST_HasArc">
 	  <refnamediv>
 		<refname>ST_HasArc</refname>
 
@@ -1408,7 +1414,7 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 
 		<para>Returns true if a geometry or geometry collection contains a circular string</para>
 
-		<para>Availability: 1.2.3?</para>
+		<para role="availability" conformance="1.2.3">Availability: 1.2.3?</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 	  </refsection>
@@ -1428,11 +1434,11 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_CurveToLine" />, <xref linkend="ST_LineToCurve" /></para>
+		<para><xref linkend="ST_CurveToLine"/>, <xref linkend="ST_LineToCurve"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_InteriorRingN">
+	<refentry xml:id="ST_InteriorRingN">
 	  <refnamediv>
 		<refname>ST_InteriorRingN</refname>
 
@@ -1452,15 +1458,12 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the Nth interior ring (hole) of a POLYGON geometry as a LINESTRING.
-			The index starts at 1.
-            Returns NULL if the geometry is not a polygon or the index is out
-			of range.  </para>
+		<para>Returns the Nth interior ring (hole) of a POLYGON geometry as a LINESTRING. The index starts at 1. Returns NULL if the geometry is not a polygon or the index is out of range.</para>
 
 		<!-- optionally mention that this function uses indexes if appropriate -->
 		<note>
 		  <para>This function does not support MULTIPOLYGONs.
-          For MULTIPOLYGONs use in conjunction with <xref linkend="ST_GeometryN" /> or <xref linkend="ST_Dump" /> </para>
+          For MULTIPOLYGONs use in conjunction with <xref linkend="ST_GeometryN"/> or <xref linkend="ST_Dump"/> </para>
 		</note>
 
 		<para>&sfs_compliant;</para>
@@ -1487,17 +1490,114 @@ FROM (SELECT ST_BuildArea(
 		<title>See Also</title>
 
 		<para>
-            <xref linkend="ST_ExteriorRing" />,
-            <xref linkend="ST_BuildArea" />,
-            <xref linkend="ST_Collect" />,
-            <xref linkend="ST_Dump" />,
-            <xref linkend="ST_NumInteriorRing" />,
-            <xref linkend="ST_NumInteriorRings" />
+            <xref linkend="ST_ExteriorRing"/>,
+            <xref linkend="ST_BuildArea"/>,
+            <xref linkend="ST_Collect"/>,
+            <xref linkend="ST_Dump"/>,
+            <xref linkend="ST_NumInteriorRing"/>,
+            <xref linkend="ST_NumInteriorRings"/>
 		</para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_IsClosed">
+    <refentry xml:id="ST_NumCurves">
+      <refnamediv>
+        <refname>ST_NumCurves</refname>
+        <refpurpose>Return the number of component curves in a CompoundCurve.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>integer <function>ST_NumCurves</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>a_compoundcurve</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Return the number of component curves in a CompoundCurve, zero for an empty CompoundCurve, or NULL for a non-CompoundCurve input. </para>
+        <para>&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5</para>
+        <para>&Z_support;</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>
+-- Returns 3
+SELECT ST_NumCurves('COMPOUNDCURVE(
+    (2 2, 2.5 2.5),
+    CIRCULARSTRING(2.5 2.5, 4.5 2.5, 3.5 3.5),
+    (3.5 3.5, 2.5 4.5, 3 5, 2 2)
+  )');
+
+-- Returns 0
+SELECT ST_NumCurves('COMPOUNDCURVE EMPTY');
+        </programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para>
+            <xref linkend="ST_CurveN"/>,
+            <xref linkend="ST_Dump"/>,
+            <xref linkend="ST_ExteriorRing"/>,
+            <xref linkend="ST_NumInteriorRings"/>,
+            <xref linkend="ST_NumGeometries"/>
+        </para>
+      </refsection>
+    </refentry>
+
+    <refentry xml:id="ST_CurveN">
+      <refnamediv>
+        <refname>ST_CurveN</refname>
+        <refpurpose>Returns the Nth component curve geometry of a CompoundCurve.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_CurveN</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>a_compoundcurve</parameter></paramdef>
+            <paramdef><type>integer </type> <parameter>index</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Returns the Nth component curve geometry of a CompoundCurve. The index starts at 1. Returns NULL if the geometry is not a CompoundCurve or the index is out of range.</para>
+        <para>&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5</para>
+        <para>&Z_support;</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>
+SELECT ST_AsText(ST_CurveN('COMPOUNDCURVE(
+    (2 2, 2.5 2.5),
+    CIRCULARSTRING(2.5 2.5, 4.5 2.5, 3.5 3.5),
+    (3.5 3.5, 2.5 4.5, 3 5, 2 2)
+  )', 1));
+        </programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para>
+            <xref linkend="ST_NumCurves"/>,
+            <xref linkend="ST_Dump"/>,
+            <xref linkend="ST_ExteriorRing"/>,
+            <xref linkend="ST_NumInteriorRings"/>,
+            <xref linkend="ST_NumGeometries"/>
+        </para>
+      </refsection>
+    </refentry>
+
+	<refentry xml:id="ST_IsClosed">
 	  <refnamediv>
 		<refname>ST_IsClosed</refname>
 
@@ -1526,13 +1626,13 @@ FROM (SELECT ST_BuildArea(
 		<para>&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3</para>
 		<note>
 		  <para>SQL-MM defines the result of
-		  <function>ST_IsClosed(<varname>NULL</varname>)</function> to be 0, while
+		  <code>ST_IsClosed(NULL)</code> to be 0, while
 		  PostGIS returns <varname>NULL</varname>.</para>
 		</note>
 
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 
 		<para>&P_support;</para>
 
@@ -1603,11 +1703,11 @@ postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_IsRing" /></para>
+		<para><xref linkend="ST_IsRing"/></para>
 	  </refsection>
         </refentry>
 
-	<refentry id="ST_IsCollection">
+	<refentry xml:id="ST_IsCollection">
 	  <refnamediv>
 		<refname>ST_IsCollection</refname>
       <refpurpose>Tests if a geometry is a geometry collection type.</refpurpose>
@@ -1684,11 +1784,11 @@ postgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::geometry);
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_NumGeometries" /></para>
+		<para><xref linkend="ST_NumGeometries"/></para>
 	  </refsection>
         </refentry>
 
-	<refentry id="ST_IsEmpty">
+	<refentry xml:id="ST_IsEmpty">
 	  <refnamediv>
 		<refname>ST_IsEmpty</refname>
 
@@ -1718,7 +1818,7 @@ postgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::geometry);
 		<para>&sfs_compliant; s2.1.1.1</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.7</para>
 		<para>&curve_support;</para>
-		<warning><para>Changed: 2.0.0 In prior versions of PostGIS ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed.  This is now illegal in PostGIS 2.0.0 to better conform with SQL/MM standards</para></warning>
+		<warning><para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions of PostGIS ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed.  This is now illegal in PostGIS 2.0.0 to better conform with SQL/MM standards</para></warning>
 
 	  </refsection>
 
@@ -1764,7 +1864,7 @@ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
 
 	</refentry>
 
-	<refentry id="ST_IsPolygonCCW">
+	<refentry xml:id="ST_IsPolygonCCW">
 		<refnamediv>
 			<refname>
 				ST_IsPolygonCCW
@@ -1818,7 +1918,7 @@ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
 				</para>
 			</note>
 
-			<para>Availability: 2.4.0</para>
+			<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
 			<para>&Z_support;</para>
 			<para>&M_support;</para>
 
@@ -1827,14 +1927,14 @@ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
 		<refsection>
 			<title>See Also</title>
 			<para>
-				<xref linkend="ST_ForcePolygonCW" />,
-				<xref linkend="ST_ForcePolygonCCW" />,
-				<xref linkend="ST_IsPolygonCW" />
+				<xref linkend="ST_ForcePolygonCW"/>,
+				<xref linkend="ST_ForcePolygonCCW"/>,
+				<xref linkend="ST_IsPolygonCW"/>
 			</para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_IsPolygonCW">
+	<refentry xml:id="ST_IsPolygonCW">
 		<refnamediv>
 			<refname>
 				ST_IsPolygonCW
@@ -1888,7 +1988,7 @@ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
 				</para>
 			</note>
 
-			<para>Availability: 2.4.0</para>
+			<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
 			<para>&Z_support;</para>
 			<para>&M_support;</para>
 		</refsection>
@@ -1896,14 +1996,14 @@ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
 		<refsection>
 			<title>See Also</title>
 			<para>
-				<xref linkend="ST_ForcePolygonCW" />,
-				<xref linkend="ST_ForcePolygonCCW" />,
-				<xref linkend="ST_IsPolygonCW" />
+				<xref linkend="ST_ForcePolygonCW"/>,
+				<xref linkend="ST_ForcePolygonCCW"/>,
+				<xref linkend="ST_IsPolygonCW"/>
 			</para>
 		</refsection>
 	</refentry>
 
-  <refentry id="ST_IsRing">
+  <refentry xml:id="ST_IsRing">
 	<refnamediv>
 	  <refname>ST_IsRing</refname>
 
@@ -1925,16 +2025,14 @@ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
 
 	  <para>Returns <varname>TRUE</varname> if this
 	  <varname>LINESTRING</varname> is both <xref linkend="ST_IsClosed" />
-	  (<function>ST_StartPoint(<parameter>g</parameter>)</function>
-	  <function>~=</function>
-	  <function>ST_Endpoint(<parameter>g</parameter>)</function>) and <xref
+	  (<code>ST_StartPoint(g) ~= ST_Endpoint(g)</code>) and <xref
 	  linkend="ST_IsSimple" /> (does not self intersect).</para>
 
 	  <para>&sfs_compliant; 2.1.5.1</para>
 	  <para>&sqlmm_compliant; SQL-MM 3: 7.1.6</para>
 	  <note>
 		<para>SQL-MM defines the result of
-		<function>ST_IsRing(<varname>NULL</varname>)</function> to be 0, while
+		<code>ST_IsRing(NULL)</code> to be 0, while
 		PostGIS returns <varname>NULL</varname>.</para>
 	  </note>
 	</refsection>
@@ -1960,13 +2058,13 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;
 	<refsection>
 	  <title>See Also</title>
 
-	  <para><xref linkend="ST_IsClosed" />, <xref linkend="ST_IsSimple" />, <xref linkend="ST_StartPoint" />,
-	  <xref linkend="ST_EndPoint" /></para>
+	  <para><xref linkend="ST_IsClosed"/>, <xref linkend="ST_IsSimple"/>, <xref linkend="ST_StartPoint"/>,
+	  <xref linkend="ST_EndPoint"/></para>
 	</refsection>
   </refentry>
 
 
-  <refentry id="ST_IsSimple">
+  <refentry xml:id="ST_IsSimple">
 	  <refnamediv>
 		<refname>ST_IsSimple</refname>
 
@@ -1988,7 +2086,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;
 		<para>Returns true if this Geometry has no anomalous geometric
 				points, such as self-intersection or self-tangency. For more
 			information on the OGC's definition of geometry simplicity and validity, refer
-			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliancy of geometries"</link></para>
+			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliance of geometries"</link></para>
 
 		<note>
 			<para>SQL-MM defines the result of ST_IsSimple(NULL) to be 0,
@@ -2007,7 +2105,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;
 		<programlisting> SELECT ST_IsSimple(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
  st_issimple
 -------------
- t
+ f
 (1 row)
 
  SELECT ST_IsSimple(ST_GeomFromText('LINESTRING(1 1,2 2,2 3.5,1 3,1 2,2 1)'));
@@ -2020,11 +2118,11 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;
 		<refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_IsValid" /></para>
+			<para><xref linkend="ST_IsValid"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_M">
+	<refentry xml:id="ST_M">
 	  <refnamediv>
 		<refname>ST_M</refname>
 
@@ -2072,11 +2170,11 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_X" />, <xref linkend="ST_Y" />, <xref linkend="ST_Z" /></para>
+		<para><xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_X"/>, <xref linkend="ST_Y"/>, <xref linkend="ST_Z"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_MemSize">
+	<refentry xml:id="ST_MemSize">
 	  <refnamediv>
 		<refname>ST_MemSize</refname>
 
@@ -2096,7 +2194,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;
 		<title>Description</title>
 
 		<para>Returns the amount of memory space (in bytes) the geometry takes. </para>
-		<para>This complements the PostgreSQL built-in <ulink url="https://www.postgresql.org/docs/current/functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT">database object functions</ulink>
+		<para>This complements the PostgreSQL built-in <link xlink:href="https://www.postgresql.org/docs/current/functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT">database object functions</link>
 		 pg_column_size, pg_size_pretty, pg_relation_size, pg_total_relation_size.</para>
 		<note><para>pg_relation_size which gives the byte size of a table may return byte size lower than ST_MemSize. This is because
 		pg_relation_size does not add toasted table contribution and large geometries are stored in TOAST tables.</para>
@@ -2108,7 +2206,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
-		<para>Changed: 2.2.0 name changed to ST_MemSize to follow naming convention.</para>
+		<para role="changed" conformance="2.2.0">Changed: 2.2.0 name changed to ST_MemSize to follow naming convention.</para>
 	  </refsection>
 
 
@@ -2145,7 +2243,7 @@ fulltable_size geomsize  pergeom
 
 	</refentry>
 
-	<refentry id="ST_NDims">
+	<refentry xml:id="ST_NDims">
 		<refnamediv>
 			<refname>ST_NDims</refname>
 			<refpurpose>Returns the coordinate dimension of a geometry.</refpurpose>
@@ -2183,11 +2281,11 @@ fulltable_size geomsize  pergeom
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_CoordDim" />, <xref linkend="ST_Dimension" />, <xref linkend="ST_GeomFromEWKT" /></para>
+			<para><xref linkend="ST_CoordDim"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_GeomFromEWKT"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_NPoints">
+	<refentry xml:id="ST_NPoints">
 		<refnamediv>
 			<refname>ST_NPoints</refname>
 			<refpurpose>Returns the number of points (vertices) in a geometry.</refpurpose>
@@ -2206,7 +2304,7 @@ fulltable_size geomsize  pergeom
 			<title>Description</title>
 
 			<para>Return the number of points in a geometry.  Works for all geometries.</para>
-			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 			<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
@@ -2229,11 +2327,11 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 		<refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_NumPoints" /></para>
+			<para><xref linkend="ST_NumPoints"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_NRings">
+	<refentry xml:id="ST_NRings">
 	  <refnamediv>
 		<refname>ST_NRings</refname>
 		<refpurpose>Returns the number of rings in a polygonal geometry.</refpurpose>
@@ -2274,11 +2372,11 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_NumInteriorRings" /></para>
+		<para><xref linkend="ST_NumInteriorRings"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_NumGeometries">
+	<refentry xml:id="ST_NumGeometries">
 		<refnamediv>
 			<refname>ST_NumGeometries</refname>
 			<refpurpose>Returns the number of elements in a geometry collection.</refpurpose>
@@ -2296,11 +2394,12 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 		<refsection>
 			<title>Description</title>
 
-			<para>Returns the number of Geometries. If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
-			number of geometries, for single geometries will return 1, otherwise return NULL.</para>
+			<para>Returns the number of elements in a geometry collection (GEOMETRYCOLLECTION or MULTI*).
+			For non-empty atomic geometries returns 1.  For empty geometries returns 0.
+			</para>
 
-			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-			<para>Changed: 2.0.0 In prior versions this would return NULL if the geometry was not a collection/MULTI type.
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+			<para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions this would return NULL if the geometry was not a collection/MULTI type.
 				2.0.0+ now returns 1 for single geometries e.g POLYGON, LINESTRING, POINT.</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 9.1.4</para>
 			<para>&Z_support;</para>
@@ -2329,11 +2428,11 @@ POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
 		<refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Multi" /></para>
+			<para><xref linkend="ST_GeometryN"/>, <xref linkend="ST_Multi"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_NumInteriorRings">
+	<refentry xml:id="ST_NumInteriorRings">
 	  <refnamediv>
 		<refname>ST_NumInteriorRings</refname>
 		<refpurpose>Returns the number of interior rings (holes) of a Polygon.</refpurpose>
@@ -2357,7 +2456,7 @@ POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
     </para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 8.2.5</para>
-		<para>Changed: 2.0.0 - in prior versions it would allow passing a MULTIPOLYGON, returning the number of interior rings of first POLYGON.</para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 - in prior versions it would allow passing a MULTIPOLYGON, returning the number of interior rings of first POLYGON.</para>
 	  </refsection>
 
 	  <refsection>
@@ -2379,11 +2478,11 @@ GROUP BY gid, field1,field2;
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_NumInteriorRing" />, <xref linkend="ST_InteriorRingN" /></para>
+		<para><xref linkend="ST_NumInteriorRing"/>, <xref linkend="ST_InteriorRingN"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_NumInteriorRing">
+	<refentry xml:id="ST_NumInteriorRing">
 	  <refnamediv>
 		<refname>ST_NumInteriorRing</refname>
 		<refpurpose>Returns the number of interior rings (holes) of a Polygon. Aias for ST_NumInteriorRings</refpurpose>
@@ -2401,11 +2500,11 @@ GROUP BY gid, field1,field2;
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_NumInteriorRings" />, <xref linkend="ST_InteriorRingN" /></para>
+		<para><xref linkend="ST_NumInteriorRings"/>, <xref linkend="ST_InteriorRingN"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_NumPatches">
+	<refentry xml:id="ST_NumPatches">
 	  <refnamediv>
 		<refname>ST_NumPatches</refname>
 		<refpurpose>Return the number of faces on a Polyhedral Surface.  Will return null for non-polyhedral geometries.</refpurpose>
@@ -2426,7 +2525,7 @@ GROUP BY gid, field1,field2;
 		<para>Return the number of faces on a Polyhedral Surface.  Will return null for non-polyhedral geometries. This is
 		an alias for ST_NumGeometries to support MM naming. Faster to use ST_NumGeometries if you don't care about MM convention.</para>
 
-		<para>Availability: 2.0.0</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 		<para>&Z_support;</para>
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5</para>
@@ -2447,11 +2546,11 @@ GROUP BY gid, field1,field2;
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_NumGeometries" /></para>
+		<para><xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_NumGeometries"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_NumPoints">
+	<refentry xml:id="ST_NumPoints">
 	  <refnamediv>
 		<refname>ST_NumPoints</refname>
 		<refpurpose>Returns the number of points in a LineString or CircularString.</refpurpose>
@@ -2470,7 +2569,7 @@ GROUP BY gid, field1,field2;
 		<title>Description</title>
 
 		<para>Return the number of points in an ST_LineString or
-		  ST_CircularString value. Prior to 1.4 only works with linestrings as the specs state.  From 1.4 forward this is an alias for ST_NPoints which returns number of vertexes for
+		  ST_CircularString value. Prior to 1.4 only works with linestrings as the specs state.  From 1.4 forward this is an alias for ST_NPoints which returns number of vertices for
 		  not just linestrings.
 		  Consider using ST_NPoints instead which is multi-purpose
 		  and works with many geometry types.</para>
@@ -2490,11 +2589,11 @@ GROUP BY gid, field1,field2;
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_NPoints" /></para>
+		<para><xref linkend="ST_NPoints"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_PatchN">
+	<refentry xml:id="ST_PatchN">
 	  <refnamediv>
 		<refname>ST_PatchN</refname>
 
@@ -2525,10 +2624,10 @@ GROUP BY gid, field1,field2;
 		</note>
 
 		<note>
-		  <para>If you want to extract all elements of a geometry <xref linkend="ST_Dump" /> is more efficient.</para>
+		  <para>If you want to extract all elements of a geometry <xref linkend="ST_Dump"/> is more efficient.</para>
 		</note>
 
-		<para>Availability: 2.0.0</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 		<para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
@@ -2558,11 +2657,11 @@ VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_Dump" />, <xref linkend="ST_GeometryN" />, <xref linkend="ST_NumGeometries" /></para>
+		<para><xref linkend="ST_AsEWKT"/>, <xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_GeometryN"/>, <xref linkend="ST_NumGeometries"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_PointN">
+	<refentry xml:id="ST_PointN">
 	  <refnamediv>
 		<refname>ST_PointN</refname>
 
@@ -2602,10 +2701,10 @@ VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)
 		<para>&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
-		<note><para>Changed: 2.0.0 no longer works with single geometry multilinestrings.  In older
+		<note><para role="changed" conformance="2.0.0">Changed: 2.0.0 no longer works with single geometry multilinestrings.  In older
 	  versions of PostGIS -- a single line multilinestring would work happily with this
 	  function and return the start point.  In 2.0.0 it just returns NULL like any other multilinestring.</para>
-      <para> Changed: 2.3.0 : negative indexing available (-1 is last point)
+      <para role="changed" conformance="2.3.0"> Changed: 2.3.0 : negative indexing available (-1 is last point)
     </para>
       </note>
 
@@ -2653,11 +2752,11 @@ FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_NPoints" /></para>
+		<para><xref linkend="ST_NPoints"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Points">
+	<refentry xml:id="ST_Points">
 		<refnamediv>
 			<refname>ST_Points</refname>
 			<refpurpose>Returns a MultiPoint containing the coordinates of a geometry.
@@ -2684,12 +2783,12 @@ FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g
                 Duplicate points are preserved,
 				including the start and end points of ring geometries.
 				(If desired, duplicate points can be removed by calling
-				<xref linkend="ST_RemoveRepeatedPoints" /> on the result).
+				<xref linkend="ST_RemoveRepeatedPoints"/> on the result).
 			</para>
 
             <para>
             To obtain information about the position of each coordinate in the parent geometry
-            use <xref linkend="ST_DumpPoints" />.
+            use <xref linkend="ST_DumpPoints"/>.
             </para>
 
 			<para>
@@ -2699,7 +2798,7 @@ FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g
 			<para>&curve_support;</para>
 			<para>&Z_support;</para>
 
-			<para>Availability: 2.3.0</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0</para>
 
 		</refsection>
 
@@ -2715,11 +2814,11 @@ MULTIPOINT Z ((30 10 4),(10 30 5),(40 40 6),(30 10 4))
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_RemoveRepeatedPoints" />, <xref linkend="ST_DumpPoints" /></para>
+			<para><xref linkend="ST_RemoveRepeatedPoints"/>, <xref linkend="ST_DumpPoints"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_StartPoint">
+	<refentry xml:id="ST_StartPoint">
 	<refnamediv>
 	  <refname>ST_StartPoint</refname>
 
@@ -2750,8 +2849,8 @@ MULTIPOINT Z ((30 10 4),(10 30 5),(40 40 6),(30 10 4))
 	  <para>&curve_support;</para>
 
 	  <note>
-        <para>Enhanced: 3.2.0 returns a point for all geometries. Prior behavior returns NULLs if input was not a LineString.</para>
-      <para>Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
+        <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 returns a point for all geometries. Prior behavior returns NULLs if input was not a LineString.</para>
+      <para role="changed" conformance="2.0.0">Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
 	  versions of PostGIS a single-line MultiLineString would work happily with this
 	  function and return the start point.  In 2.0.0 it just returns NULL like any other MultiLineString.
 	  The old behavior was an undocumented feature, but people who assumed they had their data stored as LINESTRING
@@ -2798,10 +2897,10 @@ SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 3)
 	<refsection>
 	  <title>See Also</title>
 
-	  <para><xref linkend="ST_EndPoint" />, <xref linkend="ST_PointN" /></para>
+	  <para><xref linkend="ST_EndPoint"/>, <xref linkend="ST_PointN"/></para>
 	</refsection>
   </refentry>
-	<refentry id="ST_Summary">
+	<refentry xml:id="ST_Summary">
 	  <refnamediv>
 		<refname>ST_Summary</refname>
 
@@ -2846,10 +2945,10 @@ SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 3)
 
 	<!-- Optionally mention support for Triangles and TINS  -->
 	<para>&T_support;</para>
-		<para>Availability: 1.2.2</para>
-		<para>Enhanced: 2.0.0 added support for geography</para>
-		<para>Enhanced: 2.1.0 S flag to denote if has a known spatial reference system</para>
-		<para>Enhanced: 2.2.0 Added support for TIN and Curves</para>
+		<para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 added support for geography</para>
+		<para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 S flag to denote if has a known spatial reference system</para>
+		<para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0 Added support for TIN and Curves</para>
 	  </refsection>
 
 	  <refsection>
@@ -2883,24 +2982,24 @@ SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 3)
 		<title>See Also</title>
 
 		<para>
-<xref linkend="PostGIS_DropBBox" />,
-<xref linkend="PostGIS_AddBBox" />,
-<xref linkend="ST_Force_3DM" />,
-<xref linkend="ST_Force_3DZ" />,
-<xref linkend="ST_Force2D" />,
-<xref linkend="geography" />
+<xref linkend="PostGIS_DropBBox"/>,
+<xref linkend="PostGIS_AddBBox"/>,
+<xref linkend="ST_Force_3DM"/>,
+<xref linkend="ST_Force_3DZ"/>,
+<xref linkend="ST_Force2D"/>,
+<xref linkend="geography"/>
 		</para>
 
 		<para>
-<xref linkend="ST_IsValid" />,
-<xref linkend="ST_IsValid" />,
-<xref linkend="ST_IsValidReason" />,
-<xref linkend="ST_IsValidDetail" />
+<xref linkend="ST_IsValid"/>,
+<xref linkend="ST_IsValid"/>,
+<xref linkend="ST_IsValidReason"/>,
+<xref linkend="ST_IsValidDetail"/>
 		</para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_X">
+	<refentry xml:id="ST_X">
 	  <refnamediv>
 		<refname>ST_X</refname>
 
@@ -2923,7 +3022,7 @@ SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 3)
 			available. Input must be a point.</para>
 
 		<note><para>To get the minimum and maximum X value of geometry coordinates use the functions
-		<xref linkend="ST_XMin" /> and <xref linkend="ST_XMax" />.</para></note>
+		<xref linkend="ST_XMin"/> and <xref linkend="ST_XMax"/>.</para></note>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 6.1.3</para>
 		<para>&Z_support;</para>
@@ -2952,11 +3051,11 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Centroid" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_XMax" />, <xref linkend="ST_XMin" />, <xref linkend="ST_Y" />, <xref linkend="ST_Z" /></para>
+		<para><xref linkend="ST_Centroid"/>, <xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_M"/>, <xref linkend="ST_XMax"/>, <xref linkend="ST_XMin"/>, <xref linkend="ST_Y"/>, <xref linkend="ST_Z"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Y">
+	<refentry xml:id="ST_Y">
 	  <refnamediv>
 		<refname>ST_Y</refname>
 
@@ -2979,7 +3078,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 			available. Input must be a point.</para>
 
 		<note><para>To get the minimum and maximum Y value of geometry coordinates use the functions
-		<xref linkend="ST_YMin" /> and <xref linkend="ST_YMax" />.</para></note>
+		<xref linkend="ST_YMin"/> and <xref linkend="ST_YMax"/>.</para></note>
 
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 6.1.4</para>
@@ -3010,11 +3109,11 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Centroid" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_X" />, <xref linkend="ST_YMax" />, <xref linkend="ST_YMin" />, <xref linkend="ST_Z" /></para>
+		<para><xref linkend="ST_Centroid"/>, <xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_M"/>, <xref linkend="ST_X"/>, <xref linkend="ST_YMax"/>, <xref linkend="ST_YMin"/>, <xref linkend="ST_Z"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Z">
+	<refentry xml:id="ST_Z">
 	  <refnamediv>
 		<refname>ST_Z</refname>
 
@@ -3037,7 +3136,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 			available. Input must be a point.</para>
 
 		<note><para>To get the minimum and maximum Z value of geometry coordinates use the functions
-		<xref linkend="ST_ZMin" /> and <xref linkend="ST_ZMax" />.</para></note>
+		<xref linkend="ST_ZMin"/> and <xref linkend="ST_ZMax"/>.</para></note>
 
 
 		<para>&sqlmm_compliant;</para>
@@ -3060,11 +3159,11 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_X" />, <xref linkend="ST_Y" />, <xref linkend="ST_ZMax" />, <xref linkend="ST_ZMin" /> </para>
+		<para><xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_M"/>, <xref linkend="ST_X"/>, <xref linkend="ST_Y"/>, <xref linkend="ST_ZMax"/>, <xref linkend="ST_ZMin"/> </para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Zmflag">
+	<refentry xml:id="ST_Zmflag">
 	  <refnamediv>
 		<refname>ST_Zmflag</refname>
 
@@ -3120,8 +3219,107 @@ SELECT ST_Zmflag(ST_GeomFromEWKT('POINT(1 2 3 4)'));
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_CoordDim" />, <xref linkend="ST_NDims" />, <xref linkend="ST_Dimension" /></para>
+		<para><xref linkend="ST_CoordDim"/>, <xref linkend="ST_NDims"/>, <xref linkend="ST_Dimension"/></para>
 	  </refsection>
 	</refentry>
 
-  </sect1>
+    <refentry xml:id="ST_HasZ">
+  <refnamediv>
+    <refname>ST_HasZ</refname>
+    <refpurpose>Checks if a geometry has a Z dimension.</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>boolean <function>ST_HasZ</function></funcdef>
+        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsection>
+    <title>Description</title>
+
+    <para>Checks if the input geometry has a Z dimension and returns a boolean value. If the geometry has a Z dimension, it returns true; otherwise, it returns false.</para>
+
+    <para>Geometry objects with a Z dimension typically represent three-dimensional (3D) geometries, while those without it are two-dimensional (2D) geometries.</para>
+
+    <para>This function is useful for determining if a geometry has elevation or height information.</para>
+
+    <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+    <para>&Z_support;</para>
+    <para>&M_support;</para>
+  </refsection>
+
+  <refsection>
+    <title>Examples</title>
+
+    <programlisting>SELECT ST_HasZ(ST_GeomFromText('POINT(1 2 3)'));
+ --result
+ true
+</programlisting>
+    <programlisting>SELECT ST_HasZ(ST_GeomFromText('LINESTRING(0 0, 1 1)'));
+ --result
+ false
+</programlisting>
+  </refsection>
+
+  <refsection>
+    <title>See Also</title>
+    <para><xref linkend="ST_Zmflag"/></para>
+    <para><xref linkend="ST_HasM"/></para>
+  </refsection>
+</refentry>
+
+<refentry xml:id="ST_HasM">
+  <refnamediv>
+    <refname>ST_HasM</refname>
+    <refpurpose>Checks if a geometry has an M (measure) dimension.</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>boolean <function>ST_HasM</function></funcdef>
+        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsection>
+    <title>Description</title>
+
+    <para>Checks if the input geometry has an M (measure) dimension and returns a boolean value. If the geometry has an M dimension, it returns true; otherwise, it returns false.</para>
+
+    <para>Geometry objects with an M dimension typically represent measurements or additional data associated with spatial features.</para>
+
+    <para>This function is useful for determining if a geometry includes measure information.</para>
+
+    <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+    <para>&Z_support;</para>
+    <para>&M_support;</para>
+  </refsection>
+
+  <refsection>
+    <title>Examples</title>
+
+    <programlisting>SELECT ST_HasM(ST_GeomFromText('POINTM(1 2 3)'));
+ --result
+ true
+</programlisting>
+    <programlisting>SELECT ST_HasM(ST_GeomFromText('LINESTRING(0 0, 1 1)'));
+ --result
+ false
+</programlisting>
+  </refsection>
+
+  <refsection>
+    <title>See Also</title>
+    <para><xref linkend="ST_Zmflag"/></para>
+    <para><xref linkend="ST_HasZ"/></para>
+  </refsection>
+</refentry>
+
+
+  </section>

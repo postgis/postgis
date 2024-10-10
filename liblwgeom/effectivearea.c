@@ -283,7 +283,7 @@ static void tune_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, dou
 			ea->res_arealist[current]=FLT_MAX;
 
 		if(ea->res_arealist[current]<check_order_min_area)
-			lwerror("Oh no, this is a bug. For some reason the minHeap returned our points in the wrong order. Please file a ticket in PostGIS ticket system, or send a mial at the mailing list.Returned area = %lf, and last area = %lf",ea->res_arealist[current],check_order_min_area);
+			lwerror("Oh no, this is a bug. For some reason the minHeap returned our points in the wrong order. Please file a ticket in PostGIS ticket system, or send a mail at the mailing list.Returned area = %lf, and last area = %lf",ea->res_arealist[current],check_order_min_area);
 
 		check_order_min_area=ea->res_arealist[current];
 
@@ -327,7 +327,7 @@ static void tune_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, dou
 			minheap_update(&tree, ea->initial_arealist, ea->initial_arealist[after_current].treeindex);
 		}
 
-		/*rearrange the nodes so the eliminated point will be ingored on the next run*/
+		/*rearrange the nodes so the eliminated point will be ignored on the next run*/
 		ea->initial_arealist[before_current].next = ea->initial_arealist[current].next;
 		ea->initial_arealist[after_current].prev = ea->initial_arealist[current].prev;
 

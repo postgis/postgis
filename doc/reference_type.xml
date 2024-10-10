@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="PostGIS_Types">
-    <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="PostGIS_Types">
+    <title>PostGIS Geometry/Geography/Box Data Types</title><info>
     <abstract>
     <para>This section lists the custom PostgreSQL
 		data types installed by PostGIS to represent spatial data.
     </para>
     <para>Each data type describes its type casting behavior.
-		A <ulink url="https://www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS">type cast</ulink>
+		A <link xlink:href="https://www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS">type cast</link>
 		converts values of one data type into another type.
 		PostgreSQL allows defining casting behavior for custom types, along with the functions used to convert type values.
 		Casts can have <emphasis role="bold">automatic</emphasis> behavior,
@@ -23,10 +23,10 @@
 
     <para>All data types can be cast to <varname>text</varname>, so this does not need to be specified explicitly.</para>
     </abstract>
-    </sect1info>
-    <title>PostGIS Geometry/Geography/Box Data Types</title>
+    </info>
 
-	<refentry id="box2d_type">
+
+	<refentry xml:id="box2d_type">
       <refnamediv>
         <refname>box2d</refname>
         <refpurpose>The type representing a 2-dimensional bounding box. </refpurpose>
@@ -36,7 +36,7 @@
         <title>Description</title>
         <para><varname>box2d</varname> is a spatial data type used to represent
             the two-dimensional bounding box enclosing a geometry or collection of geometries.
-            For example, the <xref linkend="ST_Extent" /> aggregate function returns a <varname>box2d</varname> object.</para>
+            For example, the <xref linkend="ST_Extent"/> aggregate function returns a <varname>box2d</varname> object.</para>
 
             <para>The representation contains the values <varname>xmin, ymin, xmax, ymax</varname>.
             These are the minimum and maximum values of the X and Y extents.
@@ -68,11 +68,11 @@
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="PostGIS_BoxFunctions" /></para>
+			<para><xref linkend="PostGIS_BoxFunctions"/></para>
 		</refsection>
     </refentry>
 
-	<refentry id="box3d_type">
+	<refentry xml:id="box3d_type">
       <refnamediv>
         <refname>box3d</refname>
         <refpurpose>The type representing a 3-dimensional bounding box. </refpurpose>
@@ -82,11 +82,11 @@
         <title>Description</title>
         <para><varname>box3d</varname> is a PostGIS spatial data type used to represent
             the three-dimensional bounding box enclosing a geometry or collection of geometries.
-            For example, the <xref linkend="ST_3DExtent" /> aggregate function returns a <varname>box3d</varname> object.
+            For example, the <xref linkend="ST_3DExtent"/> aggregate function returns a <varname>box3d</varname> object.
             </para>
 
             <para>The representation contains the values <varname>xmin, ymin, zmin, xmax, ymax, zmax</varname>.
-            These are the minimum and maxium values of the X, Y and Z extents.
+            These are the minimum and maximum values of the X, Y and Z extents.
             </para>
 
             <para><varname>box3d</varname> objects have a text representation which looks like <code>BOX3D(1 2 3,5 6 5)</code>.
@@ -122,12 +122,12 @@
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="PostGIS_BoxFunctions" /></para>
+			<para><xref linkend="PostGIS_BoxFunctions"/></para>
 		</refsection>
 
     </refentry>
 
-	<refentry id="geometry">
+	<refentry xml:id="geometry">
 		<refnamediv>
 			<refname>geometry</refname>
 			<refpurpose>The type representing spatial features with planar coordinate systems.</refpurpose>
@@ -180,11 +180,11 @@
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="RefObject" />, <xref linkend="PostGIS_SQLMM_Functions" /></para>
+			<para><xref linkend="RefObject"/>, <xref linkend="PostGIS_SQLMM_Functions"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="geometry_dump">
+	<refentry xml:id="geometry_dump">
 		<refnamediv>
 			<refname>geometry_dump</refname>
 			<refpurpose>A composite type used to describe the parts of complex geometry.</refpurpose>
@@ -193,7 +193,7 @@
 		<refsection>
 		<title>Description</title>
 		<para><varname>geometry_dump</varname> is a
-		<ulink url="https://www.postgresql.org/docs/current/rowtypes.html">composite data type</ulink>
+		<link xlink:href="https://www.postgresql.org/docs/current/rowtypes.html">composite data type</link>
 		containing the fields:</para>
 		<itemizedlist>
 		<listitem>
@@ -212,11 +212,11 @@
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="PostGIS_Geometry_DumpFunctions" /> </para>
+			<para><xref linkend="PostGIS_Geometry_DumpFunctions"/> </para>
 		</refsection>
 	</refentry>
 
-	<refentry id="geography">
+	<refentry xml:id="geography">
 		<refnamediv>
 			<refname>geography</refname>
 			<refpurpose>The type representing spatial features with geodetic (ellipsoidal) coordinate systems.</refpurpose>
@@ -254,7 +254,7 @@
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="PostGIS_Geography" />, <xref linkend="PostGIS_GeographyFunctions" /></para>
+			<para><xref linkend="PostGIS_Geography"/>, <xref linkend="PostGIS_GeographyFunctions"/></para>
 		</refsection>
 	</refentry>
-  </sect1>
+  </section>

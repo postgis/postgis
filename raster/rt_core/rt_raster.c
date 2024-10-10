@@ -724,7 +724,7 @@ rt_raster_get_geotransform_matrix(rt_raster raster,
  * Set raster's geotransform using 6-element array
  *
  * @param raster : the raster to set matrix of
- * @param gt : intput parameter, 6-element geotransform matrix
+ * @param gt : input parameter, 6-element geotransform matrix
  *
  */
 void
@@ -1782,7 +1782,7 @@ rt_raster_to_gdal(
 		rtn_drv,
 		"/vsimem/out.dat", /* should be fine assuming this is in a process */
 		src_ds,
-		FALSE, /* should copy be strictly equivelent? */
+		FALSE, /* should copy be strictly equivalent? */
 		options, /* format options */
 		NULL, /* progress function */
 		NULL /* progress data */
@@ -3368,14 +3368,14 @@ rt_raster_gdal_rasterize(
 			rt_band_get_nodata(oldband, &nodataval);
 
 		/* allocate data */
-		data = rtalloc(rt_pixtype_size(arg->pixtype[i]) * _width * _height);
+		data = rtalloc((size_t)rt_pixtype_size(arg->pixtype[i]) * _width * _height);
 		if (data == NULL) {
 			rterror("rt_raster_gdal_rasterize: Could not allocate memory for band data");
 			_rti_rasterize_arg_destroy(arg);
 			rt_raster_destroy(rast);
 			return NULL;
 		}
-		memset(data, 0, rt_pixtype_size(arg->pixtype[i]) * _width * _height);
+		memset(data, 0, (size_t)rt_pixtype_size(arg->pixtype[i]) * _width * _height);
 
 		/* create new band of correct type */
 		band = rt_band_new_inline(

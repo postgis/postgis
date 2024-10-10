@@ -79,3 +79,26 @@ NOTICE:  One or both of the geometries is missing z-value. The unknown z-value w
 #4328.5|t|t
 NOTICE:  One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
 #4328.6|t|t
+st_project.01|POINT(0 1)
+st_project.02|POINT(0 -1)
+st_project.03|POINT(1 0)
+st_project.04|POINT(-1 0)
+st_project.05|POINT(0.707 0.707)
+st_project.06|POINT(-0.707 -0.707)
+st_project.07|POINT(0 0)
+st_project.08|POINT(9.293 9.293)
+st_project.11|POINT(-1 0)
+st_project.12|POINT(1 0)
+st_project.13|POINT(0 -1)
+st_project.14|POINT(0 1)
+st_project.15|POINT(-0.707 -0.707)
+st_project.16|POINT(0.707 0.707)
+st_project.17|POINT(0 0)
+st_project.18|POINT(7.293 7.293)
+st_lineextend.1|LINESTRING(-0.707 -0.707,0 0,1 1,1.707 1.707)
+st_lineextend.2|LINESTRING(-0.707 -0.707,0 0,1 1)
+st_lineextend.3|LINESTRING(0 0,1 1,1.707 1.707)
+st_lineextend.4|LINESTRING(0 0,1 1,1.707 1.707)
+st_lineextend.5|
+ERROR:  Argument must be LINESTRING geometry
+#5782|t

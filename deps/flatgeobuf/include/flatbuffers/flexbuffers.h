@@ -17,6 +17,7 @@
 #ifndef FLATBUFFERS_FLEXBUFFERS_H_
 #define FLATBUFFERS_FLEXBUFFERS_H_
 
+#include <algorithm>
 #include <map>
 // Used to select STL variant.
 #include "flatbuffers/base.h"
@@ -382,10 +383,10 @@ class Reference {
         type_(type) {}
 
   Reference(const uint8_t *data, uint8_t parent_width, uint8_t packed_type)
-      : data_(data), parent_width_(parent_width) {
-    byte_width_ = 1U << static_cast<BitWidth>(packed_type & 3);
-    type_ = static_cast<Type>(packed_type >> 2);
-  }
+      : data_(data),
+        parent_width_(parent_width),
+        byte_width_(static_cast<uint8_t>(1 << (packed_type & 3))),
+        type_(static_cast<Type>(packed_type >> 2)) {}
 
   Type GetType() const { return type_; }
 
@@ -1740,9 +1741,9 @@ class Verifier FLATBUFFERS_FINAL_CLASS {
     if (!Check(depth_ <= max_depth_ && num_vectors_ <= max_vectors_))
       return false;
     auto size_byte_width = r.byte_width_;
-    FLEX_CHECK_VERIFIED(p,
-                        PackedType(Builder::WidthB(size_byte_width), r.type_));
     if (!VerifyBeforePointer(p, size_byte_width)) return false;
+    FLEX_CHECK_VERIFIED(p - size_byte_width,
+                        PackedType(Builder::WidthB(size_byte_width), r.type_));
     auto sized = Sized(p, size_byte_width);
     auto num_elems = sized.size();
     auto elem_byte_width = r.type_ == FBT_STRING || r.type_ == FBT_BLOB
@@ -1844,7 +1845,7 @@ class Verifier FLATBUFFERS_FINAL_CLASS {
         uint8_t len = 0;
         auto vtype = ToFixedTypedVectorElementType(r.type_, &len);
         if (!VerifyType(vtype)) return false;
-        return VerifyFromPointer(p, r.byte_width_ * len);
+        return VerifyFromPointer(p, static_cast<size_t>(r.byte_width_) * len);
       }
       default: return false;
     }
@@ -1871,7 +1872,7 @@ class Verifier FLATBUFFERS_FINAL_CLASS {
   std::vector<uint8_t> *reuse_tracker_;
 };
 
-// Utility function that contructs the Verifier for you, see above for
+// Utility function that constructs the Verifier for you, see above for
 // parameters.
 inline bool VerifyBuffer(const uint8_t *buf, size_t buf_len,
                          std::vector<uint8_t> *reuse_tracker = nullptr) {

@@ -10,8 +10,7 @@
  *
  **********************************************************************/
 
-#ifndef LWGEOM_CACHE_H_
-#define LWGEOM_CACHE_H_ 1
+#pragma once
 
 #include "postgres.h"
 #include "fmgr.h"
@@ -20,16 +19,18 @@
 #include "lwgeodetic_tree.h"
 #include "lwgeom_pg.h"
 
-
-#define TOAST_CACHE_ENTRY 0
-#define PREP_CACHE_ENTRY 1
-#define RTREE_CACHE_ENTRY 2
-#define CIRC_CACHE_ENTRY 3
-#define RECT_CACHE_ENTRY 4
-#define SRSDESC_CACHE_ENTRY 5
-#define SRID_CACHE_ENTRY 6
+enum CacheEntryEnum {
+	TOAST_CACHE_ENTRY   = 0,
+	PREP_CACHE_ENTRY    = 1,
+	ITREE_CACHE_ENTRY   = 2,
+	CIRC_CACHE_ENTRY    = 3,
+	RECT_CACHE_ENTRY    = 4,
+	SRSDESC_CACHE_ENTRY = 5,
+	SRID_CACHE_ENTRY    = 6
+};
 
 #define NUM_CACHE_ENTRIES 7
+
 
 /* Returns the MemoryContext used to store the caches */
 MemoryContext PostgisCacheContext(FunctionCallInfo fcinfo);
@@ -61,7 +62,7 @@ typedef struct {
 
 /*
 * Other specific geometry cache types are the
-* RTreeGeomCache - lwgeom_rtree.h
+* IntervalTreeGeomCache - lwgeom_itree.h
 * PrepGeomCache - lwgeom_geos_prepared.h
 */
 
@@ -135,4 +136,3 @@ typedef struct {
 
 int32_t GetSRIDCacheBySRS(FunctionCallInfo fcinfo, const char *srs);
 
-#endif /* LWGEOM_CACHE_H_ */

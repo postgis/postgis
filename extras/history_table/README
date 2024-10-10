@@ -34,7 +34,7 @@ Or, to retrieve a view of the roads table at any point in the past:
 To history-enable a table using this module
 
  * Load the history_table.sql file.
- * Run the initalization routine:
+ * Run the initialization routine:
    SELECT postgis_install_history();
  * Enable history on a table:
    SELECT postgis_enable_history('public', 'roads', 'the_geom');

@@ -2,7 +2,7 @@
 -- ST_SummaryStatsAgg AGGREGATE
 -- Compute summary statistics for an aggregation of raster.
 --
--- Exemple
+-- Example
 -- SELECT (ss).count,
 --        (ss).sum,
 --        (ss).mean,

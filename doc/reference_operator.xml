@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="Operators">
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Operators">
 	<title>Operators</title>
 
-	    <sect2 id="operators-bbox">
+	    <section xml:id="operators-bbox">
       <title>Bounding Box Operators</title>
 
-		<refentry id="geometry_overlaps">
+		<refentry xml:id="geometry_overlaps">
 		  <refnamediv>
 			<refname>&amp;&amp;</refname>
 
@@ -58,8 +58,8 @@
             <note><para>This operand will make use of any indexes that may be available on the
                 geometries.</para></note>
 
-            <para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
-            <para>Availability: 1.5.0 support for geography was introduced.</para>
+            <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+            <para role="availability" conformance="1.5.0">Availability: 1.5.0 support for geography was introduced.</para>
             <para>&curve_support;</para>
             <para>&P_support;</para>
         </refsection>
@@ -67,7 +67,8 @@
 		<refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp; tbl2.column2 AS overlaps
+			<programlisting><![CDATA[
+SELECT tbl1.column1, tbl2.column1, tbl1.column2 && tbl2.column2 AS overlaps
 FROM ( VALUES
 	(1, 'LINESTRING(0 0, 3 3)'::geometry),
 	(2, 'LINESTRING(0 1, 0 5)'::geometry)) AS tbl1,
@@ -78,7 +79,8 @@ FROM ( VALUES
 ---------+---------+----------
 	   1 |       3 | t
 	   2 |       3 | f
-(2 rows)</programlisting>
+(2 rows)
+]]></programlisting>
 <!-- TODO Add geography examples -->
 		  </refsection>
 
@@ -86,19 +88,19 @@ FROM ( VALUES
 			<title>See Also</title>
 
 			<para>
-                <xref linkend="ST_Intersects" />,
-                <xref linkend="ST_Extent" />,
-				<xref linkend="ST_Geometry_Overabove" />,
-				<xref linkend="ST_Geometry_Overright" />,
-				<xref linkend="ST_Geometry_Overbelow" />,
-				<xref linkend="ST_Geometry_Overleft" />,
-				<xref linkend="ST_Geometry_Contain" />,
-				<xref linkend="ST_Geometry_Contained" />
+                <xref linkend="ST_Intersects"/>,
+                <xref linkend="ST_Extent"/>,
+				<xref linkend="ST_Geometry_Overabove"/>,
+				<xref linkend="ST_Geometry_Overright"/>,
+				<xref linkend="ST_Geometry_Overbelow"/>,
+				<xref linkend="ST_Geometry_Overleft"/>,
+				<xref linkend="ST_Geometry_Contain"/>,
+				<xref linkend="ST_Geometry_Contained"/>
             </para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="overlaps_geometry_box2df">
+		<refentry xml:id="overlaps_geometry_box2df">
 		  <refnamediv>
 			<refname>&amp;&amp;(geometry,box2df)</refname>
 
@@ -133,7 +135,7 @@ FROM ( VALUES
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -141,30 +143,32 @@ FROM ( VALUES
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_Point(1,1) &amp;&amp; ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) AS overlaps;
+			<programlisting><![CDATA[
+SELECT ST_Point(1,1) && ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) AS overlaps;
 
  overlaps
 ----------
  t
-(1 row)</programlisting>
+(1 row)
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="overlaps_box2df_geometry" />,
-				<xref linkend="overlaps_box2df_box2df" />,
-				<xref linkend="contains_geometry_box2df" />,
-				<xref linkend="contains_box2df_geometry" />,
-				<xref linkend="contains_box2df_box2df" />,
-				<xref linkend="is_contained_geometry_box2df" />,
-				<xref linkend="is_contained_box2df_geometry" />,
-				<xref linkend="is_contained_box2df_box2df" /></para>
+				<xref linkend="overlaps_box2df_geometry"/>,
+				<xref linkend="overlaps_box2df_box2df"/>,
+				<xref linkend="contains_geometry_box2df"/>,
+				<xref linkend="contains_box2df_geometry"/>,
+				<xref linkend="contains_box2df_box2df"/>,
+				<xref linkend="is_contained_geometry_box2df"/>,
+				<xref linkend="is_contained_box2df_geometry"/>,
+				<xref linkend="is_contained_box2df_box2df"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="overlaps_box2df_geometry">
+		<refentry xml:id="overlaps_box2df_geometry">
 		  <refnamediv>
 			<refname>&amp;&amp;(box2df,geometry)</refname>
 
@@ -199,7 +203,7 @@ FROM ( VALUES
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -207,30 +211,32 @@ FROM ( VALUES
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) &amp;&amp; ST_Point(1,1) AS overlaps;
+			<programlisting><![CDATA[
+SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) && ST_Point(1,1) AS overlaps;
 
  overlaps
 ----------
  t
-(1 row)</programlisting>
+(1 row)
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="overlaps_geometry_box2df" />,
-				<xref linkend="overlaps_box2df_box2df" />,
-				<xref linkend="contains_geometry_box2df" />,
-				<xref linkend="contains_box2df_geometry" />,
-				<xref linkend="contains_box2df_box2df" />,
-				<xref linkend="is_contained_geometry_box2df" />,
-				<xref linkend="is_contained_box2df_geometry" />,
-				<xref linkend="is_contained_box2df_box2df" /></para>
+				<xref linkend="overlaps_geometry_box2df"/>,
+				<xref linkend="overlaps_box2df_box2df"/>,
+				<xref linkend="contains_geometry_box2df"/>,
+				<xref linkend="contains_box2df_geometry"/>,
+				<xref linkend="contains_box2df_box2df"/>,
+				<xref linkend="is_contained_geometry_box2df"/>,
+				<xref linkend="is_contained_box2df_geometry"/>,
+				<xref linkend="is_contained_box2df_box2df"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="overlaps_box2df_box2df">
+		<refentry xml:id="overlaps_box2df_box2df">
 		  <refnamediv>
 			<refname>&amp;&amp;(box2df,box2df)</refname>
 
@@ -265,7 +271,7 @@ FROM ( VALUES
 			<note><para>This operator is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -273,30 +279,32 @@ FROM ( VALUES
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) &amp;&amp; ST_MakeBox2D(ST_Point(1,1), ST_Point(3,3)) AS overlaps;
+			<programlisting><![CDATA[
+SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) && ST_MakeBox2D(ST_Point(1,1), ST_Point(3,3)) AS overlaps;
 
  overlaps
 ----------
  t
-(1 row)</programlisting>
+(1 row)
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="overlaps_geometry_box2df" />,
-				<xref linkend="overlaps_box2df_geometry" />,
-				<xref linkend="contains_geometry_box2df" />,
-				<xref linkend="contains_box2df_geometry" />,
-				<xref linkend="contains_box2df_box2df" />,
-				<xref linkend="is_contained_geometry_box2df" />,
-				<xref linkend="is_contained_box2df_geometry" />,
-				<xref linkend="is_contained_box2df_box2df" /></para>
+				<xref linkend="overlaps_geometry_box2df"/>,
+				<xref linkend="overlaps_box2df_geometry"/>,
+				<xref linkend="contains_geometry_box2df"/>,
+				<xref linkend="contains_box2df_geometry"/>,
+				<xref linkend="contains_box2df_box2df"/>,
+				<xref linkend="is_contained_geometry_box2df"/>,
+				<xref linkend="is_contained_box2df_geometry"/>,
+				<xref linkend="is_contained_box2df_box2df"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="geometry_overlaps_nd">
+		<refentry xml:id="geometry_overlaps_nd">
 		  <refnamediv>
 			<refname>&amp;&amp;&amp;</refname>
 
@@ -331,7 +339,7 @@ FROM ( VALUES
 			<note><para>This operand will make use of any indexes that may be available on the
 				geometries.</para></note>
 
-			<para>Availability: 2.0.0</para>
+			<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 			<para>&T_support;</para>
@@ -341,8 +349,9 @@ FROM ( VALUES
 		  <refsection>
 			<title>Examples: 3D LineStrings</title>
 
-			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp;&amp; tbl2.column2 AS overlaps_3d,
-			            tbl1.column2 &amp;&amp; tbl2.column2 AS overlaps_2d
+			<programlisting><![CDATA[
+SELECT tbl1.column1, tbl2.column1, tbl1.column2 &&& tbl2.column2 AS overlaps_3d,
+			            tbl1.column2 && tbl2.column2 AS overlaps_2d
 FROM ( VALUES
 	(1, 'LINESTRING Z(0 0 1, 3 3 2)'::geometry),
 	(2, 'LINESTRING Z(1 2 0, 0 5 -1)'::geometry)) AS tbl1,
@@ -353,14 +362,16 @@ FROM ( VALUES
 ---------+---------+-------------+-------------
        1 |       3 | t           | t
        2 |       3 | f           | t
-</programlisting>
+
+]]></programlisting>
 
 		  </refsection>
 		  <refsection>
 			<title>Examples: 3M LineStrings</title>
 
-			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp;&amp; tbl2.column2 AS overlaps_3zm,
-			            tbl1.column2 &amp;&amp; tbl2.column2 AS overlaps_2d
+			<programlisting><![CDATA[
+SELECT tbl1.column1, tbl2.column1, tbl1.column2 &&& tbl2.column2 AS overlaps_3zm,
+			            tbl1.column2 && tbl2.column2 AS overlaps_2d
 FROM ( VALUES
 	(1, 'LINESTRING M(0 0 1, 3 3 2)'::geometry),
 	(2, 'LINESTRING M(1 2 0, 0 5 -1)'::geometry)) AS tbl1,
@@ -371,18 +382,19 @@ FROM ( VALUES
 ---------+---------+-------------+-------------
        1 |       3 | t           | t
        2 |       3 | f           | t
-</programlisting>
+
+]]></programlisting>
 
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="geometry_overlaps" /></para>
+			<para><xref linkend="geometry_overlaps"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="overlaps_nd_geometry_gidx">
+		<refentry xml:id="overlaps_nd_geometry_gidx">
 		  <refnamediv>
 			<refname>&amp;&amp;&amp;(geometry,gidx)</refname>
 
@@ -417,7 +429,7 @@ FROM ( VALUES
 			<note><para>This operator is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 			<para>&T_support;</para>
@@ -427,24 +439,26 @@ FROM ( VALUES
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakePoint(1,1,1) &amp;&amp;&amp; ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) AS overlaps;
+			<programlisting><![CDATA[
+SELECT ST_MakePoint(1,1,1) &&& ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) AS overlaps;
 
  overlaps
 ----------
  t
-(1 row)</programlisting>
+(1 row)
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="overlaps_nd_gidx_geometry" />,
-				<xref linkend="overlaps_nd_gidx_gidx" /></para>
+				<xref linkend="overlaps_nd_gidx_geometry"/>,
+				<xref linkend="overlaps_nd_gidx_gidx"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="overlaps_nd_gidx_geometry">
+		<refentry xml:id="overlaps_nd_gidx_geometry">
 		  <refnamediv>
 			<refname>&amp;&amp;&amp;(gidx,geometry)</refname>
 
@@ -479,7 +493,7 @@ FROM ( VALUES
 			<note><para>This operator is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 			<para>&T_support;</para>
@@ -489,24 +503,26 @@ FROM ( VALUES
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &amp;&amp;&amp; ST_MakePoint(1,1,1) AS overlaps;
+			<programlisting><![CDATA[
+SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &&& ST_MakePoint(1,1,1) AS overlaps;
 
  overlaps
 ----------
  t
-(1 row)</programlisting>
+(1 row)
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="overlaps_nd_geometry_gidx" />,
-				<xref linkend="overlaps_nd_gidx_gidx" /></para>
+				<xref linkend="overlaps_nd_geometry_gidx"/>,
+				<xref linkend="overlaps_nd_gidx_gidx"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="overlaps_nd_gidx_gidx">
+		<refentry xml:id="overlaps_nd_gidx_gidx">
 		  <refnamediv>
 			<refname>&amp;&amp;&amp;(gidx,gidx)</refname>
 
@@ -541,7 +557,7 @@ FROM ( VALUES
 			<note><para>This operator is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 			<para>&T_support;</para>
@@ -551,24 +567,26 @@ FROM ( VALUES
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &amp;&amp;&amp; ST_3DMakeBox(ST_MakePoint(1,1,1), ST_MakePoint(3,3,3)) AS overlaps;
+			<programlisting><![CDATA[
+SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &&& ST_3DMakeBox(ST_MakePoint(1,1,1), ST_MakePoint(3,3,3)) AS overlaps;
 
  overlaps
 ----------
  t
-(1 row)</programlisting>
+(1 row)
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
 			<para>
-                                <xref linkend="overlaps_nd_geometry_gidx" />,
-                                <xref linkend="overlaps_nd_gidx_geometry" /></para>
+                                <xref linkend="overlaps_nd_geometry_gidx"/>,
+                                <xref linkend="overlaps_nd_gidx_geometry"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Geometry_Overleft">
+		<refentry xml:id="ST_Geometry_Overleft">
 		  <refnamediv>
 			<refname>&amp;&lt;</refname>
 
@@ -612,7 +630,8 @@ FROM ( VALUES
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&lt; tbl2.column2 AS overleft
+			<programlisting><![CDATA[
+SELECT tbl1.column1, tbl2.column1, tbl1.column2 &< tbl2.column2 AS overleft
 FROM
   ( VALUES
 	(1, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl1,
@@ -626,21 +645,22 @@ FROM
 	   1 |       2 | f
 	   1 |       3 | f
 	   1 |       4 | t
-(3 rows)</programlisting>
+(3 rows)
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="geometry_overlaps" />,
-				<xref linkend="ST_Geometry_Overabove" />,
-				<xref linkend="ST_Geometry_Overright" />,
-				<xref linkend="ST_Geometry_Overbelow" /></para>
+				<xref linkend="geometry_overlaps"/>,
+				<xref linkend="ST_Geometry_Overabove"/>,
+				<xref linkend="ST_Geometry_Overright"/>,
+				<xref linkend="ST_Geometry_Overbelow"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Geometry_Overbelow">
+		<refentry xml:id="ST_Geometry_Overbelow">
 		  <refnamediv>
 			<refname>&amp;&lt;|</refname>
 
@@ -687,7 +707,8 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&lt;| tbl2.column2 AS overbelow
+			<programlisting><![CDATA[
+SELECT tbl1.column1, tbl2.column1, tbl1.column2 &<| tbl2.column2 AS overbelow
 FROM
   ( VALUES
 	(1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,
@@ -701,21 +722,22 @@ FROM
 	   1 |       2 | f
 	   1 |       3 | t
 	   1 |       4 | t
-(3 rows)</programlisting>
+(3 rows)
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="geometry_overlaps" />,
-				<xref linkend="ST_Geometry_Overabove" />,
-				<xref linkend="ST_Geometry_Overright" />,
-				<xref linkend="ST_Geometry_Overleft" /></para>
+				<xref linkend="geometry_overlaps"/>,
+				<xref linkend="ST_Geometry_Overabove"/>,
+				<xref linkend="ST_Geometry_Overright"/>,
+				<xref linkend="ST_Geometry_Overleft"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Geometry_Overright">
+		<refentry xml:id="ST_Geometry_Overright">
 		  <refnamediv>
 			<refname>&amp;&gt;</refname>
 
@@ -759,7 +781,8 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&gt; tbl2.column2 AS overright
+			<programlisting><![CDATA[
+SELECT tbl1.column1, tbl2.column1, tbl1.column2 &> tbl2.column2 AS overright
 FROM
   ( VALUES
 	(1, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl1,
@@ -773,21 +796,22 @@ FROM
 	   1 |       2 | t
 	   1 |       3 | t
 	   1 |       4 | f
-(3 rows)</programlisting>
+(3 rows)
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="geometry_overlaps" />,
-				<xref linkend="ST_Geometry_Overabove" />,
-				<xref linkend="ST_Geometry_Overbelow" />,
-				<xref linkend="ST_Geometry_Overleft" /></para>
+				<xref linkend="geometry_overlaps"/>,
+				<xref linkend="ST_Geometry_Overabove"/>,
+				<xref linkend="ST_Geometry_Overbelow"/>,
+				<xref linkend="ST_Geometry_Overleft"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Geometry_Left">
+		<refentry xml:id="ST_Geometry_Left">
 		  <refnamediv>
 			<refname>&lt;&lt;</refname>
 
@@ -830,7 +854,8 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &lt;&lt; tbl2.column2 AS left
+			<programlisting><![CDATA[
+SELECT tbl1.column1, tbl2.column1, tbl1.column2 << tbl2.column2 AS left
 FROM
   ( VALUES
 	(1, 'LINESTRING (1 2, 1 5)'::geometry)) AS tbl1,
@@ -844,17 +869,18 @@ FROM
 	   1 |       2 | f
 	   1 |       3 | t
 	   1 |       4 | t
-(3 rows)</programlisting>
+(3 rows)
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Geometry_Right" />, <xref linkend="ST_Geometry_Above" />, <xref linkend="ST_Geometry_Below" /></para>
+			<para><xref linkend="ST_Geometry_Right"/>, <xref linkend="ST_Geometry_Above"/>, <xref linkend="ST_Geometry_Below"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Geometry_Below">
+		<refentry xml:id="ST_Geometry_Below">
 		  <refnamediv>
 			<refname>&lt;&lt;|</refname>
 
@@ -897,7 +923,8 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &lt;&lt;| tbl2.column2 AS below
+			<programlisting><![CDATA[
+SELECT tbl1.column1, tbl2.column1, tbl1.column2 <<| tbl2.column2 AS below
 FROM
   ( VALUES
 	(1, 'LINESTRING (0 0, 4 3)'::geometry)) AS tbl1,
@@ -911,17 +938,18 @@ FROM
 	   1 |       2 | t
 	   1 |       3 | f
 	   1 |       4 | f
-(3 rows)</programlisting>
+(3 rows)
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Geometry_Left" />, <xref linkend="ST_Geometry_Right" />, <xref linkend="ST_Geometry_Above" /></para>
+			<para><xref linkend="ST_Geometry_Left"/>, <xref linkend="ST_Geometry_Right"/>, <xref linkend="ST_Geometry_Above"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Geometry_EQ">
+		<refentry xml:id="ST_Geometry_EQ">
 		  <refnamediv>
 			<refname>&#61;</refname>
 
@@ -981,15 +1009,15 @@ FROM
           equal by this operator. For "spatial equality", that ignores
           things like coordinate order, and can detect features that
           cover the same spatial area with different representations,
-          use <xref linkend="ST_OrderingEquals" />
-          or <xref linkend="ST_Equals" /></para>
+          use <xref linkend="ST_OrderingEquals"/>
+          or <xref linkend="ST_Equals"/></para>
 			</note>
 
 			<caution><para>This operand will NOT make use of any indexes that may be available on the
 				geometries. For an index assisted exact equality test, combine &#61; with &amp;&amp;.</para></caution>
 
 
-			<para>Changed: 2.4.0, in prior versions this was bounding box equality not a geometric equality. If you need bounding box equality, use <xref linkend="ST_Geometry_Same" /> instead.</para>
+			<para role="changed" conformance="2.4.0">Changed: 2.4.0, in prior versions this was bounding box equality not a geometric equality. If you need bounding box equality, use <xref linkend="ST_Geometry_Same"/> instead.</para>
 
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
@@ -999,7 +1027,8 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::geometry;
+			<programlisting><![CDATA[
+SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::geometry;
  ?column?
 ----------
  f
@@ -1033,18 +1062,19 @@ GROUP BY column1;
 
 --pt_intersect --
 f
-</programlisting>
+
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Equals" />, <xref linkend="ST_OrderingEquals" />, <xref linkend="ST_Geometry_Same" />
+			<para><xref linkend="ST_Equals"/>, <xref linkend="ST_OrderingEquals"/>, <xref linkend="ST_Geometry_Same"/>
 			<!--, <xref linkend="ST_Geometry_LT" />, <xref linkend="ST_Geometry_GT" /> --></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Geometry_Right">
+		<refentry xml:id="ST_Geometry_Right">
 		  <refnamediv>
 			<refname>&gt;&gt;</refname>
 
@@ -1087,7 +1117,8 @@ f
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &gt;&gt; tbl2.column2 AS right
+			<programlisting><![CDATA[
+SELECT tbl1.column1, tbl2.column1, tbl1.column2 >> tbl2.column2 AS right
 FROM
   ( VALUES
 	(1, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl1,
@@ -1101,17 +1132,18 @@ FROM
 	   1 |       2 | t
 	   1 |       3 | f
 	   1 |       4 | f
-(3 rows)</programlisting>
+(3 rows)
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Geometry_Left" />, <xref linkend="ST_Geometry_Above" />, <xref linkend="ST_Geometry_Below" /></para>
+			<para><xref linkend="ST_Geometry_Left"/>, <xref linkend="ST_Geometry_Above"/>, <xref linkend="ST_Geometry_Below"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Geometry_Contained">
+		<refentry xml:id="ST_Geometry_Contained">
 		  <refnamediv>
 			<refname>@</refname>
 
@@ -1156,7 +1188,8 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 @ tbl2.column2 AS contained
+			<programlisting><![CDATA[
+SELECT tbl1.column1, tbl2.column1, tbl1.column2 @ tbl2.column2 AS contained
 FROM
   ( VALUES
 	(1, 'LINESTRING (1 1, 3 3)'::geometry)) AS tbl1,
@@ -1170,17 +1203,18 @@ FROM
 	   1 |       2 | t
 	   1 |       3 | f
 	   1 |       4 | t
-(3 rows)</programlisting>
+(3 rows)
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Geometry_Contain" />, <xref linkend="geometry_overlaps" /></para>
+			<para><xref linkend="ST_Geometry_Contain"/>, <xref linkend="geometry_overlaps"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="is_contained_geometry_box2df">
+		<refentry xml:id="is_contained_geometry_box2df">
 		  <refnamediv>
 			<refname>@(geometry,box2df)</refname>
 
@@ -1215,7 +1249,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1235,18 +1269,18 @@ FROM
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="overlaps_geometry_box2df" />,
-				<xref linkend="overlaps_box2df_geometry" />,
-				<xref linkend="overlaps_box2df_box2df" />,
-				<xref linkend="contains_geometry_box2df" />,
-				<xref linkend="contains_box2df_geometry" />,
-				<xref linkend="contains_box2df_box2df" />,
-				<xref linkend="is_contained_box2df_geometry" />,
-				<xref linkend="is_contained_box2df_box2df" /></para>
+				<xref linkend="overlaps_geometry_box2df"/>,
+				<xref linkend="overlaps_box2df_geometry"/>,
+				<xref linkend="overlaps_box2df_box2df"/>,
+				<xref linkend="contains_geometry_box2df"/>,
+				<xref linkend="contains_box2df_geometry"/>,
+				<xref linkend="contains_box2df_box2df"/>,
+				<xref linkend="is_contained_box2df_geometry"/>,
+				<xref linkend="is_contained_box2df_box2df"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="is_contained_box2df_geometry">
+		<refentry xml:id="is_contained_box2df_geometry">
 		  <refnamediv>
 			<refname>@(box2df,geometry)</refname>
 
@@ -1281,7 +1315,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1301,18 +1335,18 @@ FROM
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="overlaps_geometry_box2df" />,
-				<xref linkend="overlaps_box2df_geometry" />,
-				<xref linkend="overlaps_box2df_box2df" />,
-				<xref linkend="contains_geometry_box2df" />,
-				<xref linkend="contains_box2df_geometry" />,
-				<xref linkend="contains_box2df_box2df" />,
-				<xref linkend="is_contained_geometry_box2df" />,
-				<xref linkend="is_contained_box2df_box2df" /></para>
+				<xref linkend="overlaps_geometry_box2df"/>,
+				<xref linkend="overlaps_box2df_geometry"/>,
+				<xref linkend="overlaps_box2df_box2df"/>,
+				<xref linkend="contains_geometry_box2df"/>,
+				<xref linkend="contains_box2df_geometry"/>,
+				<xref linkend="contains_box2df_box2df"/>,
+				<xref linkend="is_contained_geometry_box2df"/>,
+				<xref linkend="is_contained_box2df_box2df"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="is_contained_box2df_box2df">
+		<refentry xml:id="is_contained_box2df_box2df">
 		  <refnamediv>
 			<refname>@(box2df,box2df)</refname>
 
@@ -1347,7 +1381,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1367,18 +1401,18 @@ FROM
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="overlaps_geometry_box2df" />,
-				<xref linkend="overlaps_box2df_geometry" />,
-				<xref linkend="overlaps_box2df_box2df" />,
-				<xref linkend="contains_geometry_box2df" />,
-				<xref linkend="contains_box2df_geometry" />,
-				<xref linkend="contains_box2df_box2df" />,
-				<xref linkend="is_contained_geometry_box2df" />,
-				<xref linkend="is_contained_box2df_geometry" /></para>
+				<xref linkend="overlaps_geometry_box2df"/>,
+				<xref linkend="overlaps_box2df_geometry"/>,
+				<xref linkend="overlaps_box2df_box2df"/>,
+				<xref linkend="contains_geometry_box2df"/>,
+				<xref linkend="contains_box2df_geometry"/>,
+				<xref linkend="contains_box2df_box2df"/>,
+				<xref linkend="is_contained_geometry_box2df"/>,
+				<xref linkend="is_contained_box2df_geometry"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Geometry_Overabove">
+		<refentry xml:id="ST_Geometry_Overabove">
 		  <refnamediv>
 			<refname>|&amp;&gt;</refname>
 
@@ -1422,7 +1456,8 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&amp;&gt; tbl2.column2 AS overabove
+			<programlisting><![CDATA[
+SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&> tbl2.column2 AS overabove
 FROM
   ( VALUES
 	(1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,
@@ -1436,21 +1471,22 @@ FROM
 	   1 |       2 | t
 	   1 |       3 | f
 	   1 |       4 | f
-(3 rows)</programlisting>
+(3 rows)
+]]></programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="geometry_overlaps" />,
-				<xref linkend="ST_Geometry_Overright" />,
-				<xref linkend="ST_Geometry_Overbelow" />,
-				<xref linkend="ST_Geometry_Overleft" /></para>
+				<xref linkend="geometry_overlaps"/>,
+				<xref linkend="ST_Geometry_Overright"/>,
+				<xref linkend="ST_Geometry_Overbelow"/>,
+				<xref linkend="ST_Geometry_Overleft"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Geometry_Above">
+		<refentry xml:id="ST_Geometry_Above">
 		  <refnamediv>
 			<refname>|&gt;&gt;</refname>
 
@@ -1513,11 +1549,11 @@ FROM
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Geometry_Left" />, <xref linkend="ST_Geometry_Right" />, <xref linkend="ST_Geometry_Below" /></para>
+			<para><xref linkend="ST_Geometry_Left"/>, <xref linkend="ST_Geometry_Right"/>, <xref linkend="ST_Geometry_Below"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Geometry_Contain">
+		<refentry xml:id="ST_Geometry_Contain">
 		  <refnamediv>
 			<refname>~</refname>
 
@@ -1580,11 +1616,11 @@ FROM
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Geometry_Contained" />, <xref linkend="geometry_overlaps" /></para>
+			<para><xref linkend="ST_Geometry_Contained"/>, <xref linkend="geometry_overlaps"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="contains_geometry_box2df">
+		<refentry xml:id="contains_geometry_box2df">
 		  <refnamediv>
 			<refname>~(geometry,box2df)</refname>
 
@@ -1619,7 +1655,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1639,18 +1675,18 @@ FROM
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="overlaps_geometry_box2df" />,
-				<xref linkend="overlaps_box2df_geometry" />,
-				<xref linkend="overlaps_box2df_box2df" />,
-				<xref linkend="contains_box2df_geometry" />,
-				<xref linkend="contains_box2df_box2df" />,
-				<xref linkend="is_contained_geometry_box2df" />,
-				<xref linkend="is_contained_box2df_geometry" />,
-				<xref linkend="is_contained_box2df_box2df" /></para>
+				<xref linkend="overlaps_geometry_box2df"/>,
+				<xref linkend="overlaps_box2df_geometry"/>,
+				<xref linkend="overlaps_box2df_box2df"/>,
+				<xref linkend="contains_box2df_geometry"/>,
+				<xref linkend="contains_box2df_box2df"/>,
+				<xref linkend="is_contained_geometry_box2df"/>,
+				<xref linkend="is_contained_box2df_geometry"/>,
+				<xref linkend="is_contained_box2df_box2df"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="contains_box2df_geometry">
+		<refentry xml:id="contains_box2df_geometry">
 		  <refnamediv>
 			<refname>~(box2df,geometry)</refname>
 
@@ -1685,7 +1721,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1705,18 +1741,18 @@ FROM
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="overlaps_geometry_box2df" />,
-				<xref linkend="overlaps_box2df_geometry" />,
-				<xref linkend="overlaps_box2df_box2df" />,
-				<xref linkend="contains_geometry_box2df" />,
-				<xref linkend="contains_box2df_box2df" />,
-				<xref linkend="is_contained_geometry_box2df" />,
-				<xref linkend="is_contained_box2df_geometry" />,
-				<xref linkend="is_contained_box2df_box2df" /></para>
+				<xref linkend="overlaps_geometry_box2df"/>,
+				<xref linkend="overlaps_box2df_geometry"/>,
+				<xref linkend="overlaps_box2df_box2df"/>,
+				<xref linkend="contains_geometry_box2df"/>,
+				<xref linkend="contains_box2df_box2df"/>,
+				<xref linkend="is_contained_geometry_box2df"/>,
+				<xref linkend="is_contained_box2df_geometry"/>,
+				<xref linkend="is_contained_box2df_box2df"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="contains_box2df_box2df">
+		<refentry xml:id="contains_box2df_box2df">
 		  <refnamediv>
 			<refname>~(box2df,box2df)</refname>
 
@@ -1751,7 +1787,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1771,18 +1807,18 @@ FROM
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="overlaps_geometry_box2df" />,
-				<xref linkend="overlaps_box2df_geometry" />,
-				<xref linkend="overlaps_box2df_box2df" />,
-				<xref linkend="contains_geometry_box2df" />,
-				<xref linkend="contains_box2df_geometry" />,
-				<xref linkend="is_contained_geometry_box2df" />,
-				<xref linkend="is_contained_box2df_geometry" />,
-				<xref linkend="is_contained_box2df_box2df" /></para>
+				<xref linkend="overlaps_geometry_box2df"/>,
+				<xref linkend="overlaps_box2df_geometry"/>,
+				<xref linkend="overlaps_box2df_box2df"/>,
+				<xref linkend="contains_geometry_box2df"/>,
+				<xref linkend="contains_box2df_geometry"/>,
+				<xref linkend="is_contained_geometry_box2df"/>,
+				<xref linkend="is_contained_box2df_geometry"/>,
+				<xref linkend="is_contained_box2df_box2df"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Geometry_Same">
+		<refentry xml:id="ST_Geometry_Same">
 		  <refnamediv>
 			<refname>~=</refname>
 
@@ -1821,7 +1857,7 @@ FROM
 			<note><para>This operand will make use of any indexes that may be available on the
 			  geometries.</para></note>
 
-			 <para>Availability: 1.5.0 changed behavior</para>
+			 <para role="availability" conformance="1.5.0">Availability: 1.5.0 changed behavior</para>
 			 <para>&P_support;</para>
 
 			<warning>
@@ -1831,8 +1867,7 @@ FROM
 			  it also depends on if you have done a hard or soft upgrade
 			  which behavior your database has. To find out which behavior
 			  your database has you can run the query below.
-				To check for true equality use <xref linkend="ST_OrderingEquals" /> or <xref
-			  linkend="ST_Equals" />.</para>
+				To check for true equality use <xref linkend="ST_OrderingEquals"/> or <xref linkend="ST_Equals"/>.</para>
 			  </warning>
 		  </refsection>
 
@@ -1848,18 +1883,18 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Equals" />, <xref linkend="ST_OrderingEquals" />, <xref linkend="ST_Geometry_EQ" /></para>
+			<para><xref linkend="ST_Equals"/>, <xref linkend="ST_OrderingEquals"/>, <xref linkend="ST_Geometry_EQ"/></para>
 		  </refsection>
 		</refentry>
 
-    </sect2>
+    </section>
 	<!-- ==============================================================================  -->
 
-		<sect2 id="operators-distance">
+		<section xml:id="operators-distance">
 		<title>Distance Operators</title>
 
 
-		<refentry id="geometry_distance_knn">
+		<refentry xml:id="geometry_distance_knn">
 		  <refnamediv>
 			<refname>&lt;-&gt;</refname>
 
@@ -1918,20 +1953,20 @@ sphere for geographies.
 
 			<note><para>This operand will make use of 2D GiST indexes that may be available on the geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator is in the ORDER BY clause.</para></note>
 			<note><para>Index only kicks in if one of the geometries is a constant (not in a subquery/cte).  e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a.geom</para></note>
-			<para>Refer to <ulink url="https://postgis.net/workshops/postgis-intro/knn.html">PostGIS workshop: Nearest-Neighbor Searching</ulink> for a detailed example.</para>
+			<para>Refer to <link xlink:href="https://postgis.net/workshops/postgis-intro/knn.html">PostGIS workshop: Nearest-Neighbor Searching</link> for a detailed example.</para>
 
-			 <para>Enhanced: 2.2.0 -- True KNN ("K nearest neighbor") behavior for geometry and geography for PostgreSQL 9.5+. Note for geography KNN is based on sphere rather than spheroid.  For PostgreSQL 9.4 and below, geography support is new but only supports centroid box.</para>
-			 <para>Changed: 2.2.0 -- For PostgreSQL 9.5 users, old Hybrid syntax may be slower, so you'll want to get rid of that hack if you are running your code only on PostGIS 2.2+ 9.5+.  See examples below.</para>
-			 <para>Availability: 2.0.0 -- Weak KNN provides nearest neighbors based on geometry centroid distances instead of true distances. Exact results for points, inexact for all other types. Available for PostgreSQL 9.1+</para>
+			 <para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0 -- True KNN ("K nearest neighbor") behavior for geometry and geography for PostgreSQL 9.5+. Note for geography KNN is based on sphere rather than spheroid.  For PostgreSQL 9.4 and below, geography support is new but only supports centroid box.</para>
+			 <para role="changed" conformance="2.2.0">Changed: 2.2.0 -- For PostgreSQL 9.5 users, old Hybrid syntax may be slower, so you'll want to get rid of that hack if you are running your code only on PostGIS 2.2+ 9.5+.  See examples below.</para>
+			 <para role="availability" conformance="2.0.0">Availability: 2.0.0 -- Weak KNN provides nearest neighbors based on geometry centroid distances instead of true distances. Exact results for points, inexact for all other types. Available for PostgreSQL 9.1+</para>
 
 
 		  </refsection>
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting><![CDATA[SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
+<programlisting>SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
 FROM va2005
-ORDER BY d limit 10;]]>
+ORDER BY d limit 10;
 
         d         | edabbr | vaabbr
 ------------------+--------+--------
@@ -1950,9 +1985,10 @@ ORDER BY d limit 10;]]>
 <para>
 Then the KNN raw answer:
 </para>
-<programlisting><![CDATA[SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
+<programlisting><![CDATA[
+SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
 FROM va2005
-ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;]]>
+ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;
 
         d         | edabbr | vaabbr
 ------------------+--------+--------
@@ -1967,7 +2003,8 @@ ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;]]>
   12089.665931705 | ALQ    | 127
  18472.5531479404 | ALQ    | 002
 (10 rows)
-</programlisting>
+
+]]></programlisting>
 <para>
 If you run "EXPLAIN ANALYZE" on the two queries you would see a performance improvement for the second.
 </para>
@@ -1975,13 +2012,14 @@ If you run "EXPLAIN ANALYZE" on the two queries you would see a performance impr
 <para>
 For users running with PostgreSQL &lt; 9.5, use a hybrid query to find the true nearest neighbors. First a CTE query using the index-assisted KNN, then an exact query to get correct ordering:
 </para>
-<programlisting><![CDATA[WITH index_query AS (
+<programlisting><![CDATA[
+WITH index_query AS (
   SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
 	FROM va2005
   ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry LIMIT 100)
   SELECT *
 	FROM index_query
-  ORDER BY d limit 10;]]>
+  ORDER BY d limit 10;
 
         d         | edabbr | vaabbr
 ------------------+--------+--------
@@ -1997,15 +2035,16 @@ For users running with PostgreSQL &lt; 9.5, use a hybrid query to find the true 
  18472.5531479404 | ALQ    | 002
 (10 rows)
 
-			</programlisting>
+
+]]></programlisting>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Distance" />, <xref linkend="geometry_distance_box" /></para>
+			<para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance"/>, <xref linkend="geometry_distance_box"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="geometry_distance_cpa">
+		<refentry xml:id="geometry_distance_cpa">
 		  <refnamediv>
 			<refname>|=|</refname>
 
@@ -2040,8 +2079,8 @@ Returns the distance between A and B trajectories at their closest point of appr
 
 			<para>
 The <varname>|=|</varname> operator returns the 3D distance between
-two trajectories (See <xref linkend="ST_IsValidTrajectory" />).
-This is the same as <xref linkend="ST_DistanceCPA" /> but as an operator
+two trajectories (See <xref linkend="ST_IsValidTrajectory"/>).
+This is the same as <xref linkend="ST_DistanceCPA"/> but as an operator
 it can be used for doing nearest neighbor searches using an N-dimensional
 index (requires PostgreSQL 9.5.0 or higher).
       </para>
@@ -2049,7 +2088,7 @@ index (requires PostgreSQL 9.5.0 or higher).
 			<note><para>This operand will make use of ND GiST indexes that may be available on the geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator is in the ORDER BY clause.</para></note>
 			<note><para>Index only kicks in if one of the geometries is a constant (not in a subquery/cte).  e.g. 'SRID=3005;LINESTRINGM(0 0 0,0 0 1)'::geometry instead of a.geom</para></note>
 
-			 <para>Availability: 2.2.0. Index-supported only available for PostgreSQL 9.5+</para>
+			 <para role="availability" conformance="2.2.0.">Availability: 2.2.0. Index-supported only available for PostgreSQL 9.5+</para>
 
 		  </refsection>
 
@@ -2078,14 +2117,14 @@ SELECT track_id, dist FROM (
 		  <refsection>
 			<title>See Also</title>
 			<para>
-<xref linkend="ST_DistanceCPA" />,
-<xref linkend="ST_ClosestPointOfApproach" />,
-<xref linkend="ST_IsValidTrajectory" />
+<xref linkend="ST_DistanceCPA"/>,
+<xref linkend="ST_ClosestPointOfApproach"/>,
+<xref linkend="ST_IsValidTrajectory"/>
       </para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="geometry_distance_box">
+		<refentry xml:id="geometry_distance_box">
 		  <refnamediv>
 			<refname>&lt;#&gt;</refname>
 
@@ -2124,13 +2163,14 @@ Returns the 2D distance between A and B bounding boxes.
 			  is in the ORDER BY clause.</para></note>
 			<note><para>Index only kicks in if one of the geometries is a constant e.g. ORDER BY (ST_GeomFromText('POINT(1 2)') &lt;#&gt; geom)  instead of g1.geom &lt;#&gt;.</para></note>
 
-			 <para>Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+</para>
+			 <para role="availability" conformance="2.0.0">Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+</para>
 
 		  </refsection>
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting><![CDATA[SELECT *
+<programlisting><![CDATA[
+SELECT *
 FROM (
 SELECT b.tlid, b.mtfcc,
 	b.geom <#> ST_GeomFromText('LINESTRING(746149 2948672,745954 2948576,
@@ -2142,7 +2182,7 @@ SELECT b.tlid, b.mtfcc,
     FROM bos_roads As b
     ORDER BY b_dist, b.tlid
     LIMIT 100) As foo
-    ORDER BY act_dist, tlid LIMIT 10;]]>
+    ORDER BY act_dist, tlid LIMIT 10;
 
    tlid    | mtfcc |      b_dist      |     act_dist
 -----------+-------+------------------+------------------
@@ -2157,21 +2197,21 @@ SELECT b.tlid, b.mtfcc,
   85732032 | S1400 |           277.75 | 311.830282365264
   85735592 | S1400 |           222.25 | 311.830282365264
 (10 rows)
-</programlisting>
+
+]]></programlisting>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Distance" />, <xref linkend="geometry_distance_knn" /></para>
+			<para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance"/>, <xref linkend="geometry_distance_knn"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="geometry_distance_centroid_nd">
+		<refentry xml:id="geometry_distance_centroid_nd">
 		  <refnamediv>
 			<refname>&lt;&lt;-&gt;&gt;</refname>
 
 			<refpurpose>
-Returns the n-D distance between the centroids of A and B bounding
-boxes.
+Returns the n-D distance between the A and B geometries or bounding boxes
 			</refpurpose>
 		  </refnamediv>
 
@@ -2217,7 +2257,7 @@ subquery/cte).  e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead
 of a.geom
       </para></note>
 
-			 <para>Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+</para>
+			 <para role="availability" conformance="2.2.0">Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+</para>
 
 
 		  </refsection>
@@ -2225,68 +2265,11 @@ of a.geom
 		  <refsection>
 			<title>See Also</title>
 			<para>
-<xref linkend="geometry_distance_box_nd" />,
-<xref linkend="geometry_distance_knn" />
+<xref linkend="geometry_distance_knn"/>
       </para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="geometry_distance_box_nd">
-		  <refnamediv>
-			<refname>&lt;&lt;#&gt;&gt;</refname>
+    </section>
 
-			<refpurpose>
-Returns the n-D distance between A and B bounding boxes.
-			</refpurpose>
-		  </refnamediv>
-
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>double precision <function>&lt;&lt;#&gt;&gt;</function></funcdef>
-
-				<paramdef>
-				  <type>geometry </type>
-
-				  <parameter>A</parameter>
-				</paramdef>
-
-				<paramdef>
-				  <type>geometry </type>
-
-				  <parameter>B</parameter>
-				</paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
-
-		  <refsection>
-			<title>Description</title>
-
-			<para>The <varname>&lt;&lt;#&gt;&gt;</varname> operator returns distance between two floating point bounding boxes, possibly reading them from a spatial index (PostgreSQL 9.1+ required).   Useful for doing nearest neighbor <emphasis role="strong">approximate</emphasis> distance ordering.</para>
-
-			<note><para>This operand will make use of any indexes that may be available on the
-			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
-			  is in the ORDER BY clause.</para></note>
-			<note><para>
-Index only kicks in if one of the geometries is a constant e.g. ORDER BY
-(ST_GeomFromText('POINT(1 2)') &lt;&lt;#&gt;&gt; geom)  instead of g1.geom
-&lt;&lt;#&gt;&gt;.
-      </para></note>
-
-			 <para>Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+</para>
-
-		  </refsection>
-
-		  <refsection>
-			<title>See Also</title>
-			<para>
-<xref linkend="geometry_distance_centroid_nd" />,
-<xref linkend="geometry_distance_box" />
-      </para>
-		  </refsection>
-		</refentry>
-
-    </sect2>
-
-	</sect1>
+	</section>

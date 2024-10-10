@@ -68,7 +68,7 @@ void free_address(ADDRESS *a);
  *  1000 general memory allocation error
  *  1001 failed to create hash table structure
  *  1002 failed to find state abbreviation
- *  1003 hash table is full, failled to add new entry
+ *  1003 hash table is full, failed to add new entry
  *
 */
 

@@ -955,7 +955,7 @@ rt_raster rt_raster_gdal_warp(
 	if (subspatial) {
 		double gt[6] = {0, 1, 0, 0, 0, -1};
 		/* See http://trac.osgeo.org/postgis/ticket/2911 */
-		/* We should proably also tweak rotation here */
+		/* We should probably also tweak rotation here */
 		/* NOTE: the times 10 is because it was divided by 10 in a section above,
 		 *       I'm not sure the above division was needed */
 		gt[1] = _scale[0] * 10;

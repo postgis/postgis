@@ -30,10 +30,20 @@ indent_size = 2
 indent_style = space
 indent_size = 4
 
+# Exception: utils/create_extension_unpackage.pl uses 2-spaces indent
+[utils/create_extension_unpackage.pl]
+indent_style = space
+indent_size = 2
+
 # Exception: regress/run_test.pl uses 4-spaces indent
 [regress/run_test.pl]
 indent_style = space
 indent_size = 4
+
+# Exception: loader/postgis.pl uses 2-spaces indent
+[loader/postgis.pl]
+indent_style = space
+indent_size = 2
 
 # SQL files want tab indentation
 [*.{sql,sql.in}]
@@ -45,8 +55,9 @@ indent_style = space
 indent_size = 2
 
 # topology C files want space indentation
-[liblwgeom/lwgeom_topo.{c,h}]
+[liblwgeom/topo/**.{c,h}]
 indent_style = space
+indent_size = 2
 
 [liblwgeom/lwgeom_log.h]
 indent_style = space
@@ -77,5 +88,12 @@ end_of_line = crlf
 
 # Docbook should be space cause tabs are mangled in html
 [*.xml]
+indent_style = space
+indent_size = 4
+
+[*.xsl]
+indent_style = tab
+
+[postgis/common_after_upgrade.sql]
 indent_style = space
 indent_size = 4

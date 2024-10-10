@@ -73,7 +73,7 @@ typedef struct colmap_t {
  *
  *    etc.
  *
- * It is the reponsibility of the caller to reclaim the allocated space
+ * It is the responsibility of the caller to reclaim the allocated space
  * as follows:
  *
  * free(map->colmap_pgfieldnames[]) to free the column names

@@ -196,7 +196,7 @@ select 'ST_PointN3',  ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2)'::geometry,
 select 'ST_PointN4', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2)'::geometry,0));
 select 'ST_PointN5', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2)'::geometry,1));
 select 'ST_PointN6', ST_AsText(ST_PointN('POLYGON((0 0, 1 1, 0 1, 0 0))'::geometry,1));
-select 'ST_PointN7', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2,3 3, 4 4)'::geometry,-2)); --testing negativ index
+select 'ST_PointN7', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2,3 3, 4 4)'::geometry,-2)); --testing negative index
 select 'ST_PointN8', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2,3 3, 4 4)'::geometry,-6));
 select 'ST_PointN9', ST_AsText(ST_PointN('LINESTRING(0 0 0, 1 1 1,2 2 2,3 3 3,4 4 4)'::geometry,2)); --testing 3D
 

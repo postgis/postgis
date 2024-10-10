@@ -7,7 +7,7 @@
 #
 # PostGIS documentation build Makefile
 #
-# Copyright 2003-2022 Sandro Santilli <strk@kbt.io>
+# Copyright 2003-2023 Sandro Santilli <strk@kbt.io>
 # Copyright 2004-2012 Paul Ramsey <pramsey@cleverelephant.ca>
 # Copyright 2009-2022 Regina Obe <lr@pcorp.us>
 # Copyright 2008-2010 Mark Cave-Ayland
@@ -21,33 +21,55 @@
 # that we could produce a large number of files (think chunked HTML)
 #
 
-translations = it_IT pt_BR fr es pl ko_KR de ja ru
+translations = it_IT pt_BR fr es pl ka ko_KR de ja ru zh_Hans ro uk
 
+PACKAGE_TARNAME = @PACKAGE_TARNAME@
+
+prefix = @prefix@
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
+abs_top_srcdir = @abs_top_srcdir@
+datarootdir = @datarootdir@
+datadir = @datadir@
 builddir = @builddir@
 top_builddir = @top_builddir@
+abs_top_builddir = @abs_top_builddir@
 mandir = @mandir@
+abs_srcdir = @abs_srcdir@
+abs_builddir = @abs_builddir@
+docdir = @docdir@
+htmldir = @htmldir@
 
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 
+DOCSUFFIX=-en
+
+# TODO: change this ?
+html_builddir=$(abs_builddir)/html
+images_builddir=$(html_builddir)/images
+
 ifneq (,$(findstring dev,$(POSTGIS_MICRO_VERSION)))
-  POSTGIS_DOWNLOAD_URL=http://postgis.net/stuff
+  POSTGIS_DOWNLOAD_URL=https://postgis.net/stuff
 else
-  POSTGIS_DOWNLOAD_URL=http://download.osgeo.org/postgis/source
+  POSTGIS_DOWNLOAD_URL=https://download.osgeo.org/postgis/source
 endif
 
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 
+XMLCATALOG=@XMLCATALOG@
 XSLTPROC=@XSLTPROC@
 XSLBASE=@XSLBASE@
+DOCBOOK5_RNG=@DOCBOOK5_RNG@
+DOCBOOK5_DTD=@DOCBOOK5_DTD@
 CAN_UPDATE_TRANSLATIONS=@CAN_UPDATE_TRANSLATIONS@
 XMLLINT=@XMLLINT@
 CAN_BUILD_COMMENTS=@CAN_BUILD_COMMENTS@
 PERL=@PERL@
+#CAN_BUILD_PDF=@CAN_BUILD_PDF@
+#CAN_BUILD_EPUB=@CAN_BUILD_EPUB@
 
 # To allow network access use:
 #
@@ -57,12 +79,23 @@ ifeq ($(XSLTPROCFLAGS),)
 	XSLTPROCFLAGS=--nonet
 endif
 
+XSLT_PATH= \
+	$(builddir):$(abs_srcdir)
+
+XSLTPROC_PATH_OPT= \
+	--path $(XSLT_PATH)
+
+XSLTPROC_CUSTOM_VARS = \
+	--stringparam postgis_version $(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION) \
+	--stringparam postgis_language $(patsubst -%,%,$(DOCSUFFIX))/
+
 XSLTPROC_COMMONOPTS= \
-	--path $(srcdir) \
+	$(XSLTPROC_PATH_OPT) \
 	--param section.autolabel 1 \
 	--param section.label.includes.component.label 1 \
 	--param chunk.section.depth 0 \
 	--param generate.section.toc.level 2 \
+	--param toc.section.depth 1 \
 	--param funcsynopsis.style kr \
 	--param admon.graphics 1 \
 	--param admon.textlabel 0 \
@@ -73,32 +106,39 @@ XSLTPROC_COMMONOPTS= \
 	--param header.rule 0 \
 	--param footer.rule 0 \
 	--param table.borders.with.css 1 \
-	--stringparam chunker.output.encoding UTF-8 \
-	--stringparam chunker.output.indent no \
+	--stringparam docbook.css.source "" \
+	--stringparam html.ext .html \
 	--stringparam saxon.character.representation decimal \
-	--stringparam html.stylesheet style.css \
 	$(XSLTPROCFLAGS)
 
+XSLTPROC_CHUNKED_HTML_OPTS = \
+	--stringparam chunker.output.encoding UTF-8 \
+	--stringparam chunker.output.indent yes \
+	--stringparam admon.graphics.path ../images/ \
+	--stringparam img.src.path ../ \
+	--stringparam html.stylesheet ../style.css
 
-HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl
-CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
+HTML_DOCBOOK_XSL=$(XSLBASE)/xhtml5/docbook.xsl
+CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/xhtml5/chunk.xsl
 
 # DBLatex's dblatex script for PDF generation from DocBook
 DBLATEX=@DBLATEX@
 
 # Gettext for translated documentation
+MSGCAT=@MSGCAT@
+MSGCOMM=@MSGCOMM@
 MSGMERGE=@MSGMERGE@
 MSGINIT=@MSGINIT@
+MSGATTRIB=@MSGATTRIB@
 
 # XML gettext tools
 XML2POT=@XML2POT@
 
 # DOCBOOK to EPUB
-DBTOEPUB=dbtoepub
+DBTOEPUB=@DBTOEPUB@
 
 # Directories for postgresql subdirectories
 PGSQL_DOCDIR=@PGSQL_DOCDIR@
-PGSQL_SHAREDIR=@PGSQL_SHAREDIR@
 
 BUILD_TARGET =
 
@@ -110,28 +150,33 @@ ifeq ($(CAN_BUILD_PDF),yes)
 BUILD_TARGET += pdf
 endif
 
+ifeq ($(CAN_BUILD_EPUB),yes)
+BUILD_TARGET += epub
+endif
+
+
 # TODO: add "html" to the BUILD_TARGET if it can be built
 
 all: $(BUILD_TARGET)
 
 XML_SOURCES = \
-    extras_address_standardizer.xml \
+	administration.xml \
+	database_tuning.xml \
+	extras_address_standardizer.xml \
 	extras_historytable.xml \
 	extras_tigergeocoder.xml \
 	extras_topology.xml \
 	extras.xml \
-	faq_raster.xml \
-	faq.xml \
 	installation.xml \
-	administration.xml \
-	database_tuning.xml \
 	introduction.xml \
 	performance_tips.xml \
+	postgis_special.xml \
 	postgis.xml \
 	reference_accessor.xml \
 	reference_bbox.xml \
 	reference_cluster.xml \
 	reference_constructor.xml \
+	reference_coverage.xml \
 	reference_editor.xml \
 	reference_exception.xml \
 	reference_guc.xml \
@@ -139,16 +184,15 @@ XML_SOURCES = \
 	reference_lrs.xml \
 	reference_management.xml \
 	reference_measure.xml \
-	reference_sfcgal.xml \
 	reference_operator.xml \
 	reference_output.xml \
 	reference_overlay.xml \
 	reference_processing.xml \
 	reference_raster.xml \
 	reference_relationship.xml \
+	reference_sfcgal.xml \
 	reference_srs.xml \
 	reference_trajectory.xml \
-	reference_transaction.xml \
 	reference_transformation.xml \
 	reference_troubleshooting.xml \
 	reference_type.xml \
@@ -157,183 +201,279 @@ XML_SOURCES = \
 	reference.xml \
 	release_notes.xml \
 	reporting.xml \
-	using_postgis_app.xml \
 	using_postgis_dataman.xml \
 	using_postgis_query.xml \
-	using_raster_dataman.xml
+	using_raster_dataman.xml \
+	xsl-config.xml
+
+XSL_GENERATED_SOURCES = \
+	list_3d_functions.xsl.xml \
+	list_aggregates.xsl.xml \
+	list_box_functions.xsl.xml \
+	list_curved_geometry_functions.xsl.xml \
+	list_dump_functions.xsl.xml \
+	list_geography_functions.xsl.xml \
+	list_new_functions.xsl.xml \
+	list_raster_functions.xsl.xml \
+	list_sqlmm_functions.xsl.xml \
+	list_window_functions.xsl.xml \
+	table_body_function_support_matrix.xsl.xml \
+	list_polyhedral_functions.xsl.xml
+
+TAG_GENERATED_SOURCES = \
+	address_standardizer_required.tag \
+	curve_support.tag \
+	geography_transform.tag \
+	index_aware.tag \
+	M_support.tag \
+	P_support.tag \
+	sfcgal_enhanced.tag \
+	sfcgal_required.tag \
+	sfs_compliant.tag \
+	sqlmm_compliant.tag \
+	T_support.tag \
+	Z_support.tag
 
 XML_GENERATED_SOURCES = \
-	postgis_aggs_mm.xml \
-	postgis-out.xml \
+	$(XSL_GENERATED_SOURCES)
 
-XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES)
+XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES) $(TAG_GENERATED_SOURCES)
 
-XML_INPUTS_POT = $(XML_SOURCES:%.xml=$(srcdir)/po/templates/%.xml.pot)
+XML_SOURCE_POTS = $(XML_SOURCES:%.xml=%.xml.pot)
+
+XML_UNIFIED_POT = $(srcdir)/po/templates/postgis-manual.pot
+
+PO_FILES = $(patsubst \
+	%, \
+	$(srcdir)/po/%/postgis-manual.po, \
+	$(translations) \
+)
+
+GENERATED_COMMENT_FILES = $(patsubst \
+	$(srcdir)/xsl/%.xsl, \
+	%, \
+	$(wildcard $(srcdir)/xsl/*_comments.sql.xsl) \
+)
+
+GENERATED_CHEATSHEET_FILES = $(patsubst \
+	$(abs_srcdir)/xsl/%.html.xsl, \
+	$(html_builddir)/%$(DOCSUFFIX).html, \
+	$(wildcard $(abs_srcdir)/xsl/*_cheatsheet.html.xsl) \
+)
 
 VPATH = $(srcdir)
 
-.PHONY: $(XML_INPUTS_POT)
+
+CAN_CHECK_XML = yes
+
+ifeq ($(XMLLINT),)
+postgis-nospecial.xml: requirements_not_met_xmllint
+postgis-out.xml: requirements_not_met_xmllint
+check-cheatsheets: requirements_not_met_xmllint
+check-xml: requirements_not_met_xmllint
+CAN_CHECK_XML = no
+endif
+
+ifeq ($(XMLCATALOG),)
+check-xml: requirements_not_met_xmlcatalog
+CAN_CHECK_XML = no
+endif
+
+ifeq ($(DOCBOOK5_RNG),)
+CAN_CHECK_XML = no
+endif
+
+ifeq ($(DOCBOOK5_DTD),)
+CAN_CHECK_XML = no
+endif
+
+ifeq ($(MSGMERGE),)
+$(PO_FILES): requirements_not_met_msgmerge
+endif
+
+ifeq ($(MSGATTRIB),)
+$(PO_FILES): requirements_not_met_msgattrib
+endif
+
+ifeq ($(MSGCOMM),)
+$(PO_FILES): requirements_not_met_msgcomm
+$(XML_UNIFIED_POT): requirements_not_met_msgcomm
+endif
+
+ifeq ($(MSGCAT),)
+$(XML_UNIFIED_POT): requirements_not_met_msgcat
+endif
+
+ifeq ($(MSGINIT),)
+$(PO_FILES): requirements_not_met_msginit
+endif
+
 ifeq ($(XML2POT),)
-$(XML_INPUTS_POT): requirements_not_met_xml2pot
-else
-$(XML_INPUTS_POT): $(srcdir)/po/templates/%.xml.pot: %.xml
+$(XML_SOURCE_POTS): requirements_not_met_xml2pot
+endif
+
+CHECK_UNIT_TARGET =
+
+ifeq ($(CAN_CHECK_XML),yes)
+CHECK_UNIT_TARGET = check-xml
+endif
+
+
+$(XML_SOURCE_POTS): %.xml.pot: %.xml po/strip_untranslatable.sh
+	$(XML2POT) $< > $@
+	$(abs_srcdir)/po/strip_untranslatable.sh $@
+
+# Update translation template
+update-pot: $(XML_UNIFIED_POT)
+
+$(XML_UNIFIED_POT): $(XML_SOURCE_POTS)
+	@$(MSGCAT) --sort-by-file --use-first --no-location -o $@.tmp $(XML_SOURCE_POTS)
 	@if test -f $@; then \
-	  $(XML2POT) $< > $@.tmp; \
-    changed=`diff $@.tmp $@ \
-			| grep -v '^[<>] "POT-Creation-Date:' \
-			| grep -v '^[<>] "Report-Msgid-Bugs-To:' \
-			| wc -l`; \
-    if expr $${changed} \> 3 >/dev/null; then \
+    if test -n "$$($(MSGCOMM) --unique $@.tmp $@ | tail -1)"; then \
       echo "$@ updated"; \
-      mv $@.tmp $@; \
     else \
       echo "$@ unchanged"; \
       rm -f $@.tmp; \
     fi; \
-  else \
-	  $(XML2POT) $< > $@; \
+  fi; \
+  if test -f $@.tmp; then \
+    mv $@.tmp $@; \
   fi;
-endif
-
-# Update translation templates
-update-pot: $(XML_INPUTS_POT)
 
 # Creates or updates translation files
-ifeq ($(MSGMERGE),)
-update-po: requirements_not_met_msgmerge
+update-po: $(PO_FILES)
+
+$(PO_FILES): $(XML_UNIFIED_POT)
+	@mkdir -p `dirname $@`
+	@lang=`basename $$(dirname $@)`; \
+	if test -f $@; then \
+		$(MSGMERGE) --no-fuzzy-matching -q -o $@.tmp $@ $(XML_UNIFIED_POT) || exit 1; \
+		$(MSGATTRIB) --no-obsolete -o $@.tmp $@.tmp || exit 1; \
+		if test -n "$$($(MSGCOMM) --unique $@.tmp $@ | tail -1)"; then \
+			mv $@.tmp $@; \
+			echo "$@ updated"; \
+		else \
+			echo "$@ unchanged"; \
+			touch $@; \
+			rm -f $@.tmp; \
+		fi; \
+	else \
+		$(MSGINIT) -i $(XML_UNIFIED_POT) -o $@ -l $$lang --no-translator || exit 1; \
+		echo "$@ created"; \
+	fi;
+
+ifeq ($(XSLTPROC),)
+$(XSL_GENERATED_SOURCES): requirements_not_met_xsltproc
 else
-update-po: $(XML_INPUTS_POT)
-	@for lang in $(translations); do \
-    echo "Creating po files for language $$lang..." ; \
-    for pot in $(XML_INPUTS_POT); do \
-      mkdir -p $(srcdir)/po/$$lang; \
-      po=$(srcdir)/po/$$lang/`basename $$pot .pot`.po; \
-      if test -f $$po; then \
-        $(MSGMERGE) --no-fuzzy-matching --update $$po $$pot; \
-      else \
-        $(MSGINIT) -i $$pot -o $$po -l $$lang --no-translator; \
-      fi; \
-    done; \
-  done
+$(XSL_GENERATED_SOURCES): %.xsl.xml: xsl/%.xml.xsl postgis-nospecial.xml xsl-config.xml $(TAG_GENERATED_SOURCES) $(XML_SOURCES)
+	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-nospecial.xml
 endif
 
 ifeq ($(XSLTPROC),)
-postgis_aggs_mm.xml: requirements_not_met_xsltproc
+$(TAG_GENERATED_SOURCES): requirements_not_met_xsltproc
 else
-postgis_aggs_mm.xml: xsl/postgis_aggs_mm.xml.xsl Makefile postgis-out.xml $(XML_SOURCES)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
+$(TAG_GENERATED_SOURCES): xsl/node_by_xpath.xsl xsl-config.xml | Makefile
+	tag=tag_$(basename $(notdir $@)); \
+	$(XSLTPROC) --stringparam xpath "/config/tags/para[@role='$$tag']/node()" -o $@ $^
+	test -s $@ # ensure something was extracted
 endif
 
-postgis_comments.sql: xsl/postgis_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $<  postgis-out.xml > $@
+$(GENERATED_COMMENT_FILES): %.sql: xsl/%.sql.xsl postgis-out.xml xsl/common_utils.xsl xsl/common_comments.xsl
+	$(XSLTPROC) --novalid $(XSLTPROCFLAGS) $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
-html/postgis_cheatsheet.html: xsl/postgis_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
+$(GENERATED_CHEATSHEET_FILES): $(html_builddir)/%$(DOCSUFFIX).html: xsl/%.html.xsl postgis-out.xml xsl/common_cheatsheet.xsl xsl/common_utils.xsl
+	$(XSLTPROC) --novalid $(XSLTPROCFLAGS) $(XSLTPROC_PATH_OPT) $(XSLTPROC_CUSTOM_VARS) -o $@ $< postgis-out.xml
 
-raster_comments.sql: xsl/raster_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
+postgis-nospecial.xml: postgis.xml $(XML_SOURCES) $(TAG_GENERATED_SOURCES) Makefile
+	grep -v '\&postgis_special;' $< > $@.in
+	$(XMLLINT) $(XSLTPROC_PATH_OPT) --noent -o $@ $@.in
 
-html/raster_cheatsheet.html: ./xsl/raster_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
+# TODO: use a postgis_release_version variable passed via --stringparam
+postgis-out.xml: postgis.xml Makefile $(XML_INPUTS) Makefile
+	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g;s'@@POSTGIS_DOWNLOAD_URL@@'${POSTGIS_DOWNLOAD_URL}'g;" $< > $@.in
+	$(XMLLINT) $(XSLTPROC_PATH_OPT) --noent -o $@ $@.in
 
-topology_comments.sql: xsl/topology_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
-
-html/topology_cheatsheet.html: xsl/topology_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
-
-sfcgal_comments.sql: xsl/sfcgal_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
-
-html/sfcgal_cheatsheet.html: xsl/sfcgal_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
-
-tiger_geocoder_comments.sql: xsl/tiger_geocoder_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
-
-html/tiger_geocoder_cheatsheet.html: xsl/tiger_geocoder_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
-
-postgis-out.xml: postgis.xml Makefile
-	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g;s'@@POSTGIS_DOWNLOAD_URL@@'${POSTGIS_DOWNLOAD_URL}'g;" $< > $@
-
-chunked-html: postgis-out.xml Makefile images $(XML_INPUTS)
+chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/index.html
+$(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		--output html/ \
+		$(XSLTPROC_CHUNKED_HTML_OPTS) \
+		$(XSLTPROCFLAGS) \
+		--output $(dir $@) \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
 
-chunked-html-web: postgis-out.xml Makefile images $(XML_INPUTS)
-	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		--output html/ \
-		--stringparam html.script ga.js \
-		$(CHUNK_HTML_DOCBOOK_XSL) \
-		$<
+html: $(html_builddir)/postgis$(DOCSUFFIX).html
 
-HTML_BITS = $(wildcard html/*.html)
-
-chunked-html-web-mobile: postgis-out.xml Makefile images $(XML_INPUTS)
-	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		--output html/ \
-		--stringparam html.script ga.js \
-		$(CHUNK_HTML_DOCBOOK_XSL) \
-		$<
-	$(PERL) -pi -e 's/<head>/<head><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">/g' $(HTML_BITS)
-
-html: html/postgis$(DOCSUFFIX).html
-
-html-localized:
-	@for lang in $(translations); do \
-    echo "Creating html for language $$lang..."; \
-    $(MAKE) -C po/$$lang local-html || exit 1; \
+%-localized:
+	rule=$(patsubst %-localized,%,$@); \
+	for lang in $(translations); do \
+    echo "Making $$rule for language $$lang..."; \
+    $(MAKE) -C po/$$lang local-$$rule || exit 1; \
   done
 
-html/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile images $(XML_INPUTS)
+$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		--output html/postgis$(DOCSUFFIX).html \
+		--stringparam html.stylesheet style.css \
+		--output $(html_builddir)/postgis$(DOCSUFFIX).html \
 		$(HTML_DOCBOOK_XSL) \
 		$<
 
 
-postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml images $(XML_INPUTS)
-	if test x"$(DBLATEX)" = x; then \
-	   echo "Error: dblatex not found, can't build pdf"; \
-	   echo "       try installing dblatex and then re-run configure"; \
-	   false; \
-	else \
-		$(DBLATEX) -T native -t pdf \
-		   -I "${PWD}/html" \
-		   -P doc.collab.show=0 \
-		   -P figure.note="${PWD}/html/images/note" \
-		   -P figure.tip="${PWD}/html/images/tip" \
-		   -P figure.important="${PWD}/html/images/important" \
-		   -P figure.warning="${PWD}/html/images/warning" \
-		   -P figure.caution="${PWD}/html/images/caution" \
-		   -P latex.output.revhistory=0 \
-		   -s "${PWD}/texstyle.sty" \
-		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf $<; \
-	fi
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(abs_srcdir)/texstyle-common.sty $(abs_srcdir)/texstyle.sty | images
+ifeq ($(DBLATEX),)
+	@echo
+	@echo "configure was unable to find the 'dblatex' utility program."
+	@echo "To create pdf files, install dblatex and then re-run configure."
+	@echo
+	@false
+else
+	$(DBLATEX) -T native -t pdf \
+		 -x "--path $(XSLT_PATH)" \
+		 -I "$(abs_builddir)/html" \
+		 -P doc.collab.show=0 \
+		 -P figure.note="images/note" \
+		 -P figure.tip="images/tip" \
+		 -P figure.important="images/important" \
+		 -P figure.warning="images/warning" \
+		 -P figure.caution="images/caution" \
+		 -P latex.output.revhistory=0 \
+		 --texinputs "$(srcdir):$(abs_srcdir)" \
+		 -s "texstyle" \
+		 $(DBLATEX_EXTRA_OPTIONS) \
+		 -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf $<
+endif
 
-postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub: postgis-out.xml images $(XML_INPUTS)
-	if test x"$(DBTOEPUB)" = x; then \
-	   echo "Error: dbtoepub not found, can't build epub"; \
-	   echo "       try installing dbtoepub"; \
-	   false; \
-	else \
-		$(DBTOEPUB) -c "${PWD}/html/style.css" \
-		 -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub \
-		  $<; \
-	fi
+pdf-install: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf
+	mkdir -p $(DESTDIR)$(docdir)
+	$(INSTALL_DATA) $< $(DESTDIR)$(docdir)/
+
+pdf-uninstall:
+	rm -f $(DESTDIR)$(docdir)/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf
+
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub: postgis-out.xml images
+ifeq ($(DBTOEPUB),)
+	@echo
+	@echo "configure was unable to find the 'dbtoepub' utility program."
+	@echo "To create pdf files, install dbtoepub and then re-run configure."
+	@echo
+	@false
+else
+	ln -fs html/images .; # work around https://trac.osgeo.org/postgis/ticket/5422
+	$(DBTOEPUB) -c "${PWD}/html/style.css" \
+	 -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub \
+		$<
+endif
+
+epub-install: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub
+	mkdir -p $(DESTDIR)$(docdir)
+	$(INSTALL_DATA) $< $(DESTDIR)$(docdir)/
+
+epub-uninstall:
+	rm -f $(DESTDIR)$(docdir)/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub
 
 epub: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub
 
 pdf: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf
-
-pdf-localized:
-	@for lang in $(translations); do \
-    echo "Creating pdf for language $$lang..."; \
-    $(MAKE) -C po/$$lang local-pdf; \
-  done
 
 doxygen.cfg: doxygen.cfg.in
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g" $< > $@
@@ -341,38 +481,57 @@ doxygen.cfg: doxygen.cfg.in
 doxygen: doxygen.cfg
 	doxygen $<
 
-images:
-	$(MAKE) -C html/image_src images
+images images-install images-uninstall images-clean:
+	$(MAKE) -C $(images_builddir) $@
 
-images-clean:
-	$(MAKE) -C html/image_src images-clean
+html-clean:
+	rm -f $(html_builddir)/postgis$(DOCSUFFIX).html
+	rm -rf $(html_builddir)/postgis$(DOCSUFFIX)/
 
-clean:
-	rm -f html/*.html
-	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
-	rm -f *.epub
-	$(MAKE) -C html/image_src clean
+pdf-clean:
+	rm -f postgis*$(DOCSUFFIX).pdf
+
+epub-clean:
+	rm -f postgis*$(DOCSUFFIX).epub
+
+cheatsheet-install: $(GENERATED_CHEATSHEET_FILES)
+	mkdir -p $(DESTDIR)$(htmldir)
+	$(INSTALL_DATA) $(GENERATED_CHEATSHEET_FILES) $(DESTDIR)$(htmldir)/
+
+cheatsheet-clean:
+	rm -f $(GENERATED_CHEATSHEET_FILES)
+
+clean: images-clean html-clean pdf-clean epub-clean cheatsheet-clean clean-pot
+	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
 	rm -f $(XML_GENERATED_SOURCES)
+	rm -f postgis-nospecial.xml postgis-nospecial.xml.in
+	rm -f postgis-out.xml postgis-out.xml.in
+	rm -f $(TAG_GENERATED_SOURCES)
+	$(MAKE) -C $(images_builddir) clean
 	rm -f postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
+	rm -f sfcgal_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
+	rm -f *.tmp
+	$(MAKE) clean-localized
+
+clean-pot:
+	rm -f *.pot
 
 distclean: clean
-	$(MAKE) -C html/image_src distclean
-	rm -f Makefile Makefile.comments html/image_src/Makefile
-	for lang in $(translations); do \
-		rm -f po/$$lang/Makefile; \
-	done
+	$(MAKE) -C $(images_builddir) distclean
+	$(MAKE) distclean-localized
+	rm -f Makefile Makefile.comments
 
-maintainer-clean: clean images-clean
-	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql sfcgal_comments.sql
+maintainer-clean: distclean
+	rm -f $(GENERATED_COMMENT_FILES)
 
 ifneq ($(CAN_BUILD_COMMENTS),yes)
 comments:
 else
-comments: postgis_comments.sql raster_comments.sql topology_comments.sql sfcgal_comments.sql tiger_geocoder_comments.sql
+comments: $(GENERATED_COMMENT_FILES)
 endif
 
-cheatsheets: html/postgis_cheatsheet.html html/raster_cheatsheet.html html/topology_cheatsheet.html html/sfcgal_cheatsheet.html html/tiger_geocoder_cheatsheet.html
+cheatsheets: $(GENERATED_CHEATSHEET_FILES)
 
 ifneq ($(CAN_BUILD_COMMENTS),yes)
 comments-install:
@@ -391,7 +550,7 @@ endif
 comments-uninstall:
 	$(MAKE) -f Makefile.comments uninstall
 
-man-install: man/shp2pgsql.1 man/pgsql2shp.1 man/pgtopo_export.1 man/pgtopo_import.1
+man-install: man/shp2pgsql.1 man/pgsql2shp.1 man/pgtopo_export.1 man/pgtopo_import.1 man/postgis.1 man/postgis_restore.1
 	mkdir -p $(DESTDIR)$(mandir)/man1
 	for f in $^; do \
 		$(INSTALL_DATA) $$f $(DESTDIR)$(mandir)/man1/`basename $$f`; \
@@ -402,50 +561,66 @@ man-uninstall:
 	rm -f $(DESTDIR)$(mandir)/man1/pgsql2shp.1
 	rm -f $(DESTDIR)$(mandir)/man1/pgtopo_export.1
 	rm -f $(DESTDIR)$(mandir)/man1/pgtopo_import.1
+	rm -f $(DESTDIR)$(mandir)/man1/postgis.1
+	rm -f $(DESTDIR)$(mandir)/man1/postgis_restore.1
 
-docs-install: html/postgis.html html/style.css
-	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images
-	$(INSTALL_DATA) html/postgis.html $(DESTDIR)$(PGSQL_DOCDIR)/postgis/
-	$(INSTALL_DATA) html/style.css $(DESTDIR)$(PGSQL_DOCDIR)/postgis/
-	$(INSTALL_DATA) html/images/* $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images/
+html-install: $(html_builddir)/postgis$(DOCSUFFIX).html
+	mkdir -p $(DESTDIR)$(htmldir)
+	$(INSTALL_DATA) $(html_builddir)/postgis$(DOCSUFFIX).html $(DESTDIR)$(htmldir)/
+
+html-uninstall:
+	rm -f $(DESTDIR)$(htmldir)/postgis$(DOCSUFFIX).html
+
+chunked-html-install: chunked-html
+	mkdir -p $(DESTDIR)$(htmldir)
+	cp -R $(html_builddir)/postgis$(DOCSUFFIX) $(DESTDIR)$(htmldir)/
+
+chunked-html-uninstall:
+	rm -rf $(DESTDIR)$(htmldir)/postgis$(DOCSUFFIX)/
+
+html-assets-install: images-install
+	$(INSTALL_DATA) $(abs_srcdir)/html/style.css $(DESTDIR)$(htmldir)/
+
+html-assets-uninstall: images-install
+	rm -f $(DESTDIR)$(htmldir)/style.css
+
+docs-install: html-install html-assets-install
+	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis
 	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
 
-docs-uninstall:
-	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
-	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/style.css
-	rm -rf $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images
+docs-uninstall: html-uninstall html-assets-uninstall
 	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
 
-install: comments-install
+install: comments-install man-install
 
-uninstall: comments-uninstall
+uninstall: comments-uninstall man-uninstall
 
 ifeq ($(XSLTPROC),)
 garden: requirements_not_met_xsltproc
 else
-garden:	xsl/postgis_gardentest.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) -o postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql xsl/postgis_gardentest.sql.xsl postgis-out.xml
-	$(XSLTPROC) -o raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql xsl/raster_gardentest.sql.xsl postgis-out.xml
+garden: postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql sfcgal_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 endif
 
-
+%_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql: xsl/%_gardentest.sql.xsl postgis-out.xml
+	$(XSLTPROC) -o $@ $(XSLTPROC_PATH_OPT) $^
 
 check: check-unit
 check-regress:
 
-ifeq ($(XMLLINT),)
-check-unit: requirements_not_met_xmllint
-else
-check-unit: $(XML_INPUTS)
-	$(XMLLINT) --loaddtd --path $(srcdir) --xinclude --valid postgis-out.xml --noout
-endif
+check-unit: $(CHECK_UNIT_TARGET)
 
-check-localized:
-	@for lang in $(translations); do \
-    echo "Creating html for language $$lang..."; \
-    $(MAKE) -C po/$$lang local-check || exit 1; \
-  done
+check-xml: postgis-out.xml
+	# TODO: --schematron http://docbook.org/xml/5.0/sch/docbook.sch
+	# See https://trac.osgeo.org/postgis/ticket/5532
+	$(XMLLINT) --noout --nonet \
+		--valid --loaddtd \
+		--relaxng $(DOCBOOK5_RNG) \
+		$<
 
+check-cheatsheets: cheatsheets
+	for f in $(html_builddir)/*_cheatsheet-en.html; do \
+		$(abs_top_srcdir)/utils/check_localized_cheatsheets.sh $${f} en $(patsubst -%,%,$(DOCSUFFIX)) || exit 1; \
+	done
 
 requirements_not_met_xsltproc:
 	@echo
@@ -456,16 +631,24 @@ requirements_not_met_xsltproc:
 	@echo
 	@echo "  http://postgis.net/documentation"
 	@echo
+	@false
 
 requirements_not_met_xmllint:
 	@echo
 	@echo "configure was unable to find 'xmllint' which is required"
-	@echo "to test the documentation."
-	@echo "Install xmllint and then re-run configure. Alternatively "
-	@echo "refer to online manual:"
+	@echo "to build the postgis comments and documentation."
+	@echo "Install xmllint and then re-run configure."
 	@echo
-	@echo "  http://postgis.net/documentation"
+	@false
+
+requirements_not_met_xmlcatalog:
 	@echo
+	@echo "configure was unable to find 'xmlcatalog' which is required"
+	@echo "to check the postgis documentation."
+	@echo "Install xmlcatalog and then re-run configure."
+	@echo
+	@false
+
 
 requirements_not_met_xslbase:
 	@echo
@@ -478,11 +661,17 @@ requirements_not_met_xslbase:
 	@echo "  http://postgis.net/documentation"
 	@echo
 
+requirements_not_met_msginit: requirements_not_met_gettext
+requirements_not_met_msgattrib: requirements_not_met_gettext
+requirements_not_met_msgcat: requirements_not_met_gettext
+requirements_not_met_msgcomm: requirements_not_met_gettext
+requirements_not_met_msgmerge: requirements_not_met_gettext
 requirements_not_met_gettext:
 	@echo
-	@echo "configure was unable to find both gettext's 'msgmerge' utility program."
+	@echo "configure was unable to find gettext utility programs."
 	@echo "To update the translation templates, install gettext and then re-run configure."
 	@echo
+	@false
 
 requirements_not_met_xml2pot:
 	@echo

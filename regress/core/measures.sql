@@ -290,3 +290,40 @@ SELECT '#4328.3', ST_Intersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'TRIANGLE(
 SELECT '#4328.4', ST_Intersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POLYGON((.1 .1, .2 .2, .2 .1, .1 .1))'::geometry), ST_3DIntersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POLYGON((.1 .1, .2 .2, .2 .1, .1 .1))'::geometry);
 SELECT '#4328.5', ST_Intersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1)'::geometry), ST_3DIntersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1)'::geometry);
 SELECT '#4328.6', ST_Intersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CURVEPOLYGON(CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1, 1.2 1.2, 1.1 1.1))'::geometry), ST_3DIntersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CURVEPOLYGON(CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1, 1.2 1.2, 1.1 1.1))'::geometry);
+
+SELECT 'st_project.01', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 1, 0), 0.1), 2);
+SELECT 'st_project.02', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 1, pi()), 0.1), 2);
+SELECT 'st_project.03', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 1, pi()/2), 0.1), 2);
+SELECT 'st_project.04', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 1, 3*pi()/2), 0.1), 2);
+SELECT 'st_project.05', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 1, pi()/4), 0.001), 3);
+SELECT 'st_project.06', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 1, pi()+pi()/4), 0.001), 3);
+SELECT 'st_project.07', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 0, 0), 0.001), 3);
+SELECT 'st_project.08', ST_AsText(ST_SnapToGrid(ST_Project('POINT(10 10)'::geometry, 1, pi()+pi()/4), 0.001), 3);
+
+SELECT 'st_project.11', ST_AsText(ST_SnapToGrid(ST_Project('POINT(1 0)'::geometry, 'POINT(0 0)'::geometry, 1), 0.1), 2);
+SELECT 'st_project.12', ST_AsText(ST_SnapToGrid(ST_Project('POINT(-1 0)'::geometry, 'POINT(0 0)'::geometry, 1), 0.1), 2);
+SELECT 'st_project.13', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 1)'::geometry, 'POINT(0 0)'::geometry, 1), 0.1), 2);
+SELECT 'st_project.14', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 -1)'::geometry, 'POINT(0 0)'::geometry, 1), 0.1), 2);
+SELECT 'st_project.15', ST_AsText(ST_SnapToGrid(ST_Project('POINT(1 1)'::geometry, 'POINT(0 0)'::geometry, 1), 0.001), 3);
+SELECT 'st_project.16', ST_AsText(ST_SnapToGrid(ST_Project('POINT(-1 -1)'::geometry, 'POINT(0 0)'::geometry, 1), 0.001), 3);
+SELECT 'st_project.17', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 'POINT(0 0)'::geometry, 1), 0.001), 3);
+SELECT 'st_project.18', ST_AsText(ST_SnapToGrid(ST_Project('POINT(10 10)'::geometry, 'POINT(8 8)'::geometry, 1), 0.001), 3);
+
+SELECT 'st_lineextend.1', ST_AsText(ST_SnapToGrid(ST_LineExtend('LINESTRING(0 0,1 1)'::geometry, 1, 1), 0.001), 3);
+SELECT 'st_lineextend.2', ST_AsText(ST_SnapToGrid(ST_LineExtend('LINESTRING(0 0,1 1)'::geometry, 0, 1), 0.001), 3);
+SELECT 'st_lineextend.3', ST_AsText(ST_SnapToGrid(ST_LineExtend('LINESTRING(0 0,1 1)'::geometry, 1), 0.001), 3);
+SELECT 'st_lineextend.4', ST_AsText(ST_SnapToGrid(ST_LineExtend('LINESTRING(0 0,1 1,1 1,1 1)'::geometry, 1), 0.001), 3);
+SELECT 'st_lineextend.5', ST_AsText(ST_SnapToGrid(ST_LineExtend('LINESTRING EMPTY'::geometry, 1), 0.001), 3);
+SELECT 'st_lineextend.6', ST_AsText(ST_SnapToGrid(ST_LineExtend('POINT EMPTY'::geometry, 1), 0.001), 3);
+
+-- #5782
+WITH inp AS (
+	SELECT
+	'LINESTRING(18.00678831099686 69.0404811833497,18.006784630996860 69.04045431334970,18.00677727099686 69.0404005833497)'::geometry a,
+	'LINESTRING(18.00677727099686 69.0404005833497,18.006780950996863 69.04042744334969,18.00678831099686 69.0404811833497)'::geometry b,
+	'POINT(18.006691126034692 69.04048768506776)'::geometry q
+)
+SELECT
+	'#5782',
+	ST_Distance(a,q) < ST_Distance(b,q)
+FROM inp;

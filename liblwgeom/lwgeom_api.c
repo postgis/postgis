@@ -30,7 +30,6 @@
 
 #include <stdio.h>
 #include <assert.h>
-#include "../postgis_revision.h"
 
 #define xstr(s) str(s)
 #define str(s) #s
@@ -222,7 +221,7 @@ getPoint3dz_p(const POINTARRAY *pa, uint32_t n, POINT3DZ *op)
 		return 0;
 	}
 
-	//assert(n < pa->npoints); --causes point emtpy/point empty to crash
+	//assert(n < pa->npoints); --causes point empty/point empty to crash
 	if ( n>=pa->npoints )
 	{
 		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
@@ -448,9 +447,9 @@ void printPA(POINTARRAY *pa)
 	else mflag = "";
 
 	lwnotice("      POINTARRAY%s{", mflag);
-	lwnotice("                 ndims=%i,   ptsize=%i",
+	lwnotice("                 ndims=%i,   ptsize=%zu",
 	         FLAGS_NDIMS(pa->flags), ptarray_point_size(pa));
-	lwnotice("                 npoints = %i", pa->npoints);
+	lwnotice("                 npoints = %u", pa->npoints);
 
 	if (!pa)
 	{
@@ -648,9 +647,7 @@ deparse_hex(uint8_t str, char *result)
 void
 interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, double F)
 {
-#if PARANOIA_LEVEL > 0
-	if (F < 0 || F > 1) lwerror("interpolate_point4d: invalid F (%g)", F);
-#endif
+	assert(F >= 0 && F <= 1);
 	I->x=A->x+((B->x-A->x)*F);
 	I->y=A->y+((B->y-A->y)*F);
 	I->z=A->z+((B->z-A->z)*F);

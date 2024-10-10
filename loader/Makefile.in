@@ -14,6 +14,7 @@
 top_builddir = @top_builddir@
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
+datarootdir = @datarootdir@
 datadir = @datadir@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
@@ -26,16 +27,23 @@ VPATH = $(srcdir)
 CC=@CC@
 CFLAGS= -I$(top_srcdir)/liblwgeom -I$(top_builddir)/liblwgeom @CPPFLAGS@ @CFLAGS@ @PICFLAGS@ @PROJ_CPPFLAGS@
 SHELL = @SHELL@
-INSTALL = @INSTALL@
 LIBTOOL = @LIBTOOL@
 
-LDFLAGS = @LDFLAGS@
+LDFLAGS = @LDFLAGS@ @PROJ_LDFLAGS@ @GEOS_LDFLAGS@
 
 # Filenames with extension as determined by the OS
 POSTGIS-CLI=postgis
-PGSQL2SHP-CLI=pgsql2shp@EXESUFFIX@
 SHP2PGSQL-CLI=shp2pgsql@EXESUFFIX@
-SHP2PGSQL-GUI=shp2pgsql-gui@EXESUFFIX@
+PGSQL2SHP-CLI=
+SHP2PGSQL-GUI=
+ifneq (@PG_CONFIG@,no)
+	PGSQL2SHP-CLI=pgsql2shp@EXESUFFIX@
+	ifneq (@GTK_BUILD@,)
+		SHP2PGSQL-GUI=shp2pgsql-gui@EXESUFFIX@
+		# We test this variable later to see if we're building the GUI
+		gtk_build = 1
+	endif
+endif
 
 # PostgreSQL frontend CPPFLAGS and LDFLAGS (for compiling and linking with libpq)
 PGSQL_FE_CPPFLAGS=@PGSQL_FE_CPPFLAGS@
@@ -74,9 +82,6 @@ ifeq ($(REGRESS),1)
 	pkglibdir=/lib
 	datadir=/share
 endif
-
-# We test this variable later to see if we're building the GUI
-gtk_build = @GTK_BUILD@
 
 # Common object files
 SHPLIB_OBJS = shpopen.o dbfopen.o getopt.o shpcommon.o safileio.o
@@ -142,10 +147,12 @@ ifdef gtk_build
 endif
 
 install: installdir install-desktop install-icons
-ifdef gtk_build
+ifneq ($(SHP2PGSQL-GUI),)
 	$(LIBTOOL) --mode=install $(INSTALL) $(SHP2PGSQL-GUI) "$(DESTDIR)$(bindir)/$(SHP2PGSQL-GUI)"
 endif
+ifneq ($(PGSQL2SHP-CLI),)
 	$(LIBTOOL) --mode=install $(INSTALL) $(PGSQL2SHP-CLI) "$(DESTDIR)$(bindir)/$(PGSQL2SHP-CLI)"
+endif
 	$(LIBTOOL) --mode=install $(INSTALL) $(SHP2PGSQL-CLI) "$(DESTDIR)$(bindir)/$(SHP2PGSQL-CLI)"
 	$(LIBTOOL) --mode=install $(INSTALL) $(POSTGIS-CLI) "$(DESTDIR)$(bindir)/$(POSTGIS-CLI)"
 
@@ -160,9 +167,13 @@ ifdef gtk_build
 endif
 
 uninstall: uninstall-desktop uninstall-icons
+ifneq ($(PGSQL2SHP-CLI),)
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(PGSQL2SHP-CLI)"
+endif
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(SHP2PGSQL-CLI)"
+ifneq ($(SHP2PGSQL-GUI),)
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(SHP2PGSQL-GUI)"
+endif
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(POSTGIS-CLI)"
 
 # TODO: move here what's currently run from regress/loader and

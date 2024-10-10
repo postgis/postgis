@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<chapter id="performance_tips">
+<!-- Converted by db4-upgrade version 1.1 -->
+<chapter xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="performance_tips">
   <title>Performance Tips</title>
 
-  <sect1 id="small_tables_large_objects">
+  <section xml:id="small_tables_large_objects">
     <title>Small tables of large geometries</title>
 
-    <sect2>
+    <section>
       <title>Problem description</title>
 
       <para>Current PostgreSQL versions (including 9.6) suffer from a query
@@ -13,7 +13,7 @@
       "extension room" used to store large (in the sense of data size) values
       that do not fit into normal data pages (like long texts, images or
       complex geometries with lots of vertices), see
-      <ulink url="http://www.postgresql.org/docs/current/static/storage-toast.html">the PostgreSQL Documentation for TOAST</ulink> for more
+      <link xlink:href="http://www.postgresql.org/docs/current/static/storage-toast.html">the PostgreSQL Documentation for TOAST</link> for more
       information).</para>
 
       <para>The problem appears if you happen to have a table with rather
@@ -36,12 +36,12 @@
       ANALYZE" postgresql command. For more information and the technical
       details, you can read the thread on the PostgreSQL performance mailing
       list:
-      <ulink url="http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</ulink></para>
+      <link xlink:href="http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</link></para>
 
-      <para>and newer thread on PostGIS <ulink url="https://lists.osgeo.org/pipermail/postgis-devel/2017-June/026209.html">https://lists.osgeo.org/pipermail/postgis-devel/2017-June/026209.html</ulink></para>
-    </sect2>
+      <para>and newer thread on PostGIS <link xlink:href="https://lists.osgeo.org/pipermail/postgis-devel/2017-June/026209.html">https://lists.osgeo.org/pipermail/postgis-devel/2017-June/026209.html</link></para>
+    </section>
 
-    <sect2>
+    <section>
       <title>Workarounds</title>
 
       <para>The PostgreSQL people are trying to solve this issue by making the
@@ -66,19 +66,21 @@ UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(geom));</programlisting>
       <para>Now change your query to use the &amp;&amp; operator against bbox
       instead of geom_column, like:</para>
 
-      <programlisting>SELECT geom_column
+      <programlisting><![CDATA[
+SELECT geom_column
 FROM mytable
-WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);</programlisting>
+WHERE bbox && ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);
+]]></programlisting>
 
       <para>Of course, if you change or add rows to mytable, you have to keep
       the bbox "in sync". The most transparent way to do this would be
       triggers, but you also can modify your application to keep the bbox
       column current or run the UPDATE query above after every
       modification.</para>
-    </sect2>
-  </sect1>
+    </section>
+  </section>
 
-  <sect1 id="database_clustering">
+  <section xml:id="database_clustering">
     <title>CLUSTERing on geometry indices</title>
 
     <para>For tables that are mostly read-only, and where a single index is
@@ -109,9 +111,9 @@ ALTER TABLE</programlisting>
     your geometry column. Additionally, you must use the above method to add
     the constraint, using a CHECK constraint like "ALTER TABLE blubb ADD CHECK
     (geometry is not null);" will not work.</para>
-  </sect1>
+  </section>
 
-  <sect1 id="avoiding_dimension_conversion">
+  <section xml:id="avoiding_dimension_conversion">
     <title>Avoiding dimension conversion</title>
 
     <para>Sometimes, you happen to have 3D or 4D data in your table, but
@@ -139,6 +141,6 @@ VACUUM FULL ANALYZE mytable;</programlisting>
     dimension(geom)&gt;2" skips re-writing of geometries that already are
     in 2D.</para>
 
-  </sect1>
+  </section>
 
 </chapter>

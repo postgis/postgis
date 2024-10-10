@@ -4,7 +4,7 @@
 # PostGIS - Spatial Types for PostgreSQL
 # http://postgis.net
 #
-# Copyright (C) 2012-2014 Sandro Santilli <strk@kbt.io>
+# Copyright (C) 2012-2024 Sandro Santilli <strk@kbt.io>
 # Copyright (C) 2014-2015 Regina Obe <lr@pcorp.us>
 # Copyright (C) 2012-2013 Paul Ramsey <pramsey@cleverelephant.ca>
 #
@@ -13,11 +13,11 @@
 #
 
 #$| = 1;
-use File::Basename;
+use File::Basename(dirname,fileparse,basename);
 use File::Temp 'tempdir';
 use Time::HiRes qw(time);
 use File::Copy;
-use File::Path;
+use File::Path(mkpath);
 use Cwd 'abs_path';
 use Getopt::Long;
 use strict;
@@ -49,9 +49,12 @@ BEGIN {
 
 our $DB = $ENV{"POSTGIS_REGRESS_DB"} || "postgis_reg";
 our $REGDIR = $ENV{"POSTGIS_REGRESS_DIR"} || abs_path(dirname($0));
+our $DB_OWNER = $ENV{"POSTGIS_REGRESS_DB_OWNER"};
+our $DB_ROLE_EXT_MKR = $ENV{"POSTGIS_REGRESS_ROLE_EXT_CREATOR"} || $DB_OWNER;
+
 our $TOP_SOURCEDIR = ${REGDIR} . '/..';
 our $ABS_TOP_SOURCEDIR = abs_path(${TOP_SOURCEDIR});
-our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"} || ${TOP_SOURCEDIR};
+our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"};
 our $sysdiff = !system("diff --strip-trailing-cr $0 $0 2> /dev/null");
 
 ##################################################################
@@ -78,7 +81,9 @@ my $OPT_WITH_RASTER = 0;
 my $OPT_WITH_SFCGAL = 0;
 my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
+my $OPT_LEGACY = 0;
 my @OPT_HOOK_AFTER_CREATE;
+my @OPT_HOOK_AFTER_CREATE_DB;
 my @OPT_HOOK_AFTER_RESTORE;
 my @OPT_HOOK_BEFORE_DUMP;
 my @OPT_HOOK_BEFORE_TEST;
@@ -97,7 +102,7 @@ GetOptions (
 	'verbose+' => \$VERBOSE,
 	'clean' => \$OPT_CLEAN,
 	'nodrop' => \$OPT_NODROP,
-	'upgrade' => \$OPT_UPGRADE,
+	'upgrade+' => \$OPT_UPGRADE,
 	'upgrade-path=s' => \$OPT_UPGRADE_PATH,
 	'dumprestore' => \$OPT_DUMPRESTORE,
 	'nocreate' => \$OPT_NOCREATE,
@@ -107,9 +112,11 @@ GetOptions (
 	'sfcgal' => \$OPT_WITH_SFCGAL,
 	'expect' => \$OPT_EXPECT,
 	'extensions' => \$OPT_EXTENSIONS,
+	'legacy' => \$OPT_LEGACY,
 	'schema=s' => \$OPT_SCHEMA,
 	'build-dir=s' => \$TOP_BUILDDIR,
 	'after-create-script=s' => \@OPT_HOOK_AFTER_CREATE,
+	'after-create-db-script=s' => \@OPT_HOOK_AFTER_CREATE_DB,
 	'after-test-script=s' => \@OPT_HOOK_AFTER_TEST,
 	'before-uninstall-script=s' => \@OPT_HOOK_BEFORE_UNINSTALL,
 	'before-test-script=s' => \@OPT_HOOK_BEFORE_TEST,
@@ -128,12 +135,12 @@ sub findOrDie
 {
     my $exec = shift;
     my $verbose = shift;
-    printf "Checking for %s ... ", $exec if $verbose;
+    printf "Checking for %s ... ", $exec if $verbose gt 1;
     foreach my $d ( split /:/, $ENV{PATH} )
     {
         my $path = $d . '/' . $exec;
         if ( -x $path ) {
-            if ( $verbose ) {
+            if ( $verbose gt 1 ) {
                 print "found";
                 print " ($path)" if $verbose gt 1;
                 print "\n";
@@ -144,6 +151,20 @@ sub findOrDie
     print STDERR "Unable to find $exec executable.\n";
     print STDERR "PATH is " . $ENV{"PATH"} . "\n";
     die "HINT: use POSTGIS_TOP_BUILD_DIR env or --build-dir switch the specify top build dir.\n";
+}
+
+
+# If build dir is not given, try to guess
+if ( "${TOP_BUILDDIR}" eq "" )
+{
+    foreach my $d ( $ENV{'PWD'}, "${TOP_SOURCEDIR}" )
+    {
+        if ( -e ${d} . '/postgis_revision.h' )
+        {
+            $TOP_BUILDDIR="${d}";
+            last;
+        }
+    }
 }
 
 # Prepend scripts' build dirs to path
@@ -182,7 +203,7 @@ sub postgis_restore
 
 if ( $OPT_UPGRADE_PATH )
 {
-  $OPT_UPGRADE = 1; # implied
+  $OPT_UPGRADE = 1 if not $OPT_UPGRADE; # implied
   my @path = split ('--', $OPT_UPGRADE_PATH);
   $OPT_UPGRADE_FROM = $path[0]
     || die "Malformed upgrade path, <from>--<to> expected, $OPT_UPGRADE_PATH given";
@@ -327,8 +348,17 @@ else
 	}
 }
 
-my $libver = sql("select postgis_lib_version()");
+unless ( $OPT_NOCREATE )
+{
+    foreach my $hook (@OPT_HOOK_AFTER_CREATE)
+    {
+        print "Running after-create script $hook\n";
+        die unless load_sql_file($hook, 1);
+    }
+}
 
+
+my $libver = sql("select postgis_lib_version()");
 if ( ! $libver )
 {
 	`dropdb $DB`;
@@ -336,6 +366,28 @@ if ( ! $libver )
 	print "For details, check $REGRESS_LOG\n\n";
 	exit(1);
 }
+
+sub compute_executor_slow_factor
+{
+    my $ms_to_fetch_full_version = sql(<<EOF
+        CREATE TEMP TABLE _start AS SELECT clock_timestamp() c;
+        SELECT FROM postgis_full_version();
+        SELECT EXTRACT(milliseconds FROM clock_timestamp()-c)
+             FROM _start;
+EOF
+    );
+    my $default_ms_to_fetch_full_version = 10;
+    my $test_executor_slow_factor = 1;
+    if ( $ms_to_fetch_full_version gt $default_ms_to_fetch_full_version )
+    {
+        $test_executor_slow_factor = $ms_to_fetch_full_version / $default_ms_to_fetch_full_version;
+    }
+    #
+    print "Executor slow factor: $test_executor_slow_factor ($ms_to_fetch_full_version ms to fetch full version)\n";
+    sql("ALTER DATABASE \\\"$DB\\\" SET test.executor_slow_factor = $test_executor_slow_factor");
+}
+
+compute_executor_slow_factor;
 
 sub staged_scripts_dir
 {
@@ -395,7 +447,7 @@ if ( $OPT_DUMPRESTORE )
     print "Creating db '${DB}'\n";
     $rv = create_db();
     if ( ! $rv ) {
-        fail("Could not create db ${DB}", $REGRESS_LOG);
+        fail("Could not create db ${DB} (create_db returned $rv)", $REGRESS_LOG);
         die;
     }
 
@@ -409,7 +461,8 @@ if ( $OPT_DUMPRESTORE )
 
 if ( $OPT_UPGRADE )
 {
-    print "Upgrading from postgis $libver\n";
+    my $upgradesleft = $OPT_UPGRADE;
+    print "Upgrading from postgis $libver ($upgradesleft upgrades requested)\n";
 
     foreach my $hook (@OPT_HOOK_BEFORE_UPGRADE)
     {
@@ -417,13 +470,16 @@ if ( $OPT_UPGRADE )
         die unless load_sql_file($hook, 1);
     }
 
-    if ( $OPT_EXTENSIONS )
+    while ( $upgradesleft-- )
     {
-        die unless upgrade_spatial_extensions();
-    }
-    else
-    {
-        die unless upgrade_spatial();
+        if ( $OPT_EXTENSIONS )
+        {
+            die unless upgrade_spatial_extensions();
+        }
+        else
+        {
+            die unless upgrade_spatial();
+        }
     }
 
     foreach my $hook (@OPT_HOOK_AFTER_UPGRADE)
@@ -463,19 +519,15 @@ print "  PROJ: $projver\n" if $projver;
 print "  SFCGAL: $sfcgalver\n" if $sfcgalver;
 print "  GDAL: $gdalver\n" if $gdalver;
 
+# allow hook scripts to perform arbitrary reports via output of INFO strings
+system("grep INFO $REGRESS_LOG | sed 's/INFO://'");
+
 
 ##################################################################
 # Run the tests
 ##################################################################
 
 print "\nRunning tests\n\n";
-
-foreach my $hook (@OPT_HOOK_AFTER_CREATE)
-{
-	start_test("after-create-script $hook");
-	show_progress();
-	pass() if load_sql_file($hook, 1);
-}
 
 foreach $TEST (@ARGV)
 {
@@ -663,7 +715,8 @@ Usage: $0 [<options>] <testname> [<testname>]
 Options:
   -v, --verbose   be verbose about failures
   --nocreate      do not create the regression database on start
-  --upgrade       source the upgrade scripts on start
+  --upgrade       upgrade db before running tests, can be passed
+                  multiple times to perform multiple upgrades.
   --upgrade-path  upgrade path, format <from>--<to>.
                   <from> can be specified as "unpackaged<version>"
                          to specify a script version to start from.
@@ -678,17 +731,21 @@ Options:
   --schema        where to install/find PostGIS (relocatable) PostGIS
                   (defaults to "public")
   --raster        load also raster extension
-  --tiger      		load also tiger_geocoder extension
+  --tiger         load also tiger_geocoder extension
   --topology      load also topology extension
   --sfcgal        use also sfcgal backend
   --clean         cleanup test logs on exit
   --expect        save obtained output as expected
   --extension     load using extensions
+  --legacy        load also legacy scripts
   --build-dir <path>
                   specify where to find the top build dir of PostGIS,
                   to find binaries and scripts
   --after-create-script <path>
                   script to load after spatial db creation
+                  (multiple switches supported, to be run in given order)
+  --after-create-db-script <path>
+                  script to load after db creation
                   (multiple switches supported, to be run in given order)
   --before-uninstall-script <path>
                   script to load before spatial extension uninstall
@@ -711,6 +768,21 @@ Options:
   --after-test-script <path>
                   script to load after each test run
                   (multiple switches supported, to be run in given order)
+Environment Variables:
+  POSTGIS_REGRESS_DB
+                  Name of database to create and use for regression tests.
+                  Defaults to "postgis_reg"
+  POSTGIS_REGRESS_DB_OWNER
+                  PostgreSQL role to become owner of the regress db.
+                  Defaults to connecting user (determined by libpq env
+                  variables)
+  POSTGIS_REGRESS_ROLE_EXT_CREATOR
+                  PostgreSQL role to switch to for creating/upgrading the
+                  postgis extensions. Defaults to POSTGIS_REGRESS_DB_OWNER
+  POSTGIS_REGRESS_DIR
+                  Base directory of regress tests. Defaults to
+                  name of directory containing this script.
+
 };
 
 }
@@ -836,6 +908,7 @@ sub drop_table
 sub sql
 {
 	my $sql = shift;
+	# TODO: capture or discard stderr ?
 	my $result = `psql -qtXA -d $DB -c 'SET search_path TO public,$OPT_SCHEMA' -c "$sql" | sed '/^SET\$/d'`;
 	$result =~ s/[\n\r]*$//;
 	$result;
@@ -1446,16 +1519,28 @@ sub create_db
 {
 	my $createcmd = "createdb --encoding=UTF-8 --template=template0 --lc-collate=C";
 	if ( $pgvernum ge 150000 ) {
-		$createcmd .= " --locale=C --locale-provider=libc"
+		$createcmd .= " --locale=C --locale-provider=libc";
 	}
-	$createcmd .= " $DB > $REGRESS_LOG";
-	return not system($createcmd);
+	if ( $DB_OWNER ) {
+		$createcmd .= " --owner $DB_OWNER";
+	}
+	$createcmd .= " $DB > $REGRESS_LOG 2>&1";
+
+	return 0 if system($createcmd);
+
+	foreach my $hook (@OPT_HOOK_AFTER_CREATE_DB)
+	{
+		print "Running after-create-db-script $hook\n";
+		die unless load_sql_file($hook, 1);
+	}
+
+	return 1;
 }
 
 sub create_spatial
 {
     my ($cmd, $rv);
-    print "Creating database '$DB' \n";
+    print "Creating database '$DB'.\n";
 
     $rv = create_db();
 
@@ -1492,33 +1577,47 @@ sub create_spatial
 
 sub load_sql_file
 {
-	my $file = shift;
-	my $strict = shift;
+    my $file = shift;
+    my $strict = shift;
+    my $werror = shift;
 
-	if ( $strict && ! -e $file )
-	{
-		fail "Unable to find $file";
-		return 0;
-	}
+    my $tmplog = ${REGRESS_LOG} . '.tmp';
 
-	if ( -e $file )
-	{
-		# ON_ERROR_STOP is used by psql to return non-0 on an error
-		my $psql_opts = "--quiet --no-psqlrc --variable ON_ERROR_STOP=true";
-		my $cmd = "psql $psql_opts -c 'CREATE SCHEMA IF NOT EXISTS $OPT_SCHEMA' ";
-		$cmd .= "-c 'SET search_path TO $OPT_SCHEMA,topology'";
-		$cmd .= " -v \"opt_dumprestore=${OPT_DUMPRESTORE}\"";
-		$cmd .= " -Xf $file $DB >> $REGRESS_LOG 2>&1";
-		#print "  $file\n" if $VERBOSE;
-		my $rv = system($cmd);
-		if ( $rv )
-		{
-		  fail "Error encountered loading $file", $REGRESS_LOG;
-		  #exit 1;
-			return 0;
-		}
-	}
-	return 1;
+    if ( -e $file )
+    {
+        # ON_ERROR_STOP is used by psql to return non-0 on an error
+        my $psql_opts = "--quiet --no-psqlrc --variable ON_ERROR_STOP=true";
+        my $cmd = "psql $psql_opts -c 'CREATE SCHEMA IF NOT EXISTS $OPT_SCHEMA' ";
+        $cmd .= "-c 'SET search_path TO $OPT_SCHEMA,topology'";
+        $cmd .= " -v \"opt_dumprestore=${OPT_DUMPRESTORE}\"";
+        $cmd .= " -v \"regdir=$REGDIR\"";
+        $cmd .= " -Xf $file $DB > $tmplog 2>&1";
+        #print "  $file\n" if $VERBOSE;
+        my $rv = system($cmd);
+        if ( $rv )
+        {
+            fail "Error encountered loading $file", $tmplog;
+            return 0;
+        }
+
+        if ( $werror )
+        {
+            if ( system("grep -A3 WARNING $tmplog") == 0 )
+            {
+                fail "Warnings encountered loading $file", $tmplog;
+                return 0;
+            }
+        }
+
+        system("cat $tmplog >> $REGRESS_LOG");
+    }
+    elsif ( $strict )
+    {
+        fail "Unable to find $file";
+        return 0;
+    }
+
+    return 1;
 }
 
 # Prepare the database for spatial operations (extension method)
@@ -1526,6 +1625,11 @@ sub prepare_spatial_extensions
 {
 	# ON_ERROR_STOP is used by psql to return non-0 on an error
 	my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
+
+	if ( $DB_ROLE_EXT_MKR ) {
+		print "Using role '$DB_ROLE_EXT_MKR' for spatial extensions creation.\n";
+		$psql_opts .= " -c \"set role='$DB_ROLE_EXT_MKR'\"";
+	}
 
 	my $sql = "CREATE SCHEMA IF NOT EXISTS ${OPT_SCHEMA}";
 	my $cmd = "psql $psql_opts -c \"". $sql . "\" $DB >> $REGRESS_LOG 2>&1";
@@ -1644,35 +1748,39 @@ sub prepare_spatial_extensions
 sub prepare_spatial
 {
 	my $version = shift;
+	my $werror = defined ($version) ? 0 : 1; # threat warnings as errors
 	my $scriptdir = scriptdir($version);
-	print "Loading unpackaged components from $scriptdir\n";
-
-	print "Loading PostGIS into '${DB}' \n";
+	print "Loading PostGIS in '${DB} using scripts from $scriptdir'\n";
 
 	# Load postgis.sql into the database
-	return 0 unless load_sql_file("${scriptdir}/postgis.sql", 1);
-	return 0 unless load_sql_file("${scriptdir}/postgis_comments.sql", 0);
-	return 0 unless load_sql_file("${scriptdir}/spatial_ref_sys.sql", 0);
+	return 0 unless load_sql_file("${scriptdir}/postgis.sql", 1, $werror);
+	return 0 unless load_sql_file("${scriptdir}/postgis_comments.sql", 0, $werror);
+	return 0 unless load_sql_file("${scriptdir}/spatial_ref_sys.sql", 0, $werror);
+	if ( $OPT_LEGACY )
+	{
+		print "Loading legacy.sql from $scriptdir\n";
+		return 0 unless load_sql_file("${scriptdir}/legacy.sql", 0, $werror);
+	}
 
 	if ( $OPT_WITH_TOPO )
 	{
 		print "Loading Topology into '${DB}'\n";
-		return 0 unless load_sql_file("${scriptdir}/topology.sql", 1);
-		return 0 unless load_sql_file("${scriptdir}/topology_comments.sql", 0);
+		return 0 unless load_sql_file("${scriptdir}/topology.sql", 1, $werror);
+		return 0 unless load_sql_file("${scriptdir}/topology_comments.sql", 0, $werror);
 	}
 
 	if ( $OPT_WITH_RASTER )
 	{
 		print "Loading Raster into '${DB}'\n";
-		return 0 unless load_sql_file("${scriptdir}/rtpostgis.sql", 1);
-		return 0 unless load_sql_file("${scriptdir}/raster_comments.sql", 0);
+		return 0 unless load_sql_file("${scriptdir}/rtpostgis.sql", 1, $werror);
+		return 0 unless load_sql_file("${scriptdir}/raster_comments.sql", 0, $werror);
 	}
 
 	if ( $OPT_WITH_SFCGAL )
 	{
 		print "Loading SFCGAL into '${DB}'\n";
-		return 0 unless load_sql_file("${scriptdir}/sfcgal.sql", 1);
-		return 0 unless load_sql_file("${scriptdir}/sfcgal_comments.sql", 0);
+		return 0 unless load_sql_file("${scriptdir}/sfcgal.sql", 1, $werror);
+		return 0 unless load_sql_file("${scriptdir}/sfcgal_comments.sql", 0, $werror);
 	}
 
 	return 1;
@@ -1684,7 +1792,7 @@ sub upgrade_extension_sql
 
     my $sql = '';
     if ( "${libver}" eq "${to}" ) {
-        if ( semver_lessthan($to, "3.3.0") ) {
+        if ( semver_lessthan($to, "3.4.0") ) {
             $sql .= "ALTER EXTENSION $extname UPDATE TO '${to}next'; ";
         } else {
             $sql .= "ALTER EXTENSION $extname UPDATE TO 'ANY'; ";
@@ -1701,9 +1809,9 @@ sub package_extension_sql
 	my $sql;
 
 	if ( $pgvernum lt 130000 ) {
-		$sql = "CREATE EXTENSION ${extname} VERSION '${extver}' FROM unpackaged;";
+		$sql = "CREATE EXTENSION IF NOT EXISTS ${extname} VERSION '${extver}' FROM unpackaged;";
 	} else {
-		$sql = "CREATE EXTENSION ${extname} VERSION unpackaged;";
+		$sql = "CREATE EXTENSION IF NOT EXISTS ${extname} VERSION unpackaged;";
 		$sql .= "ALTER EXTENSION ${extname} UPDATE TO '${extver}'";
 	}
 	return $sql;
@@ -1752,6 +1860,11 @@ sub upgrade_spatial_extensions
     my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
     my $sql;
     my $upgrade_via_function = 0;
+
+    if ( $DB_ROLE_EXT_MKR ) {
+      print "Using role '$DB_ROLE_EXT_MKR' for spatial extensions upgrade.\n";
+      $psql_opts .= " -c \"set role='$DB_ROLE_EXT_MKR'\"";
+    }
 
     if ( $OPT_UPGRADE_TO =~ /!$/ )
     {
@@ -1802,7 +1915,7 @@ sub upgrade_spatial_extensions
     }
 
     # Handle raster split if coming from pre-split extension
-    # and going to splitted raster
+    # and going to split raster
     if ( $OPT_UPGRADE_FROM &&
          ( not $OPT_UPGRADE_FROM =~ /^unpackaged/ ) &&
          has_split_raster_ext($OPT_UPGRADE_TO) &&
@@ -1823,15 +1936,8 @@ sub upgrade_spatial_extensions
 
       if ( ! $OPT_WITH_RASTER )
       {
-        print "Dropping PostGIS Raster in '${DB}' using: ${sql}\n" ;
-
-        $sql = "DROP EXTENSION postgis_raster";
-        $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
-        $rv = system($cmd);
-        if ( $rv ) {
-          fail "Error encountered dropping EXTENSION POSTGIS_RASTER on upgrade", $REGRESS_LOG;
-          return 0;
-        }
+        print "Marking PostGIS Raster as present for later drop\n";
+        $OPT_WITH_RASTER=1
       }
     }
 
@@ -1930,6 +2036,10 @@ sub drop_spatial
 	{
 		load_sql_file("${STAGED_SCRIPTS_DIR}/uninstall_sfcgal.sql");
 	}
+	if ( $OPT_LEGACY )
+	{
+		load_sql_file("${STAGED_SCRIPTS_DIR}/uninstall_legacy.sql");
+	}
 	load_sql_file("${STAGED_SCRIPTS_DIR}/uninstall_postgis.sql");
 
   	return 1;
@@ -2022,6 +2132,29 @@ sub uninstall_spatial
 	if ( $OBJ_COUNT_POST != $OBJ_COUNT_PRE )
 	{
 		fail("Object count pre-install ($OBJ_COUNT_PRE) != post-uninstall ($OBJ_COUNT_POST)");
+
+        if ( $OPT_UPGRADE_FROM )
+        {
+            my $fromversion = $OPT_UPGRADE_FROM;
+            $fromversion =~ s/unpackaged//;
+            print
+                "\n-------------------------------------------------\n",
+                "Need to add these to an after_upgrade.sql script?",
+                "\n-------------------------------------------------\n",
+                sql("
+SELECT format(
+    'SELECT _postgis_drop_function_by_identity(%L, %L, %L);',
+    proname,
+    pg_catalog.pg_get_function_identity_arguments(oid),
+    '$fromversion'
+)
+FROM pg_proc
+WHERE pronamespace = '${OPT_SCHEMA}'::regnamespace
+ORDER BY 1;
+                "),
+                "\n-------------------------------------------------\n",
+        }
+
 		return 0;
 	}
 

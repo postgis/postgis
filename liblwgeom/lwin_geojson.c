@@ -425,7 +425,7 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 		snprintf(err, 256, "%s (at offset %d)", json_tokener_error_desc(jstok->err), jstok->char_offset);
 		json_tokener_free(jstok);
 		json_object_put(poObj);
-		lwerror(err);
+		lwerror("%s", err);
 		return NULL;
 	}
 	json_tokener_free(jstok);

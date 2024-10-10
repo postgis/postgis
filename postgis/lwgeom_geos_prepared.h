@@ -22,9 +22,7 @@
  *
  **********************************************************************/
 
-
-#ifndef LWGEOM_GEOS_PREPARED_H_
-#define LWGEOM_GEOS_PREPARED_H_ 1
+#pragma once
 
 #include "postgres.h"
 #include "fmgr.h"
@@ -39,20 +37,16 @@
 #include "lwgeom_cache.h"
 
 /*
-* Cache structure. We use GSERIALIZED as keys so no transformations
-* are needed before we memcmp them with other keys. We store the
-* size to avoid having to calculate the size every time.
-* The argnum gives the number of function arguments we are caching.
-* Intersects requires that both arguments be checked for cacheability,
-* while Contains only requires that the containing argument be checked.
-* Both the Geometry and the PreparedGeometry have to be cached,
-* because the PreparedGeometry contains a reference to the geometry.
-*
-* Note that the first 6 entries are part of the common GeomCache
-* structure and have to remain in order to allow the overall caching
-* system to share code (the cache checking code is common between
-* prepared geometry, circtrees, recttrees, and rtrees).
-*/
+ * Cache structure. The common components used across all
+ * caches are in the GeomCache. That contains SHARED_GSERIALIZED
+ * and the argnum that indicates which argument we are caching
+ * prepared geometry for.
+ * The argnum gives the number of function arguments we are caching.
+ * Intersects requires that both arguments be checked for cacheability,
+ * while Contains only requires that the containing argument be checked.
+ * Both the Geometry and the PreparedGeometry have to be cached,
+ * because the PreparedGeometry contains a reference to the geometry.
+ */
 typedef struct {
 	GeomCache                   gcache;
 	MemoryContext               context_statement;
@@ -63,13 +57,12 @@ typedef struct {
 
 
 /*
-** Get the current cache, given the input geometries.
-** Function will create cache if none exists, and prepare geometries in
-** cache if necessary, or pull an existing cache if possible.
-**
-** If you are only caching one argument (e.g., in contains) supply 0 as the
-** value for pg_geom2.
-*/
+ * Get the current cache, given the input geometries.
+ * Function will create cache if none exists, and prepare geometries in
+ * cache if necessary, or pull an existing cache if possible.
+ *
+ * If you are only caching one argument (e.g., in contains) supply 0 as the
+ * value for pg_geom2.
+ */
 PrepGeomCache *GetPrepGeomCache(FunctionCallInfo fcinfo, SHARED_GSERIALIZED *pg_geom1, SHARED_GSERIALIZED *pg_geom2);
 
-#endif /* LWGEOM_GEOS_PREPARED_H_ */

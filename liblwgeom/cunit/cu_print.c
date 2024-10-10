@@ -31,7 +31,7 @@ test_lwpoint_to_latlon_assert_format(char *point_wkt, const char *format, const 
 		CU_FAIL();
 	}
 	num_old_failures = CU_get_number_of_failures();
-	CU_ASSERT_STRING_EQUAL(actual, expected);
+	ASSERT_STRING_EQUAL(actual, expected);
 	num_new_failures = CU_get_number_of_failures();
 	if (num_new_failures > num_old_failures)
 	{
@@ -204,6 +204,11 @@ test_lwpoint_to_latlon_format_orders(void)
 static void
 test_lwpoint_to_latlon_optional_format(void)
 {
+	test_lwpoint_to_latlon_assert_format("POINT(21.9999999 1)",
+		"D-M-S-C", "1-0-0-N 22-0-0-E");
+	test_lwpoint_to_latlon_assert_format("POINT(21.99999999999 1)",
+		"D-M-S-C", "1-0-0-N 22-0-0-E");
+
 	test_lwpoint_to_latlon_assert_format("POINT(-45.4545 -12.34567)", "DD.DDD", "-12.346 -45.455");
 	test_lwpoint_to_latlon_assert_format("POINT(-45.4545 -12.34567)", "DD.DDD C", "12.346 S 45.455 W");
 	test_lwpoint_to_latlon_assert_format(
@@ -502,7 +507,7 @@ test_lwprint(void)
 	assert_lwprint_equal(2.9802322387695312E-8, OUT_MAX_DIGITS, "0.000000029802322387695312"); /* Trailing zeros */
 }
 
-/* Macro to test rountrip of lwprint_double when using enough precision digits (OUT_MAX_DIGITS) */
+/* Macro to test roundtrip of lwprint_double when using enough precision digits (OUT_MAX_DIGITS) */
 #define assert_lwprint_roundtrip(d) \
 	{ \
 		char s[OUT_DOUBLE_BUFFER_SIZE] = {0}; \

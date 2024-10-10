@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="Geometry_Editors">
-     <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Geometry_Editors">
+     <title>Geometry Editors</title><info>
         <abstract>
         <para>These functions create modified geometries by changing type, structure or vertices.
         </para>
         </abstract>
-    </sect1info>
+    </info>
 
-	  <title>Geometry Editors</title>
 
-		<refentry id="ST_AddPoint">
+
+		<refentry xml:id="ST_AddPoint">
 		  <refnamediv>
 			<refname>ST_AddPoint</refname>
 			<refpurpose>Add a point to a LineString.</refpurpose>
@@ -39,7 +39,7 @@
 				(using a 0-based index).
                 If the <parameter>position</parameter> parameter is omitted or is -1
 				the point is appended to the end of the LineString.</para>
-			<para>Availability: 1.1.0</para>
+			<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
@@ -69,12 +69,12 @@ WHERE ST_IsClosed(geom) = false;
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_RemovePoint"/>, <xref linkend="ST_SetPoint" /></para>
+			<para><xref linkend="ST_RemovePoint"/>, <xref linkend="ST_SetPoint"/></para>
 		  </refsection>
 	</refentry>
 
 
-	<refentry id="ST_CollectionExtract">
+	<refentry xml:id="ST_CollectionExtract">
 		<refnamediv>
 			<refname>ST_CollectionExtract</refname>
 
@@ -116,19 +116,19 @@ Given a geometry collection, returns a multi-geometry containing only elements o
             <listitem><para>3 == POLYGON</para></listitem>
             </itemizedlist>
 
-            <para>For atomic geometry inputs, the geometry is retured unchanged
+            <para>For atomic geometry inputs, the geometry is returned unchanged
             if the input type matches the requested type.
             Otherwise, the result is an EMPTY geometry of the specified type.
-            If required, these can be converted to multi-geometries using <xref linkend="ST_Multi" />.
+            If required, these can be converted to multi-geometries using <xref linkend="ST_Multi"/>.
             </para>
 
 			<warning><para>MultiPolygon results are not checked for validity.
             If the polygon components are adjacent or overlapping the result will be invalid.
-            (For example, this can occur when applying this function to an <xref linkend="ST_Split" /> result.)
-            This situation can be checked with <xref linkend="ST_IsValid" /> and repaired with <xref linkend="ST_MakeValid" />.
+            (For example, this can occur when applying this function to an <xref linkend="ST_Split"/> result.)
+            This situation can be checked with <xref linkend="ST_IsValid"/> and repaired with <xref linkend="ST_MakeValid"/>.
             </para></warning>
 
-			<para>Availability: 1.5.0</para>
+			<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
 
 			<note><para>
             Prior to 1.5.3 this function returned atomic inputs unchanged, no matter type.
@@ -171,13 +171,13 @@ SELECT ST_AsText(ST_CollectionExtract(
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_CollectionHomogenize" />, <xref linkend="ST_Multi" />,
-                <xref linkend="ST_IsValid" />, <xref linkend="ST_MakeValid" />
+			<para><xref linkend="ST_CollectionHomogenize"/>, <xref linkend="ST_Multi"/>,
+                <xref linkend="ST_IsValid"/>, <xref linkend="ST_MakeValid"/>
             </para>
 		</refsection>
 	</refentry>
 
-    <refentry id="ST_CollectionHomogenize">
+    <refentry xml:id="ST_CollectionHomogenize">
         <refnamediv>
             <refname>ST_CollectionHomogenize</refname>
 
@@ -206,16 +206,16 @@ Returns the simplest representation of a geometry collection.
             <listitem><para>Heterogeneous (mixed) collections are flattened into a single GeometryCollection.</para></listitem>
             <listitem><para>Collections containing a single atomic element are returned as that element.</para></listitem>
             <listitem><para>Atomic geometries are returned unchanged.
-                If required, these can be converted to a multi-geometry using <xref linkend="ST_Multi" />.</para></listitem>
+                If required, these can be converted to a multi-geometry using <xref linkend="ST_Multi"/>.</para></listitem>
             </itemizedlist>
 
             <warning><para>This function does not ensure that the result is valid.
             In particular, a collection containing adjacent or overlapping Polygons
             will create an invalid MultiPolygon.
-            This situation can be checked with <xref linkend="ST_IsValid" /> and repaired with <xref linkend="ST_MakeValid" />.
+            This situation can be checked with <xref linkend="ST_IsValid"/> and repaired with <xref linkend="ST_MakeValid"/>.
             </para></warning>
 
-            <para>Availability: 2.0.0</para>
+            <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 
         </refsection>
 
@@ -268,12 +268,12 @@ SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION (POLYGON ((10 50, 5
         </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_CollectionExtract" />, <xref linkend="ST_Multi" />,
-            <xref linkend="ST_IsValid" />, <xref linkend="ST_MakeValid" /></para>
+            <para><xref linkend="ST_CollectionExtract"/>, <xref linkend="ST_Multi"/>,
+            <xref linkend="ST_IsValid"/>, <xref linkend="ST_MakeValid"/></para>
         </refsection>
     </refentry>
 
-    <refentry id="ST_CurveToLine">
+    <refentry xml:id="ST_CurveToLine">
       <refnamediv>
         <refname>ST_CurveToLine</refname>
 
@@ -331,9 +331,9 @@ Supported bits are:
       </itemizedlist>
     </para>
 
-        <para>Availability: 1.3.0</para>
-    <para>Enhanced: 2.4.0 added support for max-deviation and max-angle tolerance, and for symmetric output.</para>
-    <para>Enhanced: 3.0.0 implemented a minimum number of segments per linearized arc to prevent topological collapse.</para>
+        <para role="availability" conformance="1.3.0">Availability: 1.3.0</para>
+    <para role="enhanced" conformance="2.4.0">Enhanced: 2.4.0 added support for max-deviation and max-angle tolerance, and for symmetric output.</para>
+    <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 implemented a minimum number of segments per linearized arc to prevent topological collapse.</para>
 
         <para>&sfs_compliant;</para>
         <para>&sqlmm_compliant; SQL-MM 3: 7.1.7</para>
@@ -421,11 +421,11 @@ st_astext
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_LineToCurve" /></para>
+        <para><xref linkend="ST_LineToCurve"/></para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_Scroll">
+    <refentry xml:id="ST_Scroll">
       <refnamediv>
         <refname>ST_Scroll</refname>
         <refpurpose>Change start point of a closed LineString.</refpurpose>
@@ -447,7 +447,7 @@ st_astext
 Changes the start/end point of a closed LineString to
 the given vertex <parameter>point</parameter>.
         </para>
-        <para>Availability: 3.2.0</para>
+        <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
         <para>&Z_support;</para>
         <para>&M_support;</para>
       </refsection>
@@ -467,11 +467,11 @@ SRID=4326;LINESTRING(5 5 4 2,0 0 0 1,10 0 2 0,5 5 4 2)
       </refsection>
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_Normalize" /></para>
+        <para><xref linkend="ST_Normalize"/></para>
       </refsection>
 </refentry>
 
-    <refentry id="ST_FlipCoordinates">
+    <refentry xml:id="ST_FlipCoordinates">
       <refnamediv>
         <refname>ST_FlipCoordinates</refname>
         <refpurpose>Returns a version of a geometry with X and Y axis flipped. </refpurpose>
@@ -490,7 +490,7 @@ SRID=4326;LINESTRING(5 5 4 2,0 0 0 1,10 0 2 0,5 5 4 2)
         <title>Description</title>
         <para>Returns a version of the given geometry with X and Y axis flipped.
         Useful for fixing geometries which contain coordinates expressed as latitude/longitude (Y,X).</para>
-        <para>Availability: 2.0.0</para>
+        <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
         <para>&curve_support;</para>
         <para>&Z_support;</para>
         <para>&M_support;</para>
@@ -500,23 +500,23 @@ SRID=4326;LINESTRING(5 5 4 2,0 0 0 1,10 0 2 0,5 5 4 2)
 
       <refsection>
         <title>Example</title>
-        <programlisting><![CDATA[
+        <programlisting>
 SELECT ST_AsEWKT(ST_FlipCoordinates(GeomFromEWKT('POINT(1 2)')));
  st_asewkt
 ------------
 POINT(2 1)
-         ]]></programlisting>
+         </programlisting>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
       <refsection>
         <title>See Also</title>
-        <para> <xref linkend="ST_SwapOrdinates" /> </para>
+        <para> <xref linkend="ST_SwapOrdinates"/> </para>
       </refsection>
 
     </refentry>
 
-	<refentry id="ST_Force2D">
+	<refentry xml:id="ST_Force2D">
 	  <refnamediv>
 		<refname>ST_Force2D</refname>
 
@@ -540,8 +540,8 @@ POINT(2 1)
 		This is useful for force OGC-compliant output (since OGC only
 		specifies 2-D geometries).</para>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
-		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_2D.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Force_2D.</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
 		<para>&Z_support;</para>
@@ -573,7 +573,7 @@ SELECT  ST_AsEWKT(ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Force_3D">
+	<refentry xml:id="ST_Force_3D">
 	  <refnamediv>
 		<refname>ST_Force3D</refname>
 
@@ -595,9 +595,9 @@ SELECT  ST_AsEWKT(ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3
 
         <para>Forces the geometries into XYZ mode. This is an alias for ST_Force3DZ. If a geometry has no Z component, then a <parameter>Zvalue</parameter> Z coordinate is tacked on.</para>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
-		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3D.</para>
-		<para>Changed: 3.1.0. Added support for supplying a non-zero Z value.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3D.</para>
+		<para role="changed" conformance="3.1.0.">Changed: 3.1.0. Added support for supplying a non-zero Z value.</para>
 		<para>&P_support;</para>
 		<para>&curve_support;</para>
 		<para>&Z_support;</para>
@@ -631,7 +631,7 @@ SELECT  ST_AsEWKT(ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Force_3DZ">
+	<refentry xml:id="ST_Force_3DZ">
 	  <refnamediv>
 		<refname>ST_Force3DZ</refname>
 
@@ -653,9 +653,9 @@ SELECT  ST_AsEWKT(ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 
 		<para>Forces the geometries into XYZ mode. If a geometry has no Z component, then a <parameter>Zvalue</parameter> Z coordinate is tacked on.</para>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
-		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DZ.</para>
-		<para>Changed: 3.1.0. Added support for supplying a non-zero Z value.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DZ.</para>
+		<para role="changed" conformance="3.1.0.">Changed: 3.1.0. Added support for supplying a non-zero Z value.</para>
 		<para>&P_support;</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
@@ -689,7 +689,7 @@ SELECT  ST_AsEWKT(ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Force_3DM">
+	<refentry xml:id="ST_Force_3DM">
 	  <refnamediv>
 		<refname>ST_Force3DM</refname>
 
@@ -712,8 +712,8 @@ SELECT  ST_AsEWKT(ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 		<para>Forces the geometries into XYM mode. If a geometry has no M component, then a <parameter>Mvalue</parameter> M coordinate is tacked on.  If it has a Z component, then Z is removed</para>
 
 
-		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DM.</para>
-		<para>Changed: 3.1.0. Added support for supplying a non-zero M value.</para>
+		<para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DM.</para>
+		<para role="changed" conformance="3.1.0.">Changed: 3.1.0. Added support for supplying a non-zero M value.</para>
 		<para>&curve_support;</para>
 	  </refsection>
 
@@ -746,7 +746,7 @@ SELECT  ST_AsEWKT(ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Force_4D">
+	<refentry xml:id="ST_Force_4D">
 	  <refnamediv>
 		<refname>ST_Force4D</refname>
 
@@ -769,8 +769,8 @@ SELECT  ST_AsEWKT(ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 
 
 		<para>Forces the geometries into XYZM mode. <parameter>Zvalue</parameter> and <parameter>Mvalue</parameter> is tacked on for missing Z and M dimensions, respectively. </para>
 
-		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_4D.</para>
-		<para>Changed: 3.1.0. Added support for supplying non-zero Z and M values.</para>
+		<para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Force_4D.</para>
+		<para role="changed" conformance="3.1.0.">Changed: 3.1.0. Added support for supplying non-zero Z and M values.</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 	  </refsection>
@@ -805,56 +805,7 @@ SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_ForcePolygonCCW">
-		<refnamediv>
-			<refname>
-				ST_ForcePolygonCCW
-			</refname>
-			<refpurpose>
-				Orients all exterior rings counter-clockwise and all interior rings clockwise.
-			</refpurpose>
-		</refnamediv>
-
-		<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-					<funcdef>
-						geometry
-						<function>ST_ForcePolygonCCW</function>
-					</funcdef>
-					<paramdef>
-						<type>geometry</type>
-						<parameter>geom</parameter>
-					</paramdef>
-				</funcprototype>
-			</funcsynopsis>
-		</refsynopsisdiv>
-
-		<refsection>
-			<title>Description</title>
-
-			<para>
-				Forces (Multi)Polygons to use a counter-clockwise orientation for
-				their exterior ring, and a clockwise orientation for their interior
-				rings.  Non-polygonal geometries are returned unchanged.
-			</para>
-
-			<para>Availability: 2.4.0</para>
-			<para>&Z_support;</para>
-			<para>&M_support;</para>
-		</refsection>
-
-		<refsection>
-			<title>See Also</title>
-			<para>
-				<xref linkend="ST_ForcePolygonCW" />,
-				<xref linkend="ST_IsPolygonCCW" />,
-				<xref linkend="ST_IsPolygonCW" />
-			</para>
-		</refsection>
-	</refentry>
-
-	<refentry id="ST_Force_Collection">
+	<refentry xml:id="ST_Force_Collection">
 	  <refnamediv>
 		<refname>ST_ForceCollection</refname>
 
@@ -876,9 +827,9 @@ SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,
 		<para>Converts the geometry into a GEOMETRYCOLLECTION. This is
 			useful for simplifying the WKB representation.</para>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
-		<para>Availability: 1.2.2, prior to 1.3.4 this function will crash with Curves.  This is fixed in 1.3.4+</para>
-		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para role="availability" conformance="1.2.2">Availability: 1.2.2, prior to 1.3.4 this function will crash with Curves.  This is fixed in 1.3.4+</para>
+		<para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection.</para>
 
 		<para>&P_support;</para>
 		<para>&Z_support;</para>
@@ -936,7 +887,110 @@ GEOMETRYCOLLECTION(
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_ForcePolygonCW">
+
+	<refentry xml:id="ST_ForceCurve">
+		<refnamediv>
+			<refname>ST_ForceCurve</refname>
+
+			<refpurpose>Upcast a geometry into its curved type, if applicable.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>geometry
+						<function>ST_ForceCurve</function></funcdef>
+						<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+                        Turns a geometry into its curved representation, if applicable:
+                        lines become compoundcurves, multilines become multicurves
+                        polygons become curvepolygons multipolygons become multisurfaces. If the geometry input is already a curved representation returns back same as input.
+                        </para>
+
+		        <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+			<para>&Z_support;</para>
+				<!-- Optionally mention Circular String Support -->
+				<para>&curve_support;</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_AsText(
+  ST_ForceCurve(
+	'POLYGON((0 0 2, 5 0 2, 0 5 2, 0 0 2),(1 1 2, 1 3 2, 3 1 2, 1 1 2))'::geometry
+  )
+);
+                              st_astext
+----------------------------------------------------------------------
+ CURVEPOLYGON Z ((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))
+(1 row)</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_LineToCurve"/></para>
+		</refsection>
+	</refentry>
+
+	<refentry xml:id="ST_ForcePolygonCCW">
+		<refnamediv>
+			<refname>
+				ST_ForcePolygonCCW
+			</refname>
+			<refpurpose>
+				Orients all exterior rings counter-clockwise and all interior rings clockwise.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>
+						geometry
+						<function>ST_ForcePolygonCCW</function>
+					</funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geom</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Forces (Multi)Polygons to use a counter-clockwise orientation for
+				their exterior ring, and a clockwise orientation for their interior
+				rings.  Non-polygonal geometries are returned unchanged.
+			</para>
+
+			<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
+			<para>&Z_support;</para>
+			<para>&M_support;</para>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="ST_ForcePolygonCW"/>,
+				<xref linkend="ST_IsPolygonCCW"/>,
+				<xref linkend="ST_IsPolygonCW"/>
+			</para>
+		</refsection>
+	</refentry>
+
+	<refentry xml:id="ST_ForcePolygonCW">
 		<refnamediv>
 			<refname>
 				ST_ForcePolygonCW
@@ -970,7 +1024,7 @@ GEOMETRYCOLLECTION(
 				rings.  Non-polygonal geometries are returned unchanged.
 			</para>
 
-			<para>Availability: 2.4.0</para>
+			<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
 			<para>&Z_support;</para>
 			<para>&M_support;</para>
 		</refsection>
@@ -978,14 +1032,14 @@ GEOMETRYCOLLECTION(
 		<refsection>
 			<title>See Also</title>
 			<para>
-				<xref linkend="ST_ForcePolygonCCW" />,
-				<xref linkend="ST_IsPolygonCCW" />,
-				<xref linkend="ST_IsPolygonCW" />
+				<xref linkend="ST_ForcePolygonCCW"/>,
+				<xref linkend="ST_IsPolygonCCW"/>,
+				<xref linkend="ST_IsPolygonCW"/>
 			</para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_ForceSFS">
+	<refentry xml:id="ST_ForceSFS">
 	  <refnamediv>
 		<refname>ST_ForceSFS</refname>
 
@@ -1017,7 +1071,7 @@ GEOMETRYCOLLECTION(
 	</refentry>
 
 
-	<refentry id="ST_ForceRHR">
+	<refentry xml:id="ST_ForceRHR">
 		<refnamediv>
 			<refname>ST_ForceRHR</refname>
 
@@ -1042,7 +1096,7 @@ GEOMETRYCOLLECTION(
 				Right-Hand-Rule, in which the area that is bounded by the
 				polygon is to the right of the boundary. In particular, the exterior ring is
 				orientated in a clockwise direction and the interior rings in a counter-clockwise
-				direction.  This function is a synonym for <xref linkend="ST_ForcePolygonCW" /></para>
+				direction.  This function is a synonym for <xref linkend="ST_ForcePolygonCW"/></para>
 
 			<note>
 				<para>
@@ -1050,7 +1104,7 @@ GEOMETRYCOLLECTION(
 				</para>
 			</note>
 
-			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 			<para>&Z_support;</para>
 			<para>&P_support;</para>
 		</refsection>
@@ -1083,60 +1137,57 @@ GEOMETRYCOLLECTION(
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_ForceCurve">
-		<refnamediv>
-			<refname>ST_ForceCurve</refname>
+    <refentry xml:id="ST_LineExtend">
+          <refnamediv>
+            <refname>ST_LineExtend</refname>
 
-			<refpurpose>Upcast a geometry into its curved type, if applicable.</refpurpose>
-		</refnamediv>
+            <refpurpose>Returns a line extended forwards and backwards by specified distances.</refpurpose>
+          </refnamediv>
 
-		<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-					<funcdef>geometry
-						<function>ST_ForceCurve</function></funcdef>
-						<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-		</refsynopsisdiv>
+          <refsynopsisdiv>
+            <funcsynopsis>
+              <funcprototype>
+                <funcdef>geometry <function>ST_LineExtend</function></funcdef>
+                <paramdef><type>geometry </type>
+                <parameter>line</parameter></paramdef>
+                <paramdef><type>float </type>
+                <parameter>distance_forward</parameter></paramdef>
+                <paramdef choice="opt"><type>float</type> <parameter>distance_backward=0.0</parameter></paramdef>
+              </funcprototype>
+            </funcsynopsis>
+          </refsynopsisdiv>
 
-		<refsection>
-			<title>Description</title>
+          <refsection>
+            <title>Description</title>
 
-			<para>
-                        Turns a geometry into its curved representation, if applicable:
-                        lines become compoundcurves, multilines become multicurves
-                        polygons become curvepolygons multipolygons become multisurfaces. If the geometry input is already a curved representation returns back same as input.
-                        </para>
+            <para>Returns a line extended forwards and backwards by adding new start (and end) points at the given distance(s). 
+			A distance of zero does not add a point. 
+			Only non-negative distances are allowed. 
+			The direction(s) of the added point(s) is determined by the first (and last) two distinct points of the line.
+			Duplicate points are ignored.
+			</para>
 
-		        <para>Availability: 2.2.0</para>
-			<para>&Z_support;</para>
-				<!-- Optionally mention Circular String Support -->
-				<para>&curve_support;</para>
-		</refsection>
+            <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
 
-		<refsection>
-			<title>Examples</title>
+          </refsection>
 
-			<programlisting>SELECT ST_AsText(
-  ST_ForceCurve(
-	'POLYGON((0 0 2, 5 0 2, 0 5 2, 0 0 2),(1 1 2, 1 3 2, 3 1 2, 1 1 2))'::geometry
-  )
-);
-                              st_astext
-----------------------------------------------------------------------
- CURVEPOLYGON Z ((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))
-(1 row)</programlisting>
-		</refsection>
+          <refsection>
+            <title>Example: Extends a line 5 units forward and 6 units backward</title>
 
-		<refsection>
-			<title>See Also</title>
+<programlisting>
+SELECT ST_AsText(ST_LineExtend('LINESTRING(0 0, 0 10)'::geometry, 5, 6));
+--------------------------------------------
+LINESTRING(0 -6,0 0,0 10,0 15)
+</programlisting>
+          </refsection>
 
-			<para><xref linkend="ST_LineToCurve"/></para>
-		</refsection>
-	</refentry>
+          <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_LineSubstring"/>, <xref linkend="ST_LocateAlong"/>, <xref linkend="ST_Project"/></para>
+          </refsection>
+    </refentry>
 
-    <refentry id="ST_LineToCurve">
+    <refentry xml:id="ST_LineToCurve">
       <refnamediv>
         <refname>ST_LineToCurve</refname>
 
@@ -1157,7 +1208,7 @@ GEOMETRYCOLLECTION(
 
         <para>Converts plain LINESTRING/POLYGON to CIRCULAR STRINGs and Curved Polygons.  Note much fewer points are needed to describe the curved equivalent.</para>
         <note><para>If the input LINESTRING/POLYGON is not curved enough to clearly represent a curve, the function will return the same input geometry.</para></note>
-        <para>Availability: 1.3.0</para>
+        <para role="availability" conformance="1.3.0">Availability: 1.3.0</para>
         <para>&Z_support;</para>
         <para>&curve_support;</para>
       </refsection>
@@ -1200,12 +1251,11 @@ FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2)))
       <!-- Optionally add a "See Also" section -->
       <refsection>
         <title>See Also</title>
-
-        <para><xref linkend="ST_CurveToLine" /></para>
+        <para><xref linkend="ST_CurveToLine"/></para>
       </refsection>
     </refentry>
 
-	<refentry id="ST_Multi">
+	<refentry xml:id="ST_Multi">
 		<refnamediv>
 			<refname>ST_Multi</refname>
 
@@ -1241,11 +1291,13 @@ SELECT ST_AsText(ST_Multi('POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))'));
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AsText" /></para>
+			<para><xref linkend="ST_AsText"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_Normalize">
+
+
+	<refentry xml:id="ST_Normalize">
 		<refnamediv>
 			<refname>ST_Normalize</refname>
 
@@ -1275,7 +1327,7 @@ SELECT ST_AsText(ST_Multi('POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))'));
         and obtained results).
       </para>
 
-      <para>Availability: 2.3.0</para>
+      <para role="availability" conformance="2.3.0">Availability: 2.3.0</para>
 
 		</refsection>
 
@@ -1303,12 +1355,105 @@ SELECT ST_AsText(ST_Normalize(ST_GeomFromText(
 		<refsection>
 			<title>See Also</title>
 			<para>
-        <xref linkend="ST_Equals" />,
+        <xref linkend="ST_Equals"/>,
       </para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_QuantizeCoordinates">
+
+    <refentry xml:id="ST_Project">
+          <refnamediv>
+            <refname>ST_Project</refname>
+
+            <refpurpose>Returns a point projected from a start point by a distance and bearing (azimuth).</refpurpose>
+          </refnamediv>
+
+          <refsynopsisdiv>
+            <funcsynopsis>
+              <funcprototype>
+                <funcdef>geometry <function>ST_Project</function></funcdef>
+                <paramdef><type>geometry </type>
+                <parameter>g1</parameter></paramdef>
+                <paramdef><type>float </type>
+                <parameter>distance</parameter></paramdef>
+                <paramdef><type>float </type>
+                <parameter>azimuth</parameter></paramdef>
+              </funcprototype>
+
+              <funcprototype>
+                <funcdef>geometry <function>ST_Project</function></funcdef>
+                <paramdef><type>geometry </type>
+                <parameter>g1</parameter></paramdef>
+                <paramdef><type>geometry </type>
+                <parameter>g2</parameter></paramdef>
+                <paramdef><type>float </type>
+                <parameter>distance</parameter></paramdef>
+              </funcprototype>
+
+              <funcprototype>
+                <funcdef>geography <function>ST_Project</function></funcdef>
+                <paramdef><type>geography </type>
+                <parameter>g1</parameter></paramdef>
+                <paramdef><type>float </type>
+                <parameter>distance</parameter></paramdef>
+                <paramdef><type>float </type>
+                <parameter>azimuth</parameter></paramdef>
+              </funcprototype>
+
+              <funcprototype>
+                <funcdef>geography <function>ST_Project</function></funcdef>
+                <paramdef><type>geography </type>
+                <parameter>g1</parameter></paramdef>
+                <paramdef><type>geography </type>
+                <parameter>g2</parameter></paramdef>
+                <paramdef><type>float </type>
+                <parameter>distance</parameter></paramdef>
+              </funcprototype>
+
+            </funcsynopsis>
+          </refsynopsisdiv>
+
+          <refsection>
+            <title>Description</title>
+
+            <para>Returns a point projected from a point along a geodesic using a given distance and azimuth (bearing). This is known as the direct geodesic problem.</para>
+            <para>The two-point version uses the path from the first to the second point to implicitly define the azimuth and uses the distance as before.</para>
+            <para>The distance is given in meters.  Negative values are supported.</para>
+            <para>The azimuth (also known as heading or bearing) is given in radians.
+            It is measured clockwise from true north.</para>
+            <itemizedlist>
+                <listitem><para>North is azimuth zero (0 degrees)</para></listitem>
+                <listitem><para>East is azimuth &#x03C0;/2 (90 degrees)</para></listitem>
+                <listitem><para>South is azimuth &#x03C0; (180 degrees)</para></listitem>
+                <listitem><para>West is azimuth 3&#x03C0;/2 (270 degrees)</para></listitem>
+            </itemizedlist>
+            <para>Negative azimuth values and values greater than 2&#x03C0; (360 degrees) are supported.</para>
+
+            <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+            <para role="enhanced" conformance="2.4.0">Enhanced: 2.4.0 Allow negative distance and non-normalized azimuth.</para>
+            <para role="enhanced" conformance="3.4.0">Enhanced: 3.4.0 Allow geometry arguments and two-point form omitting azimuth.</para>
+
+          </refsection>
+
+          <refsection>
+            <title>Example: Projected point at 100,000 meters and bearing 45 degrees </title>
+
+<programlisting>
+SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
+--------------------------------------------
+ POINT(0.635231029125537 0.639472334729198)
+</programlisting>
+          </refsection>
+
+          <refsection>
+            <title>See Also</title>
+
+            <para><xref linkend="ST_Azimuth"/>, <xref linkend="ST_Distance"/>, <link xlink:href="http://www.postgresql.org/docs/current/interactive/functions-math.html">PostgreSQL function radians()</link></para>
+          </refsection>
+    </refentry>
+
+
+	<refentry xml:id="ST_QuantizeCoordinates">
 		<refnamediv>
 			<refname>
 				ST_QuantizeCoordinates
@@ -1359,9 +1504,8 @@ SELECT ST_AsText(ST_Normalize(ST_GeomFromText(
 				resulting coordinate value will still round to the original value,
 				but will have improved compressiblity. This can result in a
 				significant disk usage reduction provided that the geometry column
-				is using a <ulink
-				url="https://www.postgresql.org/docs/current/static/storage-toast.html#STORAGE-TOAST-ONDISK">
-				compressible storage type</ulink>. The function allows
+				is using a <link xlink:href="https://www.postgresql.org/docs/current/static/storage-toast.html#STORAGE-TOAST-ONDISK">
+				compressible storage type</link>. The function allows
 				specification of a different number of digits after the decimal
 				point in each dimension; unspecified dimensions are assumed to have
 				the precision of the <code>x</code> dimension. Negative digits are
@@ -1378,7 +1522,7 @@ SELECT ST_AsText(ST_Normalize(ST_GeomFromText(
 				when it is called with a number of digits lower than the intrinsic
 				precision of the geometry.
 			</para>
-			<para>Availability: 2.5.0</para>
+			<para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
 		</refsection>
 		<refsection>
 			<title>Technical Background</title>
@@ -1407,13 +1551,13 @@ SELECT ST_AsText(ST_Normalize(ST_GeomFromText(
 				<code>ST_QuantizeCoordinates</code> sets the 22 insignificant
 				bits to zero. For a long coordinate sequence this creates a
 				pattern of blocks of consecutive zeros that is compressed
-				by PostgreSQL more effeciently.
+				by PostgreSQL more efficiently.
 			</para>
 
 			<note>
 				<para>
 					Only the on-disk size of the geometry is potentially affected by
-					<code>ST_QuantizeCoordinates</code>.  <xref linkend="ST_MemSize" />,
+					<code>ST_QuantizeCoordinates</code>.  <xref linkend="ST_MemSize"/>,
 					which reports the in-memory usage of the geometry, will return the
 					the same value regardless of the disk space used by a geometry.
 				</para>
@@ -1476,13 +1620,13 @@ digits  |                   encode                   |                st_astext
 		<refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_SnapToGrid" /></para>
+			<para><xref linkend="ST_SnapToGrid"/></para>
 		</refsection>
 
 	</refentry>
 
 
-	<refentry id="ST_RemovePoint">
+	<refentry xml:id="ST_RemovePoint">
 	  <refnamediv>
 		<refname>ST_RemovePoint</refname>
 		<refpurpose>Remove a point from a linestring.</refpurpose>
@@ -1503,8 +1647,8 @@ digits  |                   encode                   |                st_astext
 		<para>Removes a point from a LineString, given its index (0-based).
         Useful for turning a closed line (ring) into an open linestring.
         </para>
-        <para>Enhanced: 3.2.0</para>
-		<para>Availability: 1.1.0</para>
+        <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0</para>
+		<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
 		<para>&Z_support;</para>
 	  </refsection>
 
@@ -1525,7 +1669,7 @@ UPDATE sometable
 	  </refsection>
 	</refentry>
 
-    <refentry id="ST_RemoveRepeatedPoints">
+    <refentry xml:id="ST_RemoveRepeatedPoints">
       <refnamediv>
         <refname>ST_RemoveRepeatedPoints</refname>
         <refpurpose>Returns a version of a geometry with
@@ -1554,8 +1698,8 @@ UPDATE sometable
         <para>If the <parameter>tolerance</parameter> parameter is provided, vertices within the tolerance distance
         of one another are considered to be duplicates.</para>
 
-        <para>Enhanced: 3.2.0</para>
-        <para>Availability: 2.2.0</para>
+        <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0</para>
+        <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
         <para>&P_support;</para>
         <para>&Z_support;</para>
       </refsection>
@@ -1597,11 +1741,248 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 
           <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_Simplify" /></para>
+            <para><xref linkend="ST_Simplify"/></para>
           </refsection>
     </refentry>
 
-	<refentry id="ST_Reverse">
+	<refentry xml:id="ST_RemoveIrrelevantPointsForView">
+	  <refnamediv>
+		<refname>ST_RemoveIrrelevantPointsForView</refname>
+		<refpurpose>Removes points that are irrelevant for rendering a specific rectangluar view of a geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RemoveIrrelevantPointsForView</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef>
+			<paramdef choice="opt"><type>boolean </type><parameter>cartesian_hint = false</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a <xref linkend="geometry"/> without points being irrelevant for rendering the geometry within a given rectangluar view.</para>
+		<para>This function can be used to quickly preprocess geometries that should be rendered only within certain bounds.</para>
+		<para>Only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING are evaluated. Other geometries keep unchanged.</para>
+		<para>In contrast to <code>ST_ClipByBox2D()</code> this function
+			<itemizedlist>
+				<listitem><para>sorts out points without computing new intersection points which avoids rounding errors and usually increases performance,</para></listitem>
+				<listitem><para>returns a geometry with equal or similar point number,</para></listitem>
+				<listitem><para>leads to the same rendering result within the specified view, and</para></listitem>
+				<listitem><para>may introduce self-intersections which would make the resulting geometry invalid (see example below).</para></listitem>
+			</itemizedlist>
+		</para>
+
+		<para>If <code>cartesian_hint</code> is set to <code>true</code>,
+			the algorithm applies additional optimizations involving cartesian math
+			to further reduce the resulting point number.
+			Please note that using this option might introduce rendering artifacts
+			if the resulting coordinates are projected into another (non-cartesian)
+			coordinate system before rendering.
+		</para>
+		
+		<warning><para>For polygons, this function does currently not ensure that the result is valid.
+		This situation can be checked with <xref linkend="ST_IsValid"/> and repaired with <xref linkend="ST_MakeValid"/>.
+		</para></warning>
+
+		<para>
+			<informalfigure>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/st_removeirrelevantpointsforview.png"/>
+					</imageobject>
+					<caption>
+						<para>Example: ST_RemoveIrrelevantPointsForView() applied to a polygon. Blue points remain, the rendering result (light-blue area) within the grey view box remains as well.</para>
+					</caption>
+				</mediaobject>
+			</informalfigure>
+		</para>
+		
+		<para>
+			<informalfigure>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/st_removeirrelevantpointsforview_crossing.png"/>
+					</imageobject>
+					<caption>
+						<para>Example: Due to the fact that points are just sorted out and no new points are computed, the result of ST_RemoveIrrelevantPointsForView() may contain self-intersections.</para>
+					</caption>
+				</mediaobject>
+			</informalfigure>
+		</para>
+		
+		<para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+		
+		
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('MULTIPOLYGON(((10 10, 20 10, 30 10, 40 10, 20 20, 10 20, 10 10)),((10 10, 20 10, 20 20, 10 20, 10 10)))'),
+			ST_MakeEnvelope(12,12,18,18), true));
+		
+		st_astext
+		---------
+		    MULTIPOLYGON(((10 10,40 10,20 20,10 20,10 10)),((10 10,20 10,20 20,10 20,10 10)))
+		</programlisting>
+		
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('MULTILINESTRING((0 0, 10 0,20 0,30 0), (0 15, 5 15, 10 15, 15 15, 20 15, 25 15, 30 15, 40 15), (13 13,15 15,17 17))'),
+			ST_MakeEnvelope(12,12,18,18), true));
+		
+		st_astext
+		---------
+			MULTILINESTRING((10 15,15 15,20 15),(13 13,15 15,17 17))
+		</programlisting>
+		
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('LINESTRING(0 0, 10 0,20 0,30 0)'),
+			ST_MakeEnvelope(12,12,18,18), true));
+		
+		st_astext
+		---------
+		    LINESTRING EMPTY
+		</programlisting>
+
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('POLYGON((0 30, 15 30, 30 30, 30 0, 0 0, 0 30))'),
+			ST_MakeEnvelope(12,12,18,18), true));
+		
+		st_astext
+		---------
+		    POLYGON((15 30,30 0,0 0,15 30))
+		</programlisting>
+
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('POLYGON((0 30, 15 30, 30 30, 30 0, 0 0, 0 30))'),
+			ST_MakeEnvelope(12,12,18,18)));
+		
+		st_astext
+		---------
+		    POLYGON((0 30,30 30,30 0,0 0,0 30))
+		</programlisting>
+		
+	  </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_ClipByBox2D"/>, <xref linkend="ST_Intersection"/></para>
+      </refsection>
+
+	</refentry>
+
+	<refentry xml:id="ST_RemoveSmallParts">
+	  <refnamediv>
+		<refname>ST_RemoveSmallParts</refname>
+		<refpurpose>Removes small parts (polygon rings or linestrings) of a geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RemoveSmallParts</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>double precision </type> <parameter>minSizeX</parameter></paramdef>
+			<paramdef><type>double precision </type> <parameter>minSizeY</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a <xref linkend="geometry"/> without small parts (exterior or interior polygon rings, or linestrings).</para>
+		<para>This function can be used as preprocessing step for creating simplified maps, e. g. to remove small islands or holes.</para>
+		<para>It evaluates only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING. Other geometries remain unchanged.</para>
+		<para>If <parameter>minSizeX</parameter> is greater than 0, parts are sorted out if their width is smaller than <parameter>minSizeX</parameter>.</para>
+		<para>If <parameter>minSizeY</parameter> is greater than 0, parts are sorted out if their height is smaller than <parameter>minSizeY</parameter>.</para>
+		<para>Both <parameter>minSizeX</parameter> and <parameter>minSizeY</parameter> are measured in coordinate system units of the geometry.</para>
+		<para>For polygon types, evaluation is done separately for each ring which can lead to one of the following results:
+            <itemizedlist>
+            <listitem><para>the original geometry,</para></listitem>
+			<listitem><para>a POLYGON with all rings with less vertices,</para></listitem>
+			<listitem><para>a POLYGON with a reduced number of interior rings (having possibly less vertices),</para></listitem> 
+			<listitem><para>a POLYGON EMPTY, or</para></listitem>
+			<listitem><para>a MULTIPOLYGON with a reduced number of polygons (having possibly less interior rings or vertices), or</para></listitem>
+			<listitem><para>a MULTIPOLYGON EMPTY.</para></listitem>
+			</itemizedlist>
+		</para>
+		<para>For linestring types, evaluation is done for each linestring which can lead to one of the following results:
+            <itemizedlist>
+            <listitem><para>the original geometry,</para></listitem>
+			<listitem><para>a LINESTRING with a reduced number of vertices,</para></listitem>
+			<listitem><para>a LINESTRING EMPTY,</para></listitem>
+			<listitem><para>a MULTILINESTRING with a reduced number of linestrings (having possibly less vertices), or</para></listitem>
+			<listitem><para>a MULTILINESTRING EMPTY.</para></listitem>
+			</itemizedlist>
+		</para>
+
+        <para>
+            <informalfigure>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="images/st_removesmallparts.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Example: ST_RemoveSmallParts() applied to a multi-polygon. Blue parts remain.</para>
+                    </caption>
+                </mediaobject>
+            </informalfigure>
+        </para>
+
+		<para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+		
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveSmallParts(
+			ST_GeomFromText('MULTIPOLYGON(
+				((60 160, 120 160, 120 220, 60 220, 60 160), (70 170, 70 210, 110 210, 110 170, 70 170)),
+				((85 75, 155 75, 155 145, 85 145, 85 75)),
+				((50 110, 70 110, 70 130, 50 130, 50 110)))'),
+				50, 50));
+		
+		st_astext
+		---------
+			MULTIPOLYGON(((60 160,120 160,120 220,60 220,60 160)),((85 75,155 75,155 145,85 145,85 75)))
+		</programlisting>
+
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveSmallParts(
+			ST_GeomFromText('LINESTRING(10 10, 20 20)'),
+				50, 50));
+		
+		st_astext
+		---------
+			LINESTRING EMPTY
+		</programlisting>
+			
+	  </refsection>
+
+	</refentry>
+
+	<refentry xml:id="ST_Reverse">
 	  <refnamediv>
 		<refname>ST_Reverse</refname>
 		<refpurpose>Return the geometry with vertex order reversed.</refpurpose>
@@ -1619,9 +2000,9 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 	  <refsection>
 		<title>Description</title>
 
-		<para>Can be used on any geometry and reverses the order of the vertexes.</para>
+		<para>Can be used on any geometry and reverses the order of the vertices.</para>
 
-		<para>Enhanced: 2.4.0 support for curves was introduced.</para>
+		<para role="enhanced" conformance="2.4.0">Enhanced: 2.4.0 support for curves was introduced.</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 	  </refsection>
@@ -1641,7 +2022,7 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Segmentize">
+	<refentry xml:id="ST_Segmentize">
 		<refnamediv>
 			<refname>ST_Segmentize</refname>
 
@@ -1694,11 +2075,11 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
             rather than a maximum length.
             </para></warning>
 
-			<para>Availability: 1.2.2</para>
-			<para>Enhanced: 3.0.0 Segmentize geometry now produces equal-length subsegments</para>
-			<para>Enhanced: 2.3.0 Segmentize geography now produces equal-length subsegments</para>
-			<para>Enhanced: 2.1.0 support for geography was introduced.</para>
-			<para>Changed: 2.1.0 As a result of the introduction of geography support,
+			<para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
+			<para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 Segmentize geometry now produces equal-length subsegments</para>
+			<para role="enhanced" conformance="2.3.0">Enhanced: 2.3.0 Segmentize geography now produces equal-length subsegments</para>
+			<para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 support for geography was introduced.</para>
+			<para role="changed" conformance="2.1.0">Changed: 2.1.0 As a result of the introduction of geography support,
             the usage <code>ST_Segmentize('LINESTRING(1 2, 3 4)', 0.5)</code> causes an ambiguous function error.
             The input needs to be properly typed as a geometry or geography.
             Use ST_GeomFromText, ST_GeogFromText or a cast to the required type
@@ -1736,7 +2117,7 @@ LINESTRING(0 0,4.252632294621186 8.43596525986862,8.69579947419404 16.8240934897
 			<informalfigure>
 			  <mediaobject>
 				<imageobject>
-				  <imagedata fileref="images/st_segmentize01.png" />
+				  <imagedata fileref="images/st_segmentize01.png"/>
 				</imageobject>
 				<caption><para>A geographic line segmentized along a great circle arc</para></caption>
 			  </mediaobject>
@@ -1745,11 +2126,11 @@ LINESTRING(0 0,4.252632294621186 8.43596525986862,8.69579947419404 16.8240934897
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_LineSubstring" /></para>
+			<para><xref linkend="ST_LineSubstring"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_SetPoint">
+	<refentry xml:id="ST_SetPoint">
 		  <refnamediv>
 			<refname>ST_SetPoint</refname>
 			<refpurpose>Replace point of a linestring with a given point.</refpurpose>
@@ -1771,7 +2152,7 @@ LINESTRING(0 0,4.252632294621186 8.43596525986862,8.69579947419404 16.8240934897
 			<para>Replace point N of linestring with given point. Index is
 			0-based.Negative index are counted backwards, so that -1 is last point.
 				This is especially useful in triggers when trying to maintain relationship of joints when one vertex moves.</para>
-			<para>Availability: 1.1.0</para>
+			<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
 			<para>Updated 2.3.0 : negative indexing</para>
 
 			<para>&Z_support;</para>
@@ -1808,7 +2189,7 @@ LINESTRING(0 0,1 1,0 0,3 3,4 4)
 		  </refsection>
 	</refentry>
 
-    <refentry id="ST_ShiftLongitude">
+    <refentry xml:id="ST_ShiftLongitude">
       <refnamediv>
         <refname>ST_ShiftLongitude</refname>
 
@@ -1838,7 +2219,7 @@ LINESTRING(0 0,1 1,0 0,3 3,4 4)
     </warning>
 
         <para>&Z_support;</para>
-        <para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
     <para>NOTE: this function was renamed from "ST_Shift_Longitude" in 2.2.0</para>
         <para>&P_support;</para>
         <para>&T_support;</para>
@@ -1877,12 +2258,12 @@ LINESTRING(174 12,-178 13)
       <refsection>
         <title>See Also</title>
         <para>
-      <xref linkend="ST_WrapX" />
+      <xref linkend="ST_WrapX"/>
     </para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_WrapX">
+    <refentry xml:id="ST_WrapX">
       <refnamediv>
         <refname>ST_WrapX</refname>
 
@@ -1915,7 +2296,7 @@ This is useful to "recenter" long-lat input to have features
 of interest not spawned from one side to the other.
     </para></note>
 
-        <para>Availability: 2.3.0 requires GEOS</para>
+        <para role="availability" conformance="2.3.0">Availability: 2.3.0 requires GEOS</para>
         <para>&Z_support;</para>
 <!-- TODO: check these
         <para>&P_support;</para>
@@ -1941,11 +2322,11 @@ select ST_WrapX(geom, -30, 360);
       <!-- Optionally add a "See Also" section -->
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_ShiftLongitude" /></para>
+        <para><xref linkend="ST_ShiftLongitude"/></para>
       </refsection>
     </refentry>
 
-	<refentry id="ST_SnapToGrid">
+	<refentry xml:id="ST_SnapToGrid">
 	  <refnamediv>
 		<refname>ST_SnapToGrid</refname>
 
@@ -2008,7 +2389,7 @@ select ST_WrapX(geom, -30, 360);
 
 		<note>
 		  <para>The returned geometry might lose its simplicity (see
-		  <xref linkend="ST_IsSimple" />).</para>
+		  <xref linkend="ST_IsSimple"/>).</para>
 		</note>
 
 		<note>
@@ -2019,8 +2400,8 @@ select ST_WrapX(geom, -30, 360);
 		  define all grid dimensions.</para>
 		</note>
 
-		<para>Availability: 1.0.0RC1</para>
-		<para>Availability: 1.1.0 - Z and M support</para>
+		<para role="availability" conformance="1.0.0">Availability: 1.0.0RC1</para>
+		<para role="availability" conformance="1.1.0">Availability: 1.1.0 - Z and M support</para>
 
 		<para>&Z_support;</para>
 	  </refsection>
@@ -2068,17 +2449,17 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 		<title>See Also</title>
 
 		<para>
-		<xref linkend="ST_Snap" />,
-		<xref linkend="ST_AsEWKT" />,
-		<xref linkend="ST_AsText" />,
-		<xref linkend="ST_GeomFromText" />,
-		<xref linkend="ST_GeomFromEWKT" />,
-		<xref linkend="ST_Simplify" />
+		<xref linkend="ST_Snap"/>,
+		<xref linkend="ST_AsEWKT"/>,
+		<xref linkend="ST_AsText"/>,
+		<xref linkend="ST_GeomFromText"/>,
+		<xref linkend="ST_GeomFromEWKT"/>,
+		<xref linkend="ST_Simplify"/>
 		</para>
 	  </refsection>
 	</refentry>
 
-		<refentry id="ST_Snap">
+		<refentry xml:id="ST_Snap">
 	  <refnamediv>
 		<refname>ST_Snap</refname>
 
@@ -2127,27 +2508,27 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 		<note>
 		  <para>
 		  The returned geometry might lose its simplicity (see
-		  <xref linkend="ST_IsSimple" />) and validity (see
-		  <xref linkend="ST_IsValid" />).
+		  <xref linkend="ST_IsSimple"/>) and validity (see
+		  <xref linkend="ST_IsValid"/>).
 		  </para>
 		</note>
 		<para>Performed by the GEOS module.</para>
-		<para>Availability: 2.0.0</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
 			<informaltable>
 				  <tgroup cols="2">
-					<colspec colname="column1" />
-					<colspec colname="column2" />
-					<spanspec namest="column1" nameend="column2" spanname="span-horiz" align="center" />
+					<colspec colname="column1"/>
+					<colspec colname="column2"/>
+					<spanspec namest="column1" nameend="column2" spanname="span-horiz" align="center"/>
 					<tbody>
 					  <row>
 						<entry spanname="span-horiz"><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_snap01.png" />
+								<imagedata fileref="images/st_snap01.png"/>
 							  </imageobject>
 							  <caption><para>A multipolygon shown with a linestring (before any snapping)</para></caption>
 							</mediaobject>
@@ -2158,7 +2539,7 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 					   <entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_snap02.png" />
+								<imagedata fileref="images/st_snap02.png"/>
 							  </imageobject>
 							  <caption><para>A multipolygon snapped to linestring to tolerance: 1.01 of distance.
 							  The new multipolygon is shown with reference linestring</para></caption>
@@ -2183,7 +2564,7 @@ FROM (SELECT
 					<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_snap04.png" />
+								<imagedata fileref="images/st_snap04.png"/>
 							  </imageobject>
 							  <caption><para>A multipolygon snapped to linestring to tolerance: 1.25 of distance.
 							  The new multipolygon is shown with reference linestring</para></caption>
@@ -2212,7 +2593,7 @@ MULTIPOLYGON(((5 107,26 200,126 200,126 125,101 100,54 84,5 107),
 					   <entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_snap03.png" />
+								<imagedata fileref="images/st_snap03.png"/>
 							  </imageobject>
 							  <caption><para>The linestring snapped to the original multipolygon  at tolerance 1.01 of distance.
 							  The new linestring is shown with reference multipolygon</para></caption>
@@ -2239,7 +2620,7 @@ FROM (SELECT
 					<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_snap05.png" />
+								<imagedata fileref="images/st_snap05.png"/>
 							  </imageobject>
 							  <caption><para>The linestring snapped to the original multipolygon  at tolerance 1.25 of distance.
 							  The new linestring is shown with reference multipolygon</para></caption>
@@ -2273,12 +2654,12 @@ LINESTRING(26 125,54 84,101 100)
 		<title>See Also</title>
 
 		<para>
-		<xref linkend="ST_SnapToGrid" />
+		<xref linkend="ST_SnapToGrid"/>
 		</para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_SwapOrdinates">
+	<refentry xml:id="ST_SwapOrdinates">
 	  <refnamediv>
 		<refname>ST_SwapOrdinates</refname>
 		<refpurpose>Returns a version of the given geometry with
@@ -2305,7 +2686,7 @@ Returns a version of the given geometry with given ordinates swapped.
 The <varname>ords</varname> parameter is a 2-characters string naming
 the ordinates to swap. Valid names are: x,y,z and m.
     </para>
-		<para>Availability: 2.2.0</para>
+		<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 		<para>&curve_support;</para>
 		<para>&Z_support;</para>
 		<para>&M_support;</para>
@@ -2315,7 +2696,7 @@ the ordinates to swap. Valid names are: x,y,z and m.
 
 	  <refsection>
 		<title>Example</title>
-		<programlisting><![CDATA[
+		<programlisting>
 -- Scale M value by 2
 SELECT ST_AsText(
   ST_SwapOrdinates(
@@ -2328,15 +2709,15 @@ SELECT ST_AsText(
      st_astext
 --------------------
  POINT ZM (0 0 0 4)
-		 ]]></programlisting>
+		 </programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para> <xref linkend="ST_FlipCoordinates" /> </para>
+		<para> <xref linkend="ST_FlipCoordinates"/> </para>
 	  </refsection>
 
 	</refentry>
 
-  </sect1>
+  </section>

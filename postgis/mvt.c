@@ -881,7 +881,7 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 		GBOX bgbox;
 		bgbox.xmax = bgbox.ymax = (double)extent + (double)buffer;
 		bgbox.xmin = bgbox.ymin = -(double)buffer;
-		FLAGS_SET_GEODETIC(bgbox.flags, 0);
+		bgbox.flags = 0;
 
 		ng = mvt_unsafe_clip_by_box(ng, &bgbox);
 
@@ -1109,9 +1109,9 @@ static bytea *mvt_ctx_to_bytea(mvt_agg_context *ctx)
 	/* Zero features => empty bytea output */
 	if (ctx && ctx->layer && ctx->layer->n_features == 0)
 	{
-		bytea *ba = palloc(VARHDRSZ);
-		SET_VARSIZE(ba, VARHDRSZ);
-		return ba;
+		bytea* ba_empty = palloc(VARHDRSZ);
+		SET_VARSIZE(ba_empty, VARHDRSZ);
+		return ba_empty;
 	}
 
 	/* Serialize the Tile */

@@ -1,0 +1,196 @@
+<!--
+######################################################################################
+#
+# PostGIS - Spatial Types for PostgreSQL
+# http://www.postgis.net
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+# Copyright 2003-2022 Sandro Santilli <strk@kbt.io>
+#
+# Purpose: translatable configuration file for xsl generated
+# documentation snippets
+#
+######################################################################################
+-->
+
+<config xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Configuration for list_new_functions.xml.xsl -->
+    <list_new_functions>
+
+        <!-- List of maj/min versions we want to know about -->
+        <postgis_versions>
+            <v>3.5</v>
+            <v>3.4</v>
+            <v>3.3</v>
+            <v>3.2</v>
+            <v>3.1</v>
+            <v>3.0</v>
+            <v>2.5</v>
+            <v>2.4</v>
+            <v>2.3</v>
+            <v>2.2</v>
+            <v>2.1</v>
+            <v>2.0</v>
+            <v>1.5</v>
+            <v>1.4</v>
+            <v>1.3</v>
+        </postgis_versions>
+
+        <per_version_header>
+            <title>PostGIS Functions new or enhanced in %</title>
+            <para>The functions given below are PostGIS functions that were added or enhanced.</para>
+        </per_version_header>
+
+        <!--
+        | List of supported availability/enhanced/changed tags
+        | we use <para> to make them translatable.
+        | The parameter is the text we want to show under the
+        | section listing all functions tagged by that tag
+        -->
+        <supported_tags>
+            <tag role="availability">
+                <para>Functions new in PostGIS %</para>
+            </tag>
+            <tag role="enhanced">
+                <para>Functions enhanced in PostGIS %</para>
+            </tag>
+            <tag role="changed">
+                <para>Functions changed in PostGIS %</para>
+            </tag>
+        </supported_tags>
+
+    </list_new_functions>
+
+    <tags>
+        <para role="tag_address_standardizer_required">
+            <inlinemediaobject>
+               <imageobject>
+                 <imagedata fileref='images/check.png' />
+               </imageobject>
+            </inlinemediaobject>
+            This method needs address_standardizer extension.
+        </para>
+
+        <para role="tag_curve_support">
+            <inlinemediaobject conformance="curve">
+               <imageobject><imagedata fileref='images/check.png' /></imageobject>
+            </inlinemediaobject>
+            This method supports Circular Strings and Curves.
+        </para>
+
+        <para role="tag_geography_transform">
+            <inlinemediaobject conformance="geography_transform">
+               <imageobject><imagedata fileref='images/matrix_transform.png' /></imageobject>
+            </inlinemediaobject> For geography this is a thin wrapper around the geometry implementation.
+        </para>
+
+        <para role="tag_index_aware">
+            This function automatically includes a bounding box comparison
+            that makes use of any spatial indexes that are available on the geometries.
+        </para>
+
+        <para role="tag_M_support">
+            <inlinemediaobject>
+               <imageobject>
+                 <imagedata fileref='images/check.png' />
+            </imageobject>
+            </inlinemediaobject>
+            This function supports M coordinates.
+        </para>
+
+        <para role="tag_P_support">
+            <inlinemediaobject conformance="polyhedral">
+               <imageobject>
+                 <imagedata fileref='images/check.png' />
+               </imageobject>
+            </inlinemediaobject>
+            This function supports Polyhedral surfaces.
+        </para>
+
+        <para role="tag_sfcgal_enhanced">
+            <inlinemediaobject conformance="sfcgal_enhanced">
+                <imageobject>
+                    <imagedata fileref='images/check.png' />
+                </imageobject>
+            </inlinemediaobject>
+            This method is also provided by SFCGAL backend.
+        </para>
+
+        <para role="tag_sfcgal_required">
+            <inlinemediaobject conformance="sfcgal_required">
+               <imageobject>
+                 <imagedata fileref='images/check.png' />
+               </imageobject>
+            </inlinemediaobject>
+            This method needs SFCGAL backend.
+        </para>
+
+        <para role="tag_sfs_compliant">
+            <inlinemediaobject>
+               <imageobject>
+                    <imagedata fileref='images/check.png' />
+                </imageobject>
+            </inlinemediaobject>
+            This method implements the <link
+            xlink:href="http://www.opengeospatial.org/standards/sfs">OGC Simple Features
+            Implementation Specification for SQL 1.1.</link>
+        </para>
+
+        <para role="tag_sqlmm_compliant">
+            <inlinemediaobject conformance="sqlmm">
+                <imageobject>
+                    <imagedata fileref='images/check.png' />
+                </imageobject>
+            </inlinemediaobject>
+            This method implements the SQL/MM specification.
+        </para>
+
+        <para role="tag_T_support">
+            <inlinemediaobject conformance="triangle">
+               <imageobject>
+                 <imagedata fileref='images/check.png' />
+                </imageobject>
+            </inlinemediaobject>
+            This function supports Triangles and Triangulated Irregular Network Surfaces (TIN).
+        </para>
+
+        <para role="tag_Z_support">
+            <inlinemediaobject conformance="3d">
+               <imageobject>
+                 <imagedata fileref='images/check.png' />
+               </imageobject>
+            </inlinemediaobject>
+            This function supports 3d and will not drop the z-index.
+        </para>
+    </tags>
+
+    <cheatsheets>
+        <para role="new_in_release">
+            New in this release
+        </para>
+        <para role="enhanced_in_release">
+            Enhanced in this release
+        </para>
+        <para role="aggregate">
+				Aggregate
+        </para>
+        <para role="window_function">
+				Window function
+        </para>
+        <para role="requires_geos_3.9_or_higher">
+				Requires GEOS (3.9,3.10,3.11,3.12) or higher
+        </para>
+        <para role="requires_sfcgal_1.5_or_higher">
+				Requires SFCGAL 1.5 or higher
+        </para>
+        <para role="z_support">
+				2.5/3D support
+        </para>
+        <para role="geography_support">
+				Supports geography
+        </para>
+    </cheatsheets>
+
+</config>

@@ -43,9 +43,14 @@ TESTS += \
 	$(top_srcdir)/regress/core/estimatedextent \
 	$(top_srcdir)/regress/core/forcecurve \
 	$(top_srcdir)/regress/core/flatgeobuf \
+	$(top_srcdir)/regress/core/frechet \
+	$(top_srcdir)/regress/core/generate_points \
 	$(top_srcdir)/regress/core/geography \
+	$(top_srcdir)/regress/core/geography_centroid \
+	$(top_srcdir)/regress/core/geography_covers \
 	$(top_srcdir)/regress/core/geometric_median \
-  $(top_srcdir)/regress/core/geos_noop \
+	$(top_srcdir)/regress/core/geos_noop \
+	$(top_srcdir)/regress/core/geos38 \
 	$(top_srcdir)/regress/core/hausdorff \
 	$(top_srcdir)/regress/core/in_flatgeobuf \
 	$(top_srcdir)/regress/core/in_geohash \
@@ -57,7 +62,6 @@ TESTS += \
 	$(top_srcdir)/regress/core/iscollection \
 	$(top_srcdir)/regress/core/legacy \
 	$(top_srcdir)/regress/core/letters \
-	$(top_srcdir)/regress/core/long_xact \
 	$(top_srcdir)/regress/core/lwgeom_regress \
 	$(top_srcdir)/regress/core/measures \
 	$(top_srcdir)/regress/core/minimum_bounding_circle \
@@ -67,6 +71,7 @@ TESTS += \
 	$(top_srcdir)/regress/core/out_flatgeobuf \
 	$(top_srcdir)/regress/core/out_geometry \
 	$(top_srcdir)/regress/core/out_geography \
+	$(top_srcdir)/regress/core/out_gml \
 	$(top_srcdir)/regress/core/polygonize \
 	$(top_srcdir)/regress/core/polyhedralsurface \
 	$(top_srcdir)/regress/core/postgis_type_name \
@@ -89,7 +94,9 @@ TESTS += \
 	$(top_srcdir)/regress/core/regress_proj_4890 \
 	$(top_srcdir)/regress/core/regress_proj_pipeline \
 	$(top_srcdir)/regress/core/relate \
+	$(top_srcdir)/regress/core/remove_irrelevant_points_for_view \
 	$(top_srcdir)/regress/core/remove_repeated_points \
+	$(top_srcdir)/regress/core/remove_small_parts \
 	$(top_srcdir)/regress/core/removepoint \
 	$(top_srcdir)/regress/core/reverse \
 	$(top_srcdir)/regress/core/scroll \
@@ -125,7 +132,6 @@ TESTS += \
 	$(top_srcdir)/regress/core/unaryunion \
 	$(top_srcdir)/regress/core/union \
 	$(top_srcdir)/regress/core/clean \
-	$(top_srcdir)/regress/core/relate_bnr \
 	$(top_srcdir)/regress/core/delaunaytriangles \
 	$(top_srcdir)/regress/core/clipbybox2d \
 	$(top_srcdir)/regress/core/subdivide \
@@ -144,19 +150,6 @@ TESTS += \
 TESTS_SLOW = \
 	$(top_srcdir)/regress/core/concave_hull_hard \
 	$(top_srcdir)/regress/core/knn_recheck
-
-ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 30700),1)
-	# GEOS-3.7 adds:
-	# ST_FrechetDistance
-	TESTS += \
-		$(top_srcdir)/regress/core/frechet
-endif
-
-ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 30800),1)
-	# GEOS-3.8 adds stable pointonsurface implementation
-	TESTS += \
-		$(top_srcdir)/regress/core/geos38
-endif
 
 ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 30900),1)
 	# GEOS-3.9 adds stable maximuminscribedcircle implementation
@@ -177,6 +170,16 @@ ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31100),1)
 else
 	TESTS += \
 		$(top_srcdir)/regress/core/concave_hull
+endif
+
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31200),1)
+	TESTS += \
+		$(top_srcdir)/regress/core/coverage
+endif
+
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" "<=" 31200),1)
+	TESTS += \
+		$(top_srcdir)/regress/core/relate_bnr
 endif
 
 ifeq ($(INTERRUPTTESTS),yes)

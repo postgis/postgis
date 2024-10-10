@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="Management_Functions">
-    <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Management_Functions">
+    <title>Table Management Functions</title><info>
     <abstract>
     <para>These functions assist in defining tables containing geometry columns.
     </para>
     </abstract>
-    </sect1info>
+    </info>
 
-	<title>Table Management Functions</title>
+	
 
-	<refentry id="AddGeometryColumn">
+	<refentry xml:id="AddGeometryColumn">
 	  <refnamediv>
 		<refname>AddGeometryColumn</refname>
 
@@ -106,14 +106,14 @@
 		geometry type, or dimension is invalid.</para>
 
 		<note>
-			<para>Changed: 2.0.0 This function no longer updates geometry_columns since geometry_columns is a view that reads from system catalogs.  It by default
+			<para role="changed" conformance="2.0.0">Changed: 2.0.0 This function no longer updates geometry_columns since geometry_columns is a view that reads from system catalogs.  It by default
 			also does not create constraints, but instead uses the built in type modifier behavior of PostgreSQL.  So for example building a wgs84 POINT column with this function is now
 			equivalent to: <code>ALTER TABLE some_table ADD COLUMN geom geometry(Point,4326);</code> </para>
-			<para>Changed: 2.0.0 If you require the old behavior of constraints use the default <varname>use_typmod</varname>, but set it to false.</para>
+			<para role="changed" conformance="2.0.0">Changed: 2.0.0 If you require the old behavior of constraints use the default <varname>use_typmod</varname>, but set it to false.</para>
 		</note>
 
 		<note>
-		    <para>Changed: 2.0.0 Views can no longer be manually registered in geometry_columns, however views built against geometry typmod tables geometries and used without wrapper functions will register themselves correctly
+		    <para role="changed" conformance="2.0.0">Changed: 2.0.0 Views can no longer be manually registered in geometry_columns, however views built against geometry typmod tables geometries and used without wrapper functions will register themselves correctly
 		            because they inherit the typmod behavior of their parent table column.
 		            Views that use geometry functions that output other geometries will need to be cast to typmod geometries for these view geometry columns to be registered correctly
 		            in geometry_columns. Refer to <xref linkend="Manual_Register_Spatial_Column"/>.
@@ -122,7 +122,7 @@
 		<para>&sfs_compliant;</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
-		<para>Enhanced: 2.0.0 use_typmod argument introduced.  Defaults to creating typmod geometry column instead of constraint-based.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 use_typmod argument introduced.  Defaults to creating typmod geometry column instead of constraint-based.</para>
 	  </refsection>
 
 	  <refsection>
@@ -191,7 +191,7 @@ SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims
 	  </refsection>
 	</refentry>
 
-	<refentry id="DropGeometryColumn">
+	<refentry xml:id="DropGeometryColumn">
 	  <refnamediv>
 		<refname>DropGeometryColumn</refname>
 
@@ -253,7 +253,7 @@ SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<note>
-			<para>Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
+			<para role="changed" conformance="2.0.0">Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
 			    you can drop a geometry column like any other table column using <code>ALTER TABLE</code></para>
 		</note>
 	  </refsection>
@@ -279,7 +279,7 @@ ALTER TABLE my_schema.my_spatial_table DROP column geom;
 	  </refsection>
 	</refentry>
 
-	<refentry id="DropGeometryTable">
+	<refentry xml:id="DropGeometryTable">
 	  <refnamediv>
 		<refname>DropGeometryTable</refname>
 
@@ -326,7 +326,7 @@ ALTER TABLE my_schema.my_spatial_table DROP column geom;
 		not provided.</para>
 
 		<note>
-			<para>Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
+			<para role="changed" conformance="2.0.0">Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
 			    you can drop a table with geometry columns like any other table using <code>DROP TABLE</code></para>
 		</note>
 	  </refsection>
@@ -349,7 +349,7 @@ DROP TABLE my_schema.my_spatial_table;
 	  </refsection>
 	</refentry>
 
-	<refentry id="Find_SRID">
+	<refentry xml:id="Find_SRID">
 	  <refnamediv>
 		<refname>Find_SRID</refname>
 
@@ -373,7 +373,7 @@ DROP TABLE my_schema.my_spatial_table;
 		<para>Returns the integer SRID of the
 			specified geometry column by searching through the GEOMETRY_COLUMNS table.
 			If the geometry column has not been properly added (e.g. with the
-			<xref linkend="AddGeometryColumn" /> function), this function will not work.</para>
+			<xref linkend="AddGeometryColumn"/> function), this function will not work.</para>
 	  </refsection>
 
 	  <refsection>
@@ -390,12 +390,12 @@ find_srid
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_SRID" /></para>
+		<para><xref linkend="ST_SRID"/></para>
 	  </refsection>
 	</refentry>
 
 
-	<refentry id="Populate_Geometry_Columns">
+	<refentry xml:id="Populate_Geometry_Columns">
 	  <refnamediv>
 		<refname>Populate_Geometry_Columns</refname>
 
@@ -436,20 +436,17 @@ find_srid
 		<itemizedlist>
 		  <listitem>
 			<para><varname>enforce_dims_geom</varname> - ensures every
-			geometry has the same dimension (see <xref
-			linkend="ST_NDims" />)</para>
+			geometry has the same dimension (see <xref linkend="ST_NDims"/>)</para>
 		  </listitem>
 
 		  <listitem>
 			<para><varname>enforce_geotype_geom</varname> - ensures every
-			geometry is of the same type (see <xref
-			linkend="GeometryType" />)</para>
+			geometry is of the same type (see <xref linkend="GeometryType"/>)</para>
 		  </listitem>
 
 		  <listitem>
 			<para><varname>enforce_srid_geom</varname> - ensures every
-			geometry is in the same projection (see <xref
-			linkend="ST_SRID" />)</para>
+			geometry is in the same projection (see <xref linkend="ST_SRID"/>)</para>
 		  </listitem>
 		</itemizedlist>
 
@@ -474,10 +471,10 @@ find_srid
 		were inserted into the <varname>geometry_columns</varname> table.  The
 		parameterized version simply returns the number of rows inserted into
 		the <varname>geometry_columns</varname> table.</para>
-		<para>Availability: 1.4.0</para>
-		<para>Changed: 2.0.0 By default, now uses type modifiers instead of check constraints to constrain geometry types.  You can still use check
+		<para role="availability" conformance="1.4.0">Availability: 1.4.0</para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 By default, now uses type modifiers instead of check constraints to constrain geometry types.  You can still use check
 		    constraint behavior instead by using the new  <varname>use_typmod</varname> and setting it to false.</para>
-		<para>Enhanced: 2.0.0 <varname>use_typmod</varname> optional argument was introduced that allows controlling if columns are created with typmodifiers or with check constraints.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 <varname>use_typmod</varname> optional argument was introduced that allows controlling if columns are created with typmodifiers or with check constraints.</para>
 	  </refsection>
 
 	  <refsection>
@@ -534,7 +531,7 @@ Check constraints:
 
 	</refentry>
 
-	<refentry id="UpdateGeometrySRID">
+	<refentry xml:id="UpdateGeometrySRID">
 	  <refnamediv>
 		<refname>UpdateGeometrySRID</refname>
 
@@ -642,4 +639,4 @@ SRID=4326;LINESTRING(10 10, 15 0)
 	  </refsection>
 	</refentry>
 
-  </sect1>
+  </section>

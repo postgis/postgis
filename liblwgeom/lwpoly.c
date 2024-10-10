@@ -352,7 +352,7 @@ lwpoly_same(const LWPOLY *p1, const LWPOLY *p2)
 /*
  * Construct a polygon from a LWLINE being
  * the shell and an array of LWLINE (possibly NULL) being holes.
- * Pointarrays from intput geoms are cloned.
+ * Pointarrays from input geoms are cloned.
  * SRID must be the same for each input line.
  * Input lines must have at least 4 points, and be closed.
  */
@@ -415,7 +415,7 @@ lwpoly_force_dims(const LWPOLY *poly, int hasz, int hasm, double zval, double mv
 	return polyout;
 }
 
-uint32_t lwpoly_count_vertices(LWPOLY *poly)
+uint32_t lwpoly_count_vertices(const LWPOLY *poly)
 {
 	uint32_t i = 0;
 	uint32_t v = 0; /* vertices */

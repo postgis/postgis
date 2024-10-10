@@ -42,7 +42,7 @@ BEGIN
 
   -- Update topology.layer record
 
-  -- Temporarely disable integrity check
+  -- Temporarily disable integrity check
   ALTER TABLE topology.layer DISABLE TRIGGER layer_integrity_checks;
 
   sql := format(

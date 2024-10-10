@@ -6,9 +6,9 @@ CTBDIR=`pg_config --sharedir`/contrib/
 TMPDIR=/tmp/check_all_upgrades-$$-tmp
 PGVER=`pg_config --version | awk '{print $2}'`
 PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//' | sed 's/\(alpha\|beta\|rc\).*//' )
-CHECK_UNPACKAGED=0
+SKIP_LABEL_REGEXP=
 echo "INFO: PostgreSQL version: ${PGVER} [${PGVER_MAJOR}]"
-
+MAKE=$(which gmake make | head -1)
 BUILDDIR=$PWD # TODO: allow override ?
 
 cd $(dirname $0)/..
@@ -18,16 +18,30 @@ cd - > /dev/null
 # This is useful to run database queries
 export PGDATABASE=template1
 
+usage() {
+  echo "Usage: $0 [-s] <to_version>"
+  echo "Options:"
+  echo "\t-s  Stop on first failure"
+  echo "\t--skip <regexp>  Do not run tests with label matching given extended regexp"
+}
 
-if test "$1" = "-s"; then
-  EXIT_ON_FIRST_FAILURE=1
+while test -n "$1"; do
+  if test "$1" = "-s"; then
+    EXIT_ON_FIRST_FAILURE=1
+  elif test "$1" = "--skip"; then
+    shift
+    SKIP_LABEL_REGEXP=$1
+  elif test -z "$to_version_param"; then
+    to_version_param="$1"
+  else
+    usage >&2
+    exit 1
+  fi
   shift
-fi
+done
 
-if test -z "$1"; then
-  echo "Usage: $0 [-s] <to_version>" >&2
-  echo "Options:" >&2
-  echo "\t-s  Stop on first failure" >&2
+if test -z "$to_version_param"; then
+  usage >&2
   exit 1
 fi
 
@@ -93,16 +107,32 @@ minimum_postgis_version_for_postgresql_major_version()
 13:3.0
 14:3.1
 15:3.2
+16:3.3
+17:3.3
 EOF
   fi
 
   # Drop patch-level number from PostgreSQL version
   minsupported=`grep ^${pgver}: ${supportfile} | cut -d: -f2`
   test -n "${minsupported}" || {
-    echo "Cannot detemine minimum supported PostGIS version for PostgreSQL major version ${pgver}" >&2
+    echo "Cannot determine minimum supported PostGIS version for PostgreSQL major version ${pgver}" >&2
     exit 1
   }
   echo "${minsupported}"
+}
+
+kept_label()
+{
+  label=$1
+
+  if test -n "${SKIP_LABEL_REGEXP}"; then
+    if echo "${label}" | egrep -q "${SKIP_LABEL_REGEXP}"; then
+      echo "SKIP: $label (matches regexp '${SKIP_LABEL_REGEXP}')"
+      return 1;
+    fi
+  fi
+
+  return 0;
 }
 
 compatible_upgrade()
@@ -141,7 +171,6 @@ report_missing_versions()
 }
 
 
-to_version_param="$1"
 to_version=$to_version_param
 if expr $to_version : ':auto' >/dev/null; then
   to_version=`psql -XAtc "select default_version from pg_available_extensions where name = 'postgis'"` || exit 1
@@ -166,10 +195,23 @@ fi
 if test -f postgis_raster--${to_version}.sql; then
   INSTALLED_EXTENSIONS="$INSTALLED_EXTENSIONS postgis_raster"
 fi
+if test -f postgis_sfcgal--${to_version}.sql; then
+  INSTALLED_EXTENSIONS="$INSTALLED_EXTENSIONS postgis_sfcgal"
+fi
 
 echo "INFO: installed extensions: $INSTALLED_EXTENSIONS"
 
-for EXT in ${INSTALLED_EXTENSIONS}; do
+USERTESTFLAGS=${RUNTESTFLAGS}
+
+# Make use of all public functions defined by source version
+# and use double-upgrade
+USERTESTFLAGS="\
+  ${USERTESTFLAGS} \
+  --before-upgrade-script ${SRCDIR}/regress/hooks/use-all-functions.sql \
+  --after-upgrade-script ${SRCDIR}/regress/hooks/hook-after-upgrade.sql \
+"
+
+for EXT in ${INSTALLED_EXTENSIONS}; do #{
   if test "${EXT}" = "postgis"; then
     REGDIR=${BUILDDIR}/regress
   elif test "${EXT}" = "postgis_topology"; then
@@ -177,22 +219,25 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
   elif test "${EXT}" = "postgis_raster"; then
     REGDIR=${BUILDDIR}/raster/test/regress
   elif test "${EXT}" = "postgis_sfcgal"; then
-    REGDIR=${BUILDDIR}/sfcgal/test/regress
+    REGDIR=${BUILDDIR}/sfcgal/regress
   else
     echo "SKIP: don't know where to find regress tests for extension ${EXT}"
   fi
-
-  USERTESTFLAGS=${RUNTESTFLAGS}
 
   # Check extension->extension upgrades
   files=`'ls' ${EXT}--* | grep -v -- '--.*--' | sed "s/^${EXT}--\(.*\)\.sql/\1/"`
   for fname in $files; do
     from_version="$fname"
+    if test "$from_version" = "unpackaged"; then
+      # We deal with unpackaged tests separately
+      continue;
+    fi
     UPGRADE_PATH="${from_version}--${to_version_param}"
     test_label="${EXT} extension upgrade ${UPGRADE_PATH}"
     if expr $to_version_param : ':auto' >/dev/null; then
       test_label="${test_label} ($to_version)"
     fi
+    kept_label "${test_label}" || continue
     compatible_upgrade "${test_label}" ${from_version} ${to_version} || continue
     path=$( psql -XAtc "
         SELECT path
@@ -207,7 +252,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
     fi
     echo "Testing ${test_label}"
     RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-    make -C ${REGDIR} check && {
+    ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
       echo "PASS: ${test_label}"
     } || {
       echo "FAIL: ${test_label}"
@@ -215,62 +260,84 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
     }
   done
 
+  if ! kept_label "unpackaged"; then
+    echo "SKIP: ${EXT} script-based upgrades (disabled by commandline)"
+    continue;
+  fi
+
   # Check unpackaged->extension upgrades
-  if test $CHECK_UNPACKAGED != 0; then
-    for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
-      UPGRADE_PATH="unpackaged${majmin}--${to_version_param}"
-      test_label="${EXT} extension upgrade ${UPGRADE_PATH}"
-      if expr $to_version_param : ':auto' >/dev/null; then
-        test_label="${test_label} ($to_version)"
-      fi
-      compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
-      path=$( psql -XAtc "
-          SELECT path
-          FROM pg_catalog.pg_extension_update_paths('${EXT}')
-          WHERE source = 'unpackaged'
-          AND target = '${to_version}'
-      " ) || exit 1
-      if test -z "${path}"; then
-        echo "SKIP: ${test_label} (no upgrade path from unpackaged to ${to_version} known by postgresql)"
-        continue
-      fi
+  for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
+    UPGRADE_PATH="unpackaged${majmin}--${to_version_param}"
+    test_label="${EXT} extension upgrade ${UPGRADE_PATH}"
+    if expr $to_version_param : ':auto' >/dev/null; then
+      test_label="${test_label} ($to_version)"
+    fi
+    kept_label "${test_label}" || continue
+    compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
+    path=$( psql -XAtc "
+        SELECT path
+        FROM pg_catalog.pg_extension_update_paths('${EXT}')
+        WHERE source = 'unpackaged'
+        AND target = '${to_version}'
+    " ) || exit 1
+    if test -z "${path}"; then
+      echo "SKIP: ${test_label} (no upgrade path from unpackaged to ${to_version} known by postgresql)"
+      continue
+    fi
+    echo "Testing ${test_label}"
+    RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+    ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
+      echo "PASS: ${test_label}"
+    } || {
+      echo "FAIL: ${test_label}"
+      failed
+    }
+  done
+
+  # Check unpackaged->unpackaged upgrades (if target version == current version)
+#  CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
+  CURRENTVERSION=$(grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | tr '\n' '.')
+
+  if test "${to_version}" != "${CURRENTVERSION}"; then #{
+    echo "SKIP: ${EXT} script-based upgrades (${to_version_param} [${to_version}] does not match built version ${CURRENTVERSION})"
+    continue
+  fi #}
+
+  for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`
+  do #{
+    UPGRADE_PATH="unpackaged${majmin}--:auto"
+    test_label="${EXT} script soft upgrade ${UPGRADE_PATH}"
+    if expr $to_version_param : ':auto' >/dev/null; then
+      test_label="${test_label} ($to_version)"
+    fi
+
+    compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
+
+    if kept_label "${test_label}"; then #{
       echo "Testing ${test_label}"
-      RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-      make -C ${REGDIR} check && {
+      RUNTESTFLAGS="-v --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+      ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
         echo "PASS: ${test_label}"
       } || {
         echo "FAIL: ${test_label}"
         failed
       }
-    done
-  fi
-
-  # Check unpackaged->unpackaged upgrades
-  if test $CHECK_UNPACKAGED != 0; then
-    CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
-    if test "${to_version}" = "${CURRENTVERSION}"; then
-      for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`
-      do #{
-        UPGRADE_PATH="unpackaged${majmin}--:auto"
-        test_label="${EXT} script-based upgrade ${UPGRADE_PATH}"
-        if expr $to_version_param : ':auto' >/dev/null; then
-          test_label="${test_label} ($to_version)"
-        fi
-        compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
-        echo "Testing ${test_label}"
-        RUNTESTFLAGS="-v --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-        make -C ${REGDIR} check && {
-          echo "PASS: ${test_label}"
-        } || {
-          echo "FAIL: ${test_label}"
-          failed
-        }
-      done #}
-    else #}{
-      echo "SKIP: ${EXT} script-based upgrades (${to_version_param} [${to_version}] does not match built version ${CURRENTVERSION})"
     fi #}
-  fi
 
-done
+    test_label="${EXT} script hard upgrade ${UPGRADE_PATH}"
+    if kept_label "${test_label}"; then #{
+      echo "Testing ${test_label}"
+      RUNTESTFLAGS="-v --dumprestore --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+      ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
+        echo "PASS: ${test_label}"
+      } || {
+        echo "FAIL: ${test_label}"
+        failed
+      }
+    fi #}
+
+  done #}
+
+done #}
 
 exit $failures

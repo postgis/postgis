@@ -236,3 +236,28 @@ insert into test (geom1, geom2) select NULL, NULL;
 insert into test (geom1, geom2) select NULL, NULL;
 ANALYZE test;
 drop table test cascade;
+
+
+--
+-- Geography estimated extent
+-- See https://trac.osgeo.org/postgis/ticket/5734
+--
+BEGIN;
+CREATE TABLE t(g geography);
+INSERT INTO t SELECT ST_MakePoint(n,n) FROM generate_series(0,10) n;
+ANALYZE t;
+SELECT '#5734.noindex', ST_AsText(
+	ST_BoundingDiagonal(ST_EstimatedExtent('t','g')),
+	0
+);
+CREATE INDEX ON t USING GIST (g);
+SELECT '#5734.index', ST_AsText(
+	ST_BoundingDiagonal(ST_EstimatedExtent('t','g')),
+	0
+);
+TRUNCATE t;
+SELECT '#5734.index_nodata', ST_AsText(
+	ST_BoundingDiagonal(ST_EstimatedExtent('t','g')),
+	0
+);
+ROLLBACK;

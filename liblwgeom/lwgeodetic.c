@@ -715,58 +715,6 @@ edge_point_side(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p)
 }
 
 /**
-* Returns the angle in radians at point B of the triangle formed by A-B-C
-*/
-static double
-sphere_angle(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b,  const GEOGRAPHIC_POINT *c)
-{
-	POINT3D normal1, normal2;
-	robust_cross_product(b, a, &normal1);
-	robust_cross_product(b, c, &normal2);
-	normalize(&normal1);
-	normalize(&normal2);
-	return sphere_distance_cartesian(&normal1, &normal2);
-}
-
-/**
-* Computes the spherical area of a triangle. If C is to the left of A/B,
-* the area is negative. If C is to the right of A/B, the area is positive.
-*
-* @param a The first triangle vertex.
-* @param b The second triangle vertex.
-* @param c The last triangle vertex.
-* @return the signed area in radians.
-*/
-static double
-sphere_signed_area(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const GEOGRAPHIC_POINT *c)
-{
-	double angle_a, angle_b, angle_c;
-	double area_radians = 0.0;
-	int side;
-	GEOGRAPHIC_EDGE e;
-
-	angle_a = sphere_angle(b,a,c);
-	angle_b = sphere_angle(a,b,c);
-	angle_c = sphere_angle(b,c,a);
-
-	area_radians = angle_a + angle_b + angle_c - M_PI;
-
-	/* What's the direction of the B/C edge? */
-	e.start = *a;
-	e.end = *b;
-	side = edge_point_side(&e, c);
-
-	/* Co-linear points implies no area */
-	if ( side == 0 )
-		return 0.0;
-
-	/* Add the sign to the area */
-	return side * area_radians;
-}
-
-
-
-/**
 * Returns true if the point p is on the great circle plane.
 * Forms the scalar triple product of A,B,p and if the volume of the
 * resulting parallelepiped is near zero the point p is on the
@@ -1805,39 +1753,6 @@ lwgeom_segmentize_sphere(const LWGEOM *lwg_in, double max_seg_length)
 }
 
 
-/**
-* Returns the area of the ring (ring must be closed) in square radians (surface of
-* the sphere is 4*PI).
-*/
-double
-ptarray_area_sphere(const POINTARRAY *pa)
-{
-	uint32_t i;
-	const POINT2D *p;
-	GEOGRAPHIC_POINT a, b, c;
-	double area = 0.0;
-
-	/* Return zero on nonsensical inputs */
-	if ( ! pa || pa->npoints < 4 )
-		return 0.0;
-
-	p = getPoint2d_cp(pa, 0);
-	geographic_point_init(p->x, p->y, &a);
-	p = getPoint2d_cp(pa, 1);
-	geographic_point_init(p->x, p->y, &b);
-
-	for ( i = 2; i < pa->npoints-1; i++ )
-	{
-		p = getPoint2d_cp(pa, i);
-		geographic_point_init(p->x, p->y, &c);
-		area += sphere_signed_area(&a, &b, &c);
-		b = c;
-	}
-
-	return fabs(area);
-}
-
-
 static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY *pa2, const SPHEROID *s, double tolerance, int check_intersection)
 {
 	GEOGRAPHIC_EDGE e1, e2;
@@ -2029,67 +1944,14 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 
 
 /**
-* Calculate the area of an LWGEOM. Anything except POLYGON, MULTIPOLYGON
-* and GEOMETRYCOLLECTION return zero immediately. Multi's recurse, polygons
-* calculate external ring area and subtract internal ring area. A GBOX is
-* required to calculate an outside point.
+* Delegate to the spheroid function with a spherically
+* parameterized spheroid.
 */
 double lwgeom_area_sphere(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 {
-	int type;
-	double radius2 = spheroid->radius * spheroid->radius;
-
-	assert(lwgeom);
-
-	/* No area in nothing */
-	if ( lwgeom_is_empty(lwgeom) )
-		return 0.0;
-
-	/* Read the geometry type number */
-	type = lwgeom->type;
-
-	/* Anything but polygons and collections returns zero */
-	if ( ! ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ) )
-		return 0.0;
-
-	/* Actually calculate area */
-	if ( type == POLYGONTYPE )
-	{
-		LWPOLY *poly = (LWPOLY*)lwgeom;
-		uint32_t i;
-		double area = 0.0;
-
-		/* Just in case there's no rings */
-		if ( poly->nrings < 1 )
-			return 0.0;
-
-		/* First, the area of the outer ring */
-		area += radius2 * ptarray_area_sphere(poly->rings[0]);
-
-		/* Subtract areas of inner rings */
-		for ( i = 1; i < poly->nrings; i++ )
-		{
-			area -= radius2 * ptarray_area_sphere(poly->rings[i]);
-		}
-		return area;
-	}
-
-	/* Recurse into sub-geometries to get area */
-	if ( type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE )
-	{
-		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom;
-		uint32_t i;
-		double area = 0.0;
-
-		for ( i = 0; i < col->ngeoms; i++ )
-		{
-			area += lwgeom_area_sphere(col->geoms[i], spheroid);
-		}
-		return area;
-	}
-
-	/* Shouldn't get here. */
-	return 0.0;
+	SPHEROID s;
+	spheroid_init(&s, WGS84_RADIUS, WGS84_RADIUS);
+	return lwgeom_area_spheroid(lwgeom, &s);
 }
 
 
@@ -2107,8 +1969,8 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 	GEOGRAPHIC_POINT geo_source, geo_dest;
 	POINT4D pt_dest;
 	double x, y;
-	POINTARRAY *pa;
 	LWPOINT *lwp;
+	int has_z, has_m;
 
 	/* Normalize distance to be positive*/
 	if ( distance < 0.0 ) {
@@ -2129,6 +1991,8 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 	/* Convert to ta geodetic point */
 	x = lwpoint_get_x(r);
 	y = lwpoint_get_y(r);
+	has_z = lwgeom_has_z(lwpoint_as_lwgeom(r));
+	has_m = lwgeom_has_m(lwpoint_as_lwgeom(r));
 	geographic_point_init(x, y, &geo_source);
 
 	/* Try the projection */
@@ -2140,20 +2004,26 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 	}
 
 	/* Build the output LWPOINT */
-	pa = ptarray_construct(0, 0, 1);
 	pt_dest.x = rad2deg(longitude_radians_normalize(geo_dest.lon));
 	pt_dest.y = rad2deg(latitude_radians_normalize(geo_dest.lat));
-	pt_dest.z = pt_dest.m = 0.0;
-	ptarray_set_point4d(pa, 0, &pt_dest);
-	lwp = lwpoint_construct(r->srid, NULL, pa);
+	pt_dest.z = has_z ? lwpoint_get_z(r) : 0.0;
+	pt_dest.m = has_m ? lwpoint_get_m(r) : 0.0;
+	lwp = lwpoint_make(r->srid, has_z, has_m, &pt_dest);
 	lwgeom_set_geodetic(lwpoint_as_lwgeom(lwp), LW_TRUE);
+	return lwp;
+}
+
+LWPOINT* lwgeom_project_spheroid_lwpoint(const LWPOINT *from, const LWPOINT *to, const SPHEROID *spheroid, double distance)
+{
+	double azimuth = lwgeom_azumith_spheroid(from, to, spheroid);
+	LWPOINT *lwp = lwgeom_project_spheroid(to, spheroid, distance, azimuth);
 	return lwp;
 }
 
 
 /**
 * Calculate a bearing (azimuth) given a source and destination point.
-* @param r - location of first point.
+https://accesd.desjardins.ca/coast* @param r - location of first point.
 * @param s - location of second point.
 * @param spheroid - spheroid definition.
 * @return azimuth - azimuth in radians.
@@ -2218,13 +2088,13 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	type2 = lwgeom2->type;
 
 	/* Make sure we have boxes */
-	if ( lwgeom1->bbox )
+	if ( FLAGS_GET_GEODETIC(lwgeom1->flags) && lwgeom1->bbox )
 		gbox1 = *(lwgeom1->bbox);
 	else
 		lwgeom_calculate_gbox_geodetic(lwgeom1, &gbox1);
 
 	/* Make sure we have boxes */
-	if ( lwgeom2->bbox )
+	if ( FLAGS_GET_GEODETIC(lwgeom2->flags) && lwgeom2->bbox )
 		gbox2 = *(lwgeom2->bbox);
 	else
 		lwgeom_calculate_gbox_geodetic(lwgeom2, &gbox2);
@@ -2629,23 +2499,10 @@ int lwpoly_covers_lwpoly(const LWPOLY *poly1, const LWPOLY *poly2)
 	/* check if all vertices of poly2 are inside poly1 */
 	for (i = 0; i < poly2->nrings; i++)
 	{
-
-		/* every other ring is a hole, check if point is inside the actual polygon */
-		if ( i % 2 == 0)
+		if (LW_FALSE == lwpoly_covers_pointarray(poly1, poly2->rings[i]))
 		{
-			if (LW_FALSE == lwpoly_covers_pointarray(poly1, poly2->rings[i]))
-			{
-				LWDEBUG(4,"returning false, geometry2 has point outside of geometry1");
-				return LW_FALSE;
-			}
-		}
-		else
-		{
-			if (LW_TRUE == lwpoly_covers_pointarray(poly1, poly2->rings[i]))
-			{
-				LWDEBUG(4,"returning false, geometry2 has point inside a hole of geometry1");
-				return LW_FALSE;
-			}
+			LWDEBUG(4,"returning false, geometry2 has point outside of geometry1");
+			return LW_FALSE;
 		}
 	}
 
@@ -2659,7 +2516,7 @@ int lwpoly_covers_lwpoly(const LWPOLY *poly1, const LWPOLY *poly2)
 		}
 	}
 
-	/* no abort condition found, so the poly2 should be completly inside poly1 */
+	/* no abort condition found, so the poly2 should be completely inside poly1 */
 	return LW_TRUE;
 }
 
@@ -3472,7 +3329,7 @@ point_in_cone(const POINT3D *A1, const POINT3D *A2, const POINT3D *P)
 		/* If the projection of the candidate is larger than */
 		/* the projection of the start point, the candidate */
 		/* must be closer to the center than the start, so */
-		/* therefor inside the cone */
+		/* therefore inside the cone */
 		if (similarity > min_similarity)
 		{
 			return LW_TRUE;
@@ -3543,7 +3400,14 @@ edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const P
 	/* Are A-plane and B-plane basically the same? */
 	ab_dot = dot_product(&AN, &BN);
 
-	if ( FP_EQUALS(fabs(ab_dot), 1.0) )
+	/*
+	* https://trac.osgeo.org/postgis/ticket/5765
+	* Failure because the colinearity check was
+	* triggering due to an overly loose equality
+	* check here.
+	* if ( FP_EQUALS(fabs(ab_dot), 1.0) )
+	*/
+	if ( 1.0 - fabs(ab_dot) <= 10e-16 )
 	{
 		/* Co-linear case */
 		if ( point_in_cone(A1, A2, B1) || point_in_cone(A1, A2, B2) ||
@@ -3722,3 +3586,134 @@ int ptarray_contains_point_sphere(const POINTARRAY *pa, const POINT2D *pt_outsid
 
 	return LW_FALSE;
 }
+
+
+/*
+* Given a geodetic bounding volume, calculate a lon/lat bounding
+* box that should contain the original feature that gave rise to
+* the geodetic box, in plate-carre space (planar lon/lat).
+*/
+int gbox_geocentric_get_gbox_cartesian(const GBOX *gbox_geocentric, GBOX *gbox_planar)
+{
+	/* Normalized corners of the bounding volume */
+	POINT3D corners[8];
+	POINT3D cap_center = {0,0,0};
+	double furthest_angle = 0.0;
+	double cap_angle = 0.0;
+	int all_longitudes = LW_FALSE;
+	double lon0 = -M_PI, lon1 = M_PI;
+	double lat0, lat1;
+	GEOGRAPHIC_POINT cap_center_g;
+
+	if (!gbox_geocentric || !gbox_planar)
+	{
+		lwerror("Null pointer passed to %s", __func__);
+		return LW_FALSE;
+	}
+
+#define	CORNER_SET(ii, xx, yy, zz) { \
+	corners[ii].x = gbox_geocentric->xx; \
+	corners[ii].y = gbox_geocentric->yy; \
+	corners[ii].z = gbox_geocentric->zz; \
+	}
+
+	/*
+	* First find a "centered" vector to serve as the mid-point
+	* of the input bounding volume.
+	*/
+	CORNER_SET(0, xmin, ymin, zmin);
+	CORNER_SET(1, xmax, ymin, zmin);
+	CORNER_SET(2, xmin, ymax, zmin);
+	CORNER_SET(3, xmax, ymax, zmin);
+	CORNER_SET(4, xmin, ymin, zmax);
+	CORNER_SET(5, xmax, ymin, zmax);
+	CORNER_SET(6, xmin, ymax, zmax);
+	CORNER_SET(7, xmax, ymax, zmax);
+
+	/*
+	* Normalize the volume corners
+	* and normalize the final vector.
+	*/
+	for (uint32_t i = 0; i < 8; i++)
+	{
+		normalize(&(corners[i]));
+		cap_center.x += corners[i].x;
+		cap_center.y += corners[i].y;
+		cap_center.z += corners[i].z;
+	}
+	normalize(&cap_center);
+
+	/*
+	* Find the volume corner that is furthest from the center,
+	* and calculate the angle between the center and the corner.
+	* Now we have a "cap" (center and angle)
+	*/
+	for (uint32_t i = 0; i < 8; i++)
+	{
+		double angle = vector_angle(&cap_center, &(corners[i]));
+		if (angle > furthest_angle)
+			furthest_angle = angle;
+	}
+	cap_angle = furthest_angle;
+
+	/*
+	* Calculate the planar box that contains the cap.
+	* If the cap contains a pole, then we include all longitudes
+	*/
+	cart2geog(&cap_center, &cap_center_g);
+
+	/* Check whether cap includes the south pole */
+	lat0 = cap_center_g.lat - cap_angle;
+	if (lat0 <= -M_PI_2)
+	{
+		lat0 = -M_PI_2;
+		all_longitudes = LW_TRUE;
+	}
+
+	/* Check whether cap includes the north pole */
+	lat1 = cap_center_g.lat + cap_angle;
+	if (lat1 >= M_PI_2)
+	{
+		lat1 = M_PI_2;
+		all_longitudes = LW_TRUE;
+	}
+
+	if (!all_longitudes)
+	{
+		// Compute the range of longitudes covered by the cap.  We use the law
+		// of sines for spherical triangles.  Consider the triangle ABC where
+		// A is the north pole, B is the center of the cap, and C is the point
+		// of tangency between the cap boundary and a line of longitude.  Then
+		// C is a right angle, and letting a,b,c denote the sides opposite A,B,C,
+		// we have sin(a)/sin(A) = sin(c)/sin(C), or sin(A) = sin(a)/sin(c).
+		// Here "a" is the cap angle, and "c" is the colatitude (90 degrees
+		// minus the latitude).  This formula also works for negative latitudes.
+		//
+		// The formula for sin(a) follows from the relationship h = 1 - cos(a).
+
+		double sin_a = sin(cap_angle);
+		double sin_c = cos(cap_center_g.lat);
+		if (sin_a <= sin_c)
+		{
+			double angle_A = asin(sin_a / sin_c);
+			lon0 = remainder(cap_center_g.lon - angle_A, 2 * M_PI);
+			lon1 = remainder(cap_center_g.lon + angle_A, 2 * M_PI);
+		}
+		else
+		{
+			lon0 = -M_PI;
+			lon1 =  M_PI;
+		}
+	}
+
+	gbox_planar->xmin = rad2deg(lon0);
+	gbox_planar->ymin = rad2deg(lat0);
+	gbox_planar->xmax = rad2deg(lon1);
+	gbox_planar->ymax = rad2deg(lat1);
+	FLAGS_SET_GEODETIC(gbox_planar->flags, 0);
+	FLAGS_SET_Z(gbox_planar->flags, 0);
+	FLAGS_SET_M(gbox_planar->flags, 0);
+
+	return LW_TRUE;
+}
+

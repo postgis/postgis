@@ -111,7 +111,7 @@ GetPROJSRSCache()
 		cache = MemoryContextAllocZero(context, sizeof(PROJSRSCache));
 
 		if (!cache)
-			elog(ERROR, "Unable to allocate space for PROJSRSCache in context %p", context);
+			elog(ERROR, "Unable to allocate space for PROJSRSCache in context %p", (void *)context);
 
 		cache->PROJSRSCacheCount = 0;
 		cache->PROJSRSCacheContext = context;
@@ -498,7 +498,7 @@ lwproj_lookup(int32_t srid_from, int32_t srid_to, LWPROJ **pj)
 		*pj = AddToPROJSRSCache(proj_cache, srid_from, srid_to);
 	}
 
-	return pj != NULL;
+	return *pj != NULL;
 }
 
 int

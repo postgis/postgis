@@ -109,7 +109,7 @@ endif
 
 # Generate any .sql file from .sql.in files by running them through the SQL pre-processor
 %.sql: %.sql.in
-	$(SQLPP) -I@top_builddir@/postgis $< > $@.tmp
+	$(SQLPP) -I@top_builddir@/postgis -I@top_srcdir@ $< > $@.tmp
 	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
 	rm -f $@.tmp
@@ -118,7 +118,7 @@ topology_upgrade.sql.in:  topology.sql ../utils/create_upgrade.pl
 	$(PERL) @top_srcdir@/utils/create_upgrade.pl $< > $@
 	#$(PERL) -0777 -ne 's/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*?;//msg;print;' $< > $@
 
-topology_upgrade.sql: topology_before_upgrade.sql topology_upgrade.sql.in topology_after_upgrade.sql
+topology_upgrade.sql: ../postgis/common_before_upgrade.sql topology_before_upgrade.sql topology_upgrade.sql.in topology_after_upgrade.sql ../postgis/common_after_upgrade.sql
 	echo "BEGIN;" > $@
 	cat $^ > $@
 	echo "COMMIT;" >> $@
@@ -142,6 +142,7 @@ topology.sql: \
 	sql/manage/FindLayer.sql.in \
 	sql/manage/FindTopology.sql.in \
 	sql/manage/ManageHelper.sql.in \
+	sql/manage/populate_topology_layer.sql.in \
 	sql/manage/RenameTopology.sql.in \
 	sql/manage/TopologySummary.sql.in \
 	sql/manage/ValidateTopologyRelation.sql.in \
@@ -153,6 +154,7 @@ topology.sql: \
 	sql/topogeometry/topogeom_edit.sql.in \
 	sql/topogeometry/simplify.sql.in \
 	sql/predicates.sql.in \
+	../libpgcommon/sql/AddToSearchPath.sql.inc \
 	../postgis/sqldefines.h \
 	../postgis_revision.h
 
@@ -184,3 +186,11 @@ install-importer: loader/pgtopo_import | installdir
 
 install-exporter: loader/pgtopo_export | installdir
 	$(LIBTOOL) --mode=install $(INSTALL) $^ "$(DESTDIR)$(bindir)/pgtopo_export"
+
+uninstall: uninstall-importer uninstall-exporter
+
+uninstall-importer:
+	rm -f '$(DESTDIR)$(bindir)/pgtopo_import'
+
+uninstall-exporter:
+	rm -f '$(DESTDIR)$(bindir)/pgtopo_export'

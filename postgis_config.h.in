@@ -7,9 +7,6 @@
    configure process */
 #define POSTGIS_DEBUG_LEVEL 0
 
-/* Define to 1 to enable memory checks in pointarray management. */
-#undef PARANOIA_LEVEL
-
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
@@ -83,7 +80,7 @@
 /* PostGIS build date */
 #undef POSTGIS_BUILD_DATE
 
-/* SFCGAL library version at buil time */
+/* SFCGAL library version at build time */
 #undef POSTGIS_SFCGAL_VERSION
 
 /* GDAL library version */

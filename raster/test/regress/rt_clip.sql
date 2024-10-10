@@ -15,7 +15,7 @@ CREATE TABLE raster_clip_out (
 	tid integer,
 	rid integer,
 	gid integer,
-	rast raster
+	rast raster, touched boolean
 );
 
 CREATE OR REPLACE FUNCTION make_test_raster(
@@ -77,23 +77,23 @@ DROP FUNCTION make_test_raster(integer, integer, integer, double precision, doub
 
 -- Test 1 without trimming, without defining a nodata value
 INSERT INTO raster_clip_out
-SELECT 1, rid, gid, ST_Clip(rast, geom, false)
-FROM raster_clip, geom_clip;
+SELECT 1, rid, gid, ST_Clip(rast, geom, false, touched => t1::boolean), t1::boolean AS touched
+FROM raster_clip, geom_clip, generate_series(0,1) AS t1;
 
 -- Test 2 with trimming, without defining a nodata value
 INSERT INTO raster_clip_out
-SELECT 2, rid, gid, ST_Clip(rast, geom, true)
-FROM raster_clip, geom_clip;
+SELECT 2, rid, gid, ST_Clip(rast, geom, true, touched => t1::boolean), t1::boolean AS touched
+FROM raster_clip, geom_clip, generate_series(0,1) AS t1;
 
 -- Test 3 without trimming, defining a nodata value
 INSERT INTO raster_clip_out
-SELECT 3, rid, gid, ST_Clip(rast, geom, ARRAY[255, 254, 253], false)
-FROM raster_clip, geom_clip;
+SELECT 3, rid, gid, ST_Clip(rast, geom, ARRAY[255, 254, 253], false, touched => t1::boolean), t1::boolean AS touched
+FROM raster_clip, geom_clip, generate_series(0,1) AS t1;
 
 -- Test 4 with trimming, defining a nodata value
 INSERT INTO raster_clip_out
-SELECT 4, rid, gid, ST_Clip(rast, geom, ARRAY[255, 254, 253], true)
-FROM raster_clip, geom_clip;
+SELECT 4, rid, gid, ST_Clip(rast, geom, ARRAY[255, 254, 253], true, touched => t1::boolean), t1::boolean AS touched
+FROM raster_clip, geom_clip, generate_series(0,1) AS t1;
 
 -- Display the metadata of the resulting rasters
 SELECT
@@ -111,13 +111,13 @@ SELECT
 	srid,
 	numbands,
 	pixeltype,
-	round(nodatavalue::numeric, 3) AS nodatavalue
+	round(nodatavalue::numeric, 3) AS nodatavalue, touched
 FROM (
 	SELECT  tid,
 	        rid,
 		gid,
 		md.*,
-		bmd.*
+		bmd.*, touched
 	FROM raster_clip_out
 		LEFT JOIN LATERAL ST_Metadata(rast) AS md ON true
 		LEFT JOIN LATERAL ST_BandMetadata(rast, 1) AS bmd ON true
@@ -131,12 +131,12 @@ SELECT
 	(gvxy).x,
 	(gvxy).y,
 	(gvxy).val,
-	ST_AsText((gvxy).geom) geom
-FROM (SELECT tid, rid, gid, gvxy
+	ST_AsText((gvxy).geom) geom, touched
+FROM (SELECT tid, rid, gid, gvxy, touched
       FROM raster_clip_out, ST_PixelAsPolygons(rast) AS gvxy
       WHERE rid = 1
 ) foo
-ORDER BY 1, 2, 3, 4, 5, 7;
+ORDER BY 1, 2, 3, 4, 5, 7,8;
 
 -- Display the pixels and the values of the resulting rasters (raster 2, 3 bands)
 SELECT
@@ -146,14 +146,15 @@ SELECT
 	band,
 	(gvxy).x,
 	(gvxy).y,
+	touched,
 	(gvxy).val,
-	ST_AsText((gvxy).geom) geom
-FROM (SELECT tid, rid, gid, band, gvxy
+	ST_AsText((gvxy).geom) geom, count(1) OVER(PARTITION BY tid,rid,gid, band,touched) AS numpp
+FROM (SELECT tid, rid, gid, band, gvxy, touched
       FROM raster_clip_out, generate_series(1, 3) band,
 				ST_PixelAsPolygons(rast, band) AS gvxy
       WHERE rid = 2
 ) foo
-ORDER BY 1, 2, 3, 4, 5, 6, 8;
+ORDER BY 1, 2, 3, 4, 5, 6, 7, 8;
 
 DROP TABLE IF EXISTS geom_clip;
 DROP TABLE IF EXISTS raster_clip;

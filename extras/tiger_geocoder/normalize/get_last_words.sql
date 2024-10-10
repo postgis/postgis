@@ -1,5 +1,5 @@
 -- Returns a string consisting of the last N words.  Words are allowed
--- to be seperated only by spaces, but multiple spaces between
+-- to be separated only by spaces, but multiple spaces between
 -- words are allowed.  Words must be alphanumberic.
 -- If more words are requested than exist, the full input string is
 -- returned.

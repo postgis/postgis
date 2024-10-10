@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 3.3.0rc2
-:Date: 2022-08-21
+:Version: 3.5.0
+:Date: 2024-09-25
 :Website: https://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -16,8 +16,8 @@ Directory structure::
   ./doc         PostGIS Documentation
   ./extensions  Support for the PostgreSQL Extensions framework
   ./extras      Various pieces that didn't belong to mainstream
-                (package management specfiles, WFS_locks
-                  , sample WKB parser, postgis_tiger_geocoder)
+                (package management specfiles, sample WKB parser,
+                postgis_tiger_geocoder)
   ./fuzzers     Google fuzz tests for liblwgeom
   ./liblwgeom   LWGEOM geometry library
   ./libpgcommon PostGIS library to bridge LWGEOM to PostgreSQL
@@ -36,20 +36,37 @@ Directory structure::
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 11 and above.
+PostGIS is compatible with PostgreSQL 12 and above.
 
 You *must* have the full PostgreSQL - including server headers - installed for
 this to work.
 
-* PROJ4 (Required, Version 5.2.0 or higher):
+For apt-based systems you can run this command to install the below dependencies (except for GTK):
 
-  The PROJ4 catographic projection library is required if you want to use the
+  sudo apt-get install \
+    docbook-xsl-ns \
+    gettext \
+    libgdal-dev \
+    libgeos-dev \
+    libjson-c-dev \
+    libproj-dev \
+    libprotobuf-c-dev \
+    libsfcgal-dev \
+    libxml2-dev \
+    libxml2-utils \
+    protobuf-c-compiler \
+    xsltproc
+
+* PROJ (Required, Version 6.1 or higher):
+
+  The PROJ catographic projection library is required if you want to use the
   ST_Transform() function to reproject features within the database.
 
     https://proj.org
 
-* GEOS (Required, Version 3.6 or higher)
-  - 3.11+ for imporved ST_ConcaveHull, ST_lineMerge,
+* GEOS (Required, Version 3.8 or higher)
+  - 3.12+ for ST_CoverageSimplify and ST_CoverageInvalidEdges
+  - 3.11+ for improved ST_ConcaveHull, ST_lineMerge,
     and new functions ST_SimplifyPolygonHull, ST_TriangulatePolygon
   - 3.10+ for ST_MakeValid enhancements
   - 3.9+ is needed to take advantage of
@@ -81,10 +98,6 @@ this to work.
 
     http://github.com/json-c/json-c/wiki
 
-  You can get it installed in apt-based systems using:
-
-    apt-get install libjson0-dev
-
 * GDAL (Optional, Version 2 or higher 3+ is strongly recommended)
 
   GDAL (https://gdal.org) is *required* if you want to compile PostGIS
@@ -95,7 +108,7 @@ this to work.
 * SFCGAL 1.4.1+ is requires for additional functionality ST_AlphaShape, ST_OptimalAlphaShape,
   and ST_3DConvexhull
 
-  https://gitlab.com/Oslandia/SFCGAL
+  https://gitlab.com/sfcgal/SFCGAL
 
 * protobuf-c (Optional, Version 1.1.0 or higher)
 
@@ -104,10 +117,6 @@ this to work.
   minimum version of protobuf-c.
 
     https://github.com/protobuf-c/protobuf-c
-
-  To get packages on apt-based systems:
-
-    apt-get install libprotobuf-c-dev protobuf-c-compiler
 
 * GTK (Optional,  Version 2 series: 2.2.0 or higher)
 
@@ -141,7 +150,7 @@ and refuse to proceed. You can specify it using the
 
 PostGIS supports pkg-config for most dependencies.
 
-If PROJ4 has been installed but cannot be found, configure will complain and
+If PROJ has been installed but cannot be found, configure will complain and
 refuse to proceed. You can specify an alternative installation directory using
 the ``--with-projdir=DIR`` option.
 
@@ -324,4 +333,4 @@ usage.
 PostGIS Topology support
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-See topology/README for more informations about topology support.
+See topology/README for more information about topology support.
