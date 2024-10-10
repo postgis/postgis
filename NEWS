@@ -10,6 +10,8 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
          a supernumerary rast argument (Dian M Fay)
 - #5787, Check that ST_ChangeEdgeGeom doesn't change winding of rings
          (Sandro Santilli)
+- #5791, Add legacy stubs for old transaction functions
+         to allow pg_upgrade (Regina Obe)
 
 * Enhancements *
 
