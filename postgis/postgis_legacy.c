@@ -103,3 +103,8 @@ POSTGIS_DEPRECATE("3.1.0", postgis_sfcgal_noop)
 POSTGIS_DEPRECATE("3.1.0", LWGEOM_locate_between_m)
 POSTGIS_DEPRECATE("3.1.0", postgis_svn_version)
 POSTGIS_DEPRECATE("3.3.0", pgis_geometry_union_finalfn)
+
+/**START: Removal of transactin lock feature **/
+POSTGIS_DEPRECATE("3.5.0", check_authorization)
+POSTGIS_DEPRECATE("3.5.0", getTransactionID)
+/**End: Remoal of transaction lock feature */
