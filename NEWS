@@ -6,6 +6,7 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
 
 * Bug fixes *
 
+- #5794, Fix crash in TopoGeo_addPoint (Sandro Santilli)
 - #5785, [raster] ST_MapAlgebra segfaults when expression references
          a supernumerary rast argument (Dian M Fay)
 - #5787, Check that ST_ChangeEdgeGeom doesn't change winding of rings
@@ -52,9 +53,9 @@ Andreas Schild (German Team)
            will need rebuilding to upgrade to new signature
            (Jan Tojnar)
   - #5496, ST_Clip all variants replaced, will require
-           rebuilding of materialized views that use them 
+           rebuilding of materialized views that use them
            (funding from The National Institute for Agricultural
-            and Food Research and Technology (INIA-CSIC)), 
+            and Food Research and Technology (INIA-CSIC)),
             Regina Obe)
   - #5659, ST_DFullyWithin behaviour has changed to
            be ST_Contains(ST_Buffer(A, R), B) (Paul Ramsey)
