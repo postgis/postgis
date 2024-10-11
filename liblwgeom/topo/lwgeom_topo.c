@@ -6427,7 +6427,7 @@ _lwt_SnapEdgeToExistingNode(
  * @param moved if not-null will be set to 0 if the point was added
  *              w/out any snapping or 1 otherwise.
  *
- * @return id of the new node or -1 on error
+ * @return id of the new node, 0 if no edge was found below tolerance or -1 on error
  *
  */
 static LWT_ELEMID
@@ -6454,6 +6454,12 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY* topo, LWT_ISO_EDGE *edges, uint64_t nu
     sorted[j].ptr = e;
     sorted[j++].score = dist;
   }
+  if ( ! j )
+  {
+    lwfree(sorted);
+    return 0;
+  }
+
   num = j;
   qsort(sorted, num, sizeof(scored_pointer), compare_scored_pointer);
   edges2 = lwalloc(sizeof(LWT_ISO_EDGE)*num);
@@ -6760,7 +6766,8 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
     id = _lwt_SplitAllEdgesToNewNode(topo, edges, num, lwgeom_as_lwpoint(pt), tol, moved);
     _lwt_release_edges(edges, num);
   }
-  else
+
+  if ( id == 0 )
   {
     /* The point is isolated, add it as such */
     /* TODO: pass 1 as last argument (skipChecks) ? */
