@@ -25,6 +25,8 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
 * Enhancements *
 
   - #5782, Improve robustness of min distance calculation (Sandro Santilli)
+  - Speedup topology building when closing large rings with many
+    hooles (Björn Harrtell)
 
 * Breaking Changes *
 
