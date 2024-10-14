@@ -2141,9 +2141,8 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
         return -2;
       }
 
-      /* IDEA: check that bounding box shortcut is taken, or use
-       *       shellbox to do it here */
-      contains = ptarray_contains_point(pa, &ep);
+      contains = gbox_contains_point2d(shellbox, &ep) == LW_TRUE ? LW_INSIDE : LW_OUTSIDE;
+      contains = contains == LW_INSIDE ? ptarray_contains_point(pa, &ep) : contains;
 
       LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " first point %s new ring",
           e->edge_id, (contains == LW_INSIDE ? "inside" :
