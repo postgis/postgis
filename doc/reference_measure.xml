@@ -526,7 +526,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		<para>&curve_support;</para>
 
 		<para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced in 1.5.  Speed improvements for planar to better handle large or many vertex geometries</para>
-		<para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 improved speed for geography. See <link xlink:href="http://boundlessgeo.com/2012/07/making-geography-faster/">Making Geography faster</link> for details.</para>
+		<para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 improved speed for geography. See <link xlink:href="https://web.archive.org/web/20160827203903/http://boundlessgeo.com/2012/07/making-geography-faster/">Making Geography faster</link> for details.</para>
 		<para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 - support for curved geometries was introduced.</para>
 		<para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness. Requires PROJ &gt;= 4.9.0 to take advantage of the new feature.</para>
 		<para role="changed" conformance="3.0.0">Changed: 3.0.0 - does not depend on SFCGAL anymore.</para>
