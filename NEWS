@@ -9,10 +9,12 @@ PostGIS 3.3.8dev
           (Sandro Santilli)
  - #5795, Fix ST_NewEdgesSplit can cause invalid topology
           (Björn Harrtell
+ - #5677, Retain SRID during unary union (Paul Ramsey)
 
 * Enhancements *
 
   - #5782, Improve robustness of min distance calculation (Sandro Santilli)
+
 
 PostGIS 3.3.7
 2024-09-05
