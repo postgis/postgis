@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Fix the link to the geography performance article (Laurențiu Nicola)
   - Correct the topology geometry shrinking examples (Sandro Santilli)
   - #5758, Match the tile bounding box SRID in the ST_AsMVTGeom example (Regina Obe)
   - #5527, Report invalid composite arguments in ST_FromFlatGeobuf (Paul Ramsey)
