@@ -584,6 +584,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 #pragma GCC diagnostic pop
 #endif
+		srid = GEOSGetSRID(g);
 		g_union = GEOSUnaryUnion(g);
 		GEOSGeom_destroy(g);
 		if (!g_union) HANDLE_GEOS_ERROR("GEOSUnaryUnion");
