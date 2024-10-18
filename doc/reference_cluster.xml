@@ -222,7 +222,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 			<parameter>geom</parameter></paramdef>
 
 			<paramdef><type>integer </type>
-			<parameter>number_of_clusters</parameter></paramdef>
+			<parameter>k</parameter></paramdef>
 
             <paramdef><type>float </type>
 			<parameter>max_radius</parameter></paramdef>
