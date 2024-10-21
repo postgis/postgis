@@ -7,7 +7,7 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
 * Bug fixes *
 
 - #5795, Fix ST_NewEdgesSplit can cause invalid topology
-         (Björn Harrtell
+         (Björn Harrtell)
 - #5794, Fix crash in TopoGeo_addPoint (Sandro Santilli)
 - #5785, [raster] ST_MapAlgebra segfaults when expression references
          a supernumerary rast argument (Dian M Fay)
@@ -15,6 +15,8 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
          (Sandro Santilli)
 - #5791, Add legacy stubs for old transaction functions
          to allow pg_upgrade (Regina Obe)
+- #5800, PROJ compiled version reading the wrong minor and micro
+         (Regina Obe)
 
 * Enhancements *
 
