@@ -16,6 +16,10 @@ PostGIS 3.4.4dev
 
   - #5782, Improve robustness of min distance calculation (Sandro Santilli)
 
+* Breaking Changes *
+
+  - #5799, make ST_TileEnvelope clips envelopes to tile plane extent (Paul Ramsey)
+
 
 PostGIS 3.4.3
 2024/09/04
@@ -202,6 +206,7 @@ There are 2 new ./configure switches:
    (postgis, postgis_restore, shp2pgsql, raster2pgsql, pgsql2shp,
    pgtopo_import, pgtopo_export)
 
+<<<<<<< HEAD
 PostGIS 3.3.0
 2022/08/26
 
