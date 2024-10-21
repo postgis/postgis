@@ -2143,9 +2143,11 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	y1 = bbox.ymax - tileGeoSizeY * (y + 1 + margin);
 	y2 = bbox.ymax - tileGeoSizeY * (y - margin);
 
-	/* Clip y-axis to the given bounds */
+	/* Clip the final tile bounds to the bounds of the tile plane */
 	if (y1 < bbox.ymin) y1 = bbox.ymin;
 	if (y2 > bbox.ymax) y2 = bbox.ymax;
+	if (x1 < bbox.xmin) x1 = bbox.xmin;
+	if (x2 > bbox.xmax) x2 = bbox.xmax;
 
 	PG_RETURN_POINTER(
 		geometry_serialize(
