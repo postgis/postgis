@@ -237,8 +237,8 @@ Datum postgis_proj_compiled_version(PG_FUNCTION_ARGS)
     ver,
     "%d.%d.%d",
     (POSTGIS_PROJ_VERSION/10000),
-    ((POSTGIS_GEOS_VERSION%10000)/100),
-    ((POSTGIS_GEOS_VERSION)%100)
+    ((POSTGIS_PROJ_VERSION%10000)/100),
+    ((POSTGIS_PROJ_VERSION)%100)
   );
 
   result = cstring_to_text(ver);
