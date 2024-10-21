@@ -15,6 +15,10 @@ PostGIS 3.3.8dev
 
   - #5782, Improve robustness of min distance calculation (Sandro Santilli)
 
+* Breaking Changes *
+
+  - #5799, make ST_TileEnvelope clips envelopes to tile plane extent (Paul Ramsey)
+
 
 PostGIS 3.3.7
 2024-09-05
