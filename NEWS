@@ -75,6 +75,8 @@ Andreas Schild (German Team)
         to get valid inputs to feed to the calculation.
       - Zero length LineStrings are treated as if they are the
         equivalent Point object.
+  - #5799, make ST_TileEnvelope clip envelopes to tile plane
+           extent (Paul Ramsey)
 
 
 * Deprecated signatures *
