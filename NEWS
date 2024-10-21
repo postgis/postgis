@@ -3,6 +3,7 @@ PostGIS 3.6.0
 
 * Breaking Changes *
 
+#5799, make ST_TileEnvelope clips envelopes to tile plane extent (Paul Ramsey)
 
 * Deprecated signatures *
 
