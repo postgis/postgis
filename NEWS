@@ -22,6 +22,12 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
 
   - #5782, Improve robustness of min distance calculation (Sandro Santilli)
 
+* Breaking Changes *
+
+  - #5799, make ST_TileEnvelope clip envelopes to tile plane
+           extent (Paul Ramsey)
+
+
 PostGIS 3.5.0
 2024/09/25
 
@@ -75,8 +81,6 @@ Andreas Schild (German Team)
         to get valid inputs to feed to the calculation.
       - Zero length LineStrings are treated as if they are the
         equivalent Point object.
-  - #5799, make ST_TileEnvelope clip envelopes to tile plane
-           extent (Paul Ramsey)
 
 
 * Deprecated signatures *
