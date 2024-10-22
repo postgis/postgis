@@ -17,6 +17,8 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
          to allow pg_upgrade (Regina Obe)
 - #5800, PROJ compiled version reading the wrong minor and micro
          (Regina Obe)
+- #5790, Non-schema qualified calls causing issue with 
+         materialized views (Regina Obe)
 
 * Enhancements *
 

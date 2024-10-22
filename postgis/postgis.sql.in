@@ -2404,7 +2404,7 @@ BEGIN
 			RAISE EXCEPTION 'AddGeometryColumn() - SRID must be <= %', SRID_USR_MAX;
 		END IF;
 		new_srid := new_srid_in;
-		SELECT SRID INTO sr FROM spatial_ref_sys WHERE SRID = new_srid;
+		SELECT SRID INTO sr FROM @extschema@.spatial_ref_sys WHERE SRID = new_srid;
 		IF NOT FOUND THEN
 			RAISE EXCEPTION 'AddGeometryColumn() - invalid SRID';
 			RETURN 'fail';
@@ -2761,7 +2761,7 @@ BEGIN
 
 	-- Ensure that new_srid is valid
 	IF ( new_srid > 0 ) THEN
-		IF ( SELECT count(*) = 0 from spatial_ref_sys where srid = new_srid ) THEN
+		IF ( SELECT count(*) = 0 from @extschema@.spatial_ref_sys where srid = new_srid ) THEN
 			RAISE EXCEPTION 'invalid SRID: % not found in spatial_ref_sys', new_srid;
 			RETURN false;
 		END IF;
@@ -2971,7 +2971,7 @@ CREATE OR REPLACE FUNCTION ST_Transform(geometry,integer)
 CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, to_proj text)
 	RETURNS geometry AS
 	'SELECT @extschema@.postgis_transform_geometry($1, proj4text, $2, 0)
-	FROM spatial_ref_sys WHERE srid=@extschema@.ST_SRID($1);'
+	FROM @extschema@.spatial_ref_sys WHERE srid=@extschema@.ST_SRID($1);'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
@@ -2986,7 +2986,7 @@ CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_proj t
 CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_srid integer)
 	RETURNS geometry AS
 	'SELECT @extschema@.postgis_transform_geometry($1, $2, proj4text, $3)
-	FROM spatial_ref_sys WHERE srid=$3;'
+	FROM @extschema@.spatial_ref_sys WHERE srid=$3;'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
@@ -3875,7 +3875,7 @@ CREATE OR REPLACE FUNCTION ST_SymDifference(geom1 geometry, geom2 geometry, grid
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SymmetricDifference(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS 'SELECT ST_SymDifference(geom1, geom2, -1.0);'
+	AS 'SELECT @extschema@.ST_SymDifference(geom1, geom2, -1.0);'
 	LANGUAGE 'sql';
 
 CREATE OR REPLACE FUNCTION ST_Union(geom1 geometry, geom2 geometry)
@@ -6958,7 +6958,7 @@ CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFA
 -- Availability: 2.3.0
 -- has to be here because need ST_StartPoint
 CREATE OR REPLACE FUNCTION ST_Angle(line1 geometry, line2 geometry)
-	RETURNS float8 AS 'SELECT ST_Angle(St_StartPoint($1), ST_EndPoint($1), St_StartPoint($2), ST_EndPoint($2))'
+	RETURNS float8 AS 'SELECT @extschema@.ST_Angle(@extschema@.St_StartPoint($1), @extschema@.ST_EndPoint($1), @extschema@.ST_StartPoint($2), @extschema@.ST_EndPoint($2))'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
