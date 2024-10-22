@@ -291,16 +291,22 @@ FROM testdata;
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>integer <function>ST_ClusterKMeans</function></funcdef>
-
-			<paramdef><type>geometry winset </type>
-			<parameter>geom</parameter></paramdef>
-
-			<paramdef><type>integer </type>
-			<parameter>number_of_clusters</parameter></paramdef>
-
-            <paramdef><type>float </type>
-			<parameter>max_radius</parameter></paramdef>
+            <funcdef>integer <function>ST_ClusterKMeans</function></funcdef>
+    
+            <paramdef>
+              <type>geometry winset </type>
+              <parameter>geom</parameter>
+            </paramdef>
+    
+            <paramdef>
+              <type>integer </type>
+              <parameter>k</parameter>
+            </paramdef>
+    
+            <paramdef>
+              <type>float8 </type>
+              <parameter>max_radius</parameter>
+            </paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
