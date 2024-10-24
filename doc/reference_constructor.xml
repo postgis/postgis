@@ -157,7 +157,7 @@ SELECT stusps, ST_Collect(f.geom) as geom
 		<title>Examples</title>
 		<para>Create a 3D line string from a 3D MultiPoint</para>
 		<programlisting>
-SELECT ST_AsEWKT(  ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)')  ));
+SELECT ST_AsEWKT(  ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)')  );
 
 --result--
 LINESTRING(1 2 3,4 5 6,7 8 9)
