@@ -1445,7 +1445,7 @@ Changes the shape of an edge without affecting the topology structure.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>integer <function>ST_ChangeEdgeGeom</function></funcdef>
+					<funcdef>text <function>ST_ChangeEdgeGeom</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>acurve</parameter></paramdef>
