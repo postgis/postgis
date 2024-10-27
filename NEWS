@@ -11,6 +11,8 @@ PostGIS 3.4.4dev
   - #5795, Fix ST_NewEdgesSplit can cause invalid topology
           (Björn Harrtell
   - #5677, Retain SRID during unary union (Paul Ramsey)
+  - #5790, Non-schema qualified calls causing issue with
+           materialized views (Regina Obe)
 
 * Enhancements *
 

@@ -7532,7 +7532,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_pixel_types(rastschema name, r
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
-			|| ' CHECK (_@extschema@.raster_constraint_pixel_types(' || quote_ident($3)
+			|| ' CHECK (@extschema@._raster_constraint_pixel_types(' || quote_ident($3)
 			|| ') = ''{';
 		FOR x in 1..max LOOP
 			sql := sql || '"' || attr[x] || '"';
@@ -7620,7 +7620,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name,
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
-			|| ' CHECK (_@extschema@.raster_constraint_nodata_values(' || quote_ident($3)
+			|| ' CHECK (@extschema@._raster_constraint_nodata_values(' || quote_ident($3)
 			|| ')::numeric[] = ''{';
 		FOR x in 1..max LOOP
 			IF attr[x] IS NULL THEN
