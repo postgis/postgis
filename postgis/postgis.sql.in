@@ -405,6 +405,12 @@ CREATE OR REPLACE FUNCTION geometry_eq(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_DEFAULT;
 
+																	   
+			 
+								   
+											
+			   
+
 CREATE OR REPLACE FUNCTION geometry_cmp(geom1 geometry, geom2 geometry)
 	RETURNS integer
 	AS 'MODULE_PATHNAME', 'lwgeom_cmp'
@@ -441,6 +447,13 @@ CREATE OPERATOR = (
 	COMMUTATOR = '=', -- we might implement a faster negator here
 	RESTRICT = contsel, JOIN = contjoinsel, HASHES, MERGES
 );
+
+					  
+					
+																   
+								  
+													   
+  
 
 -- Availability: 0.9.0
 CREATE OPERATOR >= (
@@ -1654,6 +1667,20 @@ CREATE OR REPLACE FUNCTION ST_NDims(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_DEFAULT;
 
+					  
+											
+				
+									
+											
+			   
+
+					  
+											
+				
+									
+											
+			   
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsEWKT(geometry)
 	RETURNS TEXT
@@ -2404,7 +2431,7 @@ BEGIN
 			RAISE EXCEPTION 'AddGeometryColumn() - SRID must be <= %', SRID_USR_MAX;
 		END IF;
 		new_srid := new_srid_in;
-		SELECT SRID INTO sr FROM spatial_ref_sys WHERE SRID = new_srid;
+		SELECT SRID INTO sr FROM @extschema@.spatial_ref_sys WHERE SRID = new_srid;
 		IF NOT FOUND THEN
 			RAISE EXCEPTION 'AddGeometryColumn() - invalid SRID';
 			RETURN 'fail';
@@ -2761,7 +2788,7 @@ BEGIN
 
 	-- Ensure that new_srid is valid
 	IF ( new_srid > 0 ) THEN
-		IF ( SELECT count(*) = 0 from spatial_ref_sys where srid = new_srid ) THEN
+		IF ( SELECT count(*) = 0 from @extschema@.spatial_ref_sys where srid = new_srid ) THEN
 			RAISE EXCEPTION 'invalid SRID: % not found in spatial_ref_sys', new_srid;
 			RETURN false;
 		END IF;
@@ -3033,6 +3060,11 @@ CREATE OR REPLACE FUNCTION postgis_proj_version() RETURNS text
 	LANGUAGE 'c' IMMUTABLE
 	_COST_DEFAULT;
 
+																	   
+					 
+					   
+			   
+
 CREATE OR REPLACE FUNCTION postgis_wagyu_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE
@@ -3223,6 +3255,7 @@ DECLARE
 	libver text;
 	librev text;
 	projver text;
+					   
 	geosver text;
 	geosver_compiled text;
 	sfcgalver text;
@@ -3248,6 +3281,7 @@ BEGIN
 	SELECT @extschema@.postgis_proj_version() INTO projver;
 	SELECT @extschema@.postgis_geos_version() INTO geosver;
 	SELECT @extschema@.postgis_geos_compiled_version() INTO geosver_compiled;
+																		  
 	SELECT @extschema@.postgis_libjson_version() INTO json_lib_ver;
 	SELECT @extschema@.postgis_libprotobuf_version() INTO protobuf_lib_ver;
 	SELECT @extschema@.postgis_wagyu_version() INTO wagyu_lib_ver;
@@ -3346,6 +3380,9 @@ BEGIN
 
 	IF  projver IS NOT NULL THEN
 		fullver = fullver || ' PROJ="' || projver || '"';
+																						  
+	  
+																				
 	END IF;
 
 	IF  gdalver IS NOT NULL THEN
@@ -5033,6 +5070,8 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits integer 
 	_COST_MEDIUM;
 
 -- Availability: 3.0.0
+											
+																		 
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(r record, geom_column text DEFAULT '', maxdecimaldigits integer DEFAULT 9, pretty_bool bool DEFAULT false)
 	RETURNS text
 	AS 'MODULE_PATHNAME','ST_AsGeoJsonRow'
@@ -6511,6 +6550,18 @@ CREATE OR REPLACE FUNCTION ST_LineToCurve(Geometry geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+														  
+				
+									 
+											
+			
+
+																  
+				 
+								  
+											
+			
+
 -------------------------------------------------------------------------------
 -- SQL/MM - SQL Functions on type ST_Point
 -------------------------------------------------------------------------------
@@ -6840,7 +6891,7 @@ $$
 			var_cent := @extschema@.ST_Centroid(var_param_geom);
 			IF (@extschema@.ST_XMax(var_enline) - @extschema@.ST_XMin(var_enline) ) > var_buf AND (@extschema@.ST_YMax(var_enline) - @extschema@.ST_YMin(var_enline) ) > var_buf THEN
 					IF @extschema@.ST_Dwithin(@extschema@.ST_Centroid(var_convhull) , @extschema@.ST_Centroid(@extschema@.ST_Envelope(var_param_geom)), var_buf/2) THEN
-				-- If the geometric dimension is > 1 and the object is symettric (cutting at centroid will not work -- offset a bit)
+				-- If the geometric dimension is > 1 and the object is symmetric (cutting at centroid will not work -- offset a bit)
 						var_cent := @extschema@.ST_Translate(var_cent, (@extschema@.ST_XMax(var_enline) - @extschema@.ST_XMin(var_enline))/1000,  (@extschema@.ST_YMAX(var_enline) - @extschema@.ST_YMin(var_enline))/1000);
 					ELSE
 						-- uses closest point on geometry to centroid. I can't explain why we are doing this
@@ -6934,7 +6985,7 @@ CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFA
 -- Availability: 2.3.0
 -- has to be here because need ST_StartPoint
 CREATE OR REPLACE FUNCTION ST_Angle(line1 geometry, line2 geometry)
-	RETURNS float8 AS 'SELECT ST_Angle(St_StartPoint($1), ST_EndPoint($1), St_StartPoint($2), ST_EndPoint($2))'
+	RETURNS float8 AS 'SELECT @extschema@.ST_Angle(@extschema@.St_StartPoint($1), @extschema@.ST_EndPoint($1), @extschema@.ST_StartPoint($2), @extschema@.ST_EndPoint($2))'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
@@ -6953,5 +7004,25 @@ CREATE OR REPLACE FUNCTION ST_3DLineInterpolatePoint(geometry, float8)
 -- moved to separate file cause its involved
 #include "postgis_spgist.sql.in"
 #include "postgis_letters.sql"
+
+																	   
+								   
+																	   
+					  
+																								   
+				
+													   
+											
+			  
+
+																	   
+					  
+																	   
+					  
+																							
+				
+										  
+										   
+			  
 
 COMMIT;
