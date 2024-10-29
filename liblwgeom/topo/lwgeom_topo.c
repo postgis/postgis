@@ -5410,7 +5410,7 @@ _lwt_SnapEdgeToExistingNode(
 
     /* TODO: check that newSplitEdgeLine part does not cross any other edge ? */
     /* TODO: check that newSplitEdgeLine retains its position in the edge end star (see ticket #5786) */
-    /* TODO: check that the motion range does not contain any node
+    /* TODO: check that the motion range does not contain any node */
 
     {{
       // build the motion range shape: splitC->geoms[0] + splitC->geoms[1] - edge->geom
