@@ -144,7 +144,7 @@ static inline uint32_t c_int(enum mvt_cmd_id id, uint32_t count)
 
 static inline uint32_t p_int(int32_t value)
 {
-	return (value << 1) ^ (value >> 31);
+	return (value << 1) ^ ((int64_t)value >> 31);
 }
 
 static uint32_t encode_ptarray(enum mvt_type type, POINTARRAY *pa, uint32_t *buffer, int32_t *px, int32_t *py)
