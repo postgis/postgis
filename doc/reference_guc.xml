@@ -5,7 +5,7 @@
     <para>This section lists custom PostGIS Grand Unified Custom Variables (GUC).
 These can be set globally, by database, by session or by transaction. Best set at global or database level.</para>
 <para>For more examples of usage refer to <link xlink:href="https://www.postgresql.org/docs/current/sql-set.html">SQL SET</link> 
-    and <link xlink:href="https://www.postgresql.org/docs/current/sql-altersystem.html">SQL ALTER SYSTEM</link>
+    and <link xlink:href="https://www.postgresql.org/docs/current/sql-altersystem.html">SQL ALTER SYSTEM</link></para>
     </abstract>
     </info>
     <refentry xml:id="postgis_backend">
