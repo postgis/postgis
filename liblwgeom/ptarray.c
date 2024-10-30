@@ -2088,7 +2088,7 @@ ptarray_startpoint(const POINTARRAY *pa, POINT4D *pt)
  *
  */
 void
-ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
+ptarray_grid_in_place(POINTARRAY *pa, gridspec *grid)
 {
 	uint32_t j = 0;
 	POINT4D *p, *p_out = NULL;
@@ -2108,11 +2108,24 @@ ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
 		if (ndims > 3)
 			m = p->m;
 
-		if (grid->xsize > 0)
-			x = rint((x - grid->ipx) / grid->xsize) * grid->xsize + grid->ipx;
+		/*
+		 * See https://github.com/libgeos/geos/pull/956
+		 * We use scale for rounding when gridsize is < 1 and
+		 * gridsize for rounding when scale < 1.
+		 */
+		if (grid->xsize > 0) {
+			if (grid->xsize < 1)
+				x = rint((x - grid->ipx) * grid->xscale) / grid->xscale + grid->ipx;
+			else
+				x = rint((x - grid->ipx) / grid->xsize) * grid->xsize + grid->ipx;
+		}
 
-		if (grid->ysize > 0)
-			y = rint((y - grid->ipy) / grid->ysize) * grid->ysize + grid->ipy;
+		if (grid->ysize > 0) {
+			if (grid->ysize < 1)
+				y = rint((y - grid->ipy) * grid->yscale) / grid->yscale + grid->ipy;
+			else
+				y = rint((y - grid->ipy) / grid->ysize) * grid->ysize + grid->ipy;
+		}
 
 		/* Read and round this point */
 		/* Z is always in third position */

@@ -4,6 +4,6 @@ ERROR:  could not parse coordinate operation 'bad coordinate transform pipeline'
 ERROR:  lwgeom_transform_pipeline: Failed to transform
 5|0
 6|12345
-7|POINT(151.20000000000002 -33.800000000000004)
+7|POINT(151.2 -33.8)
 8|POINT(2 49)
 9|12345

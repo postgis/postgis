@@ -432,7 +432,7 @@ int lwtin_is_closed(const LWTIN *tin);
 /**
 * Snap to grid
 */
-void ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid);
+void ptarray_grid_in_place(POINTARRAY *pa, gridspec *grid);
 
 /*
 * What side of the line formed by p1 and p2 does q fall?

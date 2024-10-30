@@ -1510,6 +1510,10 @@ SELECT '#5320', ST_SimplifyPreserveTopology('0106000020E864000001000000010300000
 DROP PROCEDURE IF EXISTS p_force_parellel_mode(text);
 SELECT '#5378', ST_SRID( ST_Buffer(ST_GeomFromText('POINT(-94 29.53)', 4269)::geography, 12)::geometry );
 
+SELECT '#5425', ST_AsText(ST_SnapToGrid(
+  ST_SnapToGrid('POINT(1.23456789 9.87654321)'::geometry, 0.001),
+  0.000001) );
+
 SELECT '#5627' AS ticket, bool_and(ST_Intersects(
     'MULTIPOINT(EMPTY,(-378 574))'::geometry,
     geom))

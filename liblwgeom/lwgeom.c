@@ -2226,11 +2226,51 @@ lwgeom_startpoint(const LWGEOM *lwgeom, POINT4D *pt)
 	}
 }
 
+static inline double
+snap_to_int(double val)
+{
+	const double tolerance = 1e-6;
+    double rintval = rint(val);
+    if (fabs(val - rintval) < tolerance)
+    {
+        return rintval;
+    }
+    return val;
+}
+
+/*
+ * See https://github.com/libgeos/geos/pull/956
+ * We use scale for rounding when gridsize is < 1 and
+ * gridsize for rounding when scale < 1.
+ */
+static inline void
+condition_gridspec_scale(gridspec *grid)
+{
+	if(grid->xsize > 0)
+	{
+		if(grid->xsize < 1)
+			grid->xscale = snap_to_int(1/grid->xsize);
+		else
+			grid->xsize = snap_to_int(grid->xsize);
+	}
+	if(grid->ysize > 0)
+	{
+		if(grid->ysize < 1)
+			grid->yscale = snap_to_int(1/grid->ysize);
+		else
+			grid->ysize = snap_to_int(grid->ysize);
+	}
+}
+
+
 void
-lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
+lwgeom_grid_in_place(LWGEOM *geom, gridspec *grid)
 {
 	if (!geom) return;
 	if (lwgeom_is_empty(geom)) return;
+
+	condition_gridspec_scale(grid);
+
 	switch ( geom->type )
 	{
 		case POINTTYPE:
@@ -2328,7 +2368,7 @@ lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
 
 
 LWGEOM *
-lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
+lwgeom_grid(const LWGEOM *lwgeom, gridspec *grid)
 {
 	LWGEOM *lwgeom_out = lwgeom_clone_deep(lwgeom);
 	lwgeom_grid_in_place(lwgeom_out, grid);

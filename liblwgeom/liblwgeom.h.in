@@ -1398,11 +1398,15 @@ typedef struct gridspec_t
 	double ysize;
 	double zsize;
 	double msize;
+    double xscale;
+    double yscale;
+    double zscale;
+    double mscale;
 }
 gridspec;
 
-extern LWGEOM* lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid);
-extern void lwgeom_grid_in_place(LWGEOM *lwgeom, const gridspec *grid);
+extern LWGEOM* lwgeom_grid(const LWGEOM *lwgeom, gridspec *grid);
+extern void lwgeom_grid_in_place(LWGEOM *lwgeom, gridspec *grid);
 
 
 /****************************************************************

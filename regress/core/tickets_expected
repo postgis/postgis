@@ -468,6 +468,7 @@ ERROR:  Line has no points
 ERROR:  Geometry contains invalid coordinates
 ERROR:  Geometry contains invalid coordinates
 #5378|4269
+#5425|POINT(1.235 9.877)
 #5627|t
 #5604|2|POINT(0 0)|2|POINT(-2 0)
 #5639|fullywithin1|t
