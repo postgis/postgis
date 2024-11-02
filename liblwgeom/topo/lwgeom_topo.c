@@ -5287,7 +5287,7 @@ _lwt_SnapEdgeToExistingNode(
   for ( n=0; n<2; ++n)
   {
     int forward;
-    /* TODO: directly get full existing edge rather than just id */
+    /* TODO: directly get full existing edge rather than just id * */
     LWT_ELEMID existingEdgeId = _lwt_GetEqualEdge( topo, lwgeom_as_lwline(splitC->geoms[n]), &forward );
     if ( existingEdgeId == -1 )
     {
@@ -5408,74 +5408,8 @@ _lwt_SnapEdgeToExistingNode(
       splitNodeNewEdgeOutgoing = 0;
     }
 
-    /* TODO: check that newSplitEdgeLine part does not cross any other edge ? */
+    /* TODO: check that newSplitEdgeLine part does not crosses any other edge ? */
     /* TODO: check that newSplitEdgeLine retains its position in the edge end star (see ticket #5786) */
-    /* TODO: check that the motion range does not contain any node */
-
-    {{
-      // build the motion range shape: splitC->geoms[0] + splitC->geoms[1] - edge->geom
-      POINTARRAY *motionRange = ptarray_clone_deep(lwgeom_as_lwline(splitC->geoms[0])->points);
-      ptarray_append_ptarray(motionRange, lwgeom_as_lwline(splitC->geoms[1])->points, 0);
-      POINTARRAY *reverseNewLine = ptarray_clone_deep(edge->geom->points);
-      ptarray_reverse_in_place(reverseNewLine);
-      ptarray_append_ptarray(motionRange, reverseNewLine, 0);
-      ptarray_free(reverseNewLine);
-
-      // motionBounds takes ownership of motionRange
-      LWLINE *motionBounds = lwline_construct(topo->srid, NULL, motionRange);
-
-      // motionPoly takes ownership of motionBounds
-      LWGEOM *motionPoly = (LWGEOM *)lwpoly_from_lwlines(motionBounds, 0, NULL);
-
-      LWDEBUGG(1, motionPoly, "Motion range");
-
-      // check the Motion range doesn't cover any of
-      // the edges incident to the split node other
-      // than the existing edge
-      GEOSGeometry *motionPolyG = NULL;
-      for ( uint64_t t=0; t<splitNodeEdges->numEdges; t++ )
-      {
-        LWT_ISO_EDGE *e = &(splitNodeEdges->edges[t]);
-        GEOSGeometry *eg;
-        if ( e == existingEdge ) continue;
-        if ( e == edge ) continue;
-        if ( ! motionPolyG ) {
-          motionPolyG = LWGEOM2GEOS( motionPoly, 0 );
-          if ( ! motionPolyG )
-          {
-            lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
-            return -1;
-          }
-        }
-        eg = LWGEOM2GEOS( lwline_as_lwgeom(e->geom), 0 );
-        if ( ! eg )
-        {
-          lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
-          return -1;
-        }
-
-        int covers = GEOSCovers( motionPolyG, eg );
-        // TODO: use preparedCovers ?
-        GEOSGeom_destroy(eg);
-        if (covers == 2)
-        {
-          lwerror("Covers error: %s", lwgeom_geos_errmsg);
-          return -1;
-        }
-        if ( covers )
-        {
-          lwgeom_free(motionPoly);
-          lwerror("snapping edge %" LWTFMT_ELEMID
-            " to new node moves it past edge %" LWTFMT_ELEMID,
-            edge->edge_id, e->edge_id
-          );
-          return -1;
-        }
-      }
-      if ( motionPolyG ) GEOSGeom_destroy(motionPolyG);
-
-      lwgeom_free(motionPoly);
-    }}
 
     LWDEBUGF(1, "Existing edge %"
         LWTFMT_ELEMID " (post-modEdgeSplit) next_right:%"
