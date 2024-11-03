@@ -49,11 +49,12 @@ BEGIN
   END IF;
 
   ------ Fetch next id for the new topology
-  FOR rec IN SELECT nextval('topology.topology_id_seq')
-  LOOP
-    topology_id = rec.nextval;
-  END LOOP;
-
+  --FOR rec IN SELECT nextval('topology.topology_id_seq')
+  --LOOP
+  --  topology_id = rec.nextval;
+  --END LOOP;
+  topology_id := nextval('topology.topology_id_seq');
+  
   sql := format(
     $$
       CREATE SCHEMA %1$I;
