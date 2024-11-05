@@ -12,3 +12,16 @@ SELECT 'CG_Translate2D', ST_AsText(CG_Translate2D('LINESTRING(1 1, 2 2)', 1, -1)
 SELECT 'CG_Translate3D', ST_AsText(CG_Translate3D('POINT(1 1 1)', 1, -1, 2), 0);
 SELECT 'CG_StraightSkeletonPartition', ST_AsText(CG_StraightSkeletonPartition('POLYGON((0 0, 4 0, 2 2, 0 0))', true), 2);
 SELECT 'CG_Buffer3D', ST_AsText(CG_Buffer3D('POINT(0 0 0)', 1, 8, 0), 2);
+SELECT 'CG_Rotate', ST_AsText(ST_ReducePrecision(CG_Rotate('LINESTRING  EMPTY', pi()/2), 0.1));
+SELECT 'CG_Rotate2D', ST_AsText(CG_Rotate2D('POINT EMPTY', pi()/2, 1, 1), 0);
+SELECT 'CG_Rotate3D', ST_AsText(ST_ReducePrecision(CG_Rotate3D('POINT EMPTY', pi()/2, 0, 0, 1), 0.1));
+SELECT 'CG_RotateX', ST_AsText(ST_ReducePrecision(CG_RotateX('POINT EMPTY', pi()/2), 0.1));
+SELECT 'CG_RotateY', ST_AsText(ST_ReducePrecision(CG_RotateY('POINT EMPTY', pi()/2), 0.1));
+SELECT 'CG_RotateZ', ST_AsText(ST_ReducePrecision(CG_RotateZ('POINT EMPTY', pi()/2), 0.1));
+SELECT 'CG_Scale', ST_AsText(CG_Scale('LINESTRING EMPTY', 2), 0);
+SELECT 'CG_Scale3D', ST_AsText(CG_Scale3D('POINT EMPTY', 2, 3, 4), 0);
+SELECT 'CG_Scale3DAroundCenter', ST_AsText(ST_ReducePrecision(CG_Scale3DAroundCenter('POINT EMPTY', 0.5, 0.5, 0.5, 1, 1, 1), 0.1));
+SELECT 'CG_Translate2D', ST_AsText(CG_Translate2D('LINESTRING EMPTY', 1, -1), 0);
+SELECT 'CG_Translate3D', ST_AsText(CG_Translate3D('POINT EMPTY', 1, -1, 2), 0);
+SELECT 'CG_StraightSkeletonPartition', ST_AsText(CG_StraightSkeletonPartition('POLYGON EMPTY', true), 2);
+SELECT 'CG_Buffer3D', ST_AsText(CG_Buffer3D('POINT EMPTY', 1, 8, 0), 2);
