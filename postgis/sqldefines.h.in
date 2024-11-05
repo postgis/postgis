@@ -22,17 +22,10 @@
  * See https://trac.osgeo.org/postgis/ticket/3675
  * for sideffects of costing inlined SQL.
  */
-#if POSTGIS_PGSQL_VERSION >= 120
 #define _COST_DEFAULT COST 1
 #define _COST_LOW COST 50
 #define _COST_MEDIUM COST 250
 #define _COST_HIGH COST 5000
-#else
-#define _COST_DEFAULT COST 1
-#define _COST_LOW COST 1
-#define _COST_MEDIUM COST 10
-#define _COST_HIGH COST 10
-#endif
 
 /*
  * Define the build date and the version number
