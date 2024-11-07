@@ -4226,6 +4226,8 @@ Datum ST_GetFaceEdges(PG_FUNCTION_ARGS)
 
   if ( state->curr == state->nelems )
   {
+    if ( state->nelems ) lwfree(state->elems);
+    lwfree( state );
     SRF_RETURN_DONE(funcctx);
   }
 
@@ -5108,6 +5110,7 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
     tol = PG_GETARG_FLOAT8(2);
     if ( tol < 0 )
     {
+      lwgeom_free(lwgeom);
       PG_FREE_IF_COPY(geom, 1);
       lwpgerror("Tolerance must be >=0");
       PG_RETURN_NULL();
@@ -5115,6 +5118,8 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
 
     if ( SPI_OK_CONNECT != SPI_connect() )
     {
+      lwgeom_free(lwgeom);
+      PG_FREE_IF_COPY(geom, 1);
       lwpgerror("Could not connect to SPI");
       PG_RETURN_NULL();
     }
@@ -5172,6 +5177,9 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
   if ( state->curr == state->nelems )
   {
     POSTGIS_DEBUG(1, "We're done, cleaning up all");
+
+    if ( state->nelems ) lwfree(state->elems);
+    lwfree( state );
     SRF_RETURN_DONE(funcctx);
   }
 
@@ -5377,6 +5385,8 @@ Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
   if ( state->curr == state->nelems )
   {
     POSTGIS_DEBUG(1, "We're done, cleaning up all");
+    if ( state->nelems ) lwfree(state->elems);
+    lwfree( state );
     SRF_RETURN_DONE(funcctx);
   }
 
@@ -5500,6 +5510,8 @@ Datum GetRingEdges(PG_FUNCTION_ARGS)
   if ( state->curr == state->nelems )
   {
     POSTGIS_DEBUG(1, "We're done, cleaning up all");
+    if ( state->nelems ) lwfree(state->elems);
+    lwfree( state );
     SRF_RETURN_DONE(funcctx);
   }
 
