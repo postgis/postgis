@@ -7181,9 +7181,9 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
         lwerror("GEOSDistanceIndexed error: %s", lwgeom_geos_errmsg);
         return NULL;
       }
+      GEOSGeom_destroy(edge_g);
       if ( dist && dist >= tol ) continue;
       nearby[nearbyindex++] = g;
-      GEOSGeom_destroy(edge_g);
     }}
     LWDEBUGF(1, "Found %d edges closer than tolerance (%g)", nearbyindex, tol);
     GEOSGeom_destroy(noded_g);
