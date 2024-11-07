@@ -325,7 +325,7 @@ static uint32 gserialized_typmod_in(ArrayType *arr, int is_geography)
 		}
 	}
 
-	lwfree(elem_values);
+	pfree(elem_values);
 
 	return typmod;
 }
