@@ -691,8 +691,8 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     /* check if the edge has a non-boundary-boundary intersection with our edge */
 
     relate = GEOSRelateBoundaryNodeRule(eegg, edgegg, 2);
+    GEOSGeom_destroy(eegg);
     if ( ! relate ) {
-      GEOSGeom_destroy(eegg);
       GEOSGeom_destroy(edgegg);
       _lwt_release_edges(edges, num_edges);
       lwerror("GEOSRelateBoundaryNodeRule error: %s", lwgeom_geos_errmsg);
@@ -704,7 +704,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     match = GEOSRelatePatternMatch(relate, "FF*F*****");
     if ( match ) {
       /* error or no interior intersection */
-      GEOSGeom_destroy(eegg);
       GEOSFree(relate);
       if ( match == 2 ) {
         _lwt_release_edges(edges, num_edges);
@@ -719,7 +718,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     if ( match ) {
       _lwt_release_edges(edges, num_edges);
       GEOSGeom_destroy(edgegg);
-      GEOSGeom_destroy(eegg);
       GEOSFree(relate);
       if ( match == 2 ) {
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
@@ -734,7 +732,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     if ( match ) {
       _lwt_release_edges(edges, num_edges);
       GEOSGeom_destroy(edgegg);
-      GEOSGeom_destroy(eegg);
       GEOSFree(relate);
       if ( match == 2 ) {
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
@@ -749,7 +746,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     if ( match ) {
       _lwt_release_edges(edges, num_edges);
       GEOSGeom_destroy(edgegg);
-      GEOSGeom_destroy(eegg);
       GEOSFree(relate);
       if ( match == 2 ) {
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
@@ -764,7 +760,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     if ( match ) {
       _lwt_release_edges(edges, num_edges);
       GEOSGeom_destroy(edgegg);
-      GEOSGeom_destroy(eegg);
       GEOSFree(relate);
       if ( match == 2 ) {
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
@@ -779,7 +774,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     if ( match ) {
       _lwt_release_edges(edges, num_edges);
       GEOSGeom_destroy(edgegg);
-      GEOSGeom_destroy(eegg);
       GEOSFree(relate);
       if ( match == 2 ) {
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
@@ -792,7 +786,6 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     LWDEBUGF(2, "Edge %" LWTFMT_ELEMID " analisys completed, it does no harm", edge_id);
 
     GEOSFree(relate);
-    GEOSGeom_destroy(eegg);
   }
   LWDEBUGF(1, "No edge crossing detected among the %lu candidate edges", num_edges);
   if ( edges ) _lwt_release_edges(edges, num_edges);
