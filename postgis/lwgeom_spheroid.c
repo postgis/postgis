@@ -80,7 +80,7 @@ PG_FUNCTION_INFO_V1(ellipsoid_in);
 Datum ellipsoid_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
-	SPHEROID *sphere = (SPHEROID *) palloc(sizeof(SPHEROID));
+	SPHEROID *sphere = (SPHEROID *) lwalloc(sizeof(SPHEROID));
 	int nitems;
 	double rf;
 
@@ -89,7 +89,7 @@ Datum ellipsoid_in(PG_FUNCTION_ARGS)
 	if (strstr(str,"SPHEROID") !=  str )
 	{
 		elog(ERROR,"SPHEROID parser - doesn't start with SPHEROID");
-		pfree(sphere);
+		lwfree(sphere);
 		PG_RETURN_NULL();
 	}
 
@@ -103,7 +103,7 @@ Datum ellipsoid_in(PG_FUNCTION_ARGS)
 	if (nitems != 3)
 	{
 		elog(ERROR,"SPHEROID parser - couldn't parse the spheroid");
-		pfree(sphere);
+		lwfree(sphere);
 		PG_RETURN_NULL();
 	}
 
@@ -123,7 +123,7 @@ Datum ellipsoid_out(PG_FUNCTION_ARGS)
 	SPHEROID *sphere = (SPHEROID *) PG_GETARG_POINTER(0);
 	char *result;
 	size_t sz = MAX_DIGS_DOUBLE + MAX_DIGS_DOUBLE + 20 + 9 + 2;
-	result = palloc(sz);
+	result = lwalloc(sz);
 
 	snprintf(result, sz, "SPHEROID(\"%s\",%.15g,%.15g)",
 	        sphere->name, sphere->a, 1.0/sphere->f);

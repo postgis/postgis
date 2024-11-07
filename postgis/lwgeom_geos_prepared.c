@@ -58,7 +58,7 @@
 **
 **  All this is to allow us to clean up external malloc'ed objects
 **  (the GEOS Geometry and PreparedGeometry) before the structure
-**  that references them (PrepGeomCache) is pfree'd by PgSQL. The
+**  that references them (PrepGeomCache) is lwfree'd by PgSQL. The
 **  methods in the PreparedCacheContext are called just before the
 **  function context is freed, allowing us to look up the references
 **  in the PrepGeomHash and free them before the function context
@@ -338,7 +338,7 @@ PrepGeomCacheCleaner(GeomCache *cache)
 static GeomCache*
 PrepGeomCacheAllocator()
 {
-	PrepGeomCache* prepcache = palloc(sizeof(PrepGeomCache));
+	PrepGeomCache* prepcache = lwalloc(sizeof(PrepGeomCache));
 	memset(prepcache, 0, sizeof(PrepGeomCache));
 	prepcache->context_statement = CurrentMemoryContext;
 	prepcache->gcache.type = PREP_CACHE_ENTRY;

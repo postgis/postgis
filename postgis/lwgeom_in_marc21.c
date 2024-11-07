@@ -225,7 +225,7 @@ static double parse_geo_literal(char *literal) {
 
 	POSTGIS_DEBUGF(2, "    start_literal=%d", start_literal);
 
-	dgr = palloc(sizeof(char)*numdigits_degrees+1);
+	dgr = lwalloc(sizeof(char)*numdigits_degrees+1);
 	snprintf(dgr, numdigits_degrees+1, "%s", &literal[start_literal]);
 
 	if (strchr(literal, '.') == NULL && strchr(literal, ',') == NULL) {
@@ -251,21 +251,21 @@ static double parse_geo_literal(char *literal) {
 		/* checks if the literal contains minutes */
 		if (literal_length > (start_literal + numdigits_degrees)) {
 
-			min = palloc(sizeof(char)*numdigits_minutes+1);
+			min = lwalloc(sizeof(char)*numdigits_minutes+1);
 			snprintf(min, numdigits_minutes+1, "%s", &literal[start_literal+numdigits_degrees]);
 			POSTGIS_DEBUGF(2, "    parsed minutes (lon/lat): %s", min);
 			result = result + atof(min) / 60;
-			pfree(min);
+			lwfree(min);
 
 			/* checks if the literal contains seconds */
 			if (literal_length >= (start_literal + numdigits_degrees + numdigits_minutes)) {
 
-				sec = palloc(sizeof(char)*numdigits_seconds+1);
+				sec = lwalloc(sizeof(char)*numdigits_seconds+1);
 				snprintf(sec, numdigits_seconds+1, "%s", &literal[start_literal+numdigits_degrees+numdigits_minutes]);
 				POSTGIS_DEBUGF(2, "    parsed seconds (lon/lat): %s", sec);
 
 				result = result + atof(sec) / 3600;
-				pfree(sec);
+				lwfree(sec);
 
 			}
 
@@ -299,12 +299,12 @@ static double parse_geo_literal(char *literal) {
 			 *     |-> start_literal (1 digit; optional)
 			 */
 
-			char *dec = palloc(sizeof(char)*literal_length+1);
+			char *dec = lwalloc(sizeof(char)*literal_length+1);
 			snprintf(dec, literal_length+1, "%s", &literal[start_literal]);
 			result = atof(dec);
 
 			POSTGIS_DEBUGF(2, "    parsed decimal degrees: %s", dec);
-			pfree(dec);
+			lwfree(dec);
 
 		/* checks if the literal is encoded in decimal minutes */
 		} else if (literal[start_literal + numdigits_degrees + numdigits_minutes] == '.') {
@@ -320,7 +320,7 @@ static double parse_geo_literal(char *literal) {
 
 			size_t len_decimal_minutes = literal_length - (start_literal + numdigits_degrees);
 
-			min = palloc(sizeof(char)*len_decimal_minutes+1);
+			min = lwalloc(sizeof(char)*len_decimal_minutes+1);
 			snprintf(min, len_decimal_minutes+1, "%s", &literal[start_literal + numdigits_degrees]);
 
 			POSTGIS_DEBUGF(2, "    parsed degrees: %s", dgr);
@@ -328,7 +328,7 @@ static double parse_geo_literal(char *literal) {
 
 			result = atof(dgr) + (atof(min) / 60);
 
-			pfree(min);
+			lwfree(min);
 
 		/* checks if the literal is encoded in decimal seconds */
 		} else if (literal[start_literal + numdigits_degrees + numdigits_minutes + numdigits_seconds] == '.') {
@@ -345,10 +345,10 @@ static double parse_geo_literal(char *literal) {
 
 			size_t len_decimal_seconds = literal_length - (start_literal + numdigits_degrees + numdigits_minutes);
 
-			min = palloc(sizeof(char)*numdigits_minutes+1);
+			min = lwalloc(sizeof(char)*numdigits_minutes+1);
 			snprintf(min, numdigits_minutes+1, "%s", &literal[start_literal + numdigits_degrees]);
 
-			sec = palloc(sizeof(char)*len_decimal_seconds+1);
+			sec = lwalloc(sizeof(char)*len_decimal_seconds+1);
 			snprintf(sec, len_decimal_seconds+1, "%s", &literal[start_literal + numdigits_degrees + numdigits_minutes]);
 
 			result = atof(dgr) + (atof(min) / 60) + (atof(sec) / 3600);
@@ -356,8 +356,8 @@ static double parse_geo_literal(char *literal) {
 			POSTGIS_DEBUGF(2, "    parsed degrees: %s", dgr);
 			POSTGIS_DEBUGF(2, "    parsed minutes: %s", min);
 			POSTGIS_DEBUGF(2, "    parsed decimal seconds: %s", sec);
-			pfree(min);
-			pfree(sec);
+			lwfree(min);
+			lwfree(sec);
 
 		}
 
@@ -368,7 +368,7 @@ static double parse_geo_literal(char *literal) {
 	 * “-“ for S and W
 	 */
 
-	pfree(dgr);
+	lwfree(dgr);
 
 	if (start_character == 'S' || start_character == 'W' || start_character == '-') {
 

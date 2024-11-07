@@ -352,7 +352,7 @@ gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
 		return NULL;
 	}
 	proj_destroy(lwp->pj);
-	pfree(lwp);
+	lwfree(lwp);
 
 	return pa;
 }

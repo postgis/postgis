@@ -122,7 +122,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 		else
 		{
 			len = VARSIZE_ANY_EXHDR(prefix_text);
-			prefix_buf = palloc(len + 2); /* +2 is one for the ':' and one for term null */
+			prefix_buf = lwalloc(len + 2); /* +2 is one for the ':' and one for term null */
 			memcpy(prefix_buf, VARDATA(prefix_text), len);
 			/* add colon and null terminate */
 			prefix_buf[len] = ':';
@@ -142,7 +142,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 		else
 		{
 			len = VARSIZE_ANY_EXHDR(gml_id_text);
-			gml_id_buf = palloc(len+1);
+			gml_id_buf = lwalloc(len+1);
 			memcpy(gml_id_buf, VARDATA(gml_id_text), len);
 			gml_id_buf[len] = '\0';
 			gml_id = gml_id_buf;
@@ -295,7 +295,7 @@ Datum geometry_to_jsonb(PG_FUNCTION_ARGS)
 	}
 	geojson = lwgeom_to_geojson(lwgeom, srs, 15, 0);
 	lwgeom_free(lwgeom);
-	cstr = palloc0(VARSIZE_ANY_EXHDR(geojson) + 1);
+	cstr = lwalloc0(VARSIZE_ANY_EXHDR(geojson) + 1);
 	memcpy(cstr, VARDATA(geojson), VARSIZE_ANY_EXHDR(geojson));
 	PG_RETURN_DATUM(DirectFunctionCall1(jsonb_in, PointerGetDatum(cstr)));
 }
@@ -379,7 +379,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 		else
 		{
 			/* +2 is one for the ':' and one for term null */
-			defidbuf = palloc(VARSIZE_ANY_EXHDR(defid_text)+2);
+			defidbuf = lwalloc(VARSIZE_ANY_EXHDR(defid_text)+2);
 			memcpy(defidbuf, VARDATA(defid_text),
 			       VARSIZE_ANY_EXHDR(defid_text));
 			/* add colon and null terminate */

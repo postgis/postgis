@@ -404,7 +404,7 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 			lwpgerror("K (%d) must be smaller than the number of rows in the group (%d)", k, N);
 
 		/* Read all the geometries from the partition window into a list */
-		geoms = palloc(sizeof(LWGEOM*) * N);
+		geoms = lwalloc(sizeof(LWGEOM*) * N);
 		for (i = 0; i < N; i++)
 		{
 			GSERIALIZED *g;
@@ -430,7 +430,7 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 			if (geoms[i])
 				lwgeom_free(geoms[i]);
 
-		pfree(geoms);
+		lwfree(geoms);
 
 		if (!r)
 		{
@@ -525,7 +525,7 @@ coverage_read_partition_into_collection(
 	uint32 i, ngeoms = 0, gtype;
 
 	/* Read in all the geometries in this partition */
-	geoms = palloc(rowcount * sizeof(GEOSGeometry*));
+	geoms = lwalloc(rowcount * sizeof(GEOSGeometry*));
 	for (i = 0; i < rowcount; i++)
 	{
 		GSERIALIZED* gser;
@@ -599,7 +599,7 @@ coverage_read_partition_into_collection(
 		return NULL;
 	}
 
-	pfree(geoms);
+	lwfree(geoms);
 	return geos;
 }
 
@@ -812,7 +812,7 @@ Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 
 	/* Convert all geometries into GEOSGeometry array */
-	geoms = palloc(sizeof(GEOSGeometry *) * nelems);
+	geoms = lwalloc(sizeof(GEOSGeometry *) * nelems);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 

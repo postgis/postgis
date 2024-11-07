@@ -132,8 +132,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	/* now we have a geometry, and input/output PJ structs. */
 	geom = lwgeom_from_gserialized(gser);
 	rv = lwgeom_transform_from_str(geom, input_srs, output_srs);
-	pfree(input_srs);
-	pfree(output_srs);
+	lwfree(input_srs);
+	lwfree(output_srs);
 
 	if (rv == LW_FAILURE)
 	{
@@ -178,7 +178,7 @@ Datum transform_pipeline_geom(PG_FUNCTION_ARGS)
 
 	geom = lwgeom_from_gserialized(gser);
 	rv = lwgeom_transform_pipeline(geom, input_pipeline, is_forward);
-	pfree(input_pipeline);
+	lwfree(input_pipeline);
 
 	if (rv == LW_FAILURE)
 	{
@@ -279,7 +279,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	if (VARSIZE_ANY_EXHDR(prefix_text) > 0)
 	{
 		/* +2 is one for the ':' and one for term null */
-		prefixbuf = palloc(VARSIZE_ANY_EXHDR(prefix_text)+2);
+		prefixbuf = lwalloc(VARSIZE_ANY_EXHDR(prefix_text)+2);
 		memcpy(prefixbuf, VARDATA(prefix_text),
 		       VARSIZE_ANY_EXHDR(prefix_text));
 		/* add colon and null terminate */
@@ -408,10 +408,10 @@ srs_tuple_from_entry(const struct srs_entry* entry, TupleDesc tuple_desc)
 static struct srs_data *
 srs_state_init()
 {
-	struct srs_data *state = palloc0(sizeof(*state));
+	struct srs_data *state = lwalloc0(sizeof(*state));
 	state->capacity = 8192;
 	state->num_entries = 0;
-	state->entries = palloc0(state->capacity * sizeof(*(state->entries)));
+	state->entries = lwalloc0(state->capacity * sizeof(*(state->entries)));
 	return state;
 }
 
@@ -421,7 +421,7 @@ srs_state_memcheck(struct srs_data *state)
 	if (state->num_entries == state->capacity)
 	{
 		state->capacity *= 2;
-		state->entries = repalloc(state->entries, state->capacity * sizeof(*(state->entries)));
+		state->entries = lwrealloc(state->entries, state->capacity * sizeof(*(state->entries)));
 	}
 	return;
 }

@@ -256,7 +256,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	if (VARSIZE_ANY_EXHDR(prefix_text) > 0)
 	{
 		/* +2 is one for the ':' and one for term null */
-		prefix_buf = palloc(VARSIZE_ANY_EXHDR(prefix_text)+2);
+		prefix_buf = lwalloc(VARSIZE_ANY_EXHDR(prefix_text)+2);
 		memcpy(prefix_buf, VARDATA_ANY(prefix_text),
 		       VARSIZE_ANY_EXHDR(prefix_text));
 		/* add colon and null terminate */
@@ -271,7 +271,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 
 	if (VARSIZE_ANY_EXHDR(id_text) > 0)
 	{
-		id_buf = palloc(VARSIZE_ANY_EXHDR(id_text)+2);
+		id_buf = lwalloc(VARSIZE_ANY_EXHDR(id_text)+2);
 		memcpy(id_buf, VARDATA(id_text), VARSIZE_ANY_EXHDR(id_text));
 		id_buf[VARSIZE_ANY_EXHDR(id_text)+1] = '\0';
 		id = id_buf;
@@ -342,7 +342,7 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	if (VARSIZE_ANY_EXHDR(prefix_text) > 0)
 	{
 		/* +2 is one for the ':' and one for term null */
-		prefixbuf = palloc(VARSIZE_ANY_EXHDR(prefix_text)+2);
+		prefixbuf = lwalloc(VARSIZE_ANY_EXHDR(prefix_text)+2);
 		memcpy(prefixbuf, VARDATA(prefix_text),
 		       VARSIZE_ANY_EXHDR(prefix_text));
 		/* add colon and null terminate */
@@ -452,7 +452,7 @@ Datum geography_from_text(PG_FUNCTION_ARGS)
 	srid_check_latlong(lwg_parser_result.geom->srid);
 
 	/* Clean up string */
-	pfree(wkt);
+	lwfree(wkt);
 	g_ser = gserialized_geography_from_lwgeom(lwg_parser_result.geom, -1);
 
 	/* Clean up temporary object */

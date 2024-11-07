@@ -28,6 +28,7 @@
 #include "../postgis_config.h"
 
 #include "liblwgeom.h"         /* For standard geometry types. */
+#include "liblwgeom_internal.h"
 #include "lwgeom_pg.h"       /* For debugging macros. */
 
 
@@ -85,7 +86,7 @@ Datum geometry_to_point(PG_FUNCTION_ARGS)
 	if (gserialized_peek_first_point(geom, &pt) == LW_FAILURE)
 		PG_RETURN_NULL();
 
-	point = (Point *)palloc(sizeof(Point));
+	point = (Point *)lwalloc(sizeof(Point));
 	point->x = pt.x;
 	point->y = pt.y;
 
@@ -121,7 +122,7 @@ Datum geometry_to_path(PG_FUNCTION_ARGS)
 
 	pa = lwline->points;
     size = offsetof(PATH, p[0]) + sizeof(path->p[0]) * pa->npoints;
-    path = (PATH*)palloc(size);
+    path = (PATH*)lwalloc(size);
 	SET_VARSIZE(path, size);
 	path->npts = pa->npoints;
 	path->closed = 0;
@@ -207,7 +208,7 @@ Datum geometry_to_polygon(PG_FUNCTION_ARGS)
 	pa = lwpoly->rings[0];
 
 	size = offsetof(POLYGON, p[0]) + sizeof(polygon->p[0]) * pa->npoints;
-	polygon = (POLYGON*)palloc0(size); /* zero any holes */
+	polygon = (POLYGON*)lwalloc0(size); /* zero any holes */
 	SET_VARSIZE(polygon, size);
 
 	polygon->npts = pa->npoints;
@@ -270,7 +271,7 @@ Datum polygon_to_geometry(PG_FUNCTION_ARGS)
 		ptarray_append_point(pa, &pt, LW_FALSE);
 	}
 
-	ppa = palloc(sizeof(POINTARRAY*));
+	ppa = lwalloc(sizeof(POINTARRAY*));
 	ppa[0] = pa;
 	lwpoly = lwpoly_construct(SRID_UNKNOWN, NULL, 1, ppa);
 	geom = geometry_serialize(lwpoly_as_lwgeom(lwpoly));

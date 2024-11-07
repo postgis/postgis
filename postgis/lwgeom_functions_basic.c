@@ -494,7 +494,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 		bbox = lwgeom->bbox;
 		lwgeom->srid = SRID_UNKNOWN;
 		lwgeom->bbox = NULL;
-		lwgeoms = palloc(sizeof(LWGEOM *));
+		lwgeoms = lwalloc(sizeof(LWGEOM *));
 		lwgeoms[0] = lwgeom;
 		lwgeom = (LWGEOM *)lwcollection_construct(COLLECTIONTYPE, srid, bbox, 1, lwgeoms);
 	}
@@ -1041,7 +1041,7 @@ Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 
 	/* Release detoasted geometry */
-	pfree(geom);
+	lwfree(geom);
 
 	PG_RETURN_POINTER(ret);
 }
@@ -1284,7 +1284,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	 * Deserialize all geometries in array into the lwgeoms pointers
 	 * array. Check input types to form output type.
 	 */
-	lwgeoms = palloc(sizeof(LWGEOM *) * nelems);
+	lwgeoms = lwalloc(sizeof(LWGEOM *) * nelems);
 	count = 0;
 	outtype = 0;
 
@@ -1327,7 +1327,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 					gbox_merge(lwgeoms[count]->bbox, box);
 				else
 				{
-					pfree(box);
+					lwfree(box);
 					box = NULL;
 				}
 			}
@@ -1453,7 +1453,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	 */
 
 	/* possibly more then required */
-	geoms = palloc(sizeof(LWGEOM *) * nelems);
+	geoms = lwalloc(sizeof(LWGEOM *) * nelems);
 	ngeoms = 0;
 
 	iterator = array_create_iterator(array, 0, NULL);
@@ -2444,7 +2444,7 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 
 	/* Release memory */
 	lwline_free(line);
-	pfree(pglwg1); /* we forced copy, POINARRAY is released now */
+	lwfree(pglwg1); /* we forced copy, POINARRAY is released now */
 
 	PG_RETURN_POINTER(result);
 }
@@ -3005,7 +3005,7 @@ Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
 
 	g_out = geometry_serialize(lwgeom_in);
 
-	pfree(g_in);
+	lwfree(g_in);
 	PG_RETURN_POINTER(g_out);
 }
 

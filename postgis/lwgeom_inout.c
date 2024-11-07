@@ -45,6 +45,7 @@
 #include "funcapi.h"
 
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwgeom_cache.h"
 #include "lwgeom_pg.h"
 #include "geography.h" /* for lwgeom_valid_typmod */
@@ -250,14 +251,14 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
     (uint8_t *)format_str, strlen(format_str), GetDatabaseEncoding(), PG_UTF8);
   assert(tmp != NULL);
   if ( tmp != format_str ) {
-    pfree(format_str);
+    lwfree(format_str);
     format_str = tmp;
   }
 
 	/* Produce the formatted string. */
 	formatted_str = lwpoint_to_latlon((LWPOINT *)lwgeom, format_str);
   assert(formatted_str != NULL);
-  pfree(format_str);
+  lwfree(format_str);
 
   /* Convert the formatted string from UTF-8 back to database encoding. */
   tmp = (char *)pg_do_encoding_conversion(
@@ -265,13 +266,13 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
     PG_UTF8, GetDatabaseEncoding());
   assert(tmp != NULL);
   if ( tmp != formatted_str) {
-    pfree(formatted_str);
+    lwfree(formatted_str);
     formatted_str = tmp;
   }
 
 	/* Convert to the postgres output string type. */
 	formatted_text = cstring_to_text(formatted_str);
-  pfree(formatted_str);
+  lwfree(formatted_str);
 
 	PG_RETURN_POINTER(formatted_text);
 }
@@ -539,7 +540,7 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 			col = lwcollection_construct_empty(COLLECTIONTYPE, lwgeom_get_srid(geom), has_z, has_m);
 		}
 		if ( ! idlist )
-			idlist = palloc0(num_geoms * sizeof(int64_t));
+			idlist = lwalloc0(num_geoms * sizeof(int64_t));
 
 
 		/* Check if there is differences in dimensionality*/

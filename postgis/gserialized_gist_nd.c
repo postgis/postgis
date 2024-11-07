@@ -110,7 +110,7 @@ typedef bool (*gidx_predicate)(GIDX *a, GIDX *b);
 GIDX *
 gidx_copy(GIDX *b)
 {
-	GIDX *c = (GIDX *)palloc(VARSIZE(b));
+	GIDX *c = (GIDX *)lwalloc(VARSIZE(b));
 	POSTGIS_DEBUGF(5, "copied gidx (%p) to gidx (%p)", b, c);
 	memcpy((void *)c, (void *)b, VARSIZE(b));
 	return c;
@@ -173,7 +173,7 @@ gidx_merge(GIDX **b_union, GIDX *b_new)
 	/* Q: Unknown is 0 dimensions. Should we never modify unknown instead? (ticket #4232) */
 	if (gidx_is_unknown(*b_union))
 	{
-		pfree(*b_union);
+		lwfree(*b_union);
 		*b_union = gidx_copy(b_new);
 		return;
 	}
@@ -185,7 +185,7 @@ gidx_merge(GIDX **b_union, GIDX *b_new)
 	 * Unset dimension is essentially [-FLT_MAX, FLT_MAX], so we can either trim it or reset to that range.*/
 	if (dims_new < dims_union)
 	{
-		*b_union = (GIDX *)repalloc(*b_union, GIDX_SIZE(dims_new));
+		*b_union = (GIDX *)lwrealloc(*b_union, GIDX_SIZE(dims_new));
 		SET_VARSIZE(*b_union, VARSIZE(b_new));
 		dims_union = dims_new;
 	}
@@ -931,7 +931,7 @@ Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
 	}
 
 	POSTGIS_DEBUG(4, "[GIST] processing leafkey input");
-	entry_out = palloc(sizeof(GISTENTRY));
+	entry_out = lwalloc(sizeof(GISTENTRY));
 
 	/*
 	** Null key? Make a copy of the input entry and
@@ -1379,7 +1379,7 @@ gserialized_gist_picksplit_addlist(OffsetNumber *list, GIDX **box_union, GIDX *b
 		gidx_merge(box_union, box_current);
 	else
 	{
-		pfree(*box_union);
+		lwfree(*box_union);
 		*box_union = gidx_copy(box_current);
 	}
 
@@ -1430,8 +1430,8 @@ gserialized_gist_picksplit_fallback(GistEntryVector *entryvec, GIST_SPLITVEC *v)
 	maxoff = entryvec->n - 1;
 
 	nbytes = (maxoff + 2) * sizeof(OffsetNumber);
-	v->spl_left = (OffsetNumber *)palloc(nbytes);
-	v->spl_right = (OffsetNumber *)palloc(nbytes);
+	v->spl_left = (OffsetNumber *)lwalloc(nbytes);
+	v->spl_right = (OffsetNumber *)lwalloc(nbytes);
 	v->spl_nleft = v->spl_nright = 0;
 
 	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
@@ -1635,13 +1635,13 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 	nbytes = (max_offset + 2) * sizeof(OffsetNumber);
 	ndims_pageunion = GIDX_NDIMS(box_pageunion);
 	POSTGIS_DEBUGF(4, "[GIST] ndims_pageunion == %d", ndims_pageunion);
-	pos = palloc(2 * ndims_pageunion * sizeof(int));
-	list = palloc(2 * ndims_pageunion * sizeof(OffsetNumber *));
-	box_union = palloc(2 * ndims_pageunion * sizeof(GIDX *));
+	pos = lwalloc(2 * ndims_pageunion * sizeof(int));
+	list = lwalloc(2 * ndims_pageunion * sizeof(OffsetNumber *));
+	box_union = lwalloc(2 * ndims_pageunion * sizeof(GIDX *));
 	for (d = 0; d < ndims_pageunion; d++)
 	{
-		list[BELOW(d)] = (OffsetNumber *)palloc(nbytes);
-		list[ABOVE(d)] = (OffsetNumber *)palloc(nbytes);
+		list[BELOW(d)] = (OffsetNumber *)lwalloc(nbytes);
+		list[ABOVE(d)] = (OffsetNumber *)lwalloc(nbytes);
 		box_union[BELOW(d)] = gidx_new(ndims_pageunion);
 		box_union[ABOVE(d)] = gidx_new(ndims_pageunion);
 		pos[BELOW(d)] = 0;
@@ -1683,7 +1683,7 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 		** Instead we split on center points and see if we do better.
 		** First calculate the average center point for each axis.
 		*/
-		double *avgCenter = palloc(ndims_pageunion * sizeof(double));
+		double *avgCenter = lwalloc(ndims_pageunion * sizeof(double));
 
 		for (d = 0; d < ndims_pageunion; d++)
 			avgCenter[d] = 0.0;

@@ -40,6 +40,7 @@
 #include "catalog/pg_type.h" /* for CSTRINGOID */
 
 #include "liblwgeom.h"         /* For standard geometry types. */
+#include "liblwgeom_internal.h" /* For lwalloc0 */
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
 #include "lwgeom_transform.h" /* for srid_is_latlon */
@@ -62,7 +63,7 @@ PG_FUNCTION_INFO_V1(postgis_typmod_out);
 Datum postgis_typmod_out(PG_FUNCTION_ARGS)
 {
 	StringInfoData si;
-	// char *s = (char*)palloc(64);
+	// char *s = (char*)lwalloc(64);
 	int32 typmod = PG_GETARG_INT32(0);
 	int32 srid = TYPMOD_GET_SRID(typmod);
 	int32 type = TYPMOD_GET_TYPE(typmod);
@@ -74,7 +75,7 @@ Datum postgis_typmod_out(PG_FUNCTION_ARGS)
 	/* No SRID or type or dimensionality? Then no typmod at all. Return empty string. */
 	if (!(srid || type || hasz || hasm) || typmod < 0)
 	{
-		PG_RETURN_CSTRING(pstrdup(""));
+		PG_RETURN_CSTRING(lwstrdup(""));
 	}
 
 	/* Opening bracket. */
@@ -140,7 +141,7 @@ GSERIALIZED* postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 	{
 		LWPOINT *empty_point = lwpoint_construct_empty(geom_srid, geom_z, geom_m);
 		geom_type = POINTTYPE;
-		pfree(gser);
+		lwfree(gser);
 		if ( gserialized_is_geodetic(gser) )
 			gser = geography_serialize(lwpoint_as_lwgeom(empty_point));
 		else
@@ -324,7 +325,7 @@ static uint32 gserialized_typmod_in(ArrayType *arr, int is_geography)
 		}
 	}
 
-	pfree(elem_values);
+	lwfree(elem_values);
 
 	return typmod;
 }
@@ -407,7 +408,7 @@ Datum postgis_typmod_type(PG_FUNCTION_ARGS)
 {
 	int32 typmod = PG_GETARG_INT32(0);
 	int32 type = TYPMOD_GET_TYPE(typmod);
-	char *s = (char*)palloc(64);
+	char *s = (char*)lwalloc(64);
 	char *ptr = s;
 	text *stext;
 
@@ -426,7 +427,7 @@ Datum postgis_typmod_type(PG_FUNCTION_ARGS)
 		ptr += sprintf(ptr, "%s", "M");
 
 	stext = cstring_to_text(s);
-	pfree(s);
+	lwfree(s);
 	PG_RETURN_TEXT_P(stext);
 }
 

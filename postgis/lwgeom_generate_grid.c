@@ -30,6 +30,7 @@
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 
 #include <math.h>
 #include <float.h>
@@ -107,7 +108,7 @@ HexagonGridState;
 static HexagonGridState *
 hexagon_grid_state(double size, const GBOX *gbox, int32_t srid)
 {
-	HexagonGridState *state = palloc0(sizeof(HexagonGridState));
+	HexagonGridState *state = lwalloc0(sizeof(HexagonGridState));
 	double col_width = 1.5 * size;
 	double row_height = size * 2 * H;
 
@@ -188,7 +189,7 @@ SquareGridState;
 static SquareGridState *
 square_grid_state(double size, const GBOX *gbox, int32_t srid)
 {
-	SquareGridState *state = palloc0(sizeof(SquareGridState));
+	SquareGridState *state = lwalloc0(sizeof(SquareGridState));
 
 	/* fill in state */
 	state->cell_shape = SHAPE_SQUARE;

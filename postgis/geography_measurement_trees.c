@@ -76,7 +76,7 @@ CircTreeFreer(GeomCache* cache)
 static GeomCache*
 CircTreeAllocator(void)
 {
-	CircTreeGeomCache* cache = palloc(sizeof(CircTreeGeomCache));
+	CircTreeGeomCache* cache = lwalloc(sizeof(CircTreeGeomCache));
 	memset(cache, 0, sizeof(CircTreeGeomCache));
 	return (GeomCache*)cache;
 }

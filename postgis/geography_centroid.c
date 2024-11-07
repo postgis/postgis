@@ -105,7 +105,7 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
 
         /* average between all points */
         uint32_t size = mpoints->ngeoms;
-        POINT3DM* points = palloc(size*sizeof(POINT3DM));
+        POINT3DM* points = lwalloc(size*sizeof(POINT3DM));
 
 		uint32_t i;
 		for (i = 0; i < size; i++) {
@@ -115,7 +115,7 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
         }
 
 		lwpoint_out = geography_centroid_from_wpoints(srid, points, size);
-        pfree(points);
+        lwfree(points);
         break;
     }
 
@@ -266,7 +266,7 @@ LWPOINT* geography_centroid_from_mline(const LWMLINE* mline, SPHEROID* s)
         size += (mline->geoms[i]->points->npoints - 1) * 2;
     }
 
-    points = palloc(size*sizeof(POINT3DM));
+    points = lwalloc(size*sizeof(POINT3DM));
 
     for (i = 0; i < mline->ngeoms; i++) {
         LWLINE* line = mline->geoms[i];
@@ -304,7 +304,7 @@ LWPOINT* geography_centroid_from_mline(const LWMLINE* mline, SPHEROID* s)
     }
 
     result = geography_centroid_from_wpoints(mline->srid, points, size);
-    pfree(points);
+    lwfree(points);
     return result;
 }
 
@@ -327,7 +327,7 @@ LWPOINT* geography_centroid_from_mpoly(const LWMPOLY* mpoly, bool use_spheroid, 
 		}
     }
 
-    points = palloc(size*sizeof(POINT3DM));
+    points = lwalloc(size*sizeof(POINT3DM));
 
 
     /* use first point as reference to create triangles */
@@ -397,6 +397,6 @@ LWPOINT* geography_centroid_from_mpoly(const LWMPOLY* mpoly, bool use_spheroid, 
         }
     }
     result = geography_centroid_from_wpoints(mpoly->srid, points, size);
-    pfree(points);
+    lwfree(points);
     return result;
 }

@@ -598,7 +598,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	** Collect the non-empty inputs and stuff them into a GEOS collection
 	*/
 	geoms_size = nelems;
-	geoms = palloc(sizeof(GEOSGeometry*) * geoms_size);
+	geoms = lwalloc(sizeof(GEOSGeometry*) * geoms_size);
 
 	/*
 	** We need to convert the array of GSERIALIZED into a GEOS collection.
@@ -650,7 +650,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			if ( curgeom == geoms_size )
 			{
 				geoms_size *= 2;
-				geoms = repalloc( geoms, sizeof(GEOSGeometry*) * geoms_size );
+				geoms = lwrealloc( geoms, sizeof(GEOSGeometry*) * geoms_size );
 			}
 
 			geoms[curgeom] = g;
@@ -1169,7 +1169,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 				break;
 			}
 		}
-		pfree(params); /* was pstrduped */
+		lwfree(params); /* was lwstrduped */
 	}
 
 
@@ -1383,7 +1383,7 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 			}
 		}
 		POSTGIS_DEBUGF(3, "joinStyle:%d mitreLimit:%g", joinStyle, mitreLimit);
-		pfree(paramstr); /* alloc'ed in text_to_cstring */
+		lwfree(paramstr); /* alloc'ed in text_to_cstring */
 	}
 
 	lwgeom_result = lwgeom_offsetcurve(lwgeom_input, size, quadsegs, joinStyle, mitreLimit);
@@ -1693,7 +1693,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy((GEOSGeometry *)g1);
 		if ( geos_reason )
 		{
-			reason = pstrdup(geos_reason);
+			reason = lwstrdup(geos_reason);
 			GEOSFree(geos_reason);
 		}
 		if ( geos_location )
@@ -1712,7 +1712,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	else
 	{
 		/* TODO: check lwgeom_geos_errmsg for validity error */
-		reason = pstrdup(lwgeom_geos_errmsg);
+		reason = lwstrdup(lwgeom_geos_errmsg);
 	}
 
 	/* the boolean validity */
@@ -1725,7 +1725,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	values[2] = location ? lwgeom_to_hexwkb_buffer(location, WKB_EXTENDED) : 0;
 
 	tuple = BuildTupleFromCStrings(attinmeta, values);
-	result = (HeapTupleHeader) palloc(tuple->t_len);
+	result = (HeapTupleHeader) lwalloc(tuple->t_len);
 	memcpy(result, tuple->t_data, tuple->t_len);
 	heap_freetuple(tuple);
 
@@ -1862,7 +1862,7 @@ LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems,  int* is3d, int* srid)
     bool gotsrid = false;
     uint32_t i = 0;
 
-	LWGEOM** lw_geoms = palloc(nelems * sizeof(LWGEOM*));
+	LWGEOM** lw_geoms = lwalloc(nelems * sizeof(LWGEOM*));
 
     iterator = array_create_iterator(array, 0, NULL);
 
@@ -1904,7 +1904,7 @@ GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* sri
     bool gotsrid = false;
     uint32_t i = 0;
 
-	GEOSGeometry** geos_geoms = palloc(nelems * sizeof(GEOSGeometry*));
+	GEOSGeometry** geos_geoms = lwalloc(nelems * sizeof(GEOSGeometry*));
 
     iterator = array_create_iterator(array, 0, NULL);
 
@@ -2013,7 +2013,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(3, "polygonize_garray: GEOSpolygonize returned");
 
 	for (i=0; i<nelems; ++i) GEOSGeom_destroy((GEOSGeometry *)vgeoms[i]);
-	pfree(vgeoms);
+	lwfree(vgeoms);
 
 	if ( ! geos_result ) PG_RETURN_NULL();
 
@@ -2072,11 +2072,11 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 		elog(ERROR, "clusterintersecting: Error performing clustering");
 		PG_RETURN_NULL();
 	}
-	pfree(geos_inputs); /* don't need to destroy items because GeometryCollections have taken ownership */
+	lwfree(geos_inputs); /* don't need to destroy items because GeometryCollections have taken ownership */
 
 	if (!geos_results) PG_RETURN_NULL();
 
-	result_array_data = palloc(nclusters * sizeof(Datum));
+	result_array_data = lwalloc(nclusters * sizeof(Datum));
 	for (i=0; i<nclusters; ++i)
 	{
 		result_array_data[i] = PointerGetDatum(GEOS2POSTGIS(geos_results[i], is3d));
@@ -2148,11 +2148,11 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 		elog(ERROR, "cluster_within: Error performing clustering");
 		PG_RETURN_NULL();
 	}
-	pfree(lw_inputs); /* don't need to destroy items because GeometryCollections have taken ownership */
+	lwfree(lw_inputs); /* don't need to destroy items because GeometryCollections have taken ownership */
 
 	if (!lw_results) PG_RETURN_NULL();
 
-	result_array_data = palloc(nclusters * sizeof(Datum));
+	result_array_data = lwalloc(nclusters * sizeof(Datum));
 	for (i=0; i<nclusters; ++i)
 	{
 		result_array_data[i] = PointerGetDatum(geometry_serialize(lw_results[i]));

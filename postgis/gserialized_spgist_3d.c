@@ -82,8 +82,8 @@ Datum gserialized_overlaps_3d(PG_FUNCTION_ARGS)
 	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
 	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
 	bool resut = BOX3D_overlaps_internal(box1, box2);
-	pfree(box1);
-	pfree(box2);
+	lwfree(box1);
+	lwfree(box2);
 
 	PG_RETURN_BOOL(resut);
 }
@@ -94,8 +94,8 @@ Datum gserialized_contains_3d(PG_FUNCTION_ARGS)
 	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
 	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
 	bool resut = BOX3D_contains_internal(box1, box2);
-	pfree(box1);
-	pfree(box2);
+	lwfree(box1);
+	lwfree(box2);
 
 	PG_RETURN_BOOL(resut);
 }
@@ -106,8 +106,8 @@ Datum gserialized_contained_3d(PG_FUNCTION_ARGS)
 	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
 	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
 	bool resut = BOX3D_contained_internal(box1, box2);
-	pfree(box1);
-	pfree(box2);
+	lwfree(box1);
+	lwfree(box2);
 
 	PG_RETURN_BOOL(resut);
 }
@@ -118,8 +118,8 @@ Datum gserialized_same_3d(PG_FUNCTION_ARGS)
 	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
 	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
 	bool resut = BOX3D_same_internal(box1, box2);
-	pfree(box1);
-	pfree(box2);
+	lwfree(box1);
+	lwfree(box2);
 
 	PG_RETURN_BOOL(resut);
 }
@@ -190,7 +190,7 @@ getOctant(const BOX3D *centroid, const BOX3D *inBox)
 static CubeBox3D *
 initCubeBox(void)
 {
-	CubeBox3D *cube_box = (CubeBox3D *)palloc(sizeof(CubeBox3D));
+	CubeBox3D *cube_box = (CubeBox3D *)lwalloc(sizeof(CubeBox3D));
 	double infinity = DBL_MAX;
 
 	cube_box->left.xmin = -infinity;
@@ -224,7 +224,7 @@ initCubeBox(void)
 static CubeBox3D *
 nextCubeBox3D(CubeBox3D *cube_box, BOX3D *centroid, uint8 octant)
 {
-	CubeBox3D *next_cube_box = (CubeBox3D *)palloc(sizeof(CubeBox3D));
+	CubeBox3D *next_cube_box = (CubeBox3D *)lwalloc(sizeof(CubeBox3D));
 
 	memcpy(next_cube_box, cube_box, sizeof(CubeBox3D));
 
@@ -424,12 +424,12 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	spgPickSplitOut *out = (spgPickSplitOut *)PG_GETARG_POINTER(1);
 	BOX3D *centroid;
 	int median, i;
-	double *lowXs = palloc(sizeof(double) * in->nTuples);
-	double *highXs = palloc(sizeof(double) * in->nTuples);
-	double *lowYs = palloc(sizeof(double) * in->nTuples);
-	double *highYs = palloc(sizeof(double) * in->nTuples);
-	double *lowZs = palloc(sizeof(double) * in->nTuples);
-	double *highZs = palloc(sizeof(double) * in->nTuples);
+	double *lowXs = lwalloc(sizeof(double) * in->nTuples);
+	double *highXs = lwalloc(sizeof(double) * in->nTuples);
+	double *lowYs = lwalloc(sizeof(double) * in->nTuples);
+	double *highYs = lwalloc(sizeof(double) * in->nTuples);
+	double *lowZs = lwalloc(sizeof(double) * in->nTuples);
+	double *highZs = lwalloc(sizeof(double) * in->nTuples);
 	int32_t srid = SRID_UNKNOWN;
 
 	/* Calculate median of all 6D coordinates */
@@ -456,7 +456,7 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 
 	median = in->nTuples / 2;
 
-	centroid = palloc(sizeof(BOX3D));
+	centroid = lwalloc(sizeof(BOX3D));
 
 	centroid->xmin = lowXs[median];
 	centroid->xmax = highXs[median];
@@ -473,8 +473,8 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	out->nNodes = 64;
 	out->nodeLabels = NULL; /* We don't need node labels. */
 
-	out->mapTuplesToNodes = palloc(sizeof(int) * in->nTuples);
-	out->leafTupleDatums = palloc(sizeof(Datum) * in->nTuples);
+	out->mapTuplesToNodes = lwalloc(sizeof(int) * in->nTuples);
+	out->leafTupleDatums = lwalloc(sizeof(Datum) * in->nTuples);
 
 	/*
 	 * Assign ranges to corresponding nodes according to octants relative to
@@ -489,12 +489,12 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 		out->mapTuplesToNodes[i] = octant;
 	}
 
-	pfree(lowXs);
-	pfree(highXs);
-	pfree(lowYs);
-	pfree(highYs);
-	pfree(lowZs);
-	pfree(highZs);
+	lwfree(lowXs);
+	lwfree(highXs);
+	lwfree(lowYs);
+	lwfree(highYs);
+	lwfree(lowZs);
+	lwfree(highZs);
 
 	PG_RETURN_VOID();
 }
@@ -520,7 +520,7 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 	{
 		/* Report that all nodes should be visited */
 		out->nNodes = in->nNodes;
-		out->nodeNumbers = (int *)palloc(sizeof(int) * in->nNodes);
+		out->nodeNumbers = (int *)lwalloc(sizeof(int) * in->nNodes);
 		for (i = 0; i < in->nNodes; i++)
 			out->nodeNumbers[i] = i;
 
@@ -540,8 +540,8 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 
 	/* Allocate enough memory for nodes */
 	out->nNodes = 0;
-	nodeNumbers = (int *)palloc(sizeof(int) * in->nNodes);
-	traversalValues = (void **)palloc(sizeof(void *) * in->nNodes);
+	nodeNumbers = (int *)lwalloc(sizeof(int) * in->nNodes);
+	traversalValues = (void **)lwalloc(sizeof(void *) * in->nNodes);
 
 	/*
 	 * We switch memory context, because we want to allocate memory for new
@@ -642,20 +642,20 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 			 * If this node is not selected, we don't need to keep the next
 			 * traversal value in the memory context.
 			 */
-			pfree(next_cube_box);
+			lwfree(next_cube_box);
 		}
 	}
 
 	/* Pass to the next level only the values that need to be traversed */
-	out->nodeNumbers = (int *)palloc(sizeof(int) * out->nNodes);
-	out->traversalValues = (void **)palloc(sizeof(void *) * out->nNodes);
+	out->nodeNumbers = (int *)lwalloc(sizeof(int) * out->nNodes);
+	out->traversalValues = (void **)lwalloc(sizeof(void *) * out->nNodes);
 	for (i = 0; i < out->nNodes; i++)
 	{
 		out->nodeNumbers[i] = nodeNumbers[i];
 		out->traversalValues[i] = traversalValues[i];
 	}
-	pfree(nodeNumbers);
-	pfree(traversalValues);
+	lwfree(nodeNumbers);
+	lwfree(traversalValues);
 
 	/* Switch after */
 	MemoryContextSwitchTo(old_ctx);

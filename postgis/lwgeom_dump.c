@@ -374,7 +374,7 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 			SRF_RETURN_DONE(funcctx);
 
 		/* allocate memory for user context */
-		fctx = (collection_fctx *) palloc(sizeof(collection_fctx));
+		fctx = (collection_fctx *) lwalloc(sizeof(collection_fctx));
 
 		/* initialize state */
 		fctx->nextgeom = 0;

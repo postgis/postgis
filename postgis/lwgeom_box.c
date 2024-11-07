@@ -116,7 +116,7 @@ Datum BOX2D_out(PG_FUNCTION_ARGS)
 	tmp[size++] = ')';
 	size += 1;
 
-	result = palloc(size + 1); /* +1= null term */
+	result = lwalloc(size + 1); /* +1= null term */
 	memcpy(result, tmp, size + 1);
 	result[size] = '\0';
 
@@ -348,7 +348,7 @@ Datum BOX2D_intersects(PG_FUNCTION_ARGS)
 	GBOX *n;
 
 
-	n = (GBOX *) palloc(sizeof(GBOX));
+	n = (GBOX *) lwalloc(sizeof(GBOX));
 
 	n->xmax = Min(a->xmax, b->xmax);
 	n->ymax = Min(a->ymax, b->ymax);
@@ -358,7 +358,7 @@ Datum BOX2D_intersects(PG_FUNCTION_ARGS)
 
 	if (n->xmax < n->xmin || n->ymax < n->ymin)
 	{
-		pfree(n);
+		lwfree(n);
 		/* Indicate "no intersection" by returning NULL pointer */
 		n = NULL;
 	}
@@ -387,7 +387,7 @@ PG_FUNCTION_INFO_V1(BOX2D_expand);
 Datum BOX2D_expand(PG_FUNCTION_ARGS)
 {
 	GBOX *box = (GBOX *)PG_GETARG_POINTER(0);
-	GBOX *result = (GBOX *)palloc(sizeof(GBOX));
+	GBOX *result = (GBOX *)lwalloc(sizeof(GBOX));
 	memcpy(result, box, sizeof(GBOX));
 
 	if (PG_NARGS() == 2)
@@ -427,7 +427,7 @@ Datum BOX2D_combine(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* combine_box2d(null,null) => null */
 	}
 
-	result = (GBOX *)palloc(sizeof(GBOX));
+	result = (GBOX *)lwalloc(sizeof(GBOX));
 
 	if (PG_ARGISNULL(box2d_idx))
 	{

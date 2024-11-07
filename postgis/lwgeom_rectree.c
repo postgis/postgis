@@ -92,7 +92,7 @@ RectTreeFreer(GeomCache *cache)
 static GeomCache *
 RectTreeAllocator(void)
 {
-	RectTreeGeomCache *cache = palloc(sizeof(RectTreeGeomCache));
+	RectTreeGeomCache *cache = lwalloc(sizeof(RectTreeGeomCache));
 	memset(cache, 0, sizeof(RectTreeGeomCache));
 	return (GeomCache*)cache;
 }

@@ -34,6 +34,8 @@
 #include "utils/datetime.h"
 #include "utils/jsonb.h"
 
+#include "liblwgeom_internal.h"
+
 static uint8_t get_column_type(Oid typoid) {
 	switch (typoid)
 	{
@@ -79,7 +81,7 @@ static void inspect_table(struct flatgeobuf_agg_ctx *ctx)
 
 	POSTGIS_DEBUG(2, "calling inspect_table");
 
-	columns = palloc(sizeof(flatgeobuf_column *) * natts);
+	columns = lwalloc(sizeof(flatgeobuf_column *) * natts);
 	ctx->tupdesc = tupdesc;
 
 	// inspect columns
@@ -103,8 +105,8 @@ static void inspect_table(struct flatgeobuf_agg_ctx *ctx)
 		}
 		POSTGIS_DEBUGF(2, "creating column definition for %s with oid %d", key, typoid);
 
-		c = (flatgeobuf_column *) palloc0(sizeof(flatgeobuf_column));
-		c->name = pstrdup(key);
+		c = (flatgeobuf_column *) lwalloc0(sizeof(flatgeobuf_column));
+		c->name = lwstrdup(key);
 		c->type = get_column_type(typoid);
 		columns[columns_size] = c;
 		columns_size++;
@@ -125,12 +127,12 @@ static void ensure_properties_size(struct flatgeobuf_agg_ctx *ctx, size_t size)
 	if (ctx->ctx->properties_size == 0) {
 		ctx->ctx->properties_size = 1024 * 4;
 		POSTGIS_DEBUGF(2, "flatgeobuf: properties buffer to size %d", ctx->ctx->properties_size);
-		ctx->ctx->properties = palloc(ctx->ctx->properties_size);
+		ctx->ctx->properties = lwalloc(ctx->ctx->properties_size);
 	}
 	if (ctx->ctx->properties_size < size) {
 		ctx->ctx->properties_size = ctx->ctx->properties_size * 2;
 		POSTGIS_DEBUGF(2, "flatgeobuf: reallocating properties buffer to size %d", ctx->ctx->properties_size);
-		ctx->ctx->properties = repalloc(ctx->ctx->properties, ctx->ctx->properties_size);
+		ctx->ctx->properties = lwrealloc(ctx->ctx->properties, ctx->ctx->properties_size);
 		ensure_properties_size(ctx, size);
 	}
 }
@@ -140,12 +142,12 @@ static void ensure_items_len(struct flatgeobuf_agg_ctx *ctx)
 {
 	if (ctx->ctx->features_count == 0) {
 		ctx->ctx->items_len = 32;
-		ctx->ctx->items = palloc(sizeof(flatgeobuf_item *) * ctx->ctx->items_len);
+		ctx->ctx->items = lwalloc(sizeof(flatgeobuf_item *) * ctx->ctx->items_len);
 	}
 	if (ctx->ctx->items_len < (ctx->ctx->features_count + 1)) {
 		ctx->ctx->items_len = ctx->ctx->items_len * 2;
 		POSTGIS_DEBUGF(2, "flatgeobuf: reallocating items to len %ld", ctx->ctx->items_len);
-		ctx->ctx->items = repalloc(ctx->ctx->items, sizeof(flatgeobuf_item *) * ctx->ctx->items_len);
+		ctx->ctx->items = lwrealloc(ctx->ctx->items, sizeof(flatgeobuf_item *) * ctx->ctx->items_len);
 		ensure_items_len(ctx);
 	}
 }
@@ -235,7 +237,7 @@ static void encode_properties(flatgeobuf_agg_ctx *ctx)
 			TimestampTz timestamp;
 			timestamp = DatumGetTimestampTz(datum);
 			timestamp2tm(timestamp, &tz, &tm, &fsec, &tzn, NULL);
-			string_value = palloc(MAXDATELEN + 1);
+			string_value = lwalloc(MAXDATELEN + 1);
 			EncodeDateTime(&tm, fsec, true, tz, tzn, USE_ISO_DATES, string_value);
 			len = strlen(string_value);
 			ensure_properties_size(ctx, offset + sizeof(len));
@@ -432,7 +434,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for string value");
 			memcpy(&len, data + offset, sizeof(uint32_t));
 			offset += sizeof(len);
-			buf = palloc0(len + 1);
+			buf = lwalloc0(len + 1);
 			memcpy(buf, (const char *) data + offset, len);
 			ParseDateTime((const char *) buf, workbuf, sizeof(workbuf), field, ftype, MAXDATEFIELDS, &nf);
 
@@ -467,8 +469,8 @@ void flatgeobuf_decode_row(struct flatgeobuf_decode_ctx *ctx)
 	HeapTuple heapTuple;
 	uint32_t natts = ctx->tupdesc->natts;
 
-	Datum *values = palloc0(natts * sizeof(Datum *));
-	bool *isnull = palloc0(natts * sizeof(bool *));
+	Datum *values = lwalloc0(natts * sizeof(Datum *));
+	bool *isnull = lwalloc0(natts * sizeof(bool *));
 
 	values[0] = Int32GetDatum(ctx->fid);
 
@@ -504,8 +506,8 @@ struct flatgeobuf_agg_ctx *flatgeobuf_agg_ctx_init(const char *geom_name, const 
 {
 	struct flatgeobuf_agg_ctx *ctx;
 	size_t size = VARHDRSZ + FLATGEOBUF_MAGICBYTES_SIZE;
-	ctx = palloc0(sizeof(*ctx));
-	ctx->ctx = palloc0(sizeof(flatgeobuf_ctx));
+	ctx = lwalloc0(sizeof(*ctx));
+	ctx->ctx = lwalloc0(sizeof(flatgeobuf_ctx));
 	ctx->ctx->buf = lwalloc(size);
 	memcpy(ctx->ctx->buf + VARHDRSZ, flatgeobuf_magicbytes, FLATGEOBUF_MAGICBYTES_SIZE);
 	ctx->geom_name = geom_name;

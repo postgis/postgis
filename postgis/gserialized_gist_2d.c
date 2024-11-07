@@ -124,7 +124,7 @@ static char* box2df_to_string(const BOX2DF *a)
 	int len = 7;
 
 	if (a == NULL)
-		return pstrdup("<NULLPTR>");
+		return lwstrdup("<NULLPTR>");
 
 	len += lwprint_double(a->xmin, precision, &tmp[len]);
 	tmp[len++] = ' ';
@@ -136,13 +136,13 @@ static char* box2df_to_string(const BOX2DF *a)
 	len += lwprint_double(a->ymax, precision, &tmp[len]);
 	tmp[len++] = ')';
 
-	return pstrdup(tmp);
+	return lwstrdup(tmp);
 }
 
 /* Allocate a new copy of BOX2DF */
 BOX2DF* box2df_copy(BOX2DF *b)
 {
-	BOX2DF *c = (BOX2DF*)palloc(sizeof(BOX2DF));
+	BOX2DF *c = (BOX2DF*)lwalloc(sizeof(BOX2DF));
 	memcpy((void*)c, (void*)b, sizeof(BOX2DF));
 	POSTGIS_DEBUGF(5, "copied box2df (%p) to box2df (%p)", b, c);
 	return c;
@@ -860,7 +860,7 @@ Datum gserialized_gist_compress_2d(PG_FUNCTION_ARGS)
 	}
 
 	POSTGIS_DEBUG(4, "[GIST] processing leafkey input");
-	entry_out = palloc(sizeof(GISTENTRY));
+	entry_out = lwalloc(sizeof(GISTENTRY));
 
 	/*
 	** Null key? Make a copy of the input entry and
@@ -1434,8 +1434,8 @@ fallbackSplit(GistEntryVector *entryvec, GIST_SPLITVEC *v)
 	maxoff = entryvec->n - 1;
 
 	nbytes = (maxoff + 2) * sizeof(OffsetNumber);
-	v->spl_left = (OffsetNumber *) palloc(nbytes);
-	v->spl_right = (OffsetNumber *) palloc(nbytes);
+	v->spl_left = (OffsetNumber *) lwalloc(nbytes);
+	v->spl_right = (OffsetNumber *) lwalloc(nbytes);
 	v->spl_nleft = v->spl_nright = 0;
 
 	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
@@ -1447,7 +1447,7 @@ fallbackSplit(GistEntryVector *entryvec, GIST_SPLITVEC *v)
 			v->spl_left[v->spl_nleft] = i;
 			if (unionL == NULL)
 			{
-				unionL = (BOX2DF *) palloc(sizeof(BOX2DF));
+				unionL = (BOX2DF *) lwalloc(sizeof(BOX2DF));
 				*unionL = *cur;
 			}
 			else
@@ -1460,7 +1460,7 @@ fallbackSplit(GistEntryVector *entryvec, GIST_SPLITVEC *v)
 			v->spl_right[v->spl_nright] = i;
 			if (unionR == NULL)
 			{
-				unionR = (BOX2DF *) palloc(sizeof(BOX2DF));
+				unionR = (BOX2DF *) lwalloc(sizeof(BOX2DF));
 				*unionR = *cur;
 			}
 			else
@@ -1782,8 +1782,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	nentries = context.entriesCount = maxoff - FirstOffsetNumber + 1;
 
 	/* Allocate arrays for intervals along axes */
-	intervalsLower = (SplitInterval *) palloc(nentries * sizeof(SplitInterval));
-	intervalsUpper = (SplitInterval *) palloc(nentries * sizeof(SplitInterval));
+	intervalsLower = (SplitInterval *) lwalloc(nentries * sizeof(SplitInterval));
+	intervalsUpper = (SplitInterval *) lwalloc(nentries * sizeof(SplitInterval));
 
 	/*
 	 * Calculate the overall minimum bounding box over all the entries.
@@ -1963,21 +1963,21 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(4, "split direction: %d", context.dim);
 
 	/* Allocate vectors for results */
-	v->spl_left = (OffsetNumber *) palloc(nentries * sizeof(OffsetNumber));
-	v->spl_right = (OffsetNumber *) palloc(nentries * sizeof(OffsetNumber));
+	v->spl_left = (OffsetNumber *) lwalloc(nentries * sizeof(OffsetNumber));
+	v->spl_right = (OffsetNumber *) lwalloc(nentries * sizeof(OffsetNumber));
 	v->spl_nleft = 0;
 	v->spl_nright = 0;
 
 	/* Allocate bounding boxes of left and right groups */
-	leftBox = palloc0(sizeof(BOX2DF));
-	rightBox = palloc0(sizeof(BOX2DF));
+	leftBox = lwalloc0(sizeof(BOX2DF));
+	rightBox = lwalloc0(sizeof(BOX2DF));
 
 	/*
 	 * Allocate an array for "common entries" - entries which can be placed to
 	 * either group without affecting overlap along selected axis.
 	 */
 	commonEntriesCount = 0;
-	commonEntries = (CommonEntry *) palloc(nentries * sizeof(CommonEntry));
+	commonEntries = (CommonEntry *) lwalloc(nentries * sizeof(CommonEntry));
 
 	/* Helper macros to place an entry in the left or right group */
 #define PLACE_LEFT(box, off)					\

@@ -198,7 +198,7 @@ static int is_format_valid(const char* format){
 		const size_t int_part_len = (size_t)(dec_part - format);
 		if(int_part_len == 0 || dec_part_len<2)	return LW_FALSE;
 
-		int_part = palloc(int_part_len + 1);
+		int_part = lwalloc(int_part_len + 1);
 		memcpy(int_part, &format[0], int_part_len);
 		int_part[int_part_len]='\0';
 
@@ -206,7 +206,7 @@ static int is_format_valid(const char* format){
 			strcmp(int_part,"hdddmm") && strcmp(int_part,"dddmm") &&
 			strcmp(int_part,"hdddmmss") && strcmp(int_part,"dddmmss")) {
 
-			pfree(int_part);
+			lwfree(int_part);
 			return LW_FALSE;
 
 		}
@@ -215,12 +215,12 @@ static int is_format_valid(const char* format){
 
 			if(dec_part[i]!=int_part[int_part_len-1]) {
 
-				pfree(int_part);
+				lwfree(int_part);
 				return LW_FALSE;
 			}
 		}
 
-		pfree(int_part);
+		lwfree(int_part);
 
 	}
 
@@ -239,7 +239,7 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, con
 
 	int has_cardinal_direction = 0;
 	int num_decimals = 0;
-	char* res = palloc(sizeof(char)*strlen(format)+2);
+	char* res = lwalloc(sizeof(char)*strlen(format)+2);
 
 	/* size of the buffer for the output snprintf calls.
 	 * the output strings must have the same length as the format.
@@ -376,7 +376,7 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, con
 	}
 
 
-	pfree(res);
+	lwfree(res);
 	return LW_SUCCESS;
 
 

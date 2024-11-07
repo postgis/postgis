@@ -41,7 +41,7 @@ static text*
 cstring2text(const char *cstring)
 {
 	size_t len = strlen(cstring);
-	text *result = (text *) palloc(len + VARHDRSZ);
+	text *result = (text *) lwalloc(len + VARHDRSZ);
 	SET_VARSIZE(result, len + VARHDRSZ);
 	memcpy(VARDATA(result), cstring, len);
 

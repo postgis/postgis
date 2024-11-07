@@ -123,7 +123,7 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	static int maxtyplen = 20;
 
 	gser = PG_GETARG_GSERIALIZED_HEADER(0);
-	text_ob = palloc0(VARHDRSZ + maxtyplen);
+	text_ob = lwalloc0(VARHDRSZ + maxtyplen);
 	result = VARDATA(text_ob);
 
 	type = gserialized_get_type(gser);

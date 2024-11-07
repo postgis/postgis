@@ -937,7 +937,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 	}
 
-	pfree(pstr);
+	lwfree(pstr);
 	if (result == 2) HANDLE_GEOS_ERROR("GEOSRelatePattern");
 
 	PG_RETURN_BOOL(result);

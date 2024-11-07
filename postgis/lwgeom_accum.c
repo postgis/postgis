@@ -170,8 +170,8 @@ pgis_accum_finalfn(CollectionBuildState *state, MemoryContext mctx, __attribute_
 
 	/* Build up an array, because that's what we pass to all the */
 	/* specific final functions */
-	elems = palloc(nelems * sizeof(Datum));
-	nulls = palloc(nelems * sizeof(bool));
+	elems = lwalloc(nelems * sizeof(Datum));
+	nulls = lwalloc(nelems * sizeof(bool));
 
 	foreach (l, state->geoms)
 	{

@@ -154,7 +154,7 @@ getQuadrant4D(BOX2DF *centroid, BOX2DF *inBox)
 static RectBox *
 initRectBox(void)
 {
-	RectBox *rect_box = (RectBox *)palloc(sizeof(RectBox));
+	RectBox *rect_box = (RectBox *)lwalloc(sizeof(RectBox));
 	float infinity = FLT_MAX;
 
 	rect_box->left.xmin = -infinity;
@@ -182,7 +182,7 @@ initRectBox(void)
 static RectBox *
 nextRectBox(RectBox *rect_box, BOX2DF *centroid, uint8 quadrant)
 {
-	RectBox *next_rect_box = (RectBox *)palloc(sizeof(RectBox));
+	RectBox *next_rect_box = (RectBox *)lwalloc(sizeof(RectBox));
 
 	memcpy(next_rect_box, rect_box, sizeof(RectBox));
 
@@ -340,10 +340,10 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_2d(PG_FUNCTION_ARGS)
 	spgPickSplitOut *out = (spgPickSplitOut *)PG_GETARG_POINTER(1);
 	BOX2DF *centroid;
 	int median, i;
-	double *lowXs = palloc(sizeof(double) * in->nTuples);
-	double *highXs = palloc(sizeof(double) * in->nTuples);
-	double *lowYs = palloc(sizeof(double) * in->nTuples);
-	double *highYs = palloc(sizeof(double) * in->nTuples);
+	double *lowXs = lwalloc(sizeof(double) * in->nTuples);
+	double *highXs = lwalloc(sizeof(double) * in->nTuples);
+	double *lowYs = lwalloc(sizeof(double) * in->nTuples);
+	double *highYs = lwalloc(sizeof(double) * in->nTuples);
 
 	/* Calculate median of all 4D coordinates */
 	for (i = 0; i < in->nTuples; i++)
@@ -363,7 +363,7 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_2d(PG_FUNCTION_ARGS)
 
 	median = in->nTuples / 2;
 
-	centroid = palloc(sizeof(BOX2DF));
+	centroid = lwalloc(sizeof(BOX2DF));
 
 	centroid->xmin = (float)lowXs[median];
 	centroid->xmax = (float)highXs[median];
@@ -377,8 +377,8 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_2d(PG_FUNCTION_ARGS)
 	out->nNodes = 16;
 	out->nodeLabels = NULL; /* We don't need node labels. */
 
-	out->mapTuplesToNodes = palloc(sizeof(int) * in->nTuples);
-	out->leafTupleDatums = palloc(sizeof(Datum) * in->nTuples);
+	out->mapTuplesToNodes = lwalloc(sizeof(int) * in->nTuples);
+	out->leafTupleDatums = lwalloc(sizeof(Datum) * in->nTuples);
 
 	/*
 	 * Assign ranges to corresponding nodes according to quadrants relative to the "centroid" range
@@ -392,10 +392,10 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_2d(PG_FUNCTION_ARGS)
 		out->mapTuplesToNodes[i] = quadrant;
 	}
 
-	pfree(lowXs);
-	pfree(highXs);
-	pfree(lowYs);
-	pfree(highYs);
+	lwfree(lowXs);
+	lwfree(highXs);
+	lwfree(lowYs);
+	lwfree(highYs);
 
 	PG_RETURN_VOID();
 }
@@ -419,7 +419,7 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
 	{
 		/* Report that all nodes should be visited */
 		out->nNodes = in->nNodes;
-		out->nodeNumbers = (int *)palloc(sizeof(int) * in->nNodes);
+		out->nodeNumbers = (int *)lwalloc(sizeof(int) * in->nNodes);
 		for (i = 0; i < in->nNodes; i++)
 			out->nodeNumbers[i] = i;
 
@@ -439,8 +439,8 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
 
 	/* Allocate enough memory for nodes */
 	out->nNodes = 0;
-	out->nodeNumbers = (int *)palloc(sizeof(int) * in->nNodes);
-	out->traversalValues = (void **)palloc(sizeof(void *) * in->nNodes);
+	out->nodeNumbers = (int *)lwalloc(sizeof(int) * in->nNodes);
+	out->traversalValues = (void **)lwalloc(sizeof(void *) * in->nNodes);
 
 	/*
 	 * We switch memory context, because we want to allocate memory for new
@@ -540,7 +540,7 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
 			 * If this node is not selected, we don't need to keep the next
 			 * traversal value in the memory context.
 			 */
-			pfree(next_rect_box);
+			lwfree(next_rect_box);
 		}
 	}
 
@@ -665,7 +665,7 @@ PG_FUNCTION_INFO_V1(gserialized_spgist_compress_2d);
 PGDLLEXPORT Datum gserialized_spgist_compress_2d(PG_FUNCTION_ARGS)
 {
 	Datum gsdatum = PG_GETARG_DATUM(0);
-	BOX2DF *bbox_out = palloc(sizeof(BOX2DF));
+	BOX2DF *bbox_out = lwalloc(sizeof(BOX2DF));
 	int result = LW_SUCCESS;
 
 	POSTGIS_DEBUG(4, "[SPGIST] 'compress' function called");

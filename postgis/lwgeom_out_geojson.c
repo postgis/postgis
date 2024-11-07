@@ -440,7 +440,7 @@ datum_to_json(Datum val, bool is_null, StringInfo result,
 				appendStringInfoString(result, outputstr);
 			else
 				escape_json(result, outputstr);
-			pfree(outputstr);
+			lwfree(outputstr);
 			break;
 		case JSONTYPE_DATE:
 			{
@@ -470,20 +470,20 @@ datum_to_json(Datum val, bool is_null, StringInfo result,
 			/* JSON and JSONB output will already be escaped */
 			outputstr = OidOutputFunctionCall(outfuncoid, val);
 			appendStringInfoString(result, outputstr);
-			pfree(outputstr);
+			lwfree(outputstr);
 			break;
 		case JSONTYPE_CAST:
 			/* outfuncoid refers to a cast function, not an output function */
 			jsontext = DatumGetTextPP(OidFunctionCall1(outfuncoid, val));
 			outputstr = text_to_cstring(jsontext);
 			appendStringInfoString(result, outputstr);
-			pfree(outputstr);
-			pfree(jsontext);
+			lwfree(outputstr);
+			lwfree(jsontext);
 			break;
 		default:
 			outputstr = OidOutputFunctionCall(outfuncoid, val);
 			escape_json(result, outputstr);
-			pfree(outputstr);
+			lwfree(outputstr);
 			break;
 	}
 }
@@ -531,8 +531,8 @@ array_to_json_internal(Datum array, StringInfo result, bool use_line_feeds)
 	array_dim_to_json(result, 0, ndim, dim, elements, nulls, &count, tcategory,
 					  outfuncoid, use_line_feeds);
 
-	pfree(elements);
-	pfree(nulls);
+	lwfree(elements);
+	lwfree(nulls);
 }
 
 /*
@@ -683,7 +683,7 @@ static char *
 postgis_JsonEncodeDateTime(char *buf, Datum value, Oid typid)
 {
 	if (!buf)
-		buf = palloc(MAXDATELEN + 1);
+		buf = lwalloc(MAXDATELEN + 1);
 
 	switch (typid)
 	{

@@ -44,6 +44,9 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+/* Useful to spot memory leaks */
+/* #define POSTGIS_SKIP_POOLED_ALLOCS 1 */
+
 #define PGC_ERRMSG_MAXLEN 2048 //256
 
 /****************************************************************************************/
@@ -321,7 +324,11 @@ pg_alloc(size_t size)
 
 	POSTGIS_DEBUGF(5, "  pg_alloc(%d) called", (int)size);
 
+#ifdef POSTGIS_SKIP_POOLED_ALLOCS
+	result = malloc(size);
+#else
 	result = palloc(size);
+#endif
 
 	POSTGIS_DEBUGF(5, "  pg_alloc(%d) returning %p", (int)size, result);
 
@@ -337,7 +344,11 @@ pg_realloc(void *mem, size_t size)
 
 	POSTGIS_DEBUGF(5, "  pg_realloc(%p, %d) called", mem, (int)size);
 
+#ifdef POSTGIS_SKIP_POOLED_ALLOCS
+	result = realloc(mem, size);
+#else
 	result = repalloc(mem, size);
+#endif
 
 	POSTGIS_DEBUGF(5, "  pg_realloc(%p, %d) returning %p", mem, (int)size, result);
 
@@ -347,7 +358,11 @@ pg_realloc(void *mem, size_t size)
 static void
 pg_free(void *ptr)
 {
+#ifdef POSTGIS_SKIP_POOLED_ALLOCS
+	free(ptr);
+#else
 	pfree(ptr);
+#endif
 }
 
 static void pg_error(const char *fmt, va_list ap) __attribute__ (( format(printf, 1, 0) ));

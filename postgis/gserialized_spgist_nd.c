@@ -155,9 +155,9 @@ getOctant(const GIDX *centroid, const GIDX *inBox)
 static CubeGIDX *
 initCubeBox(int ndims)
 {
-	CubeGIDX *cube_box = (CubeGIDX *)palloc(sizeof(CubeGIDX));
-	GIDX *left = (GIDX *)palloc(GIDX_SIZE(ndims));
-	GIDX *right = (GIDX *)palloc(GIDX_SIZE(ndims));
+	CubeGIDX *cube_box = (CubeGIDX *)lwalloc(sizeof(CubeGIDX));
+	GIDX *left = (GIDX *)lwalloc(GIDX_SIZE(ndims));
+	GIDX *right = (GIDX *)lwalloc(GIDX_SIZE(ndims));
 	int i;
 
 	SET_VARSIZE(left, GIDX_SIZE(ndims));
@@ -187,9 +187,9 @@ static CubeGIDX *
 nextCubeBox(CubeGIDX *cube_box, GIDX *centroid, uint16_t octant)
 {
 	int ndims = GIDX_NDIMS(centroid), i;
-	CubeGIDX *next_cube_box = (CubeGIDX *)palloc(sizeof(CubeGIDX));
-	GIDX *left = (GIDX *)palloc(GIDX_SIZE(ndims));
-	GIDX *right = (GIDX *)palloc(GIDX_SIZE(ndims));
+	CubeGIDX *next_cube_box = (CubeGIDX *)lwalloc(sizeof(CubeGIDX));
+	GIDX *left = (GIDX *)lwalloc(GIDX_SIZE(ndims));
+	GIDX *right = (GIDX *)lwalloc(GIDX_SIZE(ndims));
 	uint16_t dim = 0x01;
 
 	memcpy(left, cube_box->left, VARSIZE(cube_box->left));
@@ -321,8 +321,8 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 	for (dim = 0; dim < GIDX_MAX_DIM; dim++)
 		count[dim] = 0;
 
-	lowXs = palloc(sizeof(float) * in->nTuples * GIDX_MAX_DIM),
-	highXs = palloc(sizeof(float) * in->nTuples * GIDX_MAX_DIM);
+	lowXs = lwalloc(sizeof(float) * in->nTuples * GIDX_MAX_DIM),
+	highXs = lwalloc(sizeof(float) * in->nTuples * GIDX_MAX_DIM);
 
 	/* Calculate maxdims median of all ND coordinates */
 	for (tuple = 0; tuple < in->nTuples; tuple++)
@@ -349,7 +349,7 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 		qsort(&highXs[dim * in->nTuples], count[dim], sizeof(float), compareFloats);
 	}
 
-	centroid = (GIDX *)palloc(GIDX_SIZE(maxdims));
+	centroid = (GIDX *)lwalloc(GIDX_SIZE(maxdims));
 	SET_VARSIZE(centroid, GIDX_SIZE(maxdims));
 
 	for (dim = 0; dim < maxdims; dim++)
@@ -366,8 +366,8 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 	out->nNodes = 0x01 << (2 * maxdims);
 	out->nodeLabels = NULL; /* We don't need node labels. */
 
-	out->mapTuplesToNodes = palloc(sizeof(int) * in->nTuples);
-	out->leafTupleDatums = palloc(sizeof(Datum) * in->nTuples);
+	out->mapTuplesToNodes = lwalloc(sizeof(int) * in->nTuples);
+	out->leafTupleDatums = lwalloc(sizeof(Datum) * in->nTuples);
 
 	/*
 	 * Assign ranges to corresponding nodes according to octants relative to
@@ -382,8 +382,8 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 		out->mapTuplesToNodes[tuple] = octant;
 	}
 
-	pfree(lowXs);
-	pfree(highXs);
+	lwfree(lowXs);
+	lwfree(highXs);
 
 	PG_RETURN_VOID();
 }
@@ -410,7 +410,7 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 	{
 		/* Report that all nodes should be visited */
 		out->nNodes = in->nNodes;
-		out->nodeNumbers = (int *)palloc(sizeof(int) * in->nNodes);
+		out->nodeNumbers = (int *)lwalloc(sizeof(int) * in->nNodes);
 		for (i = 0; i < in->nNodes; i++)
 			out->nodeNumbers[i] = i;
 
@@ -437,8 +437,8 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 
 	/* Allocate enough memory for nodes */
 	out->nNodes = 0;
-	nodeNumbers = (int *)palloc(sizeof(int) * in->nNodes);
-	traversalValues = (void **)palloc(sizeof(void *) * in->nNodes);
+	nodeNumbers = (int *)lwalloc(sizeof(int) * in->nNodes);
+	traversalValues = (void **)lwalloc(sizeof(void *) * in->nNodes);
 
 	for (i = 0; i < in->nNodes; i++)
 	{
@@ -499,20 +499,20 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 			 * If this node is not selected, we don't need to keep the next
 			 * traversal value in the memory context.
 			 */
-			pfree(next_cube_box);
+			lwfree(next_cube_box);
 		}
 	}
 
 	/* Pass to the next level only the values that need to be traversed */
-	out->nodeNumbers = (int *)palloc(sizeof(int) * out->nNodes);
-	out->traversalValues = (void **)palloc(sizeof(void *) * out->nNodes);
+	out->nodeNumbers = (int *)lwalloc(sizeof(int) * out->nNodes);
+	out->traversalValues = (void **)lwalloc(sizeof(void *) * out->nNodes);
 	for (i = 0; i < out->nNodes; i++)
 	{
 		out->nodeNumbers[i] = nodeNumbers[i];
 		out->traversalValues[i] = traversalValues[i];
 	}
-	pfree(nodeNumbers);
-	pfree(traversalValues);
+	lwfree(nodeNumbers);
+	lwfree(traversalValues);
 
 	/* Switch after */
 	MemoryContextSwitchTo(old_ctx);

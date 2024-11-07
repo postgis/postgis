@@ -92,7 +92,7 @@ IntervalTreeFreer(GeomCache *geomcache)
 static GeomCache *
 IntervalTreeAllocator(void)
 {
-	IntervalTreeGeomCache *cache = palloc(sizeof(IntervalTreeGeomCache));
+	IntervalTreeGeomCache *cache = lwalloc(sizeof(IntervalTreeGeomCache));
 	memset(cache, 0, sizeof(IntervalTreeGeomCache));
 	return (GeomCache*)cache;
 }

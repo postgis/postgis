@@ -509,7 +509,7 @@ nd_stats_to_json(const ND_STATS *nd_stats)
 	/* Extent */
 	json_extent = nd_box_to_json(&(nd_stats->extent), ndims);
 	stringbuffer_aprintf(sb, "\"extent\":%s,", json_extent);
-	pfree(json_extent);
+	lwfree(json_extent);
 
 	stringbuffer_aprintf(sb, "\"table_features\":%d,", (int)roundf(nd_stats->table_features));
 	stringbuffer_aprintf(sb, "\"sample_features\":%d,", (int)roundf(nd_stats->sample_features));
@@ -799,7 +799,7 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 	const ND_BOX *ndb;
 
 	int num_bins = Min(Max(2, num_boxes/BIN_MIN_SIZE), MAX_NUM_BINS);
-	counts = palloc0(num_bins * sizeof(int));
+	counts = lwalloc0(num_bins * sizeof(int));
 
 	/* For each dimension... */
 	for ( d = 0; d < ndims; d++ )
@@ -879,7 +879,7 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 		distribution[d] = range;
 	}
 
-	pfree(counts);
+	lwfree(counts);
 
 	return true;
 }
@@ -933,7 +933,7 @@ pg_nd_stats_from_tuple(HeapTuple stats_tuple, int mode)
 		}
 
 		/* Clone the stats here so we can release the attstatsslot immediately */
-		nd_stats = palloc(sizeof(float4) * sslot.nnumbers);
+		nd_stats = lwalloc(sizeof(float4) * sslot.nnumbers);
 		memcpy(nd_stats, sslot.numbers, sizeof(float4) * sslot.nnumbers);
 
 		free_attstatsslot(&sslot);
@@ -1305,8 +1305,8 @@ gserialized_joinsel_internal(PlannerInfo *root, List *args, JoinType jointype, i
 
 	selectivity = estimate_join_selectivity(stats1, stats2);
 	POSTGIS_DEBUGF(2, "got selectivity %g", selectivity);
-	pfree(stats1);
-	pfree(stats2);
+	lwfree(stats1);
+	lwfree(stats2);
 	return selectivity;
 }
 
@@ -1422,7 +1422,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	 * We might need less space, but don't think
 	 * its worth saving...
 	 */
-	sample_boxes = palloc(sizeof(ND_BOX*) * sample_rows);
+	sample_boxes = lwalloc(sizeof(ND_BOX*) * sample_rows);
 
 	/*
 	 * First scan:
@@ -1478,7 +1478,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 			ndims = Max(gbox_ndims(&gbox), ndims);
 
 		/* Convert gbox to n-d box */
-		nd_box = palloc(sizeof(ND_BOX));
+		nd_box = lwalloc(sizeof(ND_BOX));
 		nd_box_from_gbox(&gbox, nd_box);
 
 		/* Cache n-d bounding box */
@@ -1682,7 +1682,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	 */
 	old_context = MemoryContextSwitchTo(stats->anl_context);
 	nd_stats_size = sizeof(ND_STATS) + ((histo_cells - 1) * sizeof(float4));
-	nd_stats = palloc(nd_stats_size);
+	nd_stats = lwalloc(nd_stats_size);
 	memset(nd_stats, 0, nd_stats_size); /* Initialize all values to 0 */
 	MemoryContextSwitchTo(old_context);
 
@@ -1899,7 +1899,7 @@ Datum gserialized_analyze_nd(PG_FUNCTION_ARGS)
 {
 	VacAttrStats *stats = (VacAttrStats *)PG_GETARG_POINTER(0);
 	GserializedAnalyzeExtraData *extra_data =
-	    (GserializedAnalyzeExtraData *)palloc(sizeof(GserializedAnalyzeExtraData));
+	    (GserializedAnalyzeExtraData *)lwalloc(sizeof(GserializedAnalyzeExtraData));
 
 	/* Ask for standard analyze to fill in as much as possible */
 	if (!std_typanalyze(stats))
@@ -2078,8 +2078,8 @@ Datum _postgis_gserialized_stats(PG_FUNCTION_ARGS)
 	elog(DEBUG1, "stats grid:\n%s", nd_stats_to_grid(nd_stats));
 	str = nd_stats_to_json(nd_stats);
 	json = cstring_to_text(str);
-	pfree(str);
-	pfree(nd_stats);
+	lwfree(str);
+	lwfree(nd_stats);
 
 	PG_RETURN_TEXT_P(json);
 }
@@ -2119,7 +2119,7 @@ Datum _postgis_gserialized_sel(PG_FUNCTION_ARGS)
 	/* Do the estimation */
 	selectivity = estimate_selectivity(&gbox, nd_stats, mode);
 
-	pfree(nd_stats);
+	lwfree(nd_stats);
 	PG_RETURN_FLOAT8(selectivity);
 }
 
@@ -2162,8 +2162,8 @@ Datum _postgis_gserialized_joinsel(PG_FUNCTION_ARGS)
 	/* Do the estimation */
 	selectivity = estimate_join_selectivity(nd_stats1, nd_stats2);
 
-	pfree(nd_stats1);
-	pfree(nd_stats2);
+	lwfree(nd_stats1);
+	lwfree(nd_stats2);
 	PG_RETURN_FLOAT8(selectivity);
 }
 
@@ -2263,7 +2263,7 @@ gserialized_sel_internal(PlannerInfo *root, List *args, int varRelid, int mode)
 	nd_stats = pg_nd_stats_from_tuple(vardata.statsTuple, mode);
 	ReleaseVariableStats(vardata);
 	selectivity = estimate_selectivity(&search_box, nd_stats, mode);
-	pfree(nd_stats);
+	lwfree(nd_stats);
 	return selectivity;
 }
 
@@ -2686,7 +2686,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 			gbox->zmax = nd_stats->extent.max[2];
 		}
 
-		pfree(nd_stats);
+		lwfree(nd_stats);
 	}
 
 	/* Convert geocentric geography box into a planar box */

@@ -478,7 +478,7 @@ Datum geography_expand(PG_FUNCTION_ARGS)
 
 	if ( g_out != g )
 	{
-		pfree(g);
+		lwfree(g);
 	}
 
 	PG_RETURN_POINTER(g_out);
