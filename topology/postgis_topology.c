@@ -15,7 +15,7 @@
 #include "c.h" /* for UINT64_FORMAT and uint64 */
 #include "utils/builtins.h" /* for cstring_to_text */
 #include "utils/elog.h"
-#include "utils/memutils.h" /* for TopMemoryContext */
+#include "utils/memutils.h" /* for transaction contexts */
 #include "utils/array.h" /* for ArrayType */
 #include "catalog/pg_type.h" /* for INT4OID, TEXTOID */
 #include "lib/stringinfo.h"
@@ -793,12 +793,9 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     if ( ! isnull )
     {
       {
-        MemoryContext oldcontext = CurrentMemoryContext;
         geom = (GSERIALIZED *)PG_DETOAST_DATUM(dat);
         lwg = lwgeom_from_gserialized(geom);
-        MemoryContextSwitchTo( TopMemoryContext );
         edge->geom = lwgeom_as_lwline(lwgeom_clone_deep(lwg));
-        MemoryContextSwitchTo( oldcontext ); /* switch back */
         lwgeom_free(lwg);
         if ( DatumGetPointer(dat) != (Pointer)geom ) pfree(geom); /* IF_COPY */
       }
@@ -4106,8 +4103,8 @@ Datum ST_GetFaceGeometry(PG_FUNCTION_ARGS)
   }
 
   /* Serialize in upper memory context (outside of SPI) */
-  /* TODO: use a narrower context to switch to */
-  old_context = MemoryContextSwitchTo( TopMemoryContext );
+  /* TODO: use a narrower context to switch to ? */
+  old_context = MemoryContextSwitchTo( TopTransactionContext );
   geom = geometry_serialize(lwgeom);
   MemoryContextSwitchTo(old_context);
 
