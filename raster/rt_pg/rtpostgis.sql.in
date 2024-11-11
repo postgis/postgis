@@ -5,7 +5,7 @@
 -- http://trac.osgeo.org/postgis/wiki/WKTRaster
 --
 -- Copyright (c) 2015-2017 Regina Obe <lr@pcorp.us>
--- Copyright (c) 2009-2023 Sandro Santilli <strk@kbt.io>
+-- Copyright (c) 2009-2024 Sandro Santilli <strk@kbt.io>
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 -- Copyright (c) 2009-2010 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 -- Copyright (c) 2009-2010 Mateusz Loskot <mateusz@loskot.net>
@@ -6571,6 +6571,51 @@ CREATE AGGREGATE st_union(raster, text) (
 );
 
 -----------------------------------------------------------------------
+-- ST_AsRasterAgg aggregate
+----------------------------------------------------------------------{
+
+-- Availability: 3.6.0
+CREATE OR REPLACE FUNCTION _ST_AsRasterAgg_transfn(staterast raster, geom geometry, val float8, rast raster, pixeltype text, nodataval float8, uniontype text, touched boolean)
+RETURNS raster AS $BODY$
+DECLARE
+  tmprast RASTER;
+BEGIN
+  tmprast := @extschema@.ST_AsRaster(geom, rast,
+    pixeltype => pixeltype,
+    value => val,
+    nodataval => nodataval,
+    touched => touched
+  );
+
+  IF staterast IS NULL THEN
+    staterast = tmprast;
+  ELSE
+    SELECT @extschema@.ST_Union(r, uniontype)
+    FROM ( VALUES (staterast), (tmprast) ) AS foo(r)
+    INTO staterast;
+  END IF;
+
+  RETURN staterast;
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+-- Availability: 3.6.0
+CREATE OR REPLACE FUNCTION _ST_AsRasterAgg_finalfn(rast raster)
+RETURNS raster AS $BODY$
+BEGIN
+	RETURN rast;
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+-- Availability: 3.6.0
+CREATE AGGREGATE ST_AsRasterAgg(geom geometry, val float8, ref raster, pixeltype text, nodataval float8, uniontype text, touched boolean) (
+	SFUNC = _ST_AsRasterAgg_transfn,
+	STYPE = raster,
+	parallel = safe,
+	FINALFUNC = _ST_AsRasterAgg_finalfn
+);
+
+-----------------------------------------------------------------------
 -- ST_Clip
 -----------------------------------------------------------------------
 
@@ -6638,7 +6683,7 @@ CREATE OR REPLACE FUNCTION st_clip(
 
 -- Availability: 2.0.0
 -- Changed: 3.5.0 - added touched parameter
--- Replaces st_clip(raster, geometry, float8[], boolean) deprecated in 3.5.0 
+-- Replaces st_clip(raster, geometry, float8[], boolean) deprecated in 3.5.0
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster,
 	geom geometry,

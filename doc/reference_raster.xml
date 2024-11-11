@@ -2064,6 +2064,88 @@ SELECT ST_AsPNG(
             </refsection>
         </refentry>
 
+<!-- { ST_AsRasterAgg -->
+
+      <refentry xml:id="RT_ST_AsRasterAgg">
+            <refnamediv>
+                <refname>ST_AsRasterAgg</refname>
+                <refpurpose>
+                    Aggregate. Renders PostGIS geometries into a new raster.
+                </refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>raster <function>ST_AsRasterAgg</function></funcdef>
+                        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>val</parameter></paramdef>
+                        <paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>nodataval</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>uniontype</parameter></paramdef>
+                        <paramdef><type>boolean </type> <parameter>touched</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>
+Returns a single-band raster containing the rendered version of all incoming
+geometries, each with its associated value.
+                </para>
+
+                <para role="availability" conformance="3.6.0">Availability: 3.6.0 </para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+                <programlisting>
+WITH inp(g,v) AS (
+	VALUES
+		( ST_Buffer(ST_MakePoint(10,0), 10), 1 ),
+		( ST_Buffer(ST_MakePoint(20,0), 10), 2 )
+),
+agg AS (
+	SELECT ST_AsRasterAgg(
+		g,
+		v,
+		ST_MakeEmptyRaster(0,0,0,0,1.0),
+		'8BUI',
+		99,
+		'SUM',
+		true
+	) r
+	FROM inp
+)
+SELECT
+	ST_Width(r) w,
+	ST_Height(r) h,
+	ST_Value(r,'POINT(5 0)') v5_0,
+	ST_Value(r,'POINT(15 0)') v15_0,
+	ST_Value(r,'POINT(25 0)') v25_0
+FROM agg;
+ w  | h  | v5_0 | v15_0 | v25_0
+----+----+------+-------+-------
+ 30 | 20 |    1 |     3 |     2
+(1 row)
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_AsRaster"/>,
+                    <xref linkend="RT_ST_DumpAsPolygons"/>,
+                    <xref linkend="RT_ST_Union"/>
+                </para>
+            </refsection>
+        </refentry>
+
+<!-- ST_AsRasterAgg }-->
+
             <refentry xml:id="RT_ST_Band">
             <refnamediv>
                 <refname>ST_Band</refname>
@@ -14008,6 +14090,7 @@ ORDER BY val;
                     <title>See Also</title>
                     <para>
                         <xref linkend="geomval"/>,
+                        <xref linkend="RT_ST_AsRasterAgg"/>,
                         <xref linkend="RT_ST_Value"/>,
                         <xref linkend="RT_ST_Polygon"/>,
                         <xref linkend="RT_ST_ValueCount"/>
