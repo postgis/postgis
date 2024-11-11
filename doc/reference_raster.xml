@@ -5078,6 +5078,7 @@ WHERE
             <refsection>
                 <title>See Also</title>
                 <para>
+                    <xref linkend="RT_ST_DumpValues"/>,
                     <xref linkend="RT_ST_SetValue"/>,
                     <xref linkend="RT_ST_DumpAsPolygons"/>,
                     <xref linkend="RT_ST_NumBands"/>,
@@ -9455,12 +9456,12 @@ FROM dummy_rast WHERE rid=2;
 
                 <refsection><title>Examples: Comparing selecting all touched vs. not all touched</title>
                         <programlisting><![CDATA[SELECT ST_Count(rast) AS count_pixels_in_orig, ST_Count(rast_touched) AS all_touched_pixels, ST_Count(rast_not_touched) AS default_clip
-FROM ST_AsRaster(ST_Letters('R'), scalex => 1.0, scaley => -1.0) AS r(rast) 
+FROM ST_AsRaster(ST_Letters('R'), scalex => 1.0, scaley => -1.0) AS r(rast)
     INNER JOIN ST_GeomFromText('LINESTRING(0 1, 5 6, 10 10)') AS g(geom)
  ON ST_Intersects(r.rast,g.geom)
  , ST_Clip(r.rast, g.geom, touched => true) AS rast_touched
  , ST_Clip(r.rast, g.geom, touched => false) AS rast_not_touched;]]>
- 
+
  count_pixels_in_orig | all_touched_pixels | default_clip
 ----------------------+--------------------+--------------
                  2605 |                 16 |           10
