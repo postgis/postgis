@@ -195,7 +195,7 @@ while(<INPUT>)
         while(<INPUT>)
         {
             $def .= $_;
-            $endfunc = 1 if /^\s*(\$\$\s*)?LANGUAGE /;
+            $endfunc = 1 if /^\s*(\$[^\$]*\$\s*)?LANGUAGE /;
             last if ( $endfunc && /\;/ );
         }
         foreach my $replaced (@replaced_array)
