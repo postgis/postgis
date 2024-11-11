@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Read tagged dollar quotes when generating function upgrades (Sandro Santilli)
  - [tiger_geocoder] Treat address fragments literally during normalization
    (Darafei Praliaskouski)
  - Accept rules of the documented maximum length in address_standardizer (Darafei Praliaskouski)
