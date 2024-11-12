@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-09-29 05:23+0000\n"
-"PO-Revision-Date: 2024-10-02 12:47+0000\n"
+"PO-Revision-Date: 2024-11-12 10:47+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
@@ -289,20 +289,20 @@ msgstr ""
 "und ein HARD UPGRADE-Verfahren für Major-Versionen."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Before attempting to upgrade PostGIS, it is always worth to backup your "
 "data. If you use the -Fc flag to pg_dump you will always be able to restore "
 "the dump with a HARD UPGRADE."
 msgstr ""
-"Bevor Sie versuchen, PostGIS zu aktualisieren, lohnt es sich immer, Ihre "
-"Daten zu sichern. Wenn Sie das Flag -Fc für pg_dump verwenden, können Sie "
-"den Dump bei einem HARD UPGRADE immer wiederherstellen."
+"Bevor PostGIS aktualisiert wird, sollten die Daten unbedingt gesichert "
+"werden. Wenn die Option -Fc beim Befehl pg_dump verwendet wird, kann der "
+"Dump bei einem HARD UPGRADE immer wieder hergestellt werden."
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Soft upgrade"
-msgstr "Sanftes Upgrade"
+msgstr "Sanfte Aktualisierung"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -318,9 +318,9 @@ msgstr ""
 "auf Erweiterungen umstellen, da das Skript nicht mehr unterstützt wird."
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Soft Upgrade 9.1+ using extensions"
-msgstr "Soft Upgrade 9.1+ mit Erweiterungen"
+msgstr "Sanfte Aktualisierung 9.1+ mittels Erweiterungen"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -351,14 +351,14 @@ msgstr ""
 "Wenn Sie PostGIS 2.5 oder niedriger verwenden, gehen Sie wie folgt vor:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you have multiple versions of PostGIS installed, and you don't want to "
 "upgrade to the latest, you can explicitly specify the version as follows:"
 msgstr ""
 "Wenn Sie mehrere Versionen von PostGIS installiert haben und nicht auf die "
-"neueste Version aktualisieren möchten, können Sie die Version wie folgt "
-"explizit angeben:"
+"neueste Version aktualisieren möchten, können Sie die gewünschte Version wie "
+"folgt explizit angeben:"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -366,7 +366,7 @@ msgid "If you get an error notice something like:"
 msgstr "Wenn Sie eine Fehlermeldung wie diese erhalten:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Then you'll need to backup your database, create a fresh one as described in "
 "<xref linkend=\"create_new_db_extensions\"/> and then restore your backup on "
@@ -374,7 +374,7 @@ msgid ""
 msgstr ""
 "Dann müssen Sie eine Sicherungskopie Ihrer Datenbank anlegen, eine neue "
 "Datenbank erstellen, wie unter <xref linkend=\"create_new_db_extensions\"/> "
-"beschrieben, und dann Ihre Sicherungskopie auf dieser neuen Datenbank "
+"beschrieben, und dann Ihre Sicherungskopie in dieser neuen Datenbank "
 "wiederherstellen."
 
 #. Tag: para
@@ -383,7 +383,7 @@ msgid "If you get a notice message like:"
 msgstr "Wenn Sie eine Meldung wie diese erhalten:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Then everything is already up to date and you can safely ignore it. "
 "<emphasis role=\"bold\">UNLESS</emphasis> you're attempting to upgrade from "
@@ -391,7 +391,7 @@ msgid ""
 "in that case you can append \"next\" to the version string, and next time "
 "you'll need to drop the \"next\" suffix again:"
 msgstr ""
-"Dann ist bereits alles auf dem neuesten Stand und Sie können es getrost "
+"Dann ist bereits alles auf dem neuesten Stand und Sie können das getrost "
 "ignorieren. <emphasis role=\"bold\">Es sei denn,</emphasis> Sie versuchen, "
 "von einer Entwicklungsversion auf die nächste zu aktualisieren (die keine "
 "neue Versionsnummer erhält); in diesem Fall können Sie \"next\" an die "
@@ -412,32 +412,34 @@ msgstr ""
 "hat und somit die neueste Version bei der Wiederherstellung übernimmt."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you are upgrading PostGIS extension from a version prior to 3.0.0, you "
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
 "safely drop, if you don't need raster support. You can drop as follows:"
 msgstr ""
-"Wenn Sie die PostGIS-Erweiterung von einer Version vor 3.0.0 aktualisieren, "
-"erhalten Sie eine neue Erweiterung <emphasis>postgis_raster</emphasis>, die "
-"Sie getrost löschen können, wenn Sie die Rasterunterstützung nicht "
-"benötigen. Sie können sie wie folgt entfernen:"
+"Wenn Sie die PostGIS-Erweiterung von einer Version kleiner 3.0.0 "
+"aktualisieren, erhalten Sie eine neue Erweiterung <emphasis>postgis_raster</"
+"emphasis>, die Sie getrost löschen können, wenn Sie die Rasterunterstützung "
+"nicht benötigen. Sie können diese wie folgt entfernen:"
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Soft Upgrade Pre 9.1+ or without extensions"
-msgstr "Soft Upgrade Pre 9.1+ oder ohne Erweiterungen"
+msgstr ""
+"Sanfte Aktualisierung bei Version kleiner 9.1 oder wenn nicht mittels "
+"Erweiterungen installiert wurde"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This section applies only to those who installed PostGIS not using "
 "extensions. If you have extensions and try to upgrade with this approach "
 "you'll get messages like:"
 msgstr ""
-"Dieser Abschnitt gilt nur für diejenigen, die PostGIS ohne Erweiterungen "
-"installiert haben. Wenn Sie Erweiterungen haben und versuchen, mit diesem "
-"Ansatz zu aktualisieren, erhalten Sie Meldungen wie:"
+"Dieser Abschnitt gilt nur, wenn PostGIS ohne Erweiterungen installiert "
+"wurde. Wenn Erweiterungen existieren und eine Aktualiserung mit diesem "
+"Ansatz versucht wird, erhalten Sie eine Meldungen wie:"
 
 #. Tag: para
 #, fuzzy, no-c-format
