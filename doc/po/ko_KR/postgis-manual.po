@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-29 05:23+0000\n"
+"POT-Creation-Date: 2024-11-14 11:19+0000\n"
 "PO-Revision-Date: 2023-10-14 20:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -9432,6 +9432,11 @@ msgstr "다피트 츠바르크(David Zwarg)"
 
 #. Tag: member
 #, no-c-format
+msgid "Dian M Fay"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Dmitry Vasilyev"
 msgstr ""
 
@@ -13830,10 +13835,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"While not OGC-compliant, <varname>ST_MakePoint</varname> is faster and more "
-"precise than <xref linkend=\"ST_GeomFromText\"/> and <xref "
-"linkend=\"ST_PointFromText\"/>. It is also easier to use for numeric "
-"coordinate values."
+"While not OGC-compliant, <varname>ST_MakePoint</varname> is faster than "
+"<xref linkend=\"ST_GeomFromText\"/> and <xref linkend=\"ST_PointFromText\"/"
+">. It is also easier to use for numeric coordinate values."
 msgstr ""
 
 #. Tag: para
@@ -16403,6 +16407,15 @@ msgstr ""
 "서 GUC를 설정할 수 있습니다. 전체 또는 데이터베이스 단계에서 설정하는 편이 가"
 "장 좋습니다."
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"For more examples of usage refer to <link xlink:href=\"https://www."
+"postgresql.org/docs/current/sql-set.html\">SQL SET</link> and <link xlink:"
+"href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
+"ALTER SYSTEM</link>"
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
@@ -16617,36 +16630,23 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
-msgstr ""
-"<varname>postgis.gdal_enabled_drivers</varname> 를 설정한 다음 재설정해보십시"
-"오."
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend for all new connections to database"
-msgstr "데이터베이스와의 모든 새 연결에 백엔드를 설정해봅시다."
-
-#. Tag: para
-#, fuzzy, no-c-format
 msgid ""
-"Sets default enabled drivers for all new connections to server. Requires "
-"super user access and PostgreSQL 9.4+. Also note that database, session, and "
-"user settings override this."
+"To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current "
+"session"
 msgstr ""
-"서버와의 모든 새 연결에 기본 활성화된 드라이버를 설정해봅시다. 슈퍼유저 권한 "
-"및 PostgreSQL 9.4 이상 버전이 필요합니다. 또 데이터베이스, 세션, 사용자 설정 "
-"단계에서 이 설정을 무시할 수 없습니다."
 
 #. Tag: para
 #, no-c-format
-msgid "Enable all GDAL Drivers"
-msgstr "모든 GDAL 드라이버를 활성화시키십시오."
+msgid "Set for all new connections to a specific database to specific drivers"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Disable all GDAL Drivers"
-msgstr "모든 GDAL 드라이버를 비활성화시키십시오."
+msgid ""
+"Setting for whole database cluster to enable all drivers. Requires super "
+"user access. Also note that database, session, and user settings override "
+"this."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -16719,14 +16719,14 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Set for specific database"
+msgid "Set for all new connections to a specific database"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Setting for whole database cluster. You need to reconnect to the database "
-"for changes to take effect."
+"Setting for whole database cluster. Requires super user access. Also note "
+"that database, session, and user settings override this."
 msgstr ""
 
 #. Tag: refpurpose
@@ -19385,13 +19385,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
-"boundlessgeo.com/2012/07/making-geography-faster/\">Making Geography faster</"
-"link> for details."
+"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"https://"
+"web.archive.org/web/20160827203903/http://boundlessgeo.com/2012/07/making-"
+"geography-faster/\">Making Geography faster</link> for details."
 msgstr ""
-"개선 사항: 2.1.0 버전부터 지리형에 대한 속도가 향상됐습니다. 자세한 내용은 "
-"<link xlink:href=\"http://boundlessgeo.com/2012/07/making-geography-faster/"
-"\">Making Geography faster</link> 를 참조하십시오."
 
 #. Tag: para
 #, no-c-format
@@ -27085,6 +27082,29 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
+msgid "Aggregate. Renders PostGIS geometries into a new raster."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a single-band raster containing the rendered version of all incoming "
+"geometries, each with its associated value."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_Union\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
 msgid ""
 "Returns one or more bands of an existing raster as a new raster. Useful for "
 "building new rasters from existing rasters."
@@ -28622,21 +28642,15 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_NumBands\"/"
-">, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/"
-">, <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, "
-"<xref linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
+", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_DumpAsPolygons\"/"
+">, <xref linkend=\"RT_ST_NumBands\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref "
+"linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, <xref "
+"linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
 "linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref "
 "linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
 "linkend=\"ST_Intersection\"/>"
 msgstr ""
-", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_NumBands\"/"
-">, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/"
-">, <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, "
-"<xref linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
-"linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref "
-"linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
-"linkend=\"ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33488,11 +33502,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, <xref "
-"linkend=\"RT_ST_ValueCount\"/>"
+", <xref linkend=\"RT_ST_AsRasterAgg\"/>, <xref linkend=\"RT_ST_Value\"/>, "
+"<xref linkend=\"RT_ST_Polygon\"/>, <xref linkend=\"RT_ST_ValueCount\"/>"
 msgstr ""
-", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, <xref "
-"linkend=\"RT_ST_ValueCount\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35925,14 +35937,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.5.0 support for geography was introduced"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
-"blog.opengeo.org/2012/07/12/making-geography-faster/\">Making Geography "
-"faster</link> for details."
 msgstr ""
 
 #. Tag: para
@@ -44391,6 +44395,70 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
+#~ msgstr ""
+#~ "<varname>postgis.gdal_enabled_drivers</varname> 를 설정한 다음 재설정해보"
+#~ "십시오."
+
+#, no-c-format
+#~ msgid "Sets backend for all new connections to database"
+#~ msgstr "데이터베이스와의 모든 새 연결에 백엔드를 설정해봅시다."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Sets default enabled drivers for all new connections to server. Requires "
+#~ "super user access and PostgreSQL 9.4+. Also note that database, session, "
+#~ "and user settings override this."
+#~ msgstr ""
+#~ "서버와의 모든 새 연결에 기본 활성화된 드라이버를 설정해봅시다. 슈퍼유저 권"
+#~ "한 및 PostgreSQL 9.4 이상 버전이 필요합니다. 또 데이터베이스, 세션, 사용"
+#~ "자 설정 단계에서 이 설정을 무시할 수 없습니다."
+
+#, no-c-format
+#~ msgid "Enable all GDAL Drivers"
+#~ msgstr "모든 GDAL 드라이버를 활성화시키십시오."
+
+#, no-c-format
+#~ msgid "Disable all GDAL Drivers"
+#~ msgstr "모든 GDAL 드라이버를 비활성화시키십시오."
+
+#, no-c-format
+#~ msgid ""
+#~ "Enhanced: 2.1.0 improved speed for geography. See <link xlink:"
+#~ "href=\"http://boundlessgeo.com/2012/07/making-geography-faster/\">Making "
+#~ "Geography faster</link> for details."
+#~ msgstr ""
+#~ "개선 사항: 2.1.0 버전부터 지리형에 대한 속도가 향상됐습니다. 자세한 내용"
+#~ "은 <link xlink:href=\"http://boundlessgeo.com/2012/07/making-geography-"
+#~ "faster/\">Making Geography faster</link> 를 참조하십시오."
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref "
+#~ "linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, "
+#~ "<xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
+#~ "linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>, "
+#~ "<xref linkend=\"RT_ST_SRID\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+#~ "linkend=\"ST_Point\"/>, <xref linkend=\"ST_MakeEnvelope\"/>, <xref "
+#~ "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Intersection\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref "
+#~ "linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, "
+#~ "<xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
+#~ "linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>, "
+#~ "<xref linkend=\"RT_ST_SRID\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+#~ "linkend=\"ST_Point\"/>, <xref linkend=\"ST_MakeEnvelope\"/>, <xref "
+#~ "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Intersection\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, "
+#~ "<xref linkend=\"RT_ST_ValueCount\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, "
+#~ "<xref linkend=\"RT_ST_ValueCount\"/>"
 
 #, no-c-format
 #~ msgid ""

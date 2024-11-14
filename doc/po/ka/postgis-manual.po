@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-29 05:23+0000\n"
+"POT-Creation-Date: 2024-11-14 11:19+0000\n"
 "PO-Revision-Date: 2024-06-29 07:45+0000\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -7990,6 +7990,11 @@ msgstr ""
 
 #. Tag: member
 #, no-c-format
+msgid "Dian M Fay"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Dmitry Vasilyev"
 msgstr ""
 
@@ -12017,10 +12022,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"While not OGC-compliant, <varname>ST_MakePoint</varname> is faster and more "
-"precise than <xref linkend=\"ST_GeomFromText\"/> and <xref "
-"linkend=\"ST_PointFromText\"/>. It is also easier to use for numeric "
-"coordinate values."
+"While not OGC-compliant, <varname>ST_MakePoint</varname> is faster than "
+"<xref linkend=\"ST_GeomFromText\"/> and <xref linkend=\"ST_PointFromText\"/"
+">. It is also easier to use for numeric coordinate values."
 msgstr ""
 
 #. Tag: para
@@ -14448,6 +14452,15 @@ msgid ""
 "set at global or database level."
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"For more examples of usage refer to <link xlink:href=\"https://www."
+"postgresql.org/docs/current/sql-set.html\">SQL SET</link> and <link xlink:"
+"href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
+"ALTER SYSTEM</link>"
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
@@ -14613,30 +14626,22 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
+msgid ""
+"To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current "
+"session"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Sets backend for all new connections to database"
+msgid "Set for all new connections to a specific database to specific drivers"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Sets default enabled drivers for all new connections to server. Requires "
-"super user access and PostgreSQL 9.4+. Also note that database, session, and "
-"user settings override this."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Enable all GDAL Drivers"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Disable all GDAL Drivers"
+"Setting for whole database cluster to enable all drivers. Requires super "
+"user access. Also note that database, session, and user settings override "
+"this."
 msgstr ""
 
 #. Tag: para
@@ -14693,14 +14698,14 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Set for specific database"
+msgid "Set for all new connections to a specific database"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Setting for whole database cluster. You need to reconnect to the database "
-"for changes to take effect."
+"Setting for whole database cluster. Requires super user access. Also note "
+"that database, session, and user settings override this."
 msgstr ""
 
 #. Tag: refpurpose
@@ -16973,9 +16978,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
-"boundlessgeo.com/2012/07/making-geography-faster/\">Making Geography faster</"
-"link> for details."
+"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"https://"
+"web.archive.org/web/20160827203903/http://boundlessgeo.com/2012/07/making-"
+"geography-faster/\">Making Geography faster</link> for details."
 msgstr ""
 
 #. Tag: para
@@ -24003,6 +24008,29 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
+msgid "Aggregate. Renders PostGIS geometries into a new raster."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a single-band raster containing the rendered version of all incoming "
+"geometries, each with its associated value."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_Union\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
 msgid ""
 "Returns one or more bands of an existing raster as a new raster. Useful for "
 "building new rasters from existing rasters."
@@ -25265,10 +25293,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_NumBands\"/"
-">, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/"
-">, <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, "
-"<xref linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
+", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_DumpAsPolygons\"/"
+">, <xref linkend=\"RT_ST_NumBands\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref "
+"linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, <xref "
+"linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
 "linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref "
 "linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
 "linkend=\"ST_Intersection\"/>"
@@ -29192,8 +29221,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, <xref "
-"linkend=\"RT_ST_ValueCount\"/>"
+", <xref linkend=\"RT_ST_AsRasterAgg\"/>, <xref linkend=\"RT_ST_Value\"/>, "
+"<xref linkend=\"RT_ST_Polygon\"/>, <xref linkend=\"RT_ST_ValueCount\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -31443,14 +31472,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.5.0 support for geography was introduced"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
-"blog.opengeo.org/2012/07/12/making-geography-faster/\">Making Geography "
-"faster</link> for details."
 msgstr ""
 
 #. Tag: para

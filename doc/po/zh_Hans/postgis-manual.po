@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-29 05:23+0000\n"
+"POT-Creation-Date: 2024-11-14 11:19+0000\n"
 "PO-Revision-Date: 2023-12-28 09:45+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -9508,6 +9508,11 @@ msgstr "David Techer"
 
 #. Tag: member
 #, no-c-format
+msgid "Dian M Fay"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Dmitry Vasilyev"
 msgstr "Dmitry Vasilyev"
 
@@ -14050,14 +14055,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"While not OGC-compliant, <varname>ST_MakePoint</varname> is faster and more "
-"precise than <xref linkend=\"ST_GeomFromText\"/> and <xref "
-"linkend=\"ST_PointFromText\"/>. It is also easier to use for numeric "
-"coordinate values."
+"While not OGC-compliant, <varname>ST_MakePoint</varname> is faster than "
+"<xref linkend=\"ST_GeomFromText\"/> and <xref linkend=\"ST_PointFromText\"/"
+">. It is also easier to use for numeric coordinate values."
 msgstr ""
-"虽然不符合 OGC 标准，但<varname>ST_MakePoint</varname> 比<xref "
-"linkend=\"ST_GeomFromText\"/> 和 <xref linkend=\"ST_PointFromText\"/>更快、更"
-"精确。 它也更容易用于数字坐标值。"
 
 #. Tag: para
 #, no-c-format
@@ -16825,6 +16826,15 @@ msgstr ""
 "本部分列出了自定义 PostGIS Grand Unified 自定义变量 (GUC)。 这些可以通过数据"
 "库、会话或事务进行全局设置。 最好在全局或数据库级别设置。"
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"For more examples of usage refer to <link xlink:href=\"https://www."
+"postgresql.org/docs/current/sql-set.html\">SQL SET</link> and <link xlink:"
+"href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
+"ALTER SYSTEM</link>"
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
@@ -17031,33 +17041,23 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
-msgstr "设置和重置<varname>postgis.gdal_enabled_drivers</varname>"
+msgid ""
+"To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current "
+"session"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Sets backend for all new connections to database"
-msgstr "为所有新的数据库连接设置后端"
+msgid "Set for all new connections to a specific database to specific drivers"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Sets default enabled drivers for all new connections to server. Requires "
-"super user access and PostgreSQL 9.4+. Also note that database, session, and "
-"user settings override this."
+"Setting for whole database cluster to enable all drivers. Requires super "
+"user access. Also note that database, session, and user settings override "
+"this."
 msgstr ""
-"为与服务器的所有新连接设置默认启用的驱动程序。 需要超级用户访问权限和 "
-"PostgreSQL 9.4+ 。 另请注意，数据库、会话和用户设置会覆盖此设置。"
-
-#. Tag: para
-#, no-c-format
-msgid "Enable all GDAL Drivers"
-msgstr "启用所有 GDAL 驱动程序"
-
-#. Tag: para
-#, no-c-format
-msgid "Disable all GDAL Drivers"
-msgstr "禁用所有GDAL驱动程序"
 
 #. Tag: para
 #, no-c-format
@@ -17125,15 +17125,15 @@ msgstr "设置和重置当前会话的 <varname>postgis.enable_outdb_rasters</va
 
 #. Tag: para
 #, no-c-format
-msgid "Set for specific database"
-msgstr "针对特定数据库设置"
+msgid "Set for all new connections to a specific database"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Setting for whole database cluster. You need to reconnect to the database "
-"for changes to take effect."
-msgstr "整个数据库集群的设置。 您需要重新连接到数据库才能使更改生效。"
+"Setting for whole database cluster. Requires super user access. Also note "
+"that database, session, and user settings override this."
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19799,12 +19799,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
-"boundlessgeo.com/2012/07/making-geography-faster/\">Making Geography faster</"
-"link> for details."
+"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"https://"
+"web.archive.org/web/20160827203903/http://boundlessgeo.com/2012/07/making-"
+"geography-faster/\">Making Geography faster</link> for details."
 msgstr ""
-"增强：2.1.0 提高了地理速度。 有关详细信息，请参阅<link xlink:href=\"http://"
-"boundlessgeo.com/2012/07/making-geography-faster/\">使地理更快</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -28110,6 +28108,29 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
+msgid "Aggregate. Renders PostGIS geometries into a new raster."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a single-band raster containing the rendered version of all incoming "
+"geometries, each with its associated value."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_Union\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
 msgid ""
 "Returns one or more bands of an existing raster as a new raster. Useful for "
 "building new rasters from existing rasters."
@@ -29595,21 +29616,15 @@ msgstr "增强：2.0.0 添加了 except_nodata_value 可选参数。"
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_NumBands\"/"
-">, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/"
-">, <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, "
-"<xref linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
+", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_DumpAsPolygons\"/"
+">, <xref linkend=\"RT_ST_NumBands\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref "
+"linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, <xref "
+"linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
 "linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref "
 "linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
 "linkend=\"ST_Intersection\"/>"
 msgstr ""
-", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_NumBands\"/"
-">, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/"
-">, <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, "
-"<xref linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
-"linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref "
-"linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
-"linkend=\"ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -34374,11 +34389,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, <xref "
-"linkend=\"RT_ST_ValueCount\"/>"
+", <xref linkend=\"RT_ST_AsRasterAgg\"/>, <xref linkend=\"RT_ST_Value\"/>, "
+"<xref linkend=\"RT_ST_Polygon\"/>, <xref linkend=\"RT_ST_ValueCount\"/>"
 msgstr ""
-", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, <xref "
-"linkend=\"RT_ST_ValueCount\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37034,16 +37047,6 @@ msgstr "此函数调用包括利用几何上可用的任何索引的边界框比
 #, no-c-format
 msgid "Availability: 1.5.0 support for geography was introduced"
 msgstr "可用性：1.5.0 引入了对地理的支持"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
-"blog.opengeo.org/2012/07/12/making-geography-faster/\">Making Geography "
-"faster</link> for details."
-msgstr ""
-"增强：2.1.0 提高了地理速度。 有关详细信息，请参阅<link xlink:href=\"http://"
-"blog.opengeo.org/2012/07/12/making-geography-faster/\">使地理更快</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -46161,6 +46164,98 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
+
+#, no-c-format
+#~ msgid ""
+#~ "While not OGC-compliant, <varname>ST_MakePoint</varname> is faster and "
+#~ "more precise than <xref linkend=\"ST_GeomFromText\"/> and <xref "
+#~ "linkend=\"ST_PointFromText\"/>. It is also easier to use for numeric "
+#~ "coordinate values."
+#~ msgstr ""
+#~ "虽然不符合 OGC 标准，但<varname>ST_MakePoint</varname> 比<xref "
+#~ "linkend=\"ST_GeomFromText\"/> 和 <xref linkend=\"ST_PointFromText\"/>更"
+#~ "快、更精确。 它也更容易用于数字坐标值。"
+
+#, no-c-format
+#~ msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
+#~ msgstr "设置和重置<varname>postgis.gdal_enabled_drivers</varname>"
+
+#, no-c-format
+#~ msgid "Sets backend for all new connections to database"
+#~ msgstr "为所有新的数据库连接设置后端"
+
+#, no-c-format
+#~ msgid ""
+#~ "Sets default enabled drivers for all new connections to server. Requires "
+#~ "super user access and PostgreSQL 9.4+. Also note that database, session, "
+#~ "and user settings override this."
+#~ msgstr ""
+#~ "为与服务器的所有新连接设置默认启用的驱动程序。 需要超级用户访问权限和 "
+#~ "PostgreSQL 9.4+ 。 另请注意，数据库、会话和用户设置会覆盖此设置。"
+
+#, no-c-format
+#~ msgid "Enable all GDAL Drivers"
+#~ msgstr "启用所有 GDAL 驱动程序"
+
+#, no-c-format
+#~ msgid "Disable all GDAL Drivers"
+#~ msgstr "禁用所有GDAL驱动程序"
+
+#, no-c-format
+#~ msgid "Set for specific database"
+#~ msgstr "针对特定数据库设置"
+
+#, no-c-format
+#~ msgid ""
+#~ "Setting for whole database cluster. You need to reconnect to the database "
+#~ "for changes to take effect."
+#~ msgstr "整个数据库集群的设置。 您需要重新连接到数据库才能使更改生效。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Enhanced: 2.1.0 improved speed for geography. See <link xlink:"
+#~ "href=\"http://boundlessgeo.com/2012/07/making-geography-faster/\">Making "
+#~ "Geography faster</link> for details."
+#~ msgstr ""
+#~ "增强：2.1.0 提高了地理速度。 有关详细信息，请参阅<link xlink:"
+#~ "href=\"http://boundlessgeo.com/2012/07/making-geography-faster/\">使地理更"
+#~ "快</link>。"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref "
+#~ "linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, "
+#~ "<xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
+#~ "linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>, "
+#~ "<xref linkend=\"RT_ST_SRID\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+#~ "linkend=\"ST_Point\"/>, <xref linkend=\"ST_MakeEnvelope\"/>, <xref "
+#~ "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Intersection\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref "
+#~ "linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, "
+#~ "<xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
+#~ "linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>, "
+#~ "<xref linkend=\"RT_ST_SRID\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+#~ "linkend=\"ST_Point\"/>, <xref linkend=\"ST_MakeEnvelope\"/>, <xref "
+#~ "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Intersection\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, "
+#~ "<xref linkend=\"RT_ST_ValueCount\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, "
+#~ "<xref linkend=\"RT_ST_ValueCount\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "Enhanced: 2.1.0 improved speed for geography. See <link xlink:"
+#~ "href=\"http://blog.opengeo.org/2012/07/12/making-geography-faster/"
+#~ "\">Making Geography faster</link> for details."
+#~ msgstr ""
+#~ "增强：2.1.0 提高了地理速度。 有关详细信息，请参阅<link xlink:"
+#~ "href=\"http://blog.opengeo.org/2012/07/12/making-geography-faster/\">使地"
+#~ "理更快</link>。"
 
 #, no-c-format
 #~ msgid "Many thanks to our translation teams, in particular:"

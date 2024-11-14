@@ -8,11 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-29 05:23+0000\n"
+"POT-Creation-Date: 2024-11-14 11:19+0000\n"
 "PO-Revision-Date: 2024-11-12 10:47+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
-"Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/de/>\n"
+"Language-Team: German <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -107,10 +107,9 @@ msgid ""
 msgstr ""
 "Das Setzen von Umgebungsvariablen variiert je nach Betriebssystem. Für eine "
 "PostgreSQL Installation unter Ubuntu oder Debian mit apt-postgresql, sollte "
-"<filename>/etc/postgresql/"
-"<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</"
-"filename> editiert werden, wobei sich 10 auf die PostgreSQL-Version und main "
-"auf den Cluster bezieht."
+"<filename>/etc/postgresql/<replaceable>10</replaceable>/<replaceable>main</"
+"replaceable>/environment</filename> editiert werden, wobei sich 10 auf die "
+"PostgreSQL-Version und main auf den Cluster bezieht."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -193,8 +192,8 @@ msgid ""
 "development or in a restricted environment)."
 msgstr ""
 "Dies ist in der Regel nur dann notwendig, wenn PostGIS nicht in das "
-"Erweiterungsverzeichnis von PostgreSQL installiert werden kann oder soll ("
-"wie in einer Test-, Entwicklungs- oder eingeschränkten Umgebung)."
+"Erweiterungsverzeichnis von PostgreSQL installiert werden kann oder soll "
+"(wie in einer Test-, Entwicklungs- oder eingeschränkten Umgebung)."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -10702,6 +10701,11 @@ msgid "David Techer"
 msgstr "David Zwarg"
 
 #. Tag: member
+#, no-c-format
+msgid "Dian M Fay"
+msgstr ""
+
+#. Tag: member
 #, fuzzy, no-c-format
 msgid "Dmitry Vasilyev"
 msgstr "Dmitri Wassiljew"
@@ -15686,19 +15690,12 @@ msgstr ""
 "erstellten Punkt anzugeben."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"While not OGC-compliant, <varname>ST_MakePoint</varname> is faster and more "
-"precise than <xref linkend=\"ST_GeomFromText\"/> and <xref "
-"linkend=\"ST_PointFromText\"/>. It is also easier to use for numeric "
-"coordinate values."
+"While not OGC-compliant, <varname>ST_MakePoint</varname> is faster than "
+"<xref linkend=\"ST_GeomFromText\"/> and <xref linkend=\"ST_PointFromText\"/"
+">. It is also easier to use for numeric coordinate values."
 msgstr ""
-"Erzeugt eine 2D-, 3DZ- oder 4D-Punktgeometrie (Geometrie mit "
-"Kilometrierung). <varname>ST_MakePoint</varname> ist zwar nicht OGC-konform, "
-"ist aber im Allgemeinen schneller und genauer als <xref "
-"linkend=\"ST_GeomFromText\"/> oder<xref linkend=\"ST_PointFromText\"/> und "
-"auch leichter anzuwenden wenn Sie mit rohen Koordinaten anstatt mit WKT "
-"arbeiten."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -18839,6 +18836,15 @@ msgstr ""
 "Transaktion gesetzt werden. Am Besten werden diese global oder auf "
 "Datenbankebene gesetzt."
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"For more examples of usage refer to <link xlink:href=\"https://www."
+"postgresql.org/docs/current/sql-set.html\">SQL SET</link> and <link xlink:"
+"href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
+"ALTER SYSTEM</link>"
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
@@ -19058,38 +19064,23 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
-msgstr ""
-"<varname>postgis.gdal_enabled_drivers</varname> setzen und zurücksetzen"
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend for all new connections to database"
-msgstr ""
-"Bestimmt das Backend, das für alle neuen Verbindungen zur Datenbank "
-"verwendet wird"
-
-#. Tag: para
-#, fuzzy, no-c-format
 msgid ""
-"Sets default enabled drivers for all new connections to server. Requires "
-"super user access and PostgreSQL 9.4+. Also note that database, session, and "
-"user settings override this."
+"To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current "
+"session"
 msgstr ""
-"Setzt die standardmäßig aktivierten Treiber für alle neuen Verbindungen zum "
-"Server. Benötigt Administratorrechte und PostgreSQL 9.4+. Beachten Sie aber "
-"bitte, dass die Datenbank-, Sitzungs- und Benutzereinstellungen dies "
-"überschreiben."
 
 #. Tag: para
 #, no-c-format
-msgid "Enable all GDAL Drivers"
-msgstr "Aktiviert alle GDAL-Treiber"
+msgid "Set for all new connections to a specific database to specific drivers"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Disable all GDAL Drivers"
-msgstr "Deaktiviert alle GDAL-Treiber"
+msgid ""
+"Setting for whole database cluster to enable all drivers. Requires super "
+"user access. Also note that database, session, and user settings override "
+"this."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -19163,18 +19154,16 @@ msgstr ""
 "<varname>postgis.enable_outdb_rasters</varname> setzen oder zurücksetzen"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Set for specific database"
-msgstr "Für eine bestimmte Datenbank eingestellt"
+#, no-c-format
+msgid "Set for all new connections to a specific database"
+msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"Setting for whole database cluster. You need to reconnect to the database "
-"for changes to take effect."
+"Setting for whole database cluster. Requires super user access. Also note "
+"that database, session, and user settings override this."
 msgstr ""
-"Einstellung für den gesamten Datenbank-Cluster. Sie müssen sich erneut mit "
-"der Datenbank verbinden, damit die Änderungen wirksam werden."
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -22161,13 +22150,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
-"boundlessgeo.com/2012/07/making-geography-faster/\">Making Geography faster</"
-"link> for details."
+"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"https://"
+"web.archive.org/web/20160827203903/http://boundlessgeo.com/2012/07/making-"
+"geography-faster/\">Making Geography faster</link> for details."
 msgstr ""
-"Enhanced: 2.1.0 Geschwindigkeitsverbesserung beim geographischen Datentyp. "
-"Siehe <link xlink:href=\"http://boundlessgeo.com/2012/07/making-geography-"
-"faster/\">Making Geography faster</link> für Details."
 
 #. Tag: para
 #, no-c-format
@@ -31512,6 +31498,29 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
+msgid "Aggregate. Renders PostGIS geometries into a new raster."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a single-band raster containing the rendered version of all incoming "
+"geometries, each with its associated value."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_Union\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
 msgid ""
 "Returns one or more bands of an existing raster as a new raster. Useful for "
 "building new rasters from existing rasters."
@@ -33182,21 +33191,15 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_NumBands\"/"
-">, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/"
-">, <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, "
-"<xref linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
+", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_DumpAsPolygons\"/"
+">, <xref linkend=\"RT_ST_NumBands\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref "
+"linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, <xref "
+"linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
 "linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref "
 "linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
 "linkend=\"ST_Intersection\"/>"
 msgstr ""
-", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_NumBands\"/"
-">, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/"
-">, <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, "
-"<xref linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
-"linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref "
-"linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
-"linkend=\"ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38488,11 +38491,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, <xref "
-"linkend=\"RT_ST_ValueCount\"/>"
+", <xref linkend=\"RT_ST_AsRasterAgg\"/>, <xref linkend=\"RT_ST_Value\"/>, "
+"<xref linkend=\"RT_ST_Polygon\"/>, <xref linkend=\"RT_ST_ValueCount\"/>"
 msgstr ""
-", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, <xref "
-"linkend=\"RT_ST_ValueCount\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41468,17 +41469,6 @@ msgid "Availability: 1.5.0 support for geography was introduced"
 msgstr ""
 "Verfügbarkeit: Mit Version 1.5.0 wurde die Unterstützung für Geografie "
 "eingeführt."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
-"blog.opengeo.org/2012/07/12/making-geography-faster/\">Making Geography "
-"faster</link> for details."
-msgstr ""
-"Verbessert: 2.1.0 verbesserte die Geschwindigkeit für Geographie. Siehe "
-"<link xlink:href=\"http://blog.opengeo.org/2012/07/12/making-geography-"
-"faster/\">Geografie schneller machen</link> für Details."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -51681,6 +51671,108 @@ msgstr "2.5/3D-Unterstützung"
 #, fuzzy, no-c-format
 msgid "Supports geography"
 msgstr "Unterstützt Geographie"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "While not OGC-compliant, <varname>ST_MakePoint</varname> is faster and "
+#~ "more precise than <xref linkend=\"ST_GeomFromText\"/> and <xref "
+#~ "linkend=\"ST_PointFromText\"/>. It is also easier to use for numeric "
+#~ "coordinate values."
+#~ msgstr ""
+#~ "Erzeugt eine 2D-, 3DZ- oder 4D-Punktgeometrie (Geometrie mit "
+#~ "Kilometrierung). <varname>ST_MakePoint</varname> ist zwar nicht OGC-"
+#~ "konform, ist aber im Allgemeinen schneller und genauer als <xref "
+#~ "linkend=\"ST_GeomFromText\"/> oder<xref linkend=\"ST_PointFromText\"/> "
+#~ "und auch leichter anzuwenden wenn Sie mit rohen Koordinaten anstatt mit "
+#~ "WKT arbeiten."
+
+#, no-c-format
+#~ msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
+#~ msgstr ""
+#~ "<varname>postgis.gdal_enabled_drivers</varname> setzen und zurücksetzen"
+
+#, no-c-format
+#~ msgid "Sets backend for all new connections to database"
+#~ msgstr ""
+#~ "Bestimmt das Backend, das für alle neuen Verbindungen zur Datenbank "
+#~ "verwendet wird"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Sets default enabled drivers for all new connections to server. Requires "
+#~ "super user access and PostgreSQL 9.4+. Also note that database, session, "
+#~ "and user settings override this."
+#~ msgstr ""
+#~ "Setzt die standardmäßig aktivierten Treiber für alle neuen Verbindungen "
+#~ "zum Server. Benötigt Administratorrechte und PostgreSQL 9.4+. Beachten "
+#~ "Sie aber bitte, dass die Datenbank-, Sitzungs- und Benutzereinstellungen "
+#~ "dies überschreiben."
+
+#, no-c-format
+#~ msgid "Enable all GDAL Drivers"
+#~ msgstr "Aktiviert alle GDAL-Treiber"
+
+#, no-c-format
+#~ msgid "Disable all GDAL Drivers"
+#~ msgstr "Deaktiviert alle GDAL-Treiber"
+
+#, fuzzy, no-c-format
+#~ msgid "Set for specific database"
+#~ msgstr "Für eine bestimmte Datenbank eingestellt"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Setting for whole database cluster. You need to reconnect to the database "
+#~ "for changes to take effect."
+#~ msgstr ""
+#~ "Einstellung für den gesamten Datenbank-Cluster. Sie müssen sich erneut "
+#~ "mit der Datenbank verbinden, damit die Änderungen wirksam werden."
+
+#, no-c-format
+#~ msgid ""
+#~ "Enhanced: 2.1.0 improved speed for geography. See <link xlink:"
+#~ "href=\"http://boundlessgeo.com/2012/07/making-geography-faster/\">Making "
+#~ "Geography faster</link> for details."
+#~ msgstr ""
+#~ "Enhanced: 2.1.0 Geschwindigkeitsverbesserung beim geographischen "
+#~ "Datentyp. Siehe <link xlink:href=\"http://boundlessgeo.com/2012/07/making-"
+#~ "geography-faster/\">Making Geography faster</link> für Details."
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref "
+#~ "linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, "
+#~ "<xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
+#~ "linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>, "
+#~ "<xref linkend=\"RT_ST_SRID\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+#~ "linkend=\"ST_Point\"/>, <xref linkend=\"ST_MakeEnvelope\"/>, <xref "
+#~ "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Intersection\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref "
+#~ "linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, "
+#~ "<xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
+#~ "linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>, "
+#~ "<xref linkend=\"RT_ST_SRID\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+#~ "linkend=\"ST_Point\"/>, <xref linkend=\"ST_MakeEnvelope\"/>, <xref "
+#~ "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Intersection\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, "
+#~ "<xref linkend=\"RT_ST_ValueCount\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, "
+#~ "<xref linkend=\"RT_ST_ValueCount\"/>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Enhanced: 2.1.0 improved speed for geography. See <link xlink:"
+#~ "href=\"http://blog.opengeo.org/2012/07/12/making-geography-faster/"
+#~ "\">Making Geography faster</link> for details."
+#~ msgstr ""
+#~ "Verbessert: 2.1.0 verbesserte die Geschwindigkeit für Geographie. Siehe "
+#~ "<link xlink:href=\"http://blog.opengeo.org/2012/07/12/making-geography-"
+#~ "faster/\">Geografie schneller machen</link> für Details."
 
 #, fuzzy, no-c-format
 #~ msgid "Many thanks to our translation teams, in particular:"
