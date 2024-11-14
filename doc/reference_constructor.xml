@@ -401,15 +401,15 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
 
 			<para>
 			While not OGC-compliant, <varname>ST_MakePoint</varname> is
-			faster and more precise than <xref linkend="ST_GeomFromText"/>
+			faster than <xref linkend="ST_GeomFromText"/>
 			and <xref linkend="ST_PointFromText"/>.
 			It is also easier to use for numeric coordinate values.</para>
 
 			<note><para>For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</varname> is latitude</para></note>
 
 			<note><para>
-			The functions 
-			<xref linkend="ST_Point"/>, <xref linkend="ST_PointZ"/>, <xref linkend="ST_PointM"/>, and <xref linkend="ST_PointZM"/> 
+			The functions
+			<xref linkend="ST_Point"/>, <xref linkend="ST_PointZ"/>, <xref linkend="ST_PointM"/>, and <xref linkend="ST_PointZM"/>
 			can be used to create points with a given SRID.
 			</para></note>
 
@@ -463,7 +463,7 @@ result
 		<refsection>
 			<title>Description</title>
 
-			<para>Creates a point with X, Y and M (measure) ordinates. 
+			<para>Creates a point with X, Y and M (measure) ordinates.
 			Use <xref linkend="ST_MakePoint"/> to make points with XY, XYZ, or XYZM coordinates.</para>
 
 			<para>Use <xref linkend="ST_SetSRID"/> to specify a SRID for the created point.</para>
@@ -471,8 +471,8 @@ result
 			<note><para>For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</varname> is latitude</para></note>
 
 			<note><para>
-			The functions 
-			<xref linkend="ST_PointM"/>, and <xref linkend="ST_PointZM"/> 
+			The functions
+			<xref linkend="ST_PointM"/>, and <xref linkend="ST_PointZM"/>
 			can be used to create points with an M value and a given SRID.
 			</para></note>
 
@@ -729,8 +729,8 @@ SELECT ST_Transform( ST_Point( 3637510, 3014852, 2273), 4326)::geography;</progr
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_MakePoint"/>, 
-			<xref linkend="ST_PointZ"/>, <xref linkend="ST_PointM"/>, <xref linkend="ST_PointZM"/>, 
+		<para><xref linkend="ST_MakePoint"/>,
+			<xref linkend="ST_PointZ"/>, <xref linkend="ST_PointM"/>, <xref linkend="ST_PointZM"/>,
 			<xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/></para>
 	  </refsection>
 	</refentry>
