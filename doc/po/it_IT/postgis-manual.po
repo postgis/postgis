@@ -40240,7 +40240,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Spatial Queries"
-msgstr ""
+msgstr "Interrogazioni spaziali"
 
 #. Tag: para
 #, no-c-format
@@ -40251,11 +40251,17 @@ msgid ""
 "functions are available, how to use them in queries, and ensuring that "
 "appropriate indexes are in place to provide good performance."
 msgstr ""
+"La ragion d'essere delle basi di dati spaziali è quella di effettuare "
+"all'interno del database le interrogazioni che normalmente "
+"richiederebbero l'impiego di un sistema GIS desktop. "
+"Usare PostGIS in maniera efficace richiede la conoscienza di quali funzioni "
+"sono disponibili, come usarle nelle interrogazioni e la creazione di indici "
+"che garantiscano una buona performance."
 
 #. Tag: title
 #, no-c-format
 msgid "Determining Spatial Relationships"
-msgstr ""
+msgstr "Determinare le relazioni spaziali"
 
 #. Tag: para
 #, no-c-format
@@ -40263,11 +40269,13 @@ msgid ""
 "Spatial relationships indicate how two geometries interact with one another. "
 "They are a fundamental capability for querying geometry."
 msgstr ""
+"Le relazioni spaziali indicano come due geometrie interagiscono tra loro. "
+"Rappresentano la principale capacità di interrogazione delle geometries.
 
 #. Tag: title
 #, no-c-format
 msgid "Dimensionally Extended 9-Intersection Model"
-msgstr ""
+msgstr "Modello dimensionale esteso 9-Intersection"
 
 #. Tag: para
 #, no-c-format
@@ -40279,6 +40287,11 @@ msgid ""
 "two geometries and to classify the relationship between the two geometries "
 "based on the entries in the resulting 'intersection' matrix.\""
 msgstr ""
+"Secondo la specifica <link xlink:href=\"http://www.opengeospatial.org/standards/"
+"sfs\">OpenGIS Simple Features Implementation Specification for SQL</link>, "
+"\"l'approccio di base per comparare due geometrie è quello di determinare "
+"l'interesezione tra gli interni, i confini e gli esterni di ognuna, classificando "
+"così la relazione tra le due geometrie attraverso la risultante matrice di 'intersezione'.\""
 
 #. Tag: para
 #, no-c-format
@@ -40286,6 +40299,8 @@ msgid ""
 "In the theory of point-set topology, the points in a geometry embedded in 2-"
 "dimensional space are categorized into three sets:"
 msgstr ""
+"Nella teoria della topologia degli insiemi di punti, i punti di una geometria "
+"nello spazio bidimensionale sono categorizzate in 3 insiemi:"
 
 #. Tag: glossterm
 #, no-c-format
@@ -40301,6 +40316,11 @@ msgid ""
 "is the two endpoints. For <varname>POLYGON</varname>s, the boundary is the "
 "linework of the exterior and interior rings."
 msgstr ""
+"Il confine di una geometria è l'insieme di geometrie della dimensione immediatamente "
+"inferiore. Per i <varname>POINT</varname>, che hanno dimensione 0, il "
+"confine è l'insieme vuoto. Il confine di una <varname>LINESTRING</varname> "
+"è l'insieme dei due punti estremi. Per i <varname>POLYGON</varname>, il confine è "
+"l'insieme delle linee che ne formano il ring esterno e i ring interni."
 
 #. Tag: glossterm
 #, no-c-format
@@ -40316,6 +40336,11 @@ msgid ""
 "between the endpoints. For <varname>POLYGON</varname>s, the interior is the "
 "areal surface inside the polygon."
 msgstr ""
+"L'interno di una geometria è costituito da quei punti della geometria che non "
+"sono parte del confine. Per i <varname>POINT</varname>, l'interno è il punto "
+"stesso. L'interno di una <varname>LINESTRING</varname> è l'insieme dei punti "
+"tra i due estremi. Per i <varname>POLYGON</varname>, l'interno è la superficie "
+"all'interno del poligono."
 
 #. Tag: glossterm
 #, no-c-format
@@ -40329,6 +40354,9 @@ msgid ""
 "embedded; in other words, all points not in the interior or on the boundary "
 "of the geometry. It is a 2-dimensional non-closed surface."
 msgstr ""
+"L'esterno di una geometria è lo spazio attorno al quale la geometria è immersa; "
+"in altre parole, tutti i punti che non fanno parte dell'interno o del confine "
+"della geometria. È una superficie non chiusa a 2 dimensioni."
 
 #. Tag: para
 #, no-c-format
@@ -40340,6 +40368,12 @@ msgid ""
 "dimensions can be formally represented in a 3x3 <emphasis "
 "role=\"bold\">intersection matrix</emphasis>."
 msgstr ""
+"L'articolo <link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally "
+"Extended 9-Intersection Model</link> (DE-9IM) descrive la relazione spatiale "
+"tra due geometrie specificando le dimensioni delle 9 intersezioni tra gli insiemi "
+"di punti sopracitati di ogni geometria. La dimensione dell'intersezione "
+"può essere formalmente rappresentata in una "
+"<emphasis role=\"bold\">matrice d'intersezione</emphasis> 3x3."
 
 #. Tag: para
 #, no-c-format
@@ -40351,25 +40385,31 @@ msgid ""
 "dimension of a set <emphasis>s</emphasis> with the domain of <literal>{0,1,2,"
 "F}</literal>:"
 msgstr ""
+"Per una geometria <emphasis>g</emphasis> <emphasis>Interno</emphasis>, "
+"<emphasis>Confine</emphasis> e <emphasis>Esterno</emphasis> si denotano "
+"usando la notazione <emphasis>I(g)</emphasis>, <emphasis>B(g)</emphasis> ed "
+"<emphasis>E(g)</emphasis>. Inoltre, <emphasis>dim(s)</emphasis> denota la "
+"dimensione di un insieme <emphasis>s</emphasis> nel dominio <literal>{0,1,2,"
+"F}</literal>:"
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>0</literal> =&gt; point"
+msgid "<literal>0</literal> =&gt; punto"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>1</literal> =&gt; line"
+msgid "<literal>1</literal> =&gt; linea"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>2</literal> =&gt; area"
+msgid "<literal>2</literal> =&gt; superficie"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>F</literal> =&gt; empty set"
+msgid "<literal>F</literal> =&gt; insieme vuoto"
 msgstr ""
 
 #. Tag: para
@@ -40378,21 +40418,23 @@ msgid ""
 "Using this notation, the intersection matrix for two geometries <emphasis>a</"
 "emphasis> and <emphasis>b</emphasis> is:"
 msgstr ""
+"Usando questa notazione, la matrice d'intersezione per due geometrie <emphasis>a</"
+"emphasis> e <emphasis>b</emphasis> è:"
 
 #. Tag: emphasis
 #, no-c-format
 msgid "<emphasis role=\"bold\">Interior</emphasis>"
-msgstr ""
+msgstr "<emphasis role=\"bold\">Interno</emphasis>"
 
 #. Tag: emphasis
 #, no-c-format
 msgid "<emphasis role=\"bold\">Boundary</emphasis>"
-msgstr ""
+msgstr "<emphasis role=\"bold\">Confine</emphasis>"
 
 #. Tag: emphasis
 #, no-c-format
 msgid "<emphasis role=\"bold\">Exterior</emphasis>"
-msgstr ""
+msgstr "<emphasis role=\"bold\">Esterno</emphasis>"
 
 #. Tag: emphasis
 #, no-c-format
@@ -40442,7 +40484,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Visually, for two overlapping polygonal geometries, this looks like:"
-msgstr ""
+msgstr "Visivamente, per due geometrie poligonali parzialmente sovrapposte, avrà questo aspetto:"
 
 #. Tag: para
 #, no-c-format
@@ -40512,11 +40554,14 @@ msgid ""
 "represented as the text string '<emphasis role=\"bold\">212101212</"
 "emphasis>'."
 msgstr ""
+"Leggendola da sinistra a destra e dall'alto verso il basso, la matrice "
+"d'intersezione viene rappresentata come la stringa di testo '<emphasis role=\"bold\">212101212</"
+"emphasis>'."
 
 #. Tag: para
 #, no-c-format
 msgid "For more information, refer to:"
-msgstr ""
+msgstr "Per maggiori informazioni si veda:"
 
 #. Tag: para
 #, no-c-format
