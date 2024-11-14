@@ -40270,7 +40270,7 @@ msgid ""
 "They are a fundamental capability for querying geometry."
 msgstr ""
 "Le relazioni spaziali indicano come due geometrie interagiscono tra loro. "
-"Rappresentano la principale capacità di interrogazione delle geometries.
+"Rappresentano la principale capacità di interrogazione delle geometries."
 
 #. Tag: title
 #, no-c-format
