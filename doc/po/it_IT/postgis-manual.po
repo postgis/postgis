@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-11-14 11:19+0000\n"
+"POT-Creation-Date: 2024-11-15 22:46+0000\n"
 "PO-Revision-Date: 2024-11-14 20:47+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/it/>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14329,8 +14329,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Squares are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
-"> to set the SRID to the one you expect."
+"Squares are generated with the SRID of the given origin. Use <xref "
+"linkend=\"ST_SetSRID\"/> to set the SRID if the given origin has an unknown "
+"SRID (as is the case by default)."
 msgstr ""
 
 #. Tag: title
@@ -35339,6 +35340,246 @@ msgid ""
 "linkend=\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
 
+#. Tag: refpurpose
+#, no-c-format
+msgid "Computes the straight skeleton partition of a polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Computes the straight skeleton partition of the input polygon geometry "
+"<parameter>geom</parameter>. The straight skeleton is a partitioning of the "
+"polygon into faces formed by tracing the collapse of its edges. If "
+"<parameter>auto_orientation</parameter> is set to true, the function will "
+"automatically adjust the orientation of the input polygon to ensure correct "
+"results."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0 - requires SFCGAL >= 2.0.0."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Computes a 3D buffer around a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generates a 3D buffer around the input geometry <parameter>geom</parameter> "
+"with a specified <parameter>radius</parameter>. The buffer is constructed in "
+"3D space, creating a volumetric representation of the geometry's "
+"surroundings. The <parameter>segments</parameter> parameter defines the "
+"number of segments used to approximate the curved sections of the buffer. "
+"The <parameter>buffer_type</parameter> specifies the type of buffer to "
+"create: 0: Rounded buffer (default) 1: Flat buffer 2: Square buffer"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0 - requires SFCGAL >= 2.0.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_3DConvexHull\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry by a given angle around the origin (0,0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the origin point (0,0). The rotation is performed "
+"in 2D space; Z coordinates are not modified. Positive angles rotate the "
+"geometry counter-clockwise."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Rotate\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry by a given angle around a specified point in 2D."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the point (<parameter>cx</parameter>, "
+"<parameter>cy</parameter>). The rotation is performed in 2D space; Z "
+"coordinates are dropped. Positive angles rotate the geometry counter-"
+"clockwise."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_Rotate3D\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry in 3D space around an axis vector."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around an axis defined by the vector (<parameter>ax</"
+"parameter>, <parameter>ay</parameter>, <parameter>az</parameter>) passing "
+"through the origin (0,0,0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_RotateZ\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry around the X-axis by a given angle."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the X-axis."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_RotateZ\"/>, <xref linkend=\"CG_Rotate3D\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry around the Y-axis by a given angle."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the Y-axis passing."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry around the Z-axis by a given angle."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the Z-axis."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_Rotate3D\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Scales a geometry uniformly in all dimensions by a given factor."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Scales the input geometry <parameter>geom</parameter> by a uniform scale "
+"<parameter>factor</parameter> in all dimensions (X, Y, and Z). The scaling "
+"is performed relative to the origin point (0,0,0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_Scale3DAroundCenter\"/>, <xref linkend=\"ST_Scale\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Scales a geometry by separate factors along X, Y, and Z axes."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Scales the input geometry <parameter>geom</parameter> by different factors "
+"along the X, Y, and Z axes. The scaling is performed relative to the origin "
+"point (0,0,0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_Scale3DAroundCenter\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Scales a geometry in 3D space around a specified center point."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Scales the input geometry <parameter>geom</parameter> by different factors "
+"along the X, Y, and Z axes, relative to a specified center point "
+"(<parameter>centerX</parameter>, <parameter>centerY</parameter>, "
+"<parameter>centerZ</parameter>)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_Scale3D\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Translates (moves) a geometry by given offsets in 2D space."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Translates the input geometry <parameter>geom</parameter> by adding "
+"<parameter>deltaX</parameter> to the X coordinates and <parameter>deltaY</"
+"parameter> to the Y coordinates. Z coordinates are dropped."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Translate\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Translates (moves) a geometry by given offsets in 3D space."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Translates the input geometry <parameter>geom</parameter> by adding "
+"<parameter>deltaX</parameter> to the X coordinates, <parameter>deltaY</"
+"parameter> to the Y coordinates, and <parameter>deltaZ</parameter> to the Z "
+"coordinates."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Spatial Reference System Functions"
@@ -36214,11 +36455,6 @@ msgid ""
 "<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code> is short-"
 "hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, "
 "deltaX*XFactor, deltaY*YFactor, 0)</code>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_Translate\"/>"
 msgstr ""
 
 #. Tag: title
@@ -40255,11 +40491,11 @@ msgid ""
 "appropriate indexes are in place to provide good performance."
 msgstr ""
 "La ragion d'essere delle basi di dati spaziali è quella di effettuare "
-"all'interno del database le interrogazioni che normalmente "
-"richiederebbero l'impiego di un sistema GIS desktop. "
-"Usare PostGIS in maniera efficace richiede la conoscienza di quali funzioni "
-"sono disponibili, come usarle nelle interrogazioni e la creazione di indici "
-"che garantiscano una buona performance."
+"all'interno del database le interrogazioni che normalmente richiederebbero "
+"l'impiego di un sistema GIS desktop. Usare PostGIS in maniera efficace "
+"richiede la conoscienza di quali funzioni sono disponibili, come usarle "
+"nelle interrogazioni e la creazione di indici che garantiscano una buona "
+"performance."
 
 #. Tag: title
 #, no-c-format
@@ -40290,11 +40526,12 @@ msgid ""
 "two geometries and to classify the relationship between the two geometries "
 "based on the entries in the resulting 'intersection' matrix.\""
 msgstr ""
-"Secondo la specifica <link xlink:href=\"http://www.opengeospatial.org/standards/"
-"sfs\">OpenGIS Simple Features Implementation Specification for SQL</link>, "
-"\"l'approccio di base per comparare due geometrie è quello di determinare "
-"l'interesezione tra gli interni, i confini e gli esterni di ognuna, classificando "
-"così la relazione tra le due geometrie attraverso la risultante matrice di 'intersezione'.\""
+"Secondo la specifica <link xlink:href=\"http://www.opengeospatial.org/"
+"standards/sfs\">OpenGIS Simple Features Implementation Specification for "
+"SQL</link>, \"l'approccio di base per comparare due geometrie è quello di "
+"determinare l'interesezione tra gli interni, i confini e gli esterni di "
+"ognuna, classificando così la relazione tra le due geometrie attraverso la "
+"risultante matrice di 'intersezione'.\""
 
 #. Tag: para
 #, no-c-format
@@ -40302,8 +40539,8 @@ msgid ""
 "In the theory of point-set topology, the points in a geometry embedded in 2-"
 "dimensional space are categorized into three sets:"
 msgstr ""
-"Nella teoria della topologia degli insiemi di punti, i punti di una geometria "
-"nello spazio bidimensionale sono categorizzate in 3 insiemi:"
+"Nella teoria della topologia degli insiemi di punti, i punti di una "
+"geometria nello spazio bidimensionale sono categorizzate in 3 insiemi:"
 
 #. Tag: glossterm
 #, no-c-format
@@ -40319,11 +40556,12 @@ msgid ""
 "is the two endpoints. For <varname>POLYGON</varname>s, the boundary is the "
 "linework of the exterior and interior rings."
 msgstr ""
-"Il confine di una geometria è l'insieme di geometrie della dimensione immediatamente "
-"inferiore. Per i <varname>POINT</varname>, che hanno dimensione 0, il "
-"confine è l'insieme vuoto. Il confine di una <varname>LINESTRING</varname> "
-"è l'insieme dei due punti estremi. Per i <varname>POLYGON</varname>, il confine è "
-"l'insieme delle linee che ne formano il ring esterno e i ring interni."
+"Il confine di una geometria è l'insieme di geometrie della dimensione "
+"immediatamente inferiore. Per i <varname>POINT</varname>, che hanno "
+"dimensione 0, il confine è l'insieme vuoto. Il confine di una "
+"<varname>LINESTRING</varname> è l'insieme dei due punti estremi. Per i "
+"<varname>POLYGON</varname>, il confine è l'insieme delle linee che ne "
+"formano il ring esterno e i ring interni."
 
 #. Tag: glossterm
 #, no-c-format
@@ -40339,11 +40577,11 @@ msgid ""
 "between the endpoints. For <varname>POLYGON</varname>s, the interior is the "
 "areal surface inside the polygon."
 msgstr ""
-"L'interno di una geometria è costituito da quei punti della geometria che non "
-"sono parte del confine. Per i <varname>POINT</varname>, l'interno è il punto "
-"stesso. L'interno di una <varname>LINESTRING</varname> è l'insieme dei punti "
-"tra i due estremi. Per i <varname>POLYGON</varname>, l'interno è la superficie "
-"all'interno del poligono."
+"L'interno di una geometria è costituito da quei punti della geometria che "
+"non sono parte del confine. Per i <varname>POINT</varname>, l'interno è il "
+"punto stesso. L'interno di una <varname>LINESTRING</varname> è l'insieme dei "
+"punti tra i due estremi. Per i <varname>POLYGON</varname>, l'interno è la "
+"superficie all'interno del poligono."
 
 #. Tag: glossterm
 #, no-c-format
@@ -40357,9 +40595,9 @@ msgid ""
 "embedded; in other words, all points not in the interior or on the boundary "
 "of the geometry. It is a 2-dimensional non-closed surface."
 msgstr ""
-"L'esterno di una geometria è lo spazio attorno al quale la geometria è immersa; "
-"in altre parole, tutti i punti che non fanno parte dell'interno o del confine "
-"della geometria. È una superficie non chiusa a 2 dimensioni."
+"L'esterno di una geometria è lo spazio attorno al quale la geometria è "
+"immersa; in altre parole, tutti i punti che non fanno parte dell'interno o "
+"del confine della geometria. È una superficie non chiusa a 2 dimensioni."
 
 #. Tag: para
 #, no-c-format
@@ -40371,11 +40609,11 @@ msgid ""
 "dimensions can be formally represented in a 3x3 <emphasis "
 "role=\"bold\">intersection matrix</emphasis>."
 msgstr ""
-"L'articolo <link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally "
-"Extended 9-Intersection Model</link> (DE-9IM) descrive la relazione spatiale "
-"tra due geometrie specificando le dimensioni delle 9 intersezioni tra gli insiemi "
-"di punti sopracitati di ogni geometria. La dimensione dell'intersezione "
-"può essere formalmente rappresentata in una "
+"L'articolo <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"DE-9IM\">Dimensionally Extended 9-Intersection Model</link> (DE-9IM) "
+"descrive la relazione spatiale tra due geometrie specificando le dimensioni "
+"delle 9 intersezioni tra gli insiemi di punti sopracitati di ogni geometria. "
+"La dimensione dell'intersezione può essere formalmente rappresentata in una "
 "<emphasis role=\"bold\">matrice d'intersezione</emphasis> 3x3."
 
 #. Tag: para
@@ -40397,22 +40635,22 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>0</literal> =&gt; punto"
+msgid "<literal>0</literal> =&gt; point"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>1</literal> =&gt; linea"
+msgid "<literal>1</literal> =&gt; line"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>2</literal> =&gt; superficie"
+msgid "<literal>2</literal> =&gt; area"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>F</literal> =&gt; insieme vuoto"
+msgid "<literal>F</literal> =&gt; empty set"
 msgstr ""
 
 #. Tag: para
@@ -40421,8 +40659,8 @@ msgid ""
 "Using this notation, the intersection matrix for two geometries <emphasis>a</"
 "emphasis> and <emphasis>b</emphasis> is:"
 msgstr ""
-"Usando questa notazione, la matrice d'intersezione per due geometrie <emphasis>a</"
-"emphasis> e <emphasis>b</emphasis> è:"
+"Usando questa notazione, la matrice d'intersezione per due geometrie "
+"<emphasis>a</emphasis> e <emphasis>b</emphasis> è:"
 
 #. Tag: emphasis
 #, no-c-format
@@ -40487,7 +40725,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Visually, for two overlapping polygonal geometries, this looks like:"
-msgstr "Visivamente, per due geometrie poligonali parzialmente sovrapposte, avrà questo aspetto:"
+msgstr ""
+"Visivamente, per due geometrie poligonali parzialmente sovrapposte, avrà "
+"questo aspetto:"
 
 #. Tag: para
 #, no-c-format
@@ -40558,8 +40798,8 @@ msgid ""
 "emphasis>'."
 msgstr ""
 "Leggendola da sinistra a destra e dall'alto verso il basso, la matrice "
-"d'intersezione viene rappresentata come la stringa di testo '<emphasis role=\"bold\">212101212</"
-"emphasis>'."
+"d'intersezione viene rappresentata come la stringa di testo '<emphasis "
+"role=\"bold\">212101212</emphasis>'."
 
 #. Tag: para
 #, no-c-format

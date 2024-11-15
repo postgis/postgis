@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-11-14 11:19+0000\n"
+"POT-Creation-Date: 2024-11-15 22:46+0000\n"
 "PO-Revision-Date: 2024-11-15 02:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14988,9 +14988,9 @@ msgid ""
 "<xref linkend=\"ST_GeomFromText\"/> and <xref linkend=\"ST_PointFromText\"/"
 ">. It is also easier to use for numeric coordinate values."
 msgstr ""
-"OGC準拠ではありませんが、<varname>ST_MakePoint</varname>は<xref linkend="
-"\"ST_GeomFromText\"/>や<xref linkend=\"ST_PointFromText\""
-"/>より高速です。また、数値による座標値を使用できます。"
+"OGC準拠ではありませんが、<varname>ST_MakePoint</varname>は<xref "
+"linkend=\"ST_GeomFromText\"/>や<xref linkend=\"ST_PointFromText\"/>より高速で"
+"す。また、数値による座標値を使用できます。"
 
 #. Tag: para
 #, no-c-format
@@ -15767,11 +15767,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Squares are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
-"> to set the SRID to the one you expect."
+"Squares are generated with the SRID of the given origin. Use <xref "
+"linkend=\"ST_SetSRID\"/> to set the SRID if the given origin has an unknown "
+"SRID (as is the case by default)."
 msgstr ""
-"四角形はSRIDの設定なしで生成されるので、SRIDを期待する値に設定するために"
-"<xref linkend=\"ST_SetSRID\"/>を使います。"
 
 #. Tag: title
 #, no-c-format
@@ -17977,9 +17976,9 @@ msgid ""
 "ALTER SYSTEM</link>"
 msgstr ""
 "その他の使用例については <link xlink:href=\"https://www.postgresql.jp/"
-"document/current/html/sql-set.html\">SQL SET</link>と<link xlink:href=\"https"
-"://www.postgresql.jp/document/current/html/sql-altersystem.html\">SQL ALTER "
-"SYSTEM</link>を参照して下さい"
+"document/current/html/sql-set.html\">SQL SET</link>と<link xlink:"
+"href=\"https://www.postgresql.jp/document/current/html/sql-altersystem."
+"html\">SQL ALTER SYSTEM</link>を参照して下さい"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18196,8 +18195,9 @@ msgstr ""
 msgid ""
 "To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current "
 "session"
-msgstr "現在のセッションでの<varname>postgis."
-"gdal_enabled_drivers</varname>の設定とリセット"
+msgstr ""
+"現在のセッションでの<varname>postgis.gdal_enabled_drivers</varname>の設定とリ"
+"セット"
 
 #. Tag: para
 #, no-c-format
@@ -18211,9 +18211,9 @@ msgid ""
 "user access. Also note that database, session, and user settings override "
 "this."
 msgstr ""
-"データベースクラスタの全体に対して全てのドライバを有効にする設定。スーパーユ"
-"ーザアカウントが必要です。データベース、セッション、ユーザの設定が優先される"
-"ことに注意して下さい。"
+"データベースクラスタの全体に対して全てのドライバを有効にする設定。スーパー"
+"ユーザアカウントが必要です。データベース、セッション、ユーザの設定が優先され"
+"ることに注意して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -21087,8 +21087,8 @@ msgid ""
 msgstr ""
 "Enhanced: 2.1.0 ジオグラフィ版の速度が改善しました。詳細については<link "
 "xlink:href=\"https://web.archive.org/web/20160827203903/http://boundlessgeo."
-"com/2012/07/making-geography-faster/\">Making Geography "
-"faster</link>をご覧下さい。"
+"com/2012/07/making-geography-faster/\">Making Geography faster</link>をご覧下"
+"さい。"
 
 #. Tag: para
 #, no-c-format
@@ -29870,7 +29870,8 @@ msgstr "集約関数です。PostGISジオメトリを新しいラスタに変�
 msgid ""
 "Returns a single-band raster containing the rendered version of all incoming "
 "geometries, each with its associated value."
-msgstr "入力ジオメトリとそれに関連付けた値を使ってラスタに変換したもの全てを持つ単一"
+msgstr ""
+"入力ジオメトリとそれに関連付けた値を使ってラスタに変換したもの全てを持つ単一"
 "バンドのラスタを返します。"
 
 #. Tag: para
@@ -31465,12 +31466,13 @@ msgid ""
 "linkend=\"ST_Intersection\"/>"
 msgstr ""
 ", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_DumpAsPolygons\"/"
-">, <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_PixelAsPolygon\""
-"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, "
-"<xref linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>, "
-"<xref linkend=\"RT_ST_SRID\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend="
-"\"ST_Point\"/>, <xref linkend=\"ST_MakeEnvelope\"/>, <xref linkend="
-"\"ST_Intersects\"/>, <xref linkend=\"ST_Intersection\"/>"
+">, <xref linkend=\"RT_ST_NumBands\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref "
+"linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, <xref "
+"linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
+"linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+"linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
+"linkend=\"ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40696,6 +40698,246 @@ msgstr ""
 "linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref "
 "linkend=\"CG_OptimalConvexPartition\"/>と同じ例です)"
 
+#. Tag: refpurpose
+#, no-c-format
+msgid "Computes the straight skeleton partition of a polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Computes the straight skeleton partition of the input polygon geometry "
+"<parameter>geom</parameter>. The straight skeleton is a partitioning of the "
+"polygon into faces formed by tracing the collapse of its edges. If "
+"<parameter>auto_orientation</parameter> is set to true, the function will "
+"automatically adjust the orientation of the input polygon to ensure correct "
+"results."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0 - requires SFCGAL >= 2.0.0."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Computes a 3D buffer around a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generates a 3D buffer around the input geometry <parameter>geom</parameter> "
+"with a specified <parameter>radius</parameter>. The buffer is constructed in "
+"3D space, creating a volumetric representation of the geometry's "
+"surroundings. The <parameter>segments</parameter> parameter defines the "
+"number of segments used to approximate the curved sections of the buffer. "
+"The <parameter>buffer_type</parameter> specifies the type of buffer to "
+"create: 0: Rounded buffer (default) 1: Flat buffer 2: Square buffer"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0 - requires SFCGAL >= 2.0.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_3DConvexHull\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry by a given angle around the origin (0,0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the origin point (0,0). The rotation is performed "
+"in 2D space; Z coordinates are not modified. Positive angles rotate the "
+"geometry counter-clockwise."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Rotate\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry by a given angle around a specified point in 2D."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the point (<parameter>cx</parameter>, "
+"<parameter>cy</parameter>). The rotation is performed in 2D space; Z "
+"coordinates are dropped. Positive angles rotate the geometry counter-"
+"clockwise."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_Rotate3D\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry in 3D space around an axis vector."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around an axis defined by the vector (<parameter>ax</"
+"parameter>, <parameter>ay</parameter>, <parameter>az</parameter>) passing "
+"through the origin (0,0,0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_RotateZ\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry around the X-axis by a given angle."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the X-axis."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_RotateZ\"/>, <xref linkend=\"CG_Rotate3D\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry around the Y-axis by a given angle."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the Y-axis passing."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry around the Z-axis by a given angle."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the Z-axis."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_Rotate3D\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Scales a geometry uniformly in all dimensions by a given factor."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Scales the input geometry <parameter>geom</parameter> by a uniform scale "
+"<parameter>factor</parameter> in all dimensions (X, Y, and Z). The scaling "
+"is performed relative to the origin point (0,0,0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_Scale3DAroundCenter\"/>, <xref linkend=\"ST_Scale\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Scales a geometry by separate factors along X, Y, and Z axes."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Scales the input geometry <parameter>geom</parameter> by different factors "
+"along the X, Y, and Z axes. The scaling is performed relative to the origin "
+"point (0,0,0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_Scale3DAroundCenter\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Scales a geometry in 3D space around a specified center point."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Scales the input geometry <parameter>geom</parameter> by different factors "
+"along the X, Y, and Z axes, relative to a specified center point "
+"(<parameter>centerX</parameter>, <parameter>centerY</parameter>, "
+"<parameter>centerZ</parameter>)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_Scale3D\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Translates (moves) a geometry by given offsets in 2D space."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Translates the input geometry <parameter>geom</parameter> by adding "
+"<parameter>deltaX</parameter> to the X coordinates and <parameter>deltaY</"
+"parameter> to the Y coordinates. Z coordinates are dropped."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Translate\"/>"
+msgstr ", <xref linkend=\"ST_Translate\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Translates (moves) a geometry by given offsets in 3D space."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Translates the input geometry <parameter>geom</parameter> by adding "
+"<parameter>deltaX</parameter> to the X coordinates, <parameter>deltaY</"
+"parameter> to the Y coordinates, and <parameter>deltaZ</parameter> to the Z "
+"coordinates."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Spatial Reference System Functions"
@@ -41770,11 +42012,6 @@ msgstr ""
 "<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code>は"
 "<code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, "
 "deltaX*XFactor, deltaY*YFactor, 0)</code>の短縮版です。"
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_Translate\"/>"
-msgstr ", <xref linkend=\"ST_Translate\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -48979,6 +49216,14 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid ""
+#~ "Squares are generated with no SRID set, so use <xref "
+#~ "linkend=\"ST_SetSRID\"/> to set the SRID to the one you expect."
+#~ msgstr ""
+#~ "四角形はSRIDの設定なしで生成されるので、SRIDを期待する値に設定するために"
+#~ "<xref linkend=\"ST_SetSRID\"/>を使います。"
 
 #, no-c-format
 #~ msgid ""
