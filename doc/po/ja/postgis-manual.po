@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-14 11:19+0000\n"
-"PO-Revision-Date: 2024-09-30 04:47+0000\n"
+"PO-Revision-Date: 2024-11-15 02:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10199,7 +10199,7 @@ msgstr "David Techer"
 #. Tag: member
 #, no-c-format
 msgid "Dian M Fay"
-msgstr ""
+msgstr "Dian M Fay"
 
 #. Tag: member
 #, no-c-format
@@ -14988,6 +14988,9 @@ msgid ""
 "<xref linkend=\"ST_GeomFromText\"/> and <xref linkend=\"ST_PointFromText\"/"
 ">. It is also easier to use for numeric coordinate values."
 msgstr ""
+"OGC準拠ではありませんが、<varname>ST_MakePoint</varname>は<xref linkend="
+"\"ST_GeomFromText\"/>や<xref linkend=\"ST_PointFromText\""
+"/>より高速です。また、数値による座標値を使用できます。"
 
 #. Tag: para
 #, no-c-format
@@ -17973,6 +17976,10 @@ msgid ""
 "href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
 "ALTER SYSTEM</link>"
 msgstr ""
+"その他の使用例については <link xlink:href=\"https://www.postgresql.jp/"
+"document/current/html/sql-set.html\">SQL SET</link>と<link xlink:href=\"https"
+"://www.postgresql.jp/document/current/html/sql-altersystem.html\">SQL ALTER "
+"SYSTEM</link>を参照して下さい"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18189,12 +18196,13 @@ msgstr ""
 msgid ""
 "To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current "
 "session"
-msgstr ""
+msgstr "現在のセッションでの<varname>postgis."
+"gdal_enabled_drivers</varname>の設定とリセット"
 
 #. Tag: para
 #, no-c-format
 msgid "Set for all new connections to a specific database to specific drivers"
-msgstr ""
+msgstr "特定データベースへの新しい接続の全てに対する特定のドライバの設定"
 
 #. Tag: para
 #, no-c-format
@@ -18203,6 +18211,9 @@ msgid ""
 "user access. Also note that database, session, and user settings override "
 "this."
 msgstr ""
+"データベースクラスタの全体に対して全てのドライバを有効にする設定。スーパーユ"
+"ーザアカウントが必要です。データベース、セッション、ユーザの設定が優先される"
+"ことに注意して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -18278,7 +18289,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Set for all new connections to a specific database"
-msgstr ""
+msgstr "特定データベースへの新しい接続の全てに対する設定"
 
 #. Tag: para
 #, no-c-format
@@ -18286,6 +18297,8 @@ msgid ""
 "Setting for whole database cluster. Requires super user access. Also note "
 "that database, session, and user settings override this."
 msgstr ""
+"データベースクラスタの全体に対する設定。スーパーユーザアカウントが必要です。"
+"データベース、セッション、ユーザの設定が優先されることに注意して下さい。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -21072,6 +21085,10 @@ msgid ""
 "web.archive.org/web/20160827203903/http://boundlessgeo.com/2012/07/making-"
 "geography-faster/\">Making Geography faster</link> for details."
 msgstr ""
+"Enhanced: 2.1.0 ジオグラフィ版の速度が改善しました。詳細については<link "
+"xlink:href=\"https://web.archive.org/web/20160827203903/http://boundlessgeo."
+"com/2012/07/making-geography-faster/\">Making Geography "
+"faster</link>をご覧下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -29846,25 +29863,27 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Aggregate. Renders PostGIS geometries into a new raster."
-msgstr ""
+msgstr "集約関数です。PostGISジオメトリを新しいラスタに変換します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Returns a single-band raster containing the rendered version of all incoming "
 "geometries, each with its associated value."
-msgstr ""
+msgstr "入力ジオメトリとそれに関連付けた値を使ってラスタに変換したもの全てを持つ単一"
+"バンドのラスタを返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0"
-msgstr ""
+msgstr "Availability: 3.6.0"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_Union\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_Union\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31445,6 +31464,13 @@ msgid ""
 "linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
 "linkend=\"ST_Intersection\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_DumpAsPolygons\"/"
+">, <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_PixelAsPolygon\""
+"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, "
+"<xref linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>, "
+"<xref linkend=\"RT_ST_SRID\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend="
+"\"ST_Point\"/>, <xref linkend=\"ST_MakeEnvelope\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36437,6 +36463,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_AsRasterAgg\"/>, <xref linkend=\"RT_ST_Value\"/>, "
 "<xref linkend=\"RT_ST_Polygon\"/>, <xref linkend=\"RT_ST_ValueCount\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AsRasterAgg\"/>, <xref linkend=\"RT_ST_Value\"/>, "
+"<xref linkend=\"RT_ST_Polygon\"/>, <xref linkend=\"RT_ST_ValueCount\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
