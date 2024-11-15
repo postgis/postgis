@@ -1217,7 +1217,7 @@ FROM admin0 WHERE name = 'Canada'
 			<paramdef><type>float8</type> <parameter>size</parameter></paramdef>
 			<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef>
 			<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef>
-			<paramdef choice="opt"><type>geometry</type> <parameter>origin</parameter></paramdef>
+			<paramdef choice="opt"><type>geometry</type> <parameter>origin='POINT(0 0)'</parameter></paramdef>
 		  </funcprototype>
 		 </funcsynopsis>
 		</refsynopsisdiv>
@@ -1228,7 +1228,11 @@ FROM admin0 WHERE name = 'Canada'
 			<para>Uses the same square tiling concept as <xref linkend="ST_SquareGrid"/>, but generates just one square at the desired cell coordinate. Optionally,
 			can adjust origin coordinate of the tiling, the default origin is at 0,0.
 			</para>
-			<para>Squares are generated with no SRID set, so use <xref linkend="ST_SetSRID"/> to set the SRID to the one you expect.</para>
+
+			<para>
+Squares are generated with the SRID of the given origin.
+Use <xref linkend="ST_SetSRID"/> to set the SRID if the given origin
+has an unknown SRID (as is the case by default).</para>
 
 			<para role="availability" conformance="3.1.0">Availability: 3.1.0</para>
 		</refsection>
