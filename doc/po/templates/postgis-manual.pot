@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-11-14 11:19+0000\n"
+"POT-Creation-Date: 2024-11-15 22:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -12654,8 +12654,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Squares are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
-"> to set the SRID to the one you expect."
+"Squares are generated with the SRID of the given origin. Use <xref "
+"linkend=\"ST_SetSRID\"/> to set the SRID if the given origin has an unknown "
+"SRID (as is the case by default)."
 msgstr ""
 
 #. Tag: title
@@ -32673,6 +32674,246 @@ msgid ""
 "linkend=\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
 
+#. Tag: refpurpose
+#, no-c-format
+msgid "Computes the straight skeleton partition of a polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Computes the straight skeleton partition of the input polygon geometry "
+"<parameter>geom</parameter>. The straight skeleton is a partitioning of the "
+"polygon into faces formed by tracing the collapse of its edges. If "
+"<parameter>auto_orientation</parameter> is set to true, the function will "
+"automatically adjust the orientation of the input polygon to ensure correct "
+"results."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0 - requires SFCGAL >= 2.0.0."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Computes a 3D buffer around a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generates a 3D buffer around the input geometry <parameter>geom</parameter> "
+"with a specified <parameter>radius</parameter>. The buffer is constructed in "
+"3D space, creating a volumetric representation of the geometry's "
+"surroundings. The <parameter>segments</parameter> parameter defines the "
+"number of segments used to approximate the curved sections of the buffer. "
+"The <parameter>buffer_type</parameter> specifies the type of buffer to "
+"create: 0: Rounded buffer (default) 1: Flat buffer 2: Square buffer"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0 - requires SFCGAL >= 2.0.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_3DConvexHull\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry by a given angle around the origin (0,0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the origin point (0,0). The rotation is performed "
+"in 2D space; Z coordinates are not modified. Positive angles rotate the "
+"geometry counter-clockwise."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Rotate\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry by a given angle around a specified point in 2D."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the point (<parameter>cx</parameter>, "
+"<parameter>cy</parameter>). The rotation is performed in 2D space; Z "
+"coordinates are dropped. Positive angles rotate the geometry counter-"
+"clockwise."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_Rotate3D\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry in 3D space around an axis vector."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around an axis defined by the vector (<parameter>ax</"
+"parameter>, <parameter>ay</parameter>, <parameter>az</parameter>) passing "
+"through the origin (0,0,0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_RotateZ\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry around the X-axis by a given angle."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the X-axis."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_RotateZ\"/>, <xref linkend=\"CG_Rotate3D\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry around the Y-axis by a given angle."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the Y-axis passing."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Rotates a geometry around the Z-axis by a given angle."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
+"parameter> radians around the Z-axis."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_Rotate3D\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Scales a geometry uniformly in all dimensions by a given factor."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Scales the input geometry <parameter>geom</parameter> by a uniform scale "
+"<parameter>factor</parameter> in all dimensions (X, Y, and Z). The scaling "
+"is performed relative to the origin point (0,0,0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_Scale3DAroundCenter\"/>, <xref linkend=\"ST_Scale\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Scales a geometry by separate factors along X, Y, and Z axes."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Scales the input geometry <parameter>geom</parameter> by different factors "
+"along the X, Y, and Z axes. The scaling is performed relative to the origin "
+"point (0,0,0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_Scale3DAroundCenter\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Scales a geometry in 3D space around a specified center point."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Scales the input geometry <parameter>geom</parameter> by different factors "
+"along the X, Y, and Z axes, relative to a specified center point "
+"(<parameter>centerX</parameter>, <parameter>centerY</parameter>, "
+"<parameter>centerZ</parameter>)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_Scale3D\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Translates (moves) a geometry by given offsets in 2D space."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Translates the input geometry <parameter>geom</parameter> by adding "
+"<parameter>deltaX</parameter> to the X coordinates and <parameter>deltaY</"
+"parameter> to the Y coordinates. Z coordinates are dropped."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Translate\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Translates (moves) a geometry by given offsets in 3D space."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Translates the input geometry <parameter>geom</parameter> by adding "
+"<parameter>deltaX</parameter> to the X coordinates, <parameter>deltaY</"
+"parameter> to the Y coordinates, and <parameter>deltaZ</parameter> to the Z "
+"coordinates."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Spatial Reference System Functions"
@@ -33548,11 +33789,6 @@ msgid ""
 "<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code> is short-"
 "hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, "
 "deltaX*XFactor, deltaY*YFactor, 0)</code>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_Translate\"/>"
 msgstr ""
 
 #. Tag: title
