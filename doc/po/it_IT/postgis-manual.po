@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-15 22:46+0000\n"
-"PO-Revision-Date: 2024-11-14 20:47+0000\n"
+"PO-Revision-Date: 2024-11-16 09:47+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/it/>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1857,6 +1857,8 @@ msgid ""
 "(token number <code>15</code>): The <emphasis role=\"bold\">3B</emphasis> in "
 "<code>BOX 3B</code>"
 msgstr ""
+"(numero di token <code>15</code>): Il <emphasis role=\"bold\">3B</emphasis> "
+"in <code>BOX 3B</code>"
 
 #. Tag: para
 #, no-c-format
@@ -1864,6 +1866,8 @@ msgid ""
 "(token number <code>8</code>): The <emphasis role=\"bold\">RR</emphasis> in "
 "<code>RR 7</code>"
 msgstr ""
+"(numero di token <code>8</code>): Il <emphasis role=\"bold\">RR</emphasis> "
+"in <code>RR 7</code>"
 
 #. Tag: para
 #, no-c-format
@@ -1871,6 +1875,8 @@ msgid ""
 "(token number <code>16</code>): The <emphasis role=\"bold\">APT</emphasis> "
 "in <code>APT 3B</code>"
 msgstr ""
+"(numero di token <code>16</code>): Il <emphasis role=\"bold\">APT</emphasis> "
+"in <code>APT 3B</code>"
 
 #. Tag: para
 #, no-c-format
