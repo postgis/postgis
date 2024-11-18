@@ -3074,10 +3074,80 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
        <title>Examples</title>
        <programlisting>SELECT ST_AsText(CG_Buffer3D('POINT(0 0 0)', 1, 8, 0));
 -- Result: POLYHEDRALSURFACE Z (((0 0 1, 0.5 -0.5 0.71, 0 -0.71 0.71, 0 0 1)), ... )</programlisting>
+
+       <para>The following images were rendered pasting the output of the ST_AsX3D query into <link xlink:href="https://postgis.net/docs/support/viewers/x3d_viewer.htm">X3D Viewer</url>.</para>
+       <programlisting><![CDATA[SELECT string_agg('<Shape>' || ST_AsX3D(cgbuffer3d_output)  || '<Appearance>
+          <Material diffuseColor="0 0.8 0.2" specularColor="0 1 0"/>
+        </Appearance>
+    </Shape>', '');]]></programlisting> 
+    <informaltable>
+                <tgroup cols="2">
+                <tbody>
+                    <row>
+                    <entry><para><informalfigure>
+                        <mediaobject>
+                            <imageobject>
+                            <imagedata fileref="images/cg_3dbuffer01.png"/>
+                            </imageobject>
+                            <caption><para>segments=32 (rounded buffer)</para></caption>
+                        </mediaobject>
+                        </informalfigure>
+            <programlisting>SELECT CG_Buffer3D(ST_GeomFromText('POINT(100 90)'), 50,32,0);</programlisting>
+                        </para></entry>
+
+                    <entry><para><informalfigure>
+                        <mediaobject>
+                            <imageobject>
+                            <imagedata fileref="images/cg_3dbuffer02.png"/>
+                            </imageobject>
+                            <caption><para>5 segments rounded</para></caption>
+                        </mediaobject>
+                        </informalfigure>
+            <programlisting>SELECT CG_Buffer3D(
+ ST_GeomFromText('POINT(100 90)'),
+ 50,5,0);
+            </programlisting>
+                    </para></entry>
+                    </row>
+                    <row>
+                    <entry><para><informalfigure>
+                        <mediaobject>
+                            <imageobject>
+                            <imagedata fileref="images/cg_3dbuffer03.png"/>
+                            </imageobject>
+                            <caption><para>32 segments, round</para></caption>
+                        </mediaobject>
+                        </informalfigure>
+            <programlisting>SELECT CG_Buffer3D(
+  ST_GeomFromText(
+    'LINESTRING(50 50,150 150,150 50)'
+    ),
+ 10,32,0);
+            </programlisting>
+                        </para></entry>
+                        <entry><para><informalfigure>
+                        <mediaobject>
+                            <imageobject>
+                            <imagedata fileref="images/cg_3dbuffer04.png"/>
+                            </imageobject>
+                            <caption><para>32 segments, square</para></caption>
+                        </mediaobject>
+                        </informalfigure>
+            <programlisting>SELECT CG_Buffer3D(
+  ST_GeomFromText(
+    'LINESTRING(50 50,150 150,150 50)'
+    ),
+ 10,32,2);
+            </programlisting>
+                        </para></entry>
+    </row>
+    </tbody>
+    </tgroup>
+    </informaltable>
    </refsection>
    <refsection>
        <title>See Also</title>
-       <para><xref linkend="ST_Buffer"/>, <xref linkend="ST_3DConvexHull"/></para>
+       <para><xref linkend="ST_Buffer"/>, <xref linkend="ST_3DConvexHull"/>, <xref linkend="ST_AsX3D" /></para>
    </refsection>
 </refentry>
 
