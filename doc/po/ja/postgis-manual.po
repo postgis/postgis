@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-15 22:46+0000\n"
-"PO-Revision-Date: 2024-11-15 02:47+0000\n"
+"PO-Revision-Date: 2024-11-18 03:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15771,6 +15771,9 @@ msgid ""
 "linkend=\"ST_SetSRID\"/> to set the SRID if the given origin has an unknown "
 "SRID (as is the case by default)."
 msgstr ""
+"与えられた原点のSRIDで正方形が生成されます。与える原点のSRIDが不明 "
+"(デフォルトのまま)の場合には<xref linkend=\"ST_SetSRID\""
+"/>を使ってSRIDを設定します。"
 
 #. Tag: title
 #, no-c-format
@@ -40701,7 +40704,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the straight skeleton partition of a polygon."
-msgstr ""
+msgstr "ポリゴンのストレートスケルトン分割を計算します。"
 
 #. Tag: para
 #, no-c-format
@@ -40713,16 +40716,20 @@ msgid ""
 "automatically adjust the orientation of the input polygon to ensure correct "
 "results."
 msgstr ""
+"ポリゴンジオメトリ<parameter>geom</parameter>のストレートスケルトン分割を計算"
+"します。ストレートスケルトンはポリゴンをエッジの間引きで形成されるフェースに"
+"分割します。<parameter>auto_orientation</parameter>をTRUEに指定した場合には、"
+"この関数は正しい結果が得られるように入力ポリゴンの向きを自動的に調整します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0 - requires SFCGAL >= 2.0.0."
-msgstr ""
+msgstr "Availability: 3.6.0 - SFCGAL >= 2.0.0が必要です。"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes a 3D buffer around a geometry."
-msgstr ""
+msgstr "ジオメトリの周りの3次元バッファを計算します。"
 
 #. Tag: para
 #, no-c-format
@@ -40735,21 +40742,27 @@ msgid ""
 "The <parameter>buffer_type</parameter> specifies the type of buffer to "
 "create: 0: Rounded buffer (default) 1: Flat buffer 2: Square buffer"
 msgstr ""
+"入力ジオメトリ<parameter>geom</parameter>の周りに指定した<parameter>radius</p"
+"arameter>で3次元バッファを生成します。バッファは3次元空間内に生成され、ジオメ"
+"トリの周囲の立体表現を生成します。<parameter>segments</parameter>パラメータは"
+"、バッファの曲線部の近似分割数を指定するものです。<parameter>buffer_type</par"
+"ameter>は、バッファ生成タイプを指定します。0: 曲面バッファ (デフォルト) 1: "
+"平面バッファ 2: 四角バッファ (訳注: ST_Bufferの端点処理を参照して下さい)"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0 - requires SFCGAL >= 2.0.0"
-msgstr ""
+msgstr "Availability: 3.6.0 - SFCGAL >= 2.0.0が必要です"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DConvexHull\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_3DConvexHull\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry by a given angle around the origin (0,0)."
-msgstr ""
+msgstr "ジオメトリを (0,0)を中心に指定した角度で回転させます。"
 
 #. Tag: para
 #, no-c-format
@@ -40759,16 +40772,19 @@ msgid ""
 "in 2D space; Z coordinates are not modified. Positive angles rotate the "
 "geometry counter-clockwise."
 msgstr ""
+"入力ジオメトリ<parameter>geom</parameter>を (0,0)を中心に<parameter>angle</pa"
+"rameter>ラジアンで回転させます。回転は2次元空間で行います。Z値は変更されませ"
+"ん。正の角度では反時計回りに回転させます。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Rotate\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Rotate\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry by a given angle around a specified point in 2D."
-msgstr ""
+msgstr "ジオメトリを指定した2次元ポイントを中心に指定した角度で回転させます。"
 
 #. Tag: para
 #, no-c-format
@@ -40779,16 +40795,20 @@ msgid ""
 "coordinates are dropped. Positive angles rotate the geometry counter-"
 "clockwise."
 msgstr ""
+"入力ジオメトリ<parameter>geom</parameter>をポイント (<parameter>cx</"
+"parameter>, <parameter>cy</parameter>)を中心に<parameter>angle</parameter>ラ"
+"ジアンで回転させます。回転は2次元空間で行います。Z値は削除されます。正の角度"
+"では反時計回りに回転させます。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_Rotate3D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_Rotate3D\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry in 3D space around an axis vector."
-msgstr ""
+msgstr "ジオメトリを指定したベクトルを軸に3次元空間で回転させます。"
 
 #. Tag: para
 #, no-c-format
@@ -40798,16 +40818,19 @@ msgid ""
 "parameter>, <parameter>ay</parameter>, <parameter>az</parameter>) passing "
 "through the origin (0,0,0)."
 msgstr ""
+"入力ジオメトリ<parameter>geom</parameter>を (0,0)と (<parameter>ax</"
+"parameter>, <parameter>ay</parameter>, <parameter>az</parameter>) とを結ぶベ"
+"クトルを軸に<parameter>angle</parameter>ラジアンで3次元空間で回転させます。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_RotateZ\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_RotateZ\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry around the X-axis by a given angle."
-msgstr ""
+msgstr "ジオメトリをX軸を軸に指定した角度で回転させます。"
 
 #. Tag: para
 #, no-c-format
@@ -40815,16 +40838,18 @@ msgid ""
 "Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
 "parameter> radians around the X-axis."
 msgstr ""
+"入力ジオメトリ<parameter>geom</parameter>をX軸を軸に<parameter>angle</paramet"
+"er>ラジアンで回転させます。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_RotateZ\"/>, <xref linkend=\"CG_Rotate3D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_RotateZ\"/>, <xref linkend=\"CG_Rotate3D\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry around the Y-axis by a given angle."
-msgstr ""
+msgstr "ジオメトリをY軸を軸に指定した角度で回転させます。"
 
 #. Tag: para
 #, no-c-format
@@ -40832,11 +40857,13 @@ msgid ""
 "Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
 "parameter> radians around the Y-axis passing."
 msgstr ""
+"入力ジオメトリ<parameter>geom</parameter>をY軸を軸に<parameter>angle</paramet"
+"er>ラジアンで回転させます。"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry around the Z-axis by a given angle."
-msgstr ""
+msgstr "ジオメトリをZ軸を軸に指定した角度で回転させます。"
 
 #. Tag: para
 #, no-c-format
@@ -40844,16 +40871,18 @@ msgid ""
 "Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
 "parameter> radians around the Z-axis."
 msgstr ""
+"入力ジオメトリ<parameter>geom</parameter>をZ軸を軸に<parameter>angle</paramet"
+"er>ラジアンで回転させます。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_Rotate3D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_Rotate3D\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Scales a geometry uniformly in all dimensions by a given factor."
-msgstr ""
+msgstr "ジオメトリを全ての次元で与えられた係数で均一に拡大縮小します。"
 
 #. Tag: para
 #, no-c-format
@@ -40862,17 +40891,21 @@ msgid ""
 "<parameter>factor</parameter> in all dimensions (X, Y, and Z). The scaling "
 "is performed relative to the origin point (0,0,0)."
 msgstr ""
+"入力ジオメトリ<parameter>geom</parameter>を全ての次元 "
+"(X,Y,Z)で与えられた係数<parameter>factor</parameter>で均一に拡大縮小します。"
+"拡大縮小は (0,0,0)を基準に実行します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"CG_Scale3DAroundCenter\"/>, <xref linkend=\"ST_Scale\"/>"
 msgstr ""
+", <xref linkend=\"CG_Scale3DAroundCenter\"/>, <xref linkend=\"ST_Scale\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Scales a geometry by separate factors along X, Y, and Z axes."
-msgstr ""
+msgstr "ジオメトリをX,Y,Z軸に沿って個別の係数で拡大縮小します。"
 
 #. Tag: para
 #, no-c-format
@@ -40881,16 +40914,18 @@ msgid ""
 "along the X, Y, and Z axes. The scaling is performed relative to the origin "
 "point (0,0,0)."
 msgstr ""
+"入力ジオメトリ<parameter>geom</parameter>をX,Y,Z軸に沿って個別の係数で拡大縮"
+"小します。拡大縮小は (0,0,0)を基準に実行します。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_Scale3DAroundCenter\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_Scale3DAroundCenter\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Scales a geometry in 3D space around a specified center point."
-msgstr ""
+msgstr "ジオメトリを3次元空間で指定した点を中心として拡大縮小します。"
 
 #. Tag: para
 #, no-c-format
@@ -40900,16 +40935,19 @@ msgid ""
 "(<parameter>centerX</parameter>, <parameter>centerY</parameter>, "
 "<parameter>centerZ</parameter>)."
 msgstr ""
+"入力ジオメトリ<parameter>geom</parameter>をX,Y,Z軸に沿って個別の係数で、点 "
+"(<parameter>centerX</parameter>, <parameter>centerY</parameter>, "
+"<parameter>centerZ</parameter>)を中心に拡大縮小します。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_Scale3D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_Scale3D\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Translates (moves) a geometry by given offsets in 2D space."
-msgstr ""
+msgstr "ジオメトリを与えたオフセットで2次元で移動させます。"
 
 #. Tag: para
 #, no-c-format
@@ -40918,6 +40956,9 @@ msgid ""
 "<parameter>deltaX</parameter> to the X coordinates and <parameter>deltaY</"
 "parameter> to the Y coordinates. Z coordinates are dropped."
 msgstr ""
+"入力ジオメトリ<parameter>geom</parameter>を、 X値に<parameter>deltaX</paramet"
+"er>を、Y値に<parameter>deltaY</parameter>を、それぞれ足します。Z値は削除され"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -40927,7 +40968,7 @@ msgstr ", <xref linkend=\"ST_Translate\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Translates (moves) a geometry by given offsets in 3D space."
-msgstr ""
+msgstr "ジオメトリを与えたオフセットで3元で移動させます。"
 
 #. Tag: para
 #, no-c-format
@@ -40937,6 +40978,9 @@ msgid ""
 "parameter> to the Y coordinates, and <parameter>deltaZ</parameter> to the Z "
 "coordinates."
 msgstr ""
+"入力ジオメトリ<parameter>geom</parameter>を、 X値に<parameter>deltaX</paramet"
+"er>を、Y値に<parameter>deltaY</parameter>を、Z値に<parameter>deltaZ</paramete"
+"r>を、それぞれ足します。"
 
 #. Tag: title
 #, no-c-format
