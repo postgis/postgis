@@ -3025,7 +3025,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         <para>Computes the straight skeleton partition of the input polygon geometry <parameter>geom</parameter>.
         The straight skeleton is a partitioning of the polygon into faces formed by tracing the collapse of its edges.
         If <parameter>auto_orientation</parameter> is set to true, the function will automatically adjust the orientation of the input polygon to ensure correct results.</para>
-        <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL >= 2.0.0.</para>
+        <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0.</para>
         <para>&sfcgal_required;</para>
     </refsection>
     <refsection>
@@ -3064,7 +3064,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
        0: Rounded buffer (default)
        1: Flat buffer
        2: Square buffer</para>
-       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL >= 2.0.0</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
        <para>&sfcgal_required;</para>
        <para>&Z_support;</para>
        <para>&P_support;</para>
@@ -3100,7 +3100,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
        <para>Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</parameter> radians around the origin point (0,0).
        The rotation is performed in 2D space; Z coordinates are not modified.
        Positive angles rotate the geometry counter-clockwise.</para>
-       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL >= 2.0.0</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
        <para>&sfcgal_required;</para>
    </refsection>
    <refsection>
@@ -3135,7 +3135,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
        <para>Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</parameter> radians around the point (<parameter>cx</parameter>, <parameter>cy</parameter>).
        The rotation is performed in 2D space; Z coordinates are dropped.
        Positive angles rotate the geometry counter-clockwise.</para>
-       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL >= 2.0.0</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
        <para>&sfcgal_required;</para>
    </refsection>
    <refsection>
@@ -3170,7 +3170,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
        <title>Description</title>
        <para>Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</parameter> radians around an axis defined by the vector (<parameter>ax</parameter>, <parameter>ay</parameter>, <parameter>az</parameter>) passing through the origin (0,0,0).
        </para>
-       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL >= 2.0.0</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
        <para>&sfcgal_required;</para>
        <para>&Z_support;</para>
    </refsection>
@@ -3203,7 +3203,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
        <title>Description</title>
        <para>Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</parameter> radians around the X-axis.
        </para>
-       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL >= 2.0.0</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
        <para>&sfcgal_required;</para>
        <para>&Z_support;</para>
    </refsection>
@@ -3236,7 +3236,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
        <title>Description</title>
        <para>Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</parameter> radians around the Y-axis passing.
        </para>
-       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL >= 2.0.0</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
        <para>&sfcgal_required;</para>
        <para>&Z_support;</para>
    </refsection>
@@ -3269,7 +3269,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
        <title>Description</title>
        <para>Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</parameter> radians around the Z-axis.
        </para>
-       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL >= 2.0.0</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
        <para>&sfcgal_required;</para>
        <para>&Z_support;</para>
    </refsection>
@@ -3302,7 +3302,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
        <title>Description</title>
        <para>Scales the input geometry <parameter>geom</parameter> by a uniform scale <parameter>factor</parameter> in all dimensions (X, Y, and Z).
        The scaling is performed relative to the origin point (0,0,0).</para>
-       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL >= 2.0.0</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
        <para>&sfcgal_required;</para>
    </refsection>
    <refsection>
@@ -3336,7 +3336,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
        <title>Description</title>
        <para>Scales the input geometry <parameter>geom</parameter> by different factors along the X, Y, and Z axes.
        The scaling is performed relative to the origin point (0,0,0).</para>
-       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL >= 2.0.0</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
        <para>&sfcgal_required;</para>
        <para>&Z_support;</para>
    </refsection>
@@ -3373,7 +3373,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
    <refsection>
        <title>Description</title>
        <para>Scales the input geometry <parameter>geom</parameter> by different factors along the X, Y, and Z axes, relative to a specified center point (<parameter>centerX</parameter>, <parameter>centerY</parameter>, <parameter>centerZ</parameter>).</para>
-       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL >= 2.0.0</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
        <para>&sfcgal_required;</para>
        <para>&Z_support;</para>
    </refsection>
@@ -3407,7 +3407,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
        <title>Description</title>
        <para>Translates the input geometry <parameter>geom</parameter> by adding <parameter>deltaX</parameter> to the X coordinates and <parameter>deltaY</parameter> to the Y coordinates.
        Z coordinates are dropped.</para>
-       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL >= 2.0.0</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
        <para>&sfcgal_required;</para>
    </refsection>
    <refsection>
@@ -3440,7 +3440,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
    <refsection>
        <title>Description</title>
        <para>Translates the input geometry <parameter>geom</parameter> by adding <parameter>deltaX</parameter> to the X coordinates, <parameter>deltaY</parameter> to the Y coordinates, and <parameter>deltaZ</parameter> to the Z coordinates.</para>
-       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL >= 2.0.0</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
        <para>&sfcgal_required;</para>
        <para>&Z_support;</para>
    </refsection>
