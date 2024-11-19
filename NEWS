@@ -6,6 +6,7 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
 
 * Bug fixes *
 
+- #5677, Retain SRID during unary union (Paul Ramsey)
 - #5792, Prevent topology corruption with TopoGeo_addPoint near almost
          collinear edges (Sandro Santilli)
 - #5795, Fix ST_NewEdgesSplit can cause invalid topology
