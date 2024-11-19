@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-11-15 22:46+0000\n"
+"POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2023-12-28 09:45+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -38371,7 +38371,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Availability: 3.6.0 - requires SFCGAL >= 2.0.0."
+msgid "Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0."
 msgstr ""
 
 #. Tag: refpurpose
@@ -38393,12 +38393,40 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Availability: 3.6.0 - requires SFCGAL >= 2.0.0"
+msgid "Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_3DConvexHull\"/>"
+msgid ""
+"The following images were rendered pasting the output of the ST_AsX3D query "
+"into <link xlink:href=\"https://postgis.net/docs/support/viewers/x3d_viewer."
+"htm\">X3D Viewer</link>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "segments=32 (rounded buffer)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "5 segments rounded"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "32 segments, round"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "32 segments, square"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_3DConvexHull\"/>, <xref linkend=\"ST_AsX3D\"/>"
 msgstr ""
 
 #. Tag: refpurpose
