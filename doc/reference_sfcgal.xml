@@ -3039,15 +3039,15 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
     </refsection>
 </refentry>
 
-<refentry xml:id="CG_Buffer3D">
+<refentry xml:id="CG_3DBuffer">
    <refnamediv>
-       <refname>CG_Buffer3D</refname>
+       <refname>CG_3DBuffer</refname>
        <refpurpose>Computes a 3D buffer around a geometry.</refpurpose>
    </refnamediv>
    <refsynopsisdiv>
        <funcsynopsis>
            <funcprototype>
-               <funcdef>geometry <function>CG_Buffer3D</function></funcdef>
+               <funcdef>geometry <function>CG_3DBuffer</function></funcdef>
                <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
                <paramdef><type>float8</type> <parameter>radius</parameter></paramdef>
                <paramdef><type>integer</type> <parameter>segments</parameter></paramdef>
@@ -3072,7 +3072,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_Buffer3D('POINT(0 0 0)', 1, 8, 0));
+       <programlisting>SELECT ST_AsText(CG_3DBuffer('POINT(0 0 0)', 1, 8, 0));
 -- Result: POLYHEDRALSURFACE Z (((0 0 1, 0.5 -0.5 0.71, 0 -0.71 0.71, 0 0 1)), ... )</programlisting>
 
        <para>The following images were rendered pasting the output of the ST_AsX3D query into <link xlink:href="https://postgis.net/docs/support/viewers/x3d_viewer.htm">X3D Viewer</link>.</para>
@@ -3092,7 +3092,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                             <caption><para>segments=32 (rounded buffer)</para></caption>
                         </mediaobject>
                         </informalfigure>
-            <programlisting>SELECT CG_Buffer3D(ST_GeomFromText('POINT(100 90)'), 50,32,0);</programlisting>
+            <programlisting>SELECT CG_3DBuffer(ST_GeomFromText('POINT(100 90)'), 50,32,0);</programlisting>
                         </para></entry>
 
                     <entry><para><informalfigure>
@@ -3103,7 +3103,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                             <caption><para>5 segments rounded</para></caption>
                         </mediaobject>
                         </informalfigure>
-            <programlisting>SELECT CG_Buffer3D(
+            <programlisting>SELECT CG_3DBuffer(
  ST_GeomFromText('POINT(100 90)'),
  50,5,0);
             </programlisting>
@@ -3118,7 +3118,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                             <caption><para>32 segments, round</para></caption>
                         </mediaobject>
                         </informalfigure>
-            <programlisting>SELECT CG_Buffer3D(
+            <programlisting>SELECT CG_3DBuffer(
   ST_GeomFromText(
     'LINESTRING(50 50,150 150,150 50)'
     ),
@@ -3133,7 +3133,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                             <caption><para>32 segments, square</para></caption>
                         </mediaobject>
                         </informalfigure>
-            <programlisting>SELECT CG_Buffer3D(
+            <programlisting>SELECT CG_3DBuffer(
   ST_GeomFromText(
     'LINESTRING(50 50,150 150,150 50)'
     ),
@@ -3180,19 +3180,19 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
    </refsection>
    <refsection>
        <title>See Also</title>
-       <para><xref linkend="CG_Rotate2D"/>, <xref linkend="ST_Rotate"/></para>
+       <para><xref linkend="CG_2DRotate"/>, <xref linkend="ST_Rotate"/></para>
    </refsection>
 </refentry>
 
-<refentry xml:id="CG_Rotate2D">
+<refentry xml:id="CG_2DRotate">
    <refnamediv>
-       <refname>CG_Rotate2D</refname>
+       <refname>CG_2DRotate</refname>
        <refpurpose>Rotates a geometry by a given angle around a specified point in 2D.</refpurpose>
    </refnamediv>
    <refsynopsisdiv>
        <funcsynopsis>
            <funcprototype>
-               <funcdef>geometry <function>CG_Rotate2D</function></funcdef>
+               <funcdef>geometry <function>CG_2DRotate</function></funcdef>
                <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
                <paramdef><type>float8</type> <parameter>angle</parameter></paramdef>
                <paramdef><type>float8</type> <parameter>cx</parameter></paramdef>
@@ -3210,24 +3210,24 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_Rotate2D('POINT(1 0)', pi()/2, 1, 1));
+       <programlisting>SELECT ST_AsText(CG_2DRotate('POINT(1 0)', pi()/2, 1, 1));
 -- Result: POINT(2 1)</programlisting>
    </refsection>
    <refsection>
        <title>See Also</title>
-       <para><xref linkend="CG_Rotate"/>, <xref linkend="CG_Rotate3D"/></para>
+       <para><xref linkend="CG_Rotate"/>, <xref linkend="CG_3DRotate"/></para>
    </refsection>
 </refentry>
 
-<refentry xml:id="CG_Rotate3D">
+<refentry xml:id="CG_3DRotate">
    <refnamediv>
-       <refname>CG_Rotate3D</refname>
+       <refname>CG_3DRotate</refname>
        <refpurpose>Rotates a geometry in 3D space around an axis vector.</refpurpose>
    </refnamediv>
    <refsynopsisdiv>
        <funcsynopsis>
            <funcprototype>
-               <funcdef>geometry <function>CG_Rotate3D</function></funcdef>
+               <funcdef>geometry <function>CG_3DRotate</function></funcdef>
                <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
                <paramdef><type>float8</type> <parameter>angle</parameter></paramdef>
                <paramdef><type>float8</type> <parameter>ax</parameter></paramdef>
@@ -3246,7 +3246,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_Rotate3D('POINT(1 0 0)', pi()/2, 0, 0, 1));
+       <programlisting>SELECT ST_AsText(CG_3DRotate('POINT(1 0 0)', pi()/2, 0, 0, 1));
 -- Result: POINT(0 1 0)</programlisting>
    </refsection>
    <refsection>
@@ -3284,7 +3284,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
    </refsection>
    <refsection>
        <title>See Also</title>
-       <para><xref linkend="CG_RotateY"/>, <xref linkend="CG_RotateZ"/>, <xref linkend="CG_Rotate3D"/></para>
+       <para><xref linkend="CG_RotateY"/>, <xref linkend="CG_RotateZ"/>, <xref linkend="CG_3DRotate"/></para>
    </refsection>
 </refentry>
 
@@ -3317,7 +3317,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
    </refsection>
    <refsection>
        <title>See Also</title>
-       <para><xref linkend="CG_RotateX"/>, <xref linkend="CG_RotateZ"/>, <xref linkend="CG_Rotate3D"/></para>
+       <para><xref linkend="CG_RotateX"/>, <xref linkend="CG_RotateZ"/>, <xref linkend="CG_3DRotate"/></para>
    </refsection>
 </refentry>
 
@@ -3350,7 +3350,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
    </refsection>
    <refsection>
        <title>See Also</title>
-       <para><xref linkend="CG_RotateX"/>, <xref linkend="CG_RotateY"/>, <xref linkend="CG_Rotate3D"/></para>
+       <para><xref linkend="CG_RotateX"/>, <xref linkend="CG_RotateY"/>, <xref linkend="CG_3DRotate"/></para>
    </refsection>
 </refentry>
 
@@ -3382,19 +3382,19 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
    </refsection>
    <refsection>
        <title>See Also</title>
-       <para><xref linkend="CG_Scale3D"/>, <xref linkend="CG_Scale3DAroundCenter"/>, <xref linkend="ST_Scale"/></para>
+       <para><xref linkend="CG_3DScale"/>, <xref linkend="CG_3DScaleAroundCenter"/>, <xref linkend="ST_Scale"/></para>
    </refsection>
 </refentry>
 
-<refentry xml:id="CG_Scale3D">
+<refentry xml:id="CG_3DScale">
    <refnamediv>
-       <refname>CG_Scale3D</refname>
+       <refname>CG_3DScale</refname>
        <refpurpose>Scales a geometry by separate factors along X, Y, and Z axes.</refpurpose>
    </refnamediv>
    <refsynopsisdiv>
        <funcsynopsis>
            <funcprototype>
-               <funcdef>geometry <function>CG_Scale3D</function></funcdef>
+               <funcdef>geometry <function>CG_3DScale</function></funcdef>
                <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
                <paramdef><type>float8</type> <parameter>factorX</parameter></paramdef>
                <paramdef><type>float8</type> <parameter>factorY</parameter></paramdef>
@@ -3412,24 +3412,24 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_Scale3D('POINT(1 1 1)', 2, 3, 4));
+       <programlisting>SELECT ST_AsText(CG_3DScale('POINT(1 1 1)', 2, 3, 4));
 -- Result: POINT(2 3 4)</programlisting>
    </refsection>
    <refsection>
        <title>See Also</title>
-       <para><xref linkend="CG_Scale"/>, <xref linkend="CG_Scale3DAroundCenter"/></para>
+       <para><xref linkend="CG_Scale"/>, <xref linkend="CG_3DScaleAroundCenter"/></para>
    </refsection>
 </refentry>
 
-<refentry xml:id="CG_Scale3DAroundCenter">
+<refentry xml:id="CG_3DScaleAroundCenter">
    <refnamediv>
-       <refname>CG_Scale3DAroundCenter</refname>
+       <refname>CG_3DScaleAroundCenter</refname>
        <refpurpose>Scales a geometry in 3D space around a specified center point.</refpurpose>
    </refnamediv>
    <refsynopsisdiv>
        <funcsynopsis>
            <funcprototype>
-               <funcdef>geometry <function>CG_Scale3DAroundCenter</function></funcdef>
+               <funcdef>geometry <function>CG_3DScaleAroundCenter</function></funcdef>
                <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
                <paramdef><type>float8</type> <parameter>factorX</parameter></paramdef>
                <paramdef><type>float8</type> <parameter>factorY</parameter></paramdef>
@@ -3449,24 +3449,24 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_Scale3DAroundCenter('POINT(2 2 2)', 0.5, 0.5, 0.5, 1, 1, 1));
+       <programlisting>SELECT ST_AsText(CG_3DScaleAroundCenter('POINT(2 2 2)', 0.5, 0.5, 0.5, 1, 1, 1));
 -- Result: POINT(1.5 1.5 1.5)</programlisting>
    </refsection>
    <refsection>
        <title>See Also</title>
-       <para><xref linkend="CG_Scale"/>, <xref linkend="CG_Scale3D"/></para>
+       <para><xref linkend="CG_Scale"/>, <xref linkend="CG_3DScale"/></para>
    </refsection>
 </refentry>
 
-<refentry xml:id="CG_Translate2D">
+<refentry xml:id="CG_Translate">
    <refnamediv>
-       <refname>CG_Translate2D</refname>
+       <refname>CG_Translate</refname>
        <refpurpose>Translates (moves) a geometry by given offsets in 2D space.</refpurpose>
    </refnamediv>
    <refsynopsisdiv>
        <funcsynopsis>
            <funcprototype>
-               <funcdef>geometry <function>CG_Translate2D</function></funcdef>
+               <funcdef>geometry <function>CG_Translate</function></funcdef>
                <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
                <paramdef><type>float8</type> <parameter>deltaX</parameter></paramdef>
                <paramdef><type>float8</type> <parameter>deltaY</parameter></paramdef>
@@ -3482,24 +3482,24 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_Translate2D('LINESTRING(1 1, 2 2)', 1, -1));
+       <programlisting>SELECT ST_AsText(CG_Translate('LINESTRING(1 1, 2 2)', 1, -1));
 -- Result: LINESTRING(2 0, 3 1)</programlisting>
    </refsection>
    <refsection>
        <title>See Also</title>
-       <para><xref linkend="CG_Translate3D"/>, <xref linkend="ST_Translate"/></para>
+       <para><xref linkend="CG_3DTranslate"/>, <xref linkend="ST_Translate"/></para>
    </refsection>
 </refentry>
 
-<refentry xml:id="CG_Translate3D">
+<refentry xml:id="CG_3DTranslate">
    <refnamediv>
-       <refname>CG_Translate3D</refname>
+       <refname>CG_3DTranslate</refname>
        <refpurpose>Translates (moves) a geometry by given offsets in 3D space.</refpurpose>
    </refnamediv>
    <refsynopsisdiv>
        <funcsynopsis>
            <funcprototype>
-               <funcdef>geometry <function>CG_Translate3D</function></funcdef>
+               <funcdef>geometry <function>CG_3DTranslate</function></funcdef>
                <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
                <paramdef><type>float8</type> <parameter>deltaX</parameter></paramdef>
                <paramdef><type>float8</type> <parameter>deltaY</parameter></paramdef>
@@ -3516,12 +3516,12 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_Translate3D('POINT(1 1 1)', 1, -1, 2));
+       <programlisting>SELECT ST_AsText(CG_3DTranslate('POINT(1 1 1)', 1, -1, 2));
 -- Result: POINT(2 0 3)</programlisting>
    </refsection>
    <refsection>
        <title>See Also</title>
-       <para><xref linkend="CG_Translate2D"/>, <xref linkend="ST_Translate"/></para>
+       <para><xref linkend="CG_Translate"/>, <xref linkend="ST_Translate"/></para>
    </refsection>
 </refentry>
 
