@@ -594,8 +594,8 @@ Datum within(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "Contains: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
 
 	/*
-	** Short-circuit 1: if geom2 bounding box is not completely inside
-	** geom1 bounding box we can return FALSE.
+	** Short-circuit 1: if geom1 bounding box is not completely inside
+	** geom2 bounding box we can return FALSE.
 	*/
 	if (gserialized_get_gbox_p(geom1, &box1) &&
 	    gserialized_get_gbox_p(geom2, &box2))
@@ -620,7 +620,7 @@ Datum within(PG_FUNCTION_ARGS)
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
-	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, NULL);
+	prep_cache = GetPrepGeomCache(fcinfo, NULL, shared_geom2);
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 2 )
 	{
 		g1 = POSTGIS2GEOS(geom1);
