@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Correct the PAGC regression result for a directional street name (wangdapeng)
  - Improve compatibility of the cluster upgrade test script (Sandro Santilli)
  - Read regression directives correctly with or without a final newline (Sandro Santilli)
  - Initialize the complete GiST key header without an out-of-bounds access (Sandro Santilli)
