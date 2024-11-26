@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Correct the PAGC regression result for a directional street name (wangdapeng)
   - Release temporary allocations in the shapefile loader and dumper (Laurențiu Nicola)
   - Use the SQL argument name k in the ST_ClusterKMeans synopsis (Dan Levy)
   - Fix the link to the geography performance article (Laurențiu Nicola)
