@@ -3,6 +3,8 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - [tiger_geocoder] Correct the PAGC regression fixture for directions and ZIP codes
+    (Dapeng Wang)
   - [address_standardizer] Accept rules containing exactly 128 terms
     (Darafei Praliaskouski)
   - Correct the documented default band for raster summary statistics (Martin Davis)
