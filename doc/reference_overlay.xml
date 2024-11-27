@@ -301,7 +301,7 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
       </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_3DIntersection"/>, <xref linkend="ST_Difference"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Force2D"/>, <xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
+            <para><xref linkend="ST_3DIntersection"/>, <xref linkend="ST_Difference"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_ClipByBox2D"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Force2D"/>, <xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
         </refsection>
     </refentry>
 
