@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-11-28 09:47+0000\n"
+"PO-Revision-Date: 2024-11-28 13:04+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
@@ -5803,6 +5803,10 @@ msgid ""
 "existing nodes or edges within given tolerance. Existing edges and faces may "
 "be split as a consequence of the load."
 msgstr ""
+"Lädt eine Geometrie in eine bestehende Topologie. Die gegebene Geometrie "
+"rastet an vorhandenen Knoten oder Kanten innerhalb der angegebenen Toleranz "
+"ein. Vorhandene Kanten und Flächen können als Folge der Belastung geteilt "
+"werden."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -5815,6 +5819,8 @@ msgid ""
 ", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref "
 "linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend="
+"\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
 
 #. Tag: title
 #, no-c-format
