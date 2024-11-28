@@ -108,7 +108,10 @@ check-no-trailing-blanks:
 		grep -v deps/ | \
 		xargs grep -n '[[:space:]]$$'
 
-installcheck: installcheck-base installcheck-upgrade
+installcheck: installcheck-base installcheck-upgrade installcheck-extensions
+
+installcheck-extensions:
+	$(MAKE) -C extensions/ installcheck
 
 installcheck-base:
 	# this includes packaged-extension self upgrade
