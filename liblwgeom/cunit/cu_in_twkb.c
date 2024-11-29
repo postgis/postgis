@@ -27,7 +27,7 @@ static uint8_t variant = 0;
 
 /*
 ** The suite initialization function.
-** Create any re-used objects.
+** Create any reused objects.
 */
 static int init_twkb_in_suite(void)
 {

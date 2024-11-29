@@ -1662,7 +1662,7 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t it_first, uint32_t
 	return split;
 }
 
-/* O(N) simplification for tolearnce = 0 */
+/* O(N) simplification for tolerance = 0 */
 static void
 ptarray_simplify_in_place_tolerance0(POINTARRAY *pa)
 {

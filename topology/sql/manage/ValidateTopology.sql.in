@@ -306,7 +306,7 @@ BEGIN
           RETURN NEXT retrec;
         END IF;
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-        RAISE DEBUG 'Finished analisys of edge star around node %', last_node_id;
+        RAISE DEBUG 'Finished analysis of edge star around node %', last_node_id;
 #endif /* POSTGIS_TOPOLOGY_DEBUG */
       END IF;
 #ifdef POSTGIS_TOPOLOGY_DEBUG
@@ -348,7 +348,7 @@ BEGIN
       RETURN NEXT retrec;
     END IF;
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Finished analisys of edge star around node % (out of loop)', last_node_id;
+    RAISE DEBUG 'Finished analysis of edge star around node % (out of loop)', last_node_id;
 #endif /* POSTGIS_TOPOLOGY_DEBUG */
   END IF; --}
 

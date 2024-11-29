@@ -297,7 +297,7 @@ into includes in the future for easier maintenance.</para></listitem>
 						<varlistentry>
 								<term><varname>TYPE</varname></term>
 								<listitem>
-									<para>(2). Words and abbreviation used to denote street typess. For example: <emphasis>ST</emphasis> or <emphasis>AVE</emphasis>.</para>
+									<para>(2). Words and abbreviation used to denote street types. For example: <emphasis>ST</emphasis> or <emphasis>AVE</emphasis>.</para>
 								</listitem>
 						</varlistentry>
 

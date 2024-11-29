@@ -191,7 +191,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- Returns an existing edge at the same location, if any.
 --
 -- An exception is raised if the given line crosses an existing
--- node or interects with an existing edge on anything but endnodes.
+-- node or intersects with an existing edge on anything but endnodes.
 --
 -- The newly added edge has "universe" face on both sides
 -- and links to itself as per next left/right edge.

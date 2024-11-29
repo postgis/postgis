@@ -459,7 +459,7 @@ union_dbscan_general(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double e
 				if (UF_find(uf, p) == UF_find(uf, q))
 					continue;
 
-				/* Similarly, if q is already identifed as a border point of another
+				/* Similarly, if q is already identified as a border point of another
 				 * cluster, there's no point figuring out what the distance is.
 				 */
 				if (in_a_cluster[q] && !is_in_core[q])

@@ -74,7 +74,7 @@ sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
 
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl sql/topology_upgrade.sql Makefile | sql
 	cat $< | $(PERL) @top_srcdir@/utils/create_unpackaged.pl postgis_topology > $@
-	# Ugprade after packaging (TODO: use ANY--TARGET path?)
+	# Upgrade after packaging (TODO: use ANY--TARGET path?)
 	cat sql/topology_upgrade.sql >> $@
 
 #upgrade script should have everything but table, schema, type creation/alter

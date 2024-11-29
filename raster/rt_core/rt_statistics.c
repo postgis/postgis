@@ -1180,7 +1180,7 @@ rt_band_get_quantiles_stream(
 
 		/* exclude_nodata_value = TRUE and band is NODATA */
 		if (exclude_nodata_value && rt_band_get_isnodata_flag(band)) {
-			RASTER_DEBUG(3, "Skipping quantile calcuation as band is NODATA");
+			RASTER_DEBUG(3, "Skipping quantile calculation as band is NODATA");
 			break;
 		}
 

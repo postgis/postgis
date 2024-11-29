@@ -271,7 +271,7 @@ rt_errorstate rt_pixtype_compare_clamped_values(
  *
  * @param npixel : array of rt_pixel objects
  * @param count : number of elements in npixel
- * @param mask : mask to be respected when retruning array
+ * @param mask : mask to be respected when returning array
  * @param x : the column of the center pixel (0-based)
  * @param y : the line of the center pixel (0-based)
  * @param distancex : the number of pixels around the specified pixel

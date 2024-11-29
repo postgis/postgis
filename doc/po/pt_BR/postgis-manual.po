@@ -1338,7 +1338,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"(2). Words and abbreviation used to denote street typess. For example: "
+"(2). Words and abbreviation used to denote street types. For example: "
 "<emphasis>ST</emphasis> or <emphasis>AVE</emphasis>."
 msgstr ""
 "(2). Palavras e abreviação usadas para indicar tipos de ruas. Por exemplo: "
@@ -13407,7 +13407,7 @@ msgstr ""
 msgid ""
 "Note that border geometries may be within <varname>eps</varname> distance of "
 "core geometries in more than one cluster. Either assignment would be "
-"correct, so the border geometry will be arbitrarily asssigned to one of the "
+"correct, so the border geometry will be arbitrarily assigned to one of the "
 "available clusters. In this situation it is possible for a correct cluster "
 "to be generated with fewer than <varname>minpoints</varname> geometries. To "
 "ensure deterministic assignment of border geometries (so that repeated calls "
@@ -15143,7 +15143,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "1: Symmetric (orientation idependent) output."
+msgid "1: Symmetric (orientation independent) output."
 msgstr ""
 
 #. Tag: para
@@ -15797,7 +15797,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Removes points that are irrelevant for rendering a specific rectangluar view "
+"Removes points that are irrelevant for rendering a specific rectangular view "
 "of a geometry."
 msgstr ""
 
@@ -15805,7 +15805,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns a <xref linkend=\"geometry\"/> without points being irrelevant for "
-"rendering the geometry within a given rectangluar view."
+"rendering the geometry within a given rectangular view."
 msgstr ""
 
 #. Tag: para
@@ -25718,7 +25718,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Computes a simplifed topology-preserving outer or inner hull of a polygonal "
+"Computes a simplified topology-preserving outer or inner hull of a polygonal "
 "geometry."
 msgstr ""
 
@@ -32493,7 +32493,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "1 band version - Creates a new one band raster formed by applying a valid "
-"PostgreSQL function on the input raster band and of pixeltype prodived. Band "
+"PostgreSQL function on the input raster band and of pixeltype provided. Band "
 "1 is assumed if no band is specified."
 msgstr ""
 "Versão de banda raster 1: Cria uma nova banda raster formada pela aplicação "
@@ -32606,7 +32606,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "2 band version - Creates a new one band raster formed by applying a valid "
-"PostgreSQL function on the 2 input raster bands and of pixeltype prodived. "
+"PostgreSQL function on the 2 input raster bands and of pixeltype provided. "
 "Band 1 is assumed if no band is specified. Extent type defaults to "
 "INTERSECTION if not specified."
 msgstr ""
@@ -34558,7 +34558,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Enhanced: 2.1.0 addition of Aggegrate variant"
+msgid "Enhanced: 2.1.0 addition of Aggregate variant"
 msgstr "Melhorias: 2.1.0 adição da variante agregada"
 
 #. Tag: title

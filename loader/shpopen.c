@@ -251,7 +251,7 @@ void SHPAPI_CALL SHPWriteHeader( SHPHandle psSHP )
     panSHX = STATIC_CAST(int32 *, malloc(sizeof(int32) * 2 * psSHP->nRecords));
     if( panSHX == SHPLIB_NULLPTR )
     {
-        psSHP->sHooks.Error( "Failure allocatin panSHX" );
+        psSHP->sHooks.Error( "Failure allocating panSHX" );
         return;
     }
 
@@ -493,7 +493,7 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
         return SHPLIB_NULLPTR;
     }
 
-    /* If a lot of records are advertized, check that the file is big enough */
+    /* If a lot of records are advertised, check that the file is big enough */
     /* to hold them */
     if( psSHP->nRecords >= 1024 * 1024 )
     {

@@ -84,7 +84,7 @@ const char *postgis_spatial_ref_sys(void);
 
 /****************************************************************************************/
 
-/* Install PosgreSQL handlers for liblwgeom use */
+/* Install PostgreSQL handlers for liblwgeom use */
 void pg_install_lwgeom_handlers(void);
 
 /* Argument handling macros */

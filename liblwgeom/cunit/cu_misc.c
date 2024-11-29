@@ -235,7 +235,7 @@ static void test_clone(void)
 	lwgeom_free(geom1);
 	lwgeom_free(geom2);
 
-	/* Free in "forewards" order */
+	/* Free in "forwards" order */
 	geom1 = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_ALL);
 	geom2 = lwgeom_clone(geom1);
 	lwgeom_free(geom2);

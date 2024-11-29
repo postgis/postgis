@@ -150,7 +150,7 @@ class RasterReader(object):
 
         row = cur.fetchone()
         if row is None:
-            raise RasterError("No tupes returned for query: %s" % sql)
+            raise RasterError("No tuples returned for query: %s" % sql)
         return row
 
     def _query_value(self, band, x, y):

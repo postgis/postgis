@@ -220,7 +220,7 @@ for ($i=0; $i<@bps_list; $i++)
 		$fact = int(($itime/$dtime)*100)/100;
 
 		if ( $icount ne $dcount ) {
-			die "intersects gave $icount true valus, distance $dcount\n";
+			die "intersects gave $icount true values, distance $dcount\n";
 		}
 
 		print "    $bps\t".(int(($icount/$TOTROWS)*100)/100)."\t".$itime."\t".$dtime."\t".$fact."\n";

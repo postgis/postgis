@@ -323,7 +323,7 @@ The 'flags' argument is a bitfield. 0 by default.
 Supported bits are:
       <itemizedlist>
         <listitem>
-          <para>1: Symmetric (orientation idependent) output.</para>
+          <para>1: Symmetric (orientation independent) output.</para>
         </listitem>
         <listitem>
           <para>2: Retain angle, avoids reducing angles (segment lengths) when producing symmetric output. Has no effect when Symmetric flag is off.</para>
@@ -1748,7 +1748,7 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 	<refentry xml:id="ST_RemoveIrrelevantPointsForView">
 	  <refnamediv>
 		<refname>ST_RemoveIrrelevantPointsForView</refname>
-		<refpurpose>Removes points that are irrelevant for rendering a specific rectangluar view of a geometry.</refpurpose>
+		<refpurpose>Removes points that are irrelevant for rendering a specific rectangular view of a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1765,7 +1765,7 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns a <xref linkend="geometry"/> without points being irrelevant for rendering the geometry within a given rectangluar view.</para>
+		<para>Returns a <xref linkend="geometry"/> without points being irrelevant for rendering the geometry within a given rectangular view.</para>
 		<para>This function can be used to quickly preprocess geometries that should be rendered only within certain bounds.</para>
 		<para>Only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING are evaluated. Other geometries keep unchanged.</para>
 		<para>In contrast to <code>ST_ClipByBox2D()</code> this function

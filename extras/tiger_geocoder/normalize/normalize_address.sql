@@ -32,7 +32,7 @@
 -- table.
 --
 -- Street addresses are assumed to be a single word, starting with a number.
--- Address is manditory; if no address is given, and the street is numbered,
+-- Address is mandatory; if no address is given, and the street is numbered,
 -- the resulting address will be the street name, and the street name
 -- will be an empty string.
 --

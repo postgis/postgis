@@ -8,7 +8,7 @@ SELECT max(node_id)||' max node_id Main.node' from "Main".node;
 SELECT max(face_id)||' max node_id Main.face' from "Main".face;
 
 
-SELECT topology.CreateTopology('temp01',4326) > 0; -- Create temp01 toplogies to use the masters primary keys
+SELECT topology.CreateTopology('temp01',4326) > 0; -- Create temp01 topologies to use the masters primary keys
 ALTER TABLE temp01.edge_data ALTER COLUMN edge_id set default nextval('"Main".edge_data_edge_id_seq'::regclass);
 ALTER TABLE temp01.node ALTER COLUMN node_id set default nextval('"Main".node_node_id_seq'::regclass);
 ALTER TABLE temp01.face ALTER COLUMN face_id set default nextval('"Main".face_face_id_seq'::regclass);
@@ -16,7 +16,7 @@ DROP SEQUENCE temp01.edge_data_edge_id_seq; -- Drop sequences since we do no nee
 DROP SEQUENCE temp01.node_node_id_seq;
 DROP SEQUENCE temp01.face_face_id_seq;
 
-SELECT topology.CreateTopology('temp02',4326) > 0; -- Create temp02 toplogies to use the masters primary keys
+SELECT topology.CreateTopology('temp02',4326) > 0; -- Create temp02 topologies to use the masters primary keys
 ALTER TABLE temp02.edge_data ALTER COLUMN edge_id set default nextval('"Main".edge_data_edge_id_seq'::regclass);
 ALTER TABLE temp02.node ALTER COLUMN node_id set default nextval('"Main".node_node_id_seq'::regclass);
 ALTER TABLE temp02.face ALTER COLUMN face_id set default nextval('"Main".face_face_id_seq'::regclass);

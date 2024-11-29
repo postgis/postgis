@@ -783,7 +783,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
       return -1;
     }
 
-    LWDEBUGF(2, "Edge %" LWTFMT_ELEMID " analisys completed, it does no harm", edge_id);
+    LWDEBUGF(2, "Edge %" LWTFMT_ELEMID " analysis completed, it does no harm", edge_id);
 
     GEOSFree(relate);
   }
@@ -2306,8 +2306,8 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
 {
   LWT_ISO_EDGE newedge;
   LWGEOM *cleangeom;
-  edgeend span; /* start point analisys */
-  edgeend epan; /* end point analisys */
+  edgeend span; /* start point analysis */
+  edgeend epan; /* end point analysis */
   POINT2D p1, pn, p2;
   POINTARRAY *pa;
   LWT_ELEMID node_ids[2];
@@ -3456,7 +3456,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
    * NOTE: this could probably replace the "isclosed" test.
    *
    * NOTE: if either start or end node had different CW and CCW
-   *       edges a twist would be cought in the previous check.
+   *       edges a twist would be caught in the previous check.
    */
   if ( ! isclosed &&
        oldedge->face_left != oldedge->face_right &&
@@ -5015,7 +5015,7 @@ lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, const LWPOINT *pt, double tol)
   return id;
 }
 
-/* Return the smallest delta that can perturbate
+/* Return the smallest delta that can perturb
  * the given value */
 static inline double
 _lwt_minToleranceDouble( double d )
@@ -5024,7 +5024,7 @@ _lwt_minToleranceDouble( double d )
   return ret;
 }
 
-/* Return the smallest delta that can perturbate
+/* Return the smallest delta that can perturb
  * the given point
 static inline double
 _lwt_minTolerancePoint2d( const POINT2D* p )
@@ -5035,7 +5035,7 @@ _lwt_minTolerancePoint2d( const POINT2D* p )
 }
 */
 
-/* Return the smallest delta that can perturbate
+/* Return the smallest delta that can perturb
  * the maximum absolute value of a geometry ordinate
  */
 static double

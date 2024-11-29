@@ -24,7 +24,7 @@ static char *s;
 
 /*
 ** The suite initialization function.
-** Create any re-used objects.
+** Create any reused objects.
 */
 static int init_wkb_out_suite(void)
 {
