@@ -59,7 +59,7 @@
 
 		<para>
 		  Note that border geometries may be within <varname>eps</varname> distance of core geometries in more than one cluster; in this
-		  case, either assignment would be correct, and the border geometry will be arbitrarily asssigned to one of the available clusters.
+		  case, either assignment would be correct, and the border geometry will be arbitrarily assigned to one of the available clusters.
 		  In these cases, it is possible for a correct cluster to be generated with fewer than <varname>minpoints</varname> geometries.
 		  When assignment of a border geometry is ambiguous, repeated calls to ST_ClusterDBSCAN will produce identical results if an ORDER BY
 		  clause is included in the window definition, but cluster assignments may differ from other implementations of the same algorithm.

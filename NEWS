@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Correct spelling in the English function reference (Mike Taves)
  - Document the GTK version required by the shapefile loader GUI (Sandro Santilli)
  - Report the invalid values supplied to clustering functions (Sandro Santilli)
  - Remove the obsolete bounding-box KNN operator from the manual (Regina Obe)
