@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Correct spelling in the English function reference (Mike Taves)
   - Avoid an implicit dependency on Abseil in FlatGeobuf (Paul Ramsey)
   - Report the invalid values supplied to clustering functions (Sandro Santilli)
   - Remove the obsolete bounding-box KNN operator from the manual (Regina Obe)
