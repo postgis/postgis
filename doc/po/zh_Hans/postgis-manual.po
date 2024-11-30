@@ -1450,7 +1450,7 @@ msgstr "(8).用于表示乡村路线的单词和缩写。 <emphasis>RR</emphasis
 #. Tag: para
 #, no-c-format
 msgid ""
-"(2). Words and abbreviation used to denote street types. For example: "
+"(2). Words and abbreviations used to denote street types. For example: "
 "<emphasis>ST</emphasis> or <emphasis>AVE</emphasis>."
 msgstr ""
 "(2). 用于表示街道类型的单词和缩写。 例如：<emphasis>ST</emphasis> or "
@@ -1459,7 +1459,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"(16). Words and abbreviation used to denote internal subaddresses. For "
+"(16). Words and abbreviations used to denote internal subaddresses. For "
 "example, <emphasis>APT</emphasis> or <emphasis>UNIT</emphasis>."
 msgstr ""
 "(16). 用于表示内部子地址的单词和缩写。 例如，<emphasis>APT </emphasis>或 "
