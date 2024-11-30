@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Correct street type and unit terminology in the Address Standardizer manual (Mike Taves)
  - Keep the segmentize regression running until it can be interrupted (Sandro Santilli)
  - Check source whitespace from out-of-tree builds (Sandro Santilli)
  - Allow 300 milliseconds for the buffer interruption test (Regina Obe)
