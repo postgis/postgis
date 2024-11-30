@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - Correct street type and unit terminology in the Address Standardizer manual (Mike Taves)
   - Use the SQL argument name k in the ST_ClusterKMeans synopsis (Dan Levy)
   - #5527, Report invalid composite arguments in ST_FromFlatGeobuf (Paul Ramsey)
   - #5041, Generate valid SQL for the TIGER 2020 tract loader (Regina Obe)
