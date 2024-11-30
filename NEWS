@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Correct street type and unit terminology in the Address Standardizer manual (Mike Taves)
  - Regenerate topology SQL when layer or topology creation changes (Sandro Santilli)
  - Allow 300 milliseconds for the buffer interruption test (Regina Obe)
  - Generate the garden tests from an out-of-tree build (Sandro Santilli)
