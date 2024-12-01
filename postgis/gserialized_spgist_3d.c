@@ -81,11 +81,11 @@ Datum gserialized_overlaps_3d(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
 	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
-	bool resut = BOX3D_overlaps_internal(box1, box2);
+	bool result = BOX3D_overlaps_internal(box1, box2);
 	pfree(box1);
 	pfree(box2);
 
-	PG_RETURN_BOOL(resut);
+	PG_RETURN_BOOL(result);
 }
 
 PG_FUNCTION_INFO_V1(gserialized_contains_3d);
@@ -93,11 +93,11 @@ Datum gserialized_contains_3d(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
 	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
-	bool resut = BOX3D_contains_internal(box1, box2);
+	bool result = BOX3D_contains_internal(box1, box2);
 	pfree(box1);
 	pfree(box2);
 
-	PG_RETURN_BOOL(resut);
+	PG_RETURN_BOOL(result);
 }
 
 PG_FUNCTION_INFO_V1(gserialized_contained_3d);
@@ -105,11 +105,11 @@ Datum gserialized_contained_3d(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
 	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
-	bool resut = BOX3D_contained_internal(box1, box2);
+	bool result = BOX3D_contained_internal(box1, box2);
 	pfree(box1);
 	pfree(box2);
 
-	PG_RETURN_BOOL(resut);
+	PG_RETURN_BOOL(result);
 }
 
 PG_FUNCTION_INFO_V1(gserialized_same_3d);
@@ -117,11 +117,11 @@ Datum gserialized_same_3d(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
 	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
-	bool resut = BOX3D_same_internal(box1, box2);
+	bool result = BOX3D_same_internal(box1, box2);
 	pfree(box1);
 	pfree(box2);
 
-	PG_RETURN_BOOL(resut);
+	PG_RETURN_BOOL(result);
 }
 
 /*
