@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-04 15:54+0000\n"
+"PO-Revision-Date: 2024-12-04 15:55+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
@@ -11079,7 +11079,7 @@ msgstr "Ron Mayer"
 #. Tag: member
 #, no-c-format
 msgid "Sam Peters"
-msgstr ""
+msgstr "Sam Peters"
 
 #. Tag: member
 #, fuzzy, no-c-format
@@ -11184,7 +11184,7 @@ msgstr "Volf Tomáš"
 #. Tag: member
 #, no-c-format
 msgid "Zuo Chenwei"
-msgstr ""
+msgstr "Zuo Chenwei"
 
 #. Tag: term
 #, no-c-format
@@ -11293,7 +11293,7 @@ msgstr "Geografische Daten BC"
 #. Tag: link
 #, no-c-format
 msgid "HighGo"
-msgstr ""
+msgstr "HighGo"
 
 #. Tag: simpara
 #, fuzzy, no-c-format
@@ -11303,7 +11303,7 @@ msgstr "Hunter Systeme Gruppe"
 #. Tag: link
 #, no-c-format
 msgid "INIA-CSIC"
-msgstr ""
+msgstr "INIA-CSIC"
 
 #. Tag: link
 #, fuzzy, no-c-format
@@ -11908,7 +11908,7 @@ msgstr "PostGIS-Aggregat-Funktionen"
 #. Tag: section
 #, no-c-format
 msgid "&list_aggregates;"
-msgstr ""
+msgstr "&liste_aggregate;"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -11929,7 +11929,7 @@ msgstr "PostGIS-Fenster-Funktionen"
 #. Tag: section
 #, no-c-format
 msgid "&list_window_functions;"
-msgstr ""
+msgstr "&Liste_Fenster_Funktionen;"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -12118,7 +12118,7 @@ msgstr "PostGIS-Funktionen zur Unterstützung polyedrischer Flächen"
 #. Tag: section
 #, no-c-format
 msgid "&list_polyhedral_geometry_functions;"
-msgstr ""
+msgstr "&list_polyedrische_geometrische_Funktionen;"
 
 #. Tag: para
 #, fuzzy, no-c-format
