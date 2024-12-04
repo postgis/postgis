@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-04 15:57+0000\n"
+"PO-Revision-Date: 2024-12-04 15:59+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
@@ -12826,6 +12826,9 @@ msgid ""
 "represent the linear segments of the supplied geometry, while the "
 "<varname>CIRCULARSTRING</varname>s represent the arc segments."
 msgstr ""
+"Die Felder <parameter>geom</parameter> <varname> LINESTRING</varname>s "
+"stellen die linearen Segmente der gelieferten Geometrie dar, während die "
+"Felder <varname>CIRCULARSTRING</varname>s die Bogensegmente darstellen."
 
 #. Tag: para
 #, fuzzy, no-c-format
