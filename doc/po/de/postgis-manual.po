@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2024-12-04 16:01+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -13270,6 +13270,8 @@ msgid ""
 "Return the number of component curves in a CompoundCurve, zero for an empty "
 "CompoundCurve, or NULL for a non-CompoundCurve input."
 msgstr ""
+"Gibt die Anzahl der Komponentenkurven in einer CompoundCurve zurück, Null "
+"für eine leere CompoundCurve oder NULL für eine Nicht-CompoundCurve-Eingabe."
 
 #. Tag: para
 #, no-c-format
