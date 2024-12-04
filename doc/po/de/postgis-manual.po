@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-04 15:55+0000\n"
+"PO-Revision-Date: 2024-12-04 15:57+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
@@ -11908,7 +11908,7 @@ msgstr "PostGIS-Aggregat-Funktionen"
 #. Tag: section
 #, no-c-format
 msgid "&list_aggregates;"
-msgstr "&liste_aggregate;"
+msgstr "&list_aggregates;"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -11929,7 +11929,7 @@ msgstr "PostGIS-Fenster-Funktionen"
 #. Tag: section
 #, no-c-format
 msgid "&list_window_functions;"
-msgstr "&Liste_Fenster_Funktionen;"
+msgstr "&list_window_functions;"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -12118,7 +12118,7 @@ msgstr "PostGIS-Funktionen zur Unterstützung polyedrischer Flächen"
 #. Tag: section
 #, no-c-format
 msgid "&list_polyhedral_geometry_functions;"
-msgstr "&list_polyedrische_geometrische_Funktionen;"
+msgstr "&list_polyhedral_geometry_functions;"
 
 #. Tag: para
 #, fuzzy, no-c-format
