@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2024-12-04 16:03+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -13285,7 +13285,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the Nth component curve geometry of a CompoundCurve."
-msgstr ""
+msgstr "Gibt die N-te Komponentengeometrie einer CompoundCurve zurück."
 
 #. Tag: para
 #, no-c-format
