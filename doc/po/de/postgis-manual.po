@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2024-12-04 16:02+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -13279,6 +13279,8 @@ msgid ""
 ", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
 "linkend=\"ST_NumInteriorRings\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 msgstr ""
+", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
+"linkend=\"ST_NumInteriorRings\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
