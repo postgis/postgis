@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-04 15:59+0000\n"
+"PO-Revision-Date: 2024-12-04 16:00+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
@@ -13262,7 +13262,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return the number of component curves in a CompoundCurve."
-msgstr ""
+msgstr "Gibt die Anzahl der Komponenten-Kurven in einer CompoundCurve zurück."
 
 #. Tag: para
 #, no-c-format
