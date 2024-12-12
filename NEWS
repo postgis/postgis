@@ -23,6 +23,7 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
 - #5790, Non-schema qualified calls causing issue with
          materialized views (Regina Obe)
 - #5812, Performance regression in ST_Within (Paul Ramsey)
+- #5815, Remove hash/merge promise from <> operator (Paul Ramsey)
 
 * Enhancements *
 

@@ -425,7 +425,7 @@ CREATE OPERATOR = (
 CREATE OPERATOR <> (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_neq,
 	COMMUTATOR = '<>', NEGATOR = '=',
-	RESTRICT = contsel, JOIN = contjoinsel, HASHES, MERGES
+	RESTRICT = contsel, JOIN = contjoinsel
 );
 
 -- Availability: 0.9.0
