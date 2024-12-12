@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-12 08:47+0000\n"
+"PO-Revision-Date: 2024-12-12 09:19+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -343,13 +343,13 @@ msgid ""
 "If you have multiple versions of PostGIS installed, and you don't want to "
 "upgrade to the latest, you can explicitly specify the version as follows:"
 msgstr ""
-"インストールされたPostGISに複数のバージョンがあり、最新版にアップグレードした"
-"くない場合には、明示的なバージョンの指定ができます。次のようにします:"
+"複数のバージョンのPostGISがインストールされていて、最新版にはアップグレードし"
+"たくない場合には、明示的なバージョンの指定ができます。次のようにします:"
 
 #. Tag: para
 #, no-c-format
 msgid "If you get an error notice something like:"
-msgstr "次のようなエラー通知が表示されることがあります。"
+msgstr "次のようなエラー通知が表示されることがあります:"
 
 #. Tag: para
 #, no-c-format
@@ -358,9 +358,9 @@ msgid ""
 "<xref linkend=\"create_new_db_extensions\"/> and then restore your backup on "
 "top of this new database."
 msgstr ""
-"この場合は、データベースをバックアップして、 <xref "
-"linkend=\"create_new_db_extensions\"/> に記述されているように新しいデータベー"
-"スを生成し、バックアップを新しいデータベースにリストアしなければなりません。"
+"この場合には、データベースをバックアップして、 <xref linkend="
+"\"create_new_db_extensions\"/> に記述されているように新しいデータベースを生成"
+"し、バックアップを新しいデータベースにリストアしなければなりません。"
 
 #. Tag: para
 #, no-c-format
@@ -376,10 +376,10 @@ msgid ""
 "in that case you can append \"next\" to the version string, and next time "
 "you'll need to drop the \"next\" suffix again:"
 msgstr ""
-"この場合は、全てアップデートされていて、安全に無視できます。SVN版から次版 (新"
-"しい版番号を得ていないもの)にアップグレードしようと<emphasis role=\"bold\">し"
-"ない限り</emphasis>、\"next\"を版文字列に追加できますが、次回に\"next\"を削除"
-"する必要があります:"
+"この場合には、全てアップデートされていて、安全に無視できます。"
+"開発版からその次のバージョン (新しいバージョン番号を得ていないもの)"
+"にアップグレードしようと<emphasis role=\"bold\">しない限り</emphasis>、\"next"
+"\"をバージョン文字列に追加できますが、次回に\"next\"を削除する必要があります:"
 
 #. Tag: para
 #, no-c-format
