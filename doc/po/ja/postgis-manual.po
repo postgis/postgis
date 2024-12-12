@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-11-20 02:47+0000\n"
+"PO-Revision-Date: 2024-12-12 08:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -150,8 +150,8 @@ msgid ""
 "the EXTENSION mechanism."
 msgstr ""
 "PostgreSQL 9.1以上を使っていて、エクステンションのPostGISモジュールをコンパイ"
-"ル、インストールしている場合には、エクステンションというメカニズムを使用し"
-"て、データベースを空間データベースに切り替えることができます。"
+"ル、インストールしている場合には、エクステンションというメカニズムを使用して"
+"、データベースを空間データベースに変えることができます。"
 
 #. Tag: para
 #, no-c-format
@@ -160,9 +160,9 @@ msgid ""
 "the functions and comments. Raster and topology are packaged as a separate "
 "extension."
 msgstr ""
-"中核となるPostGISエクステンションには、ジオメトリ、ジオグラフィ、"
-"spatial_ref_sysおよび全ての関数とコメントが含まれています。ラスタとトポロジは"
-"別のエクステンションになっています。"
+"中核となるPostGISエクステンションには、ジオメトリ、ジオグラフィ、spatial_ref_"
+"sysおよび全ての関数とコメントが含まれています。ラスタとトポロジは別のエクステ"
+"ンションになっています。"
 
 #. Tag: para
 #, no-c-format
@@ -183,9 +183,9 @@ msgid ""
 "installed in the PostgreSQL extension directory (for example during testing, "
 "development or in a restricted environment)."
 msgstr ""
-"これは、通常はPostgreSQLのエクステンションのディレクトリ内にPostGISをインス"
-"トールできないか、したくない場合 (たとえばテスト中や開発中、または制限のある"
-"環境内)にのみ必要となります。"
+"これは、通常はPostgreSQLのエクステンションのディレクトリ内にPostGISをインスト"
+"ールできないか、したくない場合 "
+"(たとえばテスト中や開発中、または制限のある環境内)にのみ必要となります。"
 
 #. Tag: para
 #, no-c-format
@@ -206,10 +206,11 @@ msgid ""
 "objects are in the <filename>rtpostgis.sql</filename> script. Topology "
 "objects are in the <filename>topology.sql</filename> script."
 msgstr ""
-"中核のPostGISオブジェクト (ジオメトリ型とジオグラフィ型、これらに対応する関"
-"数)は<filename>postgis.sql</filename>スクリプトにあります。ラスタオブジェクト"
-"は<filename>rtpostgis.sql</filename>スクリプトにあります。トポロジオブジェク"
-"トは<filename>topology.sql</filename>スクリプトにあります。"
+"中核のPostGISオブジェクト "
+"(ジオメトリ型とジオグラフィ型、これらに対応する関数)は<filename>postgis."
+"sql</filename>スクリプトにあります。ラスタオブジェクトは<filename>rtpostgis."
+"sql</filename>スクリプトにあります。トポロジオブジェクトは<filename>topology."
+"sql</filename>スクリプトにあります。"
 
 #. Tag: para
 #, no-c-format
