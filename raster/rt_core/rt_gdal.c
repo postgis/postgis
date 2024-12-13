@@ -202,6 +202,7 @@ int rt_raster_gdal_contour(
 		/* Reclaim feature and associated geometry memory */
 		OGR_F_Destroy(hFeat);
 		geom = lwgeom_from_wkb(bufWkb, szWkb, LW_PARSER_CHECK_NONE);
+		if (!geom) rterror("%s: invalid wkb", __func__);
 		lwgeom_set_srid(geom, arg.dst.srid);
 		contour.geom = gserialized_from_lwgeom(geom, NULL);
 		lwgeom_free(geom);
