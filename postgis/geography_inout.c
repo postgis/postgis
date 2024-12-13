@@ -615,6 +615,11 @@ Datum geography_recv(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom = lwgeom_from_wkb((uint8_t*)buf->data, buf->len, LW_PARSER_CHECK_ALL);
+	if ( !lwgeom )
+	{
+		ereport(ERROR,(errmsg("recv error - invalid geometry")));
+		PG_RETURN_NULL();
+	}
 
 	/* Error on any SRID != default */
 	srid_check_latlong(fcinfo, lwgeom->srid);
