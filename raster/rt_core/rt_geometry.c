@@ -1232,6 +1232,7 @@ rt_raster_gdal_polygonize(
 
 		/* convert WKB to LWGEOM */
 		lwgeom = lwgeom_from_wkb(wkb, wkbsize, LW_PARSER_CHECK_NONE);
+		if (!lwgeom) rterror("%s: invalid wkb", __func__);
 
 #if POSTGIS_DEBUG_LEVEL > 3
 		{
