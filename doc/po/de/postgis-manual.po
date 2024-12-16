@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2024-12-16 13:29+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -18148,6 +18148,9 @@ msgid ""
 "points remain, the rendering result (light-blue area) within the grey view "
 "box remains as well."
 msgstr ""
+"Beispiel: ST_RemoveIrrelevantPointsForView() angewendet auf ein Polygon. "
+"Blaue Punkte bleiben erhalten, das Rendering-Ergebnis (hellblauer Bereich) "
+"innerhalb der grauen Viewbox bleibt ebenfalls erhalten."
 
 #. Tag: para
 #, no-c-format
@@ -18156,11 +18159,14 @@ msgid ""
 "are computed, the result of ST_RemoveIrrelevantPointsForView() may contain "
 "self-intersections."
 msgstr ""
+"Beispiel: Da die Punkte nur aussortiert werden und keine neuen Punkte "
+"berechnet werden, kann das Ergebnis von ST_RemoveIrrelevantPointsForView() "
+"Selbstüberschneidungen enthalten."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Intersection\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
