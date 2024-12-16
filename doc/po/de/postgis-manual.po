@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-16 13:29+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-12-16 13:43+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -18171,7 +18171,7 @@ msgstr ", <xref linkend=\"ST_Intersection\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Removes small parts (polygon rings or linestrings) of a geometry."
-msgstr ""
+msgstr "Entfernt kleine Teile (Polygonringe oder Linienzüge) einer Geometrie."
 
 #. Tag: para
 #, no-c-format
@@ -18179,6 +18179,8 @@ msgid ""
 "Returns a <xref linkend=\"geometry\"/> without small parts (exterior or "
 "interior polygon rings, or linestrings)."
 msgstr ""
+"Gibt eine <xref linkend=\"geometry\"/> ohne kleine Teile (äußere oder innere "
+"Polygonringe oder Linienzüge) zurück."
 
 #. Tag: para
 #, no-c-format
@@ -18186,6 +18188,8 @@ msgid ""
 "This function can be used as preprocessing step for creating simplified "
 "maps, e. g. to remove small islands or holes."
 msgstr ""
+"Diese Funktion kann als Vorverarbeitungsschritt zur Erstellung vereinfachter "
+"Karten verwendet werden, z. B. um kleine Inseln oder Löcher zu entfernen."
 
 #. Tag: para
 #, no-c-format
