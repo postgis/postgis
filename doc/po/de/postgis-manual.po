@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-16 13:43+0000\n"
+"PO-Revision-Date: 2024-12-16 13:51+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
@@ -18197,6 +18197,8 @@ msgid ""
 "It evaluates only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING. "
 "Other geometries remain unchanged."
 msgstr ""
+"Es wertet nur Geometrien vom Typ (MULTI)POLYGON und (MULTI)LINESTRING aus. "
+"Andere Geometrien bleiben unverändert."
 
 #. Tag: para
 #, no-c-format
@@ -18211,6 +18213,9 @@ msgid ""
 "If <parameter>minSizeY</parameter> is greater than 0, parts are sorted out "
 "if their height is smaller than <parameter>minSizeY</parameter>."
 msgstr ""
+"Wenn <parameter>minSizeY</parameter> größer als 0 ist, werden Teile "
+"ausgeschlossen, wenn ihre Höhe kleiner als <parameter>minSizeY</parameter> "
+"ist."
 
 #. Tag: para
 #, no-c-format
