@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2024-12-16 14:49+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -19275,6 +19275,9 @@ msgid ""
 "Setting for whole database cluster. Requires super user access. Also note "
 "that database, session, and user settings override this."
 msgstr ""
+"Einstellung für den gesamten Datenbank-Cluster. Erfordert Superuser-Zugriff. "
+"Beachten Sie auch, dass Datenbank-, Sitzungs- und Benutzereinstellungen "
+"Vorrang vor dieser Einstellung haben."
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
