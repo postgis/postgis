@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-16 14:08+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-12-16 14:09+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -18260,7 +18260,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "a POLYGON EMPTY, or"
-msgstr "a POLYGON EMPTY, oder"
+msgstr "ein POLYGON EMPTY, oder"
 
 #. Tag: para
 #, no-c-format
