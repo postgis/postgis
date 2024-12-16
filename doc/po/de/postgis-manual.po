@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-16 14:47+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-12-16 14:49+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -19267,7 +19267,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Set for all new connections to a specific database"
-msgstr "Für alle neuen Verbindungen zu einer bestimmten Datenbank festgelegt"
+msgstr "Für alle neuen Verbindungen zu einer bestimmten Datenbank aktivieren"
 
 #. Tag: para
 #, no-c-format
