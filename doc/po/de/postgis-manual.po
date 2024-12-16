@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-16 14:16+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-12-16 14:47+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -18314,8 +18314,8 @@ msgstr "ein MULTILINESTRING LEER."
 msgid ""
 "Example: ST_RemoveSmallParts() applied to a multi-polygon. Blue parts remain."
 msgstr ""
-"Beispiel: ST_RemoveSmallParts() angewandt auf ein Multi-Polygon. Blaue Teile "
-"bleiben erhalten."
+"Beispiel: ST_RemoveSmallParts() angewendet auf ein Multi-Polygon. Blaue "
+"Teile bleiben erhalten."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18944,6 +18944,10 @@ msgid ""
 "href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
 "ALTER SYSTEM</link>"
 msgstr ""
+"Weitere Anwendungsbeispiele finden Sie unter <link xlink:href=\"https://www."
+"postgresql.org/docs/current/sql-set.html\">SQL SET</link> und <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\""
+">SQL ALTER SYSTEM</link>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19168,11 +19172,15 @@ msgid ""
 "To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current "
 "session"
 msgstr ""
+"Um <varname>postgis.gdal_enabled_drivers</varname> für die aktuelle Sitzung "
+"zu setzen oder zurückzusetzen"
 
 #. Tag: para
 #, no-c-format
 msgid "Set for all new connections to a specific database to specific drivers"
 msgstr ""
+"Setzt bestimmte Treiber für alle neuen Verbindungen zu einer bestimmten "
+"Datenbank"
 
 #. Tag: para
 #, no-c-format
@@ -19181,6 +19189,9 @@ msgid ""
 "user access. Also note that database, session, and user settings override "
 "this."
 msgstr ""
+"Aktiviert alle Treiber für den gesamten Datenbank-Cluster. Erfordert "
+"Superuser-Zugriff. Beachten Sie auch, dass Datenbank-, Sitzungs- und "
+"Benutzereinstellungen dies überschreiben."
 
 #. Tag: para
 #, no-c-format
