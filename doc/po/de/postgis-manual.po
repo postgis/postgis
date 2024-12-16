@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-16 13:51+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-12-16 14:08+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -18207,8 +18207,8 @@ msgid ""
 "if their width is smaller than <parameter>minSizeX</parameter>."
 msgstr ""
 "Wenn <parameter>minSizeX</parameter> größer als 0 ist, werden Teile "
-"aussortiert, wenn ihre Breite kleiner ist als "
-"<parameter>minSizeX</parameter>."
+"ausgeschlossen, wenn ihre Breite kleiner als <parameter>minSizeX</parameter> "
+"ist."
 
 #. Tag: para
 #, no-c-format
@@ -18226,6 +18226,8 @@ msgid ""
 "Both <parameter>minSizeX</parameter> and <parameter>minSizeY</parameter> are "
 "measured in coordinate system units of the geometry."
 msgstr ""
+"Sowohl <parameter>minSizeX</parameter> als auch <parameter>minSizeY</"
+"parameter> werden in den Koordinatensystemeinheiten der Geometrie gemessen."
 
 #. Tag: para
 #, no-c-format
@@ -18233,16 +18235,18 @@ msgid ""
 "For polygon types, evaluation is done separately for each ring which can "
 "lead to one of the following results:"
 msgstr ""
+"Bei Polygonen wird die Auswertung für jeden Ring getrennt vorgenommen, was "
+"zu einem der folgenden Ergebnisse führen kann:"
 
 #. Tag: para
 #, no-c-format
 msgid "the original geometry,"
-msgstr ""
+msgstr "die ursprüngliche Geometrie,"
 
 #. Tag: para
 #, no-c-format
 msgid "a POLYGON with all rings with less vertices,"
-msgstr ""
+msgstr "ein POLYGON mit allen Ringen, die weniger Scheitelpunkte haben"
 
 #. Tag: para
 #, no-c-format
@@ -18250,6 +18254,8 @@ msgid ""
 "a POLYGON with a reduced number of interior rings (having possibly less "
 "vertices),"
 msgstr ""
+"ein POLYGON mit einer reduzierten Anzahl an inneren Ringen (möglicherweise "
+"mit weniger Scheitelpunkten),"
 
 #. Tag: para
 #, no-c-format
