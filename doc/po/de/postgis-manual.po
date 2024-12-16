@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2024-12-16 14:47+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -19267,7 +19267,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Set for all new connections to a specific database"
-msgstr ""
+msgstr "Für alle neuen Verbindungen zu einer bestimmten Datenbank festgelegt"
 
 #. Tag: para
 #, no-c-format
