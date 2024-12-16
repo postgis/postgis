@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-16 11:51+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-12-16 13:29+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -18080,7 +18080,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "In contrast to <code>ST_ClipByBox2D()</code> this function"
-msgstr "Im Gegensatz zu <code>ST_ClipByBox2D()</code> ist diese Funktion"
+msgstr ""
+"Im Gegensatz zu <code>ST_ClipByBox2D()</code> werden von dieser Funktion"
 
 #. Tag: para
 #, no-c-format
@@ -18088,16 +18089,20 @@ msgid ""
 "sorts out points without computing new intersection points which avoids "
 "rounding errors and usually increases performance,"
 msgstr ""
+"irrelevante Punkte ausgeschlossen, ohne neue Schnittpunkte zu berechnen, "
+"wodurch Rundungsfehler vermieden werden und die Leistung in der Regel steigt,"
 
 #. Tag: para
 #, no-c-format
 msgid "returns a geometry with equal or similar point number,"
-msgstr ""
+msgstr "eine Geometrie mit gleicher oder ähnlicher Punktanzahl zurückgegeben,"
 
 #. Tag: para
 #, no-c-format
 msgid "leads to the same rendering result within the specified view, and"
 msgstr ""
+"das gleiche Rendering-Ergebnis innerhalb der gegebenen Ansicht ausgegeben, "
+"und"
 
 #. Tag: para
 #, no-c-format
@@ -18105,6 +18110,8 @@ msgid ""
 "may introduce self-intersections which would make the resulting geometry "
 "invalid (see example below)."
 msgstr ""
+"es kann zu Selbstüberschneidungen kommen, welche die resultierende Geometrie "
+"ungültig machen würden (siehe Beispiel unten)."
 
 #. Tag: para
 #, no-c-format
@@ -18115,6 +18122,13 @@ msgid ""
 "introduce rendering artifacts if the resulting coordinates are projected "
 "into another (non-cartesian) coordinate system before rendering."
 msgstr ""
+"Wenn <code>cartesian_hint</code> auf <code>true</code> gesetzt ist, wendet "
+"der Algorithmus zusätzliche Optimierungen unter Verwendung kartesischer "
+"Mathematik an, um die resultierende Punktanzahl weiter zu reduzieren. "
+"Beachten Sie bitte, dass die Verwendung dieser Option Rendering-Artefakte "
+"verursachen kann, wenn die resultierenden Koordinaten in ein anderes (nicht-"
+"kartesisches) Koordinatensystem projiziert werden, bevor sie gerendert "
+"werden.“"
 
 #. Tag: para
 #, no-c-format
@@ -18123,6 +18137,9 @@ msgid ""
 "valid. This situation can be checked with <xref linkend=\"ST_IsValid\"/> and "
 "repaired with <xref linkend=\"ST_MakeValid\"/>."
 msgstr ""
+"Für Polygone stellt diese Funktion derzeit nicht sicher, dass das Ergebnis "
+"gültig ist. Diese Situation kann mit <xref linkend=\"ST_IsValid\"/> "
+"überprüft und mit <xref linkend=\"ST_MakeValid\"/> repariert werden."
 
 #. Tag: para
 #, no-c-format
