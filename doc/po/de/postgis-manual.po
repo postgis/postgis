@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-16 14:49+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-12-16 15:15+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -19275,9 +19275,9 @@ msgid ""
 "Setting for whole database cluster. Requires super user access. Also note "
 "that database, session, and user settings override this."
 msgstr ""
-"Einstellung für den gesamten Datenbank-Cluster. Erfordert Superuser-Zugriff. "
-"Beachten Sie auch, dass Datenbank-, Sitzungs- und Benutzereinstellungen "
-"Vorrang vor dieser Einstellung haben."
+"Für den gesamten Datenbank-Cluster aktivieren. Erfordert Superuser-Zugriff. "
+"Beachten Sie auch, dass Datenbank-, Sitzungs- und Benutzereinstellungen dies "
+"überschreiben."
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -22268,6 +22268,10 @@ msgid ""
 "web.archive.org/web/20160827203903/http://boundlessgeo.com/2012/07/making-"
 "geography-faster/\">Making Geography faster</link> for details."
 msgstr ""
+"Erweitert: 2.1.0 verbesserte die Geschwindigkeit für Geographie. Weitere "
+"Details finden Sie unter <link xlink:href=\"https://web.archive.org/web/"
+"20160827203903/http://boundlessgeo.com/2012/07/making-geography-faster/\""
+">Making Geography faster</link>."
 
 #. Tag: para
 #, no-c-format
@@ -25403,6 +25407,8 @@ msgstr "3D-Geometrien werden unterstützt:"
 #, no-c-format
 msgid "Options argument can be used to add BBOX and CRS in GeoJSON output:"
 msgstr ""
+"Das Argument options kann verwendet werden, um BBOX oder CRS in der GeoJSON-"
+"Ausgabe hinzuzufügen:"
 
 #. Tag: para
 #, fuzzy, no-c-format
