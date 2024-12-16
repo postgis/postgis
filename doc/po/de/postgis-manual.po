@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-16 14:09+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-12-16 14:14+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -18274,7 +18274,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "a MULTIPOLYGON EMPTY."
-msgstr "a MULTIPOLYGON LEER."
+msgstr "ein MULTIPOLYGON EMPTY."
 
 #. Tag: para
 #, no-c-format
@@ -18282,11 +18282,13 @@ msgid ""
 "For linestring types, evaluation is done for each linestring which can lead "
 "to one of the following results:"
 msgstr ""
+"Bei Linienzügen wird die Auswertung für jeden Linienzug getrennt "
+"vorgenommen, was zu einem der folgenden Ergebnisse führen kann:"
 
 #. Tag: para
 #, no-c-format
 msgid "a LINESTRING with a reduced number of vertices,"
-msgstr ""
+msgstr "ein LINESTRING mit einer reduzierten Anzahl an Scheitelpunkten,"
 
 #. Tag: para
 #, no-c-format
