@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2024-12-16 16:28+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -15768,6 +15768,9 @@ msgid ""
 "<xref linkend=\"ST_GeomFromText\"/> and <xref linkend=\"ST_PointFromText\"/"
 ">. It is also easier to use for numeric coordinate values."
 msgstr ""
+"<varname>ST_MakePoint</varname> ist zwar nicht OGC-konform, aber schneller "
+"als <xref linkend=\"ST_GeomFromText\"/> und <xref linkend=\"ST_PointFromText"
+"\"/>. Es ist auch einfacher für numerische Koordinatenwerte zu verwenden."
 
 #. Tag: para
 #, fuzzy, no-c-format
