@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-17 07:31+0000\n"
+"PO-Revision-Date: 2024-12-17 07:32+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
@@ -18119,7 +18119,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "returns a geometry with equal or similar point number,"
-msgstr "eine Geometrie mit gleicher oder ähnlicher Punktanzahl zurückgegeben,"
+msgstr "gibt eine Geometrie mit gleicher oder ähnlicher Punktzahl zurück,"
 
 #. Tag: para
 #, no-c-format
