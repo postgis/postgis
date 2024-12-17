@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-17 07:33+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2024-12-17 08:47+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -259,13 +259,13 @@ msgid "Upgrading spatial databases"
 msgstr "Aktualisierung von Geodatenbanken"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Upgrading existing spatial databases can be tricky as it requires "
 "replacement or introduction of new PostGIS object definitions."
 msgstr ""
 "Die Aktualisierung bestehender räumlicher Datenbanken kann schwierig sein, "
-"da sie den Austausch oder die Einführung neuer PostGIS-Objektdefinitionen "
+"da sie den Austausch oder die Einführung neuer PostGIS Objektdefinitionen "
 "erfordert."
 
 #. Tag: para
@@ -417,17 +417,17 @@ msgid ""
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
 "safely drop, if you don't need raster support. You can drop as follows:"
 msgstr ""
-"Wenn Sie die PostGIS-Erweiterung von einer Version kleiner 3.0.0 "
-"aktualisieren, erhalten Sie eine neue Erweiterung <emphasis>postgis_raster</"
-"emphasis>, die Sie getrost löschen können, wenn Sie die Rasterunterstützung "
-"nicht benötigen. Sie können diese wie folgt entfernen:"
+"Wenn Sie die PostGIS-Erweiterung vor Version 3.0.0 aktualisieren, erhalten "
+"Sie die neue Erweiterung <emphasis>postgis_raster</emphasis>, welche Sie "
+"getrost löschen können, wenn Sie keine Rasterunterstützung benötigen. Sie "
+"können diese wie folgt entfernen:"
 
 #. Tag: title
 #, no-c-format
 msgid "Soft Upgrade Pre 9.1+ or without extensions"
 msgstr ""
-"Sanfte Aktualisierung bei Version kleiner 9.1 oder wenn nicht mittels "
-"Erweiterungen installiert wurde"
+"<xref linkend=\"create_new_db\"/>Sanfte Aktualisierung bei Version kleiner "
+"9.1 oder wenn nicht mittels Erweiterungen installiert wurde"
 
 #. Tag: para
 #, no-c-format
@@ -5695,7 +5695,7 @@ msgid ""
 "linkend=\"CreateTopology\"/>"
 msgstr ""
 ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend="
-"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref linkend="
+"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref linkend="
 "\"CreateTopology\"/>"
 
 #. Tag: refpurpose
@@ -5704,9 +5704,8 @@ msgid ""
 "Adds a linestring to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces."
 msgstr ""
-"Erweitert eine Topologie um einen Linienzug unter Berücksichtigung eines "
-"Toleranzwerts. Kanten und Maschen können dabei möglicherweise aufgetrennt "
-"werden."
+"Fügt einen Linienzug unter Berücksichtigung eines Toleranzwerts zu einer "
+"Topologie hinzu , wobei Kanten/Maschen dabei aufgetrennt werden können."
 
 #. Tag: para
 #, no-c-format
@@ -5719,28 +5718,28 @@ msgid ""
 msgstr ""
 "Fügt einen Linienzug zu einer bestehenden Topologie hinzu und gibt einen "
 "Satz vorzeichenbehafteter Kantenbezeichner zurück, aus denen dieser "
-"aufgebaut ist (negative Bezeichner bedeuten, dass die Kante in die "
-"entgegengesetzte Richtung des eingegebenen Linienzugs verläuft). Die "
-"angegebene Linie rastet an vorhandenen Knoten oder Kanten innerhalb einer "
-"gegebenen Toleranz ein. Vorhandene Kanten und Maschen können durch die Linie "
-"geteilt werden. Neue Knoten und Maschen können hinzugefügt werden."
+"aufgebaut ist (ein negativer Bezeichner bedeutet, dass die Kante in die "
+"entgegengesetzte Richtung des gegebenen Linienzugs verläuft). Die angegebene "
+"Linie rastet an vorhandenen Knoten oder Kanten innerhalb einer gegebenen "
+"Toleranz ein. Vorhandene Kanten und Maschen können an der Linie aufgetrennt "
+"werden. Neue Knoten und Maschen können hinzugefügt werden."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Updating statistics about topologies being loaded via this function is up to "
 "caller, see <xref linkend=\"Topology_StatsManagement\"/>."
 msgstr ""
 "Die Aktualisierung von Statistiken über Topologien, die über diese Funktion "
-"geladen werden, ist Sache des Aufrufers, siehe <xref "
-"linkend=\"Topology_StatsManagement\"/>."
+"geladen werden, obliegt dem Aufrufer, siehe <xref linkend="
+"\"Topology_StatsManagement\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.2.0 added support for returning signed identifier."
 msgstr ""
-"Verbessert: In Version 3.2.0 wurde die Unterstützung für die Rückgabe "
-"signierter Identifikatoren hinzugefügt."
+"Erweitert: In Version 3.2.0 wurde Unterstützung für die Rückgabe signierter "
+"Identifikatoren hinzugefügt."
 
 #. Tag: para
 #, no-c-format
@@ -5759,9 +5758,9 @@ msgid ""
 "Adds a polygon to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces. Returns face identifiers."
 msgstr ""
-"Fügt ein Polygon, unter Berücksichtigung einer Toleranz, an eine bestehende "
-"Topologie an. Existierende Kanten/Maschen werden eventuell aufgetrennt. Gibt "
-"den Identifikator der Masche zurück."
+"Fügt ein Polygon unter Berücksichtigung eines Toleranzwertes zu einer "
+"bestehenden Topologie hinzu, wobei bestehende Kanten/Maschen aufgetrennt "
+"werden können. Gibt Maschenidentifikatoren zurück."
 
 #. Tag: para
 #, no-c-format
@@ -5772,10 +5771,10 @@ msgid ""
 "the boundary of the new polygon."
 msgstr ""
 "Fügt ein Polygon zu einer existierenden Topologie hinzu und gibt die "
-"Identifikatoren der Maschen aus, aus denen es gebildet ist. Die Begrenzung "
-"des gegebenen Polygons wird innerhalb der angegebenen Toleranz an "
-"bestehenden Knoten und Kanten gefangen. Gegebenenfalls werden existierende "
-"Kanten und Maschen an der Begrenzung des neuen Polygons geteilt."
+"Maschenidentifikatoren zurück, aus denen dieses aufgebaut ist. Die "
+"Begrenzung des gegebenen Polygons wird innerhalb einer gegebenen Toleranz an "
+"bestehenden Knoten und Kanten gefangen. Existierende Kanten und Maschen "
+"können entlang der Begrenzung des neuen Polygons aufgetrennt werden."
 
 #. Tag: para
 #, no-c-format
@@ -18126,7 +18125,7 @@ msgstr ""
 #, no-c-format
 msgid "leads to the same rendering result within the specified view, and"
 msgstr ""
-"zu demselben Rendering-Ergebnis innerhalb der angegebenen Ansicht führt, und"
+"führt zu demselben Rendering-Ergebnis innerhalb der gegebenen Ansicht, und"
 
 #. Tag: para
 #, no-c-format
@@ -18135,7 +18134,7 @@ msgid ""
 "invalid (see example below)."
 msgstr ""
 "es kann zu Selbstüberschneidungen kommen, welche die resultierende Geometrie "
-"ungültig machen würden (siehe Beispiel unten)."
+"ungültig machen können (siehe Beispiel unten)."
 
 #. Tag: para
 #, no-c-format
@@ -19347,7 +19346,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Geometry Input"
-msgstr "Geometrische Konstruktoren"
+msgstr "Geometrische Eingabe"
 
 #. Tag: para
 #, no-c-format
@@ -20047,8 +20046,8 @@ msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC Extended Well-Known "
 "binary (EWKT) representation."
 msgstr ""
-"Erzeugt ein PostGIS ST_Geometry Objekt aus der erweiterten OGC Well-known-"
-"Text (EWKT) Darstellung."
+"Erzeugt ein PostGIS ST_Geometry Objekt aus der erweiterten OGC Well-known "
+"binären (EWKT) Darstellung."
 
 #. Tag: para
 #, no-c-format
