@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-17 10:47+0000\n"
+"PO-Revision-Date: 2024-12-17 12:47+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
@@ -516,7 +516,7 @@ msgstr ""
 "informieren."
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Hard upgrade"
 msgstr "Hartes Upgrade"
 
@@ -805,28 +805,28 @@ msgstr ""
 "aufgeführt sind."
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Startup"
 msgstr "Startup"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "These settings are configured in <code>postgresql.conf</code>:"
 msgstr ""
 "Diese Einstellungen werden in <code>postgresql.conf</code> konfiguriert:"
 
 #. Tag: link
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "constraint_exclusion"
 msgstr "constraint_exclusion"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Default: partition"
 msgstr "Standard: Partition"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This is generally used for table partitioning. The default for this is set "
 "to \"partition\" which is ideal for PostgreSQL 8.4 and above since it will "
@@ -835,22 +835,23 @@ msgid ""
 msgstr ""
 "Dies wird im Allgemeinen für die Partitionierung von Tabellen verwendet. Die "
 "Voreinstellung hierfür ist \"partition\", was ideal für PostgreSQL 8.4 und "
-"höher ist, da es den Planer dazu zwingt, Tabellen nur dann für die "
-"Berücksichtigung von Einschränkungen zu analysieren, wenn sie sich in einer "
-"vererbten Hierarchie befinden, und den Planer ansonsten nicht zu bestrafen."
+"höher ist, da es den Planer dazu zwingt, Tabellen nur dann auf "
+"Einschränkungen zu analysieren, wenn sie sich in einer vererbten Hierarchie "
+"befinden, und so im gegensätzlichen Fall keine unnötigen Kosten durch den "
+"Planer versursacht werden."
 
 #. Tag: link
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "shared_buffers"
 msgstr "shared_buffers"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Default: ~128MB in PostgreSQL 9.6"
-msgstr "Standard: ~128MB in PostgreSQL 9.6"
+msgstr "Standardwert: ~128MB in PostgreSQL 9.6"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Set to about 25% to 40% of available RAM. On windows you may not be able to "
 "set as high."
@@ -859,7 +860,7 @@ msgstr ""
 "Windows können Sie diesen Wert möglicherweise nicht so hoch einstellen."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
 "config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</link> "
@@ -869,78 +870,80 @@ msgid ""
 msgstr ""
 "<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
 "config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</link> "
-"Diese Einstellung ist nur für PostgreSQL 9.4+ verfügbar. Für PostgreSQL 9.6+ "
-"hat diese Einstellung zusätzliche Bedeutung, da sie die maximale Anzahl von "
-"Prozessen steuert, die Sie für parallele Abfragen haben können."
+"Diese Einstellung ist ab PostgreSQL 9.4 verfügbar. Ab PostgreSQL 9.6 kann "
+"mit dieser Einstellung zusätzlich die maximale Anzahl von Prozessen bei "
+"parallelen Abfragen eingestellt werden."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Default: 8"
-msgstr "Voreinstellung: 8"
+msgstr "Standardwert: 8"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Sets the maximum number of background processes that the system can support. "
 "This parameter can only be set at server start."
 msgstr ""
-"Legt die maximale Anzahl von Hintergrundprozessen fest, die das System "
-"unterstützen kann. Dieser Parameter kann nur beim Start des Servers gesetzt "
-"werden."
+"Setzt die maximale Anzahl an Hintergrundprozessen, die von dem System "
+"unterstützt werden. Dieser Parameter kann nur durch einen Serverstart "
+"gesetzt werden."
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Runtime"
 msgstr "Laufzeit"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
 "config-resource.html#GUC-WORK-MEM\">work_mem</link> - sets the size of "
 "memory used for sort operations and complex queries"
 msgstr ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
-"config-resource.html#GUC-WORK-MEM\">work_mem</link> - legt die Größe des für "
-"Sortiervorgänge und komplexe Abfragen verwendeten Speichers fest"
+"config-resource.html#GUC-WORK-MEM\">work_mem</link> - setzt die "
+"Speichergröße für Sortiervorgänge und komplexe Abfragen"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Default: 1-4MB"
-msgstr "Standard: 1-4MB"
+msgstr "Standardwert: 1-4MB"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Adjust up for large dbs, complex queries, lots of RAM"
-msgstr "Anpassung für große Datenbanken, komplexe Abfragen, viel RAM"
+msgstr ""
+"Bitte passen Sie bei großen Datenbanken und für komplexe Abfragen mit "
+"entsprechend viel RAM an"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Adjust down for many concurrent users or low RAM."
 msgstr ""
-"Verringern Sie den Wert bei vielen gleichzeitigen Benutzern oder geringem "
-"RAM."
+"Bitte verringern Sie den Wert bei vielen gleichzeitigen Benutzern oder wenn "
+"nur wenig RAM vorhanden ist."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "If you have lots of RAM and few developers:"
 msgstr "Wenn Sie viel RAM und wenig Entwickler haben:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
 "config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> "
 "- the memory size used for VACUUM, CREATE INDEX, etc."
 msgstr ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
-"config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> "
-"- die Speichergröße, die für VACUUM, CREATE INDEX, etc. verwendet wird."
+"config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> -"
+" die Speichergröße, welche für VACUUM, CREATE INDEX, etc. verwendet wird."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Default: 16-64MB"
-msgstr "Standard: 16-64MB"
+msgstr "Standardwert: 16-64MB"
 
 #. Tag: para
 #, fuzzy, no-c-format
