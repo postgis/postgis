@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-18 08:47+0000\n"
+"PO-Revision-Date: 2024-12-18 10:47+0000\n"
 "Last-Translator: Dapeng Wang <wangdapeng20191008@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -7327,7 +7327,7 @@ msgstr ""
 "兴奋的新变化发生时构建。你可以使用这些版本来尝试正在进行中的PostGIS发布"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The PostGIS module is an extension to the PostgreSQL backend server. As "
 "such, PostGIS &last_release_version; <emphasis>requires</emphasis> full "
@@ -7336,9 +7336,9 @@ msgid ""
 "Earlier versions of PostgreSQL are <emphasis>not</emphasis> supported."
 msgstr ""
 "PostGIS模块是PostgreSQL后台服务器的扩展。在PostGIS "
-"&last_release_version;中，为了编译，需要完整的PostgreSQL服务器头文件。"
-"它可以在PostgreSQL &min_postgres_version; - "
-"&max_postgres_version;版本之间构建。旧版本的PostgreSQL "
+"&last_release_version;中，为了编译， <emphasis>必须</emphasis> "
+"提供完整的PostgreSQL服务器头文件。它可以在PostgreSQL &min_postgres_version; -"
+" &max_postgres_version;版本之间构建。旧版本的PostgreSQL "
 "<emphasis>不</emphasis>再支持。"
 
 #. Tag: para
@@ -8097,8 +8097,8 @@ msgid ""
 "the extension to install if not specified. <filename>postgis.control, "
 "postgis_topology.control</filename>."
 msgstr ""
-"这些控制文件表示信息，例如要安装的扩展版本（如果未指定）。 <filename>postgis."
-"control，postgis_topology.control</filename>。"
+"指定未提供时，控制文件<filename>postgis.control, postgis_topology.control</"
+"filename> 显示要安装的扩展版本等信息。"
 
 #. Tag: para
 #, no-c-format
@@ -8108,9 +8108,9 @@ msgid ""
 "<filename>extensions/postgis/sql/*.sql</filename>, <filename>extensions/"
 "postgis_topology/sql/*.sql</filename>"
 msgstr ""
-"每个扩展名的 /sql 文件夹中的所有文件。请注意，必须复制到 PostgreSQL 共享/扩展"
-"文件夹的顶层。<filename>extensions/postgis/sql/*.sql</filename>, "
-"<filename>extensions/postgis_topology/sql/*.sql</filename>"
+"请注意，针对每个扩展的 /sql 文件夹中的所有文件（例如，<filename>extensions/"
+"postgis/sql/*.sql</filename> 和 <filename>extensions/postgis_topology/sql/*."
+"sql</filename>）需要复制到 PostgreSQL 的 share/extension 文件夹的最上层"
 
 #. Tag: para
 #, no-c-format
