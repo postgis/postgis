@@ -10,8 +10,8 @@ msgstr ""
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2024-12-12 10:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -150,8 +150,8 @@ msgid ""
 "the EXTENSION mechanism."
 msgstr ""
 "PostgreSQL 9.1以上を使っていて、エクステンションのPostGISモジュールをコンパイ"
-"ル、インストールしている場合には、エクステンションというメカニズムを使用して"
-"、データベースを空間データベースに変えることができます。"
+"ル、インストールしている場合には、エクステンションというメカニズムを使用し"
+"て、データベースを空間データベースに変えることができます。"
 
 #. Tag: para
 #, no-c-format
@@ -160,9 +160,9 @@ msgid ""
 "the functions and comments. Raster and topology are packaged as a separate "
 "extension."
 msgstr ""
-"中核となるPostGISエクステンションには、ジオメトリ、ジオグラフィ、spatial_ref_"
-"sysおよび全ての関数とコメントが含まれています。ラスタとトポロジは別のエクステ"
-"ンションになっています。"
+"中核となるPostGISエクステンションには、ジオメトリ、ジオグラフィ、"
+"spatial_ref_sysおよび全ての関数とコメントが含まれています。ラスタとトポロジは"
+"別のエクステンションになっています。"
 
 #. Tag: para
 #, no-c-format
@@ -183,9 +183,9 @@ msgid ""
 "installed in the PostgreSQL extension directory (for example during testing, "
 "development or in a restricted environment)."
 msgstr ""
-"これは、通常はPostgreSQLのエクステンションのディレクトリ内にPostGISをインスト"
-"ールできないか、したくない場合 "
-"(たとえばテスト中や開発中、または制限のある環境内)にのみ必要となります。"
+"これは、通常はPostgreSQLのエクステンションのディレクトリ内にPostGISをインス"
+"トールできないか、したくない場合 (たとえばテスト中や開発中、または制限のある"
+"環境内)にのみ必要となります。"
 
 #. Tag: para
 #, no-c-format
@@ -206,11 +206,10 @@ msgid ""
 "objects are in the <filename>rtpostgis.sql</filename> script. Topology "
 "objects are in the <filename>topology.sql</filename> script."
 msgstr ""
-"中核のPostGISオブジェクト "
-"(ジオメトリ型とジオグラフィ型、これらに対応する関数)は<filename>postgis."
-"sql</filename>スクリプトにあります。ラスタオブジェクトは<filename>rtpostgis."
-"sql</filename>スクリプトにあります。トポロジオブジェクトは<filename>topology."
-"sql</filename>スクリプトにあります。"
+"中核のPostGISオブジェクト (ジオメトリ型とジオグラフィ型、これらに対応する関"
+"数)は<filename>postgis.sql</filename>スクリプトにあります。ラスタオブジェクト"
+"は<filename>rtpostgis.sql</filename>スクリプトにあります。トポロジオブジェク"
+"トは<filename>topology.sql</filename>スクリプトにあります。"
 
 #. Tag: para
 #, no-c-format
@@ -220,10 +219,10 @@ msgid ""
 "populate the <varname>spatial_ref_sys</varname> table. This will permit you "
 "to perform ST_Transform() operations on geometries."
 msgstr ""
-"EPSG座標系定義IDの完全なテーブルを得るには、<filename>spatial_ref_sys.sql</fi"
-"lename>定義ファイルをロードして<varname>spatial_ref_sys</varname>テーブルを生"
-"成して下さい。これによりジオメトリ関数ST_Transform()が実行できるようになりま"
-"す。"
+"EPSG座標系定義IDの完全なテーブルを得るには、<filename>spatial_ref_sys.sql</"
+"filename>定義ファイルをロードして<varname>spatial_ref_sys</varname>テーブルを"
+"生成して下さい。これによりジオメトリ関数ST_Transform()が実行できるようになり"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -233,10 +232,10 @@ msgid ""
 "by simply typing <command>\\dd [function_name]</command> from a "
 "<command>psql</command> terminal window."
 msgstr ""
-"PostGIS関数にコメントを追加したい場合には、<filename>postgis_comments.sql</fi"
-"lename>スクリプト内にコメントがあるのが分かると思います。コメントは<command>p"
-"sql</command>のターミナルウィンドウから単に<command>\\dd "
-"[関数名]</command>と打ち込むだけで見ることができます。"
+"PostGIS関数にコメントを追加したい場合には、<filename>postgis_comments.sql</"
+"filename>スクリプト内にコメントがあるのが分かると思います。コメントは"
+"<command>psql</command>のターミナルウィンドウから単に<command>\\dd [関数名]</"
+"command>と打ち込むだけで見ることができます。"
 
 #. Tag: para
 #, no-c-format
@@ -262,7 +261,8 @@ msgstr ""
 msgid ""
 "Unfortunately not all definitions can be easily replaced in a live database, "
 "so sometimes your best bet is a dump/reload process."
-msgstr "不幸なことに、定義の全てが実行中のデータベース内で簡単に置き換えられるわけで"
+msgstr ""
+"不幸なことに、定義の全てが実行中のデータベース内で簡単に置き換えられるわけで"
 "はないので、ダンプ/リロードが最善策となることがあります。"
 
 #. Tag: para
@@ -357,9 +357,9 @@ msgid ""
 "<xref linkend=\"create_new_db_extensions\"/> and then restore your backup on "
 "top of this new database."
 msgstr ""
-"この場合には、データベースをバックアップして、 <xref linkend="
-"\"create_new_db_extensions\"/> に記述されているように新しいデータベースを生成"
-"し、バックアップを新しいデータベースにリストアしなければなりません。"
+"この場合には、データベースをバックアップして、 <xref "
+"linkend=\"create_new_db_extensions\"/> に記述されているように新しいデータベー"
+"スを生成し、バックアップを新しいデータベースにリストアしなければなりません。"
 
 #. Tag: para
 #, no-c-format
@@ -375,10 +375,10 @@ msgid ""
 "in that case you can append \"next\" to the version string, and next time "
 "you'll need to drop the \"next\" suffix again:"
 msgstr ""
-"この場合には、全てアップデートされていて、安全に無視できます。"
-"開発版からその次のバージョン (新しいバージョン番号を得ていないもの)"
-"にアップグレードしようと<emphasis role=\"bold\">しない限り</emphasis>、\"next"
-"\"をバージョン文字列に追加できますが、次回に\"next\"を削除する必要があります:"
+"この場合には、全てアップデートされていて、安全に無視できます。開発版からその"
+"次のバージョン (新しいバージョン番号を得ていないもの)にアップグレードしようと"
+"<emphasis role=\"bold\">しない限り</emphasis>、\"next\"をバージョン文字列に追"
+"加できますが、次回に\"next\"を削除する必要があります:"
 
 #. Tag: para
 #, no-c-format
@@ -388,10 +388,10 @@ msgid ""
 "the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
 "the newest latest version during restore."
 msgstr ""
-"PostGISをバージョン指定なしにインストールした場合には、 しばしばリストア前のP"
-"ostGISエクステンションの再インストールをとばすことができます。 "
-"バックアップには<code>CREATE EXTENSION "
-"postgis</code>があって、リストアの間に最新版になります。"
+"PostGISをバージョン指定なしにインストールした場合には、 しばしばリストア前の"
+"PostGISエクステンションの再インストールをとばすことができます。 バックアップ"
+"には<code>CREATE EXTENSION postgis</code>があって、リストアの間に最新版になり"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -40742,12 +40742,12 @@ msgid ""
 "The <parameter>buffer_type</parameter> specifies the type of buffer to "
 "create: 0: Rounded buffer (default) 1: Flat buffer 2: Square buffer"
 msgstr ""
-"入力ジオメトリ<parameter>geom</parameter>の周りに指定した<parameter>radius</p"
-"arameter>で3次元バッファを生成します。バッファは3次元空間内に生成され、ジオメ"
-"トリの周囲の立体表現を生成します。<parameter>segments</parameter>パラメータは"
-"、バッファの曲線部の近似分割数を指定するものです。<parameter>buffer_type</par"
-"ameter>は、バッファ生成タイプを指定します。0: 球形バッファ (デフォルト) 1: "
-"平面バッファ 2: 四角形バッファ (訳注: ST_Bufferの端点処理を参照して下さい)"
+"入力ジオメトリ<parameter>geom</parameter>の周りに指定した<parameter>radius</"
+"parameter>で3次元バッファを生成します。バッファは3次元空間内に生成され、ジオ"
+"メトリの周囲の立体表現を生成します。<parameter>segments</parameter>パラメータ"
+"は、バッファの曲線部の近似分割数を指定するものです。<parameter>buffer_type</"
+"parameter>は、バッファ生成タイプを指定します。0: 球形バッファ (デフォルト) "
+"1: 平面バッファ 2: 四角形バッファ (訳注: ST_Bufferの端点処理を参照して下さい)"
 
 #. Tag: para
 #, no-c-format
@@ -40762,8 +40762,8 @@ msgid ""
 "htm\">X3D Viewer</link>."
 msgstr ""
 "次の画像はST_AsX3Dクエリの出力を<link xlink:href=\"https://postgis.net/docs/"
-"support/viewers/x3d_viewer.htm\">X3D "
-"Viewer</link>に貼り付けて描画したものです。"
+"support/viewers/x3d_viewer.htm\">X3D Viewer</link>に貼り付けて描画したもので"
+"す。"
 
 #. Tag: para
 #, no-c-format

@@ -5030,8 +5030,8 @@ msgid ""
 ", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
 "linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
 msgstr ""
-", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref linkend=\"CreateTopology\""
-"/>, <xref linkend=\"DropTopology\"/>"
+", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
+"linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5057,9 +5057,9 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
-", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend="
-"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref linkend="
-"\"CreateTopology\"/>"
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref "
+"linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref "
+"linkend=\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5102,9 +5102,9 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
-", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend="
-"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref linkend="
-"\"CreateTopology\"/>"
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref "
+"linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref "
+"linkend=\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5131,9 +5131,9 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddFace\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
-", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend="
-"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddFace\"/>, <xref linkend="
-"\"CreateTopology\"/>"
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref "
+"linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddFace\"/>, <xref "
+"linkend=\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5147,7 +5147,8 @@ msgid ""
 "Loads a geometry into an existing topology. The given geometry will snap to "
 "existing nodes or edges within given tolerance. Existing edges and faces may "
 "be split as a consequence of the load."
-msgstr "将几何图形加载到现有拓扑中。给定的几何图形将在给定的容差范围内捕捉到现有的节"
+msgstr ""
+"将几何图形加载到现有拓扑中。给定的几何图形将在给定的容差范围内捕捉到现有的节"
 "点或边。现有的边和面可能会因加载操作而被拆分。"
 
 #. Tag: para
@@ -5161,8 +5162,8 @@ msgid ""
 ", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref "
 "linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
 msgstr ""
-", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend="
-"\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref "
+"linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -6258,7 +6259,8 @@ msgstr ""
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"TopoGeo_AddLineString\"/> "
 "instead."
-msgstr "在 3.5.0 版本中已弃用。请改用 <xref linkend=\"TopoGeo_AddLineString\"/>。"
+msgstr ""
+"在 3.5.0 版本中已弃用。请改用 <xref linkend=\"TopoGeo_AddLineString\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -7594,15 +7596,15 @@ msgid ""
 "xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/"
 "SFCGAL/</link>."
 msgstr ""
-"SFCGAL 1.4.1 及以上版本是必需的，但要使用所有功能，必须安装 1.5.0 "
-"及以上版本。SFCGAL 可为 PostGIS 提供额外的 2D 和 3D 高级分析功能，如 <xref "
+"SFCGAL 1.4.1 及以上版本是必需的，但要使用所有功能，必须安装 1.5.0 及以上版"
+"本。SFCGAL 可为 PostGIS 提供额外的 2D 和 3D 高级分析功能，如 <xref "
 "linkend=\"reference_sfcgal\"/> 中所述。此外，它还允许在两种后端（例如 "
 "ST_Intersection 或 ST_Area 等函数）中，使用 SFCGAL 而不是 GEOS。通过 "
-"PostgreSQL 配置变量 <code>postgis.backend</code>，用户可以在安装了 SFCGAL "
-"的情况下控制使用哪个后端（默认是 GEOS）。注意：SFCGAL 1.2 版本至少需要 CGAL "
-"4.3 和 Boost 1.54（参见 <link xlink:href=\"https://sfcgal.org/\""
-">https://sfcgal.org/</link> 和 <link xlink:href=\"https://gitlab.com/sfcgal/"
-"SFCGAL/\">https://gitlab.com/sfcgal/SFCGAL/</link>）。"
+"PostgreSQL 配置变量 <code>postgis.backend</code>，用户可以在安装了 SFCGAL 的"
+"情况下控制使用哪个后端（默认是 GEOS）。注意：SFCGAL 1.2 版本至少需要 CGAL "
+"4.3 和 Boost 1.54（参见 <link xlink:href=\"https://sfcgal.org/\">https://"
+"sfcgal.org/</link> 和 <link xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/"
+"\">https://gitlab.com/sfcgal/SFCGAL/</link>）。"
 
 #. Tag: para
 #, no-c-format
@@ -14842,8 +14844,8 @@ msgid ""
 "linkend=\"ST_SetSRID\"/> to set the SRID if the given origin has an unknown "
 "SRID (as is the case by default)."
 msgstr ""
-"正方形将使用给定原点的 SRID 生成。如果给定原点的 SRID "
-"不明（默认为这种情况），可以使用 <xref linkend=\"ST_SetSRID\"/> 来设置 SRID。"
+"正方形将使用给定原点的 SRID 生成。如果给定原点的 SRID 不明（默认为这种情"
+"况），可以使用 <xref linkend=\"ST_SetSRID\"/> 来设置 SRID。"
 
 #. Tag: title
 #, no-c-format
@@ -16132,8 +16134,9 @@ msgstr "删除在指定矩形表示范围内与绘制无关的几何图形点。
 msgid ""
 "Returns a <xref linkend=\"geometry\"/> without points being irrelevant for "
 "rendering the geometry within a given rectangluar view."
-msgstr "返回一个 <xref linkend=\"geometry\""
-"/>，移除了在指定矩形表示范围内绘制时无关的点。"
+msgstr ""
+"返回一个 <xref linkend=\"geometry\"/>，移除了在指定矩形表示范围内绘制时无关的"
+"点。"
 
 #. Tag: para
 #, no-c-format
@@ -16159,8 +16162,9 @@ msgstr ""
 msgid ""
 "sorts out points without computing new intersection points which avoids "
 "rounding errors and usually increases performance,"
-msgstr "此函数通过对点进行排序而不计算新的交点，从而避免了舍入误差，并通常提高了效率"
-"，"
+msgstr ""
+"此函数通过对点进行排序而不计算新的交点，从而避免了舍入误差，并通常提高了效"
+"率，"
 
 #. Tag: para
 #, no-c-format
@@ -16303,7 +16307,8 @@ msgstr "POLYGON EMPTY，或者"
 msgid ""
 "a MULTIPOLYGON with a reduced number of polygons (having possibly less "
 "interior rings or vertices), or"
-msgstr "一个多边形数量减少的 MULTIPOLYGON（可能还减少了内部环的数量或顶点数），或者"
+msgstr ""
+"一个多边形数量减少的 MULTIPOLYGON（可能还减少了内部环的数量或顶点数），或者"
 
 #. Tag: para
 #, no-c-format
@@ -17101,7 +17106,8 @@ msgid ""
 "Setting for whole database cluster to enable all drivers. Requires super "
 "user access. Also note that database, session, and user settings override "
 "this."
-msgstr "为整个数据库集群设置以启用所有驱动程序。需要超级用户权限。请注意，数据库、会"
+msgstr ""
+"为整个数据库集群设置以启用所有驱动程序。需要超级用户权限。请注意，数据库、会"
 "话和用户的设置会优先于此设置。"
 
 #. Tag: para
@@ -17178,7 +17184,8 @@ msgstr "为所有新连接到特定数据库的会话设置"
 msgid ""
 "Setting for whole database cluster. Requires super user access. Also note "
 "that database, session, and user settings override this."
-msgstr "为整个数据库集群设置。需要超级用户权限。请注意，数据库、会话和用户设置会优先"
+msgstr ""
+"为整个数据库集群设置。需要超级用户权限。请注意，数据库、会话和用户设置会优先"
 "于此设置。"
 
 #. Tag: refpurpose
@@ -26032,8 +26039,9 @@ msgstr ""
 msgid ""
 "Behavior changed in GEOS 3.11 so offset curves now have the same direction "
 "as the input line, for both positive and negative offsets."
-msgstr "在 GEOS 3.11 "
-"中，行为发生了变化，因此在正负偏移下，偏移曲线与输入线具有相同的方向。"
+msgstr ""
+"在 GEOS 3.11 中，行为发生了变化，因此在正负偏移下，偏移曲线与输入线具有相同的"
+"方向。"
 
 #. Tag: para
 #, no-c-format
@@ -29674,12 +29682,13 @@ msgid ""
 "linkend=\"ST_Intersection\"/>"
 msgstr ""
 ", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_DumpAsPolygons\"/"
-">, <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_PixelAsPolygon\""
-"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, "
-"<xref linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>, "
-"<xref linkend=\"RT_ST_SRID\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend="
-"\"ST_Point\"/>, <xref linkend=\"ST_MakeEnvelope\"/>, <xref linkend="
-"\"ST_Intersects\"/>, <xref linkend=\"ST_Intersection\"/>"
+">, <xref linkend=\"RT_ST_NumBands\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref "
+"linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, <xref "
+"linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
+"linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+"linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
+"linkend=\"ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37493,7 +37502,8 @@ msgstr "测试两个三维几何图形是否相交"
 msgid ""
 "Tests if two 3D geometries intersect. 3D geometries intersect if they have "
 "any point in common in the three-dimensional space."
-msgstr "测试两个三维几何图形是否相交。如果在三维空间中存在共同的点，则这两个三维几何"
+msgstr ""
+"测试两个三维几何图形是否相交。如果在三维空间中存在共同的点，则这两个三维几何"
 "图形相交。"
 
 #. Tag: refpurpose
@@ -37506,8 +37516,9 @@ msgstr "计算两个几何图形之间的几何差异"
 msgid ""
 "Computes the geometric difference between two geometries. The resulting "
 "geometry is a set of points that are present in geomA but not in geomB."
-msgstr "计算两个几何图形之间的几何差异。返回的几何图形是一个点集，包含在 geomA "
-"中但不在 geomB 中的点。"
+msgstr ""
+"计算两个几何图形之间的几何差异。返回的几何图形是一个点集，包含在 geomA 中但不"
+"在 geomB 中的点。"
 
 #. Tag: para
 #, no-c-format
@@ -37937,7 +37948,8 @@ msgstr "计算几何区域的近似中轴。"
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_ApproximateMedialAxis\"/> "
 "instead."
-msgstr "自 3.5.0 版本起已弃用。请改用 <xref linkend=\"CG_ApproximateMedialAxis\"/>。"
+msgstr ""
+"自 3.5.0 版本起已弃用。请改用 <xref linkend=\"CG_ApproximateMedialAxis\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -37947,9 +37959,9 @@ msgid ""
 "(1.2.0+). Otherwise the function is just a wrapper around "
 "CG_StraightSkeleton (slower case)."
 msgstr ""
-"基于直骨架，返回实际输入的近似中心轴。如果在支持的版本（1.2.0+）下构建，"
-"将使用 SFCGAL 特有的 API；否则，此函数将是 "
-"CG_StraightSkeleton（较慢的情况）函数的封装。"
+"基于直骨架，返回实际输入的近似中心轴。如果在支持的版本（1.2.0+）下构建，将使"
+"用 SFCGAL 特有的 API；否则，此函数将是 CG_StraightSkeleton（较慢的情况）函数"
+"的封装。"
 
 #. Tag: para
 #, no-c-format
@@ -37967,8 +37979,9 @@ msgstr "返回围绕给定输入几何体的约束 Delaunay 三角剖分。"
 msgid ""
 "is deprecated as of 3.5.0. Use <xref "
 "linkend=\"CG_ConstrainedDelaunayTriangles\"/> instead."
-msgstr "自 3.5.0 版本起已弃用。请改用 <xref linkend=\"CG_ConstrainedDelaunayTriangles"
-"\"/>。"
+msgstr ""
+"自 3.5.0 版本起已弃用。请改用 <xref "
+"linkend=\"CG_ConstrainedDelaunayTriangles\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -38183,7 +38196,8 @@ msgstr "使用“最佳”alpha 值计算包围几何体的 Alpha 形状。"
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_OptimalAlphaShape\"/> "
 "instead."
-msgstr "自 3.5.0 版本起已弃用。请改用 <xref linkend=\"CG_OptimalAlphaShape\"/>。"
+msgstr ""
+"自 3.5.0 版本起已弃用。请改用 <xref linkend=\"CG_OptimalAlphaShape\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -38301,7 +38315,8 @@ msgstr "多边形的直骨架"
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_StraightSkeleton\"/> "
 "instead."
-msgstr "自 3.5.0 版本起已弃用。请改用 <xref linkend=\"CG_StraightSkeleton\"/>。"
+msgstr ""
+"自 3.5.0 版本起已弃用。请改用 <xref linkend=\"CG_StraightSkeleton\"/>。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40609,9 +40624,10 @@ msgid ""
 "<xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
 "linkend=\"PostGIS_Version\"/>"
 msgstr ""
-", <xref linkend=\"PostGIS_Full_Version\"/>, <xref linkend="
-"\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref "
-"linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+", <xref linkend=\"PostGIS_Full_Version\"/>, <xref "
+"linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, "
+"<xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refpurpose
 #, no-c-format

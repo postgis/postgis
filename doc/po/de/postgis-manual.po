@@ -11,8 +11,8 @@ msgstr ""
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2024-12-17 12:47+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
-"Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/de/>\n"
+"Language-Team: German <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -405,8 +405,8 @@ msgid ""
 "the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
 "the newest latest version during restore."
 msgstr ""
-"Wenn Sie PostGIS ursprünglich installiert haben ohne eine Version anzugeben "
-", können Sie die Neuinstallation der postgis-Erweiterung vor der "
+"Wenn Sie PostGIS ursprünglich installiert haben ohne eine Version "
+"anzugeben , können Sie die Neuinstallation der postgis-Erweiterung vor der "
 "Wiederherstellung oftmals überspringen, da im Backup nur <code>CREATE "
 "EXTENSION postgis</code> steht und daher die aktuellste Version für die "
 "Wiederherstellung herangezogen wird."
@@ -501,8 +501,8 @@ msgid ""
 msgstr ""
 "Wenn Sie <filename>postgis_upgrade.sql</filename> für das Upgrade Ihrer "
 "Version nicht finden können, so liegt das daran, dass die Version für ein "
-"Soft-Upgrade zu niedrig ist und Sie daher ein <link linkend=\"hard_upgrade\""
-">HARD UPGRADE</link> durchführen müssen."
+"Soft-Upgrade zu niedrig ist und Sie daher ein <link "
+"linkend=\"hard_upgrade\">HARD UPGRADE</link> durchführen müssen."
 
 #. Tag: para
 #, no-c-format
@@ -937,8 +937,8 @@ msgid ""
 "- the memory size used for VACUUM, CREATE INDEX, etc."
 msgstr ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
-"config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> -"
-" die Speichergröße, welche für VACUUM, CREATE INDEX, etc. verwendet wird."
+"config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> "
+"- die Speichergröße, welche für VACUUM, CREATE INDEX, etc. verwendet wird."
 
 #. Tag: para
 #, no-c-format
@@ -5667,8 +5667,8 @@ msgid ""
 ", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
 "linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
 msgstr ""
-", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref linkend=\"CreateTopology\""
-"/>, <xref linkend=\"DropTopology\"/>"
+", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
+"linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5698,9 +5698,9 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
-", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend="
-"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref linkend="
-"\"CreateTopology\"/>"
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref "
+"linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref "
+"linkend=\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5735,8 +5735,8 @@ msgid ""
 "caller, see <xref linkend=\"Topology_StatsManagement\"/>."
 msgstr ""
 "Die Aktualisierung von Statistiken über Topologien, die über diese Funktion "
-"geladen werden, obliegt dem Aufrufer, siehe <xref linkend="
-"\"Topology_StatsManagement\"/>."
+"geladen werden, obliegt dem Aufrufer, siehe <xref "
+"linkend=\"Topology_StatsManagement\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -5752,9 +5752,9 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
-", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend="
-"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref linkend="
-"\"CreateTopology\"/>"
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref "
+"linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref "
+"linkend=\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5787,9 +5787,9 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddFace\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
-", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend="
-"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddFace\"/>, <xref linkend="
-"\"CreateTopology\"/>"
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref "
+"linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddFace\"/>, <xref "
+"linkend=\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5822,8 +5822,8 @@ msgid ""
 ", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref "
 "linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
 msgstr ""
-", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend="
-"\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref "
+"linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -7090,8 +7090,8 @@ msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"TopoGeo_AddLineString\"/> "
 "instead."
 msgstr ""
-"Veraltet seit 3.5.0. Bitte verwenden Sie <xref linkend="
-"\"TopoGeo_AddLineString\"/> stattdessen."
+"Veraltet seit 3.5.0. Bitte verwenden Sie <xref "
+"linkend=\"TopoGeo_AddLineString\"/> stattdessen."
 
 #. Tag: para
 #, no-c-format
@@ -8580,16 +8580,17 @@ msgid ""
 "SFCGAL/</link>."
 msgstr ""
 "SFCGAL, 1.4.1 oder höher ist nötig, und 1.5.0+ erforderlich um alle "
-"Funktionen nutzen zu können. SFCGAL kann verwendet werden, um zusätzliche 2D-"
-" und 3D-Analysefunktionen für PostGIS cf <xref linkend=\"reference_sfcgal\"/"
-"> bereitzustellen. Außerdem kann SFCGAL anstelle von GEOS für einige 2D-"
-"Funktionen verwendet werden, die von beiden Backends bereitgestellt werden ("
-"z. B. ST_Intersection oder ST_Area). Die PostgreSQL-Konfigurationsvariable "
-"<code>postgis.backend</code> erlaubt es dem Endbenutzer das Backend "
-"auszuwählen, falls SFCGAL installiert ist (GEOS ist Standard). Hinweis: "
-"SFCGAL 1.2 benötigt mindestens CGAL 4.3 und Boost 1.54 (cf <link xlink:href="
-"\"https://sfcgal.org\">https://sfcgal.org</link>) <link xlink:href=\"https"
-"://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/SFCGAL/</link>."
+"Funktionen nutzen zu können. SFCGAL kann verwendet werden, um zusätzliche "
+"2D- und 3D-Analysefunktionen für PostGIS cf <xref "
+"linkend=\"reference_sfcgal\"/> bereitzustellen. Außerdem kann SFCGAL "
+"anstelle von GEOS für einige 2D-Funktionen verwendet werden, die von beiden "
+"Backends bereitgestellt werden (z. B. ST_Intersection oder ST_Area). Die "
+"PostgreSQL-Konfigurationsvariable <code>postgis.backend</code> erlaubt es "
+"dem Endbenutzer das Backend auszuwählen, falls SFCGAL installiert ist (GEOS "
+"ist Standard). Hinweis: SFCGAL 1.2 benötigt mindestens CGAL 4.3 und Boost "
+"1.54 (cf <link xlink:href=\"https://sfcgal.org\">https://sfcgal.org</link>) "
+"<link xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/"
+"sfcgal/SFCGAL/</link>."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -15772,8 +15773,9 @@ msgid ""
 ">. It is also easier to use for numeric coordinate values."
 msgstr ""
 "<varname>ST_MakePoint</varname> ist zwar nicht OGC-konform, aber schneller "
-"als <xref linkend=\"ST_GeomFromText\"/> und <xref linkend=\"ST_PointFromText"
-"\"/>. Auch ist die Verwendung von numerischen Koordinatenwerten einfacher."
+"als <xref linkend=\"ST_GeomFromText\"/> und <xref "
+"linkend=\"ST_PointFromText\"/>. Auch ist die Verwendung von numerischen "
+"Koordinatenwerten einfacher."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -18328,8 +18330,8 @@ msgid ""
 "a MULTILINESTRING with a reduced number of linestrings (having possibly less "
 "vertices), or"
 msgstr ""
-"ein MULTILINESTRING mit einer reduzierten Anzahl an Linienzügen ("
-"möglicherweise weniger Scheitelpunkten), oder"
+"ein MULTILINESTRING mit einer reduzierten Anzahl an Linienzügen "
+"(möglicherweise weniger Scheitelpunkten), oder"
 
 #. Tag: para
 #, no-c-format
@@ -18972,9 +18974,9 @@ msgid ""
 "ALTER SYSTEM</link>"
 msgstr ""
 "Weitere Anwendungsbeispiele finden Sie unter <link xlink:href=\"https://www."
-"postgresql.org/docs/current/sql-set.html\">SQL SET</link> und <link "
-"xlink:href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\""
-">SQL ALTER SYSTEM</link>"
+"postgresql.org/docs/current/sql-set.html\">SQL SET</link> und <link xlink:"
+"href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
+"ALTER SYSTEM</link>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22296,9 +22298,9 @@ msgid ""
 "geography-faster/\">Making Geography faster</link> for details."
 msgstr ""
 "Erweitert: 2.1.0 verbesserte die Geschwindigkeit für Geographie. Weitere "
-"Details finden Sie unter <link xlink:href=\"https://web.archive.org/web/"
-"20160827203903/http://boundlessgeo.com/2012/07/making-geography-faster/\""
-">Making Geography faster</link>."
+"Details finden Sie unter <link xlink:href=\"https://web.archive.org/"
+"web/20160827203903/http://boundlessgeo.com/2012/07/making-geography-faster/"
+"\">Making Geography faster</link>."
 
 #. Tag: para
 #, no-c-format
@@ -33354,12 +33356,13 @@ msgid ""
 "linkend=\"ST_Intersection\"/>"
 msgstr ""
 ", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_DumpAsPolygons\"/"
-">, <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_PixelAsPolygon\""
-"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, "
-"<xref linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>, "
-"<xref linkend=\"RT_ST_SRID\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend="
-"\"ST_Point\"/>, <xref linkend=\"ST_MakeEnvelope\"/>, <xref linkend="
-"\"ST_Intersects\"/>, <xref linkend=\"ST_Intersection\"/>"
+">, <xref linkend=\"RT_ST_NumBands\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref "
+"linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, <xref "
+"linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
+"linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+"linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
+"linkend=\"ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
