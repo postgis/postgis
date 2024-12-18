@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-18 06:47+0000\n"
+"PO-Revision-Date: 2024-12-18 07:05+0000\n"
 "Last-Translator: Dapeng Wang <wangdapeng20191008@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -7594,6 +7594,15 @@ msgid ""
 "xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/"
 "SFCGAL/</link>."
 msgstr ""
+"SFCGAL 1.4.1 及以上版本是必需的，但要使用所有功能，必须安装 1.5.0 "
+"及以上版本。SFCGAL 可为 PostGIS 提供额外的 2D 和 3D 高级分析功能，如 <xref "
+"linkend=\"reference_sfcgal\"/> 中所述。此外，它还允许在两种后端（例如 "
+"ST_Intersection 或 ST_Area 等函数）中，使用 SFCGAL 而不是 GEOS。通过 "
+"PostgreSQL 配置变量 <code>postgis.backend</code>，用户可以在安装了 SFCGAL "
+"的情况下控制使用哪个后端（默认是 GEOS）。注意：SFCGAL 1.2 版本至少需要 CGAL "
+"4.3 和 Boost 1.54（参见 <link xlink:href=\"https://sfcgal.org/\""
+">https://sfcgal.org/</link> 和 <link xlink:href=\"https://gitlab.com/sfcgal/"
+"SFCGAL/\">https://gitlab.com/sfcgal/SFCGAL/</link>）。"
 
 #. Tag: para
 #, no-c-format
@@ -9530,7 +9539,7 @@ msgstr "David Techer"
 #. Tag: member
 #, no-c-format
 msgid "Dian M Fay"
-msgstr ""
+msgstr "Dian M Fay"
 
 #. Tag: member
 #, no-c-format
@@ -9635,7 +9644,7 @@ msgstr "Jackie Leng"
 #. Tag: member
 #, no-c-format
 msgid "James Addison"
-msgstr ""
+msgstr "James Addison"
 
 #. Tag: member
 #, no-c-format
@@ -9870,7 +9879,7 @@ msgstr "Ron Mayer"
 #. Tag: member
 #, no-c-format
 msgid "Sam Peters"
-msgstr ""
+msgstr "Sam Peters"
 
 #. Tag: member
 #, no-c-format
@@ -9975,7 +9984,7 @@ msgstr "Volf Tomáš"
 #. Tag: member
 #, no-c-format
 msgid "Zuo Chenwei"
-msgstr ""
+msgstr "Zuo Chenwei"
 
 #. Tag: term
 #, no-c-format
@@ -10083,7 +10092,7 @@ msgstr "Geographic Data BC"
 #. Tag: link
 #, no-c-format
 msgid "HighGo"
-msgstr ""
+msgstr "HighGo"
 
 #. Tag: simpara
 #, no-c-format
@@ -10093,7 +10102,7 @@ msgstr "Hunter Systems Group"
 #. Tag: link
 #, no-c-format
 msgid "INIA-CSIC"
-msgstr ""
+msgstr "INIA-CSIC"
 
 #. Tag: link
 #, no-c-format
@@ -11032,6 +11041,13 @@ msgid ""
 "&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
 "&reference_version; &reference_guc; &reference_troubleshooting;"
 msgstr ""
+"&reference_type; &reference_management; &reference_constructor; "
+"&reference_accessor; &reference_editor; &reference_validation; "
+"&reference_srs; &reference_input; &reference_output; &reference_operator; "
+"&reference_relationship; &reference_measure; &reference_overlay; "
+"&reference_processing; &reference_coverage; &reference_transformation; "
+"&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
+"&reference_version; &reference_guc; &reference_troubleshooting;"
 
 #. Tag: title
 #, no-c-format
