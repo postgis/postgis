@@ -35458,7 +35458,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"CG_Rotate3D\"/>"
+msgid ", <xref linkend=\"CG_3DRotate\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -35494,7 +35494,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"CG_RotateZ\"/>, <xref linkend=\"CG_Rotate3D\"/>"
+msgid ", <xref linkend=\"CG_RotateZ\"/>, <xref linkend=\"CG_3DRotate\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -35523,7 +35523,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_Rotate3D\"/>"
+msgid ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_3DRotate\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -35542,7 +35542,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"CG_Scale3DAroundCenter\"/>, <xref linkend=\"ST_Scale\"/>"
+", <xref linkend=\"CG_3DScaleAroundCenter\"/>, <xref linkend=\"ST_Scale\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -35560,7 +35560,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"CG_Scale3DAroundCenter\"/>"
+msgid ", <xref linkend=\"CG_3DScaleAroundCenter\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -35579,7 +35579,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"CG_Scale3D\"/>"
+msgid ", <xref linkend=\"CG_3DScale\"/>"
 msgstr ""
 
 #. Tag: refpurpose
