@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - Correct the topology geometry shrinking examples (Sandro Santilli)
   - Report the failing topology row in line and point insertion tests (Sandro Santilli)
   - [tiger_geocoder] Correct the PAGC regression fixture for directions and ZIP codes
     (Dapeng Wang)
