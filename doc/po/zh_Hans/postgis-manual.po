@@ -2,13 +2,14 @@
 # Automatically generated, 2023.
 #
 # Zuochenwei <zuochenwei5@gmail.com>, 2023.
+# Dapeng Wang <wangdapeng20191008@gmail.com>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2023-12-28 09:45+0000\n"
-"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
+"PO-Revision-Date: 2024-12-18 04:47+0000\n"
+"Last-Translator: Dapeng Wang <wangdapeng20191008@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -16,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.3\n"
+"X-Generator: Weblate 5.4.3\n"
 
 #. Tag: chapter
 #, no-c-format
@@ -5029,6 +5030,8 @@ msgid ""
 ", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
 "linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
 msgstr ""
+", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref linkend=\"CreateTopology\""
+"/>, <xref linkend=\"DropTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5054,13 +5057,16 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend="
+"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref linkend="
+"\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Adds a linestring to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces."
-msgstr ""
+msgstr "使用容差将线串添加到现有拓扑中，并在可能的情况下拆分边或面。"
 
 #. Tag: para
 #, no-c-format
@@ -5071,6 +5077,9 @@ msgid ""
 "existing nodes or edges within given tolerance. Existing edges and faces may "
 "be split by the line. New nodes and faces may be added."
 msgstr ""
+"使用容差将线串添加到现有拓扑中，并返回组成该线串的一组带符号的边标识符（负符"
+"号表示边的方向与输入线串相反）。指定的线将在给定的容差范围内捕捉到现有的节点"
+"或边。现有的边和面可能会被线拆分，并且可能会添加新的节点和面。"
 
 #. Tag: para
 #, no-c-format
@@ -5084,7 +5093,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.2.0 added support for returning signed identifier."
-msgstr ""
+msgstr "增强：3.2.0 版本新增了返回符号化标识符的功能。"
 
 #. Tag: para
 #, no-c-format
@@ -5093,6 +5102,9 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend="
+"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref linkend="
+"\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5119,12 +5131,15 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddFace\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend="
+"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddFace\"/>, <xref linkend="
+"\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Load a geometry into an existing topology, snapping and splitting as needed."
-msgstr ""
+msgstr "将几何图形加载到现有拓扑中，并在必要时执行捕捉和拆分操作。"
 
 #. Tag: para
 #, no-c-format
@@ -5132,7 +5147,8 @@ msgid ""
 "Loads a geometry into an existing topology. The given geometry will snap to "
 "existing nodes or edges within given tolerance. Existing edges and faces may "
 "be split as a consequence of the load."
-msgstr ""
+msgstr "将几何图形加载到现有拓扑中。给定的几何图形将在给定的容差范围内捕捉到现有的节"
+"点或边。现有的边和面可能会因加载操作而被拆分。"
 
 #. Tag: para
 #, no-c-format
@@ -5145,6 +5161,8 @@ msgid ""
 ", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref "
 "linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend="
+"\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -6240,7 +6258,7 @@ msgstr ""
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"TopoGeo_AddLineString\"/> "
 "instead."
-msgstr ""
+msgstr "在 3.5.0 版本中已弃用。请改用 <xref linkend=\"TopoGeo_AddLineString\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -7522,6 +7540,9 @@ msgid ""
 "xlink:href=\"https://gdal.org/download.html\">https://gdal.org/download."
 "html</link>."
 msgstr ""
+"推荐使用 GDAL 3 以上版本。此版本对于栅格功能是必需的。更多信息请参阅<link "
+"xlink:href=\"https://gdal.org/download.html\">https://gdal.org/download."
+"html</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -9454,7 +9475,7 @@ msgstr "Charlie Savage"
 #. Tag: member
 #, no-c-format
 msgid "Chris Mayo"
-msgstr ""
+msgstr "Chris Mayo"
 
 #. Tag: member
 #, no-c-format
@@ -9479,7 +9500,7 @@ msgstr "Dane Springmeyer"
 #. Tag: member
 #, no-c-format
 msgid "Dapeng Wang"
-msgstr ""
+msgstr "Dapeng Wang"
 
 #. Tag: member
 #, no-c-format
