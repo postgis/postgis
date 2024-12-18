@@ -112,7 +112,7 @@ cd postgis-&last_release_version;</programlisting>
 	  .
 	</para>
 
-	<programlisting>git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis
+	<programlisting>git clone https://git.osgeo.org/gitea/postgis/postgis.git
 cd postgis
 sh autogen.sh
     </programlisting>
