@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-18 07:05+0000\n"
+"PO-Revision-Date: 2024-12-18 08:47+0000\n"
 "Last-Translator: Dapeng Wang <wangdapeng20191008@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -7327,7 +7327,7 @@ msgstr ""
 "兴奋的新变化发生时构建。你可以使用这些版本来尝试正在进行中的PostGIS发布"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The PostGIS module is an extension to the PostgreSQL backend server. As "
 "such, PostGIS &last_release_version; <emphasis>requires</emphasis> full "
@@ -7335,10 +7335,11 @@ msgid ""
 "against PostgreSQL versions &min_postgres_version; - &max_postgres_version;. "
 "Earlier versions of PostgreSQL are <emphasis>not</emphasis> supported."
 msgstr ""
-"PostGIS 模块是PostgreSQL服务的扩展。 PostGIS&last_release_version; <emphasis>"
-"需要</emphasis>完整的 PostgreSQL 服务器标头进行编译。你可以在PostgreSQL "
-"&min_postgres_version; - &max_postgres_version;之间构建。 <emphasis>不</"
-"emphasis>支持旧版本的PostgreSQL。"
+"PostGIS模块是PostgreSQL后台服务器的扩展。在PostGIS "
+"&last_release_version;中，为了编译，需要完整的PostgreSQL服务器头文件。"
+"它可以在PostgreSQL &min_postgres_version; - "
+"&max_postgres_version;版本之间构建。旧版本的PostgreSQL "
+"<emphasis>不</emphasis>再支持。"
 
 #. Tag: para
 #, no-c-format
@@ -7445,9 +7446,9 @@ msgid ""
 "PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
 "org\"> https://www.postgresql.org </link> ."
 msgstr ""
-"PostgreSQL12 - 16。需要完整安装 PostgreSQL（包括服务器标头）。PostgreSQL可从"
-"<link xlink:href=\"https://www.postgresql.org\">https://www.postgresql.org </"
-"link> 获取。"
+"PostgreSQL12 - 16。需要完整安装 PostgreSQL（包括服务器头文件）。"
+"PostgreSQL可在<link xlink:href=\"https://www.postgresql.org\">https://"
+"www.postgresql.org </link> 获取。"
 
 #. Tag: para
 #, no-c-format
@@ -7494,9 +7495,9 @@ msgid ""
 "available for download from <link xlink:href=\"https://proj.org/\"> https://"
 "proj.org/ </link> ."
 msgstr ""
-"Proj重投影库。需要项目 6.1 或更高版本。Proj 库用于在 PostGIS 中提供坐标重投影"
-"支持。Proj 可以从<link xlink:href=\"https://proj.org/\"> https://proj.org/ </"
-"link> 下载。"
+"Proj投影转换库 。需要 Proj 6.1 及以上版本。Proj 库用于 PostGIS "
+"中提供坐标重投影支持。Proj 可以从<link xlink:href=\"https://proj.org/\"> "
+"https://proj.org/ </link> 下载。"
 
 #. Tag: para
 #, no-c-format
@@ -7506,9 +7507,10 @@ msgid ""
 "GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
 "\"> https://libgeos.org </link>."
 msgstr ""
-"GEOS 几何库，版本 &min_geos_version; 或更高版本，但为了充分利用所有新的函数和"
-"特性，需要使用 GEOS 3.12+。您可以从以下链接下载 GEOS：<link xlink:"
-"href=\"https://libgeos.org/\"> https://libgeos.org </link>。"
+"GEOS 几何库，&min_geos_version; "
+"或更高版本，但为了充分利用所有新的函数和特性，需要使用 GEOS 3.12+。"
+"GEOS可以从<link xlink:href=\"https://libgeos.org/\"> https://libgeos.org "
+"</link>下载。"
 
 #. Tag: para
 #, no-c-format
@@ -8072,8 +8074,8 @@ msgid ""
 "files from one OS to another as long as you have the PostGIS binaries "
 "already installed on your servers."
 msgstr ""
-"无论操作系统如何，扩展文件在同一版本的 PostGIS 中始终相同。只要已安装 "
-"PostGIS 二进制文件，就可以将扩展文件从一个操作系统复制到另一个操作系统。"
+"扩展文件在同一版本的PostGIS中始终是相同的，无论操作系统如何。只要已经安装了Po"
+"stGIS二进制文件，就可以将扩展文件从一个操作系统复制到另一个操作系统。"
 
 #. Tag: para
 #, no-c-format
@@ -8084,9 +8086,9 @@ msgid ""
 "filename> folder of your PostgreSQL install as well as the needed binaries "
 "for regular PostGIS if you don't have them already on the server."
 msgstr ""
-"如果您想在与您的开发不同的单独服务器上手动安装扩展，您需要将扩展文件夹中的以"
-"下文件复制到 PostgreSQL 安装的 <filename>PostgreSQL/share/extension</"
-"filename> 文件夹中 常规 PostGIS 所需的二进制文件（如果服务器上还没有它们）。"
+"如果您想在与开发环境不同的另一台服务器上手动安装扩展，除了通常需要的PostGIS二"
+"进制文件之外，还需要将以下文件从 extensions 文件夹复制到 PostgreSQL "
+"安装目录下的 <filename>PostgreSQL/share/extension</filename> 文件夹中。"
 
 #. Tag: para
 #, no-c-format
@@ -11493,6 +11495,8 @@ msgid ""
 "represent the linear segments of the supplied geometry, while the "
 "<varname>CIRCULARSTRING</varname>s represent the arc segments."
 msgstr ""
+"<parameter>geom</parameter> 字段中的 <varname>LINESTRING</varname> "
+"表示给定几何体的线段，而 <varname>CIRCULARSTRING</varname> 表示圆弧线段。"
 
 #. Tag: para
 #, no-c-format
@@ -11890,14 +11894,15 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return the number of component curves in a CompoundCurve."
-msgstr ""
+msgstr "返回复合曲线中的曲线数量。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Return the number of component curves in a CompoundCurve, zero for an empty "
 "CompoundCurve, or NULL for a non-CompoundCurve input."
-msgstr ""
+msgstr "返回复合曲线中的曲线数量。如果输入为空的复合曲线，则返回0；如果不是复合曲线，"
+"则返回NULL。"
 
 #. Tag: para
 #, no-c-format
@@ -11905,11 +11910,13 @@ msgid ""
 ", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
 "linkend=\"ST_NumInteriorRings\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 msgstr ""
+", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
+"linkend=\"ST_NumInteriorRings\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the Nth component curve geometry of a CompoundCurve."
-msgstr ""
+msgstr "返回复合曲线（CompoundCurve）中的第N个曲线几何体。"
 
 #. Tag: para
 #, no-c-format
@@ -11917,7 +11924,8 @@ msgid ""
 "Returns the Nth component curve geometry of a CompoundCurve. The index "
 "starts at 1. Returns NULL if the geometry is not a CompoundCurve or the "
 "index is out of range."
-msgstr ""
+msgstr "返回复合曲线（CompoundCurve）中的第N个曲线几何体。索引从1开始。如果输入的几何"
+"体不是复合曲线，或者索引超出范围，则返回NULL。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -13022,6 +13030,10 @@ msgid ""
 "afterwards remove the first and last double-quote character. For geometry "
 "column pass as is.\""
 msgstr ""
+"对于表名或命名空间（schema）的名称，如果包含特殊字符或引号，可能需要进行特殊"
+"处理。有些用户会使用“标识符转义规则”，“通过加上双引号来生成字符串，然后去掉最"
+"前面和最后面的双引号。而对于几何列（geometry "
+"column），则直接传递原始值，而不进行任何额外的处理。”"
 
 #. Tag: para
 #, no-c-format
@@ -14098,6 +14110,9 @@ msgid ""
 "<xref linkend=\"ST_GeomFromText\"/> and <xref linkend=\"ST_PointFromText\"/"
 ">. It is also easier to use for numeric coordinate values."
 msgstr ""
+"虽然不符合OGC规范，<varname>ST_MakePoint</varname>比<xref linkend="
+"\"ST_GeomFromText\"/>和<xref linkend=\"ST_PointFromText\""
+"/>更快。此外，它还可以使用数值坐标值。"
 
 #. Tag: para
 #, no-c-format
@@ -16150,12 +16165,13 @@ msgstr "使用此函数可以对仅在特定范围内渲染的几何图形进行
 msgid ""
 "Only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING are evaluated. "
 "Other geometries keep unchanged."
-msgstr ""
+msgstr "只有（MULTI）POLYGON和（MULTI）LINESTRING类型的几何图形会被评估。其他几何图形"
+"不会被更改。"
 
 #. Tag: para
 #, no-c-format
 msgid "In contrast to <code>ST_ClipByBox2D()</code> this function"
-msgstr ""
+msgstr "这个函数与 <code>ST_ClipByBox2D()</code> 的区别如下"
 
 #. Tag: para
 #, no-c-format
@@ -16192,6 +16208,10 @@ msgid ""
 "introduce rendering artifacts if the resulting coordinates are projected "
 "into another (non-cartesian) coordinate system before rendering."
 msgstr ""
+"如果将 <code>cartesian_hint</code> 设置为 <code>TRUE</code>，则算法会应用额外"
+"的优化，包括使用笛卡尔数学，进一步减少结果中的点数。需要注意的是，如果结果坐"
+"标被投影到其他（非笛卡尔）坐标系中，使用此可选参数可能会导致绘制中的不自然阴"
+"影或噪点。"
 
 #. Tag: para
 #, no-c-format
@@ -16200,6 +16220,9 @@ msgid ""
 "valid. This situation can be checked with <xref linkend=\"ST_IsValid\"/> and "
 "repaired with <xref linkend=\"ST_MakeValid\"/>."
 msgstr ""
+"对于多边形来说，当前此函数无法保证结果的有效性。可以通过 <xref linkend="
+"\"ST_IsValid\"/> 来检查这种情况，并使用 <xref linkend=\"ST_MakeValid\"/> "
+"来修复。"
 
 #. Tag: para
 #, no-c-format
@@ -16236,7 +16259,7 @@ msgstr "删除几何图形中的所有小部分（多边形环或线串）。"
 msgid ""
 "Returns a <xref linkend=\"geometry\"/> without small parts (exterior or "
 "interior polygon rings, or linestrings)."
-msgstr ""
+msgstr "返回不包含小部分（外环、内环或线串）的 <xref linkend=\"geometry\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -16250,7 +16273,8 @@ msgstr "此函数可用于地图简化中的预处理步骤，例如删除小岛
 msgid ""
 "It evaluates only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING. "
 "Other geometries remain unchanged."
-msgstr ""
+msgstr "只有 (MULTI)POLYGON 和 (MULTI)LINESTRING "
+"类型的几何体会被评估。其他几何体不会发生变化。"
 
 #. Tag: para
 #, no-c-format
@@ -16258,6 +16282,8 @@ msgid ""
 "If <parameter>minSizeX</parameter> is greater than 0, parts are sorted out "
 "if their width is smaller than <parameter>minSizeX</parameter>."
 msgstr ""
+"如果 <parameter>minSizeX</parameter> 大于 0，则会分割出宽度小于 "
+"<parameter>minSizeX</parameter> 的部分。"
 
 #. Tag: para
 #, no-c-format
@@ -16265,6 +16291,8 @@ msgid ""
 "If <parameter>minSizeY</parameter> is greater than 0, parts are sorted out "
 "if their height is smaller than <parameter>minSizeY</parameter>."
 msgstr ""
+"如果 <parameter>minSizeY</parameter> 大于 0，则会分割出高度小于 "
+"<parameter>minSizeY</parameter> 的部分。"
 
 #. Tag: para
 #, no-c-format
@@ -16272,6 +16300,8 @@ msgid ""
 "Both <parameter>minSizeX</parameter> and <parameter>minSizeY</parameter> are "
 "measured in coordinate system units of the geometry."
 msgstr ""
+"<parameter>minSizeX</parameter> 和 <parameter>minSizeY</parameter> "
+"都是以几何体坐标系的单位进行度量的。"
 
 #. Tag: para
 #, no-c-format
@@ -16288,14 +16318,14 @@ msgstr "原始几何图形，"
 #. Tag: para
 #, no-c-format
 msgid "a POLYGON with all rings with less vertices,"
-msgstr ""
+msgstr "所有环的顶点减少的多边形 (POLYGON)，"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "a POLYGON with a reduced number of interior rings (having possibly less "
 "vertices),"
-msgstr ""
+msgstr "内环数量减少的多边形 (POLYGON)（可能还会减少顶点数），"
 
 #. Tag: para
 #, no-c-format
@@ -16883,6 +16913,9 @@ msgid ""
 "href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
 "ALTER SYSTEM</link>"
 msgstr ""
+"有关其他使用示例，请参阅 <link xlink:href=\"https://www.postgresql.org/docs/"
+"current/sql-set.html\">SQL SET</link> 和<link xlink:href=\"https://www."
+"postgresql.org/docs/current/sql-altersystem.html\">SQL ALTER SYSTEM</link>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19856,6 +19889,10 @@ msgid ""
 "web.archive.org/web/20160827203903/http://boundlessgeo.com/2012/07/making-"
 "geography-faster/\">Making Geography faster</link> for details."
 msgstr ""
+"增强功能：2.1.0版本提升了地理（Geography）类型的速度。有关详细信息，"
+"请参阅<link xlink:href=\"https://web.archive.org/web/20160827203903/"
+"http://boundlessgeo.com/2012/07/making-geography-faster/\">Making Geography "
+"faster</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -26541,6 +26578,11 @@ msgid ""
 "geometry. For outer hulls a value of 0.0 produces the convex hull (for a "
 "single polygon); for inner hulls it produces a triangle."
 msgstr ""
+"顶点数的减少可以通过 <varname>vertex_fraction</varname> 参数进行控制。"
+"该参数的取值范围是 0 到 "
+"1。较小的值会使简化过程更加深入，顶点数减少，凹性降低。对于外部和内部的凹包，"
+"当 vertex_fraction 值为 1.0 时，会生成与原始几何体相同的形状；而当值为 0.0 "
+"时，对于外部凹包会生成凸包（单一多边形），而对于内部凹包则会生成三角形。"
 
 #. Tag: para
 #, no-c-format
@@ -36823,6 +36865,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) = ∅) ∧ "
 "(A ⋂ B ≠ ∅) </emphasis>"
 msgstr ""
+"在数学术语中：<emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) = ∅) ∧ (A ⋂ B ≠ "
+"∅)</emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -37050,6 +37094,9 @@ msgid ""
 "distance is specified in units defined by the spatial reference system of "
 "the geometries."
 msgstr ""
+"当<code>g2</code>完全位于<code>g1</code>指定的<code>distance</code>距离范围内"
+"时，返回TRUE。从视觉上看，当<code>g2</code>完全包含在<code>g1</code>扩展<code"
+">distance</code>距离的缓冲区内时，返回TRUE。"
 
 #. Tag: para
 #, no-c-format
@@ -37372,7 +37419,7 @@ msgstr "计算 3D 实体的体积。 如果应用于表面（甚至闭合）几�
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as CG_3DVolume)"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1（与CG_3DVolume相同）"
 
 #. Tag: para
 #, no-c-format
@@ -37382,6 +37429,9 @@ msgid ""
 "linkend=\"CG_MakeSolid\"/>. Areal geometries have no volume. Here is an "
 "example to demonstrate."
 msgstr ""
+"当你用WKT生成一个封闭的面时，它会被当作一个面而不是立体来处理。要将其转换为立"
+"体，您可以使用 <xref linkend=\"CG_MakeSolid\""
+"/>。面几何体没有体积。以下是一个例子。"
 
 #. Tag: para
 #, no-c-format
@@ -37391,12 +37441,12 @@ msgstr ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>"
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_ForceLHR\"/> instead."
-msgstr ""
+msgstr "在 3.5.0 版本中已弃用。请改用 <xref linkend=\"CG_ForceLHR\"/>。"
 
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_IsPlanar\"/> instead."
-msgstr ""
+msgstr "在 3.5.0 版本中已弃用。请改用 <xref linkend=\"CG_IsPlanar\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -37743,6 +37793,9 @@ msgid ""
 "it operates on rows of data, in the same way the SUM() and AVG() functions "
 "do and like most aggregates, it also ignores NULL geometries."
 msgstr ""
+"<emphasis role=\"bold\">集约函数形式:</emphasis>返回将几何行集合合并为一个三"
+"维几何的结果。CG_3DUnion()函数是一个“集约函数”，这意味着它与SUM()、MEAN()等函"
+"数以相同的方式操作多个数据行，并像大多数其他集约函数一样忽略NULL几何。"
 
 #. Tag: para
 #, no-c-format
@@ -37848,14 +37901,15 @@ msgstr "可用性：3.5.0 - 需要 SFCGAL&gt;= 1.4.1。"
 msgid ""
 "Alpha-shape of a MultiPoint (same example As <xref "
 "linkend=\"CG_OptimalAlphaShape\"/>)"
-msgstr ""
+msgstr "MULTIPOINTO的α形状（与<xref linkend=\"CG_OptimalAlphaShape\"/>相同）"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
 "linkend=\"CG_OptimalAlphaShape\"/>)"
-msgstr ""
+msgstr "允许孔洞的MULTIPOINT的α形状（与<xref linkend=\"CG_OptimalAlphaShape\""
+"/>相同的示例）"
 
 #. Tag: para
 #, no-c-format
@@ -38071,6 +38125,12 @@ msgid ""
 "with CG_Extrude(polygon, 0, 0, body_height). The result is an union of these "
 "polyhedralsurfaces."
 msgstr ""
+"直线骨架的（历史上的）第一个使用例子可能是通过给定一个多边形屋顶，使用直线骨"
+"架方法来得出帐篷的布局。骨架的每个边都被从平面上升一定的偏移距离，确保水总是"
+"会落在轮廓的边缘（即屋顶的边界线），无论水从屋顶的任何地方落下，这样结果的屋"
+"顶就可以说是“正确的”。该函数计算这个多边形的挤压，别名“屋顶”。如果参数 "
+"body_height 大于 0，则多边形将通过 CG_Extrude(polygon, 0, 0, body_height) "
+"来进行挤压。结果是这些多面体表面的组合。"
 
 #. Tag: para
 #, no-c-format
@@ -38238,14 +38298,14 @@ msgstr "可用性：3.3.0 - 需要 SFCGAL &gt;= 1.4.1。"
 msgid ""
 "Optimal alpha-shape of a MultiPoint (same example as <xref "
 "linkend=\"CG_AlphaShape\"/>)"
-msgstr ""
+msgstr "MULTIPOINT 的最优 α 形状（与 <xref linkend=\"CG_AlphaShape\"/> 相同）"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref "
 "linkend=\"CG_AlphaShape\"/>)"
-msgstr ""
+msgstr "允许孔的 MULTIPOINT 最优 α 形状（与 <xref linkend=\"CG_AlphaShape\"/> 相同）"
 
 #. Tag: para
 #, no-c-format
@@ -38303,7 +38363,7 @@ msgstr "从几何体计算直骨架"
 #. Tag: para
 #, no-c-format
 msgid "Requires SFCGAL &gt;= 1.3.8 for option use_distance_as_m"
-msgstr ""
+msgstr "要使用任意参数 use_distance_as_m，需要 SFCGAL &gt;= 1.3.8"
 
 #. Tag: para
 #, no-c-format
@@ -38381,18 +38441,18 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Triangulates a polygonal geometry"
-msgstr ""
+msgstr "对多边形几何体进行三角剖分"
 
 #. Tag: para
 #, no-c-format
 msgid "Triangulates a polygonal geometry."
-msgstr ""
+msgstr "对多边形几何体进行三角剖分。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "NOTE: this function returns a geometry representing the triangulated result."
-msgstr ""
+msgstr "注意: 此函数返回表示三角剖分结果的几何对象。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38451,7 +38511,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the straight skeleton partition of a polygon."
-msgstr ""
+msgstr "计算多边形的直骨架分割。"
 
 #. Tag: para
 #, no-c-format
@@ -38463,6 +38523,9 @@ msgid ""
 "automatically adjust the orientation of the input polygon to ensure correct "
 "results."
 msgstr ""
+"计算多边形几何体<parameter>geom</parameter>的直骨架分割。直骨架通过边缘简化将"
+"多边形分割成若干面。如果将<parameter>auto_orientation</parameter>设置为TRUE，"
+"函数会自动调整输入多边形的方向，以确保得到正确的结果。"
 
 #. Tag: para
 #, no-c-format
@@ -38472,7 +38535,7 @@ msgstr "可用性：3.6.0 - 需要 SFCGAL&gt;= 2.0.0。"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes a 3D buffer around a geometry."
-msgstr ""
+msgstr "计算几何体周围的三维缓冲区。"
 
 #. Tag: para
 #, no-c-format
@@ -38485,6 +38548,11 @@ msgid ""
 "The <parameter>buffer_type</parameter> specifies the type of buffer to "
 "create: 0: Rounded buffer (default) 1: Flat buffer 2: Square buffer"
 msgstr ""
+"生成输入几何体 <parameter>geom</parameter> 周围指定半径 <parameter>radius</"
+"parameter> 的三维缓冲区。缓冲区将在三维空间内生成，并形成几何体周围的立体表示"
+"。<parameter>segments</parameter> "
+"参数指定缓冲区曲线部分的近似分割数。<parameter>buffer_type</parameter> "
+"参数指定缓冲区生成类型：0: 球形缓冲区（默认）1: 平面缓冲区2: 方形缓冲区"
 
 #. Tag: para
 #, no-c-format
@@ -38498,6 +38566,9 @@ msgid ""
 "into <link xlink:href=\"https://postgis.net/docs/support/viewers/x3d_viewer."
 "htm\">X3D Viewer</link>."
 msgstr ""
+"下一张图片是通过将 ST_AsX3D 查询的输出粘贴到 <link xlink:href=\"https"
+"://postgis.net/docs/support/viewers/x3d_viewer.htm\">X3D Viewer</link> "
+"中进行绘制的结果。"
 
 #. Tag: para
 #, no-c-format
@@ -38507,17 +38578,17 @@ msgstr "segments=32（球形缓冲区）"
 #. Tag: para
 #, no-c-format
 msgid "5 segments rounded"
-msgstr ""
+msgstr "5边形球"
 
 #. Tag: para
 #, no-c-format
 msgid "32 segments, round"
-msgstr ""
+msgstr "32边球形"
 
 #. Tag: para
 #, no-c-format
 msgid "32 segments, square"
-msgstr ""
+msgstr "32边方形"
 
 #. Tag: para
 #, no-c-format
@@ -38527,7 +38598,7 @@ msgstr ", <xref linkend=\"ST_3DConvexHull\"/>, <xref linkend=\"ST_AsX3D\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry by a given angle around the origin (0,0)."
-msgstr ""
+msgstr "将几何图形围绕 (0,0) 旋转指定的角度。"
 
 #. Tag: para
 #, no-c-format
@@ -38537,6 +38608,9 @@ msgid ""
 "in 2D space; Z coordinates are not modified. Positive angles rotate the "
 "geometry counter-clockwise."
 msgstr ""
+"将输入几何图形 <parameter>geom</parameter> 围绕 (0,0) 中心按 "
+"<parameter>angle</parameter> 弧度旋转。旋转发生在二维平面中，Z "
+"值保持不变。正角度表示逆时针旋转。"
 
 #. Tag: para
 #, no-c-format
@@ -38546,7 +38620,7 @@ msgstr ", <xref linkend=\"ST_Rotate\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry by a given angle around a specified point in 2D."
-msgstr ""
+msgstr "将几何图形围绕指定的二维点按指定角度进行旋转。"
 
 #. Tag: para
 #, no-c-format
@@ -38557,6 +38631,9 @@ msgid ""
 "coordinates are dropped. Positive angles rotate the geometry counter-"
 "clockwise."
 msgstr ""
+"将输入几何图形 <parameter>geom</parameter> 围绕点 (<parameter>cx</"
+"parameter>, <parameter>cy</parameter>) 按指定的 <parameter>angle</parameter> "
+"弧度进行旋转。旋转在二维空间中进行，Z值将被删除。正角度表示逆时针旋转。"
 
 #. Tag: para
 #, no-c-format
@@ -38566,7 +38643,8 @@ msgstr ", <xref linkend=\"CG_3DRotate\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry in 3D space around an axis vector."
-msgstr ""
+msgstr "输入几何体 geom 会围绕指定的向量轴进行三维旋转。旋转角度由参数 "
+"angle（以弧度为单位）指定，旋转将在三维空间内进行。"
 
 #. Tag: para
 #, no-c-format
@@ -38576,6 +38654,9 @@ msgid ""
 "parameter>, <parameter>ay</parameter>, <parameter>az</parameter>) passing "
 "through the origin (0,0,0)."
 msgstr ""
+"将输入几何图形<parameter>geom</parameter>围绕从 (0,0) 到 (<parameter>ax</"
+"parameter>, <parameter>ay</parameter>, <parameter>az</parameter>) "
+"的向量轴，在三维空间中旋转<parameter>angle</parameter>弧度。"
 
 #. Tag: para
 #, no-c-format
@@ -38585,7 +38666,7 @@ msgstr ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_RotateZ\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry around the X-axis by a given angle."
-msgstr ""
+msgstr "将几何图形绕X轴旋转指定的角度。"
 
 #. Tag: para
 #, no-c-format
@@ -38593,6 +38674,8 @@ msgid ""
 "Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
 "parameter> radians around the X-axis."
 msgstr ""
+"将输入几何图形 <parameter>geom</parameter> 绕X轴旋转 <parameter>angle</"
+"parameter> 弧度。"
 
 #. Tag: para
 #, no-c-format
@@ -38602,7 +38685,7 @@ msgstr ", <xref linkend=\"CG_RotateZ\"/>, <xref linkend=\"CG_3DRotate\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry around the Y-axis by a given angle."
-msgstr ""
+msgstr "将几何图形绕Y轴旋转指定的角度。"
 
 #. Tag: para
 #, no-c-format
@@ -38610,11 +38693,13 @@ msgid ""
 "Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
 "parameter> radians around the Y-axis passing."
 msgstr ""
+"将输入几何图形 <parameter>geom</parameter> 绕Y轴旋转 <parameter>angle</"
+"parameter> 弧度。"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry around the Z-axis by a given angle."
-msgstr ""
+msgstr "将几何图形绕Z轴旋转指定的角度。"
 
 #. Tag: para
 #, no-c-format
@@ -38622,6 +38707,8 @@ msgid ""
 "Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
 "parameter> radians around the Z-axis."
 msgstr ""
+"将输入几何图形 <parameter>geom</parameter> 绕Z轴旋转 <parameter>angle</"
+"parameter> 弧度。"
 
 #. Tag: para
 #, no-c-format
@@ -38631,7 +38718,7 @@ msgstr ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_3DRotate\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Scales a geometry uniformly in all dimensions by a given factor."
-msgstr ""
+msgstr "将几何图形在所有维度上按给定的系数均匀缩放。"
 
 #. Tag: para
 #, no-c-format
@@ -38640,6 +38727,8 @@ msgid ""
 "<parameter>factor</parameter> in all dimensions (X, Y, and Z). The scaling "
 "is performed relative to the origin point (0,0,0)."
 msgstr ""
+"将输入几何图形 <parameter>geom</parameter> 在所有维度（X、Y、Z）上按给定系数 "
+"<parameter>factor</parameter> 均匀缩放。缩放是以 (0, 0, 0) 为基准进行的。"
 
 #. Tag: para
 #, no-c-format
@@ -38651,7 +38740,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Scales a geometry by separate factors along X, Y, and Z axes."
-msgstr ""
+msgstr "将几何图形沿 X、Y、Z 轴分别按给定的不同系数进行缩放。"
 
 #. Tag: para
 #, no-c-format
@@ -38660,6 +38749,8 @@ msgid ""
 "along the X, Y, and Z axes. The scaling is performed relative to the origin "
 "point (0,0,0)."
 msgstr ""
+"将输入几何图形 <parameter>geom</parameter> 沿 X、Y、Z "
+"轴分别按给定的系数进行缩放。缩放是相对于原点 (0,0,0) 执行的。"
 
 #. Tag: para
 #, no-c-format
@@ -38669,7 +38760,7 @@ msgstr ", <xref linkend=\"CG_3DScaleAroundCenter\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Scales a geometry in 3D space around a specified center point."
-msgstr ""
+msgstr "将几何图形在三维空间中，以指定的点为中心进行缩放。"
 
 #. Tag: para
 #, no-c-format
@@ -38679,6 +38770,9 @@ msgid ""
 "(<parameter>centerX</parameter>, <parameter>centerY</parameter>, "
 "<parameter>centerZ</parameter>)."
 msgstr ""
+"将输入几何图形 <parameter>geom</parameter> 以指定的点 (<parameter>centerX</"
+"parameter>, <parameter>centerY</parameter>, <parameter>centerZ</parameter>) "
+"为中心，沿 X、Y、Z 轴分别使用给定的系数进行缩放。"
 
 #. Tag: para
 #, no-c-format
@@ -38688,7 +38782,7 @@ msgstr ", <xref linkend=\"CG_3DScale\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Translates (moves) a geometry by given offsets in 2D space."
-msgstr ""
+msgstr "将几何图形在二维空间中按给定的偏移量进行平移。"
 
 #. Tag: para
 #, no-c-format
@@ -38697,6 +38791,9 @@ msgid ""
 "<parameter>deltaX</parameter> to the X coordinates and <parameter>deltaY</"
 "parameter> to the Y coordinates. Z coordinates are dropped."
 msgstr ""
+"将输入几何图形 <parameter>geom</parameter> 在 X 轴方向上增加 "
+"<parameter>deltaX</parameter>，在 Y 轴方向上增加 "
+"<parameter>deltaY</parameter>，Z 值将被删除。"
 
 #. Tag: para
 #, no-c-format
@@ -38706,7 +38803,7 @@ msgstr ", <xref linkend=\"ST_Translate\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Translates (moves) a geometry by given offsets in 3D space."
-msgstr ""
+msgstr "将输入几何图形按照给定的偏移量在三维空间中移动。"
 
 #. Tag: para
 #, no-c-format
@@ -38716,6 +38813,9 @@ msgid ""
 "parameter> to the Y coordinates, and <parameter>deltaZ</parameter> to the Z "
 "coordinates."
 msgstr ""
+"将输入几何体 <parameter>geom</parameter> 在 X 值上加上 "
+"<parameter>deltaX</parameter>，在 Y 值上加上 <parameter>deltaY</parameter>，"
+"在 Z 值上加上 <parameter>deltaZ</parameter>。"
 
 #. Tag: title
 #, no-c-format
@@ -40556,12 +40656,12 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the version number of the libjson-c library."
-msgstr ""
+msgstr "返回 libjson-c 库的版本号。"
 
 #. Tag: para
 #, no-c-format
 msgid "Returns the version number of the LibJSON-C library."
-msgstr ""
+msgstr "返回 LibJSON-C 库的版本号。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40634,14 +40734,14 @@ msgstr ""
 msgid ""
 "Returns the version number of the PROJ library against which PostGIS was "
 "built."
-msgstr ""
+msgstr "返回用于构建 PostGIS 的 PROJ 库的版本号。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Returns the version number of the PROJ library, or against which PostGIS was "
 "built."
-msgstr ""
+msgstr "返回的是用于构建 PostGIS 的 PROJ 库的版本号。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -43496,9 +43596,8 @@ msgstr ""
 msgid ""
 "Coerce all integers to standard 32-bit integers, do not create 64-bit "
 "bigints, even if the DBF header signature appears to warrant it."
-msgstr ""
-"将所有整数强制为标准 32 位整数，不要创建 64 位大整数，即使DBF标头签名似乎可以"
-"保证这一点。"
+msgstr "将所有整数强制转换为标准的32位整数。即使在DBF头中被认为是有效的，也不会生成64"
+"位的bigint。"
 
 #. Tag: para
 #, no-c-format
