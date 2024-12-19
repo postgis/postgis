@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-19 02:47+0000\n"
+"PO-Revision-Date: 2024-12-19 08:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -427,9 +427,9 @@ msgid ""
 "prior to r7409, you cannot use this procedure but would rather need to do a "
 "<link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
 msgstr ""
-"ご注意: PostGIS 1.*またはr7429以前のPostGIS 2.*へ移行する場合には、この手続き"
-"を使うことができませんが、<link linkend=\"hard_upgrade\">ハードアップグレード"
-"</link>を実行する必要があります。"
+"ご注意: PostGIS 1.*またはr7429以前のPostGIS "
+"2.*へ移行する場合には、この手続きを使うことができず、<link linkend="
+"\"hard_upgrade\">ハードアップグレード</link>を実行する必要があります。"
 
 #. Tag: para
 #, no-c-format
@@ -438,9 +438,9 @@ msgid ""
 "<filename>*_upgrade.sql</filename> files in the installation folders. You "
 "can list them all with:"
 msgstr ""
-"コンパイルとインストール (make install)の実行後に、インストール先フォルダ内に"
-"ある<filename>*_upgrade.sql</filename>のファイルの集合を見つけておくべきで"
-"す。次のコマンドで一覧を得られます:"
+"コンパイルとインストール (make "
+"install)の実行後に、インストール先フォルダ内にある<filename>*_upgrade.sql</fi"
+"lename>のファイル一式を見つけておくべきです。次のコマンドで一覧を得られます:"
 
 #. Tag: para
 #, no-c-format
@@ -459,14 +459,14 @@ msgid ""
 msgstr ""
 "同じ手続きをラスタ、トポロジ、SFCGALエクステンションに適用します。それぞれの"
 "ファイル名は<filename>rtpostgis_upgrade.sql</filename>, "
-"<filename>topology_upgrade.sql</filename>, <filename>sfcgal_upgrade.sql</"
-"filename>になります。必要な場合は次のように実行します:"
+"<filename>topology_upgrade.sql</filename>, <filename>sfcgal_upgrade.sql</file"
+"name>になります。これらのエクステンションが必要な場合には次のように実行します"
+":"
 
 #. Tag: para
 #, no-c-format
 msgid "You are advised to switch to an extension based install by running"
-msgstr ""
-"エクステンションによるインストールに変更した方が良いです。次のようにします:"
+msgstr "エクステンションによるインストールに変更した方が良いです。次のようにします:"
 
 #. Tag: para
 #, no-c-format
