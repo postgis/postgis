@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-19 08:47+0000\n"
+"PO-Revision-Date: 2024-12-19 10:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -173,8 +173,7 @@ msgstr "空間データベースにしたいデータベース上で次のSQLを
 #. Tag: title
 #, no-c-format
 msgid "Spatially enable database without using EXTENSION (discouraged)"
-msgstr ""
-"エクステンションを使わずに空間データベースを有効にする (お勧めできません)"
+msgstr "エクステンションを使わずに空間データベースを有効にする (お勧めしません)"
 
 #. Tag: para
 #, no-c-format
@@ -252,8 +251,7 @@ msgstr "空間データベースのアップグレード"
 msgid ""
 "Upgrading existing spatial databases can be tricky as it requires "
 "replacement or introduction of new PostGIS object definitions."
-msgstr ""
-"既存の空間データベースのアップグレードは、新しいPostGISオブジェクト定義の置き"
+msgstr "既存の空間データベースのアップグレードは、新しいPostGISオブジェクト定義の置き"
 "換えや導入を必要とするとき、慎重を要することがあります。"
 
 #. Tag: para
@@ -475,10 +473,10 @@ msgid ""
 "upgrading your version you are using a version too early for a soft upgrade "
 "and need to do a <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
 msgstr ""
-"求める版へのアップグレードに使う特定の<filename>postgis_upgrade.sql</"
-"filename>が発見できない場合には、ソフトアップグレードを実行するにはあまりに前"
-"の版を使っています。<link linkend=\"hard_upgrade\">ハードアップグレード</"
-"link>が必要です。"
+"アップグレードに使う特定の<filename>postgis_upgrade.sql</filename>が発見でき"
+"ない場合には、ソフトアップグレードを実行するにはあまりに前のバージョンを使っ"
+"ています。<link linkend=\"hard_upgrade\""
+">ハードアップグレード</link>が必要です。"
 
 #. Tag: para
 #, no-c-format
@@ -487,9 +485,9 @@ msgid ""
 "about the need to run this kind of upgrade using a \"procs need upgrade\" "
 "message."
 msgstr ""
-"<xref linkend=\"PostGIS_Full_Version\"/>関数の\"procs need upgrade\"という"
-"メッセージで、この種のアップグレードを実行する必要性についての情報が得られま"
-"す。"
+"<xref linkend=\"PostGIS_Full_Version\"/>関数の\"procs need "
+"upgrade\"というメッセージで"
+"、この種のアップグレードを実行する必要性についての情報が得られます。"
 
 #. Tag: title
 #, no-c-format
@@ -505,11 +503,11 @@ msgid ""
 "Notes</link> appendix reports for each version whether you need a dump/"
 "reload (HARD UPGRADE) to upgrade."
 msgstr ""
-"ハードアップグレードとは、PostGISで利用可能なデータの完全なダンプ/リロードを"
-"意味します。PostGISオブジェクトの内部格納状態が変更される場合や、ソフトアップ"
-"グレードができない場合に、ハードアップグレードが必要です。付録の<link "
-"linkend=\"release_notes\">リリースノート</link>に、版ごとについて、ダンプ/リ"
-"ロード (ハードアップグレード)の要否を記載しています。"
+"ハードアップグレードとは、PostGISで利用可能なデータベースの完全なダンプ/リロ"
+"ードを意味します。PostGISオブジェクトの内部格納状態が変更される場合や、ソフト"
+"アップグレードができない場合に、ハードアップグレードが必要です。付録の<link "
+"linkend=\"release_notes\">リリースノート</link>に、バージョンごとのダンプ/"
+"リロード (ハードアップグレード)の要否を記載しています。"
 
 #. Tag: para
 #, no-c-format
@@ -520,10 +518,10 @@ msgid ""
 "database with PostGIS installed without getting duplicate symbol errors or "
 "bringing forward deprecated objects."
 msgstr ""
-"ダンプ/リロード作業はpostgis_restoreスクリプトが補助します。このスクリプト"
-"は、PostGIS (古いものを含む)に属する定義を全て飛ばします。また、重複シンボル"
-"エラーや非推奨オブジェクトを持越すことなく、スキーマとデータをPostGISをインス"
-"トールしたデータベースにリストアできます 。"
+"ダンプ/リロード作業はpostgis_restoreスクリプトが補助します。このスクリプトを"
+"使うと、PostGIS (古いものを含む)に属する定義を全て飛ばしてダンプします。また"
+"、重複シンボルエラーや非推奨オブジェクトを持越すことなく、"
+"スキーマとデータをPostGISをインストールしたデータベースにリストアできます 。"
 
 #. Tag: para
 #, no-c-format
@@ -562,8 +560,8 @@ msgid ""
 "for instructions on how to do this."
 msgstr ""
 "新しいデータベースにPostGISを、PostGISが無い状態からインストールします。この"
-"データベースを<varname>newdb</varname>と呼ぶことにします。この作業に関する説"
-"明については<xref linkend=\"create_new_db\"/>と<xref "
+"データベースを<varname>newdb</varname>と呼ぶことにします。"
+"この作業に関する説明については<xref linkend=\"create_new_db\"/>と<xref "
 "linkend=\"create_new_db_extensions\"/>とを参照して下さい。"
 
 #. Tag: para
