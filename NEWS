@@ -24,6 +24,7 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
          materialized views (Regina Obe)
 - #5812, Performance regression in ST_Within (Paul Ramsey)
 - #5815, Remove hash/merge promise from <> operator (Paul Ramsey)
+- #5823, Build support for Pg18 (Paul Ramsey)
 
 * Enhancements *
 
