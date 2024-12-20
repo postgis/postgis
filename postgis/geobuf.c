@@ -24,7 +24,6 @@
 
 #include <math.h>
 #include "geobuf.h"
-#include "pgsql_compat.h"
 
 #if defined HAVE_LIBPROTOBUF
 
