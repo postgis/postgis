@@ -32,7 +32,6 @@
 /*#define POSTGIS_DEBUG_LEVEL 1*/
 #include "lwgeom_log.h"
 #include "lwgeom_pg.h"
-#include "pgsql_compat.h"
 
 #include <stdarg.h>
 
