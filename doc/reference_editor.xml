@@ -1681,7 +1681,7 @@ UPDATE sometable
           <funcprototype>
             <funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef>
             <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-            <paramdef choice="opt"><type>float8</type> <parameter>tolerance</parameter></paramdef>
+            <paramdef choice="opt"><type>float8</type> <parameter>tolerance = 0.0</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -1695,8 +1695,10 @@ UPDATE sometable
                 The endpoints of LineStrings are preserved.
         </para>
 
-        <para>If the <parameter>tolerance</parameter> parameter is provided, vertices within the tolerance distance
-        of one another are considered to be duplicates.</para>
+        <para>If a non-zero <parameter>tolerance</parameter> parameter is provided, vertices within the tolerance distance
+        of one another are considered to be duplicates.
+		The distance is computed in 2D (XY plane).
+		</para>
 
         <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0</para>
         <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
