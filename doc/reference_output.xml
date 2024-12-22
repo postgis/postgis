@@ -1395,7 +1395,7 @@ SELECT ST_AsText(ST_AsMVTGeom(
  MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))
 		</programlisting>
 
-    <para>Canonical example for a Web Mercator tile using a computed tile bounds to query and clip geometry.
+    <para>Canonical example for a Web Mercator tile using a computed tile bounds to query and clip geometry. This assumes the data.geom column has srid of 4326.
     </para>
 		<programlisting><![CDATA[
 
@@ -1403,7 +1403,7 @@ SELECT ST_AsMVTGeom(
             ST_Transform( geom, 3857 ),
             ST_TileEnvelope(12, 513, 412), extent => 4096, buffer => 64) AS geom
   FROM data
-  WHERE geom && ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096))
+  WHERE geom && ST_Transform(ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096)),4326)
 
 
 ]]></programlisting>
