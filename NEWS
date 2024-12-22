@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - #5758, Match the tile bounding box SRID in the ST_AsMVTGeom example (Regina Obe)
   - #5527, Report invalid composite arguments in ST_FromFlatGeobuf (Paul Ramsey)
   - #5041, Generate valid SQL for the TIGER 2020 tract loader (Regina Obe)
   - Include generated raster upgrades in the hard-upgrade restore list (Sandro Santilli)
