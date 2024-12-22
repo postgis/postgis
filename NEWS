@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #5758, Match the tile bounding box SRID in the ST_AsMVTGeom example (Regina Obe)
  - #5350, Skip empty members when serializing SVG geometry collections (Regina Obe)
  - #5527, Report invalid composite arguments in ST_FromFlatGeobuf (Paul Ramsey)
  - Preserve views depending on ST_Slope across raster upgrades (Sandro Santilli)
