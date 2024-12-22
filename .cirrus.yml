@@ -35,9 +35,9 @@ task:
     # - name: 14-CURRENT
     #   freebsd_instance:
     #     image_family: freebsd-14-0-snap
-    - name: 13.2-RELEASE
+    - name: 14.1-RELEASE
       freebsd_instance:
-        image_family: freebsd-13-2
+        image_family: freebsd-14-1
     #- name: 12.3-RELEASE
     #  freebsd_instance:
     #    image_family: freebsd-12-3
