@@ -1,5 +1,17 @@
+PostGIS 3.4.5
+xxxx/xx/xx
+
+PostgreSQL 12-17 required. GEOS 3.6+ required but GEOS 3.12+ to take advantage of all features.
+Proj 6.1+ required.
+
+* Bug Fixes *
+
+
 PostGIS 3.4.4
 2024/12/22
+
+PostgreSQL 12-17 required. GEOS 3.6+ required but GEOS 3.12+ to take advantage of all features.
+Proj 6.1+ required.
 
 * Bug Fixes *
 
