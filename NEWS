@@ -1,5 +1,5 @@
 PostGIS 3.5.1
-xxxx/xx/xx
+2024/12/22
 
 To take advantage of all postgis_sfcgal extension features SFCGAL 1.5+ is needed.
 PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
@@ -7,14 +7,14 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
 * Bug fixes *
 
 - #5677, Retain SRID during unary union (Paul Ramsey)
-- #5792, Prevent topology corruption with TopoGeo_addPoint near almost
+- #5792, [topology] Prevent topology corruption with TopoGeo_addPoint near almost
          collinear edges (Sandro Santilli)
-- #5795, Fix ST_NewEdgesSplit can cause invalid topology
+- #5795, [topology] Fix ST_NewEdgesSplit can cause invalid topology
          (Björn Harrtell)
 - #5794, Fix crash in TopoGeo_addPoint (Sandro Santilli)
 - #5785, [raster] ST_MapAlgebra segfaults when expression references
          a supernumerary rast argument (Dian M Fay)
-- #5787, Check that ST_ChangeEdgeGeom doesn't change winding of rings
+- #5787, [topology] Check that ST_ChangeEdgeGeom doesn't change winding of rings
          (Sandro Santilli)
 - #5791, Add legacy stubs for old transaction functions
          to allow pg_upgrade (Regina Obe)
@@ -29,9 +29,9 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
 * Enhancements *
 
   - #5782, Improve robustness of min distance calculation (Sandro Santilli)
-  - Speedup topology building when closing large rings with many
-    hooles (Björn Harrtell)
-  - #5810, Update tiger geocoder to handle TIGER 2024 data (Regina Obe)
+  - [topology] Speedup topology building when closing large rings with many
+    holes (Björn Harrtell)
+  - #5810, [tiger_geocoder] Update tiger geocoder to handle TIGER 2024 data (Regina Obe)
 
 * Breaking Changes *
 
