@@ -1,14 +1,18 @@
-PostGIS 3.2.8dev
-2024/xx/xx
+PostGIS 3.2.8
+2024/12/22
+
+PostgreSQL 9.6-15 required. GEOS 3.6+ required but GEOS 3.9+ to take advantage of all features.
+Proj 4.9+ required.
 
 * Bug Fixes  *
 
- - #5795, Fix ST_NewEdgesSplit can cause invalid topology (Björn Harrtell)
+ - #5795, [topology] Fix ST_NewEdgesSplit can cause invalid topology (Björn Harrtell)
  - #5677, ST_Union(geom[]) should unary union single entry arrays (Paul Ramsey)
  - #5589, ST_3DDistance error for shared first point (Paul Ramsey)
  - #5686, ST_NumInteriorRings and Triangle crash (Paul Ramsey)
  - #5765, Handle nearly co-linear edges with slightly less slop (Paul Ramsey)
  - #5745, St_AsLatLonText rounding errors (Paul Ramsey)
+ - Handle null returns from wkb parser (Paul Ramsey)
 
 
 PostGIS 3.2.7

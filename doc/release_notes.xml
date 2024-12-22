@@ -3,6 +3,22 @@
   <title>Appendix</title>
    <subtitle>Release Notes</subtitle>
     <sect1>
+        <title>PostGIS 3.2.8</title>
+        <para>2024/12/22</para>
+        <para>PostgreSQL 9.6-15 required. GEOS 3.6+ required but GEOS 3.9+ to take advantage of all features. Proj 4.9+ required.</para>
+        <simplesect>
+            <title>Bug Fixes</title>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5795">5795</ulink>, [topology] Fix ST_NewEdgesSplit can cause invalid topology
+                    (Björn Harrtell)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5677">5677</ulink>, ST_Union(geom[]) should unary union single entry arrays(Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5589">5589</ulink>, ST_3DDistance error for shared first point (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5686">#5686</ulink>, ST_NumInteriorRings and Triangle crash (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5765">#5765</ulink>, Handle nearly co-linear edges with slightly less slop (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5745">#5745</ulink>, St_AsLatLonText rounding errors (Paul Ramsey)</para>
+            <para>Handle null returns from wkb parser (Paul Ramsey)</para>
+        </simplesect>
+    </sect1>
+    <sect1>
       <title>PostGIS 3.2.7</title>
       <para>2024/02/06</para>
       <simplesect>
