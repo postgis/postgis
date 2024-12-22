@@ -11,38 +11,38 @@
 
             <simplesect>
                 <title>Breaking Changes</title>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5677">#5677</ulink>, Retain SRID during unary union (Paul Ramsey)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5792">#5792</ulink>, [topology] Prevent topology corruption with TopoGeo_addPoint near almost
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5677">#5677</link>, Retain SRID during unary union (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5792">#5792</link>, [topology] Prevent topology corruption with TopoGeo_addPoint near almost
                         collinear edges (Sandro Santilli)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5795">#5795</ulink>, [topology] Fix ST_NewEdgesSplit can cause invalid topology
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5795">#5795</link>, [topology] Fix ST_NewEdgesSplit can cause invalid topology
                         (Björn Harrtell)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5794">#5794</ulink>, [topology] Fix crash in TopoGeo_addPoint (Sandro Santilli)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5785">#5785</ulink>, [raster] ST_MapAlgebra segfaults when expression references
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5794">#5794</link>, [topology] Fix crash in TopoGeo_addPoint (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5785">#5785</link>, [raster] ST_MapAlgebra segfaults when expression references
                         a supernumerary rast argument (Dian M Fay)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5787">#5787</ulink>, Check that ST_ChangeEdgeGeom doesn't change winding of rings
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5787">#5787</link>, Check that ST_ChangeEdgeGeom doesn't change winding of rings
                         (Sandro Santilli)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5791">#5791</ulink>, Add legacy stubs for old transaction functions
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5791">#5791</link>, Add legacy stubs for old transaction functions
                         to allow pg_upgrade (Regina Obe)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5800">#5800</ulink>, PROJ compiled version reading the wrong minor and micro
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5800">#5800</link>, PROJ compiled version reading the wrong minor and micro
                         (Regina Obe)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5790">#5790</ulink>, Non-schema qualified calls causing issue with
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5790">#5790</link>, Non-schema qualified calls causing issue with
                         materialized views (Regina Obe)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5812">#5812</ulink>, Performance regression in ST_Within (Paul Ramsey)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5815">#5815</ulink>, Remove hash/merge promise from &lt;&gt; operator (Paul Ramsey)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5823">#5823</ulink>, Build support for Pg18 (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5812">#5812</link>, Performance regression in ST_Within (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5815">#5815</link>, Remove hash/merge promise from &lt;&gt; operator (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5823">#5823</link>, Build support for Pg18 (Paul Ramsey)</para>
             </simplesect>
 
             <simplesect>
                 <title>Enhancements</title>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5782">#5782</ulink>, Improve robustness of min distance calculation (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5782">#5782</link>, Improve robustness of min distance calculation (Sandro Santilli)</para>
                 <para>[topology] Speedup topology building when closing large rings with many
                     holes (Björn Harrtell)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5810">#5810</ulink>, Update tiger geocoder to handle TIGER 2024 data (Regina Obe)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5810">#5810</link>, Update tiger geocoder to handle TIGER 2024 data (Regina Obe)</para>
             </simplesect>
 
             <simplesect>
                 <title>Breaking Changes</title>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5799">#5799</ulink>, make ST_TileEnvelope clip envelopes to tile plane
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/#5799">#5799</link>, make ST_TileEnvelope clip envelopes to tile plane
            extent (Paul Ramsey)</para>
             </simplesect>
         </section>
