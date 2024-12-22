@@ -3,6 +3,21 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
         <sect1>
+            <title>PostGIS 3.3.8</title>
+            <para>2024/12/22</para>
+            <para>PostgreSQL 11-17 required. GEOS 3.6+ required but GEOS 3.11+ to take advantage of all features. Proj 4.9+ required.</para>
+            <simplesect>
+                <title>Bug Fixes</title>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5785">5785</ulink>, [raster] ST_MapAlgebra segfaults when expression references
+                        a supernumerary rast argument (Dian M Fay)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5787">5787</ulink>, [topology] Check that ST_ChangeEdgeGeom doesn't change winding of rings
+                        (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5795">5795</ulink>, [topology] Fix ST_NewEdgesSplit can cause invalid topology
+                        (Björn Harrtell)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5677">5677</ulink>, Retain SRID during unary union (Paul Ramsey)</para>
+            </simplesect>
+        </sect1>
+        <sect1>
             <title>PostGIS 3.3.7</title>
             <para>2024/09/05</para>
             <simplesect>
