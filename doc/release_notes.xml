@@ -3,6 +3,20 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+        <title>Release 3.1.12</title>
+        <para>This release works with PostgreSQL 9.6-14.</para>
+        <simplesect>
+            <title>Bug Fixes</title>
+            <para>Release date: 2024/12/23</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5795">#5795</ulink>, [topology] Fix ST_NewEdgesSplit can cause invalid topology (Björn Harrtell)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5589">#5589</ulink>, ST_3DDistance error for shared first point (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5686">#5686</ulink>, ST_NumInteriorRings and Triangle crash (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5765">#5765</ulink>, Handle nearly co-linear edges with slightly less slop (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/#5745">#5745</ulink>, St_AsLatLonText rounding errors (Paul Ramsey)</para>
+            <para>Handle null returns from wkb parser (Paul Ramsey)</para>
+        </simplesect>
+    </sect1>
+    <sect1>
         <title>Release 3.1.11</title>
         <para>This release works with PostgreSQL 9.6-14.</para>
         <simplesect>
