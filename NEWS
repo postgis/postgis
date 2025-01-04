@@ -5,7 +5,7 @@ Proj 4.9+ required.
 * Bug Fixes *
 
  - #5795, [topology] Fix ST_NewEdgesSplit can cause invalid topology (Björn Harrtell)
-
+ - Handle null returns from wkb parser, Paul Ramsey
 
 PostGIS 3.0.11
 2024/02/06
