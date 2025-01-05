@@ -1,4 +1,6 @@
-#### $Id: package_postgis210.sh 10291 2012-09-15 05:37:23Z robe $
+#!/usr/bin/env bash
+
+. $(dirname $0)/winnie_common.sh
 ### this script is used to zip up the compiled binaries
 ## PostgreSQL, OS_BUILD denote the last build to be packaged
 ## and are passed in by the jenkins job process
@@ -12,53 +14,6 @@
 #export OS_BUILD=32
 
 #export GCC_TYPE=
-#if no override is set - use these values
-#otherwise use the ones jenkins passes thru
-#!/usr/bin/env bash
-if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.8.1
-	export GDAL_VER=3.0.4
-	export PROJ_VER=7.2.1
-	export SFCGAL_VER=1.3.8
-	export CGAL_VER=5.0
-	export ICON_VER=1.16
-	export ZLIB_VER=1.2.11
-  export PROTOBUF_VER=3.2.0
-	export PROTOBUFC_VER=1.2.1
-	export JSON_VER=0.12
-	export PROJSO=libproj-13.dll
-	export CURL_VER=7.73
-fi;
-
-export PROTOBUF_VER=3.2.0
-export PROTOBUFC_VER=1.2.1
-export JSON_VER=0.12
-export PCRE_VER=8.33
-
-if  [[ "${ICON_VER}" == '' ]] ; then
-  export ICON_VER=1.15
-fi;
-
-echo "ICON_VER ${ICON_VER}"
-if  [[ "${CURL_VER}" == '' ]] ; then
-  export CURL_VER=7.73
-fi;
-
-#set to something even if override is on but not set
-if  [[ "${ZLIB_VER}" == '' ]] ; then
-  export ZLIB_VER=1.2.11
-fi;
-
-
-#set to something even if override is on but not set
-if  [[ "${LIBXML_VER}" == '' ]] ; then
-  export LIBXML_VER=2.9.9
-fi;
-
-#set to something even if override is on but not set
-if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=5.0
-fi;
 
 echo "ZLIB_VER $ZLIB_VER"
 echo "PROJ_VER $PROJ_VER"
@@ -104,7 +59,6 @@ export REL_PGVER=${PG_VER//./} #strip the period
 export RELDIR=${PROJECTS}/postgis/builds/${POSTGIS_MINOR_VER}
 export RELVERDIR=postgis-pg${REL_PGVER}-binaries-${POSTGIS_MICRO_VER}w${OS_BUILD}${GCC_TYPE}
 export PATH="${PATHOLD}:${PGPATH}/bin:${PGPATH}/lib"
-export PCRE_VER=8.33
 #PATH="${PGPATH}/bin:${PGPATH}/lib:${PROJECTS}/xsltproc:${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/gtkw${OS_BUILD}/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include:${PROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin:${PATH}"
 #echo PATH AFTER: $PATH
 outdir="${RELDIR}/${RELVERDIR}"
