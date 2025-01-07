@@ -1,14 +1,14 @@
 # Japanese translations for postgis package.
 # Automatically generated, 2023.
 #
-# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023, 2024.
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023, 2024, 2025.
 # Yoichi Kayama <yoichi.kayama@gmail.com>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2024-12-19 10:47+0000\n"
+"PO-Revision-Date: 2025-01-07 00:34+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -573,10 +573,10 @@ msgid ""
 "If for any reason you really want your own overrides of standard entries "
 "just don't load the spatial_ref_sys.sql file when creating the new db."
 msgstr ""
-"ダンプにあるspatial_ref_sysは、リストアされますが、既にあるspatial_ref_sysを"
-"上書きしません。リストア対象のデータベースに公式データセットの訂正が確実に伝"
-"わるようにするためです。標準のエントリを上書きしたい場合は、newdbを生成する際"
-"にspaltial_ref_sys.sqlファイルをロードしないだけです。"
+"ダンプにあるspatial_ref_sysのエントリはリストアされますが、既にあるspatial_re"
+"f_sysのエントリを上書きしません。リストア対象のデータベースに公式データセット"
+"の訂正が確実に伝わるようにするためです。標準のエントリを上書きしたい場合は、n"
+"ewdbを生成する際にspaltial_ref_sys.sqlファイルをロードしないだけです。"
 
 #. Tag: para
 #, no-c-format
