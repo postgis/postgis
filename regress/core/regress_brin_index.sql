@@ -171,8 +171,15 @@ SELECT 'scan_idx', qnodes('select count(*) from test where the_geom &&& ''BOX3D(
 
 DROP INDEX brin_4d;
 
+-- #5564
+SET max_parallel_workers TO 2;
+CREATE TABLE random_points AS
+SELECT ST_MakePoint(0, 0) AS geom FROM generate_series(1, 130562);
+CREATE INDEX ON random_points USING brin(geom);
+
 -- cleanup
 DROP TABLE test;
+DROP TABLE random_points;
 DROP FUNCTION qnodes(text);
 
 set enable_indexscan = on;
