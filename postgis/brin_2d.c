@@ -89,3 +89,30 @@ geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 
 	PG_RETURN_BOOL(true);
 }
+
+
+PG_FUNCTION_INFO_V1(geom2d_brin_inclusion_merge);
+Datum
+geom2d_brin_inclusion_merge(PG_FUNCTION_ARGS)
+{
+	BOX2DF *box_key = (BOX2DF *) PG_GETARG_POINTER(0);
+	BOX2DF *box_geom = (BOX2DF *) PG_GETARG_POINTER(1);
+
+	/*
+	 * Check if the stored bounding box already contains the geometry's one.
+	 *
+	 * If not, enlarge the stored box2df to make it contains the current
+	 * geometry.
+	 */
+	if (!box2df_contains(box_key, box_geom))
+	{
+	    box_key->xmin = Min(box_key->xmin, box_geom->xmin);
+	    box_key->xmax = Max(box_key->xmax, box_geom->xmax);
+	    box_key->ymin = Min(box_key->ymin, box_geom->ymin);
+	    box_key->ymax = Max(box_key->ymax, box_geom->ymax);
+	}
+
+	PG_RETURN_POINTER(box_key);
+}
+
+

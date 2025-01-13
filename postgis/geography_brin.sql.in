@@ -54,9 +54,16 @@ CREATE OPERATOR && (
 --------------------------------
 
 -- Availability: 2.3.0
-CREATE OR REPLACE FUNCTION geog_brin_inclusion_add_value(internal, internal, internal, internal) RETURNS boolean
+CREATE OR REPLACE FUNCTION geog_brin_inclusion_add_value(internal, internal, internal, internal)
+RETURNS boolean
         AS 'MODULE_PATHNAME','geog_brin_inclusion_add_value'
-        LANGUAGE 'c';
+        LANGUAGE 'c' PARALLEL SAFE;
+
+-- Availability: 3.6.0
+CREATE OR REPLACE FUNCTION geog_brin_inclusion_merge(internal, internal)
+RETURNS internal
+        AS 'MODULE_PATHNAME','geog_brin_inclusion_merge'
+        LANGUAGE 'c' PARALLEL SAFE;
 
 -- Availability: 2.3.0
 CREATE OPERATOR CLASS brin_geography_inclusion_ops
@@ -66,6 +73,7 @@ CREATE OPERATOR CLASS brin_geography_inclusion_ops
     FUNCTION      2        geog_brin_inclusion_add_value(internal, internal, internal, internal),
     FUNCTION      3        brin_inclusion_consistent(internal, internal, internal),
     FUNCTION      4        brin_inclusion_union(internal, internal, internal),
+    FUNCTION      11       geog_brin_inclusion_merge(internal, internal),
     OPERATOR      3        &&(geography, geography),
     OPERATOR      3        &&(geography, gidx),
     OPERATOR      3        &&(gidx, geography),
