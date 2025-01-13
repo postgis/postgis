@@ -55,8 +55,15 @@ SELECT '#4608-2', count(*) FROM test where ST_CoveredBy(the_geog, ST_GeogFromTex
 
 DROP INDEX brin_geog;
 
+-- #5564
+SET max_parallel_workers TO 2;
+CREATE TABLE random_points AS
+SELECT ST_MakePoint(0, 0)::geography AS geog FROM generate_series(1, 130562);
+CREATE INDEX ON random_points USING brin(geog);
+
 -- cleanup
 DROP TABLE test;
+DROP TABLE random_points;
 DROP FUNCTION qnodes(text);
 
 set enable_indexscan = on;

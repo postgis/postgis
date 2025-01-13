@@ -11,8 +11,12 @@
  * FunctionCallInvoke machinery for each heap tuple.
  */
 
-Datum gidx_brin_inclusion_add_value(BrinDesc *bdesc, BrinValues *column, Datum
-		newval, bool isnull, int max_dims);
+static Datum gidx_brin_inclusion_add_value(
+	BrinDesc *bdesc, BrinValues *column,
+	Datum newval, bool isnull, int max_dims);
+
+static GIDX * gidx_brin_inclusion_merge(
+	GIDX *gidx_key, GIDX *gidx_geom);
 
 /*
  * As for the GiST case, geographies are converted into GIDX before
@@ -58,7 +62,7 @@ geom4d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 					4));
 }
 
-Datum
+static Datum
 gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 		BrinValues *column, Datum newval, bool isnull, int max_dims)
 {
@@ -186,3 +190,52 @@ gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 
 	PG_RETURN_BOOL(true);
 }
+
+
+static GIDX *
+gidx_brin_inclusion_merge(GIDX *gidx_key, GIDX *gidx_geom)
+{
+	if (!gidx_contains(gidx_key, gidx_geom))
+	{
+		for (uint32_t i = 0; i < GIDX_NDIMS(gidx_key); i++)
+		{
+			/* Adjust minimums */
+			GIDX_SET_MIN(gidx_key, i,
+					Min(GIDX_GET_MIN(gidx_key,i),GIDX_GET_MIN(gidx_geom,i)));
+			/* Adjust maximums */
+			GIDX_SET_MAX(gidx_key, i,
+					Max(GIDX_GET_MAX(gidx_key,i),GIDX_GET_MAX(gidx_geom,i)));
+		}
+	}
+
+	return gidx_key;
+}
+
+PG_FUNCTION_INFO_V1(geog_brin_inclusion_merge);
+Datum geog_brin_inclusion_merge(PG_FUNCTION_ARGS)
+{
+	GIDX *key = (GIDX *) PG_GETARG_POINTER(0);
+	GIDX *geom = (GIDX *) PG_GETARG_POINTER(1);
+
+	PG_RETURN_POINTER(gidx_brin_inclusion_merge(key, geom));
+}
+
+PG_FUNCTION_INFO_V1(geom3d_brin_inclusion_merge);
+Datum geom3d_brin_inclusion_merge(PG_FUNCTION_ARGS)
+{
+	GIDX *key = (GIDX *) PG_GETARG_POINTER(0);
+	GIDX *geom = (GIDX *) PG_GETARG_POINTER(1);
+
+	PG_RETURN_POINTER(gidx_brin_inclusion_merge(key, geom));
+}
+
+PG_FUNCTION_INFO_V1(geom4d_brin_inclusion_merge);
+Datum geom4d_brin_inclusion_merge(PG_FUNCTION_ARGS)
+{
+	GIDX *key = (GIDX *) PG_GETARG_POINTER(0);
+	GIDX *geom = (GIDX *) PG_GETARG_POINTER(1);
+
+	PG_RETURN_POINTER(gidx_brin_inclusion_merge(key, geom));
+}
+
+

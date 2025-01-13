@@ -6,6 +6,9 @@ Proj 6.1+ required.
 
 * Bug Fixes *
 
+  - #5564, BRIN crash fix and support for parallel in PG17+
+          (Paul Ramsey, Regina Obe)
+
 
 PostGIS 3.4.4
 2024/12/22
