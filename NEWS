@@ -8,6 +8,8 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
 
 - #5677, Retain SRID during unary union (Paul Ramsey)
 - #5833, pg_upgrade fix for postgis_sfcgal (Regina Obe)
+- #5564, BRIN crash fix and support for parallel in PG17+
+         (Paul Ramsey, Regina Obe)
 
 
 PostGIS 3.5.1
