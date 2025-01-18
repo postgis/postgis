@@ -11,11 +11,11 @@ export PROJECTS=/projects
 export MSYS2_ARG_CONV_EXCL=/config/tags
 
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.12.2
-	export GDAL_VER=3.8.5
+	export GEOS_VER=3.13.0
+	export GDAL_VER=3.9.2
 	export PROJ_VER=8.2.1
-	export SFCGAL_VER=1.5.1
-	export CGAL_VER=5.6
+	export SFCGAL_VER=1.5.2
+	export CGAL_VER=5.6.1
 	export ICON_VER=1.17
 	export ZLIB_VER=1.2.13
 	export PROTOBUF_VER=3.2.0
@@ -28,7 +28,7 @@ fi;
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
 export JSON_VER=0.12
-export PCRE_VER=8.33
+export PCRE_VER=8.45
 
 
 #export OS_BUILD=64
@@ -52,16 +52,16 @@ fi;
 
 #set to something even if override is on but not set
 if  [[ "${LIBXML_VER}" == '' ]] ; then
-  export LIBXML_VER=2.9.14
+  export LIBXML_VER=2.12.5
 fi;
 
 #set to something even if override is on but not set
 if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=5.6
+  export CGAL_VER=5.6.1
 fi;
 
 ##hard code versions of cgal etc. for now
-export CGAL_VER=5.6
+export CGAL_VER=5.6.1
 BOOST_VER=1.84.0
 export BOOST_VER_WU=1_84_0
 
