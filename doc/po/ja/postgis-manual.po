@@ -10,8 +10,8 @@ msgstr ""
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2025-01-07 03:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -173,7 +173,8 @@ msgstr "空間データベースにしたいデータベース上で次のSQLを
 #. Tag: title
 #, no-c-format
 msgid "Spatially enable database without using EXTENSION (discouraged)"
-msgstr "エクステンションを使わずに空間データベースを有効にする (お勧めしません)"
+msgstr ""
+"エクステンションを使わずに空間データベースを有効にする (お勧めしません)"
 
 #. Tag: para
 #, no-c-format
@@ -251,7 +252,8 @@ msgstr "空間データベースのアップグレード"
 msgid ""
 "Upgrading existing spatial databases can be tricky as it requires "
 "replacement or introduction of new PostGIS object definitions."
-msgstr "既存の空間データベースのアップグレードは、新しいPostGISオブジェクト定義の置き"
+msgstr ""
+"既存の空間データベースのアップグレードは、新しいPostGISオブジェクト定義の置き"
 "換えや導入を必要とするとき、慎重を要することがあります。"
 
 #. Tag: para
@@ -297,10 +299,10 @@ msgid ""
 "way, you are advised to switch your install to extensions because the script "
 "way is no longer supported."
 msgstr ""
-"エクステンションを使ってデータベースをインストールした場合には、エクステンシ"
-"ョンモデルでアップグレードしなければなりません。 古いSQLスクリプトを使ってイ"
-"ンストールした場合には、SQLスクリプトは既にサポートされていませんので、エクス"
-"テンションに切り替えるべきです。"
+"エクステンションを使ってデータベースをインストールした場合には、エクステン"
+"ションモデルでアップグレードしなければなりません。 古いSQLスクリプトを使って"
+"インストールした場合には、SQLスクリプトは既にサポートされていませんので、エク"
+"ステンションに切り替えるべきです。"
 
 #. Tag: title
 #, no-c-format
@@ -325,9 +327,9 @@ msgid ""
 "linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the latest "
 "version you have installed."
 msgstr ""
-"PostGIS 3以上を実行している場合には、<xref linkend="
-"\"PostGIS_Extensions_Upgrade\"/>関数を使って、インストールしているものを最新"
-"のバージョンにアップグレードするべきです。"
+"PostGIS 3以上を実行している場合には、<xref "
+"linkend=\"PostGIS_Extensions_Upgrade\"/>関数を使って、インストールしているも"
+"のを最新のバージョンにアップグレードするべきです。"
 
 #. Tag: para
 #, no-c-format
@@ -386,10 +388,10 @@ msgid ""
 "the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
 "the newest latest version during restore."
 msgstr ""
-"PostGISをバージョン指定なしにインストールした場合には、 しばしばリストア前のP"
-"ostGISエクステンションの再インストールをとばすことができます。 "
-"バックアップには<code>CREATE EXTENSION "
-"postgis</code>があって、リストアの間に最新版になります。"
+"PostGISをバージョン指定なしにインストールした場合には、 しばしばリストア前の"
+"PostGISエクステンションの再インストールをとばすことができます。 バックアップ"
+"には<code>CREATE EXTENSION postgis</code>があって、リストアの間に最新版になり"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -398,10 +400,9 @@ msgid ""
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
 "safely drop, if you don't need raster support. You can drop as follows:"
 msgstr ""
-"PostGISエクステンションを3.0."
-"0より前からアップグレードする場合には、ラスタ機能が不要なら、"
-"安全に削除できる新しい <emphasis>postgis_raster</emphasis>エクステンションを"
-"持つことになります。削除は次のようにします:"
+"PostGISエクステンションを3.0.0より前からアップグレードする場合には、ラスタ機"
+"能が不要なら、安全に削除できる新しい <emphasis>postgis_raster</emphasis>エク"
+"ステンションを持つことになります。削除は次のようにします:"
 
 #. Tag: title
 #, no-c-format
@@ -425,9 +426,9 @@ msgid ""
 "prior to r7409, you cannot use this procedure but would rather need to do a "
 "<link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
 msgstr ""
-"ご注意: PostGIS 1.*またはr7429以前のPostGIS "
-"2.*へ移行する場合には、この手続きを使うことができず、<link linkend="
-"\"hard_upgrade\">ハードアップグレード</link>を実行する必要があります。"
+"ご注意: PostGIS 1.*またはr7429以前のPostGIS 2.*へ移行する場合には、この手続き"
+"を使うことができず、<link linkend=\"hard_upgrade\">ハードアップグレード</"
+"link>を実行する必要があります。"
 
 #. Tag: para
 #, no-c-format
@@ -436,9 +437,9 @@ msgid ""
 "<filename>*_upgrade.sql</filename> files in the installation folders. You "
 "can list them all with:"
 msgstr ""
-"コンパイルとインストール (make "
-"install)の実行後に、インストール先フォルダ内にある<filename>*_upgrade.sql</fi"
-"lename>のファイル一式を見つけておくべきです。次のコマンドで一覧を得られます:"
+"コンパイルとインストール (make install)の実行後に、インストール先フォルダ内に"
+"ある<filename>*_upgrade.sql</filename>のファイル一式を見つけておくべきです。"
+"次のコマンドで一覧を得られます:"
 
 #. Tag: para
 #, no-c-format
@@ -457,14 +458,15 @@ msgid ""
 msgstr ""
 "同じ手続きをラスタ、トポロジ、SFCGALエクステンションに適用します。それぞれの"
 "ファイル名は<filename>rtpostgis_upgrade.sql</filename>, "
-"<filename>topology_upgrade.sql</filename>, <filename>sfcgal_upgrade.sql</file"
-"name>になります。これらのエクステンションが必要な場合には次のように実行します"
-":"
+"<filename>topology_upgrade.sql</filename>, <filename>sfcgal_upgrade.sql</"
+"filename>になります。これらのエクステンションが必要な場合には次のように実行し"
+"ます:"
 
 #. Tag: para
 #, no-c-format
 msgid "You are advised to switch to an extension based install by running"
-msgstr "エクステンションによるインストールに変更した方が良いです。次のようにします:"
+msgstr ""
+"エクステンションによるインストールに変更した方が良いです。次のようにします:"
 
 #. Tag: para
 #, no-c-format
@@ -475,8 +477,8 @@ msgid ""
 msgstr ""
 "アップグレードに使う特定の<filename>postgis_upgrade.sql</filename>が発見でき"
 "ない場合には、ソフトアップグレードを実行するにはあまりに前のバージョンを使っ"
-"ています。<link linkend=\"hard_upgrade\""
-">ハードアップグレード</link>が必要です。"
+"ています。<link linkend=\"hard_upgrade\">ハードアップグレード</link>が必要で"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -485,9 +487,9 @@ msgid ""
 "about the need to run this kind of upgrade using a \"procs need upgrade\" "
 "message."
 msgstr ""
-"<xref linkend=\"PostGIS_Full_Version\"/>関数の\"procs need "
-"upgrade\"というメッセージで"
-"、この種のアップグレードを実行する必要性についての情報が得られます。"
+"<xref linkend=\"PostGIS_Full_Version\"/>関数の\"procs need upgrade\"という"
+"メッセージで、この種のアップグレードを実行する必要性についての情報が得られま"
+"す。"
 
 #. Tag: title
 #, no-c-format
@@ -503,11 +505,11 @@ msgid ""
 "Notes</link> appendix reports for each version whether you need a dump/"
 "reload (HARD UPGRADE) to upgrade."
 msgstr ""
-"ハードアップグレードとは、PostGISで利用可能なデータベースの完全なダンプ/リロ"
-"ードを意味します。PostGISオブジェクトの内部格納状態が変更される場合や、ソフト"
-"アップグレードができない場合に、ハードアップグレードが必要です。付録の<link "
-"linkend=\"release_notes\">リリースノート</link>に、バージョンごとのダンプ/"
-"リロード (ハードアップグレード)の要否を記載しています。"
+"ハードアップグレードとは、PostGISで利用可能なデータベースの完全なダンプ/リ"
+"ロードを意味します。PostGISオブジェクトの内部格納状態が変更される場合や、ソフ"
+"トアップグレードができない場合に、ハードアップグレードが必要です。付録の"
+"<link linkend=\"release_notes\">リリースノート</link>に、バージョンごとのダン"
+"プ/リロード (ハードアップグレード)の要否を記載しています。"
 
 #. Tag: para
 #, no-c-format
@@ -519,9 +521,9 @@ msgid ""
 "bringing forward deprecated objects."
 msgstr ""
 "ダンプ/リロード作業はpostgis_restoreスクリプトが補助します。このスクリプトを"
-"使うと、PostGIS (古いものを含む)に属する定義を全て飛ばしてダンプします。また"
-"、重複シンボルエラーや非推奨オブジェクトを持越すことなく、"
-"スキーマとデータをPostGISをインストールしたデータベースにリストアできます 。"
+"使うと、PostGIS (古いものを含む)に属する定義を全て飛ばしてダンプします。ま"
+"た、重複シンボルエラーや非推奨オブジェクトを持越すことなく、スキーマとデータ"
+"をPostGISをインストールしたデータベースにリストアできます 。"
 
 #. Tag: para
 #, no-c-format
@@ -560,8 +562,8 @@ msgid ""
 "for instructions on how to do this."
 msgstr ""
 "新しいデータベースにPostGISを、PostGISが無い状態からインストールします。この"
-"データベースを<varname>newdb</varname>と呼ぶことにします。"
-"この作業に関する説明については<xref linkend=\"create_new_db\"/>と<xref "
+"データベースを<varname>newdb</varname>と呼ぶことにします。この作業に関する説"
+"明については<xref linkend=\"create_new_db\"/>と<xref "
 "linkend=\"create_new_db_extensions\"/>とを参照して下さい。"
 
 #. Tag: para
@@ -573,10 +575,11 @@ msgid ""
 "If for any reason you really want your own overrides of standard entries "
 "just don't load the spatial_ref_sys.sql file when creating the new db."
 msgstr ""
-"ダンプにあるspatial_ref_sysのエントリはリストアされますが、既にあるspatial_re"
-"f_sysのエントリを上書きしません。リストア対象のデータベースに公式データセット"
-"の訂正が確実に伝わるようにするためです。標準のエントリを上書きしたい場合は、n"
-"ewdbを生成する際にspaltial_ref_sys.sqlファイルをロードしないだけです。"
+"ダンプにあるspatial_ref_sysのエントリはリストアされますが、既にある"
+"spatial_ref_sysのエントリを上書きしません。リストア対象のデータベースに公式"
+"データセットの訂正が確実に伝わるようにするためです。標準のエントリを上書きし"
+"たい場合は、newdbを生成する際にspaltial_ref_sys.sqlファイルをロードしないだけ"
+"です。"
 
 #. Tag: para
 #, no-c-format
@@ -602,8 +605,8 @@ msgid ""
 "postgis_restore. Unexpected errors, if any, will be printed to the standard "
 "error stream by psql. Keep a log of those."
 msgstr ""
-"バックアップを新しい<varname>newdb</varname>データベースにリストアするには、p"
-"ostgis_restoreを使います。psqlが予期せぬエラーを標準エラー出力に出すことがあ"
+"バックアップを新しい<varname>newdb</varname>データベースにリストアするには、"
+"postgis_restoreを使います。psqlが予期せぬエラーを標準エラー出力に出すことがあ"
 "ります。このエラーのログは保存しておいて下さい。"
 
 #. Tag: para
@@ -624,11 +627,11 @@ msgid ""
 msgstr ""
 "ビューまたは関数の中に非推奨のPostGISオブジェクトを使っているものがある場合。"
 "これの訂正には、リストア前に<filename>legacy.sql</filename>スクリプトのロード"
-"を試してみることができます。非推奨オブジェクトをまだ持っているバージョンのPos"
-"tGISにリストアして、コードを作り替えた後に再移動を試みることもできます。<file"
-"name>legacy.sql</filename>を利用する場合は、コードを非推奨関数を使わないよう"
-"に訂正し、また<filename>uninstall_legacy.sql</filename>をロードして非推奨オブ"
-"ジェクトを削除するのを忘れないでください。"
+"を試してみることができます。非推奨オブジェクトをまだ持っているバージョンの"
+"PostGISにリストアして、コードを作り替えた後に再移動を試みることもできます。"
+"<filename>legacy.sql</filename>を利用する場合は、コードを非推奨関数を使わない"
+"ように訂正し、また<filename>uninstall_legacy.sql</filename>をロードして非推奨"
+"オブジェクトを削除するのを忘れないでください。"
 
 #. Tag: para
 #, no-c-format
@@ -644,12 +647,11 @@ msgid ""
 msgstr ""
 "ダンプファイル内のspatial_ref_sysにあるカスタムレコードが不正なSRIDになってい"
 "る場合。妥当なSRID値は0より大きく999000より小さくなります。999000から999999の"
-"間は内部利用のための予約領域ですが、SRID値 &gt; 999999 "
-"の場合は、その値は一切使用できません。全ての不正なSRIDを持つ独自レコードは、"
-"SRID値 &gt; 999999 の場合は予約領域に移動して、保持されます。しかし、値を保持"
-"するために設定されているspatial_ref_sysテーブルのチェック制約が外れます。"
-"場合によっては "
-"(複数の不正なSRIDが同じ予約領域のSRID値に変換されるとき)、主キーも外れます。"
+"間は内部利用のための予約領域ですが、SRID値 &gt; 999999 の場合は、その値は一切"
+"使用できません。全ての不正なSRIDを持つ独自レコードは、SRID値 &gt; 999999 の場"
+"合は予約領域に移動して、保持されます。しかし、値を保持するために設定されてい"
+"るspatial_ref_sysテーブルのチェック制約が外れます。場合によっては (複数の不正"
+"なSRIDが同じ予約領域のSRID値に変換されるとき)、主キーも外れます。"
 
 #. Tag: para
 #, no-c-format
@@ -659,10 +661,10 @@ msgid ""
 "new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the invalid "
 "entry from spatial_ref_sys and re-construct the check(s) with:"
 msgstr ""
-"これを修正するために、独自のSRSを妥当な値 (910000.."
-"910999の範囲)のSRIDに複写し、全てのテーブルを新しいSRIDに変更 (<xref linkend="
-"\"UpdateGeometrySRID\"/>)して、spatial_ref_sysから不正なエントリを削除します"
-"。そして、次のようにチェック制約を再構築します:"
+"これを修正するために、独自のSRSを妥当な値 (910000..910999の範囲)のSRIDに複写"
+"し、全てのテーブルを新しいSRIDに変更 (<xref linkend=\"UpdateGeometrySRID\"/>)"
+"して、spatial_ref_sysから不正なエントリを削除します。そして、次のようにチェッ"
+"ク制約を再構築します:"
 
 #. Tag: para
 #, no-c-format
@@ -672,10 +674,10 @@ msgid ""
 "IGN </link> cartography, you will have probably SRIDs out of range and you "
 "will see, when importing your database, issues like this :"
 msgstr ""
-"フランス<link xlink:href=\"https://en.wikipedia.org/wiki/Institut_g%C3%"
-"A9ographique_national\">IGN</link>地図を含む古いデータベースをアップグレード"
-"する場合には、おそらくSRIDが範囲外になり、データベースのインポート時に次のよ"
-"うな問題に遭遇します:"
+"フランス<link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Institut_g%C3%A9ographique_national\">IGN</link>地図を含む古いデータベースを"
+"アップグレードする場合には、おそらくSRIDが範囲外になり、データベースのイン"
+"ポート時に次のような問題に遭遇します:"
 
 #. Tag: para
 #, no-c-format
@@ -701,8 +703,8 @@ msgid ""
 "Put_IGN_SRS_into_Postgis.sql\"> this script </link> After these operations, "
 "import your data :"
 msgstr ""
-"その後、新しいデータベースを生成し、必要なPostGISエクステンションを有効化して"
-"、<link xlink:href=\"https://raw.githubusercontent.com/Remi-C/"
+"その後、新しいデータベースを生成し、必要なPostGISエクステンションを有効化し"
+"て、<link xlink:href=\"https://raw.githubusercontent.com/Remi-C/"
 "IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql\">このスクリ"
 "プト</link>で確実にフランスIGNの系を挿入します。これらの処理の後、次のように"
 "データのインポートを行います:"
