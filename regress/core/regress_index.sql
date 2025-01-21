@@ -47,7 +47,7 @@ CREATE FUNCTION estimate_error(qry text, tol int)
 RETURNS text
 LANGUAGE 'plpgsql' VOLATILE AS $$
 DECLARE
-  anl TEXT; -- analisys
+  anl TEXT; -- analysis
   err INT; -- absolute difference between planned and actual rows
   est INT; -- estimated count
   act INT; -- actual count

@@ -1542,7 +1542,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"(2). Words and abbreviation used to denote street typess. For example: "
+"(2). Words and abbreviations used to denote street types. For example: "
 "<emphasis>ST</emphasis> or <emphasis>AVE</emphasis>."
 msgstr ""
 "(2) ストリート種別を示す語または略語です。たとえば<emphasis>ST</emphasis>や"
@@ -1551,7 +1551,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"(16). Words and abbreviation used to denote internal subaddresses. For "
+"(16). Words and abbreviations used to denote internal subaddresses. For "
 "example, <emphasis>APT</emphasis> or <emphasis>UNIT</emphasis>."
 msgstr ""
 "(16) 内部の部分住所を示す語または略語です。たとえば<emphasis>APT</emphasis>や"
@@ -7978,7 +7978,7 @@ msgid ""
 "UsersWikiPostgreSQLPostGIS\">https://trac.osgeo.org/postgis/wiki/"
 "UsersWikiPostgreSQLPostGIS</link>"
 msgstr ""
-"完全なPosgreSQL/PostGIS対応表とPostGIS/GEOS対応表については<link xlink:"
+"完全なPostgreSQL/PostGIS対応表とPostGIS/GEOS対応表については<link xlink:"
 "href=\"http://trac.osgeo.org/postgis/wiki/"
 "UsersWikiPostgreSQLPostGIS\">http://trac.osgeo.org/postgis/wiki/"
 "UsersWikiPostgreSQLPostGIS</link>をご覧ください。"
@@ -14304,7 +14304,7 @@ msgstr ""
 msgid ""
 "Note that border geometries may be within <varname>eps</varname> distance of "
 "core geometries in more than one cluster. Either assignment would be "
-"correct, so the border geometry will be arbitrarily asssigned to one of the "
+"correct, so the border geometry will be arbitrarily assigned to one of the "
 "available clusters. In this situation it is possible for a correct cluster "
 "to be generated with fewer than <varname>minpoints</varname> geometries. To "
 "ensure deterministic assignment of border geometries (so that repeated calls "
@@ -16383,7 +16383,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "1: Symmetric (orientation idependent) output."
+msgid "1: Symmetric (orientation independent) output."
 msgstr "1: 対称となる (方向独立)出力。"
 
 #. Tag: para
@@ -17127,7 +17127,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Removes points that are irrelevant for rendering a specific rectangluar view "
+"Removes points that are irrelevant for rendering a specific rectangular view "
 "of a geometry."
 msgstr ""
 "指定した矩形表示範囲での描画に関係のないジオメトリのポイントを削除します。"
@@ -17136,7 +17136,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns a <xref linkend=\"geometry\"/> without points being irrelevant for "
-"rendering the geometry within a given rectangluar view."
+"rendering the geometry within a given rectangular view."
 msgstr ""
 "指定した矩形表示範囲での描画に関係のないポイントを外した<xref "
 "linkend=\"geometry\"/>を返します。"
@@ -28128,7 +28128,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Computes a simplifed topology-preserving outer or inner hull of a polygonal "
+"Computes a simplified topology-preserving outer or inner hull of a polygonal "
 "geometry."
 msgstr ""
 "ポリゴンジオメトリに対してトポロジを保存した状態で簡略化した外側または内側の"
@@ -35079,7 +35079,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "1 band version - Creates a new one band raster formed by applying a valid "
-"PostgreSQL function on the input raster band and of pixeltype prodived. Band "
+"PostgreSQL function on the input raster band and of pixeltype provided. Band "
 "1 is assumed if no band is specified."
 msgstr ""
 "1バンド版 - 入力バンドに対する妥当なPostgreSQL関数で形成された、指定したピク"
@@ -35202,7 +35202,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "2 band version - Creates a new one band raster formed by applying a valid "
-"PostgreSQL function on the 2 input raster bands and of pixeltype prodived. "
+"PostgreSQL function on the 2 input raster bands and of pixeltype provided. "
 "Band 1 is assumed if no band is specified. Extent type defaults to "
 "INTERSECTION if not specified."
 msgstr ""
@@ -37112,7 +37112,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Enhanced: 2.1.0 addition of Aggegrate variant"
+msgid "Enhanced: 2.1.0 addition of Aggregate variant"
 msgstr "Enhanced: 2.1.0 集約関数版の追加"
 
 #. Tag: title

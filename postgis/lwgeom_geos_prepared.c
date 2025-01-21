@@ -34,7 +34,7 @@
 /***********************************************************************
 **
 **  PreparedGeometry implementations that cache intermediate indexed versions
-**  of geometry in a special MemoryContext for re-used by future function
+**  of geometry in a special MemoryContext for reused by future function
 **  invocations.
 **
 **  By creating a memory context to hold the GEOS PreparedGeometry and Geometry

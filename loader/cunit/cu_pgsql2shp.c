@@ -46,7 +46,7 @@ CU_pSuite register_pgsql2shp_suite(void)
 
 /*
 ** The suite initialization function.
-** Create any re-used objects.
+** Create any reused objects.
 */
 int init_pgsql2shp_suite(void)
 {

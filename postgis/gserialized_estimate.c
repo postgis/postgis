@@ -38,7 +38,7 @@ relations. Queries with constant arguments call gserialized_gist_sel,
 queries with relations on both sides call gserialized_gist_joinsel.
 
 gserialized_gist_sel sums up the values in the histogram that overlap
-the contant search box.
+the constant search box.
 
 gserialized_gist_joinsel sums up the product of the overlapping
 cells in each relation's histogram.
@@ -290,7 +290,7 @@ typedef struct {
 /**
 * Given that geodetic boxes are X/Y/Z regardless of the
 * underlying geometry dimensionality and other boxes
-* are guided by HAS_Z/HAS_M in their dimesionality,
+* are guided by HAS_Z/HAS_M in their dimensionality,
 * we have a little utility function to make it easy.
 */
 static int
@@ -1874,7 +1874,7 @@ compute_gserialized_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 *
 * It will need to return a stats builder function reference
 * and a "minimum" sample rows to feed it.
-* If we want analisys to be completely skipped we can return
+* If we want analysis to be completely skipped we can return
 * false and leave output vals untouched.
 *
 * What we know from this call is:

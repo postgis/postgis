@@ -505,7 +505,7 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 
 					/*
 					* Arguments were swapped to put the index value on the
-					* left, so we need the commutated operator for
+					* left, so we need the commuted operator for
 					* the OpExpr
 					*/
 					if (swapped)

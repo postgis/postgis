@@ -1451,7 +1451,7 @@ msgstr "(8).用于表示乡村路线的单词和缩写。 <emphasis>RR</emphasis
 #. Tag: para
 #, no-c-format
 msgid ""
-"(2). Words and abbreviation used to denote street typess. For example: "
+"(2). Words and abbreviations used to denote street types. For example: "
 "<emphasis>ST</emphasis> or <emphasis>AVE</emphasis>."
 msgstr ""
 "(2). 用于表示街道类型的单词和缩写。 例如：<emphasis>ST</emphasis> or "
@@ -1460,7 +1460,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"(16). Words and abbreviation used to denote internal subaddresses. For "
+"(16). Words and abbreviations used to denote internal subaddresses. For "
 "example, <emphasis>APT</emphasis> or <emphasis>UNIT</emphasis>."
 msgstr ""
 "(16). 用于表示内部子地址的单词和缩写。 例如，<emphasis>APT </emphasis>或 "
@@ -7460,7 +7460,7 @@ msgid ""
 msgstr ""
 "请参阅 <link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
 "UsersWikiPostgreSQLPostGIS\">https://trac.osgeo.org/postgis/wiki/"
-"UsersWikiPostgreSQLPostGIS</link> 中完整的 PosgreSQL/PostGIS 和 PostGIS/GEOS "
+"UsersWikiPostgreSQLPostGIS</link> 中完整的 PostgreSQL/PostGIS 和 PostGIS/GEOS "
 "支持表"
 
 #. Tag: para
@@ -13465,7 +13465,7 @@ msgstr ""
 msgid ""
 "Note that border geometries may be within <varname>eps</varname> distance of "
 "core geometries in more than one cluster. Either assignment would be "
-"correct, so the border geometry will be arbitrarily asssigned to one of the "
+"correct, so the border geometry will be arbitrarily assigned to one of the "
 "available clusters. In this situation it is possible for a correct cluster "
 "to be generated with fewer than <varname>minpoints</varname> geometries. To "
 "ensure deterministic assignment of border geometries (so that repeated calls "
@@ -15432,7 +15432,7 @@ msgstr "'flags' 参数是一个位字段。 默认为 0。 支持的位有："
 
 #. Tag: para
 #, no-c-format
-msgid "1: Symmetric (orientation idependent) output."
+msgid "1: Symmetric (orientation independent) output."
 msgstr "1：对称（与方向无关）输出。"
 
 #. Tag: para
@@ -16140,7 +16140,7 @@ msgstr "<emphasis role=\"bold\">示例:</emphasis> 删除在容差距离内的�
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Removes points that are irrelevant for rendering a specific rectangluar view "
+"Removes points that are irrelevant for rendering a specific rectangular view "
 "of a geometry."
 msgstr "删除在指定矩形表示范围内与绘制无关的几何图形点。"
 
@@ -16148,7 +16148,7 @@ msgstr "删除在指定矩形表示范围内与绘制无关的几何图形点。
 #, no-c-format
 msgid ""
 "Returns a <xref linkend=\"geometry\"/> without points being irrelevant for "
-"rendering the geometry within a given rectangluar view."
+"rendering the geometry within a given rectangular view."
 msgstr ""
 "返回一个 <xref linkend=\"geometry\"/>，移除了在指定矩形表示范围内绘制时无关的"
 "点。"
@@ -26551,7 +26551,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Computes a simplifed topology-preserving outer or inner hull of a polygonal "
+"Computes a simplified topology-preserving outer or inner hull of a polygonal "
 "geometry."
 msgstr "计算多边形几何的简化的保留拓扑的外部或内部外壳。"
 
@@ -33161,7 +33161,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "1 band version - Creates a new one band raster formed by applying a valid "
-"PostgreSQL function on the input raster band and of pixeltype prodived. Band "
+"PostgreSQL function on the input raster band and of pixeltype provided. Band "
 "1 is assumed if no band is specified."
 msgstr ""
 "1 波段版本 - 通过在输入栅格波段和提供的像素类型上应用有效的 PostgreSQL 函数来"
@@ -33280,7 +33280,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "2 band version - Creates a new one band raster formed by applying a valid "
-"PostgreSQL function on the 2 input raster bands and of pixeltype prodived. "
+"PostgreSQL function on the 2 input raster bands and of pixeltype provided. "
 "Band 1 is assumed if no band is specified. Extent type defaults to "
 "INTERSECTION if not specified."
 msgstr ""
@@ -35107,7 +35107,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Enhanced: 2.1.0 addition of Aggegrate variant"
+msgid "Enhanced: 2.1.0 addition of Aggregate variant"
 msgstr "增强：2.1.0 添加聚合变体"
 
 #. Tag: title

@@ -2839,7 +2839,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) AS geom) AS t;
     <refentry xml:id="ST_SimplifyPolygonHull">
       <refnamediv>
         <refname>ST_SimplifyPolygonHull</refname>
-        <refpurpose>Computes a simplifed topology-preserving outer or inner hull of a polygonal geometry.</refpurpose>
+        <refpurpose>Computes a simplified topology-preserving outer or inner hull of a polygonal geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>

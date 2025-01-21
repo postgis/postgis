@@ -826,7 +826,7 @@ Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
 		gser = (GSERIALIZED *)DatumGetPointer(value);
 		if (gserialized_is_empty(gser)) continue;
 
-		/* Omit unconvertable */
+		/* Omit unconvertible */
 		geos = POSTGIS2GEOS(gser);
 		if (!geos) continue;
 

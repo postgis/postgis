@@ -541,7 +541,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} RelationTrigger()
 
 --{
---  DropTopoGeometryColumn(schema, table, colum)
+--  DropTopoGeometryColumn(schema, table, column)
 --
 --  Drop a TopoGeometry column, unregister the associated layer,
 --  cleanup the relation table.

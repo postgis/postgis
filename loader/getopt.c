@@ -26,7 +26,7 @@
  * space is allowed, but not mandatory, and the last option in a group can
  * have an argument.  That particular version of the man page evidently
  * has no official existence, and my source at AT&T did not send a copy.
- * The current SVR2 man page reflects the actual behavor of this getopt.
+ * The current SVR2 man page reflects the actual behavior of this getopt.
  * However, I am not about to post a copy of anything licensed by AT&T.
  */
 

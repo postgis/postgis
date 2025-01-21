@@ -57,7 +57,7 @@ static void test_lwgeom_make_valid(void)
 	/* We're really only interested in avoiding a crash in here.
 	 * See http://trac.osgeo.org/postgis/ticket/1738
 	 * TODO: enhance the test if we find a workaround
-	 *       to the excepion:
+	 *       to the exception:
 	 * See http://trac.osgeo.org/postgis/ticket/1735
 	 */
 

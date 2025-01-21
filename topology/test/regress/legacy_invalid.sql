@@ -43,7 +43,7 @@ FROM grid g,
 LATERAL topology.validatetopology('invalid_topology', g.geom) vt ;
 
 -- Check that all errors found by the catch-all validator
--- are also cought by the per-cell validator
+-- are also caught by the per-cell validator
 CREATE TABLE invalid_topology.missing_invalidities AS
   SELECT error, id1, id2 FROM invalid_topology.invalidities
     EXCEPT

@@ -53,7 +53,7 @@
  * for SET functions or function normally returning a modified raster, return
  * the original raster
  * for GET functions, return NULL
- * try to deduce a valid parameter value if it makes sence (e.g. out of range
+ * try to deduce a valid parameter value if it makes sense (e.g. out of range
  * index for addBand)
  *
  * Do not put the name of the faulty function for NOTICEs, only with ERRORs.

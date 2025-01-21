@@ -301,7 +301,7 @@ CREATE OPERATOR CLASS gist_geography_ops
 	FUNCTION        6        geography_gist_picksplit (internal, internal),
 	FUNCTION        7        geography_gist_same (box2d, box2d, internal);
 
--- moved to separate file cause its invovled
+-- moved to separate file cause its involved
 #include "geography_brin.sql.in"
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------

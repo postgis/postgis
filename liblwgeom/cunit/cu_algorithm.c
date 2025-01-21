@@ -33,7 +33,7 @@ LWGEOM_PARSER_RESULT parse_result;
 
 /*
 ** The suite initialization function.
-** Create any re-used objects.
+** Create any reused objects.
 */
 static int init_cg_suite(void)
 {

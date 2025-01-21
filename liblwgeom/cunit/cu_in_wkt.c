@@ -25,7 +25,7 @@ char *r;
 
 /*
 ** The suite initialization function.
-** Create any re-used objects.
+** Create any reused objects.
 */
 static int init_wkt_in_suite(void)
 {
