@@ -26,8 +26,10 @@ make install
 make check RUNTESTFLAGS="-v --extension"
 err_status=$?
 
-make garden
-err_status=$?
+# TODO: Turn back on after we have resolved
+# https://trac.osgeo.org/postgis/ticket/5636
+#make garden
+#err_status=$?
 
 if [ -d $PGDATA/postmaster.pid ] ; then
 	$PGCTL stop -D $PGDATA -s -m fast
