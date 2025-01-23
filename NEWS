@@ -15,3 +15,5 @@ PostGIS 3.6.0
            (Maxime Schoemans)
   - GT-228 Add new functions (Scale, Translate, Rotate, Buffer 3D and
            Straight Skeleton Partition) from SFCGAL 2 (Loïc Bartoletti)
+  - New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages
+    and routes them into the PostgreSQL logging system. (Paul Ramsey)

@@ -47,27 +47,27 @@
 
 /* Display a simple message at NOTICE level */
 #define POSTGIS_RT_DEBUG(level, msg) \
-    do { \
-        if (POSTGIS_DEBUG_LEVEL >= level) \
-            ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__))); \
-    } while (0);
+	do { \
+		if (POSTGIS_DEBUG_LEVEL >= level) \
+			ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__))); \
+	} while (0);
 
 /* Display a formatted message at NOTICE level (like printf, with variadic arguments) */
 #define POSTGIS_RT_DEBUGF(level, msg, ...) \
-    do { \
-        if (POSTGIS_DEBUG_LEVEL >= level) \
-        ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__))); \
-    } while (0);
+	do { \
+		if (POSTGIS_DEBUG_LEVEL >= level) \
+		ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__))); \
+	} while (0);
 
 #else
 
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
 #define POSTGIS_RT_DEBUG(level, msg) \
-    ((void) 0)
+	((void) 0)
 
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
 #define POSTGIS_RT_DEBUGF(level, msg, ...) \
-    ((void) 0)
+	((void) 0)
 
 #endif
 
@@ -79,5 +79,7 @@ typedef struct rt_raster_serialized_t rt_pgraster;
 #define MAX_DBL_CHARLEN (3 + DBL_MANT_DIG - DBL_MIN_EXP)
 #define MAX_INT_CHARLEN 32
 
+/* postgis.gdal_cpl_debug on/off callback */
+void rtpg_gdal_set_cpl_debug(bool value, void *extra);
 
 #endif /* RTPOSTGIS_H_INCLUDED */

@@ -297,5 +297,34 @@ SET LOCAL postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECR
     </refentry>
 
 
+  <refentry xml:id="postgis_gdal_cpl_debug">
+            <refnamediv>
+                <refname>postgis.gdal_cpl_debug</refname>
+                <refpurpose>
+                    A boolean configuration to turn logging of GDAL debug messages on and off.
+                </refpurpose>
+            </refnamediv>
+
+            <refsection>
+                <title>Description</title>
+                <para>
+                    By default, GDAL logging is printed to stderr, and lower level debug messages are not printed at all. Turning this GUC to true will cause GDAL logging to be sent into the PostgreSQL logging stream, so you can see more or less of it by altering the <code>client_min_message</code> PostgreSQL GUC.
+                </para>
+
+                <para role="availability" conformance="3.6.0">Availability: 3.6.0</para>
+
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="postgis_enable_outdb_rasters"/>
+                    <xref linkend="postgis_gdal_enabled_drivers"/>
+                </para>
+            </refsection>
+    </refentry>
+
+
+
 
 </section>

@@ -1075,3 +1075,67 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(pgrast);
 }
 
+/***********************************************************************/
+/* Support for hooking up GDAL logging to PgSQL error/debug reporting */
+
+#define gdalErrorTypesSize 17
+
+const char* const gdalErrorTypes[gdalErrorTypesSize] =
+{
+    "None",
+    "AppDefined",
+    "OutOfMemory",
+    "FileIO",
+    "OpenFailed",
+    "IllegalArg",
+    "NotSupported",
+    "AssertionFailed",
+    "NoWriteAccess",
+    "UserInterrupt",
+    "ObjectNull",
+    "HttpResponse",
+    "AWSBucketNotFound",
+    "AWSObjectNotFound",
+    "AWSAccessDenied",
+    "AWSInvalidCredentials",
+    "AWSSignatureDoesNotMatch"
+};
+
+static void
+ogrErrorHandler(CPLErr eErrClass, int err_no, const char* msg)
+{
+    const char* gdalErrType = "unknown type";
+    if (err_no >= 0 && err_no < gdalErrorTypesSize)
+    {
+        gdalErrType = gdalErrorTypes[err_no];
+    }
+    switch (eErrClass)
+    {
+    case CE_None:
+        elog(NOTICE, "GDAL %s [%d] %s", gdalErrType, err_no, msg);
+        break;
+    case CE_Debug:
+        elog(DEBUG2, "GDAL %s [%d] %s", gdalErrType, err_no, msg);
+        break;
+    case CE_Warning:
+        elog(WARNING, "GDAL %s [%d] %s", gdalErrType, err_no, msg);
+        break;
+    case CE_Failure:
+    case CE_Fatal:
+    default:
+        elog(ERROR, "GDAL %s [%d] %s", gdalErrType, err_no, msg);
+        break;
+    }
+    return;
+}
+
+void
+rtpg_gdal_set_cpl_debug(bool value, void *extra)
+{
+	(void)extra;
+	CPLSetConfigOption("CPL_DEBUG", value ? "ON" : "OFF");
+    /* Hook up the GDAL error handlers to PgSQL elog() */
+    CPLSetErrorHandler(value ? ogrErrorHandler : NULL);
+    CPLSetCurrentErrorHandlerCatchDebug(value);
+}
+

@@ -167,7 +167,6 @@ void _PG_fini(void);
 
 #define RT_MSG_MAXLEN 256
 
-
 /* ---------------------------------------------------------------- */
 /*  Memory allocation / error reporting hooks                       */
 /* ---------------------------------------------------------------- */
@@ -462,6 +461,7 @@ static char *gdal_datapath = NULL;
 static char *gdal_vsi_options = NULL;
 static char *gdal_enabled_drivers = NULL;
 static bool enable_outdb_rasters = false;
+static bool gdal_cpl_debug = false;
 
 /* ---------------------------------------------------------------- */
 /*  Useful variables                                                */
@@ -644,7 +644,6 @@ static void
 rtpg_assignHookEnableOutDBRasters(bool enable, void *extra) {
 	/* do nothing for now */
 }
-
 
 
 /*
@@ -831,6 +830,30 @@ _PG_init(void) {
 			0, /* int flags */
 			NULL, /* GucBoolCheckHook check_hook */
 			rtpg_assignHookEnableOutDBRasters, /* GucBoolAssignHook assign_hook */
+			NULL  /* GucShowHook show_hook */
+		);
+	}
+
+	/* Prototype for CPL_Degbuf control function. */
+	if ( postgis_guc_find_option("postgis.gdal_cpl_debug") )
+	{
+		/* In this narrow case the previously installed GUC is tied to the callback in */
+		/* the previously loaded library. Probably this is happening during an */
+		/* upgrade, so the old library is where the callback ties to. */
+		elog(WARNING, "'%s' is already set and cannot be changed until you reconnect", "postgis.gdal_cpl_debug");
+	}
+	else
+	{
+		DefineCustomBoolVariable(
+			"postgis.gdal_cpl_debug", /* name */
+			"Enable GDAL debugging messages", /* short_desc */
+			"GDAL debug messages will be sent at the PgSQL debug log level", /* long_desc */
+			&gdal_cpl_debug, /* valueAddr */
+			false, /* bootValue */
+			PGC_SUSET, /* GucContext context */
+			0, /* int flags */
+			NULL, /* GucBoolCheckHook check_hook */
+			rtpg_gdal_set_cpl_debug, /* GucBoolAssignHook assign_hook */
 			NULL  /* GucShowHook show_hook */
 		);
 	}
