@@ -30,6 +30,7 @@
 #include <postgres.h>
 #include <fmgr.h>
 #include <funcapi.h> /* for SRF */
+#include <miscadmin.h>
 #include <utils/builtins.h> /* for text_to_cstring() */
 #include <access/htup_details.h> /* for heap_form_tuple() */
 #include <utils/lsyscache.h> /* for get_typlenbyvalalign */
@@ -625,6 +626,19 @@ Datum RASTER_Contour(PG_FUNCTION_ARGS)
 	}
 }
 
+
+static int rtpg_util_gdal_progress_func(
+	double dfComplete,
+	const char *pszMessage,
+	void *pProgressArg)
+{
+	(void)dfComplete;
+	(void)pszMessage;
+
+	/* return 0 to cancel processing, 1 to continue */
+	return !(QueryCancelPending || ProcDiePending);
+}
+
 /************************************************************************
  *  RASTER_InterpolateRaster
  *
@@ -790,7 +804,7 @@ Datum RASTER_InterpolateRaster(PG_FUNCTION_ARGS)
 	        env.MinX, env.MaxX, env.MinY, env.MaxY,
 	        in_band_width, in_band_height,
 	        in_band_gdaltype, out_data,
-	        NULL, /* GDALProgressFunc */
+	        rtpg_util_gdal_progress_func, /* GDALProgressFunc */
 	        NULL /* ProgressArgs */
 	        );
 

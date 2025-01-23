@@ -55,7 +55,7 @@ typedef struct
 /*  GDAL progress callback for interrupt handling */
 /* ---------------------------------------------------------------- */
 
-int rt_util_gdal_progress_func(
+static int rt_util_gdal_progress_func(
 	double dfComplete,
 	const char *pszMessage,
 	void *pProgressArg)

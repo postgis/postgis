@@ -2334,14 +2334,6 @@ rt_util_gdal_driver_registered(const char *drv);
 GDALDatasetH
 rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared);
 
-
-/*
-    Callback for GDAL functions to hook into interrupt system
-*/
-int
-rt_util_gdal_progress_func(double dfComplete, const char *pszMessage, void *pProgressArg);
-
-
 void
 rt_util_from_ogr_envelope(
 	OGREnvelope	env,
