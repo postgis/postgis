@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - #5841, Allow cancellation during raster grid interpolation (Paul Ramsey)
   - Read tagged dollar quotes when generating function upgrades (Sandro Santilli)
   - Fix the link to the geography performance article (Laurențiu Nicola)
   - Correct the topology geometry shrinking examples (Sandro Santilli)
