@@ -17,3 +17,4 @@ PostGIS 3.6.0
            Straight Skeleton Partition) from SFCGAL 2 (Loïc Bartoletti)
   - New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages
     and routes them into the PostgreSQL logging system. (Paul Ramsey)
+  - #5841, Change interrupt handling to remove use of pqsignal (Paul Ramsey)

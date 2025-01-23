@@ -646,62 +646,12 @@ rtpg_assignHookEnableOutDBRasters(bool enable, void *extra) {
 }
 
 
-/*
-* Machinery for intercepting the system SIGINT
-* handler so we can cancel long-running GDAL operations
-* via the progress handlers.
-*/
-static pqsigfunc coreIntHandler = 0;
-
-#ifdef WIN32
-static void interruptCallback() {
-  if (UNBLOCKED_SIGNAL_QUEUE())
-    pgwin32_dispatch_queued_signals();
-}
-#endif
-
-
-/*
-* This is the interrupt capture for this module.
-* Before handing off the signal to the core, it
-* sets the interrupt flag for currently running
-* functions.
-*/
-static void
-handleInterrupt(int sig)
-{
-	/*
-	* NOTE: printf here would be dangerous, see
-	* https://trac.osgeo.org/postgis/ticket/3644
-	*/
-	// printf("postgis_raster interrupt requested\n"); fflush(stdout);
-
-	/* Request interruption of liblwgeom as well */
-	lwgeom_request_interrupt();
-
-	/* Pass control into the usual core handler */
-	if (coreIntHandler) {
-		(*coreIntHandler)(sig);
-	}
-}
-
-
-
 /* Module load callback */
 void
 _PG_init(void) {
 
 	bool boot_postgis_enable_outdb_rasters = false;
 	MemoryContext old_context;
-
-	/* Set up interrupt capture */
-	coreIntHandler = pqsignal(SIGINT, handleInterrupt);
-
-#ifdef WIN32
- 	GEOS_interruptRegisterCallback(interruptCallback);
- 	lwgeom_register_interrupt_callback(interruptCallback);
-#endif
-
 
 	/*
 	 * Change to context for memory allocation calls like palloc() in the
@@ -889,9 +839,6 @@ _PG_fini(void) {
 	MemoryContext old_context = MemoryContextSwitchTo(TopMemoryContext);
 
 	elog(NOTICE, "Goodbye from PostGIS Raster %s", POSTGIS_VERSION);
-
-	/* Return SIGINT handling to core */
-	pqsignal(SIGINT, coreIntHandler);
 
 	/* Clean up */
 	pfree(env_postgis_gdal_enabled_drivers);
