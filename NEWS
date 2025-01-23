@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - #5841, Allow cancellation during raster grid interpolation (Paul Ramsey)
   - Report nested DocBook paragraphs during documentation validation (Sandro Santilli)
   - Correct the SQL/MM function list (Sandro Santilli)
   - Correct the coverage examples in the manual (Martin Davis)
