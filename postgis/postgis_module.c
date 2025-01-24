@@ -26,7 +26,6 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "miscadmin.h"
-#include "executor/executor.h"
 #include "utils/elog.h"
 #include "utils/guc.h"
 #include "libpq/pqsignal.h"
@@ -46,8 +45,6 @@
  */
 PG_MODULE_MAGIC;
 
-// static ExecutorStart_hook_type onExecutorStartPrev = NULL;
-// static void onExecutorStart(QueryDesc *queryDesc, int eflags);
 
 static void interrupt_geos_callback()
 {
@@ -112,9 +109,6 @@ _PG_init(void)
 	proj_log_func(NULL, NULL, pjLogFunction);
 #endif
 
-	/* setup hooks */
-	// onExecutorStartPrev = ExecutorStart_hook;
-	// ExecutorStart_hook = onExecutorStart;
 }
 
 /*
@@ -125,28 +119,6 @@ void
 _PG_fini(void)
 {
 	elog(NOTICE, "Goodbye from PostGIS %s", POSTGIS_VERSION);
-
-	/* restore original hooks */
-	// ExecutorStart_hook = onExecutorStartPrev;
 }
 
 
-
-// static void onExecutorStart(QueryDesc *queryDesc, int eflags) {
-// 		/* cancel interrupt requests */
-
-// 		GEOS_interruptCancel();
-
-// #ifdef HAVE_LIBPROTOBUF
-// 		/* Taking out per #5385 crash */
-// 		//lwgeom_wagyu_interruptReset();
-// #endif
-
-// 		lwgeom_cancel_interrupt();
-
-// 		if (onExecutorStartPrev) {
-// 				(*onExecutorStartPrev)(queryDesc, eflags);
-// 		} else {
-// 				standard_ExecutorStart(queryDesc, eflags);
-// 		}
-// }
