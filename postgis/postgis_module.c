@@ -25,6 +25,7 @@
 
 #include "postgres.h"
 #include "fmgr.h"
+#include "miscadmin.h"
 #include "executor/executor.h"
 #include "utils/elog.h"
 #include "utils/guc.h"
@@ -45,18 +46,31 @@
  */
 PG_MODULE_MAGIC;
 
-static pqsigfunc coreIntHandler = 0;
-static void handleInterrupt(int sig);
-
-#ifdef WIN32
-static void interruptCallback() {
-  if (UNBLOCKED_SIGNAL_QUEUE())
-    pgwin32_dispatch_queued_signals();
+static void interrupt_geos_callback()
+{
+	/*
+	 * If PgSQL global flags show interrupt,
+	 * flip the pending flag in GEOS
+	 * to end current query.
+	 */
+	if (QueryCancelPending || ProcDiePending)
+	{
+		GEOS_interruptRequest();
+	}
 }
-#endif
 
-static ExecutorStart_hook_type onExecutorStartPrev = NULL;
-static void onExecutorStart(QueryDesc *queryDesc, int eflags);
+static void interrupt_liblwgeom_callback()
+{
+	/*
+	 * If PgSQL global flags show interrupt,
+	 * flip the pending flag in liblwgeom
+	 * to end current query.
+	 */
+	if (QueryCancelPending || ProcDiePending)
+	{
+		lwgeom_request_interrupt();
+	}
+}
 
 /*
 * Pass proj error message out via the PostgreSQL logging
@@ -79,25 +93,22 @@ pjLogFunction(void* data, int logLevel, const char* message)
 void _PG_init(void);
 void
 _PG_init(void)
-{
-  coreIntHandler = pqsignal(SIGINT, handleInterrupt);
+	{
+	/*
+	 * Hook up interrupt checking to call back here
+	 * and examine the PgSQL interrupt state variables
+	 */
+	GEOS_interruptRegisterCallback(interrupt_geos_callback);
+	lwgeom_register_interrupt_callback(interrupt_liblwgeom_callback);
 
-#ifdef WIN32
-  GEOS_interruptRegisterCallback(interruptCallback);
-  lwgeom_register_interrupt_callback(interruptCallback);
-#endif
+	/* Install PostgreSQL error/memory handlers */
+	pg_install_lwgeom_handlers();
 
-  /* install PostgreSQL handlers */
-  pg_install_lwgeom_handlers();
-
-  /* pass proj messages through the pgsql error handler */
 #if POSTGIS_PROJ_VERSION > 60000
-  proj_log_func(NULL, NULL, pjLogFunction);
+	/* Pass proj messages through the pgsql error handler */
+	proj_log_func(NULL, NULL, pjLogFunction);
 #endif
 
-  /* setup hooks */
-  onExecutorStartPrev = ExecutorStart_hook;
-  ExecutorStart_hook = onExecutorStart;
 }
 
 /*
@@ -107,54 +118,7 @@ void _PG_fini(void);
 void
 _PG_fini(void)
 {
-  elog(NOTICE, "Goodbye from PostGIS %s", POSTGIS_VERSION);
-  pqsignal(SIGINT, coreIntHandler);
-
-  /* restore original hooks */
-  ExecutorStart_hook = onExecutorStartPrev;
+	elog(NOTICE, "Goodbye from PostGIS %s", POSTGIS_VERSION);
 }
 
 
-static void
-handleInterrupt(int sig)
-{
-  /* NOTE: printf here would be dangerous, see
-   * https://trac.osgeo.org/postgis/ticket/3644
-   *
-   * TODO: block interrupts during execution, to fix the problem
-   */
-  /* printf("Interrupt requested\n"); fflush(stdout); */
-
-  GEOS_interruptRequest();
-
-#ifdef HAVE_LIBPROTOBUF
-	/* Taking out per #5385 crash */
-  //lwgeom_wagyu_interruptRequest();
-#endif
-
-  /* request interruption of liblwgeom as well */
-  lwgeom_request_interrupt();
-
-  if ( coreIntHandler ) {
-    (*coreIntHandler)(sig);
-  }
-}
-
-static void onExecutorStart(QueryDesc *queryDesc, int eflags) {
-    /* cancel interrupt requests */
-
-    GEOS_interruptCancel();
-
-#ifdef HAVE_LIBPROTOBUF
-		/* Taking out per #5385 crash */
-    //lwgeom_wagyu_interruptReset();
-#endif
-
-    lwgeom_cancel_interrupt();
-
-    if (onExecutorStartPrev) {
-        (*onExecutorStartPrev)(queryDesc, eflags);
-    } else {
-        standard_ExecutorStart(queryDesc, eflags);
-    }
-}

@@ -6,6 +6,10 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 
 * Bug fixes *
 
+- #5841, Change approach to interrupt handling to conform to PgSQL 
+         recommended practice (Paul Ramsey)
+
+
 PostGIS 3.5.2
 2025/01/18
 
