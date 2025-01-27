@@ -186,6 +186,11 @@ case $host_os in
 esac
 AC_SUBST([MINGWBUILD])
 
+AC_PATH_PROG([CODESPELL], [codespell], [])
+if test "x$CODESPELL" = "x"; then
+	AC_MSG_WARN([codespell is not installed so spelling cannot be checked])
+fi
+
 AC_PATH_PROG([PERL], [perl], [])
 if test "x$PERL" = "x"; then
         AC_MSG_ERROR([Perl was not found. Building PostGIS requires Perl.])

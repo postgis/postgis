@@ -4,6 +4,7 @@
   before_script:
     - apt-get update -qq && apt-get install -y
         autoconf
+        codespell
         bison
         build-essential
         docbook-xsl-ns
