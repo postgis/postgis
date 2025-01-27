@@ -1,3 +1,3 @@
 [codespell]
-skip = *.sql,*.po,spatial_ref_sys.sql,./deps,./extras/tiger_geocoder/tables/lookup_tables_2011.sql,./extras/tiger_geocoder/pagc_normalize/pagc_tables.sql,./extensions/address_standardizer,./configure,./macros/*.m4,./autom4te.cache,./build-aux,./libtool,./extensions/postgis_tiger_geocoder/*.in
+skip = *.sql,*.po,spatial_ref_sys.sql,./deps,./extras/tiger_geocoder/tables/lookup_tables_2011.sql,./extras/tiger_geocoder/pagc_normalize/pagc_tables.sql,./extensions/address_standardizer,./configure,./macros/*.m4,./autom4te.cache,./build-aux,./libtool,./extensions/postgis_tiger_geocoder/*.in,.git,build*
 ignore-words = .codespell.ignore
