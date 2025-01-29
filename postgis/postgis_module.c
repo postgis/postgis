@@ -48,6 +48,12 @@ PG_MODULE_MAGIC;
 
 static void interrupt_geos_callback()
 {
+#ifdef WIN32
+	if (UNBLOCKED_SIGNAL_QUEUE())
+	{
+		pgwin32_dispatch_queued_signals();
+	}
+#endif
 	/*
 	 * If PgSQL global flags show interrupt,
 	 * flip the pending flag in GEOS
@@ -61,6 +67,12 @@ static void interrupt_geos_callback()
 
 static void interrupt_liblwgeom_callback()
 {
+#ifdef WIN32
+	if (UNBLOCKED_SIGNAL_QUEUE())
+	{
+		pgwin32_dispatch_queued_signals();
+	}
+#endif
 	/*
 	 * If PgSQL global flags show interrupt,
 	 * flip the pending flag in liblwgeom
