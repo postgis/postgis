@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2025-01-31 03:16+0000\n"
+"PO-Revision-Date: 2025-01-31 04:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -787,10 +787,10 @@ msgid ""
 "force the planner to only analyze tables for constraint consideration if "
 "they are in an inherited hierarchy and not pay the planner penalty otherwise."
 msgstr ""
-"一般的にテーブルのパーティショニングに使われます。デフォルトとして"
-"\"partition\"に設定されています。継承階層内にあり、プランナにペナルティ以外を"
-"払わないなら、クエリプランナにテーブルの制約条件の解析だけを行わせるので、"
-"PostgreSQL 8.4以上ではこれが理想的です。"
+"一般的にテーブルのパーティショニングに使われます。デフォルトとして\"partition"
+"\"に設定されていて、これはPostgreSQL 8.4以上では理想的です。この設定では、テ"
+"ーブルが継承階層内にある場合には、プランナに対して制約条件の解析だけを行うよ"
+"う強制して、他の場合には、プランナにペナルティを与えないことになるためです。"
 
 #. Tag: link
 #, no-c-format
@@ -800,15 +800,14 @@ msgstr "shared_buffers"
 #. Tag: para
 #, no-c-format
 msgid "Default: ~128MB in PostgreSQL 9.6"
-msgstr "デフォルト: PostgreSQL 9.6では128MB以下"
+msgstr "デフォルト: PostgreSQL 9.6では約128MB"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Set to about 25% to 40% of available RAM. On windows you may not be able to "
 "set as high."
-msgstr ""
-"利用可能なRAMの25%から40%を設定します。Windowsでは高く設定することができない"
+msgstr "利用可能なRAMの25%から40%を設定します。Windowsでは高く設定することができない"
 "かも知れません。"
 
 #. Tag: para
@@ -835,9 +834,8 @@ msgstr "デフォルト: 8"
 msgid ""
 "Sets the maximum number of background processes that the system can support. "
 "This parameter can only be set at server start."
-msgstr ""
-"システムが対応できるバックグラウンドプロセスの最大値を設定します。このパラ"
-"メータはサーバ起動時のみ設定できます。"
+msgstr "システムが対応できるバックグラウンドプロセスの最大値を設定します。このパラメ"
+"ータはサーバ起動時のみ設定できます。"
 
 #. Tag: title
 #, no-c-format
@@ -851,8 +849,10 @@ msgid ""
 "config-resource.html#GUC-WORK-MEM\">work_mem</link> - sets the size of "
 "memory used for sort operations and complex queries"
 msgstr ""
-"<link xlink:href=\"https://www.postgresql.jp/document/current/html/runtime-"
-"config-resource.html#GUC-WORK-MEM\">work_mem</link> - "
+"<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
+"config-resource.html#GUC-WORK-MEM\">work_mem</link> (訳注: <link xlink:href="
+"\"https://www.postgresql.jp/document/current/html/runtime-config-resource."
+"html#GUC-WORK-MEM\">日本語訳</link>) - "
 "並べ替えや複雑なクエリに使われるメモリのサイズの設定"
 
 #. Tag: para
@@ -863,21 +863,19 @@ msgstr "デフォルト: 1-4MB"
 #. Tag: para
 #, no-c-format
 msgid "Adjust up for large dbs, complex queries, lots of RAM"
-msgstr ""
-"大きなデータベースの場合や、複雑なクエリの場合、RAMが多い場合は値を大きくする"
+msgstr "大きなデータベースの場合や、複雑なクエリの場合、RAMが多い場合は値を大きくする"
 "ように調整します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Adjust down for many concurrent users or low RAM."
-msgstr ""
-"同時接続ユーザ数が多い場合や、RAMが少ない場合には値を小さくするように調整しま"
+msgstr "同時接続ユーザ数が多い場合や、RAMが少ない場合には値を小さくするように調整しま"
 "す。"
 
 #. Tag: para
 #, no-c-format
 msgid "If you have lots of RAM and few developers:"
-msgstr "たくさんのRAMを持ち、少数の開発者しかいない場合は次のようにします。"
+msgstr "たくさんのRAMを持ち、少数の開発者しかいない場合は次のようにします:"
 
 #. Tag: para
 #, no-c-format
@@ -888,7 +886,9 @@ msgid ""
 msgstr ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
 "config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> "
-"- VACUUM, CREATE INDEX等で使われるメモリのサイズ"
+"(訳注: <link xlink:href=\"https://www.postgresql.jp/document/current/html/"
+"runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM\">日本語訳</link>) - "
+"VACUUM, CREATE INDEX等で使われるメモリのサイズ"
 
 #. Tag: para
 #, no-c-format
@@ -898,9 +898,8 @@ msgstr "デフォルト: 16-64MB"
 #. Tag: para
 #, no-c-format
 msgid "Generally too low - ties up I/O, locks objects while swapping memory"
-msgstr ""
-"一般的には低すぎます - メモリスワップの間、入出力が拘束され、オブジェクトが"
-"ロックされます"
+msgstr "一般的には低すぎます - "
+"メモリスワップの間、入出力が拘束され、オブジェクトがロックされます"
 
 #. Tag: para
 #, no-c-format
@@ -909,8 +908,8 @@ msgid ""
 "the # of concurrent users. If you have lots of RAM and few developers:"
 msgstr ""
 "たくさんのRAMを持つ本番サーバでは32MBから1GBが推奨ですが、同時接続ユーザ数に"
-"依存します。たくさんのRAMを持ち、少数の開発者しかいない場合は次のようにしま"
-"す:"
+"依存します。たくさんのRAMを持ち、少数の開発者しかいない場合は次のようにします"
+":"
 
 #. Tag: link
 #, no-c-format
@@ -11027,12 +11026,15 @@ msgid ""
 "docs/current/static/storage-toast.html\">the PostgreSQL Documentation for "
 "TOAST</link> for more information)."
 msgstr ""
-"現版のPostgreSQL (9.6を含む)では、TOASTテーブルに従うクエリオプティマイザの弱"
-"さに苦しみます。 TOASTテーブルは、(長いテキスト、イメージ、多数の頂点を持つ複"
-"合ジオメトリといった)通常のデータページに適合しない、(データサイズという意味"
-"では)巨大な値を納めるための「拡張部屋」の一種です。詳細情報は <link xlink:"
-"href=\"http://www.postgresql.org/docs/current/static/storage-toast."
-"html\">the PostgreSQL Documentation for TOAST</link>をご覧ください。"
+"現版のPostgreSQL (9."
+"6を含む)では、TOASTテーブルに従うクエリオプティマイザの弱さに苦しみます。 TOA"
+"STテーブルは、(長いテキスト、イメージ、多数の頂点を持つ複合ジオメトリといった"
+")通常のデータページに適合しない、(データサイズという意味では)巨大な値を納める"
+"ための「拡張部屋」の一種です。詳細情報は <link xlink:href=\"http://www."
+"postgresql.org/docs/current/static/storage-toast.html\">the PostgreSQL "
+"Documentation for TOAST</link> (訳注: <link xlink:href=\"https://www."
+"postgresql.jp/document/current/html/storage-toast.html\""
+">日本語訳</link>)をご覧ください。"
 
 #. Tag: para
 #, no-c-format
