@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2025-01-24 04:47+0000\n"
+"PO-Revision-Date: 2025-01-31 03:16+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -724,9 +724,9 @@ msgid ""
 "are usually large, so memory-related optimizations generally have more of an "
 "impact on PostGIS than other types of PostgreSQL queries."
 msgstr ""
-"PostGISの調整はPostgreSQLの作業量の調整と非常に似ています。ジオメトリとラスタ"
-"は重く、メモリ関連の最適化は他のPostgreSQLクエリと比べて影響が大きい点だけは"
-"留意して下さい。"
+"PostGISの性能向上のための調整はPostgreSQLの作業量の調整と非常に似ています。追"
+"加して留意すべき点は、ジオメトリとラスタは重大きいのでメモリ関連の最適化は他"
+"のPostgreSQLクエリと比べて影響が大きいことだけです。"
 
 #. Tag: para
 #, no-c-format
@@ -746,9 +746,9 @@ msgid ""
 "touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</code> "
 "by using the <code>ALTER SYSTEM</code> command."
 msgstr ""
-"PostgreSQL 9.4以上では、<code>ALTER SYSTEM</code>を使うことで、"
-"<code>postgresql.conf</code>や<code>postgresql.auto.conf</code>を触ることなく"
-"サーバレベルで設定できます。"
+"PostgreSQL 9.4以上では、<code>ALTER "
+"SYSTEM</code>を使うことで、<code>postgresql.conf</code>や<code>postgresql."
+"auto.conf</code>を触ることなくサーバレベルで設定できます。"
 
 #. Tag: para
 #, no-c-format
@@ -756,8 +756,8 @@ msgid ""
 "In addition to the Postgres settings, PostGIS has some custom settings which "
 "are listed in <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
-"PostgreSQLの設定に加えて、PostGISには <xref linkend=\"PostGIS_GUC\"/>で挙げる"
-"独自設定があります。"
+"PostgreSQLの設定に加えて、PostGISには <xref linkend=\"PostGIS_GUC\""
+"/>で挙げる独自設定があります。"
 
 #. Tag: title
 #, no-c-format
@@ -851,9 +851,9 @@ msgid ""
 "config-resource.html#GUC-WORK-MEM\">work_mem</link> - sets the size of "
 "memory used for sort operations and complex queries"
 msgstr ""
-"<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
-"config-resource.html#GUC-WORK-MEM\">work_mem</link> - 並べ替えや複雑なクエリ"
-"に使われるメモリのサイズの設定"
+"<link xlink:href=\"https://www.postgresql.jp/document/current/html/runtime-"
+"config-resource.html#GUC-WORK-MEM\">work_mem</link> - "
+"並べ替えや複雑なクエリに使われるメモリのサイズの設定"
 
 #. Tag: para
 #, no-c-format
