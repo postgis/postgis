@@ -2,7 +2,7 @@
 # Automatically generated, 2023.
 #
 # Thomas Muguet <thomas.muguet@oslandia.com>, 2024, 2025.
-# DeepL <noreply-mt-deepl@weblate.org>, 2024.
+# DeepL <noreply-mt-deepl@weblate.org>, 2024, 2025.
 # Edouard Choinière <echoix@users.noreply.weblate.osgeo.org>, 2024.
 msgid ""
 msgstr ""
@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2025-02-03 16:47+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -5691,6 +5691,8 @@ msgid ""
 "Adds a linestring to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces."
 msgstr ""
+"Ajoute une ligne à une topologie existante en utilisant une tolérance et en "
+"divisant éventuellement les arêtes/faces existantes."
 
 #. Tag: para
 #, no-c-format
@@ -5701,6 +5703,13 @@ msgid ""
 "existing nodes or edges within given tolerance. Existing edges and faces may "
 "be split by the line. New nodes and faces may be added."
 msgstr ""
+"Ajoute une ligne à une topologie existante et renvoie un ensemble "
+"d'identificateurs d'arêtes signés qui la composent (les identificateurs "
+"négatifs signifient que l'arête va dans la direction opposée à la ligne "
+"d'entrée). La ligne donnée s'accroche aux nœuds ou aux arêtes existants dans "
+"la limite d'une tolérance donnée. Les arêtes et les faces existantes peuvent "
+"être divisées par la ligne. De nouveaux nœuds et de nouvelles faces peuvent "
+"être ajoutés."
 
 #. Tag: para
 #, no-c-format
@@ -5716,6 +5725,8 @@ msgstr ""
 #, no-c-format
 msgid "Enhanced: 3.2.0 added support for returning signed identifier."
 msgstr ""
+"Amélioration : la version 3.2.0 a ajouté la possibilité de renvoyer un "
+"identifiant signé."
 
 #. Tag: para
 #, no-c-format
@@ -8467,6 +8478,9 @@ msgid ""
 "xlink:href=\"https://gdal.org/download.html\">https://gdal.org/download."
 "html</link>."
 msgstr ""
+"La version 3+ de GDAL est préférable. Elle est nécessaire pour la prise en "
+"charge des données matricielles. <link xlink:href=\"https://gdal.org/download"
+".html\">https://gdal.org/download.html</link>."
 
 #. Tag: para
 #, no-c-format
