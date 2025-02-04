@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2025-01-31 04:47+0000\n"
+"PO-Revision-Date: 2025-02-04 01:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -821,6 +821,8 @@ msgid ""
 msgstr ""
 "<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
 "config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</link> "
+"(訳注: <link xlink:href=\"https://www.postgresql.jp/document/current/html/"
+"runtime-config-resource.html#GUC-MAX-WORKER-PROCESSES\">日本語訳</link>) "
 "これは、PostgreSQL 9.4以上で有効です。PostgreSQL 9.6以上では、パラレルクエリ"
 "処理に使うプロセス数の最大値の制御で、さらに重要なものとなっています。"
 
@@ -930,10 +932,10 @@ msgid ""
 msgstr ""
 "この設定はPostgreSQL 9.6以上で使用でき、並列クエリに対応しているPostGIS 2.3以"
 "上に影響は限られます。0より大きい値に設定すると、<code>ST_Intersects</code>と"
-"いった関係関数を含むクエリで、複数プロセッサが使われるようにできます。その"
-"時、2倍を超える速度が出る可能性があります。予備のプロセッサが多数ある場合に"
-"は、この値をプロセッサ数に変更するべきです。また、"
-"<code>max_worker_processes</code>をこの値と同じにするようにします。"
+"いった関係関数を含むクエリで、複数プロセッサが使われるようにできます。その時"
+"、2倍を超える速度が出る可能性があります。予備のプロセッサが多数ある場合には、"
+"この値をプロセッサ数に変更するべきです。また、<code>max_worker_processes</cod"
+"e>を、少なくともこの値まで増やします。"
 
 #. Tag: para
 #, no-c-format
@@ -952,11 +954,11 @@ msgid ""
 "parallel query execution."
 msgstr ""
 "単一の<varname>Gather</varname>ノードが開始できるワーカの最大数を設定します。"
-"並列ワーカは、<varname>max_worker_processes</varname>で確立されたプロセスの"
-"プールから取得されます。要求したワーカ数は、実際には実行可能になっていない場"
-"合があることに注意して下さい。これが発生する場合には、想定より少ないワーカで"
-"プランが実行され、非効率になります。これの値を0 (デフォルト値)にすると、パラ"
-"レルクエリ実行が無効になります。"
+"並列ワーカは、<varname>max_worker_processes</varname>で確立されたプロセスのプ"
+"ールから取得されます。要求したワーカ数は、実際には実行可能になっていない場合"
+"があることに注意して下さい。これが発生する場合には、想定より少ないワーカでプ"
+"ランが実行されることになり、場合によっては非効率になります。これの値を0 "
+"(デフォルト値)にすると、パラレルクエリ実行が無効になります。"
 
 #. Tag: title
 #, no-c-format
@@ -973,8 +975,8 @@ msgid ""
 msgstr ""
 "本章では、PostGISのソースアーカイブとソースレポジトリのextrasフォルダにある機"
 "能を記述します。 これらは必ずPostGISバイナリ版に同梱されているものではありま"
-"せんが、通常は実行可能なplpgsqlベースのものまたは標準的なシェルスクリプトで"
-"す。"
+"せんが、通常は実行可能なPL/"
+"pgSQLベースのものまたは標準的なシェルスクリプトです。"
 
 #. Tag: chapter
 #, no-c-format
@@ -994,11 +996,11 @@ msgid ""
 "<link xlink:href=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-"
 "refactor/postgresql\">PAGC PostgreSQL Address Standardizer</link>)."
 msgstr ""
-"これは、<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-11."
-"html\">PAGC standardizer</link>から分かれたものです (オリジナルのコードは"
-"<link xlink:href=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-"
-"refactor/postgresql\">PAGC PostgreSQL Address Standardizer</link>にありま"
-"す)。"
+"これは、<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-11.html\""
+">PAGC standardizer</link>から分かれたものです (オリジナルのコードは<link "
+"xlink:href=\"http://sourceforge.net/p/pagc/code/360/tree/branches/"
+"sew-refactor/postgresql\">PAGC PostgreSQL Address "
+"Standardizer</link>にあります)。"
 
 #. Tag: para
 #, no-c-format
@@ -1008,8 +1010,8 @@ msgid ""
 "helper lex and gaz tables."
 msgstr ""
 "住所標準化は単一行の住所のパーサで、入力に住所を取り、テーブルに保存された規"
-"則と、補助テーブルlex (lexicon, 語彙)およびgaz (gazetteer, 地名集)とを基に正"
-"規化します。"
+"則と、補助テーブルのlex (lexicon, 語彙)およびgaz (gazetteer, "
+"地名集)とを基に正規化します。"
 
 #. Tag: para
 #, no-c-format
@@ -1023,12 +1025,12 @@ msgid ""
 "installed via: <code>CREATE EXTENSION address_standardizer_data_us;</code>"
 msgstr ""
 "コードは、<code>address_standardizer</code>という名前の、一つのPostgreSQLエク"
-"ステンションとしてビルドされます。<code>CREATE EXTENSION "
-"address_standardizer;</code>でインストールできます。address_standardizerエク"
-"ステンションとともに、<code>address_standardizer_data_us</code>というサンプル"
-"データのエクステンションがビルドされます。これには、アメリカのgaz, lexとrules"
-"テーブルデータがあります。このエクステンションは<code>CREATE EXTENSION "
-"address_standardizer_data_us;</code>でインストールできます。"
+"ステンションとしてビルドされます。<code>CREATE EXTENSION address_standardizer"
+";</code>でインストールできます。address_standardizerエクステンションとともに"
+"、<code>address_standardizer_data_us</code>というサンプルデータのエクステンシ"
+"ョンがビルドされます。これには、アメリカのgaz, "
+"lexとrulesテーブルデータがあります。このエクステンションは<code>CREATE "
+"EXTENSION address_standardizer_data_us;</code>でインストールできます。"
 
 #. Tag: para
 #, no-c-format
@@ -1045,8 +1047,8 @@ msgid ""
 "For installation instructions refer to: <xref "
 "linkend=\"installing_pagc_address_standardizer\"/>."
 msgstr ""
-"インストール手順については、<xref "
-"linkend=\"installing_pagc_address_standardizer\"/>を参照してください。"
+"インストール手順については、<xref linkend="
+"\"installing_pagc_address_standardizer\"/>を参照してください。"
 
 #. Tag: title
 #, no-c-format
@@ -1062,10 +1064,9 @@ msgid ""
 "currently does not look for a country code or name, but that could be "
 "introduced in the future."
 msgstr ""
-"パーサは右から左に見ます。最初に郵便番号、州/県、市のMACRO (訳注: マクロ)要素"
-"を見ます。その後、番地または交差点もしくはランドマークを扱う場合には、MICRO "
-"(訳注: マイクロ)要素を見ます。現在は、国別コードや国名を見ませんが、将来的に"
-"は導入できると思います。"
+"パーサは右から左に見ていきます。最初に郵便番号、州/県、市のMACRO要素を見ます"
+"。その後、番地または交差点もしくはランドマークを扱う場合には、MICRO要素を見ま"
+"す。現在は、国別コードや国名を見ませんが、将来的には導入もありえます。"
 
 #. Tag: term
 #, no-c-format
@@ -1077,8 +1078,7 @@ msgstr "国別コード"
 msgid ""
 "Assumed to be US or CA based on: postcode as US or Canada state/province as "
 "US or Canada else US"
-msgstr ""
-"USまたはCAを仮定します。郵便番号か州/県で米国かカナダを分けますが、判別できな"
+msgstr "USまたはCAを仮定します。郵便番号か州/県で米国かカナダを分けますが、判別できな"
 "い場合は米国とします。"
 
 #. Tag: term
@@ -1092,9 +1092,8 @@ msgid ""
 "These are recognized using Perl compatible regular expressions. These regexs "
 "are currently in the parseaddress-api.c and are relatively simple to make "
 "changes to if needed."
-msgstr ""
-"Perl互換の正規表現を使用して認識します。正規表現は現在はparseaddress-api.cに"
-"あり、必要な際の変更は比較的簡単です。"
+msgstr "Perl互換の正規表現を使用して認識します。正規表現は現在はparseaddress-api."
+"cにあり、必要な際の変更は比較的簡単です。"
 
 #. Tag: term
 #, no-c-format
@@ -1125,15 +1124,14 @@ msgid ""
 "is very important especially when designing your own functions."
 msgstr ""
 "本節では住所標準化でインストールされたPostgreSQLデータ型の一覧を挙げます。独"
-"自関数をデザインする時に特に重要となるキャストの振る舞いを記述しています。"
+"自関数をデザインする時に特に重要となるキャストのふるまいを記述しています。"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "A composite type that consists of the elements of an address. This is the "
 "return type for <varname>standardize_address</varname> function."
-msgstr ""
-"住所の要素からなる複合型です。<varname>standardize_address</varname>関数が返"
+msgstr "住所の要素からなる複合型です。<varname>standardize_address</varname>関数が返"
 "す型です。"
 
 #. Tag: title
@@ -1149,18 +1147,17 @@ msgid ""
 "for elements are borrowed from <link xlink:href=\"http://www.pagcgeo.org/"
 "docs/html/pagc-12.html#ss12.1\">PAGC Postal Attributes</link>."
 msgstr ""
-"住所の要素からなる複合型です。<xref linkend=\"standardize_address\"/> 関数が"
-"返す型です。要素の記述のいくつかは<link xlink:href=\"http://www.pagcgeo.org/"
-"docs/html/pagc-12.html#ss12.1\">PAGC Postal Attributes</link>から借りていま"
-"す。"
+"住所の要素からなる複合型です。<xref linkend=\"standardize_address\"/> "
+"関数が返す型です。要素の記述のいくつかは<link xlink:href=\"http://www.pagcgeo"
+".org/docs/html/pagc-12.html#ss12.1\">PAGC Postal "
+"Attributes</link>から借りています。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The token numbers denote the output reference number in the <xref "
 "linkend=\"rulestab\"/>."
-msgstr ""
-"トークン番号は、<xref linkend=\"rulestab\"/>内の出力参照番号を示します。"
+msgstr "トークン番号は、<xref linkend=\"rulestab\"/>内の出力参照番号を示します。"
 
 #. Tag: para
 #, no-c-format
@@ -1173,16 +1170,16 @@ msgid ""
 "is text (token number <code>0</code>): Refers to building number or name. "
 "Unparsed building identifiers and types. Generally blank for most addresses."
 msgstr ""
-"文字列 (トークン番号<code>0</code>): 建物番号や建物名を参照します。解析されて"
-"いない建物識別子と型です。一般的に、ほとんどの住所では空白です。"
+"文字列 (トークン番号 <code>0</code>): 建物番号や建物名を参照します。解析され"
+"ていない建物識別子と型です。一般的に、ほとんどの住所では空白です。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "is a text (token number <code>1</code>): This is the street number on a "
 "street. Example <emphasis>75</emphasis> in <code>75 State Street</code>."
 msgstr ""
-"文字列 (トークン番号<code>1</code>): ストリートの番号です。<code>75 State "
+"文字列 (トークン番号 <code>1</code>): ストリートの番号です。<code>75 State "
 "Street</code>では <emphasis>75</emphasis>にあたります。"
 
 #. Tag: para
@@ -1191,11 +1188,11 @@ msgid ""
 "is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as "
 "North, South, East, West etc."
 msgstr ""
-"文字列 (トークン番号<code>2</code>): North, South, East, Westといった、スト"
-"リート名の方角前置語です。"
+"文字列 (トークン番号 <code>2</code>): North, South, East, "
+"Westといった、ストリート名の方角前置語です。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example "
 "<emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>."
@@ -1206,9 +1203,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>4</code>): STREET PREFIX TYPE"
-msgstr ""
-"文字列 (トークン番号 <code>4</code>): STREET PREFIX TYPE (ストリート名の前置"
-"詞の種別)"
+msgstr "文字列 (トークン番号 <code>4</code>): STREET PREFIX TYPE "
+"(ストリート名の前置詞の種別)"
 
 #. Tag: para
 #, no-c-format
@@ -1243,8 +1239,8 @@ msgid ""
 "is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>7</"
 "emphasis> in <code>RR 7</code>."
 msgstr ""
-"文字列 (トークン番号 <code>8</code>): RURAL ROUTE (地方集配路線)。"
-"<emphasis>8</emphasis>が<code>RR 7</code>では該当します。"
+"文字列 (トークン番号 <code>8</code>): RURAL ROUTE "
+"(地方集配路線)。<emphasis>7</emphasis>が<code>RR 7</code>では該当します。"
 
 #. Tag: para
 #, no-c-format
@@ -1254,23 +1250,20 @@ msgstr "文字列: 階番号のような追加的情報です。"
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>10</code>): Example Boston."
-msgstr ""
-"文字列 (トークン番号 <code>10</code>): 市名です。Boston等が該当します。"
+msgstr "文字列 (トークン番号 <code>10</code>): 市名です。Boston等が該当します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is text (token number <code>11</code>): Example <code>MASSACHUSETTS</code>"
-msgstr ""
-"文字列 (トークン番号 <code>11</code>): 州名です。<code>MASSACHUSETTS</code>が"
-"該当します。"
+msgstr "文字列 (トークン番号 <code>11</code>): "
+"州名です。<code>MASSACHUSETTS</code>が該当します。"
 
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>12</code>): Example <code>USA</code>"
-msgstr ""
-"文字列 (トークン番号 <code>12</code>): 国名です。<code>USA</code>が該当しま"
-"す。"
+msgstr "文字列 (トークン番号 <code>12</code>): "
+"国名です。<code>USA</code>が該当します。"
 
 #. Tag: para
 #, no-c-format
@@ -1278,8 +1271,8 @@ msgid ""
 "is text POSTAL CODE (ZIP CODE) (token number <code>13</code>): Example "
 "<code>02109</code>"
 msgstr ""
-"文字列 (トークン番号 <code>13</code>): 郵便番号 (POSTAL CODE, ZIP CODE)です。"
-"<code>02109</code>等です。"
+"文字列 (トークン番号 <code>13</code>): 郵便番号 (POSTAL CODE, ZIP "
+"CODE)です。<code>02109</code>等です。"
 
 #. Tag: para
 #, no-c-format
