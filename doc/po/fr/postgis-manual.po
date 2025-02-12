@@ -4,13 +4,14 @@
 # Thomas Muguet <thomas.muguet@oslandia.com>, 2024, 2025.
 # DeepL <noreply-mt-deepl@weblate.org>, 2024, 2025.
 # Edouard Choinière <echoix@users.noreply.weblate.osgeo.org>, 2024.
+# Pierre Cardinal <pierre.cardinal@sympatico.ca>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2025-02-03 16:47+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2025-02-12 02:47+0000\n"
+"Last-Translator: Pierre Cardinal <pierre.cardinal@sympatico.ca>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -8520,7 +8521,7 @@ msgstr ""
 "<link xlink:href=\"http://www.gtk.org/\"> http://www.gtk.org/ </link> ."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SFCGAL, 1.4.1 or higher is required and 1.5.0+ is needed to be able to use "
 "all functionality. SFCGAL can be used to provide additional 2D and 3D "
@@ -8534,6 +8535,18 @@ msgid ""
 "xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/"
 "SFCGAL/</link>."
 msgstr ""
+"SFCGAL, 1.4.1 ou plus est nécessaire et 1.5.0+ est nécessaire pour pouvoir "
+"utiliser toutes les fonctionnalités. SFCGAL peut être utilisé pour fournir "
+"des fonctions d'analyse avancées 2D et 3D supplémentaires à PostGIS cf <xref "
+"linkend=\"reference_sfcgal\"/>. Il permet également d'utiliser SFCGAL plutôt "
+"que GEOS pour certaines fonctions 2D fournies par les deux backends (comme "
+"ST_Intersection ou ST_Area, par exemple). Une variable de configuration "
+"PostgreSQL <code>postgis.backend</code> permet à l'utilisateur final de "
+"contrôler le backend qu'il souhaite utiliser si SFCGAL est installé (GEOS "
+"par défaut). Nota : SFCGAL 1.2 nécessite au minimum CGAL 4.3 et Boost 1.54 ("
+"cf : <link xlink:href=\"https://sfcgal.org\">https://sfcgal.org</link>) "
+"<link xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/"
+"sfcgal/SFCGAL/</link>."
 
 #. Tag: para
 #, no-c-format
@@ -10688,9 +10701,9 @@ msgid "David Techer"
 msgstr "David Techer"
 
 #. Tag: member
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Dian M Fay"
-msgstr ""
+msgstr "Dian M Fay"
 
 #. Tag: member
 #, no-c-format
@@ -11245,7 +11258,7 @@ msgstr "Geographic Data BC"
 #. Tag: link
 #, no-c-format
 msgid "HighGo"
-msgstr ""
+msgstr "HighGo"
 
 #. Tag: simpara
 #, no-c-format
@@ -12268,7 +12281,7 @@ msgstr ""
 "supprimées des prochaines version de PostGIS. IL NE FAUT PLUS LES UTILISER."
 
 #. Tag: chapter
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "&reference_type; &reference_management; &reference_constructor; "
 "&reference_accessor; &reference_editor; &reference_validation; "
@@ -12278,6 +12291,14 @@ msgid ""
 "&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
 "&reference_version; &reference_guc; &reference_troubleshooting;"
 msgstr ""
+"&reference_type; &reference_management; &reference_constructor; "
+"&reference_accessor; &reference_editor; &reference_validation; "
+"&reference_srs; &reference_input; &reference_output; &reference_operator; "
+"&reference_relationship; &reference_measure; &reference_overlay; "
+"&reference_processing; &reference_coverage; &reference_transformation; "
+"&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
+"&reference_transaction; &reference_version; &reference_guc; "
+"&reference_troubleshooting;"
 
 #. Tag: title
 #, no-c-format
@@ -14435,7 +14456,7 @@ msgstr ""
 "renvoie NULL. Avant la version 1.5.4, une exception était levée."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Escaping names for tables and/or namespaces that include special characters "
 "and quotes may require special handling. A user notes: \"For schemas and "
@@ -14443,6 +14464,13 @@ msgid ""
 "afterwards remove the first and last double-quote character. For geometry "
 "column pass as is.\""
 msgstr ""
+"L'échappement des noms de tables et/ou d'espaces de noms qui comprennent des "
+"caractères spéciaux et des guillemets peut nécessiter un traitement "
+"particulier. Un utilisateur note : \"Pour les schémas et les tables, "
+"utiliser les règles d'échappement des identificateurs pour produire une "
+"chaîne de caractères entre guillemets, puis supprimer le premier et le "
+"dernier caractère entre guillemets. Pour les colonnes géométriques, laissez-"
+"les telles quelles."
 
 #. Tag: para
 #, no-c-format
@@ -15657,12 +15685,16 @@ msgstr ""
 "créé."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "While not OGC-compliant, <varname>ST_MakePoint</varname> is faster than "
 "<xref linkend=\"ST_GeomFromText\"/> and <xref linkend=\"ST_PointFromText\"/"
 ">. It is also easier to use for numeric coordinate values."
 msgstr ""
+"Bien que non conforme à l'OGC, <varname>ST_MakePoint</varname> est plus "
+"rapide que <xref linkend=\"ST_GeomFromText\"/> et <xref linkend="
+"\"ST_PointFromText\"/>. Il est également plus facile à utiliser pour les "
+"valeurs de coordonnées numériques."
 
 #. Tag: para
 #, no-c-format
@@ -45302,9 +45334,9 @@ msgid "PostGIS 3.6.0"
 msgstr ""
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "2025/xx/xx"
-msgstr ""
+msgstr "2025/xx/xx"
 
 #. Tag: title
 #, no-c-format
