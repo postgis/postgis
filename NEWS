@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - [topology] Check deletion results when healing edges (Paul Ramsey and Maksim Korotkov)
  - #5728, Use portable formats for geometry and topology diagnostics (Sandro Santilli)
  - #5850, [topology] Fix closed-line processing in debug builds (Sandro Santilli)
  - #5500, [raster] Preserve views using ST_MapAlgebraFCT during upgrade (Sandro Santilli)
