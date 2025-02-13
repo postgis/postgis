@@ -4773,7 +4773,7 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
     return -1;
   }
   if ( ! modEdge ) {
-    i = lwt_be_deleteEdges(topo, e1, LWT_COL_EDGE_EDGE_ID);
+    result = lwt_be_deleteEdges(topo, e1, LWT_COL_EDGE_EDGE_ID);
     if (result == -1)
     {
       _lwt_release_edges(edges, nedges);
@@ -4785,7 +4785,7 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
   _lwt_release_edges(edges, nedges);
 
   /* delete the common node */
-  i = lwt_be_deleteNodesById( topo, &commonnode, 1 );
+  result = lwt_be_deleteNodesById( topo, &commonnode, 1 );
   if (result == -1)
   {
     PGTOPO_BE_ERROR();
