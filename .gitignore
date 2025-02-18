@@ -167,7 +167,6 @@ topology/test/Makefile
 topology/test/load_topology-4326.sql
 topology/test/load_topology.sql
 topology/test/topo_predicates.sql
-topology/test/regress/topogeo_addlinestring_expected
 topology/topology_drop_after.sql
 topology/topology_drop_after.sql.in
 topology/topology_drop_before.sql
