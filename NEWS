@@ -8,6 +8,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 
 - #5841, Change approach to interrupt handling to conform to PgSQL 
          recommended practice (Paul Ramsey)
+- #5855, Fix index binding in ST_DFullyWithin (Paul Ramsey)
 - Fix misassignment of result in _lwt_HealEdges (Maxim Korotkov)
 
 
