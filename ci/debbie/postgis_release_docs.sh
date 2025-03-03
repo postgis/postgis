@@ -109,7 +109,7 @@ done
 
 # Build and install pdf and epub
 make pdf-install # || : survive failure
-make epub-install # || : survive failure
+#make epub-install # || : survive failure
 
 # build japanese, french, german, chinese, korean pdf
 make -C ../doc/po/ja local-pdf-install
