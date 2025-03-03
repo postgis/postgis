@@ -55,11 +55,11 @@ DECLARE
 BEGIN
   EXECUTE 'EXPLAIN ANALYZE ' || qry INTO anl;
 
-  SELECT regexp_matches(anl, ' rows=([0-9]*) .* rows=([0-9]*) ')
+  SELECT regexp_matches(anl, E' rows=([0-9]*) .* rows=([0-9\.]*) ')
   INTO mat;
 
   est := mat[1];
-  act := mat[2];
+  act := mat[2]::numeric::integer;
 
   err = abs(est-act);
 
