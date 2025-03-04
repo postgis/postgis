@@ -12,7 +12,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2025-03-04 11:47+0000\n"
-"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -18003,6 +18003,8 @@ msgid ""
 "Removes points that are irrelevant for rendering a specific rectangular view "
 "of a geometry."
 msgstr ""
+"Supprime les points qui ne sont pas pertinents pour le rendu d'une vue "
+"rectangulaire spécifique d'une géométrie."
 
 #. Tag: para
 #, no-c-format
@@ -18019,6 +18021,8 @@ msgid ""
 "This function can be used to quickly preprocess geometries that should be "
 "rendered only within certain bounds."
 msgstr ""
+"Cette fonction peut être utilisée pour prétraiter rapidement les géométries "
+"qui ne doivent être rendues qu'à l'intérieur de certaines limites."
 
 #. Tag: para
 #, no-c-format
@@ -18026,6 +18030,8 @@ msgid ""
 "Only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING are evaluated. "
 "Other geometries keep unchanged."
 msgstr ""
+"Seules les géométries de type (MULTI)POLYGONE et (MULTI)LINESTRING sont "
+"évaluées. Les autres géométries restent inchangées."
 
 #. Tag: para
 #, no-c-format
@@ -18038,16 +18044,18 @@ msgid ""
 "sorts out points without computing new intersection points which avoids "
 "rounding errors and usually increases performance,"
 msgstr ""
+"trie les points sans calculer de nouveaux points d'intersection, ce qui "
+"évite les erreurs d'arrondi et augmente généralement les performances,"
 
 #. Tag: para
 #, no-c-format
 msgid "returns a geometry with equal or similar point number,"
-msgstr ""
+msgstr "renvoie une géométrie dont le nombre de points est égal ou similaire,"
 
 #. Tag: para
 #, no-c-format
 msgid "leads to the same rendering result within the specified view, and"
-msgstr ""
+msgstr "conduit au même résultat de rendu dans la vue spécifiée, et"
 
 #. Tag: para
 #, no-c-format
@@ -18055,6 +18063,8 @@ msgid ""
 "may introduce self-intersections which would make the resulting geometry "
 "invalid (see example below)."
 msgstr ""
+"peut introduire des auto-intersections qui rendraient la géométrie "
+"résultante invalide (voir l'exemple ci-dessous)."
 
 #. Tag: para
 #, no-c-format
@@ -18065,6 +18075,12 @@ msgid ""
 "introduce rendering artifacts if the resulting coordinates are projected "
 "into another (non-cartesian) coordinate system before rendering."
 msgstr ""
+"Si <code>cartesian_hint</code> est défini à <code>true</code>, l'algorithme "
+"applique des optimisations supplémentaires impliquant des mathématiques "
+"cartésiennes pour réduire davantage le nombre de points résultant. Veuillez "
+"noter que l'utilisation de cette option peut introduire des artefacts de "
+"rendu si les coordonnées résultantes sont projetées dans un autre système de "
+"coordonnées (non cartésien) avant le rendu."
 
 #. Tag: para
 #, no-c-format
@@ -18073,6 +18089,9 @@ msgid ""
 "valid. This situation can be checked with <xref linkend=\"ST_IsValid\"/> and "
 "repaired with <xref linkend=\"ST_MakeValid\"/>."
 msgstr ""
+"Pour les polygones, cette fonction ne garantit pas actuellement que le "
+"résultat est valide. Cette situation peut être vérifiée avec <xref linkend="
+"\"ST_IsValid\"/> et réparée avec <xref linkend=\"ST_MakeValid\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -18081,6 +18100,9 @@ msgid ""
 "points remain, the rendering result (light-blue area) within the grey view "
 "box remains as well."
 msgstr ""
+"Exemple : ST_RemoveIrrelevantPointsForView() appliqué à un polygone. Les "
+"points bleus restent, le résultat du rendu (zone bleu clair) à l'intérieur "
+"de la boîte de visualisation grise reste également."
 
 #. Tag: para
 #, no-c-format
@@ -18089,6 +18111,9 @@ msgid ""
 "are computed, the result of ST_RemoveIrrelevantPointsForView() may contain "
 "self-intersections."
 msgstr ""
+"Exemple : Étant donné que les points sont simplement triés et qu'aucun "
+"nouveau point n'est calculé, le résultat de "
+"ST_RemoveIrrelevantPointsForView() peut contenir des auto-intersections."
 
 #. Tag: para
 #, no-c-format
@@ -18099,6 +18124,7 @@ msgstr ", <xref linkend=\"ST_Intersection\"/>"
 #, no-c-format
 msgid "Removes small parts (polygon rings or linestrings) of a geometry."
 msgstr ""
+"Supprime les petites parties (anneaux de polygone ou lignes) d'une géométrie."
 
 #. Tag: para
 #, no-c-format
@@ -18106,6 +18132,8 @@ msgid ""
 "Returns a <xref linkend=\"geometry\"/> without small parts (exterior or "
 "interior polygon rings, or linestrings)."
 msgstr ""
+"Retourne un <xref linkend=\"geometry\"/> sans les petites parties (anneaux "
+"de polygones extérieurs ou intérieurs, ou lignes)."
 
 #. Tag: para
 #, no-c-format
@@ -18113,6 +18141,9 @@ msgid ""
 "This function can be used as preprocessing step for creating simplified "
 "maps, e. g. to remove small islands or holes."
 msgstr ""
+"Cette fonction peut être utilisée comme étape de prétraitement pour créer "
+"des cartes simplifiées, par exemple pour supprimer les petites îles ou les "
+"trous."
 
 #. Tag: para
 #, no-c-format
@@ -18120,6 +18151,8 @@ msgid ""
 "It evaluates only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING. "
 "Other geometries remain unchanged."
 msgstr ""
+"Il n'évalue que les géométries de type (MULTI)POLYGONE et (MULTI)LINESTRING. "
+"Les autres géométries restent inchangées."
 
 #. Tag: para
 #, no-c-format
@@ -18166,7 +18199,7 @@ msgstr "la géométrie d'origine,"
 #. Tag: para
 #, no-c-format
 msgid "a POLYGON with all rings with less vertices,"
-msgstr ""
+msgstr "un POLYGONE avec tous les anneaux ayant moins de sommets,"
 
 #. Tag: para
 #, no-c-format
@@ -18180,7 +18213,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "a POLYGON EMPTY, or"
-msgstr ""
+msgstr "un POLYGONE VIDE, ou"
 
 #. Tag: para
 #, no-c-format
@@ -18188,6 +18221,8 @@ msgid ""
 "a MULTIPOLYGON with a reduced number of polygons (having possibly less "
 "interior rings or vertices), or"
 msgstr ""
+"un MULTIPOLYGONE avec un nombre réduit de polygones (ayant éventuellement "
+"moins d'anneaux intérieurs ou de sommets), ou"
 
 #. Tag: para
 #, no-c-format
@@ -18864,6 +18899,10 @@ msgid ""
 "href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
 "ALTER SYSTEM</link>"
 msgstr ""
+"Pour plus d'exemples d'utilisation, voir <link xlink:href=\"https://www."
+"postgresql.org/docs/current/sql-set.html\">SQL SET</link> et <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\""
+">SQL ALTER SYSTEM</link>."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19091,11 +19130,15 @@ msgid ""
 "To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current "
 "session"
 msgstr ""
+"Pour définir et réinitialiser <varname>postgis.gdal_enabled_drivers</"
+"varname> pour la session en cours"
 
 #. Tag: para
 #, no-c-format
 msgid "Set for all new connections to a specific database to specific drivers"
 msgstr ""
+"Définir pour toutes les nouvelles connexions à une base de données "
+"spécifique des pilotes spécifiques"
 
 #. Tag: para
 #, no-c-format
@@ -19104,6 +19147,10 @@ msgid ""
 "user access. Also note that database, session, and user settings override "
 "this."
 msgstr ""
+"Paramètre pour l'ensemble du cluster de bases de données afin d'activer tous "
+"les pilotes. Nécessite l'accès d'un super utilisateur. Notez également que "
+"les paramètres de la base de données, de la session et de l'utilisateur sont "
+"prioritaires."
 
 #. Tag: para
 #, no-c-format
@@ -19181,6 +19228,7 @@ msgstr ""
 #, no-c-format
 msgid "Set for all new connections to a specific database"
 msgstr ""
+"Défini pour toutes les nouvelles connexions à une base de données spécifique"
 
 #. Tag: para
 #, no-c-format
@@ -25266,6 +25314,8 @@ msgstr "Les géométries 3D sont prises en charge :"
 #, no-c-format
 msgid "Options argument can be used to add BBOX and CRS in GeoJSON output:"
 msgstr ""
+"L'argument Options peut être utilisé pour ajouter BBOX et CRS dans la sortie "
+"GeoJSON :"
 
 #. Tag: para
 #, no-c-format
@@ -29058,6 +29108,9 @@ msgid ""
 "Behavior changed in GEOS 3.11 so offset curves now have the same direction "
 "as the input line, for both positive and negative offsets."
 msgstr ""
+"Comportement modifié dans GEOS 3.11 de sorte que les courbes de décalage ont "
+"désormais la même direction que la ligne d'entrée, tant pour les décalages "
+"positifs que négatifs."
 
 #. Tag: para
 #, no-c-format
@@ -31431,7 +31484,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Aggregate. Renders PostGIS geometries into a new raster."
-msgstr ""
+msgstr "Aggregate. Rend les géométries PostGIS dans un nouveau raster."
 
 #. Tag: para
 #, no-c-format
@@ -31439,17 +31492,20 @@ msgid ""
 "Returns a single-band raster containing the rendered version of all incoming "
 "geometries, each with its associated value."
 msgstr ""
+"Renvoie un raster à bande unique contenant la version rendue de toutes les "
+"géométries entrantes, chacune avec sa valeur associée."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0"
-msgstr ""
+msgstr "Disponibilité : 3.6.0"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_Union\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_Union\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41041,6 +41097,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) = ∅) ∧ "
 "(A ⋂ B ≠ ∅) </emphasis>"
 msgstr ""
+"En termes mathématiques : <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) = ∅) "
+"∧ (A ⋂ B ≠ ∅). </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -41651,7 +41709,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as CG_3DVolume)"
-msgstr ""
+msgstr "&sqlmm_compliant ; SQL-MM IEC 13249-3 : 9.1 (identique à CG_3DVolume)"
 
 #. Tag: para
 #, no-c-format
@@ -41661,6 +41719,10 @@ msgid ""
 "linkend=\"CG_MakeSolid\"/>. Areal geometries have no volume. Here is an "
 "example to demonstrate."
 msgstr ""
+"Lorsque des surfaces fermées sont créées avec WKT, elles sont traitées comme "
+"des surfaces aréolaires et non comme des surfaces solides. Pour les rendre "
+"solides, vous devez utiliser <xref linkend=\"CG_MakeSolid\"/>. Les "
+"géométries aréolaires n'ont pas de volume. Voici un exemple de démonstration."
 
 #. Tag: para
 #, no-c-format
@@ -42050,7 +42112,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Perform 3D union using postgis_sfcgal."
-msgstr ""
+msgstr "Réaliser l'union 3D en utilisant postgis_sfcgal."
 
 #. Tag: para
 #, no-c-format
@@ -42175,7 +42237,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.4.1."
-msgstr ""
+msgstr "Disponibilité : 3.5.0 - nécessite SFCGAL &gt;= 1.4.1."
 
 #. Tag: para
 #, no-c-format
@@ -42348,7 +42410,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "CG_ConstrainedDelaunayTriangles of 2 polygons"
-msgstr ""
+msgstr "CG_ConstrainedDelaunayTriangles de 2 polygones"
 
 #. Tag: para
 #, no-c-format
@@ -42625,6 +42687,8 @@ msgid ""
 "Optimal alpha-shape of a MultiPoint (same example as <xref "
 "linkend=\"CG_AlphaShape\"/>)"
 msgstr ""
+"Forme alpha optimale d'un MultiPoint (même exemple que <xref linkend="
+"\"CG_AlphaShape\"/>)"
 
 #. Tag: para
 #, no-c-format
@@ -42632,6 +42696,8 @@ msgid ""
 "Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref "
 "linkend=\"CG_AlphaShape\"/>)"
 msgstr ""
+"Forme alpha optimale d'un MultiPoint, autorisant les trous (même exemple que "
+"<xref linkend=\"CG_AlphaShape\"/>)"
 
 #. Tag: para
 #, no-c-format
