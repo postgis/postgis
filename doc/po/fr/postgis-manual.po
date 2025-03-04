@@ -12,7 +12,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2025-03-04 10:30+0000\n"
-"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -8522,7 +8522,7 @@ msgstr ""
 "<link xlink:href=\"http://www.gtk.org/\"> http://www.gtk.org/ </link> ."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SFCGAL, 1.4.1 or higher is required and 1.5.0+ is needed to be able to use "
 "all functionality. SFCGAL can be used to provide additional 2D and 3D "
@@ -10702,7 +10702,7 @@ msgid "David Techer"
 msgstr "David Techer"
 
 #. Tag: member
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Dian M Fay"
 msgstr "Dian M Fay"
 
@@ -16524,6 +16524,9 @@ msgid ""
 "linkend=\"ST_SetSRID\"/> to set the SRID if the given origin has an unknown "
 "SRID (as is the case by default)."
 msgstr ""
+"Les carrés sont générés avec le SRID de l'origine donnée. Utilisez <xref "
+"linkend=\"ST_SetSRID\"/> pour définir le SRID si l'origine donnée a un SRID "
+"inconnu (comme c'est le cas par défaut)."
 
 #. Tag: title
 #, no-c-format
