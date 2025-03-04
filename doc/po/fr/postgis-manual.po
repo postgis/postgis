@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2025-03-04 11:47+0000\n"
+"PO-Revision-Date: 2025-03-04 14:47+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
@@ -42918,7 +42918,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the straight skeleton partition of a polygon."
-msgstr ""
+msgstr "Calcule la partition du squelette droit d'un polygone."
 
 #. Tag: para
 #, no-c-format
@@ -42930,16 +42930,22 @@ msgid ""
 "automatically adjust the orientation of the input polygon to ensure correct "
 "results."
 msgstr ""
+"Calcule la partition du squelette droit du polygone d'entrée geometry "
+"<parameter>geom</parameter>. Le squelette droit est une partition du "
+"polygone en faces formées en traçant l'effondrement de ses arêtes. Si "
+"<parameter>auto_orientation</parameter> vaut true, la fonction ajustera "
+"automatiquement l'orientation du polygone d'entrée pour garantir des "
+"résultats corrects."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0."
-msgstr ""
+msgstr "Disponibilité : 3.6.0 - nécessite SFCGAL &gt;= 2.0.0."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes a 3D buffer around a geometry."
-msgstr ""
+msgstr "Calcule un tampon 3D autour d'une géométrie."
 
 #. Tag: para
 #, no-c-format
@@ -42956,7 +42962,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0"
-msgstr ""
+msgstr "Disponibilité : 3.6.0 - nécessite SFCGAL &gt;= 2.0.0"
 
 #. Tag: para
 #, no-c-format
@@ -42965,26 +42971,29 @@ msgid ""
 "into <link xlink:href=\"https://postgis.net/docs/support/viewers/x3d_viewer."
 "htm\">X3D Viewer</link>."
 msgstr ""
+"Les images suivantes ont été obtenues en collant le résultat de la requête "
+"ST_AsX3D dans <link xlink:href=\"https://postgis.net/docs/support/viewers/"
+"x3d_viewer.htm\">X3D Viewer</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "segments=32 (rounded buffer)"
-msgstr ""
+msgstr "segments=32 (tampon arrondi)"
 
 #. Tag: para
 #, no-c-format
 msgid "5 segments rounded"
-msgstr ""
+msgstr "5 segments arrondis"
 
 #. Tag: para
 #, no-c-format
 msgid "32 segments, round"
-msgstr ""
+msgstr "32 segments, ronds"
 
 #. Tag: para
 #, no-c-format
 msgid "32 segments, square"
-msgstr ""
+msgstr "32 segments, carrés"
 
 #. Tag: para
 #, no-c-format
@@ -42994,7 +43003,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry by a given angle around the origin (0,0)."
-msgstr ""
+msgstr "Fait pivoter une géométrie d'un angle donné autour de l'origine (0,0)."
 
 #. Tag: para
 #, no-c-format
@@ -43004,6 +43013,11 @@ msgid ""
 "in 2D space; Z coordinates are not modified. Positive angles rotate the "
 "geometry counter-clockwise."
 msgstr ""
+"Fait pivoter la géométrie d'entrée <parameter>geom</parameter> de "
+"<parameter>angle</parameter> radians autour du point d'origine (0,0). La "
+"rotation est effectuée dans l'espace 2D ; les coordonnées Z ne sont pas "
+"modifiées. Les angles positifs font tourner la géométrie dans le sens "
+"inverse des aiguilles d'une montre."
 
 #. Tag: para
 #, no-c-format
@@ -43014,6 +43028,7 @@ msgstr ""
 #, no-c-format
 msgid "Rotates a geometry by a given angle around a specified point in 2D."
 msgstr ""
+"Fait pivoter une géométrie d'un angle donné autour d'un point spécifié en 2D."
 
 #. Tag: para
 #, no-c-format
@@ -43024,6 +43039,12 @@ msgid ""
 "coordinates are dropped. Positive angles rotate the geometry counter-"
 "clockwise."
 msgstr ""
+"Fait pivoter la géométrie d'entrée <parameter>geom</parameter> de "
+"<parameter>angle</parameter> radians autour du point (<parameter>cx</"
+"parameter>, <parameter>cy</parameter>). La rotation est effectuée dans "
+"l'espace 2D ; les coordonnées Z ne sont pas prises en compte. Les angles "
+"positifs font tourner la géométrie dans le sens inverse des aiguilles d'une "
+"montre."
 
 #. Tag: para
 #, no-c-format
@@ -43033,7 +43054,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry in 3D space around an axis vector."
-msgstr ""
+msgstr "Fait pivoter une géométrie dans l'espace 3D autour d'un vecteur d'axe."
 
 #. Tag: para
 #, no-c-format
@@ -43043,6 +43064,10 @@ msgid ""
 "parameter>, <parameter>ay</parameter>, <parameter>az</parameter>) passing "
 "through the origin (0,0,0)."
 msgstr ""
+"Fait pivoter la géométrie d'entrée <parameter>geom</parameter> de "
+"<parameter>angle</parameter> radians autour d'un axe défini par le vecteur "
+"(<parameter>ax</parameter>, <parameter>ay</parameter>, "
+"<parameter>az</parameter>) passant par l'origine (0,0,0)."
 
 #. Tag: para
 #, no-c-format
@@ -43052,7 +43077,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry around the X-axis by a given angle."
-msgstr ""
+msgstr "Fait pivoter une géométrie autour de l'axe X d'un angle donné."
 
 #. Tag: para
 #, no-c-format
@@ -43060,6 +43085,8 @@ msgid ""
 "Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
 "parameter> radians around the X-axis."
 msgstr ""
+"Fait pivoter la géométrie d'entrée <parameter>geom</parameter> de "
+"<parameter>angle</parameter> radians autour de l'axe X."
 
 #. Tag: para
 #, no-c-format
@@ -43069,7 +43096,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry around the Y-axis by a given angle."
-msgstr ""
+msgstr "Fait pivoter une géométrie autour de l'axe Y d'un angle donné."
 
 #. Tag: para
 #, no-c-format
@@ -43081,7 +43108,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry around the Z-axis by a given angle."
-msgstr ""
+msgstr "Fait pivoter une géométrie autour de l'axe Z d'un angle donné."
 
 #. Tag: para
 #, no-c-format
@@ -43089,6 +43116,8 @@ msgid ""
 "Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
 "parameter> radians around the Z-axis."
 msgstr ""
+"Fait pivoter la géométrie d'entrée <parameter>geom</parameter> de "
+"<parameter>angle</parameter> radians autour de l'axe Z."
 
 #. Tag: para
 #, no-c-format
@@ -43099,6 +43128,8 @@ msgstr ""
 #, no-c-format
 msgid "Scales a geometry uniformly in all dimensions by a given factor."
 msgstr ""
+"Met à l'échelle une géométrie uniformément dans toutes les dimensions selon "
+"un facteur donné."
 
 #. Tag: para
 #, no-c-format
@@ -43107,6 +43138,10 @@ msgid ""
 "<parameter>factor</parameter> in all dimensions (X, Y, and Z). The scaling "
 "is performed relative to the origin point (0,0,0)."
 msgstr ""
+"Met à l'échelle la géométrie d'entrée <parameter>geom</parameter> par un "
+"facteur d'échelle uniforme <parameter></parameter> dans toutes les "
+"dimensions (X, Y et Z). La mise à l'échelle est effectuée par rapport au "
+"point d'origine (0,0,0)."
 
 #. Tag: para
 #, no-c-format
@@ -43118,6 +43153,8 @@ msgstr ""
 #, no-c-format
 msgid "Scales a geometry by separate factors along X, Y, and Z axes."
 msgstr ""
+"Met à l'échelle une géométrie en fonction de facteurs distincts le long des "
+"axes X, Y et Z."
 
 #. Tag: para
 #, no-c-format
@@ -43126,6 +43163,10 @@ msgid ""
 "along the X, Y, and Z axes. The scaling is performed relative to the origin "
 "point (0,0,0)."
 msgstr ""
+"Met à l'échelle la géométrie d'entrée <parameter>geom</parameter> en "
+"fonction de différents facteurs le long des axes X, Y et Z. La mise à "
+"l'échelle est effectuée par rapport au point d'origine (0,0,0). La mise à "
+"l'échelle est effectuée par rapport au point d'origine (0,0,0)."
 
 #. Tag: para
 #, no-c-format
@@ -43136,6 +43177,8 @@ msgstr ""
 #, no-c-format
 msgid "Scales a geometry in 3D space around a specified center point."
 msgstr ""
+"Met à l'échelle une géométrie dans l'espace 3D autour d'un point central "
+"spécifié."
 
 #. Tag: para
 #, no-c-format
@@ -43145,6 +43188,10 @@ msgid ""
 "(<parameter>centerX</parameter>, <parameter>centerY</parameter>, "
 "<parameter>centerZ</parameter>)."
 msgstr ""
+"Met à l'échelle la géométrie d'entrée <parameter>geom</parameter> par "
+"différents facteurs le long des axes X, Y et Z, par rapport à un point "
+"central spécifié (<parameter>centerX</parameter>, <parameter>centerY</"
+"parameter>, <parameter>centerZ</parameter>)."
 
 #. Tag: para
 #, no-c-format
@@ -45244,7 +45291,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the version number of the libjson-c library."
-msgstr ""
+msgstr "Renvoie le numéro de version de la bibliothèque libjson-c."
 
 #. Tag: para
 #, no-c-format
@@ -45325,6 +45372,8 @@ msgid ""
 "Returns the version number of the PROJ library against which PostGIS was "
 "built."
 msgstr ""
+"Renvoie le numéro de version de la bibliothèque PROJ avec laquelle PostGIS a "
+"été construit."
 
 #. Tag: para
 #, no-c-format
@@ -45505,7 +45554,7 @@ msgstr "Notes de version"
 #. Tag: title
 #, no-c-format
 msgid "PostGIS 3.6.0"
-msgstr ""
+msgstr "PostGIS 3.6.0"
 
 #. Tag: para
 #, fuzzy, no-c-format
