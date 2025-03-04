@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2025-03-04 10:30+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2025-03-04 11:47+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -18010,6 +18010,8 @@ msgid ""
 "Returns a <xref linkend=\"geometry\"/> without points being irrelevant for "
 "rendering the geometry within a given rectangular view."
 msgstr ""
+"Renvoie une <xref linkend=\"geometry\"/> sans les points non pertinents pour "
+"le rendu de la géométrie dans une vue rectangulaire donnée."
 
 #. Tag: para
 #, no-c-format
@@ -18125,6 +18127,8 @@ msgid ""
 "If <parameter>minSizeX</parameter> is greater than 0, parts are sorted out "
 "if their width is smaller than <parameter>minSizeX</parameter>."
 msgstr ""
+"Si <parameter>minSizeX</parameter> est supérieur à 0, les parties sont "
+"triées si leur largeur est inférieure à <parameter>minSizeX</parameter>."
 
 #. Tag: para
 #, no-c-format
@@ -18132,6 +18136,8 @@ msgid ""
 "If <parameter>minSizeY</parameter> is greater than 0, parts are sorted out "
 "if their height is smaller than <parameter>minSizeY</parameter>."
 msgstr ""
+"Si <parameter>minSizeY</parameter> est supérieur à 0, les parties sont "
+"triées si leur hauteur est inférieure à <parameter>minSizeY</parameter>."
 
 #. Tag: para
 #, no-c-format
@@ -18139,6 +18145,9 @@ msgid ""
 "Both <parameter>minSizeX</parameter> and <parameter>minSizeY</parameter> are "
 "measured in coordinate system units of the geometry."
 msgstr ""
+"Les deux paramètres, <parameter>minSizeX</parameter> et <parameter>minSizeY</"
+"parameter> sont mesurés dans les unités du système de coordonnées de la "
+"géométrie."
 
 #. Tag: para
 #, no-c-format
@@ -18146,6 +18155,8 @@ msgid ""
 "For polygon types, evaluation is done separately for each ring which can "
 "lead to one of the following results:"
 msgstr ""
+"Pour les objets de type polygone, l'évaluation est effectuée séparément pour "
+"chaque anneau, ce qui peut conduire à l'un des résultats suivants :"
 
 #. Tag: para
 #, no-c-format
@@ -18163,6 +18174,8 @@ msgid ""
 "a POLYGON with a reduced number of interior rings (having possibly less "
 "vertices),"
 msgstr ""
+"un POLYGONE avec un nombre réduit d'anneaux intérieurs (ayant éventuellement "
+"moins de sommets),"
 
 #. Tag: para
 #, no-c-format
@@ -18179,7 +18192,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "a MULTIPOLYGON EMPTY."
-msgstr ""
+msgstr "un MULTIPOLYGONE VIDE."
 
 #. Tag: para
 #, no-c-format
@@ -18187,16 +18200,18 @@ msgid ""
 "For linestring types, evaluation is done for each linestring which can lead "
 "to one of the following results:"
 msgstr ""
+"Pour les types linestring l'évaluation est effectuée pour chaque ligne, ce "
+"qui peut conduire à l'un des résultats suivants :"
 
 #. Tag: para
 #, no-c-format
 msgid "a LINESTRING with a reduced number of vertices,"
-msgstr ""
+msgstr "une LINESTRING avec un nombre réduit de sommets,"
 
 #. Tag: para
 #, no-c-format
 msgid "a LINESTRING EMPTY,"
-msgstr ""
+msgstr "une LINESTRING VIDE,"
 
 #. Tag: para
 #, no-c-format
@@ -18204,17 +18219,21 @@ msgid ""
 "a MULTILINESTRING with a reduced number of linestrings (having possibly less "
 "vertices), or"
 msgstr ""
+"une MULTILINESTRING avec un nombre réduit de lignes (ayant éventuellement "
+"moins de sommets), ou"
 
 #. Tag: para
 #, no-c-format
 msgid "a MULTILINESTRING EMPTY."
-msgstr ""
+msgstr "une MULTILINESTRING VIDE."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Example: ST_RemoveSmallParts() applied to a multi-polygon. Blue parts remain."
 msgstr ""
+"Exemple : ST_RemoveSmallParts() appliqué à un multi-polygone. Les parties "
+"bleues sont conservées."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19169,6 +19188,9 @@ msgid ""
 "Setting for whole database cluster. Requires super user access. Also note "
 "that database, session, and user settings override this."
 msgstr ""
+"Paramètre pour l'ensemble du cluster de bases de données. Nécessite l'accès "
+"d'un super-utilisateur. Notez également que les paramètres de la base de "
+"données, de la session et de l'utilisateur sont prioritaires."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22120,6 +22142,10 @@ msgid ""
 "web.archive.org/web/20160827203903/http://boundlessgeo.com/2012/07/making-"
 "geography-faster/\">Making Geography faster</link> for details."
 msgstr ""
+"Amélioration : la version 2.1.0 a amélioré la vitesse pour le type "
+"geography. Voir <link xlink:href=\"https://web.archive.org/web/"
+"20160827203903/http://boundlessgeo.com/2012/07/making-geography-faster/\""
+">Making Geography faster</link> pour plus de détails."
 
 #. Tag: para
 #, no-c-format
@@ -33089,6 +33115,13 @@ msgid ""
 "linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
 "linkend=\"ST_Intersection\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_DumpAsPolygons\"/"
+">, <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_PixelAsPolygon\""
+"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, "
+"<xref linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>, "
+"<xref linkend=\"RT_ST_SRID\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend="
+"\"ST_Point\"/>, <xref linkend=\"ST_MakeEnvelope\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35397,6 +35430,12 @@ msgid ""
 "varname> is set to TRUE, then touched pixels are included, otherwise only if "
 "the center of the pixel is in the geometry it is included."
 msgstr ""
+"Renvoie le raster découpé par la géométrie d'entrée. Si le numéro de bande "
+"n'est pas spécifié, toutes les bandes sont traitées. Si <varname>crop</"
+"varname> n'est pas spécifié ou est TRUE, le raster de sortie est rogné. Si "
+"<varname>touched</varname> est défini sur TRUE, les pixels touchés sont "
+"inclus, sinon seulement si le centre du pixel est dans la géométrie, il est "
+"inclus."
 
 #. Tag: para
 #, no-c-format
@@ -38364,6 +38403,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_AsRasterAgg\"/>, <xref linkend=\"RT_ST_Value\"/>, "
 "<xref linkend=\"RT_ST_Polygon\"/>, <xref linkend=\"RT_ST_ValueCount\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AsRasterAgg\"/>, <xref linkend=\"RT_ST_Value\"/>, "
+"<xref linkend=\"RT_ST_Polygon\"/>, <xref linkend=\"RT_ST_ValueCount\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41595,6 +41636,8 @@ msgid ""
 ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>, <xref "
 "linkend=\"CG_Area\"/>"
 msgstr ""
+", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>, <xref "
+"linkend=\"CG_Area\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41622,17 +41665,21 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>"
 
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_ForceLHR\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_ForceLHR\"/"
+"> à la place."
 
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_IsPlanar\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_IsPlanar\"/"
+"> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -41647,23 +41694,31 @@ msgstr ""
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_IsSolid\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_IsSolid\"/"
+"> à la place."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_MakeSolid\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_MakeSolid\""
+"/> à la place."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Orientation\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_Orientation"
+"\"/> à la place."
 
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DArea\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_3DArea\"/> "
+"à la place."
 
 #. Tag: para
 #, no-c-format
@@ -41678,6 +41733,8 @@ msgstr ""
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Volume\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_Volume\"/> "
+"à la place."
 
 #. Tag: para
 #, no-c-format
@@ -41782,6 +41839,8 @@ msgstr "Effectuer une différence 3D"
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DDifference\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
+"\"CG_3DDifference\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -41817,6 +41876,8 @@ msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
 "linkend=\"CG_3DUnion\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
+"linkend=\"CG_3DUnion\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41840,7 +41901,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_Distance\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_Distance\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41876,6 +41937,8 @@ msgstr "Calcule l'enveloppe convexe 3D d'une géométrie."
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DConvexHull\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
+"\"CG_3DConvexHull\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -41897,6 +41960,8 @@ msgstr "Réaliser une intersection 3D"
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DIntersection\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
+"\"CG_3DIntersection\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -41958,6 +42023,8 @@ msgstr "Effectuer l'union 3D."
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DUnion\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_3DUnion\"/"
+"> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -41994,6 +42061,12 @@ msgid ""
 "it operates on rows of data, in the same way the SUM() and AVG() functions "
 "do and like most aggregates, it also ignores NULL geometries."
 msgstr ""
+"<emphasis role=\"bold\">Variante aggregate :</emphasis> renvoie une "
+"géométrie qui est l'union 3D d'un ensemble de géométries. La fonction "
+"CG_3DUnion() est une fonction \"aggregate\" dans la terminologie de "
+"PostgreSQL. Cela signifie qu'elle opère sur des lignes de données, de la "
+"même manière que les fonctions SUM() et AVG() et, comme la plupart des "
+"agrégats, elle ignore les géométries NULL."
 
 #. Tag: para
 #, no-c-format
@@ -42012,6 +42085,8 @@ msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
 "linkend=\"CG_3DDifference\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
+"linkend=\"CG_3DDifference\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -42023,6 +42098,8 @@ msgstr "Calcul d'une forme Alpha entourant une géométrie"
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_AlphaShape\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_AlphaShape"
+"\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42106,6 +42183,8 @@ msgid ""
 "Alpha-shape of a MultiPoint (same example As <xref "
 "linkend=\"CG_OptimalAlphaShape\"/>)"
 msgstr ""
+"Forme alpha d'un MultiPoint (même exemple que <xref linkend="
+"\"CG_OptimalAlphaShape\"/>)"
 
 #. Tag: para
 #, no-c-format
@@ -42113,6 +42192,8 @@ msgid ""
 "Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
 "linkend=\"CG_OptimalAlphaShape\"/>)"
 msgstr ""
+"Forme alpha d'un MultiPoint, autorisant les trous (même exemple que <xref "
+"linkend=\"CG_OptimalAlphaShape\"/>)"
 
 #. Tag: para
 #, no-c-format
@@ -42126,7 +42207,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_OptimalAlphaShape\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_OptimalAlphaShape\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -42215,6 +42296,8 @@ msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_ApproximateMedialAxis\"/> "
 "instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
+"\"CG_ApproximateMedialAxis\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42248,6 +42331,8 @@ msgid ""
 "is deprecated as of 3.5.0. Use <xref "
 "linkend=\"CG_ConstrainedDelaunayTriangles\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
+"\"CG_ConstrainedDelaunayTriangles\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42278,6 +42363,8 @@ msgid ""
 ", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"CG_Tesselate\"/"
 ">, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
 msgstr ""
+", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"CG_Tesselate\"/"
+">, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -42288,6 +42375,8 @@ msgstr "Extruder une surface vers un volume"
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Extrude\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_Extrude\"/"
+"> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42339,6 +42428,16 @@ msgid ""
 "with CG_Extrude(polygon, 0, 0, body_height). The result is an union of these "
 "polyhedralsurfaces."
 msgstr ""
+"Il s'agit peut-être du premier cas d'utilisation (historique) des squelettes "
+"droits : étant donné un toit polygonal, le squelette droit donne directement "
+"la disposition de chaque tente. Si chaque arête du squelette est soulevée du "
+"plan d'une hauteur égale à sa distance de décalage, le toit résultant est "
+"\"correct\" en ce sens que l'eau tombera toujours vers les bords du contour ("
+"la bordure du toit), quel que soit l'endroit où elle tombe sur le toit. La "
+"fonction calcule cette extrusion ou \"toit\" sur un polygone. Si l'argument "
+"body_height > 0, alors le polygone est extrudé comme avec CG_Extrude("
+"polygon, 0, 0, body_height). Le résultat est une union de ces polyedres "
+"surfaciques."
 
 #. Tag: para
 #, no-c-format
@@ -42384,6 +42483,8 @@ msgstr "Effectue la somme de Minkowski"
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_MinkowskiSum\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
+"\"CG_MinkowskiSum\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42478,6 +42579,8 @@ msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_OptimalAlphaShape\"/> "
 "instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
+"\"CG_OptimalAlphaShape\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42533,7 +42636,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_AlphaShape\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_AlphaShape\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -42601,6 +42704,8 @@ msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_StraightSkeleton\"/> "
 "instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
+"\"CG_StraightSkeleton\"/> à la place."
 
 #. Tag: refpurpose
 #, no-c-format
