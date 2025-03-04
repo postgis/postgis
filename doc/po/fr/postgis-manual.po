@@ -12,7 +12,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2025-03-04 14:47+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -12282,7 +12282,7 @@ msgstr ""
 "supprimées des prochaines version de PostGIS. IL NE FAUT PLUS LES UTILISER."
 
 #. Tag: chapter
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "&reference_type; &reference_management; &reference_constructor; "
 "&reference_accessor; &reference_editor; &reference_validation; "
@@ -14456,7 +14456,7 @@ msgstr ""
 "renvoie NULL. Avant la version 1.5.4, une exception était levée."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Escaping names for tables and/or namespaces that include special characters "
 "and quotes may require special handling. A user notes: \"For schemas and "
@@ -18902,7 +18902,7 @@ msgstr ""
 "Pour plus d'exemples d'utilisation, voir <link xlink:href=\"https://www."
 "postgresql.org/docs/current/sql-set.html\">SQL SET</link> et <link "
 "xlink:href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\""
-">SQL ALTER SYSTEM</link>."
+">SQL ALTER SYSTEM</link>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31549,11 +31549,11 @@ msgstr ""
 "Pour les variantes avec le paramètre <code>nbands</code> en texte, le "
 "délimiteur par défaut est <code>,</code>, il faut donc passer par exemple "
 "<code>'1,2,3'</code>. Pour utiliser un autre délimiteur, utilisez le "
-"paramètre delimiter : <code>ST_Band(rast, '1@2@3', '@')</code>. Néanmoins, "
+"paramètre delimiter : <code>ST_Band(rast, '1@2@3', '@')</code>. Néanmoins, "
 "pour utiliser plusieurs bandes, nous encourageons fortement d'utiliser la "
-"variante avec le paramètre de type tableau (e.g. <code>ST_Band(rast, "
-"'{1,2,3}'::int[]);</code>); la variante avec la liste de bandes en "
-"<code>text</code> peut être supprimée des prochaines versions de PostGIS."
+"variante avec le paramètre de type tableau (e.g. <code>ST_Band(rast, '{1,2,3}"
+"' ::int[]) ;</code>) ; la variante avec la liste de bandes en <code>text</"
+"code> peut être supprimée des prochaines versions de PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -42787,6 +42787,8 @@ msgstr ""
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Tesselate\"/> instead."
 msgstr ""
+"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_Tesselate\""
+"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42958,6 +42960,14 @@ msgid ""
 "The <parameter>buffer_type</parameter> specifies the type of buffer to "
 "create: 0: Rounded buffer (default) 1: Flat buffer 2: Square buffer"
 msgstr ""
+"Génère un tampon 3D autour de la géométrie d'entrée <parameter>geom</"
+"parameter> avec un <parameter>radius</parameter> spécifié . Le tampon est "
+"construit dans l'espace 3D, créant une représentation volumétrique de "
+"l'environnement de la géométrie. Le paramètre <parameter>segments</"
+"parameter> définit le nombre de segments utilisés pour approximer les "
+"sections courbes du tampon. Le paramètre <parameter>buffer_type</parameter> "
+"spécifie le type de tampon à créer : 0 : tampon arrondi (par défaut) 1 : "
+"tampon plat 2 : tampon carré"
 
 #. Tag: para
 #, no-c-format
@@ -42998,7 +43008,7 @@ msgstr "32 segments, carrés"
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DConvexHull\"/>, <xref linkend=\"ST_AsX3D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_3DConvexHull\"/>, <xref linkend=\"ST_AsX3D\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -43022,7 +43032,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Rotate\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Rotate\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -43049,7 +43059,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_3DRotate\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_3DRotate\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -43072,7 +43082,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_RotateZ\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_RotateZ\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -43091,7 +43101,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_RotateZ\"/>, <xref linkend=\"CG_3DRotate\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_RotateZ\"/>, <xref linkend=\"CG_3DRotate\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -43104,6 +43114,8 @@ msgid ""
 "Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</"
 "parameter> radians around the Y-axis passing."
 msgstr ""
+"Fait pivoter la géométrie d'entrée <parameter>geom</parameter> de "
+"<parameter>angle</parameter> radians autour de l'axe Y."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -43122,7 +43134,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_3DRotate\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_RotateY\"/>, <xref linkend=\"CG_3DRotate\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -43148,6 +43160,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"CG_3DScaleAroundCenter\"/>, <xref linkend=\"ST_Scale\"/>"
 msgstr ""
+", <xref linkend=\"CG_3DScaleAroundCenter\"/>, <xref linkend=\"ST_Scale\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -43171,7 +43184,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_3DScaleAroundCenter\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_3DScaleAroundCenter\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -43196,12 +43209,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_3DScale\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_3DScale\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Translates (moves) a geometry by given offsets in 2D space."
-msgstr ""
+msgstr "Déplace une géométrie en fonction de décalages donnés dans l'espace 2D."
 
 #. Tag: para
 #, no-c-format
@@ -43210,6 +43223,10 @@ msgid ""
 "<parameter>deltaX</parameter> to the X coordinates and <parameter>deltaY</"
 "parameter> to the Y coordinates. Z coordinates are dropped."
 msgstr ""
+"Déplace la géométrie d'entrée <parameter>geom</parameter> en ajoutant "
+"<parameter>deltaX</parameter> aux coordonnées X et <parameter>deltaY</"
+"parameter> aux coordonnées Y. Les coordonnées Z sont supprimées. Les "
+"coordonnées Z ne sont pas prises en compte."
 
 #. Tag: para
 #, no-c-format
@@ -43219,7 +43236,7 @@ msgstr ", <xref linkend=\"ST_Translate\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Translates (moves) a geometry by given offsets in 3D space."
-msgstr ""
+msgstr "Déplace une géométrie en fonction de décalages donnés dans l'espace 3D."
 
 #. Tag: para
 #, no-c-format
@@ -43229,6 +43246,10 @@ msgid ""
 "parameter> to the Y coordinates, and <parameter>deltaZ</parameter> to the Z "
 "coordinates."
 msgstr ""
+"Déplace la géométrie d'entrée <parameter>geom</parameter> en ajoutant "
+"<parameter>deltaX</parameter> aux coordonnées X, <parameter>deltaY</"
+"parameter> aux coordonnées Y et <parameter>deltaZ</parameter> aux "
+"coordonnées Z."
 
 #. Tag: title
 #, no-c-format
@@ -45365,6 +45386,9 @@ msgid ""
 "<xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
 "linkend=\"PostGIS_Version\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Full_Version\"/>, <xref linkend="
+"\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref "
+"linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -45381,6 +45405,8 @@ msgid ""
 "Returns the version number of the PROJ library, or against which PostGIS was "
 "built."
 msgstr ""
+"Renvoie le numéro de version de la bibliothèque PROJ, ou par rapport à "
+"laquelle PostGIS a été buildé."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -45557,7 +45583,7 @@ msgid "PostGIS 3.6.0"
 msgstr "PostGIS 3.6.0"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "2025/xx/xx"
 msgstr "2025/xx/xx"
 
