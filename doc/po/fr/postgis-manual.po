@@ -5,13 +5,14 @@
 # DeepL <noreply-mt-deepl@weblate.org>, 2024, 2025.
 # Edouard Choinière <echoix@users.noreply.weblate.osgeo.org>, 2024.
 # Pierre Cardinal <pierre.cardinal@sympatico.ca>, 2025.
+# Vincent Bre <vincent.bre@oslandia.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2025-02-12 02:47+0000\n"
-"Last-Translator: Pierre Cardinal <pierre.cardinal@sympatico.ca>\n"
+"PO-Revision-Date: 2025-03-04 10:30+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -12297,8 +12298,7 @@ msgstr ""
 "&reference_relationship; &reference_measure; &reference_overlay; "
 "&reference_processing; &reference_coverage; &reference_transformation; "
 "&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
-"&reference_transaction; &reference_version; &reference_guc; "
-"&reference_troubleshooting;"
+"&reference_version; &reference_guc; &reference_troubleshooting;"
 
 #. Tag: title
 #, no-c-format
@@ -15685,7 +15685,7 @@ msgstr ""
 "créé."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "While not OGC-compliant, <varname>ST_MakePoint</varname> is faster than "
 "<xref linkend=\"ST_GeomFromText\"/> and <xref linkend=\"ST_PointFromText\"/"
