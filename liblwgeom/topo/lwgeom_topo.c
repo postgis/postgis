@@ -7835,6 +7835,9 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
    * we found the face containing our query point */
   if ( closestEdge->face_left == closestEdge->face_right )
   {
+    LWDEBUGF(1, "Closest point is on a edge with face %" LWTFMT_ELEMID
+      " on both sides", closestEdge->face_left);
+
     containingFace = closestEdge->face_left;
     _lwt_release_edges(closestEdge, 1);
     return containingFace;
