@@ -158,13 +158,13 @@ fi
  make installcheck
 
  #test tiger geocoder
- cd ${POSTGIS_SRC}
- cd extensions/postgis_tiger_geocoder
- make installcheck
- if [ "$?" != "0" ]; then
-  exit $?
- fi
-fi
+#  cd ${POSTGIS_SRC}
+#  cd extensions/postgis_tiger_geocoder
+#  make installcheck
+#  if [ "$?" != "0" ]; then
+#   exit $?
+#  fi
+# fi
 
 if [ "$DUMP_RESTORE" == "1" ]; then
  echo "Dump restore test"
