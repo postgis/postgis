@@ -10,6 +10,7 @@ PostGIS 3.6.0
 
 * New Features *
 
+  - #5861, Add --drop-topology switch to pgtopo_import (Sandro Santilli)
   - #1247, ST_AsRasterAgg (Sandro Santilli)
   - #5784, GT-223 Export circ_tree_distance_tree_internal for mobilitydb use
            (Maxime Schoemans)
