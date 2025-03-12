@@ -4602,6 +4602,11 @@ different topology (say a spatially-simplified version of the starting
 topology).
         </para>
 
+        <para>
+If the target topology already exists and you want it dropped upfront
+you can pass the <code>--drop-topology</code> switch (since PostGIS-3.6.0).
+        </para>
+
     </section> <!-- pgtopo_import -->
 
 </section> <!-- Importing and exporting Topologies -->
