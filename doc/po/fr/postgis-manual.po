@@ -41709,7 +41709,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as CG_3DVolume)"
-msgstr "&sqlmm_compliant ; SQL-MM IEC 13249-3 : 9.1 (identique à CG_3DVolume)"
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3 : 9.1 (identique à CG_3DVolume)"
 
 #. Tag: para
 #, no-c-format
