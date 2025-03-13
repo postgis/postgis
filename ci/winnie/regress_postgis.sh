@@ -157,14 +157,15 @@ fi
  cd extensions/address_standardizer
  make installcheck
 
- #test tiger geocoder
+#test tiger geocoder
 #  cd ${POSTGIS_SRC}
 #  cd extensions/postgis_tiger_geocoder
 #  make installcheck
 #  if [ "$?" != "0" ]; then
 #   exit $?
 #  fi
-# fi
+#end extension
+fi
 
 if [ "$DUMP_RESTORE" == "1" ]; then
  echo "Dump restore test"
