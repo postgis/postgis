@@ -53,7 +53,7 @@
         <refsection>
             <title>Description</title>
 
-            <para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the 2D bounding box of geometry A intersects the 2D bounding box of geometry B.</para>
+            <para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the 2D bounding box of geometry A intersects the 2D bounding box of geometry B, using float precision.</para>
 
             <note><para>This operand will make use of any indexes that may be available on the
                 geometries.</para></note>
