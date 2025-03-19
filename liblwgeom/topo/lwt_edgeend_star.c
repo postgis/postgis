@@ -163,7 +163,7 @@ lwt_EdgeEndStar_debugPrint( const LWT_EDGEEND_STAR *star )
   for ( uint64_t i=0; i<star->numEdgeEnds; ++i )
   {
     LWT_EDGEEND *ee = star->edgeEnds[i];
-    lwdebug(1, " EdgeEnd %" PRIu64 " is %s edge %" LWTFMT_ELEMID ", azimuth=%g",
+    lwdebug(1, " EdgeEnd %" PRIu64 " is %s edge %" LWTFMT_ELEMID ", azimuth=%.15g",
       i, ee->outgoing ? "outgoing" : "incoming",
       ee->edge->edge_id, ee->azimuth
     );
