@@ -595,4 +595,10 @@ AS 'MODULE_PATHNAME', 'sfcgal_translate_3d'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 _COST_LOW;
 
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_Simplify(geom geometry, threshold float8, preserveTopology boolean DEFAULT false )
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_simplify'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
 COMMIT;

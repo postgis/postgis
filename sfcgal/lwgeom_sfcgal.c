@@ -77,6 +77,7 @@ Datum postgis_sfcgal_noop(PG_FUNCTION_ARGS);
 Datum sfcgal_convexhull3D(PG_FUNCTION_ARGS);
 Datum sfcgal_alphashape(PG_FUNCTION_ARGS);
 Datum sfcgal_optimalalphashape(PG_FUNCTION_ARGS);
+Datum sfcgal_simplify(PG_FUNCTION_ARGS);
 
 GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 char *text_to_cstring(const text *textptr);
@@ -1727,3 +1728,41 @@ sfcgal_buffer3d(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(output);
 #endif
 }
+
+PG_FUNCTION_INFO_V1(sfcgal_simplify);
+Datum
+sfcgal_simplify(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20100
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_simplify' function (requires SFCGAL 2.1.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20100 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	double threshold;
+	bool preserveTopology;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	threshold = PG_GETARG_FLOAT8(1);
+	preserveTopology = PG_GETARG_BOOL(2);
+	srid = gserialized_get_srid(input);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_geometry_simplify(geom, threshold, preserveTopology);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
