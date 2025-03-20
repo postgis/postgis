@@ -2600,7 +2600,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	char *col = NULL;
 	int16 attnum, idx_attnum;
 	Oid atttypid = InvalidOid;
-	char nsp_tbl[NAMEDATALEN];
+	char nsp_tbl[2*NAMEDATALEN+6];
 	char *tbl;
 	Oid tbl_oid, idx_oid = 0;
 	ND_STATS *nd_stats;
@@ -2625,13 +2625,13 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 		char *nsp = text_to_cstring(PG_GETARG_TEXT_P(0));
 		tbl = text_to_cstring(PG_GETARG_TEXT_P(1));
 		coltxt = PG_GETARG_TEXT_P(2);
-		snprintf(nsp_tbl, NAMEDATALEN, "\"%s\".\"%s\"", nsp, tbl);
+		snprintf(nsp_tbl, sizeof(nsp_tbl), "\"%s\".\"%s\"", nsp, tbl);
 	}
 	if ( PG_NARGS() == 2 )
 	{
 		tbl = text_to_cstring(PG_GETARG_TEXT_P(0));
 		coltxt = PG_GETARG_TEXT_P(1);
-		snprintf(nsp_tbl, NAMEDATALEN, "\"%s\"", tbl);
+		snprintf(nsp_tbl, sizeof(nsp_tbl), "\"%s\"", tbl);
 	}
 
 	/* Parse the namespace/table strings and lookup in system catalogs */
