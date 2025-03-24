@@ -1809,7 +1809,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         <refsection>
             <title>See Also</title>
 
-            <para><xref linkend="CG_StraightSkeleton"/></para>
+            <para><xref linkend="CG_StraightSkeleton"/>, <xref linkend="CG_StraightSkeletonPartition"/></para>
         </refsection>
 
     </refentry>
@@ -2116,7 +2116,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_Extrude" />, <xref linkend="CG_StraightSkeleton" /></para>
+            <para><xref linkend="ST_Extrude" />, <xref linkend="CG_ExtrudeStraightSkeleton" />, <xref linkend="CG_StraightSkeleton" />,  <xref linkend="CG_StraightSkeletonPartition" /> </para>
         </refsection>
 
     </refentry>
@@ -3032,10 +3032,39 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         <title>Examples</title>
         <programlisting>SELECT ST_AsText(CG_StraightSkeletonPartition('POLYGON((0 0, 4 0, 2 2, 0 0))', true));
 -- Result: MULTIPOLYGON(((0 0,2 0.83,2 2)),((4 0,2 0.83,0 0)),((2 2,2 0.83,4 0)))</programlisting>
+
+        <programlisting>SELECT CG_StraightSkeletonPartition(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))', true);</programlisting>
+        <informaltable>
+            <tgroup cols="2">
+                <tbody>
+                    <row>
+                        <entry><para><informalfigure>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="images/st_straightskeleton01.png"/>
+                                        </imageobject>
+                                        <caption><para>Original polygon</para></caption>
+                                    </mediaobject>
+                            </informalfigure></para>
+                        </entry>
+                        <entry><para><informalfigure>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="images/cg_straightskeletonpartition01.png"/>
+                                        </imageobject>
+                                        <caption><para>Straight Skeleton Partition of polygon</para></caption>
+                                    </mediaobject>
+                            </informalfigure></para>
+                        </entry>
+                    </row>
+                </tbody>
+            </tgroup>
+        </informaltable>
     </refsection>
+
     <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_StraightSkeleton"/>, <xref linkend="ST_Polygonize"/></para>
+        <para><xref linkend="CG_StraightSkeleton"/>, <xref linkend="ST_Polygonize"/></para>
     </refsection>
 </refentry>
 
