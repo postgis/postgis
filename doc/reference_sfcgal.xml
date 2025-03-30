@@ -2592,7 +2592,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="CG_ExtrudeStraightSkeleton" /></para>
+            <para><xref linkend="CG_StraightSkeletonPartition" />, <xref linkend="CG_ExtrudeStraightSkeleton" /></para>
         </refsection>
     </refentry>
 
@@ -3033,7 +3033,9 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         <programlisting>SELECT ST_AsText(CG_StraightSkeletonPartition('POLYGON((0 0, 4 0, 2 2, 0 0))', true));
 -- Result: MULTIPOLYGON(((0 0,2 0.83,2 2)),((4 0,2 0.83,0 0)),((2 2,2 0.83,4 0)))</programlisting>
 
-        <programlisting>SELECT CG_StraightSkeletonPartition(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))', true);</programlisting>
+        <programlisting>SELECT CG_StraightSkeletonPartition(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20
+            , 160 30, 60 30, 60 130, 190 140, 190 190 ))')
+            , true );</programlisting>
         <informaltable>
             <tgroup cols="2">
                 <tbody>
