@@ -4,13 +4,14 @@
 # Regina Obe <regina@arrival3d.com>, 2023.
 # Sandro Santilli <strk@kbt.io>, 2024.
 # DeepL <noreply-mt-deepl@weblate.org>, 2025.
+# luca <lucadeluge@gmail.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
 "PO-Revision-Date: 2025-03-31 15:47+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"Last-Translator: luca <lucadeluge@gmail.com>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/it/>\n"
 "Language: it_IT\n"
@@ -2025,9 +2026,9 @@ msgid ""
 "The set of rules matching the input and the corresponding score for each. "
 "The first rule (highest scoring) is what is used for standardization"
 msgstr ""
-"L'insieme delle regole che corrispondono all'input e il punteggio "
-"corrispondente per ciascuna di esse. La prima regola (con il punteggio più "
-"alto) è quella utilizzata per la standardizzazione."
+"L'insieme delle regole che corrispondono all'input e il punteggio relativo "
+"per ciascuna di esse. La prima regola (con il punteggio più alto) è quella "
+"utilizzata per la standardizzazione."
 
 #. Tag: para
 #, no-c-format
