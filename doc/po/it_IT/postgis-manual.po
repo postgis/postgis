@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2025-03-31 14:32+0000\n"
+"PO-Revision-Date: 2025-03-31 15:47+0000\n"
 "Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/it/>\n"
@@ -2035,11 +2035,14 @@ msgid ""
 "The standardized address elements <xref linkend=\"stdaddr\"/> that would be "
 "returned when running <xref linkend=\"standardize_address\"/>"
 msgstr ""
+"Gli elementi di indirizzo standardizzati <xref linkend=\"stdaddr\"/> che "
+"verrebbero restituiti durante l'esecuzione di <xref linkend="
+"\"standardize_address\"/>"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.4.0"
-msgstr ""
+msgstr "Disponibilità: 3.4.0"
 
 #. Tag: title
 #, no-c-format
@@ -2049,12 +2052,13 @@ msgstr "Esempi"
 #. Tag: para
 #, no-c-format
 msgid "Using address_standardizer_data_us extension"
-msgstr ""
+msgstr "Utilizzo dell'estensione address_standardizer_data_us"
 
 #. Tag: para
 #, no-c-format
 msgid "Variant 1: Single line address and returning the input tokens"
 msgstr ""
+"Variante 1: indirizzo a riga singola e restituzione dei token di ingresso"
 
 #. Tag: para
 #, no-c-format
@@ -2062,6 +2066,8 @@ msgid ""
 "Variant 2: Multi line address and returning first rule input mappings and "
 "score"
 msgstr ""
+"Variante 2: indirizzo multilinea e restituzione delle mappature di ingresso "
+"della prima regola e del punteggio"
 
 #. Tag: title
 #, no-c-format
@@ -2074,11 +2080,13 @@ msgid ""
 ", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref "
 "linkend=\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
 msgstr ""
+", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref linkend="
+"\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Takes a 1 line address and breaks into parts"
-msgstr ""
+msgstr "Prende un indirizzo di 1 riga e lo suddivide in parti"
 
 #. Tag: para
 #, no-c-format
@@ -2098,12 +2106,12 @@ msgstr "Disponibilità: 2.2.0"
 #. Tag: para
 #, no-c-format
 msgid "Single Address"
-msgstr ""
+msgstr "Indirizzo singolo"
 
 #. Tag: para
 #, no-c-format
 msgid "Table of addresses"
-msgstr ""
+msgstr "Tabella degli indirizzi"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2123,7 +2131,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Variant 1: Takes an address as a single line."
-msgstr ""
+msgstr "Variante 1: prende un indirizzo come una singola riga."
 
 #. Tag: para
 #, no-c-format
@@ -2139,6 +2147,8 @@ msgstr ""
 msgid ""
 "Variant 1: Single line address. This doesn't work well with non-US addresses"
 msgstr ""
+"Variante 1: indirizzo a riga singola. Non funziona bene con gli indirizzi "
+"non statunitensi."
 
 #. Tag: para
 #, no-c-format
@@ -2157,7 +2167,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Variant 2: As a two part Address"
-msgstr ""
+msgstr "Variante 2: come indirizzo in due parti"
 
 #. Tag: title
 #, no-c-format
