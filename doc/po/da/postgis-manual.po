@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2025-04-01 09:47+0000\n"
+"PO-Revision-Date: 2025-04-02 23:47+0000\n"
 "Last-Translator: Kristian Thy <thy@42.dk>\n"
 "Language-Team: Danish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/da/>\n"
@@ -120,6 +120,8 @@ msgid ""
 "After you set the environment variables, you'll need to restart your "
 "PostgreSQL service for the changes to take effect."
 msgstr ""
+"Efter du har sat miljøvariablerne skal du genstarte din PostgreSQL-service "
+"for at ændringerne træder i kraft."
 
 #. Tag: title
 #, no-c-format
