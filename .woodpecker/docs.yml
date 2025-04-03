@@ -175,6 +175,18 @@ steps:
           include:
             - "doc/po/ko_KR/*.po"
 
+  check-xml-da:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/da local-check-xml
+    depends_on: prepare
+    when:
+      - event: push
+        path:
+          include:
+            - "doc/po/da/*.po"
+
   check-xml-de:
     image: *test_image
     pull: true
@@ -331,6 +343,18 @@ steps:
         path:
           include:
             - "doc/po/ko_KR/*.po"
+
+  html-da:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/da local-html
+    depends_on: check-xml-da
+    when:
+      - event: push
+        path:
+          include:
+            - "doc/po/da/*.po"
 
   html-de:
     image: *test_image
@@ -489,6 +513,18 @@ steps:
           include:
             - "doc/po/ko_KR/*.po"
 
+  cheatsheets-da:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/da local-cheatsheets
+    depends_on: check-xml-da
+    when:
+      - event: push
+        path:
+          include:
+            - "doc/po/da/*.po"
+
   cheatsheets-de:
     image: *test_image
     pull: true
@@ -646,6 +682,18 @@ steps:
           include:
             - "doc/po/ko_KR/*.po"
 
+  check-cheatsheets-da:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/da local-check-cheatsheets
+    depends_on: [ cheatsheets-da, build-cheatsheets ]
+    when:
+      - event: push
+        path:
+          include:
+            - "doc/po/da/*.po"
+
   check-cheatsheets-de:
     image: *test_image
     pull: true
@@ -802,6 +850,18 @@ steps:
         path:
           include:
             - "doc/po/ko_KR/*.po"
+
+  pdf-da:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/da local-pdf
+    depends_on: [ build-images, check-xml-da ]
+    when:
+      - event: push
+        path:
+          include:
+            - "doc/po/da/*.po"
 
   pdf-de:
     image: *test_image
