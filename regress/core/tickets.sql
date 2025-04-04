@@ -1575,3 +1575,7 @@ WHERE ST_DFullyWithin(
     extent,
     1700
 );
+
+SELECT '#####', ST_AsText(ST_AddPoint(
+		'LINESTRING (1 1, 2 2)'::geometry,
+		'POINT EMPTY'::geometry), 2);
