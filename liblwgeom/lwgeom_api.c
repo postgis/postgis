@@ -108,7 +108,8 @@ POINT4D
 getPoint4d(const POINTARRAY *pa, uint32_t n)
 {
 	POINT4D result;
-	getPoint4d_p(pa, n, &result);
+	if (getPoint4d_p(pa, n, &result) == 0)
+		lwerror("%s [%d] error returned by getPoint4d_p", __FILE__, __LINE__);
 	return result;
 }
 
@@ -135,7 +136,7 @@ getPoint4d_p(const POINTARRAY *pa, uint32_t n, POINT4D *op)
 
 	if ( n>=pa->npoints )
 	{
-		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
+		lwerror("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
 	}
 

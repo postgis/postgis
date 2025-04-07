@@ -6,6 +6,9 @@ Proj 4.9+ required.
 
 * Bug Fixes  *
 
+ - #5876, Fix ST_AddPoint with empty point argument (Paul Ramsey)
+
+
 PostGIS 3.2.8
 2024/12/22
 

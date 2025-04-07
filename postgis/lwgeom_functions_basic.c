@@ -2325,6 +2325,11 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	if (gserialized_is_empty(pglwg2))
+	{
+		PG_RETURN_POINTER(pglwg1);
+	}
+
 	line = lwgeom_as_lwline(lwgeom_from_gserialized(pglwg1));
 
 	if (PG_NARGS() <= 2)
