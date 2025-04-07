@@ -1557,3 +1557,7 @@ SELECT '#5677',
 SELECT '#5686', ST_NumInteriorRings('TRIANGLE (( -71.0821 42.3036, -71.0821 42.3936, -71.0901 42.3036, -71.0821 42.3036))'::geometry);
 
 SELECT '#5747', ST_Length('MULTISURFACE (((0 0, 1 0, 1 1, 0 1, 0 0)), CURVEPOLYGON (CIRCULARSTRING (10 10, 11 11, 12 10, 11 9, 10 10)))'::geometry);
+
+SELECT '#5876', ST_AsText(ST_AddPoint(
+		'LINESTRING (1 1, 2 2)'::geometry,
+		'POINT EMPTY'::geometry), 2);

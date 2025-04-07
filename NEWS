@@ -11,6 +11,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 - #5855, Fix index binding in ST_DFullyWithin (Paul Ramsey)
 - #5819, Support longer names in estimated extent (Paul Ramsey)
 - Fix misassignment of result in _lwt_HealEdges (Maxim Korotkov)
+- #5876, ST_AddPoint with empty argument adds garbage (Paul Ramsey)
 
 
 
