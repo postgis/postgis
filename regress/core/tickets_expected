@@ -483,3 +483,4 @@ ERROR:  Geometry contains invalid coordinates
 #5686|0
 #5747|0
 #5855|Knosesmauet
+#5876|LINESTRING(1 1,2 2)
