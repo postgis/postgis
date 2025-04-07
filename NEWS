@@ -4,6 +4,11 @@ xxxx-xx-xx
 PostgreSQL 11-17 required. GEOS 3.6+ required but GEOS 3.11+ to take advantage of all features.
 Proj 4.9+ required.
 
+* Bug Fixes and Enhancements *
+
+ - #5876, Fix ST_AddPoint with empty point argument (Paul Ramsey)
+
+
 PostGIS 3.3.8
 2024-12-22
 
