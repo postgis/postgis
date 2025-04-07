@@ -1546,3 +1546,7 @@ SELECT '#5647' AS ticket,
  'coveredby_mixed_empty '  || ST_CoveredBy(mixedemptypt, poly),
  'covers_mixed_empty '     || ST_Covers(poly, mixedemptypt)
 FROM g, generate_series(1,2);
+
+SELECT '#5876', ST_AsText(ST_AddPoint(
+		'LINESTRING (1 1, 2 2)'::geometry,
+		'POINT EMPTY'::geometry), 2);

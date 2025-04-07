@@ -8,6 +8,7 @@ Proj 6.1+ required.
 
   - #5564, BRIN crash fix and support for parallel in PG17+
           (Paul Ramsey, Regina Obe)
+  - #5876, Fix ST_AddPoint with empty point argument
 
 
 PostGIS 3.4.4
