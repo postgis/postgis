@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2025-03-17 03:47+0000\n"
+"PO-Revision-Date: 2025-04-07 08:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -999,14 +999,14 @@ msgstr ""
 "Standardizer</link>にあります)。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The address standardizer is a single line address parser that takes an input "
 "address and normalizes it based on a set of rules stored in a table and "
 "helper lex and gaz tables."
 msgstr ""
 "住所標準化は単一行の住所のパーサで、入力に住所を取り、テーブルに保存された規"
-"則と、補助テーブルのlex (lexicon, 語彙)およびgaz (gazetteer, "
+"則と、補助テーブルのlex (訳注: lexicon, 語彙)およびgaz (訳注: gazetteer, "
 "地名集)とを基に正規化します。"
 
 #. Tag: para
@@ -1170,13 +1170,14 @@ msgstr ""
 "ていない建物識別子と型です。一般的に、ほとんどの住所では空白です。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "is a text (token number <code>1</code>): This is the street number on a "
 "street. Example <emphasis>75</emphasis> in <code>75 State Street</code>."
 msgstr ""
-"文字列 (トークン番号 <code>1</code>): ストリートの番号です。<code>75 State "
-"Street</code>では <emphasis>75</emphasis>にあたります。"
+"文字列 (トークン番号 <code>1</code>): "
+"ストリートの番号です。<emphasis>75</emphasis>となっている場合には、"
+"たとえば<code>75 State Street</code>となっています。"
 
 #. Tag: para
 #, no-c-format
@@ -1188,13 +1189,14 @@ msgstr ""
 "Westといった、ストリート名の方角前置語です。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example "
 "<emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>."
 msgstr ""
-"文字列 (トークン番号 <code>3</code>): ストリート名の修飾前置語です。"
-"<code>3715 OLD HIGHWAY 99</code>では<emphasis>OLD</emphasis>にあたります。"
+"文字列 (トークン番号 <code>3</code>): "
+"ストリート名の修飾前置語です。<emphasis>OLD</emphasis>となっている場合には、"
+"たとえば<code>3715 OLD HIGHWAY 99</code>となっています。"
 
 #. Tag: para
 #, no-c-format
