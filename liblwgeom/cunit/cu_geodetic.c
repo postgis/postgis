@@ -1594,6 +1594,53 @@ static void test_lwgeom_area_sphere(void)
 }
 
 
+static void test_geography_substring(void)
+{
+	LWGEOM *lwg;
+	LWGEOM *result;
+	double length;
+	SPHEROID s;
+
+	/* Init to Sphere */
+	spheroid_init(&s, WGS84_RADIUS, WGS84_RADIUS);
+	s.a = s.b = s.radius;
+
+	/*
+	 * geography_substring(
+	 *   const LWLINE *lwline,
+	 *   const SPHEROID *s,
+	 *   double from, double to, double tolerance
+	 */
+
+	lwg = lwgeom_from_wkt("LINESTRING(2 48, 2 49, 2 50)", LW_PARSER_CHECK_NONE);
+	length = lwgeom_length(lwg);
+	CU_ASSERT_DOUBLE_EQUAL(length, 2.0, 0.001);
+	result = geography_substring((LWLINE*)lwg, &s, 0.0, 1.0, 0.01);
+	length = lwgeom_length(result);
+	CU_ASSERT_DOUBLE_EQUAL(length, 2.0, 0.001);
+	lwgeom_free(lwg);
+	lwgeom_free(result);
+
+	lwg = lwgeom_from_wkt("LINESTRING(2 48, 2 49)", LW_PARSER_CHECK_NONE);
+	length = lwgeom_length(lwg);
+	CU_ASSERT_DOUBLE_EQUAL(length, 1.0, 0.001);
+	result = geography_substring((LWLINE*)lwg, &s, 0.0, 1.0, 0.01);
+	length = lwgeom_length(result);
+	CU_ASSERT_DOUBLE_EQUAL(length, 1.0, 0.001);
+	lwgeom_free(lwg);
+	lwgeom_free(result);
+
+	lwg = lwgeom_from_wkt("LINESTRING(2 48)", LW_PARSER_CHECK_NONE);
+	length = lwgeom_length(lwg);
+	CU_ASSERT_DOUBLE_EQUAL(length, 0.0, 0.001);
+	result = geography_substring((LWLINE*)lwg, &s, 0.0, 1.0, 0.01);
+	length = lwgeom_length(result);
+	CU_ASSERT_DOUBLE_EQUAL(length, 0.0, 0.001);
+	lwgeom_free(lwg);
+	lwgeom_free(result);
+}
+
+
 static void test_gbox_to_string_truncated(void)
 {
 	GBOX g = {
@@ -1682,4 +1729,5 @@ void geodetic_suite_setup(void)
 	PG_ADD_TEST(suite, test_ptarray_contains_point_sphere_iowa);
 	PG_ADD_TEST(suite, test_gbox_to_string_truncated);
 	PG_ADD_TEST(suite, test_gbox_geocentric_get_gbox_cartesian);
+	PG_ADD_TEST(suite, test_geography_substring);
 }
