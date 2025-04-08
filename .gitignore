@@ -8,7 +8,6 @@
 *.res
 *.marks
 *.swp
-*.orig
 *.gcda
 *.gcno
 astyle
