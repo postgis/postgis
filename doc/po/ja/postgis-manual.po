@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2025-04-07 08:47+0000\n"
+"PO-Revision-Date: 2025-04-08 10:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -1034,8 +1034,9 @@ msgid ""
 "The code for this extension can be found in the PostGIS <filename>extensions/"
 "address_standardizer</filename> and is currently self-contained."
 msgstr ""
-"このエクステンションのコードはPostGISの<filename>extensions/"
-"address_standardizer</filename>内にあり、現在は自己充足しています。"
+"このエクステンションのコードはPostGISの<filename>extensions/address_standardi"
+"zer</filename>内にあり、現在は、必要なものが全て揃っているようになっています"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -1060,9 +1061,9 @@ msgid ""
 "currently does not look for a country code or name, but that could be "
 "introduced in the future."
 msgstr ""
-"パーサは右から左に見ていきます。最初に郵便番号、州/県、市のMACRO要素を見ます"
-"。その後、番地または交差点もしくはランドマークを扱う場合には、MICRO要素を見ま"
-"す。現在は、国別コードや国名を見ませんが、将来的には導入もありえます。"
+"パーサは右から左に見ていきます。最初に郵便番号、州/県、市の広域要素を見ます。"
+"その後、番地または交差点もしくはランドマークを扱う場合には、詳細要素を見ます"
+"。現在は、国別コードや国名を見ませんが、将来的には導入もありえます。"
 
 #. Tag: term
 #, no-c-format
@@ -1177,7 +1178,7 @@ msgid ""
 msgstr ""
 "文字列 (トークン番号 <code>1</code>): "
 "ストリートの番号です。<emphasis>75</emphasis>となっている場合には、"
-"たとえば<code>75 State Street</code>となっています。"
+"たとえば<code>75 State Street</code>から得られます。"
 
 #. Tag: para
 #, no-c-format
@@ -1196,7 +1197,7 @@ msgid ""
 msgstr ""
 "文字列 (トークン番号 <code>3</code>): "
 "ストリート名の修飾前置語です。<emphasis>OLD</emphasis>となっている場合には、"
-"たとえば<code>3715 OLD HIGHWAY 99</code>となっています。"
+"たとえば<code>3715 OLD HIGHWAY 99</code>から得られます。"
 
 #. Tag: para
 #, no-c-format
@@ -1217,8 +1218,8 @@ msgid ""
 "emphasis> in <code>75 State Street</code>."
 msgstr ""
 "文字列 (トークン番号 <code>6</code>): St, Ave, Cir等の後置詞の種別です。スト"
-"リート名に続いて記述されるものです。<code>75 State Street</code>では"
-"<emphasis>STREET</emphasis>が該当します。"
+"リート名に続いて記述されるものです。<emphasis>STREET</emphasis>になっている場"
+"合には、たとえば<code>75 State Street</code>から得られます。"
 
 #. Tag: para
 #, no-c-format
@@ -1227,9 +1228,9 @@ msgid ""
 "modifier that follows the street name.. Example <emphasis>WEST</emphasis> in "
 "<code>3715 TENTH AVENUE WEST</code>."
 msgstr ""
-"文字列 (トークン番号 <code>7</code>): ストリート名に続くNorth, South, East, "
-"Westといった、ストリート名の方角前置語です。<code>3715 TENTH AVENUE WEST</"
-"code>では<emphasis>WEST</emphasis>が該当します。"
+"文字列 (トークン番号 <code>7</code>): ストリート名に続くNorth, South, East, W"
+"estといった、ストリート名の方角前置語です。<emphasis>WEST</emphasis>となって"
+"いる場合には、たとえば<code>3715 TENTH AVENUE WEST</code>から得られます。"
 
 #. Tag: para
 #, no-c-format
@@ -1277,9 +1278,8 @@ msgstr ""
 msgid ""
 "is text POSTAL BOX NUMBER (token number <code>14 and 15</code>): Example "
 "<code>02109</code>"
-msgstr ""
-"文字列 (トークン番号 <code>14 と 15</code>): 私書箱番号です。<code>02109</"
-"code>等です。"
+msgstr "文字列 (トークン番号 <code>14 と 15</code>): "
+"私書箱番号です。<code>02109</code>等です。"
 
 #. Tag: para
 #, no-c-format
@@ -1287,8 +1287,9 @@ msgid ""
 "is text Apartment number or Suite Number (token number <code>17</code>): "
 "Example <emphasis>3B</emphasis> in <code>APT 3B</code>."
 msgstr ""
-"文字列 (トークン番号 <code>17</code>): 部屋番号です。<code>APT 3B</code>の"
-"<emphasis>3B</emphasis>が該当します。"
+"文字列 (トークン番号 <code>17</code>): "
+"部屋番号です。<emphasis>3B</emphasis>となっている場合には、たとえば<code>APT "
+"3B</code>から得られます。"
 
 #. Tag: title
 #, no-c-format
