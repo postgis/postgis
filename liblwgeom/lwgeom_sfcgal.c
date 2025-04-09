@@ -25,7 +25,7 @@
 #include "lwgeom_sfcgal.h"
 #include <stdio.h>
 
-#if POSTGIS_SFCGAL_VERSION >= 20000
+#if POSTGIS_SFCGAL_VERSION >= 20100
 #define sfcgal_triangulated_surface_num_triangles(g) sfcgal_geometry_num_geometries((g))
 #define sfcgal_triangulated_surface_triangle_n(g,i)  sfcgal_geometry_get_geometry_n((g), (i))
 #define sfcgal_polyhedral_surface_num_polygons(g)    sfcgal_geometry_num_geometries((g))
