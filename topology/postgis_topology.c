@@ -3659,7 +3659,7 @@ Datum ST_ModEdgeSplit(PG_FUNCTION_ARGS)
   node_id = lwt_ModEdgeSplit(topo, edge_id, pt, 0);
   POSTGIS_DEBUG(1, "lwt_ModEdgeSplit returned");
   lwgeom_free(lwgeom);
-  PG_FREE_IF_COPY(geom, 3);
+  PG_FREE_IF_COPY(geom, 2);
   lwt_FreeTopology(topo);
 
   if ( node_id == -1 )
@@ -3729,7 +3729,7 @@ Datum ST_NewEdgesSplit(PG_FUNCTION_ARGS)
   node_id = lwt_NewEdgesSplit(topo, edge_id, pt, 0);
   POSTGIS_DEBUG(1, "lwt_NewEdgesSplit returned");
   lwgeom_free(lwgeom);
-  PG_FREE_IF_COPY(geom, 3);
+  PG_FREE_IF_COPY(geom, 2);
   lwt_FreeTopology(topo);
 
   if ( node_id == -1 )
