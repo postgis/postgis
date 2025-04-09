@@ -175,8 +175,7 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE)
 			ereport(ERROR,
 					(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-					 errmsg("function returning record called in context "
-							"that cannot accept type record")));
+					 errmsg("first argument of function must be composite type")));
 
 		data = PG_GETARG_BYTEA_PP(1);
 
