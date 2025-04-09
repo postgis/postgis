@@ -380,7 +380,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	if (option & LW_X3D_USE_GEOCOORDS) {
 		if (lwgeom->srid != 4326)
 		{
-			PG_FREE_IF_COPY(geom, 0);
+			PG_FREE_IF_COPY(geom, 1);
 			/** TODO: we need to support UTM and other coordinate systems supported by X3D eventually
 			http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#t-earthgeoids **/
 			elog(ERROR, "Only SRID 4326 is supported for geocoordinates.");
