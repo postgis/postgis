@@ -34,7 +34,7 @@
 #include "postgres.h"
 #include "utils/builtins.h"
 #include "../postgis_config.h"
-#include "lwgeom_pg.h"
+// #include "lwgeom_pg.h"
 
 #define POSTGIS_DEPRECATE(version, funcname) \
 	Datum funcname(PG_FUNCTION_ARGS); \
