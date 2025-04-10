@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2025-04-09 08:47+0000\n"
+"PO-Revision-Date: 2025-04-10 03:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -1034,9 +1034,8 @@ msgid ""
 "The code for this extension can be found in the PostGIS <filename>extensions/"
 "address_standardizer</filename> and is currently self-contained."
 msgstr ""
-"このエクステンションのコードはPostGISの<filename>extensions/address_standardi"
-"zer</filename>内にあり、現在は、必要なものが全て揃っているようになっています"
-"。"
+"このエクステンションのコードはPostGISの<filename>extensions/"
+"address_standardizer</filename>内にあり、現在は単独で機能します。"
 
 #. Tag: para
 #, no-c-format
@@ -1202,8 +1201,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>4</code>): STREET PREFIX TYPE"
-msgstr "文字列 (トークン番号 <code>4</code>): STREET PREFIX TYPE "
-"(ストリート名の前置詞の種別)"
+msgstr "文字列 (トークン番号 <code>4</code>): ストリート名の前置詞の種別"
 
 #. Tag: para
 #, no-c-format
@@ -1229,7 +1227,7 @@ msgid ""
 "<code>3715 TENTH AVENUE WEST</code>."
 msgstr ""
 "文字列 (トークン番号 <code>7</code>): ストリート名に続くNorth, South, East, W"
-"estといった、ストリート名の方角前置語です。<emphasis>WEST</emphasis>となって"
+"estといった、ストリート名の方角後置語です。<emphasis>WEST</emphasis>となって"
 "いる場合には、たとえば<code>3715 TENTH AVENUE WEST</code>から得られます。"
 
 #. Tag: para
@@ -1330,16 +1328,15 @@ msgid ""
 "by -1 followed by number denoting kind of rule followed by ranking of rule."
 msgstr ""
 "規則テーブルには、住所入力順列トークンから標準化した出力順列への対応付けに関"
-"する規則の集合が入ります。それぞれの規則は、入力トークン、-1 (終端)、出力トー"
-"クン、-1、規則の種類を示す数字、規則の階級、からなります。"
+"する規則の集合が入ります。それぞれの規則は、入力トークンの集合、-1 (終端)、出"
+"力トークンの集合、-1、規則の種類を示す数字、規則の順位、からなります。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "A rules table must have at least the following columns, though you are "
 "allowed to add more for your own uses."
-msgstr ""
-"規則テーブルには、少なくとも次に示すカラムが必要です。それ以外にカラムを追加"
+msgstr "規則テーブルには、少なくとも次に示すカラムが必要です。それ以外にカラムを追加"
 "してもかまいません。"
 
 #. Tag: para
@@ -1355,8 +1352,8 @@ msgid ""
 "Rule records</link>."
 msgstr ""
 "規則を示す文字列フィールド。 <link xlink:href=\"http://www.pagcgeo.org/docs/"
-"html/pagc-12.html#--r-rec--\">PAGC Address Standardizer Rule records</link>に"
-"詳細情報があります。"
+"html/pagc-12.html#--r-rec--\">PAGC Address Standardizer Rule "
+"records</link>に詳細情報があります。"
 
 #. Tag: para
 #, no-c-format
@@ -1368,8 +1365,8 @@ msgid ""
 "the rule. The rules are ranked from 0 (lowest) to 17 (highest)."
 msgstr ""
 "ruleには、入力トークンを表現する非負の整数、終端を示す-1、郵便属性を表現する"
-"非負の整数、終端を示す-1、規則種別を表現する整数、規則の階級を示す整数からな"
-"る集合が入ります。規則は0 (最低)から17 (最高)まであります。"
+"非負の整数、終端を示す-1、規則種別を表現する整数、規則の順位を示す整数からな"
+"る集合が入ります。順位は0 (最低)から17 (最高)まであります。"
 
 #. Tag: para
 #, no-c-format
@@ -1382,7 +1379,7 @@ msgstr ""
 "たとえば、<code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6</code>は、<emphasis>TYPE "
 "NUMBER TYPE DIRECT QUALIF</emphasis>なる入力トークン順列が、<emphasis>STREET "
 "STREET SUFTYP SUFDIR QUALIF</emphasis>なる出力トークン順列に対応付けされ、規"
-"則はARC_Cで、階級は6となります。"
+"則はARC_Cで、順位は6となります。"
 
 #. Tag: para
 #, no-c-format
@@ -1627,7 +1624,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Rule Types and Rank"
-msgstr "規則種別と階級"
+msgstr "規則種別と順位"
 
 #. Tag: para
 #, no-c-format
@@ -1637,7 +1634,7 @@ msgid ""
 "17 (highest)."
 msgstr ""
 "規則の最後の部分は規則種別で、次に挙げるものの一つが示すものです。この後には"
-"階級が続きます。規則は0 (最低) から17 (最高)までに階級付けされます。"
+"順位が続きます。規則には0 (最低) から17 (最高)までの順位が付けられます。"
 
 #. Tag: para
 #, no-c-format
