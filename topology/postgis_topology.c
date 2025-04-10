@@ -52,7 +52,7 @@
  */
 PG_MODULE_MAGIC;
 
-LWT_BE_IFACE* be_iface;
+static LWT_BE_IFACE* be_iface;
 
 /*
  * Private data we'll use for this backend
@@ -75,7 +75,7 @@ struct LWT_BE_DATA_T
   int topoLoadFailMessageFlavor; /* 0:sql, 1:AddPoint */
 };
 
-LWT_BE_DATA be_data;
+static LWT_BE_DATA be_data;
 
 struct LWT_BE_TOPOLOGY_T
 {
@@ -1521,7 +1521,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
     else
     {
       lwpgwarning("liblwgeom-topo invoked 'getNodeWithinDistance2D' "
-                  "backend callback with limit=%ld and no fields",
+                  "backend callback with limit=" UINT64_FORMAT " and no fields",
                   elems_requested);
       appendStringInfo(sql, "*");
     }

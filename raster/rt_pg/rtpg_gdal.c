@@ -1094,7 +1094,7 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 
 #define gdalErrorTypesSize 17
 
-const char* const gdalErrorTypes[gdalErrorTypesSize] =
+static const char* const gdalErrorTypes[gdalErrorTypesSize] =
 {
     "None",
     "AppDefined",
