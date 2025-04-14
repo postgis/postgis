@@ -1,3 +1,5 @@
+labels:
+  platform: linux/amd64
 variables:
   - &test_image 'repo.osgeo.org/postgis/build-test:trisquel11'
   - common_doc_paths: &common_doc_paths
