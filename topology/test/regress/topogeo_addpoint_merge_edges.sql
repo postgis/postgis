@@ -132,8 +132,8 @@ BEGIN
       lbl,
       'area change',
       l,
-      rec.bfr::text,
-      rec.aft::text
+      bfr::text,
+      aft::text
     ], '|')
     FROM (
       SELECT t.lbl l, ST_Area(t.g) bfr, ST_Area(tg::geometry) aft
