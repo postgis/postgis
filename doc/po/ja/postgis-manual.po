@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2025-04-10 03:47+0000\n"
+"PO-Revision-Date: 2025-04-14 01:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -1401,9 +1401,10 @@ msgid ""
 "www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC Input Tokens</link> are "
 "as follows:"
 msgstr ""
-"個々の規則は、入力トークン順列、終端を示す<code>-1</code>の順です。<link "
-"xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC "
-"Input Tokens</link>から引用した正当な入力トークンは次の通りです:"
+"個々の規則は、入力トークン集合が先にあって、その後で終端を示す<code>-1</code>"
+"が来ます。<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#ss12.2\">PAGC Input "
+"Tokens</link>から引用した正当な入力トークンは次の通りです:"
 
 #. Tag: emphasis
 #, no-c-format
@@ -1415,9 +1416,8 @@ msgstr "書式ベースの入力トークン"
 msgid ""
 "(13). The ampersand (&amp;) is frequently used to abbreviate the word "
 "\"and\"."
-msgstr ""
-"(13) アンパサンド (&amp;)は、\"and\"という語を短縮するために、よく使われま"
-"す。"
+msgstr "(13) アンパサンド (&amp;)は、\"and\"という語を短縮するために"
+"、よく使われます。"
 
 #. Tag: para
 #, no-c-format
@@ -1451,9 +1451,8 @@ msgstr "(0) 数字からなる文字列。"
 #. Tag: para
 #, no-c-format
 msgid "(15). Representations such as First or 1st. Often used in street names."
-msgstr ""
-"(15) \"First\"や\"1st\"といったものを表現する文字列。しばしばストリート名の中"
-"で使われています。"
+msgstr "(15) \"First\"や\"1st\"といったものを表現する文字列"
+"。しばしばストリート名の中で使われています。"
 
 #. Tag: para
 #, no-c-format
@@ -1465,8 +1464,7 @@ msgstr "(18) 一つの文字。"
 msgid ""
 "(1). A word is a string of letters of arbitrary length. A single letter can "
 "be both a SINGLE and a WORD."
-msgstr ""
-"(1) 任意長を持つ文字列です。一つの文字はSINGLEおよびWORDの両方になりえます。"
+msgstr "(1) 任意長を持つ文字列です。一つの文字はSINGLEおよびWORDの両方になりえます。"
 
 #. Tag: emphasis
 #, no-c-format
@@ -1479,8 +1477,8 @@ msgid ""
 "(14). Words used to denote post office boxes. For example <emphasis>Box</"
 "emphasis> or <emphasis>PO Box</emphasis>."
 msgstr ""
-"(14) 私書箱を示すために使われる語です。たとえば <emphasis>Box</emphasis>また"
-"は<emphasis>PO Box</emphasis>です。"
+"(14) 私書箱を示すために使われる語です。たとえば <emphasis>Box</"
+"emphasis>または<emphasis>PO Box</emphasis>です。"
 
 #. Tag: para
 #, no-c-format
@@ -1489,8 +1487,9 @@ msgid ""
 "prefix. For example: <emphasis>Tower</emphasis> in <emphasis>Tower 7A</"
 "emphasis>."
 msgstr ""
-"(19) 建物またはその複合体を示すための語で、通常は前置語になります。たとえば"
-"<emphasis>Tower 7A</emphasis>では<emphasis>Tower</emphasis>が該当します。"
+"(19) 建物またはその複合体を示すための語で、通常は前置語になります。"
+"たとえば<emphasis>Tower "
+"7A</emphasis>では<emphasis>Tower</emphasis>が該当します。"
 
 #. Tag: para
 #, no-c-format
@@ -1520,16 +1519,15 @@ msgid ""
 "(6). Words and abbreviations used to denote highways and roads. For example: "
 "the <emphasis>Interstate</emphasis> in <emphasis>Interstate 5</emphasis>"
 msgstr ""
-"(6) 高速道路と道路を示す語または略語です。たとえば<emphasis>Interstate 5</"
-"emphasis>の<emphasis>Interstate</emphasis>です。"
+"(6) 高速道路と道路を示す語または略語です。たとえば<emphasis>Interstate "
+"5</emphasis>では<emphasis>Interstate</emphasis>が該当します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "(8). Words and abbreviations used to denote rural routes. <emphasis>RR</"
 "emphasis>."
-msgstr ""
-"(8) 地方集配路線を示す語または略語です。たとえば<emphasis>RR</emphasis>です。"
+msgstr "(8) 地方集配路線を示す語または略語です。たとえば<emphasis>RR</emphasis>です。"
 
 #. Tag: para
 #, no-c-format
@@ -1537,8 +1535,8 @@ msgid ""
 "(2). Words and abbreviations used to denote street types. For example: "
 "<emphasis>ST</emphasis> or <emphasis>AVE</emphasis>."
 msgstr ""
-"(2) ストリート種別を示す語または略語です。たとえば<emphasis>ST</emphasis>や"
-"<emphasis>AVE</emphasis>です。"
+"(2) ストリート種別を示す語または略語です。たとえば<emphasis>ST</emphasis>や<e"
+"mphasis>AVE</emphasis>です。"
 
 #. Tag: para
 #, no-c-format
@@ -1569,15 +1567,15 @@ msgstr "(29) 4桁の番号。ZIP4です。"
 msgid ""
 "(27). A 3 character sequence of letter number letter. Identifies an FSA, the "
 "first 3 characters of a Canadian postal code."
-msgstr ""
-"(27) 英数3文字の順列です。カナダの郵便番号の先頭3文字であるFSAを示します。"
+msgstr "(27) 英字、数字、英字からなる3文字列です。カナダの郵便番号の先頭3文字であるFS"
+"Aを示します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "(26). A 3 character sequence of number letter number. Identifies an LDU, the "
 "last 3 characters of a Canadian postal code."
-msgstr "(26) 英数3文字の順列です。カナダの郵便番号の末尾3文字です。"
+msgstr "(26) 英字、数字、英字からなる3文字列です。カナダの郵便番号の末尾3文字です。"
 
 #. Tag: emphasis
 #, no-c-format
@@ -1598,8 +1596,7 @@ msgstr ""
 msgid ""
 "(7). A word with low lexical significance, that can be omitted in parsing. "
 "For example: <emphasis>THE</emphasis>."
-msgstr ""
-"(7) 重要性が低い語で、パース時に省かれます。たとえば<emphasis>THE</emphasis>"
+msgstr "(7) 重要性が低い語で、パース時に省かれます。たとえば<emphasis>THE</emphasis>"
 "が該当します。"
 
 #. Tag: title
@@ -1616,10 +1613,12 @@ msgid ""
 "dependent on kind of rule. Output tokens valid for each rule type are listed "
 "in <xref linkend=\"rule_types_rank\"/>."
 msgstr ""
-"1番目の-1 (終端)の後に、出力トークンが続き、その後に<code>-1</code>が続きま"
-"す。対応する出力トークンの番号は、<xref linkend=\"stdaddr\"/>に挙げています。"
-"許されるものは、規則の種類に依存します。それぞれの規則種別で有効なトークンは"
-"<xref linkend=\"rule_types_rank\"/>に挙げています。"
+"1番目の-1 "
+"(終端)の後に、出力トークンが続き、その後に<code>-1</code>が続きます。"
+"対応する出力トークンの番号は<xref linkend=\"stdaddr\""
+"/>に挙げています。許されるものは、規則の種類に依存します。"
+"それぞれの規則種別で有効なトークンは<xref linkend=\"rule_types_rank\""
+"/>に挙げています。"
 
 #. Tag: title
 #, no-c-format
