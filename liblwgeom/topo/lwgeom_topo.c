@@ -1441,11 +1441,11 @@ _lwt_FirstDistinctVertex2D(const POINTARRAY* pa, const POINT2D *ref, int from, i
     inc = -1;
   }
 
-  LWDEBUGF(1, "first point is index %d", from);
+  LWDEBUGF(2, "first point is index %d", from);
   fp = *ref; /* getPoint2d_p(pa, from, &fp); */
   for ( i = from+inc; i != toofar; i += inc )
   {
-    LWDEBUGF(1, "testing point %d", i);
+    LWDEBUGF(2, "testing point %d", i);
     getPoint2d_p(pa, i, op); /* pick next point */
     if ( P2D_SAME_STRICT(op,&fp) ) continue; /* equal to startpoint */
     /* this is a good one, neither same of start nor of end point */
@@ -5226,23 +5226,6 @@ _lwt_SnapEdgeToExistingNode(
     return -1;
   }
 
-  LWDEBUGF(1, "Split edge %"
-      LWTFMT_ELEMID " (pre-modEdgeSplit) next_right:%"
-      LWTFMT_ELEMID ", next_left:%"
-      LWTFMT_ELEMID ", face_right:%"
-      LWTFMT_ELEMID ", face_left:%"
-      LWTFMT_ELEMID ", start_node:%"
-      LWTFMT_ELEMID ", end_node:%"
-      LWTFMT_ELEMID,
-      edge->edge_id,
-      edge->next_right,
-      edge->next_left,
-      edge->face_right,
-      edge->face_left,
-      edge->start_node,
-      edge->end_node
-  );
-
   /* Update split edge reference as it was possibly changed by previous call */
   for ( uint64_t t=0; t<firstNodeEdges->numEdges; t++ )
   {
@@ -5254,7 +5237,7 @@ _lwt_SnapEdgeToExistingNode(
   }
 
   LWDEBUGF(1, "Split edge %"
-      LWTFMT_ELEMID " (post-modEdgeSplit) next_right:%"
+      LWTFMT_ELEMID " start condition: next_right:%"
       LWTFMT_ELEMID ", next_left:%"
       LWTFMT_ELEMID ", face_right:%"
       LWTFMT_ELEMID ", face_left:%"
