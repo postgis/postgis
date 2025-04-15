@@ -18,6 +18,7 @@ These can be set globally, by database, by session or by transaction. Best set a
         <title>Description</title>
         <para>This GUC is only relevant if you compiled PostGIS with sfcgal support.  By default <varname>geos</varname> backend is used for functions where both GEOS and SFCGAL have the same named function.  This variable allows you to override and make sfcgal the backend to service the request.</para>
         <para>Availability: 2.1.0</para>
+        <warning><para>This switch does nothing as of PostGIS 3.0, DO NOT USE.</para></warning>
       </refsection>
 
       <refsection>

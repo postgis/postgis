@@ -1,10 +1,16 @@
+labels:
+  platform: linux/amd64
+when:
+  event: [push, pull_request, tag]
 steps:
-  build:
-    image: docker.osgeo.org/postgis/build-test:trisquel3
+  - name: build
+    image: repo.osgeo.org/postgis/build-test:trisquel3
     when:
       - event: push
-        path: "doc/*"
+        path: 
+          include: ['doc/*', '.woodpecker/*.yaml']
     commands:
+      - export PATH=/usr/lib/postgresql/13/bin:$PATH
       - ./autogen.sh
       - mkdir -p build-docs && cd build-docs
       - ../configure
