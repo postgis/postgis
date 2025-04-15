@@ -377,7 +377,6 @@ static double parse_geo_literal(char *literal) {
 
 	}
 
-	POSTGIS_DEBUGF(2, "=> parse_geo_literal returns: %.*f (in decimal degrees)", literal_length-(3+start_literal), result);
 	return result;
 }
 

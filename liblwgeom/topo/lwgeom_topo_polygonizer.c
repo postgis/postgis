@@ -280,14 +280,14 @@ _lwt_UpdateEdgeRingSideFace(LWT_TOPOLOGY *topo, LWT_EDGERING *ring,
     LWT_ELEMID id = edge->edge_id;
     if ( elem->left )
     {
-      LWDEBUGF(3, "Forward edge %d is %d", forward_edges_count, id);
+      LWDEBUGF(3, "Forward edge %d is %lld", forward_edges_count, id);
       forward_edges[forward_edges_count].edge_id = id;
       forward_edges[forward_edges_count++].face_left = face;
       edge->face_left = face;
     }
     else
     {
-      LWDEBUGF(3, "Backward edge %d is %d", forward_edges_count, id);
+      LWDEBUGF(3, "Backward edge %d is %lld", forward_edges_count, id);
       backward_edges[backward_edges_count].edge_id = id;
       backward_edges[backward_edges_count++].face_right = face;
       edge->face_right = face;
@@ -364,7 +364,7 @@ _lwt_BuildEdgeRing(__attribute__((__unused__)) LWT_TOPOLOGY *topo, LWT_ISO_EDGE_
   cur = edge;
   curside = side;
 
-  LWDEBUGF(2, "Building rings for edge %d (side %d)", cur->edge_id, side);
+  LWDEBUGF(2, "Building rings for edge %lld (side %d)", cur->edge_id, side);
 
   do {
     LWT_ELEMID next;
@@ -380,7 +380,7 @@ _lwt_BuildEdgeRing(__attribute__((__unused__)) LWT_TOPOLOGY *topo, LWT_ISO_EDGE_
     LWT_EDGERING_PUSH(ring, elem);
     next = elem->left ? cur->next_left : cur->next_right;
 
-    LWDEBUGF(3, " next edge is %d", next);
+    LWDEBUGF(3, " next edge is %lld", next);
 
     if ( next > 0 ) curside = 1;
     else { curside = -1; next = -next; }
@@ -392,7 +392,7 @@ _lwt_BuildEdgeRing(__attribute__((__unused__)) LWT_TOPOLOGY *topo, LWT_ISO_EDGE_
     }
   } while (cur != edge || curside != side);
 
-  LWDEBUGF(1, "Ring for edge %d has %d elems", edge->edge_id*side, ring->size);
+  LWDEBUGF(1, "Ring for edge %lld has %d elems", edge->edge_id*side, ring->size);
 
   return ring;
 }
@@ -585,7 +585,7 @@ _lwt_RegisterFaceOnEdgeSide(LWT_TOPOLOGY *topo, LWT_ISO_EDGE *edge,
     /* Create new face */
     LWT_ISO_FACE newface;
 
-    LWDEBUGF(1, "Ring of edge %d is a shell (shell %d)", edge->edge_id * side, shells->size);
+    LWDEBUGF(1, "Ring of edge %lld is a shell (shell %d)", edge->edge_id * side, shells->size);
 
     newface.mbr = _lwt_EdgeRingGetBbox(ring);
 
@@ -619,7 +619,7 @@ _lwt_RegisterFaceOnEdgeSide(LWT_TOPOLOGY *topo, LWT_ISO_EDGE *edge,
   }
   else /* cw, so is an hole */
   {
-    LWDEBUGF(1, "Ring of edge %d is a hole (hole %d)", edge->edge_id * side, holes->size);
+    LWDEBUGF(1, "Ring of edge %lld is a hole (hole %d)", edge->edge_id * side, holes->size);
     *registered = placeholder_faceid;
     LWT_EDGERING_ARRAY_PUSH(holes, ring);
   }
@@ -676,7 +676,7 @@ _lwt_FindFaceContainingRing(LWT_TOPOLOGY* topo, LWT_EDGERING *ring,
     {
       LWT_EDGERING *sring = shells->rings[i];
       const GBOX* shellbox = _lwt_EdgeRingGetBbox(sring);
-      LWDEBUGF(2, "GBOX of shell %p for edge %d is %g %g,%g %g",
+      LWDEBUGF(2, "GBOX of shell %p for edge %lld is %g %g,%g %g",
         sring, sring->elems[0]->edge->edge_id, shellbox->xmin,
         shellbox->ymin, shellbox->xmax, shellbox->ymax);
       POINTARRAY *pa = ptarray_construct(0, 0, 2);
@@ -701,7 +701,7 @@ _lwt_FindFaceContainingRing(LWT_TOPOLOGY* topo, LWT_EDGERING *ring,
   LWT_EDGERING_ARRAY candidates;
   LWT_EDGERING_ARRAY_INIT(&candidates);
 	GEOSSTRtree_query(shells->tree, ghole, &_lwt_AccumulateCanditates, &candidates);
-  LWDEBUGF(1, "Found %d candidate shells containing first point of ring's originating edge %d",
+  LWDEBUGF(1, "Found %d candidate shells containing first point of ring's originating edge %lld",
           candidates.size, ring->elems[0]->edge->edge_id * ( ring->elems[0]->left ? 1 : -1 ) );
 
   /* TODO: sort candidates by bounding box size */
@@ -714,7 +714,7 @@ _lwt_FindFaceContainingRing(LWT_TOPOLOGY* topo, LWT_EDGERING *ring,
 
     if ( sring->elems[0]->edge->edge_id == ring->elems[0]->edge->edge_id )
     {
-      LWDEBUGF(1, "Shell %d is on other side of ring",
+      LWDEBUGF(1, "Shell %lld is on other side of ring",
                _lwt_EdgeRingGetFace(sring));
       continue;
     }
@@ -722,7 +722,7 @@ _lwt_FindFaceContainingRing(LWT_TOPOLOGY* topo, LWT_EDGERING *ring,
     /* The hole envelope cannot equal the shell envelope */
     if ( gbox_same(shellbox, testbox) )
     {
-      LWDEBUGF(1, "Bbox of shell %d equals that of hole ring",
+      LWDEBUGF(1, "Bbox of shell %lld equals that of hole ring",
                _lwt_EdgeRingGetFace(sring));
       continue;
     }
@@ -730,7 +730,7 @@ _lwt_FindFaceContainingRing(LWT_TOPOLOGY* topo, LWT_EDGERING *ring,
     /* Skip if ring box is not in shell box */
     if ( ! gbox_contains_2d(shellbox, testbox) )
     {
-      LWDEBUGF(1, "Bbox of shell %d does not contain bbox of ring point",
+      LWDEBUGF(1, "Bbox of shell %lld does not contain bbox of ring point",
                _lwt_EdgeRingGetFace(sring));
       continue;
     }
@@ -739,7 +739,7 @@ _lwt_FindFaceContainingRing(LWT_TOPOLOGY* topo, LWT_EDGERING *ring,
      * and this shell's bbox is not contained in the other */
     if ( minenv && ! gbox_contains_2d(minenv, shellbox) )
     {
-      LWDEBUGF(2, "Bbox of shell %d (face %d) not contained by bbox "
+      LWDEBUGF(2, "Bbox of shell %d (face %lld) not contained by bbox "
                   "of last shell found to contain the point",
                   i, _lwt_EdgeRingGetFace(sring));
       continue;
@@ -751,7 +751,7 @@ _lwt_FindFaceContainingRing(LWT_TOPOLOGY* topo, LWT_EDGERING *ring,
       /* Continue until all shells are tested, as we want to
        * use the one with the smallest bounding box */
       /* IDEA: sort shells by bbox size, stopping on first match */
-      LWDEBUGF(1, "Shell %d contains hole of edge %d",
+      LWDEBUGF(1, "Shell %lld contains hole of edge %lld",
                _lwt_EdgeRingGetFace(sring),
                ring->elems[0]->edge->edge_id);
       minenv = shellbox;
@@ -872,14 +872,14 @@ lwt_Polygonize(LWT_TOPOLOGY* topo)
 
     LWT_ELEMID newface = -1;
 
-    LWDEBUGF(1, "Next face-missing edge has id:%d, face_left:%d, face_right:%d",
+    LWDEBUGF(1, "Next face-missing edge has id:%lld, face_left:%lld, face_right:%lld",
                edge->edge_id, edge->face_left, edge->face_right);
     if ( edge->face_left == -1 )
     {
       err = _lwt_RegisterFaceOnEdgeSide(topo, edge, 1, &edgetable,
                                         &holes, &shells, &newface);
       if ( err ) break;
-      LWDEBUGF(1, "New face on the left of edge %d is %d",
+      LWDEBUGF(1, "New face on the left of edge %lld is %lld",
                  edge->edge_id, newface);
       edge->face_left = newface;
     }
@@ -888,7 +888,7 @@ lwt_Polygonize(LWT_TOPOLOGY* topo)
       err = _lwt_RegisterFaceOnEdgeSide(topo, edge, -1, &edgetable,
                                         &holes, &shells, &newface);
       if ( err ) break;
-      LWDEBUGF(1, "New face on the right of edge %d is %d",
+      LWDEBUGF(1, "New face on the right of edge %lld is %lld",
                  edge->edge_id, newface);
       edge->face_right = newface;
     }

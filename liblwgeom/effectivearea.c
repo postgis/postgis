@@ -265,7 +265,7 @@ static void tune_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, dou
 	for (i=0;i<npoints;i++)
 	{
 		 ((areanode*) tree.key_array[i])->treeindex=i;
-		LWDEBUGF(4,"Check ordering qsort gives, area=%lf and belong to point %d",((areanode*) tree.key_array[i])->area, tree.key_array[i]-ea->initial_arealist);
+		LWDEBUGF(4,"Check ordering qsort gives, area=%lf and belong to point %ld",((areanode*) tree.key_array[i])->area, tree.key_array[i]-ea->initial_arealist);
 	}
 	/*Ok, now we have a minHeap, just need to keep it*/
 

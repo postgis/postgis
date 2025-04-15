@@ -168,7 +168,7 @@ circ_center_spherical(const GEOGRAPHIC_POINT* c1, const GEOGRAPHIC_POINT* c2, do
 	/* Direction from c1 to c2 */
 	double dir = sphere_direction(c1, c2, distance);
 
-	LWDEBUGF(4,"calculating spherical center", dir);
+	LWDEBUG(4,"calculating spherical center");
 
 	LWDEBUGF(4,"dir is %g", dir);
 

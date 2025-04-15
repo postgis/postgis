@@ -190,7 +190,7 @@ rt_set_handlers_options(rt_allocator allocator, rt_reallocator reallocator,
 void *
 rtalloc(size_t size) {
     void * mem = ctx_t.alloc(size);
-    RASTER_DEBUGF(5, "rtalloc called: %d@%p", size, mem);
+    RASTER_DEBUGF(5, "rtalloc called: %zu@%p", size, mem);
     return mem;
 }
 
@@ -198,7 +198,7 @@ rtalloc(size_t size) {
 void *
 rtrealloc(void * mem, size_t size) {
     void * result = ctx_t.realloc(mem, size);
-    RASTER_DEBUGF(5, "rtrealloc called: %d@%p", size, result);
+    RASTER_DEBUGF(5, "rtrealloc called: %zu@%p", size, result);
     return result;
 }
 

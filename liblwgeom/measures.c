@@ -1152,7 +1152,7 @@ lw_dist2d_pt_ptarray(const POINT2D *p, POINTARRAY *pa, DISTPTS *dl)
 		if (!lw_dist2d_pt_seg(p, start, end, dl))
 			return LW_FALSE;
 
-		LWDEBUGF(2, "lw_dist2d_pt_ptarray: distance from seg %lu ? : %.15g", t, dl->distance);
+		LWDEBUGF(2, "lw_dist2d_pt_ptarray: distance from seg %u ? : %.15g", t, dl->distance);
 
 		if (dl->distance <= dl->tolerance && dl->mode == DIST_MIN)
 			return LW_TRUE; /*just a check if the answer is already given*/

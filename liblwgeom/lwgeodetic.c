@@ -3558,7 +3558,7 @@ int ptarray_contains_point_sphere(const POINTARRAY *pa, const POINT2D *pt_outsid
 			if ( inter & PIR_B_TOUCH_RIGHT || inter & PIR_COLINEAR )
 			{
 				/* Do nothing, to avoid double counts. */
-				LWDEBUGF(4,"    edge (%d) crossed, disregarding to avoid double count", i, count);
+				LWDEBUGF(4,"    edge (%d) crossed, count == %d, disregarding to avoid double count", i, count);
 			}
 			else
 			{

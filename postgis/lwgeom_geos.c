@@ -1982,13 +1982,6 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	GEOSGeometry *geos_result;
 	const GEOSGeometry **vgeoms;
 	int32_t srid = SRID_UNKNOWN;
-#if POSTGIS_DEBUG_LEVEL >= 3
-	static int call=1;
-#endif
-
-#if POSTGIS_DEBUG_LEVEL >= 3
-	call++;
-#endif
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();

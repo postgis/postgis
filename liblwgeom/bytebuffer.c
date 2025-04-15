@@ -71,19 +71,19 @@ bytebuffer_destroy_buffer(bytebuffer_t *s)
 static inline void
 bytebuffer_makeroom(bytebuffer_t *s, size_t size_to_add)
 {
-	LWDEBUGF(2,"Entered bytebuffer_makeroom with space need of %d", size_to_add);
+	LWDEBUGF(2,"Entered bytebuffer_makeroom with space need of %zu", size_to_add);
 	size_t current_write_size = (s->writecursor - s->buf_start);
 	size_t capacity = s->capacity;
 	size_t required_size = current_write_size + size_to_add;
 
-	LWDEBUGF(2,"capacity = %d and required size = %d",capacity ,required_size);
+	LWDEBUGF(2,"capacity = %zu and required size = %zu", capacity, required_size);
 	while (capacity < required_size)
 		capacity *= 2;
 
 	if ( capacity > s->capacity )
 	{
 		size_t current_read_size = (s->readcursor - s->buf_start);
-		LWDEBUGF(4,"We need to realloc more memory. New capacity is %d", capacity);
+		LWDEBUGF(4,"We need to realloc more memory. New capacity is %zu", capacity);
 		if ( s->buf_start == s->buf_static )
 		{
 			s->buf_start = lwalloc(capacity);

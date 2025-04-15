@@ -281,7 +281,7 @@ rt_band_get_summary_stats(
 				y += diff + offset;
 				diff = sample_int - offset;
 			}
-			RASTER_DEBUGF(5, "(x, y, z) = (%d, %d, %d)", x, y, z);
+			RASTER_DEBUGF(5, "(x, y, z) = (%u, %lld, %u)", x, y, z);
 			if (y >= band->height || z > sample_per) break;
 
 			rtn = rt_band_get_pixel(band, x, y, &value, &isnodata);
@@ -1050,7 +1050,7 @@ rt_band_get_quantiles_stream(
 	assert(NULL != band);
 	assert(cov_count > 1);
 	assert(NULL != rtn_count);
-	RASTER_DEBUGF(3, "cov_count = %d", cov_count);
+	RASTER_DEBUGF(3, "cov_count = %llu", cov_count);
 
 	data = rt_band_get_data(band);
 	if (data == NULL) {
@@ -1135,7 +1135,7 @@ rt_band_get_quantiles_stream(
 				qll->tau = cov_count - (*qlls)[i - 1].tau + 1;
 			}
 
-			RASTER_DEBUGF(4, "qll init: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
+			RASTER_DEBUGF(4, "qll init: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %llu, %llu, %llu)",
 				qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
 			RASTER_DEBUGF(4, "qll init: (head, tail) = (%p, %p)", qll->head, qll->tail);
 		}
@@ -1192,7 +1192,7 @@ rt_band_get_quantiles_stream(
 				y += diff + offset;
 				diff = sample_int - offset;
 			}
-			RASTER_DEBUGF(5, "(x, y, z) = (%d, %d, %d)", x, y, z);
+			RASTER_DEBUGF(5, "(x, y, z) = (%u, %lld, %u)", x, y, z);
 			if (y >= band->height || z > sample_per) break;
 
 			status = rt_band_get_pixel(band, x, y, &value, &isnodata);
@@ -1205,7 +1205,7 @@ rt_band_get_quantiles_stream(
 					qll = &((*qlls)[a]);
 					qls = NULL;
 					RASTER_DEBUGF(4, "%d of %d (%f)", a + 1, *qlls_count, qll->quantile);
-					RASTER_DEBUGF(5, "qll before: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
+					RASTER_DEBUGF(5, "qll before: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %lld, %lld, %lld)",
 						qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
 					RASTER_DEBUGF(5, "qll before: (head, tail) = (%p, %p)", qll->head, qll->tail);
 
@@ -1444,7 +1444,7 @@ rt_band_get_quantiles_stream(
 						}
 					}
 
-					RASTER_DEBUGF(5, "sum2, tau = %d, %d", qll->sum2, qll->tau);
+					RASTER_DEBUGF(5, "sum2, tau = %lld, %lld", qll->sum2, qll->tau);
 					if (qll->sum2 >= qll->tau) {
 						/* AL-GEQ */
 						if (qll->algeq) {
@@ -1498,14 +1498,14 @@ rt_band_get_quantiles_stream(
 						}
 					}
 
-					RASTER_DEBUGF(5, "qll after: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
+					RASTER_DEBUGF(5, "qll after: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %lld, %lld, %lld)",
 						qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
 					RASTER_DEBUGF(5, "qll after: (head, tail) = (%p, %p)\n\n", qll->head, qll->tail);
 				}
 
 			}
 			else {
-				RASTER_DEBUGF(5, "skipping value at (x, y) = (%d, %d)", x, y);
+				RASTER_DEBUGF(5, "skipping value at (x, y) = (%u, %lld)", x, y);
 			}
 
 			z++;
@@ -1530,7 +1530,7 @@ rt_band_get_quantiles_stream(
 		}
 		if (exists) continue;
 
-		RASTER_DEBUGF(5, "qll: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
+		RASTER_DEBUGF(5, "qll: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %lld, %lld, %lld)",
 			qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
 		RASTER_DEBUGF(5, "qll: (head, tail) = (%p, %p)", qll->head, qll->tail);
 
@@ -1552,7 +1552,7 @@ rt_band_get_quantiles_stream(
 		for (j = i + 1; j < *qlls_count; j++) {
 			if (FLT_EQ((*qlls)[j].quantile, qll->quantile)) {
 
-				RASTER_DEBUGF(5, "qlls[%d]: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
+				RASTER_DEBUGF(5, "qlls[%d]: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %lld, %lld, %lld)",
 					j, (*qlls)[j].algeq, (*qlls)[j].quantile, (*qlls)[j].count, (*qlls)[j].tau, (*qlls)[j].sum1, (*qlls)[j].sum2);
 				RASTER_DEBUGF(5, "qlls[%d]: (head, tail) = (%p, %p)", j, (*qlls)[j].head, (*qlls)[j].tail);
 

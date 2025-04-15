@@ -413,8 +413,8 @@ int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q
 	** location of the other end-point. Only touches by the first point
 	** will be considered "real" to avoid double counting.
 	*/
-	LWDEBUGF(4, "pq1=%.15g pq2=%.15g", pq1, pq2);
-	LWDEBUGF(4, "qp1=%.15g qp2=%.15g", qp1, qp2);
+	LWDEBUGF(4, "pq1=%d pq2=%d", pq1, pq2);
+	LWDEBUGF(4, "qp1=%d qp2=%d", qp1, qp2);
 
 	/* Second point of p or q touches, it's not a crossing. */
 	if ( pq2 == 0 || qp2 == 0 )
@@ -518,7 +518,7 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 
 			this_cross = lw_segment_intersects(p1, p2, q1, q2);
 
-			LWDEBUGF(4, "i=%d, j=%d (%.8g %.8g, %.8g %.8g)", this_cross, i, j, p1->x, p1->y, p2->x, p2->y);
+			LWDEBUGF(4, "i=%d, j=%d (%.8g %.8g, %.8g %.8g)", i, j, p1->x, p1->y, p2->x, p2->y);
 
 			if ( this_cross == SEG_CROSS_LEFT )
 			{

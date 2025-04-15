@@ -616,7 +616,7 @@ static void lwpsurface_to_wkt_sb(const LWPSURFACE *psurf, stringbuffer_t *sb, in
 static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	LWDEBUGF(4, "lwgeom_to_wkt_sb: type %s, hasz %d, hasm %d",
-		lwtype_name(geom->type), (geom->type),
+		lwtype_name(geom->type),
 		FLAGS_GET_Z(geom->flags)?1:0, FLAGS_GET_M(geom->flags)?1:0);
 
 	switch (geom->type)

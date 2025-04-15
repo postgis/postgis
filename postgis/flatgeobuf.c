@@ -143,7 +143,7 @@ static void ensure_items_len(struct flatgeobuf_agg_ctx *ctx)
 	}
 	if (ctx->ctx->items_len < (ctx->ctx->features_count + 1)) {
 		ctx->ctx->items_len = ctx->ctx->items_len * 2;
-		POSTGIS_DEBUGF(2, "flatgeobuf: reallocating items to len %ld", ctx->ctx->items_len);
+		POSTGIS_DEBUGF(2, "flatgeobuf: reallocating items to len %lld", ctx->ctx->items_len);
 		ctx->ctx->items = repalloc(ctx->ctx->items, sizeof(flatgeobuf_item *) * ctx->ctx->items_len);
 		ensure_items_len(ctx);
 	}
@@ -491,7 +491,7 @@ void flatgeobuf_decode_row(struct flatgeobuf_decode_ctx *ctx)
 	POSTGIS_DEBUGF(3, "fid now %d", ctx->fid);
 
 	if (ctx->ctx->offset == ctx->ctx->size) {
-		POSTGIS_DEBUGF(3, "reached end at %ld", ctx->ctx->offset);
+		POSTGIS_DEBUGF(3, "reached end at %lld", ctx->ctx->offset);
 		ctx->done = true;
 	}
 }
@@ -556,7 +556,7 @@ void flatgeobuf_agg_transfn(struct flatgeobuf_agg_ctx *ctx)
  */
 uint8_t *flatgeobuf_agg_finalfn(struct flatgeobuf_agg_ctx *ctx)
 {
-	POSTGIS_DEBUGF(3, "called at offset %ld", ctx->ctx->offset);
+	POSTGIS_DEBUGF(3, "called at offset %lld", ctx->ctx->offset);
 	if (ctx == NULL)
 		flatgeobuf_agg_ctx_init(NULL, false);
 	// header only result
@@ -569,6 +569,5 @@ uint8_t *flatgeobuf_agg_finalfn(struct flatgeobuf_agg_ctx *ctx)
 	if (ctx->tupdesc != NULL)
 		ReleaseTupleDesc(ctx->tupdesc);
 	SET_VARSIZE(ctx->ctx->buf, ctx->ctx->offset);
-	POSTGIS_DEBUGF(3, "returning at offset %ld", ctx->ctx->offset);
 	return ctx->ctx->buf;
 }

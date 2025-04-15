@@ -99,15 +99,15 @@ lwt_edgeEndStar_addEdge( LWT_EDGEEND_STAR *star, const LWT_ISO_EDGE *edge )
   }
 
   LWDEBUGF(1, "Edge %" LWTFMT_ELEMID
-    " got %" PRIu64 " ends incident to star node %" LWTFMT_ELEMID,
+    " got %d" " ends incident to star node %" LWTFMT_ELEMID,
     edge->edge_id, numEdgeEnds, star->nodeID );
 
   newCapacity = star->numEdgeEnds + numEdgeEnds;
-  LWDEBUGF(3, "Current star capacity:%d, required:%d",
+  LWDEBUGF(3, "Current star capacity:%lld, required:%lld",
     star->edgeEndsCapacity, newCapacity);
   if ( newCapacity > star->edgeEndsCapacity )
   {
-    LWDEBUGF(3, "Reallocating edgeEnds from %p to new size %d", star->edgeEnds, newCapacity * sizeof(LWT_EDGEEND *));
+    LWDEBUGF(3, "Reallocating edgeEnds from %p to new size %lld", star->edgeEnds, newCapacity * sizeof(LWT_EDGEEND *));
     if ( star->edgeEnds ) {
       star->edgeEnds = lwrealloc(star->edgeEnds, newCapacity * sizeof(LWT_EDGEEND *));
     } else {
@@ -115,7 +115,7 @@ lwt_edgeEndStar_addEdge( LWT_EDGEEND_STAR *star, const LWT_ISO_EDGE *edge )
     }
     LWDEBUGF(3, "Reallocated edgeEnds are %p", star->edgeEnds);
     star->edgeEndsCapacity = newCapacity;
-    LWDEBUGF(3, "New star capacity: %d", newCapacity);
+    LWDEBUGF(3, "New star capacity: %lld", newCapacity);
   }
 
   for (int i=0; i<numEdgeEnds; ++i)
@@ -138,7 +138,7 @@ lwt_edgeEnd_compare(const void *i1, const void *i2)
 	else
 		ret = 0;
 
-  LWDEBUGF(4, "qsort comparator for %s edge %d with azimuth %g and %s edge %d with azimuth %g returning %d",
+  LWDEBUGF(4, "qsort comparator for %s edge %lld with azimuth %g and %s edge %lld with azimuth %g returning %d",
       ee1->outgoing ? "outgoing" : "incoming", ee1->edge->edge_id, ee1->azimuth,
       ee2->outgoing ? "outgoing" : "incoming", ee2->edge->edge_id, ee2->azimuth,
       ret

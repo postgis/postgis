@@ -939,7 +939,7 @@ rect_tree_intersects_tree_recursive(RECT_NODE *n1, RECT_NODE *n2)
 #if POSTGIS_DEBUG_LEVEL >= 4
 	char *n1_str = rect_node_to_str(n1);
 	char *n2_str = rect_node_to_str(n2);
-	LWDEBUGF(4,"n1 %s  n2 %s", n1, n2);
+	LWDEBUGF(4,"n1 %s  n2 %s", n1_str, n2_str);
 	lwfree(n1_str);
 	lwfree(n2_str);
 #endif

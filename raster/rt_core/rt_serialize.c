@@ -535,9 +535,9 @@ rt_raster_serialize(rt_raster raster) {
 	memset(ret, '-', size);
 	ptr = ret;
 
-	RASTER_DEBUGF(3, "sizeof(struct rt_raster_serialized_t):%u",
+	RASTER_DEBUGF(3, "sizeof(struct rt_raster_serialized_t):%lu",
 		sizeof (struct rt_raster_serialized_t));
-	RASTER_DEBUGF(3, "sizeof(struct rt_raster_t):%u",
+	RASTER_DEBUGF(3, "sizeof(struct rt_raster_t):%lu",
 		sizeof (struct rt_raster_t));
 	RASTER_DEBUGF(3, "serialized size:%lu", (long unsigned) size);
 
@@ -909,7 +909,7 @@ rt_raster_deserialize(void* serialized, int header_only) {
 			++ptr;
 		}
 
-		RASTER_DEBUGF(3, "rt_raster_deserialize: skip %d bytes of 8-bytes boundary padding", ptr - padbeg);
+		RASTER_DEBUGF(3, "rt_raster_deserialize: skip %ld bytes of 8-bytes boundary padding", ptr - padbeg);
 
 		/* Consistency checking (ptr is pixbytes-aligned) */
 		assert(!((ptr - beg) % pixbytes));

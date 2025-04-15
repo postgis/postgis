@@ -647,7 +647,7 @@ static size_t gserialized2_from_lwpoint_size(const LWPOINT *point)
 	size += 4; /* Number of points (one or zero (empty)). */
 	size += sizeof(double) * point->point->npoints * FLAGS_NDIMS(point->flags);
 
-	LWDEBUGF(3, "point size = %d", size);
+	LWDEBUGF(3, "point size = %zu", size);
 
 	return size;
 }
@@ -661,7 +661,7 @@ static size_t gserialized2_from_lwline_size(const LWLINE *line)
 	size += 4; /* Number of points (zero => empty). */
 	size += sizeof(double) * line->points->npoints * FLAGS_NDIMS(line->flags);
 
-	LWDEBUGF(3, "linestring size = %d", size);
+	LWDEBUGF(3, "linestring size = %zu", size);
 
 	return size;
 }
@@ -675,7 +675,7 @@ static size_t gserialized2_from_lwtriangle_size(const LWTRIANGLE *triangle)
 	size += 4; /* Number of points (zero => empty). */
 	size += sizeof(double)* triangle->points->npoints * FLAGS_NDIMS(triangle->flags);
 
-	LWDEBUGF(3, "triangle size = %d", size);
+	LWDEBUGF(3, "triangle size = %zu", size);
 
 	return size;
 }
@@ -698,7 +698,7 @@ static size_t gserialized2_from_lwpoly_size(const LWPOLY *poly)
 		size += poly->rings[i]->npoints * point_size;
 	}
 
-	LWDEBUGF(3, "polygon size = %d", size);
+	LWDEBUGF(3, "polygon size = %zu", size);
 
 	return size;
 }
@@ -712,7 +712,7 @@ static size_t gserialized2_from_lwcircstring_size(const LWCIRCSTRING *curve)
 	size += 4; /* Number of points (zero => empty). */
 	size += sizeof(double) * curve->points->npoints * FLAGS_NDIMS(curve->flags);
 
-	LWDEBUGF(3, "circstring size = %d", size);
+	LWDEBUGF(3, "circstring size = %zu", size);
 
 	return size;
 }
@@ -730,10 +730,10 @@ static size_t gserialized2_from_lwcollection_size(const LWCOLLECTION *col)
 	{
 		size_t subsize = gserialized2_from_any_size(col->geoms[i]);
 		size += subsize;
-		LWDEBUGF(3, "lwcollection subgeom(%d) size = %d", i, subsize);
+		LWDEBUGF(3, "lwcollection subgeom(%d) size = %zu", i, subsize);
 	}
 
-	LWDEBUGF(3, "lwcollection size = %d", size);
+	LWDEBUGF(3, "lwcollection size = %zu", size);
 
 	return size;
 }
@@ -787,7 +787,7 @@ size_t gserialized2_from_lwgeom_size(const LWGEOM *geom)
 		size += gbox_serialized_size(geom->flags);
 
 	size += gserialized2_from_any_size(geom);
-	LWDEBUGF(3, "%s size = %d", __func__, size);
+	LWDEBUGF(3, "%s size = %zu", __func__, size);
 
 	return size;
 }
@@ -1119,7 +1119,7 @@ static size_t gserialized2_from_gbox(const GBOX *gbox, uint8_t *buf)
 		loc += 2 * sizeof(float);
 
 		return_size = (size_t)(loc - buf);
-		LWDEBUGF(4, "returning size %d", return_size);
+		LWDEBUGF(4, "returning size %zu", return_size);
 		return return_size;
 	}
 
@@ -1137,7 +1137,7 @@ static size_t gserialized2_from_gbox(const GBOX *gbox, uint8_t *buf)
 		loc += 2 * sizeof(float);
 	}
 	return_size = (size_t)(loc - buf);
-	LWDEBUGF(4, "returning size %d", return_size);
+	LWDEBUGF(4, "returning size %zu", return_size);
 	return return_size;
 }
 
