@@ -880,8 +880,11 @@ rt_raster rt_raster_gdal_warp(
 	for (i = 0; i < arg->wopts->nBandCount; i++)
 		arg->wopts->panDstBands[i] = arg->wopts->panSrcBands[i] = i + 1;
 
+/* See https://trac.osgeo.org/postgis/ticket/5881 */
+#if POSTGIS_GDAL_VERSION >= 311
 	/* set nodata mapping */
 	if (hasnodata) {
+#endif
 		RASTER_DEBUG(3, "Setting nodata mapping");
 		arg->wopts->padfSrcNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
 		arg->wopts->padfDstNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
@@ -924,7 +927,9 @@ rt_raster rt_raster_gdal_warp(
 				arg->wopts->padfDstNoDataReal[i], arg->wopts->padfDstNoDataImag[i]
 			);
 		}
+#if POSTGIS_GDAL_VERSION >= 311
 	}
+#endif
 
 	/* warp raster */
 	RASTER_DEBUG(3, "Warping raster");
