@@ -520,7 +520,8 @@ static void test_gdal_warp() {
 }
 
 static void test_gdal_warp_preserves_data(void) {
-	const char *filename = "../regress/loader/Projected.tif";
+	const char *filename = POSTGIS_TOP_SRC_DIR "/raster/test/regress/loader/Projected.tif";
+
 	GDALDatasetH hDS_in = NULL;
 	rt_raster rast_in = NULL;
 	rt_raster rast_out = NULL;
