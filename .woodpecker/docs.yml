@@ -6,7 +6,8 @@ steps:
   - name: build
     image: repo.osgeo.org/postgis/build-test:trisquel3
     when:
-      path: "doc/*"
+      path: 
+        include: ['doc/*', '.woodpecker/*.yaml']
     commands:
       - export PATH=/usr/lib/postgresql/12/bin:$PATH
       - ./autogen.sh
