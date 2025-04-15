@@ -2825,7 +2825,7 @@ rt_raster_gdal_rasterize(
 		_dim[1] == 0
 	) {
 
-#if POSTGIS_GDAL_VERSION > 18
+#if POSTGIS_GDAL_VERSION > 10800
 
 		RASTER_DEBUG(3, "Adjusting extent for GDAL > 1.8 by half the scale on X-axis");
 		extent.MinX -= (_scale[0] / 2.);

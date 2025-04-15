@@ -269,7 +269,7 @@ rt_pg_options(const char* varname)
 static stringlist_t *vsi_option_stringlist = NULL;
 
 
-#if POSTGIS_GDAL_VERSION < 23
+#if POSTGIS_GDAL_VERSION < 20300
 
 /*
 * For older versions of GDAL we  have extracted the list of options
@@ -341,7 +341,7 @@ rt_pg_vsi_load_all_options(void)
 	stringlist_sort(vsi_option_stringlist);
 }
 
-#else /* POSTGIS_GDAL_VERSION < 23 */
+#else /* POSTGIS_GDAL_VERSION < 20300 */
 
 /*
 * For newer versions of GDAL the VSIGetFileSystemOptions() call returns
@@ -413,7 +413,7 @@ rt_pg_vsi_load_all_options(void)
 	stringlist_sort(vsi_option_stringlist);
 }
 
-#endif /* POSTGIS_GDAL_VERSION < 23 */
+#endif /* POSTGIS_GDAL_VERSION < 20300 */
 
 
 static bool

@@ -157,7 +157,7 @@ int rt_raster_gdal_contour(
 		return _rti_contour_arg_destroy(&arg);
 
 	/* Polygonize is 2.4+ only */
-#if POSTGIS_GDAL_VERSION >= 24
+#if POSTGIS_GDAL_VERSION >= 20400
 	arg.dst.gtype = polygonize ? wkbPolygon : wkbLineString;
 #else
 	arg.dst.gtype = wkbLineString;

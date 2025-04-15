@@ -1587,7 +1587,8 @@ if test "x$with_raster" != "xno"; then
 
 	dnl GDAL version constants, update here
 	GDAL_MIN_VERSION=2.0.0
-	GDAL_MIN_VERSION_NUMBER=180 dnl TODO: Use GDAL version calculation MAJOR*1000+MINOR*100+REV*10+BUILD
+	dnl Compare to POSTGIS_GDAL_VERSION
+	GDAL_MIN_VERSION_NUMBER=20000
 
 	AC_ARG_WITH(
 		[gdalconfig],
@@ -1613,13 +1614,12 @@ if test "x$with_raster" != "xno"; then
 		GDAL_MINOR_VERSION=`$GDAL_CONFIG --version | cut -d. -f2 | sed 's/[[^0-9]]//g'`
 		GDAL_PATCH_VERSION=`$GDAL_CONFIG --version | cut -d. -f3 | sed 's/[[^0-9]]//g'`
 		GDAL_FULL_VERSION=`$GDAL_CONFIG --version`
-		POSTGIS_GDAL_VERSION="$GDAL_MAJOR_VERSION$GDAL_MINOR_VERSION"
-		GDAL_VERSION_NUMBER="$GDAL_MAJOR_VERSION$GDAL_MINOR_VERSION$GDAL_PATCH_VERSION"
+		POSTGIS_GDAL_VERSION=`echo $GDAL_FULL_VERSION | $PERL -nle 'printf "%d%02d%02d\n",$1,$2,$3 if /(\d+)\.(\d+)\.(\d+)/'`
 
 		AC_MSG_RESULT([$GDAL_FULL_VERSION])
 
 		dnl Ensure we are using minimum required version of GDAL
-		if test ! "$GDAL_VERSION_NUMBER" -ge "$GDAL_MIN_VERSION_NUMBER" ; then
+		if test ! "$POSTGIS_GDAL_VERSION" -ge "$GDAL_MIN_VERSION_NUMBER" ; then
 			AC_MSG_ERROR([PostGIS raster requires GDAL >= $GDAL_MIN_VERSION. Use --without-raster to build without raster support.])
 		fi
 
