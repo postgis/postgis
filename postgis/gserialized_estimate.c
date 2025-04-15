@@ -2315,7 +2315,7 @@ index_has_attr(Oid index_oid, Oid table_oid, int16 table_attnum)
 		elog(ERROR, "table=%u and index=%u are not related", table_oid, index_oid);
 
 	/* Check if the attnum is in the indkey array */
-	for (int16 i = 0; i < index_form->indkey.dim1; i++)
+	for (int16 i = 0; i < (int16)(index_form->indkey.dim1); i++)
 	{
 		if (index_form->indkey.values[i] == table_attnum)
 		{
