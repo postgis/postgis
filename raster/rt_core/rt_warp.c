@@ -29,7 +29,6 @@
  */
 
 #include "../../postgis_config.h"
-/* #define POSTGIS_DEBUG_LEVEL 4 */
 
 #include "librtcore.h"
 #include "librtcore_internal.h"
@@ -188,8 +187,6 @@ rt_raster rt_raster_gdal_warp(
 	CPLErr cplerr;
 	char *dst_options[] = {"SUBCLASS=VRTWarpedDataset", NULL};
 	_rti_warp_arg arg = NULL;
-
-	int hasnodata = 0;
 
 	GDALRasterBandH band;
 	rt_band rtband = NULL;
@@ -819,7 +816,6 @@ rt_raster rt_raster_gdal_warp(
 
 		/* set nodata */
 		if (rt_band_get_hasnodata_flag(rtband) != FALSE) {
-			hasnodata = 1;
 			rt_band_get_nodata(rtband, &nodata);
 			if (GDALSetRasterNoDataValue(band, nodata) != CE_None)
 				rtwarn("rt_raster_gdal_warp: Could not set nodata value for band %d", i);
@@ -869,6 +865,7 @@ rt_raster rt_raster_gdal_warp(
 	arg->wopts->pfnTransformer = arg->transform.func;
 	arg->wopts->pTransformerArg = arg->transform.arg.transform;
 	arg->wopts->papszWarpOptions = (char **) CPLMalloc(sizeof(char *) * 2);
+
 	arg->wopts->papszWarpOptions[0] = (char *) CPLMalloc(sizeof(char) * (strlen("INIT_DEST=NO_DATA") + 1));
 	strcpy(arg->wopts->papszWarpOptions[0], "INIT_DEST=NO_DATA");
 	arg->wopts->papszWarpOptions[1] = NULL;
@@ -880,8 +877,17 @@ rt_raster rt_raster_gdal_warp(
 	for (i = 0; i < arg->wopts->nBandCount; i++)
 		arg->wopts->panDstBands[i] = arg->wopts->panSrcBands[i] = i + 1;
 
-	/* set nodata mapping */
-	if (hasnodata) {
+	/*
+	* https://trac.osgeo.org/postgis/ticket/5881
+	* In order to call GDALWarp with BAND_INIT=NO_DATA we need to ensure
+	* that the src and dst rasters have nodata values and they are
+	* matched up nicely. This block used by tested with the hasnodata
+	* check on all src raster bands, but now we just do it every time
+	* because that makes sense (any warped raster is likely to have
+	* empty corners on output, and those corners need to be filled with
+	* some kind of NODATA value).
+	*/
+	{
 		RASTER_DEBUG(3, "Setting nodata mapping");
 		arg->wopts->padfSrcNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
 		arg->wopts->padfDstNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
