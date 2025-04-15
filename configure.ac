@@ -1968,7 +1968,7 @@ AC_MSG_RESULT([  GEOS config:          ${GEOS_CONFIG_SRC}])
 AC_MSG_RESULT([  GEOS version:         ${GEOS_VERSION} (${POSTGIS_GEOS_VERSION})])
 if test "x$RASTER" = "xraster"; then
     AC_MSG_RESULT([  GDAL config:          ${GDAL_CONFIG}])
-    AC_MSG_RESULT([  GDAL version:         ${GDAL_FULL_VERSION}])
+    AC_MSG_RESULT([  GDAL version:         ${GDAL_FULL_VERSION}] (${POSTGIS_GDAL_VERSION}))
 fi
 if test "x$SFCGAL" = "xsfcgal"; then
     AC_MSG_RESULT([  SFCGAL config:        ${SFCGAL_CONFIG}])
