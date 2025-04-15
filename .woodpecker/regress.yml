@@ -6,7 +6,7 @@ matrix:
     - 11
 
 steps:
-  name: build
+  - name: build
     image: docker.osgeo.org/postgis/build-test:trisquel3
     commands:
       - sh autogen.sh

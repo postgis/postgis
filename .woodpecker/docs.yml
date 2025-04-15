@@ -1,13 +1,13 @@
 labels:
   platform: linux/amd64
 steps:
-  name: build
-  image: docker.osgeo.org/postgis/build-test:trisquel3
-  commands:
-    - export PATH=/usr/lib/postgresql/12/bin:$PATH
-    - ./autogen.sh
-    - PGVER=12 ./configure
-    - make docs
+  - name: build
+    image: docker.osgeo.org/postgis/build-test:trisquel3
+    commands:
+      - export PATH=/usr/lib/postgresql/12/bin:$PATH
+      - ./autogen.sh
+      - PGVER=12 ./configure
+      - make docs
       #- make -C doc check
       #- make docs-localized
       #- make -C doc/ check-localized
