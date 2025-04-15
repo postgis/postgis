@@ -25,6 +25,15 @@
 #include "lwgeom_sfcgal.h"
 #include <stdio.h>
 
+#if POSTGIS_SFCGAL_VERSION >= 20100
+#define sfcgal_triangulated_surface_num_triangles(g) sfcgal_geometry_num_geometries((g))
+#define sfcgal_triangulated_surface_triangle_n(g,i)  sfcgal_geometry_get_geometry_n((g), (i))
+#define sfcgal_polyhedral_surface_num_polygons(g)    sfcgal_geometry_num_geometries((g))
+#define sfcgal_polyhedral_surface_polygon_n(g,i)     sfcgal_geometry_get_geometry_n((g), (i))
+#define sfcgal_geometry_collection_num_geometries(g) sfcgal_geometry_num_geometries((g))
+#define sfcgal_geometry_collection_geometry_n(g,i)   sfcgal_geometry_get_geometry_n((g), (i))
+#endif
+
 static int SFCGAL_type_to_lwgeom_type(sfcgal_geometry_type_t type);
 static POINTARRAY *ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int force3D);
 static sfcgal_geometry_t *ptarray_to_SFCGAL(const POINTARRAY *pa, int type);
