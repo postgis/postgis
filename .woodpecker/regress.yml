@@ -1,3 +1,7 @@
+labels:
+  platform: linux/amd64
+when:
+  event: [push, pull_request, tag]
 matrix:
   PG_VERSION:
     - 15
@@ -5,10 +9,9 @@ matrix:
     - 12
     - 11
 
-pipeline:
-  build:
-    group: build
-    image: docker.osgeo.org/postgis/build-test:trisquel3
+steps:
+  - name: build
+    image: repo.osgeo.org/postgis/build-test:trisquel3
     commands:
       - sh autogen.sh
       - PGVER=${PG_VERSION} sh ci/dronie/postgis_regress.sh
