@@ -189,7 +189,9 @@ rt_raster rt_raster_gdal_warp(
 	char *dst_options[] = {"SUBCLASS=VRTWarpedDataset", NULL};
 	_rti_warp_arg arg = NULL;
 
+#if POSTGIS_GDAL_VERSION < 311
 	int hasnodata = 0;
+#endif
 
 	GDALRasterBandH band;
 	rt_band rtband = NULL;
@@ -819,7 +821,9 @@ rt_raster rt_raster_gdal_warp(
 
 		/* set nodata */
 		if (rt_band_get_hasnodata_flag(rtband) != FALSE) {
+#if POSTGIS_GDAL_VERSION < 311
 			hasnodata = 1;
+#endif
 			rt_band_get_nodata(rtband, &nodata);
 			if (GDALSetRasterNoDataValue(band, nodata) != CE_None)
 				rtwarn("rt_raster_gdal_warp: Could not set nodata value for band %d", i);
@@ -881,7 +885,7 @@ rt_raster rt_raster_gdal_warp(
 		arg->wopts->panDstBands[i] = arg->wopts->panSrcBands[i] = i + 1;
 
 /* See https://trac.osgeo.org/postgis/ticket/5881 */
-#if POSTGIS_GDAL_VERSION >= 311
+#if POSTGIS_GDAL_VERSION < 311
 	/* set nodata mapping */
 	if (hasnodata) {
 #endif
@@ -927,7 +931,7 @@ rt_raster rt_raster_gdal_warp(
 				arg->wopts->padfDstNoDataReal[i], arg->wopts->padfDstNoDataImag[i]
 			);
 		}
-#if POSTGIS_GDAL_VERSION >= 311
+#if POSTGIS_GDAL_VERSION < 311
 	}
 #endif
 
