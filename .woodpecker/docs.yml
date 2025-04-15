@@ -8,6 +8,7 @@ steps:
     when:
       path: "doc/*"
     commands:
+      - export PATH=/usr/lib/postgresql/12/bin:$PATH
       - ./autogen.sh
       - PGVER=12 ./configure
       - make docs
