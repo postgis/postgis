@@ -1,5 +1,9 @@
-pipeline:
-  build:
+labels:
+  platform: linux/amd64
+when:
+  event: [push, pull_request, tag]
+steps:
+  - name: build
     image: docker.osgeo.org/postgis/build-test:trisquel3
     commands:
       - export PATH=/usr/lib/postgresql/13/bin:$PATH
