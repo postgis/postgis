@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-19 11:58+0000\n"
-"PO-Revision-Date: 2025-04-21 09:47+0000\n"
+"PO-Revision-Date: 2025-04-22 01:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -1409,7 +1409,7 @@ msgstr ""
 #. Tag: emphasis
 #, no-c-format
 msgid "Form-Based Input Tokens"
-msgstr "書式ベースの入力トークン"
+msgstr "形式ベースの入力トークン"
 
 #. Tag: para
 #, no-c-format
@@ -1433,8 +1433,8 @@ msgstr "(21) 二つの文字の順列。しばしば識別子に用いられま�
 #, no-c-format
 msgid "(25). Fractions are sometimes used in civic numbers or unit numbers."
 msgstr ""
-"(25) ときどき\"civic nunber\"または\"unit number\" (訳注: 各戸に付けられる番"
-"号)で使われます。"
+"(25) ときどき\"civic nunber\" (訳注: 番地など)または\"unit number\" (訳注: "
+"部屋番号など)で使われます。"
 
 #. Tag: para
 #, no-c-format
@@ -1642,7 +1642,7 @@ msgid ""
 "rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis>"
 msgstr ""
 "(トークン番号 = \"<emphasis role=\"bold\">0</emphasis>\") <emphasis>PLACE "
-"STATE ZIP</emphasis>のようなMACRO節をパースするための規則のクラス。"
+"STATE ZIP</emphasis>のようなMACRO句をパースするための規則のクラス。"
 
 #. Tag: para
 #, no-c-format
@@ -1652,15 +1652,14 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
-"<emphasis role=\"bold\"><varname>MACRO_C</varname>出力トークン</emphasis> "
-"(<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>から抜粋)。"
+"<emphasis role=\"bold\"><varname>MACRO_C</varname>出力トークン</emphasis> ("
+"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\""
+">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>から引用)。"
 
 #. Tag: para
 #, no-c-format
 msgid "(token number \"10\"). Example \"Albany\""
-msgstr ""
-"(トークン番号 \"10\") たとえば\"Albany\" (訳注: ニューヨーク州の州都)等。"
+msgstr "(トークン番号 \"10\") たとえば\"Albany\" (訳注: ニューヨーク州の州都)等。"
 
 #. Tag: para
 #, no-c-format
@@ -1672,9 +1671,8 @@ msgstr "(トークン番号 \"11\") たとえば\"NY\" (訳注: ニューヨー�
 msgid ""
 "(token number \"12\"). This attribute is not used in most reference files. "
 "Example \"USA\""
-msgstr ""
-"(トークン番号 \"12\") ほとんどの参照ファイル内で使われない属性です。たとえば"
-"\"USA\"等。"
+msgstr "(トークン番号 \"12\") ほとんどの参照ファイル内で使われない属性です。"
+"たとえば\"USA\"等。"
 
 #. Tag: para
 #, no-c-format
@@ -1682,8 +1680,8 @@ msgid ""
 "(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). This "
 "attribute is used for both the US Zip and the Canadian Postal Codes."
 msgstr ""
-"(トークン番号 \"13\") (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). 米国Zip (郵"
-"便番号)とカナダ郵便番号の両方で使われます。"
+"(トークン番号 \"13\") (SAD要素の\"ZIP CODE\" , \"PLUS 4\" ). 米国Zip (訳注: "
+"郵便番号)とカナダ郵便番号の両方で使われます。"
 
 #. Tag: para
 #, no-c-format
@@ -1937,9 +1935,9 @@ msgid ""
 "consisting of standard postal second line of an address e.g <code>city, "
 "state postal_code country</code>."
 msgstr ""
-"二行住所では、郵便住所の標準の1行目である<code>house_num street</code>等で構"
-"成される<varname>micro</varname>と、2行目である<code>city, state postal_code "
-"country</code>等で構成されるmacroからなります。"
+"2行住所では、郵便住所の標準の1行目は<varname>micro</varname>で、"
+"<code>house_num street</code>等で構成され、2行目はmacroで、<code>city, state "
+"postal_code country</code>等で構成されます。"
 
 #. Tag: para
 #, no-c-format
