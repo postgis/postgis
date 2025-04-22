@@ -6305,26 +6305,29 @@ CREATE OR REPLACE VIEW geometry_columns AS
 	 JOIN pg_type t ON a.atttypid = t.oid
 	 LEFT JOIN ( SELECT s.connamespace,
 			s.conrelid,
-			s.conkey, replace(split_part(s.consrc, ''''::text, 2), ')'::text, ''::text) As type
+			s.conkey,
+			(regexp_match(s.consrc, 'geometrytype\(\w+\)\s*=\s*(\w+)', 'i'))[1]::text AS type
 		   FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 				FROM pg_constraint) AS s
-		  WHERE s.consrc ~~* '%geometrytype(% = %'::text
+		  WHERE s.consrc ~* 'geometrytype(\w+)\s*=\s*\w+'::text
 
 ) st ON st.connamespace = n.oid AND st.conrelid = c.oid AND (a.attnum = ANY (st.conkey))
 	 LEFT JOIN ( SELECT s.connamespace,
 			s.conrelid,
-			s.conkey, replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text)::integer As ndims
+			s.conkey,
+			(regexp_match(s.consrc, 'ndims\(\w+\)\s*=\s*(\d+)', 'i'))[1]::integer AS ndims
 		   FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 			FROM pg_constraint) AS s
-		  WHERE s.consrc ~~* '%ndims(% = %'::text
+		  WHERE s.consrc ~* 'ndims(\w+)\s*=\s*\d+'::text
 
 ) sn ON sn.connamespace = n.oid AND sn.conrelid = c.oid AND (a.attnum = ANY (sn.conkey))
 	 LEFT JOIN ( SELECT s.connamespace,
 			s.conrelid,
-			s.conkey, replace(replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text), '('::text, ''::text)::integer As srid
+			s.conkey,
+			(regexp_match(s.consrc, 'st_srid\(\w+\)\s*=\s*(\d+)', 'i'))[1]::integer As srid
 		   FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 			FROM pg_constraint) AS s
-		  WHERE s.consrc ~~* '%srid(% = %'::text
+		  WHERE s.consrc ~* 'srid(\w+)\s*=\s*\d+'::text
 
 ) sr ON sr.connamespace = n.oid AND sr.conrelid = c.oid AND (a.attnum = ANY (sr.conkey))
   WHERE (c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"]))
