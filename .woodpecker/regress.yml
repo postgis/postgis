@@ -3,7 +3,7 @@ labels:
 when:
   event: [push, pull_request, tag]
 variables:
-  test-image: &test-image repo.osgeo.org/postgis/build-test:trisquel11
+  test-image: &test-image repo.osgeo.org/postgis/build-test:universal
   steps-env: &steps-env
     - export PATH=/usr/lib/postgresql/$${PGVER}/bin:$${PATH}
     - export PGPORT=$$(grep ^port /etc/postgresql/$${PGVER}/main/postgresql.conf | awk '{print $$3}')
@@ -63,7 +63,7 @@ steps:
     image: *test-image
     depends_on: autogen
     environment:
-      - PGVER=12
+      PGVER: 12
     commands:
       - <<: *steps-env
       - <<: *steps-pg-build
@@ -72,7 +72,7 @@ steps:
     image: *test-image
     depends_on: autogen
     environment:
-      - PGVER=17
+       PGVER: 17
     commands:
       - <<: *steps-env
       - <<: *steps-pg-build
@@ -81,7 +81,7 @@ steps:
     image: *test-image
     depends_on: build-pg12
     environment:
-      - PGVER=12
+      PGVER: 12
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
@@ -91,7 +91,7 @@ steps:
     image: *test-image
     depends_on: build-pg17
     environment:
-      - PGVER=17
+       PGVER: 17
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
@@ -101,7 +101,7 @@ steps:
     image: *test-image
     depends_on: build-pg12
     environment:
-      - PGVER=12
+      PGVER: 12
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
@@ -112,7 +112,7 @@ steps:
     image: *test-image
     depends_on: build-pg17
     environment:
-      - PGVER=17
+      PGVER: 17
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
@@ -123,7 +123,7 @@ steps:
     image: *test-image
     depends_on: installcheck-pg12
     environment:
-      - PGVER=12
+      PGVER: 12
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
@@ -134,7 +134,7 @@ steps:
     image: *test-image
     depends_on: installcheck-pg17
     environment:
-      - PGVER=17
+      PGVER: 17
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
