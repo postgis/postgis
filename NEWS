@@ -10,6 +10,7 @@ Proj 6.1+ required.
           (Paul Ramsey, Regina Obe)
   - #5876, Fix ST_AddPoint with empty point argument
   - #5874, Line substring returns wrong answer (Paul Ramsey)
+  - #5829, geometry_columns with non-standard constraints (Paul Ramsey)
 
 
 PostGIS 3.4.4
