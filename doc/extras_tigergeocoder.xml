@@ -6,7 +6,7 @@
 >
      <title>Tiger Geocoder</title><info>
         <abstract>
-            <para>A plpgsql based geocoder written to work with the <link xlink:href="http://www.census.gov/geo/www/tiger/">TIGER (Topologically Integrated Geographic Encoding and Referencing system ) / Line and Master Address database export</link> released by the US Census Bureau.   </para>
+            <para>A plpgsql based geocoder written to work with the <link xlink:href="https://www2.census.gov/geo/tiger/">TIGER (Topologically Integrated Geographic Encoding and Referencing system ) / Line and Master Address database export</link> released by the US Census Bureau.   </para>
             <para>There are four components to the geocoder: the data loader functions, the address normalizer, the address geocoder, and the reverse geocoder. </para>
             <para>Although it is designed specifically for the US, a lot of the concepts and functions are applicable and can be adapted to work with other country address and road networks.</para>
             <para>The script builds a schema called <varname>tiger</varname> to house all the tiger related functions, reusable lookup data such as road type prefixes, suffixes, states, various control tables for managing data load, and skeleton base tables from which all the tiger loaded tables inherit from.</para>
