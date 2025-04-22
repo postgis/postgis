@@ -6417,7 +6417,7 @@ CREATE OR REPLACE VIEW geometry_columns AS
 	 LEFT JOIN ( SELECT s.connamespace,
 			s.conrelid,
 			s.conkey,
-			(regexp_match(s.consrc, E'st_srid\(\w+\)\s*=\s*(\d+)', E'i'))[1]::integer As srid
+			(regexp_match(s.consrc, E'srid\(\w+\)\s*=\s*(\d+)', E'i'))[1]::integer As srid
 		   FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 			FROM pg_constraint) AS s
 		  WHERE s.consrc ~* E'srid(\w+)\s*=\s*\d+'::text
