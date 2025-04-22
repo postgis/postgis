@@ -1,6 +1,10 @@
 PostGIS 3.6.0
 2025/xx/xx
 
+* Bug fixes *
+
+  - #5818, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)
+
 * Breaking Changes *
 
   - #5799, make ST_TileEnvelope clips envelopes to tile plane extent (Paul Ramsey)
