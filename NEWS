@@ -13,6 +13,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 - Fix misassignment of result in _lwt_HealEdges (Maxim Korotkov)
 - #5876, ST_AddPoint with empty argument adds garbage (Paul Ramsey)
 - #5874, Line substring returns wrong answer (Paul Ramsey)
+- #5829, geometry_columns with non-standard constraints (Paul Ramsey)
 
 
 PostGIS 3.5.2
