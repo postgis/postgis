@@ -267,7 +267,7 @@ rt_pg_options(const char* varname)
 /*  GDAL allowed config options for VSI filesystems */
 /* ---------------------------------------------------------------- */
 
-stringlist_t *vsi_option_stringlist = NULL;
+static stringlist_t *vsi_option_stringlist = NULL;
 
 
 #if POSTGIS_GDAL_VERSION < 23
