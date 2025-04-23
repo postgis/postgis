@@ -59,7 +59,7 @@ steps:
     image: *test-image
     depends_on: autogen
     environment:
-      - PGVER=11
+      PGVER: 11
     commands:
       - <<: *steps-env
       - <<: *steps-pg-build
@@ -68,7 +68,7 @@ steps:
     image: *test-image
     depends_on: autogen
     environment:
-      - PGVER=15
+      PGVER: 15
     commands:
       - <<: *steps-env
       - <<: *steps-pg-build
@@ -77,7 +77,7 @@ steps:
     image: *test-image
     depends_on: build-pg11
     environment:
-      - PGVER=11
+      PGVER: 11
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
@@ -88,7 +88,7 @@ steps:
     image: *test-image
     depends_on: build-pg15
     environment:
-      - PGVER=15
+      PGVER: 15
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
@@ -99,7 +99,7 @@ steps:
     image: *test-image
     depends_on: build-pg11
     environment:
-      - PGVER=11
+      PGVER: 11
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
@@ -110,7 +110,7 @@ steps:
     image: *test-image
     depends_on: build-pg15
     environment:
-      - PGVER=15
+      PGVER: 15
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
