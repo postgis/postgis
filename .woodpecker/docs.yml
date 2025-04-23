@@ -1,5 +1,5 @@
 variables:
-  - &test_image 'docker.osgeo.org/postgis/build-test:trisquel3'
+  - &test_image 'repo.osgeo.org/postgis/build-test:trisquel3'
   - common_doc_paths: &common_doc_paths
       # related config files
       - ".woodpecker/docs.yml"

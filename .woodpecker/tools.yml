@@ -2,7 +2,7 @@ when:
   event: [push, pull_request, tag]
 steps:
   build:
-    image: docker.osgeo.org/postgis/build-test:trisquel3
+    image: repo.osgeo.org/postgis/build-test:trisquel3
     pull: true
     commands:
       - sh ci/dronie/postgis_tools.sh
