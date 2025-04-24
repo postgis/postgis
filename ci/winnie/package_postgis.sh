@@ -184,15 +184,6 @@ for EXTNAME in postgis postgis_raster postgis_topology postgis_sfcgal postgis_ti
 		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
 		cp extensions//$EXTNAME/sql/${EXTNAME}_data_us--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
 	fi
-
-	for OLD_VERSION in $UPGRADEABLE_VERSIONS; do \
-		if [ "$OLD_VERSION" > "2.5" ] || [ "$OLD_VERSION" in $WIN_RELEASED_VERSIONS ]; then
-			cp extensions/$EXTNAME/sql/$EXTNAME--TEMPLATED--TO--ANY.sql  ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--$OLD_VERSION--${POSTGIS_MINOR_MAX_VER}.sql; \
-			if test "$EXTNAME" = "address_standardizer"; then
-				cp extensions/$EXTNAME/sql/$EXTNAME--TEMPLATED--TO--ANY.sql ${RELDIR}/${RELVERDIR}/share/extension/${EXTNAME}_data_us--$OLD_VERSION--${POSTGIS_MINOR_MAX_VER}.sql; \
-			fi
-		fi
-	done
 done
 #cp ${PGPATH}/share/extension/postgis*--2.5*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
 #cp ${PGPATH}/share/extension/postgis*--3*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension

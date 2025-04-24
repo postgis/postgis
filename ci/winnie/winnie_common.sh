@@ -11,7 +11,7 @@ export PROJECTS=/projects
 export MSYS2_ARG_CONV_EXCL=/config/tags
 
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.13.0
+	export GEOS_VER=3.13.1
 	export GDAL_VER=3.9.2
 	export PROJ_VER=8.2.1
 	export SFCGAL_VER=1.5.2
