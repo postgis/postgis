@@ -31,3 +31,4 @@ multi-merge-forward-backward|-checking-
 multi-merge-closest-not-containing-projected|-checking-
 ERROR:  snapping edge 2 to new node moves it past edge 3
 ERROR:  snapping edge 2 to new node moves it past edge 3
+ERROR:  snapping edge 2 to new node moves it past edge 3
