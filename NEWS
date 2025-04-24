@@ -6,7 +6,9 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 
 * Bug fixes *
 
-- #5841, Change approach to interrupt handling to conform to PgSQL 
+- #5862, [topology] Prevent another topology corruption with
+         TopoGeo_addPoint near almost collinear edges (Sandro Santilli)
+- #5841, Change approach to interrupt handling to conform to PgSQL
          recommended practice (Paul Ramsey)
 - #5855, Fix index binding in ST_DFullyWithin (Paul Ramsey)
 - #5819, Support longer names in estimated extent (Paul Ramsey)
