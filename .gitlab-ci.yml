@@ -48,6 +48,7 @@
 test:
   image: debian:bookworm
   <<: *build_definition
-#test32:
-#  image: i386/debian:bookworm
-#  <<: *build_definition
+
+test32:
+  image: i386/debian:bookworm
+  <<: *build_definition
