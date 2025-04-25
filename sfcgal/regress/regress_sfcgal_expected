@@ -14,3 +14,4 @@ postgis_sfcgal_noop|33
 ST_3DConvexHull|80.9227
 ST_3DUnion|t
 ST_3DUnion (aggregate)|t
+ST_IsSolid|t

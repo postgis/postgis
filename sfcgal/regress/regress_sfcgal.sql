@@ -43,3 +43,18 @@ SELECT 'ST_3DUnion (aggregate)', ABS(ST_Volume(ST_3DUnion(g))) - 40 < 1e-12 FROM
     UNION
     SELECT ST_Extrude(ST_GeomFromText('POLYGON((-1 -1 -2, 1 -1 -2, 1 1 -2, -1 1 -2, -1 -1 -2))'), 0, 0, 4) AS g
 ) AS f;
+-- Test https://trac.osgeo.org/postgis/ticket/5818
+ WITH solid AS (
+     SELECT ST_MakeSolid(
+         'POLYHEDRALSURFACE Z (((-1 1 -1,1 1 -1,1 -1 -1,-1 -1 -1,-1 1 -1)),
+                               ((-1 1 1,-1 -1 1,1 -1 1,1 1 1,-1 1 1)),
+                               ((-1 1 -1,-1 1 1,1 1 1,1 1 -1,-1 1 -1)),
+                               ((1 1 -1,1 1 1,1 -1 1,1 -1 -1,1 1 -1)),
+                               ((1 -1 -1,1 -1 1,-1 -1 1,-1 -1 -1,1 -1 -1)),
+                               ((-1 -1 -1,-1 -1 1,-1 1 1,-1 1 -1,-1 -1 -1)))'
+     ) geom
+ )
+ SELECT
+     'ST_IsSolid',
+     ST_IsSolid(geom)
+ FROM solid;

@@ -11,7 +11,7 @@ Proj 6.1+ required.
   - #5876, Fix ST_AddPoint with empty point argument
   - #5874, Line substring returns wrong answer (Paul Ramsey)
   - #5829, geometry_columns with non-standard constraints (Paul Ramsey)
-
+  - #5818, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)
 
 PostGIS 3.4.4
 2024/12/22
