@@ -6,6 +6,7 @@ Proj 4.9+ required.
 
  - #5795, [topology] Fix ST_NewEdgesSplit can cause invalid topology (Björn Harrtell)
  - Handle null returns from wkb parser, Paul Ramsey
+ - #5818, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)
 
 PostGIS 3.0.11
 2024/02/06

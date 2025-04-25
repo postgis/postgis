@@ -11,3 +11,4 @@ ST_MinkowskiSum|MULTIPOLYGON(((0 0,1 0,5 0,5 1,4 1,0 1,0 0)))
 ST_StraightSkeleton|MULTILINESTRING((1 1,1.5 1.5),(2 1,1.5 1.5),(2 2,1.5 1.5),(1 2,1.5 1.5))
 ST_ConstrainedDelaunayTriangles|TIN(((4 0,2 2,2 -2,4 0)),((2 2,0 0,2 -2,2 2)))
 postgis_sfcgal_noop|33
+ST_IsSolid|t
