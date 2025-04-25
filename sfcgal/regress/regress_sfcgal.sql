@@ -96,3 +96,18 @@ SELECT 'CG_Intersection', ST_AsText(CG_Intersection('LINESTRING(0 0, 5 5)', 'LIN
 SELECT 'CG_Difference', ST_AsText(CG_Difference('LINESTRING(0 0, 1 0)', 'LINESTRING(0.5 0, 0.7 0)'));
 SELECT 'CG_Union', ST_AsText(CG_Union('POINT(.5 0)', 'LINESTRING(-1 0,1 0)'));
 SELECT 'CG_Triangulate', ST_AsText(CG_Triangulate('POLYGON((0.0 0.0,1.0 0.0,1.0 1.0,0.0 1.0,0.0 0.0),(0.2 0.2,0.2 0.8,0.8 0.8,0.8 0.2,0.2 0.2))'));
+-- Test https://trac.osgeo.org/postgis/ticket/5818
+WITH solid AS (
+    SELECT CG_MakeSolid(
+        'POLYHEDRALSURFACE Z (((-1 1 -1,1 1 -1,1 -1 -1,-1 -1 -1,-1 1 -1)),
+                              ((-1 1 1,-1 -1 1,1 -1 1,1 1 1,-1 1 1)),
+                              ((-1 1 -1,-1 1 1,1 1 1,1 1 -1,-1 1 -1)),
+                              ((1 1 -1,1 1 1,1 -1 1,1 -1 -1,1 1 -1)),
+                              ((1 -1 -1,1 -1 1,-1 -1 1,-1 -1 -1,1 -1 -1)),
+                              ((-1 -1 -1,-1 -1 1,-1 1 1,-1 1 -1,-1 -1 -1)))'
+    ) geom
+)
+SELECT
+    'CG_IsSolid',
+    CG_IsSolid(geom)
+FROM solid;
