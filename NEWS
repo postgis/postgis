@@ -4,6 +4,7 @@ YYYY/MM/DD
 * Bug Fixes *
 
  - #5876, Fix ST_AddPoint with empty point argument (Paul Ramsey)
+ - #5818, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)
 
 
 PostGIS 3.1.12

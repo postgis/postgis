@@ -931,7 +931,7 @@ int
 lwgeom_is_solid(const LWGEOM *geom)
 {
 	if ( ! geom ) return LW_FALSE;
-	return FLAGS_GET_GEODETIC(geom->flags);
+	return FLAGS_GET_SOLID(geom->flags);
 }
 
 int
