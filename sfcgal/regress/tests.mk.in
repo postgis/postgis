@@ -25,7 +25,11 @@ endif
 ifeq ($(shell expr "$(POSTGIS_SFCGAL_VERSION)" ">=" 10500),1)
 	TESTS += \
 		$(top_srcdir)/sfcgal/regress/partition.sql \
-		$(top_srcdir)/sfcgal/regress/extrudestraigthskeleton.sql \
+		$(top_srcdir)/sfcgal/regress/extrudestraigthskeleton.sql
+endif
+
+ifeq ($(shell expr "$(POSTGIS_SFCGAL_VERSION)" ">=" 10501),1)
+	TESTS += \
 		$(top_srcdir)/sfcgal/regress/visibility.sql
 endif
 

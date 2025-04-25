@@ -1,3 +1,4 @@
 Visibility point in polygon|POLYGON((3 2,1 2,0 4,0 0,3 2))
 Visibility point in polygon with hole|POLYGON((0 1.67,0.2 1.8,0.9 1.8,1.93 1.29,3 2,1 2,0 4,0 1.67))
+Visibility segment in polygon|POLYGON((4 0,4 4,1 2,0 1.33,0 0,3 2,4 0))
 Visibility segment in polygon with hole|POLYGON((19 -2,12 6,14 14,10.43 7.57,11 7,11 6,10 6,9.56 6,9 5,1 2,4.67 2.33,8 4,10 3,9.87 2.81,12 3,19 -2))
