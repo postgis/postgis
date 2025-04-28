@@ -10,11 +10,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-11-19 11:58+0000\n"
+"POT-Creation-Date: 2025-04-28 09:57+0000\n"
 "PO-Revision-Date: 2025-03-04 14:47+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
-"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/fr/>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2437,15 +2437,11 @@ msgstr "Géocodeur Tiger"
 #. Tag: para
 #, no-c-format
 msgid ""
-"A plpgsql based geocoder written to work with the <link xlink:href=\"http://"
-"www.census.gov/geo/www/tiger/\">TIGER (Topologically Integrated Geographic "
+"A plpgsql based geocoder written to work with the <link xlink:href=\"https://"
+"www2.census.gov/geo/tiger/\">TIGER (Topologically Integrated Geographic "
 "Encoding and Referencing system ) / Line and Master Address database export</"
 "link> released by the US Census Bureau."
 msgstr ""
-"Un géocodeur basé sur plpgsql écrit pour fonctionner avec le <link xlink:"
-"href=\"http://www.census.gov/geo/www/tiger/\">TIGER (Topologically "
-"Integrated Geographic Encoding and Referencing system ) / Line and Master "
-"Address database export</link> publié par le US Census Bureau."
 
 #. Tag: para
 #, no-c-format
@@ -7049,8 +7045,8 @@ msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"TopoGeo_AddLineString\"/> "
 "instead."
 msgstr ""
-"est obsolète depuis la version 3.5.0. Utilisez plutôt <xref linkend="
-"\"TopoGeo_AddLineString\"/>."
+"est obsolète depuis la version 3.5.0. Utilisez plutôt <xref "
+"linkend=\"TopoGeo_AddLineString\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -8144,6 +8140,13 @@ msgstr ""
 "ou pour lier des couches à une topologie différente (par exemple une version "
 "spatialement simplifiée de la topologie de départ)."
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"If the target topology already exists and you want it dropped upfront you "
+"can pass the <code>--drop-topology</code> switch (since PostGIS-3.6.0)."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Installation"
@@ -8481,8 +8484,8 @@ msgid ""
 "html</link>."
 msgstr ""
 "La version 3+ de GDAL est préférable. Elle est nécessaire pour la prise en "
-"charge des données matricielles. <link xlink:href=\"https://gdal.org/download"
-".html\">https://gdal.org/download.html</link>."
+"charge des données matricielles. <link xlink:href=\"https://gdal.org/"
+"download.html\">https://gdal.org/download.html</link>."
 
 #. Tag: para
 #, no-c-format
@@ -8544,8 +8547,8 @@ msgstr ""
 "ST_Intersection ou ST_Area, par exemple). Une variable de configuration "
 "PostgreSQL <code>postgis.backend</code> permet à l'utilisateur final de "
 "contrôler le backend qu'il souhaite utiliser si SFCGAL est installé (GEOS "
-"par défaut). Nota : SFCGAL 1.2 nécessite au minimum CGAL 4.3 et Boost 1.54 ("
-"cf : <link xlink:href=\"https://sfcgal.org\">https://sfcgal.org</link>) "
+"par défaut). Nota : SFCGAL 1.2 nécessite au minimum CGAL 4.3 et Boost 1.54 "
+"(cf : <link xlink:href=\"https://sfcgal.org\">https://sfcgal.org</link>) "
 "<link xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/"
 "sfcgal/SFCGAL/</link>."
 
@@ -15692,9 +15695,9 @@ msgid ""
 ">. It is also easier to use for numeric coordinate values."
 msgstr ""
 "Bien que non conforme à l'OGC, <varname>ST_MakePoint</varname> est plus "
-"rapide que <xref linkend=\"ST_GeomFromText\"/> et <xref linkend="
-"\"ST_PointFromText\"/>. Il est également plus facile à utiliser pour les "
-"valeurs de coordonnées numériques."
+"rapide que <xref linkend=\"ST_GeomFromText\"/> et <xref "
+"linkend=\"ST_PointFromText\"/>. Il est également plus facile à utiliser pour "
+"les valeurs de coordonnées numériques."
 
 #. Tag: para
 #, no-c-format
@@ -17972,12 +17975,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"If the <parameter>tolerance</parameter> parameter is provided, vertices "
-"within the tolerance distance of one another are considered to be duplicates."
+"If a non-zero <parameter>tolerance</parameter> parameter is provided, "
+"vertices within the tolerance distance of one another are considered to be "
+"duplicates. The distance is computed in 2D (XY plane)."
 msgstr ""
-"Si le paramètre <parameter>tolérance</parameter> est fourni, les sommets "
-"situés dans la distance de tolérance les uns des autres sont considérés "
-"comme des doublons."
 
 #. Tag: para
 #, no-c-format
@@ -18090,8 +18091,8 @@ msgid ""
 "repaired with <xref linkend=\"ST_MakeValid\"/>."
 msgstr ""
 "Pour les polygones, cette fonction ne garantit pas actuellement que le "
-"résultat est valide. Cette situation peut être vérifiée avec <xref linkend="
-"\"ST_IsValid\"/> et réparée avec <xref linkend=\"ST_MakeValid\"/>."
+"résultat est valide. Cette situation peut être vérifiée avec <xref "
+"linkend=\"ST_IsValid\"/> et réparée avec <xref linkend=\"ST_MakeValid\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -18900,42 +18901,9 @@ msgid ""
 "ALTER SYSTEM</link>"
 msgstr ""
 "Pour plus d'exemples d'utilisation, voir <link xlink:href=\"https://www."
-"postgresql.org/docs/current/sql-set.html\">SQL SET</link> et <link "
-"xlink:href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\""
-">SQL ALTER SYSTEM</link>"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"The backend to service a function where GEOS and SFCGAL overlap. Options: "
-"geos or sfcgal. Defaults to geos."
-msgstr ""
-"Le backend qui sera utilisé par les fonctions lorsque GEOS et SFCGAL se "
-"recouvrent. Options : geos ou sfcgal. Valeur par défaut geos."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This GUC is only relevant if you compiled PostGIS with sfcgal support. By "
-"default <varname>geos</varname> backend is used for functions where both "
-"GEOS and SFCGAL have the same named function. This variable allows you to "
-"override and make sfcgal the backend to service the request."
-msgstr ""
-"Cette GUC n'a de sens que si vous avez compilé PostGIS avec le support "
-"SFCGAL. Par défaut le backend <varname>geos</varname> est utilisé pour les "
-"fonctions proposées à la fois par GEOS et SFCGAL (même nom). Cette variable "
-"permet de surcharger la valeur par défaut et d'utiliser sfcgal comme backend "
-"pour effectuer la requête."
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend just for life of connection"
-msgstr "Régler le backend juste pour le temps de la connexion"
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend for new connections to database"
-msgstr "Régler le backend pour les nouvelles connexions à une base de données"
+"postgresql.org/docs/current/sql-set.html\">SQL SET</link> et <link xlink:"
+"href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
+"ALTER SYSTEM</link>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19282,6 +19250,26 @@ msgstr ""
 "Définissez <varname>postgis.gdal_vsi_options</varname> uniquement pour la "
 "<emphasis>transaction courante</emphasis> en utilisant le mot clé "
 "<varname>LOCAL</varname> :"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"A boolean configuration to turn logging of GDAL debug messages on and off."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"By default, GDAL logging is printed to stderr, and lower level debug "
+"messages are not printed at all. Turning this GUC to true will cause GDAL "
+"logging to be sent into the PostgreSQL logging stream, so you can see more "
+"or less of it by altering the <code>client_min_message</code> PostgreSQL GUC."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0"
+msgstr "Disponibilité : 3.6.0"
 
 #. Tag: title
 #, no-c-format
@@ -22191,9 +22179,9 @@ msgid ""
 "geography-faster/\">Making Geography faster</link> for details."
 msgstr ""
 "Amélioration : la version 2.1.0 a amélioré la vitesse pour le type "
-"geography. Voir <link xlink:href=\"https://web.archive.org/web/"
-"20160827203903/http://boundlessgeo.com/2012/07/making-geography-faster/\""
-">Making Geography faster</link> pour plus de détails."
+"geography. Voir <link xlink:href=\"https://web.archive.org/"
+"web/20160827203903/http://boundlessgeo.com/2012/07/making-geography-faster/"
+"\">Making Geography faster</link> pour plus de détails."
 
 #. Tag: para
 #, no-c-format
@@ -25885,10 +25873,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Canonical example for a Web Mercator tile using a computed tile bounds to "
-"query and clip geometry."
+"query and clip geometry. This assumes the data.geom column has srid of 4326."
 msgstr ""
-"Exemple canonique d'une tuile Web Mercator utilisant les limites calculées "
-"d'une tuile pour interroger et découper la géométrie."
 
 #. Tag: para
 #, no-c-format
@@ -26696,16 +26682,10 @@ msgstr ""
 "Il s'agit de la seule fonction de superposition pour laquelle l'ordre "
 "d'entrée est important. ST_Difference(A, B) renvoie toujours une partie de A."
 
-#. Tag: para
+#. Tag: refsection
 #, no-c-format
-msgid ""
-"If the optional <code>gridSize</code> argument is provided, the inputs are "
-"snapped to a grid of the given size, and the result vertices are computed on "
-"that same grid. (Requires GEOS-3.9.0 or higher)"
+msgid "&overlay_gridsize_arg;"
 msgstr ""
-"Si l'argument optionnel <code>gridSize</code> est fourni, les entrées sont "
-"placées sur une grille de la taille donnée, et les sommets du résultat sont "
-"calculés sur cette même grille. (Nécessite GEOS-3.9.0 ou plus)"
 
 #. Tag: para
 #, no-c-format
@@ -26758,8 +26738,10 @@ msgstr "La différence entre les points 3D."
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
-msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
+msgid ""
+", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26921,14 +26903,11 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
-"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
-"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
+"linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Force2D\"/>, <xref "
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
+"linkend=\"ST_Multi\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
-", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
-"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
-"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -27159,13 +27138,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<code>max_vertices</code> must be 5 or more, as 5 points are needed to "
-"represent a closed box. <code>gridSize</code> can be specified to have "
-"clipping work in fixed-precision space (requires GEOS-3.9.0+)."
+"represent a closed box."
 msgstr ""
-"<code>max_vertices</code> doit être égal ou supérieur à 5, car 5 points sont "
-"nécessaires pour représenter une boîte fermée. <code>gridSize</code> peut "
-"être spécifié pour que la subdivision fonctionne dans un espace de précision "
-"fixe (nécessite GEOS-3.9.0+)."
 
 #. Tag: para
 #, no-c-format
@@ -27273,10 +27247,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
-"linkend=\"ST_NPoints\"/>"
+"linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
-", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
-"linkend=\"ST_NPoints\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -27377,10 +27349,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
-"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
-", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
-"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -27463,18 +27434,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"A <code>gridSize</code> can be specified to work in fixed-precision space. "
-"The inputs are snapped to a grid of the given size, and the result vertices "
-"are computed on that same grid. (Requires GEOS-3.9.0 or higher)"
-msgstr ""
-"Un <code>gridSize</code> peut être spécifiée pour travailler dans un espace "
-"de précision fixe. Les entrées sont placées sur une grille de la taille "
-"donnée, et les sommets du résultat sont calculés sur cette même grille. "
-"(Nécessite GEOS-3.9.0 ou plus)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
 "may sometimes be used in place of ST_Union, if the result is not required to "
 "be non-overlapping. ST_Collect is usually faster than ST_Union because it "
 "performs no processing on the collected geometries."
@@ -27552,11 +27511,8 @@ msgstr "Exemple en 3D ne mélangeant pas les dimensions"
 msgid ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
 "linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
-"linkend=\"ST_SymDifference\"/>"
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
-", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
-"linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
-"linkend=\"ST_SymDifference\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -31497,11 +31453,6 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Availability: 3.6.0"
-msgstr "Disponibilité : 3.6.0"
-
-#. Tag: para
-#, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_Union\"/>"
 msgstr ""
@@ -31551,9 +31502,9 @@ msgstr ""
 "<code>'1,2,3'</code>. Pour utiliser un autre délimiteur, utilisez le "
 "paramètre delimiter : <code>ST_Band(rast, '1@2@3', '@')</code>. Néanmoins, "
 "pour utiliser plusieurs bandes, nous encourageons fortement d'utiliser la "
-"variante avec le paramètre de type tableau (e.g. <code>ST_Band(rast, '{1,2,3}"
-"' ::int[]) ;</code>) ; la variante avec la liste de bandes en <code>text</"
-"code> peut être supprimée des prochaines versions de PostGIS."
+"variante avec le paramètre de type tableau (e.g. <code>ST_Band(rast, "
+"'{1,2,3}' ::int[]) ;</code>) ; la variante avec la liste de bandes en "
+"<code>text</code> peut être supprimée des prochaines versions de PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -33172,12 +33123,13 @@ msgid ""
 "linkend=\"ST_Intersection\"/>"
 msgstr ""
 ", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_DumpAsPolygons\"/"
-">, <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_PixelAsPolygon\""
-"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, "
-"<xref linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>, "
-"<xref linkend=\"RT_ST_SRID\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend="
-"\"ST_Point\"/>, <xref linkend=\"ST_MakeEnvelope\"/>, <xref linkend="
-"\"ST_Intersects\"/>, <xref linkend=\"ST_Intersection\"/>"
+">, <xref linkend=\"RT_ST_NumBands\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref "
+"linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, <xref "
+"linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
+"linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+"linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
+"linkend=\"ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41764,16 +41716,16 @@ msgstr ""
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_MakeSolid\"/> instead."
 msgstr ""
-"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_MakeSolid\""
-"/> à la place."
+"est obsolète depuis la version 3.5.0. Utilisez <xref "
+"linkend=\"CG_MakeSolid\"/> à la place."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Orientation\"/> instead."
 msgstr ""
-"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_Orientation"
-"\"/> à la place."
+"est obsolète depuis la version 3.5.0. Utilisez <xref "
+"linkend=\"CG_Orientation\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -41901,8 +41853,8 @@ msgstr "Effectuer une différence 3D"
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DDifference\"/> instead."
 msgstr ""
-"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
-"\"CG_3DDifference\"/> à la place."
+"est obsolète depuis la version 3.5.0. Utilisez <xref "
+"linkend=\"CG_3DDifference\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -41999,8 +41951,8 @@ msgstr "Calcule l'enveloppe convexe 3D d'une géométrie."
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DConvexHull\"/> instead."
 msgstr ""
-"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
-"\"CG_3DConvexHull\"/> à la place."
+"est obsolète depuis la version 3.5.0. Utilisez <xref "
+"linkend=\"CG_3DConvexHull\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42022,8 +41974,8 @@ msgstr "Réaliser une intersection 3D"
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DIntersection\"/> instead."
 msgstr ""
-"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
-"\"CG_3DIntersection\"/> à la place."
+"est obsolète depuis la version 3.5.0. Utilisez <xref "
+"linkend=\"CG_3DIntersection\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42160,8 +42112,8 @@ msgstr "Calcul d'une forme Alpha entourant une géométrie"
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_AlphaShape\"/> instead."
 msgstr ""
-"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_AlphaShape"
-"\"/> à la place."
+"est obsolète depuis la version 3.5.0. Utilisez <xref "
+"linkend=\"CG_AlphaShape\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42245,8 +42197,8 @@ msgid ""
 "Alpha-shape of a MultiPoint (same example As <xref "
 "linkend=\"CG_OptimalAlphaShape\"/>)"
 msgstr ""
-"Forme alpha d'un MultiPoint (même exemple que <xref linkend="
-"\"CG_OptimalAlphaShape\"/>)"
+"Forme alpha d'un MultiPoint (même exemple que <xref "
+"linkend=\"CG_OptimalAlphaShape\"/>)"
 
 #. Tag: para
 #, no-c-format
@@ -42358,8 +42310,8 @@ msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_ApproximateMedialAxis\"/> "
 "instead."
 msgstr ""
-"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
-"\"CG_ApproximateMedialAxis\"/> à la place."
+"est obsolète depuis la version 3.5.0. Utilisez <xref "
+"linkend=\"CG_ApproximateMedialAxis\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42379,6 +42331,11 @@ msgstr ""
 msgid "A polygon and its approximate medial axis"
 msgstr "Un polygone et son axe médian approximatif"
 
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
@@ -42393,8 +42350,8 @@ msgid ""
 "is deprecated as of 3.5.0. Use <xref "
 "linkend=\"CG_ConstrainedDelaunayTriangles\"/> instead."
 msgstr ""
-"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
-"\"CG_ConstrainedDelaunayTriangles\"/> à la place."
+"est obsolète depuis la version 3.5.0. Utilisez <xref "
+"linkend=\"CG_ConstrainedDelaunayTriangles\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42494,17 +42451,20 @@ msgstr ""
 "droits : étant donné un toit polygonal, le squelette droit donne directement "
 "la disposition de chaque tente. Si chaque arête du squelette est soulevée du "
 "plan d'une hauteur égale à sa distance de décalage, le toit résultant est "
-"\"correct\" en ce sens que l'eau tombera toujours vers les bords du contour ("
-"la bordure du toit), quel que soit l'endroit où elle tombe sur le toit. La "
+"\"correct\" en ce sens que l'eau tombera toujours vers les bords du contour "
+"(la bordure du toit), quel que soit l'endroit où elle tombe sur le toit. La "
 "fonction calcule cette extrusion ou \"toit\" sur un polygone. Si l'argument "
-"body_height > 0, alors le polygone est extrudé comme avec CG_Extrude("
-"polygon, 0, 0, body_height). Le résultat est une union de ces polyedres "
-"surfaciques."
+"body_height > 0, alors le polygone est extrudé comme avec "
+"CG_Extrude(polygon, 0, 0, body_height). Le résultat est une union de ces "
+"polyedres surfaciques."
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"CG_StraightSkeleton\"/>"
-msgstr ", <xref linkend=\"CG_StraightSkeleton\"/>"
+msgid ""
+", <xref linkend=\"CG_ExtrudeStraightSkeleton\"/>, <xref "
+"linkend=\"CG_StraightSkeleton\"/>, <xref "
+"linkend=\"CG_StraightSkeletonPartition\"/>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -42545,8 +42505,8 @@ msgstr "Effectue la somme de Minkowski"
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_MinkowskiSum\"/> instead."
 msgstr ""
-"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
-"\"CG_MinkowskiSum\"/> à la place."
+"est obsolète depuis la version 3.5.0. Utilisez <xref "
+"linkend=\"CG_MinkowskiSum\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42641,8 +42601,8 @@ msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_OptimalAlphaShape\"/> "
 "instead."
 msgstr ""
-"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
-"\"CG_OptimalAlphaShape\"/> à la place."
+"est obsolète depuis la version 3.5.0. Utilisez <xref "
+"linkend=\"CG_OptimalAlphaShape\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42687,8 +42647,8 @@ msgid ""
 "Optimal alpha-shape of a MultiPoint (same example as <xref "
 "linkend=\"CG_AlphaShape\"/>)"
 msgstr ""
-"Forme alpha optimale d'un MultiPoint (même exemple que <xref linkend="
-"\"CG_AlphaShape\"/>)"
+"Forme alpha optimale d'un MultiPoint (même exemple que <xref "
+"linkend=\"CG_AlphaShape\"/>)"
 
 #. Tag: para
 #, no-c-format
@@ -42761,6 +42721,13 @@ msgstr "Nécessite SFCGAL &gt;= 1.3.8 pour l'option use_distance_as_m"
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"Note that valid inputs with rings that touch at a single point will raise an "
+"error."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Straight Skeleton of polygon"
 msgstr "Squelette d'un polygone"
 
@@ -42770,8 +42737,8 @@ msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_StraightSkeleton\"/> "
 "instead."
 msgstr ""
-"est obsolète depuis la version 3.5.0. Utilisez <xref linkend="
-"\"CG_StraightSkeleton\"/> à la place."
+"est obsolète depuis la version 3.5.0. Utilisez <xref "
+"linkend=\"CG_StraightSkeleton\"/> à la place."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -42787,8 +42754,8 @@ msgstr ""
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Tesselate\"/> instead."
 msgstr ""
-"est obsolète depuis la version 3.5.0. Utilisez <xref linkend=\"CG_Tesselate\""
-"/> à la place."
+"est obsolète depuis la version 3.5.0. Utilisez <xref "
+"linkend=\"CG_Tesselate\"/> à la place."
 
 #. Tag: para
 #, no-c-format
@@ -42944,6 +42911,11 @@ msgstr ""
 msgid "Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0."
 msgstr "Disponibilité : 3.6.0 - nécessite SFCGAL &gt;= 2.0.0."
 
+#. Tag: para
+#, no-c-format
+msgid "Straight Skeleton Partition of polygon"
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes a 3D buffer around a geometry."
@@ -43076,8 +43048,8 @@ msgid ""
 msgstr ""
 "Fait pivoter la géométrie d'entrée <parameter>geom</parameter> de "
 "<parameter>angle</parameter> radians autour d'un axe défini par le vecteur "
-"(<parameter>ax</parameter>, <parameter>ay</parameter>, "
-"<parameter>az</parameter>) passant par l'origine (0,0,0)."
+"(<parameter>ax</parameter>, <parameter>ay</parameter>, <parameter>az</"
+"parameter>) passant par l'origine (0,0,0)."
 
 #. Tag: para
 #, no-c-format
@@ -43214,7 +43186,8 @@ msgstr ", <xref linkend=\"CG_3DScale\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Translates (moves) a geometry by given offsets in 2D space."
-msgstr "Déplace une géométrie en fonction de décalages donnés dans l'espace 2D."
+msgstr ""
+"Déplace une géométrie en fonction de décalages donnés dans l'espace 2D."
 
 #. Tag: para
 #, no-c-format
@@ -43236,7 +43209,8 @@ msgstr ", <xref linkend=\"ST_Translate\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Translates (moves) a geometry by given offsets in 3D space."
-msgstr "Déplace une géométrie en fonction de décalages donnés dans l'espace 3D."
+msgstr ""
+"Déplace une géométrie en fonction de décalages donnés dans l'espace 3D."
 
 #. Tag: para
 #, no-c-format
@@ -45386,9 +45360,10 @@ msgid ""
 "<xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
 "linkend=\"PostGIS_Version\"/>"
 msgstr ""
-", <xref linkend=\"PostGIS_Full_Version\"/>, <xref linkend="
-"\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref "
-"linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+", <xref linkend=\"PostGIS_Full_Version\"/>, <xref "
+"linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, "
+"<xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -52078,6 +52053,16 @@ msgstr "Cette fonction prend en charge la 3D et ne supprime pas l'indice z."
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"If the optional <code>gridSize</code> parameter is given (GEOS-3.9.0 or "
+"higher required), all result vertices are guaranteed to fall on a grid of "
+"the specified size. For the operation to give predictable results all the "
+"input vertices must fall already on the specified grid, see <xref "
+"linkend=\"ST_ReducePrecision\"/>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "New in this release"
 msgstr "Nouveautés de cette version"
 
@@ -52115,6 +52100,145 @@ msgstr "Support 2.5/3D"
 #, no-c-format
 msgid "Supports geography"
 msgstr "Prise en charge du type geography"
+
+#, no-c-format
+#~ msgid ""
+#~ "A plpgsql based geocoder written to work with the <link xlink:"
+#~ "href=\"http://www.census.gov/geo/www/tiger/\">TIGER (Topologically "
+#~ "Integrated Geographic Encoding and Referencing system ) / Line and Master "
+#~ "Address database export</link> released by the US Census Bureau."
+#~ msgstr ""
+#~ "Un géocodeur basé sur plpgsql écrit pour fonctionner avec le <link xlink:"
+#~ "href=\"http://www.census.gov/geo/www/tiger/\">TIGER (Topologically "
+#~ "Integrated Geographic Encoding and Referencing system ) / Line and Master "
+#~ "Address database export</link> publié par le US Census Bureau."
+
+#, no-c-format
+#~ msgid ""
+#~ "If the <parameter>tolerance</parameter> parameter is provided, vertices "
+#~ "within the tolerance distance of one another are considered to be "
+#~ "duplicates."
+#~ msgstr ""
+#~ "Si le paramètre <parameter>tolérance</parameter> est fourni, les sommets "
+#~ "situés dans la distance de tolérance les uns des autres sont considérés "
+#~ "comme des doublons."
+
+#, no-c-format
+#~ msgid ""
+#~ "The backend to service a function where GEOS and SFCGAL overlap. Options: "
+#~ "geos or sfcgal. Defaults to geos."
+#~ msgstr ""
+#~ "Le backend qui sera utilisé par les fonctions lorsque GEOS et SFCGAL se "
+#~ "recouvrent. Options : geos ou sfcgal. Valeur par défaut geos."
+
+#, no-c-format
+#~ msgid ""
+#~ "This GUC is only relevant if you compiled PostGIS with sfcgal support. By "
+#~ "default <varname>geos</varname> backend is used for functions where both "
+#~ "GEOS and SFCGAL have the same named function. This variable allows you to "
+#~ "override and make sfcgal the backend to service the request."
+#~ msgstr ""
+#~ "Cette GUC n'a de sens que si vous avez compilé PostGIS avec le support "
+#~ "SFCGAL. Par défaut le backend <varname>geos</varname> est utilisé pour "
+#~ "les fonctions proposées à la fois par GEOS et SFCGAL (même nom). Cette "
+#~ "variable permet de surcharger la valeur par défaut et d'utiliser sfcgal "
+#~ "comme backend pour effectuer la requête."
+
+#, no-c-format
+#~ msgid "Sets backend just for life of connection"
+#~ msgstr "Régler le backend juste pour le temps de la connexion"
+
+#, no-c-format
+#~ msgid "Sets backend for new connections to database"
+#~ msgstr ""
+#~ "Régler le backend pour les nouvelles connexions à une base de données"
+
+#, no-c-format
+#~ msgid ""
+#~ "Canonical example for a Web Mercator tile using a computed tile bounds to "
+#~ "query and clip geometry."
+#~ msgstr ""
+#~ "Exemple canonique d'une tuile Web Mercator utilisant les limites "
+#~ "calculées d'une tuile pour interroger et découper la géométrie."
+
+#, no-c-format
+#~ msgid ""
+#~ "If the optional <code>gridSize</code> argument is provided, the inputs "
+#~ "are snapped to a grid of the given size, and the result vertices are "
+#~ "computed on that same grid. (Requires GEOS-3.9.0 or higher)"
+#~ msgstr ""
+#~ "Si l'argument optionnel <code>gridSize</code> est fourni, les entrées "
+#~ "sont placées sur une grille de la taille donnée, et les sommets du "
+#~ "résultat sont calculés sur cette même grille. (Nécessite GEOS-3.9.0 ou "
+#~ "plus)"
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
+#~ msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+#~ "linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
+#~ "linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
+#~ "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+#~ "linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
+#~ "linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
+#~ "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "<code>max_vertices</code> must be 5 or more, as 5 points are needed to "
+#~ "represent a closed box. <code>gridSize</code> can be specified to have "
+#~ "clipping work in fixed-precision space (requires GEOS-3.9.0+)."
+#~ msgstr ""
+#~ "<code>max_vertices</code> doit être égal ou supérieur à 5, car 5 points "
+#~ "sont nécessaires pour représenter une boîte fermée. <code>gridSize</code> "
+#~ "peut être spécifié pour que la subdivision fonctionne dans un espace de "
+#~ "précision fixe (nécessite GEOS-3.9.0+)."
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
+#~ "linkend=\"ST_NPoints\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
+#~ "linkend=\"ST_NPoints\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, "
+#~ "<xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, "
+#~ "<xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "A <code>gridSize</code> can be specified to work in fixed-precision "
+#~ "space. The inputs are snapped to a grid of the given size, and the result "
+#~ "vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher)"
+#~ msgstr ""
+#~ "Un <code>gridSize</code> peut être spécifiée pour travailler dans un "
+#~ "espace de précision fixe. Les entrées sont placées sur une grille de la "
+#~ "taille donnée, et les sommets du résultat sont calculés sur cette même "
+#~ "grille. (Nécessite GEOS-3.9.0 ou plus)"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, "
+#~ "<xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, "
+#~ "<xref linkend=\"ST_SymDifference\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, "
+#~ "<xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, "
+#~ "<xref linkend=\"ST_SymDifference\"/>"
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"CG_StraightSkeleton\"/>"
+#~ msgstr ", <xref linkend=\"CG_StraightSkeleton\"/>"
 
 #, no-c-format
 #~ msgid ""

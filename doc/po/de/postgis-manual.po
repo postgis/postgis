@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-11-19 11:58+0000\n"
+"POT-Creation-Date: 2025-04-28 09:57+0000\n"
 "PO-Revision-Date: 2024-12-17 12:47+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -2435,16 +2435,11 @@ msgstr "Tiger Geokoder"
 #. Tag: para
 #, no-c-format
 msgid ""
-"A plpgsql based geocoder written to work with the <link xlink:href=\"http://"
-"www.census.gov/geo/www/tiger/\">TIGER (Topologically Integrated Geographic "
+"A plpgsql based geocoder written to work with the <link xlink:href=\"https://"
+"www2.census.gov/geo/tiger/\">TIGER (Topologically Integrated Geographic "
 "Encoding and Referencing system ) / Line and Master Address database export</"
 "link> released by the US Census Bureau."
 msgstr ""
-"Ein auf PL/pgSQL basierender Geokodierer, der für das vom United States "
-"Census Bureau herausgegebene  <link xlink:href=\"http://www.census.gov/geo/"
-"www/tiger/\">TIGER (Topologically Integrated Geographic Encoding and "
-"Referencing system ) / Line and Master Address database export</link> "
-"geschrieben wurde."
 
 #. Tag: para
 #, no-c-format
@@ -8189,6 +8184,13 @@ msgstr ""
 "nützlich sein, um Ebenen zu laden, NACHDEM die Benennungskonflikte gelöst "
 "wurden, oder um Ebenen mit einer anderen Topologie zu verknüpfen (z. B. "
 "einer räumlich vereinfachten Version der Ausgangstopologie)."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If the target topology already exists and you want it dropped upfront you "
+"can pass the <code>--drop-topology</code> switch (since PostGIS-3.6.0)."
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -18049,14 +18051,12 @@ msgstr ""
 "einzeln verarbeitet. Die Endpunkte von LineStrings werden beibehalten."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"If the <parameter>tolerance</parameter> parameter is provided, vertices "
-"within the tolerance distance of one another are considered to be duplicates."
+"If a non-zero <parameter>tolerance</parameter> parameter is provided, "
+"vertices within the tolerance distance of one another are considered to be "
+"duplicates. The distance is computed in 2D (XY plane)."
 msgstr ""
-"Wenn der Parameter <parameter>tolerance</parameter> angegeben wird, werden "
-"Scheitelpunkte, die innerhalb des Toleranzabstands zueinander liegen, als "
-"Duplikate betrachtet."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -18981,39 +18981,6 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"The backend to service a function where GEOS and SFCGAL overlap. Options: "
-"geos or sfcgal. Defaults to geos."
-msgstr ""
-"Dieses Backend stellt eine Funktion zur Auswahl zwischen GEOS und SFCGAL zur "
-"Verfügung."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This GUC is only relevant if you compiled PostGIS with sfcgal support. By "
-"default <varname>geos</varname> backend is used for functions where both "
-"GEOS and SFCGAL have the same named function. This variable allows you to "
-"override and make sfcgal the backend to service the request."
-msgstr ""
-"Diese GUC hat nur Bedeutung, wenn Sie PostGIS mit SFCGAL Unterstützung "
-"kompiliert haben. Funktionen, welche sowohl bei GEOS als auch bei SFCGAL die "
-"gleiche Bezeichnung haben, werden standardmäßig mit dem <varname>geos</"
-"varname> Backend ausgeführt. Die Standardeinstellung wird mit dieser "
-"Variablen überschrieben und SFCGAL für den Aufruf verwendet."
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend just for life of connection"
-msgstr "Setzt das Backend für die Dauer der Verbindung"
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend for new connections to database"
-msgstr "Setzt das Backend für neue Verbindungen zur Datenbank"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
 "A configuration option to assign the value of GDAL's GDAL_DATA option. If "
 "not set, the environmentally set GDAL_DATA variable is used."
 msgstr ""
@@ -19348,6 +19315,26 @@ msgstr ""
 "Setzen Sie <varname>postgis.gdal_vsi_options</varname> nur für die aktuelle "
 "Transaktion <emphasis></emphasis> mit dem Schlüsselwort <varname>LOCAL</"
 "varname>:"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"A boolean configuration to turn logging of GDAL debug messages on and off."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"By default, GDAL logging is printed to stderr, and lower level debug "
+"messages are not printed at all. Turning this GUC to true will cause GDAL "
+"logging to be sent into the PostgreSQL logging stream, so you can see more "
+"or less of it by altering the <code>client_min_message</code> PostgreSQL GUC."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0"
+msgstr "Verfügbarkeit: 3.6.0"
 
 #. Tag: title
 #, no-c-format
@@ -25996,13 +25983,11 @@ msgstr ""
 "aber kleine Polygone verwerfen."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Canonical example for a Web Mercator tile using a computed tile bounds to "
-"query and clip geometry."
+"query and clip geometry. This assumes the data.geom column has srid of 4326."
 msgstr ""
-"Kanonisches Beispiel für eine Web-Mercator-Kachel unter Verwendung einer "
-"berechneten Kachelgrenze zur Abfrage und zum Ausschneiden von Geometrie."
 
 #. Tag: para
 #, no-c-format
@@ -26812,17 +26797,10 @@ msgstr ""
 "Eingabe eine Rolle spielt. ST_Difference(A, B) gibt immer einen Teil von A "
 "zurück."
 
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"If the optional <code>gridSize</code> argument is provided, the inputs are "
-"snapped to a grid of the given size, and the result vertices are computed on "
-"that same grid. (Requires GEOS-3.9.0 or higher)"
+#. Tag: refsection
+#, no-c-format
+msgid "&overlay_gridsize_arg;"
 msgstr ""
-"Wenn das optionale Argument <code>gridSize</code> angegeben wird, werden die "
-"Eingaben auf ein Gitter der angegebenen Größe gerastert, und die "
-"Ergebnispunkte werden auf demselben Gitter berechnet. (Benötigt GEOS-3.9.0 "
-"oder höher)"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -26874,9 +26852,11 @@ msgid "The difference of 3D points."
 msgstr "Die Differenz der 3D-Punkte."
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
-msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -27033,17 +27013,14 @@ msgstr ""
 ">."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
-"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
-"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
+"linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Force2D\"/>, <xref "
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
+"linkend=\"ST_Multi\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
-", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
-"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
-"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -27274,16 +27251,11 @@ msgstr ""
 "Teil nicht mehr als <code>max_vertices</code> enthält."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<code>max_vertices</code> must be 5 or more, as 5 points are needed to "
-"represent a closed box. <code>gridSize</code> can be specified to have "
-"clipping work in fixed-precision space (requires GEOS-3.9.0+)."
+"represent a closed box."
 msgstr ""
-"<code>max_vertices</code> muss 5 oder mehr sein, da 5 Punkte benötigt "
-"werden, um eine geschlossene Box darzustellen. <code>gridSize</code> kann "
-"angegeben werden, damit das Clipping im Raum mit fester Genauigkeit "
-"funktioniert (erfordert GEOS-3.9.0+)."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -27390,13 +27362,11 @@ msgstr ""
 "Ergebnisteil."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
-"linkend=\"ST_NPoints\"/>"
+"linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
-", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
-"linkend=\"ST_NPoints\"/>"
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -27495,13 +27465,12 @@ msgstr ""
 "ST_Union und <xref linkend=\"ST_MemUnion\"/> hergestellt wird."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
-"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
-", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
-"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -27584,18 +27553,6 @@ msgstr ""
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-"A <code>gridSize</code> can be specified to work in fixed-precision space. "
-"The inputs are snapped to a grid of the given size, and the result vertices "
-"are computed on that same grid. (Requires GEOS-3.9.0 or higher)"
-msgstr ""
-"Ein <code>gridSize</code> kann angegeben werden, um im Raum mit fester "
-"Genauigkeit zu arbeiten. Die Eingaben werden auf ein Gitter der angegebenen "
-"Größe gerastert, und die Ergebnispunkte werden auf demselben Gitter "
-"berechnet. (Benötigt GEOS-3.9.0 oder höher)"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
 "may sometimes be used in place of ST_Union, if the result is not required to "
 "be non-overlapping. ST_Collect is usually faster than ST_Union because it "
 "performs no processing on the collected geometries."
@@ -27668,15 +27625,12 @@ msgid "3d example not mixing dimensions"
 msgstr "3d-Beispiel ohne Vermischung der Dimensionen"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
 "linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
-"linkend=\"ST_SymDifference\"/>"
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
-", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
-"linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
-"linkend=\"ST_SymDifference\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -31661,11 +31615,6 @@ msgid ""
 msgstr ""
 "Gibt einen einbandigen Raster zurück, der die gerasterte Version aller "
 "eingehenden Geometrien und den jeweils zugehörigen Wert enthält."
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 3.6.0"
-msgstr "Verfügbarkeit: 3.6.0"
 
 #. Tag: para
 #, no-c-format
@@ -42520,6 +42469,11 @@ msgstr ""
 msgid "A polygon and its approximate medial axis"
 msgstr "Ein Polygon und seine ungefähre Mittelachse"
 
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
+msgstr ""
+
 #. Tag: refpurpose
 #, fuzzy, no-c-format
 msgid ""
@@ -42627,7 +42581,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"CG_StraightSkeleton\"/>"
+msgid ""
+", <xref linkend=\"CG_ExtrudeStraightSkeleton\"/>, <xref "
+"linkend=\"CG_StraightSkeleton\"/>, <xref "
+"linkend=\"CG_StraightSkeletonPartition\"/>"
 msgstr ""
 
 #. Tag: para
@@ -42876,6 +42833,13 @@ msgid "Requires SFCGAL &gt;= 1.3.8 for option use_distance_as_m"
 msgstr ""
 
 #. Tag: para
+#, no-c-format
+msgid ""
+"Note that valid inputs with rings that touch at a single point will raise an "
+"error."
+msgstr ""
+
+#. Tag: para
 #, fuzzy, no-c-format
 msgid "Straight Skeleton of polygon"
 msgstr "Gerades Skelett eines Polygons"
@@ -43048,6 +43012,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Straight Skeleton Partition of polygon"
 msgstr ""
 
 #. Tag: refpurpose
@@ -52065,6 +52034,16 @@ msgid "This function supports 3d and will not drop the z-index."
 msgstr "Diese Funktion unterstützt 3d und lässt den Z-Index nicht fallen."
 
 #. Tag: para
+#, no-c-format
+msgid ""
+"If the optional <code>gridSize</code> parameter is given (GEOS-3.9.0 or "
+"higher required), all result vertices are guaranteed to fall on a grid of "
+"the specified size. For the operation to give predictable results all the "
+"input vertices must fall already on the specified grid, see <xref "
+"linkend=\"ST_ReducePrecision\"/>."
+msgstr ""
+
+#. Tag: para
 #, fuzzy, no-c-format
 msgid "New in this release"
 msgstr "Neu in dieser Version"
@@ -52103,6 +52082,141 @@ msgstr "2.5/3D-Unterstützung"
 #, fuzzy, no-c-format
 msgid "Supports geography"
 msgstr "Unterstützt Geographie"
+
+#, no-c-format
+#~ msgid ""
+#~ "A plpgsql based geocoder written to work with the <link xlink:"
+#~ "href=\"http://www.census.gov/geo/www/tiger/\">TIGER (Topologically "
+#~ "Integrated Geographic Encoding and Referencing system ) / Line and Master "
+#~ "Address database export</link> released by the US Census Bureau."
+#~ msgstr ""
+#~ "Ein auf PL/pgSQL basierender Geokodierer, der für das vom United States "
+#~ "Census Bureau herausgegebene  <link xlink:href=\"http://www.census.gov/"
+#~ "geo/www/tiger/\">TIGER (Topologically Integrated Geographic Encoding and "
+#~ "Referencing system ) / Line and Master Address database export</link> "
+#~ "geschrieben wurde."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "If the <parameter>tolerance</parameter> parameter is provided, vertices "
+#~ "within the tolerance distance of one another are considered to be "
+#~ "duplicates."
+#~ msgstr ""
+#~ "Wenn der Parameter <parameter>tolerance</parameter> angegeben wird, "
+#~ "werden Scheitelpunkte, die innerhalb des Toleranzabstands zueinander "
+#~ "liegen, als Duplikate betrachtet."
+
+#, no-c-format
+#~ msgid ""
+#~ "The backend to service a function where GEOS and SFCGAL overlap. Options: "
+#~ "geos or sfcgal. Defaults to geos."
+#~ msgstr ""
+#~ "Dieses Backend stellt eine Funktion zur Auswahl zwischen GEOS und SFCGAL "
+#~ "zur Verfügung."
+
+#, no-c-format
+#~ msgid ""
+#~ "This GUC is only relevant if you compiled PostGIS with sfcgal support. By "
+#~ "default <varname>geos</varname> backend is used for functions where both "
+#~ "GEOS and SFCGAL have the same named function. This variable allows you to "
+#~ "override and make sfcgal the backend to service the request."
+#~ msgstr ""
+#~ "Diese GUC hat nur Bedeutung, wenn Sie PostGIS mit SFCGAL Unterstützung "
+#~ "kompiliert haben. Funktionen, welche sowohl bei GEOS als auch bei SFCGAL "
+#~ "die gleiche Bezeichnung haben, werden standardmäßig mit dem "
+#~ "<varname>geos</varname> Backend ausgeführt. Die Standardeinstellung wird "
+#~ "mit dieser Variablen überschrieben und SFCGAL für den Aufruf verwendet."
+
+#, no-c-format
+#~ msgid "Sets backend just for life of connection"
+#~ msgstr "Setzt das Backend für die Dauer der Verbindung"
+
+#, no-c-format
+#~ msgid "Sets backend for new connections to database"
+#~ msgstr "Setzt das Backend für neue Verbindungen zur Datenbank"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Canonical example for a Web Mercator tile using a computed tile bounds to "
+#~ "query and clip geometry."
+#~ msgstr ""
+#~ "Kanonisches Beispiel für eine Web-Mercator-Kachel unter Verwendung einer "
+#~ "berechneten Kachelgrenze zur Abfrage und zum Ausschneiden von Geometrie."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "If the optional <code>gridSize</code> argument is provided, the inputs "
+#~ "are snapped to a grid of the given size, and the result vertices are "
+#~ "computed on that same grid. (Requires GEOS-3.9.0 or higher)"
+#~ msgstr ""
+#~ "Wenn das optionale Argument <code>gridSize</code> angegeben wird, werden "
+#~ "die Eingaben auf ein Gitter der angegebenen Größe gerastert, und die "
+#~ "Ergebnispunkte werden auf demselben Gitter berechnet. (Benötigt "
+#~ "GEOS-3.9.0 oder höher)"
+
+#, fuzzy, no-c-format
+#~ msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
+#~ msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+#~ "linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
+#~ "linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
+#~ "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+#~ "linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
+#~ "linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
+#~ "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<code>max_vertices</code> must be 5 or more, as 5 points are needed to "
+#~ "represent a closed box. <code>gridSize</code> can be specified to have "
+#~ "clipping work in fixed-precision space (requires GEOS-3.9.0+)."
+#~ msgstr ""
+#~ "<code>max_vertices</code> muss 5 oder mehr sein, da 5 Punkte benötigt "
+#~ "werden, um eine geschlossene Box darzustellen. <code>gridSize</code> kann "
+#~ "angegeben werden, damit das Clipping im Raum mit fester Genauigkeit "
+#~ "funktioniert (erfordert GEOS-3.9.0+)."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
+#~ "linkend=\"ST_NPoints\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
+#~ "linkend=\"ST_NPoints\"/>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, "
+#~ "<xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, "
+#~ "<xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "A <code>gridSize</code> can be specified to work in fixed-precision "
+#~ "space. The inputs are snapped to a grid of the given size, and the result "
+#~ "vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher)"
+#~ msgstr ""
+#~ "Ein <code>gridSize</code> kann angegeben werden, um im Raum mit fester "
+#~ "Genauigkeit zu arbeiten. Die Eingaben werden auf ein Gitter der "
+#~ "angegebenen Größe gerastert, und die Ergebnispunkte werden auf demselben "
+#~ "Gitter berechnet. (Benötigt GEOS-3.9.0 oder höher)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, "
+#~ "<xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, "
+#~ "<xref linkend=\"ST_SymDifference\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, "
+#~ "<xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, "
+#~ "<xref linkend=\"ST_SymDifference\"/>"
 
 #, fuzzy, no-c-format
 #~ msgid ""

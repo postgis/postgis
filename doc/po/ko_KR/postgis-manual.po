@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-11-19 11:58+0000\n"
+"POT-Creation-Date: 2025-04-28 09:57+0000\n"
 "PO-Revision-Date: 2023-10-14 20:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -2061,15 +2061,11 @@ msgstr "TIGER 지오코딩 도구"
 #. Tag: para
 #, no-c-format
 msgid ""
-"A plpgsql based geocoder written to work with the <link xlink:href=\"http://"
-"www.census.gov/geo/www/tiger/\">TIGER (Topologically Integrated Geographic "
+"A plpgsql based geocoder written to work with the <link xlink:href=\"https://"
+"www2.census.gov/geo/tiger/\">TIGER (Topologically Integrated Geographic "
 "Encoding and Referencing system ) / Line and Master Address database export</"
 "link> released by the US Census Bureau."
 msgstr ""
-"미국 인구조사국이 배포한 <link xlink:href=\"http://www.census.gov/geo/www/"
-"tiger/\">TIGER (Topologically Integrated Geographic Encoding and Referencing "
-"system ) / Line and Master Address database export</link> 과 함께 동작하도록 "
-"작성된 PL/pgSQL 기반 지오코딩 도구입니다."
 
 #. Tag: para
 #, no-c-format
@@ -7178,6 +7174,13 @@ msgid ""
 "the <code>--only-layers</code> switch. This can be useful to load layers "
 "AFTER resolving the naming conflicts or to link layers to a different "
 "topology (say a spatially-simplified version of the starting topology)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If the target topology already exists and you want it dropped upfront you "
+"can pass the <code>--drop-topology</code> switch (since PostGIS-3.6.0)."
 msgstr ""
 
 #. Tag: title
@@ -15635,8 +15638,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"If the <parameter>tolerance</parameter> parameter is provided, vertices "
-"within the tolerance distance of one another are considered to be duplicates."
+"If a non-zero <parameter>tolerance</parameter> parameter is provided, "
+"vertices within the tolerance distance of one another are considered to be "
+"duplicates. The distance is computed in 2D (XY plane)."
 msgstr ""
 
 #. Tag: para
@@ -16420,38 +16424,6 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"The backend to service a function where GEOS and SFCGAL overlap. Options: "
-"geos or sfcgal. Defaults to geos."
-msgstr ""
-"GEOS와 SFCGAL 양쪽의 겹치는 함수를 서비스하는 백엔드입니다. geos 또는 sfcgal"
-"을 선택할 수 있는데, 기본값은 geos입니다."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This GUC is only relevant if you compiled PostGIS with sfcgal support. By "
-"default <varname>geos</varname> backend is used for functions where both "
-"GEOS and SFCGAL have the same named function. This variable allows you to "
-"override and make sfcgal the backend to service the request."
-msgstr ""
-"PostGIS를 sfcgal 지원과 함께 컴파일했을 경우에만 GUC가 유의미해집니다. GEOS"
-"와 SFCGAL의 동일한 함수명을 가진 함수를 위해 이용되는 <varname>geos</"
-"varname> 백엔드가 기본값입니다. 이 변수를 변경하면 기본값을 무시하고 요청을 "
-"서비스하는 백엔드를 sfcgal로 바꿀 수 있습니다."
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend just for life of connection"
-msgstr "연결이 유지될 동안만 백엔드를 설정해봅시다."
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend for new connections to database"
-msgstr "데이터베이스와의 새 연결에 백엔드를 설정해봅시다."
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
 "A configuration option to assign the value of GDAL's GDAL_DATA option. If "
 "not set, the environmentally set GDAL_DATA variable is used."
 msgstr ""
@@ -16760,6 +16732,26 @@ msgid ""
 "Set <varname>postgis.gdal_vsi_options</varname> just for the "
 "<emphasis>current transaction</emphasis> using the <varname>LOCAL</varname> "
 "keyword:"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"A boolean configuration to turn logging of GDAL debug messages on and off."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"By default, GDAL logging is printed to stderr, and lower level debug "
+"messages are not printed at all. Turning this GUC to true will cause GDAL "
+"logging to be sent into the PostgreSQL logging stream, so you can see more "
+"or less of it by altering the <code>client_min_message</code> PostgreSQL GUC."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0"
 msgstr ""
 
 #. Tag: title
@@ -22495,7 +22487,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Canonical example for a Web Mercator tile using a computed tile bounds to "
-"query and clip geometry."
+"query and clip geometry. This assumes the data.geom column has srid of 4326."
 msgstr ""
 
 #. Tag: para
@@ -23179,12 +23171,9 @@ msgid ""
 "ST_Difference(A, B) always returns a portion of A."
 msgstr ""
 
-#. Tag: para
+#. Tag: refsection
 #, no-c-format
-msgid ""
-"If the optional <code>gridSize</code> argument is provided, the inputs are "
-"snapped to a grid of the given size, and the result vertices are computed on "
-"that same grid. (Requires GEOS-3.9.0 or higher)"
+msgid "&overlay_gridsize_arg;"
 msgstr ""
 
 #. Tag: para
@@ -23236,7 +23225,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
+msgid ""
+", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -23356,9 +23347,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
-"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
-"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
+"linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Force2D\"/>, <xref "
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
+"linkend=\"ST_Multi\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -23536,8 +23528,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<code>max_vertices</code> must be 5 or more, as 5 points are needed to "
-"represent a closed box. <code>gridSize</code> can be specified to have "
-"clipping work in fixed-precision space (requires GEOS-3.9.0+)."
+"represent a closed box."
 msgstr ""
 
 #. Tag: para
@@ -23615,7 +23606,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
-"linkend=\"ST_NPoints\"/>"
+"linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -23693,7 +23684,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
-"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -23749,14 +23741,6 @@ msgid ""
 "described in <link xlink:href=\"http://blog.cleverelephant.ca/2009/01/must-"
 "faster-unions-in-postgis-14.html\">http://blog.cleverelephant.ca/2009/01/"
 "must-faster-unions-in-postgis-14.html</link>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A <code>gridSize</code> can be specified to work in fixed-precision space. "
-"The inputs are snapped to a grid of the given size, and the result vertices "
-"are computed on that same grid. (Requires GEOS-3.9.0 or higher)"
 msgstr ""
 
 #. Tag: para
@@ -23825,7 +23809,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
 "linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
-"linkend=\"ST_SymDifference\"/>"
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: title
@@ -27091,11 +27075,6 @@ msgstr ""
 msgid ""
 "Returns a single-band raster containing the rendered version of all incoming "
 "geometries, each with its associated value."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 3.6.0"
 msgstr ""
 
 #. Tag: para
@@ -36735,6 +36714,11 @@ msgstr ""
 msgid "A polygon and its approximate medial axis"
 msgstr "폴리곤과 그 근사 중심축"
 
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
@@ -36838,7 +36822,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"CG_StraightSkeleton\"/>"
+msgid ""
+", <xref linkend=\"CG_ExtrudeStraightSkeleton\"/>, <xref "
+"linkend=\"CG_StraightSkeleton\"/>, <xref "
+"linkend=\"CG_StraightSkeletonPartition\"/>"
 msgstr ""
 
 #. Tag: para
@@ -37060,6 +37047,13 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"Note that valid inputs with rings that touch at a single point will raise an "
+"error."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Straight Skeleton of polygon"
 msgstr "폴리곤의 직선 골격"
 
@@ -37210,6 +37204,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Straight Skeleton Partition of polygon"
 msgstr ""
 
 #. Tag: refpurpose
@@ -44622,6 +44621,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"If the optional <code>gridSize</code> parameter is given (GEOS-3.9.0 or "
+"higher required), all result vertices are guaranteed to fall on a grid of "
+"the specified size. For the operation to give predictable results all the "
+"input vertices must fall already on the specified grid, see <xref "
+"linkend=\"ST_ReducePrecision\"/>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "New in this release"
 msgstr ""
 
@@ -44659,6 +44668,46 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "A plpgsql based geocoder written to work with the <link xlink:"
+#~ "href=\"http://www.census.gov/geo/www/tiger/\">TIGER (Topologically "
+#~ "Integrated Geographic Encoding and Referencing system ) / Line and Master "
+#~ "Address database export</link> released by the US Census Bureau."
+#~ msgstr ""
+#~ "미국 인구조사국이 배포한 <link xlink:href=\"http://www.census.gov/geo/www/"
+#~ "tiger/\">TIGER (Topologically Integrated Geographic Encoding and "
+#~ "Referencing system ) / Line and Master Address database export</link> 과 "
+#~ "함께 동작하도록 작성된 PL/pgSQL 기반 지오코딩 도구입니다."
+
+#, no-c-format
+#~ msgid ""
+#~ "The backend to service a function where GEOS and SFCGAL overlap. Options: "
+#~ "geos or sfcgal. Defaults to geos."
+#~ msgstr ""
+#~ "GEOS와 SFCGAL 양쪽의 겹치는 함수를 서비스하는 백엔드입니다. geos 또는 "
+#~ "sfcgal을 선택할 수 있는데, 기본값은 geos입니다."
+
+#, no-c-format
+#~ msgid ""
+#~ "This GUC is only relevant if you compiled PostGIS with sfcgal support. By "
+#~ "default <varname>geos</varname> backend is used for functions where both "
+#~ "GEOS and SFCGAL have the same named function. This variable allows you to "
+#~ "override and make sfcgal the backend to service the request."
+#~ msgstr ""
+#~ "PostGIS를 sfcgal 지원과 함께 컴파일했을 경우에만 GUC가 유의미해집니다. "
+#~ "GEOS와 SFCGAL의 동일한 함수명을 가진 함수를 위해 이용되는 <varname>geos</"
+#~ "varname> 백엔드가 기본값입니다. 이 변수를 변경하면 기본값을 무시하고 요청"
+#~ "을 서비스하는 백엔드를 sfcgal로 바꿀 수 있습니다."
+
+#, no-c-format
+#~ msgid "Sets backend just for life of connection"
+#~ msgstr "연결이 유지될 동안만 백엔드를 설정해봅시다."
+
+#, no-c-format
+#~ msgid "Sets backend for new connections to database"
+#~ msgstr "데이터베이스와의 새 연결에 백엔드를 설정해봅시다."
 
 #, no-c-format
 #~ msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
