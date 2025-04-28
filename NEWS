@@ -4,6 +4,7 @@ PostGIS 3.6.0
 * Bug fixes *
 
   - #5818, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)
+  - #5872, GH-796 Fix tests and results for SK Partition (Loïc Bartoletti)
 
 * Breaking Changes *
 
