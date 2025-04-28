@@ -28,15 +28,25 @@
 -- 3.5527136788005009294e-15 for the starting value of 9.0
 --
 -- }{
+CREATE OR REPLACE FUNCTION topology._st_mintolerance(val float8)
+  RETURNS float8
+AS $$
+    SELECT 3.6 * power(10,  - ( 15 - log(val) ));
+$$ LANGUAGE 'sql' IMMUTABLE STRICT;
+-- }
+
+-- {
+-- Get min tolerance for a given geometry
+-- }{
 CREATE OR REPLACE FUNCTION topology._st_mintolerance(ageom Geometry)
   RETURNS float8
 AS $$
-    SELECT 3.6 * power(10,  - ( 15 - log(coalesce(
+    SELECT topology._st_mintolerance(coalesce(
       nullif(
-        greatest(abs(ST_xmin($1)), abs(ST_ymin($1)),
-                 abs(ST_xmax($1)), abs(ST_ymax($1))),
+        greatest(abs(ST_Xmin($1)), abs(ST_Ymin($1)),
+                 abs(ST_Xmax($1)), abs(ST_Ymax($1))),
         0),
-      1)) ));
+      1));
 $$ LANGUAGE 'sql' IMMUTABLE STRICT;
 -- }
 

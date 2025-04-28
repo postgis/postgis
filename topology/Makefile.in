@@ -142,10 +142,12 @@ topology.sql: \
 	sql/manage/FindLayer.sql.in \
 	sql/manage/FindTopology.sql.in \
 	sql/manage/ManageHelper.sql.in \
+	sql/manage/MakeTopologyPrecise.sql.in \
 	sql/manage/populate_topology_layer.sql.in \
 	sql/manage/RenameTopology.sql.in \
 	sql/manage/TopologySummary.sql.in \
 	sql/manage/ValidateTopologyRelation.sql.in \
+	sql/manage/ValidateTopologyPrecision.sql.in \
 	sql/manage/ValidateTopology.sql.in \
 	sql/topoelement/topoelement_agg.sql.in \
 	sql/topogeometry/type.sql.in \

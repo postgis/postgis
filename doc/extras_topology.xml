@@ -964,6 +964,126 @@ relation table of the topology.
 			</refsection>
 		</refentry>
 
+		<refentry xml:id="ValidateTopologyPrecision">
+			<refnamediv>
+				<refname>ValidateTopologyPrecision</refname>
+
+				<refpurpose>Returns non-precise vertices in the topology.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>geometry <function>ValidateTopologyPrecision</function></funcdef>
+					<paramdef><type>name </type> <parameter>toponame</parameter></paramdef>
+					<paramdef choice="opt"><type>geometry</type> <parameter>bbox</parameter></paramdef>
+					<paramdef choice="opt"><type>float8</type> <parameter>gridSize</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Returns all vertices that are not rounded to the topology or given
+<varname>gridSize</varname> as a puntal geometry, optionally limiting
+the check to the area specified by the <varname>bbox</varname> parameter.
+                </para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="3.6.0">Availability: 3.6.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+SELECT ST_AsEWKT(g) FROM
+ topology.ValidateTopologyPrecision(
+    'city_data',
+    gridSize => 2,
+    bbox => ST_MakeEnvelope(0,0,20,20)
+) g;
+      st_asewkt
+----------------------
+ MULTIPOINT(9 6,9 14)
+(1 row)
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+<xref linkend="MakeTopologyPrecise"/>
+                </para>
+			</refsection>
+		</refentry>
+
+		<refentry xml:id="MakeTopologyPrecise">
+			<refnamediv>
+				<refname>MakeTopologyPrecise</refname>
+
+				<refpurpose>Snap topology vertices to precision grid.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>void <function>MakeTopologyPrecise</function></funcdef>
+					<paramdef><type>name </type> <parameter>toponame</parameter></paramdef>
+					<paramdef choice="opt"><type>geometry</type> <parameter>bbox</parameter></paramdef>
+					<paramdef choice="opt"><type>float8</type> <parameter>gridSize</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Snaps all vertices of a topology to the topology precision grid or to
+the grid whose size is specified with the <varname>gridSize</varname>
+parameter, optionally limiting the operation to the objects
+intersecting the area specified by the <varname>bbox</varname> parameter.
+                </para>
+
+<note>
+<para>
+Snapping could make the topology invalid, so it is recommended to
+check the outcome of operation with <xref
+linkend="ValidateTopology"/>.
+</para>
+</note>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="3.6.0">Availability: 3.6.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+SELECT topology.MakeTopologyPrecise(
+    'city_data',
+    gridSize => 2
+);
+ maketopologyprecise
+---------------------
+
+(1 row)
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+<xref linkend="ValidateTopologyPrecision"/>,
+<xref linkend="ValidateTopology"/>
+                </para>
+			</refsection>
+		</refentry>
+
 		<refentry xml:id="FindTopology">
 			<refnamediv>
 				<refname>FindTopology</refname>

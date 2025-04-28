@@ -1401,6 +1401,8 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 #include "sql/manage/RenameTopology.sql.in"
 #include "sql/manage/ValidateTopology.sql.in"
 #include "sql/manage/ValidateTopologyRelation.sql.in"
+#include "sql/manage/ValidateTopologyPrecision.sql.in"
+#include "sql/manage/MakeTopologyPrecise.sql.in"
 
 -- Cleanup functions
 #include "sql/cleanup/RemoveUnusedPrimitives.sql.in"

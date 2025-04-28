@@ -1,0 +1,8 @@
+start|edge|1|SRID=4326;LINESTRING(0 0,2 0,4 0,6 0,8 0)
+start|edge|2|SRID=4326;LINESTRING(8 0,8 2,8 4,8 6,8 8)
+start|node|4|SRID=4326;POINT(-3 -1)
+topo_float|SRID=4326;MULTIPOINT EMPTY
+topo_prec4|SRID=4326;MULTIPOINT(8 6,8 2,6 0,2 0,-3 -1)
+topo_prec4_bbox|SRID=4326;MULTIPOINT(6 0,2 0)
+topo_prec2|SRID=4326;POINT(-3 -1)
+ERROR:  Presence of max ordinate value 8 requires a minimum grid size of 2.88e-14

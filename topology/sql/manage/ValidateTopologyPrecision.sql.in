@@ -1,0 +1,106 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2025 Sandro Santilli <strk@kbt.io>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- Author: Sandro Santilli <strk@kbt.io>
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+-- {
+-- Invalidities are represented by any vertex that does not fall on
+-- the topology precision grid.
+-- }{
+CREATE OR REPLACE FUNCTION topology.ValidateTopologyPrecision(toponame name, bbox geometry DEFAULT NULL, gridSize float8 DEFAULT NULL)
+RETURNS geometry AS
+$BODY$
+DECLARE
+  topo topology.topology;
+  imprecisePoints GEOMETRY;
+  sql TEXT;
+  dataBox GEOMETRY;
+  dataMagnitude FLOAT8;
+  minGridSize FLOAT8;
+BEGIN
+
+  topo := findTopology(toponame);
+  IF topo.id IS NULL THEN
+    RAISE EXCEPTION 'Could not find topology "%"', toponame;
+  END IF;
+
+  IF gridSize IS NULL THEN
+    gridSize := topo.precision;
+  END IF;
+
+  imprecisePoints = ST_SetSRID('MULTIPOINT EMPTY'::geometry, topo.srid);
+
+  IF gridSize <= 0 THEN
+    RAISE NOTICE 'Every vertex is precise with grid size %', gridSize;
+    RETURN imprecisePoints;
+  END IF;
+
+  SELECT ST_Union(g) b
+  FROM (
+    SELECT ST_EstimatedExtent(topo.name, 'edge_data', 'geom')::geometry g
+    UNION
+    SELECT ST_EstimatedExtent(topo.name, 'node', 'geom')::geometry
+  ) foo
+  INTO dataBox;
+
+  IF dataBox IS NULL THEN
+    RAISE NOTICE 'Every vertex is precise in an empty topology';
+    RETURN imprecisePoints;
+  END IF;
+
+   dataMagnitude = greatest(
+      abs(ST_Xmin(dataBox)),
+      abs(ST_Xmax(dataBox)),
+      abs(ST_Ymin(dataBox)),
+      abs(ST_Ymax(dataBox))
+  );
+  -- TODO: restrict data magnitude computation to given bbox ?
+  minGridSize := topology._st_mintolerance(dataMagnitude);
+  IF minGridSize > gridSize THEN
+    RAISE EXCEPTION 'Presence of max ordinate value % requires a minimum grid size of %', dataMagnitude, minGridSize;
+  END IF;
+
+  sql := format(
+    $$
+WITH edgePoints AS (
+  SELECT geom FROM (
+    SELECT (ST_DumpPoints(geom)).geom FROM %1$I.edge
+    WHERE ( $1 IS NULL OR geom && $1 )
+  ) foo
+  WHERE ( $1 IS NULL OR geom && $1 )
+), isolatedNodes AS (
+  SELECT geom FROM %1$I.node
+  WHERE containing_face IS NOT NULL
+  AND ( $1 IS NULL OR geom && $1 )
+), allVertices AS (
+  SELECT geom from edgePoints
+  UNION
+  SELECT geom from isolatedNodes
+)
+SELECT ST_Union(geom) FROM allVertices
+WHERE NOT ST_Equals( ST_ReducePrecision(geom, $2), geom )
+    $$,
+    topo.name
+  );
+
+  EXECUTE sql USING bbox, gridSize
+  INTO imprecisePoints;
+
+  -- Return invalid vertices
+
+  RETURN imprecisePoints;
+
+END;
+
+$BODY$
+LANGUAGE 'plpgsql' STABLE; --}

@@ -1,0 +1,107 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2025 Sandro Santilli <strk@kbt.io>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- Author: Sandro Santilli <strk@kbt.io>
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+-- {
+-- Invalidities are represented by any vertex that does not fall on
+-- the topology precision grid.
+-- }{
+CREATE OR REPLACE FUNCTION topology.MakeTopologyPrecise(toponame name, bbox GEOMETRY DEFAULT NULL, gridSize float8 DEFAULT NULL)
+RETURNS void AS
+$BODY$
+DECLARE
+  topo topology.topology;
+  imprecisePoints GEOMETRY;
+  sql TEXT;
+  dataBox GEOMETRY;
+  dataMagnitude FLOAT8;
+  minGridSize FLOAT8;
+BEGIN
+  topo := findTopology(toponame);
+  IF topo.id IS NULL THEN
+    RAISE EXCEPTION 'Could not find topology "%"', toponame;
+  END IF;
+
+  IF gridSize IS NULL THEN
+    gridSize := topo.precision;
+  END IF;
+
+  IF gridSize <= 0 THEN
+    RAISE NOTICE 'Every vertex is precise with grid size %', gridSize;
+    RETURN;
+  END IF;
+
+  -- TODO: compute real extent instead of estimated/float4 one?
+  -- TODO: generalize a topology.MinTolerance(toponame) ?
+  SELECT ST_Union(g) b
+  FROM (
+    SELECT ST_EstimatedExtent(topo.name, 'edge_data', 'geom')::geometry g
+    UNION
+    SELECT ST_EstimatedExtent(topo.name, 'node', 'geom')::geometry
+  ) foo
+  INTO dataBox;
+
+  IF dataBox IS NULL THEN
+    RAISE NOTICE 'Every vertex is precise in an empty topology';
+    RETURN;
+  END IF;
+
+   dataMagnitude = greatest(
+      abs(ST_Xmin(dataBox)),
+      abs(ST_Xmax(dataBox)),
+      abs(ST_Ymin(dataBox)),
+      abs(ST_Ymax(dataBox))
+  );
+  -- TODO: restrict data magnitude computation to requested bbox ?
+  minGridSize := topology._st_mintolerance(dataMagnitude);
+  IF minGridSize > gridSize THEN
+    RAISE EXCEPTION 'Presence of max ordinate value % requires a minimum grid size of %', dataMagnitude, minGridSize;
+  END IF;
+
+  -- TODO: recursively grow working bbox to include all edges connected
+  --       to all endpoints of edges intersecting it ?
+
+  sql := format(
+    $$
+UPDATE %1$I.edge_data
+SET geom = ST_SnapToGrid(geom, $2)
+WHERE ( $1 IS NULL OR geom && $1 )
+    $$, topo.name
+  );
+  EXECUTE sql USING bbox, gridSize;
+
+  sql := format(
+    $$
+UPDATE %1$I.node
+SET geom = ST_SnapToGrid(geom, $2)
+WHERE ( $1 IS NULL OR geom && $1 )
+    $$, topo.name
+  );
+  EXECUTE sql USING bbox, gridSize;
+
+  sql := format(
+    $$
+UPDATE %1$I.face
+SET mbr = ST_SnapToGrid(mbr, $2)
+WHERE ( $1 IS NULL OR mbr && $1 )
+    $$, topo.name
+  );
+  EXECUTE sql USING bbox, gridSize;
+
+  -- TODO: validate topology if requested ?
+
+END;
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE; --}
+
