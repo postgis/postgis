@@ -5199,7 +5199,7 @@ _lwt_GetEqualEdge( LWT_TOPOLOGY *topo, LWLINE *edge, int *forward )
  * TODO: check that the motion range does not contain any node
  *
  */
-static void
+static int
 _lwt_SnapEdge_checkMotion( LWT_TOPOLOGY* topo, const LWCOLLECTION *splitC, const LWT_ISO_EDGE *edge, LWT_ISO_EDGE *existingEdge, const LWT_NODE_EDGES *splitNodeEdges )
 {
   // build the motion range shape: splitC->geoms[0] + splitC->geoms[1] - edge->geom
@@ -5280,6 +5280,8 @@ _lwt_SnapEdge_checkMotion( LWT_TOPOLOGY* topo, const LWCOLLECTION *splitC, const
   if ( motionPolyG ) GEOSGeom_destroy(motionPolyG);
 
   lwgeom_free(motionPoly);
+
+  return 0;
 }
 
 static int
