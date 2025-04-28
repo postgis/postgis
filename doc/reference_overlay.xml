@@ -90,11 +90,7 @@ SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
         <note><para>This is the only overlay function where input order matters.
             ST_Difference(A, B) always returns a portion of A.</para></note>
 
-            <para>
-If the optional <code>gridSize</code> argument is provided, the inputs are
-snapped to a grid of the given size, and the result vertices are computed
-on that same grid. (Requires GEOS-3.9.0 or higher)
-            </para>
+        <para> &overlay_gridsize_arg; </para>
 
         <para>Performed by the GEOS module</para>
         <para>Enhanced: 3.1.0 accept a gridSize parameter - requires GEOS &gt;= 3.9.0</para>
@@ -167,7 +163,12 @@ MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_SymDifference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
+        <para>
+<xref linkend="ST_SymDifference"/>,
+<xref linkend="ST_Intersection"/>,
+<xref linkend="ST_Union"/>,
+<xref linkend="ST_ReducePrecision"/>
+        </para>
       </refsection>
     </refentry>
 
@@ -221,11 +222,7 @@ Returns a geometry representing the shared portion of geometries A and B.
             <para>ST_Intersection in conjunction with ST_Intersects is very useful for clipping geometries such as in bounding box, buffer, region
                 queries where you only want to return that portion of a geometry that sits in a country or region of interest.</para>
 
-            <para>
-If the optional <code>gridSize</code> argument is provided, the inputs are
-snapped to a grid of the given size, and the result vertices are computed
-on that same grid.  (Requires GEOS-3.9.0 or higher)
-            </para>
+            <para> &overlay_gridsize_arg; </para>
 
             <note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
                     fits the bounding box of the 2 geography objects (if geography objects are within one half zone UTM but not same UTM will pick one of those) (favoring UTM or Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario)  and then intersection in that best fit planar spatial ref and retransforms back to WGS84 geography.</para></note>
@@ -298,7 +295,19 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
       </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_3DIntersection" />, <xref linkend="ST_Difference"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Force2D" />, <xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
+            <para>
+<xref linkend="ST_3DIntersection"/>,
+<xref linkend="ST_Difference"/>,
+<xref linkend="ST_Union"/>,
+<xref linkend="ST_ClipByBox2D"/>,
+<xref linkend="ST_Dimension"/>,
+<xref linkend="ST_Dump"/>,
+<xref linkend="ST_Force2D"/>,
+<xref linkend="ST_SymDifference"/>,
+<xref linkend="ST_Intersects"/>,
+<xref linkend="ST_Multi"/>,
+<xref linkend="ST_ReducePrecision"/>
+            </para>
         </refsection>
     </refentry>
 
@@ -620,8 +629,10 @@ GEOMETRYCOLLECTION(
             "miss" cases are faster to check as boxes for all parts typically cover smaller area than original geometry box,
             "hit" cases are faster because recheck operates on less points.
             <code>max_vertices</code> must be 5 or more, as 5 points are needed to represent a closed box.
-            <code>gridSize</code> can be specified to have clipping work in fixed-precision space (requires GEOS-3.9.0+).
         </para>
+
+        <para> &overlay_gridsize_arg; </para>
+
         <para>Performed by the GEOS module.</para>
         <para>Availability: 2.2.0</para>
         <para>Enhanced: 2.5.0 reuses existing points on polygon split, vertex count is lowered from 8 to 5.</para>
@@ -699,10 +710,11 @@ LINESTRING(44.7994523421035 82.5156766227011,85 85)</screen>
         <title>See Also</title>
         <para>
 <xref linkend="ST_AsText" />,
-<xref linkend="ST_ClipByBox2D" />,
-<xref linkend="ST_Segmentize" />,
-<xref linkend="ST_Split" />,
-<xref linkend="ST_NPoints" />
+<xref linkend="ST_ClipByBox2D"/>,
+<xref linkend="ST_Segmentize"/>,
+<xref linkend="ST_Split"/>,
+<xref linkend="ST_NPoints"/>,
+<xref linkend="ST_ReducePrecision"/>
     </para>
       </refsection>
     </refentry>
@@ -735,11 +747,7 @@ LINESTRING(44.7994523421035 82.5156766227011,85 85)</screen>
             It is called a symmetric difference because <code>ST_SymDifference(A,B) = ST_SymDifference(B,A)</code>.
             </para>
 
-            <para>
-If the optional <code>gridSize</code> argument is provided, the inputs are
-snapped to a grid of the given size, and the result vertices are computed
-on that same grid. (Requires GEOS-3.9.0 or higher)
-            </para>
+        <para> &overlay_gridsize_arg; </para>
 
         <para>Performed by the GEOS module</para>
 
@@ -817,7 +825,12 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_Difference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
+        <para>
+<xref linkend="ST_Difference"/>,
+<xref linkend="ST_Intersection"/>,
+<xref linkend="ST_Union"/>,
+<xref linkend="ST_ReducePrecision"/>
+        </para>
       </refsection>
 </refentry>
 
@@ -887,11 +900,7 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
         url="http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html">http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html</ulink>
     </para>
 
-    <para>A <code>gridSize</code> can be specified to work in fixed-precision space.
-        The inputs are snapped to a grid of the given size, and the result vertices are computed
-        on that same grid.
-        (Requires GEOS-3.9.0 or higher)
-    </para>
+    <para> &overlay_gridsize_arg; </para>
 
     <note><para><xref linkend="ST_Collect" /> may sometimes be used in place of ST_Union,
         if the result is not required to be non-overlapping.
@@ -902,7 +911,7 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
     <para>Performed by the GEOS module.</para>
     <para>ST_Union creates MultiLineString and does not sew LineStrings into a single LineString.
         Use <xref linkend="ST_LineMerge" /> to sew LineStrings.</para>
-        
+
     <para>NOTE: this function was formerly called GeomUnion(), which
         was renamed from "Union" because UNION is an SQL reserved
         word.</para>
@@ -992,7 +1001,8 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
             <xref linkend="ST_MemUnion" />,
             <xref linkend="ST_Intersection" />,
             <xref linkend="ST_Difference" />,
-            <xref linkend="ST_SymDifference" />
+            <xref linkend="ST_SymDifference" />,
+            <xref linkend="ST_ReducePrecision"/>
         </para>
       </refsection>
     </refentry>
@@ -1040,11 +1050,7 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
         striking a balance between ST_Union and <xref linkend="ST_MemUnion" />.
         </para>
 
-        <para>
-If the optional <code>gridSize</code> argument is provided, the inputs are
-snapped to a grid of the given size, and the result vertices are computed
-on that same grid. (Requires GEOS-3.9.0 or higher)
-        </para>
+        <para> &overlay_gridsize_arg; </para>
 
         <para>&Z_support; However, the result is computed using XY only.
             The result Z values are copied, averaged or interpolated.</para>
@@ -1059,13 +1065,14 @@ on that same grid. (Requires GEOS-3.9.0 or higher)
         <title>See Also</title>
 
         <para>
-            <xref linkend="ST_Union" />,
-            <xref linkend="ST_MemUnion" />,
-            <xref linkend="ST_Collect" />,
-            <xref linkend="ST_Node" />
+            <xref linkend="ST_Union"/>,
+            <xref linkend="ST_MemUnion"/>,
+            <xref linkend="ST_MakeValid"/>,
+            <xref linkend="ST_Collect"/>,
+            <xref linkend="ST_Node"/>,
+            <xref linkend="ST_ReducePrecision"/>
         </para>
       </refsection>
     </refentry>
-
 
 </sect1>
