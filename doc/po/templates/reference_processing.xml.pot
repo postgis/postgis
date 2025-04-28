@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-14 02:04+0000\n"
+"POT-Creation-Date: 2025-04-28 10:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -3110,7 +3110,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1940
+#: reference_processing.xml:1940 reference_processing.xml:2115
 #, no-c-format
 msgid "Availability: 3.3.0 - requires GEOS &gt;= 3.11.0"
 msgstr ""
@@ -3383,12 +3383,6 @@ msgid ""
 "triangles formed from the vertices of the polygon, and covering it exactly, "
 "with the maximum total interior angle over all possible triangulations. It "
 "provides the \"best quality\" triangulation of the polygon."
-msgstr ""
-
-#. Tag: para
-#: reference_processing.xml:2115
-#, no-c-format
-msgid "Availability: 3.3.0"
 msgstr ""
 
 #. Tag: title

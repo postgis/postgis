@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-22 01:55+0000\n"
+"POT-Creation-Date: 2025-04-28 10:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -2470,7 +2470,7 @@ msgstr ""
 #: extras_topology.xml:1666
 #, no-c-format
 msgid ""
-"<funcdef>integer <function>ST_ChangeEdgeGeom</function></funcdef> "
+"<funcdef>text <function>ST_ChangeEdgeGeom</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>acurve</parameter></paramdef>"
@@ -4795,8 +4795,10 @@ msgstr ""
 #: extras_topology.xml:3376
 #, no-c-format
 msgid ""
-"Returns a set of element_id,element_type (topoelements) for a given "
-"topogeometry object in <varname>toponame</varname> schema."
+"Returns a set of element_id,element_type (topoelements) corresponding to "
+"primitive topology elements <xref linkend=\"topoelement\"/> (1: nodes, 2: "
+"edges, 3: faces) that a given topogeometry object in <varname>toponame</"
+"varname> schema is composed of."
 msgstr ""
 
 #. Tag: para
@@ -5432,9 +5434,9 @@ msgid ""
 "<filename>pgtopo_dump_version</filename> file with format version info. As "
 "of version <code>1</code> the directory contains tab-delimited CSV files "
 "with data of the topology primitive tables (node, edge_data, face, "
-"relation), of the topology and layer records associated with it, and "
-"optionall (if <code>--skip-layers</code> is not given) a custom-format "
-"PostgreSQL dump of tables reported as being layers of the given topology."
+"relation), the topology and layer records associated with it and (unless "
+"<code>--skip-layers</code> is given) a custom-format PostgreSQL dump of "
+"tables reported as being layers of the given topology."
 msgstr ""
 
 #. Tag: title
