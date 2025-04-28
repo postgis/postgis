@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-10-26 10:22+0000\n"
+"POT-Creation-Date: 2025-04-28 10:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -119,42 +119,42 @@ msgstr ""
 #: reference_raster.xml:4986 reference_raster.xml:5063
 #: reference_raster.xml:5135 reference_raster.xml:5214
 #: reference_raster.xml:5355 reference_raster.xml:5390
-#: reference_raster.xml:5437 reference_raster.xml:5490
-#: reference_raster.xml:5552 reference_raster.xml:5611
-#: reference_raster.xml:5684 reference_raster.xml:5789
-#: reference_raster.xml:5839 reference_raster.xml:5913
-#: reference_raster.xml:6059 reference_raster.xml:6101
-#: reference_raster.xml:6144 reference_raster.xml:6198
-#: reference_raster.xml:6251 reference_raster.xml:6303
-#: reference_raster.xml:6398 reference_raster.xml:6489
-#: reference_raster.xml:6577 reference_raster.xml:6685
-#: reference_raster.xml:6878 reference_raster.xml:7117
-#: reference_raster.xml:7260 reference_raster.xml:7410
-#: reference_raster.xml:7744 reference_raster.xml:7950
-#: reference_raster.xml:8074 reference_raster.xml:8400
-#: reference_raster.xml:8524 reference_raster.xml:8645
-#: reference_raster.xml:8787 reference_raster.xml:8869
-#: reference_raster.xml:8941 reference_raster.xml:9005
-#: reference_raster.xml:9076 reference_raster.xml:9151
-#: reference_raster.xml:9234 reference_raster.xml:9305
-#: reference_raster.xml:9361 reference_raster.xml:9436
-#: reference_raster.xml:9507 reference_raster.xml:9591
-#: reference_raster.xml:9683 reference_raster.xml:9765
-#: reference_raster.xml:9819 reference_raster.xml:9893
-#: reference_raster.xml:9941 reference_raster.xml:9993
-#: reference_raster.xml:10035 reference_raster.xml:10083
-#: reference_raster.xml:10135 reference_raster.xml:10183
-#: reference_raster.xml:10225 reference_raster.xml:10298
-#: reference_raster.xml:10343 reference_raster.xml:10387
-#: reference_raster.xml:10432 reference_raster.xml:10501
-#: reference_raster.xml:10548 reference_raster.xml:10621
-#: reference_raster.xml:10689 reference_raster.xml:10778
-#: reference_raster.xml:10863 reference_raster.xml:10944
-#: reference_raster.xml:11025 reference_raster.xml:11154
-#: reference_raster.xml:11238 reference_raster.xml:11318
-#: reference_raster.xml:11437 reference_raster.xml:11484
-#: reference_raster.xml:11556 reference_raster.xml:11653
-#: reference_raster.xml:11746
+#: reference_raster.xml:5437 reference_raster.xml:5484
+#: reference_raster.xml:5546 reference_raster.xml:5605
+#: reference_raster.xml:5678 reference_raster.xml:5783
+#: reference_raster.xml:5833 reference_raster.xml:5907
+#: reference_raster.xml:6053 reference_raster.xml:6095
+#: reference_raster.xml:6138 reference_raster.xml:6192
+#: reference_raster.xml:6245 reference_raster.xml:6297
+#: reference_raster.xml:6392 reference_raster.xml:6483
+#: reference_raster.xml:6571 reference_raster.xml:6679
+#: reference_raster.xml:6872 reference_raster.xml:7111
+#: reference_raster.xml:7254 reference_raster.xml:7404
+#: reference_raster.xml:7738 reference_raster.xml:7944
+#: reference_raster.xml:8068 reference_raster.xml:8394
+#: reference_raster.xml:8518 reference_raster.xml:8639
+#: reference_raster.xml:8781 reference_raster.xml:8863
+#: reference_raster.xml:8935 reference_raster.xml:8999
+#: reference_raster.xml:9070 reference_raster.xml:9145
+#: reference_raster.xml:9228 reference_raster.xml:9299
+#: reference_raster.xml:9355 reference_raster.xml:9430
+#: reference_raster.xml:9501 reference_raster.xml:9585
+#: reference_raster.xml:9677 reference_raster.xml:9759
+#: reference_raster.xml:9813 reference_raster.xml:9887
+#: reference_raster.xml:9935 reference_raster.xml:9987
+#: reference_raster.xml:10029 reference_raster.xml:10077
+#: reference_raster.xml:10129 reference_raster.xml:10177
+#: reference_raster.xml:10219 reference_raster.xml:10292
+#: reference_raster.xml:10337 reference_raster.xml:10381
+#: reference_raster.xml:10426 reference_raster.xml:10495
+#: reference_raster.xml:10542 reference_raster.xml:10615
+#: reference_raster.xml:10683 reference_raster.xml:10772
+#: reference_raster.xml:10857 reference_raster.xml:10938
+#: reference_raster.xml:11019 reference_raster.xml:11148
+#: reference_raster.xml:11232 reference_raster.xml:11312
+#: reference_raster.xml:11431 reference_raster.xml:11478
+#: reference_raster.xml:11550 reference_raster.xml:11647
+#: reference_raster.xml:11740
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -211,41 +211,41 @@ msgstr ""
 #: reference_raster.xml:4944 reference_raster.xml:5013
 #: reference_raster.xml:5091 reference_raster.xml:5165
 #: reference_raster.xml:5320 reference_raster.xml:5368
-#: reference_raster.xml:5409 reference_raster.xml:5462
-#: reference_raster.xml:5515 reference_raster.xml:5567
-#: reference_raster.xml:5628 reference_raster.xml:5720
-#: reference_raster.xml:5805 reference_raster.xml:5870
-#: reference_raster.xml:5930 reference_raster.xml:6077
-#: reference_raster.xml:6118 reference_raster.xml:6161
-#: reference_raster.xml:6226 reference_raster.xml:6274
-#: reference_raster.xml:6352 reference_raster.xml:6443
-#: reference_raster.xml:6534 reference_raster.xml:6614
-#: reference_raster.xml:6841 reference_raster.xml:7075
-#: reference_raster.xml:7184 reference_raster.xml:7319
-#: reference_raster.xml:7675 reference_raster.xml:7911
-#: reference_raster.xml:8024 reference_raster.xml:8316
-#: reference_raster.xml:8481 reference_raster.xml:8612
-#: reference_raster.xml:8745 reference_raster.xml:8816
-#: reference_raster.xml:8900 reference_raster.xml:8973
-#: reference_raster.xml:9043 reference_raster.xml:9112
-#: reference_raster.xml:9194 reference_raster.xml:9273
-#: reference_raster.xml:9328 reference_raster.xml:9397
-#: reference_raster.xml:9468 reference_raster.xml:9543
-#: reference_raster.xml:9636 reference_raster.xml:9733
-#: reference_raster.xml:9776 reference_raster.xml:9861
-#: reference_raster.xml:9909 reference_raster.xml:9960
-#: reference_raster.xml:10010 reference_raster.xml:10055
-#: reference_raster.xml:10109 reference_raster.xml:10155
-#: reference_raster.xml:10198 reference_raster.xml:10238
-#: reference_raster.xml:10446 reference_raster.xml:10514
-#: reference_raster.xml:10567 reference_raster.xml:10633
-#: reference_raster.xml:10724 reference_raster.xml:10809
-#: reference_raster.xml:10890 reference_raster.xml:10971
-#: reference_raster.xml:11055 reference_raster.xml:11184
-#: reference_raster.xml:11265 reference_raster.xml:11345
-#: reference_raster.xml:11458 reference_raster.xml:11502
-#: reference_raster.xml:11589 reference_raster.xml:11684
-#: reference_raster.xml:11777
+#: reference_raster.xml:5409 reference_raster.xml:5456
+#: reference_raster.xml:5509 reference_raster.xml:5561
+#: reference_raster.xml:5622 reference_raster.xml:5714
+#: reference_raster.xml:5799 reference_raster.xml:5864
+#: reference_raster.xml:5924 reference_raster.xml:6071
+#: reference_raster.xml:6112 reference_raster.xml:6155
+#: reference_raster.xml:6220 reference_raster.xml:6268
+#: reference_raster.xml:6346 reference_raster.xml:6437
+#: reference_raster.xml:6528 reference_raster.xml:6608
+#: reference_raster.xml:6835 reference_raster.xml:7069
+#: reference_raster.xml:7178 reference_raster.xml:7313
+#: reference_raster.xml:7669 reference_raster.xml:7905
+#: reference_raster.xml:8018 reference_raster.xml:8310
+#: reference_raster.xml:8475 reference_raster.xml:8606
+#: reference_raster.xml:8739 reference_raster.xml:8810
+#: reference_raster.xml:8894 reference_raster.xml:8967
+#: reference_raster.xml:9037 reference_raster.xml:9106
+#: reference_raster.xml:9188 reference_raster.xml:9267
+#: reference_raster.xml:9322 reference_raster.xml:9391
+#: reference_raster.xml:9462 reference_raster.xml:9537
+#: reference_raster.xml:9630 reference_raster.xml:9727
+#: reference_raster.xml:9770 reference_raster.xml:9855
+#: reference_raster.xml:9903 reference_raster.xml:9954
+#: reference_raster.xml:10004 reference_raster.xml:10049
+#: reference_raster.xml:10103 reference_raster.xml:10149
+#: reference_raster.xml:10192 reference_raster.xml:10232
+#: reference_raster.xml:10440 reference_raster.xml:10508
+#: reference_raster.xml:10561 reference_raster.xml:10627
+#: reference_raster.xml:10718 reference_raster.xml:10803
+#: reference_raster.xml:10884 reference_raster.xml:10965
+#: reference_raster.xml:11049 reference_raster.xml:11178
+#: reference_raster.xml:11259 reference_raster.xml:11339
+#: reference_raster.xml:11452 reference_raster.xml:11496
+#: reference_raster.xml:11583 reference_raster.xml:11678
+#: reference_raster.xml:11771
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -785,20 +785,20 @@ msgstr ""
 #: reference_raster.xml:858 reference_raster.xml:1708 reference_raster.xml:2146
 #: reference_raster.xml:3196 reference_raster.xml:3456
 #: reference_raster.xml:3499 reference_raster.xml:3560
-#: reference_raster.xml:5398 reference_raster.xml:5557
-#: reference_raster.xml:5706 reference_raster.xml:5794
-#: reference_raster.xml:5848 reference_raster.xml:6064
-#: reference_raster.xml:6699 reference_raster.xml:7970
-#: reference_raster.xml:8169 reference_raster.xml:8439
-#: reference_raster.xml:8566 reference_raster.xml:8695
-#: reference_raster.xml:8793 reference_raster.xml:8877
-#: reference_raster.xml:8961 reference_raster.xml:9100
-#: reference_raster.xml:9175 reference_raster.xml:9262
-#: reference_raster.xml:9385 reference_raster.xml:9456
-#: reference_raster.xml:9531 reference_raster.xml:9617
-#: reference_raster.xml:9713 reference_raster.xml:9841
-#: reference_raster.xml:10305 reference_raster.xml:10556
-#: reference_raster.xml:10628 reference_raster.xml:11447
+#: reference_raster.xml:5398 reference_raster.xml:5551
+#: reference_raster.xml:5700 reference_raster.xml:5788
+#: reference_raster.xml:5842 reference_raster.xml:6058
+#: reference_raster.xml:6693 reference_raster.xml:7964
+#: reference_raster.xml:8163 reference_raster.xml:8433
+#: reference_raster.xml:8560 reference_raster.xml:8689
+#: reference_raster.xml:8787 reference_raster.xml:8871
+#: reference_raster.xml:8955 reference_raster.xml:9094
+#: reference_raster.xml:9169 reference_raster.xml:9256
+#: reference_raster.xml:9379 reference_raster.xml:9450
+#: reference_raster.xml:9525 reference_raster.xml:9611
+#: reference_raster.xml:9707 reference_raster.xml:9835
+#: reference_raster.xml:10299 reference_raster.xml:10550
+#: reference_raster.xml:10622 reference_raster.xml:11441
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr ""
@@ -900,31 +900,31 @@ msgstr ""
 #: reference_raster.xml:5005 reference_raster.xml:5083
 #: reference_raster.xml:5160 reference_raster.xml:5245
 #: reference_raster.xml:5361 reference_raster.xml:5402
-#: reference_raster.xml:5457 reference_raster.xml:5510
-#: reference_raster.xml:5561 reference_raster.xml:5623
-#: reference_raster.xml:5798 reference_raster.xml:5925
-#: reference_raster.xml:6068 reference_raster.xml:6111
-#: reference_raster.xml:6154 reference_raster.xml:6219
-#: reference_raster.xml:6267 reference_raster.xml:6526
-#: reference_raster.xml:6964 reference_raster.xml:7974
-#: reference_raster.xml:8443 reference_raster.xml:8699
-#: reference_raster.xml:8966 reference_raster.xml:9038
-#: reference_raster.xml:9105 reference_raster.xml:9267
-#: reference_raster.xml:9323 reference_raster.xml:9390
-#: reference_raster.xml:9461 reference_raster.xml:9536
-#: reference_raster.xml:9771 reference_raster.xml:9904
-#: reference_raster.xml:9955 reference_raster.xml:10004
-#: reference_raster.xml:10047 reference_raster.xml:10104
-#: reference_raster.xml:10149 reference_raster.xml:10193
-#: reference_raster.xml:10233 reference_raster.xml:10309
-#: reference_raster.xml:10353 reference_raster.xml:10398
-#: reference_raster.xml:10561 reference_raster.xml:10717
-#: reference_raster.xml:10804 reference_raster.xml:10885
-#: reference_raster.xml:10966 reference_raster.xml:11047
-#: reference_raster.xml:11179 reference_raster.xml:11260
-#: reference_raster.xml:11340 reference_raster.xml:11497
-#: reference_raster.xml:11584 reference_raster.xml:11679
-#: reference_raster.xml:11772
+#: reference_raster.xml:5451 reference_raster.xml:5504
+#: reference_raster.xml:5555 reference_raster.xml:5617
+#: reference_raster.xml:5792 reference_raster.xml:5919
+#: reference_raster.xml:6062 reference_raster.xml:6105
+#: reference_raster.xml:6148 reference_raster.xml:6213
+#: reference_raster.xml:6261 reference_raster.xml:6520
+#: reference_raster.xml:6958 reference_raster.xml:7968
+#: reference_raster.xml:8437 reference_raster.xml:8693
+#: reference_raster.xml:8960 reference_raster.xml:9032
+#: reference_raster.xml:9099 reference_raster.xml:9261
+#: reference_raster.xml:9317 reference_raster.xml:9384
+#: reference_raster.xml:9455 reference_raster.xml:9530
+#: reference_raster.xml:9765 reference_raster.xml:9898
+#: reference_raster.xml:9949 reference_raster.xml:9998
+#: reference_raster.xml:10041 reference_raster.xml:10098
+#: reference_raster.xml:10143 reference_raster.xml:10187
+#: reference_raster.xml:10227 reference_raster.xml:10303
+#: reference_raster.xml:10347 reference_raster.xml:10392
+#: reference_raster.xml:10555 reference_raster.xml:10711
+#: reference_raster.xml:10798 reference_raster.xml:10879
+#: reference_raster.xml:10960 reference_raster.xml:11041
+#: reference_raster.xml:11173 reference_raster.xml:11254
+#: reference_raster.xml:11334 reference_raster.xml:11491
+#: reference_raster.xml:11578 reference_raster.xml:11673
+#: reference_raster.xml:11766
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -1115,8 +1115,8 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:1012 reference_raster.xml:1635
-#: reference_raster.xml:6323 reference_raster.xml:6431
-#: reference_raster.xml:6522 reference_raster.xml:6602
+#: reference_raster.xml:6317 reference_raster.xml:6425
+#: reference_raster.xml:6516 reference_raster.xml:6596
 #, no-c-format
 msgid "Availability: 2.0.0 - requires GDAL &gt;= 1.6.0."
 msgstr ""
@@ -1448,17 +1448,17 @@ msgstr ""
 #: reference_raster.xml:3704 reference_raster.xml:3760
 #: reference_raster.xml:3919 reference_raster.xml:4101
 #: reference_raster.xml:4286 reference_raster.xml:4389
-#: reference_raster.xml:4486 reference_raster.xml:6960
-#: reference_raster.xml:7559 reference_raster.xml:7750
-#: reference_raster.xml:9034 reference_raster.xml:9319
-#: reference_raster.xml:9767 reference_raster.xml:9900
-#: reference_raster.xml:9951 reference_raster.xml:10189
-#: reference_raster.xml:10441 reference_raster.xml:10713
-#: reference_raster.xml:10800 reference_raster.xml:10881
-#: reference_raster.xml:10962 reference_raster.xml:11043
-#: reference_raster.xml:11256 reference_raster.xml:11336
-#: reference_raster.xml:11493 reference_raster.xml:11580
-#: reference_raster.xml:11675 reference_raster.xml:11768
+#: reference_raster.xml:4486 reference_raster.xml:6954
+#: reference_raster.xml:7553 reference_raster.xml:7744
+#: reference_raster.xml:9028 reference_raster.xml:9313
+#: reference_raster.xml:9761 reference_raster.xml:9894
+#: reference_raster.xml:9945 reference_raster.xml:10183
+#: reference_raster.xml:10435 reference_raster.xml:10707
+#: reference_raster.xml:10794 reference_raster.xml:10875
+#: reference_raster.xml:10956 reference_raster.xml:11037
+#: reference_raster.xml:11250 reference_raster.xml:11330
+#: reference_raster.xml:11487 reference_raster.xml:11574
+#: reference_raster.xml:11669 reference_raster.xml:11762
 #, no-c-format
 msgid "Availability: 2.1.0"
 msgstr ""
@@ -1511,8 +1511,8 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:1308 reference_raster.xml:1989
-#: reference_raster.xml:2188 reference_raster.xml:5619
-#: reference_raster.xml:5921
+#: reference_raster.xml:2188 reference_raster.xml:5613
+#: reference_raster.xml:5915
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr ""
@@ -1891,7 +1891,7 @@ msgid "Availability: 2.4.0"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:1796 reference_raster.xml:8797
+#: reference_raster.xml:1796 reference_raster.xml:8791
 #, no-c-format
 msgid "Examples Basic"
 msgstr ""
@@ -2927,18 +2927,18 @@ msgstr ""
 
 #. Tag: title
 #: reference_raster.xml:3109 reference_raster.xml:4291
-#: reference_raster.xml:7134 reference_raster.xml:7564
-#: reference_raster.xml:9180 reference_raster.xml:9623
-#: reference_raster.xml:9720 reference_raster.xml:9848
+#: reference_raster.xml:7128 reference_raster.xml:7558
+#: reference_raster.xml:9174 reference_raster.xml:9617
+#: reference_raster.xml:9714 reference_raster.xml:9842
 #, no-c-format
 msgid "Examples: Variant 1"
 msgstr ""
 
 #. Tag: title
 #: reference_raster.xml:3116 reference_raster.xml:4304
-#: reference_raster.xml:7178 reference_raster.xml:9187
-#: reference_raster.xml:9628 reference_raster.xml:9725
-#: reference_raster.xml:9853
+#: reference_raster.xml:7172 reference_raster.xml:9181
+#: reference_raster.xml:9622 reference_raster.xml:9719
+#: reference_raster.xml:9847
 #, no-c-format
 msgid "Examples: Variant 2"
 msgstr ""
@@ -3072,9 +3072,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:3280 reference_raster.xml:3316
-#: reference_raster.xml:5453 reference_raster.xml:5506
-#: reference_raster.xml:6107 reference_raster.xml:6150
-#: reference_raster.xml:6263 reference_raster.xml:7129
+#: reference_raster.xml:5447 reference_raster.xml:5500
+#: reference_raster.xml:6101 reference_raster.xml:6144
+#: reference_raster.xml:6257 reference_raster.xml:7123
 #, no-c-format
 msgid "Availability: 2.5.0"
 msgstr ""
@@ -3811,7 +3811,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:4188 reference_raster.xml:10239
+#: reference_raster.xml:4188 reference_raster.xml:10233
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>"
 msgstr ""
@@ -4781,28 +4781,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5448 reference_raster.xml:5501
-#, no-c-format
-msgid ""
-"Internally, this method replaces the PostGIS raster's band at index "
-"<varname>band</varname> with a new band instead of updating the existing "
-"path information."
-msgstr ""
-
-#. Tag: para
-#: reference_raster.xml:5463
+#: reference_raster.xml:5457
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetBandIndex\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:5474
+#: reference_raster.xml:5468
 #, no-c-format
 msgid "Update the external band number of an out-db band"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:5479
+#: reference_raster.xml:5473
 #, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_SetBandIndex</function></funcdef> "
@@ -4814,7 +4805,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5492
+#: reference_raster.xml:5486
 #, no-c-format
 msgid ""
 "Updates an out-db band's external band number. This does not touch the "
@@ -4822,7 +4813,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5495
+#: reference_raster.xml:5489
 #, no-c-format
 msgid ""
 "If <varname>force</varname> is set to true, no tests are done to ensure "
@@ -4832,19 +4823,28 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5516
+#: reference_raster.xml:5495
+#, no-c-format
+msgid ""
+"Internally, this method replaces the PostGIS raster's band at index "
+"<varname>band</varname> with a new band instead of updating the existing "
+"path information."
+msgstr ""
+
+#. Tag: para
+#: reference_raster.xml:5510
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetBandPath\"/>"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:5527
+#: reference_raster.xml:5521
 #, no-c-format
 msgid "Raster Band Statistics and Analytics"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:5532
+#: reference_raster.xml:5526
 #, no-c-format
 msgid ""
 "Returns the number of pixels in a given band of a raster or raster coverage. "
@@ -4853,7 +4853,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5554
+#: reference_raster.xml:5548
 #, no-c-format
 msgid ""
 "Returns the number of pixels in a given band of a raster or raster coverage. "
@@ -4861,7 +4861,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5555
+#: reference_raster.xml:5549
 #, no-c-format
 msgid ""
 "If <varname>exclude_nodata_value</varname> is set to true, will only count "
@@ -4871,7 +4871,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5556
+#: reference_raster.xml:5550
 #, no-c-format
 msgid ""
 "Changed: 3.1.0 - The ST_Count(rastertable, rastercolumn, ...) variants "
@@ -4879,7 +4879,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5568 reference_raster.xml:5629
+#: reference_raster.xml:5562 reference_raster.xml:5623
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
@@ -4887,7 +4887,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:5579
+#: reference_raster.xml:5573
 #, no-c-format
 msgid ""
 "Aggregate. Returns the number of pixels in a given band of a set of rasters. "
@@ -4896,7 +4896,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5613
+#: reference_raster.xml:5607
 #, no-c-format
 msgid ""
 "Returns the number of pixels in a given band of a set of rasters. If no band "
@@ -4904,7 +4904,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5614
+#: reference_raster.xml:5608
 #, no-c-format
 msgid ""
 "If <varname>exclude_nodata_value</varname> is set to true, will only count "
@@ -4914,7 +4914,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5617
+#: reference_raster.xml:5611
 #, no-c-format
 msgid ""
 "By default will sample all pixels. To get faster response, set "
@@ -4922,7 +4922,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:5640
+#: reference_raster.xml:5634
 #, no-c-format
 msgid ""
 "Returns a set of record summarizing a raster or raster coverage data "
@@ -4931,7 +4931,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5686
+#: reference_raster.xml:5680
 #, no-c-format
 msgid ""
 "Returns set of records consisting of min, max, count, percent for a given "
@@ -4940,7 +4940,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5687
+#: reference_raster.xml:5681
 #, no-c-format
 msgid ""
 "By default only considers pixel values not equal to the <varname>nodata</"
@@ -4949,13 +4949,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:5691
+#: reference_raster.xml:5685
 #, no-c-format
 msgid "<parameter>width </parameter><type>double precision[]</type>"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5692
+#: reference_raster.xml:5686
 #, no-c-format
 msgid ""
 "width: an array indicating the width of each category/bin. If the number of "
@@ -4963,7 +4963,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5693
+#: reference_raster.xml:5687
 #, no-c-format
 msgid ""
 "Example: 9 bins, widths are [a, b, c] will have the output be [a, b, c, a, "
@@ -4971,13 +4971,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:5696
+#: reference_raster.xml:5690
 #, no-c-format
 msgid "<parameter>bins </parameter><type>integer</type>"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5697
+#: reference_raster.xml:5691
 #, no-c-format
 msgid ""
 "Number of breakouts -- this is the number of records you'll get back from "
@@ -4986,13 +4986,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:5701
+#: reference_raster.xml:5695
 #, no-c-format
 msgid "<parameter>right </parameter><type>boolean</type>"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5702
+#: reference_raster.xml:5696
 #, no-c-format
 msgid ""
 "compute the histogram from the right rather than from the left (default). "
@@ -5000,13 +5000,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5705
+#: reference_raster.xml:5699
 #, no-c-format
 msgid "Changed: 3.1.0 Removed ST_Histogram(table_name, column_name) variant."
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:5710
+#: reference_raster.xml:5704
 #, no-c-format
 msgid ""
 "Example: Single raster tile - compute histograms for bands 1, 2, 3 and "
@@ -5014,13 +5014,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:5715
+#: reference_raster.xml:5709
 #, no-c-format
 msgid "Example: Just band 2 but for 6 bins"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5721
+#: reference_raster.xml:5715
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
@@ -5028,7 +5028,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:5732
+#: reference_raster.xml:5726
 #, no-c-format
 msgid ""
 "<refpurpose>Compute quantiles for a raster or raster table coverage in the "
@@ -5037,7 +5037,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5791
+#: reference_raster.xml:5785
 #, no-c-format
 msgid ""
 "<para>Compute quantiles for a raster or raster table coverage in the context "
@@ -5046,7 +5046,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5792 reference_raster.xml:6063
+#: reference_raster.xml:5786 reference_raster.xml:6057
 #, no-c-format
 msgid ""
 "If <varname>exclude_nodata_value</varname> is set to false, will also count "
@@ -5054,13 +5054,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5793
+#: reference_raster.xml:5787
 #, no-c-format
 msgid "Changed: 3.1.0 Removed ST_Quantile(table_name, column_name) variant."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5806
+#: reference_raster.xml:5800
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
@@ -5069,7 +5069,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:5818
+#: reference_raster.xml:5812
 #, no-c-format
 msgid ""
 "Returns summarystats consisting of count, sum, mean, stddev, min, max for a "
@@ -5078,7 +5078,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5841 reference_raster.xml:5915
+#: reference_raster.xml:5835 reference_raster.xml:5909
 #, no-c-format
 msgid ""
 "Returns <xref linkend=\"summarystats\"/> consisting of count, sum, mean, "
@@ -5087,7 +5087,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5843
+#: reference_raster.xml:5837
 #, no-c-format
 msgid ""
 "By default only considers pixel values not equal to the <varname>nodata</"
@@ -5096,7 +5096,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5845
+#: reference_raster.xml:5839
 #, no-c-format
 msgid ""
 "By default will sample all pixels. To get faster response, set "
@@ -5104,7 +5104,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5847
+#: reference_raster.xml:5841
 #, no-c-format
 msgid ""
 "Changed: 3.1.0 ST_SummaryStats(rastertable, rastercolumn, ...) variants are "
@@ -5112,19 +5112,19 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:5853
+#: reference_raster.xml:5847
 #, no-c-format
 msgid "Example: Single raster tile"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:5858
+#: reference_raster.xml:5852
 #, no-c-format
 msgid "Example: Summarize pixels that intersect buildings of interest"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5859
+#: reference_raster.xml:5853
 #, no-c-format
 msgid ""
 "This example took 574ms on PostGIS windows 64-bit with all of Boston "
@@ -5133,13 +5133,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:5865
+#: reference_raster.xml:5859
 #, no-c-format
 msgid "Example: Raster coverage"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5871
+#: reference_raster.xml:5865
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>, <xref linkend=\"RT_ST_Count\"/"
@@ -5147,7 +5147,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:5883
+#: reference_raster.xml:5877
 #, no-c-format
 msgid ""
 "Aggregate. Returns summarystats consisting of count, sum, mean, stddev, min, "
@@ -5156,7 +5156,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5917
+#: reference_raster.xml:5911
 #, no-c-format
 msgid ""
 "By default only considers pixel values not equal to the <varname>NODATA</"
@@ -5165,7 +5165,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5919
+#: reference_raster.xml:5913
 #, no-c-format
 msgid ""
 "By default will sample all pixels. To get faster response, set "
@@ -5173,7 +5173,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5931
+#: reference_raster.xml:5925
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref linkend=\"RT_ST_Count\"/>, "
@@ -5181,7 +5181,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:5943
+#: reference_raster.xml:5937
 #, no-c-format
 msgid ""
 "Returns a set of records containing a pixel band value and count of the "
@@ -5192,7 +5192,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6061
+#: reference_raster.xml:6055
 #, no-c-format
 msgid ""
 "Returns a set of records with columns <varname>value</varname> "
@@ -5201,7 +5201,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6062
+#: reference_raster.xml:6056
 #, no-c-format
 msgid ""
 "If no band is specified <varname>nband</varname> defaults to 1. If no "
@@ -5212,25 +5212,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6078
+#: reference_raster.xml:6072
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetBandNoDataValue\"/>"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:6084
+#: reference_raster.xml:6078
 #, no-c-format
 msgid "Raster Inputs"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:6088
+#: reference_raster.xml:6082
 #, no-c-format
 msgid "Return a raster value from a Well-Known Binary (WKB) raster."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:6093
+#: reference_raster.xml:6087
 #, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_RastFromWKB</function></funcdef> "
@@ -5238,13 +5238,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6103
+#: reference_raster.xml:6097
 #, no-c-format
 msgid "Given a Well-Known Binary (WKB) raster, return a raster."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6119
+#: reference_raster.xml:6113
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_RastFromHexWKB\"/>, <xref linkend=\"RT_ST_AsBinary\"/"
@@ -5252,7 +5252,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:6131
+#: reference_raster.xml:6125
 #, no-c-format
 msgid ""
 "Return a raster value from a Hex representation of Well-Known Binary (WKB) "
@@ -5260,7 +5260,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:6136
+#: reference_raster.xml:6130
 #, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_RastFromHexWKB</function></funcdef> "
@@ -5268,7 +5268,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6146
+#: reference_raster.xml:6140
 #, no-c-format
 msgid ""
 "Given a Well-Known Binary (WKB) raster in Hex representation, return a "
@@ -5276,7 +5276,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6162
+#: reference_raster.xml:6156
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_RastFromWKB\"/>, <xref linkend=\"RT_ST_AsBinary\"/>, "
@@ -5284,19 +5284,19 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:6174
+#: reference_raster.xml:6168
 #, no-c-format
 msgid "Raster Outputs"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:6179
+#: reference_raster.xml:6173
 #, no-c-format
 msgid "Return the Well-Known Binary (WKB) representation of the raster."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6200
+#: reference_raster.xml:6194
 #, no-c-format
 msgid ""
 "Returns the Binary representation of the raster. If <varname>outasin</"
@@ -5306,7 +5306,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6205
+#: reference_raster.xml:6199
 #, no-c-format
 msgid ""
 "This is useful in binary cursors to pull data out of the database without "
@@ -5314,7 +5314,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6210
+#: reference_raster.xml:6204
 #, no-c-format
 msgid ""
 "By default, WKB output contains the external file path for out-db bands. If "
@@ -5323,31 +5323,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6214
+#: reference_raster.xml:6208
 #, no-c-format
 msgid "Enhanced: 2.1.0 Addition of <varname>outasin</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6215
+#: reference_raster.xml:6209
 #, no-c-format
 msgid "Enhanced: 2.5.0 Addition of <varname>ST_AsWKB</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6227
+#: reference_raster.xml:6221
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_AsHexWKB\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:6237
+#: reference_raster.xml:6231
 #, no-c-format
 msgid "Return the Well-Known Binary (WKB) in Hex representation of the raster."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:6242
+#: reference_raster.xml:6236
 #, no-c-format
 msgid ""
 "<funcdef>bytea <function>ST_AsHexWKB</function></funcdef> "
@@ -5357,7 +5357,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6253
+#: reference_raster.xml:6247
 #, no-c-format
 msgid ""
 "Returns the Binary representation in Hex representation of the raster. If "
@@ -5367,7 +5367,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6259
+#: reference_raster.xml:6253
 #, no-c-format
 msgid ""
 "By default, Hex WKB output contains the external file path for out-db bands. "
@@ -5376,13 +5376,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6275
+#: reference_raster.xml:6269
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_AsBinary\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:6286
+#: reference_raster.xml:6280
 #, no-c-format
 msgid ""
 "Return the raster tile in the designated GDAL Raster format. Raster formats "
@@ -5391,7 +5391,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:6291
+#: reference_raster.xml:6285
 #, no-c-format
 msgid ""
 "<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
@@ -5403,7 +5403,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6305
+#: reference_raster.xml:6299
 #, no-c-format
 msgid ""
 "Returns the raster tile in the designated format. Arguments are itemized "
@@ -5411,7 +5411,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6308
+#: reference_raster.xml:6302
 #, no-c-format
 msgid ""
 "<varname>format</varname> format to output. This is dependent on the drivers "
@@ -5421,7 +5421,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6313
+#: reference_raster.xml:6307
 #, no-c-format
 msgid ""
 "<varname>options</varname> text array of GDAL options. Valid options are "
@@ -5430,7 +5430,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6318
+#: reference_raster.xml:6312
 #, no-c-format
 msgid ""
 "<varname>srs</varname> The proj4text or srtext (from spatial_ref_sys) to "
@@ -5438,19 +5438,19 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:6328
+#: reference_raster.xml:6322
 #, no-c-format
 msgid "JPEG Output Example, multiple tiles as single raster"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:6335
+#: reference_raster.xml:6329
 #, no-c-format
 msgid "Using PostgreSQL Large Object Support to export raster"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6336
+#: reference_raster.xml:6330
 #, no-c-format
 msgid ""
 "One way to export raster into another format is using <ulink url=\"https://"
@@ -5463,19 +5463,19 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:6344
+#: reference_raster.xml:6338
 #, no-c-format
 msgid "GTIFF Output Examples"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6353
+#: reference_raster.xml:6347
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:6360
+#: reference_raster.xml:6354
 #, no-c-format
 msgid ""
 "Return the raster tile selected bands as a single Joint Photographic Exports "
@@ -5485,7 +5485,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6400
+#: reference_raster.xml:6394
 #, no-c-format
 msgid ""
 "Returns the selected bands of the raster as a single Joint Photographic "
@@ -5497,13 +5497,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6403 reference_raster.xml:6494
+#: reference_raster.xml:6397 reference_raster.xml:6488
 #, no-c-format
 msgid "<varname>nband</varname> is for single band exports."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6408
+#: reference_raster.xml:6402
 #, no-c-format
 msgid ""
 "<varname>nbands</varname> is an array of bands to export (note that max is 3 "
@@ -5512,7 +5512,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6413
+#: reference_raster.xml:6407
 #, no-c-format
 msgid ""
 "<varname>quality</varname> number from 0 to 100. The higher the number the "
@@ -5520,7 +5520,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6418
+#: reference_raster.xml:6412
 #, no-c-format
 msgid ""
 "<varname>options</varname> text Array of GDAL options as defined for JPEG "
@@ -5532,13 +5532,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:6435
+#: reference_raster.xml:6429
 #, no-c-format
 msgid "Examples: Output"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6444
+#: reference_raster.xml:6438
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref "
@@ -5547,7 +5547,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:6451
+#: reference_raster.xml:6445
 #, no-c-format
 msgid ""
 "Return the raster tile selected bands as a single portable network graphics "
@@ -5558,7 +5558,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6491
+#: reference_raster.xml:6485
 #, no-c-format
 msgid ""
 "Returns the selected bands of the raster as a single Portable Network "
@@ -5570,7 +5570,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6499
+#: reference_raster.xml:6493
 #, no-c-format
 msgid ""
 "<varname>nbands</varname> is an array of bands to export (note that max is 4 "
@@ -5579,7 +5579,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6504
+#: reference_raster.xml:6498
 #, no-c-format
 msgid ""
 "<varname>compression</varname> number from 1 to 9. The higher the number the "
@@ -5587,7 +5587,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6509
+#: reference_raster.xml:6503
 #, no-c-format
 msgid ""
 "<varname>options</varname> text Array of GDAL options as defined for PNG "
@@ -5600,7 +5600,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6535
+#: reference_raster.xml:6529
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_ColorMap\"/>, <xref linkend=\"RT_ST_GDALDrivers\"/>, "
@@ -5608,7 +5608,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:6542
+#: reference_raster.xml:6536
 #, no-c-format
 msgid ""
 "Return the raster selected bands as a single TIFF image (byte array). If no "
@@ -5617,7 +5617,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6579
+#: reference_raster.xml:6573
 #, no-c-format
 msgid ""
 "Returns the selected bands of the raster as a single Tagged Image File "
@@ -5630,7 +5630,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6582
+#: reference_raster.xml:6576
 #, no-c-format
 msgid ""
 "<varname>nbands</varname> is an array of bands to export (note that max is 3 "
@@ -5639,7 +5639,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6587
+#: reference_raster.xml:6581
 #, no-c-format
 msgid ""
 "<varname>compression</varname> Compression expression -- JPEG90 (or some "
@@ -5647,7 +5647,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6592
+#: reference_raster.xml:6586
 #, no-c-format
 msgid ""
 "<varname>options</varname> text Array of GDAL create options as defined for "
@@ -5657,7 +5657,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6597
+#: reference_raster.xml:6591
 #, no-c-format
 msgid ""
 "<varname>srid</varname> srid of spatial_ref_sys of the raster. This is used "
@@ -5665,26 +5665,26 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:6606
+#: reference_raster.xml:6600
 #, no-c-format
 msgid "Examples: Use jpeg compression 90%"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6615
+#: reference_raster.xml:6609
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:6621
+#: reference_raster.xml:6615
 #, no-c-format
 msgid "Raster Processing: Map Algebra"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:6626
+#: reference_raster.xml:6620
 #, no-c-format
 msgid ""
 "Returns the raster clipped by the input geometry. If band number not is "
@@ -5693,7 +5693,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6687
+#: reference_raster.xml:6681
 #, no-c-format
 msgid ""
 "Returns a raster that is clipped by the input geometry <varname>geom</"
@@ -5701,7 +5701,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6691
+#: reference_raster.xml:6685
 #, no-c-format
 msgid ""
 "Rasters resulting from ST_Clip must have a nodata value assigned for areas "
@@ -5716,7 +5716,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6695
+#: reference_raster.xml:6689
 #, no-c-format
 msgid ""
 "If <varname>crop</varname> is not specified, true is assumed meaning the "
@@ -5726,13 +5726,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6701
+#: reference_raster.xml:6695
 #, no-c-format
 msgid "Enhanced: 2.1.0 Rewritten in C"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6703
+#: reference_raster.xml:6697
 #, no-c-format
 msgid ""
 "Examples here use Massachusetts aerial data available on MassGIS site <ulink "
@@ -5741,45 +5741,45 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:6709
+#: reference_raster.xml:6703
 #, no-c-format
 msgid "Examples: 1 band clipping"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6727 reference_raster.xml:6770
-#: reference_raster.xml:6813
+#: reference_raster.xml:6721 reference_raster.xml:6764
+#: reference_raster.xml:6807
 #, no-c-format
 msgid "Full raster tile before clipping"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6741 reference_raster.xml:6827
+#: reference_raster.xml:6735 reference_raster.xml:6821
 #, no-c-format
 msgid "After Clipping"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:6754
+#: reference_raster.xml:6748
 #, no-c-format
 msgid ""
 "Examples: 1 band clipping with no crop and add back other bands unchanged"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6784
+#: reference_raster.xml:6778
 #, no-c-format
 msgid "After Clipping - surreal"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:6797
+#: reference_raster.xml:6791
 #, no-c-format
 msgid "Examples: Clip all bands"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6842
+#: reference_raster.xml:6836
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection\"/"
@@ -5787,7 +5787,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:6853
+#: reference_raster.xml:6847
 #, no-c-format
 msgid ""
 "Creates a new raster of up to four 8BUI bands (grayscale, RGB, RGBA) from "
@@ -5795,7 +5795,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:6858
+#: reference_raster.xml:6852
 #, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_ColorMap</function></funcdef> "
@@ -5808,7 +5808,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:6868
+#: reference_raster.xml:6862
 #, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_ColorMap</function></funcdef> "
@@ -5819,7 +5819,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6880
+#: reference_raster.xml:6874
 #, no-c-format
 msgid ""
 "Apply a <varname>colormap</varname> to the band at <varname>nband</varname> "
@@ -5829,13 +5829,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6884
+#: reference_raster.xml:6878
 #, no-c-format
 msgid "If <varname>nband</varname> is not specified, then band 1 is assumed."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6886
+#: reference_raster.xml:6880
 #, no-c-format
 msgid ""
 "<varname>colormap</varname> can be a keyword of a pre-defined colormap or a "
@@ -5843,13 +5843,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6890
+#: reference_raster.xml:6884
 #, no-c-format
 msgid "Valid pre-defined <varname>colormap</varname> keyword:"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6896
+#: reference_raster.xml:6890
 #, no-c-format
 msgid ""
 "<varname>grayscale</varname> or <varname>greyscale</varname> for a one 8BUI "
@@ -5857,7 +5857,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6901
+#: reference_raster.xml:6895
 #, no-c-format
 msgid ""
 "<varname>pseudocolor</varname> for a four 8BUI (RGBA) band raster with "
@@ -5865,7 +5865,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6906
+#: reference_raster.xml:6900
 #, no-c-format
 msgid ""
 "<varname>fire</varname> for a four 8BUI (RGBA) band raster with colors going "
@@ -5873,7 +5873,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6911
+#: reference_raster.xml:6905
 #, no-c-format
 msgid ""
 "<varname>bluered</varname> for a four 8BUI (RGBA) band raster with colors "
@@ -5881,7 +5881,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6917
+#: reference_raster.xml:6911
 #, no-c-format
 msgid ""
 "Users can pass a set of entries (one per line) to <varname>colormap</"
@@ -5896,7 +5896,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6923
+#: reference_raster.xml:6917
 #, no-c-format
 msgid ""
 "The syntax of <varname>colormap</varname> is similar to that of the color-"
@@ -5905,13 +5905,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6927
+#: reference_raster.xml:6921
 #, no-c-format
 msgid "Valid keywords for <varname>method</varname>:"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6933
+#: reference_raster.xml:6927
 #, no-c-format
 msgid ""
 "<varname>INTERPOLATE</varname> to use linear interpolation to smoothly blend "
@@ -5919,7 +5919,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6938
+#: reference_raster.xml:6932
 #, no-c-format
 msgid ""
 "<varname>EXACT</varname> to strictly match only those pixels values found in "
@@ -5928,7 +5928,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6943
+#: reference_raster.xml:6937
 #, no-c-format
 msgid ""
 "<varname>NEAREST</varname> to use the colormap entry whose value is closest "
@@ -5936,7 +5936,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6950
+#: reference_raster.xml:6944
 #, no-c-format
 msgid ""
 "A great reference for colormaps is <ulink url=\"http://www.colorbrewer2."
@@ -5944,7 +5944,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6955
+#: reference_raster.xml:6949
 #, no-c-format
 msgid ""
 "The resulting bands of new raster will have no NODATA value set. Use <xref "
@@ -5953,55 +5953,55 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6965
+#: reference_raster.xml:6959
 #, no-c-format
 msgid "This is a junk table to play with"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:6975
+#: reference_raster.xml:6969
 #, no-c-format
 msgid "Examples: Compare different color map looks using ST_AsPNG"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:6990
+#: reference_raster.xml:6984
 #, no-c-format
 msgid "orig_png"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7004
+#: reference_raster.xml:6998
 #, no-c-format
 msgid "grey_png"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7018
+#: reference_raster.xml:7012
 #, no-c-format
 msgid "pseudo_png"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7034
+#: reference_raster.xml:7028
 #, no-c-format
 msgid "fire_png"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7048
+#: reference_raster.xml:7042
 #, no-c-format
 msgid "bluered_png"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7062
+#: reference_raster.xml:7056
 #, no-c-format
 msgid "red_png"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7076
+#: reference_raster.xml:7070
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_AsRaster\"/> <xref linkend=\"RT_ST_MapAlgebra\"/>, "
@@ -6011,7 +6011,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:7092
+#: reference_raster.xml:7086
 #, no-c-format
 msgid ""
 "Creates a new one-8BUI band raster from the source raster and specified "
@@ -6019,7 +6019,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:7097
+#: reference_raster.xml:7091
 #, no-c-format
 msgid ""
 "<funcdef>(1) raster <function>ST_Grayscale</function></funcdef> "
@@ -6033,7 +6033,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:7108
+#: reference_raster.xml:7102
 #, no-c-format
 msgid ""
 "<funcdef>(2) raster <function>ST_Grayscale</function></funcdef> "
@@ -6043,7 +6043,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7119
+#: reference_raster.xml:7113
 #, no-c-format
 msgid ""
 "Create a raster with one 8BUI band given three input bands (from one or more "
@@ -6052,7 +6052,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7124
+#: reference_raster.xml:7118
 #, no-c-format
 msgid ""
 "This function is not like <xref linkend=\"RT_ST_ColorMap\"/> with the "
@@ -6063,25 +6063,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7150
+#: reference_raster.xml:7144
 #, no-c-format
 msgid "original_png"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7164
+#: reference_raster.xml:7158
 #, no-c-format
 msgid "grayscale_png"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7185
+#: reference_raster.xml:7179
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_ColorMap\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:7197
+#: reference_raster.xml:7191
 #, no-c-format
 msgid ""
 "<refpurpose>Returns a raster or a set of geometry-pixelvalue pairs "
@@ -6090,7 +6090,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7261
+#: reference_raster.xml:7255
 #, no-c-format
 msgid ""
 "<para>Returns a raster or a set of geometry-pixelvalue pairs representing "
@@ -6099,7 +6099,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7265
+#: reference_raster.xml:7259
 #, no-c-format
 msgid ""
 "The first three variants, returning a setof geomval, works in vector space. "
@@ -6113,7 +6113,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7269
+#: reference_raster.xml:7263
 #, no-c-format
 msgid ""
 "You can access the geometry and the value parts of the resulting set of "
@@ -6122,7 +6122,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7273
+#: reference_raster.xml:7267
 #, no-c-format
 msgid ""
 "The other variants, returning a raster, works in raster space. They are "
@@ -6131,7 +6131,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7277
+#: reference_raster.xml:7271
 #, no-c-format
 msgid ""
 "The extent of the resulting raster corresponds to the geometrical "
@@ -6144,7 +6144,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7281
+#: reference_raster.xml:7275
 #, no-c-format
 msgid ""
 "Rasters resulting from ST_Intersection must have a nodata value assigned for "
@@ -6160,7 +6160,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7285
+#: reference_raster.xml:7279
 #, no-c-format
 msgid ""
 "In all variants, if no band number is specified band 1 is assumed. If you "
@@ -6169,7 +6169,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7290
+#: reference_raster.xml:7284
 #, no-c-format
 msgid ""
 "To get more control on the resulting extent or on what to return when "
@@ -6178,7 +6178,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7296
+#: reference_raster.xml:7290
 #, no-c-format
 msgid ""
 "To compute the intersection of a raster band with a geometry in raster "
@@ -6187,7 +6187,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7302
+#: reference_raster.xml:7296
 #, no-c-format
 msgid ""
 "ST_Intersection should be used in conjunction with <xref "
@@ -6196,7 +6196,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7307
+#: reference_raster.xml:7301
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 - Intersection in the raster space was introduced. In "
@@ -6205,13 +6205,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:7313
+#: reference_raster.xml:7307
 #, no-c-format
 msgid "Examples: Geometry, Raster -- resulting in geometry vals"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7320
+#: reference_raster.xml:7314
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Intersects\"/>, <xref "
@@ -6220,7 +6220,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:7333
+#: reference_raster.xml:7327
 #, no-c-format
 msgid ""
 "Callback function version - Returns a one-band raster given one or more "
@@ -6228,7 +6228,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7412
+#: reference_raster.xml:7406
 #, no-c-format
 msgid ""
 "Returns a one-band raster given one or more input rasters, band indexes and "
@@ -6236,19 +6236,19 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7418
+#: reference_raster.xml:7412
 #, no-c-format
 msgid "rast,rast1,rast2, rastbandargset"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7420
+#: reference_raster.xml:7414
 #, no-c-format
 msgid "Rasters on which the map algebra process is evaluated."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7421
+#: reference_raster.xml:7415
 #, no-c-format
 msgid ""
 "<varname>rastbandargset</varname> allows the use of a map algebra operation "
@@ -6256,13 +6256,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7426
+#: reference_raster.xml:7420
 #, no-c-format
 msgid "nband, nband1, nband2"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7428
+#: reference_raster.xml:7422
 #, no-c-format
 msgid ""
 "Band numbers of the raster to be evaluated. nband can be an integer or "
@@ -6271,13 +6271,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7434
+#: reference_raster.xml:7428
 #, no-c-format
 msgid "callbackfunc"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7436
+#: reference_raster.xml:7430
 #, no-c-format
 msgid ""
 "The <varname>callbackfunc</varname> parameter must be the name and signature "
@@ -6286,7 +6286,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7441
+#: reference_raster.xml:7435
 #, no-c-format
 msgid ""
 "The <varname>callbackfunc</varname> must have three arguments: a 3-dimension "
@@ -6304,7 +6304,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7445
+#: reference_raster.xml:7439
 #, no-c-format
 msgid ""
 "Passing a <type>regprocedure</type> argument to a SQL function requires the "
@@ -6314,8 +6314,8 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7451 reference_raster.xml:8423
-#: reference_raster.xml:8551
+#: reference_raster.xml:7445 reference_raster.xml:8417
+#: reference_raster.xml:8545
 #, no-c-format
 msgid ""
 "Note that the argument contains the name of the function, the types of the "
@@ -6324,13 +6324,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7459
+#: reference_raster.xml:7453
 #, no-c-format
 msgid "mask"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7461
+#: reference_raster.xml:7455
 #, no-c-format
 msgid ""
 "An n-dimensional array (matrix) of numbers used to filter what cells get "
@@ -6341,13 +6341,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7468
+#: reference_raster.xml:7462
 #, no-c-format
 msgid "weighted"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7470
+#: reference_raster.xml:7464
 #, no-c-format
 msgid ""
 "boolean (true/false) to denote if a mask value should be weighted "
@@ -6356,14 +6356,14 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7477 reference_raster.xml:7802
-#: reference_raster.xml:8097 reference_raster.xml:8665
+#: reference_raster.xml:7471 reference_raster.xml:7796
+#: reference_raster.xml:8091 reference_raster.xml:8659
 #, no-c-format
 msgid "pixeltype"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7479
+#: reference_raster.xml:7473
 #, no-c-format
 msgid ""
 "If <varname>pixeltype</varname> is passed in, the one band of the new raster "
@@ -6375,7 +6375,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7482
+#: reference_raster.xml:7476
 #, no-c-format
 msgid ""
 "The resulting pixel type of the output raster must be one listed in <xref "
@@ -6383,14 +6383,14 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7489 reference_raster.xml:7810
-#: reference_raster.xml:8106
+#: reference_raster.xml:7483 reference_raster.xml:7804
+#: reference_raster.xml:8100
 #, no-c-format
 msgid "extenttype"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7491
+#: reference_raster.xml:7485
 #, no-c-format
 msgid ""
 "Possible values are INTERSECTION (default), UNION, FIRST (default for one "
@@ -6398,13 +6398,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7498
+#: reference_raster.xml:7492
 #, no-c-format
 msgid "customextent"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7500
+#: reference_raster.xml:7494
 #, no-c-format
 msgid ""
 "If <varname>extentype</varname> is CUSTOM, a raster must be provided for "
@@ -6412,13 +6412,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7507
+#: reference_raster.xml:7501
 #, no-c-format
 msgid "distancex"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7509
+#: reference_raster.xml:7503
 #, no-c-format
 msgid ""
 "The distance in pixels from the reference cell in x direction. So width of "
@@ -6427,13 +6427,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7516
+#: reference_raster.xml:7510
 #, no-c-format
 msgid "distancey"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7518
+#: reference_raster.xml:7512
 #, no-c-format
 msgid ""
 "The distance in pixels from reference cell in y direction. Height of "
@@ -6442,13 +6442,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7525
+#: reference_raster.xml:7519
 #, no-c-format
 msgid "userargs"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7527
+#: reference_raster.xml:7521
 #, no-c-format
 msgid ""
 "The third argument to the <varname>callbackfunc</varname> is a "
@@ -6458,8 +6458,8 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7535 reference_raster.xml:8432
-#: reference_raster.xml:8559
+#: reference_raster.xml:7529 reference_raster.xml:8426
+#: reference_raster.xml:8553
 #, no-c-format
 msgid ""
 "For more information about the VARIADIC keyword, please refer to the "
@@ -6469,7 +6469,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7541
+#: reference_raster.xml:7535
 #, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>callbackfunc</varname> is "
@@ -6478,7 +6478,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7546
+#: reference_raster.xml:7540
 #, no-c-format
 msgid ""
 "Variant 1 accepts an array of <varname>rastbandarg</varname> allowing the "
@@ -6487,7 +6487,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7550
+#: reference_raster.xml:7544
 #, no-c-format
 msgid ""
 "Variants 2 and 3 operate upon one or more bands of one raster. See example "
@@ -6495,7 +6495,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7554
+#: reference_raster.xml:7548
 #, no-c-format
 msgid ""
 "Variant 4 operate upon two rasters with one band per raster. See example "
@@ -6503,31 +6503,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7558
+#: reference_raster.xml:7552
 #, no-c-format
 msgid "Availability: 2.2.0: Ability to add a mask"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7566 reference_raster.xml:7588
+#: reference_raster.xml:7560 reference_raster.xml:7582
 #, no-c-format
 msgid "One raster, one band"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7569 reference_raster.xml:7585
+#: reference_raster.xml:7563 reference_raster.xml:7579
 #, no-c-format
 msgid "One raster, several bands"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7572
+#: reference_raster.xml:7566
 #, no-c-format
 msgid "Several rasters, several bands"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7575
+#: reference_raster.xml:7569
 #, no-c-format
 msgid ""
 "Complete example of tiles of a coverage with neighborhood. This query only "
@@ -6535,7 +6535,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7578
+#: reference_raster.xml:7572
 #, no-c-format
 msgid ""
 "Example like the prior one for tiles of a coverage with neighborhood but "
@@ -6543,49 +6543,49 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:7583
+#: reference_raster.xml:7577
 #, no-c-format
 msgid "Examples: Variants 2 and 3"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:7593
+#: reference_raster.xml:7587
 #, no-c-format
 msgid "Examples: Variant 4"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7595
+#: reference_raster.xml:7589
 #, no-c-format
 msgid "Two rasters, two bands"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:7601
+#: reference_raster.xml:7595
 #, no-c-format
 msgid "Examples: Using Masks"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7616
+#: reference_raster.xml:7610
 #, no-c-format
 msgid "original"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7630
+#: reference_raster.xml:7624
 #, no-c-format
 msgid "no mask mean value (same as having all 1s in mask matrix)"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7646
+#: reference_raster.xml:7640
 #, no-c-format
 msgid "mask only consider neighbors, exclude center"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7660
+#: reference_raster.xml:7654
 #, no-c-format
 msgid ""
 "mask weighted only consider neighbors, exclude center multi other pixel "
@@ -6593,14 +6593,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7677
+#: reference_raster.xml:7671
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra_expr\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:7689
+#: reference_raster.xml:7683
 #, no-c-format
 msgid ""
 "<refpurpose>Expression version - Returns a one-band raster given one or two "
@@ -6609,7 +6609,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7746
+#: reference_raster.xml:7740
 #, no-c-format
 msgid ""
 "<para>Expression version - Returns a one-band raster given one or two input "
@@ -6617,13 +6617,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:7754
+#: reference_raster.xml:7748
 #, no-c-format
 msgid "Description: Variants 1 and 2 (one raster)"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7756
+#: reference_raster.xml:7750
 #, no-c-format
 msgid ""
 "Creates a new one band raster formed by applying a valid PostgreSQL "
@@ -6634,8 +6634,8 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7760 reference_raster.xml:7962
-#: reference_raster.xml:8410
+#: reference_raster.xml:7754 reference_raster.xml:7956
+#: reference_raster.xml:8404
 #, no-c-format
 msgid ""
 "If <varname>pixeltype</varname> is passed in, then the new raster will have "
@@ -6644,45 +6644,45 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7765
+#: reference_raster.xml:7759
 #, no-c-format
 msgid "Keywords permitted for <varname>expression</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7768
+#: reference_raster.xml:7762
 #, no-c-format
 msgid "<varname>[rast]</varname> - Pixel value of the pixel of interest"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7771
+#: reference_raster.xml:7765
 #, no-c-format
 msgid "<varname>[rast.val]</varname> - Pixel value of the pixel of interest"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7774
+#: reference_raster.xml:7768
 #, no-c-format
 msgid ""
 "<varname>[rast.x]</varname> - 1-based pixel column of the pixel of interest"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7777
+#: reference_raster.xml:7771
 #, no-c-format
 msgid ""
 "<varname>[rast.y]</varname> - 1-based pixel row of the pixel of interest"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:7786
+#: reference_raster.xml:7780
 #, no-c-format
 msgid "Description: Variants 3 and 4 (two raster)"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7788 reference_raster.xml:8082
+#: reference_raster.xml:7782 reference_raster.xml:8076
 #, no-c-format
 msgid ""
 "Creates a new one band raster formed by applying a valid PostgreSQL "
@@ -6696,13 +6696,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7794 reference_raster.xml:8088
+#: reference_raster.xml:7788 reference_raster.xml:8082
 #, no-c-format
 msgid "expression"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7796 reference_raster.xml:8090
+#: reference_raster.xml:7790 reference_raster.xml:8084
 #, no-c-format
 msgid ""
 "A PostgreSQL algebraic expression involving the two rasters and PostgreSQL "
@@ -6711,7 +6711,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7804 reference_raster.xml:8099
+#: reference_raster.xml:7798 reference_raster.xml:8093
 #, no-c-format
 msgid ""
 "The resulting pixel type of the output raster. Must be one listed in <xref "
@@ -6720,13 +6720,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7812 reference_raster.xml:8108
+#: reference_raster.xml:7806 reference_raster.xml:8102
 #, no-c-format
 msgid "Controls the extent of resulting raster"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7818 reference_raster.xml:8111
+#: reference_raster.xml:7812 reference_raster.xml:8105
 #, no-c-format
 msgid ""
 "<varname>INTERSECTION</varname> - The extent of the new raster is the "
@@ -6734,7 +6734,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7823 reference_raster.xml:8116
+#: reference_raster.xml:7817 reference_raster.xml:8110
 #, no-c-format
 msgid ""
 "<varname>UNION</varname> - The extent of the new raster is the union of the "
@@ -6742,7 +6742,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7828 reference_raster.xml:8121
+#: reference_raster.xml:7822 reference_raster.xml:8115
 #, no-c-format
 msgid ""
 "<varname>FIRST</varname> - The extent of the new raster is the same as the "
@@ -6750,7 +6750,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7833 reference_raster.xml:8126
+#: reference_raster.xml:7827 reference_raster.xml:8120
 #, no-c-format
 msgid ""
 "<varname>SECOND</varname> - The extent of the new raster is the same as the "
@@ -6758,13 +6758,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7841 reference_raster.xml:8135
+#: reference_raster.xml:7835 reference_raster.xml:8129
 #, no-c-format
 msgid "nodata1expr"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7843 reference_raster.xml:8137
+#: reference_raster.xml:7837 reference_raster.xml:8131
 #, no-c-format
 msgid ""
 "An algebraic expression involving only <varname>rast2</varname> or a "
@@ -6773,13 +6773,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7849 reference_raster.xml:8144
+#: reference_raster.xml:7843 reference_raster.xml:8138
 #, no-c-format
 msgid "nodata2expr"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7851 reference_raster.xml:8146
+#: reference_raster.xml:7845 reference_raster.xml:8140
 #, no-c-format
 msgid ""
 "An algebraic expression involving only <varname>rast1</varname> or a "
@@ -6788,13 +6788,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:7857 reference_raster.xml:8153
+#: reference_raster.xml:7851 reference_raster.xml:8147
 #, no-c-format
 msgid "nodatanodataval"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7859 reference_raster.xml:8155
+#: reference_raster.xml:7853 reference_raster.xml:8149
 #, no-c-format
 msgid ""
 "A numeric constant to return when spatially corresponding rast1 and rast2 "
@@ -6802,7 +6802,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7867
+#: reference_raster.xml:7861
 #, no-c-format
 msgid ""
 "Keywords permitted in <varname>expression</varname>, <varname>nodata1expr</"
@@ -6810,7 +6810,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7870
+#: reference_raster.xml:7864
 #, no-c-format
 msgid ""
 "<varname>[rast1]</varname> - Pixel value of the pixel of interest from "
@@ -6818,7 +6818,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7873
+#: reference_raster.xml:7867
 #, no-c-format
 msgid ""
 "<varname>[rast1.val]</varname> - Pixel value of the pixel of interest from "
@@ -6826,7 +6826,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7876
+#: reference_raster.xml:7870
 #, no-c-format
 msgid ""
 "<varname>[rast1.x]</varname> - 1-based pixel column of the pixel of interest "
@@ -6834,7 +6834,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7879
+#: reference_raster.xml:7873
 #, no-c-format
 msgid ""
 "<varname>[rast1.y]</varname> - 1-based pixel row of the pixel of interest "
@@ -6842,7 +6842,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7882
+#: reference_raster.xml:7876
 #, no-c-format
 msgid ""
 "<varname>[rast2]</varname> - Pixel value of the pixel of interest from "
@@ -6850,7 +6850,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7885
+#: reference_raster.xml:7879
 #, no-c-format
 msgid ""
 "<varname>[rast2.val]</varname> - Pixel value of the pixel of interest from "
@@ -6858,7 +6858,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7888
+#: reference_raster.xml:7882
 #, no-c-format
 msgid ""
 "<varname>[rast2.x]</varname> - 1-based pixel column of the pixel of interest "
@@ -6866,7 +6866,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7891
+#: reference_raster.xml:7885
 #, no-c-format
 msgid ""
 "<varname>[rast2.y]</varname> - 1-based pixel row of the pixel of interest "
@@ -6874,25 +6874,25 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:7899
+#: reference_raster.xml:7893
 #, no-c-format
 msgid "Examples: Variants 1 and 2"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:7905
+#: reference_raster.xml:7899
 #, no-c-format
 msgid "Examples: Variant 3 and 4"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7913
+#: reference_raster.xml:7907
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:7924
+#: reference_raster.xml:7918
 #, no-c-format
 msgid ""
 "1 raster band version: Creates a new one band raster formed by applying a "
@@ -6901,7 +6901,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7953 reference_raster.xml:8077
+#: reference_raster.xml:7947 reference_raster.xml:8071
 #, no-c-format
 msgid ""
 "is deprecated as of 2.1.0. Use <xref linkend=\"RT_ST_MapAlgebra_expr\"/> "
@@ -6909,7 +6909,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7958
+#: reference_raster.xml:7952
 #, no-c-format
 msgid ""
 "Creates a new one band raster formed by applying a valid PostgreSQL "
@@ -6920,7 +6920,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7966
+#: reference_raster.xml:7960
 #, no-c-format
 msgid ""
 "In the expression you can use the term <varname>[rast]</varname> to refer to "
@@ -6930,8 +6930,8 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7976 reference_raster.xml:8175
-#: reference_raster.xml:8445
+#: reference_raster.xml:7970 reference_raster.xml:8169
+#: reference_raster.xml:8439
 #, no-c-format
 msgid ""
 "Create a new 1 band raster from our original that is a function of modulo 2 "
@@ -6939,7 +6939,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7979
+#: reference_raster.xml:7973
 #, no-c-format
 msgid ""
 "Create a new 1 band raster of pixel-type 2BUI from our original that is "
@@ -6947,19 +6947,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:7994
+#: reference_raster.xml:7988
 #, no-c-format
 msgid "original (column rast_view)"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8008 reference_raster.xml:8468
+#: reference_raster.xml:8002 reference_raster.xml:8462
 #, no-c-format
 msgid "rast_view_ma"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8019 reference_raster.xml:8476
+#: reference_raster.xml:8013 reference_raster.xml:8470
 #, no-c-format
 msgid ""
 "Create a new 3 band raster same pixel type from our original 3 band raster "
@@ -6967,7 +6967,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8025
+#: reference_raster.xml:8019
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_MapAlgebraFct\"/>, <xref "
@@ -6976,7 +6976,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:8038
+#: reference_raster.xml:8032
 #, no-c-format
 msgid ""
 "2 raster band version: Creates a new one band raster formed by applying a "
@@ -6989,7 +6989,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8162
+#: reference_raster.xml:8156
 #, no-c-format
 msgid ""
 "If <varname>pixeltype</varname> is passed in, then the new raster will have "
@@ -6999,7 +6999,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8165
+#: reference_raster.xml:8159
 #, no-c-format
 msgid ""
 "Use the term <varname>[rast1.val]</varname> <varname>[rast2.val]</varname> "
@@ -7009,68 +7009,68 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:8173
+#: reference_raster.xml:8167
 #, no-c-format
 msgid "Example: 2 Band Intersection and Union"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8190
+#: reference_raster.xml:8184
 #, no-c-format
 msgid "mapalgebra intersection"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8204
+#: reference_raster.xml:8198
 #, no-c-format
 msgid "map algebra union"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:8217 reference_raster.xml:8570
+#: reference_raster.xml:8211 reference_raster.xml:8564
 #, no-c-format
 msgid "Example: Overlaying rasters on a canvas as separate bands"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8231
+#: reference_raster.xml:8225
 #, no-c-format
 msgid "rast1"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8244
+#: reference_raster.xml:8238
 #, no-c-format
 msgid "rast2"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8260
+#: reference_raster.xml:8254
 #, no-c-format
 msgid "rast3"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8274
+#: reference_raster.xml:8268
 #, no-c-format
 msgid "final_rast"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:8287
+#: reference_raster.xml:8281
 #, no-c-format
 msgid ""
 "Example: Overlay 2 meter boundary of select parcels over an aerial imagery"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8303
+#: reference_raster.xml:8297
 #, no-c-format
 msgid "The blue lines are the boundaries of select parcels"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8317
+#: reference_raster.xml:8311
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref "
@@ -7081,7 +7081,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:8335
+#: reference_raster.xml:8329
 #, no-c-format
 msgid ""
 "1 band version - Creates a new one band raster formed by applying a valid "
@@ -7090,15 +7090,15 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8403 reference_raster.xml:8527
-#: reference_raster.xml:8648
+#: reference_raster.xml:8397 reference_raster.xml:8521
+#: reference_raster.xml:8642
 #, no-c-format
 msgid ""
 "is deprecated as of 2.1.0. Use <xref linkend=\"RT_ST_MapAlgebra\"/> instead."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8408
+#: reference_raster.xml:8402
 #, no-c-format
 msgid ""
 "Creates a new one band raster formed by applying a valid PostgreSQL function "
@@ -7109,7 +7109,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8412
+#: reference_raster.xml:8406
 #, no-c-format
 msgid ""
 "The <varname>onerasteruserfunc</varname> parameter must be the name and "
@@ -7118,7 +7118,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8415
+#: reference_raster.xml:8409
 #, no-c-format
 msgid ""
 "The <varname>userfunction</varname> may accept two or three arguments: a "
@@ -7131,7 +7131,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8419 reference_raster.xml:8546
+#: reference_raster.xml:8413 reference_raster.xml:8540
 #, no-c-format
 msgid ""
 "Passing a <type>regprodedure</type> argument to a SQL function requires the "
@@ -7141,7 +7141,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8427
+#: reference_raster.xml:8421
 #, no-c-format
 msgid ""
 "The third argument to the <varname>userfunction</varname> is a "
@@ -7152,7 +7152,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8436
+#: reference_raster.xml:8430
 #, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>userfunction</varname> is "
@@ -7161,7 +7161,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8448
+#: reference_raster.xml:8442
 #, no-c-format
 msgid ""
 "Create a new 1 band raster of pixel-type 2BUI from our original that is "
@@ -7170,13 +7170,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8460
+#: reference_raster.xml:8454
 #, no-c-format
 msgid "original (column rast-view)"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8482 reference_raster.xml:8613
+#: reference_raster.xml:8476 reference_raster.xml:8607
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref "
@@ -7184,7 +7184,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:8494
+#: reference_raster.xml:8488
 #, no-c-format
 msgid ""
 "2 band version - Creates a new one band raster formed by applying a valid "
@@ -7194,7 +7194,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8532
+#: reference_raster.xml:8526
 #, no-c-format
 msgid ""
 "Creates a new one band raster formed by applying a valid PostgreSQL function "
@@ -7206,7 +7206,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8535
+#: reference_raster.xml:8529
 #, no-c-format
 msgid ""
 "If <varname>pixeltype</varname> is passed in, then the new raster will have "
@@ -7216,7 +7216,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8538
+#: reference_raster.xml:8532
 #, no-c-format
 msgid ""
 "The <varname>tworastuserfunc</varname> parameter must be the name and "
@@ -7225,7 +7225,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8542
+#: reference_raster.xml:8536
 #, no-c-format
 msgid ""
 "The <varname>tworastuserfunc</varname> may accept three or four arguments: a "
@@ -7240,7 +7240,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8555
+#: reference_raster.xml:8549
 #, no-c-format
 msgid ""
 "The fourth argument to the <varname>tworastuserfunc</varname> is a "
@@ -7251,7 +7251,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8563
+#: reference_raster.xml:8557
 #, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>tworastuserfunc</varname> "
@@ -7260,25 +7260,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8584
+#: reference_raster.xml:8578
 #, no-c-format
 msgid "map bands overlay (canvas) (R: small road, G: circle, B: big road)"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:8596
+#: reference_raster.xml:8590
 #, no-c-format
 msgid "User Defined function that takes extra args"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8605
+#: reference_raster.xml:8599
 #, no-c-format
 msgid "user defined with extra args and different bands from same raster"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:8625
+#: reference_raster.xml:8619
 #, no-c-format
 msgid ""
 "1-band version: Map Algebra Nearest Neighbor using user-defined PostgreSQL "
@@ -7287,7 +7287,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:8630
+#: reference_raster.xml:8624
 #, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_MapAlgebraFctNgb</function></funcdef> "
@@ -7303,7 +7303,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8653
+#: reference_raster.xml:8647
 #, no-c-format
 msgid ""
 "(one raster version) Return a raster which values are the result of a "
@@ -7314,31 +7314,31 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:8657
+#: reference_raster.xml:8651
 #, no-c-format
 msgid "<term>rast</term>"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8658
+#: reference_raster.xml:8652
 #, no-c-format
 msgid "Raster on which the user function is evaluated."
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:8661
+#: reference_raster.xml:8655
 #, no-c-format
 msgid "band"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8662
+#: reference_raster.xml:8656
 #, no-c-format
 msgid "Band number of the raster to be evaluated. Default to 1."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8666
+#: reference_raster.xml:8660
 #, no-c-format
 msgid ""
 "The resulting pixel type of the output raster. Must be one listed in <xref "
@@ -7349,37 +7349,37 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:8669
+#: reference_raster.xml:8663
 #, no-c-format
 msgid "ngbwidth"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8670
+#: reference_raster.xml:8664
 #, no-c-format
 msgid "The width of the neighborhood, in cells."
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:8673
+#: reference_raster.xml:8667
 #, no-c-format
 msgid "ngbheight"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8674
+#: reference_raster.xml:8668
 #, no-c-format
 msgid "The height of the neighborhood, in cells."
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:8677
+#: reference_raster.xml:8671
 #, no-c-format
 msgid "onerastngbuserfunc"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8678
+#: reference_raster.xml:8672
 #, no-c-format
 msgid ""
 "PLPGSQL/psql user function to apply to neighborhood pixels of a single band "
@@ -7388,13 +7388,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:8681
+#: reference_raster.xml:8675
 #, no-c-format
 msgid "nodatamode"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8683
+#: reference_raster.xml:8677
 #, no-c-format
 msgid ""
 "Defines what value to pass to the function for a neighborhood pixel that is "
@@ -7402,7 +7402,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8684
+#: reference_raster.xml:8678
 #, no-c-format
 msgid ""
 "'ignore': any NODATA values encountered in the neighborhood are ignored by "
@@ -7411,7 +7411,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8685
+#: reference_raster.xml:8679
 #, no-c-format
 msgid ""
 "'NULL': any NODATA values encountered in the neighborhood will cause the "
@@ -7420,7 +7420,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8686
+#: reference_raster.xml:8680
 #, no-c-format
 msgid ""
 "'value': any NODATA values encountered in the neighborhood are replaced by "
@@ -7430,19 +7430,19 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: reference_raster.xml:8690
+#: reference_raster.xml:8684
 #, no-c-format
 msgid "args"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8691
+#: reference_raster.xml:8685
 #, no-c-format
 msgid "Arguments to pass into the user function."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8701
+#: reference_raster.xml:8695
 #, no-c-format
 msgid ""
 "Examples utilize the katrina raster loaded as a single tile described in "
@@ -7452,26 +7452,26 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8717
+#: reference_raster.xml:8711
 #, no-c-format
 msgid "First band of our raster"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8731
+#: reference_raster.xml:8725
 #, no-c-format
 msgid "new raster after averaging pixels withing 4x4 pixels of each other"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8746
+#: reference_raster.xml:8740
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_MapAlgebraExpr\"/>, <xref linkend=\"RT_ST_Rescale\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:8757
+#: reference_raster.xml:8751
 #, no-c-format
 msgid ""
 "Creates a new raster composed of band types reclassified from original. The "
@@ -7481,7 +7481,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8789
+#: reference_raster.xml:8783
 #, no-c-format
 msgid ""
 "Creates a new raster formed by applying a valid PostgreSQL algebraic "
@@ -7494,7 +7494,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8791
+#: reference_raster.xml:8785
 #, no-c-format
 msgid ""
 "The bands of the new raster will have pixel type of <varname>pixeltype</"
@@ -7503,7 +7503,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8798
+#: reference_raster.xml:8792
 #, no-c-format
 msgid ""
 "Create a new raster from the original where band 2 is converted from 8BUI to "
@@ -7511,13 +7511,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:8803
+#: reference_raster.xml:8797
 #, no-c-format
 msgid "Example: Advanced using multiple reclassargs"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8805
+#: reference_raster.xml:8799
 #, no-c-format
 msgid ""
 "Create a new raster from the original where band 1,2,3 is converted to "
@@ -7527,14 +7527,14 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:8810
+#: reference_raster.xml:8804
 #, no-c-format
 msgid ""
 "Example: Advanced Map a single band 32BF raster to multiple viewable bands"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8811
+#: reference_raster.xml:8805
 #, no-c-format
 msgid ""
 "Create a new 3 band (8BUI,8BUI,8BUI viewable raster) from a raster that has "
@@ -7542,7 +7542,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8817
+#: reference_raster.xml:8811
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Band\"/>, <xref linkend=\"RT_ST_BandPixelType\"/>, "
@@ -7551,7 +7551,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:8831
+#: reference_raster.xml:8825
 #, no-c-format
 msgid ""
 "Returns the union of a set of raster tiles into a single raster composed of "
@@ -7559,7 +7559,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8871
+#: reference_raster.xml:8865
 #, no-c-format
 msgid ""
 "Returns the union of a set of raster tiles into a single raster composed of "
@@ -7570,7 +7570,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8874
+#: reference_raster.xml:8868
 #, no-c-format
 msgid ""
 "In order for rasters to be unioned, they must all have the same alignment. "
@@ -7581,19 +7581,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8878
+#: reference_raster.xml:8872
 #, no-c-format
 msgid "Enhanced: 2.1.0 Improved Speed (fully C-Based)."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8879
+#: reference_raster.xml:8873
 #, no-c-format
 msgid "Availability: 2.1.0 ST_Union(rast, unionarg) variant was introduced."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8880
+#: reference_raster.xml:8874
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 ST_Union(rast) (variant 1) unions all bands of all input "
@@ -7601,7 +7601,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8881
+#: reference_raster.xml:8875
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 ST_Union(rast, uniontype) (variant 4) unions all bands of "
@@ -7609,13 +7609,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:8884
+#: reference_raster.xml:8878
 #, no-c-format
 msgid "Examples: Reconstitute a single band chunked raster tile"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:8889 reference_raster.xml:8893
+#: reference_raster.xml:8883 reference_raster.xml:8887
 #, no-c-format
 msgid ""
 "Examples: Return a multi-band raster that is the union of tiles intersecting "
@@ -7623,7 +7623,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8894
+#: reference_raster.xml:8888
 #, no-c-format
 msgid ""
 "Here we use the longer syntax if we only wanted a subset of bands or we want "
@@ -7631,7 +7631,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8901
+#: reference_raster.xml:8895
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Envelope\"/>, <xref linkend=\"RT_ST_ConvexHull\"/>, "
@@ -7639,13 +7639,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:8914
+#: reference_raster.xml:8908
 #, no-c-format
 msgid "Built-in Map Algebra Callback Functions"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:8919
+#: reference_raster.xml:8913
 #, no-c-format
 msgid ""
 "Raster processing function that calculates the number of unique pixel values "
@@ -7653,21 +7653,32 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8943
+#: reference_raster.xml:8937
 #, no-c-format
 msgid ""
 "Calculate the number of unique pixel values in a neighborhood of pixels."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8946 reference_raster.xml:9085
-#: reference_raster.xml:9160 reference_raster.xml:9245
-#: reference_raster.xml:9370 reference_raster.xml:9441
-#: reference_raster.xml:9516
+#: reference_raster.xml:8940 reference_raster.xml:9079
+#: reference_raster.xml:9154 reference_raster.xml:9239
+#: reference_raster.xml:9364 reference_raster.xml:9435
+#: reference_raster.xml:9510
 #, no-c-format
 msgid ""
 "Variant 1 is a specialized callback function for use as a callback parameter "
 "to <xref linkend=\"RT_ST_MapAlgebraFctNgb\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_raster.xml:8944 reference_raster.xml:9083
+#: reference_raster.xml:9158 reference_raster.xml:9245
+#: reference_raster.xml:9368 reference_raster.xml:9439
+#: reference_raster.xml:9514
+#, no-c-format
+msgid ""
+"Variant 2 is a specialized callback function for use as a callback parameter "
+"to <xref linkend=\"RT_ST_MapAlgebra\"/>."
 msgstr ""
 
 #. Tag: para
@@ -7677,8 +7688,8 @@ msgstr ""
 #: reference_raster.xml:9520
 #, no-c-format
 msgid ""
-"Variant 2 is a specialized callback function for use as a callback parameter "
-"to <xref linkend=\"RT_ST_MapAlgebra\"/>."
+"Use of Variant 1 is discouraged since <xref "
+"linkend=\"RT_ST_MapAlgebraFctNgb\"/> has been deprecated as of 2.1.0."
 msgstr ""
 
 #. Tag: para
@@ -7687,23 +7698,12 @@ msgstr ""
 #: reference_raster.xml:9380 reference_raster.xml:9451
 #: reference_raster.xml:9526
 #, no-c-format
-msgid ""
-"Use of Variant 1 is discouraged since <xref "
-"linkend=\"RT_ST_MapAlgebraFctNgb\"/> has been deprecated as of 2.1.0."
-msgstr ""
-
-#. Tag: para
-#: reference_raster.xml:8962 reference_raster.xml:9101
-#: reference_raster.xml:9176 reference_raster.xml:9263
-#: reference_raster.xml:9386 reference_raster.xml:9457
-#: reference_raster.xml:9532
-#, no-c-format
 msgid "Enhanced: 2.1.0 Addition of Variant 2"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:8974 reference_raster.xml:9398
-#: reference_raster.xml:9469
+#: reference_raster.xml:8968 reference_raster.xml:9392
+#: reference_raster.xml:9463
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Min4ma\"/>, "
@@ -7713,7 +7713,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:8990
+#: reference_raster.xml:8984
 #, no-c-format
 msgid ""
 "Raster processing function that interpolates a pixel's value from the "
@@ -7721,7 +7721,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:8995
+#: reference_raster.xml:8989
 #, no-c-format
 msgid ""
 "<funcdef>double precision <function>ST_InvDistWeight4ma</function></funcdef> "
@@ -7732,7 +7732,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9007
+#: reference_raster.xml:9001
 #, no-c-format
 msgid ""
 "Calculate an interpolated value for a pixel using the Inverse Distance "
@@ -7740,7 +7740,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9009
+#: reference_raster.xml:9003
 #, no-c-format
 msgid ""
 "There are two optional parameters that can be passed through "
@@ -7754,19 +7754,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9013
+#: reference_raster.xml:9007
 #, no-c-format
 msgid "The basic inverse distance weight equation is:"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9022
+#: reference_raster.xml:9016
 #, no-c-format
 msgid "k = power factor, a real number between 0 and 1"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9031 reference_raster.xml:9316
+#: reference_raster.xml:9025 reference_raster.xml:9310
 #, no-c-format
 msgid ""
 "This function is a specialized callback function for use as a callback "
@@ -7774,13 +7774,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9044
+#: reference_raster.xml:9038
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_MinDist4ma\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9054
+#: reference_raster.xml:9048
 #, no-c-format
 msgid ""
 "Raster processing function that calculates the maximum pixel value in a "
@@ -7788,15 +7788,15 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9078
+#: reference_raster.xml:9072
 #, no-c-format
 msgid "Calculate the maximum pixel value in a neighborhood of pixels."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9080 reference_raster.xml:9155
-#: reference_raster.xml:9240 reference_raster.xml:9365
-#: reference_raster.xml:9511
+#: reference_raster.xml:9074 reference_raster.xml:9149
+#: reference_raster.xml:9234 reference_raster.xml:9359
+#: reference_raster.xml:9505
 #, no-c-format
 msgid ""
 "For Variant 2, a substitution value for NODATA pixels can be specified by "
@@ -7804,7 +7804,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9113
+#: reference_raster.xml:9107
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Min4ma\"/>, "
@@ -7814,7 +7814,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9129
+#: reference_raster.xml:9123
 #, no-c-format
 msgid ""
 "Raster processing function that calculates the mean pixel value in a "
@@ -7822,13 +7822,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9153
+#: reference_raster.xml:9147
 #, no-c-format
 msgid "Calculate the mean pixel value in a neighborhood of pixels."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9195
+#: reference_raster.xml:9189
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Min4ma\"/>, "
@@ -7837,7 +7837,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9210
+#: reference_raster.xml:9204
 #, no-c-format
 msgid ""
 "Raster processing function that calculates the minimum pixel value in a "
@@ -7845,13 +7845,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9236
+#: reference_raster.xml:9230
 #, no-c-format
 msgid "Calculate the minimum pixel value in a neighborhood of pixels."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9274
+#: reference_raster.xml:9268
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Max4ma\"/>, "
@@ -7861,7 +7861,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9290
+#: reference_raster.xml:9284
 #, no-c-format
 msgid ""
 "Raster processing function that returns the minimum distance (in number of "
@@ -7869,7 +7869,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:9295
+#: reference_raster.xml:9289
 #, no-c-format
 msgid ""
 "<funcdef>double precision <function>ST_MinDist4ma</function></funcdef> "
@@ -7880,7 +7880,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9307
+#: reference_raster.xml:9301
 #, no-c-format
 msgid ""
 "Return the shortest distance (in number of pixels) between the pixel of "
@@ -7888,7 +7888,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9310
+#: reference_raster.xml:9304
 #, no-c-format
 msgid ""
 "The intent of this function is to provide an informative data point that "
@@ -7898,13 +7898,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9329
+#: reference_raster.xml:9323
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_InvDistWeight4ma\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9339
+#: reference_raster.xml:9333
 #, no-c-format
 msgid ""
 "Raster processing function that calculates the range of pixel values in a "
@@ -7912,13 +7912,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9363
+#: reference_raster.xml:9357
 #, no-c-format
 msgid "Calculate the range of pixel values in a neighborhood of pixels."
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9414
+#: reference_raster.xml:9408
 #, no-c-format
 msgid ""
 "Raster processing function that calculates the standard deviation of pixel "
@@ -7926,14 +7926,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9438
+#: reference_raster.xml:9432
 #, no-c-format
 msgid ""
 "Calculate the standard deviation of pixel values in a neighborhood of pixels."
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9485
+#: reference_raster.xml:9479
 #, no-c-format
 msgid ""
 "Raster processing function that calculates the sum of all pixel values in a "
@@ -7941,13 +7941,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9509
+#: reference_raster.xml:9503
 #, no-c-format
 msgid "Calculate the sum of all pixel values in a neighborhood of pixels."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9544
+#: reference_raster.xml:9538
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Min4ma\"/>, "
@@ -7957,13 +7957,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:9560
+#: reference_raster.xml:9554
 #, no-c-format
 msgid "Raster Processing: DEM (Elevation)"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9565
+#: reference_raster.xml:9559
 #, no-c-format
 msgid ""
 "Returns the aspect (in degrees by default) of an elevation raster band. "
@@ -7971,7 +7971,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9593
+#: reference_raster.xml:9587
 #, no-c-format
 msgid ""
 "Returns the aspect (in degrees by default) of an elevation raster band. "
@@ -7979,7 +7979,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9595
+#: reference_raster.xml:9589
 #, no-c-format
 msgid ""
 "<varname>units</varname> indicates the units of the aspect. Possible values "
@@ -7987,7 +7987,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9599
+#: reference_raster.xml:9593
 #, no-c-format
 msgid ""
 "When <varname>units</varname> = RADIANS, values are between 0 and 2 * pi "
@@ -7995,7 +7995,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9603
+#: reference_raster.xml:9597
 #, no-c-format
 msgid ""
 "When <varname>units</varname> = DEGREES, values are between 0 and 360 "
@@ -8003,13 +8003,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9607
+#: reference_raster.xml:9601
 #, no-c-format
 msgid "If slope of pixel is zero, aspect of pixel is -1."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9612
+#: reference_raster.xml:9606
 #, no-c-format
 msgid ""
 "For more information about Slope, Aspect and Hillshade, please refer to "
@@ -8021,7 +8021,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9618 reference_raster.xml:9714
+#: reference_raster.xml:9612 reference_raster.xml:9708
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional "
@@ -8029,7 +8029,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9619 reference_raster.xml:9843
+#: reference_raster.xml:9613 reference_raster.xml:9837
 #, no-c-format
 msgid ""
 "Changed: 2.1.0 In prior versions, return values were in radians. Now, return "
@@ -8037,8 +8037,8 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9630 reference_raster.xml:9727
-#: reference_raster.xml:9855
+#: reference_raster.xml:9624 reference_raster.xml:9721
+#: reference_raster.xml:9849
 #, no-c-format
 msgid ""
 "Complete example of tiles of a coverage. This query only works with "
@@ -8046,7 +8046,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9637
+#: reference_raster.xml:9631
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_TRI\"/>, <xref linkend=\"RT_ST_TPI\"/>, <xref "
@@ -8055,7 +8055,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9651
+#: reference_raster.xml:9645
 #, no-c-format
 msgid ""
 "Returns the hypothetical illumination of an elevation raster band using "
@@ -8063,7 +8063,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9685
+#: reference_raster.xml:9679
 #, no-c-format
 msgid ""
 "Returns the hypothetical illumination of an elevation raster band using the "
@@ -8073,7 +8073,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9687
+#: reference_raster.xml:9681
 #, no-c-format
 msgid ""
 "<varname>azimuth</varname> is a value between 0 and 360 degrees measured "
@@ -8081,7 +8081,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9691
+#: reference_raster.xml:9685
 #, no-c-format
 msgid ""
 "<varname>altitude</varname> is a value between 0 and 90 degrees where 0 "
@@ -8089,7 +8089,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9695
+#: reference_raster.xml:9689
 #, no-c-format
 msgid ""
 "<varname>max_bright</varname> is a value between 0 and 255 with 0 as no "
@@ -8097,7 +8097,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9699 reference_raster.xml:9827
+#: reference_raster.xml:9693 reference_raster.xml:9821
 #, no-c-format
 msgid ""
 "<varname>scale</varname> is the ratio of vertical units to horizontal. For "
@@ -8105,7 +8105,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9703
+#: reference_raster.xml:9697
 #, no-c-format
 msgid ""
 "If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels "
@@ -8115,7 +8115,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9708
+#: reference_raster.xml:9702
 #, no-c-format
 msgid ""
 "For more information about Hillshade, please refer to <ulink url=\"http://"
@@ -8124,7 +8124,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9715
+#: reference_raster.xml:9709
 #, no-c-format
 msgid ""
 "Changed: 2.1.0 In prior versions, azimuth and altitude were expressed in "
@@ -8132,7 +8132,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9734
+#: reference_raster.xml:9728
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_TRI\"/>, <xref linkend=\"RT_ST_TPI\"/>, <xref "
@@ -8141,13 +8141,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9748
+#: reference_raster.xml:9742
 #, no-c-format
 msgid "Returns a raster with the calculated \"roughness\" of a DEM."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:9753
+#: reference_raster.xml:9747
 #, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_Roughness</function></funcdef> "
@@ -8161,7 +8161,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9766
+#: reference_raster.xml:9760
 #, no-c-format
 msgid ""
 "Calculates the \"roughness\" of a DEM, by subtracting the maximum from the "
@@ -8169,7 +8169,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9777
+#: reference_raster.xml:9771
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_TRI\"/>, <xref linkend=\"RT_ST_TPI\"/>, <xref "
@@ -8178,7 +8178,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9791
+#: reference_raster.xml:9785
 #, no-c-format
 msgid ""
 "Returns the slope (in degrees by default) of an elevation raster band. "
@@ -8186,7 +8186,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9821
+#: reference_raster.xml:9815
 #, no-c-format
 msgid ""
 "Returns the slope (in degrees by default) of an elevation raster band. "
@@ -8194,7 +8194,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9823
+#: reference_raster.xml:9817
 #, no-c-format
 msgid ""
 "<varname>units</varname> indicates the units of the slope. Possible values "
@@ -8202,7 +8202,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9831
+#: reference_raster.xml:9825
 #, no-c-format
 msgid ""
 "If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels "
@@ -8211,7 +8211,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9836
+#: reference_raster.xml:9830
 #, no-c-format
 msgid ""
 "For more information about Slope, Aspect and Hillshade, please refer to "
@@ -8223,7 +8223,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9842
+#: reference_raster.xml:9836
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>units</"
@@ -8232,7 +8232,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9862
+#: reference_raster.xml:9856
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_TRI\"/>, <xref linkend=\"RT_ST_TPI\"/>, <xref "
@@ -8241,13 +8241,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9876
+#: reference_raster.xml:9870
 #, no-c-format
 msgid "Returns a raster with the calculated Topographic Position Index."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:9881
+#: reference_raster.xml:9875
 #, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_TPI</function></funcdef> <paramdef><type>raster "
@@ -8260,7 +8260,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9895
+#: reference_raster.xml:9889
 #, no-c-format
 msgid ""
 "Calculates the Topographic Position Index, which is defined as the focal "
@@ -8268,13 +8268,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9898 reference_raster.xml:9948
+#: reference_raster.xml:9892 reference_raster.xml:9942
 #, no-c-format
 msgid "This function only supports a focalmean radius of one."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9910
+#: reference_raster.xml:9904
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_TRI\"/>, <xref linkend=\"RT_ST_Roughness\"/>, <xref "
@@ -8283,13 +8283,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9924
+#: reference_raster.xml:9918
 #, no-c-format
 msgid "Returns a raster with the calculated Terrain Ruggedness Index."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:9929
+#: reference_raster.xml:9923
 #, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_TRI</function></funcdef> <paramdef><type>raster "
@@ -8302,7 +8302,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9943
+#: reference_raster.xml:9937
 #, no-c-format
 msgid ""
 "Terrain Ruggedness Index is calculated by comparing a central pixel with its "
@@ -8311,7 +8311,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9961
+#: reference_raster.xml:9955
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Roughness\"/>, <xref linkend=\"RT_ST_TPI\"/>, <xref "
@@ -8320,19 +8320,19 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:9975
+#: reference_raster.xml:9969
 #, no-c-format
 msgid "Raster Processing: Raster to Geometry"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9980
+#: reference_raster.xml:9974
 #, no-c-format
 msgid "Returns the box 3d representation of the enclosing box of the raster."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:9985
+#: reference_raster.xml:9979
 #, no-c-format
 msgid ""
 "<funcdef>box3d <function>Box3D</function></funcdef> <paramdef><type>raster </"
@@ -8340,13 +8340,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9995
+#: reference_raster.xml:9989
 #, no-c-format
 msgid "Returns the box representing the extent of the raster."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9996
+#: reference_raster.xml:9990
 #, no-c-format
 msgid ""
 "The polygon is defined by the corner points of the bounding box "
@@ -8355,7 +8355,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10000
+#: reference_raster.xml:9994
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 In pre-2.0 versions, there used to be a box2d instead of "
@@ -8363,7 +8363,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10020
+#: reference_raster.xml:10014
 #, no-c-format
 msgid ""
 "Return the convex hull geometry of the raster including pixel values equal "
@@ -8373,7 +8373,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:10027
+#: reference_raster.xml:10021
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ConvexHull</function></funcdef> "
@@ -8381,7 +8381,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10037
+#: reference_raster.xml:10031
 #, no-c-format
 msgid ""
 "Return the convex hull geometry of the raster including the NoDataBandValue "
@@ -8391,7 +8391,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10041
+#: reference_raster.xml:10035
 #, no-c-format
 msgid ""
 "ST_Envelope floors the coordinates and hence add a little buffer around the "
@@ -8400,7 +8400,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10048
+#: reference_raster.xml:10042
 #, no-c-format
 msgid ""
 "Refer to <ulink url=\"http://trac.osgeo.org/postgis/wiki/WKTRaster/"
@@ -8409,7 +8409,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10056
+#: reference_raster.xml:10050
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_MinConvexHull\"/>, <xref linkend=\"ST_ConvexHull\"/"
@@ -8417,7 +8417,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10068
+#: reference_raster.xml:10062
 #, no-c-format
 msgid ""
 "Returns a set of geomval (geom,val) rows, from a given raster band. If no "
@@ -8425,7 +8425,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:10073
+#: reference_raster.xml:10067
 #, no-c-format
 msgid ""
 "<funcdef>setof geomval <function>ST_DumpAsPolygons</function></funcdef> "
@@ -8436,7 +8436,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10084
+#: reference_raster.xml:10078
 #, no-c-format
 msgid ""
 "This is a set-returning function (SRF). It returns a set of geomval rows, "
@@ -8446,7 +8446,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10088
+#: reference_raster.xml:10082
 #, no-c-format
 msgid ""
 "ST_DumpAsPolygon is useful for polygonizing rasters. It is the reverse of a "
@@ -8455,7 +8455,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10092 reference_raster.xml:10226
+#: reference_raster.xml:10086 reference_raster.xml:10220
 #, no-c-format
 msgid ""
 "Changed 3.3.0, validation and fixing is disabled to improve performance. May "
@@ -8463,13 +8463,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10093
+#: reference_raster.xml:10087
 #, no-c-format
 msgid "Availability: Requires GDAL 1.7 or higher."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10094
+#: reference_raster.xml:10088
 #, no-c-format
 msgid ""
 "If there is a no data value set for a band, pixels with that value will not "
@@ -8477,7 +8477,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10095
+#: reference_raster.xml:10089
 #, no-c-format
 msgid ""
 "If you only care about count of pixels with a given value in a raster, it is "
@@ -8485,7 +8485,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10097
+#: reference_raster.xml:10091
 #, no-c-format
 msgid ""
 "This is different than ST_PixelAsPolygons where one geometry is returned for "
@@ -8493,7 +8493,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10110
+#: reference_raster.xml:10104
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, <xref "
@@ -8501,13 +8501,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10122
+#: reference_raster.xml:10116
 #, no-c-format
 msgid "Returns the polygon representation of the extent of the raster."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:10127
+#: reference_raster.xml:10121
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Envelope</function></funcdef> "
@@ -8515,7 +8515,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10137
+#: reference_raster.xml:10131
 #, no-c-format
 msgid ""
 "Returns the polygon representation of the extent of the raster in spatial "
@@ -8524,7 +8524,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10139
+#: reference_raster.xml:10133
 #, no-c-format
 msgid ""
 "The polygon is defined by the corner points of the bounding box "
@@ -8535,19 +8535,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10156
+#: reference_raster.xml:10150
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10167
+#: reference_raster.xml:10161
 #, no-c-format
 msgid "Return the convex hull geometry of the raster excluding NODATA pixels."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:10174
+#: reference_raster.xml:10168
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MinConvexHull</function></funcdef> "
@@ -8557,7 +8557,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10185
+#: reference_raster.xml:10179
 #, no-c-format
 msgid ""
 "Return the convex hull geometry of the raster excluding NODATA pixels. If "
@@ -8565,7 +8565,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10199
+#: reference_raster.xml:10193
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_ConvexHull\"/>, <xref linkend=\"ST_ConvexHull\"/>, "
@@ -8573,7 +8573,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10211
+#: reference_raster.xml:10205
 #, no-c-format
 msgid ""
 "Returns a multipolygon geometry formed by the union of pixels that have a "
@@ -8582,7 +8582,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:10216
+#: reference_raster.xml:10210
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Polygon</function></funcdef> "
@@ -8592,13 +8592,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10227
+#: reference_raster.xml:10221
 #, no-c-format
 msgid "Availability: 0.1.6 Requires GDAL 1.7 or higher."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10228
+#: reference_raster.xml:10222
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 Improved Speed (fully C-Based) and the returning "
@@ -8606,7 +8606,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10229
+#: reference_raster.xml:10223
 #, no-c-format
 msgid ""
 "Changed: 2.1.0 In prior versions would sometimes return a polygon, changed "
@@ -8614,13 +8614,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:10249
+#: reference_raster.xml:10243
 #, no-c-format
 msgid "Raster Operators"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10254
+#: reference_raster.xml:10248
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box intersects B's bounding "
@@ -8628,7 +8628,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10300
+#: reference_raster.xml:10294
 #, no-c-format
 msgid ""
 "The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> "
@@ -8637,9 +8637,9 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10302 reference_raster.xml:10349
-#: reference_raster.xml:10553 reference_raster.xml:11563
-#: reference_raster.xml:11664 reference_raster.xml:11757
+#: reference_raster.xml:10296 reference_raster.xml:10343
+#: reference_raster.xml:10547 reference_raster.xml:11557
+#: reference_raster.xml:11658 reference_raster.xml:11751
 #, no-c-format
 msgid ""
 "This operand will make use of any indexes that may be available on the "
@@ -8647,14 +8647,14 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10319
+#: reference_raster.xml:10313
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is to the left of B's."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:10324
+#: reference_raster.xml:10318
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
@@ -8663,7 +8663,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10345
+#: reference_raster.xml:10339
 #, no-c-format
 msgid ""
 "The <varname>&amp;&lt;</varname> operator returns <varname>TRUE</varname> if "
@@ -8673,14 +8673,14 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10363
+#: reference_raster.xml:10357
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is to the right of B's."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:10368
+#: reference_raster.xml:10362
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
@@ -8689,7 +8689,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10389
+#: reference_raster.xml:10383
 #, no-c-format
 msgid ""
 "The <varname>&amp;&gt;</varname> operator returns <varname>TRUE</varname> if "
@@ -8699,7 +8699,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10393
+#: reference_raster.xml:10387
 #, no-c-format
 msgid ""
 "This operand will make use of any indexes that may be available on the "
@@ -8707,7 +8707,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10408
+#: reference_raster.xml:10402
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is the same as B's. Uses "
@@ -8715,7 +8715,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:10413
+#: reference_raster.xml:10407
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&#61;</function></funcdef> <paramdef> "
@@ -8724,7 +8724,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10434
+#: reference_raster.xml:10428
 #, no-c-format
 msgid ""
 "The <varname>&#61;</varname> operator returns <varname>TRUE</varname> if the "
@@ -8735,7 +8735,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10438
+#: reference_raster.xml:10432
 #, no-c-format
 msgid ""
 "This operand will NOT make use of any indexes that may be available on the "
@@ -8744,7 +8744,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10456
+#: reference_raster.xml:10450
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is contained by B's. "
@@ -8752,7 +8752,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10503
+#: reference_raster.xml:10497
 #, no-c-format
 msgid ""
 "The <varname>@</varname> operator returns <varname>TRUE</varname> if the "
@@ -8761,31 +8761,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10506 reference_raster.xml:10626
+#: reference_raster.xml:10500 reference_raster.xml:10620
 #, no-c-format
 msgid "This operand will use spatial indexes on the rasters."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10508
+#: reference_raster.xml:10502
 #, no-c-format
 msgid "Availability: 2.0.0 raster @ raster, raster @ geometry introduced"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10509
+#: reference_raster.xml:10503
 #, no-c-format
 msgid "Availability: 2.0.5 geometry @ raster introduced"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10524
+#: reference_raster.xml:10518
 #, no-c-format
 msgid "Returns <varname>TRUE</varname> if A's bounding box is the same as B's."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:10529
+#: reference_raster.xml:10523
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>raster </"
@@ -8794,7 +8794,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10550
+#: reference_raster.xml:10544
 #, no-c-format
 msgid ""
 "The <varname>~=</varname> operator returns <varname>TRUE</varname> if the "
@@ -8802,7 +8802,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10562
+#: reference_raster.xml:10556
 #, no-c-format
 msgid ""
 "Very useful usecase is for taking two sets of single band rasters that are "
@@ -8811,13 +8811,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10568
+#: reference_raster.xml:10562
 #, no-c-format
 msgid ", <xref linkend=\"RT_Raster_EQ\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10576
+#: reference_raster.xml:10570
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is contains B's. Uses "
@@ -8825,7 +8825,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10623
+#: reference_raster.xml:10617
 #, no-c-format
 msgid ""
 "The <varname>~</varname> operator returns <varname>TRUE</varname> if the "
@@ -8834,13 +8834,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:10641
+#: reference_raster.xml:10635
 #, no-c-format
 msgid "Raster and Raster Band Spatial Relationships"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10646
+#: reference_raster.xml:10640
 #, no-c-format
 msgid ""
 "Return true if no points of raster rastB lie in the exterior of raster rastA "
@@ -8849,7 +8849,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10691
+#: reference_raster.xml:10685
 #, no-c-format
 msgid ""
 "Raster rastA contains rastB if and only if no points of rastB lie in the "
@@ -8861,10 +8861,10 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10696 reference_raster.xml:10789
-#: reference_raster.xml:10870 reference_raster.xml:10951
-#: reference_raster.xml:11161 reference_raster.xml:11245
-#: reference_raster.xml:11325
+#: reference_raster.xml:10690 reference_raster.xml:10783
+#: reference_raster.xml:10864 reference_raster.xml:10945
+#: reference_raster.xml:11155 reference_raster.xml:11239
+#: reference_raster.xml:11319
 #, no-c-format
 msgid ""
 "This function will make use of any indexes that may be available on the "
@@ -8872,7 +8872,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10702
+#: reference_raster.xml:10696
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -8881,7 +8881,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10708
+#: reference_raster.xml:10702
 #, no-c-format
 msgid ""
 "ST_Contains() is the inverse of ST_Within(). So, ST_Contains(rastA, rastB) "
@@ -8889,13 +8889,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10725
+#: reference_raster.xml:10719
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Within\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10735
+#: reference_raster.xml:10729
 #, no-c-format
 msgid ""
 "Return true if rastB intersects the interior of rastA but not the boundary "
@@ -8903,7 +8903,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10780
+#: reference_raster.xml:10774
 #, no-c-format
 msgid ""
 "Raster rastA contains properly rastB if rastB intersects the interior of "
@@ -8914,13 +8914,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10784
+#: reference_raster.xml:10778
 #, no-c-format
 msgid "Raster rastA does not contain properly itself but does contain itself."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10795
+#: reference_raster.xml:10789
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -8929,19 +8929,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10810
+#: reference_raster.xml:10804
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Contains\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10820
+#: reference_raster.xml:10814
 #, no-c-format
 msgid "Return true if no points of raster rastB lie outside raster rastA."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10865
+#: reference_raster.xml:10859
 #, no-c-format
 msgid ""
 "Raster rastA covers rastB if and only if no points of rastB lie in the "
@@ -8952,7 +8952,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10876
+#: reference_raster.xml:10870
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -8961,19 +8961,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10891
+#: reference_raster.xml:10885
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_CoveredBy\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10901
+#: reference_raster.xml:10895
 #, no-c-format
 msgid "Return true if no points of raster rastA lie outside raster rastB."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10946
+#: reference_raster.xml:10940
 #, no-c-format
 msgid ""
 "Raster rastA is covered by rastB if and only if no points of rastA lie in "
@@ -8984,7 +8984,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10957
+#: reference_raster.xml:10951
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -8993,19 +8993,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10972
+#: reference_raster.xml:10966
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Covers\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10982
+#: reference_raster.xml:10976
 #, no-c-format
 msgid "Return true if raster rastA does not spatially intersect rastB."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11027
+#: reference_raster.xml:11021
 #, no-c-format
 msgid ""
 "Raster rastA and rastB are disjointed if they do not share any space "
@@ -9016,13 +9016,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11032
+#: reference_raster.xml:11026
 #, no-c-format
 msgid "This function does NOT use any indexes."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11038
+#: reference_raster.xml:11032
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -9030,13 +9030,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:11065
+#: reference_raster.xml:11059
 #, no-c-format
 msgid "Return true if raster rastA spatially intersects raster rastB."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11156
+#: reference_raster.xml:11150
 #, no-c-format
 msgid ""
 "Return true if raster rastA spatially intersects raster rastB. If the band "
@@ -9046,13 +9046,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11166
+#: reference_raster.xml:11160
 #, no-c-format
 msgid "Enhanced: 2.0.0 support raster/raster intersects was introduced."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11171
+#: reference_raster.xml:11165
 #, no-c-format
 msgid ""
 "Changed: 2.1.0 The behavior of the ST_Intersects(raster, geometry) variants "
@@ -9060,13 +9060,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11185
+#: reference_raster.xml:11179
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Disjoint\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:11195
+#: reference_raster.xml:11189
 #, no-c-format
 msgid ""
 "Return true if raster rastA and rastB intersect but one does not completely "
@@ -9074,7 +9074,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11240
+#: reference_raster.xml:11234
 #, no-c-format
 msgid ""
 "Return true if raster rastA spatially overlaps raster rastB. This means that "
@@ -9085,7 +9085,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11251
+#: reference_raster.xml:11245
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -9093,7 +9093,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:11275
+#: reference_raster.xml:11269
 #, no-c-format
 msgid ""
 "Return true if raster rastA and rastB have at least one point in common but "
@@ -9101,7 +9101,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11320
+#: reference_raster.xml:11314
 #, no-c-format
 msgid ""
 "Return true if raster rastA spatially touches raster rastB. This means that "
@@ -9113,7 +9113,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11331
+#: reference_raster.xml:11325
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -9121,7 +9121,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:11356
+#: reference_raster.xml:11350
 #, no-c-format
 msgid ""
 "Returns true if rasters have same skew, scale, spatial ref, and offset "
@@ -9130,7 +9130,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11439
+#: reference_raster.xml:11433
 #, no-c-format
 msgid ""
 "Non-Aggregate version (Variants 1 and 2): Returns true if the two rasters "
@@ -9142,7 +9142,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11443
+#: reference_raster.xml:11437
 #, no-c-format
 msgid ""
 "Aggregate version (Variant 3): From a set of rasters, returns true if all "
@@ -9152,19 +9152,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11448
+#: reference_raster.xml:11442
 #, no-c-format
 msgid "Enhanced: 2.1.0 addition of Aggegrate variant"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:11452
+#: reference_raster.xml:11446
 #, no-c-format
 msgid "Examples: Rasters"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11459
+#: reference_raster.xml:11453
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_NotSameAlignmentReason\"/>, <xref "
@@ -9172,7 +9172,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:11470
+#: reference_raster.xml:11464
 #, no-c-format
 msgid ""
 "<refpurpose>Returns text stating if rasters are aligned and if not aligned, "
@@ -9180,7 +9180,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:11475
+#: reference_raster.xml:11469
 #, no-c-format
 msgid ""
 "<funcdef>text <function>ST_NotSameAlignmentReason</function></funcdef> "
@@ -9189,7 +9189,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11485
+#: reference_raster.xml:11479
 #, no-c-format
 msgid ""
 "<para>Returns text stating if rasters are aligned and if not aligned, a "
@@ -9197,7 +9197,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11488
+#: reference_raster.xml:11482
 #, no-c-format
 msgid ""
 "If there are several reasons why the rasters are not aligned, only one "
@@ -9205,13 +9205,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11503
+#: reference_raster.xml:11497
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SameAlignment\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:11513
+#: reference_raster.xml:11507
 #, no-c-format
 msgid ""
 "Return true if no points of raster rastA lie in the exterior of raster rastB "
@@ -9220,7 +9220,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11558
+#: reference_raster.xml:11552
 #, no-c-format
 msgid ""
 "Raster rastA is within rastB if and only if no points of rastA lie in the "
@@ -9232,7 +9232,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11569
+#: reference_raster.xml:11563
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -9241,7 +9241,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11575
+#: reference_raster.xml:11569
 #, no-c-format
 msgid ""
 "ST_Within() is the inverse of ST_Contains(). So, ST_Within(rastA, rastB) "
@@ -9249,7 +9249,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11590
+#: reference_raster.xml:11584
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Contains\"/>, <xref linkend=\"RT_ST_DWithin\"/>, "
@@ -9257,7 +9257,7 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:11602
+#: reference_raster.xml:11596
 #, no-c-format
 msgid ""
 "Return true if rasters rastA and rastB are within the specified distance of "
@@ -9265,7 +9265,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11655
+#: reference_raster.xml:11649
 #, no-c-format
 msgid ""
 "Return true if rasters rastA and rastB are within the specified distance of "
@@ -9276,7 +9276,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11659 reference_raster.xml:11752
+#: reference_raster.xml:11653 reference_raster.xml:11746
 #, no-c-format
 msgid ""
 "The distance is specified in units defined by the spatial reference system "
@@ -9285,7 +9285,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11670
+#: reference_raster.xml:11664
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -9293,13 +9293,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11685
+#: reference_raster.xml:11679
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DFullyWithin\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:11695
+#: reference_raster.xml:11689
 #, no-c-format
 msgid ""
 "Return true if rasters rastA and rastB are fully within the specified "
@@ -9307,7 +9307,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11748
+#: reference_raster.xml:11742
 #, no-c-format
 msgid ""
 "Return true if rasters rastA and rastB are fully within the specified "
@@ -9318,7 +9318,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11763
+#: reference_raster.xml:11757
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -9326,38 +9326,38 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11778
+#: reference_raster.xml:11772
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DWithin\"/>"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11790
+#: reference_raster.xml:11784
 #, no-c-format
 msgid ""
 "This section documents various gotchas and tips related to PostGIS Raster."
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:11793
+#: reference_raster.xml:11787
 #, no-c-format
 msgid "Raster Tips"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:11796
+#: reference_raster.xml:11790
 #, no-c-format
 msgid "Out-DB Rasters"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:11799
+#: reference_raster.xml:11793
 #, no-c-format
 msgid "Directory containing many files"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11800
+#: reference_raster.xml:11794
 #, no-c-format
 msgid ""
 "When GDAL opens a file, GDAL eagerly scans the directory of that file to "
@@ -9367,7 +9367,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11803
+#: reference_raster.xml:11797
 #, no-c-format
 msgid ""
 "To control this behavior, GDAL provides the following environment variable: "
@@ -9378,7 +9378,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11807
+#: reference_raster.xml:11801
 #, no-c-format
 msgid ""
 "In Ubuntu (and assuming you are using PostgreSQL's packages for Ubuntu), "
@@ -9390,13 +9390,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:11816
+#: reference_raster.xml:11810
 #, no-c-format
 msgid "Maximum Number of Open Files"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11818
+#: reference_raster.xml:11812
 #, no-c-format
 msgid ""
 "The maximum number of open files permitted by Linux and PostgreSQL are "
@@ -9409,7 +9409,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11822
+#: reference_raster.xml:11816
 #, no-c-format
 msgid ""
 "The easiest change to make is the following PostgreSQL setting: <ulink "
@@ -9424,7 +9424,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11828
+#: reference_raster.xml:11822
 #, no-c-format
 msgid ""
 "The major change to make is the Linux kernel's open files limits. There are "
@@ -9432,25 +9432,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11832
+#: reference_raster.xml:11826
 #, no-c-format
 msgid "<para>Maximum number of open files for the entire system</para>"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11835
+#: reference_raster.xml:11829
 #, no-c-format
 msgid "<para>Maximum number of open files per process</para>"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:11841
+#: reference_raster.xml:11835
 #, no-c-format
 msgid "<title>Maximum number of open files for the entire system</title>"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11843
+#: reference_raster.xml:11837
 #, no-c-format
 msgid ""
 "You can inspect the current maximum number of open files for the entire "
@@ -9458,7 +9458,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11849
+#: reference_raster.xml:11843
 #, no-c-format
 msgid ""
 "If the value returned is not large enough, add a file to <emphasis>/etc/"
@@ -9466,13 +9466,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:11857
+#: reference_raster.xml:11851
 #, no-c-format
 msgid "<title>Maximum number of open files per process</title>"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11859
+#: reference_raster.xml:11853
 #, no-c-format
 msgid ""
 "We need to increase the maximum number of open files per process for the "
@@ -9480,7 +9480,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11863
+#: reference_raster.xml:11857
 #, no-c-format
 msgid ""
 "To see what the current PostgreSQL service processes are using for maximum "
@@ -9489,7 +9489,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11869
+#: reference_raster.xml:11863
 #, no-c-format
 msgid ""
 "In the example above, we inspected the open files limit for Process 31718. "
@@ -9498,7 +9498,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11873
+#: reference_raster.xml:11867
 #, no-c-format
 msgid ""
 "We want to increase <emphasis>Soft Limit</emphasis> and <emphasis>Hard "
@@ -9509,7 +9509,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11877
+#: reference_raster.xml:11871
 #, no-c-format
 msgid ""
 "In Ubuntu (and assuming you are using PostgreSQL's packages for Ubuntu), the "
@@ -9520,7 +9520,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11881
+#: reference_raster.xml:11875
 #, no-c-format
 msgid ""
 "Let's first address the SysV Ubuntu case where we add <emphasis "
@@ -9530,7 +9530,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11887
+#: reference_raster.xml:11881
 #, no-c-format
 msgid ""
 "Now to address the systemd Ubuntu case. We will add <emphasis "
@@ -9540,7 +9540,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11893
+#: reference_raster.xml:11887
 #, no-c-format
 msgid ""
 "After making the necessary systemd changes, make sure to reload the daemon"

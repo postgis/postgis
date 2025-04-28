@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-06-30 21:55+0000\n"
+"POT-Creation-Date: 2025-04-28 10:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -15,19 +15,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: postgis.xml:94
+#: postgis.xml:95
 #, no-c-format
 msgid "PostGIS &last_release_version; Manual"
 msgstr ""
 
 #. Tag: corpauthor
-#: postgis.xml:98
+#: postgis.xml:99
 #, no-c-format
 msgid "The PostGIS Development Group"
 msgstr ""
 
 #. Tag: affiliation
-#: postgis.xml:104
+#: postgis.xml:105
 #, no-c-format
 msgid ""
 "<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
@@ -37,7 +37,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: postgis.xml:118
+#: postgis.xml:119
 #, no-c-format
 msgid ""
 "PostGIS is an extension to the <ulink url=\"https://www.postgresql.org/"
@@ -48,13 +48,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: postgis.xml:127
+#: postgis.xml:128
 #, no-c-format
 msgid "This is the manual for version &last_release_version;"
 msgstr ""
 
 #. Tag: para
-#: postgis.xml:128
+#: postgis.xml:129
 #, no-c-format
 msgid ""
 "This work is licensed under a <ulink url=\"http://creativecommons.org/"

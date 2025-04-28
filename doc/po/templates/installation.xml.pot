@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-29 10:16+0000\n"
+"POT-Creation-Date: 2025-04-28 10:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -330,10 +330,9 @@ msgid ""
 "or ST_Area, for instance). A PostgreSQL configuration variable <code>postgis."
 "backend</code> allow end user to control which backend he want to use if "
 "SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.2 require at least "
-"CGAL 4.3 and Boost 1.54 (cf: <ulink url=\"https://oslandia.gitlab.io/SFCGAL/"
-"dev.html\">https://oslandia.gitlab.io/SFCGAL/dev.html</ulink>) <ulink "
-"url=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/"
-"SFCGAL/</ulink>."
+"CGAL 4.3 and Boost 1.54 (cf: <ulink url=\"https://sfcgal.org\">https://"
+"sfcgal.org</ulink>) <ulink url=\"https://gitlab.com/sfcgal/SFCGAL/\">https://"
+"gitlab.com/sfcgal/SFCGAL/</ulink>."
 msgstr ""
 
 #. Tag: para
@@ -1284,7 +1283,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:862
+#: installation.xml:860
+#, no-c-format
+msgid "This will only have data if you marked zcta520 to be loaded"
+msgstr ""
+
+#. Tag: para
+#: installation.xml:865
 #, no-c-format
 msgid ""
 "By default the tables corresponding to <varname>bg</varname>, "
@@ -1295,7 +1300,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:865
+#: installation.xml:868
 #, no-c-format
 msgid ""
 "Alternatively you can load just these tables after loading state data using "
@@ -1303,7 +1308,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:867
+#: installation.xml:870
 #, no-c-format
 msgid ""
 "For each state you want to load data for, generate a state script <xref "
@@ -1311,7 +1316,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:867
+#: installation.xml:870
 #, no-c-format
 msgid ""
 "DO NOT Generate the state script until you have already loaded the nation "
@@ -1319,13 +1324,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:871
+#: installation.xml:874
 #, no-c-format
 msgid "Run the generated commandline scripts."
 msgstr ""
 
 #. Tag: para
-#: installation.xml:874
+#: installation.xml:877
 #, no-c-format
 msgid ""
 "After you are done loading all data or at a stopping point, it's a good idea "
@@ -1333,13 +1338,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: installation.xml:880
+#: installation.xml:883
 #, no-c-format
 msgid "Using Address Standardizer Extension with Tiger geocoder"
 msgstr ""
 
 #. Tag: para
-#: installation.xml:881
+#: installation.xml:884
 #, no-c-format
 msgid ""
 "One of the many complaints of folks is the address normalizer function <xref "
@@ -1353,7 +1358,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:884
+#: installation.xml:887
 #, no-c-format
 msgid ""
 "Once you install this extension in the same database as you have installed "
@@ -1369,13 +1374,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: installation.xml:887
+#: installation.xml:890
 #, no-c-format
 msgid "Required tools for tiger data loading"
 msgstr ""
 
 #. Tag: para
-#: installation.xml:888
+#: installation.xml:891
 #, no-c-format
 msgid ""
 "The load process downloads data from the census website for the respective "
@@ -1389,19 +1394,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:890
+#: installation.xml:893
 #, no-c-format
 msgid "In order to be able to load data you'll need the following tools:"
 msgstr ""
 
 #. Tag: para
-#: installation.xml:892
+#: installation.xml:895
 #, no-c-format
 msgid "A tool to unzip the zip files from census website."
 msgstr ""
 
 #. Tag: para
-#: installation.xml:893
+#: installation.xml:896
 #, no-c-format
 msgid ""
 "For Unix like systems: <varname>unzip</varname> executable which is usually "
@@ -1409,7 +1414,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:894
+#: installation.xml:897
 #, no-c-format
 msgid ""
 "For Windows, 7-zip which is a free compress/uncompress tool you can download "
@@ -1417,7 +1422,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:896
+#: installation.xml:899
 #, no-c-format
 msgid ""
 "<filename>shp2pgsql</filename> commandline which is installed by default "
@@ -1425,7 +1430,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:897
+#: installation.xml:900
 #, no-c-format
 msgid ""
 "<filename>wget</filename> which is a web grabber tool usually installed on "
@@ -1433,7 +1438,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:898
+#: installation.xml:901
 #, no-c-format
 msgid ""
 "If you are on windows, you can get pre-compiled binaries from <ulink "
@@ -1442,7 +1447,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:901
+#: installation.xml:904
 #, no-c-format
 msgid ""
 "If you are upgrading from tiger_2010, you'll need to first generate and run "
@@ -1455,7 +1460,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:903
+#: installation.xml:906
 #, no-c-format
 msgid ""
 "To load state data refer to <xref linkend=\"Loader_Generate_Script\"/> to "
@@ -1465,7 +1470,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:906
+#: installation.xml:909
 #, no-c-format
 msgid ""
 "After the states you desire have been loaded, make sure to run the: "
@@ -1474,7 +1479,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:908
+#: installation.xml:911
 #, no-c-format
 msgid ""
 "To test that things are working as they should, try to run a geocode on an "
@@ -1482,19 +1487,19 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: installation.xml:911
+#: installation.xml:914
 #, no-c-format
 msgid "Upgrading your Tiger Geocoder Install and Data"
 msgstr ""
 
 #. Tag: para
-#: installation.xml:912
+#: installation.xml:915
 #, no-c-format
 msgid "First upgrade your postgis_tiger_geocoder extension as follows:"
 msgstr ""
 
 #. Tag: para
-#: installation.xml:914
+#: installation.xml:917
 #, no-c-format
 msgid ""
 "Next drop all nation tables and load up the new ones. Generate a drop script "
@@ -1503,13 +1508,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:916
+#: installation.xml:919
 #, no-c-format
 msgid "Run the generated drop SQL statements."
 msgstr ""
 
 #. Tag: para
-#: installation.xml:917
+#: installation.xml:920
 #, no-c-format
 msgid ""
 "Generate a nation load script with this SELECT statement as detailed in "
@@ -1517,19 +1522,19 @@ msgid ""
 msgstr ""
 
 #. Tag: emphasis
-#: installation.xml:918
+#: installation.xml:921
 #, no-c-format
 msgid "For windows"
 msgstr ""
 
 #. Tag: emphasis
-#: installation.xml:920
+#: installation.xml:923
 #, no-c-format
 msgid "For unix/linux"
 msgstr ""
 
 #. Tag: para
-#: installation.xml:922
+#: installation.xml:925
 #, no-c-format
 msgid ""
 "Refer to <xref linkend=\"install_tiger_geocoder_extension\"/> for "
@@ -1538,7 +1543,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:923
+#: installation.xml:926
 #, no-c-format
 msgid ""
 "You can have a mix of different year state tables and can upgrade each state "
@@ -1548,13 +1553,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: installation.xml:930
+#: installation.xml:933
 #, no-c-format
 msgid "Common Problems during installation"
 msgstr ""
 
 #. Tag: para
-#: installation.xml:931
+#: installation.xml:934
 #, no-c-format
 msgid ""
 "There are several things to check when your installation or upgrade doesn't "
@@ -1562,7 +1567,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:938
+#: installation.xml:941
 #, no-c-format
 msgid ""
 "Check that you have installed PostgreSQL &min_postgres_version; or newer, "
@@ -1577,7 +1582,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:953
+#: installation.xml:956
 #, no-c-format
 msgid ""
 "If you are running an RPM based distribution, you can check for the "
@@ -1586,7 +1591,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:961
+#: installation.xml:964
 #, no-c-format
 msgid ""
 "If your upgrade fails, make sure you are restoring into a database that "
@@ -1594,7 +1599,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:966
+#: installation.xml:969
 #, no-c-format
 msgid ""
 "Also check that configure has correctly detected the location and version of "
@@ -1602,7 +1607,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:973
+#: installation.xml:976
 #, no-c-format
 msgid ""
 "The output from configure is used to generate the <filename>postgis_config."

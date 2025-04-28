@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2025-04-28 10:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -1067,9 +1067,9 @@ msgid "Availability: 3.4.0"
 msgstr ""
 
 #. Tag: title
-#: reference_editor.xml:990 reference_editor.xml:1145
+#: reference_editor.xml:990
 #, no-c-format
-msgid "Example: Projected point at 100,000 meters and bearing 45 degrees"
+msgid "Example: Extends a line 5 units forward and 6 units backward"
 msgstr ""
 
 #. Tag: para
@@ -1201,6 +1201,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Enhanced: 3.4.0 Allow geometry arguments and two-point form omitting azimuth."
+msgstr ""
+
+#. Tag: title
+#: reference_editor.xml:1145
+#, no-c-format
+msgid "Example: Projected point at 100,000 meters and bearing 45 degrees"
 msgstr ""
 
 #. Tag: para
