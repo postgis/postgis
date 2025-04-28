@@ -5235,7 +5235,7 @@ _lwt_SnapEdge_checkMotion( LWT_TOPOLOGY* topo, const LWCOLLECTION *splitC, const
       if ( ! motionPolyG )
       {
         lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
-        return -1;
+        return;
       }
     }
     eg = LWGEOM2GEOS( lwline_as_lwgeom(e->geom), 0 );
@@ -5244,7 +5244,7 @@ _lwt_SnapEdge_checkMotion( LWT_TOPOLOGY* topo, const LWCOLLECTION *splitC, const
       GEOSGeom_destroy(motionPolyG);
       lwgeom_free(motionPoly);
       lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
-      return -1;
+      return;
     }
 
     char *relate = GEOSRelate( motionPolyG, eg );
@@ -5254,7 +5254,7 @@ _lwt_SnapEdge_checkMotion( LWT_TOPOLOGY* topo, const LWCOLLECTION *splitC, const
       GEOSGeom_destroy(motionPolyG);
       lwgeom_free(motionPoly);
       lwerror("Relate error: %s", lwgeom_geos_errmsg);
-      return -1;
+      return;
     }
 
     int match = GEOSRelatePatternMatch(relate, "FF*F*****");
@@ -5264,7 +5264,7 @@ _lwt_SnapEdge_checkMotion( LWT_TOPOLOGY* topo, const LWCOLLECTION *splitC, const
       GEOSGeom_destroy(motionPolyG);
       lwgeom_free(motionPoly);
       lwerror("RelateMatch error: %s", lwgeom_geos_errmsg);
-      return -1;
+      return;
     }
     if ( ! match )
     {
@@ -5274,7 +5274,7 @@ _lwt_SnapEdge_checkMotion( LWT_TOPOLOGY* topo, const LWCOLLECTION *splitC, const
         " to new node moves it past edge %" LWTFMT_ELEMID,
         edge->edge_id, e->edge_id
       );
-      return -1;
+      return;
     }
   }
   if ( motionPolyG ) GEOSGeom_destroy(motionPolyG);
