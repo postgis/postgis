@@ -90,11 +90,7 @@ SELECT ST_ClipByBox2D(geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
         <note><para>This is the only overlay function where input order matters.
             ST_Difference(A, B) always returns a portion of A.</para></note>
 
-            <para>
-If the optional <code>gridSize</code> argument is provided, the inputs are
-snapped to a grid of the given size, and the result vertices are computed
-on that same grid. (Requires GEOS-3.9.0 or higher)
-            </para>
+        <para> &overlay_gridsize_arg; </para>
 
         <para>Performed by the GEOS module</para>
         <para>Enhanced: 3.1.0 accept a gridSize parameter - requires GEOS &gt;= 3.9.0</para>
@@ -167,7 +163,12 @@ MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_SymDifference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
+        <para>
+<xref linkend="ST_SymDifference"/>,
+<xref linkend="ST_Intersection"/>,
+<xref linkend="ST_Union"/>,
+<xref linkend="ST_ReducePrecision"/>
+        </para>
       </refsection>
     </refentry>
 
@@ -219,11 +220,7 @@ Computes a geometry representing the shared portion of geometries A and B.
             <para>If the geometries have no points in common (i.e. are disjoint)
             then an empty atomic geometry of appropriate type is returned.</para>
 
-            <para>
-If the optional <code>gridSize</code> argument is provided, the inputs are
-snapped to a grid of the given size, and the result vertices are computed
-on that same grid.  (Requires GEOS-3.9.0 or higher)
-            </para>
+            <para> &overlay_gridsize_arg; </para>
 
             <para>ST_Intersection in conjunction with <xref linkend="ST_Intersects"/> is useful for clipping geometries such as in bounding box, buffer, or region
                 queries where you only require the portion of a geometry that is inside a country or region of interest.</para>
@@ -299,7 +296,19 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
       </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_3DIntersection" />, <xref linkend="ST_Difference"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Force2D" />, <xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
+            <para>
+<xref linkend="ST_3DIntersection"/>,
+<xref linkend="ST_Difference"/>,
+<xref linkend="ST_Union"/>,
+<xref linkend="ST_ClipByBox2D"/>,
+<xref linkend="ST_Dimension"/>,
+<xref linkend="ST_Dump"/>,
+<xref linkend="ST_Force2D"/>,
+<xref linkend="ST_SymDifference"/>,
+<xref linkend="ST_Intersects"/>,
+<xref linkend="ST_Multi"/>,
+<xref linkend="ST_ReducePrecision"/>
+            </para>
         </refsection>
     </refentry>
 
@@ -628,8 +637,10 @@ SELECT ST_AsText( ST_Split(line, point)) AS no_split,
         </para>
         <para>
             <code>max_vertices</code> must be 5 or more, as 5 points are needed to represent a closed box.
-            <code>gridSize</code> can be specified to have clipping work in fixed-precision space (requires GEOS-3.9.0+).
         </para>
+
+        <para> &overlay_gridsize_arg; </para>
+
         <para>
             Point-in-polygon and other spatial operations are normally faster for indexed subdivided datasets.
             Since the bounding boxes for the parts usually cover a smaller area than the original geometry bbox,
@@ -745,10 +756,11 @@ CREATE TABLE subdivided_geoms AS
       <refsection>
         <title>See Also</title>
         <para>
-<xref linkend="ST_ClipByBox2D" />,
-<xref linkend="ST_Segmentize" />,
-<xref linkend="ST_Split" />,
-<xref linkend="ST_NPoints" />
+<xref linkend="ST_ClipByBox2D"/>,
+<xref linkend="ST_Segmentize"/>,
+<xref linkend="ST_Split"/>,
+<xref linkend="ST_NPoints"/>,
+<xref linkend="ST_ReducePrecision"/>
     </para>
       </refsection>
     </refentry>
@@ -781,11 +793,7 @@ CREATE TABLE subdivided_geoms AS
             It is called a symmetric difference because <code>ST_SymDifference(A,B) = ST_SymDifference(B,A)</code>.
             </para>
 
-            <para>
-If the optional <code>gridSize</code> argument is provided, the inputs are
-snapped to a grid of the given size, and the result vertices are computed
-on that same grid. (Requires GEOS-3.9.0 or higher)
-            </para>
+        <para> &overlay_gridsize_arg; </para>
 
         <para>Performed by the GEOS module</para>
 
@@ -863,7 +871,12 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_Difference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
+        <para>
+<xref linkend="ST_Difference"/>,
+<xref linkend="ST_Intersection"/>,
+<xref linkend="ST_Union"/>,
+<xref linkend="ST_ReducePrecision"/>
+        </para>
       </refsection>
 </refentry>
 
@@ -916,11 +929,7 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
         striking a balance between ST_Union and <xref linkend="ST_MemUnion" />.
         </para>
 
-        <para>
-        If the optional <code>gridSize</code> argument is provided, the inputs are
-        snapped to a grid of the given size, and the result vertices are computed
-        on that same grid. (Requires GEOS-3.9.0 or higher)
-        </para>
+        <para> &overlay_gridsize_arg; </para>
 
         <para>&Z_support; However, the result is computed using XY only.
             The result Z values are copied, averaged or interpolated.</para>
@@ -935,11 +944,12 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
         <title>See Also</title>
 
         <para>
-            <xref linkend="ST_Union" />,
-            <xref linkend="ST_MemUnion" />,
-            <xref linkend="ST_MakeValid" />,
-            <xref linkend="ST_Collect" />,
-            <xref linkend="ST_Node" />
+            <xref linkend="ST_Union"/>,
+            <xref linkend="ST_MemUnion"/>,
+            <xref linkend="ST_MakeValid"/>,
+            <xref linkend="ST_Collect"/>,
+            <xref linkend="ST_Node"/>,
+            <xref linkend="ST_ReducePrecision"/>
         </para>
       </refsection>
     </refentry>
@@ -1009,11 +1019,7 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
         url="http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html">http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html</ulink>
     </para>
 
-    <para>A <code>gridSize</code> can be specified to work in fixed-precision space.
-        The inputs are snapped to a grid of the given size, and the result vertices are computed
-        on that same grid.
-        (Requires GEOS-3.9.0 or higher)
-    </para>
+    <para> &overlay_gridsize_arg; </para>
 
     <note><para><xref linkend="ST_Collect" /> may sometimes be used in place of ST_Union,
         if the result is not required to be non-overlapping.
@@ -1109,12 +1115,13 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
       <refsection>
         <title>See Also</title>
         <para>
-            <xref linkend="ST_Collect" />,
-            <xref linkend="ST_UnaryUnion" />,
-            <xref linkend="ST_MemUnion" />,
-            <xref linkend="ST_Intersection" />,
-            <xref linkend="ST_Difference" />,
-            <xref linkend="ST_SymDifference" />
+            <xref linkend="ST_Collect"/>,
+            <xref linkend="ST_UnaryUnion"/>,
+            <xref linkend="ST_MemUnion"/>,
+            <xref linkend="ST_Intersection"/>,
+            <xref linkend="ST_Difference"/>,
+            <xref linkend="ST_SymDifference"/>,
+            <xref linkend="ST_ReducePrecision"/>
         </para>
       </refsection>
     </refentry>

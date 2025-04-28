@@ -71,6 +71,13 @@
  url='http://www.opengeospatial.org/standards/sfs'>OGC Simple Features
  Implementation Specification for SQL 1.1.</ulink>">
 
+<!ENTITY overlay_gridsize_arg
+"If the optional <code>gridSize</code> parameter is given (GEOS-3.9.0 or higher required),
+all result vertices are guaranteed to fall on a grid of the specified
+size.  For the operation to give predictable results all the input vertices
+must fall already on the specified grid, see <xref linkend='ST_ReducePrecision'/>.
+">
+
 <!ENTITY sqlmm_compliant
 "<inlinemediaobject>
    <imageobject>
