@@ -223,7 +223,8 @@ TAG_GENERATED_SOURCES = \
 	sfs_compliant.tag \
 	sqlmm_compliant.tag \
 	T_support.tag \
-	Z_support.tag
+	Z_support.tag \
+	overlay_gridsize_arg.tag
 
 XML_GENERATED_SOURCES = \
 	$(XSL_GENERATED_SOURCES) \
