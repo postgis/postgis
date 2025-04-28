@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-25 17:55+0000\n"
+"POT-Creation-Date: 2025-04-28 10:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -7988,6 +7988,11 @@ msgstr ""
 
 #. Tag: member
 #, no-c-format
+msgid "Dian M Fay"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Dmitry Vasilyev"
 msgstr ""
 
@@ -8545,7 +8550,9 @@ msgstr ""
 
 #. Tag: link
 #, no-c-format
-msgid "INIA-CSIC"
+msgid ""
+">The National Institute for Agricultural and Food Research and Technology "
+"(INIA-CSIC)"
 msgstr ""
 
 #. Tag: link
@@ -14446,30 +14453,13 @@ msgid ""
 "set at global or database level."
 msgstr ""
 
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"The backend to service a function where GEOS and SFCGAL overlap. Options: "
-"geos or sfcgal. Defaults to geos."
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
-"This GUC is only relevant if you compiled PostGIS with sfcgal support. By "
-"default <varname>geos</varname> backend is used for functions where both "
-"GEOS and SFCGAL have the same named function. This variable allows you to "
-"override and make sfcgal the backend to service the request."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend just for life of connection"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend for new connections to database"
+"For more examples of usage refer to <link xlink:href=\"https://www."
+"postgresql.org/docs/current/sql-set.html\">SQL SET</link> and <link xlink:"
+"href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
+"ALTER SYSTEM</link>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -14611,30 +14601,22 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
+msgid ""
+"To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current "
+"session"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Sets backend for all new connections to database"
+msgid "Set for all new connections to a specific database to specific drivers"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Sets default enabled drivers for all new connections to server. Requires "
-"super user access and PostgreSQL 9.4+. Also note that database, session, and "
-"user settings override this."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Enable all GDAL Drivers"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Disable all GDAL Drivers"
+"Setting for whole database cluster to enable all drivers. Requires super "
+"user access. Also note that database, session, and user settings override "
+"this."
 msgstr ""
 
 #. Tag: para
@@ -14691,14 +14673,14 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Set for specific database"
+msgid "Set for all new connections to a specific database"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Setting for whole database cluster. You need to reconnect to the database "
-"for changes to take effect."
+"Setting for whole database cluster. Requires super user access. Also note "
+"that database, session, and user settings override this."
 msgstr ""
 
 #. Tag: refpurpose
@@ -19742,7 +19724,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Canonical example for a Web Mercator tile using a computed tile bounds to "
-"query and clip geometry."
+"query and clip geometry. This assumes the data.geom column has srid of 4326."
 msgstr ""
 
 #. Tag: para
@@ -20345,12 +20327,9 @@ msgid ""
 "ST_Difference(A, B) always returns a portion of A."
 msgstr ""
 
-#. Tag: para
+#. Tag: refsection
 #, no-c-format
-msgid ""
-"If the optional <code>gridSize</code> argument is provided, the inputs are "
-"snapped to a grid of the given size, and the result vertices are computed on "
-"that same grid. (Requires GEOS-3.9.0 or higher)"
+msgid "&overlay_gridsize_arg;"
 msgstr ""
 
 #. Tag: para
@@ -20402,7 +20381,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
+msgid ""
+", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20522,9 +20503,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
-"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
-"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
+"linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Force2D\"/>, <xref "
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
+"linkend=\"ST_Multi\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20702,8 +20684,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<code>max_vertices</code> must be 5 or more, as 5 points are needed to "
-"represent a closed box. <code>gridSize</code> can be specified to have "
-"clipping work in fixed-precision space (requires GEOS-3.9.0+)."
+"represent a closed box."
 msgstr ""
 
 #. Tag: para
@@ -20781,7 +20762,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
-"linkend=\"ST_NPoints\"/>"
+"linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20859,7 +20840,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
-"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20915,14 +20897,6 @@ msgid ""
 "described in <link xlink:href=\"http://blog.cleverelephant.ca/2009/01/must-"
 "faster-unions-in-postgis-14.html\">http://blog.cleverelephant.ca/2009/01/"
 "must-faster-unions-in-postgis-14.html</link>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A <code>gridSize</code> can be specified to work in fixed-precision space. "
-"The inputs are snapped to a grid of the given size, and the result vertices "
-"are computed on that same grid. (Requires GEOS-3.9.0 or higher)"
 msgstr ""
 
 #. Tag: para
@@ -20991,7 +20965,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
 "linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
-"linkend=\"ST_SymDifference\"/>"
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: title
@@ -34443,12 +34417,12 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.5.0"
+msgid "PostGIS 3.5.2"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2024/09/25"
+msgid "2025/01/18"
 msgstr ""
 
 #. Tag: para
@@ -34457,6 +34431,174 @@ msgid ""
 "This version requires PostgreSQL 12-17, GEOS 3.8 or higher, and Proj 6.1+. "
 "To take advantage of all features, GEOS 3.12+ is needed. To take advantage "
 "of all SFCGAL features, SFCGAL 1.5.0+ is needed."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Bug Fixes"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5677\">#5677</"
+"link>, Retain SRID during unary union (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5833\">#5833</"
+"link>, pg_upgrade fix for postgis_sfcgal (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5564\">#5564</"
+"link>, BRIN crash fix and support for parallel in PG17+ (Paul Ramsey, Regina "
+"Obe)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "PostGIS 3.5.1"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "2024/12/22"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Breaking Changes"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5792\">#5792</"
+"link>, [topology] Prevent topology corruption with TopoGeo_addPoint near "
+"almost collinear edges (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5795\">#5795</"
+"link>, [topology] Fix ST_NewEdgesSplit can cause invalid topology (Björn "
+"Harrtell)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5794\">#5794</"
+"link>, [topology] Fix crash in TopoGeo_addPoint (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5785\">#5785</"
+"link>, [raster] ST_MapAlgebra segfaults when expression references a "
+"supernumerary rast argument (Dian M Fay)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5787\">#5787</"
+"link>, Check that ST_ChangeEdgeGeom doesn't change winding of rings (Sandro "
+"Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5791\">#5791</"
+"link>, Add legacy stubs for old transaction functions to allow pg_upgrade "
+"(Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5800\">#5800</"
+"link>, PROJ compiled version reading the wrong minor and micro (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5790\">#5790</"
+"link>, Non-schema qualified calls causing issue with materialized views "
+"(Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5812\">#5812</"
+"link>, Performance regression in ST_Within (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5815\">#5815</"
+"link>, Remove hash/merge promise from &lt;&gt; operator (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5823\">#5823</"
+"link>, Build support for Pg18 (Paul Ramsey)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Enhancements"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5782\">#5782</"
+"link>, Improve robustness of min distance calculation (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"[topology] Speedup topology building when closing large rings with many "
+"holes (Björn Harrtell)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5810\">#5810</"
+"link>, Update tiger geocoder to handle TIGER 2024 data (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5799\">#5799</"
+"link>, make ST_TileEnvelope clip envelopes to tile plane extent (Paul Ramsey)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "PostGIS 3.5.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "2024/09/25"
 msgstr ""
 
 #. Tag: para
@@ -34477,11 +34619,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Vincent Bre (French Team)"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Breaking Changes"
 msgstr ""
 
 #. Tag: para
@@ -34542,7 +34679,8 @@ msgstr ""
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5496\">#5496</"
 "link>, ST_Clip all variants replaced, will require rebuilding of "
-"materialized views that use them (Regina Obe)"
+"materialized views that use them (funding from The National Institute for "
+"Agricultural and Food Research and Technology (INIA-CSIC)), Regina Obe"
 msgstr ""
 
 #. Tag: para
@@ -34728,11 +34866,6 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5706\">#5706</"
 "link>, <link xlink:href=\"https://github.com/postgis/postgis/"
 "pull/768\">GH-768</link>, ST_RemoveSmallParts (Sam Peters)"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Enhancements"
 msgstr ""
 
 #. Tag: para
@@ -39540,6 +39673,16 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This function supports 3d and will not drop the z-index."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If the optional <code>gridSize</code> parameter is given (GEOS-3.9.0 or "
+"higher required), all result vertices are guaranteed to fall on a grid of "
+"the specified size. For the operation to give predictable results all the "
+"input vertices must fall already on the specified grid, see <xref "
+"linkend=\"ST_ReducePrecision\"/>."
 msgstr ""
 
 #. Tag: para
