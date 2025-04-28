@@ -1,4 +1,4 @@
-PostGIS 3.4.5
+PostGIS 3.4.5dev
 xxxx/xx/xx
 
 PostgreSQL 12-17 required. GEOS 3.6+ required but GEOS 3.12+ to take advantage of all features.
@@ -12,6 +12,7 @@ Proj 6.1+ required.
   - #5874, Line substring returns wrong answer (Paul Ramsey)
   - #5829, geometry_columns with non-standard constraints (Paul Ramsey)
   - #5818, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)
+  - #5885, Fix documentation about grid-based overlay operations (Sandro Santilli)
 
 PostGIS 3.4.4
 2024/12/22
