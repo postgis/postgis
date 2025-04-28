@@ -73,6 +73,7 @@
 <!ENTITY T_support SYSTEM "T_support.tag">
 <!ENTITY index_aware SYSTEM "index_aware.tag">
 <!ENTITY geography_transform SYSTEM "geography_transform.tag">
+<!ENTITY overlay_gridsize_arg SYSTEM "overlay_gridsize_arg.tag">
 
 <!-- entity definitions for the postgis_special section -->
 <!ENTITY postgis_special SYSTEM "postgis_special.xml">
