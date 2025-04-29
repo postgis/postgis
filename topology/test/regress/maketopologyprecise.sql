@@ -9,6 +9,8 @@ SELECT 'start', 'e', edge_id, ST_AsEWKT(geom) FROM topo.edge ORDER BY edge_id;
 SELECT topology.MakeTopologyPrecise('topo');
 SELECT 'prec5', 'e', edge_id, ST_AsEWKT(geom) FROM topo.edge ORDER BY edge_id;
 
+SET client_min_messages TO WARNING;
+
 -- TODO: test bbox limited made-precise topology
 
 -- Cleanup
