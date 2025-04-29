@@ -3,5 +3,3 @@ NOTICE:  Every vertex is precise in an empty topology
 ERROR:  Presence of max ordinate value 1002003008 requires a minimum grid size of 3.60721082879999e-6
 start|e|1|LINESTRING(123456789 0.1,6 -1002003004)
 prec5|e|1|LINESTRING(123456790 0,5 -1002003005)
-NOTICE:  Dropping all layers from topology 'topo' (1)
-NOTICE:  drop cascades to 6 other objects
