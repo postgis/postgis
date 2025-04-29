@@ -88,7 +88,7 @@ WITH edgePoints AS (
   SELECT geom from isolatedNodes
 )
 SELECT ST_Union(geom) FROM allVertices
-WHERE NOT ST_Equals( ST_ReducePrecision(geom, $2), geom )
+WHERE NOT ST_Equals( ST_SnapToGrid(geom, $2), geom )
     $$,
     topo.name
   );
