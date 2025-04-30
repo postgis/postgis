@@ -22,6 +22,7 @@ Proj 4.9+ required.
  - #5905, Crash on deeply nested geometries (Paul Ramsey)
  - #5909, ST_ValueCount crashes on empty table (Paul Ramsey)
  - #5917, ST_Relate becomes unresponsive (Paul Ramsey)
+ - #5985, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro Santilli)
 
 
 PostGIS 3.3.8
