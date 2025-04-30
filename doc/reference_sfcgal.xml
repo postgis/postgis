@@ -3122,7 +3122,7 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
        <programlisting><![CDATA[SELECT string_agg('<Shape>' || ST_AsX3D(cgbuffer3d_output)  || '<Appearance>
           <Material diffuseColor="0 0.8 0.2" specularColor="0 1 0"/>
         </Appearance>
-    </Shape>', '');]]></programlisting> 
+    </Shape>', '');]]></programlisting>
     <informaltable>
                 <tgroup cols="2">
                 <tbody>
