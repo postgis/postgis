@@ -23,8 +23,8 @@
         libprotobuf-c-dev
         libtool
         libxml2-utils
-        postgresql-15
-        postgresql-server-dev-15
+        postgresql
+        postgresql-server-dev
         protobuf-c-compiler
         xsltproc
     - service postgresql start
