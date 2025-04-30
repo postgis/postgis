@@ -601,4 +601,12 @@ RETURNS geometry
 AS 'MODULE_PATHNAME', 'sfcgal_simplify'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 _COST_LOW;
+
+-- Availability: 3.6.0
+CREATE OR REPLACE FUNCTION CG_3DAlphaWrapping(geom geometry, relative_alpha int, relative_offset int DEFAULT 0)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_alphawrapping_3d'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
+
 COMMIT;
