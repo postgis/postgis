@@ -28,6 +28,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 - #5943, Memory leak in handling GEOS GeometryFactory (Megan Ma)
 - #5407, Use memset in place of bzero (Paul Ramsey)
 - #5082, LRS proportions clamped to [0,1] (Pawel Ostrowski)
+- #5985, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro Santilli)
 
 
 PostGIS 3.5.3
