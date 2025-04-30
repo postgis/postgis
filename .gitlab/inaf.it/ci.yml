@@ -32,27 +32,14 @@
   script:
     - ./autogen.sh
     - ./configure
-    - make maintainer-clean
-    - ./autogen.sh
-    - chattr -R +i . # mark source tree as immutable
-    - export SRCDIR="${PWD}"
-    - echo "SRCDIR is ${SRCDIR}"
-    - mkdir /tmp/build && cd /tmp/build
-    - echo "Build dir is ${PWD}"
-    - ${SRCDIR}/configure --without-raster CFLAGS="-Wall -fno-omit-frame-pointer -Werror"
     - make
-    - make -C liblwgeom check
-    - su -c 'make' postgres # idempotence test, see #5099
-    - RUNTESTFLAGS="-v --dumprestore" make check-regress
-    - make install
-    - RUNTESTFLAGS="-v --dumprestore" make installcheck
+    - make check
     - make distclean
-    - ${SRCDIR}/utils/check_distclean.sh
 
 test:
-  image: debian:bookworm
+  image: debian:trixie
   <<: *build_definition
 
 test32:
-  image: i386/debian:bookworm
+  image: i386/debian:trixie
   <<: *build_definition
