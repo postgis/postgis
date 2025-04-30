@@ -3712,7 +3712,95 @@ SELECT (ST_Dump(CG_Simplify(geom, 0.5, false))).geom FROM depts_pds;
     <para>
       <xref linkend="ST_Simplify"/>, <xref linkend="ST_SimplifyPreserveTopology"/>
     </para>
-  </refsection>
+   </refsection>
+</refentry>
+
+<refentry xml:id="CG_3DAlphaWrapping">
+   <refnamediv>
+       <refname>CG_3DAlphaWrapping</refname>
+       <refpurpose>Computes a 3D Alpha-wrapping strictly enclosing a geometry.</refpurpose>
+   </refnamediv>
+   <refsynopsisdiv>
+       <funcsynopsis>
+           <funcprototype>
+               <funcdef>geometry <function>CG_3DAlphaWrapping</function></funcdef>
+               <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+               <paramdef><type>integer</type> <parameter>relative_alpha</parameter></paramdef>
+               <paramdef><type>integer</type> <parameter>relative_offset</parameter></paramdef>
+           </funcprototype>
+       </funcsynopsis>
+   </refsynopsisdiv>
+   <refsection>
+       <title>Description</title>
+       <para>Computes the <link xlink:href="https://doc.cgal.org/latest/Alpha_wrap_3/index.html">3D Alpha Wrapping</link> of the points in a geometry. An alpha wrapping is a watertight and orientable surface mesh that strictly encloses the input. It can be seen as an extension or refinement of an <link linkend="CG_AlphaShape">alpha-shape</link>.</para>
+       <para>
+            The <varname>relative_alpha</varname> parameter controls which features will appear in the output.
+            It can can have values from 0 to infinity.
+            Smaller relative_alpha values result in simpler outputs, but they are less accurate representations of the original input.
+        </para>
+       <para>
+            The <varname>relative_offset</varname> parameter controls the tightness of the result.
+            It can can have values from 0 to infinity.
+            If this parameter is set to 0, its value is automatically determined based on the relative_alpha parameter.
+        </para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.1.0</para>
+       <para>&sfcgal_required;</para>
+       <para>&Z_support;</para>
+   </refsection>
+   <refsection>
+       <title>Examples</title>
+       <para>
+           <programlisting>SELECT CG_3DAlphaWrapping('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
+           (88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
+           (81 47),(88 58),(68 73),(49 95),(81 60),(87 50),(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),
+           (35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),(75 84),(75 77),(81 29),(77 73),
+           (41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),(80 72),(54 32),(55 26),
+           (62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
+           (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),
+           (34 86),(45 90),(64 97))'::geometry,10);</programlisting>
+           <informalfigure>
+               <mediaobject>
+                   <imageobject>
+                       <imagedata fileref="images/cg_3dalphawrapping01.png"/>
+                   </imageobject>
+                   <caption><para>Alpha wrapping of a MultiPoint (same example As <xref linkend="CG_OptimalAlphaShape"/>)</para></caption>
+               </mediaobject>
+           </informalfigure>
+       </para>
+       <para>
+           <programlisting>SELECT CG_3DAlphaWrapping('MULTIPOINT((132 64),(114 64),(99 64),(81 64),(63 64),(57 49),
+           (52 36),(46 20),(37 20),(26 20),(32 36),(39 55),(43 69),(50 84),(57 100),(63 118),(68 133),(74 149),
+           (81 164),(88 180),(101 180),(112 180),(119 164),(126 149),(132 131),(139 113),(143 100),(150 84),(157 69),(163 51),
+           (168 36),(174 20),(163 20),(150 20),(143 36),(139 49),(132 64),(99 151),(92 138),(88 124),(81 109),(74 93),(70 82),
+           (83 82),(99 82),(112 82),(126 82),(121 96),(114 109),(110 122),(103 138),(99 151),(34 27),(43 31),(48 44),(46 58),
+           (52 73),(63 73),(61 84),(72 71),(90 69),(101 76),(123 71),(141 62),(166 27),(150 33),(159 36),(146 44),(154 53),
+           (152 62),(146 73),(134 76),(143 82),(141 91),(130 98),(126 104),(132 113),(128 127),(117 122),(112 133),(119 144),
+           (108 147),(119 153),(110 171),(103 164),(92 171),(86 160),(88 142),(79 140),(72 124),(83 131),(79 118),(68 113),
+           (63 102),(68 93),(35 45))'::geometry,14);</programlisting>
+           <informalfigure>
+               <mediaobject>
+                   <imageobject>
+                       <imagedata fileref="images/cg_3dalphawrapping02.png"/>
+                   </imageobject>
+                   <caption><para>Alpha wrapping of a MultiPoint (same example as <xref linkend="ST_ConcaveHull"/>)</para></caption>
+               </mediaobject>
+           </informalfigure>
+       </para>
+       <para>
+           <informalfigure>
+               <mediaobject>
+                   <imageobject>
+                       <imagedata fileref="images/cg_3dalphawrapping03.png"/>
+                   </imageobject>
+                   <caption><para>Effect of the <varname>relative_alpha</varname> parameter with values 5, 10 and 20. A value of 5 results in a coarse output. Increasing the parameter up to 20 significantly improves the precision and granularity of the result.</para></caption>
+               </mediaobject>
+           </informalfigure>
+       </para>
+   </refsection>
+   <refsection>
+       <title>See Also</title>
+       <para><xref linkend="CG_AlphaShape"/></para>
+   </refsection>
 </refentry>
 
     </section>
