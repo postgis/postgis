@@ -34,7 +34,7 @@
     - ./autogen.sh
     - ./configure
     - make
-    - make check
+    - make check RUNTESTFLAGS=-v
     - make distclean
 
 test:
