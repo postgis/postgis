@@ -16,6 +16,7 @@ PostGIS 3.6.0
 
 * New Features *
 
+  - #5894, TotalTopologySize (Sandro Santilli)
   - #5890, ValidateTopologyPrecision, MakeTopologyPrecise (Sandro Santilli)
   - #5861, Add --drop-topology switch to pgtopo_import (Sandro Santilli)
   - #1247, ST_AsRasterAgg (Sandro Santilli)
