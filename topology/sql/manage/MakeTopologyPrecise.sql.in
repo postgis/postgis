@@ -17,6 +17,7 @@
 -- Invalidities are represented by any vertex that does not fall on
 -- the topology precision grid.
 -- }{
+-- Availability: 3.6.0
 CREATE OR REPLACE FUNCTION topology.MakeTopologyPrecise(toponame name, bbox GEOMETRY DEFAULT NULL, gridSize float8 DEFAULT NULL)
 RETURNS void AS
 $BODY$
