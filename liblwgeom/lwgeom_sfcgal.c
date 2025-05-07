@@ -28,6 +28,7 @@
 #if POSTGIS_SFCGAL_VERSION >= 20100
 #define sfcgal_triangulated_surface_num_triangles(g) sfcgal_triangulated_surface_num_patches((g))
 #define sfcgal_triangulated_surface_triangle_n(g,i)  sfcgal_triangulated_surface_patch_n((g), (i))
+#define sfcgal_triangulated_surface_add_triangle(g, p) sfcgal_triangulated_surface_add_patch((g), (p))
 #define sfcgal_polyhedral_surface_num_polygons(g)    sfcgal_polyhedral_surface_num_patches((g))
 #define sfcgal_polyhedral_surface_polygon_n(g,i)     sfcgal_polyhedral_surface_patch_n((g), (i))
 #define sfcgal_geometry_collection_num_geometries(g) sfcgal_geometry_num_geometries((g))
