@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-04-28 09:57+0000\n"
-"PO-Revision-Date: 2025-04-22 03:47+0000\n"
+"PO-Revision-Date: 2025-05-09 00:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2310,6 +2310,10 @@ msgid ""
 "Encoding and Referencing system ) / Line and Master Address database export</"
 "link> released by the US Census Bureau."
 msgstr ""
+"米国統計局が公開している<link xlink:href=\"https://www2.census.gov/geo/tiger/"
+"\">TIGER (Topologically Integrated Geographic Encoding and Referencing "
+"system ) / Line and Master Address database "
+"export</link>と連動するように書かれたPL/pgSQLベースのジオコーダです。"
 
 #. Tag: para
 #, no-c-format
@@ -7759,6 +7763,8 @@ msgid ""
 "If the target topology already exists and you want it dropped upfront you "
 "can pass the <code>--drop-topology</code> switch (since PostGIS-3.6.0)."
 msgstr ""
+"対象トポロジが既に存在していて事前に削除したいなら <code>--drop-topology</"
+"code> スイッチを渡すことができます (PostGIS 3.6.0以降)。"
 
 #. Tag: title
 #, no-c-format
@@ -17118,6 +17124,9 @@ msgid ""
 "vertices within the tolerance distance of one another are considered to be "
 "duplicates. The distance is computed in 2D (XY plane)."
 msgstr ""
+"ゼロでない<parameter>tolerance</parameter>パラメータを与えた場合には、相互に"
+"許容範囲距離内の頂点は重複頂点とみなされます。距離は2次元 "
+"(XY平面)で計算されます。"
 
 #. Tag: para
 #, no-c-format
@@ -18326,7 +18335,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A boolean configuration to turn logging of GDAL debug messages on and off."
-msgstr ""
+msgstr "GDALデバッグメッセージのログを取るか取らないかを設定する真偽値。"
 
 #. Tag: para
 #, no-c-format
@@ -18336,6 +18345,10 @@ msgid ""
 "logging to be sent into the PostgreSQL logging stream, so you can see more "
 "or less of it by altering the <code>client_min_message</code> PostgreSQL GUC."
 msgstr ""
+"デフォルトでは、ログは標準エラー出力に印字され、低レベルのデバッグメッセージ"
+"は一切出力されません。このGUCをTRUEに変更すると、GDALログがPostgreSQLログスト"
+"リームに出力され、PostgreSQL GUCの<code>client_min_message</code>を変更するこ"
+"とでメッセージ量を多くも少なくもできます。"
 
 #. Tag: para
 #, no-c-format
@@ -24597,6 +24610,8 @@ msgid ""
 "Canonical example for a Web Mercator tile using a computed tile bounds to "
 "query and clip geometry. This assumes the data.geom column has srid of 4326."
 msgstr ""
+"問い合わせとジオメトリのクリッピングを行うために計算されたタイル境界を使うWeb"
+"メルカトルのタイルの標準的な例です。data.geomカラムのSRIDは4326です。"
 
 #. Tag: para
 #, no-c-format
@@ -25362,7 +25377,7 @@ msgstr ""
 #. Tag: refsection
 #, no-c-format
 msgid "&overlay_gridsize_arg;"
-msgstr ""
+msgstr "&overlay_gridsize_arg;"
 
 #. Tag: para
 #, no-c-format
@@ -25419,6 +25434,8 @@ msgid ""
 ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>, <xref "
 "linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
+", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -25573,6 +25590,11 @@ msgid ""
 "linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
 "linkend=\"ST_Multi\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
+", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Force2D\"/>, <xref linkend="
+"\"ST_SymDifference\"/>, <xref linkend=\"ST_Intersects\"/>, <xref linkend="
+"\"ST_Multi\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -25796,7 +25818,8 @@ msgstr ""
 msgid ""
 "<code>max_vertices</code> must be 5 or more, as 5 points are needed to "
 "represent a closed box."
-msgstr ""
+msgstr "閉じたボックスを表現するために必要なポイント数は5個ですから、<code>max_vertic"
+"es</code>は5以上です。"
 
 #. Tag: para
 #, no-c-format
@@ -25900,6 +25923,8 @@ msgid ""
 ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
 "linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
+", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
+"linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26000,6 +26025,9 @@ msgid ""
 "linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>, <xref "
 "linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
+", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>, <xref linkend="
+"\"ST_ReducePrecision\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26153,6 +26181,9 @@ msgid ""
 "linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
 "linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
+", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
+"linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -40160,7 +40191,7 @@ msgstr "ポリゴンと近似的な中心軸"
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40282,6 +40313,8 @@ msgid ""
 "linkend=\"CG_StraightSkeleton\"/>, <xref "
 "linkend=\"CG_StraightSkeletonPartition\"/>"
 msgstr ""
+", <xref linkend=\"CG_ExtrudeStraightSkeleton\"/>, <xref linkend="
+"\"CG_StraightSkeleton\"/>, <xref linkend=\"CG_StraightSkeletonPartition\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -40530,7 +40563,8 @@ msgstr "任意引数use_distance_as_mを使用するにはSFCGAL &gt;= 1.3.8が�
 msgid ""
 "Note that valid inputs with rings that touch at a single point will raise an "
 "error."
-msgstr ""
+msgstr "リング同士が1点で接触する妥当な入力ではエラーが発生することに注意してください"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -40709,7 +40743,7 @@ msgstr "Availability: 3.6.0 - SFCGAL &gt;= 2.0.0が必要です。"
 #. Tag: para
 #, no-c-format
 msgid "Straight Skeleton Partition of polygon"
-msgstr ""
+msgstr "ポリゴンのストレートスケルトン分割"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -49246,6 +49280,10 @@ msgid ""
 "input vertices must fall already on the specified grid, see <xref "
 "linkend=\"ST_ReducePrecision\"/>."
 msgstr ""
+"元の<code>gridSize</code>を与える場合には (GEOS-3.9.0以上では必要)、全ての結"
+"果頂点が指定されたサイズのグリッドに落ちることが保証されます。予測できる結果"
+"を得るには、全ての入力頂点が既に指定したグリッドに落ちている必要があります。"
+"<xref linkend=\"ST_ReducePrecision\"/>をご覧ください。"
 
 #. Tag: para
 #, no-c-format
