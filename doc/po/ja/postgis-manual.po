@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-04-28 09:57+0000\n"
-"PO-Revision-Date: 2025-05-09 00:47+0000\n"
+"PO-Revision-Date: 2025-05-12 01:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -1176,8 +1176,9 @@ msgid ""
 "is text (token number <code>0</code>): Refers to building number or name. "
 "Unparsed building identifiers and types. Generally blank for most addresses."
 msgstr ""
-"文字列 (トークン番号 <code>0</code>): 建物番号や建物名を参照します。解析され"
-"ていない建物識別子と型です。一般的に、ほとんどの住所では空白です。"
+"文字列 (トークン番号 <code>0</code>): 建物番号や建物名を指します。建物識別子"
+"と建物タイプのうち解析されていないものです。一般的に、ほとんどの住所では空白"
+"になります。"
 
 #. Tag: para
 #, no-c-format
@@ -1185,9 +1186,9 @@ msgid ""
 "is a text (token number <code>1</code>): This is the street number on a "
 "street. Example <emphasis>75</emphasis> in <code>75 State Street</code>."
 msgstr ""
-"文字列 (トークン番号 <code>1</code>): ストリートの番号です。<emphasis>75</"
-"emphasis>となっている場合には、たとえば<code>75 State Street</code>から得られ"
-"ます。"
+"文字列 (トークン番号 <code>1</code>): "
+"ストリート上の番号です。<emphasis>75</emphasis>となっている場合には、"
+"たとえば<code>75 State Street</code>から得られます。"
 
 #. Tag: para
 #, no-c-format
@@ -1204,9 +1205,9 @@ msgid ""
 "is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example "
 "<emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>."
 msgstr ""
-"文字列 (トークン番号 <code>3</code>): ストリート名の修飾前置語です。"
-"<emphasis>OLD</emphasis>となっている場合には、たとえば<code>3715 OLD HIGHWAY "
-"99</code>から得られます。"
+"文字列 (トークン番号 <code>3</code>): "
+"ストリート名の修飾前置語です。<emphasis>OLD</emphasis>となっている場合には、"
+"たとえば<code>3715 OLD HIGHWAY 99</code>から得られます。"
 
 #. Tag: para
 #, no-c-format
@@ -1236,8 +1237,8 @@ msgid ""
 "modifier that follows the street name.. Example <emphasis>WEST</emphasis> in "
 "<code>3715 TENTH AVENUE WEST</code>."
 msgstr ""
-"文字列 (トークン番号 <code>7</code>): ストリート名に続くNorth, South, East, "
-"Westといった、ストリート名の方角後置語です。<emphasis>WEST</emphasis>となって"
+"文字列 (トークン番号 <code>7</code>): ストリート名に続くNorth, South, East, W"
+"estといった、ストリート名の方角後置語です。<emphasis>WEST</emphasis>となって"
 "いる場合には、たとえば<code>3715 TENTH AVENUE WEST</code>から得られます。"
 
 #. Tag: para
@@ -1299,8 +1300,9 @@ msgid ""
 "is text Apartment number or Suite Number (token number <code>17</code>): "
 "Example <emphasis>3B</emphasis> in <code>APT 3B</code>."
 msgstr ""
-"文字列 (トークン番号 <code>17</code>): 部屋番号です。<emphasis>3B</emphasis>"
-"となっている場合には、たとえば<code>APT 3B</code>から得られます。"
+"文字列 (トークン番号 <code>17</code>): "
+"部屋番号です。<emphasis>3B</emphasis>となっている場合には、たとえば<code>APT "
+"3B</code>から得られます。"
 
 #. Tag: title
 #, no-c-format
@@ -1527,7 +1529,7 @@ msgstr "(22) 方位を示す語です。たとえば <emphasis>North</emphasis>�
 #. Tag: para
 #, no-c-format
 msgid "(20). Words used to denote milepost addresses."
-msgstr "(20) 距離標の住所を示す語です。"
+msgstr "(20) 距離標を使った住所を示す語です。"
 
 #. Tag: para
 #, no-c-format
@@ -1607,8 +1609,8 @@ msgid ""
 "STOPWORDS combine with WORDS. In rules a string of multiple WORDs and "
 "STOPWORDs will be represented by a single WORD token."
 msgstr ""
-"STOPWORD (訳注: 処理対象外とする語)はWORDと結合します。規則で、複数のWORDと"
-"STOPWORDの列は、単一のWORDトークンで表現されます。"
+"STOPWORD (訳注: 処理対象外とする語)はWORDと結合します。規則で、複数のWORDとST"
+"OPWORDの列は、単一のWORDトークンで表現されます。"
 
 #. Tag: para
 #, no-c-format
@@ -1670,9 +1672,9 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
-"<emphasis role=\"bold\"><varname>MACRO_C</varname>出力トークン</emphasis> "
-"(<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>から引用)。"
+"<emphasis role=\"bold\"><varname>MACRO_C</varname>出力トークン</emphasis> ("
+"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\""
+">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>から引用)。"
 
 #. Tag: para
 #, no-c-format
