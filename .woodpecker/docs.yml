@@ -43,7 +43,7 @@ steps:
     commands:
       - make -C build-docs/doc check
     when:
-      - path: *when_path
+      - path: *when_path_full
         event: [tag, pull_request, push]
   build-images:
     image: *test_image
