@@ -5488,7 +5488,7 @@ CREATE OR REPLACE FUNCTION ST_PointN(geometry,integer)
 CREATE OR REPLACE FUNCTION ST_NumPatches(geometry)
 	RETURNS integer
 	AS '
-	SELECT CASE WHEN @extschema@.ST_GeometryType($1) = ''ST_PolyhedralSurface''
+	SELECT CASE WHEN @extschema@.ST_GeometryType($1) in (''ST_PolyhedralSurface'', ''ST_Tin'')
 	THEN @extschema@.ST_NumGeometries($1)
 	ELSE NULL END
 	'
@@ -5499,7 +5499,7 @@ CREATE OR REPLACE FUNCTION ST_NumPatches(geometry)
 CREATE OR REPLACE FUNCTION ST_PatchN(geometry, integer)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.ST_GeometryType($1) = ''ST_PolyhedralSurface''
+	SELECT CASE WHEN @extschema@.ST_GeometryType($1) in (''ST_PolyhedralSurface'', ''ST_Tin'')
 	THEN @extschema@.ST_GeometryN($1, $2)
 	ELSE NULL END
 	'
