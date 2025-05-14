@@ -3122,7 +3122,7 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
        <programlisting><![CDATA[SELECT string_agg('<Shape>' || ST_AsX3D(cgbuffer3d_output)  || '<Appearance>
           <Material diffuseColor="0 0.8 0.2" specularColor="0 1 0"/>
         </Appearance>
-    </Shape>', '');]]></programlisting> 
+    </Shape>', '');]]></programlisting>
     <informaltable>
                 <tgroup cols="2">
                 <tbody>
@@ -3566,6 +3566,153 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
        <title>See Also</title>
        <para><xref linkend="CG_Translate"/>, <xref linkend="ST_Translate"/></para>
    </refsection>
+</refentry>
+
+<refentry xml:id="CG_Simplify">
+  <refnamediv>
+    <refname>CG_Simplify</refname>
+    <refpurpose>Reduces the complexity of a geometry while preserving essential features and Z/M values.</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>geometry <function>CG_Simplify</function></funcdef>
+        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+        <paramdef><type>double precision</type> <parameter>threshold</parameter></paramdef>
+        <paramdef choice="opt"><type>boolean</type> <parameter>preserveTopology = false</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsection>
+    <title>Description</title>
+    <para>
+      Simplifies a geometry using SFCGAL's simplification algorithm, which reduces the number of points or vertices while preserving the essential features of the geometry. This function preserves Z and M values during simplification.
+    </para>
+    <para>
+      The algorithm is based on constrained triangulation and uses the <link xlink:href="https://doc.cgal.org/latest/Polyline_simplification_2/index.html">CGAL Polyline Simplification 2</link> library with additional handling to preserve Z and M coordinates.
+      When topology is preserved and geometries intersect, Z and M values are interpolated at intersection points.
+    </para>
+    <para>
+      This function works well with 3D terrain-like geometries (2.5D) but is not designed for vertical surfaces like walls.
+    </para>
+    <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.1.0</para>
+    <para>&sfcgal_required;</para>
+    <para>&Z_support;</para>
+    <para>&M_support;</para>
+  </refsection>
+
+  <refsection>
+    <title>Parameters</title>
+    <variablelist>
+      <varlistentry>
+        <term><parameter>geom</parameter></term>
+        <listitem>
+          <para>Input geometry</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter>threshold</parameter></term>
+        <listitem>
+          <para>Maximum distance threshold (in geometry unit) for simplification. The higher this value, the more simplified the resulting geometry will be.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter>preserveTopology</parameter></term>
+        <listitem>
+          <para>If set to true, the function ensures that the topology of the geometry is preserved. When geometries intersect in this mode, Z and M values at intersection points are interpolated. The default value is false.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsection>
+
+  <refsection>
+    <title>Return Value</title>
+    <para>
+      Returns a simplified geometry with preserved Z and M values.
+    </para>
+  </refsection>
+
+  <refsection>
+    <title>Examples</title>
+    <para>
+      <programlisting>
+-- Simplify a polygon with a threshold of 0.5
+SELECT ST_AsText(CG_Simplify(ST_GeomFromText('POLYGON((0 0, 0 1, 0.1 1, 0.2 1, 0.3 1, 0.4 1, 0.5 1, 1 1, 1 0, 0 0))'), 0.5));
+
+-- Simplify a 3D terrain geometry while preserving topology and Z values
+SELECT ST_AsText(CG_Simplify(ST_GeomFromText('LINESTRING Z(0 0 0, 0 1 1, 0.1 1 1, 0.2 1 1, 0.3 1 1, 1 1 2)'), 0.2, true));
+
+-- Simplify a geometry with both Z and M values
+SELECT ST_AsText(CG_Simplify(ST_GeomFromText('LINESTRING ZM(0 0 0 1, 0 1 1 2, 0.1 1 1 3, 0.2 1 1 4, 0.3 1 1 5, 1 1 2 6)'), 0.2));
+
+-- Simplify two geometry together preserving Z and M values, without topology
+SELECT ST_AsText(CG_Simplify('GEOMETRYCOLLECTION ZM(LINESTRING ZM(-1 -1 3 4, 0 0 10 100, 1 1 20 200, 0 2 15 150, 0 5 30 300, 2 19 25 250, -4 20 15 150), POLYGON ZM((0 0 10 100, 1 1 20 200, 0 2 15 150, 0 5 30 300, 2 19 25 250, -4 20 15 150, 0 0 10 100)))', 2, false));
+
+-- Simplify two geometry together preserving Z and M values, with topology
+SELECT ST_AsText(CG_Simplify('GEOMETRYCOLLECTION ZM(LINESTRING ZM(-1 -1 3 4, 0 0 10 100, 1 1 20 200, 0 2 15 150, 0 5 30 300, 2 19 25 250, -4 20 15 150), POLYGON ZM((0 0 10 100, 1 1 20 200, 0 2 15 150, 0 5 30 300, 2 19 25 250, -4 20 15 150, 0 0 10 100)))', 2, true));
+      </programlisting>
+    </para>
+    <para>
+        <programlisting>
+WITH depts_pds as (SELECT ST_GeomFromText('GEOMETRYCOLLECTION(
+POLYGON((88.46 158.85,90.77 171.54,147.31 173.85,146.15 145,173.85 119.62,146.15 103.46,112.69 118.46,91.92 93.08,65.38 101.15,34.23 121.92,41.15 142.69,49.23 143.85,88.46 158.85)),
+POLYGON((112.69 118.46,146.15 103.46,190 60.77,185.38 43.46,126.54 26.15,83.85 28.46,67.69 64.23,43.46 58.46,10 83.85,34.23 121.92,65.38 101.15,91.92 93.08,112.69 118.46)))
+') as geom)
+SELECT geom FROM depts_pds;
+        </programlisting>
+        <informalfigure>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/cg_simplify00.png"/>
+                </imageobject>
+                <caption><para>Originals geometries</para></caption>
+            </mediaobject>
+        </informalfigure>
+    </para>
+    <para>
+        <programlisting>
+WITH depts_pds as (SELECT ST_GeomFromText('GEOMETRYCOLLECTION(
+POLYGON((88.46 158.85,90.77 171.54,147.31 173.85,146.15 145,173.85 119.62,146.15 103.46,112.69 118.46,91.92 93.08,65.38 101.15,34.23 121.92,41.15 142.69,49.23 143.85,88.46 158.85)),
+POLYGON((112.69 118.46,146.15 103.46,190 60.77,185.38 43.46,126.54 26.15,83.85 28.46,67.69 64.23,43.46 58.46,10 83.85,34.23 121.92,65.38 101.15,91.92 93.08,112.69 118.46)))
+') as geom)
+SELECT (ST_Dump(CG_Simplify(geom, 0.5, true))).geom FROM depts_pds;
+        </programlisting>
+        <informalfigure>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/cg_simplify01.png"/>
+                </imageobject>
+                <caption><para>Simplification with 0.5 and topology preserved</para></caption>
+            </mediaobject>
+        </informalfigure>
+    </para>
+    <para>
+      <programlisting>
+WITH depts_pds as (SELECT ST_GeomFromText('GEOMETRYCOLLECTION(
+POLYGON((88.46 158.85,90.77 171.54,147.31 173.85,146.15 145,173.85 119.62,146.15 103.46,112.69 118.46,91.92 93.08,65.38 101.15,34.23 121.92,41.15 142.69,49.23 143.85,88.46 158.85)),
+POLYGON((112.69 118.46,146.15 103.46,190 60.77,185.38 43.46,126.54 26.15,83.85 28.46,67.69 64.23,43.46 58.46,10 83.85,34.23 121.92,65.38 101.15,91.92 93.08,112.69 118.46)))
+') as geom)
+SELECT (ST_Dump(CG_Simplify(geom, 0.5, false))).geom FROM depts_pds;
+      </programlisting>
+      <informalfigure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/cg_simplify02.png"/>
+          </imageobject>
+          <caption><para>Simplification with 0.5 without topology preservation</para></caption>
+        </mediaobject>
+      </informalfigure>
+    </para>
+  </refsection>
+
+  <refsection>
+    <title>See Also</title>
+    <para>
+      <xref linkend="ST_Simplify"/>, <xref linkend="ST_SimplifyPreserveTopology"/>
+    </para>
+  </refsection>
 </refentry>
 
     </section>
