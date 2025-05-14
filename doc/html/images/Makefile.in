@@ -47,6 +47,9 @@ GENERATED_IMAGES= \
 	cg_ymonotonepartition01.png \
 	cg_ymonotonepartition02.png \
 	cg_straightskeletonpartition01.png \
+	cg_simplify00.png \
+	cg_simplify01.png \
+	cg_simplify02.png \
 	de9im01.png \
 	de9im02.png \
 	st_alphashape01.png \
