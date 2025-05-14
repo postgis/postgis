@@ -237,6 +237,22 @@ ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int want3d)
 }
 
 /*
+ * Create a SFCGAL point based on dimensional flags (2D, 3D, 2D+M, 3D+M).
+ */
+static sfcgal_geometry_t *
+create_sfcgal_point_by_dimensions(double x, double y, double z, double m, int is_3d, int is_measured)
+{
+    if (is_3d && is_measured)
+        return sfcgal_point_create_from_xyzm(x, y, z, m);
+    else if (is_3d)
+        return sfcgal_point_create_from_xyz(x, y, z);
+    else if (is_measured)
+        return sfcgal_point_create_from_xym(x, y, m);
+    else
+        return sfcgal_point_create_from_xy(x, y);
+}
+
+/*
  * Convert a PostGIS pointarray to SFCGAL structure
  *
  * Used for simple LWGEOM geometry POINT, LINESTRING, TRIANGLE
@@ -245,79 +261,55 @@ ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int want3d)
 static sfcgal_geometry_t *
 ptarray_to_SFCGAL(const POINTARRAY *pa, int type)
 {
-	POINT3DZ point;
-	int is_3d;
-	uint32_t i;
+    POINT4D point;
+    int is_3d, is_measured;
+    uint32_t i;
 
-	assert(pa);
+    assert(pa);
 
-	is_3d = FLAGS_GET_Z(pa->flags) != 0;
+    is_3d = FLAGS_GET_Z(pa->flags) != 0;
+    is_measured = FLAGS_GET_M(pa->flags) != 0;
 
-	switch (type)
-	{
-	case POINTTYPE:
-	{
-		getPoint3dz_p(pa, 0, &point);
-		if (is_3d)
-			return sfcgal_point_create_from_xyz(point.x, point.y, point.z);
-		else
-			return sfcgal_point_create_from_xy(point.x, point.y);
-	}
-	break;
+    switch (type)
+    {
+    case POINTTYPE:
+    {
+        getPoint4d_p(pa, 0, &point);
+        return create_sfcgal_point_by_dimensions(point.x, point.y, point.z, point.m, is_3d, is_measured);
+    }
+    break;
+    case LINETYPE:
+    {
+        sfcgal_geometry_t *line = sfcgal_linestring_create();
+        for (i = 0; i < pa->npoints; i++)
+        {
+            getPoint4d_p(pa, i, &point);
+            sfcgal_linestring_add_point(line,
+                create_sfcgal_point_by_dimensions(point.x, point.y, point.z, point.m, is_3d, is_measured));
+        }
+        return line;
+    }
+    break;
+    case TRIANGLETYPE:
+    {
+        sfcgal_geometry_t *triangle = sfcgal_triangle_create();
+        sfcgal_geometry_t *vertex;
 
-	case LINETYPE:
-	{
-		sfcgal_geometry_t *line = sfcgal_linestring_create();
+        for (i = 0; i < 3; i++)
+        {
+            getPoint4d_p(pa, i, &point);
+            vertex = create_sfcgal_point_by_dimensions(point.x, point.y, point.z, point.m, is_3d, is_measured);
+            sfcgal_triangle_set_vertex(triangle, i, vertex);
+        }
 
-		for (i = 0; i < pa->npoints; i++)
-		{
-			getPoint3dz_p(pa, i, &point);
-			if (is_3d)
-			{
-				sfcgal_linestring_add_point(line,
-							    sfcgal_point_create_from_xyz(point.x, point.y, point.z));
-			}
-			else
-			{
-				sfcgal_linestring_add_point(line, sfcgal_point_create_from_xy(point.x, point.y));
-			}
-		}
-
-		return line;
-	}
-	break;
-
-	case TRIANGLETYPE:
-	{
-		sfcgal_geometry_t *triangle = sfcgal_triangle_create();
-
-		getPoint3dz_p(pa, 0, &point);
-		if (is_3d)
-			sfcgal_triangle_set_vertex_from_xyz(triangle, 0, point.x, point.y, point.z);
-		else
-			sfcgal_triangle_set_vertex_from_xy(triangle, 0, point.x, point.y);
-
-		getPoint3dz_p(pa, 1, &point);
-		if (is_3d)
-			sfcgal_triangle_set_vertex_from_xyz(triangle, 1, point.x, point.y, point.z);
-		else
-			sfcgal_triangle_set_vertex_from_xy(triangle, 1, point.x, point.y);
-
-		getPoint3dz_p(pa, 2, &point);
-		if (is_3d)
-			sfcgal_triangle_set_vertex_from_xyz(triangle, 2, point.x, point.y, point.z);
-		else
-			sfcgal_triangle_set_vertex_from_xy(triangle, 2, point.x, point.y);
-
-		return triangle;
-	}
-	break;
-
-	/* Other SFCGAL types should not be called directly ... */
-	default:
-		lwerror("ptarray_from_SFCGAL: Unknown Type");
-		return NULL;
-	}
+        return triangle;
+    }
+    break;
+    /* Other SFCGAL types should not be called directly ... */
+    default:
+        lwerror("ptarray_from_SFCGAL: Unknown Type");
+        return NULL;
+    }
 }
 
 /*
