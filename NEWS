@@ -16,6 +16,7 @@ PostGIS 3.6.0
 
 * New Features *
 
+  - GH-803, ADD CG_Simplify function (Loïc Bartoletti)
   - GH-805, Add M support for SFCGAL >= 1.5.0 (Loïc Bartoletti)
   - #5894, TotalTopologySize (Sandro Santilli)
   - #5890, ValidateTopologyPrecision, MakeTopologyPrecise (Sandro Santilli)
