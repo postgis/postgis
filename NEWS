@@ -6,6 +6,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 
 * Bug fixes *
 
+- Do not complain about illegal option when calling shp2pgsql -?
 - #5862, [topology] Prevent another topology corruption with
          TopoGeo_addPoint near almost collinear edges (Sandro Santilli)
 - #5841, Change approach to interrupt handling to conform to PgSQL

@@ -105,7 +105,7 @@ main (int argc, char **argv)
 	set_loader_config_defaults(config);
 
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
-	while ((c = pgis_getopt(argc, argv, "-acdeg:ikm:nps:t:wDGIN:ST:W:X:Z")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "-?acdeg:ikm:nps:t:wDGIN:ST:W:X:Z")) != EOF)
 	{
 		// can not do this inside the switch case
 		if ('-' == c)
