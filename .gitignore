@@ -218,3 +218,7 @@ deps/Makefile
 deps/wagyu/Makefile
 deps/ryu/Makefile
 deps/flatgeobuf/Makefile
+
+# Dump
+**/*Dump.xml
+**/*.core
