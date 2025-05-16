@@ -3102,16 +3102,14 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
        <title>Description</title>
        <para>Generates a 3D buffer around the input geometry <parameter>geom</parameter> with a specified <parameter>radius</parameter>.
        The buffer is constructed in 3D space, creating a volumetric representation of the geometry's surroundings.
-       The <parameter>segments</parameter> parameter defines the number of segments used to approximate the curved sections of the buffer.
+       The <parameter>segments</parameter> parameter defines the number of segments used to approximate the curved sections of the buffer, with a minimum value of 4 segments required.
        The <parameter>buffer_type</parameter> specifies the type of buffer to create:
        0: Rounded buffer (default)
        1: Flat buffer
        2: Square buffer</para>
+       <para>Input geometry must be a Point or LineString.</para>
        <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
        <para>&sfcgal_required;</para>
-       <para>&Z_support;</para>
-       <para>&P_support;</para>
-       <para>&T_support;</para>
    </refsection>
    <refsection>
        <title>Examples</title>
