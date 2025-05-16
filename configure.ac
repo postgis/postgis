@@ -186,6 +186,11 @@ case $host_os in
 esac
 AC_SUBST([MINGWBUILD])
 
+dnl
+dnl define _USE_MATH_DEFINES for Windows
+dnl
+AC_DEFINE([_USE_MATH_DEFINES], [], [Define to use math constants in MSVC])
+
 AC_PATH_PROG([CODESPELL], [codespell], [])
 if test "x$CODESPELL" = "x"; then
 	AC_MSG_WARN([codespell is not installed so spelling cannot be checked])
