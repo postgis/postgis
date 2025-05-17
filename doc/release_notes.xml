@@ -3,6 +3,31 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
         <section>
+            <title>PostGIS 3.5.3</title>
+            <para>2025/05/17</para>
+            <para>This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj 6.1+.
+            To take advantage of all features, GEOS 3.12+ is needed.
+            To take advantage of all SFCGAL features, SFCGAL 1.5.0+ is needed.</para>
+
+            <simplesect>
+                <title>Bug Fixes</title>
+                    <para>Do not complain about illegal option when calling shp2pgsql -?
+                    (Sandro Santilli, Giovanni Zezza)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5862">5862</link>, [topology] Prevent another topology corruption with
+                            TopoGeo_addPoint near almost collinear edges (Sandro Santilli)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5841">5841</link>, Change approach to interrupt handling to conform to PgSQL
+                            recommended practice (Paul Ramsey)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5855">5855</link>, Fix index binding in ST_DFullyWithin (Paul Ramsey)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5819">5819</link>, Support longer names in estimated extent (Paul Ramsey)</para>
+                    <para>Fix misassignment of result in _lwt_HealEdges (Maxim Korotkov)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5876">5876</link>, ST_AddPoint with empty argument adds garbage (Paul Ramsey)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5874">5874</link>, Line substring returns wrong answer (Paul Ramsey)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5829">5829</link>, geometry_columns with non-standard constraints (Paul Ramsey)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5818">5818</link>, <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/244">GT-244</link> Fix CG_IsSolid function (Loïc Bartoletti)</para>
+                    <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5885">5885</link>, Fix documentation about grid-based overlay operations (Sandro Santilli)</para>
+            </simplesect>
+        </section>
+        <section>
             <title>PostGIS 3.5.2</title>
             <para>2025/01/18</para>
             <para>This version requires PostgreSQL 12-17, GEOS 3.8 or higher, and Proj 6.1+.

@@ -1,5 +1,5 @@
-PostGIS 3.5.3dev
-2025/xx/xx
+PostGIS 3.5.3
+2025/05/16
 
 To take advantage of all postgis_sfcgal extension features SFCGAL 1.5+ is needed.
 PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
@@ -7,6 +7,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 * Bug fixes *
 
 - Do not complain about illegal option when calling shp2pgsql -?
+  (Sandro Santilli, Giovanni Zezza)
 - #5862, [topology] Prevent another topology corruption with
          TopoGeo_addPoint near almost collinear edges (Sandro Santilli)
 - #5841, Change approach to interrupt handling to conform to PgSQL
