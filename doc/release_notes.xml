@@ -25,6 +25,8 @@
                     <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5829">5829</link>, geometry_columns with non-standard constraints (Paul Ramsey)</para>
                     <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5818">5818</link>, <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/244">GT-244</link> Fix CG_IsSolid function (Loïc Bartoletti)</para>
                     <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5885">5885</link>, Fix documentation about grid-based overlay operations (Sandro Santilli)</para>
+                    <para>For SFCGAL 2.1.0+ prevent using deprecated functions (Regina Obe)</para>
+            </simplesect>
             </simplesect>
         </section>
         <section>
