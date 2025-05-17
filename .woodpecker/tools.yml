@@ -4,7 +4,7 @@ when:
   event: [push, pull_request, tag]
 steps:
   build:
-    image: repo.osgeo.org/postgis/build-test:trisquel11
+    image: repo.osgeo.org/postgis/build-test:universal
     pull: true
     commands:
       - sh ci/dronie/postgis_tools.sh
