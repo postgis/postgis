@@ -27,7 +27,6 @@
                     <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5885">5885</link>, Fix documentation about grid-based overlay operations (Sandro Santilli)</para>
                     <para>For SFCGAL 2.1.0+ prevent using deprecated functions (Regina Obe)</para>
             </simplesect>
-            </simplesect>
         </section>
         <section>
             <title>PostGIS 3.5.2</title>
