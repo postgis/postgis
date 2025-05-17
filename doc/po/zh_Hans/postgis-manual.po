@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-25 17:55+0000\n"
+"POT-Creation-Date: 2025-05-17 23:10+0000\n"
 "PO-Revision-Date: 2023-12-28 09:45+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -17,646 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.3\n"
-
-#. Tag: chapter
-#, no-c-format
-msgid "&database_tuning;"
-msgstr "&database_tuning;"
-
-#. Tag: title
-#, no-c-format
-msgid "PostGIS Administration"
-msgstr "PostGIS 管理"
-
-#. Tag: title
-#, no-c-format
-msgid "Configuring raster support"
-msgstr "配置栅格支持"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you enabled raster support you may want to read below how to properly "
-"configure it."
-msgstr "如果启用了栅格的支持，则可能需要读一下下面的内容来正确配置它。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"As of PostGIS 2.1.3, out-of-db rasters and all raster drivers are disabled "
-"by default. In order to re-enable these, you need to set the following "
-"environment variables <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and "
-"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in the server environment. "
-"For PostGIS 2.2, you can use the more cross-platform approach of setting the "
-"corresponding <xref linkend=\"PostGIS_GUC\"/>."
-msgstr ""
-"从 PostGIS 2.1.3 开始，默认情况下禁用数据库外栅格和所有栅格驱动程序要启用它"
-"们，请在服务器上设置环境变量 <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> "
-"和<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>。PostGIS 2.2 提供了一种跨平"
-"台方法，用于根据第 <xref linkend=\"PostGIS_GUC\"/> 进行设置。"
-
-#. Tag: para
-#, no-c-format
-msgid "If you want to enable offline raster:"
-msgstr "如果要启用离线栅格："
-
-#. Tag: para
-#, no-c-format
-msgid "Any other setting or no setting at all will disable out of db rasters."
-msgstr "如果包括任何其它值或不包含值，则会禁用离线栅格。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"In order to enable all GDAL drivers available in your GDAL install, set this "
-"environment variable as follows"
-msgstr "若想启用已经安装的 GDAL 驱动，请设置以下环境变量"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you want to only enable specific drivers, set your environment variable "
-"as follows:"
-msgstr "如果只想启用某些驱动，请按如下所示设置环境变量："
-
-#. Tag: para
-#, no-c-format
-msgid "If you are on windows, do not quote the driver list"
-msgstr "在 Windows 上，不要在驱动程序列表中加上引号"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Setting environment variables varies depending on OS. For PostgreSQL "
-"installed on Ubuntu or Debian via apt-postgresql, the preferred way is to "
-"edit <filename>/etc/postgresql/<replaceable>10</replaceable>/"
-"<replaceable>main</replaceable>/environment</filename> where 10 refers to "
-"version of PostgreSQL and main refers to the cluster."
-msgstr ""
-"环境变量的设置因操作系统而异。对于在 Ubuntu 或 Debian 上通过 apt-postgresql "
-"安装的 PostgreSQL，首选方法是编辑<filename>/etc/postgresql/<replaceable>10</"
-"replaceable>/<replaceable>main</replaceable>/environment</filename> ，其中数"
-"字 10 是 PostgreSQL 的版本，main 表示集群。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"On windows, if you are running as a service, you can set via System "
-"variables which for Windows 7 you can get to by right-clicking on Computer-"
-"&gt;Properties Advanced System Settings or in explorer navigating to "
-"<varname>Control Panel\\All Control Panel Items\\System</varname>. Then "
-"clicking <emphasis>Advanced System Settings -&gt;Advanced-&gt;Environment "
-"Variables</emphasis> and adding new system variables."
-msgstr ""
-"在 Windows 上，如果您作为服务运行，则可以通过系统变量进行设置，对于 Windows "
-"7，您可以通过右键单击计算机 -&gt; 属性高级系统设置或在资源管理器中导航至 "
-"<varname>控制面板\\所有 控制面板项目\\系统</varname>。 然后点击<emphasis>高级"
-"系统设置-&gt;高级->环境变量</emphasis>并添加新的系统变量。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"After you set the environment variables, you'll need to restart your "
-"PostgreSQL service for the changes to take effect."
-msgstr "设置环境变量后，您需要重启 PostgreSQL 服务才能使更改生效。"
-
-#. Tag: title
-#, no-c-format
-msgid "Creating spatial databases"
-msgstr "创建空间数据库"
-
-#. Tag: title
-#, no-c-format
-msgid "Spatially enable database using EXTENSION"
-msgstr "使用扩展（EXTENSION）启用空间数据库"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you are using PostgreSQL 9.1+ and have compiled and installed the "
-"extensions/postgis modules, you can turn a database into a spatial one using "
-"the EXTENSION mechanism."
-msgstr ""
-"如果您使用的是 PostgreSQL 9.1 以上的版本，并且已经编译并安装了 postgis 扩展模"
-"块，那么数据库将在 PG 的扩展机制下成为空间数据库。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Core postgis extension includes geometry, geography, spatial_ref_sys and all "
-"the functions and comments. Raster and topology are packaged as a separate "
-"extension."
-msgstr ""
-"postgis 的核心扩展包括几何、地理、spatial_ref_sys 以及所有函数和注释。栅格"
-"（Raster）和拓扑（Topology）打包为单独的扩展模块。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Run the following SQL snippet in the database you want to enable spatially:"
-msgstr "在要启用空间的数据库中运行以下SQL代码段："
-
-#. Tag: title
-#, no-c-format
-msgid "Spatially enable database without using EXTENSION (discouraged)"
-msgstr "不通过扩展（EXTENSION）的方式启用空间数据库（不建议）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This is generally only needed if you cannot or don't want to get PostGIS "
-"installed in the PostgreSQL extension directory (for example during testing, "
-"development or in a restricted environment)."
-msgstr ""
-"通常，仅当你不能或不想在PostgreSQL扩展的目录中安装PostGIS时（例如，在测试或开"
-"发期间，或在受限环境中），才需要这样做。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Adding PostGIS objects and function definitions into your database is done "
-"by loading the various sql files located in <filename>[prefix]/share/"
-"contrib</filename> as specified during the build phase."
-msgstr ""
-"将 PostGIS 对象和函数定义添加到数据库中是通过加载位于构建阶段指定的 "
-"<filename>[prefix]/share/contrib</filename> 中的各种 sql 文件来完成的。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The core PostGIS objects (geometry and geography types, and their support "
-"functions) are in the <filename>postgis.sql</filename> script. Raster "
-"objects are in the <filename>rtpostgis.sql</filename> script. Topology "
-"objects are in the <filename>topology.sql</filename> script."
-msgstr ""
-"核心 PostGIS 对象（几何和地理类型及其支持函数）位于 <filename>postgis.sql</"
-"filename> 脚本中。 栅格对象位于 <filename>rtpostgis.sql</filename> 脚本中。 "
-"拓扑对象位于 <filename>topology.sql</filename> 脚本中。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"For a complete set of EPSG coordinate system definition identifiers, you can "
-"also load the <filename>spatial_ref_sys.sql</filename> definitions file and "
-"populate the <varname>spatial_ref_sys</varname> table. This will permit you "
-"to perform ST_Transform() operations on geometries."
-msgstr ""
-"对于完整的 EPSG 坐标系定义标识符集，您还可以加载 <filename>spatial_ref_sys."
-"sql</filename> 定义文件并填充 <varname>spatial_ref_sys</varname> 表。 这将允"
-"许您对几何图形执行 ST_Transform() 操作。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you wish to add comments to the PostGIS functions, you can find them in "
-"the <filename>postgis_comments.sql</filename> script. Comments can be viewed "
-"by simply typing <command>\\dd [function_name]</command> from a "
-"<command>psql</command> terminal window."
-msgstr ""
-"如果您希望向 PostGIS 函数添加注释，可以在 <filename>postgis_comments.sql</"
-"filename> 脚本中找到它们。 只需从 <command>psql</command> 终端窗口输入 "
-"<command>\\dd [function_name]</command> 即可查看注释。"
-
-#. Tag: para
-#, no-c-format
-msgid "Run the following Shell commands in your terminal:"
-msgstr "在终端中运行以下 shell 命令："
-
-#. Tag: title
-#, no-c-format
-msgid "Upgrading spatial databases"
-msgstr "升级空间数据库"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Upgrading existing spatial databases can be tricky as it requires "
-"replacement or introduction of new PostGIS object definitions."
-msgstr ""
-"当您需要替换或部署新的 PostGIS 对象定义时，升级现有空间数据库可能会很棘手。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Unfortunately not all definitions can be easily replaced in a live database, "
-"so sometimes your best bet is a dump/reload process."
-msgstr ""
-"遗憾的是，并非所有定义都可以在正在运行的数据库中轻松替换，因此转储/重装可能是"
-"最好的选择。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases, and "
-"a HARD UPGRADE procedure for major releases."
-msgstr "PostGIS 为次要版本升级和错误修复提供软升级，为主要升级提供硬升级。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Before attempting to upgrade PostGIS, it is always worth to backup your "
-"data. If you use the -Fc flag to pg_dump you will always be able to restore "
-"the dump with a HARD UPGRADE."
-msgstr ""
-"在尝试升级PostGIS之前备份数据始终是值得的。 可以将 -fc 标志与 pg_dump 一起使"
-"用，以始终通过硬升级还原转储。"
-
-#. Tag: title
-#, no-c-format
-msgid "Soft upgrade"
-msgstr "软升级"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you installed your database using extensions, you'll need to upgrade "
-"using the extension model as well. If you installed using the old sql script "
-"way, you are advised to switch your install to extensions because the script "
-"way is no longer supported."
-msgstr ""
-"如果使用扩展安装数据库，则必须使用扩展模型对其进行升级。 如果使用较旧的 SQL "
-"脚本进行安装，则应切换到扩展，因为不再支持 SQL 脚本。"
-
-#. Tag: title
-#, no-c-format
-msgid "Soft Upgrade 9.1+ using extensions"
-msgstr "使用 9.1 或更高版本的扩展进行软升级"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you originally installed PostGIS with extensions, then you need to "
-"upgrade using extensions as well. Doing a minor upgrade with extensions, is "
-"fairly painless."
-msgstr ""
-"如果使用扩展程序安装了PostGIS，则需要使用该扩展程序进行升级。使用扩展程序进行"
-"小升级非常轻松。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you are running PostGIS 3 or above, then you should use the <xref "
-"linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the latest "
-"version you have installed."
-msgstr ""
-"如果您运行的是 PostGIS 3 或更高版本，则应升级到已安装的具有<xref "
-"linkend=\"PostGIS_Extensions_Upgrade\"/>功能的最新版本。"
-
-#. Tag: para
-#, no-c-format
-msgid "If you are running PostGIS 2.5 or lower, then do the following:"
-msgstr "如果您运行的是 PostGIS 2.5 或更早版本，执行以下操作："
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you have multiple versions of PostGIS installed, and you don't want to "
-"upgrade to the latest, you can explicitly specify the version as follows:"
-msgstr ""
-"如果安装了多个版本的 PostGIS，并且不想升级到最新版本，则可以指定显式版本。 执"
-"行以下操作："
-
-#. Tag: para
-#, no-c-format
-msgid "If you get an error notice something like:"
-msgstr "您可能会看到类似于以下内容的错误通知："
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Then you'll need to backup your database, create a fresh one as described in "
-"<xref linkend=\"create_new_db_extensions\"/> and then restore your backup on "
-"top of this new database."
-msgstr ""
-"在这种情况下，必须备份数据库，按照 <xref "
-"linkend=\"create_new_db_extensions\"/>中所述生成新数据库，然后将备份还原到新"
-"数据库。"
-
-#. Tag: para
-#, no-c-format
-msgid "If you get a notice message like:"
-msgstr "您可能会收到类似于以下内容的消息："
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Then everything is already up to date and you can safely ignore it. "
-"<emphasis role=\"bold\">UNLESS</emphasis> you're attempting to upgrade from "
-"an development version to the next (which doesn't get a new version number); "
-"in that case you can append \"next\" to the version string, and next time "
-"you'll need to drop the \"next\" suffix again:"
-msgstr ""
-"那么一切都已经是最新的，您可以安全地忽略它。 <emphasis role=\"bold\">除非</"
-"emphasis>您正在尝试从开发版本升级到下一个版本（不会获得新的版本号）； 在这种"
-"情况下，您可以将“next”附加到版本字符串，下次您需要再次删除“next”后缀："
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you installed PostGIS originally without a version specified, you can "
-"often skip the reinstallation of postgis extension before restoring since "
-"the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
-"the newest latest version during restore."
-msgstr ""
-"如果您最初安装 PostGIS 时没有指定版本，则通常可以在恢复之前跳过 postgis 扩展"
-"的重新安装，因为备份只有 <code>CREATE EXTENSION postgis</code> ，因此在恢复期"
-"间会选择最新版本。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you are upgrading PostGIS extension from a version prior to 3.0.0, you "
-"will have a new extension <emphasis>postgis_raster</emphasis> which you can "
-"safely drop, if you don't need raster support. You can drop as follows:"
-msgstr ""
-"如果您要从 3.0.0 之前的版本升级 PostGIS 扩展，您将拥有一个新的扩展 "
-"<emphasis>postgis_raster</emphasis>，如果您不需要栅格支持，则可以安全地删除该"
-"扩展。 您可以按如下方式删除："
-
-#. Tag: title
-#, no-c-format
-msgid "Soft Upgrade Pre 9.1+ or without extensions"
-msgstr "9.1之前版本或者无扩展软升级"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This section applies only to those who installed PostGIS not using "
-"extensions. If you have extensions and try to upgrade with this approach "
-"you'll get messages like:"
-msgstr ""
-"它适用于在不使用扩展名的情况下安装了PostGIS的人。如果您使用的是扩展并使用此方"
-"法，您将看到类似于以下内容的消息："
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* "
-"prior to r7409, you cannot use this procedure but would rather need to do a "
-"<link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
-msgstr ""
-"注： 如果要迁移到 r1 之前的 PostGIS 7429.* 或 PostGIS 2.*，则此过程不可用，但"
-"需要执行<link linkend=\"hard_upgrade\">硬升级</link>。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"After compiling and installing (make install) you should find a set of "
-"<filename>*_upgrade.sql</filename> files in the installation folders. You "
-"can list them all with:"
-msgstr ""
-"编译并安装（make install）后，您应该在安装文件夹中找到一组 "
-"<filename>*_upgrade.sql</filename> 文件。 您可以通过以下方式列出它们："
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Load them all in turn, starting from <filename>postgis_upgrade.sql</"
-"filename>."
-msgstr "从 <filename>postgis_upgrade.sql</filename> 开始依次加载它们。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The same procedure applies to raster, topology and sfcgal extensions, with "
-"upgrade files named <filename>rtpostgis_upgrade.sql</filename>, "
-"<filename>topology_upgrade.sql</filename> and <filename>sfcgal_upgrade.sql</"
-"filename> respectively. If you need them:"
-msgstr ""
-"相同的过程适用于栅格、拓扑和 sfcgal 扩展，升级文件分别名为 "
-"<filename>rtpostgis_upgrade.sql</filename>、<filename>topology_upgrade.sql</"
-"filename> 和 <filename>sfcgal_upgrade.sql</filename>。 如果您需要它们："
-
-#. Tag: para
-#, no-c-format
-msgid "You are advised to switch to an extension based install by running"
-msgstr "建议您通过运行切换到基于扩展的安装"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you can't find the <filename>postgis_upgrade.sql</filename> specific for "
-"upgrading your version you are using a version too early for a soft upgrade "
-"and need to do a <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
-msgstr ""
-"如果您找不到专门用于升级您的版本的 <filename>postgis_upgrade.sql</filename>，"
-"那么您使用的版本对于软升级来说还太早，需要执行<link linkend=\"hard_upgrade\">"
-"硬升级</link>。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The <xref linkend=\"PostGIS_Full_Version\"/> function should inform you "
-"about the need to run this kind of upgrade using a \"procs need upgrade\" "
-"message."
-msgstr ""
-"<xref linkend=\"PostGIS_Full_Version\"/>函数的“进程需要升级”消息提供了有关需"
-"要执行此类升级的信息。"
-
-#. Tag: title
-#, no-c-format
-msgid "Hard upgrade"
-msgstr "硬升级"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"By HARD UPGRADE we mean full dump/reload of postgis-enabled databases. You "
-"need a HARD UPGRADE when PostGIS objects' internal storage changes or when "
-"SOFT UPGRADE is not possible. The <link linkend=\"release_notes\">Release "
-"Notes</link> appendix reports for each version whether you need a dump/"
-"reload (HARD UPGRADE) to upgrade."
-msgstr ""
-"硬升级意味着完全转储/重新加载 PostGIS 中可用的数据。如果 PostGIS 对象的内部存"
-"储状态发生更改或无法进行软升级，则需要硬升级。 附录中的<link "
-"linkend=\"release_notes\">发行说明</link>指示每个版本是否需要转储/重新加载"
-"（硬升级）。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The dump/reload process is assisted by the postgis_restore script which "
-"takes care of skipping from the dump all definitions which belong to PostGIS "
-"(including old ones), allowing you to restore your schemas and data into a "
-"database with PostGIS installed without getting duplicate symbol errors or "
-"bringing forward deprecated objects."
-msgstr ""
-"转储/重新加载操作由脚本辅助postgis_restore。 此脚本跳过属于 PostGIS 的所有定"
-"义（包括旧定义）。 您还可以将方案和数据恢复到 PostGIS 安装的数据库，而不会传"
-"递重复的符号错误或已弃用的对象。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Supplementary instructions for windows users are available at <link xlink:"
-"href=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
-"upgrade</link>."
-msgstr ""
-"有关 Windows 的其他信息，请参阅 <link xlink:href=\"http://trac.osgeo.org/"
-"postgis/wiki/UsersWikiWinUpgrade\">Windows 硬升级</link>。"
-
-#. Tag: para
-#, no-c-format
-msgid "The Procedure is as follows:"
-msgstr "程序如下："
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Create a \"custom-format\" dump of the database you want to upgrade (let's "
-"call it <varname>olddb</varname>) include binary blobs (-b) and verbose (-v) "
-"output. The user can be the owner of the db, need not be postgres super "
-"account."
-msgstr ""
-"创建要升级的数据库的“自定义格式”转储（我们称之为 <varname>olddb</varname>），"
-"包括二进制 blob (-b) 和详细 (-v) 输出。 用户可以是数据库的所有者，不必是"
-"postgres超级帐户。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Do a fresh install of PostGIS in a new database -- we'll refer to this "
-"database as <varname>newdb</varname>. Please refer to <xref "
-"linkend=\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> "
-"for instructions on how to do this."
-msgstr ""
-"在新数据库中全新安装 PostGIS - 我们将此数据库称为 <varname>newdb</varname>。 "
-"请参阅 <xref linkend=\"create_new_db\"/> 和 <xref "
-"linkend=\"create_new_db_extensions\"/> 了解如何执行此操作的说明。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The spatial_ref_sys entries found in your dump will be restored, but they "
-"will not override existing ones in spatial_ref_sys. This is to ensure that "
-"fixes in the official set will be properly propagated to restored databases. "
-"If for any reason you really want your own overrides of standard entries "
-"just don't load the spatial_ref_sys.sql file when creating the new db."
-msgstr ""
-"转储中的spatial_ref_sys将还原，但不会覆盖现有spatial_ref_sys。 这是为了确保对"
-"正式数据集的更正被传送到要恢复的数据库。 如果要覆盖标准条目，只需在生成 "
-"newdb 时不要加载spaltial_ref_sys.sql文件。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If your database is really old or you know you've been using long deprecated "
-"functions in your views and functions, you might need to load "
-"<filename>legacy.sql</filename> for all your functions and views etc. to "
-"properly come back. Only do this if _really_ needed. Consider upgrading your "
-"views and functions before dumping instead, if possible. The deprecated "
-"functions can be later removed by loading <filename>uninstall_legacy.sql</"
-"filename>."
-msgstr ""
-"如果您的数据库确实很旧，或者您知道在视图和函数中使用了长期不推荐使用的函数，"
-"则可能需要为所有函数和视图等加载 <filename>legacy.sql</filename> 才能正确返"
-"回 。 仅在确实需要时才执行此操作。 如果可能的话，请考虑在转储之前升级您的视图"
-"和函数。 稍后可以通过加载 <filename>uninstall_legacy.sql</filename> 来删除已"
-"弃用的函数。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Restore your backup into your fresh <varname>newdb</varname> database using "
-"postgis_restore. Unexpected errors, if any, will be printed to the standard "
-"error stream by psql. Keep a log of those."
-msgstr ""
-"使用 postgis_restore 将备份恢复到新的 <varname>newdb</varname> 数据库中。 意"
-"外错误（如果有）将由 psql 打印到标准错误流。 记录这些内容。"
-
-#. Tag: para
-#, no-c-format
-msgid "Errors may arise in the following cases:"
-msgstr "在以下情况下可能会发生错误："
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Some of your views or functions make use of deprecated PostGIS objects. In "
-"order to fix this you may try loading <filename>legacy.sql</filename> script "
-"prior to restore or you'll have to restore to a version of PostGIS which "
-"still contains those objects and try a migration again after porting your "
-"code. If the <filename>legacy.sql</filename> way works for you, don't forget "
-"to fix your code to stop using deprecated functions and drop them loading "
-"<filename>uninstall_legacy.sql</filename>."
-msgstr ""
-"您的某些视图或函数使用已弃用的 PostGIS 对象。 为了解决这个问题，您可以尝试在"
-"恢复之前加载 <filename>legacy.sql</filename> 脚本，或者您必须恢复到仍包含这些"
-"对象的 PostGIS 版本，并在移植代码后再次尝试迁移。 如果 <filename>legacy.sql</"
-"filename> 方式适合您，请不要忘记修复您的代码以停止使用已弃用的函数并将其加载 "
-"<filename>uninstall_legacy.sql</filename>。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Some custom records of spatial_ref_sys in dump file have an invalid SRID "
-"value. Valid SRID values are bigger than 0 and smaller than 999000. Values "
-"in the 999000.999999 range are reserved for internal use while values &gt; "
-"999999 can't be used at all. All your custom records with invalid SRIDs will "
-"be retained, with those &gt; 999999 moved into the reserved range, but the "
-"spatial_ref_sys table would lose a check constraint guarding for that "
-"invariant to hold and possibly also its primary key ( when multiple invalid "
-"SRIDS get converted to the same reserved SRID value )."
-msgstr ""
-"一些在转储文件中的自定义空间参考系统记录具有无效的SRID值。有效的SRID值应大于0"
-"且小于999000。值在999000.999999范围内被保留供内部使用，而大于999999的值则根本"
-"不能使用。所有具有无效SRID的自定义记录将被保留，其中大于999999的值将被移动到"
-"保留范围内，但空间_ref_sys表将失去维护该不变条件的检查约束，可能还会失去其主"
-"键（当多个无效的SRID值转换为相同的保留SRID值时）。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"In order to fix this you should copy your custom SRS to a SRID with a valid "
-"value (maybe in the 910000..910999 range), convert all your tables to the "
-"new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the invalid "
-"entry from spatial_ref_sys and re-construct the check(s) with:"
-msgstr ""
-"为了解决此问题，您应该将自定义SRS复制到 具有有效值的 SRID（可能在 "
-"910000..910999 范围），将所有表转换为新的 srid （请参阅<xref "
-"linkend=\"UpdateGeometrySRID\"/>），删除无效的 从spatial_ref_sys输入并重建检"
-"查："
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you are upgrading an old database containing french <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national\"> "
-"IGN </link> cartography, you will have probably SRIDs out of range and you "
-"will see, when importing your database, issues like this :"
-msgstr ""
-"如果要升级包含法国 <link xlink:href=\"https://en.wikipedia.org/wiki/"
-"Institut_g%C3%A9ographique_national\"> IGN </link> 映射的旧数据库，则可能会超"
-"出 SRID 的范围，并在导入数据库时遇到以下问题："
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"In this case, you can try following steps : first throw out completely the "
-"IGN from the sql which is resulting from postgis_restore. So, after having "
-"run :"
-msgstr ""
-"在这种情况下，您可以尝试以下步骤： 完全丢弃最初从 SQL postgis_restore中产生"
-"的 IGN。 为此，请运行以下命令："
-
-#. Tag: para
-#, no-c-format
-msgid "run this command :"
-msgstr "运行以下命令："
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Create then your newdb, activate the required Postgis extensions, and insert "
-"properly the french system IGN with : <link xlink:href=\"https://raw."
-"githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/"
-"Put_IGN_SRS_into_Postgis.sql\"> this script </link> After these operations, "
-"import your data :"
-msgstr ""
-"之后，生成一个新数据库，启用必要的 PostGIS 扩展，并确保使用此 <link xlink:"
-"href=\"https://raw.githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/"
-"master/Put_IGN_SRS_into_Postgis.sql\"> 脚本</link>插入法语 IGN 系统。 完成这"
-"些过程后，按如下方式导入数据："
 
 #. Tag: title
 #, no-c-format
@@ -9508,6 +8868,11 @@ msgstr "David Techer"
 
 #. Tag: member
 #, no-c-format
+msgid "Dian M Fay"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Dmitry Vasilyev"
 msgstr "Dmitry Vasilyev"
 
@@ -10066,7 +9431,9 @@ msgstr "Hunter Systems Group"
 
 #. Tag: link
 #, no-c-format
-msgid "INIA-CSIC"
+msgid ""
+">The National Institute for Agricultural and Food Research and Technology "
+"(INIA-CSIC)"
 msgstr ""
 
 #. Tag: link
@@ -16825,36 +16192,14 @@ msgstr ""
 "本部分列出了自定义 PostGIS Grand Unified 自定义变量 (GUC)。 这些可以通过数据"
 "库、会话或事务进行全局设置。 最好在全局或数据库级别设置。"
 
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"The backend to service a function where GEOS and SFCGAL overlap. Options: "
-"geos or sfcgal. Defaults to geos."
-msgstr ""
-"为 GEOS 和 SFCGAL 重叠的功能提供服务的后端。 选项：geos 或 sfcgal。 默认为"
-"geos。"
-
 #. Tag: para
 #, no-c-format
 msgid ""
-"This GUC is only relevant if you compiled PostGIS with sfcgal support. By "
-"default <varname>geos</varname> backend is used for functions where both "
-"GEOS and SFCGAL have the same named function. This variable allows you to "
-"override and make sfcgal the backend to service the request."
+"For more examples of usage refer to <link xlink:href=\"https://www."
+"postgresql.org/docs/current/sql-set.html\">SQL SET</link> and <link xlink:"
+"href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
+"ALTER SYSTEM</link>"
 msgstr ""
-"仅当您使用 sfcgal 支持编译 PostGIS 时，此 GUC 才相关。 默认情况下，"
-"<varname>geos </varname>后端用于 GEOS 和 SFCGAL 具有相同命名函数的函数。 此变"
-"量允许您覆盖并使 sfcgal 成为后端来服务请求。"
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend just for life of connection"
-msgstr "仅针对连接生命周期设置后端"
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend for new connections to database"
-msgstr "设置数据库新连接的后端"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17031,33 +16376,23 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
-msgstr "设置和重置<varname>postgis.gdal_enabled_drivers</varname>"
+msgid ""
+"To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current "
+"session"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Sets backend for all new connections to database"
-msgstr "为所有新的数据库连接设置后端"
+msgid "Set for all new connections to a specific database to specific drivers"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Sets default enabled drivers for all new connections to server. Requires "
-"super user access and PostgreSQL 9.4+. Also note that database, session, and "
-"user settings override this."
+"Setting for whole database cluster to enable all drivers. Requires super "
+"user access. Also note that database, session, and user settings override "
+"this."
 msgstr ""
-"为与服务器的所有新连接设置默认启用的驱动程序。 需要超级用户访问权限和 "
-"PostgreSQL 9.4+ 。 另请注意，数据库、会话和用户设置会覆盖此设置。"
-
-#. Tag: para
-#, no-c-format
-msgid "Enable all GDAL Drivers"
-msgstr "启用所有 GDAL 驱动程序"
-
-#. Tag: para
-#, no-c-format
-msgid "Disable all GDAL Drivers"
-msgstr "禁用所有GDAL驱动程序"
 
 #. Tag: para
 #, no-c-format
@@ -17125,15 +16460,15 @@ msgstr "设置和重置当前会话的 <varname>postgis.enable_outdb_rasters</va
 
 #. Tag: para
 #, no-c-format
-msgid "Set for specific database"
-msgstr "针对特定数据库设置"
+msgid "Set for all new connections to a specific database"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Setting for whole database cluster. You need to reconnect to the database "
-"for changes to take effect."
-msgstr "整个数据库集群的设置。 您需要重新连接到数据库才能使更改生效。"
+"Setting for whole database cluster. Requires super user access. Also note "
+"that database, session, and user settings override this."
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23107,8 +22442,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Canonical example for a Web Mercator tile using a computed tile bounds to "
-"query and clip geometry."
-msgstr "使用计算的图块边界来查询和裁剪几何图形的 Web 墨卡托图块的规范示例。"
+"query and clip geometry. This assumes the data.geom column has srid of 4326."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -23834,15 +23169,10 @@ msgstr ""
 "这是唯一一个与输入顺序有关的叠加函数。 ST_Difference(A, B) 始终返回 A 的一部"
 "分。"
 
-#. Tag: para
+#. Tag: refsection
 #, no-c-format
-msgid ""
-"If the optional <code>gridSize</code> argument is provided, the inputs are "
-"snapped to a grid of the given size, and the result vertices are computed on "
-"that same grid. (Requires GEOS-3.9.0 or higher)"
+msgid "&overlay_gridsize_arg;"
 msgstr ""
-"如果提供了可选的<code> gridSize </code>参数，则输入将捕捉到给定大小的网格，并"
-"在同一网格上计算结果顶点。 （需要 GEOS-3.9.0 或更高版本）"
 
 #. Tag: para
 #, no-c-format
@@ -23893,8 +23223,10 @@ msgstr "3D点的差异。"
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
-msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
+msgid ""
+", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -24034,14 +23366,11 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
-"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
-"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
+"linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Force2D\"/>, <xref "
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
+"linkend=\"ST_Multi\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
-", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
-"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
-"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -24245,12 +23574,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<code>max_vertices</code> must be 5 or more, as 5 points are needed to "
-"represent a closed box. <code>gridSize</code> can be specified to have "
-"clipping work in fixed-precision space (requires GEOS-3.9.0+)."
+"represent a closed box."
 msgstr ""
-"<code>max_vertices</code> 必须为 5 或更多，因为需要 5 个点来表示一个封闭的盒"
-"子。 可以指定<code>gridSize</code>以在固定精度空间中进行裁剪工作（需要"
-"GEOS-3.9.0+）。"
 
 #. Tag: para
 #, no-c-format
@@ -24345,10 +23670,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
-"linkend=\"ST_NPoints\"/>"
+"linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
-", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
-"linkend=\"ST_NPoints\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -24439,10 +23762,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
-"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
-", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
-"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -24512,16 +23834,6 @@ msgstr ""
 "ca/2009/01/must-faster-unions-in-postgis-14.html\"> http://blog."
 "cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html </link>中引入"
 "的快速级联连接算法"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A <code>gridSize</code> can be specified to work in fixed-precision space. "
-"The inputs are snapped to a grid of the given size, and the result vertices "
-"are computed on that same grid. (Requires GEOS-3.9.0 or higher)"
-msgstr ""
-"可以指定 <code>gridSize </code>来在固定精度空间中工作。 输入将捕捉到给定大小"
-"的网格，并在同一网格上计算结果顶点。 （需要 GEOS-3.9.0 或更高版本）"
 
 #. Tag: para
 #, no-c-format
@@ -24597,11 +23909,8 @@ msgstr "不混合维度的 3D 示例"
 msgid ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
 "linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
-"linkend=\"ST_SymDifference\"/>"
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
-", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
-"linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
-"linkend=\"ST_SymDifference\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -40436,12 +39745,118 @@ msgstr "发行说明"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.5.0"
+msgid "PostGIS 3.5.3"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2024/09/25"
+msgid "2025/05/17"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj "
+"6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
+"advantage of all SFCGAL features, SFCGAL 1.5.0+ is needed."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Bug Fixes"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Do not complain about illegal option when calling shp2pgsql -? (Sandro "
+"Santilli, Giovanni Zezza)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5862\">5862</link>, "
+"[topology] Prevent another topology corruption with TopoGeo_addPoint near "
+"almost collinear edges (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\">5841</link>, "
+"Change approach to interrupt handling to conform to PgSQL recommended "
+"practice (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5855\">5855</link>, "
+"Fix index binding in ST_DFullyWithin (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5819\">5819</link>, "
+"Support longer names in estimated extent (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Fix misassignment of result in _lwt_HealEdges (Maxim Korotkov)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5876\">5876</link>, "
+"ST_AddPoint with empty argument adds garbage (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5874\">5874</link>, "
+"Line substring returns wrong answer (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">5829</link>, "
+"geometry_columns with non-standard constraints (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5818\">5818</link>, "
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/244\">GT-244</link> Fix CG_IsSolid function (Loïc Bartoletti)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5885\">5885</link>, "
+"Fix documentation about grid-based overlay operations (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "For SFCGAL 2.1.0+ prevent using deprecated functions (Regina Obe)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "PostGIS 3.5.2"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "2025/01/18"
 msgstr ""
 
 #. Tag: para
@@ -40450,6 +39865,169 @@ msgid ""
 "This version requires PostgreSQL 12-17, GEOS 3.8 or higher, and Proj 6.1+. "
 "To take advantage of all features, GEOS 3.12+ is needed. To take advantage "
 "of all SFCGAL features, SFCGAL 1.5.0+ is needed."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5677\">#5677</"
+"link>, Retain SRID during unary union (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5833\">#5833</"
+"link>, pg_upgrade fix for postgis_sfcgal (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5564\">#5564</"
+"link>, BRIN crash fix and support for parallel in PG17+ (Paul Ramsey, Regina "
+"Obe)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "PostGIS 3.5.1"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "2024/12/22"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Breaking Changes"
+msgstr "重大变化"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5792\">#5792</"
+"link>, [topology] Prevent topology corruption with TopoGeo_addPoint near "
+"almost collinear edges (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5795\">#5795</"
+"link>, [topology] Fix ST_NewEdgesSplit can cause invalid topology (Björn "
+"Harrtell)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5794\">#5794</"
+"link>, [topology] Fix crash in TopoGeo_addPoint (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5785\">#5785</"
+"link>, [raster] ST_MapAlgebra segfaults when expression references a "
+"supernumerary rast argument (Dian M Fay)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5787\">#5787</"
+"link>, Check that ST_ChangeEdgeGeom doesn't change winding of rings (Sandro "
+"Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5791\">#5791</"
+"link>, Add legacy stubs for old transaction functions to allow pg_upgrade "
+"(Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5800\">#5800</"
+"link>, PROJ compiled version reading the wrong minor and micro (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5790\">#5790</"
+"link>, Non-schema qualified calls causing issue with materialized views "
+"(Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5812\">#5812</"
+"link>, Performance regression in ST_Within (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5815\">#5815</"
+"link>, Remove hash/merge promise from &lt;&gt; operator (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5823\">#5823</"
+"link>, Build support for Pg18 (Paul Ramsey)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Enhancements"
+msgstr "增强功能"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5782\">#5782</"
+"link>, Improve robustness of min distance calculation (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"[topology] Speedup topology building when closing large rings with many "
+"holes (Björn Harrtell)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5810\">#5810</"
+"link>, Update tiger geocoder to handle TIGER 2024 data (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5799\">#5799</"
+"link>, make ST_TileEnvelope clip envelopes to tile plane extent (Paul Ramsey)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "PostGIS 3.5.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "2024/09/25"
 msgstr ""
 
 #. Tag: para
@@ -40471,11 +40049,6 @@ msgstr "Teramoto Ikuhiro (Japanese Team)"
 #, no-c-format
 msgid "Vincent Bre (French Team)"
 msgstr "Vincent Bre (French Team)"
-
-#. Tag: title
-#, no-c-format
-msgid "Breaking Changes"
-msgstr "重大变化"
 
 #. Tag: para
 #, no-c-format
@@ -40535,7 +40108,8 @@ msgstr ""
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5496\">#5496</"
 "link>, ST_Clip all variants replaced, will require rebuilding of "
-"materialized views that use them (Regina Obe)"
+"materialized views that use them (funding from The National Institute for "
+"Agricultural and Food Research and Technology (INIA-CSIC)), Regina Obe"
 msgstr ""
 
 #. Tag: para
@@ -40722,11 +40296,6 @@ msgid ""
 "link>, <link xlink:href=\"https://github.com/postgis/postgis/"
 "pull/768\">GH-768</link>, ST_RemoveSmallParts (Sam Peters)"
 msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Enhancements"
-msgstr "增强功能"
 
 #. Tag: para
 #, no-c-format
@@ -46488,6 +46057,16 @@ msgstr "该函数支持 3d 并且不会丢失 z-index。"
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"If the optional <code>gridSize</code> parameter is given (GEOS-3.9.0 or "
+"higher required), all result vertices are guaranteed to fall on a grid of "
+"the specified size. For the operation to give predictable results all the "
+"input vertices must fall already on the specified grid, see <xref "
+"linkend=\"ST_ReducePrecision\"/>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "New in this release"
 msgstr "此版本中的新功能"
 
@@ -46525,1668 +46104,3 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
-
-#, no-c-format
-#~ msgid ""
-#~ "Adds a linestring to an existing topology using a tolerance and possibly "
-#~ "splitting existing edges/faces. Returns edge identifiers."
-#~ msgstr "使用公差并可能分割现有边/面，将线串添加到现有拓扑。 返回边标识符。"
-
-#, no-c-format
-#~ msgid ""
-#~ "The reduction in vertex count is controlled by the "
-#~ "<varname>vertex_fraction</varname> parameter, which is a number in the "
-#~ "range 0 to 1. Lower values produce simpler results, with smaller vertex "
-#~ "count and less concaveness. For both outer and inner hulls a vertex "
-#~ "fraction of 1.0 produces the orginal geometry. For outer hulls a value of "
-#~ "0.0 produces the convex hull (for a single polygon); for inner hulls it "
-#~ "produces a triangle."
-#~ msgstr ""
-#~ "顶点数的减少由<varname> vertex_fraction </varname>参数控制，该参数是 0 到 "
-#~ "1 范围内的数字。值越低，结果越简单，顶点数越少，凹度也越小。 对于外壳和内"
-#~ "壳，顶点分数 1.0 生成原始几何形状。 对于外壳，值 0.0 生成凸包（对于单个多"
-#~ "边形）； 对于内壳，它会生成一个三角形。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns the raster clipped by the input geometry. If band number not is "
-#~ "specified, all bands are processed. If <varname>crop</varname> is not "
-#~ "specified or TRUE, the output raster is cropped."
-#~ msgstr ""
-#~ "返回由输入几何图形裁剪的栅格。 如果未指定波段号，则处理所有波段。 如果"
-#~ "<varname>裁剪</varname>未指定或为 TRUE，则输出栅格将被裁剪。"
-
-#, no-c-format
-#~ msgid ""
-#~ "GDAL, version 2+ is required 3+ is preferred. This is required for raster "
-#~ "support. <link xlink:href=\"https://gdal.org/download.html\">https://gdal."
-#~ "org/download.html</link>."
-#~ msgstr ""
-#~ "GDAL，版本 2+ 是必需的，版本 3+ 是首选。 这是栅格支持所必需的。<link "
-#~ "xlink:href=\"https://gdal.org/download.html\">https://gdal.org/download."
-#~ "html</link>。"
-
-#, no-c-format
-#~ msgid ""
-#~ "SFCGAL, version 1.3.1 (or higher), 1.4.1 or higher is recommended and "
-#~ "required to be able to use all functionality. SFCGAL can be used to "
-#~ "provide additional 2D and 3D advanced analysis functions to PostGIS cf "
-#~ "<xref linkend=\"reference_sfcgal\"/>. And also allow to use SFCGAL rather "
-#~ "than GEOS for some 2D functions provided by both backends (like "
-#~ "ST_Intersection or ST_Area, for instance). A PostgreSQL configuration "
-#~ "variable <code>postgis.backend</code> allow end user to control which "
-#~ "backend he want to use if SFCGAL is installed (GEOS by default). Nota: "
-#~ "SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: <link xlink:"
-#~ "href=\"https://sfcgal.org\">https://sfcgal.org</link>) <link xlink:"
-#~ "href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/"
-#~ "SFCGAL/</link>."
-#~ msgstr ""
-#~ "SFCGAL，版本 1.3.1（或更高版本），建议使用 1.4.1 或更高版本，以能够使用所"
-#~ "有功能。SFCGAL 可用于为 PostGIS 提供额外的 2D 和 3D 高级分析功能，详情请参"
-#~ "考 <xref linkend=\"reference_sfcgal\"/>。此外，还可以使用 SFCGAL 替代 "
-#~ "GEOS 来执行某些由两个后端都提供的 2D 函数（例如 ST_Intersection 或 "
-#~ "ST_Area）。如果已安装 SFCGAL，则用户可以通过 PostgreSQL 配置变量 "
-#~ "<code>postgis.backend</code> 来控制使用哪个后端（默认为 GEOS）。注意："
-#~ "SFCGAL 1.2 至少需要 CGAL 4.3 和 Boost 1.54（参见：<link xlink:"
-#~ "href=\"https://sfcgal.org\">https://sfcgal.org</link>) <link xlink:"
-#~ "href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/"
-#~ "SFCGAL/</link>。"
-
-#, no-c-format
-#~ msgid "PostGIS 3.4.0"
-#~ msgstr "PostGIS 3.4.0"
-
-#, no-c-format
-#~ msgid "2023/08/15"
-#~ msgstr "2023/08/15"
-
-#, no-c-format
-#~ msgid ""
-#~ "This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj "
-#~ "6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
-#~ "advantage of all SFCGAL features, SFCGAL 1.4.1+ is needed."
-#~ msgstr ""
-#~ "此版本需要 PostgreSQL 12-16、GEOS 3.6 或更高版本以及 Proj 6.1 。 要利用所"
-#~ "有功能，需要 GEOS 3.12。 要利用 SFCGAL 的所有功能，需要 SFCGAL 1.4.1。"
-
-#, no-c-format
-#~ msgid ""
-#~ "NOTE: GEOS 3.12.0 details at <link xlink:href=\"https://libgeos.org/"
-#~ "posts/2023-06-27-geos-3-12-released/\">GEOS 3.12.0 release notes</link>"
-#~ msgstr ""
-#~ "注意：GEOS 3.12.0 详细信息请参见 <link xlink:href=\"https://libgeos.org/"
-#~ "posts/2023-06-27-geos-3-12-released/\"> GEOS 3.12.0 发行说明</link>"
-
-#, no-c-format
-#~ msgid "There are 2 new ./configure switches:"
-#~ msgstr "有 2 个新的 ./configure 开关："
-
-#, no-c-format
-#~ msgid ""
-#~ "--disable-extension-upgrades-install, will skip installing all the "
-#~ "extension upgrade scripts except for the ANY--currentversion. If you use "
-#~ "this, you can install select upgrades using the postgis commandline tool"
-#~ msgstr ""
-#~ "--disable-extension-upgrades-install，将跳过安装除 ANY--current 版本之外的"
-#~ "所有扩展升级脚本。 如果您使用它，您可以使用 postgis 命令行工具安装选择升级"
-
-#, no-c-format
-#~ msgid ""
-#~ "--without-pgconfig, will build just the commandline tools raster2pgsql "
-#~ "and shp2pgsql even if PostgreSQL is not installed"
-#~ msgstr ""
-#~ "--without-pg_config，即使未安装 PostgreSQL，也将仅构建命令行工具 "
-#~ "raster2pgsql 和 shp2pgsql"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</"
-#~ "link>, complete manual internationalization (Sandro Santilli)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</"
-#~ "link>，完成手册国际化工作（Sandro Santilli）"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5052\">5052</"
-#~ "link>, target version support in postgis_extensions_upgrade (Sandro "
-#~ "Santilli)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5052\">5052</"
-#~ "link>，postgis_extensions_upgrade 中的目标版本支持 (Sandro Santilli)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</"
-#~ "link>, expose version of GEOS at compile time (Sandro Santilli)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</"
-#~ "link>，在编译时公开 GEOS 版本 (Sandro Santilli)"
-
-#, no-c-format
-#~ msgid ""
-#~ "New install-extension-upgrades command in postgis script (Sandro Santilli)"
-#~ msgstr ""
-#~ "postgis 脚本中的新 install-extension-upgrades 命令 (Sandro Santilli)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5257\">5257</"
-#~ "link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
-#~ "ticket/5261\">5261</link>, <link xlink:href=\"https://trac.osgeo.org/"
-#~ "postgis/ticket/5277\">5277</link>, Support changes for PostgreSQL 16 "
-#~ "(Regina Obe)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5257\">5257</"
-#~ "link>、<link xlink:href=\"https://trac.osgeo.org/postgis/"
-#~ "ticket/5261\">5261</link>、<link xlink:href=\"https://trac.osgeo.org/"
-#~ "postgis/ticket/5277\">5277</link>，PostgreSQL 16 的支持更改 (Regina Obe)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5006\">5006</"
-#~ "link>, <link xlink:href=\"https://github.com/postgis/postgis/"
-#~ "pull/705\">705</link>, ST_Transform: Support PROJ pipelines (Robert Coup, "
-#~ "Koordinates)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5006\">5006</"
-#~ "link>、 <link xlink:href=\"https://github.com/postgis/postgis/"
-#~ "pull/705\">705</link>、ST_Transform：支持 PROJ 管道（Robert Coup、"
-#~ "Koitudes）"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5283\">5283</"
-#~ "link>, [postgis_topology] RenameTopology (Sandro Santilli)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5283\">5283</"
-#~ "link>, [postgis_topology] 重命名拓扑 (Sandro Santilli)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5286\">5286</"
-#~ "link>, [postgis_topology] RenameTopoGeometryColumn (Sandro Santilli)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5286\">5286</"
-#~ "link>, [postgis_topology] 重命名TopoGeometryColumn (Sandro Santilli)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/703\">703</"
-#~ "link>, [postgis_raster] Add min/max resampling as options (Christian "
-#~ "Schroeder)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/703\">703</"
-#~ "link>、[postgis_raster] 添加最小/最大重采样选项（Christian Schroeder）"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5336\">5336</"
-#~ "link>, [postgis_topology] topogeometry cast to topoelement support "
-#~ "(Regina Obe)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5336\">5336</"
-#~ "link>, [postgis_topology] 拓扑几何转换为拓扑元素支持 (Regina Obe)"
-
-#, no-c-format
-#~ msgid ""
-#~ "Allow singleton geometry to be inserted into Geometry(Multi*) columns "
-#~ "(Paul Ramsey)"
-#~ msgstr "允许将单个几何体插入到 Geometry(Multi*) 列中 (Paul Ramsey)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/721\">721</"
-#~ "link>, New window-based ST_ClusterWithinWin and ST_ClusterIntersectingWin "
-#~ "(Paul Ramsey)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/721\">721</"
-#~ "link>、新的基于窗口的 ST_ClusterWithinWin 和 ST_ClusterIntersectingWin "
-#~ "(Paul Ramsey)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5397\">5397</"
-#~ "link>, [address_standardizer] debug_standardize_address function (Regina "
-#~ "Obe)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5397\">5397</"
-#~ "link>, [address_standardizer] debug_standardize_address 函数 (Regina Obe)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5373\">5373</"
-#~ "link>ST_LargestEmptyCircle, exposes extra semantics on circle finding. "
-#~ "Geos 3.9+ required(Martin Davis)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5373\">5373</"
-#~ "link>ST_LargestEmptyCircle，公开有关圆查找的额外语义。 需要 Geos "
-#~ "3.9+（Martin Davis）"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</"
-#~ "link>, ST_Project signature for geometry, and two-point signature (Paul "
-#~ "Ramsey)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</"
-#~ "link>、ST_Project 几何签名和两点签名 (Paul Ramsey)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</"
-#~ "link>, ST_LineExtend for extending linestrings (Paul Ramsey)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</"
-#~ "link>, ST_LineExtend 用于扩展线串 (Paul Ramsey)"
-
-#, no-c-format
-#~ msgid ""
-#~ "New coverage functions ST_CoverageInvalidEdges, ST_CoverageSimplify, "
-#~ "ST_CoverageUnion (Paul Ramsey)"
-#~ msgstr ""
-#~ "新的覆盖函数 ST_CoverageInvalidEdges、ST_CoverageSimplify、"
-#~ "ST_CoverageUnion (Paul Ramsey)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5194\">5194</"
-#~ "link>, do not update system catalogs from postgis_extensions_upgrade "
-#~ "(Sandro Santilli)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5194\">5194</"
-#~ "link>，不要从 postgis_extensions_upgrade 更新系统目录（Sandro Santilli）"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</"
-#~ "link>, reduce number of upgrade paths installed on system (Sandro "
-#~ "Santilli)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</"
-#~ "link>，减少系统上安装的升级路径数量（Sandro Santilli）"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/635\">635</"
-#~ "link>, honour --bindir (and --prefix) configure switch for executables "
-#~ "(Sandro Santilli)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/635\">635</"
-#~ "link>、honor --bindir（和 --prefix）为可执行文件配置开关（Sandro "
-#~ "Santilli）"
-
-#, no-c-format
-#~ msgid ""
-#~ "Honour --mandir (and --prefix) configure switch for man pages install "
-#~ "path (Sandro Santilli)"
-#~ msgstr ""
-#~ "Honor --mandir （和 --prefix）配置手册页安装路径开关（Sandro Santilli）"
-
-#, no-c-format
-#~ msgid ""
-#~ "Honour --htmldir (and --docdir and --prefix) configure switch for html "
-#~ "pages install path (Sandro Santilli)"
-#~ msgstr ""
-#~ "Honor --htmldir （以及 --docdir 和 --prefix）配置 html 页面安装路径的开关 "
-#~ "(Sandro Santilli)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5447\">5447</"
-#~ "link> Manual pages added for postgis and postgis_restore utilities "
-#~ "(Sandro Santilli)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5447\">5447</"
-#~ "link> 为 postgis 和 postgis_restore 实用程序添加了手册页 (Sandro Santilli)"
-
-#, no-c-format
-#~ msgid ""
-#~ "[postgis_topology] Speed up check of topology faces without edges (Sandro "
-#~ "Santilli)"
-#~ msgstr "[postgis_topology] 加快无边拓扑面的检查速度 (Sandro Santilli)"
-
-#, no-c-format
-#~ msgid ""
-#~ "[postgis_topology] Speed up coincident nodes check in topology validation "
-#~ "(Sandro Santilli)"
-#~ msgstr "[postgis_topology] 加速拓扑验证中的重合节点检查 (Sandro Santilli)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/718\">718</"
-#~ "link>, ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/718\">718</"
-#~ "link>、ST_QuantizeCooperatives()：加速实现（Even Rouault）"
-
-#, no-c-format
-#~ msgid ""
-#~ "Repair spatial planner stats to use computed selectivity for contains/"
-#~ "within queries (Paul Ramsey)"
-#~ msgstr "修复空间规划器统计信息以对包含/内部查询使用计算选择性 (Paul Ramsey)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/734\">734</"
-#~ "link>, Additional metadata on Proj installation in postgis_proj_version "
-#~ "(Paul Ramsey)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/734\">734</"
-#~ "link>，postgis_proj_version 中 Proj 安装的附加元数据 (Paul Ramsey)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</"
-#~ "link>, Allow building tools without PostgreSQL server headers. Respect "
-#~ "prefix/bin for tools install (Sandro Santilli)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</"
-#~ "link>, 允许构建没有 PostgreSQL 服务器标头的工具。 尊遵循工具安装的前缀/"
-#~ "bin (Sandro Santilli)"
-
-#, no-c-format
-#~ msgid ""
-#~ "ST_Project signature for geometry, and two-point signature (Paul Ramsey)"
-#~ msgstr "ST_Project 几何签名和两点签名 (Paul Ramsey)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4913\">4913</"
-#~ "link>, ST_AsSVG support for curve types CircularString, CompoundCurve, "
-#~ "MultiCurve, and MultiSurface (Regina Obe)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4913\">4913</"
-#~ "link>、ST_AsSVG 支持曲线类型 CircularString、CompoundCurve、MultiCurve 和 "
-#~ "MultiSurface (Regina Obe)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</"
-#~ "link>, ST_ClosestPoint, ST_ShortestLine, ST_LineSubString support for "
-#~ "geography type (MobilityDB Esteban Zimanyi, Maxime Schoemans, Paul Ramsey)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</"
-#~ "link>、ST_ClosestPoint、ST_ShortestLine、ST_LineSubString 支持地理类型"
-#~ "（MobilityDB Esteban Zimanyi、Maxime Schoemans、Paul Ramsey）"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</"
-#~ "link>, Drop support for Proj &lt; 6.1 and PG 11 (Regina Obe)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</"
-#~ "link>，放弃对 Proj &lt; 6.1 和 PG 11 的支持（Regina Obe）"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</"
-#~ "link>, <link xlink:href=\"https://github.com/postgis/postgis/"
-#~ "pull/734\">734</link>, postgis_full_version() and postgis_proj_version() "
-#~ "now output more information about proj network configuration and data "
-#~ "paths. GEOS compile-time version also shown if different from run-time "
-#~ "(Paul Ramsey, Sandro Santilli)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</"
-#~ "link>、<link xlink:href=\"https://github.com/postgis/postgis/"
-#~ "pull/734\">734</link>、postgis_full_version() 和 postgis_proj_version() 现"
-#~ "在输出有关 proj 网络配置和数据路径的更多信息。 如果与运行时不同，也会显示 "
-#~ "GEOS 编译时版本（Paul Ramsey、Sandro Santilli）"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/5447\">5447</"
-#~ "link>, postgis_restore.pl renamed to postgis_restore (Sandro Santilli)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/5447\">5447</"
-#~ "link>, postgis_restore.pl 重命名为 postgis_restore (Sandro Santilli)"
-
-#, no-c-format
-#~ msgid ""
-#~ "Utilities now installed in OS bin or user specified --bindir and --prefix "
-#~ "instead of postgresql bin and extension stripped except on windows "
-#~ "(postgis, postgis_restore, shp2pgsql, raster2pgsql, pgsql2shp, "
-#~ "pgtopo_import, pgtopo_export)"
-#~ msgstr ""
-#~ "实用程序现在安装在操作系统 bin 或用户指定的 --bindir 和 --prefix 中，而不"
-#~ "是 postgresql bin 中，并且扩展名被删除，Windows 上除外（postgis、"
-#~ "postgis_restore、shp2pgsql、raster2pgsql、pgsql2shp、pgtopo_import、"
-#~ "pgtopo_export）"
-
-#, no-c-format
-#~ msgid ""
-#~ "Adds a linestring to an existing topology and returns a set of edge "
-#~ "identifiers forming it up. The given line will snap to existing nodes or "
-#~ "edges within given tolerance. Existing edges and faces may be split by "
-#~ "the line."
-#~ msgstr ""
-#~ "将线串添加到现有拓扑并返回组成它的一组边标识符。 给定的线将捕捉到给定公差"
-#~ "内的现有节点或边。 现有的边和面可能会被线分割。"
-
-#, no-c-format
-#~ msgid ""
-#~ "&reference_type; &reference_management; &reference_constructor; "
-#~ "&reference_accessor; &reference_editor; &reference_validation; "
-#~ "&reference_srs; &reference_input; &reference_output; &reference_operator; "
-#~ "&reference_relationship; &reference_measure; &reference_overlay; "
-#~ "&reference_processing; &reference_coverage; &reference_transformation; "
-#~ "&reference_cluster; &reference_bbox; &reference_lrs; "
-#~ "&reference_trajectory; &reference_transaction; &reference_version; "
-#~ "&reference_guc; &reference_troubleshooting;"
-#~ msgstr ""
-#~ "&reference_type; &reference_management; &reference_constructor; "
-#~ "&reference_accessor; &reference_editor; &reference_validation; "
-#~ "&reference_srs; &reference_input; &reference_output; &reference_operator; "
-#~ "&reference_relationship; &reference_measure; &reference_overlay; "
-#~ "&reference_processing; &reference_coverage; &reference_transformation; "
-#~ "&reference_cluster; &reference_bbox; &reference_lrs; "
-#~ "&reference_trajectory; &reference_transaction; &reference_version; "
-#~ "&reference_guc; &reference_troubleshooting;"
-
-#, no-c-format
-#~ msgid ""
-#~ "In mathematical terms: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) ≠ ∅) "
-#~ "∧ (A ⋂ B ≠ ∅) </emphasis>"
-#~ msgstr ""
-#~ "用数学术语来说： <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) ≠ ∅) ∧ (A "
-#~ "⋂ B ≠ ∅)</emphasis>"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> "
-#~ "<xref linkend=\"ST_3DUnion\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> "
-#~ "<xref linkend=\"ST_3DUnion\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> "
-#~ "<xref linkend=\"ST_3DDifference\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> "
-#~ "<xref linkend=\"ST_3DDifference\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ "Alpha-shape of a MultiPoint (same example As <xref "
-#~ "linkend=\"ST_OptimalAlphaShape\"/>)"
-#~ msgstr ""
-#~ "MultiPoint 的 Alpha 形状（与 <xref linkend=\"ST_OptimalAlphaShape\"/> 相同"
-#~ "的示例）"
-
-#, no-c-format
-#~ msgid ""
-#~ "Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
-#~ "linkend=\"ST_OptimalAlphaShape\"/>)"
-#~ msgstr ""
-#~ "MultiPoint 的 Alpha 形状，允许有孔（与 <xref "
-#~ "linkend=\"ST_OptimalAlphaShape\"/>相同的示例）"
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
-#~ msgstr ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
-
-#, no-c-format
-#~ msgid "ST_ConstrainedDelaunayTriangles of 2 polygons"
-#~ msgstr "2 个多边形的ST_ConstrainedDelaunayTriangles"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref "
-#~ "linkend=\"ST_Tesselate\"/>, <xref linkend=\"ST_ConcaveHull\"/>, <xref "
-#~ "linkend=\"ST_Dump\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref "
-#~ "linkend=\"ST_Tesselate\"/>, <xref linkend=\"ST_ConcaveHull\"/>, <xref "
-#~ "linkend=\"ST_Dump\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ "Perhaps the first (historically) use-case of straight skeletons: given a "
-#~ "polygonal roof, the straight skeleton directly gives the layout of each "
-#~ "tent. If each skeleton edge is lifted from the plane a height equal to "
-#~ "its offset distance, the resulting roof is \"correct\" in that water will "
-#~ "always fall down to the contour edges (the roof's border), regardless of "
-#~ "where it falls on the roof. The function computes this extrusion aka "
-#~ "\"roof\" on a polygon. If the argument body_height > 0, so the polygon is "
-#~ "extruded like with ST_Extrude(polygon, 0, 0, body_height). The result is "
-#~ "an union of these polyhedralsurfaces."
-#~ msgstr ""
-#~ "或许是直线骨架的最早应用案例之一：给定一个多边形屋顶，直线骨架直接提供了每"
-#~ "个建筑物的布局。如果将每个骨架边沿其偏移距离从平面抬升到相应的高度，得到的"
-#~ "屋顶是“正确”的，因为水将始终流向轮廓边缘（屋顶的边界），无论它在屋顶的哪个"
-#~ "位置下落。该函数计算多边形的这种挤出，又称“屋顶”。如果参数 body_height > "
-#~ "0，则多边形就像使用 ST_Extrude(polygon, 0, 0, body_height) 一样挤出。结果"
-#~ "是这些多面体表面的并集。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Optimal alpha-shape of a MultiPoint (same example as <xref "
-#~ "linkend=\"ST_AlphaShape\"/>)"
-#~ msgstr ""
-#~ "MultiPoint 的最佳 alpha 形状（与 <xref linkend=\"ST_AlphaShape\"/> 相同的"
-#~ "示例）"
-
-#, no-c-format
-#~ msgid ""
-#~ "Optimal alpha-shape of a MultiPoint, allowing holes (same example as "
-#~ "<xref linkend=\"ST_AlphaShape\"/>)"
-#~ msgstr ""
-#~ "MultiPoint 的最佳 alpha 形状（与<xref linkend=\"ST_AlphaShape\"/> 相同的示"
-#~ "例）"
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"ST_AlphaShape\"/>"
-#~ msgstr ", <xref linkend=\"ST_AlphaShape\"/>"
-
-#, no-c-format
-#~ msgid "Long Transaction Support"
-#~ msgstr "长事务支持"
-
-#, no-c-format
-#~ msgid ""
-#~ "These functions implement a row locking mechanism to support long "
-#~ "transactions. They are provided primarily for implementors of the <link "
-#~ "xlink:href=\"http://www.opengeospatial.org/standards/wfs\">Web Feature "
-#~ "Service</link> specification."
-#~ msgstr ""
-#~ "这些函数实现行锁定机制来支持长事务。 它们主要是为 <link xlink:"
-#~ "href=\"http://www.opengeospatial.org/standards/wfs\">Web 要素服务</link>规"
-#~ "范的实现者提供的。"
-
-#, no-c-format
-#~ msgid ""
-#~ "For the locking mechanism to operate correctly the <emphasis "
-#~ "role=\"bold\">serializable</emphasis> <link xlink:href=\"http://www."
-#~ "postgresql.org/docs/current/static/transaction-iso.html\"> transaction "
-#~ "isolation level</link> must be used."
-#~ msgstr ""
-#~ "为了使锁定机制正确运行，必须使用<emphasis role=\"bold\">可序列化</"
-#~ "emphasis><link xlink:href=\"http://www.postgresql.org/docs/current/static/"
-#~ "transaction-iso.html\">事务隔离级别</link>。"
-
-#, no-c-format
-#~ msgid ""
-#~ "<refpurpose>Adds an authorization token to be used in the current "
-#~ "transaction.</refpurpose>"
-#~ msgstr "<refpurpose>添加要在当前事务中使用的授权令牌。</refpurpose>"
-
-#, no-c-format
-#~ msgid ""
-#~ "<para>Adds an authorization token to be used in the current transaction.</"
-#~ "para>"
-#~ msgstr "<para>添加要在当前事务中使用的授权令牌。</para>"
-
-#, no-c-format
-#~ msgid ""
-#~ "Adds the current transaction identifier and authorization token to a "
-#~ "temporary table called <varname>temp_lock_have_table</varname>."
-#~ msgstr ""
-#~ "将当前事务标识符和授权令牌添加到名为 <varname>temp_lock_have_table </"
-#~ "varname>的临时表中。"
-
-#, no-c-format
-#~ msgid "Availability: 1.1.3"
-#~ msgstr "可用性：1.1.3"
-
-#, no-c-format
-#~ msgid ""
-#~ "Creates a trigger on a table to prevent/allow updates and deletes of rows "
-#~ "based on authorization token."
-#~ msgstr "在表上创建触发器，以根据授权令牌阻止/允许更新和删除行。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Creates trigger on a table to prevent/allow updates and deletes of rows "
-#~ "based on an authorization token. Identify rows using &lt;rowid_col&gt; "
-#~ "column."
-#~ msgstr ""
-#~ "在表上创建触发器以防止/允许基于授权令牌更新和删除行。 使用 &lt;"
-#~ "rowid_col&gt; 列标识行。"
-
-#, no-c-format
-#~ msgid ""
-#~ "If a_schema_name is not passed in, then searches for table in current "
-#~ "schema."
-#~ msgstr "如果未传入a_schema_name，则在当前模式中搜索表。"
-
-#, no-c-format
-#~ msgid ""
-#~ "If an authorization trigger already exists on this table function errors."
-#~ msgstr "如果该表上已存在授权触发器，则函数会出错。"
-
-#, no-c-format
-#~ msgid "If Transaction support is not enabled, function throws an exception."
-#~ msgstr "如果未启用事务支持，函数将引发异常。"
-
-#, no-c-format
-#~ msgid "Disables long transaction support."
-#~ msgstr "禁用长事务支持。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Disables long transaction support. This function removes the long "
-#~ "transaction support metadata tables, and drops all triggers attached to "
-#~ "lock-checked tables."
-#~ msgstr ""
-#~ "禁用长事务支持。 此函数删除长事务支持元数据表，并删除附加到锁定检查表的所"
-#~ "有触发器。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Drops meta table called <varname>authorization_table</varname> and a view "
-#~ "called <varname>authorized_tables</varname> and all triggers called "
-#~ "<varname>checkauthtrigger</varname>"
-#~ msgstr ""
-#~ "删除名为<varname>authorization_table</varname>的元表和名为"
-#~ "<varname>authorized_tables</varname>的视图以及名为"
-#~ "<varname>checkauthtrigger</varname>的所有触发器"
-
-#, no-c-format
-#~ msgid "Enables long transaction support."
-#~ msgstr "启用长事务支持。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Enables long transaction support. This function creates the required "
-#~ "metadata tables. It must be called once before using the other functions "
-#~ "in this section. Calling it twice is harmless."
-#~ msgstr ""
-#~ "启用长事务支持。 该函数创建所需的元数据表。 在使用本节中的其他函数之前必须"
-#~ "调用它一次。 调用两次是无害的。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Creates a meta table called <varname>authorization_table</varname> and a "
-#~ "view called <varname>authorized_tables</varname>"
-#~ msgstr ""
-#~ "创建一个名为<varname>authorization_table</varname>的元表和一个名为"
-#~ "<varname>authorized_tables</varname>的视图"
-
-#, no-c-format
-#~ msgid "Sets lock/authorization for a row in a table."
-#~ msgstr "为表中的行设置锁定/授权。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Sets lock/authorization for a specific row in a table. "
-#~ "<varname>an_auth_token</varname> is a text value. <varname>expire_dt</"
-#~ "varname> is a timestamp which defaults to <emphasis>now() + 1 hour</"
-#~ "emphasis>. Returns 1 if lock has been assigned, 0 otherwise (i.e. row is "
-#~ "already locked by another auth.)"
-#~ msgstr ""
-#~ "为表中的特定行设置锁定/授权。 <varname>an_auth_token</varname> 是一个文本"
-#~ "值。 <varname>expiredt</varname> 是一个时间戳，默认为 <emphasis>now() +1 "
-#~ "小时</emphasis>。 如果已分配锁，则返回 1，否则返回 0（即行已被另一个身份验"
-#~ "证锁定。）"
-
-#, no-c-format
-#~ msgid "Removes all locks held by an authorization token."
-#~ msgstr "删除授权令牌持有的所有锁。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Removes all locks held by specified authorization token. Returns the "
-#~ "number of locks released."
-#~ msgstr "删除指定授权令牌持有的所有锁。 返回释放的锁的数量。"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddNode\"/>, "
-#~ "<xref linkend=\"CreateTopology\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddNode\"/>, "
-#~ "<xref linkend=\"CreateTopology\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddEdge\"/>, "
-#~ "<xref linkend=\"CreateTopology\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddEdge\"/>, "
-#~ "<xref linkend=\"CreateTopology\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend=\"AddFace\"/>, "
-#~ "<xref linkend=\"CreateTopology\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend=\"AddFace\"/>, "
-#~ "<xref linkend=\"CreateTopology\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ "the <parameter>geom</parameter> field <varname>LINESTRING</varname>s "
-#~ "represent the segments of the supplied geometry."
-#~ msgstr ""
-#~ "<parameter>geom</parameter> 字段 <varname>LINESTRING</varname>s 表示所提供"
-#~ "几何图形的各个线段。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Return an approximate medial axis for the areal input based on its "
-#~ "straight skeleton. Uses an SFCGAL specific API when built against a "
-#~ "capable version (1.2.0+). Otherwise the function is just a wrapper around "
-#~ "ST_StraightSkeleton (slower case)."
-#~ msgstr ""
-#~ "基于直线骨架，返回输入面的近似中心轴。 如果您使用可能的版本（1.2.0 或更高"
-#~ "版本）进行构建，则将使用 SFCGAL 自己的 API。 否则ST_StraightSkeleton它将是"
-#~ "一个（缓慢的）包装。"
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"ST_StraightSkeleton\"/>"
-#~ msgstr ", <xref linkend=\"ST_StraightSkeleton\"/>"
-
-#, no-c-format
-#~ msgid "Tests if two geometries are entirely within a given distance"
-#~ msgstr "测试两个几何图形是否完全在给定距离内"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns true if the geometries are entirely within the specified distance "
-#~ "of one another. The distance is specified in units defined by the spatial "
-#~ "reference system of the geometries. For this function to make sense, the "
-#~ "source geometries must both be of the same coordinate projection, having "
-#~ "the same SRID."
-#~ msgstr ""
-#~ "如果几何图形彼此完全在指定距离内，则返回 true。 距离以几何空间参考系统定义"
-#~ "的单位指定。 为了使此函数有意义，源几何图形必须具有相同的坐标投影，并具有"
-#~ "相同的 SRID。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns the n-D distance between the centroids of A and B bounding boxes."
-#~ msgstr "返回 A 和 B 边界框质心之间的 n 维距离。"
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"geometry_distance_knn\"/>"
-#~ msgstr ", <xref linkend=\"geometry_distance_knn\"/>"
-
-#, no-c-format
-#~ msgid "Returns the n-D distance between A and B bounding boxes."
-#~ msgstr "返回 A 和 B 边界框之间的 n 维距离。"
-
-#, no-c-format
-#~ msgid ""
-#~ "The <varname>&lt;&lt;#&gt;&gt;</varname> operator returns distance "
-#~ "between two floating point bounding boxes, possibly reading them from a "
-#~ "spatial index (PostgreSQL 9.1+ required). Useful for doing nearest "
-#~ "neighbor <emphasis role=\"strong\">approximate</emphasis> distance "
-#~ "ordering."
-#~ msgstr ""
-#~ "<varname>&lt;&lt;#&gt;&gt;</varname> 运算符返回两个浮点边界框之间的距离，"
-#~ "可能从空间索引中读取它们（需要 PostgreSQL 9.1）。 对于进行最近邻<emphasis "
-#~ "role=\"strong\">近似</emphasis>距离排序很有用。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Index only kicks in if one of the geometries is a constant e.g. ORDER BY "
-#~ "(ST_GeomFromText('POINT(1 2)') &lt;&lt;#&gt;&gt; geom) instead of g1.geom "
-#~ "&lt;&lt;#&gt;&gt;."
-#~ msgstr ""
-#~ "仅当其中一个几何图形是常量时，索引才会生效，例如 ORDER BY "
-#~ "(ST_GeomFromText('POINT(1 2)') &lt;&lt;#&gt;&gt; geom) 而不是 g1.geom &lt;"
-#~ "&lt;#&gt;&gt;。"
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"geometry_distance_box\"/>"
-#~ msgstr ", <xref linkend=\"geometry_distance_box\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ "&reference_type; &reference_management; &reference_constructor; "
-#~ "&reference_accessor; &reference_editor; &reference_validation; "
-#~ "&reference_srs; &reference_input; &reference_output; &reference_operator; "
-#~ "&reference_relationship; &reference_measure; &reference_overlay; "
-#~ "&reference_processing; &reference_coverage; &reference_transformation; "
-#~ "&reference_cluster; &reference_bbox; &reference_lrs; "
-#~ "&reference_trajectory; &reference_sfcgal; &reference_transaction; "
-#~ "&reference_version; &reference_guc; &reference_troubleshooting;"
-#~ msgstr ""
-#~ "&reference_type; &reference_management; &reference_constructor; "
-#~ "&reference_accessor; &reference_editor; &reference_validation; "
-#~ "&reference_srs; &reference_input; &reference_output; &reference_operator; "
-#~ "&reference_relationship; &reference_measure; &reference_overlay; "
-#~ "&reference_processing; &reference_coverage; &reference_transformation; "
-#~ "&reference_cluster; &reference_bbox; &reference_lrs; "
-#~ "&reference_trajectory; &reference_sfcgal; &reference_transaction; "
-#~ "&reference_version; &reference_guc; &reference_troubleshooting;"
-
-#, no-c-format
-#~ msgid "SFCGAL Functions"
-#~ msgstr "SFCGAL 函数"
-
-#, no-c-format
-#~ msgid "This will only have data is you marked zcta5 to be loaded"
-#~ msgstr "只有在你标记了 zcta5 被加载时才会有数据"
-
-#, no-c-format
-#~ msgid ""
-#~ "ST_ClusterWithin is equivalent to running <xref "
-#~ "linkend=\"ST_ClusterDBSCAN\"/> with <code>minpoints := 0</code>."
-#~ msgstr ""
-#~ "ST_ClusterWithin 相当于使用 <xref linkend=\"ST_ClusterDBSCAN\"/> 且设置 "
-#~ "<code>minpoints := 0</code>。"
-
-#, no-c-format
-#~ msgid ""
-#~ "ST_ClusterWithinWin is equivalent to running <xref "
-#~ "linkend=\"ST_ClusterDBSCAN\"/> with <code>minpoints := 0</code>."
-#~ msgstr ""
-#~ "ST_ClusterWithinWin 相当于使用 <xref linkend=\"ST_ClusterDBSCAN\"/> 且设"
-#~ "置 <code>minpoints := 0</code>。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a simplified version of a geometry, using the Douglas-Peucker "
-#~ "algorithm."
-#~ msgstr "使用 Douglas-Peucker 算法返回几何的简化版本。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a \"simplified\" version of the given geometry using the Douglas-"
-#~ "Peucker algorithm. Will actually do something only with (multi)lines and "
-#~ "(multi)polygons but you can safely call it with any kind of geometry. "
-#~ "Since simplification occurs on a object-by-object basis you can also feed "
-#~ "a GeometryCollection to this function."
-#~ msgstr ""
-#~ "使用 Douglas-Peucker 算法返回给定几何图形的“简化”版本的函数。这个函数的目"
-#~ "标是避免创建无效的派生几何（尤其是多边形）。通常，这个函数会用于(多)线和"
-#~ "(多)多边形，但你也可以安全地将任何类型的几何图形传递给它。由于简化是以对象"
-#~ "为单位进行的，因此你还可以将 GeometryCollection（几何对象的集合）传递给此"
-#~ "函数。"
-
-#, no-c-format
-#~ msgid ""
-#~ "The \"preserve collapsed\" flag will retain objects that would otherwise "
-#~ "be too small given the tolerance. For example, a 1m long line simplified "
-#~ "with a 10m tolerance. If <varname>preserveCollapsed</varname> argument is "
-#~ "specified as true, the line will not disappear. This flag is useful for "
-#~ "rendering engines, to avoid having large numbers of very small objects "
-#~ "disappear from a map leaving surprising gaps."
-#~ msgstr ""
-#~ "\"保留已折叠\" 标志将保留在给定容差下本来会被认为太小而被删除的对象。例"
-#~ "如，使用 10 米的容差对 1 米长的线进行简化。如果指定了 "
-#~ "<varname>preserveCollapsed</varname> 参数为 true，则该线将不会消失。这个标"
-#~ "志对于渲染引擎非常有用，以避免在地图上有大量非常小的对象消失，留下意外的空"
-#~ "隙。"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref "
-#~ "linkend=\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref "
-#~ "linkend=\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a simplified and valid version of a geometry, using the Douglas-"
-#~ "Peucker algorithm."
-#~ msgstr "使用 Douglas-Peucker 算法返回几何的简化且有效的版本。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a \"simplified\" version of the given geometry using the Douglas-"
-#~ "Peucker algorithm. Will avoid creating derived geometries (polygons in "
-#~ "particular) that are invalid. Will actually do something only with "
-#~ "(multi)lines and (multi)polygons but you can safely call it with any kind "
-#~ "of geometry. Since simplification occurs on a object-by-object basis you "
-#~ "can also feed a GeometryCollection to this function."
-#~ msgstr ""
-#~ "使用 Douglas-Peucker 算法返回给定几何图形的“简化”版本。 将避免创建无效的派"
-#~ "生几何图形（特别是多边形）。 实际上只会对（多）线和（多）多边形执行某些操"
-#~ "作，但您可以使用任何类型的几何体安全地调用它。 由于简化是在逐个对象的基础"
-#~ "上进行的，因此您还可以将 GeometryCollection 提供给此函数。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Same example as Simplify, but we see Preserve Topology prevents "
-#~ "oversimplification. The circle can at most become a square."
-#~ msgstr ""
-#~ "与简化相同的示例，但我们看到保留拓扑可以防止过度简化。 圆最多可以变成正方"
-#~ "形。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a simplified version of a geometry, using the Visvalingam-Whyatt "
-#~ "algorithm"
-#~ msgstr "使用 Visvalingam-Whyatt 算法返回几何的简化版本"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a \"simplified\" version of the given geometry using the "
-#~ "Visvalingam-Whyatt algorithm. Will actually do something only with "
-#~ "(multi)lines and (multi)polygons but you can safely call it with any kind "
-#~ "of geometry. Since simplification occurs on a object-by-object basis you "
-#~ "can also feed a GeometryCollection to this function."
-#~ msgstr ""
-#~ "使用 Visvalingam-Whyatt 算法返回给定几何图形的“简化”版本。 实际上只会对"
-#~ "（多）线和（多）多边形执行某些操作，但您可以使用任何类型的几何体安全地调用"
-#~ "它。 由于简化是在逐个对象的基础上进行的，因此您还可以将 "
-#~ "GeometryCollection 提供给此函数。"
-
-#, no-c-format
-#~ msgid "A LineString is simplified with a minimum area threshold of 30."
-#~ msgstr "LineString 通过最小面积阈值 30 进行简化。"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_Simplify\"/>, <xref "
-#~ "linkend=\"ST_SimplifyPreserveTopology\"/>, Topology <xref "
-#~ "linkend=\"TP_ST_Simplify\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_Simplify\"/>, <xref "
-#~ "linkend=\"ST_SimplifyPreserveTopology\"/>, Topology <xref "
-#~ "linkend=\"TP_ST_Simplify\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ "If <varname>crop</varname> is not specified, true is assumed meaning the "
-#~ "output raster is cropped to the intersection of the <varname>geom</"
-#~ "varname>and <varname>rast</varname> extents. If <varname>crop</varname> "
-#~ "is set to false, the new raster gets the same extent as <varname>rast</"
-#~ "varname>."
-#~ msgstr ""
-#~ "如果未指定 <varname>crop</varname> 参数，默认为 true，这意味着输出的栅格图"
-#~ "像将被裁剪为 <varname>geom</varname> 和 <varname>rast</varname> 边界的交集"
-#~ "部分。如果将 <varname>crop</varname> 设置为 false，则新的栅格图像将具有与 "
-#~ "<varname>rast</varname> 相同的范围。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Examples here use Massachusetts aerial data available on MassGIS site "
-#~ "<link xlink:href=\"http://www.mass.gov/mgis/colororthos2008.htm\">MassGIS "
-#~ "Aerial Orthos</link>. Coordinates are in Massachusetts State Plane Meters."
-#~ msgstr ""
-#~ "此处的示例使用 MassGIS 网站<link xlink:href=\"http://www.mass.gov/mgis/"
-#~ "colororthos2008.htm\"> MassGIS Aerial Orthos</link> 上提供的马萨诸塞州航空"
-#~ "数据。 坐标采用马萨诸塞州平面米。"
-
-#, no-c-format
-#~ msgid "Examples: 1 band clipping"
-#~ msgstr "示例：单波段剪辑"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref "
-#~ "linkend=\"RT_ST_Intersection\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref "
-#~ "linkend=\"RT_ST_Intersection\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a line with the last and first segments extended the specified "
-#~ "distance(s)."
-#~ msgstr "返回一条线，其中最后一段和第一段延伸了指定的距离。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a line with the last and first segments extended the specified "
-#~ "distance(s). Distance of zero carries out no extension. Only non-negative "
-#~ "distances are allowed. The first (and last) two distinct points in a line "
-#~ "are used to determine the direction of projection, duplicate points are "
-#~ "ignored."
-#~ msgstr ""
-#~ "返回一条线，其中最后一段和第一段延伸了指定的距离。 距离为零时不进行扩展。 "
-#~ "仅允许非负距离。 一条线上的第一个（和最后一个）两个不同的点用于确定延伸的"
-#~ "方向，重复的点将被忽略。"
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"ST_Project\"/>"
-#~ msgstr ", <xref linkend=\"ST_Project\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
-#~ "linkend=\"ST_LineMerge\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
-#~ "linkend=\"ST_LineMerge\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ "An alternate way to generate Features with an <varname>id</varname> "
-#~ "property is to use JSONB functions and operators:"
-#~ msgstr ""
-#~ "生成具有<varname> id </varname>属性的功能的另一种方法是使用 JSONB 函数和运"
-#~ "算符："
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_ConstrainedDelaunayTriangles\"/>, <xref "
-#~ "linkend=\"ST_Tesselate\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_ConstrainedDelaunayTriangles\"/>, <xref "
-#~ "linkend=\"ST_Tesselate\"/>"
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"ST_DelaunayTriangles\"/>"
-#~ msgstr ", <xref linkend=\"ST_DelaunayTriangles\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ "Buildbot Maintenance, Windows production and experimental builds, "
-#~ "documentation, alignment of PostGIS with PostgreSQL releases, X3D "
-#~ "support, TIGER geocoder support, management functions."
-#~ msgstr ""
-#~ "Buildbot 维护、Windows 生产和实验构建、文档、PostGIS 与 PostgreSQL 版本的"
-#~ "对齐、X3D 支持、TIGER 地理编码器支持、管理功能。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Index improvements, bug fixing and geometry/geography function "
-#~ "improvements, SFCGAL, raster, GitHub curation, and bot maintenance."
-#~ msgstr ""
-#~ "索引改进、纠错和几何/地理功能改进、SFCGAL、栅格、GitHub 策展、机器人维护。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Bug fixes and maintenance, buildbot maintenance, git mirror management, "
-#~ "management functions, integration of new GEOS functionality and alignment "
-#~ "with GEOS releases, topology support, and raster framework and low level "
-#~ "API functions."
-#~ msgstr ""
-#~ "Bug 修复和维护、buildbot 维护、git 镜像管理、管理功能、新 GEOS 功能的集成"
-#~ "以及与 GEOS 版本的一致性、拓扑支持以及栅格框架和低级 API 功能。"
-
-#, no-c-format
-#~ msgid ""
-#~ "MapBox Vector Tile and GeoBuf functions. Gogs testing and GitLab "
-#~ "experimentation."
-#~ msgstr "MapBox Vector Tile和GeoBuf函数，Gogs测试和GitLab实验。"
-
-#, no-c-format
-#~ msgid ""
-#~ "A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
-#~ "matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject> means "
-#~ "the function support is provided by SFCGAL if PostGIS compiled with "
-#~ "SFCGAL support, otherwise GEOS/built-in support."
-#~ msgstr ""
-#~ "A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
-#~ "matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject>表示如果 "
-#~ "PostGIS 使用 SFCGAL 支持编译，则功能支持由 SFCGAL 提供，否则 GEOS/built-in"
-#~ "支持。"
-
-#, no-c-format
-#~ msgid ""
-#~ "GEOS geometry library, version 3.6 or greater, but GEOS 3.12+ is required "
-#~ "to take full advantage of all the new functions and features. GEOS is "
-#~ "available for download from <link xlink:href=\"https://libgeos.org/\"> "
-#~ "https://libgeos.org </link>."
-#~ msgstr ""
-#~ "几何库 GEOS 3.6 或更高版本是必需的，但需要 GEOS 3.12 或更高版本才能充分利"
-#~ "用所有功能和特性。 您可以从 <link xlink:href=\"https://libgeos.org/\"> "
-#~ "https://libgeos.org </link>下载 GEOS。"
-
-#, no-c-format
-#~ msgid ""
-#~ "SFCGAL, version 1.3.1 (or higher), 1.4.1 or higher is recommended and "
-#~ "required to be able to use all functionality. SFCGAL can be used to "
-#~ "provide additional 2D and 3D advanced analysis functions to PostGIS cf "
-#~ "<xref linkend=\"reference_sfcgal\"/>. And also allow to use SFCGAL rather "
-#~ "than GEOS for some 2D functions provided by both backends (like "
-#~ "ST_Intersection or ST_Area, for instance). A PostgreSQL configuration "
-#~ "variable <code>postgis.backend</code> allow end user to control which "
-#~ "backend he want to use if SFCGAL is installed (GEOS by default). Nota: "
-#~ "SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: <link xlink:"
-#~ "href=\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://oslandia."
-#~ "gitlab.io/SFCGAL/dev.html</link>) <link xlink:href=\"https://gitlab.com/"
-#~ "Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/</link>."
-#~ msgstr ""
-#~ "建议使用 SFCGAL 版本 1.3.1（或更高版本）、1.4.1 或更高版本，以便能够使用所"
-#~ "有功能。SFCGAL 可用于为 PostGIS 提供额外的 2D 和 3D 高级分析功能，参见"
-#~ "<xref linkend=\"reference_sfcgal\"/>。并且还允许对两个后端提供的某些 2D 函"
-#~ "数（例如 ST_Intersection 或 ST_Area）使用 SFCGAL 而不是 GEOS。如果安装了 "
-#~ "SFCGAL（默认为 GEOS），PostgreSQL 配置变量 <code>postgis.backend</code>允"
-#~ "许最终用户控制他想要使用哪个后端。注：SFCGAL 1.2 至少需要 CGAL 4.3 和 "
-#~ "Boost 1.54（参见：<link xlink:href=\"https://oslandia.gitlab.io/SFCGAL/"
-#~ "dev.html\">https://oslandia.gitlab.io/SFCGAL/dev.html</link>）<link xlink:"
-#~ "href=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/"
-#~ "SFCGAL/</link>。"
-
-#, no-c-format
-#~ msgid "Creates a 2D, 3D Z or 4D ZM Point geometry."
-#~ msgstr "生成 2D、3D （XYZ） 和 4D （XYZM） 点。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Use <xref linkend=\"ST_MakePointM\"/> to make points with XYM coordinates."
-#~ msgstr "使用 <xref linkend=\"ST_MakePointM\"/>创建具有 XYM 坐标的点。"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
-#~ "<xref linkend=\"ST_MakePointM\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
-#~ "<xref linkend=\"ST_MakePointM\"/>"
-
-#, no-c-format
-#~ msgid "Creates a point with X, Y and M (measure) coordinates."
-#~ msgstr "从 X、Y、M（测量）值生成点。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Use <xref linkend=\"ST_MakePoint\"/> to make points with XY, XYZ, or XYZM "
-#~ "coordinates."
-#~ msgstr ""
-#~ "使用 <xref linkend=\"ST_MakePoint\"/> 创建具有 XY、XYZ、XYZM 坐标的点。"
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
-#~ msgstr ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
-
-#, no-c-format
-#~ msgid "New in 3.2.0: With SRID specified"
-#~ msgstr "3.2.0 中的新功能：可以指定 SRID"
-
-#, no-c-format
-#~ msgid "Pre-PostGIS 3.2 syntax"
-#~ msgstr "PostGIS 3.2 之前的语法"
-
-#, no-c-format
-#~ msgid "3.2 and on you can include the srid"
-#~ msgstr "在 3.2 中，它可以包含 SRID"
-
-#, no-c-format
-#~ msgid ""
-#~ "PostgreSQL also provides the <varname>::</varname> short-hand for casting"
-#~ msgstr "PostgreSQL 还提供了用于转换的<varname>::</varname>简写"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-#~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
-#~ "linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-#~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
-#~ "linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
-
-#, no-c-format
-#~ msgid "Return a geometry as a GeoJSON element."
-#~ msgstr "以 GeoJSON 元素的形式返回几何图形。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a geometry as a GeoJSON \"geometry\", or a row as a GeoJSON "
-#~ "\"feature\". (See the <link xlink:href=\"https://tools.ietf.org/html/"
-#~ "rfc7946\">GeoJSON specifications RFC 7946</link>). 2D and 3D Geometries "
-#~ "are both supported. GeoJSON only support SFS 1.1 geometry types (no curve "
-#~ "support for example)."
-#~ msgstr ""
-#~ "将几何图形返回为 GeoJSON“几何图形”，或将行返回为 GeoJSON“特征”。 （请参阅 "
-#~ "<link xlink:href=\"https://tools.ietf.org/html/rfc7946\">GeoJSON 规范 RFC "
-#~ "7946</link>）。 2D 和 3D 几何图形均受支持。 GeoJSON 仅支持 SFS 1.1 几何类"
-#~ "型（例如不支持曲线）。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns the smallest measure at which points interpolated along the given "
-#~ "trajectories are at the smallest distance."
-#~ msgstr "返回沿给定轨迹插值的点距离最小的最小测量值。"
-
-#, no-c-format
-#~ msgid ""
-#~ "See <xref linkend=\"ST_LocateAlong\"/> for getting the actual points at "
-#~ "the given measure."
-#~ msgstr "请参阅 <xref linkend=\"ST_LocateAlong\"/>以获取给定测量处的实际点。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns the minimum distance two moving objects have ever been each other."
-#~ msgstr "返回两个移动对象彼此之间的最小距离。"
-
-#, no-c-format
-#~ msgid ""
-#~ "<![CDATA[[\n"
-#~ "SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
-#~ "]]>"
-#~ msgstr ""
-#~ "<![CDATA[[\n"
-#~ "SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
-#~ "]]>"
-
-#, no-c-format
-#~ msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
-#~ msgstr "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
-
-#, no-c-format
-#~ msgid "MACRO_C"
-#~ msgstr "MACRO_C"
-
-#, no-c-format
-#~ msgid ""
-#~ "<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (excerpted from "
-#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
-#~ msgstr ""
-#~ "<emphasis role=\"bold\">MACRO_C 输出令牌</emphasis>（摘自<link xlink:"
-#~ "href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://"
-#~ "www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
-
-#, no-c-format
-#~ msgid "MICRO_C"
-#~ msgstr "MICRO_C"
-
-#, no-c-format
-#~ msgid ""
-#~ "<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (excerpted from "
-#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
-#~ msgstr ""
-#~ "<emphasis role=\"bold\">MICRO_C 输出令牌</emphasis> （摘自<link xlink:"
-#~ "href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://"
-#~ "www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
-
-#, no-c-format
-#~ msgid "ARC_C"
-#~ msgstr "ARC_C"
-
-#, no-c-format
-#~ msgid "CIVIC_C"
-#~ msgstr "CIVIC_C"
-
-#, no-c-format
-#~ msgid "EXTRA_C"
-#~ msgstr "EXTRA_C"
-
-#, no-c-format
-#~ msgid ""
-#~ "<emphasis role=\"bold\">EXTRA_C output tokens</emphasis> (excerpted from "
-#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
-#~ msgstr ""
-#~ "<emphasis role=\"bold\">EXTRA_C 输出令牌</emphasis> （摘自 <link xlink:"
-#~ "href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://"
-#~ "www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
-
-#, no-c-format
-#~ msgid "PointOnSurface of a <varname>MULTIPOINT</varname>"
-#~ msgstr "<varname>多点</varname>表面上的点"
-
-#, no-c-format
-#~ msgid "PointOnSurface of a <varname>LINESTRING</varname>"
-#~ msgstr "<varname>线串</varname>表面上的点"
-
-#, no-c-format
-#~ msgid "PointOnSurface of a <varname>POLYGON</varname>"
-#~ msgstr "<varname>面</varname>表面上的点"
-
-#, no-c-format
-#~ msgid "PointOnSurface of a <varname>GEOMETRYCOLLECTION</varname>"
-#~ msgstr "<varname>几何集合</varname>表面上的点"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a <varname>POINT</varname> which is guaranteed to lie in the "
-#~ "interior of a surface (POLYGON, MULTIPOLYGON, and CURVED POLYGON). In "
-#~ "PostGIS this function also works on line and point geometries."
-#~ msgstr ""
-#~ "返回保证位于曲面内部的<varname>点</varname>（POLYGON、MULTIPOLYGON 和 "
-#~ "CURVED POLYGON）。 在 PostGIS 中，此函数也适用于线和点几何图形。"
-
-#, no-c-format
-#~ msgid "make comments"
-#~ msgstr "发表评论"
-
-#, no-c-format
-#~ msgid "make cheatsheets"
-#~ msgstr "制作备忘单"
-
-#, no-c-format
-#~ msgid "make check"
-#~ msgstr "进行检查"
-
-#, no-c-format
-#~ msgid "make install"
-#~ msgstr "进行安装"
-
-#, no-c-format
-#~ msgid "make comments-install"
-#~ msgstr "评论脚本-安装"
-
-#, no-c-format
-#~ msgid "name"
-#~ msgstr "Name"
-
-#, no-c-format
-#~ msgid "<term>id</term>"
-#~ msgstr "<term>id</term>"
-
-#, no-c-format
-#~ msgid "MIXED"
-#~ msgstr "MIXED"
-
-#, no-c-format
-#~ msgid "DIRECT"
-#~ msgstr "DIRECT"
-
-#, no-c-format
-#~ msgid "polygon_hull"
-#~ msgstr "polygon_hull"
-
-#, no-c-format
-#~ msgid "points_hull"
-#~ msgstr "points_hull"
-
-#, no-c-format
-#~ msgid "index integer"
-#~ msgstr "index integer"
-
-#, no-c-format
-#~ msgid "pixeltype text"
-#~ msgstr "pixeltype text"
-
-#, no-c-format
-#~ msgid "initialvalue double precision"
-#~ msgstr "初始值双精度"
-
-#, no-c-format
-#~ msgid "nodataval double precision"
-#~ msgstr "nodataval 双精度"
-
-#, no-c-format
-#~ msgid "rast raster"
-#~ msgstr "rast raster"
-
-#, no-c-format
-#~ msgid "nband integer"
-#~ msgstr "nband integer"
-
-#, no-c-format
-#~ msgid "reclassexpr text"
-#~ msgstr "reclassexpr text"
-
-#, no-c-format
-#~ msgid "uniontype text"
-#~ msgstr "uniontype text"
-
-#, no-c-format
-#~ msgid "value"
-#~ msgstr "value"
-
-#, no-c-format
-#~ msgid "input_points"
-#~ msgstr "input_points"
-
-#, no-c-format
-#~ msgid "algorithm_options"
-#~ msgstr "algorithm_options"
-
-#, no-c-format
-#~ msgid "template"
-#~ msgstr "template"
-
-#, no-c-format
-#~ msgid "template_band_num"
-#~ msgstr "template_band_num"
-
-#, no-c-format
-#~ msgid "T********"
-#~ msgstr "T********"
-
-#, no-c-format
-#~ msgid "*T*******"
-#~ msgstr "*T*******"
-
-#, no-c-format
-#~ msgid "***T*****"
-#~ msgstr "***T*****"
-
-#, no-c-format
-#~ msgid "****T****"
-#~ msgstr "****T****"
-
-#, no-c-format
-#~ msgid "srid"
-#~ msgstr "srid"
-
-#, no-c-format
-#~ msgid "auth_name"
-#~ msgstr "auth_name"
-
-#, no-c-format
-#~ msgid "auth_srid"
-#~ msgstr "auth_srid"
-
-#, no-c-format
-#~ msgid "srtext"
-#~ msgstr "srtext"
-
-#, no-c-format
-#~ msgid "proj4text"
-#~ msgstr "proj4text"
-
-#, no-c-format
-#~ msgid "f_table_catalog, f_table_schema, f_table_name"
-#~ msgstr "f_table_catalog, f_table_schema, f_table_name"
-
-#, no-c-format
-#~ msgid "f_geometry_column"
-#~ msgstr "f_geometry_column"
-
-#, no-c-format
-#~ msgid "coord_dimension"
-#~ msgstr "coord_dimension"
-
-#, no-c-format
-#~ msgid "type"
-#~ msgstr "type"
-
-#, no-c-format
-#~ msgid "<term>-c</term>"
-#~ msgstr "<term>-c</term>"
-
-#, no-c-format
-#~ msgid "<term>-a</term>"
-#~ msgstr "<term>-a</term>"
-
-#, no-c-format
-#~ msgid "<term>-d</term>"
-#~ msgstr "<term>-d</term>"
-
-#, no-c-format
-#~ msgid "<term>-p</term>"
-#~ msgstr "<term>-p</term>"
-
-#, no-c-format
-#~ msgid "<term>-?</term>"
-#~ msgstr "<term>-?</term>"
-
-#, no-c-format
-#~ msgid "<term>-D</term>"
-#~ msgstr "<term>-D</term>"
-
-#, no-c-format
-#~ msgid "-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;"
-#~ msgstr "-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;"
-
-#, no-c-format
-#~ msgid "<term>-k</term>"
-#~ msgstr "<term>-k</term>"
-
-#, no-c-format
-#~ msgid "<term>-i</term>"
-#~ msgstr "<term>-i</term>"
-
-#, no-c-format
-#~ msgid "<term>-I</term>"
-#~ msgstr "<term>-I</term>"
-
-#, no-c-format
-#~ msgid "<term>-m</term>"
-#~ msgstr "<term>-m</term>"
-
-#, no-c-format
-#~ msgid "<term>-S</term>"
-#~ msgstr "<term>-S</term>"
-
-#, no-c-format
-#~ msgid "-t &lt;dimensionality&gt;"
-#~ msgstr "-t &lt;维度&gt;"
-
-#, no-c-format
-#~ msgid "<term>-w</term>"
-#~ msgstr "<term>-w</term>"
-
-#, no-c-format
-#~ msgid "<term>-e</term>"
-#~ msgstr "<term>-e</term>"
-
-#, no-c-format
-#~ msgid "-W &lt;encoding&gt;"
-#~ msgstr "-W &lt;编码&gt;"
-
-#, no-c-format
-#~ msgid "-N &lt;policy&gt;"
-#~ msgstr "-N &lt;策略&gt;"
-
-#, no-c-format
-#~ msgid "<term>-n</term>"
-#~ msgstr "<term>-n</term>"
-
-#, no-c-format
-#~ msgid "<term>-G</term>"
-#~ msgstr "<term>-G</term>"
-
-#, no-c-format
-#~ msgid "-T &lt;tablespace&gt;"
-#~ msgstr "-T &lt;表空间&gt;"
-
-#, no-c-format
-#~ msgid "-X &lt;tablespace&gt;"
-#~ msgstr "-X &lt;表空间&gt;"
-
-#, no-c-format
-#~ msgid "<term>-Z</term>"
-#~ msgstr "<term>-Z</term>"
-
-#, no-c-format
-#~ msgid "ST_Intersects"
-#~ msgstr "ST_Intersects"
-
-#, no-c-format
-#~ msgid "<term>=</term>"
-#~ msgstr "<term>=</term>"
-
-#, no-c-format
-#~ msgid "-f &lt;filename&gt;"
-#~ msgstr "-f &lt;文件名&gt;"
-
-#, no-c-format
-#~ msgid "-h &lt;host&gt;"
-#~ msgstr "-h &lt;主机&gt;"
-
-#, no-c-format
-#~ msgid "-p &lt;port&gt;"
-#~ msgstr "-p &lt;端口&gt;"
-
-#, no-c-format
-#~ msgid "-P &lt;password&gt;"
-#~ msgstr "-P &lt;密码&gt;"
-
-#, no-c-format
-#~ msgid "-u &lt;user&gt;"
-#~ msgstr "-u &lt;用户名&gt;"
-
-#, no-c-format
-#~ msgid "-g &lt;geometry column&gt;"
-#~ msgstr "-g &lt;几何列&gt;"
-
-#, no-c-format
-#~ msgid "<term>-b</term>"
-#~ msgstr "<term>-b</term>"
-
-#, no-c-format
-#~ msgid "<term>-r</term>"
-#~ msgstr "<term>-r</term>"
-
-#, no-c-format
-#~ msgid "-m filename"
-#~ msgstr "-m 文件名"
-
-#, no-c-format
-#~ msgid "<term>-C</term>"
-#~ msgstr "<term>-C</term>"
-
-#, no-c-format
-#~ msgid "<term>-x</term>"
-#~ msgstr "<term>-x</term>"
-
-#, no-c-format
-#~ msgid "-s &lt;SRID&gt;"
-#~ msgstr "-s &lt;SRID&gt;"
-
-#, no-c-format
-#~ msgid "-b BAND"
-#~ msgstr "-b BAND"
-
-#, no-c-format
-#~ msgid "-t TILE_SIZE"
-#~ msgstr "-t TILE_SIZE"
-
-#, no-c-format
-#~ msgid "<term>-P</term>"
-#~ msgstr "<term>-P</term>"
-
-#, no-c-format
-#~ msgid "-R, --register"
-#~ msgstr "-R, --register"
-
-#, no-c-format
-#~ msgid "-l OVERVIEW_FACTOR"
-#~ msgstr "-l OVERVIEW_FACTOR"
-
-#, no-c-format
-#~ msgid "-N NODATA"
-#~ msgstr "-N NODATA"
-
-#, no-c-format
-#~ msgid "-f COLUMN"
-#~ msgstr "-f COLUMN"
-
-#, no-c-format
-#~ msgid "<term>-F</term>"
-#~ msgstr "<term>-F</term>"
-
-#, no-c-format
-#~ msgid "-n COLUMN"
-#~ msgstr "-n COLUMN"
-
-#, no-c-format
-#~ msgid "<term>-q</term>"
-#~ msgstr "<term>-q</term>"
-
-#, no-c-format
-#~ msgid "<term>-M</term>"
-#~ msgstr "<term>-M</term>"
-
-#, no-c-format
-#~ msgid "-T tablespace"
-#~ msgstr "-T tablespace"
-
-#, no-c-format
-#~ msgid "-X tablespace"
-#~ msgstr "-X tablespace"
-
-#, no-c-format
-#~ msgid "-Y max_rows_per_copy=50"
-#~ msgstr "-Y max_rows_per_copy=50"
-
-#, no-c-format
-#~ msgid "-E ENDIAN"
-#~ msgstr "-E ENDIAN"
-
-#, no-c-format
-#~ msgid "-V version"
-#~ msgstr "-V version"

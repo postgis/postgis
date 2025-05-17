@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-25 17:55+0000\n"
+"POT-Creation-Date: 2025-05-17 23:10+0000\n"
 "PO-Revision-Date: 2023-10-14 20:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -16,530 +16,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.0\n"
-
-#. Tag: chapter
-#, no-c-format
-msgid "&database_tuning;"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "PostGIS Administration"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Configuring raster support"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you enabled raster support you may want to read below how to properly "
-"configure it."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"As of PostGIS 2.1.3, out-of-db rasters and all raster drivers are disabled "
-"by default. In order to re-enable these, you need to set the following "
-"environment variables <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and "
-"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in the server environment. "
-"For PostGIS 2.2, you can use the more cross-platform approach of setting the "
-"corresponding <xref linkend=\"PostGIS_GUC\"/>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "If you want to enable offline raster:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Any other setting or no setting at all will disable out of db rasters."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"In order to enable all GDAL drivers available in your GDAL install, set this "
-"environment variable as follows"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you want to only enable specific drivers, set your environment variable "
-"as follows:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "If you are on windows, do not quote the driver list"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Setting environment variables varies depending on OS. For PostgreSQL "
-"installed on Ubuntu or Debian via apt-postgresql, the preferred way is to "
-"edit <filename>/etc/postgresql/<replaceable>10</replaceable>/"
-"<replaceable>main</replaceable>/environment</filename> where 10 refers to "
-"version of PostgreSQL and main refers to the cluster."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"On windows, if you are running as a service, you can set via System "
-"variables which for Windows 7 you can get to by right-clicking on Computer-"
-"&gt;Properties Advanced System Settings or in explorer navigating to "
-"<varname>Control Panel\\All Control Panel Items\\System</varname>. Then "
-"clicking <emphasis>Advanced System Settings -&gt;Advanced-&gt;Environment "
-"Variables</emphasis> and adding new system variables."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"After you set the environment variables, you'll need to restart your "
-"PostgreSQL service for the changes to take effect."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Creating spatial databases"
-msgstr "공간 데이터베이스 생성"
-
-#. Tag: title
-#, no-c-format
-msgid "Spatially enable database using EXTENSION"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you are using PostgreSQL 9.1+ and have compiled and installed the "
-"extensions/postgis modules, you can turn a database into a spatial one using "
-"the EXTENSION mechanism."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Core postgis extension includes geometry, geography, spatial_ref_sys and all "
-"the functions and comments. Raster and topology are packaged as a separate "
-"extension."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Run the following SQL snippet in the database you want to enable spatially:"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Spatially enable database without using EXTENSION (discouraged)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This is generally only needed if you cannot or don't want to get PostGIS "
-"installed in the PostgreSQL extension directory (for example during testing, "
-"development or in a restricted environment)."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Adding PostGIS objects and function definitions into your database is done "
-"by loading the various sql files located in <filename>[prefix]/share/"
-"contrib</filename> as specified during the build phase."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The core PostGIS objects (geometry and geography types, and their support "
-"functions) are in the <filename>postgis.sql</filename> script. Raster "
-"objects are in the <filename>rtpostgis.sql</filename> script. Topology "
-"objects are in the <filename>topology.sql</filename> script."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"For a complete set of EPSG coordinate system definition identifiers, you can "
-"also load the <filename>spatial_ref_sys.sql</filename> definitions file and "
-"populate the <varname>spatial_ref_sys</varname> table. This will permit you "
-"to perform ST_Transform() operations on geometries."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you wish to add comments to the PostGIS functions, you can find them in "
-"the <filename>postgis_comments.sql</filename> script. Comments can be viewed "
-"by simply typing <command>\\dd [function_name]</command> from a "
-"<command>psql</command> terminal window."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Run the following Shell commands in your terminal:"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Upgrading spatial databases"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Upgrading existing spatial databases can be tricky as it requires "
-"replacement or introduction of new PostGIS object definitions."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Unfortunately not all definitions can be easily replaced in a live database, "
-"so sometimes your best bet is a dump/reload process."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases, and "
-"a HARD UPGRADE procedure for major releases."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Before attempting to upgrade PostGIS, it is always worth to backup your "
-"data. If you use the -Fc flag to pg_dump you will always be able to restore "
-"the dump with a HARD UPGRADE."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Soft upgrade"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you installed your database using extensions, you'll need to upgrade "
-"using the extension model as well. If you installed using the old sql script "
-"way, you are advised to switch your install to extensions because the script "
-"way is no longer supported."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Soft Upgrade 9.1+ using extensions"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you originally installed PostGIS with extensions, then you need to "
-"upgrade using extensions as well. Doing a minor upgrade with extensions, is "
-"fairly painless."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you are running PostGIS 3 or above, then you should use the <xref "
-"linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the latest "
-"version you have installed."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "If you are running PostGIS 2.5 or lower, then do the following:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you have multiple versions of PostGIS installed, and you don't want to "
-"upgrade to the latest, you can explicitly specify the version as follows:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "If you get an error notice something like:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Then you'll need to backup your database, create a fresh one as described in "
-"<xref linkend=\"create_new_db_extensions\"/> and then restore your backup on "
-"top of this new database."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "If you get a notice message like:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Then everything is already up to date and you can safely ignore it. "
-"<emphasis role=\"bold\">UNLESS</emphasis> you're attempting to upgrade from "
-"an development version to the next (which doesn't get a new version number); "
-"in that case you can append \"next\" to the version string, and next time "
-"you'll need to drop the \"next\" suffix again:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you installed PostGIS originally without a version specified, you can "
-"often skip the reinstallation of postgis extension before restoring since "
-"the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
-"the newest latest version during restore."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you are upgrading PostGIS extension from a version prior to 3.0.0, you "
-"will have a new extension <emphasis>postgis_raster</emphasis> which you can "
-"safely drop, if you don't need raster support. You can drop as follows:"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Soft Upgrade Pre 9.1+ or without extensions"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This section applies only to those who installed PostGIS not using "
-"extensions. If you have extensions and try to upgrade with this approach "
-"you'll get messages like:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* "
-"prior to r7409, you cannot use this procedure but would rather need to do a "
-"<link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"After compiling and installing (make install) you should find a set of "
-"<filename>*_upgrade.sql</filename> files in the installation folders. You "
-"can list them all with:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Load them all in turn, starting from <filename>postgis_upgrade.sql</"
-"filename>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The same procedure applies to raster, topology and sfcgal extensions, with "
-"upgrade files named <filename>rtpostgis_upgrade.sql</filename>, "
-"<filename>topology_upgrade.sql</filename> and <filename>sfcgal_upgrade.sql</"
-"filename> respectively. If you need them:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "You are advised to switch to an extension based install by running"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you can't find the <filename>postgis_upgrade.sql</filename> specific for "
-"upgrading your version you are using a version too early for a soft upgrade "
-"and need to do a <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The <xref linkend=\"PostGIS_Full_Version\"/> function should inform you "
-"about the need to run this kind of upgrade using a \"procs need upgrade\" "
-"message."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Hard upgrade"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"By HARD UPGRADE we mean full dump/reload of postgis-enabled databases. You "
-"need a HARD UPGRADE when PostGIS objects' internal storage changes or when "
-"SOFT UPGRADE is not possible. The <link linkend=\"release_notes\">Release "
-"Notes</link> appendix reports for each version whether you need a dump/"
-"reload (HARD UPGRADE) to upgrade."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The dump/reload process is assisted by the postgis_restore script which "
-"takes care of skipping from the dump all definitions which belong to PostGIS "
-"(including old ones), allowing you to restore your schemas and data into a "
-"database with PostGIS installed without getting duplicate symbol errors or "
-"bringing forward deprecated objects."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Supplementary instructions for windows users are available at <link xlink:"
-"href=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
-"upgrade</link>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "The Procedure is as follows:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Create a \"custom-format\" dump of the database you want to upgrade (let's "
-"call it <varname>olddb</varname>) include binary blobs (-b) and verbose (-v) "
-"output. The user can be the owner of the db, need not be postgres super "
-"account."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Do a fresh install of PostGIS in a new database -- we'll refer to this "
-"database as <varname>newdb</varname>. Please refer to <xref "
-"linkend=\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> "
-"for instructions on how to do this."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The spatial_ref_sys entries found in your dump will be restored, but they "
-"will not override existing ones in spatial_ref_sys. This is to ensure that "
-"fixes in the official set will be properly propagated to restored databases. "
-"If for any reason you really want your own overrides of standard entries "
-"just don't load the spatial_ref_sys.sql file when creating the new db."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If your database is really old or you know you've been using long deprecated "
-"functions in your views and functions, you might need to load "
-"<filename>legacy.sql</filename> for all your functions and views etc. to "
-"properly come back. Only do this if _really_ needed. Consider upgrading your "
-"views and functions before dumping instead, if possible. The deprecated "
-"functions can be later removed by loading <filename>uninstall_legacy.sql</"
-"filename>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Restore your backup into your fresh <varname>newdb</varname> database using "
-"postgis_restore. Unexpected errors, if any, will be printed to the standard "
-"error stream by psql. Keep a log of those."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Errors may arise in the following cases:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Some of your views or functions make use of deprecated PostGIS objects. In "
-"order to fix this you may try loading <filename>legacy.sql</filename> script "
-"prior to restore or you'll have to restore to a version of PostGIS which "
-"still contains those objects and try a migration again after porting your "
-"code. If the <filename>legacy.sql</filename> way works for you, don't forget "
-"to fix your code to stop using deprecated functions and drop them loading "
-"<filename>uninstall_legacy.sql</filename>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Some custom records of spatial_ref_sys in dump file have an invalid SRID "
-"value. Valid SRID values are bigger than 0 and smaller than 999000. Values "
-"in the 999000.999999 range are reserved for internal use while values &gt; "
-"999999 can't be used at all. All your custom records with invalid SRIDs will "
-"be retained, with those &gt; 999999 moved into the reserved range, but the "
-"spatial_ref_sys table would lose a check constraint guarding for that "
-"invariant to hold and possibly also its primary key ( when multiple invalid "
-"SRIDS get converted to the same reserved SRID value )."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"In order to fix this you should copy your custom SRS to a SRID with a valid "
-"value (maybe in the 910000..910999 range), convert all your tables to the "
-"new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the invalid "
-"entry from spatial_ref_sys and re-construct the check(s) with:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you are upgrading an old database containing french <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national\"> "
-"IGN </link> cartography, you will have probably SRIDs out of range and you "
-"will see, when importing your database, issues like this :"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"In this case, you can try following steps : first throw out completely the "
-"IGN from the sql which is resulting from postgis_restore. So, after having "
-"run :"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "run this command :"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Create then your newdb, activate the required Postgis extensions, and insert "
-"properly the french system IGN with : <link xlink:href=\"https://raw."
-"githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/"
-"Put_IGN_SRS_into_Postgis.sql\"> this script </link> After these operations, "
-"import your data :"
-msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -9432,6 +8908,11 @@ msgstr "다피트 츠바르크(David Zwarg)"
 
 #. Tag: member
 #, no-c-format
+msgid "Dian M Fay"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Dmitry Vasilyev"
 msgstr ""
 
@@ -9991,7 +9472,9 @@ msgstr ""
 
 #. Tag: link
 #, no-c-format
-msgid "INIA-CSIC"
+msgid ""
+">The National Institute for Agricultural and Food Research and Technology "
+"(INIA-CSIC)"
 msgstr ""
 
 #. Tag: link
@@ -16403,37 +15886,14 @@ msgstr ""
 "서 GUC를 설정할 수 있습니다. 전체 또는 데이터베이스 단계에서 설정하는 편이 가"
 "장 좋습니다."
 
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"The backend to service a function where GEOS and SFCGAL overlap. Options: "
-"geos or sfcgal. Defaults to geos."
-msgstr ""
-"GEOS와 SFCGAL 양쪽의 겹치는 함수를 서비스하는 백엔드입니다. geos 또는 sfcgal"
-"을 선택할 수 있는데, 기본값은 geos입니다."
-
 #. Tag: para
 #, no-c-format
 msgid ""
-"This GUC is only relevant if you compiled PostGIS with sfcgal support. By "
-"default <varname>geos</varname> backend is used for functions where both "
-"GEOS and SFCGAL have the same named function. This variable allows you to "
-"override and make sfcgal the backend to service the request."
+"For more examples of usage refer to <link xlink:href=\"https://www."
+"postgresql.org/docs/current/sql-set.html\">SQL SET</link> and <link xlink:"
+"href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
+"ALTER SYSTEM</link>"
 msgstr ""
-"PostGIS를 sfcgal 지원과 함께 컴파일했을 경우에만 GUC가 유의미해집니다. GEOS"
-"와 SFCGAL의 동일한 함수명을 가진 함수를 위해 이용되는 <varname>geos</"
-"varname> 백엔드가 기본값입니다. 이 변수를 변경하면 기본값을 무시하고 요청을 "
-"서비스하는 백엔드를 sfcgal로 바꿀 수 있습니다."
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend just for life of connection"
-msgstr "연결이 유지될 동안만 백엔드를 설정해봅시다."
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend for new connections to database"
-msgstr "데이터베이스와의 새 연결에 백엔드를 설정해봅시다."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -16617,36 +16077,23 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
-msgstr ""
-"<varname>postgis.gdal_enabled_drivers</varname> 를 설정한 다음 재설정해보십시"
-"오."
-
-#. Tag: para
-#, no-c-format
-msgid "Sets backend for all new connections to database"
-msgstr "데이터베이스와의 모든 새 연결에 백엔드를 설정해봅시다."
-
-#. Tag: para
-#, fuzzy, no-c-format
 msgid ""
-"Sets default enabled drivers for all new connections to server. Requires "
-"super user access and PostgreSQL 9.4+. Also note that database, session, and "
-"user settings override this."
+"To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current "
+"session"
 msgstr ""
-"서버와의 모든 새 연결에 기본 활성화된 드라이버를 설정해봅시다. 슈퍼유저 권한 "
-"및 PostgreSQL 9.4 이상 버전이 필요합니다. 또 데이터베이스, 세션, 사용자 설정 "
-"단계에서 이 설정을 무시할 수 없습니다."
 
 #. Tag: para
 #, no-c-format
-msgid "Enable all GDAL Drivers"
-msgstr "모든 GDAL 드라이버를 활성화시키십시오."
+msgid "Set for all new connections to a specific database to specific drivers"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Disable all GDAL Drivers"
-msgstr "모든 GDAL 드라이버를 비활성화시키십시오."
+msgid ""
+"Setting for whole database cluster to enable all drivers. Requires super "
+"user access. Also note that database, session, and user settings override "
+"this."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -16719,14 +16166,14 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Set for specific database"
+msgid "Set for all new connections to a specific database"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Setting for whole database cluster. You need to reconnect to the database "
-"for changes to take effect."
+"Setting for whole database cluster. Requires super user access. Also note "
+"that database, session, and user settings override this."
 msgstr ""
 
 #. Tag: refpurpose
@@ -22497,7 +21944,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Canonical example for a Web Mercator tile using a computed tile bounds to "
-"query and clip geometry."
+"query and clip geometry. This assumes the data.geom column has srid of 4326."
 msgstr ""
 
 #. Tag: para
@@ -23181,12 +22628,9 @@ msgid ""
 "ST_Difference(A, B) always returns a portion of A."
 msgstr ""
 
-#. Tag: para
+#. Tag: refsection
 #, no-c-format
-msgid ""
-"If the optional <code>gridSize</code> argument is provided, the inputs are "
-"snapped to a grid of the given size, and the result vertices are computed on "
-"that same grid. (Requires GEOS-3.9.0 or higher)"
+msgid "&overlay_gridsize_arg;"
 msgstr ""
 
 #. Tag: para
@@ -23238,7 +22682,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
+msgid ""
+", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -23358,9 +22804,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
-"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
-"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
+"linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Force2D\"/>, <xref "
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
+"linkend=\"ST_Multi\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -23538,8 +22985,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<code>max_vertices</code> must be 5 or more, as 5 points are needed to "
-"represent a closed box. <code>gridSize</code> can be specified to have "
-"clipping work in fixed-precision space (requires GEOS-3.9.0+)."
+"represent a closed box."
 msgstr ""
 
 #. Tag: para
@@ -23617,7 +23063,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
-"linkend=\"ST_NPoints\"/>"
+"linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -23695,7 +23141,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
-"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -23751,14 +23198,6 @@ msgid ""
 "described in <link xlink:href=\"http://blog.cleverelephant.ca/2009/01/must-"
 "faster-unions-in-postgis-14.html\">http://blog.cleverelephant.ca/2009/01/"
 "must-faster-unions-in-postgis-14.html</link>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A <code>gridSize</code> can be specified to work in fixed-precision space. "
-"The inputs are snapped to a grid of the given size, and the result vertices "
-"are computed on that same grid. (Requires GEOS-3.9.0 or higher)"
 msgstr ""
 
 #. Tag: para
@@ -23827,7 +23266,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
 "linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
-"linkend=\"ST_SymDifference\"/>"
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
 #. Tag: title
@@ -38992,12 +38431,118 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.5.0"
+msgid "PostGIS 3.5.3"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2024/09/25"
+msgid "2025/05/17"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj "
+"6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
+"advantage of all SFCGAL features, SFCGAL 1.5.0+ is needed."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Bug Fixes"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Do not complain about illegal option when calling shp2pgsql -? (Sandro "
+"Santilli, Giovanni Zezza)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5862\">5862</link>, "
+"[topology] Prevent another topology corruption with TopoGeo_addPoint near "
+"almost collinear edges (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\">5841</link>, "
+"Change approach to interrupt handling to conform to PgSQL recommended "
+"practice (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5855\">5855</link>, "
+"Fix index binding in ST_DFullyWithin (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5819\">5819</link>, "
+"Support longer names in estimated extent (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Fix misassignment of result in _lwt_HealEdges (Maxim Korotkov)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5876\">5876</link>, "
+"ST_AddPoint with empty argument adds garbage (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5874\">5874</link>, "
+"Line substring returns wrong answer (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">5829</link>, "
+"geometry_columns with non-standard constraints (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5818\">5818</link>, "
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/244\">GT-244</link> Fix CG_IsSolid function (Loïc Bartoletti)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5885\">5885</link>, "
+"Fix documentation about grid-based overlay operations (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "For SFCGAL 2.1.0+ prevent using deprecated functions (Regina Obe)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "PostGIS 3.5.2"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "2025/01/18"
 msgstr ""
 
 #. Tag: para
@@ -39006,6 +38551,169 @@ msgid ""
 "This version requires PostgreSQL 12-17, GEOS 3.8 or higher, and Proj 6.1+. "
 "To take advantage of all features, GEOS 3.12+ is needed. To take advantage "
 "of all SFCGAL features, SFCGAL 1.5.0+ is needed."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5677\">#5677</"
+"link>, Retain SRID during unary union (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5833\">#5833</"
+"link>, pg_upgrade fix for postgis_sfcgal (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5564\">#5564</"
+"link>, BRIN crash fix and support for parallel in PG17+ (Paul Ramsey, Regina "
+"Obe)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "PostGIS 3.5.1"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "2024/12/22"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Breaking Changes"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5792\">#5792</"
+"link>, [topology] Prevent topology corruption with TopoGeo_addPoint near "
+"almost collinear edges (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5795\">#5795</"
+"link>, [topology] Fix ST_NewEdgesSplit can cause invalid topology (Björn "
+"Harrtell)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5794\">#5794</"
+"link>, [topology] Fix crash in TopoGeo_addPoint (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5785\">#5785</"
+"link>, [raster] ST_MapAlgebra segfaults when expression references a "
+"supernumerary rast argument (Dian M Fay)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5787\">#5787</"
+"link>, Check that ST_ChangeEdgeGeom doesn't change winding of rings (Sandro "
+"Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5791\">#5791</"
+"link>, Add legacy stubs for old transaction functions to allow pg_upgrade "
+"(Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5800\">#5800</"
+"link>, PROJ compiled version reading the wrong minor and micro (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5790\">#5790</"
+"link>, Non-schema qualified calls causing issue with materialized views "
+"(Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5812\">#5812</"
+"link>, Performance regression in ST_Within (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5815\">#5815</"
+"link>, Remove hash/merge promise from &lt;&gt; operator (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5823\">#5823</"
+"link>, Build support for Pg18 (Paul Ramsey)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Enhancements"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5782\">#5782</"
+"link>, Improve robustness of min distance calculation (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"[topology] Speedup topology building when closing large rings with many "
+"holes (Björn Harrtell)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5810\">#5810</"
+"link>, Update tiger geocoder to handle TIGER 2024 data (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5799\">#5799</"
+"link>, make ST_TileEnvelope clip envelopes to tile plane extent (Paul Ramsey)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "PostGIS 3.5.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "2024/09/25"
 msgstr ""
 
 #. Tag: para
@@ -39026,11 +38734,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Vincent Bre (French Team)"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Breaking Changes"
 msgstr ""
 
 #. Tag: para
@@ -39091,7 +38794,8 @@ msgstr ""
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5496\">#5496</"
 "link>, ST_Clip all variants replaced, will require rebuilding of "
-"materialized views that use them (Regina Obe)"
+"materialized views that use them (funding from The National Institute for "
+"Agricultural and Food Research and Technology (INIA-CSIC)), Regina Obe"
 msgstr ""
 
 #. Tag: para
@@ -39277,11 +38981,6 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5706\">#5706</"
 "link>, <link xlink:href=\"https://github.com/postgis/postgis/"
 "pull/768\">GH-768</link>, ST_RemoveSmallParts (Sam Peters)"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Enhancements"
 msgstr ""
 
 #. Tag: para
@@ -44718,6 +44417,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"If the optional <code>gridSize</code> parameter is given (GEOS-3.9.0 or "
+"higher required), all result vertices are guaranteed to fall on a grid of "
+"the specified size. For the operation to give predictable results all the "
+"input vertices must fall already on the specified grid, see <xref "
+"linkend=\"ST_ReducePrecision\"/>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "New in this release"
 msgstr ""
 
@@ -44755,978 +44464,3 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns the raster clipped by the input geometry. If band number not is "
-#~ "specified, all bands are processed. If <varname>crop</varname> is not "
-#~ "specified or TRUE, the output raster is cropped."
-#~ msgstr ""
-#~ "입력 도형으로 잘라낸 래스터를 반환합니다. 밴드 번호를 지정하지 않은 경우, "
-#~ "모든 밴드를 처리합니다. <varname>crop</varname> 을 설정하지 않거나 참으로 "
-#~ "설정한 경우, 잘라낸 래스터를 출력합니다."
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> "
-#~ "<xref linkend=\"ST_3DUnion\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> "
-#~ "<xref linkend=\"ST_3DUnion\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> "
-#~ "<xref linkend=\"ST_3DDifference\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> "
-#~ "<xref linkend=\"ST_3DDifference\"/>"
-
-#, fuzzy, no-c-format
-#~ msgid "Long Transaction Support"
-#~ msgstr "장기 실행 트랜잭션(Long Transaction) 지원"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "These functions implement a row locking mechanism to support long "
-#~ "transactions. They are provided primarily for implementors of the <link "
-#~ "xlink:href=\"http://www.opengeospatial.org/standards/wfs\">Web Feature "
-#~ "Service</link> specification."
-#~ msgstr ""
-#~ "이 모듈 및 관련 PL/pgSQL 함수들은 <link xlink:href=\"http://www."
-#~ "opengeospatial.org/standards/wfs\">웹 피처 서비스(Web Feature Service)</"
-#~ "link> 사양서가 요구하는 장기 잠금(long locking) 을 지원하기 위해 구현됐습"
-#~ "니다."
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "For the locking mechanism to operate correctly the <emphasis "
-#~ "role=\"bold\">serializable</emphasis> <link xlink:href=\"http://www."
-#~ "postgresql.org/docs/current/static/transaction-iso.html\"> transaction "
-#~ "isolation level</link> must be used."
-#~ msgstr ""
-#~ "사용자는 <link xlink:href=\"http://www.postgresql.org/docs/current/static/"
-#~ "transaction-iso.html\">직렬 가능 트랜잭션 레벨(serializable transaction "
-#~ "level)</link> 을 이용해야 합니다. 그렇지 않으면 잠금 기제(locking "
-#~ "mechanism)가 중단될 것입니다."
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "<refpurpose>Adds an authorization token to be used in the current "
-#~ "transaction.</refpurpose>"
-#~ msgstr ""
-#~ "<refpurpose>현재 트랜잭션에 이용될 승인 토큰을 추가합니다.</refpurpose>"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "<para>Adds an authorization token to be used in the current transaction.</"
-#~ "para>"
-#~ msgstr "<para>현재 트랜잭션에 이용될 승인 토큰을 추가합니다.</para>"
-
-#, no-c-format
-#~ msgid "Availability: 1.1.3"
-#~ msgstr "1.1.3 버전부터 사용할 수 있습니다."
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "Creates a trigger on a table to prevent/allow updates and deletes of rows "
-#~ "based on authorization token."
-#~ msgstr ""
-#~ "승인 토큰을 바탕으로, 테이블에 대해 행들의 업데이트 및 삭제를 금지/허락하"
-#~ "는 트리거를 생성합니다."
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "Creates trigger on a table to prevent/allow updates and deletes of rows "
-#~ "based on an authorization token. Identify rows using &lt;rowid_col&gt; "
-#~ "column."
-#~ msgstr ""
-#~ "승인 토큰을 바탕으로, 테이블에 대해 행들의 업데이트 및 삭제를 금지/허락하"
-#~ "는 트리거를 생성합니다. &lt;rowid_col&gt; 열을 이용해서 행을 식별합니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "If a_schema_name is not passed in, then searches for table in current "
-#~ "schema."
-#~ msgstr ""
-#~ "a_schema_name을 설정하지 않으면, 현재 스키마에서 테이블을 검색합니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "If an authorization trigger already exists on this table function errors."
-#~ msgstr ""
-#~ "해당 테이블에 이미 승인 트리거가 존재할 경우, 함수가 오류를 일으킵니다."
-
-#, no-c-format
-#~ msgid "If Transaction support is not enabled, function throws an exception."
-#~ msgstr ""
-#~ "트랜잭션 지원이 활성화돼 있지 않을 경우, 함수가 예외를 발생시킵니다."
-
-#, fuzzy, no-c-format
-#~ msgid "Disables long transaction support."
-#~ msgstr "DisableLongTransactions"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "Disables long transaction support. This function removes the long "
-#~ "transaction support metadata tables, and drops all triggers attached to "
-#~ "lock-checked tables."
-#~ msgstr ""
-#~ "장기 실행 트랜잭션 지원을 비활성화시킵니다. 이 함수는 장기 실행 트랜잭션 "
-#~ "지원 메타데이터 테이블을 제거하고, 잠금을 확인한(lock-checked) 테이블에 부"
-#~ "여된 모든 트리거를 삭제합니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "Drops meta table called <varname>authorization_table</varname> and a view "
-#~ "called <varname>authorized_tables</varname> and all triggers called "
-#~ "<varname>checkauthtrigger</varname>"
-#~ msgstr ""
-#~ "<varname>authorization_table</varname> 이라는 메타 테이블, "
-#~ "<varname>authorized_tables</varname> 라는 뷰, 그리고 "
-#~ "<varname>checkauthtrigger</varname> 라는 모든 트리거들을 삭제합니다."
-
-#, fuzzy, no-c-format
-#~ msgid "Enables long transaction support."
-#~ msgstr "EnableLongTransactions"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "Enables long transaction support. This function creates the required "
-#~ "metadata tables. It must be called once before using the other functions "
-#~ "in this section. Calling it twice is harmless."
-#~ msgstr ""
-#~ "장기 실행 트랜잭션 지원을 활성화시킵니다. 이 함수는 필수적인 메타데이터 테"
-#~ "이블들을 생성하는데, 이 단원에 있는 다른 함수들을 이용하기 전에 한번 호출"
-#~ "해줘야 합니다. 두 번 호출해도 상관없습니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "Creates a meta table called <varname>authorization_table</varname> and a "
-#~ "view called <varname>authorized_tables</varname>"
-#~ msgstr ""
-#~ "<varname>authorization_table</varname> 이라는 메타 테이블 및 "
-#~ "<varname>authorized_tables</varname> 라는 뷰를 생성합니다."
-
-#, fuzzy, no-c-format
-#~ msgid "Sets lock/authorization for a row in a table."
-#~ msgstr "테이블 내부의 특정 행에 대한 잠금/승인을 설정합니다."
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "Sets lock/authorization for a specific row in a table. "
-#~ "<varname>an_auth_token</varname> is a text value. <varname>expire_dt</"
-#~ "varname> is a timestamp which defaults to <emphasis>now() + 1 hour</"
-#~ "emphasis>. Returns 1 if lock has been assigned, 0 otherwise (i.e. row is "
-#~ "already locked by another auth.)"
-#~ msgstr ""
-#~ "테이블 내부의 특정 행에 대한 잠금/승인을 설정합니다. &lt;authid&gt;는 텍스"
-#~ "트 값, &lt;expires&gt;는 기본값이 now()+1시간인 타임스탬프입니다. 잠금이 "
-#~ "할당된 경우 1을 반환하고, 그렇지 않을 (이미 다른 승인을 받아 잠겨 있는) 경"
-#~ "우 0을 반환합니다."
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "Removes all locks held by specified authorization token. Returns the "
-#~ "number of locks released."
-#~ msgstr ""
-#~ "특정 승인 ID가 실행한 모든 잠금을 제거합니다. 해제된 잠금 개수를 반환합니"
-#~ "다."
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddNode\"/>, "
-#~ "<xref linkend=\"CreateTopology\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddNode\"/>, "
-#~ "<xref linkend=\"CreateTopology\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddEdge\"/>, "
-#~ "<xref linkend=\"CreateTopology\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddEdge\"/>, "
-#~ "<xref linkend=\"CreateTopology\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend=\"AddFace\"/>, "
-#~ "<xref linkend=\"CreateTopology\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend=\"AddFace\"/>, "
-#~ "<xref linkend=\"CreateTopology\"/>"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "the <parameter>geom</parameter> field <varname>LINESTRING</varname>s "
-#~ "represent the segments of the supplied geometry."
-#~ msgstr ""
-#~ "<varname>LINESTRING</varname> 이 닫혀 있는 단순 도형인 경우 "
-#~ "<varname>TRUE</varname> 를 반환합니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "Return an approximate medial axis for the areal input based on its "
-#~ "straight skeleton. Uses an SFCGAL specific API when built against a "
-#~ "capable version (1.2.0+). Otherwise the function is just a wrapper around "
-#~ "ST_StraightSkeleton (slower case)."
-#~ msgstr ""
-#~ "입력 면 도형의 직선 골격을 바탕으로 근사 중심축(approximate medial axis)"
-#~ "을 반환합니다. 사용 가능한 버전(1.2.0 이상)에 대해 빌드했을 때 SFCGAL에 특"
-#~ "화된 API를 이용합니다. 그렇지 않을 경우 이 함수는 (더 느린) "
-#~ "ST_StraightSkeleton 함수를 둘러싼 래퍼(wrapper)에 불과합니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns the n-D distance between the centroids of A and B bounding boxes."
-#~ msgstr ""
-#~ "A 경계 상자와 B의 경계 상자의 중심점 사이의 N차원 거리를 반환합니다."
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"geometry_distance_knn\"/>"
-#~ msgstr ", <xref linkend=\"geometry_distance_knn\"/>"
-
-#, no-c-format
-#~ msgid "Returns the n-D distance between A and B bounding boxes."
-#~ msgstr "A와 B의 경계 상자 사이의 N차원 거리를 반환합니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "The <varname>&lt;&lt;#&gt;&gt;</varname> operator returns distance "
-#~ "between two floating point bounding boxes, possibly reading them from a "
-#~ "spatial index (PostgreSQL 9.1+ required). Useful for doing nearest "
-#~ "neighbor <emphasis role=\"strong\">approximate</emphasis> distance "
-#~ "ordering."
-#~ msgstr ""
-#~ "<varname>&lt;#&gt;</varname> 연산자는 두 부동소수점(floating point) 경계 "
-#~ "상자 사이의 거리를 반환합니다. 공간 인덱스(PostgreSQL 9.1 이상 버전 필요)"
-#~ "로부터 경계 상자들을 읽어 올 수도 있습니다. 최근접 <emphasis "
-#~ "role=\"strong\">근사치</emphasis> 거리의 순서를 정렬하는 데 유용합니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "Index only kicks in if one of the geometries is a constant e.g. ORDER BY "
-#~ "(ST_GeomFromText('POINT(1 2)') &lt;&lt;#&gt;&gt; geom) instead of g1.geom "
-#~ "&lt;&lt;#&gt;&gt;."
-#~ msgstr ""
-#~ "도형 가운데 하나가, 예를 들어 g1.geom &lt;&lt;#&gt;&gt;가 아니라 ORDER BY "
-#~ "(ST_GeomFromText('POINT(1 2)') &lt;&lt;#&gt;&gt; geom)과 같이, 상수일 경우"
-#~ "에만 인덱스의 효과가 나타납니다."
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"geometry_distance_box\"/>"
-#~ msgstr ", <xref linkend=\"geometry_distance_box\"/>"
-
-#, no-c-format
-#~ msgid "SFCGAL Functions"
-#~ msgstr "SFCGAL 함수"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a \"simplified\" version of the given geometry using the Douglas-"
-#~ "Peucker algorithm. Will actually do something only with (multi)lines and "
-#~ "(multi)polygons but you can safely call it with any kind of geometry. "
-#~ "Since simplification occurs on a object-by-object basis you can also feed "
-#~ "a GeometryCollection to this function."
-#~ msgstr ""
-#~ "더글러스-패커(Douglas-Peucker) 알고리즘을 이용해서 입력 도형의 \"단순화"
-#~ "\"된 버전을 반환합니다. 실제로는 [멀티]라인, [멀티]폴리곤과만 작동하지만, "
-#~ "어떤 종류의 도형도 입력할 수 있다고 해도 과언은 아닙니다. 객체별 기반으로 "
-#~ "단순화 작업을 하기 때문에 이 함수에 도형 집합도 입력할 수 있습니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a \"simplified\" version of the given geometry using the Douglas-"
-#~ "Peucker algorithm. Will avoid creating derived geometries (polygons in "
-#~ "particular) that are invalid. Will actually do something only with "
-#~ "(multi)lines and (multi)polygons but you can safely call it with any kind "
-#~ "of geometry. Since simplification occurs on a object-by-object basis you "
-#~ "can also feed a GeometryCollection to this function."
-#~ msgstr ""
-#~ "더글러스-패커(Douglas-Peucker) 알고리즘을 이용해서 입력 도형의 \"단순화"
-#~ "\"된 버전을 반환합니다. 유효하지 않은 파생 도형(특히 폴리곤)을 생성하지 않"
-#~ "을 것입니다. 실제로는 [멀티]라인, [멀티]폴리곤과만 작동하지만, 어떤 종류"
-#~ "의 도형도 입력할 수 있다고 해도 과언은 아닙니다. 객체별 기반으로 단순화 작"
-#~ "업을 하기 때문에 이 함수에 도형 집합도 입력할 수 있습니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "Same example as Simplify, but we see Preserve Topology prevents "
-#~ "oversimplification. The circle can at most become a square."
-#~ msgstr ""
-#~ "ST_Simplify 함수와 동일하지만, ST_SimplifyPreserveTopology는 과단순화"
-#~ "(oversimplification)를 막아준다는 사실을 알 수 있습니다. 원을 단순화해도 "
-#~ "기껏해야 사각형에서 끝납니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a \"simplified\" version of the given geometry using the "
-#~ "Visvalingam-Whyatt algorithm. Will actually do something only with "
-#~ "(multi)lines and (multi)polygons but you can safely call it with any kind "
-#~ "of geometry. Since simplification occurs on a object-by-object basis you "
-#~ "can also feed a GeometryCollection to this function."
-#~ msgstr ""
-#~ "비스베일링검-와이어트(Visvalingam-Whyatt) 알고리즘을 이용해서 입력 도형의 "
-#~ "\"단순화\"된 버전을 반환합니다. 실제로는 [멀티]라인, [멀티]폴리곤과만 작동"
-#~ "하지만, 어떤 종류의 도형도 입력할 수 있다고 해도 과언은 아닙니다. 객체별 "
-#~ "기반으로 단순화 작업을 하기 때문에 이 함수에 도형 집합도 입력할 수 있습니"
-#~ "다."
-
-#, no-c-format
-#~ msgid "A LineString is simplified with a minimum area threshold of 30."
-#~ msgstr ""
-#~ "라인스트링을 최소 임계 면적(minimum area threshold) 30으로 단순화합니다."
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_Simplify\"/>, <xref "
-#~ "linkend=\"ST_SimplifyPreserveTopology\"/>, Topology <xref "
-#~ "linkend=\"TP_ST_Simplify\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_Simplify\"/>, <xref "
-#~ "linkend=\"ST_SimplifyPreserveTopology\"/>, 위상(topology) <xref "
-#~ "linkend=\"TP_ST_Simplify\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ "If <varname>crop</varname> is not specified, true is assumed meaning the "
-#~ "output raster is cropped to the intersection of the <varname>geom</"
-#~ "varname>and <varname>rast</varname> extents. If <varname>crop</varname> "
-#~ "is set to false, the new raster gets the same extent as <varname>rast</"
-#~ "varname>."
-#~ msgstr ""
-#~ "<varname>crop</varname> 을 설정하지 않을 경우, 참으로 가정합니다. "
-#~ "<varname>geom</varname> 범위와 <varname>rast</varname> 범위가 교차하는 부"
-#~ "분을 잘라낸 래스터를 출력한다는 의미입니다. <varname>crop</varname> 을 거"
-#~ "짓으로 설정할 경우, 새 래스터의 범위는 <varname>rast</varname> 의 범위와 "
-#~ "동일합니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "Examples here use Massachusetts aerial data available on MassGIS site "
-#~ "<link xlink:href=\"http://www.mass.gov/mgis/colororthos2008.htm\">MassGIS "
-#~ "Aerial Orthos</link>. Coordinates are in Massachusetts State Plane Meters."
-#~ msgstr ""
-#~ "이 예시는 MassGIS 사이트의 <link xlink:href=\"http://www.mass.gov/mgis/"
-#~ "colororthos2008.htm\">MassGIS Aerial Orthos</link> 에서 다운로드할 수 있"
-#~ "는 매사추세츠 항공사진 데이터를 이용합니다. 매사추세츠 주 미터 단위 평면"
-#~ "의 좌표로 돼 있습니다."
-
-#, no-c-format
-#~ msgid "Examples: 1 band clipping"
-#~ msgstr "예시: 밴드 1개 잘라내기"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref "
-#~ "linkend=\"RT_ST_Intersection\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref "
-#~ "linkend=\"RT_ST_Intersection\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
-#~ "linkend=\"ST_LineMerge\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
-#~ "linkend=\"ST_LineMerge\"/>"
-
-#, fuzzy, no-c-format
-#~ msgid "Creates a 2D, 3D Z or 4D ZM Point geometry."
-#~ msgstr "주어진 포인트 도형들로 정의되는 BOX2D를 생성합니다."
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
-#~ "<xref linkend=\"ST_MakePointM\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
-#~ "<xref linkend=\"ST_MakePointM\"/>"
-
-#, fuzzy, no-c-format
-#~ msgid "Creates a point with X, Y and M (measure) coordinates."
-#~ msgstr "x, y 좌표 및 단위를 가진 포인트를 생성합니다."
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
-#~ msgstr ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-#~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
-#~ "linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-#~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
-#~ "linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
-
-#, no-c-format
-#~ msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
-#~ msgstr "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
-
-#, no-c-format
-#~ msgid "MACRO_C"
-#~ msgstr "MACRO_C"
-
-#, no-c-format
-#~ msgid ""
-#~ "<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (excerpted from "
-#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
-#~ msgstr ""
-#~ "<emphasis role=\"bold\">MACRO_C 출력 토큰</emphasis> (<link xlink:"
-#~ "href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://"
-#~ "www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link> 에서 발췌)"
-
-#, no-c-format
-#~ msgid "MICRO_C"
-#~ msgstr "MICRO_C"
-
-#, no-c-format
-#~ msgid ""
-#~ "<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (excerpted from "
-#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
-#~ msgstr ""
-#~ "<emphasis role=\"bold\">MICRO_C 출력 토큰</emphasis> (<link xlink:"
-#~ "href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://"
-#~ "www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link> 에서 발췌)."
-
-#, no-c-format
-#~ msgid "ARC_C"
-#~ msgstr "ARC_C"
-
-#, no-c-format
-#~ msgid "CIVIC_C"
-#~ msgstr "CIVIC_C"
-
-#, no-c-format
-#~ msgid "EXTRA_C"
-#~ msgstr "EXTRA_C"
-
-#, no-c-format
-#~ msgid ""
-#~ "<emphasis role=\"bold\">EXTRA_C output tokens</emphasis> (excerpted from "
-#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
-#~ msgstr ""
-#~ "<emphasis role=\"bold\">EXTRA_C 출력 토큰</emphasis> (<link xlink:"
-#~ "href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://"
-#~ "www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link> 에서 발췌)."
-
-#, no-c-format
-#~ msgid "make comments"
-#~ msgstr "make comments"
-
-#, no-c-format
-#~ msgid "make cheatsheets"
-#~ msgstr "make cheatsheets"
-
-#, no-c-format
-#~ msgid "make check"
-#~ msgstr "make check"
-
-#, no-c-format
-#~ msgid "make install"
-#~ msgstr "make install"
-
-#, no-c-format
-#~ msgid "make comments-install"
-#~ msgstr "make comments-install"
-
-#, no-c-format
-#~ msgid "building"
-#~ msgstr "building"
-
-#, no-c-format
-#~ msgid "house_num"
-#~ msgstr "house_num"
-
-#, no-c-format
-#~ msgid "predir"
-#~ msgstr "predir"
-
-#, no-c-format
-#~ msgid "qual"
-#~ msgstr "qual"
-
-#, no-c-format
-#~ msgid "pretype"
-#~ msgstr "pretype"
-
-#, no-c-format
-#~ msgid "name"
-#~ msgstr "name"
-
-#, no-c-format
-#~ msgid "suftype"
-#~ msgstr "suftype"
-
-#, no-c-format
-#~ msgid "sufdir"
-#~ msgstr "sufdir"
-
-#, no-c-format
-#~ msgid "ruralroute"
-#~ msgstr "ruralroute"
-
-#, no-c-format
-#~ msgid "extra"
-#~ msgstr "extra"
-
-#, no-c-format
-#~ msgid "city"
-#~ msgstr "city"
-
-#, no-c-format
-#~ msgid "state"
-#~ msgstr "state"
-
-#, no-c-format
-#~ msgid "country"
-#~ msgstr "country"
-
-#, no-c-format
-#~ msgid "postcode"
-#~ msgstr "postcode"
-
-#, no-c-format
-#~ msgid "<term>box</term>"
-#~ msgstr "<term>box</term>"
-
-#, no-c-format
-#~ msgid "unit"
-#~ msgstr "unit"
-
-#, no-c-format
-#~ msgid "<term>id</term>"
-#~ msgstr "<term>id</term>"
-
-#, no-c-format
-#~ msgid "rule"
-#~ msgstr "rule"
-
-#, no-c-format
-#~ msgid "AMPERS"
-#~ msgstr "AMPERS"
-
-#, no-c-format
-#~ msgid "DASH"
-#~ msgstr "DASH"
-
-#, no-c-format
-#~ msgid "DOUBLE"
-#~ msgstr "DOUBLE"
-
-#, no-c-format
-#~ msgid "FRACT"
-#~ msgstr "FRACT"
-
-#, no-c-format
-#~ msgid "MIXED"
-#~ msgstr "MIXED"
-
-#, no-c-format
-#~ msgid "NUMBER"
-#~ msgstr "NUMBER"
-
-#, no-c-format
-#~ msgid "<term>ORD</term>"
-#~ msgstr "<term>ORD</term>"
-
-#, no-c-format
-#~ msgid "WORD"
-#~ msgstr "WORD"
-
-#, no-c-format
-#~ msgid "BOXH"
-#~ msgstr "BOXH"
-
-#, no-c-format
-#~ msgid "BUILDH"
-#~ msgstr "BUILDH"
-
-#, no-c-format
-#~ msgid "BUILDT"
-#~ msgstr "BUILDT"
-
-#, no-c-format
-#~ msgid "DIRECT"
-#~ msgstr "DIRECT"
-
-#, no-c-format
-#~ msgid "MILE"
-#~ msgstr "MILE"
-
-#, no-c-format
-#~ msgid "ROAD"
-#~ msgstr "ROAD"
-
-#, no-c-format
-#~ msgid "<term>RR</term>"
-#~ msgstr "<term>RR</term>"
-
-#, no-c-format
-#~ msgid "TYPE"
-#~ msgstr "TYPE"
-
-#, no-c-format
-#~ msgid "UNITH"
-#~ msgstr "UNITH"
-
-#, no-c-format
-#~ msgid "QUINT"
-#~ msgstr "QUINT"
-
-#, no-c-format
-#~ msgid "QUAD"
-#~ msgstr "QUAD"
-
-#, no-c-format
-#~ msgid "<term>PCH</term>"
-#~ msgstr "<term>PCH</term>"
-
-#, no-c-format
-#~ msgid "<term>PCT</term>"
-#~ msgstr "<term>PCT</term>"
-
-#, no-c-format
-#~ msgid "STOPWORD"
-#~ msgstr "STOPWORD"
-
-#, no-c-format
-#~ msgid "CITY"
-#~ msgstr "CITY"
-
-#, no-c-format
-#~ msgid "STATE"
-#~ msgstr "STATE"
-
-#, no-c-format
-#~ msgid "NATION"
-#~ msgstr "NATION"
-
-#, no-c-format
-#~ msgid "POSTAL"
-#~ msgstr "POSTAL"
-
-#, no-c-format
-#~ msgid "HOUSE"
-#~ msgstr "HOUSE"
-
-#, no-c-format
-#~ msgid "street"
-#~ msgstr "street"
-
-#, no-c-format
-#~ msgid "BLDNG"
-#~ msgstr "BLDNG"
-
-#, no-c-format
-#~ msgid "BOXT"
-#~ msgstr "BOXT"
-
-#, no-c-format
-#~ msgid "UNITT"
-#~ msgstr "UNITT"
-
-#, no-c-format
-#~ msgid "UNKNWN"
-#~ msgstr "UNKNWN"
-
-#, no-c-format
-#~ msgid "<term>seq</term>"
-#~ msgstr "<term>seq</term>"
-
-#, no-c-format
-#~ msgid "word"
-#~ msgstr "word"
-
-#, no-c-format
-#~ msgid "stdword"
-#~ msgstr "stdword"
-
-#, no-c-format
-#~ msgid "token"
-#~ msgstr "token"
-
-#, fuzzy, no-c-format
-#~ msgid "value"
-#~ msgstr "ST_Value"
-
-#, no-c-format
-#~ msgid "rast,rast1,rast2, rastbandargset"
-#~ msgstr "rast, rast1, rast2, rastbandargset"
-
-#, no-c-format
-#~ msgid "nband, nband1, nband2"
-#~ msgstr "nband, nband1, nband2"
-
-#, no-c-format
-#~ msgid "callbackfunc"
-#~ msgstr "callbackfunc"
-
-#, no-c-format
-#~ msgid "mask"
-#~ msgstr "mask"
-
-#, no-c-format
-#~ msgid "weighted"
-#~ msgstr "weighted"
-
-#, no-c-format
-#~ msgid "pixeltype"
-#~ msgstr "pixeltype"
-
-#, no-c-format
-#~ msgid "extenttype"
-#~ msgstr "extenttype"
-
-#, no-c-format
-#~ msgid "customextent"
-#~ msgstr "customextent"
-
-#, no-c-format
-#~ msgid "distancex"
-#~ msgstr "distancex"
-
-#, no-c-format
-#~ msgid "distancey"
-#~ msgstr "distancey"
-
-#, no-c-format
-#~ msgid "userargs"
-#~ msgstr "userargs"
-
-#, no-c-format
-#~ msgid "expression"
-#~ msgstr "표현식(expression)"
-
-#, no-c-format
-#~ msgid "nodata1expr"
-#~ msgstr "nodata1expr"
-
-#, no-c-format
-#~ msgid "nodata2expr"
-#~ msgstr "nodata2expr"
-
-#, no-c-format
-#~ msgid "nodatanodataval"
-#~ msgstr "nodatanodataval"
-
-#, no-c-format
-#~ msgid "rast"
-#~ msgstr "rast"
-
-#, no-c-format
-#~ msgid "band"
-#~ msgstr "band"
-
-#, no-c-format
-#~ msgid "ngbwidth"
-#~ msgstr "ngbwidth"
-
-#, no-c-format
-#~ msgid "ngbheight"
-#~ msgstr "ngbheight"
-
-#, no-c-format
-#~ msgid "onerastngbuserfunc"
-#~ msgstr "onerastngbuserfunc"
-
-#, no-c-format
-#~ msgid "nodatamode"
-#~ msgstr "nodatamode"
-
-#, no-c-format
-#~ msgid "args"
-#~ msgstr "args"
-
-#, fuzzy, no-c-format
-#~ msgid "f_geometry_column"
-#~ msgstr "\\d geometry_columns"
-
-#, no-c-format
-#~ msgid "<term>-c</term>"
-#~ msgstr "<term>-c</term>"
-
-#, no-c-format
-#~ msgid "<term>-a</term>"
-#~ msgstr "<term>-a</term>"
-
-#, no-c-format
-#~ msgid "<term>-d</term>"
-#~ msgstr "<term>-d</term>"
-
-#, no-c-format
-#~ msgid "<term>-p</term>"
-#~ msgstr "<term>-p</term>"
-
-#, no-c-format
-#~ msgid "<term>-?</term>"
-#~ msgstr "<term>-?</term>"
-
-#, no-c-format
-#~ msgid "<term>-D</term>"
-#~ msgstr "<term>-D</term>"
-
-#, fuzzy, no-c-format
-#~ msgid "-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;"
-#~ msgstr "-s [&lt;FROM_SRID%gt;:]&lt;SRID&gt;"
-
-#, no-c-format
-#~ msgid "<term>-k</term>"
-#~ msgstr "<term>-k</term>"
-
-#, no-c-format
-#~ msgid "<term>-i</term>"
-#~ msgstr "<term>-i</term>"
-
-#, no-c-format
-#~ msgid "<term>-I</term>"
-#~ msgstr "<term>-I</term>"
-
-#, no-c-format
-#~ msgid "<term>-m</term>"
-#~ msgstr "<term>-m</term>"
-
-#, no-c-format
-#~ msgid "<term>-S</term>"
-#~ msgstr "<term>-S</term>"
-
-#, no-c-format
-#~ msgid "-t &lt;dimensionality&gt;"
-#~ msgstr "-t &lt;dimensionality&gt;"
-
-#, no-c-format
-#~ msgid "<term>-w</term>"
-#~ msgstr "<term>-w</term>"
-
-#, no-c-format
-#~ msgid "<term>-e</term>"
-#~ msgstr "<term>-e</term>"
-
-#, no-c-format
-#~ msgid "-W &lt;encoding&gt;"
-#~ msgstr "-W &lt;encoding&gt;"
-
-#, no-c-format
-#~ msgid "-N &lt;policy&gt;"
-#~ msgstr "-N &lt;policy&gt;"
-
-#, no-c-format
-#~ msgid "<term>-n</term>"
-#~ msgstr "<term>-n</term>"
-
-#, no-c-format
-#~ msgid "<term>-G</term>"
-#~ msgstr "<term>-G</term>"
-
-#, no-c-format
-#~ msgid "-T &lt;tablespace&gt;"
-#~ msgstr "-T &lt;tablespace&gt;"
-
-#, no-c-format
-#~ msgid "-X &lt;tablespace&gt;"
-#~ msgstr "-X &lt;tablespace&gt;"
-
-#, fuzzy, no-c-format
-#~ msgid "<term>-Z</term>"
-#~ msgstr "<term>-c</term>"
-
-#, no-c-format
-#~ msgid "<term>=</term>"
-#~ msgstr "<term>=</term>"
-
-#, no-c-format
-#~ msgid "-f &lt;filename&gt;"
-#~ msgstr "-f &lt;filename&gt;"
-
-#, no-c-format
-#~ msgid "-h &lt;host&gt;"
-#~ msgstr "-h &lt;host&gt;"
-
-#, no-c-format
-#~ msgid "-p &lt;port&gt;"
-#~ msgstr "-p &lt;port&gt;"
-
-#, no-c-format
-#~ msgid "-P &lt;password&gt;"
-#~ msgstr "-P &lt;password&gt;"
-
-#, no-c-format
-#~ msgid "-u &lt;user&gt;"
-#~ msgstr "-u &lt;user&gt;"
-
-#, no-c-format
-#~ msgid "-g &lt;geometry column&gt;"
-#~ msgstr "-g &lt;geometry column&gt;"
-
-#, no-c-format
-#~ msgid "<term>-b</term>"
-#~ msgstr "<term>-b</term>"
-
-#, no-c-format
-#~ msgid "<term>-r</term>"
-#~ msgstr "<term>-r</term>"
-
-#, no-c-format
-#~ msgid "<term>-C</term>"
-#~ msgstr "<term>-C</term>"
-
-#, no-c-format
-#~ msgid "<term>-x</term>"
-#~ msgstr "<term>-x</term>"
-
-#, no-c-format
-#~ msgid "-s &lt;SRID&gt;"
-#~ msgstr "-s &lt;SRID&gt;"
-
-#, no-c-format
-#~ msgid "-b BAND"
-#~ msgstr "-b BAND"
-
-#, no-c-format
-#~ msgid "-t TILE_SIZE"
-#~ msgstr "-t TILE_SIZE"
-
-#, no-c-format
-#~ msgid "<term>-P</term>"
-#~ msgstr "<term>-P</term>"
-
-#, no-c-format
-#~ msgid "-R, --register"
-#~ msgstr "-R, --register"
-
-#, no-c-format
-#~ msgid "-f COLUMN"
-#~ msgstr "-f COLUMN"
-
-#, no-c-format
-#~ msgid "<term>-F</term>"
-#~ msgstr "<term>-F</term>"
-
-#, no-c-format
-#~ msgid "-n COLUMN"
-#~ msgstr "-n COLUMN"
-
-#, no-c-format
-#~ msgid "<term>-q</term>"
-#~ msgstr "<term>-q</term>"
-
-#, no-c-format
-#~ msgid "<term>-M</term>"
-#~ msgstr "<term>-M</term>"
-
-#, no-c-format
-#~ msgid "-E ENDIAN"
-#~ msgstr "-E ENDIAN"
