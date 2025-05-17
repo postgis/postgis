@@ -3,8 +3,32 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
         <section>
-            <title>PostGIS 3.6.0</title>
-            <para>2025/xx/xx</para>
-        </section>
+            <title>PostGIS 3.6.0alpha1</title>
+            <para>2025/05/17</para>
+                        <para>This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj 6.1+.
+            To take advantage of all features, GEOS 3.12+ is needed.
+            To take advantage of all SFCGAL features, SFCGAL 2.1+ is needed.</para>
 
+            <simplesect><title>Breaking Changes</title>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5799">#5799</link>, make ST_TileEnvelope clips envelopes to tile plane extent (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5829">#5829</link>, remove constraint checking from geometry_columns view (Paul Ramsey)</para>
+            </simplesect>
+
+            <simplesect><title>New Features</title>
+                <para><link xlink:href="https://github.com/postgis/postgis/pull/803">GH-803</link>, [sfcgal] ADD CG_Simplify function (Loïc Bartoletti)</para>
+                <para><link xlink:href="https://github.com/postgis/postgis/pull/805">GH-805</link>, [sfcgal] Add M support for SFCGAL &gt;= 1.5.0 (Loïc Bartoletti)</para>
+                <para><link xlink:href="https://github.com/postgis/postgis/pull/801">GH-801</link>, [sfcgal] ADD CG_3DAlphaWrapping function (Jean Felder)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5894">#5894</link>, [topology] TotalTopologySize (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5890">#5890</link>, [topology] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5861">#5861</link>, [topology] Add --drop-topology switch to pgtopo_import (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/1247">#1247</link>, [raster] ST_AsRasterAgg (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5784">#5784</link>, GT-223 Export circ_tree_distance_tree_internal for mobilitydb use
+                        (Maxime Schoemans)</para>
+                <para><link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/228">GT-228</link> [sfcgal] Add new functions (Scale, Translate, Rotate, Buffer 3D and
+                        Straight Skeleton Partition) from SFCGAL 2 (Loïc Bartoletti)</para>
+                <para>[raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages
+                    and routes them into the PostgreSQL logging system. (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5841">#5841</link>, Change interrupt handling to remove use of pqsignal to support PG 18 (Paul Ramsey)</para>
+            </simplesect>
+        </section>
 </appendix>

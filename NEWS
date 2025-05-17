@@ -1,10 +1,9 @@
-PostGIS 3.6.0
-2025/xx/xx
+PostGIS 3.6.0alpha1
+2025/05/16
 
-* Bug fixes *
-
-  - #5818, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)
-  - #5872, GH-796 Fix tests and results for SK Partition (Loïc Bartoletti)
+This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj 6.1+.
+To take advantage of all features, GEOS 3.12+ is needed.
+To take advantage of all SFCGAL features, SFCGAL 2.1+ is needed.
 
 * Breaking Changes *
 
@@ -16,17 +15,17 @@ PostGIS 3.6.0
 
 * New Features *
 
-  - GH-803, ADD CG_Simplify function (Loïc Bartoletti)
-  - GH-805, Add M support for SFCGAL >= 1.5.0 (Loïc Bartoletti)
-  - GH-801, ADD CG_3DAlphaWrapping function (Jean Felder)
-  - #5894, TotalTopologySize (Sandro Santilli)
-  - #5890, ValidateTopologyPrecision, MakeTopologyPrecise (Sandro Santilli)
-  - #5861, Add --drop-topology switch to pgtopo_import (Sandro Santilli)
-  - #1247, ST_AsRasterAgg (Sandro Santilli)
+  - GH-803, [sfcgal] ADD CG_Simplify function (Loïc Bartoletti)
+  - GH-805, [sfcgal] Add M support for SFCGAL >= 1.5.0 (Loïc Bartoletti)
+  - GH-801, [sfcgal] ADD CG_3DAlphaWrapping function (Jean Felder)
+  - #5894, [topology] TotalTopologySize (Sandro Santilli)
+  - #5890, [topology] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro Santilli)
+  - #5861, [topology] Add --drop-topology switch to pgtopo_import (Sandro Santilli)
+  - #1247, [raster] ST_AsRasterAgg (Sandro Santilli)
   - #5784, GT-223 Export circ_tree_distance_tree_internal for mobilitydb use
            (Maxime Schoemans)
-  - GT-228 Add new functions (Scale, Translate, Rotate, Buffer 3D and
+  - GT-228 [sfcgal] Add new functions (Scale, Translate, Rotate, Buffer 3D and
            Straight Skeleton Partition) from SFCGAL 2 (Loïc Bartoletti)
-  - New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages
+  - [raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages
     and routes them into the PostgreSQL logging system. (Paul Ramsey)
-  - #5841, Change interrupt handling to remove use of pqsignal (Paul Ramsey)
+  - #5841, Change interrupt handling to remove use of pqsignal to support PG 18 (Paul Ramsey)
