@@ -1,5 +1,5 @@
-PostGIS 3.6.0alpha1
-2025/05/16
+PostGIS 3.6.0dev
+xxxx/xx/xxx
 
 This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.12+ is needed.
