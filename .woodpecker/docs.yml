@@ -8,10 +8,10 @@ variables:
       # related config files
       - ".woodpecker/docs.yml"
       # Makefiles
-      #- "doc/Makefile.in"
-      #- "doc/html/images/Makefile.in"
+      - "doc/Makefile.in"
+      - "doc/html/images/Makefile.in"
       # XML sources
-      #- "doc/*.xml"
+      - "doc/*.xml"
       # Internationalization Makefiles
       #- "doc/po/Makefile.local"
   - &when_path
@@ -34,8 +34,6 @@ steps:
       - ../configure --without-pg --without-protobuf --without-raster
       - make postgis_revision.h
       - xmllint --version
-    when:
-      - path: *when_path_full
 
   check-xml:
     image: *test_image
