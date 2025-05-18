@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-04-28 09:57+0000\n"
+"POT-Creation-Date: 2025-05-18 00:48+0000\n"
 "PO-Revision-Date: 2023-09-22 19:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Polish <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -3990,6 +3990,50 @@ msgstr "Dostępność: 2.0"
 
 #. Tag: refpurpose
 #, no-c-format
+msgid "Returns non-precise vertices in the topology."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns all vertices that are not rounded to the topology or given "
+"<varname>gridSize</varname> as a puntal geometry, optionally limiting the "
+"check to the area specified by the <varname>bbox</varname> parameter."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Snap topology vertices to precision grid."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Snaps all vertices of a topology to the topology precision grid or to the "
+"grid whose size is specified with the <varname>gridSize</varname> parameter, "
+"optionally limiting the operation to the objects intersecting the area "
+"specified by the <varname>bbox</varname> parameter."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Snapping could make the topology invalid, so it is recommended to check the "
+"outcome of operation with <xref linkend=\"ValidateTopology\"/>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ValidateTopology\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
 msgid "Returns a topology record by different means."
 msgstr ""
 
@@ -4010,6 +4054,20 @@ msgstr ""
 msgid ""
 "Takes a layer identifier or the identifier of a topology-related object and "
 "returns a topology.layer record."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Total disk space used by the specified topology, including all indexes and "
+"TOAST data."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Takes a topology name and provides the total disk space used by all its "
+"tables, including indexes and TOAST data."
 msgstr ""
 
 #. Tag: title
@@ -6398,13 +6456,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"SFCGAL, 1.4.1 or higher is required and 1.5.0+ is needed to be able to use "
-"all functionality. SFCGAL can be used to provide additional 2D and 3D "
-"advanced analysis functions to PostGIS cf <xref linkend=\"reference_sfcgal\"/"
-">. And also allow to use SFCGAL rather than GEOS for some 2D functions "
-"provided by both backends (like ST_Intersection or ST_Area, for instance). A "
-"PostgreSQL configuration variable <code>postgis.backend</code> allow end "
-"user to control which backend he want to use if SFCGAL is installed (GEOS by "
+"SFCGAL, 1.4.1 or higher is required and 2.1+ is needed to be able to use all "
+"functionality. SFCGAL can be used to provide additional 2D and 3D advanced "
+"analysis functions to PostGIS cf <xref linkend=\"reference_sfcgal\"/>. And "
+"also allow to use SFCGAL rather than GEOS for some 2D functions provided by "
+"both backends (like ST_Intersection or ST_Area, for instance). A PostgreSQL "
+"configuration variable <code>postgis.backend</code> allow end user to "
+"control which backend he want to use if SFCGAL is installed (GEOS by "
 "default). Nota: SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: "
 "<link xlink:href=\"https://sfcgal.org\">https://sfcgal.org</link>) <link "
 "xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/"
@@ -6415,8 +6473,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "In order to build the <xref linkend=\"Address_Standardizer\"/> you will also "
-"need PCRE <link xlink:href=\"http://www.pcre.org\">http://www.pcre.org</"
-"link> (which generally is already installed on nix systems). <xref "
+"need PCRE 1 or 2 <link xlink:href=\"http://www.pcre.org\">http://www.pcre."
+"org</link> (which generally is already installed on nix systems). <xref "
 "linkend=\"Address_Standardizer\"/> will automatically be built if it detects "
 "a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/"
 "pcre</varname> during configure."
@@ -14816,11 +14874,6 @@ msgid ""
 "messages are not printed at all. Turning this GUC to true will cause GDAL "
 "logging to be sent into the PostgreSQL logging stream, so you can see more "
 "or less of it by altering the <code>client_min_message</code> PostgreSQL GUC."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 3.6.0"
 msgstr ""
 
 #. Tag: title
@@ -32912,9 +32965,15 @@ msgid ""
 "with a specified <parameter>radius</parameter>. The buffer is constructed in "
 "3D space, creating a volumetric representation of the geometry's "
 "surroundings. The <parameter>segments</parameter> parameter defines the "
-"number of segments used to approximate the curved sections of the buffer. "
-"The <parameter>buffer_type</parameter> specifies the type of buffer to "
-"create: 0: Rounded buffer (default) 1: Flat buffer 2: Square buffer"
+"number of segments used to approximate the curved sections of the buffer, "
+"with a minimum value of 4 segments required. The <parameter>buffer_type</"
+"parameter> specifies the type of buffer to create: 0: Rounded buffer "
+"(default) 1: Flat buffer 2: Square buffer"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Input geometry must be a Point or LineString."
 msgstr ""
 
 #. Tag: para
@@ -33145,6 +33204,163 @@ msgid ""
 "<parameter>deltaX</parameter> to the X coordinates, <parameter>deltaY</"
 "parameter> to the Y coordinates, and <parameter>deltaZ</parameter> to the Z "
 "coordinates."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Reduces the complexity of a geometry while preserving essential features and "
+"Z/M values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Simplifies a geometry using SFCGAL's simplification algorithm, which reduces "
+"the number of points or vertices while preserving the essential features of "
+"the geometry. This function preserves Z and M values during simplification."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The algorithm is based on constrained triangulation and uses the <link xlink:"
+"href=\"https://doc.cgal.org/latest/Polyline_simplification_2/index."
+"html\">CGAL Polyline Simplification 2</link> library with additional "
+"handling to preserve Z and M coordinates. When topology is preserved and "
+"geometries intersect, Z and M values are interpolated at intersection points."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This function works well with 3D terrain-like geometries (2.5D) but is not "
+"designed for vertical surfaces like walls."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0 - requires SFCGAL &gt;= 2.1.0"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Parameters"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Input geometry"
+msgstr ""
+
+#. Tag: parameter
+#, no-c-format
+msgid "threshold"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Maximum distance threshold (in geometry unit) for simplification. The higher "
+"this value, the more simplified the resulting geometry will be."
+msgstr ""
+
+#. Tag: parameter
+#, no-c-format
+msgid "preserveTopology"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If set to true, the function ensures that the topology of the geometry is "
+"preserved. When geometries intersect in this mode, Z and M values at "
+"intersection points are interpolated. The default value is false."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Return Value"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Returns a simplified geometry with preserved Z and M values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Originals geometries"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplification with 0.5 and topology preserved"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplification with 0.5 without topology preservation"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Computes a 3D Alpha-wrapping strictly enclosing a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Computes the <link xlink:href=\"https://doc.cgal.org/latest/Alpha_wrap_3/"
+"index.html\">3D Alpha Wrapping</link> of the points in a geometry. An alpha "
+"wrapping is a watertight and orientable surface mesh that strictly encloses "
+"the input. It can be seen as an extension or refinement of an <link "
+"linkend=\"CG_AlphaShape\">alpha-shape</link>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <varname>relative_alpha</varname> parameter controls which features will "
+"appear in the output. It can can have values from 0 to infinity. Smaller "
+"relative_alpha values result in simpler outputs, but they are less accurate "
+"representations of the original input."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <varname>relative_offset</varname> parameter controls the tightness of "
+"the result. It can can have values from 0 to infinity. If this parameter is "
+"set to 0, its value is automatically determined based on the relative_alpha "
+"parameter."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Alpha wrapping of a MultiPoint (same example As <xref "
+"linkend=\"CG_OptimalAlphaShape\"/>)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Alpha wrapping of a MultiPoint (same example as <xref "
+"linkend=\"ST_ConcaveHull\"/>)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Effect of the <varname>relative_alpha</varname> parameter with values 5, 10 "
+"and 20. A value of 5 results in a coarse output. Increasing the parameter up "
+"to 20 significantly improves the precision and granularity of the result."
 msgstr ""
 
 #. Tag: title
@@ -34933,12 +35149,128 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0"
+msgid "PostGIS 3.6.0alpha1"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/xx/xx"
+msgid "2025/05/17"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj "
+"6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
+"advantage of all SFCGAL features, SFCGAL 2.1+ is needed."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Breaking Changes"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5799\">#5799</"
+"link>, make ST_TileEnvelope clips envelopes to tile plane extent (Paul "
+"Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">#5829</"
+"link>, remove constraint checking from geometry_columns view (Paul Ramsey)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "New Features"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/803\">GH-803</"
+"link>, [sfcgal] ADD CG_Simplify function (Loïc Bartoletti)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/805\">GH-805</"
+"link>, [sfcgal] Add M support for SFCGAL &gt;= 1.5.0 (Loïc Bartoletti)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/801\">GH-801</"
+"link>, [sfcgal] ADD CG_3DAlphaWrapping function (Jean Felder)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5894\">#5894</"
+"link>, [topology] TotalTopologySize (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5890\">#5890</"
+"link>, [topology] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro "
+"Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5861\">#5861</"
+"link>, [topology] Add --drop-topology switch to pgtopo_import (Sandro "
+"Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1247\">#1247</"
+"link>, [raster] ST_AsRasterAgg (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
+"link>, GT-223 Export circ_tree_distance_tree_internal for mobilitydb use "
+"(Maxime Schoemans)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/228\">GT-228</link> [sfcgal] Add new functions (Scale, Translate, "
+"Rotate, Buffer 3D and Straight Skeleton Partition) from SFCGAL 2 (Loïc "
+"Bartoletti)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"[raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages and "
+"routes them into the PostgreSQL logging system. (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\">#5841</"
+"link>, Change interrupt handling to remove use of pqsignal to support PG 18 "
+"(Paul Ramsey)"
 msgstr ""
 
 #. Tag: title
