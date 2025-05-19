@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-05-19 02:47+0000\n"
+"PO-Revision-Date: 2025-05-20 01:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -5099,7 +5099,7 @@ msgstr "Availability: 3.6.0"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Snap topology vertices to precision grid."
-msgstr ""
+msgstr "トポロジの頂点を精度グリッドにスナップします。"
 
 #. Tag: para
 #, no-c-format
@@ -5109,6 +5109,10 @@ msgid ""
 "optionally limiting the operation to the objects intersecting the area "
 "specified by the <varname>bbox</varname> parameter."
 msgstr ""
+"トポロジの全ての頂点をトポロジの精度グリッドにスナップするか、<varname>gridSi"
+"ze</varname>パラメータで指定したサイズのにグリッドにスナップします。任意に<va"
+"rname>bbox</varname>パラメータで指定した領域とインタセクとするものだけを処理"
+"することもできます。"
 
 #. Tag: para
 #, no-c-format
@@ -5116,11 +5120,13 @@ msgid ""
 "Snapping could make the topology invalid, so it is recommended to check the "
 "outcome of operation with <xref linkend=\"ValidateTopology\"/>."
 msgstr ""
+"スナップによってトポロジが不正になることがありえるので、処理の結果を<xref "
+"linkend=\"ValidateTopology\"/>で確認することを推奨します。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ValidateTopology\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ValidateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5155,14 +5161,16 @@ msgstr ""
 msgid ""
 "Total disk space used by the specified topology, including all indexes and "
 "TOAST data."
-msgstr ""
+msgstr "指定したトポロジが使用するディスク容量の総量を得ます。インデックスやTOASTデー"
+"タも含みます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Takes a topology name and provides the total disk space used by all its "
 "tables, including indexes and TOAST data."
-msgstr ""
+msgstr "トポロジ名から、そのトポロジのすべてのテーブルのディスク容量の総量を返します"
+"。インデックスとTOASTデータも含みます。"
 
 #. Tag: title
 #, no-c-format
@@ -8204,6 +8212,18 @@ msgid ""
 "xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/"
 "SFCGAL/</link>."
 msgstr ""
+"SFCGAL。1.4.1以上が必要ですが、全ての機能を使用できるようにするためには、2."
+"1以上が必要です。SFCGALは、<xref linkend=\"reference_sfcgal\"/>のような、追加"
+"的な2次元や3次元の高度な解析機能をPostGISに提供するために使います。また、"
+"SFCGALとGEOSの両方から提供されている2次元関数 (ST_Intersection, ST_Areaなど)"
+"についてはGEOSでなくSFCGALを使うことができます。PostgreSQLコンフィギュレーシ"
+"ョン変数である<code>postgis."
+"backend</code>によって、SFCGALがインストールされている場合には、"
+"エンドユーザがどのバックエンドを使うかを制御することができるようになります "
+"(デフォルトはGEOS)。ご注意: SFCGAL 1.2は少なくともCGAL 4.3とBoost 1.54 "
+"が必要です (<link xlink:href=\"https://sfcgal.org/\">https://sfcgal.org/</"
+"link> 参照) <link xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\""
+">https://gitlab.com/sfcgal/SFCGAL/</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -8215,6 +8235,13 @@ msgid ""
 "a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/"
 "pcre</varname> during configure."
 msgstr ""
+"<xref linkend=\"Address_Standardizer\"/>をビルドするには、 PCRE 1 "
+"または2のいずれかも必要になります <link xlink:href=\"http://www.pcre.org\""
+">http://www.pcre.org</link> "
+"(UNIXシステムではインストール済みなのが一般的です)。<xref linkend="
+"\"Address_Standardizer\"/>は、PCREライブラリが検出されると自動的にビルドされ"
+"ますが、コンフィギュア時に妥当な<varname>--with-pcre-dir=/path/to/"
+"pcre</varname>を渡してもビルドできます。"
 
 #. Tag: para
 #, no-c-format
@@ -40795,7 +40822,7 @@ msgid "Computes a 3D buffer around a geometry."
 msgstr "ジオメトリの周りの3次元バッファを計算します。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Generates a 3D buffer around the input geometry <parameter>geom</parameter> "
 "with a specified <parameter>radius</parameter>. The buffer is constructed in "
@@ -40806,11 +40833,17 @@ msgid ""
 "parameter> specifies the type of buffer to create: 0: Rounded buffer "
 "(default) 1: Flat buffer 2: Square buffer"
 msgstr ""
+"入力ジオメトリ<parameter>geom</parameter> まわりに<parameter>radius</paramete"
+"r>で指定した3次元バッファを生成します。バッファは3次元空間に構築され、ジオメ"
+"トリの周囲の立体表現を生成します。 <parameter>segments</parameter>パラメータ"
+"でバッファの曲線の近似に使われる辺の数を決めます。4辺分割が最低値として必要で"
+"す。<parameter>buffer_type</parameter>で生成バッファのタイプを指定します。0: "
+"円バッファ (デフォルト) 1: 平面バッファ 2: 正方形バッファ"
 
 #. Tag: para
 #, no-c-format
 msgid "Input geometry must be a Point or LineString."
-msgstr ""
+msgstr "入力ジオメトリはPOINTまたはLINESTRINGでなければなりません。"
 
 #. Tag: para
 #, no-c-format
@@ -41081,18 +41114,21 @@ msgstr ""
 msgid ""
 "Reduces the complexity of a geometry while preserving essential features and "
 "Z/M values."
-msgstr ""
+msgstr "主要な地物とZ/M値を維持しつつジオメトリの複雑さを減らします。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Simplifies a geometry using SFCGAL's simplification algorithm, which reduces "
 "the number of points or vertices while preserving the essential features of "
 "the geometry. This function preserves Z and M values during simplification."
 msgstr ""
+"SFCGALの単純化アルゴリズムを使ってジオメトリを単純化します。ジオメトリの主要"
+"な特徴を保存しつつポイントや頂点の数を減らします。この関数はZ値やM値の保存も"
+"します。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The algorithm is based on constrained triangulation and uses the <link xlink:"
 "href=\"https://doc.cgal.org/latest/Polyline_simplification_2/index."
@@ -41100,18 +41136,23 @@ msgid ""
 "handling to preserve Z and M coordinates. When topology is preserved and "
 "geometries intersect, Z and M values are interpolated at intersection points."
 msgstr ""
+"アルゴリズムは制約付き三角分割を基にしていて、"
+"Z値とM値の保存のための追加操作を持つ<link xlink:href=\"https://doc.cgal.org/"
+"latest/Polyline_simplification_2/index.html\">CGAL Polyline Simplification "
+"2</link>ライブラリを使っています。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "This function works well with 3D terrain-like geometries (2.5D) but is not "
 "designed for vertical surfaces like walls."
-msgstr ""
+msgstr "この関数は3次元地形のようなジオメトリ (2.5次元)で動作しますが、壁のような垂直"
+"なサーフェス用にはデザインされていません。"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0 - requires SFCGAL &gt;= 2.1.0"
-msgstr ""
+msgstr "Availability: 3.6.0 - SFCGAL &gt;= 2.1.0が必要"
 
 #. Tag: title
 #, no-c-format
@@ -41121,7 +41162,7 @@ msgstr "パラメータ"
 #. Tag: para
 #, no-c-format
 msgid "Input geometry"
-msgstr ""
+msgstr "入力ジオメトリ"
 
 #. Tag: parameter
 #, no-c-format
