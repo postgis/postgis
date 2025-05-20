@@ -13,8 +13,6 @@ export CONFIG_FILE="$CUR_DIR/configs.sh"
 . $CONFIG_FILE
 echo $PATH
 
-cd ${WORKSPACE}/PostGIS_Worker_Run/label/${label}/$BRANCH
-
 sh autogen.sh
 ./configure --with-pgconfig=${PGPATH}/bin/pg_config --with-geosconfig=${GEOS_PATH}/bin/geos-config --with-library-minor-version --enable-lto --without-interrupt-tests --prefix=${PGPATH}
 #make clean
