@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-05-20 01:47+0000\n"
+"PO-Revision-Date: 2025-05-20 03:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -41167,19 +41167,20 @@ msgstr "入力ジオメトリ"
 #. Tag: parameter
 #, no-c-format
 msgid "threshold"
-msgstr ""
+msgstr "threshold"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Maximum distance threshold (in geometry unit) for simplification. The higher "
 "this value, the more simplified the resulting geometry will be."
-msgstr ""
+msgstr "単純化に関する最大距離のしきい値 "
+"(ジオメトリの単位)。この値が大きいほど結果ジオメトリが単純になります。"
 
 #. Tag: parameter
 #, no-c-format
 msgid "preserveTopology"
-msgstr ""
+msgstr "preserveTopology"
 
 #. Tag: para
 #, no-c-format
@@ -41188,31 +41189,34 @@ msgid ""
 "preserved. When geometries intersect in this mode, Z and M values at "
 "intersection points are interpolated. The default value is false."
 msgstr ""
+"TRUEに設定すると、この関数はジオメトリのトポロジを確実に保存します。このモー"
+"ドでジオメトリがインタセクとするとき、インタセクとするポイントにおけるZ値とM"
+"値は補完値になります。デフォルト値はFALSEです。"
 
 #. Tag: title
 #, no-c-format
 msgid "Return Value"
-msgstr ""
+msgstr "返り値"
 
 #. Tag: para
 #, no-c-format
 msgid "Returns a simplified geometry with preserved Z and M values."
-msgstr ""
+msgstr "Z値とM値を保存した単純化されたジオメトリが返ります。"
 
 #. Tag: para
 #, no-c-format
 msgid "Originals geometries"
-msgstr ""
+msgstr "元のジオメトリ"
 
 #. Tag: para
 #, no-c-format
 msgid "Simplification with 0.5 and topology preserved"
-msgstr ""
+msgstr "0.5かつトポロジ保存を指定して単純化したもの"
 
 #. Tag: para
 #, no-c-format
 msgid "Simplification with 0.5 without topology preservation"
-msgstr ""
+msgstr "0.5だがトポロジ保存なしで単純化したもの"
 
 #. Tag: para
 #, no-c-format
