@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-05-20 03:47+0000\n"
+"PO-Revision-Date: 2025-05-21 03:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -41221,7 +41221,7 @@ msgstr "0.5だがトポロジ保存なしで単純化したもの"
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
