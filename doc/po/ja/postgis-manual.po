@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-05-21 03:47+0000\n"
+"PO-Revision-Date: 2025-05-21 05:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -41226,7 +41226,7 @@ msgstr ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes a 3D Alpha-wrapping strictly enclosing a geometry."
-msgstr ""
+msgstr "厳密にジオメトリを囲む3次元アルファラッピングを計算します。"
 
 #. Tag: para
 #, no-c-format
@@ -41237,6 +41237,11 @@ msgid ""
 "the input. It can be seen as an extension or refinement of an <link "
 "linkend=\"CG_AlphaShape\">alpha-shape</link>."
 msgstr ""
+"ジオメトリのポイントから<link xlink:href=\"https://doc.cgal.org/latest/"
+"Alpha_wrap_3/index.html\">3Dアルファラッピング</link>を計算します。アルファラ"
+"ッピングは、入力を厳密に囲む水漏れのない方向つきサーフェスメッシュです。"
+"<link linkend=\"CG_AlphaShape\""
+">アルファシェイプ</link>の拡張または改良とみることができます。"
 
 #. Tag: para
 #, no-c-format
@@ -41246,29 +41251,37 @@ msgid ""
 "relative_alpha values result in simpler outputs, but they are less accurate "
 "representations of the original input."
 msgstr ""
+"<varname>relative_alpha</varname>パラメータで、出力に現れる地物を制御します。"
+"0から無限大を取ります。relative_alphaが小さいほど、より単純な出力になりますが"
+"、元の入力より精度の低い表現になります。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <varname>relative_offset</varname> parameter controls the tightness of "
 "the result. It can can have values from 0 to infinity. If this parameter is "
 "set to 0, its value is automatically determined based on the relative_alpha "
 "parameter."
 msgstr ""
+"<varname>relative_offset</varname>パラメータで、結果の余裕を制御します。0から"
+"無限大まで値を取ることができます。このパラメータが0に設定されると、値は自動的"
+"にrelative_alphaパラメータを基に決定されます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Alpha wrapping of a MultiPoint (same example As <xref "
 "linkend=\"CG_OptimalAlphaShape\"/>)"
-msgstr ""
+msgstr "MULTIPOINTのアルファラッピング (<xref linkend=\"CG_OptimalAlphaShape\""
+"/>と同じ例です)"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Alpha wrapping of a MultiPoint (same example as <xref "
 "linkend=\"ST_ConcaveHull\"/>)"
-msgstr ""
+msgstr "MULTIPOINTのアルファラッピング (<xref linkend=\"ST_ConcaveHull\""
+"/>と同じ例です)"
 
 #. Tag: para
 #, no-c-format
@@ -41277,6 +41290,8 @@ msgid ""
 "and 20. A value of 5 results in a coarse output. Increasing the parameter up "
 "to 20 significantly improves the precision and granularity of the result."
 msgstr ""
+"<varname>relative_alpha</varname>パラメータ値の5, 10, 20の効果。5の時は荒い出"
+"力です。20まで上がっていくと、結果の精度と粒度が大幅に改善されます。"
 
 #. Tag: title
 #, no-c-format
@@ -43460,12 +43475,12 @@ msgstr "リリースノート"
 #. Tag: title
 #, no-c-format
 msgid "PostGIS 3.6.0alpha1"
-msgstr ""
+msgstr "PostGIS 3.6.0alpha1"
 
 #. Tag: para
 #, no-c-format
 msgid "2025/05/17"
-msgstr ""
+msgstr "2025/05/17"
 
 #. Tag: para
 #, no-c-format
@@ -43474,6 +43489,9 @@ msgid ""
 "6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
 "advantage of all SFCGAL features, SFCGAL 2.1+ is needed."
 msgstr ""
+"このバージョンはPostgreSQL 12-18beta1、GEOS 3.8以上、Proj 6."
+"1以上が必要です。全ての機能を利用するには、GEOS 3."
+"12以上が必要です。全てのSFCGAL機能を利用するには、SFCGAL 2.1以上が必要です。"
 
 #. Tag: title
 #, no-c-format
@@ -43494,11 +43512,14 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">#5829</"
 "link>, remove constraint checking from geometry_columns view (Paul Ramsey)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">#5829</"
+"link>, geometry_columnsビューから制約条件チェックを外しました (Paul "
+"Ramseyさん)"
 
 #. Tag: title
 #, no-c-format
 msgid "New Features"
-msgstr ""
+msgstr "新機能"
 
 #. Tag: para
 #, no-c-format
@@ -43506,6 +43527,8 @@ msgid ""
 "<link xlink:href=\"https://github.com/postgis/postgis/pull/803\">GH-803</"
 "link>, [sfcgal] ADD CG_Simplify function (Loïc Bartoletti)"
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/803\">GH-803</"
+"link>, [sfcgal] CG_Simplify関数が追加されました (Loïc Bartolettiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -43513,6 +43536,9 @@ msgid ""
 "<link xlink:href=\"https://github.com/postgis/postgis/pull/805\">GH-805</"
 "link>, [sfcgal] Add M support for SFCGAL &gt;= 1.5.0 (Loïc Bartoletti)"
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/805\">GH-805</"
+"link>, [sfcgal] SFCGAL &gt;= 1.5.0 でM値に対応するようになりました (Loïc "
+"Bartolettiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -43520,6 +43546,8 @@ msgid ""
 "<link xlink:href=\"https://github.com/postgis/postgis/pull/801\">GH-801</"
 "link>, [sfcgal] ADD CG_3DAlphaWrapping function (Jean Felder)"
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/801\">GH-801</"
+"link>, [sfcgal] CG_3DAlphaWrapping 関数が追加されました (Jean Felderさん)"
 
 #. Tag: para
 #, no-c-format
@@ -43527,6 +43555,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5894\">#5894</"
 "link>, [topology] TotalTopologySize (Sandro Santilli)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5894\">#5894</"
+"link>, [topology] TotalTopologySize (Sandro Santilliさん)"
 
 #. Tag: para
 #, no-c-format
@@ -43535,6 +43565,9 @@ msgid ""
 "link>, [topology] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro "
 "Santilli)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5890\">#5890</"
+"link>, [topology] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro "
+"Santilliさん)"
 
 #. Tag: para
 #, no-c-format
@@ -43543,6 +43576,9 @@ msgid ""
 "link>, [topology] Add --drop-topology switch to pgtopo_import (Sandro "
 "Santilli)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5861\">#5861</"
+"link>, [topology] pgtopo_importに--drop-topology スイッチ追加 (Sandro "
+"Santilliさん)"
 
 #. Tag: para
 #, no-c-format
@@ -43550,6 +43586,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1247\">#1247</"
 "link>, [raster] ST_AsRasterAgg (Sandro Santilli)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1247\">#1247</"
+"link>, [raster] ST_AsRasterAgg (Sandro Santilliさん)"
 
 #. Tag: para
 #, no-c-format
@@ -43567,6 +43605,9 @@ msgid ""
 "Rotate, Buffer 3D and Straight Skeleton Partition) from SFCGAL 2 (Loïc "
 "Bartoletti)"
 msgstr ""
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/228\""
+">GT-228</link> [sfcgal] SFCGAL 2から作られた新しい関数 (Scale, Translate, "
+"Rotate, Buffer 3D, Straight Skeleton Partition) (Loïc Bartolettiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -43574,6 +43615,9 @@ msgid ""
 "[raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages and "
 "routes them into the PostgreSQL logging system. (Paul Ramsey)"
 msgstr ""
+"[raster] GDALのデバッグ用メッセージを有効にして、"
+"PostgreSQLログシステムに送るための新しいGUCのpostgis.gdal_cpl_debug (Paul "
+"Ramseyさん)"
 
 #. Tag: para
 #, no-c-format
@@ -43581,7 +43625,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\">#5841</"
 "link>, Change interrupt handling to remove use of pqsignal to support PG 18 "
 "(Paul Ramsey)"
-msgstr ""
+msgstr "PostgreSQL 18対応のため、"
+"割込処理でpqsignalの利用を削除するように変更しました (Paul Ramseyさん)"
 
 #. Tag: title
 #, no-c-format
