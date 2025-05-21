@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-05-21 05:47+0000\n"
+"PO-Revision-Date: 2025-05-21 07:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -40822,7 +40822,7 @@ msgid "Computes a 3D buffer around a geometry."
 msgstr "ジオメトリの周りの3次元バッファを計算します。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Generates a 3D buffer around the input geometry <parameter>geom</parameter> "
 "with a specified <parameter>radius</parameter>. The buffer is constructed in "
@@ -41117,7 +41117,7 @@ msgid ""
 msgstr "主要な地物とZ/M値を維持しつつジオメトリの複雑さを減らします。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Simplifies a geometry using SFCGAL's simplification algorithm, which reduces "
 "the number of points or vertices while preserving the essential features of "
@@ -41128,7 +41128,7 @@ msgstr ""
 "します。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The algorithm is based on constrained triangulation and uses the <link xlink:"
 "href=\"https://doc.cgal.org/latest/Polyline_simplification_2/index."
@@ -41138,16 +41138,17 @@ msgid ""
 msgstr ""
 "アルゴリズムは制約付き三角分割を基にしていて、"
 "Z値とM値の保存のための追加操作を持つ<link xlink:href=\"https://doc.cgal.org/"
-"latest/Polyline_simplification_2/index.html\">CGAL Polyline Simplification "
-"2</link>ライブラリを使っています。"
+"latest/Polyline_simplification_2/index.html\">CGAL Polyline Simplification 2<"
+"/link>ライブラリを使っています。トポロジが保存され、ジオメトリどうしがインタ"
+"セクトしているとき、Z値とM値はインタセクトしているポイントで補間されます。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This function works well with 3D terrain-like geometries (2.5D) but is not "
 "designed for vertical surfaces like walls."
-msgstr "この関数は3次元地形のようなジオメトリ (2.5次元)で動作しますが、壁のような垂直"
-"なサーフェス用にはデザインされていません。"
+msgstr "この関数は3次元地形のようなジオメトリ (2."
+"5次元)で動作しますが、壁のような垂直なサーフェス向けには作られていません。"
 
 #. Tag: para
 #, no-c-format
@@ -41256,7 +41257,7 @@ msgstr ""
 "、元の入力より精度の低い表現になります。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>relative_offset</varname> parameter controls the tightness of "
 "the result. It can can have values from 0 to infinity. If this parameter is "
@@ -43505,6 +43506,10 @@ msgid ""
 "link>, make ST_TileEnvelope clips envelopes to tile plane extent (Paul "
 "Ramsey)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5799\">#5799</"
+"link>, "
+"ST_TileEnvelopeがエンベロープをタイル平面範囲にクリップするようにしました ("
+"Paul Ramseyさん)"
 
 #. Tag: para
 #, no-c-format
@@ -43596,6 +43601,10 @@ msgid ""
 "link>, GT-223 Export circ_tree_distance_tree_internal for mobilitydb use "
 "(Maxime Schoemans)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
+"link>, GT-223 "
+"MobilityDB利用のためのcirc_tree_distance_tree_internalのエクスポート (Maxime "
+"Schoemansさん)"
 
 #. Tag: para
 #, no-c-format
