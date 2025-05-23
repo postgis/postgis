@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - Correct the documented default band for raster summary statistics (Martin Davis)
   - [tiger_geocoder] Treat address fragments literally during normalization
     (Darafei Praliaskouski)
   - #2850, GH-1020, Preserve fixed numeric DBF widths and scale in pgsql2shp (Darafei Praliaskouski)
