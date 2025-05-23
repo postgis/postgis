@@ -8378,7 +8378,7 @@ ORDER BY value, quantile,rid
         <refentry xml:id="RT_ST_SummaryStats">
             <refnamediv>
                 <refname>ST_SummaryStats</refname>
-                <refpurpose>Returns summarystats consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage. Band 1 is assumed is no band is specified.</refpurpose>
+                <refpurpose>Returns summarystats consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage. Band 1 is assumed if no band is specified.</refpurpose>
             </refnamediv>
 
             <refsynopsisdiv>
@@ -8507,7 +8507,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
         <refentry xml:id="RT_ST_SummaryStatsAgg">
             <refnamediv>
                 <refname>ST_SummaryStatsAgg</refname>
-                <refpurpose>Aggregate. Returns summarystats consisting of count, sum, mean, stddev, min, max for a given raster band of a set of raster. Band 1 is assumed is no band is specified.</refpurpose>
+                <refpurpose>Aggregate. Returns summarystats consisting of count, sum, mean, stddev, min, max for a given raster band of a set of raster. Band 1 is assumed if no band is specified.</refpurpose>
             </refnamediv>
 
             <refsynopsisdiv>
