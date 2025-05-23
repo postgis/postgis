@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Correct the documented default band for raster summary statistics (Martin Davis)
   - Check the topology backend result when healing edges (Paul Ramsey)
   - Honor --without-gui during configuration (Chris Mayo)
   - #2850, GH-1020, Preserve fixed numeric DBF widths and scale in pgsql2shp (Darafei Praliaskouski)
