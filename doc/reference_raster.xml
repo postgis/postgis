@@ -240,7 +240,7 @@ VALUES (1,
           </refnamediv>
           <refsection>
             <title>Description</title>
-            <para>A composite type used as input into the ST_Reclass function defining the behavior of reclassification.</para>
+            <para>A composite type used as input into the <xref linkend="RT_ST_Reclass"/> function defining the behavior of reclassification.</para>
             <variablelist>
                 <varlistentry>
                     <term><varname>nband integer</varname></term>
@@ -12390,15 +12390,22 @@ SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
                 <refsection>
                     <title>Description</title>
 
-                    <para>Creates a new raster formed by applying a valid PostgreSQL algebraic operation defined by the <varname>reclassexpr</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified band 1 is assumed.  The new raster will have the same georeference, width, and height as the original raster.  Bands not designated will come back unchanged.  Refer to <xref linkend="reclassarg"/> for description of valid reclassification expressions.</para>
+                    <para>Creates a new raster formed by applying a reclassification operation defined by the <varname>reclassexpr</varname> on the input raster (<varname>rast</varname>). 
+                    Refer to <xref linkend="reclassarg"/> for the description of reclassification expressions.
+                    If no <varname>band</varname> is specified band 1 is assumed.    
+                    </para>
 
-                    <para>The bands of the new raster will have pixel type of <varname>pixeltype</varname>.  If <varname>reclassargset</varname> is passed in then each reclassarg defines behavior of each band generated.</para>
+                    <para>The new raster will have the same georeference, width, and height as the original raster.  
+                    The bands of the new raster have pixel type of <varname>pixeltype</varname>.  
+                    If <varname>reclassargset</varname> is specified then each <varname>reclassarg</varname> defines the type of the target band.
+                    Bands not designated are returned unchanged.
+                    </para>
 
                     <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
                 </refsection>
 
                 <refsection>
-                    <title>Examples Basic</title>
+                    <title>Example: Basic</title>
                     <para>Create a new raster from the original where band 2 is converted from 8BUI to 4BUI and all values from 101-254 are set to nodata value.</para>
                     <programlisting>
 ALTER TABLE dummy_rast ADD COLUMN reclass_rast raster;
