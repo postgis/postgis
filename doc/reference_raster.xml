@@ -2,14 +2,11 @@
 <chapter xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="RT_reference">
   <title>Raster Reference</title>
 
-  <para>The functions given below are the ones which a user of PostGIS Raster is
-  likely to need and which are currently available in PostGIS Raster. There are other functions which are required support
-  functions to the raster objects which are not of use to a general
-  user.</para>
-  <para><varname>raster</varname> is a new PostGIS type for storing and analyzing raster data. </para>
+  <para><varname>raster</varname> is a PostGIS type for storing and analyzing raster data. </para>
   <para>For loading rasters from raster files please refer to <xref linkend="RT_Loading_Rasters"/></para>
 
-    <para>For the examples in this reference we will be using a raster table of dummy rasters - Formed with the following code </para>
+    <para>Some examples in this reference use a raster table of dummy data, 
+    created with the following code:</para>
 <programlisting language="sql">CREATE TABLE dummy_rast(rid integer, rast raster);
 INSERT INTO dummy_rast(rid, rast)
 VALUES (1,
@@ -42,6 +39,11 @@ VALUES (1,
 (2,  ('01000003009A9999999999A93F9A9999999999A9BF000000E02B274A' ||
 '41000000007719564100000000000000000000000000000000FFFFFFFF050005000400FDFEFDFEFEFDFEFEFDF9FAFEF' ||
 'EFCF9FBFDFEFEFDFCFAFEFEFE04004E627AADD16076B4F9FE6370A9F5FE59637AB0E54F58617087040046566487A1506CA2E3FA5A6CAFFBFE4D566DA4CB3E454C5665')::raster);</programlisting>
+
+  <para>The functions below are ones which a user of PostGIS Raster is likely to need. 
+  There are other raster support functions which are not of interest to a general
+  user.</para>
+
   <section xml:id="Raster_Types">
     <title>Raster Support Data types</title><info>
             <abstract>
