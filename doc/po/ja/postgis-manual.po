@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-05-21 07:47+0000\n"
+"PO-Revision-Date: 2025-05-27 08:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -1713,9 +1713,10 @@ msgid ""
 "pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used "
 "in the build phase."
 msgstr ""
-"(トークン番号 = \"<emphasis role=\"bold\">1</emphasis>\") 完全なMICRO節 "
-"(House, street, sufdir, predir, pretyp, suftype, qualif等)をパースするための"
-"規則のクラス (ARC_CとCIVIC_Cの和)。建物フェーズでは使われません。"
+"(トークン番号 = \"<emphasis role=\"bold\">1</emphasis>\") 完全なMICRO句 ("
+"House, street, sufdir, predir, pretyp, suftype, qualif等)"
+"をパースするための規則のクラス "
+"(ARC_CとCIVIC_Cの和)。構築フェーズでは使われません。"
 
 #. Tag: para
 #, no-c-format
@@ -1757,7 +1758,8 @@ msgid ""
 "These rules are not used in the build phase."
 msgstr ""
 "(トークン番号 = \"<emphasis role=\"bold\">4</emphasis>\") EXTRA属性 (ジオコー"
-"ディングから除かれる属性)をパースするための規則のクラス。"
+"ディングから除かれる属性)をパースするための規則のクラス。構築フェーズでは使わ"
+"れません。"
 
 #. Tag: para
 #, no-c-format
