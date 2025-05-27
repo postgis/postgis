@@ -12,11 +12,11 @@ export MSYS2_ARG_CONV_EXCL=/config/tags
 export XML_CATALOG_FILES="/projects/docbook/docbook-5.0.1/catalog.xml"
 
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.13.0
+	export GEOS_VER=3.13.1
 	export GDAL_VER=3.9.2
 	export PROJ_VER=8.2.1
-	export SFCGAL_VER=1.5.2
-	export CGAL_VER=5.6.1
+	export SFCGAL_VER=2.1.0
+	export CGAL_VER=6.0.1
 	export ICON_VER=1.17
 	export ZLIB_VER=1.2.13
 	export PROTOBUF_VER=3.2.0
@@ -65,11 +65,11 @@ fi;
 
 #set to something even if override is on but not set
 if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=5.6.1
+  export CGAL_VER=6.0.1
 fi;
 
 ##hard code versions of cgal etc. for now
-export CGAL_VER=5.6.1
+
 BOOST_VER=1.84.0
 export BOOST_VER_WU=1_84_0
 
