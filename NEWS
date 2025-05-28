@@ -29,3 +29,6 @@ To take advantage of all SFCGAL features, SFCGAL 2.1+ is needed.
   - [raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages
     and routes them into the PostgreSQL logging system. (Paul Ramsey)
   - #5841, Change interrupt handling to remove use of pqsignal to support PG 18 (Paul Ramsey)
+
+* Bug fixes and Enhancements *
+  - #5914, Fixed memory leak in ST_GeomFromGeoJSON (Darafei Praliaskouski)
