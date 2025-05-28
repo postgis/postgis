@@ -58,7 +58,7 @@ fi
 sh autogen.sh
 
 # excluding topology cause it's erroring out on some tests
-EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --without-topology"
+#EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --without-topology"
 
 if [ -n "$PCRE_VER" ]; then
     export PATH="${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/include:${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
@@ -91,7 +91,7 @@ LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${LZ4_PATH}/lib -L${PROJECTS
 #patch liblwgeom generated make to get rid of dynamic linking
 #sed -i 's/LDFLAGS += -no-undefined//g' liblwgeom/Makefile
 
-make
+make -j 4
 make install
 make check RUNTESTFLAGS=-v
 
@@ -103,7 +103,7 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  strip postgis/postgis-*.dll
  strip raster/rt_pg/postgis_raster-*.dll
  strip sfcgal/*.dll
- #cp topology/*.dll ${PGPATHEDB}/lib
+ cp topology/*.dll ${PGPATHEDB}/lib
  cp postgis/postgis*.dll ${PGPATHEDB}/lib
  cp sfcgal/*.dll ${PGPATHEDB}/lib
  cp raster/rt_pg/postgis_raster-*.dll ${PGPATHEDB}/lib
@@ -120,7 +120,7 @@ value=${value//UPGRADEABLE_VERSIONS = /}
 export UPGRADEABLE_VERSIONS=$value
 export WIN_RELEASED_VERSIONS="2.0.0 2.0.1 2.0.3 2.0.4 2.0.6 2.1.4 2.1.7 2.1.8 2.2.0 2.2.3 2.3.0 2.3.7 2.4.0 2.4.4"
 #echo "Versions are:  $UPGRADEABLE_VERSIONS"
-for EXTNAME in postgis postgis_raster postgis_sfcgal postgis_tiger_geocoder address_standardizer; do
+for EXTNAME in postgis postgis_raster postgis_sfcgal postgis_tiger_geocoder address_standardizer postgis_topology; do
 	cp extensions/$EXTNAME/sql/*  ${PGPATHEDB}/share/extension
 	cp extensions/$EXTNAME/sql/$EXTNAME--TEMPLATED--TO--ANY.sql  ${PGPATHEDB}/share/extension/$EXTNAME--$POSTGIS_MICRO_VER--${POSTGIS_MINOR_MAX_VER}.sql;
 
