@@ -6,6 +6,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 * Bug fixes *
 
 - #5908, [topology] Fix crash in GetFaceContainingPoint (Sandro Santilli)
+- #5907, [topology] Fix crash in TopoGeo_AddPolygon with EMPTY input (Sandro Santilli)
 
 
 PostGIS 3.5.3
