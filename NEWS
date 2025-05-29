@@ -6,6 +6,7 @@ Proj 6.1+ required.
 
 * Bug Fixes *
 
+  - #5908, [topology] Fix crash in GetFaceContainingPoint (Sandro Santilli)
   - Do not complain about illegal option when calling shp2pgsql -?
   - #5564, BRIN crash fix and support for parallel in PG17+
           (Paul Ramsey, Regina Obe)

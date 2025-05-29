@@ -1,3 +1,7 @@
+null1
+null2
+null3
+ERROR:  Second argument needs be a non-empty point
 pos|1|1
 pos|2|2
 pos|3|3
