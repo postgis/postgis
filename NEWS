@@ -1,4 +1,4 @@
-PostGIS 3.2.9
+PostGIS 3.2.9dev
 xxxx/xx/xx
 
 PostgreSQL 9.6-15 required. GEOS 3.6+ required but GEOS 3.9+ to take advantage of all features.
@@ -6,6 +6,7 @@ Proj 4.9+ required.
 
 * Bug Fixes  *
 
+ - #5908, [topology] Fix crash in GetFaceContainingPoint (Sandro Santilli)
  - #5876, Fix ST_AddPoint with empty point argument (Paul Ramsey)
  - #5818, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)
  - #5885, Fix documentation about grid-based overlay operations (Sandro Santilli)

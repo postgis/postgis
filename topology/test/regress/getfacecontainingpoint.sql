@@ -54,7 +54,11 @@ SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(43.58 8
 SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(45 8, 44 9)');
 SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(45 8, 43.58 8.2)');
 
-
+-- Corner case calls
+SELECT 'null1' FROM topology.GetFaceContainingPoint(null, 'POINT(0 0)');
+SELECT 'null2' FROM topology.GetFaceContainingPoint('city_data', null);
+SELECT 'null3' FROM topology.GetFaceContainingPoint(null, null);
+SELECT 'empty' FROM topology.GetFaceContainingPoint('city_data', 'POINT EMPTY');
 
 
 -- Get face containing the "point on surface" of each face's geometry

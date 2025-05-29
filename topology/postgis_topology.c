@@ -5323,7 +5323,7 @@ Datum GetRingEdges(PG_FUNCTION_ARGS)
   SRF_RETURN_NEXT(funcctx, result);
 }
 
-/*  GetFaceContainingPoint(atopology, point) */
+/* GetFaceContainingPoint(atopology, point) */
 Datum GetFaceContainingPoint(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(GetFaceContainingPoint);
 Datum GetFaceContainingPoint(PG_FUNCTION_ARGS)
@@ -5335,6 +5335,12 @@ Datum GetFaceContainingPoint(PG_FUNCTION_ARGS)
   LWGEOM *lwgeom;
   LWPOINT *pt;
   LWT_TOPOLOGY *topo;
+
+  if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) )
+  {
+    /* should only happen when the SQL function is not declared STRICT */
+    PG_RETURN_NULL();
+  }
 
   toponame_text = PG_GETARG_TEXT_P(0);
   toponame = text_to_cstring(toponame_text);
@@ -5348,6 +5354,14 @@ Datum GetFaceContainingPoint(PG_FUNCTION_ARGS)
     lwgeom_free(lwgeom);
     PG_FREE_IF_COPY(geom, 1);
     lwpgerror("Second argument must be a point geometry");
+    PG_RETURN_NULL();
+  }
+
+  if ( lwpoint_is_empty(pt) )
+  {
+    lwgeom_free(lwgeom);
+    PG_FREE_IF_COPY(geom, 1);
+    lwpgerror("Second argument needs be a non-empty point");
     PG_RETURN_NULL();
   }
 
