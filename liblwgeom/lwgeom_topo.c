@@ -5876,6 +5876,13 @@ lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
   const GEOSPreparedGeometry *ppoly;
   GEOSGeometry *polyg;
 
+  /* Nothing to add, in an empty polygon */
+  if ( lwpoly_is_empty(poly) )
+  {
+    *nfaces = 0;
+    return NULL;
+  }
+
   /* Get tolerance, if 0 was given */
   if ( ! tol ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)poly );
   LWDEBUGF(1, "Working tolerance:%.15g", tol);
