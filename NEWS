@@ -3,6 +3,10 @@ xxxx/xx/xx
 To take advantage of all postgis_sfcgal extension features SFCGAL 1.5+ is needed.
 PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 
+* Bug fixes *
+
+- #5908, [topology] Fix crash in GetFaceContainingPoint (Sandro Santilli)
+
 
 PostGIS 3.5.3
 2025/05/17
