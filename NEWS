@@ -7,6 +7,7 @@ Proj 4.9+ required.
 * Bug Fixes and Enhancements *
 
  - #5908, [topology] Fix crash in GetFaceContainingPoint (Sandro Santilli)
+ - #5907, [topology] Fix crash in TopoGeo_AddPolygon with EMPTY input (Sandro Santilli)
  - #5876, Fix ST_AddPoint with empty point argument (Paul Ramsey)
  - #5829, geometry_columns with non-standard constraints (Paul Ramsey)
  - #5818, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)
