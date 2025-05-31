@@ -35,7 +35,7 @@ These can be set globally, by database, by session or by transaction. Best set a
 
                 <note>
                     <para>
-                        Additional information about GDAL_DATA is available at GDAL's <link xlink:href="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration Options</link>.
+                        Additional information about GDAL_DATA is available at GDAL's <link xlink:href="https://gdal.org/user/configoptions.html">Configuration Options</link>.
                     </para>
                 </note>
 
@@ -114,7 +114,7 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
 
                 <note>
                     <para>
-                        Additional information about GDAL_SKIP is available at GDAL's <link xlink:href="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration Options</link>.
+                        Additional information about GDAL_SKIP is available at GDAL's <link xlink:href="https://gdal.org/user/configoptions.html">Configuration Options</link>.
                     </para>
                 </note>
 
@@ -241,7 +241,7 @@ SELECT pg_reload_conf();
             <refsection>
                 <title>Description</title>
                 <para>
-                    A string configuration to set options used when working with an out-db raster. <link xlink:href="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration options</link> control things like how much space GDAL allocates to local data cache, whether to read overviews, and what access keys to use for remote out-db data sources.
+                    A string configuration to set options used when working with an out-db raster. <link xlink:href="https://gdal.org/user/configoptions.html">Configuration options</link> control things like how much space GDAL allocates to local data cache, whether to read overviews, and what access keys to use for remote out-db data sources.
                 </para>
 
                 <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
