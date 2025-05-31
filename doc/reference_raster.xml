@@ -12272,7 +12272,7 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
                 <refsection>
                     <title>Examples</title>
 
-                    <para>Examples utilize the katrina raster loaded as a single tile described in <link xlink:href="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</link> and then prepared in the <xref linkend="RT_ST_Rescale"/> examples </para>
+                    <para>Examples utilize the katrina raster loaded as a single tile described in <link xlink:href="https://gdal.org/user/drivers/raster/postgisraster.html">https://gdal.org/user/drivers/raster/postgisraster.html</link> and then prepared in the <xref linkend="RT_ST_Rescale"/> examples </para>
 
                     <programlisting>
 --
@@ -16057,7 +16057,7 @@ SELECT r1.rid, r2.rid, ST_DFullyWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_
                     When GDAL opens a file, GDAL eagerly scans the directory of that file to build a catalog of other files. If this directory contains many files (e.g. thousands, millions), opening that file becomes extremely slow (especially if that file happens to be on a network drive such as NFS).
                 </para>
                 <para>
-                    To control this behavior, GDAL provides the following environment variable: <link xlink:href="https://trac.osgeo.org/gdal/wiki/ConfigOptions#GDAL_DISABLE_READDIR_ON_OPEN">GDAL_DISABLE_READDIR_ON_OPEN</link>.  Set <varname>GDAL_DISABLE_READDIR_ON_OPEN</varname> to <varname>TRUE</varname> to disable directory scanning.
+                    To control this behavior, GDAL provides the following environment variable: <link xlink:href="https://gdal.org/user/configoptions.html#config-GDAL_DISABLE_READDIR_ON_OPEN">GDAL_DISABLE_READDIR_ON_OPEN</link>.  Set <varname>GDAL_DISABLE_READDIR_ON_OPEN</varname> to <varname>TRUE</varname> to disable directory scanning.
                 </para>
 
                 <para>
