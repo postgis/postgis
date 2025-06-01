@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Release temporary GeoJSON input after parsing (Paul Ramsey)
  - #6076, Measure only matching components of geography collections (Paul Ramsey)
  - GH-831, Document why ST_Subdivide can change geography boundaries
      (Nikolai Berkoff)
