@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Release temporary GeoJSON input after parsing (Paul Ramsey)
   - #6076, Measure only matching components of geography collections (Paul Ramsey)
   - Drop the obsolete ST_TileEnvelope signature on upgrade (Darafei Praliaskouski)
   - GH-831, Document why ST_Subdivide can change geography boundaries
