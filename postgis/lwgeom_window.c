@@ -632,6 +632,8 @@ static char * overlapMergeStrategies[] = {
     "MERGE_MIN_INDEX"
 };
 
+#if POSTGIS_GEOS_VERSION >= 31400
+
 static int
 coverage_merge_strategy(const char *strategy)
 {
@@ -645,6 +647,8 @@ coverage_merge_strategy(const char *strategy)
 	}
 	return -1;
 }
+
+#endif
 
 /*
  * This calculation is shared by both coverage operations
