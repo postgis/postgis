@@ -824,7 +824,7 @@ Datum ST_CoverageSimplify(PG_FUNCTION_ARGS)
 #if POSTGIS_GEOS_VERSION < 31200
 
 	lwpgerror("The GEOS version this PostGIS binary "
-		"was compiled against (%d) doesn't support "
+		"was compiled against (%d) not include "
 		"'GEOSCoverageSimplifyVW' function (3.12 or greater required)",
 		POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
@@ -844,7 +844,7 @@ Datum ST_CoverageInvalidEdges(PG_FUNCTION_ARGS)
 #if POSTGIS_GEOS_VERSION < 31200
 
 	lwpgerror("The GEOS version this PostGIS binary "
-		"was compiled against (%d) doesn't support "
+		"was compiled against (%d) does not include "
 		"'GEOSCoverageIsValid' function (3.12 or greater required)",
 		POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
@@ -863,8 +863,8 @@ Datum ST_CoverageClean(PG_FUNCTION_ARGS)
 #if POSTGIS_GEOS_VERSION < 31400
 
 	lwpgerror("The GEOS version this PostGIS binary "
-		"was compiled against (%d) doesn't support "
-		"'ST_CoverageClean' function (3.14 or greater required)",
+		"was compiled against (%d) not include "
+		"'GEOSCoverageClean' function (3.14 or greater required)",
 		POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
 
