@@ -621,6 +621,8 @@ enum {
 #endif
 };
 
+#if POSTGIS_GEOS_VERSION >= 31400
+
 static char * overlapMergeStrategies[] = {
     /* Merge strategy that chooses polygon with longest common border */
     "MERGE_LONGEST_BORDER",
@@ -631,8 +633,6 @@ static char * overlapMergeStrategies[] = {
     /* Merge strategy that chooses polygon with smallest input index */
     "MERGE_MIN_INDEX"
 };
-
-#if POSTGIS_GEOS_VERSION >= 31400
 
 static int
 coverage_merge_strategy(const char *strategy)
