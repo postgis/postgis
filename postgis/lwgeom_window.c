@@ -696,7 +696,7 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 			if (!isnull) tolerance = DatumGetFloat8(d);
 
 			d = WinGetFuncArgCurrent(winobj, 2, &isnull);
-			if (!isnull) simplifyBoundary = DatumGetBool(d);
+			if (!isnull) simplifyBoundary = DatumGetFloat8(d);
 
 			/* GEOSCoverageSimplifyVW is "preserveBoundary" so we invert simplifyBoundary */
 			output = GEOSCoverageSimplifyVW(input, tolerance, !simplifyBoundary);
@@ -723,12 +723,19 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 			if (!isnull) snappingDistance = DatumGetFloat8(d);
 
 			d = WinGetFuncArgCurrent(winobj, 2, &isnull);
-			if (!isnull) gapMaximumWidth = DatumGetBool(d);
+			if (!isnull) gapMaximumWidth = DatumGetFloat8(d);
 
 			d = WinGetFuncArgCurrent(winobj, 3, &isnull);
 			// if (!isnull) overlapMergeStrategy = DatumGetInt32(d);
-			if (!isnull) overlapMergeStrategyText = DatumGetTextP(d);
-			overlapMergeStrategy = coverage_merge_strategy(text_to_cstring(overlapMergeStrategyText));
+			if (!isnull)
+			{
+				overlapMergeStrategyText = DatumGetTextP(d);
+				overlapMergeStrategy = coverage_merge_strategy(text_to_cstring(overlapMergeStrategyText));
+			}
+			else
+			{
+				overlapMergeStrategy = 0; /* Default to MERGE_LONGEST_BORDER */
+			}
 			if (overlapMergeStrategy < 0)
 			{
 				HANDLE_GEOS_ERROR("Invalid OverlapMergeStrategy");
