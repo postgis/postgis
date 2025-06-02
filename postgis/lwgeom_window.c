@@ -29,6 +29,7 @@
 #include "postgres.h"
 #include "funcapi.h"
 #include "windowapi.h"
+#include "utils/builtins.h"
 
 /* PostGIS */
 #include "liblwgeom.h"
@@ -543,7 +544,8 @@ coverage_read_partition_into_collection(
 		 * GEOS nulls or empties. So we need to maintain a
 		 * map (context->idx) from the window position of the
 		 * input to the GEOS position, so we can put the
-		 * right result in the output stream.
+		 * right result in the output stream. Things we want to
+		 * skip get an index of -1.
 		 */
 
 		/* Skip NULL inputs and move on */
@@ -581,7 +583,7 @@ coverage_read_partition_into_collection(
 	/*
 	 * Create the GEOS input collection! The new
 	 * collection takes ownership of the input GEOSGeometry
-	 * objects, leaving just the ngeoms array, which
+	 * objects, leaving just the geoms array, which
 	 * will be cleaned up on function exit.
 	 */
 	geos = GEOSGeom_createCollection(
@@ -612,9 +614,37 @@ coverage_read_partition_into_collection(
  * operating mode is controlled with this enumeration.
  */
 enum {
-	COVERAGE_SIMPLIFY = 0,
-	COVERAGE_ISVALID = 1
+	 COVERAGE_SIMPLIFY = 0
+	,COVERAGE_ISVALID  = 1
+#if POSTGIS_GEOS_VERSION >= 31400
+	,COVERAGE_CLEAN    = 2
+#endif
 };
+
+static char * overlapMergeStrategies[] = {
+    /* Merge strategy that chooses polygon with longest common border */
+    "MERGE_LONGEST_BORDER",
+    /* Merge strategy that chooses polygon with maximum area */
+    "MERGE_MAX_AREA",
+    /* Merge strategy that chooses polygon with minimum area */
+    "MERGE_MIN_AREA",
+    /* Merge strategy that chooses polygon with smallest input index */
+    "MERGE_MIN_INDEX"
+};
+
+static int
+coverage_merge_strategy(const char *strategy)
+{
+	size_t stratLen = sizeof(overlapMergeStrategies) / sizeof(overlapMergeStrategies[0]);
+	for (uint32_t i = 0; i < stratLen; i++)
+	{
+		if (strcasecmp(strategy, overlapMergeStrategies[i]) == 0)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
 
 /*
  * This calculation is shared by both coverage operations
@@ -636,11 +666,9 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 	if (!context->isdone)
 	{
 		bool isnull;
-		Datum d;
-		double tolerance = 0.0;
-		bool simplifyBoundary = true;
 		GEOSGeometry *output = NULL;
 		GEOSGeometry *input = NULL;
+		Datum d;
 
 		if (!fcinfo->flinfo)
 			elog(ERROR, "%s: Could not find upper context", __func__);
@@ -652,20 +680,6 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 			PG_RETURN_NULL();
 		}
 
-		/* Get the tolerance argument from second position */
-		d = WinGetFuncArgCurrent(winobj, 1, &isnull);
-		if (!isnull)
-			tolerance = DatumGetFloat8(d);
-
-		/* The third position "preserve boundary" argument */
-		/* is only for the simplify mode */
-		if (mode == COVERAGE_SIMPLIFY)
-		{
-			d = WinGetFuncArgCurrent(winobj, 2, &isnull);
-			if (!isnull)
-				simplifyBoundary = DatumGetBool(d);
-		}
-
 		initGEOS(lwpgnotice, lwgeom_geos_error);
 
 		input = coverage_read_partition_into_collection(winobj, context);
@@ -675,13 +689,64 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 		/* Run the correct GEOS function for the calling mode */
 		if (mode == COVERAGE_SIMPLIFY)
 		{
+			bool simplifyBoundary = true;
+			double tolerance = 0.0;
+
+			d = WinGetFuncArgCurrent(winobj, 1, &isnull);
+			if (!isnull) tolerance = DatumGetFloat8(d);
+
+			d = WinGetFuncArgCurrent(winobj, 2, &isnull);
+			if (!isnull) simplifyBoundary = DatumGetBool(d);
+
 			/* GEOSCoverageSimplifyVW is "preserveBoundary" so we invert simplifyBoundary */
 			output = GEOSCoverageSimplifyVW(input, tolerance, !simplifyBoundary);
 		}
 		else if (mode == COVERAGE_ISVALID)
 		{
+			double tolerance = 0.0;
+			d = WinGetFuncArgCurrent(winobj, 1, &isnull);
+			if (!isnull) tolerance = DatumGetFloat8(d);
 			GEOSCoverageIsValid(input, tolerance, &output);
 		}
+
+#if POSTGIS_GEOS_VERSION >= 31400
+
+		else if (mode == COVERAGE_CLEAN)
+		{
+			double snappingDistance = 0.0;
+			double gapMaximumWidth = 0.0;
+			text *overlapMergeStrategyText;
+			int overlapMergeStrategy;
+			GEOSCoverageCleanParams *params = NULL;
+
+			d = WinGetFuncArgCurrent(winobj, 1, &isnull);
+			if (!isnull) snappingDistance = DatumGetFloat8(d);
+
+			d = WinGetFuncArgCurrent(winobj, 2, &isnull);
+			if (!isnull) gapMaximumWidth = DatumGetBool(d);
+
+			d = WinGetFuncArgCurrent(winobj, 3, &isnull);
+			// if (!isnull) overlapMergeStrategy = DatumGetInt32(d);
+			if (!isnull) overlapMergeStrategyText = DatumGetTextP(d);
+			overlapMergeStrategy = coverage_merge_strategy(text_to_cstring(overlapMergeStrategyText));
+			if (overlapMergeStrategy < 0)
+			{
+				HANDLE_GEOS_ERROR("Invalid OverlapMergeStrategy");
+			}
+
+			params = GEOSCoverageCleanParams_create();
+			GEOSCoverageCleanParams_setGapMaximumWidth(params, gapMaximumWidth);
+			GEOSCoverageCleanParams_setSnappingDistance(params, snappingDistance);
+			if (!GEOSCoverageCleanParams_setOverlapMergeStrategy(params, overlapMergeStrategy))
+			{
+				GEOSCoverageCleanParams_destroy(params);
+				HANDLE_GEOS_ERROR("Invalid OverlapMergeStrategy");
+			}
+
+			output = GEOSCoverageCleanWithParams(input, params);
+			GEOSCoverageCleanParams_destroy(params);
+		}
+#endif
 		else
 		{
 			elog(ERROR, "Unknown mode, never get here");
@@ -753,7 +818,7 @@ Datum ST_CoverageSimplify(PG_FUNCTION_ARGS)
 
 	lwpgerror("The GEOS version this PostGIS binary "
 		"was compiled against (%d) doesn't support "
-		"'GEOSCoverageSimplifyVW' function (3.12.0+ required)",
+		"'GEOSCoverageSimplifyVW' function (3.14 or greater required)",
 		POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
 
@@ -773,13 +838,32 @@ Datum ST_CoverageInvalidEdges(PG_FUNCTION_ARGS)
 
 	lwpgerror("The GEOS version this PostGIS binary "
 		"was compiled against (%d) doesn't support "
-		"'GEOSCoverageIsValid' function (3.12.0+ required)",
+		"'GEOSCoverageIsValid' function (3.12 or greater required)",
 		POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
 
 #else /* POSTGIS_GEOS_VERSION >= 31200 */
 
 	return coverage_window_calculation(fcinfo, COVERAGE_ISVALID);
+
+#endif
+}
+
+extern Datum ST_CoverageClean(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_CoverageClean);
+Datum ST_CoverageClean(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 31400
+
+	lwpgerror("The GEOS version this PostGIS binary "
+		"was compiled against (%d) doesn't support "
+		"'ST_CoverageClean' function (3.14 or greater required)",
+		POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+
+#else /* POSTGIS_GEOS_VERSION >= 31400 */
+
+	return coverage_window_calculation(fcinfo, COVERAGE_CLEAN);
 
 #endif
 }

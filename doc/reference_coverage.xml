@@ -109,6 +109,7 @@ SELECT true = ALL (
       <para>
         <xref linkend="ST_IsValid"/>,
         <xref linkend="ST_CoverageUnion"/>,
+        <xref linkend="ST_CoverageClean"/>,
         <xref linkend="ST_CoverageSimplify"/>
       </para>
     </refsection>
@@ -212,7 +213,9 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
     <refsection>
       <title>See Also</title>
       <para>
-        <xref linkend="ST_CoverageInvalidEdges"/>
+        <xref linkend="ST_CoverageInvalidEdges"/>,
+        <xref linkend="ST_CoverageUnion"/>,
+        <xref linkend="ST_CoverageClean"/>
       </para>
     </refsection>
 
@@ -301,9 +304,90 @@ MULTIPOLYGON (((10 150, 80 190, 110 150, 140 80, 120 10, 10 10, 10 150), (50 60,
       <title>See Also</title>
       <para>
         <xref linkend="ST_CoverageInvalidEdges"/>,
+        <xref linkend="ST_CoverageSimplify"/>,
+        <xref linkend="ST_CoverageClean"/>,
         <xref linkend="ST_Union"/>
       </para>
     </refsection>
 
   </refentry>
+
+
+
+
+  <refentry xml:id="ST_CoverageClean">
+    <refnamediv>
+      <refname>ST_CoverageClean</refname>
+
+      <refpurpose>Computes a clean (edge matched, non-overlapping, gap-cleared) polygonal coverage, given a non-clean input.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+          <funcdef>geometry <function>ST_CoverageClean</function></funcdef>
+          <paramdef><type>geometry winset</type>
+            <parameter>geom</parameter></paramdef>
+          <paramdef choice="opt"><type>float8 </type>
+            <parameter>snappingDistance = -1</parameter></paramdef>
+          <paramdef choice="opt"><type>float8 </type>
+            <parameter>gapMaximumWidth = 0</parameter></paramdef>
+          <paramdef choice="opt"><type>text </type>
+            <parameter>overlapMergeStrategy = 'MERGE_LONGEST_BORDER'</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+      <para>A window function which alters the edges of a polygonal coverage to ensure that none of the polygons overlap, that small gaps are snapped away, and that all shared edges are exactly identical. The result is a clean coverage that will pass validation tests like <xref linkend="ST_CoverageInvalidEdges"/></para>
+      <para>The <parameter>snappingDistance</parameter> controls the node snapping step, when nearby vertices are snapped together. The default setting (-1) applies an automatic snapping distance based on an analysis of the input. Set to 0.0 to turn off all snapping.</para>
+      <para>The <parameter>gapMaximumWidth</parameter> controls the cleaning of gaps between polygons. Gaps smaller than this tolerance will be closed.</para>
+      <para>The <parameter>overlapMergeStrategy</parameter> controls the algorithm used to determine which neighboring polygons to merge overlapping areas into.</para>
+      <para><code>MERGE_LONGEST_BORDER</code> chooses polygon with longest common border</para>
+      <para><code>MERGE_MAX_AREA</code> chooses polygon with maximum area</para>
+      <para><code>MERGE_MIN_AREA</code> chooses polygon with minimum area</para>
+      <para><code>MERGE_MIN_INDEX</code> chooses polygon with smallest input index</para>
+
+      <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires GEOS &gt;= 3.14.0</para>
+    </refsection>
+
+    <refsection>
+      <title>Examples</title>
+
+      <programlisting>-- Populate demo table
+CREATE TABLE example AS SELECT * FROM (VALUES
+  (1, 'POLYGON ((10 190, 30 160, 40 110, 100 70, 120 10, 10 10, 10 190))'::geometry),
+  (2, 'POLYGON ((100 190, 10 190, 30 160, 40 110, 50 80, 74 110.5, 100 130, 140 120, 140 160, 100 190))'::geometry),
+  (3, 'POLYGON ((140 190, 190 190, 190 80, 140 80, 140 190))'::geometry),
+  (4, 'POLYGON ((180 40, 120 10, 100 70, 140 80, 190 80, 180 40))'::geometry)
+) AS v(id, geom);
+
+-- Prove it is a dirty coverage
+SELECT ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
+  FROM example;
+
+-- Clean the coverage
+CREATE TABLE example_clean AS
+  SELECT id, ST_CoverageClean(geom) OVER () AS GEOM
+  FROM example;
+
+-- Prove it is a clean coverage
+SELECT ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
+  FROM example_clean;
+      </programlisting>
+    </refsection>
+
+    <refsection>
+      <title>See Also</title>
+      <para>
+        <xref linkend="ST_CoverageInvalidEdges"/>,
+        <xref linkend="ST_Union"/>
+        <xref linkend="ST_CoverageSimplify"/>
+      </para>
+    </refsection>
+
+  </refentry>
+
 </section>
