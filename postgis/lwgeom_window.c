@@ -636,7 +636,7 @@ static int
 coverage_merge_strategy(const char *strategy)
 {
 	size_t stratLen = sizeof(overlapMergeStrategies) / sizeof(overlapMergeStrategies[0]);
-	for (uint32_t i = 0; i < stratLen; i++)
+	for (size_t i = 0; i < stratLen; i++)
 	{
 		if (strcasecmp(strategy, overlapMergeStrategies[i]) == 0)
 		{
@@ -825,7 +825,7 @@ Datum ST_CoverageSimplify(PG_FUNCTION_ARGS)
 
 	lwpgerror("The GEOS version this PostGIS binary "
 		"was compiled against (%d) doesn't support "
-		"'GEOSCoverageSimplifyVW' function (3.14 or greater required)",
+		"'GEOSCoverageSimplifyVW' function (3.12 or greater required)",
 		POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
 
