@@ -724,10 +724,10 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 			GEOSCoverageCleanParams *params = NULL;
 
 			d = WinGetFuncArgCurrent(winobj, 1, &isnull);
-			if (!isnull) snappingDistance = DatumGetFloat8(d);
+			if (!isnull) gapMaximumWidth = DatumGetFloat8(d);
 
 			d = WinGetFuncArgCurrent(winobj, 2, &isnull);
-			if (!isnull) gapMaximumWidth = DatumGetFloat8(d);
+			if (!isnull) snappingDistance = DatumGetFloat8(d);
 
 			d = WinGetFuncArgCurrent(winobj, 3, &isnull);
 			// if (!isnull) overlapMergeStrategy = DatumGetInt32(d);

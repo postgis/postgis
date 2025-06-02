@@ -4468,7 +4468,7 @@ CREATE OR REPLACE FUNCTION ST_CoverageInvalidEdges (geom geometry, tolerance flo
 	_COST_HIGH;
 
 -- Availability: 3.6.0
-CREATE OR REPLACE FUNCTION ST_CoverageClean (geom geometry, snappingDistance float8 default -1.0, gapMaximumWidth float8 default 0.0, overlapMergeStrategy text default 'MERGE_LONGEST_BORDER')
+CREATE OR REPLACE FUNCTION ST_CoverageClean (geom geometry, gapMaximumWidth float8 default 0.0, snappingDistance float8 default -1.0, overlapMergeStrategy text default 'MERGE_LONGEST_BORDER')
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_CoverageClean'
 	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE

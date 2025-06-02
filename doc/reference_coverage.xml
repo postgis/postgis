@@ -342,8 +342,8 @@ MULTIPOLYGON (((10 150, 80 190, 110 150, 140 80, 120 10, 10 10, 10 150), (50 60,
       <title>Description</title>
 
       <para>A window function which alters the edges of a polygonal coverage to ensure that none of the polygons overlap, that small gaps are snapped away, and that all shared edges are exactly identical. The result is a clean coverage that will pass validation tests like <xref linkend="ST_CoverageInvalidEdges"/></para>
-      <para>The <parameter>snappingDistance</parameter> controls the node snapping step, when nearby vertices are snapped together. The default setting (-1) applies an automatic snapping distance based on an analysis of the input. Set to 0.0 to turn off all snapping.</para>
       <para>The <parameter>gapMaximumWidth</parameter> controls the cleaning of gaps between polygons. Gaps smaller than this tolerance will be closed.</para>
+      <para>The <parameter>snappingDistance</parameter> controls the node snapping step, when nearby vertices are snapped together. The default setting (-1) applies an automatic snapping distance based on an analysis of the input. Set to 0.0 to turn off all snapping.</para>
       <para>The <parameter>overlapMergeStrategy</parameter> controls the algorithm used to determine which neighboring polygons to merge overlapping areas into.</para>
       <para><code>MERGE_LONGEST_BORDER</code> chooses polygon with longest common border</para>
       <para><code>MERGE_MAX_AREA</code> chooses polygon with maximum area</para>
