@@ -730,7 +730,6 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 			if (!isnull) snappingDistance = DatumGetFloat8(d);
 
 			d = WinGetFuncArgCurrent(winobj, 3, &isnull);
-			// if (!isnull) overlapMergeStrategy = DatumGetInt32(d);
 			if (!isnull)
 			{
 				overlapMergeStrategyText = DatumGetTextP(d);
