@@ -18,6 +18,7 @@ jobs:
         ci:
         # Use the last stable releases to run more tests
         - { tag: pg17-geos313-gdal39-proj94, mode: coverage }
+        # - { tag: pg17-geos313-gdal39-proj94, mode: garden }
         - { tag: pg16-geos312-gdal37-proj921, mode: coverage }
         - { tag: pg15-geos311-gdal35-proj90, mode: coverage }
         - { tag: pg15-clang-geos311-gdal35-proj90, mode: usan_clang }
@@ -30,6 +31,7 @@ jobs:
         - { tag: pg13-clang-geos39-gdal31-proj71, mode: usan_clang }
         # Run tests with different dependency combinations
         - { tag: latest, mode: tests }
+        - { tag: latest, mode: garden }
         - { tag: pg13-geos38-gdal31-proj71, mode: tests }
         - { tag: pg12-geos38-gdal30-proj611, mode: tests }
 

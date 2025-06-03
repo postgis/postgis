@@ -13,7 +13,7 @@
 	<xsl:output method="text" />
 	<xsl:variable name='testversion'>3.5.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
-	<xsl:variable name='fnexclude'>CG_Visibility CG_YMonotonePartition ST_AlphaShape ST_OptimalAlphaShape</xsl:variable>
+	<xsl:variable name='fnexclude'>CG_ExtrudeStraightSkeleton CG_Visibility CG_YMonotonePartition ST_AlphaShape ST_OptimalAlphaShape</xsl:variable>
 	<!--This is just a place holder to state functions not supported or tested separately -->
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>

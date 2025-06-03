@@ -105,6 +105,8 @@ garden: staged-install
 	psql -qX -v ON_ERROR_STOP=true -d $(GARDENDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/postgis.sql
 	psql -qX -v ON_ERROR_STOP=true -d $(GARDENDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/spatial_ref_sys.sql
 	psql -qX -v ON_ERROR_STOP=true -d $(GARDENDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/rtpostgis.sql
+	psql -qX -v ON_ERROR_STOP=true -d $(GARDENDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/topology.sql
+	psql -qX -v ON_ERROR_STOP=true -d $(GARDENDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/sfcgal.sql
 	@echo '-------------------------------------------------'
 	@echo 'PostGIS garden tests in progress (it will take time)'
 	@echo '-------------------------------------------------'
@@ -121,3 +123,19 @@ garden: staged-install
 		> raster_garden_result.txt 2>&1 || { \
 		tail -n 20 raster_garden_result.txt; false; }
 	tail -n 20 raster_garden_result.txt
+	@echo '-------------------------------------------------'
+	@echo 'PostGIS Topology garden tests in progress (it will take time)'
+	@echo '-------------------------------------------------'
+	psql -X -ad $(GARDENDB) < \
+		../doc/topology_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql \
+		> topology_garden_result.txt 2>&1 || { \
+		tail -n 20 topology_garden_result.txt; false; }
+	tail -n 20 topology_garden_result.txt
+	@echo '-------------------------------------------------'
+	@echo 'PostGIS SFCGAL garden tests in progress (it will take time)'
+	@echo '-------------------------------------------------'
+	psql -X -ad $(GARDENDB) < \
+		../doc/sfcgal_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql \
+		> sfcgal_garden_result.txt 2>&1 || { \
+		tail -n 20 sfcgal_garden_result.txt; false; }
+	tail -n 20 sfcgal_garden_result.txt
