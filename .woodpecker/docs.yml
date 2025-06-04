@@ -229,6 +229,17 @@ steps:
           include:
             - "doc/po/ro/*.po"
 
+  check-xml-sv:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/sv local-check-xml
+    depends_on: prepare
+    when:
+       - path:
+          include:
+            - "doc/po/sv/*.po"
+
   check-xml-uk:
     image: *test_image
     pull: true
@@ -383,6 +394,17 @@ steps:
        - path:
           include:
             - "doc/po/ro/*.po"
+
+  html-sv:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/sv local-html
+    depends_on: check-xml-sv
+    when:
+       - path:
+          include:
+            - "doc/po/sv/*.po"
 
   html-uk:
     image: *test_image
@@ -539,6 +561,17 @@ steps:
           include:
             - "doc/po/ro/*.po"
 
+  cheatsheets-sv:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/sv local-cheatsheets
+    depends_on: check-xml-sv
+    when:
+       - path:
+          include:
+            - "doc/po/sv/*.po"
+
   cheatsheets-uk:
     image: *test_image
     pull: true
@@ -694,6 +727,17 @@ steps:
           include:
             - "doc/po/ro/*.po"
 
+  check-cheatsheets-sv:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/sv local-check-cheatsheets
+    depends_on: [ cheatsheets-sv, build-cheatsheets ]
+    when:
+       - path:
+          include:
+            - "doc/po/sv/*.po"
+
   check-cheatsheets-uk:
     image: *test_image
     pull: true
@@ -848,6 +892,17 @@ steps:
        - path:
           include:
             - "doc/po/ro/*.po"
+
+  pdf-sv:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/sv local-pdf
+    depends_on: [ build-images, check-xml-sv ]
+    when:
+       - path:
+          include:
+            - "doc/po/sv/*.po"
 
   pdf-uk:
     image: *test_image
