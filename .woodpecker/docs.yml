@@ -13,7 +13,7 @@ variables:
       # XML sources
       - "doc/*.xml"
       # Internationalization Makefiles
-      #- "doc/po/Makefile.local"
+      - "doc/po/Makefile.local"
   - &when_path
       include:
         - <<: *common_doc_paths
@@ -21,8 +21,8 @@ variables:
       include:
         - <<: *common_doc_paths
         # Any localized assets
-        #- "doc/po/*/Makefile.in"
-        #- "doc/po/*/*.po"
+        - "doc/po/*/Makefile.in"
+        - "doc/po/*/*.po"
 
 steps:
   prepare:
