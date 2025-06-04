@@ -5,6 +5,12 @@ This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.12+ is needed.
 To take advantage of all SFCGAL features, SFCGAL 2.1+ is needed.
 
+Many thanks to our translation teams, in particular:
+
+Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)
+Teramoto Ikuhiro (Japanese Team)
+Daniel Nylander (Swedish Team)
+
 * Breaking Changes *
 
   - #5799, make ST_TileEnvelope clips envelopes to tile plane extent (Paul Ramsey)
