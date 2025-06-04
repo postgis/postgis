@@ -623,6 +623,7 @@ static int load_lex(LEXICON *lex, char *tab)
     char *word;
     char *stdword;
     int token;
+    (void)total_tuples;
 
     DBG("start load_lex\n");
     SET_TIME(t1);

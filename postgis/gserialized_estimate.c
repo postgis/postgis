@@ -727,6 +727,8 @@ nd_box_ratio(const ND_BOX *b1, const ND_BOX *b2, int ndims)
 	double vol2 = 1.0;
 	double vol1 = 1.0;
 
+	(void)vol1;
+
 	for ( d = 0 ; d < ndims; d++ )
 	{
 		if ( b1->max[d] <= b2->min[d] || b1->min[d] >= b2->max[d] )
@@ -1413,6 +1415,8 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 
 	int stats_slot;                     /* What slot is this data going into? (2D vs ND) */
 	int stats_kind;                     /* And this is what? (2D vs ND) */
+
+	(void)total_sample_volume;
 
 	/* Initialize sum and stddev */
 	nd_box_init(&sum);

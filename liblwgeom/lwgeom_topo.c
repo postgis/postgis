@@ -5677,6 +5677,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
         lwalloc(nearbycount * sizeof(LWGEOM *))
         ;
     int nn = 0;
+    (void)nn;
     for (i=0; i<numnodes; ++i)
     {
       LWT_ISO_NODE *n = &(nodes[i]);

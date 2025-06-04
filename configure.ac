@@ -1178,7 +1178,9 @@ AC_ARG_WITH([address-standardizer],
                     [Disable the address_standardizer extension])],
     [], [])
 
-HAVE_PCRE=no
+HAVE_PCRE1=no
+HAVE_PCRE2=no
+PCRE_SUPPORT="not found"
 ADDRESS_STANDARDIZER=""
 
 if test "x$with_address_standardizer" != "xno"; then
@@ -1197,42 +1199,74 @@ if test "x$with_address_standardizer" != "xno"; then
             AC_MSG_ERROR([you must specify a parameter to --with-pcredir, e.g. --with-pcredir=/path/to])
         else
             if test -d "$PCREDIR"; then
-                AC_MSG_RESULT([Using user-specified PCRE directory: $PCREDIR])
+                AC_MSG_CHECKING([for PCRE in $PCREDIR...])
 
-                AC_CHECK_FILE("$PCREDIR/include/pcre.h",
+                AC_CHECK_FILE("$PCREDIR/include/pcre2.h",
+                    [
+                        PCRE_CPPFLAGS="-I$PCREDIR/include"
+                        PCRE_LDFLAGS="-L$PCREDIR/lib -lpcre2-8"
+                        HAVE_PCRE2=yes
+                        ADDRESS_STANDARDIZER="address_standardizer"
+                        AC_MSG_RESULT([found pcre2.h])
+                    ],
+                    [
+                        AC_CHECK_FILE("$PCREDIR/include/pcre.h",
                         [
-                            PCRE_CPPFLAGS="-I$PCREDIR/include"
-                            PCRE_LDFLAGS="-L$PCREDIR/lib -lpcre"
-                            HAVE_PCRE=yes
-                            ADDRESS_STANDARDIZER="address_standardizer"
+	                          PCRE_CPPFLAGS="-I$PCREDIR/include"
+	                          PCRE_LDFLAGS="-L$PCREDIR/lib -lpcre"
+	                          HAVE_PCRE1=yes
+	                          ADDRESS_STANDARDIZER="address_standardizer"
+                            AC_MSG_RESULT([found pcre.h])
                         ],
-                        [AC_MSG_ERROR([Could not find header: pcre.h])])
+                        [
+                            AC_MSG_RESULT([no])
+                            AC_MSG_ERROR(["Could not find PCRE header in $PCREDIR/include"])
+                        ])
+                    ])
             else
                 AC_MSG_ERROR([the --with-pcredir directory "$PCREDIR" cannot be found])
             fi
         fi
     elif test ! -z "$PKG_CONFIG"; then
-	PKG_CHECK_MODULES([PCRE], [libpcre], [
+        PKG_CHECK_MODULES([PCRE2], [libpcre2-8], [
+            PCRE_CPPFLAGS="$PCRE2_CFLAGS"
+            PCRE_LDFLAGS="$PCRE2_LIBS"
+            ADDRESS_STANDARDIZER="address_standardizer"
+            HAVE_PCRE2=yes
+        ],[
+            PKG_CHECK_MODULES([PCRE], [libpcre], [
                 PCRE_CPPFLAGS="$PCRE_CFLAGS"
                 PCRE_LDFLAGS="$PCRE_LIBS"
                 ADDRESS_STANDARDIZER="address_standardizer"
-                HAVE_PCRE=yes
-            ],
-            [
+                HAVE_PCRE1=yes
+            ],[
                 ADDRESS_STANDARDIZER=""
-                HAVE_PCRE=no
             ])
+        ])
+    fi
+
+    if test "x$HAVE_PCRE2" = "xyes"; then
+        PCRE_SUPPORT="Version 2"
+        PCRE_VERSION=2
+    elif test "x$HAVE_PCRE1" = "xyes"; then
+        PCRE_SUPPORT="Version 1"
+        PCRE_VERSION=1
+    else
+        ADDRESS_STANDARDIZER=""
+        PCRE_SUPPORT="not found"
+        PCRE_VERSION=0
+        AC_MSG_RESULT([ADDRESS_STANDARDIZER support: disabled])
     fi
 
     AC_SUBST([PCRE_CPPFLAGS])
     AC_SUBST([PCRE_LDFLAGS])
+    AC_SUBST([PCRE_VERSION])
 
 else
     ADDRESS_STANDARDIZER=""
     AC_MSG_RESULT([ADDRESS_STANDARDIZER support: disabled])
 fi
 
-AC_SUBST([HAVE_PCRE])
 AC_SUBST([ADDRESS_STANDARDIZER])
 
 CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $PROTOBUF_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $PCRE_CPPFLAGS $CPPFLAGS"
@@ -1655,7 +1689,7 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
   AC_MSG_RESULT([  protobuf-c version:   ${PROTOC_VERSION}])
 fi
 
-AC_MSG_RESULT([  PCRE support:         ${HAVE_PCRE}])
+AC_MSG_RESULT([  PCRE support:         ${PCRE_SUPPORT}])
 AC_MSG_RESULT([  Perl:                 ${PERL}])
 AC_MSG_RESULT([  Wagyu:                ${HAVE_WAGYU}])
 

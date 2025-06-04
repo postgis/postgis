@@ -20,7 +20,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 #include "postgres.h"
 
-#define OVECCOUNT 30
+#define OVECPAIRS 10
+#define OVECCOUNT 3*OVECPAIRS
 
 #ifdef USE_HSEARCH
 
@@ -40,17 +41,17 @@ typedef hash_t HHash;
 #endif
 
 typedef struct address_struct {
-    char *num;
-    char *street;
-    char *street2;
-    char *address1;
-    char *city;
-    char *st;
-    char *zip;
-    char *zipplus;
-    char *cc;
-    double lat;
-    double lon;
+	char *num;
+	char *street;
+	char *street2;
+	char *address1;
+	char *city;
+	char *st;
+	char *zip;
+	char *zipplus;
+	char *cc;
+	double lat;
+	double lon;
 } ADDRESS;
 
 int clean_trailing_punct(char *s);
