@@ -12137,7 +12137,7 @@ msgstr "&sfs_compliant;"
 #. Tag: para
 #, no-c-format
 msgid "&curve_support;"
-msgstr "&kurva_support;"
+msgstr "&curve_support;"
 
 #. Tag: para
 #, no-c-format
