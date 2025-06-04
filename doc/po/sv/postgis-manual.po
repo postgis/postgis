@@ -1181,7 +1181,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&address_standardizer_required;"
-msgstr "&adress_standardiserare_krävs;"
+msgstr "&address_standardizer_required;"
 
 #. Tag: para
 #, no-c-format
@@ -11662,7 +11662,7 @@ msgstr "PostGIS aggregerade funktioner"
 #. Tag: section
 #, no-c-format
 msgid "&list_aggregates;"
-msgstr "&lista_aggregat;"
+msgstr "&list_aggregates;"
 
 #. Tag: para
 #, no-c-format
@@ -11683,7 +11683,7 @@ msgstr "Funktioner i PostGIS-fönstret"
 #. Tag: section
 #, no-c-format
 msgid "&list_window_functions;"
-msgstr "&lista_fönster_funktioner;"
+msgstr "&list_window_functions;"
 
 #. Tag: para
 #, no-c-format
@@ -11705,7 +11705,7 @@ msgstr "PostGIS SQL-MM-kompatibla funktioner"
 #. Tag: section
 #, no-c-format
 msgid "&list_sqlmm_functions;"
-msgstr "&lista_sqlmm_funktioner;"
+msgstr "&list_sqlmm_functions;"
 
 #. Tag: para
 #, no-c-format
@@ -11752,7 +11752,7 @@ msgstr ""
 #. Tag: section
 #, no-c-format
 msgid "&list_geography_functions;"
-msgstr "&lista_geografifunktioner;"
+msgstr "&list_geography_functions;"
 
 #. Tag: title
 #, no-c-format
@@ -11773,7 +11773,7 @@ msgstr ""
 #. Tag: section
 #, no-c-format
 msgid "&list_raster_functions;"
-msgstr "&lista_raster_funktioner;"
+msgstr "&list_raster_functions;
 
 #. Tag: title
 #, no-c-format
@@ -11818,7 +11818,7 @@ msgstr ""
 #. Tag: section
 #, no-c-format
 msgid "&list_box_functions;"
-msgstr "&list_box_funktioner;"
+msgstr "&list_box_functions;"
 
 #. Tag: title
 #, no-c-format
@@ -12014,7 +12014,7 @@ msgstr "<entry>T</entry>"
 #. Tag: tgroup
 #, no-c-format
 msgid "&table_body_function_support_matrix;"
-msgstr "&tabell_kropp_funktion_stöd_matris;"
+msgstr "&table_body_function_support_matrix;"
 
 #. Tag: section
 #, no-c-format
@@ -12782,7 +12782,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.1"
-msgstr "&sfs_uppfyller kraven; s2.1.1.1"
+msgstr "&sfs_compliant; s2.1.1.1"
 
 #. Tag: para
 #, no-c-format
@@ -18903,7 +18903,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s3.2.6.2"
-msgstr "&sfs_uppfyller kraven; s3.2.6.2"
+msgstr "&sfs_compliant; s3.2.6.2"
 
 #. Tag: para
 #, no-c-format
@@ -19779,7 +19779,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s3.2.7.2"
-msgstr "&sfs_uppfyller kraven; s3.2.7.2"
+msgstr "&sfs_compliant; s3.2.7.2"
 
 #. Tag: para
 #, no-c-format
@@ -22121,7 +22121,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s2.1.5.1"
-msgstr "&sfs_uppfyller kraven; s2.1.5.1"
+msgstr "&sfs_compliant; s2.1.5.1"
 
 #. Tag: para
 #, no-c-format
@@ -26046,7 +26046,7 @@ msgstr "Kräver GEOS &gt;= 3.9.0 för att använda parametern gridSize."
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.3"
-msgstr "&sfs_uppfyller kraven; s2.1.1.3"
+msgstr "&sfs_compliant; s2.1.1.3"
 
 #. Tag: para
 #, no-c-format
@@ -38621,7 +38621,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&index_aware;"
-msgstr "&index_medveten;"
+msgstr "&index_aware;"
 
 #. Tag: para
 #, no-c-format
@@ -39183,7 +39183,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s2.1.13.3"
-msgstr "&sfs_uppfyller kraven; s2.1.13.3"
+msgstr "&sfs_compliant; s2.1.13.3"
 
 #. Tag: para
 #, no-c-format
@@ -39334,7 +39334,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2"
-msgstr "&sfs_uppfyller kraven; s2.1.1.2"
+msgstr "&sfs_compliant; s2.1.1.2"
 
 #. Tag: para
 #, no-c-format
