@@ -16,6 +16,8 @@ Daniel Nylander (Swedish Team)
   - #5799, make ST_TileEnvelope clips envelopes to tile plane extent (Paul Ramsey)
   - #5829, remove constraint checking from geometry_columns view (Paul Ramsey)
   - #3373, GT-255 [topology] Support for upgrading domains (Ayo Adesugba, U.S. Census Bureau)
+  - GT-252, ST_NumGeometries/ST_GeometryN treat TIN and PolyhedralSurface as unitary geometries,
+    use ST_NumPatches/ST_PatchN for patch access (Loïc Bartoletti)
 
 * Deprecated signatures *
 
@@ -36,7 +38,7 @@ Daniel Nylander (Swedish Team)
   - [raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages
     and routes them into the PostgreSQL logging system. (Paul Ramsey)
   - #5841, Change interrupt handling to remove use of pqsignal to support PG 18 (Paul Ramsey)
-  - Add ST_CoverageClean to edge match and gap remove polygonal 
+  - Add ST_CoverageClean to edge match and gap remove polygonal
     coverages (Paul Ramsey) from GEOS 3.14 (Martin Davis)
   - Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)
 
