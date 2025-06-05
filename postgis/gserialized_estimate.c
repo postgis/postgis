@@ -2271,7 +2271,9 @@ gserialized_sel_internal(PlannerInfo *root, List *args, int varRelid, int mode)
 	nd_stats = pg_nd_stats_from_tuple(vardata.statsTuple, mode);
 	ReleaseVariableStats(vardata);
 	selectivity = estimate_selectivity(&search_box, nd_stats, mode);
-	pfree(nd_stats);
+	if (nd_stats)
+		pfree(nd_stats);
+
 	return selectivity;
 }
 
