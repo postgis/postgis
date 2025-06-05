@@ -265,16 +265,29 @@ static xmlNodePtr get_xlink_node(xmlNodePtr xnode)
 	xmlChar *href, *p, *node_id;
 
 	href = xmlGetNsProp(xnode, (xmlChar *)"href", (xmlChar *) XLINK_NS);
-	id = lwalloc((xmlStrlen(xnode->ns->prefix) * 2 + xmlStrlen(xnode->name)
-	              + xmlStrlen(href) + sizeof("//:[@:id='']") + 1));
 	p = href;
 	p++; /* ignore '#' first char */
 
-	/* XPath pattern look like: //gml:point[@gml:id='p1'] */
-	sprintf(id, "//%s:%s[@%s:id='%s']", 	(char *) xnode->ns->prefix,
-	        (char *) xnode->name,
-	        (char *) xnode->ns->prefix,
-	        (char *) p);
+	if (xnode->ns)
+	{
+		id = lwalloc((xmlStrlen(xnode->ns->prefix) * 2 + xmlStrlen(xnode->name) +
+		              xmlStrlen(href) + sizeof("//:[@:id='']") + 1));
+		/* XPath pattern look like: //gml:point[@gml:id='p1'] */
+		sprintf(id, "//%s:%s[@%s:id='%s']",
+		        (char *) xnode->ns->prefix,
+		        (char *) xnode->name,
+		        (char *) xnode->ns->prefix,
+		        (char *) p);
+	}
+	else
+	{
+		id = lwalloc((xmlStrlen(xnode->name) +
+		              xmlStrlen(href) + sizeof("//:[@:id='']") + 1));
+		/* XPath pattern look like: //gml:point[@gml:id='p1'] */
+		sprintf(id, "//%s[@id='%s']",
+		        (char *) xnode->name,
+		        (char *) p);
+	}
 
 	ctx = xmlXPathNewContext(xnode->doc);
 	if (ctx == NULL)
@@ -1052,6 +1065,8 @@ static LWGEOM* parse_gml_point(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	POINTARRAY *pa;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
 
 	if (xnode->children == NULL)
 		return lwpoint_as_lwgeom(lwpoint_construct_empty(*root_srid, 0, 0));
@@ -1087,6 +1102,8 @@ static LWGEOM* parse_gml_line(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	POINTARRAY *pa;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
 
 	if (xnode->children == NULL)
 		return lwline_as_lwgeom(lwline_construct_empty(*root_srid, 0, 0));
@@ -1128,6 +1145,8 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	xmlChar *interpolation=NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
 
 	/* Looking for gml:segments */
 	for (xa = xnode->children ; xa != NULL ; xa = xa->next)
@@ -1234,6 +1253,8 @@ static LWGEOM* parse_gml_linearring(xmlNodePtr xnode, bool *hasz, int *root_srid
 	POINTARRAY **ppa = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
 	parse_gml_srs(xnode, &srs);
 
 	ppa = (POINTARRAY**) lwalloc(sizeof(POINTARRAY*));
@@ -1268,6 +1289,8 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	POINTARRAY **ppa = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
 
 	if (xnode->children == NULL)
 		return lwpoly_as_lwgeom(lwpoly_construct_empty(*root_srid, 0, 0));
@@ -1362,6 +1385,8 @@ static LWGEOM* parse_gml_triangle(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	xmlChar *interpolation=NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
 
 	if (xnode->children == NULL)
 		return lwtriangle_as_lwgeom(lwtriangle_construct_empty(*root_srid, 0, 0));
@@ -1528,6 +1553,8 @@ static LWGEOM* parse_gml_surface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	bool found=false;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
 
 	/* Looking for gml:patches */
 	for (xa = xnode->children ; xa != NULL ; xa = xa->next)
@@ -1580,6 +1607,8 @@ static LWGEOM* parse_gml_tin(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	bool found=false;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
 
 	parse_gml_srs(xnode, &srs);
 	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
@@ -1630,6 +1659,8 @@ static LWGEOM* parse_gml_mpoint(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	LWGEOM *geom = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
 
 	parse_gml_srs(xnode, &srs);
 	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
@@ -1676,6 +1707,10 @@ static LWGEOM* parse_gml_mline(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	LWGEOM *geom = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
 
 	parse_gml_srs(xnode, &srs);
 	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
@@ -1711,6 +1746,8 @@ static LWGEOM* parse_gml_mcurve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	LWGEOM *geom = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
 
 	parse_gml_srs(xnode, &srs);
 	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
@@ -1758,6 +1795,8 @@ static LWGEOM* parse_gml_mpoly(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	LWGEOM *geom = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
 
 	parse_gml_srs(xnode, &srs);
 	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
@@ -1793,6 +1832,8 @@ static LWGEOM* parse_gml_msurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	LWGEOM *geom = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
 
 	parse_gml_srs(xnode, &srs);
 	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
@@ -1841,6 +1882,8 @@ static LWGEOM* parse_gml_psurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	LWGEOM *geom = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+	if (xnode == NULL)
+		gml_lwpgerror("invalid GML representation", 30);
 
 	parse_gml_srs(xnode, &srs);
 	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)

@@ -10,6 +10,7 @@ YYYY/MM/DD
  - #5885, Fix documentation about grid-based overlay operations (Sandro Santilli)
  - PCRE2 support for more modern systems (Paul Ramsey)
  - #5921, Crash freeing uninitialized pointer (Arsenii Mukhin)
+ - #5912, Crash on GML with xlink and no prefix (Paul Ramsey)
 
 
 PostGIS 3.1.12
