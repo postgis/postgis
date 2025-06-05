@@ -996,6 +996,9 @@ SELECT 'xlink_22', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http:
 -- ERROR circular ref
 SELECT 'xlink_23', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry gml:id="mg1" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:MultiGeometry xlink:type="simple" xlink:href="#mg1"/></gml:geometryMember></gml:MultiGeometry>'));
 
+-- XLink no gml namespace
+SELECT 'xlink_1_no_ns', ST_AsEWKT(ST_GeomFromGML('<LineString xmlns:xlink="http://www.w3.org/1999/xlink"><pointProperty><Point id="p1"><pos>1 2</pos></Point></pointProperty><pointProperty><Point xlink:type="simple" xlink:href="#p1"/></pointProperty><pos>3 4</pos></LineString>'));
+
 --
 -- Bijective PostGIS GML test
 --
