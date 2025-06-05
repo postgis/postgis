@@ -6,6 +6,7 @@ Proj 4.9+ required.
 
 * Bug Fixes  *
 
+ - #5922, [topology] Fix crash in TopoGeo_AddLinestring with EMPTY input (Sandro Santilli)
  - #5908, [topology] Fix crash in GetFaceContainingPoint (Sandro Santilli)
  - #5907, [topology] Fix crash in TopoGeo_AddPolygon with EMPTY input (Sandro Santilli)
  - #5876, Fix ST_AddPoint with empty point argument (Paul Ramsey)
