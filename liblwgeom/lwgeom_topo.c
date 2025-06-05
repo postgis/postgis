@@ -5593,6 +5593,12 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   uint64_t i;
   GBOX qbox;
 
+  if ( lwline_is_empty(line) )
+  {
+    *nedges = 0;
+    return NULL;
+  }
+
   *nedges = -1; /* error condition, by default */
 
   /* Get tolerance, if 0 was given */
