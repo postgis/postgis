@@ -1123,6 +1123,20 @@ lwgeom_is_unitary(const LWGEOM *geom)
 }
 
 int
+lwgeom_has_patches(const LWGEOM *geom)
+{
+	switch (geom->type)
+	{
+	case TINTYPE:
+	case POLYHEDRALSURFACETYPE:
+		return LW_TRUE;
+		break;
+	default:
+		return LW_FALSE;
+	}
+}
+
+int
 lwgeom_has_rings(const LWGEOM *geom)
 {
 	switch (geom->type)

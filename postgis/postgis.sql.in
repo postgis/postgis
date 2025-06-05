@@ -5487,24 +5487,15 @@ CREATE OR REPLACE FUNCTION ST_PointN(geometry,integer)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_NumPatches(geometry)
 	RETURNS integer
-	AS '
-	SELECT CASE WHEN @extschema@.ST_GeometryType($1) in (''ST_PolyhedralSurface'', ''ST_Tin'')
-	THEN @extschema@.ST_NumGeometries($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	AS 'MODULE_PATHNAME', 'LWGEOM_numpatches'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_PatchN(geometry, integer)
 	RETURNS geometry
-	AS '
-	SELECT CASE WHEN @extschema@.ST_GeometryType($1) in (''ST_PolyhedralSurface'', ''ST_Tin'')
-	THEN @extschema@.ST_GeometryN($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
+	AS 'MODULE_PATHNAME', 'LWGEOM_patchn'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- PostGIS equivalent function of old StartPoint(geometry))
 CREATE OR REPLACE FUNCTION ST_StartPoint(geometry)
