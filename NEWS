@@ -9,6 +9,7 @@ YYYY/MM/DD
  - #5818, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)
  - #5885, Fix documentation about grid-based overlay operations (Sandro Santilli)
  - PCRE2 support for more modern systems (Paul Ramsey)
+ - #5921, Crash freeing uninitialized pointer (Arsenii Mukhin)
 
 
 PostGIS 3.1.12
