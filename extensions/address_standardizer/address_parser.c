@@ -8,7 +8,6 @@
 #include "utils/builtins.h"
 
 #include "parseaddress-api.h"
-#include <pcre.h>
 #include <string.h>
 
 #undef DEBUG
