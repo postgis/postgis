@@ -1451,8 +1451,13 @@ int lwgeom_dimension(const LWGEOM *geom)
 	case CURVEPOLYTYPE:
 	case MULTISURFACETYPE:
 	case MULTIPOLYGONTYPE:
-	case TINTYPE:
 		return 2;
+	case TINTYPE:
+	{
+		/* A closed tin surface contains a volume. */
+		int closed = lwtin_is_closed((LWTIN*)geom);
+		return ( closed ? 3 : 2 );
+	}
 	case POLYHEDRALSURFACETYPE:
 	{
 		/* A closed polyhedral surface contains a volume. */
