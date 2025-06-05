@@ -5106,6 +5106,13 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
       }
     }
+    /* Nothing to do if line is empty */
+    if ( lwline_is_empty(ln) )
+    {
+      lwgeom_free(lwgeom);
+      PG_FREE_IF_COPY(geom, 1);
+      PG_RETURN_NULL();
+    }
 
     tol = PG_GETARG_FLOAT8(2);
     if ( tol < 0 )
