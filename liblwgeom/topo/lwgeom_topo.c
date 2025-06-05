@@ -7128,6 +7128,12 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   int input_was_closed = 0;
   POINT4D originalStartPoint;
 
+  if ( lwline_is_empty(line) )
+  {
+    *nedges = 0;
+    return NULL;
+  }
+
   if ( lwline_is_closed(line) )
   {
     input_was_closed = 1;
