@@ -184,6 +184,7 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
 
 	(void)mi;
 	(void)comma;
+
 	ret = (ADDRESS *) palloc0(sizeof(ADDRESS));
 
 	/* check if we were passed a lat lon */
