@@ -3,6 +3,7 @@ max|edge|26
 ERROR:  Invalid geometry type (MULTILINESTRING) passed to TopoGeo_AddLinestring, expected LINESTRING
 ERROR:  Invalid geometry type (POINT) passed to TopoGeo_AddLinestring, expected LINESTRING
 ERROR:  No topology with name "invalid" in topology.topology
+empty|
 iso_uni|27
 iso_uni|N||POINT(36 26)
 iso_uni|N||POINT(38 30)
