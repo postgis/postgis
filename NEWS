@@ -13,6 +13,7 @@ Proj 4.9+ required.
  - #5818, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)
  - #5885, Fix documentation about grid-based overlay operations (Sandro Santilli)
  - #5921, Crash freeing uninitialized pointer (Arsenii Mukhin)
+ - #5912, Crash on GML with xlink and no prefix (Paul Ramsey)
 
 PostGIS 3.2.8
 2024/12/22
