@@ -55,8 +55,12 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS);
 Datum LWGEOM_numpoints_linestring(PG_FUNCTION_ARGS);
 /* ---- NumGeometries(geometry) */
 Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS);
+/* ---- NumPatches(geometry) */
+Datum LWGEOM_numpatches(PG_FUNCTION_ARGS);
 /* ---- GeometryN(geometry, integer) */
 Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS);
+/* ---- PatchN(geometry, integer) */
+Datum LWGEOM_patchn(PG_FUNCTION_ARGS);
 /* ---- Dimension(geometry) */
 Datum LWGEOM_dimension(PG_FUNCTION_ARGS);
 /* ---- ExteriorRing(geometry) */
@@ -233,6 +237,42 @@ Datum LWGEOM_numpoints_linestring(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(count);
 }
 
+/*
+ * Count geometries with patches option
+ * patches_as_geometries = true: count patches as separate geometries (for ST_NumPatches)
+ * patches_as_geometries = false: treat TIN/PolyhedralSurface as unitary geometries (for ST_NumGeometries)
+ */
+static int32
+lwgeom_count_geometries(LWGEOM *lwgeom, bool patches_as_geometries)
+{
+	int32 ret = 0;
+
+	if (lwgeom_is_empty(lwgeom))
+	{
+		ret = 0;
+	}
+	else if (lwgeom_is_unitary(lwgeom))
+	{
+		/* If it's a TIN or PolyhedralSurface and we want to count patches */
+		if (lwgeom_has_patches(lwgeom) && patches_as_geometries)
+		{
+			LWCOLLECTION *col = lwgeom_as_lwcollection(lwgeom);
+			ret = col ? col->ngeoms : 1;
+		}
+		else
+		{
+			ret = 1;
+		}
+	}
+	else
+	{
+		LWCOLLECTION *col = lwgeom_as_lwcollection(lwgeom);
+		ret = col->ngeoms;
+	}
+
+	return ret;
+}
+
 PG_FUNCTION_INFO_V1(LWGEOM_numgeometries_collection);
 Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 {
@@ -241,22 +281,91 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 	int32 ret = 0;
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	if (lwgeom_is_empty(lwgeom))
-	{
-		ret = 0;
-	}
-	else if (lwgeom_is_unitary(lwgeom))
-	{
-		ret = 1;
-	}
-	else
-	{
-		LWCOLLECTION *col = lwgeom_as_lwcollection(lwgeom);
-		ret = col->ngeoms;
-	}
+
+	/* TIN and PolyhedralSurface count as 1 geometry, not their patch count */
+	ret = lwgeom_count_geometries(lwgeom, false);
+
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_INT32(ret);
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_numpatches);
+Datum LWGEOM_numpatches(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom;
+	int32 ret = 0;
+
+	lwgeom = lwgeom_from_gserialized(geom);
+
+	if (!lwgeom_has_patches(lwgeom))
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 0);
+		elog(ERROR, "ST_NumPatches only supports TIN and PolyhedralSurface geometries");
+	}
+
+	ret = lwgeom_count_geometries(lwgeom, true);
+
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_INT32(ret);
+}
+
+/*
+ * Extract geometry at given index with patches option
+ */
+static LWGEOM*
+lwgeom_extract_geometry_n(LWGEOM *lwgeom, int32 idx, bool patches_as_geometries)
+{
+	LWCOLLECTION *coll = NULL;
+	LWGEOM *subgeom = NULL;
+
+	/* Empty returns NULL */
+	if (lwgeom_is_empty(lwgeom))
+		return NULL;
+
+	/* Unitary geometries */
+	if (lwgeom_is_unitary(lwgeom))
+	{
+		/* If it's a TIN or PolyhedralSurface and we want to access patches */
+		if (lwgeom_has_patches(lwgeom) && patches_as_geometries)
+		{
+			coll = lwgeom_as_lwcollection(lwgeom);
+			if (!coll)
+			{
+				/* Single patch case */
+				if (idx == 1)
+					return lwgeom;
+				else
+					return NULL;
+			}
+		}
+		else
+		{
+			/* Standard unitary geometry handling */
+			if (idx == 1)
+				return lwgeom;
+			else
+				return NULL;
+		}
+	}
+	else
+	{
+		coll = lwgeom_as_lwcollection(lwgeom);
+	}
+
+	if (!coll)
+		return NULL;
+
+	/* Handle out-of-range index value */
+	idx -= 1;
+	if (idx < 0 || idx >= (int32) coll->ngeoms)
+		return NULL;
+
+	subgeom = coll->geoms[idx];
+	return subgeom;
 }
 
 /** 1-based offset */
@@ -267,36 +376,58 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	GSERIALIZED *result = NULL;
 	int32 idx = PG_GETARG_INT32(1);
-	LWCOLLECTION *coll = NULL;
 	LWGEOM *subgeom = NULL;
 
-	/* Empty returns NULL */
-	if (lwgeom_is_empty(lwgeom))
+	/* TIN and PolyhedralSurface are treated as unitary geometries */
+	subgeom = lwgeom_extract_geometry_n(lwgeom, idx, false);
+
+	if (!subgeom)
 		PG_RETURN_NULL();
 
-	/* Unitary geometries just reflect back */
-	if (lwgeom_is_unitary(lwgeom))
+	/* If returning the original geometry */
+	if (subgeom == lwgeom)
+		PG_RETURN_POINTER(geom);
+
+	subgeom->srid = lwgeom->srid;
+	/* COMPUTE_BBOX==TAINTING */
+	if (lwgeom->bbox) lwgeom_add_bbox(subgeom);
+
+	result = geometry_serialize(subgeom);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(result);
+}
+
+/** 1-based offset */
+PG_FUNCTION_INFO_V1(LWGEOM_patchn);
+Datum LWGEOM_patchn(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	GSERIALIZED *result = NULL;
+	int32 idx = PG_GETARG_INT32(1);
+	LWGEOM *subgeom = NULL;
+
+	if (!lwgeom_has_patches(lwgeom))
 	{
-		if ( idx == 1 )
-			PG_RETURN_POINTER(geom);
-		else
-			PG_RETURN_NULL();
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 0);
+		elog(ERROR, "ST_PatchN only supports TIN and PolyhedralSurface geometries");
 	}
 
-	coll = lwgeom_as_lwcollection(lwgeom);
-	if (!coll)
-		elog(ERROR, "Unable to handle type %d in ST_GeometryN", lwgeom->type);
+	/* Access patches individually */
+	subgeom = lwgeom_extract_geometry_n(lwgeom, idx, true);
 
-	/* Handle out-of-range index value */
-	idx -= 1;
-	if ( idx < 0 || idx >= (int32) coll->ngeoms )
+	if (!subgeom)
 		PG_RETURN_NULL();
 
-	subgeom = coll->geoms[idx];
-	subgeom->srid = coll->srid;
+	/* If returning the original geometry */
+	if (subgeom == lwgeom)
+		PG_RETURN_POINTER(geom);
 
+	subgeom->srid = lwgeom->srid;
 	/* COMPUTE_BBOX==TAINTING */
-	if ( coll->bbox ) lwgeom_add_bbox(subgeom);
+	if (lwgeom->bbox) lwgeom_add_bbox(subgeom);
 
 	result = geometry_serialize(subgeom);
 	lwgeom_free(lwgeom);

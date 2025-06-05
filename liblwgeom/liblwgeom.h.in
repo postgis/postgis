@@ -907,6 +907,11 @@ extern int lwgeom_is_collection(const LWGEOM *lwgeom);
 */
 extern int lwgeom_is_unitary(const LWGEOM *geom);
 
+/*
+ * Check if geometry type contains patches
+ */
+extern int lwgeom_has_patches(const LWGEOM *geom);
+
 /**
 * Is this a type that has rings enclosing an area, but is
 * not a collection of areas? (triangle, polygon, curvepolygon)
