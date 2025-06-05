@@ -27,3 +27,14 @@ SELECT 'patchN_02', ST_AsEWKT(ST_patchN('POLYHEDRALSURFACE(((0 0,0 0,0 1,0 0)))'
 SELECT 'patchN_03', ST_AsEWKT(ST_patchN('POLYHEDRALSURFACE(((0 0,0 0,0 1,0 0)))'::geometry, 0));
 SELECT 'patchN_04', ST_AsEWKT(ST_patchN('POLYHEDRALSURFACE(((0 0,0 0,0 1,0 0)))'::geometry, 2));
 SELECT 'patchN_05', ST_AsEWKT(ST_patchN('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))'::geometry, 2));
+
+-- ST_NumGeometries
+SELECT 'numgeometries_01', ST_NumGeometries('POLYHEDRALSURFACE EMPTY'::geometry);
+SELECT 'numgeometries_02', ST_NumGeometries('POLYHEDRALSURFACE(((0 0,0 0,0 1,0 0)))'::geometry);
+SELECT 'numgeometries_03', ST_NumGeometries('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))'::geometry);
+
+-- ST_GeometryN
+SELECT 'geometryN_01', ST_AsEWKT(ST_GeometryN('POLYHEDRALSURFACE EMPTY'::geometry, 1));
+SELECT 'geometryN_02', ST_AsEWKT(ST_GeometryN('POLYHEDRALSURFACE(((0 0,0 0,0 1,0 0)))'::geometry, 1));
+SELECT 'geometryN_03', ST_AsEWKT(ST_GeometryN('POLYHEDRALSURFACE(((0 0,0 0,0 1,0 0)))'::geometry, 0));
+SELECT 'geometryN_04', ST_AsEWKT(ST_GeometryN('POLYHEDRALSURFACE(((0 0,0 0,0 1,0 0)))'::geometry, 2));

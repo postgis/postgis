@@ -14,3 +14,10 @@ patchN_02|POLYGON((0 0,0 0,0 1,0 0))
 patchN_03|
 patchN_04|
 patchN_05|POLYGON((0 0 0,0 1 0,1 0 0,0 0 0))
+numgeometries_01|0
+numgeometries_02|1
+numgeometries_03|1
+geometryN_01|
+geometryN_02|POLYHEDRALSURFACE(((0 0,0 0,0 1,0 0)))
+geometryN_03|
+geometryN_04|
