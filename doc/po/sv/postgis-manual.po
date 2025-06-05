@@ -11773,7 +11773,7 @@ msgstr ""
 #. Tag: section
 #, no-c-format
 msgid "&list_raster_functions;"
-msgstr "&list_raster_functions;
+msgstr "&list_raster_functions;"
 
 #. Tag: title
 #, no-c-format
