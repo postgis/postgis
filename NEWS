@@ -16,6 +16,7 @@ Proj 4.9+ required.
  - #5912, Crash on GML with xlink and no prefix (Paul Ramsey)
  - #5905, Crash on deeply nested geometries (Paul Ramsey)
  - #5909, ST_ValueCount crashes on empty table (Paul Ramsey)
+ - #5917, ST_Relate becomes unresponsive (Paul Ramsey)
 
 
 PostGIS 3.2.8
