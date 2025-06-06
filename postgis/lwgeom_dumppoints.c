@@ -271,6 +271,10 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 
 		/* if a collection and we have more geoms */
 		if (node->idx < lwcoll->ngeoms) {
+
+			if(state->stacklen >= MAXDEPTH)
+				elog(ERROR, "Unabled to dump overly nested collection");
+
 			/* push the next geom on the path and the stack */
 			lwgeom = lwcoll->geoms[node->idx++];
 			state->path[state->pathlen++] = Int32GetDatum(node->idx);
