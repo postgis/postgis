@@ -180,6 +180,9 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 			 * stack
 			 */
 
+			if (state->stacklen > MAXDEPTH)
+				elog(ERROR, "Unable to dump overly nested collection.");
+
 			oldcontext = MemoryContextSwitchTo(newcontext);
 
 			node = lwalloc(sizeof(GEOMDUMPNODE));
