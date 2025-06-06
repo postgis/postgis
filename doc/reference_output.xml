@@ -1,90 +1,90 @@
 <!-- Converted by db4-upgrade version 1.1 -->
 <section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Geometry_Outputs">
-	  <title>Geometry Output</title><info>
-			<abstract>
-			<para>These functions convert geometry objects into various textual or binary formats.</para>
-			</abstract>
-		</info>
+    <title>Geometry Output</title><info>
+      <abstract>
+      <para>These functions convert geometry objects into various textual or binary formats.</para>
+      </abstract>
+    </info>
 
 
 
     <section>
       <title>Well-Known Text (WKT)</title>
 
-	  <refentry xml:id="ST_AsEWKT">
-		  <refnamediv>
-			<refname>ST_AsEWKT</refname>
-			<refpurpose>Return the Well-Known Text (WKT) representation of the geometry with SRID meta data.</refpurpose>
-		  </refnamediv>
+    <refentry xml:id="ST_AsEWKT">
+      <refnamediv>
+      <refname>ST_AsEWKT</refname>
+      <refpurpose>Return the Well-Known Text (WKT) representation of the geometry with SRID meta data.</refpurpose>
+      </refnamediv>
 
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>text <function>ST_AsEWKT</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>text <function>ST_AsEWKT</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>text <function>ST_AsEWKT</function></funcdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>text <function>ST_AsEWKT</function></funcdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
+      <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>text <function>ST_AsEWKT</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>text <function>ST_AsEWKT</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>text <function>ST_AsEWKT</function></funcdef>
+        <paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>text <function>ST_AsEWKT</function></funcdef>
+        <paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+      </refsynopsisdiv>
 
-		  <refsection>
-			<title>Description</title>
+      <refsection>
+      <title>Description</title>
 
-			<para>Returns the Well-Known Text representation of the geometry prefixed with the SRID.
+      <para>Returns the Well-Known Text representation of the geometry prefixed with the SRID.
             The optional <parameter>maxdecimaldigits</parameter> argument may be used to reduce the maximum number
-			of decimal digits after floating point used in output (defaults to 15).</para>
+      of decimal digits after floating point used in output (defaults to 15).</para>
 
             <para>To perform the inverse conversion of EWKT representation to PostGIS geometry
                 use <xref linkend="ST_GeomFromEWKT"/>.</para>
 
       <warning>
-			<para>Using the <parameter>maxdecimaldigits</parameter> parameter
+      <para>Using the <parameter>maxdecimaldigits</parameter> parameter
             can cause output geometry to become invalid.
             To avoid this use <xref linkend="ST_ReducePrecision"/>
             with a suitable gridsize first.
             </para>
       </warning>
 
-			<note>
-			  <para>The WKT spec does not include the SRID.  To get the OGC WKT format use <xref linkend="ST_AsText"/>.</para>
-			</note>
-			<warning>
+      <note>
+        <para>The WKT spec does not include the SRID.  To get the OGC WKT format use <xref linkend="ST_AsText"/>.</para>
+      </note>
+      <warning>
         <para>WKT format does not maintain precision so to prevent floating truncation,
         use <xref linkend="ST_AsBinary"/> or <xref linkend="ST_AsEWKB"/> format for transport.</para>
-			</warning>
+      </warning>
 
             <para role="enhanced" conformance="3.1.0">Enhanced: 3.1.0 support for optional precision parameter.</para>
-			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and TIN was introduced.</para>
+      <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and TIN was introduced.</para>
 
-			<para>&Z_support;</para>
-			<para>&curve_support;</para>
-			<para>&P_support;</para>
-			<para>&T_support;</para>
-		  </refsection>
+      <para>&Z_support;</para>
+      <para>&curve_support;</para>
+      <para>&P_support;</para>
+      <para>&T_support;</para>
+      </refsection>
 
 
-		  <refsection>
-			<title>Examples</title>
+      <refsection>
+      <title>Examples</title>
 
-			<programlisting>SELECT ST_AsEWKT('0103000020E61000000100000005000000000000
-			000000000000000000000000000000000000000000000000000000
-			F03F000000000000F03F000000000000F03F000000000000F03
-			F000000000000000000000000000000000000000000000000'::geometry);
+      <programlisting>SELECT ST_AsEWKT('0103000020E61000000100000005000000000000
+      000000000000000000000000000000000000000000000000000000
+      F03F000000000000F03F000000000000F03F000000000000F03
+      F000000000000000000000000000000000000000000000000'::geometry);
 
-		   st_asewkt
+       st_asewkt
 --------------------------------
 SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))
 (1 row)
@@ -96,89 +96,89 @@ E20A4100000000305C02410000000000000840')
 --st_asewkt---
 CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 </programlisting>
-		  </refsection>
+      </refsection>
 
-		  <!-- Optionally add a "See Also" section -->
-		  <refsection>
-			<title>See Also</title>
-			<para>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+      <title>See Also</title>
+      <para>
 <xref linkend="ST_AsBinary"/>,
 <xref linkend="ST_AsEWKB"/>,
 <xref linkend="ST_AsText"/>,
 <xref linkend="ST_GeomFromEWKT"/></para>
-		  </refsection>
-	</refentry>
+      </refsection>
+  </refentry>
 
-	<refentry xml:id="ST_AsText">
-		  <refnamediv>
-			<refname>ST_AsText</refname>
-			<refpurpose>Return the Well-Known Text (WKT) representation of the geometry/geography without SRID metadata.</refpurpose>
-		  </refnamediv>
+  <refentry xml:id="ST_AsText">
+      <refnamediv>
+      <refname>ST_AsText</refname>
+      <refpurpose>Return the Well-Known Text (WKT) representation of the geometry/geography without SRID metadata.</refpurpose>
+      </refnamediv>
 
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>text <function>ST_AsText</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>text <function>ST_AsText</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits = 15</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>text <function>ST_AsText</function></funcdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>text <function>ST_AsText</function></funcdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits = 15</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
+      <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>text <function>ST_AsText</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>text <function>ST_AsText</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits = 15</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>text <function>ST_AsText</function></funcdef>
+        <paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>text <function>ST_AsText</function></funcdef>
+        <paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits = 15</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+      </refsynopsisdiv>
 
-		  <refsection>
-			<title>Description</title>
+      <refsection>
+      <title>Description</title>
 
-			<para>Returns the OGC <link linkend="OpenGISWKBWKT">Well-Known Text</link> (WKT) representation of the geometry/geography.
+      <para>Returns the OGC <link linkend="OpenGISWKBWKT">Well-Known Text</link> (WKT) representation of the geometry/geography.
             The optional <parameter>maxdecimaldigits</parameter> argument may be used to limit the number
-			of digits after the decimal point in output ordinates (defaults to 15).</para>
+      of digits after the decimal point in output ordinates (defaults to 15).</para>
 
-			<para>To perform the inverse conversion of WKT representation to PostGIS geometry
+      <para>To perform the inverse conversion of WKT representation to PostGIS geometry
             use <xref linkend="ST_GeomFromText"/>.</para>
 
-			<note>
-			  <para>The standard OGC WKT representation does not include the SRID.
+      <note>
+        <para>The standard OGC WKT representation does not include the SRID.
               To include the SRID as part of the output representation, use the non-standard
-				PostGIS function <xref linkend="ST_AsEWKT"/></para>
-			</note>
+        PostGIS function <xref linkend="ST_AsEWKT"/></para>
+      </note>
       <warning>
-			<para>The textual representation of numbers in WKT may not maintain full floating-point precision.
+      <para>The textual representation of numbers in WKT may not maintain full floating-point precision.
             To ensure full accuracy for data storage or transport it is best to use
             <link linkend="OpenGISWKBWKT">Well-Known Binary</link> (WKB) format
             (see  <xref linkend="ST_AsBinary"/> and <parameter>maxdecimaldigits</parameter>).</para>
       </warning>
 
       <warning>
-			<para>Using the <parameter>maxdecimaldigits</parameter> parameter
+      <para>Using the <parameter>maxdecimaldigits</parameter> parameter
             can cause output geometry to become invalid.
             To avoid this use <xref linkend="ST_ReducePrecision"/>
             with a suitable gridsize first.
             </para>
       </warning>
 
-			<para role="availability" conformance="1.5">Availability: 1.5 - support for geography was introduced.</para>
-			<para role="enhanced" conformance="2.5">Enhanced: 2.5 - optional parameter precision introduced.</para>
-			<para>&sfs_compliant; s2.1.1.1</para>
-			<para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
-			<para>&curve_support;</para>
-		  </refsection>
+      <para role="availability" conformance="1.5">Availability: 1.5 - support for geography was introduced.</para>
+      <para role="enhanced" conformance="2.5">Enhanced: 2.5 - optional parameter precision introduced.</para>
+      <para>&sfs_compliant; s2.1.1.1</para>
+      <para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
+      <para>&curve_support;</para>
+      </refsection>
 
-		  <refsection>
-			<title>Examples</title>
+      <refsection>
+      <title>Examples</title>
 
-			<programlisting>SELECT ST_AsText('01030000000100000005000000000000000000
+      <programlisting>SELECT ST_AsText('01030000000100000005000000000000000000
 000000000000000000000000000000000000000000000000
 F03F000000000000F03F000000000000F03F000000000000F03
 F000000000000000000000000000000000000000000000000');
@@ -189,459 +189,459 @@ F000000000000000000000000000000000000000000000000');
 </programlisting>
 
 <para>Full precision output is the default.</para>
-			<programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'));
+      <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'));
     st_astext
 ------------------------------
  POINT(111.1111111 1.1111111)
 </programlisting>
 
 <para>The <parameter>maxdecimaldigits</parameter> argument can be used to limit output precision.</para>
-			<programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'), 2);
+      <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'), 2);
     st_astext
 --------------------
  POINT(111.11 1.11)
 </programlisting>
-		  </refsection>
+      </refsection>
 
-		  <!-- Optionally add a "See Also" section -->
-		  <refsection>
-			<title>See Also</title>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+      <title>See Also</title>
 
-			<para><xref linkend="ST_AsBinary"/>, <xref linkend="ST_AsEWKB"/>, <xref linkend="ST_AsEWKT"/>, <xref linkend="ST_GeomFromText"/></para>
-		  </refsection>
-	</refentry>
+      <para><xref linkend="ST_AsBinary"/>, <xref linkend="ST_AsEWKB"/>, <xref linkend="ST_AsEWKT"/>, <xref linkend="ST_GeomFromText"/></para>
+      </refsection>
+  </refentry>
 
     </section>
-	<!-- ==============================================================================  -->
+  <!-- ==============================================================================  -->
 
     <section>
       <title>Well-Known Binary (WKB)</title>
 
-		  <refentry xml:id="ST_AsBinary">
-		  <refnamediv>
-			<refname>ST_AsBinary</refname>
-			<refpurpose>Return the OGC/ISO Well-Known Binary (WKB) representation of the geometry/geography without SRID meta data.</refpurpose>
-		  </refnamediv>
+      <refentry xml:id="ST_AsBinary">
+      <refnamediv>
+      <refname>ST_AsBinary</refname>
+      <refpurpose>Return the OGC/ISO Well-Known Binary (WKB) representation of the geometry/geography without SRID meta data.</refpurpose>
+      </refnamediv>
 
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsBinary</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsBinary</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsBinary</function></funcdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsBinary</function></funcdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
+      <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>bytea <function>ST_AsBinary</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>bytea <function>ST_AsBinary</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        <paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>bytea <function>ST_AsBinary</function></funcdef>
+        <paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>bytea <function>ST_AsBinary</function></funcdef>
+        <paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+        <paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+      </refsynopsisdiv>
 
-		  <refsection>
-			<title>Description</title>
+      <refsection>
+      <title>Description</title>
 
-			<para>Returns the OGC/ISO <link linkend="OpenGISWKBWKT">Well-Known Binary</link> (WKB) representation of the geometry.
-            The first function variant defaults to encoding using server machine endian.
-            The second function variant takes a text argument
-			specifying the endian encoding, either little-endian ('NDR') or big-endian ('XDR').</para>
+      <para>Returns the OGC/ISO <link linkend="OpenGISWKBWKT">Well-Known Binary</link> (WKB) representation of the geometry.
+            The first function variant defaults to encoding using server machine endian. The second function variant takes a text argument
+      specifying the endian encoding: either 'NDR' for little-endian; or 'XDR' for big-endian. Supplying unknown arguments will result in little-endian output.
+      </para>
 
-			<para>WKB format is useful to read geometry data from the
-			database and maintaining full numeric precision.
+      <para>WKB format is useful to read geometry data from the
+      database and maintaining full numeric precision.
             This avoids the precision rounding that can happen with text formats such as WKT.</para>
 
-			<para>To perform the inverse conversion of WKB to PostGIS geometry use <xref linkend="ST_GeomFromWKB"/>.</para>
+      <para>To perform the inverse conversion of WKB to PostGIS geometry use <xref linkend="ST_GeomFromWKB"/>.</para>
 
-			<note>
-			  <para>The OGC/ISO WKB format does not include the SRID.  To get the EWKB format which does include the SRID use <xref linkend="ST_AsEWKB"/></para>
-			</note>
+      <note>
+        <para>The OGC/ISO WKB format does not include the SRID.  To get the EWKB format which does include the SRID use <xref linkend="ST_AsEWKB"/></para>
+      </note>
 
-			<note>
-			  <para>The default behavior in PostgreSQL 9.0 has been changed to output bytea in hex encoding.
+      <note>
+        <para>The default behavior in PostgreSQL 9.0 has been changed to output bytea in hex encoding.
                 If your GUI tools require the old behavior, then SET bytea_output='escape' in your database.</para>
-			</note>
+      </note>
 
-			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for higher coordinate dimensions was introduced.</para>
-			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for specifying endian with geography was introduced.</para>
-			<para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced.</para>
-			<para role="changed" conformance="2.0.0">Changed: 2.0.0 Inputs to this function can not be unknown -- must be geometry.  Constructs such as <code>ST_AsBinary('POINT(1 2)')</code> are no longer valid and you will get an <code>n st_asbinary(unknown)  is not unique error</code>.  Code like that
-			needs to be changed to <code>ST_AsBinary('POINT(1 2)'::geometry);</code>.  If that is not possible, then install <filename>legacy.sql</filename>.</para>
-			<para>&sfs_compliant; s2.1.1.1</para>
-			<para>&sqlmm_compliant; SQL-MM 3: 5.1.37</para>
-			<para>&curve_support;</para>
-			<para>&P_support;</para>
-			<para>&T_support;</para>
-			<para>&Z_support;</para>
-		  </refsection>
+      <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+      <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for higher coordinate dimensions was introduced.</para>
+      <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for specifying endian with geography was introduced.</para>
+      <para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced.</para>
+      <para role="changed" conformance="2.0.0">Changed: 2.0.0 Inputs to this function can not be unknown -- must be geometry.  Constructs such as <code>ST_AsBinary('POINT(1 2)')</code> are no longer valid and you will get an <code>n st_asbinary(unknown)  is not unique error</code>.  Code like that
+      needs to be changed to <code>ST_AsBinary('POINT(1 2)'::geometry);</code>.  If that is not possible, then install <filename>legacy.sql</filename>.</para>
+      <para>&sfs_compliant; s2.1.1.1</para>
+      <para>&sqlmm_compliant; SQL-MM 3: 5.1.37</para>
+      <para>&curve_support;</para>
+      <para>&P_support;</para>
+      <para>&T_support;</para>
+      <para>&Z_support;</para>
+      </refsection>
 
 
-		  <refsection>
-			<title>Examples</title>
+      <refsection>
+      <title>Examples</title>
 
-			<programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+      <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
 
-		   st_asbinary
+       st_asbinary
 --------------------------------
 \x01030000000100000005000000000000000000000000000000000000000000000000000000000000
 000000f03f000000000000f03f000000000000f03f000000000000f03f0000000000000000000000
 00000000000000000000000000
 </programlisting>
-			<programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');
-		   st_asbinary
+      <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');
+       st_asbinary
 --------------------------------
 \x000000000300000001000000050000000000000000000000000000000000000000000000003ff000
 00000000003ff00000000000003ff00000000000003ff00000000000000000000000000000000000
 00000000000000000000000000
 </programlisting>
-		  </refsection>
+      </refsection>
 
-		  <!-- Optionally add a "See Also" section -->
-		  <refsection>
-			<title>See Also</title>
-			<para>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+      <title>See Also</title>
+      <para>
 <xref linkend="ST_GeomFromWKB"/>,
 <xref linkend="ST_AsEWKB"/>,
 <xref linkend="ST_AsTWKB"/>,
 <xref linkend="ST_AsText"/>,
-			</para>
-		  </refsection>
-	</refentry>
+      </para>
+      </refsection>
+  </refentry>
 
-	<refentry xml:id="ST_AsEWKB">
-		  <refnamediv>
-			<refname>ST_AsEWKB</refname>
-			<refpurpose>Return the Extended Well-Known Binary (EWKB) representation of the geometry with SRID meta data.</refpurpose>
-		  </refnamediv>
+  <refentry xml:id="ST_AsEWKB">
+      <refnamediv>
+      <refname>ST_AsEWKB</refname>
+      <refpurpose>Return the Extended Well-Known Binary (EWKB) representation of the geometry with SRID meta data.</refpurpose>
+      </refnamediv>
 
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsEWKB</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsEWKB</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
+      <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>bytea <function>ST_AsEWKB</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>bytea <function>ST_AsEWKB</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        <paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+      </refsynopsisdiv>
 
-		  <refsection>
-			<title>Description</title>
-			<para>Returns the <link linkend="EWKB_EWKT">Extended Well-Known Binary</link> (EWKB) representation of the geometry with SRID metadata.
+      <refsection>
+      <title>Description</title>
+      <para>Returns the <link linkend="EWKB_EWKT">Extended Well-Known Binary</link> (EWKB) representation of the geometry with SRID metadata.
             The first function variant defaults to encoding using server machine endian.
             The second function variant takes a text argument
-			specifying the endian encoding, either little-endian ('NDR') or big-endian ('XDR').</para>
+      specifying the endian encoding: either 'NDR' for little-endian; or 'XDR' for big-endian. Supplying unknown arguments will result in little-endian output.</para>
 
-			<para>WKB format is useful to read geometry data from the
-			database and maintaining full numeric precision.
+      <para>WKB format is useful to read geometry data from the
+      database and maintaining full numeric precision.
             This avoids the precision rounding that can happen with text formats such as WKT.</para>
 
-			<para>To perform the inverse conversion of EWKB to PostGIS geometry use <xref linkend="ST_GeomFromEWKB"/>.</para>
+      <para>To perform the inverse conversion of EWKB to PostGIS geometry use <xref linkend="ST_GeomFromEWKB"/>.</para>
 
-			<note>
-			  <para>To get the OGC/ISO WKB format use <xref linkend="ST_AsBinary"/>.
+      <note>
+        <para>To get the OGC/ISO WKB format use <xref linkend="ST_AsBinary"/>.
               Note that OGC/ISO WKB format does not include the SRID.  </para>
-			</note>
+      </note>
 
-			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-			<para>&Z_support;</para>
-			<para>&curve_support;</para>
-			<para>&P_support;</para>
-			<para>&T_support;</para>
-		  </refsection>
+      <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+      <para>&Z_support;</para>
+      <para>&curve_support;</para>
+      <para>&P_support;</para>
+      <para>&T_support;</para>
+      </refsection>
 
 
-		  <refsection>
-			<title>Examples</title>
+      <refsection>
+      <title>Examples</title>
 
-			<programlisting>SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+      <programlisting>SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
 
-		   st_asewkb
+       st_asewkb
 --------------------------------
 \x0103000020e610000001000000050000000000000000000000000000000000000000000000000000
 00000000000000f03f000000000000f03f000000000000f03f000000000000f03f00000000000000
 0000000000000000000000000000000000
 </programlisting>
-		<programlisting>
-			SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');
-		   st_asewkb
+    <programlisting>
+      SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');
+       st_asewkb
 --------------------------------
 \x0020000003000010e600000001000000050000000000000000000000000000000000000000000000
 003ff00000000000003ff00000000000003ff00000000000003ff000000000000000000000000000
 0000000000000000000000000000000000
-		</programlisting>
-		  </refsection>
+    </programlisting>
+      </refsection>
 
-		  <!-- Optionally add a "See Also" section -->
-		  <refsection>
-			<title>See Also</title>
-			<para><xref linkend="ST_AsBinary"/>, <xref linkend="ST_GeomFromEWKB"/>, <xref linkend="ST_SRID"/></para>
-		  </refsection>
-	</refentry>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+      <title>See Also</title>
+      <para><xref linkend="ST_AsBinary"/>, <xref linkend="ST_GeomFromEWKB"/>, <xref linkend="ST_SRID"/></para>
+      </refsection>
+  </refentry>
 
-	<refentry xml:id="ST_AsHEXEWKB">
-	  <refnamediv>
-		<refname>ST_AsHEXEWKB</refname>
+  <refentry xml:id="ST_AsHEXEWKB">
+    <refnamediv>
+    <refname>ST_AsHEXEWKB</refname>
 
-		<refpurpose>Returns a Geometry in HEXEWKB format (as text) using either
-			little-endian (NDR) or big-endian (XDR) encoding.</refpurpose>
-	  </refnamediv>
+    <refpurpose>Returns a Geometry in HEXEWKB format (as text) using either
+      little-endian (NDR) or big-endian (XDR) encoding.</refpurpose>
+    </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>text <function>ST_AsHEXEWKB</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-			<paramdef><type>text </type> <parameter>NDRorXDR</parameter></paramdef>
-		  </funcprototype>
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+      <funcdef>text <function>ST_AsHEXEWKB</function></funcdef>
+      <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+      <paramdef><type>text </type> <parameter>NDRorXDR</parameter></paramdef>
+      </funcprototype>
 
-		  <funcprototype>
-			<funcdef>text <function>ST_AsHEXEWKB</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <funcprototype>
+      <funcdef>text <function>ST_AsHEXEWKB</function></funcdef>
+      <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+    <refsection>
+    <title>Description</title>
 
-		<para>Returns a Geometry in HEXEWKB format (as text) using either
-			little-endian (NDR) or big-endian (XDR) encoding.  If no encoding is specified, then NDR is used.</para>
+    <para>Returns a Geometry in HEXEWKB format (as text) using either
+      little-endian (NDR) or big-endian (XDR) encoding.  If no encoding is specified, then NDR is used.</para>
 
-		<note>
-		  <para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
-		</note>
-		<para>&Z_support;</para>
-		<para>&curve_support;</para>
-	  </refsection>
+    <note>
+      <para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
+    </note>
+    <para>&Z_support;</para>
+    <para>&curve_support;</para>
+    </refsection>
 
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
-		which gives same answer as
+    <refsection>
+    <title>Examples</title>
+    <programlisting>SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+    which gives same answer as
 
-		SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326)::text;
+    SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326)::text;
 
-		st_ashexewkb
-		--------
-		0103000020E6100000010000000500
-		00000000000000000000000000000000
-		00000000000000000000000000000000F03F
-		000000000000F03F000000000000F03F000000000000F03
-		F000000000000000000000000000000000000000000000000</programlisting>
-	  </refsection>
-	</refentry>
+    st_ashexewkb
+    --------
+    0103000020E6100000010000000500
+    00000000000000000000000000000000
+    00000000000000000000000000000000F03F
+    000000000000F03F000000000000F03F000000000000F03
+    F000000000000000000000000000000000000000000000000</programlisting>
+    </refsection>
+  </refentry>
 
 
     </section>
 
-	<!-- ==============================================================================  -->
+  <!-- ==============================================================================  -->
 
     <section>
       <title>Other Formats</title>
 
-	<refentry xml:id="ST_AsEncodedPolyline">
-		<refnamediv>
-		<refname>ST_AsEncodedPolyline</refname>
-		<refpurpose>Returns an Encoded Polyline from a LineString geometry.</refpurpose>
-		</refnamediv>
+  <refentry xml:id="ST_AsEncodedPolyline">
+    <refnamediv>
+    <refname>ST_AsEncodedPolyline</refname>
+    <refpurpose>Returns an Encoded Polyline from a LineString geometry.</refpurpose>
+    </refnamediv>
 
-		<refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-		  <funcdef>text <function>ST_AsEncodedPolyline</function></funcdef>
-		  <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-		  <paramdef choice="opt"><type>integer </type> <parameter>precision=5</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-		</refsynopsisdiv>
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+      <funcdef>text <function>ST_AsEncodedPolyline</function></funcdef>
+      <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+      <paramdef choice="opt"><type>integer </type> <parameter>precision=5</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
 
-		<refsection>
-		<title>Description</title>
+    <refsection>
+    <title>Description</title>
 
-		<para>Returns the geometry as an Encoded Polyline. This format is used by Google Maps with precision=5 and by Open Source Routing Machine with precision=5 and 6.</para>
-		<para>Optional <varname>precision</varname> specifies how many decimal places will be preserved in Encoded Polyline. Value should be the same on encoding and decoding, or coordinates will be incorrect.</para>
+    <para>Returns the geometry as an Encoded Polyline. This format is used by Google Maps with precision=5 and by Open Source Routing Machine with precision=5 and 6.</para>
+    <para>Optional <varname>precision</varname> specifies how many decimal places will be preserved in Encoded Polyline. Value should be the same on encoding and decoding, or coordinates will be incorrect.</para>
 
-		<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
-		</refsection>
+    <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+    </refsection>
 
-		<refsection>
-		<title>Examples</title>
-	<para>Basic </para>
-	<programlisting>
-	SELECT ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));
-	--result--
-	|_p~iF~ps|U_ulLnnqC_mqNvxq`@
-	</programlisting>
+    <refsection>
+    <title>Examples</title>
+  <para>Basic </para>
+  <programlisting>
+  SELECT ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));
+  --result--
+  |_p~iF~ps|U_ulLnnqC_mqNvxq`@
+  </programlisting>
 
-	<para>Use in conjunction with geography linestring and geography segmentize, and put on google maps</para>
-	<programlisting>-- the SQL for Boston to San Francisco, segments every 100 KM
-	SELECT ST_AsEncodedPolyline(
-		ST_Segmentize(
-			ST_GeogFromText('LINESTRING(-71.0519 42.4935,-122.4483 37.64)'),
-				100000)::geometry) As encodedFlightPath;</programlisting>
+  <para>Use in conjunction with geography linestring and geography segmentize, and put on google maps</para>
+  <programlisting>-- the SQL for Boston to San Francisco, segments every 100 KM
+  SELECT ST_AsEncodedPolyline(
+    ST_Segmentize(
+      ST_GeogFromText('LINESTRING(-71.0519 42.4935,-122.4483 37.64)'),
+        100000)::geometry) As encodedFlightPath;</programlisting>
 
 
-	<para>javascript will look something like this where $ variable you replace with query result</para>
-	<programlisting><![CDATA[
+  <para>javascript will look something like this where $ variable you replace with query result</para>
+  <programlisting><![CDATA[
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=geometry"></script>
 <script type="text/javascript">
-	 flightPath = new google.maps.Polyline({
-			path:  google.maps.geometry.encoding.decodePath("$encodedFlightPath"),
-			map: map,
-			strokeColor: '#0000CC',
-			strokeOpacity: 1.0,
-			strokeWeight: 4
-		});
+   flightPath = new google.maps.Polyline({
+      path:  google.maps.geometry.encoding.decodePath("$encodedFlightPath"),
+      map: map,
+      strokeColor: '#0000CC',
+      strokeOpacity: 1.0,
+      strokeWeight: 4
+    });
 </script>
 
 ]]></programlisting>
-	</refsection>
-		<!-- Optionally add a "See Also" section -->
-		<refsection>
-		<title>See Also</title>
-		<para><xref linkend="ST_LineFromEncodedPolyline"/>, <xref linkend="ST_Segmentize"/></para>
-		</refsection>
-	</refentry>
+  </refsection>
+    <!-- Optionally add a "See Also" section -->
+    <refsection>
+    <title>See Also</title>
+    <para><xref linkend="ST_LineFromEncodedPolyline"/>, <xref linkend="ST_Segmentize"/></para>
+    </refsection>
+  </refentry>
 
-	<refentry xml:id="ST_AsFlatGeobuf">
-	  <refnamediv>
-		<refname>ST_AsFlatGeobuf</refname>
+  <refentry xml:id="ST_AsFlatGeobuf">
+    <refnamediv>
+    <refname>ST_AsFlatGeobuf</refname>
 
-		<refpurpose>Return a FlatGeobuf representation of a set of rows.</refpurpose>
-	  </refnamediv>
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		<funcprototype>
-				<funcdef>bytea <function>ST_AsFlatGeobuf</function></funcdef>
-				<paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>bytea <function>ST_AsFlatGeobuf</function></funcdef>
-				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
-				<paramdef><type>bool </type> <parameter>index</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>bytea <function>ST_AsFlatGeobuf</function></funcdef>
-				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
-				<paramdef><type>bool </type> <parameter>index</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
-			</funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+    <refpurpose>Return a FlatGeobuf representation of a set of rows.</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+    <funcsynopsis>
+    <funcprototype>
+        <funcdef>bytea <function>ST_AsFlatGeobuf</function></funcdef>
+        <paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>bytea <function>ST_AsFlatGeobuf</function></funcdef>
+        <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+        <paramdef><type>bool </type> <parameter>index</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>bytea <function>ST_AsFlatGeobuf</function></funcdef>
+        <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+        <paramdef><type>bool </type> <parameter>index</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+    <refsection>
+    <title>Description</title>
 
-		<para>
-			Return a FlatGeobuf representation (<link xlink:href="http://flatgeobuf.org">http://flatgeobuf.org</link>)
-			of a set of rows corresponding to a FeatureCollection.
+    <para>
+      Return a FlatGeobuf representation (<link xlink:href="http://flatgeobuf.org">http://flatgeobuf.org</link>)
+      of a set of rows corresponding to a FeatureCollection.
 
-			NOTE: PostgreSQL bytea cannot exceed 1GB.
-		</para>
+      NOTE: PostgreSQL bytea cannot exceed 1GB.
+    </para>
 
-		<para><varname>row</varname> row data with at least a geometry column.</para>
-		<para><varname>index</varname> toggle spatial index creation. Default is false.</para>
-		<para><varname>geom_name</varname> is the name of the geometry column in the row data. If NULL it will default to the first found geometry column.</para>
+    <para><varname>row</varname> row data with at least a geometry column.</para>
+    <para><varname>index</varname> toggle spatial index creation. Default is false.</para>
+    <para><varname>geom_name</varname> is the name of the geometry column in the row data. If NULL it will default to the first found geometry column.</para>
 
-		<para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
-	  </refsection>
-	</refentry>
+    <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
+    </refsection>
+  </refentry>
 
-	<refentry xml:id="ST_AsGeobuf">
-	  <refnamediv>
-		<refname>ST_AsGeobuf</refname>
+  <refentry xml:id="ST_AsGeobuf">
+    <refnamediv>
+    <refname>ST_AsGeobuf</refname>
 
-		<refpurpose>Return a Geobuf representation of a set of rows.</refpurpose>
-	  </refnamediv>
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		<funcprototype>
-				<funcdef>bytea <function>ST_AsGeobuf</function></funcdef>
-				<paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>bytea <function>ST_AsGeobuf</function></funcdef>
-				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
-			</funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+    <refpurpose>Return a Geobuf representation of a set of rows.</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+    <funcsynopsis>
+    <funcprototype>
+        <funcdef>bytea <function>ST_AsGeobuf</function></funcdef>
+        <paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>bytea <function>ST_AsGeobuf</function></funcdef>
+        <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+    <refsection>
+    <title>Description</title>
 
-		<para>
-			Return a Geobuf representation (<link xlink:href="https://github.com/mapbox/geobuf">https://github.com/mapbox/geobuf</link>) of a set of rows corresponding to a FeatureCollection.
-			Every input geometry is analyzed to determine maximum precision for optimal storage.
-			Note that Geobuf in its current form cannot be streamed so the full output will be assembled in memory.
-		</para>
+    <para>
+      Return a Geobuf representation (<link xlink:href="https://github.com/mapbox/geobuf">https://github.com/mapbox/geobuf</link>) of a set of rows corresponding to a FeatureCollection.
+      Every input geometry is analyzed to determine maximum precision for optimal storage.
+      Note that Geobuf in its current form cannot be streamed so the full output will be assembled in memory.
+    </para>
 
-		<para><varname>row</varname> row data with at least a geometry column.</para>
-		<para><varname>geom_name</varname> is the name of the geometry column in the row data. If NULL it will default to the first found geometry column.</para>
+    <para><varname>row</varname> row data with at least a geometry column.</para>
+    <para><varname>geom_name</varname> is the name of the geometry column in the row data. If NULL it will default to the first found geometry column.</para>
 
-		<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
-	  </refsection>
+    <para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
+    </refsection>
 
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')
+    <refsection>
+    <title>Examples</title>
+    <programlisting>SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')
     FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') AS geom) AS q;
  st_asgeobuf
 ----------------------------------
  GAAiEAoOCgwIBBoIAAAAAgIAAAE=
 
 
-		</programlisting>
-	  </refsection>
-	</refentry>
+    </programlisting>
+    </refsection>
+  </refentry>
 
 
-	<refentry xml:id="ST_AsGeoJSON">
-	  <refnamediv>
-		<refname>ST_AsGeoJSON</refname>
+  <refentry xml:id="ST_AsGeoJSON">
+    <refnamediv>
+    <refname>ST_AsGeoJSON</refname>
 
-		<refpurpose>Return a geometry or feature in GeoJSON format.</refpurpose>
-	  </refnamediv>
+    <refpurpose>Return a geometry or feature in GeoJSON format.</refpurpose>
+    </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
-				<paramdef><type>record </type> <parameter>feature</parameter></paramdef>
-				<paramdef choice="opt"><type>text </type> <parameter>geom_column=""</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=9</parameter></paramdef>
-				<paramdef choice="opt"><type>boolean </type> <parameter>pretty_bool=false</parameter></paramdef>
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+        <paramdef><type>record </type> <parameter>feature</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>geom_column=""</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=9</parameter></paramdef>
+        <paramdef choice="opt"><type>boolean </type> <parameter>pretty_bool=false</parameter></paramdef>
                 <paramdef choice="opt"><type>text </type> <parameter>id_column=''</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=9</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>options=8</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
-				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=9</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
-			</funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=9</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>options=8</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+        <paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=9</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+    <refsection>
+    <title>Description</title>
 
         <para>
 Returns a geometry as a GeoJSON "geometry" object,
@@ -670,39 +670,39 @@ If omitted, the first geometry column in the record will be determined.
 Conversely, passing the parameter will save column type lookups.
 </para>
 
-			<para>The <varname>maxdecimaldigits</varname> argument may be used to reduce the maximum number of decimal places used in output (defaults to 9). If you are using EPSG:4326 and are outputting the geometry only for display, <varname>maxdecimaldigits</varname>=6 can be a good choice for many maps.</para>
+      <para>The <varname>maxdecimaldigits</varname> argument may be used to reduce the maximum number of decimal places used in output (defaults to 9). If you are using EPSG:4326 and are outputting the geometry only for display, <varname>maxdecimaldigits</varname>=6 can be a good choice for many maps.</para>
 
       <warning>
-			<para>Using the <parameter>maxdecimaldigits</parameter> parameter
+      <para>Using the <parameter>maxdecimaldigits</parameter> parameter
             can cause output geometry to become invalid.
             To avoid this use <xref linkend="ST_ReducePrecision"/>
             with a suitable gridsize first.
             </para>
       </warning>
 
-			<para>The <varname>options</varname> argument can be used to add BBOX or CRS in GeoJSON output:
-			  <itemizedlist>
-				<listitem>
-				  <para>0: means no option</para>
-				</listitem>
+      <para>The <varname>options</varname> argument can be used to add BBOX or CRS in GeoJSON output:
+        <itemizedlist>
+        <listitem>
+          <para>0: means no option</para>
+        </listitem>
 
-				<listitem>
-				  <para>1: GeoJSON BBOX</para>
-				</listitem>
+        <listitem>
+          <para>1: GeoJSON BBOX</para>
+        </listitem>
 
-				<listitem>
-				  <para>2: GeoJSON Short CRS (e.g EPSG:4326)</para>
-				</listitem>
+        <listitem>
+          <para>2: GeoJSON Short CRS (e.g EPSG:4326)</para>
+        </listitem>
 
-				<listitem>
-				  <para>4: GeoJSON Long CRS (e.g urn:ogc:def:crs:EPSG::4326)</para>
-				</listitem>
+        <listitem>
+          <para>4: GeoJSON Long CRS (e.g urn:ogc:def:crs:EPSG::4326)</para>
+        </listitem>
 
-				<listitem>
-				  <para>8: GeoJSON Short CRS if not EPSG:4326 (default)</para>
-				</listitem>
-			  </itemizedlist>
-			</para>
+        <listitem>
+          <para>8: GeoJSON Short CRS if not EPSG:4326 (default)</para>
+        </listitem>
+        </itemizedlist>
+      </para>
 
             <para>The <varname>id_column</varname> parameter is used to set the "id" member of the returned GeoJSON features. As per GeoJSON RFC, this SHOULD be used whenever a feature has a commonly used identifier, such as a primary key. When not specified, the produced features will not get an "id" member and any columns other than the geometry, including any potential keys, will just end up inside the feature’s "properties" member.</para>
 
@@ -725,17 +725,17 @@ Conversely, passing the parameter will save column type lookups.
                 </itemizedlist>
             </para>
 
-			<para role="availability" conformance="1.3.4">Availability: 1.3.4</para>
-			<para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced.</para>
-			<para role="changed" conformance="2.0.0">Changed: 2.0.0 support default args and named args.</para>
-			<para role="changed" conformance="3.0.0">Changed: 3.0.0 support records as input</para>
-			<para role="changed" conformance="3.0.0">Changed: 3.0.0 output SRID if not EPSG:4326.</para>
+      <para role="availability" conformance="1.3.4">Availability: 1.3.4</para>
+      <para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced.</para>
+      <para role="changed" conformance="2.0.0">Changed: 2.0.0 support default args and named args.</para>
+      <para role="changed" conformance="3.0.0">Changed: 3.0.0 support records as input</para>
+      <para role="changed" conformance="3.0.0">Changed: 3.0.0 output SRID if not EPSG:4326.</para>
             <para role="changed" conformance="3.5.0">Changed: 3.5.0 allow specifying the column containing the feature id</para>
-			<para>&Z_support;</para>
-	  </refsection>
+      <para>&Z_support;</para>
+    </refsection>
 
-	  <refsection>
-		<title>Examples</title>
+    <refsection>
+    <title>Examples</title>
 
 <para>Generate a FeatureCollection:</para>
 <programlisting>SELECT json_build_object(
@@ -749,7 +749,7 @@ FROM ( VALUES (1, 'one', 'POINT(1 1)'::geometry),
 <screen>{"type" : "FeatureCollection", "features" : [{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "id": 2, "properties": {"name": "two"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "id": 3, "properties": {"name": "three"}}]}</screen>
 
 <para>Generate a Feature:</para>
-		<programlisting>SELECT ST_AsGeoJSON(t.*, id_column => 'id')
+    <programlisting>SELECT ST_AsGeoJSON(t.*, id_column => 'id')
 FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programlisting>
 <screen>                                                  st_asgeojson
 -----------------------------------------------------------------------------------------------------------------
@@ -757,8 +757,8 @@ FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programl
 </screen>
 
 <para>Don't forget to transform your data to WGS84 longitude, latitude to conform with the GeoJSON specification:</para>
-		<programlisting>SELECT ST_AsGeoJSON(ST_Transform(geom,4326)) from fe_edges limit 1;</programlisting>
-<screen>					   st_asgeojson
+    <programlisting>SELECT ST_AsGeoJSON(ST_Transform(geom,4326)) from fe_edges limit 1;</programlisting>
+<screen>             st_asgeojson
 -----------------------------------------------------------------------------------------------------------
 
 {"type":"MultiLineString","coordinates":[[[-89.734634999999997,31.492072000000000],
@@ -772,369 +772,369 @@ FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programl
 <screen>
   {"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[1.000000000,1.000000000,1.000000000,1.000000000],"coordinates":[1,1]}
 </screen>
-	  </refsection>
+    </refsection>
   <refsection>
     <title>See Also</title>
 
     <para><xref linkend="ST_GeomFromGeoJSON"/>, <xref linkend="ST_ForcePolygonCCW"/>, <xref linkend="ST_Transform"/> </para>
   </refsection>
 
-	</refentry>
+  </refentry>
 
 
-	<refentry xml:id="ST_AsGML">
-	  <refnamediv>
-		<refname>ST_AsGML</refname>
-		<refpurpose>Return the geometry as a GML version 2 or 3 element.</refpurpose>
-	  </refnamediv>
+  <refentry xml:id="ST_AsGML">
+    <refnamediv>
+    <refname>ST_AsGML</refname>
+    <refpurpose>Return the geometry as a GML version 2 or 3 element.</refpurpose>
+    </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
-				<paramdef choice="opt"><type>text </type> <parameter>nprefix=null</parameter></paramdef>
-				<paramdef choice="opt"><type>text </type> <parameter>id=null</parameter></paramdef>
-			</funcprototype>
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>text <function>ST_AsGML</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>text <function>ST_AsGML</function></funcdef>
+        <paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>nprefix=null</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>id=null</parameter></paramdef>
+      </funcprototype>
 
 
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
-				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
-				<paramdef choice="opt"><type>text </type> <parameter>nprefix=null</parameter></paramdef>
-				<paramdef choice="opt"><type>text </type> <parameter>id=null</parameter></paramdef>
-			</funcprototype>
+      <funcprototype>
+        <funcdef>text <function>ST_AsGML</function></funcdef>
+        <paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>nprefix=null</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>id=null</parameter></paramdef>
+      </funcprototype>
 
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
-				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
-				<paramdef choice="opt"><type>text </type> <parameter>nprefix=null</parameter></paramdef>
-				<paramdef choice="opt"><type>text </type> <parameter>id=null</parameter></paramdef>
-			</funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <funcprototype>
+        <funcdef>text <function>ST_AsGML</function></funcdef>
+        <paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+        <paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>nprefix=null</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>id=null</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+    <refsection>
+    <title>Description</title>
 
-		<para>Return the geometry as a Geography Markup Language (GML) element. The version parameter,
-			if specified, may be either 2 or 3. If no version parameter is
-			specified then the default is assumed to be 2. The <varname>maxdecimaldigits</varname> argument
-			may be used to reduce the maximum number of decimal places
-			used in output (defaults to 15).</para>
+    <para>Return the geometry as a Geography Markup Language (GML) element. The version parameter,
+      if specified, may be either 2 or 3. If no version parameter is
+      specified then the default is assumed to be 2. The <varname>maxdecimaldigits</varname> argument
+      may be used to reduce the maximum number of decimal places
+      used in output (defaults to 15).</para>
 
       <warning>
-			<para>Using the <parameter>maxdecimaldigits</parameter> parameter
+      <para>Using the <parameter>maxdecimaldigits</parameter> parameter
             can cause output geometry to become invalid.
             To avoid this use <xref linkend="ST_ReducePrecision"/>
             with a suitable gridsize first.
             </para>
       </warning>
 
-		<para>GML 2 refer to 2.1.2 version, GML 3 to 3.1.1 version</para>
-		<para>The 'options' argument is a bitfield. It could be used to define CRS output type
-					in GML output, and to declare data as lat/lon:
-						  <itemizedlist>
-								<listitem>
-								  <para>0: GML Short CRS (e.g EPSG:4326), default value</para>
-								</listitem>
+    <para>GML 2 refer to 2.1.2 version, GML 3 to 3.1.1 version</para>
+    <para>The 'options' argument is a bitfield. It could be used to define CRS output type
+          in GML output, and to declare data as lat/lon:
+              <itemizedlist>
+                <listitem>
+                  <para>0: GML Short CRS (e.g EPSG:4326), default value</para>
+                </listitem>
 
-								<listitem>
-								  <para>1: GML Long CRS (e.g urn:ogc:def:crs:EPSG::4326)</para>
-								</listitem>
+                <listitem>
+                  <para>1: GML Long CRS (e.g urn:ogc:def:crs:EPSG::4326)</para>
+                </listitem>
 
-								<listitem>
-								  <para>2: For GML 3 only, remove srsDimension attribute from output.</para>
-								</listitem>
+                <listitem>
+                  <para>2: For GML 3 only, remove srsDimension attribute from output.</para>
+                </listitem>
 
-								<listitem>
-								  <para>4: For GML 3 only, use &lt;LineString&gt; rather than &lt;Curve&gt; tag for lines.</para>
-								</listitem>
+                <listitem>
+                  <para>4: For GML 3 only, use &lt;LineString&gt; rather than &lt;Curve&gt; tag for lines.</para>
+                </listitem>
 
-								<listitem>
-								  <para>16: Declare that data are lat/lon (e.g srid=4326). Default is to assume that data are planars.
-								  This option is useful for GML 3.1.1 output only, related to axis order. So if you set it, it will swap the coordinates
-								  so order is lat lon instead of database lon lat.</para>
-								</listitem>
+                <listitem>
+                  <para>16: Declare that data are lat/lon (e.g srid=4326). Default is to assume that data are planars.
+                  This option is useful for GML 3.1.1 output only, related to axis order. So if you set it, it will swap the coordinates
+                  so order is lat lon instead of database lon lat.</para>
+                </listitem>
 
-								<listitem>
-								  <para>32: Output the box of the geometry (envelope).</para>
-								</listitem>
-						  </itemizedlist>
-						</para>
+                <listitem>
+                  <para>32: Output the box of the geometry (envelope).</para>
+                </listitem>
+              </itemizedlist>
+            </para>
 
-		<para>The 'namespace prefix' argument may be used to specify a custom
+    <para>The 'namespace prefix' argument may be used to specify a custom
 namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is used</para>
 
 
-		  <para role="availability" conformance="1.3.2">Availability: 1.3.2</para>
-		  <para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced.</para>
-		  <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 prefix support was introduced. Option 4 for GML3 was introduced to allow using LineString instead of Curve tag for lines. GML3 Support for Polyhedral surfaces and TINS was introduced. Option 32 was introduced to output the box.</para>
-		  <para role="changed" conformance="2.0.0">Changed: 2.0.0 use default named args</para>
-		  <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 id support was introduced, for GML 3.</para>
+      <para role="availability" conformance="1.3.2">Availability: 1.3.2</para>
+      <para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced.</para>
+      <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 prefix support was introduced. Option 4 for GML3 was introduced to allow using LineString instead of Curve tag for lines. GML3 Support for Polyhedral surfaces and TINS was introduced. Option 32 was introduced to output the box.</para>
+      <para role="changed" conformance="2.0.0">Changed: 2.0.0 use default named args</para>
+      <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 id support was introduced, for GML 3.</para>
 
-		<note><para>Only version 3+ of ST_AsGML supports Polyhedral Surfaces and TINS.</para></note>
+    <note><para>Only version 3+ of ST_AsGML supports Polyhedral Surfaces and TINS.</para></note>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 17.2</para>
-		<para>&Z_support;</para>
-		<para>&P_support;</para>
-		<para>&T_support;</para>
-	  </refsection>
+    <para>&Z_support;</para>
+    <para>&P_support;</para>
+    <para>&T_support;</para>
+    </refsection>
 
-	  <refsection>
-		<title>Examples: Version 2</title>
-		<programlisting><![CDATA[
+    <refsection>
+    <title>Examples: Version 2</title>
+    <programlisting><![CDATA[
 SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
-		st_asgml
-		--------
-		<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>
+    st_asgml
+    --------
+    <gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>
 
 ]]></programlisting>
-	  </refsection>
-		<refsection>
-		<title>Examples: Version 3</title>
-		<programlisting><![CDATA[
+    </refsection>
+    <refsection>
+    <title>Examples: Version 3</title>
+    <programlisting><![CDATA[
 -- Flip coordinates and output extended EPSG (16 | 1)--
 SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);
-			st_asgml
-			--------
-		<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>
+      st_asgml
+      --------
+    <gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>
 
 ]]></programlisting>
-		<programlisting><![CDATA[
+    <programlisting><![CDATA[
 -- Output the envelope (32) --
 SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);
-		st_asgml
-		--------
-	<gml:Envelope srsName="EPSG:4326">
-		<gml:lowerCorner>1 2</gml:lowerCorner>
-		<gml:upperCorner>10 20</gml:upperCorner>
-	</gml:Envelope>
+    st_asgml
+    --------
+  <gml:Envelope srsName="EPSG:4326">
+    <gml:lowerCorner>1 2</gml:lowerCorner>
+    <gml:upperCorner>10 20</gml:upperCorner>
+  </gml:Envelope>
 
 ]]></programlisting>
 
-		<programlisting><![CDATA[
+    <programlisting><![CDATA[
 -- Output the envelope (32) , reverse (lat lon instead of lon lat) (16), long srs (1)= 32 | 16 | 1 = 49 --
 SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);
-	st_asgml
-	--------
+  st_asgml
+  --------
 <gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326">
-	<gml:lowerCorner>2 1</gml:lowerCorner>
-	<gml:upperCorner>20 10</gml:upperCorner>
+  <gml:lowerCorner>2 1</gml:lowerCorner>
+  <gml:upperCorner>20 10</gml:upperCorner>
 </gml:Envelope>
 
 ]]></programlisting>
 
-		<programlisting><![CDATA[
+    <programlisting><![CDATA[
 -- Polyhedral Example --
 SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
 ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
-	st_asgml
-	--------
+  st_asgml
+  --------
  <gml:PolyhedralSurface>
 <gml:polygonPatches>
    <gml:PolygonPatch>
-		<gml:exterior>
-			  <gml:LinearRing>
-				   <gml:posList srsDimension="3">0 0 0 0 0 1 0 1 1 0 1 0 0 0 0</gml:posList>
-			  </gml:LinearRing>
-		</gml:exterior>
+    <gml:exterior>
+        <gml:LinearRing>
+           <gml:posList srsDimension="3">0 0 0 0 0 1 0 1 1 0 1 0 0 0 0</gml:posList>
+        </gml:LinearRing>
+    </gml:exterior>
    </gml:PolygonPatch>
    <gml:PolygonPatch>
-		<gml:exterior>
-			  <gml:LinearRing>
-				   <gml:posList srsDimension="3">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList>
-			  </gml:LinearRing>
-		</gml:exterior>
+    <gml:exterior>
+        <gml:LinearRing>
+           <gml:posList srsDimension="3">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList>
+        </gml:LinearRing>
+    </gml:exterior>
    </gml:PolygonPatch>
    <gml:PolygonPatch>
-		<gml:exterior>
-			  <gml:LinearRing>
-				   <gml:posList srsDimension="3">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList>
-			  </gml:LinearRing>
-		</gml:exterior>
+    <gml:exterior>
+        <gml:LinearRing>
+           <gml:posList srsDimension="3">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList>
+        </gml:LinearRing>
+    </gml:exterior>
    </gml:PolygonPatch>
    <gml:PolygonPatch>
-		<gml:exterior>
-			  <gml:LinearRing>
-				   <gml:posList srsDimension="3">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList>
-			  </gml:LinearRing>
-		</gml:exterior>
+    <gml:exterior>
+        <gml:LinearRing>
+           <gml:posList srsDimension="3">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList>
+        </gml:LinearRing>
+    </gml:exterior>
    </gml:PolygonPatch>
    <gml:PolygonPatch>
-		<gml:exterior>
-			  <gml:LinearRing>
-				   <gml:posList srsDimension="3">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList>
-			  </gml:LinearRing>
-		</gml:exterior>
+    <gml:exterior>
+        <gml:LinearRing>
+           <gml:posList srsDimension="3">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList>
+        </gml:LinearRing>
+    </gml:exterior>
    </gml:PolygonPatch>
    <gml:PolygonPatch>
-		<gml:exterior>
-			  <gml:LinearRing>
-				   <gml:posList srsDimension="3">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList>
-			  </gml:LinearRing>
-		</gml:exterior>
+    <gml:exterior>
+        <gml:LinearRing>
+           <gml:posList srsDimension="3">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList>
+        </gml:LinearRing>
+    </gml:exterior>
    </gml:PolygonPatch>
 </gml:polygonPatches>
 </gml:PolyhedralSurface>
 
 ]]></programlisting>
 
-	  </refsection>
+    </refsection>
   <refsection>
     <title>See Also</title>
 
     <para><xref linkend="ST_GeomFromGML"/></para>
   </refsection>
-	</refentry>
+  </refentry>
 
 
-	<refentry xml:id="ST_AsKML">
-	  <refnamediv>
-		<refname>ST_AsKML</refname>
+  <refentry xml:id="ST_AsKML">
+    <refnamediv>
+    <refname>ST_AsKML</refname>
 
-		<refpurpose>Return the geometry as a KML element.</refpurpose>
-	  </refnamediv>
+    <refpurpose>Return the geometry as a KML element.</refpurpose>
+    </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
+    <refsynopsisdiv>
+    <funcsynopsis>
 
-			<funcprototype>
-				<funcdef>text <function>ST_AsKML</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice="opt"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef>
-			</funcprototype>
+      <funcprototype>
+        <funcdef>text <function>ST_AsKML</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef>
+      </funcprototype>
 
-			<funcprototype>
-				<funcdef>text <function>ST_AsKML</function></funcdef>
-				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice="opt"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef>
-			</funcprototype>
+      <funcprototype>
+        <funcdef>text <function>ST_AsKML</function></funcdef>
+        <paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef>
+      </funcprototype>
 
-		</funcsynopsis>
-	  </refsynopsisdiv>
+    </funcsynopsis>
+    </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+    <refsection>
+    <title>Description</title>
 
-		<para>Return the geometry as a Keyhole Markup Language (KML) element.
-			default maximum number of decimal places is 15,
-			default namespace is no prefix.</para>
+    <para>Return the geometry as a Keyhole Markup Language (KML) element.
+      default maximum number of decimal places is 15,
+      default namespace is no prefix.</para>
 
       <warning>
-			<para>Using the <parameter>maxdecimaldigits</parameter> parameter
+      <para>Using the <parameter>maxdecimaldigits</parameter> parameter
             can cause output geometry to become invalid.
             To avoid this use <xref linkend="ST_ReducePrecision"/>
             with a suitable gridsize first.
             </para>
       </warning>
 
-		<note>
-		  <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version"/> to confirm you have proj support compiled in.</para>
-		</note>
+    <note>
+      <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version"/> to confirm you have proj support compiled in.</para>
+    </note>
 
-		<note>
-		  <para role="availability" conformance="1.2.2">Availability: 1.2.2 - later variants that include version param came in 1.3.2</para>
-		</note>
-		<note>
-		  <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 - Add prefix namespace, use default and named args</para>
-		</note>
-		<note>
-		  <para role="changed" conformance="3.0.0">Changed: 3.0.0 - Removed the "versioned" variant signature</para>
-		</note>
+    <note>
+      <para role="availability" conformance="1.2.2">Availability: 1.2.2 - later variants that include version param came in 1.3.2</para>
+    </note>
+    <note>
+      <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 - Add prefix namespace, use default and named args</para>
+    </note>
+    <note>
+      <para role="changed" conformance="3.0.0">Changed: 3.0.0 - Removed the "versioned" variant signature</para>
+    </note>
 
-		<note>
-			<para>AsKML output will not work with geometries that do not have an SRID</para>
-		</note>
+    <note>
+      <para>AsKML output will not work with geometries that do not have an SRID</para>
+    </note>
 
-		<para>&Z_support;</para>
-	  </refsection>
+    <para>&Z_support;</para>
+    </refsection>
 
-	  <refsection>
-		<title>Examples</title>
-		<programlisting><![CDATA[
+    <refsection>
+    <title>Examples</title>
+    <programlisting><![CDATA[
 SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
 
-		st_askml
-		--------
-		<Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>
+    st_askml
+    --------
+    <Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>
 
-		--3d linestring
-		SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');
-		<LineString><coordinates>1,2,3 4,5,6</coordinates></LineString>
+    --3d linestring
+    SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');
+    <LineString><coordinates>1,2,3 4,5,6</coordinates></LineString>
 
 
 ]]></programlisting>
-	  </refsection>
-	 <refsection>
-		<title>See Also</title>
+    </refsection>
+   <refsection>
+    <title>See Also</title>
 
-		<para><xref linkend="ST_AsSVG"/>, <xref linkend="ST_AsGML"/></para>
-	  </refsection>
-	</refentry>
+    <para><xref linkend="ST_AsSVG"/>, <xref linkend="ST_AsGML"/></para>
+    </refsection>
+  </refentry>
 
-		<refentry xml:id="ST_AsLatLonText">
-		  <refnamediv>
-			<refname>ST_AsLatLonText</refname>
-			<refpurpose>Return the Degrees, Minutes, Seconds representation of the given point.</refpurpose>
-		  </refnamediv>
+    <refentry xml:id="ST_AsLatLonText">
+      <refnamediv>
+      <refname>ST_AsLatLonText</refname>
+      <refpurpose>Return the Degrees, Minutes, Seconds representation of the given point.</refpurpose>
+      </refnamediv>
 
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>text <function>ST_AsLatLonText</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>format=''</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
+      <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>text <function>ST_AsLatLonText</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>format=''</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+      </refsynopsisdiv>
 
-		  <refsection>
-			<title>Description</title>
+      <refsection>
+      <title>Description</title>
 
-			<para>Returns the Degrees, Minutes, Seconds representation of the point.</para>
+      <para>Returns the Degrees, Minutes, Seconds representation of the point.</para>
 
-			<note>
-			  <para>It is assumed the point is in a lat/lon projection.  The X (lon) and Y (lat) coordinates are normalized in the output
-				to the "normal" range (-180 to +180 for lon, -90 to +90 for lat).</para>
-			</note>
-				<para>
-					The text parameter is a format string containing the format for the resulting text, similar to a date format string.  Valid tokens
-					are "D" for degrees, "M" for minutes, "S" for seconds, and "C" for cardinal direction (NSEW).  DMS tokens may be repeated to indicate
-					desired width and precision ("SSS.SSSS" means "  1.0023").
-				</para>
-				<para>
-					"M", "S", and "C" are optional.  If "C" is omitted, degrees are
-					shown with a "-" sign if south or west.  If "S" is omitted, minutes will be shown as decimal with as many digits of precision
-					as you specify.  If "M" is also omitted, degrees are shown as decimal with as many digits precision as you specify.
-				</para>
-				<para>
-					If the format string is omitted (or zero-length) a default format will be used.
-				</para>
+      <note>
+        <para>It is assumed the point is in a lat/lon projection.  The X (lon) and Y (lat) coordinates are normalized in the output
+        to the "normal" range (-180 to +180 for lon, -90 to +90 for lat).</para>
+      </note>
+        <para>
+          The text parameter is a format string containing the format for the resulting text, similar to a date format string.  Valid tokens
+          are "D" for degrees, "M" for minutes, "S" for seconds, and "C" for cardinal direction (NSEW).  DMS tokens may be repeated to indicate
+          desired width and precision ("SSS.SSSS" means "  1.0023").
+        </para>
+        <para>
+          "M", "S", and "C" are optional.  If "C" is omitted, degrees are
+          shown with a "-" sign if south or west.  If "S" is omitted, minutes will be shown as decimal with as many digits of precision
+          as you specify.  If "M" is also omitted, degrees are shown as decimal with as many digits precision as you specify.
+        </para>
+        <para>
+          If the format string is omitted (or zero-length) a default format will be used.
+        </para>
 
-			<para role="availability" conformance="2.0">Availability: 2.0</para>
-		  </refsection>
+      <para role="availability" conformance="2.0">Availability: 2.0</para>
+      </refsection>
 
 
-		  <refsection>
-			<title>Examples</title>
+      <refsection>
+      <title>Examples</title>
 <para>Default format.</para>
 <programlisting>
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));
@@ -1177,10 +1177,10 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 -------------------------------
  72°19'29.928"S 57°45'56.757"E
 </programlisting>
-		  </refsection>
+      </refsection>
 
-		  <!-- Optionally add a "See Also" section -->
-	</refentry>
+      <!-- Optionally add a "See Also" section -->
+  </refentry>
 
     <refentry xml:id="ST_AsMARC21">
         <refnamediv>
@@ -1332,36 +1332,36 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
         </refsection>
     </refentry>
 
-	<refentry xml:id="ST_AsMVTGeom">
-	  <refnamediv>
-		<refname>ST_AsMVTGeom</refname>
+  <refentry xml:id="ST_AsMVTGeom">
+    <refnamediv>
+    <refname>ST_AsMVTGeom</refname>
 
-		<refpurpose>Transforms a geometry into the coordinate space of a MVT tile.</refpurpose>
-	  </refnamediv>
-	  <refsynopsisdiv>
-		<funcsynopsis>
-			<funcprototype>
-				<funcdef>geometry <function>ST_AsMVTGeom</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>extent=4096</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>buffer=256</parameter></paramdef>
-				<paramdef choice="opt"><type>boolean </type> <parameter>clip_geom=true</parameter></paramdef>
-			</funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+    <refpurpose>Transforms a geometry into the coordinate space of a MVT tile.</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>geometry <function>ST_AsMVTGeom</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+        <paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>extent=4096</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>buffer=256</parameter></paramdef>
+        <paramdef choice="opt"><type>boolean </type> <parameter>clip_geom=true</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+    <refsection>
+    <title>Description</title>
 
-		<para>Transforms a geometry into the coordinate space of a MVT (<link xlink:href="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</link>) tile,
+    <para>Transforms a geometry into the coordinate space of a MVT (<link xlink:href="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</link>) tile,
         clipping it to the tile bounds if required.
         The geometry must be in the coordinate system of the target map (using <xref linkend="ST_Transform"/> if needed).
         Commonly this is <link xlink:href="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</link> (SRID:3857).
         </para>
-		<para>The function attempts to preserve geometry validity, and corrects it if needed.
+    <para>The function attempts to preserve geometry validity, and corrects it if needed.
         This may cause the result geometry to collapse to a lower dimension.
-		</para>
+    </para>
         <para>The rectangular bounds of the tile in the target map coordinate space must be provided,
         so the geometry can be transformed, and clipped if required.
         The bounds can be generated using <xref linkend="ST_TileEnvelope"/>.
@@ -1370,34 +1370,34 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
         This function is used to convert geometry into the tile coordinate space required by <xref linkend="ST_AsMVT"/>.
         </para>
 
-		<para><varname>geom</varname> is the geometry to transform, in the coordinate system of the target map.</para>
-		<para><varname>bounds</varname> is the rectangular bounds of the tile in map coordinate space, with no buffer.</para>
-		<para><varname>extent</varname> is the tile extent size in tile coordinate space as defined by the <link xlink:href="https://www.mapbox.com/vector-tiles/specification/">MVT specification</link>. Defaults to 4096.</para>
-		<para><varname>buffer</varname> is the buffer size in tile coordinate space for geometry clippig. Defaults to 256.</para>
-		<para><varname>clip_geom</varname> is a boolean to control if geometries are clipped or encoded as-is. Defaults to true.</para>
+    <para><varname>geom</varname> is the geometry to transform, in the coordinate system of the target map.</para>
+    <para><varname>bounds</varname> is the rectangular bounds of the tile in map coordinate space, with no buffer.</para>
+    <para><varname>extent</varname> is the tile extent size in tile coordinate space as defined by the <link xlink:href="https://www.mapbox.com/vector-tiles/specification/">MVT specification</link>. Defaults to 4096.</para>
+    <para><varname>buffer</varname> is the buffer size in tile coordinate space for geometry clippig. Defaults to 256.</para>
+    <para><varname>clip_geom</varname> is a boolean to control if geometries are clipped or encoded as-is. Defaults to true.</para>
 
-		<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
+    <para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
 
         <note>
             <para>From 3.0, Wagyu can be chosen at configure time to clip and validate MVT polygons. This library is faster and produces more correct results than the GEOS default, but it might drop small polygons.</para>
         </note>
-	  </refsection>
+    </refsection>
 
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>
+    <refsection>
+    <title>Examples</title>
+    <programlisting>
 SELECT ST_AsText(ST_AsMVTGeom(
-	ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
-	ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
-	4096, 0, false));
+  ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
+  ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
+  4096, 0, false));
                               st_astext
 --------------------------------------------------------------------
  MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))
-		</programlisting>
+    </programlisting>
 
     <para>Canonical example for a Web Mercator tile using a computed tile bounds to query and clip geometry. This assumes the data.geom column has srid of 4326.
     </para>
-		<programlisting><![CDATA[
+    <programlisting><![CDATA[
 
 SELECT ST_AsMVTGeom(
             ST_Transform( geom, 3857 ),
@@ -1408,7 +1408,7 @@ SELECT ST_AsMVTGeom(
 
 ]]></programlisting>
 
-	  </refsection>
+    </refsection>
 
     <refsection>
         <title>See Also</title>
@@ -1418,92 +1418,92 @@ SELECT ST_AsMVTGeom(
                 <xref linkend="PostGIS_Wagyu_Version"/>
             </para>
         </refsection>
-	</refentry>
+  </refentry>
 
-	<refentry xml:id="ST_AsMVT">
-	  <refnamediv>
-		<refname>ST_AsMVT</refname>
+  <refentry xml:id="ST_AsMVT">
+    <refnamediv>
+    <refname>ST_AsMVT</refname>
 
-		<refpurpose>Aggregate function returning a MVT representation of a set of rows.</refpurpose>
-	  </refnamediv>
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		<funcprototype>
-				<funcdef>bytea <function>ST_AsMVT</function></funcdef>
-				<paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>bytea <function>ST_AsMVT</function></funcdef>
-				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>name</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>bytea <function>ST_AsMVT</function></funcdef>
-				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>name</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>bytea <function>ST_AsMVT</function></funcdef>
-				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>name</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
-			</funcprototype>
-		  <funcprototype>
-				<funcdef>bytea <function>ST_AsMVT</function></funcdef>
-				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>name</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>feature_id_name</parameter></paramdef>
+    <refpurpose>Aggregate function returning a MVT representation of a set of rows.</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+    <funcsynopsis>
+    <funcprototype>
+        <funcdef>bytea <function>ST_AsMVT</function></funcdef>
+        <paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef>
       </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <funcprototype>
+        <funcdef>bytea <function>ST_AsMVT</function></funcdef>
+        <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>name</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>bytea <function>ST_AsMVT</function></funcdef>
+        <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>name</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>bytea <function>ST_AsMVT</function></funcdef>
+        <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>name</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>bytea <function>ST_AsMVT</function></funcdef>
+        <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>name</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>feature_id_name</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+    <refsection>
+    <title>Description</title>
 
-		<para>An aggregate function which returns a binary <link xlink:href="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</link>
-		representation of a set of rows corresponding to a tile layer.
-		The rows must contain a geometry column which will be encoded as a feature geometry.
-		The geometry must be in tile coordinate space
-		and valid as per the <link xlink:href="https://www.mapbox.com/vector-tiles/specification/">MVT specification</link>.
-		<xref linkend="ST_AsMVTGeom"/> can be used to transform geometry into tile coordinate space.
-		Other row columns are encoded as feature attributes.
-		</para>
+    <para>An aggregate function which returns a binary <link xlink:href="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</link>
+    representation of a set of rows corresponding to a tile layer.
+    The rows must contain a geometry column which will be encoded as a feature geometry.
+    The geometry must be in tile coordinate space
+    and valid as per the <link xlink:href="https://www.mapbox.com/vector-tiles/specification/">MVT specification</link>.
+    <xref linkend="ST_AsMVTGeom"/> can be used to transform geometry into tile coordinate space.
+    Other row columns are encoded as feature attributes.
+    </para>
 
-		<para>The <link xlink:href="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</link> format
-		can store features with varying	sets of attributes.
-		To use this capability supply a JSONB column in the row data containing Json objects one level deep.
-		The keys and values in the JSONB values will be encoded as feature attributes.
-		</para>
+    <para>The <link xlink:href="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</link> format
+    can store features with varying sets of attributes.
+    To use this capability supply a JSONB column in the row data containing Json objects one level deep.
+    The keys and values in the JSONB values will be encoded as feature attributes.
+    </para>
 
-		<para>
-		Tiles with multiple layers can be created by concatenating multiple calls to this function
-		using <varname>||</varname> or <varname>STRING_AGG</varname>.
-		</para>
+    <para>
+    Tiles with multiple layers can be created by concatenating multiple calls to this function
+    using <varname>||</varname> or <varname>STRING_AGG</varname>.
+    </para>
 
-		<important>
-			<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an element in the row.
-			However you can use <xref linkend="ST_AsMVTGeom"/> to prepare a geometry collection for inclusion.</para>
-		</important>
+    <important>
+      <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an element in the row.
+      However you can use <xref linkend="ST_AsMVTGeom"/> to prepare a geometry collection for inclusion.</para>
+    </important>
 
-	  <para><varname>row</varname> row data with at least a geometry column.</para>
-		<para><varname>name</varname> is the name of the layer. Default is the string "default".</para>
-		<para><varname>extent</varname> is the tile extent in screen space as defined by the specification. Default is 4096.</para>
-		<para><varname>geom_name</varname> is the name of the geometry column in the row data. Default is the first geometry column. Note that PostgreSQL by default automatically <link xlink:href="https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS">folds unquoted identifiers to lower case</link>, which means that unless the geometry column is quoted, e.g. <varname>"MyMVTGeom"</varname>, this parameter must be provided as lowercase.</para>
-		<para><varname>feature_id_name</varname> is the name of the Feature ID column in the row data. If NULL or negative the Feature ID is not set. The first column matching name and valid type (smallint, integer, bigint) will be used as Feature ID, and any subsequent column will be added as a property. JSON properties are not supported.</para>
+    <para><varname>row</varname> row data with at least a geometry column.</para>
+    <para><varname>name</varname> is the name of the layer. Default is the string "default".</para>
+    <para><varname>extent</varname> is the tile extent in screen space as defined by the specification. Default is 4096.</para>
+    <para><varname>geom_name</varname> is the name of the geometry column in the row data. Default is the first geometry column. Note that PostgreSQL by default automatically <link xlink:href="https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS">folds unquoted identifiers to lower case</link>, which means that unless the geometry column is quoted, e.g. <varname>"MyMVTGeom"</varname>, this parameter must be provided as lowercase.</para>
+    <para><varname>feature_id_name</varname> is the name of the Feature ID column in the row data. If NULL or negative the Feature ID is not set. The first column matching name and valid type (smallint, integer, bigint) will be used as Feature ID, and any subsequent column will be added as a property. JSON properties are not supported.</para>
 
 
-	    <para role="enhanced" conformance="3.0">Enhanced: 3.0 - added support for Feature ID.</para>
-	    <para role="enhanced" conformance="2.5.0">Enhanced: 2.5.0 - added support parallel query.</para>
-		<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
-	  </refsection>
+      <para role="enhanced" conformance="3.0">Enhanced: 3.0 - added support for Feature ID.</para>
+      <para role="enhanced" conformance="2.5.0">Enhanced: 2.5.0 - added support parallel query.</para>
+    <para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
+    </refsection>
 
-	  <refsection>
-		<title>Examples</title>
-		<programlisting><![CDATA[
+    <refsection>
+    <title>Examples</title>
+    <programlisting><![CDATA[
 WITH mvtgeom AS
 (
   SELECT ST_AsMVTGeom(geom, ST_TileEnvelope(12, 513, 412), extent => 4096, buffer => 64) AS geom, name, description
@@ -1516,73 +1516,73 @@ FROM mvtgeom;
 ]]>
         </programlisting>
 
-	  </refsection>
+    </refsection>
 
-		<refsection>
-			<title>See Also</title>
-				<para>
-					<xref linkend="ST_AsMVTGeom"/>, <xref linkend="ST_TileEnvelope"/>
-				</para>
-		  </refsection>
-	</refentry>
+    <refsection>
+      <title>See Also</title>
+        <para>
+          <xref linkend="ST_AsMVTGeom"/>, <xref linkend="ST_TileEnvelope"/>
+        </para>
+      </refsection>
+  </refentry>
 
-	<refentry xml:id="ST_AsSVG">
-	  <refnamediv>
-		<refname>ST_AsSVG</refname>
+  <refentry xml:id="ST_AsSVG">
+    <refnamediv>
+    <refname>ST_AsSVG</refname>
 
-		<refpurpose>Returns SVG path data for a geometry.</refpurpose>
-	  </refnamediv>
+    <refpurpose>Returns SVG path data for a geometry.</refpurpose>
+    </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-			<funcprototype>
-				<funcdef>text <function>ST_AsSVG</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>rel=0</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsSVG</function></funcdef>
-				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>rel=0</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-			</funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>text <function>ST_AsSVG</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>rel=0</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>text <function>ST_AsSVG</function></funcdef>
+        <paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>rel=0</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+    <refsection>
+    <title>Description</title>
 
-		<para>Return the geometry as Scalar Vector Graphics (SVG) path data. Use 1 as second
-			argument to have the path data implemented in terms of relative
-			moves, the default (or 0) uses absolute moves. Third argument may
-			be used to reduce the maximum number of decimal digits used in
-			output (defaults to 15). Point geometries will be rendered as
-			cx/cy when 'rel' arg is 0, x/y when 'rel' is 1. Multipoint
-			geometries are delimited by commas (","), GeometryCollection
-			geometries are delimited by semicolons (";").</para>
+    <para>Return the geometry as Scalar Vector Graphics (SVG) path data. Use 1 as second
+      argument to have the path data implemented in terms of relative
+      moves, the default (or 0) uses absolute moves. Third argument may
+      be used to reduce the maximum number of decimal digits used in
+      output (defaults to 15). Point geometries will be rendered as
+      cx/cy when 'rel' arg is 0, x/y when 'rel' is 1. Multipoint
+      geometries are delimited by commas (","), GeometryCollection
+      geometries are delimited by semicolons (";").</para>
 
         <para>For working with PostGIS SVG graphics, checkout <link xlink:href="https://github.com/dr-jts/pg_svg">pg_svg</link> library which
         provides plpgsql functions for working with outputs from ST_AsSVG.</para>
 
         <para role="enhanced" conformance="3.4.0">Enhanced: 3.4.0 to support all curve types</para>
-		<para role="changed" conformance="2.0.0">Changed: 2.0.0 to use default args and support named args</para>
-		<note>
-		  <para role="availability" conformance="1.2.2.">Availability: 1.2.2. Availability: 1.4.0  Changed in PostGIS 1.4.0 to include L command in absolute path to conform to <link xlink:href="http://www.w3.org/TR/SVG/paths.html#PathDataBNF">http://www.w3.org/TR/SVG/paths.html#PathDataBNF</link></para>
-		</note>
+    <para role="changed" conformance="2.0.0">Changed: 2.0.0 to use default args and support named args</para>
+    <note>
+      <para role="availability" conformance="1.2.2.">Availability: 1.2.2. Availability: 1.4.0  Changed in PostGIS 1.4.0 to include L command in absolute path to conform to <link xlink:href="http://www.w3.org/TR/SVG/paths.html#PathDataBNF">http://www.w3.org/TR/SVG/paths.html#PathDataBNF</link></para>
+    </note>
         <para>&curve_support;</para>
-	  </refsection>
+    </refsection>
 
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry);
+    <refsection>
+    <title>Examples</title>
+    <programlisting>SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry);
 
 st_assvg
 --------
 M 0 0 L 0 -1 1 -1 1 0 Z</programlisting>
 
         <para>Circular string</para>
-		<programlisting>SELECT ST_AsSVG( ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)') );
+    <programlisting>SELECT ST_AsSVG( ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)') );
 
 st_assvg
 --------
@@ -1608,54 +1608,54 @@ M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z
 M -1 0 L 0 -0.5 1 0 0 -1 -1 0 Z
 M 7 -8 L 10 -10 6 -14 4 -11 Z
  </programlisting>
-	  </refsection>
-	</refentry>
-		<refentry xml:id="ST_AsTWKB">
-		  <refnamediv>
-			<refname>ST_AsTWKB</refname>
-			<refpurpose>Returns the geometry as TWKB, aka "Tiny Well-Known Binary"</refpurpose>
-		  </refnamediv>
+    </refsection>
+  </refentry>
+    <refentry xml:id="ST_AsTWKB">
+      <refnamediv>
+      <refname>ST_AsTWKB</refname>
+      <refpurpose>Returns the geometry as TWKB, aka "Tiny Well-Known Binary"</refpurpose>
+      </refnamediv>
 
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>prec=0</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>prec_z=0</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>prec_m=0</parameter></paramdef>
-				<paramdef><type>boolean </type> <parameter>with_sizes=false</parameter></paramdef>
-				<paramdef><type>boolean </type> <parameter>with_boxes=false</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
-				<paramdef><type>geometry[] </type> <parameter>geom</parameter></paramdef>
-				<paramdef><type>bigint[] </type> <parameter>ids</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>prec=0</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>prec_z=0</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>prec_m=0</parameter></paramdef>
-				<paramdef><type>boolean </type> <parameter>with_sizes=false</parameter></paramdef>
-				<paramdef><type>boolean </type> <parameter>with_boxes=false</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
-		  <refsection>
-			<title>Description</title>
-			<para>Returns the geometry in TWKB (Tiny Well-Known Binary) format. TWKB is a <link xlink:href="https://github.com/TWKB/Specification/blob/master/twkb.md">compressed binary format</link> with a focus on minimizing the size of the output. </para>
-			<para>The decimal digits parameters control how much precision is stored in the output. By default, values are rounded to the nearest unit before encoding. If you want to transfer more precision, increase the number. For example, a value of 1 implies that the first digit to the right of the decimal point will be preserved.</para>
-			<para>The sizes and bounding boxes parameters control whether optional information about the encoded length of the object and the bounds of the object are included in the output. By default they are not. Do not turn them on unless your client software has a use for them, as they just use up space (and saving space is the point of TWKB).</para>
-			<para>The array-input form of the function is used to convert a collection of geometries and unique identifiers into a TWKB collection that preserves the identifiers. This is useful for clients that expect to unpack a collection and then access further information about the objects inside. You can create the arrays using the <link xlink:href="https://www.postgresql.org/docs/current/functions-aggregate.html">array_agg</link> function. The other parameters operate the same as for the simple form of the function.</para>
-			<note>
-			  <para>The format specification is available online at <link xlink:href="https://github.com/TWKB/Specification">https://github.com/TWKB/Specification</link>, and code for building a JavaScript client can be found at <link xlink:href="https://github.com/TWKB/twkb.js">https://github.com/TWKB/twkb.js</link>.</para>
-			</note>
+      <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>bytea <function>ST_AsTWKB</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>prec=0</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>prec_z=0</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>prec_m=0</parameter></paramdef>
+        <paramdef><type>boolean </type> <parameter>with_sizes=false</parameter></paramdef>
+        <paramdef><type>boolean </type> <parameter>with_boxes=false</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>bytea <function>ST_AsTWKB</function></funcdef>
+        <paramdef><type>geometry[] </type> <parameter>geom</parameter></paramdef>
+        <paramdef><type>bigint[] </type> <parameter>ids</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>prec=0</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>prec_z=0</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>prec_m=0</parameter></paramdef>
+        <paramdef><type>boolean </type> <parameter>with_sizes=false</parameter></paramdef>
+        <paramdef><type>boolean </type> <parameter>with_boxes=false</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+      </refsynopsisdiv>
+      <refsection>
+      <title>Description</title>
+      <para>Returns the geometry in TWKB (Tiny Well-Known Binary) format. TWKB is a <link xlink:href="https://github.com/TWKB/Specification/blob/master/twkb.md">compressed binary format</link> with a focus on minimizing the size of the output. </para>
+      <para>The decimal digits parameters control how much precision is stored in the output. By default, values are rounded to the nearest unit before encoding. If you want to transfer more precision, increase the number. For example, a value of 1 implies that the first digit to the right of the decimal point will be preserved.</para>
+      <para>The sizes and bounding boxes parameters control whether optional information about the encoded length of the object and the bounds of the object are included in the output. By default they are not. Do not turn them on unless your client software has a use for them, as they just use up space (and saving space is the point of TWKB).</para>
+      <para>The array-input form of the function is used to convert a collection of geometries and unique identifiers into a TWKB collection that preserves the identifiers. This is useful for clients that expect to unpack a collection and then access further information about the objects inside. You can create the arrays using the <link xlink:href="https://www.postgresql.org/docs/current/functions-aggregate.html">array_agg</link> function. The other parameters operate the same as for the simple form of the function.</para>
+      <note>
+        <para>The format specification is available online at <link xlink:href="https://github.com/TWKB/Specification">https://github.com/TWKB/Specification</link>, and code for building a JavaScript client can be found at <link xlink:href="https://github.com/TWKB/twkb.js">https://github.com/TWKB/twkb.js</link>.</para>
+      </note>
 
-			<para role="enhanced" conformance="2.4.0">Enhanced: 2.4.0 memory and speed improvements.</para>
-			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
-		  </refsection>
+      <para role="enhanced" conformance="2.4.0">Enhanced: 2.4.0 memory and speed improvements.</para>
+      <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+      </refsection>
 
 
-		  <refsection>
-			<title>Examples</title>
+      <refsection>
+      <title>Examples</title>
 <programlisting>
 SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);
                  st_astwkb
@@ -1672,41 +1672,41 @@ SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
 \x040402020400000202
 </programlisting>
 
-		  </refsection>
+      </refsection>
 
-		  <refsection>
-			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromTWKB"/>, <xref linkend="ST_AsBinary"/>, <xref linkend="ST_AsEWKB"/>, <xref linkend="ST_AsEWKT"/>, <xref linkend="ST_GeomFromText"/></para>
-		  </refsection>
-	</refentry>
+      <refsection>
+      <title>See Also</title>
+      <para><xref linkend="ST_GeomFromTWKB"/>, <xref linkend="ST_AsBinary"/>, <xref linkend="ST_AsEWKB"/>, <xref linkend="ST_AsEWKT"/>, <xref linkend="ST_GeomFromText"/></para>
+      </refsection>
+  </refentry>
 
-	<refentry xml:id="ST_AsX3D">
-	  <refnamediv>
-		<refname>ST_AsX3D</refname>
+  <refentry xml:id="ST_AsX3D">
+    <refnamediv>
+    <refname>ST_AsX3D</refname>
 
-		<refpurpose>Returns a Geometry in X3D xml node element format: ISO-IEC-19776-1.2-X3DEncodings-XML</refpurpose>
-	  </refnamediv>
+    <refpurpose>Returns a Geometry in X3D xml node element format: ISO-IEC-19776-1.2-X3DEncodings-XML</refpurpose>
+    </refnamediv>
 
-	  <refsynopsisdiv>
-	     <funcsynopsis>
-	         <funcprototype>
-				<funcdef>text <function>ST_AsX3D</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
-			</funcprototype>
-	    </funcsynopsis>
-	  </refsynopsisdiv>
+    <refsynopsisdiv>
+       <funcsynopsis>
+           <funcprototype>
+        <funcdef>text <function>ST_AsX3D</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+      </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+    <refsection>
+    <title>Description</title>
 
-		<para>Returns a geometry as an X3D xml formatted node element  <link xlink:href="http://www.web3d.org/standards/number/19776-1">http://www.web3d.org/standards/number/19776-1</link>.  If <varname>maxdecimaldigits</varname> (precision) is not specified then defaults to 15. </para>
-		<note>
-		    <para>There are various options for translating PostGIS geometries to X3D since X3D geometry types don't map directly to PostGIS geometry types and some newer X3D types that might be better mappings we have avoided since most rendering tools don't currently support them.
-		        These are the mappings we have settled on.  Feel free to post a bug ticket if you have thoughts on the idea or ways we can allow people to denote their preferred mappings.</para>
-		    <para>Below is how we currently map PostGIS 2D/3D types to X3D types</para>
-		</note>
+    <para>Returns a geometry as an X3D xml formatted node element  <link xlink:href="http://www.web3d.org/standards/number/19776-1">http://www.web3d.org/standards/number/19776-1</link>.  If <varname>maxdecimaldigits</varname> (precision) is not specified then defaults to 15. </para>
+    <note>
+        <para>There are various options for translating PostGIS geometries to X3D since X3D geometry types don't map directly to PostGIS geometry types and some newer X3D types that might be better mappings we have avoided since most rendering tools don't currently support them.
+            These are the mappings we have settled on.  Feel free to post a bug ticket if you have thoughts on the idea or ways we can allow people to denote their preferred mappings.</para>
+        <para>Below is how we currently map PostGIS 2D/3D types to X3D types</para>
+    </note>
 
         <para>The 'options' argument is a bitfield. For PostGIS 2.2+, this is used to denote whether to represent coordinates with X3D GeoCoordinates Geospatial node and also whether to flip the x/y axis.  By default, <code>ST_AsX3D</code> outputs in database form (long,lat or X,Y), but X3D default of lat/lon, y/x may be preferred.</para>
 
@@ -1726,68 +1726,68 @@ SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
         </itemizedlist>
 
 
-		<informaltable>
-				<tgroup cols="3">
-					<thead>
-					  <row>
-						<entry>PostGIS Type</entry>
-						<entry>2D X3D Type</entry>
-						<entry>3D X3D Type</entry>
-					  </row>
-					</thead>
-					<tbody>
-					  <row>
-						<entry>LINESTRING</entry>
-						<entry>not yet implemented - will be PolyLine2D</entry>
-						<entry>LineSet</entry>
-					  </row>
-					  <row>
-						<entry>MULTILINESTRING</entry>
-						<entry>not yet implemented - will be PolyLine2D</entry>
-						<entry>IndexedLineSet</entry>
-					  </row>
-					  <row>
-						<entry>MULTIPOINT</entry>
-						<entry>Polypoint2D</entry>
-						<entry>PointSet</entry>
-					  </row>
-					  <row>
-						<entry>POINT</entry>
-						<entry>outputs the space delimited coordinates</entry>
-						<entry>outputs the space delimited coordinates</entry>
-					  </row>
-					  <row>
-						<entry>(MULTI) POLYGON, POLYHEDRALSURFACE</entry>
-						<entry>Invalid X3D markup</entry>
-						<entry>IndexedFaceSet (inner rings currently output as another faceset)</entry>
-					  </row>
-					  <row>
-						<entry>TIN</entry>
-						<entry>TriangleSet2D (Not Yet Implemented)</entry>
-						<entry>IndexedTriangleSet</entry>
-					  </row>
-				</tbody>
-			</tgroup>
-		</informaltable>
-		<note><para>2D geometry support not yet complete.  Inner rings currently just drawn as separate polygons.  We are working on these.</para></note>
-		<para>Lots of advancements happening in 3D space particularly with <link xlink:href="https://www.web3d.org/wiki/index.php/X3D_and_HTML5">X3D Integration with HTML5</link></para>
-		<para>There is also a nice open source X3D viewer you can use to view rendered geometries. Free Wrl <link xlink:href="http://freewrl.sourceforge.net/">http://freewrl.sourceforge.net/</link> binaries available for Mac, Linux, and Windows. Use the FreeWRL_Launcher packaged to view the geometries.</para>
-		<para>Also check out <link xlink:href="https://git.osgeo.org/gitea/robe/postgis_x3d_viewer">PostGIS minimalist X3D viewer</link>  that utilizes this function and <link xlink:href="http://www.x3dom.org/">x3dDom html/js open source toolkit</link>.</para>
-		<para role="availability" conformance="2.0.0">Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML</para>
-		<para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) flipping.  Look at options for details.</para>
-		<!-- Optionally mention 3d support -->
-		<para>&Z_support;</para>
+    <informaltable>
+        <tgroup cols="3">
+          <thead>
+            <row>
+            <entry>PostGIS Type</entry>
+            <entry>2D X3D Type</entry>
+            <entry>3D X3D Type</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+            <entry>LINESTRING</entry>
+            <entry>not yet implemented - will be PolyLine2D</entry>
+            <entry>LineSet</entry>
+            </row>
+            <row>
+            <entry>MULTILINESTRING</entry>
+            <entry>not yet implemented - will be PolyLine2D</entry>
+            <entry>IndexedLineSet</entry>
+            </row>
+            <row>
+            <entry>MULTIPOINT</entry>
+            <entry>Polypoint2D</entry>
+            <entry>PointSet</entry>
+            </row>
+            <row>
+            <entry>POINT</entry>
+            <entry>outputs the space delimited coordinates</entry>
+            <entry>outputs the space delimited coordinates</entry>
+            </row>
+            <row>
+            <entry>(MULTI) POLYGON, POLYHEDRALSURFACE</entry>
+            <entry>Invalid X3D markup</entry>
+            <entry>IndexedFaceSet (inner rings currently output as another faceset)</entry>
+            </row>
+            <row>
+            <entry>TIN</entry>
+            <entry>TriangleSet2D (Not Yet Implemented)</entry>
+            <entry>IndexedTriangleSet</entry>
+            </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+    <note><para>2D geometry support not yet complete.  Inner rings currently just drawn as separate polygons.  We are working on these.</para></note>
+    <para>Lots of advancements happening in 3D space particularly with <link xlink:href="https://www.web3d.org/wiki/index.php/X3D_and_HTML5">X3D Integration with HTML5</link></para>
+    <para>There is also a nice open source X3D viewer you can use to view rendered geometries. Free Wrl <link xlink:href="http://freewrl.sourceforge.net/">http://freewrl.sourceforge.net/</link> binaries available for Mac, Linux, and Windows. Use the FreeWRL_Launcher packaged to view the geometries.</para>
+    <para>Also check out <link xlink:href="https://git.osgeo.org/gitea/robe/postgis_x3d_viewer">PostGIS minimalist X3D viewer</link>  that utilizes this function and <link xlink:href="http://www.x3dom.org/">x3dDom html/js open source toolkit</link>.</para>
+    <para role="availability" conformance="2.0.0">Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML</para>
+    <para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) flipping.  Look at options for details.</para>
+    <!-- Optionally mention 3d support -->
+    <para>&Z_support;</para>
         <!-- Optionally mention supports Polyhedral Surface  -->
         <para>&P_support;</para>
 
         <!-- Optionally mention support for Triangles and TINS  -->
         <para>&T_support;</para>
 
-	  </refsection>
+    </refsection>
 
-	  <refsection>
-		<title>Example: Create a fully functional X3D document - This will generate a cube that is viewable in FreeWrl and other X3D viewers.</title>
-		<programlisting><![CDATA[
+    <refsection>
+    <title>Example: Create a fully functional X3D document - This will generate a cube that is viewable in FreeWrl and other X3D viewers.</title>
+    <programlisting><![CDATA[
 SELECT '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
 <X3D>
@@ -1806,8 +1806,8 @@ SELECT '<?xml version="1.0" encoding="UTF-8"?>
   </Scene>
 </X3D>' As x3ddoc;
 
-		x3ddoc
-		--------
+    x3ddoc
+    --------
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
 <X3D>
@@ -1825,7 +1825,7 @@ SELECT '<?xml version="1.0" encoding="UTF-8"?>
   </Scene>
 </X3D>
 ]]></programlisting>
-	  </refsection>
+    </refsection>
       <refsection>
          <title>PostGIS buildings</title>
          <para>
@@ -1850,9 +1850,9 @@ FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);
             </mediaobject>
         </informalfigure>
       </refsection>
-	   <refsection>
-		<title>Example: An Octagon elevated 3 Units and decimal precision of 6</title>
-		<programlisting><![CDATA[
+     <refsection>
+    <title>Example: An Octagon elevated 3 Units and decimal precision of 6</title>
+    <programlisting><![CDATA[
 SELECT ST_AsX3D(
 ST_Translate(
     ST_Force_3d(
@@ -1866,10 +1866,10 @@ x3dfrag
     <Coordinate point="15 10 3 13.535534 6.464466 3 10 5 3 6.464466 6.464466 3 5 10 3 6.464466 13.535534 3 10 15 3 13.535534 13.535534 3 " />
 </IndexedFaceSet>
 ]]></programlisting>
-	  </refsection>
-	  <refsection>
-		<title>Example: TIN</title>
-		<programlisting><![CDATA[
+    </refsection>
+    <refsection>
+    <title>Example: TIN</title>
+    <programlisting><![CDATA[
 SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((
                 0 0 0,
                 0 0 1,
@@ -1883,49 +1883,49 @@ SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((
             ))
             )')) As x3dfrag;
 
-		x3dfrag
-		--------
+    x3dfrag
+    --------
 <IndexedTriangleSet  index='0 1 2 3 4 5'><Coordinate point='0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 1 1 0'/></IndexedTriangleSet>
 ]]></programlisting>
-	  </refsection>
-	  <refsection>
-		<title>Example: Closed multilinestring (the boundary of a polygon with holes)</title>
-		<programlisting><![CDATA[
+    </refsection>
+    <refsection>
+    <title>Example: Closed multilinestring (the boundary of a polygon with holes)</title>
+    <programlisting><![CDATA[
 SELECT ST_AsX3D(
-		    ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12 -12 10,-20 0 10,-12 16 10,0 24 10,16 16 10,20 0 10),
+        ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12 -12 10,-20 0 10,-12 16 10,0 24 10,16 16 10,20 0 10),
   (12 0 10,8 8 10,0 12 10,-8 8 10,-8 0 10,-8 -4 10,0 -8 10,8 -4 10,12 0 10))')
 ) As x3dfrag;
 
-		x3dfrag
-		--------
+    x3dfrag
+    --------
 <IndexedLineSet  coordIndex='0 1 2 3 4 5 6 7 0 -1 8 9 10 11 12 13 14 15 8'>
     <Coordinate point='20 0 10 16 -12 10 0 -16 10 -12 -12 10 -20 0 10 -12 16 10 0 24 10 16 16 10 12 0 10 8 8 10 0 12 10 -8 8 10 -8 0 10 -8 -4 10 0 -8 10 8 -4 10 ' />
  </IndexedLineSet>
 ]]></programlisting>
-	  </refsection>
-	</refentry>
+    </refsection>
+  </refentry>
 
-	<refentry xml:id="ST_GeoHash">
-	  <refnamediv>
-		<refname>ST_GeoHash</refname>
+  <refentry xml:id="ST_GeoHash">
+    <refnamediv>
+    <refname>ST_GeoHash</refname>
 
-		<refpurpose>Return a GeoHash representation of the geometry.</refpurpose>
-	  </refnamediv>
+    <refpurpose>Return a GeoHash representation of the geometry.</refpurpose>
+    </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-			<funcprototype>
-				<funcdef>text <function>ST_GeoHash</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxchars=full_precision_of_point</parameter></paramdef>
-			</funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>text <function>ST_GeoHash</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxchars=full_precision_of_point</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+    <refsection>
+    <title>Description</title>
 
-		<para>Computes a <link xlink:href="http://en.wikipedia.org/wiki/Geohash">GeoHash</link> representation of a geometry.
+    <para>Computes a <link xlink:href="http://en.wikipedia.org/wiki/Geohash">GeoHash</link> representation of a geometry.
         A GeoHash encodes a geographic Point into a text form that is sortable and searchable based on prefixing.
         A shorter GeoHash is a less precise representation of a point.
         It can be thought of as a box that contains the point.
@@ -1935,30 +1935,30 @@ SELECT ST_AsX3D(
         The precision of the code depends on the geographic extent of the geometry.
         </para>
 
-		<para>If <varname>maxchars</varname> is not specified, the returned GeoHash code is for the smallest cell containing the input geometry.
+    <para>If <varname>maxchars</varname> is not specified, the returned GeoHash code is for the smallest cell containing the input geometry.
         Points return a GeoHash with 20 characters of precision (about enough to hold the full double precision of the input).
         Other geometric types may return a GeoHash with less precision, depending on the extent of the geometry.
         Larger geometries are represented with less precision, smaller ones with more precision.
         The box determined by the GeoHash code always contains the input feature.</para>
 
-		<para>If <varname>maxchars</varname> is specified the returned GeoHash code has at most that many characters.
+    <para>If <varname>maxchars</varname> is specified the returned GeoHash code has at most that many characters.
         It maps to a (possibly) lower precision representation of the input geometry.
         For non-points, the starting point of the calculation is the center of the bounding box of the geometry.</para>
 
-		<para role="availability" conformance="1.4.0">Availability: 1.4.0</para>
+    <para role="availability" conformance="1.4.0">Availability: 1.4.0</para>
 
-		<note>
-			<para>ST_GeoHash requires input geometry to be in geographic (lon/lat) coordinates.</para>
-		</note>
+    <note>
+      <para>ST_GeoHash requires input geometry to be in geographic (lon/lat) coordinates.</para>
+    </note>
 
-		<para>&curve_support;</para>
-	  </refsection>
+    <para>&curve_support;</para>
+    </refsection>
 
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>SELECT ST_GeoHash( ST_Point(-126,48) );
+    <refsection>
+    <title>Examples</title>
+    <programlisting>SELECT ST_GeoHash( ST_Point(-126,48) );
 
-	 st_geohash
+   st_geohash
 ----------------------
  c0w3hf1s70w3hf1s70w3
 
@@ -1975,14 +1975,14 @@ SELECT ST_GeoHash('LINESTRING(-126 48, -126.1 48.1)'::geometry);
 ------------
  c0w3
 
-		</programlisting>
-	  </refsection>
-	 <refsection>
-		<title>See Also</title>
+    </programlisting>
+    </refsection>
+   <refsection>
+    <title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromGeoHash"/>, <xref linkend="ST_PointFromGeoHash"/>, <xref linkend="ST_Box2dFromGeoHash"/></para>
-	  </refsection>
-	</refentry>
+    <para><xref linkend="ST_GeomFromGeoHash"/>, <xref linkend="ST_PointFromGeoHash"/>, <xref linkend="ST_Box2dFromGeoHash"/></para>
+    </refsection>
+  </refentry>
 
-		</section>
+    </section>
   </section>
