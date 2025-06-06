@@ -20,6 +20,8 @@ Proj 6.1+ required.
   - #5921, Crash freeing uninitialized pointer (Arsenii Mukhin)
   - #5912, Crash on GML with xlink and no prefix (Paul Ramsey)
   - #5905, Crash on deeply nested geometries (Paul Ramsey)
+  - #5909, ST_ValueCount crashes on empty table (Paul Ramsey)
+
 
 PostGIS 3.4.4
 2024/12/22
