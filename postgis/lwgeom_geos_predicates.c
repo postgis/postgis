@@ -888,7 +888,10 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
-	text *patt = PG_GETARG_TEXT_P(2);
+
+	/* Ensure DE9IM pattern is no more than 9 chars */
+	text *patt = DatumGetTextP(DirectFunctionCall2(text_left,
+		PG_GETARG_DATUM(2), Int32GetDatum(9)));
 	char *pstr = text_to_cstring(patt);
 	char result;
 	size_t i;
