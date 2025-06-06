@@ -2515,6 +2515,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	char *patt;
+	text *ptxt;
 	char result;
 	GEOSGeometry *g1, *g2;
 	size_t i;
@@ -2537,8 +2538,10 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 	}
 
-	patt =  DatumGetCString(DirectFunctionCall1(textout,
-	                        PointerGetDatum(PG_GETARG_DATUM(2))));
+	/* Ensure DE9IM pattern is no more than 9 chars */
+	ptxt = DatumGetTextP(DirectFunctionCall2(text_left,
+	               PG_GETARG_DATUM(2), Int32GetDatum(9)));
+	patt = text_to_cstring(ptxt);
 
 	/*
 	** Need to make sure 't' and 'f' are upper-case before handing to GEOS
