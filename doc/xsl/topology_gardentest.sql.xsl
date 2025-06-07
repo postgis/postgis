@@ -600,6 +600,19 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 						'<xsl:value-of select="$var_geom_name" />'
 					</xsl:when>
 
+					<xsl:when test="contains(db:parameter, 'feature_column') and db:type = 'name'">
+						'topo'
+					</xsl:when>
+
+					<xsl:when test="contains(db:parameter, 'layer_table') and db:type = 'regclass'">
+						'public.pgis_tgarden_point'::regclass
+					</xsl:when>
+
+					<xsl:when test="contains(db:parameter, 'new_name') and db:type = 'name'">
+						'topo'
+					</xsl:when>
+					
+
 					<xsl:when test="contains(db:parameter, 'bounds')">
 						ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096))
 					</xsl:when>
@@ -632,6 +645,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(db:type, 'bigint[]')">
 						<xsl:text>ARRAY[ST_XMin(foo1.the_geom)::bigint]</xsl:text>
 					</xsl:when>
+
 					<xsl:when test="contains(db:type, 'geometry[]') and count($func/paramdef/db:type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1'">
 						ARRAY[foo1.the_geom]
 					</xsl:when>
@@ -683,10 +697,10 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(db:type, 'spheroid')">
 						<xsl:value-of select="$var_spheroid" />
 					</xsl:when>
-					<xsl:when test="contains(db:type, 'integer') and position() = 2">
+					<xsl:when test="contains(db:type, 'int') and position() = 2">
 						<xsl:value-of select="$var_integer1" />
 					</xsl:when>
-					<xsl:when test="contains(db:type, 'integer') or contains(db:type, 'int4')">
+					<xsl:when test="contains(db:type, 'int') or contains(db:type, 'int4')">
 						<xsl:value-of select="$var_integer2" />
 					</xsl:when>
 					<xsl:when test="contains(db:type, 'text')">

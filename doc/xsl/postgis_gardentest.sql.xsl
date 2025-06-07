@@ -11,7 +11,7 @@
 			using a garden variety of geometries.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>3.5.0</xsl:variable>
+	<xsl:variable name='testversion'>3.6.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable CG_Visibility CG_YMonotonePartition ST_AlphaShape ST_OptimalAlphaShape</xsl:variable>
 	<!--This is just a place holder to state functions not supported or tested separately -->
@@ -36,7 +36,7 @@
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
 	<xsl:variable name='var_geom_name'>the_geom</xsl:variable>
-	<xsl:variable name='var_logtable'>postgis_garden_log35</xsl:variable>
+	<xsl:variable name='var_logtable'>postgis_garden_log36</xsl:variable>
 	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp()
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
 		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
@@ -717,6 +717,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(db:parameter, 'NDR')">
 						'<xsl:value-of select="$var_NDRXDR" />'
 					</xsl:when>
+					<xsl:when test="(contains(db:parameter, 'target_version'))">
+						'<xsl:value-of select="$testversion" />'
+					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'gj_version')">
 						<xsl:value-of select="$var_gj_version" />
 					</xsl:when>
@@ -739,6 +742,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 						'<xsl:value-of select="$var_geom_name" />'
 					</xsl:when>
 
+					<xsl:when test="contains(db:parameter, 'relation_oid')">
+						'<xsl:value-of select="$var_logtable" />'::regclass
+					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'bounds')">
 						ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096))
 					</xsl:when>
@@ -762,11 +768,11 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(db:type, 'bigint[]')">
 						<xsl:text>ARRAY[ST_XMin(foo1.the_geom)::bigint]</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(db:type, 'geometry[]') and count($func/paramdef/db:type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1'">
-						ARRAY[foo1.the_geom]
+					<xsl:when test="contains(db:type, 'geometry[]') and count($func/paramdef/db:type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '2'">
+						ARRAY[foo2.the_geom]
 					</xsl:when>
 					<xsl:when test="contains(db:type, 'geometry[]')">
-						ARRAY[foo2.the_geom]
+						ARRAY[foo1.the_geom]
 					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'EWKT')">
 						<xsl:text>ST_AsEWKT(foo1.the_geom)</xsl:text>

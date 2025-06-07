@@ -1095,7 +1095,7 @@ SELECT topology.MakeTopologyPrecise(
 				<funcsynopsis>
 					<funcprototype>
                         <funcdef>topology <function>FindTopology</function></funcdef>
-                        <paramdef><type>TopoGeometry</type> <parameter>topogeom</parameter></paramdef>
+                        <paramdef><type>topogeometry</type> <parameter>topogeom</parameter></paramdef>
 					</funcprototype>
 					<funcprototype>
                         <funcdef>topology <function>FindTopology</function></funcdef>
@@ -1159,7 +1159,7 @@ SELECT name(findTopology('features.land_parcels', 'feature'));
 				<funcsynopsis>
 					<funcprototype>
                         <funcdef>topology.layer <function>FindLayer</function></funcdef>
-                        <paramdef><type>TopoGeometry</type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>topogeometry</type> <parameter>tg</parameter></paramdef>
 					</funcprototype>
 					<funcprototype>
                         <funcdef>topology.layer <function>FindLayer</function></funcdef>
@@ -3490,7 +3490,7 @@ faceid
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>geometry <function>ST_Simplify</function></funcdef>
-			<paramdef><type>TopoGeometry</type> <parameter>tg</parameter></paramdef>
+			<paramdef><type>topogeometry</type> <parameter>tg</parameter></paramdef>
 			<paramdef><type>float8</type> <parameter>tolerance</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>

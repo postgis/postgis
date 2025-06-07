@@ -133,8 +133,8 @@ DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
 CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, spatial_class text DEFAULT 'raster', func text, g1 text, g2 text, log_start timestamp, log_end timestamp, log_sql text);
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />_output;
 CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMARY KEY, log_output xml);
-						<xsl:apply-templates select="/db:book/db:chapter[@xml:id='RT_reference']" />
-            <xsl:apply-templates select="/db:book/db:chapter[@xml:id='RT_reference']/db:section[contains(@xml:id, 'Type')]" />
+			<xsl:apply-templates select="/db:book/db:chapter[@xml:id='RT_reference']" />
+           
         </xsl:template>
 	<xsl:template match='db:chapter'>
 <!-- define a table we call pgis_rgarden_mega that will contain a raster column with a band for all types of pixels we support -->
