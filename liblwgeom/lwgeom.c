@@ -1112,9 +1112,25 @@ lwgeom_is_unitary(const LWGEOM *geom)
 	case COMPOUNDTYPE:
 	case CIRCSTRINGTYPE:
 	case TRIANGLETYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
 		return LW_TRUE;
 		break;
 
+	default:
+		return LW_FALSE;
+	}
+}
+
+int
+lwgeom_has_patches(const LWGEOM *geom)
+{
+	switch (geom->type)
+	{
+	case TINTYPE:
+	case POLYHEDRALSURFACETYPE:
+		return LW_TRUE;
+		break;
 	default:
 		return LW_FALSE;
 	}
@@ -1156,7 +1172,7 @@ lwtype_is_collection(uint8_t type)
 	case MULTICURVETYPE:
 	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
-	case TINTYPE:
+  case TINTYPE:
 		return LW_TRUE;
 		break;
 
