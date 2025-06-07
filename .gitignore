@@ -55,6 +55,7 @@ doc/raster_comments.sql
 doc/postgis_gardentest_*.sql
 doc/raster_gardentest_*.sql
 doc/sfcgal_gardentest_*.sql
+doc/topology_gardentest_*.sql
 doc/tiger_geocoder_comments.sql
 doc/topology_comments.sql
 extensions/Makefile
