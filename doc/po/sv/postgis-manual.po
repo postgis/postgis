@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-06-08 12:38+0000\n"
+"PO-Revision-Date: 2025-06-08 13:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/sv/>\n"
@@ -197,7 +197,7 @@ msgid ""
 "contrib</filename> as specified during the build phase."
 msgstr ""
 "Att lägga till PostGIS-objekt och funktionsdefinitioner i din databas görs "
-"genom att ladda de olika sql-filerna som finns i <filename>[prefix]/share/"
+"genom att läsa in de olika sql-filerna som finns i <filename>[prefix]/share/"
 "contrib</filename> enligt specifikationerna under byggfasen."
 
 #. Tag: para
@@ -222,9 +222,9 @@ msgid ""
 "to perform ST_Transform() operations on geometries."
 msgstr ""
 "För en fullständig uppsättning EPSG-koordinatsystemdefinitionsidentifierare "
-"kan du också ladda definitionsfilen <filename>spatial_ref_sys.sql</filename> "
-"och fylla i tabellen <varname>spatial_ref_sys</varname>. Detta gör att du "
-"kan utföra ST_Transform()-operationer på geometrier."
+"kan du också läsa in definitionsfilen <filename>spatial_ref_sys.sql</"
+"filename> och fylla i tabellen <varname>spatial_ref_sys</varname>. Detta gör "
+"att du kan utföra ST_Transform()-operationer på geometrier."
 
 #. Tag: para
 #, no-c-format
@@ -450,7 +450,7 @@ msgid ""
 "Load them all in turn, starting from <filename>postgis_upgrade.sql</"
 "filename>."
 msgstr ""
-"Ladda dem alla i tur och ordning, med början från <filename>postgis_upgrade."
+"Läs in dem alla i tur och ordning, med början från <filename>postgis_upgrade."
 "sql</filename>."
 
 #. Tag: para
@@ -602,11 +602,11 @@ msgid ""
 msgstr ""
 "Om din databas är riktigt gammal eller om du vet att du har använt "
 "funktioner som inte längre används i dina vyer och funktioner, kan du behöva "
-"ladda <filename>legacy.sql</filename> för att alla dina funktioner och vyer "
-"etc. ska komma tillbaka på rätt sätt. Gör detta endast om det _verkligen_ "
-"behövs. Överväg att uppgradera dina vyer och funktioner innan du dumpar dem, "
-"om möjligt. De föråldrade funktionerna kan senare tas bort genom att ladda "
-"<filename>uninstall_legacy.sql</filename>."
+"läsa in <filename>legacy.sql</filename> för att alla dina funktioner och "
+"vyer etc. ska komma tillbaka på rätt sätt. Gör detta endast om det "
+"_verkligen_ behövs. Överväg att uppgradera dina vyer och funktioner innan du "
+"dumpar dem, om möjligt. De föråldrade funktionerna kan senare tas bort genom "
+"att läsa in <filename>uninstall_legacy.sql</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -636,12 +636,12 @@ msgid ""
 "<filename>uninstall_legacy.sql</filename>."
 msgstr ""
 "Några av dina vyer eller funktioner använder sig av föråldrade PostGIS-"
-"objekt. För att åtgärda detta kan du försöka ladda <filename>legacy.sql-"
+"objekt. För att åtgärda detta kan du försöka läsa in <filename>legacy.sql-"
 "skriptet</filename> före återställningen eller så måste du återställa till "
 "en version av PostGIS som fortfarande innehåller dessa objekt och försöka "
 "migrera igen efter att ha portat din kod. Om <filename>legacy.sql</filename> "
 "fungerar för dig, glöm inte att fixa din kod så att den slutar använda "
-"föråldrade funktioner och ta bort dem genom att ladda "
+"föråldrade funktioner och ta bort dem genom att läsa in "
 "<filename>uninstall_legacy.sql</filename>."
 
 #. Tag: para
@@ -1139,8 +1139,9 @@ msgid ""
 "is very important especially when designing your own functions."
 msgstr ""
 "Detta avsnitt listar PostgreSQL-datatyperna installerade av Address "
-"Standardizer-tillägget. Observera att vi beskriver gjutbeteendet för dessa, "
-"vilket är mycket viktigt, särskilt när du utformar dina egna funktioner."
+"Standardizer-tillägget. Observera att vi beskriver casting-beteendet för "
+"dessa, vilket är mycket viktigt, särskilt när du utformar dina egna "
+"funktioner."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -1928,7 +1929,7 @@ msgstr ""
 "En gaz-tabell (förkortning för gazeteer) används för att standardisera "
 "ortnamn och associera inmatningen med <xref linkend=\"rule_input_tokens\"/> "
 "och (b) standardiserade representationer. Om du t.ex. befinner dig i USA kan "
-"du ladda dessa med delstatsnamn och tillhörande förkortningar."
+"du läsa in dessa med delstatsnamn och tillhörande förkortningar."
 
 #. Tag: para
 #, no-c-format
@@ -2590,12 +2591,12 @@ msgid ""
 msgstr ""
 "<link xlink:href=\"http://wiki.openstreetmap.org/wiki/Nominatim\">Nominatim</"
 "link> använder OpenStreetMap gazeteer-formaterade data. Det kräver osm2pgsql "
-"för att ladda data, PostgreSQL 8.4+ och PostGIS 1.5+ för att fungera. Det är "
-"förpackat som ett webbtjänstgränssnitt och verkar utformat för att anropas "
-"som en webbtjänst. Precis som tigergekodern har den både en geokodare och en "
-"omvänd geokodarkomponent. Från dokumentationen är det oklart om det har ett "
-"rent SQL-gränssnitt som tigergekodern, eller om en hel del av logiken "
-"implementeras i webbgränssnittet."
+"för att läsa in data, PostgreSQL 8.4+ och PostGIS 1.5+ för att fungera. Det "
+"är förpackat som ett webbtjänstgränssnitt och verkar utformat för att "
+"anropas som en webbtjänst. Precis som tigergekodern har den både en "
+"geokodare och en omvänd geokodarkomponent. Från dokumentationen är det "
+"oklart om det har ett rent SQL-gränssnitt som tigergekodern, eller om en hel "
+"del av logiken implementeras i webbgränssnittet."
 
 #. Tag: para
 #, no-c-format
@@ -3080,7 +3081,7 @@ msgid ""
 msgstr ""
 "Den använder unzip på Linux (7-zip på Windows som standard) och wget för att "
 "göra nedladdningen. Den använder <xref linkend=\"shp2pgsql_usage\"/> för att "
-"ladda in data. Observera att den minsta enhet som den gör är en hel stat. "
+"läsa in in data. Observera att den minsta enhet som den gör är en hel stat. "
 "Den kommer endast att bearbeta filerna i mapparna staging och temp."
 
 #. Tag: para
@@ -3203,8 +3204,8 @@ msgid ""
 "Availability: 2.0.0 to support Tiger 2010 structured data and load census "
 "tract (tract), block groups (bg), and blocks (tabblocks) tables ."
 msgstr ""
-"Tillgänglighet: 2.0.0 för att stödja Tiger 2010-strukturerade data och ladda "
-"tabeller för folkräkningstrakt (tract), blockgrupper (bg) och block "
+"Tillgänglighet: 2.0.0 för att stödja Tiger 2010-strukturerade data och läsa "
+"in tabeller för folkräkningstrakt (tract), blockgrupper (bg) och block "
 "(tabblocks)."
 
 #. Tag: para
@@ -3342,7 +3343,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Generate script script to load nation data Windows."
-msgstr "Generera skriptskript för att ladda nationsdata Windows."
+msgstr "Generera skriptskript för att läsa in nationsdata Windows."
 
 #. Tag: para
 #, no-c-format
@@ -3980,7 +3981,7 @@ msgid ""
 "load data into."
 msgstr ""
 "<varname>topo_name</varname> Namnet på en befintlig PostGIS-topologi att "
-"ladda data till."
+"läsa in data till."
 
 #. Tag: para
 #, no-c-format
@@ -4206,7 +4207,7 @@ msgid ""
 "especially when designing your own functions."
 msgstr ""
 "Detta avsnitt listar PostgreSQL-datatyper installerade av PostGIS Topology. "
-"Observera att vi beskriver gjutningsbeteendet för dessa, vilket är mycket "
+"Observera att vi beskriver casting-beteendet för dessa, vilket är mycket "
 "viktigt, särskilt när du utformar dina egna funktioner."
 
 #. Tag: refpurpose
@@ -4301,7 +4302,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Casting Behavior"
-msgstr "Gjutbeteende"
+msgstr "Casting-beteende"
 
 #. Tag: para
 #, no-c-format
@@ -5675,7 +5676,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Load a geometry into an existing topology, snapping and splitting as needed."
-msgstr "Ladda en geometri i en befintlig topologi, snappa och dela efter behov."
+msgstr ""
+"Läs in en geometri i en befintlig topologi, snappa och dela efter behov."
 
 #. Tag: para
 #, no-c-format
@@ -7990,9 +7992,9 @@ msgid ""
 "AFTER resolving the naming conflicts or to link layers to a different "
 "topology (say a spatially-simplified version of the starting topology)."
 msgstr ""
-"SQL för att endast ladda och länka lager till en namngiven topologi kan "
+"SQL för att endast läsa in och länka lager till en namngiven topologi kan "
 "genereras med hjälp av omkopplaren <code>--only-layers</code>. Detta kan "
-"vara användbart för att ladda lager EFTER att namnkonflikterna har lösts "
+"vara användbart för att läsa in lager EFTER att namnkonflikterna har lösts "
 "eller för att länka lager till en annan topologi (t.ex. en spatialt "
 "förenklad version av starttopologin)."
 
@@ -9459,10 +9461,10 @@ msgid ""
 "minutes), takes up quite a bit of disk space, and is not used that often."
 msgstr ""
 "Från och med PostGIS 2.4.1 har laddningssteget Zip code-5 digit tabulation "
-"area <varname>zcta5</varname> reviderats för att ladda aktuella zcta5-data "
+"area <varname>zcta5</varname> reviderats för att läsa in aktuella zcta5-data "
 "och är en del av <xref linkend=\"Loader_Generate_Nation_Script\"/> när det "
 "är aktiverat. Det är avstängt som standard eftersom det tar ganska lång tid "
-"att ladda (20 till 60 minuter), tar upp en hel del diskutrymme och inte "
+"att läsa in (20 till 60 minuter), tar upp en hel del diskutrymme och inte "
 "används så ofta."
 
 #. Tag: para
@@ -9586,8 +9588,8 @@ msgid ""
 "For each state you want to load data for, generate a state script <xref "
 "linkend=\"Loader_Generate_Script\"/>."
 msgstr ""
-"För varje delstat som du vill ladda data för genererar du ett delstatsskript "
-"<xref linkend=\"Loader_Generate_Script\"/>."
+"För varje delstat som du vill läsa in data för genererar du ett "
+"delstatsskript <xref linkend=\"Loader_Generate_Script\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -9600,8 +9602,8 @@ msgid ""
 "After you are done loading all data or at a stopping point, it's a good idea "
 "to analyze all the tiger tables to update the stats (include inherited stats)"
 msgstr ""
-"När du är klar med att ladda alla data eller vid en stopppunkt är det en bra "
-"idé att analysera alla tigertabeller för att uppdatera statistiken ("
+"När du är klar med att läsa in alla data eller vid en stopppunkt är det en "
+"bra idé att analysera alla tigertabeller för att uppdatera statistiken ("
 "inklusive ärvd statistik)"
 
 #. Tag: title
@@ -9685,7 +9687,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "In order to be able to load data you'll need the following tools:"
-msgstr "För att kunna ladda data behöver du följande verktyg:"
+msgstr "För att kunna läsa in data behöver du följande verktyg:"
 
 #. Tag: para
 #, no-c-format
@@ -9826,7 +9828,7 @@ msgid ""
 "Generate a nation load script with this SELECT statement as detailed in "
 "<xref linkend=\"Loader_Generate_Nation_Script\"/>"
 msgstr ""
-"Generera ett script för att ladda en nation med denna SELECT-sats enligt "
+"Generera ett script för att läsa in en nation med denna SELECT-sats enligt "
 "beskrivningen i <xref linkend=\"Loader_Generate_Nation_Script\"/>"
 
 #. Tag: emphasis
@@ -12085,7 +12087,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Geometry Accessors"
-msgstr "Geometri Accessorer"
+msgstr "Geometriåtkomst"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -16288,7 +16290,7 @@ msgstr ", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>"
 #. Tag: title
 #, no-c-format
 msgid "Coverages"
-msgstr "Försäkringsskydd"
+msgstr "Täckning"
 
 #. Tag: para
 #, no-c-format
@@ -29362,8 +29364,8 @@ msgid ""
 "For loading rasters from raster files please refer to <xref "
 "linkend=\"RT_Loading_Rasters\"/>"
 msgstr ""
-"För att ladda raster från rasterfiler, se <xref linkend=\"RT_Loading_Rasters"
-"\"/>"
+"För att läsa in raster från rasterfiler, se <xref linkend="
+"\"RT_Loading_Rasters\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -29853,7 +29855,7 @@ msgid ""
 msgstr ""
 "Denna funktion härleder begränsningarna från de data som redan finns i "
 "tabellen. För att den ska fungera måste du därför först skapa rasterkolumnen "
-"och sedan ladda den med data."
+"och sedan läsa in den med data."
 
 #. Tag: para
 #, no-c-format
@@ -29862,7 +29864,7 @@ msgid ""
 "constraints, you may want to run the DropRasterConstraints if the extent of "
 "your data has changed."
 msgstr ""
-"Om du behöver ladda mer data i dina tabeller efter att du redan har "
+"Om du behöver läsa in mer data i dina tabeller efter att du redan har "
 "tillämpat begränsningar kan du köra DropRasterConstraints om omfattningen av "
 "dina data har ändrats."
 
@@ -29908,8 +29910,9 @@ msgid ""
 msgstr ""
 "Tar bort PostGIS-rasterbegränsningar som hänvisar till en rastertabellkolumn "
 "som lades till av <xref linkend=\"RT_AddRasterConstraints\"/>. Användbart om "
-"du behöver ladda mer data eller uppdatera dina rasterkolumndata. Du behöver "
-"inte göra detta om du vill bli av med en rastertabell eller en rasterkolumn."
+"du behöver läsa in mer data eller uppdatera dina rasterkolumndata. Du "
+"behöver inte göra detta om du vill bli av med en rastertabell eller en "
+"rasterkolumn."
 
 #. Tag: para
 #, no-c-format
@@ -40552,7 +40555,7 @@ msgid ""
 "solid, the input geometry must be a closed Polyhedral Surface or a closed "
 "TIN."
 msgstr ""
-"Gjut geometrin till en solid. Ingen kontroll utförs. För att få en giltig "
+"Casta geometrin till en solid. Ingen kontroll utförs. För att få en giltig "
 "solid måste indatageometrin vara en sluten polyedrisk yta eller en sluten "
 "TIN."
 
@@ -43508,7 +43511,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Geometry/Geography/Box Data Types"
-msgstr "PostGIS Geometri/Geografi/Box Datatyper"
+msgstr "PostGIS-datatyper Geometry/Geography/Box"
 
 #. Tag: para
 #, no-c-format
@@ -43531,9 +43534,9 @@ msgid ""
 "automatic conversion of a function argument to a type supported by the "
 "function."
 msgstr ""
-"Varje datatyp beskriver sitt typcastingbeteende. En <link xlink:href=\"https"
-"://www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-"
-"CASTS\">typgjutning</link> konverterar värden av en datatyp till en annan "
+"Varje datatyp beskriver sitt type casting-beteende. En <link xlink:href="
+"\"https://www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-"
+"TYPE-CASTS\">type cast</link> konverterar värden av en datatyp till en annan "
 "typ. PostgreSQL tillåter att definiera casting-beteende för anpassade typer, "
 "tillsammans med de funktioner som används för att konvertera typvärden. "
 "Casts kan ha <emphasis role=\"bold\">automatiskt</emphasis> beteende, vilket "
@@ -44169,7 +44172,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Version Functions"
-msgstr "Version Funktioner"
+msgstr "Versionsfunktioner"
 
 #. Tag: para
 #, no-c-format
@@ -46254,7 +46257,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "When to use the Geography data type"
-msgstr "När ska datatypen Geografi användas"
+msgstr "När ska datatypen Geography användas"
 
 #. Tag: para
 #, no-c-format
@@ -46315,7 +46318,7 @@ msgid ""
 msgstr ""
 "Om du inte förstår projektioner, inte vill lära dig mer om dem och är beredd "
 "att acceptera de begränsningar i funktionalitet som finns i GEOGRAPHY, kan "
-"det vara lättare för dig att använda GEOGRAPHY än GEOMETRY. Ladda helt "
+"det vara lättare för dig att använda GEOGRAPHY än GEOMETRY. Läs in helt "
 "enkelt upp dina data som longitud/latitud och fortsätt därifrån."
 
 #. Tag: para
@@ -46334,7 +46337,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Geography Advanced FAQ"
-msgstr "Geografi avancerad FAQ"
+msgstr "Avancerade frågor och svar om Geography"
 
 #. Tag: para
 #, no-c-format
@@ -47043,7 +47046,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "SPATIAL_REF_SYS Table"
-msgstr "SPATIAL_REF_SYS Tabell"
+msgstr "Tabellen SPATIAL_REF_SYS"
 
 #. Tag: para
 #, no-c-format
@@ -47406,7 +47409,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "GEOMETRY_COLUMNS View"
-msgstr "GEOMETRY_COLUMNS Visa"
+msgstr "Visa GEOMETRY_COLUMNS"
 
 #. Tag: para
 #, no-c-format
@@ -47560,7 +47563,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Loading Spatial Data"
-msgstr "Ladda spatial data"
+msgstr "Läs in spatial data"
 
 #. Tag: para
 #, no-c-format
@@ -47578,7 +47581,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Using SQL to Load Data"
-msgstr "Använda SQL för att ladda data"
+msgstr "Använda SQL för att läsa in data"
 
 #. Tag: para
 #, no-c-format
@@ -47610,7 +47613,7 @@ msgstr "SQL-filen kan laddas in i PostgreSQL med <code>psql</code>:"
 #. Tag: title
 #, no-c-format
 msgid "Using the Shapefile Loader"
-msgstr "Använda Shapefile Loader"
+msgstr "Använda Shapefile-inläsaren"
 
 #. Tag: para
 #, no-c-format
@@ -47680,7 +47683,7 @@ msgid ""
 msgstr ""
 "Producerar endast SQL-koden för tabellskapande, utan att lägga till några "
 "faktiska data. Detta kan användas om du helt vill separera stegen för att "
-"skapa tabeller och ladda data."
+"skapa tabeller och läsa in data."
 
 #. Tag: para
 #, no-c-format
@@ -47695,7 +47698,7 @@ msgid ""
 "SQL format. Use this for very large data sets."
 msgstr ""
 "Använd PostgreSQL \"dump\" -formatet för utdata. Detta kan kombineras med -"
-"a, -c och -d. Det är mycket snabbare att ladda än standard SQL-formatet "
+"a, -c och -d. Det är mycket snabbare att läsa in än standard SQL-formatet "
 "\"insert\". Använd detta för mycket stora datamängder."
 
 #. Tag: para
@@ -47794,7 +47797,7 @@ msgid ""
 "\"dump\" format always uses a transaction."
 msgstr ""
 "Exekvera varje sats för sig, utan att använda en transaktion. Detta gör det "
-"möjligt att ladda majoriteten av bra data när det finns några dåliga "
+"möjligt att läsa in majoriteten av bra data när det finns några dåliga "
 "geometrier som genererar fel. Observera att detta inte kan användas med "
 "flaggan -D eftersom \"dump\"-formatet alltid använder en transaktion."
 
@@ -47827,9 +47830,10 @@ msgid ""
 "the attribute data and no geometry."
 msgstr ""
 "-n Importera endast DBF-fil. Om dina data inte har någon motsvarande "
-"shapefil kommer den automatiskt att växla till detta läge och bara ladda dbf-"
-"filen. Så att ställa in denna flagga behövs bara om du har en fullständig "
-"shapefiluppsättning och du bara vill ha attributdata och ingen geometri."
+"shapefil kommer den automatiskt att växla till detta läge och bara läsa in "
+"dbf-filen. Så att ställa in denna flagga behövs bara om du har en "
+"fullständig shapefiluppsättning och du bara vill ha attributdata och ingen "
+"geometri."
 
 #. Tag: para
 #, no-c-format
@@ -49660,7 +49664,7 @@ msgstr "Rasterdatahantering, frågor och applikationer"
 #. Tag: title
 #, no-c-format
 msgid "Loading and Creating Rasters"
-msgstr "Ladda och skapa raster"
+msgstr "Läs in och skapa raster"
 
 #. Tag: para
 #, no-c-format
@@ -49676,7 +49680,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Using raster2pgsql to load rasters"
-msgstr "Använda raster2pgsql för att ladda raster"
+msgstr "Använda raster2pgsql för att läsa in raster"
 
 #. Tag: para
 #, no-c-format
@@ -49686,9 +49690,9 @@ msgid ""
 "raster table. It is capable of loading folders of raster files as well as "
 "creating overviews of rasters."
 msgstr ""
-"<varname>Raster2pgsql</varname> är en körbar rasterladdare som laddar GDAL-"
-"stödda rasterformat till SQL som lämpar sig för laddning i en PostGIS-"
-"rastertabell. Den kan ladda mappar med rasterfiler samt skapa översikter "
+"<varname>Raster2pgsql</varname> är en körbar rasterläsa inre som läsa inr "
+"GDAL-stödda rasterformat till SQL som lämpar sig för laddning i en PostGIS-"
+"rastertabell. Den kan läsa in mappar med rasterfiler samt skapa översikter "
 "över raster."
 
 #. Tag: para
@@ -49764,7 +49768,7 @@ msgid ""
 "of table insert. (-F) Include a field called filename to hold the name of "
 "the file the tiles were cut from."
 msgstr ""
-"Ladda raster Massachusetts statliga planmätare flygplattor i ett schema som "
+"Läs in raster Massachusetts statliga planmätare flygplattor i ett schema som "
 "heter <varname>aerial</varname> och skapa en fullständig vy, 2 och 4 nivå "
 "översiktstabeller, använd kopieringsläge för att infoga (ingen "
 "mellanliggande fil bara direkt till db) och -e tvingar inte allt i en "
@@ -50506,7 +50510,7 @@ msgid ""
 "linkend=\"RT_AddRasterConstraints\"/> after load."
 msgstr ""
 "<varname>extent</varname> Detta är omfattningen av alla rasterrader i din "
-"rasteruppsättning. Om du planerar att ladda mer data som kommer att ändra "
+"rasteruppsättning. Om du planerar att läsa in mer data som kommer att ändra "
 "uppsättningens utsträckning, bör du köra funktionen <xref linkend="
 "\"RT_DropRasterConstraints\"/> före laddningen och sedan tillämpa "
 "begränsningar på nytt med <xref linkend=\"RT_AddRasterConstraints\"/> efter "
@@ -50698,7 +50702,7 @@ msgstr ""
 "<varname>overview_factor</varname> - detta är pyramidnivån för "
 "översiktstabellen. Ju högre siffra desto lägre upplösning på tabellen. "
 "raster2pgsql kommer, om den får en mapp med bilder, att beräkna översikten "
-"för varje bildfil och ladda den separat. Nivå 1 antas alltid vara "
+"för varje bildfil och läsa in den separat. Nivå 1 antas alltid vara "
 "originalfilen. Nivå 2 är att varje kakel representerar 4 av originalet. Så "
 "om du till exempel har en mapp med bildfiler på 5000x5000 pixlar som du valt "
 "att dela upp i 125x125, kommer din bastabell för varje bildfil att ha "
