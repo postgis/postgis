@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-06-08 10:47+0000\n"
+"PO-Revision-Date: 2025-06-08 12:38+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/sv/>\n"
@@ -441,7 +441,7 @@ msgid ""
 "can list them all with:"
 msgstr ""
 "När du har kompilerat och installerat (make install) bör du hitta en "
-"uppsättning <filename>*_upgrade.sql-filer</filename> i "
+"uppsättning <filename>*_upgrade.sql</filename>-filer i "
 "installationsmapparna. Du kan lista dem alla med:"
 
 #. Tag: para
@@ -510,9 +510,9 @@ msgid ""
 "Notes</link> appendix reports for each version whether you need a dump/"
 "reload (HARD UPGRADE) to upgrade."
 msgstr ""
-"Med HÅRD UPGRADERING menar vi fullständig dumpning/omladdning av PostGIS-"
-"aktiverade databaser. Du behöver en HÅRD UPGRADERING när PostGIS-objektens "
-"interna lagring ändras eller när SOFT UPGRADERING inte är möjlig. Bilagan "
+"Med HÅRD UPPGRADERING menar vi fullständig dumpning/omladdning av PostGIS-"
+"aktiverade databaser. Du behöver en HÅRD UPPGRADERING när PostGIS-objektens "
+"interna lagring ändras eller när MJUK UPPGRADERING inte är möjlig. Bilagan "
 "<link linkend=\"release_notes\">Release Notes</link> rapporterar för varje "
 "version om du behöver en dumpning/omladdning (HARD UPGRADE) för att "
 "uppgradera."
@@ -786,7 +786,7 @@ msgstr "Dessa inställningar konfigureras i <code>postgresql.conf:</code>:"
 #. Tag: link
 #, no-c-format
 msgid "constraint_exclusion"
-msgstr "begränsning_uteslutning"
+msgstr "constraint_exclusion"
 
 #. Tag: para
 #, no-c-format
@@ -810,7 +810,7 @@ msgstr ""
 #. Tag: link
 #, no-c-format
 msgid "shared_buffers"
-msgstr "delade_buffertar"
+msgstr "shared_buffers"
 
 #. Tag: para
 #, no-c-format
@@ -924,7 +924,7 @@ msgstr ""
 #. Tag: link
 #, no-c-format
 msgid "max_parallel_workers_per_gather"
-msgstr "max_parallella_arbetare_per_samlare"
+msgstr "max_parallel_workers_per_gather"
 
 #. Tag: para
 #, no-c-format
@@ -4561,8 +4561,8 @@ msgid ""
 "Valid <varname>feature_type</varname>s are: POINT, MULTIPOINT, LINE, "
 "MULTILINE, POLYGON, MULTIPOLYGON, COLLECTION"
 msgstr ""
-"Giltiga <varname>feature_types</varname>är: PUNKT, MULTIPUNKT, LINJE, "
-"MULTILINJE, POLYGON, MULTIPOLYGON, SAMLING"
+"Giltiga <varname>feature_types</varname>är: PUNKT, MULTIPOINT, LINE, "
+"MULTILINE, POLYGON, MULTIPOLYGON, COLLECTION"
 
 #. Tag: para
 #, no-c-format
@@ -5592,7 +5592,7 @@ msgid ""
 "Adds a linestring to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces."
 msgstr ""
-"Lägger till en linjestring till en befintlig topologi med hjälp av en "
+"Lägger till en linestrings till en befintlig topologi med hjälp av en "
 "tolerans och eventuellt delning av befintliga kanter/ytor."
 
 #. Tag: para
@@ -5604,10 +5604,10 @@ msgid ""
 "existing nodes or edges within given tolerance. Existing edges and faces may "
 "be split by the line. New nodes and faces may be added."
 msgstr ""
-"Lägger till en linjestring till en befintlig topologi och returnerar en "
+"Lägger till en linestrings till en befintlig topologi och returnerar en "
 "uppsättning signerade kantidentifierare som bildar den (negativa "
 "identifierare innebär att kanten går i motsatt riktning mot den inmatade "
-"linjestringen). Den angivna linjen kommer att fästa vid befintliga noder "
+"linestringsen). Den angivna linjen kommer att fästa vid befintliga noder "
 "eller kanter inom given tolerans. Befintliga kanter och ytor kan delas av "
 "linjen. Nya noder och ytor kan läggas till."
 
@@ -6882,9 +6882,9 @@ msgid ""
 "specified linestring geometry and returns the edgeid of the new (or "
 "existing) edge."
 msgstr ""
-"Lägger till en linjestringskant i tabellen edge och associerade start- och "
+"Lägger till en linestringskant i tabellen edge och associerade start- och "
 "slutpunkter i tabellen point nodes i det angivna topologischemat med hjälp "
-"av den angivna linjestringgeometrin och returnerar edgeid för den nya (eller "
+"av den angivna linestringsgeometrin och returnerar edgeid för den nya (eller "
 "befintliga) kanten."
 
 #. Tag: para
@@ -6897,7 +6897,7 @@ msgid ""
 msgstr ""
 "Lägger till en edge i edge-tabellen och associerade noder i nodes-tabellen i "
 "det angivna <varname>toponame-schemat</varname> med hjälp av den angivna "
-"geometrin för linjestring och returnerar edgeid för den nya eller befintliga "
+"geometrin för linestrings och returnerar edgeid för den nya eller befintliga "
 "posten. Den nyligen tillagda kanten har \"universe\"-yta på båda sidor och "
 "länkar till sig själv."
 
@@ -6909,7 +6909,7 @@ msgid ""
 "edge is not added."
 msgstr ""
 "Om <varname>aline-geometrin</varname> korsar, överlappar, innehåller eller "
-"är innesluten av en befintlig linjestringskant, så kastas ett fel och kanten "
+"är innesluten av en befintlig linestringskant, så kastas ett fel och kanten "
 "läggs inte till."
 
 #. Tag: para
@@ -9832,7 +9832,7 @@ msgstr ""
 #. Tag: emphasis
 #, no-c-format
 msgid "For windows"
-msgstr "För fönster"
+msgstr "För Windows"
 
 #. Tag: emphasis
 #, no-c-format
@@ -10094,7 +10094,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Core Contributors Present"
-msgstr "Huvudbidragare närvarande"
+msgstr "Nuvarande centrala bidragare"
 
 #. Tag: term
 #, no-c-format
@@ -12792,7 +12792,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.19"
 #. Tag: para
 #, no-c-format
 msgid "Envelope of a point and linestring."
-msgstr "Hölje av en punkt och en linjestring."
+msgstr "Hölje av en punkt och en linestrings."
 
 #. Tag: para
 #, no-c-format
@@ -13081,7 +13081,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "GEOMETRYCOLLECTION"
-msgstr "GEOMETRISAMLING"
+msgstr "GEOMETRYCOLLECTION"
 
 #. Tag: para
 #, no-c-format
@@ -13175,8 +13175,8 @@ msgid ""
 "still get a true return by passing a single closed linestring no matter its "
 "orientation."
 msgstr ""
-"Slutna linjestrings betraktas inte som polygonala komponenter, så du skulle "
-"fortfarande få ett sant resultat genom att skicka en enda sluten linjestring "
+"Slutna linestrings betraktas inte som polygonala komponenter, så du skulle "
+"fortfarande få ett sant resultat genom att skicka en enda sluten linestrings "
 "oavsett dess orientering."
 
 #. Tag: para
@@ -13561,9 +13561,9 @@ msgid ""
 "purpose and works with many geometry types."
 msgstr ""
 "Returnerar antalet punkter i ett ST_LineString- eller ST_CircularString-"
-"värde. Före 1.4 fungerar endast med linjestringar enligt specifikationerna. "
+"värde. Före 1.4 fungerar endast med linestringsar enligt specifikationerna. "
 "Från 1.4 och framåt är detta ett alias för ST_NPoints som returnerar antalet "
-"hörn för inte bara linjestringar. Överväg att använda ST_NPoints istället "
+"hörn för inte bara linestringsar. Överväg att använda ST_NPoints istället "
 "som är mångsidigt och fungerar med många geometrityper."
 
 #. Tag: para
@@ -13629,10 +13629,10 @@ msgid ""
 "LineString, so that -1 is the last point. Returns NULL if there is no "
 "linestring in the geometry."
 msgstr ""
-"Returnerar den N:te punkten i en enkel linjestring eller cirkulär "
-"linjestring i geometrin. Negativa värden räknas baklänges från slutet av "
+"Returnerar den N:te punkten i en enkel linestrings eller cirkulär "
+"linestrings i geometrin. Negativa värden räknas baklänges från slutet av "
 "LineString, så att -1 är den sista punkten. Returnerar NULL om det inte "
-"finns någon linjestring i geometrin."
+"finns någon linestrings i geometrin."
 
 #. Tag: para
 #, no-c-format
@@ -15173,7 +15173,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Create a 3D line string from a 3D MultiPoint"
-msgstr "Skapa en 3D-linjestring från en 3D MultiPoint"
+msgstr "Skapa en 3D-linestrings från en 3D MultiPoint"
 
 #. Tag: para
 #, no-c-format
@@ -16621,7 +16621,7 @@ msgstr "1 == PUNKT"
 #. Tag: para
 #, no-c-format
 msgid "2 == LINESTRING"
-msgstr "2 == LINJESTRING"
+msgstr "2 == LINESTRING"
 
 #. Tag: para
 #, no-c-format
@@ -17542,7 +17542,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Remove a point from a linestring."
-msgstr "Ta bort en punkt från en linjestring."
+msgstr "Ta bort en punkt från en linestrings."
 
 #. Tag: para
 #, no-c-format
@@ -17551,7 +17551,7 @@ msgid ""
 "turning a closed line (ring) into an open linestring."
 msgstr ""
 "Tar bort en punkt från en LineString, givet dess index (0-baserat). "
-"Användbar för att förvandla en sluten linje (ring) till en öppen linjestring."
+"Användbar för att förvandla en sluten linje (ring) till en öppen linestrings."
 
 #. Tag: para
 #, no-c-format
@@ -17749,7 +17749,7 @@ msgstr ", <xref linkend=\"ST_Intersection\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Removes small parts (polygon rings or linestrings) of a geometry."
-msgstr "Tar bort små delar (polygonringar eller linjestrings) av en geometri."
+msgstr "Tar bort små delar (polygonringar eller linestrings) av en geometri."
 
 #. Tag: para
 #, no-c-format
@@ -17758,7 +17758,7 @@ msgid ""
 "interior polygon rings, or linestrings)."
 msgstr ""
 "Returnerar en <xref linkend=\"geometry\"/> utan små delar (yttre eller inre "
-"polygonringar eller linjestrings)."
+"polygonringar eller linestrings)."
 
 #. Tag: para
 #, no-c-format
@@ -17858,7 +17858,7 @@ msgid ""
 "For linestring types, evaluation is done for each linestring which can lead "
 "to one of the following results:"
 msgstr ""
-"För linjestringstyper görs utvärderingen för varje linjestring, vilket kan "
+"För linestringstyper görs utvärderingen för varje linestrings, vilket kan "
 "leda till något av följande resultat:"
 
 #. Tag: para
@@ -17877,7 +17877,7 @@ msgid ""
 "a MULTILINESTRING with a reduced number of linestrings (having possibly less "
 "vertices), or"
 msgstr ""
-"en MULTILINESTRING med ett reducerat antal linjestringar (som eventuellt har "
+"en MULTILINESTRING med ett reducerat antal linestringsar (som eventuellt har "
 "färre toppar), eller"
 
 #. Tag: para
@@ -18040,7 +18040,7 @@ msgstr "En geografisk linje segmenterad längs en storcirkelbåge"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Replace point of a linestring with a given point."
-msgstr "Ersätt punkten i en linjestring med en given punkt."
+msgstr "Ersätt punkten i en linestrings med en given punkt."
 
 #. Tag: para
 #, no-c-format
@@ -18050,7 +18050,7 @@ msgid ""
 "useful in triggers when trying to maintain relationship of joints when one "
 "vertex moves."
 msgstr ""
-"Ersätter punkt N i linjestring med given punkt. Index är 0-baserat. Negativa "
+"Ersätter punkt N i linestrings med given punkt. Index är 0-baserat. Negativa "
 "index räknas baklänges, så att -1 är sista punkten. Detta är särskilt "
 "användbart i triggers när man försöker bibehålla relationen mellan lederna "
 "när en vertex flyttas."
@@ -18286,7 +18286,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "A multipolygon shown with a linestring (before any snapping)"
-msgstr "En multipolygon som visas med en linjestring (innan någon snapping)"
+msgstr "En multipolygon som visas med en linestrings (innan någon snapping)"
 
 #. Tag: para
 #, no-c-format
@@ -18294,8 +18294,8 @@ msgid ""
 "A multipolygon snapped to linestring to tolerance: 1.01 of distance. The new "
 "multipolygon is shown with reference linestring"
 msgstr ""
-"En multipolygon knäpps till linjestring med tolerans: 1,01 av avståndet. Den "
-"nya multipolygonen visas med referenslinjestring"
+"En multipolygon knäpps till linestrings med tolerans: 1,01 av avståndet. Den "
+"nya multipolygonen visas med referenslinestrings"
 
 #. Tag: para
 #, no-c-format
@@ -18303,8 +18303,8 @@ msgid ""
 "A multipolygon snapped to linestring to tolerance: 1.25 of distance. The new "
 "multipolygon is shown with reference linestring"
 msgstr ""
-"En multipolygon knäpps till linjestring med toleransen: 1,25 av avståndet. "
-"Den nya multipolygonen visas med referenslinjestring"
+"En multipolygon knäpps till linestrings med toleransen: 1,25 av avståndet. "
+"Den nya multipolygonen visas med referenslinestrings"
 
 #. Tag: para
 #, no-c-format
@@ -18877,7 +18877,7 @@ msgid ""
 "linestrings as a MultiLineString Well-Known text representation.</refpurpose>"
 msgstr ""
 "<refpurpose>Konstruera en polygon givet en godtycklig samling av slutna "
-"linjestrings som en MultiLineString Well-Known "
+"linestrings som en MultiLineString Well-Known "
 "textrepresentation.</refpurpose>"
 
 #. Tag: para
@@ -18887,7 +18887,7 @@ msgid ""
 "linestrings as a MultiLineString Well-Known text representation.</para>"
 msgstr ""
 "<para>Konstruera en polygon givet en godtycklig samling av slutna "
-"linjestrings som en MultiLineString Well-Known textrepresentation.</para>"
+"linestrings som en MultiLineString Well-Known textrepresentation.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -18916,9 +18916,8 @@ msgid ""
 "Construct a MultiPolygon given an arbitrary collection of closed linestrings "
 "as a MultiLineString text representation Well-Known text representation."
 msgstr ""
-"Konstruera en MultiPolygon givet en godtycklig samling av slutna "
-"linjestrings som en MultiLineString text representation Well-Known text "
-"representation."
+"Konstruera en MultiPolygon givet en godtycklig samling av slutna linestrings "
+"som en MultiLineString text representation Well-Known text representation."
 
 #. Tag: para
 #, no-c-format
@@ -18926,7 +18925,7 @@ msgid ""
 "Construct a Polygon given an arbitrary collection of closed linestrings, "
 "polygons, MultiLineStrings as Well-Known text representation."
 msgstr ""
-"Konstruera en polygon givet en godtycklig samling av slutna linjestrings, "
+"Konstruera en polygon givet en godtycklig samling av slutna linestrings, "
 "polygoner, MultiLineStrings som Well-Known text representation."
 
 #. Tag: para
@@ -19271,7 +19270,7 @@ msgid ""
 msgstr ""
 "Om du vet att alla dina geometrier är LINESTRINGS är det mer effektivt att "
 "bara använda ST_GeomFromText. Detta anropar bara ST_GeomFromText och lägger "
-"till ytterligare validering att den returnerar en linjestring."
+"till ytterligare validering att den returnerar en linestrings."
 
 #. Tag: para
 #, no-c-format
@@ -19554,7 +19553,7 @@ msgid ""
 "line string binary rep 0f LINESTRING(-71.160281 42.258729,-71.160837 "
 "42.259113,-71.161144 42.25932) in NAD 83 long lat (4269)."
 msgstr ""
-"linjestring binär rep 0f LINESTRING(-71.160281 42.258729,-71.160837 42."
+"linestrings binär rep 0f LINESTRING(-71.160281 42.258729,-71.160837 42."
 "259113,-71.161144 42.25932) i NAD 83 lång lat (4269)."
 
 #. Tag: para
@@ -19676,7 +19675,7 @@ msgstr ""
 "Om du vet att alla dina geometrier är <varname>LINESTRINGar</varname>är det "
 "mer effektivt att bara använda <xref linkend=\"ST_GeomFromWKB\"/>. Den här "
 "funktionen anropar bara <xref linkend=\"ST_GeomFromWKB\"/> och lägger till "
-"ytterligare validering av att den returnerar en linjestring."
+"ytterligare validering av att den returnerar en linestrings."
 
 #. Tag: para
 #, no-c-format
@@ -21612,17 +21611,17 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "linestring and point -- both 3d and 2d closest point"
-msgstr "linjestring och punkt -- både 3d och 2d närmaste punkt"
+msgstr "linestrings och punkt -- både 3d och 2d närmaste punkt"
 
 #. Tag: para
 #, no-c-format
 msgid "linestring and multipoint -- both 3d and 2d closest point"
-msgstr "linjestring och multipoint -- både 3d och 2d närmaste punkt"
+msgstr "linestrings och multipoint -- både 3d och 2d närmaste punkt"
 
 #. Tag: para
 #, no-c-format
 msgid "Multilinestring and polygon both 3d and 2d closest point"
-msgstr "Multilinjestring och polygon både 3d och 2d närmaste punkt"
+msgstr "Multilinestrings och polygon både 3d och 2d närmaste punkt"
 
 #. Tag: para
 #, no-c-format
@@ -22171,8 +22170,8 @@ msgid ""
 "Returns the 2D length of the geometry if it is a linestring or multi-"
 "linestring. This is an alias for <varname>ST_Length</varname>"
 msgstr ""
-"Returnerar geometrins 2D-längd om det är en linjestring eller "
-"multilinjestring. Detta är ett alias för <varname>ST_Length</varname>"
+"Returnerar geometrins 2D-längd om det är en linestrings eller "
+"multilinestrings. Detta är ett alias för <varname>ST_Length</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -22347,12 +22346,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "linestring and point -- both 3d and 2d longest line"
-msgstr "linjestring och punkt -- både 3d och 2d längsta linjen"
+msgstr "linestrings och punkt -- både 3d och 2d längsta linjen"
 
 #. Tag: para
 #, no-c-format
 msgid "linestring and multipoint -- both 3d and 2d longest line"
-msgstr "linjestring och multipoint -- både 3d och 2d längsta linjen"
+msgstr "linestrings och multipoint -- både 3d och 2d längsta linjen"
 
 #. Tag: para
 #, no-c-format
@@ -22781,12 +22780,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "linestring and point -- both 3d and 2d shortest line"
-msgstr "linjestring och punkt -- både 3d och 2d kortaste linjen"
+msgstr "linestrings och punkt -- både 3d och 2d kortaste linjen"
 
 #. Tag: para
 #, no-c-format
 msgid "linestring and multipoint -- both 3d and 2d shortest line"
-msgstr "linjestring och multipoint -- både 3d och 2d kortaste linjen"
+msgstr "linestrings och multipoint -- både 3d och 2d kortaste linjen"
 
 #. Tag: para
 #, no-c-format
@@ -25710,7 +25709,7 @@ msgstr "Linjeuppsättning"
 #. Tag: entry
 #, no-c-format
 msgid "MULTILINESTRING"
-msgstr "MULTILINJESTRING"
+msgstr "MULTILINESTRING"
 
 #. Tag: entry
 #, no-c-format
@@ -25877,7 +25876,7 @@ msgstr "Exempel: TIN"
 #. Tag: title
 #, no-c-format
 msgid "Example: Closed multilinestring (the boundary of a polygon with holes)"
-msgstr "Exempel på: Sluten multilinjestring (gränsen för en polygon med hål)"
+msgstr "Exempel på: Sluten multilinestrings (gränsen för en polygon med hål)"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26065,17 +26064,17 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "The input linestrings"
-msgstr "De inmatade linjestringarna"
+msgstr "De inmatade linestrings"
 
 #. Tag: para
 #, no-c-format
 msgid "The difference of the two linestrings"
-msgstr "Skillnaden mellan de två linjestringarna"
+msgstr "Skillnaden mellan de två linestrings"
 
 #. Tag: para
 #, no-c-format
 msgid "The difference of 2D linestrings."
-msgstr "Skillnaden mellan 2D-linjestrings."
+msgstr "Skillnaden mellan 2D-linestrings."
 
 #. Tag: para
 #, no-c-format
@@ -26302,7 +26301,7 @@ msgid ""
 "dissolved (duplicate lines are removed)."
 msgstr ""
 "Returnerar en (Multi)LineString som representerar den fullständigt nodade "
-"versionen av en samling linjestrings. Nodningen bevarar alla indatans noder "
+"versionen av en samling linestrings. Nodningen bevarar alla indatans noder "
 "och introducerar minsta möjliga antal nya noder. Det resulterande "
 "linjeverket är upplöst (dubbletter av linjer tas bort)."
 
@@ -26334,8 +26333,8 @@ msgid ""
 "order and direction compared to PostGIS &lt; 2.4."
 msgstr ""
 "Ändrad: 2.4.0 denna funktion använder GEOSNode internt istället för "
-"GEOSUnaryUnion. Detta kan leda till att de resulterande linjestringarna har "
-"en annan ordning och riktning jämfört med PostGIS &lt; 2.4."
+"GEOSUnaryUnion. Detta kan leda till att de resulterande linestrings har en "
+"annan ordning och riktning jämfört med PostGIS &lt; 2.4."
 
 #. Tag: para
 #, no-c-format
@@ -26622,12 +26621,12 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.21"
 #. Tag: para
 #, no-c-format
 msgid "The original linestrings shown together"
-msgstr "De ursprungliga linjestringarna visas tillsammans"
+msgstr "De ursprungliga linestrings visas tillsammans"
 
 #. Tag: para
 #, no-c-format
 msgid "The symmetric difference of the two linestrings"
-msgstr "Den symmetriska skillnaden mellan de två linjestringarna"
+msgstr "Den symmetriska skillnaden mellan de två linestrings"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26668,7 +26667,7 @@ msgid ""
 "does this, but it does not provide the <code>gridSize</code> option.)"
 msgstr ""
 "En annan användning av denna funktion är att nodera och lösa upp en samling "
-"linjestrings som korsar eller överlappar varandra för att göra dem <link "
+"linestrings som korsar eller överlappar varandra för att göra dem <link "
 "linkend=\"Simple_Geometry\">enkla.</link>(<xref linkend=\"ST_Node\"/> gör "
 "också detta, men det ger inte <code>gridSize-alternativet</code>.)"
 
@@ -27300,7 +27299,7 @@ msgstr "Centroid för en <varname>MULTIPOINT</varname>"
 #. Tag: para
 #, no-c-format
 msgid "Centroid of a <varname>LINESTRING</varname>"
-msgstr "Centroid av en <varname>LINJESTRIPNING</varname>"
+msgstr "Centroid av en <varname>LINESTRIPNING</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -27310,7 +27309,7 @@ msgstr "Centroid av en <varname>POLYGON</varname>"
 #. Tag: para
 #, no-c-format
 msgid "Centroid of a <varname>GEOMETRYCOLLECTION</varname>"
-msgstr "Centroid av en <varname>GEOMETRISK SAMLING</varname>"
+msgstr "Centroid av en <varname>GEOMETRYSK COLLECTION</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -27777,7 +27776,7 @@ msgstr "Denna funktion returnerar alla dimensioner, inklusive Z- och M-värden"
 #. Tag: para
 #, no-c-format
 msgid "A linestring is filtered"
-msgstr "En linjestring är filtrerad"
+msgstr "En linestrings är filtrerad"
 
 #. Tag: para
 #, no-c-format
@@ -28053,7 +28052,7 @@ msgid ""
 "Maximum inscribed circle of a multi-linestring. Center, nearest point, and "
 "radius are returned."
 msgstr ""
-"Maximal inskriven cirkel för en multi-linjestring. Centrum, närmaste punkt "
+"Maximal inskriven cirkel för en multi-linestrings. Centrum, närmaste punkt "
 "och radie returneras."
 
 #. Tag: para
@@ -28200,7 +28199,7 @@ msgid ""
 "Minimum bounding circle of a point and linestring. Using 8 segs to "
 "approximate a quarter circle"
 msgstr ""
-"Minsta begränsningscirkel för en punkt och linjestring. Använda 8 segs för "
+"Minsta begränsningscirkel för en punkt och linestrings. Använda 8 segs för "
 "att approximera en kvartscirkel"
 
 #. Tag: para
@@ -28273,7 +28272,7 @@ msgstr "Kräver GEOS &gt;= 3.6.0."
 #. Tag: para
 #, no-c-format
 msgid "Oriented envelope of a point and linestring."
-msgstr "Orienterat kuvert av en punkt och en linjestring."
+msgstr "Orienterat kuvert av en punkt och en linestrings."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -28562,7 +28561,7 @@ msgstr "Polygoniserat resultat"
 #. Tag: para
 #, no-c-format
 msgid "Polygonizing a table of linestrings:"
-msgstr "Polygonisera en tabell med linjestrings:"
+msgstr "Polygonisera en tabell med linestrings:"
 
 #. Tag: para
 #, no-c-format
@@ -28654,7 +28653,7 @@ msgid ""
 "multilinestrings."
 msgstr ""
 "Returnerar en samling som innehåller sökvägar som delas av de två inmatade "
-"linjestringarna/multilinjestringarna."
+"linestrings/multilinestrings."
 
 #. Tag: para
 #, no-c-format
@@ -38605,7 +38604,7 @@ msgid ""
 "linestrings, polygons, polyhedral surface (area)"
 msgstr ""
 "Testar om två geometrier korsar varandra spatialt i 3D - endast för punkter, "
-"linjestrings, polygoner, polyedrisk yta (area)"
+"linestrings, polygoner, polyedrisk yta (area)"
 
 #. Tag: para
 #, no-c-format
@@ -38634,8 +38633,8 @@ msgid ""
 msgstr ""
 "På grund av brister i den flytande robustheten korsar geometrier inte alltid "
 "varandra på det sätt som man förväntar sig efter geometrisk bearbetning. "
-"Till exempel kanske den närmaste punkten på en linjestring till en geometri "
-"inte ligger på linjestringen. För den här typen av problem, där ett avstånd "
+"Till exempel kanske den närmaste punkten på en linestrings till en geometri "
+"inte ligger på linestringsen. För den här typen av problem, där ett avstånd "
 "på en centimeter bara ska betraktas som en skärningspunkt, använder du <xref "
 "linkend=\"ST_3DDWithin\"/>."
 
@@ -38799,7 +38798,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>MULTIPOINT</varname>"
-msgstr "<varname>LINJESTRING</varname> / <varname>MULTIPUNKT</varname>"
+msgstr "<varname>LINESTRING</varname> / <varname>MULTIPOINT</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -38809,7 +38808,7 @@ msgstr "<varname>POLYGON</varname> / <varname>PUNKT</varname>"
 #. Tag: para
 #, no-c-format
 msgid "<varname>POLYGON</varname> / <varname>LINESTRING</varname>"
-msgstr "<varname>POLYGON</varname> / <varname>LINJESTRING</varname>"
+msgstr "<varname>POLYGON</varname> / <varname>LINESTRING</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -38828,7 +38827,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "<varname>POLYGON</varname> / <varname>MULTIPOINT</varname>"
-msgstr "<varname>POLYGON</varname> / <varname>MULTIPUNKT</varname>"
+msgstr "<varname>POLYGON</varname> / <varname>MULTIPOINT</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -38844,7 +38843,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>POINT</varname>"
-msgstr "<varname>LINJESTRING</varname> / <varname>PUNKT</varname>"
+msgstr "<varname>LINESTRING</varname> / <varname>PUNKT</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -39198,17 +39197,17 @@ msgstr "Följande situationer returnerar alla <varname>true</varname>."
 #. Tag: para
 #, no-c-format
 msgid "<varname>MULTIPOINT</varname> / <varname>LINESTRING</varname>"
-msgstr "<varname>MULTIPOINT</varname> / <varname>LINJESTRING</varname>"
+msgstr "<varname>MULTIPOINT</varname> / <varname>LINESTRING</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>MULTIPOINT</varname> / <varname>POLYGON</varname>"
-msgstr "<varname>MULTIPUNKT</varname> / <varname>POLYGON</varname>"
+msgstr "<varname>MULTIPOINT</varname> / <varname>POLYGON</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>POLYGON</varname>"
-msgstr "<varname>LINJESTRING</varname> / <varname>POLYGON</varname>"
+msgstr "<varname>LINESTRING</varname> / <varname>POLYGON</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -39472,7 +39471,7 @@ msgid ""
 "kind of crossing behavior exists between them. 0 indicates no crossing. This "
 "is only supported for <varname>LINESTRING</varname>s."
 msgstr ""
-"Givet två linjestringar returnerar ett heltal mellan -3 och 3 som indikerar "
+"Givet två linestringsar returnerar ett heltal mellan -3 och 3 som indikerar "
 "vilken typ av korsningsbeteende som finns mellan dem. 0 indikerar ingen "
 "korsning. Detta stöds endast för <varname>LINESTRINGs</varname>."
 
@@ -40969,7 +40968,7 @@ msgstr "Skärningspunkten mellan geom1 och geom2"
 #. Tag: para
 #, no-c-format
 msgid "3D linestrings and polygons"
-msgstr "3D-linjestrings och polygoner"
+msgstr "3D-linestrings och polygoner"
 
 #. Tag: para
 #, no-c-format
@@ -41377,7 +41376,7 @@ msgstr "Hexagon extruderad 30 enheter längs Z ger en PolyhedralSurfaceZ"
 #. Tag: para
 #, no-c-format
 msgid "Original linestring"
-msgstr "Original linjestring"
+msgstr "Original linestrings"
 
 #. Tag: para
 #, no-c-format
@@ -41503,7 +41502,7 @@ msgid ""
 "leading to possible cases of invalidity. The second parameter must be a 2D "
 "polygon."
 msgstr ""
-"Den första parametern kan vara en 2D-geometri (punkt, linjestring, polygon). "
+"Den första parametern kan vara en 2D-geometri (punkt, linestrings, polygon). "
 "Om en 3D-geometri skickas in kommer den att konverteras till 2D genom att "
 "tvinga Z till 0, vilket kan leda till ogiltiga fall. Den andra parametern "
 "måste vara en 2D-polygon."
@@ -41523,7 +41522,7 @@ msgid ""
 "Minkowski Sum of Linestring and circle polygon where Linestring cuts thru "
 "the circle"
 msgstr ""
-"Minkowski-summa av linjestring och cirkelpolygon där linjestring skär genom "
+"Minkowski-summa av linestrings och cirkelpolygon där linestrings skär genom "
 "cirkeln"
 
 #. Tag: para
@@ -43447,7 +43446,7 @@ msgstr "Flytta en punkt 1 grads longitud"
 #. Tag: para
 #, no-c-format
 msgid "Move a linestring 1 degree longitude and 1/2 degree latitude"
-msgstr "Flytta en linjestring 1 grads longitud och 1/2 grads latitud"
+msgstr "Flytta en linestrings 1 grads longitud och 1/2 grads latitud"
 
 #. Tag: para
 #, no-c-format
@@ -44028,9 +44027,9 @@ msgid ""
 "Supported inputs are: POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, "
 "POLYGONS, MULTIPOLYGONS and GEOMETRYCOLLECTIONS containing any mix of them."
 msgstr ""
-"Ingångar som stöds är: PUNKTER, MULTIPUNKTER, LINJESTRIMNINGAR, "
-"MULTILINJESTRIMNINGAR, POLYGONER, MULTIPOLYGONER och GEOMETRIUPPLÄGGNINGAR "
-"som innehåller alla blandningar av dem."
+"Ingångar som stöds är: POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, "
+"POLYGONS, MULTIPOLYGONS och GEOMETRYCOLLECTIONS som innehåller alla "
+"blandningar av dem."
 
 #. Tag: para
 #, no-c-format
@@ -44102,7 +44101,7 @@ msgstr ""
 "Nyckeln \"keepcollapsed\" är endast giltig för algoritmen \"structure\" och "
 "har värdena \"true\" eller \"false\". När den är inställd på \"false\" "
 "kommer geometrikomponenter som kollapsar till en lägre dimensionalitet, "
-"t.ex. en enpunktslinjestring, att tas bort."
+"t.ex. en enpunktslinestrings, att tas bort."
 
 #. Tag: para
 #, no-c-format
@@ -45351,7 +45350,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "CircularString"
-msgstr "CirkulärString"
+msgstr "CircularString"
 
 #. Tag: para
 #, no-c-format
@@ -45378,7 +45377,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "CompoundCurve"
-msgstr "SammansattKurva"
+msgstr "CompoundCurve"
 
 #. Tag: para
 #, no-c-format
@@ -45396,7 +45395,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "CurvePolygon"
-msgstr "KurvaPolygon"
+msgstr "CurvePolygon"
 
 #. Tag: para
 #, no-c-format
@@ -45429,7 +45428,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "MultiCurve"
-msgstr "MultiKurva"
+msgstr "MultiCurve"
 
 #. Tag: para
 #, no-c-format
@@ -45505,12 +45504,12 @@ msgstr "PUNKT EMPTY"
 #. Tag: para
 #, no-c-format
 msgid "LINESTRING(0 0,1 1,1 2)"
-msgstr "LINJESTRING(0 0,1 1,1 2)"
+msgstr "LINESTRING(0 0,1 1,1 2)"
 
 #. Tag: para
 #, no-c-format
 msgid "LINESTRING EMPTY"
-msgstr "LINJESTRING TOM"
+msgstr "LINESTRING TOM"
 
 #. Tag: para
 #, no-c-format
@@ -45520,7 +45519,7 @@ msgstr "POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))"
 #. Tag: para
 #, no-c-format
 msgid "MULTIPOINT((0 0),(1 2))"
-msgstr "MULTIPUNKT((0 0),(1 2))"
+msgstr "MULTIPOINT((0 0),(1 2))"
 
 #. Tag: para
 #, no-c-format
@@ -45549,12 +45548,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))"
-msgstr "GEOMETRYCOLLECTION(PUNKT(2 3),LINJESTRING(2 3,3 4))"
+msgstr "GEOMETRYCOLLECTION(PUNKT(2 3),LINESTRING(2 3,3 4))"
 
 #. Tag: para
 #, no-c-format
 msgid "GEOMETRYCOLLECTION EMPTY"
-msgstr "GEOMETRIUPPSAMLING TOM"
+msgstr "GEOMETRYUPPCOLLECTION TOM"
 
 #. Tag: para
 #, no-c-format
@@ -45598,7 +45597,7 @@ msgstr "WKB: 0101000000000000000000F03F000000000000F03"
 #. Tag: para
 #, no-c-format
 msgid "WKT: LINESTRING (2 2, 9 9)"
-msgstr "WKT: LINJESTRING (2 2, 9 9)"
+msgstr "WKT: LINESTRING (2 2, 9 9)"
 
 #. Tag: para
 #, no-c-format
@@ -45623,7 +45622,7 @@ msgstr ""
 msgid ""
 "For example, a statement to create and insert a spatial object from WKB is:"
 msgstr ""
-"Ett uttalande för att skapa och infoga ett spatialt objekt från WKB är t.ex:"
+"Ett villkor för att skapa och infoga ett spatialt objekt från WKB är t.ex:"
 
 #. Tag: title
 #, no-c-format
@@ -45908,12 +45907,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "GEOMETRYCOLLECTIONM( POINTM(2 3 9), LINESTRINGM(2 3 4, 3 4 5) )"
-msgstr "GEOMETRYCOLLECTIONM( PUNKTM(2 3 9), LINJESTRINGM(2 3 4, 3 4 5) )"
+msgstr "GEOMETRYCOLLECTIONM( PUNKTM(2 3 9), LINESTRINGM(2 3 4, 3 4 5) )"
 
 #. Tag: para
 #, no-c-format
 msgid "MULTICURVE( (0 0, 5 5), CIRCULARSTRING(4 0, 4 4, 8 4) )"
-msgstr "MULTIKURVA( (0 0, 5 5), CIRKULÄRSTRÄNG(4 0, 4 4, 8 4) )"
+msgstr "MULTICURVE( (0 0, 5 5), CIRCULARSTRING(4 0, 4 4, 8 4) )"
 
 #. Tag: para
 #, no-c-format
@@ -45953,13 +45952,13 @@ msgid ""
 "For example, a statement to create and insert a PostGIS spatial object using "
 "EWKT is:"
 msgstr ""
-"Ett uttalande för att skapa och infoga ett spatialt PostGIS-objekt med EWKT "
-"är t.ex:"
+"Ett villkor för att skapa och infoga ett spatialt PostGIS-objekt med EWKT är "
+"t.ex:"
 
 #. Tag: title
 #, no-c-format
 msgid "Geography Data Type"
-msgstr "Geografi Datatyp"
+msgstr "Geografidatatyp"
 
 #. Tag: para
 #, no-c-format
@@ -46094,13 +46093,12 @@ msgid ""
 "(XYZM) data."
 msgstr ""
 "modifieraren spatial type begränsar vilka typer av former och dimensioner "
-"som tillåts i kolumnen. Tillåtna värden för den spatiala typen är: POINT "
-"(PUNKT), LINESTRING (LINJESTRING), POLYGON, MULTIPOINT (MULTIPUNKT), "
-"MULTILINESTRING (MULTILINJESTRING), MULTIPOLYGON, GEOMETRYCOLLECTION "
-"(GEOMETRISAMLING). Geografitypen stöder inte kurvor, TINS eller "
+"som tillåts i kolumnen. Tillåtna värden för den spatiala typen är: POINT, "
+"LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, "
+"GEOMETRYCOLLECTION. Geografitypen stöder inte kurvor, TINS eller "
 "POLYHEDRALSURFACEs. Modifieraren stöder begränsningar av "
 "koordinatdimensionalitet genom att lägga till suffix: Z, M och ZM. En "
-"modifierare av typen \"LINESTRINGM\" tillåter t.ex. endast linjestrings med "
+"modifierare av typen \"LINESTRINGM\" tillåter t.ex. endast linestrings med "
 "tre dimensioner och behandlar den tredje dimensionen som ett mått. På samma "
 "sätt kräver \"POINTZM\" fyrdimensionella (XYZM) data."
 
@@ -46513,9 +46511,9 @@ msgid ""
 "endpoints of a simple LineString are identical it is called "
 "<emphasis>closed</emphasis> and referred to as a Linear Ring."
 msgstr ""
-"En <varname>linjestring</varname> är <emphasis>enkel</emphasis> om den inte "
+"En <varname>linestrings</varname> är <emphasis>enkel</emphasis> om den inte "
 "passerar genom samma punkt två gånger, med undantag för ändpunkterna. Om "
-"ändpunkterna på en enkel linjestring är identiska kallas den "
+"ändpunkterna på en enkel linestrings är identiska kallas den "
 "<emphasis>sluten</emphasis> och kallas för en linjär ring."
 
 #. Tag: emphasis
@@ -46826,8 +46824,8 @@ msgstr ""
 "PostGIS tillåter skapande och lagring av både giltig och ogiltig geometri. "
 "Detta gör att ogiltig geometri kan upptäckas och flaggas eller fixas. Det "
 "finns också situationer där OGC:s giltighetsregler är strängare än önskat ("
-"exempel på detta är linjestrings med noll längd och polygoner med "
-"inverterade hål)"
+"exempel på detta är linestrings med noll längd och polygoner med inverterade "
+"hål)"
 
 #. Tag: para
 #, no-c-format
@@ -47341,8 +47339,8 @@ msgstr ""
 "MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION etc.). Modifieraren stöder "
 "begränsningar av koordinatdimensionalitet genom att lägga till suffix: Z, M "
 "och ZM. En modifierare av typen \"LINESTRINGM\" tillåter t.ex. endast "
-"linjestrings med tre dimensioner och behandlar den tredje dimensionen som "
-"ett mått. På samma sätt kräver \"POINTZM\" fyrdimensionella (XYZM) data."
+"linestrings med tre dimensioner och behandlar den tredje dimensionen som ett "
+"mått. På samma sätt kräver \"POINTZM\" fyrdimensionella (XYZM) data."
 
 #. Tag: para
 #, no-c-format
@@ -48001,7 +47999,7 @@ msgid ""
 "its bounding box will be used for the comparison."
 msgstr ""
 "När du använder operatorn \"&amp;&amp;\" kan du ange antingen en BOX3D som "
-"jämförelsefunktion eller en GEOMETRY. När du anger en GEOMETRI kommer dock "
+"jämförelsefunktion eller en GEOMETRY. När du anger en GEOMETRY kommer dock "
 "dess bounding box att användas för jämförelsen."
 
 #. Tag: para
@@ -50029,7 +50027,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Execute each statement individually, do not use a transaction."
-msgstr "Utför varje uttalande individuellt, använd inte en transaktion."
+msgstr "Utför varje villkor individuellt, använd inte en transaktion."
 
 #. Tag: para
 #, no-c-format
