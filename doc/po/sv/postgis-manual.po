@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-06-04 09:47+0000\n"
+"PO-Revision-Date: 2025-06-08 10:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/sv/>\n"
@@ -858,7 +858,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Runtime"
-msgstr "Speltid"
+msgstr "Körtid"
 
 #. Tag: para
 #, no-c-format
@@ -5705,7 +5705,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Topology Editors"
-msgstr "Topologiredaktörer"
+msgstr "Topologiredigerare"
 
 #. Tag: para
 #, no-c-format
@@ -7338,7 +7338,7 @@ msgstr ", <xref linkend=\"topogeometry\"/>, <xref linkend=\"topoelement\"/>"
 #. Tag: title
 #, no-c-format
 msgid "TopoGeometry Editors"
-msgstr "TopoGeometry Redaktörer"
+msgstr "TopoGeometry-redigerare"
 
 #. Tag: para
 #, no-c-format
@@ -10038,7 +10038,7 @@ msgid ""
 msgstr ""
 "CI- och webbplatsunderhåll, Windows-produktion och experimentella byggnader, "
 "dokumentation, anpassning av PostGIS till PostgreSQL-utgåvor, X3D-stöd, "
-"TIGER-geokoderstöd, ledningsfunktioner."
+"TIGER-geokoderstöd, hanteringsfunktioner."
 
 #. Tag: term
 #, no-c-format
@@ -10173,7 +10173,7 @@ msgstr "Geometribearbetning, PostgreSQL gist, allmän buggfixning"
 #. Tag: title
 #, no-c-format
 msgid "Core Contributors Past"
-msgstr "Centrala bidragsgivare Tidigare"
+msgstr "Tidigare centrala bidragsgivare"
 
 #. Tag: term
 #, no-c-format
@@ -11593,7 +11593,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS &last_release_version; Manual"
-msgstr "PostGIS &last_release_version; Manuell"
+msgstr "Manual för PostGIS &last_release_version;"
 
 #. Tag: orgname
 #, no-c-format
@@ -16527,7 +16527,7 @@ msgstr "Unionens resultat"
 #. Tag: title
 #, no-c-format
 msgid "Geometry Editors"
-msgstr "Geometri-redaktörer"
+msgstr "Geometriredigerare"
 
 #. Tag: para
 #, no-c-format
@@ -33526,7 +33526,7 @@ msgstr ", <xref linkend=\"RT_ST_SetSRID\"/>"
 #. Tag: title
 #, no-c-format
 msgid "Raster Band Editors"
-msgstr "Raster Band Redaktörer"
+msgstr "Rasterbandredigerare"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40462,7 +40462,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Management Functions"
-msgstr "SFCGAL:s ledningsfunktioner"
+msgstr "SFCGAL-hanteringsfunktioner"
 
 #. Tag: para
 #, no-c-format
@@ -45167,7 +45167,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "LineString"
-msgstr "LinjeString"
+msgstr "LineString"
 
 #. Tag: para
 #, no-c-format
