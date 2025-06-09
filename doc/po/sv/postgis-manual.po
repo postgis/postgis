@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-06-09 06:47+0000\n"
+"PO-Revision-Date: 2025-06-09 12:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/sv/>\n"
@@ -1176,8 +1176,7 @@ msgid ""
 "The token numbers denote the output reference number in the <xref "
 "linkend=\"rulestab\"/>."
 msgstr ""
-"Tokennumren betecknar utgångens referensnummer i <xref linkend=\"rulestab\""
-"/>."
+"Tokennumren betecknar utdatans referensnummer i <xref linkend=\"rulestab\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -1353,8 +1352,8 @@ msgstr ""
 "Regeltabellen innehåller en uppsättning regler som mappar tokens i adressens "
 "indatasekvens till en standardiserad utdatasekvens. En regel definieras som "
 "en uppsättning inmatningstokens följt av -1 (terminator) följt av en "
-"uppsättning utmatningstokens följt av -1 följt av ett nummer som anger typ "
-"av regel följt av rangordning av regeln."
+"uppsättning utdatatokens följt av -1 följt av ett nummer som anger typ av "
+"regel följt av rangordning av regeln."
 
 #. Tag: para
 #, no-c-format
@@ -1656,8 +1655,8 @@ msgstr ""
 "Efter den första -1 (terminator) följer utdatatokens och deras ordning, "
 "följt av en terminator <code>-1.</code> Numren för motsvarande utdatatokens "
 "listas i <xref linkend=\"stdaddr\"/>. Vad som är tillåtet beror på typ av "
-"regel. Utmatningstoken som är giltiga för varje regeltyp listas i <xref "
-"linkend=\"rule_types_rank\"/>."
+"regel. Utdatatoken som är giltiga för varje regeltyp listas i <xref linkend="
+"\"rule_types_rank\"/>."
 
 #. Tag: title
 #, no-c-format
@@ -1790,9 +1789,9 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
-"<emphasis role=\"bold\"><varname>EXTRA_C-utmatningstoken</varname></"
-"emphasis> (utdrag från <link xlink:href=\"http://www.pagcgeo.org/docs/html/"
-"pagc-12.html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12."
+"<emphasis role=\"bold\"><varname>EXTRA_C-utdatatoken</varname></emphasis> ("
+"utdrag från <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12."
 "html#--r-typ--.</link>."
 
 #. Tag: para
@@ -2059,7 +2058,7 @@ msgid ""
 "score"
 msgstr ""
 "Variant 2: Flerradig adress och returnering av första regelns "
-"ingångsmappningar och poäng"
+"indatamappningar och poäng"
 
 #. Tag: title
 #, no-c-format
@@ -3592,8 +3591,8 @@ msgid ""
 "Output select fields. Use <xref linkend=\"Pprint_Addy\"/> if you want a "
 "pretty textual output."
 msgstr ""
-"Utmatning av valda fält. Använd <xref linkend=\"Pprint_Addy\"/> om du vill "
-"ha en snygg textutskrift."
+"Utdata av valda fält. Använd <xref linkend=\"Pprint_Addy\"/> om du vill ha "
+"en snygg textutskrift."
 
 #. Tag: para
 #, no-c-format
@@ -4394,7 +4393,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Topology Domains"
-msgstr "Topologi Domäner"
+msgstr "Topologidomäner"
 
 #. Tag: para
 #, no-c-format
@@ -5346,7 +5345,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Topology Constructors"
-msgstr "Topologikonstruktörer"
+msgstr "Topology Constructors"
 
 #. Tag: para
 #, no-c-format
@@ -5813,9 +5812,9 @@ msgid ""
 "start or end nodes of an existing edge, then an exception is thrown."
 msgstr ""
 "Om det spatiala referenssystemet (srid) för <varname>alinestring-geometrin</"
-"varname> inte är detsamma som topologin, om något av indataargumenten är "
-"null, om noderna finns i mer än en yta eller om noderna är start- eller "
-"slutnoder för en befintlig kant, så kastas ett undantag."
+"varname> inte är detsamma som topologin, om något av indatagumenten är null, "
+"om noderna finns i mer än en yta eller om noderna är start- eller slutnoder "
+"för en befintlig kant, så kastas ett undantag."
 
 #. Tag: para
 #, no-c-format
@@ -6352,7 +6351,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Topology Accessors"
-msgstr "Topologi Accessorer"
+msgstr "Topologi-accessorer"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6694,7 +6693,7 @@ msgid ""
 "Sequence numbers start with value 1."
 msgstr ""
 "Returnerar den ordnade uppsättningen signerade kantidentifierare som man "
-"möter när man går på en given kantsida. Varje utgång består av en sekvens "
+"möter när man går på en given kantsida. Varje utdata består av en sekvens "
 "och ett signerat kant-ID. Sekvensnummer börjar med värde 1."
 
 #. Tag: para
@@ -7105,7 +7104,7 @@ msgstr ", <xref linkend=\"ST_RemEdgeModFace\"/>"
 #. Tag: title
 #, no-c-format
 msgid "TopoGeometry Constructors"
-msgstr "TopoGeometry Konstruktörer"
+msgstr "TopoGeometry Constructors"
 
 #. Tag: para
 #, no-c-format
@@ -7467,7 +7466,7 @@ msgstr "Se <xref linkend=\"toTopoGeom\"/>."
 #. Tag: title
 #, no-c-format
 msgid "TopoGeometry Accessors"
-msgstr "TopoGeometry Accessorer"
+msgstr "TopoGeometry-accessorer"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -7580,7 +7579,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "TopoGeometry Outputs"
-msgstr "TopoGeometry Utgångar"
+msgstr "TopoGeometry-utdata"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -7715,7 +7714,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.2.1 added support for puntal inputs"
-msgstr "Förbättrad: 2.2.1 har lagt till stöd för puntal-ingångar"
+msgstr "Förbättrad: 2.2.1 har lagt till stöd för puntal-indata"
 
 #. Tag: title
 #, no-c-format
@@ -7869,10 +7868,9 @@ msgid ""
 "switch."
 msgstr ""
 "Som standard skriver <filename>pgtopo_export</filename> dumpfilen till "
-"standardutmatningen så att den kan pipas till <filename>pgtopo_import</"
-"filename> eller omdirigeras till en fil (vägrar att skriva till terminalen). "
-"Du kan ange ett filnamn för utdata med kommandoradsalternativet "
-"<code>-f.</code>."
+"standardutdata så att den kan pipas till <filename>pgtopo_import</filename> "
+"eller omdirigeras till en fil (vägrar att skriva till terminalen). Du kan "
+"ange ett filnamn för utdata med kommandoradsalternativet <code>-f.</code>."
 
 #. Tag: para
 #, no-c-format
@@ -9322,7 +9320,7 @@ msgstr "Följande test kräver inga regler, gas eller lex tabeller"
 #. Tag: para
 #, no-c-format
 msgid "Output should be"
-msgstr "Utgången bör vara"
+msgstr "Utdata bör vara"
 
 #. Tag: title
 #, no-c-format
@@ -9985,7 +9983,7 @@ msgid ""
 msgstr ""
 "Utvecklingsgruppen för PostGIS-projektet planerar att stödja och förbättra "
 "PostGIS för att bättre stödja en rad viktiga GIS-funktioner inom områdena "
-"OGC och SQL/MM spatiala standarder, avancerade topologiska konstruktioner ("
+"OGC och SQL/MM spatiala standarder, avancerade topologiska constructs ("
 "täckningar, ytor, nätverk), datakälla för verktyg för användargränssnitt på "
 "skrivbordet för visning och redigering av GIS-data samt webbaserade "
 "åtkomstverktyg."
@@ -10230,7 +10228,7 @@ msgid ""
 "(Emeritus) Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug "
 "fixes."
 msgstr ""
-"(Emeritus) Inmatning/utmatning XML (KML,GML)/GeoJSON-funktioner, 3D-stöd och "
+"(Emeritus) Inmatning/utdata XML (KML,GML)/GeoJSON-funktioner, 3D-stöd och "
 "buggfixar."
 
 #. Tag: term
@@ -12995,7 +12993,7 @@ msgid ""
 "CompoundCurve, or NULL for a non-CompoundCurve input."
 msgstr ""
 "Returnerar antalet komponentkurvor i en CompoundCurve, noll för en tom "
-"CompoundCurve, eller NULL för en icke-CompoundCurve-ingång."
+"CompoundCurve, eller NULL för en icke-CompoundCurve-indata."
 
 #. Tag: para
 #, no-c-format
@@ -14678,7 +14676,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "An input geometry is added to a cluster if it is either:"
-msgstr "En ingångsgeometri läggs till i ett kluster om den är antingen:"
+msgstr "En indatageometri läggs till i ett kluster om den är antingen:"
 
 #. Tag: para
 #, no-c-format
@@ -14820,7 +14818,7 @@ msgstr ""
 "En fönsterfunktion som bygger sammanhängande kluster av geometrier som "
 "korsar varandra. Det är möjligt att traversera alla geometrier i ett kluster "
 "utan att lämna klustret. Returvärdet är det klusternummer som "
-"geometriargumentet deltar i, eller null för null-ingångar."
+"geometriargumentet deltar i, eller null för null-indata."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14845,8 +14843,8 @@ msgstr ""
 "means_clustering\">K-means</link> klusternummer för varje indatageometri. "
 "Avståndet som används för klustring är avståndet mellan centroiderna för 2D-"
 "geometrier och avståndet mellan bounding box-centren för 3D-geometrier. För "
-"POINT-ingångar kommer M-koordinaten att behandlas som ingångens vikt och "
-"måste vara större än 0."
+"POINT-indata kommer M-koordinaten att behandlas som indataens vikt och måste "
+"vara större än 0."
 
 #. Tag: para
 #, no-c-format
@@ -15013,7 +15011,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Geometry Constructors"
-msgstr "Geometri-konstruktörer"
+msgstr "Geometry Constructors"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15104,7 +15102,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Examples - Two-input variant"
-msgstr "Exempel - variant med två ingångar"
+msgstr "Exempel - variant med två indata"
 
 #. Tag: para
 #, no-c-format
@@ -15129,12 +15127,12 @@ msgstr "Exempel - Array-variant"
 #. Tag: para
 #, no-c-format
 msgid "Using an array constructor for a subquery."
-msgstr "Använda en array-konstruktör för en subquery."
+msgstr "Använda en array constructor för en subquery."
 
 #. Tag: para
 #, no-c-format
 msgid "Using an array constructor for values."
-msgstr "Använda en matriskonstruktör för värden."
+msgstr "Använda en array constructor för värden."
 
 #. Tag: title
 #, no-c-format
@@ -15264,7 +15262,7 @@ msgid ""
 "collapse repeated points from the output LineString."
 msgstr ""
 "Upprepade noder i början av indata LineStrings kollapsas till en enda punkt. "
-"Upprepade punkter i Point- och MultiPoint-ingångar kollapsas inte. <xref "
+"Upprepade punkter i Point- och MultiPoint-indata kollapsas inte. <xref "
 "linkend=\"ST_RemoveRepeatedPoints\"/> kan användas för att kollapsa "
 "upprepade punkter från utdata LineString."
 
@@ -15272,13 +15270,13 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Availability: 2.3.0 - Support for MultiPoint input elements was introduced"
-msgstr "Tillgänglighet: 2.3.0 - Stöd för MultiPoint-ingångselement infördes"
+msgstr "Tillgänglighet: 2.3.0 - Stöd för MultiPoint-indataelement infördes"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Availability: 2.0.0 - Support for LineString input elements was introduced"
-msgstr "Tillgänglighet: 2.0.0 - Stöd för LineString-ingångselement infördes"
+msgstr "Tillgänglighet: 2.0.0 - Stöd för LineString-indataelement infördes"
 
 #. Tag: para
 #, no-c-format
@@ -15292,7 +15290,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Examples: Two-input variant"
-msgstr "Exempel: Variant med två ingångar"
+msgstr "Exempel: Variant med två indata"
 
 #. Tag: para
 #, no-c-format
@@ -15466,7 +15464,7 @@ msgid ""
 "is used for text output because <xref linkend=\"ST_AsText\"/> does not "
 "support M values."
 msgstr ""
-"används för textutmatning eftersom <xref linkend=\"ST_AsText\"/> inte stöder "
+"används för textutdata eftersom <xref linkend=\"ST_AsText\"/> inte stöder "
 "M-värden."
 
 #. Tag: para
@@ -15523,7 +15521,7 @@ msgid ""
 msgstr ""
 "<emphasis role=\"bold\">Variant 2:</emphasis> Accepterar en skal LineString "
 "och en array av inre (hål) LineStrings. En geometri-array kan konstrueras "
-"med hjälp av PostgreSQL array_agg(), ARRAY[] eller ARRAY() konstruktioner."
+"med hjälp av PostgreSQL array_agg(), ARRAY[] eller ARRAY() constructs."
 
 #. Tag: para
 #, no-c-format
@@ -15605,7 +15603,7 @@ msgid ""
 "The CASE construct is used because passing a null array into ST_MakePolygon "
 "results in a NULL return value."
 msgstr ""
-"CASE-konstruktionen används eftersom en null-array som skickas till "
+"CASE construct används eftersom en null-array som skickas till "
 "ST_MakePolygon resulterar i ett NULL-returvärde."
 
 #. Tag: para
@@ -15614,8 +15612,8 @@ msgid ""
 "Another technique is to utilize a correlated subquery and the ARRAY() "
 "constructor that converts a row set to an array."
 msgstr ""
-"En annan teknik är att använda en korrelerad underfråga och ARRAY()-"
-"konstruktören som omvandlar en raduppsättning till en array."
+"En annan teknik är att använda en korrelerad underfråga och ARRAY() "
+"constructor som omvandlar en raduppsättning till en array."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15962,7 +15960,7 @@ msgstr ""
 msgid ""
 "The SRS for the output hexagons is the SRS provided by the bounds geometry."
 msgstr ""
-"SRS för utmatningshexagonerna är den SRS som tillhandahålls av "
+"SRS för utdatahexagonerna är den SRS som tillhandahålls av "
 "begränsningsgeometrin."
 
 #. Tag: para
@@ -16033,7 +16031,7 @@ msgid ""
 msgstr ""
 "Nyckelordet LATERAL är underförstått för set-returning-funktioner när man "
 "hänvisar till en tidigare tabell i FROM-listan. Så CROSS JOIN LATERAL, CROSS "
-"JOIN eller helt enkelt , är likvärdiga konstruktioner för det här exemplet."
+"JOIN eller helt enkelt , är likvärdiga constructs för det här exemplet."
 
 #. Tag: para
 #, no-c-format
@@ -16112,8 +16110,7 @@ msgstr ""
 msgid ""
 "The SRS for the output squares is the SRS provided by the bounds geometry."
 msgstr ""
-"SRS för utmatningsrutorna är den SRS som tillhandahålls av "
-"avgränsningsgeometrin."
+"SRS för utdatarutorna är den SRS som tillhandahålls av avgränsningsgeometrin."
 
 #. Tag: para
 #, no-c-format
@@ -16794,7 +16791,7 @@ msgid ""
 "support CIRCULARSTRING geometry types"
 msgstr ""
 "Konverterar en CIRCULAR STRING till vanlig LINESTRING eller CURVEPOLYGON "
-"till POLYGON eller MULTISURFACE till MULTIPOLYGON. Användbart för utmatning "
+"till POLYGON eller MULTISURFACE till MULTIPOLYGON. Användbart för utdata "
 "till enheter som inte stöder geometrityper av typen CIRCULARSTRING"
 
 #. Tag: para
@@ -16842,7 +16839,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "1: Symmetric (orientation independent) output."
-msgstr "1: Symmetrisk (orienteringsoberoende) utgång."
+msgstr "1: Symmetrisk (orienteringsoberoende) utdata."
 
 #. Tag: para
 #, no-c-format
@@ -16851,7 +16848,7 @@ msgid ""
 "symmetric output. Has no effect when Symmetric flag is off."
 msgstr ""
 "2: Behåll vinkeln, undviker att minska vinklar (segmentlängder) när "
-"symmetrisk utmatning produceras. Har ingen effekt när Symmetric-flaggan är "
+"symmetrisk utdata produceras. Har ingen effekt när Symmetric-flaggan är "
 "avstängd."
 
 #. Tag: para
@@ -16866,7 +16863,7 @@ msgid ""
 "for symmetric output."
 msgstr ""
 "Förbättrad: I 2.4.0 tillkom stöd för toleranserna max-avvikelse och max-"
-"vinkel samt för symmetrisk utmatning."
+"vinkel samt för symmetrisk utdata."
 
 #. Tag: para
 #, no-c-format
@@ -18170,7 +18167,7 @@ msgstr ""
 "Variant 1,2,3: Fäst alla punkter i indatageometrin i det rutnät som "
 "definieras av dess ursprung och cellstorlek. Ta bort på varandra följande "
 "punkter som faller på samma cell, och returnera slutligen NULL om "
-"utgångspunkterna inte är tillräckliga för att definiera en geometri av den "
+"utdatapunkterna inte är tillräckliga för att definiera en geometri av den "
 "givna typen. Kollapsade geometrier i en samling tas bort från den. "
 "Användbart för att minska precisionen."
 
@@ -24017,7 +24014,7 @@ msgstr "Tillgänglighet: 2.2.0 -- KNN endast tillgängligt för PostgreSQL 9.1+"
 #. Tag: title
 #, no-c-format
 msgid "Geometry Output"
-msgstr "Geometriutmatning"
+msgstr "Geometriutdata"
 
 #. Tag: para
 #, no-c-format
@@ -24189,7 +24186,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.25"
 #. Tag: para
 #, no-c-format
 msgid "Full precision output is the default."
-msgstr "Fullständig precisionsutmatning är standard."
+msgstr "Fullständig precisionsutdata är standard."
 
 #. Tag: para
 #, no-c-format
@@ -24301,9 +24298,9 @@ msgid ""
 "then install <filename>legacy.sql</filename>."
 msgstr ""
 "Ändrad: 2.0.0 Indata till denna funktion kan inte vara okända - de måste "
-"vara geometriska. Konstruktioner som <code>ST_AsBinary('POINT(1 2)')</code> "
-"är inte längre giltiga och du kommer att få ett <code>n st_asbinary(unknown) "
-"is not unique-fel</code>. Kod som denna måste ändras till "
+"vara geometriska. Constructs som <code>ST_AsBinary('POINT(1 2)')</code> är "
+"inte längre giltiga och du kommer att få ett <code>n st_asbinary(unknown) is "
+"not unique error</code>. Kod som denna måste ändras till "
 "<code>ST_AsBinary('POINT(1 2)'::geometry);.</code> Om det inte är möjligt, "
 "installera då <filename>legacy.sql</filename>."
 
@@ -24787,7 +24784,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "32: Output the box of the geometry (envelope)."
-msgstr "32: Utmatning av geometrins box (kuvert)."
+msgstr "32: Utdata av geometrins box (kuvert)."
 
 #. Tag: para
 #, no-c-format
@@ -25667,7 +25664,7 @@ msgid ""
 "default of <code>GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"'</"
 "code> use <code>(2 + 1)</code> = <code>3</code>"
 msgstr ""
-"2: Utmatning av koordinater i GeoSpatial GeoCoordinates. Detta alternativ "
+"2: Utdata av koordinater i GeoSpatial GeoCoordinates. Detta alternativ "
 "kommer att ge ett fel om geometrierna inte är i WGS 84 long lat (srid: 4326)"
 ". Detta är för närvarande den enda GeoCoordinate-typen som stöds. <link "
 "xlink:href=\"http://www.web3d.org/documents/specifications/19775-1/V3.2/"
@@ -26868,7 +26865,7 @@ msgid ""
 "These functions compute geometric constructions, or alter geometry size or "
 "shape."
 msgstr ""
-"Dessa funktioner beräknar geometriska konstruktioner eller ändrar geometrins "
+"Dessa funktioner beräknar geometriska constructions eller ändrar geometrins "
 "storlek eller form."
 
 #. Tag: refpurpose
@@ -27420,7 +27417,7 @@ msgid ""
 "Computes a possibly concave geometry that contains all input geometry "
 "vertices"
 msgstr ""
-"Beräknar en eventuellt konkav geometri som innehåller alla ingångsgeometrins "
+"Beräknar en eventuellt konkav geometri som innehåller alla indatageometrins "
 "toppar"
 
 #. Tag: para
@@ -27652,8 +27649,8 @@ msgstr ""
 "Beräknar <link xlink:href=\"http://en.wikipedia.org/wiki/"
 "Delaunay_triangulation\">Delaunay-trianguleringen</link> av hörnen i "
 "indatageometrin. Den valfria <varname>toleransen</varname> kan användas för "
-"att fästa ihop närliggande ingångsvertikaler, vilket förbättrar robustheten "
-"i vissa situationer. Resultatgeometrin avgränsas av den konvexa skrovet av "
+"att fästa ihop närliggande indatavertikaler, vilket förbättrar robustheten i "
+"vissa situationer. Resultatgeometrin avgränsas av den konvexa skrovet av "
 "indatapunkterna. Representationen av resultatgeometrin bestäms av "
 "<varname>flaggkoden</varname>:"
 
@@ -28320,7 +28317,7 @@ msgid ""
 "input geometries."
 msgstr ""
 "Observera att utdata kan vara MULTILINESTRING eller EMPTY för vissa "
-"pusselformade ingångsgeometrier."
+"pusselformade indatageometrier."
 
 #. Tag: para
 #, no-c-format
@@ -28618,9 +28615,9 @@ msgid ""
 "formats such as WKT, GeoJSON or KML when the number of output decimal places "
 "is limited)."
 msgstr ""
-"säkerställa giltig geometriutmatning till format som använder lägre "
-"precision (t.ex. textformat som WKT, GeoJSON eller KML när antalet decimaler "
-"i utmatningen är begränsat)."
+"säkerställa giltig geometriutdata till format som använder lägre precision ("
+"t.ex. textformat som WKT, GeoJSON eller KML när antalet decimaler i utdata "
+"är begränsat)."
 
 #. Tag: para
 #, no-c-format
@@ -29583,7 +29580,7 @@ msgid ""
 "Value to treat as no data. For image outputs that support transparency, "
 "these will be blank."
 msgstr ""
-"Värde som ska behandlas som ingen data. För bildutgångar som stöder "
+"Värde som ska behandlas som ingen data. För bildutdata som stöder "
 "transparens kommer dessa att vara tomma."
 
 #. Tag: title
@@ -30227,7 +30224,7 @@ msgid ""
 "The raster value the line represents. For an elevation DEM input, this would "
 "be the elevation of the output contour."
 msgstr ""
-"Det rastervärde som linjen representerar. För en höjd-DEM-ingång skulle "
+"Det rastervärde som linjen representerar. För en höjd-DEM-indata skulle "
 "detta vara höjden på den utgående konturen."
 
 #. Tag: refpurpose
@@ -30307,7 +30304,7 @@ msgid ""
 "raster, but that can be adjusted with this parameter."
 msgstr ""
 "Som standard används det första bandet i mallrastret för att driva "
-"utgångsrastret, men det kan justeras med den här parametern."
+"utdatarastret, men det kan justeras med den här parametern."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -30350,9 +30347,9 @@ msgid ""
 "varname> of the original in both directions)."
 msgstr ""
 "Skapa en översiktstabell med omsamplade plattor från källtabellen. "
-"Utgångsbrickorna kommer att ha samma storlek som ingångsbrickorna och täcka "
+"Utdatabrickorna kommer att ha samma storlek som indatabrickorna och täcka "
 "samma spatiala utsträckning med en lägre upplösning (pixelstorleken kommer "
-"att vara <varname>1/faktor</varname> av originalet i båda riktningarna)."
+"att vara 1/<varname>faktor</varname> av originalet i båda riktningarna)."
 
 #. Tag: para
 #, no-c-format
@@ -30383,7 +30380,7 @@ msgstr "Generellt bättre kvalitet på utdata, men långsammare till produktform
 #. Tag: para
 #, no-c-format
 msgid "Output to faster to process default nearest neighbor"
-msgstr "Utgång till snabbare för att bearbeta standard närmaste granne"
+msgstr "Utdata till snabbare för att bearbeta standard närmaste granne"
 
 #. Tag: para
 #, no-c-format
@@ -30398,7 +30395,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Raster Constructors"
-msgstr "Rasterkonstruktörer"
+msgstr "Raster Constructors"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -30657,7 +30654,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Examples: Output geometries as PNG files"
-msgstr "Exempel: Utmatning av geometrier som PNG-filer"
+msgstr "Exempel: Utdata av geometrier som PNG-filer"
 
 #. Tag: para
 #, no-c-format
@@ -30901,7 +30898,7 @@ msgid ""
 msgstr ""
 "<refpurpose>Returnerar en uppsättning raster som är resultatet av "
 "uppdelningen av inmatningsrastret baserat på de önskade dimensionerna för "
-"utmatningsrastren.</refpurpose>"
+"utdatarastren.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -30911,7 +30908,7 @@ msgid ""
 msgstr ""
 "<para>Returnerar en uppsättning raster som är resultatet av uppdelningen av "
 "inmatningsrastret baserat på de önskade dimensionerna för "
-"utmatningsrastren.</para>"
+"utdatarastren.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -30995,7 +30992,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Raster Accessors"
-msgstr "Raster Accessorer"
+msgstr "Raster-accessorer"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31688,7 +31685,7 @@ msgstr "Ändrad: 2.1.0 I tidigare versioner kallades detta ST_World2RasterCoordY
 #. Tag: title
 #, no-c-format
 msgid "Raster Band Accessors"
-msgstr "Rasterband Accessorer"
+msgstr "Rasterband-accessorer"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32003,7 +32000,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Raster Pixel Accessors and Setters"
-msgstr "Raster Pixel Accessorer och Setters"
+msgstr "Raster Pixel-accessorer och Setters"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33357,8 +33354,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Variant 1 expects the actual width/height of the output raster."
-msgstr ""
-"Variant 1 förväntar sig den faktiska bredden/höjden på utmatningsrastret."
+msgstr "Variant 1 förväntar sig den faktiska bredden/höjden på utdatarastret."
 
 #. Tag: para
 #, no-c-format
@@ -33376,8 +33372,8 @@ msgid ""
 "textual percentage (\"20%\") indicating the percentage of the input raster's "
 "width/height."
 msgstr ""
-"Variant 3 tar antingen den faktiska bredden/höjden på utmatningsrastret "
-"eller en procentandel i textform (\"20%\") som anger procentandelen av "
+"Variant 3 tar antingen den faktiska bredden/höjden på utdatarastret eller en "
+"procentandel i textform (\"20%\") som anger procentandelen av "
 "inmatningsrastrets bredd/höjd."
 
 #. Tag: para
@@ -34078,7 +34074,7 @@ msgstr ", <xref linkend=\"RT_ST_SetBandNoDataValue\"/>"
 #. Tag: title
 #, no-c-format
 msgid "Raster Inputs"
-msgstr "Raster-ingångar"
+msgstr "Raster-indata"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -34129,7 +34125,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Raster Outputs"
-msgstr "Rasterutgångar"
+msgstr "Rasterutdata"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -34390,7 +34386,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Examples: Output"
-msgstr "Exempel: Utgång"
+msgstr "Exempel: Utdata"
 
 #. Tag: para
 #, no-c-format
@@ -34468,9 +34464,9 @@ msgstr ""
 "för PNG (se create_options for PNG på <xref linkend=\"RT_ST_GDALDrivers\"/>)"
 ". För PNG är endast ZLEVEL giltigt (den tid som ska läggas på komprimering - "
 "standard 6), t.ex. ARRAY['ZLEVEL=9']. WORLDFILE är inte tillåtet eftersom "
-"funktionen skulle behöva mata ut två utgångar. Se <link xlink:href=\"http"
-"://www.gdal.org/frmt_various.html\">GDAL Rasterformatalternativ</link> för "
-"mer information."
+"funktionen skulle behöva mata ut två utdata. Se <link xlink:href=\"http://www"
+".gdal.org/frmt_various.html\">GDAL Rasterformatalternativ</link> för mer "
+"information."
 
 #. Tag: para
 #, no-c-format
@@ -35235,13 +35231,13 @@ msgid ""
 msgstr ""
 "<varname>Callbackfunc</varname> måste ha tre argument: en 3-dimensionell "
 "matris med dubbel precision, en 2-dimensionell matris med heltal och en "
-"variadisk 1-dimensionell textmatris. Det första <varname>argumentvärdet</"
+"variadisk 1-dimensionell textmatris. Det första argumentet <varname>value</"
 "varname> är uppsättningen värden (som dubbel precision) från alla ingående "
 "raster. De tre dimensionerna (där indexen är 1-baserade) är: raster #, rad "
 "y, kolumn x. Det andra argumentet <varname>position</varname> är "
-"uppsättningen pixelpositioner från utgångsrastret och ingångsrastren. Den "
+"uppsättningen pixelpositioner från utdatarastret och indatarastren. Den "
 "yttre dimensionen (där indexen är 0-baserade) är raster #. Positionen vid "
-"ytterdimensionens index 0 är utgångsrastrets pixelposition. För varje yttre "
+"ytterdimensionens index 0 är utdatarastrets pixelposition. För varje yttre "
 "dimension finns det två element i den inre dimensionen för X och Y. Det "
 "tredje argumentet <varname>userargs</varname> används för att skicka igenom "
 "eventuella användarspecifika argument."
@@ -37066,7 +37062,7 @@ msgid ""
 "are between 0 and 255."
 msgstr ""
 "Returnerar den hypotetiska belysningen av ett höjdrasterband med hjälp av "
-"ingångsvärdena azimut, höjd, ljusstyrka och skala. Använder kartalgebra och "
+"indatavärdena azimut, höjd, ljusstyrka och skala. Använder kartalgebra och "
 "tillämpar ekvationen för kullskugga på närliggande pixlar. Returpixelvärdena "
 "ligger mellan 0 och 255."
 
@@ -40041,7 +40037,7 @@ msgstr ""
 "Returnerar <varname>TRUE</varname> om A och B skär varandra, men deras "
 "interiörer inte skär varandra. På motsvarande sätt har A och B minst en "
 "gemensam punkt och de gemensamma punkterna ligger inom minst en gräns. För "
-"Point/Point-ingångar är relationen alltid <varname>FALSK</varname>, eftersom "
+"Point/Point-indata är relationen alltid <varname>FALSK</varname>, eftersom "
 "punkter inte har någon gräns."
 
 #. Tag: para
@@ -40521,7 +40517,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Accessors and Setters"
-msgstr "SFCGAL Accessorer och Setters"
+msgstr "SFCGAL-accessorer och Setters"
 
 #. Tag: para
 #, no-c-format
@@ -41100,8 +41096,8 @@ msgid ""
 msgstr ""
 "Beräknar <link xlink:href=\"https://en.wikipedia.org/wiki/Alpha_shape\""
 ">Alpha-Shape</link> för punkterna i en geometri. En alfa-form är en "
-"(vanligtvis) konkav polygonal geometri som innehåller alla ingångsvärdenas "
-"hörnpunkter och vars hörnpunkter är en delmängd av ingångsvärdenas "
+"(vanligtvis) konkav polygonal geometri som innehåller alla indatavärdenas "
+"hörnpunkter och vars hörnpunkter är en delmängd av indatavärdenas "
 "hörnpunkter. En alfa-form ger en bättre anpassning till indatans form än den "
 "form som produceras av det <link linkend=\"ST_ConvexHull\">konvexa "
 "skrovet</link>."
@@ -42806,12 +42802,11 @@ msgid ""
 "linkend=\"ST_InverseTransformPipeline\"/> the pipeline is executed in the "
 "inverse direction."
 msgstr ""
-"SRID för inmatningsgeometrin ignoreras och SRID för utmatningsgeometrin "
-"kommer att sättas till noll om inte ett värde anges via den valfria "
-"parametern <varname>to_srid</varname>. När du använder "
-"`ST_TransformPipeline()` körs pipelinen i framåtriktad riktning. Om du "
-"använder <xref linkend=\"ST_InverseTransformPipeline\"/> körs pipelinen i "
-"omvänd riktning."
+"SRID för inmatningsgeometrin ignoreras och SRID för utdatageometrin kommer "
+"att sättas till noll om inte ett värde anges via den valfria parametern "
+"<varname>to_srid</varname>. När du använder `ST_TransformPipeline()` körs "
+"pipelinen i framåtriktad riktning. Om du använder <xref linkend="
+"\"ST_InverseTransformPipeline\"/> körs pipelinen i omvänd riktning."
 
 #. Tag: para
 #, no-c-format
@@ -44080,7 +44075,7 @@ msgid ""
 msgstr ""
 "\"linework\" är den ursprungliga algoritmen och bygger giltiga geometrier "
 "genom att först extrahera alla linjer, noda ihop detta linjearbete och sedan "
-"bygga en värdeutgång från linjearbetet."
+"bygga en värdeutdata från linjearbetet."
 
 #. Tag: para
 #, no-c-format
@@ -45155,7 +45150,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Point"
-msgstr "Punkt"
+msgstr "Point"
 
 #. Tag: para
 #, no-c-format
@@ -45195,7 +45190,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "LinearRing"
-msgstr "Linjär ring"
+msgstr "LinearRing"
 
 #. Tag: para
 #, no-c-format
@@ -45724,9 +45719,9 @@ msgid ""
 "not include the SRID value."
 msgstr ""
 "OGC SFA-specifikationerna stödde ursprungligen endast 2D-geometrier, och "
-"geometrins SRID ingår inte i inmatnings-/utmatningsrepresentationerna. OGC "
-"SFA-specifikationen 1.2.1 (som överensstämmer med ISO 19125-standarden) "
-"lägger till stöd för 3D (ZYZ) och uppmätta (XYM och XYZM) koordinater, men "
+"geometrins SRID ingår inte i inmatnings-/utdatarepresentationerna. OGC SFA-"
+"specifikationen 1.2.1 (som överensstämmer med ISO 19125-standarden) lägger "
+"till stöd för 3D (ZYZ) och uppmätta (XYM och XYZM) koordinater, men "
 "inkluderar fortfarande inte SRID-värdet."
 
 #. Tag: para
@@ -45946,7 +45941,7 @@ msgid ""
 "Input and output using these formats is available using the following "
 "functions:"
 msgstr ""
-"Inmatning och utmatning med dessa format kan göras med hjälp av följande "
+"Inmatning och utdata med dessa format kan göras med hjälp av följande "
 "funktioner:"
 
 #. Tag: para
@@ -46514,10 +46509,10 @@ msgid ""
 "endpoints of a simple LineString are identical it is called "
 "<emphasis>closed</emphasis> and referred to as a Linear Ring."
 msgstr ""
-"En <varname>linestrings</varname> är <emphasis>enkel</emphasis> om den inte "
+"En <varname>LINESTRING</varname> är <emphasis>enkel</emphasis> om den inte "
 "passerar genom samma punkt två gånger, med undantag för ändpunkterna. Om "
-"ändpunkterna på en enkel linestrings är identiska kallas den "
-"<emphasis>sluten</emphasis> och kallas för en linjär ring."
+"ändpunkterna på en enkel LineString är identiska kallas den "
+"<emphasis>sluten</emphasis> och kallas för en Linear Ring."
 
 #. Tag: emphasis
 #, no-c-format
@@ -46530,7 +46525,7 @@ msgstr ""
 "<emphasis role=\"bold\">(a)</emphasis> och <emphasis role=\"bold\">(c)</"
 "emphasis> är enkla <varname>LINESTRINGs</varname>. <emphasis role=\"bold\""
 ">(b)</emphasis> och <emphasis role=\"bold\">(d)</emphasis> är inte enkla. "
-"<emphasis role=\"bold\">(c)</emphasis> är en sluten linjär ring."
+"<emphasis role=\"bold\">(c)</emphasis> är en sluten Linear Ring."
 
 #. Tag: emphasis
 #, no-c-format
@@ -47016,10 +47011,10 @@ msgid ""
 msgstr ""
 "En geometri är associerad med ett spatialt referenssystem genom sitt SRID-"
 "värde, som nås via <xref linkend=\"ST_SRID\"/>. SRID för en geometri kan "
-"tilldelas med hjälp av <xref linkend=\"ST_SetSRID\"/>. Vissa "
-"geometrikonstruktörsfunktioner gör det möjligt att ange en SRID (t.ex. <xref "
-"linkend=\"ST_Point\"/> och <xref linkend=\"ST_MakeEnvelope\"/>). <link "
-"linkend=\"EWKB_EWKT\">EWKT-formatet</link> stöder SRID med prefixet "
+"tilldelas med hjälp av <xref linkend=\"ST_SetSRID\"/>. Vissa geometry "
+"constructor-funktioner gör det möjligt att ange en SRID (t.ex. <xref linkend="
+"\"ST_Point\"/> och <xref linkend=\"ST_MakeEnvelope\"/>). <link linkend="
+"\"EWKB_EWKT\">EWKT-formatet</link> stöder SRID med prefixet "
 "<code>SRID=n;.</code>."
 
 #. Tag: para
@@ -47205,9 +47200,9 @@ msgstr ""
 "Men det finns många koordinatsystem som den inte innehåller. Du kan lägga "
 "till SRS-definitioner i tabellen om du har den information som krävs om det "
 "spatiala referenssystemet. Eller så kan du definiera ditt eget spatiala "
-"referenssystem om du är bekant med PROJ-konstruktioner. Tänk på att de "
-"flesta spatiala referenssystem är regionala och inte har någon betydelse när "
-"de används utanför de gränser som de är avsedda för."
+"referenssystem om du är bekant med PROJ constructs. Tänk på att de flesta "
+"spatiala referenssystem är regionala och inte har någon betydelse när de "
+"används utanför de gränser som de är avsedda för."
 
 #. Tag: para
 #, no-c-format
@@ -47785,7 +47780,7 @@ msgid ""
 "Output WKT format, instead of WKB. Note that this can introduce coordinate "
 "drifts due to loss of precision."
 msgstr ""
-"Utmatning i WKT-format istället för WKB. Observera att detta kan medföra "
+"Utdata i WKT-format istället för WKB. Observera att detta kan medföra "
 "koordinatavvikelser på grund av förlorad precision."
 
 #. Tag: para
@@ -48784,7 +48779,7 @@ msgid ""
 "LATERAL JOIN."
 msgstr ""
 "Om <command>SET ENABLE_SEQSCAN TO OFF;</command> inte hjälper din fråga kan "
-"det bero på att frågan använder en SQL-konstruktion som Postgres-planeraren "
+"det bero på att frågan använder en SQL construct som Postgres-planeraren "
 "ännu inte kan optimera. Det kan vara möjligt att skriva om frågan på ett "
 "sätt som planeraren kan hantera. Till exempel kanske en underfråga med en "
 "inline SELECT inte ger en effektiv plan, men kan eventuellt skrivas om med "
@@ -49876,9 +49871,8 @@ msgid ""
 "Assign output raster with specified SRID. If not provided or is zero, "
 "raster's metadata will be checked to determine an appropriate SRID."
 msgstr ""
-"Tilldelar utmatningsraster med angiven SRID. Om den inte anges eller är "
-"noll, kommer rastrets metadata att kontrolleras för att fastställa en "
-"lämplig SRID."
+"Tilldelar utdataraster med angiven SRID. Om den inte anges eller är noll, "
+"kommer rastrets metadata att kontrolleras för att fastställa en lämplig SRID."
 
 #. Tag: para
 #, no-c-format
@@ -50039,8 +50033,8 @@ msgid ""
 "Control endianness of generated binary output of raster; specify 0 for XDR "
 "and 1 for NDR (default); only NDR output is supported now"
 msgstr ""
-"Styr endianness för genererad binär utmatning av raster; ange 0 för XDR och "
-"1 för NDR (standard); endast NDR-utmatning stöds nu"
+"Styr endianness för genererad binär utdata av raster; ange 0 för XDR och 1 "
+"för NDR (standard); endast NDR-utdata stöds nu"
 
 #. Tag: para
 #, no-c-format
@@ -50745,7 +50739,7 @@ msgstr ""
 msgid ""
 "PHP Example Outputting using ST_AsPNG in concert with other raster functions"
 msgstr ""
-"PHP-exempel Utmatning med ST_AsPNG i kombination med andra rasterfunktioner"
+"PHP-exempel Utdata med ST_AsPNG i kombination med andra rasterfunktioner"
 
 #. Tag: para
 #, no-c-format
@@ -50794,7 +50788,7 @@ msgid ""
 "ASP.NET C# Example Outputting using ST_AsPNG in concert with other raster "
 "functions"
 msgstr ""
-"ASP.NET C# Exempel Utmatning med hjälp av ST_AsPNG tillsammans med andra "
+"ASP.NET C# Exempel Utdata med hjälp av ST_AsPNG tillsammans med andra "
 "rasterfunktioner"
 
 #. Tag: para
@@ -50898,7 +50892,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Outputting Rasters with PSQL"
-msgstr "Utmatning av raster med PSQL"
+msgstr "Utdata av raster med PSQL"
 
 #. Tag: para
 #, no-c-format
