@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-06-08 17:47+0000\n"
+"PO-Revision-Date: 2025-06-09 06:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/sv/>\n"
@@ -44145,7 +44145,7 @@ msgstr "efter_geom: MULTIPOLYGON av 4 icke överlappande polygoner"
 #. Tag: para
 #, no-c-format
 msgid "after_geom_structure: MULTIPOLYGON of 1 non-overlapping polygon"
-msgstr "efter_geom_struktur: MULTIPOLYGON av 1 icke överlappande polygon"
+msgstr "after_geom_strukture: MULTIPOLYGON av 1 icke överlappande polygon"
 
 #. Tag: para
 #, no-c-format
@@ -44160,7 +44160,7 @@ msgstr "efter_geom: MULTIPOLYGON med 14 icke överlappande polygoner"
 #. Tag: para
 #, no-c-format
 msgid "after_geom_structure: MULTIPOLYGON of 1 Non-overlapping polygon"
-msgstr "efter_geom_struktur: MULTIPOLYGON av 1 icke överlappande polygon"
+msgstr "after_geom_structure: MULTIPOLYGON av 1 icke överlappande polygon"
 
 #. Tag: para
 #, no-c-format
