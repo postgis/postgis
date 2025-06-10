@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - Handle allocation failure when creating a geometry string buffer (Maksim Korotkov)
   - Free temporary shapefile codepage strings (Maksim Korotkov)
   - [address_standardizer] Reject out-of-range rule weights (reported by Harsh Raj Singhania; fixed by Darafei Praliaskouski)
   - [tiger_geocoder] Skip soundex matching for numeric street names (Tag Spilman)
