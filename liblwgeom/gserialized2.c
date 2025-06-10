@@ -294,15 +294,15 @@ gserialized2_hash(const GSERIALIZED *g1)
 
 const float * gserialized2_get_float_box_p(const GSERIALIZED *g, size_t *ndims)
 {
+	/* Cannot do anything if there's no box */
+	if (!(g && gserialized_has_bbox(g)))
+		return NULL;
+
 	uint8_t *ptr = (uint8_t*)(g->data);
 	size_t bndims = G2FLAGS_NDIMS_BOX(g->gflags);
 
 	if (ndims)
 		*ndims = bndims;
-
-	/* Cannot do anything if there's no box */
-	if (!(g && gserialized_has_bbox(g)))
-		return NULL;
 
 	/* Advance past optional extended flags */
 	if (gserialized2_has_extended(g))
@@ -313,9 +313,10 @@ const float * gserialized2_get_float_box_p(const GSERIALIZED *g, size_t *ndims)
 
 int gserialized2_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 {
-	uint8_t gflags = g->gflags;
 	/* Null input! */
 	if (!(g && gbox)) return LW_FAILURE;
+
+	uint8_t gflags = g->gflags;
 
 	/* Initialize the flags on the box */
 	gbox->flags = gserialized2_get_lwflags(g);
