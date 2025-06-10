@@ -443,7 +443,11 @@ void printPA(POINTARRAY *pa)
 	POINT4D pt;
 	char *mflag;
 
-
+	if (!pa)
+	{
+		lwnotice("                    PTARRAY is null pointer!");
+		return;
+	}
 	if ( FLAGS_GET_M(pa->flags) ) mflag = "M";
 	else mflag = "";
 
@@ -452,24 +456,17 @@ void printPA(POINTARRAY *pa)
 	         FLAGS_NDIMS(pa->flags), ptarray_point_size(pa));
 	lwnotice("                 npoints = %u", pa->npoints);
 
-	if (!pa)
+	for (t = 0; t < pa->npoints; t++)
 	{
-		lwnotice("                    PTARRAY is null pointer!");
+		getPoint4d_p(pa, t, &pt);
+		if (FLAGS_NDIMS(pa->flags) == 2)
+			lwnotice("                    %i : %lf,%lf", t, pt.x, pt.y);
+		if (FLAGS_NDIMS(pa->flags) == 3)
+			lwnotice("                    %i : %lf,%lf,%lf", t, pt.x, pt.y, pt.z);
+		if (FLAGS_NDIMS(pa->flags) == 4)
+			lwnotice("                    %i : %lf,%lf,%lf,%lf", t, pt.x, pt.y, pt.z, pt.m);
 	}
-	else
-	{
 
-		for (t = 0; t < pa->npoints; t++)
-		{
-			getPoint4d_p(pa, t, &pt);
-			if (FLAGS_NDIMS(pa->flags) == 2)
-				lwnotice("                    %i : %lf,%lf", t, pt.x, pt.y);
-			if (FLAGS_NDIMS(pa->flags) == 3)
-				lwnotice("                    %i : %lf,%lf,%lf", t, pt.x, pt.y, pt.z);
-			if (FLAGS_NDIMS(pa->flags) == 4)
-				lwnotice("                    %i : %lf,%lf,%lf,%lf", t, pt.x, pt.y, pt.z, pt.m);
-		}
-	}
 	lwnotice("      }");
 }
 
