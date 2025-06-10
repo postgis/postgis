@@ -1414,7 +1414,10 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	if ( getenv("PGCLIENTENCODING") )
 	{
 		char *codepage = encoding2codepage(getenv("PGCLIENTENCODING"));
+		if (!codepage)
+			return SHPDUMPERERR;
 		state->dbf = DBFCreateEx(state->shp_file, codepage);
+		free(codepage);
 	}
 	else
 	{
