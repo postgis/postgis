@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Free temporary shapefile codepage strings (Maksim Korotkov)
  - Support GEOS 3.15 overlay output in regressions (Paul Ramsey)
  - [address_standardizer] Reject out-of-range rule weights (reported by Harsh Raj Singhania; fixed by Darafei Praliaskouski)
  - [tiger_geocoder] Skip soundex matching for numeric street names (Tag Spilman)
