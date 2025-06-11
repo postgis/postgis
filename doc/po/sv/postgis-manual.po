@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-06-09 14:47+0000\n"
+"PO-Revision-Date: 2025-06-11 06:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/sv/>\n"
@@ -2752,10 +2752,10 @@ msgid ""
 msgstr ""
 "Tar in en adress som en sträng (eller en redan normaliserad adress) och "
 "matar ut en uppsättning möjliga platser som inkluderar en punktgeometri i "
-"NAD 83 long lat, en <varname>normaliserad</varname> adress (addy) för varje, "
+"NAD 83 long lat, en <varname>normalized_address</varname> (addy) för varje, "
 "och betyget. Ju lägre betyg desto mer sannolik är matchningen. Resultaten "
-"sorteras efter lägsta betyg först. Använder Tigerdata (kanter, ansikten, "
-"addr), PostgreSQL fuzzy strängmatchning (soundex, levenshtein) och PostGIS "
+"sorteras efter lägsta betyg först. Använder Tigerdata (edges,faces,addr), "
+"PostgreSQL fuzzy strängmatchning (soundex, levenshtein) och PostGIS "
 "linjeinterpolationsfunktioner för att interpolera adress längs "
 "Tigerkanterna. Ju högre betyg desto mindre sannolikt är det att geokoden är "
 "rätt. Den geokodade punkten är som standard förskjuten 10 meter från "
@@ -2855,10 +2855,10 @@ msgstr ""
 "Tar in två gator som korsar varandra och en stat, stad, postnummer och matar "
 "ut en uppsättning möjliga platser på den första tvärgatan som är i "
 "korsningen, inkluderar också en geomout som punktplats i NAD 83 lång lat, en "
-"<varname>normaliserad adress</varname> (addy) för varje plats och betyg. Ju "
+"<varname>normalized_address</varname> (addy) för varje plats och betyg. Ju "
 "lägre betyg desto mer sannolik är matchningen. Resultaten sorteras efter "
 "lägsta betyg först. Kan valfritt skicka in maximala resultat, standard är "
-"10. Använder Tiger-data (kanter, ansikten, addr), PostgreSQL fuzzy "
+"10. Använder Tiger-data (edges, faces, addr), PostgreSQL fuzzy "
 "strängmatchning (soundex, levenshtein)."
 
 #. Tag: para
@@ -2881,11 +2881,11 @@ msgstr ""
 "normaliserad adress för varje plats och betyg. Ju lägre betyg desto mer "
 "sannolik är matchningen. Resultaten sorteras efter lägsta betyg först. Kan "
 "valfritt skicka in maximala resultat, standard är 10. Returnerar "
-"<varname>normaliserad_adress</varname> (addy) för varje, geomout som "
+"<varname>normalized_address</varname> (addy) för varje, geomout som "
 "punktplats i nad 83 long lat, och betyg. Ju lägre betyg desto mer sannolik "
 "är matchningen. Resultaten sorteras efter lägsta betyg först. Använder "
-"Tigerdata (kanter, ansikten, addr), PostgreSQL fuzzy strängmatchning ("
-"soundex, levenshtein)"
+"Tigerdata (edges,faces,addr), PostgreSQL fuzzy strängmatchning (soundex, "
+"levenshtein)"
 
 #. Tag: para
 #, no-c-format
@@ -3919,13 +3919,12 @@ msgid ""
 "future be more easily reconciled with tiger data. Returns summary details "
 "about the process."
 msgstr ""
-"Laddar en definierad region med tigerdata till en PostGIS-topologi. "
-"Ansikten, noder och kanter transformeras till det spatiala referenssystemet "
-"för måltopologin och punkter knäpps till toleransen för måltopologin. De "
-"skapade ytorna, noderna och kanterna har samma id som de ursprungliga "
-"ytorna, noderna och kanterna i tigerdata, så att dataset i framtiden lättare "
-"kan stämmas av med tigerdata. Returnerar sammanfattande information om "
-"processen."
+"Läser in en definierad region med tigerdata till en PostGIS-topologi. Ytor, "
+"noder och kanter transformeras till det spatiala referenssystemet för "
+"måltopologin och punkter knäpps till toleransen för måltopologin. De skapade "
+"ytorna, noderna och kanterna har samma id som de ursprungliga ytorna, "
+"noderna och kanterna i tigerdata, så att dataset i framtiden lättare kan "
+"stämmas av med tigerdata. Returnerar sammanfattande information om processen."
 
 #. Tag: para
 #, no-c-format
@@ -4369,8 +4368,9 @@ msgid ""
 "face overlaps face,face within face,"
 msgstr ""
 "Aktuella felbeskrivningar är: sammanfallande noder, kant korsar nod, kant "
-"inte enkel, kant slutnod geometri missmatchning, kant startnod geometri "
-"missmatchning, ansikte överlappar ansikte, ansikte inom ansikte,"
+"inte enkel, geometrisk felmatchning mellan kantens slutpunkt och nod, "
+"geometrisk felmatchning mellan kantens startpunkt och nod, yta överlappar "
+"yta, yta inom yta,"
 
 #. Tag: para
 #, no-c-format
@@ -4919,12 +4919,12 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "face without edges"
-msgstr "ansikte utan kanter"
+msgstr "yta utan kanter"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the orphaned face."
-msgstr "Identifierare av det föräldralösa ansiktet."
+msgstr "Identifierare av den föräldralösa ytan."
 
 #. Tag: entry
 #, no-c-format
@@ -4938,12 +4938,12 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "face has no rings"
-msgstr "ansiktet har inga ringar"
+msgstr "ytan har inga ringar"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the partially-defined face."
-msgstr "Identifierare av det delvis definierade ansiktet."
+msgstr "Identifierare av den delvis definierade ytan."
 
 #. Tag: entry
 #, no-c-format
@@ -4953,12 +4953,12 @@ msgstr "Kanter som rapporterar en yta på sina sidor bildar inte en ring."
 #. Tag: entry
 #, no-c-format
 msgid "face has wrong mbr"
-msgstr "ansiktet har fel mbr"
+msgstr "ytan har fel mbr"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the face with wrong mbr cache."
-msgstr "Identifierare av ansiktet med felaktig mbr-cache."
+msgstr "Identifierare av yta med felaktig mbr-cache."
 
 #. Tag: entry
 #, no-c-format
@@ -4972,7 +4972,7 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "hole not in advertised face"
-msgstr "hål inte i annonserat ansikte"
+msgstr "hål inte i annonserad yta"
 
 #. Tag: entry
 #, no-c-format
@@ -5092,7 +5092,7 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "mixed face labeling in ring"
-msgstr "blandad ansiktsmärkning i ring"
+msgstr "blandad ytmärkning i ring"
 
 #. Tag: entry
 #, no-c-format
@@ -5100,8 +5100,8 @@ msgid ""
 "Edges in a ring indicate conflicting faces on the walking side. This is also "
 "known as a \"Side Location Conflict\"."
 msgstr ""
-"Kanter i en ring indikerar motstridiga ansikten på gångsidan. Detta kallas "
-"också för en \"Side Location Conflict\"."
+"Kanter i en ring indikerar motstridiga ytor på gångsidan. Detta kallas också "
+"för en \"Side Location Conflict\"."
 
 #. Tag: entry
 #, no-c-format
@@ -5120,12 +5120,12 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "face has multiple shells"
-msgstr "ansiktet har flera skal"
+msgstr "ytan har flera skal"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the contended face."
-msgstr "Identifierare av det konturerade ansiktet."
+msgstr "Identifierare av den konturerade ytan."
 
 #. Tag: entry
 #, no-c-format
@@ -5162,7 +5162,7 @@ msgid ""
 "linking checks."
 msgstr ""
 "Ändrad: 3.2.0 lade till valfri bbox-parameter, utför kontroller av "
-"ansiktsmärkning och kantlänkning."
+"ytmärkning och kantlänkning."
 
 #. Tag: para
 #, no-c-format
@@ -5644,8 +5644,7 @@ msgid ""
 "splitting existing edges/faces. Returns face identifiers."
 msgstr ""
 "Lägger till en polygon till en befintlig topologi med hjälp av en tolerans "
-"och eventuellt delning av befintliga kanter/ytor. Returnerar "
-"ansiktsidentifierare."
+"och eventuellt delning av befintliga kanter/ytor. Returnerar ytidentifierare."
 
 #. Tag: para
 #, no-c-format
@@ -5656,9 +5655,9 @@ msgid ""
 "the boundary of the new polygon."
 msgstr ""
 "Lägger till en polygon till en befintlig topologi och returnerar en "
-"uppsättning ansiktsidentifierare som bildar den. Gränsen för den givna "
-"polygonen kommer att snäppa till befintliga noder eller kanter inom given "
-"tolerans. Befintliga kanter och ytor kan delas av den nya polygonens gräns."
+"uppsättning ytidentifierare som bildar den. Gränsen för den givna polygonen "
+"kommer att snäppa till befintliga noder eller kanter inom given tolerans. "
+"Befintliga kanter och ytor kan delas av den nya polygonens gräns."
 
 #. Tag: para
 #, no-c-format
@@ -5735,8 +5734,8 @@ msgid ""
 "existing face with faceid <varname>aface</varname> to a topology "
 "<varname>atopology</varname> and returns the nodeid of the new node."
 msgstr ""
-"Lägger till en isolerad nod med punktläge <varname>apoint</varname> till ett "
-"befintligt ansikte med faceid <varname>aface</varname> till en topologi "
+"Lägger till en isolerad nod med punktläge <varname>apoint</varname> till en "
+"befintlig yta med faceid <varname>aface</varname> till en topologi "
 "<varname>atopologi</varname> och returnerar den nya nodens nodeid."
 
 #. Tag: para
@@ -6032,9 +6031,8 @@ msgid ""
 msgstr ""
 "Tar bort en kant, och om den borttagna kanten separerar två ytor tas den ena "
 "ytan bort och den andra ytan modifieras så att den täcker utrymmet för båda "
-"ytorna. Företrädesvis behålls ansiktet till höger, för att vara konsekvent "
-"med <xref linkend=\"ST_AddEdgeModFace\"/>. Returnerar id för den yta som "
-"bevaras."
+"ytorna. Företrädesvis behålls ytan till höger, för att vara konsekvent med "
+"<xref linkend=\"ST_AddEdgeModFace\"/>. Returnerar id för den yta som bevaras."
 
 #. Tag: para
 #, no-c-format
@@ -6438,16 +6436,14 @@ msgid ""
 "If no face intersects the given query location, 0 is returned (universal "
 "face)."
 msgstr ""
-"Om inget ansikte korsar den angivna sökplatsen returneras 0 (universellt "
-"ansikte)."
+"Om ingen yta korsar den angivna sökplatsen returneras 0 (universell yta)."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If more than one face intersect the query location an exception is thrown."
 msgstr ""
-"Om mer än ett ansikte korsar den plats där frågan ställs uppstår ett "
-"undantag."
+"Om mer än en yta korsar den plats där frågan ställs uppstår ett undantag."
 
 #. Tag: para
 #, no-c-format
@@ -6489,7 +6485,7 @@ msgid ""
 "labeling."
 msgstr ""
 "Funktionen bygger på en giltig topologi med hjälp av kantlänkning och "
-"ansiktsmärkning."
+"ytmärkning."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6656,8 +6652,7 @@ msgstr ", <xref linkend=\"AddFace\"/>, <xref linkend=\"ST_GetFaceGeometry\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the polygon in the given topology with the specified face id."
-msgstr ""
-"Returnerar polygonen i den angivna topologin med det angivna ansikts-id."
+msgstr "Returnerar polygonen i den angivna topologin med det angivna ytans id."
 
 #. Tag: para
 #, no-c-format
@@ -6665,8 +6660,8 @@ msgid ""
 "Returns the polygon in the given topology with the specified face id. Builds "
 "the polygon from the edges making up the face."
 msgstr ""
-"Returnerar polygonen i den angivna topologin med det angivna ansikts-id. "
-"Bygger polygonen från de kanter som utgör ansiktet."
+"Returnerar polygonen i den angivna topologin med det angivna ytans id. "
+"Bygger polygonen från de kanter som utgör ytan."
 
 #. Tag: para
 #, no-c-format
@@ -6801,8 +6796,8 @@ msgid ""
 "Already known faces are recognized, so it is safe to call Polygonize "
 "multiple times on the same topology."
 msgstr ""
-"Redan kända ansikten känns igen, så det är säkert att anropa Polygonize "
-"flera gånger på samma topologi."
+"Redan kända ytan känns igen, så det är säkert att anropa Polygonize flera "
+"gånger på samma topologi."
 
 #. Tag: para
 #, no-c-format
@@ -6946,7 +6941,7 @@ msgid ""
 "<refpurpose>Registers a face primitive to a topology and gets its identifier."
 "</refpurpose>"
 msgstr ""
-"<refpurpose>Registrerar en ansiktsprimitiv till en topologi och hämtar dess "
+"<refpurpose>Registrerar en ytprimitiv till en topologi och hämtar dess "
 "identifierare.</refpurpose>"
 
 #. Tag: para
@@ -6955,7 +6950,7 @@ msgid ""
 "<para>Registers a face primitive to a topology and gets its identifier.</"
 "para>"
 msgstr ""
-"<para>Registrerar en ansiktsprimitiv till en topologi och hämtar dess "
+"<para>Registrerar en ytprimitiv till en topologi och hämtar dess "
 "identifierare.</para>"
 
 #. Tag: para
@@ -6966,10 +6961,10 @@ msgid ""
 "left_face and right_face fields. Isolated nodes contained in the face will "
 "also be updated to have a correct containing_face field value."
 msgstr ""
-"För ett nytillagt ansikte kommer de kanter som utgör dess gränser och de som "
-"ingår i ansiktet att uppdateras så att de har korrekta värden i fälten "
-"left_face och right_face. Isolerade noder som ingår i ansiktet kommer också "
-"att uppdateras så att de får ett korrekt värde i fältet containing_face."
+"För en nytillagd yta kommer de kanter som utgör dess gränser och de som "
+"ingår i ytan att uppdateras så att de har korrekta värden i fälten left_face "
+"och right_face. Isolerade noder som ingår i ytan kommer också att uppdateras "
+"så att de får ett korrekt värde i fältet containing_face."
 
 #. Tag: para
 #, no-c-format
@@ -7003,11 +6998,11 @@ msgid ""
 "in the edge, node an relation tables, nor will the MBR field of the existing "
 "face record be updated. It is up to the caller to deal with that."
 msgstr ""
-"När en ny registrering av ett befintligt ansikte utförs (force_new=true), "
-"kommer inga åtgärder att vidtas för att lösa hängande referenser till det "
-"befintliga ansiktet i tabellerna för edge, node och relation, och MBR-fältet "
-"i posten för det befintliga ansiktet kommer inte heller att uppdateras. Det "
-"är upp till den som anropar att hantera detta."
+"När en ny registrering av en befintlig yta utförs (force_new=true), kommer "
+"inga åtgärder att vidtas för att lösa hängande referenser till den "
+"befintliga ytan i tabellerna för edge, node och relation, och MBR-fältet i "
+"posten för den befintliga ytan kommer inte heller att uppdateras. Det är upp "
+"till den som anropar att hantera detta."
 
 #. Tag: para
 #, no-c-format
@@ -7077,8 +7072,8 @@ msgid ""
 msgstr ""
 "Hittar alla primitiver (noder, kanter, ytor) som inte är absolut nödvändiga "
 "för att representera befintliga TopoGeometry-objekt och tar bort dem, med "
-"bibehållen topologigiltighet (kantlänkning, ansiktsmärkning) och "
-"TopoGeometry-rymdbeläggning."
+"bibehållen topologigiltighet (kantlänkning, ytmärkning) och TopoGeometry-"
+"rymdbeläggning."
 
 #. Tag: para
 #, no-c-format
