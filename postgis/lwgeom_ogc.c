@@ -118,6 +118,18 @@ Datum LWGEOM_set_srid(PG_FUNCTION_ARGS)
 
 /* returns a string representation of this geometry's type */
 PG_FUNCTION_INFO_V1(LWGEOM_getTYPE);
+/**
+ * Return the geometry type name for a serialized geometry.
+ *
+ * Examines the GSERIALIZED header of the input geometry and returns a text value
+ * containing the canonical geometry type name (e.g. "POINT", "LINESTRING",
+ * "POLYGON", "GEOMETRYCOLLECTION", "TIN", "NURBSCURVE", etc.). If the geometry
+ * has an M dimension but no Z dimension, an "M" suffix is appended (for
+ * example "POINTM"). If the type is not recognized, "UNKNOWN" is returned.
+ *
+ * The function expects a serialized geometry argument and returns a PostgreSQL
+ * text datum with the type name.
+ */
 Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *gser;
@@ -162,6 +174,8 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 		strcpy(result,"POLYHEDRALSURFACE");
 	else if (type == TINTYPE)
 		strcpy(result,"TIN");
+	else if (type == NURBSCURVETYPE)
+		strcpy(result,"NURBSCURVE");
 	else
 		strcpy(result,"UNKNOWN");
 
@@ -191,7 +205,8 @@ static char *stTypeName[] = {"Unknown",
 			     "ST_MultiSurface",
 			     "ST_PolyhedralSurface",
 			     "ST_Triangle",
-			     "ST_Tin"};
+			     "ST_Tin",
+					 "ST_NurbsCurve"};
 
 /* returns a string representation of this geometry's type */
 PG_FUNCTION_INFO_V1(geometry_geometrytype);

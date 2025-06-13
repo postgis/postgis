@@ -749,6 +749,19 @@ static int lwcollection_calculate_gbox_cartesian(LWCOLLECTION *coll, GBOX *gbox)
 	return result;
 }
 
+/**
+ * Calculate a Cartesian bounding box for an LWGEOM and store it in a GBOX.
+ *
+ * Computes the 2D/3D/M bounding box for the given geometry and writes the result
+ * into the provided gbox. The function dispatches to type-specific helpers for
+ * supported geometry types. For NURBS curves the bounding box is conservatively
+ * derived from the curve's control points (control-polygon bounding box).
+ *
+ * @param lwgeom Geometry to compute the bounding box for. If NULL, the function returns LW_FAILURE.
+ * @param gbox Destination GBOX to receive the computed bounding box (must be non-NULL).
+ * @return LW_SUCCESS on successful computation and population of gbox; LW_FAILURE if lwgeom is NULL,
+ *         if the geometry type is unsupported, or if a bounding box cannot be computed (e.g. empty NURBS).
+ */
 int lwgeom_calculate_gbox_cartesian(const LWGEOM *lwgeom, GBOX *gbox)
 {
 	if ( ! lwgeom ) return LW_FAILURE;
@@ -777,6 +790,25 @@ int lwgeom_calculate_gbox_cartesian(const LWGEOM *lwgeom, GBOX *gbox)
 	case TINTYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_calculate_gbox_cartesian((LWCOLLECTION *)lwgeom, gbox);
+	case NURBSCURVETYPE:
+	{
+		/*
+		 * For NURBS curves, calculate bounding box from control points
+		 *
+		 * Note: This gives the control polygon bounding box, not the actual
+		 * curve bounding box. The true curve is guaranteed to lie within
+		 * the convex hull of control points, so this is a valid (conservative)
+		 * bounding box that's computationally efficient.
+		 *
+		 * For tighter bounds, one would need to evaluate the curve at multiple
+		 * parameter values, which is much more expensive.
+		 */
+		const LWNURBSCURVE *nurbs = (const LWNURBSCURVE*)lwgeom;
+		if (nurbs->points && nurbs->points->npoints > 0)
+			return ptarray_calculate_gbox_cartesian(nurbs->points, gbox);
+		else
+			return LW_FAILURE; /* Empty curve has no bounding box */
+	}
 	}
 	/* Never get here, please. */
 	lwerror("unsupported type (%d) - %s", lwgeom->type, lwtype_name(lwgeom->type));

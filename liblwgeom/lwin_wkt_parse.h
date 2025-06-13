@@ -74,9 +74,10 @@ extern int wkt_yydebug;
     TRIANGLE_TOK = 275,            /* TRIANGLE_TOK  */
     TIN_TOK = 276,                 /* TIN_TOK  */
     POLYHEDRALSURFACE_TOK = 277,   /* POLYHEDRALSURFACE_TOK  */
-    DOUBLE_TOK = 278,              /* DOUBLE_TOK  */
-    DIMENSIONALITY_TOK = 279,      /* DIMENSIONALITY_TOK  */
-    SRID_TOK = 280                 /* SRID_TOK  */
+    NURBSCURVE_TOK = 278,          /* NURBSCURVE_TOK  */
+    DOUBLE_TOK = 279,              /* DOUBLE_TOK  */
+    DIMENSIONALITY_TOK = 280,      /* DIMENSIONALITY_TOK  */
+    SRID_TOK = 281                 /* SRID_TOK  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -85,7 +86,7 @@ extern int wkt_yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 112 "lwin_wkt_parse.y"
+#line 119 "lwin_wkt_parse.y"
 
 	int integervalue;
 	double doublevalue;
@@ -94,7 +95,7 @@ union YYSTYPE
 	POINT coordinatevalue;
 	POINTARRAY *ptarrayvalue;
 
-#line 98 "lwin_wkt_parse.h"
+#line 99 "lwin_wkt_parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

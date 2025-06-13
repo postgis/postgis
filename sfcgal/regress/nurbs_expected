@@ -1,0 +1,43 @@
+nurbs_from_linestring|ST_NurbsCurve
+nurbs_from_multipoint|ST_NurbsCurve
+nurbs_degree3|ST_NurbsCurve
+nurbs_to_linestring_8seg|ST_LineString
+nurbs_to_linestring_default|ST_LineString
+nurbs_evaluate_at_half|ST_Point
+nurbs_first_derivative|ST_Point
+nurbs_interpolate|ST_NurbsCurve
+nurbs_approximate|ST_NurbsCurve
+nurbs_3d|ST_NurbsCurve
+nurbs_3d_evaluation|t
+nurbs_3d_interpolation|t
+nurbs_with_m|ST_NurbsCurve
+ERROR:  NURBS degree must be between 1 and 10
+ERROR:  Need at least 4 control points for degree 3 NURBS
+ERROR:  Control points must be a LINESTRING or MULTIPOINT
+ERROR:  Number of segments must be between 2 and 10000
+nurbs_derivative_at_start|ST_Point
+nurbs_second_derivative|ST_Point
+nurbs_approximate_limit|ST_NurbsCurve
+ERROR:  Parameter outside valid range
+wkt_nurbs_degree3_closed|ST_NurbsCurve
+wkt_nurbs_to_linestring|ST_LineString
+wkt_nurbs_simple|ST_NurbsCurve
+wkt_nurbs_with_weights|ST_NurbsCurve
+wkt_nurbs_4points|ST_NurbsCurve
+wkt_nurbs_3d_weights|ST_NurbsCurve
+wkt_nurbs_quarter_circle|ST_NurbsCurve
+wkt_nurbs_wave|ST_NurbsCurve
+wkt_weighted_to_linestring|ST_LineString
+wkt_nurbs_evaluate|ST_Point
+wkt_nurbs_derivative|ST_Point
+wkt_nurbs_3d_preserved|t
+wkt_nurbs_m_simple|ST_NurbsCurve
+wkt_nurbs_zm_simple|ST_NurbsCurve
+wkt_nurbs_m_weights|ST_NurbsCurve
+wkt_nurbs_zm_weights|ST_NurbsCurve
+wkt_nurbs_zm_full|ST_NurbsCurve
+wkt_nurbs_m_preserved|t
+wkt_nurbs_zm_preserved|t
+ERROR:  parse error - invalid geometry
+ERROR:  parse error - invalid geometry
+wkt_nurbs_bad_multiplicity_fail|f

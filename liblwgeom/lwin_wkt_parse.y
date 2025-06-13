@@ -101,6 +101,13 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 	return LW_SUCCESS;
 }
 
+#define SET_PARSER_ERROR(errcode) \
+    do { \
+        global_parser_result.errcode = (errcode); \
+        global_parser_result.message = parser_error_messages[(errcode)]; \
+        global_parser_result.errlocation = wkt_yylloc.last_column; \
+    } while(0)
+
 #define WKT_ERROR() { if ( global_parser_result.errcode != 0 ) { YYERROR; } }
 
 
@@ -126,6 +133,7 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 %token SEMICOLON_TOK
 %token TRIANGLE_TOK TIN_TOK
 %token POLYHEDRALSURFACE_TOK
+%token NURBSCURVE_TOK
 
 %token <doublevalue> DOUBLE_TOK
 %token <stringvalue> DIMENSIONALITY_TOK
@@ -139,6 +147,8 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 %type <geometryvalue> compoundcurve
 %type <geometryvalue> compound_list
 %type <geometryvalue> curve_list
+%type <ptarrayvalue> weight_list
+%type <ptarrayvalue> knot_list
 %type <geometryvalue> curvepolygon
 %type <geometryvalue> curvering
 %type <geometryvalue> curvering_list
@@ -170,12 +180,14 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 %type <geometryvalue> triangle
 %type <geometryvalue> triangle_list
 %type <geometryvalue> triangle_untagged
-
+%type <geometryvalue> nurbscurve
 
 /* These clean up memory on errors and parser aborts. */
 %destructor { ptarray_free($$); } ptarray
 %destructor { ptarray_free($$); } ring
 %destructor { ptarray_free($$); } patchring
+%destructor { ptarray_free($$); } weight_list
+%destructor { ptarray_free($$); } knot_list
 %destructor { lwgeom_free($$); } curvering_list
 %destructor { lwgeom_free($$); } triangle_list
 %destructor { lwgeom_free($$); } surface_list
@@ -207,6 +219,7 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 %destructor { lwgeom_free($$); } patch
 %destructor { lwgeom_free($$); } polygon_untagged
 %destructor { lwgeom_free($$); } polyhedralsurface
+%destructor { lwgeom_free($$); } nurbscurve
 %destructor { lwgeom_free($$); } tin
 %destructor { lwgeom_free($$); } triangle
 %destructor { lwgeom_free($$); } triangle_untagged
@@ -234,6 +247,7 @@ geometry_no_srid :
 	tin { $$ = $1; } |
 	polyhedralsurface { $$ = $1; } |
 	triangle { $$ = $1; } |
+	nurbscurve { $$ = $1; } |
 	geometrycollection { $$ = $1; } ;
 
 geometrycollection :
@@ -539,5 +553,53 @@ coordinate :
 	DOUBLE_TOK DOUBLE_TOK DOUBLE_TOK DOUBLE_TOK
 		{ $$ = wkt_parser_coord_4($1, $2, $3, $4); WKT_ERROR(); } ;
 
-%%
+nurbscurve :
+	/* Full syntax: NURBSCURVE(degree, (points), (weights), (knots)) */
+	NURBSCURVE_TOK LBRACKET_TOK DOUBLE_TOK COMMA_TOK LBRACKET_TOK ptarray RBRACKET_TOK COMMA_TOK LBRACKET_TOK weight_list RBRACKET_TOK COMMA_TOK LBRACKET_TOK knot_list RBRACKET_TOK RBRACKET_TOK
+		{ $$ = wkt_parser_nurbscurve_new($3, $6, $10, $14, NULL); WKT_ERROR(); } |
+	NURBSCURVE_TOK DIMENSIONALITY_TOK LBRACKET_TOK DOUBLE_TOK COMMA_TOK LBRACKET_TOK ptarray RBRACKET_TOK COMMA_TOK LBRACKET_TOK weight_list RBRACKET_TOK COMMA_TOK LBRACKET_TOK knot_list RBRACKET_TOK RBRACKET_TOK
+		{ $$ = wkt_parser_nurbscurve_new($4, $7, $11, $15, $2); WKT_ERROR(); } |
+	/* With weights only: NURBSCURVE(degree, (points), (weights)) */
+	NURBSCURVE_TOK LBRACKET_TOK DOUBLE_TOK COMMA_TOK LBRACKET_TOK ptarray RBRACKET_TOK COMMA_TOK LBRACKET_TOK weight_list RBRACKET_TOK RBRACKET_TOK
+		{ $$ = wkt_parser_nurbscurve_new($3, $6, $10, NULL, NULL); WKT_ERROR(); } |
+	NURBSCURVE_TOK DIMENSIONALITY_TOK LBRACKET_TOK DOUBLE_TOK COMMA_TOK LBRACKET_TOK ptarray RBRACKET_TOK COMMA_TOK LBRACKET_TOK weight_list RBRACKET_TOK RBRACKET_TOK
+		{ $$ = wkt_parser_nurbscurve_new($4, $7, $11, NULL, $2); WKT_ERROR(); } |
+	/* With degree only: NURBSCURVE(degree, (points)) */
+	NURBSCURVE_TOK LBRACKET_TOK DOUBLE_TOK COMMA_TOK LBRACKET_TOK ptarray RBRACKET_TOK RBRACKET_TOK
+		{ $$ = wkt_parser_nurbscurve_new($3, $6, NULL, NULL, NULL); WKT_ERROR(); } |
+	NURBSCURVE_TOK DIMENSIONALITY_TOK LBRACKET_TOK DOUBLE_TOK COMMA_TOK LBRACKET_TOK ptarray RBRACKET_TOK RBRACKET_TOK
+		{ $$ = wkt_parser_nurbscurve_new($4, $7, NULL, NULL, $2); WKT_ERROR(); } |
+
+
+	NURBSCURVE_TOK DIMENSIONALITY_TOK EMPTY_TOK
+		{ $$ = wkt_parser_nurbscurve_empty($2); WKT_ERROR(); } |
+	NURBSCURVE_TOK EMPTY_TOK
+		{ $$ = wkt_parser_nurbscurve_empty(NULL); WKT_ERROR(); }
+	;
+
+weight_list :
+	weight_list COMMA_TOK DOUBLE_TOK
+		{
+			$$ = wkt_parser_ptarray_add_coord($1, wkt_parser_coord_2($3, 0));
+			WKT_ERROR();
+		}
+	| DOUBLE_TOK
+		{
+			$$ = wkt_parser_ptarray_new(wkt_parser_coord_2($1, 0));
+			WKT_ERROR();
+		}
+	;
+
+knot_list :
+	knot_list COMMA_TOK DOUBLE_TOK
+		{
+			$$ = wkt_parser_ptarray_add_coord($1, wkt_parser_coord_2($3, 0));
+			WKT_ERROR();
+		}
+	| DOUBLE_TOK
+		{
+			$$ = wkt_parser_ptarray_new(wkt_parser_coord_2($1, 0));
+			WKT_ERROR();
+		}
+	;
 

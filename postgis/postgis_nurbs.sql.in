@@ -1,0 +1,144 @@
+-- ST_MakeNurbsCurve(degree, control_points)
+-- Creates a basic NURBS curve with uniform weights (B-spline)
+-- Parameters:
+--   degree: Polynomial degree (1-10), higher = smoother
+--   control_points: LINESTRING geometry defining curve shape
+-- Returns: NURBS curve geometry
+-- Example: SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry);
+CREATE OR REPLACE FUNCTION ST_MakeNurbsCurve(degree integer, control_points geometry)
+    RETURNS geometry
+    AS 'MODULE_PATHNAME', 'ST_MakeNurbsCurve'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 50;
+
+-- ST_MakeNurbsCurve(degree, control_points, weights)
+-- Creates a rational NURBS curve with explicit weights
+-- Parameters:
+--   degree: Polynomial degree (1-10)
+--   control_points: LINESTRING geometry defining curve shape
+--   weights: Array of positive weights, one per control point
+-- Returns: Weighted NURBS curve geometry
+-- Example: SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]);
+CREATE OR REPLACE FUNCTION ST_MakeNurbsCurve(degree integer, control_points geometry, weights double precision[])
+    RETURNS geometry
+    AS 'MODULE_PATHNAME', 'ST_MakeNurbsCurveWithWeights'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 100;
+
+-- ST_MakeNurbsCurve(degree, control_points, weights, knots)
+-- Creates a complete NURBS curve with custom knot vector
+-- Parameters:
+--   degree: Polynomial degree (1-10)
+--   control_points: LINESTRING geometry defining curve shape
+--   weights: Array of positive weights (NULL for uniform weights)
+--   knots: Knot vector defining parameter space (NULL for uniform spacing)
+-- Returns: Complete NURBS curve geometry
+-- Note: Knot vector must have (npoints + degree + 1) elements and be non-decreasing
+-- Example: SELECT ST_MakeNurbsCurve(2, pts, weights, ARRAY[0,0,0,0.5,1,1,1]);
+CREATE OR REPLACE FUNCTION ST_MakeNurbsCurve(degree integer, control_points geometry,
+                                           weights double precision[], knots double precision[])
+    RETURNS geometry
+    AS 'MODULE_PATHNAME', 'ST_MakeNurbsCurveComplete'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 150;
+
+
+-- ST_NurbsCurveControlPoints(nurbscurve)
+-- Extracts control points as euclidean coordinates (removes weight influence)
+-- Parameters:
+--   nurbscurve: Input NURBS curve geometry
+-- Returns: MULTIPOINT of control points in euclidean space
+-- Note: For rational curves, divides homogeneous coordinates by weights
+CREATE OR REPLACE FUNCTION ST_NurbsCurveControlPoints(nurbscurve geometry)
+    RETURNS geometry
+    AS 'MODULE_PATHNAME', 'ST_NurbsCurveControlPoints'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 50;
+
+-- ST_NurbsCurveDegree(nurbscurve)
+-- Returns the polynomial degree of the NURBS curve
+-- Parameters:
+--   nurbscurve: Input NURBS curve geometry
+-- Returns: Integer degree (1-10)
+CREATE OR REPLACE FUNCTION ST_NurbsCurveDegree(nurbscurve geometry)
+    RETURNS integer
+    AS 'MODULE_PATHNAME', 'ST_NurbsCurveDegree'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 10;
+
+-- ST_NurbsCurveWeights(nurbscurve)
+-- Extracts weight values for rational NURBS curves
+-- Parameters:
+--   nurbscurve: Input NURBS curve geometry
+-- Returns: Array of weight values, NULL for non-rational curves
+CREATE OR REPLACE FUNCTION ST_NurbsCurveWeights(nurbscurve geometry)
+    RETURNS double precision[]
+    AS 'MODULE_PATHNAME', 'ST_NurbsCurveWeights'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 25;
+
+-- ST_NurbsCurveKnots(nurbscurve)
+-- Extracts the knot vector defining parameter space
+-- Parameters:
+--   nurbscurve: Input NURBS curve geometry
+-- Returns: Array of knot values, NULL for uniform parameterization
+CREATE OR REPLACE FUNCTION ST_NurbsCurveKnots(nurbscurve geometry)
+    RETURNS double precision[]
+    AS 'MODULE_PATHNAME', 'ST_NurbsCurveKnots'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 25;
+
+-- ST_NurbsCurveNumControlPoints(nurbscurve)
+-- Returns the number of control points
+-- Parameters:
+--   nurbscurve: Input NURBS curve geometry
+-- Returns: Number of control points (integer)
+CREATE OR REPLACE FUNCTION ST_NurbsCurveNumControlPoints(nurbscurve geometry)
+    RETURNS integer
+    AS 'MODULE_PATHNAME', 'ST_NurbsCurveNumControlPoints'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 10;
+
+-- ST_NurbsCurveIsRational(nurbscurve)
+-- Determines if curve uses rational (weighted) formulation
+-- Parameters:
+--   nurbscurve: Input NURBS curve geometry
+-- Returns: TRUE if curve has weights, FALSE for polynomial B-spline
+CREATE OR REPLACE FUNCTION ST_NurbsCurveIsRational(nurbscurve geometry)
+    RETURNS boolean
+    AS 'MODULE_PATHNAME', 'ST_NurbsCurveIsRational'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 10;
+
+-- ST_NurbsCurveIsValid(nurbscurve)
+-- Comprehensive mathematical validation of NURBS curve
+-- Checks:
+--   - Sufficient control points for degree
+--   - Positive weights (if rational)
+--   - Non-decreasing knot vector
+--   - Correct knot vector length: npoints + degree + 1
+-- Parameters:
+--   nurbscurve: Input NURBS curve geometry
+-- Returns: TRUE if mathematically valid, FALSE otherwise
+CREATE OR REPLACE FUNCTION ST_NurbsCurveIsValid(nurbscurve geometry)
+    RETURNS boolean
+    AS 'MODULE_PATHNAME', 'ST_NurbsCurveIsValid'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 50;
+
+-- ST_IsNurbsCurve(geometry)
+-- Tests if geometry is a NURBS curve type
+-- Parameters:
+--   geometry: Input geometry to test
+-- Returns: TRUE if geometry is NURBS curve, FALSE otherwise
+CREATE OR REPLACE FUNCTION ST_IsNurbsCurve(geometry)
+    RETURNS boolean
+    AS $$
+    SELECT CASE
+        WHEN $1 IS NULL THEN NULL
+        WHEN ST_GeometryType($1) = 'ST_NurbsCurve' THEN TRUE
+        ELSE FALSE
+    END
+    $$
+    LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+    COST 5;

@@ -74,7 +74,8 @@ static char *lwgeomTypeName[] =
 	"MultiSurface",
 	"PolyhedralSurface",
 	"Triangle",
-	"Tin"
+	"Tin",
+	"NurbsCurve"
 };
 
 /*
@@ -215,7 +216,7 @@ lwdebug(int level, const char *fmt, ...)
 const char*
 lwtype_name(uint8_t type)
 {
-	if ( type > 15 )
+	if ( type > NUMTYPES-1 )
 	{
 		/* assert(0); */
 		return "Invalid type";

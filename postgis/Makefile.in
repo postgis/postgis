@@ -99,6 +99,7 @@ PG_OBJS= \
 	lwgeom_triggers.o \
 	lwgeom_dump.o \
 	lwgeom_dumppoints.o \
+	lwgeom_nurbs_functions.o \
 	lwgeom_functions_lrs.o \
 	lwgeom_functions_temporal.o \
 	lwgeom_rectree.o \

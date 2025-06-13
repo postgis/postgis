@@ -609,4 +609,53 @@ AS 'MODULE_PATHNAME', 'sfcgal_alphawrapping_3d'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 _COST_LOW;
 
+
+-- Availability: 3.7.0
+-- Create NURBS curve from control points with specified degree
+CREATE OR REPLACE FUNCTION CG_NurbsCurveFromPoints(control_points geometry, degree integer)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_postgis_nurbs_curve_from_points'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_MEDIUM;
+
+-- Availability: 3.7.0
+-- Convert NURBS curve to LineString with specified tessellation
+CREATE OR REPLACE FUNCTION CG_NurbsCurveToLineString(nurbscurve geometry, segments integer DEFAULT 32)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_postgis_nurbs_curve_to_linestring'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_MEDIUM;
+
+-- Availability: 3.7.0
+-- Evaluate NURBS curve at given parameter
+CREATE OR REPLACE FUNCTION CG_NurbsCurveEvaluate(nurbscurve geometry, parameter float8)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_postgis_nurbs_curve_evaluate'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
+
+-- Availability: 3.7.0
+-- Compute derivative of NURBS curve at given parameter
+CREATE OR REPLACE FUNCTION CG_NurbsCurveDerivative(nurbscurve geometry, parameter float8, derivative_order integer)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_postgis_nurbs_curve_derivative'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_MEDIUM;
+
+-- Availability: 3.7.0
+-- Create interpolating NURBS curve through data points
+CREATE OR REPLACE FUNCTION CG_NurbsCurveInterpolate(data_points geometry, degree integer)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_postgis_nurbs_curve_interpolate'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_HIGH;
+
+-- Availability: 3.7.0
+-- Create approximating NURBS curve for data points
+CREATE OR REPLACE FUNCTION CG_NurbsCurveApproximate(data_points geometry, degree integer, tolerance float8, max_control_points integer DEFAULT 100)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_postgis_nurbs_curve_approximate'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_HIGH;
+
 COMMIT;
