@@ -837,6 +837,24 @@ LWGEOM* wkt_parser_collection_add_geom(LWGEOM *col, LWGEOM *geom)
 	return lwcollection_as_lwgeom(lwcollection_add_lwgeom(lwgeom_as_lwcollection(col), geom));
 }
 
+/**
+ * Finalize a geometry collection by validating and harmonizing dimensionality, and set its collection type.
+ *
+ * Validates that the provided collection (geom) matches the explicit dimensionality tokens (Z/M) if present,
+ * harmonizes sub-geometry dimensionality when needed, and sets geom->type to the requested collection type.
+ * If geom is NULL an empty collection of the requested type is constructed (SRID_UNKNOWN) and returned.
+ *
+ * @param lwtype Target collection type (e.g., COLLECTIONTYPE).
+ * @param geom Geometry to finalize; may be NULL to produce an empty collection. On error this function frees geom.
+ * @param dimensionality Optional dimensionality token string (e.g. "Z", "M", "ZM"); used to enforce or harmonize Z/M presence.
+ *
+ * @return The finalized LWGEOM (possibly the input geom, modified), or NULL on error.
+ *
+ * Side effects:
+ * - May free the input geom on error.
+ * - May call wkt_parser_set_dims() to propagate dimensionality to sub-geometries.
+ * - On error sets parser error codes: PARSER_ERROR_MIXDIMS (dimensionality mismatch) or PARSER_ERROR_OTHER.
+ */
 LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *geom, char *dimensionality)
 {
 	lwflags_t flags = wkt_dimensionality(dimensionality);
@@ -891,6 +909,310 @@ LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *geom, char *dimension
 	return geom;
 }
 
+/**
+ * Create a 2D control point for NURBS with the weight stored in the M component (XYM).
+ *
+ * @param c1 X coordinate.
+ * @param c2 Y coordinate.
+ * @param weight Weight for the NURBS control point (stored in M).
+ * @return POINT with X=c1, Y=c2, Z=0.0 and M=weight; flags indicate no Z and presence of M.
+ */
+POINT wkt_parser_nurbs_coord_3(double c1, double c2, double weight)
+{
+	POINT p;
+	p.flags = 0;
+	p.x = c1;
+	p.y = c2;
+	p.z = 0.0;
+	p.m = weight;  /* Weight goes in M coordinate */
+	FLAGS_SET_Z(p.flags, 0);
+	FLAGS_SET_M(p.flags, 1);
+	return p;
+}
+
+/**
+ * Create a 3D control point for NURBS with the weight stored in the M component (XYZM).
+ *
+ * The returned POINT has X=c1, Y=c2, Z=c3, and M=weight, and has both Z and M flags enabled.
+ *
+ * @param c1 X coordinate.
+ * @param c2 Y coordinate.
+ * @param c3 Z coordinate.
+ * @param weight Curve weight stored in the point's M component.
+ * @return POINT initialized as an XYZM control point with appropriate flags set.
+ */
+POINT wkt_parser_nurbs_coord_4(double c1, double c2, double c3, double weight)
+{
+	POINT p;
+	p.flags = 0;
+	p.x = c1;
+	p.y = c2;
+	p.z = c3;
+	p.m = weight;  /* Weight goes in M coordinate */
+	FLAGS_SET_Z(p.flags, 1);
+	FLAGS_SET_M(p.flags, 1);
+	return p;
+}
+
+/**
+ * Create a new NURBS curve from WKT parsing
+ */
+
+/**
+ * Construct a NURBS curve geometry from parsed components.
+ *
+ * Builds and returns a LWNURBSCURVE (as LWGEOM) using the supplied polynomial
+ * degree, control points, optional per-control-point weights, and optional
+ * knot vector. If degree == 0, degree 2 is used for backward compatibility.
+ *
+ * The function validates:
+ * - degree is in a supported range (1..10; 0 is treated as 2),
+ * - points count is at least degree + 1,
+ * - if weights are provided, their count equals the number of points and all
+ *   weights are positive (weights are read from the X coordinate of the
+ *   supplied weights POINTARRAY),
+ * - if knots are provided, their count equals points_count + degree + 1 and
+ *   the knot vector is non-decreasing (knot values are read from the X
+ *   coordinate of the supplied knots POINTARRAY),
+ * - dimensionality of the points is compatible with the optional
+ *   dimensionality token.
+ *
+ * Ownership and side effects:
+ * - The function takes ownership of the supplied POINTARRAY pointers: it will
+ *   free them on error and will consume them on success (they are passed into
+ *   the constructed NURBS curve). Caller must not use or free them after
+ *   calling this function.
+ * - On any validation or construction failure the function returns NULL and
+ *   sets the parser error state.
+ *
+ * @param degree Polynomial degree for the NURBS curve (0 treated as 2).
+ * @param points Control point array (must be non-NULL for a non-empty curve).
+ * @param weights Optional weight array (one weight per control point; weight
+ *                value is read from each point's X coordinate).
+ * @param knots Optional knot array (knot values read from each point's X
+ *              coordinate).
+ * @param dimensionality Optional dimensionality token (e.g. "Z", "M", "ZM")
+ *                        used to derive Z/M flags for the constructed curve.
+ *
+ * @return Pointer to the constructed LWGEOM representing the NURBS curve, or
+ *         NULL on error.
+ */
+LWGEOM* wkt_parser_nurbscurve_new(double degree, POINTARRAY *points, POINTARRAY *weights, POINTARRAY *knots, char *dimensionality)
+{
+	LWNURBSCURVE *curve;
+	double *weight_array = NULL;
+	double *knot_array = NULL;
+	uint32_t nweights = 0, nknots = 0;
+	lwflags_t flags = wkt_dimensionality(dimensionality);
+	int int_degree;
+
+	LWDEBUG(4,"entered wkt_parser_nurbscurve_new");
+
+	/* Validate degree is finite and not fractional */
+	if (!isfinite(degree)) {
+		if (points) ptarray_free(points);
+		if (weights) ptarray_free(weights);
+		if (knots) ptarray_free(knots);
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+
+	/* Check if degree has a fractional part */
+	if (fabs(degree - round(degree)) >= 1e-10) {
+		if (points) ptarray_free(points);
+		if (weights) ptarray_free(weights);
+		if (knots) ptarray_free(knots);
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+
+	/* Cast to int after validation */
+	int_degree = (int)round(degree);
+
+	/* Handle simple format compatibility - if degree is 0, use default degree 2 */
+	if (int_degree == 0) {
+		int_degree = 2;
+	}
+
+	/* Validate degree range */
+	if (int_degree < 1 || int_degree > 10) {
+		if (points) ptarray_free(points);
+		if (weights) ptarray_free(weights);
+		if (knots) ptarray_free(knots);
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+
+	/* Handle empty geometry */
+	if (!points) {
+		if (weights) ptarray_free(weights);
+		if (knots) ptarray_free(knots);
+		return lwnurbscurve_as_lwgeom(lwnurbscurve_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(flags), FLAGS_GET_M(flags)));
+	}
+
+	/* Validate minimum points for degree */
+	if (points->npoints < (uint32_t)(int_degree + 1)) {
+		ptarray_free(points);
+		if (weights) ptarray_free(weights);
+		if (knots) ptarray_free(knots);
+		SET_PARSER_ERROR(PARSER_ERROR_MOREPOINTS);
+		return NULL;
+	}
+
+	/* Check dimensionality consistency */
+	if (wkt_pointarray_dimensionality(points, flags) == LW_FALSE) {
+		ptarray_free(points);
+		if (weights) ptarray_free(weights);
+		if (knots) ptarray_free(knots);
+		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
+		return NULL;
+	}
+
+	/* Extract weights if provided */
+	if (weights && weights->npoints > 0) {
+		nweights = weights->npoints;
+		if (nweights != points->npoints) {
+			ptarray_free(points);
+			ptarray_free(weights);
+			if (knots) ptarray_free(knots);
+			SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+			return NULL;
+		}
+
+		weight_array = lwalloc(sizeof(double) * nweights);
+		for (uint32_t i = 0; i < nweights; i++) {
+			POINT2D p;
+			if (!getPoint2d_p(weights, i, &p)) {
+				ptarray_free(points);
+				ptarray_free(weights);
+				if (knots) ptarray_free(knots);
+				lwfree(weight_array);
+				SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+				return NULL;
+			}
+			weight_array[i] = p.x; /* Weight is stored in X coordinate */
+
+			if (weight_array[i] <= 0.0) {
+				ptarray_free(points);
+				ptarray_free(weights);
+				if (knots) ptarray_free(knots);
+				lwfree(weight_array);
+				SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+				return NULL;
+			}
+		}
+		ptarray_free(weights);
+	}
+
+	/* Extract knots if provided */
+	if (knots && knots->npoints > 0) {
+		nknots = knots->npoints;
+		uint32_t expected_knots = points->npoints + int_degree + 1;
+
+		if (nknots != expected_knots) {
+			ptarray_free(points);
+			if (weight_array) lwfree(weight_array);
+			ptarray_free(knots);
+			SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+			return NULL;
+		}
+
+		knot_array = lwalloc(sizeof(double) * nknots);
+		for (uint32_t i = 0; i < nknots; i++) {
+			POINT2D p;
+			if (!getPoint2d_p(knots, i, &p)) {
+				ptarray_free(points);
+				if (weight_array) lwfree(weight_array);
+				ptarray_free(knots);
+				lwfree(knot_array);
+				SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+				return NULL;
+			}
+			knot_array[i] = p.x; /* Knot value is stored in X coordinate */
+		}
+
+		/* Validate knot vector is non-decreasing */
+		for (uint32_t i = 1; i < nknots; i++) {
+			if (knot_array[i] < knot_array[i-1]) {
+				ptarray_free(points);
+				if (weight_array) lwfree(weight_array);
+				ptarray_free(knots);
+				lwfree(knot_array);
+				SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+				return NULL;
+			}
+		}
+
+		/* Basic knot vector validation - ensure knots are in non-decreasing order */
+		for (uint32_t i = 1; i < nknots; i++) {
+			if (knot_array[i] < knot_array[i-1]) {
+				ptarray_free(points);
+				if (weight_array) lwfree(weight_array);
+				ptarray_free(knots);
+				lwfree(knot_array);
+				SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+				return NULL;
+			}
+		}
+
+		ptarray_free(knots);
+	}
+
+	/* Create the NURBS curve */
+	curve = lwnurbscurve_construct(SRID_UNKNOWN, NULL, int_degree, points, weight_array, knot_array, nweights, nknots);
+
+	if (!curve) {
+		if (weight_array) lwfree(weight_array);
+		if (knot_array) lwfree(knot_array);
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+	/* Deep-copied by constructor */
+	if (weight_array) lwfree(weight_array);
+	if (knot_array) lwfree(knot_array);
+	return lwnurbscurve_as_lwgeom(curve);
+}
+
+
+/**
+ * Create an empty NURBS curve with the given dimensionality token.
+ *
+ * The `dimensionality` token (e.g., "Z", "M", "ZM", or NULL) controls whether
+ * the created empty NURBS geometry has Z and/or M components. The returned
+ * geometry uses SRID_UNKNOWN.
+ *
+ * @param dimensionality Dimensionality token (case-insensitive) or NULL for 2D.
+ * @return A newly allocated empty LWNURBSCURVE as an LWGEOM on success;
+ *         NULL on failure (parser error set).
+ */
+LWGEOM* wkt_parser_nurbscurve_empty(char *dimensionality)
+{
+	lwflags_t flags = wkt_dimensionality(dimensionality);
+	LWNURBSCURVE *curve;
+
+	LWDEBUG(4,"entered wkt_parser_nurbscurve_empty");
+
+	curve = lwnurbscurve_construct_empty(SRID_UNKNOWN,
+		FLAGS_GET_Z(flags), FLAGS_GET_M(flags));
+
+	if (!curve) {
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+
+	return lwnurbscurve_as_lwgeom(curve);
+}
+
+/**
+ * Register a parsed geometry and apply an SRID.
+ *
+ * If `geom` is non-NULL, sets its SRID to `srid` when `srid` is not SRID_UNKNOWN and
+ * is within the valid range; otherwise sets the geometry SRID to SRID_UNKNOWN.
+ * Stores the geometry pointer in the global parser result object.
+ *
+ * @param geom Parsed geometry to register (may be NULL — function returns without action).
+ * @param srid Spatial reference identifier to assign to the geometry.
+ */
 void
 wkt_parser_geometry_new(LWGEOM *geom, int32_t srid)
 {
