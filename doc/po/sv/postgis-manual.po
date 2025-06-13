@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-06-13 07:47+0000\n"
+"PO-Revision-Date: 2025-06-13 17:21+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/sv/>\n"
@@ -30105,12 +30105,12 @@ msgstr "Tillgänglighet: 2.0.0 - kräver GDAL &gt;= 1.6.0."
 #. Tag: title
 #, no-c-format
 msgid "Examples: List of Drivers"
-msgstr "Exempel: Lista över förare"
+msgstr "Exempel: Lista över drivare"
 
 #. Tag: title
 #, no-c-format
 msgid "Example: List of options for each driver"
-msgstr "Exempel: Lista med alternativ för varje förare"
+msgstr "Exempel: Lista med alternativ för varje drivare"
 
 #. Tag: para
 #, no-c-format
