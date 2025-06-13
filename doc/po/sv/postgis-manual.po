@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-06-11 06:47+0000\n"
+"PO-Revision-Date: 2025-06-13 07:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/sv/>\n"
@@ -3080,8 +3080,8 @@ msgid ""
 msgstr ""
 "Den använder unzip på Linux (7-zip på Windows som standard) och wget för att "
 "göra nedladdningen. Den använder <xref linkend=\"shp2pgsql_usage\"/> för att "
-"läsa in in data. Observera att den minsta enhet som den gör är en hel stat. "
-"Den kommer endast att bearbeta filerna i mapparna staging och temp."
+"läsa in data. Observera att den minsta enhet som den gör är en hel stat. Den "
+"kommer endast att bearbeta filerna i mapparna staging och temp."
 
 #. Tag: para
 #, no-c-format
@@ -10526,7 +10526,7 @@ msgstr "Eugene Antimirov"
 #. Tag: member
 #, no-c-format
 msgid "Even Rouault"
-msgstr "Även Rouault"
+msgstr "Even Rouault"
 
 #. Tag: member
 #, no-c-format
@@ -18862,7 +18862,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Well-Known Text (WKT)"
-msgstr "Välkänd text (WKT)"
+msgstr "Well-Known Text (WKT)"
 
 #. Tag: refpurpose
 #, no-c-format
