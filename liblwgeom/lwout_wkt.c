@@ -609,6 +609,76 @@ static void lwpsurface_to_wkt_sb(const LWPSURFACE *psurf, stringbuffer_t *sb, in
 	stringbuffer_append_len(sb, ")", 1);
 }
 
+static void lwnurbscurve_to_wkt_sb(const LWNURBSCURVE *curve, stringbuffer_t *sb, int precision, uint8_t variant)
+{
+    if (!(variant & WKT_NO_TYPE)) {
+        stringbuffer_append_len(sb, "NURBSCURVE", 10);
+        dimension_qualifiers_to_wkt_sb((LWGEOM*)curve, sb, variant);
+    }
+
+    if (!curve->points || curve->points->npoints == 0) {
+        empty_to_wkt_sb(sb);
+        return;
+    }
+
+    stringbuffer_append_len(sb, "(", 1);
+
+    /* Degré en premier */
+    stringbuffer_aprintf(sb, "%d,(", curve->degree);
+
+    /* Points de contrôle (sans poids) */
+    ptarray_to_wkt_sb(curve->points, sb, precision, variant | WKT_NO_PARENS);
+
+    stringbuffer_append_len(sb, ")", 1);
+
+    /* Always output weights if knots will be output (for round-trip consistency) */
+    bool output_knots = (curve->knots && curve->nknots > 0);
+    bool output_weights = false;
+
+    /* Check if we need to output weights */
+    if (curve->weights && curve->nweights > 0) {
+        bool has_varying_weights = false;
+        for (uint32_t i = 1; i < curve->nweights && !has_varying_weights; i++) {
+            if (fabs(curve->weights[i] - curve->weights[0]) > 1e-10) {
+                has_varying_weights = true;
+            }
+        }
+        output_weights = has_varying_weights || output_knots;
+    } else if (output_knots) {
+        /* Generate default uniform weights if knots are present but weights are missing */
+        output_weights = true;
+    }
+
+    /* Output weights */
+    if (output_weights) {
+        stringbuffer_append_len(sb, ",(", 2);
+        if (curve->weights && curve->nweights > 0) {
+            for (uint32_t i = 0; i < curve->nweights; i++) {
+                if (i > 0) stringbuffer_append_len(sb, ",", 1);
+                stringbuffer_aprintf(sb, "%.*g", precision, curve->weights[i]);
+            }
+        } else {
+            /* Generate default uniform weights (1.0 for each control point) */
+            for (uint32_t i = 0; i < curve->points->npoints; i++) {
+                if (i > 0) stringbuffer_append_len(sb, ",", 1);
+                stringbuffer_aprintf(sb, "1");
+            }
+        }
+        stringbuffer_append_len(sb, ")", 1);
+    }
+
+    /* Vecteur de nœuds si présent */
+    if (output_knots) {
+        stringbuffer_append_len(sb, ",(", 2);
+        for (uint32_t i = 0; i < curve->nknots; i++) {
+            if (i > 0) stringbuffer_append_len(sb, ",", 1);
+            stringbuffer_aprintf(sb, "%.*g", precision, curve->knots[i]);
+        }
+        stringbuffer_append_len(sb, ")", 1);
+    }
+
+    stringbuffer_append_len(sb, ")", 1);
+}
 
 /*
 * Generic GEOMETRY
@@ -665,6 +735,9 @@ static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precisi
 		break;
 	case POLYHEDRALSURFACETYPE:
 		lwpsurface_to_wkt_sb((LWPSURFACE*)geom, sb, precision, variant);
+		break;
+	case NURBSCURVETYPE:
+		lwnurbscurve_to_wkt_sb((LWNURBSCURVE*)geom, sb, precision, variant);
 		break;
 	default:
 		lwerror("lwgeom_to_wkt_sb: Type %d - %s unsupported.",

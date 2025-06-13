@@ -6998,4 +6998,6 @@ AS 'MODULE_PATHNAME','ST_RemoveSmallParts'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
+#include "postgis_nurbs.sql.in"
+
 COMMIT;

@@ -43,3 +43,8 @@ ifeq ($(shell expr "$(POSTGIS_SFCGAL_VERSION)" ">=" 20100),1)
 		$(top_srcdir)/sfcgal/regress/simplify.sql \
 		$(top_srcdir)/sfcgal/regress/alphawrapping.sql
 endif
+
+ifeq ($(shell expr "$(POSTGIS_SFCGAL_VERSION)" ">=" 20300),1)
+	TESTS += \
+			$(top_srcdir)/sfcgal/regress/nurbs.sql
+endif

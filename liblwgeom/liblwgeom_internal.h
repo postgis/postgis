@@ -117,7 +117,7 @@
 #define WKB_POLYHEDRALSURFACE_TYPE 15
 #define WKB_TIN_TYPE 16
 #define WKB_TRIANGLE_TYPE 17
-
+#define WKB_NURBSCURVE_TYPE 21 /* from Wikipedia, is it real? */
 
 /**
 * Macro that returns:
@@ -358,6 +358,8 @@ POINTARRAY *ptarray_clone(const POINTARRAY *ptarray);
 LWLINE *lwline_clone_deep(const LWLINE *lwgeom);
 LWPOLY *lwpoly_clone_deep(const LWPOLY *lwgeom);
 LWCOLLECTION *lwcollection_clone_deep(const LWCOLLECTION *lwgeom);
+LWNURBSCURVE *lwnurbscurve_clone_deep(const LWNURBSCURVE *curve);
+double *lwnurbscurve_get_knots_for_wkb(const LWNURBSCURVE *curve, uint32_t *nknots_out);
 GBOX *gbox_clone(const GBOX *gbox);
 
 /*
@@ -501,5 +503,7 @@ int lwpoly_contains_point(const LWPOLY *poly, const POINT2D *pt);
 POINT4D* lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_empty);
 char* lwstrdup(const char* a);
 void* lwalloc0(size_t sz);
+
+/* NURBS */
 
 #endif /* _LIBLWGEOM_INTERNAL_H */

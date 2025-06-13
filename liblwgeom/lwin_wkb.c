@@ -235,6 +235,9 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 		case WKB_TRIANGLE_TYPE:
 			s->lwtype = TRIANGLETYPE;
 			break;
+		case WKB_NURBSCURVE_TYPE:
+			s->lwtype = NURBSCURVETYPE;
+			break;
 
 		/* PostGIS 1.5 emits 13, 14 for CurvePolygon, MultiCurve */
 		/* These numbers aren't SQL/MM (numbers currently only */
@@ -732,6 +735,131 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 	return col;
 }
 
+static LWNURBSCURVE* lwnurbscurve_from_wkb_state(wkb_parse_state *s)
+{
+    uint32_t degree, nknots, npoints;
+    double *weights = NULL, *knots = NULL;
+    POINTARRAY *points = NULL;
+
+    /* ISO/IEC 13249-3:2016 compliant parsing */
+    degree = integer_from_wkb_state(s);
+    if (s->error) return NULL;
+
+    /* Read control points count */
+    npoints = integer_from_wkb_state(s);
+    if (s->error) return NULL;
+
+    /* Initialize points array */
+    if (npoints > 0) {
+        points = ptarray_construct(s->has_z, s->has_m, npoints);
+        weights = lwalloc(sizeof(double) * npoints);
+
+        /* ISO format: each control point has structure:
+         * <byte order> <wkbweightedpoint> <bit> [<wkbweight>]
+         */
+        for (uint32_t i = 0; i < npoints; i++) {
+            /* Read byte order for this point (ISO requirement) */
+            byte_from_wkb_state(s);
+            if (s->error) {
+                lwfree(weights);
+                ptarray_free(points);
+                return NULL;
+            }
+
+            /* Read point coordinates */
+            POINT4D pt = {0, 0, 0, 0};
+            pt.x = double_from_wkb_state(s);
+            if (s->error) {
+                lwfree(weights);
+                ptarray_free(points);
+                return NULL;
+            }
+
+            pt.y = double_from_wkb_state(s);
+            if (s->error) {
+                lwfree(weights);
+                ptarray_free(points);
+                return NULL;
+            }
+
+            if (s->has_z) {
+                pt.z = double_from_wkb_state(s);
+                if (s->error) {
+                    lwfree(weights);
+                    ptarray_free(points);
+                    return NULL;
+                }
+            }
+
+            if (s->has_m) {
+                pt.m = double_from_wkb_state(s);
+                if (s->error) {
+                    lwfree(weights);
+                    ptarray_free(points);
+                    return NULL;
+                }
+            }
+
+            ptarray_set_point4d(points, i, &pt);
+
+            /* Read weight bit flag */
+            uint8_t has_weight = byte_from_wkb_state(s);
+            if (s->error) {
+                lwfree(weights);
+                ptarray_free(points);
+                return NULL;
+            }
+
+            if (has_weight == 0) {
+                /* Default weight = 1.0 */
+                weights[i] = 1.0;
+            } else if (has_weight == 1) {
+                /* Custom weight follows */
+                weights[i] = double_from_wkb_state(s);
+                if (s->error) {
+                    lwfree(weights);
+                    ptarray_free(points);
+                    return NULL;
+                }
+            } else {
+                lwerror("WKB NURBSCURVE: invalid weight bit %d for point %d (must be 0 or 1)", has_weight, i);
+                lwfree(weights);
+                ptarray_free(points);
+                return NULL;
+            }
+        }
+    } else {
+        points = ptarray_construct_empty(s->has_z, s->has_m, 1);
+    }
+
+    /* Read knots (required by WKB standard) */
+    nknots = integer_from_wkb_state(s);
+    if (s->error) {
+        lwfree(weights);
+        ptarray_free(points);
+        return NULL;
+    }
+
+    if (nknots == 0) {
+        lwerror("WKB NURBSCURVE: knots required by standard (got 0)");
+        lwfree(weights);
+        ptarray_free(points);
+        return NULL;
+    }
+
+    knots = lwalloc(sizeof(double) * nknots);
+    for (uint32_t i = 0; i < nknots; i++) {
+        knots[i] = double_from_wkb_state(s);
+        if (s->error) {
+            lwfree(weights);
+            lwfree(knots);
+            ptarray_free(points);
+            return NULL;
+        }
+    }
+
+    return lwnurbscurve_construct(s->srid, degree, points, weights, knots, npoints, nknots);
+}
 
 /**
 * GEOMETRY
@@ -817,7 +945,9 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 		case COLLECTIONTYPE:
 			return (LWGEOM*)lwcollection_from_wkb_state(s);
 			break;
-
+		case NURBSCURVETYPE:
+			return (LWGEOM*)lwnurbscurve_from_wkb_state(s);
+			break;
 		/* Unknown type! */
 		default:
 			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(s->lwtype));

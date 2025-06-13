@@ -162,6 +162,8 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 		strcpy(result,"POLYHEDRALSURFACE");
 	else if (type == TINTYPE)
 		strcpy(result,"TIN");
+	else if (type == NURBSCURVETYPE)
+		strcpy(result,"NURBSCURVE");
 	else
 		strcpy(result,"UNKNOWN");
 
@@ -191,7 +193,8 @@ static char *stTypeName[] = {"Unknown",
 			     "ST_MultiSurface",
 			     "ST_PolyhedralSurface",
 			     "ST_Triangle",
-			     "ST_Tin"};
+			     "ST_Tin",
+					 "ST_NurbsCurve"};
 
 /* returns a string representation of this geometry's type */
 PG_FUNCTION_INFO_V1(geometry_geometrytype);

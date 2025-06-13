@@ -126,6 +126,11 @@ SFCGAL_type_to_lwgeom_type(sfcgal_geometry_type_t type)
 	case SFCGAL_TYPE_TRIANGLE:
 		return TRIANGLETYPE;
 
+#if POSTGIS_SFCGAL_VERSION >= 20300
+	case SFCGAL_TYPE_NURBSCURVE:
+		return NURBSCURVETYPE;
+#endif
+
 	default:
 		lwerror("SFCGAL_type_to_lwgeom_type: Unknown Type");
 		return 0;
@@ -314,6 +319,147 @@ ptarray_to_SFCGAL(const POINTARRAY *pa, int type)
 	}
 }
 
+#if POSTGIS_SFCGAL_VERSION >= 20300
+/* Helper function to convert PostGIS NURBS to SFCGAL NURBS */
+static sfcgal_geometry_t*
+lwgeom_nurbs_to_sfcgal_nurbs(const LWNURBSCURVE *nurbs)
+{
+	sfcgal_geometry_t **points;
+	double *weights = NULL;
+	double *knots = NULL;
+	sfcgal_geometry_t *result;
+	uint32_t i;
+	POINT4D pt;
+
+	if (!nurbs || !nurbs->points || nurbs->points->npoints == 0)
+		return NULL;
+
+	/* Create array of SFCGAL points from control points */
+	points = (sfcgal_geometry_t**)lwalloc(sizeof(sfcgal_geometry_t*) * nurbs->points->npoints);
+
+	for (i = 0; i < nurbs->points->npoints; i++)
+	{
+		getPoint4d_p(nurbs->points, i, &pt);
+		if (FLAGS_GET_Z(nurbs->flags) && FLAGS_GET_M(nurbs->flags))
+			points[i] = sfcgal_point_create_from_xyzm(pt.x, pt.y, pt.z, pt.m);
+		else if (FLAGS_GET_Z(nurbs->flags))
+			points[i] = sfcgal_point_create_from_xyz(pt.x, pt.y, pt.z);
+		else if (FLAGS_GET_M(nurbs->flags))
+			points[i] = sfcgal_point_create_from_xym(pt.x, pt.y, pt.m);
+		else
+			points[i] = sfcgal_point_create_from_xy(pt.x, pt.y);
+	}
+
+	/* Handle weights if present */
+	if (nurbs->weights && nurbs->nweights > 0)
+	{
+		weights = nurbs->weights;
+	}
+
+	/* Handle knot vector if present */
+	if (nurbs->knots && nurbs->nknots > 0)
+	{
+		knots = nurbs->knots;
+		result = sfcgal_nurbs_curve_create_from_full_data(
+			(const sfcgal_geometry_t**)points, weights, nurbs->points->npoints,
+			nurbs->degree, knots, nurbs->nknots);
+	}
+	else if (weights)
+	{
+		result = sfcgal_nurbs_curve_create_from_points_and_weights(
+			(const sfcgal_geometry_t**)points, weights, nurbs->points->npoints,
+			nurbs->degree, SFCGAL_KNOT_METHOD_UNIFORM);
+	}
+	else
+	{
+		result = sfcgal_nurbs_curve_create_from_points(
+			(const sfcgal_geometry_t**)points, nurbs->points->npoints,
+			nurbs->degree, SFCGAL_KNOT_METHOD_UNIFORM);
+	}
+
+	/* Clean up temporary points */
+	for (i = 0; i < nurbs->points->npoints; i++)
+	{
+		sfcgal_geometry_delete(points[i]);
+	}
+	lwfree(points);
+
+	return result;
+}
+
+/* Helper function to convert SFCGAL NURBS to PostGIS NURBS */
+static LWNURBSCURVE*
+sfcgal_nurbs_to_lwgeom_nurbs(const sfcgal_geometry_t* sfcgal_nurbs, int srid)
+{
+	size_t num_points, num_knots, i;
+	unsigned int degree;
+	POINTARRAY *pa;
+	double *weights = NULL;
+	double *knots = NULL;
+	LWNURBSCURVE *result;
+	const sfcgal_geometry_t *pt;
+	POINT4D point;
+	int has_z = 0, has_m = 0;
+
+	if (!sfcgal_nurbs)
+		return NULL;
+
+	num_points = sfcgal_nurbs_curve_num_control_points(sfcgal_nurbs);
+	degree = sfcgal_nurbs_curve_degree(sfcgal_nurbs);
+	num_knots = sfcgal_nurbs_curve_num_knots(sfcgal_nurbs);
+
+	/* Check if first point has Z or M coordinates */
+	if (num_points > 0)
+	{
+		pt = sfcgal_nurbs_curve_control_point_n(sfcgal_nurbs, 0);
+		/* Check dimensionality */
+		has_z = (sfcgal_geometry_dimension(pt) >= 3 || sfcgal_geometry_is_3d(pt));
+		has_m = 0; /* SFCGAL doesn't support M coordinates directly */
+	}
+
+	/* Create point array */
+	pa = ptarray_construct(has_z, has_m, num_points);
+
+	/* Extract control points */
+	for (i = 0; i < num_points; i++)
+	{
+		pt = sfcgal_nurbs_curve_control_point_n(sfcgal_nurbs, i);
+
+		point.x = sfcgal_point_x(pt);
+		point.y = sfcgal_point_y(pt);
+		if (has_z) point.z = sfcgal_point_z(pt);
+		if (has_m) point.m = sfcgal_point_m(pt);
+
+		ptarray_set_point4d(pa, i, &point);
+	}
+
+	/* Extract weights if rational */
+	if (sfcgal_nurbs_curve_is_rational(sfcgal_nurbs))
+	{
+		weights = (double*)lwalloc(sizeof(double) * num_points);
+		for (i = 0; i < num_points; i++)
+		{
+			weights[i] = sfcgal_nurbs_curve_weight_n(sfcgal_nurbs, i);
+		}
+	}
+
+	/* Extract knot vector */
+	if (num_knots > 0)
+	{
+		knots = (double*)lwalloc(sizeof(double) * num_knots);
+		for (i = 0; i < num_knots; i++)
+		{
+			knots[i] = sfcgal_nurbs_curve_knot_n(sfcgal_nurbs, i);
+		}
+	}
+
+	result = lwnurbscurve_construct(srid, degree, pa, weights, knots,
+		weights ? num_points : 0, num_knots);
+
+	return result;
+}
+#endif /* POSTGIS_SFCGAL_VERSION >= 20300 */
+
 /*
  * Convert a SFCGAL structure to PostGIS LWGEOM
  *
@@ -476,6 +622,15 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t srid)
 		return (LWGEOM *)lwcollection_construct(TINTYPE, srid, NULL, ngeoms, geoms);
 	}
 
+#if POSTGIS_SFCGAL_VERSION >= 20300
+	case SFCGAL_TYPE_NURBSCURVE: {
+		LWNURBSCURVE *nurbs = sfcgal_nurbs_to_lwgeom_nurbs(geom, srid);
+		if (!nurbs)
+			return NULL;
+		return (LWGEOM *)nurbs;
+	}
+#endif
+
 	default:
 		lwerror("SFCGAL2LWGEOM: Unknown Type");
 		return NULL;
@@ -594,6 +749,14 @@ LWGEOM2SFCGAL(const LWGEOM *geom)
 		return ret_geom;
 	}
 	break;
+
+#if POSTGIS_SFCGAL_VERSION >= 20300
+	case NURBSCURVETYPE: {
+		const LWNURBSCURVE *nurbs = (const LWNURBSCURVE *)geom;
+		return lwgeom_nurbs_to_sfcgal_nurbs(nurbs);
+	}
+	break;
+#endif
 
 	default:
 		lwerror("LWGEOM2SFCGAL: Unsupported geometry type %s !", lwtype_name(geom->type));

@@ -78,6 +78,12 @@ Datum sfcgal_convexhull3D(PG_FUNCTION_ARGS);
 Datum sfcgal_alphashape(PG_FUNCTION_ARGS);
 Datum sfcgal_optimalalphashape(PG_FUNCTION_ARGS);
 Datum sfcgal_simplify(PG_FUNCTION_ARGS);
+Datum sfcgal_postgis_nurbs_curve_from_points(PG_FUNCTION_ARGS);
+Datum sfcgal_postgis_nurbs_curve_evaluate(PG_FUNCTION_ARGS);
+Datum sfcgal_postgis_nurbs_curve_to_linestring(PG_FUNCTION_ARGS);
+Datum sfcgal_postgis_nurbs_curve_derivative(PG_FUNCTION_ARGS);
+Datum sfcgal_postgis_nurbs_curve_interpolate(PG_FUNCTION_ARGS);
+Datum sfcgal_postgis_nurbs_curve_approximate(PG_FUNCTION_ARGS);
 
 GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 char *text_to_cstring(const text *textptr);
@@ -1841,6 +1847,632 @@ sfcgal_alphawrapping_3d(PG_FUNCTION_ARGS)
 
 	output = SFCGALGeometry2POSTGIS(result, 1, srid); // force 3d output
 	sfcgal_geometry_delete(result);
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+/* NURBS curve support functions using native SFCGAL NURBS API */
+
+
+/* CG_NurbsCurveFromPoints - Create NURBS curve from control points */
+PG_FUNCTION_INFO_V1(sfcgal_postgis_nurbs_curve_from_points);
+Datum
+sfcgal_postgis_nurbs_curve_from_points(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20300
+	lwpgerror(
+		"The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+		"'sfcgal_nurbs_curve_from_points' function (requires SFCGAL 2.3.0+)",
+		POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20300 */
+	GSERIALIZED *input, *output;
+	LWGEOM *lwgeom;
+	LWLINE *line;
+	int32_t degree;
+	sfcgal_geometry_t **points;
+	sfcgal_geometry_t *sfcgal_nurbs;
+	LWNURBSCURVE *result_nurbs;
+	uint32_t i;
+	POINT4D pt;
+	srid_t srid;
+	POINTARRAY *pa;
+	uint32_t npoints;
+
+	sfcgal_postgis_init();
+
+	if (PG_ARGISNULL(0) || PG_ARGISNULL(1))
+		PG_RETURN_NULL();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	degree = PG_GETARG_INT32(1);
+	srid = gserialized_get_srid(input);
+
+	/* Validate degree */
+	if (degree < 1 || degree > 10)
+	{
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("NURBS degree must be between 1 and 10")));
+	}
+
+	/* Extract control points */
+	lwgeom = lwgeom_from_gserialized(input);
+	if (!lwgeom || (lwgeom->type != LINETYPE && lwgeom->type != MULTIPOINTTYPE))
+	{
+		if (lwgeom) lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("Control points must be a LINESTRING or MULTIPOINT")));
+	}
+
+	/* Get point array based on geometry type */
+	if (lwgeom->type == LINETYPE)
+	{
+		line = (LWLINE*)lwgeom;
+		pa = line->points;
+		npoints = pa->npoints;
+	}
+	else /* MULTIPOINTTYPE */
+	{
+		LWMPOINT *mpoint = (LWMPOINT*)lwgeom;
+		if (!mpoint->ngeoms)
+		{
+			lwgeom_free(lwgeom);
+			PG_FREE_IF_COPY(input, 0);
+			ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+					errmsg("MULTIPOINT must contain at least one point")));
+		}
+
+		/* Create a temporary point array from multipoint */
+		pa = ptarray_construct_empty(FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags), mpoint->ngeoms);
+		for (i = 0; i < mpoint->ngeoms; i++)
+		{
+			LWPOINT *pt_geom = mpoint->geoms[i];
+			if (pt_geom && pt_geom->point && pt_geom->point->npoints == 1)
+			{
+				getPoint4d_p(pt_geom->point, 0, &pt);
+				ptarray_append_point(pa, &pt, LW_TRUE);
+			}
+		}
+		npoints = pa->npoints;
+	}
+
+	if (!pa || npoints < degree + 1)
+	{
+		if (lwgeom->type == MULTIPOINTTYPE && pa) ptarray_free(pa);
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("Need at least %d control points for degree %d NURBS",
+					degree + 1, degree)));
+	}
+
+	/* Convert to SFCGAL points */
+	points = (sfcgal_geometry_t**)palloc(sizeof(sfcgal_geometry_t*) * npoints);
+
+	for (i = 0; i < npoints; i++)
+	{
+		getPoint4d_p(pa, i, &pt);
+		if (FLAGS_GET_Z(lwgeom->flags) && FLAGS_GET_M(lwgeom->flags))
+			points[i] = sfcgal_point_create_from_xyzm(pt.x, pt.y, pt.z, pt.m);
+		else if (FLAGS_GET_Z(lwgeom->flags))
+			points[i] = sfcgal_point_create_from_xyz(pt.x, pt.y, pt.z);
+		else if (FLAGS_GET_M(lwgeom->flags))
+			points[i] = sfcgal_point_create_from_xym(pt.x, pt.y, pt.m);
+		else
+			points[i] = sfcgal_point_create_from_xy(pt.x, pt.y);
+	}
+
+	/* Create NURBS curve using SFCGAL */
+	sfcgal_nurbs = sfcgal_nurbs_curve_create_from_points(
+		(const sfcgal_geometry_t**)points, npoints, degree,
+		SFCGAL_KNOT_METHOD_UNIFORM);
+
+	/* Clean up SFCGAL points */
+	for (i = 0; i < npoints; i++)
+	{
+		sfcgal_geometry_delete(points[i]);
+	}
+	pfree(points);
+
+	/* Clean up temporary point array for MULTIPOINT */
+	if (lwgeom->type == MULTIPOINTTYPE && pa)
+		ptarray_free(pa);
+
+	if (!sfcgal_nurbs)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),
+				errmsg("Failed to create NURBS curve with SFCGAL")));
+	}
+
+	/* Convert back to PostGIS NURBS */
+	result_nurbs = (LWNURBSCURVE*)SFCGAL2LWGEOM(sfcgal_nurbs, 0, srid);
+	sfcgal_geometry_delete(sfcgal_nurbs);
+
+	if (!result_nurbs)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),
+				errmsg("Failed to convert SFCGAL NURBS to PostGIS")));
+	}
+
+	output = geometry_serialize((LWGEOM*)result_nurbs);
+
+	lwnurbscurve_free(result_nurbs);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(input, 0);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+/* CG_NurbsCurveToLineString - Convert NURBS curve to LineString using SFCGAL */
+PG_FUNCTION_INFO_V1(sfcgal_postgis_nurbs_curve_to_linestring);
+Datum
+sfcgal_postgis_nurbs_curve_to_linestring(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20300
+	lwpgerror(
+		"The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+		"'sfcgal_nurbs_curve_to_linestring' function (requires SFCGAL 2.3.0+)",
+		POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20300 */
+	GSERIALIZED *input, *output;
+	LWGEOM *lwgeom;
+	LWNURBSCURVE *nurbs;
+	sfcgal_geometry_t *sfcgal_nurbs, *sfcgal_line;
+	uint32_t segments;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	segments = PG_NARGS() > 1 ? PG_GETARG_INT32(1) : 32;
+	srid = gserialized_get_srid(input);
+
+	/* Validate segment count */
+	if (segments < 2 || segments > 10000)
+	{
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("Number of segments must be between 2 and 10000")));
+	}
+
+	/* Extract NURBS curve */
+	lwgeom = lwgeom_from_gserialized(input);
+	if (!lwgeom || lwgeom->type != NURBSCURVETYPE)
+	{
+		if (lwgeom) lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("Input geometry must be a NURBS curve")));
+	}
+
+	nurbs = (LWNURBSCURVE*)lwgeom;
+
+	/* Convert PostGIS NURBS to SFCGAL NURBS */
+	sfcgal_nurbs = LWGEOM2SFCGAL((LWGEOM*)nurbs);
+	if (!sfcgal_nurbs)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),
+				errmsg("Failed to convert NURBS to SFCGAL format")));
+	}
+
+	/* Convert NURBS to LineString using SFCGAL */
+	sfcgal_line = sfcgal_nurbs_curve_to_linestring(sfcgal_nurbs, segments);
+	sfcgal_geometry_delete(sfcgal_nurbs);
+
+	if (!sfcgal_line)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),
+				errmsg("Failed to tessellate NURBS curve with SFCGAL")));
+	}
+
+	/* Convert result back to PostGIS */
+	output = SFCGALGeometry2POSTGIS(sfcgal_line, 0, srid);
+	sfcgal_geometry_delete(sfcgal_line);
+
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(input, 0);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+/* CG_NurbsCurveEvaluate - Evaluate NURBS curve at parameter using SFCGAL */
+PG_FUNCTION_INFO_V1(sfcgal_postgis_nurbs_curve_evaluate);
+Datum
+sfcgal_postgis_nurbs_curve_evaluate(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20300
+	lwpgerror(
+		"The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+		"'sfcgal_nurbs_curve_evaluate' function (requires SFCGAL 2.3.0+)",
+		POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20300 */
+	GSERIALIZED *input, *output;
+	LWGEOM *lwgeom;
+	LWNURBSCURVE *nurbs;
+	sfcgal_geometry_t *sfcgal_nurbs, *sfcgal_point;
+	double parameter;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	if (PG_ARGISNULL(0) || PG_ARGISNULL(1))
+		PG_RETURN_NULL();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	parameter = PG_GETARG_FLOAT8(1);
+	srid = gserialized_get_srid(input);
+
+	/* Extract NURBS curve */
+	lwgeom = lwgeom_from_gserialized(input);
+	if (!lwgeom || lwgeom->type != NURBSCURVETYPE)
+	{
+		if (lwgeom) lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("Input geometry must be a NURBS curve")));
+	}
+
+	nurbs = (LWNURBSCURVE*)lwgeom;
+
+	/* Convert PostGIS NURBS to SFCGAL NURBS */
+	sfcgal_nurbs = LWGEOM2SFCGAL((LWGEOM*)nurbs);
+	if (!sfcgal_nurbs)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),
+				errmsg("Failed to convert NURBS to SFCGAL format")));
+	}
+
+	/* Evaluate point on curve using SFCGAL */
+	sfcgal_point = sfcgal_nurbs_curve_evaluate(sfcgal_nurbs, parameter);
+	sfcgal_geometry_delete(sfcgal_nurbs);
+
+	if (!sfcgal_point)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),
+				errmsg("Failed to evaluate NURBS curve at parameter %g", parameter)));
+	}
+
+	/* Convert result back to PostGIS */
+	output = SFCGALGeometry2POSTGIS(sfcgal_point, 0, srid);
+	sfcgal_geometry_delete(sfcgal_point);
+
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(input, 0);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+/* CG_NurbsCurveDerivative - Compute derivative of NURBS curve using SFCGAL */
+PG_FUNCTION_INFO_V1(sfcgal_postgis_nurbs_curve_derivative);
+Datum
+sfcgal_postgis_nurbs_curve_derivative(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20300
+	lwpgerror(
+		"The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+		"'sfcgal_nurbs_curve_derivative' function (requires SFCGAL 2.3.0+)",
+		POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20300 */
+	GSERIALIZED *input, *output;
+	LWGEOM *lwgeom;
+	LWNURBSCURVE *nurbs;
+	sfcgal_geometry_t *sfcgal_nurbs, *sfcgal_point;
+	double parameter;
+	uint32_t order;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	if (PG_ARGISNULL(0) || PG_ARGISNULL(1) || PG_ARGISNULL(2))
+		PG_RETURN_NULL();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	parameter = PG_GETARG_FLOAT8(1);
+	order = PG_GETARG_INT32(2);
+	srid = gserialized_get_srid(input);
+
+	if (order < 1 || order > 3)
+	{
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("Derivative order must be between 1 and 3")));
+	}
+
+	/* Extract NURBS curve */
+	lwgeom = lwgeom_from_gserialized(input);
+	if (!lwgeom || lwgeom->type != NURBSCURVETYPE)
+	{
+		if (lwgeom) lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("Input geometry must be a NURBS curve")));
+	}
+
+	nurbs = (LWNURBSCURVE*)lwgeom;
+
+	/* Convert PostGIS NURBS to SFCGAL NURBS */
+	sfcgal_nurbs = LWGEOM2SFCGAL((LWGEOM*)nurbs);
+	if (!sfcgal_nurbs)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),
+				errmsg("Failed to convert NURBS to SFCGAL format")));
+	}
+
+	/* Compute derivative using SFCGAL */
+	sfcgal_point = sfcgal_nurbs_curve_derivative(sfcgal_nurbs, parameter, order);
+	sfcgal_geometry_delete(sfcgal_nurbs);
+
+	if (!sfcgal_point)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),
+				errmsg("Failed to compute derivative of NURBS curve")));
+	}
+
+	/* Convert result back to PostGIS */
+	output = SFCGALGeometry2POSTGIS(sfcgal_point, 0, srid);
+	sfcgal_geometry_delete(sfcgal_point);
+
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(input, 0);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+/* CG_NurbsCurveInterpolate - Create interpolating NURBS curve using SFCGAL */
+PG_FUNCTION_INFO_V1(sfcgal_postgis_nurbs_curve_interpolate);
+Datum
+sfcgal_postgis_nurbs_curve_interpolate(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20300
+	lwpgerror(
+		"The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+		"'sfcgal_nurbs_curve_interpolate' function (requires SFCGAL 2.3.0+)",
+		POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20300 */
+	GSERIALIZED *input, *output;
+	LWGEOM *lwgeom;
+	LWLINE *line;
+	sfcgal_geometry_t **points;
+	sfcgal_geometry_t *sfcgal_nurbs;
+	LWNURBSCURVE *result_nurbs;
+	int32_t degree;
+	uint32_t i;
+	POINT4D pt;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	if (PG_ARGISNULL(0) || PG_ARGISNULL(1))
+		PG_RETURN_NULL();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	degree = PG_GETARG_INT32(1);
+	srid = gserialized_get_srid(input);
+
+	/* Validate degree */
+	if (degree < 1 || degree > 10)
+	{
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("NURBS degree must be between 1 and 10")));
+	}
+
+	/* Extract data points */
+	lwgeom = lwgeom_from_gserialized(input);
+	if (!lwgeom || lwgeom->type != LINETYPE)
+	{
+		if (lwgeom) lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("Data points must be a LINESTRING")));
+	}
+
+	line = (LWLINE*)lwgeom;
+	if (!line->points || line->points->npoints < degree + 1)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("Need at least %d data points for degree %d interpolation",
+					degree + 1, degree)));
+	}
+
+	/* Convert to SFCGAL points */
+	points = (sfcgal_geometry_t**)palloc(sizeof(sfcgal_geometry_t*) * line->points->npoints);
+
+	for (i = 0; i < line->points->npoints; i++)
+	{
+		getPoint4d_p(line->points, i, &pt);
+		if (FLAGS_GET_Z(line->flags) && FLAGS_GET_M(line->flags))
+			points[i] = sfcgal_point_create_from_xyzm(pt.x, pt.y, pt.z, pt.m);
+		else if (FLAGS_GET_Z(line->flags))
+			points[i] = sfcgal_point_create_from_xyz(pt.x, pt.y, pt.z);
+		else if (FLAGS_GET_M(line->flags))
+			points[i] = sfcgal_point_create_from_xym(pt.x, pt.y, pt.m);
+		else
+			points[i] = sfcgal_point_create_from_xy(pt.x, pt.y);
+	}
+
+	/* Create interpolating NURBS curve using SFCGAL */
+	sfcgal_nurbs = sfcgal_nurbs_curve_interpolate(
+		(const sfcgal_geometry_t**)points, line->points->npoints, degree,
+		SFCGAL_KNOT_METHOD_CHORD_LENGTH, SFCGAL_END_CONDITION_CLAMPED);
+
+	/* Clean up SFCGAL points */
+	for (i = 0; i < line->points->npoints; i++)
+	{
+		sfcgal_geometry_delete(points[i]);
+	}
+	pfree(points);
+
+	if (!sfcgal_nurbs)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),
+				errmsg("Failed to create interpolating NURBS curve with SFCGAL")));
+	}
+
+	/* Convert back to PostGIS NURBS */
+	result_nurbs = (LWNURBSCURVE*)SFCGAL2LWGEOM(sfcgal_nurbs, 0, srid);
+	sfcgal_geometry_delete(sfcgal_nurbs);
+
+	if (!result_nurbs)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),
+				errmsg("Failed to convert SFCGAL NURBS to PostGIS")));
+	}
+
+	output = geometry_serialize((LWGEOM*)result_nurbs);
+
+	lwnurbscurve_free(result_nurbs);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(input, 0);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+
+/* CG_NurbsCurveApproximate - Create approximating NURBS curve using SFCGAL */
+PG_FUNCTION_INFO_V1(sfcgal_postgis_nurbs_curve_approximate);
+Datum
+sfcgal_postgis_nurbs_curve_approximate(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20300
+	lwpgerror(
+		"The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+		"'sfcgal_nurbs_curve_approximate' function (requires SFCGAL 2.3.0+)",
+		POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20300 */
+	GSERIALIZED *input, *output;
+	LWGEOM *lwgeom;
+	LWLINE *line;
+	int32_t degree;
+	float8 tolerance;
+	int32_t max_control_points = 100; /* default */
+	sfcgal_geometry_t **points;
+	sfcgal_geometry_t *sfcgal_nurbs;
+	LWNURBSCURVE *result_nurbs;
+	uint32_t i;
+	POINT4D pt;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	if (PG_ARGISNULL(0) || PG_ARGISNULL(1) || PG_ARGISNULL(2))
+		PG_RETURN_NULL();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	degree = PG_GETARG_INT32(1);
+	tolerance = PG_GETARG_FLOAT8(2);
+	if (PG_NARGS() > 3 && !PG_ARGISNULL(3))
+		max_control_points = PG_GETARG_INT32(3);
+	srid = gserialized_get_srid(input);
+
+	/* Validate degree */
+	if (degree < 1 || degree > 10)
+	{
+		lwpgnotice("NURBS degree is %d, must be between 1 and 10", degree);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("NURBS degree must be between 1 and 10")));
+	}
+
+	/* Convert to lwgeom */
+	lwgeom = lwgeom_from_gserialized(input);
+	if (lwgeom->type != LINETYPE)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("Data points must be a LINESTRING")));
+	}
+
+	line = (LWLINE*)lwgeom;
+	if (!line->points || line->points->npoints < degree + 1)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("Need at least %d data points for degree %d approximation",
+					degree + 1, degree)));
+	}
+
+	/* Convert to SFCGAL points */
+	points = (sfcgal_geometry_t**)palloc(sizeof(sfcgal_geometry_t*) * line->points->npoints);
+
+	for (i = 0; i < line->points->npoints; i++)
+	{
+		getPoint4d_p(line->points, i, &pt);
+		if (FLAGS_GET_Z(line->flags) && FLAGS_GET_M(line->flags))
+			points[i] = sfcgal_point_create_from_xyzm(pt.x, pt.y, pt.z, pt.m);
+		else if (FLAGS_GET_Z(line->flags))
+			points[i] = sfcgal_point_create_from_xyz(pt.x, pt.y, pt.z);
+		else if (FLAGS_GET_M(line->flags))
+			points[i] = sfcgal_point_create_from_xym(pt.x, pt.y, pt.m);
+		else
+			points[i] = sfcgal_point_create_from_xy(pt.x, pt.y);
+	}
+
+	/* Create approximating NURBS curve */
+	sfcgal_nurbs = sfcgal_nurbs_curve_approximate((const sfcgal_geometry_t **)points, line->points->npoints, degree,
+													tolerance, max_control_points);
+
+	/* Clean up points */
+	for (i = 0; i < line->points->npoints; i++)
+		sfcgal_geometry_delete(points[i]);
+	pfree(points);
+
+	if (!sfcgal_nurbs)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),
+				errmsg("SFCGAL NURBS curve approximation failed")));
+	}
+
+	/* Convert result back to PostGIS */
+	result_nurbs = (LWNURBSCURVE*)SFCGAL2LWGEOM(sfcgal_nurbs, 0, srid);
+	sfcgal_geometry_delete(sfcgal_nurbs);
+
+	output = geometry_serialize(lwnurbscurve_as_lwgeom(result_nurbs));
+	lwnurbscurve_free(result_nurbs);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(input, 0);
+
 	PG_RETURN_POINTER(output);
 #endif
 }

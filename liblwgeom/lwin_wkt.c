@@ -891,6 +891,194 @@ LWGEOM* wkt_parser_collection_finalize(int lwtype, LWGEOM *geom, char *dimension
 	return geom;
 }
 
+/**
+* Build a 2D coordinate with weight (for NURBS) - stored as XYM
+*/
+POINT wkt_parser_nurbs_coord_3(double c1, double c2, double weight)
+{
+	POINT p;
+	p.flags = 0;
+	p.x = c1;
+	p.y = c2;
+	p.z = 0.0;
+	p.m = weight;  /* Weight goes in M coordinate */
+	FLAGS_SET_Z(p.flags, 0);
+	FLAGS_SET_M(p.flags, 1);
+	return p;
+}
+
+/**
+* Build a 3D coordinate with weight (for NURBS) - stored as XYZM
+*/
+POINT wkt_parser_nurbs_coord_4(double c1, double c2, double c3, double weight)
+{
+	POINT p;
+	p.flags = 0;
+	p.x = c1;
+	p.y = c2;
+	p.z = c3;
+	p.m = weight;  /* Weight goes in M coordinate */
+	FLAGS_SET_Z(p.flags, 1);
+	FLAGS_SET_M(p.flags, 1);
+	return p;
+}
+
+/**
+ * Create a new NURBS curve from WKT parsing
+ */
+
+/**
+ * Create a new NURBS curve with specification: degree, points, weights, knots
+ * Can be called with degree=0 for simple format compatibility (uses degree 2)
+ */
+LWGEOM* wkt_parser_nurbscurve_new(int degree, POINTARRAY *points, POINTARRAY *weights, POINTARRAY *knots, char *dimensionality)
+{
+	LWNURBSCURVE *curve;
+	double *weight_array = NULL;
+	double *knot_array = NULL;
+	uint32_t nweights = 0, nknots = 0;
+	lwflags_t flags = wkt_dimensionality(dimensionality);
+
+	LWDEBUG(4,"entered wkt_parser_nurbscurve_new");
+
+	/* Handle simple format compatibility - if degree is 0, use default degree 2 */
+	if (degree == 0) {
+		degree = 2;
+	}
+
+	/* Validate degree */
+	if (degree < 1 || degree > 10) {
+		if (points) ptarray_free(points);
+		if (weights) ptarray_free(weights);
+		if (knots) ptarray_free(knots);
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+
+	/* Handle empty geometry */
+	if (!points) {
+		if (weights) ptarray_free(weights);
+		if (knots) ptarray_free(knots);
+		return lwnurbscurve_as_lwgeom(lwnurbscurve_construct_empty(SRID_UNKNOWN, FLAGS_GET_Z(flags), FLAGS_GET_M(flags)));
+	}
+
+	/* Validate minimum points for degree */
+	if (points->npoints < (uint32_t)(degree + 1)) {
+		ptarray_free(points);
+		if (weights) ptarray_free(weights);
+		if (knots) ptarray_free(knots);
+		SET_PARSER_ERROR(PARSER_ERROR_MOREPOINTS);
+		return NULL;
+	}
+
+	/* Check dimensionality consistency */
+	if (wkt_pointarray_dimensionality(points, flags) == LW_FALSE) {
+		ptarray_free(points);
+		if (weights) ptarray_free(weights);
+		if (knots) ptarray_free(knots);
+		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
+		return NULL;
+	}
+
+	/* Extract weights if provided */
+	if (weights && weights->npoints > 0) {
+		nweights = weights->npoints;
+		if (nweights != points->npoints) {
+			ptarray_free(points);
+			ptarray_free(weights);
+			if (knots) ptarray_free(knots);
+			SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+			return NULL;
+		}
+
+		weight_array = lwalloc(sizeof(double) * nweights);
+		for (uint32_t i = 0; i < nweights; i++) {
+			POINT2D p;
+			getPoint2d_p(weights, i, &p);
+			weight_array[i] = p.x; /* Weight is stored in X coordinate */
+
+			if (weight_array[i] <= 0.0) {
+				ptarray_free(points);
+				ptarray_free(weights);
+				if (knots) ptarray_free(knots);
+				lwfree(weight_array);
+				SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+				return NULL;
+			}
+		}
+		ptarray_free(weights);
+	}
+
+	/* Extract knots if provided */
+	if (knots && knots->npoints > 0) {
+		nknots = knots->npoints;
+		uint32_t expected_knots = points->npoints + degree + 1;
+
+		if (nknots != expected_knots) {
+			ptarray_free(points);
+			if (weight_array) lwfree(weight_array);
+			ptarray_free(knots);
+			SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+			return NULL;
+		}
+
+		knot_array = lwalloc(sizeof(double) * nknots);
+		for (uint32_t i = 0; i < nknots; i++) {
+			POINT2D p;
+			getPoint2d_p(knots, i, &p);
+			knot_array[i] = p.x; /* Knot value is stored in X coordinate */
+		}
+
+		/* Validate knot vector is non-decreasing */
+		for (uint32_t i = 1; i < nknots; i++) {
+			if (knot_array[i] < knot_array[i-1]) {
+				ptarray_free(points);
+				if (weight_array) lwfree(weight_array);
+				ptarray_free(knots);
+				lwfree(knot_array);
+				SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+				return NULL;
+			}
+		}
+
+		ptarray_free(knots);
+	}
+
+	/* Create the NURBS curve */
+	curve = lwnurbscurve_construct(SRID_UNKNOWN, degree, points, weight_array, knot_array, nweights, nknots);
+
+	if (!curve) {
+		if (weight_array) lwfree(weight_array);
+		if (knot_array) lwfree(knot_array);
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+
+	return lwnurbscurve_as_lwgeom(curve);
+}
+
+
+/**
+ * Create an empty NURBS curve with the specified dimensionality.
+ */
+LWGEOM* wkt_parser_nurbscurve_empty(char *dimensionality)
+{
+	lwflags_t flags = wkt_dimensionality(dimensionality);
+	LWNURBSCURVE *curve;
+
+	LWDEBUG(4,"entered wkt_parser_nurbscurve_empty");
+
+	curve = lwnurbscurve_construct_empty(SRID_UNKNOWN,
+		FLAGS_GET_Z(flags), FLAGS_GET_M(flags));
+
+	if (!curve) {
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+
+	return lwnurbscurve_as_lwgeom(curve);
+}
+
 void
 wkt_parser_geometry_new(LWGEOM *geom, int32_t srid)
 {

@@ -41,3 +41,4 @@ sfcgal_geometry_t *LWGEOM2SFCGAL(const LWGEOM *geom);
  * Take a PostGIS geometry, send it to SFCGAL and return it unchanged
  */
 LWGEOM *lwgeom_sfcgal_noop(const LWGEOM *geom_in);
+

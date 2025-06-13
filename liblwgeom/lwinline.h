@@ -192,6 +192,25 @@ lwcollection_is_empty(const LWCOLLECTION *col)
 }
 
 /**
+ * Check if a NURBS curve is empty
+ * A NURBS curve is considered empty if it has no control points
+ */
+static inline int
+lwnurbscurve_is_empty(const LWNURBSCURVE *curve)
+{
+    if (!curve)
+        return LW_TRUE;
+
+    if (!curve->points)
+        return LW_TRUE;
+
+    if (curve->points->npoints == 0)
+        return LW_TRUE;
+
+    return LW_FALSE;
+}
+
+/**
  * Return true or false depending on whether a geometry is an "empty"
  * geometry (no vertices members)
  */
@@ -226,6 +245,9 @@ lwgeom_is_empty(const LWGEOM *geom)
 	case TINTYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_is_empty((LWCOLLECTION *)geom);
+		break;
+	case NURBSCURVETYPE:
+		return lwnurbscurve_is_empty((LWNURBSCURVE*)geom);
 		break;
 	default:
 		return LW_FALSE;

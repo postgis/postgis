@@ -777,6 +777,25 @@ int lwgeom_calculate_gbox_cartesian(const LWGEOM *lwgeom, GBOX *gbox)
 	case TINTYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_calculate_gbox_cartesian((LWCOLLECTION *)lwgeom, gbox);
+	case NURBSCURVETYPE:
+	{
+		/*
+		 * For NURBS curves, calculate bounding box from control points
+		 *
+		 * Note: This gives the control polygon bounding box, not the actual
+		 * curve bounding box. The true curve is guaranteed to lie within
+		 * the convex hull of control points, so this is a valid (conservative)
+		 * bounding box that's computationally efficient.
+		 *
+		 * For tighter bounds, one would need to evaluate the curve at multiple
+		 * parameter values, which is much more expensive.
+		 */
+		const LWNURBSCURVE *nurbs = (const LWNURBSCURVE*)lwgeom;
+		if (nurbs->points && nurbs->points->npoints > 0)
+			return ptarray_calculate_gbox_cartesian(nurbs->points, gbox);
+		else
+			return LW_FAILURE; /* Empty curve has no bounding box */
+	}
 	}
 	/* Never get here, please. */
 	lwerror("unsupported type (%d) - %s", lwgeom->type, lwtype_name(lwgeom->type));

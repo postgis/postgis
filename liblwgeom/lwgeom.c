@@ -551,6 +551,8 @@ lwgeom_clone_deep(const LWGEOM *lwgeom)
 	case TINTYPE:
 	case COLLECTIONTYPE:
 		return (LWGEOM *)lwcollection_clone_deep((LWCOLLECTION *)lwgeom);
+	case NURBSCURVETYPE:
+		return (LWGEOM *)lwnurbscurve_clone_deep((LWNURBSCURVE *)lwgeom);
 	default:
 		lwerror("lwgeom_clone_deep: Unknown geometry type: %s", lwtype_name(lwgeom->type));
 		return NULL;
@@ -1262,6 +1264,9 @@ void lwgeom_free(LWGEOM *lwgeom)
 	case COLLECTIONTYPE:
 		lwcollection_free((LWCOLLECTION *)lwgeom);
 		break;
+	case NURBSCURVETYPE:
+		lwnurbscurve_free((LWNURBSCURVE *)lwgeom);
+		break;
 	default:
 		lwerror("lwgeom_free called with unknown type (%d) %s", lwgeom->type, lwtype_name(lwgeom->type));
 	}
@@ -1281,6 +1286,15 @@ int lwgeom_needs_bbox(const LWGEOM *geom)
 			return LW_FALSE;
 		else
 			return LW_TRUE;
+	}
+	else if ( geom->type == NURBSCURVETYPE )
+	{
+		return LW_FALSE;
+		// LWNURBSCURVE *nurbs = (LWNURBSCURVE*)geom;
+		// if ( !nurbs->points || nurbs->points->npoints <= 2 )
+		// 	return LW_FALSE;
+		// else
+		// 	return LW_TRUE;
 	}
 	else if ( geom->type == MULTIPOINTTYPE )
 	{
@@ -1380,6 +1394,7 @@ int lwgeom_dimension(const LWGEOM *geom)
 	case COMPOUNDTYPE:
 	case MULTICURVETYPE:
 	case MULTILINETYPE:
+	case NURBSCURVETYPE:
 		return 1;
 	case TRIANGLETYPE:
 	case POLYGONTYPE:
@@ -1504,6 +1519,7 @@ extern int lwgeom_dimensionality(const LWGEOM *geom)
 	case MULTILINETYPE:
 	case COMPOUNDTYPE:
 	case MULTICURVETYPE:
+	case NURBSCURVETYPE:
 		return 1;
 		break;
 	case POLYGONTYPE:
@@ -2146,6 +2162,7 @@ lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
 		case LINETYPE:
 		case CIRCSTRINGTYPE:
 		case TRIANGLETYPE:
+		case NURBSCURVETYPE:
 		{
 			LWLINE *l = (LWLINE*)geom;
 			ptarray_scale(l->points, factor);
@@ -2210,6 +2227,8 @@ lwgeom_construct_empty(uint8_t type, int32_t srid, char hasz, char hasm)
 		case MULTIPOLYGONTYPE:
 		case COLLECTIONTYPE:
 			return lwcollection_as_lwgeom(lwcollection_construct_empty(type, srid, hasz, hasm));
+		case NURBSCURVETYPE:
+			return lwnurbscurve_as_lwgeom(lwnurbscurve_construct_empty(srid, hasz, hasm));
 		default:
 			lwerror("lwgeom_construct_empty: unsupported geometry type: %s",
 		        	lwtype_name(type));

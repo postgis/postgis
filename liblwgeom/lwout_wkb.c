@@ -92,6 +92,9 @@ static uint32_t lwgeom_wkb_type(const LWGEOM *geom, uint8_t variant)
 	case LINETYPE:
 		wkb_type = WKB_LINESTRING_TYPE;
 		break;
+	case NURBSCURVETYPE:
+		wkb_type = WKB_NURBSCURVE_TYPE;
+		break;
 	case POLYGONTYPE:
 		wkb_type = WKB_POLYGON_TYPE;
 		break;
@@ -135,7 +138,17 @@ static uint32_t lwgeom_wkb_type(const LWGEOM *geom, uint8_t variant)
 		lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(geom->type));
 	}
 
-	if ( variant & WKB_EXTENDED )
+	/* NURBS curves always use ISO dimension encoding */
+	if ( geom->type == NURBSCURVETYPE )
+	{
+		if ( FLAGS_GET_Z(geom->flags) && !FLAGS_GET_M(geom->flags) )
+			wkb_type += 1000;  /* Z: 1000 offset */
+		else if ( FLAGS_GET_M(geom->flags) && !FLAGS_GET_Z(geom->flags) )
+			wkb_type += 2000;  /* M: 2000 offset */
+		else if ( FLAGS_GET_Z(geom->flags) && FLAGS_GET_M(geom->flags) )
+			wkb_type += 3000;  /* ZM: 3000 offset */
+	}
+	else if ( variant & WKB_EXTENDED )
 	{
 		if ( FLAGS_GET_Z(geom->flags) )
 			wkb_type |= WKBZOFFSET;
@@ -147,13 +160,11 @@ static uint32_t lwgeom_wkb_type(const LWGEOM *geom, uint8_t variant)
 	}
 	else if ( variant & WKB_ISO )
 	{
-		/* Z types are in the 1000 range */
+		/* ISO encoding for other geometry types */
 		if ( FLAGS_GET_Z(geom->flags) )
 			wkb_type += 1000;
-		/* M types are in the 2000 range */
 		if ( FLAGS_GET_M(geom->flags) )
 			wkb_type += 2000;
-		/* ZM types are in the 1000 + 2000 = 3000 range, see above */
 	}
 	return wkb_type;
 }
@@ -235,6 +246,25 @@ integer_to_wkb_buf(const uint32_t ival, uint8_t *buf, uint8_t variant)
 			memcpy(buf, iptr, WKB_INT_SIZE);
 		}
 		return buf + WKB_INT_SIZE;
+	}
+}
+
+/*
+* Byte
+*/
+static uint8_t* byte_to_wkb_buf(const uint8_t bval, uint8_t *buf, uint8_t variant)
+{
+	if ( variant & WKB_HEX )
+	{
+		/* Convert single byte to 2 hex characters */
+		buf[0] = hexchr[bval >> 4];      /* Top four bits to 0-F */
+		buf[1] = hexchr[bval & 0x0F];    /* Bottom four bits to 0-F */
+		return buf + 2;
+	}
+	else
+	{
+		buf[0] = bval;
+		return buf + 1;
 	}
 }
 
@@ -669,6 +699,127 @@ static uint8_t* lwcollection_to_wkb_buf(const LWCOLLECTION *col, uint8_t *buf, u
 	return buf;
 }
 
+static size_t lwnurbscurve_to_wkb_size(const LWNURBSCURVE *curve, uint8_t variant)
+{
+    size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE; /* endian + type */
+
+    /* Extended WKB needs space for optional SRID integer */
+    if ( lwgeom_wkb_needs_srid((LWGEOM*)curve, variant) )
+        size += WKB_INT_SIZE;
+
+    /* ISO/IEC 13249-3:2016 compliant structure:
+     * <byte order> <wkbnurbs> [ <wkbdegree> <wkbcontrolpoints binary> <wkbknots binary> ]
+     */
+
+    size += WKB_INT_SIZE; /* degree */
+
+    /* Control points count */
+    size += WKB_INT_SIZE; /* npoints */
+
+    uint32_t npoints = curve->points ? curve->points->npoints : 0;
+    uint32_t dims = curve->points ? FLAGS_NDIMS(curve->points->flags) : 2;
+
+    /* ISO format: Each control point has individual weight structure
+     * <nurbspoint binary representation> ::=
+     * <byte order> [ <wkbweightedpoint> <bit> [ <wkbweight> ] ]
+     */
+    for (uint32_t i = 0; i < npoints; i++) {
+        size += WKB_BYTE_SIZE; /* byte order for each point */
+        size += dims * WKB_DOUBLE_SIZE; /* point coordinates */
+        size += WKB_BYTE_SIZE; /* weight bit flag */
+
+        /* Add weight value if this point has a custom weight */
+        if (curve->weights && i < curve->nweights && curve->weights[i] != 1.0) {
+            size += WKB_DOUBLE_SIZE; /* weight value */
+        }
+    }
+
+    /* Knots are always required in WKB output (generate uniform if not present) */
+    size += WKB_INT_SIZE; /* nknots count */
+    uint32_t nknots_for_size = 0;
+    double *knots_for_size = lwnurbscurve_get_knots_for_wkb(curve, &nknots_for_size);
+    if (knots_for_size) {
+        size += WKB_DOUBLE_SIZE * nknots_for_size;
+        lwfree(knots_for_size); /* Just needed the count */
+    }
+
+    return size;
+}
+
+static uint8_t* lwnurbscurve_to_wkb_buf(const LWNURBSCURVE *curve, uint8_t *buf, uint8_t variant)
+{
+    uint32_t wkb_type = lwgeom_wkb_type((LWGEOM*)curve, variant);
+
+    /* Write endian flag */
+    buf = endian_to_wkb_buf(buf, variant);
+
+    /* Write type */
+    buf = integer_to_wkb_buf(wkb_type, buf, variant);
+
+    /* Set the optional SRID for extended variant */
+    if ( lwgeom_wkb_needs_srid((LWGEOM*)curve, variant) )
+        buf = integer_to_wkb_buf(curve->srid, buf, variant);
+
+    /* ISO/IEC 13249-3:2016 compliant structure */
+    buf = integer_to_wkb_buf(curve->degree, buf, variant);
+
+    /* Write control points count */
+    uint32_t npoints = curve->points ? curve->points->npoints : 0;
+    uint32_t dims = curve->points ? FLAGS_NDIMS(curve->points->flags) : 2;
+    buf = integer_to_wkb_buf(npoints, buf, variant);
+
+    /* ISO format: Write each control point with individual weight structure
+     * <nurbspoint binary representation> ::=
+     * <byte order> [ <wkbweightedpoint> <bit> [ <wkbweight> ] ]
+     */
+    for (uint32_t i = 0; i < npoints; i++) {
+        /* Write byte order for this point (ISO requirement) */
+        buf = endian_to_wkb_buf(buf, variant);
+
+        /* Write point coordinates */
+        if (curve->points) {
+            double *coords = (double*)getPoint_internal(curve->points, i);
+            for (uint32_t d = 0; d < dims; d++) {
+                buf = double_to_wkb_buf(coords[d], buf, variant);
+            }
+        }
+
+        /* Write weight bit flag */
+        uint8_t has_weight = 0;
+        double weight_value = 1.0; /* default weight */
+
+        if (curve->weights && i < curve->nweights && curve->weights[i] != 1.0) {
+            has_weight = 1;
+            weight_value = curve->weights[i];
+        }
+
+        buf = byte_to_wkb_buf(has_weight, buf, variant);
+
+        /* Write weight value if flag = 1 */
+        if (has_weight) {
+            buf = double_to_wkb_buf(weight_value, buf, variant);
+        }
+    }
+
+    /* Write knots (always required - generate uniform if not present) */
+    {
+        uint32_t nknots = 0;
+        double *knots = lwnurbscurve_get_knots_for_wkb(curve, &nknots);
+        if (knots && nknots > 0) {
+            buf = integer_to_wkb_buf(nknots, buf, variant);
+            for (uint32_t i = 0; i < nknots; i++) {
+                buf = double_to_wkb_buf(knots[i], buf, variant);
+            }
+            lwfree(knots);
+        } else {
+            /* Fallback - should not happen */
+            buf = integer_to_wkb_buf(0, buf, variant);
+        }
+    }
+
+    return buf;
+}
+
 /*
 * GEOMETRY
 */
@@ -725,7 +876,9 @@ lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 		case TINTYPE:
 			size += lwcollection_to_wkb_size((LWCOLLECTION*)geom, variant);
 			break;
-
+		case NURBSCURVETYPE:
+			size += lwnurbscurve_to_wkb_size((LWNURBSCURVE*)geom, variant);
+			break;
 		/* Unknown type! */
 		default:
 			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(geom->type));
@@ -773,6 +926,8 @@ static uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t vari
 		case POLYHEDRALSURFACETYPE:
 		case TINTYPE:
 			return lwcollection_to_wkb_buf((LWCOLLECTION*)geom, buf, variant);
+		case NURBSCURVETYPE:
+			return lwnurbscurve_to_wkb_buf((LWNURBSCURVE*)geom, buf, variant);
 
 		/* Unknown type! */
 		default:
