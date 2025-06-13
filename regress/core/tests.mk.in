@@ -151,7 +151,10 @@ TESTS += \
 	$(top_srcdir)/regress/core/wkb \
 	$(top_srcdir)/regress/core/wkt \
 	$(top_srcdir)/regress/core/wmsservers \
-  $(top_srcdir)/regress/core/wrapx
+  $(top_srcdir)/regress/core/wrapx \
+	$(top_srcdir)/regress/core/nurbs_eval \
+	$(top_srcdir)/regress/core/nurbs_wkt \
+	$(top_srcdir)/regress/core/nurbs_wkb
 
 # Slow slow tests
 TESTS_SLOW = \

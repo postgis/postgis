@@ -39,15 +39,28 @@ char* inputs[] =
 	"CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),(4 3, 4 5, 1 4, 0 0)), LINESTRING (0.1 0.1, 0.3 0.1, 0.3 0.3, 0.1 0.1) )",
 	"MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),(1 1, 3 3, 3 1, 1 1)),((10 10, 14 12, 11 10, 10 10),(11 11, 11.5 11, 11 11.5, 11 11)))",
 	"POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )",
-	"TIN(((80 130,50 160,80 70,80 130)),((50 160,10 190,10 70,50 160)), ((80 70,50 160,10 70,80 70)),((120 160,120 190,50 160,120 160)), ((120 190,10 190,50 160,120 190)))"
+	"TIN(((80 130,50 160,80 70,80 130)),((50 160,10 190,10 70,50 160)), ((80 70,50 160,10 70,80 70)),((120 160,120 190,50 160,120 160)), ((120 190,10 190,50 160,120 190)))",
+	"NURBSCURVE(1, (0 0, 10 0, 20 0))"
 };
 
+/**
+ * Count the number of point vertices in a geometry using the LWGEOM point iterator.
+ *
+ * Iterates over `g` with lwpointiterator_create/lwpointiterator_next and returns the total
+ * number of points visited. The function does not modify `g`. It uses CUnit assertions
+ * to verify each iterator step succeeds.
+ *
+ * @param g Pointer to a valid LWGEOM to inspect (must not be NULL).
+ * @return The number of point vertices discovered by the iterator.
+ */
 static uint32_t
 count_points_using_iterator(LWGEOM* g)
 {
 	POINT4D p;
 	uint32_t count = 0;
 	LWPOINTITERATOR* it = lwpointiterator_create(g);
+	CU_ASSERT_PTR_NOT_NULL(it);
+  if (!it) return 0;
 
 	while (lwpointiterator_has_next(it))
 	{

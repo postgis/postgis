@@ -35,14 +35,14 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED
-# define YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED
+#ifndef YY_YY_LWIN_WKT_PARSE_H_INCLUDED
+# define YY_YY_LWIN_WKT_PARSE_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
 #endif
 #if YYDEBUG
-extern int wkt_yydebug;
+extern int yydebug;
 #endif
 
 /* Token kinds.  */
@@ -74,9 +74,10 @@ extern int wkt_yydebug;
     TRIANGLE_TOK = 275,            /* TRIANGLE_TOK  */
     TIN_TOK = 276,                 /* TIN_TOK  */
     POLYHEDRALSURFACE_TOK = 277,   /* POLYHEDRALSURFACE_TOK  */
-    DOUBLE_TOK = 278,              /* DOUBLE_TOK  */
-    DIMENSIONALITY_TOK = 279,      /* DIMENSIONALITY_TOK  */
-    SRID_TOK = 280                 /* SRID_TOK  */
+    NURBSCURVE_TOK = 278,          /* NURBSCURVE_TOK  */
+    DOUBLE_TOK = 279,              /* DOUBLE_TOK  */
+    DIMENSIONALITY_TOK = 280,      /* DIMENSIONALITY_TOK  */
+    SRID_TOK = 281                 /* SRID_TOK  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -85,7 +86,7 @@ extern int wkt_yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 111 "lwin_wkt_parse.y"
+#line 118 "lwin_wkt_parse.y"
 
 	int integervalue;
 	double doublevalue;
@@ -94,7 +95,7 @@ union YYSTYPE
 	POINT coordinatevalue;
 	POINTARRAY *ptarrayvalue;
 
-#line 98 "lwin_wkt_parse.h"
+#line 99 "lwin_wkt_parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -117,10 +118,10 @@ struct YYLTYPE
 #endif
 
 
-extern YYSTYPE wkt_yylval;
-extern YYLTYPE wkt_yylloc;
+extern YYSTYPE yylval;
+extern YYLTYPE yylloc;
 
-int wkt_yyparse (void);
+int yyparse (void);
 
 
-#endif /* !YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED  */
+#endif /* !YY_YY_LWIN_WKT_PARSE_H_INCLUDED  */

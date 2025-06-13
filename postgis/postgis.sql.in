@@ -2411,7 +2411,8 @@ BEGIN
 	POLYGONM, MULTIPOLYGONM,
 	CIRCULARSTRINGM, COMPOUNDCURVEM, MULTICURVEM
 	CURVEPOLYGONM, MULTISURFACEM, TRIANGLE, TRIANGLEM,
-	POLYHEDRALSURFACE, POLYHEDRALSURFACEM, TIN, TINM
+	POLYHEDRALSURFACE, POLYHEDRALSURFACEM, TIN, TINM,
+	NURBSCURVE, NURBSCURVEM
 	or GEOMETRYCOLLECTIONM', new_type, new_dim;
 		RETURN 'fail';
 	END IF;
@@ -6363,7 +6364,12 @@ $$
 			('TIN', 'Tin', 2),
 			('TIN', 'TinZ', 3),
 			('TINM', 'TinM', 3),
-			('TIN', 'TinZM', 4) )
+			('TIN', 'TinZM', 4),
+
+			('NURBSCURVE',  'NurbsCurve', 2),
+			('NURBSCURVE',  'NurbsCurveZ', 3),
+			('NURBSCURVEM', 'NurbsCurveM', 3),
+			('NURBSCURVE',  'NurbsCurveZM', 4) )
 			 As g(old_name, new_name, coord_dimension)
 	WHERE (upper(old_name) = upper($1) OR upper(new_name) = upper($1))
 		AND coord_dimension = $2;
@@ -7063,5 +7069,8 @@ RETURNS geometry
 AS 'MODULE_PATHNAME','ST_RemoveSmallParts'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
+
+
+#include "postgis_nurbs.sql.in"
 
 COMMIT;

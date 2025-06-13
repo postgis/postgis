@@ -93,6 +93,8 @@ extract_pointarrays_from_lwgeom(const LWGEOM* g)
 		return prepend_node(lwgeom_as_lwtriangle(g)->points, NULL);
 	case CIRCSTRINGTYPE:
 		return prepend_node(lwgeom_as_lwcircstring(g)->points, NULL);
+	case NURBSCURVETYPE:
+		return prepend_node(lwnurbscurve_get_control_points(lwgeom_as_lwnurbscurve(g)), NULL);
 	case POLYGONTYPE:
 	{
 		LISTNODE* n = NULL;

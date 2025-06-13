@@ -132,7 +132,7 @@
 #define WKB_POLYHEDRALSURFACE_TYPE 15
 #define WKB_TIN_TYPE 16
 #define WKB_TRIANGLE_TYPE 17
-
+#define WKB_NURBSCURVE_TYPE 21 /* ISO 19107:2019 - NURBS curve WKB type */
 
 /**
 * Macro that returns:
@@ -380,6 +380,10 @@ POINTARRAY *ptarray_clone(const POINTARRAY *ptarray);
 LWLINE *lwline_clone_deep(const LWLINE *lwgeom);
 LWPOLY *lwpoly_clone_deep(const LWPOLY *lwgeom);
 LWCOLLECTION *lwcollection_clone_deep(const LWCOLLECTION *lwgeom);
+LWNURBSCURVE *lwnurbscurve_clone_deep(const LWNURBSCURVE *curve);
+double *lwnurbscurve_get_knots_for_wkb(const LWNURBSCURVE *curve, uint32_t *nknots_out);
+LWPOINT *lwnurbscurve_evaluate(const LWNURBSCURVE *curve, double t);
+LWLINE *lwnurbscurve_to_linestring(const LWNURBSCURVE *curve, uint32_t num_segments);
 GBOX *gbox_clone(const GBOX *gbox);
 
 /*

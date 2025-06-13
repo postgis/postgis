@@ -177,6 +177,16 @@ lwtriangle_is_empty(const LWTRIANGLE *triangle)
 
 static inline int lwgeom_is_empty(const LWGEOM *geom);
 
+/**
+ * Determine whether a collection geometry contains no non-empty geometries.
+ *
+ * Returns true if the collection has zero geometries, its geometry array is NULL,
+ * or every contained geometry is empty according to lwgeom_is_empty(). Returns
+ * false as soon as any contained geometry is found to be non-empty.
+ *
+ * @param col Collection to check; must be a valid LWCOLLECTION pointer.
+ * @return LW_TRUE if the collection is empty, LW_FALSE otherwise.
+ */
 static inline int
 lwcollection_is_empty(const LWCOLLECTION *col)
 {
@@ -192,8 +202,42 @@ lwcollection_is_empty(const LWCOLLECTION *col)
 }
 
 /**
- * Return true or false depending on whether a geometry is an "empty"
- * geometry (no vertices members)
+ * Determine whether a NURBS curve is empty.
+ *
+ * A NURBS curve is considered empty if the curve pointer is NULL, its
+ * associated points array is NULL, or the points array reports zero control
+ * points.
+ *
+ * @param curve NURBS curve to test.
+ * @return LW_TRUE if the curve is empty, otherwise LW_FALSE.
+ */
+static inline int
+lwnurbscurve_is_empty(const LWNURBSCURVE *curve)
+{
+    if (!curve)
+        return LW_TRUE;
+
+    if (!curve->points)
+        return LW_TRUE;
+
+    if (curve->points->npoints == 0)
+        return LW_TRUE;
+
+    return LW_FALSE;
+}
+
+/**
+ * Determine whether a geometry contains no vertices.
+ *
+ * Returns LW_TRUE if the provided LWGEOM has no coordinate vertices according to
+ * its concrete type (points, lines, rings, polygons, collections, NURBS curves, etc.).
+ * The check is delegated to type-specific emptiness helpers; unrecognized geometry
+ * types are treated as non-empty (returns LW_FALSE).
+ *
+ * The caller must pass a non-NULL geom pointer whose ->type field is valid.
+ *
+ * @param geom Geometry to test for emptiness.
+ * @return LW_TRUE if the geometry is empty, otherwise LW_FALSE.
  */
 static inline int
 lwgeom_is_empty(const LWGEOM *geom)
@@ -226,6 +270,9 @@ lwgeom_is_empty(const LWGEOM *geom)
 	case TINTYPE:
 	case COLLECTIONTYPE:
 		return lwcollection_is_empty((LWCOLLECTION *)geom);
+		break;
+	case NURBSCURVETYPE:
+		return lwnurbscurve_is_empty((LWNURBSCURVE*)geom);
 		break;
 	default:
 		return LW_FALSE;
