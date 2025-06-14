@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Resolve the ST_GeomFromGeoHash cast in the PostGIS schema (Paul Ramsey)
   - Release temporary GeoJSON input after parsing (Paul Ramsey)
   - #6076, Measure only matching components of geography collections (Paul Ramsey)
   - Drop the obsolete ST_TileEnvelope signature on upgrade (Darafei Praliaskouski)
