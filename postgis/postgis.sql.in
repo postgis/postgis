@@ -5400,7 +5400,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromGeoHash(text, integer DEFAULT NULL)
 -- ST_GeomFromGeoHash(geohash text, precision integer)
 CREATE OR REPLACE FUNCTION ST_GeomFromGeoHash(text, integer DEFAULT NULL)
 	RETURNS geometry
-	AS $$ SELECT CAST(@extschema@.ST_Box2dFromGeoHash($1, $2) AS geometry); $$
+	AS $$ SELECT CAST(@extschema@.ST_Box2dFromGeoHash($1, $2) AS @extschema@.geometry); $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE
 	_COST_LOW;
 
