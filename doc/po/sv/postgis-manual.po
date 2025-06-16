@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-06-14 06:47+0000\n"
+"PO-Revision-Date: 2025-06-16 18:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/sv/>\n"
@@ -32730,7 +32730,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Raster Editors"
-msgstr "Raster-editorer"
+msgstr "Raster-redigerare"
 
 #. Tag: refpurpose
 #, no-c-format
