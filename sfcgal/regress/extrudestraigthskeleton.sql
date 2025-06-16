@@ -39,3 +39,5 @@ SELECT
   test_result
 FROM
   check_patches;
+SELECT 'Empty building and roof', ST_AsText(CG_ExtrudeStraightSkeleton(ST_GeomFromText('POLYGON EMPTY',4326), 20.1, 20.1));
+SELECT 'Empty roof', ST_AsText(CG_ExtrudeStraightSkeleton(ST_GeomFromText('POLYGON EMPTY',4326), 20.1));

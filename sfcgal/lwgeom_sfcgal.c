@@ -1129,6 +1129,8 @@ sfcgal_extrudestraightskeleton(PG_FUNCTION_ARGS)
 	    POSTGIS_SFCGAL_VERSION);
 	PG_RETURN_NULL();
 #else /* POSTGIS_SFCGAL_VERSION >= 10500 */
+
+
 	GSERIALIZED *input, *output;
 	sfcgal_geometry_t *geom;
 	sfcgal_geometry_t *result;
@@ -1139,6 +1141,18 @@ sfcgal_extrudestraightskeleton(PG_FUNCTION_ARGS)
 
 	input = PG_GETARG_GSERIALIZED_P(0);
 	srid = gserialized_get_srid(input);
+#if POSTGIS_SFCGAL_VERSION < 20200
+	if (gserialized_is_empty(input))
+	{
+		result = sfcgal_polyhedral_surface_create();
+		output = SFCGALGeometry2POSTGIS(result, 0, srid);
+		sfcgal_geometry_delete(result);
+
+		PG_FREE_IF_COPY(input, 0);
+		PG_RETURN_POINTER(output);
+	}
+#endif
+
 	geom = POSTGIS2SFCGALGeometry(input);
 	PG_FREE_IF_COPY(input, 0);
 
