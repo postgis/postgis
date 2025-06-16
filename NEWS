@@ -13,6 +13,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 - #5905, Crash on deeply nested geometries (Paul Ramsey)
 - #5909, ST_ValueCount crashes on empty table (Paul Ramsey)
 - #5917, ST_Relate becomes unresponsive (Paul Ramsey)
+- #5923, CG_ExtrudeStraightSkeleton crashes on empty polygon (Loïc Bartoletti)
 
 
 PostGIS 3.5.3
