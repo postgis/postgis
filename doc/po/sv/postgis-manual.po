@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-06-16 18:47+0000\n"
+"PO-Revision-Date: 2025-06-19 21:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/sv/>\n"
@@ -11372,7 +11372,7 @@ msgstr ""
 "frågeoptimeraren att tabellen bara har 3 sidor och 80 rader. Den uppskattar "
 "att en sekventiell skanning på en så liten tabell är mycket snabbare än att "
 "använda ett index. Och så beslutar den att ignorera GIST-indexet. Vanligtvis "
-"är denna uppskattning korrekt. Men i vårt fall måste operatören hämta varje "
+"är denna uppskattning korrekt. Men i vårt fall måste operatorn hämta varje "
 "geometri från disken för att jämföra begränsningsrutorna, vilket innebär att "
 "alla TOAST-sidor också måste läsas."
 
@@ -15348,8 +15348,8 @@ msgid ""
 "Prior to PostgreSQL 9, ordering in a subquery can be used. However, "
 "sometimes the query plan may not respect the order of the subquery."
 msgstr ""
-"Före PostgreSQL 9 kan beställning i en underfråga användas. Ibland kanske "
-"dock frågeplanen inte respekterar ordningen på underfrågan."
+"Före PostgreSQL 9 kan ordning i en underfråga användas. Ibland kanske dock "
+"frågeplanen inte respekterar ordningen på underfrågan."
 
 #. Tag: para
 #, no-c-format
@@ -22798,7 +22798,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Operators"
-msgstr "Operatörer"
+msgstr "Operatorer"
 
 #. Tag: title
 #, no-c-format
@@ -23268,9 +23268,9 @@ msgstr ""
 "Operatorn <varname>=</varname> returnerar <varname>SANT</varname> om "
 "koordinaterna och koordinatordningen geometri / geografi A är desamma som "
 "koordinaterna och koordinatordningen för geometri / geografi B. PostgreSQL "
-"använder operatörerna =, &lt; och &gt; som definieras för geometrier för att "
-"utföra interna beställningar och jämförelse av geometrier (dvs. i en GROUP "
-"BY- eller ORDER BY-klausul)."
+"använder operatorerna =, &lt; och &gt; som definieras för geometrier för att "
+"utföra interna ordningar och jämförelse av geometrier (dvs. i en GROUP BY- "
+"eller ORDER BY-klausul)."
 
 #. Tag: para
 #, no-c-format
@@ -23725,7 +23725,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Distance Operators"
-msgstr "Distansoperatörer"
+msgstr "Avståndsoperatorer"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23871,7 +23871,7 @@ msgid ""
 msgstr ""
 "Operatorn <varname>|=|</varname> returnerar 3D-avståndet mellan två banor ("
 "se <xref linkend=\"ST_IsValidTrajectory\"/>). Detta är detsamma som <xref "
-"linkend=\"ST_DistanceCPA\"/> men som en operatör kan den användas för att "
+"linkend=\"ST_DistanceCPA\"/> men som en operator kan den användas för att "
 "göra närmaste grannsökningar med ett N-dimensionellt index (kräver "
 "PostgreSQL 9.5.0 eller högre)."
 
@@ -23927,10 +23927,10 @@ msgid ""
 "(PostgreSQL 9.1+ required). Useful for doing nearest neighbor <emphasis "
 "role=\"strong\">approximate</emphasis> distance ordering."
 msgstr ""
-"Operatören <varname>&lt;#&gt;</varname> returnerar avståndet mellan två "
+"Operatorn <varname>&lt;#&gt;</varname> returnerar avståndet mellan två "
 "avgränsningsrutor med flytande punkt, eventuellt läser dem från ett spatialt "
 "index (PostgreSQL 9.1+ krävs). Användbart för att göra närmaste granne "
-"<emphasis role=\"strong\">ungefärlig</emphasis> avståndsbeställning."
+"<emphasis role=\"strong\">ungefärlig</emphasis> avståndsordning."
 
 #. Tag: para
 #, no-c-format
@@ -35629,7 +35629,7 @@ msgid ""
 "intersect. e.g. (([rast1] + [rast2])/2.0)::integer"
 msgstr ""
 "Ett PostgreSQL-algebraiskt uttryck som involverar de två rasterna och "
-"PostgreSQL-definierade funktioner / operatörer som definierar pixelvärdet "
+"PostgreSQL-definierade funktioner / operatorer som definierar pixelvärdet "
 "när pixlar korsar varandra. t.ex. (([rast1] + [rast2])/2.0):: heltal"
 
 #. Tag: para
@@ -37665,9 +37665,9 @@ msgid ""
 msgstr ""
 "Operatorn <varname>=</varname> returnerar <varname>SANT</varname> om "
 "gränsboxen för raster A är densamma som gränsboxen för raster B. PostgreSQL "
-"använder operatörerna =, &lt; och &gt; som definieras för raster för att "
-"utföra interna beställningar och jämförelse av raster (dvs. i en GROUP BY- "
-"eller ORDER BY-klausul)."
+"använder operatorerna =, &lt; och &gt; som definieras för raster för att "
+"utföra interna ordningar och jämförelse av raster (dvs. i en GROUP BY- eller "
+"ORDER BY-klausul)."
 
 #. Tag: para
 #, no-c-format
@@ -48435,7 +48435,7 @@ msgstr ""
 #, no-c-format
 msgid "You can also get a 4D-dimensional index using the 4D operator class:"
 msgstr ""
-"Du kan också få ett 4D-dimensionellt index med hjälp av operatörsklassen 4D:"
+"Du kan också få ett 4D-dimensionellt index med hjälp av operatorsklassen 4D:"
 
 #. Tag: para
 #, no-c-format
@@ -48459,7 +48459,7 @@ msgstr ""
 "Tänk på att ett BRIN-index bara lagrar en indexpost för ett stort antal "
 "rader. Om din tabell lagrar geometrier med ett blandat antal dimensioner är "
 "det troligt att det resulterande indexet kommer att ha dålig prestanda. Du "
-"kan undvika denna prestandaförlust genom att välja den operatörsklass som "
+"kan undvika denna prestandaförlust genom att välja den operatorsklass som "
 "har minst antal dimensioner för de lagrade geometrierna"
 
 #. Tag: para
@@ -48488,7 +48488,7 @@ msgid ""
 "operator for 3D geometries. There is currently no support for kNN searches."
 msgstr ""
 "För närvarande finns endast \"inclusion support\", vilket innebär att endast "
-"operatörerna <varname>&amp;&amp;</varname>, <varname>~</varname> och "
+"operatorerna <varname>&amp;&amp;</varname>, <varname>~</varname> och "
 "<varname>@</varname> kan användas för 2D-fall (för både <code>geometri</"
 "code> och <code>geografi</code>), och endast operatorn "
 "<varname>&amp;&amp;&amp;</varname> för 3D-geometrier. Det finns för "
@@ -48618,7 +48618,7 @@ msgid ""
 "the geometry type can be created using the 3D operator class:"
 msgstr ""
 "Syntaxen ovan bygger upp ett 2-dimensionellt index. Ett 3-dimensionellt "
-"index för geometritypen kan skapas med hjälp av operatörsklassen 3D:"
+"index för geometritypen kan skapas med hjälp av operatorsklassen 3D:"
 
 #. Tag: para
 #, no-c-format
@@ -49567,7 +49567,7 @@ msgid ""
 "This query uses a spatial measurement as an ordering value. There are "
 "several ways of approaching this problem, but the most efficient is below:"
 msgstr ""
-"Denna fråga använder en spatial mätning som ett beställningsvärde. Det finns "
+"Denna fråga använder en spatial mätning som ett ordningsvärde. Det finns "
 "flera sätt att närma sig detta problem, men det mest effektiva är nedan:"
 
 #. Tag: para
