@@ -94,134 +94,6 @@ rt_band_reclass(
 		return 0;
 	}
 
-	/* initialize to zero */
-	if (!hasnodata) {
-		memset(mem, 0, memsize);
-	}
-	/* initialize to nodataval */
-	else {
-		int32_t checkvalint = 0;
-		uint32_t checkvaluint = 0;
-		double checkvaldouble = 0;
-		float checkvalfloat = 0;
-
-		switch (pixtype) {
-			case PT_1BB:
-			{
-				uint8_t *ptr = mem;
-				uint8_t clamped_initval = rt_util_clamp_to_1BB(nodataval);
-				for (i = 0; i < numval; i++)
-					ptr[i] = clamped_initval;
-				checkvalint = ptr[0];
-				break;
-			}
-			case PT_2BUI:
-			{
-				uint8_t *ptr = mem;
-				uint8_t clamped_initval = rt_util_clamp_to_2BUI(nodataval);
-				for (i = 0; i < numval; i++)
-					ptr[i] = clamped_initval;
-				checkvalint = ptr[0];
-				break;
-			}
-			case PT_4BUI:
-			{
-				uint8_t *ptr = mem;
-				uint8_t clamped_initval = rt_util_clamp_to_4BUI(nodataval);
-				for (i = 0; i < numval; i++)
-					ptr[i] = clamped_initval;
-				checkvalint = ptr[0];
-				break;
-			}
-			case PT_8BSI:
-			{
-				int8_t *ptr = mem;
-				int8_t clamped_initval = rt_util_clamp_to_8BSI(nodataval);
-				for (i = 0; i < numval; i++)
-					ptr[i] = clamped_initval;
-				checkvalint = ptr[0];
-				break;
-			}
-			case PT_8BUI:
-			{
-				uint8_t *ptr = mem;
-				uint8_t clamped_initval = rt_util_clamp_to_8BUI(nodataval);
-				for (i = 0; i < numval; i++)
-					ptr[i] = clamped_initval;
-				checkvalint = ptr[0];
-				break;
-			}
-			case PT_16BSI:
-			{
-				int16_t *ptr = mem;
-				int16_t clamped_initval = rt_util_clamp_to_16BSI(nodataval);
-				for (i = 0; i < numval; i++)
-					ptr[i] = clamped_initval;
-				checkvalint = ptr[0];
-				break;
-			}
-			case PT_16BUI:
-			{
-				uint16_t *ptr = mem;
-				uint16_t clamped_initval = rt_util_clamp_to_16BUI(nodataval);
-				for (i = 0; i < numval; i++)
-					ptr[i] = clamped_initval;
-				checkvalint = ptr[0];
-				break;
-			}
-			case PT_32BSI:
-			{
-				int32_t *ptr = mem;
-				int32_t clamped_initval = rt_util_clamp_to_32BSI(nodataval);
-				for (i = 0; i < numval; i++)
-					ptr[i] = clamped_initval;
-				checkvalint = ptr[0];
-				break;
-			}
-			case PT_32BUI:
-			{
-				uint32_t *ptr = mem;
-				uint32_t clamped_initval = rt_util_clamp_to_32BUI(nodataval);
-				for (i = 0; i < numval; i++)
-					ptr[i] = clamped_initval;
-				checkvaluint = ptr[0];
-				break;
-			}
-			case PT_32BF:
-			{
-				float *ptr = mem;
-				float clamped_initval = rt_util_clamp_to_32F(nodataval);
-				for (i = 0; i < numval; i++)
-					ptr[i] = clamped_initval;
-				checkvalfloat = ptr[0];
-				break;
-			}
-			case PT_64BF:
-			{
-				double *ptr = mem;
-				for (i = 0; i < numval; i++)
-					ptr[i] = nodataval;
-				checkvaldouble = ptr[0];
-				break;
-			}
-			default:
-			{
-				rterror("rt_band_reclass: Unknown pixeltype %d", pixtype);
-				rtdealloc(mem);
-				return 0;
-			}
-		}
-
-		/* Overflow checking */
-		rt_util_dbl_trunc_warning(
-			nodataval,
-			checkvalint, checkvaluint,
-			checkvalfloat, checkvaldouble,
-			pixtype
-		);
-	}
-	RASTER_DEBUGF(3, "rt_band_reclass: width = %d height = %d", width, height);
-
 	band = rt_band_new_inline(width, height, pixtype, hasnodata, nodataval, mem);
 	if (!band) {
 		rterror("rt_band_reclass: Could not create new band");
@@ -229,6 +101,8 @@ rt_band_reclass(
 		return 0;
 	}
 	rt_band_set_ownsdata_flag(band, 1); /* we DO own this data!!! */
+	rt_band_init_value(band, hasnodata ? nodataval : 0.0);
+
 	RASTER_DEBUGF(3, "rt_band_reclass: new band @ %p", band);
 
 	for (x = 0; x < width; x++) {
@@ -372,6 +246,135 @@ rt_band_reclass(
 			}
 
 			expr = NULL;
+		}
+	}
+
+	return band;
+}
+
+
+/*
+ * Pre-sorting the classpairs allows us to use bsearch
+ * on the array of classpairs in the pixel reclassification
+ * step later on.
+ */
+static int
+rt_classpair_cmp(const void *aptr, const void *bptr)
+{
+	struct rt_classpair_t *a = (struct rt_classpair_t*)aptr;
+	struct rt_classpair_t *b = (struct rt_classpair_t*)bptr;
+	if (a->src < b->src) return -1;
+	else if (a->src > b->src) return 1;
+	else return 0;
+}
+
+
+/**
+ * Returns new band with values reclassified
+ *
+ * @param srcband : the band who's values will be reclassified
+ * @param map : rt_reclassmap with src->dst mappings
+ * @param hasnodata : indicates if the user is supplying a nodata
+ * @param nodataval : user supplied nodata value for the new band
+ *
+ * @return a new rt_band or NULL on error
+ */
+rt_band
+rt_band_reclass_exact(
+	rt_band srcband, rt_reclassmap map,
+	uint32_t hasnodata, double nodataval
+) {
+	rt_band band = NULL;
+	uint32_t width = 0;
+	uint32_t height = 0;
+	int numval = 0;
+	int memsize = 0;
+	void *mem = NULL;
+	uint32_t src_hasnodata = 0;
+	rt_pixtype pixtype;
+
+	assert(NULL != srcband);
+	assert(NULL != map);
+
+	/* Need a nodataval from somewhere */
+	src_hasnodata = rt_band_get_hasnodata_flag(srcband);
+	if (!(src_hasnodata || hasnodata))
+		rterror("%s: source band missing nodata value and nodata value not supplied", __func__);
+
+	/*
+	* Use the nodata value of the input in the case where user
+	* does not supply a nodataval
+	*/
+	if (!hasnodata && src_hasnodata) {
+		rt_band_get_nodata(srcband, &nodataval);
+		hasnodata = src_hasnodata;
+	}
+
+	/* size of memory block to allocate */
+	width = rt_band_get_width(srcband);
+	height = rt_band_get_height(srcband);
+	numval = width * height;
+	pixtype = map->dsttype;
+	memsize = rt_pixtype_size(pixtype) * numval;
+	mem = (int *) rtalloc(memsize);
+	if (!mem)
+		rterror("%s: Could not allocate memory for band", __func__);
+
+	band = rt_band_new_inline(width, height, pixtype, hasnodata, nodataval, mem);
+    if (! band) {
+        rterror("%s: Could not add band to raster. Aborting", __func__);
+        rtdealloc(mem);
+        return NULL;
+    }
+
+	/*
+	 * apply nodata as baseline value and then only
+	 * map in values that match our map
+	 */
+	rt_band_init_value(band, nodataval);
+
+	/*
+	 * Put the rt_classpairs in order of source value
+	 * so we can bsearch them
+	 */
+	qsort(map->pairs, map->count, sizeof(struct rt_classpair_t), rt_classpair_cmp);
+
+	for (uint32_t x = 0; x < width; x++) {
+		for (uint32_t y = 0; y < height; y++) {
+			int isnodata;
+			double nv = nodataval;
+			struct rt_classpair_t query = {0.0, 0.0};
+			struct rt_classpair_t *rslt;
+
+			/* get pixel, skip on error */
+			if (rt_band_get_pixel(srcband, x, y, &query.src, &isnodata) != ES_NONE)
+				continue;
+
+			/* output was already initialized to nodataval */
+			if (isnodata)
+				continue;
+			/*
+			 * Look for pixel value in map.
+			 * If not in map, skip, leaving the nodata value in place.
+			 * Otherwise continue and replace with new value
+			 */
+			rslt = bsearch(&query, map->pairs, map->count, sizeof(struct rt_classpair_t), rt_classpair_cmp);
+			if (!rslt)
+				continue;
+			else
+				nv = rslt->dst;
+
+			/* round the new value for integer pixel types */
+			if (pixtype >= PT_1BB && pixtype <= PT_32BUI) {
+					nv = round(nv);
+			}
+
+			if (rt_band_set_pixel(band, x, y, nv, NULL) != ES_NONE) {
+				rterror("%s: Could not assign value to new band", __func__);
+				rt_band_destroy(band);
+				rtdealloc(mem);
+				return NULL;
+			}
 		}
 	}
 

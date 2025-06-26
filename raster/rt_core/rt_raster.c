@@ -499,12 +499,6 @@ rt_raster_generate_new_band(
     int oldnumbands = 0;
     int numbands = 0;
     void * mem = NULL;
-    int32_t checkvalint = 0;
-    uint32_t checkvaluint = 0;
-    double checkvaldouble = 0;
-    float checkvalfloat = 0;
-    int i;
-
 
     assert(NULL != raster);
 
@@ -527,143 +521,26 @@ rt_raster_generate_new_band(
         return -1;
     }
 
-    if (FLT_EQ(initialvalue, 0.0))
-        memset(mem, 0, datasize);
-    else {
-        switch (pixtype)
-        {
-            case PT_1BB:
-            {
-                uint8_t *ptr = mem;
-                uint8_t clamped_initval = rt_util_clamp_to_1BB(initialvalue);
-                for (i = 0; i < numval; i++)
-                    ptr[i] = clamped_initval;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_2BUI:
-            {
-                uint8_t *ptr = mem;
-                uint8_t clamped_initval = rt_util_clamp_to_2BUI(initialvalue);
-                for (i = 0; i < numval; i++)
-                    ptr[i] = clamped_initval;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_4BUI:
-            {
-                uint8_t *ptr = mem;
-                uint8_t clamped_initval = rt_util_clamp_to_4BUI(initialvalue);
-                for (i = 0; i < numval; i++)
-                    ptr[i] = clamped_initval;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_8BSI:
-            {
-                int8_t *ptr = mem;
-                int8_t clamped_initval = rt_util_clamp_to_8BSI(initialvalue);
-                for (i = 0; i < numval; i++)
-                    ptr[i] = clamped_initval;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_8BUI:
-            {
-                uint8_t *ptr = mem;
-                uint8_t clamped_initval = rt_util_clamp_to_8BUI(initialvalue);
-                for (i = 0; i < numval; i++)
-                    ptr[i] = clamped_initval;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_16BSI:
-            {
-                int16_t *ptr = mem;
-                int16_t clamped_initval = rt_util_clamp_to_16BSI(initialvalue);
-                for (i = 0; i < numval; i++)
-                    ptr[i] = clamped_initval;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_16BUI:
-            {
-                uint16_t *ptr = mem;
-                uint16_t clamped_initval = rt_util_clamp_to_16BUI(initialvalue);
-                for (i = 0; i < numval; i++)
-                    ptr[i] = clamped_initval;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_32BSI:
-            {
-                int32_t *ptr = mem;
-                int32_t clamped_initval = rt_util_clamp_to_32BSI(initialvalue);
-                for (i = 0; i < numval; i++)
-                    ptr[i] = clamped_initval;
-                checkvalint = ptr[0];
-                break;
-            }
-            case PT_32BUI:
-            {
-                uint32_t *ptr = mem;
-                uint32_t clamped_initval = rt_util_clamp_to_32BUI(initialvalue);
-                for (i = 0; i < numval; i++)
-                    ptr[i] = clamped_initval;
-                checkvaluint = ptr[0];
-                break;
-            }
-            case PT_32BF:
-            {
-                float *ptr = mem;
-                float clamped_initval = rt_util_clamp_to_32F(initialvalue);
-                for (i = 0; i < numval; i++)
-                    ptr[i] = clamped_initval;
-                checkvalfloat = ptr[0];
-                break;
-            }
-            case PT_64BF:
-            {
-                double *ptr = mem;
-                for (i = 0; i < numval; i++)
-                    ptr[i] = initialvalue;
-                checkvaldouble = ptr[0];
-                break;
-            }
-            default:
-            {
-                rterror("rt_raster_generate_new_band: Unknown pixeltype %d", pixtype);
-                rtdealloc(mem);
-                return -1;
-            }
-        }
-    }
-
-    /* Overflow checking */
-    rt_util_dbl_trunc_warning(
-			initialvalue,
-			checkvalint, checkvaluint,
-			checkvalfloat, checkvaldouble,
-			pixtype
-		);
-
     band = rt_band_new_inline(width, height, pixtype, hasnodata, nodatavalue, mem);
     if (! band) {
         rterror("rt_raster_generate_new_band: Could not add band to raster. Aborting");
         rtdealloc(mem);
         return -1;
     }
-		rt_band_set_ownsdata_flag(band, 1); /* we DO own this data!!! */
-    index = rt_raster_add_band(raster, band, index);
-    numbands = rt_raster_get_num_bands(raster);
-    if (numbands == oldnumbands || index == -1) {
-        rterror("rt_raster_generate_new_band: Could not add band to raster. Aborting");
-        rt_band_destroy(band);
-    }
 
-		/* set isnodata if hasnodata = TRUE and initial value = nodatavalue */
-		if (hasnodata && FLT_EQ(initialvalue, nodatavalue))
-			rt_band_set_isnodata_flag(band, 1);
+	rt_band_init_value(band, initialvalue);
+
+	rt_band_set_ownsdata_flag(band, 1); /* we DO own this data!!! */
+	index = rt_raster_add_band(raster, band, index);
+	numbands = rt_raster_get_num_bands(raster);
+	if (numbands == oldnumbands || index == -1) {
+		rterror("rt_raster_generate_new_band: Could not add band to raster. Aborting");
+		rt_band_destroy(band);
+	}
+
+	/* set isnodata if hasnodata = TRUE and initial value = nodatavalue */
+	if (hasnodata && FLT_EQ(initialvalue, nodatavalue))
+		rt_band_set_isnodata_flag(band, 1);
 
     return index;
 }
