@@ -5,7 +5,7 @@
   <para><varname>raster</varname> is a PostGIS type for storing and analyzing raster data. </para>
   <para>For loading rasters from raster files please refer to <xref linkend="RT_Loading_Rasters"/></para>
 
-    <para>Some examples in this reference use a raster table of dummy data, 
+    <para>Some examples in this reference use a raster table of dummy data,
     created with the following code:</para>
 <programlisting language="sql">CREATE TABLE dummy_rast(rid integer, rast raster);
 INSERT INTO dummy_rast(rid, rast)
@@ -40,7 +40,7 @@ VALUES (1,
 '41000000007719564100000000000000000000000000000000FFFFFFFF050005000400FDFEFDFEFEFDFEFEFDF9FAFEF' ||
 'EFCF9FBFDFEFEFDFCFAFEFEFE04004E627AADD16076B4F9FE6370A9F5FE59637AB0E54F58617087040046566487A1506CA2E3FA5A6CAFFBFE4D566DA4CB3E454C5665')::raster);</programlisting>
 
-  <para>The functions below are ones which a user of PostGIS Raster is likely to need. 
+  <para>The functions below are ones which a user of PostGIS Raster is likely to need.
   There are other raster support functions which are not of interest to a general
   user.</para>
 
@@ -12392,13 +12392,13 @@ SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
                 <refsection>
                     <title>Description</title>
 
-                    <para>Creates a new raster formed by applying a reclassification operation defined by the <varname>reclassexpr</varname> on the input raster (<varname>rast</varname>). 
+                    <para>Creates a new raster formed by applying a reclassification operation defined by the <varname>reclassexpr</varname> on the input raster (<varname>rast</varname>).
                     Refer to <xref linkend="reclassarg"/> for the description of reclassification expressions.
-                    If no <varname>band</varname> is specified band 1 is assumed.    
+                    If no <varname>band</varname> is specified band 1 is assumed.
                     </para>
 
-                    <para>The new raster will have the same georeference, width, and height as the original raster.  
-                    The bands of the new raster have pixel type of <varname>pixeltype</varname>.  
+                    <para>The new raster will have the same georeference, width, and height as the original raster.
+                    The bands of the new raster have pixel type of <varname>pixeltype</varname>.
                     If <varname>reclassargset</varname> is specified then each <varname>reclassarg</varname> defines the type of the target band.
                     Bands not designated are returned unchanged.
                     </para>
@@ -12490,6 +12490,117 @@ UPDATE wind
                         <xref linkend="RT_ST_MakeEmptyRaster"/>,
                         <xref linkend="reclassarg"/>,
                         <xref linkend="RT_ST_Value"/>
+                    </para>
+                </refsection>
+            </refentry>
+
+            <refentry xml:id="RT_ST_ReclassExact">
+                <refnamediv>
+                    <refname>ST_ReclassExact</refname>
+                    <refpurpose>Creates a new raster composed of bands reclassified from original, using a 1:1 mapping from values in the original band to new values in the destination band.</refpurpose>
+                </refnamediv>
+
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                      <funcprototype>
+                            <funcdef>raster <function>ST_ReclassExact</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>double precision[] </type> <parameter>inputvalues</parameter></paramdef>
+                            <paramdef><type>double precision[] </type> <parameter>outputvalues</parameter></paramdef>
+                            <paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+                            <paramdef choice="opt"><type>double precision </type> <parameter>nodatavalue=NULL</parameter></paramdef>
+                      </funcprototype>
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+
+                    <para>Creates a new raster formed by applying a reclassification operation
+                    defined by the <varname>inputvalues</varname> and
+                    <varname>outputvalues</varname> arrays. Pixel values found in the
+                    input array are mapped to the corresponding value in the output array.
+                    All other pixel values are mapped to the <varname>nodatavalue</varname>.
+                    </para>
+                    <para>The output pixel type defaults to float, but can be specified
+                    using the <varname>pixeltype</varname> parameter.
+                    If no <varname>band</varname> is specified band 1 is assumed.
+                    </para>
+
+                    <para>The new raster will have the same georeference, width,
+                    and height as the original raster.
+                    Bands not designated are returned unchanged.
+                    </para>
+
+                    <para role="availability" conformance="3.6.0">Availability: 3.6.0 </para>
+                </refsection>
+
+                <refsection>
+                    <title>Example: Basic</title>
+                    <para>Create a small raster and map its pixels to new values.</para>
+                    <programlisting>
+CREATE TABLE reclassexact (
+	id integer,
+	rast raster
+);
+
+--
+-- Create a raster with just four pixels
+-- [1  2]
+-- [3  4]
+--
+INSERT INTO reclassexact (id, rast)
+SELECT 1, ST_SetValues(
+    ST_AddBand(
+      ST_MakeEmptyRaster(
+        2,    -- width in pixels
+        2,    -- height in pixels
+        0,    -- upper-left x-coordinate
+        0,    -- upper-left y-coordinate
+        1,    -- pixel size in x-direction
+        -1,   -- pixel size in y-direction (negative for north-up)
+        0,    -- skew in x-direction
+        0,    -- skew in y-direction
+        4326  -- SRID (e.g., WGS 84)
+      ),
+      '32BUI'::text, -- pixel type (e.g., '32BF' for float, '8BUI' for unsigned 8-bit int)
+      0.0,           -- initial value for the band (e.g., 0.0 or a no-data value)
+      -99            -- nodatavalue
+    ),
+    1, -- band number (usually 1 for single-band rasters)
+    1, -- x origin for setting values (usually 1)
+    1, -- y origin for setting values (usually 1)
+    ARRAY[
+      ARRAY[1, 2],
+      ARRAY[3, 4]
+    ]::double precision[][] -- 2D array of values
+  );
+
+-- Reclass the values to new values
+-- and dump the values of the new raster for display
+WITH rc AS (
+  SELECT ST_ReclassExact(
+    rast,                -- input raster
+    ARRAY[4,3,2,1],      -- input map
+    ARRAY[14,13,12,11],  -- output map
+    1,                   -- band number to remap
+    '32BUI'              -- output raster pixtype
+    ) AS rast
+  FROM reclassexact
+  WHERE id = 1
+  )
+SELECT 'rce-1', (ST_DumpValues(rc.rast)).*
+FROM rc;
+                    </programlisting>
+                </refsection>
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="RT_ST_Reclass"/>,
+                        <xref linkend="RT_ST_AddBand"/>,
+                        <xref linkend="RT_ST_Band"/>,
+                        <xref linkend="RT_ST_MakeEmptyRaster"/>,
                     </para>
                 </refsection>
             </refentry>
