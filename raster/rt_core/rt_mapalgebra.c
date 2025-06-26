@@ -34,6 +34,25 @@
 * rt_band_reclass()
 ******************************************************************************/
 
+static inline double
+rt_band_reclass_round_integer(rt_pixtype pixtype, double nv)
+{
+	switch (pixtype) {
+		case PT_1BB:
+		case PT_2BUI:
+		case PT_4BUI:
+		case PT_8BSI:
+		case PT_8BUI:
+		case PT_16BSI:
+		case PT_16BUI:
+		case PT_32BSI:
+		case PT_32BUI:
+			return round(nv);
+		default:
+			return nv;
+	}
+}
+
 /**
  * Returns new band with values reclassified
  *
@@ -212,21 +231,7 @@ rt_band_reclass(
 			}
 
 			/* round the value for integers */
-			switch (pixtype) {
-				case PT_1BB:
-				case PT_2BUI:
-				case PT_4BUI:
-				case PT_8BSI:
-				case PT_8BUI:
-				case PT_16BSI:
-				case PT_16BUI:
-				case PT_32BSI:
-				case PT_32BUI:
-					nv = round(nv);
-					break;
-				default:
-					break;
-			}
+			nv = rt_band_reclass_round_integer(pixtype, nv);
 
 			RASTER_DEBUGF(4, "(%d, %d) ov: %f or: %f - %f nr: %f - %f nv: %f"
 				, x
@@ -326,6 +331,7 @@ rt_band_reclass_exact(
         rtdealloc(mem);
         return NULL;
     }
+	rt_band_set_ownsdata_flag(band, 1); /* we own this data */
 
 	/*
 	 * apply nodata as baseline value and then only
@@ -365,9 +371,7 @@ rt_band_reclass_exact(
 				nv = rslt->dst;
 
 			/* round the new value for integer pixel types */
-			if (pixtype >= PT_1BB && pixtype <= PT_32BUI) {
-					nv = round(nv);
-			}
+			nv = rt_band_reclass_round_integer(pixtype, nv);
 
 			if (rt_band_set_pixel(band, x, y, nv, NULL) != ES_NONE) {
 				rterror("%s: Could not assign value to new band", __func__);

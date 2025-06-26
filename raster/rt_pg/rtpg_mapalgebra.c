@@ -4019,7 +4019,7 @@ Datum RASTER_reclass_exact(PG_FUNCTION_ARGS) {
 	uint32_t bandnum = 0, numbands = 0;
 	ArrayType *arraysrc, *arraydst;
 	bool hasnodata = false;
-	double nodataval = -9999.9;
+	double nodataval;
 	text *pixeltype = NULL;
 	uint32_t szsrc, szdst;
 	ArrayIterator itersrc, iterdst;
@@ -4072,8 +4072,9 @@ Datum RASTER_reclass_exact(PG_FUNCTION_ARGS) {
 	/* Get array element types */
 	pixtypsrc = rt_band_get_pixtype(band);
 	pixtypdst = rt_pixtype_index_from_name(text_to_cstring(pixeltype));
+
 	if (pixtypdst == PT_END)
-		elog(ERROR, "Unable to determine output pixel type");
+		elog(ERROR, "Unknown output pixel type '%s'", text_to_cstring(pixeltype));
 
 	/* Error out on unreadable pixeltype */
 	if (pixtypsrc == PT_END)
@@ -4085,6 +4086,9 @@ Datum RASTER_reclass_exact(PG_FUNCTION_ARGS) {
 	reclassmap->srctype = pixtypsrc;
 	reclassmap->dsttype = pixtypdst;
 	reclassmap->pairs = palloc(sizeof(struct rt_classpair_t) * szdst);
+
+	if (!hasnodata)
+		nodataval = rt_pixtype_get_min_value(pixtypdst);
 
 	/* Build up rt_reclassmap.pairs from arrays */
 	itersrc = array_create_iterator(arraysrc, 0, NULL);
@@ -4104,6 +4108,9 @@ Datum RASTER_reclass_exact(PG_FUNCTION_ARGS) {
 
 	/* Carry out reclassification */
 	newband = rt_band_reclass_exact(band, reclassmap, hasnodata, nodataval);
+	/* Clean up finished map */
+	pfree(reclassmap->pairs);
+	pfree(reclassmap);
 	if (!newband)
 		elog(ERROR, "Band reclassification failed");
 

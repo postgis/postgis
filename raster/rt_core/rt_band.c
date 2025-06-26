@@ -114,6 +114,7 @@ rt_band_init_value(
 	double initval
 ) {
 	assert(band != NULL);
+	assert(band->data.mem != NULL);
 	rt_pixtype pixtype = band->pixtype;
 	uint32_t width = band->width;
 	uint32_t height = band->height;
@@ -235,7 +236,6 @@ rt_band_init_value(
 		default:
 		{
 			rterror("%s: Unknown pixeltype %d", __func__, pixtype);
-			rtdealloc(mem);
 			return;
 		}
 	}

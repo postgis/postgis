@@ -536,6 +536,7 @@ rt_raster_generate_new_band(
 	if (numbands == oldnumbands || index == -1) {
 		rterror("rt_raster_generate_new_band: Could not add band to raster. Aborting");
 		rt_band_destroy(band);
+		return -1;
 	}
 
 	/* set isnodata if hasnodata = TRUE and initial value = nodatavalue */
