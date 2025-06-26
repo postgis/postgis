@@ -12507,7 +12507,7 @@ UPDATE wind
                             <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                             <paramdef><type>double precision[] </type> <parameter>inputvalues</parameter></paramdef>
                             <paramdef><type>double precision[] </type> <parameter>outputvalues</parameter></paramdef>
-                            <paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+                            <paramdef choice="opt"><type>integer </type> <parameter>bandnumber=1</parameter></paramdef>
                             <paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
                             <paramdef choice="opt"><type>double precision </type> <parameter>nodatavalue=NULL</parameter></paramdef>
                       </funcprototype>
@@ -12525,7 +12525,7 @@ UPDATE wind
                     </para>
                     <para>The output pixel type defaults to float, but can be specified
                     using the <varname>pixeltype</varname> parameter.
-                    If no <varname>band</varname> is specified band 1 is assumed.
+                    If no <varname>bandnumber</varname> is specified band 1 is assumed.
                     </para>
 
                     <para>The new raster will have the same georeference, width,
@@ -12600,7 +12600,7 @@ FROM rc;
                         <xref linkend="RT_ST_Reclass"/>,
                         <xref linkend="RT_ST_AddBand"/>,
                         <xref linkend="RT_ST_Band"/>,
-                        <xref linkend="RT_ST_MakeEmptyRaster"/>,
+                        <xref linkend="RT_ST_MakeEmptyRaster"/>
                     </para>
                 </refsection>
             </refentry>
