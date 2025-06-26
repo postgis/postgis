@@ -301,6 +301,10 @@ rt_band_reclass_exact(
 	assert(NULL != srcband);
 	assert(NULL != map);
 
+	/* Validate that the map has consistent array lengths */
+	if (map->count == 0)
+		rterror("%s: reclassification map must contain at least one class pair", __func__);
+
 	/* Need a nodataval from somewhere */
 	src_hasnodata = rt_band_get_hasnodata_flag(srcband);
 	if (!(src_hasnodata || hasnodata))
