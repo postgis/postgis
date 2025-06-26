@@ -1325,6 +1325,16 @@ CREATE OR REPLACE FUNCTION _st_reclass(rast raster, VARIADIC reclassargset recla
 	AS 'MODULE_PATHNAME', 'RASTER_reclass'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
+CREATE OR REPLACE FUNCTION ST_ReclassExact(rast raster,
+	inputvalues float8[], outputvalues float8[],
+	bandnumber integer DEFAULT 1,
+	outputpixeltype text DEFAULT '32BF',
+	nodatavalue float8 DEFAULT NULL
+	)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_reclass_exact'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
+
 CREATE OR REPLACE FUNCTION st_reclass(rast raster, VARIADIC reclassargset reclassarg[])
 	RETURNS raster
 	AS $$

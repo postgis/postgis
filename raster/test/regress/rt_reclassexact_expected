@@ -1,0 +1,5 @@
+NOTICE:  table "reclassexact" does not exist, skipping
+rce-1|1|{{11,12},{13,14}}
+rce-2|1|{{11,12},{13,14}}
+ERROR:  array lengths must be the same
+ERROR:  Unable to determine output pixel type '32BFF'

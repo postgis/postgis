@@ -84,6 +84,7 @@ RASTER_TEST_UTILITY = \
 	$(top_srcdir)/raster/test/regress/rt_asjpeg \
 	$(top_srcdir)/raster/test/regress/rt_aspng \
 	$(top_srcdir)/raster/test/regress/rt_reclass \
+	$(top_srcdir)/raster/test/regress/rt_reclassexact \
 	$(top_srcdir)/raster/test/regress/rt_gdalwarp \
 	$(top_srcdir)/raster/test/regress/rt_gdalcontour \
 	$(top_srcdir)/raster/test/regress/rt_asraster \

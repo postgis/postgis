@@ -59,6 +59,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS);
 
 /* reclassify specified bands of a raster */
 Datum RASTER_reclass(PG_FUNCTION_ARGS);
+Datum RASTER_reclass_exact(PG_FUNCTION_ARGS);
 
 /* apply colormap to specified band of a raster */
 Datum RASTER_colorMap(PG_FUNCTION_ARGS);
@@ -3997,6 +3998,143 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 	SET_VARSIZE(pgrtn, pgrtn->size);
 	PG_RETURN_POINTER(pgrtn);
 }
+
+
+/**
+ * ST_ReclassExact(rast raster,
+ *    inputvalues float8[],
+ *    outputvalues float8[],
+ *    bandnumber integer DEFAULT 1,
+ *    outputpixeltype text DEFAULT '32BF',
+ *    nodatavalue float8 DEFAULT NULL
+ * 	) RETURNS raster
+ */
+PG_FUNCTION_INFO_V1(RASTER_reclass_exact);
+Datum RASTER_reclass_exact(PG_FUNCTION_ARGS) {
+	rt_pgraster *pgraster = NULL;
+	rt_pgraster *pgrtn = NULL;
+	rt_raster raster = NULL;
+	rt_band band = NULL;
+	rt_band newband = NULL;
+	uint32_t bandnum = 0, numbands = 0;
+	ArrayType *arraysrc, *arraydst;
+	bool hasnodata = false;
+	double nodataval;
+	text *pixeltype = NULL;
+	uint32_t szsrc, szdst;
+	ArrayIterator itersrc, iterdst;
+	Datum dsrc, ddst;
+	bool nullsrc, nulldst;
+	rt_reclassmap reclassmap;
+	rt_pixtype pixtypsrc, pixtypdst;
+
+	/* Check null on all arguments since function is not strict */
+	if (PG_ARGISNULL(0) || PG_ARGISNULL(1) || PG_ARGISNULL(2) || PG_ARGISNULL(3) || PG_ARGISNULL(4))
+		PG_RETURN_NULL();
+
+	/* Read SQL arguments */
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	arraysrc = PG_GETARG_ARRAYTYPE_P(1);
+	arraydst = PG_GETARG_ARRAYTYPE_P(2);
+	bandnum = PG_GETARG_INT32(3); /* One-based band number */
+	pixeltype = PG_GETARG_TEXT_P(4);
+	if (!PG_ARGISNULL(5)) {
+		hasnodata = true;
+		nodataval = PG_GETARG_FLOAT8(5);
+	}
+
+	/* Check arrays have same size */
+	szsrc = ArrayGetNItems(ARR_NDIM(arraysrc), ARR_DIMS(arraysrc));
+	szdst = ArrayGetNItems(ARR_NDIM(arraydst), ARR_DIMS(arraydst));
+	if (szsrc !=  szdst)
+		elog(ERROR, "array lengths must be the same");
+
+	/* Read the raster */
+	raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!raster) {
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "%s: Could not deserialize raster", __func__);
+	}
+
+	/* Check that this raster has bands we can work with */
+	numbands = rt_raster_get_num_bands(raster);
+	if (numbands < 1)
+		elog(ERROR, "Raster has no bands");
+	if (bandnum < 1 || bandnum > numbands)
+		elog(ERROR, "Invalid band index %d, input raster has %d bands. Band indexes are one-based.",
+		     bandnum, numbands);
+
+	/* Read the band */
+	band = rt_raster_get_band(raster, bandnum-1);
+	if (!band)
+		elog(ERROR, "Could not find raster band of index %d", bandnum);
+
+	/* Get array element types */
+	pixtypsrc = rt_band_get_pixtype(band);
+	pixtypdst = rt_pixtype_index_from_name(text_to_cstring(pixeltype));
+
+	if (pixtypdst == PT_END)
+		elog(ERROR, "Unknown output pixel type '%s'", text_to_cstring(pixeltype));
+
+	/* Error out on unreadable pixeltype */
+	if (pixtypsrc == PT_END)
+		elog(ERROR, "Unsupported pixtype");
+
+	/* Create the rt_reclassmap */
+	reclassmap = palloc(sizeof(struct rt_reclassmap_t));
+	reclassmap->count = 0;
+	reclassmap->srctype = pixtypsrc;
+	reclassmap->dsttype = pixtypdst;
+	reclassmap->pairs = palloc(sizeof(struct rt_classpair_t) * szdst);
+
+	if (!hasnodata)
+		nodataval = rt_pixtype_get_min_value(pixtypdst);
+
+	/* Build up rt_reclassmap.pairs from arrays */
+	itersrc = array_create_iterator(arraysrc, 0, NULL);
+	iterdst = array_create_iterator(arraydst, 0, NULL);
+	while(array_iterate(itersrc, &dsrc, &nullsrc) &&
+	      array_iterate(iterdst, &ddst, &nulldst))
+	{
+		double valsrc = nullsrc ? nodataval : (double)DatumGetFloat8(dsrc);
+		double valdst = nulldst ? nodataval : (double)DatumGetFloat8(ddst);
+		Assert(szdst > reclassmap->count);
+		reclassmap->pairs[reclassmap->count].src = valsrc;
+		reclassmap->pairs[reclassmap->count].dst = valdst;
+		reclassmap->count++;
+	}
+	array_free_iterator(itersrc);
+	array_free_iterator(iterdst);
+
+	/* Carry out reclassification */
+	newband = rt_band_reclass_exact(band, reclassmap, hasnodata, nodataval);
+	/* Clean up finished map */
+	pfree(reclassmap->pairs);
+	pfree(reclassmap);
+	if (!newband)
+		elog(ERROR, "Band reclassification failed");
+
+	/* replace old band with new band */
+	if (rt_raster_replace_band(raster, newband, bandnum-1) == NULL) {
+		rt_band_destroy(newband);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "Could not replace raster band of index %d with reclassified band", bandnum);
+	}
+
+	pgrtn = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(pgraster, 0);
+	if (!pgrtn)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(pgrtn, pgrtn->size);
+	PG_RETURN_POINTER(pgrtn);
+}
+
+
+
+
 
 /* ---------------------------------------------------------------- */
 /* apply colormap to specified band of a raster                     */
