@@ -98,10 +98,9 @@ This is only applicable to LINESTRING geometry and does not affect POINT or POLY
             This may not produce the desired behavior if the input object is much larger than a UTM zone or crosses the dateline
             </para></note>
 
-            <note><para>Buffer output is always a valid polygonal geometry.
-            Buffer can handle invalid inputs,
-            so buffering by distance 0 is sometimes used as a way of repairing invalid polygons.
-            <xref linkend="ST_MakeValid"/> can also be used for this purpose.
+            <note><para>Buffer can handle invalid inputs and the output is always a valid polygonal geometry.
+            Buffering by distance 0 is sometimes used as a way of repairing invalid polygons.
+            <xref linkend="ST_MakeValid"/> is more suitable for this process as it can handle multi-polygons.
             </para></note>
 
             <note><para>Buffering is sometimes used to perform a within-distance search.
