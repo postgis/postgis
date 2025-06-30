@@ -7,13 +7,14 @@
 # Pierre Cardinal <pierre.cardinal@sympatico.ca>, 2025.
 # Vincent Bre <vincent.bre@oslandia.com>, 2025.
 # Edouard Choiniere <echoix@users.noreply.weblate.osgeo.org>, 2025.
+# Weblate <noreply-mt-weblate@weblate.org>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
 "PO-Revision-Date: 2025-07-01 00:47+0000\n"
-"Last-Translator: Edouard Choiniere <echoix@users.noreply.weblate.osgeo.org>\n"
+"Last-Translator: Weblate <noreply-mt-weblate@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/fr/>\n"
 "Language: fr\n"
@@ -43299,7 +43300,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Parameters"
-msgstr ""
+msgstr "Paramètres"
 
 #. Tag: para
 #, no-c-format
