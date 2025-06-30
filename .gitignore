@@ -224,3 +224,6 @@ deps/flatgeobuf/Makefile
 # Dump
 **/*Dump.xml
 **/*.core
+
+# MacOS
+.DS_Store
