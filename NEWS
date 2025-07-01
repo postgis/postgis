@@ -15,6 +15,7 @@ Daniel Nylander (Swedish Team)
 
   - #5799, make ST_TileEnvelope clips envelopes to tile plane extent (Paul Ramsey)
   - #5829, remove constraint checking from geometry_columns view (Paul Ramsey)
+  - #3373, GT-255 [topology] Support for upgrading domains (Ayo Adesugba, U.S. Census Bureau)
 
 * Deprecated signatures *
 

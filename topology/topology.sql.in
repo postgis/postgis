@@ -350,44 +350,39 @@ CREATE TYPE topology.TopoGeometry AS (
 -- element_type will be the child layer identifier and
 -- element_id will be composing TopoGeometry identifier
 --
+-- Availability: 1.1.0
 CREATE DOMAIN topology.TopoElement AS integer[]
+  -- Availability: 1.1.0
   CONSTRAINT DIMENSIONS CHECK (
     array_upper(VALUE, 2) IS NULL
     AND array_upper(VALUE, 1) = 2
-  );
-ALTER DOMAIN topology.TopoElement ADD
-        CONSTRAINT lower_dimension CHECK (
-    array_lower(VALUE, 1) = 1
-  );
-ALTER DOMAIN topology.TopoElement DROP CONSTRAINT
-  IF EXISTS
-  type_range;
-ALTER DOMAIN topology.TopoElement ADD
-        CONSTRAINT type_range CHECK (
+  )
+  -- Availability: 1.1.0
+  CONSTRAINT type_range CHECK (
     VALUE[2] > 0
+  )
+  -- Availability: 2.0.0
+  CONSTRAINT lower_dimension CHECK (
+    array_lower(VALUE, 1) = 1
   );
 
 --
 -- TopoElementArray domain
 --
--- Changed: 3.1.0 - get rid of IS NOT NULL check
+-- Availability: 1.1.0
 CREATE DOMAIN topology.TopoElementArray AS integer[][]
+  -- Availability: 1.1.0
+	-- Changed: 3.1.0 - get rid of IS NOT NULL check
   CONSTRAINT DIMENSIONS CHECK (
     array_upper(VALUE, 2) = 2
     AND array_upper(VALUE, 3) IS NULL
-  );
-
--- Changed: 3.1.0
-ALTER DOMAIN topology.TopoElementArray DROP CONSTRAINT
-  IF EXISTS
-  DIMENSIONS;
-
--- Changed: 3.1.0 - get rid of IS NOT NULL check
-ALTER DOMAIN topology.TopoElementArray ADD
-        CONSTRAINT type_range CHECK (
+  )
+  -- Availability: 3.1.0
+  CONSTRAINT type_range CHECK (
     array_upper(VALUE, 2) = 2
     AND array_upper(VALUE, 3) IS NULL
   );
+
 
 --{ RelationTrigger()
 --
