@@ -79,6 +79,14 @@ sub parse_missing
     return join(',',@missing);
 }
 
+sub remove_line_break
+{
+    my $line = shift;
+    $line =~ s/\s+/ /g;      # Replace all whitespace (including newlines, tabs) with single spaces
+    $line =~ s/^\s+|\s+$//g; # Trim leading and trailing whitespace
+    return $line;
+}
+
 #
 # Commandline argument handling
 #
@@ -186,6 +194,220 @@ while(<INPUT>)
     #
     print if (/^drop function /i);
     print if (/^drop aggregate /i);
+
+    if (/^create domain\s+([^.]+)\.([^\s]+)\s+as\s+([^;]+)/i) {
+        my $schema = lc($1);
+        my $name   = lc($2);
+        my $type   = lc($3);
+        $type = remove_line_break($type); # Normalize whitespace using helper function
+
+        my $def .= $_;
+        my $subcomment = '';
+        my @constraints; # [type, definition, last_updated, comment]
+        my $type_changed = 0;
+        my $all_constraints_created_together = 1;
+
+        print "\n\n-- Domain: $schema.$name($type)\n";
+
+        my @replaced_array = parse_replaces($comment);
+
+        my $domain_last_updated = parse_last_updated($comment);
+        if ( !$domain_last_updated )
+        {
+            die "ERROR: no last updated info for domain  '${schema}.${name}($type)'\n";
+        }
+        my $missing = parse_missing($comment);
+
+        unless (/;\s*$/) {
+            while(my $line = <INPUT>) {
+                if ($line =~ /^\s*\-\-/) {
+                    $subcomment .= remove_line_break($line);
+                    next;
+                }
+
+                # Find NOT NULL or NULL constraint in domain definition ignore ;
+                if ($line =~ /^\s*(NOT\s+NULL|NULL)\s*;?\s*$/i) {
+                    my $ctype = uc($1);
+
+                    my $last_updated = parse_last_updated($subcomment);
+                    my $missing = parse_missing($subcomment);
+
+                    if ( $last_updated ) {
+                        push @constraints, [$ctype, '', $ctype, $last_updated, $missing, $subcomment];
+                    } else {
+                        die "ERROR: no last updated info for constraint '${ctype}' in ${schema}.${name}($type)\n";
+                    }
+
+                    $subcomment = '';
+
+                    if ($line =~ /;\s*$/) {
+                        $def .= "$ctype;\n";
+                        last;
+                    } else {
+                        $def .= "$ctype\n";
+                    }
+
+                    next;
+                }
+
+                if ($line =~ /CONSTRAINT\s+(\w+)\s+CHECK/i) {
+                    my $constraint_name = $1;
+                    my $constraint = $line;
+                    my $open_parens = ($constraint =~ tr/(//);
+                    my $close_parens = ($constraint =~ tr/)//);
+                    my $found_semicolon = 0;
+
+                    while ($open_parens == 0 || $open_parens > $close_parens) {
+                        my $nextline = <INPUT>;
+                        last unless defined $nextline;
+
+                        if ($nextline =~ /;\s*$/) {
+                            $found_semicolon = 1;
+                            $nextline =~ s/;\s*$//;
+                        }
+
+                        $constraint .= $nextline;
+                        $open_parens += ($nextline =~ tr/(//);
+                        $close_parens += ($nextline =~ tr/)//);
+                    }
+
+                    # Make a single line of the constraint
+                    $constraint = remove_line_break($constraint);
+
+                    my $last_updated = parse_last_updated($subcomment);
+                    my $missing = parse_missing($subcomment);
+
+                    if ( $last_updated ) {
+                        push @constraints, ['CHECK', $constraint_name, $constraint, $last_updated, $missing, $subcomment];
+                    } else {
+                        die "ERROR: no last updated info for constraint '${constraint_name}' in ${schema}.${name}($type)\n";
+                    }
+
+                    $subcomment = ''; # Reset subcomment after using it
+
+                    if ($found_semicolon) {
+                        $def .= "$constraint;\n";
+                        last;
+                    } else {
+                        $def .= "$constraint\n";
+                    }
+
+                    next;
+                }
+
+                last if $line =~ /;\s*$/;  # End of domain definition
+            }
+        }
+
+        foreach my $c (@constraints) {
+            my ($ctype, $cname, $cdef, $last_updated, $missing, $comment) = @$c;
+
+            if ($domain_last_updated != $last_updated) {
+                $all_constraints_created_together = 0;
+            }
+        }
+
+        if (@replaced_array) {
+            foreach my $replaced(@replaced_array)
+            {
+                my ($rname, $rargs, $ver) = @$replaced;
+                $rname = lc($rname); # lowercase the name
+                my $old_type = lc($rargs);
+                my $new_type = lc($type);
+
+                if ($old_type ne $new_type)
+                {
+                    $type_changed = 1;
+                    print <<"EOF";
+-- ${schema}.${name}($old_type) -- LastUpdated: ${domain_last_updated}
+-- Updated Domain ${schema}.${name}($new_type)
+-- We cannot drop the old domain, so we modify it
+DO LANGUAGE 'plpgsql'
+\$postgis_domain_upgrade\$
+BEGIN
+IF $ver > version_from_num
+EOF
+                    print "OR version_from_num IN ( ${missing} )" if ($missing);
+                    print <<"EOF";
+    FROM _postgis_upgrade_info()
+THEN
+    IF EXISTS (SELECT 1 FROM pg_catalog.pg_type AS t
+        WHERE  typnamespace::regnamespace::text = 'topology'
+        AND typname = '$name' AND typbasetype::regtype::text = '$old_type')
+    THEN
+        UPDATE pg_catalog.pg_type SET typbasetype = '$new_type'::regtype::oid
+        WHERE typnamespace::regnamespace::text = 'topology'
+        AND typname::text = '$name' AND typbasetype::regtype::text = '$old_type';
+EOF
+                    foreach my $c (@constraints) {
+                        my ($ctype, $cname, $cdef, $last_updated, $missing, $comment) = @$c;
+
+                        print <<"EOF";
+        EXECUTE \$postgis_domain_upgrade_parsed_def\$ ALTER DOMAIN ${schema}.${name} DROP CONSTRAINT IF EXISTS $cname \$postgis_domain_upgrade_parsed_def\$;
+        EXECUTE \$postgis_domain_upgrade_parsed_def\$ ALTER DOMAIN ${schema}.${name} ADD $cdef \$postgis_domain_upgrade_parsed_def\$;
+EOF
+                    }
+                    print <<"EOF";
+        RAISE DEBUG 'Upgraded % from % to %', '$name', '$old_type', '$new_type';
+    END IF;
+END IF;
+END
+\$postgis_domain_upgrade\$;\n
+EOF
+                }
+            }
+        } elsif ($all_constraints_created_together) {
+            print <<"EOF";
+DO LANGUAGE 'plpgsql'
+\$postgis_domain_upgrade\$
+BEGIN
+IF $domain_last_updated > version_from_num
+EOF
+            print "OR version_from_num IN ( ${missing} )\n" if ($missing);
+            print <<"EOF";
+FROM _postgis_upgrade_info()
+THEN
+    EXECUTE \$postgis_domain_upgrade_parsed_def\$ $def \$postgis_domain_upgrade_parsed_def\$;
+END IF;
+END
+\$postgis_domain_upgrade\$;
+EOF
+        } else {
+            foreach my $c (@constraints) {
+                my ($ctype, $cname, $cdef, $last_updated, $missing, $comment) = @$c;
+
+                print <<"EOF";
+DO LANGUAGE 'plpgsql'
+\$postgis_domain_upgrade\$
+BEGIN
+IF $last_updated > version_from_num
+EOF
+            print "OR version_from_num IN ( ${missing} )\n" if ($missing);
+            print <<"EOF";
+FROM _postgis_upgrade_info()
+THEN
+    EXECUTE \$postgis_domain_upgrade_parsed_def\$ ALTER DOMAIN ${schema}.${name} DROP CONSTRAINT IF EXISTS $cname \$postgis_domain_upgrade_parsed_def\$;
+    EXECUTE \$postgis_domain_upgrade_parsed_def\$ ALTER DOMAIN ${schema}.${name} ADD $cdef \$postgis_domain_upgrade_parsed_def\$;
+END IF;
+END
+\$postgis_domain_upgrade\$;
+EOF
+                print "\n";
+            }
+        }
+    }
+
+    if (/^alter\s+domain\s+([^.]+)\.([^\s]+)\s/ims)
+    {
+        # This is a domain alteration, which we do not support in upgrade scripts
+        # since we cannot drop and recreate domains.
+        # We will just die with an error message.
+        my $schema = $1;
+        my $name   = remove_line_break(lc($2));
+        #print "Altering domain $schema.$name is not supported in upgrade scripts.\n";
+        # Die if we find an ALTER DOMAIN command
+        die "ERROR: ALTER DOMAIN command found for domain '${name}'\n";
+    }
 
     if (/^create or replace function/i)
     {
@@ -783,4 +1005,5 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql';
+
 
