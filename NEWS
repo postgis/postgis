@@ -238,7 +238,6 @@ There are 2 new ./configure switches:
    (postgis, postgis_restore, shp2pgsql, raster2pgsql, pgsql2shp,
    pgtopo_import, pgtopo_export)
 
-<<<<<<< HEAD
 PostGIS 3.3.0
 2022/08/26
 
