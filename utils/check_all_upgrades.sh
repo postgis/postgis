@@ -296,7 +296,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
 
   # Check unpackaged->unpackaged upgrades (if target version == current version)
 #  CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
-  CURRENTVERSION=$(grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | tr '\n' '.')
+  CURRENTVERSION=$(grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | tr '\n' '.' | sed 's/\.$//')
 
   if test "${to_version}" != "${CURRENTVERSION}"; then #{
     echo "SKIP: ${EXT} script-based upgrades (${to_version_param} [${to_version}] does not match built version ${CURRENTVERSION})"
