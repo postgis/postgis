@@ -120,7 +120,7 @@ topology_upgrade.sql.in:  topology.sql ../utils/create_upgrade.pl
 
 topology_upgrade.sql: ../postgis/common_before_upgrade.sql topology_before_upgrade.sql topology_upgrade.sql.in topology_after_upgrade.sql ../postgis/common_after_upgrade.sql
 	echo "BEGIN;" > $@
-	cat $^ > $@
+	cat $^ >> $@
 	echo "COMMIT;" >> $@
 
 topology.sql: \
