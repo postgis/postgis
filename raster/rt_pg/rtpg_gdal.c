@@ -733,7 +733,7 @@ Datum RASTER_InterpolateRaster(PG_FUNCTION_ARGS)
 	in_band_height = rt_band_get_height(in_band);
 	in_band_pixtype = rt_band_get_pixtype(in_band);
 	in_band_gdaltype = rt_util_pixtype_to_gdal_datatype(in_band_pixtype);
-	in_band_gdaltype_size = GDALGetDataTypeSize(in_band_gdaltype) / 8;
+	in_band_gdaltype_size = GDALGetDataTypeSizeBytes(in_band_gdaltype);
 
 	/* Quickly copy options struct into local memory context, so we */
 	/* don't have malloc'ed memory lying around */

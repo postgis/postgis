@@ -2402,7 +2402,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 
 		/* pixtype */
 		gdpixtype = GDALGetRasterDataType(gdband);
-		RASTER_DEBUGF(4, "gdpixtype, size = %s, %d", GDALGetDataTypeName(gdpixtype), GDALGetDataTypeSize(gdpixtype) / 8);
+		RASTER_DEBUGF(4, "gdpixtype, size = %s, %d", GDALGetDataTypeName(gdpixtype), GDALGetDataTypeSizeBytes(gdpixtype));
 		pt = rt_util_gdal_datatype_to_pixtype(gdpixtype);
 		if (pt == PT_END) {
 			rterror("rt_raster_from_gdal_dataset: Unknown pixel type for GDAL band");
