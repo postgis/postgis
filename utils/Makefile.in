@@ -53,6 +53,7 @@ DROP_FILES = \
 	$(top_builddir)/sfcgal/uninstall_sfcgal.sql \
 	$(top_builddir)/raster/rt_pg/rtpostgis_upgrade.sql \
 	$(top_builddir)/raster/rt_pg/uninstall_rtpostgis.sql \
+	$(top_builddir)/topology/topology_upgrade.sql \
 	$(top_builddir)/topology/uninstall_topology.sql
 
 $(top_builddir)/postgis/uninstall_postgis.sql:
