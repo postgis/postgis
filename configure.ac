@@ -1581,8 +1581,8 @@ if test "x$with_raster" != "xno"; then
 	LIBGDAL_DEPLIBS_LDFLAGS=""
 
 	dnl GDAL version constants, update here
-	GDAL_MIN_VERSION=2.0.0
-	GDAL_MIN_VERSION_NUMBER=180 dnl TODO: Use GDAL version calculation MAJOR*1000+MINOR*100+REV*10+BUILD
+	GDAL_MIN_VERSION=2.4.0
+	GDAL_MIN_VERSION_NUMBER=240 dnl TODO: Use GDAL version calculation MAJOR*1000+MINOR*100+REV*10+BUILD
 
 	AC_ARG_WITH(
 		[gdalconfig],
