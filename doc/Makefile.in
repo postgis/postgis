@@ -83,7 +83,7 @@ XSLT_PATH= \
 	$(builddir):$(abs_srcdir)
 
 XSLTPROC_PATH_OPT= \
-	--path $(XSLT_PATH)
+	--path "$(XSLT_PATH)"
 
 XSLTPROC_CUSTOM_VARS = \
 	--stringparam postgis_version $(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION) \
