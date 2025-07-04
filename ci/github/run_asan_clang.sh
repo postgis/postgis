@@ -14,7 +14,7 @@ export ASAN_OPTIONS=halt_on_error=false,leak_check_at_exit=false,exitcode=0
 export MSAN_OPTIONS=halt_on_error=false,leak_check_at_exit=false,exitcode=0
 
 #Run postgres preloading sanitizer libs
-#LD_PRELOAD=/usr/lib/clang/${CLANG_VER}/lib/linux/libclang_rt.asan-x86_64.so
+LD_PRELOAD=/usr/lib/clang/${CLANG_VER}/lib/linux/libclang_rt.asan-x86_64.so \
 /usr/local/pgsql/bin/pg_ctl -c -o '-F' -l /tmp/logfile start
 
 
@@ -22,6 +22,8 @@ export MSAN_OPTIONS=halt_on_error=false,leak_check_at_exit=false,exitcode=0
 ./autogen.sh
 ./configure CC=clang CFLAGS="${CFLAGS_USAN}" LDFLAGS="${LDFLAGS_STD}"
 bash ./ci/github/logbt -- make -j
+LD_PRELOAD=/usr/lib/clang/${CLANG_VER}/lib/linux/libclang_rt.asan-x86_64.so \
+ulimit -s 16000000
 bash ./ci/github/logbt -- make check RUNTESTFLAGS=--verbose
 cat /tmp/logfile
 echo -------
