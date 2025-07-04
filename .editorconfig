@@ -10,6 +10,10 @@ end_of_line = lf
 trim_trailing_whitespace = true
 insert_final_newline = true
 
+[NEWS]
+indent_style = space
+indent_size = 2
+
 [*_expected]
 trim_trailing_whitespace = false
 
@@ -40,6 +44,11 @@ indent_size = 2
 indent_style = space
 indent_size = 4
 
+# Exception: loader/postgis.pl uses 2-spaces indent
+[loader/postgis.pl]
+indent_style = space
+indent_size = 2
+
 # SQL files want tab indentation
 [*.{sql,sql.in}]
 indent_style = tab
@@ -52,6 +61,7 @@ indent_size = 2
 # topology C files want space indentation
 [liblwgeom/topo/**.{c,h}]
 indent_style = space
+indent_size = 2
 
 [liblwgeom/lwgeom_log.h]
 indent_style = space

@@ -2073,7 +2073,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 	}
 	/* do when there is no more left */
 	else {
-		pfree(covvcnts2);
+		if (covvcnts2) pfree(covvcnts2);
 		SRF_RETURN_DONE(funcctx);
 	}
 }

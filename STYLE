@@ -9,7 +9,7 @@ recognize this, and understand it will be the work of many years before
 PostGIS has a consistently named internal set of functions, but,
 we can dream.
 
-If new functions follow this guideline, if we do a little rennovation work
+If new functions follow this guideline, if we do a little renovation work
 from time to time, we will eventually get there.
 
 

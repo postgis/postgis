@@ -13,12 +13,12 @@
 	 ******************************************************************** -->
 	<xsl:output method="xml" indent="yes" encoding="utf-8" />
 
-	<!-- We deal only with the reference chapter -->
+	<!-- We deal only with the reference chapters -->
 	<xsl:template match="/">
-		<xsl:apply-templates select="/db:book/db:chapter[@xml:id='reference']" />
+		<xsl:apply-templates select="/db:book/db:chapter[contains(@xml:id, 'reference')]" />
 	</xsl:template>
 
-	<xsl:template match="//db:chapter">
+	<xsl:template match="/">
 
 		<xsl:variable name="chap" select="." />
 

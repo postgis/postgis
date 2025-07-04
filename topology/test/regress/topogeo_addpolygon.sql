@@ -19,7 +19,7 @@ DECLARE
   sql text;
 BEGIN
   -- Check effect on nodes
-  sql :=  'SELECT $1 || ''|N|'' ' || CASE WHEN add_id THEN ' || n.node_id || ''|'' ' ELSE '' END || ' || 
+  sql :=  'SELECT $1 || ''|N|'' ' || CASE WHEN add_id THEN ' || n.node_id || ''|'' ' ELSE '' END || ' ||
         COALESCE(n.containing_face::text,'''') || ''|'' ||
         ST_AsText(ST_SnapToGrid(n.geom, 0.2))::text as xx
   	FROM city_data.node n WHERE n.node_id > (
@@ -35,7 +35,7 @@ BEGIN
   -- Check effect on edges (there should be one split)
   sql := 'WITH node_limits AS ( SELECT max FROM city_data.limits WHERE what = ''node''::text ),
        edge_limits AS ( SELECT max FROM city_data.limits WHERE what = ''edge''::text )
-  SELECT $1 || ''|E|'' ' || CASE WHEN add_id THEN ' || e.edge_id || ''|sn'' || e.start_node || ''|en'' || e.end_node::text ' ELSE '' END || ' AS xx ' || 
+  SELECT $1 || ''|E|'' ' || CASE WHEN add_id THEN ' || e.edge_id || ''|sn'' || e.start_node || ''|en'' || e.end_node::text ' ELSE '' END || ' AS xx ' ||
    ' FROM city_data.edge e, node_limits nl, edge_limits el
    WHERE e.start_node > nl.max
       OR e.end_node > nl.max
@@ -72,6 +72,7 @@ $$ LANGUAGE 'plpgsql';
 SELECT 'invalid', TopoGeo_addPolygon('city_data', 'MULTILINESTRING((36 26, 38 30))');
 SELECT 'invalid', TopoGeo_addPolygon('city_data', 'POINT(36 26)');
 SELECT 'invalid', TopoGeo_addPolygon('invalid', 'POLYGON((36 26, 40 24, 40 30, 36 26))');
+SELECT 'empty', TopoGeo_addPolygon('city_data', 'POLYGON EMPTY');
 
 -- Isolated face in universal face
 SELECT 'iso_uni', TopoGeo_addPolygon('city_data', 'POLYGON((36 26, 38 30, 43 26, 36 26))');
@@ -145,11 +146,11 @@ SELECT 't1946.1', topology.topogeo_AddPolygon('bug1946',
           76.68727 30.74249,76.67933 30.75,
           76.69223 30.74157,76.68728 30.74248))'
 ::geometry);  **/
-SELECT 't1946.2', COUNT(*) 
+SELECT 't1946.2', COUNT(*)
   FROM topology.topogeo_AddPolygon('bug1946',
 'POLYGON((76.68728 30.74248,76.68727 30.74248,
           76.68727 30.74249,76.67933 30.75,
           76.69223 30.74157,76.68728 30.74248))'
-::geometry); 
+::geometry);
 
 SELECT 't1946.end', topology.DropTopology('bug1946');

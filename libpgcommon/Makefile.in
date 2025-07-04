@@ -34,8 +34,7 @@ SA_HEADERS = \
 	lwgeom_pg.h \
 	lwgeom_transform.h \
 	lwgeom_cache.h \
-	gserialized_gist.h \
-	pgsql_compat.h
+	gserialized_gist.h
 
 all: libpgcommon.a
 

@@ -47,7 +47,7 @@ CREATE FUNCTION estimate_error(qry text, tol int)
 RETURNS text
 LANGUAGE 'plpgsql' VOLATILE AS $$
 DECLARE
-  anl TEXT; -- analisys
+  anl TEXT; -- analysis
   err INT; -- absolute difference between planned and actual rows
   est INT; -- estimated count
   act INT; -- actual count
@@ -57,11 +57,11 @@ BEGIN
   -- TODO: rewrite using json output ?
   EXECUTE 'EXPLAIN ANALYZE ' || qry INTO anl;
 
-  SELECT regexp_matches(anl, ' rows=([0-9]*) .* rows=([0-9]*) ')
+  SELECT regexp_matches(anl, E' rows=([0-9]*) .* rows=([0-9\.]*) ')
   INTO mat;
 
   est := mat[1];
-  act := mat[2];
+  act := mat[2]::numeric::integer;
 
   err = abs(est-act);
 

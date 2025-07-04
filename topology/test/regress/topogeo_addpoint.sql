@@ -78,3 +78,11 @@ SELECT 't5698', 'E', TopoGeo_addLinestring('t', 'LINESTRING( 15.796760167740288 
 SELECT 't5698', 'N', TopoGeo_addPoint( 't', 'POINT(15.796760167739626 69.05714853429157)');
 SELECT 't5698', 'V', * FROM ValidateTopology('t');
 SELECT NULL FROM DropTopology('t');
+
+-- See https://trac.osgeo.org/postgis/ticket/5794
+BEGIN;
+SELECT NULL FROM topology.CreateTopology ('t');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t', 'LINESTRING(0 0, 10 0)');
+SELECT 't5794', 'N', topology.TopoGeo_addPoint('t', 'POINT(9 5)', 5);
+SELECT 't5794', 'V', * FROM ValidateTopology('t');
+ROLLBACK;

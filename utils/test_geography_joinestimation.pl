@@ -284,7 +284,7 @@ sub get_num_rows
 # rewritten split_extent to be more datatype-conservative
 #
 # Revision 1.3  2004/03/05 16:01:02  strk
-# added -bps switch to set maximun query level. reworked command line parsing
+# added -bps switch to set maximum query level. reworked command line parsing
 #
 # Revision 1.2  2004/03/05 15:29:35  strk
 # more verbose output

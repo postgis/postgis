@@ -30,7 +30,7 @@ static void test_lwgeom_clip_by_rect(void)
 	out = lwgeom_clip_by_rect(in, 5, 0, 10, 10);
 	tmp = lwgeom_to_ewkt(out);
 	/* printf("%s\n", tmp); */
-	CU_ASSERT_STRING_EQUAL("LINESTRING(5 5,10 0)", tmp)
+	ASSERT_STRING_EQUAL(tmp, "LINESTRING(5 5,10 0)");
 	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
 
 	wkt = "LINESTRING EMPTY";
@@ -38,7 +38,7 @@ static void test_lwgeom_clip_by_rect(void)
 	out = lwgeom_clip_by_rect(in, 5, 0, 10, 10);
 	tmp = lwgeom_to_ewkt(out);
 	/* printf("%s\n", tmp); */
-	CU_ASSERT_STRING_EQUAL(wkt, tmp)
+	ASSERT_STRING_EQUAL(tmp, wkt);
 	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
 
 	wkt = "MULTIPOINT EMPTY";
@@ -46,7 +46,7 @@ static void test_lwgeom_clip_by_rect(void)
 	out = lwgeom_clip_by_rect(in, 5, 0, 10, 10);
 	tmp = lwgeom_to_ewkt(out);
 	/* printf("%s\n", tmp); */
-	CU_ASSERT_STRING_EQUAL(wkt, tmp)
+	ASSERT_STRING_EQUAL(tmp, wkt);
 	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
 
 	wkt = "MULTIPOINT(0 0, 6 6, 7 5)";
@@ -54,7 +54,7 @@ static void test_lwgeom_clip_by_rect(void)
 	out = lwgeom_clip_by_rect(in, 5, 0, 10, 10);
 	tmp = lwgeom_to_ewkt(out);
 	/* printf("%s\n", tmp); */
-	CU_ASSERT_STRING_EQUAL("MULTIPOINT(6 6,7 5)", tmp)
+	ASSERT_STRING_EQUAL(tmp, "MULTIPOINT(6 6,7 5)");
 	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
 
 	/* Disjoint polygon */

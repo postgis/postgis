@@ -107,7 +107,7 @@ BEGIN
 		RETURN;
 	WHEN others THEN
 		GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
-		RAISE WARNING 'Could not check deprecated function % existance, got % (%), assuming it does not exist',
+		RAISE WARNING 'Could not check deprecated function % existence, got % (%), assuming it does not exist',
 			function_signature, SQLERRM, SQLSTATE
 		USING DETAIL = detail;
 		RETURN;

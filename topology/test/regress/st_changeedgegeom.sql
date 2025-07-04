@@ -150,3 +150,47 @@ ROLLBACK;
 
 SELECT topology.DropTopology('city_data');
 
+-- See https://trac.osgeo.org/postgis/ticket/5709
+SELECT NULL FROM createtopology('t5709');
+SELECT 't5709', 'edge', * FROM TopoGeo_addLineString('t5709',
+  'LINESTRING(
+    0 0,
+    5 65.2,
+    10 0,
+    0 0)
+  ');
+SELECT 't5709', 'mbr-invalid-before', face_id
+FROM t5709.face
+WHERE face_id > 0
+AND NOT ST_Equals(
+    mbr,
+    ST_Envelope(
+      ST_GetFaceGeometry('t5709', face_id)
+    )
+  );
+--set client_min_messages to DEBUG;
+SELECT NULL FROM ST_ChangeEdgeGeom('t5709', 1,
+  'LINESTRING(
+    0 0,
+    5 65.2000000000001,
+    10 0,
+    0 0)
+  ');
+SELECT 't5709', 'mbr-invalid-after', face_id
+FROM t5709.face
+WHERE face_id > 0
+AND NOT ST_Equals(
+    mbr,
+    ST_Envelope(
+      ST_GetFaceGeometry('t5709', face_id)
+    )
+  );
+SELECT NULL FROM topology.DropTopology('t5709');
+
+-- See https://trac.osgeo.org/postgis/ticket/5787
+SELECT NULL FROM topology.CreateTopology('t5787');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t5787', 'LINESTRING(0 0, 5 5, 10 0)');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t5787', 'LINESTRING(0 0, 10 0)');
+SELECT '#5787', 'unexpected success' FROM topology.ST_ChangeEdgeGeom('t5787', 1, 'LINESTRING(0 0, 5 -5, 10 0)');
+SELECT '#5787', 'unexpected invalidity', * FROM topology.ValidateTopology('t5787');
+SELECT NULL FROM topology.DropTopology('t5787');

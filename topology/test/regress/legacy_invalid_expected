@@ -10,9 +10,9 @@ edge crosses edge|20|27
 edge crosses edge|30|32
 edge crosses node|1|23
 edge crosses node|27|14
-edge end node geometry mis-match|30|3
+edge end node geometry mismatch|30|3
 edge not simple|28|
-edge start node geometry mis-match|30|4
+edge start node geometry mismatch|30|4
 face without edges|10|
 invalid edge|33|
 invalid next_left_edge|2|3

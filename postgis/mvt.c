@@ -29,7 +29,6 @@
 
 #include "mvt.h"
 #include "lwgeom_geos.h"
-#include "pgsql_compat.h"
 
 #ifdef HAVE_LIBPROTOBUF
 #include "utils/jsonb.h"
@@ -877,7 +876,7 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 
 	if (clip_geom)
 	{
-		gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
+		gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0};
 		GBOX bgbox;
 		bgbox.xmax = bgbox.ymax = (double)extent + (double)buffer;
 		bgbox.xmin = bgbox.ymin = -(double)buffer;
@@ -933,7 +932,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	bool clip_geom)
 {
 	AFFINE affine = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
+	gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0};
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
 	double fx, fy;

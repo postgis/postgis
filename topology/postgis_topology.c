@@ -15,7 +15,7 @@
 #include "c.h" /* for UINT64_FORMAT and uint64 */
 #include "utils/builtins.h" /* for cstring_to_text */
 #include "utils/elog.h"
-#include "utils/memutils.h" /* for TopMemoryContext */
+#include "utils/memutils.h" /* for transaction contexts */
 #include "utils/array.h" /* for ArrayType */
 #include "catalog/pg_type.h" /* for INT4OID, TEXTOID */
 #include "lib/stringinfo.h"
@@ -32,7 +32,6 @@
 /*#define POSTGIS_DEBUG_LEVEL 1*/
 #include "lwgeom_log.h"
 #include "lwgeom_pg.h"
-#include "pgsql_compat.h"
 
 #include <stdarg.h>
 
@@ -53,7 +52,7 @@
  */
 PG_MODULE_MAGIC;
 
-LWT_BE_IFACE* be_iface;
+static LWT_BE_IFACE* be_iface;
 
 /*
  * Private data we'll use for this backend
@@ -76,7 +75,7 @@ struct LWT_BE_DATA_T
   int topoLoadFailMessageFlavor; /* 0:sql, 1:AddPoint */
 };
 
-LWT_BE_DATA be_data;
+static LWT_BE_DATA be_data;
 
 struct LWT_BE_TOPOLOGY_T
 {
@@ -793,12 +792,9 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     if ( ! isnull )
     {
       {
-        MemoryContext oldcontext = CurrentMemoryContext;
         geom = (GSERIALIZED *)PG_DETOAST_DATUM(dat);
         lwg = lwgeom_from_gserialized(geom);
-        MemoryContextSwitchTo( TopMemoryContext );
         edge->geom = lwgeom_as_lwline(lwgeom_clone_deep(lwg));
-        MemoryContextSwitchTo( oldcontext ); /* switch back */
         lwgeom_free(lwg);
         if ( DatumGetPointer(dat) != (Pointer)geom ) pfree(geom); /* IF_COPY */
       }
@@ -1525,7 +1521,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
     else
     {
       lwpgwarning("liblwgeom-topo invoked 'getNodeWithinDistance2D' "
-                  "backend callback with limit=%d and no fields",
+                  "backend callback with limit=" UINT64_FORMAT " and no fields",
                   elems_requested);
       appendStringInfo(sql, "*");
     }
@@ -2137,8 +2133,14 @@ cb_getNextEdgeId( const LWT_BE_TOPOLOGY* topo )
   LWT_ELEMID edge_id;
 
   initStringInfo(sql);
-  appendStringInfo(sql, "SELECT nextval('\"%s\".edge_data_edge_id_seq')",
-                   topo->name);
+  appendStringInfo(sql, "SELECT nextval("
+       "SUBSTRING(column_default, "
+       "POSITION('(' IN column_default)+2, "
+       "(POSITION(':' IN column_default)-POSITION('(' IN column_default)-3))"
+       ") "
+       "FROM information_schema.columns "
+       "WHERE table_schema = '%s' AND table_name='edge_data' AND column_name = 'edge_id' \n",
+      topo->name);
   spi_result = SPI_execute(sql->data, false, 0);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT )
@@ -3657,7 +3659,7 @@ Datum ST_ModEdgeSplit(PG_FUNCTION_ARGS)
   node_id = lwt_ModEdgeSplit(topo, edge_id, pt, 0);
   POSTGIS_DEBUG(1, "lwt_ModEdgeSplit returned");
   lwgeom_free(lwgeom);
-  PG_FREE_IF_COPY(geom, 3);
+  PG_FREE_IF_COPY(geom, 2);
   lwt_FreeTopology(topo);
 
   if ( node_id == -1 )
@@ -3727,7 +3729,7 @@ Datum ST_NewEdgesSplit(PG_FUNCTION_ARGS)
   node_id = lwt_NewEdgesSplit(topo, edge_id, pt, 0);
   POSTGIS_DEBUG(1, "lwt_NewEdgesSplit returned");
   lwgeom_free(lwgeom);
-  PG_FREE_IF_COPY(geom, 3);
+  PG_FREE_IF_COPY(geom, 2);
   lwt_FreeTopology(topo);
 
   if ( node_id == -1 )
@@ -4100,8 +4102,8 @@ Datum ST_GetFaceGeometry(PG_FUNCTION_ARGS)
   }
 
   /* Serialize in upper memory context (outside of SPI) */
-  /* TODO: use a narrower context to switch to */
-  old_context = MemoryContextSwitchTo( TopMemoryContext );
+  /* TODO: use a narrower context to switch to ? */
+  old_context = MemoryContextSwitchTo( TopTransactionContext );
   geom = geometry_serialize(lwgeom);
   MemoryContextSwitchTo(old_context);
 
@@ -4223,6 +4225,8 @@ Datum ST_GetFaceEdges(PG_FUNCTION_ARGS)
 
   if ( state->curr == state->nelems )
   {
+    if ( state->nelems ) lwfree(state->elems);
+    lwfree( state );
     SRF_RETURN_DONE(funcctx);
   }
 
@@ -5101,10 +5105,18 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
       }
     }
+    /* Nothing to do if line is empty */
+    if ( lwline_is_empty(ln) )
+    {
+      lwgeom_free(lwgeom);
+      PG_FREE_IF_COPY(geom, 1);
+      PG_RETURN_NULL();
+    }
 
     tol = PG_GETARG_FLOAT8(2);
     if ( tol < 0 )
     {
+      lwgeom_free(lwgeom);
       PG_FREE_IF_COPY(geom, 1);
       lwpgerror("Tolerance must be >=0");
       PG_RETURN_NULL();
@@ -5112,6 +5124,8 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
 
     if ( SPI_OK_CONNECT != SPI_connect() )
     {
+      lwgeom_free(lwgeom);
+      PG_FREE_IF_COPY(geom, 1);
       lwpgerror("Could not connect to SPI");
       PG_RETURN_NULL();
     }
@@ -5169,6 +5183,9 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
   if ( state->curr == state->nelems )
   {
     POSTGIS_DEBUG(1, "We're done, cleaning up all");
+
+    if ( state->nelems ) lwfree(state->elems);
+    lwfree( state );
     SRF_RETURN_DONE(funcctx);
   }
 
@@ -5374,6 +5391,8 @@ Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
   if ( state->curr == state->nelems )
   {
     POSTGIS_DEBUG(1, "We're done, cleaning up all");
+    if ( state->nelems ) lwfree(state->elems);
+    lwfree( state );
     SRF_RETURN_DONE(funcctx);
   }
 
@@ -5497,6 +5516,8 @@ Datum GetRingEdges(PG_FUNCTION_ARGS)
   if ( state->curr == state->nelems )
   {
     POSTGIS_DEBUG(1, "We're done, cleaning up all");
+    if ( state->nelems ) lwfree(state->elems);
+    lwfree( state );
     SRF_RETURN_DONE(funcctx);
   }
 
@@ -5513,7 +5534,7 @@ Datum GetRingEdges(PG_FUNCTION_ARGS)
   SRF_RETURN_NEXT(funcctx, result);
 }
 
-/*  GetFaceContainingPoint(atopology, point) */
+/* GetFaceContainingPoint(atopology, point) */
 Datum GetFaceContainingPoint(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(GetFaceContainingPoint);
 Datum GetFaceContainingPoint(PG_FUNCTION_ARGS)
@@ -5525,6 +5546,12 @@ Datum GetFaceContainingPoint(PG_FUNCTION_ARGS)
   LWGEOM *lwgeom;
   LWPOINT *pt;
   LWT_TOPOLOGY *topo;
+
+  if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) )
+  {
+    /* should only happen when the SQL function is not declared STRICT */
+    PG_RETURN_NULL();
+  }
 
   toponame_text = PG_GETARG_TEXT_P(0);
   toponame = text_to_cstring(toponame_text);
@@ -5538,6 +5565,14 @@ Datum GetFaceContainingPoint(PG_FUNCTION_ARGS)
     lwgeom_free(lwgeom);
     PG_FREE_IF_COPY(geom, 1);
     lwpgerror("Second argument must be a point geometry");
+    PG_RETURN_NULL();
+  }
+
+  if ( lwpoint_is_empty(pt) )
+  {
+    lwgeom_free(lwgeom);
+    PG_FREE_IF_COPY(geom, 1);
+    lwpgerror("Second argument needs be a non-empty point");
     PG_RETURN_NULL();
   }
 
@@ -5627,12 +5662,17 @@ Datum TopoGeo_LoadGeometry(PG_FUNCTION_ARGS)
   LWGEOM *lwgeom;
   LWT_TOPOLOGY *topo;
 
+  if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) )
+  {
+    lwpgerror("SQL/MM Spatial exception - null argument");
+    PG_RETURN_NULL();
+  }
+
   toponame_text = PG_GETARG_TEXT_P(0);
   toponame = text_to_cstring(toponame_text);
   PG_FREE_IF_COPY(toponame_text, 0);
 
   geom = PG_GETARG_GSERIALIZED_P(1);
-  lwgeom = lwgeom_from_gserialized(geom);
 
   tol = PG_GETARG_FLOAT8(2);
   if ( tol < 0 )
@@ -5657,10 +5697,16 @@ Datum TopoGeo_LoadGeometry(PG_FUNCTION_ARGS)
     PG_RETURN_NULL();
   }
 
-  POSTGIS_DEBUG(1, "Calling lwt_LoadGeometry");
-  lwt_LoadGeometry(topo, lwgeom, tol);
-  POSTGIS_DEBUG(1, "lwt_LoadGeometry returned");
-  lwgeom_free(lwgeom);
+  /* Nothing to do if the input is empty */
+  if (gserialized_is_empty(geom) != LW_TRUE)
+  {
+    lwgeom = lwgeom_from_gserialized(geom);
+    POSTGIS_DEBUG(1, "Calling lwt_LoadGeometry");
+    lwt_LoadGeometry(topo, lwgeom, tol);
+    POSTGIS_DEBUG(1, "lwt_LoadGeometry returned");
+    lwgeom_free(lwgeom);
+  }
+
   PG_FREE_IF_COPY(geom, 1);
   lwt_FreeTopology(topo);
 

@@ -294,7 +294,7 @@ SELECT create_census_base_tables();
 \i geocode/census_tracts_functions.sql
 COMMIT;
 -- Tiger to PostGIS Topology
--- only useable if you have topology installed
+-- only usable if you have topology installed
 \i topology/tiger_topology_loader.sql
 
 -- install missing indexes

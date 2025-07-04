@@ -38,11 +38,11 @@ static void do_geojson_test(const char * exp, char * in, char * exp_srs)
 	if (strcmp(h, exp))
 	{
 		fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp, h);
-		CU_ASSERT_STRING_EQUAL(h, exp);
+		ASSERT_STRING_EQUAL(h, exp);
 	}
 	else
 	{
-		CU_ASSERT_STRING_EQUAL(h, exp);
+		ASSERT_STRING_EQUAL(h, exp);
 	}
 
 	if ( exp_srs )
@@ -55,7 +55,7 @@ static void do_geojson_test(const char * exp, char * in, char * exp_srs)
 		else if (strcmp(srs, exp_srs))
 		{
 			fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp_srs, srs);
-			CU_ASSERT_STRING_EQUAL(srs, exp_srs);
+			ASSERT_STRING_EQUAL(srs, exp_srs);
 		}
 	}
 	else if ( srs )

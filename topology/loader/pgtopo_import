@@ -13,13 +13,19 @@
 set -e
 
 usage() {
-  echo "Usage: $(basename $0) [ --skip-layers | --only-layers ] [ -f <dumpfile> ] <toponame>"
+  echo "Usage: $(basename $0) [OPTIONS] <toponame>"
+  echo "OPTIONS:"
+  echo " --skip-layers    Skip importing layers"
+  echo " --only-layers    Only import layers"
+  echo " --drop-topology  Drop topology before importing it"
+  echo " -f <dumpfile>    Read dump from <file> instead of stdin"
 }
 
 
 
 SKIP_LAYERS=no
 ONLY_LAYERS=no
+DROP_TOPOLOGY=no
 TOPONAME=
 DUMPFILE=-
 
@@ -29,6 +35,9 @@ while test -n "$1"; do
     shift
   elif test "$1" = '--only-layers'; then
     ONLY_LAYERS=yes
+    shift
+  elif test "$1" = '--drop-topology'; then
+    DROP_TOPOLOGY=yes
     shift
   elif test "$1" = '-f'; then
     shift
@@ -92,6 +101,17 @@ test ${DUMPVERSION} -eq '1' || {
 echo "BEGIN;"
 
 if test "$ONLY_LAYERS" = "no"; then # {
+  #################################################
+  # Drop any existing topology if requested so
+  #################################################
+  if test "$DROP_TOPOLOGY" = "yes"; then #{
+  cat<<EOF
+  SELECT topology.DropTopology(
+    '${TOPONAME}'
+  );
+EOF
+  fi #}
+
   #################################################
   # Create topology
   #################################################

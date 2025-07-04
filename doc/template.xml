@@ -67,10 +67,10 @@
 	<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 	<!-- use this format if function behavior has changed that could pose backward compatibility issues  -->
 	<para role="changed" conformance="2.0.0">Changed: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+    <!-- Optionally mention OpenGIS compliance if appropriate -->
     <para>&sfs_compliant;</para>
 
-    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+    <!-- Optionally mention SQL/MM compliance if appropriate -->
 	<para>&sqlmm_compliant; SQL-MM 3: 5.1.40</para>
 
 	<!-- Optionally mention 3d support -->

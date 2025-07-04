@@ -8,7 +8,7 @@ BEGIN
 	-- We use now() here to get the time at the
 	-- start of the transaction, which started when
 	-- this function was called, so the earliest
-	-- posssible time
+	-- possible time
   SELECT now()-t lap, sf slow_factor
 	FROM _time INTO rec;
 

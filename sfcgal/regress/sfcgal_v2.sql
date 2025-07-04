@@ -1,0 +1,27 @@
+-- SFCGAL 2.0.0
+SELECT 'CG_Rotate', ST_AsText(ST_ReducePrecision(CG_Rotate('LINESTRING (1 0, 0 1)', pi()/2), 0.1));
+SELECT 'CG_2DRotate', ST_AsText(CG_2DRotate('POINT(1 0)', pi()/2, 1, 1), 0);
+SELECT 'CG_3DRotate', ST_AsText(ST_ReducePrecision(CG_3DRotate('POINT(1 0 0)', pi()/2, 0, 0, 1), 0.1));
+SELECT 'CG_RotateX', ST_AsText(ST_ReducePrecision(CG_RotateX('POINT(0 1 0)', pi()/2), 0.1));
+SELECT 'CG_RotateY', ST_AsText(ST_ReducePrecision(CG_RotateY('POINT(1 0 0)', pi()/2), 0.1));
+SELECT 'CG_RotateZ', ST_AsText(ST_ReducePrecision(CG_RotateZ('POINT(1 0 0)', pi()/2), 0.1));
+SELECT 'CG_Scale', ST_AsText(CG_Scale('LINESTRING(1 1, 2 2)', 2), 0);
+SELECT 'CG_3DScale', ST_AsText(CG_3DScale('POINT(1 1 1)', 2, 3, 4), 0);
+SELECT 'CG_3DScaleAroundCenter', ST_AsText(ST_ReducePrecision(CG_3DScaleAroundCenter('POINT(2 2 2)', 0.5, 0.5, 0.5, 1, 1, 1), 0.1));
+SELECT 'CG_Translate', ST_AsText(CG_Translate('LINESTRING(1 1, 2 2)', 1, -1), 0);
+SELECT 'CG_3DTranslate', ST_AsText(CG_3DTranslate('POINT(1 1 1)', 1, -1, 2), 0);
+SELECT 'CG_StraightSkeletonPartition', ST_AsText(ST_Collect(dmp.geom), 2) FROM ST_Dump(CG_StraightSkeletonPartition('POLYGON((0 0, 4 0, 2 2, 0 0))', true)) as dmp;
+SELECT 'CG_3DBuffer', ST_AsText(CG_3DBuffer('POINT(0 0 0)', 1, 8, 0), 2);
+SELECT 'CG_Rotate', ST_AsText(ST_ReducePrecision(CG_Rotate('LINESTRING  EMPTY', pi()/2), 0.1));
+SELECT 'CG_2DRotate', ST_AsText(CG_2DRotate('POINT EMPTY', pi()/2, 1, 1), 0);
+SELECT 'CG_3DRotate', ST_AsText(ST_ReducePrecision(CG_3DRotate('POINT EMPTY', pi()/2, 0, 0, 1), 0.1));
+SELECT 'CG_RotateX', ST_AsText(ST_ReducePrecision(CG_RotateX('POINT EMPTY', pi()/2), 0.1));
+SELECT 'CG_RotateY', ST_AsText(ST_ReducePrecision(CG_RotateY('POINT EMPTY', pi()/2), 0.1));
+SELECT 'CG_RotateZ', ST_AsText(ST_ReducePrecision(CG_RotateZ('POINT EMPTY', pi()/2), 0.1));
+SELECT 'CG_Scale', ST_AsText(CG_Scale('LINESTRING EMPTY', 2), 0);
+SELECT 'CG_3DScale', ST_AsText(CG_3DScale('POINT EMPTY', 2, 3, 4), 0);
+SELECT 'CG_3DScaleAroundCenter', ST_AsText(ST_ReducePrecision(CG_3DScaleAroundCenter('POINT EMPTY', 0.5, 0.5, 0.5, 1, 1, 1), 0.1));
+SELECT 'CG_Translate', ST_AsText(CG_Translate('LINESTRING EMPTY', 1, -1), 0);
+SELECT 'CG_3DTranslate', ST_AsText(CG_3DTranslate('POINT EMPTY', 1, -1, 2), 0);
+SELECT 'CG_StraightSkeletonPartition', replace(ST_AsText(CG_StraightSkeletonPartition('POLYGON EMPTY', true), 2), 'MULTIPOLYGON', 'POLYHEDRALSURFACE');
+SELECT 'CG_3DBuffer', ST_AsText(CG_3DBuffer('POINT EMPTY', 1, 8, 0), 2);

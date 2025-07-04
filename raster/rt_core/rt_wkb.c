@@ -31,6 +31,8 @@
 #include "librtcore_internal.h"
 #include "rt_serialize.h"
 
+#include <inttypes.h>
+
 /* Read band from WKB as at start of band */
 static rt_band
 rt_band_from_wkb(
@@ -181,7 +183,7 @@ rt_band_from_wkb(
 			memcpy(band->data.offline.path, *ptr, sz);
 			band->data.offline.path[sz] = '\0';
 
-			RASTER_DEBUGF(3, "OFFDB band path is %s (size is %d)",
+			RASTER_DEBUGF(3, "OFFDB band path is %s (size is %zu)",
 				band->data.offline.path, sz);
 
 			*ptr += sz + 1;
@@ -286,13 +288,14 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
 
 	/* Check that wkbsize is >= sizeof(rt_raster_serialized) */
 	if (wkbsize < RT_WKB_HDR_SZ) {
-		rterror("rt_raster_from_wkb: wkb size (%d)  < min size (%d)",
+		rterror("rt_raster_from_wkb: wkb size (%" PRIu32
+			") < min size (%zu)",
 			wkbsize, RT_WKB_HDR_SZ);
 		return NULL;
 	}
 	wkbend = wkb + wkbsize;
 
-	RASTER_DEBUGF(3, "Parsing header from wkb position %d (expected 0)",
+	RASTER_DEBUGF(3, "Parsing header from wkb position %zu (expected 0)",
 		d_binptr_to_pos(ptr, wkbend, wkbsize));
 
 	CHECK_BINPTR_POSITION(ptr, wkbend, wkbsize, 0);
@@ -341,7 +344,7 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
 		rast->srid);
 	RASTER_DEBUGF(3, "rt_raster_from_wkb: Raster dims: %dx%d",
 		rast->width, rast->height);
-	RASTER_DEBUGF(3, "Parsing raster header finished at wkb position %d (expected 61)",
+	RASTER_DEBUGF(3, "Parsing raster header finished at wkb position %zu (expected 61)",
 		d_binptr_to_pos(ptr, wkbend, wkbsize));
 
 	CHECK_BINPTR_POSITION(ptr, wkbend, wkbsize, 61);
@@ -350,11 +353,11 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
 	if (!rast->numBands) {
 		/* Here ptr should have been left to right after last used byte */
 		if (ptr < wkbend) {
-			rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr);
+			rtwarn("%zu bytes of WKB remained unparsed", wkbend - ptr);
 		}
 		else if (ptr > wkbend) {
 			/* Easier to get a segfault before I guess */
-			rtwarn("We parsed %d bytes more then available!", ptr - wkbend);
+			rtwarn("We parsed %zu bytes more then available!", ptr - wkbend);
 		}
 
 		rast->bands = NULL;
@@ -374,7 +377,7 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
 	assert(ptr <= wkbend);
 
 	for (i = 0; i < rast->numBands; ++i) {
-		RASTER_DEBUGF(3, "Parsing band %d from wkb position %d", i,
+		RASTER_DEBUGF(3, "Parsing band %d from wkb position %zu", i,
 			d_binptr_to_pos(ptr, wkbend, wkbsize));
 
 		rt_band band = rt_band_from_wkb(rast->width, rast->height,
@@ -392,11 +395,11 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
 
 	/* Here ptr should have been left to right after last used byte */
 	if (ptr < wkbend) {
-		rtwarn("%d bytes of WKB remained unparsed", wkbend - ptr);
+		rtwarn("%zu bytes of WKB remained unparsed", wkbend - ptr);
 	}
 	else if (ptr > wkbend) {
 		/* Easier to get a segfault before I guess */
-		rtwarn("We parsed %d bytes more then available!", ptr - wkbend);
+		rtwarn("We parsed %zu bytes more then available!", ptr - wkbend);
 	}
 
 	return rast;
@@ -521,7 +524,7 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize) {
 #if POSTGIS_DEBUG_LEVEL > 2
 	wkbend = ptr + (*wkbsize);
 #endif
-	RASTER_DEBUGF(3, "Writing raster header to wkb on position %d (expected 0)",
+	RASTER_DEBUGF(3, "Writing raster header to wkb on position %zu (expected 0)",
 		d_binptr_to_pos(ptr, wkbend, *wkbsize));
 
 	/* Write endianness */
@@ -535,7 +538,7 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize) {
 	memcpy(ptr, &(raster->numBands), sizeof (struct rt_raster_serialized_t) - 6);
 	ptr += sizeof (struct rt_raster_serialized_t) - 6;
 
-	RASTER_DEBUGF(3, "Writing bands header to wkb position %d (expected 61)",
+	RASTER_DEBUGF(3, "Writing bands header to wkb position %zu (expected 61)",
 		d_binptr_to_pos(ptr, wkbend, *wkbsize));
 
 	/* Serialize bands now */
@@ -545,7 +548,7 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize) {
 		int pixbytes = rt_pixtype_size(pixtype);
 
 		RASTER_DEBUGF(3, "Writing WKB for band %d", i);
-		RASTER_DEBUGF(3, "Writing band pixel type to wkb position %d",
+		RASTER_DEBUGF(3, "Writing band pixel type to wkb position %zu",
 			d_binptr_to_pos(ptr, wkbend, *wkbsize));
 
 		if (pixbytes < 1) {
@@ -572,7 +575,7 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize) {
 		assert(!(((uint64_t) ptr) % pixbytes));
 #endif
 
-		RASTER_DEBUGF(3, "Writing band nodata to wkb position %d",
+		RASTER_DEBUGF(3, "Writing band nodata to wkb position %zu",
 			d_binptr_to_pos(ptr, wkbend, *wkbsize));
 
 		/* Add nodata value */
@@ -630,7 +633,7 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize) {
 			default:
 				rterror("rt_raster_to_wkb: Fatal error caused by unknown pixel type. Aborting.");
 				rtdealloc(wkb);
-				abort(); /* shoudn't happen */
+				abort(); /* shouldn't happen */
 				return 0;
 		}
 

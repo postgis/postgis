@@ -2,14 +2,11 @@
 <chapter xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="RT_reference">
   <title>Raster Reference</title>
 
-  <para>The functions given below are the ones which a user of PostGIS Raster is
-  likely to need and which are currently available in PostGIS Raster. There are other functions which are required support
-  functions to the raster objects which are not of use to a general
-  user.</para>
-  <para><varname>raster</varname> is a new PostGIS type for storing and analyzing raster data. </para>
+  <para><varname>raster</varname> is a PostGIS type for storing and analyzing raster data. </para>
   <para>For loading rasters from raster files please refer to <xref linkend="RT_Loading_Rasters"/></para>
 
-    <para>For the examples in this reference we will be using a raster table of dummy rasters - Formed with the following code </para>
+    <para>Some examples in this reference use a raster table of dummy data, 
+    created with the following code:</para>
 <programlisting language="sql">CREATE TABLE dummy_rast(rid integer, rast raster);
 INSERT INTO dummy_rast(rid, rast)
 VALUES (1,
@@ -42,6 +39,11 @@ VALUES (1,
 (2,  ('01000003009A9999999999A93F9A9999999999A9BF000000E02B274A' ||
 '41000000007719564100000000000000000000000000000000FFFFFFFF050005000400FDFEFDFEFEFDFEFEFDF9FAFEF' ||
 'EFCF9FBFDFEFEFDFCFAFEFEFE04004E627AADD16076B4F9FE6370A9F5FE59637AB0E54F58617087040046566487A1506CA2E3FA5A6CAFFBFE4D566DA4CB3E454C5665')::raster);</programlisting>
+
+  <para>The functions below are ones which a user of PostGIS Raster is likely to need. 
+  There are other raster support functions which are not of interest to a general
+  user.</para>
+
   <section xml:id="Raster_Types">
     <title>Raster Support Data types</title><info>
             <abstract>
@@ -240,7 +242,7 @@ VALUES (1,
           </refnamediv>
           <refsection>
             <title>Description</title>
-            <para>A composite type used as input into the ST_Reclass function defining the behavior of reclassification.</para>
+            <para>A composite type used as input into the <xref linkend="RT_ST_Reclass"/> function defining the behavior of reclassification.</para>
             <variablelist>
                 <varlistentry>
                     <term><varname>nband integer</varname></term>
@@ -584,7 +586,7 @@ VALUES (1,
             <listitem><para><varname>blocksize</varname> sets both X and Y blocksize</para></listitem>
             <listitem><para><varname>blocksize_x</varname> sets X tile (width in pixels of each tile)</para></listitem>
             <listitem><para><varname>blocksize_y</varname> sets Y tile (height in pixels of each tile)</para></listitem>
-            <listitem><para><varname>extent</varname> computes extent of whole table and applys constraint all rasters must be within that extent</para></listitem>
+            <listitem><para><varname>extent</varname> computes extent of whole table and applies constraint all rasters must be within that extent</para></listitem>
 
             <listitem><para><varname>num_bands</varname> number of bands</para></listitem>
             <listitem><para><varname>pixel_types</varname> reads array of pixel types for each band ensure all band n have same pixel type</para></listitem>
@@ -1203,7 +1205,7 @@ WHERE short_name = 'JPEG') As g;
 --------------------+---------+-------------------------------------------------
  PROGRESSIVE        | boolean | whether to generate a progressive JPEG
  QUALITY            | int     | good=100, bad=0, default=75
- WORLDFILE          | boolean | whether to geneate a worldfile
+ WORLDFILE          | boolean | whether to generate a worldfile
  INTERNAL_MASK      | boolean | whether to generate a validity mask
  COMMENT            | string  | Comment
  SOURCE_ICC_PROFILE | string  | ICC profile encoded in Base64
@@ -2064,6 +2066,88 @@ SELECT ST_AsPNG(
             </refsection>
         </refentry>
 
+<!-- { ST_AsRasterAgg -->
+
+      <refentry xml:id="RT_ST_AsRasterAgg">
+            <refnamediv>
+                <refname>ST_AsRasterAgg</refname>
+                <refpurpose>
+                    Aggregate. Renders PostGIS geometries into a new raster.
+                </refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>raster <function>ST_AsRasterAgg</function></funcdef>
+                        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>val</parameter></paramdef>
+                        <paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>nodataval</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>uniontype</parameter></paramdef>
+                        <paramdef><type>boolean </type> <parameter>touched</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>
+Returns a single-band raster containing the rendered version of all incoming
+geometries, each with its associated value.
+                </para>
+
+                <para role="availability" conformance="3.6.0">Availability: 3.6.0 </para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+                <programlisting>
+WITH inp(g,v) AS (
+	VALUES
+		( ST_Buffer(ST_MakePoint(10,0), 10), 1 ),
+		( ST_Buffer(ST_MakePoint(20,0), 10), 2 )
+),
+agg AS (
+	SELECT ST_AsRasterAgg(
+		g,
+		v,
+		ST_MakeEmptyRaster(0,0,0,0,1.0),
+		'8BUI',
+		99,
+		'SUM',
+		true
+	) r
+	FROM inp
+)
+SELECT
+	ST_Width(r) w,
+	ST_Height(r) h,
+	ST_Value(r,'POINT(5 0)') v5_0,
+	ST_Value(r,'POINT(15 0)') v15_0,
+	ST_Value(r,'POINT(25 0)') v25_0
+FROM agg;
+ w  | h  | v5_0 | v15_0 | v25_0
+----+----+------+-------+-------
+ 30 | 20 |    1 |     3 |     2
+(1 row)
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_AsRaster"/>,
+                    <xref linkend="RT_ST_DumpAsPolygons"/>,
+                    <xref linkend="RT_ST_Union"/>
+                </para>
+            </refsection>
+        </refentry>
+
+<!-- ST_AsRasterAgg }-->
+
             <refentry xml:id="RT_ST_Band">
             <refnamediv>
                 <refname>ST_Band</refname>
@@ -2098,7 +2182,7 @@ SELECT ST_AsPNG(
 
                 <para>Returns one or more bands of an existing raster as a new raster.  Useful for building new rasters from existing rasters or export of only selected
                 bands of a raster or rearranging the order of bands in a raster. If no band is specified or any of specified bands does not exist in the raster, then all bands are returned. Used as a helper function in various functions such as for deleting a band. </para>
-                <warning><para>For the <code>nbands</code> as text variant of function, the default delimiter is <code>,</code> which means you can ask for <code>'1,2,3'</code> and if you wanted to use a different delimeter you would do <code>ST_Band(rast, '1@2@3', '@')</code>.  For asking for multiple bands, we strongly suggest you use the array form of this function e.g. <code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> list of bands form may be removed in future versions of PostGIS.</para></warning>
+                <warning><para>For the <code>nbands</code> as text variant of function, the default delimiter is <code>,</code> which means you can ask for <code>'1,2,3'</code> and if you wanted to use a different delimiter you would do <code>ST_Band(rast, '1@2@3', '@')</code>.  For asking for multiple bands, we strongly suggest you use the array form of this function e.g. <code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> list of bands form may be removed in future versions of PostGIS.</para></warning>
 
                  <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
             </refsection>
@@ -5078,6 +5162,7 @@ WHERE
             <refsection>
                 <title>See Also</title>
                 <para>
+                    <xref linkend="RT_ST_DumpValues"/>,
                     <xref linkend="RT_ST_SetValue"/>,
                     <xref linkend="RT_ST_DumpAsPolygons"/>,
                     <xref linkend="RT_ST_NumBands"/>,
@@ -8295,7 +8380,7 @@ ORDER BY value, quantile,rid
         <refentry xml:id="RT_ST_SummaryStats">
             <refnamediv>
                 <refname>ST_SummaryStats</refname>
-                <refpurpose>Returns summarystats consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage. Band 1 is assumed is no band is specified.</refpurpose>
+                <refpurpose>Returns summarystats consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage. Band 1 is assumed if no band is specified.</refpurpose>
             </refnamediv>
 
             <refsynopsisdiv>
@@ -8424,7 +8509,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
         <refentry xml:id="RT_ST_SummaryStatsAgg">
             <refnamediv>
                 <refname>ST_SummaryStatsAgg</refname>
-                <refpurpose>Aggregate. Returns summarystats consisting of count, sum, mean, stddev, min, max for a given raster band of a set of raster. Band 1 is assumed is no band is specified.</refpurpose>
+                <refpurpose>Aggregate. Returns summarystats consisting of count, sum, mean, stddev, min, max for a given raster band of a set of raster. Band 1 is assumed if no band is specified.</refpurpose>
             </refnamediv>
 
             <refsynopsisdiv>
@@ -9364,7 +9449,7 @@ FROM dummy_rast WHERE rid=2;
             <refentry xml:id="RT_ST_Clip">
                 <refnamediv>
                     <refname>ST_Clip</refname>
-                    <refpurpose>Returns the raster clipped by the input geometry.  If band number not is specified, all bands are processed. If <varname>crop</varname> is not specified or TRUE, the output raster is cropped.</refpurpose>
+                    <refpurpose>Returns the raster clipped by the input geometry.  If band number is not specified, all bands are processed. If <varname>crop</varname> is not specified or TRUE, the output raster is cropped. If <varname>touched</varname> is set to TRUE, then touched pixels are included, otherwise only if the center of the pixel is in the geometry it is included.</refpurpose>
                 </refnamediv>
 
                 <refsynopsisdiv>
@@ -9455,12 +9540,12 @@ FROM dummy_rast WHERE rid=2;
 
                 <refsection><title>Examples: Comparing selecting all touched vs. not all touched</title>
                         <programlisting><![CDATA[SELECT ST_Count(rast) AS count_pixels_in_orig, ST_Count(rast_touched) AS all_touched_pixels, ST_Count(rast_not_touched) AS default_clip
-FROM ST_AsRaster(ST_Letters('R'), scalex => 1.0, scaley => -1.0) AS r(rast) 
+FROM ST_AsRaster(ST_Letters('R'), scalex => 1.0, scaley => -1.0) AS r(rast)
     INNER JOIN ST_GeomFromText('LINESTRING(0 1, 5 6, 10 10)') AS g(geom)
  ON ST_Intersects(r.rast,g.geom)
  , ST_Clip(r.rast, g.geom, touched => true) AS rast_touched
  , ST_Clip(r.rast, g.geom, touched => false) AS rast_not_touched;]]>
- 
+
  count_pixels_in_orig | all_touched_pixels | default_clip
 ----------------------+--------------------+--------------
                  2605 |                 16 |           10
@@ -10362,7 +10447,7 @@ FROM (
                             <term><varname>nband, nband1, nband2</varname></term>
                             <listitem>
                                 <para>
-                                    Band numbers of the raster to be evaluated. nband can be an integer or integer[] denoting the bands. nband1 is band on rast1 and nband2 is band on rast2 for hte 2 raster/2band case.
+                                    Band numbers of the raster to be evaluated. nband can be an integer or integer[] denoting the bands. nband1 is band on rast1 and nband2 is band on rast2 for the 2 raster/2band case.
                                 </para>
                             </listitem>
                         </varlistentry>
@@ -10706,7 +10791,7 @@ SELECT 'mask only consider neighbors, exclude center' AS title, ST_MapAlgebra(ra
 FROM foo
 
 UNION ALL
-SELECT 'mask weighted only consider neighbors, exclude center multi otehr pixel values by 2' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::regprocedure,
+SELECT 'mask weighted only consider neighbors, exclude center multi other pixel values by 2' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::regprocedure,
     '{{2,2,2}, {2,0,2}, {2,2,2}}'::double precision[], true) As rast
 FROM foo;
                     </programlisting>
@@ -11619,7 +11704,7 @@ FROM prunion;
             <refentry xml:id="RT_ST_MapAlgebraFct">
                 <refnamediv>
                     <refname>ST_MapAlgebraFct</refname>
-                    <refpurpose>1 band version - Creates a new one band raster formed by applying a valid PostgreSQL function on the input raster band and of pixeltype prodived. Band 1 is assumed if no band is specified.</refpurpose>
+                    <refpurpose>1 band version - Creates a new one band raster formed by applying a valid PostgreSQL function on the input raster band and of pixeltype provided. Band 1 is assumed if no band is specified.</refpurpose>
                 </refnamediv>
 
                 <refsynopsisdiv>
@@ -11878,7 +11963,7 @@ WHERE rid=167;
             <refentry xml:id="RT_ST_MapAlgebraFct2">
                 <refnamediv>
                     <refname>ST_MapAlgebraFct</refname>
-                    <refpurpose>2 band version - Creates a new one band raster formed by applying a valid PostgreSQL function on the 2 input raster bands and of pixeltype prodived. Band 1 is assumed if no band is specified. Extent type defaults to INTERSECTION if not specified.</refpurpose>
+                    <refpurpose>2 band version - Creates a new one band raster formed by applying a valid PostgreSQL function on the 2 input raster bands and of pixeltype provided. Band 1 is assumed if no band is specified. Extent type defaults to INTERSECTION if not specified.</refpurpose>
                 </refnamediv>
 
                 <refsynopsisdiv>
@@ -12187,7 +12272,7 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
                 <refsection>
                     <title>Examples</title>
 
-                    <para>Examples utilize the katrina raster loaded as a single tile described in <link xlink:href="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</link> and then prepared in the <xref linkend="RT_ST_Rescale"/> examples </para>
+                    <para>Examples utilize the katrina raster loaded as a single tile described in <link xlink:href="https://gdal.org/user/drivers/raster/postgisraster.html">https://gdal.org/user/drivers/raster/postgisraster.html</link> and then prepared in the <xref linkend="RT_ST_Rescale"/> examples </para>
 
                     <programlisting>
 --
@@ -12249,7 +12334,7 @@ SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
                                                         <imagedata fileref="images/st_mapalgebrafctngb02.png"/>
                                                     </imageobject>
                                                     <caption>
-                                                        <para>new raster after averaging pixels withing 4x4 pixels of each other</para>
+                                                        <para>new raster after averaging pixels within 4x4 pixels of each other</para>
                                                     </caption>
                                                 </mediaobject>
                                             </informalfigure>
@@ -12307,15 +12392,22 @@ SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
                 <refsection>
                     <title>Description</title>
 
-                    <para>Creates a new raster formed by applying a valid PostgreSQL algebraic operation defined by the <varname>reclassexpr</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified band 1 is assumed.  The new raster will have the same georeference, width, and height as the original raster.  Bands not designated will come back unchanged.  Refer to <xref linkend="reclassarg"/> for description of valid reclassification expressions.</para>
+                    <para>Creates a new raster formed by applying a reclassification operation defined by the <varname>reclassexpr</varname> on the input raster (<varname>rast</varname>). 
+                    Refer to <xref linkend="reclassarg"/> for the description of reclassification expressions.
+                    If no <varname>band</varname> is specified band 1 is assumed.    
+                    </para>
 
-                    <para>The bands of the new raster will have pixel type of <varname>pixeltype</varname>.  If <varname>reclassargset</varname> is passed in then each reclassarg defines behavior of each band generated.</para>
+                    <para>The new raster will have the same georeference, width, and height as the original raster.  
+                    The bands of the new raster have pixel type of <varname>pixeltype</varname>.  
+                    If <varname>reclassargset</varname> is specified then each <varname>reclassarg</varname> defines the type of the target band.
+                    Bands not designated are returned unchanged.
+                    </para>
 
                     <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
                 </refsection>
 
                 <refsection>
-                    <title>Examples Basic</title>
+                    <title>Example: Basic</title>
                     <para>Create a new raster from the original where band 2 is converted from 8BUI to 4BUI and all values from 101-254 are set to nodata value.</para>
                     <programlisting>
 ALTER TABLE dummy_rast ADD COLUMN reclass_rast raster;
@@ -14007,6 +14099,7 @@ ORDER BY val;
                     <title>See Also</title>
                     <para>
                         <xref linkend="geomval"/>,
+                        <xref linkend="RT_ST_AsRasterAgg"/>,
                         <xref linkend="RT_ST_Value"/>,
                         <xref linkend="RT_ST_Polygon"/>,
                         <xref linkend="RT_ST_ValueCount"/>
@@ -15551,7 +15644,7 @@ SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CRO
             </para>
 
             <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
-            <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 addition of Aggegrate variant</para>
+            <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 addition of Aggregate variant</para>
           </refsection>
 
           <refsection>
@@ -15964,7 +16057,7 @@ SELECT r1.rid, r2.rid, ST_DFullyWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_
                     When GDAL opens a file, GDAL eagerly scans the directory of that file to build a catalog of other files. If this directory contains many files (e.g. thousands, millions), opening that file becomes extremely slow (especially if that file happens to be on a network drive such as NFS).
                 </para>
                 <para>
-                    To control this behavior, GDAL provides the following environment variable: <link xlink:href="https://trac.osgeo.org/gdal/wiki/ConfigOptions#GDAL_DISABLE_READDIR_ON_OPEN">GDAL_DISABLE_READDIR_ON_OPEN</link>.  Set <varname>GDAL_DISABLE_READDIR_ON_OPEN</varname> to <varname>TRUE</varname> to disable directory scanning.
+                    To control this behavior, GDAL provides the following environment variable: <link xlink:href="https://gdal.org/user/configoptions.html#config-GDAL_DISABLE_READDIR_ON_OPEN">GDAL_DISABLE_READDIR_ON_OPEN</link>.  Set <varname>GDAL_DISABLE_READDIR_ON_OPEN</varname> to <varname>TRUE</varname> to disable directory scanning.
                 </para>
 
                 <para>

@@ -62,26 +62,6 @@ END
 $$ LANGUAGE 'plpgsql';
 
 
--- Check that pgaudit is disabled or not installed
--- Running extension creation with pgaudit enabled will result in a
--- multi-gigabyte log storm for PgSQL <= 14
-DO $$
-DECLARE
-	pgalog text;
-BEGIN
-	SHOW pgaudit.log INTO pgalog;
-	RAISE DEBUG 'pgaudit is installed, pgaudit.log is set to ''%''', pgalog;
-	IF pg_catalog.lower(pgalog) != 'none'
-	THEN
-		RAISE EXCEPTION 'PostGIS installation stopped: pgaudit.log is set to ''%''. Set pgaudit.log to ''none'' before installing PostGIS. You may re-enable pgaudit after installation is complete.', pgalog;
-	END IF;
-EXCEPTION
-	WHEN undefined_object THEN
-		RAISE DEBUG 'pgaudit is not installed';
-END;
-$$;
-
-
 -- Let the user know about a deprecated signature and its new name, if any
 CREATE OR REPLACE FUNCTION _postgis_deprecate(oldname text, newname text, version text)
 RETURNS void AS
@@ -445,7 +425,7 @@ CREATE OPERATOR = (
 CREATE OPERATOR <> (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_neq,
 	COMMUTATOR = '<>', NEGATOR = '=',
-	RESTRICT = contsel, JOIN = contjoinsel, HASHES, MERGES
+	RESTRICT = contsel, JOIN = contjoinsel
 );
 
 -- Availability: 0.9.0
@@ -2099,7 +2079,7 @@ CREATE OR REPLACE FUNCTION ST_DumpRings(geometry)
 -----------------------------------------------------------------------
 -- ST_DumpPoints()
 -----------------------------------------------------------------------
--- This function mimicks that of ST_Dump for collections, but this function
+-- This function mimics that of ST_Dump for collections, but this function
 -- that returns a path and all the points that make up a particular geometry.
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry)
@@ -2134,7 +2114,7 @@ CREATE TABLE spatial_ref_sys (
 -- views in the database that contain geometry columns. This function
 -- is a simple wrapper for populate_geometry_columns(oid).  In essence,
 -- this function ensures every geometry column in the database has the
--- appropriate spatial contraints (for tables) and exists in the
+-- appropriate spatial constraints (for tables) and exists in the
 -- geometry_columns table.
 -- Availability: 1.4.0
 -- Revised: 2.0.0 -- no longer deletes from geometry_columns
@@ -2217,7 +2197,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 -- If the provided oid is for a table, this function tries to determine
 -- the srid, dimension, and geometry type of the all geometries
--- in the table, adding contraints as necessary to the table.  If
+-- in the table, adding constraints as necessary to the table.  If
 -- successful, an appropriate row is inserted into the geometry_columns
 -- table, otherwise, the exception is caught and an error notice is
 -- raised describing the problem. (This is so the wrapper function
@@ -2368,8 +2348,8 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 -- Geometry types (except GEOMETRY) are checked for consistency using a CHECK constraint.
 -- Uses an ALTER TABLE command to add the geometry column to the table.
--- Addes a row to geometry_columns.
--- Addes a constraint on the table that all the geometries MUST have the same
+-- Adds a row to geometry_columns.
+-- Adds a constraint on the table that all the geometries MUST have the same
 -- SRID. Checks the coord_dimension to make sure its between 0 and 3.
 -- Should also check the precision grid (future expansion).
 --
@@ -2424,7 +2404,7 @@ BEGIN
 			RAISE EXCEPTION 'AddGeometryColumn() - SRID must be <= %', SRID_USR_MAX;
 		END IF;
 		new_srid := new_srid_in;
-		SELECT SRID INTO sr FROM spatial_ref_sys WHERE SRID = new_srid;
+		SELECT SRID INTO sr FROM @extschema@.spatial_ref_sys WHERE SRID = new_srid;
 		IF NOT FOUND THEN
 			RAISE EXCEPTION 'AddGeometryColumn() - invalid SRID';
 			RETURN 'fail';
@@ -2781,7 +2761,7 @@ BEGIN
 
 	-- Ensure that new_srid is valid
 	IF ( new_srid > 0 ) THEN
-		IF ( SELECT count(*) = 0 from spatial_ref_sys where srid = new_srid ) THEN
+		IF ( SELECT count(*) = 0 from @extschema@.spatial_ref_sys where srid = new_srid ) THEN
 			RAISE EXCEPTION 'invalid SRID: % not found in spatial_ref_sys', new_srid;
 			RETURN false;
 		END IF;
@@ -2991,7 +2971,7 @@ CREATE OR REPLACE FUNCTION ST_Transform(geometry,integer)
 CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, to_proj text)
 	RETURNS geometry AS
 	'SELECT @extschema@.postgis_transform_geometry($1, proj4text, $2, 0)
-	FROM spatial_ref_sys WHERE srid=@extschema@.ST_SRID($1);'
+	FROM @extschema@.spatial_ref_sys WHERE srid=@extschema@.ST_SRID($1);'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
@@ -3006,7 +2986,7 @@ CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_proj t
 CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_srid integer)
 	RETURNS geometry AS
 	'SELECT @extschema@.postgis_transform_geometry($1, $2, proj4text, $3)
-	FROM spatial_ref_sys WHERE srid=$3;'
+	FROM @extschema@.spatial_ref_sys WHERE srid=$3;'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
@@ -3049,6 +3029,11 @@ CREATE OR REPLACE FUNCTION postgis_liblwgeom_version() RETURNS text
 	_COST_DEFAULT;
 
 CREATE OR REPLACE FUNCTION postgis_proj_version() RETURNS text
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' IMMUTABLE
+	_COST_DEFAULT;
+
+CREATE OR REPLACE FUNCTION postgis_proj_compiled_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE
 	_COST_DEFAULT;
@@ -3170,7 +3155,7 @@ BEGIN
 							SELECT 1 FROM pg_catalog.pg_type
 							WHERE typname = 'raster' ) )
 
-				 -- PostGIS SFCGAL is availble if
+				 -- PostGIS SFCGAL is available if
 				 -- 'postgis_sfcgal_version' function exists
 				 OR ( rec.name = 'postgis_sfcgal' AND EXISTS (
 							SELECT 1 FROM pg_catalog.pg_proc
@@ -3243,6 +3228,7 @@ DECLARE
 	libver text;
 	librev text;
 	projver text;
+	projver_compiled text;
 	geosver text;
 	geosver_compiled text;
 	sfcgalver text;
@@ -3268,6 +3254,7 @@ BEGIN
 	SELECT @extschema@.postgis_proj_version() INTO projver;
 	SELECT @extschema@.postgis_geos_version() INTO geosver;
 	SELECT @extschema@.postgis_geos_compiled_version() INTO geosver_compiled;
+	SELECT @extschema@.postgis_proj_compiled_version() INTO projver_compiled;
 	SELECT @extschema@.postgis_libjson_version() INTO json_lib_ver;
 	SELECT @extschema@.postgis_libprotobuf_version() INTO protobuf_lib_ver;
 	SELECT @extschema@.postgis_wagyu_version() INTO wagyu_lib_ver;
@@ -3366,6 +3353,10 @@ BEGIN
 
 	IF  projver IS NOT NULL THEN
 		fullver = fullver || ' PROJ="' || projver || '"';
+		IF (string_to_array(projver, '.'))[1:3] != (string_to_array(projver_compiled, '.'))[1:3]
+		THEN
+			fullver = format('%s (compiled against PROJ %s)', fullver, projver_compiled);
+		END IF;
 	END IF;
 
 	IF  gdalver IS NOT NULL THEN
@@ -3884,7 +3875,7 @@ CREATE OR REPLACE FUNCTION ST_SymDifference(geom1 geometry, geom2 geometry, grid
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SymmetricDifference(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS 'SELECT ST_SymDifference(geom1, geom2, -1.0);'
+	AS 'SELECT @extschema@.ST_SymDifference(geom1, geom2, -1.0);'
 	LANGUAGE 'sql';
 
 CREATE OR REPLACE FUNCTION ST_Union(geom1 geometry, geom2 geometry)
@@ -3976,7 +3967,7 @@ CREATE OR REPLACE FUNCTION ST_MakeValid(geom geometry, params text)
 --	- Obeying the RHR (if polygonal)
 --	- Simplified of consecutive duplicated points
 -- Ensuring:
---	- No input vertexes are discarded (except consecutive repeated ones)
+--	- No input vertices are discarded (except consecutive repeated ones)
 --	- Output geometry type matches input
 --
 -- Returns NULL on failure.
@@ -4476,6 +4467,13 @@ CREATE OR REPLACE FUNCTION ST_CoverageInvalidEdges (geom geometry, tolerance flo
 	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
 	_COST_HIGH;
 
+-- Availability: 3.6.0
+CREATE OR REPLACE FUNCTION ST_CoverageClean (geom geometry, gapMaximumWidth float8 default 0.0, snappingDistance float8 default -1.0, overlapMergeStrategy text default 'MERGE_LONGEST_BORDER')
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CoverageClean'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	_COST_HIGH;
+
 --------------------------------------------------------------------------------
 
 -- Availability: 2.3.0
@@ -4501,8 +4499,8 @@ CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry, integer)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
--- PostGIS equivalent function: relate(geom1 geometry, geom2 geometry,text)
-CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry,text)
+-- PostGIS equivalent function: relate(geom1 geometry, geom2 geometry, text)
+CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry, text)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','relate_pattern'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -5402,7 +5400,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromGeoHash(text, integer DEFAULT NULL)
 -- ST_GeomFromGeoHash(geohash text, precision integer)
 CREATE OR REPLACE FUNCTION ST_GeomFromGeoHash(text, integer DEFAULT NULL)
 	RETURNS geometry
-	AS $$ SELECT CAST(@extschema@.ST_Box2dFromGeoHash($1, $2) AS geometry); $$
+	AS $$ SELECT CAST(@extschema@.ST_Box2dFromGeoHash($1, $2) AS @extschema@.geometry); $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE
 	_COST_LOW;
 
@@ -6215,7 +6213,6 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
 
 /* Should we include the .sql directly here ? */
-#include "long_xact.sql.in"
 #include "geography.sql.in"
 
 -- Availability: 2.2.0
@@ -6399,37 +6396,13 @@ CREATE OR REPLACE VIEW geometry_columns AS
 	n.nspname AS f_table_schema,
 	c.relname AS f_table_name,
 	a.attname AS f_geometry_column,
-	COALESCE(postgis_typmod_dims(a.atttypmod), sn.ndims, 2) AS coord_dimension,
-	COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod), 0), sr.srid, 0) AS srid,
-	replace(replace(COALESCE(NULLIF(upper(postgis_typmod_type(a.atttypmod)), 'GEOMETRY'::text), st.type, 'GEOMETRY'::text), 'ZM'::text, ''::text), 'Z'::text, ''::text)::character varying(30) AS type
+	COALESCE(postgis_typmod_dims(a.atttypmod), 2) AS coord_dimension,
+	COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod), 0), 0) AS srid,
+	replace(replace(COALESCE(NULLIF(upper(postgis_typmod_type(a.atttypmod)), 'GEOMETRY'::text), 'GEOMETRY'::text), 'ZM'::text, ''::text), 'Z'::text, ''::text)::character varying(30) AS type
    FROM pg_class c
 	 JOIN pg_attribute a ON a.attrelid = c.oid AND NOT a.attisdropped
 	 JOIN pg_namespace n ON c.relnamespace = n.oid
 	 JOIN pg_type t ON a.atttypid = t.oid
-	 LEFT JOIN ( SELECT s.connamespace,
-			s.conrelid,
-			s.conkey, replace(split_part(s.consrc, ''''::text, 2), ')'::text, ''::text) As type
-		   FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
-				FROM pg_constraint) AS s
-		  WHERE s.consrc ~~* '%geometrytype(% = %'::text
-
-) st ON st.connamespace = n.oid AND st.conrelid = c.oid AND (a.attnum = ANY (st.conkey))
-	 LEFT JOIN ( SELECT s.connamespace,
-			s.conrelid,
-			s.conkey, replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text)::integer As ndims
-		   FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
-			FROM pg_constraint) AS s
-		  WHERE s.consrc ~~* '%ndims(% = %'::text
-
-) sn ON sn.connamespace = n.oid AND sn.conrelid = c.oid AND (a.attnum = ANY (sn.conkey))
-	 LEFT JOIN ( SELECT s.connamespace,
-			s.conrelid,
-			s.conkey, replace(replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text), '('::text, ''::text)::integer As srid
-		   FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
-			FROM pg_constraint) AS s
-		  WHERE s.consrc ~~* '%srid(% = %'::text
-
-) sr ON sr.connamespace = n.oid AND sr.conrelid = c.oid AND (a.attnum = ANY (sr.conkey))
   WHERE (c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"]))
   AND NOT c.relname = 'raster_columns'::name AND t.typname = 'geometry'::name
   AND NOT pg_is_other_temp_schema(c.relnamespace) AND has_table_privilege(c.oid, 'SELECT'::text);
@@ -6874,7 +6847,7 @@ $$
 			var_cent := @extschema@.ST_Centroid(var_param_geom);
 			IF (@extschema@.ST_XMax(var_enline) - @extschema@.ST_XMin(var_enline) ) > var_buf AND (@extschema@.ST_YMax(var_enline) - @extschema@.ST_YMin(var_enline) ) > var_buf THEN
 					IF @extschema@.ST_Dwithin(@extschema@.ST_Centroid(var_convhull) , @extschema@.ST_Centroid(@extschema@.ST_Envelope(var_param_geom)), var_buf/2) THEN
-				-- If the geometric dimension is > 1 and the object is symettric (cutting at centroid will not work -- offset a bit)
+				-- If the geometric dimension is > 1 and the object is symmetric (cutting at centroid will not work -- offset a bit)
 						var_cent := @extschema@.ST_Translate(var_cent, (@extschema@.ST_XMax(var_enline) - @extschema@.ST_XMin(var_enline))/1000,  (@extschema@.ST_YMAX(var_enline) - @extschema@.ST_YMin(var_enline))/1000);
 					ELSE
 						-- uses closest point on geometry to centroid. I can't explain why we are doing this
@@ -6968,7 +6941,7 @@ CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFA
 -- Availability: 2.3.0
 -- has to be here because need ST_StartPoint
 CREATE OR REPLACE FUNCTION ST_Angle(line1 geometry, line2 geometry)
-	RETURNS float8 AS 'SELECT ST_Angle(St_StartPoint($1), ST_EndPoint($1), St_StartPoint($2), ST_EndPoint($2))'
+	RETURNS float8 AS 'SELECT @extschema@.ST_Angle(@extschema@.St_StartPoint($1), @extschema@.ST_EndPoint($1), @extschema@.ST_StartPoint($2), @extschema@.ST_EndPoint($2))'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
@@ -6987,5 +6960,25 @@ CREATE OR REPLACE FUNCTION ST_3DLineInterpolatePoint(geometry, float8)
 -- moved to separate file cause its involved
 #include "postgis_spgist.sql.in"
 #include "postgis_letters.sql"
+
+-----------------------------------------------------------------------
+-- ST_RemoveIrrelevantPointsForView
+-----------------------------------------------------------------------
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_RemoveIrrelevantPointsForView(geometry, box2d, boolean default false)
+RETURNS geometry
+AS 'MODULE_PATHNAME','ST_RemoveIrrelevantPointsForView'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+-----------------------------------------------------------------------
+-- ST_RemoveSmallParts
+-----------------------------------------------------------------------
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_RemoveSmallParts(geometry, double precision, double precision)
+RETURNS geometry
+AS 'MODULE_PATHNAME','ST_RemoveSmallParts'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
 
 COMMIT;

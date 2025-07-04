@@ -84,8 +84,11 @@ stringbuffer_create_with_size(size_t size)
 void
 stringbuffer_destroy(stringbuffer_t *s)
 {
-	stringbuffer_release(s);
-	if ( s ) lwfree(s);
+	if ( s )
+	{
+		stringbuffer_release(s);
+		lwfree(s);
+	}
 }
 
 /**
@@ -193,6 +196,8 @@ stringbuffer_copy(stringbuffer_t *dst, stringbuffer_t *src)
 * check errno for reasons, documented in the printf man page.
 */
 static int
+stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap) __attribute__ ((format (printf, 2, 0)));
+static int
 stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 {
 	int maxlen = (s->capacity - (s->str_end - s->str_start));
@@ -205,12 +210,14 @@ stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 	len = vsnprintf(s->str_end, maxlen, fmt, ap2);
 	va_end(ap2);
 
-	/* Propogate errors up */
+	/* Propagate errors up */
 	if ( len < 0 )
 		#if defined(__MINGW64_VERSION_MAJOR)
+		{
 		va_copy(ap2, ap);
 		len = _vscprintf(fmt, ap2);/**Assume windows flaky vsnprintf that returns -1 if initial buffer to small and add more space **/
 		va_end(ap2);
+		}
 		#else
 		return len;
 		#endif

@@ -1,3 +1,6 @@
+ERROR:  SQL/MM Spatial exception - invalid topology name
+ERROR:  SQL/MM Spatial exception - null argument
+empty|
 point1|1 nodes|0 edges|0 faces
 mpoint1|2 nodes|0 edges|0 faces
 mline1|6 nodes|4 edges|0 faces

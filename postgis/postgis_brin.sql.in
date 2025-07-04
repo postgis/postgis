@@ -192,16 +192,34 @@ RETURNS boolean
 AS 'MODULE_PATHNAME','geom2d_brin_inclusion_add_value'
 LANGUAGE 'c' PARALLEL SAFE _COST_DEFAULT;
 
+-- Availability: 3.6.0
+CREATE OR REPLACE FUNCTION geom2d_brin_inclusion_merge(internal, internal)
+RETURNS internal
+AS 'MODULE_PATHNAME','geom2d_brin_inclusion_merge'
+LANGUAGE 'c' PARALLEL SAFE _COST_DEFAULT;
+
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION geom3d_brin_inclusion_add_value(internal, internal, internal, internal)
 RETURNS boolean
 AS 'MODULE_PATHNAME','geom3d_brin_inclusion_add_value'
 LANGUAGE 'c' PARALLEL SAFE _COST_DEFAULT;
 
+-- Availability: 3.6.0
+CREATE OR REPLACE FUNCTION geom3d_brin_inclusion_merge(internal, internal)
+RETURNS internal
+AS 'MODULE_PATHNAME','geom3d_brin_inclusion_merge'
+LANGUAGE 'c' PARALLEL SAFE _COST_DEFAULT;
+
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION geom4d_brin_inclusion_add_value(internal, internal, internal, internal)
 RETURNS boolean
 AS 'MODULE_PATHNAME','geom4d_brin_inclusion_add_value'
+LANGUAGE 'c' PARALLEL SAFE _COST_DEFAULT;
+
+-- Availability: 3.6.0
+CREATE OR REPLACE FUNCTION geom4d_brin_inclusion_merge(internal, internal)
+RETURNS internal
+AS 'MODULE_PATHNAME','geom4d_brin_inclusion_merge'
 LANGUAGE 'c' PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
@@ -212,6 +230,7 @@ CREATE OPERATOR CLASS brin_geometry_inclusion_ops_2d
     FUNCTION      2        geom2d_brin_inclusion_add_value(internal, internal, internal, internal),
     FUNCTION      3        brin_inclusion_consistent(internal, internal, internal),
     FUNCTION      4        brin_inclusion_union(internal, internal, internal),
+    FUNCTION      11       geom2d_brin_inclusion_merge(internal, internal),
     OPERATOR      3         &&(box2df, box2df),
     OPERATOR      3         &&(box2df, geometry),
     OPERATOR      3         &&(geometry, box2df),
@@ -226,6 +245,7 @@ CREATE OPERATOR CLASS brin_geometry_inclusion_ops_2d
     OPERATOR      8        @(geometry, geometry),
   STORAGE box2df;
 
+
 		-------------
 		-- 3D case --
 		-------------
@@ -238,6 +258,7 @@ CREATE OPERATOR CLASS brin_geometry_inclusion_ops_3d
     FUNCTION      2        geom3d_brin_inclusion_add_value(internal, internal, internal, internal),
     FUNCTION      3        brin_inclusion_consistent(internal, internal, internal),
     FUNCTION      4        brin_inclusion_union(internal, internal, internal),
+    FUNCTION      11       geom3d_brin_inclusion_merge(internal, internal),
     OPERATOR      3        &&&(geometry, geometry),
     OPERATOR      3        &&&(geometry, gidx),
     OPERATOR      3        &&&(gidx, geometry),
@@ -256,6 +277,7 @@ CREATE OPERATOR CLASS brin_geometry_inclusion_ops_4d
     FUNCTION      2        geom4d_brin_inclusion_add_value(internal, internal, internal, internal),
     FUNCTION      3        brin_inclusion_consistent(internal, internal, internal),
     FUNCTION      4        brin_inclusion_union(internal, internal, internal),
+    FUNCTION      11       geom4d_brin_inclusion_merge(internal, internal),
     OPERATOR      3        &&&(geometry, geometry),
     OPERATOR      3        &&&(geometry, gidx),
     OPERATOR      3        &&&(gidx, geometry),

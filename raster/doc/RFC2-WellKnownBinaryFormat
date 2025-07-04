@@ -9,8 +9,8 @@ Revisions:
 ------------------------------------------------------
 
 The WKB format for RASTER is meant for transport.
-Takes into account endiannes and avoids any padding.
-Still, beside padding and endiannes, it matches the
+Takes into account endianness and avoids any padding.
+Still, beside padding and endianness, it matches the
 internal serialized format (see RFC1), for quick
 input/output.
 
@@ -25,7 +25,7 @@ input/output.
  +---------------+-------------+------------------------------+
  | - name -      |  - type -   | - meaning -                  |
  +---------------+-------------+------------------------------+
- | endiannes     | byte        | 1:ndr/little endian          |
+ | endianness    | byte        | 1:ndr/little endian          |
  |               |             | 0:xdr/big endian             |
  +---------------+-------------+------------------------------+
  | version       | uint16      | format version (0 for this   |
@@ -67,7 +67,7 @@ input/output.
  | - name -      |  - type -    | - meaning -                       |
  +---------------+--------------+-----------------------------------+
  | isOffline     | 1bit         | If true, data is to be found      |
- |               |              | on the filesystem, trought the    |
+ |               |              | on the filesystem, through the    |
  |               |              | path specified in RASTERDATA      |
  +---------------+--------------+-----------------------------------+
  | hasNodataValue| 1bit         | If true, stored nodata value is   |
@@ -111,10 +111,11 @@ input/output.
  |               | depending on | so pix[0] is upper-left, pix[w-1] |
  |               | pixtype [1]  | is upper-right.                   |
  |               |              |                                   |
- |               |              | As for endiannes, it is specified |
- |               |              | at the start of WKB, and implicit |
- |               |              | up to 8bits (bit-order is most    |
- |               |              | significant first)                |
+ |               |              | As for endianness, it is          |
+ |               |              | specified at the start of WKB,    |
+ |               |              | and implicit up to 8bits          |
+ |               |              | (bit-order is most significant    |
+ |               |              | first)                            |
  |               |              |                                   |
  +---------------+--------------+-----------------------------------+
 

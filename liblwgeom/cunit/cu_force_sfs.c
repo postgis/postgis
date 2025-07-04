@@ -28,7 +28,7 @@ static void do_geom_test(char * in, char * out)
 	if (strcmp(tmp, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nExp:  %s\n",
 		        in, tmp, out);
-	CU_ASSERT_STRING_EQUAL(tmp, out);
+	ASSERT_STRING_EQUAL(tmp, out);
 	lwfree(tmp);
 	lwgeom_free(h);
 }

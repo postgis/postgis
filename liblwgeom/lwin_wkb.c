@@ -96,7 +96,7 @@ uint8_t* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 	uint32_t i;
 
 	if( hexsize % 2 )
-		lwerror("Invalid hex string, length (%d) has to be a multiple of two!", hexsize);
+		lwerror("Invalid hex string, length (%zu) has to be a multiple of two!", hexsize);
 
 	buf = lwalloc(hexsize/2);
 
@@ -672,7 +672,7 @@ static LWCURVEPOLY* lwcurvepoly_from_wkb_state(wkb_parse_state *s)
 		{
 			lwgeom_free(geom);
 			lwgeom_free((LWGEOM *)cp);
-			lwerror("Unable to add geometry (%p) to curvepoly (%p)", geom, cp);
+			lwerror("Unable to add geometry (%p) to curvepoly (%p)", (void *) geom, (void *) cp);
 			return NULL;
 		}
 	}
@@ -723,7 +723,7 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 		{
 			lwgeom_free(geom);
 			lwgeom_free((LWGEOM *)col);
-			lwerror("Unable to add geometry (%p) to collection (%p)", geom, col);
+			lwerror("Unable to add geometry (%p) to collection (%p)", (void *) geom, (void *) col);
 			return NULL;
 		}
 	}

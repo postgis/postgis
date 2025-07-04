@@ -101,6 +101,7 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 	geojson = text2cstring(geojson_input);
 
 	lwgeom = lwgeom_from_geojson(geojson, &srs);
+	lwfree(geojson);
 	if (!lwgeom)
 	{
 		/* Shouldn't get here */

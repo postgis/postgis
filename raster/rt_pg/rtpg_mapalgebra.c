@@ -114,7 +114,7 @@ struct rtpg_nmapalgebra_arg_t {
 
 	int distance[2]; /* distance in X and Y axis */
 
-	rt_extenttype extenttype; /* ouput raster's extent type */
+	rt_extenttype extenttype; /* output raster's extent type */
 	rt_pgraster *pgcextent; /* custom extent of type rt_pgraster */
 	rt_raster cextent; /* custom extent of type rt_raster */
         rt_mask mask; /* mask for the nmapalgebra operation */
@@ -122,7 +122,7 @@ struct rtpg_nmapalgebra_arg_t {
 	rtpg_nmapalgebra_callback_arg	callback;
 };
 
-static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init() {
+static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init(void) {
 	rtpg_nmapalgebra_arg arg = NULL;
 
 	arg = palloc(sizeof(struct rtpg_nmapalgebra_arg_t));
@@ -1178,6 +1178,11 @@ static int rtpg_nmapalgebraexpr_callback(
 				idx = callback->expr[id].spi_argpos[i];
 				if (idx < 1) continue;
 				idx--; /* 1-based now 0-based */
+
+				if (arg->rasters == 1 && i > 7) {
+					elog(ERROR, "rtpg_nmapalgebraexpr_callback: rast2 argument specified in single-raster invocation");
+					return 0;
+				}
 
 				switch (i) {
 					/* [rast.x] */
@@ -2933,7 +2938,7 @@ struct rtpg_clip_arg_t {
 	rtpg_clip_band band;
 };
 
-static rtpg_clip_arg rtpg_clip_arg_init() {
+static rtpg_clip_arg rtpg_clip_arg_init(void) {
 	rtpg_clip_arg arg = NULL;
 
 	arg = palloc(sizeof(struct rtpg_clip_arg_t));
@@ -4014,7 +4019,7 @@ struct rtpg_colormap_arg_t {
 };
 
 static rtpg_colormap_arg
-rtpg_colormap_arg_init() {
+rtpg_colormap_arg_init(void) {
 	rtpg_colormap_arg arg = NULL;
 
 	arg = palloc(sizeof(struct rtpg_colormap_arg_t));
@@ -4767,7 +4772,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
             PG_RETURN_NULL();
         };
 
-        /* Execute the expresion into newval */
+        /* Execute the expression into newval */
         ret = SPI_execute(initexpr, FALSE, 0);
 
         if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {

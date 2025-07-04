@@ -34,6 +34,9 @@
 #define str(s) #s
 
 static void
+loader_rt_error_handler(const char *fmt, va_list ap) __attribute__ ((format (printf, 1, 0)));
+
+static void
 loader_rt_error_handler(const char *fmt, va_list ap) {
 	static const char *label = "ERROR: ";
 	char newfmt[1024] = {0};
@@ -44,6 +47,9 @@ loader_rt_error_handler(const char *fmt, va_list ap) {
 }
 
 static void
+loader_rt_warning_handler(const char *fmt, va_list ap) __attribute__ ((format (printf, 1, 0)));
+
+static void
 loader_rt_warning_handler(const char *fmt, va_list ap) {
 	static const char *label = "WARNING: ";
 	char newfmt[1024] = {0};
@@ -52,6 +58,9 @@ loader_rt_warning_handler(const char *fmt, va_list ap) {
 	vfprintf(stderr, newfmt, ap);
 	va_end(ap);
 }
+
+static void
+loader_rt_info_handler(const char *fmt, va_list ap) __attribute__ ((format (printf, 1, 0)));
 
 static void
 loader_rt_info_handler(const char *fmt, va_list ap) {

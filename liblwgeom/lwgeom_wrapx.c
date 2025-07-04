@@ -142,7 +142,7 @@ lwcollection_wrapx(const LWCOLLECTION* lwcoll_in, double cutx, double amount)
 			lwnotice("Error wrapping geometry, cleaning up");
 			for (j = 0; j < i; j++)
 			{
-				lwnotice("cleaning geometry %d (%p)", j, wrap_geoms[j]);
+				lwnotice("cleaning geometry %d (%p)", j, (void *) wrap_geoms[j]);
 				lwgeom_free(wrap_geoms[j]);
 			}
 			lwfree(wrap_geoms);

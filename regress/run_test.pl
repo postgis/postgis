@@ -13,11 +13,11 @@
 #
 
 #$| = 1;
-use File::Basename;
+use File::Basename(dirname,fileparse,basename);
 use File::Temp 'tempdir';
 use Time::HiRes qw(time);
 use File::Copy;
-use File::Path;
+use File::Path(mkpath);
 use Cwd 'abs_path';
 use Getopt::Long;
 use strict;
@@ -715,7 +715,7 @@ Usage: $0 [<options>] <testname> [<testname>]
 Options:
   -v, --verbose   be verbose about failures
   --nocreate      do not create the regression database on start
-  --upgrade       upgrade db before runnign tests, can be passed
+  --upgrade       upgrade db before running tests, can be passed
                   multiple times to perform multiple upgrades.
   --upgrade-path  upgrade path, format <from>--<to>.
                   <from> can be specified as "unpackaged<version>"
@@ -1915,7 +1915,7 @@ sub upgrade_spatial_extensions
     }
 
     # Handle raster split if coming from pre-split extension
-    # and going to splitted raster
+    # and going to split raster
     if ( $OPT_UPGRADE_FROM &&
          ( not $OPT_UPGRADE_FROM =~ /^unpackaged/ ) &&
          has_split_raster_ext($OPT_UPGRADE_TO) &&

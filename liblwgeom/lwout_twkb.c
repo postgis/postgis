@@ -32,7 +32,7 @@ static uint8_t lwgeom_twkb_type(const LWGEOM *geom)
 {
 	uint8_t twkb_type = 0;
 
-	LWDEBUGF(2, "Entered  lwgeom_twkb_type",0);
+	LWDEBUG(2, "Entered lwgeom_twkb_type");
 
 	switch ( geom->type )
 	{
@@ -168,7 +168,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 			/* last accumulated point. This is important to not build up an */
 			/* accumulated error when rounding the coordinates */
 			nextdelta[j] = (int64_t) llround(globals->factor[j] * dbl_ptr[j]) - ts->accum_rels[j];
-			LWDEBUGF(4, "deltavalue: %d, ", nextdelta[j]);
+			LWDEBUGF(4, "deltavalue: %lld, ", nextdelta[j]);
 			diff += llabs(nextdelta[j]);
 		}
 
@@ -470,7 +470,7 @@ static int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWK
 		/* Reset bbox calculation */
 		child_state.bbox_max[i] = INT64_MIN;
 		child_state.bbox_min[i] = INT64_MAX;
-		/* Reset acumulated delta values to get absolute values on next point */
+		/* Reset accumulated delta values to get absolute values on next point */
 		child_state.accum_rels[i] = 0;
 	}
 

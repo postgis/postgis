@@ -13,12 +13,12 @@
 	 ******************************************************************** -->
 	<xsl:output method="xml" indent="yes" encoding="utf-8" />
 
-	<!-- We deal only with the reference chapter -->
+	<!-- We deal only with the reference chapters -->
 	<xsl:template match="/">
-		<xsl:apply-templates select="/db:book/db:chapter[@xml:id='reference']" />
+		<xsl:apply-templates select="/db:book/db:chapter[contains(@xml:id, 'reference')]" />
 	</xsl:template>
 
-	<xsl:template match="//db:chapter">
+	<xsl:template match="/">
 
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
@@ -27,15 +27,19 @@
 					<xsl:variable name='comment'>
 						<xsl:value-of select="normalize-space(translate(translate(db:refnamediv/db:refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
 					</xsl:variable>
+
 					<xsl:variable name="refid">
 						<xsl:value-of select="@xml:id" />
+					</xsl:variable>
+					<xsl:variable name="refname">
+						<xsl:value-of select="db:refnamediv/db:refname" />
 					</xsl:variable>
 
 			<!-- For each section if there is note that it supports 3d catalog it -->
 						<xsl:for-each select="db:refsection">
 							<xsl:choose>
 								<xsl:when test="descendant::node()[@conformance='3d']">
-									<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
+									<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 								</xsl:when>
 							</xsl:choose>
 						</xsl:for-each>

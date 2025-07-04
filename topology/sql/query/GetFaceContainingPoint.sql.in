@@ -27,4 +27,4 @@ CREATE OR REPLACE FUNCTION topology.GetFaceContainingPoint(
 )
 RETURNS INT AS
 	'MODULE_PATHNAME', 'GetFaceContainingPoint'
-LANGUAGE 'c' STABLE;
+LANGUAGE 'c' STABLE STRICT;

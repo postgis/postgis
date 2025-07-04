@@ -12,11 +12,11 @@ export MSYS2_ARG_CONV_EXCL=/config/tags
 export XML_CATALOG_FILES="/projects/docbook/docbook-5.0.1/catalog.xml"
 
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.13
-	export GDAL_VER=3.7.1
+	export GEOS_VER=3.13.1
+	export GDAL_VER=3.9.2
 	export PROJ_VER=8.2.1
-	export SFCGAL_VER=1.5.1
-	export CGAL_VER=5.6.1
+	export SFCGAL_VER=2.1.0
+	export CGAL_VER=6.0.1
 	export ICON_VER=1.17
 	export ZLIB_VER=1.2.13
 	export PROTOBUF_VER=3.2.0
@@ -29,7 +29,7 @@ fi;
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
 export JSON_VER=0.12
-export PCRE_VER=8.33
+export PCRE_VER=8.45
 
 
 #export OS_BUILD=64
@@ -46,6 +46,13 @@ fi;
 
 echo "ICON_VER ${ICON_VER}"
 
+if  [[ "${LZ4_VER}" == '' ]] ; then
+  export LZ4_VER=1.9.3
+fi;
+
+echo "LZ4_VER ${LZ4_VER}"
+
+
 #set to something even if override is on but not set
 if  [[ "${ZLIB_VER}" == '' ]] ; then
   export ZLIB_VER=1.2.13
@@ -53,18 +60,18 @@ fi;
 
 #set to something even if override is on but not set
 if  [[ "${LIBXML_VER}" == '' ]] ; then
-  export LIBXML_VER=2.9.14
+  export LIBXML_VER=2.12.5
 fi;
 
 #set to something even if override is on but not set
 if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=5.6.1
+  export CGAL_VER=6.0.1
 fi;
 
 ##hard code versions of cgal etc. for now
-export CGAL_VER=5.6.1
-BOOST_VER=1.78.0
-export BOOST_VER_WU=1_78_0
+
+BOOST_VER=1.84.0
+export BOOST_VER_WU=1_84_0
 
 
 export LZ4_PATH=${PROJECTS}/lz4/rel-lz4-${LZ4_VER}w${OS_BUILD}${GCC_TYPE}

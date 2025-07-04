@@ -949,7 +949,7 @@ static void test_ptarray_contains_point_sphere(void)
 	CU_ASSERT_EQUAL(result, LW_FALSE);
 	lwgeom_free(lwg);
 
-	/* Point on ring between vertexes case */
+	/* Point on ring between vertices case */
 	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 1.1;
@@ -1324,7 +1324,7 @@ static void test_spheroid_distance(void)
 #endif
 	CU_ASSERT_DOUBLE_EQUAL(d, 1113194.9079327357264771, epsilon);
 
-	/* One horizonal degree
+	/* One horizontal degree
 	$ GeodSolve -E -i -p 16 --input-string "0 -1 0 0" */
 	point_set(-1.0, 0.0, &g1);
 	point_set(0.0, 0.0, &g2);
@@ -1593,6 +1593,54 @@ static void test_lwgeom_area_sphere(void)
 	/* end #3393 */
 }
 
+
+static void test_geography_substring(void)
+{
+	LWGEOM *lwg;
+	LWGEOM *result;
+	double length;
+	SPHEROID s;
+
+	/* Init to Sphere */
+	spheroid_init(&s, WGS84_RADIUS, WGS84_RADIUS);
+	s.a = s.b = s.radius;
+
+	/*
+	 * geography_substring(
+	 *   const LWLINE *lwline,
+	 *   const SPHEROID *s,
+	 *   double from, double to, double tolerance
+	 */
+
+	lwg = lwgeom_from_wkt("LINESTRING(2 48, 2 49, 2 50)", LW_PARSER_CHECK_NONE);
+	length = lwgeom_length(lwg);
+	CU_ASSERT_DOUBLE_EQUAL(length, 2.0, 0.001);
+	result = geography_substring((LWLINE*)lwg, &s, 0.0, 1.0, 0.01);
+	length = lwgeom_length(result);
+	CU_ASSERT_DOUBLE_EQUAL(length, 2.0, 0.001);
+	lwgeom_free(lwg);
+	lwgeom_free(result);
+
+	lwg = lwgeom_from_wkt("LINESTRING(2 48, 2 49)", LW_PARSER_CHECK_NONE);
+	length = lwgeom_length(lwg);
+	CU_ASSERT_DOUBLE_EQUAL(length, 1.0, 0.001);
+	result = geography_substring((LWLINE*)lwg, &s, 0.0, 1.0, 0.01);
+	length = lwgeom_length(result);
+	CU_ASSERT_DOUBLE_EQUAL(length, 1.0, 0.001);
+	lwgeom_free(lwg);
+	lwgeom_free(result);
+
+	lwg = lwgeom_from_wkt("LINESTRING(2 48)", LW_PARSER_CHECK_NONE);
+	length = lwgeom_length(lwg);
+	CU_ASSERT_DOUBLE_EQUAL(length, 0.0, 0.001);
+	result = geography_substring((LWLINE*)lwg, &s, 0.0, 1.0, 0.01);
+	length = lwgeom_length(result);
+	CU_ASSERT_DOUBLE_EQUAL(length, 0.0, 0.001);
+	lwgeom_free(lwg);
+	lwgeom_free(result);
+}
+
+
 static void test_gbox_to_string_truncated(void)
 {
 	GBOX g = {
@@ -1614,6 +1662,41 @@ static void test_gbox_to_string_truncated(void)
 
 	lwfree(c);
 }
+
+static void BOX3D_BOXLL_TEST(double xmin, double ymin, double xmax, double ymax)
+{
+	LWGEOM *lwg;
+	GBOX gbox_gc;
+	GBOX gbox_ll;
+	char wkt[256];
+	snprintf(wkt, 256, "LINESTRING(%f %f,%f %f)", xmin, ymin, xmax, ymax);
+	lwg = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
+
+	lwgeom_calculate_gbox_geodetic(lwg, &gbox_gc);
+	lwgeom_free(lwg);
+	// printf("\n%s",wkt);
+
+	gbox_geocentric_get_gbox_cartesian(&gbox_gc, &gbox_ll);
+
+	// printf("\nBOX(%g %g, %g %g)\n",
+	// 	gbox_ll.xmin, gbox_ll.ymin,
+	// 	gbox_ll.xmax, gbox_ll.ymax);
+
+	CU_ASSERT(gbox_ll.xmin <= xmin);
+	CU_ASSERT(gbox_ll.ymin <= ymin);
+	CU_ASSERT(gbox_ll.xmax >= xmax);
+	CU_ASSERT(gbox_ll.ymax >= ymax);
+}
+
+void test_gbox_geocentric_get_gbox_cartesian(void)
+{
+	BOX3D_BOXLL_TEST(-90,80, 90,80);
+	BOX3D_BOXLL_TEST(1,1, 2,2);
+	BOX3D_BOXLL_TEST(10,10, 20,20);
+	BOX3D_BOXLL_TEST(100,10, 120,10);
+	BOX3D_BOXLL_TEST(-100,10, 120,10);
+}
+
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -1645,4 +1728,6 @@ void geodetic_suite_setup(void)
 	PG_ADD_TEST(suite, test_ptarray_contains_point_sphere);
 	PG_ADD_TEST(suite, test_ptarray_contains_point_sphere_iowa);
 	PG_ADD_TEST(suite, test_gbox_to_string_truncated);
+	PG_ADD_TEST(suite, test_gbox_geocentric_get_gbox_cartesian);
+	PG_ADD_TEST(suite, test_geography_substring);
 }

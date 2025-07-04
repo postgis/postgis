@@ -55,8 +55,8 @@ CREATE OR REPLACE FUNCTION ST_TestRaster(h integer, w integer, val float8)
 --                  results are truncated to this type. Default to the
 --                  pixeltype of the first raster.
 -- ngbwidth integer - The width of the neighborhood, in cells.
--- ngbheight integer - The heigh of the neighborhood, in cells.
--- userfunction regprocedure - PLPGSQL user function to apply to with neighborhod pixels.
+-- ngbheight integer - The height of the neighborhood, in cells.
+-- userfunction regprocedure - PLPGSQL user function to apply to with neighborhood pixels.
 -- args variadic text[] - Arguments to pass into the user function.
 --------------------------------------------------------------------
 DROP FUNCTION IF EXISTS ST_MapAlgebraFctNgb(rast raster, band integer, pixeltype text, ngbwidth integer, ngbheight integer, userfunction text, nodatamode text, variadic args text[]);

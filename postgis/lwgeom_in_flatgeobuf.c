@@ -99,7 +99,7 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 	ctx = palloc0(sizeof(*ctx));
 	ctx->ctx = palloc0(sizeof(flatgeobuf_ctx));
 	ctx->ctx->size = VARSIZE_ANY_EXHDR(data);
-	POSTGIS_DEBUGF(3, "bytea data size is %ld", ctx->ctx->size);
+	POSTGIS_DEBUGF(3, "bytea data size is %lld", ctx->ctx->size);
 	ctx->ctx->buf = lwalloc(ctx->ctx->size);
 	memcpy(ctx->ctx->buf, VARDATA_ANY(data), ctx->ctx->size);
 	ctx->ctx->offset = 0;
@@ -175,8 +175,7 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE)
 			ereport(ERROR,
 					(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-					 errmsg("function returning record called in context "
-							"that cannot accept type record")));
+					 errmsg("first argument of function must be composite type")));
 
 		data = PG_GETARG_BYTEA_PP(1);
 
@@ -184,7 +183,7 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 		ctx->tupdesc = tupdesc;
 		ctx->ctx = palloc0(sizeof(flatgeobuf_ctx));
 		ctx->ctx->size = VARSIZE_ANY_EXHDR(data);
-		POSTGIS_DEBUGF(3, "VARSIZE_ANY_EXHDR %ld", ctx->ctx->size);
+		POSTGIS_DEBUGF(3, "VARSIZE_ANY_EXHDR %lld", ctx->ctx->size);
 		ctx->ctx->buf = palloc(ctx->ctx->size);
 		memcpy(ctx->ctx->buf, VARDATA_ANY(data), ctx->ctx->size);
 		ctx->ctx->offset = 0;
@@ -202,10 +201,10 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 		flatgeobuf_check_magicbytes(ctx);
 		flatgeobuf_decode_header(ctx->ctx);
 
-		POSTGIS_DEBUGF(2, "header decoded now at offset %ld", ctx->ctx->offset);
+		POSTGIS_DEBUGF(2, "header decoded now at offset %lld", ctx->ctx->offset);
 
 		if (ctx->ctx->size == ctx->ctx->offset) {
-			POSTGIS_DEBUGF(2, "no feature data offset %ld", ctx->ctx->offset);
+			POSTGIS_DEBUGF(2, "no feature data offset %lld", ctx->ctx->offset);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}

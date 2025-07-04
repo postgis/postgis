@@ -4,35 +4,10 @@
     <abstract>
     <para>This section lists custom PostGIS Grand Unified Custom Variables (GUC).
 These can be set globally, by database, by session or by transaction. Best set at global or database level.</para>
+<para>For more examples of usage refer to <link xlink:href="https://www.postgresql.org/docs/current/sql-set.html">SQL SET</link> 
+    and <link xlink:href="https://www.postgresql.org/docs/current/sql-altersystem.html">SQL ALTER SYSTEM</link></para>
     </abstract>
     </info>
-
-
-    <refentry xml:id="postgis_backend">
-      <refnamediv>
-        <refname>postgis.backend</refname>
-        <refpurpose>The backend to service a function where GEOS and SFCGAL overlap. Options: geos or sfcgal. Defaults to geos.</refpurpose>
-      </refnamediv>
-
-      <refsection>
-        <title>Description</title>
-        <para>This GUC is only relevant if you compiled PostGIS with sfcgal support.  By default <varname>geos</varname> backend is used for functions where both GEOS and SFCGAL have the same named function.  This variable allows you to override and make sfcgal the backend to service the request.</para>
-        <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
-      </refsection>
-
-      <refsection>
-    <title>Examples</title>
-    <para>Sets backend just for life of connection</para>
-    <programlisting>set postgis.backend = sfcgal;</programlisting>
-
-    <para>Sets backend for new connections to database</para>
-    <programlisting>ALTER DATABASE mygisdb SET postgis.backend = sfcgal;</programlisting>
-      </refsection>
-      <refsection>
-              <title>See Also</title>
-              <para><xref linkend="reference_sfcgal"/></para>
-            </refsection>
-  </refentry>
 
   <refentry xml:id="postgis_gdal_datapath">
             <refnamediv>
@@ -60,7 +35,7 @@ These can be set globally, by database, by session or by transaction. Best set a
 
                 <note>
                     <para>
-                        Additional information about GDAL_DATA is available at GDAL's <link xlink:href="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration Options</link>.
+                        Additional information about GDAL_DATA is available at GDAL's <link xlink:href="https://gdal.org/user/configoptions.html">Configuration Options</link>.
                     </para>
                 </note>
 
@@ -139,7 +114,7 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
 
                 <note>
                     <para>
-                        Additional information about GDAL_SKIP is available at GDAL's <link xlink:href="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration Options</link>.
+                        Additional information about GDAL_SKIP is available at GDAL's <link xlink:href="https://gdal.org/user/configoptions.html">Configuration Options</link>.
                     </para>
                 </note>
 
@@ -149,30 +124,25 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
 
             <refsection>
                 <title>Examples</title>
-                <para>Set and reset <varname>postgis.gdal_enabled_drivers</varname></para>
-
-                <para>Sets backend for all new connections to database</para>
-                <programlisting>ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';</programlisting>
-
-                <para>Sets default enabled drivers for all new connections to server. Requires super user access and PostgreSQL 9.4+.
-                    Also note that database, session, and user settings override this.</para>
-                <programlisting>ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';
-SELECT pg_reload_conf();
-                </programlisting>
+                <para>To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current session</para>
 
                 <programlisting>
-SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';
+SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
 SET postgis.gdal_enabled_drivers = default;
                 </programlisting>
 
-                <para>Enable all GDAL Drivers</para>
-                <programlisting>
-SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
-                </programlisting>
+                <para>Set for all new connections to a specific database to specific drivers</para>
 
-                <para>Disable all GDAL Drivers</para>
+                <programlisting>ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';</programlisting>
+
+                <para>Setting for whole database cluster to enable all drivers. Requires super user access.
+                    Also note that database, session, and user settings override this.</para>
+
                 <programlisting>
-SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';
+ --writes to postgres.auto.conf
+ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';
+ --Reloads postgres conf
+SELECT pg_reload_conf();
                 </programlisting>
             </refsection>
 
@@ -234,16 +204,17 @@ SET postgis.enable_outdb_rasters = True;
 SET postgis.enable_outdb_rasters = False;
                 </programlisting>
 
-                <para>Set for specific database</para>
+                <para>Set for all new connections to a specific database</para>
 
                 <programlisting>
 ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;
                 </programlisting>
 
-                <para>Setting for whole database cluster. You need to reconnect to the database for changes to take effect.</para>
+                <para>Setting for whole database cluster. Requires super user access.
+                    Also note that database, session, and user settings override this.</para>
                 <programlisting>
  --writes to postgres.auto.conf
-ALTER SYSTEM postgis.enable_outdb_rasters = true;
+ALTER SYSTEM SET postgis.enable_outdb_rasters = true;
  --Reloads postgres conf
 SELECT pg_reload_conf();
                 </programlisting>
@@ -270,7 +241,7 @@ SELECT pg_reload_conf();
             <refsection>
                 <title>Description</title>
                 <para>
-                    A string configuration to set options used when working with an out-db raster. <link xlink:href="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration options</link> control things like how much space GDAL allocates to local data cache, whether to read overviews, and what access keys to use for remote out-db data sources.
+                    A string configuration to set options used when working with an out-db raster. <link xlink:href="https://gdal.org/user/configoptions.html">Configuration options</link> control things like how much space GDAL allocates to local data cache, whether to read overviews, and what access keys to use for remote out-db data sources.
                 </para>
 
                 <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
@@ -299,6 +270,35 @@ SET LOCAL postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECR
                 </para>
             </refsection>
     </refentry>
+
+
+  <refentry xml:id="postgis_gdal_cpl_debug">
+            <refnamediv>
+                <refname>postgis.gdal_cpl_debug</refname>
+                <refpurpose>
+                    A boolean configuration to turn logging of GDAL debug messages on and off.
+                </refpurpose>
+            </refnamediv>
+
+            <refsection>
+                <title>Description</title>
+                <para>
+                    By default, GDAL logging is printed to stderr, and lower level debug messages are not printed at all. Turning this GUC to true will cause GDAL logging to be sent into the PostgreSQL logging stream, so you can see more or less of it by altering the <code>client_min_message</code> PostgreSQL GUC.
+                </para>
+
+                <para role="availability" conformance="3.6.0">Availability: 3.6.0</para>
+
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="postgis_enable_outdb_rasters"/>
+                    <xref linkend="postgis_gdal_enabled_drivers"/>
+                </para>
+            </refsection>
+    </refentry>
+
 
 
 

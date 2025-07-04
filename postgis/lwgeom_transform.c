@@ -39,6 +39,7 @@ Datum transform(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
 Datum transform_pipeline_geom(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);
+Datum postgis_proj_compiled_version(PG_FUNCTION_ARGS);
 Datum LWGEOM_asKML(PG_FUNCTION_ARGS);
 
 /**
@@ -203,16 +204,11 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 {
 	stringbuffer_t sb;
 
-#if POSTGIS_PROJ_VERSION < 61
-	stringbuffer_init(&sb);
-	stringbuffer_append(&sb, pj_get_release());
-#else
 	PJ_INFO pji = proj_info();
 	stringbuffer_init(&sb);
 	stringbuffer_append(&sb, pji.version);
-#endif
 
-#if POSTGIS_PROJ_VERSION >= 71
+#if POSTGIS_PROJ_VERSION >= 70100
 
 	stringbuffer_aprintf(&sb,
 		" NETWORK_ENABLED=%s",
@@ -232,6 +228,22 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(cstring_to_text(stringbuffer_getstring(&sb)));
 }
 
+PG_FUNCTION_INFO_V1(postgis_proj_compiled_version);
+Datum postgis_proj_compiled_version(PG_FUNCTION_ARGS)
+{
+  static char ver[64];
+  text *result;
+  sprintf(
+    ver,
+    "%d.%d.%d",
+    (POSTGIS_PROJ_VERSION/10000),
+    ((POSTGIS_PROJ_VERSION%10000)/100),
+    ((POSTGIS_PROJ_VERSION)%100)
+  );
+
+  result = cstring_to_text(ver);
+  PG_RETURN_POINTER(result);
+}
 
 /**
  * Encode feature in KML
@@ -299,8 +311,6 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 /********************************************************************************
  * PROJ database reading functions
  */
-
-#if POSTGIS_PROJ_VERSION >= 61
 
 struct srs_entry {
 	text* auth_name;
@@ -470,7 +480,7 @@ srs_find_planar(const char *auth_name, const LWGEOM *bounds, struct srs_data *st
 	params->bbox_valid = true;
 	params->allow_deprecated = false;
 
-#if POSTGIS_PROJ_VERSION >= 81
+#if POSTGIS_PROJ_VERSION >= 80100
 	params->celestial_body_name = "Earth";
 #endif
 
@@ -523,7 +533,6 @@ srs_find_planar(const char *auth_name, const LWGEOM *bounds, struct srs_data *st
 	proj_crs_info_list_destroy(crs_list_ptr);
 	proj_get_crs_list_parameters_destroy(params);
 }
-#endif
 
 /**
  * Search for srtext and proj4text given auth_name and auth_srid,
@@ -533,9 +542,6 @@ Datum postgis_srs_entry(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(postgis_srs_entry);
 Datum postgis_srs_entry(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_PROJ_VERSION < 60
-	elog(ERROR, "%s is not supported with Proj < 6.0", __func__);
-#else
 	Datum result;
 	struct srs_entry entry;
 	text* auth_name = PG_GETARG_TEXT_P(0);
@@ -557,7 +563,6 @@ Datum postgis_srs_entry(PG_FUNCTION_ARGS)
 		PG_RETURN_DATUM(srs_tuple_from_entry(&entry, tuple_desc));
 	else
 		PG_RETURN_NULL();
-#endif
 }
 
 
@@ -565,9 +570,6 @@ Datum postgis_srs_entry_all(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(postgis_srs_entry_all);
 Datum postgis_srs_entry_all(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_PROJ_VERSION < 60
-	elog(ERROR, "%s is not supported with Proj < 6.0", __func__);
-#else
 	FuncCallContext *funcctx;
 	MemoryContext oldcontext;
 	struct srs_data *state;
@@ -630,7 +632,6 @@ Datum postgis_srs_entry_all(PG_FUNCTION_ARGS)
 
 	/* Stop if lookup fails drastically */
 	SRF_RETURN_DONE(funcctx);
-#endif
 }
 
 
@@ -638,9 +639,6 @@ Datum postgis_srs_codes(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(postgis_srs_codes);
 Datum postgis_srs_codes(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_PROJ_VERSION < 60
-	elog(ERROR, "%s is not supported with Proj < 6.0", __func__);
-#else
 	FuncCallContext *funcctx;
 	MemoryContext oldcontext;
 	struct srs_data *state;
@@ -689,7 +687,6 @@ Datum postgis_srs_codes(PG_FUNCTION_ARGS)
 	/* Stop if lookup fails drastically */
 	SRF_RETURN_DONE(funcctx);
 	SRF_RETURN_DONE(funcctx);
-#endif
 }
 
 
@@ -701,9 +698,6 @@ Datum postgis_srs_search(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(postgis_srs_search);
 Datum postgis_srs_search(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_PROJ_VERSION < 60
-	elog(ERROR, "%s is not supported with Proj < 6.0", __func__);
-#else
 	FuncCallContext *funcctx;
 	MemoryContext oldcontext;
 	struct srs_data *state;
@@ -771,7 +765,6 @@ Datum postgis_srs_search(PG_FUNCTION_ARGS)
 
 	/* Stop if lookup fails drastically */
 	SRF_RETURN_DONE(funcctx);
-#endif
 }
 
 

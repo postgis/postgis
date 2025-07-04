@@ -116,7 +116,7 @@ Given a geometry collection, returns a multi-geometry containing only elements o
             <listitem><para>3 == POLYGON</para></listitem>
             </itemizedlist>
 
-            <para>For atomic geometry inputs, the geometry is retured unchanged
+            <para>For atomic geometry inputs, the geometry is returned unchanged
             if the input type matches the requested type.
             Otherwise, the result is an EMPTY geometry of the specified type.
             If required, these can be converted to multi-geometries using <xref linkend="ST_Multi"/>.
@@ -323,7 +323,7 @@ The 'flags' argument is a bitfield. 0 by default.
 Supported bits are:
       <itemizedlist>
         <listitem>
-          <para>1: Symmetric (orientation idependent) output.</para>
+          <para>1: Symmetric (orientation independent) output.</para>
         </listitem>
         <listitem>
           <para>2: Retain angle, avoids reducing angles (segment lengths) when producing symmetric output. Has no effect when Symmetric flag is off.</para>
@@ -1551,7 +1551,7 @@ SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
 				<code>ST_QuantizeCoordinates</code> sets the 22 insignificant
 				bits to zero. For a long coordinate sequence this creates a
 				pattern of blocks of consecutive zeros that is compressed
-				by PostgreSQL more effeciently.
+				by PostgreSQL more efficiently.
 			</para>
 
 			<note>
@@ -1681,7 +1681,7 @@ UPDATE sometable
           <funcprototype>
             <funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef>
             <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-            <paramdef choice="opt"><type>float8</type> <parameter>tolerance</parameter></paramdef>
+            <paramdef choice="opt"><type>float8</type> <parameter>tolerance = 0.0</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -1695,8 +1695,10 @@ UPDATE sometable
                 The endpoints of LineStrings are preserved.
         </para>
 
-        <para>If the <parameter>tolerance</parameter> parameter is provided, vertices within the tolerance distance
-        of one another are considered to be duplicates.</para>
+        <para>If a non-zero <parameter>tolerance</parameter> parameter is provided, vertices within the tolerance distance
+        of one another are considered to be duplicates.
+		The distance is computed in 2D (XY plane).
+		</para>
 
         <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0</para>
         <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
@@ -1745,6 +1747,243 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
           </refsection>
     </refentry>
 
+	<refentry xml:id="ST_RemoveIrrelevantPointsForView">
+	  <refnamediv>
+		<refname>ST_RemoveIrrelevantPointsForView</refname>
+		<refpurpose>Removes points that are irrelevant for rendering a specific rectangular view of a geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RemoveIrrelevantPointsForView</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef>
+			<paramdef choice="opt"><type>boolean </type><parameter>cartesian_hint = false</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a <xref linkend="geometry"/> without points being irrelevant for rendering the geometry within a given rectangular view.</para>
+		<para>This function can be used to quickly preprocess geometries that should be rendered only within certain bounds.</para>
+		<para>Only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING are evaluated. Other geometries keep unchanged.</para>
+		<para>In contrast to <code>ST_ClipByBox2D()</code> this function
+			<itemizedlist>
+				<listitem><para>sorts out points without computing new intersection points which avoids rounding errors and usually increases performance,</para></listitem>
+				<listitem><para>returns a geometry with equal or similar point number,</para></listitem>
+				<listitem><para>leads to the same rendering result within the specified view, and</para></listitem>
+				<listitem><para>may introduce self-intersections which would make the resulting geometry invalid (see example below).</para></listitem>
+			</itemizedlist>
+		</para>
+
+		<para>If <code>cartesian_hint</code> is set to <code>true</code>,
+			the algorithm applies additional optimizations involving cartesian math
+			to further reduce the resulting point number.
+			Please note that using this option might introduce rendering artifacts
+			if the resulting coordinates are projected into another (non-cartesian)
+			coordinate system before rendering.
+		</para>
+		
+		<warning><para>For polygons, this function does currently not ensure that the result is valid.
+		This situation can be checked with <xref linkend="ST_IsValid"/> and repaired with <xref linkend="ST_MakeValid"/>.
+		</para></warning>
+
+		<para>
+			<informalfigure>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/st_removeirrelevantpointsforview.png"/>
+					</imageobject>
+					<caption>
+						<para>Example: ST_RemoveIrrelevantPointsForView() applied to a polygon. Blue points remain, the rendering result (light-blue area) within the grey view box remains as well.</para>
+					</caption>
+				</mediaobject>
+			</informalfigure>
+		</para>
+		
+		<para>
+			<informalfigure>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/st_removeirrelevantpointsforview_crossing.png"/>
+					</imageobject>
+					<caption>
+						<para>Example: Due to the fact that points are just sorted out and no new points are computed, the result of ST_RemoveIrrelevantPointsForView() may contain self-intersections.</para>
+					</caption>
+				</mediaobject>
+			</informalfigure>
+		</para>
+		
+		<para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+		
+		
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('MULTIPOLYGON(((10 10, 20 10, 30 10, 40 10, 20 20, 10 20, 10 10)),((10 10, 20 10, 20 20, 10 20, 10 10)))'),
+			ST_MakeEnvelope(12,12,18,18), true));
+		
+		st_astext
+		---------
+		    MULTIPOLYGON(((10 10,40 10,20 20,10 20,10 10)),((10 10,20 10,20 20,10 20,10 10)))
+		</programlisting>
+		
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('MULTILINESTRING((0 0, 10 0,20 0,30 0), (0 15, 5 15, 10 15, 15 15, 20 15, 25 15, 30 15, 40 15), (13 13,15 15,17 17))'),
+			ST_MakeEnvelope(12,12,18,18), true));
+		
+		st_astext
+		---------
+			MULTILINESTRING((10 15,15 15,20 15),(13 13,15 15,17 17))
+		</programlisting>
+		
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('LINESTRING(0 0, 10 0,20 0,30 0)'),
+			ST_MakeEnvelope(12,12,18,18), true));
+		
+		st_astext
+		---------
+		    LINESTRING EMPTY
+		</programlisting>
+
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('POLYGON((0 30, 15 30, 30 30, 30 0, 0 0, 0 30))'),
+			ST_MakeEnvelope(12,12,18,18), true));
+		
+		st_astext
+		---------
+		    POLYGON((15 30,30 0,0 0,15 30))
+		</programlisting>
+
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveIrrelevantPointsForView(
+			ST_GeomFromText('POLYGON((0 30, 15 30, 30 30, 30 0, 0 0, 0 30))'),
+			ST_MakeEnvelope(12,12,18,18)));
+		
+		st_astext
+		---------
+		    POLYGON((0 30,30 30,30 0,0 0,0 30))
+		</programlisting>
+		
+	  </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_ClipByBox2D"/>, <xref linkend="ST_Intersection"/></para>
+      </refsection>
+
+	</refentry>
+
+	<refentry xml:id="ST_RemoveSmallParts">
+	  <refnamediv>
+		<refname>ST_RemoveSmallParts</refname>
+		<refpurpose>Removes small parts (polygon rings or linestrings) of a geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RemoveSmallParts</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>double precision </type> <parameter>minSizeX</parameter></paramdef>
+			<paramdef><type>double precision </type> <parameter>minSizeY</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a <xref linkend="geometry"/> without small parts (exterior or interior polygon rings, or linestrings).</para>
+		<para>This function can be used as preprocessing step for creating simplified maps, e. g. to remove small islands or holes.</para>
+		<para>It evaluates only geometries of type (MULTI)POLYGON and (MULTI)LINESTRING. Other geometries remain unchanged.</para>
+		<para>If <parameter>minSizeX</parameter> is greater than 0, parts are sorted out if their width is smaller than <parameter>minSizeX</parameter>.</para>
+		<para>If <parameter>minSizeY</parameter> is greater than 0, parts are sorted out if their height is smaller than <parameter>minSizeY</parameter>.</para>
+		<para>Both <parameter>minSizeX</parameter> and <parameter>minSizeY</parameter> are measured in coordinate system units of the geometry.</para>
+		<para>For polygon types, evaluation is done separately for each ring which can lead to one of the following results:
+            <itemizedlist>
+            <listitem><para>the original geometry,</para></listitem>
+			<listitem><para>a POLYGON with all rings with less vertices,</para></listitem>
+			<listitem><para>a POLYGON with a reduced number of interior rings (having possibly less vertices),</para></listitem> 
+			<listitem><para>a POLYGON EMPTY, or</para></listitem>
+			<listitem><para>a MULTIPOLYGON with a reduced number of polygons (having possibly less interior rings or vertices), or</para></listitem>
+			<listitem><para>a MULTIPOLYGON EMPTY.</para></listitem>
+			</itemizedlist>
+		</para>
+		<para>For linestring types, evaluation is done for each linestring which can lead to one of the following results:
+            <itemizedlist>
+            <listitem><para>the original geometry,</para></listitem>
+			<listitem><para>a LINESTRING with a reduced number of vertices,</para></listitem>
+			<listitem><para>a LINESTRING EMPTY,</para></listitem>
+			<listitem><para>a MULTILINESTRING with a reduced number of linestrings (having possibly less vertices), or</para></listitem>
+			<listitem><para>a MULTILINESTRING EMPTY.</para></listitem>
+			</itemizedlist>
+		</para>
+
+        <para>
+            <informalfigure>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="images/st_removesmallparts.png"/>
+                    </imageobject>
+                    <caption>
+                        <para>Example: ST_RemoveSmallParts() applied to a multi-polygon. Blue parts remain.</para>
+                    </caption>
+                </mediaobject>
+            </informalfigure>
+        </para>
+
+		<para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+		
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveSmallParts(
+			ST_GeomFromText('MULTIPOLYGON(
+				((60 160, 120 160, 120 220, 60 220, 60 160), (70 170, 70 210, 110 210, 110 170, 70 170)),
+				((85 75, 155 75, 155 145, 85 145, 85 75)),
+				((50 110, 70 110, 70 130, 50 130, 50 110)))'),
+				50, 50));
+		
+		st_astext
+		---------
+			MULTIPOLYGON(((60 160,120 160,120 220,60 220,60 160)),((85 75,155 75,155 145,85 145,85 75)))
+		</programlisting>
+
+		<programlisting>
+			SELECT ST_AsText(
+			ST_RemoveSmallParts(
+			ST_GeomFromText('LINESTRING(10 10, 20 20)'),
+				50, 50));
+		
+		st_astext
+		---------
+			LINESTRING EMPTY
+		</programlisting>
+			
+	  </refsection>
+
+	</refentry>
+
 	<refentry xml:id="ST_Reverse">
 	  <refnamediv>
 		<refname>ST_Reverse</refname>
@@ -1763,7 +2002,7 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 	  <refsection>
 		<title>Description</title>
 
-		<para>Can be used on any geometry and reverses the order of the vertexes.</para>
+		<para>Can be used on any geometry and reverses the order of the vertices.</para>
 
 		<para role="enhanced" conformance="2.4.0">Enhanced: 2.4.0 support for curves was introduced.</para>
 		<para>&Z_support;</para>

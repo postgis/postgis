@@ -32,7 +32,7 @@ CREATE OR REPLACE FUNCTION ST_Reclass(rast raster,
         -- Temporary container for the two part of the class being parsed.
         reclassstr text[];
 
-        -- Temporary array containing the splited class.
+        -- Temporary array containing the split class.
         fromstr text[];
 
         i int;

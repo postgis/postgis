@@ -133,6 +133,8 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		unsigned char *wkb = bytes_from_hexbytes(str, hexsize);
 		/* TODO: 20101206: No parser checks! This is inline with current 1.5 behavior, but needs discussion */
 		lwgeom = lwgeom_from_wkb(wkb, hexsize/2, LW_PARSER_CHECK_NONE);
+		/* Parser should throw error, but if not, catch here. */
+		if ( !lwgeom ) PG_RETURN_NULL();
 		/* If we picked up an SRID at the head of the WKB set it manually */
 		if ( srid ) lwgeom_set_srid(lwgeom, srid);
 		/* Add a bbox if necessary */
@@ -456,7 +458,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
 		sp.precision_m = PG_GETARG_INT32(3);
 
-	/* We don't permit ids for single geoemtries */
+	/* We don't permit ids for single geometries */
 	variant = variant & ~TWKB_ID;
 
 	/* If user wants registered twkb sizes */
@@ -698,6 +700,11 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom = lwgeom_from_wkb((uint8_t*)buf->data, buf->len, LW_PARSER_CHECK_ALL);
+	if ( !lwgeom )
+	{
+		ereport(ERROR,(errmsg("recv error - invalid geometry")));
+		PG_RETURN_NULL();
+	}
 
 	if ( lwgeom_needs_bbox(lwgeom) )
 		lwgeom_add_bbox(lwgeom);

@@ -180,6 +180,9 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 			 * stack
 			 */
 
+			if (state->stacklen > MAXDEPTH)
+				elog(ERROR, "Unable to dump overly nested collection.");
+
 			oldcontext = MemoryContextSwitchTo(newcontext);
 
 			node = lwalloc(sizeof(GEOMDUMPNODE));
@@ -272,7 +275,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 	/* get state */
 	state = funcctx->user_fctx;
 
-	/* Loop trough polygon rings */
+	/* Loop through polygon rings */
 	while (state->ringnum < state->poly->nrings )
 	{
 		LWPOLY* poly = state->poly;

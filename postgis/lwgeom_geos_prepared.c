@@ -34,7 +34,7 @@
 /***********************************************************************
 **
 **  PreparedGeometry implementations that cache intermediate indexed versions
-**  of geometry in a special MemoryContext for re-used by future function
+**  of geometry in a special MemoryContext for reused by future function
 **  invocations.
 **
 **  By creating a memory context to hold the GEOS PreparedGeometry and Geometry
@@ -280,7 +280,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	pghe = GetPrepGeomHashEntry(prepcache->context_callback);
 	if ( ! pghe )
 	{
-		lwpgerror("PrepGeomCacheBuilder failed to find hash entry for context %p", prepcache->context_callback);
+		lwpgerror("PrepGeomCacheBuilder failed to find hash entry for context %p", (void *)prepcache->context_callback);
 		return LW_FAILURE;
 	}
 

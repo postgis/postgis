@@ -195,7 +195,7 @@ while(<INPUT>)
         while(<INPUT>)
         {
             $def .= $_;
-            $endfunc = 1 if /^\s*(\$\$\s*)?LANGUAGE /;
+            $endfunc = 1 if /^\s*(\$[^\$]*\$\s*)?LANGUAGE /;
             last if ( $endfunc && /\;/ );
         }
         foreach my $replaced (@replaced_array)
@@ -503,7 +503,7 @@ EOF
 
     }
 
-    # Always output create ore replace view (see ticket #1097)
+    # Always output create or replace view (see ticket #1097)
     if (/^create or replace view\s+(\S+)\s*/i)
     {
         print;
@@ -528,7 +528,7 @@ EOF
         }
     }
 
-    # Always output create ore replace rule
+    # Always output create or replace rule
     if (/^create or replace rule\s+(\S+)\s*/i)
     {
         print;

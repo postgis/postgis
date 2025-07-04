@@ -7,7 +7,7 @@
    </abstract>
     </info>
 
-    
+
 
   <refentry xml:id="ST_InverseTransformPipeline">
     <refnamediv>
@@ -429,7 +429,7 @@ CREATE INDEX idx_geom_26986_parcels
     <programlisting>
 -- Forward direction
 SELECT ST_AsText(ST_TransformPipeline('SRID=4326;POINT(2 49)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::16031') AS utm_geom);
+  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS utm_geom;
 
                   utm_geom
 --------------------------------------------
@@ -659,7 +659,7 @@ SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;
     <refnamediv>
     <refname>postgis_srs_search</refname>
 
-    <refpurpose>Return metadata records for projected coordinate systems that have areas of useage that fully contain the bounds parameter.</refpurpose>
+    <refpurpose>Return metadata records for projected coordinate systems that have areas of usage that fully contain the bounds parameter.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -675,7 +675,7 @@ SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;
     <refsection>
       <title>Description</title>
 
-      <para>Return a set of metadata records for projected coordinate systems that have areas of useage that fully contain the bounds parameter. Each record will have the <varname>auth_name</varname>, <varname>auth_srid</varname>, <varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</varname>, and the corners of the area of usage, <varname>point_sw</varname> and <varname>point_ne</varname>.
+      <para>Return a set of metadata records for projected coordinate systems that have areas of usage that fully contain the bounds parameter. Each record will have the <varname>auth_name</varname>, <varname>auth_srid</varname>, <varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</varname>, and the corners of the area of usage, <varname>point_sw</varname> and <varname>point_ne</varname>.
       </para>
 
       <para>The search only looks for projected coordinate systems, and is intended for users to explore the possible systems that work for the extent of their data.</para>

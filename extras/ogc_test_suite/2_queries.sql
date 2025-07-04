@@ -802,7 +802,7 @@ WHERE fid = 120;
 -- Conformance Item T37
 -- Equals(g1 Geometry, g2 Geometry) : Integer
 -- For this test we will determine if the geometry of Goose Island is equal
--- to the same geometry as consructed from it's WKT representation.
+-- to the same geometry as constructed from it's WKT representation.
 --
 -- ANSWER: 1
 -- *** Adaptation Alert ***

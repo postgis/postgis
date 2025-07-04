@@ -63,7 +63,7 @@ OPTIONS
               is  to  write a 2-dimensional shape file in that case). Starting
               from postgis-1.0.0+, dimensions are fully encoded.
 
-       -k     Keep idendifiers case (don't uppercase field names).
+       -k     Keep identifiers case (don't uppercase field names).
 
        -?     Display version and usage information.
 

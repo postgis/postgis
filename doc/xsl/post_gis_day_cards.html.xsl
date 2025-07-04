@@ -60,7 +60,7 @@ h1 {
 						All other cards precedence by alphabetical order.</li>
 				<li><b>Post GIS in a language I don't understand</b> To celebrate the ubiquity of PostGIS, you can create Post GIS playing cards in a language
 					you don't understand.  Here is what you do.  Go to <a href="http://translate.google.com" target="_blank">http://translate.google.com</a> and paste in the URL to this page in the first text box (make sure it is set to English),
-					in the <b>To:</b> drop down, pick a language you do not know, but preferably you have friends that speak that language and can laugh at your grammar and pronounciation. In no time you'll be able to impress your friends living far far away with your command of their language.
+					in the <b>To:</b> drop down, pick a language you do not know, but preferably you have friends that speak that language and can laugh at your grammar and pronunciation. In no time you'll be able to impress your friends living far far away with your command of their language.
 					<b><span style='color:red'>Warning: </span> because of the great number of functions PostGIS has to offer, Google (or any other translator) may refuse to translate all cards leaving you with a mix of some other language and English cards.</b>
 				</li>
 				<li><b>Post GIS in a language I do understand</b> Similar to the I don't understand game, except you pick a non-english language that you do understand. Enjoy many moments of laughter reading machine generated translations that are sorta accurate but often comical.
@@ -69,7 +69,7 @@ h1 {
 					Pour yourself a glass of scotch and the kid a glass of milk and whip out the old scissors, glue, and print outs.
 					<b>Serving suggestion:</b> It might be a good idea to pour the Scotch in a clear glass so you don't hand out the wrong glass to the kids.
 					After the second helping, it might be prudent to stay away from the scissors.</li>
-					<li>Invent your own Post GIS card game.  The possiblities are only limited by your imagination.</li>
+					<li>Invent your own Post GIS card game.  The possibilities are only limited by your imagination.</li>
 				</ul>
 			<p style='page-break-before:always' />
 			<div id="divoutter"><div class='card_front'><div class='func'>WHAT IS POST GIS?</div></div><div class='card_back'><div class='func'>POSTGIS<br /><img src='images/PostGIS_logo.png' style='width:100px;height:100px' /></div></div>

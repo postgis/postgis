@@ -4,7 +4,7 @@ set client_min_messages to WARNING;
 \i ../load_features.sql
 \i ../hierarchy.sql
 
--- This edges perturbate the topology so that walking around the boundaries
+-- This edges perturb the topology so that walking around the boundaries
 -- of P1 and P2 may require walking on some of them
 SELECT 'E' || TopoGeo_addLinestring('city_data', 'LINESTRING(9 14, 15 10)');
 SELECT 'E' || TopoGeo_addLinestring('city_data', 'LINESTRING(21 14, 15 18)');

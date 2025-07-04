@@ -28,7 +28,7 @@
 #include "lwgeom_log.h"
 #include <string.h>
 
-/** convert decimal degress to radians */
+/** convert decimal degrees to radians */
 static void
 to_rad(POINT4D *pt)
 {
@@ -36,7 +36,7 @@ to_rad(POINT4D *pt)
 	pt->y *= M_PI/180.0;
 }
 
-/** convert radians to decimal degress */
+/** convert radians to decimal degrees */
 static void
 to_dec(POINT4D *pt)
 {
@@ -297,7 +297,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 
 		if (n_converted != n_points)
 		{
-			lwerror("ptarray_transform: converted (%d) != input (%d)", n_converted, n_points);
+			lwerror("ptarray_transform: converted (%zu) != input (%zu)", n_converted, n_points);
 			return LW_FAILURE;
 		}
 

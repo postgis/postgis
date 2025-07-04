@@ -1,4 +1,8 @@
 SET client_min_messages TO WARNING;
+
+-- Unexisted topology call
+SELECT 'unexistent_topo', topology.TopoGeo_LoadGeometry('t', 'POINT(0 0)'::geometry);
+
 SELECT NULL FROM topology.CreateTopology('t');
 
 CREATE FUNCTION t.print_counts(lbl text) RETURNS TEXT
@@ -10,6 +14,12 @@ AS $$
     ( SELECT count(*) FROM t.face WHERE face_id != 0 )
   );
 $$ LANGUAGE 'sql';
+
+-- Null call
+SELECT 'null', topology.TopoGeo_LoadGeometry('t', NULL::geometry);
+
+-- Empty
+SELECT 'empty', topology.TopoGeo_LoadGeometry('t', 'POINT EMPTY'::geometry);
 
 --
 --

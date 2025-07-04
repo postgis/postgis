@@ -30,12 +30,12 @@ DROP AGGREGATE IF EXISTS st_accum_old(geometry);
 DROP AGGREGATE IF EXISTS st_accum(geometry); -- Dropped in 3.0.0
 SELECT _postgis_drop_function_by_signature('pgis_geometry_accum_finalfn(internal)');
 
-DROP AGGREGATE IF EXISTS st_astwkb_agg(geometry, integer); -- temporarely introduced before 2.2.0 final
-DROP AGGREGATE IF EXISTS st_astwkb_agg(geometry, integer, bigint); -- temporarely introduced before 2.2.0 final
-DROP AGGREGATE IF EXISTS st_astwkbagg(geometry, integer); -- temporarely introduced before 2.2.0 final
-DROP AGGREGATE IF EXISTS st_astwkbagg(geometry, integer, bigint); -- temporarely introduced before 2.2.0 final
-DROP AGGREGATE IF EXISTS st_astwkbagg(geometry, integer, bigint, boolean); -- temporarely introduced before 2.2.0 final
-DROP AGGREGATE IF EXISTS st_astwkbagg(geometry, integer, bigint, boolean, boolean); -- temporarely introduced before 2.2.0 final
+DROP AGGREGATE IF EXISTS st_astwkb_agg(geometry, integer); -- temporarily introduced before 2.2.0 final
+DROP AGGREGATE IF EXISTS st_astwkb_agg(geometry, integer, bigint); -- temporarily introduced before 2.2.0 final
+DROP AGGREGATE IF EXISTS st_astwkbagg(geometry, integer); -- temporarily introduced before 2.2.0 final
+DROP AGGREGATE IF EXISTS st_astwkbagg(geometry, integer, bigint); -- temporarily introduced before 2.2.0 final
+DROP AGGREGATE IF EXISTS st_astwkbagg(geometry, integer, bigint, boolean); -- temporarily introduced before 2.2.0 final
+DROP AGGREGATE IF EXISTS st_astwkbagg(geometry, integer, bigint, boolean, boolean); -- temporarily introduced before 2.2.0 final
 
 -- BEGIN Management functions that now have default param for typmod --
 SELECT _postgis_drop_function_by_signature('AddGeometryColumn(varchar, varchar, varchar, varchar, integer, varchar, integer)');
@@ -183,16 +183,16 @@ SELECT _postgis_drop_function_by_signature('pgis_geometry_union_finalfn(pgis_abs
 DROP TYPE IF EXISTS pgis_abs CASCADE; -- TODO: use a _postgis_drop_type ?
 
 
-SELECT _postgis_drop_function_by_signature('st_astwkb(geometry, integer, bigint, bool, bool)'); -- temporarely introduced before 2.2.0 final
-SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_transfn(internal, geometry, integer)'); -- temporarely introduced before 2.2.0 final
-SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_transfn(internal, geometry, integer, bigint)'); -- temporarely introduced before 2.2.0 final
-SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_transfn(internal, geometry, integer, bigint, bool)'); -- temporarely introduced before 2.2.0 final
-SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_transfn(internal, geometry, integer, bigint, bool, bool)'); -- temporarely introduced before 2.2.0 final
-SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_finalfn(internal)'); -- temporarely introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('st_astwkb(geometry, integer, bigint, bool, bool)'); -- temporarily introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_transfn(internal, geometry, integer)'); -- temporarily introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_transfn(internal, geometry, integer, bigint)'); -- temporarily introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_transfn(internal, geometry, integer, bigint, bool)'); -- temporarily introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_transfn(internal, geometry, integer, bigint, bool, bool)'); -- temporarily introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_finalfn(internal)'); -- temporarily introduced before 2.2.0 final
 
-SELECT _postgis_drop_function_by_signature('st_seteffectivearea(geometry, double precision)'); -- temporarely introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('st_seteffectivearea(geometry, double precision)'); -- temporarily introduced before 2.2.0 final
 
-SELECT _postgis_drop_function_by_signature('geometry_distance_box_nd(geometry, geometry)'); -- temporarely introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('geometry_distance_box_nd(geometry, geometry)'); -- temporarily introduced before 2.2.0 final
 
 SELECT _postgis_drop_function_by_signature('_ST_DumpPoints(geometry, integer[])'); -- removed 2.4.0, but really should have been removed 2.1.0 when ST_DumpPoints got reimpmented in C
 
@@ -205,6 +205,7 @@ SELECT _postgis_drop_function_by_signature('ST_Distance(geography, geography)');
 SELECT _postgis_drop_function_by_signature('ST_Distance(geography, geography, float8, boolean)');
 SELECT _postgis_drop_function_by_signature('ST_Buffer(geometry, float8, cstring)');
 SELECT _postgis_drop_function_by_signature('ST_IsValidDetail(geometry)');
+SELECT _postgis_drop_function_by_signature('ST_RemoveIrrelevantPointsForView(geometry, box2d)'); -- temporarily introduced in 3.5.0dev, replaced by ST_RemoveIrrelevantPointsForView(geometry, box2d, boolean) in 3.5.0dev
 SELECT _postgis_drop_function_by_identity('ST_AsKML','int4, geometry, int4, text');
 SELECT _postgis_drop_function_by_identity('ST_AsGeoJson','int4, geometry, int4, int4');
 SELECT _postgis_drop_function_by_identity('_ST_AsGeoJson','int4, geometry, int4, int4');
@@ -240,6 +241,23 @@ SELECT _postgis_drop_function_by_signature('st_distance_sphere(geometry, geometr
 SELECT _postgis_drop_function_by_signature('pgis_geometry_union_transfn(internal, geometry)');
 SELECT _postgis_drop_function_by_signature('pgis_geometry_union_finalfn(internal)');
 
+-- Long Xact support dropped in 3.5.0
+-- See https://trac.osgeo.org/postgis/ticket/5723
+SELECT _postgis_drop_function_by_signature('UnlockRows(text)', '3.5.0');
+SELECT _postgis_drop_function_by_signature('LockRow(text, text, text, text, timestamp)', '3.5.0');
+SELECT _postgis_drop_function_by_signature('LockRow(text, text, text, text)', '3.5.0');
+SELECT _postgis_drop_function_by_signature('LockRow(text, text, text)', '3.5.0');
+SELECT _postgis_drop_function_by_signature('LockRow(text, text, text, timestamp)', '3.5.0');
+SELECT _postgis_drop_function_by_signature('AddAuth(text)', '3.5.0');
+SELECT _postgis_drop_function_by_signature('CheckAuth(text, text, text)', '3.5.0');
+SELECT _postgis_drop_function_by_signature('CheckAuth(text, text)', '3.5.0');
+SELECT _postgis_drop_function_by_signature('CheckAuthTrigger()', '3.5.0');
+SELECT _postgis_drop_function_by_signature('GetTransactionID()', '3.5.0');
+SELECT _postgis_drop_function_by_signature('EnableLongTransactions()', '3.5.0');
+SELECT _postgis_drop_function_by_signature('LongTransactionsEnabled()', '3.5.0');
+SELECT _postgis_drop_function_by_signature('DisableLongTransactions()', '3.5.0');
+
+
 -- #4394
 update pg_operator set oprcanhash = true, oprcanmerge = true where oprname = '=' and oprcode = 'geometry_eq'::regproc;
 
@@ -257,4 +275,233 @@ IF _postgis_scripts_pgsql_version()::integer >= 96 THEN
         END;
 END IF;
 END;
+$$;
+
+-- #5564 fix up the brin op classes for upgrades
+DO language plpgsql
+$$
+BEGIN
+    -- Check if the function is already associated with any operator class
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_catalog.pg_amproc
+        WHERE amproc::text = 'geom2d_brin_inclusion_merge' AND
+              amprocfamily IN (
+                  SELECT oid FROM pg_catalog.pg_opfamily
+                  WHERE opfname = 'brin_geometry_inclusion_ops_2d'
+              )
+    ) THEN
+        BEGIN
+            -- Create a temporary operator class for 'brin_geometry_inclusion_ops_2d_temp'
+            CREATE OPERATOR CLASS brin_geometry_inclusion_ops_2d_temp
+                FOR TYPE geometry USING brin AS
+                    FUNCTION 11 geom2d_brin_inclusion_merge(internal, internal);
+
+            -- find current and new operator family OIDs
+            WITH a AS (
+                SELECT n.oid AS oid_nfamily, o.oid AS oid_ofamily
+                FROM pg_catalog.pg_opfamily AS n
+                CROSS JOIN (
+                    SELECT oid
+                    FROM pg_catalog.pg_opfamily
+                    WHERE opfname = 'brin_geometry_inclusion_ops_2d_temp'
+                ) AS o
+                WHERE n.opfname = 'brin_geometry_inclusion_ops_2d'
+            ),
+            -- Update the amprocfamily in pg_amproc
+            amupdate AS (
+                UPDATE pg_catalog.pg_amproc AS amp
+                SET amprocfamily = a.oid_nfamily
+                FROM a
+                WHERE amp.amprocfamily = a.oid_ofamily AND
+                      amp.amproc::text = 'geom2d_brin_inclusion_merge'
+                RETURNING amp.*
+            )
+            -- Update dependencies in pg_depend to the existing operator class
+            UPDATE pg_depend AS d
+            SET refobjid = (
+                SELECT n.oid
+                FROM pg_catalog.pg_opclass AS n
+                WHERE opcname = 'brin_geometry_inclusion_ops_2d'
+            )
+            FROM amupdate
+            WHERE d.objid = amupdate.oid AND
+                  refobjid = (
+                      SELECT o.oid
+                      FROM pg_catalog.pg_opclass AS o
+                      WHERE opcname = 'brin_geometry_inclusion_ops_2d_temp'
+                  );
+
+            -- Drop the temporary operator family after use
+            DROP OPERATOR FAMILY brin_geometry_inclusion_ops_2d_temp USING brin;
+        EXCEPTION WHEN OTHERS THEN
+            RAISE EXCEPTION
+                'Could not add geom2d_brin_inclusion_merge to brin_geometry_inclusion_ops_2d class: %',
+                SQLERRM;
+        END;
+    END IF;
+
+    -- Check if the function is already associated with any operator class
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_catalog.pg_amproc
+        WHERE amproc::text = 'geom3d_brin_inclusion_merge'
+    ) THEN
+        BEGIN
+            -- Create a temporary operator class with the new function
+            CREATE OPERATOR CLASS brin_geometry_inclusion_ops_3d_temp
+            FOR TYPE geometry USING brin AS
+                FUNCTION 11 geom3d_brin_inclusion_merge(internal, internal);
+
+            -- Change the pg_amproc association to the existing opclass
+             WITH a AS (
+                SELECT n.oid AS oid_nfamily, o.oid AS oid_ofamily
+                FROM pg_catalog.pg_opfamily AS n
+                CROSS JOIN (
+                    SELECT oid FROM pg_catalog.pg_opfamily
+                    WHERE opfname = 'brin_geometry_inclusion_ops_3d_temp'
+                ) AS o
+                WHERE n.opfname = 'brin_geometry_inclusion_ops_3d'
+            ), amupdate AS (
+                UPDATE pg_catalog.pg_amproc AS amp
+                SET amprocfamily = a.oid_nfamily
+                FROM a
+                WHERE
+                    amp.amprocfamily = a.oid_ofamily
+                    AND amp.amproc::text = 'geom3d_brin_inclusion_merge'
+                RETURNING amp.*
+            )
+            -- Change the opclass dependency to the existing one
+            UPDATE pg_depend AS d
+            SET refobjid = (
+                SELECT n.oid
+                FROM pg_catalog.pg_opclass AS n
+                WHERE opcname = 'brin_geometry_inclusion_ops_3d'
+            )
+            FROM amupdate
+            WHERE d.objid = amupdate.oid AND
+                  refobjid = (
+                    SELECT o.oid
+                    FROM pg_catalog.pg_opclass AS o
+                    WHERE opcname = 'brin_geometry_inclusion_ops_3d_temp'
+                );
+
+            -- Dropping the autogenerated temporary family which cascades to temporary class
+            DROP OPERATOR FAMILY brin_geometry_inclusion_ops_3d_temp USING brin;
+        EXCEPTION WHEN OTHERS THEN
+            RAISE EXCEPTION 'Could not add geom3d_brin_inclusion_merge to brin_geometry_inclusion_ops_3d class: %', SQLERRM;
+        END;
+    END IF;
+
+    -- Check if the function is already associated with any operator class
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_catalog.pg_amproc
+        WHERE amproc::text = 'geom4d_brin_inclusion_merge'
+    ) THEN
+        BEGIN
+            -- Create a temporary operator class with the new function
+            CREATE OPERATOR CLASS brin_geometry_inclusion_ops_4d_temp
+            FOR TYPE geometry USING brin AS
+                FUNCTION 11 geom4d_brin_inclusion_merge(internal, internal);
+
+            -- Change the pg_amproc association to the existing opclass
+             WITH a AS (
+                SELECT n.oid AS oid_nfamily, o.oid AS oid_ofamily
+                FROM pg_catalog.pg_opfamily AS n
+                CROSS JOIN (
+                    SELECT oid FROM pg_catalog.pg_opfamily
+                    WHERE opfname = 'brin_geometry_inclusion_ops_4d_temp'
+                ) AS o
+                WHERE n.opfname = 'brin_geometry_inclusion_ops_4d'
+            ) , amupdate AS (
+                UPDATE pg_catalog.pg_amproc AS amp
+                SET amprocfamily = a.oid_nfamily
+                FROM a
+                WHERE
+                    amp.amprocfamily = a.oid_ofamily
+                    AND amp.amproc::text = 'geom4d_brin_inclusion_merge'
+                RETURNING amp.*
+            )
+            -- Change the opclass dependency to the existing one
+            UPDATE pg_depend AS d
+            SET refobjid = (
+                SELECT n.oid
+                FROM pg_catalog.pg_opclass AS n
+                WHERE opcname = 'brin_geometry_inclusion_ops_4d'
+            )
+            FROM amupdate
+            WHERE d.objid = amupdate.oid AND
+                  refobjid = (
+                    SELECT o.oid
+                    FROM pg_catalog.pg_opclass AS o
+                    WHERE opcname = 'brin_geometry_inclusion_ops_4d_temp'
+                );
+
+            -- Dropping the autogenerated temporary family also drops the temporary class
+            DROP OPERATOR FAMILY brin_geometry_inclusion_ops_4d_temp USING brin;
+        EXCEPTION WHEN OTHERS THEN
+            RAISE EXCEPTION
+                'Could not add geom4d_brin_inclusion_merge to brin_geometry_inclusion_ops_4d class: %',
+                SQLERRM;
+        END;
+    END IF;
+
+-- geography brin
+    -- Check if the function 'geog_brin_inclusion_merge' already exists
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_catalog.pg_amproc
+        WHERE amproc::text = 'geog_brin_inclusion_merge'
+    ) THEN
+        BEGIN
+            -- Create a temporary operator class for 'brin_geography_inclusion_ops_temp'
+            CREATE OPERATOR CLASS brin_geography_inclusion_ops_temp
+                FOR TYPE geography USING brin AS
+                    FUNCTION 11 geog_brin_inclusion_merge(internal, internal);
+
+            -- find current and new operator family OIDs
+            WITH a AS (
+                SELECT n.oid AS oid_nfamily, o.oid AS oid_ofamily
+                FROM pg_catalog.pg_opfamily AS n
+                CROSS JOIN (
+                    SELECT oid
+                    FROM pg_catalog.pg_opfamily
+                    WHERE opfname = 'brin_geography_inclusion_ops_temp'
+                ) AS o
+                WHERE n.opfname = 'brin_geography_inclusion_ops'
+            ),
+            -- Update the amprocfamily in pg_amproc
+            amupdate AS (
+                UPDATE pg_catalog.pg_amproc AS amp
+                SET amprocfamily = a.oid_nfamily
+                FROM a
+                WHERE amp.amprocfamily = a.oid_ofamily AND
+                      amp.amproc::text = 'geog_brin_inclusion_merge'
+                RETURNING amp.*
+            )
+            -- Update dependencies in pg_depend to the existing operator class
+            UPDATE pg_depend AS d
+            SET refobjid = (
+                SELECT n.oid
+                FROM pg_catalog.pg_opclass AS n
+                WHERE opcname = 'brin_geography_inclusion_ops'
+            )
+            FROM amupdate
+            WHERE d.objid = amupdate.oid AND
+                  refobjid = (
+                      SELECT o.oid
+                      FROM pg_catalog.pg_opclass AS o
+                      WHERE opcname = 'brin_geography_inclusion_ops_temp'
+                  );
+
+            -- Drop the temporary operator family after use
+            DROP OPERATOR FAMILY brin_geography_inclusion_ops_temp USING brin;
+        EXCEPTION WHEN OTHERS THEN
+            RAISE EXCEPTION
+                'Could not add geog_brin_inclusion_merge to brin_geography_inclusion_ops class: %',
+                SQLERRM;
+        END;
+    END IF;
+END;
+
 $$;

@@ -412,10 +412,10 @@ FUNCTION	"collect(geometry, geometry)"	PUBLIC	DEPRECATE
 FUNCTION	"ST_collect(geometry, geometry)"	PUBLIC	KEEP	
 AGGREGATE	memcollect(	PUBLIC	DEPRECATE	
 AGGREGATE	ST_memcollect(	PUBLIC	KEEP	
-FUNCTION	"geom_accum (geometry[],geometry)"	PUBLIC	DELETE	superceded by new aggregator
-FUNCTION	"ST_geom_accum (geometry[],geometry)"	PUBLIC	DELETE	superceded by new aggregator
-FUNCTION	collect_garray (geometry[])	PUBLIC	DELETE	superceded by new aggregator
-FUNCTION	ST_collect_garray (geometry[])	PUBLIC	DELETE	superceded by new aggregator
+FUNCTION	"geom_accum (geometry[],geometry)"	PUBLIC	DELETE	superseded by new aggregator
+FUNCTION	"ST_geom_accum (geometry[],geometry)"	PUBLIC	DELETE	superseded by new aggregator
+FUNCTION	collect_garray (geometry[])	PUBLIC	DELETE	superseded by new aggregator
+FUNCTION	ST_collect_garray (geometry[])	PUBLIC	DELETE	superseded by new aggregator
 FUNCTION	ST_collect (geometry[])	PUBLIC	KEEP	
 AGGREGATE	MemGeomUnion (	PUBLIC	DEPRECATE	
 AGGREGATE	ST_MemUnion (	PUBLIC	KEEP	
@@ -433,7 +433,7 @@ AGGREGATE	ST_Accum (	PUBLIC	KEEP
 AGGREGATE	accum_old (	PUBLIC	DELETE	
 AGGREGATE	ST_accum_old (	PUBLIC	DELETE	
 FUNCTION	unite_garray (geometry[])	PUBLIC	DEPRECATE	
-FUNCTION	ST_unite_garray (geometry[])	PUBLIC	DEPRECATE	superceded by st_union(geometry[])
+FUNCTION	ST_unite_garray (geometry[])	PUBLIC	DEPRECATE	superseded by st_union(geometry[])
 FUNCTION	ST_Union (geometry[])	PUBLIC	KEEP	
 AGGREGATE	GeomUnion_Old (	PUBLIC	DELETE	
 AGGREGATE	ST_Union_Old (	PUBLIC	DELETE	

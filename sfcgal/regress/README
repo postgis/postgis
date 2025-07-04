@@ -2,7 +2,7 @@ These regress/sfcgal directory contains several tests closely based on
 current regress one. 
 
 Usually they should behave really the same (i.e with both backends)
-however some slightly differences beetween GEOS and SFCGAL backends 
+however some slightly differences between GEOS and SFCGAL backends
 are listed below:
 
 

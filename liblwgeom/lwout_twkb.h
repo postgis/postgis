@@ -39,7 +39,7 @@
 #include <limits.h>
 #include "bytebuffer.h"
 
-/* Maximum number of geometry dimmensions that internal arrays can hold */
+/* Maximum number of geometry dimensions that internal arrays can hold */
 #define MAX_N_DIMS 4
 
 #define MAX_BBOX_SIZE 64
@@ -79,7 +79,7 @@ typedef struct
 	int8_t prec_xy;
 	int8_t prec_z;
 	int8_t prec_m;
-	float factor[4]; /*What factor to multiply the coordiinates with to get the requested precision*/
+	float factor[4]; /*What factor to multiply the coordinates with to get the requested precision*/
 } TWKB_GLOBALS;
 
 typedef struct

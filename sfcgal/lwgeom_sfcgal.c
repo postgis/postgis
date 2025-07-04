@@ -40,72 +40,12 @@
  * This is required for builds against pgsql
  */
 PG_MODULE_MAGIC;
-#ifdef WIN32
-static void
-interruptCallback()
-{
-	if (UNBLOCKED_SIGNAL_QUEUE())
-		pgwin32_dispatch_queued_signals();
-}
-#endif
 
-static pqsigfunc coreIntHandler = 0;
-static void handleInterrupt(int sig);
-
-/*
- * Module load callback
- */
-void _PG_init(void);
-void
-_PG_init(void)
-{
-
-	coreIntHandler = pqsignal(SIGINT, handleInterrupt);
-
-#ifdef WIN32
-	GEOS_interruptRegisterCallback(interruptCallback);
-	lwgeom_register_interrupt_callback(interruptCallback);
-#endif
-
-	/* install PostgreSQL handlers */
-	pg_install_lwgeom_handlers();
-}
-
-/*
- * Module unload callback
- */
-void _PG_fini(void);
-void
-_PG_fini(void)
-{
-	elog(NOTICE, "Goodbye from PostGIS SFCGAL %s", POSTGIS_VERSION);
-	pqsignal(SIGINT, coreIntHandler);
-}
-
-static void
-handleInterrupt(int sig)
-{
-	/* NOTE: printf here would be dangerous, see
-	 * https://trac.osgeo.org/postgis/ticket/3644
-	 *
-	 * TODO: block interrupts during execution, to fix the problem
-	 */
-	/* printf("Interrupt requested\n"); fflush(stdout); */
-
-	/* request interruption of liblwgeom as well */
-	lwgeom_request_interrupt();
-
-	if (coreIntHandler)
-	{
-		(*coreIntHandler)(sig);
-	}
-}
-
-Datum postgis_sfcgal_version(PG_FUNCTION_ARGS);
-
+/* Prototypes */
 #if POSTGIS_SFCGAL_VERSION >= 10400
 Datum postgis_sfcgal_full_version(PG_FUNCTION_ARGS);
 #endif
+Datum postgis_sfcgal_version(PG_FUNCTION_ARGS);
 
 Datum sfcgal_from_ewkt(PG_FUNCTION_ARGS);
 Datum sfcgal_distance(PG_FUNCTION_ARGS);
@@ -137,11 +77,34 @@ Datum postgis_sfcgal_noop(PG_FUNCTION_ARGS);
 Datum sfcgal_convexhull3D(PG_FUNCTION_ARGS);
 Datum sfcgal_alphashape(PG_FUNCTION_ARGS);
 Datum sfcgal_optimalalphashape(PG_FUNCTION_ARGS);
+Datum sfcgal_simplify(PG_FUNCTION_ARGS);
 
 GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 char *text_to_cstring(const text *textptr);
+void _PG_init(void);
+void _PG_fini(void);
+
 
 static int __sfcgal_init = 0;
+
+
+/* Module load callback */
+void
+_PG_init(void)
+{
+	/* install PostgreSQL handlers */
+	pg_install_lwgeom_handlers();
+	elog(DEBUG1, "PostGIS SFCGAL %s loaded", POSTGIS_VERSION);
+}
+
+
+/* Module unload callback */
+void
+_PG_fini(void)
+{
+	elog(NOTICE, "Goodbye from PostGIS SFCGAL %s", POSTGIS_VERSION);
+}
+
 
 void
 sfcgal_postgis_init(void)
@@ -433,21 +396,23 @@ sfcgal_straight_skeleton(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(input, 0);
 
 	use_m_as_distance = PG_GETARG_BOOL(1);
-	if ( ( POSTGIS_SFCGAL_VERSION < 10308) && use_m_as_distance) {
-		lwpgnotice("The SFCGAL version this PostGIS binary "
-							"was compiled against (%d) doesn't support "
-							"'is_measured' argument in straight_skeleton "
-							"function (1.3.8+ required) "
-						  "fallback to function not using m as distance.",
-							POSTGIS_SFCGAL_VERSION);
+	if ((POSTGIS_SFCGAL_VERSION < 10308) && use_m_as_distance)
+	{
+		lwpgnotice(
+		    "The SFCGAL version this PostGIS binary "
+		    "was compiled against (%d) doesn't support "
+		    "'is_measured' argument in straight_skeleton "
+		    "function (1.3.8+ required) "
+		    "fallback to function not using m as distance.",
+		    POSTGIS_SFCGAL_VERSION);
 		use_m_as_distance = false;
 	}
 
-  if ( use_m_as_distance )
-  {
+	if (use_m_as_distance)
+	{
 		result = sfcgal_geometry_straight_skeleton_distance_in_m(geom);
 	}
-  else
+	else
 	{
 		result = sfcgal_geometry_straight_skeleton(geom);
 	}
@@ -1164,6 +1129,8 @@ sfcgal_extrudestraightskeleton(PG_FUNCTION_ARGS)
 	    POSTGIS_SFCGAL_VERSION);
 	PG_RETURN_NULL();
 #else /* POSTGIS_SFCGAL_VERSION >= 10500 */
+
+
 	GSERIALIZED *input, *output;
 	sfcgal_geometry_t *geom;
 	sfcgal_geometry_t *result;
@@ -1174,6 +1141,18 @@ sfcgal_extrudestraightskeleton(PG_FUNCTION_ARGS)
 
 	input = PG_GETARG_GSERIALIZED_P(0);
 	srid = gserialized_get_srid(input);
+#if POSTGIS_SFCGAL_VERSION < 20200
+	if (gserialized_is_empty(input))
+	{
+		result = sfcgal_polyhedral_surface_create();
+		output = SFCGALGeometry2POSTGIS(result, 0, srid);
+		sfcgal_geometry_delete(result);
+
+		PG_FREE_IF_COPY(input, 0);
+		PG_RETURN_POINTER(output);
+	}
+#endif
+
 	geom = POSTGIS2SFCGALGeometry(input);
 	PG_FREE_IF_COPY(input, 0);
 
@@ -1272,6 +1251,574 @@ sfcgal_visibility_segment(PG_FUNCTION_ARGS)
 	output = SFCGALGeometry2POSTGIS(result, 0, srid);
 	sfcgal_geometry_delete(result);
 
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_rotate);
+Datum
+sfcgal_rotate(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20000
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_rotate' function (requires SFCGAL 2.0.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20000 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	double angle;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	angle = PG_GETARG_FLOAT8(1);
+	srid = gserialized_get_srid(input);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_geometry_rotate(geom, angle);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_rotate_2d);
+Datum
+sfcgal_rotate_2d(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20000
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_rotate_2d' function (requires SFCGAL 2.0.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20000 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	double angle, cx, cy;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	angle = PG_GETARG_FLOAT8(1);
+	cx = PG_GETARG_FLOAT8(2);
+	cy = PG_GETARG_FLOAT8(3);
+	srid = gserialized_get_srid(input);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_geometry_rotate_2d(geom, angle, cx, cy);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_rotate_3d);
+Datum
+sfcgal_rotate_3d(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20000
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_rotate_3d' function (requires SFCGAL 2.0.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20000 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	double angle, ax, ay, az;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	angle = PG_GETARG_FLOAT8(1);
+	ax = PG_GETARG_FLOAT8(2);
+	ay = PG_GETARG_FLOAT8(3);
+	az = PG_GETARG_FLOAT8(4);
+	srid = gserialized_get_srid(input);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_geometry_rotate_3d(geom, angle, ax, ay, az);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 1, srid); // Force 3D output
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_rotate_x);
+Datum
+sfcgal_rotate_x(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20000
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_rotate_x' function (requires SFCGAL 2.0.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20000 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	double angle;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	angle = PG_GETARG_FLOAT8(1);
+	srid = gserialized_get_srid(input);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_geometry_rotate_x(geom, angle);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 1, srid); // Force 3D output
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_rotate_y);
+Datum
+sfcgal_rotate_y(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20000
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_rotate_y' function (requires SFCGAL 2.0.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20000 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	double angle;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	angle = PG_GETARG_FLOAT8(1);
+	srid = gserialized_get_srid(input);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_geometry_rotate_y(geom, angle);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 1, srid); // Force 3D output
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_rotate_z);
+Datum
+sfcgal_rotate_z(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20000
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_rotate_z' function (requires SFCGAL 2.0.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20000 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	double angle;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	angle = PG_GETARG_FLOAT8(1);
+	srid = gserialized_get_srid(input);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_geometry_rotate_z(geom, angle);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 1, srid); // Force 3D output
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_scale);
+Datum
+sfcgal_scale(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20000
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_scale' function (requires SFCGAL 2.0.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20000 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	double scale_factor;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	scale_factor = PG_GETARG_FLOAT8(1);
+	srid = gserialized_get_srid(input);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_geometry_scale(geom, scale_factor);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_scale_3d);
+Datum
+sfcgal_scale_3d(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20000
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_scale_3d' function (requires SFCGAL 2.0.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20000 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	double sx, sy, sz;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	sx = PG_GETARG_FLOAT8(1);
+	sy = PG_GETARG_FLOAT8(2);
+	sz = PG_GETARG_FLOAT8(3);
+	srid = gserialized_get_srid(input);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_geometry_scale_3d(geom, sx, sy, sz);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 1, srid); // Force 3D output
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_scale_3d_around_center);
+Datum
+sfcgal_scale_3d_around_center(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20000
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_scale_3d_around_center' function (requires SFCGAL 2.0.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20000 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	double sx, sy, sz, cx, cy, cz;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	sx = PG_GETARG_FLOAT8(1);
+	sy = PG_GETARG_FLOAT8(2);
+	sz = PG_GETARG_FLOAT8(3);
+	cx = PG_GETARG_FLOAT8(4);
+	cy = PG_GETARG_FLOAT8(5);
+	cz = PG_GETARG_FLOAT8(6);
+	srid = gserialized_get_srid(input);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_geometry_scale_3d_around_center(geom, sx, sy, sz, cx, cy, cz);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 1, srid); // Force 3D output
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_translate_2d);
+Datum
+sfcgal_translate_2d(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20000
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_translate_2d' function (requires SFCGAL 2.0.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20000 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	double dx, dy;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P_COPY(0);
+	dx = PG_GETARG_FLOAT8(1);
+	dy = PG_GETARG_FLOAT8(2);
+	srid = gserialized_get_srid(input);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+
+	result = sfcgal_geometry_translate_2d(geom, dx, dy);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_FREE_IF_COPY(input, 0);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_translate_3d);
+Datum
+sfcgal_translate_3d(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20000
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_translate_3d' function (requires SFCGAL 2.0.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20000 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	double dx, dy, dz;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P_COPY(0);
+	dx = PG_GETARG_FLOAT8(1);
+	dy = PG_GETARG_FLOAT8(2);
+	dz = PG_GETARG_FLOAT8(3);
+	srid = gserialized_get_srid(input);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+
+	result = sfcgal_geometry_translate_3d(geom, dx, dy, dz);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 1, srid); // Force 3D output
+	sfcgal_geometry_delete(result);
+
+	PG_FREE_IF_COPY(input, 0);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_straight_skeleton_partition);
+Datum
+sfcgal_straight_skeleton_partition(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20000
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_straight_skeleton_partition' function (requires SFCGAL 2.0.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20000 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	srid_t srid;
+	bool auto_orientation;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	auto_orientation = PG_GETARG_BOOL(1);
+	srid = gserialized_get_srid(input);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_geometry_straight_skeleton_partition(geom, auto_orientation);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_buffer3d);
+Datum
+sfcgal_buffer3d(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20000
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_buffer3d' function (requires SFCGAL 2.0.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20000 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom = NULL, *result;
+	double radius;
+	int segments;
+	int buffer_type_int;
+	sfcgal_buffer3d_type_t buffer_type;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	radius = PG_GETARG_FLOAT8(1);
+	segments = PG_GETARG_INT32(2);
+	buffer_type_int = PG_GETARG_INT32(3);
+	srid = gserialized_get_srid(input);
+
+	if (buffer_type_int < 0 || buffer_type_int > 2)
+		ereport(ERROR, (errmsg("Invalid buffer type")));
+
+	buffer_type = (sfcgal_buffer3d_type_t)buffer_type_int;
+
+	if (gserialized_is_empty(input))
+	{
+		result = sfcgal_polyhedral_surface_create();
+	}
+	else
+	{
+
+		geom = POSTGIS2SFCGALGeometry(input);
+		PG_FREE_IF_COPY(input, 0);
+		result = sfcgal_geometry_buffer3d(geom, radius, segments, buffer_type);
+		sfcgal_geometry_delete(geom);
+	}
+
+	output = SFCGALGeometry2POSTGIS(result, 1, srid); // force 3d output
+	sfcgal_geometry_delete(result);
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_simplify);
+Datum
+sfcgal_simplify(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20100
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_simplify' function (requires SFCGAL 2.1.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20100 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	double threshold;
+	bool preserveTopology;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	threshold = PG_GETARG_FLOAT8(1);
+	preserveTopology = PG_GETARG_BOOL(2);
+	srid = gserialized_get_srid(input);
+
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_geometry_simplify(geom, threshold, preserveTopology);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_alphawrapping_3d);
+Datum
+sfcgal_alphawrapping_3d(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20100
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_alphawrapping3d' function (requires SFCGAL 2.1.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 20100 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom = NULL, *result;
+	size_t relative_alpha;
+	size_t relative_offset;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	relative_alpha = (size_t)PG_GETARG_INT32(1);
+	relative_offset = (size_t)PG_GETARG_INT32(2);
+	srid = gserialized_get_srid(input);
+
+	if (gserialized_is_empty(input))
+	{
+		result = sfcgal_polyhedral_surface_create();
+	}
+	else
+	{
+
+		geom = POSTGIS2SFCGALGeometry(input);
+		PG_FREE_IF_COPY(input, 0);
+		result = sfcgal_geometry_alpha_wrapping_3d(geom, relative_alpha, relative_offset);
+		sfcgal_geometry_delete(geom);
+	}
+
+	output = SFCGALGeometry2POSTGIS(result, 1, srid); // force 3d output
+	sfcgal_geometry_delete(result);
 	PG_RETURN_POINTER(output);
 #endif
 }

@@ -45,12 +45,12 @@ typedef struct STDADDR_s {  // define as required
    char *unit;
 } STDADDR;
 
-LEXICON * lex_init();
+LEXICON * lex_init(ERR_PARAM *err_p);
 int lex_add_entry(LEXICON *lex, int seq, char *word, char
 *stdword, SYMB token);
 void lex_free(LEXICON *lex);
 
-RULES *rules_init();
+RULES *rules_init(ERR_PARAM *err_p);
 int rules_add_rule(RULES *rules, int num, int *rule);
 int rules_add_rule_from_str(RULES *rules, char *rule);
 int rules_ready(RULES *rules);

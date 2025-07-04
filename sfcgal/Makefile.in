@@ -46,7 +46,7 @@ SQL_OBJS = \
 
 # Objects to build using PGXS
 
-OBJS = lwgeom_sfcgal.o
+OBJS = lwgeom_sfcgal.o postgis_sfcgal_legacy.o
 
 # Libraries to link into the module (proj, geos)
 #

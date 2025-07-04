@@ -120,7 +120,7 @@ topology_upgrade.sql.in:  topology.sql ../utils/create_upgrade.pl
 
 topology_upgrade.sql: ../postgis/common_before_upgrade.sql topology_before_upgrade.sql topology_upgrade.sql.in topology_after_upgrade.sql ../postgis/common_after_upgrade.sql
 	echo "BEGIN;" > $@
-	cat $^ > $@
+	cat $^ >> $@
 	echo "COMMIT;" >> $@
 
 topology.sql: \
@@ -142,10 +142,13 @@ topology.sql: \
 	sql/manage/FindLayer.sql.in \
 	sql/manage/FindTopology.sql.in \
 	sql/manage/ManageHelper.sql.in \
+	sql/manage/MakeTopologyPrecise.sql.in \
+	sql/manage/TotalTopologySize.sql.in \
 	sql/manage/populate_topology_layer.sql.in \
 	sql/manage/RenameTopology.sql.in \
 	sql/manage/TopologySummary.sql.in \
 	sql/manage/ValidateTopologyRelation.sql.in \
+	sql/manage/ValidateTopologyPrecision.sql.in \
 	sql/manage/ValidateTopology.sql.in \
 	sql/topoelement/topoelement_agg.sql.in \
 	sql/topogeometry/type.sql.in \

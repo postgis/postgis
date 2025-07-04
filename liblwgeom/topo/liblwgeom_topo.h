@@ -209,7 +209,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param fields fields to be filled in the returned structure, see
    *               LWT_COL_NODE_* macros
    * @param limit max number of nodes to return, 0 for no limit, -1
-   *              to only check for existance if a matching row.
+   *              to only check for existence if a matching row.
    *
    * @return an array of nodes or null in the following cases:
    *         - limit=-1 ("numelems" is set to 1 if found, 0 otherwise)
@@ -324,7 +324,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param upd_fields fields to be updated for the selected edges,
    *                   see LWT_COL_EDGE_* macros
    * @param exc_edge an LWT_ISO_EDGE object with exclusion fields set,
-   *                 can be NULL if no exlusion condition exists.
+   *                 can be NULL if no exclusion condition exists.
    * @param exc_fields fields used for excluding edges from the update,
    *                   see LWT_COL_EDGE_* macros
    *
@@ -1061,7 +1061,7 @@ LWT_ELEMID lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol);
  *               line was split into, or -1 on error
  *               (liblwgeom error handler will be invoked with error message)
  *
- * @return an array of <nedges> edge identifiers that sewed togheter
+ * @return an array of <nedges> edge identifiers that sewed together
  *         will build up the input linestring (after snapping). Caller
  *         will need to free the array using lwfree(), if not null.
  */
@@ -1085,7 +1085,7 @@ LWT_ELEMID* lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol,
  *               line was split into, or -1 on error
  *               (liblwgeom error handler will be invoked with error message)
  *
- * @return an array of <nedges> edge identifiers that sewed togheter
+ * @return an array of <nedges> edge identifiers that sewed together
  *         will build up the input linestring (after snapping). Caller
  *         will need to free the array using lwfree(), if not null.
  */
@@ -1136,7 +1136,7 @@ int lwt_Polygonize(LWT_TOPOLOGY* topo);
  *               polygon was split into, or -1 on error
  *               (liblwgeom error handler will be invoked with error message)
  *
- * @return an array of <nfaces> face identifiers that sewed togheter
+ * @return an array of <nfaces> face identifiers that sewed together
  *         will build up the input polygon (after snapping). Caller
  *         will need to free the array using lwfree(), if not null.
  */

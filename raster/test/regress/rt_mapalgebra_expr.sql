@@ -128,6 +128,11 @@ SELECT ST_Value(rast, 1, 1),
     ST_Value(ST_MapAlgebra(rast, 1, NULL, '[rast]/0'), 1, 1)
 FROM ST_TestRaster(0, 0, 10) rast;
 
+-- Test being cheeky with rast2 in a single-rast invocation
+SELECT ST_Value(rast, 1, 1),
+    ST_Value(ST_MapAlgebra(rast, 1, NULL, '[rast2.val]+1'), 1, 1)
+FROM ST_TestRaster(0, 0, 10) rast;
+
 -- Test evaluations to null (see #1523)
 WITH op AS ( select rast AS rin,
   ST_MapAlgebra(rast, 1, NULL, 'SELECT g from (SELECT NULL::double precision as g) as foo', 2)

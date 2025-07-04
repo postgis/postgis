@@ -2,50 +2,50 @@
 <section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Temporal">
     <title>Trajectory Functions</title><info>
     <abstract>
-			<para>These functions support working with trajectories.
-			A trajectory is a linear geometry with increasing measures (M value) on each coordinate.
-			Spatio-temporal data can be modeled by using relative times (such as the epoch)
-			as the measure values.
-			</para>
+      <para>These functions support working with trajectories.
+      A trajectory is a linear geometry with increasing measures (M value) on each coordinate.
+      Spatio-temporal data can be modeled by using relative times (such as the epoch)
+      as the measure values.
+      </para>
     </abstract>
     </info>
- 	  
 
-		<refentry xml:id="ST_IsValidTrajectory">
 
-		  <refnamediv>
-			<refname>ST_IsValidTrajectory</refname>
-			<refpurpose>Tests if the geometry is a valid trajectory.</refpurpose>
-		  </refnamediv>
+    <refentry xml:id="ST_IsValidTrajectory">
 
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>boolean <function>ST_IsValidTrajectory</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
+      <refnamediv>
+      <refname>ST_IsValidTrajectory</refname>
+      <refpurpose>Tests if the geometry is a valid trajectory.</refpurpose>
+      </refnamediv>
 
-		  <refsection>
-			<title>Description</title>
-			<para>
+      <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>boolean <function>ST_IsValidTrajectory</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+      <title>Description</title>
+      <para>
 Tests if a geometry encodes a valid trajectory.
 A valid trajectory is represented as a <varname>LINESTRING</varname>
 with measures (M values).
 The measure values must increase from each vertex to the next.
-			</para>
-			<para>
+      </para>
+      <para>
 Valid trajectories are expected as input to spatio-temporal functions
 like <xref linkend="ST_ClosestPointOfApproach"/>
-			</para>
-			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
-			<para>&Z_support;</para>
-		  </refsection>
+      </para>
+      <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+      <para>&Z_support;</para>
+      </refsection>
 
 
-		  <refsection>
-			<title>Examples</title>
+      <refsection>
+      <title>Examples</title>
 <programlisting>
 -- A valid trajectory
 SELECT ST_IsValidTrajectory(ST_MakeLine(
@@ -61,58 +61,58 @@ NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
 ----------------------
  f
 </programlisting>
-		  </refsection>
+      </refsection>
 
-		  <refsection>
-			<title>See Also</title>
-			<para>
+      <refsection>
+      <title>See Also</title>
+      <para>
 <xref linkend="ST_ClosestPointOfApproach"/>
-			</para>
-		  </refsection>
-		</refentry>
+      </para>
+      </refsection>
+    </refentry>
 
-		<refentry xml:id="ST_ClosestPointOfApproach">
+    <refentry xml:id="ST_ClosestPointOfApproach">
 
-		  <refnamediv>
-			<refname>ST_ClosestPointOfApproach</refname>
-			<refpurpose>
+      <refnamediv>
+      <refname>ST_ClosestPointOfApproach</refname>
+      <refpurpose>
 Returns a measure at the closest point of approach of two trajectories.
       </refpurpose>
-		  </refnamediv>
+      </refnamediv>
 
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>float8 <function>ST_ClosestPointOfApproach</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef>
-				<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
+      <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>float8 <function>ST_ClosestPointOfApproach</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>track1</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+      </refsynopsisdiv>
 
-		  <refsection>
-			<title>Description</title>
+      <refsection>
+      <title>Description</title>
 
-			<para>
+      <para>
 Returns the smallest measure at which points interpolated along the given
 trajectories are the least distance apart.
       </para>
-			<para>
+      <para>
 Inputs must be valid trajectories as
 checked by <xref linkend="ST_IsValidTrajectory"/>. Null is returned if
 the trajectories do not overlap in their M ranges.
-			</para>
+      </para>
 
-			<para>
+      <para>
 To obtain the actual points at the computed measure use <xref linkend="ST_LocateAlong"/> .
-			</para>
+      </para>
 
-			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
-			<para>&Z_support;</para>
-		  </refsection>
+      <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+      <para>&Z_support;</para>
+      </refsection>
 
-		  <refsection>
-			<title>Examples</title>
+      <refsection>
+      <title>Examples</title>
 <programlisting>
 -- Return the time in which two objects moving between 10:00 and 11:00
 -- are closest to each other and their distance at that point
@@ -133,65 +133,65 @@ WITH inp AS ( SELECT
   FROM inp, cpa
 )
 SELECT to_timestamp(m) t,
-       ST_Distance(pa,pb) distance,
+       ST_3DDistance(pa,pb) distance,
        ST_AsText(pa, 2) AS pa, ST_AsText(pb, 2) AS pb
 FROM points, cpa;
 
                t               |      distance      |                  pa                  |                   pb                   
 -------------------------------+--------------------+--------------------------------------+----------------------------------------
- 2015-05-26 10:45:31.034483-07 | 1.9603683315139542 | POINT ZM (7.59 0 3.79 1432662331.03) | POINT ZM (9.1 1.24 3.93 1432662331.03)
+ 2015-05-26 10:45:31.034483-07 | 1.9652147377620688 | POINT ZM (7.59 0 3.79 1432662331.03) | POINT ZM (9.1 1.24 3.93 1432662331.03)
  </programlisting>
-		  </refsection>
+      </refsection>
 
-		  <refsection>
-			<title>See Also</title>
-			<para>
+      <refsection>
+      <title>See Also</title>
+      <para>
 <xref linkend="ST_IsValidTrajectory"/>,
 <xref linkend="ST_DistanceCPA"/>,
 <xref linkend="ST_LocateAlong"/>,
 <xref linkend="ST_AddMeasure"/>
-			</para>
-		  </refsection>
-		</refentry>
+      </para>
+      </refsection>
+    </refentry>
 
-		<refentry xml:id="ST_DistanceCPA">
+    <refentry xml:id="ST_DistanceCPA">
 
-		  <refnamediv>
-			<refname>ST_DistanceCPA</refname>
-			<refpurpose>
+      <refnamediv>
+      <refname>ST_DistanceCPA</refname>
+      <refpurpose>
 Returns the distance between the closest point of approach of two trajectories.
       </refpurpose>
-		  </refnamediv>
+      </refnamediv>
 
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>float8 <function>ST_DistanceCPA</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef>
-				<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
+      <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>float8 <function>ST_DistanceCPA</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>track1</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+      </refsynopsisdiv>
 
-		  <refsection>
-			<title>Description</title>
+      <refsection>
+      <title>Description</title>
 
-			<para>
+      <para>
 Returns the distance (in 2D) between two trajectories at their closest point of approach.
       </para>
-			<para>
+      <para>
 Inputs must be valid trajectories as checked by
 <xref linkend="ST_IsValidTrajectory"/>.
 Null is returned if the trajectories do not overlap in their M ranges.
-			</para>
+      </para>
 
-			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
-			<para>&Z_support;</para>
-		  </refsection>
+      <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+      <para>&Z_support;</para>
+      </refsection>
 
 
-		  <refsection>
-			<title>Examples</title>
+      <refsection>
+      <title>Examples</title>
 <programlisting>
 -- Return the minimum distance of two objects moving between 10:00 and 11:00
 WITH inp AS ( SELECT
@@ -207,62 +207,62 @@ WITH inp AS ( SELECT
 SELECT ST_DistanceCPA(a,b) distance FROM inp;
 
      distance
-------------------
- 1.96036833151395
+-------------------
+ 1.965214737762069
 </programlisting>
-		  </refsection>
+      </refsection>
 
-		  <refsection>
-			<title>See Also</title>
-			<para>
+      <refsection>
+      <title>See Also</title>
+      <para>
 <xref linkend="ST_IsValidTrajectory"/>,
 <xref linkend="ST_ClosestPointOfApproach"/>,
 <xref linkend="ST_AddMeasure"/>,
 <xref linkend="geometry_distance_cpa"/>
-			</para>
-		  </refsection>
-		</refentry>
+      </para>
+      </refsection>
+    </refentry>
 
-		<refentry xml:id="ST_CPAWithin">
+    <refentry xml:id="ST_CPAWithin">
 
-		  <refnamediv>
-			<refname>ST_CPAWithin</refname>
-			<refpurpose>
+      <refnamediv>
+      <refname>ST_CPAWithin</refname>
+      <refpurpose>
 Tests if the closest point of approach of two trajectories
 is within the specified distance.
       </refpurpose>
-		  </refnamediv>
+      </refnamediv>
 
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>boolean <function>ST_CPAWithin</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef>
-				<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>
-				<paramdef><type>float8 </type> <parameter>dist</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
+      <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>boolean <function>ST_CPAWithin</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>track1</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>
+        <paramdef><type>float8 </type> <parameter>dist</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+      </refsynopsisdiv>
 
-		  <refsection>
-			<title>Description</title>
+      <refsection>
+      <title>Description</title>
 
-			<para>
+      <para>
 Tests whether two moving objects have ever been closer than the specified distance.
       </para>
-			<para>
+      <para>
 Inputs must be valid trajectories as checked by
 <xref linkend="ST_IsValidTrajectory"/>.
 False is returned if the trajectories do not overlap in their M ranges.
-			</para>
+      </para>
 
-			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
-			<para>&Z_support;</para>
-		  </refsection>
+      <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+      <para>&Z_support;</para>
+      </refsection>
 
 
-		  <refsection>
-			<title>Examples</title>
+      <refsection>
+      <title>Examples</title>
 <programlisting>
 WITH inp AS ( SELECT
   ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,
@@ -280,18 +280,18 @@ SELECT ST_CPAWithin(a,b,2), ST_DistanceCPA(a,b) distance FROM inp;
 --------------+------------------
  t            | 1.96521473776207
 </programlisting>
-		  </refsection>
+      </refsection>
 
-		  <!-- Optionally add a "See Also" section -->
-		  <refsection>
-			<title>See Also</title>
-			<para>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+      <title>See Also</title>
+      <para>
 <xref linkend="ST_IsValidTrajectory"/>,
 <xref linkend="ST_ClosestPointOfApproach"/>,
 <xref linkend="ST_DistanceCPA"/>,
 <xref linkend="geometry_distance_cpa"/>
-			</para>
-		  </refsection>
-		</refentry>
+      </para>
+      </refsection>
+    </refentry>
 
   </section>

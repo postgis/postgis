@@ -8,7 +8,7 @@ PGVER=`pg_config --version | awk '{print $2}'`
 PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//' | sed 's/\(alpha\|beta\|rc\).*//' )
 SKIP_LABEL_REGEXP=
 echo "INFO: PostgreSQL version: ${PGVER} [${PGVER_MAJOR}]"
-
+MAKE=$(which gmake make | head -1)
 BUILDDIR=$PWD # TODO: allow override ?
 
 cd $(dirname $0)/..
@@ -107,13 +107,15 @@ minimum_postgis_version_for_postgresql_major_version()
 13:3.0
 14:3.1
 15:3.2
+16:3.3
+17:3.3
 EOF
   fi
 
   # Drop patch-level number from PostgreSQL version
   minsupported=`grep ^${pgver}: ${supportfile} | cut -d: -f2`
   test -n "${minsupported}" || {
-    echo "Cannot detemine minimum supported PostGIS version for PostgreSQL major version ${pgver}" >&2
+    echo "Cannot determine minimum supported PostGIS version for PostgreSQL major version ${pgver}" >&2
     exit 1
   }
   echo "${minsupported}"
@@ -193,6 +195,9 @@ fi
 if test -f postgis_raster--${to_version}.sql; then
   INSTALLED_EXTENSIONS="$INSTALLED_EXTENSIONS postgis_raster"
 fi
+if test -f postgis_sfcgal--${to_version}.sql; then
+  INSTALLED_EXTENSIONS="$INSTALLED_EXTENSIONS postgis_sfcgal"
+fi
 
 echo "INFO: installed extensions: $INSTALLED_EXTENSIONS"
 
@@ -214,7 +219,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
   elif test "${EXT}" = "postgis_raster"; then
     REGDIR=${BUILDDIR}/raster/test/regress
   elif test "${EXT}" = "postgis_sfcgal"; then
-    REGDIR=${BUILDDIR}/sfcgal/test/regress
+    REGDIR=${BUILDDIR}/sfcgal/regress
   else
     echo "SKIP: don't know where to find regress tests for extension ${EXT}"
   fi
@@ -247,7 +252,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     fi
     echo "Testing ${test_label}"
     RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-    make -C ${REGDIR} check ${MAKE_ARGS} && {
+    ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
       echo "PASS: ${test_label}"
     } || {
       echo "FAIL: ${test_label}"
@@ -281,7 +286,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     fi
     echo "Testing ${test_label}"
     RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-    make -C ${REGDIR} check ${MAKE_ARGS} && {
+    ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
       echo "PASS: ${test_label}"
     } || {
       echo "FAIL: ${test_label}"
@@ -290,7 +295,8 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
   done
 
   # Check unpackaged->unpackaged upgrades (if target version == current version)
-  CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
+#  CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
+  CURRENTVERSION=$(grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | tr '\n' '.' | sed 's/\.$//')
 
   if test "${to_version}" != "${CURRENTVERSION}"; then #{
     echo "SKIP: ${EXT} script-based upgrades (${to_version_param} [${to_version}] does not match built version ${CURRENTVERSION})"
@@ -310,7 +316,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     if kept_label "${test_label}"; then #{
       echo "Testing ${test_label}"
       RUNTESTFLAGS="-v --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-      make -C ${REGDIR} check ${MAKE_ARGS} && {
+      ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
         echo "PASS: ${test_label}"
       } || {
         echo "FAIL: ${test_label}"
@@ -322,7 +328,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     if kept_label "${test_label}"; then #{
       echo "Testing ${test_label}"
       RUNTESTFLAGS="-v --dumprestore --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-      make -C ${REGDIR} check ${MAKE_ARGS} && {
+      ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
         echo "PASS: ${test_label}"
       } || {
         echo "FAIL: ${test_label}"

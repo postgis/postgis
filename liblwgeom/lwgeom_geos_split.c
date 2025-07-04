@@ -94,7 +94,7 @@ lwline_split_by_line(const LWLINE* lwline_in, const LWGEOM* blade_in)
 		g2 = gdiff; gdiff = NULL;
 	}
 
-	/* If interior intersecton is linear we can't split */
+	/* If interior intersection is linear we can't split */
 	ret = GEOSRelatePattern(g1, g2, "1********");
 	if ( 2 == ret )
 	{
@@ -422,7 +422,7 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWGEOM* blade_in)
 		GEOSGeom_destroy(g1_bounds);
 		GEOSGeom_destroy((GEOSGeometry*)vgeoms[0]);
 		GEOSGeom_destroy(polygons);
-		lwerror("%s [%s] Unexpected return from GEOSpolygonize", __FILE__, __LINE__);
+		lwerror("%s [%d] Unexpected return from GEOSpolygonize", __FILE__, __LINE__);
 		return 0;
 	}
 #endif

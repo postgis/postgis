@@ -25,6 +25,16 @@
 #include "lwgeom_sfcgal.h"
 #include <stdio.h>
 
+#if POSTGIS_SFCGAL_VERSION >= 20100
+#define sfcgal_triangulated_surface_num_triangles(g) sfcgal_triangulated_surface_num_patches((g))
+#define sfcgal_triangulated_surface_triangle_n(g, i) sfcgal_triangulated_surface_patch_n((g), (i))
+#define sfcgal_triangulated_surface_add_triangle(g, p) sfcgal_triangulated_surface_add_patch((g), (p))
+#define sfcgal_polyhedral_surface_num_polygons(g) sfcgal_polyhedral_surface_num_patches((g))
+#define sfcgal_polyhedral_surface_polygon_n(g, i) sfcgal_polyhedral_surface_patch_n((g), (i))
+#define sfcgal_geometry_collection_num_geometries(g) sfcgal_geometry_num_geometries((g))
+#define sfcgal_polyhedral_surface_add_polygon(g, p) sfcgal_polyhedral_surface_add_patch((g), (p))
+#endif
+
 static int SFCGAL_type_to_lwgeom_type(sfcgal_geometry_type_t type);
 static POINTARRAY *ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int force3D);
 static sfcgal_geometry_t *ptarray_to_SFCGAL(const POINTARRAY *pa, int type);
@@ -45,10 +55,11 @@ lwgeom_sfcgal_full_version()
 #if POSTGIS_SFCGAL_VERSION >= 10400
 	const char *version = sfcgal_full_version();
 #else
-	char *version = (char*)lwalloc(MAX_LENGTH_SFCGAL_FULL_VERSION);
-	snprintf(version, MAX_LENGTH_SFCGAL_FULL_VERSION,
-		"SFCGAL=\"%s\" CGAL=\"Unknown\" Boost=\"Unknown\"",
-		sfcgal_version());
+	char *version = (char *)lwalloc(MAX_LENGTH_SFCGAL_FULL_VERSION);
+	snprintf(version,
+		 MAX_LENGTH_SFCGAL_FULL_VERSION,
+		 "SFCGAL=\"%s\" CGAL=\"Unknown\" Boost=\"Unknown\"",
+		 sfcgal_version());
 #endif
 	return version;
 }
@@ -146,8 +157,7 @@ ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int want3d)
 
 	switch (sfcgal_geometry_type_id(geom))
 	{
-	case SFCGAL_TYPE_POINT:
-	{
+	case SFCGAL_TYPE_POINT: {
 		pa = ptarray_construct(want3d, is_measured, 1);
 		point.x = sfcgal_point_x(geom);
 		point.y = sfcgal_point_y(geom);
@@ -166,8 +176,7 @@ ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int want3d)
 	}
 	break;
 
-	case SFCGAL_TYPE_LINESTRING:
-	{
+	case SFCGAL_TYPE_LINESTRING: {
 		npoints = sfcgal_linestring_num_points(geom);
 		pa = ptarray_construct(want3d, is_measured, npoints);
 
@@ -192,8 +201,7 @@ ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int want3d)
 	}
 	break;
 
-	case SFCGAL_TYPE_TRIANGLE:
-	{
+	case SFCGAL_TYPE_TRIANGLE: {
 		pa = ptarray_construct(want3d, is_measured, 4);
 
 		for (i = 0; i < 4; i++)
@@ -225,86 +233,83 @@ ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int want3d)
 	return pa;
 }
 
-/*
+/**
+ * Create a SFCGAL point based on dimensional flags (XY, XYZ, XYM, XYZM).
+ */
+static sfcgal_geometry_t *
+create_sfcgal_point_by_dimensions(double x, double y, double z, double m, int is_3d, int is_measured)
+{
+#if POSTGIS_SFCGAL_VERSION >= 10500
+	if (is_3d && is_measured)
+		return sfcgal_point_create_from_xyzm(x, y, z, m);
+	else if (is_3d)
+		return sfcgal_point_create_from_xyz(x, y, z);
+	else if (is_measured)
+		return sfcgal_point_create_from_xym(x, y, m);
+	else
+		return sfcgal_point_create_from_xy(x, y);
+#else
+	(void)is_measured;
+	(void)m;
+	if (is_3d)
+		return sfcgal_point_create_from_xyz(x, y, z);
+	else
+		return sfcgal_point_create_from_xy(x, y);
+#endif
+}
+
+/**
  * Convert a PostGIS pointarray to SFCGAL structure
- *
- * Used for simple LWGEOM geometry POINT, LINESTRING, TRIANGLE
- * and POLYGON rings
  */
 static sfcgal_geometry_t *
 ptarray_to_SFCGAL(const POINTARRAY *pa, int type)
 {
-	POINT3DZ point;
-	int is_3d;
+	POINT4D point;
+	int is_3d, is_measured;
 	uint32_t i;
 
 	assert(pa);
 
 	is_3d = FLAGS_GET_Z(pa->flags) != 0;
+	is_measured = FLAGS_GET_M(pa->flags) != 0;
 
 	switch (type)
 	{
-	case POINTTYPE:
-	{
-		getPoint3dz_p(pa, 0, &point);
-		if (is_3d)
-			return sfcgal_point_create_from_xyz(point.x, point.y, point.z);
-		else
-			return sfcgal_point_create_from_xy(point.x, point.y);
+	case POINTTYPE: {
+		getPoint4d_p(pa, 0, &point);
+		return create_sfcgal_point_by_dimensions(point.x, point.y, point.z, point.m, is_3d, is_measured);
 	}
 	break;
-
-	case LINETYPE:
-	{
+	case LINETYPE: {
 		sfcgal_geometry_t *line = sfcgal_linestring_create();
-
 		for (i = 0; i < pa->npoints; i++)
 		{
-			getPoint3dz_p(pa, i, &point);
-			if (is_3d)
-			{
-				sfcgal_linestring_add_point(line,
-							    sfcgal_point_create_from_xyz(point.x, point.y, point.z));
-			}
-			else
-			{
-				sfcgal_linestring_add_point(line, sfcgal_point_create_from_xy(point.x, point.y));
-			}
+			getPoint4d_p(pa, i, &point);
+			sfcgal_linestring_add_point(
+			    line,
+			    create_sfcgal_point_by_dimensions(point.x, point.y, point.z, point.m, is_3d, is_measured));
 		}
-
 		return line;
 	}
 	break;
-
-	case TRIANGLETYPE:
-	{
+	case TRIANGLETYPE: {
 		sfcgal_geometry_t *triangle = sfcgal_triangle_create();
-
-		getPoint3dz_p(pa, 0, &point);
-		if (is_3d)
-			sfcgal_triangle_set_vertex_from_xyz(triangle, 0, point.x, point.y, point.z);
-		else
-			sfcgal_triangle_set_vertex_from_xy(triangle, 0, point.x, point.y);
-
-		getPoint3dz_p(pa, 1, &point);
-		if (is_3d)
-			sfcgal_triangle_set_vertex_from_xyz(triangle, 1, point.x, point.y, point.z);
-		else
-			sfcgal_triangle_set_vertex_from_xy(triangle, 1, point.x, point.y);
-
-		getPoint3dz_p(pa, 2, &point);
-		if (is_3d)
-			sfcgal_triangle_set_vertex_from_xyz(triangle, 2, point.x, point.y, point.z);
-		else
-			sfcgal_triangle_set_vertex_from_xy(triangle, 2, point.x, point.y);
-
+		for (i = 0; i < 3; i++)
+		{
+			getPoint4d_p(pa, i, &point);
+			sfcgal_geometry_t *vertex =
+			    create_sfcgal_point_by_dimensions(point.x, point.y, point.z, point.m, is_3d, is_measured);
+			if (vertex)
+			{
+				sfcgal_triangle_set_vertex(triangle, i, vertex);
+				sfcgal_geometry_delete(vertex);
+			}
+		}
 		return triangle;
 	}
 	break;
-
-	/* Other SFCGAL types should not be called directly ... */
 	default:
-		lwerror("ptarray_from_SFCGAL: Unknown Type");
+		lwerror("ptarray_to_SFCGAL: Unknown Type");
 		return NULL;
 	}
 }
@@ -327,8 +332,7 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t srid)
 
 	switch (sfcgal_geometry_type_id(geom))
 	{
-	case SFCGAL_TYPE_POINT:
-	{
+	case SFCGAL_TYPE_POINT: {
 		if (sfcgal_geometry_is_empty(geom))
 			return (LWGEOM *)lwpoint_construct_empty(srid, want3d, 0);
 
@@ -336,8 +340,7 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t srid)
 		return (LWGEOM *)lwpoint_construct(srid, NULL, pa);
 	}
 
-	case SFCGAL_TYPE_LINESTRING:
-	{
+	case SFCGAL_TYPE_LINESTRING: {
 		if (sfcgal_geometry_is_empty(geom))
 			return (LWGEOM *)lwline_construct_empty(srid, want3d, 0);
 
@@ -345,8 +348,7 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t srid)
 		return (LWGEOM *)lwline_construct(srid, NULL, pa);
 	}
 
-	case SFCGAL_TYPE_TRIANGLE:
-	{
+	case SFCGAL_TYPE_TRIANGLE: {
 		if (sfcgal_geometry_is_empty(geom))
 			return (LWGEOM *)lwtriangle_construct_empty(srid, want3d, 0);
 
@@ -354,8 +356,7 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t srid)
 		return (LWGEOM *)lwtriangle_construct(srid, NULL, pa);
 	}
 
-	case SFCGAL_TYPE_POLYGON:
-	{
+	case SFCGAL_TYPE_POLYGON: {
 		if (sfcgal_geometry_is_empty(geom))
 			return (LWGEOM *)lwpoly_construct_empty(srid, want3d, 0);
 
@@ -373,8 +374,7 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t srid)
 	case SFCGAL_TYPE_MULTILINESTRING:
 	case SFCGAL_TYPE_MULTIPOLYGON:
 	case SFCGAL_TYPE_MULTISOLID:
-	case SFCGAL_TYPE_GEOMETRYCOLLECTION:
-	{
+	case SFCGAL_TYPE_GEOMETRYCOLLECTION: {
 		ngeoms = sfcgal_geometry_collection_num_geometries(geom);
 		LWGEOM **geoms = NULL;
 		if (ngeoms)
@@ -415,8 +415,7 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t srid)
 	/* TODO curve types handling */
 #endif
 
-	case SFCGAL_TYPE_POLYHEDRALSURFACE:
-	{
+	case SFCGAL_TYPE_POLYHEDRALSURFACE: {
 		ngeoms = sfcgal_polyhedral_surface_num_polygons(geom);
 
 		LWGEOM **geoms = NULL;
@@ -433,8 +432,7 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t srid)
 	}
 
 	/* Solid is map as a closed PolyhedralSurface (for now) */
-	case SFCGAL_TYPE_SOLID:
-	{
+	case SFCGAL_TYPE_SOLID: {
 		nshells = sfcgal_solid_num_shells(geom);
 
 		for (ngeoms = 0, i = 0; i < nshells; i++)
@@ -463,8 +461,7 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t srid)
 		return rgeom;
 	}
 
-	case SFCGAL_TYPE_TRIANGULATEDSURFACE:
-	{
+	case SFCGAL_TYPE_TRIANGULATEDSURFACE: {
 		ngeoms = sfcgal_triangulated_surface_num_triangles(geom);
 		LWGEOM **geoms = NULL;
 		if (ngeoms)
@@ -495,8 +492,7 @@ LWGEOM2SFCGAL(const LWGEOM *geom)
 
 	switch (geom->type)
 	{
-	case POINTTYPE:
-	{
+	case POINTTYPE: {
 		const LWPOINT *lwp = (const LWPOINT *)geom;
 		if (lwgeom_is_empty(geom))
 			return sfcgal_point_create();
@@ -505,8 +501,7 @@ LWGEOM2SFCGAL(const LWGEOM *geom)
 	}
 	break;
 
-	case LINETYPE:
-	{
+	case LINETYPE: {
 		const LWLINE *line = (const LWLINE *)geom;
 		if (lwgeom_is_empty(geom))
 			return sfcgal_linestring_create();
@@ -515,8 +510,7 @@ LWGEOM2SFCGAL(const LWGEOM *geom)
 	}
 	break;
 
-	case TRIANGLETYPE:
-	{
+	case TRIANGLETYPE: {
 		const LWTRIANGLE *triangle = (const LWTRIANGLE *)geom;
 		if (lwgeom_is_empty(geom))
 			return sfcgal_triangle_create();
@@ -524,8 +518,7 @@ LWGEOM2SFCGAL(const LWGEOM *geom)
 	}
 	break;
 
-	case POLYGONTYPE:
-	{
+	case POLYGONTYPE: {
 		const LWPOLY *poly = (const LWPOLY *)geom;
 		uint32_t nrings = poly->nrings - 1;
 
@@ -547,8 +540,7 @@ LWGEOM2SFCGAL(const LWGEOM *geom)
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
-	case COLLECTIONTYPE:
-	{
+	case COLLECTIONTYPE: {
 		if (geom->type == MULTIPOINTTYPE)
 			ret_geom = sfcgal_multi_point_create();
 		else if (geom->type == MULTILINETYPE)
@@ -569,8 +561,7 @@ LWGEOM2SFCGAL(const LWGEOM *geom)
 	}
 	break;
 
-	case POLYHEDRALSURFACETYPE:
-	{
+	case POLYHEDRALSURFACETYPE: {
 		const LWPSURFACE *lwp = (const LWPSURFACE *)geom;
 		ret_geom = sfcgal_polyhedral_surface_create();
 
@@ -590,8 +581,7 @@ LWGEOM2SFCGAL(const LWGEOM *geom)
 	}
 	break;
 
-	case TINTYPE:
-	{
+	case TINTYPE: {
 		const LWTIN *lwp = (const LWTIN *)geom;
 		ret_geom = sfcgal_triangulated_surface_create();
 

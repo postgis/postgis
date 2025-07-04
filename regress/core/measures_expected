@@ -101,3 +101,4 @@ st_lineextend.3|LINESTRING(0 0,1 1,1.707 1.707)
 st_lineextend.4|LINESTRING(0 0,1 1,1.707 1.707)
 st_lineextend.5|
 ERROR:  Argument must be LINESTRING geometry
+#5782|t

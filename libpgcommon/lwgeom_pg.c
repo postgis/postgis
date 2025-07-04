@@ -350,6 +350,8 @@ pg_free(void *ptr)
 	pfree(ptr);
 }
 
+static void pg_error(const char *fmt, va_list ap) __attribute__ (( format(printf, 1, 0) ));
+
 static void
 pg_error(const char *fmt, va_list ap)
 {
@@ -360,6 +362,8 @@ pg_error(const char *fmt, va_list ap)
 	errmsg[PGC_ERRMSG_MAXLEN]='\0';
 	ereport(ERROR, (errmsg_internal("%s", errmsg)));
 }
+
+static void pg_warning(const char *fmt, va_list ap) __attribute__ (( format(printf, 1, 0) ));
 
 static void
 pg_warning(const char *fmt, va_list ap)
@@ -372,6 +376,8 @@ pg_warning(const char *fmt, va_list ap)
 	ereport(WARNING, (errmsg_internal("%s", errmsg)));
 }
 
+static void pg_notice(const char *fmt, va_list ap) __attribute__ (( format(printf, 1, 0) ));
+
 static void
 pg_notice(const char *fmt, va_list ap)
 {
@@ -382,6 +388,8 @@ pg_notice(const char *fmt, va_list ap)
 	errmsg[PGC_ERRMSG_MAXLEN]='\0';
 	ereport(NOTICE, (errmsg_internal("%s", errmsg)));
 }
+
+static void pg_debug(int level, const char *fmt, va_list ap) __attribute__ (( format(printf, 2, 0) ));
 
 static void
 pg_debug(int level, const char *fmt, va_list ap)
@@ -578,7 +586,7 @@ CallerFInfoFunctionCall3(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum
 
     /* Check for null result, since caller is clearly not expecting one */
     if (fcinfo->isnull)
-        elog(ERROR, "function %p returned NULL", (void *) func);
+        elog(ERROR, "function %p returned NULL", (void *)&func);
 
     return result;
 }

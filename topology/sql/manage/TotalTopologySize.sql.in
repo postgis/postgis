@@ -1,0 +1,39 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2025 Sandro Santilli <strk@kbt.io>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- Author: Sandro Santilli <strk@kbt.io>
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+-- Availability: 3.6.0
+CREATE OR REPLACE FUNCTION topology.TotalTopologySize(toponame name)
+RETURNS int8
+AS $BODY$
+DECLARE
+  sql TEXT;
+  total_size int8;
+BEGIN
+  sql := format(
+    $$
+SELECT
+pg_catalog.pg_total_relation_size('%1$I.edge_data') +
+pg_catalog.pg_total_relation_size('%1$I.node') +
+pg_catalog.pg_total_relation_size('%1$I.face') +
+pg_catalog.pg_total_relation_size('%1$I.relation')
+    $$,
+    toponame
+  );
+
+  EXECUTE sql INTO total_size;
+  RETURN total_size;
+
+END;
+$BODY$ LANGUAGE 'plpgsql' STABLE;

@@ -1488,7 +1488,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 	if (arg == NULL) {
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
-		elog(ERROR, "RASTER_setPixelValuesGeomval: Could not intialize argument structure");
+		elog(ERROR, "RASTER_setPixelValuesGeomval: Could not initialize argument structure");
 		PG_RETURN_NULL();
 	}
 

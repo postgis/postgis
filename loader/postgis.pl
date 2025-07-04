@@ -18,9 +18,11 @@ sub usage
 	print qq{Usage: $0 <command> [<args>]
 Commands:
   help               print this message and exits
-  enable <database>  enable PostGIS in given database
-  upgrade <database> upgrade PostGIS in given database
-  status <database>  print PostGIS status in given database
+  list-all           list all databases
+  list-enabled       list PostGIS-enabled databases
+  enable <db>...     enable PostGIS in given databases
+  upgrade [<db>...]  upgrade PostGIS in given databases (or all)
+  status [<db>...]   print PostGIS status in given databases (or all)
   install-extension-upgrades [--pg_sharedir <dir>] [--extension <name>] [<from>...]
 		Ensure files required to upgrade PostGIS from
 		the given version are installed on the system.
@@ -174,6 +176,35 @@ sub install_extension_upgrades
 
 }
 
+sub get_all_databases
+{
+  my $ALL = `psql -qXtAc 'select datname from pg_database where datallowconn' template1`;
+  return split("\n", $ALL);
+}
+
+sub list_all_databases
+{
+  my @ALL = get_all_databases();
+  foreach (@ALL)
+  {
+    print $_ . "\n";
+  }
+}
+
+sub list_enabled_databases
+{
+  my @ALL = get_all_databases();
+  my $sql = "
+    SELECT proname
+    FROM pg_proc
+    WHERE proname = 'postgis_full_version'
+  ";
+  foreach my $db (@ALL)
+  {
+    my $enabled = `psql -qXtAc "${sql}" ${db}`;
+    print $db . "\n" if $enabled ne '';
+  }
+}
 
 sub enable
 {
@@ -185,32 +216,46 @@ sub enable
 
 sub upgrade
 {
-  die "Please specify at least a database name" unless @_;
+  my @DB = @_;
 
-  foreach my $db (@_)
+  #die "Please specify at least a database name" unless @DB;
+  @DB = get_all_databases() unless @DB;
+
+  foreach my $db (@DB)
   {
-    print "upgrading db $db\n";
-    my $LOG=`cat <<EOF | psql -qXtA ${db}
-BEGIN;
-UPDATE pg_catalog.pg_extension SET extversion = 'ANY'
- WHERE extname IN (
-			'postgis',
-			'postgis_raster',
-			'postgis_sfcgal',
-			'postgis_topology',
-			'postgis_tiger_geocoder'
-  );
-SELECT postgis_extensions_upgrade();
-COMMIT;
-EOF`;
+    print "upgrading PostGIS in db $db if needed\n";
+    open(my $SESSION, "| psql -qXtA ${db} |") || die "Could not connect to database ${db}";
+    print $SESSION <<'EOF';
+DO $BODY$
+BEGIN
+  IF EXISTS ( SELECT * FROM pg_proc where proname = 'postgis_extensions_upgrade' )
+  THEN
+    UPDATE pg_catalog.pg_extension SET extversion = 'ANY'
+    WHERE extname IN (
+      'postgis',
+      'postgis_raster',
+      'postgis_sfcgal',
+      'postgis_topology',
+      'postgis_tiger_geocoder'
+    );
+    PERFORM postgis_extensions_upgrade();
+  END IF;
+END;
+$BODY$ LANGUAGE 'plpgsql';
+EOF
+    @out = <$SESSION>;
+    print @out;
+    close($SESSION);
   }
 }
 
 sub status
 {
-  die "Please specify at least a database name" unless @_;
+  my @DB = @_;
 
-  foreach my $db (@_)
+  @DB = get_all_databases() unless @DB;
+
+  foreach my $db (@DB)
   {
     my $sql = "
 SELECT n.nspname
@@ -274,6 +319,12 @@ if ( $cmd eq "help" ) {
 }
 elsif ( $cmd eq "enable" ) {
 	exit enable(@ARGV);
+}
+elsif ( $cmd eq "list-all" ) {
+	exit list_all_databases(@ARGV);
+}
+elsif ( $cmd eq "list-enabled" ) {
+	exit list_enabled_databases(@ARGV);
 }
 elsif ( $cmd eq "upgrade" ) {
 	exit upgrade(@ARGV);

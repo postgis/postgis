@@ -105,7 +105,7 @@ main (int argc, char **argv)
 	set_loader_config_defaults(config);
 
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
-	while ((c = pgis_getopt(argc, argv, "-acdeg:ikm:nps:t:wDGIN:ST:W:X:Z")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "-?acdeg:ikm:nps:t:wDGIN:ST:W:X:Z")) != EOF)
 	{
 		// can not do this inside the switch case
 		if ('-' == c)
@@ -187,6 +187,7 @@ main (int argc, char **argv)
 			break;
 
 		case 'W':
+			free(config->encoding);
 			config->encoding = strdup(pgis_optarg);
 			break;
 
@@ -453,12 +454,9 @@ main (int argc, char **argv)
 	ShpLoaderDestroy(state);
 
 	/* Free configuration variables */
-	if (config->schema)
-		free(config->schema);
-	if (config->table)
-		free(config->table);
-	if (config->encoding)
-		free(config->encoding);
+	free(config->schema);
+	free(config->table);
+	free(config->encoding);
 	free(config);
 
 	return 0;

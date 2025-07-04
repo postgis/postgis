@@ -12,11 +12,11 @@
 -- Author: Regina Obe <lr@pcorp.us>
 --
 -- This is a suite of SQL helper functions for use during a PostGIS extension install/upgrade
--- The functions get uninstalled after the extention install/upgrade process
+-- The functions get uninstalled after the extension install/upgrade process
 ---------------------------
 -- postgis_extension_remove_objects: This function removes objects of a particular class from an extension
 -- this is needed because there is no ALTER EXTENSION DROP FUNCTION/AGGREGATE command
--- and we can't CREATE OR REPALCe functions whose signatures have changed and we can drop them if they are part of an extention
+-- and we can't CREATE OR REPLACE functions whose signatures have changed and we can drop them if they are part of an extension
 -- So we use this to remove it from extension first before we drop
 CREATE FUNCTION postgis_extension_remove_objects(param_extension text, param_type text)
   RETURNS boolean AS

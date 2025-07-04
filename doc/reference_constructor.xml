@@ -157,7 +157,7 @@ SELECT stusps, ST_Collect(f.geom) as geom
 		<title>Examples</title>
 		<para>Create a 3D line string from a 3D MultiPoint</para>
 		<programlisting>
-SELECT ST_AsEWKT(  ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)')  ));
+SELECT ST_AsEWKT(  ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)')  );
 
 --result--
 LINESTRING(1 2 3,4 5 6,7 8 9)
@@ -401,15 +401,15 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
 
 			<para>
 			While not OGC-compliant, <varname>ST_MakePoint</varname> is
-			faster and more precise than <xref linkend="ST_GeomFromText"/>
+			faster than <xref linkend="ST_GeomFromText"/>
 			and <xref linkend="ST_PointFromText"/>.
 			It is also easier to use for numeric coordinate values.</para>
 
 			<note><para>For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</varname> is latitude</para></note>
 
 			<note><para>
-			The functions 
-			<xref linkend="ST_Point"/>, <xref linkend="ST_PointZ"/>, <xref linkend="ST_PointM"/>, and <xref linkend="ST_PointZM"/> 
+			The functions
+			<xref linkend="ST_Point"/>, <xref linkend="ST_PointZ"/>, <xref linkend="ST_PointM"/>, and <xref linkend="ST_PointZM"/>
 			can be used to create points with a given SRID.
 			</para></note>
 
@@ -463,7 +463,7 @@ result
 		<refsection>
 			<title>Description</title>
 
-			<para>Creates a point with X, Y and M (measure) ordinates. 
+			<para>Creates a point with X, Y and M (measure) ordinates.
 			Use <xref linkend="ST_MakePoint"/> to make points with XY, XYZ, or XYZM coordinates.</para>
 
 			<para>Use <xref linkend="ST_SetSRID"/> to specify a SRID for the created point.</para>
@@ -471,8 +471,8 @@ result
 			<note><para>For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</varname> is latitude</para></note>
 
 			<note><para>
-			The functions 
-			<xref linkend="ST_PointM"/>, and <xref linkend="ST_PointZM"/> 
+			The functions
+			<xref linkend="ST_PointM"/>, and <xref linkend="ST_PointZM"/>
 			can be used to create points with an M value and a given SRID.
 			</para></note>
 
@@ -729,8 +729,8 @@ SELECT ST_Transform( ST_Point( 3637510, 3014852, 2273), 4326)::geography;</progr
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_MakePoint"/>, 
-			<xref linkend="ST_PointZ"/>, <xref linkend="ST_PointM"/>, <xref linkend="ST_PointZM"/>, 
+		<para><xref linkend="ST_MakePoint"/>,
+			<xref linkend="ST_PointZ"/>, <xref linkend="ST_PointM"/>, <xref linkend="ST_PointZM"/>,
 			<xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/></para>
 	  </refsection>
 	</refentry>
@@ -939,7 +939,7 @@ SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
 
 			<para>Creates a rectangular Polygon
             giving the extent of a tile in the <link xlink:href="https://en.wikipedia.org/wiki/Tiled_web_map">XYZ tile system</link>.
-            The tile is specifed by the zoom level Z and the XY index of the tile in the grid at that level.
+            The tile is specified by the zoom level Z and the XY index of the tile in the grid at that level.
             Can be used to define the tile bounds required by <xref linkend="ST_AsMVTGeom"/> to convert geometry
             into the MVT tile coordinate space.
             </para>
@@ -1217,7 +1217,7 @@ FROM admin0 WHERE name = 'Canada'
 			<paramdef><type>float8</type> <parameter>size</parameter></paramdef>
 			<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef>
 			<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef>
-			<paramdef choice="opt"><type>geometry</type> <parameter>origin</parameter></paramdef>
+			<paramdef choice="opt"><type>geometry</type> <parameter>origin='POINT(0 0)'</parameter></paramdef>
 		  </funcprototype>
 		 </funcsynopsis>
 		</refsynopsisdiv>
@@ -1228,7 +1228,11 @@ FROM admin0 WHERE name = 'Canada'
 			<para>Uses the same square tiling concept as <xref linkend="ST_SquareGrid"/>, but generates just one square at the desired cell coordinate. Optionally,
 			can adjust origin coordinate of the tiling, the default origin is at 0,0.
 			</para>
-			<para>Squares are generated with no SRID set, so use <xref linkend="ST_SetSRID"/> to set the SRID to the one you expect.</para>
+
+			<para>
+Squares are generated with the SRID of the given origin.
+Use <xref linkend="ST_SetSRID"/> to set the SRID if the given origin
+has an unknown SRID (as is the case by default).</para>
 
 			<para role="availability" conformance="3.1.0">Availability: 3.1.0</para>
 		</refsection>

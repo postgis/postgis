@@ -112,7 +112,7 @@ will be of 7 bytes.
  Pixel type specifies type of pixel values in a band.
  Storage flag specifies whether the band data is stored
  as part of the datum or is to be found on the server's
- filesytem.
+ filesystem.
 
  There are currently 11 supported pixel value types, so 4
  bits are enough to account for all. We'll reserve
@@ -190,7 +190,7 @@ will be of 7 bytes.
       [nodata] [x:0,y:0] [x:1,y:0] [x:0,y:1] [x:1,y:1]
 
    Where the size of the [...] blocks is 1,2,4 or 8 bytes depending
-   on pixeltype. Endiannes of multi-bytes value is the host endiannes.
+   on pixeltype. Endianness of multi-bytes value is the host endianness.
 
  * For off-db bands the nodata value is followed by a band number
    followed by a null-terminated string expressing the path to
@@ -199,7 +199,7 @@ will be of 7 bytes.
       [nodata] [bandno] [path]
 
    Where the size of the [nodata] block is 1,2,4 or 8 bytes depending
-   on pixeltype (endiannes of multi-bytes value is the host endiannes),
+   on pixeltype (endianness of multi-bytes value is the host endianness),
    size of [bandno] is 1 byte, and [path] is null-terminated.
    
 

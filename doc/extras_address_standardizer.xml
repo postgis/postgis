@@ -297,14 +297,14 @@ into includes in the future for easier maintenance.</para></listitem>
 						<varlistentry>
 								<term><varname>TYPE</varname></term>
 								<listitem>
-									<para>(2). Words and abbreviation used to denote street typess. For example: <emphasis>ST</emphasis> or <emphasis>AVE</emphasis>.</para>
+									<para>(2). Words and abbreviations used to denote street types. For example: <emphasis>ST</emphasis> or <emphasis>AVE</emphasis>.</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
 								<term><varname>UNITH</varname></term>
 								<listitem>
-									<para>(16). Words and abbreviation used to denote internal subaddresses. For example, <emphasis>APT</emphasis> or <emphasis>UNIT</emphasis>.</para>
+									<para>(16). Words and abbreviations used to denote internal subaddresses. For example, <emphasis>APT</emphasis> or <emphasis>UNIT</emphasis>.</para>
 								</listitem>
 						</varlistentry>
 				</variablelist>
@@ -542,7 +542,7 @@ into includes in the future for easier maintenance.</para></listitem>
 						</varlistentry>
 						<varlistentry><term><varname>seq</varname></term>
 							<listitem>
-								<para>integer: definition number? - identifer used for that instance of the word</para>
+								<para>integer: definition number? - identifier used for that instance of the word</para>
 							</listitem>
 						</varlistentry>
 						<varlistentry><term><varname>word</varname></term>
@@ -710,7 +710,7 @@ into includes in the future for easier maintenance.</para></listitem>
 		<refsection>
 			<title>Examples</title>
 
-			<para>Single Addresss</para>
+			<para>Single Address</para>
 			<programlisting>SELECT num, street, city, zip, zipplus
 	FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234') AS a;</programlisting>
 <screen>

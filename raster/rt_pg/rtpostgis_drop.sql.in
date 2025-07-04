@@ -28,7 +28,7 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
--- This file will be used to drop obseleted objects.
+-- This file will be used to drop obsoleted objects.
 -- It will be only used for upgrades.
 -- It will be loaded _after_ the objects upgrade statements, so
 -- that objects previously dependent on these objects have a chance

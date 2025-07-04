@@ -219,7 +219,7 @@ while( my $l = <INPUT> ) {
   }
 
   # We can't skip OPERATORS from the manifest file
-  # because it doesn't contain enough informations
+  # because it doesn't contain enough information
   # about the type the operator is for
   elsif ( $l =~ /CREATE OPERATOR *([^ ,]*)/)
   {
@@ -504,7 +504,7 @@ clamp_srid
     printf STDERR "  WARNING: SRID $oldsrid converted to $newsrid (official UNKNOWN)\n";
   } elsif ( $oldsrid > $SRID_MAXIMUM ) {
     $newsrid = $SRID_USER_MAXIMUM + 1 +
-      # -1 is to reduce likelyhood of clashes
+      # -1 is to reduce likelihood of clashes
       # NOTE: must match core implementation (lwutil.c)
       ( $oldsrid % ( $SRID_MAXIMUM - $SRID_USER_MAXIMUM - 1 ) );
     printf STDERR "  WARNING: SRID $oldsrid converted to $newsrid (in reserved zone)\n";

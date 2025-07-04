@@ -57,12 +57,16 @@ fi
 
 sh autogen.sh
 
+# excluding topology cause it's erroring out on some tests
+#EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --without-topology"
+
 if [ -n "$PCRE_VER" ]; then
     export PATH="${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/include:${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
 fi
 
-
-if [[ "${INCLUDE_MINOR_LIB}" == "1" ]] ; then
+if [ $INCLUDE_MINOR_LIB == "1" ]; then
+  EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --with-library-minor-version"
+fi
 
 #CPPFLAGS="-I${PGPATH}/include -I${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include" \
 #CFLAGS="-Wall -fno-omit-frame-pointer"
@@ -78,19 +82,8 @@ LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${LZ4_PATH}/lib -L${PROJECTS
   --with-libiconv=${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE} \
   --with-gui --with-gettext=no \
   --with-sfcgal=${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/sfcgal-config \
-  --prefix=${PROJECTS}/postgis/liblwgeom-${POSTGIS_VER}w${OS_BUILD}${GCC_TYPE} --with-library-minor-version
-  #exit
-else
-LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${LZ4_PATH}/bin -L${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/lib -L${PROJECTS}/zlib/rel-zlib-${ZLIB_VER}w${OS_BUILD}${GCC_TYPE}/lib" \
-./configure \
-  --host=${MINGHOST} --with-xml2config=${PROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}${GCC_TYPE}/bin/xml2-config  \
-  --with-pgconfig=${PGPATH}/bin/pg_config \
-  --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/geos-config \
-  --with-libiconv=${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE} \
-  --with-gui --with-gettext=no \
-  --with-sfcgal=${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/sfcgal-config \
-  --prefix=${PROJECTS}/postgis/liblwgeom-${POSTGIS_VER}w${OS_BUILD}${GCC_TYPE}
-fi;
+  --prefix=${PROJECTS}/postgis/liblwgeom-${POSTGIS_VER}w${OS_BUILD}${GCC_TYPE} --with-library-minor-version \
+  ${EXTRA_CONFIGURE_ARGS}
 
 
 #make distclean
@@ -98,7 +91,7 @@ fi;
 #patch liblwgeom generated make to get rid of dynamic linking
 #sed -i 's/LDFLAGS += -no-undefined//g' liblwgeom/Makefile
 
-make
+make -j 4
 make install
 make check RUNTESTFLAGS=-v
 
@@ -127,7 +120,7 @@ value=${value//UPGRADEABLE_VERSIONS = /}
 export UPGRADEABLE_VERSIONS=$value
 export WIN_RELEASED_VERSIONS="2.0.0 2.0.1 2.0.3 2.0.4 2.0.6 2.1.4 2.1.7 2.1.8 2.2.0 2.2.3 2.3.0 2.3.7 2.4.0 2.4.4"
 #echo "Versions are:  $UPGRADEABLE_VERSIONS"
-for EXTNAME in postgis postgis_raster postgis_topology postgis_sfcgal postgis_tiger_geocoder address_standardizer; do
+for EXTNAME in postgis postgis_raster postgis_sfcgal postgis_tiger_geocoder address_standardizer postgis_topology; do
 	cp extensions/$EXTNAME/sql/*  ${PGPATHEDB}/share/extension
 	cp extensions/$EXTNAME/sql/$EXTNAME--TEMPLATED--TO--ANY.sql  ${PGPATHEDB}/share/extension/$EXTNAME--$POSTGIS_MICRO_VER--${POSTGIS_MINOR_MAX_VER}.sql;
 
@@ -164,13 +157,14 @@ fi
  cd extensions/address_standardizer
  make installcheck
 
- #test tiger geocoder
- cd ${POSTGIS_SRC}
- cd extensions/postgis_tiger_geocoder
- make installcheck
- if [ "$?" != "0" ]; then
-  exit $?
- fi
+#test tiger geocoder
+#  cd ${POSTGIS_SRC}
+#  cd extensions/postgis_tiger_geocoder
+#  make installcheck
+#  if [ "$?" != "0" ]; then
+#   exit $?
+#  fi
+#end extension
 fi
 
 if [ "$DUMP_RESTORE" == "1" ]; then

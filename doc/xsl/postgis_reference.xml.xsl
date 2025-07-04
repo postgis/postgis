@@ -36,7 +36,7 @@
 	 	<xsl:value-of select="@linkend" />
 	 </xsl:template>
 
-	 <!--strip comman tag and just leave inner body -->
+	 <!--strip command tag and just leave inner body -->
 	 <xsl:template match="command">
 	 	command: <xsl:value-of select="." />
 	 </xsl:template>

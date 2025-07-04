@@ -1,0 +1,15 @@
+t
+Topology Main populated
+2 max edge_id Main.edge_data
+2 max node_id Main.node
+2 max node_id Main.face
+t
+t
+Topology temp01 populated
+4 max edge_id temp01.edge_data
+4 max node_id temp01.node
+4 max face_id temp01.face
+5
+5 max edge_id temp02.edge_data
+5 max node_id temp02.node
+0 max face_id temp02.face

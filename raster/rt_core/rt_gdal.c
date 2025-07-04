@@ -55,7 +55,7 @@ typedef struct
 /*  GDAL progress callback for interrupt handling */
 /* ---------------------------------------------------------------- */
 
-int rt_util_gdal_progress_func(
+static int rt_util_gdal_progress_func(
 	double dfComplete,
 	const char *pszMessage,
 	void *pProgressArg)
@@ -157,7 +157,7 @@ int rt_raster_gdal_contour(
 		return _rti_contour_arg_destroy(&arg);
 
 	/* Polygonize is 2.4+ only */
-#if POSTGIS_GDAL_VERSION >= 24
+#if POSTGIS_GDAL_VERSION >= 20400
 	arg.dst.gtype = polygonize ? wkbPolygon : wkbLineString;
 #else
 	arg.dst.gtype = wkbLineString;
@@ -284,6 +284,7 @@ int rt_raster_gdal_contour(
 		/* Reclaim feature and associated geometry memory */
 		OGR_F_Destroy(hFeat);
 		geom = lwgeom_from_wkb(bufWkb, szWkb, LW_PARSER_CHECK_NONE);
+		if (!geom) rterror("%s: invalid wkb", __func__);
 		lwgeom_set_srid(geom, arg.dst.srid);
 		contour.geom = gserialized_from_lwgeom(geom, NULL);
 		lwgeom_free(geom);

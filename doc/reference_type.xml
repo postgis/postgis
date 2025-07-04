@@ -86,7 +86,7 @@
             </para>
 
             <para>The representation contains the values <varname>xmin, ymin, zmin, xmax, ymax, zmax</varname>.
-            These are the minimum and maxium values of the X, Y and Z extents.
+            These are the minimum and maximum values of the X, Y and Z extents.
             </para>
 
             <para><varname>box3d</varname> objects have a text representation which looks like <code>BOX3D(1 2 3,5 6 5)</code>.

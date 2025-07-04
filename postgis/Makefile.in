@@ -83,6 +83,7 @@ PG_OBJS= \
 	lwgeom_box.o \
 	lwgeom_box3d.o \
 	lwgeom_geos.o \
+	lwgeom_geos_predicates.o \
 	lwgeom_geos_prepared.o \
 	lwgeom_geos_clean.o \
 	lwgeom_geos_relatematch.o \
@@ -102,7 +103,6 @@ PG_OBJS= \
 	lwgeom_functions_temporal.o \
 	lwgeom_rectree.o \
 	lwgeom_itree.o \
-	long_xact.o \
 	lwgeom_sqlmm.o \
 	lwgeom_transform.o \
 	lwgeom_window.o \
@@ -131,6 +131,8 @@ PG_OBJS= \
 	flatgeobuf.o \
 	lwgeom_in_flatgeobuf.o \
 	lwgeom_out_flatgeobuf.o \
+	lwgeom_remove_irrelevant_points_for_view.o \
+	lwgeom_remove_small_parts.o \
 	postgis_legacy.o
 
 # Objects to build using PGXS
@@ -255,7 +257,7 @@ postgis_upgrade.sql: common_before_upgrade.sql postgis_before_upgrade.sql postgi
 # SQL objects are also dependent on postgis_config.h for PostgreSQL version
 $(SQL_OBJS): ../postgis_config.h ../postgis_revision.h
 
-postgis.sql: sqldefines.h long_xact.sql.in geography.sql.in postgis_brin.sql.in postgis_spgist.sql.in postgis_letters.sql
+postgis.sql: sqldefines.h geography.sql.in postgis_brin.sql.in postgis_spgist.sql.in postgis_letters.sql
 
 uninstall_postgis.sql: postgis.sql ../utils/create_uninstall.pl
 	$(PERL) @top_srcdir@/utils/create_uninstall.pl $< $(POSTGIS_PGSQL_VERSION) > $@

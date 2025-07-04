@@ -103,7 +103,7 @@ int flatgeobuf_encode_header(ctx *ctx)
 	}
 
 	ctx->buf = (uint8_t *) lwrealloc(ctx->buf, ctx->offset + size);
-	LWDEBUGF(2, "copying to ctx->buf at offset %ld", ctx->offset);
+	LWDEBUGF(2, "copying to ctx->buf at offset %llu", ctx->offset);
 	memcpy(ctx->buf + ctx->offset, buffer, size);
 
 	ctx->offset += size;
@@ -138,7 +138,7 @@ int flatgeobuf_encode_feature(ctx *ctx)
 	const auto buffer = fbb.GetBufferPointer();
 	const auto size = fbb.GetSize();
 
-	LWDEBUGF(3, "encode_feature size %ld", size);
+	LWDEBUGF(3, "encode_feature size %u", size);
 
 	Verifier verifier(buffer, size - sizeof(uoffset_t));
 	if (VerifySizePrefixedFeatureBuffer(verifier)) {
@@ -146,9 +146,9 @@ int flatgeobuf_encode_feature(ctx *ctx)
 		return -1;
 	}
 
-	LWDEBUGF(3, "reallocating ctx->buf to size %ld", ctx->offset + size);
+	LWDEBUGF(3, "reallocating ctx->buf to size %llu", ctx->offset + size);
 	ctx->buf = (uint8_t * ) lwrealloc(ctx->buf, ctx->offset + size);
-	LWDEBUGF(3, "copying feature to ctx->buf at offset %ld", ctx->offset);
+	LWDEBUGF(3, "copying feature to ctx->buf at offset %llu", ctx->offset);
 	memcpy(ctx->buf + ctx->offset, buffer, size);
 
 	if (ctx->create_index) {
@@ -220,7 +220,7 @@ void flatgeobuf_create_index(ctx *ctx)
 	for (auto item : items) {
 		auto featureItem = std::static_pointer_cast<FeatureItem>(item);
 		ctx->buf = (uint8_t *) lwrealloc(ctx->buf, ctx->offset + featureItem->size);
-		LWDEBUGF(2, "copy from offset %ld", featureItem->offset);
+		LWDEBUGF(2, "copy from offset %llu", featureItem->offset);
 		memcpy(ctx->buf + ctx->offset, oldbuf + featureItem->offset, featureItem->size);
 		ctx->offset += featureItem->size;
 	}
@@ -229,9 +229,9 @@ void flatgeobuf_create_index(ctx *ctx)
 
 int flatgeobuf_decode_feature(ctx *ctx)
 {
-	LWDEBUGF(2, "reading size prefix at %ld", ctx->offset);
+	LWDEBUGF(2, "reading size prefix at %llu", ctx->offset);
 	auto size = flatbuffers::GetPrefixedSize(ctx->buf + ctx->offset);
-	LWDEBUGF(2, "size is %ld (without size prefix)", size);
+	LWDEBUGF(2, "size is %u (without size prefix)", size);
 
 	Verifier verifier(ctx->buf + ctx->offset, size);
 	if (VerifySizePrefixedFeatureBuffer(verifier)) {
@@ -267,9 +267,9 @@ int flatgeobuf_decode_feature(ctx *ctx)
 
 int flatgeobuf_decode_header(ctx *ctx)
 {
-	LWDEBUGF(2, "reading size prefix at %ld", ctx->offset);
+	LWDEBUGF(2, "reading size prefix at %llu", ctx->offset);
 	auto size = flatbuffers::GetPrefixedSize(ctx->buf + ctx->offset);
-	LWDEBUGF(2, "size is %ld (without size prefix)", size);
+	LWDEBUGF(2, "size is %u (without size prefix)", size);
 
 	Verifier verifier(ctx->buf + ctx->offset, size);
 	if (VerifySizePrefixedHeaderBuffer(verifier)) {
@@ -279,7 +279,7 @@ int flatgeobuf_decode_header(ctx *ctx)
 
 	ctx->offset += sizeof(uoffset_t);
 
-	LWDEBUGF(2, "reading header at %ld with size %ld", ctx->offset, size);
+	LWDEBUGF(2, "reading header at %llu with size %u", ctx->offset, size);
 	auto header = GetHeader(ctx->buf + ctx->offset);
 	ctx->offset += size;
 
@@ -312,7 +312,7 @@ int flatgeobuf_decode_header(ctx *ctx)
 
 	if (ctx->index_node_size > 0 && ctx->features_count > 0) {
 		auto treeSize = PackedRTree::size(ctx->features_count, ctx->index_node_size);
-		LWDEBUGF(2, "Adding tree size %ld to offset", treeSize);
+		LWDEBUGF(2, "Adding tree size %llu to offset", treeSize);
 		ctx->offset += treeSize;
 	}
 

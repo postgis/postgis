@@ -206,5 +206,19 @@ SELECT '#5548.1', * FROM topology.ValidateTopology('t5548',
   ST_MakeEnvelope(2,2,4,4));
 ROLLBACK;
 
+-- See https://trac.osgeo.org/postgis/ticket/5766
+BEGIN;
+SELECT NULL FROM topology.CreateTopology('t5766');
+SELECT NULL FROM topology.TopoGeo_addPolygon('t5766', 'POLYGON((0 0, 1 2, 2 0,0 0))');
+UPDATE t5766.face SET mbr = ST_MakeEnvelope(0,0,2,2) WHERE face_id = 0; -- bbox matching leftmost ring
+SELECT '#5766.1', 'no bbox', (array_agg(v))[1] FROM topology.ValidateTopology('t5766') v;
+SELECT '#5766.1', 'overlapping bbox', (array_agg(v))[1] FROM topology.ValidateTopology('t5766', 'POINT(1 1)') v;
+SELECT '#5766.1', 'disjoint bbox', (array_agg(v))[1] FROM topology.ValidateTopology('t5766', 'POINT(3 0)') v;
+UPDATE t5766.face SET mbr = ST_MakeEnvelope(0,0,1,2) WHERE face_id = 0; -- bbox not matching leftmost ring
+SELECT '#5766.2', 'no bbox', (array_agg(v))[1] FROM topology.ValidateTopology('t5766') v;
+SELECT '#5766.2', 'overlapping bbox', (array_agg(v))[1] FROM topology.ValidateTopology('t5766', 'POINT(1 1)') v;
+SELECT '#5766.2', 'disjoint bbox', (array_agg(v))[1] FROM topology.ValidateTopology('t5766', 'POINT(3 0)') v;
+ROLLBACK;
+
 SELECT NULL FROM topology.DropTopology('city_data');
 

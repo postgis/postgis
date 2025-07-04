@@ -64,7 +64,7 @@ OPTIONS
               Specify the name of the geometry column (mostly useful in append
               mode).
 
-       -k     Keep idendifiers case (column, schema and attributes). Note that
+       -k     Keep identifiers case (column, schema and attributes). Note that
               attributes in Shapefile are usually all UPPERCASE.
 
        -i     Coerce all integers to standard 32-bit integers, do  not  create

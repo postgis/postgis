@@ -53,7 +53,7 @@ extern void stringbuffer_destroy(stringbuffer_t *sb);
 extern void stringbuffer_clear(stringbuffer_t *sb);
 void stringbuffer_set(stringbuffer_t *sb, const char *s);
 void stringbuffer_copy(stringbuffer_t *sb, stringbuffer_t *src);
-extern int stringbuffer_aprintf(stringbuffer_t *sb, const char *fmt, ...);
+extern int stringbuffer_aprintf(stringbuffer_t *sb, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
 extern const char *stringbuffer_getstring(stringbuffer_t *sb);
 extern char *stringbuffer_getstringcopy(stringbuffer_t *sb);
 extern lwvarlena_t *stringbuffer_getvarlenacopy(stringbuffer_t *s);

@@ -54,7 +54,7 @@ CREATE OR REPLACE FUNCTION CG_3DIntersection(geom1 geometry, geom2 geometry)
 
 -- Availability: 2.1.0
 -- Deprecation in 3.5.0
-CREATE OR REPLACE FUNCTION ST_3DIntersection(geometry, geometry)
+CREATE OR REPLACE FUNCTION ST_3DIntersection(geom1 geometry, geom2 geometry)
 RETURNS geometry AS $$
 	SELECT @extschema@._postgis_deprecate(
 		'ST_3DIntersection', 'CG_3DIntersection', '3.5.0');
@@ -93,7 +93,7 @@ CREATE OR REPLACE FUNCTION CG_3DDifference(geom1 geometry, geom2 geometry)
 
 -- Availability: 2.2
 -- Deprecation in 3.5.0
-CREATE OR REPLACE FUNCTION ST_3DDifference(geometry, geometry)
+CREATE OR REPLACE FUNCTION ST_3DDifference(geom1 geometry, geom2 geometry)
 RETURNS geometry AS $$
 	SELECT @extschema@._postgis_deprecate(
 		'ST_3DDifference', 'CG_3DDifference', '3.5.0');
@@ -132,7 +132,7 @@ CREATE AGGREGATE ST_3DUnion(geometry) (
 
 -- Availability: 2.2
 -- Deprecation in 3.5.0
-CREATE OR REPLACE FUNCTION ST_3DUnion(geometry, geometry)
+CREATE OR REPLACE FUNCTION ST_3DUnion(geom1 geometry, geom2 geometry)
 RETURNS geometry AS $$
 	SELECT @extschema@._postgis_deprecate(
 		'ST_3DUnion', 'CG_3DUnion', '3.5.0');
@@ -503,5 +503,110 @@ CREATE OR REPLACE FUNCTION CG_Visibility(polygon geometry, point geometry)
        AS 'MODULE_PATHNAME', 'sfcgal_visibility_point'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
+
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_3DBuffer(geom geometry, radius float8, segments integer, buffer_type integer)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_buffer3d'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_HIGH;
+
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_StraightSkeletonPartition(geom geometry, auto_orientation boolean)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_straight_skeleton_partition'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_MEDIUM;
+
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_RotateX(geom geometry, angle float8)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_rotate_x'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
+
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_RotateY(geom geometry, angle float8)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_rotate_y'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
+
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_RotateZ(geom geometry, angle float8)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_rotate_z'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
+
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_Rotate(geom geometry, angle float8)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_rotate'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
+
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_2DRotate(geom geometry, angle float8, cx float8, cy float8)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_rotate_2d'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
+
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_3DRotate(geom geometry, angle float8, ax float8, ay float8, az float8)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_rotate_3d'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
+
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_Scale(geom geometry, factor float8)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_scale'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
+
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_3DScaleAroundCenter(geom geometry, factorX float8, factorY float8, factorZ float8, centerX float8, centerY float8, centerZ float8)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_scale_3d_around_center'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
+
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_3DScale(geom geometry, factorX float8, factorY float8, factorZ float8)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_scale_3d'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
+
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_Translate(geom geometry, deltaX float8, deltaY float8)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_translate_2d'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
+
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_3DTranslate(geom geometry, deltaX float8, deltaY float8, deltaZ float8)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_translate_3d'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
+
+-- Availability 3.6.0
+CREATE OR REPLACE FUNCTION CG_Simplify(geom geometry, threshold float8, preserveTopology boolean DEFAULT false )
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_simplify'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
+
+-- Availability: 3.6.0
+CREATE OR REPLACE FUNCTION CG_3DAlphaWrapping(geom geometry, relative_alpha int, relative_offset int DEFAULT 0)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_alphawrapping_3d'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_LOW;
 
 COMMIT;

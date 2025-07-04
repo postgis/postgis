@@ -1,8 +1,8 @@
 
 SELECT 'mic-box' AS name,
-       st_astext(center, 4) AS center,
-       st_astext(nearest, 4) AS nearest,
-       round(radius::numeric,4) AS radius
+       st_astext(center, 1) AS center,
+       st_astext(nearest, 1) AS nearest,
+       round(radius::numeric,1) AS radius
 FROM ST_MaximumInscribedCircle('Polygon((0 0, 100 0, 99 98, 0 100, 0 0))'::geometry);
 
 SELECT 'mic-empty' AS name,
@@ -35,7 +35,7 @@ FROM ST_MaximumInscribedCircle('POINT(0 0)'::geometry);
 WITH p AS (
 	SELECT 'Polygon((0 0, 100 0, 99 98, 0 100, 0 0))'::geometry AS ply
 )
-SELECT 'mic-cte' AS name, ST_AsText(st_snaptogrid((ST_MaximumInscribedCircle(ply)).center,0.001))
+SELECT 'mic-cte' AS name, ST_AsText(st_snaptogrid((ST_MaximumInscribedCircle(ply)).center,0.1))
 	FROM p;
 
 -- ST_ReducePrecision

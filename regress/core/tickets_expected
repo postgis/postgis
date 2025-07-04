@@ -468,6 +468,7 @@ ERROR:  Line has no points
 ERROR:  Geometry contains invalid coordinates
 ERROR:  Geometry contains invalid coordinates
 #5378|4269
+#5425|POINT(1.235 9.877)
 #5627|t
 #5604|2|POINT(0 0)|2|POINT(-2 0)
 #5639|fullywithin1|t
@@ -480,3 +481,6 @@ ERROR:  Geometry contains invalid coordinates
 #5597|{"type": "Feature", "geometry": null, "properties": {}}
 #5677|POLYGON((0 0,0 10,20 22,20 30,30 30,30 20,22 20,10 0,0 0))
 #5686|0
+#5747|0
+#5855|Knosesmauet
+#5876|LINESTRING(1 1,2 2)

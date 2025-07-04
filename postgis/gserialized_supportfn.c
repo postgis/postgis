@@ -85,7 +85,7 @@ static const int16 GeometryStrategies[] = {
 	[ST_OVERLAPS_IDX]               = RTOverlapStrategyNumber,
 	[ST_COVERS_IDX]                 = RTContainsStrategyNumber,
 	[ST_CROSSES_IDX]                = RTOverlapStrategyNumber,
-	[ST_DFULLYWITHIN_IDX]           = RTContainsStrategyNumber,
+	[ST_DFULLYWITHIN_IDX]           = RTContainedByStrategyNumber,
 	[ST_3DDWITHIN_IDX]              = RTOverlapStrategyNumber,
 	[ST_3DDFULLYWITHIN_IDX]         = RTOverlapStrategyNumber,
 	[ST_LINECROSSINGDIRECTION_IDX]  = RTOverlapStrategyNumber,
@@ -303,7 +303,7 @@ expandFunctionOid(Oid geotype, Oid callingfunc)
 /*
 * For functions that we want enhanced with spatial
 * index lookups, add this support function to the
-* SQL function defintion, for example:
+* SQL function definition, for example:
 *
 * CREATE OR REPLACE FUNCTION ST_Intersects(g1 geometry, g2 geometry)
 *	RETURNS boolean
@@ -505,7 +505,7 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 
 					/*
 					* Arguments were swapped to put the index value on the
-					* left, so we need the commutated operator for
+					* left, so we need the commuted operator for
 					* the OpExpr
 					*/
 					if (swapped)

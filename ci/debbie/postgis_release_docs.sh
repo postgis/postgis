@@ -109,7 +109,7 @@ done
 
 # Build and install pdf and epub
 make pdf-install # || : survive failure
-make epub-install # || : survive failure
+#make epub-install # || : survive failure
 
 # build japanese, french, german, chinese, korean pdf
 make -C ../doc/po/ja local-pdf-install
@@ -117,6 +117,7 @@ make -C ../doc/po/fr local-pdf-install
 make -C ../doc/po/de local-pdf-install
 make -C ../doc/po/zh_Hans local-pdf-install
 make -C ../doc/po/ko_KR local-pdf-install
+make -C ../doc/po/sv local-pdf-install
 
 # build comments files
 make -C ../doc/po/ja comments
@@ -124,6 +125,7 @@ make -C ../doc/po/fr comments
 make -C ../doc/po/de comments
 make -C ../doc/po/zh_Hans comments
 make -C ../doc/po/ko_KR comments
+make -C ../doc/po/sv comments
 # Build and install localized pdf and epub
 # make pdf-install-localized # || : survive failures
 #make epub-install-localized # || : survive failures

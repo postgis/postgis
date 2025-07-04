@@ -25,7 +25,7 @@ select topology.GetEdgeByPoint('schema_topo',ST_GeomFromText('POINT(5 5.5)'), 0:
 -- Ask for Point in a Node
 select topology.GetEdgeByPoint('schema_topo',ST_GeomFromText('POINT(4 7)'), 1::float8);
 
--- Ask for a Point with a tollerance too high
+-- Ask for a Point with a tolerance too high
 select topology.GetEdgeByPoint('schema_topo',ST_GeomFromText('POINT(5 5)'), 2::float8);
 
 SELECT topology.DropTopology('schema_topo');

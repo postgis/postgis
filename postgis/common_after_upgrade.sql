@@ -18,7 +18,7 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
--- DROP auxiliar function (created by common_before_upgrade.sql)
+-- DROP auxiliary function (created by common_before_upgrade.sql)
 DROP FUNCTION _postgis_drop_function_by_identity(text, text, text);
 DROP FUNCTION _postgis_drop_function_by_signature(text, text);
 

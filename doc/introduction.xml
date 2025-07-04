@@ -81,7 +81,7 @@
 		<varlistentry>
 			<term>Loïc Bartoletti</term>
 			<listitem>
-			  <para>SFCGAL enhancments and maintenance and ci support</para>
+			  <para>SFCGAL enhancements and maintenance and ci support</para>
 			</listitem>
 		</varlistentry>
 
@@ -246,11 +246,14 @@
 					<member>Christoph Berg</member>
 					<member>Christoph Moench-Tegeder</member>
 					<member>Dane Springmeyer</member>
+					<member>Daniel Nylander</member>
+					<member>Dapeng Wang</member>
 					<member>Daryl Herzmann</member>
 					<member>Dave Fuhry</member>
 					<member>David Garnier</member>
 					<member>David Skea</member>
 					<member>David Techer</member>
+					<member>Dian M Fay</member>
 					<member>Dmitry Vasilyev</member>
 					<member>Eduin Carrillo</member>
 					<member>Esteban Zimanyi</member>
@@ -287,12 +290,14 @@
 					<member>Kashif Rasul</member>
 					<member>Klaus Foerster</member>
 					<member>Kris Jurka</member>
+					<member>Laurențiu Nicola</member>
 					<member>Laurenz Albe</member>
 					<member>Lars Roessiger</member>
 					<member>Leo Hsu</member>
 					<member>Loic Dachary</member>
 					<member>Luca S. Percich</member>
 					<member>Lucas C. Villa Real</member>
+					<member>Maksim Korotkov</member>
 					<member>Maria Arias de Reyna</member>
 					<member>Marc Ducobu</member>
 					<member>Mark Sondheim</member>
@@ -318,6 +323,7 @@
 					<member>Robert Coup</member>
 					<member>Roger Crew</member>
 					<member>Ron Mayer</member>
+					<member>Sam Peters</member>
 					<member>Sebastiaan Couwenberg</member>
 					<member>Sergei Shoulbakov</member>
 					<member>Sergey Fedoseev</member>
@@ -338,6 +344,7 @@
 					<member>Vincent Mora</member>
 					<member>Vincent Picavet</member>
 					<member>Volf Tomáš</member>
+					<member>Zuo Chenwei</member>
 				</simplelist>
 			</para>
 		</listitem>
@@ -368,6 +375,7 @@
 				<listitem><simpara><link xlink:href="http://www.elecnor-deimos.com">Deimos Space</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.faunalia.eu">Faunalia</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://gov.bc.ca">Geographic Data BC</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.highgo.com">HighGo</link></simpara></listitem>
 				<listitem><simpara>Hunter Systems Group</simpara></listitem>
 				<listitem><simpara><link xlink:href="https://pti-agriambio.csic.es">INIA-CSIC</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.isciences.com">ISciences, LLC</link></simpara></listitem>
@@ -378,12 +386,13 @@
 				<listitem><simpara>Maponics</simpara></listitem>
 				<listitem><simpara><link xlink:href="http://www.mtri.org">Michigan Tech Research Institute</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.nrcan.gc.ca">Natural Resources Canada</link></simpara></listitem>
-				<listitem><simpara>Norwegian Forest and Landscape Institue</simpara></listitem>
+				<listitem><simpara>Norwegian Forest and Landscape Institute</simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.nibio.no/">Norwegian Institute of Bioeconomy Research (NIBIO)</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.osgeo.org">OSGeo</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://oslandia.com">Oslandia</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.palantir.com">Palantir Technologies</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.paragoncorporation.com">Paragon Corporation</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://postgrespro.com">Postgres Pro</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.r3-gis.com">R3 GIS</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="http://www.refractions.net">Refractions Research</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.regione.toscana.it">Regione Toscana - SITA</link></simpara></listitem>

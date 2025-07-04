@@ -633,7 +633,7 @@ static void test_raster_get_pixel_bilinear() {
 		);
 
 	CU_ASSERT_EQUAL(err, ES_NONE);
-	printf("xw = %g, yw = %g, value = %g, nodata = %d\n", xr, yr, value, nodata);
+	// printf("xw = %g, yw = %g, value = %g, nodata = %d\n", xr, yr, value, nodata);
 
 
 }

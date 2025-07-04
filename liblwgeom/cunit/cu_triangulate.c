@@ -40,7 +40,7 @@ test_lwgeom_delaunay_triangulation(void)
 	if (strcmp(wkt, exp_wkt))
 		fprintf(stderr, "\nExp:  %s\nObt:  %s\n", exp_wkt, wkt);
 
-	CU_ASSERT_STRING_EQUAL(wkt, exp_wkt);
+	ASSERT_STRING_EQUAL(wkt, exp_wkt);
 	lwfree(wkt);
 }
 
@@ -98,7 +98,7 @@ test_lwgeom_voronoi_diagram_expected_empty(void)
 	assert_empty_diagram("POLYGON EMPTY", 0);
 	assert_empty_diagram("POINT (1 2)", 0);
 
-	/* This one produces an empty diagram because our two unqiue points
+	/* This one produces an empty diagram because our two unique points
 	 * collapse onto one after considering the tolerance. */
 	assert_empty_diagram("MULTIPOINT (0 0, 0 0.00001)", 0.001);
 }

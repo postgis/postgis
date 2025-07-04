@@ -232,7 +232,8 @@ SELECT '#5289', 'invalidity', * FROM topology.ValidateTopology('city_data');
 UPDATE features.city_streets
 SET feature = TopoGeom_addElement(feature, ARRAY[2, 2])
 WHERE feature_name = 'R4';
-
+UPDATE features.city_streets SET geom = feature::geometry
+WHERE feature_name = 'R4';
 SELECT '#5303', 'clean', topology.RemoveUnusedPrimitives('city_data');
 SELECT '#5303', 'changed', * FROM features.check_changed_features();
 SELECT '#5303', 'invalidity', * FROM topology.ValidateTopology('city_data');

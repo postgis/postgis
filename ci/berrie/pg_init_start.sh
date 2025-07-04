@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Berrie is a 32-bit Rasberry Pi managed by Bruce Rindahl
+#Berrie is a 32-bit Raspberry Pi managed by Bruce Rindahl
 #This is script to launch custom compiled PostgreSQL
 #export label=berrie #this is passed in via Jenkins
 SCRIPT=$(readlink -f "$0")

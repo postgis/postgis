@@ -81,7 +81,7 @@ while(<INPUT>)
         }
     }
 
-    # Always output create ore replace view (see ticket #1097)
+    # Always output create or replace view (see ticket #1097)
     elsif (/^create or replace view\s+(\S+)\s*/i)
     {
 		my $def = $_;
@@ -95,7 +95,7 @@ while(<INPUT>)
 		print $def;
     }
 
-    # Always output create ore replace rule
+    # Always output create or replace rule
     elsif (/^create or replace rule\s+(\S+)\s*/i)
     {
 		my $def = $_;

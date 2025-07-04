@@ -724,7 +724,7 @@ rt_raster_get_geotransform_matrix(rt_raster raster,
  * Set raster's geotransform using 6-element array
  *
  * @param raster : the raster to set matrix of
- * @param gt : intput parameter, 6-element geotransform matrix
+ * @param gt : input parameter, 6-element geotransform matrix
  *
  */
 void
@@ -1782,7 +1782,7 @@ rt_raster_to_gdal(
 		rtn_drv,
 		"/vsimem/out.dat", /* should be fine assuming this is in a process */
 		src_ds,
-		FALSE, /* should copy be strictly equivelent? */
+		FALSE, /* should copy be strictly equivalent? */
 		options, /* format options */
 		NULL, /* progress function */
 		NULL /* progress data */
@@ -2402,7 +2402,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 
 		/* pixtype */
 		gdpixtype = GDALGetRasterDataType(gdband);
-		RASTER_DEBUGF(4, "gdpixtype, size = %s, %d", GDALGetDataTypeName(gdpixtype), GDALGetDataTypeSize(gdpixtype) / 8);
+		RASTER_DEBUGF(4, "gdpixtype, size = %s, %d", GDALGetDataTypeName(gdpixtype), GDALGetDataTypeSizeBytes(gdpixtype));
 		pt = rt_util_gdal_datatype_to_pixtype(gdpixtype);
 		if (pt == PT_END) {
 			rterror("rt_raster_from_gdal_dataset: Unknown pixel type for GDAL band");
@@ -2825,7 +2825,7 @@ rt_raster_gdal_rasterize(
 		_dim[1] == 0
 	) {
 
-#if POSTGIS_GDAL_VERSION > 18
+#if POSTGIS_GDAL_VERSION > 10800
 
 		RASTER_DEBUG(3, "Adjusting extent for GDAL > 1.8 by half the scale on X-axis");
 		extent.MinX -= (_scale[0] / 2.);

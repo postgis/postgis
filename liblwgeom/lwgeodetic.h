@@ -144,6 +144,7 @@ void normalize(POINT3D *p);
 void unit_normal(const POINT3D *P1, const POINT3D *P2, POINT3D *normal);
 double sphere_direction(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e, double d);
 void ll2cart(const POINT2D *g, POINT3D *p);
+int gbox_geocentric_get_gbox_cartesian(const GBOX *gbox_geocentric, GBOX *gbox_planar);
 
 /*
 ** Prototypes for spheroid functions.

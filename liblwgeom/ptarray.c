@@ -130,7 +130,7 @@ ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, uint32_t where)
 	{
 		size_t copy_size = point_size * (pa->npoints - where);
 		memmove(getPoint_internal(pa, where+1), getPoint_internal(pa, where), copy_size);
-		LWDEBUGF(5,"copying %d bytes to start vertex %d from start vertex %d", copy_size, where+1, where);
+		LWDEBUGF(5,"copying %zu bytes to start vertex %d from start vertex %d", copy_size, where+1, where);
 	}
 
 	/* We have one more point */
@@ -138,7 +138,7 @@ ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, uint32_t where)
 
 	/* Copy the new point into the gap */
 	ptarray_set_point4d(pa, where, p);
-	LWDEBUGF(5,"copying new point to start vertex %d", point_size, where);
+	LWDEBUGF(5,"copying new point to start vertex %zu", point_size);
 
 	return LW_SUCCESS;
 }
@@ -485,7 +485,7 @@ ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
 	LWDEBUG(5,"npoints are the same");
 
 	ptsize = ptarray_point_size(pa1);
-	LWDEBUGF(5, "ptsize = %d", ptsize);
+	LWDEBUGF(5, "ptsize = %zu", ptsize);
 
 	for (i=0; i<pa1->npoints; i++)
 	{
@@ -525,12 +525,12 @@ ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdims, uint32_t where)
 	POINT4D pbuf;
 	size_t ptsize = ptarray_point_size(pa);
 
-	LWDEBUGF(3, "pa %x p %x size %d where %d",
+	LWDEBUGF(3, "pa %p p %p size %zu where %u",
 	         pa, p, pdims, where);
 
 	if ( pdims < 2 || pdims > 4 )
 	{
-		lwerror("ptarray_addPoint: point dimension out of range (%d)",
+		lwerror("ptarray_addPoint: point dimension out of range (%zu)",
 		        pdims);
 		return NULL;
 	}
@@ -542,7 +542,7 @@ ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdims, uint32_t where)
 		return NULL;
 	}
 
-	LWDEBUG(3, "called with a %dD point");
+	LWDEBUG(3, "called with a point");
 
 	pbuf.x = pbuf.y = pbuf.z = pbuf.m = 0.0;
 	memcpy((uint8_t *)&pbuf, p, pdims*sizeof(double));
@@ -576,7 +576,7 @@ ptarray_removePoint(POINTARRAY *pa, uint32_t which)
 	POINTARRAY *ret;
 	size_t ptsize = ptarray_point_size(pa);
 
-	LWDEBUGF(3, "pa %x which %d", pa, which);
+	LWDEBUGF(3, "pa %p which %u", pa, which);
 
 	assert(which <= pa->npoints-1);
 	assert(pa->npoints >= 3);
@@ -1596,7 +1596,7 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 
 /* Out of the points in pa [itfist .. itlast], finds the one that's farthest away from
  * the segment determined by pts[itfist] and pts[itlast].
- * Returns itfirst if no point was found futher away than max_distance_sqr
+ * Returns itfirst if no point was found further away than max_distance_sqr
  */
 static uint32_t
 ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t it_first, uint32_t it_last, double max_distance_sqr)
@@ -1662,7 +1662,7 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t it_first, uint32_t
 	return split;
 }
 
-/* O(N) simplification for tolearnce = 0 */
+/* O(N) simplification for tolerance = 0 */
 static void
 ptarray_simplify_in_place_tolerance0(POINTARRAY *pa)
 {
@@ -1685,7 +1685,11 @@ ptarray_simplify_in_place_tolerance0(POINTARRAY *pa)
 		double dot_ac_ab = ca_x * ba_x + ca_y * ba_y;
 		double s_numerator = ca_x * ba_y - ca_y * ba_x;
 
-		if (dot_ac_ab < 0.0 || dot_ac_ab > ab_length_sqr || s_numerator != 0)
+		if (p2d_same(kept_pt, next_pt) ||
+			dot_ac_ab < 0.0 ||
+			dot_ac_ab > ab_length_sqr ||
+			s_numerator != 0)
+
 		{
 			kept_it++;
 			kept_pt = curr_pt;
@@ -2084,7 +2088,7 @@ ptarray_startpoint(const POINTARRAY *pa, POINT4D *pt)
  *
  */
 void
-ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
+ptarray_grid_in_place(POINTARRAY *pa, gridspec *grid)
 {
 	uint32_t j = 0;
 	POINT4D *p, *p_out = NULL;
@@ -2104,11 +2108,24 @@ ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
 		if (ndims > 3)
 			m = p->m;
 
-		if (grid->xsize > 0)
-			x = rint((x - grid->ipx) / grid->xsize) * grid->xsize + grid->ipx;
+		/*
+		 * See https://github.com/libgeos/geos/pull/956
+		 * We use scale for rounding when gridsize is < 1 and
+		 * gridsize for rounding when scale < 1.
+		 */
+		if (grid->xsize > 0) {
+			if (grid->xsize < 1)
+				x = rint((x - grid->ipx) * grid->xscale) / grid->xscale + grid->ipx;
+			else
+				x = rint((x - grid->ipx) / grid->xsize) * grid->xsize + grid->ipx;
+		}
 
-		if (grid->ysize > 0)
-			y = rint((y - grid->ipy) / grid->ysize) * grid->ysize + grid->ipy;
+		if (grid->ysize > 0) {
+			if (grid->ysize < 1)
+				y = rint((y - grid->ipy) * grid->yscale) / grid->yscale + grid->ipy;
+			else
+				y = rint((y - grid->ipy) / grid->ysize) * grid->ysize + grid->ipy;
+		}
 
 		/* Read and round this point */
 		/* Z is always in third position */
@@ -2215,7 +2232,7 @@ ptarray_scroll_in_place(POINTARRAY *pa, const POINT4D *pt)
 	/* TODO: reduce allocations */
 	tmp = ptarray_construct(FLAGS_GET_Z(pa->flags), FLAGS_GET_M(pa->flags), pa->npoints);
 
-	bzero(getPoint_internal(tmp, 0), (size_t)ptsize * pa->npoints);
+	memset(getPoint_internal(tmp, 0), 0, (size_t)ptsize * pa->npoints);
 	/* Copy the block from found point to last point into the output array */
 	memcpy(
 		getPoint_internal(tmp, 0),

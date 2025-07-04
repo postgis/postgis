@@ -76,22 +76,6 @@ Datum ST_AsMARC21(PG_FUNCTION_ARGS) {
 
 	}
 
-//	if (GetLWPROJ(srid, srid, &lwproj) == LW_FAILURE) {
-//
-//		PG_FREE_IF_COPY(gs, 0);
-//		lwpgerror("ST_AsMARC21: Failure reading projections from spatial_ref_sys.");
-//		PG_RETURN_NULL();
-//
-//	}
-
-//#if POSTGIS_PROJ_VERSION < 61
-//	is_latlong = pj_is_latlong(lwproj->pj_from);
-//#else
-//	is_latlong = lwproj->source_is_latlong;
-//#endif
-
-	//is_latlong = lwproj_is_latlong(lwproj);
-
 	if (!lwproj_is_latlong(lwproj)) {
 
 		PG_FREE_IF_COPY(gs, 0);

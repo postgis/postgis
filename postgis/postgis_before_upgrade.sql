@@ -37,7 +37,7 @@ SELECT _postgis_drop_function_by_identity
 	);
 
 -- FUNCTION UpdateGeometrySRID changed the name of the args (http://trac.osgeo.org/postgis/ticket/1606) for 2.0
--- It changed the paramenter `new_srid` to `new_srid_in`
+-- It changed the parameter `new_srid` to `new_srid_in`
 -- (catalogn_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid integer)
 -- Dropping it conditionally since the same signature still exists.
 SELECT _postgis_drop_function_by_identity

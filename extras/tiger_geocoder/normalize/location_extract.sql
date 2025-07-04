@@ -1,7 +1,7 @@
 -- location_extract(streetAddressString, stateAbbreviation)
 -- This function extracts a location name from the end of the given string.
 -- The first attempt is to find an exact match against the place_lookup
--- table.  If this fails, a word-by-word soundex match is tryed against the
+-- table.  If this fails, a word-by-word soundex match is tried against the
 -- same table.  If multiple candidates are found, the one with the smallest
 -- levenshtein distance from the given string is assumed the correct one.
 -- If no match is found against the place_lookup table, the same tests are

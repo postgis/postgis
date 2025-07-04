@@ -53,7 +53,7 @@
  * for SET functions or function normally returning a modified raster, return
  * the original raster
  * for GET functions, return NULL
- * try to deduce a valid parameter value if it makes sence (e.g. out of range
+ * try to deduce a valid parameter value if it makes sense (e.g. out of range
  * index for addBand)
  *
  * Do not put the name of the faulty function for NOTICEs, only with ERRORs.
@@ -68,7 +68,7 @@
  * automatically free'd at the end of the function. If you want some data to
  * live between function calls, you have 2 options:
  *
- * - Use fcinfo->flinfo->fn_mcxt contex to store the data (by pointing the
+ * - Use fcinfo->flinfo->fn_mcxt context to store the data (by pointing the
  *   data you want to keep with fcinfo->flinfo->fn_extra)
  * - Use SRF funcapi, and storing the data at multi_call_memory_ctx (by pointing
  *   the data you want to keep with funcctx->user_fctx. funcctx is created by
@@ -166,7 +166,6 @@ void _PG_init(void);
 void _PG_fini(void);
 
 #define RT_MSG_MAXLEN 256
-
 
 /* ---------------------------------------------------------------- */
 /*  Memory allocation / error reporting hooks                       */
@@ -267,10 +266,10 @@ rt_pg_options(const char* varname)
 /*  GDAL allowed config options for VSI filesystems */
 /* ---------------------------------------------------------------- */
 
-stringlist_t *vsi_option_stringlist = NULL;
+static stringlist_t *vsi_option_stringlist = NULL;
 
 
-#if POSTGIS_GDAL_VERSION < 23
+#if POSTGIS_GDAL_VERSION < 20300
 
 /*
 * For older versions of GDAL we  have extracted the list of options
@@ -342,7 +341,7 @@ rt_pg_vsi_load_all_options(void)
 	stringlist_sort(vsi_option_stringlist);
 }
 
-#else /* POSTGIS_GDAL_VERSION < 23 */
+#else /* POSTGIS_GDAL_VERSION < 20300 */
 
 /*
 * For newer versions of GDAL the VSIGetFileSystemOptions() call returns
@@ -414,7 +413,7 @@ rt_pg_vsi_load_all_options(void)
 	stringlist_sort(vsi_option_stringlist);
 }
 
-#endif /* POSTGIS_GDAL_VERSION < 23 */
+#endif /* POSTGIS_GDAL_VERSION < 20300 */
 
 
 static bool
@@ -462,6 +461,7 @@ static char *gdal_datapath = NULL;
 static char *gdal_vsi_options = NULL;
 static char *gdal_enabled_drivers = NULL;
 static bool enable_outdb_rasters = false;
+static bool gdal_cpl_debug = false;
 
 /* ---------------------------------------------------------------- */
 /*  Useful variables                                                */
@@ -646,63 +646,12 @@ rtpg_assignHookEnableOutDBRasters(bool enable, void *extra) {
 }
 
 
-
-/*
-* Machinery for intercepting the system SIGINT
-* handler so we can cancel long-running GDAL operations
-* via the progress handlers.
-*/
-static pqsigfunc coreIntHandler = 0;
-
-#ifdef WIN32
-static void interruptCallback() {
-  if (UNBLOCKED_SIGNAL_QUEUE())
-    pgwin32_dispatch_queued_signals();
-}
-#endif
-
-
-/*
-* This is the interrupt capture for this module.
-* Before handing off the signal to the core, it
-* sets the interrupt flag for currently running
-* functions.
-*/
-static void
-handleInterrupt(int sig)
-{
-	/*
-	* NOTE: printf here would be dangerous, see
-	* https://trac.osgeo.org/postgis/ticket/3644
-	*/
-	// printf("postgis_raster interrupt requested\n"); fflush(stdout);
-
-	/* Request interruption of liblwgeom as well */
-	lwgeom_request_interrupt();
-
-	/* Pass control into the usual core handler */
-	if (coreIntHandler) {
-		(*coreIntHandler)(sig);
-	}
-}
-
-
-
 /* Module load callback */
 void
 _PG_init(void) {
 
 	bool boot_postgis_enable_outdb_rasters = false;
 	MemoryContext old_context;
-
-	/* Set up interrupt capture */
-	coreIntHandler = pqsignal(SIGINT, handleInterrupt);
-
-#ifdef WIN32
- 	GEOS_interruptRegisterCallback(interruptCallback);
- 	lwgeom_register_interrupt_callback(interruptCallback);
-#endif
-
 
 	/*
 	 * Change to context for memory allocation calls like palloc() in the
@@ -835,6 +784,30 @@ _PG_init(void) {
 		);
 	}
 
+	/* Prototype for CPL_Degbuf control function. */
+	if ( postgis_guc_find_option("postgis.gdal_cpl_debug") )
+	{
+		/* In this narrow case the previously installed GUC is tied to the callback in */
+		/* the previously loaded library. Probably this is happening during an */
+		/* upgrade, so the old library is where the callback ties to. */
+		elog(WARNING, "'%s' is already set and cannot be changed until you reconnect", "postgis.gdal_cpl_debug");
+	}
+	else
+	{
+		DefineCustomBoolVariable(
+			"postgis.gdal_cpl_debug", /* name */
+			"Enable GDAL debugging messages", /* short_desc */
+			"GDAL debug messages will be sent at the PgSQL debug log level", /* long_desc */
+			&gdal_cpl_debug, /* valueAddr */
+			false, /* bootValue */
+			PGC_SUSET, /* GucContext context */
+			0, /* int flags */
+			NULL, /* GucBoolCheckHook check_hook */
+			rtpg_gdal_set_cpl_debug, /* GucBoolAssignHook assign_hook */
+			NULL  /* GucShowHook show_hook */
+		);
+	}
+
 	if ( postgis_guc_find_option("postgis.gdal_vsi_options") )
 	{
 		elog(WARNING, "'%s' is already set and cannot be changed until you reconnect", "postgis.gdal_vsi_options");
@@ -866,9 +839,6 @@ _PG_fini(void) {
 	MemoryContext old_context = MemoryContextSwitchTo(TopMemoryContext);
 
 	elog(NOTICE, "Goodbye from PostGIS Raster %s", POSTGIS_VERSION);
-
-	/* Return SIGINT handling to core */
-	pqsignal(SIGINT, coreIntHandler);
 
 	/* Clean up */
 	pfree(env_postgis_gdal_enabled_drivers);

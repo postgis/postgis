@@ -65,25 +65,25 @@ bytebuffer_destroy_buffer(bytebuffer_t *s)
 }
 
 /**
-* If necessary, expand the bytebuffer_t internal buffer to accomodate the
+* If necessary, expand the bytebuffer_t internal buffer to accommodate the
 * specified additional size.
 */
 static inline void
 bytebuffer_makeroom(bytebuffer_t *s, size_t size_to_add)
 {
-	LWDEBUGF(2,"Entered bytebuffer_makeroom with space need of %d", size_to_add);
+	LWDEBUGF(2,"Entered bytebuffer_makeroom with space need of %zu", size_to_add);
 	size_t current_write_size = (s->writecursor - s->buf_start);
 	size_t capacity = s->capacity;
 	size_t required_size = current_write_size + size_to_add;
 
-	LWDEBUGF(2,"capacity = %d and required size = %d",capacity ,required_size);
+	LWDEBUGF(2,"capacity = %zu and required size = %zu", capacity, required_size);
 	while (capacity < required_size)
 		capacity *= 2;
 
 	if ( capacity > s->capacity )
 	{
 		size_t current_read_size = (s->readcursor - s->buf_start);
-		LWDEBUGF(4,"We need to realloc more memory. New capacity is %d", capacity);
+		LWDEBUGF(4,"We need to realloc more memory. New capacity is %zu", capacity);
 		if ( s->buf_start == s->buf_static )
 		{
 			s->buf_start = lwalloc(capacity);
@@ -296,7 +296,7 @@ bytebuffer_append_int(bytebuffer_t *buf, const int val, int swap)
 	/* Machine/request arch mismatch, so flip byte order */
 	if ( swap)
 	{
-		LWDEBUG(4,"Ok, let's do the swaping thing");
+		LWDEBUG(4,"Ok, let's do the swapping thing");
 		for ( i = 0; i < WKB_INT_SIZE; i++ )
 		{
 			*(buf->writecursor) = iptr[WKB_INT_SIZE - 1 - i];

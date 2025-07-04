@@ -1066,7 +1066,7 @@ SELECT
 	    <listitem><para>
         the polygon boundary rings (the exterior shell ring and interior hole rings)
         are <emphasis>simple</emphasis> (do not cross or self-touch).
-        Because of this a polygon cannnot have cut lines, spikes or loops.
+        Because of this a polygon cannot have cut lines, spikes or loops.
         This implies that polygon holes must be represented as interior rings,
         rather than by the exterior ring self-touching (a so-called "inverted hole").
         </para></listitem>

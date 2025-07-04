@@ -139,7 +139,7 @@
 			&nbsp;<sup>3d</sup>
 		</xsl:if>
 
-		<!-- if only one proto just dispaly it on first line -->
+		<!-- if only one proto just display it on first line -->
 		<xsl:if test="count(db:refsynopsisdiv/db:funcsynopsis/db:funcprototype) = 1">
 			(<xsl:call-template name="list_in_params"><xsl:with-param name="func" select="db:refsynopsisdiv/db:funcsynopsis/db:funcprototype" /></xsl:call-template>)
 		</xsl:if>
