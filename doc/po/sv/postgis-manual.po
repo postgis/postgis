@@ -5,10 +5,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-06-19 21:47+0000\n"
+"PO-Revision-Date: 2025-07-04 06:14+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
-"Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/sv/>\n"
+"Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18551,6 +18551,9 @@ msgid ""
 "href=\"https://gdal.org/user/configoptions.html\">Configuration Options</"
 "link>."
 msgstr ""
+"Ytterligare information om GDAL_DATA finns på GDAL:s <link "
+"xlink:href=”https://gdal.org/user/configoptions."
+"html”>konfigurationsalternativ</link>."
 
 #. Tag: para
 #, no-c-format
@@ -18680,6 +18683,9 @@ msgid ""
 "href=\"https://gdal.org/user/configoptions.html\">Configuration Options</"
 "link>."
 msgstr ""
+"Ytterligare information om GDAL_SKIP finns på GDAL:s <link "
+"xlink:href=”https://gdal.org/user/configoptions."
+"html”>konfigurationsalternativ</link>."
 
 #. Tag: para
 #, no-c-format
@@ -18813,6 +18819,11 @@ msgid ""
 "allocates to local data cache, whether to read overviews, and what access "
 "keys to use for remote out-db data sources."
 msgstr ""
+"En strängkonfiguration för att ställa in alternativ som används när du "
+"arbetar med en out-db-raster. <link xlink:href=”https://gdal.org/user/"
+"configoptions.html”>Konfigurationsalternativ</link> styr saker som hur "
+"mycket utrymme GDAL tilldelar lokal datacache, om översikter ska läsas och "
+"vilka åtkomstnycklar som ska användas för fjärranslutna out-db-datakällor."
 
 #. Tag: para
 #, no-c-format
@@ -36463,6 +36474,10 @@ msgid ""
 "html\">https://gdal.org/user/drivers/raster/postgisraster.html</link> and "
 "then prepared in the <xref linkend=\"RT_ST_Rescale\"/> examples"
 msgstr ""
+"Exemplen använder katrina-raster som lästs in som en enda bricka som "
+"beskrivs i <link xlink:href=”https://gdal.org/user/drivers/raster/"
+"postgisraster.html”>https://gdal.org/user/drivers/raster/postgisraster.html</"
+"link> och sedan förberetts i exemplen <xref linkend=\"RT_ST_Rescale\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -38425,6 +38440,11 @@ msgid ""
 "<varname>GDAL_DISABLE_READDIR_ON_OPEN</varname> to <varname>TRUE</varname> "
 "to disable directory scanning."
 msgstr ""
+"För att kontrollera detta beteende tillhandahåller GDAL följande "
+"miljövariabel: <link xlink:href=”https://gdal.org/user/configoptions.html"
+"#config-GDAL_DISABLE_READDIR_ON_OPEN”>GDAL_DISABLE_READDIR_ON_OPEN</link>. "
+"Ställ in <varname>GDAL_DISABLE_READDIR_ON_OPEN</varname> till <varname>TRUE</"
+"varname> för att inaktivera katalogsökning."
 
 #. Tag: para
 #, no-c-format
