@@ -16,8 +16,26 @@ jobs:
       fail-fast: false
       matrix:
         ci:
-        - { tag: latest, mode: usan_clang }
-        - { tag: latest, mode: asan_clang }
+        # Use the last stable releases to run more tests
+        - { tag: pg18-geosmain-gdal311-proj96, mode: tests }
+        - { tag: pg17-geos313-gdal39-proj94, mode: coverage }
+        # - { tag: pg17-geos313-gdal39-proj94, mode: garden }
+        - { tag: pg17-geos313-gdal39-proj94, mode: usan_clang }
+        - { tag: pg17-geos313-gdal39-proj94, mode: asan_clang }
+        - { tag: pg16-geos312-gdal37-proj921, mode: coverage }
+        - { tag: pg15-geos311-gdal35-proj90, mode: coverage }
+        # - { tag: pg13-geos39-gdal31-proj71, mode: garden }
+        - { tag: pg14-geos39-gdal33-proj71, mode: tests }
+        # - { tag: pg14-clang-geos39-gdal33-proj71, mode: usan_clang }
+        #- { tag: pg13-geos39-gdal31-proj71, mode: tests }
+        #- { tag: pg13-geos39-gdal31-proj71, mode: coverage }
+        #- { tag: pg13-geos39-gdal31-proj71, mode: usan_gcc }
+        - { tag: pg13-clang-geos39-gdal31-proj71, mode: usan_clang }
+        # Run tests with different dependency combinations
+        - { tag: latest, mode: tests }
+        - { tag: latest, mode: garden }
+        - { tag: pg13-geos38-gdal31-proj71, mode: tests }
+        - { tag: pg12-geos38-gdal30-proj611, mode: tests }
 
     runs-on: ubuntu-latest
     steps:
@@ -35,7 +53,7 @@ jobs:
       run: |
         set -e
         uname -a
-        echo "FROM lnicola/postgis-build-env:${{ matrix.ci.tag }}" > Dockerfile
+        echo "FROM postgis/postgis-build-env:${{ matrix.ci.tag }}" > Dockerfile
         echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
         echo "CMD bash ci/github/run_${{ matrix.ci.mode }}.sh" >> Dockerfile
         docker build -t pgtest .
