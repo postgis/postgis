@@ -4,15 +4,16 @@
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023, 2024, 2025.
 # Yoichi Kayama <yoichi.kayama@gmail.com>, 2024.
 # Weblate <noreply-mt-weblate@weblate.org>, 2025.
+# Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-05-27 08:47+0000\n"
-"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"PO-Revision-Date: 2025-07-04 02:47+0000\n"
+"Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18126,8 +18127,8 @@ msgid ""
 "href=\"https://gdal.org/user/configoptions.html\">Configuration Options</"
 "link>."
 msgstr ""
-"GDAL_DATAに関する追加情報報は、GDALの<link xlink:href=\"http://trac.osgeo."
-"org/gdal/wiki/configoptions.html\">Configuration Options</link>にあります。"
+"GDAL_DATAに関する追加情報報は、GDALの <link xlink:href=\"https://gdal.org/"
+"user/configoptions.html\">Configuration Options</link>.にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -18253,8 +18254,8 @@ msgid ""
 "href=\"https://gdal.org/user/configoptions.html\">Configuration Options</"
 "link>."
 msgstr ""
-"GDAL_SKIPに関する追加情報は、GDALの<link xlink:href=\"http://trac.osgeo.org/"
-"gdal/wiki/configoptions.html\">Configuration Options</link>にあります。"
+"GDAL_SKIPに関する追加情報は、GDALの<link xlink:href=\"https://gdal.org/user/"
+"configoptions.html\">Configuration Options</link>にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -35498,10 +35499,11 @@ msgid ""
 "html\">https://gdal.org/user/drivers/raster/postgisraster.html</link> and "
 "then prepared in the <xref linkend=\"RT_ST_Rescale\"/> examples"
 msgstr ""
-"単一タイルとしてロードされたカトリーナのラスタを使った例です。<link xlink:"
-"href=\"https://gdal.org/user/drivers/raster/postgisraster.html\">http://trac."
-"osgeo.org/gdal/wiki/frmts_wtkraster.html</link>に説明があります。また、<xref "
-"linkend=\"RT_ST_Rescale\"/>の例で準備を行っています"
+"単一タイルとしてロードされたカトリーナのラスタを使った例です。<link "
+"xlink:href=\"https://gdal.org/user/drivers/raster/postgisraster.html\""
+">https://gdal.org/user/drivers/raster/postgisraster."
+"html</link>に説明があります。また、<xref linkend=\"RT_ST_Rescale\""
+"/>の例で準備を行っています"
 
 #. Tag: para
 #, no-c-format
@@ -37409,11 +37411,11 @@ msgid ""
 "<varname>GDAL_DISABLE_READDIR_ON_OPEN</varname> to <varname>TRUE</varname> "
 "to disable directory scanning."
 msgstr ""
-"この振る舞いを制御するために、GDALには<link xlink:href=\"https://trac.osgeo."
-"org/gdal/wiki/configoptions.html#config-"
-"GDAL_DISABLE_READDIR_ON_OPEN\">GDAL_DISABLE_READDIR_ON_OPEN</link>という環境"
-"変数があります。<varname>GDAL_DISABLE_READDIR_ON_OPEN</varname>を"
-"<varname>TRUE</varname>に設定すると、ディレクトリのスキャンを無効にします。"
+"この振る舞いを制御するために、GDALには<link xlink:href=\"https://gdal.org/"
+"user/configoptions.html#config-GDAL_DISABLE_READDIR_ON_OPEN\">GDAL_DISABLE_RE"
+"ADDIR_ON_OPEN</link>という環境変数があります。<varname>GDAL_DISABLE_READDIR_O"
+"N_OPEN</varname>を<varname>TRUE</varname>に設定すると、ディレクトリのスキャン"
+"を無効にします。"
 
 #. Tag: para
 #, no-c-format
