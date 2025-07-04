@@ -154,6 +154,7 @@ typedef struct rt_quantile_t* rt_quantile;
 typedef struct rt_valuecount_t* rt_valuecount;
 typedef struct rt_gdaldriver_t* rt_gdaldriver;
 typedef struct rt_reclassexpr_t* rt_reclassexpr;
+typedef struct rt_reclassmap_t* rt_reclassmap;
 
 typedef struct rt_iterator_t* rt_iterator;
 typedef struct rt_iterator_arg_t* rt_iterator_arg;
@@ -433,6 +434,18 @@ rt_band rt_band_new_inline(
 	rt_pixtype pixtype,
 	uint32_t hasnodata, double nodataval,
 	uint8_t* data
+);
+
+/**
+ * Fill in the cells of a band with a starting value
+ * frequently used to init with nodata value
+ *
+ * @param band      : band to initialize
+ * @param initval   : value to initialize with
+ */
+void rt_band_init_value(
+	rt_band band,
+	double initval
 );
 
 /**
@@ -995,6 +1008,20 @@ rt_band rt_band_reclass(
 	rt_band srcband, rt_pixtype pixtype,
 	uint32_t hasnodata, double nodataval,
 	rt_reclassexpr *exprset, int exprcount
+);
+
+/**
+ * Returns new band with values reclassified
+ * @param srcband : the band who's values will be reclassified
+ * @param map : the src and dst values to remapping
+ * @param hasnodata : indicates if the band has a nodata value
+ * @param nodataval : nodata value for the new band
+ *
+ * @return a new rt_band or NULL on error
+ */
+rt_band rt_band_reclass_exact(
+	rt_band srcband, rt_reclassmap map,
+	uint32_t hasnodata, double nodataval
 );
 
 /*- rt_raster --------------------------------------------------------*/
@@ -2580,6 +2607,20 @@ struct rt_reclassexpr_t {
 		int exc_min; /* exceed min */
 		int exc_max; /* exceed max */
 	} src, dst;
+};
+
+/* src/dst mapping for rt_classmap */
+struct rt_classpair_t {
+	double src;
+	double dst;
+};
+
+/* exact reclassification expression */
+struct rt_reclassmap_t {
+	uint32_t count;
+	rt_pixtype srctype;
+	rt_pixtype dsttype;
+	struct rt_classpair_t *pairs;
 };
 
 /* raster iterator */

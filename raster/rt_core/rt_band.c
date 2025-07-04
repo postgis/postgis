@@ -102,6 +102,157 @@ rt_band_new_inline(
 }
 
 /**
+ * Fill in the cells of a band with a starting value
+ * frequently used to init with nodata value
+ *
+ * @param band      : band to initialize
+ * @param initval   : value to initialize with
+ */
+void
+rt_band_init_value(
+	rt_band band,
+	double initval
+) {
+	assert(band != NULL);
+	assert(band->data.mem != NULL);
+	rt_pixtype pixtype = band->pixtype;
+	uint32_t width = band->width;
+	uint32_t height = band->height;
+	uint32_t numval = width * height;
+	void *mem = band->data.mem;
+	size_t memsize = numval * rt_pixtype_size(pixtype);
+
+	/* initialize to nodataval */
+	int32_t checkvalint = 0;
+	uint32_t checkvaluint = 0;
+	double checkvaldouble = 0;
+	float checkvalfloat = 0;
+
+	/* initialize to zero */
+	if (FLT_EQ(initval, 0.0)) {
+		memset(mem, 0, memsize);
+		return;
+	}
+
+	switch (pixtype) {
+		case PT_1BB:
+		{
+			uint8_t *ptr = mem;
+			uint8_t clamped_initval = rt_util_clamp_to_1BB(initval);
+			for (uint32_t i = 0; i < numval; i++)
+				ptr[i] = clamped_initval;
+			checkvalint = ptr[0];
+			break;
+		}
+		case PT_2BUI:
+		{
+			uint8_t *ptr = mem;
+			uint8_t clamped_initval = rt_util_clamp_to_2BUI(initval);
+			for (uint32_t i = 0; i < numval; i++)
+				ptr[i] = clamped_initval;
+			checkvalint = ptr[0];
+			break;
+		}
+		case PT_4BUI:
+		{
+			uint8_t *ptr = mem;
+			uint8_t clamped_initval = rt_util_clamp_to_4BUI(initval);
+			for (uint32_t i = 0; i < numval; i++)
+				ptr[i] = clamped_initval;
+			checkvalint = ptr[0];
+			break;
+		}
+		case PT_8BSI:
+		{
+			int8_t *ptr = mem;
+			int8_t clamped_initval = rt_util_clamp_to_8BSI(initval);
+			for (uint32_t i = 0; i < numval; i++)
+				ptr[i] = clamped_initval;
+			checkvalint = ptr[0];
+			break;
+		}
+		case PT_8BUI:
+		{
+			uint8_t *ptr = mem;
+			uint8_t clamped_initval = rt_util_clamp_to_8BUI(initval);
+			for (uint32_t i = 0; i < numval; i++)
+				ptr[i] = clamped_initval;
+			checkvalint = ptr[0];
+			break;
+		}
+		case PT_16BSI:
+		{
+			int16_t *ptr = mem;
+			int16_t clamped_initval = rt_util_clamp_to_16BSI(initval);
+			for (uint32_t i = 0; i < numval; i++)
+				ptr[i] = clamped_initval;
+			checkvalint = ptr[0];
+			break;
+		}
+		case PT_16BUI:
+		{
+			uint16_t *ptr = mem;
+			uint16_t clamped_initval = rt_util_clamp_to_16BUI(initval);
+			for (uint32_t i = 0; i < numval; i++)
+				ptr[i] = clamped_initval;
+			checkvalint = ptr[0];
+			break;
+		}
+		case PT_32BSI:
+		{
+			int32_t *ptr = mem;
+			int32_t clamped_initval = rt_util_clamp_to_32BSI(initval);
+			for (uint32_t i = 0; i < numval; i++)
+				ptr[i] = clamped_initval;
+			checkvalint = ptr[0];
+			break;
+		}
+		case PT_32BUI:
+		{
+			uint32_t *ptr = mem;
+			uint32_t clamped_initval = rt_util_clamp_to_32BUI(initval);
+			for (uint32_t i = 0; i < numval; i++)
+				ptr[i] = clamped_initval;
+			checkvaluint = ptr[0];
+			break;
+		}
+		case PT_32BF:
+		{
+			float *ptr = mem;
+			float clamped_initval = rt_util_clamp_to_32F(initval);
+			for (uint32_t i = 0; i < numval; i++)
+				ptr[i] = clamped_initval;
+			checkvalfloat = ptr[0];
+			break;
+		}
+		case PT_64BF:
+		{
+			double *ptr = mem;
+			for (uint32_t i = 0; i < numval; i++)
+				ptr[i] = initval;
+			checkvaldouble = ptr[0];
+			break;
+		}
+		default:
+		{
+			rterror("%s: Unknown pixeltype %d", __func__, pixtype);
+			return;
+		}
+	}
+
+	/* Overflow checking */
+	rt_util_dbl_trunc_warning(
+		initval,
+		checkvalint, checkvaluint,
+		checkvalfloat, checkvaldouble,
+		pixtype
+	);
+
+	return;
+}
+
+
+/**
  * Create an out-db rt_band
  *
  * @param width     : number of pixel columns
@@ -2080,4 +2231,3 @@ rt_band_corrected_clamped_value(
 
 	return ES_NONE;
 }
-

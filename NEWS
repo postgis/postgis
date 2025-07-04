@@ -37,3 +37,5 @@ Daniel Nylander (Swedish Team)
   - #5841, Change interrupt handling to remove use of pqsignal to support PG 18 (Paul Ramsey)
   - Add ST_CoverageClean to edge match and gap remove polygonal 
     coverages (Paul Ramsey) from GEOS 3.14 (Martin Davis)
+  - Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)
+
