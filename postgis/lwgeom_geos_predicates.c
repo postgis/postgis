@@ -880,6 +880,8 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
+
+#if POSTGIS_GEOS_VERSION >= 31300
 /*
  *  Flip the DE9IM matrix around the diagonal to
  *  account for flipping the order of the operands
@@ -893,6 +895,7 @@ imInvert(char *im)
 	t = im[2]; im[2] = im[6]; im[6] = t;
 	t = im[5]; im[5] = im[7]; im[7] = t;
 }
+#endif
 
 PG_FUNCTION_INFO_V1(relate_pattern);
 Datum relate_pattern(PG_FUNCTION_ARGS)
