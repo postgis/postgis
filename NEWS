@@ -18,6 +18,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 - #5935, Require GDAL 2.4 for postgis_raster
          and switch to GDALGetDataTypeSizeBytes (Laurențiu Nicola)
 - GT-257, fix issue with xsltproc with path has spaces (Laurențiu Nicola)
+- #5939, incorrect parameter order in ST_Relate caching (Paul Ramsey)
 
 
 PostGIS 3.5.3
