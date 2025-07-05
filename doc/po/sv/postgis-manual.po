@@ -18552,8 +18552,7 @@ msgid ""
 "link>."
 msgstr ""
 "Ytterligare information om GDAL_DATA finns på GDAL:s <link "
-"xlink:href="https://gdal.org/user/configoptions."
-"html">konfigurationsalternativ</link>."
+"xlink:href=\"https://gdal.org/user/configoptions.html\">konfigurationsalternativ</link>."
 
 #. Tag: para
 #, no-c-format
@@ -18684,8 +18683,7 @@ msgid ""
 "link>."
 msgstr ""
 "Ytterligare information om GDAL_SKIP finns på GDAL:s <link "
-"xlink:href="https://gdal.org/user/configoptions."
-"html">konfigurationsalternativ</link>."
+"xlink:href=\"https://gdal.org/user/configoptions.html\">konfigurationsalternativ</link>."
 
 #. Tag: para
 #, no-c-format
@@ -18820,8 +18818,8 @@ msgid ""
 "keys to use for remote out-db data sources."
 msgstr ""
 "En strängkonfiguration för att ställa in alternativ som används när du "
-"arbetar med en out-db-raster. <link xlink:href="https://gdal.org/user/"
-"configoptions.html">Konfigurationsalternativ</link> styr saker som hur "
+"arbetar med en out-db-raster. <link xlink:href=\"https://gdal.org/user/"
+"configoptions.html\">Konfigurationsalternativ</link> styr saker som hur "
 "mycket utrymme GDAL tilldelar lokal datacache, om översikter ska läsas och "
 "vilka åtkomstnycklar som ska användas för fjärranslutna out-db-datakällor."
 
@@ -36475,8 +36473,8 @@ msgid ""
 "then prepared in the <xref linkend=\"RT_ST_Rescale\"/> examples"
 msgstr ""
 "Exemplen använder katrina-raster som lästs in som en enda bricka som "
-"beskrivs i <link xlink:href="https://gdal.org/user/drivers/raster/"
-"postgisraster.html">https://gdal.org/user/drivers/raster/postgisraster.html</"
+"beskrivs i <link xlink:href=\"https://gdal.org/user/drivers/raster/"
+"postgisraster.html\">https://gdal.org/user/drivers/raster/postgisraster.html</"
 "link> och sedan förberetts i exemplen <xref linkend=\"RT_ST_Rescale\"/>"
 
 #. Tag: para
@@ -38441,8 +38439,8 @@ msgid ""
 "to disable directory scanning."
 msgstr ""
 "För att kontrollera detta beteende tillhandahåller GDAL följande "
-"miljövariabel: <link xlink:href="https://gdal.org/user/configoptions.html"
-"#config-GDAL_DISABLE_READDIR_ON_OPEN">GDAL_DISABLE_READDIR_ON_OPEN</link>. "
+"miljövariabel: <link xlink:href=\"https://gdal.org/user/configoptions.html"
+"#config-GDAL_DISABLE_READDIR_ON_OPEN\">GDAL_DISABLE_READDIR_ON_OPEN</link>. "
 "Ställ in <varname>GDAL_DISABLE_READDIR_ON_OPEN</varname> till <varname>TRUE</"
 "varname> för att inaktivera katalogsökning."
 
