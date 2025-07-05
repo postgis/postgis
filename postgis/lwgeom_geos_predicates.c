@@ -880,6 +880,19 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
+/*
+ *  Flip the DE9IM matrix around the diagonal to
+ *  account for flipping the order of the operands
+ *  to the GEOSPreparedRelatePattern function.
+ */
+static void
+imInvert(char *im)
+{
+	char t;
+	t = im[1]; im[1] = im[3]; im[3] = t;
+	t = im[2]; im[2] = im[6]; im[6] = t;
+	t = im[5]; im[5] = im[7]; im[7] = t;
+}
 
 PG_FUNCTION_INFO_V1(relate_pattern);
 Datum relate_pattern(PG_FUNCTION_ARGS)
@@ -890,11 +903,11 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
 
 	/* Ensure DE9IM pattern is no more than 9 chars */
-	text *patt = DatumGetTextP(DirectFunctionCall2(text_left,
+	text *imPtr = DatumGetTextP(DirectFunctionCall2(text_left,
 		PG_GETARG_DATUM(2), Int32GetDatum(9)));
-	char *pstr = text_to_cstring(patt);
+	char *im = text_to_cstring(imPtr);
 	char result;
-	size_t i;
+	uint32_t i;
 #if POSTGIS_GEOS_VERSION >= 31300
 	PrepGeomCache *prep_cache;
 #endif
@@ -904,11 +917,8 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	/*
 	** Need to make sure 't' and 'f' are upper-case before handing to GEOS
 	*/
-	for ( i = 0; i < strlen(pstr); i++ )
-	{
-		if ( pstr[i] == 't' ) pstr[i] = 'T';
-		if ( pstr[i] == 'f' ) pstr[i] = 'F';
-	}
+	for (i = 0; i < strlen(im); i++)
+		im[i] = toupper(im[i]);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
@@ -916,11 +926,19 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, shared_geom2);
 	if ( prep_cache && prep_cache->prepared_geom )
 	{
-		GEOSGeometry *g = prep_cache->gcache.argnum == 1
-			? POSTGIS2GEOS(geom2)
-			: POSTGIS2GEOS(geom1);
+		GEOSGeometry *g = NULL;
+		if (prep_cache->gcache.argnum == 1)
+		{
+			g = POSTGIS2GEOS(geom2);
+		}
+		else
+		{
+			g = POSTGIS2GEOS(geom1);
+			imInvert(im);
+		}
+
 		if (!g) HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
-		result = GEOSPreparedRelatePattern(prep_cache->prepared_geom, g, pstr);
+		result = GEOSPreparedRelatePattern(prep_cache->prepared_geom, g, im);
 		GEOSGeom_destroy(g);
 	}
 	else
@@ -935,12 +953,12 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 			HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 			GEOSGeom_destroy(g1);
 		}
-		result = GEOSRelatePattern(g1, g2, pstr);
+		result = GEOSRelatePattern(g1, g2, im);
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 	}
 
-	pfree(pstr);
+	pfree(im);
 	if (result == 2) HANDLE_GEOS_ERROR("GEOSRelatePattern");
 
 	PG_RETURN_BOOL(result);
