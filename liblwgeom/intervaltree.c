@@ -234,10 +234,11 @@ itree_add_pointarray(IntervalTree *itree, const POINTARRAY *pa)
 }
 
 
-static void
-itree_add_polygon(IntervalTree *itree, const LWPOLY *poly)
+static IntervalTree *
+itree_from_polygon(const LWPOLY *poly)
 {
-	if (poly->nrings == 0) return;
+	IntervalTree *itree = lwalloc0(sizeof(IntervalTree));
+	if (poly->nrings == 0) return itree;
 
 	itree->maxNodes = itree_num_nodes_polygon(poly);
 	itree->nodes = lwalloc0(itree->maxNodes * sizeof(IntervalTreeNode));
@@ -260,14 +261,15 @@ itree_add_polygon(IntervalTree *itree, const LWPOLY *poly)
 		itree->ringCounts[itree->numPolys] += 1;
 	}
 	itree->numPolys = 1;
-	return;
+	return itree;
 }
 
 
-static void
-itree_add_multipolygon(IntervalTree *itree, const LWMPOLY *mpoly)
+static IntervalTree *
+itree_from_multipolygon(const LWMPOLY *mpoly)
 {
-	if (mpoly->ngeoms == 0) return;
+	IntervalTree *itree = lwalloc0(sizeof(IntervalTree));
+	if (mpoly->ngeoms == 0) return itree;
 
 	itree->maxNodes = itree_num_nodes_multipolygon(mpoly);
 	itree->nodes = lwalloc0(itree->maxNodes * sizeof(IntervalTreeNode));
@@ -300,7 +302,7 @@ itree_add_multipolygon(IntervalTree *itree, const LWMPOLY *mpoly)
 
 		itree->numPolys += 1;
 	}
-	return;
+	return itree;
 }
 
 
@@ -308,23 +310,16 @@ IntervalTree *
 itree_from_lwgeom(const LWGEOM *geom)
 {
 	if (!geom) lwerror("%s called with null geometry", __func__);
-	if (lwgeom_get_type(geom) == MULTIPOLYGONTYPE)
+	switch(lwgeom_get_type(geom))
 	{
-		IntervalTree *itree = lwalloc0(sizeof(IntervalTree));
-		itree_add_multipolygon(itree, lwgeom_as_lwmpoly(geom));
-		return itree;
+		case MULTIPOLYGONTYPE:
+			return itree_from_multipolygon(lwgeom_as_lwmpoly(geom));
+		case POLYGONTYPE:
+			return itree_from_polygon(lwgeom_as_lwpoly(geom));
+		default:
+			lwerror("%s got asked to build index on non-polygon", __func__);
 	}
-	else if (lwgeom_get_type(geom) == POLYGONTYPE)
-	{
-		IntervalTree *itree = lwalloc0(sizeof(IntervalTree));
-		itree_add_polygon(itree, lwgeom_as_lwpoly(geom));
-		return itree;
-	}
-	else
-	{
-		lwerror("%s got asked to build index on non-polygon", __func__);
-		return NULL;
-	}
+	return NULL;
 }
 
 
