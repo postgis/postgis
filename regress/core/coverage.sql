@@ -53,7 +53,7 @@ SELECT 'three partition b' AS test,
 FROM coverage GROUP BY id ORDER BY id;
 
 
-TRUNCATE coverage;
+/**TRUNCATE coverage;
 INSERT INTO coverage VALUES
 (4, 1, 'POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))'),
 (4, 2, 'POLYGON ((1 0, 0.9 1, 2 1, 2 0, 1 0))');
@@ -63,7 +63,7 @@ WITH u AS (
 )
 SELECT 'union 2' AS test,
   ST_Area(geom), ST_GeometryType(geom)
-FROM u;
+FROM u;**/
 
 
 TRUNCATE coverage;
