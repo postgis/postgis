@@ -12,8 +12,8 @@ msgstr ""
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
 "PO-Revision-Date: 2025-07-04 02:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10261,6 +10261,11 @@ msgstr "Dane Springmeyer"
 
 #. Tag: member
 #, no-c-format
+msgid "Daniel Nylander"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Dapeng Wang"
 msgstr "Dapeng Wang"
 
@@ -10476,6 +10481,11 @@ msgstr "Kris Jurka"
 
 #. Tag: member
 #, no-c-format
+msgid "Laurențiu Nicola"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Laurenz Albe"
 msgstr "Laurenz Albe"
 
@@ -10503,6 +10513,11 @@ msgstr "Luca S. Percich"
 #, no-c-format
 msgid "Lucas C. Villa Real"
 msgstr "Lucas C. Villa Real"
+
+#. Tag: member
+#, no-c-format
+msgid "Maksim Korotkov"
+msgstr ""
 
 #. Tag: member
 #, no-c-format
@@ -10927,6 +10942,11 @@ msgstr "Palantir Technologies"
 #, no-c-format
 msgid "Paragon Corporation"
 msgstr "Paragon Corporation"
+
+#. Tag: link
+#, no-c-format
+msgid "Postgres Pro"
+msgstr ""
 
 #. Tag: link
 #, no-c-format
@@ -16049,11 +16069,9 @@ msgstr "オーバラップと頂点不一致により発生した不正エッジ
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_CoverageUnion\"/>, <xref "
-"linkend=\"ST_CoverageSimplify\"/>"
+", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/"
+">, <xref linkend=\"ST_CoverageSimplify\"/>"
 msgstr ""
-", <xref linkend=\"ST_CoverageUnion\"/>, <xref "
-"linkend=\"ST_CoverageSimplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -16119,6 +16137,12 @@ msgstr "入力カバレッジ"
 msgid "Simplified coverage"
 msgstr "カバレッジの単純化"
 
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/>"
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
@@ -16163,6 +16187,84 @@ msgstr "Availability: 3.4.0 - GEOS 3.8.0以上が必要です"
 #, no-c-format
 msgid "Union result"
 msgstr "結合結果"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_CoverageSimplify\"/>, <xref "
+"linkend=\"ST_CoverageClean\"/>, <xref linkend=\"ST_Union\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Computes a clean (edge matched, non-overlapping, gap-cleared) polygonal "
+"coverage, given a non-clean input."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A window function which alters the edges of a polygonal coverage to ensure "
+"that none of the polygons overlap, that small gaps are snapped away, and "
+"that all shared edges are exactly identical. The result is a clean coverage "
+"that will pass validation tests like <xref "
+"linkend=\"ST_CoverageInvalidEdges\"/>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <parameter>gapMaximumWidth</parameter> controls the cleaning of gaps "
+"between polygons. Gaps smaller than this tolerance will be closed."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <parameter>snappingDistance</parameter> controls the node snapping step, "
+"when nearby vertices are snapped together. The default setting (-1) applies "
+"an automatic snapping distance based on an analysis of the input. Set to 0.0 "
+"to turn off all snapping."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <parameter>overlapMergeStrategy</parameter> controls the algorithm used "
+"to determine which neighboring polygons to merge overlapping areas into."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<code>MERGE_LONGEST_BORDER</code> chooses polygon with longest common border"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<code>MERGE_MAX_AREA</code> chooses polygon with maximum area"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<code>MERGE_MIN_AREA</code> chooses polygon with minimum area"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<code>MERGE_MIN_INDEX</code> chooses polygon with smallest input index"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0 - requires GEOS &gt;= 3.14.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Union\"/> <xref linkend=\"ST_CoverageSimplify\"/>"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -23689,13 +23791,10 @@ msgid ""
 "Returns the OGC/ISO <link linkend=\"OpenGISWKBWKT\">Well-Known Binary</link> "
 "(WKB) representation of the geometry. The first function variant defaults to "
 "encoding using server machine endian. The second function variant takes a "
-"text argument specifying the endian encoding, either little-endian ('NDR') "
-"or big-endian ('XDR')."
+"text argument specifying the endian encoding: either 'NDR' for little-"
+"endian; or 'XDR' for big-endian. Supplying unknown arguments will result in "
+"little-endian output."
 msgstr ""
-"ジオメトリのOGC/ISO<link linkend=\"OpenGISWKBWKT\">Well-Knownバイナリ</link> "
-"(WKB)表現を返します。最初の形式では、サーバ機のエンディアンをデフォルトとして"
-"使います。二つ目の形式では、リトルエンディアン ('NDR')またはビッグエンディア"
-"ン ('XDR')を指定する文字列を取ります。"
 
 #. Tag: para
 #, no-c-format
@@ -23800,13 +23899,10 @@ msgid ""
 "Returns the <link linkend=\"EWKB_EWKT\">Extended Well-Known Binary</link> "
 "(EWKB) representation of the geometry with SRID metadata. The first function "
 "variant defaults to encoding using server machine endian. The second "
-"function variant takes a text argument specifying the endian encoding, "
-"either little-endian ('NDR') or big-endian ('XDR')."
+"function variant takes a text argument specifying the endian encoding: "
+"either 'NDR' for little-endian; or 'XDR' for big-endian. Supplying unknown "
+"arguments will result in little-endian output."
 msgstr ""
-"ジオメトリの、SRIDメタデータを持つ<link linkend=\"EWKB_EWKT\">Extended Well-"
-"Knownバイナリ</link> (EWKB)表現を返します。最初の形式では、サーバ機のエンディ"
-"アンをデフォルトとして使います。二つ目の形式では、リトルエンディアン ('NDR')"
-"またはビッグエンディアン ('XDR')を指定する文字列を取ります。"
 
 #. Tag: para
 #, no-c-format
@@ -26386,14 +26482,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Buffer output is always a valid polygonal geometry. Buffer can handle "
-"invalid inputs, so buffering by distance 0 is sometimes used as a way of "
-"repairing invalid polygons. <xref linkend=\"ST_MakeValid\"/> can also be "
-"used for this purpose."
+"Buffer can handle invalid inputs and the output is always a valid polygonal "
+"geometry. Buffering by distance 0 is sometimes used as a way of repairing "
+"invalid polygons. <xref linkend=\"ST_MakeValid\"/> is more suitable for this "
+"process as it can handle multi-polygons."
 msgstr ""
-"バッファ出力は常に妥当なポリゴンジオメトリです。バッファは不正な入力を処理で"
-"きるので、不正なポリゴンを修復する方法として、距離0のバッファリングが使われま"
-"す。同じ目的の関数としては<xref linkend=\"ST_MakeValid\"/>が使われます。"
 
 #. Tag: para
 #, no-c-format
@@ -28633,23 +28726,9 @@ msgstr "ラスタ リファレンス"
 #. Tag: para
 #, no-c-format
 msgid ""
-"The functions given below are the ones which a user of PostGIS Raster is "
-"likely to need and which are currently available in PostGIS Raster. There "
-"are other functions which are required support functions to the raster "
-"objects which are not of use to a general user."
+"<varname>raster</varname> is a PostGIS type for storing and analyzing raster "
+"data."
 msgstr ""
-"ここで挙げる関数は、PostGISラスタにとって必要と思われるもので、現在PostGISラ"
-"スタで有効なものです。他に、一般的なユーザが利用しない、ラスタオブジェクトに"
-"対して求められるサポート関数があります。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>raster</varname> is a new PostGIS type for storing and analyzing "
-"raster data."
-msgstr ""
-"<varname>raster</varname>は、ラスタデータの格納と分析のための新しいPostGIS型"
-"です。"
 
 #. Tag: para
 #, no-c-format
@@ -28663,11 +28742,17 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For the examples in this reference we will be using a raster table of dummy "
-"rasters - Formed with the following code"
+"Some examples in this reference use a raster table of dummy data, created "
+"with the following code:"
 msgstr ""
-"このリファレンスにおける例ではダミーラスタのラスタテーブルを使っています。ラ"
-"スタは次のようなコードで形成しています。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The functions below are ones which a user of PostGIS Raster is likely to "
+"need. There are other raster support functions which are not of interest to "
+"a general user."
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -28818,20 +28903,16 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"<refpurpose>A composite type used as input into the ST_Reclass function "
-"defining the behavior of reclassification.</refpurpose>"
+"A composite type used as input into the ST_Reclass function defining the "
+"behavior of reclassification."
 msgstr ""
-"<refpurpose>ST_Reclass関数への入力として使用する複合型です。再分類の挙動を定"
-"義します。</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"<para>A composite type used as input into the ST_Reclass function defining "
-"the behavior of reclassification.</para>"
+"A composite type used as input into the <xref linkend=\"RT_ST_Reclass\"/> "
+"function defining the behavior of reclassification."
 msgstr ""
-"<para>ST_Reclass関数への入力として使用する複合型です。再分類の挙動を定義しま"
-"す。</para>"
 
 #. Tag: para
 #, no-c-format
@@ -33063,12 +33144,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns summarystats consisting of count, sum, mean, stddev, min, max for a "
-"given raster band of a raster or raster coverage. Band 1 is assumed is no "
+"given raster band of a raster or raster coverage. Band 1 is assumed if no "
 "band is specified."
 msgstr ""
-"ラスタまたはラスタカバレッジの指定したバンドについて、ピクセル数、合計値、平"
-"均値、標準偏差、最小値、最大値からなる統計情報の概要を返します。バンドを指定"
-"しない場合には、1番と仮定します。"
 
 #. Tag: para
 #, no-c-format
@@ -33150,12 +33228,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Aggregate. Returns summarystats consisting of count, sum, mean, stddev, min, "
-"max for a given raster band of a set of raster. Band 1 is assumed is no band "
+"max for a given raster band of a set of raster. Band 1 is assumed if no band "
 "is specified."
 msgstr ""
-"集約関数です。ラスタ集合の指定したバンドについて、ピクセル数、合計値、平均"
-"値、標準偏差、最小値、最大値からなる統計情報の概要を返します。バンドを指定し"
-"ない場合には、1番と仮定します。"
 
 #. Tag: para
 #, no-c-format
@@ -35499,11 +35574,10 @@ msgid ""
 "html\">https://gdal.org/user/drivers/raster/postgisraster.html</link> and "
 "then prepared in the <xref linkend=\"RT_ST_Rescale\"/> examples"
 msgstr ""
-"単一タイルとしてロードされたカトリーナのラスタを使った例です。<link "
-"xlink:href=\"https://gdal.org/user/drivers/raster/postgisraster.html\""
-">https://gdal.org/user/drivers/raster/postgisraster."
-"html</link>に説明があります。また、<xref linkend=\"RT_ST_Rescale\""
-"/>の例で準備を行っています"
+"単一タイルとしてロードされたカトリーナのラスタを使った例です。<link xlink:"
+"href=\"https://gdal.org/user/drivers/raster/postgisraster.html\">https://"
+"gdal.org/user/drivers/raster/postgisraster.html</link>に説明があります。ま"
+"た、<xref linkend=\"RT_ST_Rescale\"/>の例で準備を行っています"
 
 #. Tag: para
 #, no-c-format
@@ -35538,31 +35612,27 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Creates a new raster formed by applying a valid PostgreSQL algebraic "
-"operation defined by the <varname>reclassexpr</varname> on the input raster "
-"(<varname>rast</varname>). If no <varname>band</varname> is specified band 1 "
-"is assumed. The new raster will have the same georeference, width, and "
-"height as the original raster. Bands not designated will come back "
-"unchanged. Refer to <xref linkend=\"reclassarg\"/> for description of valid "
-"reclassification expressions."
+"Creates a new raster formed by applying a reclassification operation defined "
+"by the <varname>reclassexpr</varname> on the input raster (<varname>rast</"
+"varname>). Refer to <xref linkend=\"reclassarg\"/> for the description of "
+"reclassification expressions. If no <varname>band</varname> is specified "
+"band 1 is assumed."
 msgstr ""
-"入力ラスタ (<varname>rast</varname>)に<varname>reclassexpr</varname>で定義す"
-"る妥当なPostgreSQL代数演算子を適用して新しいラスタを生成します。"
-"<varname>band</varname>が指定されていない場合には、1番と仮定します。新しいラ"
-"スタは、元のラスタと同じ地理参照、幅、高さを持ちます。指示されていないバンド"
-"は変更せずに返ります。妥当な再分類の数式の説明については<xref "
-"linkend=\"reclassarg\"/>を参照して下さい。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"The bands of the new raster will have pixel type of <varname>pixeltype</"
-"varname>. If <varname>reclassargset</varname> is passed in then each "
-"reclassarg defines behavior of each band generated."
+"The new raster will have the same georeference, width, and height as the "
+"original raster. The bands of the new raster have pixel type of "
+"<varname>pixeltype</varname>. If <varname>reclassargset</varname> is "
+"specified then each <varname>reclassarg</varname> defines the type of the "
+"target band. Bands not designated are returned unchanged."
 msgstr ""
-"新しいラスタのバンドは<varname>pixeltype</varname>で指定するピクセルタイプに"
-"なります。<varname>reclassargset</varname>を渡した場合は、個々のreclassargが"
-"生成されるバンド毎の挙動を定義します。"
+
+#. Tag: title
+#, no-c-format
+msgid "Example: Basic"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -35616,6 +35686,51 @@ msgstr ""
 ", <xref linkend=\"RT_ST_Band\"/>, <xref linkend=\"RT_ST_BandPixelType\"/>, "
 "<xref linkend=\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"reclassarg\"/>, "
 "<xref linkend=\"RT_ST_Value\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Creates a new raster composed of bands reclassified from original, using a "
+"1:1 mapping from values in the original band to new values in the "
+"destination band."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Creates a new raster formed by applying a reclassification operation defined "
+"by the <varname>inputvalues</varname> and <varname>outputvalues</varname> "
+"arrays. Pixel values found in the input array are mapped to the "
+"corresponding value in the output array. All other pixel values are mapped "
+"to the <varname>nodatavalue</varname>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The output pixel type defaults to float, but can be specified using the "
+"<varname>pixeltype</varname> parameter. If no <varname>bandnumber</varname> "
+"is specified band 1 is assumed."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The new raster will have the same georeference, width, and height as the "
+"original raster. Bands not designated are returned unchanged."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Create a small raster and map its pixels to new values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_Band\"/>, <xref "
+"linkend=\"RT_ST_MakeEmptyRaster\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37412,10 +37527,10 @@ msgid ""
 "to disable directory scanning."
 msgstr ""
 "この振る舞いを制御するために、GDALには<link xlink:href=\"https://gdal.org/"
-"user/configoptions.html#config-GDAL_DISABLE_READDIR_ON_OPEN\">GDAL_DISABLE_RE"
-"ADDIR_ON_OPEN</link>という環境変数があります。<varname>GDAL_DISABLE_READDIR_O"
-"N_OPEN</varname>を<varname>TRUE</varname>に設定すると、ディレクトリのスキャン"
-"を無効にします。"
+"user/configoptions.html#config-"
+"GDAL_DISABLE_READDIR_ON_OPEN\">GDAL_DISABLE_READDIR_ON_OPEN</link>という環境"
+"変数があります。<varname>GDAL_DISABLE_READDIR_ON_OPEN</varname>を"
+"<varname>TRUE</varname>に設定すると、ディレクトリのスキャンを無効にします。"
 
 #. Tag: para
 #, no-c-format
@@ -49745,6 +49860,143 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_CoverageUnion\"/>, <xref "
+#~ "linkend=\"ST_CoverageSimplify\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_CoverageUnion\"/>, <xref "
+#~ "linkend=\"ST_CoverageSimplify\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns the OGC/ISO <link linkend=\"OpenGISWKBWKT\">Well-Known Binary</"
+#~ "link> (WKB) representation of the geometry. The first function variant "
+#~ "defaults to encoding using server machine endian. The second function "
+#~ "variant takes a text argument specifying the endian encoding, either "
+#~ "little-endian ('NDR') or big-endian ('XDR')."
+#~ msgstr ""
+#~ "ジオメトリのOGC/ISO<link linkend=\"OpenGISWKBWKT\">Well-Knownバイナリ</"
+#~ "link> (WKB)表現を返します。最初の形式では、サーバ機のエンディアンをデフォ"
+#~ "ルトとして使います。二つ目の形式では、リトルエンディアン ('NDR')またはビッ"
+#~ "グエンディアン ('XDR')を指定する文字列を取ります。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns the <link linkend=\"EWKB_EWKT\">Extended Well-Known Binary</link> "
+#~ "(EWKB) representation of the geometry with SRID metadata. The first "
+#~ "function variant defaults to encoding using server machine endian. The "
+#~ "second function variant takes a text argument specifying the endian "
+#~ "encoding, either little-endian ('NDR') or big-endian ('XDR')."
+#~ msgstr ""
+#~ "ジオメトリの、SRIDメタデータを持つ<link linkend=\"EWKB_EWKT\">Extended "
+#~ "Well-Knownバイナリ</link> (EWKB)表現を返します。最初の形式では、サーバ機の"
+#~ "エンディアンをデフォルトとして使います。二つ目の形式では、リトルエンディア"
+#~ "ン ('NDR')またはビッグエンディアン ('XDR')を指定する文字列を取ります。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Buffer output is always a valid polygonal geometry. Buffer can handle "
+#~ "invalid inputs, so buffering by distance 0 is sometimes used as a way of "
+#~ "repairing invalid polygons. <xref linkend=\"ST_MakeValid\"/> can also be "
+#~ "used for this purpose."
+#~ msgstr ""
+#~ "バッファ出力は常に妥当なポリゴンジオメトリです。バッファは不正な入力を処理"
+#~ "できるので、不正なポリゴンを修復する方法として、距離0のバッファリングが使"
+#~ "われます。同じ目的の関数としては<xref linkend=\"ST_MakeValid\"/>が使われま"
+#~ "す。"
+
+#, no-c-format
+#~ msgid ""
+#~ "The functions given below are the ones which a user of PostGIS Raster is "
+#~ "likely to need and which are currently available in PostGIS Raster. There "
+#~ "are other functions which are required support functions to the raster "
+#~ "objects which are not of use to a general user."
+#~ msgstr ""
+#~ "ここで挙げる関数は、PostGISラスタにとって必要と思われるもので、現在PostGIS"
+#~ "ラスタで有効なものです。他に、一般的なユーザが利用しない、ラスタオブジェク"
+#~ "トに対して求められるサポート関数があります。"
+
+#, no-c-format
+#~ msgid ""
+#~ "<varname>raster</varname> is a new PostGIS type for storing and analyzing "
+#~ "raster data."
+#~ msgstr ""
+#~ "<varname>raster</varname>は、ラスタデータの格納と分析のための新しいPostGIS"
+#~ "型です。"
+
+#, no-c-format
+#~ msgid ""
+#~ "For the examples in this reference we will be using a raster table of "
+#~ "dummy rasters - Formed with the following code"
+#~ msgstr ""
+#~ "このリファレンスにおける例ではダミーラスタのラスタテーブルを使っています。"
+#~ "ラスタは次のようなコードで形成しています。"
+
+#, no-c-format
+#~ msgid ""
+#~ "<refpurpose>A composite type used as input into the ST_Reclass function "
+#~ "defining the behavior of reclassification.</refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>ST_Reclass関数への入力として使用する複合型です。再分類の挙動を"
+#~ "定義します。</refpurpose>"
+
+#, no-c-format
+#~ msgid ""
+#~ "<para>A composite type used as input into the ST_Reclass function "
+#~ "defining the behavior of reclassification.</para>"
+#~ msgstr ""
+#~ "<para>ST_Reclass関数への入力として使用する複合型です。再分類の挙動を定義し"
+#~ "ます。</para>"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns summarystats consisting of count, sum, mean, stddev, min, max for "
+#~ "a given raster band of a raster or raster coverage. Band 1 is assumed is "
+#~ "no band is specified."
+#~ msgstr ""
+#~ "ラスタまたはラスタカバレッジの指定したバンドについて、ピクセル数、合計値、"
+#~ "平均値、標準偏差、最小値、最大値からなる統計情報の概要を返します。バンドを"
+#~ "指定しない場合には、1番と仮定します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Aggregate. Returns summarystats consisting of count, sum, mean, stddev, "
+#~ "min, max for a given raster band of a set of raster. Band 1 is assumed is "
+#~ "no band is specified."
+#~ msgstr ""
+#~ "集約関数です。ラスタ集合の指定したバンドについて、ピクセル数、合計値、平均"
+#~ "値、標準偏差、最小値、最大値からなる統計情報の概要を返します。バンドを指定"
+#~ "しない場合には、1番と仮定します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Creates a new raster formed by applying a valid PostgreSQL algebraic "
+#~ "operation defined by the <varname>reclassexpr</varname> on the input "
+#~ "raster (<varname>rast</varname>). If no <varname>band</varname> is "
+#~ "specified band 1 is assumed. The new raster will have the same "
+#~ "georeference, width, and height as the original raster. Bands not "
+#~ "designated will come back unchanged. Refer to <xref "
+#~ "linkend=\"reclassarg\"/> for description of valid reclassification "
+#~ "expressions."
+#~ msgstr ""
+#~ "入力ラスタ (<varname>rast</varname>)に<varname>reclassexpr</varname>で定義"
+#~ "する妥当なPostgreSQL代数演算子を適用して新しいラスタを生成します。"
+#~ "<varname>band</varname>が指定されていない場合には、1番と仮定します。新しい"
+#~ "ラスタは、元のラスタと同じ地理参照、幅、高さを持ちます。指示されていないバ"
+#~ "ンドは変更せずに返ります。妥当な再分類の数式の説明については<xref "
+#~ "linkend=\"reclassarg\"/>を参照して下さい。"
+
+#, no-c-format
+#~ msgid ""
+#~ "The bands of the new raster will have pixel type of <varname>pixeltype</"
+#~ "varname>. If <varname>reclassargset</varname> is passed in then each "
+#~ "reclassarg defines behavior of each band generated."
+#~ msgstr ""
+#~ "新しいラスタのバンドは<varname>pixeltype</varname>で指定するピクセルタイプ"
+#~ "になります。<varname>reclassargset</varname>を渡した場合は、個々の"
+#~ "reclassargが生成されるバンド毎の挙動を定義します。"
 
 #, no-c-format
 #~ msgid ""
