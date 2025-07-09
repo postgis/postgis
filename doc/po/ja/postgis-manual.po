@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-07-09 09:47+0000\n"
+"PO-Revision-Date: 2025-07-10 01:31+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -16224,6 +16224,8 @@ msgid ""
 "The <parameter>gapMaximumWidth</parameter> controls the cleaning of gaps "
 "between polygons. Gaps smaller than this tolerance will be closed."
 msgstr ""
+"<parameter>gapMaximumWidth</parameter>は、ポリゴン間の隙間の除去を制御するた"
+"めのものです。この許容値より小さい隙間は塞がれます。"
 
 #. Tag: para
 #, no-c-format
@@ -16233,6 +16235,9 @@ msgid ""
 "an automatic snapping distance based on an analysis of the input. Set to 0.0 "
 "to turn off all snapping."
 msgstr ""
+"<parameter>snappingDistance</parameter>は近隣ノードを一つにまとめるスナップの"
+"制御のためのものです。デフォルト設定 (-1) "
+"では、入力制御に基づき算出されたスナップ距離が自動的に適用されます。"
 
 #. Tag: para
 #, no-c-format
@@ -16240,22 +16245,24 @@ msgid ""
 "The <parameter>overlapMergeStrategy</parameter> controls the algorithm used "
 "to determine which neighboring polygons to merge overlapping areas into."
 msgstr ""
+"<parameter>overlapMergeStrategy</parameter> は、オーバーラップ領域をマージす"
+"る先の近隣ポリゴンの決定に使われるアルゴリズムを制御します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<code>MERGE_LONGEST_BORDER</code> chooses polygon with longest common border"
-msgstr ""
+msgstr "<code>MERGE_LONGEST_BORDER</code> 共通境界線が最も長いポリゴンを選択します"
 
 #. Tag: para
 #, no-c-format
 msgid "<code>MERGE_MAX_AREA</code> chooses polygon with maximum area"
-msgstr ""
+msgstr "<code>MERGE_MAX_AREA</code> 最大面積のポリゴンを選択します"
 
 #. Tag: para
 #, no-c-format
 msgid "<code>MERGE_MIN_AREA</code> chooses polygon with minimum area"
-msgstr ""
+msgstr "<code>MERGE_MIN_AREA</code> 最小面積のポリゴンを選択します"
 
 #. Tag: para
 #, no-c-format
@@ -16265,7 +16272,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0 - requires GEOS &gt;= 3.14.0"
-msgstr ""
+msgstr "Availability: 3.6.0 - GEOS &gt;= 3.14.0が必要です"
 
 #. Tag: para
 #, no-c-format
@@ -23801,6 +23808,11 @@ msgid ""
 "endian; or 'XDR' for big-endian. Supplying unknown arguments will result in "
 "little-endian output."
 msgstr ""
+"ジオメトリのOGC/ISO <link linkend=\"OpenGISWKBWKT\">Well-Known Binary</link> "
+"(WKB)表現を返します。最初の形式はサーバ機のエンディアンをデフォルトとしてバイ"
+"ナリを生成するものです。二つ目の形式は、エンディアンを指定する文字列引数で、"
+"リトルエンディアンは 'NDR'、ビッグエンディアンは'XDR'です。それ以外の値を与え"
+"ると、リトルエンディアンで出力します。"
 
 #. Tag: para
 #, no-c-format
