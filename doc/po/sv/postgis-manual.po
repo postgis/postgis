@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-07-09 18:45+0000\n"
+"PO-Revision-Date: 2025-07-09 20:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/sv/>\n"
@@ -1189,7 +1189,7 @@ msgid ""
 "is text (token number <code>0</code>): Refers to building number or name. "
 "Unparsed building identifiers and types. Generally blank for most addresses."
 msgstr ""
-"är text (token nummer <code>0</code>): Hänvisar till byggnadsnummer eller "
+"är text (tokennummer <code>0</code>): Hänvisar till byggnadsnummer eller "
 "namn. Oparsade byggnadsidentifierare och typer. Generellt tomt för de flesta "
 "adresser."
 
@@ -1199,7 +1199,7 @@ msgid ""
 "is a text (token number <code>1</code>): This is the street number on a "
 "street. Example <emphasis>75</emphasis> in <code>75 State Street</code>."
 msgstr ""
-"är en text (token nummer <code>1</code>): Detta är gatunumret på en gata. "
+"är en text (tokennummer <code>1</code>): Detta är gatunumret på en gata. "
 "Exempel <emphasis>75</emphasis> i <code>75 State Street</code>."
 
 #. Tag: para
@@ -1208,7 +1208,7 @@ msgid ""
 "is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as "
 "North, South, East, West etc."
 msgstr ""
-"är text (symbol nummer <code>2</code>): STREET NAME PRE-DIRECTIONAL såsom "
+"är text (tokennummer <code>2</code>): STREET NAME PRE-DIRECTIONAL såsom "
 "North, South, East, West etc."
 
 #. Tag: para
@@ -1217,18 +1217,18 @@ msgid ""
 "is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example "
 "<emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>."
 msgstr ""
-"är text (symbol nummer <code>3</code>): STREET NAME PRE-MODIFIER Exempel "
+"är text (tokennummer <code>3</code>): STREET NAME PRE-MODIFIER Exempel "
 "<emphasis>OLD</emphasis> i <code>3715 OLD HIGHWAY 99</code>."
 
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>4</code>): STREET PREFIX TYPE"
-msgstr "är text (symbol nummer <code>4</code>): GATA PREFIX TYP"
+msgstr "är text (tokennummer <code>4</code>): GATA PREFIX TYP"
 
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>5</code>): STREET NAME"
-msgstr "är text (symbol nummer <code>5</code>): GATANS NAMN"
+msgstr "är text (tokennummer <code>5</code>): GATANS NAMN"
 
 #. Tag: para
 #, no-c-format
@@ -1237,7 +1237,7 @@ msgid ""
 "street type following the root street name. Example <emphasis>STREET</"
 "emphasis> in <code>75 State Street</code>."
 msgstr ""
-"är text (token nummer <code>6</code>): STREET POST TYPE t.ex. St, Ave, Cir. "
+"är text (tokennummer <code>6</code>): STREET POST TYPE t.ex. St, Ave, Cir. "
 "En gatutyp som följer på det ursprungliga gatunamnet. Exempel "
 "<emphasis>STREET</emphasis> i <code>75 State Street</code>."
 
@@ -1248,7 +1248,7 @@ msgid ""
 "modifier that follows the street name.. Example <emphasis>WEST</emphasis> in "
 "<code>3715 TENTH AVENUE WEST</code>."
 msgstr ""
-"är text (symbol nummer <code>7</code>): STREET POST-DIRECTIONAL En "
+"är text (tokennummer <code>7</code>): STREET POST-DIRECTIONAL En "
 "riktningsmodifierare som följer gatunamnet. Exempel <emphasis>WEST</"
 "emphasis> i <code>3715 TENTH AVENUE WEST</code>."
 
@@ -1258,7 +1258,7 @@ msgid ""
 "is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>7</"
 "emphasis> in <code>RR 7</code>."
 msgstr ""
-"är text (symbol nummer <code>8</code>): RURAL ROUTE . Exempel <emphasis>7</"
+"är text (tokennummer <code>8</code>): RURAL ROUTE . Exempel <emphasis>7</"
 "emphasis> i <code>RR 7</code>."
 
 #. Tag: para
@@ -1269,19 +1269,19 @@ msgstr "är text: Extra information som våningsnummer."
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>10</code>): Example Boston."
-msgstr "är text (symbol nummer <code>10</code>): Exempel Boston."
+msgstr "är text (tokennummer <code>10</code>): Exempel Boston."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is text (token number <code>11</code>): Example <code>MASSACHUSETTS</code>"
 msgstr ""
-"är text (symbol nummer <code>11</code>): Exempel <code>MASSACHUSETTS</code>"
+"är text (tokennummer <code>11</code>): Exempel <code>MASSACHUSETTS</code>"
 
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>12</code>): Example <code>USA</code>"
-msgstr "är text (symbol nummer <code>12</code>): Exempel <code>USA</code>"
+msgstr "är text (tokennummer <code>12</code>): Exempel <code>USA</code>"
 
 #. Tag: para
 #, no-c-format
@@ -1289,7 +1289,7 @@ msgid ""
 "is text POSTAL CODE (ZIP CODE) (token number <code>13</code>): Example "
 "<code>02109</code>"
 msgstr ""
-"är texten POSTAL CODE (ZIP CODE) (token nummer <code>13</code>): Exempel "
+"är texten POSTAL CODE (ZIP CODE) (tokennummer <code>13</code>): Exempel "
 "<code>02109</code>"
 
 #. Tag: para
@@ -1298,7 +1298,7 @@ msgid ""
 "is text POSTAL BOX NUMBER (token number <code>14 and 15</code>): Example "
 "<code>02109</code>"
 msgstr ""
-"är texten POSTAL BOX NUMBER (symbol nummer <code>14 och 15</code>): Exempel "
+"är texten POSTAL BOX NUMBER (tokennummer <code>14 och 15</code>): Exempel "
 "<code>02109</code>"
 
 #. Tag: para
@@ -1307,7 +1307,7 @@ msgid ""
 "is text Apartment number or Suite Number (token number <code>17</code>): "
 "Example <emphasis>3B</emphasis> in <code>APT 3B</code>."
 msgstr ""
-"är text Lägenhetsnummer eller Svitnummer (symbol nummer <code>17</code>): "
+"är text Lägenhetsnummer eller Svitnummer (tokennummer <code>17</code>): "
 "Exempel <emphasis>3B</emphasis> i <code>APT 3B</code>."
 
 #. Tag: title
@@ -1699,12 +1699,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "(token number \"10\"). Example \"Albany\""
-msgstr "(symboliskt nummer \"10\"). Exempel \"Albany\""
+msgstr "(tokennummer \"10\"). Exempel \"Albany\""
 
 #. Tag: para
 #, no-c-format
 msgid "(token number \"11\"). Example \"NY\""
-msgstr "(symboliskt nummer \"11\"). Exempel \"NY\""
+msgstr "(tokennummer \"11\"). Exempel \"NY\""
 
 #. Tag: para
 #, no-c-format
@@ -1712,8 +1712,8 @@ msgid ""
 "(token number \"12\"). This attribute is not used in most reference files. "
 "Example \"USA\""
 msgstr ""
-"(token nummer \"12\"). Detta attribut används inte i de flesta "
-"referensfiler. Exempel \"USA\""
+"(tokennummer \"12\"). Detta attribut används inte i de flesta referensfiler. "
+"Exempel \"USA\""
 
 #. Tag: para
 #, no-c-format
@@ -1721,7 +1721,7 @@ msgid ""
 "(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). This "
 "attribute is used for both the US Zip and the Canadian Postal Codes."
 msgstr ""
-"(symboliskt nummer \"13\"). (SADS-element \"ZIP CODE\" , \"PLUS 4\" ). Detta "
+"(tokennummer \"13\"). (SADS-element \"ZIP CODE\" , \"PLUS 4\" ). Detta "
 "attribut används för både amerikanska postnummer och kanadensiska postnummer."
 
 #. Tag: para
@@ -1767,7 +1767,7 @@ msgid ""
 "(token number = \"<emphasis role=\"bold\">3</emphasis>\"). The class of "
 "rules for parsing the HOUSE attribute."
 msgstr ""
-"(token nummer =<emphasis role=\"bold\">\"3</emphasis>\"). Klassen av regler "
+"(tokennummer =<emphasis role=\"bold\">\"3</emphasis>\"). Klassen av regler "
 "för analys av HOUSE-attributet."
 
 #. Tag: para
@@ -1797,8 +1797,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "(token number <code>0</code>): Unparsed building identifiers and types."
-msgstr ""
-"(token nummer <code>0</code>): Oparsade byggnadsidentifierare och typer."
+msgstr "(tokennummer <code>0</code>): Oparsade byggnadsidentifierare och typer."
 
 #. Tag: para
 #, no-c-format
@@ -1806,7 +1805,7 @@ msgid ""
 "(token number <code>14</code>): The <emphasis role=\"bold\">BOX</emphasis> "
 "in <code>BOX 3B</code>"
 msgstr ""
-"(symbol nummer <code>14</code>): <emphasis role=\"bold\">BOX</emphasis> i "
+"(tokennummer <code>14</code>): <emphasis role=\"bold\">BOX</emphasis> i "
 "<code>BOX 3B</code>"
 
 #. Tag: para
@@ -1815,7 +1814,7 @@ msgid ""
 "(token number <code>15</code>): The <emphasis role=\"bold\">3B</emphasis> in "
 "<code>BOX 3B</code>"
 msgstr ""
-"(symbol nummer <code>15</code>): <emphasis role=\"bold\">3B</emphasis> i "
+"(tokennummer <code>15</code>): <emphasis role=\"bold\">3B</emphasis> i "
 "<code>BOX</code>"
 
 #. Tag: para
@@ -1824,7 +1823,7 @@ msgid ""
 "(token number <code>8</code>): The <emphasis role=\"bold\">RR</emphasis> in "
 "<code>RR 7</code>"
 msgstr ""
-"(symbol nummer <code>8</code>): <emphasis role=\"bold\">RR</emphasis> i "
+"(tokennummer <code>8</code>): <emphasis role=\"bold\">RR</emphasis> i "
 "<code>RR 7</code>"
 
 #. Tag: para
@@ -1833,7 +1832,7 @@ msgid ""
 "(token number <code>16</code>): The <emphasis role=\"bold\">APT</emphasis> "
 "in <code>APT 3B</code>"
 msgstr ""
-"(symbol nummer <code>16</code>): <emphasis role=\"bold\">APT</emphasis> i "
+"(tokennummer <code>16</code>): <emphasis role=\"bold\">APT</emphasis> i "
 "<code>APT 3B</code>"
 
 #. Tag: para
@@ -1842,13 +1841,13 @@ msgid ""
 "(token number <code>17</code>): The <emphasis role=\"bold\">3B</emphasis> in "
 "<code>APT 3B</code>"
 msgstr ""
-"(symbol nummer <code>17</code>): <emphasis role=\"bold\">3B</emphasis> i "
+"(tokennummer <code>17</code>): <emphasis role=\"bold\">3B</emphasis> i "
 "<code>APT 3B</code>"
 
 #. Tag: para
 #, no-c-format
 msgid "(token number <code>9</code>): An otherwise unclassified output."
-msgstr "(token nummer <code>9</code>): En i övrigt oklassificerad produktion."
+msgstr "(tokennummer <code>9</code>): En i övrigt oklassificerad produktion."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -10733,7 +10732,7 @@ msgstr "Lucas C. Villa Real"
 #. Tag: member
 #, no-c-format
 msgid "Maksim Korotkov"
-msgstr ""
+msgstr "Maksim Korotkov"
 
 #. Tag: member
 #, no-c-format
@@ -11162,7 +11161,7 @@ msgstr "Paragon Corporation"
 #. Tag: link
 #, no-c-format
 msgid "Postgres Pro"
-msgstr ""
+msgstr "Postgres Pro"
 
 #. Tag: link
 #, no-c-format
@@ -16437,6 +16436,8 @@ msgid ""
 ", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/"
 ">, <xref linkend=\"ST_CoverageSimplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/"
+">, <xref linkend=\"ST_CoverageSimplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -16510,6 +16511,7 @@ msgstr "Förenklad täckning"
 msgid ""
 ", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/>"
 msgstr ""
+", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -16563,6 +16565,8 @@ msgid ""
 ", <xref linkend=\"ST_CoverageSimplify\"/>, <xref "
 "linkend=\"ST_CoverageClean\"/>, <xref linkend=\"ST_Union\"/>"
 msgstr ""
+", <xref linkend=\"ST_CoverageSimplify\"/>, <xref linkend=\"ST_CoverageClean\""
+"/>, <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -16570,6 +16574,8 @@ msgid ""
 "Computes a clean (edge matched, non-overlapping, gap-cleared) polygonal "
 "coverage, given a non-clean input."
 msgstr ""
+"Beräknar en ren (kantmatchad, icke-överlappande, gap-cleared) "
+"polygontäckning, givet en icke ren indata."
 
 #. Tag: para
 #, no-c-format
@@ -16580,6 +16586,11 @@ msgid ""
 "that will pass validation tests like <xref "
 "linkend=\"ST_CoverageInvalidEdges\"/>"
 msgstr ""
+"En fönsterfunktion som ändrar kanterna på en polygonal täckning för att "
+"säkerställa att ingen av polygonerna överlappar varandra, att små luckor är "
+"bortklippta och att alla delade kanter är exakt identiska. Resultatet är en "
+"ren täckning som kommer att klara valideringstester som <xref linkend="
+"\"ST_CoverageInvalidEdges\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -16587,6 +16598,8 @@ msgid ""
 "The <parameter>gapMaximumWidth</parameter> controls the cleaning of gaps "
 "between polygons. Gaps smaller than this tolerance will be closed."
 msgstr ""
+"<parameter>GapMaximumWidth</parameter> styr rensningen av mellanrum mellan "
+"polygoner. Luckor som är mindre än denna tolerans kommer att stängas."
 
 #. Tag: para
 #, no-c-format
@@ -16596,6 +16609,10 @@ msgid ""
 "an automatic snapping distance based on an analysis of the input. Set to 0.0 "
 "to turn off all snapping."
 msgstr ""
+"<parameter>SnappingDistance</parameter> styr nodsnäppningssteget, när "
+"närliggande hörn snäpps ihop. Standardinställningen (-1) tillämpar ett "
+"automatiskt snapping-avstånd baserat på en analys av indata. Ställ in till "
+"0.0 för att stänga av all snapping."
 
 #. Tag: para
 #, no-c-format
@@ -16603,37 +16620,42 @@ msgid ""
 "The <parameter>overlapMergeStrategy</parameter> controls the algorithm used "
 "to determine which neighboring polygons to merge overlapping areas into."
 msgstr ""
+"<parameter>OverlapMergeStrategy</parameter> styr den algoritm som används "
+"för att avgöra vilka angränsande polygoner som överlappande områden ska slås "
+"samman till."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<code>MERGE_LONGEST_BORDER</code> chooses polygon with longest common border"
 msgstr ""
+"<code>MERGE_LONGEST_BORDER</code> väljer polygonen med den längsta "
+"gemensamma gränsen"
 
 #. Tag: para
 #, no-c-format
 msgid "<code>MERGE_MAX_AREA</code> chooses polygon with maximum area"
-msgstr ""
+msgstr "<code>MERGE_MAX_AREA</code> väljer polygon med maximal area"
 
 #. Tag: para
 #, no-c-format
 msgid "<code>MERGE_MIN_AREA</code> chooses polygon with minimum area"
-msgstr ""
+msgstr "<code>MERGE_MIN_AREA</code> väljer polygon med minsta yta"
 
 #. Tag: para
 #, no-c-format
 msgid "<code>MERGE_MIN_INDEX</code> chooses polygon with smallest input index"
-msgstr ""
+msgstr "<code>MERGE_MIN_INDEX</code> väljer polygon med minsta ingångsindex"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0 - requires GEOS &gt;= 3.14.0"
-msgstr ""
+msgstr "Tillgänglighet: 3.6.0 - kräver GEOS &gt;= 3.14.0"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/> <xref linkend=\"ST_CoverageSimplify\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Union\"/> <xref linkend=\"ST_CoverageSimplify\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -24357,6 +24379,12 @@ msgid ""
 "endian; or 'XDR' for big-endian. Supplying unknown arguments will result in "
 "little-endian output."
 msgstr ""
+"Returnerar OGC/ISO <link linkend=\"OpenGISWKBWKT\">Well-Known Binary</link> "
+"(WKB)-representationen av geometrin. Den första funktionsvarianten använder "
+"som standard kodning med servermaskinens endian. Den andra "
+"funktionsvarianten tar ett textargument som anger endian-kodningen: antingen "
+"'NDR' för little-endian eller 'XDR' för big-endian. Om du anger okända "
+"argument kommer utdata att resultera i little-endian."
 
 #. Tag: para
 #, no-c-format
@@ -24465,6 +24493,12 @@ msgid ""
 "either 'NDR' for little-endian; or 'XDR' for big-endian. Supplying unknown "
 "arguments will result in little-endian output."
 msgstr ""
+"Returnerar EWKB-representationen ( <link linkend=\"EWKB_EWKT\">Extended Well-"
+"Known Binary</link> ) av geometrin med SRID-metadata. Den första "
+"funktionsvarianten använder som standard kodning med servermaskinens endian. "
+"Den andra funktionsvarianten tar ett textargument som anger endian-kodningen:"
+" antingen 'NDR' för little-endian eller 'XDR' för big-endian. Om du anger "
+"okända argument kommer utdata att resultera i little-endian."
 
 #. Tag: para
 #, no-c-format
@@ -27119,6 +27153,10 @@ msgid ""
 "invalid polygons. <xref linkend=\"ST_MakeValid\"/> is more suitable for this "
 "process as it can handle multi-polygons."
 msgstr ""
+"Buffer kan hantera ogiltiga indata och utdata är alltid en giltig polygonal "
+"geometri. Buffring med avstånd 0 används ibland som ett sätt att reparera "
+"ogiltiga polygoner. <xref linkend=\"ST_MakeValid\"/> är mer lämplig för "
+"denna process eftersom den kan hantera multipolygoner."
 
 #. Tag: para
 #, no-c-format
@@ -29466,6 +29504,8 @@ msgid ""
 "<varname>raster</varname> is a PostGIS type for storing and analyzing raster "
 "data."
 msgstr ""
+"<varname>raster</varname> är en PostGIS-typ för lagring och analys av "
+"rasterdata."
 
 #. Tag: para
 #, no-c-format
@@ -29482,6 +29522,8 @@ msgid ""
 "Some examples in this reference use a raster table of dummy data, created "
 "with the following code:"
 msgstr ""
+"I några exempel i denna referens används en rastertabell med dummy-data som "
+"skapats med följande kod:"
 
 #. Tag: para
 #, no-c-format
@@ -29490,6 +29532,9 @@ msgid ""
 "need. There are other raster support functions which are not of interest to "
 "a general user."
 msgstr ""
+"Funktionerna nedan är sådana som en användare av PostGIS Raster sannolikt "
+"kommer att behöva. Det finns andra stödfunktioner för raster som inte är av "
+"intresse för en allmän användare."
 
 #. Tag: title
 #, no-c-format
@@ -29649,6 +29694,8 @@ msgid ""
 "A composite type used as input into the ST_Reclass function defining the "
 "behavior of reclassification."
 msgstr ""
+"En sammansatt typ som används som indata till funktionen ST_Reclass och som "
+"definierar beteendet vid omklassificering."
 
 #. Tag: para
 #, no-c-format
@@ -29656,6 +29703,8 @@ msgid ""
 "A composite type used as input into the <xref linkend=\"RT_ST_Reclass\"/> "
 "function defining the behavior of reclassification."
 msgstr ""
+"En sammansatt typ som används som indata till funktionen <xref linkend="
+"\"RT_ST_Reclass\"/> som definierar beteendet vid omklassificering."
 
 #. Tag: para
 #, no-c-format
@@ -34042,6 +34091,9 @@ msgid ""
 "given raster band of a raster or raster coverage. Band 1 is assumed if no "
 "band is specified."
 msgstr ""
+"Returnerar summarystats bestående av count, sum, mean, stddev, min, max för "
+"ett givet rasterband i ett raster eller en rastertäckning. Band 1 antas om "
+"inget band anges."
 
 #. Tag: para
 #, no-c-format
@@ -34126,6 +34178,9 @@ msgid ""
 "max for a given raster band of a set of raster. Band 1 is assumed if no band "
 "is specified."
 msgstr ""
+"Aggregera. Returnerar summarystats bestående av count, sum, mean, stddev, "
+"min, max för ett givet rasterband i en uppsättning raster. Band 1 antas om "
+"inget band anges."
 
 #. Tag: para
 #, no-c-format
@@ -36591,6 +36646,11 @@ msgid ""
 "reclassification expressions. If no <varname>band</varname> is specified "
 "band 1 is assumed."
 msgstr ""
+"Skapar ett nytt raster som bildas genom att tillämpa en "
+"omklassificeringsoperation som definieras av <varname>reclassexpr</varname> "
+"på indatarastret<varname>(rast).</varname> Se <xref linkend=\"reclassarg\"/> "
+"för en beskrivning av omklassificeringsuttryck. Om inget <varname>band</"
+"varname> anges antas band 1."
 
 #. Tag: para
 #, no-c-format
@@ -36601,11 +36661,16 @@ msgid ""
 "specified then each <varname>reclassarg</varname> defines the type of the "
 "target band. Bands not designated are returned unchanged."
 msgstr ""
+"Det nya rastret kommer att ha samma georeferens, bredd och höjd som det "
+"ursprungliga rastret. Banden i det nya rastret har pixeltyp av "
+"<varname>pixeltype</varname>. Om <varname>reclassargset</varname> "
+"specificeras definierar varje <varname>reclassarg</varname> typen av "
+"målband. Band som inte har angetts returneras oförändrade."
 
 #. Tag: title
 #, no-c-format
 msgid "Example: Basic"
-msgstr ""
+msgstr "Exempel: Grundläggande"
 
 #. Tag: para
 #, no-c-format
@@ -36670,6 +36735,9 @@ msgid ""
 "1:1 mapping from values in the original band to new values in the "
 "destination band."
 msgstr ""
+"Skapar ett nytt raster som består av band som omklassificerats från "
+"originalbandet med hjälp av en 1:1-mappning från värden i originalbandet "
+"till nya värden i destinationsbandet."
 
 #. Tag: para
 #, no-c-format
@@ -36680,6 +36748,11 @@ msgid ""
 "corresponding value in the output array. All other pixel values are mapped "
 "to the <varname>nodatavalue</varname>."
 msgstr ""
+"Skapar ett nytt raster som bildas genom att tillämpa en "
+"omklassificeringsoperation som definieras av matriserna "
+"<varname>inputvalues</varname> och <varname>outputvalues</varname>. "
+"Pixelvärden som finns i input-arrayen mappas till motsvarande värde i output-"
+"arrayen. Alla andra pixelvärden mappas till <varname>nodatavärdet</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -36688,6 +36761,9 @@ msgid ""
 "<varname>pixeltype</varname> parameter. If no <varname>bandnumber</varname> "
 "is specified band 1 is assumed."
 msgstr ""
+"Pixeltypen för utdata är som standard float, men kan specificeras med hjälp "
+"av parametern <varname>pixeltype</varname>. Om inget <varname>bandnumber</"
+"varname> anges antas band 1."
 
 #. Tag: para
 #, no-c-format
@@ -36695,11 +36771,13 @@ msgid ""
 "The new raster will have the same georeference, width, and height as the "
 "original raster. Bands not designated are returned unchanged."
 msgstr ""
+"Det nya rastret kommer att ha samma georeferens, bredd och höjd som det "
+"ursprungliga rastret. Band som inte anges returneras oförändrade."
 
 #. Tag: para
 #, no-c-format
 msgid "Create a small raster and map its pixels to new values."
-msgstr ""
+msgstr "Skapa ett litet raster och mappa dess pixlar till nya värden."
 
 #. Tag: para
 #, no-c-format
@@ -36707,6 +36785,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_Band\"/>, <xref "
 "linkend=\"RT_ST_MakeEmptyRaster\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_Band\"/>, <xref "
+"linkend=\"RT_ST_MakeEmptyRaster\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
