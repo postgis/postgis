@@ -3,13 +3,14 @@
 #
 # Zuochenwei <zuochenwei5@gmail.com>, 2023.
 # Dapeng Wang <wangdapeng20191008@gmail.com>, 2024.
+# Regina Obe <robe@postgis.net>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2024-12-18 10:47+0000\n"
-"Last-Translator: Dapeng Wang <wangdapeng20191008@gmail.com>\n"
+"PO-Revision-Date: 2025-07-09 04:24+0000\n"
+"Last-Translator: Regina Obe <robe@postgis.net>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -38888,7 +38889,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"CG_3DScaleAroundCenter\"/>, <xref linkend=\"ST_Scale\"/>"
 msgstr ""
-", <xref linkend=\"CG_Scale3DAroundCenter\"/>, <xref linkend=\"ST_Scale\"/>"
+", <xref linkend=\"CG_3DScaleAroundCenter\"/>, <xref linkend=\"ST_Scale\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
