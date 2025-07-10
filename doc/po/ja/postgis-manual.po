@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-07-10 01:31+0000\n"
+"PO-Revision-Date: 2025-07-10 03:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -23809,10 +23809,10 @@ msgid ""
 "little-endian output."
 msgstr ""
 "ジオメトリのOGC/ISO <link linkend=\"OpenGISWKBWKT\">Well-Known Binary</link> "
-"(WKB)表現を返します。最初の形式はサーバ機のエンディアンをデフォルトとしてバイ"
-"ナリを生成するものです。二つ目の形式は、エンディアンを指定する文字列引数で、"
-"リトルエンディアンは 'NDR'、ビッグエンディアンは'XDR'です。それ以外の値を与え"
-"ると、リトルエンディアンで出力します。"
+"(WKB)表現を返します。一つ目の形式はサーバ機のエンディアンをデフォルトとしてバ"
+"イナリを生成するものです。二つ目の形式は、エンディアンを指定する文字列引数を"
+"取ります。リトルエンディアンは 'NDR'、ビッグエンディアンは'XDR'です。それ以外"
+"の値を与えると、リトルエンディアンで出力します。"
 
 #. Tag: para
 #, no-c-format
@@ -23921,6 +23921,11 @@ msgid ""
 "either 'NDR' for little-endian; or 'XDR' for big-endian. Supplying unknown "
 "arguments will result in little-endian output."
 msgstr ""
+"SRIDメタデータを持つジオメトリの <link linkend=\"EWKB_EWKT\">Extended Well-"
+"Known Binary</link> (EWKB)表現を返します。一つ目の形式はサーバ機のエンディア"
+"ンをデフォルトとしてバイナリを生成するものです。二つ目の形式は、エンディアン"
+"を指定する文字列引数を取ります。リトルエンディアンは 'NDR'、ビッグエンディア"
+"ンは'XDR'です。それ以外の値を与えると、リトルエンディアンで出力します。"
 
 #. Tag: para
 #, no-c-format
@@ -26505,6 +26510,10 @@ msgid ""
 "invalid polygons. <xref linkend=\"ST_MakeValid\"/> is more suitable for this "
 "process as it can handle multi-polygons."
 msgstr ""
+"不正な入力を操作することができ、出力は常に妥当なポリゴンジオメトリです。距離 "
+"0によるバッファ生成は時々不正なポリゴンの修復方法として使われます。. <xref "
+"linkend=\"ST_MakeValid\""
+"/>の方がマルチポリゴンも扱えるので、この目的に使うのにより適切です。"
 
 #. Tag: para
 #, no-c-format
