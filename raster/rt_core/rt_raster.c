@@ -1958,7 +1958,9 @@ rt_raster_to_gdal_mem(
 		/*
 			For all pixel types other than PT_8BSI, set pointer to start of data
 		*/
+#if POSTGIS_GDAL_VERSION < 30700
 		if (pt != PT_8BSI) {
+#endif
 			pVoid = rt_band_get_data(rtband);
 			RASTER_DEBUGF(4, "Band data is at pos %p", pVoid);
 
@@ -1989,12 +1991,12 @@ rt_raster_to_gdal_mem(
 				GDALClose(ds);
 				return 0;
 			}
-		}
+#if POSTGIS_GDAL_VERSION < 30700
 		/*
-			PT_8BSI is special as GDAL has no equivalent pixel type.
+			PT_8BSI is special as GDAL (prior to 3.7) has no equivalent pixel type.
 			Must convert 8BSI to 16BSI so create basic band
 		*/
-		else {
+		} else {
 			/* add band */
 			if (GDALAddBand(ds, gdal_pt, NULL) == CE_Failure) {
 				rterror("rt_raster_to_gdal_mem: Could not add GDAL raster band");
@@ -2004,6 +2006,7 @@ rt_raster_to_gdal_mem(
 				return 0;
 			}
 		}
+#endif
 
 		/* check band count */
 		if (GDALGetRasterCount(ds) != i + 1) {
@@ -2024,6 +2027,8 @@ rt_raster_to_gdal_mem(
 			GDALClose(ds);
 			return 0;
 		}
+
+#if POSTGIS_GDAL_VERSION < 30700
 
 		/* PT_8BSI requires manual setting of pixels */
 		if (pt == PT_8BSI) {
@@ -2120,6 +2125,7 @@ rt_raster_to_gdal_mem(
 
 			rtdealloc(values);
 		}
+#endif
 
 		/* Add nodata value for band */
 		if (rt_band_get_hasnodata_flag(rtband) != FALSE && excludeNodataValues[i]) {

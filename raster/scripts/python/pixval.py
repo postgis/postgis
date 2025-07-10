@@ -31,6 +31,7 @@ import sys
 def pt2fmt(pt):
     fmttypes = {
         gdalc.GDT_Byte: 'B',
+        gdalc.GDT_Int8: 'B',
         gdalc.GDT_Int16: 'h',
         gdalc.GDT_UInt16: 'H',
         gdalc.GDT_Int32: 'i',

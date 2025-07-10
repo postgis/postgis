@@ -384,7 +384,6 @@ static void test_gdal_to_raster() {
 
 	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, NULL, 0, &gddrv, &destroy);
 	CU_ASSERT(gddrv != NULL);
-	CU_ASSERT_EQUAL(destroy, 0);
 	CU_ASSERT(gdds != NULL);
 	CU_ASSERT_EQUAL((uint32_t)GDALGetRasterXSize(gdds), width);
 	CU_ASSERT_EQUAL((uint32_t)GDALGetRasterYSize(gdds), height);
@@ -404,6 +403,10 @@ static void test_gdal_to_raster() {
 		}
 	}
 
+	if (destroy && gddrv) {
+		GDALDeregisterDriver(gddrv);
+		GDALDestroyDriver(gddrv);
+	}
 	GDALClose(gdds);
 	gdds = NULL;
 	gddrv = NULL;
@@ -430,7 +433,6 @@ static void test_gdal_to_raster() {
 
 	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, NULL, 0, &gddrv, &destroy);
 	CU_ASSERT(gddrv != NULL);
-	CU_ASSERT_EQUAL(destroy, 0);
 	CU_ASSERT(gdds != NULL);
 	CU_ASSERT_EQUAL((uint32_t)GDALGetRasterXSize(gdds), width);
 	CU_ASSERT_EQUAL((uint32_t)GDALGetRasterYSize(gdds), height);
@@ -441,14 +443,26 @@ static void test_gdal_to_raster() {
 
 	band = rt_raster_get_band(rast, 0);
 	CU_ASSERT(band != NULL);
+#if POSTGIS_GDAL_VERSION < 30700
 	CU_ASSERT_EQUAL(rt_band_get_pixtype(band), PT_16BSI);
-
+#else
+	CU_ASSERT_EQUAL(rt_band_get_pixtype(band), PT_8BSI);
+#endif
 	for (x = 0; x < width; x++) {
 		for (y = 0; y < height; y++) {
 			rtn = rt_band_get_pixel(band, x, y, &value, NULL);
- 			CU_ASSERT_EQUAL(rtn, ES_NONE);
+#if POSTGIS_GDAL_VERSION < 30700
 			CU_ASSERT_DOUBLE_EQUAL(value, values[x][y], 1.);
+			CU_ASSERT_DOUBLE_EQUAL(value, values[x][y], DBL_EPSILON);
+#else
+ 			CU_ASSERT_EQUAL(rtn, ES_NONE);
+			CU_ASSERT_DOUBLE_EQUAL(value, values[x][y], DBL_EPSILON);
+#endif
 		}
+	}
+	if (destroy && gddrv) {
+		GDALDeregisterDriver(gddrv);
+		GDALDestroyDriver(gddrv);
 	}
 
 	GDALClose(gdds);

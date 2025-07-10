@@ -214,6 +214,7 @@ def gdt2pt(gdt):
     """Translate GDAL data type to WKT Raster pixel type."""
     pixtypes = {
         gdalc.GDT_Byte    : { 'name': 'PT_8BUI',  'id':  4 },
+        gdalc.GDT_Int8    : { 'name': 'PT_8BSI',  'id':  3 },
         gdalc.GDT_Int16   : { 'name': 'PT_16BSI', 'id':  5 },
         gdalc.GDT_UInt16  : { 'name': 'PT_16BUI', 'id':  6 },
         gdalc.GDT_Int32   : { 'name': 'PT_32BSI', 'id':  7 },

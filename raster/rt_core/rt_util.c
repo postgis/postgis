@@ -129,6 +129,9 @@ rt_util_pixtype_to_gdal_datatype(rt_pixtype pt) {
 		case PT_8BUI:
 			return GDT_Byte;
 		case PT_8BSI:
+#if POSTGIS_GDAL_VERSION >= 30700
+			return GDT_Int8;
+#endif
 		case PT_16BSI:
 			return GDT_Int16;
 		case PT_16BUI:
@@ -160,6 +163,10 @@ rt_util_gdal_datatype_to_pixtype(GDALDataType gdt) {
 	switch (gdt) {
 		case GDT_Byte:
 			return PT_8BUI;
+#if POSTGIS_GDAL_VERSION >= 30700
+		case GDT_Int8:
+			return PT_8BSI;
+#endif
 		case GDT_UInt16:
 			return PT_16BUI;
 		case GDT_Int16:
