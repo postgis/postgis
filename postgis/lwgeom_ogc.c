@@ -386,7 +386,11 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 
 	/* If returning the original geometry */
 	if (subgeom == lwgeom)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_POINTER(geom);
+	}
 
 	subgeom->srid = lwgeom->srid;
 	/* COMPUTE_BBOX==TAINTING */
