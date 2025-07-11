@@ -1101,9 +1101,9 @@ lwgeom_is_collection(const LWGEOM *geom)
 }
 
 int
-lwgeom_is_unitary(const LWGEOM *geom)
+lwtype_is_unitary(uint32_t lwtype)
 {
-	switch (geom->type)
+	switch (lwtype)
 	{
 	case POINTTYPE:
 	case LINETYPE:
@@ -1134,6 +1134,10 @@ lwgeom_has_patches(const LWGEOM *geom)
 	default:
 		return LW_FALSE;
 	}
+
+lwgeom_is_unitary(const LWGEOM *geom)
+{
+	return lwtype_is_unitary(geom->type);
 }
 
 int
