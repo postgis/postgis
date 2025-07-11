@@ -5596,7 +5596,7 @@ CREATE OR REPLACE FUNCTION ST_WKTToSQL(text)
 CREATE OR REPLACE FUNCTION ST_PointFromText(text)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1)) = ''POINT''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromText($1)) = ''ST_Point''
 	THEN @extschema@.ST_GeomFromText($1)
 	ELSE NULL END
 	'
@@ -5608,7 +5608,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromText(text)
 CREATE OR REPLACE FUNCTION ST_PointFromText(text, integer)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''POINT''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromText($1, $2)) = ''ST_Point''
 	THEN @extschema@.ST_GeomFromText($1, $2)
 	ELSE NULL END
 	'
@@ -5619,7 +5619,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromText(text, integer)
 CREATE OR REPLACE FUNCTION ST_LineFromText(text)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1)) = ''LINESTRING''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromText($1)) = ''ST_LineString''
 	THEN @extschema@.ST_GeomFromText($1)
 	ELSE NULL END
 	'
@@ -5630,7 +5630,7 @@ CREATE OR REPLACE FUNCTION ST_LineFromText(text)
 CREATE OR REPLACE FUNCTION ST_LineFromText(text, integer)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''LINESTRING''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromText($1, $2)) = ''ST_LineString''
 	THEN @extschema@.ST_GeomFromText($1,$2)
 	ELSE NULL END
 	'
@@ -5641,7 +5641,7 @@ CREATE OR REPLACE FUNCTION ST_LineFromText(text, integer)
 CREATE OR REPLACE FUNCTION ST_PolyFromText(text)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1)) = ''POLYGON''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromText($1)) = ''ST_Polygon''
 	THEN @extschema@.ST_GeomFromText($1)
 	ELSE NULL END
 	'
@@ -5652,7 +5652,7 @@ CREATE OR REPLACE FUNCTION ST_PolyFromText(text)
 CREATE OR REPLACE FUNCTION ST_PolyFromText(text, integer)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''POLYGON''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromText($1, $2)) = ''ST_Polygon''
 	THEN @extschema@.ST_GeomFromText($1, $2)
 	ELSE NULL END
 	'
@@ -5678,7 +5678,7 @@ CREATE OR REPLACE FUNCTION ST_MLineFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE
-	WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''MULTILINESTRING''
+	WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromText($1, $2)) = ''ST_MultiLineString''
 	THEN @extschema@.ST_GeomFromText($1,$2)
 	ELSE NULL END
 	'
@@ -5689,7 +5689,7 @@ CREATE OR REPLACE FUNCTION ST_MLineFromText(text, integer)
 CREATE OR REPLACE FUNCTION ST_MLineFromText(text)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1)) = ''MULTILINESTRING''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromText($1)) = ''ST_MultiLineString''
 	THEN @extschema@.ST_GeomFromText($1)
 	ELSE NULL END
 	'
@@ -5714,7 +5714,7 @@ CREATE OR REPLACE FUNCTION ST_MultiLineStringFromText(text, integer)
 CREATE OR REPLACE FUNCTION ST_MPointFromText(text, integer)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''MULTIPOINT''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromText($1, $2)) = ''ST_MultiPoint''
 	THEN ST_GeomFromText($1, $2)
 	ELSE NULL END
 	'
@@ -5725,7 +5725,7 @@ CREATE OR REPLACE FUNCTION ST_MPointFromText(text, integer)
 CREATE OR REPLACE FUNCTION ST_MPointFromText(text)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1)) = ''MULTIPOINT''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromText($1)) = ''ST_MultiPoint''
 	THEN @extschema@.ST_GeomFromText($1)
 	ELSE NULL END
 	'
@@ -5743,7 +5743,7 @@ CREATE OR REPLACE FUNCTION ST_MultiPointFromText(text)
 CREATE OR REPLACE FUNCTION ST_MPolyFromText(text, integer)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''MULTIPOLYGON''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromText($1, $2)) = ''ST_MultiPolygon''
 	THEN @extschema@.ST_GeomFromText($1,$2)
 	ELSE NULL END
 	'
@@ -5754,7 +5754,7 @@ CREATE OR REPLACE FUNCTION ST_MPolyFromText(text, integer)
 CREATE OR REPLACE FUNCTION ST_MPolyFromText(text)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1)) = ''MULTIPOLYGON''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromText($1)) = ''ST_MultiPolygon''
 	THEN @extschema@.ST_GeomFromText($1)
 	ELSE NULL END
 	'
@@ -5780,7 +5780,7 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE
-	WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''GEOMETRYCOLLECTION''
+	WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromText($1, $2)) = ''ST_GeometryCollection''
 	THEN @extschema@.ST_GeomFromText($1,$2)
 	ELSE NULL END
 	'
@@ -5792,7 +5792,7 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text)
 	RETURNS geometry
 	AS '
 	SELECT CASE
-	WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1)) = ''GEOMETRYCOLLECTION''
+	WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromText($1)) = ''ST_GeometryCollection''
 	THEN @extschema@.ST_GeomFromText($1)
 	ELSE NULL END
 	'
@@ -5817,7 +5817,7 @@ CREATE OR REPLACE FUNCTION ST_GeomFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_PointFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1, $2)) = ''POINT''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1, $2)) = ''ST_Point''
 	THEN @extschema@.ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
@@ -5828,7 +5828,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_PointFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1)) = ''POINT''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1)) = ''ST_Point''
 	THEN @extschema@.ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
@@ -5839,7 +5839,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromWKB(bytea)
 CREATE OR REPLACE FUNCTION ST_LineFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1, $2)) = ''LINESTRING''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1, $2)) = ''ST_LineString''
 	THEN @extschema@.ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
@@ -5850,7 +5850,7 @@ CREATE OR REPLACE FUNCTION ST_LineFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_LineFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1)) = ''LINESTRING''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1)) = ''ST_LineString''
 	THEN @extschema@.ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
@@ -5861,7 +5861,7 @@ CREATE OR REPLACE FUNCTION ST_LineFromWKB(bytea)
 CREATE OR REPLACE FUNCTION ST_LinestringFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1, $2)) = ''LINESTRING''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1, $2)) = ''ST_LineString''
 	THEN @extschema@.ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
@@ -5872,7 +5872,7 @@ CREATE OR REPLACE FUNCTION ST_LinestringFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_LinestringFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1)) = ''LINESTRING''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1)) = ''ST_LineString''
 	THEN @extschema@.ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
@@ -5883,7 +5883,7 @@ CREATE OR REPLACE FUNCTION ST_LinestringFromWKB(bytea)
 CREATE OR REPLACE FUNCTION ST_PolyFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1, $2)) = ''POLYGON''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1, $2)) = ''ST_Polygon''
 	THEN @extschema@.ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
@@ -5894,7 +5894,7 @@ CREATE OR REPLACE FUNCTION ST_PolyFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_PolyFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1)) = ''POLYGON''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1)) = ''ST_Polygon''
 	THEN @extschema@.ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
@@ -5905,7 +5905,7 @@ CREATE OR REPLACE FUNCTION ST_PolyFromWKB(bytea)
 CREATE OR REPLACE FUNCTION ST_PolygonFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1,$2)) = ''POLYGON''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1,$2)) = ''ST_Polygon''
 	THEN @extschema@.ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
@@ -5916,7 +5916,7 @@ CREATE OR REPLACE FUNCTION ST_PolygonFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_PolygonFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1)) = ''POLYGON''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1)) = ''ST_Polygon''
 	THEN @extschema@.ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
@@ -5927,7 +5927,7 @@ CREATE OR REPLACE FUNCTION ST_PolygonFromWKB(bytea)
 CREATE OR REPLACE FUNCTION ST_MPointFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1, $2)) = ''MULTIPOINT''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1, $2)) = ''ST_MultiPoint''
 	THEN @extschema@.ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
@@ -5938,7 +5938,7 @@ CREATE OR REPLACE FUNCTION ST_MPointFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_MPointFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1)) = ''MULTIPOINT''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1)) = ''ST_MultiPoint''
 	THEN @extschema@.ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
@@ -5949,7 +5949,7 @@ CREATE OR REPLACE FUNCTION ST_MPointFromWKB(bytea)
 CREATE OR REPLACE FUNCTION ST_MultiPointFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1,$2)) = ''MULTIPOINT''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1,$2)) = ''ST_MultiPoint''
 	THEN @extschema@.ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
@@ -5960,7 +5960,7 @@ CREATE OR REPLACE FUNCTION ST_MultiPointFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_MultiPointFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1)) = ''MULTIPOINT''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1)) = ''ST_MultiPoint''
 	THEN @extschema@.ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
@@ -5971,7 +5971,7 @@ CREATE OR REPLACE FUNCTION ST_MultiPointFromWKB(bytea)
 CREATE OR REPLACE FUNCTION ST_MultiLineFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1)) = ''MULTILINESTRING''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1)) = ''ST_MultiLineString''
 	THEN @extschema@.ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
@@ -5982,7 +5982,7 @@ CREATE OR REPLACE FUNCTION ST_MultiLineFromWKB(bytea)
 CREATE OR REPLACE FUNCTION ST_MLineFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1, $2)) = ''MULTILINESTRING''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1, $2)) = ''ST_MultiLineString''
 	THEN @extschema@.ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
@@ -5993,7 +5993,7 @@ CREATE OR REPLACE FUNCTION ST_MLineFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_MLineFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1)) = ''MULTILINESTRING''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1)) = ''ST_MultiLineString''
 	THEN @extschema@.ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
@@ -6005,7 +6005,7 @@ CREATE OR REPLACE FUNCTION ST_MLineFromWKB(bytea)
 CREATE OR REPLACE FUNCTION ST_MPolyFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1, $2)) = ''ST_MultiPolygon''
 	THEN @extschema@.ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
@@ -6016,7 +6016,7 @@ CREATE OR REPLACE FUNCTION ST_MPolyFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_MPolyFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1)) = ''MULTIPOLYGON''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1)) = ''ST_MultiPolygon''
 	THEN @extschema@.ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
@@ -6026,7 +6026,7 @@ CREATE OR REPLACE FUNCTION ST_MPolyFromWKB(bytea)
 CREATE OR REPLACE FUNCTION ST_MultiPolyFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1, $2)) = ''ST_MultiPolygon''
 	THEN @extschema@.ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
@@ -6037,7 +6037,7 @@ CREATE OR REPLACE FUNCTION ST_MultiPolyFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_MultiPolyFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1)) = ''MULTIPOLYGON''
+	SELECT CASE WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1)) = ''ST_MultiPolygon''
 	THEN @extschema@.ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
@@ -6049,7 +6049,7 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
 	SELECT CASE
-	WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1, $2)) = ''GEOMETRYCOLLECTION''
+	WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1, $2)) = ''ST_GeometryCollection''
 	THEN @extschema@.ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
@@ -6061,7 +6061,7 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea)
 	RETURNS geometry
 	AS '
 	SELECT CASE
-	WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromWKB($1)) = ''GEOMETRYCOLLECTION''
+	WHEN @extschema@.ST_GeometryType(@extschema@.ST_GeomFromWKB($1)) = ''ST_GeometryCollection''
 	THEN @extschema@.ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
@@ -6158,7 +6158,7 @@ BEGIN
 
 	geom := @extschema@.ST_BuildArea(mline);
 
-	IF @extschema@.GeometryType(geom) != 'POLYGON'
+	IF @extschema@.ST_GeometryType(geom) != 'ST_Polygon'
 	THEN
 		RAISE EXCEPTION 'Input returns more then a single polygon, try using BdMPolyFromText instead';
 	END IF;
