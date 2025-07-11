@@ -1134,7 +1134,9 @@ lwgeom_has_patches(const LWGEOM *geom)
 	default:
 		return LW_FALSE;
 	}
+}
 
+int
 lwgeom_is_unitary(const LWGEOM *geom)
 {
 	return lwtype_is_unitary(geom->type);
