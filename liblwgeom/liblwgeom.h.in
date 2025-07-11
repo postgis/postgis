@@ -906,6 +906,7 @@ extern int lwgeom_is_collection(const LWGEOM *lwgeom);
 * are all unitary, they are not just bags of other geometries.
 */
 extern int lwgeom_is_unitary(const LWGEOM *geom);
+extern int lwtype_is_unitary(uint32_t lwtype);
 
 /**
 * Is this a type that has rings enclosing an area, but is

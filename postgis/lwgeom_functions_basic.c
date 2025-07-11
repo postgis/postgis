@@ -2161,8 +2161,8 @@ PG_FUNCTION_INFO_V1(ST_IsCollection);
 Datum ST_IsCollection(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_HEADER(0);
-	LWGEOM *lwg = lwgeom_from_gserialized(geom);
-	PG_RETURN_BOOL(!lwgeom_is_unitary(lwg));
+	uint32_t lwtype = gserialized_get_type(geom);
+	PG_RETURN_BOOL(!lwtype_is_unitary(lwtype));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_makepoint);
