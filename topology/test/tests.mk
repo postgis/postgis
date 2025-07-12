@@ -39,6 +39,7 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/getnodeedges.sql \
 	$(top_srcdir)/topology/test/regress/getringedges.sql \
 	$(top_srcdir)/topology/test/regress/gettopogeomelements.sql \
+	$(top_srcdir)/topology/test/regress/gettopogeomelements_large.sql \
 	$(top_srcdir)/topology/test/regress/gml.sql \
 	$(top_srcdir)/topology/test/regress/layertrigger.sql \
 	$(top_srcdir)/topology/test/regress/legacy_invalid.sql \
@@ -89,6 +90,10 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/topologysummary.sql \
 	$(top_srcdir)/topology/test/regress/totaltopologysize.sql \
 	$(top_srcdir)/topology/test/regress/totopogeom.sql \
+	$(top_srcdir)/topology/test/regress/upgradetopology.sql \
 	$(top_srcdir)/topology/test/regress/validatetopologyprecision.sql \
 	$(top_srcdir)/topology/test/regress/validatetopologyrelation.sql \
-	$(top_srcdir)/topology/test/regress/validatetopology.sql
+	$(top_srcdir)/topology/test/regress/validatetopologyrelation_large.sql \
+	$(top_srcdir)/topology/test/regress/validatetopology.sql \
+	$(top_srcdir)/topology/test/regress/validatetopology_large.sql \
+	$(top_srcdir)/topology/test/regress/verifylargeids.sql

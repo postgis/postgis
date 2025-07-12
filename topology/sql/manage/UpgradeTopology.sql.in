@@ -1,0 +1,207 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2025 Sandro Santilli <strk@kbt.io>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- Author: Sandro Santilli <strk@kbt.io>
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+-- Utility function to upgrade a topology created with int4 ids to bigint
+-- Assumption: User has not customized/altered the initial structure of the topology schema
+--
+-- Availability: 3.6.0
+CREATE OR REPLACE FUNCTION topology.UpgradeTopology(toponame name)
+RETURNS void
+AS $BODY$
+DECLARE
+  sql TEXT;
+  topo topology.topology;
+  face_currval INT;
+  edge_currval INT;
+  node_currval INT;
+BEGIN
+  topo := findTopology(toponame);
+  IF topo.id IS NULL THEN
+    RAISE EXCEPTION 'Could not find topology "%"', toponame;
+  END IF;
+
+  -- Check if topology already uses large ids
+  IF topo.useslargeids THEN
+    RAISE EXCEPTION 'Topology "%" is already upgraded to use large ids', toponame;
+  END IF;
+
+  -- Get face sequence current value
+  EXECUTE format(
+    $$
+    SELECT last_value
+    FROM %1$I.face_face_id_seq
+    $$,
+    toponame
+  ) INTO face_currval;
+
+  -- Get edge sequence current value
+  EXECUTE format(
+    $$
+    SELECT last_value
+    FROM %1$I.edge_data_edge_id_seq
+    $$,
+    toponame
+  ) INTO edge_currval;
+
+  -- Get node sequence current value
+  EXECUTE format(
+    $$
+    SELECT last_value
+    FROM %1$I.node_node_id_seq
+    $$,
+    toponame
+  ) INTO node_currval;
+
+  sql := format(
+    $$
+		-- Upgrade the face table
+		ALTER TABLE %1$I.face
+    	ALTER COLUMN face_id TYPE BIGINT;
+
+		ALTER TABLE %1$I.face
+    	ALTER COLUMN face_id DROP DEFAULT;
+
+		DROP SEQUENCE %1$I.face_face_id_seq;
+
+		CREATE SEQUENCE %1$I.face_face_id_seq AS BIGINT;
+
+		SELECT setval('%1$I.face_face_id_seq', %2$s);
+
+		ALTER TABLE %1$I.face
+    	ALTER COLUMN face_id SET DEFAULT nextval('%1$I.face_face_id_seq');
+
+		-- Upgrade the edge_data table
+  		-- Drop the edge view
+    	DROP VIEW IF EXISTS %1$I.edge;
+
+		ALTER TABLE %1$I.edge_data
+    	ALTER COLUMN edge_id TYPE BIGINT;
+
+		ALTER TABLE %1$I.edge_data
+    	ALTER COLUMN edge_id DROP DEFAULT;
+
+		DROP SEQUENCE %1$I.edge_data_edge_id_seq;
+
+		CREATE SEQUENCE %1$I.edge_data_edge_id_seq AS BIGINT;
+
+		SELECT setval('%1$I.edge_data_edge_id_seq', %3$s);
+
+		ALTER TABLE %1$I.edge_data
+    	ALTER COLUMN edge_id SET DEFAULT nextval('%1$I.edge_data_edge_id_seq');
+
+		ALTER TABLE %1$I.edge_data
+    	ALTER COLUMN left_face TYPE BIGINT;
+
+		ALTER TABLE %1$I.edge_data
+    	ALTER COLUMN right_face TYPE BIGINT;
+
+		ALTER TABLE %1$I.edge_data
+    	ALTER COLUMN next_left_edge TYPE BIGINT;
+
+		ALTER TABLE %1$I.edge_data
+    	ALTER COLUMN abs_next_left_edge TYPE BIGINT;
+
+		ALTER TABLE %1$I.edge_data
+    	ALTER COLUMN next_right_edge TYPE BIGINT;
+
+		ALTER TABLE %1$I.edge_data
+    	ALTER COLUMN abs_next_right_edge TYPE BIGINT;
+
+		ALTER TABLE %1$I.edge_data
+    	ALTER COLUMN start_node TYPE BIGINT;
+
+		ALTER TABLE %1$I.edge_data
+    	ALTER COLUMN end_node TYPE BIGINT;
+
+		-- edge standard view (select rule)
+		CREATE VIEW %1$I.edge AS
+		SELECT
+			edge_id, start_node, end_node, next_left_edge,
+			next_right_edge, left_face, right_face, geom
+		FROM %1$I.edge_data;
+
+		-- Edge standard view description
+		COMMENT ON VIEW %1$I.edge IS
+		'Contains edge topology primitives';
+		COMMENT ON COLUMN %1$I.edge.edge_id IS
+		'Unique identifier of the edge';
+		COMMENT ON COLUMN %1$I.edge.start_node IS
+		'Unique identifier of the node at the start of the edge';
+		COMMENT ON COLUMN %1$I.edge.end_node IS
+		'Unique identifier of the node at the end of the edge';
+		COMMENT ON COLUMN %1$I.edge.next_left_edge IS
+		'Unique identifier of the next edge of the face on the left (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary';
+		COMMENT ON COLUMN %1$I.edge.next_right_edge IS
+		'Unique identifier of the next edge of the face on the right (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary';
+		COMMENT ON COLUMN %1$I.edge.left_face IS
+		'Unique identifier of the face on the left side of the edge when looking in the direction from START_NODE to END_NODE';
+		COMMENT ON COLUMN %1$I.edge.right_face IS
+		'Unique identifier of the face on the right side of the edge when looking in the direction from START_NODE to END_NODE';
+		COMMENT ON COLUMN %1$I.edge.geom IS
+		'The geometry of the edge';
+
+		-- edge standard view (insert rule)
+		CREATE RULE edge_insert_rule AS
+		ON INSERT TO %1$I.edge
+		DO INSTEAD INSERT into %1$I.edge_data
+		VALUES (
+			NEW.edge_id, NEW.start_node, NEW.end_node,
+			NEW.next_left_edge, abs(NEW.next_left_edge),
+			NEW.next_right_edge, abs(NEW.next_right_edge),
+			NEW.left_face, NEW.right_face, NEW.geom
+		);
+
+		-- Upgrade the node table
+	    ALTER TABLE %1$I.node
+	    ALTER COLUMN node_id TYPE BIGINT;
+		
+	    ALTER TABLE %1$I.node
+	    ALTER COLUMN node_id DROP DEFAULT;
+
+    	DROP SEQUENCE %1$I.node_node_id_seq;
+
+    	CREATE SEQUENCE %1$I.node_node_id_seq AS BIGINT;
+
+		SELECT setval('%1$I.node_node_id_seq', %4$s);
+
+		ALTER TABLE %1$I.node
+    	ALTER COLUMN node_id SET DEFAULT nextval('%1$I.node_node_id_seq');
+
+	    ALTER TABLE %1$I.node
+	    ALTER COLUMN containing_face TYPE BIGINT;
+
+		-- Upgrade the relation table
+	    ALTER TABLE %1$I.relation
+	    ALTER COLUMN topogeo_id TYPE BIGINT;
+
+	    ALTER TABLE %1$I.relation
+	    ALTER COLUMN element_id TYPE BIGINT;
+
+  		-- Update the topology table
+	    UPDATE topology.topology
+	    SET useslargeids = true
+	    WHERE id = topology.id;
+	$$,
+	toponame,
+	face_currval,
+	edge_currval,
+	node_currval
+  );
+
+  --RAISE INFO '%', sql;
+  EXECUTE sql;
+END;
+$BODY$ LANGUAGE 'plpgsql' VOLATILE;
+

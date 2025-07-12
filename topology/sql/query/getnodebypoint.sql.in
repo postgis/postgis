@@ -26,8 +26,10 @@
 --
 -- if near the point there are two or more nodes it throw an exception.
 --
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces getnodebypoint(varchar, geometry, float8) deprecated in 3.6.0
 CREATE OR REPLACE FUNCTION topology.GetNodeByPoint(atopology varchar, apoint geometry, tol1 float8)
-	RETURNS int AS
+	RETURNS bigint AS
 	'MODULE_PATHNAME', 'GetNodeByPoint'
 	LANGUAGE 'c' STABLE STRICT;
 --} GetNodeByPoint

@@ -1,0 +1,33 @@
+E1000000000027
+E1000000000028
+E1000000000029
+E1000000000030
+L1-vanilla|R1|{ "type": "MultiLineString", "arcs": [[1000000000009,-1000000000011]]}
+L1-vanilla|R2|{ "type": "MultiLineString", "arcs": [[1000000000004,-1000000000006]]}
+L1-vanilla|R3|{ "type": "MultiLineString", "arcs": [[1000000000025]]}
+L1-vanilla|R4|{ "type": "MultiLineString", "arcs": [[1000000000003]]}
+L2-vanilla|R1R2|{ "type": "MultiLineString", "arcs": [[1000000000009,-1000000000011],[1000000000004,-1000000000006]]}
+L2-vanilla|R4|{ "type": "MultiLineString", "arcs": [[1000000000003]]}
+A1-vanilla|P1|{ "type": "MultiPolygon", "arcs": [[[1000000000021,1000000000020,1000000000005,-1000000000019,-1000000000020,-1000000000012]]]}
+A1-vanilla|P2|{ "type": "MultiPolygon", "arcs": [[[1000000000019,1000000000018,1000000000006,-1000000000017,-1000000000018,-1000000000013]]]}
+A1-vanilla|P3|{ "type": "MultiPolygon", "arcs": [[[1000000000017,1000000000016,1000000000007,-1000000000015,-1000000000016,-1000000000014]]]}
+A1-vanilla|P4|{ "type": "MultiPolygon", "arcs": [[[-1000000000002]]]}
+A1-vanilla|P5|{ "type": "MultiPolygon", "arcs": [[[-1000000000001],[1000000000025]]]}
+A2-vanilla|P1P2|{ "type": "MultiPolygon", "arcs": [[[1000000000021,1000000000020,1000000000005,1000000000006,-1000000000017,-1000000000018,-1000000000013,-1000000000012]]]}
+A2-vanilla|P3P4|{ "type": "MultiPolygon", "arcs": [[[-1000000000002]],[[1000000000017,1000000000016,1000000000007,-1000000000015,-1000000000016,-1000000000014]]]}
+L1-edgemap|R1|{ "type": "MultiLineString", "arcs": [[0,-2]]}
+L1-edgemap|R2|{ "type": "MultiLineString", "arcs": [[2,-4]]}
+L1-edgemap|R3|{ "type": "MultiLineString", "arcs": [[4]]}
+L1-edgemap|R4|{ "type": "MultiLineString", "arcs": [[5]]}
+L2-edgemap|R1R2|{ "type": "MultiLineString", "arcs": [[0,-2],[2,-4]]}
+L2-edgemap|R4|{ "type": "MultiLineString", "arcs": [[4]]}
+A1-edgemap|P1|{ "type": "MultiPolygon", "arcs": [[[5,4,3,-3,-2,-1]]]}
+A1-edgemap|P2|{ "type": "MultiPolygon", "arcs": [[[1,2,9,-9,-8,-7]]]}
+A1-edgemap|P3|{ "type": "MultiPolygon", "arcs": [[[7,8,13,-13,-12,-11]]]}
+A1-edgemap|P4|{ "type": "MultiPolygon", "arcs": [[[-15]]]}
+A1-edgemap|P5|{ "type": "MultiPolygon", "arcs": [[[-16],[16]]]}
+A2-edgemap|P1P2|{ "type": "MultiPolygon", "arcs": [[[7,6,5,4,-4,-3,-2,-1]]]}
+A2-edgemap|P3P4|{ "type": "MultiPolygon", "arcs": [[[-9]],[[2,3,12,-12,-11,-10]]]}
+E1000000000032
+E1000000000033
+Topology 'large_city_data' dropped

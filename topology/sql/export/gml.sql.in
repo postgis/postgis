@@ -28,8 +28,9 @@
 -- INTERNAL FUNCTION
 -- text _AsGMLNode(id, point, nsprefix, precision, options, idprefix, gmlver)
 --
--- }{
-CREATE OR REPLACE FUNCTION topology._AsGMLNode(id int, point geometry, nsprefix_in text, prec int, options int, idprefix text, gmlver int)
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces _asgmlnode(integer, geometry, text, integer, integer, text, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology._AsGMLNode(id bigint, point geometry, nsprefix_in text, prec int, options int, idprefix text, gmlver int)
   RETURNS text
 AS
 $$
@@ -70,8 +71,9 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 -- text _AsGMLEdge(edge_id, start_node, end_node, line, visitedTable,
 --                 nsprefix, precision, options, idprefix, gmlVersion)
 --
--- }{
-CREATE OR REPLACE FUNCTION topology._AsGMLEdge(edge_id int, start_node int,end_node int, line geometry, visitedTable regclass, nsprefix_in text, prec int, options int, idprefix text, gmlver int)
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces _asgmledge(integer, integer, integer, geometry, regclass, text, integer, integer, text, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology._AsGMLEdge(edge_id bigint, start_node bigint, end_node bigint, line geometry, visitedTable regclass, nsprefix_in text, prec int, options int, idprefix text, gmlver int)
   RETURNS text
 AS
 $$
@@ -163,8 +165,9 @@ LANGUAGE 'plpgsql' VOLATILE; -- writes into visitedTable
 -- text _AsGMLFace(toponame, face_id, visitedTable,
 --                 nsprefix, precision, options, idprefix, gmlVersion)
 --
--- }{
-CREATE OR REPLACE FUNCTION topology._AsGMLFace(toponame text, face_id int, visitedTable regclass, nsprefix_in text, prec int, options int, idprefix text, gmlver int)
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces _asgmlface(text, integer, regclass, text, integer, integer, text, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology._AsGMLFace(toponame text, face_id bigint, visitedTable regclass, nsprefix_in text, prec int, options int, idprefix text, gmlver int)
   RETURNS text
 AS
 $$

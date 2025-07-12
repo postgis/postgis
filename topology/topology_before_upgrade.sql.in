@@ -30,3 +30,19 @@ SELECT _postgis_drop_function_by_signature('topology.validatetopology(varchar)',
 -- being optional (3.2.0)
 SELECT _postgis_drop_function_by_signature('topology.AddNode(varchar, geometry)', '3.2.0');
 SELECT _postgis_drop_function_by_signature('topology.AddNode(varchar, geometry, boolean, boolean)', '3.2.0');
+
+-- 3.6.0
+-- Merged both and made child_id (integer) optional
+SELECT _postgis_drop_function_by_signature('AddTopoGeometryColumn(varchar, varchar, varchar, varchar, varchar)', '3.6.0');
+SELECT _postgis_drop_function_by_signature('AddTopoGeometryColumn(varchar, varchar, varchar, varchar, varchar, integer)', '3.6.0');
+-- Merged all 4 functions and added optional topology_id and useslargeids
+SELECT _postgis_drop_function_by_signature('topology.CreateTopology(varchar, integer, float8, boolean)', '3.6.0');
+SELECT _postgis_drop_function_by_signature('topology.CreateTopology(varchar, integer, float8)', '3.6.0');
+SELECT _postgis_drop_function_by_signature('topology.CreateTopology(varchar, integer)', '3.6.0');
+SELECT _postgis_drop_function_by_signature('topology.CreateTopology(varchar)', '3.6.0');
+-- Upgrade casts, domains, and types from integer to bigint
+SELECT _postgis_drop_cast_by_types('topogeometry', 'integer[]', '3.6.0');
+SELECT _postgis_topology_upgrade_domain_type('topoelement','integer[]','bigint[]','3.6.0');
+SELECT _postgis_topology_upgrade_domain_type('topoelementarray','integer[][]','bigint[][]','3.6.0');
+SELECT _postgis_add_column_to_table('topology.topology', 'useslargeids', 'BOOLEAN', true, 'false','3.6.0');
+

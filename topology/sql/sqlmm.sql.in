@@ -27,9 +27,10 @@
 --
 -- Availability: 1.1.0
 --
+-- Replaces getfaceedges_returntype(integer, integer) deprecated in 3.6.0
 CREATE TYPE topology.GetFaceEdges_ReturnType AS (
   sequence integer,
-  edge integer
+  edge bigint
 );
 
 --{
@@ -40,7 +41,9 @@ CREATE TYPE topology.GetFaceEdges_ReturnType AS (
 --
 -- Availability: 1.1.0
 --
-CREATE OR REPLACE FUNCTION topology.ST_GetFaceEdges(toponame varchar, face_id integer)
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_getfaceedges(varchar, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_GetFaceEdges(toponame varchar, face_id bigint)
   RETURNS SETOF topology.GetFaceEdges_ReturnType AS
 	'MODULE_PATHNAME', 'ST_GetFaceEdges'
   LANGUAGE 'c' STABLE;
@@ -59,8 +62,10 @@ CREATE OR REPLACE FUNCTION topology.ST_GetFaceEdges(toponame varchar, face_id in
 --   of the two edges
 -- * Update references in the Relation table.
 --
-CREATE OR REPLACE FUNCTION topology.ST_NewEdgeHeal(toponame varchar, e1id integer, e2id integer)
-  RETURNS int AS
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_newedgeheal(varchar, integer, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_NewEdgeHeal(toponame varchar, e1id bigint, e2id bigint)
+  RETURNS bigint AS
   'MODULE_PATHNAME','ST_NewEdgeHeal'
   LANGUAGE 'c' VOLATILE;
 --} ST_NewEdgeHeal
@@ -78,9 +83,11 @@ CREATE OR REPLACE FUNCTION topology.ST_NewEdgeHeal(toponame varchar, e1id intege
 -- * Raise an exception if any TopoGeometry is defined by only one
 --   of the two edges
 -- * Update references in the Relation table.
--- {
-CREATE OR REPLACE FUNCTION topology.ST_ModEdgeHeal(toponame varchar, e1id integer, e2id integer)
-  RETURNS int AS
+--
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_modedgeheal(varchar, integer, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_ModEdgeHeal(toponame varchar, e1id bigint, e2id bigint)
+  RETURNS bigint AS
   'MODULE_PATHNAME','ST_ModEdgeHeal'
   LANGUAGE 'c' VOLATILE;
 --} ST_ModEdgeHeal
@@ -100,9 +107,10 @@ CREATE OR REPLACE FUNCTION topology.ST_ModEdgeHeal(toponame varchar, e1id intege
 -- * Update containg_face for isolated nodes in the dissolved faces
 -- * Update references in the Relation table
 --
--- }{
-CREATE OR REPLACE FUNCTION topology.ST_RemEdgeNewFace(toponame varchar, e1id integer)
-  RETURNS int AS
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_remedgenewface(varchar, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_RemEdgeNewFace(toponame varchar, e1id bigint)
+  RETURNS bigint AS
 	'MODULE_PATHNAME','ST_RemEdgeNewFace'
   LANGUAGE 'c' VOLATILE;
 --} ST_RemEdgeNewFace
@@ -123,9 +131,10 @@ CREATE OR REPLACE FUNCTION topology.ST_RemEdgeNewFace(toponame varchar, e1id int
 -- * Update references in the Relation table
 -- * Return id of the face taking up the removed edge space
 --
--- }{
-CREATE OR REPLACE FUNCTION topology.ST_RemEdgeModFace(toponame varchar, e1id integer)
-  RETURNS int AS
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_remedgemodface(varchar, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_RemEdgeModFace(toponame varchar, e1id bigint)
+  RETURNS bigint AS
 	'MODULE_PATHNAME','ST_RemEdgeModFace'
   LANGUAGE 'c' VOLATILE;
 --} ST_RemEdgeModFace
@@ -136,7 +145,9 @@ CREATE OR REPLACE FUNCTION topology.ST_RemEdgeModFace(toponame varchar, e1id int
 --
 --  ST_GetFaceGeometry(atopology, aface)
 --
-CREATE OR REPLACE FUNCTION topology.ST_GetFaceGeometry(toponame varchar, aface integer)
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_getfacegeometry(varchar, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_GetFaceGeometry(toponame varchar, aface bigint)
   RETURNS GEOMETRY AS
 	'MODULE_PATHNAME', 'ST_GetFaceGeometry'
   LANGUAGE 'c' STABLE;
@@ -150,8 +161,10 @@ CREATE OR REPLACE FUNCTION topology.ST_GetFaceGeometry(toponame varchar, aface i
 --
 -- Availability: 1.1.0
 --
-CREATE OR REPLACE FUNCTION topology.ST_AddIsoNode(atopology varchar, aface integer, apoint geometry)
-  RETURNS INTEGER AS
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_addisonode(varchar, integer, geometry) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_AddIsoNode(atopology varchar, aface bigint, apoint geometry)
+  RETURNS BIGINT AS
 	'MODULE_PATHNAME','ST_AddIsoNode'
   LANGUAGE 'c' VOLATILE;
 --} ST_AddIsoNode
@@ -162,7 +175,9 @@ CREATE OR REPLACE FUNCTION topology.ST_AddIsoNode(atopology varchar, aface integ
 --
 --  ST_MoveIsoNode(atopology, anode, apoint)
 --
-CREATE OR REPLACE FUNCTION topology.ST_MoveIsoNode(atopology character varying, anode integer, apoint geometry)
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_moveisonode(varchar, integer, geometry) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_MoveIsoNode(atopology character varying, anode bigint, apoint geometry)
   RETURNS text AS
   'MODULE_PATHNAME','ST_MoveIsoNode'
   LANGUAGE 'c' VOLATILE;
@@ -175,8 +190,9 @@ CREATE OR REPLACE FUNCTION topology.ST_MoveIsoNode(atopology character varying, 
 --  ST_RemoveIsoNode(atopology, anode)
 --
 -- Availability: 1.1.0
---
-CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoNode(atopology varchar, anode integer)
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_removeisonode(varchar, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoNode(atopology varchar, anode bigint)
   RETURNS TEXT AS
 	'MODULE_PATHNAME','ST_RemoveIsoNode'
   LANGUAGE 'c' VOLATILE;
@@ -187,7 +203,9 @@ CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoNode(atopology varchar, anode in
 -- ST_RemoveIsoNode was renamed to ST_RemIsoNode in the final ISO
 -- document
 --
-CREATE OR REPLACE FUNCTION topology.ST_RemIsoNode(varchar, integer)
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_remisonode(varchar, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_RemIsoNode(varchar, bigint)
   RETURNS TEXT AS
 	'MODULE_PATHNAME','ST_RemoveIsoNode'
   LANGUAGE 'c' VOLATILE;
@@ -200,8 +218,9 @@ CREATE OR REPLACE FUNCTION topology.ST_RemIsoNode(varchar, integer)
 --  ST_RemoveIsoEdge(atopology, anedge)
 --
 -- Availability: 1.1.0
---
-CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoEdge(atopology varchar, anedge integer)
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_removeisoedge(varchar, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoEdge(atopology varchar, anedge bigint)
   RETURNS TEXT AS
 	'MODULE_PATHNAME','ST_RemIsoEdge'
 	LANGUAGE 'c' VOLATILE;
@@ -217,9 +236,10 @@ CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoEdge(atopology varchar, anedge i
 -- * Update references in the Relation table.
 --
 -- Availability: 1.1.0
---
-CREATE OR REPLACE FUNCTION topology.ST_NewEdgesSplit(atopology varchar, anedge integer, apoint geometry)
-  RETURNS INTEGER AS
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_newedgessplit(varchar, integer, geometry) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_NewEdgesSplit(atopology varchar, anedge bigint, apoint geometry)
+  RETURNS BIGINT AS
   'MODULE_PATHNAME','ST_NewEdgesSplit'
   LANGUAGE 'c' VOLATILE;
 --} ST_NewEdgesSplit
@@ -235,9 +255,10 @@ CREATE OR REPLACE FUNCTION topology.ST_NewEdgesSplit(atopology varchar, anedge i
 --
 -- Availability: 2.0.0
 -- Replaces ST_ModEdgesSplit(varchar, integer, geometry) deprecated in 2.0.0
---
-CREATE OR REPLACE FUNCTION topology.ST_ModEdgeSplit(atopology varchar, anedge integer, apoint geometry)
-  RETURNS INTEGER AS
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_modedgesplit(varchar, integer, geometry) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_ModEdgeSplit(atopology varchar, anedge bigint, apoint geometry)
+  RETURNS BIGINT AS
 	'MODULE_PATHNAME','ST_ModEdgeSplit'
   LANGUAGE 'c' VOLATILE;
 --} ST_ModEdgesSplit
@@ -255,11 +276,10 @@ CREATE OR REPLACE FUNCTION topology.ST_ModEdgeSplit(atopology varchar, anedge in
 --   (ie: would create a ring)
 --
 -- Availability: 1.1.0
---
--- }{
---
-CREATE OR REPLACE FUNCTION topology.ST_AddIsoEdge(atopology varchar, anode integer, anothernode integer, acurve geometry)
-  RETURNS INTEGER AS
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_addisoedge(varchar, integer, integer, geometry) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_AddIsoEdge(atopology varchar, anode bigint, anothernode bigint, acurve geometry)
+  RETURNS BIGINT AS
 	'MODULE_PATHNAME','ST_AddIsoEdge'
   LANGUAGE 'c' VOLATILE;
 --} ST_AddIsoEdge
@@ -273,12 +293,14 @@ CREATE OR REPLACE FUNCTION topology.ST_AddIsoEdge(atopology varchar, anode integ
 --        if negative `anode' is assumed to be its end node
 --
 -- @todo DROP, NOT NEEDED ANYMORE (might need to go in some _drop, I guess)
--- {
-CREATE OR REPLACE FUNCTION topology._ST_AdjacentEdges(atopology varchar, anode integer, anedge integer)
-RETURNS integer[] AS
+--
+-- Changed: 3.6.0 uses bigint for IDS
+-- Replaces _st_adjacentedges(varchar, integer, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology._ST_AdjacentEdges(atopology varchar, anode bigint, anedge bigint)
+RETURNS bigint[] AS
 $$
 DECLARE
-  ret integer[];
+  ret bigint[];
 BEGIN
   WITH edgestar AS (
     SELECT *, count(*) over () AS cnt
@@ -311,8 +333,9 @@ LANGUAGE 'plpgsql' STABLE;
 -- * Raise an exception if given a non-existent edge
 -- * Raise an exception if movement is not topologically isomorphic
 --
--- }{
-CREATE OR REPLACE FUNCTION topology.ST_ChangeEdgeGeom(atopology varchar, anedge integer, acurve geometry)
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_changeedgegeom(varchar, integer, geometry) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_ChangeEdgeGeom(atopology varchar, anedge bigint, acurve geometry)
   RETURNS TEXT AS
 	'MODULE_PATHNAME','ST_ChangeEdgeGeom'
   LANGUAGE 'c' VOLATILE;
@@ -329,8 +352,10 @@ CREATE OR REPLACE FUNCTION topology.ST_ChangeEdgeGeom(atopology varchar, anedge 
 --   as they stop being isolated nodes
 -- * Update references in the Relation table.
 --
-CREATE OR REPLACE FUNCTION topology.ST_AddEdgeNewFaces(atopology varchar, anode integer, anothernode integer, acurve geometry)
-  RETURNS INTEGER AS
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_addedgenewfaces(varchar, integer, integer, geometry) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_AddEdgeNewFaces(atopology varchar, anode bigint, anothernode bigint, acurve geometry)
+  RETURNS BIGINT AS
 	'MODULE_PATHNAME','ST_AddEdgeNewFaces'
   LANGUAGE 'c' VOLATILE;
 --} ST_AddEdgeNewFaces
@@ -346,8 +371,10 @@ CREATE OR REPLACE FUNCTION topology.ST_AddEdgeNewFaces(atopology varchar, anode 
 --   as they stop being isolated nodes
 -- * Update references in the Relation table.
 --
-CREATE OR REPLACE FUNCTION topology.ST_AddEdgeModFace(atopology varchar, anode integer, anothernode integer, acurve geometry)
-  RETURNS INTEGER AS
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces st_addedgemodface(varchar, integer, integer, geometry) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.ST_AddEdgeModFace(atopology varchar, anode bigint, anothernode bigint, acurve geometry)
+  RETURNS BIGINT AS
 	'MODULE_PATHNAME','ST_AddEdgeModFace'
   LANGUAGE 'c' VOLATILE;
 --} ST_AddEdgeModFace

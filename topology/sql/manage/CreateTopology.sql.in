@@ -15,15 +15,19 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 --{
---  CreateTopology(name, SRID, precision, hasZ)
+--  CreateTopology(name, SRID, precision, hasZ, topoid, usesLargeIds)
 --
 -- Create a topology schema, add a topology info record
 -- in the topology.topology relation, return it's numeric
 -- id.
 --
--- Availability: 2.0.0
+-- Availability: 3.6.0
 --
-CREATE OR REPLACE FUNCTION topology.CreateTopology(atopology varchar, srid integer, prec float8, hasZ boolean)
+-- Changed: 3.6.0
+-- merges all previous variants with defaults and uses bigint for IDs
+-- if user passes usesLargeIds=true, and allows user defined topology id.
+-- Replaces CreateTopology(varchar, integer, float8, boolean) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.CreateTopology(atopology name, srid integer DEFAULT 0, prec float8 DEFAULT 0, hasZ boolean DEFAULT false, topoid integer default 0, usesLargeIDs boolean default false)
 RETURNS integer
 AS
 $BODY$
@@ -32,12 +36,20 @@ DECLARE
   topology_id integer;
   sql TEXT;
   zsuffix TEXT := '';
+  cnt integer;
+  primaryColumnType TEXT := 'SERIAL';
+  dataColumnType TEXT := 'INT4';
 BEGIN
 
 --  FOR rec IN SELECT * FROM pg_namespace WHERE text(nspname) = atopology
 --  LOOP
 --    RAISE EXCEPTION 'SQL/MM Spatial exception - schema already exists';
 --  END LOOP;
+
+  -- Prevent negative
+  IF topoid < 0 THEN
+    RAISE EXCEPTION 'Invalid Topology ID % (must be > 0)', topoid;
+  END IF;
 
   IF hasZ THEN
     zsuffix := 'z';
@@ -46,10 +58,38 @@ BEGIN
   IF srid < 0 THEN
     RAISE NOTICE 'SRID value % converted to the officially unknown SRID value 0', srid;
     srid = 0;
+  ELSIF srid = 0 THEN
+    -- TODO: Does this need a notice. It will break a lot of tests
+    srid = ST_SRID('POINT EMPTY'::geometry);
   END IF;
 
-  ------ Fetch next id for the new topology
   topology_id := nextval('topology.topology_id_seq');
+
+  IF topoid > 0 THEN
+    ------ Check if the ID has been used already
+    SELECT count(*)
+    INTO cnt
+    FROM topology.topology
+    WHERE id = topoid;
+    -- RAISE INFO 'cnt: %', cnt;
+
+    IF cnt > 0
+    THEN
+      RAISE EXCEPTION 'topology with id % already exists', topoid;
+    END IF;
+
+    -- set sequence to match topoid
+    IF topoid > topology_id THEN
+      SELECT setval('topology.topology_id_seq', topoid) INTO topology_id;
+    END IF;
+
+    topology_id := topoid;
+  END IF;
+
+  IF usesLargeIDs THEN
+    primaryColumnType := 'BIGSERIAL';
+    dataColumnType := 'INT8';
+  END IF;
 
   sql := format(
     $$
@@ -57,7 +97,7 @@ BEGIN
 
       -------------{ face CREATION
       CREATE TABLE %1$I.face(
-        face_id SERIAL,
+        face_id %5$s,
         mbr GEOMETRY(polygon, %2$L), -- 2d only mbr is good enough
         CONSTRAINT face_primary_key
         PRIMARY KEY(face_id)
@@ -72,8 +112,8 @@ BEGIN
       --------------{ node CREATION
 
       CREATE TABLE %1$I.node(
-        node_id SERIAL,
-        containing_face INTEGER,
+        node_id %5$s,
+        containing_face %6$s,
         geom GEOMETRY(point%3$s, %2$L),
         CONSTRAINT node_primary_key
           PRIMARY KEY(node_id),
@@ -98,15 +138,15 @@ BEGIN
 
       -- edge_data table
       CREATE TABLE %1$I.edge_data (
-        edge_id SERIAL NOT NULL PRIMARY KEY,
-        start_node INTEGER NOT NULL,
-        end_node INTEGER NOT NULL,
-        next_left_edge INTEGER NOT NULL,
-        abs_next_left_edge INTEGER NOT NULL,
-        next_right_edge INTEGER NOT NULL,
-        abs_next_right_edge INTEGER NOT NULL,
-        left_face INTEGER NOT NULL,
-        right_face INTEGER NOT NULL,
+        edge_id %5$s NOT NULL PRIMARY KEY,
+        start_node %6$s NOT NULL,
+        end_node %6$s NOT NULL,
+        next_left_edge %6$s NOT NULL,
+        abs_next_left_edge %6$s NOT NULL,
+        next_right_edge %6$s NOT NULL,
+        abs_next_right_edge %6$s NOT NULL,
+        left_face %6$s NOT NULL,
+        right_face %6$s NOT NULL,
         geom GEOMETRY(linestring%3$s, %2$L) NOT NULL,
 
         CONSTRAINT start_node_exists
@@ -187,9 +227,9 @@ BEGIN
 
       --------------{ relation CREATION
       CREATE TABLE %1$I.relation (
-        topogeo_id integer NOT NULL,
+        topogeo_id %6$s NOT NULL,
         layer_id integer NOT NULL,
-        element_id integer NOT NULL,
+        element_id %6$s NOT NULL,
         element_type integer NOT NULL,
         UNIQUE(layer_id,topogeo_id,element_id,element_type)
       );
@@ -242,10 +282,12 @@ BEGIN
       -- TODO: consider also adding an index on node.containing_face
 
     $$,
-    atopology,   -- %1
-    srid,        -- %2
-    zsuffix,     -- %3
-    topology_id  -- %4
+    atopology,          -- %1
+    srid,               -- %2
+    zsuffix,            -- %3
+    topology_id,        -- %4
+    primaryColumnType,  -- %5
+    dataColumnType      -- %6
   );
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'SQL: %', sql;
@@ -253,8 +295,8 @@ BEGIN
   EXECUTE sql;
 
   ------- Add record to the "topology" metadata table
-  INSERT INTO topology.topology (id, name, srid, precision, hasZ)
-  VALUES (topology_id, atopology, srid, prec, hasZ);
+  INSERT INTO topology.topology (id, name, srid, precision, hasZ, usesLargeIds)
+  VALUES (topology_id, atopology, srid, prec, hasZ, usesLargeIDs);
 
   RETURN topology_id;
 END
@@ -262,29 +304,3 @@ $BODY$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 --} CreateTopology
-
---{ CreateTopology wrappers for unspecified srid or precision or hasZ
-
---  CreateTopology(name, SRID, precision) -- hasZ = false
--- Availability: 1.1.0
-CREATE OR REPLACE FUNCTION topology.CreateTopology(toponame varchar, srid integer, prec float8)
-RETURNS integer AS
-' SELECT topology.CreateTopology($1, $2, $3, false);'
-LANGUAGE 'sql' VOLATILE STRICT;
-
---  CreateTopology(name, SRID) -- precision = 0
--- Availability: 1.1.0
-CREATE OR REPLACE FUNCTION topology.CreateTopology(varchar, integer)
-RETURNS integer AS
-' SELECT topology.CreateTopology($1, $2, 0); '
-LANGUAGE 'sql' VOLATILE STRICT;
-
---  CreateTopology(name) -- srid = unknown, precision = 0
--- Availability: 1.1.0
-CREATE OR REPLACE FUNCTION topology.CreateTopology(varchar)
-RETURNS integer AS
-$$ SELECT topology.CreateTopology($1, ST_SRID('POINT EMPTY'::geometry), 0); $$
-LANGUAGE 'sql' VOLATILE STRICT;
-
---} CreateTopology
-

@@ -1,10 +1,21 @@
 t
 t
 t
+t
+t
+t
+t
+t
+t
+t
+3002
 ERROR:  schema "3d" already exists
+ERROR:  schema "3d.2" already exists
 2d|0|0|f
 2dAgain|0|0|f
+2dLarge|0|0|f
 3d|0|0|t
+3dLarge|0|0|t
 ERROR:  Column has Z dimension but geometry does not
 ERROR:  Column has Z dimension but geometry does not
 3
@@ -12,7 +23,15 @@ ERROR:  Geometry has M dimension but column does not
 ERROR:  Geometry has Z dimension but column does not
 3
 Topology '2d' dropped
+Topology '2d.2' dropped
+Topology '2dLarge' dropped
+Topology '2dLarge.2' dropped
+Topology '2dLarge.3' dropped
 Topology '2dAgain' dropped
+Topology '2dAgain.2' dropped
 Topology '3d' dropped
+Topology '3d.2' dropped
+Topology '3dLarge' dropped
+Topology '3dLarge.2' dropped
 ERROR:  schema "public" already exists
 ERROR:  schema "topology" already exists

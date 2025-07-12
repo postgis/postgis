@@ -19,13 +19,15 @@
 --
 -- GetNodeEdges(atopology, anode)
 --
-CREATE OR REPLACE FUNCTION topology.GetNodeEdges(atopology varchar, anode int)
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces getnodeedges(varchar, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.GetNodeEdges(atopology varchar, anode bigint)
 	RETURNS SETOF topology.GetFaceEdges_ReturnType
 AS
 $BODY$
 DECLARE
-  curedge int;
-  nextedge int;
+  curedge bigint;
+  nextedge bigint;
   rec RECORD;
   retrec topology.GetFaceEdges_ReturnType;
   n int;

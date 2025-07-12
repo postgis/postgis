@@ -25,7 +25,7 @@
 -- Format specification here:
 -- http://github.com/mbostock/topojson-specification/blob/master/README.md
 --
--- }{
+-- Changed: 3.6.0 uses bigint for IDs
 CREATE OR REPLACE FUNCTION topology.AsTopoJSON(tg topology.TopoGeometry, edgeMapTable regclass)
   RETURNS text AS
 $$
@@ -35,17 +35,17 @@ DECLARE
   sql text;
   rec RECORD;
   rec2 RECORD;
-  side int;
-  arcid int;
-  arcs int[];
+  side int8;
+  arcid int8;
+  arcs int8[];
   ringtxt TEXT[];
   comptxt TEXT[];
   edges_found BOOLEAN;
   old_search_path TEXT;
-  all_faces int[];
-  faces int[];
-  shell_faces int[];
-  visited_edges int[];
+  all_faces int8[];
+  faces int8[];
+  shell_faces int8[];
+  visited_edges int8[];
   looking_for_holes BOOLEAN;
 BEGIN
 
@@ -96,7 +96,7 @@ BEGIN
           arcid := -(arcid+1);
         END IF;
 
-        arcs := arcs || arcid;
+        arcs := arcs || arcid::int8;
 
       END LOOP; -- }
 
@@ -124,10 +124,10 @@ BEGIN
     RAISE DEBUG 'Faces: %', all_faces;
 #endif
 
-    visited_edges := ARRAY[]::int[];
+    visited_edges := ARRAY[]::int8[];
     faces := all_faces;
     looking_for_holes := false;
-    shell_faces := ARRAY[]::int[];
+    shell_faces := ARRAY[]::int8[];
 
     CREATE TEMP TABLE _postgis_topology_astopojson_tmp_edges
     ON COMMIT DROP
@@ -230,14 +230,14 @@ FROM _edgepath
 #endif
 
         IF rec.left_face = ANY (all_faces) AND NOT rec.left_face = ANY (shell_faces) THEN
-          shell_faces := shell_faces || rec.left_face;
+          shell_faces := shell_faces || rec.left_face::int8;
         END IF;
 
         IF rec.right_face = ANY (all_faces) AND NOT rec.right_face = ANY (shell_faces) THEN
-          shell_faces := shell_faces || rec.right_face;
+          shell_faces := shell_faces || rec.right_face::int8;
         END IF;
 
-        visited_edges := visited_edges || rec.edge_id;
+        visited_edges := visited_edges || rec.edge_id::int8;
 
         edges_found := true;
 
@@ -271,13 +271,13 @@ FROM _edgepath
         RAISE DEBUG 'ARC id: %' , arcid;
 #endif
 
-        arcs := arcid || arcs;
+        arcs := arcid::int8 || arcs;
 
       END LOOP; -- } over recursive query
 
       DELETE from _postgis_topology_astopojson_tmp_edges
       WHERE edge_id = ANY (visited_edges);
-      visited_edges := ARRAY[]::int[];
+      visited_edges := ARRAY[]::int8[];
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
       --RAISE DEBUG 'Edges found:%, visited faces: %, ARCS: %' , edges_found, shell_faces, arcs;
@@ -293,7 +293,7 @@ FROM _edgepath
           comptxt := comptxt || ( '[' || array_to_string(ringtxt, ',') || ']' );
           ringtxt := NULL;
           faces := all_faces;
-          shell_faces := ARRAY[]::int[];
+          shell_faces := ARRAY[]::int8[];
         ELSE
           EXIT; -- end of loop
         END IF;

@@ -1,0 +1,38 @@
+#3042|---||
+#3042|invalid next_left_edge|1000000000003|-1000000000003
+#3042|invalid next_left_edge|1000000000009|1000000000019
+#3042|invalid next_left_edge|1000000000010|-1000000000020
+#3042|invalid next_left_edge|1000000000020|-1000000000009
+#3042|invalid next_left_edge|1000000000025|-1000000000025
+#3042|invalid next_right_edge|1000000000003|1000000000002
+#3042|invalid next_right_edge|1000000000019|-1000000000010
+#3042|invalid next_right_edge|1000000000025|1000000000025
+#4944|---||
+#4944|mixed face labeling in ring|-1000000000021|
+#4944|mixed face labeling in ring|-1000000000019|
+#4945|---||
+#4945|face has multiple shells|1000000000003|-1000000000017
+#4830.1|---||
+#4830.1|hole not in advertised face|-1000000000025|
+#4830.2|---||
+#4830.2|hole not in advertised face|-1000000000005|
+#4830.3|---||
+#4830.3|hole not in advertised face|-1000000000026|
+#4830.4|---||
+#4830.4|hole not in advertised face|-1000000000025|
+#4830.5|---||
+#4830.5|hole not in advertised face|-1000000000026|
+#5017.2|mixed face labeling in ring
+#5017.3|mixed face labeling in ring
+#5105.0|1
+#5105.edges_count|1
+#5105.faces_count|0
+#5403.0|1
+#5548.0|1
+#5548.1|face without edges|1|
+#5766.1|no bbox|("face has wrong mbr",0,)
+#5766.1|overlapping bbox|("face has wrong mbr",0,)
+#5766.1|disjoint bbox|
+#5766.2|no bbox|("face has wrong mbr",0,)
+#5766.2|overlapping bbox|("face has wrong mbr",0,)
+#5766.2|disjoint bbox|

@@ -375,7 +375,7 @@ lwt_be_getRingEdges(LWT_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numedges, uin
   CBT3(topo, getRingEdges, edge, numedges, limit);
 }
 
-int
+LWT_ELEMID
 lwt_be_ExistsCoincidentNode(LWT_TOPOLOGY* topo, const LWPOINT* pt)
 {
   uint64_t exists = 0;
@@ -388,7 +388,7 @@ lwt_be_ExistsCoincidentNode(LWT_TOPOLOGY* topo, const LWPOINT* pt)
   return exists;
 }
 
-int
+LWT_ELEMID
 lwt_be_ExistsEdgeIntersectingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
 {
   uint64_t exists = 0;
@@ -1522,7 +1522,7 @@ _lwt_InitEdgeEndByLine(edgeend *fee, edgeend *lee, LWLINE *edge,
  */
 static int
 _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
-                        edgeend *other, int myedge_id )
+                        edgeend *other, LWT_ELEMID myedge_id )
 {
   LWT_ISO_EDGE *edges;
   uint64_t numedges = 1;
@@ -7677,7 +7677,7 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
   const POINT2D *closestSegmentP0, *closestSegmentP1;
   LWT_ELEMID closestNode = 0;
   double dist;
-  int containingFace = -1;
+  LWT_ELEMID containingFace = -1;
 
   closestEdge = lwt_be_getClosestEdge( topo, pt, &numedges,
     LWT_COL_EDGE_GEOM|

@@ -27,6 +27,9 @@ Layer 1, UNREGISTERED, 1 topogeoms
 Topology test (id 1, SRID 10, precision 20)
 0 nodes, 0 edges, 0 faces, 1 topogeoms in 1 layers
 Layer 1, UNREGISTERED, 1 topogeoms
+--registered_topo--
+Topology test2 (id 2, SRID 4326, precision 20, has Z, uses Large IDs)
+0 nodes, 0 edges, 0 faces, corrupted relations
 --registered_missing_layer_table--
 Topology test (id 1, SRID 10, precision 20)
 0 nodes, 0 edges, 0 faces, 1 topogeoms in 1 layers
@@ -64,4 +67,7 @@ Layer 1, type Puntal (1), 1 topogeoms
  Deploy: test.t.c
 --registered+missing--
 Topology test (id 1, SRID 10, precision 20)
+missing schema
+--registered+missing--
+Topology test2 (id 2, SRID 4326, precision 20, has Z, uses Large IDs)
 missing schema

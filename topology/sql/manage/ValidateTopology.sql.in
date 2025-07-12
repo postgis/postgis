@@ -21,22 +21,27 @@
 --
 -- Availability: 1.1.0
 --
+-- Changed: 3.6.0 uses bigint for ids
+-- Replaces validatetopology_returntype(varchar, integer, integer) deprecated in 3.6.0
 CREATE TYPE topology.ValidateTopology_ReturnType AS (
   error varchar,
-  id1 integer,
-  id2 integer
+  id1 bigint,
+  id2 bigint
 );
 
 --{
 -- Return the outermost ring of a topology face
 --
-CREATE OR REPLACE FUNCTION topology._ValidateTopologyGetFaceShellMaximalEdgeRing(atopology varchar, aface int)
+-- Availability: 3.6.0
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces _validatetopologygetfaceshellmaximaledgering(varchar, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology._validatetopologygetfaceshellmaximaledgering(atopology varchar, aface bigint)
 RETURNS GEOMETRY AS
 $BODY$
 DECLARE
   sql TEXT;
   outsidePoint GEOMETRY;
-  leftmostEdge INT;
+  leftmostEdge BIGINT;
   shell GEOMETRY;
 BEGIN
 
@@ -126,13 +131,14 @@ END;
 $BODY$ LANGUAGE 'plpgsql' STABLE; --}
 
 -- Assumes search_path has topology schema first
---{
-CREATE OR REPLACE FUNCTION topology._ValidateTopologyGetRingEdges(starting_edge int)
-RETURNS int[]
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces _validatetopologygetringedges(integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology._ValidateTopologyGetRingEdges(starting_edge bigint)
+RETURNS bigint[]
 AS
 $BODY$
 DECLARE
-  ret int[];
+  ret bigint[];
 BEGIN
   WITH RECURSIVE edgering AS (
     SELECT
@@ -169,7 +175,9 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 --}
 
-CREATE OR REPLACE FUNCTION topology._CheckEdgeLinking(curedge_edge_id INT, prevedge_edge_id INT, prevedge_next_left_edge INT, prevedge_next_right_edge INT)
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces _checkedgelinking(integer, integer, integer, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology._CheckEdgeLinking(curedge_edge_id BIGINT, prevedge_edge_id BIGINT, prevedge_next_left_edge BIGINT, prevedge_next_right_edge BIGINT)
 RETURNS topology.ValidateTopology_ReturnType
 AS
 $BODY$
@@ -223,14 +231,15 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 --
 -- NOTE: assumes search_path was set before calling this function
 --
+-- Changed: 3.6.0 uses bigint for IDs
 CREATE OR REPLACE FUNCTION topology._ValidateTopologyEdgeLinking(bbox geometry DEFAULT NULL)
 RETURNS SETOF topology.ValidateTopology_ReturnType
-AS --{
+AS
 $BODY$
 DECLARE
   retrec topology.ValidateTopology_ReturnType;
   rec RECORD;
-  last_node_id int;
+  last_node_id bigint;
   last_node_first_edge RECORD;
   last_node_prev_edge RECORD;
 BEGIN
@@ -372,6 +381,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- Creates a pg_temp.hole_check table
 -- Creates a pg_temp.shell_check table
 --
+-- Changed: 3.6.0 uses bigint for IDs
 CREATE OR REPLACE FUNCTION topology._ValidateTopologyRings(bbox geometry DEFAULT NULL)
 RETURNS SETOF topology.ValidateTopology_ReturnType
 AS --{
@@ -387,15 +397,15 @@ DECLARE
 BEGIN
 
   CREATE TEMP TABLE shell_check (
-    face_id int PRIMARY KEY,
+    face_id bigint PRIMARY KEY,
     ring_geom geometry
   );
 
   CREATE TEMP TABLE hole_check (
-    ring_id int,
+    ring_id bigint,
     hole_mbr geometry, -- point
     hole_point geometry, -- point
-    in_shell int
+    in_shell bigint
   );
 
   RAISE NOTICE 'Building edge rings';
@@ -611,7 +621,6 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 -- Availability: 1.0.0
 -- Changed: 3.2.0 - add bbox optional parameter
---
 CREATE OR REPLACE FUNCTION topology.ValidateTopology(toponame varchar, bbox geometry DEFAULT NULL)
   RETURNS setof topology.ValidateTopology_ReturnType
 AS
@@ -621,12 +630,12 @@ DECLARE
   rec RECORD;
   rec2 RECORD;
   affected_rows integer;
-  invalid_edges integer[];
-  invalid_faces integer[];
+  invalid_edges bigint[];
+  invalid_faces bigint[];
   has_invalid_edge_linking BOOLEAN := false;
   has_invalid_rings BOOLEAN := false;
   search_path_backup text;
-  containing_face integer;
+  containing_face bigint;
 BEGIN
 
   IF NOT EXISTS (
@@ -709,7 +718,7 @@ BEGIN
   -- Scan all edges
   RAISE NOTICE 'Checking for invalid or not-simple edges';
   FOR rec IN
-    SELECT e.geom, e.edge_id as id1, e.left_face, e.right_face
+    SELECT e.geom, e.edge_id::int8 as id1, e.left_face::int8, e.right_face::int8
     FROM edge e
     WHERE (
       bbox IS NULL
@@ -840,7 +849,7 @@ BEGIN
   -- Check for faces w/out edges
   RAISE NOTICE 'Checking for faces without edges';
   FOR rec IN
-    SELECT f.face_id as id1
+    SELECT f.face_id::int8 as id1
     FROM face f
     LEFT JOIN edge_data e ON (
       f.face_id = e.left_face OR

@@ -18,6 +18,7 @@ Daniel Nylander (Swedish Team)
   - #3373, GT-255 [topology] Support for upgrading domains (Ayo Adesugba, U.S. Census Bureau)
   - GT-252, ST_NumGeometries/ST_GeometryN treat TIN and PolyhedralSurface as unitary geometries,
     use ST_NumPatches/ST_PatchN for patch access (Loïc Bartoletti)
+  - #3110, GT-242 [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)
 
 * Deprecated signatures *
 
@@ -41,4 +42,5 @@ Daniel Nylander (Swedish Team)
   - Add ST_CoverageClean to edge match and gap remove polygonal
     coverages (Paul Ramsey) from GEOS 3.14 (Martin Davis)
   - Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)
+  - #3110, GT-242 [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)
 

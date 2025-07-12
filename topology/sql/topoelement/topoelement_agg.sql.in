@@ -29,6 +29,7 @@
 --
 -- Append a TopoElement to a TopoElementArray
 --
+-- Changed: 3.6.0 to use bigint for ids
 CREATE OR REPLACE FUNCTION topology.TopoElementArray_append(topology.TopoElementArray, topology.TopoElement)
 	RETURNS topology.TopoElementArray
 AS
@@ -37,7 +38,7 @@ $$
 		WHEN $1 IS NULL THEN
 			topology.TopoElementArray('{' || $2::text || '}')
 		ELSE
-			topology.TopoElementArray($1::int[][]||$2::int[])
+			topology.TopoElementArray($1::bigint[][]||$2::bigint[])
 		END;
 $$
 LANGUAGE 'sql' IMMUTABLE;

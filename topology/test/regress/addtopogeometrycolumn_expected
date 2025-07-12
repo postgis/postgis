@@ -1,6 +1,10 @@
-ERROR:  Topology 'tt' does not exist
+ERROR:  relation "public.feature" does not exist
+ERROR:  relation "public.feature2" does not exist at character 35
 t
 ERROR:  relation "public.feature" does not exist
+ERROR:  relation "public.feature2" does not exist at character 35
+ERROR:  Layer type must be one of POINT,LINE,POLYGON,COLLECTION
+ERROR:  Child layer 0 does not exist in topology "tt"
 ERROR:  Layer type must be one of POINT,LINE,POLYGON,COLLECTION
 ERROR:  Child layer 0 does not exist in topology "tt"
 T1|1
@@ -15,6 +19,20 @@ T9|9
 T10|10
 T11|11
 T12|12
+ERROR:  Layer ID 1 is already in use
+T1.2|1001
+1001
+T2.2|1002
+T3.2|1003
+T4.2|1004
+T5.2|1005
+T6.2|1006
+T7.2|1007
+T8.2|1008
+T9.2|1009
+T10.2|1010
+T11.2|1011
+T12.2|1012
 1|public|feature|tg|1|0|
 2|public|feature|tg2|2|0|
 3|public|feature|tg3|3|0|
@@ -27,4 +45,17 @@ T12|12
 10|public|feature|tg10|2|0|
 11|public|feature|tg11|3|0|
 12|public|feature|tg12|4|0|
+1001|public|feature2|tg|1|0|
+1002|public|feature2|tg2|2|0|
+1003|public|feature2|tg3|3|0|
+1004|public|feature2|tg4|4|0|
+1005|public|feature2|tg5|1|0|
+1006|public|feature2|tg6|2|0|
+1007|public|feature2|tg7|3|0|
+1008|public|feature2|tg8|4|0|
+1009|public|feature2|tg9|1|0|
+1010|public|feature2|tg10|2|0|
+1011|public|feature2|tg11|3|0|
+1012|public|feature2|tg12|4|0|
+1013
 Topology 'tt' dropped

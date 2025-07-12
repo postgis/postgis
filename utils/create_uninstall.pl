@@ -100,7 +100,7 @@ while( my $line = <INPUT>)
 		push (@funcs, $defn) if ! $supp;
 		push (@supp_funcs, $defn) if $supp;
 	}
-	elsif ($line =~ /^create or replace view\s*(\w+)/i) {
+	elsif ($line =~ /^create or replace view\s*([\w\.]+)/i) {
 		push (@views, $1);
 	}
 	elsif ($line =~ /^create table \s*([\w\.]+)/i) {

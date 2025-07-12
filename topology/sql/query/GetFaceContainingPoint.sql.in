@@ -21,10 +21,12 @@
 --
 --
 -- Availability: 3.2.0
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces getfacecontainingpoint(text, geometry) deprecated in 3.6.0
 CREATE OR REPLACE FUNCTION topology.GetFaceContainingPoint(
   atopology text,
   apoint geometry
 )
-RETURNS INT AS
+RETURNS BIGINT AS
 	'MODULE_PATHNAME', 'GetFaceContainingPoint'
 LANGUAGE 'c' STABLE STRICT;

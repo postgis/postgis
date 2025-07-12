@@ -21,6 +21,10 @@
 -- DROP auxiliary function (created by common_before_upgrade.sql)
 DROP FUNCTION _postgis_drop_function_by_identity(text, text, text);
 DROP FUNCTION _postgis_drop_function_by_signature(text, text);
+DROP FUNCTION _postgis_topology_upgrade_domain_type(text, text, text, text);
+DROP FUNCTION _postgis_drop_cast_by_types(text, text, text);
+DROP FUNCTION _postgis_topology_upgrade_user_type_attribute(text, text, text, text, text);
+DROP FUNCTION _postgis_add_column_to_table(regclass, name, text, boolean, text, text);
 
 
 -- Drop deprecated functions if possible

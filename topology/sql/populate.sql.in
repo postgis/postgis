@@ -94,15 +94,16 @@ $$ LANGUAGE 'plpgsql' STABLE STRICT;
 -- For the project: "Sviluppo strumenti software per il trattamento di dati
 -- geografici basati su QuantumGIS e Postgis (CIG 0494241492)"
 --
--- }{
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces addnode(varchar, geometry, boolean, boolean) deprecated in 3.6.0
 CREATE OR REPLACE FUNCTION topology.AddNode(atopology varchar, apoint geometry, allowEdgeSplitting boolean DEFAULT false, setContainingFace boolean DEFAULT false)
-	RETURNS int
+	RETURNS bigint
 AS
 $$
 DECLARE
-	nodeid int;
+	nodeid bigint;
 	rec RECORD;
-  containing_face int;
+  containing_face bigint;
   seq_name_node text;
 BEGIN
 	--
@@ -214,12 +215,14 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- For the project: "Sviluppo strumenti software per il trattamento di dati
 -- geografici basati su QuantumGIS e Postgis (CIG 0494241492)"
 --
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces addedge(varchar, geometry) deprecated in 3.6.0
 CREATE OR REPLACE FUNCTION topology.AddEdge(atopology varchar, aline geometry)
-	RETURNS int
+	RETURNS bigint
 AS
 $$
 DECLARE
-	edgeid int;
+	edgeid bigint;
 	rec RECORD;
   ix geometry;
   seq_name_edge_data text;
@@ -444,22 +447,24 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- For the project: "Sviluppo strumenti software per il trattamento di dati
 -- geografici basati su QuantumGIS e Postgis (CIG 0494241492)"
 --
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces addface(varchar, geometry, boolean) deprecated in 3.6.0
 CREATE OR REPLACE FUNCTION topology.AddFace(atopology varchar, apoly geometry, force_new boolean DEFAULT FALSE)
-	RETURNS int
+	RETURNS bigint
 AS
 $$
 DECLARE
   bounds geometry;
   symdif geometry;
-  faceid int;
+  faceid int8;
   rec RECORD;
   rrec RECORD;
   relate text;
-  right_edges int[];
-  left_edges int[];
+  right_edges int8[];
+  left_edges int8[];
   all_edges geometry;
-  old_faceid int;
-  old_edgeid int;
+  old_faceid int8;
+  old_edgeid int8;
   sql text;
   right_side bool;
   edgeseg geometry;
@@ -565,10 +570,10 @@ BEGIN
 #endif
 
       IF right_side THEN
-        right_edges := array_append(right_edges, rec.edge_id);
+        right_edges := array_append(right_edges, rec.edge_id::int8);
         old_faceid = rec.right_face;
       ELSE
-        left_edges := array_append(left_edges, rec.edge_id);
+        left_edges := array_append(left_edges, rec.edge_id::int8);
         old_faceid = rec.left_face;
       END IF;
 
@@ -721,8 +726,10 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 --  Add a Point into a topology, with an optional tolerance
 --
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces topogeo_addpoint(varchar, geometry, float8) deprecated in 3.6.0
 CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint geometry, tolerance float8 DEFAULT 0)
-	RETURNS int AS
+	RETURNS bigint AS
 	'MODULE_PATHNAME', 'TopoGeo_AddPoint'
   LANGUAGE 'c' VOLATILE;
 --} TopoGeo_AddPoint
@@ -732,9 +739,10 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint g
 --
 --  Add a LineString into a topology
 --
--- }{
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces topogeo_addlinestring(varchar, geometry, float8) deprecated in 3.6.0
 CREATE OR REPLACE FUNCTION topology.TopoGeo_AddLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT 0)
-	RETURNS SETOF int AS
+	RETURNS SETOF bigint AS
 	'MODULE_PATHNAME', 'TopoGeo_AddLinestring'
   LANGUAGE 'c' VOLATILE;
 --} TopoGeo_addLinestring
@@ -744,9 +752,10 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddLinestring(atopology varchar, ali
 --
 --  Add a Polygon into a topology
 --
--- }{
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces topogeo_addpolygon(varchar, geometry, float8) deprecated in 3.6.0
 CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology varchar, apoly geometry, tolerance float8 DEFAULT 0)
-	RETURNS SETOF int AS
+	RETURNS SETOF bigint AS
 	'MODULE_PATHNAME', 'TopoGeo_AddPolygon'
   LANGUAGE 'c' VOLATILE;
 --} TopoGeo_AddPolygon

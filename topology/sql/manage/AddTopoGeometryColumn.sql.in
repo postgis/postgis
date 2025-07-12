@@ -17,20 +17,35 @@
 --  Add a TopoGeometry column to a table, making it a topology layer.
 --  Returns created layer id.
 --
--- Availability: 1.1.0
+-- Availability: 3.6.0
 --
-CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(toponame varchar, schema varchar, tbl varchar, col varchar, ltype varchar, child integer)
+-- Changed: 3.6.0 allows user defined layerid and simplifies schema.tablename to regclass
+CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(toponame name, tab regclass, col name, layerid integer, layertype varchar, child integer DEFAULT NULL)
   RETURNS integer
 AS
 $$
 DECLARE
-  intltype integer;
+  intlayertype integer;
   newlevel integer;
   topoid integer;
   rec RECORD;
   newlayer_id integer;
   query text;
+  cnt integer;
+  schema varchar;
+  tbl varchar;
+  sql TEXT;
 BEGIN
+  IF layerid IS NOT NULL and layerid < 0 THEN
+    RAISE EXCEPTION 'Invalid Layer ID % (must be > 0)', layerid;
+  END IF;
+
+  SELECT n.nspname::text, c.relname::text INTO schema, tbl
+  FROM pg_class c
+  JOIN pg_namespace n ON c.relnamespace = n.oid
+  WHERE c.oid = tab;
+
+  --RAISE NOTICE 'Creating % %.%', tab, schema, tbl;
 
   -- Get topology id
   SELECT id INTO topoid
@@ -40,23 +55,22 @@ BEGIN
     RAISE EXCEPTION 'Topology % does not exist', quote_literal(toponame);
   END IF;
 
-  IF ltype ILIKE '%POINT%' OR ltype ILIKE 'PUNTAL' THEN
-    intltype = 1;
-  ELSIF ltype ILIKE '%LINE%' OR ltype ILIKE 'LINEAL' THEN
-    intltype = 2;
-  ELSIF ltype ILIKE '%POLYGON%' OR ltype ILIKE 'AREAL' THEN
-    intltype = 3;
-  ELSIF ltype ILIKE '%COLLECTION%' OR ltype ILIKE 'GEOMETRY' THEN
-    intltype = 4;
+  IF layertype ILIKE '%POINT%' OR layertype ILIKE 'PUNTAL' THEN
+    intlayertype = 1;
+  ELSIF layertype ILIKE '%LINE%' OR layertype ILIKE 'LINEAL' THEN
+    intlayertype = 2;
+  ELSIF layertype ILIKE '%POLYGON%' OR layertype ILIKE 'AREAL' THEN
+    intlayertype = 3;
+  ELSIF layertype ILIKE '%COLLECTION%' OR layertype ILIKE 'GEOMETRY' THEN
+    intlayertype = 4;
   ELSE
     RAISE EXCEPTION 'Layer type must be one of POINT,LINE,POLYGON,COLLECTION';
   END IF;
 
   --
-  -- Add new TopoGeometry column in schema.table
+  -- Add new TopoGeometry column in tab
   --
-  EXECUTE 'ALTER TABLE ' || quote_ident(schema)
-    || '.' || quote_ident(tbl)
+  EXECUTE 'ALTER TABLE ' || tab::text
     || ' ADD COLUMN ' || quote_ident(col)
     || ' topology.TopoGeometry;';
 
@@ -73,13 +87,47 @@ BEGIN
     END IF;
   END IF;
 
-  --
   -- Get new layer id from sequence
   --
   EXECUTE 'SELECT nextval(' ||
     quote_literal(
       quote_ident(toponame) || '.layer_id_seq'
     ) || ')' INTO STRICT newlayer_id;
+
+  IF layerid IS NOT NULL THEN
+    -- Check if the id is already used
+    SELECT count(*)
+    INTO cnt
+    FROM topology.layer
+    WHERE layer_id = layerid;
+
+    IF cnt > 0 THEN
+      RAISE EXCEPTION 'Layer ID % is already in use', layerid;
+    END IF;
+
+    IF layerid > newlayer_id THEN
+      -- set sequence to match layer id
+      EXECUTE 'SELECT setval(' ||
+        quote_literal(
+          quote_ident(toponame) || '.layer_id_seq') || ', ' || layerid ||
+        ')' INTO STRICT newlayer_id;
+    END IF;
+
+    newlayer_id := layerid;
+  END IF;
+
+  sql := 'INSERT INTO '
+       'topology.layer(topology_id, '
+       'layer_id, level, child_id, schema_name, '
+       'table_name, feature_column, feature_type) '
+       'VALUES ('
+    || topoid || ','
+    || newlayer_id || ',' || COALESCE(newlevel, 0) || ','
+    || COALESCE(child::text, 'NULL') || ','
+    || quote_literal(schema) || ','
+    || quote_literal(tbl) || ','
+    || quote_literal(col) || ','
+    || intlayertype || ');';
 
   EXECUTE 'INSERT INTO '
        'topology.layer(topology_id, '
@@ -92,7 +140,7 @@ BEGIN
     || quote_literal(schema) || ','
     || quote_literal(tbl) || ','
     || quote_literal(col) || ','
-    || intltype || ');';
+    || intlayertype || ');';
 
   --
   -- Create a sequence for TopoGeometries in this new layer
@@ -103,14 +151,13 @@ BEGIN
   --
   -- Add constraints on TopoGeom column
   --
-  EXECUTE 'ALTER TABLE ' || quote_ident(schema)
-    || '.' || quote_ident(tbl)
+  EXECUTE 'ALTER TABLE ' || tab::text
     || ' ADD CONSTRAINT "check_topogeom_' || col || '" CHECK ('
        'topology_id(' || quote_ident(col) || ') = ' || topoid
     || ' AND '
        'layer_id(' || quote_ident(col) || ') = ' || newlayer_id
     || ' AND '
-       'type(' || quote_ident(col) || ') = ' || intltype
+       'type(' || quote_ident(col) || ') = ' || intlayertype
     || ');';
 
   --
@@ -171,14 +218,13 @@ $$
 LANGUAGE 'plpgsql' VOLATILE;
 --}{ AddTopoGeometryColumn
 
-CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(varchar, varchar, varchar, varchar, varchar)
+-- Changed: 3.6.0 allows user defined layer id
+-- Replaces addtopogeometrycolumn(varchar, varchar, varchar, varchar, varchar, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(toponame name, schema name, tbl name, col name, ltype varchar, child integer default null)
   RETURNS integer
 AS
 $$
-  SELECT topology.AddTopoGeometryColumn($1, $2, $3, $4, $5, NULL);
+  SELECT topology.AddTopoGeometryColumn($1, format('%I.%I', $2, $3)::regclass, $4, null, $5, $6);
 $$
 LANGUAGE 'sql' VOLATILE;
-
---
---} AddTopoGeometryColumn
 

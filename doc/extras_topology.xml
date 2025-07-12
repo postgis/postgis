@@ -268,37 +268,41 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
 
             <refsynopsisdiv>
                 <funcsynopsis>
-                     <funcprototype>
+                    <funcprototype>
                         <funcdef>integer <function>AddTopoGeometryColumn</function></funcdef>
-                        <paramdef><type>varchar </type>
+
+                        <paramdef><type>name </type>
                         <parameter>topology_name</parameter></paramdef>
 
-                        <paramdef><type>varchar </type>
+                        <paramdef><type>name </type>
                         <parameter>schema_name</parameter></paramdef>
 
-                        <paramdef><type>varchar </type>
+                        <paramdef><type>name </type>
                         <parameter>table_name</parameter></paramdef>
 
-                        <paramdef><type>varchar </type>
+                        <paramdef><type>name </type>
                         <parameter>column_name</parameter></paramdef>
 
                         <paramdef><type>varchar </type>
                         <parameter>feature_type</parameter></paramdef>
+
+                        <paramdef><type>integer </type>
+                        <parameter>child_layer</parameter></paramdef>
                     </funcprototype>
                     <funcprototype>
                         <funcdef>integer <function>AddTopoGeometryColumn</function></funcdef>
 
-                        <paramdef><type>varchar </type>
+                        <paramdef><type>name </type>
                         <parameter>topology_name</parameter></paramdef>
 
-                        <paramdef><type>varchar </type>
-                        <parameter>schema_name</parameter></paramdef>
+                        <paramdef><type>regclass </type>
+                        <parameter>tab</parameter></paramdef>
 
-                        <paramdef><type>varchar </type>
-                        <parameter>table_name</parameter></paramdef>
-
-                        <paramdef><type>varchar </type>
+                        <paramdef><type>name </type>
                         <parameter>column_name</parameter></paramdef>
+
+                        <paramdef><type>integer </type>
+                        <parameter>layer_id</parameter></paramdef>
 
                         <paramdef><type>varchar </type>
                         <parameter>feature_type</parameter></paramdef>
@@ -1264,6 +1268,47 @@ disk space used by all its tables, including indexes and TOAST data.
 				<para><xref linkend="Topology_Load_Tiger"/></para>
 			</refsection>
 		</refentry>
+
+        <refentry xml:id="UpgradeTopology">
+			<refnamediv>
+				<refname>UpgradeTopology</refname>
+
+				<refpurpose>Upgrades the specified topology to support large ids (int8) for topology and primitive ids.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>void <function>UpgradeTopology</function></funcdef>
+					<paramdef><type>name </type> <parameter>toponame</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Takes a topology name and upgrades it to support large ids (int8) for topology and primitive ids.
+The function upgrades the following:
+- face (face_id column from int4 to int8, face_id_seq from int4 to int8)
+- node (node_id column from int4 to int8, containing_face column from int4 to int8, node_id_seq from int4 to int8)
+- edge_data (edge_id column from int4 to int8, edge_data_edge_id_seq from int4 to int8, left_face and right_face columns from int4 to int8, start_node and end_node columns from int4 to int8, next_left_edge and next_right_edge columns from int4 to int8)
+- relation (topogeo_id column from int4 to int8, element_id from int4 to int8)
+- topology (useslargeids column set to true)
+                </para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="3.6.0">Availability: 3.6.0</para>
+			</refsection>
+
+            <refsection>
+				<title>Examples</title>
+<programlisting>
+SELECT topology.upgradetopology('city_data');
+</programlisting>
+            </refsection>
+        </refentry>
 	</section>
 
 	<section xml:id="Topology_StatsManagement" xreflabel="maintaining statistics during topology editing and population">
@@ -1321,28 +1366,12 @@ ANALYZE themselves, to use updated statistics.
 				<funcsynopsis>
 					<funcprototype>
 						<funcdef>integer <function>CreateTopology</function></funcdef>
-						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
-					</funcprototype>
-
-					<funcprototype>
-						<funcdef>integer <function>CreateTopology</function></funcdef>
-						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
-					</funcprototype>
-
-					<funcprototype>
-						<funcdef>integer <function>CreateTopology</function></funcdef>
-						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
-						<paramdef><type>double precision </type> <parameter>prec</parameter></paramdef>
-					</funcprototype>
-
-					<funcprototype>
-						<funcdef>integer <function>CreateTopology</function></funcdef>
-						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
+						<paramdef><type>name </type> <parameter>topology_schema_name</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>prec</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>hasz</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>topoid</parameter></paramdef>
+                        <paramdef><type>boolean </type> <parameter>useslargeids</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -1585,7 +1614,7 @@ Adds a point to an existing topology using a tolerance and possibly splitting an
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-						<funcdef>integer <function>TopoGeo_AddPoint</function></funcdef>
+						<funcdef>bigint <function>TopoGeo_AddPoint</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
@@ -1632,7 +1661,7 @@ Adds a linestring to an existing topology using a tolerance and possibly splitti
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-						<funcdef>SETOF integer <function>TopoGeo_AddLineString</function></funcdef>
+						<funcdef>SETOF bigint <function>TopoGeo_AddLineString</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
@@ -1685,7 +1714,7 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-						<funcdef>SETOF integer <function>TopoGeo_AddPolygon</function></funcdef>
+						<funcdef>SETOF bigint <function>TopoGeo_AddPolygon</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>apoly</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
@@ -1795,9 +1824,9 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>integer <function>ST_AddIsoNode</function></funcdef>
+					<funcdef>bigint <function>ST_AddIsoNode</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>aface</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>aface</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -1840,10 +1869,10 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>integer <function>ST_AddIsoEdge</function></funcdef>
+					<funcdef>bigint <function>ST_AddIsoEdge</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anode</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anothernode</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anode</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anothernode</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>alinestring</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -1887,10 +1916,10 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>integer <function>ST_AddEdgeNewFaces</function></funcdef>
+					<funcdef>bigint <function>ST_AddEdgeNewFaces</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anode</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anothernode</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anode</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anothernode</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>acurve</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -1944,10 +1973,10 @@ Updates all existing joined edges and relationships accordingly.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>integer <function>ST_AddEdgeModFace</function></funcdef>
+					<funcdef>bigint <function>ST_AddEdgeModFace</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anode</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anothernode</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anode</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anothernode</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>acurve</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -2012,9 +2041,9 @@ delete the original faces and replace them with a new face.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>integer <function>ST_RemEdgeNewFace</function></funcdef>
+					<funcdef>bigint <function>ST_RemEdgeNewFace</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anedge</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2084,9 +2113,9 @@ deletes one face and modifies the other face to cover the space of both.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>integer <function>ST_RemEdgeModFace</function></funcdef>
+					<funcdef>bigint <function>ST_RemEdgeModFace</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anedge</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2153,7 +2182,7 @@ Changes the shape of an edge without affecting the topology structure.
 					<funcprototype>
 					<funcdef>text <function>ST_ChangeEdgeGeom</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anedge</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>acurve</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -2218,9 +2247,9 @@ an error is thrown.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>integer <function>ST_ModEdgeSplit</function></funcdef>
+					<funcdef>bigint <function>ST_ModEdgeSplit</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anedge</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -2286,10 +2315,10 @@ and deleting the second edge. Returns the id of the deleted node.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>int <function>ST_ModEdgeHeal</function></funcdef>
+					<funcdef>bigint <function>ST_ModEdgeHeal</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anotheredge</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anedge</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anotheredge</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2334,10 +2363,10 @@ edge provided.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>int <function>ST_NewEdgeHeal</function></funcdef>
+					<funcdef>bigint <function>ST_NewEdgeHeal</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anotheredge</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anedge</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anotheredge</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2383,7 +2412,7 @@ Updates all existing joined edges and relationships accordingly.
 					<funcprototype>
 					<funcdef>text <function>ST_MoveIsoNode</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anode</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anode</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -2442,9 +2471,9 @@ Isolated Node 7 moved to location 227579.5,893916.5</programlisting>
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>integer <function>ST_NewEdgesSplit</function></funcdef>
+					<funcdef>bigint <function>ST_NewEdgesSplit</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anedge</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -2510,7 +2539,7 @@ SELECT topology.ST_NewEdgesSplit('ma_topo', 2,  ST_GeomFromText('POINT(227578.5 
 					<funcprototype>
 					<funcdef>text <function>ST_RemoveIsoNode</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anode</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anode</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2557,7 +2586,7 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
 					<funcprototype>
 					<funcdef>text <function>ST_RemoveIsoEdge</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anedge</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2606,7 +2635,7 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
           <refsynopsisdiv>
             <funcsynopsis>
               <funcprototype>
-                <funcdef>integer <function>GetEdgeByPoint</function></funcdef>
+                <funcdef>bigint <function>GetEdgeByPoint</function></funcdef>
                 <paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
                 <paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
                 <paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>
@@ -2668,7 +2697,7 @@ ERROR:  Two or more edges found</programlisting>
 		<refsynopsisdiv>
 			<funcsynopsis>
 				<funcprototype>
-					<funcdef>integer <function>GetFaceByPoint</function></funcdef>
+					<funcdef>bigint <function>GetFaceByPoint</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>
@@ -2733,7 +2762,7 @@ ERROR:  Two or more faces found</programlisting>
 		<refsynopsisdiv>
 			<funcsynopsis>
 				<funcprototype>
-					<funcdef>integer <function>GetFaceContainingPoint</function></funcdef>
+					<funcdef>bigint <function>GetFaceContainingPoint</function></funcdef>
 					<paramdef><type>text </type> <parameter>atopology</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
 				</funcprototype>
@@ -2769,7 +2798,7 @@ ERROR:  Two or more faces found</programlisting>
           <refsynopsisdiv>
             <funcsynopsis>
               <funcprototype>
-                <funcdef>integer <function>GetNodeByPoint</function></funcdef>
+                <funcdef>bigint <function>GetNodeByPoint</function></funcdef>
                 <paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
                 <paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
                 <paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>
@@ -2969,7 +2998,7 @@ ERROR:  Two or more faces found</programlisting>
 					<funcprototype>
 					<funcdef>getfaceedges_returntype <function>ST_GetFaceEdges</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>aface</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>aface</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3040,7 +3069,7 @@ FROM topology.ST_GetFaceEdges('tt',1) As t(seq,edge)
 					<funcprototype>
 					<funcdef>geometry <function>ST_GetFaceGeometry</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>aface</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>aface</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3094,7 +3123,7 @@ a given edge side.
 					<funcprototype>
 					<funcdef>getfaceedges_returntype <function>GetRingEdges</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>aring</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>aring</parameter></paramdef>
 					<paramdef choice="opt"><type>integer </type> <parameter>max_edges=null</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -3156,7 +3185,7 @@ Returns an ordered set of edges incident to the given node.
 					<funcprototype>
 					<funcdef>getfaceedges_returntype <function>GetNodeEdges</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anode</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anode</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3252,7 +3281,7 @@ This function does not use nor set the next_left_edge and next_right_edge fields
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-						<funcdef>integer <function>AddNode</function></funcdef>
+						<funcdef>bigint <function>AddNode</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
 						<paramdef choice="opt"><type>boolean </type> <parameter>allowEdgeSplitting=false</parameter></paramdef>
@@ -3317,7 +3346,7 @@ nodeid
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>integer <function>AddEdge</function></funcdef>
+					<funcdef>bigint <function>AddEdge</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
 					</funcprototype>
@@ -3379,7 +3408,7 @@ edgeid
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>integer <function>AddFace</function></funcdef>
+					<funcdef>bigint <function>AddFace</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>apolygon</parameter></paramdef>
 					<paramdef choice="opt"><type>boolean </type> <parameter>force_new=false</parameter></paramdef>
@@ -3523,7 +3552,7 @@ faceid
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>int <function>RemoveUnusedPrimitives</function></funcdef>
+			<funcdef>bigint <function>RemoveUnusedPrimitives</function></funcdef>
 			<paramdef><type>text</type> <parameter>topology_name</parameter></paramdef>
 			<paramdef><type>geometry</type> <parameter>bbox</parameter></paramdef>
 		  </funcprototype>
@@ -3582,6 +3611,7 @@ are expanded to include merged faces (upon removing edges) or healed edges
 					<paramdef><type>integer </type> <parameter>tg_type</parameter></paramdef>
 					<paramdef><type>integer</type> <parameter>layer_id</parameter></paramdef>
 					<paramdef><type>topoelementarray</type> <parameter>tg_objs</parameter></paramdef>
+                    <paramdef><type>bigint</type> <parameter>tg_id</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
@@ -4128,7 +4158,7 @@ Refer to <xref linkend="toTopoGeom"/>.
 					<funcdef>topoelementarray <function>GetTopoGeomElementArray</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>layer_id</parameter></paramdef>
-					<paramdef><type>integer</type> <parameter>tg_id</parameter></paramdef>
+					<paramdef><type>bigint</type> <parameter>tg_id</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 				<funcsynopsis>
@@ -4176,7 +4206,7 @@ Refer to <xref linkend="toTopoGeom"/>.
 					<funcdef>setof topoelement <function>GetTopoGeomElements</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>layer_id</parameter></paramdef>
-					<paramdef><type>integer</type> <parameter>tg_id</parameter></paramdef>
+					<paramdef><type>bigint</type> <parameter>tg_id</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 				<funcsynopsis>

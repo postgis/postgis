@@ -50,13 +50,19 @@ load_topology.sql: load_topology.sql.in Makefile
 load_topology-4326.sql: load_topology.sql.in Makefile
 	cpp -P -traditional-cpp $< | sed -e 's:@SRID@:4326:g' > $@
 
+load_large_topology.sql: load_large_topology.sql.in Makefile
+	cpp -P -traditional-cpp $< | sed -e 's:@SRID@:-1:g' > $@
+
+load_large_topology-4326.sql: load_large_topology.sql.in Makefile
+	cpp -P -traditional-cpp $< | sed -e 's:@SRID@:4326:g' > $@
+
 clean distclean:
-	rm -f topo_predicates.sql load_topology.sql load_topology-4326.sql
+	rm -f topo_predicates.sql load_topology.sql load_topology-4326.sql load_large_topology.sql load_large_topology-4326.sql
 
 check: check-regress
 check-regress: check-regress-deps
 
-check-regress-deps: topo_predicates.sql load_topology.sql load_topology-4326.sql
+check-regress-deps: topo_predicates.sql load_topology.sql load_topology-4326.sql load_large_topology.sql load_large_topology-4326.sql
 
 include $(srcdir)/tests.mk
 include $(top_srcdir)/regress/runtest.mk

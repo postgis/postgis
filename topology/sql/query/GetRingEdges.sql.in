@@ -37,7 +37,9 @@
 --
 -- GetRingEdges(atopology, anedge, [maxedges])
 --
-CREATE OR REPLACE FUNCTION topology.GetRingEdges(atopology varchar, anedge int, maxedges int DEFAULT null)
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces getringedges(varchar, integer, integer) deprecated in 3.6.0
+CREATE OR REPLACE FUNCTION topology.GetRingEdges(atopology varchar, anedge bigint, maxedges int DEFAULT null)
 	RETURNS SETOF topology.GetFaceEdges_ReturnType AS
 	'MODULE_PATHNAME', 'GetRingEdges'
 LANGUAGE 'c' STABLE;

@@ -28,6 +28,7 @@ DECLARE
   n int4;
   ret text;
   sql text;
+  useslargeids BOOLEAN := false;
 BEGIN
 
   SELECT * FROM topology.topology where name = atopology
@@ -35,7 +36,12 @@ BEGIN
   oldtopo_id = rec.id;
   -- TODO: more gracefully handle unexistent topology
 
-  SELECT topology.CreateTopology(newtopo, rec.SRID, rec.precision, rec.hasZ)
+  -- Ensure useslargeids field is available
+  IF to_jsonb(rec) ? 'useslargeids' THEN
+    useslargeids := rec.useslargeids;
+  END IF;
+
+  SELECT topology.CreateTopology(newtopo, rec.SRID, rec.precision, rec.hasZ, 0, rec.useslargeids)
   INTO strict newtopo_id;
 
   sql := format(

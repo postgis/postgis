@@ -569,7 +569,7 @@ _lwt_RegisterFaceOnEdgeSide(LWT_TOPOLOGY *topo, LWT_ISO_EDGE *edge,
 {
   const LWT_BE_IFACE *iface = topo->be_iface;
   /* this is arbitrary, could be taken as parameter */
-  static const int placeholder_faceid = LWT_HOLES_FACE_PLACEHOLDER;
+  static const LWT_ELEMID placeholder_faceid = LWT_HOLES_FACE_PLACEHOLDER;
   LWT_EDGERING *ring;
 
   /* Get edge ring */

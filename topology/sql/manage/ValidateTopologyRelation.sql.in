@@ -17,8 +17,12 @@
 --   - Referenced element does not exist
 --   - Same element listed twice
 --
+-- Availability: 3.6.0
+
+-- Changed: 3.6.0 uses bigint for ids
+-- Replaces validatetopologyrelation(varchar) deprecated in 3.6.0
 CREATE OR REPLACE FUNCTION topology.ValidateTopologyRelation(toponame varchar)
-RETURNS TABLE(error text, layer_id int, topogeo_id int, element_id int)
+RETURNS TABLE(error text, layer_id int, topogeo_id bigint, element_id bigint)
 AS
 $BODY$
 DECLARE

@@ -6,7 +6,7 @@ set client_min_messages to ERROR;
 
 -- Utility functions for the test {
 
-CREATE TEMP TABLE orig_node_summary(node_id integer, containing_face integer);
+CREATE TEMP TABLE orig_node_summary(node_id int8, containing_face int8);
 CREATE OR REPLACE FUNCTION save_nodes()
 RETURNS VOID
 AS $$
@@ -18,8 +18,8 @@ AS $$
 $$ LANGUAGE 'sql';
 
 CREATE OR REPLACE FUNCTION check_nodes(lbl text)
-RETURNS TABLE (l text, o text, node_id int,
-    containing_face int)
+RETURNS TABLE (l text, o text, node_id int8,
+    containing_face int8)
 AS $$
 DECLARE
   sql1 text;
@@ -57,7 +57,7 @@ BEGIN
 END
 $$ LANGUAGE 'plpgsql';
 
-CREATE TEMP TABLE orig_edge_summary (edge_id integer, next_left_edge integer, next_right_edge integer, left_face integer, right_face integer);
+CREATE TEMP TABLE orig_edge_summary (edge_id int8, next_left_edge int8, next_right_edge int8, left_face int8, right_face int8);
 CREATE OR REPLACE FUNCTION save_edges()
 RETURNS VOID
 AS $$
@@ -69,9 +69,9 @@ AS $$
 $$ LANGUAGE 'sql';
 
 CREATE OR REPLACE FUNCTION check_edges(lbl text)
-RETURNS TABLE (l text, o text, edge_id int,
-    next_left_edge int, next_right_edge int,
-    left_face int, right_face int)
+RETURNS TABLE (l text, o text, edge_id int8,
+    next_left_edge int8, next_right_edge int8,
+    left_face int8, right_face int8)
 AS $$
 DECLARE
   rec RECORD;
@@ -111,7 +111,7 @@ BEGIN
 END
 $$ LANGUAGE 'plpgsql';
 
-CREATE TEMP TABLE orig_face_summary(face_id integer, mbr geometry);
+CREATE TEMP TABLE orig_face_summary(face_id int8, mbr geometry);
 CREATE OR REPLACE FUNCTION save_faces()
 RETURNS VOID
 AS $$
@@ -122,7 +122,7 @@ AS $$
 $$ LANGUAGE 'sql';
 
 CREATE OR REPLACE FUNCTION check_faces(lbl text)
-RETURNS TABLE (l text, o text, face_id int, mbr text)
+RETURNS TABLE (l text, o text, face_id int8, mbr text)
 AS $$
 DECLARE
   sql1 text;

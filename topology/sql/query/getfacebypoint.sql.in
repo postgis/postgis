@@ -29,14 +29,15 @@
 -- Initial implementation by Andrea Peri (27 Feb 2011)
 -- Rewrite by Sandro Santilli (29 Jun 2021)
 --
--- }{
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces getfacebypoint(varchar, geometry, float8) deprecated in 3.6.0
 CREATE OR REPLACE FUNCTION topology.GetFaceByPoint(atopology varchar, apoint geometry, tol1 float8)
-	RETURNS int AS
-$BODY$ -- }{
+	RETURNS bigint AS
+$BODY$
 DECLARE
   rec RECORD;
   sql TEXT;
-  sideFaces INT[];
+  sideFaces INT8[];
 BEGIN
 
   -- Check if any edge intersects the query circle

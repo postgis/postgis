@@ -41,6 +41,7 @@ BEGIN
                || 'SRID ' || rec.srid || ', '
                || 'precision ' || rec.precision;
     IF rec.hasz THEN ret := ret || ', has Z'; END IF;
+    IF rec.useslargeids THEN ret := ret || ', uses Large IDs'; END IF;
     ret := ret || E')\n';
   EXCEPTION
     WHEN NO_DATA_FOUND THEN

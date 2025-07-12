@@ -331,29 +331,20 @@ EOF
                     print <<"EOF";
     FROM _postgis_upgrade_info()
 THEN
-    IF EXISTS (SELECT 1 FROM pg_catalog.pg_type AS t
-        WHERE  typnamespace::regnamespace::text = 'topology'
-        AND typname = '$name' AND typbasetype::regtype::text = '$old_type')
-    THEN
-        UPDATE pg_catalog.pg_type SET typbasetype = '$new_type'::regtype::oid
-        WHERE typnamespace::regnamespace::text = 'topology'
-        AND typname::text = '$name' AND typbasetype::regtype::text = '$old_type';
+    PERFORM _postgis_topology_upgrade_domain_type('${name}', '${old_type}', '${new_type}', '${ver}');
+END IF;
+END
+\$postgis_domain_upgrade\$;\n
 EOF
                     foreach my $c (@constraints) {
                         my ($ctype, $cname, $cdef, $last_updated, $missing, $comment) = @$c;
 
                         print <<"EOF";
-        EXECUTE \$postgis_domain_upgrade_parsed_def\$ ALTER DOMAIN ${schema}.${name} DROP CONSTRAINT IF EXISTS $cname \$postgis_domain_upgrade_parsed_def\$;
-        EXECUTE \$postgis_domain_upgrade_parsed_def\$ ALTER DOMAIN ${schema}.${name} ADD $cdef \$postgis_domain_upgrade_parsed_def\$;
+ALTER DOMAIN ${schema}.${name} DROP CONSTRAINT IF EXISTS $cname;
+ALTER DOMAIN ${schema}.${name} ADD $cdef;\n
 EOF
                     }
-                    print <<"EOF";
-        RAISE DEBUG 'Upgraded % from % to %', '$name', '$old_type', '$new_type';
-    END IF;
-END IF;
-END
-\$postgis_domain_upgrade\$;\n
-EOF
+
                 }
             }
         } elsif ($all_constraints_created_together) {
@@ -449,7 +440,9 @@ EOF
             my $argnames = join ',', @argnamearray;
             my $argtypes = join ',', @argtypearray;
 
-            my $renamed = $name . '_deprecated_by_postgis_' . ${ver};
+            my $renamed_suffix =  '_deprecated_by_postgis_' . ${ver};
+            my $renamed_suffix_len = length(${renamed_suffix});
+            my $renamed = substr($name, 0, (63-${renamed_suffix_len})) . ${renamed_suffix};
             my $replacement = "${renamed}(${args})";
             push @renamed_deprecated_functions, ${renamed};
             print <<"EOF";
@@ -524,10 +517,37 @@ EOF
     {
         my $newtype = $1;
         my $def .= $_;
-        while(<INPUT>)
-        {
-            $def .= $_;
-            last if /\)/;
+        my @replaced_array = parse_replaces($comment);
+
+        my @attributes;
+        my $attr_comment = '';
+        while(<INPUT>) {
+            # End of type definition
+            last if /^\s*\)\s*;?\s*$/;
+
+            # Skip empty lines
+            next if /^\s*$/;
+
+            # Handle comment-only lines (attribute doc lines)
+            if (/^\s*--(.*)$/) {
+                $attr_comment .= ($attr_comment ? "\n" : "") . $1;
+                next;
+            }
+
+            # Parse attribute line, possibly with inline comment
+            if (/^\s*([\w"]+)\s+([\w\[\]]+)\s*(--.*)?[,]?\s*$/) {
+                my ($attr_name, $attr_type, $inline_comment) = ($1, $2, $3);
+                $attr_name =~ s/^"//; $attr_name =~ s/"$//; # remove quotes if any
+                my $full_comment = $attr_comment;
+                $full_comment .= ($full_comment && $inline_comment ? "\n" : "") if $inline_comment;
+                $full_comment .= $inline_comment ? $inline_comment =~ s/^\s*--\s*//r : '';
+                push @attributes, {
+                    name    => remove_line_break($attr_name),
+                    type    => remove_line_break($attr_type),
+                    comment => $full_comment,
+                };
+                $attr_comment = '';
+            }
         }
 
         my $last_updated = parse_last_updated($comment);
@@ -536,10 +556,36 @@ EOF
             die "ERROR: no last updated info for type '${newtype}'\n";
         }
         my $missing = parse_missing($comment);
-        print "-- Type ${newtype} -- LastUpdated: ${last_updated}\n";
-        print <<"EOF";
+
+        if (@replaced_array)
+        {
+            my ($name, $oldargtypes, $version) = @{$replaced_array[0]};
+            my @args = split ',', $oldargtypes;
+
+            # Compare with new @attributes
+            my $new_count = scalar @attributes;
+            my $old_count = scalar @args;
+
+            if ($new_count != $old_count) {
+                die "ERROR: Type ${newtype} has ${new_count} attributes, but ${old_count} were replaced.\n";
+            }
+
+            for (my $i = 0; $i < @attributes; $i++) {
+                my $attr = $attributes[$i];
+                my $attr_name = $attr->{name};
+                my $new_type = $attr->{type};
+                my $old_type = remove_line_break($args[$i]);
+
+                if ($old_type ne $new_type) {
+                    print "-- Alter Type Attribute from ${old_type} to ${new_type} -- LastUpdated: ${last_updated}\n";
+                    print "SELECT _postgis_topology_upgrade_user_type_attribute('${name}', '${attr_name}', '${old_type}', '${new_type}', '${version}');\n\n"
+                }
+            }
+        } else {
+            print "-- Type ${newtype} -- LastUpdated: ${last_updated}\n";
+            print <<"EOF";
 DO LANGUAGE 'plpgsql'
-\$postgis_proc_upgrade\$
+\$postgis_type_upgrade\$
 BEGIN
   IF $last_updated > version_from_num
 EOF
@@ -547,11 +593,13 @@ EOF
         print <<"EOF";
      FROM _postgis_upgrade_info()
   THEN
-      EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
+      EXECUTE \$postgis_type_upgrade_parsed_def\$ $def \$postgis_type_upgrade_parsed_def\$;
   END IF;
 END
-\$postgis_proc_upgrade\$;
+\$postgis_type_upgrade\$;
 EOF
+        }
+        print "\n\n";
     }
 
     if (/^do *language .*\$\$/i)

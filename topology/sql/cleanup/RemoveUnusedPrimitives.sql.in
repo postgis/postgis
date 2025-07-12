@@ -16,11 +16,13 @@
 --
 -- Returns number of deleted primitives
 --
+-- Changed: 3.6.0 uses bigint for IDs
+-- Replaces removeunusedprimitives(text, geometry) deprecated in 3.6.0
 CREATE OR REPLACE FUNCTION topology.RemoveUnusedPrimitives(
   atopology text,
   bbox GEOMETRY DEFAULT NULL
 )
-RETURNS INT AS
+RETURNS BIGINT AS
 $BODY$
 DECLARE
   topo topology.topology;
@@ -30,13 +32,13 @@ DECLARE
   sql TEXT;
   rec RECORD;
   edgeMap JSONB := '{}';
-  edge1 INT;
-  edge2 INT;
-  removedNode INT;
+  edge1 BIGINT;
+  edge2 BIGINT;
+  removedNode BIGINT;
   ok BOOLEAN;
   fixedLinks INT := 0;
-  mergedFaces INT[];
-  moreMergedFaces INT[];
+  mergedFaces BIGINT[];
+  moreMergedFaces BIGINT[];
 BEGIN
 
   topo := findTopology(atopology);
@@ -53,13 +55,13 @@ BEGIN
     $$
       CREATE TEMPORARY TABLE deleted_edges AS
       SELECT
-        edge_id,
-        next_right_edge,
-        next_left_edge,
-        left_face,
-        right_face,
-        start_node,
-        end_node
+        edge_id::int8,
+        next_right_edge::int8,
+        next_left_edge::int8,
+        left_face::int8,
+        right_face::int8,
+        start_node::int8,
+        end_node::int8
       FROM %1$I.edge_data e
       WHERE ( $1 IS NULL OR ST_Intersects(geom, $1) )
       AND NOT EXISTS (
@@ -88,7 +90,7 @@ BEGIN
       WITH breaking_merges AS (
         SELECT
           DISTINCT
-          de.edge_id
+          de.edge_id::int8
           --, ARRAY[r.layer_id, r.topogeo_id] topogeo
           --, array_agg(r.element_id) faces
         FROM
@@ -250,14 +252,14 @@ BEGIN
       ARRAY[
         LEAST(left_face, right_face),
         GREATEST(left_face, right_face)
-      ] faceset
+      ]::int8[] faceset
     FROM deleted_edges
     WHERE left_face != right_face
   )
   SELECT faceset
   FROM merges;
 
-  CREATE TEMPORARY TABLE merged_faces (keep INT, merge INT[]);
+  CREATE TEMPORARY TABLE merged_faces (keep BIGINT, merge BIGINT[]);
 
   LOOP -- {
 
