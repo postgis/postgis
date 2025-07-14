@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-07-10 03:47+0000\n"
+"PO-Revision-Date: 2025-07-14 10:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -16217,6 +16217,10 @@ msgid ""
 "that will pass validation tests like <xref "
 "linkend=\"ST_CoverageInvalidEdges\"/>"
 msgstr ""
+"ポリゴンカバレッジのエッジを変更して、ポリゴンのオーバーラップを無くし、隙間"
+"をスナップして除き、全ての共有エッジが同じものにすることを確実にするウィンド"
+"ウ関数です。結果は <xref linkend=\"ST_CoverageInvalidEdges\""
+"/>のような評価関数にパスするクリーンなカバレッジです"
 
 #. Tag: para
 #, no-c-format
@@ -16267,7 +16271,7 @@ msgstr "<code>MERGE_MIN_AREA</code> 最小面積のポリゴンを選択しま�
 #. Tag: para
 #, no-c-format
 msgid "<code>MERGE_MIN_INDEX</code> chooses polygon with smallest input index"
-msgstr ""
+msgstr "<code>MERGE_MIN_INDEX</code> 入力の要素番号が最も小さいポリゴンを選択します"
 
 #. Tag: para
 #, no-c-format
@@ -28755,7 +28759,8 @@ msgstr "ラスタ リファレンス"
 msgid ""
 "<varname>raster</varname> is a PostGIS type for storing and analyzing raster "
 "data."
-msgstr ""
+msgstr "<varname>raster</varname>は、ラスタデータを格納、解析するためのPostGIS型です"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -28771,7 +28776,7 @@ msgstr ""
 msgid ""
 "Some examples in this reference use a raster table of dummy data, created "
 "with the following code:"
-msgstr ""
+msgstr "このリファレンスで使うダミーデータのラスタテーブルの作り方は次の通りです:"
 
 #. Tag: para
 #, no-c-format
@@ -28779,7 +28784,8 @@ msgid ""
 "The functions below are ones which a user of PostGIS Raster is likely to "
 "need. There are other raster support functions which are not of interest to "
 "a general user."
-msgstr ""
+msgstr "下に示す関数はPostGISラスタのユーザにとって必要そうなものです。他にも一般的な"
+"ユーザにとって興味のないラスタ対応関数があります。"
 
 #. Tag: title
 #, no-c-format
@@ -28932,14 +28938,15 @@ msgstr ""
 msgid ""
 "A composite type used as input into the ST_Reclass function defining the "
 "behavior of reclassification."
-msgstr ""
+msgstr "ST_Reclass関数への入力として使われる再分類のふるまいを定義する複合型です。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "A composite type used as input into the <xref linkend=\"RT_ST_Reclass\"/> "
 "function defining the behavior of reclassification."
-msgstr ""
+msgstr "<xref linkend=\"RT_ST_Reclass\""
+"/>関数への入力として使われる再分類のふるまいを定義する複合型です。"
 
 #. Tag: para
 #, no-c-format
@@ -33174,6 +33181,9 @@ msgid ""
 "given raster band of a raster or raster coverage. Band 1 is assumed if no "
 "band is specified."
 msgstr ""
+"与えられたラスターのバンドまたはラスターカバレッジのcount, sum, mean, "
+"stddev, min, maxからなる統計情報のサマリーです。バンドを指定しない場合には、1"
+"番と仮定します。"
 
 #. Tag: para
 #, no-c-format
@@ -33258,6 +33268,9 @@ msgid ""
 "max for a given raster band of a set of raster. Band 1 is assumed if no band "
 "is specified."
 msgstr ""
+"集約関数。与えられたラスターのバンドの集合のcount, sum, mean, stddev, min, ma"
+"xからなる統計情報のサマリーです。バンドを指定しない場合には、1番と仮定します"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -35637,7 +35650,7 @@ msgstr ""
 "バンドを8BUIバンドに変換する、等のために使います。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Creates a new raster formed by applying a reclassification operation defined "
 "by the <varname>reclassexpr</varname> on the input raster (<varname>rast</"
@@ -35645,6 +35658,9 @@ msgid ""
 "reclassification expressions. If no <varname>band</varname> is specified "
 "band 1 is assumed."
 msgstr ""
+"<varname>reclassexpr</varname>によって定義される入力ラスター (<varname>rast</"
+"varname>)の再分類処理を適用して新しいラスターを生成します。<varname>band</var"
+"name>を指定しない場合には、1番を仮定します。"
 
 #. Tag: para
 #, no-c-format
@@ -35655,11 +35671,16 @@ msgid ""
 "specified then each <varname>reclassarg</varname> defines the type of the "
 "target band. Bands not designated are returned unchanged."
 msgstr ""
+"新しいラスターは元のラスターと同じジオリファレンス、幅、高さになります。新し"
+"いラスタのバンドは<varname>pixeltype</varname>で指定したピクセルタイプになり"
+"ます。 <varname>reclassargset</varname>を指定すると、しれじれび "
+"<varname>reclassarg</varname> は対象バンドのピクセルタイプを定義します。指定"
+"しないバンドは変更されずに返ります。"
 
 #. Tag: title
 #, no-c-format
 msgid "Example: Basic"
-msgstr ""
+msgstr "例: 基本"
 
 #. Tag: para
 #, no-c-format
