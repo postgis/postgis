@@ -35650,7 +35650,7 @@ msgstr ""
 "バンドを8BUIバンドに変換する、等のために使います。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Creates a new raster formed by applying a reclassification operation defined "
 "by the <varname>reclassexpr</varname> on the input raster (<varname>rast</"
