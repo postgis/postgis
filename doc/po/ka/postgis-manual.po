@@ -7950,6 +7950,11 @@ msgstr ""
 
 #. Tag: member
 #, no-c-format
+msgid "Ayo Adesugba"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Barbara Phillipot"
 msgstr ""
 
@@ -8748,6 +8753,11 @@ msgstr ""
 #. Tag: link
 #, no-c-format
 msgid "Université Laval"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "U.S. Census Bureau"
 msgstr ""
 
 #. Tag: link

@@ -10643,6 +10643,11 @@ msgstr "Artur Zakirov"
 
 #. Tag: member
 #, no-c-format
+msgid "Ayo Adesugba"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Barbara Phillipot"
 msgstr "Barbara Phillipot"
 
@@ -11445,6 +11450,11 @@ msgstr "UC Davis Center for Vectorborne Diseases"
 #, no-c-format
 msgid "Université Laval"
 msgstr "Université Laval"
+
+#. Tag: link
+#, no-c-format
+msgid "U.S. Census Bureau"
+msgstr ""
 
 #. Tag: link
 #, no-c-format

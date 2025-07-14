@@ -7,8 +7,8 @@ msgstr ""
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
 "PO-Revision-Date: 2025-07-09 20:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
-"Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/sv/>\n"
+"Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1797,7 +1797,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "(token number <code>0</code>): Unparsed building identifiers and types."
-msgstr "(tokennummer <code>0</code>): Oparsade byggnadsidentifierare och typer."
+msgstr ""
+"(tokennummer <code>0</code>): Oparsade byggnadsidentifierare och typer."
 
 #. Tag: para
 #, no-c-format
@@ -10401,6 +10402,11 @@ msgstr "Artur Zakirov"
 
 #. Tag: member
 #, no-c-format
+msgid "Ayo Adesugba"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Barbara Phillipot"
 msgstr "Barbara Phillipot"
 
@@ -11202,6 +11208,11 @@ msgstr "UC Davis Center för vektorburna sjukdomar"
 #, no-c-format
 msgid "Université Laval"
 msgstr "Universitet Laval"
+
+#. Tag: link
+#, no-c-format
+msgid "U.S. Census Bureau"
+msgstr ""
 
 #. Tag: link
 #, no-c-format
@@ -16565,8 +16576,8 @@ msgid ""
 ", <xref linkend=\"ST_CoverageSimplify\"/>, <xref "
 "linkend=\"ST_CoverageClean\"/>, <xref linkend=\"ST_Union\"/>"
 msgstr ""
-", <xref linkend=\"ST_CoverageSimplify\"/>, <xref linkend=\"ST_CoverageClean\""
-"/>, <xref linkend=\"ST_Union\"/>"
+", <xref linkend=\"ST_CoverageSimplify\"/>, <xref "
+"linkend=\"ST_CoverageClean\"/>, <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -16589,8 +16600,8 @@ msgstr ""
 "En fönsterfunktion som ändrar kanterna på en polygonal täckning för att "
 "säkerställa att ingen av polygonerna överlappar varandra, att små luckor är "
 "bortklippta och att alla delade kanter är exakt identiska. Resultatet är en "
-"ren täckning som kommer att klara valideringstester som <xref linkend="
-"\"ST_CoverageInvalidEdges\"/>"
+"ren täckning som kommer att klara valideringstester som <xref "
+"linkend=\"ST_CoverageInvalidEdges\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -24496,9 +24507,9 @@ msgstr ""
 "Returnerar EWKB-representationen ( <link linkend=\"EWKB_EWKT\">Extended Well-"
 "Known Binary</link> ) av geometrin med SRID-metadata. Den första "
 "funktionsvarianten använder som standard kodning med servermaskinens endian. "
-"Den andra funktionsvarianten tar ett textargument som anger endian-kodningen:"
-" antingen 'NDR' för little-endian eller 'XDR' för big-endian. Om du anger "
-"okända argument kommer utdata att resultera i little-endian."
+"Den andra funktionsvarianten tar ett textargument som anger endian-"
+"kodningen: antingen 'NDR' för little-endian eller 'XDR' för big-endian. Om "
+"du anger okända argument kommer utdata att resultera i little-endian."
 
 #. Tag: para
 #, no-c-format
@@ -29703,8 +29714,8 @@ msgid ""
 "A composite type used as input into the <xref linkend=\"RT_ST_Reclass\"/> "
 "function defining the behavior of reclassification."
 msgstr ""
-"En sammansatt typ som används som indata till funktionen <xref linkend="
-"\"RT_ST_Reclass\"/> som definierar beteendet vid omklassificering."
+"En sammansatt typ som används som indata till funktionen <xref "
+"linkend=\"RT_ST_Reclass\"/> som definierar beteendet vid omklassificering."
 
 #. Tag: para
 #, no-c-format
