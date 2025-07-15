@@ -10,10 +10,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-07-14 10:47+0000\n"
+"PO-Revision-Date: 2025-07-15 09:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10187,7 +10187,7 @@ msgstr "Artur Zakirov"
 #. Tag: member
 #, no-c-format
 msgid "Ayo Adesugba"
-msgstr ""
+msgstr "Ayo Adesugba"
 
 #. Tag: member
 #, no-c-format
@@ -10996,7 +10996,7 @@ msgstr "ラヴァル大学"
 #. Tag: link
 #, no-c-format
 msgid "U.S. Census Bureau"
-msgstr ""
+msgstr "米国国勢調査局"
 
 #. Tag: link
 #, no-c-format
@@ -35754,15 +35754,17 @@ msgstr ""
 "<xref linkend=\"RT_ST_Value\"/>"
 
 #. Tag: refpurpose
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Creates a new raster composed of bands reclassified from original, using a "
 "1:1 mapping from values in the original band to new values in the "
 "destination band."
 msgstr ""
+"元ラスターから再分類したバンドからなる新しいラスタを生成します。元ラスターの"
+"バンド内の値から生成されるラスターのバンド内の値に1:1マッピングを使います。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Creates a new raster formed by applying a reclassification operation defined "
 "by the <varname>inputvalues</varname> and <varname>outputvalues</varname> "
@@ -35770,6 +35772,10 @@ msgid ""
 "corresponding value in the output array. All other pixel values are mapped "
 "to the <varname>nodatavalue</varname>."
 msgstr ""
+"<varname>inputvalues</varname>配列と<varname>outputvalues</varname>配列によっ"
+"て定義される再分類処理を適用することで形成される新しいラスタを生成します。入"
+"力配列のピクセル値は対応する出力配列の値にマップされます。"
+"他のピクセル値は全て <varname>nodatavalue</varname>にマップされます。"
 
 #. Tag: para
 #, no-c-format
@@ -35778,13 +35784,17 @@ msgid ""
 "<varname>pixeltype</varname> parameter. If no <varname>bandnumber</varname> "
 "is specified band 1 is assumed."
 msgstr ""
+"出力ピクセルタイプのデフォルトは浮動小数点数ですが、 <varname>pixeltype</varn"
+"ame>パラメータで指定できます。<varname>bandnumber</varname>を指定しな場合には"
+"、1番を仮定します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The new raster will have the same georeference, width, and height as the "
 "original raster. Bands not designated are returned unchanged."
-msgstr ""
+msgstr "新しいラスターは元ラスターと同じジオリファレンス、同じ幅、同じ高さを持ちます"
+"。指定されていないバンドは変更されずに返ります。"
 
 #. Tag: para
 #, no-c-format
