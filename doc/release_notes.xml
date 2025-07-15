@@ -3,15 +3,26 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
         <section>
-            <title>PostGIS 3.6.0alpha1</title>
-            <para>2025/05/17</para>
+            <title>PostGIS 3.6.0beta1</title>
+            <para>2025/07/xx</para>
                         <para>This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj 6.1+.
             To take advantage of all features, GEOS 3.12+ is needed.
             To take advantage of all SFCGAL features, SFCGAL 2.1+ is needed.</para>
 
+            <para>Many thanks to our translation teams, in particular:</para>
+            <para>Teramoto Ikuhiro (Japanese Team)</para>
+            <para>Daniel Nylander (Swedish Team)</para>
+            <para>Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)</para>
+
+
+
             <simplesect><title>Breaking Changes</title>
                 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5799">#5799</link>, make ST_TileEnvelope clips envelopes to tile plane extent (Paul Ramsey)</para>
                 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5829">#5829</link>, remove constraint checking from geometry_columns view (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/3373">#3373</link>, <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/255">GT-255</link> [topology] Support for upgrading domains (Ayo Adesugba, U.S. Census Bureau)</para>
+                <para><link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/252">GT-252</link>, ST_NumGeometries/ST_GeometryN treat TIN and PolyhedralSurface as unitary geometries,
+                    use ST_NumPatches/ST_PatchN for patch access (Loïc Bartoletti)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/3110">#3110</link>, <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/242">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)</para>
             </simplesect>
 
             <simplesect><title>New Features</title>
@@ -22,13 +33,17 @@
                 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5890">#5890</link>, [topology] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro Santilli)</para>
                 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5861">#5861</link>, [topology] Add --drop-topology switch to pgtopo_import (Sandro Santilli)</para>
                 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/1247">#1247</link>, [raster] ST_AsRasterAgg (Sandro Santilli)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5784">#5784</link>, GT-223 Export circ_tree_distance_tree_internal for mobilitydb use
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5784">#5784</link>, <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/223">GT-223</link> Export circ_tree_distance_tree_internal for mobilitydb use
                         (Maxime Schoemans)</para>
                 <para><link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/228">GT-228</link> [sfcgal] Add new functions (Scale, Translate, Rotate, Buffer 3D and
                         Straight Skeleton Partition) from SFCGAL 2 (Loïc Bartoletti)</para>
                 <para>[raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages
                     and routes them into the PostgreSQL logging system. (Paul Ramsey)</para>
                 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5841">#5841</link>, Change interrupt handling to remove use of pqsignal to support PG 18 (Paul Ramsey)</para>
+                <para>Add ST_CoverageClean to edge match and gap remove polygonal
+                    coverages (Paul Ramsey) from GEOS 3.14 (Martin Davis)</para>
+                <para>Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/3110">#3110</link>, <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/242">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)</para>
             </simplesect>
         </section>
 </appendix>
