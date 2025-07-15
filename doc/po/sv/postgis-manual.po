@@ -5,10 +5,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-07-09 20:47+0000\n"
+"PO-Revision-Date: 2025-07-15 07:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
-"Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/sv/>\n"
+"Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10403,7 +10403,7 @@ msgstr "Artur Zakirov"
 #. Tag: member
 #, no-c-format
 msgid "Ayo Adesugba"
-msgstr ""
+msgstr "Ayo Adesugba"
 
 #. Tag: member
 #, no-c-format
@@ -11212,7 +11212,7 @@ msgstr "Universitet Laval"
 #. Tag: link
 #, no-c-format
 msgid "U.S. Census Bureau"
-msgstr ""
+msgstr "U.S. Census Bureau"
 
 #. Tag: link
 #, no-c-format
