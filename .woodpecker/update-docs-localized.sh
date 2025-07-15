@@ -5,7 +5,10 @@ cd $(dirname $0)
 SUPPORTED_LANGUAGES=$(grep ^translations ../doc/Makefile.in | cut -d= -f2)
 #SUPPORTED_LANGUAGES="ja de fr zh_Hans" # restrict built translations
 
-TARGETS="check-xml html cheatsheets check-cheatsheets pdf"
+# TODO: Put back pdf localized building once woodpecker docker image works with it
+#  These are false errors as debbie builds the pdfs fine and tests anyway
+#TARGETS="check-xml html cheatsheets check-cheatsheets pdf"
+TARGETS="check-xml html cheatsheets check-cheatsheets"
 
 cat docs.yml | sed '/DO NOT EDIT/q' > docs.yml.new
 
