@@ -12,8 +12,8 @@ msgstr ""
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
 "PO-Revision-Date: 2025-07-15 09:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5176,6 +5176,28 @@ msgstr ""
 "トポロジ名から、そのトポロジのすべてのテーブルのディスク容量の総量を返しま"
 "す。インデックスとTOASTデータも含みます。"
 
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Upgrades the specified topology to support large ids (int8) for topology and "
+"primitive ids."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Takes a topology name and upgrades it to support large ids (int8) for "
+"topology and primitive ids. The function upgrades the following: - face "
+"(face_id column from int4 to int8, face_id_seq from int4 to int8) - node "
+"(node_id column from int4 to int8, containing_face column from int4 to int8, "
+"node_id_seq from int4 to int8) - edge_data (edge_id column from int4 to "
+"int8, edge_data_edge_id_seq from int4 to int8, left_face and right_face "
+"columns from int4 to int8, start_node and end_node columns from int4 to "
+"int8, next_left_edge and next_right_edge columns from int4 to int8) - "
+"relation (topogeo_id column from int4 to int8, element_id from int4 to int8) "
+"- topology (useslargeids column set to true)"
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Topology Statistics Management"
@@ -5262,10 +5284,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The <varname>srid</varname> is the <link linkend=\"spatial_ref_sys\">spatial "
-"reference system</link> SRID for the topology."
+"reference system</link> SRID for the topology. The SRID defaults to -1 "
+"(unknown) if not specified."
 msgstr ""
-"<varname>srid</varname>は、このトポロジの<link linkend=\"spatial_ref_sys\">空"
-"間参照系</link>のSRIDです。"
 
 #. Tag: para
 #, no-c-format
@@ -5280,6 +5301,21 @@ msgstr ""
 #, no-c-format
 msgid "<varname>hasz</varname> defaults to false if not specified."
 msgstr "<varname>hasz</varname>を指定しない場合のデフォルトはFALSEです。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>topoid</varname> optional explicit identifier (allows deterministic "
+"topology id assignment, needs to be unique)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>useslargeids</varname> optional, defaults to false. If true, the "
+"topology will be created to support large ids (int8) for topology and "
+"primitive ids."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -35774,8 +35810,8 @@ msgid ""
 msgstr ""
 "<varname>inputvalues</varname>配列と<varname>outputvalues</varname>配列によっ"
 "て定義される再分類処理を適用することで形成される新しいラスタを生成します。入"
-"力配列のピクセル値は対応する出力配列の値にマップされます。"
-"他のピクセル値は全て <varname>nodatavalue</varname>にマップされます。"
+"力配列のピクセル値は対応する出力配列の値にマップされます。他のピクセル値は全"
+"て <varname>nodatavalue</varname>にマップされます。"
 
 #. Tag: para
 #, no-c-format
@@ -35784,17 +35820,18 @@ msgid ""
 "<varname>pixeltype</varname> parameter. If no <varname>bandnumber</varname> "
 "is specified band 1 is assumed."
 msgstr ""
-"出力ピクセルタイプのデフォルトは浮動小数点数ですが、 <varname>pixeltype</varn"
-"ame>パラメータで指定できます。<varname>bandnumber</varname>を指定しな場合には"
-"、1番を仮定します。"
+"出力ピクセルタイプのデフォルトは浮動小数点数ですが、 <varname>pixeltype</"
+"varname>パラメータで指定できます。<varname>bandnumber</varname>を指定しな場合"
+"には、1番を仮定します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The new raster will have the same georeference, width, and height as the "
 "original raster. Bands not designated are returned unchanged."
-msgstr "新しいラスターは元ラスターと同じジオリファレンス、同じ幅、同じ高さを持ちます"
-"。指定されていないバンドは変更されずに返ります。"
+msgstr ""
+"新しいラスターは元ラスターと同じジオリファレンス、同じ幅、同じ高さを持ちま"
+"す。指定されていないバンドは変更されずに返ります。"
 
 #. Tag: para
 #, no-c-format
@@ -43674,13 +43711,13 @@ msgstr "リリースノート"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0alpha1"
-msgstr "PostGIS 3.6.0alpha1"
+msgid "PostGIS 3.6.0beta1"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/05/17"
-msgstr "2025/05/17"
+msgid "2025/07/xx"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -43692,6 +43729,26 @@ msgstr ""
 "このバージョンはPostgreSQL 12-18beta1、GEOS 3.8以上、Proj 6.1以上が必要です。"
 "全ての機能を利用するには、GEOS 3.12以上が必要です。全てのSFCGAL機能を利用する"
 "には、SFCGAL 2.1以上が必要です。"
+
+#. Tag: para
+#, no-c-format
+msgid "Many thanks to our translation teams, in particular:"
+msgstr "翻訳チームに感謝します、特に次の方々です:"
+
+#. Tag: para
+#, no-c-format
+msgid "Teramoto Ikuhiro (Japanese Team)"
+msgstr "Teramoto Ikuhiroさん (日本語チーム)"
+
+#. Tag: para
+#, no-c-format
+msgid "Daniel Nylander (Swedish Team)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
+msgstr "HighGoのDapeng Wangさん、Zuo Chenweiさん (中国語チーム)"
 
 #. Tag: title
 #, no-c-format
@@ -43718,6 +43775,33 @@ msgstr ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">#5829</"
 "link>, geometry_columnsビューから制約条件チェックを外しました (Paul Ramseyさ"
 "ん)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/255\">GT-255</link> [topology] Support for upgrading domains (Ayo "
+"Adesugba, U.S. Census Bureau)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/252\">GT-252</link>, ST_NumGeometries/ST_GeometryN treat TIN and "
+"PolyhedralSurface as unitary geometries, use ST_NumPatches/ST_PatchN for "
+"patch access (Loïc Bartoletti)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. "
+"Census Bureau)"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -43796,12 +43880,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
-"link>, GT-223 Export circ_tree_distance_tree_internal for mobilitydb use "
-"(Maxime Schoemans)"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/223\">GT-223</link> Export circ_tree_distance_tree_internal for "
+"mobilitydb use (Maxime Schoemans)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
-"link>, GT-223 MobilityDB利用のためのcirc_tree_distance_tree_internalのエクス"
-"ポート (Maxime Schoemansさん)"
 
 #. Tag: para
 #, no-c-format
@@ -43834,6 +43916,18 @@ msgid ""
 msgstr ""
 "PostgreSQL 18対応のため、割込処理でpqsignalの利用を削除するように変更しまし"
 "た (Paul Ramseyさん)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Add ST_CoverageClean to edge match and gap remove polygonal coverages (Paul "
+"Ramsey) from GEOS 3.14 (Martin Davis)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -49941,6 +50035,33 @@ msgstr "ジオグラフィ対応"
 
 #, no-c-format
 #~ msgid ""
+#~ "The <varname>srid</varname> is the <link "
+#~ "linkend=\"spatial_ref_sys\">spatial reference system</link> SRID for the "
+#~ "topology."
+#~ msgstr ""
+#~ "<varname>srid</varname>は、このトポロジの<link "
+#~ "linkend=\"spatial_ref_sys\">空間参照系</link>のSRIDです。"
+
+#, no-c-format
+#~ msgid "PostGIS 3.6.0alpha1"
+#~ msgstr "PostGIS 3.6.0alpha1"
+
+#, no-c-format
+#~ msgid "2025/05/17"
+#~ msgstr "2025/05/17"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
+#~ "link>, GT-223 Export circ_tree_distance_tree_internal for mobilitydb use "
+#~ "(Maxime Schoemans)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
+#~ "link>, GT-223 MobilityDB利用のためのcirc_tree_distance_tree_internalのエク"
+#~ "スポート (Maxime Schoemansさん)"
+
+#, no-c-format
+#~ msgid ""
 #~ ", <xref linkend=\"ST_CoverageUnion\"/>, <xref "
 #~ "linkend=\"ST_CoverageSimplify\"/>"
 #~ msgstr ""
@@ -50412,18 +50533,6 @@ msgstr "ジオグラフィ対応"
 #~ "このバージョンにはPostgreSQL 12-17、GEOS 3.8以上、Proj 6.1以上が必要です。"
 #~ "全ての機能を利用するにはGEOS 3.12以上が必要です。全てのSFCGAL機能を使用す"
 #~ "るにはSFCGAL 1.5.0以上が必要です。"
-
-#, no-c-format
-#~ msgid "Many thanks to our translation teams, in particular:"
-#~ msgstr "翻訳チームに感謝します、特に次の方々です:"
-
-#, no-c-format
-#~ msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
-#~ msgstr "HighGoのDapeng Wangさん、Zuo Chenweiさん (中国語チーム)"
-
-#, no-c-format
-#~ msgid "Teramoto Ikuhiro (Japanese Team)"
-#~ msgstr "Teramoto Ikuhiroさん (日本語チーム)"
 
 #, no-c-format
 #~ msgid "Vincent Bre (French Team)"
