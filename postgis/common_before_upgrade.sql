@@ -119,7 +119,7 @@ BEGIN
 		cast_source,
 		cast_target
 	);
-  RAISE INFO 'SQL: %', sql;
+  RAISE DEBUG 'SQL: %', sql;
 	EXECUTE sql;
 
 END;
@@ -200,12 +200,12 @@ BEGIN
 		EXCEPTION
 		WHEN others THEN
 			GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
-			RAISE INFO 'Could not modify % from % to %, got % (%)',
+			RAISE WARNING 'Could not modify % from % to %, got % (%)',
 				domain_name, old_domain_type, new_domain_type, SQLERRM, SQLSTATE USING DETAIL = detail;
 			RETURN;
 		END;
 	ELSE
-		RAISE INFO 'Deprecated domain (topology.% with type %) does not exist', domain_name, old_domain_type;
+		RAISE DEBUG 'Deprecated domain (topology.% with type %) does not exist', domain_name, old_domain_type;
 		RETURN;
 	END IF;
 END;
@@ -274,6 +274,7 @@ BEGIN
     	FROM information_schema.columns
     	WHERE table_name = 'pg_attribute'
       AND column_name <> ALL (excluded_columns)
+			AND column_name NOT LIKE 'oid%' -- Exclude system columns
   		LOOP
     		sql := sql || format('%I = src.%I, ', colname, colname);
   		END LOOP;
@@ -308,18 +309,11 @@ BEGIN
 		--RAISE INFO 'SQL: %', sql;
 		EXECUTE sql;
 
-		--GET DIAGNOSTICS num_updated = ROW_COUNT;
-
-		-- IF num_updated = 0 THEN
-		-- 	RAISE WARNING 'No attributes updated for %.% from % to %', type_name, attr_name, old_attr_type, new_attr_type;
-		-- 	RETURN;
-		-- END IF;
-
 		RAISE INFO 'Upgraded %.% from % to %', type_name, attr_name, old_attr_type, new_attr_type;
 	EXCEPTION
 	WHEN others THEN
 		GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
-		RAISE INFO 'Could not modify %.% from % to %, got % (%)',
+		RAISE WARNING 'Could not modify %.% from % to %, got % (%)',
 			type_name, attr_name, old_attr_type, new_attr_type, SQLERRM, SQLSTATE
 		USING DETAIL = detail;
 		RETURN;
