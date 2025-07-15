@@ -80,11 +80,11 @@ BEGIN
 		SELECT setval('%1$I.face_face_id_seq', %2$s);
 
 		ALTER TABLE %1$I.face
-    	ALTER COLUMN face_id SET DEFAULT nextval('%1$I.face_face_id_seq');
+      ALTER COLUMN face_id SET DEFAULT nextval('%1$I.face_face_id_seq');
 
 		-- Upgrade the edge_data table
-  		-- Drop the edge view
-    	DROP VIEW IF EXISTS %1$I.edge;
+  	-- Drop the edge view
+    DROP VIEW IF EXISTS %1$I.edge;
 
 		ALTER TABLE %1$I.edge_data
     	ALTER COLUMN edge_id TYPE BIGINT;
@@ -164,40 +164,41 @@ BEGIN
 		);
 
 		-- Upgrade the node table
-	    ALTER TABLE %1$I.node
+	  ALTER TABLE %1$I.node
 	    ALTER COLUMN node_id TYPE BIGINT;
-		
-	    ALTER TABLE %1$I.node
+
+	  ALTER TABLE %1$I.node
 	    ALTER COLUMN node_id DROP DEFAULT;
 
-    	DROP SEQUENCE %1$I.node_node_id_seq;
+    DROP SEQUENCE %1$I.node_node_id_seq;
 
-    	CREATE SEQUENCE %1$I.node_node_id_seq AS BIGINT;
+    CREATE SEQUENCE %1$I.node_node_id_seq AS BIGINT;
 
 		SELECT setval('%1$I.node_node_id_seq', %4$s);
 
 		ALTER TABLE %1$I.node
     	ALTER COLUMN node_id SET DEFAULT nextval('%1$I.node_node_id_seq');
 
-	    ALTER TABLE %1$I.node
+	  ALTER TABLE %1$I.node
 	    ALTER COLUMN containing_face TYPE BIGINT;
 
 		-- Upgrade the relation table
-	    ALTER TABLE %1$I.relation
+	  ALTER TABLE %1$I.relation
 	    ALTER COLUMN topogeo_id TYPE BIGINT;
 
-	    ALTER TABLE %1$I.relation
+	  ALTER TABLE %1$I.relation
 	    ALTER COLUMN element_id TYPE BIGINT;
 
   		-- Update the topology table
-	    UPDATE topology.topology
-	    SET useslargeids = true
-	    WHERE id = topology.id;
-	$$,
-	toponame,
-	face_currval,
-	edge_currval,
-	node_currval
+	  UPDATE topology.topology
+	  SET useslargeids = true
+	  WHERE id = %5$s;
+    $$,
+    toponame,
+    face_currval,
+    edge_currval,
+    node_currval,
+    topo.id
   );
 
   --RAISE INFO '%', sql;
