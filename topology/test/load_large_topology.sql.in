@@ -195,5 +195,10 @@ SELECT NULL FROM setval('large_city_data.edge_data_edge_id_seq', 1000000000026);
 -- Set face minimum bounding rectangle
 UPDATE large_city_data.face set mbr = ST_SetSRID( ( select st_extent(geom) from large_city_data.edge where left_face = face_id or right_face = face_id ), @SRID@ ) where face_id != 0;
 
+-- Validate the loaded topology
+SELECT 'load_validation', *
+FROM ValidateTopology('large_city_data')
+WHERE error IS NOT NULL;
+
 END;
 

@@ -1367,11 +1367,11 @@ ANALYZE themselves, to use updated statistics.
 					<funcprototype>
 						<funcdef>integer <function>CreateTopology</function></funcdef>
 						<paramdef><type>name </type> <parameter>topology_schema_name</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
-						<paramdef><type>double precision </type> <parameter>prec</parameter></paramdef>
-						<paramdef><type>boolean </type> <parameter>hasz</parameter></paramdef>
-                        <paramdef><type>integer </type> <parameter>topoid</parameter></paramdef>
-                        <paramdef><type>boolean </type> <parameter>useslargeids</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>srid</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>prec</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>hasz</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer </type> <parameter>topoid</parameter></paramdef>
+                        <paramdef choice="opt"><type>boolean </type> <parameter>useslargeids</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -1386,7 +1386,7 @@ ANALYZE themselves, to use updated statistics.
 				It returns the id of the topology.
 				</para>
 
- 				<para>The <varname>srid</varname> is the <link linkend="spatial_ref_sys">spatial reference system</link> SRID for the topology.
+ 				<para>The <varname>srid</varname> is the <link linkend="spatial_ref_sys">spatial reference system</link> SRID for the topology. The SRID defaults to -1 (unknown) if not specified.
 				</para>
 
 				<para>The tolerance <varname>prec</varname> is measured in the units of the spatial reference system.
@@ -1394,6 +1394,10 @@ ANALYZE themselves, to use updated statistics.
 				</para>
 
 				<para><varname>hasz</varname> defaults to false if not specified. </para>
+
+                <para><varname>topoid</varname> optional explicit identifier (allows deterministic topology id assignment, needs to be unique)</para>
+
+                <para><varname>useslargeids</varname> optional, defaults to false. If true, the topology will be created to support large ids (int8) for topology and primitive ids.</para>
 
                 <para>This is similar to the SQL/MM <xref linkend="ST_InitTopoGeo"/> but has more functionality.</para>
 

@@ -36,7 +36,7 @@ DECLARE
   tbl varchar;
   sql TEXT;
 BEGIN
-  IF layerid IS NOT NULL and layerid < 0 THEN
+  IF layerid IS NOT NULL and layerid <= 0 THEN
     RAISE EXCEPTION 'Invalid Layer ID % (must be > 0)', layerid;
   END IF;
 
@@ -129,18 +129,7 @@ BEGIN
     || quote_literal(col) || ','
     || intlayertype || ');';
 
-  EXECUTE 'INSERT INTO '
-       'topology.layer(topology_id, '
-       'layer_id, level, child_id, schema_name, '
-       'table_name, feature_column, feature_type) '
-       'VALUES ('
-    || topoid || ','
-    || newlayer_id || ',' || COALESCE(newlevel, 0) || ','
-    || COALESCE(child::text, 'NULL') || ','
-    || quote_literal(schema) || ','
-    || quote_literal(tbl) || ','
-    || quote_literal(col) || ','
-    || intlayertype || ');';
+  EXECUTE sql;
 
   --
   -- Create a sequence for TopoGeometries in this new layer
