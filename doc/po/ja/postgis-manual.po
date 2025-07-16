@@ -10,10 +10,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-07-15 09:47+0000\n"
+"PO-Revision-Date: 2025-07-16 03:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5181,7 +5181,8 @@ msgstr ""
 msgid ""
 "Upgrades the specified topology to support large ids (int8) for topology and "
 "primitive ids."
-msgstr ""
+msgstr "指定したトポロジーに対して、トポロジーIDとプリミティブIDが大きな数 "
+"(int8)に対応するようアップグレードします。"
 
 #. Tag: para
 #, no-c-format
@@ -5197,6 +5198,16 @@ msgid ""
 "relation (topogeo_id column from int4 to int8, element_id from int4 to int8) "
 "- topology (useslargeids column set to true)"
 msgstr ""
+"トポロジー名を取って、トポロジーIDとプリミティブIDが大きな数 (int8)に対応する"
+"ようアップグレードします。この関数は次のアップグレードを行います: フェイス "
+"(face_idカラムをint4からint8に、face_id_seqをint4からint8に) - ノード (node_i"
+"dカラムをint4からint8に、containing_faceカラムをint4からint8に、node_id_seqを"
+"int4からint8に) - edge_data (edge_idカラムをint4からint8に、edge_data_edge_id"
+"_seqをint4からint8に、left_faceカラムとright_faceカラムをint4からint8に、star"
+"t_nodeカラムとend_nodeカラムをint4からint8に、next_left_edgeカラムとnext_righ"
+"t_edgeカラムをint4からint8に) - relation "
+"(topogeo_idカラムをint4からint8に、element_idをint4からint8に) - topology "
+"(useslargeidsカラムをTRUEに設定)"
 
 #. Tag: title
 #, no-c-format
@@ -5287,6 +5298,9 @@ msgid ""
 "reference system</link> SRID for the topology. The SRID defaults to -1 "
 "(unknown) if not specified."
 msgstr ""
+"<varname>srid</varname>はトポロジーの<link linkend=\"spatial_ref_sys\""
+">空間参照系</link> のSRIDです。SRIDを指定していない場合のデフォルトは-1 "
+"(不明)です。"
 
 #. Tag: para
 #, no-c-format
@@ -5308,6 +5322,8 @@ msgid ""
 "<varname>topoid</varname> optional explicit identifier (allows deterministic "
 "topology id assignment, needs to be unique)"
 msgstr ""
+"<varname>topoid</varname> 任意パラメータ、明示的な識別子 "
+"(トポロジーIDの割当を決定しますが一意である必要があります)"
 
 #. Tag: para
 #, no-c-format
@@ -5316,6 +5332,10 @@ msgid ""
 "topology will be created to support large ids (int8) for topology and "
 "primitive ids."
 msgstr ""
+"<varname>useslargeids</varname> "
+"任意パラメータで、デフォルトはFALSEです。TRUEの場合には、"
+"このトポロジーのトポロジーIDとプリミティブIDは大きな数のID (int8) "
+"に対応します。"
 
 #. Tag: para
 #, no-c-format
@@ -43710,14 +43730,14 @@ msgid "Release Notes"
 msgstr "リリースノート"
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "PostGIS 3.6.0beta1"
-msgstr ""
+msgstr "PostGIS 3.6.0beta1"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "2025/07/xx"
-msgstr ""
+msgstr "2025/07/xx"
 
 #. Tag: para
 #, no-c-format
@@ -43743,7 +43763,7 @@ msgstr "Teramoto Ikuhiroさん (日本語チーム)"
 #. Tag: para
 #, no-c-format
 msgid "Daniel Nylander (Swedish Team)"
-msgstr ""
+msgstr "Daniel Nylanderさん (スウェーデン語チーム)"
 
 #. Tag: para
 #, no-c-format
@@ -43923,11 +43943,13 @@ msgid ""
 "Add ST_CoverageClean to edge match and gap remove polygonal coverages (Paul "
 "Ramsey) from GEOS 3.14 (Martin Davis)"
 msgstr ""
+"ポリゴンカバレッジのエッジの適合と隙間の除去を行うST_CoverageCleanの追加 ("
+"Paul Ramseyさん)、GEOS 3.14 (Martin Davisさん) を利用"
 
 #. Tag: para
 #, no-c-format
 msgid "Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
-msgstr ""
+msgstr "素早いラスタ値の再設定を行うST_ReclassExactを追加 (Paul Ramseyさん)"
 
 #. Tag: title
 #, no-c-format
