@@ -1002,7 +1002,11 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "%s", GEOSGeomToWKT(g2));
 
 	relate_str = GEOSRelateBoundaryNodeRule(g1, g2, bnr);
-	if (!relate_str) HANDLE_GEOS_ERROR("GEOSRelate");
+	if (!relate_str) {
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g2);
+		HANDLE_GEOS_ERROR("GEOSRelate");
+	}
 	result = cstring_to_text(relate_str);
 	GEOSFree(relate_str);
 	GEOSGeom_destroy(g1);
