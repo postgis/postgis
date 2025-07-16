@@ -274,7 +274,7 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 		if (node->idx < lwcoll->ngeoms) {
 
 			if(state->stacklen >= MAXDEPTH)
-				elog(ERROR, "Unabled to dump overly nested collection");
+				elog(ERROR, "Unable to dump overly nested collection");
 
 			/* push the next geom on the path and the stack */
 			lwgeom = lwcoll->geoms[node->idx++];
