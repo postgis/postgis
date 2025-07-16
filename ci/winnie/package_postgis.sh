@@ -51,12 +51,6 @@ mkdir $outdir/lib
 mkdir $outdir/utils
 
 
-
-#pg 15 is shipping with newer ssl
-cp ${PGPATHEDB}/bin/libcrypto-3-x64.dll $outdir/bin/postgisgui
-cp ${PGPATHEDB}/bin/libssl-3-x64.dll $outdir/bin/postgisgui
-
-
 cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libstdc++-6.dll $outdir/bin
 cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libgcc*.dll $outdir/bin
 
@@ -65,6 +59,9 @@ if [ -n "${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}" ]; then
 	mkdir $outdir/bin/postgisgui
 	mkdir $outdir/bin/postgisgui/share
 	mkdir $outdir/bin/postgisgui/lib
+	#pg 15 is shipping with newer ssl
+	cp ${PGPATHEDB}/bin/libcrypto-3-x64.dll $outdir/bin/postgisgui
+	cp ${PGPATHEDB}/bin/libssl-3-x64.dll $outdir/bin/postgisgui
 	cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 	cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libstdc++-6.dll $outdir/bin/postgisgui
 	cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libgcc*.dll $outdir/bin/postgisgui
@@ -86,6 +83,9 @@ if [ -n "${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}" ]; then
 
 	cp loader/shp2pgsql-gui.exe ${RELDIR}/${RELVERDIR}/bin/postgisgui
 	cp loader/.libs/shp2pgsql-gui.exe ${RELDIR}/${RELVERDIR}/bin/postgisgui
+
+	#shp2pgsql-gui now has dependency on geos (though in theory it shouldn't)
+	cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
 fi;
 
 # proj
@@ -157,8 +157,6 @@ cp topology/loader/* ${RELDIR}/${RELVERDIR}/bin
 
 #cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
 
-#shp2pgsql-gui now has dependency on geos (though in theory it shouldn't)
-cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
 cp spatial_ref_sys.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp topology/topology.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 #cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
