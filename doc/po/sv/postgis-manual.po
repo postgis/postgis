@@ -5,10 +5,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-07-15 07:47+0000\n"
+"PO-Revision-Date: 2025-07-16 07:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
-"Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/sv/>\n"
+"Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5299,6 +5299,8 @@ msgid ""
 "Upgrades the specified topology to support large ids (int8) for topology and "
 "primitive ids."
 msgstr ""
+"Uppgraderar den angivna topologin till att stödja stora ids (int8) för "
+"topologi och primitiva ids."
 
 #. Tag: para
 #, no-c-format
@@ -5314,6 +5316,16 @@ msgid ""
 "relation (topogeo_id column from int4 to int8, element_id from int4 to int8) "
 "- topology (useslargeids column set to true)"
 msgstr ""
+"Tar ett topologinamn och uppgraderar det så att det stöder stora id:n (int8) "
+"för topologi och primitiva id:n. Funktionen uppgraderar följande: - face ("
+"face_id kolumn från int4 till int8, face_id_seq från int4 till int8) - node ("
+"node_id kolumn från int4 till int8, containing_face kolumn från int4 till "
+"int8, node_id_seq från int4 till int8) - edge_data (edge_id kolumn från int4 "
+"till int8, edge_data_edge_id_seq från int4 till int8, left_face och "
+"right_face kolumner från int4 till int8, start_node och end_node kolumner "
+"från int4 till int8, next_left_edge och next_right_edge kolumner från int4 "
+"till int8) - relation (topogeo_id kolumn från int4 till int8, element_id "
+"från int4 till int8) - topologi (useslargeids kolumn satt till true)"
 
 #. Tag: title
 #, no-c-format
@@ -5411,6 +5423,9 @@ msgid ""
 "reference system</link> SRID for the topology. The SRID defaults to -1 "
 "(unknown) if not specified."
 msgstr ""
+"<varname>Srid</varname> är det <link linkend=\"spatial_ref_sys\">spatiala "
+"referenssystemets</link> SRID för topologin. Standardvärdet för SRID är -1 "
+"(okänt) om det inte anges."
 
 #. Tag: para
 #, no-c-format
@@ -5432,6 +5447,8 @@ msgid ""
 "<varname>topoid</varname> optional explicit identifier (allows deterministic "
 "topology id assignment, needs to be unique)"
 msgstr ""
+"<varname>topoid</varname> valfri explicit identifierare (möjliggör "
+"deterministisk tilldelning av topologi-id, måste vara unik)"
 
 #. Tag: para
 #, no-c-format
@@ -5440,6 +5457,9 @@ msgid ""
 "topology will be created to support large ids (int8) for topology and "
 "primitive ids."
 msgstr ""
+"<varname>useslargeids</varname> valfritt, standardvärde false. Om true, "
+"kommer topologin att skapas för att stödja stora id (int8) för topologi- och "
+"primitiva id."
 
 #. Tag: para
 #, no-c-format
@@ -44946,12 +44966,12 @@ msgstr "Anteckningar för release"
 #. Tag: title
 #, no-c-format
 msgid "PostGIS 3.6.0beta1"
-msgstr ""
+msgstr "PostGIS 3.6.0beta1"
 
 #. Tag: para
 #, no-c-format
 msgid "2025/07/xx"
-msgstr ""
+msgstr "2025/07/xx"
 
 #. Tag: para
 #, no-c-format
@@ -44967,22 +44987,22 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Many thanks to our translation teams, in particular:"
-msgstr ""
+msgstr "Ett stort tack till våra översättningsteam, i synnerhet:"
 
 #. Tag: para
 #, no-c-format
 msgid "Teramoto Ikuhiro (Japanese Team)"
-msgstr ""
+msgstr "Teramoto Ikuhiro (japanska teamet)"
 
 #. Tag: para
 #, no-c-format
 msgid "Daniel Nylander (Swedish Team)"
-msgstr ""
+msgstr "Daniel Nylander (svenska teamet)"
 
 #. Tag: para
 #, no-c-format
 msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
-msgstr ""
+msgstr "Dapeng Wang, Zuo Chenwei från HighGo (kinesiska teamet)"
 
 #. Tag: title
 #, no-c-format
@@ -45017,6 +45037,10 @@ msgid ""
 "pulls/255\">GT-255</link> [topology] Support for upgrading domains (Ayo "
 "Adesugba, U.S. Census Bureau)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"255\">GT-255</link> [topologi] Stöd för uppgradering av domäner (Ayo "
+"Adesugba, U.S. Census Bureau)"
 
 #. Tag: para
 #, no-c-format
@@ -45026,6 +45050,10 @@ msgid ""
 "PolyhedralSurface as unitary geometries, use ST_NumPatches/ST_PatchN for "
 "patch access (Loïc Bartoletti)"
 msgstr ""
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/252\""
+">GT-252</link>, ST_NumGeometries/ST_GeometryN behandlar TIN och "
+"PolyhedralSurface som enhetsgeometrier, använd ST_NumPatches/ST_PatchN för "
+"patchåtkomst (Loïc Bartoletti)"
 
 #. Tag: para
 #, no-c-format
@@ -45035,6 +45063,10 @@ msgid ""
 "pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. "
 "Census Bureau)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"242\">GT-242</link> [topologi] Stöd för bigint (Ayo Adesugba, U.S. Census "
+"Bureau)"
 
 #. Tag: title
 #, no-c-format
@@ -45116,6 +45148,10 @@ msgid ""
 "pulls/223\">GT-223</link> Export circ_tree_distance_tree_internal for "
 "mobilitydb use (Maxime Schoemans)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"223\">GT-223</link> Exportera circ_tree_distance_tree_internal för "
+"användning i mobilitydb (Maxime Schoemans)"
 
 #. Tag: para
 #, no-c-format
@@ -45157,11 +45193,15 @@ msgid ""
 "Add ST_CoverageClean to edge match and gap remove polygonal coverages (Paul "
 "Ramsey) from GEOS 3.14 (Martin Davis)"
 msgstr ""
+"Lägg till ST_CoverageClean för kantmatchning och borttagning av polygonala "
+"täckningar (Paul Ramsey) från GEOS 3.14 (Martin Davis)"
 
 #. Tag: para
 #, no-c-format
 msgid "Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
 msgstr ""
+"Lägg till ST_ReclassExact för att snabbt mappa om värden i raster (Paul "
+"Ramsey)"
 
 #. Tag: title
 #, no-c-format
