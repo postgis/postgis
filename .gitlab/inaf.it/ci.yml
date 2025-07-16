@@ -6,7 +6,7 @@
   except:
     - main
   before_script:
-    - apt-get update -qq && apt-cache search postgresql-server-dev
+    - df
     - apt-get update -qq && apt-get install -y
         autoconf
         codespell
@@ -35,6 +35,7 @@
     - ./configure
     - make
     - make check RUNTESTFLAGS=-v
+    - df
     - make distclean
 
 test:
