@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-05-18 00:48+0000\n"
-"PO-Revision-Date: 2025-07-16 03:47+0000\n"
+"PO-Revision-Date: 2025-07-16 05:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -35810,17 +35810,18 @@ msgstr ""
 "<xref linkend=\"RT_ST_Value\"/>"
 
 #. Tag: refpurpose
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Creates a new raster composed of bands reclassified from original, using a "
 "1:1 mapping from values in the original band to new values in the "
 "destination band."
 msgstr ""
 "元ラスターから再分類したバンドからなる新しいラスタを生成します。元ラスターの"
-"バンド内の値から生成されるラスターのバンド内の値に1:1マッピングを使います。"
+"バンド内の値から新たに生成されるラスターのバンド内の値への1対1のマッピングを"
+"使います。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Creates a new raster formed by applying a reclassification operation defined "
 "by the <varname>inputvalues</varname> and <varname>outputvalues</varname> "
@@ -35830,8 +35831,8 @@ msgid ""
 msgstr ""
 "<varname>inputvalues</varname>配列と<varname>outputvalues</varname>配列によっ"
 "て定義される再分類処理を適用することで形成される新しいラスタを生成します。入"
-"力配列のピクセル値は対応する出力配列の値にマップされます。他のピクセル値は全"
-"て <varname>nodatavalue</varname>にマップされます。"
+"力配列のピクセル値は対応する出力配列の値にマップされます。"
+"他のピクセル値は全て <varname>nodatavalue</varname>にマップされます。"
 
 #. Tag: para
 #, no-c-format
@@ -35856,7 +35857,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Create a small raster and map its pixels to new values."
-msgstr ""
+msgstr "小さいラスターを作ってピクセルに新しい値をマップしていきます。"
 
 #. Tag: para
 #, no-c-format
@@ -43730,12 +43731,12 @@ msgid "Release Notes"
 msgstr "リリースノート"
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "PostGIS 3.6.0beta1"
 msgstr "PostGIS 3.6.0beta1"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "2025/07/xx"
 msgstr "2025/07/xx"
 
@@ -43804,6 +43805,11 @@ msgid ""
 "pulls/255\">GT-255</link> [topology] Support for upgrading domains (Ayo "
 "Adesugba, U.S. Census Bureau)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"255\">GT-255</link> [トポロジー] "
+"アップグレード時にドメインのアップグレードに対応 (Ayo Adesugbaさん, "
+"米国国勢調査局)"
 
 #. Tag: para
 #, no-c-format
@@ -43813,6 +43819,10 @@ msgid ""
 "PolyhedralSurface as unitary geometries, use ST_NumPatches/ST_PatchN for "
 "patch access (Loïc Bartoletti)"
 msgstr ""
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/252\""
+">GT-252</link>, ST_NumGeometries/ST_GeometryN でTINと多面体サーフェスを単一ジ"
+"オメトリとして扱うように変更、面の数を数えるにはST_NumPatches/"
+"ST_PatchNを使います (Loïc Bartolettiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -43822,6 +43832,10 @@ msgid ""
 "pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. "
 "Census Bureau)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"242\">GT-242</link> [トポロジー] bigintに対応 (Ayo Adesugbaさん, "
+"米国国勢調査局)"
 
 #. Tag: title
 #, no-c-format
@@ -43904,6 +43918,11 @@ msgid ""
 "pulls/223\">GT-223</link> Export circ_tree_distance_tree_internal for "
 "mobilitydb use (Maxime Schoemans)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"223\">GT-223</link> "
+"MobilityDBでの利用のためのcirc_tree_distance_tree_internalのエクスポート ("
+"Maxime Schoemansさん)"
 
 #. Tag: para
 #, no-c-format
