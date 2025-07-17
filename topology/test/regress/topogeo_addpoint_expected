@@ -19,6 +19,7 @@ E|27|25|2
 prec1|N23
 prec2|N26
 prec3|N27
+ERROR:  Cannot add point with non-finite ordinate values
 Topology 'city_data' dropped
 tt2033.start|t
 tt2033|E1

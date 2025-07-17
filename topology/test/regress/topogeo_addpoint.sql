@@ -55,6 +55,10 @@ SELECT 'prec1', 'N' || topogeo_addpoint('city_data', 'POINT(39 26)', 2);
 SELECT 'prec2', 'N' || topogeo_addpoint('city_data', 'POINT(39 26)', 1);
 SELECT 'prec3', 'N' || topogeo_addpoint('city_data', 'POINT(36 26)', 1);
 
+
+-- See https://trac.osgeo.org/postgis/ticket/5925
+SELECT topology.TopoGeo_AddPoint('city_data', '0101000000000000000000F07F000000000000F07F'::geometry, 20.1);
+
 SELECT DropTopology('city_data');
 
 -- See http://trac.osgeo.org/postgis/ticket/2033

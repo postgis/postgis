@@ -534,6 +534,12 @@ _lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
     return -1;
   }
 
+  if ( ! lwgeom_isfinite((LWGEOM *)pt) )
+  {
+    lwerror("Cannot add point with non-finite ordinate values");
+    return -1;
+  }
+
 
   if ( ! skipISOChecks )
   {
