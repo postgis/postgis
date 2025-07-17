@@ -1202,6 +1202,17 @@ sfcgal_visibility_point(PG_FUNCTION_ARGS)
 	point = POSTGIS2SFCGALGeometry(input1);
 	PG_FREE_IF_COPY(input1, 1);
 
+#if POSTGIS_SFCGAL_VERSION < 20200
+	if (gserialized_is_empty(input0) || gserialized_is_empty(input1))
+	{
+		result = sfcgal_polygon_create();
+		output = SFCGALGeometry2POSTGIS(result, 0, srid);
+		sfcgal_geometry_delete(result);
+
+		PG_RETURN_POINTER(output);
+	}
+#endif
+
 	result = sfcgal_geometry_visibility_point(polygon, point);
 	sfcgal_geometry_delete(polygon);
 	sfcgal_geometry_delete(point);
@@ -1241,7 +1252,18 @@ sfcgal_visibility_segment(PG_FUNCTION_ARGS)
 	pointA = POSTGIS2SFCGALGeometry(input1);
 	PG_FREE_IF_COPY(input1, 1);
 	pointB = POSTGIS2SFCGALGeometry(input2);
-	PG_FREE_IF_COPY(input1, 2);
+	PG_FREE_IF_COPY(input2, 2);
+
+#if POSTGIS_SFCGAL_VERSION < 20200
+	if (gserialized_is_empty(input0) || gserialized_is_empty(input1) || gserialized_is_empty(input2))
+	{
+		result = sfcgal_polygon_create();
+		output = SFCGALGeometry2POSTGIS(result, 0, srid);
+		sfcgal_geometry_delete(result);
+
+		PG_RETURN_POINTER(output);
+	}
+#endif
 
 	result = sfcgal_geometry_visibility_segment(polygon, pointA, pointB);
 	sfcgal_geometry_delete(polygon);
