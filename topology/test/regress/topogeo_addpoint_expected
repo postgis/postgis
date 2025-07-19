@@ -33,3 +33,4 @@ tt5394|N|3
 t5698|E|1
 t5698|N|3
 t5794|N|3
+ERROR:  Corrupted topology: geometry of edge 1 is EMPTY
