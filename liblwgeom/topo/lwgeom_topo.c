@@ -7715,6 +7715,14 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
     return -1;
   }
 
+  if ( closestEdge->geom->points->npoints < 2 )
+  {
+    lwerror("Corrupted topology: geometry of edge %" LWTFMT_ELEMID " is EMPTY",
+      closestEdge->edge_id);
+    _lwt_release_edges(closestEdge, 1);
+    return -1;
+  }
+
   LWDEBUGGF(2, lwline_as_lwgeom(closestEdge->geom), "Closest edge %" LWTFMT_ELEMID, closestEdge->edge_id);
 
   /* Find closest segment of edge to the point */
