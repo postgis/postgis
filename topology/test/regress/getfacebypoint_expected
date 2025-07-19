@@ -10,4 +10,4 @@ t4|0
 t5|t
 ERROR:  Two or more faces found
 ERROR:  Two or more faces found
-ERROR:  Corrupted topology: geometry of edge 9 is EMPTY
+ERROR:  Corrupted topology (see #5946)
