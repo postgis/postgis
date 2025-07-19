@@ -1,9 +1,9 @@
-PostGIS 3.6.0dev
+PostGIS 3.6.0beta1
 2025/07/xx
 
-This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj 6.1+.
-To take advantage of all features, GEOS 3.12+ is needed.
-To take advantage of all SFCGAL features, SFCGAL 2.1+ is needed.
+This version requires PostgreSQL 12-18beta2, GEOS 3.8 or higher, and Proj 6.1+.
+To take advantage of all features, GEOS 3.14+ is needed.
+To take advantage of all SFCGAL features, SFCGAL 2.2+ is needed.
 
 Many thanks to our translation teams, in particular:
 
@@ -15,12 +15,16 @@ Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)
 
   - #5799, make ST_TileEnvelope clips envelopes to tile plane extent (Paul Ramsey)
   - #5829, remove constraint checking from geometry_columns view (Paul Ramsey)
-  - #3373, GT-255 [topology] Support for upgrading domains (Ayo Adesugba, U.S. Census Bureau)
+  - #3373, GT-255, [topology] Support for upgrading domains (Ayo Adesugba, U.S. Census Bureau)
   - GT-252, ST_NumGeometries/ST_GeometryN treat TIN and PolyhedralSurface as unitary geometries,
     use ST_NumPatches/ST_PatchN for patch access (Loïc Bartoletti)
   - #3110, GT-242 [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)
 
-* Deprecated signatures *
+* Deprecated / Removed signatures * 
+
+ - #3110, GT-242, [topology] numerous topology functions that accepted integer 
+          replaced with bigint versions to support both integer and bigint inputs
+          (Ayo Adesugba, U.S. Census Bureau)
 
 
 * New Features *
@@ -34,7 +38,7 @@ Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)
   - #1247, [raster] ST_AsRasterAgg (Sandro Santilli)
   - #5784, GT-223 Export circ_tree_distance_tree_internal for mobilitydb use
            (Maxime Schoemans)
-  - GT-228 [sfcgal] Add new functions (Scale, Translate, Rotate, Buffer 3D and
+  - GT-228, [sfcgal] Add new functions (Scale, Translate, Rotate, Buffer 3D and
            Straight Skeleton Partition) from SFCGAL 2 (Loïc Bartoletti)
   - [raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages
     and routes them into the PostgreSQL logging system. (Paul Ramsey)

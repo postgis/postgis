@@ -144,7 +144,7 @@ sh autogen.sh
 		  is available from
 		  <link xlink:href="https://www.postgresql.org">
 			https://www.postgresql.org
-		  </link>
+		  </link>18
 		  .
 		</para>
 		<para>For a full PostgreSQL / PostGIS support matrix and PostGIS/GEOS support matrix refer to
@@ -184,7 +184,7 @@ sh autogen.sh
 
 	  <listitem>
 		<para>
-		  GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.12+ is required to take full advantage of all the new functions and features. GEOS is available for download from
+		  GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.14+ is required to take full advantage of all the new functions and features. GEOS is available for download from
 		  <link xlink:href="https://libgeos.org/">
 			https://libgeos.org
 		  </link>.
