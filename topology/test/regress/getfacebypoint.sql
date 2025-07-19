@@ -59,9 +59,19 @@ SELECT 'e2', topology.GetFaceByPoint('topo','POINT(6 13)', 1);
 
 -- Empty edge geometries should not make the function choke
 -- See https://trac.osgeo.org/postgis/ticket/5946
-BEGIN;
-UPDATE topo.edge_data SET geom = 'LINESTRING EMPTY';
-SELECT 't5946', topology.GetFaceByPoint('topo','POINT(6 13)', 0);
-ROLLBACK;
+DO $$
+BEGIN
+  -- 1. corrupt topology
+  UPDATE topo.edge_data SET geom = 'LINESTRING EMPTY';
+  -- 2. Try to get a face by a point
+  BEGIN
+    SELECT 't5946', topology.GetFaceByPoint('topo','POINT(6 13)', 0);
+  EXCEPTION
+  WHEN OTHERS THEN
+    -- Strip details, we only want the first part
+    RAISE EXCEPTION '%', regexp_replace(SQLERRM, '([^:]): .*', '\1 (see #5946)');
+  END;
+END;
+$$ LANGUAGE 'plpgsql';
 
 SELECT NULL FROM topology.DropTopology('topo');
