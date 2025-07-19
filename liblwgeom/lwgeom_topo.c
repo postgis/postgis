@@ -7217,6 +7217,30 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
     return 0;
   }
 
+  if ( closestEdge->face_left < 0 )
+  {
+    lwerror("Closest edge %" LWTFMT_ELEMID " has invalid face %" LWTFMT_ELEMID
+      " on its left side", closestEdge->edge_id, closestEdge->face_left);
+    _lwt_release_edges(closestEdge, 1);
+    return -1;
+  }
+
+  if ( closestEdge->face_right < 0 )
+  {
+    lwerror("Closest edge %" LWTFMT_ELEMID " has invalid face %" LWTFMT_ELEMID
+      " on its right side", closestEdge->edge_id, closestEdge->face_right);
+    _lwt_release_edges(closestEdge, 1);
+    return -1;
+  }
+
+  if ( closestEdge->geom->points->npoints < 2 )
+  {
+    lwerror("Corrupted topology: geometry of edge %" LWTFMT_ELEMID " is EMPTY",
+      closestEdge->edge_id);
+    _lwt_release_edges(closestEdge, 1);
+    return -1;
+  }
+
   LWDEBUGGF(2, lwline_as_lwgeom(closestEdge->geom), "Closest edge %" LWTFMT_ELEMID, closestEdge->edge_id);
 
   /* Find closest segment of edge to the point */
