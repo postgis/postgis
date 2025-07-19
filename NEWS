@@ -35,6 +35,7 @@ Proj 4.9+ required.
  - #5795, [topology] Fix ST_NewEdgesSplit can cause invalid topology
           (Björn Harrtell)
  - #5677, Retain SRID during unary union (Paul Ramsey)
+ - #5925, #5946, [topology] Have GetFaceContainingPoint survive EMPTY edges (Sandro Santilli)
 
 * Enhancements *
 

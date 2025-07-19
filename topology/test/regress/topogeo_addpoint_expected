@@ -32,3 +32,8 @@ tt5394|E2|2
 tt5394|N|3
 t5698|E|1
 t5698|N|3
+<<<<<<< HEAD
+=======
+t5794|N|3
+ERROR:  Corrupted topology: geometry of edge 1 is EMPTY
+>>>>>>> 39304ca29 (Have GetFaceContainingPoint catch EMPTY edges in corrupted topology)
