@@ -57,4 +57,11 @@ SELECT 'e1', topology.GetFaceByPoint('topo','POINT(1 5)', 0);
 -- Ask for a Point with a tollerance too high (2 or more faces)
 SELECT 'e2', topology.GetFaceByPoint('topo','POINT(6 13)', 1);
 
+-- Empty edge geometries should not make the function choke
+-- See https://trac.osgeo.org/postgis/ticket/5946
+BEGIN;
+UPDATE topo.edge_data SET geom = 'LINESTRING EMPTY';
+SELECT 't5946', topology.GetFaceByPoint('topo','POINT(6 13)', 0);
+ROLLBACK;
+
 SELECT NULL FROM topology.DropTopology('topo');

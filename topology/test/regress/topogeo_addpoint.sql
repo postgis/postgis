@@ -64,3 +64,10 @@ SELECT 'tt2033', 'N' || topogeo_addpoint('t', 'POINT(0.2 1 1)', 0.5);
 SELECT 'tt2033', 'NC', node_id, ST_AsText(geom) FROM t.node ORDER BY node_id;
 SELECT 'tt2033.end' || DropTopology('t');
 
+-- See https://trac.osgeo.org/postgis/ticket/5925
+BEGIN;
+SELECT NULL FROM topology.CreateTopology ('t');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t', 'LINESTRING(0 0, 10 0)');
+UPDATE t.edge_data SET geom = 'LINESTRING EMPTY';
+SELECT 't5925.1', topology.TopoGeo_addPoint('t', 'POINT(5 5)', 0);
+ROLLBACK;
