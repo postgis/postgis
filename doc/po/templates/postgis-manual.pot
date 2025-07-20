@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-05-18 00:48+0000\n"
+"POT-Creation-Date: 2025-07-20 04:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -6362,7 +6362,7 @@ msgid ""
 "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
 "installation of PostgreSQL (including server headers) is required. "
 "PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
-"org\"> https://www.postgresql.org </link> ."
+"org\"> https://www.postgresql.org </link>18 ."
 msgstr ""
 
 #. Tag: para
@@ -6404,7 +6404,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.12+ "
+"GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.14+ "
 "is required to take full advantage of all the new functions and features. "
 "GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
 "\"> https://libgeos.org </link>."
@@ -8377,6 +8377,11 @@ msgstr ""
 #. Tag: member
 #, no-c-format
 msgid "Maxime Schoemans"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Megan Ma"
 msgstr ""
 
 #. Tag: member
@@ -35161,15 +35166,15 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/07/xx"
+msgid "2025/07/19"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj "
-"6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
-"advantage of all SFCGAL features, SFCGAL 2.1+ is needed."
+"This version requires PostgreSQL 12-18beta2, GEOS 3.8 or higher, and Proj "
+"6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
+"advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
 msgstr ""
 
 #. Tag: para
@@ -35217,7 +35222,7 @@ msgstr ""
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
 "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/255\">GT-255</link> [topology] Support for upgrading domains (Ayo "
+"pulls/255\">GT-255</link>, [topology] Support for upgrading domains (Ayo "
 "Adesugba, U.S. Census Bureau)"
 msgstr ""
 
@@ -35235,8 +35240,13 @@ msgstr ""
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
 "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. "
+"pulls/242\">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, U.S. "
 "Census Bureau)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Removed / Deprecate signatures"
 msgstr ""
 
 #. Tag: title
