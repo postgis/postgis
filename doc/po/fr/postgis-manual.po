@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-05-18 00:48+0000\n"
+"POT-Creation-Date: 2025-07-20 04:11+0000\n"
 "PO-Revision-Date: 2025-07-01 00:47+0000\n"
 "Last-Translator: Weblate <noreply-mt-weblate@weblate.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -8472,12 +8472,8 @@ msgid ""
 "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
 "installation of PostgreSQL (including server headers) is required. "
 "PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
-"org\"> https://www.postgresql.org </link> ."
+"org\"> https://www.postgresql.org </link>18 ."
 msgstr ""
-"PostgreSQL &min_postgres_version; - &max_postgres_version;. Une installation "
-"complète de PostgreSQL (y compris les en-têtes du serveur) est nécessaire. "
-"PostgreSQL est disponible à partir de <link xlink:href=\"https://www."
-"postgresql.org\"> https://www.postgresql.org </link> ."
 
 #. Tag: para
 #, no-c-format
@@ -8535,15 +8531,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.12+ "
+"GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.14+ "
 "is required to take full advantage of all the new functions and features. "
 "GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
 "\"> https://libgeos.org </link>."
 msgstr ""
-"La bibliothèque de géométrie GEOS, version &min_geos_version; ou supérieure, "
-"mais GEOS 3.12+ est nécessaire pour profiter pleinement de toutes les "
-"nouvelles fonctions et caractéristiques. GEOS peut être téléchargé à partir "
-"de <link xlink:href=\"https://libgeos.org/\"> https://libgeos.org </link>."
 
 #. Tag: para
 #, no-c-format
@@ -11071,6 +11063,11 @@ msgstr "Maxime van Noppen"
 #, no-c-format
 msgid "Maxime Schoemans"
 msgstr "Maxime Schoemans"
+
+#. Tag: member
+#, no-c-format
+msgid "Megan Ma"
+msgstr ""
 
 #. Tag: member
 #, no-c-format
@@ -45904,15 +45901,15 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/07/xx"
+msgid "2025/07/19"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj "
-"6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
-"advantage of all SFCGAL features, SFCGAL 2.1+ is needed."
+"This version requires PostgreSQL 12-18beta2, GEOS 3.8 or higher, and Proj "
+"6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
+"advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
 msgstr ""
 
 #. Tag: para
@@ -45960,7 +45957,7 @@ msgstr ""
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
 "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/255\">GT-255</link> [topology] Support for upgrading domains (Ayo "
+"pulls/255\">GT-255</link>, [topology] Support for upgrading domains (Ayo "
 "Adesugba, U.S. Census Bureau)"
 msgstr ""
 
@@ -45978,8 +45975,13 @@ msgstr ""
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
 "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. "
+"pulls/242\">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, U.S. "
 "Census Bureau)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Removed / Deprecate signatures"
 msgstr ""
 
 #. Tag: title
@@ -52621,6 +52623,31 @@ msgstr "Support 2.5/3D"
 #, no-c-format
 msgid "Supports geography"
 msgstr "Prise en charge du type geography"
+
+#, no-c-format
+#~ msgid ""
+#~ "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
+#~ "installation of PostgreSQL (including server headers) is required. "
+#~ "PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
+#~ "org\"> https://www.postgresql.org </link> ."
+#~ msgstr ""
+#~ "PostgreSQL &min_postgres_version; - &max_postgres_version;. Une "
+#~ "installation complète de PostgreSQL (y compris les en-têtes du serveur) "
+#~ "est nécessaire. PostgreSQL est disponible à partir de <link xlink:"
+#~ "href=\"https://www.postgresql.org\"> https://www.postgresql.org </link> ."
+
+#, no-c-format
+#~ msgid ""
+#~ "GEOS geometry library, version &min_geos_version; or greater, but GEOS "
+#~ "3.12+ is required to take full advantage of all the new functions and "
+#~ "features. GEOS is available for download from <link xlink:href=\"https://"
+#~ "libgeos.org/\"> https://libgeos.org </link>."
+#~ msgstr ""
+#~ "La bibliothèque de géométrie GEOS, version &min_geos_version; ou "
+#~ "supérieure, mais GEOS 3.12+ est nécessaire pour profiter pleinement de "
+#~ "toutes les nouvelles fonctions et caractéristiques. GEOS peut être "
+#~ "téléchargé à partir de <link xlink:href=\"https://libgeos.org/\"> https://"
+#~ "libgeos.org </link>."
 
 #, no-c-format
 #~ msgid ""

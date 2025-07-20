@@ -4,11 +4,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-05-18 00:48+0000\n"
+"POT-Creation-Date: 2025-07-20 04:11+0000\n"
 "PO-Revision-Date: 2025-07-16 07:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
-"Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/sv/>\n"
+"Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5317,9 +5317,9 @@ msgid ""
 "- topology (useslargeids column set to true)"
 msgstr ""
 "Tar ett topologinamn och uppgraderar det så att det stöder stora id:n (int8) "
-"för topologi och primitiva id:n. Funktionen uppgraderar följande: - face ("
-"face_id kolumn från int4 till int8, face_id_seq från int4 till int8) - node ("
-"node_id kolumn från int4 till int8, containing_face kolumn från int4 till "
+"för topologi och primitiva id:n. Funktionen uppgraderar följande: - face "
+"(face_id kolumn från int4 till int8, face_id_seq från int4 till int8) - node "
+"(node_id kolumn från int4 till int8, containing_face kolumn från int4 till "
 "int8, node_id_seq från int4 till int8) - edge_data (edge_id kolumn från int4 "
 "till int8, edge_data_edge_id_seq från int4 till int8, left_face och "
 "right_face kolumner från int4 till int8, start_node och end_node kolumner "
@@ -8284,12 +8284,8 @@ msgid ""
 "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
 "installation of PostgreSQL (including server headers) is required. "
 "PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
-"org\"> https://www.postgresql.org </link> ."
+"org\"> https://www.postgresql.org </link>18 ."
 msgstr ""
-"PostgreSQL &min_postgres_version; - &max_postgres_version;. En fullständig "
-"installation av PostgreSQL (inklusive serverhuvuden) krävs. PostgreSQL är "
-"tillgängligt från https://www.postgresql.org <link xlink:href=\"https://www."
-"postgresql.org\">. </link> ."
 
 #. Tag: para
 #, no-c-format
@@ -8346,15 +8342,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.12+ "
+"GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.14+ "
 "is required to take full advantage of all the new functions and features. "
 "GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
 "\"> https://libgeos.org </link>."
 msgstr ""
-"GEOS geometribibliotek, version &amp;min_geos_version; eller större, men "
-"GEOS 3.12+ krävs för att dra full nytta av alla nya funktioner och "
-"egenskaper. GEOS finns tillgängligt för nedladdning från <link xlink:"
-"href=\"https://libgeos.org/\"> https://libgeos.org </link>."
 
 #. Tag: para
 #, no-c-format
@@ -10850,6 +10842,11 @@ msgstr "Maxime van Noppen"
 #, no-c-format
 msgid "Maxime Schoemans"
 msgstr "Maxime Schoemans"
+
+#. Tag: member
+#, no-c-format
+msgid "Megan Ma"
+msgstr ""
 
 #. Tag: member
 #, no-c-format
@@ -44970,19 +44967,16 @@ msgstr "PostGIS 3.6.0beta1"
 
 #. Tag: para
 #, no-c-format
-msgid "2025/07/xx"
-msgstr "2025/07/xx"
+msgid "2025/07/19"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj "
-"6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
-"advantage of all SFCGAL features, SFCGAL 2.1+ is needed."
+"This version requires PostgreSQL 12-18beta2, GEOS 3.8 or higher, and Proj "
+"6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
+"advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
 msgstr ""
-"Denna version kräver PostgreSQL 12-18beta1, GEOS 3.8 eller högre och Proj "
-"6.1+. För att dra nytta av alla funktioner behövs GEOS 3.12+. För att dra "
-"nytta av alla SFCGAL-funktioner behövs SFCGAL 2.1+."
 
 #. Tag: para
 #, no-c-format
@@ -45034,13 +45028,9 @@ msgstr ""
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
 "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/255\">GT-255</link> [topology] Support for upgrading domains (Ayo "
+"pulls/255\">GT-255</link>, [topology] Support for upgrading domains (Ayo "
 "Adesugba, U.S. Census Bureau)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"255\">GT-255</link> [topologi] Stöd för uppgradering av domäner (Ayo "
-"Adesugba, U.S. Census Bureau)"
 
 #. Tag: para
 #, no-c-format
@@ -45050,8 +45040,8 @@ msgid ""
 "PolyhedralSurface as unitary geometries, use ST_NumPatches/ST_PatchN for "
 "patch access (Loïc Bartoletti)"
 msgstr ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/252\""
-">GT-252</link>, ST_NumGeometries/ST_GeometryN behandlar TIN och "
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/252\">GT-252</link>, ST_NumGeometries/ST_GeometryN behandlar TIN och "
 "PolyhedralSurface som enhetsgeometrier, använd ST_NumPatches/ST_PatchN för "
 "patchåtkomst (Loïc Bartoletti)"
 
@@ -45060,13 +45050,14 @@ msgstr ""
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
 "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. "
+"pulls/242\">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, U.S. "
 "Census Bureau)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"242\">GT-242</link> [topologi] Stöd för bigint (Ayo Adesugba, U.S. Census "
-"Bureau)"
+
+#. Tag: title
+#, no-c-format
+msgid "Removed / Deprecate signatures"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -45149,8 +45140,8 @@ msgid ""
 "mobilitydb use (Maxime Schoemans)"
 msgstr ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"223\">GT-223</link> Exportera circ_tree_distance_tree_internal för "
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/223\">GT-223</link> Exportera circ_tree_distance_tree_internal för "
 "användning i mobilitydb (Maxime Schoemans)"
 
 #. Tag: para
@@ -51507,6 +51498,68 @@ msgstr "2.5/3D-stöd"
 #, no-c-format
 msgid "Supports geography"
 msgstr "Stödjer geografi"
+
+#, no-c-format
+#~ msgid ""
+#~ "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
+#~ "installation of PostgreSQL (including server headers) is required. "
+#~ "PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
+#~ "org\"> https://www.postgresql.org </link> ."
+#~ msgstr ""
+#~ "PostgreSQL &min_postgres_version; - &max_postgres_version;. En "
+#~ "fullständig installation av PostgreSQL (inklusive serverhuvuden) krävs. "
+#~ "PostgreSQL är tillgängligt från https://www.postgresql.org <link xlink:"
+#~ "href=\"https://www.postgresql.org\">. </link> ."
+
+#, no-c-format
+#~ msgid ""
+#~ "GEOS geometry library, version &min_geos_version; or greater, but GEOS "
+#~ "3.12+ is required to take full advantage of all the new functions and "
+#~ "features. GEOS is available for download from <link xlink:href=\"https://"
+#~ "libgeos.org/\"> https://libgeos.org </link>."
+#~ msgstr ""
+#~ "GEOS geometribibliotek, version &amp;min_geos_version; eller större, men "
+#~ "GEOS 3.12+ krävs för att dra full nytta av alla nya funktioner och "
+#~ "egenskaper. GEOS finns tillgängligt för nedladdning från <link xlink:"
+#~ "href=\"https://libgeos.org/\"> https://libgeos.org </link>."
+
+#, no-c-format
+#~ msgid "2025/07/xx"
+#~ msgstr "2025/07/xx"
+
+#, no-c-format
+#~ msgid ""
+#~ "This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj "
+#~ "6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
+#~ "advantage of all SFCGAL features, SFCGAL 2.1+ is needed."
+#~ msgstr ""
+#~ "Denna version kräver PostgreSQL 12-18beta1, GEOS 3.8 eller högre och Proj "
+#~ "6.1+. För att dra nytta av alla funktioner behövs GEOS 3.12+. För att dra "
+#~ "nytta av alla SFCGAL-funktioner behövs SFCGAL 2.1+."
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/255\">GT-255</link> [topology] Support for upgrading domains (Ayo "
+#~ "Adesugba, U.S. Census Bureau)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/255\">GT-255</link> [topologi] Stöd för uppgradering av domäner "
+#~ "(Ayo Adesugba, U.S. Census Bureau)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U."
+#~ "S. Census Bureau)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/242\">GT-242</link> [topologi] Stöd för bigint (Ayo Adesugba, U.S. "
+#~ "Census Bureau)"
 
 #, no-c-format
 #~ msgid ""
