@@ -6,6 +6,7 @@ Proj 6.1+ required.
 
 * Bug Fixes *
 
+  - #5947, [topology] Fix crash in ST_ModEdgeHeal (Sandro Santilli)
   - #5925, #5946, [topology] Have GetFaceContainingPoint survive EMPTY edges (Sandro Santilli)
   - #5936, [topology] Do script-based upgrade in a single transaction (Sandro Santilli)
   - #5922, [topology] Fix crash in TopoGeo_AddLinestring with EMPTY input (Sandro Santilli)
