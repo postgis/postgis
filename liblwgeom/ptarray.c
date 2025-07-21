@@ -230,9 +230,17 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 	ncap = pa1->npoints + npoints;
 	if ( pa1->maxpoints < ncap )
 	{
-		pa1->maxpoints = ncap > pa1->maxpoints*2 ?
-		                 ncap : pa1->maxpoints*2;
-		pa1->serialized_pointlist = lwrealloc(pa1->serialized_pointlist, (size_t)ptsize * pa1->maxpoints);
+		if ( pa1->maxpoints )
+		{
+			pa1->maxpoints = ncap > pa1->maxpoints*2 ?
+			                 ncap : pa1->maxpoints*2;
+			pa1->serialized_pointlist = lwrealloc(pa1->serialized_pointlist, (size_t)ptsize * pa1->maxpoints);
+		}
+		else
+		{
+			pa1->maxpoints = ncap;
+			pa1->serialized_pointlist = lwalloc((size_t)ptsize * pa1->maxpoints);
+		}
 	}
 
 	memcpy(getPoint_internal(pa1, pa1->npoints),
