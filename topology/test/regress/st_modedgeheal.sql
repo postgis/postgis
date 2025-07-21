@@ -225,6 +225,21 @@ SELECT '#1998.-', topology.DropTopology('t1998');
 -------------------------------------------------------------------------
 -------------------------------------------------------------------------
 
+-- Crash case
+-- See https://trac.osgeo.org/postgis/ticket/5947
+
+BEGIN;
+SELECT NULL FROM createTopology('t5947');
+SELECT NULL FROM TopoGeo_addLinestring('t5947', 'LINESTRING(10 0, 0 0)');
+SELECT NULL FROM TopoGeo_addLinestring('t5947', 'LINESTRING(20 0, 10 0)');
+UPDATE t5947.edge_data SET geom = 'LINESTRING EMPTY' WHERE edge_id = 2;
+SELECT 't5947', ST_ModEdgeHeal('t5947', 1, 2);
+ROLLBACK;
+
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+
 -- TODO: test registered but unexistent topology
 -- TODO: test registered but corrupted topology
 --       (missing node, edge, relation...)
