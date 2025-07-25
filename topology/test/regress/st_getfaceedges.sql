@@ -41,4 +41,15 @@ SELECT '#3265.3', 'E'||topology.TopoGeo_addLinestring('tt',
 SELECT '#3265.4', 0, ST_GetFaceEdges('tt', 0);
 SELECT '#3265.5', 1, ST_GetFaceEdges('tt', 1);
 SELECT '#3265.6', 2, ST_GetFaceEdges('tt', 2);
-SELECT topology.DropTopology('tt');
+SELECT NULL FROM topology.DropTopology('tt');
+
+-- See https://trac.osgeo.org/postgis/ticket/5951
+SELECT NULL FROM topology.CreateTopology('t5951');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t5951', 'LINESTRING(0 0, 10 0)');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t5951', 'LINESTRING(0 0, 5 5)');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t5951', 'LINESTRING(5 5, 10 0)');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t5951', 'LINESTRING(5 5, 10 5)');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t5951', 'LINESTRING(10 0, 10 5)');
+UPDATE t5951.edge_data SET left_face = 0, right_face = 0 WHERE edge_id = 3;
+SELECT '#5951.1', topology.ST_GetFaceEdges('t5951', face_id) FROM t5951.face WHERE face_id > 0;
+SELECT NULL FROM topology.DropTopology('t5951');

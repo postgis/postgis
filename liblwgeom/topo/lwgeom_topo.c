@@ -3124,6 +3124,8 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
   {
     /* _lwt_FaceByEdges should have already invoked lwerror in this case */
     _lwt_release_edges(edges, numfaceedges);
+    lwerror("Corrupted topology: unable to build geometry of face %"
+      LWTFMT_ELEMID " from its %llu edges", face_id, numfaceedges);
     return -1;
   }
 
