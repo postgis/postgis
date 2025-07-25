@@ -38,4 +38,4 @@ t
 #3265.6|2|(1,1)
 #3265.6|2|(2,-2)
 #3265.6|2|(3,3)
-Topology 'tt' dropped
+ERROR:  Corrupted topology: unable to build geometry of face 1 from its 2 edges
