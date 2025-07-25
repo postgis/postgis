@@ -32,7 +32,6 @@
 /*#define POSTGIS_DEBUG_LEVEL 1*/
 #include "lwgeom_log.h"
 #include "lwgeom_pg.h"
-#include "pgsql_compat.h"
 
 #include <stdarg.h>
 
@@ -53,7 +52,7 @@
  */
 PG_MODULE_MAGIC;
 
-LWT_BE_IFACE* be_iface;
+static LWT_BE_IFACE* be_iface;
 
 /*
  * Private data we'll use for this backend
@@ -76,7 +75,7 @@ struct LWT_BE_DATA_T
   int topoLoadFailMessageFlavor; /* 0:sql, 1:AddPoint */
 };
 
-LWT_BE_DATA be_data;
+static LWT_BE_DATA be_data;
 
 struct LWT_BE_TOPOLOGY_T
 {

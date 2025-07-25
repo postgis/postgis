@@ -24,7 +24,6 @@
 
 #include <math.h>
 #include "flatgeobuf.h"
-#include "pgsql_compat.h"
 #include "funcapi.h"
 #include "parser/parse_type.h"
 #include "pgtime.h"

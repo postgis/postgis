@@ -29,7 +29,6 @@
 
 #include "mvt.h"
 #include "lwgeom_geos.h"
-#include "pgsql_compat.h"
 
 #ifdef HAVE_LIBPROTOBUF
 #include "utils/jsonb.h"
