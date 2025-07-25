@@ -3904,6 +3904,10 @@ Datum ST_GetFaceEdges(PG_FUNCTION_ARGS)
 
   /* get state */
   state = funcctx->user_fctx;
+  if ( ! state )
+  {
+    SRF_RETURN_DONE(funcctx);
+  }
 
   if ( state->curr == state->nelems )
   {
