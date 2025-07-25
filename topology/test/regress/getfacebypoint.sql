@@ -69,7 +69,7 @@ BEGIN
   EXCEPTION
   WHEN OTHERS THEN
     -- Strip details, we only want the first part
-    RAISE EXCEPTION '%', regexp_replace(SQLERRM, '([^:]): .*', '\1 (see #5946)');
+    RAISE EXCEPTION '%', regexp_replace(SQLERRM, E'([^:]*): .*', E'\\1 (see #5946)');
   END;
 END;
 $$ LANGUAGE 'plpgsql';
