@@ -5,13 +5,14 @@
 # Dapeng Wang <wangdapeng20191008@gmail.com>, 2024.
 # Regina Obe <robe@postgis.net>, 2025.
 # Wangdapeng <wangdapeng20191008@gmail.com>, 2025.
+# Weblate <noreply-mt-weblate@weblate.org>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
 "PO-Revision-Date: 2025-07-28 08:47+0000\n"
-"Last-Translator: Wangdapeng <wangdapeng20191008@gmail.com>\n"
+"Last-Translator: Weblate <noreply-mt-weblate@weblate.org>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -39160,7 +39161,7 @@ msgstr "可用性: 3.6.0 - 需要 SFCGAL &gt;= 2.1.0"
 #. Tag: title
 #, no-c-format
 msgid "Parameters"
-msgstr ""
+msgstr "参数"
 
 #. Tag: para
 #, no-c-format
