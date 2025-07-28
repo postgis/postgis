@@ -85,8 +85,8 @@ providing a list of blank-separated key=value pairs as follows:
 <para>'mitre_limit=#.#' : mitre ratio limit (only affects mitered join style). 'miter_limit' is accepted as a synonym for 'mitre_limit'.</para>
 </listitem>
 <listitem>
-<para>'side=both|left|right' : 'left' or 'right' performs a single-sided buffer on the geometry, with the buffered side relative to the direction of the line.
-This is only applicable to LINESTRING geometry and does not affect POINT or POLYGON geometries. By default end caps are square.</para>
+<para>'side=both|left|right' : defaults to 'both'. 'left' or 'right' performs a single-sided buffer on the geometry, with the buffered side relative to the direction of the line.
+This is only applicable to LINESTRING geometry and does not affect POINT or POLYGON geometries. By default end caps are square when 'left' or 'right' are specified.</para>
 </listitem>
 </itemizedlist>
                 </para>
