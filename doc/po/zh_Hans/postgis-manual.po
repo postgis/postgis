@@ -4,13 +4,14 @@
 # Zuochenwei <zuochenwei5@gmail.com>, 2023.
 # Dapeng Wang <wangdapeng20191008@gmail.com>, 2024.
 # Regina Obe <robe@postgis.net>, 2025.
+# Wangdapeng <wangdapeng20191008@gmail.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-07-09 04:24+0000\n"
-"Last-Translator: Regina Obe <robe@postgis.net>\n"
+"PO-Revision-Date: 2025-07-28 08:47+0000\n"
+"Last-Translator: Wangdapeng <wangdapeng20191008@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -2191,6 +2192,9 @@ msgid ""
 "Encoding and Referencing system ) / Line and Master Address database export</"
 "link> released by the US Census Bureau."
 msgstr ""
+"一个基于 PL/pgSQL 编写的地理编码器，美国人口普查局发布的 <link xlink:href="
+"\"https://www2.census.gov/geo/tiger/\">TIGER（拓扑集成地理编码与参照系统）/ "
+"Line and Master Address database export</link> 配合使用。"
 
 #. Tag: para
 #, no-c-format
@@ -4770,7 +4774,7 @@ msgstr "可用性：3.2.0"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns non-precise vertices in the topology."
-msgstr ""
+msgstr "返回拓扑中不精确的顶点。"
 
 #. Tag: para
 #, no-c-format
@@ -4779,6 +4783,9 @@ msgid ""
 "<varname>gridSize</varname> as a puntal geometry, optionally limiting the "
 "check to the area specified by the <varname>bbox</varname> parameter."
 msgstr ""
+"返回所有未根据拓扑或指定的 <varname>gridSize</varname> "
+"进行规整的顶点，以点状几何对象形式表示，可选地通过 <varname>bbox</varname> "
+"参数限制检查范围。"
 
 #. Tag: para
 #, no-c-format
@@ -4788,7 +4795,7 @@ msgstr "可用性：3.6.0"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Snap topology vertices to precision grid."
-msgstr ""
+msgstr "将拓扑顶点对齐到精度网格。"
 
 #. Tag: para
 #, no-c-format
@@ -4798,18 +4805,22 @@ msgid ""
 "optionally limiting the operation to the objects intersecting the area "
 "specified by the <varname>bbox</varname> parameter."
 msgstr ""
+"将拓扑中的所有顶点对齐到拓扑精度网格，或对齐到由 <varname>gridSize</varname> "
+"参数指定大小的网格，可选地将操作限制在与 <varname>bbox</varname> "
+"参数指定区域相交的对象范围内。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Snapping could make the topology invalid, so it is recommended to check the "
 "outcome of operation with <xref linkend=\"ValidateTopology\"/>."
-msgstr ""
+msgstr "对齐操作可能导致拓扑变得无效，因此建议使用 <xref linkend=\"ValidateTopology\""
+"/> 检查操作结果。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ValidateTopology\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ValidateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4840,21 +4851,21 @@ msgstr "获取层标识符或拓扑相关对象的标识符并返回topology.lay
 msgid ""
 "Total disk space used by the specified topology, including all indexes and "
 "TOAST data."
-msgstr ""
+msgstr "指定拓扑占用的总磁盘空间，包括所有索引和TOAST数据。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Takes a topology name and provides the total disk space used by all its "
 "tables, including indexes and TOAST data."
-msgstr ""
+msgstr "接受一个拓扑名称，返回其所有表（包括索引和TOAST数据）占用的总磁盘空间。"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Upgrades the specified topology to support large ids (int8) for topology and "
 "primitive ids."
-msgstr ""
+msgstr "将指定拓扑升级为支持大整数（int8）类型的拓扑 ID 和要素 ID。"
 
 #. Tag: para
 #, no-c-format
@@ -4954,6 +4965,8 @@ msgid ""
 "reference system</link> SRID for the topology. The SRID defaults to -1 "
 "(unknown) if not specified."
 msgstr ""
+"<varname>srid</varname> 表示该拓扑的 <link linkend=\"spatial_ref_sys\""
+">空间参考系统</link> 的 SRID。如果未指定，默认值为 -1（未知）。"
 
 #. Tag: para
 #, no-c-format
@@ -4972,7 +4985,8 @@ msgstr "如果未指定，<varname>hasz </varname>默认为 false。"
 msgid ""
 "<varname>topoid</varname> optional explicit identifier (allows deterministic "
 "topology id assignment, needs to be unique)"
-msgstr ""
+msgstr "<varname>topoid</varname> 为可选的显式标识符（允许确定性地分配拓扑 "
+"ID，需保证唯一）"
 
 #. Tag: para
 #, no-c-format
@@ -4981,6 +4995,8 @@ msgid ""
 "topology will be created to support large ids (int8) for topology and "
 "primitive ids."
 msgstr ""
+"<varname>useslargeids</varname> 为可选参数，默认值为 false。若设为 "
+"true，则创建的拓扑将支持大整数（int8）类型的拓扑 ID 和要素 ID。"
 
 #. Tag: para
 #, no-c-format
@@ -7336,6 +7352,8 @@ msgid ""
 "If the target topology already exists and you want it dropped upfront you "
 "can pass the <code>--drop-topology</code> switch (since PostGIS-3.6.0)."
 msgstr ""
+"如果目标拓扑已存在，并且你希望在创建前将其删除，可以传递 <code>--drop-"
+"topology</code> 参数（自 PostGIS 3.6.0 起支持）。"
 
 #. Tag: title
 #, no-c-format
@@ -7544,6 +7562,9 @@ msgid ""
 "PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
 "org\"> https://www.postgresql.org </link>18 ."
 msgstr ""
+"PostgreSQL &min_postgres_version; - &max_postgres_version;. 需要完整安装 "
+"PostgreSQL（包括服务器头文件）。可从 <link xlink:href=\"https://www."
+"postgresql.org\"> https://www.postgresql.org </link> 获取18。"
 
 #. Tag: para
 #, no-c-format
@@ -7602,6 +7623,9 @@ msgid ""
 "GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
 "\"> https://libgeos.org </link>."
 msgstr ""
+"GEOS 几何库，版本需为 &min_geos_version; 或更高，但建议使用 GEOS 3.14 "
+"及以上版本，以充分利用所有新函数和特性。可从 <link xlink:href=\"https"
+"://libgeos.org/\"> https://libgeos.org </link> 下载。"
 
 #. Tag: para
 #, no-c-format
@@ -7700,6 +7724,11 @@ msgid ""
 "a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/"
 "pcre</varname> during configure."
 msgstr ""
+"若要构建 <xref linkend=\"Address_Standardizer\"/>，还需要 PCRE 1 或 2 库，"
+"<link xlink:href=\"http://www.pcre.org\">http://www.pcre.org</link>（"
+"该库通常在类 Unix 系统中已预装）。如果系统中已检测到 PCRE 库，"
+"或在配置时传入有效的 <varname>--with-pcre-dir=/path/to/pcre</varname> 参数，"
+"<xref linkend=\"Address_Standardizer\"/> 将自动构建。"
 
 #. Tag: para
 #, no-c-format
@@ -9515,7 +9544,7 @@ msgstr "Artur Zakirov"
 #. Tag: member
 #, no-c-format
 msgid "Ayo Adesugba"
-msgstr ""
+msgstr "Ayo Adesugba"
 
 #. Tag: member
 #, no-c-format
@@ -9595,7 +9624,7 @@ msgstr "Dane Springmeyer"
 #. Tag: member
 #, no-c-format
 msgid "Daniel Nylander"
-msgstr ""
+msgstr "Daniel Nylander"
 
 #. Tag: member
 #, no-c-format
@@ -9815,7 +9844,7 @@ msgstr "Kris Jurka"
 #. Tag: member
 #, no-c-format
 msgid "Laurențiu Nicola"
-msgstr ""
+msgstr "Laurențiu Nicola"
 
 #. Tag: member
 #, no-c-format
@@ -9850,7 +9879,7 @@ msgstr "Lucas C. Villa Real"
 #. Tag: member
 #, no-c-format
 msgid "Maksim Korotkov"
-msgstr ""
+msgstr "Maksim Korotkov"
 
 #. Tag: member
 #, no-c-format
@@ -9910,7 +9939,7 @@ msgstr "Maxime Schoemans"
 #. Tag: member
 #, no-c-format
 msgid "Megan Ma"
-msgstr ""
+msgstr "Megan Ma"
 
 #. Tag: member
 #, no-c-format
@@ -10283,7 +10312,7 @@ msgstr "Paragon Corporation"
 #. Tag: link
 #, no-c-format
 msgid "Postgres Pro"
-msgstr ""
+msgstr "Postgres Pro"
 
 #. Tag: link
 #, no-c-format
@@ -10328,7 +10357,7 @@ msgstr "Université Laval"
 #. Tag: link
 #, no-c-format
 msgid "U.S. Census Bureau"
-msgstr ""
+msgstr "美国人口普查局"
 
 #. Tag: link
 #, no-c-format
@@ -15148,6 +15177,8 @@ msgid ""
 ", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/"
 ">, <xref linkend=\"ST_CoverageSimplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/"
+">, <xref linkend=\"ST_CoverageSimplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15216,6 +15247,7 @@ msgstr "简化覆盖范围"
 msgid ""
 ", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/>"
 msgstr ""
+", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15264,13 +15296,15 @@ msgid ""
 ", <xref linkend=\"ST_CoverageSimplify\"/>, <xref "
 "linkend=\"ST_CoverageClean\"/>, <xref linkend=\"ST_Union\"/>"
 msgstr ""
+", <xref linkend=\"ST_CoverageSimplify\"/>, <xref linkend=\"ST_CoverageClean\""
+"/>, <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Computes a clean (edge matched, non-overlapping, gap-cleared) polygonal "
 "coverage, given a non-clean input."
-msgstr ""
+msgstr "对非规范化输入计算出一个规范的多边形覆盖结果（边界匹配、无重叠、无缝隙）。"
 
 #. Tag: para
 #, no-c-format
@@ -15281,13 +15315,17 @@ msgid ""
 "that will pass validation tests like <xref "
 "linkend=\"ST_CoverageInvalidEdges\"/>"
 msgstr ""
+"一个窗口函数，用于调整多边形覆盖的边界，以确保各多边形之间无重叠，微小缝隙被"
+"对齐消除，并使所有共享边界完全一致。结果将是一个规范的覆盖图，可通过如 <xref "
+"linkend=\"ST_CoverageInvalidEdges\"/> 等验证函数的检查"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The <parameter>gapMaximumWidth</parameter> controls the cleaning of gaps "
 "between polygons. Gaps smaller than this tolerance will be closed."
-msgstr ""
+msgstr "<parameter>gapMaximumWidth</parameter> "
+"参数用于控制多边形之间缝隙的清理。小于该容差的缝隙将被自动关闭。"
 
 #. Tag: para
 #, no-c-format
@@ -15297,6 +15335,9 @@ msgid ""
 "an automatic snapping distance based on an analysis of the input. Set to 0.0 "
 "to turn off all snapping."
 msgstr ""
+"<parameter>snappingDistance</parameter> "
+"参数用于控制节点对齐（snapping）操作，即将相近顶点合并为一个点。默认值为 "
+"-1，表示自动根据输入数据分析确定对齐距离。若设为 0.0，则完全关闭对齐操作。"
 
 #. Tag: para
 #, no-c-format
@@ -15304,37 +15345,39 @@ msgid ""
 "The <parameter>overlapMergeStrategy</parameter> controls the algorithm used "
 "to determine which neighboring polygons to merge overlapping areas into."
 msgstr ""
+"<parameter>overlapMergeStrategy</parameter> "
+"参数用于控制算法在处理重叠区域时，决定将重叠部分合并到哪个相邻多边形中。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<code>MERGE_LONGEST_BORDER</code> chooses polygon with longest common border"
-msgstr ""
+msgstr "<code>MERGE_LONGEST_BORDER</code> 选取与之具有最长公共边界的多边形进行合并"
 
 #. Tag: para
 #, no-c-format
 msgid "<code>MERGE_MAX_AREA</code> chooses polygon with maximum area"
-msgstr ""
+msgstr "<code>MERGE_MAX_AREA</code> 选取面积最大的多边形进行合并"
 
 #. Tag: para
 #, no-c-format
 msgid "<code>MERGE_MIN_AREA</code> chooses polygon with minimum area"
-msgstr ""
+msgstr "<code>MERGE_MIN_AREA</code> 选取面积最小的多边形进行合并"
 
 #. Tag: para
 #, no-c-format
 msgid "<code>MERGE_MIN_INDEX</code> chooses polygon with smallest input index"
-msgstr ""
+msgstr "<code>MERGE_MIN_INDEX</code> 选取输入索引值最小的多边形进行合并"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0 - requires GEOS &gt;= 3.14.0"
-msgstr ""
+msgstr "可用性: 3.6.0 - 需要 GEOS &gt;= 3.14.0"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/> <xref linkend=\"ST_CoverageSimplify\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Union\"/> <xref linkend=\"ST_CoverageSimplify\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -16317,6 +16360,9 @@ msgid ""
 "vertices within the tolerance distance of one another are considered to be "
 "duplicates. The distance is computed in 2D (XY plane)."
 msgstr ""
+"如果提供了非零的 <parameter>tolerance</parameter> "
+"参数，则在该容差距离内的顶点将被视为重复点。该距离在二维平面（XY "
+"平面）上计算。"
 
 #. Tag: para
 #, no-c-format
@@ -17427,7 +17473,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A boolean configuration to turn logging of GDAL debug messages on and off."
-msgstr ""
+msgstr "用于开启或关闭 GDAL 调试信息日志记录的布尔型配置项。"
 
 #. Tag: para
 #, no-c-format
@@ -17437,6 +17483,10 @@ msgid ""
 "logging to be sent into the PostgreSQL logging stream, so you can see more "
 "or less of it by altering the <code>client_min_message</code> PostgreSQL GUC."
 msgstr ""
+"默认情况下，GDAL "
+"日志输出到标准错误（stderr），且较低级别的调试信息不会被打印。将此 GUC "
+"设置为 true 后，GDAL 日志将被发送到 PostgreSQL 的日志流中，用户可通过调整 "
+"PostgreSQL 的 <code>client_min_message</code> 参数控制日志的详细程度。"
 
 #. Tag: title
 #, no-c-format
@@ -22435,6 +22485,10 @@ msgid ""
 "endian; or 'XDR' for big-endian. Supplying unknown arguments will result in "
 "little-endian output."
 msgstr ""
+"返回几何对象的 OGC/ISO <link linkend=\"OpenGISWKBWKT\">Well-Known Binary</"
+"link> (WKB) 表示形式。第一个函数形式默认使用服务器主机字节序进行编码。第二个"
+"函数形式接受一个文本参数，用于指定字节序编码方式：'NDR' 表示小端编码，'XDR' "
+"表示大端编码。如传入未知参数，将默认生成小端编码输出。"
 
 #. Tag: para
 #, no-c-format
@@ -22538,6 +22592,10 @@ msgid ""
 "either 'NDR' for little-endian; or 'XDR' for big-endian. Supplying unknown "
 "arguments will result in little-endian output."
 msgstr ""
+"返回带有 SRID 元数据的 <link linkend=\"EWKB_EWKT\">Extended Well-Known Binary"
+"</link>（EWKB）格式的几何对象表示。第一个函数形式默认使用服务器主机的字节序进"
+"行编码。第二个函数形式接受一个文本参数，用于指定字节序编码方式：'NDR' "
+"表示小端编码，'XDR' 表示大端编码。如传入未知参数，将默认输出小端编码格式。"
 
 #. Tag: para
 #, no-c-format
@@ -23374,6 +23432,8 @@ msgid ""
 "Canonical example for a Web Mercator tile using a computed tile bounds to "
 "query and clip geometry. This assumes the data.geom column has srid of 4326."
 msgstr ""
+"使用计算出的瓦片边界进行查询和裁剪几何的 Web Mercator 瓦片典型示例。"
+"本示例假设 data.geom 列的 SRID 为 4326。"
 
 #. Tag: para
 #, no-c-format
@@ -24102,7 +24162,7 @@ msgstr ""
 #. Tag: refsection
 #, no-c-format
 msgid "&overlay_gridsize_arg;"
-msgstr ""
+msgstr "&overlay_gridsize_arg;"
 
 #. Tag: para
 #, no-c-format
@@ -24157,6 +24217,8 @@ msgid ""
 ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>, <xref "
 "linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
+", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -24301,6 +24363,11 @@ msgid ""
 "linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
 "linkend=\"ST_Multi\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
+", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Force2D\"/>, <xref linkend="
+"\"ST_SymDifference\"/>, <xref linkend=\"ST_Intersects\"/>, <xref linkend="
+"\"ST_Multi\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -24505,7 +24572,7 @@ msgstr ""
 msgid ""
 "<code>max_vertices</code> must be 5 or more, as 5 points are needed to "
 "represent a closed box."
-msgstr ""
+msgstr "<code>max_vertices</code> 必须不小于 5，因为表示一个封闭盒子至少需要 5 个点。"
 
 #. Tag: para
 #, no-c-format
@@ -24602,6 +24669,8 @@ msgid ""
 ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
 "linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
+", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
+"linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -24695,6 +24764,9 @@ msgid ""
 "linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>, <xref "
 "linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
+", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>, <xref linkend="
+"\"ST_ReducePrecision\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -24841,6 +24913,9 @@ msgid ""
 "linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
 "linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
+", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
+"linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -24967,6 +25042,9 @@ msgid ""
 "invalid polygons. <xref linkend=\"ST_MakeValid\"/> is more suitable for this "
 "process as it can handle multi-polygons."
 msgstr ""
+"缓冲区操作可处理无效输入，并始终生成有效的多边形几何对象。以距离 0 "
+"进行缓冲常被用作修复无效多边形的一种方法。但对于此类修复操作，<xref linkend="
+"\"ST_MakeValid\"/> 更为适合，因为它能处理多面体MultiPolygon类型。"
 
 #. Tag: para
 #, no-c-format
@@ -27115,7 +27193,7 @@ msgstr "栅格参考"
 msgid ""
 "<varname>raster</varname> is a PostGIS type for storing and analyzing raster "
 "data."
-msgstr ""
+msgstr "<varname>raster</varname> 是用于存储和分析栅格数据的 PostGIS 类型。"
 
 #. Tag: para
 #, no-c-format
@@ -27130,7 +27208,7 @@ msgstr ""
 msgid ""
 "Some examples in this reference use a raster table of dummy data, created "
 "with the following code:"
-msgstr ""
+msgstr "本参考文档中的部分示例使用了一个通过以下代码创建的虚拟栅格数据表："
 
 #. Tag: para
 #, no-c-format
@@ -27138,7 +27216,8 @@ msgid ""
 "The functions below are ones which a user of PostGIS Raster is likely to "
 "need. There are other raster support functions which are not of interest to "
 "a general user."
-msgstr ""
+msgstr "下列函数是 PostGIS Raster 用户常用的函数。除此之外，还存在其他栅格支持函数，"
+"但它们对一般用户而言并不常用。"
 
 #. Tag: title
 #, no-c-format
@@ -27281,14 +27360,15 @@ msgstr ""
 msgid ""
 "A composite type used as input into the ST_Reclass function defining the "
 "behavior of reclassification."
-msgstr ""
+msgstr "用于输入 ST_Reclass 函数的复合类型，用于定义重分类操作的行为。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "A composite type used as input into the <xref linkend=\"RT_ST_Reclass\"/> "
 "function defining the behavior of reclassification."
-msgstr ""
+msgstr "用于输入 <xref linkend=\"RT_ST_Reclass\"/> "
+"函数的复合类型，用于定义重分类操作的行为。"
 
 #. Tag: para
 #, no-c-format
@@ -31318,6 +31398,9 @@ msgid ""
 "given raster band of a raster or raster coverage. Band 1 is assumed if no "
 "band is specified."
 msgstr ""
+"返回指定栅格或栅格覆盖中某个波段的统计摘要，包括像元数量（count）、总和（sum"
+"）、均值（mean）、标准差（stddev）、最小值（min）和最大值（max）。若未指定波"
+"段，默认使用第 1 波段。"
 
 #. Tag: para
 #, no-c-format
@@ -31399,6 +31482,9 @@ msgid ""
 "max for a given raster band of a set of raster. Band 1 is assumed if no band "
 "is specified."
 msgstr ""
+"聚合函数。返回一组栅格中指定波段的统计摘要，包括像元数量（count）、总和（sum"
+"）、均值（mean）、标准差（stddev）、最小值（min）和最大值。若未指定波段，"
+"默认使用第 1 波段。"
 
 #. Tag: para
 #, no-c-format
@@ -33678,6 +33764,10 @@ msgid ""
 "reclassification expressions. If no <varname>band</varname> is specified "
 "band 1 is assumed."
 msgstr ""
+"根据 <varname>reclassexpr</varname> 定义的重分类操作，在输入栅格 "
+"(<varname>rast</varname>) 上生成一个新的栅格。重分类表达式的说明参见 <xref "
+"linkend=\"reclassarg\"/>。如果未指定 <varname>band</varname>，则默认使用第 1 "
+"波段。"
 
 #. Tag: para
 #, no-c-format
@@ -33688,11 +33778,15 @@ msgid ""
 "specified then each <varname>reclassarg</varname> defines the type of the "
 "target band. Bands not designated are returned unchanged."
 msgstr ""
+"新栅格将具有与原始栅格相同的地理参考、宽度和高度。新栅格的波段像元类型由 "
+"<varname>pixeltype</varname> 指定。如果指定了 "
+"<varname>reclassargset</varname>，则每个 <varname>reclassarg</varname> "
+"用于定义目标波段的类型，未指定的波段将保持不变返回。"
 
 #. Tag: title
 #, no-c-format
 msgid "Example: Basic"
-msgstr ""
+msgstr "示例：基础用法"
 
 #. Tag: para
 #, no-c-format
@@ -33751,7 +33845,8 @@ msgid ""
 "Creates a new raster composed of bands reclassified from original, using a "
 "1:1 mapping from values in the original band to new values in the "
 "destination band."
-msgstr ""
+msgstr "创建一个新栅格，其波段通过对原始波段进行 1:1 "
+"映射重分类生成，将原波段中的值映射为目标波段中的新值。"
 
 #. Tag: para
 #, no-c-format
@@ -33762,6 +33857,9 @@ msgid ""
 "corresponding value in the output array. All other pixel values are mapped "
 "to the <varname>nodatavalue</varname>."
 msgstr ""
+"根据 <varname>inputvalues</varname> 和 <varname>outputvalues</varname> 数组定"
+"义的重分类操作，生成一个新的栅格。输入栅格中与数组匹配的像元值将被映射为对应"
+"的值，所有未匹配的像元值将被映射为 <varname>nodatavalue</varname>。"
 
 #. Tag: para
 #, no-c-format
@@ -33770,6 +33868,8 @@ msgid ""
 "<varname>pixeltype</varname> parameter. If no <varname>bandnumber</varname> "
 "is specified band 1 is assumed."
 msgstr ""
+"输出像元类型默认设为 float，但可通过 <varname>pixeltype</varname> "
+"参数进行指定。若未指定 <varname>bandnumber</varname>，则默认使用第 1 波段。"
 
 #. Tag: para
 #, no-c-format
@@ -33781,7 +33881,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Create a small raster and map its pixels to new values."
-msgstr ""
+msgstr "创建一个小型栅格，并将其像元映射为新的值。"
 
 #. Tag: para
 #, no-c-format
@@ -33789,6 +33889,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_Band\"/>, <xref "
 "linkend=\"RT_ST_MakeEmptyRaster\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_Band\"/>, <xref "
+"linkend=\"RT_ST_MakeEmptyRaster\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38201,7 +38303,7 @@ msgstr "多边形及其近似中轴"
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38320,6 +38422,8 @@ msgid ""
 "linkend=\"CG_StraightSkeleton\"/>, <xref "
 "linkend=\"CG_StraightSkeletonPartition\"/>"
 msgstr ""
+", <xref linkend=\"CG_ExtrudeStraightSkeleton\"/>, <xref linkend="
+"\"CG_StraightSkeleton\"/>, <xref linkend=\"CG_StraightSkeletonPartition\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -38555,7 +38659,7 @@ msgstr "要使用任意参数 use_distance_as_m，需要 SFCGAL &gt;= 1.3.8"
 msgid ""
 "Note that valid inputs with rings that touch at a single point will raise an "
 "error."
-msgstr ""
+msgstr "请注意，若合法输入中的环仅在单个点处相接，将会引发错误。"
 
 #. Tag: para
 #, no-c-format
@@ -38727,7 +38831,7 @@ msgstr "可用性：3.6.0 - 需要 SFCGAL&gt;= 2.0.0。"
 #. Tag: para
 #, no-c-format
 msgid "Straight Skeleton Partition of polygon"
-msgstr ""
+msgstr "多边形的直骨架划分"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38750,7 +38854,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Input geometry must be a Point or LineString."
-msgstr ""
+msgstr "输入几何对象必须为 Point（点）或 LineString（线串）类型。"
 
 #. Tag: para
 #, no-c-format
@@ -39051,7 +39155,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0 - requires SFCGAL &gt;= 2.1.0"
-msgstr ""
+msgstr "可用性: 3.6.0 - 需要 SFCGAL &gt;= 2.1.0"
 
 #. Tag: title
 #, no-c-format
@@ -39066,7 +39170,7 @@ msgstr ""
 #. Tag: parameter
 #, no-c-format
 msgid "threshold"
-msgstr ""
+msgstr "threshold"
 
 #. Tag: para
 #, no-c-format
@@ -41433,6 +41537,9 @@ msgid ""
 "link>, Change interrupt handling to remove use of pqsignal to support PG 18 "
 "(Paul Ramsey)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\""
+">#5841</link>，更改中断处理机制，移除对 pqsignal 的使用，以支持 PostgreSQL "
+"18（Paul Ramsey 提供）"
 
 #. Tag: para
 #, no-c-format
@@ -41440,11 +41547,13 @@ msgid ""
 "Add ST_CoverageClean to edge match and gap remove polygonal coverages (Paul "
 "Ramsey) from GEOS 3.14 (Martin Davis)"
 msgstr ""
+"新增 ST_CoverageClean，用于边界匹配与缝隙消除多边形覆盖图（由 Paul Ramsey "
+"提供，基于 GEOS 3.14 的功能，Martin Davis 开发）"
 
 #. Tag: para
 #, no-c-format
 msgid "Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
-msgstr ""
+msgstr "新增 ST_ReclassExact，用于快速重映射栅格中的值（Paul Ramsey 提供）"
 
 #. Tag: title
 #, no-c-format
