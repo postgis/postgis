@@ -4073,7 +4073,7 @@ Datum ST_GetFaceGeometry(PG_FUNCTION_ARGS)
   LWGEOM *lwgeom;
   LWT_TOPOLOGY *topo;
   GSERIALIZED *geom;
-  MemoryContext old_context;
+  MemoryContext old_context, spi_context;
 
   if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) )
   {
@@ -4087,8 +4087,10 @@ Datum ST_GetFaceGeometry(PG_FUNCTION_ARGS)
 
   face_id = PG_GETARG_INT64(1) ;
 
+  old_context = CurrentMemoryContext;
   if ( SPI_OK_CONNECT != SPI_connect() )
   {
+    pfree(toponame);
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
@@ -4115,10 +4117,11 @@ Datum ST_GetFaceGeometry(PG_FUNCTION_ARGS)
   }
 
   /* Serialize in upper memory context (outside of SPI) */
-  /* TODO: use a narrower context to switch to ? */
-  old_context = MemoryContextSwitchTo( TopTransactionContext );
+  spi_context = MemoryContextSwitchTo(old_context);
   geom = geometry_serialize(lwgeom);
-  MemoryContextSwitchTo(old_context);
+  MemoryContextSwitchTo(spi_context);
+
+  /* No need to free lwgeom here because it will go away with the SPI context */
 
   SPI_finish();
 
