@@ -24,6 +24,7 @@ This document defines how geometry can have Z,M or both values and SRID
 in a way which is compatible to the existing 2D OpenGIS Simple Features
 specification AND to the Z-Geometry documented in OpenGIS 99-402r2.
 
+
 2. Proposal
 
 2.1. Definition of ZM-Geometry
@@ -38,6 +39,7 @@ Any ZM-Geometry can be converted into a 2D geometry by discarding all its
 Z and M values. The resulting 2D geometry is the "shadow" of the ZM-Geometry.
 2D geometries cannot be safely converted into ZM-Geometries, since their Z
 and M values are undefined, and not necessarily zero.
+
 
 2.2. Extensions to Well-Known-Binary format
 
@@ -170,7 +172,14 @@ WKBPoint {
 }
 
 
-2.3. Extensions to Well-Known-Text format
+2.3. Empty Geometry Handling
+
+For geometries with a counter (nPoints for LineString, nRings for Polygon, nPoints for MultiPoint, nLines for MultiLineString, nPolygons for MultiPolygon, nGeometries for GeometryCollection), an Empty geometry can be represented by setting the counter to zero.
+
+For an empty Point, which does not have a counter, an empty geometry is signalled by setting all coordinates to an IEEE-754 quiet NaN value (big endian 0x7ff8000000000000 or little endian 0x000000000000f87f depending on the endian value of the WKB).
+
+
+2.4. Extensions to Well-Known-Text format
 
 Geometry SRID presence and value would be represented using a
 "SRID=#;" prefix to the WKT text:
