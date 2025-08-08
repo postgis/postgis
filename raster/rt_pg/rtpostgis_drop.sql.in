@@ -135,11 +135,10 @@ SELECT _postgis_drop_function_by_identity('st_approxquantile', 'rastertable text
 SELECT _postgis_drop_function_by_identity('st_approxquantile', 'rastertable text, rastercolumn text, exclude_nodata_value boolean, quantile double precision','3.0');
 SELECT _postgis_drop_function_by_identity('st_approxquantile', 'rastertable text, rastercolumn text, quantile double precision','3.0');
 
-
-
 SELECT _postgis_drop_function_by_identity('st_value','rast raster, band integer, pt geometry, exclude_nodata_value boolean');
 
 SELECT _postgis_drop_function_by_signature('st_gdalopenoptions(text[])');
 
 SELECT _postgis_drop_function_by_identity('st_clip','rast raster, geom geometry, nodataval float8[], crop boolean', '3.5');
+SELECT _postgis_drop_function_by_identity('st_approxquantile', 'rast raster, quantile double precision','3.6');
 

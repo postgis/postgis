@@ -1122,11 +1122,6 @@ CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, exclude_nodata_value b
 	AS $$ SELECT ( @extschema@._ST_quantile($1, 1, $2, 0.1, ARRAY[$3]::double precision[])).value $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
-CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, quantile double precision)
-	RETURNS double precision
-	AS $$ SELECT ( @extschema@._ST_quantile($1, 1, TRUE, 0.1, ARRAY[$2]::double precision[])).value $$
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
 
 -----------------------------------------------------------------------
 -- ST_ValueCount and ST_ValuePercent

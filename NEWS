@@ -28,6 +28,8 @@ Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)
  - #3110, GT-242, [topology] numerous topology functions that accepted integer 
           replaced with bigint versions to support both integer and bigint inputs
           (Ayo Adesugba, U.S. Census Bureau)
+ - #5498 Drop st_approxquantile(raster, double precision), wasn't usable as it triggered
+    is not unique error when used (Regina Obe)
 
 
 * New Features *
