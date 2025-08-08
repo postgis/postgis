@@ -25,6 +25,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 - #5927, ST_IsCollection throwing exception (Paul Ramsey)
 - #5902, ST_PointFromText cannot create geometries with M (Paul Ramsey)
 - #5943, Memory leak in handling GEOS GeometryFactory (Megan Ma)
+- #5407, Use memset in place of bzero (Paul Ramsey)
 
 
 PostGIS 3.5.3

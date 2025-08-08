@@ -2227,7 +2227,7 @@ ptarray_scroll_in_place(POINTARRAY *pa, const POINT4D *pt)
 	/* TODO: reduce allocations */
 	tmp = ptarray_construct(FLAGS_GET_Z(pa->flags), FLAGS_GET_M(pa->flags), pa->npoints);
 
-	bzero(getPoint_internal(tmp, 0), (size_t)ptsize * pa->npoints);
+	memset(getPoint_internal(tmp, 0), 0,  (size_t)ptsize * pa->npoints);
 	/* Copy the block from found point to last point into the output array */
 	memcpy(
 		getPoint_internal(tmp, 0),
