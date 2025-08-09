@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-09 14:47+0000\n"
+"PO-Revision-Date: 2025-08-09 21:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -30,7 +30,7 @@ msgstr "Адміністрування PostGIS"
 #. Tag: title
 #, no-c-format
 msgid "Configuring raster support"
-msgstr "Налаштування підтримки растрових зображень"
+msgstr "Налаштування підтримки растрів"
 
 #. Tag: para
 #, no-c-format
@@ -38,8 +38,8 @@ msgid ""
 "If you enabled raster support you may want to read below how to properly "
 "configure it."
 msgstr ""
-"Якщо ви увімкнули підтримку растрових зображень, вам може бути корисно "
-"ознайомитися з тим, як правильно її налаштувати."
+"Якщо ви увімкнули підтримку растрів, ви можете прочитати нижче, як правильно "
+"її налаштувати."
 
 #. Tag: para
 #, no-c-format
@@ -51,12 +51,12 @@ msgid ""
 "For PostGIS 2.2, you can use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
-"Починаючи з PostGIS 2.1.3, растри поза базою даних та всі драйвери растрів "
-"за замовчуванням вимкнені. Щоб знову ввімкнути їх, потрібно встановити такі "
-"змінні середовища <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> та "
-"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> у середовищі сервера. Для "
-"PostGIS 2.2 можна використовувати більш кросплатформний підхід, встановивши "
-"відповідний <xref linkend=\"PostGIS_GUC\"/>."
+"Починаючи з версії PostGIS 2.1.3, растри поза базою даних та всі растрові "
+"драйвери стандартно вимкнено. Для того, щоб їх увімкнути, вам потрібно "
+"встановити наступні змінні оточення <varname>POSTGIS_GDAL_ENABLED_DRIVERS</"
+"varname> та <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> у серверному "
+"середовищі. Для PostGIS 2.2 ви можете скористатися більш кросплатформним "
+"підходом, встановивши відповідні <xref linkend=\"PostGIS_GUC\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -67,8 +67,8 @@ msgstr "Якщо ви хочете увімкнути офлайн-растр:"
 #, no-c-format
 msgid "Any other setting or no setting at all will disable out of db rasters."
 msgstr ""
-"Будь-яке інше налаштування або відсутність налаштувань призведе до вимкнення "
-"растрів поза базою даних."
+"Будь-який інший параметр або відсутність параметра взагалі вимкне растри з "
+"db."
 
 #. Tag: para
 #, no-c-format
@@ -76,8 +76,8 @@ msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
 msgstr ""
-"Щоб увімкнути всі драйвери GDAL, доступні у вашій інсталяції GDAL, "
-"встановіть цю змінну середовища наступним чином"
+"Щоб увімкнути всі драйвери GDAL, доступні у вашому встановленні GDAL, "
+"встановіть цю змінну оточення наступним чином"
 
 #. Tag: para
 #, no-c-format
@@ -85,13 +85,13 @@ msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
 msgstr ""
-"Якщо ви хочете ввімкнути лише певні драйвери, встановіть змінну середовища "
+"Якщо ви хочете увімкнути лише певні драйвери, налаштуйте змінну оточення "
 "наступним чином:"
 
 #. Tag: para
 #, no-c-format
 msgid "If you are on windows, do not quote the driver list"
-msgstr "Якщо ви використовуєте Windows, не вказуйте список драйверів"
+msgstr "Якщо ви використовуєте Windows не беріть перелік драйверів в лапки"
 
 #. Tag: para
 #, no-c-format
@@ -102,11 +102,11 @@ msgid ""
 "<replaceable>main</replaceable>/environment</filename> where 10 refers to "
 "version of PostgreSQL and main refers to the cluster."
 msgstr ""
-"Налаштування змінних середовища залежить від операційної системи. Для "
+"Налаштування змінних оточення залежить від операційної системи. Для "
 "PostgreSQL, встановленого на Ubuntu або Debian за допомогою apt-postgresql, "
-"найкращим способом є редагування файлу <filename>/etc/postgresql/"
+"найкращим способом є редагування <filename>/etc/postgresql/"
 "<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</"
-"filename>, де 10 означає версію PostgreSQL, а main — кластер."
+"filename>, де 10 позначає версію PostgreSQL, а main — кластер."
 
 #. Tag: para
 #, no-c-format
@@ -118,12 +118,12 @@ msgid ""
 "clicking <emphasis>Advanced System Settings -&gt;Advanced-&gt;Environment "
 "Variables</emphasis> and adding new system variables."
 msgstr ""
-"У Windows, якщо ви працюєте як служба, ви можете встановити через системні "
-"змінні, до яких у Windows 7 можна дістатися, клацнувши правою кнопкою миші "
-"на «Комп'ютер» > «Властивості» > «Додаткові параметри системи» або в "
-"провіднику, перейшовши до <varname>Панель керування\\Усі елементи панелі "
-"керування\\Система</varname>. Потім натисніть <emphasis>Додаткові параметри "
-"системи -&gt;Додатково-&gt;Змінні середовища</emphasis> і додайте нові "
+"У Windows, якщо ви запускаєте службу, ви можете встановити системні змінні, "
+"до яких у Windows 7 можна потрапити, клацнувши правою кнопкою миші на "
+"Компʼютер -&gt; Властивості -&gt; Додаткові параметри системи або в "
+"провіднику перейшовши до <varname>Панель керування\\Всі елементи панелі "
+"керування\\Система</varname>. Потім натисніть <emphasis>Додаткові системні "
+"налаштування -&gt;Додаткові -&gt;Змінні середовища</emphasis> і додайте нові "
 "системні змінні."
 
 #. Tag: para
@@ -132,18 +132,18 @@ msgid ""
 "After you set the environment variables, you'll need to restart your "
 "PostgreSQL service for the changes to take effect."
 msgstr ""
-"Після встановлення змінних середовища необхідно перезапустити службу "
-"PostgreSQL, щоб зміни набули чинності."
+"Після того, як ви встановите змінні оточення, вам потрібно буде "
+"перезапустити службу PostgreSQL, щоб зміни набули чинності."
 
 #. Tag: title
 #, no-c-format
 msgid "Creating spatial databases"
-msgstr ""
+msgstr "Створення просторових баз даних"
 
 #. Tag: title
 #, no-c-format
 msgid "Spatially enable database using EXTENSION"
-msgstr ""
+msgstr "Активувати просторове розширення в базі данних за допомогою EXTENSION"
 
 #. Tag: para
 #, no-c-format
@@ -152,6 +152,9 @@ msgid ""
 "extensions/postgis modules, you can turn a database into a spatial one using "
 "the EXTENSION mechanism."
 msgstr ""
+"Якщо ви використовуєте PostgreSQL 9.1+ і скомпілювали та встановили модулі "
+"extensions/postgis, ви можете перетворити базу даних на просторову за "
+"допомогою механізму EXTENSION."
 
 #. Tag: para
 #, no-c-format
@@ -160,17 +163,23 @@ msgid ""
 "the functions and comments. Raster and topology are packaged as a separate "
 "extension."
 msgstr ""
+"Основне розширення PostGIS включає геометрію, географію, spatial_ref_sys та "
+"всі функції і коментарі. Растр і топологія упаковані як окреме розширення."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Run the following SQL snippet in the database you want to enable spatially:"
 msgstr ""
+"Виконайте наступний фрагмент SQL-коду в базі даних, яку ви хочете активувати "
+"просторове розширення:"
 
 #. Tag: title
 #, no-c-format
 msgid "Spatially enable database without using EXTENSION (discouraged)"
 msgstr ""
+"Активувати просторове розширення бази даних без використання EXTENSION (не "
+"рекомендується)"
 
 #. Tag: para
 #, no-c-format
@@ -179,6 +188,9 @@ msgid ""
 "installed in the PostgreSQL extension directory (for example during testing, "
 "development or in a restricted environment)."
 msgstr ""
+"Зазвичай це потрібно лише в тому випадку, якщо ви не можете або не хочете "
+"встановлювати PostGIS у каталозі розширень PostgreSQL (наприклад, під час "
+"тестування, розробки або в обмеженому середовищі)."
 
 #. Tag: para
 #, no-c-format
@@ -187,6 +199,10 @@ msgid ""
 "by loading the various sql files located in <filename>[prefix]/share/"
 "contrib</filename> as specified during the build phase."
 msgstr ""
+"Додавання об'єктів PostGIS та визначень функцій до вашої бази даних "
+"здійснюється шляхом завантаження різних файлів sql, розташованих у "
+"<filename>[prefix]/share/contrib</filename>, як зазначено під час фази "
+"побудови."
 
 #. Tag: para
 #, no-c-format
@@ -196,6 +212,10 @@ msgid ""
 "objects are in the <filename>rtpostgis.sql</filename> script. Topology "
 "objects are in the <filename>topology.sql</filename> script."
 msgstr ""
+"Основні об'єкти PostGIS (типи геометрії та географії, а також функції їх "
+"підтримки) містяться у скрипті <filename>postgis.sql</filename>. Растрові "
+"об'єкти містяться у скрипті <filename>rtpostgis.sql</filename>. Топологічні "
+"об'єкти містяться у скрипті <filename>topology.sql</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -205,6 +225,10 @@ msgid ""
 "populate the <varname>spatial_ref_sys</varname> table. This will permit you "
 "to perform ST_Transform() operations on geometries."
 msgstr ""
+"Для отримання повного набору ідентифікаторів визначення системи координат "
+"EPSG ви також можете завантажити файл визначень <filename>spatial_ref_sys."
+"sql</filename> і заповнити таблицю <varname>spatial_ref_sys</varname>. Це "
+"дозволить вам виконувати операції ST_Transform() над геометріями."
 
 #. Tag: para
 #, no-c-format
@@ -214,16 +238,20 @@ msgid ""
 "by simply typing <command>\\dd [function_name]</command> from a "
 "<command>psql</command> terminal window."
 msgstr ""
+"Якщо ви бажаєте додати коментарі до функцій PostGIS, ви можете знайти їх у "
+"скрипті <filename>postgis_comments.sql</filename>. Коментарі можна "
+"переглянути, просто ввівши <command>\\dd [function_name]</command> у вікні "
+"терміналу <command>psql</command>."
 
 #. Tag: para
 #, no-c-format
 msgid "Run the following Shell commands in your terminal:"
-msgstr ""
+msgstr "Виконайте наступні команди Shell у терміналі:"
 
 #. Tag: title
 #, no-c-format
 msgid "Upgrading spatial databases"
-msgstr ""
+msgstr "Оновлення просторових баз даних"
 
 #. Tag: para
 #, no-c-format
@@ -231,6 +259,8 @@ msgid ""
 "Upgrading existing spatial databases can be tricky as it requires "
 "replacement or introduction of new PostGIS object definitions."
 msgstr ""
+"Оновлення існуючих просторових баз даних може бути складним, оскільки "
+"вимагає заміни або впровадження нових визначень об'єктів PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -238,6 +268,8 @@ msgid ""
 "Unfortunately not all definitions can be easily replaced in a live database, "
 "so sometimes your best bet is a dump/reload process."
 msgstr ""
+"На жаль, не всі визначення можна легко замінити в активній базі даних, тому "
+"іноді найкращим варіантом є процес дампа/перезавантаження."
 
 #. Tag: para
 #, no-c-format
@@ -245,6 +277,8 @@ msgid ""
 "PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases, and "
 "a HARD UPGRADE procedure for major releases."
 msgstr ""
+"PostGIS надає процедуру SOFT UPGRADE для незначних випусків або випусків з "
+"виправленням помилок, а також процедуру HARD UPGRADE для основних випусків."
 
 #. Tag: para
 #, no-c-format
@@ -253,11 +287,14 @@ msgid ""
 "data. If you use the -Fc flag to pg_dump you will always be able to restore "
 "the dump with a HARD UPGRADE."
 msgstr ""
+"Перед тим, як спробувати оновити PostGIS, завжди варто зробити резервну "
+"копію ваших даних. Якщо ви використовуєте прапор -Fc для pg_dump, ви завжди "
+"зможете відновити дамп за допомогою HARD UPGRADE."
 
 #. Tag: title
 #, no-c-format
 msgid "Soft upgrade"
-msgstr ""
+msgstr "М'яке оновлення"
 
 #. Tag: para
 #, no-c-format
@@ -267,11 +304,15 @@ msgid ""
 "way, you are advised to switch your install to extensions because the script "
 "way is no longer supported."
 msgstr ""
+"Якщо ви встановили базу даних за допомогою розширень, вам також потрібно "
+"буде оновити її за допомогою моделі розширень. Якщо ви встановили базу даних "
+"за допомогою старого скрипту sql, рекомендуємо перейти на розширення, "
+"оскільки скрипт більше не підтримується."
 
 #. Tag: title
 #, no-c-format
 msgid "Soft Upgrade 9.1+ using extensions"
-msgstr ""
+msgstr "М'яке оновлення 9.1+ за допомогою розширень"
 
 #. Tag: para
 #, no-c-format
@@ -280,6 +321,8 @@ msgid ""
 "upgrade using extensions as well. Doing a minor upgrade with extensions, is "
 "fairly painless."
 msgstr ""
+"Якщо ви спочатку встановили PostGIS з розширеннями, то вам потрібно також "
+"оновити розширення. Незначне оновлення з розширеннями є досить простим."
 
 #. Tag: para
 #, no-c-format
@@ -288,11 +331,15 @@ msgid ""
 "linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the latest "
 "version you have installed."
 msgstr ""
+"Якщо ви використовуєте PostGIS 3 або вище, то вам слід скористатися функцією "
+"<xref linkend=\"PostGIS_Extensions_Upgrade\"/>, щоб оновити систему до "
+"останньої версії, яку ви встановили."
 
 #. Tag: para
 #, no-c-format
 msgid "If you are running PostGIS 2.5 or lower, then do the following:"
 msgstr ""
+"Якщо ви використовуєте PostGIS 2.5 або нижчу версію, виконайте наступні дії:"
 
 #. Tag: para
 #, no-c-format
@@ -300,11 +347,13 @@ msgid ""
 "If you have multiple versions of PostGIS installed, and you don't want to "
 "upgrade to the latest, you can explicitly specify the version as follows:"
 msgstr ""
+"Якщо у вас встановлено кілька версій PostGIS і ви не хочете оновлювати їх до "
+"останньої версії, ви можете явно вказати версію наступним чином:"
 
 #. Tag: para
 #, no-c-format
 msgid "If you get an error notice something like:"
-msgstr ""
+msgstr "Якщо ви отримаєте повідомлення про помилку, схоже на таке:"
 
 #. Tag: para
 #, no-c-format
@@ -313,11 +362,14 @@ msgid ""
 "<xref linkend=\"create_new_db_extensions\"/> and then restore your backup on "
 "top of this new database."
 msgstr ""
+"Потім вам потрібно буде створити резервну копію вашої бази даних, створити "
+"нову, як описано в <xref linkend=\"create_new_db_extensions\"/>, а потім "
+"відновити резервну копію на цій новій базі даних."
 
 #. Tag: para
 #, no-c-format
 msgid "If you get a notice message like:"
-msgstr ""
+msgstr "Якщо ви отримаєте таке повідомлення:"
 
 #. Tag: para
 #, no-c-format
@@ -328,6 +380,11 @@ msgid ""
 "in that case you can append \"next\" to the version string, and next time "
 "you'll need to drop the \"next\" suffix again:"
 msgstr ""
+"Тоді все вже оновлено і ви можете сміливо ігнорувати це. <emphasis role="
+"\"bold\">ЗА ВИНЯТКОМ</emphasis> випадків, коли ви намагаєтеся оновити версію "
+"з розробницької до наступної (яка не отримує нового номера версії); в цьому "
+"випадку ви можете додати «next» до рядка версії, а наступного разу вам "
+"потрібно буде знову видалити суфікс «next»:"
 
 #. Tag: para
 #, no-c-format
@@ -337,6 +394,10 @@ msgid ""
 "the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
 "the newest latest version during restore."
 msgstr ""
+"Якщо ви спочатку встановили PostGIS без вказання версії, то часто можна "
+"пропустити перевстановлення розширення postgis перед відновленням, оскільки "
+"резервна копія містить лише <code>CREATE EXTENSION postgis</code> і, отже, "
+"під час відновлення вибирає найновішу версію."
 
 #. Tag: para
 #, no-c-format
@@ -345,11 +406,14 @@ msgid ""
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
 "safely drop, if you don't need raster support. You can drop as follows:"
 msgstr ""
+"Якщо ви оновлюєте розширення PostGIS з версії до 3.0.0, у вас з’явиться нове "
+"розширення <emphasis>postgis_raster</emphasis>, яке можна безпечно видалити, "
+"якщо вам не потрібна підтримка растрових даних. Видалити його можна так:"
 
 #. Tag: title
 #, no-c-format
 msgid "Soft Upgrade Pre 9.1+ or without extensions"
-msgstr ""
+msgstr "М'яке оновлення до версії 9.1+ або без розширень"
 
 #. Tag: para
 #, no-c-format
@@ -358,6 +422,9 @@ msgid ""
 "extensions. If you have extensions and try to upgrade with this approach "
 "you'll get messages like:"
 msgstr ""
+"Цей розділ стосується лише тих, хто встановив PostGIS без використання "
+"розширень. Якщо у вас є розширення і ви спробуєте оновити систему за "
+"допомогою цього підходу, ви отримаєте такі повідомлення:"
 
 #. Tag: para
 #, no-c-format
@@ -366,6 +433,9 @@ msgid ""
 "prior to r7409, you cannot use this procedure but would rather need to do a "
 "<link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
 msgstr ""
+"ПРИМІТКА: якщо ви переходите з PostGIS 1.* на PostGIS 2.* або з PostGIS 2.* "
+"до версії r7409, ви не можете використовувати цю процедуру, а повинні "
+"виконати <link linkend=\"hard_upgrade\">ЖОРСТКЕ ОНОВЛЕННЯ</link>."
 
 #. Tag: para
 #, no-c-format
@@ -374,6 +444,9 @@ msgid ""
 "<filename>*_upgrade.sql</filename> files in the installation folders. You "
 "can list them all with:"
 msgstr ""
+"Після компіляції та встановлення (make install) ви повинні знайти набір "
+"файлів <filename>*_upgrade.sql</filename> в папках інсталяції. Ви можете "
+"перелічити їх усі за допомогою:"
 
 #. Tag: para
 #, no-c-format
@@ -381,6 +454,7 @@ msgid ""
 "Load them all in turn, starting from <filename>postgis_upgrade.sql</"
 "filename>."
 msgstr ""
+"Завантажте їх по черзі, починаючи з <filename>postgis_upgrade.sql</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -390,11 +464,16 @@ msgid ""
 "<filename>topology_upgrade.sql</filename> and <filename>sfcgal_upgrade.sql</"
 "filename> respectively. If you need them:"
 msgstr ""
+"Така сама процедура застосовується до розширень raster, topology та sfcgal, "
+"з файлами оновлення, що мають назви <filename>rtpostgis_upgrade.sql</"
+"filename>, <filename>topology_upgrade.sql</filename> та "
+"<filename>sfcgal_upgrade.sql</filename> відповідно. Якщо вони вам потрібні:"
 
 #. Tag: para
 #, no-c-format
 msgid "You are advised to switch to an extension based install by running"
 msgstr ""
+"Рекомендується перейти на інсталяцію на основі розширення, виконавши команду"
 
 #. Tag: para
 #, no-c-format
@@ -403,6 +482,10 @@ msgid ""
 "upgrading your version you are using a version too early for a soft upgrade "
 "and need to do a <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
 msgstr ""
+"Якщо ви не можете знайти файл <filename>postgis_upgrade.sql</filename>, "
+"призначений для оновлення вашої версії, це означає, що ви використовуєте "
+"версію, яка є занадто ранньою для м'якого оновлення, і вам потрібно виконати "
+"<link linkend=\"hard_upgrade\">ЖОРСТКЕ ОНОВЛЕННЯ</link>."
 
 #. Tag: para
 #, no-c-format
@@ -411,11 +494,14 @@ msgid ""
 "about the need to run this kind of upgrade using a \"procs need upgrade\" "
 "message."
 msgstr ""
+"Функція <xref linkend=\"PostGIS_Full_Version\"/> повинна повідомити вас про "
+"необхідність виконання такого оновлення за допомогою повідомлення «procs "
+"need upgrade» (процедури потребують оновлення)."
 
 #. Tag: title
 #, no-c-format
 msgid "Hard upgrade"
-msgstr ""
+msgstr "Жорстке оновлення"
 
 #. Tag: para
 #, no-c-format
@@ -426,6 +512,12 @@ msgid ""
 "Notes</link> appendix reports for each version whether you need a dump/"
 "reload (HARD UPGRADE) to upgrade."
 msgstr ""
+"Під HARD UPGRADE ми маємо на увазі повне скидання/перезавантаження баз даних "
+"з підтримкою PostGIS. HARD UPGRADE необхідний, коли змінюється внутрішнє "
+"зберігання об'єктів PostGIS або коли SOFT UPGRADE неможливий. У додатку "
+"<link linkend=\"release_notes\">Release Notes</link> для кожної версії "
+"вказано, чи потрібно для оновлення виконувати скидання/перезавантаження ("
+"HARD UPGRADE)."
 
 #. Tag: para
 #, no-c-format
@@ -436,6 +528,11 @@ msgid ""
 "database with PostGIS installed without getting duplicate symbol errors or "
 "bringing forward deprecated objects."
 msgstr ""
+"Процес вивантаження/перезавантаження здійснюється за допомогою скрипта "
+"postgis_restore, який пропускає з вивантаження всіх визначень, що належать "
+"до PostGIS (включаючи старі), що дозволяє відновити схеми та дані в базі "
+"даних з встановленим PostGIS без помилок дублювання символів або перенесення "
+"застарілих об'єктів."
 
 #. Tag: para
 #, no-c-format
@@ -444,11 +541,14 @@ msgid ""
 "href=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
 "upgrade</link>."
 msgstr ""
+"Додаткові інструкції для користувачів Windows доступні за посиланням <link "
+"xlink:href=«http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade»>Windows "
+"Hard upgrade</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "The Procedure is as follows:"
-msgstr ""
+msgstr "Процедура виглядає наступним чином:"
 
 #. Tag: para
 #, no-c-format
@@ -458,6 +558,10 @@ msgid ""
 "output. The user can be the owner of the db, need not be postgres super "
 "account."
 msgstr ""
+"Створіть дамп бази даних, яку ви хочете оновити, у «власному форматі» ("
+"назвемо його <varname>olddb</varname>), включіть бінарні блоки (-b) та "
+"детальний вивід (-v). Користувач може бути власником бази даних, не "
+"обов'язково мати супер-акаунт postgres."
 
 #. Tag: para
 #, no-c-format
@@ -467,6 +571,10 @@ msgid ""
 "linkend=\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> "
 "for instructions on how to do this."
 msgstr ""
+"Виконайте нову інсталяцію PostGIS у новій базі даних — ми будемо називати цю "
+"базу даних <varname>newdb</varname>. Інструкції щодо виконання цієї операції "
+"див. у розділах <xref linkend=\"create_new_db\"/> та <xref linkend="
+"\"create_new_db_extensions\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -477,6 +585,12 @@ msgid ""
 "If for any reason you really want your own overrides of standard entries "
 "just don't load the spatial_ref_sys.sql file when creating the new db."
 msgstr ""
+"Записи spatial_ref_sys, знайдені у вашому дампі, будуть відновлені, але вони "
+"не замінять існуючі записи в spatial_ref_sys. Це зроблено для того, щоб "
+"виправлення в офіційному наборі були правильно передані до відновлених баз "
+"даних. Якщо з якоїсь причини ви дійсно хочете замінити стандартні записи "
+"своїми власними, просто не завантажуйте файл spatial_ref_sys.sql під час "
+"створення нової бази даних."
 
 #. Tag: para
 #, no-c-format
@@ -489,6 +603,14 @@ msgid ""
 "functions can be later removed by loading <filename>uninstall_legacy.sql</"
 "filename>."
 msgstr ""
+"Якщо ваша база даних дуже стара або ви знаєте, що використовуєте давно "
+"застарілі функції у своїх представлень та функціях, можливо, вам доведеться "
+"завантажити <filename>legacy.sql</filename>, щоб усі ваші функції, "
+"представлень тощо знову працювали належним чином. Робіть це лише у разі "
+"_реальної_ необхідності. Якщо можливо, замість цього розгляньте можливість "
+"оновлення своїх представлень та функцій перед вивантаженням. Застарілі "
+"функції можна пізніше видалити, завантаживши <filename>uninstall_legacy."
+"sql</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -497,11 +619,14 @@ msgid ""
 "postgis_restore. Unexpected errors, if any, will be printed to the standard "
 "error stream by psql. Keep a log of those."
 msgstr ""
+"Відновіть резервну копію у новій базі даних <varname>newdb</varname> за "
+"допомогою postgis_restore. Несподівані помилки, якщо такі будуть, будуть "
+"виведені psql у стандартний потік помилок. Зберігайте їх у журналі."
 
 #. Tag: para
 #, no-c-format
 msgid "Errors may arise in the following cases:"
-msgstr ""
+msgstr "Помилки можуть виникати в таких випадках:"
 
 #. Tag: para
 #, no-c-format
@@ -514,6 +639,14 @@ msgid ""
 "to fix your code to stop using deprecated functions and drop them loading "
 "<filename>uninstall_legacy.sql</filename>."
 msgstr ""
+"Деякі з ваших представлень або функцій використовують застарілі об'єкти "
+"PostGIS. Щоб виправити це, ви можете спробувати завантажити скрипт "
+"<filename>legacy.sql</filename> перед відновленням або вам доведеться "
+"відновити версію PostGIS, яка все ще містить ці об'єкти, і спробувати "
+"міграцію знову після перенесення вашого коду. Якщо спосіб <filename>legacy."
+"sql</filename> працює для вас, не забудьте виправити свій код, щоб припинити "
+"використання застарілих функцій, і видалити їх, завантаживши "
+"<filename>uninstall_legacy.sql</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -527,6 +660,15 @@ msgid ""
 "invariant to hold and possibly also its primary key ( when multiple invalid "
 "SRIDS get converted to the same reserved SRID value )."
 msgstr ""
+"Деякі користувацькі записи spatial_ref_sys у файлі дампа мають недійсне "
+"значення SRID. Дійсні значення SRID більші за 0 і менші за 999000. Значення "
+"в діапазоні 999000.999999 зарезервовані для внутрішнього використання, а "
+"значення > 999999 не можуть використовуватися взагалі. Усі ваші "
+"користувацькі записи з недійсними SRID будуть збережені, а ті, що &gt; "
+"999999, будуть переміщені в зарезервований діапазон, але таблиця "
+"spatial_ref_sys втратить обмеження перевірки, що захищає цю інваріантність, "
+"а також, можливо, і свій первинний ключ (коли кілька недійсних SRID "
+"перетворюються на одне й те саме зарезервоване значення SRID)."
 
 #. Tag: para
 #, no-c-format
@@ -536,6 +678,11 @@ msgid ""
 "new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the invalid "
 "entry from spatial_ref_sys and re-construct the check(s) with:"
 msgstr ""
+"Щоб виправити цю ситуацію, слід скопіювати власний SRS до SRID із дійсним "
+"значенням (можливо, в діапазоні 910000..910999), перетворити всі таблиці на "
+"новий srid (див. <xref linkend=\"UpdateGeometrySRID\"/>), видалити недійсний "
+"запис із spatial_ref_sys і повторно створити перевірку (перевірки) за "
+"допомогою:"
 
 #. Tag: para
 #, no-c-format
@@ -545,6 +692,11 @@ msgid ""
 "IGN </link> cartography, you will have probably SRIDs out of range and you "
 "will see, when importing your database, issues like this :"
 msgstr ""
+"Якщо ви оновлюєте стару базу даних, що містить французьку <link "
+"xlink:href=«https://en.wikipedia.org/wiki/"
+"Institut_g%C3%A9ographique_national»> IGN </link> картографію, у вас, "
+"ймовірно, будуть SRID поза діапазоном, і під час імпортування бази даних ви "
+"побачите такі проблеми:"
 
 #. Tag: para
 #, no-c-format
@@ -553,11 +705,14 @@ msgid ""
 "IGN from the sql which is resulting from postgis_restore. So, after having "
 "run :"
 msgstr ""
+"У цьому випадку ви можете спробувати виконати наступні кроки: спочатку "
+"повністю видаліть IGN із sql, що є результатом postgis_restore. Отже, після "
+"виконання:"
 
 #. Tag: para
 #, no-c-format
 msgid "run this command :"
-msgstr ""
+msgstr "виконайте цю команду:"
 
 #. Tag: para
 #, no-c-format
@@ -568,11 +723,16 @@ msgid ""
 "Put_IGN_SRS_into_Postgis.sql\"> this script </link> After these operations, "
 "import your data :"
 msgstr ""
+"Створіть нову базу даних newdb, активуйте необхідні розширення Postgis і "
+"правильно вставте французьку систему IGN за допомогою: <link "
+"xlink:href=«https://raw.githubusercontent.com/Remi-C/"
+"IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql»> цього "
+"скрипту </link> Після цих операцій імпортуйте свої дані:"
 
 #. Tag: title
 #, no-c-format
 msgid "Performance Tuning"
-msgstr ""
+msgstr "Налаштування продуктивності"
 
 #. Tag: para
 #, no-c-format
@@ -582,6 +742,11 @@ msgid ""
 "are usually large, so memory-related optimizations generally have more of an "
 "impact on PostGIS than other types of PostgreSQL queries."
 msgstr ""
+"Налаштування продуктивності PostGIS дуже схоже на налаштування будь-якого "
+"робочого навантаження PostgreSQL. Єдиним додатковим моментом, який слід "
+"врахувати, є те, що геометрії та растри зазвичай мають великий розмір, тому "
+"оптимізації, пов'язані з пам'яттю, зазвичай мають більший вплив на PostGIS, "
+"ніж на інші типи запитів PostgreSQL."
 
 #. Tag: para
 #, no-c-format
@@ -590,6 +755,9 @@ msgid ""
 "href=\"https://wiki.postgresql.org/wiki/"
 "Tuning_Your_PostgreSQL_Server\">Tuning your PostgreSQL Server</link>."
 msgstr ""
+"Загальні відомості про оптимізацію PostgreSQL див. у розділі <link "
+"xlink:href=«https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server»"
+">Налаштування сервера PostgreSQL</link>."
 
 #. Tag: para
 #, no-c-format
@@ -598,6 +766,10 @@ msgid ""
 "touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</code> "
 "by using the <code>ALTER SYSTEM</code> command."
 msgstr ""
+"У PostgreSQL версії 9.4 і вище конфігурацію можна встановити на рівні "
+"сервера без редагування файлів <code>postgresql.conf</code> або "
+"<code>postgresql.auto.conf</code> за допомогою команди <code>ALTER "
+"SYSTEM</code>."
 
 #. Tag: para
 #, no-c-format
@@ -605,26 +777,28 @@ msgid ""
 "In addition to the Postgres settings, PostGIS has some custom settings which "
 "are listed in <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
+"Окрім налаштувань Postgres, PostGIS має деякі власні налаштування, які "
+"перелічені в <xref linkend=\"PostGIS_GUC\"/>."
 
 #. Tag: title
 #, no-c-format
 msgid "Startup"
-msgstr ""
+msgstr "Запуск"
 
 #. Tag: para
 #, no-c-format
 msgid "These settings are configured in <code>postgresql.conf</code>:"
-msgstr ""
+msgstr "Ці налаштування конфігуруються в <code>postgresql.conf</code>:"
 
 #. Tag: link
 #, no-c-format
 msgid "constraint_exclusion"
-msgstr ""
+msgstr "constraint_exclusion"
 
 #. Tag: para
 #, no-c-format
 msgid "Default: partition"
-msgstr ""
+msgstr "За замовчуванням: partition"
 
 #. Tag: para
 #, no-c-format
@@ -634,16 +808,21 @@ msgid ""
 "force the planner to only analyze tables for constraint consideration if "
 "they are in an inherited hierarchy and not pay the planner penalty otherwise."
 msgstr ""
+"Зазвичай використовується для розділення таблиць. За замовчуванням "
+"встановлено значення «partition», яке ідеально підходить для PostgreSQL 8.4 "
+"і вище, оскільки змушує планувальник аналізувати таблиці на предмет обмежень "
+"тільки в тому випадку, якщо вони знаходяться в успадкованій ієрархії, і не "
+"застосовувати штрафні санкції до планувальника в інших випадках."
 
 #. Tag: link
 #, no-c-format
 msgid "shared_buffers"
-msgstr ""
+msgstr "shared_buffers"
 
 #. Tag: para
 #, no-c-format
 msgid "Default: ~128MB in PostgreSQL 9.6"
-msgstr ""
+msgstr "За замовчуванням: ~128 МБ у PostgreSQL 9.6"
 
 #. Tag: para
 #, no-c-format
@@ -651,6 +830,8 @@ msgid ""
 "Set to about 25% to 40% of available RAM. On windows you may not be able to "
 "set as high."
 msgstr ""
+"Встановіть приблизно 25% до 40% доступної оперативної пам'яті. У Windows ви "
+"не зможете встановити таке високе значення."
 
 #. Tag: para
 #, no-c-format
@@ -661,11 +842,16 @@ msgid ""
 "setting has additional importance in that it controls the max number of "
 "processes you can have for parallel queries."
 msgstr ""
+"<link xlink:href=«https://www.postgresql.org/docs/current/static/runtime-"
+"config-resource.html#GUC-MAX-WORKER-PROCESSES»>max_worker_processes</link> "
+"Цей параметр доступний тільки для PostgreSQL 9.4+. Для PostgreSQL 9.6+ це "
+"налаштування має додаткове значення, оскільки воно контролює максимальну "
+"кількість процесів, які можна використовувати для паралельних запитів."
 
 #. Tag: para
 #, no-c-format
 msgid "Default: 8"
-msgstr ""
+msgstr "За замовчуванням: 8"
 
 #. Tag: para
 #, no-c-format
@@ -673,11 +859,13 @@ msgid ""
 "Sets the maximum number of background processes that the system can support. "
 "This parameter can only be set at server start."
 msgstr ""
+"Встановлює максимальну кількість фонових процесів, які може підтримувати "
+"система. Цей параметр можна встановити тільки під час запуску сервера."
 
 #. Tag: title
 #, no-c-format
 msgid "Runtime"
-msgstr ""
+msgstr "Час роботи"
 
 #. Tag: para
 #, no-c-format
@@ -686,26 +874,33 @@ msgid ""
 "config-resource.html#GUC-WORK-MEM\">work_mem</link> - sets the size of "
 "memory used for sort operations and complex queries"
 msgstr ""
+"<link xlink:href=«http://www.postgresql.org/docs/current/static/runtime-"
+"config-resource.html#GUC-WORK-MEM»>work_mem</link> - встановлює розмір "
+"пам'яті, що використовується для операцій сортування та складних запитів"
 
 #. Tag: para
 #, no-c-format
 msgid "Default: 1-4MB"
-msgstr ""
+msgstr "За замовчуванням: 1-4 МБ"
 
 #. Tag: para
 #, no-c-format
 msgid "Adjust up for large dbs, complex queries, lots of RAM"
 msgstr ""
+"Налаштуйте для великих баз даних, складних запитів, великого обсягу "
+"оперативної пам'яті"
 
 #. Tag: para
 #, no-c-format
 msgid "Adjust down for many concurrent users or low RAM."
 msgstr ""
+"Зменште налаштування для великої кількості одночасних користувачів або малої "
+"оперативної пам'яті."
 
 #. Tag: para
 #, no-c-format
 msgid "If you have lots of RAM and few developers:"
-msgstr ""
+msgstr "Якщо у вас багато оперативної пам'яті і мало розробників:"
 
 #. Tag: para
 #, no-c-format
@@ -714,16 +909,21 @@ msgid ""
 "config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> "
 "- the memory size used for VACUUM, CREATE INDEX, etc."
 msgstr ""
+"<link xlink:href=«http://www.postgresql.org/docs/current/static/runtime-"
+"config-resource.html#GUC-MAINTENANCE-WORK-MEM»>maintenance_work_mem</link> - "
+"розмір пам'яті, що використовується для VACUUM, CREATE INDEX тощо."
 
 #. Tag: para
 #, no-c-format
 msgid "Default: 16-64MB"
-msgstr ""
+msgstr "За замовчуванням: 16-64 МБ"
 
 #. Tag: para
 #, no-c-format
 msgid "Generally too low - ties up I/O, locks objects while swapping memory"
 msgstr ""
+"Зазвичай занадто низький - блокує введення-виведення, блокує об'єкти під час "
+"обміну пам'яттю"
 
 #. Tag: para
 #, no-c-format
@@ -731,11 +931,14 @@ msgid ""
 "Recommend 32MB to 1GB on production servers w/lots of RAM, but depends on "
 "the # of concurrent users. If you have lots of RAM and few developers:"
 msgstr ""
+"Рекомендуємо від 32 МБ до 1 ГБ на виробничих серверах з великим об'ємом "
+"оперативної пам'яті, але це залежить від кількості одночасних користувачів. "
+"Якщо у вас багато оперативної пам'яті і мало розробників:"
 
 #. Tag: link
 #, no-c-format
 msgid "max_parallel_workers_per_gather"
-msgstr ""
+msgstr "max_parallel_workers_per_gather"
 
 #. Tag: para
 #, no-c-format
@@ -749,11 +952,20 @@ msgid ""
 "make sure to bump up <code>max_worker_processes</code> to at least as high "
 "as this number."
 msgstr ""
+"Це налаштування доступне лише у PostgreSQL версії 9.6 і вище та впливає лише "
+"на PostGIS 2.3 і новіші версії, оскільки тільки PostGIS 2.3 і вище підтримує "
+"паралельні запити. Якщо встановити значення більше за 0, деякі запити, "
+"наприклад ті, що використовують реляційні функції, як-от "
+"<code>ST_Intersects</code>, можуть виконуватись із використанням кількох "
+"процесів і працювати більш ніж удвічі швидше. Якщо у вас багато вільних "
+"процесорів, варто встановити це значення рівним кількості наявних "
+"процесорів. Також переконайтеся, що параметр <code>max_worker_processes</"
+"code> встановлений принаймні на таке саме значення."
 
 #. Tag: para
 #, no-c-format
 msgid "Default: 0"
-msgstr ""
+msgstr "За замовчуванням: 0"
 
 #. Tag: para
 #, no-c-format
@@ -766,11 +978,19 @@ msgid ""
 "may be inefficient. Setting this value to 0, which is the default, disables "
 "parallel query execution."
 msgstr ""
+"Встановлює максимальну кількість воркерів, які може запустити один вузол "
+"<varname>Gather</varname>. Паралельні воркери беруться з пулу процесів, "
+"створеного параметром <varname>max_worker_processes</varname>. Зауважте, що "
+"запитувана кількість воркерів може бути недоступною під час виконання. Якщо "
+"це станеться, план виконання буде працювати з меншою кількістю воркерів, ніж "
+"очікувалося, що може призвести до неефективності. Встановлення цього "
+"значення в 0, що є значенням за замовчуванням, вимикає виконання паралельних "
+"запитів."
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Extras"
-msgstr ""
+msgstr "Додаткові функції PostGIS"
 
 #. Tag: para
 #, no-c-format
@@ -780,16 +1000,20 @@ msgid ""
 "PostGIS binary releases, but are usually PL/pgSQL based or standard shell "
 "scripts that can be run as is."
 msgstr ""
+"У цьому розділі описано функції, що містяться в папці extras архівів "
+"вихідного коду PostGIS та репозиторії вихідного коду. Вони не завжди входять "
+"до складу бінарних випусків PostGIS, але зазвичай є скриптами на основі PL/"
+"pgSQL або стандартними скриптами оболонки, які можна запускати без змін."
 
 #. Tag: chapter
 #, no-c-format
 msgid "&extras_address_standardizer; &extras_tigergeocoder;"
-msgstr ""
+msgstr "&extras_address_standardizer; &extras_tigergeocoder;"
 
 #. Tag: title
 #, no-c-format
 msgid "Address Standardizer"
-msgstr ""
+msgstr "Стандартизатор адрес"
 
 #. Tag: para
 #, no-c-format
@@ -799,6 +1023,10 @@ msgid ""
 "<link xlink:href=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-"
 "refactor/postgresql\">PAGC PostgreSQL Address Standardizer</link>)."
 msgstr ""
+"Це є форком <link xlink:href=«http://www.pagcgeo.org/docs/html/pagc-11.html»"
+">стандартизатора PAGC</link> (оригінальний код для цієї частини був <link "
+"xlink:href=«http://sourceforge.net/p/pagc/code/360/tree/branches/"
+"sew-refactor/postgresql»>стандартизатором адрес PAGC PostgreSQL</link>)."
 
 #. Tag: para
 #, no-c-format
@@ -807,6 +1035,9 @@ msgid ""
 "address and normalizes it based on a set of rules stored in a table and "
 "helper lex and gaz tables."
 msgstr ""
+"Стандартизатор адрес — це однорядковий аналізатор адрес, який приймає вхідну "
+"адресу та нормалізує її на основі набору правил, що зберігаються в таблиці "
+"та допоміжних таблицях lex і gaz."
 
 #. Tag: para
 #, no-c-format
@@ -819,6 +1050,13 @@ msgid ""
 "contains gaz, lex, and rules tables for US data. This extensions can be "
 "installed via: <code>CREATE EXTENSION address_standardizer_data_us;</code>"
 msgstr ""
+"Код упакований в одну бібліотеку розширення PostgreSQL під назвою "
+"<code>address_standardizer</code>, яке можна встановити за допомогою команди "
+"<code>CREATE EXTENSION address_standardizer;</code>. Окрім розширення "
+"address_standardizer, також створене прикладне розширення з даними — "
+"<code>address_standardizer_data_us</code>, яке містить таблиці gaz, lex і "
+"rules для даних США. Це розширення можна встановити командою: <code>CREATE "
+"EXTENSION address_standardizer_data_us;</code>"
 
 #. Tag: para
 #, no-c-format
@@ -826,6 +1064,8 @@ msgid ""
 "The code for this extension can be found in the PostGIS <filename>extensions/"
 "address_standardizer</filename> and is currently self-contained."
 msgstr ""
+"Код цього розширення можна знайти в PostGIS <filename>extensions/"
+"address_standardizer</filename> і на даний момент він є самостійним."
 
 #. Tag: para
 #, no-c-format
@@ -833,11 +1073,13 @@ msgid ""
 "For installation instructions refer to: <xref "
 "linkend=\"installing_pagc_address_standardizer\"/>."
 msgstr ""
+"Інструкції з установки див.: <xref linkend="
+"\"installing_pagc_address_standardizer\"/>."
 
 #. Tag: title
 #, no-c-format
 msgid "How the Parser Works"
-msgstr ""
+msgstr "Як працює парсер"
 
 #. Tag: para
 #, no-c-format
@@ -848,11 +1090,16 @@ msgid ""
 "currently does not look for a country code or name, but that could be "
 "introduced in the future."
 msgstr ""
+"Парсер працює справа наліво, спочатку перевіряючи макроелементи для "
+"поштового індексу, штату/провінції, міста, а потім перевіряє мікроелементи, "
+"щоб визначити, чи маємо ми справу з номером будинку, вулицею, перехрестям "
+"або орієнтиром. Наразі він не перевіряє код країни або назву, але це може "
+"бути додано в майбутньому."
 
 #. Tag: term
 #, no-c-format
 msgid "Country code"
-msgstr ""
+msgstr "Код країни"
 
 #. Tag: para
 #, no-c-format
@@ -860,11 +1107,14 @@ msgid ""
 "Assumed to be US or CA based on: postcode as US or Canada state/province as "
 "US or Canada else US"
 msgstr ""
+"Вважається, що місцезнаходження — США або Канада, на підставі: поштового "
+"індексу США або Канади, штату/провінції США або Канади, в іншому випадку — "
+"США"
 
 #. Tag: term
 #, no-c-format
 msgid "Postcode/zipcode"
-msgstr ""
+msgstr "Поштовий індекс"
 
 #. Tag: para
 #, no-c-format
@@ -873,11 +1123,14 @@ msgid ""
 "are currently in the parseaddress-api.c and are relatively simple to make "
 "changes to if needed."
 msgstr ""
+"Вони розпізнаються за допомогою регулярних виразів, сумісних з Perl. Ці "
+"регулярні вирази наразі знаходяться у файлі parseaddress-api.c і їх відносно "
+"просто змінити, якщо це необхідно."
 
 #. Tag: term
 #, no-c-format
 msgid "State/province"
-msgstr ""
+msgstr "Штат/провінція"
 
 #. Tag: para
 #, no-c-format
@@ -886,11 +1139,14 @@ msgid ""
 "are currently in the parseaddress-api.c but could get moved into includes in "
 "the future for easier maintenance."
 msgstr ""
+"Вони розпізнаються за допомогою регулярних виразів, сумісних з Perl. Ці "
+"регулярні вирази наразі знаходяться в parseaddress-api.c, але в майбутньому "
+"можуть бути переміщені в includes для полегшення обслуговування."
 
 #. Tag: title
 #, no-c-format
 msgid "Address Standardizer Types"
-msgstr ""
+msgstr "Типи стандартизаторів адрес"
 
 #. Tag: para
 #, no-c-format
@@ -899,6 +1155,9 @@ msgid ""
 "Standardizer extension. Note we describe the casting behavior of these which "
 "is very important especially when designing your own functions."
 msgstr ""
+"У цьому розділі наведені типи даних PostgreSQL, встановлені розширенням "
+"Address Standardizer. Зверніть увагу, що ми описуємо поведінку приведення "
+"типів (casting), що є особливо важливим при розробці власних функцій."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -906,6 +1165,8 @@ msgid ""
 "A composite type that consists of the elements of an address. This is the "
 "return type for <varname>standardize_address</varname> function."
 msgstr ""
+"Композитний тип, що складається з елементів адреси. Це тип повернення для "
+"функції <varname>standardize_address</varname>."
 
 #. Tag: title
 #, no-c-format
