@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-09 21:47+0000\n"
+"PO-Revision-Date: 2025-08-11 16:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 #. Tag: chapter
 #, no-c-format
 msgid "&database_tuning;"
-msgstr ""
+msgstr "&database_tuning;"
 
 #. Tag: title
 #, no-c-format
@@ -1171,7 +1171,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Опис"
 
 #. Tag: para
 #, no-c-format
@@ -1181,6 +1181,10 @@ msgid ""
 "for elements are borrowed from <link xlink:href=\"http://www.pagcgeo.org/"
 "docs/html/pagc-12.html#ss12.1\">PAGC Postal Attributes</link>."
 msgstr ""
+"Композитний тип, що складається з елементів адреси. Це тип повернення для "
+"функції <xref linkend=\"standardize_address\"/>. Деякі описи елементів "
+"запозичені з <link xlink:href=«http://www.pagcgeo.org/docs/html/pagc-12."
+"html#ss12.1»>PAGC Postal Attributes</link>."
 
 #. Tag: para
 #, no-c-format
@@ -1188,11 +1192,13 @@ msgid ""
 "The token numbers denote the output reference number in the <xref "
 "linkend=\"rulestab\"/>."
 msgstr ""
+"Номери токенів позначають вихідний номер посилання в <xref linkend=\"rulestab"
+"\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "&address_standardizer_required;"
-msgstr ""
+msgstr "&address_standardizer_required;"
 
 #. Tag: para
 #, no-c-format
@@ -1200,6 +1206,9 @@ msgid ""
 "is text (token number <code>0</code>): Refers to building number or name. "
 "Unparsed building identifiers and types. Generally blank for most addresses."
 msgstr ""
+"є текстом (номер токена <code>0</code>): Позначає номер або назву будівлі. "
+"Нерозбірні ідентифікатори та типи будівель. Зазвичай для більшості адрес це "
+"поле залишається порожнім."
 
 #. Tag: para
 #, no-c-format
@@ -1207,6 +1216,8 @@ msgid ""
 "is a text (token number <code>1</code>): This is the street number on a "
 "street. Example <emphasis>75</emphasis> in <code>75 State Street</code>."
 msgstr ""
+"є текстом (номер токена <code>1</code>): Це номер будинку на вулиці. Приклад "
+"<emphasis>75</emphasis> в <code>75 State Street</code>."
 
 #. Tag: para
 #, no-c-format
@@ -1214,6 +1225,8 @@ msgid ""
 "is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as "
 "North, South, East, West etc."
 msgstr ""
+"є текстом (номер токена <code>2</code>): НАЗВА ВУЛИЦІ ПЕРЕД НАПРЯМКОМ, "
+"наприклад North, South, East, West тощо."
 
 #. Tag: para
 #, no-c-format
@@ -1221,16 +1234,18 @@ msgid ""
 "is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example "
 "<emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>."
 msgstr ""
+"є текстом (номер токена <code>3</code>): ПРЕДМОДИФІКАТОР НАЗВИ ВУЛИЦІ "
+"Приклад <emphasis>OLD</emphasis> в <code>3715 OLD HIGHWAY 99</code>."
 
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>4</code>): STREET PREFIX TYPE"
-msgstr ""
+msgstr "є текстом (номер токена <code>4</code>): ПРЕФІКС ВУЛИЦІ ТИП"
 
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>5</code>): STREET NAME"
-msgstr ""
+msgstr "є текстом (номер токена <code>5</code>): НАЗВА ВУЛИЦІ"
 
 #. Tag: para
 #, no-c-format
@@ -1239,6 +1254,9 @@ msgid ""
 "street type following the root street name. Example <emphasis>STREET</"
 "emphasis> in <code>75 State Street</code>."
 msgstr ""
+"є текстом (номер токена <code>6</code>): ТИП ВУЛИЦІ, наприклад St, Ave, Cir. "
+"Тип вулиці, що йде після основної назви вулиці. Приклад <emphasis>STREET</"
+"emphasis> в <code>75 State Street</code>."
 
 #. Tag: para
 #, no-c-format
@@ -1247,6 +1265,9 @@ msgid ""
 "modifier that follows the street name.. Example <emphasis>WEST</emphasis> in "
 "<code>3715 TENTH AVENUE WEST</code>."
 msgstr ""
+"є текстом (номер токена <code>7</code>): STREET POST-DIRECTIONAL Модифікатор "
+"напрямку, що стоїть після назви вулиці. Приклад <emphasis>WEST</emphasis> в "
+"<code>3715 TENTH AVENUE WEST</code>."
 
 #. Tag: para
 #, no-c-format
@@ -1254,27 +1275,30 @@ msgid ""
 "is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>7</"
 "emphasis> in <code>RR 7</code>."
 msgstr ""
+"є текстом (номер токена <code>8</code>): СІЛЬСЬКИЙ МАРШРУТ . Приклад "
+"<emphasis>7</emphasis> в <code>RR 7</code>."
 
 #. Tag: para
 #, no-c-format
 msgid "is text: Extra information like Floor number."
-msgstr ""
+msgstr "є текстом: Додаткова інформація, така як номер поверху."
 
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>10</code>): Example Boston."
-msgstr ""
+msgstr "є текстом (номер токена <code>10</code>): Приклад Бостон."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is text (token number <code>11</code>): Example <code>MASSACHUSETTS</code>"
 msgstr ""
+"є текстом (номер токена <code>11</code>): (Приклад <code>MASSACHUSETTS</code>"
 
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>12</code>): Example <code>USA</code>"
-msgstr ""
+msgstr "є текстом (номер токена <code>12</code>): Приклад <code>США</code>"
 
 #. Tag: para
 #, no-c-format
@@ -1282,6 +1306,8 @@ msgid ""
 "is text POSTAL CODE (ZIP CODE) (token number <code>13</code>): Example "
 "<code>02109</code>"
 msgstr ""
+"є текстом ПОШТОВИЙ ІНДЕКС (ЗІП-КОД) (номер токена <code>13</code>): Приклад "
+"<code>02109</code>"
 
 #. Tag: para
 #, no-c-format
@@ -1289,6 +1315,8 @@ msgid ""
 "is text POSTAL BOX NUMBER (token number <code>14 and 15</code>): Example "
 "<code>02109</code>"
 msgstr ""
+"є текстом НОМЕР ПОШТОВОЇ СКРИНЬКИ (номер токена <code>14 та 15</code>): "
+"Приклад <code>02109</code>"
 
 #. Tag: para
 #, no-c-format
@@ -1296,11 +1324,13 @@ msgid ""
 "is text Apartment number or Suite Number (token number <code>17</code>): "
 "Example <emphasis>3B</emphasis> in <code>APT 3B</code>."
 msgstr ""
+"є текстом Номер квартири або номер люкса (номер токена <code>17</code>): "
+"Приклад <emphasis>3B</emphasis> в <code>APT 3B</code>."
 
 #. Tag: title
 #, no-c-format
 msgid "Address Standardizer Tables"
-msgstr ""
+msgstr "Таблиці стандартизації адрес"
 
 #. Tag: para
 #, no-c-format
@@ -1312,6 +1342,12 @@ msgid ""
 "custom geocoder. The names of these tables get passed into the address "
 "standardizer functions."
 msgstr ""
+"У цьому розділі перелічено формати таблиць PostgreSQL, які використовує "
+"address_standardizer для нормалізації адрес. Зверніть увагу, що ці таблиці "
+"не обов'язково мають мати ті самі назви, що й зазначені тут. Наприклад, ви "
+"можете мати різні таблиці lex, gaz, rules для кожної країни або для вашого "
+"власного геокодера. Назви цих таблиць передаються у функції стандартизатора "
+"адрес."
 
 #. Tag: para
 #, no-c-format
@@ -1319,6 +1355,8 @@ msgid ""
 "The packaged extension <varname>address_standardizer_data_us</varname> "
 "contains data for standardizing US addresses."
 msgstr ""
+"Розширення <varname>address_standardizer_data_us</varname> містить дані для "
+"стандартизації адрес у США."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -1328,6 +1366,11 @@ msgid ""
 "tokens followed by -1 (terminator) followed by set of output tokens followed "
 "by -1 followed by number denoting kind of rule followed by ranking of rule."
 msgstr ""
+"Таблиця правил містить набір правил, які відображають токени вхідної "
+"послідовності адрес на стандартизовану вихідну послідовність. Правило "
+"визначається як набір вхідних токенів, за якими слідує -1 (термінатор), за "
+"яким слідує набір вихідних токенів, за яким слідує -1, за яким слідує число, "
+"що позначає тип правила, за яким слідує рейтинг правила."
 
 #. Tag: para
 #, no-c-format
@@ -1335,11 +1378,13 @@ msgid ""
 "A rules table must have at least the following columns, though you are "
 "allowed to add more for your own uses."
 msgstr ""
+"Таблиця правил повинна містити принаймні такі стовпці, хоча ви можете "
+"додавати інші для власних потреб."
 
 #. Tag: para
 #, no-c-format
 msgid "Primary key of table"
-msgstr ""
+msgstr "Первинний ключ таблиці"
 
 #. Tag: para
 #, no-c-format
@@ -1348,6 +1393,9 @@ msgid ""
 "pagcgeo.org/docs/html/pagc-12.html#--r-rec--\">PAGC Address Standardizer "
 "Rule records</link>."
 msgstr ""
+"текстове поле, що позначає правило. Детальніше див. <link "
+"xlink:href=«http://www.pagcgeo.org/docs/html/pagc-12.html#--r-rec--»>Записи "
+"правил стандартизації адрес PAGC</link>."
 
 #. Tag: para
 #, no-c-format
@@ -1358,6 +1406,12 @@ msgid ""
 "representing a rule type, followed by an integer representing the rank of "
 "the rule. The rules are ranked from 0 (lowest) to 17 (highest)."
 msgstr ""
+"Правило складається з набору невід'ємних цілих чисел, що представляють "
+"вхідні маркери, закінчується -1, за яким слідує така ж кількість невід'ємних "
+"цілих чисел, що представляють поштові атрибути, закінчується -1, за яким "
+"слідує ціле число, що представляє тип правила, за яким слідує ціле число, що "
+"представляє ранг правила. Правила ранжуються від 0 (найнижчий) до 17 "
+"(найвищий)."
 
 #. Tag: para
 #, no-c-format
@@ -1367,6 +1421,10 @@ msgid ""
 "emphasis> to the output sequence <emphasis>STREET STREET SUFTYP SUFDIR "
 "QUALIF</emphasis>. The rule is an ARC_C rule of rank 6."
 msgstr ""
+"Так, наприклад, правило <code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6</code> "
+"відображається на послідовність вихідних токенів <emphasis>TYPE NUMBER TYPE "
+"DIRECT QUALIF</emphasis> у вихідну послідовність <emphasis>STREET STREET "
+"SUFTYP SUFDIR QUALIF</emphasis>. Це правило є правилом ARC_C рангу 6."
 
 #. Tag: para
 #, no-c-format
@@ -1374,11 +1432,12 @@ msgid ""
 "Numbers for corresponding output tokens are listed in <xref "
 "linkend=\"stdaddr\"/>."
 msgstr ""
+"Номери відповідних вихідних токенів наведені в <xref linkend=\"stdaddr\"/>."
 
 #. Tag: title
 #, no-c-format
 msgid "Input Tokens"
-msgstr ""
+msgstr "Вхідні токени"
 
 #. Tag: para
 #, no-c-format
@@ -1388,11 +1447,15 @@ msgid ""
 "www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC Input Tokens</link> are "
 "as follows:"
 msgstr ""
+"Кожне правило починається з набору вхідних токенів, за якими слідує "
+"роздільник <code>-1</code>. Дієві вхідні токени, взяті з <link "
+"xlink:href=«http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2»>PAGC Input "
+"Tokens</link>, наведені нижче:"
 
 #. Tag: emphasis
 #, no-c-format
 msgid "Form-Based Input Tokens"
-msgstr ""
+msgstr "Токени введення на основі форм"
 
 #. Tag: para
 #, no-c-format
@@ -1400,21 +1463,25 @@ msgid ""
 "(13). The ampersand (&amp;) is frequently used to abbreviate the word "
 "\"and\"."
 msgstr ""
+"(13). Символ амперсанд (&amp;) часто використовується для скорочення слова "
+"«and»."
 
 #. Tag: para
 #, no-c-format
 msgid "(9). A punctuation character."
-msgstr ""
+msgstr "(9). Розділовий знак."
 
 #. Tag: para
 #, no-c-format
 msgid "(21). A sequence of two letters. Often used as identifiers."
 msgstr ""
+"(21). Послідовність двох літер. Часто використовується як ідентифікатор."
 
 #. Tag: para
 #, no-c-format
 msgid "(25). Fractions are sometimes used in civic numbers or unit numbers."
 msgstr ""
+"(25). Дроби іноді використовуються в цивільних числах або числах одиниць."
 
 #. Tag: para
 #, no-c-format
@@ -1422,21 +1489,25 @@ msgid ""
 "(23). An alphanumeric string that contains both letters and digits. Used for "
 "identifiers."
 msgstr ""
+"(23). Алфавітно-цифровий рядок, що містить як літери, так і цифри. "
+"Використовується для ідентифікаторів."
 
 #. Tag: para
 #, no-c-format
 msgid "(0). A string of digits."
-msgstr ""
+msgstr "(0). Ряд цифр."
 
 #. Tag: para
 #, no-c-format
 msgid "(15). Representations such as First or 1st. Often used in street names."
 msgstr ""
+"(15). Такі позначення, як «Перший» або «1-й». Часто використовуються в "
+"назвах вулиць."
 
 #. Tag: para
 #, no-c-format
 msgid "(18). A single letter."
-msgstr ""
+msgstr "(18). Одна літера."
 
 #. Tag: para
 #, no-c-format
@@ -1444,11 +1515,13 @@ msgid ""
 "(1). A word is a string of letters of arbitrary length. A single letter can "
 "be both a SINGLE and a WORD."
 msgstr ""
+"(1). Слово — це послідовність літер довільної довжини. Окрема літера може "
+"бути як SINGLE так і WORD."
 
 #. Tag: emphasis
 #, no-c-format
 msgid "Function-based Input Tokens"
-msgstr ""
+msgstr "Функціональні вхідні токени"
 
 #. Tag: para
 #, no-c-format
@@ -1456,6 +1529,8 @@ msgid ""
 "(14). Words used to denote post office boxes. For example <emphasis>Box</"
 "emphasis> or <emphasis>PO Box</emphasis>."
 msgstr ""
+"(14). Слова, що використовуються для позначення поштових скриньок. "
+"Наприклад, <emphasis>Box</emphasis> або <emphasis>PO Box</emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -1464,6 +1539,9 @@ msgid ""
 "prefix. For example: <emphasis>Tower</emphasis> in <emphasis>Tower 7A</"
 "emphasis>."
 msgstr ""
+"(19). Слова, що використовуються для позначення будівель або будівельних "
+"комплексів, зазвичай як префікс. Наприклад: <emphasis>Вежа</emphasis> в "
+"<emphasis>Вежа 7A</emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -1472,6 +1550,9 @@ msgid ""
 "complexes, usually as a suffix. For example: <emphasis>Shopping Centre</"
 "emphasis>."
 msgstr ""
+"(24). Слова та абревіатури, що використовуються для позначення будівель або "
+"будівельних комплексів, зазвичай як суфікс. Наприклад: <emphasis>Торговий "
+"центр</emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -1479,11 +1560,14 @@ msgid ""
 "(22). Words used to denote directions, for example <emphasis>North</"
 "emphasis>."
 msgstr ""
+"(22). Слова, що використовуються для позначення напрямків, наприклад "
+"<emphasis>Північ</emphasis>."
 
 #. Tag: para
 #, no-c-format
 msgid "(20). Words used to denote milepost addresses."
 msgstr ""
+"(20). Слова, що використовуються для позначення адрес кілометрових стовпців."
 
 #. Tag: para
 #, no-c-format
@@ -1491,6 +1575,9 @@ msgid ""
 "(6). Words and abbreviations used to denote highways and roads. For example: "
 "the <emphasis>Interstate</emphasis> in <emphasis>Interstate 5</emphasis>"
 msgstr ""
+"(6). Слова та абревіатури, що використовуються для позначення "
+"автомагістралей та доріг. Наприклад: <emphasis>Interstate</emphasis> в "
+"<emphasis>Interstate 5</emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -1498,6 +1585,8 @@ msgid ""
 "(8). Words and abbreviations used to denote rural routes. <emphasis>RR</"
 "emphasis>."
 msgstr ""
+"(8). Слова та абревіатури, що використовуються для позначення приміських "
+"маршрутів. <emphasis>RR</emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -1505,6 +1594,8 @@ msgid ""
 "(2). Words and abbreviations used to denote street types. For example: "
 "<emphasis>ST</emphasis> or <emphasis>AVE</emphasis>."
 msgstr ""
+"(2). Слова та абревіатури, що використовуються для позначення типів вулиць. "
+"Наприклад: <emphasis>ST</emphasis> або <emphasis>AVE</emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -1512,21 +1603,23 @@ msgid ""
 "(16). Words and abbreviations used to denote internal subaddresses. For "
 "example, <emphasis>APT</emphasis> or <emphasis>UNIT</emphasis>."
 msgstr ""
+"(16). Слова та абревіатури, що використовуються для позначення внутрішніх "
+"підадрес. Наприклад, <emphasis>APT</emphasis> або <emphasis>UNIT</emphasis>."
 
 #. Tag: emphasis
 #, no-c-format
 msgid "Postal Type Input Tokens"
-msgstr ""
+msgstr "Токени введення поштового типу"
 
 #. Tag: para
 #, no-c-format
 msgid "(28). A 5 digit number. Identifies a Zip Code"
-msgstr ""
+msgstr "(28). 5-значний номер. Ідентифікує поштовий індекс"
 
 #. Tag: para
 #, no-c-format
 msgid "(29). A 4 digit number. Identifies ZIP4."
-msgstr ""
+msgstr "(29). 4-значний номер. Ідентифікує ZIP4."
 
 #. Tag: para
 #, no-c-format
@@ -1534,6 +1627,8 @@ msgid ""
 "(27). A 3 character sequence of letter number letter. Identifies an FSA, the "
 "first 3 characters of a Canadian postal code."
 msgstr ""
+"(27). Послідовність з 3 символів, що складається з літери, цифри та літери. "
+"Ідентифікує FSA, перші 3 символи канадського поштового індексу."
 
 #. Tag: para
 #, no-c-format
@@ -1541,11 +1636,13 @@ msgid ""
 "(26). A 3 character sequence of number letter number. Identifies an LDU, the "
 "last 3 characters of a Canadian postal code."
 msgstr ""
+"(26). Послідовність з 3 символів, що складається з цифри, літери та цифри. "
+"Ідентифікує LDU, останні 3 символи канадського поштового індексу."
 
 #. Tag: emphasis
 #, no-c-format
 msgid "Stopwords"
-msgstr ""
+msgstr "Стоп-слова"
 
 #. Tag: para
 #, no-c-format
@@ -1553,6 +1650,8 @@ msgid ""
 "STOPWORDS combine with WORDS. In rules a string of multiple WORDs and "
 "STOPWORDs will be represented by a single WORD token."
 msgstr ""
+"СТОПСЛОВА поєднуються зі СЛОВАМИ. У правилах послідовність декількох СЛІВ і "
+"СТОПСЛІВ буде представлена одним токеном СЛОВА."
 
 #. Tag: para
 #, no-c-format
@@ -1560,11 +1659,13 @@ msgid ""
 "(7). A word with low lexical significance, that can be omitted in parsing. "
 "For example: <emphasis>THE</emphasis>."
 msgstr ""
+"(7). Слово з низьким лексичним значенням, яке можна опустити при розборі. "
+"Наприклад: <emphasis>THE</emphasis>."
 
 #. Tag: title
 #, no-c-format
 msgid "Output Tokens"
-msgstr ""
+msgstr "Вихідні токени"
 
 #. Tag: para
 #, no-c-format
@@ -1575,11 +1676,16 @@ msgid ""
 "dependent on kind of rule. Output tokens valid for each rule type are listed "
 "in <xref linkend=\"rule_types_rank\"/>."
 msgstr ""
+"Після першого -1 (роздільника) йдуть вихідні маркери та їх порядок, а потім "
+"термінатор <code>-1</code>. Номери відповідних вихідних маркерів наведені в "
+"<xref linkend=\"stdaddr\"/>. Допустимі значення залежать від типу правила. "
+"Вихідні маркери, допустимі для кожного типу правила, наведені в <xref "
+"linkend=\"rule_types_rank\"/>."
 
 #. Tag: title
 #, no-c-format
 msgid "Rule Types and Rank"
-msgstr ""
+msgstr "Типи правил та їхній ранг"
 
 #. Tag: para
 #, no-c-format
@@ -1588,6 +1694,9 @@ msgid ""
 "following, followed by a rule rank. The rules are ranked from 0 (lowest) to "
 "17 (highest)."
 msgstr ""
+"Остання частина правила - це тип правила, який позначається одним із "
+"наступних символів, за яким слідує рангове значення правила. Правила "
+"ранжуються від 0 (найнижче) до 17 (найвище)."
 
 #. Tag: para
 #, no-c-format
@@ -1595,6 +1704,8 @@ msgid ""
 "(token number = \"<emphasis role=\"bold\">0</emphasis>\"). The class of "
 "rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis>"
 msgstr ""
+"(номер токена = «<emphasis role=\"bold\">0</emphasis>»). Клас правил для "
+"розбору MACRO класів, таких як <emphasis>PLACE STATE ZIP</emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -1604,16 +1715,20 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
+"<emphasis role=\"bold\"><varname>MACRO_C</varname> вихідні токени<emphasis> ("
+"витяг з <link xlink:href=«http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--»>http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "(token number \"10\"). Example \"Albany\""
-msgstr ""
+msgstr "(токен номер «10»). Приклад «Albany»"
 
 #. Tag: para
 #, no-c-format
 msgid "(token number \"11\"). Example \"NY\""
-msgstr ""
+msgstr "(токен номер «11»). Приклад «NY»"
 
 #. Tag: para
 #, no-c-format
@@ -1621,6 +1736,8 @@ msgid ""
 "(token number \"12\"). This attribute is not used in most reference files. "
 "Example \"USA\""
 msgstr ""
+"(токен номер «12»). Цей атрибут не використовується в більшості файлів "
+"посилань. Приклад «USA»"
 
 #. Tag: para
 #, no-c-format
@@ -1628,6 +1745,9 @@ msgid ""
 "(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). This "
 "attribute is used for both the US Zip and the Canadian Postal Codes."
 msgstr ""
+"(токен номер «13»). (Елементи SADS «ZIP CODE» , «PLUS 4» ). Цей атрибут "
+"використовується як для поштових індексів США, так і для поштових індексів "
+"Канади."
 
 #. Tag: para
 #, no-c-format
@@ -1637,6 +1757,10 @@ msgid ""
 "pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used "
 "in the build phase."
 msgstr ""
+"(номер токена = «<emphasis role=\"bold\">1</emphasis>»). Клас правил для "
+"розбору повних клаузул MICRO (таких як House, street, sufdir, predir, "
+"pretyp, suftype, qualif) (тобто ARC_C плюс CIVIC_C). Ці правила не "
+"використовуються на етапі побудови."
 
 #. Tag: para
 #, no-c-format
@@ -1646,6 +1770,10 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
+"<emphasis role=\"bold\"><varname>MICRO_C</varname> вихідні токени<emphasis> ("
+"витяг з <link xlink:href=«http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--»>http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--</link>."
 
 #. Tag: para
 #, no-c-format
@@ -1654,6 +1782,9 @@ msgid ""
 "rules for parsing MICRO clauses, excluding the HOUSE attribute. As such uses "
 "same set of output tokens as MICRO_C minus the HOUSE token."
 msgstr ""
+"(номер маркера = «<emphasis role=\"bold\">2</emphasis>»). Клас правил для "
+"розбору клаузул MICRO, за винятком атрибуту HOUSE. Як такий, використовує "
+"той самий набір вихідних маркерів, що й MICRO_C, за винятком маркера HOUSE."
 
 #. Tag: para
 #, no-c-format
@@ -1661,6 +1792,8 @@ msgid ""
 "(token number = \"<emphasis role=\"bold\">3</emphasis>\"). The class of "
 "rules for parsing the HOUSE attribute."
 msgstr ""
+"(номер токена = «<emphasis role=\"bold\">3</emphasis>»). Клас правил для "
+"розбору атрибуту HOUSE."
 
 #. Tag: para
 #, no-c-format
@@ -1669,6 +1802,9 @@ msgid ""
 "rules for parsing EXTRA attributes - attributes excluded from geocoding. "
 "These rules are not used in the build phase."
 msgstr ""
+"(номер токена = «<emphasis role=\"bold\">4</emphasis>»). Клас правил для "
+"розбору атрибутів EXTRA - атрибутів, виключених з геокодування. Ці правила "
+"не використовуються на етапі побудови."
 
 #. Tag: para
 #, no-c-format
@@ -1678,11 +1814,16 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
+"<emphasis role=\"bold\"><varname>EXTRA_C</varname> вихідні токени<emphasis> ("
+"витяг з <link xlink:href=«http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--»>http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "(token number <code>0</code>): Unparsed building identifiers and types."
 msgstr ""
+"(токен номер <code>0</code>): Нерозпізнані ідентифікатори та типи будівель."
 
 #. Tag: para
 #, no-c-format
@@ -1690,6 +1831,8 @@ msgid ""
 "(token number <code>14</code>): The <emphasis role=\"bold\">BOX</emphasis> "
 "in <code>BOX 3B</code>"
 msgstr ""
+"(токен номер <code>14</code>): <emphasis role=\"bold\">БОКС</emphasis> в "
+"<code>БОКС 3B</code>"
 
 #. Tag: para
 #, no-c-format
@@ -1697,6 +1840,8 @@ msgid ""
 "(token number <code>15</code>): The <emphasis role=\"bold\">3B</emphasis> in "
 "<code>BOX 3B</code>"
 msgstr ""
+"(токен номер <code>15</code>): <emphasis role=\"bold\">3B</emphasis> в "
+"<code>BOX 3B</code>"
 
 #. Tag: para
 #, no-c-format
@@ -1704,6 +1849,8 @@ msgid ""
 "(token number <code>8</code>): The <emphasis role=\"bold\">RR</emphasis> in "
 "<code>RR 7</code>"
 msgstr ""
+"(токен номер <code>8</code>): <emphasis role=\"bold\">RR</emphasis> в "
+"<code>RR 7</code>"
 
 #. Tag: para
 #, no-c-format
@@ -1711,6 +1858,8 @@ msgid ""
 "(token number <code>16</code>): The <emphasis role=\"bold\">APT</emphasis> "
 "in <code>APT 3B</code>"
 msgstr ""
+"(токен номер <code>16</code>): <emphasis role=\"bold\">APT</emphasis> в "
+"<code>APT 3B</code>"
 
 #. Tag: para
 #, no-c-format
@@ -1718,11 +1867,14 @@ msgid ""
 "(token number <code>17</code>): The <emphasis role=\"bold\">3B</emphasis> in "
 "<code>APT 3B</code>"
 msgstr ""
+"(токен номер <code>17</code>): <emphasis role=\"bold\">3B</emphasis> в "
+"<code>APT 3B</code>"
 
 #. Tag: para
 #, no-c-format
 msgid "(token number <code>9</code>): An otherwise unclassified output."
 msgstr ""
+"(токен номер <code>9</code>): Вихідні дані, які не підлягають класифікації."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -1731,6 +1883,9 @@ msgid ""
 "with (a) input tokens ( See <xref linkend=\"rule_input_tokens\"/>) and (b) "
 "standardized representations."
 msgstr ""
+"Таблиця lex використовується для класифікації алфавітно-цифрового вводу та "
+"пов'язування цього вводу з (а) вхідними токенами (див. <xref linkend="
+"\"rule_input_tokens\"/>) та (б) стандартизованими представленнями."
 
 #. Tag: para
 #, no-c-format
@@ -1740,26 +1895,30 @@ msgid ""
 "standardized representations. Things you will find in these tables are "
 "<code>ONE</code> mapped to stdword: <code>1</code>."
 msgstr ""
+"Таблиця lex (скорочення від lexicon) використовується для класифікації "
+"алфавітно-цифрового вводу та пов'язування цього вводу з <xref linkend="
+"\"rule_input_tokens\"/> та (b) стандартизованими представленнями. У цих "
+"таблицях ви знайдете <code>ONE</code>, що відповідає stdword: <code>1</code>."
 
 #. Tag: para
 #, no-c-format
 msgid "A lex has at least the following columns in the table. You may add"
-msgstr ""
+msgstr "Lex має принаймні такі стовпці в таблиці. Ви можете додати"
 
 #. Tag: para
 #, no-c-format
 msgid "integer: definition number?"
-msgstr ""
+msgstr "integer: definition number?"
 
 #. Tag: para
 #, no-c-format
 msgid "text: the input word"
-msgstr ""
+msgstr "text: вхідне слово"
 
 #. Tag: para
 #, no-c-format
 msgid "text: the standardized replacement word"
-msgstr ""
+msgstr "text: вхідне слово стандартизоване слово-замінник"
 
 #. Tag: para
 #, no-c-format
@@ -1768,6 +1927,9 @@ msgid ""
 "be replaced. Refer to <link xlink:href=\"http://www.pagcgeo.org/docs/html/"
 "pagc-12.html#--i-tok--\">PAGC Tokens</link>."
 msgstr ""
+"integer: тип слова. Замінюється тільки в цьому контексті. Див. <link "
+"xlink:href=«http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--»>Токени "
+"PAGC</link>."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -1776,6 +1938,9 @@ msgid ""
 "(a) input tokens ( See <xref linkend=\"rule_input_tokens\"/>) and (b) "
 "standardized representations."
 msgstr ""
+"Таблиця gaz використовується для стандартизації географічних назв та "
+"пов'язування цих даних з (а) вхідними токенами (див. <xref linkend="
+"\"rule_input_tokens\"/>) та (б) стандартизованими представленнями."
 
 #. Tag: para
 #, no-c-format
@@ -1785,6 +1950,11 @@ msgid ""
 "standardized representations. For example if you are in US, you may load "
 "these with State Names and associated abbreviations."
 msgstr ""
+"Таблиця gaz (скорочення від gazeteer) використовується для стандартизації "
+"назв місць та пов'язування цих даних з <xref linkend=\"rule_input_tokens\"/> "
+"та (b) стандартизованими представленнями. Наприклад, якщо ви перебуваєте в "
+"США, ви можете завантажити ці дані разом із назвами штатів та відповідними "
+"абревіатурами."
 
 #. Tag: para
 #, no-c-format
@@ -1792,23 +1962,29 @@ msgid ""
 "A gaz table has at least the following columns in the table. You may add "
 "more columns if you wish for your own purposes."
 msgstr ""
+"Таблиця gaz має принаймні такі стовпці. Ви можете додати більше стовпців, "
+"якщо це необхідно для ваших потреб."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "integer: definition number? - identifier used for that instance of the word"
 msgstr ""
+"integer: definition number? - ідентифікатор, що використовується для цього "
+"екземпляра слова"
 
 #. Tag: title
 #, no-c-format
 msgid "Address Standardizer Functions"
-msgstr ""
+msgstr "Функції стандартизації адреси"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns a json formatted text listing the parse tokens and standardizations"
 msgstr ""
+"Повертає текст у форматі json із переліком розібраних токенів та "
+"стандартизацій"
 
 #. Tag: para
 #, no-c-format
@@ -1820,11 +1996,17 @@ msgid ""
 "<xref linkend=\"gaztab\"/>, and <xref linkend=\"rulestab\"/> table names and "
 "an address."
 msgstr ""
+"Це функція для налагодження правил стандартизації адрес та відповідності "
+"лексичних одиниць (lex/gaz). Вона повертає текст у форматі json, що містить "
+"правила відповідності, відображення токенів та найкращу стандартизовану "
+"адресу <xref linkend=\"stdaddr\"/> у вигляді вхідної адреси з використанням "
+"<xref linkend=\"lextab\"/>імен таблиць, <xref linkend=\"gaztab\"/>та <xref "
+"linkend=\"rulestab\"/>імен таблиць та адреси."
 
 #. Tag: para
 #, no-c-format
 msgid "For single line addresses use just <varname>micro</varname>"
-msgstr ""
+msgstr "Для однорядкових адрес використовуйте лише <varname>micro</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -1834,11 +2016,15 @@ msgid ""
 "consisting of standard postal second line of an address e.g <code>city, "
 "state postal_code country</code>."
 msgstr ""
+"Для дворядкової адреси A <varname>micro</varname>, що складається зі "
+"стандартного першого рядка поштової адреси, наприклад <code>house_num "
+"street</code>, та макросу, що складається зі стандартного другого рядка "
+"поштової адреси, наприклад <code>city, state postal_code country</code>."
 
 #. Tag: para
 #, no-c-format
 msgid "Elements returned in the json document are"
-msgstr ""
+msgstr "Елементи, що повертаються в документі json, є такими"
 
 #. Tag: para
 #, no-c-format
@@ -1848,6 +2034,10 @@ msgid ""
 "for some input words, you might get back multiple records because some "
 "inputs can be categorized as more than one thing."
 msgstr ""
+"Для кожного слова у вхідній адресі повертає позицію слова, категоризацію "
+"лексеми слова та стандартне слово, до якого воно відноситься. Зверніть "
+"увагу, що для деяких вхідних слів ви можете отримати кілька записів, "
+"оскільки деякі вхідні дані можуть бути віднесені до декількох категорій."
 
 #. Tag: para
 #, no-c-format
@@ -1855,6 +2045,8 @@ msgid ""
 "The set of rules matching the input and the corresponding score for each. "
 "The first rule (highest scoring) is what is used for standardization"
 msgstr ""
+"Набір правил, що відповідають вхідним даним, та відповідний бал для кожного "
+"з них. Перше правило (з найвищим балом) використовується для стандартизації"
 
 #. Tag: para
 #, no-c-format
@@ -1862,26 +2054,28 @@ msgid ""
 "The standardized address elements <xref linkend=\"stdaddr\"/> that would be "
 "returned when running <xref linkend=\"standardize_address\"/>"
 msgstr ""
+"Стандартизовані елементи адреси <xref linkend=\"stdaddr\"/>, які будуть "
+"повернуті при виконанні <xref linkend=\"standardize_address\"/>"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.4.0"
-msgstr ""
+msgstr "Доступність: 3.4.0"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Приклади"
 
 #. Tag: para
 #, no-c-format
 msgid "Using address_standardizer_data_us extension"
-msgstr ""
+msgstr "Використання розширення address_standardizer_data_us"
 
 #. Tag: para
 #, no-c-format
 msgid "Variant 1: Single line address and returning the input tokens"
-msgstr ""
+msgstr "Варіант 1: Адреса в одному рядку та повернення вхідних токенів"
 
 #. Tag: para
 #, no-c-format
@@ -1889,11 +2083,13 @@ msgid ""
 "Variant 2: Multi line address and returning first rule input mappings and "
 "score"
 msgstr ""
+"Варіант 2: Багаторядкова адреса та повернення перших правил введення та "
+"оцінок"
 
 #. Tag: title
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Див. також"
 
 #. Tag: para
 #, no-c-format
@@ -1901,11 +2097,13 @@ msgid ""
 ", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref "
 "linkend=\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
 msgstr ""
+", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref linkend="
+"\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Takes a 1 line address and breaks into parts"
-msgstr ""
+msgstr "Бере 1-рядкову адресу і розбиває на частини"
 
 #. Tag: para
 #, no-c-format
@@ -1916,21 +2114,26 @@ msgid ""
 "emphasis>, <emphasis>state</emphasis>, <emphasis>zip</emphasis>, "
 "<emphasis>zipplus</emphasis>, <emphasis>country</emphasis>."
 msgstr ""
+"Повертає адресу як вхідні дані та повертає запис, що складається з полів "
+"<emphasis>num</emphasis>, <emphasis>street</emphasis>, <emphasis>street2</"
+"emphasis>, <emphasis>address1</emphasis>, <emphasis>city</emphasis>, "
+"<emphasis>state</emphasis>, <emphasis>zip</emphasis>, <emphasis>zipplus</"
+"emphasis>, <emphasis>country</emphasis>."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "Доступність: 2.2.0"
 
 #. Tag: para
 #, no-c-format
 msgid "Single Address"
-msgstr ""
+msgstr "Одинарна адреса"
 
 #. Tag: para
 #, no-c-format
 msgid "Table of addresses"
-msgstr ""
+msgstr "Таблиця адрес"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -1938,6 +2141,8 @@ msgid ""
 "Returns an stdaddr form of an input address utilizing lex, gaz, and rule "
 "tables."
 msgstr ""
+"Повертає форму stdaddr вхідної адреси, використовуючи таблиці lex, gaz та "
+"rule."
 
 #. Tag: para
 #, no-c-format
@@ -1946,11 +2151,14 @@ msgid ""
 "<xref linkend=\"lextab\"/> table name, <xref linkend=\"gaztab\"/>, and <xref "
 "linkend=\"rulestab\"/> table names and an address."
 msgstr ""
+"Повертає <xref linkend=\"stdaddr\"/>форму вхідної адреси, використовуючи "
+"<xref linkend=\"lextab\"/>ім'я таблиці, <xref linkend=\"gaztab\"/>та <xref "
+"linkend=\"rulestab\"/>імена таблиць та адресу."
 
 #. Tag: para
 #, no-c-format
 msgid "Variant 1: Takes an address as a single line."
-msgstr ""
+msgstr "Варіант 1: Приймає адресу в одному рядку."
 
 #. Tag: para
 #, no-c-format
@@ -1960,12 +2168,17 @@ msgid ""
 "street</code>, and a macro consisting of standard postal second line of an "
 "address e.g <code>city, state postal_code country</code>."
 msgstr ""
+"Варіант 2: Приймає адресу у вигляді 2 частин. A <varname>micro</varname>, що "
+"складається зі стандартного першого рядка поштової адреси, наприклад "
+"<code>house_num street</code>, та макросу, що складається зі стандартного "
+"другого рядка поштової адреси, наприклад <code>city, state postal_code "
+"country</code>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Variant 1: Single line address. This doesn't work well with non-US addresses"
-msgstr ""
+msgstr "Варіант 1: Адреса в одному рядку. Це не працює з адресами за межами США"
 
 #. Tag: para
 #, no-c-format
@@ -1973,6 +2186,9 @@ msgid ""
 "Using tables packaged with tiger geocoder. This example only works if you "
 "installed <varname>postgis_tiger_geocoder</varname>."
 msgstr ""
+"Використання таблиць, що входять до складу геокодера tiger. Цей приклад "
+"працює тільки в тому випадку, якщо ви встановили "
+"<varname>postgis_tiger_geocoder</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -1980,16 +2196,18 @@ msgid ""
 "Make easier to read we'll dump output using hstore extension CREATE "
 "EXTENSION hstore; you need to install"
 msgstr ""
+"Щоб полегшити читання, ми будемо виводити дані за допомогою розширення "
+"hstore CREATE EXTENSION hstore; вам потрібно встановити"
 
 #. Tag: para
 #, no-c-format
 msgid "Variant 2: As a two part Address"
-msgstr ""
+msgstr "Варіант 2: Як адреса, що складається з двох частин"
 
 #. Tag: title
 #, no-c-format
 msgid "History Tracking"
-msgstr ""
+msgstr "Відстеження історії"
 
 #. Tag: para
 #, no-c-format
@@ -2002,6 +2220,12 @@ msgid ""
 "trail of what changes have been made, by whom, and what the past state of "
 "the data is?"
 msgstr ""
+"Припустимо, ви маєте таблицю даних, яка відображає поточний стан певного "
+"географічного об'єкта. Таблиця ділянок, таблиця доріг, таблиця фруктових "
+"дерев тощо. Зазвичай інструменти ГІС сприймають таблицю як єдиний об'єкт, в "
+"якому можна оновлювати, вставляти та видаляти рядки. Як дозволити звичайним "
+"інструментам ГІС працювати з вашими даними, зберігаючи при цьому журнал "
+"змін, які були внесені, хто їх вніс та який був попередній стан даних?"
 
 #. Tag: para
 #, no-c-format
@@ -2009,6 +2233,8 @@ msgid ""
 "This <varname>history_table</varname> extra module provides some utility "
 "functions for creating and maintaining history."
 msgstr ""
+"Цей додатковий модуль <varname>history_table</varname> надає деякі корисні "
+"функції для створення та ведення історії."
 
 #. Tag: para
 #, no-c-format
@@ -2018,6 +2244,10 @@ msgid ""
 "plpgsql and located in the <varname>extras/history_table</varname> of "
 "PostGIS source tar balls and source repository."
 msgstr ""
+"<varname>history_table</varname> також було включено до PostGIS 1.5, але "
+"додано до документації в PostGIS 2.0. Цей пакет написано мовою plpgsql і "
+"розміщено в <varname>extras/history_table</varname> архівів вихідного коду "
+"PostGIS та репозиторію вихідного коду."
 
 #. Tag: para
 #, no-c-format
@@ -2026,6 +2256,9 @@ msgid ""
 "side table, which contains all the columns of the parent table, and the "
 "following additional columns:"
 msgstr ""
+"Якщо у вас є таблиця «roads», цей модуль буде вести додаткову таблицю "
+"«roads_history», яка містить усі стовпці батьківської таблиці та наступні "
+"додаткові стовпці:"
 
 #. Tag: para
 #, no-c-format
@@ -2035,6 +2268,10 @@ msgid ""
 "to NULL, a unique 'history_id', a 'last_operation' of 'INSERT' and "
 "'active_user' set."
 msgstr ""
+"Коли ви вставляєте новий запис у «roads», запис автоматично вставляється у "
+"«roads_history», з заповненим полем «date_added», полем «date_deleted», "
+"встановленим на NULL, унікальним «history_id», «last_operation» з «INSERT» "
+"та «active_user»."
 
 #. Tag: para
 #, no-c-format
@@ -2042,6 +2279,8 @@ msgid ""
 "When you delete a record in 'roads', the record in the history table is "
 "*not* deleted, but the 'date_deleted' is set to the current date."
 msgstr ""
+"Коли ви видаляєте запис у «roads», запис у таблиці історії *не* видаляється, "
+"але «date_deleted» встановлюється на поточну дату."
 
 #. Tag: para
 #, no-c-format
@@ -2050,6 +2289,9 @@ msgid ""
 "filled in and a new record is created with the 'date_added' set and "
 "'date_deleted' NULL."
 msgstr ""
+"Коли ви оновлюєте запис у «roads», у поточному записі заповнюється поле "
+"«date_deleted» і створюється новий запис із полем «date_added» та полем "
+"«date_deleted» із значенням NULL."
 
 #. Tag: para
 #, no-c-format
@@ -2057,11 +2299,13 @@ msgid ""
 "With this information maintained, it is possible to retrieve the history of "
 "any record in the roads table:"
 msgstr ""
+"Зберігаючи цю інформацію, можна отримати історію будь-якого запису в таблиці "
+"roads:"
 
 #. Tag: para
 #, no-c-format
 msgid "Or, to retrieve a view of the roads table at any point in the past:"
-msgstr ""
+msgstr "Або, щоб отримати перегляд таблиці доріг в будь-який момент в минулому:"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2069,6 +2313,8 @@ msgid ""
 "Creates a table that will hold some interesting values for managing history "
 "tables."
 msgstr ""
+"Створює таблицю, яка буде містити деякі цікаві значення для управління "
+"таблицями історії."
 
 #. Tag: para
 #, no-c-format
@@ -2076,11 +2322,14 @@ msgid ""
 "Creates a table that will hold some interesting values for managing history "
 "tables. Creates a table called <varname>historic_information</varname>"
 msgstr ""
+"Створює таблицю, яка буде містити деякі цікаві значення для управління "
+"таблицями історії. Створює таблицю з назвою "
+"<varname>historic_information</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.5.0"
-msgstr ""
+msgstr "Доступність: 1.5.0"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2089,6 +2338,9 @@ msgid ""
 "adds in side line history table and insert, update, delete rules on the "
 "table."
 msgstr ""
+"Реєструє таблицю в таблиці history_information для відстеження, а також "
+"додає в side line history таблицю та правила вставки, оновлення та видалення "
+"в таблиці."
 
 #. Tag: para
 #, no-c-format
@@ -2099,6 +2351,12 @@ msgid ""
 "insert, update, delete rules on the table. Any inserts,updates,deletes of "
 "the geometry are recorded in the history table."
 msgstr ""
+"Реєструє таблицю в таблиці history_information для відстеження, а також "
+"додає в side line history таблицю з тим самим іменем, що й таблиця, але з "
+"префіксом <varname>history</varname> в тій самій схемі, що й оригінальна "
+"таблиця. Встановлює правила вставки, оновлення та видалення для таблиці. "
+"Будь-які вставки, оновлення та видалення геометрії записуються в таблицю "
+"історії."
 
 #. Tag: para
 #, no-c-format
@@ -2107,11 +2365,14 @@ msgid ""
 "<varname>geometry_columns</varname> and fails if the geometry column is not "
 "present in <varname>geometry_columns</varname> table."
 msgstr ""
+"Ця функція наразі залежить від того, чи зареєстровано стовпець геометрії в "
+"<varname>geometry_columns</varname>, і не працює, якщо стовпець геометрії "
+"відсутній у таблиці <varname>geometry_columns</varname>."
 
 #. Tag: title
 #, no-c-format
 msgid "Tiger Geocoder"
-msgstr ""
+msgstr "Геокодер Tiger"
 
 #. Tag: para
 #, no-c-format
@@ -2121,6 +2382,10 @@ msgid ""
 "Encoding and Referencing system ) / Line and Master Address database export</"
 "link> released by the US Census Bureau."
 msgstr ""
+"Геокодер на основі plpgsql, написаний для роботи з <link "
+"xlink:href=«https://www2.census.gov/geo/tiger/»>TIGER (Topologically "
+"Integrated Geographic Encoding and Referencing system ) / Line and Master "
+"Address database export</link>, випущеним Бюро перепису населення США."
 
 #. Tag: para
 #, no-c-format
@@ -2128,6 +2393,8 @@ msgid ""
 "There are four components to the geocoder: the data loader functions, the "
 "address normalizer, the address geocoder, and the reverse geocoder."
 msgstr ""
+"Геокодер складається з чотирьох компонентів: функції завантаження даних, "
+"нормалізатор адрес, геокодер адрес та зворотний геокодер."
 
 #. Tag: para
 #, no-c-format
@@ -2136,6 +2403,9 @@ msgid ""
 "functions are applicable and can be adapted to work with other country "
 "address and road networks."
 msgstr ""
+"Хоча ця програма розроблена спеціально для США, багато її концепцій та "
+"функцій можна застосувати та адаптувати до адресних та дорожніх мереж інших "
+"країн."
 
 #. Tag: para
 #, no-c-format
@@ -2145,6 +2415,11 @@ msgid ""
 "suffixes, states, various control tables for managing data load, and "
 "skeleton base tables from which all the tiger loaded tables inherit from."
 msgstr ""
+"Скрипт створює схему під назвою <varname>tiger</varname> для розміщення всіх "
+"функцій, пов'язаних з тиграми, даних для багаторазового використання, таких "
+"як префікси типів доріг, суфікси, стани, різні таблиці управління для "
+"керування завантаженням даних, а також базові таблиці-скелети, від яких "
+"успадковуються всі завантажені таблиці тигрів."
 
 #. Tag: para
 #, no-c-format
@@ -2158,6 +2433,14 @@ msgid ""
 "<varname>faces</varname>, <varname>edges</varname>, etc located in the "
 "<varname>tiger schema</varname>."
 msgstr ""
+"Також створюється інша схема під назвою <varname>tiger_data</varname>, яка "
+"містить усі дані перепису населення для кожного штату, які завантажувач "
+"завантажує з веб-сайту Census і завантажує в базу даних. У поточній моделі "
+"кожен набір таблиць штатів має префікс з кодом штату, наприклад "
+"<varname>ma_addr</varname>, <varname>ma_edges</varname> тощо, з обмеженнями, "
+"що застосовуються лише до даних цього штату. Кожна з цих таблиць успадковує "
+"таблиці <varname>addr</varname>, <varname>faces</varname>, <varname>edges</"
+"varname> тощо, розташовані в схемі <varname>tiger schema</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -2168,6 +2451,11 @@ msgid ""
 "schema for each state, as long as all the tables inherit from the tables in "
 "the <varname>tiger</varname> schema."
 msgstr ""
+"Усі функції геокодування посилаються лише на базові таблиці, тому немає "
+"вимоги, щоб схема даних називалася <varname>tiger_data</varname> або щоб "
+"дані не могли бути додатково розділені на інші схеми, наприклад, окрема "
+"схема для кожного штату, за умови, що всі таблиці успадковують таблиці зі "
+"схеми <varname>tiger</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -2176,6 +2464,9 @@ msgid ""
 "load data using it, refer to <xref "
 "linkend=\"install_tiger_geocoder_extension\"/>."
 msgstr ""
+"Інструкції щодо увімкнення розширення у вашій базі даних, а також "
+"завантаження даних за його допомогою, див. <xref linkend="
+"\"install_tiger_geocoder_extension\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -2188,6 +2479,13 @@ msgid ""
 "have data from tiger_2010 and want to replace with tiger_2015, refer to "
 "<xref linkend=\"upgrade_tiger_geocoder\"/>"
 msgstr ""
+"Якщо ви використовуєте геокодер tiger (tiger_2010), ви можете оновити "
+"скрипти за допомогою супровідних скриптів upgrade_geocoder.bat / .sh у папці "
+"extras/tiger. Одне з основних змін між <varname>tiger_2010</varname> та "
+"<varname>tiger_2011+</varname> полягає в тому, що таблиці <varname>county</"
+"varname> та <varname>state</varname> більше не розділені за штатами. Якщо у "
+"вас є дані з tiger_2010 і ви хочете замінити їх на tiger_2015, зверніться до "
+"<xref linkend=\"upgrade_tiger_geocoder\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -2195,6 +2493,8 @@ msgid ""
 "New in PostGIS 2.2.0 release is support for Tiger 2015 data and inclusion of "
 "Address Standardizer as part of PostGIS."
 msgstr ""
+"Нововведенням у версії PostGIS 2.2.0 є підтримка даних Tiger 2015 та "
+"включення стандартизатора адрес до складу PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -2203,6 +2503,10 @@ msgid ""
 "PostgreSQL extension model if you are running PostgreSQL 9.1+. Refer to "
 "<xref linkend=\"install_tiger_geocoder_extension\"/> for details."
 msgstr ""
+"Новою функцією у версії PostGIS 2.1.0 є можливість інсталяції геокодера "
+"tiger із розширенням PostgreSQL, якщо ви використовуєте PostgreSQL 9.1+. "
+"Детальнішу інформацію див. у <xref linkend=\"install_tiger_geocoder_extension"
+"\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -2212,11 +2516,14 @@ msgid ""
 "<xref linkend=\"installing_pagc_address_standardizer\"/> for compile and "
 "installation instructions."
 msgstr ""
+"Функція <xref linkend=\"Pagc_Normalize_Address\"/>замінює вбудовану функцію "
+"<xref linkend=\"Normalize_Address\"/>. Інструкції щодо компіляції та "
+"встановлення див. у <xref linkend=\"installing_pagc_address_standardizer\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Design:"
-msgstr ""
+msgstr "Дизайн:"
 
 #. Tag: para
 #, no-c-format
@@ -2227,6 +2534,11 @@ msgid ""
 "the given address and likeliness of the location. The higher the rating "
 "number the worse the result."
 msgstr ""
+"Метою цього проекту є створення повністю функціонального геокодера, який "
+"може обробляти довільний рядок адреси в США і, використовуючи нормалізовані "
+"дані перепису TIGER, створювати геометрію точки та оцінку, що відображає "
+"місцезнаходження заданої адреси та ймовірність її розташування. Чим вищий "
+"рейтинг, тим гірший результат."
 
 #. Tag: para
 #, no-c-format
@@ -2235,6 +2547,8 @@ msgid ""
 "is useful for deriving the street address and cross streets of a GPS "
 "location."
 msgstr ""
+"Функція <varname>reverse_geocode</varname>, введена в PostGIS 2.0.0, корисна "
+"для отримання адреси вулиці та перехресних вулиць з GPS-координат."
 
 #. Tag: para
 #, no-c-format
@@ -2243,6 +2557,9 @@ msgid ""
 "and use, and should be easily installable and usable on all platforms "
 "supported by PostGIS."
 msgstr ""
+"Геокодер повинен бути простим для встановлення та використання будь-яким "
+"користувачем, знайомим з PostGIS, а також легко встановлюватися та працювати "
+"на всіх платформах, що підтримуються PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -2250,6 +2567,8 @@ msgid ""
 "It should be robust enough to function properly despite formatting and "
 "spelling errors."
 msgstr ""
+"Він повинен бути достатньо надійним, щоб працювати належним чином, "
+"незважаючи на помилки форматування та орфографії."
 
 #. Tag: para
 #, no-c-format
@@ -2257,6 +2576,9 @@ msgid ""
 "It should be extensible enough to be used with future data updates, or "
 "alternate data sources with a minimum of coding changes."
 msgstr ""
+"Він повинен бути достатньо розширюваним, щоб його можна було використовувати "
+"з майбутніми оновленнями даних або альтернативними джерелами даних з "
+"мінімальними змінами в коді."
 
 #. Tag: para
 #, no-c-format
@@ -2264,6 +2586,8 @@ msgid ""
 "The <varname>tiger</varname> schema must be added to the database search "
 "path for the functions to work properly."
 msgstr ""
+"Щоб функції працювали належним чином, схема <varname>tiger</varname> повинна "
+"бути додана до шляху пошуку бази даних."
 
 #. Tag: para
 #, no-c-format
@@ -2271,6 +2595,8 @@ msgid ""
 "There are a couple other open source geocoders for PostGIS, that unlike "
 "tiger geocoder have the advantage of multi-country geocoding support"
 msgstr ""
+"Існує ще кілька відкритих геокодерів для PostGIS, які, на відміну від tiger "
+"geocoder, мають перевагу у вигляді підтримки геокодування для різних країн"
 
 #. Tag: para
 #, no-c-format
@@ -2284,6 +2610,14 @@ msgid ""
 "a pure SQL interface like the tiger geocoder, or if a good deal of the logic "
 "is implemented in the web interface."
 msgstr ""
+"<link xlink:href=«http://wiki.openstreetmap.org/wiki/Nominatim»>Nominatim</"
+"link> використовує дані у форматі OpenStreetMap gazeteer. Для завантаження "
+"даних необхідні osm2pgsql, PostgreSQL 8.4+ та PostGIS 1.5+. Програма "
+"упакована як веб-інтерфейс і, судячи з усього, призначена для виклику як веб-"
+"сервіс. Так само, як і геокодер tiger, він має компоненти геокодера та "
+"зворотного геокодера. З документації не зрозуміло, чи має він чистий "
+"інтерфейс SQL, як геокодер tiger, чи значна частина логіки реалізована у "
+"веб-інтерфейсі."
 
 #. Tag: para
 #, no-c-format
@@ -2295,6 +2629,13 @@ msgid ""
 "relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-platform and also "
 "has a reverse geocoder among some other neat features."
 msgstr ""
+"<link xlink:href=«http://www.gisgraphy.com/»>GIS Graphy</link> також "
+"використовує PostGIS і, як і Nominatim, працює з даними OpenStreetMap (OSM). "
+"Він постачається з завантажувачем для завантаження даних OSM і, подібно до "
+"Nominatim, здатний геокодувати не тільки США. Подібно до Nominatim, він "
+"працює як веб-сервіс і використовує Java 1.5, додатки Servlet, Solr. "
+"GisGraphy є кросплатформовим і має, серед інших корисних функцій, зворотний "
+"геокодер."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2303,6 +2644,10 @@ msgid ""
 "indexes on tiger schema and user specified schema. Defaults schema to "
 "<varname>tiger_data</varname> if no schema is specified.</refpurpose>"
 msgstr ""
+"<refpurpose>Створює скрипт, який видаляє всі не первинні ключі та не "
+"унікальні індекси зі схеми tiger та схеми, вказаної користувачем. Якщо схема "
+"не вказана, за замовчуванням використовується схема "
+"<varname>tiger_data</varname>.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -2311,6 +2656,10 @@ msgid ""
 "indexes on tiger schema and user specified schema. Defaults schema to "
 "<varname>tiger_data</varname> if no schema is specified.</para>"
 msgstr ""
+"<para>Створює скрипт, який видаляє всі не первинні ключі та не унікальні "
+"індекси у схемі tiger та схемі, вказаній користувачем. Якщо схема не "
+"вказана, за замовчуванням використовується схема "
+"<varname>tiger_data</varname></para>"
 
 #. Tag: para
 #, no-c-format
@@ -2320,16 +2669,20 @@ msgid ""
 "linkend=\"Install_Missing_Indexes\"/> to add just the indexes used by the "
 "geocoder."
 msgstr ""
+"Це корисно для мінімізації роздуття індексу, яке може заплутати планувальник "
+"запитів або зайняти зайвий простір. Використовуйте разом з <xref linkend="
+"\"Install_Missing_Indexes\"/>, щоб додати тільки індекси, які "
+"використовуються геокодером."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr ""
+msgstr "Доступність: 2.0.0"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2338,6 +2691,9 @@ msgid ""
 "with <varname>county_all</varname>, <varname>state_all</varname> or state "
 "code followed by <varname>county</varname> or <varname>state</varname>."
 msgstr ""
+"Створює скрипт, який видаляє всі таблиці у вказаній схемі, що починаються з "
+"<varname>county_all</varname>, <varname>state_all</varname> або коду штату, "
+"за яким слідує <varname>county</varname> або <varname>state</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -2348,11 +2704,16 @@ msgid ""
 "is needed if you are upgrading from <varname>tiger_2010</varname> to "
 "<varname>tiger_2011</varname> data."
 msgstr ""
+"Створює скрипт, який видаляє всі таблиці у вказаній схемі, що починаються з "
+"<varname>county_all</varname>, <varname>state_all</varname> або коду штату, "
+"за яким слідує <varname>county</varname> або <varname>state</varname>. Це "
+"потрібно, якщо ви оновлюєте дані з <varname>tiger_2010</varname> до "
+"<varname>tiger_2011</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr ""
+msgstr "Доступність: 2.1.0"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2361,6 +2722,9 @@ msgid ""
 "prefixed with the state abbreviation. Defaults schema to "
 "<varname>tiger_data</varname> if no schema is specified."
 msgstr ""
+"Створює скрипт, який видаляє всі таблиці у вказаній схемі, що мають префікс "
+"у вигляді абревіатури стану. Якщо схема не вказана, за замовчуванням "
+"використовується схема <varname>tiger_data</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -2371,6 +2735,11 @@ msgid ""
 "useful for dropping tables of a state just before you reload a state in case "
 "something went wrong during your previous load."
 msgstr ""
+"Створює скрипт, який видаляє всі таблиці у вказаній схемі, що мають префікс "
+"з абревіатурою стану. Якщо схема не вказана, за замовчуванням "
+"використовується схема <varname>tiger_data</varname>. Ця функція корисна для "
+"видалення таблиць стану безпосередньо перед перезавантаженням стану на "
+"випадок, якщо під час попереднього завантаження сталася помилка."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2382,6 +2751,12 @@ msgid ""
 "pass in maximum results, defaults to 10, and restrict_region (defaults to "
 "NULL)"
 msgstr ""
+"Приймає адресу у вигляді рядка (або іншої нормалізованої адреси) і виводить "
+"набір можливих місць, що включають геометрію точки в NAD 83 long lat, "
+"нормалізовану адресу для кожного з них та рейтинг. Чим нижчий рейтинг, тим "
+"більша ймовірність збігу. Результати сортуються за найнижчим рейтингом. "
+"Можна додатково передати максимальну кількість результатів (за замовчуванням "
+"10) та обмежити регіон (за замовчуванням NULL)"
 
 #. Tag: para
 #, no-c-format
@@ -2397,6 +2772,16 @@ msgid ""
 "to offset 10 meters from center-line off to side (L/R) of street address is "
 "located on."
 msgstr ""
+"Приймає адресу у вигляді рядка (або вже нормалізовану адресу) і виводить "
+"набір можливих місць, що включають геометрію точки в NAD 83 long lat, "
+"<varname>normalized_address</varname> (addy) для кожного з них та рейтинг. "
+"Чим нижчий рейтинг, тим більша ймовірність збігу. Результати сортуються за "
+"найнижчим рейтингом. Використовує дані Tiger (краї, грані, адреси), нечітке "
+"зіставлення рядків PostgreSQL (soundex, levenshtein) та функції інтерполяції "
+"ліній PostGIS для інтерполяції адреси вздовж країв Tiger. Чим вищий рейтинг, "
+"тим менша ймовірність правильності геокоду. Геокодована точка за "
+"замовчуванням зміщена на 10 метрів від центральної лінії в бік (L/R) від "
+"адреси вулиці, на якій вона розташована."
 
 #. Tag: para
 #, no-c-format
@@ -2407,11 +2792,17 @@ msgid ""
 "<varname>max_results</varname> useful for specifying number of best results "
 "or just returning the best result."
 msgstr ""
+"Покращено: 2.0.0 для підтримки структурованих даних Tiger 2010 та "
+"переглянуто деякі логічні алгоритми для підвищення швидкості, точності "
+"геокодування та зміщення точки від центральної лінії до сторони вулиці, на "
+"якій розташована адреса. Новий параметр <varname>max_results</varname> "
+"корисний для вказання кількості найкращих результатів або для повернення "
+"лише найкращого результату."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Basic"
-msgstr ""
+msgstr "Приклади: Базові"
 
 #. Tag: para
 #, no-c-format
@@ -2420,17 +2811,24 @@ msgid ""
 "machine with 2GB ram running PostgreSQL 9.1rc1/PostGIS 2.0 loaded with all "
 "of MA,MN,CA, RI state Tiger data loaded."
 msgstr ""
+"Наведені нижче приклади часу виконання були отримані на однопроцесорному "
+"комп'ютері з частотою 3,0 ГГц, операційною системою Windows 7, 2 ГБ "
+"оперативної пам'яті та встановленим програмним забезпеченням PostgreSQL 9."
+"1rc1/PostGIS 2.0, завантаженим усіма даними про штати Массачусетс, "
+"Міннесота, Каліфорнія та Род-Айленд, отриманими з Tiger."
 
 #. Tag: para
 #, no-c-format
 msgid "Exact matches are faster to compute (61ms)"
-msgstr ""
+msgstr "Точні збіги обчислюються швидше (61 мс)"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Even if zip is not passed in the geocoder can guess (took about 122-150 ms)"
 msgstr ""
+"Навіть якщо zip-код не передається, геокодер може вгадати (займає близько "
+"122-150 мс)"
 
 #. Tag: para
 #, no-c-format
@@ -2438,6 +2836,8 @@ msgid ""
 "Can handle misspellings and provides more than one possible solution with "
 "ratings and takes longer (500ms)."
 msgstr ""
+"Може обробляти орфографічні помилки та надає кілька можливих рішень з "
+"оцінками, але працює довше (500 мс)."
 
 #. Tag: para
 #, no-c-format
@@ -2446,11 +2846,14 @@ msgid ""
 "<varname>max_results=1</varname>. Only process those not yet geocoded (have "
 "no rating)."
 msgstr ""
+"Використовується для пакетного геокодування адрес. Найпростіше встановити "
+"<varname>max_results=1</varname>. Обробляються тільки ті, що ще не "
+"геокодовані (не мають рейтингу)."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Using Geometry filter"
-msgstr ""
+msgstr "Приклади: Використання фільтра «Геометрія»"
 
 #. Tag: para
 #, no-c-format
