@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-11 16:47+0000\n"
+"PO-Revision-Date: 2025-08-11 18:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -2853,7 +2853,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Examples: Using Geometry filter"
-msgstr "Приклади: Використання фільтра «Геометрія»"
+msgstr "Приклади: Використання фільтра «Geometry»"
 
 #. Tag: para
 #, no-c-format
@@ -2862,6 +2862,9 @@ msgid ""
 "linkend=\"ST_SnapToGrid\"/>, <xref linkend=\"ST_X\"/>, <xref "
 "linkend=\"ST_Y\"/>"
 msgstr ""
+", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+"linkend=\"ST_SnapToGrid\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\""
+"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2875,6 +2878,14 @@ msgid ""
 "10. Uses Tiger data (edges, faces, addr), PostgreSQL fuzzy string matching "
 "(soundex, levenshtein)."
 msgstr ""
+"Приймає 2 перехресні вулиці, штат, місто, поштовий індекс і видає набір "
+"можливих місць на першій перехресній вулиці, що знаходиться на перехресті, а "
+"також включає геокоординати як точку розташування в NAD 83 long lat, "
+"<varname>normalized_address</varname> (адреса) для кожного місця та рейтинг. "
+"Чим нижчий рейтинг, тим більша ймовірність збігу. Результати сортуються за "
+"найнижчим рейтингом. Можна вказати максимальну кількість результатів, за "
+"замовчуванням — 10. Використовує дані Tiger (краї, грані, адреси), нечітке "
+"зіставлення рядків PostgreSQL (soundex, levenshtein)."
 
 #. Tag: para
 #, no-c-format
@@ -2890,6 +2901,17 @@ msgid ""
 "sorted by lowest rating first. Uses Tiger data (edges,faces,addr), "
 "PostgreSQL fuzzy string matching (soundex,levenshtein)"
 msgstr ""
+"Приймає 2 перехресні вулиці, штат, місто, поштовий індекс і виводить набір "
+"можливих місць на першій перехресній вулиці, що знаходиться на перехресті, а "
+"також включає геометрію точки в NAD 83 long lat, нормалізовану адресу для "
+"кожного місця та рейтинг. Чим нижчий рейтинг, тим більша ймовірність збігу. "
+"Результати сортуються за найнижчим рейтингом. Можна опціонально передати "
+"максимальну кількість результатів, за замовчуванням 10. Повертає "
+"<varname>normalized_address</varname> (addy) для кожного, geomout як точку "
+"розташування в NAD 83 long lat та рейтинг. Чим нижчий рейтинг, тим більша "
+"ймовірність збігу. Результати сортуються за найнижчим рейтингом. "
+"Використовує дані Tiger (краї, грані, адреси), нечітке зіставлення рядків "
+"PostgreSQL (soundex, levenshtein)"
 
 #. Tag: para
 #, no-c-format
@@ -2898,6 +2920,10 @@ msgid ""
 "machine with 2GB ram running PostgreSQL 9.0/PostGIS 1.5 loaded with all of "
 "MA state Tiger data loaded. Currently a bit slow (3000 ms)"
 msgstr ""
+"Наведені нижче приклади часу виконання отримані на однопроцесорному "
+"комп'ютері з частотою 3,0 ГГц, ОС Windows 7, 2 ГБ оперативної пам'яті, "
+"PostgreSQL 9.0/PostGIS 1.5 та всіма даними про тигрів штату Массачусетс. "
+"Наразі трохи повільно (3000 мс)"
 
 #. Tag: para
 #, no-c-format
@@ -2905,6 +2931,8 @@ msgid ""
 "Testing on Windows 2003 64-bit 8GB on PostGIS 2.0 PostgreSQL 64-bit Tiger "
 "2011 data loaded -- (41ms)"
 msgstr ""
+"Тестування на Windows 2003 64-біт 8 ГБ на PostGIS 2.0 PostgreSQL 64-біт "
+"Tiger 2011 дані завантажено -- (41 мс)"
 
 #. Tag: para
 #, no-c-format
@@ -2912,17 +2940,21 @@ msgid ""
 "Even if zip is not passed in the geocoder can guess (took about 3500 ms on "
 "the windows 7 box), on the windows 2003 64-bit 741 ms"
 msgstr ""
+"Навіть якщо zip не передається, геокодер може вгадати (на комп'ютері з "
+"Windows 7 це зайняло близько 3500 мс), на Windows 2003 64-біт — 741 мс"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns value of specific setting stored in tiger.geocode_settings table."
 msgstr ""
+"Повертає значення конкретного параметра, збереженого в таблиці tiger."
+"geocode_settings."
 
 #. Tag: para
 #, no-c-format
@@ -2931,6 +2963,10 @@ msgid ""
 "Settings allow you to toggle debugging of functions. Later plans will be to "
 "control rating with settings. Current list of settings are as follows:"
 msgstr ""
+"Повертає значення конкретного параметра, збереженого в таблиці "
+"tiger.geocode_settings. Параметри дозволяють вмикати та вимикати "
+"налагодження функцій. У майбутньому планується контролювати рейтинг за "
+"допомогою параметрів. Поточний список параметрів такий:"
 
 #. Tag: para
 #, no-c-format
@@ -2939,11 +2975,15 @@ msgid ""
 "geocode_settings_default. Use customized settingsa are in geocode_settings "
 "and only contain those that have been set by user."
 msgstr ""
+"Змінено: 2.2.0: стандартні налаштування тепер зберігаються в таблиці під "
+"назвою geocode_settings_default. Налаштування, що були змінені користувачем, "
+"зберігаються в geocode_settings і містять лише ті налаштування, які були "
+"встановлені користувачем."
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Example return debugging setting"
-msgstr ""
+msgstr "Приклад повернення параметрів налагодження"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2951,6 +2991,8 @@ msgid ""
 "Returns census tract or field from tract table of where the geometry is "
 "located. Default to returning short name of tract."
 msgstr ""
+"Повертає переписний район або поле з таблиці районів, де розташована "
+"геометрія. За замовчуванням повертається коротка назва району."
 
 #. Tag: para
 #, no-c-format
@@ -2958,6 +3000,9 @@ msgid ""
 "Given a geometry will return the census tract location of that geometry. NAD "
 "83 long lat is assumed if no spatial ref sys is specified."
 msgstr ""
+"За заданою геометрією поверне місце розташування переписної ділянки цієї "
+"геометрії. Якщо просторова система координат не вказана, використовується "
+"NAD 83 (довгота, широта)."
 
 #. Tag: para
 #, no-c-format
@@ -2967,6 +3012,10 @@ msgid ""
 "as well as bg, and tabblock using the <xref "
 "linkend=\"Loader_Generate_Census_Script\"/> script."
 msgstr ""
+"Ця функція використовує перепис <varname>tract</varname>, який за "
+"замовчуванням не завантажується. Якщо ви вже завантажили таблицю штатів, ви "
+"можете завантажити tract, а також bg і tabblock за допомогою скрипту <xref "
+"linkend=\"Loader_Generate_Census_Script\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -2974,17 +3023,21 @@ msgid ""
 "If you have not loaded your state data yet and want these additional tables "
 "loaded, do the following"
 msgstr ""
+"Якщо ви ще не завантажили дані про свій штат і хочете завантажити ці "
+"додаткові таблиці, виконайте наступні дії"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "then they will be included by the <xref linkend=\"Loader_Generate_Script\"/>."
 msgstr ""
+"тоді вони будуть включені за допомогою <xref linkend=\"Loader_Generate_Script"
+"\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "&gt;"
-msgstr ""
+msgstr "&gt;"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2992,6 +3045,9 @@ msgid ""
 "Finds all tables with key columns used in geocoder joins and filter "
 "conditions that are missing used indexes on those columns and will add them."
 msgstr ""
+"Знаходить усі таблиці з ключовими стовпцями, що використовуються в "
+"з'єднаннях геокодера та умовах фільтрації, в яких відсутні використовувані "
+"індекси для цих стовпців, і додає їх."
 
 #. Tag: para
 #, no-c-format
@@ -3006,6 +3062,16 @@ msgid ""
 "generating the create index script, also executes it. It is called as part "
 "of the <filename>update_geocode.sql</filename> upgrade script."
 msgstr ""
+"Знаходить усі таблиці в схемах <varname>tiger</varname> та "
+"<varname>tiger_data</varname> із ключовими стовпцями, що використовуються в "
+"з'єднаннях та фільтрах геокодера, для яких відсутні індекси в цих стовпцях, "
+"і виводить SQL DDL для визначення індексу для цих таблиць, а потім виконує "
+"згенерований скрипт. Це допоміжна функція, яка додає нові індекси, необхідні "
+"для пришвидшення запитів, які могли бути відсутні під час процесу "
+"завантаження. Ця функція є доповненням до <xref linkend="
+"\"Missing_Indexes_Generate_Script\"/>, яка, крім створення скрипту для "
+"створення індексу, також виконує його. Вона викликається як частина скрипту "
+"оновлення <filename>update_geocode.sql</filename>."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -3015,6 +3081,10 @@ msgid ""
 "stage and load into <varname>tiger_data</varname> schema. Each state script "
 "is returned as a separate record."
 msgstr ""
+"Створює скрипт оболонки для вказаної платформи для вказаних штатів, який "
+"завантажить таблиці даних Tiger census state tract, bg та tabblocks, "
+"підготує та завантажить їх у схему <varname>tiger_data</varname>. Кожен "
+"скрипт штату повертається як окремий запис."
 
 #. Tag: para
 #, no-c-format
@@ -3025,6 +3095,11 @@ msgid ""
 "stage and load into <varname>tiger_data</varname> schema. Each state script "
 "is returned as a separate record."
 msgstr ""
+"Створює скрипт оболонки для вказаної платформи для вказаних станів, який "
+"завантажить дані перепису Tiger <varname>tract</varname>, групи блоків "
+"<varname>bg</varname> та таблиці даних <varname>tabblocks</varname>, "
+"розмістить їх у схемі <varname>tiger_data</varname> та завантажить. Кожен "
+"скрипт стану повертається як окремий запис."
 
 #. Tag: para
 #, no-c-format
@@ -3034,6 +3109,11 @@ msgid ""
 "data. Note the smallest unit it does is a whole state. It will only process "
 "the files in the staging and temp folders."
 msgstr ""
+"Для завантаження використовується програма unzip в Linux (7-zip в Windows за "
+"замовчуванням) та wget. Для завантаження даних використовується <xref "
+"linkend=\"shp2pgsql_usage\"/>. Зверніть увагу, що найменша одиниця, яку "
+"обробляє програма, — це цілий штат. Програма обробляє лише файли в папках "
+"staging та temp."
 
 #. Tag: para
 #, no-c-format
@@ -3041,6 +3121,8 @@ msgid ""
 "It uses the following control tables to control the process and different OS "
 "shell syntax variations."
 msgstr ""
+"Для управління процесом і різними варіантами синтаксису оболонки ОС "
+"використовуються наступні таблиці управління."
 
 #. Tag: para
 #, no-c-format
@@ -3048,6 +3130,8 @@ msgid ""
 "<varname>loader_variables</varname> keeps track of various variables such as "
 "census site, year, data and staging schemas"
 msgstr ""
+"<varname>loader_variables</varname> відстежує різні змінні, такі як місце "
+"перепису, рік, дані та схеми підготовки"
 
 #. Tag: para
 #, no-c-format
@@ -3056,6 +3140,9 @@ msgid ""
 "the various executables are located. Comes with windows and linux. More can "
 "be added."
 msgstr ""
+"<varname>loader_platform</varname> профілі різних платформ і розташування "
+"різних виконуваних файлів. Поставляється з Windows і Linux. Можна додати "
+"інші."
 
 #. Tag: para
 #, no-c-format
@@ -3067,6 +3154,13 @@ msgid ""
 "from a table in the tiger schema. e.g. creates <varname>tiger_data.ma_faces</"
 "varname> which inherits from <varname>tiger.faces</varname>"
 msgstr ""
+"<varname>loader_lookuptables</varname> кожен запис визначає тип таблиці ("
+"штат, округ), чи обробляти записи в ній і як їх завантажувати. Визначає "
+"кроки для імпорту даних, підготовки даних, додавання, видалення стовпців, "
+"індексів та обмежень для кожного з них. Кожна таблиця має префікс із "
+"зазначенням стану та успадковує таблицю зі схеми tiger. Наприклад, "
+"створюється <varname>tiger_data.ma_faces</varname>, яка успадковує "
+"<varname>tiger.faces</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -3075,6 +3169,9 @@ msgid ""
 "2.0.0 alpha5, you'll need to run this on the states you have already done to "
 "get these additional tables."
 msgstr ""
+"включає цю логіку, але якщо ви встановили tiger geocoder до PostGIS 2.0.0 "
+"alpha5, вам потрібно буде запустити це на штатах, які ви вже обробили, щоб "
+"отримати ці додаткові таблиці."
 
 #. Tag: para
 #, no-c-format
@@ -3082,11 +3179,13 @@ msgid ""
 "Generate script to load up data for select states in Windows shell script "
 "format."
 msgstr ""
+"Створити скрипт для завантаження даних для вибраних штатів у форматі скрипту "
+"оболонки Windows."
 
 #. Tag: para
 #, no-c-format
 msgid "Generate sh script"
-msgstr ""
+msgstr "Створити скрипт sh"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -3097,6 +3196,11 @@ msgid ""
 "version supports Tiger 2010 structural changes and also loads census tract, "
 "block groups, and blocks tables."
 msgstr ""
+"Створює скрипт оболонки для вказаної платформи для вказаних станів, який "
+"завантажить дані Tiger, підготує та завантажить у схему <varname>tiger_data</"
+"varname>. Кожен скрипт стану повертається як окремий запис. Остання версія "
+"підтримує структурні зміни Tiger 2010, а також завантажує таблиці перепису, "
+"групи блоків та блоки."
 
 #. Tag: para
 #, no-c-format
@@ -3105,6 +3209,9 @@ msgid ""
 "that will download Tiger data, stage and load into <varname>tiger_data</"
 "varname> schema. Each state script is returned as a separate record."
 msgstr ""
+"Створює скрипт оболонки для вказаної платформи для вказаних станів, який "
+"завантажить дані Tiger, підготує та завантажить у схему <varname>tiger_data</"
+"varname>. Кожен скрипт стану повертається як окремий запис."
 
 #. Tag: para
 #, no-c-format
@@ -3115,6 +3222,11 @@ msgid ""
 "this by downloading the files yourself. It will only process the files in "
 "the staging and temp folders."
 msgstr ""
+"Для завантаження використовується програма unzip в Linux (7-zip в Windows за "
+"замовчуванням) та wget. Для завантаження даних використовується <xref "
+"linkend=\"shp2pgsql_usage\"/>. Зверніть увагу, що найменша одиниця, яку "
+"обробляє програма, — це весь штат, але ви можете замінити це, завантаживши "
+"файли самостійно. Програма обробляє лише файли в папках staging та temp."
 
 #. Tag: para
 #, no-c-format
@@ -3122,6 +3234,9 @@ msgid ""
 "Availability: 2.0.0 to support Tiger 2010 structured data and load census "
 "tract (tract), block groups (bg), and blocks (tabblocks) tables ."
 msgstr ""
+"Доступність: 2.0.0 для підтримки структурованих даних Tiger 2010 та "
+"завантаження таблиць перепису населення (tract), груп кварталів (bg) та "
+"кварталів (tabblocks)."
 
 #. Tag: para
 #, no-c-format
@@ -3131,6 +3246,10 @@ msgid ""
 "&gt; Query Editor - &gt; Max. characters per column</emphasis> to larger "
 "than 50000 characters."
 msgstr ""
+"Якщо ви використовуєте pgAdmin 3, майте на увазі, що за замовчуванням "
+"pgAdmin 3 обрізає довгий текст. Щоб виправити це, змініть <emphasis>Файл "
+"-&gt; Параметри -&gt; Інструмент запитів -&gt; Редактор запитів - &gt;Макс. "
+"кількість символів у стовпці</emphasis> на значення, більше 50000 символів."
 
 #. Tag: para
 #, no-c-format
@@ -3138,12 +3257,17 @@ msgid ""
 "Using psql where gistest is your database and <filename>/gisdata/data_load."
 "sh</filename> is the file to create with the shell commands to run."
 msgstr ""
+"Використовуючи psql, де gistest — ваша база даних, а <filename>/gisdata/"
+"data_load.sh</filename> — файл, який потрібно створити за допомогою команд "
+"оболонки, що виконуються."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Generate script to load up data for 2 states in Windows shell script format."
 msgstr ""
+"Створити скрипт для завантаження даних для 2 штатів у форматі скрипту "
+"оболонки Windows."
 
 #. Tag: para
 #, no-c-format
@@ -3151,6 +3275,8 @@ msgid ""
 ", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref "
 "linkend=\"Drop_State_Tables_Generate_Script\"/>"
 msgstr ""
+", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref linkend="
+"\"Drop_State_Tables_Generate_Script\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -3158,6 +3284,8 @@ msgid ""
 "Generates a shell script for the specified platform that loads in the county "
 "and state lookup tables."
 msgstr ""
+"Створює скрипт оболонки для вказаної платформи, який завантажує таблиці "
+"пошуку округів та штатів."
 
 #. Tag: para
 #, no-c-format
@@ -3169,6 +3297,12 @@ msgid ""
 "<varname>county_lookup</varname>, <varname>state</varname> tables in "
 "<varname>tiger</varname> schema."
 msgstr ""
+"Створює скрипт оболонки для вказаної платформи, який завантажує таблиці "
+"<varname>county_all</varname>, <varname>county_all_lookup</varname>, "
+"<varname>state_all</varname> у схему <varname>tiger_data</varname>. Вони "
+"успадковуються відповідно від таблиць <varname>county</varname>, "
+"<varname>county_lookup</varname>, <varname>state</varname> у схемі "
+"<varname>tiger</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -3176,6 +3310,9 @@ msgid ""
 "It uses unzip on Linux (7-zip on Windows by default) and wget to do the "
 "downloading. It uses <xref linkend=\"shp2pgsql_usage\"/> to load in the data."
 msgstr ""
+"Для завантаження використовується програма unzip в Linux (7-zip в Windows за "
+"замовчуванням) та wget. Для завантаження даних використовується <xref "
+"linkend=\"shp2pgsql_usage\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -3185,6 +3322,10 @@ msgid ""
 "loader_lookuptables</varname> to control the process and different OS shell "
 "syntax variations."
 msgstr ""
+"Він використовує наступні таблиці керування <varname>tiger.loader_platform</"
+"varname>, <varname>tiger.loader_variables</varname> та <varname>tiger."
+"loader_lookuptables</varname> для керування процесом та різними варіаціями "
+"синтаксису оболонки ОС."
 
 #. Tag: para
 #, no-c-format
@@ -3193,6 +3334,9 @@ msgid ""
 "the various executables are located. Comes with windows and linux/unix. More "
 "can be added."
 msgstr ""
+"<varname>loader_platform</varname> профілі різних платформ та розташування "
+"різних виконуваних файлів. Поставляється з Windows та Linux/Unix. Можна "
+"додати більше."
 
 #. Tag: para
 #, no-c-format
@@ -3201,6 +3345,9 @@ msgid ""
 "when enabled, zcta5 data is loaded as a single table called zcta5_all as "
 "part of the nation script load."
 msgstr ""
+"Покращено: 2.4.1 виправлено завантаження кроку табуляції поштового індексу 5 "
+"(zcta5) і, коли ця опція увімкнена, дані zcta5 завантажуються як одна "
+"таблиця під назвою zcta5_all у складі завантаження скрипту країни."
 
 #. Tag: para
 #, no-c-format
@@ -3208,6 +3355,8 @@ msgid ""
 "If you want zip code 5 tabulation area (zcta5) to be included in your nation "
 "script load, do the following:"
 msgstr ""
+"Якщо ви хочете, щоб область табуляції поштового індексу 5 (zcta5) була "
+"включена в завантаження скрипту вашої країни, виконайте наступні дії:"
 
 #. Tag: para
 #, no-c-format
