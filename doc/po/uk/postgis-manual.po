@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-11 18:47+0000\n"
+"PO-Revision-Date: 2025-08-12 00:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -3359,13 +3359,13 @@ msgstr ""
 "включена в завантаження скрипту вашої країни, виконайте наступні дії:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If you were running <varname>tiger_2010</varname> version and you want to "
 "reload as state with newer tiger data, you'll need to for the very first "
 "load generate and run drop statements <xref "
 "linkend=\"Drop_Nation_Tables_Generate_Script\"/> before you run this script."
-msgstr ""
+msgstr "Якщо ви введете геометрії з різними SRID, ви отримаєте помилку:"
 
 #. Tag: para
 #, no-c-format
