@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-12 19:47+0000\n"
+"PO-Revision-Date: 2025-08-12 23:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -4347,22 +4347,22 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "Cast To"
-msgstr ""
+msgstr "Приведення типів в"
 
 #. Tag: entry
 #, no-c-format
 msgid "Behavior"
-msgstr ""
+msgstr "Поведінка"
 
 #. Tag: entry
 #, no-c-format
 msgid "geometry"
-msgstr ""
+msgstr "geometry"
 
 #. Tag: entry
 #, no-c-format
 msgid "automatic"
-msgstr ""
+msgstr "автоматичне"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4371,6 +4371,9 @@ msgid ""
 "location of error. This is the return type for <varname>ValidateTopology</"
 "varname>."
 msgstr ""
+"Комбінований тип, що складається з повідомлення про помилку та "
+"ідентифікаторів id1 та id2 для позначення місця помилки. Це тип повернення "
+"для <varname>ValidateTopology</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -4380,11 +4383,16 @@ msgid ""
 "denote validation errors and the id1 and id2 to denote the ids of the "
 "topology objects involved in the error."
 msgstr ""
+"Композитний тип, що складається з повідомлення про помилку та двох цілих "
+"чисел. Функція <xref linkend=\"ValidateTopology\"/> повертає набір таких "
+"елементів для позначення помилок перевірки, а також ідентифікатори id1 та "
+"id2 для позначення ідентифікаторів об'єктів топології, пов'язаних із "
+"помилкою."
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>error</varname> is varchar: Denotes type of error."
-msgstr ""
+msgstr "<varname>error</varname> є varchar: Позначає тип помилки."
 
 #. Tag: para
 #, no-c-format
@@ -4393,6 +4401,9 @@ msgid ""
 "simple, edge end node geometry mismatch, edge start node geometry mismatch, "
 "face overlaps face,face within face,"
 msgstr ""
+"Поточні описи помилок: збіжні вузли, перетин ребер з вузлами, не прості "
+"ребра, невідповідність геометрії кінцевих вузлів ребер, невідповідність "
+"геометрії початкових вузлів ребер, перекриття граней, грань всередині грані,"
 
 #. Tag: para
 #, no-c-format
@@ -4400,6 +4411,8 @@ msgid ""
 "<varname>id1</varname> is an integer: Denotes identifier of edge / face / "
 "nodes in error."
 msgstr ""
+"<varname>id1</varname> integer позначає ідентифікатор ребра / грані / "
+"вузлів, що містить помилку."
 
 #. Tag: para
 #, no-c-format
@@ -4407,11 +4420,13 @@ msgid ""
 "<varname>id2</varname> is an integer: For errors that involve 2 objects "
 "denotes the secondary edge / or node"
 msgstr ""
+"<varname>id2</varname> integer: для помилок, що стосуються 2 об'єктів, "
+"позначає вторинний край / або вузол"
 
 #. Tag: title
 #, no-c-format
 msgid "Topology Domains"
-msgstr ""
+msgstr "Топологічні домени"
 
 #. Tag: para
 #, no-c-format
@@ -4421,12 +4436,19 @@ msgid ""
 "table columns. The distinction between a domain and a type is that a domain "
 "is an existing type with a check constraint bound to it."
 msgstr ""
+"У цьому розділі перелічено домени PostgreSQL, встановлені PostGIS Topology. "
+"Домени можна використовувати як типи об'єктів, наприклад, як об'єкти, що "
+"повертаються функціями, або стовпці таблиць. Відмінність домену від типу "
+"полягає в тому, що домен — це існуючий тип, до якого прив'язано обмеження "
+"перевірки."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "An array of 2 integers generally used to identify a TopoGeometry component."
 msgstr ""
+"Масив із 2 цілих чисел, що зазвичай використовується для ідентифікації "
+"компонента TopoGeometry."
 
 #. Tag: para
 #, no-c-format
@@ -4434,6 +4456,8 @@ msgid ""
 "An array of 2 integers used to represent one component of a simple or "
 "hierarchical <xref linkend=\"topogeometry\"/>."
 msgstr ""
+"Масив із 2 цілих чисел, що використовується для представлення одного "
+"компонента простого або ієрархічного <xref linkend=\"topogeometry\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -4444,6 +4468,11 @@ msgid ""
 "TopoGeometry the first element of the array represents the identifier of a "
 "child TopoGeometry and the second element represents its layer identifier."
 msgstr ""
+"У випадку простої TopoGeometry перший елемент масиву представляє "
+"ідентифікатор топологічного примітиву, а другий елемент представляє його тип "
+"(1:вузол, 2:ребро, 3:грань). У випадку ієрархічної TopoGeometry перший "
+"елемент масиву представляє ідентифікатор дочірньої TopoGeometry, а другий "
+"елемент представляє ідентифікатор її шару."
 
 #. Tag: para
 #, no-c-format
@@ -4452,6 +4481,9 @@ msgid ""
 "come from the same child layer, as specified in the topology.layer record "
 "for the layer of the TopoGeometry being defined."
 msgstr ""
+"Для будь-якої ієрархічної TopoGeometry всі дочірні елементи TopoGeometry "
+"будуть походити з того самого дочірнього шару, як зазначено в записі "
+"topology.layer для шару TopoGeometry, що визначається."
 
 #. Tag: para
 #, no-c-format
@@ -4460,11 +4492,14 @@ msgid ""
 "<xref linkend=\"TopoGeom_addElement\"/>, <xref "
 "linkend=\"TopoGeom_remElement\"/>"
 msgstr ""
+", <xref linkend=\"topoelementarray\"/>, <xref linkend=\"topogeometry\"/>, "
+"<xref linkend=\"TopoGeom_addElement\"/>, <xref linkend=\"TopoGeom_remElement"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "An array of TopoElement objects."
-msgstr ""
+msgstr "Масив об'єктів TopoElement."
 
 #. Tag: para
 #, no-c-format
@@ -4472,6 +4507,8 @@ msgid ""
 "An array of 1 or more TopoElement objects, generally used to pass around "
 "components of TopoGeometry objects."
 msgstr ""
+"Масив з 1 або більше об'єктів TopoElement, який зазвичай використовується "
+"для передачі компонентів об'єктів TopoGeometry."
 
 #. Tag: para
 #, no-c-format
@@ -4479,11 +4516,13 @@ msgid ""
 ", <xref linkend=\"GetTopoGeomElementArray\"/>, <xref "
 "linkend=\"TopoElementArray_Agg\"/>"
 msgstr ""
+", <xref linkend=\"GetTopoGeomElementArray\"/>, <xref linkend="
+"\"TopoElementArray_Agg\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Topology and TopoGeometry Management"
-msgstr ""
+msgstr "Управління топологією та топогеометрією"
 
 #. Tag: para
 #, no-c-format
@@ -4491,6 +4530,8 @@ msgid ""
 "This section lists the Topology functions for building new Topology schemas, "
 "validating topologies, and managing TopoGeometry Columns"
 msgstr ""
+"У цьому розділі перелічено функції топології для створення нових схем "
+"топології, перевірки топологій та управління стовпцями TopoGeometry"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4498,6 +4539,8 @@ msgid ""
 "Adds a topogeometry column to an existing table, registers this new column "
 "as a layer in topology.layer and returns the new layer_id."
 msgstr ""
+"Додає стовпець топогеометрії до існуючої таблиці, реєструє цей новий "
+"стовпець як шар у topology.layer і повертає новий layer_id."
 
 #. Tag: para
 #, no-c-format
@@ -4508,6 +4551,11 @@ msgid ""
 "also contain type and hierarchy information. We create a layer using the "
 "AddTopoGeometryColumn() function:"
 msgstr ""
+"Кожен об'єкт TopoGeometry належить до певного шару певної топології. Перед "
+"створенням об'єкта TopoGeometry потрібно створити його TopologyLayer. "
+"Топологічний шар — це зв'язок таблиці об'єктів з топологією. Він також "
+"містить інформацію про тип та ієрархію. Ми створюємо шар за допомогою "
+"функції AddTopoGeometryColumn():"
 
 #. Tag: para
 #, no-c-format
@@ -4515,6 +4563,8 @@ msgid ""
 "This function will both add the requested column to the table and add a "
 "record to the topology.layer table with all the given info."
 msgstr ""
+"Ця функція додасть запитуваний стовпець до таблиці та додасть запис до "
+"таблиці topology.layer з усією наданою інформацією."
 
 #. Tag: para
 #, no-c-format
@@ -4524,6 +4574,10 @@ msgid ""
 "Otherwise this layer will contain hierarchical TopoGeometries (composed by "
 "TopoGeometries from the child_layer)."
 msgstr ""
+"Якщо ви не вкажете [child_layer] (або встановите його значення NULL), цей "
+"шар буде містити базові топогеометрії (складені з примітивних топологічних "
+"елементів). В іншому випадку цей шар буде містити ієрархічні топогеометрії ("
+"складені з топогеометрій з child_layer)."
 
 #. Tag: para
 #, no-c-format
@@ -4531,6 +4585,8 @@ msgid ""
 "Once the layer is created (its id is returned by the AddTopoGeometryColumn "
 "function) you're ready to construct TopoGeometry objects in it"
 msgstr ""
+"Після створення шару (його ідентифікатор повертається функцією "
+"AddTopoGeometryColumn) ви готові до побудови об'єктів TopoGeometry в ньому"
 
 #. Tag: para
 #, no-c-format
@@ -4538,11 +4594,13 @@ msgid ""
 "Valid <varname>feature_type</varname>s are: POINT, MULTIPOINT, LINE, "
 "MULTILINE, POLYGON, MULTIPOLYGON, COLLECTION"
 msgstr ""
+"Дійсні <varname>feature_type</varname>s: POINT, MULTIPOINT, LINE, MULTILINE, "
+"POLYGON, MULTIPOLYGON, COLLECTION"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.1"
-msgstr ""
+msgstr "Доступність: 1.1"
 
 #. Tag: para
 #, no-c-format
@@ -4550,11 +4608,13 @@ msgid ""
 ", <xref linkend=\"toTopoGeom\"/>, <xref linkend=\"CreateTopology\"/>, <xref "
 "linkend=\"CreateTopoGeom\"/>"
 msgstr ""
+", <xref linkend=\"toTopoGeom\"/>, <xref linkend=\"CreateTopology\"/>, <xref "
+"linkend=\"CreateTopoGeom\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Renames a topogeometry column"
-msgstr ""
+msgstr "Перейменовує стовпець топогеометрії"
 
 #. Tag: para
 #, no-c-format
@@ -4562,11 +4622,13 @@ msgid ""
 "This function changes the name of an existing TopoGeometry column ensuring "
 "metadata information about it is updated accordingly."
 msgstr ""
+"Ця функція змінює назву існуючого стовпця TopoGeometry, забезпечуючи "
+"відповідне оновлення метаданих про нього."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RenameTopology\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"Перейменувати топологію\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4575,6 +4637,9 @@ msgid ""
 "topology.topology table and references to tables in that schema from the "
 "geometry_columns table."
 msgstr ""
+"Використовуйте з обережністю: видаляє схему топології та її посилання з "
+"таблиці topology.topology, а також посилання на таблиці в цій схемі з "
+"таблиці geometry_columns."
 
 #. Tag: para
 #, no-c-format
@@ -4585,6 +4650,11 @@ msgid ""
 "you care about. If the schema does not exist, it just removes reference "
 "entries the named schema."
 msgstr ""
+"Видаляє схему топології та її посилання з таблиці topology.topology, а також "
+"посилання на таблиці в цій схемі з таблиці geometry_columns. Цю функцію слід "
+"ВИКОРИСТОВУВАТИ З ОБЕРЕЖНІСТЮ, оскільки вона може знищити важливі для вас "
+"дані. Якщо схема не існує, вона просто видаляє записи посилань на вказану "
+"схему."
 
 #. Tag: para
 #, no-c-format
@@ -4592,11 +4662,13 @@ msgid ""
 "Cascade drops the ma_topo schema and removes all references to it in "
 "topology.topology and geometry_columns."
 msgstr ""
+"Cascade видаляє схему ma_topo та всі посилання на неї в topology.topology та "
+"geometry_columns."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Renames a topology"
-msgstr ""
+msgstr "Перейменовує топологію"
 
 #. Tag: para
 #, no-c-format
@@ -4604,6 +4676,8 @@ msgid ""
 "Renames a topology schema, updating its metadata record in the "
 "<varname>topology.topology</varname> table."
 msgstr ""
+"Перейменовує схему топології, оновлюючи запис метаданих у таблиці "
+"<varname>topology.topology</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -4611,11 +4685,13 @@ msgid ""
 "Rename a topology from <varname>topo_stage</varname> to <varname>topo_prod</"
 "varname>."
 msgstr ""
+"Перейменуйте топологію з <varname>topo_stage</varname> на "
+"<varname>topo_prod</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RenameTopoGeometryColumn\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"Перейменувати стовпець топографічної геометрії\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4624,6 +4700,9 @@ msgid ""
 "varname> in schema <varname>schema_name</varname> and unregisters the "
 "columns from topology.layer table."
 msgstr ""
+"Видаляє стовпець топогеометрії з таблиці з назвою <varname>table_name</"
+"varname> у схемі <varname>schema_name</varname> та скасовує реєстрацію "
+"стовпців у таблиці topology.layer."
 
 #. Tag: para
 #, no-c-format
@@ -4634,6 +4713,11 @@ msgid ""
 "first sets all values to NULL before dropping to bypass referential "
 "integrity checks."
 msgstr ""
+"Видаляє стовпець топогеометрії з таблиці з назвою <varname>table_name</"
+"varname> у схемі <varname>schema_name</varname> та скасовує реєстрацію "
+"стовпців у таблиці topology.layer. Повертає підсумок стану видалення. "
+"ПРИМІТКА: перед видаленням спочатку встановлює всі значення на NULL, щоб "
+"обійти перевірки цілісності посилань."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4641,6 +4725,8 @@ msgid ""
 "Adds missing entries to topology.layer table by reading metadata from topo "
 "tables."
 msgstr ""
+"Додає відсутні записи до таблиці topology.layer, зчитуючи метадані з таблиць "
+"topo."
 
 #. Tag: para
 #, no-c-format
@@ -4650,6 +4736,10 @@ msgid ""
 "fixing up entries in topology catalog after restores of schemas with topo "
 "data."
 msgstr ""
+"Додає відсутні записи до таблиці <varname>topology.layer</varname>, "
+"перевіряючи обмеження топології в таблицях. Ця функція корисна для "
+"виправлення записів у каталозі топології після відновлення схем із даними "
+"топології."
 
 #. Tag: para
 #, no-c-format
@@ -4658,11 +4748,14 @@ msgid ""
 "<varname>schema_name</varname>, <varname>table_name</varname>, "
 "<varname>feature_column</varname>."
 msgstr ""
+"Повертає список створених записів. Повертаються стовпці "
+"<varname>schema_name</varname>, <varname>table_name</varname>, "
+"<varname>feature_column</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.3.0"
-msgstr ""
+msgstr "Доступність: 2.3.0"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4670,6 +4763,8 @@ msgid ""
 "<refpurpose>Takes a topology name and provides summary totals of types of "
 "objects in topology.</refpurpose>"
 msgstr ""
+"<refpurpose>Бере ім'я топології та надає підсумкові суми типів об'єктів у "
+"топології.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -4677,6 +4772,8 @@ msgid ""
 "<para>Takes a topology name and provides summary totals of types of objects "
 "in topology.</para>"
 msgstr ""
+"<para>Бере ім'я топології та надає підсумкові суми типів об'єктів у "
+"топології.</para>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4684,6 +4781,8 @@ msgid ""
 "Returns a set of validatetopology_returntype objects detailing issues with "
 "topology."
 msgstr ""
+"Повертає набір об'єктів validated_topology_returntype, що детально описують "
+"проблеми з топологією."
 
 #. Tag: para
 #, no-c-format
@@ -4692,6 +4791,9 @@ msgid ""
 "detailing issues with topology, optionally limiting the check to the area "
 "specified by the <varname>bbox</varname> parameter."
 msgstr ""
+"Повертає набір об'єктів <xref linkend=\"validatetopology_returntype\"/>, що "
+"детально описують проблеми з топологією, за бажанням обмежуючи перевірку "
+"областю, вказаною параметром <varname>bbox</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -4699,118 +4801,122 @@ msgid ""
 "List of possible errors, what they mean and what the returned ids represent "
 "are displayed below:"
 msgstr ""
+"Нижче наведено перелік можливих помилок, їх значення та значення повернених "
+"ідентифікаторів:"
 
 #. Tag: entry
 #, no-c-format
 msgid "Error"
-msgstr ""
+msgstr "Error"
 
 #. Tag: entry
 #, no-c-format
 msgid "<entry>id1</entry>"
-msgstr ""
+msgstr "<entry>id1</entry>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<entry>id2</entry>"
-msgstr ""
+msgstr "<entry>id2</entry>"
 
 #. Tag: entry
 #, no-c-format
 msgid "Meaning"
-msgstr ""
+msgstr "Meaning"
 
 #. Tag: entry
 #, no-c-format
 msgid "coincident nodes"
-msgstr ""
+msgstr "coincident nodes"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of first node."
-msgstr ""
+msgstr "Ідентифікатор першого вузла."
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of second node."
-msgstr ""
+msgstr "Ідентифікатор другого вузла."
 
 #. Tag: entry
 #, no-c-format
 msgid "Two nodes have the same geometry."
-msgstr ""
+msgstr "Два вузли мають однакову геометрію."
 
 #. Tag: entry
 #, no-c-format
 msgid "edge crosses node"
-msgstr ""
+msgstr "edge crosses node"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the edge."
-msgstr ""
+msgstr "Ідентифікатор ребра."
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the node."
-msgstr ""
+msgstr "Ідентифікатор вузла."
 
 #. Tag: entry
 #, no-c-format
 msgid "An edge has a node in its interior. See <xref linkend=\"ST_Relate\"/>."
 msgstr ""
+"Ребро має вузол у своїй внутрішній частині. Див. <xref linkend=\"ST_Relate\""
+"/>."
 
 #. Tag: entry
 #, no-c-format
 msgid "invalid edge"
-msgstr ""
+msgstr "invalid edge"
 
 #. Tag: entry
 #, no-c-format
 msgid "An edge geometry is invalid. See <xref linkend=\"ST_IsValid\"/>."
-msgstr ""
+msgstr "Геометрія ребра недійсна. Див. <xref linkend=\"ST_IsValid\"/>."
 
 #. Tag: entry
 #, no-c-format
 msgid "edge not simple"
-msgstr ""
+msgstr "edge not simple"
 
 #. Tag: entry
 #, no-c-format
 msgid ""
 "An edge geometry has self-intersections. See <xref linkend=\"ST_IsSimple\"/>."
-msgstr ""
+msgstr "Геометрія ребра має самоперетини. Див. <xref linkend=\"ST_IsSimple\"/>."
 
 #. Tag: entry
 #, no-c-format
 msgid "edge crosses edge"
-msgstr ""
+msgstr "edge crosses edge"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of first edge."
-msgstr ""
+msgstr "Ідентифікатор першого ребра."
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of second edge."
-msgstr ""
+msgstr "Ідентифікатор другого ребра."
 
 #. Tag: entry
 #, no-c-format
 msgid ""
 "Two edges have an interior intersection. See <xref linkend=\"ST_Relate\"/>."
-msgstr ""
+msgstr "Дві ребра мають внутрішнє перетин. Див. <xref linkend=\"ST_Relate\"/>."
 
 #. Tag: entry
 #, no-c-format
 msgid "edge start node geometry mismatch"
-msgstr ""
+msgstr "edge start node geometry mismatch"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the indicated start node."
-msgstr ""
+msgstr "Ідентифікатор вказаного початкового вузла."
 
 #. Tag: entry
 #, no-c-format
@@ -4819,16 +4925,18 @@ msgid ""
 "match the first point of the edge geometry. See <xref "
 "linkend=\"ST_StartPoint\"/>."
 msgstr ""
+"Геометрія вузла, вказаного як початковий вузол для ребра, не відповідає "
+"першій точці геометрії ребра. Див. <xref linkend=\"ST_StartPoint\"/>."
 
 #. Tag: entry
 #, no-c-format
 msgid "edge end node geometry mismatch"
-msgstr ""
+msgstr "edge end node geometry mismatch"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the indicated end node."
-msgstr ""
+msgstr "Ідентифікатор вказаного кінцевого вузла."
 
 #. Tag: entry
 #, no-c-format
@@ -4837,16 +4945,18 @@ msgid ""
 "match the last point of the edge geometry. See <xref linkend=\"ST_EndPoint\"/"
 ">."
 msgstr ""
+"Геометрія вузла, вказаного як кінцевий вузол для ребра, не відповідає "
+"останній точці геометрії ребра. Див. <xref linkend=\"ST_EndPoint\"/>."
 
 #. Tag: entry
 #, no-c-format
 msgid "face without edges"
-msgstr ""
+msgstr "face without edges"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the orphaned face."
-msgstr ""
+msgstr "Ідентифікатор «осиротілої» грані."
 
 #. Tag: entry
 #, no-c-format
@@ -4854,11 +4964,13 @@ msgid ""
 "No edge reports an existing face on either of its sides (left_face, "
 "right_face)."
 msgstr ""
+"Жодне ребро не повідомляє про наявність грані з будь-якого боку (left_face, "
+"right_face)."
 
 #. Tag: entry
 #, no-c-format
 msgid "face has no rings"
-msgstr ""
+msgstr "face has no rings"
 
 #. Tag: entry
 #, no-c-format
