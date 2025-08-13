@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-12 23:47+0000\n"
+"PO-Revision-Date: 2025-08-13 11:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -4975,22 +4975,22 @@ msgstr "face has no rings"
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the partially-defined face."
-msgstr ""
+msgstr "Ідентифікатор частково визначеної грані."
 
 #. Tag: entry
 #, no-c-format
 msgid "Edges reporting a face on their sides do not form a ring."
-msgstr ""
+msgstr "Ребра, що утворюють грань на своїх боках, не утворюють кільця."
 
 #. Tag: entry
 #, no-c-format
 msgid "face has wrong mbr"
-msgstr ""
+msgstr "face has wrong mbr"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the face with wrong mbr cache."
-msgstr ""
+msgstr "Ідентифікатор грані з неправильним кешем mbr."
 
 #. Tag: entry
 #, no-c-format
@@ -4998,11 +4998,13 @@ msgid ""
 "Minimum bounding rectangle of a face does not match minimum bounding box of "
 "the collection of edges reporting the face on their sides."
 msgstr ""
+"Мінімальна обмежувальна рамка грані не збігається з мінімальною "
+"обмежувальною рамкою сукупності ребер, що утворюють грань по своїх сторонах."
 
 #. Tag: entry
 #, no-c-format
 msgid "hole not in advertised face"
-msgstr ""
+msgstr "hole not in advertised face"
 
 #. Tag: entry
 #, no-c-format
@@ -5010,6 +5012,8 @@ msgid ""
 "Signed identifier of an edge, identifying the ring. See <xref "
 "linkend=\"GetRingEdges\"/>."
 msgstr ""
+"Підписаний ідентифікатор ребра, що ідентифікує кільце. Див. <xref linkend="
+"\"GetRingEdges\"/>."
 
 #. Tag: entry
 #, no-c-format
@@ -5017,16 +5021,18 @@ msgid ""
 "A ring of edges reporting a face on its exterior is contained in different "
 "face."
 msgstr ""
+"Кільце ребер, що утворюють грань на зовнішній поверхні, міститься в іншій "
+"грані."
 
 #. Tag: entry
 #, no-c-format
 msgid "not-isolated node has not- containing_face"
-msgstr ""
+msgstr "not-isolated node has not- containing_face"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the ill-defined node."
-msgstr ""
+msgstr "Ідентифікатор неправильно визначеного вузла."
 
 #. Tag: entry
 #, no-c-format
@@ -5034,11 +5040,13 @@ msgid ""
 "A node which is reported as being on the boundary of one or more edges is "
 "indicating a containing face."
 msgstr ""
+"Вузол, який повідомляється як такий, що знаходиться на межі одного або "
+"декількох ребер, вказує на вмістну грань."
 
 #. Tag: entry
 #, no-c-format
 msgid "isolated node has containing_face"
-msgstr ""
+msgstr "isolated node has containing_face"
 
 #. Tag: entry
 #, no-c-format
@@ -5046,16 +5054,18 @@ msgid ""
 "A node which is not reported as being on the boundary of any edges is "
 "lacking the indication of a containing face."
 msgstr ""
+"Вузол, який не вказаний як такий, що знаходиться на межі будь-яких ребер, не "
+"має позначення грані, що його містить."
 
 #. Tag: entry
 #, no-c-format
 msgid "isolated node has wrong containing_face"
-msgstr ""
+msgstr "isolated node has wrong containing_face"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the misrepresented node."
-msgstr ""
+msgstr "Ідентифікатор неправильно представленого вузла."
 
 #. Tag: entry
 #, no-c-format
@@ -5064,21 +5074,25 @@ msgid ""
 "a containing face which is not the actual face containing it. See <xref "
 "linkend=\"GetFaceContainingPoint\"/>."
 msgstr ""
+"Вузол, який не вказаний як такий, що знаходиться на межі будь-яких ребер, "
+"вказує на грань, що його містить, яка не є фактичною гранью, що його "
+"містить. Див. <xref linkend=\"GetFaceContainingPoint\"/>."
 
 #. Tag: entry
 #, no-c-format
 msgid "invalid next_right_edge"
-msgstr ""
+msgstr "invalid next_right_edge"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the misrepresented edge."
-msgstr ""
+msgstr "Ідентифікатор неправильно представленого ребра."
 
 #. Tag: entry
 #, no-c-format
 msgid "Signed id of the edge which should be indicated as the next right edge."
 msgstr ""
+"Підписаний ідентифікатор ребра, яке слід вказати як наступне праве ребро."
 
 #. Tag: entry
 #, no-c-format
@@ -5086,16 +5100,19 @@ msgid ""
 "The edge indicated as the next edge encountered walking on the right side of "
 "an edge is wrong."
 msgstr ""
+"Ребро, позначене як наступне ребро, на яке натрапляєш, рухаючись праворуч "
+"від ребра, є неправильним."
 
 #. Tag: entry
 #, no-c-format
 msgid "invalid next_left_edge"
-msgstr ""
+msgstr "invalid next_left_edge"
 
 #. Tag: entry
 #, no-c-format
 msgid "Signed id of the edge which should be indicated as the next left edge."
 msgstr ""
+"Підписаний ідентифікатор ребра, яке слід вказати як наступне ліве ребро."
 
 #. Tag: entry
 #, no-c-format
@@ -5103,11 +5120,13 @@ msgid ""
 "The edge indicated as the next edge encountered walking on the left side of "
 "an edge is wrong."
 msgstr ""
+"Ребро, вказане як наступне ребро, на яке натрапляєш, рухаючись лівою "
+"стороною ребра, є неправильним."
 
 #. Tag: entry
 #, no-c-format
 msgid "mixed face labeling in ring"
-msgstr ""
+msgstr "mixed face labeling in ring"
 
 #. Tag: entry
 #, no-c-format
@@ -5115,11 +5134,13 @@ msgid ""
 "Edges in a ring indicate conflicting faces on the walking side. This is also "
 "known as a \"Side Location Conflict\"."
 msgstr ""
+"Ребра в кільці позначають конфліктуючі грані на стороні ходіння. Це також "
+"називається «конфліктом розташування сторін»."
 
 #. Tag: entry
 #, no-c-format
 msgid "non-closed ring"
-msgstr ""
+msgstr "non-closed ring"
 
 #. Tag: entry
 #, no-c-format
@@ -5127,26 +5148,28 @@ msgid ""
 "A ring of edges formed by following next_left_edge/next_right_edge "
 "attributes starts and ends on different nodes."
 msgstr ""
+"Кільце ребер, утворене атрибутами next_left_edge/next_right_edge, "
+"починається і закінчується на різних вузлах."
 
 #. Tag: entry
 #, no-c-format
 msgid "face has multiple shells"
-msgstr ""
+msgstr "face has multiple shells"
 
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the contended face."
-msgstr ""
+msgstr "Ідентифікатор грані, що є предметом суперечки."
 
 #. Tag: entry
 #, no-c-format
 msgid "More than a one ring of edges indicate the same face on its interior."
-msgstr ""
+msgstr "Більше ніж одне кільце ребер вказує на ту саму грань всередині."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.0.0"
-msgstr ""
+msgstr "Доступність: 1.0.0"
 
 #. Tag: para
 #, no-c-format
@@ -5154,6 +5177,8 @@ msgid ""
 "Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false "
 "positives that were existent in prior versions."
 msgstr ""
+"Покращено: 2.0.0 більш ефективне виявлення перетину ребер та виправлення "
+"помилок, що були присутні в попередніх версіях."
 
 #. Tag: para
 #, no-c-format
@@ -5161,6 +5186,8 @@ msgid ""
 "Changed: 2.2.0 values for id1 and id2 were swapped for 'edge crosses node' "
 "to be consistent with error description."
 msgstr ""
+"Змінено: 2.2.0 значення id1 та id2 були поміняні місцями для «перетину ребер "
+"вузлом» з метою узгодження з описом помилки."
 
 #. Tag: para
 #, no-c-format
@@ -5168,16 +5195,18 @@ msgid ""
 "Changed: 3.2.0 added optional bbox parameter, perform face labeling and edge "
 "linking checks."
 msgstr ""
+"Змінено: 3.2.0 додано опційний параметр bbox, виконується перевірка "
+"маркування ребер та з'єднання ребер."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"Topology_Load_Tiger\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"Topology_Load_Tiger\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns info about invalid topology relation records"
-msgstr ""
+msgstr "Повертає інформацію про недійсні записи топологічних відносин"
 
 #. Tag: para
 #, no-c-format
@@ -5185,16 +5214,18 @@ msgid ""
 "Returns a set records giving information about invalidities in the relation "
 "table of the topology."
 msgstr ""
+"Повертає набір записів, що містять інформацію про недійсні елементи в "
+"таблиці відносин топології."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.2.0"
-msgstr ""
+msgstr "Доступність: 3.2.0"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns non-precise vertices in the topology."
-msgstr ""
+msgstr "Повертає неточні вершини в топології."
 
 #. Tag: para
 #, no-c-format
@@ -5203,16 +5234,19 @@ msgid ""
 "<varname>gridSize</varname> as a puntal geometry, optionally limiting the "
 "check to the area specified by the <varname>bbox</varname> parameter."
 msgstr ""
+"Повертає всі вершини, які не округлені до топології або задані "
+"<varname>gridSize</varname> як точкова геометрія, опціонально обмежуючи "
+"перевірку областю, заданою параметром <varname>bbox</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0"
-msgstr ""
+msgstr "Доступність: 3.6.0"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Snap topology vertices to precision grid."
-msgstr ""
+msgstr "Прив'язати вершини топології до сітки з високою точністю."
 
 #. Tag: para
 #, no-c-format
@@ -5229,16 +5263,19 @@ msgid ""
 "Snapping could make the topology invalid, so it is recommended to check the "
 "outcome of operation with <xref linkend=\"ValidateTopology\"/>."
 msgstr ""
+"При використанні функції «Прив'язати» топологія може стати недійсною, тому "
+"рекомендується перевірити результат операції за допомогою <xref linkend="
+"\"ValidateTopology\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ValidateTopology\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ValidateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a topology record by different means."
-msgstr ""
+msgstr "Повертає запис топології різними способами."
 
 #. Tag: para
 #, no-c-format
@@ -5246,11 +5283,13 @@ msgid ""
 "Takes a topology identifier or the identifier of a topology-related object "
 "and returns a topology.topology record."
 msgstr ""
+"Приймає ідентифікатор топології або ідентифікатор об'єкта, пов'язаного з "
+"топологією, і повертає запис топології."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a topology.layer record by different means."
-msgstr ""
+msgstr "Повертає запис topology.layer різними способами."
 
 #. Tag: para
 #, no-c-format
@@ -5258,6 +5297,8 @@ msgid ""
 "Takes a layer identifier or the identifier of a topology-related object and "
 "returns a topology.layer record."
 msgstr ""
+"Приймає ідентифікатор шару або ідентифікатор об'єкта, пов'язаного з "
+"топологією, і повертає запис topology.layer."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5265,6 +5306,8 @@ msgid ""
 "Total disk space used by the specified topology, including all indexes and "
 "TOAST data."
 msgstr ""
+"Загальний обсяг дискового простору, використовуваний зазначеною топологією, "
+"включаючи всі індекси та дані TOAST."
 
 #. Tag: para
 #, no-c-format
@@ -5272,6 +5315,8 @@ msgid ""
 "Takes a topology name and provides the total disk space used by all its "
 "tables, including indexes and TOAST data."
 msgstr ""
+"Приймає ім'я топології та надає загальний обсяг дискового простору, "
+"зайнятого всіма її таблицями, включаючи індекси та дані TOAST."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5279,6 +5324,8 @@ msgid ""
 "Upgrades the specified topology to support large ids (int8) for topology and "
 "primitive ids."
 msgstr ""
+"Оновлює вказану топологію для підтримки великих ідентифікаторів (int8) для "
+"топології та примітивних ідентифікаторів."
 
 #. Tag: para
 #, no-c-format
@@ -5294,6 +5341,16 @@ msgid ""
 "relation (topogeo_id column from int4 to int8, element_id from int4 to int8) "
 "- topology (useslargeids column set to true)"
 msgstr ""
+"Бере ім'я топології та оновлює його для підтримки великих ідентифікаторів "
+"(int8) для топології та примітивних ідентифікаторів. Функція оновлює "
+"наступне: - face (стовпець face_id з int4 до int8, face_id_seq з int4 до "
+"int8) - node (стовпець node_id з int4 до int8, столпець containing_face з "
+"int4 до int8, node_id_seq з int4 до int8) - edge_data (стовпець edge_id з "
+"int4 до int8, edge_data_edge_id_seq з int4 до int8, стовпці left_face та "
+"right_face з int4 до int8, стовпці start_node та end_node з int4 до int8, "
+"стовпці next_left_edge та next_right_edge з int4 до int8) - relation ("
+"стовпець topogeo_id з int4 до int8, element_id з int4 до int8) - topology ("
+"стовпець useslargeids встановлено на true)"
 
 #. Tag: title
 #, no-c-format
