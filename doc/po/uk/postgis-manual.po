@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-13 13:47+0000\n"
+"PO-Revision-Date: 2025-08-13 15:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -5628,6 +5628,7 @@ msgstr "Доступність: 2.0"
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details -- X.3.18"
 msgstr ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details -- X.3.18"
 
 #. Tag: para
 #, no-c-format
@@ -5635,6 +5636,8 @@ msgid ""
 ", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
 "linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
 msgstr ""
+", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref linkend=\"CreateTopology\""
+"/>, <xref linkend=\"DropTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5642,6 +5645,8 @@ msgid ""
 "Adds a point to an existing topology using a tolerance and possibly "
 "splitting an existing edge."
 msgstr ""
+"Додає точку до існуючої топології, використовуючи допуск і, можливо, "
+"розділяючи існуюче ребро."
 
 #. Tag: para
 #, no-c-format
@@ -5650,6 +5655,9 @@ msgid ""
 "point will snap to existing nodes or edges within given tolerance. An "
 "existing edge may be split by the snapped point."
 msgstr ""
+"Додає точку до існуючої топології та повертає її ідентифікатор. Задана точка "
+"буде прив'язана до існуючих вузлів або ребер в межах заданого допуску. "
+"Існуюче ребро може бути розділене прив'язаною точкою."
 
 #. Tag: para
 #, no-c-format
@@ -5658,6 +5666,9 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend="
+"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref linkend="
+"\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5665,6 +5676,8 @@ msgid ""
 "Adds a linestring to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces."
 msgstr ""
+"Додає лінійний елемент до існуючої топології з використанням допуску та "
+"можливого розділення існуючих ребер/граней."
 
 #. Tag: para
 #, no-c-format
@@ -5675,6 +5688,12 @@ msgid ""
 "existing nodes or edges within given tolerance. Existing edges and faces may "
 "be split by the line. New nodes and faces may be added."
 msgstr ""
+"Додає лінійний рядок до існуючої топології та повертає набір підписаних "
+"ідентифікаторів ребер, що його утворюють (негативні ідентифікатори "
+"означають, що ребро йде в протилежному напрямку від вхідного лінійного рядка)"
+". Задана лінія буде прив'язана до існуючих вузлів або ребер в межах заданого "
+"допуску. Існуючі ребра та грані можуть бути розділені лінією. Можуть бути "
+"додані нові вузли та грані."
 
 #. Tag: para
 #, no-c-format
@@ -5682,11 +5701,16 @@ msgid ""
 "Updating statistics about topologies being loaded via this function is up to "
 "caller, see <xref linkend=\"Topology_StatsManagement\"/>."
 msgstr ""
+"Оновлення статистики про топології, що завантажуються за допомогою цієї "
+"функції, залежить від виклику, див. <xref linkend=\"Topology_StatsManagement"
+"\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.2.0 added support for returning signed identifier."
 msgstr ""
+"Покращено: у версії 3.2.0 додано підтримку повернення підписаного "
+"ідентифікатора."
 
 #. Tag: para
 #, no-c-format
@@ -5695,6 +5719,9 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend="
+"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref linkend="
+"\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5702,6 +5729,8 @@ msgid ""
 "Adds a polygon to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces. Returns face identifiers."
 msgstr ""
+"Додає полігон до існуючої топології, використовуючи допуск і, можливо, "
+"розділяючи існуючі ребра/грані. Повертає ідентифікатори граней."
 
 #. Tag: para
 #, no-c-format
@@ -5711,6 +5740,10 @@ msgid ""
 "or edges within given tolerance. Existing edges and faces may be split by "
 "the boundary of the new polygon."
 msgstr ""
+"Додає полігон до існуючої топології та повертає набір ідентифікаторів "
+"граней, що його утворюють. Межа заданого полігону буде прив'язана до "
+"існуючих вузлів або ребер з урахуванням заданого допуску. Існуючі ребра та "
+"грані можуть бути розділені межею нового полігону."
 
 #. Tag: para
 #, no-c-format
@@ -5719,12 +5752,17 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddFace\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend="
+"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddFace\"/>, <xref linkend="
+"\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Load a geometry into an existing topology, snapping and splitting as needed."
 msgstr ""
+"Завантажте геометрію в існуючу топологію, при необхідності вирівнюючи та "
+"розділяючи."
 
 #. Tag: para
 #, no-c-format
@@ -5733,11 +5771,14 @@ msgid ""
 "existing nodes or edges within given tolerance. Existing edges and faces may "
 "be split as a consequence of the load."
 msgstr ""
+"Завантажує геометрію в існуючу топологію. Задана геометрія буде прив'язана "
+"до існуючих вузлів або ребер в межах заданого допуску. Існуючі ребра та "
+"грані можуть бути розділені в результаті завантаження."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.5.0"
-msgstr ""
+msgstr "Доступність: 3.5.0"
 
 #. Tag: para
 #, no-c-format
@@ -5745,11 +5786,13 @@ msgid ""
 ", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref "
 "linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend="
+"\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Topology Editors"
-msgstr ""
+msgstr "Редактори топології"
 
 #. Tag: para
 #, no-c-format
@@ -5758,6 +5801,9 @@ msgid ""
 "splitting edges, faces, and nodes. All of these functions are defined by ISO "
 "SQL/MM."
 msgstr ""
+"Цей розділ охоплює функції топології для додавання, переміщення, видалення "
+"та розділення ребер, граней та вузлів. Усі ці функції визначені стандартом "
+"ISO SQL/MM."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5765,6 +5811,8 @@ msgid ""
 "Adds an isolated node to a face in a topology and returns the nodeid of the "
 "new node. If face is null, the node is still created."
 msgstr ""
+"Додає ізольований вузол до грані в топології та повертає ідентифікатор "
+"нового вузла. Якщо грань має нульове значення, вузол все одно створюється."
 
 #. Tag: para
 #, no-c-format
@@ -5773,6 +5821,9 @@ msgid ""
 "existing face with faceid <varname>aface</varname> to a topology "
 "<varname>atopology</varname> and returns the nodeid of the new node."
 msgstr ""
+"Додає ізольований вузол із точкою розташування <varname>apoint</varname> до "
+"існуючої грані з ідентифікатором грані <varname>aface</varname> до топології "
+"<varname>atopology</varname> і повертає ідентифікатор нового вузла."
 
 #. Tag: para
 #, no-c-format
@@ -5783,6 +5834,10 @@ msgid ""
 "boundaries) then an exception is thrown. If the point already exists as a "
 "node, an exception is thrown."
 msgstr ""
+"Якщо система просторових координат (srid) геометрії точки не збігається з "
+"топологією, <varname>apoint</varname> не є геометрією точки, точка є "
+"нульовою або точка перетинає існуючу ребро (навіть на межі), то виникає "
+"виняток. Якщо точка вже існує як вузол, виникає виняток."
 
 #. Tag: para
 #, no-c-format
@@ -5790,11 +5845,13 @@ msgid ""
 "If <varname>aface</varname> is not null and the <varname>apoint</varname> is "
 "not within the face, then an exception is thrown."
 msgstr ""
+"Якщо <varname>aface</varname> не дорівнює нулю, а <varname>apoint</varname> "
+"не знаходиться в межах грані, то генерується виняток."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM: Topo-Net Routines: X+1.3.1"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Топо-мережеві процедури: X+1.3.1"
 
 #. Tag: para
 #, no-c-format
@@ -5802,6 +5859,8 @@ msgid ""
 ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>, "
 "<xref linkend=\"ST_Intersects\"/>"
 msgstr ""
+", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>, "
+"<xref linkend=\"ST_Intersects\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5811,6 +5870,10 @@ msgid ""
 "<varname>anode</varname> and <varname>anothernode</varname> and returns the "
 "edge id of the new edge.</refpurpose>"
 msgstr ""
+"<refpurpose>Додає ізольоване ребро, визначене геометрією "
+"<varname>alinestring</varname>, до топології, що з'єднує два існуючі "
+"ізольовані вузли <varname>anode</varname> та <varname>anothernode</varname>, "
+"і повертає ідентифікатор нового ребра.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -5820,6 +5883,10 @@ msgid ""
 "<varname>anode</varname> and <varname>anothernode</varname> and returns the "
 "edge id of the new edge.</para>"
 msgstr ""
+"<para>Додає ізольоване ребро, визначене геометрією <varname>alinestring</"
+"varname>, до топології, що з'єднує два існуючі ізольовані вузли "
+"<varname>anode</varname> та <varname>anothernode</varname>, і повертає "
+"ідентифікатор нового ребра.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -5829,6 +5896,10 @@ msgid ""
 "null, or the nodes are contained in more than one face, or the nodes are "
 "start or end nodes of an existing edge, then an exception is thrown."
 msgstr ""
+"Якщо система просторових посилань (srid) геометрії <varname>alinestring</"
+"varname> не збігається з топологією, будь-який з вхідних аргументів має "
+"значення null, або вузли містяться в більш ніж одній грані, або вузли є "
+"початковими або кінцевими вузлами існуючої ребра, то генерується виняток."
 
 #. Tag: para
 #, no-c-format
@@ -5837,6 +5908,9 @@ msgid ""
 "<varname>anode</varname> and <varname>anothernode</varname> belong to, then "
 "an exception is thrown."
 msgstr ""
+"Якщо <varname>alinestring</varname> не знаходиться в межах грані, до якої "
+"належать <varname>anode</varname> та <varname>anothernode</varname>, то "
+"генерується виняток."
 
 #. Tag: para
 #, no-c-format
@@ -5845,17 +5919,20 @@ msgid ""
 "the start and end points of the <varname>alinestring</varname> then an "
 "exception is thrown."
 msgstr ""
+"Якщо <varname>anode</varname> та <varname>anothernode</varname> не є "
+"початковою та кінцевою точками <varname>alinestring</varname>, то "
+"генерується виняток."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Topo-Geo та Topo-Net 3: Деталі процедури: X.3"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_Within\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_Within\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5863,6 +5940,8 @@ msgid ""
 "Add a new edge and, if in doing so it splits a face, delete the original "
 "face and replace it with two new faces."
 msgstr ""
+"Додайте нову ребро і, якщо при цьому розділяється грань, видаліть "
+"оригінальну грань і замініть її двома новими."
 
 #. Tag: para
 #, no-c-format
@@ -5871,11 +5950,14 @@ msgid ""
 "face and replace it with two new faces. Returns the id of the newly added "
 "edge."
 msgstr ""
+"Додайте нове ребро і, якщо при цьому розділяється грань, видаліть "
+"оригінальну грань і замініть її двома новими гранями. Повертає ідентифікатор "
+"новододаного ребра."
 
 #. Tag: para
 #, no-c-format
 msgid "Updates all existing joined edges and relationships accordingly."
-msgstr ""
+msgstr "Відповідно оновлює всі існуючі з'єднані ребра та взаємозв'язки."
 
 #. Tag: para
 #, no-c-format
@@ -5886,6 +5968,11 @@ msgid ""
 "<varname>anode</varname> and <varname>anothernode</varname> are not the "
 "start and endpoints of <varname>acurve</varname> then an error is thrown."
 msgstr ""
+"Якщо будь-які аргументи мають нульове значення, вказані вузли невідомі ("
+"повинні вже існувати в таблиці <varname>node</varname> схеми топології) , "
+"<varname>acurve</varname> не є <varname>LINESTRING</varname>, "
+"<varname>anode</varname> та <varname>anothernode</varname> не є початковою "
+"та кінцевою точками <varname>acurve</varname>, тоді генерується помилка."
 
 #. Tag: para
 #, no-c-format
@@ -5893,12 +5980,15 @@ msgid ""
 "If the spatial reference system (srid) of the <varname>acurve</varname> "
 "geometry is not the same as the topology an exception is thrown."
 msgstr ""
+"Якщо система просторових посилань (srid) геометрії <varname>acurve</varname> "
+"не збігається з топологією, виникає виняток."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.12"
 msgstr ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo та Topo-Net 3: Деталі процедури: X.3.12"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5906,6 +5996,8 @@ msgid ""
 "Add a new edge and, if in doing so it splits a face, modify the original "
 "face and add a new face."
 msgstr ""
+"Додайте нову кромку і, якщо при цьому розділяється грань, змініть вихідну "
+"грань і додайте нову."
 
 #. Tag: para
 #, no-c-format
@@ -5913,6 +6005,8 @@ msgid ""
 "Add a new edge and, if doing so splits a face, modify the original face and "
 "add a new one."
 msgstr ""
+"Додайте нове ребро і, якщо це призведе до розділення грані, змініть "
+"оригінальну грань і додайте нову."
 
 #. Tag: para
 #, no-c-format
@@ -5921,17 +6015,20 @@ msgid ""
 "will not be possible if the face on the left side will need to be the "
 "Universe face (unbounded)."
 msgstr ""
+"Якщо можливо, нова грань буде створена зліва від нового ребра. Це буде "
+"неможливо, якщо грань зліва повинна бути необмеженою."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns the id of the newly added edge."
-msgstr ""
+msgstr "Повертає ідентифікатор новододаного ребра."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.13"
 msgstr ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo та Topo-Net 3: Деталі процедури: X.3.13"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5939,6 +6036,8 @@ msgid ""
 "<refpurpose>Removes an edge and, if the removed edge separated two faces, "
 "delete the original faces and replace them with a new face.</refpurpose>"
 msgstr ""
+"<refpurpose>Видаляє ребро і, якщо видалене ребро розділяло дві грані, "
+"видаляє оригінальні грані та замінює їх новою гранею.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -5946,6 +6045,8 @@ msgid ""
 "<para>Removes an edge and, if the removed edge separated two faces, delete "
 "the original faces and replace them with a new face.</para>"
 msgstr ""
+"<para>Видаляє ребро і, якщо видалене ребро розділяло дві грані, видаляє "
+"оригінальні грані та замінює їх новою гранею.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -5955,6 +6056,10 @@ msgid ""
 "confined with the universe face (possibly making the universe flood into the "
 "face on the other side)."
 msgstr ""
+"Повертає ідентифікатор новоствореної грані або NULL, якщо нова грань не "
+"створена. Нова грань не створюється, якщо видалена ребро є висячою, "
+"ізольованою або обмеженою гранею всесвіту (що може призвести до затоплення "
+"всесвіту гранею з іншого боку)."
 
 #. Tag: para
 #, no-c-format
