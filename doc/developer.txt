@@ -37,14 +37,14 @@ they were in and stubbed in a deprecation file. Ideally you should never do this
 For Major such as when PostGIS 4 comes out we could in theory skip the legacy file and just chuck the function entirely.
 
 So a function can be stubbed in 3.0.0, but not 3.0.1, though there are cases where you might as long as 
-you carefully fix up the SQL signature exposing it. The reason to avoid not doing this in a micro is people often run 
-ALTER EXTENSION or SELECt postgis_extensions_upgrade() in a micro.
+you carefully fix up the SQL signature exposing it. The reason to avoid not doing this in a micro is people often do not 
+run ALTER EXTENSION or SELECT postgis_extensions_upgrade() in a micro, so taking these out will break production code.
 
     * For the postgis extension, these should go in postgis/postgis_legacy.c the stub will look something like this. 
 
         POSTGIS_DEPRECATE("2.0.0", postgis_uses_stats)
 
-      Note the specification of the function it was removed and the name of the function
+      Note the specification of the version it was removed and the name of the function
 
     * For postgis_sfcgal, deprecated C api functions should go in sfcgal/postgis_sfcgal_legacy.c 
     * For postgis_raster, raster/rt_pg/rtpg_legacy.c
