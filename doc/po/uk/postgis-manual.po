@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-13 11:47+0000\n"
+"PO-Revision-Date: 2025-08-13 13:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -5355,7 +5355,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Topology Statistics Management"
-msgstr ""
+msgstr "Управління статистикою топології"
 
 #. Tag: para
 #, no-c-format
@@ -5363,6 +5363,8 @@ msgid ""
 "This section discusses management of database statistics during topology "
 "building."
 msgstr ""
+"У цьому розділі розглядається управління статистикою бази даних під час "
+"побудови топології."
 
 #. Tag: para
 #, no-c-format
@@ -5372,6 +5374,10 @@ msgid ""
 "node with the new linework. For this reason it is useful that statistics "
 "about the data in the topology tables are up-to-date."
 msgstr ""
+"Додавання елементів до топології викликає багато запитів до бази даних для "
+"пошуку існуючих ребер, які будуть розділені, додавання вузлів та оновлення "
+"ребер, які будуть з'єднані з новою лінією. З цієї причини корисно, щоб "
+"статистичні дані про дані в таблицях топології були актуальними."
 
 #. Tag: para
 #, no-c-format
@@ -5381,6 +5387,9 @@ msgid ""
 "in a topology would be overkill, so it is the caller's duty to take care of "
 "that."
 msgstr ""
+"Функції заповнення та редагування топології PostGIS не оновлюють статистику "
+"автоматично, оскільки оновлення статистики після кожної зміни в топології "
+"було б надмірним, тому це обов'язок того, хто викликає функцію."
 
 #. Tag: para
 #, no-c-format
@@ -5390,16 +5399,21 @@ msgid ""
 "running transactions will need to run ANALYZE themselves, to use updated "
 "statistics."
 msgstr ""
+"Статистика, оновлена за допомогою autovacuum, НЕ буде видима для транзакцій, "
+"які були запущені до завершення процесу autovacuum, тому для використання "
+"оновленої статистики довготривалі транзакції повинні самостійно виконати "
+"ANALYZE."
 
 #. Tag: title
 #, no-c-format
 msgid "Topology Constructors"
-msgstr ""
+msgstr "Конструктори топології"
 
 #. Tag: para
 #, no-c-format
 msgid "This section covers the topology functions for creating new topologies."
 msgstr ""
+"У цьому розділі описано функції топології для створення нових топологій."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5407,6 +5421,7 @@ msgid ""
 "Creates a new topology schema and registers it in the topology.topology "
 "table."
 msgstr ""
+"Створює нову схему топології та реєструє її в таблиці topology.topology."
 
 #. Tag: para
 #, no-c-format
@@ -5417,6 +5432,12 @@ msgid ""
 "<varname>face</varname>, <varname>node</varname>,and <varname>relation</"
 "varname> are created in the schema. It returns the id of the topology."
 msgstr ""
+"Створює нову схему топології з іменем <varname>topology_name</varname> і "
+"реєструє її в таблиці <varname>topology.topology</varname>. Топології "
+"повинні мати унікальні імена. Таблиці топологій (<varname>edge_data</"
+"varname>, <varname>face</varname>, <varname>node</varname> та "
+"<varname>relation</varname> створюються в схемі. Повертає ідентифікатор "
+"топології."
 
 #. Tag: para
 #, no-c-format
@@ -5425,6 +5446,9 @@ msgid ""
 "reference system</link> SRID for the topology. The SRID defaults to -1 "
 "(unknown) if not specified."
 msgstr ""
+"<varname>srid</varname> — це SRID <link linkend=\"spatial_ref_sys\""
+">просторової системи координат</link> для топології. Якщо SRID не вказано, "
+"за замовчуванням використовується значення -1 (невідомо)."
 
 #. Tag: para
 #, no-c-format
@@ -5432,11 +5456,15 @@ msgid ""
 "The tolerance <varname>prec</varname> is measured in the units of the "
 "spatial reference system. The tolerance defaults to 0."
 msgstr ""
+"Допуск <varname>prec</varname> вимірюється в одиницях просторової системи "
+"відліку. За замовчуванням допуск дорівнює 0."
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>hasz</varname> defaults to false if not specified."
 msgstr ""
+"<varname>hasz</varname> за замовчуванням має значення false, якщо не вказано "
+"інше."
 
 #. Tag: para
 #, no-c-format
@@ -5444,6 +5472,8 @@ msgid ""
 "<varname>topoid</varname> optional explicit identifier (allows deterministic "
 "topology id assignment, needs to be unique)"
 msgstr ""
+"<varname>topoid</varname> необов'язковий явний ідентифікатор (дозволяє "
+"детерміновано присвоювати ідентифікатори топології, повинен бути унікальним)"
 
 #. Tag: para
 #, no-c-format
@@ -5452,6 +5482,9 @@ msgid ""
 "topology will be created to support large ids (int8) for topology and "
 "primitive ids."
 msgstr ""
+"<varname>useslargeids</varname> необов'язковий, за замовчуванням false. Якщо "
+"true, то топологія буде створена для підтримки великих ідентифікаторів (int8)"
+" для топології та примітивних ідентифікаторів."
 
 #. Tag: para
 #, no-c-format
@@ -5459,11 +5492,13 @@ msgid ""
 "This is similar to the SQL/MM <xref linkend=\"ST_InitTopoGeo\"/> but has "
 "more functionality."
 msgstr ""
+"Це схоже на SQL/MM <xref linkend=\"ST_InitTopoGeo\"/>, але має більше "
+"функціональних можливостей."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0 added the signature accepting hasZ"
-msgstr ""
+msgstr "Покращено: у версії 2.0 додано прийняття підпису hasZ"
 
 #. Tag: para
 #, no-c-format
@@ -5472,6 +5507,10 @@ msgid ""
 "and nodes in Massachusetts State Plane-meters (SRID = 26986). The tolerance "
 "represents 0.5 meters since the spatial reference system is meter-based."
 msgstr ""
+"Створіть схему топології під назвою <varname>ma_topo</varname>, яка зберігає "
+"ребра та вузли в системі координат Massachusetts State Plane-meters (SRID = "
+"26986). Допуск становить 0,5 метра, оскільки система просторових координат "
+"базується на метрах."
 
 #. Tag: para
 #, no-c-format
@@ -5479,12 +5518,15 @@ msgid ""
 "Create a topology for Rhode Island called <varname>ri_topo</varname> in "
 "spatial reference system State Plane-feet (SRID = 3438)"
 msgstr ""
+"Створіть топологію для Род-Айленду під назвою <varname>ri_topo</varname> у "
+"системі просторових координат State Plane-feet (SRID = 3438)"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_InitTopoGeo\"/>, <xref linkend=\"Topology_Load_Tiger\"/>"
 msgstr ""
+", <xref linkend=\"ST_InitTopoGeo\"/>, <xref linkend=\"Topology_Load_Tiger\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5492,6 +5534,8 @@ msgid ""
 "Makes a copy of a topology (nodes, edges, faces, layers and TopoGeometries) "
 "into a new schema"
 msgstr ""
+"Створює копію топології (вузлів, ребер, граней, шарів і TopoGeometries) у "
+"новій схемі"
 
 #. Tag: para
 #, no-c-format
@@ -5501,6 +5545,10 @@ msgid ""
 "edges and faces in <varname>existing_topology_name</varname> are copied into "
 "the new topology, as well as Layers and their associated TopoGeometries."
 msgstr ""
+"Створює нову топологію з назвою <varname>new_name</varname>, з SRID і "
+"точністю, скопійованими з <varname>existing_topology_name</varname>. Вузли, "
+"ребра та грані в <varname>existing_topology_name</varname> копіюються в нову "
+"топологію, а також шари та пов'язані з ними TopoGeometries."
 
 #. Tag: para
 #, no-c-format
@@ -5510,17 +5558,23 @@ msgid ""
 "because the TopoGeometry objects exist only as a definition and are not yet "
 "available in a user-defined table."
 msgstr ""
+"Нові рядки в таблиці <varname>topology.layer</varname> містять синтетичні "
+"значення для schema_name, table_name та feature_column. Це пов'язано з тим, "
+"що об'єкти TopoGeometry існують лише як визначення і ще не доступні в "
+"таблиці, визначеній користувачем."
 
 #. Tag: para
 #, no-c-format
 msgid "Make a backup of a topology called <varname>ma_topo</varname>."
 msgstr ""
+"Створіть резервну копію топології під назвою <varname>ma_topo</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"RenameTopology\"/>"
 msgstr ""
+", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"RenameTopology\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -5529,12 +5583,16 @@ msgid ""
 "lacks options for spatial reference system and tolerance. it returns a text "
 "description of the topology creation, instead of the topology id."
 msgstr ""
+"Це еквівалент SQL-MM для <xref linkend=\"CreateTopology\"/>. У ньому "
+"відсутні параметри для просторової системи координат і допуску. Він повертає "
+"текстовий опис створення топології замість ідентифікатора топології."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.17"
 msgstr ""
+"&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.17"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5542,6 +5600,9 @@ msgid ""
 "<refpurpose>Adds a collection of geometries to a given empty topology and "
 "returns a message detailing success.</refpurpose>"
 msgstr ""
+"<refpurpose>Додає колекцію геометрій до заданої порожньої топології та "
+"повертає повідомлення з детальною інформацією про успішність "
+"операції.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -5549,16 +5610,18 @@ msgid ""
 "<para>Adds a collection of geometries to a given empty topology and returns "
 "a message detailing success.</para>"
 msgstr ""
+"<para>Додає колекцію геометрій до заданої порожньої топології та повертає "
+"повідомлення з детальною інформацією про успішність виконання.</para>"
 
 #. Tag: para
 #, no-c-format
 msgid "Useful for populating an empty topology."
-msgstr ""
+msgstr "Корисно для заповнення порожньої топології."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.0"
-msgstr ""
+msgstr "Доступність: 2.0"
 
 #. Tag: para
 #, no-c-format
