@@ -586,3 +586,7 @@ $$;
 -- 2.5.0 signature changed
 SELECT _postgis_drop_function_by_signature('st_bandmetadata(raster, int[])', '2.5.0');
 SELECT _postgis_drop_function_by_signature('st_bandmetadata(raster, int)', '2.5.0');
+
+
+-- removed 3.6.0, but was broken in prior versions
+SELECT _postgis_drop_function_by_signature('st_approxquantile(raster, double precision)');

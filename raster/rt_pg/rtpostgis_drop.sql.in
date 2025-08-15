@@ -140,5 +140,4 @@ SELECT _postgis_drop_function_by_identity('st_value','rast raster, band integer,
 SELECT _postgis_drop_function_by_signature('st_gdalopenoptions(text[])');
 
 SELECT _postgis_drop_function_by_identity('st_clip','rast raster, geom geometry, nodataval float8[], crop boolean', '3.5');
-SELECT _postgis_drop_function_by_identity('st_approxquantile', 'rast raster, quantile double precision','3.6');
 
