@@ -13829,8 +13829,6 @@ GROUP BY t1.rast;
                 </refsection>
             </refentry>
 
-            <refentry xml:id="RT_ST_Contour">
-
             <refentry xml:id="RT_ST_InterpolateRaster">
       <refnamediv>
         <refname>ST_InterpolateRaster</refname>
@@ -13923,6 +13921,7 @@ GROUP BY t1.rast;
 
 </refentry>
 
+            <refentry xml:id="RT_ST_Contour">
       <refnamediv>
         <refname>ST_Contour</refname>
 
