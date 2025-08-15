@@ -17,6 +17,7 @@ POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
 HAVE_JSON=@HAVE_JSON@
 HAVE_SPGIST=@HAVE_SPGIST@
 INTERRUPTTESTS=@INTERRUPTTESTS@
+HAVE_PROTOBUF=@HAVE_PROTOBUF@
 
 current_dir := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
@@ -199,14 +200,13 @@ endif
 
 ifeq ($(HAVE_SPGIST),yes)
 	TESTS += \
-	$(top_srcdir)/regress/core/regress_spgist_index_2d \
-	$(top_srcdir)/regress/core/regress_spgist_index_3d \
-	$(top_srcdir)/regress/core/regress_spgist_index_nd
+		$(top_srcdir)/regress/core/regress_spgist_index_2d \
+		$(top_srcdir)/regress/core/regress_spgist_index_3d \
+		$(top_srcdir)/regress/core/regress_spgist_index_nd
 endif
 
-ifeq (@HAVE_PROTOBUF@,yes)
-	# protobuf-c adds:
-	# ST_AsMVT, ST_AsGeobuf
+ifeq ($(HAVE_PROTOBUF),yes)
+	# protobuf-c adds: ST_AsMVT, ST_AsGeobuf
 	TESTS += \
 		$(top_srcdir)/regress/core/mvt \
 		$(top_srcdir)/regress/core/mvt_jsonb \
