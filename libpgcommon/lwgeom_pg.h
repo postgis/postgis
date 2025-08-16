@@ -89,8 +89,18 @@ void pg_install_lwgeom_handlers(void);
 /* Argument handling macros */
 #define PG_GETARG_GSERIALIZED_P(varno) ((GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(varno)))
 #define PG_GETARG_GSERIALIZED_P_COPY(varno) ((GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(varno)))
+
 #define PG_GSERIALIZED_DATUM_NEEDS_DETOAST(datum) \
-	(VARATT_IS_EXTENDED((datum)) || VARATT_IS_EXTERNAL((datum)) || VARATT_IS_COMPRESSED((datum)))
+	(VARATT_IS_EXTENDED(DatumGetPointer(datum)) || \
+	 VARATT_IS_EXTERNAL(DatumGetPointer(datum)) || \
+	 VARATT_IS_COMPRESSED(DatumGetPointer(datum)))
+
+// #define PG_GSERIALIZED_DATUM_NEEDS_DETOAST(datum) \
+// 	(VARATT_IS_EXTENDED((datum)) || \
+// 	 VARATT_IS_EXTERNAL((datum)) || \
+// 	 VARATT_IS_COMPRESSED((datum)))
+
+
 #define PG_GETARG_GSERIALIZED_HEADER(varno) \
 	PG_GSERIALIZED_DATUM_NEEDS_DETOAST(PG_GETARG_DATUM(varno)) \
 	? ((GSERIALIZED *)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(varno), 0, gserialized_max_header_size())) \

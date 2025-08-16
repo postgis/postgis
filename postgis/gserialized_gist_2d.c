@@ -476,7 +476,7 @@ gserialized_datum_get_internals_p(Datum gsdatum, GBOX *gbox, lwflags_t *flags, u
 {
 	int result = LW_SUCCESS;
 	GSERIALIZED *gpart = NULL;
-	int need_detoast = PG_GSERIALIZED_DATUM_NEEDS_DETOAST((struct varlena *)gsdatum);
+	int need_detoast = PG_GSERIALIZED_DATUM_NEEDS_DETOAST(gsdatum);
 	if (need_detoast)
 	{
 		gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
@@ -528,7 +528,7 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 {
 	int result = LW_SUCCESS;
 	GSERIALIZED *gpart = NULL;
-	int need_detoast = PG_GSERIALIZED_DATUM_NEEDS_DETOAST((struct varlena *)gsdatum);
+	int need_detoast = PG_GSERIALIZED_DATUM_NEEDS_DETOAST(gsdatum);
 	if (need_detoast)
 	{
 		gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
