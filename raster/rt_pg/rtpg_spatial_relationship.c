@@ -67,6 +67,10 @@ Datum RASTER_dfullywithin(PG_FUNCTION_ARGS);
 Datum RASTER_sameAlignment(PG_FUNCTION_ARGS);
 Datum RASTER_notSameAlignmentReason(PG_FUNCTION_ARGS);
 
+/* calculate the proportion of each cell in a grid covered */
+/* by an input geometry */
+Datum RASTER_intersectionFractions(PG_FUNCTION_ARGS);
+
 /**
  * See if two rasters intersect
  */
@@ -1312,4 +1316,46 @@ Datum RASTER_notSameAlignmentReason(PG_FUNCTION_ARGS)
 
 	result = cstring_to_text(reason);
 	PG_RETURN_TEXT_P(result);
+}
+
+
+/* calculate the proportion of each cell in a grid covered */
+/* by an input geometry */
+PG_FUNCTION_INFO_V1(RASTER_intersectionFractions);
+Datum RASTER_intersectionFractions(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 31400
+	elog(ERROR, "The GEOS version this PostGIS binary "
+	            "was compiled against (%d) does not include the "
+	            "'GEOSGridIntersectionFractions' function (3.14.0+ required)",
+	            POSTGIS_GEOS_VERSION);
+	            PG_RETURN_NULL();
+#else
+	rt_pgraster *pgrast_in = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *gser = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	LWGEOM *lwg = lwgeom_from_gserialized(gser);
+	rt_raster rast_out = NULL;
+	rt_pgraster *pgrast_out = NULL;
+	rt_raster rast_in = rt_raster_deserialize(pgrast_in, FALSE);
+
+	int gtype = lwgeom_get_type(lwg);
+	if (gtype != POLYGONTYPE && gtype != MULTIPOLYGONTYPE &&
+		gtype != LINETYPE && gtype != MULTILINETYPE)
+	{
+		elog(ERROR, "ST_IntersectionFractions: Unsupported geometry type '%s'", lwtype_name(gtype));
+	}
+
+	rast_out = rt_raster_intersection_fractions(rast_in, lwg);
+	if (!rast_out)
+		elog(ERROR, "ST_IntersectionFractions: calculation returned NULL");
+
+	pgrast_out = rt_raster_serialize(rast_out);
+	rt_raster_destroy(rast_out);
+	if (!pgrast_out)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(pgrast_out, pgrast_out->size);
+	PG_RETURN_POINTER(pgrast_out);
+
+#endif /* POSTGIS_GEOS_VERSION < 31400 */
 }

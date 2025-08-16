@@ -1293,3 +1293,99 @@ rt_raster_intersects(
 	return ES_NONE;
 }
 
+#if POSTGIS_GEOS_VERSION >= 31400
+
+rt_raster
+rt_raster_intersection_fractions(
+	const rt_raster rast_in,
+	const LWGEOM *geom
+) {
+	rt_raster rast_out = NULL;
+	rt_envelope rast_env;
+	rt_band band_out = NULL;
+	int band_num;
+	unsigned int width, height;
+	GEOSGeometry *geos_geom = NULL;
+	int geos_result;
+
+	/*  Validate inputs */
+	if (!rast_in || !geom)
+	{
+		rterror("%s: NULL input raster or geometry provided", __func__);
+		return NULL;
+	}
+
+	/* Extract raster properties */
+	width = rt_raster_get_width(rast_in);
+	height = rt_raster_get_height(rast_in);
+
+	if (width == 0 || height == 0)
+	{
+		rterror("%s: Input raster has zero width or height", __func__);
+		return NULL;
+	}
+
+	/* Get the full bounding box of the raster in world coordinates */
+	if (rt_raster_get_envelope(rast_in, &rast_env) != ES_NONE)
+	{
+		rterror("%s: Could not determine raster envelope", __func__);
+		return NULL;
+	}
+
+	/* Shallow clone a new raster with no bands */
+	rast_out = rt_raster_clone(rast_in, 0);
+	/* Add a float4 band to the empty raster */
+	band_num = rt_raster_generate_new_band(
+		rast_out, /* rast */
+		PT_32BF, /* pixel type */
+		0.0, /* initial value */
+		0, 0.0, /* hasnodata, nodataval */
+		0); /* index */
+
+	/* Get a reference to the new band */
+	band_out = rt_raster_get_band(rast_out, band_num);
+	if (!band_out)
+	{
+		rt_raster_destroy(rast_out);
+		rterror("%s: Failed to create output band", __func__);
+		return NULL;
+	}
+
+	/* Prepare for GEOS call */
+	/* Initialize GEOS to handle notices and errors */
+	initGEOS(rtinfo, lwgeom_geos_error);
+
+	/* Convert the PostGIS LWGEOM into a GEOS-compatible geometry */
+	/* Note: lwgeom_to_geos is a common function within PostGIS for this task */
+	geos_geom = LWGEOM2GEOS(geom, 0);
+	if (!geos_geom)
+	{
+		rt_raster_destroy(rast_out);
+		rterror("%s: Could not convert LWGEOM to GEOSGeometry", __func__);
+		return NULL;
+	}
+
+	/* Call the core GEOS function */
+	geos_result = GEOSGridIntersectionFractions(
+		geos_geom,
+		rast_env.MinX, rast_env.MinY,
+		rast_env.MaxX, rast_env.MaxY,
+		width, height,
+		rt_band_get_data(band_out)
+	);
+
+	/* The GEOS geometry is no longer needed after this call, so we can clean it up */
+	GEOSGeom_destroy(geos_geom);
+
+	/* Check if the GEOS function executed successfully (it returns 1 on success) */
+	if (geos_result != 1)
+	{
+		rt_raster_destroy(rast_out);
+		rterror("%s: GEOSGridIntersectionFractions call failed", __func__);
+		return NULL;
+	}
+
+	return rast_out; /* Return the newly created raster and band*/
+}
+#endif /* POSTGIS_GEOS_VERSION >= 31400 */
+

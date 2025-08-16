@@ -6311,6 +6311,15 @@ CREATE OR REPLACE FUNCTION ST_Disjoint(rast1 raster, rast2 raster)
 	COST 1000;
 
 -----------------------------------------------------------------------
+-- ST_IntersectionFractions(raster, geometry) returns raster
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION ST_IntersectionFractions(rast raster, geom geometry)
+	RETURNS raster
+	AS 'MODULE_PATHNAME','RASTER_intersectionFractions'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-----------------------------------------------------------------------
 -- ST_Intersection(geometry, raster) in geometry-space
 -- Changed: 3.0.3, fail fast on mismatch srid and schema qualify funcs
 -----------------------------------------------------------------------

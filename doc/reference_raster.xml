@@ -14434,6 +14434,72 @@ MULTIPOLYGON(((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.8
                 </refsection>
             </refentry>
 
+            <refentry xml:id="RT_ST_IntersectionFractions">
+              <refnamediv>
+                    <refname>ST_IntersectionFractions</refname>
+                    <refpurpose>Calculates the fraction of each raster cell that is covered by a given geometry.</refpurpose>
+              </refnamediv>
+
+              <refsynopsisdiv>
+                    <funcsynopsis>
+                    <funcprototype>
+                            <funcdef>raster <function>ST_IntersectionFractions</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+                      </funcprototype>
+                    </funcsynopsis>
+              </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+                    <para>Calculates the fraction of each raster cell that is covered by a given geometry. The first argument is a raster, which defines the grid geometry to use for the calculation. The extent and cell size are read from the raster parameter. The second argument is a geometry, which is overlaid with the grid, and each grid populated based on overlaying the geometry on the grid. For polygons, the value returned for each cell is the proportion of its area that is covered by the geometry. For linestrings, the value returned for each cell is the length contained in the cell.</para>
+                    <para role="availability" conformance="3.6.0">Availability: 3.6.0 Requires GEOS 3.14 or higher.</para>
+                </refsection>
+
+            <refsection>
+                    <title>Examples</title>
+                    <programlisting>
+CREATE TABLE raster_proportions_rast (
+    name text,
+    rast raster
+);
+
+INSERT INTO raster_proportions_rast (name, rast) VALUES (
+  '2x2 raster covering 0,0 to 10,10',
+  ST_MakeEmptyRaster(
+    2,  2,   -- raster width/height in pixels
+    0, 10,   -- upper-left corner x/y coordinates
+    5, -5,   -- pixel width/height in ground units
+    0,  0,   -- skew x/y
+    0        -- SRID
+  ));
+
+--
+-- This rotated square polygon covers half of each cell in the
+-- raster.
+--
+SELECT name, ST_DumpValues(
+    ST_IntersectionFractions(
+        rast,
+        'POLYGON((5 0, 0 5, 5 10, 10 5, 5 0))'::geometry),1)
+FROM raster_proportions_rast;
+
+
+ 2x2 raster covering 0,0 to 10,10
+---------------------------------
+ {{0.5,0.5},{0.5,0.5}}
+</programlisting>
+                </refsection>
+
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="RT_ST_MakeEmptyRaster"/>
+                    </para>
+                </refsection>
+            </refentry>
+
+
     </section> <!-- /misc -->
 
     <section xml:id="RT_Operators">

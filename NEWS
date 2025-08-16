@@ -52,4 +52,5 @@ Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)
     coverages (Paul Ramsey) from GEOS 3.14 (Martin Davis)
   - Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)
   - #3110, GT-242 [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)
+  - #5963, add ST_IntersectionFractions (Paul Ramsey)
 

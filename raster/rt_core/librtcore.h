@@ -2202,6 +2202,25 @@ rt_raster rt_raster_colormap(
 	rt_colormap colormap
 );
 
+#if POSTGIS_GEOS_VERSION >= 31400
+/**
+ * Calculates the fraction of each raster cell that is covered by a given geometry.
+ *
+ * This function serves as a wrapper around the GEOSGridIntersectionFractions C-API function.
+ * It takes a PostGIS raster and a geometry, and returns a new single-band raster
+ * where each pixel's value is a float between 0.0 and 1.0, representing the
+ * fraction of that cell covered by the geometry.
+ *
+ * @param rast_in The input raster which defines the grid (dimensions and georeference).
+ * @param geom The input geometry to compute intersections with.
+ * @return A new single-band raster of pixel type PT_32BF on success, or NULL on failure.
+ */
+rt_raster rt_raster_intersection_fractions(
+	const rt_raster rast_in,
+	const LWGEOM *geom
+);
+#endif
+
 /*- utilities -------------------------------------------------------*/
 
 /*

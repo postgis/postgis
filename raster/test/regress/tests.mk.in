@@ -10,7 +10,7 @@
 # *
 # **********************************************************************
 
-POSTGIS_GEOS_VERSION=31400
+POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
 
 override RUNTESTFLAGS := $(RUNTESTFLAGS) --raster
 
