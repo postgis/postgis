@@ -1,5 +1,5 @@
 export WORKSPACE=/home/jenkins/workspace
-export GEOS_VER=3.14.0
+export GEOS_VER=3.11.6
 export SFCGAL_VER=master
 
 export OS_BUILD=64
