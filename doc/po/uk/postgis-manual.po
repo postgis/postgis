@@ -383,8 +383,8 @@ msgstr ""
 "Тоді все вже оновлено і ви можете сміливо ігнорувати це. <emphasis role="
 "\"bold\">ЗА ВИНЯТКОМ</emphasis> випадків, коли ви намагаєтеся оновити версію "
 "з розробницької до наступної (яка не отримує нового номера версії); в цьому "
-"випадку ви можете додати «next» до рядка версії, а наступного разу вам "
-"потрібно буде знову видалити суфікс «next»:"
+"випадку ви можете додати \"next\" до рядка версії, а наступного разу вам "
+"потрібно буде знову видалити суфікс \"next\":"
 
 #. Tag: para
 #, no-c-format
@@ -495,8 +495,8 @@ msgid ""
 "message."
 msgstr ""
 "Функція <xref linkend=\"PostGIS_Full_Version\"/> повинна повідомити вас про "
-"необхідність виконання такого оновлення за допомогою повідомлення «procs "
-"need upgrade» (процедури потребують оновлення)."
+"необхідність виконання такого оновлення за допомогою повідомлення \"procs "
+"need upgrade\" (процедури потребують оновлення)."
 
 #. Tag: title
 #, no-c-format
@@ -542,7 +542,7 @@ msgid ""
 "upgrade</link>."
 msgstr ""
 "Додаткові інструкції для користувачів Windows доступні за посиланням <link "
-"xlink:href=«http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade»>Windows "
+"xlink:href=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows "
 "Hard upgrade</link>."
 
 #. Tag: para
@@ -558,7 +558,7 @@ msgid ""
 "output. The user can be the owner of the db, need not be postgres super "
 "account."
 msgstr ""
-"Створіть дамп бази даних, яку ви хочете оновити, у «власному форматі» ("
+"Створіть дамп бази даних, яку ви хочете оновити, у \"власному форматі\" ("
 "назвемо його <varname>olddb</varname>), включіть бінарні блоки (-b) та "
 "детальний вивід (-v). Користувач може бути власником бази даних, не "
 "обов'язково мати супер-акаунт postgres."
@@ -693,8 +693,8 @@ msgid ""
 "will see, when importing your database, issues like this :"
 msgstr ""
 "Якщо ви оновлюєте стару базу даних, що містить французьку <link "
-"xlink:href=«https://en.wikipedia.org/wiki/"
-"Institut_g%C3%A9ographique_national»> IGN </link> картографію, у вас, "
+"xlink:href=\"https://en.wikipedia.org/wiki/"
+"Institut_g%C3%A9ographique_national\"> IGN </link> картографію, у вас, "
 "ймовірно, будуть SRID поза діапазоном, і під час імпортування бази даних ви "
 "побачите такі проблеми:"
 
@@ -725,8 +725,8 @@ msgid ""
 msgstr ""
 "Створіть нову базу даних newdb, активуйте необхідні розширення Postgis і "
 "правильно вставте французьку систему IGN за допомогою: <link "
-"xlink:href=«https://raw.githubusercontent.com/Remi-C/"
-"IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql»> цього "
+"xlink:href=\"https://raw.githubusercontent.com/Remi-C/"
+"IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql\"> цього "
 "скрипту </link> Після цих операцій імпортуйте свої дані:"
 
 #. Tag: title
@@ -756,7 +756,7 @@ msgid ""
 "Tuning_Your_PostgreSQL_Server\">Tuning your PostgreSQL Server</link>."
 msgstr ""
 "Загальні відомості про оптимізацію PostgreSQL див. у розділі <link "
-"xlink:href=«https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server»"
+"xlink:href=\"https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server\"
 ">Налаштування сервера PostgreSQL</link>."
 
 #. Tag: para
@@ -809,7 +809,7 @@ msgid ""
 "they are in an inherited hierarchy and not pay the planner penalty otherwise."
 msgstr ""
 "Зазвичай використовується для розділення таблиць. За замовчуванням "
-"встановлено значення «partition», яке ідеально підходить для PostgreSQL 8.4 "
+"встановлено значення \"partition\", яке ідеально підходить для PostgreSQL 8.4 "
 "і вище, оскільки змушує планувальник аналізувати таблиці на предмет обмежень "
 "тільки в тому випадку, якщо вони знаходяться в успадкованій ієрархії, і не "
 "застосовувати штрафні санкції до планувальника в інших випадках."
@@ -842,8 +842,8 @@ msgid ""
 "setting has additional importance in that it controls the max number of "
 "processes you can have for parallel queries."
 msgstr ""
-"<link xlink:href=«https://www.postgresql.org/docs/current/static/runtime-"
-"config-resource.html#GUC-MAX-WORKER-PROCESSES»>max_worker_processes</link> "
+"<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
+"config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</link> "
 "Цей параметр доступний тільки для PostgreSQL 9.4+. Для PostgreSQL 9.6+ це "
 "налаштування має додаткове значення, оскільки воно контролює максимальну "
 "кількість процесів, які можна використовувати для паралельних запитів."
@@ -874,8 +874,8 @@ msgid ""
 "config-resource.html#GUC-WORK-MEM\">work_mem</link> - sets the size of "
 "memory used for sort operations and complex queries"
 msgstr ""
-"<link xlink:href=«http://www.postgresql.org/docs/current/static/runtime-"
-"config-resource.html#GUC-WORK-MEM»>work_mem</link> - встановлює розмір "
+"<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
+"config-resource.html#GUC-WORK-MEM\">work_mem</link> - встановлює розмір "
 "пам'яті, що використовується для операцій сортування та складних запитів"
 
 #. Tag: para
@@ -909,8 +909,8 @@ msgid ""
 "config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> "
 "- the memory size used for VACUUM, CREATE INDEX, etc."
 msgstr ""
-"<link xlink:href=«http://www.postgresql.org/docs/current/static/runtime-"
-"config-resource.html#GUC-MAINTENANCE-WORK-MEM»>maintenance_work_mem</link> - "
+"<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
+"config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> - "
 "розмір пам'яті, що використовується для VACUUM, CREATE INDEX тощо."
 
 #. Tag: para
@@ -1023,10 +1023,10 @@ msgid ""
 "<link xlink:href=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-"
 "refactor/postgresql\">PAGC PostgreSQL Address Standardizer</link>)."
 msgstr ""
-"Це є форком <link xlink:href=«http://www.pagcgeo.org/docs/html/pagc-11.html»"
+"Це є форком <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-11.html\"
 ">стандартизатора PAGC</link> (оригінальний код для цієї частини був <link "
-"xlink:href=«http://sourceforge.net/p/pagc/code/360/tree/branches/"
-"sew-refactor/postgresql»>стандартизатором адрес PAGC PostgreSQL</link>)."
+"xlink:href=\"http://sourceforge.net/p/pagc/code/360/tree/branches/"
+"sew-refactor/postgresql\">стандартизатором адрес PAGC PostgreSQL</link>)."
 
 #. Tag: para
 #, no-c-format
@@ -1073,8 +1073,8 @@ msgid ""
 "For installation instructions refer to: <xref "
 "linkend=\"installing_pagc_address_standardizer\"/>."
 msgstr ""
-"Інструкції з установки див.: <xref linkend="
-"\"installing_pagc_address_standardizer\"/>."
+"Інструкції з установки див.: <xref "
+"linkend=\"installing_pagc_address_standardizer\"/>."
 
 #. Tag: title
 #, no-c-format
@@ -1183,8 +1183,8 @@ msgid ""
 msgstr ""
 "Композитний тип, що складається з елементів адреси. Це тип повернення для "
 "функції <xref linkend=\"standardize_address\"/>. Деякі описи елементів "
-"запозичені з <link xlink:href=«http://www.pagcgeo.org/docs/html/pagc-12."
-"html#ss12.1»>PAGC Postal Attributes</link>."
+"запозичені з <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#ss12.1\">PAGC Postal Attributes</link>."
 
 #. Tag: para
 #, no-c-format
@@ -1192,8 +1192,7 @@ msgid ""
 "The token numbers denote the output reference number in the <xref "
 "linkend=\"rulestab\"/>."
 msgstr ""
-"Номери токенів позначають вихідний номер посилання в <xref linkend=\"rulestab"
-"\"/>."
+"Номери токенів позначають вихідний номер посилання в <xref linkend=\"rulestab\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -1393,8 +1392,8 @@ msgid ""
 "pagcgeo.org/docs/html/pagc-12.html#--r-rec--\">PAGC Address Standardizer "
 "Rule records</link>."
 msgstr ""
-"текстове поле, що позначає правило. Детальніше див. <link "
-"xlink:href=«http://www.pagcgeo.org/docs/html/pagc-12.html#--r-rec--»>Записи "
+"текстове поле, що позначає правило. Детальніше див. <link xlink:href=\"http://www."
+"pagcgeo.org/docs/html/pagc-12.html#--r-rec--\">Записи "
 "правил стандартизації адрес PAGC</link>."
 
 #. Tag: para
@@ -1449,7 +1448,7 @@ msgid ""
 msgstr ""
 "Кожне правило починається з набору вхідних токенів, за якими слідує "
 "роздільник <code>-1</code>. Дієві вхідні токени, взяті з <link "
-"xlink:href=«http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2»>PAGC Input "
+"xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC Input "
 "Tokens</link>, наведені нижче:"
 
 #. Tag: emphasis
@@ -1464,7 +1463,7 @@ msgid ""
 "\"and\"."
 msgstr ""
 "(13). Символ амперсанд (&amp;) часто використовується для скорочення слова "
-"«and»."
+"\"and\"."
 
 #. Tag: para
 #, no-c-format
@@ -1501,7 +1500,7 @@ msgstr "(0). Ряд цифр."
 #, no-c-format
 msgid "(15). Representations such as First or 1st. Often used in street names."
 msgstr ""
-"(15). Такі позначення, як «Перший» або «1-й». Часто використовуються в "
+"(15). Такі позначення, як \"Перший\" або \"1-й\". Часто використовуються в "
 "назвах вулиць."
 
 #. Tag: para
@@ -1704,7 +1703,7 @@ msgid ""
 "(token number = \"<emphasis role=\"bold\">0</emphasis>\"). The class of "
 "rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis>"
 msgstr ""
-"(номер токена = «<emphasis role=\"bold\">0</emphasis>»). Клас правил для "
+"(номер токена = \"<emphasis role=\"bold\">0</emphasis>\"). Клас правил для "
 "розбору MACRO класів, таких як <emphasis>PLACE STATE ZIP</emphasis>"
 
 #. Tag: para
@@ -1715,20 +1714,20 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
-"<emphasis role=\"bold\"><varname>MACRO_C</varname> вихідні токени<emphasis> ("
-"витяг з <link xlink:href=«http://www.pagcgeo.org/docs/html/pagc-12."
-"html#--r-typ--»>http://www.pagcgeo.org/docs/html/pagc-12."
+"<emphasis role=\"bold\"><varname>MACRO_C</varname> вихідні токени</emphasis> ("
+"витяг з <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12."
 "html#--r-typ--</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "(token number \"10\"). Example \"Albany\""
-msgstr "(токен номер «10»). Приклад «Albany»"
+msgstr "(токен номер \"10\"). Приклад \"Albany\""
 
 #. Tag: para
 #, no-c-format
 msgid "(token number \"11\"). Example \"NY\""
-msgstr "(токен номер «11»). Приклад «NY»"
+msgstr "(токен номер \"11\"). Приклад \"NY\""
 
 #. Tag: para
 #, no-c-format
@@ -1736,8 +1735,8 @@ msgid ""
 "(token number \"12\"). This attribute is not used in most reference files. "
 "Example \"USA\""
 msgstr ""
-"(токен номер «12»). Цей атрибут не використовується в більшості файлів "
-"посилань. Приклад «USA»"
+"(токен номер \"12\"). Цей атрибут не використовується в більшості файлів "
+"посилань. Приклад \"USA\""
 
 #. Tag: para
 #, no-c-format
@@ -1745,7 +1744,7 @@ msgid ""
 "(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). This "
 "attribute is used for both the US Zip and the Canadian Postal Codes."
 msgstr ""
-"(токен номер «13»). (Елементи SADS «ZIP CODE» , «PLUS 4» ). Цей атрибут "
+"(токен номер \"13\"). (Елементи SADS \"ZIP CODE\" , \"PLUS 4\" ). Цей атрибут "
 "використовується як для поштових індексів США, так і для поштових індексів "
 "Канади."
 
@@ -1757,7 +1756,7 @@ msgid ""
 "pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used "
 "in the build phase."
 msgstr ""
-"(номер токена = «<emphasis role=\"bold\">1</emphasis>»). Клас правил для "
+"(номер токена = \"<emphasis role=\"bold\">1</emphasis>\"). Клас правил для "
 "розбору повних клаузул MICRO (таких як House, street, sufdir, predir, "
 "pretyp, suftype, qualif) (тобто ARC_C плюс CIVIC_C). Ці правила не "
 "використовуються на етапі побудови."
@@ -1770,9 +1769,9 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
-"<emphasis role=\"bold\"><varname>MICRO_C</varname> вихідні токени<emphasis> ("
-"витяг з <link xlink:href=«http://www.pagcgeo.org/docs/html/pagc-12."
-"html#--r-typ--»>http://www.pagcgeo.org/docs/html/pagc-12."
+"<emphasis role=\"bold\"><varname>MICRO_C</varname> вихідні токени</emphasis> ("
+"витяг з <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12."
 "html#--r-typ--</link>."
 
 #. Tag: para
@@ -1782,7 +1781,7 @@ msgid ""
 "rules for parsing MICRO clauses, excluding the HOUSE attribute. As such uses "
 "same set of output tokens as MICRO_C minus the HOUSE token."
 msgstr ""
-"(номер маркера = «<emphasis role=\"bold\">2</emphasis>»). Клас правил для "
+"(номер маркера = \"<emphasis role=\"bold\">2</emphasis>\"). Клас правил для "
 "розбору клаузул MICRO, за винятком атрибуту HOUSE. Як такий, використовує "
 "той самий набір вихідних маркерів, що й MICRO_C, за винятком маркера HOUSE."
 
@@ -1792,7 +1791,7 @@ msgid ""
 "(token number = \"<emphasis role=\"bold\">3</emphasis>\"). The class of "
 "rules for parsing the HOUSE attribute."
 msgstr ""
-"(номер токена = «<emphasis role=\"bold\">3</emphasis>»). Клас правил для "
+"(номер токена = \"<emphasis role=\"bold\">3</emphasis>\"). Клас правил для "
 "розбору атрибуту HOUSE."
 
 #. Tag: para
@@ -1802,7 +1801,7 @@ msgid ""
 "rules for parsing EXTRA attributes - attributes excluded from geocoding. "
 "These rules are not used in the build phase."
 msgstr ""
-"(номер токена = «<emphasis role=\"bold\">4</emphasis>»). Клас правил для "
+"(номер токена = \"<emphasis role=\"bold\">4</emphasis>\"). Клас правил для "
 "розбору атрибутів EXTRA - атрибутів, виключених з геокодування. Ці правила "
 "не використовуються на етапі побудови."
 
@@ -1814,9 +1813,9 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
-"<emphasis role=\"bold\"><varname>EXTRA_C</varname> вихідні токени<emphasis> ("
-"витяг з <link xlink:href=«http://www.pagcgeo.org/docs/html/pagc-12."
-"html#--r-typ--»>http://www.pagcgeo.org/docs/html/pagc-12."
+"<emphasis role=\"bold\"><varname>EXTRA_C</varname> вихідні токени</emphasis> ("
+"витяг з <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12."
 "html#--r-typ--</link>."
 
 #. Tag: para
@@ -1928,7 +1927,7 @@ msgid ""
 "pagc-12.html#--i-tok--\">PAGC Tokens</link>."
 msgstr ""
 "integer: тип слова. Замінюється тільки в цьому контексті. Див. <link "
-"xlink:href=«http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--»>Токени "
+"xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--\">Токени "
 "PAGC</link>."
 
 #. Tag: refpurpose
@@ -2256,8 +2255,8 @@ msgid ""
 "side table, which contains all the columns of the parent table, and the "
 "following additional columns:"
 msgstr ""
-"Якщо у вас є таблиця «roads», цей модуль буде вести додаткову таблицю "
-"«roads_history», яка містить усі стовпці батьківської таблиці та наступні "
+"Якщо у вас є таблиця \"roads\", цей модуль буде вести додаткову таблицю "
+"\"roads_history\", яка містить усі стовпці батьківської таблиці та наступні "
 "додаткові стовпці:"
 
 #. Tag: para
@@ -2268,10 +2267,10 @@ msgid ""
 "to NULL, a unique 'history_id', a 'last_operation' of 'INSERT' and "
 "'active_user' set."
 msgstr ""
-"Коли ви вставляєте новий запис у «roads», запис автоматично вставляється у "
-"«roads_history», з заповненим полем «date_added», полем «date_deleted», "
-"встановленим на NULL, унікальним «history_id», «last_operation» з «INSERT» "
-"та «active_user»."
+"Коли ви вставляєте новий запис у \"roads\", запис автоматично вставляється у "
+"\"roads_history\", з заповненим полем \"date_added\", полем \"date_deleted\", "
+"встановленим на NULL, унікальним \"history_id\", \"last_operation\" з \"INSERT\" "
+"та \"active_user\"."
 
 #. Tag: para
 #, no-c-format
@@ -2279,8 +2278,8 @@ msgid ""
 "When you delete a record in 'roads', the record in the history table is "
 "*not* deleted, but the 'date_deleted' is set to the current date."
 msgstr ""
-"Коли ви видаляєте запис у «roads», запис у таблиці історії *не* видаляється, "
-"але «date_deleted» встановлюється на поточну дату."
+"Коли ви видаляєте запис у \"roads\", запис у таблиці історії *не* видаляється, "
+"але \"date_deleted\" встановлюється на поточну дату."
 
 #. Tag: para
 #, no-c-format
@@ -2289,9 +2288,9 @@ msgid ""
 "filled in and a new record is created with the 'date_added' set and "
 "'date_deleted' NULL."
 msgstr ""
-"Коли ви оновлюєте запис у «roads», у поточному записі заповнюється поле "
-"«date_deleted» і створюється новий запис із полем «date_added» та полем "
-"«date_deleted» із значенням NULL."
+"Коли ви оновлюєте запис у \"roads\", у поточному записі заповнюється поле "
+"\"date_deleted\" і створюється новий запис із полем \"date_added\" та полем "
+"\"date_deleted\" із значенням NULL."
 
 #. Tag: para
 #, no-c-format
@@ -2383,7 +2382,7 @@ msgid ""
 "link> released by the US Census Bureau."
 msgstr ""
 "Геокодер на основі plpgsql, написаний для роботи з <link "
-"xlink:href=«https://www2.census.gov/geo/tiger/»>TIGER (Topologically "
+"xlink:href=\"https://www2.census.gov/geo/tiger/\">TIGER (Topologically "
 "Integrated Geographic Encoding and Referencing system ) / Line and Master "
 "Address database export</link>, випущеним Бюро перепису населення США."
 
@@ -2610,7 +2609,7 @@ msgid ""
 "a pure SQL interface like the tiger geocoder, or if a good deal of the logic "
 "is implemented in the web interface."
 msgstr ""
-"<link xlink:href=«http://wiki.openstreetmap.org/wiki/Nominatim»>Nominatim</"
+"<link xlink:href=\"http://wiki.openstreetmap.org/wiki/Nominatim\">Nominatim</"
 "link> використовує дані у форматі OpenStreetMap gazeteer. Для завантаження "
 "даних необхідні osm2pgsql, PostgreSQL 8.4+ та PostGIS 1.5+. Програма "
 "упакована як веб-інтерфейс і, судячи з усього, призначена для виклику як веб-"
@@ -2629,7 +2628,7 @@ msgid ""
 "relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-platform and also "
 "has a reverse geocoder among some other neat features."
 msgstr ""
-"<link xlink:href=«http://www.gisgraphy.com/»>GIS Graphy</link> також "
+"<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link> також "
 "використовує PostGIS і, як і Nominatim, працює з даними OpenStreetMap (OSM). "
 "Він постачається з завантажувачем для завантаження даних OSM і, подібно до "
 "Nominatim, здатний геокодувати не тільки США. Подібно до Nominatim, він "
@@ -2853,7 +2852,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Examples: Using Geometry filter"
-msgstr "Приклади: Використання фільтра «Geometry»"
+msgstr "Приклади: Використання фільтра \"Geometry\""
 
 #. Tag: para
 #, no-c-format
@@ -3813,7 +3812,7 @@ msgid ""
 "taking up a good chunk of the street range and the rest of the buildings are "
 "clustered at the end."
 msgstr ""
-"Чому ми говоримо «теоретичні», а не «фактичні адреси»? Дані Tiger не містять "
+"Чому ми говоримо \"теоретичні\", а не \"фактичні адреси\"? Дані Tiger не містять "
 "реальних адрес, а лише діапазони вулиць. Таким чином, теоретична адреса є "
 "інтерпольованою адресою, що базується на діапазонах вулиць. Наприклад, "
 "інтерполяція однієї з моїх адрес дає результат 26 Court St. і 26 Court Sq., "
@@ -4136,8 +4135,8 @@ msgid ""
 msgstr ""
 "Презентація Сандро Сантіллі на конференції PostGIS Day Paris 2011 містить "
 "хороший огляд топології PostGIS та її перспектив <link "
-"xlink:href=«http://strk.kbt.io/projects/postgis/"
-"Paris2011_TopologyWithPostGIS_2_0.pdf»>Топологія з PostGIS 2.0, "
+"xlink:href=\"http://strk.kbt.io/projects/postgis/"
+"Paris2011_TopologyWithPostGIS_2_0.pdf\">Топологія з PostGIS 2.0, "
 "презентація</link>."
 
 #. Tag: para
@@ -4166,7 +4165,7 @@ msgid ""
 "some data, check out <xref linkend=\"Topology_Load_Tiger\"/>."
 msgstr ""
 "Прикладом топологічної бази даних ГІС є база даних <link "
-"xlink:href=«https://www.census.gov/geo/maps-data/data/tiger.html»>US Census "
+"xlink:href=\"https://www.census.gov/geo/maps-data/data/tiger.html\">US Census "
 "Topologically Integrated Geographic Encoding and Referencing System (TIGER)</"
 "link> (Топологічно інтегрована система географічного кодування та посилань "
 "перепису населення США). Якщо ви хочете поекспериментувати з топологією "
@@ -4196,7 +4195,7 @@ msgid ""
 "org/postgis/wiki/UsersWikiPostgisTopology\">PostGIS Topology Wiki</link>"
 msgstr ""
 "Детальнішу інформацію про цей проект можна знайти за посиланням <link "
-"xlink:href=«http://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology»"
+"xlink:href=\"http://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology\""
 ">PostGIS Topology Wiki</link>"
 
 #. Tag: para
@@ -4628,7 +4627,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RenameTopology\"/>"
-msgstr ", <xref linkend=\"Перейменувати топологію\"/>"
+msgstr ", <xref linkend=\"RenameTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4691,7 +4690,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RenameTopoGeometryColumn\"/>"
-msgstr ", <xref linkend=\"Перейменувати стовпець топографічної геометрії\"/>"
+msgstr ", <xref linkend=\"RenameTopoGeometryColumn\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4956,7 +4955,7 @@ msgstr "face without edges"
 #. Tag: entry
 #, no-c-format
 msgid "Identifier of the orphaned face."
-msgstr "Ідентифікатор «осиротілої» грані."
+msgstr "Ідентифікатор \"осиротілої\" грані."
 
 #. Tag: entry
 #, no-c-format
@@ -5135,7 +5134,7 @@ msgid ""
 "known as a \"Side Location Conflict\"."
 msgstr ""
 "Ребра в кільці позначають конфліктуючі грані на стороні ходіння. Це також "
-"називається «конфліктом розташування сторін»."
+"називається \"конфліктом розташування сторін\"."
 
 #. Tag: entry
 #, no-c-format
@@ -5186,8 +5185,8 @@ msgid ""
 "Changed: 2.2.0 values for id1 and id2 were swapped for 'edge crosses node' "
 "to be consistent with error description."
 msgstr ""
-"Змінено: 2.2.0 значення id1 та id2 були поміняні місцями для «перетину ребер "
-"вузлом» з метою узгодження з описом помилки."
+"Змінено: 2.2.0 значення id1 та id2 були поміняні місцями для \"перетину ребер "
+"вузлом\" з метою узгодження з описом помилки."
 
 #. Tag: para
 #, no-c-format
@@ -5267,7 +5266,7 @@ msgid ""
 "Snapping could make the topology invalid, so it is recommended to check the "
 "outcome of operation with <xref linkend=\"ValidateTopology\"/>."
 msgstr ""
-"При використанні функції «Прив'язати» топологія може стати недійсною, тому "
+"При використанні функції \"Прив'язати\" топологія може стати недійсною, тому "
 "рекомендується перевірити результат операції за допомогою <xref linkend="
 "\"ValidateTopology\"/>."
 

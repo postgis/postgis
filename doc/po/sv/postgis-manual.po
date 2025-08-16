@@ -8288,7 +8288,7 @@ msgid ""
 msgstr ""
 "PostgreSQL &min_postgres_version; - &max_postgres_version;. En fullständig "
 "installation av PostgreSQL (inklusive serverhuvuden) krävs. PostgreSQL finns "
-"tillgängligt på <link xlink:href=”https://www.postgresql.org”> https://"
+"tillgängligt på <link xlink:href=\"https://www.postgresql.org\"> https://"
 "www.postgresql.org </link>18 ."
 
 #. Tag: para
@@ -8354,7 +8354,7 @@ msgstr ""
 "GEOS geometribibliotek, version &min_geos_version; eller högre, men GEOS 3."
 "14+ krävs för att kunna utnyttja alla nya funktioner och egenskaper fullt "
 "ut. GEOS finns tillgängligt för hämtning från <link "
-"xlink:href=”https://libgeos.org/”> https://libgeos.org </link>."
+"xlink:href=\"https://libgeos.org/\"> https://libgeos.org </link>."
 
 #. Tag: para
 #, no-c-format
@@ -45042,9 +45042,9 @@ msgid ""
 "pulls/255\">GT-255</link>, [topology] Support for upgrading domains (Ayo "
 "Adesugba, U.S. Census Bureau)"
 msgstr ""
-"<link xlink:href=”https://trac.osgeo.org/postgis/ticket/3373”>#3373</link>, "
-"<link xlink:href=”https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"255”>GT-255</link>, [topologi] Stöd för uppgradering av domäner (Ayo "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</link>, "
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"255\">GT-255</link>, [topologi] Stöd för uppgradering av domäner (Ayo "
 "Adesugba, U.S. Census Bureau)"
 
 #. Tag: para
@@ -45068,9 +45068,9 @@ msgid ""
 "pulls/242\">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, U.S. "
 "Census Bureau)"
 msgstr ""
-"<link xlink:href=”https://trac.osgeo.org/postgis/ticket/3110”>#3110</link>, "
-"<link xlink:href=”https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"242”>GT-242</link>, [topologi] Stöd för bigint (Ayo Adesugba, U.S. Census "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</link>, "
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"242\">GT-242</link>, [topologi] Stöd för bigint (Ayo Adesugba, U.S. Census "
 "Bureau)"
 
 #. Tag: title
