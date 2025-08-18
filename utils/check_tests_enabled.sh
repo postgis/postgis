@@ -84,7 +84,7 @@ check_enabled sfcgal/regress/tests.mk.in
 err=$(($err+$?))
 check_enabled regress/core/tests.mk.in
 err=$(($err+$?))
-check_enabled raster/test/regress/tests.mk
+check_enabled raster/test/regress/tests.mk.in
 err=$(($err+$?))
 
 exit $err
