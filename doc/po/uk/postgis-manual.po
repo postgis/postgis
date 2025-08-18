@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-18 17:50+0000\n"
+"PO-Revision-Date: 2025-08-19 00:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -6267,6 +6267,10 @@ msgid ""
 "edge provided. Returns the id of the new edge replacing the healed ones. "
 "Updates all existing joined edges and relationships accordingly."
 msgstr ""
+"Виправляє дві ребра, видаляючи вузол, що їх з'єднує, видаляючи обидві ребра "
+"та замінюючи їх ребром, напрямок якого збігається з напрямком першого "
+"наданого ребра. Повертає ідентифікатор нового ребра, що замінює виправлені "
+"ребра. Відповідно оновлює всі існуючі з'єднані ребра та відносини."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6275,6 +6279,9 @@ msgid ""
 "<varname>apoint</varname> geometry exists as a node an error is thrown. "
 "Returns description of move."
 msgstr ""
+"Переміщує ізольований вузол у топології з однієї точки в іншу. Якщо нова "
+"геометрія <varname>apoint</varname> існує як вузол, виникає помилка. "
+"Повертає опис переміщення."
 
 #. Tag: para
 #, no-c-format
@@ -6282,6 +6289,8 @@ msgid ""
 "Moves an isolated node in a topology from one point to another. If new "
 "<varname>apoint</varname> geometry exists as a node an error is thrown."
 msgstr ""
+"Переміщує ізольований вузол у топології з однієї точки в іншу. Якщо нова "
+"геометрія <varname>apoint</varname> існує як вузол, виникає помилка."
 
 #. Tag: para
 #, no-c-format
@@ -6292,6 +6301,11 @@ msgid ""
 "the new location is in a different face (since 3.2.0) then an exception is "
 "thrown."
 msgstr ""
+"Якщо будь-які аргументи мають нульове значення, <varname>apoint</varname> не "
+"є точкою, існуючий вузол не є ізольованим (є початковою або кінцевою точкою "
+"існуючої ребра), нове розташування вузла перетинає існуючу ребро (навіть у "
+"кінцевих точках) або нове розташування знаходиться в іншій грані (починаючи "
+"з версії 3.2.0), то генерується виняток."
 
 #. Tag: para
 #, no-c-format
@@ -6299,16 +6313,19 @@ msgid ""
 "If the spatial reference system (srid) of the point geometry is not the same "
 "as the topology an exception is thrown."
 msgstr ""
+"Якщо система просторових координат (srid) геометрії точки не збігається з "
+"топологією, генерується виняток."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.2.0 ensures the nod cannot be moved in a different face"
 msgstr ""
+"Покращено: версія 3.2.0 гарантує, що вузол не можна перемістити на іншу грань"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM: Topo-Net Routines: X.3.2"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Процедури Topo-Net: X.3.2"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6317,6 +6334,9 @@ msgid ""
 "original edge and replacing it with two new edges. Returns the id of the new "
 "node created that joins the new edges."
 msgstr ""
+"Розділіть ребро, створивши новий вузол уздовж існуючого ребра, видаливши "
+"оригінальне ребро і замінивши його двома новими ребрами. Повертає "
+"ідентифікатор нового вузла, створеного для з'єднання нових ребер."
 
 #. Tag: para
 #, no-c-format
@@ -6327,6 +6347,11 @@ msgid ""
 "new node created that joins the new edges. Updates all existing joined edges "
 "and relationships accordingly."
 msgstr ""
+"Розділити ребро з ідентифікатором <varname>anedge</varname> шляхом створення "
+"нового вузла з точкою розташування <varname>apoint</varname> вздовж "
+"поточного ребра, видалення оригінального ребра та заміни його двома новими "
+"ребрами. Повертає ідентифікатор нового вузла, створеного для з'єднання нових "
+"ребер. Відповідно оновлює всі існуючі з'єднані ребра та відносини."
 
 #. Tag: para
 #, no-c-format
@@ -6337,11 +6362,15 @@ msgid ""
 "correspond to an existing edge or the point is not within the edge then an "
 "exception is thrown."
 msgstr ""
+"Якщо система просторових посилань (srid) геометрії точки не збігається з "
+"топологією, <varname>apoint</varname> не є геометрією точки, точка є "
+"нульовою, точка вже існує як вузол, край не відповідає існуючому краю або "
+"точка не знаходиться в межах краю, то генерується виняток."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM: Topo-Net Routines: X.3.8"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Процедури Topo-Net: X.3.8"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6350,6 +6379,9 @@ msgid ""
 "the node is not isolated (is start or end of an edge), then an exception is "
 "thrown.</refpurpose>"
 msgstr ""
+"<refpurpose>Видаляє ізольований вузол і повертає опис дії. Якщо вузол не "
+"ізольований (є початком або кінцем ребра), то генерується "
+"виняток.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -6358,12 +6390,15 @@ msgid ""
 "node is not isolated (is start or end of an edge), then an exception is "
 "thrown.</para>"
 msgstr ""
+"<para>Видаляє ізольований вузол і повертає опис дії. Якщо вузол не "
+"ізольований (є початком або кінцем ребра), то генерується виняток.</para>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X+1.3.3"
 msgstr ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo та Topo-Net 3: Деталі процедури: X+1.3.3"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6371,6 +6406,8 @@ msgid ""
 "<refpurpose>Removes an isolated edge and returns description of action. If "
 "the edge is not isolated, then an exception is thrown.</refpurpose>"
 msgstr ""
+"<refpurpose>Видаляє ізольовану грань і повертає опис дії. Якщо грань не "
+"ізольована, то генерується виняток.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -6378,21 +6415,23 @@ msgid ""
 "<para>Removes an isolated edge and returns description of action. If the "
 "edge is not isolated, then an exception is thrown.</para>"
 msgstr ""
+"<para>Видаляє ізольовану грань і повертає опис дії. Якщо грань не "
+"ізольована, то генерується виняток.</para>"
 
 #. Tag: title
 #, no-c-format
 msgid "Topology Accessors"
-msgstr ""
+msgstr "Топологічні методи доступу"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Finds the edge-id of an edge that intersects a given point."
-msgstr ""
+msgstr "Знаходить ідентифікатор ребра, яке перетинає задану точку."
 
 #. Tag: para
 #, no-c-format
 msgid "Retrieves the id of an edge that intersects a Point."
-msgstr ""
+msgstr "Отримує ідентифікатор ребра, яке перетинає точку."
 
 #. Tag: para
 #, no-c-format
@@ -6400,12 +6439,14 @@ msgid ""
 "The function returns an integer (id-edge) given a topology, a POINT and a "
 "tolerance. If tolerance = 0 then the point has to intersect the edge."
 msgstr ""
+"Функція повертає ціле число (id-edge) за заданою топологією, точкою POINT і "
+"допуском tolerance. Якщо tolerance = 0, то точка повинна перетинати край."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If <varname>apoint</varname> doesn't intersect an edge, returns 0 (zero)."
-msgstr ""
+msgstr "Якщо <varname>apoint</varname> не перетинає ребро, повертає 0 (нуль)."
 
 #. Tag: para
 #, no-c-format
@@ -6413,38 +6454,45 @@ msgid ""
 "If use tolerance &gt; 0 and there is more than one edge near the point then "
 "an exception is thrown."
 msgstr ""
+"Якщо використання tolerance &gt; 0 і поблизу точки є більше ніж одна грань, "
+"то виникає виняток."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If tolerance = 0, the function uses ST_Intersects otherwise uses ST_DWithin."
 msgstr ""
+"Якщо tolerance = 0, функція використовує ST_Intersects, в іншому випадку "
+"використовує ST_DWithin."
 
 #. Tag: para
 #, no-c-format
 msgid "Performed by the GEOS module."
-msgstr ""
+msgstr "Виконується модулем GEOS."
 
 #. Tag: para
 #, no-c-format
 msgid "These examples use edges we created in <xref linkend=\"AddEdge\"/>"
 msgstr ""
+"У цих прикладах використовуються ребра, які ми створили в <xref linkend="
+"\"AddEdge\"/>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"GetNodeByPoint\"/>, <xref linkend=\"GetFaceByPoint\"/>"
 msgstr ""
+", <xref linkend=\"GetNodeByPoint\"/>, <xref linkend=\"GetFaceByPoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Finds face intersecting a given point."
-msgstr ""
+msgstr "Знаходить грань, що перетинає задану точку."
 
 #. Tag: para
 #, no-c-format
 msgid "Finds a face referenced by a Point, with given tolerance."
-msgstr ""
+msgstr "Знаходить грань, на яку вказує точка, з заданим допуском."
 
 #. Tag: para
 #, no-c-format
@@ -6452,6 +6500,8 @@ msgid ""
 "The function will effectively look for a face intersecting a circle having "
 "the point as center and the tolerance as radius."
 msgstr ""
+"Функція ефективно шукатиме грань, що перетинає коло з центром у точці та "
+"радіусом, що відповідає допуску."
 
 #. Tag: para
 #, no-c-format
@@ -6459,12 +6509,14 @@ msgid ""
 "If no face intersects the given query location, 0 is returned (universal "
 "face)."
 msgstr ""
+"Якщо жодна поверхня не перетинає задане місце пошуку, повертається 0 ("
+"універсальна поверхня)."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If more than one face intersect the query location an exception is thrown."
-msgstr ""
+msgstr "Якщо більше ніж одна грань перетинає місце запиту, генерується виняток."
 
 #. Tag: para
 #, no-c-format
@@ -6472,6 +6524,8 @@ msgid ""
 "Enhanced: 3.2.0 more efficient implementation and clearer contract, stops "
 "working with invalid topologies."
 msgstr ""
+"Покращено: 3.2.0 більш ефективна реалізація та чіткіший контракт, припиняє "
+"роботу з недійсними топологіями."
 
 #. Tag: para
 #, no-c-format
@@ -6479,21 +6533,23 @@ msgid ""
 ", <xref linkend=\"AddFace\"/>, <xref linkend=\"GetNodeByPoint\"/>, <xref "
 "linkend=\"GetEdgeByPoint\"/>"
 msgstr ""
+", <xref linkend=\"AddFace\"/>, <xref linkend=\"GetNodeByPoint\"/>, <xref "
+"linkend=\"GetEdgeByPoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Finds the face containing a point."
-msgstr ""
+msgstr "Знаходить обличчя, що містить точку."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns the id of the face containing a point."
-msgstr ""
+msgstr "Повертає ідентифікатор грані, що містить точку."
 
 #. Tag: para
 #, no-c-format
 msgid "An exception is thrown if the point falls on a face boundary."
-msgstr ""
+msgstr "Якщо точка потрапляє на межу грані, генерується виняток."
 
 #. Tag: para
 #, no-c-format
@@ -6501,16 +6557,18 @@ msgid ""
 "The function relies on a valid topology, using edge linking and face "
 "labeling."
 msgstr ""
+"Функція базується на дійсній топології, використовуючи зв'язки між ребрами "
+"та маркування граней."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Finds the node-id of a node at a point location."
-msgstr ""
+msgstr "Знаходить ідентифікатор вузла в точці."
 
 #. Tag: para
 #, no-c-format
 msgid "Retrieves the id of a node at a point location."
-msgstr ""
+msgstr "Отримує ідентифікатор вузла в точці розташування."
 
 #. Tag: para
 #, no-c-format
@@ -6519,12 +6577,15 @@ msgid ""
 "tolerance. If tolerance = 0 means exact intersection, otherwise retrieves "
 "the node from an interval."
 msgstr ""
+"Функція повертає ціле число (id-node) за заданою топологією, POINT і "
+"допуском. Якщо допуск = 0, це означає точне перетин, в іншому випадку "
+"витягує вузол з інтервалу."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If <varname>apoint</varname> doesn't intersect a node, returns 0 (zero)."
-msgstr ""
+msgstr "Якщо <varname>apoint</varname> не перетинає вузол, повертає 0 (нуль)."
 
 #. Tag: para
 #, no-c-format
@@ -6532,12 +6593,15 @@ msgid ""
 "If use tolerance &gt; 0 and there is more than one node near the point then "
 "an exception is thrown."
 msgstr ""
+"Якщо використання tolerance &gt; 0 і поблизу точки знаходиться більше одного "
+"вузла, то виникає виняток."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"GetEdgeByPoint\"/>, <xref linkend=\"GetFaceByPoint\"/>"
 msgstr ""
+", <xref linkend=\"GetEdgeByPoint\"/>, <xref linkend=\"GetFaceByPoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6545,6 +6609,8 @@ msgid ""
 "<refpurpose>Returns the id of a topology in the topology.topology table "
 "given the name of the topology.</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає ідентифікатор топології в таблиці topology.topology за "
+"назвою топології.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -6552,6 +6618,8 @@ msgid ""
 "<para>Returns the id of a topology in the topology.topology table given the "
 "name of the topology.</para>"
 msgstr ""
+"<para>Повертає ідентифікатор топології в таблиці topology.topology за назвою "
+"топології.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -6559,6 +6627,8 @@ msgid ""
 ", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyName\"/>, "
 "<xref linkend=\"GetTopologySRID\"/>"
 msgstr ""
+", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyName\"/>, "
+"<xref linkend=\"GetTopologySRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6566,6 +6636,7 @@ msgid ""
 "Returns the SRID of a topology in the topology.topology table given the name "
 "of the topology."
 msgstr ""
+"Повертає SRID топології в таблиці topology.topology, задавши ім'я топології."
 
 #. Tag: para
 #, no-c-format
@@ -6573,6 +6644,8 @@ msgid ""
 "Returns the spatial reference id of a topology in the topology.topology "
 "table given the name of the topology."
 msgstr ""
+"Повертає ідентифікатор просторового посилання топології в таблиці "
+"topology.topology за назвою топології."
 
 #. Tag: para
 #, no-c-format
@@ -6580,11 +6653,13 @@ msgid ""
 ", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyName\"/>, "
 "<xref linkend=\"GetTopologyID\"/>"
 msgstr ""
+", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyName\"/>, "
+"<xref linkend=\"GetTopologyID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the name of a topology (schema) given the id of the topology."
-msgstr ""
+msgstr "Повертає назву топології (схеми) за ідентифікатором топології."
 
 #. Tag: para
 #, no-c-format
@@ -6592,6 +6667,8 @@ msgid ""
 "Returns the topology name (schema) of a topology from the topology.topology "
 "table given the topology id of the topology."
 msgstr ""
+"Повертає ім'я топології (схему) з таблиці topology.topology, задавши "
+"ідентифікатор топології."
 
 #. Tag: para
 #, no-c-format
@@ -6599,11 +6676,14 @@ msgid ""
 ", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyID\"/>, <xref "
 "linkend=\"GetTopologySRID\"/>"
 msgstr ""
+", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyID\"/>, <xref "
+"linkend=\"GetTopologySRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a set of ordered edges that bound <varname>aface</varname>."
 msgstr ""
+"Повертає набір впорядкованих ребер, що обмежують <varname>aface</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -6612,6 +6692,9 @@ msgid ""
 "output consists of a sequence and edgeid. Sequence numbers start with value "
 "1."
 msgstr ""
+"Повертає набір впорядкованих ребер, що обмежують <varname>aface</varname>. "
+"Кожен вихідний елемент складається з послідовності та edgeid. Номери "
+"послідовності починаються з значення 1."
 
 #. Tag: para
 #, no-c-format
@@ -6620,22 +6703,28 @@ msgid ""
 "Order of edges follows a left-hand-rule (bound face is on the left of each "
 "directed edge)."
 msgstr ""
+"Перелік кожного краю кільця починається з краю з найменшим ідентифікатором. "
+"Порядок країв відповідає правилу лівої руки (межа знаходиться ліворуч від "
+"кожного спрямованого краю)."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.5"
 msgstr ""
+"&sqlmm_compliant; SQL-MM 3 Topo-Geo та Topo-Net 3: Деталі процедури: X.3.5"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"AddFace\"/>, <xref linkend=\"ST_GetFaceGeometry\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"AddFace\"/>, <xref linkend=\"ST_GetFaceGeometry\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the polygon in the given topology with the specified face id."
 msgstr ""
+"Повертає багатокутник у заданій топології із зазначеним ідентифікатором "
+"грані."
 
 #. Tag: para
 #, no-c-format
@@ -6643,12 +6732,15 @@ msgid ""
 "Returns the polygon in the given topology with the specified face id. Builds "
 "the polygon from the edges making up the face."
 msgstr ""
+"Повертає багатокутник у заданій топології із зазначеним ідентифікатором "
+"грані. Будує багатокутник із ребер, що утворюють грань."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.16"
 msgstr ""
+"&sqlmm_compliant; SQL-MM 3 Topo-Geo та Topo-Net 3: Деталі процедури: X.3.16"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6656,6 +6748,8 @@ msgid ""
 "Returns the ordered set of signed edge identifiers met by walking on an a "
 "given edge side."
 msgstr ""
+"Повертає впорядкований набір ідентифікаторів підписаних ребер, зустрітих при "
+"проходженні по заданій стороні ребра."
 
 #. Tag: para
 #, no-c-format
@@ -6664,6 +6758,10 @@ msgid ""
 "given edge side. Each output consists of a sequence and a signed edge id. "
 "Sequence numbers start with value 1."
 msgstr ""
+"Повертає впорядкований набір ідентифікаторів підписаних ребер, зустрінутих "
+"під час проходження по заданій стороні ребра. Кожен вихідний елемент "
+"складається з послідовності та ідентифікатора підписаного ребра. Номери "
+"послідовності починаються з значення 1."
 
 #. Tag: para
 #, no-c-format
@@ -6672,6 +6770,10 @@ msgid ""
 "corresponding edge and follows the edge direction. If you pass a negative "
 "edge id, the walk starts on the right side of it and goes backward."
 msgstr ""
+"Якщо ви передаєте позитивний ідентифікатор ребра, проходження починається з "
+"лівого боку відповідного ребра і слідує за напрямком ребра. Якщо ви "
+"передаєте негативний ідентифікатор ребра, проходження починається з правого "
+"боку ребра і йде назад."
 
 #. Tag: para
 #, no-c-format
@@ -6680,21 +6782,24 @@ msgid ""
 "returned by that function. This is meant to be a safety parameter when "
 "dealing with possibly invalid topologies."
 msgstr ""
+"Якщо <varname>max_edges</varname> не дорівнює нулю, функція повертає не "
+"більше цих записів. Це є параметром безпеки при роботі з потенційно "
+"недійсними топологіями."
 
 #. Tag: para
 #, no-c-format
 msgid "This function uses edge ring linking metadata."
-msgstr ""
+msgstr "Ця функція використовує метадані зв'язку крайових кілець."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"GetNodeEdges\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"GetNodeEdges\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns an ordered set of edges incident to the given node."
-msgstr ""
+msgstr "Повертає впорядкований набір ребер, що прилягають до заданого вузла."
 
 #. Tag: para
 #, no-c-format
@@ -6705,6 +6810,12 @@ msgid ""
 "the given node. Closed edges will appear twice (with both signs). Order is "
 "clockwise starting from northbound."
 msgstr ""
+"Повертає впорядкований набір ребер, що прилягають до заданого вузла. Кожен "
+"вихідний елемент складається з послідовності та ідентифікатора ребра зі "
+"знаком. Номери послідовності починаються з 1. Позитивне ребро починається в "
+"заданому вузлі. Негативне ребро закінчується в заданому вузлі. Замкнуті "
+"ребра з'являються двічі (з обома знаками). Порядок визначається за "
+"годинниковою стрілкою, починаючи з півночі."
 
 #. Tag: para
 #, no-c-format
@@ -6712,16 +6823,18 @@ msgid ""
 "This function computes ordering rather than deriving from metadata and is "
 "thus usable to build edge ring linking."
 msgstr ""
+"Ця функція обчислює порядок, а не виводить його з метаданих, і тому може "
+"використовуватися для побудови зв'язків між кільцями ребер."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Topology Processing"
-msgstr ""
+msgstr "Обробка топології"
 
 #. Tag: para
 #, no-c-format
@@ -6729,21 +6842,22 @@ msgid ""
 "This section covers the functions for processing topologies in non-standard "
 "ways."
 msgstr ""
+"Цей розділ описує функції для обробки топологій нестандартними способами."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Finds and registers all faces defined by topology edges."
-msgstr ""
+msgstr "Знаходить і реєструє всі грані, визначені краями топології."
 
 #. Tag: para
 #, no-c-format
 msgid "Registers all faces that can be built out a topology edge primitives."
-msgstr ""
+msgstr "Реєструє всі грані, які можна побудувати з примітивів ребер."
 
 #. Tag: para
 #, no-c-format
 msgid "The target topology is assumed to contain no self-intersecting edges."
-msgstr ""
+msgstr "Припускається, що цільова топологія не містить самоперетинаючих ребер."
 
 #. Tag: para
 #, no-c-format
@@ -6751,6 +6865,8 @@ msgid ""
 "Already known faces are recognized, so it is safe to call Polygonize "
 "multiple times on the same topology."
 msgstr ""
+"Вже відомі грані розпізнаються, тому можна безпечно викликати Polygonize "
+"кілька разів для однієї топології."
 
 #. Tag: para
 #, no-c-format
@@ -6758,11 +6874,13 @@ msgid ""
 "This function does not use nor set the next_left_edge and next_right_edge "
 "fields of the edge table."
 msgstr ""
+"Ця функція не використовує і не встановлює поля next_left_edge та "
+"next_right_edge таблиці ребер."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Polygonize\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Polygonize\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6771,6 +6889,9 @@ msgid ""
 "returns the nodeid of new node. If point already exists as node, the "
 "existing nodeid is returned."
 msgstr ""
+"Додає точковий вузол до таблиці вузлів у вказаній схемі топології та "
+"повертає ідентифікатор нового вузла. Якщо точка вже існує як вузол, "
+"повертається існуючий ідентифікатор вузла."
 
 #. Tag: para
 #, no-c-format
@@ -6779,6 +6900,9 @@ msgid ""
 "<xref linkend=\"AddEdge\"/> function automatically adds start and end points "
 "of an edge when called so not necessary to explicitly add nodes of an edge."
 msgstr ""
+"Додає точковий вузол до таблиці вузлів у вказаній схемі топології. Функція "
+"<xref linkend=\"AddEdge\"/> автоматично додає початкову та кінцеву точки "
+"ребра при виклику, тому немає необхідності явно додавати вузли ребра."
 
 #. Tag: para
 #, no-c-format
@@ -6787,6 +6911,9 @@ msgid ""
 "edge is split, depending on the <varname>allowEdgeSplitting</varname> "
 "parameter value."
 msgstr ""
+"Якщо виявлено будь-яке ребро, що перетинає вузол, то, залежно від значення "
+"параметра <varname>allowEdgeSplitting</varname>, або генерується виняток, "
+"або ребро розділяється."
 
 #. Tag: para
 #, no-c-format
@@ -6794,6 +6921,8 @@ msgid ""
 "If <varname>computeContainingFace</varname> is true a newly added node would "
 "get the correct containing face computed."
 msgstr ""
+"Якщо <varname>computeContainingFace</varname> має значення true, для "
+"новододаного вузла буде обчислено правильну грань, що його містить."
 
 #. Tag: para
 #, no-c-format
@@ -6801,11 +6930,13 @@ msgid ""
 "If the <varname>apoint</varname> geometry already exists as a node, the node "
 "is not added but the existing nodeid is returned."
 msgstr ""
+"Якщо геометрія <varname>apoint</varname> вже існує як вузол, вузол не "
+"додається, а повертається існуючий nodeid."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CreateTopology\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6815,6 +6946,10 @@ msgid ""
 "specified linestring geometry and returns the edgeid of the new (or "
 "existing) edge."
 msgstr ""
+"Додає лінійний край до таблиці країв ребер та пов'язані початкові та кінцеві "
+"точки до таблиці вузлів точок заданої топологічної схеми, використовуючи "
+"задану геометрію лінійного ребра, та повертає ідентифікатор нового (або "
+"існуючого) ребра."
 
 #. Tag: para
 #, no-c-format
@@ -6824,6 +6959,10 @@ msgid ""
 "linestring geometry and returns the edgeid of the new or existing record. "
 "The newly added edge has \"universe\" face on both sides and links to itself."
 msgstr ""
+"Додає ребро до таблиці ребер і пов'язані вузли до таблиці вузлів заданої "
+"схеми <varname>toponame</varname> з використанням заданої геометрії "
+"лінійного рядка та повертає edgeid нового або існуючого запису. Новододане "
+"ребро має обох боків «універсум» і пов'язане саме з собою."
 
 #. Tag: para
 #, no-c-format
@@ -6832,6 +6971,8 @@ msgid ""
 "contained by an existing linestring edge, then an error is thrown and the "
 "edge is not added."
 msgstr ""
+"Якщо геометрія <varname>aline</varname> перетинає, перекриває, містить або "
+"міститься в існуючій лінії, то виникає помилка і ребро не додається."
 
 #. Tag: para
 #, no-c-format
@@ -6840,6 +6981,9 @@ msgid ""
 "varname> as defined for the topology otherwise an invalid spatial reference "
 "sys error will be thrown."
 msgstr ""
+"Геометрія <varname>aline</varname> повинна мати той самий <varname>srid</"
+"varname>, що визначений для топології, інакше буде видано помилку недійсного "
+"просторового посилання sys."
 
 #. Tag: para
 #, no-c-format
@@ -6847,12 +6991,15 @@ msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"TopoGeo_AddLineString\"/> "
 "instead."
 msgstr ""
+"застаріло з версії 3.5.0. Замість цього використовуйте <xref linkend="
+"\"TopoGeo_AddLineString\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"spatial_ref_sys\"/>"
 msgstr ""
+", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"spatial_ref_sys\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6860,6 +7007,8 @@ msgid ""
 "<refpurpose>Registers a face primitive to a topology and gets its identifier."
 "</refpurpose>"
 msgstr ""
+"<refpurpose>Реєструє примітив грані в топології та отримує його "
+"ідентифікатор.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -6867,6 +7016,8 @@ msgid ""
 "<para>Registers a face primitive to a topology and gets its identifier.</"
 "para>"
 msgstr ""
+"<para>Реєструє примітив грані в топології та отримує його "
+"ідентифікатор.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -6876,6 +7027,10 @@ msgid ""
 "left_face and right_face fields. Isolated nodes contained in the face will "
 "also be updated to have a correct containing_face field value."
 msgstr ""
+"Для новододаної грані краї, що утворюють її межі, та краї, що містяться в "
+"грані, будуть оновлені, щоб мати правильні значення в полях left_face та "
+"right_face. Ізольовані вузли, що містяться в грані, також будуть оновлені, "
+"щоб мати правильне значення поля containing_face."
 
 #. Tag: para
 #, no-c-format
@@ -6884,6 +7039,9 @@ msgid ""
 "edges). An exception is raised if: The polygon boundary is not fully defined "
 "by existing edges or the polygon overlaps an existing face."
 msgstr ""
+"Припускається, що топологія цілі є правильною (не містить самоперетинаючих "
+"ребер). Виникає виняток, якщо: Межа багатокутника не повністю визначена "
+"існуючими ребрами або багатокутник перетинає існуючу грань."
 
 #. Tag: para
 #, no-c-format
@@ -6893,6 +7051,11 @@ msgid ""
 "existing face is returned; if <varname>force_new</varname> is true a new id "
 "will be assigned to the newly registered face."
 msgstr ""
+"Якщо геометрія <varname>apolygon</varname> вже існує як грань, то: якщо "
+"<varname>force_new</varname> має значення false (за замовчуванням), "
+"повертається ідентифікатор існуючої грані; якщо <varname>force_new</varname> "
+"має значення true, новому зареєстрованому грані присвоюється новий "
+"ідентифікатор."
 
 #. Tag: para
 #, no-c-format
@@ -6902,6 +7065,10 @@ msgid ""
 "in the edge, node an relation tables, nor will the MBR field of the existing "
 "face record be updated. It is up to the caller to deal with that."
 msgstr ""
+"Коли виконується нова реєстрація існуючої грані (force_new=true), не буде "
+"виконано жодних дій для вирішення висячих посилань на існуючу грань у "
+"таблицях ребер, вузлів та відносин, а також не буде оновлено поле MBR "
+"існуючого запису грані. Це має зробити викликаючий."
 
 #. Tag: para
 #, no-c-format
@@ -6910,6 +7077,9 @@ msgid ""
 "varname> as defined for the topology otherwise an invalid spatial reference "
 "sys error will be thrown."
 msgstr ""
+"Геометрія <varname>apolygon</varname> повинна мати той самий <varname>srid</"
+"varname>, що визначено для топології, інакше буде видано помилку недійсного "
+"просторового посилання sys."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6917,6 +7087,8 @@ msgid ""
 "Returns a \"simplified\" geometry version of the given TopoGeometry using "
 "the Douglas-Peucker algorithm."
 msgstr ""
+"Повертає «спрощену» версію геометрії заданої TopoGeometry за допомогою "
+"алгоритму Дугласа-Пеукера."
 
 #. Tag: para
 #, no-c-format
@@ -6924,16 +7096,19 @@ msgid ""
 "Returns a \"simplified\" geometry version of the given TopoGeometry using "
 "the Douglas-Peucker algorithm on each component edge."
 msgstr ""
+"Повертає «спрощену» геометрію заданої TopoGeometry, використовуючи алгоритм "
+"Дугласа-Пеукера для кожного компонента ребра."
 
 #. Tag: para
 #, no-c-format
 msgid "The returned geometry may be non-simple or non-valid."
-msgstr ""
+msgstr "Повернена геометрія може бути неспрощеною або недійсна."
 
 #. Tag: para
 #, no-c-format
 msgid "Splitting component edges may help retaining simplicity/validity."
 msgstr ""
+"Розділення граней компонентів може допомогти зберегти простоту/дійсність."
 
 #. Tag: para
 #, no-c-format
@@ -6941,6 +7116,8 @@ msgid ""
 "Geometry <xref linkend=\"ST_Simplify\"/>, <xref linkend=\"ST_IsSimple\"/>, "
 "<xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_ModEdgeSplit\"/>"
 msgstr ""
+"Геометрія <xref linkend=\"ST_Simplify\"/>, <xref linkend=\"ST_IsSimple\"/>, "
+"<xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_ModEdgeSplit\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6948,6 +7125,8 @@ msgid ""
 "Removes topology primitives which not needed to define existing TopoGeometry "
 "objects."
 msgstr ""
+"Видаляє примітивні елементи топології, які не потрібні для визначення "
+"існуючих об'єктів TopoGeometry."
 
 #. Tag: para
 #, no-c-format
@@ -6957,6 +7136,10 @@ msgid ""
 "topology validity (edge linking, face labeling) and TopoGeometry space "
 "occupation."
 msgstr ""
+"Знаходить всі примітиви (вузли, ребра, грані), які не є строго необхідними "
+"для представлення існуючих об'єктів TopoGeometry, і видаляє їх, зберігаючи "
+"топологічну валідність (зв'язки ребер, маркування граней) і зайнятість "
+"простору TopoGeometry."
 
 #. Tag: para
 #, no-c-format
@@ -6965,27 +7148,31 @@ msgid ""
 "expanded to include merged faces (upon removing edges) or healed edges (upon "
 "removing nodes)."
 msgstr ""
+"Нові примітивні ідентифікатори не створюються, а існуючі примітиви "
+"розширюються, щоб включити об'єднані грані (після видалення ребер) або "
+"відновлені ребра (після видалення вузлів)."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.3.0"
-msgstr ""
+msgstr "Доступність: 3.3.0"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_RemEdgeModFace\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_RemEdgeModFace\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "TopoGeometry Constructors"
-msgstr ""
+msgstr "Конструктори топогеометрії"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This section covers the topology functions for creating new topogeometries."
 msgstr ""
+"Цей розділ присвячений функціям топології для створення нових топогеометрій."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6993,6 +7180,9 @@ msgid ""
 "Creates a new topo geometry object from topo element array - tg_type: 1:"
 "[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection"
 msgstr ""
+"Створює новий об'єкт топографічної геометрії з масиву топографічних "
+"елементів - tg_type: 1:[multi]point, 2:[multi]line, 3:[multi]poly, "
+"4:collection"
 
 #. Tag: para
 #, no-c-format
@@ -7001,6 +7191,9 @@ msgid ""
 "varname> and registers it in the relations table in the <varname>toponame</"
 "varname> schema."
 msgstr ""
+"Створює об'єкт топогеометрії для шару, позначеного <varname>layer_id</"
+"varname>, і реєструє його в таблиці відносин у схемі "
+"<varname>toponame</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -7009,6 +7202,9 @@ msgid ""
 "[multi]line (lineal), 3:[multi]poly (areal), 4:collection. "
 "<varname>layer_id</varname> is the layer id in the topology.layer table."
 msgstr ""
+"<varname>tg_type</varname> є цілим числом: 1:[multi]point (точкова), "
+"2:[multi]line (лінійна), 3:[multi]poly (площа), 4:колекція. "
+"<varname>layer_id</varname> є ідентифікатором шару в таблиці topology.layer."
 
 #. Tag: para
 #, no-c-format
@@ -7017,17 +7213,22 @@ msgid ""
 "set of edges, areal layers are formed from a set of faces, and collections "
 "can be formed from a mixture of nodes, edges, and faces."
 msgstr ""
+"пунктуальні шари утворюються з набору вузлів, лінійні шари утворюються з "
+"набору ребер, площинні шари утворюються з набору граней, а колекції можуть "
+"утворюватися з суміші вузлів, ребер і граней."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Omitting the array of components generates an empty TopoGeometry object."
 msgstr ""
+"Пропуск масиву компонентів призводить до створення порожнього об'єкта "
+"TopoGeometry."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Form from existing edges"
-msgstr ""
+msgstr "Приклади: Форма з існуючих ребер"
 
 #. Tag: para
 #, no-c-format
@@ -7035,11 +7236,15 @@ msgid ""
 "Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) "
 "LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>)."
 msgstr ""
+"Створіть топогеометрію в схемі ri_topo для шару 2 (наш ri_roads) типу (2) "
+"LINE для першого ребра (ми завантажили в "
+"<varname>ST_CreateTopoGeo</varname>)."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Convert an areal geometry to best guess topogeometry"
 msgstr ""
+"Приклади: Перетворення плоскої геометрії в найкраще наближену топогеометрію"
 
 #. Tag: para
 #, no-c-format
@@ -7049,6 +7254,10 @@ msgid ""
 "geometry of each block group. If our data was perfectly aligned, we could do "
 "this:"
 msgstr ""
+"Припустимо, ми маємо геометрії, які повинні бути сформовані з набору граней. "
+"Наприклад, ми маємо таблицю груп блоків і хочемо знати топологічну геометрію "
+"кожної групи блоків. Якщо наші дані були б ідеально вирівняні, ми могли б "
+"зробити так:"
 
 #. Tag: para
 #, no-c-format
@@ -7057,16 +7266,19 @@ msgid ""
 "linkend=\"ST_GetFaceGeometry\"/>, <xref linkend=\"topoelementarray\"/>, "
 "<xref linkend=\"TopoElementArray_Agg\"/>"
 msgstr ""
+", <xref linkend=\"toTopoGeom\"/> <xref linkend=\"ST_CreateTopoGeo\"/>, <xref "
+"linkend=\"ST_GetFaceGeometry\"/>, <xref linkend=\"topoelementarray\"/>, "
+"<xref linkend=\"TopoElementArray_Agg\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Converts a simple Geometry into a topo geometry."
-msgstr ""
+msgstr "Перетворює просту геометрію в топологічну геометрію."
 
 #. Tag: para
 #, no-c-format
 msgid "Converts a simple Geometry into a <xref linkend=\"topogeometry\"/>."
-msgstr ""
+msgstr "Перетворює просту геометрію в <xref linkend=\"topogeometry\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -7076,6 +7288,9 @@ msgid ""
 "will be associated with the output TopoGeometry in the <varname>relation</"
 "varname> table."
 msgstr ""
+"Топологічні примітиви, необхідні для представлення вхідної геометрії, будуть "
+"додані до базової топології, можливо з розділенням існуючих, і будуть "
+"пов'язані з вихідною TopoGeometry в таблиці <varname>relation</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -7083,6 +7298,8 @@ msgid ""
 "Existing TopoGeometry objects (with the possible exception of "
 "<varname>topogeom</varname>, if given) will retain their shapes."
 msgstr ""
+"Існуючі об'єкти TopoGeometry (за можливим винятком <varname>topogeom</"
+"varname>, якщо вказано) збережуть свої форми."
 
 #. Tag: para
 #, no-c-format
@@ -7090,6 +7307,8 @@ msgid ""
 "When <varname>tolerance</varname> is given it will be used to snap the input "
 "geometry to existing primitives."
 msgstr ""
+"Коли вказано <varname>tolerance</varname>, воно буде використовуватися для "
+"прив'язки вхідної геометрії до існуючих примітивів."
 
 #. Tag: para
 #, no-c-format
@@ -7098,6 +7317,9 @@ msgid ""
 "(<varname>layer_id</varname>) of the given topology (<varname>toponame</"
 "varname>)."
 msgstr ""
+"У першій формі буде створено нову топогеометрію для заданого шару "
+"(<varname>layer_id</varname>) заданої топології "
+"(<varname>toponame</varname>)."
 
 #. Tag: para
 #, no-c-format
@@ -7107,16 +7329,22 @@ msgid ""
 "possibly adding space to its final shape. To have the new shape completely "
 "replace the old one see <xref linkend=\"clearTopoGeom\"/>."
 msgstr ""
+"У другій формі примітиви, отримані в результаті перетворення, будуть додані "
+"до існуючої TopoGeometry (<varname>topogeom</varname>), можливо, додаючи "
+"простір до її остаточної форми. Щоб нова форма повністю замінила стару, див. "
+"<xref linkend=\"clearTopoGeom\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 adds the version taking an existing TopoGeometry."
 msgstr ""
+"Покращено: у версії 2.1.0 додано версію, що використовує існуючу "
+"TopoGeometry."
 
 #. Tag: para
 #, no-c-format
 msgid "This is a full self-contained workflow"
-msgstr ""
+msgstr "Це повністю автономний робочий процес"
 
 #. Tag: para
 #, no-c-format
@@ -7125,6 +7353,8 @@ msgid ""
 "linkend=\"CreateTopoGeom\"/>, <xref linkend=\"TopologySummary\"/>, <xref "
 "linkend=\"clearTopoGeom\"/>"
 msgstr ""
+", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref linkend=\"CreateTopoGeom\""
+"/>, <xref linkend=\"TopologySummary\"/>, <xref linkend=\"clearTopoGeom\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -7132,6 +7362,8 @@ msgid ""
 "Returns a <varname>topoelementarray</varname> for a set of element_id, type "
 "arrays (topoelements)."
 msgstr ""
+"Повертає <varname>topoelementarray</varname> для набору масивів element_id, "
+"type (topoelements)."
 
 #. Tag: para
 #, no-c-format
@@ -7139,16 +7371,18 @@ msgid ""
 "Used to create a <xref linkend=\"topoelementarray\"/> from a set of <xref "
 "linkend=\"topoelement\"/>."
 msgstr ""
+"Використовується для створення <xref linkend=\"topoelementarray\"/> з набору "
+"<xref linkend=\"topoelement\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"topoelementarray\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"topoelementarray\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Converts a topogeometry to a topoelement."
-msgstr ""
+msgstr "Перетворює топогеометрію в топоелемент."
 
 #. Tag: para
 #, no-c-format
@@ -7156,16 +7390,18 @@ msgid ""
 "Converts a <xref linkend=\"topogeometry\"/> to a <xref "
 "linkend=\"topoelement\"/>."
 msgstr ""
+"Перетворює <xref linkend=\"topogeometry\"/> на <xref linkend=\"topoelement\""
+"/>."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"topogeometry\"/>, <xref linkend=\"topoelement\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"topogeometry\"/>, <xref linkend=\"topoelement\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "TopoGeometry Editors"
-msgstr ""
+msgstr "Редактори топогеометрії"
 
 #. Tag: para
 #, no-c-format
@@ -7173,11 +7409,12 @@ msgid ""
 "This section covers the topology functions for editing existing "
 "topogeometries."
 msgstr ""
+"Цей розділ охоплює функції топології для редагування існуючих топогеометрій."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Clears the content of a topo geometry."
-msgstr ""
+msgstr "Очищає вміст геометрії топографії."
 
 #. Tag: para
 #, no-c-format
@@ -7187,16 +7424,20 @@ msgid ""
 "to replace the shape of existing objects and any dependent object in higher "
 "hierarchical levels."
 msgstr ""
+"Очищає вміст <xref linkend=\"topogeometry\"/>, перетворюючи його на "
+"порожній. Найчастіше використовується разом з <xref linkend=\"toTopoGeom\"/> "
+"для заміни форми існуючих об'єктів та будь-яких залежних об'єктів на вищих "
+"ієрархічних рівнях."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.1"
-msgstr ""
+msgstr "Доступність: 2.1"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Adds an element to the definition of a TopoGeometry."
-msgstr ""
+msgstr "Додає елемент до визначення TopoGeometry."
 
 #. Tag: para
 #, no-c-format
@@ -7204,21 +7445,23 @@ msgid ""
 "Adds a <xref linkend=\"topoelement\"/> to the definition of a TopoGeometry "
 "object. Does not error out if the element is already part of the definition."
 msgstr ""
+"Додає <xref linkend=\"topoelement\"/> до визначення об'єкта TopoGeometry. Не "
+"видає помилку, якщо елемент вже є частиною визначення."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.3"
-msgstr ""
+msgstr "Доступність: 2.3"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CreateTopoGeom\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CreateTopoGeom\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Removes an element from the definition of a TopoGeometry."
-msgstr ""
+msgstr "Видаляє елемент з визначення TopoGeometry."
 
 #. Tag: para
 #, no-c-format
@@ -7226,12 +7469,13 @@ msgid ""
 "Removes a <xref linkend=\"topoelement\"/> from the definition of a "
 "TopoGeometry object."
 msgstr ""
+"Видаляє <xref linkend=\"topoelement\"/> з визначення об'єкта TopoGeometry."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Adds element of a TopoGeometry to the definition of another TopoGeometry."
-msgstr ""
+msgstr "Додає елемент TopoGeometry до визначення іншого TopoGeometry."
 
 #. Tag: para
 #, no-c-format
@@ -7240,6 +7484,9 @@ msgid ""
 "another TopoGeometry, possibly changing its cached type (type attribute) to "
 "a collection, if needed to hold all elements in the source object."
 msgstr ""
+"Додає елементи <xref linkend=\"topogeometry\"/> до визначення іншого "
+"TopoGeometry, можливо змінюючи його кешований тип (атрибут type) на "
+"колекцію, якщо це необхідно для збереження всіх елементів в об'єкті-джерелі."
 
 #. Tag: para
 #, no-c-format
@@ -7248,31 +7495,34 @@ msgid ""
 "and, if hierarchically defined, need be composed by elements of the same "
 "child layer."
 msgstr ""
+"Два об'єкти TopoGeometry повинні бути визначені відповідно до *однієї і тієї "
+"ж* топології, а якщо вони визначені ієрархічно, то повинні складатися з "
+"елементів одного і того ж дочірнього шару."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.2"
-msgstr ""
+msgstr "Доступність: 3.2"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"clearTopoGeom\"/>, <xref linkend=\"CreateTopoGeom\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"clearTopoGeom\"/>, <xref linkend=\"CreateTopoGeom\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Adds a geometry shape to an existing topo geometry."
-msgstr ""
+msgstr "Додає геометричну фігуру до існуючої топографічної геометрії."
 
 #. Tag: para
 #, no-c-format
 msgid "Refer to <xref linkend=\"toTopoGeom\"/>."
-msgstr ""
+msgstr "Див. <xref linkend=\"toTopoGeom\"/>."
 
 #. Tag: title
 #, no-c-format
 msgid "TopoGeometry Accessors"
-msgstr ""
+msgstr "Доступ до топогеометрії"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -7281,6 +7531,9 @@ msgid ""
 "containing the topological elements and type of the given TopoGeometry "
 "(primitive elements)."
 msgstr ""
+"Повертає <varname>topoelementarray</varname> (масив топоелементів), що "
+"містить топологічні елементи та тип заданої TopoGeometry (примітивні "
+"елементи)."
 
 #. Tag: para
 #, no-c-format
@@ -7290,6 +7543,10 @@ msgid ""
 "similar to GetTopoGeomElements except it returns the elements as an array "
 "rather than as a dataset."
 msgstr ""
+"Повертає <xref linkend=\"topoelementarray\"/>, що містить топологічні "
+"елементи та тип заданої TopoGeometry (примітивні елементи). Це схоже на "
+"GetTopoGeomElements, за винятком того, що повертає елементи у вигляді "
+"масиву, а не набору даних."
 
 #. Tag: para
 #, no-c-format
@@ -7297,6 +7554,8 @@ msgid ""
 "tg_id is the topogeometry id of the topogeometry object in the topology in "
 "the layer denoted by <varname>layer_id</varname> in the topology.layer table."
 msgstr ""
+"tg_id — ідентифікатор топогеометрії об'єкта топогеометрії в топології в "
+"шарі, позначеному <varname>layer_id</varname> в таблиці topology.layer."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -7305,6 +7564,9 @@ msgid ""
 "topological element_id,element_type of the given TopoGeometry (primitive "
 "elements)."
 msgstr ""
+"Повертає набір об'єктів <varname>topoelement</varname>, що містять "
+"топологічні element_id,element_type заданої TopoGeometry (примітивні "
+"елементи)."
 
 #. Tag: para
 #, no-c-format
@@ -7314,6 +7576,10 @@ msgid ""
 "edges, 3: faces) that a given topogeometry object in <varname>toponame</"
 "varname> schema is composed of."
 msgstr ""
+"Повертає набір element_id,element_type (topoelements), що відповідає "
+"елементам примітивної топології <xref linkend=\"topoelement\"/> (1: вузли, 2:"
+" ребра, 3: грані), з яких складається заданий об'єкт топогеометрії в схемі "
+"<varname>toponame</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -7321,11 +7587,13 @@ msgid ""
 ", <xref linkend=\"topoelement\"/>, <xref linkend=\"TopoGeom_addElement\"/>, "
 "<xref linkend=\"TopoGeom_remElement\"/>"
 msgstr ""
+", <xref linkend=\"topoelement\"/>, <xref linkend=\"TopoGeom_addElement\"/>, "
+"<xref linkend=\"TopoGeom_remElement\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the spatial reference identifier for a topogeometry."
-msgstr ""
+msgstr "Повертає ідентифікатор просторової прив'язки для топогеометрії."
 
 #. Tag: para
 #, no-c-format
@@ -7333,6 +7601,8 @@ msgid ""
 "Returns the spatial reference identifier for the ST_Geometry as defined in "
 "spatial_ref_sys table. <xref linkend=\"spatial_ref_sys\"/>"
 msgstr ""
+"Повертає ідентифікатор просторової прив'язки для ST_Geometry, як визначено в "
+"таблиці spatial_ref_sys. <xref linkend=\"spatial_ref_sys\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -7342,11 +7612,16 @@ msgid ""
 "system to another. So verifying you have the right spatial reference system "
 "identifier is important if you plan to ever transform your geometries."
 msgstr ""
+"Таблиця spatial_ref_sys — це таблиця, яка каталогізує всі системи "
+"просторових посилань, відомі PostGIS, і використовується для перетворення з "
+"однієї системи просторових посилань в іншу. Тому, якщо ви плануєте "
+"перетворювати геометрії, важливо перевірити, чи маєте ви правильний "
+"ідентифікатор системи просторових посилань."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 14.1.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 14.1.5"
 
 #. Tag: para
 #, no-c-format
@@ -7354,16 +7629,18 @@ msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "TopoGeometry Outputs"
-msgstr ""
+msgstr "Вихідні дані TopoGeometry"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the GML representation of a topogeometry."
-msgstr ""
+msgstr "Повертає GML-представлення топогеометрії."
 
 #. Tag: para
 #, no-c-format
@@ -7374,6 +7651,11 @@ msgid ""
 "space. The precision (default: 15) and options (default 1) parameters, if "
 "given, are passed untouched to the underlying call to ST_AsGML."
 msgstr ""
+"Повертає GML-представлення топогеометрії у форматі GML3. Якщо не вказано "
+"<varname>nsprefix_in</varname>, використовується <varname>gml</varname>. "
+"Передайте порожній рядок для nsprefix, щоб отримати некваліфікований простір "
+"імен. Параметри точності (за замовчуванням: 15) та опції (за замовчуванням 1)"
+", якщо вони вказані, передаються без змін до базового виклику ST_AsGML."
 
 #. Tag: para
 #, no-c-format
@@ -7388,6 +7670,15 @@ msgid ""
 "be created automatically by adding a unique constraint to the fields. "
 "Example:"
 msgstr ""
+"Параметр <varname>visitedTable</varname>, якщо він вказаний, "
+"використовується для відстеження відвіданих елементів Node та Edge, щоб "
+"використовувати перехресні посилання (xlink:xref) замість дублювання "
+"визначень. Таблиця повинна мати (принаймні) два цілочисельні поля: "
+"“element_type” та “element_id”. Користувач, який викликає функцію, повинен "
+"мати права на читання та запис у вказаній таблиці. Для найкращої "
+"продуктивності слід визначити індекс для <varname>element_type</varname> та "
+"<varname>element_id</varname> у такому порядку. Такий індекс буде створено "
+"автоматично шляхом додавання унікального обмеження до полів. Приклад:"
 
 #. Tag: para
 #, no-c-format
@@ -7395,6 +7686,8 @@ msgid ""
 "The <varname>idprefix</varname> parameter, if given, will be prepended to "
 "Edge and Node tag identifiers."
 msgstr ""
+"Параметр <varname>idprefix</varname>, якщо вказано, буде додано перед "
+"ідентифікаторами тегів Edge та Node."
 
 #. Tag: para
 #, no-c-format
@@ -7402,27 +7695,31 @@ msgid ""
 "The <varname>gmlver</varname> parameter, if given, will be passed to the "
 "underlying ST_AsGML. Defaults to 3."
 msgstr ""
+"Параметр <varname>gmlver</varname>, якщо вказано, буде передано до базового "
+"ST_AsGML. За замовчуванням встановлено значення 3."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This uses the topo geometry we created in <xref linkend=\"CreateTopoGeom\"/>"
 msgstr ""
+"Тут використовується геометрія топографії, яку ми створили в <xref linkend="
+"\"CreateTopoGeom\"/>"
 
 #. Tag: para
 #, no-c-format
 msgid "Same exercise as previous without namespace"
-msgstr ""
+msgstr "Те саме завдання, що й попереднє, але без простору імен"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_CreateTopoGeo\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_CreateTopoGeo\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the TopoJSON representation of a topogeometry."
-msgstr ""
+msgstr "Повертає представлення топогеометрії у форматі TopoJSON."
 
 #. Tag: para
 #, no-c-format
@@ -7432,6 +7729,11 @@ msgid ""
 "storage mapping of edge identifiers to arc indices. This is to be able to "
 "allow for a compact \"arcs\" array in the final document."
 msgstr ""
+"Повертає представлення топогеометрії у форматі TopoJSON. Якщо "
+"<varname>edgeMapTable</varname> не є нульовим, воно буде використовуватися "
+"як відображення ідентифікаторів ребер на індекси дуг для пошуку/зберігання. "
+"Це необхідно для того, щоб у кінцевому документі можна було отримати "
+"компактний масив «дуг»."
 
 #. Tag: para
 #, no-c-format
@@ -7440,6 +7742,9 @@ msgid ""
 "\"serial\" and an \"edge_id\" of type integer; the code will query the table "
 "for \"edge_id\" so it is recommended to add an index on that field."
 msgstr ""
+"У таблиці, якщо вона надана, має бути поле «arc_id» типу «serial» та "
+"«edge_id» типу integer; код буде запитувати таблицю щодо «edge_id», тому "
+"рекомендується додати індекс до цього поля."
 
 #. Tag: para
 #, no-c-format
@@ -7447,6 +7752,8 @@ msgid ""
 "Arc indices in the TopoJSON output are 0-based but they are 1-based in the "
 "\"edgeMapTable\" table."
 msgstr ""
+"Індекси дуг у вихідних даних TopoJSON починаються з 0, але в таблиці "
+"«edgeMapTable» вони починаються з 1."
 
 #. Tag: para
 #, no-c-format
@@ -7456,16 +7763,20 @@ msgid ""
 "the <link xlink:href=\"http://github.com/mbostock/topojson-specification/"
 "blob/master/README.md\">TopoJSON specification</link>."
 msgstr ""
+"Повний документ TopoJSON повинен містити, крім фрагментів, повернутих цією "
+"функцією, фактичні дуги та деякі заголовки. Див. <link "
+"xlink:href=«http://github.com/mbostock/topojson-specification/blob/master/"
+"README.md»>специфікацію TopoJSON</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.2.1 added support for puntal inputs"
-msgstr ""
+msgstr "Покращено: у версії 2.2.1 додано підтримку вхідних сигналів puntal"
 
 #. Tag: title
 #, no-c-format
 msgid "Topology Spatial Relationships"
-msgstr ""
+msgstr "Топологія Просторові відносини"
 
 #. Tag: para
 #, no-c-format
@@ -7473,6 +7784,8 @@ msgid ""
 "This section lists the Topology functions used to check relationships "
 "between topogeometries and topology primitives"
 msgstr ""
+"У цьому розділі перелічено функції топології, що використовуються для "
+"перевірки взаємозв'язків між топогеометріями та топологічними примітивами"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -7480,6 +7793,8 @@ msgid ""
 "Returns true if two topogeometries are composed of the same topology "
 "primitives."
 msgstr ""
+"Повертає true, якщо дві топогеометрії складаються з однакових топологічних "
+"примітивів."
 
 #. Tag: para
 #, no-c-format
@@ -7487,6 +7802,8 @@ msgid ""
 "Returns true if two topogeometries are composed of the same topology "
 "primitives: faces, edges, nodes."
 msgstr ""
+"Повертає true, якщо дві топогеометрії складаються з однакових топологічних "
+"примітивів: граней, ребер, вузлів."
 
 #. Tag: para
 #, no-c-format
@@ -7495,16 +7812,18 @@ msgid ""
 "collections. It also can not compare topogeometries from different "
 "topologies."
 msgstr ""
+"Ця функція не підтримується для топогеометрій, які є колекціями геометрій. "
+"Вона також не може порівнювати топогеометрії з різних топологій."
 
 #. Tag: para
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Equals\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Equals\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -7512,6 +7831,8 @@ msgid ""
 "<refpurpose>Returns true if any pair of primitives from the two "
 "topogeometries intersect.</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає true, якщо будь-яка пара примітивів з двох "
+"топогеометрій перетинаються.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -7519,6 +7840,8 @@ msgid ""
 "<para>Returns true if any pair of primitives from the two topogeometries "
 "intersect.</para>"
 msgstr ""
+"<para>Повертає true, якщо будь-яка пара примітивів з двох топогеометрій "
+"перетинаються.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -7528,11 +7851,15 @@ msgid ""
 "topologies. Also not currently supported for hierarchical topogeometries "
 "(topogeometries composed of other topogeometries)."
 msgstr ""
+"Ця функція не підтримується для топогеометрій, які є колекціями геометрій. "
+"Вона також не може порівнювати топогеометрії з різних топологій. Також "
+"наразі не підтримується для ієрархічних топогеометрій (топогеометрій, що "
+"складаються з інших топогеометрій)."
 
 #. Tag: title
 #, no-c-format
 msgid "Importing and exporting Topologies"
-msgstr ""
+msgstr "Імпорт та експорт топологій"
 
 #. Tag: para
 #, no-c-format
@@ -7541,6 +7868,9 @@ msgid ""
 "you might want to export them into a file-based format for backup or "
 "transfer into another database."
 msgstr ""
+"Після створення топологій і, можливо, пов'язаних топологічних шарів, ви "
+"можете експортувати їх у файловий формат для резервного копіювання або "
+"перенесення в іншу базу даних."
 
 #. Tag: para
 #, no-c-format
@@ -7552,6 +7882,12 @@ msgid ""
 "databases so that parameter of your topology will need to be changes upon "
 "restoring it."
 msgstr ""
+"Використання стандартних інструментів PostgreSQL для вивантаження/"
+"відновлення є проблематичним, оскільки топології складаються з набору "
+"таблиць (4 для примітивних типів, довільна кількість для шарів) та записів у "
+"таблицях метаданих (topology.topology та topology.layer). Крім того, "
+"ідентифікатори топології не є однозначними в різних базах даних, тому "
+"параметри топології потрібно буде змінити після її відновлення."
 
 #. Tag: para
 #, no-c-format
@@ -7560,11 +7896,14 @@ msgid ""
 "provided: <filename>pgtopo_export</filename> and <filename>pgtopo_import</"
 "filename>. Example usage:"
 msgstr ""
+"Для спрощення експорту/відновлення топологій надається пара виконуваних "
+"файлів: <filename>pgtopo_export</filename> та <filename>pgtopo_import</"
+"filename>. Приклад використання:"
 
 #. Tag: title
 #, no-c-format
 msgid "Using the Topology exporter"
-msgstr ""
+msgstr "Використання експорту топології"
 
 #. Tag: para
 #, no-c-format
@@ -7573,6 +7912,9 @@ msgid ""
 "and a topology and outputs a dump file which can be used to import the "
 "topology (and associated layers) into a new database."
 msgstr ""
+"Скрипт <filename>pgtopo_export</filename> бере ім'я бази даних і топологію "
+"та виводить файл дампа, який можна використовувати для імпорту топології (та "
+"пов'язаних шарів) до нової бази даних."
 
 #. Tag: para
 #, no-c-format
@@ -7583,6 +7925,11 @@ msgid ""
 "optionally specify an output filename with the <code>-f</code> commandline "
 "switch."
 msgstr ""
+"За замовчуванням <filename>pgtopo_export</filename> записує файл дампа у "
+"стандартний вивід, щоб його можна було передати до <filename>pgtopo_import</"
+"filename> або перенаправити до файлу (відмовляючись записувати в термінал). "
+"За бажанням можна вказати ім'я файлу виводу за допомогою параметра "
+"командного рядка <code>-f</code>."
 
 #. Tag: para
 #, no-c-format
@@ -7593,6 +7940,11 @@ msgid ""
 "which case you can request skipping the layers with the <code>--skip-layers</"
 "code> switch and deal with those separately."
 msgstr ""
+"За замовчуванням <filename>pgtopo_export</filename> включає вивантаження "
+"всіх шарів, визначених для заданої топології. Це може бути більше даних, ніж "
+"вам потрібно, або вони можуть не працювати (у випадку, якщо таблиці шарів "
+"мають складні залежності). У такому випадку ви можете попросити пропустити "
+"шари за допомогою перемикача <code>--skip-layers</code> і обробити їх окремо."
 
 #. Tag: para
 #, no-c-format
@@ -7600,6 +7952,9 @@ msgid ""
 "Invoking <filename>pgtopo_export</filename> with the <code>--help</code> (or "
 "<code>-h</code> for short) switch will always print short usage string."
 msgstr ""
+"Виклик <filename>pgtopo_export</filename> з параметром <code>--help</code> ("
+"або <code>-h</code> для скорочення) завжди виведе короткий текст про "
+"використання."
 
 #. Tag: para
 #, no-c-format
@@ -7613,11 +7968,19 @@ msgid ""
 "<code>--skip-layers</code> is given) a custom-format PostgreSQL dump of "
 "tables reported as being layers of the given topology."
 msgstr ""
+"Формат файлу дампа — це стиснений архів tar каталогу "
+"<filename>pgtopo_export</filename>, що містить принаймні файл "
+"<filename>pgtopo_dump_version</filename> з інформацією про версію формату. "
+"Починаючи з версії <code>1</code>, каталог містить CSV-файли, розділені "
+"табуляцією, з даними таблиць примітивних елементів топології (node, "
+"edge_data, face, relation), пов'язаними з ними записами топології та шарів, "
+"а також (якщо не вказано <code>--skip-layers</code>) дамп таблиць у форматі "
+"PostgreSQL, що повідомляються як шари заданої топології."
 
 #. Tag: title
 #, no-c-format
 msgid "Using the Topology importer"
-msgstr ""
+msgstr "Використання імпортера топології"
 
 #. Tag: para
 #, no-c-format
@@ -7626,6 +7989,9 @@ msgid ""
 "code> format topology dump and a name to give to the topology to be created "
 "and outputs an SQL script reconstructing the topology and associated layers."
 msgstr ""
+"Скрипт <filename>pgtopo_import</filename> приймає дамп топології у форматі "
+"<code>pgtopo_export</code> та ім'я, яке буде надано створюваній топології, і "
+"виводить SQL-скрипт, що відтворює топологію та пов'язані з нею шари."
 
 #. Tag: para
 #, no-c-format
@@ -7635,6 +8001,10 @@ msgid ""
 "topology layers by properly linking all TopoGeometry values to their correct "
 "topology."
 msgstr ""
+"Створений файл SQL міститиме оператори, які створюють топологію з заданою "
+"назвою, завантажують в неї примітивні дані, відновлюють і реєструють усі "
+"шари топології, правильно пов'язуючи всі значення TopoGeometry з відповідною "
+"топологією."
 
 #. Tag: para
 #, no-c-format
@@ -7644,6 +8014,10 @@ msgid ""
 "<filename>pgtopo_export</filename> in a pipeline. You can optionally specify "
 "an input filename with the <code>-f</code> commandline switch."
 msgstr ""
+"За замовчуванням <filename>pgtopo_import</filename> зчитує дамп із "
+"стандартного вводу, щоб його можна було використовувати разом із "
+"<filename>pgtopo_export</filename> у конвеєрі. За бажанням можна вказати "
+"ім'я вхідного файлу за допомогою параметра командного рядка <code>-f</code>."
 
 #. Tag: para
 #, no-c-format
@@ -7651,6 +8025,8 @@ msgid ""
 "By default <filename>pgtopo_import</filename> includes in the output SQL "
 "file the code to restore all layers found in the dump."
 msgstr ""
+"За замовчуванням <filename>pgtopo_import</filename> включає у вихідний файл "
+"SQL код для відновлення всіх шарів, знайдених у дампі."
 
 #. Tag: para
 #, no-c-format
@@ -7660,6 +8036,10 @@ msgid ""
 "request skipping the layers with the <code>--skip-layers</code> switch and "
 "deal with those separately (or later)."
 msgstr ""
+"Це може бути небажаним або непрацюючим у випадку, якщо ваша цільова база "
+"даних вже містить таблиці з такими самими іменами, як і в дампі. У такому "
+"випадку ви можете попросити пропустити рівні за допомогою перемикача <code"
+">--skip-layers</code> і обробити їх окремо (або пізніше)."
 
 #. Tag: para
 #, no-c-format
@@ -7669,6 +8049,11 @@ msgid ""
 "AFTER resolving the naming conflicts or to link layers to a different "
 "topology (say a spatially-simplified version of the starting topology)."
 msgstr ""
+"SQL для завантаження та зв'язування шарів тільки з топологією з іменем можна "
+"створити за допомогою перемикача <code>--only-layers</code>. Це може бути "
+"корисно для завантаження шарів ПІСЛЯ вирішення конфліктів імен або для "
+"зв'язування шарів з іншою топологією (наприклад, простою версією вихідної "
+"топології)."
 
 #. Tag: para
 #, no-c-format
@@ -7676,26 +8061,31 @@ msgid ""
 "If the target topology already exists and you want it dropped upfront you "
 "can pass the <code>--drop-topology</code> switch (since PostGIS-3.6.0)."
 msgstr ""
+"Якщо цільова топологія вже існує і ви хочете її видалити заздалегідь, ви "
+"можете передати параметр <code>--drop-topology</code> (починаючи з PostGIS-3."
+"6.0)."
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Installation"
-msgstr ""
+msgstr "Встановлення PostGIS"
 
 #. Tag: para
 #, no-c-format
 msgid "This chapter details the steps required to install PostGIS."
 msgstr ""
+"У цьому розділі детально описано кроки, необхідні для встановлення PostGIS."
 
 #. Tag: title
 #, no-c-format
 msgid "Short Version"
-msgstr ""
+msgstr "Коротка версія"
 
 #. Tag: para
 #, no-c-format
 msgid "To compile assuming you have all the dependencies in your search path:"
 msgstr ""
+"Щоб скомпілювати, припускаючи, що у вашому шляху пошуку є всі залежності:"
 
 #. Tag: para
 #, no-c-format
@@ -7704,11 +8094,14 @@ msgid ""
 "linkend=\"create_spatial_db\"/>) or upgraded (<xref linkend=\"upgrading\"/>) "
 "in each individual database you want to use it in."
 msgstr ""
+"Після встановлення PostGIS його потрібно ввімкнути (<xref linkend="
+"\"create_spatial_db\"/>) або оновити (<xref linkend=\"upgrading\"/>) в "
+"кожній окремій базі даних, в якій ви хочете його використовувати."
 
 #. Tag: title
 #, no-c-format
 msgid "Compiling and Install from Source"
-msgstr ""
+msgstr "Компіляція та встановлення з вихідного коду"
 
 #. Tag: para
 #, no-c-format
@@ -7717,6 +8110,9 @@ msgid ""
 "many cases compilation is only necessary if you want the most bleeding edge "
 "versions or you are a package maintainer."
 msgstr ""
+"Багато операційних систем зараз містять готові пакети для PostgreSQL/"
+"PostGIS. У більшості випадків компіляція необхідна лише якщо ви хочете "
+"отримати найновіші версії або ви є розробником пакету."
 
 #. Tag: para
 #, no-c-format
@@ -7728,6 +8124,12 @@ msgid ""
 "xlink:href=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev "
 "Wiki</link>."
 msgstr ""
+"Цей розділ містить загальні інструкції з компіляції. Якщо ви компілюєте для "
+"Windows тощо або іншої ОС, додаткову детальну допомогу можна знайти за "
+"посиланням <link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
+"UsersWikiInstall«>Посібники з компіляції, надані користувачами PostGIS</"
+"link> та <link xlink:href=»http://trac.osgeo.org/postgis/wiki/DevWikiMain\""
+">PostGIS Dev Wiki</link>."
 
 #. Tag: para
 #, no-c-format
@@ -7736,6 +8138,9 @@ msgid ""
 "trac.osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</"
 "link>"
 msgstr ""
+"Готові пакети для різних операційних систем перелічені в <link "
+"xlink:href=«https://trac.osgeo.org/postgis/wiki/UsersWikiPackages»>Готові "
+"пакети PostGIS</link>"
 
 #. Tag: para
 #, no-c-format
@@ -7748,6 +8153,13 @@ msgid ""
 "happens. You can use these to experiment with the in progress releases of "
 "PostGIS"
 msgstr ""
+"Якщо ви користуєтеся Windows, ви можете отримати стабільні збірки через "
+"Stackbuilder або <link xlink:href=«https://postgis.net/windows_downloads»"
+">сайт завантаження PostGIS для Windows</link>. Ми також маємо <link "
+"xlink:href=«https://postgis.net/windows_downloads»>дуже новітні "
+"експериментальні збірки для Windows</link>, які зазвичай створюються один-"
+"два рази на тиждень або коли трапляється щось цікаве. Ви можете "
+"використовувати їх для експериментів з поточними версіями PostGIS"
 
 #. Tag: para
 #, no-c-format
@@ -7758,6 +8170,11 @@ msgid ""
 "against PostgreSQL versions &min_postgres_version; - &max_postgres_version;. "
 "Earlier versions of PostgreSQL are <emphasis>not</emphasis> supported."
 msgstr ""
+"Модуль PostGIS є розширенням серверного бекенду PostgreSQL. Як такий, "
+"PostGIS &last_release_version; <emphasis>вимагає</emphasis> повного доступу "
+"до заголовків сервера PostgreSQL для компіляції. Його можна скомпілювати для "
+"версій PostgreSQL &min_postgres_version; - &max_postgres_version;. Раніші "
+"версії PostgreSQL <emphasis>не</emphasis> підтримуються."
 
 #. Tag: para
 #, no-c-format
@@ -7766,6 +8183,9 @@ msgid ""
 "PostgreSQL. <link xlink:href=\"https://www.postgresql.org\"> https://www."
 "postgresql.org </link> ."
 msgstr ""
+"Якщо ви ще не встановили PostgreSQL, зверніться до інструкцій з інсталяції "
+"PostgreSQL. <link xlink:href=«https://www.postgresql.org»> https://"
+"www.postgresql.org </link> ."
 
 #. Tag: para
 #, no-c-format
@@ -7773,6 +8193,8 @@ msgid ""
 "For GEOS functionality, when you install PostgreSQL you may need to "
 "explicitly link PostgreSQL against the standard C++ library:"
 msgstr ""
+"Для роботи GEOS, під час встановлення PostgreSQL може знадобитися явно "
+"пов'язати PostgreSQL зі стандартною бібліотекою C++:"
 
 #. Tag: para
 #, no-c-format
@@ -7782,6 +8204,10 @@ msgid ""
 "closed or similar things) try this trick. This will require recompiling your "
 "PostgreSQL from scratch, of course."
 msgstr ""
+"Це обхідний шлях для вирішення проблеми взаємодії помилкових винятків C++ зі "
+"старими інструментами розробки. Якщо ви зіткнулися з дивними проблемами ("
+"несподіване закриття бекенду або подібні речі), спробуйте цей трюк. "
+"Звичайно, для цього потрібно буде перекомпілювати PostgreSQL з нуля."
 
 #. Tag: para
 #, no-c-format
@@ -7789,11 +8215,13 @@ msgid ""
 "The following steps outline the configuration and compilation of the PostGIS "
 "source. They are written for Linux users and will not work on Windows or Mac."
 msgstr ""
+"Наступні кроки описують конфігурацію та компіляцію вихідного коду PostGIS. "
+"Вони написані для користувачів Linux і не працюватимуть на Windows або Mac."
 
 #. Tag: title
 #, no-c-format
 msgid "Getting the Source"
-msgstr ""
+msgstr "Отримання вихідного коду"
 
 #. Tag: para
 #, no-c-format
@@ -7801,6 +8229,8 @@ msgid ""
 "Retrieve the PostGIS source archive from the downloads website <link xlink:"
 "href=\"&postgis_download_url;\"> &postgis_download_url; </link>"
 msgstr ""
+"Завантажте архів PostGIS з веб-сайту завантажень <link "
+"xlink:href=«&postgis_download_url;»> &postgis_download_url; </link>"
 
 #. Tag: para
 #, no-c-format
@@ -7808,6 +8238,8 @@ msgid ""
 "This will create a directory called <varname>postgis-&last_release_version;</"
 "varname> in the current working directory."
 msgstr ""
+"Це створить каталог з назвою <varname>postgis-&last_release_version;</"
+"varname> у поточному робочому каталозі."
 
 #. Tag: para
 #, no-c-format
@@ -7817,6 +8249,9 @@ msgid ""
 "gitea/postgis/postgis/\"> https://git.osgeo.org/gitea/postgis/postgis/ </"
 "link> ."
 msgstr ""
+"Або перегляньте джерело з репозиторію <link xlink:href=«https://git-scm.com/»"
+"> git </link> <link xlink:href=«https://git.osgeo.org/gitea/postgis/postgis/»"
+"> https://git.osgeo.org/gitea/postgis/postgis/ </link> ."
 
 #. Tag: para
 #, no-c-format
@@ -7824,21 +8259,23 @@ msgid ""
 "Change into the newly created <varname>postgis</varname> directory to "
 "continue the installation."
 msgstr ""
+"Перейдіть до новоствореного каталогу <varname>postgis</varname>, щоб "
+"продовжити встановлення."
 
 #. Tag: title
 #, no-c-format
 msgid "Install Requirements"
-msgstr ""
+msgstr "Вимоги до встановлення"
 
 #. Tag: para
 #, no-c-format
 msgid "PostGIS has the following requirements for building and usage:"
-msgstr ""
+msgstr "PostGIS має наступні вимоги до побудови та використання:"
 
 #. Tag: emphasis
 #, no-c-format
 msgid "Required"
-msgstr ""
+msgstr "Необхідно"
 
 #. Tag: para
 #, no-c-format
@@ -7848,6 +8285,10 @@ msgid ""
 "PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
 "org\"> https://www.postgresql.org </link>18 ."
 msgstr ""
+"PostgreSQL &min_postgres_version; - &max_postgres_version;. Потрібна повна "
+"інсталяція PostgreSQL (включно з заголовками сервера). PostgreSQL доступний "
+"за адресою <link xlink:href=«https://www.postgresql.org»> https://"
+"www.postgresql.org </link>18 ."
 
 #. Tag: para
 #, no-c-format
@@ -7857,6 +8298,10 @@ msgid ""
 "UsersWikiPostgreSQLPostGIS\">https://trac.osgeo.org/postgis/wiki/"
 "UsersWikiPostgreSQLPostGIS</link>"
 msgstr ""
+"Повна матриця підтримки PostgreSQL / PostGIS та матриця підтримки PostGIS/"
+"GEOS наведена за посиланням <link xlink:href=«https://trac.osgeo.org/postgis/"
+"wiki/UsersWikiPostgreSQLPostGIS»>https://trac.osgeo.org/postgis/wiki/"
+"UsersWikiPostgreSQLPostGIS</link>"
 
 #. Tag: para
 #, no-c-format
@@ -7865,6 +8310,9 @@ msgid ""
 "be used to compile PostGIS, but we find far fewer problems when compiling "
 "with <filename>gcc</filename>."
 msgstr ""
+"Компілятор GNU C (<filename>gcc</filename>). Для компіляції PostGIS можна "
+"використовувати й інші компілятори ANSI C, але при компіляції за допомогою "
+"<filename>gcc</filename> ми зустрічаємо набагато менше проблем."
 
 #. Tag: para
 #, no-c-format
@@ -7875,6 +8323,11 @@ msgid ""
 "<filename>make</filename> may not process the PostGIS <filename>Makefile</"
 "filename> properly."
 msgstr ""
+"GNU Make (<filename>gmake</filename> або <filename>make</filename>). Для "
+"багатьох систем GNU <filename>make</filename> є стандартною версією make. "
+"Перевірте версію, викликавши <filename>make -v</filename>. Інші версії "
+"<filename>make</filename> можуть не обробляти PostGIS <filename>Makefile</"
+"filename> належним чином."
 
 #. Tag: para
 #, no-c-format
@@ -7884,6 +8337,10 @@ msgid ""
 "available for download from <link xlink:href=\"https://proj.org/\"> https://"
 "proj.org/ </link> ."
 msgstr ""
+"Бібліотека перепроекції Proj. Потрібна версія Proj 6.1 або вище. Бібліотека "
+"Proj використовується для забезпечення підтримки перепроекції координат у "
+"PostGIS. Proj можна завантажити за адресою <link xlink:href=«https://proj."
+"org/»> https://proj.org/ </link> ."
 
 #. Tag: para
 #, no-c-format
@@ -7893,6 +8350,10 @@ msgid ""
 "GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
 "\"> https://libgeos.org </link>."
 msgstr ""
+"Бібліотека геометрії GEOS, версія &min_geos_version; або вище, але для "
+"повного використання всіх нових функцій і можливостей необхідна версія GEOS 3"
+".14+. GEOS можна завантажити за адресою <link xlink:href=«https://libgeos."
+"org/»> https://libgeos.org </link>."
 
 #. Tag: para
 #, no-c-format
@@ -7902,6 +8363,10 @@ msgid ""
 "download from <link xlink:href=\"https://gitlab.gnome.org/GNOME/libxml2/-/"
 "releases\">https://gitlab.gnome.org/GNOME/libxml2/-/releases</link>."
 msgstr ""
+"LibXML2, версія 2.5.x або вище. LibXML2 наразі використовується в деяких "
+"функціях імпорту (ST_GeomFromGML та ST_GeomFromKML). LibXML2 можна "
+"завантажити за адресою <link xlink:href=«https://gitlab.gnome.org/GNOME/"
+"libxml2/-/releases»>https://gitlab.gnome.org/GNOME/libxml2/-/releases</link>."
 
 #. Tag: para
 #, no-c-format
@@ -7911,6 +8376,10 @@ msgid ""
 "<link xlink:href=\"https://github.com/json-c/json-c/releases\">https://"
 "github.com/json-c/json-c/releases/</link>."
 msgstr ""
+"JSON-C, версія 0.9 або вище. JSON-C наразі використовується для імпорту "
+"GeoJSON за допомогою функції ST_GeomFromGeoJson. JSON-C можна завантажити за "
+"посиланням <link xlink:href=«https://github.com/json-c/json-c/"
+"releases»>https://github.com/json-c/json-c/releases/</link>."
 
 #. Tag: para
 #, no-c-format
@@ -7919,6 +8388,9 @@ msgid ""
 "xlink:href=\"https://gdal.org/download.html\">https://gdal.org/download."
 "html</link>."
 msgstr ""
+"GDAL, версія 3+ є кращою. Це необхідно для підтримки растрових даних. <link "
+"xlink:href=«https://gdal.org/download.html»>https://gdal.org/download."
+"html</link>."
 
 #. Tag: para
 #, no-c-format
@@ -7927,11 +8399,14 @@ msgid ""
 "xlink:href=\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo."
 "org/postgis/ticket/4125</link>."
 msgstr ""
+"При компіляції з PostgreSQL+JIT необхідна версія LLVM &gt;=6 <link "
+"xlink:href=«https://trac.osgeo.org/postgis/ticket/4125»>https://trac.osgeo."
+"org/postgis/ticket/4125</link>."
 
 #. Tag: emphasis
 #, no-c-format
 msgid "Optional"
-msgstr ""
+msgstr "Додатково"
 
 #. Tag: para
 #, no-c-format
@@ -7940,6 +8415,10 @@ msgid ""
 "Also make sure to enable the drivers you want to use as described in <xref "
 "linkend=\"raster_configuration\"/>."
 msgstr ""
+"GDAL (псевдоопціональний) тільки якщо ви не хочете растрові дані, ви можете "
+"залишити його поза увагою. Також переконайтеся, що ви ввімкнули драйвери, "
+"які ви хочете використовувати, як описано в <xref linkend="
+"\"raster_configuration\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -7947,6 +8426,8 @@ msgid ""
 "GTK (requires GTK+2.0, 2.8+) to compile the shp2pgsql-gui shape file loader. "
 "<link xlink:href=\"http://www.gtk.org/\"> http://www.gtk.org/ </link> ."
 msgstr ""
+"GTK (потрібно GTK+2.0, 2.8+) для компіляції завантажувача файлів shp2pgsql-"
+"gui. <link xlink:href=«http://www.gtk.org/»> http://www.gtk.org/ </link> ."
 
 #. Tag: para
 #, no-c-format
@@ -7963,6 +8444,18 @@ msgid ""
 "xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/"
 "SFCGAL/</link>."
 msgstr ""
+"SFCGAL, 1.4.1 або вище, а для використання всіх функцій необхідна версія 2.1+"
+". SFCGAL можна використовувати для надання додаткових функцій розширеного 2D-"
+" та 3D-аналізу для PostGIS cf <xref linkend=\"reference_sfcgal\"/>. А також "
+"дозволяє використовувати SFCGAL замість GEOS для деяких 2D-функцій, що "
+"надаються обома бекендами (наприклад, ST_Intersection або ST_Area). "
+"Конфігураційна змінна PostgreSQL <code>postgis.backend</code> дозволяє "
+"кінцевому користувачеві контролювати, який бекенд він хоче використовувати, "
+"якщо встановлено SFCGAL (за замовчуванням GEOS). Примітка: SFCGAL 1.2 "
+"вимагає принаймні CGAL 4.3 та Boost 1.54 (див.: <link "
+"xlink:href=«https://sfcgal.org»>https://sfcgal.org</link>) <link "
+"xlink:href=«https://gitlab.com/sfcgal/SFCGAL/»>https://gitlab.com/sfcgal/"
+"SFCGAL/</link>."
 
 #. Tag: para
 #, no-c-format
@@ -7974,6 +8467,12 @@ msgid ""
 "a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/"
 "pcre</varname> during configure."
 msgstr ""
+"Для побудови <xref linkend=\"Address_Standardizer\"/> вам також знадобиться "
+"PCRE 1 або 2 <link xlink:href=«http://www.pcre.org»>http://www.pcre.org</"
+"link> (яка, як правило, вже встановлена в системах nix). <xref linkend="
+"\"Address_Standardizer\"/> буде створено автоматично, якщо буде виявлено "
+"бібліотеку PCRE, або якщо ви передасте дійсний <varname>--with-pcre-dir=/"
+"path/to/pcre</varname> під час конфігурації."
 
 #. Tag: para
 #, no-c-format
@@ -7987,6 +8486,15 @@ msgid ""
 "PostgreSQL installation. To disable this and use GEOS instead use the "
 "<varname>--without-wagyu</varname> during the configure step."
 msgstr ""
+"Щоб увімкнути ST_AsMVT, потрібна бібліотека protobuf-c 1.1.0 або вище (для "
+"використання) та компілятор protoc-c (для побудови). Також для перевірки "
+"мінімальної версії protobuf-c необхідний pkg-config. Див. <link "
+"xlink:href=«https://github.com/protobuf-c/protobuf-c»>protobuf-c</link>. За "
+"замовчуванням Postgis використовує Wagyu для швидшої перевірки полігонів "
+"MVT, що вимагає компілятора c++11. Він використовуватиме CXXFLAGS і той "
+"самий компілятор, що й інсталяція PostgreSQL. Щоб вимкнути це і замість "
+"цього використовувати GEOS, під час конфігурації вкажіть <varname>--without-"
+"wagyu</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -7995,6 +8503,9 @@ msgid ""
 "<link xlink:href=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge."
 "net/</link>"
 msgstr ""
+"CUnit (<ім'я файлу>CUnit</ім'я файлу>). Це потрібно для регресійного "
+"тестування. <link xlink:href=«http://cunit.sourceforge.net/»>http://cunit."
+"sourceforge.net/</link>"
 
 #. Tag: para
 #, no-c-format
@@ -8003,6 +8514,9 @@ msgid ""
 "documentation. Docbook is available from <link xlink:href=\"http://www."
 "docbook.org/\"> http://www.docbook.org/ </link> ."
 msgstr ""
+"Для створення документації необхідний DocBook (<filename>xsltproc</filename>)"
+". Docbook доступний за адресою <link xlink:href=«http://www.docbook.org/»> "
+"http://www.docbook.org/ </link> ."
 
 #. Tag: para
 #, no-c-format
@@ -8012,6 +8526,9 @@ msgid ""
 "href=\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </"
 "link> ."
 msgstr ""
+"DBLatex (<filename>dblatex</filename>) необхідний для створення документації "
+"у форматі PDF. DBLatex доступний за адресою <link xlink:href=«http://dblatex."
+"sourceforge.net/»> http://dblatex.sourceforge.net/ </link> ."
 
 #. Tag: para
 #, no-c-format
@@ -8020,11 +8537,15 @@ msgid ""
 "images used in the documentation. ImageMagick is available from <link xlink:"
 "href=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </link> ."
 msgstr ""
+"Для створення зображень, що використовуються в документації, необхідна "
+"програма ImageMagick (<filename>convert</filename>). ImageMagick доступна за "
+"адресою <link xlink:href=«http://www.imagemagick.org/»> http://www."
+"imagemagick.org/ </link> ."
 
 #. Tag: title
 #, no-c-format
 msgid "Build configuration"
-msgstr ""
+msgstr "Конфігурація збірки"
 
 #. Tag: para
 #, no-c-format
@@ -8033,6 +8554,9 @@ msgid ""
 "that will be used to build the source code. This is done by running the "
 "shell script"
 msgstr ""
+"Як і в більшості випадків встановлення Linux, першим кроком є створення "
+"файлу Makefile, який буде використовуватися для компіляції вихідного коду. "
+"Це робиться за допомогою виконання скрипта оболонки"
 
 #. Tag: para
 #, no-c-format
@@ -8043,6 +8567,11 @@ msgid ""
 "<command>./configure</command>, the script accepts several parameters for "
 "those who have the required libraries and programs in non-standard locations."
 msgstr ""
+"Без додаткових параметрів ця команда спробує автоматично знайти необхідні "
+"компоненти та бібліотеки, потрібні для компіляції вихідного коду PostGIS у "
+"вашій системі. Хоча це найпоширеніший спосіб використання "
+"<command>./configure</command>, скрипт приймає кілька параметрів для тих, "
+"хто має необхідні бібліотеки та програми в нестандартних місцях."
 
 #. Tag: para
 #, no-c-format
@@ -8051,6 +8580,9 @@ msgid ""
 "complete list, use the <command>--help</command> or <command>--help=short</"
 "command> parameters."
 msgstr ""
+"У наведеному нижче списку вказані лише найчастіше використовувані параметри. "
+"Повний список можна отримати за допомогою параметрів <command>--help</"
+"command> або <command>--help=short</command>."
 
 #. Tag: para
 #, no-c-format
@@ -8063,6 +8595,13 @@ msgid ""
 "the minor version: e.g. <code>postgis-3.0</code> add this switch to your "
 "configure statement."
 msgstr ""
+"Починаючи з PostGIS 3.0, файли бібліотеки, що генеруються за замовчуванням, "
+"більше не матимуть незначну версію як частину імені файлу. Це означає, що "
+"всі бібліотеки PostGIS 3 будуть закінчуватися на <code>postgis-3</code>. Це "
+"було зроблено для спрощення pg_upgrade, але має той недолік, що ви можете "
+"встановити на сервер лише одну версію PostGIS 3. Щоб повернути стару "
+"поведінку файлів із включенням другорядної версії, наприклад <code>postgis-3."
+"0</code>, додайте цей перемикач до вашої конфігураційної команди."
 
 #. Tag: para
 #, no-c-format
@@ -8071,6 +8610,9 @@ msgid ""
 "installed. By default, this location is the same as the detected PostgreSQL "
 "installation."
 msgstr ""
+"Це місце, куди будуть встановлені виконувані файли завантажувача PostGIS та "
+"спільні бібліотеки. За замовчуванням це місце збігається з місцем "
+"встановлення PostgreSQL."
 
 #. Tag: para
 #, no-c-format
@@ -8080,6 +8622,10 @@ msgid ""
 "osgeo.org/postgis/ticket/635\"> http://trac.osgeo.org/postgis/ticket/635 </"
 "link> to track this bug."
 msgstr ""
+"Цей параметр наразі не працює, оскільки пакет встановлюється лише в каталог "
+"інсталяції PostgreSQL. Відвідайте <link xlink:href=«http://trac.osgeo.org/"
+"postgis/ticket/635»> http://trac.osgeo.org/postgis/ticket/635 </link>, щоб "
+"відстежити цю помилку."
 
 #. Tag: para
 #, no-c-format
@@ -8090,6 +8636,11 @@ msgid ""
 "manually specify a particular PostgreSQL installation that PostGIS will "
 "build against."
 msgstr ""
+"PostgreSQL надає утиліту під назвою <command>pg_config</command> для "
+"увімкнення розширень, таких як PostGIS, для пошуку каталогу інсталяції "
+"PostgreSQL. Використовуйте цей параметр (<command>--with-pgconfig=/path/to/"
+"pg_config</command>), щоб вручну вказати конкретну інсталяцію PostgreSQL, на "
+"основі якої буде побудовано PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -8100,6 +8651,11 @@ msgid ""
 "gdalconfig=/path/to/gdal-config</command>) to manually specify a particular "
 "GDAL installation that PostGIS will build against."
 msgstr ""
+"GDAL, необхідна бібліотека, надає функціональність, необхідну для підтримки "
+"растрових даних <command>gdal-config</command>, щоб програмне забезпечення "
+"могло знайти каталог інсталяції GDAL. Використовуйте цей параметр (<command"
+">--with-gdalconfig=/path/to/gdal-config</command>), щоб вручну вказати "
+"конкретну інсталяцію GDAL, на основі якої буде побудовано PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -8110,6 +8666,11 @@ msgid ""
 "to/geos-config</command>) to manually specify a particular GEOS installation "
 "that PostGIS will build against."
 msgstr ""
+"GEOS, необхідна бібліотека геометрії, надає утиліту під назвою <command>geos-"
+"config</command> для того, щоб програмне забезпечення могло знайти каталог "
+"інсталяції GEOS. Використовуйте цей параметр (<command>--with-geosconfig=/"
+"path/to/geos-config</command>), щоб вручну вказати конкретну інсталяцію "
+"GEOS, на основі якої буде побудовано PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -8122,6 +8683,14 @@ msgid ""
 "(<command>&gt;--with-xml2config=/path/to/xml2-config</command>) to manually "
 "specify a particular LibXML installation that PostGIS will build against."
 msgstr ""
+"LibXML — це бібліотека, необхідна для виконання процесів GeomFromKML/GML. "
+"Зазвичай вона знаходиться, якщо у вас встановлено libxml, але якщо її немає "
+"або ви хочете використовувати конкретну версію, вам потрібно вказати PostGIS "
+"на конкретний файл конфігурації <filename>xml2-config</filename>, щоб "
+"програмне забезпечення могло знайти каталог установки LibXML. Використовуйте "
+"цей параметр (<command>&gt;--with-xml2config=/path/to/xml2-config</command>)"
+", щоб вручну вказати конкретну інсталяцію LibXML, на основі якої буде "
+"побудовано PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -8130,11 +8699,15 @@ msgid ""
 "(<command>--with-projdir=/path/to/projdir</command>) to manually specify a "
 "particular Proj installation directory that PostGIS will build against."
 msgstr ""
+"Proj — це бібліотека перепроекції, необхідна для PostGIS. Використовуйте цей "
+"параметр (<command>--with-projdir=/path/to/projdir</command>), щоб вручну "
+"вказати конкретний каталог інсталяції Proj, на основі якого буде побудовано "
+"PostGIS."
 
 #. Tag: para
 #, no-c-format
 msgid "Directory where iconv is installed."
-msgstr ""
+msgstr "Каталог, в якому встановлено iconv."
 
 #. Tag: para
 #, no-c-format
@@ -8145,6 +8718,11 @@ msgid ""
 "manually specify a particular JSON-C installation directory that PostGIS "
 "will build against."
 msgstr ""
+"<link xlink:href=«http://oss.metaparadigm.com/json-c/»>JSON-C</link> — це "
+"бібліотека JSON з ліцензією MIT, необхідна для підтримки PostGIS "
+"ST_GeomFromJSON. Використовуйте цей параметр (<command>--with-jsondir=/path/"
+"to/jsondir</command>), щоб вручну вказати конкретний каталог інсталяції JSON-"
+"C, на основі якого буде побудовано PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -8155,6 +8733,11 @@ msgid ""
 "command>) to manually specify a particular PCRE installation directory that "
 "PostGIS will build against."
 msgstr ""
+"<link xlink:href=«http://www.pcre.org/»>PCRE</link> — це бібліотека "
+"регулярних виразів, сумісна з Perl, що має ліцензію BSD і потрібна для "
+"розширення address_standardizer. Використовуйте цей параметр (<command"
+">--with-pcredir=/path/to/pcredir</command>), щоб вручну вказати конкретний "
+"каталог інсталяції PCRE, на основі якого буде побудовано PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -8162,11 +8745,13 @@ msgid ""
 "Compile the data import GUI (requires GTK+2.0). This will create shp2pgsql-"
 "gui graphical interface to shp2pgsql."
 msgstr ""
+"Скомпілюйте графічний інтерфейс імпорту даних (потрібен GTK+2.0). Це "
+"створить графічний інтерфейс shp2pgsql-gui для shp2pgsql."
 
 #. Tag: para
 #, no-c-format
 msgid "Compile without raster support."
-msgstr ""
+msgstr "Скомпілюйте без підтримки растрових зображень."
 
 #. Tag: para
 #, no-c-format
@@ -8174,6 +8759,9 @@ msgid ""
 "Disable topology support. There is no corresponding library as all logic "
 "needed for topology is in postgis-&last_release_version; library."
 msgstr ""
+"Вимкнути підтримку топології. Відповідної бібліотеки немає, оскільки вся "
+"логіка, необхідна для топології, міститься в бібліотеці "
+"postgis-&last_release_version;."
 
 #. Tag: para
 #, no-c-format
@@ -8187,6 +8775,15 @@ msgid ""
 "used for international help/label support for the GUI loader which is not "
 "yet documented and still experimental."
 msgstr ""
+"За замовчуванням PostGIS спробує виявити підтримку gettext і скомпілювати з "
+"нею, однак якщо ви зіткнетеся з проблемами несумісності, які спричиняють "
+"порушення роботи завантажувача, ви можете повністю вимкнути її за допомогою "
+"цієї команди. Дивіться квиток <link xlink:href=«http://trac.osgeo.org/"
+"postgis/ticket/748»>http://trac.osgeo.org/postgis/ticket/748</link> для "
+"прикладу проблеми, вирішеної за допомогою цієї конфігурації. ПРИМІТКА: ви "
+"нічого не втратите, вимкнувши цю опцію. Вона використовується для підтримки "
+"міжнародної довідки/міток для завантажувача GUI, яка ще не задокументована і "
+"все ще є експериментальною."
 
 #. Tag: para
 #, no-c-format
@@ -8195,6 +8792,9 @@ msgid ""
 "<varname>PATH</varname> is an optional argument that allows to specify an "
 "alternate PATH to sfcgal-config."
 msgstr ""
+"За замовчуванням PostGIS не встановлюється з підтримкою sfcgal без цього "
+"параметра. <varname>PATH</varname> — це необов'язковий аргумент, який "
+"дозволяє вказати альтернативний шлях до sfcgal-config."
 
 #. Tag: para
 #, no-c-format
@@ -8202,6 +8802,8 @@ msgid ""
 "Disable updating postgis_revision.h to match current HEAD of the git "
 "repository."
 msgstr ""
+"Вимкнути оновлення postgis_revision.h, щоб відповідати поточній версії HEAD "
+"репозиторію git."
 
 #. Tag: para
 #, no-c-format
@@ -8210,6 +8812,9 @@ msgid ""
 "postgis/wiki/CodeRepository\"> code repository </link> , the first step is "
 "really to run the script"
 msgstr ""
+"Якщо ви отримали PostGIS з <link xlink:href=«https://trac.osgeo.org/postgis/"
+"wiki/CodeRepository»> репозиторію коду </link> , першим кроком є запуск "
+"скрипта"
 
 #. Tag: para
 #, no-c-format
@@ -8217,6 +8822,8 @@ msgid ""
 "This script will generate the <command>configure</command> script that in "
 "turn is used to customize the installation of PostGIS."
 msgstr ""
+"Цей скрипт створить скрипт <command>configure</command>, який, у свою чергу, "
+"використовується для налаштування встановлення PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -8225,18 +8832,21 @@ msgid ""
 "command> is not necessary as <command>configure</command> has already been "
 "generated."
 msgstr ""
+"Якщо ви отримали PostGIS у вигляді архіву tar, запускати <command>./autogen."
+"sh</command> не потрібно, оскільки <command>configure</command> вже було "
+"згенеровано."
 
 #. Tag: title
 #, no-c-format
 msgid "Building"
-msgstr ""
+msgstr "Збірка"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Once the Makefile has been generated, building PostGIS is as simple as "
 "running"
-msgstr ""
+msgstr "Після створення Makefile, збірка PostGIS зводиться до виконання команди"
 
 #. Tag: para
 #, no-c-format
@@ -8244,6 +8854,8 @@ msgid ""
 "The last line of the output should be \"<code>PostGIS was built "
 "successfully. Ready to install.</code>\""
 msgstr ""
+"Останній рядок виводу повинен бути таким: «<code>PostGIS було успішно "
+"скомпільовано. Готово до встановлення.</code>»"
 
 #. Tag: para
 #, no-c-format
@@ -8256,6 +8868,13 @@ msgid ""
 "doc folder so no need to make comments if installing from the tar ball. "
 "Comments are also included as part of the CREATE EXTENSION install."
 msgstr ""
+"Починаючи з PostGIS v1.4.0, всі функції мають коментарі, згенеровані з "
+"документації. Якщо ви бажаєте встановити ці коментарі у ваші просторові бази "
+"даних пізніше, запустіть команду, яка вимагає docbook. Файли "
+"postgis_comments.sql та інші файли коментарів пакету raster_comments.sql, "
+"topology_comments.sql також упаковані у tar.gz дистрибутив у папці doc, тому "
+"немає потреби створювати коментарі, якщо ви встановлюєте з tar-архіву. "
+"Коментарі також включені як частина інсталяції CREATE EXTENSION."
 
 #. Tag: para
 #, no-c-format
@@ -8267,6 +8886,13 @@ msgid ""
 "<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet."
 "html</filename>"
 msgstr ""
+"Введено в PostGIS 2.0. Ця функція створює HTML-шпаргалки, які можна "
+"використовувати для швидкого довідкового пошуку або як роздатковий матеріал "
+"для студентів. Для створення потрібно xsltproc, після чого в папці doc буде "
+"створено 4 файли: <filename>topology_cheatsheet.html</filename>, "
+"<filename>tiger_geocoder_cheatsheet.html</filename>, "
+"<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet."
+"html</filename>"
 
 #. Tag: para
 #, no-c-format
@@ -8275,11 +8901,14 @@ msgid ""
 "xlink:href=\"http://www.postgis.us/study_guides\">PostGIS / PostgreSQL Study "
 "Guides</link>"
 msgstr ""
+"Ви можете завантажити готові приклади у форматі html та pdf з <link "
+"xlink:href=«http://www.postgis.us/study_guides»>Посібників з PostGIS / "
+"PostgreSQL</link>"
 
 #. Tag: title
 #, no-c-format
 msgid "Building PostGIS Extensions and Deploying them"
-msgstr ""
+msgstr "Збірка розширень PostGIS та їх розгортання"
 
 #. Tag: para
 #, no-c-format
@@ -8287,6 +8916,8 @@ msgid ""
 "The PostGIS extensions are built and installed automatically if you are "
 "using PostgreSQL 9.1+."
 msgstr ""
+"Розширення PostGIS створюються та встановлюються автоматично, якщо ви "
+"використовуєте PostgreSQL 9.1+."
 
 #. Tag: para
 #, no-c-format
@@ -8295,6 +8926,9 @@ msgid ""
 "descriptions first. These get built if you have docbook installed. You can "
 "also manually build with the statement:"
 msgstr ""
+"Якщо ви компілюєте з репозиторію вихідного коду, спочатку потрібно "
+"скомпілювати описи функцій. Вони компілюються, якщо у вас встановлено "
+"docbook. Ви також можете скомпілювати їх вручну за допомогою команди:"
 
 #. Tag: para
 #, no-c-format
@@ -8302,6 +8936,8 @@ msgid ""
 "Building the comments is not necessary if you are building from a release "
 "tar ball since these are packaged pre-built with the tar ball already."
 msgstr ""
+"Створювати коментарі не потрібно, якщо ви створюєте з архіву tar, оскільки "
+"вони вже попередньо вбудовані в архів tar."
 
 #. Tag: para
 #, no-c-format
@@ -8310,6 +8946,9 @@ msgid ""
 "process. You can if needed build from the extensions folders or copy files "
 "if you need them on a different server."
 msgstr ""
+"Розширення повинні автоматично створюватися в рамках процесу make install. "
+"При необхідності ви можете створити їх з папок розширень або скопіювати "
+"файли, якщо вони потрібні вам на іншому сервері."
 
 #. Tag: para
 #, no-c-format
@@ -8320,6 +8959,11 @@ msgid ""
 "<link xlink:href=\"https://www.postgresql.org/docs/current/libpq-envars."
 "html\">psql environment variables</link>"
 msgstr ""
+"<code>make check</code> використовує psql для виконання тестів і, отже, може "
+"використовувати змінні середовища psql. Найпоширеніші змінні, які корисно "
+"замінити, — це <varname>PGUSER</varname>,<varname>PGPORT</varname> та "
+"<varname>PGHOST</varname>. Див. <link xlink:href=«https://www.postgresql.org/"
+"docs/current/libpq-envars.html»>Змінні середовища psql</link>"
 
 #. Tag: para
 #, no-c-format
@@ -8329,6 +8973,9 @@ msgid ""
 "files from one OS to another as long as you have the PostGIS binaries "
 "already installed on your servers."
 msgstr ""
+"Файли розширення завжди будуть однаковими для однієї версії PostGIS і "
+"PostgreSQL незалежно від ОС, тому можна копіювати файли розширення з однієї "
+"ОС на іншу, якщо на ваших серверах вже встановлено бінарні файли PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -8339,6 +8986,11 @@ msgid ""
 "filename> folder of your PostgreSQL install as well as the needed binaries "
 "for regular PostGIS if you don't have them already on the server."
 msgstr ""
+"Якщо ви хочете встановити розширення вручну на окремому сервері, відмінному "
+"від вашого сервера розробки, вам потрібно скопіювати наступні файли з папки "
+"розширень у папку <filename>PostgreSQL / share / extension</filename> вашої "
+"інсталяції PostgreSQL, а також необхідні бінарні файли для звичайного "
+"PostGIS, якщо вони ще не встановлені на сервері."
 
 #. Tag: para
 #, no-c-format
@@ -8347,6 +8999,9 @@ msgid ""
 "the extension to install if not specified. <filename>postgis.control, "
 "postgis_topology.control</filename>."
 msgstr ""
+"Це контрольні файли, які містять таку інформацію, як версія розширення, яке "
+"потрібно встановити, якщо вона не вказана. <filename>postgis.control, "
+"postgis_topology.control</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -8356,6 +9011,10 @@ msgid ""
 "<filename>extensions/postgis/sql/*.sql</filename>, <filename>extensions/"
 "postgis_topology/sql/*.sql</filename>"
 msgstr ""
+"Усі файли в папці /sql кожного розширення. Зверніть увагу, що їх потрібно "
+"скопіювати в корінь папки PostgreSQL share/extension <filename>extensions/"
+"postgis/sql/*.sql</filename>, <filename>extensions/postgis_topology/sql/*."
+"sql</filename>"
 
 #. Tag: para
 #, no-c-format
@@ -8364,6 +9023,9 @@ msgid ""
 "<varname>postgis_topology</varname> as available extensions in PgAdmin -&gt; "
 "extensions."
 msgstr ""
+"Після цього ви повинні побачити <varname>postgis</varname>, "
+"<varname>postgis_topology</varname> як доступні розширення в PgAdmin -&gt; "
+"розширення."
 
 #. Tag: para
 #, no-c-format
@@ -8371,6 +9033,8 @@ msgid ""
 "If you are using psql, you can verify that the extensions are installed by "
 "running this query:"
 msgstr ""
+"Якщо ви використовуєте psql, ви можете перевірити, чи встановлені "
+"розширення, виконавши такий запит:"
 
 #. Tag: para
 #, no-c-format
@@ -8382,6 +9046,12 @@ msgid ""
 "<varname>extensions</varname> section of the database browser tree and will "
 "even allow upgrade or uninstall by right-clicking."
 msgstr ""
+"Якщо розширення встановлено в базі даних, яку ви запитуєте, ви побачите "
+"згадку в стовпці <varname>installed_version</varname>. Якщо ви не отримали "
+"жодних записів, це означає, що на сервері взагалі не встановлено розширень "
+"postgis. PgAdmin III 1.14+ також надасть цю інформацію в розділі "
+"<varname>extensions</varname> дерева браузера бази даних і навіть дозволить "
+"оновити або видалити розширення, клацнувши правою кнопкою миші."
 
 #. Tag: para
 #, no-c-format
@@ -8390,6 +9060,9 @@ msgid ""
 "your database of choice by either using pgAdmin extension interface or "
 "running these sql commands:"
 msgstr ""
+"Якщо у вас доступні розширення, ви можете встановити розширення postgis у "
+"вибраній базі даних за допомогою інтерфейсу розширення pgAdmin або виконавши "
+"такі команди sql:"
 
 #. Tag: para
 #, no-c-format
@@ -8397,6 +9070,8 @@ msgid ""
 "In psql you can use to see what versions you have installed and also what "
 "schema they are installed."
 msgstr ""
+"У psql ви можете переглянути, які версії ви встановили, а також, в якій "
+"схемі вони встановлені."
 
 #. Tag: para
 #, no-c-format
@@ -8414,6 +9089,20 @@ msgid ""
 "extension. These behaviors are built into the current PostgreSQL extension "
 "model, so nothing we can do about it."
 msgstr ""
+"Таблиці розширення <varname>spatial_ref_sys</varname>, <varname>layer</"
+"varname>, <varname>topology</varname> не можуть бути явно збережені. Їх "
+"можна створити резервну копію лише під час створення резервної копії "
+"відповідного розширення <varname>postgis</varname> або "
+"<varname>postgis_topology</varname>, що, як видається, відбувається лише під "
+"час створення резервної копії всієї бази даних. Починаючи з PostGIS 2.0.1, "
+"під час резервного копіювання бази даних створюються резервні копії лише "
+"записів srid, які не входять до складу PostGIS, тому не змінюйте srid, які "
+"ми пакуємо, і не очікуйте, що ваші зміни будуть збережені. Якщо ви виявили "
+"проблему, створіть квиток. Структури таблиць розширень ніколи не "
+"резервуються, оскільки вони створюються за допомогою <code>CREATE EXTENSION</"
+"code> і вважаються однаковими для певної версії розширення. Ця поведінка "
+"вбудована в поточну модель розширень PostgreSQL, тому ми нічого не можемо з "
+"цим зробити."
 
 #. Tag: para
 #, no-c-format
@@ -8424,16 +9113,21 @@ msgid ""
 "Installing using `unpackaged` was removed in PostgreSQL 13, so you are "
 "advised to switch to an extension build before upgrading to PostgreSQL 13."
 msgstr ""
+"Якщо ви встановили &last_release_version; без використання нашої чудової "
+"системи розширень, ви можете змінити його на розширення, виконавши наведені "
+"нижче команди, щоб упакувати функції у відповідні розширення. Встановлення "
+"за допомогою `unpackaged` було видалено в PostgreSQL 13, тому перед "
+"оновленням до PostgreSQL 13 рекомендується перейти на збірку розширення."
 
 #. Tag: title
 #, no-c-format
 msgid "Testing"
-msgstr ""
+msgstr "Тестування"
 
 #. Tag: para
 #, no-c-format
 msgid "If you wish to test the PostGIS build, run"
-msgstr ""
+msgstr "Якщо ви бажаєте протестувати збірку PostGIS, запустіть"
 
 #. Tag: para
 #, no-c-format
@@ -8441,6 +9135,8 @@ msgid ""
 "The above command will run through various checks and regression tests using "
 "the generated library against an actual PostgreSQL database."
 msgstr ""
+"Вищезазначена команда виконає різні перевірки та регресійні тести, "
+"використовуючи створену бібліотеку та реальну базу даних PostgreSQL."
 
 #. Tag: para
 #, no-c-format
@@ -8449,6 +9145,9 @@ msgid ""
 "locations, you may need to add their library locations to the "
 "<varname>LD_LIBRARY_PATH</varname> environment variable."
 msgstr ""
+"Якщо ви налаштували PostGIS, використовуючи нестандартні розташування "
+"PostgreSQL, GEOS або Proj, можливо, вам доведеться додати розташування їхніх "
+"бібліотек до змінної середовища <varname>LD_LIBRARY_PATH</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -8461,6 +9160,12 @@ msgid ""
 "installation during configuration or be prepared to deal with the impending "
 "headaches."
 msgstr ""
+"Наразі команда <command>make check</command> під час виконання перевірок "
+"використовує змінні середовища <code>PATH</code> та <code>PGPORT</code> — "
+"вона <emphasis>не</emphasis> використовує версію PostgreSQL, яка може бути "
+"вказана за допомогою параметра конфігурації <command>--with-pgconfig</"
+"command>. Тому під час конфігурації обов'язково змініть PATH відповідно до "
+"виявленої інсталяції PostgreSQL або будьте готові до можливих проблем."
 
 #. Tag: para
 #, no-c-format
@@ -8468,6 +9173,8 @@ msgid ""
 "If successful, make check will produce the output of almost 500 tests. The "
 "results will look similar to the following (numerous lines omitted below):"
 msgstr ""
+"Якщо все пройде успішно, команда make check видасть результат майже 500 "
+"тестів. Результати будуть схожими на наведені нижче (багато рядків опущено):"
 
 #. Tag: para
 #, no-c-format
@@ -8478,16 +9185,21 @@ msgid ""
 "make install is not necessary if you already did make install at root of "
 "PostGIS code folder."
 msgstr ""
+"Розширення <varname>postgis_tiger_geocoder</varname> та "
+"<varname>address_standardizer</varname> наразі підтримують лише стандартну "
+"перевірку інсталяції PostgreSQL. Щоб перевірити їх, скористайтеся наведеним "
+"нижче кодом. Примітка: команда make install не потрібна, якщо ви вже "
+"виконали make install у кореневому каталозі коду PostGIS."
 
 #. Tag: para
 #, no-c-format
 msgid "For address_standardizer:"
-msgstr ""
+msgstr "Для address_standardizer:"
 
 #. Tag: para
 #, no-c-format
 msgid "Output should look like:"
-msgstr ""
+msgstr "Результат повинен виглядати так:"
 
 #. Tag: para
 #, no-c-format
@@ -8496,21 +9208,25 @@ msgid ""
 "available in your PostgreSQL instance. The address_standardizer tests will "
 "also kick in if you built postgis with address_standardizer support:"
 msgstr ""
+"Для геокодера tiger переконайтеся, що у вашому екземплярі PostgreSQL "
+"доступні розширення postgis та fuzzystrmatch. Тести address_standardizer "
+"також запустяться, якщо ви створили postgis із підтримкою "
+"address_standardizer:"
 
 #. Tag: para
 #, no-c-format
 msgid "output should look like:"
-msgstr ""
+msgstr "результат повинен виглядати так:"
 
 #. Tag: title
 #, no-c-format
 msgid "Installation"
-msgstr ""
+msgstr "Встановлення"
 
 #. Tag: para
 #, no-c-format
 msgid "To install PostGIS, type"
-msgstr ""
+msgstr "Щоб встановити PostGIS, введіть"
 
 #. Tag: para
 #, no-c-format
@@ -8519,6 +9235,8 @@ msgid ""
 "subdirectory specified by the <command>--prefix</command> configuration "
 "parameter. In particular:"
 msgstr ""
+"Це скопіює файли інсталяції PostGIS у відповідний підкаталог, вказаний "
+"параметром конфігурації <command>--prefix</command>. Зокрема:"
 
 #. Tag: para
 #, no-c-format
@@ -8526,6 +9244,8 @@ msgid ""
 "The loader and dumper binaries are installed in <filename>[prefix]/bin</"
 "filename>."
 msgstr ""
+"Бінарні файли завантажувача та вивантажувача встановлюються в "
+"<filename>[prefix]/bin</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -8533,12 +9253,14 @@ msgid ""
 "The SQL files, such as <filename>postgis.sql</filename>, are installed in "
 "<filename>[prefix]/share/contrib</filename>."
 msgstr ""
+"Файли SQL, такі як <filename>postgis.sql</filename>, встановлюються в "
+"<filename>[prefix]/share/contrib</filename>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The PostGIS libraries are installed in <filename>[prefix]/lib</filename>."
-msgstr ""
+msgstr "Бібліотеки PostGIS встановлюються в <filename>[prefix]/lib</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -8548,6 +9270,10 @@ msgid ""
 "<filename>raster_comments.sql</filename> file, install the sql file by "
 "running"
 msgstr ""
+"Якщо ви раніше запустили команду <command>make comments</command> для "
+"створення файлів <filename>postgis_comments.sql</filename> та "
+"<filename>raster_comments.sql</filename>, встановіть файл sql, виконавши "
+"команду"
 
 #. Tag: para
 #, no-c-format
@@ -8557,11 +9283,15 @@ msgid ""
 "typical build and installation targets since with it comes the extra "
 "dependency of <command>xsltproc</command>."
 msgstr ""
+"<filename>postgis_comments.sql</filename>, <filename>raster_comments.sql</"
+"filename>, <filename>topology_comments.sql</filename> було виокремлено з "
+"типових цілей побудови та інсталяції, оскільки з ними виникає додаткова "
+"залежність від <command>xsltproc</command>."
 
 #. Tag: title
 #, no-c-format
 msgid "Installing and Using the address standardizer"
-msgstr ""
+msgstr "Встановлення та використання стандартизатора адрес"
 
 #. Tag: para
 #, no-c-format
@@ -8572,6 +9302,11 @@ msgid ""
 "does, and how to configure it for your needs, refer to <xref "
 "linkend=\"Address_Standardizer\"/>."
 msgstr ""
+"Розширення <code>address_standardizer</code> раніше було окремим пакетом, "
+"який потрібно було завантажувати окремо. Починаючи з PostGIS 2.2, воно "
+"входить до складу пакета. Більше інформації про address_standardize, його "
+"функції та налаштування відповідно до ваших потреб дивіться у <xref linkend="
+"\"Address_Standardizer\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -8583,6 +9318,12 @@ msgid ""
 "a building block for your own geocoder or use it to standardize your "
 "addresses for easier compare of addresses."
 msgstr ""
+"Цей стандартизатор можна використовувати разом із розширенням PostGIS "
+"packaged tiger geocoder як заміну для <xref linkend=\"Normalize_Address\"/>, "
+"про яке йшлося вище. Щоб використовувати його як заміну, зверніться до <xref "
+"linkend=\"tiger_pagc_address_standardizing\"/>. Ви також можете "
+"використовувати його як будівельний блок для власного геокодера або для "
+"стандартизації адрес, щоб полегшити їх порівняння."
 
 #. Tag: para
 #, no-c-format
@@ -8596,6 +9337,14 @@ msgid ""
 "pcredir=/path/to/pcre</code> where <filename>/path/to/pcre</filename> is the "
 "root folder for your pcre include and lib directories."
 msgstr ""
+"Стандартизатор адрес використовує PCRE, який зазвичай вже встановлений на "
+"багатьох системах Nix, але ви можете завантажити останню версію за адресою: "
+"<link xlink:href=«http://www.pcre.org»>http://www.pcre.org</link>. Якщо під "
+"час <xref linkend=\"installation_configuration\"/> буде знайдено PCRE, "
+"розширення стандартизатора адрес буде автоматично скомпільовано. Якщо ви "
+"хочете використовувати власну версію pcre, передайте в конфігурацію <code"
+">--with-pcredir=/path/to/pcre</code>, де <filename>/path/to/pcre</filename> —"
+" коренева папка для ваших каталогів pcre include та lib."
 
 #. Tag: para
 #, no-c-format
@@ -8604,27 +9353,31 @@ msgid ""
 "address_standardizer already so no need to compile and can move straight to "
 "<code>CREATE EXTENSION</code> step."
 msgstr ""
+"Для користувачів Windows пакет PostGIS 2.1+ вже містить "
+"address_standardizer, тому компілювати не потрібно і можна переходити "
+"безпосередньо до кроку <code>CREATE EXTENSION</code>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Once you have installed, you can connect to your database and run the SQL:"
 msgstr ""
+"Після встановлення ви можете підключитися до бази даних і запустити SQL:"
 
 #. Tag: para
 #, no-c-format
 msgid "The following test requires no rules, gaz, or lex tables"
-msgstr ""
+msgstr "Наступний тест не вимагає правил, газів або лексичних таблиць"
 
 #. Tag: para
 #, no-c-format
 msgid "Output should be"
-msgstr ""
+msgstr "Результат повинен бути таким"
 
 #. Tag: title
 #, no-c-format
 msgid "Installing, Upgrading Tiger Geocoder, and loading data"
-msgstr ""
+msgstr "Встановлення, оновлення Tiger Geocoder та завантаження даних"
 
 #. Tag: para
 #, no-c-format
@@ -8638,11 +9391,20 @@ msgid ""
 "for windows, the postgis_tiger_geocoder extension files will work on any OS "
 "since the extension is an SQL/plpgsql only extension."
 msgstr ""
+"Додаткові компоненти, такі як геокодер Tiger, можуть не входити до складу "
+"вашого дистрибутива PostGIS. Якщо вам бракує розширення tiger geocoder або "
+"ви хочете мати новішу версію, ніж та, що входить до вашої інсталяції, "
+"скористайтеся файлами <filename>share/extension/postgis_tiger_geocoder.*</"
+"filename> з пакетів у розділі <link xlink:href=«http://postgis.net/"
+"windows_downloads/»>Windows Unreleased Versions</link> для вашої версії "
+"PostgreSQL. Хоча ці пакети призначені для Windows, файли розширення "
+"postgis_tiger_geocoder працюватимуть на будь-якій ОС, оскільки розширення є "
+"розширенням тільки для SQL/plpgsql."
 
 #. Tag: title
 #, no-c-format
 msgid "Tiger Geocoder Enabling your PostGIS database"
-msgstr ""
+msgstr "Tiger Geocoder Увімкнення бази даних PostGIS"
 
 #. Tag: para
 #, no-c-format
@@ -8650,6 +9412,8 @@ msgid ""
 "These directions assume your PostgreSQL installation already has the "
 "postgis_tiger_geocoder extension installed."
 msgstr ""
+"Ці вказівки передбачають, що у вашій установці PostgreSQL вже встановлено "
+"розширення postgis_tiger_geocoder."
 
 #. Tag: para
 #, no-c-format
@@ -8660,6 +9424,11 @@ msgid ""
 "<varname>fuzzystrmatch</varname> extension already installed, you don't need "
 "to do the second step either."
 msgstr ""
+"Підключіться до бази даних за допомогою psql, pgAdmin або іншого інструменту "
+"та виконайте наступні команди SQL. Зверніть увагу, що якщо ви встановлюєте "
+"програму в базу даних, яка вже має postgis, перший крок виконувати не "
+"потрібно. Якщо ви вже встановили розширення <varname>fuzzystrmatch</"
+"varname>, другий крок також виконувати не потрібно."
 
 #. Tag: para
 #, no-c-format
@@ -8667,6 +9436,8 @@ msgid ""
 "If you already have postgis_tiger_geocoder extension installed, and just "
 "want to update to the latest run:"
 msgstr ""
+"Якщо ви вже встановили розширення postgis_tiger_geocoder і просто хочете "
+"оновити його до останньої версії, виконайте наступні дії:"
 
 #. Tag: para
 #, no-c-format
@@ -8675,17 +9446,22 @@ msgid ""
 "varname> and <varname>tiger.loader_variables</varname> you may need to "
 "update these."
 msgstr ""
+"Якщо ви зробили власні записи або змінили <varname>tiger.loader_platform</"
+"varname> та <varname>tiger.loader_variables</varname>, можливо, вам "
+"доведеться їх оновити."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "To confirm your install is working correctly, run this sql in your database:"
 msgstr ""
+"Щоб переконатися, що інсталяція працює правильно, виконайте цей sql-запит у "
+"вашій базі даних:"
 
 #. Tag: para
 #, no-c-format
 msgid "Which should output"
-msgstr ""
+msgstr "Що повинно вивести"
 
 #. Tag: para
 #, no-c-format
@@ -8693,6 +9469,8 @@ msgid ""
 "Create a new record in <varname>tiger.loader_platform</varname> table with "
 "the paths of your executables and server."
 msgstr ""
+"Створіть новий запис у таблиці <varname>tiger.loader_platform</varname> із "
+"шляхами до ваших виконуваних файлів та сервера."
 
 #. Tag: para
 #, no-c-format
@@ -8700,6 +9478,8 @@ msgid ""
 "So for example to create a profile called debbie that follows <code>sh</"
 "code> convention. You would do:"
 msgstr ""
+"Наприклад, щоб створити профіль під назвою debbie, який дотримується "
+"конвенції <code>sh</code>, потрібно зробити наступне:"
 
 #. Tag: para
 #, no-c-format
@@ -8707,6 +9487,9 @@ msgid ""
 "And then edit the paths in the <emphasis>declare_sect</emphasis> column to "
 "those that fit Debbie's pg, unzip,shp2pgsql, psql, etc path locations."
 msgstr ""
+"А потім відредагуйте шляхи в стовпці <emphasis>declare_sect</emphasis> "
+"відповідно до шляхів, що відповідають розташуванню pg, unzip, shp2pgsql, "
+"psql тощо у Debbie."
 
 #. Tag: para
 #, no-c-format
@@ -8715,6 +9498,9 @@ msgid ""
 "just contain common case locations of items and you'll have to edit the "
 "generated script after the script is generated."
 msgstr ""
+"Якщо ви не відредагуєте цю таблицю <varname>loader_platform</varname>, вона "
+"буде містити лише загальні розташування елементів, і вам доведеться "
+"редагувати скрипт після його створення."
 
 #. Tag: para
 #, no-c-format
@@ -8725,11 +9511,17 @@ msgid ""
 "off by default because it takes quite a bit of time to load (20 to 60 "
 "minutes), takes up quite a bit of disk space, and is not used that often."
 msgstr ""
+"Починаючи з PostGIS 2.4.1, крок завантаження 5-значного поштового індексу "
+"<varname>zcta5</varname> було переглянуто, щоб завантажувати поточні дані "
+"zcta5, і він є частиною <xref linkend=\"Loader_Generate_Nation_Script\"/>, "
+"коли ввімкнено. За замовчуванням він вимкнений, оскільки завантаження займає "
+"досить багато часу (від 20 до 60 хвилин), займає чимало місця на диску і "
+"використовується не так часто."
 
 #. Tag: para
 #, no-c-format
 msgid "To enable it, do the following:"
-msgstr ""
+msgstr "Щоб увімкнути цю функцію, виконайте такі дії:"
 
 #. Tag: para
 #, no-c-format
@@ -8739,6 +9531,11 @@ msgid ""
 "linkend=\"Reverse_Geocode\"/> function uses it if the returned address is "
 "missing a zip, which often happens with highway reverse geocoding."
 msgstr ""
+"Якщо присутня функція <xref linkend=\"Geocode\"/>, вона може використовувати "
+"її, якщо додано фільтр меж, щоб обмежити пошук лише поштовими індексами в "
+"цих межах. Функція <xref linkend=\"Reverse_Geocode\"/> використовує її, якщо "
+"у повернутій адресі відсутній поштовий індекс, що часто трапляється при "
+"зворотному геокодуванні автомагістралей."
 
 #. Tag: para
 #, no-c-format
@@ -8751,6 +9548,13 @@ msgid ""
 "<varname>staging_fold</varname> in the <varname>tiger.loader_variables</"
 "varname> table."
 msgstr ""
+"Створіть папку з назвою <filename>gisdata</filename> в кореневому каталозі "
+"сервера або на вашому локальному комп'ютері, якщо у вас швидке підключення "
+"до сервера. У цю папку будуть завантажуватися та оброблятися файли tiger. "
+"Якщо ви не хочете, щоб папка знаходилася в кореневому каталозі сервера, або "
+"просто хочете змінити папку для тимчасового зберігання, відредагуйте поле "
+"<varname>staging_fold</varname> в таблиці <varname>tiger."
+"loader_variables</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -8759,6 +9563,9 @@ msgid ""
 "wherever you designated the <varname>staging_fold</varname> to be. This will "
 "be the folder where the loader extracts the downloaded tiger data."
 msgstr ""
+"Створіть папку з назвою temp у папці <filename>gisdata</filename> або в будь-"
+"якому іншому місці, яке ви призначили для <varname>staging_fold</varname>. "
+"Це буде папка, куди завантажувач витягне завантажені дані tiger."
 
 #. Tag: para
 #, no-c-format
@@ -8767,11 +9574,15 @@ msgid ""
 "make sure to use the name of your custom profile and copy the script to a ."
 "sh or .bat file. So for example to build the nation load:"
 msgstr ""
+"Потім запустіть функцію SQL <xref linkend=\"Loader_Generate_Nation_Script\"/"
+">, обов'язково вкажіть ім'я вашого власного профілю та скопіюйте скрипт у "
+"файл .sh або .bat. Наприклад, щоб створити націю, завантажте:"
 
 #. Tag: para
 #, no-c-format
 msgid "Run the generated nation load commandline scripts."
 msgstr ""
+"Запустіть скрипти командного рядка для завантаження нації, що були створені."
 
 #. Tag: para
 #, no-c-format
@@ -8780,11 +9591,16 @@ msgid ""
 "in your <code>tiger_data</code> schema and they should be filled with data. "
 "Confirm you do by doing the following queries from psql or pgAdmin"
 msgstr ""
+"Після завершення виконання скрипта nation у схемі <code>tiger_data</code> "
+"має бути три таблиці, які повинні бути заповнені даними. Перевірте це, "
+"виконавши наступні запити з psql або pgAdmin"
 
 #. Tag: para
 #, no-c-format
 msgid "This will only have data if you marked zcta5 to be loaded"
 msgstr ""
+"Це буде містити дані тільки в тому випадку, якщо ви позначили zcta5 для "
+"завантаження"
 
 #. Tag: para
 #, no-c-format
@@ -8795,6 +9611,11 @@ msgid ""
 "population statistics. If you wish to load them as part of your state loads, "
 "run the following statement to enable them."
 msgstr ""
+"За замовчуванням таблиці, що відповідають <varname>bg</varname>, "
+"<varname>tract</varname>, <varname>tabblock20</varname>, не завантажуються. "
+"Ці таблиці не використовуються геокодером, але використовуються для "
+"статистики населення. Якщо ви хочете завантажити їх як частину завантаження "
+"даних про стан, виконайте наступну команду, щоб увімкнути їх."
 
 #. Tag: para
 #, no-c-format
@@ -8802,6 +9623,8 @@ msgid ""
 "Alternatively you can load just these tables after loading state data using "
 "the <xref linkend=\"Loader_Generate_Census_Script\"/>"
 msgstr ""
+"Або ви можете завантажити тільки ці таблиці після завантаження даних про "
+"стан за допомогою <xref linkend=\"Loader_Generate_Census_Script\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -8809,6 +9632,8 @@ msgid ""
 "DO NOT Generate the state script until you have already loaded the nation "
 "data, because the state script utilizes county list loaded by nation script."
 msgstr ""
+"НЕ створюйте скрипт штату, поки не завантажили дані про країну, оскільки "
+"скрипт штату використовує список округів, завантажений скриптом країни."
 
 #. Tag: para
 #, no-c-format
@@ -8816,11 +9641,13 @@ msgid ""
 "For each state you want to load data for, generate a state script <xref "
 "linkend=\"Loader_Generate_Script\"/>."
 msgstr ""
+"Для кожного стану, для якого ви хочете завантажити дані, створіть скрипт "
+"стану <xref linkend=\"Loader_Generate_Script\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Run the generated commandline scripts."
-msgstr ""
+msgstr "Запустіть скрипти командного рядка, що були створені."
 
 #. Tag: para
 #, no-c-format
@@ -8828,11 +9655,14 @@ msgid ""
 "After you are done loading all data or at a stopping point, it's a good idea "
 "to analyze all the tiger tables to update the stats (include inherited stats)"
 msgstr ""
+"Після завантаження всіх даних або на етапі зупинки рекомендується "
+"проаналізувати всі таблиці tiger, щоб оновити статистику (включно зі "
+"статистикою, що успадковується)"
 
 #. Tag: title
 #, no-c-format
 msgid "Using Address Standardizer Extension with Tiger geocoder"
-msgstr ""
+msgstr "Використання розширення Address Standardizer з геокодером Tiger"
 
 #. Tag: para
 #, no-c-format
@@ -8846,6 +9676,14 @@ msgid ""
 "described in <xref linkend=\"installing_pagc_address_standardizer\"/> and "
 "install as an extension in your database."
 msgstr ""
+"Однією з багатьох скарг користувачів є функція нормалізації адреси <xref "
+"linkend=\"Normalize_Address\"/>, яка нормалізує адресу для підготовки до "
+"геокодування. Нормалізатор далеко не ідеальний, і спроби виправити його "
+"недоліки вимагають значних ресурсів. Тому ми інтегрували інший проект, який "
+"має набагато кращий механізм стандартизації адрес. Щоб використовувати цей "
+"новий address_standardizer, скомпілюйте розширення, як описано в <xref "
+"linkend=\"installing_pagc_address_standardizer\"/>, і встановіть його як "
+"розширення у вашій базі даних."
 
 #. Tag: para
 #, no-c-format
@@ -8861,11 +9699,21 @@ msgid ""
 "linkend=\"lextab\"/> (<code>tiger.pagc_lex</code>). These you can add and "
 "update to improve your standardizing experience for your own needs."
 msgstr ""
+"Після встановлення цього розширення в тій самій базі даних, де встановлено "
+"<code>postgis_tiger_geocoder</code>, замість <xref linkend="
+"\"Normalize_Address\"/> можна використовувати <xref linkend="
+"\"Pagc_Normalize_Address\"/>. Це розширення не залежить від tiger, тому його "
+"можна використовувати з іншими джерелами даних, такими як міжнародні адреси. "
+"Розширення tiger geocoder постачається у комплекті з власними версіями <xref "
+"linkend=\"rulestab\"/> ( <code>tiger.pagc_rules</code>) , <xref linkend="
+"\"gaztab\"/> (<code>tiger.pagc_gaz</code>) та <xref linkend=\"lextab\"/> "
+"(<code>tiger.pagc_lex</code>). Ви можете додавати та оновлювати їх, щоб "
+"покращити стандартизацію відповідно до власних потреб."
 
 #. Tag: title
 #, no-c-format
 msgid "Required tools for tiger data loading"
-msgstr ""
+msgstr "Необхідні інструменти для завантаження tiger даних"
 
 #. Tag: para
 #, no-c-format
@@ -8879,16 +9727,24 @@ msgid ""
 "linkend=\"Drop_State_Tables_Generate_Script\"/> if you need to reload a "
 "state or just don't need a state anymore."
 msgstr ""
+"Процес завантаження завантажує дані з веб-сайту перепису населення для "
+"відповідних файлів країн, запитуваних штатів, витягує файли, а потім "
+"завантажує кожен штат у свій окремий набір таблиць штатів. Кожна таблиця "
+"штату успадковує таблиці, визначені в схемі <varname>tiger</varname>, так що "
+"достатньо просто зробити запит до цих таблиць, щоб отримати доступ до всіх "
+"даних, і видалити набір таблиць штатів у будь-який час за допомогою <xref "
+"linkend=\"Drop_State_Tables_Generate_Script\"/>, якщо вам потрібно "
+"перезавантажити штат або він вам більше не потрібен."
 
 #. Tag: para
 #, no-c-format
 msgid "In order to be able to load data you'll need the following tools:"
-msgstr ""
+msgstr "Для завантаження даних вам знадобляться такі інструменти:"
 
 #. Tag: para
 #, no-c-format
 msgid "A tool to unzip the zip files from census website."
-msgstr ""
+msgstr "Інструмент для розпакування zip-файлів з веб-сайту перепису населення."
 
 #. Tag: para
 #, no-c-format
@@ -8896,6 +9752,8 @@ msgid ""
 "For Unix like systems: <varname>unzip</varname> executable which is usually "
 "already installed on most Unix like platforms."
 msgstr ""
+"Для систем типу Unix: <varname>unzip</varname> виконуваний файл, який "
+"зазвичай вже встановлений на більшості платформ типу Unix."
 
 #. Tag: para
 #, no-c-format
@@ -8903,6 +9761,9 @@ msgid ""
 "For Windows, 7-zip which is a free compress/uncompress tool you can download "
 "from <link xlink:href=\"http://www.7-zip.org/\">http://www.7-zip.org/</link>"
 msgstr ""
+"Для Windows можна завантажити безкоштовну програму для стиснення/"
+"розпакування файлів 7-zip за посиланням <link xlink:href=«http://www.7-zip."
+"org/»>http://www.7-zip.org/</link>"
 
 #. Tag: para
 #, no-c-format
@@ -8910,6 +9771,8 @@ msgid ""
 "<filename>shp2pgsql</filename> commandline which is installed by default "
 "when you install PostGIS."
 msgstr ""
+"Командний рядок <filename>shp2pgsql</filename>, який встановлюється за "
+"замовчуванням під час інсталяції PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -8917,6 +9780,8 @@ msgid ""
 "<filename>wget</filename> which is a web grabber tool usually installed on "
 "most Unix/Linux systems."
 msgstr ""
+"<filename>wget</filename> — це інструмент для завантаження веб-сторінок, "
+"який зазвичай встановлюється на більшості систем Unix/Linux."
 
 #. Tag: para
 #, no-c-format
@@ -8925,6 +9790,10 @@ msgid ""
 "href=\"http://gnuwin32.sourceforge.net/packages/wget.htm\">http://gnuwin32."
 "sourceforge.net/packages/wget.htm</link>"
 msgstr ""
+"Якщо ви використовуєте Windows, ви можете завантажити попередньо "
+"скомпільовані бінарні файли з <link xlink:href=«http://gnuwin32.sourceforge."
+"net/packages/wget.htm»>http://gnuwin32.sourceforge.net/packages/wget."
+"htm</link>"
 
 #. Tag: para
 #, no-c-format
@@ -8937,6 +9806,14 @@ msgid ""
 "time step that should be done for upgrading (from a prior year tiger census "
 "data) and for new installs."
 msgstr ""
+"Якщо ви оновлюєте систему з tiger_2010, спочатку потрібно створити та "
+"запустити <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>. Перед "
+"завантаженням будь-яких даних про стан, потрібно завантажити "
+"загальнонаціональні дані за допомогою <xref linkend="
+"\"Loader_Generate_Nation_Script\"/>. Це створить для вас скрипт "
+"завантажувача. <xref linkend=\"Loader_Generate_Nation_Script\"/> — це "
+"одноразовий крок, який потрібно виконати для оновлення (з даних перепису "
+"тигрів за попередній рік) та для нових інсталяцій."
 
 #. Tag: para
 #, no-c-format
@@ -8946,6 +9823,11 @@ msgid ""
 "Note that you can install these piecemeal. You don't have to load all the "
 "states you want all at once. You can load them as you need them."
 msgstr ""
+"Щоб завантажити дані про стан, зверніться до <xref linkend="
+"\"Loader_Generate_Script\"/>, щоб створити скрипт завантаження даних для "
+"вашої платформи для потрібних вам станів. Зверніть увагу, що ви можете "
+"встановлювати їх по частинах. Не обов'язково завантажувати всі потрібні "
+"стани одночасно. Ви можете завантажувати їх у міру необхідності."
 
 #. Tag: para
 #, no-c-format
@@ -8954,6 +9836,9 @@ msgid ""
 "<programlisting>SELECT install_missing_indexes();</programlisting> as "
 "described in <xref linkend=\"Install_Missing_Indexes\"/>."
 msgstr ""
+"Після завантаження потрібних штатів обов'язково виконайте команду: "
+"<programlisting>SELECT install_missing_indexes();</programlisting> "
+"відповідно до опису в <xref linkend=\"Install_Missing_Indexes\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -8961,16 +9846,18 @@ msgid ""
 "To test that things are working as they should, try to run a geocode on an "
 "address in your state using <xref linkend=\"Geocode\"/>"
 msgstr ""
+"Щоб перевірити, чи все працює як слід, спробуйте виконати геокодування "
+"адреси у вашому штаті, використовуючи <xref linkend=\"Geocode\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Upgrading your Tiger Geocoder Install and Data"
-msgstr ""
+msgstr "Оновлення інсталяції та даних Tiger Geocoder"
 
 #. Tag: para
 #, no-c-format
 msgid "First upgrade your postgis_tiger_geocoder extension as follows:"
-msgstr ""
+msgstr "Спочатку оновіть розширення postgis_tiger_geocoder наступним чином:"
 
 #. Tag: para
 #, no-c-format
@@ -8979,11 +9866,14 @@ msgid ""
 "with this SQL statement as detailed in <xref "
 "linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
 msgstr ""
+"Далі видаліть усі таблиці країн і завантажте нові. Створіть скрипт видалення "
+"за допомогою цього SQL-запиту, як описано в <xref linkend="
+"\"Drop_Nation_Tables_Generate_Script\"/>"
 
 #. Tag: para
 #, no-c-format
 msgid "Run the generated drop SQL statements."
-msgstr ""
+msgstr "Виконайте згенеровані оператори SQL для створення таблиць."
 
 #. Tag: para
 #, no-c-format
@@ -8991,16 +9881,18 @@ msgid ""
 "Generate a nation load script with this SELECT statement as detailed in "
 "<xref linkend=\"Loader_Generate_Nation_Script\"/>"
 msgstr ""
+"Створіть скрипт завантаження нації за допомогою цієї команди SELECT, як "
+"описано в <xref linkend=\"Loader_Generate_Nation_Script\"/>"
 
 #. Tag: emphasis
 #, no-c-format
 msgid "For windows"
-msgstr ""
+msgstr "Для windows"
 
 #. Tag: emphasis
 #, no-c-format
 msgid "For unix/linux"
-msgstr ""
+msgstr "Для Unix/Linux"
 
 #. Tag: para
 #, no-c-format
@@ -9009,6 +9901,8 @@ msgid ""
 "instructions on how to run the generate script. This only needs to be done "
 "once."
 msgstr ""
+"Інструкції щодо запуску скрипту генерації див. у <xref linkend="
+"\"install_tiger_geocoder_extension\"/>. Це потрібно зробити лише один раз."
 
 #. Tag: para
 #, no-c-format
@@ -9018,11 +9912,15 @@ msgid ""
 "state tables for that state using <xref "
 "linkend=\"Drop_State_Tables_Generate_Script\"/>."
 msgstr ""
+"Ви можете мати комбінацію таблиць стану за різні роки та оновлювати кожен "
+"стан окремо. Перед оновленням стану спочатку потрібно видалити таблиці стану "
+"за попередній рік для цього стану за допомогою <xref linkend="
+"\"Drop_State_Tables_Generate_Script\"/>."
 
 #. Tag: title
 #, no-c-format
 msgid "Common Problems during installation"
-msgstr ""
+msgstr "Поширені проблеми під час встановлення"
 
 #. Tag: para
 #, no-c-format
@@ -9030,6 +9928,8 @@ msgid ""
 "There are several things to check when your installation or upgrade doesn't "
 "go as you expected."
 msgstr ""
+"Якщо установка або оновлення не відбуваються так, як ви очікували, слід "
+"перевірити кілька речей."
 
 #. Tag: para
 #, no-c-format
@@ -9044,6 +9944,15 @@ msgid ""
 "of PostgreSQL which is running, connect to the database using psql and run "
 "this query:"
 msgstr ""
+"Переконайтеся, що ви встановили PostgreSQL &min_postgres_version; або новішу "
+"версію, і що ви компілюєте з тією ж версією вихідного коду PostgreSQL, що і "
+"версія PostgreSQL, яка працює. Плутанина може виникнути, якщо у вашому "
+"дистрибутиві (Linux) вже встановлено PostgreSQL або ви раніше встановлювали "
+"PostgreSQL і забули про це. PostGIS працюватиме лише з PostgreSQL "
+"&min_postgres_version; або новішою версією, а використання старішої версії "
+"призведе до появи дивних, несподіваних повідомлень про помилки. Щоб "
+"перевірити версію PostgreSQL, що працює, під’єднайтеся до бази даних за "
+"допомогою psql і виконайте цей запит:"
 
 #. Tag: para
 #, no-c-format
@@ -9052,6 +9961,9 @@ msgid ""
 "existence of pre-installed packages using the <command>rpm</command> command "
 "as follows: <command>rpm -qa | grep postgresql</command>"
 msgstr ""
+"Якщо ви використовуєте дистрибутив на основі RPM, ви можете перевірити "
+"наявність попередньо встановлених пакетів за допомогою команди <command>rpm</"
+"command> наступним чином: <command>rpm -qa | grep postgresql</command>"
 
 #. Tag: para
 #, no-c-format
@@ -9059,6 +9971,8 @@ msgid ""
 "If your upgrade fails, make sure you are restoring into a database that "
 "already has PostGIS installed."
 msgstr ""
+"Якщо оновлення не вдалося, переконайтеся, що ви відновлюєте дані в базу, в "
+"якій вже встановлено PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -9066,6 +9980,8 @@ msgid ""
 "Also check that configure has correctly detected the location and version of "
 "PostgreSQL, the Proj library and the GEOS library."
 msgstr ""
+"Також перевірте, чи конфігуратор правильно визначив розташування та версію "
+"PostgreSQL, бібліотеки Proj та бібліотеки GEOS."
 
 #. Tag: para
 #, no-c-format
@@ -9075,6 +9991,11 @@ msgid ""
 "<varname>POSTGIS_PROJ_VERSION</varname> and <varname>POSTGIS_GEOS_VERSION</"
 "varname> variables have been set correctly."
 msgstr ""
+"Вихідні дані команди configure використовуються для створення файлу "
+"<filename>postgis_config.h</filename>. Перевірте, чи правильно встановлено "
+"змінні <varname>POSTGIS_PGSQL_VERSION</varname>, "
+"<varname>POSTGIS_PROJ_VERSION</varname> та "
+"<varname>POSTGIS_GEOS_VERSION</varname>."
 
 #. Tag: title
 #, no-c-format
@@ -9090,6 +10011,12 @@ msgid ""
 "Victoria, British Columbia, Canada, specializing in data integration and "
 "custom software development."
 msgstr ""
+"PostGIS — це просторове розширення для реляційної бази даних PostgreSQL, "
+"створене компанією Refractions Research Inc. як проект з дослідження "
+"технологій просторових баз даних. Refractions — це компанія з консалтингу в "
+"галузі ГІС та баз даних, розташована у місті Вікторія, Британська Колумбія, "
+"Канада, що спеціалізується на інтеграції даних та розробці програмного "
+"забезпечення на замовлення."
 
 #. Tag: para
 #, no-c-format
@@ -9098,6 +10025,9 @@ msgid ""
 "by many FOSS4G developers and organizations all over the world that gain "
 "great benefit from its functionality and versatility."
 msgstr ""
+"PostGIS зараз є проєктом Фонду OSGeo, розробляється і фінансується багатьма "
+"розробниками FOSS4G і організаціями по всьому світу, які отримують величезну "
+"користь від його функціональності та універсальності."
 
 #. Tag: para
 #, no-c-format
@@ -9108,11 +10038,16 @@ msgid ""
 "(coverages, surfaces, networks), data source for desktop user interface "
 "tools for viewing and editing GIS data, and web-based access tools."
 msgstr ""
+"Група розробників проєкту PostGIS планує підтримувати та вдосконалювати "
+"PostGIS для кращої підтримки ряду важливих функціональних можливостей ГІС в "
+"області просторових стандартів OGC і SQL/MM, розширених топологічних "
+"конструкцій (покриття, поверхні, сітки), джерел даних для інструментів для "
+"перегляду і редагування даних ГІС, а також інструментів вебдоступу до них."
 
 #. Tag: title
 #, no-c-format
 msgid "Project Steering Committee"
-msgstr ""
+msgstr "Керівний комітет проєкту"
 
 #. Tag: para
 #, no-c-format
@@ -9124,11 +10059,17 @@ msgid ""
 "miscellaneous issues involving PostGIS such as developer commit access, new "
 "PSC members or significant API changes."
 msgstr ""
+"Координаційний комітет проекту PostGIS (PSC) координує загальний напрямок, "
+"цикли випуску, документацію та інформаційно-просвітницьку діяльність проекту "
+"PostGIS. Крім того, PSC надає загальну підтримку користувачам, приймає та "
+"затверджує виправлення від загальної спільноти PostGIS і голосує з різних "
+"питань, що стосуються PostGIS, таких як доступ розробників до комітів, нові "
+"члени PSC або значні зміни API."
 
 #. Tag: term
 #, no-c-format
 msgid "Raúl Marín Rodríguez"
-msgstr ""
+msgstr "Рауль Марін Родрігес"
 
 #. Tag: para
 #, no-c-format
@@ -9136,11 +10077,13 @@ msgid ""
 "MVT support, Bug fixing, Performance and stability improvements, GitHub "
 "curation, alignment of PostGIS with PostgreSQL releases"
 msgstr ""
+"Підтримка MVT, виправлення помилок, поліпшення продуктивності та "
+"стабільності, курація GitHub, узгодження PostGIS з релізами PostgreSQL"
 
 #. Tag: term
 #, no-c-format
 msgid "Regina Obe"
-msgstr ""
+msgstr "Регіна Обе"
 
 #. Tag: para
 #, no-c-format
@@ -9149,11 +10092,14 @@ msgid ""
 "documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
 "TIGER geocoder support, management functions."
 msgstr ""
+"CI та обслуговування веб-сайту, виробництво та експериментальні збірки "
+"Windows, документація, узгодження PostGIS з випусками PostgreSQL, підтримка "
+"X3D, підтримка геокодера TIGER, функції управління."
 
 #. Tag: term
 #, no-c-format
 msgid "Darafei Praliaskouski"
-msgstr ""
+msgstr "Дарафей Пралясковський"
 
 #. Tag: para
 #, no-c-format
@@ -9161,11 +10107,13 @@ msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
 "SFCGAL, raster, GitHub curation, and ci maintenance."
 msgstr ""
+"Покращення індексу, виправлення помилок та покращення функцій геометрії/"
+"географії, SFCGAL, растр, курація GitHub та обслуговування ci."
 
 #. Tag: term
 #, no-c-format
 msgid "Paul Ramsey (Chair)"
-msgstr ""
+msgstr "Пол Рамзі (голова)"
 
 #. Tag: para
 #, no-c-format
@@ -9176,11 +10124,17 @@ msgid ""
 "integration and alignment with GEOS releases, alignment of PostGIS with "
 "PostgreSQL releases, loader/dumper, and Shapefile GUI loader."
 msgstr ""
+"Співзасновник проекту PostGIS. Загальне виправлення помилок, підтримка "
+"географії, підтримка географічних та геометричних індексів (2D, 3D, nD "
+"індекси та будь-які просторові індекси), внутрішні структури геометрії, "
+"інтеграція функціональності GEOS та узгодження з релізами GEOS, узгодження "
+"PostGIS з релізами PostgreSQL, завантажувач/вивантажувач та завантажувач "
+"Shapefile GUI."
 
 #. Tag: term
 #, no-c-format
 msgid "Sandro Santilli"
-msgstr ""
+msgstr "Сандро Сантіллі"
 
 #. Tag: para
 #, no-c-format
@@ -9189,16 +10143,20 @@ msgid ""
 "functions, integration of new GEOS functionality and alignment with GEOS "
 "releases, topology support, and raster framework and low level API functions."
 msgstr ""
+"Виправлення помилок та технічне обслуговування, обслуговування CI, "
+"управління дзеркалами Git, функції управління, інтеграція нових функцій GEOS "
+"та узгодження з випусками GEOS, підтримка топології, а також функції "
+"растрової структури та API низького рівня."
 
 #. Tag: title
 #, no-c-format
 msgid "Core Contributors Present"
-msgstr ""
+msgstr "Основні учасники"
 
 #. Tag: term
 #, no-c-format
 msgid "Nicklas Avén"
-msgstr ""
+msgstr "Ніклас Авен"
 
 #. Tag: para
 #, no-c-format
@@ -9207,21 +10165,24 @@ msgid ""
 "functions) and additions, Tiny WKB (TWKB) output format and general user "
 "support"
 msgstr ""
+"Покращення функції відстані (включно з функціями 3D-відстані та "
+"взаємозв'язку) та доповнення, формат виводу Tiny WKB (TWKB) та загальна "
+"підтримка користувачів"
 
 #. Tag: term
 #, no-c-format
 msgid "Loïc Bartoletti"
-msgstr ""
+msgstr "Лоїк Бартолетті"
 
 #. Tag: para
 #, no-c-format
 msgid "SFCGAL enhancements and maintenance and ci support"
-msgstr ""
+msgstr "Покращення та обслуговування SFCGAL і підтримка ci"
 
 #. Tag: term
 #, no-c-format
 msgid "Dan Baston"
-msgstr ""
+msgstr "Ден Бастон"
 
 #. Tag: para
 #, no-c-format
@@ -9229,21 +10190,23 @@ msgid ""
 "Geometry clustering function additions, other geometry algorithm "
 "enhancements, GEOS enhancements and general user support"
 msgstr ""
+"Додавання функцій кластеризації геометрії, інші вдосконалення алгоритмів "
+"геометрії, вдосконалення GEOS та загальна підтримка користувачів"
 
 #. Tag: term
 #, no-c-format
 msgid "Martin Davis"
-msgstr ""
+msgstr "Мартін Девіс"
 
 #. Tag: para
 #, no-c-format
 msgid "GEOS enhancements and documentation"
-msgstr ""
+msgstr "Удосконалення та документація GEOS"
 
 #. Tag: term
 #, no-c-format
 msgid "Björn Harrtell"
-msgstr ""
+msgstr "Бйорн Харрелл"
 
 #. Tag: para
 #, no-c-format
@@ -9251,26 +10214,28 @@ msgid ""
 "MapBox Vector Tile, GeoBuf, and Flatgeobuf functions. Gitea testing and "
 "GitLab experimentation."
 msgstr ""
+"Функції MapBox Vector Tile, GeoBuf та Flatgeobuf. Тестування Gitea та "
+"експерименти GitLab."
 
 #. Tag: term
 #, no-c-format
 msgid "Aliaksandr Kalenik"
-msgstr ""
+msgstr "Олександр Каленік"
 
 #. Tag: para
 #, no-c-format
 msgid "Geometry Processing, PostgreSQL gist, general bug fixing"
-msgstr ""
+msgstr "Обробка геометрії, PostgreSQL gist, загальне виправлення помилок"
 
 #. Tag: title
 #, no-c-format
 msgid "Core Contributors Past"
-msgstr ""
+msgstr "Основні учасники минулого"
 
 #. Tag: term
 #, no-c-format
 msgid "Bborie Park"
-msgstr ""
+msgstr "Бборі Парк"
 
 #. Tag: para
 #, no-c-format
@@ -9279,11 +10244,14 @@ msgid ""
 "user support, general bug fixing, testing on various OS (Slackware, Mac, "
 "Windows, and more)"
 msgstr ""
+"Колишній член PSC. Розробка растрових даних, інтеграція з GDAL, завантажувач "
+"растрових даних, підтримка користувачів, загальне виправлення помилок, "
+"тестування на різних ОС (Slackware, Mac, Windows та інші)"
 
 #. Tag: term
 #, no-c-format
 msgid "Mark Cave-Ayland"
-msgstr ""
+msgstr "Марк Кейв-Айланд"
 
 #. Tag: para
 #, no-c-format
@@ -9292,21 +10260,25 @@ msgid ""
 "index selectivity and binding, loader/dumper, and Shapefile GUI Loader, "
 "integration of new and new function enhancements."
 msgstr ""
+"Колишній член PSC. Координація виправлення помилок та технічного "
+"обслуговування, вибірковості та прив'язки просторового індексу, "
+"завантажувача/вивантажувача, а також Shapefile GUI Loader, інтеграція нових "
+"та вдосконалених функцій."
 
 #. Tag: term
 #, no-c-format
 msgid "Jorge Arévalo"
-msgstr ""
+msgstr "Хорхе Аревало"
 
 #. Tag: para
 #, no-c-format
 msgid "Raster development, GDAL driver support, loader"
-msgstr ""
+msgstr "Розробка растрових даних, підтримка драйвера GDAL, завантажувач"
 
 #. Tag: term
 #, no-c-format
 msgid "Olivier Courtin"
-msgstr ""
+msgstr "Олів'є Куртен"
 
 #. Tag: para
 #, no-c-format
@@ -9314,11 +10286,13 @@ msgid ""
 "(Emeritus) Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug "
 "fixes."
 msgstr ""
+"(Почесний) Функції введення/виведення XML (KML, GML)/GeoJSON, підтримка 3D "
+"та виправлення помилок."
 
 #. Tag: term
 #, no-c-format
 msgid "Chris Hodgson"
-msgstr ""
+msgstr "Кріс Ходжсон"
 
 #. Tag: para
 #, no-c-format
@@ -9326,11 +10300,13 @@ msgid ""
 "Prior PSC Member. General development, site and buildbot maintenance, OSGeo "
 "incubation management"
 msgstr ""
+"Колишній член PSC. Загальний розвиток, обслуговування сайту та buildbot, "
+"управління інкубацією OSGeo"
 
 #. Tag: term
 #, no-c-format
 msgid "Mateusz Loskot"
-msgstr ""
+msgstr "Матеуш Лоскот"
 
 #. Tag: para
 #, no-c-format
@@ -9338,11 +10314,13 @@ msgid ""
 "CMake support for PostGIS, built original raster loader in python and low "
 "level raster API functions"
 msgstr ""
+"Підтримка CMake для PostGIS, вбудований оригінальний завантажувач растрових "
+"даних на Python та функції низького рівня для роботи з растровими даними"
 
 #. Tag: term
 #, no-c-format
 msgid "Kevin Neufeld"
-msgstr ""
+msgstr "Кевін Нойфельд"
 
 #. Tag: para
 #, no-c-format
@@ -9351,11 +10329,14 @@ msgid ""
 "maintenance, advanced user support on PostGIS newsgroup, and PostGIS "
 "maintenance function enhancements."
 msgstr ""
+"Колишній член PSC. Документація та інструменти підтримки документації, "
+"обслуговування buildbot, підтримка досвідчених користувачів у новинній групі "
+"PostGIS та вдосконалення функцій обслуговування PostGIS."
 
 #. Tag: term
 #, no-c-format
 msgid "Dave Blasby"
-msgstr ""
+msgstr "Дейв Бласбі"
 
 #. Tag: para
 #, no-c-format
@@ -9363,21 +10344,23 @@ msgid ""
 "The original developer/Co-founder of PostGIS. Dave wrote the server side "
 "objects, index bindings, and many of the server side analytical functions."
 msgstr ""
+"Оригінальний розробник/співзасновник PostGIS. Дейв написав об'єкти серверної "
+"частини, індексні прив'язки та багато аналітичних функцій серверної частини."
 
 #. Tag: term
 #, no-c-format
 msgid "Jeff Lounsbury"
-msgstr ""
+msgstr "Джефф Лаунсбері"
 
 #. Tag: para
 #, no-c-format
 msgid "Original development of the Shapefile loader/dumper."
-msgstr ""
+msgstr "Оригінальна розробка завантажувача/вивантажувача Shapefile."
 
 #. Tag: term
 #, no-c-format
 msgid "Mark Leslie"
-msgstr ""
+msgstr "Марк Леслі"
 
 #. Tag: para
 #, no-c-format
@@ -9385,11 +10368,13 @@ msgid ""
 "Ongoing maintenance and development of core functions. Enhanced curve "
 "support. Shapefile GUI loader."
 msgstr ""
+"Постійне обслуговування та розвиток основних функцій. Покращена підтримка "
+"кривих. Завантажувач Shapefile GUI."
 
 #. Tag: term
 #, no-c-format
 msgid "Pierre Racine"
-msgstr ""
+msgstr "П'єр Расін"
 
 #. Tag: para
 #, no-c-format
@@ -9397,436 +10382,438 @@ msgid ""
 "Architect of PostGIS raster implementation. Raster overall architecture, "
 "prototyping, programming support"
 msgstr ""
+"Архітектор реалізації растрових даних PostGIS. Загальна архітектура "
+"растрових даних, прототипування, підтримка програмування"
 
 #. Tag: term
 #, no-c-format
 msgid "David Zwarg"
-msgstr ""
+msgstr "Девід Цварг"
 
 #. Tag: para
 #, no-c-format
 msgid "Raster development (mostly map algebra analytic functions)"
-msgstr ""
+msgstr "Розробка растрових даних (переважно аналітичні функції алгебри карт)"
 
 #. Tag: title
 #, no-c-format
 msgid "Other Contributors"
-msgstr ""
+msgstr "Інші автори"
 
 #. Tag: term
 #, no-c-format
 msgid "Individual Contributors"
-msgstr ""
+msgstr "Індивідуальні учасники"
 
 #. Tag: member
 #, no-c-format
 msgid "Alex Bodnaru"
-msgstr ""
+msgstr "Алекс Боднару"
 
 #. Tag: member
 #, no-c-format
 msgid "Alex Mayrhofer"
-msgstr ""
+msgstr "Алекс Майрхофер"
 
 #. Tag: member
 #, no-c-format
 msgid "Andrea Peri"
-msgstr ""
+msgstr "Андреа Пері"
 
 #. Tag: member
 #, no-c-format
 msgid "Andreas Forø Tollefsen"
-msgstr ""
+msgstr "Андреас Форо Толлефсен"
 
 #. Tag: member
 #, no-c-format
 msgid "Andreas Neumann"
-msgstr ""
+msgstr "Андреас Нойман"
 
 #. Tag: member
 #, no-c-format
 msgid "Andrew Gierth"
-msgstr ""
+msgstr "Ендрю Герт"
 
 #. Tag: member
 #, no-c-format
 msgid "Anne Ghisla"
-msgstr ""
+msgstr "Енн Гісла"
 
 #. Tag: member
 #, no-c-format
 msgid "Antoine Bajolet"
-msgstr ""
+msgstr "Антуан Бажоле"
 
 #. Tag: member
 #, no-c-format
 msgid "Arthur Lesuisse"
-msgstr ""
+msgstr "Артур Лесуа"
 
 #. Tag: member
 #, no-c-format
 msgid "Artur Zakirov"
-msgstr ""
+msgstr "Артур Закіров"
 
 #. Tag: member
 #, no-c-format
 msgid "Ayo Adesugba"
-msgstr ""
+msgstr "Айо Адесугба"
 
 #. Tag: member
 #, no-c-format
 msgid "Barbara Phillipot"
-msgstr ""
+msgstr "Барбара Філліпот"
 
 #. Tag: member
 #, no-c-format
 msgid "Ben Jubb"
-msgstr ""
+msgstr "Бен Джубб"
 
 #. Tag: member
 #, no-c-format
 msgid "Bernhard Reiter"
-msgstr ""
+msgstr "Бернхард Райтер"
 
 #. Tag: member
 #, no-c-format
 msgid "Björn Esser"
-msgstr ""
+msgstr "Бйорн Ессер"
 
 #. Tag: member
 #, no-c-format
 msgid "Brian Hamlin"
-msgstr ""
+msgstr "Брайан Хемлін"
 
 #. Tag: member
 #, no-c-format
 msgid "Bruce Rindahl"
-msgstr ""
+msgstr "Брюс Ріндал"
 
 #. Tag: member
 #, no-c-format
 msgid "Bruno Wolff III"
-msgstr ""
+msgstr "Бруно Вольф III"
 
 #. Tag: member
 #, no-c-format
 msgid "Bryce L. Nordgren"
-msgstr ""
+msgstr "Брайс Л. Нордгрен"
 
 #. Tag: member
 #, no-c-format
 msgid "Carl Anderson"
-msgstr ""
+msgstr "Карл Андерсон"
 
 #. Tag: member
 #, no-c-format
 msgid "Charlie Savage"
-msgstr ""
+msgstr "Чарлі Сейвідж"
 
 #. Tag: member
 #, no-c-format
 msgid "Chris Mayo"
-msgstr ""
+msgstr "Кріс Майо"
 
 #. Tag: member
 #, no-c-format
 msgid "Christian Schroeder"
-msgstr ""
+msgstr "Крістіан Шредер"
 
 #. Tag: member
 #, no-c-format
 msgid "Christoph Berg"
-msgstr ""
+msgstr "Крістоф Берг"
 
 #. Tag: member
 #, no-c-format
 msgid "Christoph Moench-Tegeder"
-msgstr ""
+msgstr "Крістоф Менх-Тегедер"
 
 #. Tag: member
 #, no-c-format
 msgid "Dane Springmeyer"
-msgstr ""
+msgstr "Дейн Спрінгмейер"
 
 #. Tag: member
 #, no-c-format
 msgid "Daniel Nylander"
-msgstr ""
+msgstr "Даніель Нюландер"
 
 #. Tag: member
 #, no-c-format
 msgid "Dapeng Wang"
-msgstr ""
+msgstr "Дапен Ван"
 
 #. Tag: member
 #, no-c-format
 msgid "Daryl Herzmann"
-msgstr ""
+msgstr "Деріл Герцманн"
 
 #. Tag: member
 #, no-c-format
 msgid "Dave Fuhry"
-msgstr ""
+msgstr "Дейв Фурі"
 
 #. Tag: member
 #, no-c-format
 msgid "David Garnier"
-msgstr ""
+msgstr "Девід Гарньє"
 
 #. Tag: member
 #, no-c-format
 msgid "David Skea"
-msgstr ""
+msgstr "Девід Скі"
 
 #. Tag: member
 #, no-c-format
 msgid "David Techer"
-msgstr ""
+msgstr "Девід Течер"
 
 #. Tag: member
 #, no-c-format
 msgid "Dian M Fay"
-msgstr ""
+msgstr "Діан М. Фей"
 
 #. Tag: member
 #, no-c-format
 msgid "Dmitry Vasilyev"
-msgstr ""
+msgstr "Дмитро Василєв"
 
 #. Tag: member
 #, no-c-format
 msgid "Eduin Carrillo"
-msgstr ""
+msgstr "Едуїн Каррільо"
 
 #. Tag: member
 #, no-c-format
 msgid "Esteban Zimanyi"
-msgstr ""
+msgstr "Естебан Зімані"
 
 #. Tag: member
 #, no-c-format
 msgid "Eugene Antimirov"
-msgstr ""
+msgstr "Євген Антиміров"
 
 #. Tag: member
 #, no-c-format
 msgid "Even Rouault"
-msgstr ""
+msgstr "Навіть Руо"
 
 #. Tag: member
 #, no-c-format
 msgid "Florian Weimer"
-msgstr ""
+msgstr "Флоріан Ваймер"
 
 #. Tag: member
 #, no-c-format
 msgid "Frank Warmerdam"
-msgstr ""
+msgstr "Френк Вармердам"
 
 #. Tag: member
 #, no-c-format
 msgid "George Silva"
-msgstr ""
+msgstr "Джордж Сільва"
 
 #. Tag: member
 #, no-c-format
 msgid "Gerald Fenoy"
-msgstr ""
+msgstr "Джеральд Феной"
 
 #. Tag: member
 #, no-c-format
 msgid "Gino Lucrezi"
-msgstr ""
+msgstr "Джино Лукрезі"
 
 #. Tag: member
 #, no-c-format
 msgid "Greg Troxel"
-msgstr ""
+msgstr "Грег Троксел"
 
 #. Tag: member
 #, no-c-format
 msgid "Guillaume Lelarge"
-msgstr ""
+msgstr "Гійом Леларж"
 
 #. Tag: member
 #, no-c-format
 msgid "Giuseppe Broccolo"
-msgstr ""
+msgstr "Джузеппе Брокколо"
 
 #. Tag: member
 #, no-c-format
 msgid "Han Wang"
-msgstr ""
+msgstr "Хан Ван"
 
 #. Tag: member
 #, no-c-format
 msgid "Hans Lemuet"
-msgstr ""
+msgstr "Ганс Лемует"
 
 #. Tag: member
 #, no-c-format
 msgid "Haribabu Kommi"
-msgstr ""
+msgstr "Харібабу Коммі"
 
 #. Tag: member
 #, no-c-format
 msgid "Havard Tveite"
-msgstr ""
+msgstr "Хавард Твейте"
 
 #. Tag: member
 #, no-c-format
 msgid "IIDA Tetsushi"
-msgstr ""
+msgstr "ІІДА Тетсуші"
 
 #. Tag: member
 #, no-c-format
 msgid "Ingvild Nystuen"
-msgstr ""
+msgstr "Інгвільд Нюстен"
 
 #. Tag: member
 #, no-c-format
 msgid "Jackie Leng"
-msgstr ""
+msgstr "Джекі Ленг"
 
 #. Tag: member
 #, no-c-format
 msgid "James Addison"
-msgstr ""
+msgstr "Джеймс Аддісон"
 
 #. Tag: member
 #, no-c-format
 msgid "James Marca"
-msgstr ""
+msgstr "Джеймс Марка"
 
 #. Tag: member
 #, no-c-format
 msgid "Jan Katins"
-msgstr ""
+msgstr "Ян Катінс"
 
 #. Tag: member
 #, no-c-format
 msgid "Jan Tojnar"
-msgstr ""
+msgstr "Ян Тожнар"
 
 #. Tag: member
 #, no-c-format
 msgid "Jason Smith"
-msgstr ""
+msgstr "Джейсон Сміт"
 
 #. Tag: member
 #, no-c-format
 msgid "Jeff Adams"
-msgstr ""
+msgstr "Джефф Адамс"
 
 #. Tag: member
 #, no-c-format
 msgid "Jelte Fennema"
-msgstr ""
+msgstr "Джелте Феннема"
 
 #. Tag: member
 #, no-c-format
 msgid "Jim Jones"
-msgstr ""
+msgstr "Джим Джонс"
 
 #. Tag: member
 #, no-c-format
 msgid "Joe Conway"
-msgstr ""
+msgstr "Джо Конвей"
 
 #. Tag: member
 #, no-c-format
 msgid "Jonne Savolainen"
-msgstr ""
+msgstr "Йонне Саволайнен"
 
 #. Tag: member
 #, no-c-format
 msgid "Jose Carlos Martinez Llari"
-msgstr ""
+msgstr "Хосе Карлос Мартінес Лларі"
 
 #. Tag: member
 #, no-c-format
 msgid "Jörg Habenicht"
-msgstr ""
+msgstr "Йорг Хабеніхт"
 
 #. Tag: member
 #, no-c-format
 msgid "Julien Rouhaud"
-msgstr ""
+msgstr "Жюльєн Руо"
 
 #. Tag: member
 #, no-c-format
 msgid "Kashif Rasul"
-msgstr ""
+msgstr "Кашиф Расул"
 
 #. Tag: member
 #, no-c-format
 msgid "Klaus Foerster"
-msgstr ""
+msgstr "Клаус Ферстер"
 
 #. Tag: member
 #, no-c-format
 msgid "Kris Jurka"
-msgstr ""
+msgstr "Кріс Юрка"
 
 #. Tag: member
 #, no-c-format
 msgid "Laurențiu Nicola"
-msgstr ""
+msgstr "Лаурентіу Нікола"
 
 #. Tag: member
 #, no-c-format
 msgid "Laurenz Albe"
-msgstr ""
+msgstr "Лауренц Альбе"
 
 #. Tag: member
 #, no-c-format
 msgid "Lars Roessiger"
-msgstr ""
+msgstr "Ларс Роессігер"
 
 #. Tag: member
 #, no-c-format
 msgid "Leo Hsu"
-msgstr ""
+msgstr "Лео Хсу"
 
 #. Tag: member
 #, no-c-format
 msgid "Loic Dachary"
-msgstr ""
+msgstr "Лоїк Дачарі"
 
 #. Tag: member
 #, no-c-format
 msgid "Luca S. Percich"
-msgstr ""
+msgstr "Лука С. Перчіч"
 
 #. Tag: member
 #, no-c-format
 msgid "Lucas C. Villa Real"
-msgstr ""
+msgstr "Лукас С. Вілла Реаль"
 
 #. Tag: member
 #, no-c-format
 msgid "Maksim Korotkov"
-msgstr ""
+msgstr "Максим Коротков"
 
 #. Tag: member
 #, no-c-format
 msgid "Maria Arias de Reyna"
-msgstr ""
+msgstr "Марія Аріас де Рейна"
 
 #. Tag: member
 #, no-c-format
 msgid "Marc Ducobu"
-msgstr ""
+msgstr "Марк Дюкубу"
 
 #. Tag: member
 #, no-c-format
 msgid "Mark Sondheim"
-msgstr ""
+msgstr "Марк Сондхайм"
 
 #. Tag: member
 #, no-c-format
 msgid "Markus Schaber"
-msgstr ""
+msgstr "Маркус Шабер"
 
 #. Tag: member
 #, no-c-format
@@ -9836,222 +10823,222 @@ msgstr ""
 #. Tag: member
 #, no-c-format
 msgid "Matt Amos"
-msgstr ""
+msgstr "Метт Амос"
 
 #. Tag: member
 #, no-c-format
 msgid "Matt Bretl"
-msgstr ""
+msgstr "Метт Бретл"
 
 #. Tag: member
 #, no-c-format
 msgid "Matthias Bay"
-msgstr ""
+msgstr "Матіас Бей"
 
 #. Tag: member
 #, no-c-format
 msgid "Maxime Guillaud"
-msgstr ""
+msgstr "Максим Гійо"
 
 #. Tag: member
 #, no-c-format
 msgid "Maxime van Noppen"
-msgstr ""
+msgstr "Максима ван Ноппен"
 
 #. Tag: member
 #, no-c-format
 msgid "Maxime Schoemans"
-msgstr ""
+msgstr "Максим Шеманс"
 
 #. Tag: member
 #, no-c-format
 msgid "Megan Ma"
-msgstr ""
+msgstr "Меган Ма"
 
 #. Tag: member
 #, no-c-format
 msgid "Michael Fuhr"
-msgstr ""
+msgstr "Майкл Фур"
 
 #. Tag: member
 #, no-c-format
 msgid "Mike Toews"
-msgstr ""
+msgstr "Майк Тоус"
 
 #. Tag: member
 #, no-c-format
 msgid "Nathan Wagner"
-msgstr ""
+msgstr "Натан Вагнер"
 
 #. Tag: member
 #, no-c-format
 msgid "Nathaniel Clay"
-msgstr ""
+msgstr "Натаніель Клей"
 
 #. Tag: member
 #, no-c-format
 msgid "Nikita Shulga"
-msgstr ""
+msgstr "Микита Шульга"
 
 #. Tag: member
 #, no-c-format
 msgid "Norman Vine"
-msgstr ""
+msgstr "Норман Вайн"
 
 #. Tag: member
 #, no-c-format
 msgid "Patricia Tozer"
-msgstr ""
+msgstr "Патрісія Тозер"
 
 #. Tag: member
 #, no-c-format
 msgid "Rafal Magda"
-msgstr ""
+msgstr "Рафал Магда"
 
 #. Tag: member
 #, no-c-format
 msgid "Ralph Mason"
-msgstr ""
+msgstr "Ральф Мейсон"
 
 #. Tag: member
 #, no-c-format
 msgid "Rémi Cura"
-msgstr ""
+msgstr "Ремі Кура"
 
 #. Tag: member
 #, no-c-format
 msgid "Richard Greenwood"
-msgstr ""
+msgstr "Річард Грінвуд"
 
 #. Tag: member
 #, no-c-format
 msgid "Robert Coup"
-msgstr ""
+msgstr "Роберт Куп"
 
 #. Tag: member
 #, no-c-format
 msgid "Roger Crew"
-msgstr ""
+msgstr "Роджер Крю"
 
 #. Tag: member
 #, no-c-format
 msgid "Ron Mayer"
-msgstr ""
+msgstr "Рон Майер"
 
 #. Tag: member
 #, no-c-format
 msgid "Sam Peters"
-msgstr ""
+msgstr "Сем Пітерс"
 
 #. Tag: member
 #, no-c-format
 msgid "Sebastiaan Couwenberg"
-msgstr ""
+msgstr "Себастьян Коувенберг"
 
 #. Tag: member
 #, no-c-format
 msgid "Sergei Shoulbakov"
-msgstr ""
+msgstr "Сергій Шульбаков"
 
 #. Tag: member
 #, no-c-format
 msgid "Sergey Fedoseev"
-msgstr ""
+msgstr "Сергій Федосєєв"
 
 #. Tag: member
 #, no-c-format
 msgid "Shinichi Sugiyama"
-msgstr ""
+msgstr "Шінічі Сугіяма"
 
 #. Tag: member
 #, no-c-format
 msgid "Shoaib Burq"
-msgstr ""
+msgstr "Шоаїб Бурк"
 
 #. Tag: member
 #, no-c-format
 msgid "Silvio Grosso"
-msgstr ""
+msgstr "Сільвіо Гроссо"
 
 #. Tag: member
 #, no-c-format
 msgid "Stefan Corneliu Petrea"
-msgstr ""
+msgstr "Стефан Корнеліу Петреа"
 
 #. Tag: member
 #, no-c-format
 msgid "Steffen Macke"
-msgstr ""
+msgstr "Стеффен Макке"
 
 #. Tag: member
 #, no-c-format
 msgid "Stepan Kuzmin"
-msgstr ""
+msgstr "Степан Кузьмін"
 
 #. Tag: member
 #, no-c-format
 msgid "Stephen Frost"
-msgstr ""
+msgstr "Стівен Фрост"
 
 #. Tag: member
 #, no-c-format
 msgid "Steven Ottens"
-msgstr ""
+msgstr "Стівен Оттенс"
 
 #. Tag: member
 #, no-c-format
 msgid "Talha Rizwan"
-msgstr ""
+msgstr "Талха Різван"
 
 #. Tag: member
 #, no-c-format
 msgid "Teramoto Ikuhiro"
-msgstr ""
+msgstr "Терамото Ікухіро"
 
 #. Tag: member
 #, no-c-format
 msgid "Tom Glancy"
-msgstr ""
+msgstr "Том Гленсі"
 
 #. Tag: member
 #, no-c-format
 msgid "Tom van Tilburg"
-msgstr ""
+msgstr "Том ван Тільбург"
 
 #. Tag: member
 #, no-c-format
 msgid "Victor Collod"
-msgstr ""
+msgstr "Віктор Колод"
 
 #. Tag: member
 #, no-c-format
 msgid "Vincent Bre"
-msgstr ""
+msgstr "Вінсент Бре"
 
 #. Tag: member
 #, no-c-format
 msgid "Vincent Mora"
-msgstr ""
+msgstr "Вінсент Мора"
 
 #. Tag: member
 #, no-c-format
 msgid "Vincent Picavet"
-msgstr ""
+msgstr "Вінсент Пікаве"
 
 #. Tag: member
 #, no-c-format
 msgid "Volf Tomáš"
-msgstr ""
+msgstr "Вольф Томаш"
 
 #. Tag: member
 #, no-c-format
 msgid "Zuo Chenwei"
-msgstr ""
+msgstr "Зуо Ченвей"
 
 #. Tag: term
 #, no-c-format
 msgid "Corporate Sponsors"
-msgstr ""
+msgstr "Корпоративні спонсори"
 
 #. Tag: para
 #, no-c-format
@@ -10059,51 +11046,53 @@ msgid ""
 "These are corporate entities that have contributed developer time, hosting, "
 "or direct monetary funding to the PostGIS project. In alphabetical order:"
 msgstr ""
+"Це корпоративні організації, які надали розробникам час, хостинг або пряме "
+"фінансове фінансування для проекту PostGIS. У алфавітному порядку:"
 
 #. Tag: link
 #, no-c-format
 msgid "Aiven"
-msgstr ""
+msgstr "Aiven"
 
 #. Tag: link
 #, no-c-format
 msgid "Arrival 3D"
-msgstr ""
+msgstr "Arrival 3D"
 
 #. Tag: link
 #, no-c-format
 msgid "Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)"
-msgstr ""
+msgstr "Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)"
 
 #. Tag: link
 #, no-c-format
 msgid "AusVet"
-msgstr ""
+msgstr "AusVet"
 
 #. Tag: simpara
 #, no-c-format
 msgid "Avencia"
-msgstr ""
+msgstr "Avencia"
 
 #. Tag: link
 #, no-c-format
 msgid "Azavea"
-msgstr ""
+msgstr "Azavea"
 
 #. Tag: link
 #, no-c-format
 msgid "Boundless"
-msgstr ""
+msgstr "Boundless"
 
 #. Tag: link
 #, no-c-format
 msgid "Cadcorp"
-msgstr ""
+msgstr "Cadcorp"
 
 #. Tag: link
 #, no-c-format
 msgid "Camptocamp"
-msgstr ""
+msgstr "Camptocamp"
 
 #. Tag: link
 #, no-c-format
@@ -10113,192 +11102,192 @@ msgstr ""
 #. Tag: link
 #, no-c-format
 msgid "Crunchy Data"
-msgstr ""
+msgstr "Crunchy Data"
 
 #. Tag: link
 #, no-c-format
 msgid "City of Boston (DND)"
-msgstr ""
+msgstr "City of Boston (DND)"
 
 #. Tag: link
 #, no-c-format
 msgid "City of Helsinki"
-msgstr ""
+msgstr "City of Helsinki"
 
 #. Tag: link
 #, no-c-format
 msgid "Clever Elephant Solutions"
-msgstr ""
+msgstr "Clever Elephant Solutions"
 
 #. Tag: link
 #, no-c-format
 msgid "Cooperativa Alveo"
-msgstr ""
+msgstr "Cooperativa Alveo"
 
 #. Tag: link
 #, no-c-format
 msgid "Deimos Space"
-msgstr ""
+msgstr "Deimos Space"
 
 #. Tag: link
 #, no-c-format
 msgid "Faunalia"
-msgstr ""
+msgstr "Faunalia"
 
 #. Tag: link
 #, no-c-format
 msgid "Geographic Data BC"
-msgstr ""
+msgstr "Geographic Data BC"
 
 #. Tag: link
 #, no-c-format
 msgid "HighGo"
-msgstr ""
+msgstr "HighGo"
 
 #. Tag: simpara
 #, no-c-format
 msgid "Hunter Systems Group"
-msgstr ""
+msgstr "Hunter Systems Group"
 
 #. Tag: link
 #, no-c-format
 msgid "INIA-CSIC"
-msgstr ""
+msgstr "INIA-CSIC"
 
 #. Tag: link
 #, no-c-format
 msgid "ISciences, LLC"
-msgstr ""
+msgstr "ISciences, LLC"
 
 #. Tag: link
 #, no-c-format
 msgid "Kontur"
-msgstr ""
+msgstr "Kontur"
 
 #. Tag: link
 #, no-c-format
 msgid "Lidwala Consulting Engineers"
-msgstr ""
+msgstr "Lidwala Consulting Engineers"
 
 #. Tag: link
 #, no-c-format
 msgid "LISAsoft"
-msgstr ""
+msgstr "LISAsoft"
 
 #. Tag: simpara
 #, no-c-format
 msgid "Logical Tracking &amp; Tracing International AG"
-msgstr ""
+msgstr "Logical Tracking &amp; Tracing International AG"
 
 #. Tag: simpara
 #, no-c-format
 msgid "Maponics"
-msgstr ""
+msgstr "Maponics"
 
 #. Tag: link
 #, no-c-format
 msgid "Michigan Tech Research Institute"
-msgstr ""
+msgstr "Michigan Tech Research Institute"
 
 #. Tag: link
 #, no-c-format
 msgid "Natural Resources Canada"
-msgstr ""
+msgstr "Natural Resources Canada"
 
 #. Tag: simpara
 #, no-c-format
 msgid "Norwegian Forest and Landscape Institute"
-msgstr ""
+msgstr "Norwegian Forest and Landscape Institute"
 
 #. Tag: link
 #, no-c-format
 msgid "Norwegian Institute of Bioeconomy Research (NIBIO)"
-msgstr ""
+msgstr "Norwegian Institute of Bioeconomy Research (NIBIO)"
 
 #. Tag: link
 #, no-c-format
 msgid "OSGeo"
-msgstr ""
+msgstr "OSGeo"
 
 #. Tag: link
 #, no-c-format
 msgid "Oslandia"
-msgstr ""
+msgstr "Oslandia"
 
 #. Tag: link
 #, no-c-format
 msgid "Palantir Technologies"
-msgstr ""
+msgstr "Palantir Technologies"
 
 #. Tag: link
 #, no-c-format
 msgid "Paragon Corporation"
-msgstr ""
+msgstr "Paragon Corporation"
 
 #. Tag: link
 #, no-c-format
 msgid "Postgres Pro"
-msgstr ""
+msgstr "Postgres Pro"
 
 #. Tag: link
 #, no-c-format
 msgid "R3 GIS"
-msgstr ""
+msgstr "R3 GIS"
 
 #. Tag: link
 #, no-c-format
 msgid "Refractions Research"
-msgstr ""
+msgstr "Refractions Research"
 
 #. Tag: link
 #, no-c-format
 msgid "Regione Toscana - SITA"
-msgstr ""
+msgstr "Regione Toscana - SITA"
 
 #. Tag: link
 #, no-c-format
 msgid "Safe Software"
-msgstr ""
+msgstr "Safe Software"
 
 #. Tag: simpara
 #, no-c-format
 msgid "Sirius Corporation plc"
-msgstr ""
+msgstr "Sirius Corporation plc"
 
 #. Tag: link
 #, no-c-format
 msgid "Stadt Uster"
-msgstr ""
+msgstr "Stadt Uster"
 
 #. Tag: link
 #, no-c-format
 msgid "UC Davis Center for Vectorborne Diseases"
-msgstr ""
+msgstr "UC Davis Center for Vectorborne Diseases"
 
 #. Tag: link
 #, no-c-format
 msgid "Université Laval"
-msgstr ""
+msgstr "Université Laval"
 
 #. Tag: link
 #, no-c-format
 msgid "U.S. Census Bureau"
-msgstr ""
+msgstr "U.S. Census Bureau"
 
 #. Tag: link
 #, no-c-format
 msgid "U.S. Department of State (HIU)"
-msgstr ""
+msgstr "U.S. Department of State (HIU)"
 
 #. Tag: link
 #, no-c-format
 msgid "Zonar Systems"
-msgstr ""
+msgstr "Zonar Systems"
 
 #. Tag: term
 #, no-c-format
 msgid "Crowd Funding Campaigns"
-msgstr ""
+msgstr "Crowd Funding Campaigns"
 
 #. Tag: para
 #, no-c-format
@@ -10313,6 +11302,16 @@ msgid ""
 "lists.osgeo.org/mailman/listinfo/postgis-users\">PostGIS newsgroup</link> "
 "your thoughts and together we can make it happen."
 msgstr ""
+"Кампанії з краудфандингу — це кампанії, які ми проводимо, щоб зібрати кошти "
+"на реалізацію дуже потрібних функцій, які можуть бути корисними для великої "
+"кількості людей. Кожна кампанія зосереджена на конкретній функції або наборі "
+"функцій. Кожен спонсор вносить невелику частину необхідних коштів, і за "
+"умови, що достатня кількість людей/організацій долучиться до кампанії, ми "
+"отримаємо кошти для оплати роботи, яка допоможе багатьом. Якщо у вас є ідея "
+"щодо функції, яку, на вашу думку, багато інших людей були б готові спільно "
+"фінансувати, будь ласка, опублікуйте її в <link xlink:href=«https://lists."
+"osgeo.org/mailman/listinfo/postgis-users»>групі новин PostGIS</link>, і "
+"разом ми зможемо її реалізувати."
 
 #. Tag: para
 #, no-c-format
@@ -10321,6 +11320,9 @@ msgid ""
 "xlink:href=\"http://www.pledgebank.com\">PledgeBank</link> and we got two "
 "successful campaigns out of it."
 msgstr ""
+"PostGIS 2.0.0 був першим випуском, в якому ми випробували цю стратегію. Ми "
+"використовували <link xlink:href=«http://www.pledgebank.com»>PledgeBank</"
+"link> і провели дві успішні кампанії."
 
 #. Tag: para
 #, no-c-format
@@ -10330,6 +11332,10 @@ msgid ""
 "contributed $250 USD to build toTopoGeometry function and beef up topology "
 "support in 2.0.0. It happened."
 msgstr ""
+"<link xlink:href=«http://www.pledgebank.com/postgistopology»><emphasis role="
+"\"bold\">postgistopology</emphasis></link> - 10 спонсорів внесли по 250 "
+"доларів США на створення функції toTopoGeometry та покращення підтримки "
+"топології в версії 2.0.0. Це сталося."
 
 #. Tag: para
 #, no-c-format
@@ -10339,11 +11345,15 @@ msgid ""
 "contributed $100 USD to pay for the work needed to work out PostGIS 64-bit "
 "issues on windows. It happened."
 msgstr ""
+"<link xlink:href=«http://www.pledgebank.com/postgis64windows»><emphasis role="
+"\"bold\">postgis64windows</emphasis></link> - 20 спонсорів внесли по 100 "
+"доларів США для оплати робіт, необхідних для вирішення проблем PostGIS 64-"
+"bit на Windows. Це сталося."
 
 #. Tag: term
 #, no-c-format
 msgid "Important Support Libraries"
-msgstr ""
+msgstr "Важливі допоміжні бібліотеки"
 
 #. Tag: para
 #, no-c-format
@@ -10351,6 +11361,8 @@ msgid ""
 "The <link xlink:href=\"https://libgeos.org\">GEOS</link> geometry operations "
 "library"
 msgstr ""
+"Бібліотека геометричних операцій <link xlink:href=«https://libgeos."
+"org»>GEOS</link>"
 
 #. Tag: para
 #, no-c-format
@@ -10360,6 +11372,10 @@ msgid ""
 "introduced in PostGIS 2. In kind, improvements needed in GDAL to support "
 "PostGIS are contributed back to the GDAL project."
 msgstr ""
+"Бібліотека абстракції геопросторових даних <link xlink:href=«https://gdal."
+"org»>GDAL</link> використовується для забезпечення більшості функцій роботи "
+"з растровими даними, представлених у PostGIS 2. Відповідно, поліпшення, "
+"необхідні в GDAL для підтримки PostGIS, вносяться назад у проект GDAL."
 
 #. Tag: para
 #, no-c-format
@@ -10367,6 +11383,8 @@ msgid ""
 "The <link xlink:href=\"https://www.proj4.org\">PROJ</link> cartographic "
 "projection library"
 msgstr ""
+"Бібліотека картографічних проекцій <link xlink:href=«https://www.proj4."
+"org»>PROJ</link>"
 
 #. Tag: para
 #, no-c-format
@@ -10377,21 +11395,26 @@ msgid ""
 "great query planner, GIST index, and plethora of SQL features provided by "
 "PostgreSQL."
 msgstr ""
+"І останнє, але не менш важливе, <link xlink:href=«http://www.postgresql."
+"org»>PostgreSQL</link>, гігант, на якому стоїть PostGIS. Більша частина "
+"швидкості та гнучкості PostGIS була б неможливою без розширюваності, "
+"чудового планувальника запитів, індексу GIST та безлічі функцій SQL, що "
+"надаються PostgreSQL."
 
 #. Tag: title
 #, no-c-format
 msgid "Performance Tips"
-msgstr ""
+msgstr "Поради щодо продуктивності"
 
 #. Tag: title
 #, no-c-format
 msgid "Small tables of large geometries"
-msgstr ""
+msgstr "Невеликі таблиці великих геометрій"
 
 #. Tag: title
 #, no-c-format
 msgid "Problem description"
-msgstr ""
+msgstr "Опис проблеми"
 
 #. Tag: para
 #, no-c-format
@@ -10404,6 +11427,14 @@ msgid ""
 "docs/current/static/storage-toast.html\">the PostgreSQL Documentation for "
 "TOAST</link> for more information)."
 msgstr ""
+"Поточні версії PostgreSQL (включно з 9.6) мають недолік оптимізатора запитів "
+"щодо таблиць TOAST. Таблиці TOAST — це свого роду «розширення», що "
+"використовуються для зберігання великих (у сенсі розміру даних) значень, які "
+"не вміщуються на звичайних сторінках даних (наприклад, довгі тексти, "
+"зображення або складні геометричні фігури з великою кількістю вершин). "
+"Докладнішу інформацію див. <link xlink:href=\"http://www.postgresql.org/docs/"
+"current/static/storage-toast.html\">документації PostgreSQL щодо TOAST</"
+"link> для отримання додаткової інформації)."
 
 #. Tag: para
 #, no-c-format
@@ -10415,6 +11446,12 @@ msgid ""
 "table itself had about 80 rows and used only 3 data pages, but the TOAST "
 "table used 8225 pages."
 msgstr ""
+"Проблема виникає, якщо у вас є таблиця з досить великими геометріями, але не "
+"надто великою кількістю рядків (наприклад, таблиця, що містить межі всіх "
+"європейських країн у високій роздільній здатності). Тоді сама таблиця є "
+"невеликою, але використовує багато простору TOAST. У нашому прикладі таблиця "
+"мала близько 80 рядків і використовувала лише 3 сторінки даних, але таблиця "
+"TOAST використовувала 8225 сторінок."
 
 #. Tag: para
 #, no-c-format
@@ -10428,6 +11465,14 @@ msgid ""
 "geometry from disk to compare the bounding boxes, thus reading all TOAST "
 "pages, too."
 msgstr ""
+"Тепер виконайте запит, в якому використовується оператор геометрії &amp;&amp;"
+" для пошуку обмежувального прямокутника, який відповідає лише деяким із цих "
+"рядків. Тепер оптимізатор запитів бачить, що таблиця має лише 3 сторінки та "
+"80 рядків. Він оцінює, що послідовне сканування такої невеликої таблиці буде "
+"набагато швидшим, ніж використання індексу. Тому він вирішує проігнорувати "
+"індекс GIST. Зазвичай така оцінка є правильною. Але в нашому випадку "
+"оператор &amp;&amp; повинен витягнути кожну геометрію з диска, щоб порівняти "
+"обмежувальні прямокутники, тим самим прочитавши також усі сторінки TOAST."
 
 #. Tag: para
 #, no-c-format
@@ -10439,6 +11484,12 @@ msgid ""
 "php\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
 "link>"
 msgstr ""
+"Щоб перевірити, чи є у вас ця проблема, скористайтеся командою postgresql «"
+"EXPLAIN ANALYZE». Більш детальну інформацію та технічні подробиці можна "
+"знайти у темі на форумі PostgreSQL performance mailing list: <link "
+"xlink:href=«http://archives.postgresql.org/pgsql-performance/2005-02/msg00030"
+".php»>http://archives.postgresql.org/pgsql-performance/2005-02/msg00030."
+"php</link>"
 
 #. Tag: para
 #, no-c-format
@@ -10447,6 +11498,9 @@ msgid ""
 "pipermail/postgis-devel/2017-June/026209.html\">https://lists.osgeo.org/"
 "pipermail/postgis-devel/2017-June/026209.html</link>"
 msgstr ""
+"та новіша тема на PostGIS <link xlink:href=«https://lists.osgeo.org/"
+"pipermail/postgis-devel/2017-June/026209.html»>https://lists.osgeo.org/"
+"pipermail/postgis-devel/2017-June/026209.html</link>"
 
 #. Tag: title
 #, no-c-format
