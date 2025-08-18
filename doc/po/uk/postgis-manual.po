@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-13 17:46+0000\n"
+"PO-Revision-Date: 2025-08-18 17:50+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -6071,6 +6071,9 @@ msgid ""
 "TopoGeometry. Refuses to heal two faces if any TopoGeometry is defined by "
 "only one of them (and not the other)."
 msgstr ""
+"Відмовляється видаляти край, що бере участь у визначенні існуючої "
+"TopoGeometry. Відмовляється виправляти дві грані, якщо будь-яка TopoGeometry "
+"визначена тільки однією з них (а не іншою)."
 
 #. Tag: para
 #, no-c-format
@@ -6079,12 +6082,16 @@ msgid ""
 "the <varname>edge</varname> table of the topology schema), the topology name "
 "is invalid then an error is thrown."
 msgstr ""
+"Якщо будь-які аргументи мають нульове значення, задана ребро невідома ("
+"повинна вже існувати в таблиці <varname>edge</varname> схеми топології), "
+"ім'я топології недійсне, то генерується помилка."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.14"
 msgstr ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo та Topo-Net 3: Деталі процедури: X.3.14"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6092,6 +6099,8 @@ msgid ""
 "Removes an edge, and if the edge separates two faces deletes one face and "
 "modifies the other face to cover the space of both."
 msgstr ""
+"Видаляє ребро, і якщо ребро розділяє дві грані, видаляє одну грань і "
+"модифікує іншу грань, щоб покрити простір обох."
 
 #. Tag: para
 #, no-c-format
@@ -6102,12 +6111,17 @@ msgid ""
 "linkend=\"ST_AddEdgeModFace\"/>. Returns the id of the face which is "
 "preserved."
 msgstr ""
+"Видаляє ребро, і якщо видалене ребро розділяє дві грані, видаляє одну грань "
+"і модифікує іншу грань, щоб покрити простір обох. Переважно зберігає грань "
+"праворуч, щоб забезпечити узгодженість з <xref linkend=\"ST_AddEdgeModFace\"/"
+">. Повертає ідентифікатор грані, яка зберігається."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.15"
 msgstr ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo та Topo-Net 3: Деталі процедури: X.3.15"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6115,13 +6129,15 @@ msgid ""
 "<refpurpose>Changes the shape of an edge without affecting the topology "
 "structure.</refpurpose>"
 msgstr ""
+"<refpurpose>Змінює форму ребра, не впливаючи на топологічну "
+"структуру.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<para>Changes the shape of an edge without affecting the topology structure."
 "</para>"
-msgstr ""
+msgstr "<para>Змінює форму ребра, не впливаючи на топологічну структуру.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -6131,12 +6147,16 @@ msgid ""
 "varname> is not a <varname>LINESTRING</varname>, or the modification would "
 "change the underlying topology then an error is thrown."
 msgstr ""
+"Якщо будь-які аргументи мають значення null, задана ребро не існує в таблиці "
+"<varname>edge</varname> схеми топології, <varname>acurve</varname> не є "
+"<varname>LINESTRING</varname>, або модифікація змінить базову топологію, то "
+"буде видано помилку."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If the new <varname>acurve</varname> is not simple, then an error is thrown."
-msgstr ""
+msgstr "Якщо новий <varname>acurve</varname> не є простим, то виникає помилка."
 
 #. Tag: para
 #, no-c-format
@@ -6144,22 +6164,26 @@ msgid ""
 "If moving the edge from old to new position would hit an obstacle then an "
 "error is thrown."
 msgstr ""
+"Якщо переміщення ребра зі старого положення в нове призведе до зіткнення з "
+"перешкодою, буде видано помилку."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.1.0"
-msgstr ""
+msgstr "Доступність: 1.1.0"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0.0 adds topological consistency enforcement"
-msgstr ""
+msgstr "Покращено: у версії 2.0.0 додано забезпечення топологічної узгодженості"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details X.3.6"
 msgstr ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo та Topo-Net 3: Деталі рутинних операцій X."
+"3.6"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6167,6 +6191,8 @@ msgid ""
 "Split an edge by creating a new node along an existing edge, modifying the "
 "original edge and adding a new edge."
 msgstr ""
+"Розділіть ребро, створивши новий вузол уздовж існуючого ребра, змінивши "
+"оригінальне ребро та додавши нове."
 
 #. Tag: para
 #, no-c-format
@@ -6175,17 +6201,23 @@ msgid ""
 "original edge and adding a new edge. Updates all existing joined edges and "
 "relationships accordingly. Returns the identifier of the newly added node."
 msgstr ""
+"Розділити ребро, створивши новий вузол уздовж існуючого ребра, змінивши "
+"оригінальне ребро та додавши нове ребро. Відповідно оновлює всі існуючі "
+"з'єднані ребра та відносини. Повертає ідентифікатор новододаного вузла."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.0 - In prior versions, this was misnamed ST_ModEdgesSplit"
 msgstr ""
+"Змінено: 2.0 — у попередніх версіях це було неправильно названо "
+"ST_ModEdgesSplit"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.9"
 msgstr ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo та Topo-Net 3: Деталі процедури: X.3.9"
 
 #. Tag: para
 #, no-c-format
@@ -6193,6 +6225,8 @@ msgid ""
 ", <xref linkend=\"ST_ModEdgeHeal\"/>, <xref linkend=\"ST_NewEdgeHeal\"/>, "
 "<xref linkend=\"AddEdge\"/>"
 msgstr ""
+", <xref linkend=\"ST_ModEdgeHeal\"/>, <xref linkend=\"ST_NewEdgeHeal\"/>, "
+"<xref linkend=\"AddEdge\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6200,6 +6234,8 @@ msgid ""
 "Heals two edges by deleting the node connecting them, modifying the first "
 "edge and deleting the second edge. Returns the id of the deleted node."
 msgstr ""
+"Виправляє двa ребра, видаляючи вузол, що їх з'єднує, змінюючи перше ребро та "
+"видаляючи друге ребро. Повертає ідентифікатор видаленого вузла."
 
 #. Tag: para
 #, no-c-format
@@ -6208,6 +6244,9 @@ msgid ""
 "edge and deleting the second edge. Returns the id of the deleted node. "
 "Updates all existing joined edges and relationships accordingly."
 msgstr ""
+"Виправляє два ребра, видаляючи вузол, що їх з'єднує, змінюючи перше ребро та "
+"видаляючи друге ребро. Повертає ідентифікатор видаленого вузла. Відповідно "
+"оновлює всі існуючі з'єднані ребра та відносини."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6216,6 +6255,9 @@ msgid ""
 "and replacing them with an edge whose direction is the same as the first "
 "edge provided."
 msgstr ""
+"Відновлює два ребра, видаляючи вузол, що їх з'єднує, видаляючи обидва ребра "
+"та замінюючи їх ребром, напрямок якого збігається з напрямком першого "
+"наданого ребра."
 
 #. Tag: para
 #, no-c-format
