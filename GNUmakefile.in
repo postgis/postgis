@@ -285,7 +285,7 @@ ifeq (@TOPOLOGY@,topology)
 	include $(top_srcdir)/topology/test/tests.mk
 endif
 ifeq (@RASTER@,raster)
-	include $(top_srcdir)/raster/test/regress/tests.mk
+	include $(top_builddir)/raster/test/regress/tests.mk
 endif
 
 include $(top_srcdir)/regress/runtest.mk

@@ -30,7 +30,7 @@ doc/html/images/Makefile
 regression.out
 raster/test/regress/tests.mk
 regress/core/tests.mk
-sfcgla/regress/tests.mk
+sfcgal/regress/tests.mk
 
 
 # PNG images under doc/html/images

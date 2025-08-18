@@ -27,6 +27,7 @@
 top_srcdir = @top_srcdir@
 srcdir = @srcdir@
 top_builddir = @top_builddir@
+builddir = @builddir@
 
 POSTGIS_SRC=../../..
 PERL=@PERL@
@@ -59,7 +60,7 @@ rtpostgis.sql: ../../rt_pg/rtpostgis.sql
 	$(PERL) -lpe "s'\\\$$libdir'$(REGRESS_INSTALLDIR)/lib'g" $< > $@
 
 
-include $(srcdir)/tests.mk
+include $(builddir)/tests.mk
 include $(top_srcdir)/regress/runtest.mk
 
 check: check-regress
