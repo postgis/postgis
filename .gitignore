@@ -196,6 +196,8 @@ topology/Makefile
 topology/test/Makefile
 topology/test/load_topology-4326.sql
 topology/test/load_topology.sql
+topology/test/load_large_topology-4326.sql
+topology/test/load_large_topology.sql
 topology/test/topo_predicates.sql
 topology/topology_after_upgrade.sql
 topology/topology_before_upgrade.sql
