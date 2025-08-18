@@ -28,6 +28,10 @@ doc/images
 doc/html/images/generator
 doc/html/images/Makefile
 regression.out
+raster/test/regress/tests.mk
+regress/core/tests.mk
+sfcgla/regress/tests.mk
+
 
 # PNG images under doc/html/images
 # should be either symlinks or generated
