@@ -3,9 +3,9 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
         <section>
-            <title>PostGIS 3.6.0beta1</title>
-            <para>2025/07/19</para>
-                        <para>This version requires PostgreSQL 12-18beta2, GEOS 3.8 or higher, and Proj 6.1+.
+            <title>PostGIS 3.6.0rc1</title>
+            <para>2025/08/18</para>
+                        <para>This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj 6.1+.
             To take advantage of all features, GEOS 3.14+ is needed.
             To take advantage of all SFCGAL features, SFCGAL 2.2+ is needed.</para>
 
@@ -23,10 +23,14 @@
                 <para><link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/252">GT-252</link>, ST_NumGeometries/ST_GeometryN treat TIN and PolyhedralSurface as unitary geometries,
                     use ST_NumPatches/ST_PatchN for patch access (Loïc Bartoletti)</para>
                 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/3110">#3110</link>, <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/242">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5359">#5359</link>, <link xlink:href="https://trac.osgeo.org/postgis/ticket/5897">#5897</link>, <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/260">GT-260</link>
+                [tiger_geocoder] Use @extschema:extension@ for PG &gt;= 16 to schema qualify dependent extensions, switch to use typmod for tiger tables (Regina Obe)</para>
             </simplesect>
 
             <simplesect><title>Removed / Deprecate signatures</title>
                 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/3110">#3110</link>, <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/242">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5498">#5498</link> Drop st_approxquantile(raster, double precision), wasn't usable as it triggered
+                        is not unique error when used (Regina Obe)</para>
             </simplesect>
 
             <simplesect><title>New Features</title>
@@ -46,7 +50,8 @@
                 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5841">#5841</link>, Change interrupt handling to remove use of pqsignal to support PG 18 (Paul Ramsey)</para>
                 <para>Add ST_CoverageClean to edge match and gap remove polygonal
                     coverages (Paul Ramsey) from GEOS 3.14 (Martin Davis)</para>
-                <para>Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/3110">#3110</link>, <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/242">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)</para>
+                <para>[raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)</para>
                 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/3110">#3110</link>, <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/242">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)</para>
             </simplesect>
         </section>

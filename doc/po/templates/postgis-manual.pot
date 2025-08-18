@@ -23797,143 +23797,6 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid ""
-"<refpurpose>Generates a set of vector contours from the provided raster "
-"band, using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"contouring algorithm</link>.</refpurpose>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<para>Generates a set of vector contours from the provided raster band, "
-"using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"contouring algorithm</link>.</para>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"When the <varname>fixed_levels</varname> parameter is a non-empty array, the "
-"<varname>level_interval</varname> and <varname>level_base</varname> "
-"parameters are ignored."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Input parameters are:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "The raster to generate the contour of"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "The band to generate the contour of"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "The elevation interval between contours generated"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The \"base\" relative to which contour intervals are applied, this is "
-"normally zero, but could be different. To generate 10m contours at 5, 15, "
-"25, ... the LEVEL_BASE would be 5."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If <literal>true</literal>, contour polygons will be created, rather than "
-"polygon lines."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Return values are a set of records with the following attributes:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "The geometry of the contour line."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "A unique identifier given to the contour line by GDAL."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The raster value the line represents. For an elevation DEM input, this would "
-"be the elevation of the output contour."
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Interpolates a gridded surface based on an input set of 3-d points, using "
-"the X- and Y-values to position the points on the grid and the Z-value of "
-"the points as the surface elevation."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Interpolates a gridded surface based on an input set of 3-d points, using "
-"the X- and Y-values to position the points on the grid and the Z-value of "
-"the points as the surface elevation. There are five interpolation algorithms "
-"available: inverse distance, inverse distance nearest-neighbor, moving "
-"average, nearest neighbor, and linear interpolation. See the <link xlink:"
-"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">gdal_grid documentation</link> for more details on the "
-"algorithms and their parameters. For more information on how interpolations "
-"are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
-"gdal_grid_tut.html\">GDAL grid tutorial</link>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The points to drive the interpolation. Any geometry with Z-values is "
-"acceptable, all points in the input will be used."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A string defining the algorithm and algorithm options, in the format used by "
-"<link xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">gdal_grid</link>. For example, for an inverse-distance "
-"interpolation with a smoothing of 2, you would use \"invdist:smoothing=2.0\""
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A raster template to drive the geometry of the output raster. The width, "
-"height, pixel size, spatial extent and pixel type will be read from this "
-"template."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"By default the first band in the template raster is used to drive the output "
-"raster, but that can be adjusted with this parameter."
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
 msgid "Change the SRID of all rasters in the user-specified column and table."
 msgstr ""
 
@@ -29339,6 +29202,143 @@ msgid ""
 "linkend=\"RT_ST_Aspect\"/>"
 msgstr ""
 
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Interpolates a gridded surface based on an input set of 3-d points, using "
+"the X- and Y-values to position the points on the grid and the Z-value of "
+"the points as the surface elevation."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Interpolates a gridded surface based on an input set of 3-d points, using "
+"the X- and Y-values to position the points on the grid and the Z-value of "
+"the points as the surface elevation. There are five interpolation algorithms "
+"available: inverse distance, inverse distance nearest-neighbor, moving "
+"average, nearest neighbor, and linear interpolation. See the <link xlink:"
+"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"algorithms\">gdal_grid documentation</link> for more details on the "
+"algorithms and their parameters. For more information on how interpolations "
+"are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
+"gdal_grid_tut.html\">GDAL grid tutorial</link>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Input parameters are:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The points to drive the interpolation. Any geometry with Z-values is "
+"acceptable, all points in the input will be used."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A string defining the algorithm and algorithm options, in the format used by "
+"<link xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"algorithms\">gdal_grid</link>. For example, for an inverse-distance "
+"interpolation with a smoothing of 2, you would use \"invdist:smoothing=2.0\""
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A raster template to drive the geometry of the output raster. The width, "
+"height, pixel size, spatial extent and pixel type will be read from this "
+"template."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"By default the first band in the template raster is used to drive the output "
+"raster, but that can be adjusted with this parameter."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"<refpurpose>Generates a set of vector contours from the provided raster "
+"band, using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
+"contouring algorithm</link>.</refpurpose>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<para>Generates a set of vector contours from the provided raster band, "
+"using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
+"contouring algorithm</link>.</para>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When the <varname>fixed_levels</varname> parameter is a non-empty array, the "
+"<varname>level_interval</varname> and <varname>level_base</varname> "
+"parameters are ignored."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The raster to generate the contour of"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The band to generate the contour of"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The elevation interval between contours generated"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The \"base\" relative to which contour intervals are applied, this is "
+"normally zero, but could be different. To generate 10m contours at 5, 15, "
+"25, ... the LEVEL_BASE would be 5."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If <literal>true</literal>, contour polygons will be created, rather than "
+"polygon lines."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Return values are a set of records with the following attributes:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The geometry of the contour line."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A unique identifier given to the contour line by GDAL."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The raster value the line represents. For an elevation DEM input, this would "
+"be the elevation of the output contour."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Raster Processing: Raster to Geometry"
@@ -29546,6 +29546,31 @@ msgstr ""
 msgid ""
 "Changed: 2.1.0 In prior versions would sometimes return a polygon, changed "
 "to always return multipolygon."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Calculates the fraction of each raster cell that is covered by a given "
+"geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Calculates the fraction of each raster cell that is covered by a given "
+"geometry. The first argument is a raster, which defines the grid geometry to "
+"use for the calculation. The extent and cell size are read from the raster "
+"parameter. The second argument is a geometry, which is overlaid with the "
+"grid, and each grid populated based on overlaying the geometry on the grid. "
+"For polygons, the value returned for each cell is the proportion of its area "
+"that is covered by the geometry. For linestrings, the value returned for "
+"each cell is the length contained in the cell."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0 Requires GEOS 3.14 or higher."
 msgstr ""
 
 #. Tag: title
@@ -35161,18 +35186,18 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0beta1"
+msgid "PostGIS 3.6.0rc1"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/07/19"
+msgid "2025/08/18"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12-18beta2, GEOS 3.8 or higher, and Proj "
+"This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj "
 "6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
 "advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
 msgstr ""
@@ -35244,9 +35269,28 @@ msgid ""
 "Census Bureau)"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+"ticket/5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/"
+"postgis/postgis/pulls/260\">GT-260</link> [tiger_geocoder] Use @extschema:"
+"extension@ for PG &gt;= 16 to schema qualify dependent extensions, switch to "
+"use typmod for tiger tables (Regina Obe)"
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Removed / Deprecate signatures"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</link> "
+"Drop st_approxquantile(raster, double precision), wasn't usable as it "
+"triggered is not unique error when used (Regina Obe)"
 msgstr ""
 
 #. Tag: title
@@ -35347,7 +35391,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. "
+"Census Bureau)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"[raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
 msgstr ""
 
 #. Tag: title

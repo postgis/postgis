@@ -1,7 +1,7 @@
-PostGIS 3.6.0beta1
-2025/07/20
+PostGIS 3.6.0rc1
+2025/08/18
 
-This version requires PostgreSQL 12-18beta2, GEOS 3.8 or higher, and Proj 6.1+.
+This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.14+ is needed.
 To take advantage of all SFCGAL features, SFCGAL 2.2+ is needed.
 
@@ -50,7 +50,7 @@ Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)
   - #5841, Change interrupt handling to remove use of pqsignal to support PG 18 (Paul Ramsey)
   - Add ST_CoverageClean to edge match and gap remove polygonal
     coverages (Paul Ramsey) from GEOS 3.14 (Martin Davis)
-  - Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)
   - #3110, GT-242 [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)
-  - #5963, add ST_IntersectionFractions (Paul Ramsey)
+  - [raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)
+  - #5963, [raster] add ST_IntersectionFractions - Requires GEOS 3.14 (Paul Ramsey)
 
