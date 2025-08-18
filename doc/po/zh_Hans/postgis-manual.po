@@ -2193,9 +2193,9 @@ msgid ""
 "Encoding and Referencing system ) / Line and Master Address database export</"
 "link> released by the US Census Bureau."
 msgstr ""
-"一个基于 PL/pgSQL 编写的地理编码器，美国人口普查局发布的 <link xlink:href="
-"\"https://www2.census.gov/geo/tiger/\">TIGER（拓扑集成地理编码与参照系统）/ "
-"Line and Master Address database export</link> 配合使用。"
+"一个基于 PL/pgSQL 编写的地理编码器，美国人口普查局发布的 <link xlink:"
+"href=\"https://www2.census.gov/geo/tiger/\">TIGER（拓扑集成地理编码与参照系"
+"统）/ Line and Master Address database export</link> 配合使用。"
 
 #. Tag: para
 #, no-c-format
@@ -4784,9 +4784,8 @@ msgid ""
 "<varname>gridSize</varname> as a puntal geometry, optionally limiting the "
 "check to the area specified by the <varname>bbox</varname> parameter."
 msgstr ""
-"返回所有未根据拓扑或指定的 <varname>gridSize</varname> "
-"进行规整的顶点，以点状几何对象形式表示，可选地通过 <varname>bbox</varname> "
-"参数限制检查范围。"
+"返回所有未根据拓扑或指定的 <varname>gridSize</varname> 进行规整的顶点，以点状"
+"几何对象形式表示，可选地通过 <varname>bbox</varname> 参数限制检查范围。"
 
 #. Tag: para
 #, no-c-format
@@ -4807,16 +4806,17 @@ msgid ""
 "specified by the <varname>bbox</varname> parameter."
 msgstr ""
 "将拓扑中的所有顶点对齐到拓扑精度网格，或对齐到由 <varname>gridSize</varname> "
-"参数指定大小的网格，可选地将操作限制在与 <varname>bbox</varname> "
-"参数指定区域相交的对象范围内。"
+"参数指定大小的网格，可选地将操作限制在与 <varname>bbox</varname> 参数指定区域"
+"相交的对象范围内。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Snapping could make the topology invalid, so it is recommended to check the "
 "outcome of operation with <xref linkend=\"ValidateTopology\"/>."
-msgstr "对齐操作可能导致拓扑变得无效，因此建议使用 <xref linkend=\"ValidateTopology\""
-"/> 检查操作结果。"
+msgstr ""
+"对齐操作可能导致拓扑变得无效，因此建议使用 <xref "
+"linkend=\"ValidateTopology\"/> 检查操作结果。"
 
 #. Tag: para
 #, no-c-format
@@ -4859,7 +4859,8 @@ msgstr "指定拓扑占用的总磁盘空间，包括所有索引和TOAST数据�
 msgid ""
 "Takes a topology name and provides the total disk space used by all its "
 "tables, including indexes and TOAST data."
-msgstr "接受一个拓扑名称，返回其所有表（包括索引和TOAST数据）占用的总磁盘空间。"
+msgstr ""
+"接受一个拓扑名称，返回其所有表（包括索引和TOAST数据）占用的总磁盘空间。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4966,8 +4967,8 @@ msgid ""
 "reference system</link> SRID for the topology. The SRID defaults to -1 "
 "(unknown) if not specified."
 msgstr ""
-"<varname>srid</varname> 表示该拓扑的 <link linkend=\"spatial_ref_sys\""
-">空间参考系统</link> 的 SRID。如果未指定，默认值为 -1（未知）。"
+"<varname>srid</varname> 表示该拓扑的 <link linkend=\"spatial_ref_sys\">空间参"
+"考系统</link> 的 SRID。如果未指定，默认值为 -1（未知）。"
 
 #. Tag: para
 #, no-c-format
@@ -4986,8 +4987,9 @@ msgstr "如果未指定，<varname>hasz </varname>默认为 false。"
 msgid ""
 "<varname>topoid</varname> optional explicit identifier (allows deterministic "
 "topology id assignment, needs to be unique)"
-msgstr "<varname>topoid</varname> 为可选的显式标识符（允许确定性地分配拓扑 "
-"ID，需保证唯一）"
+msgstr ""
+"<varname>topoid</varname> 为可选的显式标识符（允许确定性地分配拓扑 ID，需保证"
+"唯一）"
 
 #. Tag: para
 #, no-c-format
@@ -4996,8 +4998,8 @@ msgid ""
 "topology will be created to support large ids (int8) for topology and "
 "primitive ids."
 msgstr ""
-"<varname>useslargeids</varname> 为可选参数，默认值为 false。若设为 "
-"true，则创建的拓扑将支持大整数（int8）类型的拓扑 ID 和要素 ID。"
+"<varname>useslargeids</varname> 为可选参数，默认值为 false。若设为 true，则创"
+"建的拓扑将支持大整数（int8）类型的拓扑 ID 和要素 ID。"
 
 #. Tag: para
 #, no-c-format
@@ -7624,9 +7626,9 @@ msgid ""
 "GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
 "\"> https://libgeos.org </link>."
 msgstr ""
-"GEOS 几何库，版本需为 &min_geos_version; 或更高，但建议使用 GEOS 3.14 "
-"及以上版本，以充分利用所有新函数和特性。可从 <link xlink:href=\"https"
-"://libgeos.org/\"> https://libgeos.org </link> 下载。"
+"GEOS 几何库，版本需为 &min_geos_version; 或更高，但建议使用 GEOS 3.14 及以上"
+"版本，以充分利用所有新函数和特性。可从 <link xlink:href=\"https://libgeos."
+"org/\"> https://libgeos.org </link> 下载。"
 
 #. Tag: para
 #, no-c-format
@@ -7726,10 +7728,10 @@ msgid ""
 "pcre</varname> during configure."
 msgstr ""
 "若要构建 <xref linkend=\"Address_Standardizer\"/>，还需要 PCRE 1 或 2 库，"
-"<link xlink:href=\"http://www.pcre.org\">http://www.pcre.org</link>（"
-"该库通常在类 Unix 系统中已预装）。如果系统中已检测到 PCRE 库，"
-"或在配置时传入有效的 <varname>--with-pcre-dir=/path/to/pcre</varname> 参数，"
-"<xref linkend=\"Address_Standardizer\"/> 将自动构建。"
+"<link xlink:href=\"http://www.pcre.org\">http://www.pcre.org</link>（该库通常"
+"在类 Unix 系统中已预装）。如果系统中已检测到 PCRE 库，或在配置时传入有效的 "
+"<varname>--with-pcre-dir=/path/to/pcre</varname> 参数，<xref "
+"linkend=\"Address_Standardizer\"/> 将自动构建。"
 
 #. Tag: para
 #, no-c-format
@@ -15297,15 +15299,16 @@ msgid ""
 ", <xref linkend=\"ST_CoverageSimplify\"/>, <xref "
 "linkend=\"ST_CoverageClean\"/>, <xref linkend=\"ST_Union\"/>"
 msgstr ""
-", <xref linkend=\"ST_CoverageSimplify\"/>, <xref linkend=\"ST_CoverageClean\""
-"/>, <xref linkend=\"ST_Union\"/>"
+", <xref linkend=\"ST_CoverageSimplify\"/>, <xref "
+"linkend=\"ST_CoverageClean\"/>, <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Computes a clean (edge matched, non-overlapping, gap-cleared) polygonal "
 "coverage, given a non-clean input."
-msgstr "对非规范化输入计算出一个规范的多边形覆盖结果（边界匹配、无重叠、无缝隙）。"
+msgstr ""
+"对非规范化输入计算出一个规范的多边形覆盖结果（边界匹配、无重叠、无缝隙）。"
 
 #. Tag: para
 #, no-c-format
@@ -15325,8 +15328,9 @@ msgstr ""
 msgid ""
 "The <parameter>gapMaximumWidth</parameter> controls the cleaning of gaps "
 "between polygons. Gaps smaller than this tolerance will be closed."
-msgstr "<parameter>gapMaximumWidth</parameter> "
-"参数用于控制多边形之间缝隙的清理。小于该容差的缝隙将被自动关闭。"
+msgstr ""
+"<parameter>gapMaximumWidth</parameter> 参数用于控制多边形之间缝隙的清理。小于"
+"该容差的缝隙将被自动关闭。"
 
 #. Tag: para
 #, no-c-format
@@ -15336,9 +15340,9 @@ msgid ""
 "an automatic snapping distance based on an analysis of the input. Set to 0.0 "
 "to turn off all snapping."
 msgstr ""
-"<parameter>snappingDistance</parameter> "
-"参数用于控制节点对齐（snapping）操作，即将相近顶点合并为一个点。默认值为 "
-"-1，表示自动根据输入数据分析确定对齐距离。若设为 0.0，则完全关闭对齐操作。"
+"<parameter>snappingDistance</parameter> 参数用于控制节点对齐（snapping）操"
+"作，即将相近顶点合并为一个点。默认值为 -1，表示自动根据输入数据分析确定对齐距"
+"离。若设为 0.0，则完全关闭对齐操作。"
 
 #. Tag: para
 #, no-c-format
@@ -15346,14 +15350,15 @@ msgid ""
 "The <parameter>overlapMergeStrategy</parameter> controls the algorithm used "
 "to determine which neighboring polygons to merge overlapping areas into."
 msgstr ""
-"<parameter>overlapMergeStrategy</parameter> "
-"参数用于控制算法在处理重叠区域时，决定将重叠部分合并到哪个相邻多边形中。"
+"<parameter>overlapMergeStrategy</parameter> 参数用于控制算法在处理重叠区域"
+"时，决定将重叠部分合并到哪个相邻多边形中。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<code>MERGE_LONGEST_BORDER</code> chooses polygon with longest common border"
-msgstr "<code>MERGE_LONGEST_BORDER</code> 选取与之具有最长公共边界的多边形进行合并"
+msgstr ""
+"<code>MERGE_LONGEST_BORDER</code> 选取与之具有最长公共边界的多边形进行合并"
 
 #. Tag: para
 #, no-c-format
@@ -16361,9 +16366,8 @@ msgid ""
 "vertices within the tolerance distance of one another are considered to be "
 "duplicates. The distance is computed in 2D (XY plane)."
 msgstr ""
-"如果提供了非零的 <parameter>tolerance</parameter> "
-"参数，则在该容差距离内的顶点将被视为重复点。该距离在二维平面（XY "
-"平面）上计算。"
+"如果提供了非零的 <parameter>tolerance</parameter> 参数，则在该容差距离内的顶"
+"点将被视为重复点。该距离在二维平面（XY 平面）上计算。"
 
 #. Tag: para
 #, no-c-format
@@ -17484,10 +17488,10 @@ msgid ""
 "logging to be sent into the PostgreSQL logging stream, so you can see more "
 "or less of it by altering the <code>client_min_message</code> PostgreSQL GUC."
 msgstr ""
-"默认情况下，GDAL "
-"日志输出到标准错误（stderr），且较低级别的调试信息不会被打印。将此 GUC "
-"设置为 true 后，GDAL 日志将被发送到 PostgreSQL 的日志流中，用户可通过调整 "
-"PostgreSQL 的 <code>client_min_message</code> 参数控制日志的详细程度。"
+"默认情况下，GDAL 日志输出到标准错误（stderr），且较低级别的调试信息不会被打"
+"印。将此 GUC 设置为 true 后，GDAL 日志将被发送到 PostgreSQL 的日志流中，用户"
+"可通过调整 PostgreSQL 的 <code>client_min_message</code> 参数控制日志的详细程"
+"度。"
 
 #. Tag: title
 #, no-c-format
@@ -22593,9 +22597,9 @@ msgid ""
 "either 'NDR' for little-endian; or 'XDR' for big-endian. Supplying unknown "
 "arguments will result in little-endian output."
 msgstr ""
-"返回带有 SRID 元数据的 <link linkend=\"EWKB_EWKT\">Extended Well-Known Binary"
-"</link>（EWKB）格式的几何对象表示。第一个函数形式默认使用服务器主机的字节序进"
-"行编码。第二个函数形式接受一个文本参数，用于指定字节序编码方式：'NDR' "
+"返回带有 SRID 元数据的 <link linkend=\"EWKB_EWKT\">Extended Well-Known "
+"Binary</link>（EWKB）格式的几何对象表示。第一个函数形式默认使用服务器主机的字"
+"节序进行编码。第二个函数形式接受一个文本参数，用于指定字节序编码方式：'NDR' "
 "表示小端编码，'XDR' 表示大端编码。如传入未知参数，将默认输出小端编码格式。"
 
 #. Tag: para
@@ -23433,8 +23437,8 @@ msgid ""
 "Canonical example for a Web Mercator tile using a computed tile bounds to "
 "query and clip geometry. This assumes the data.geom column has srid of 4326."
 msgstr ""
-"使用计算出的瓦片边界进行查询和裁剪几何的 Web Mercator 瓦片典型示例。"
-"本示例假设 data.geom 列的 SRID 为 4326。"
+"使用计算出的瓦片边界进行查询和裁剪几何的 Web Mercator 瓦片典型示例。本示例假"
+"设 data.geom 列的 SRID 为 4326。"
 
 #. Tag: para
 #, no-c-format
@@ -24366,9 +24370,9 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
 "linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
-"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Force2D\"/>, <xref linkend="
-"\"ST_SymDifference\"/>, <xref linkend=\"ST_Intersects\"/>, <xref linkend="
-"\"ST_Multi\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Force2D\"/>, <xref "
+"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
+"linkend=\"ST_Multi\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -24573,7 +24577,8 @@ msgstr ""
 msgid ""
 "<code>max_vertices</code> must be 5 or more, as 5 points are needed to "
 "represent a closed box."
-msgstr "<code>max_vertices</code> 必须不小于 5，因为表示一个封闭盒子至少需要 5 个点。"
+msgstr ""
+"<code>max_vertices</code> 必须不小于 5，因为表示一个封闭盒子至少需要 5 个点。"
 
 #. Tag: para
 #, no-c-format
@@ -24766,8 +24771,8 @@ msgid ""
 "linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
-"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>, <xref linkend="
-"\"ST_ReducePrecision\"/>"
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -25043,9 +25048,9 @@ msgid ""
 "invalid polygons. <xref linkend=\"ST_MakeValid\"/> is more suitable for this "
 "process as it can handle multi-polygons."
 msgstr ""
-"缓冲区操作可处理无效输入，并始终生成有效的多边形几何对象。以距离 0 "
-"进行缓冲常被用作修复无效多边形的一种方法。但对于此类修复操作，<xref linkend="
-"\"ST_MakeValid\"/> 更为适合，因为它能处理多面体MultiPolygon类型。"
+"缓冲区操作可处理无效输入，并始终生成有效的多边形几何对象。以距离 0 进行缓冲常"
+"被用作修复无效多边形的一种方法。但对于此类修复操作，<xref "
+"linkend=\"ST_MakeValid\"/> 更为适合，因为它能处理多面体MultiPolygon类型。"
 
 #. Tag: para
 #, no-c-format
@@ -27217,7 +27222,8 @@ msgid ""
 "The functions below are ones which a user of PostGIS Raster is likely to "
 "need. There are other raster support functions which are not of interest to "
 "a general user."
-msgstr "下列函数是 PostGIS Raster 用户常用的函数。除此之外，还存在其他栅格支持函数，"
+msgstr ""
+"下列函数是 PostGIS Raster 用户常用的函数。除此之外，还存在其他栅格支持函数，"
 "但它们对一般用户而言并不常用。"
 
 #. Tag: title
@@ -27368,8 +27374,9 @@ msgstr "用于输入 ST_Reclass 函数的复合类型，用于定义重分类操
 msgid ""
 "A composite type used as input into the <xref linkend=\"RT_ST_Reclass\"/> "
 "function defining the behavior of reclassification."
-msgstr "用于输入 <xref linkend=\"RT_ST_Reclass\"/> "
-"函数的复合类型，用于定义重分类操作的行为。"
+msgstr ""
+"用于输入 <xref linkend=\"RT_ST_Reclass\"/> 函数的复合类型，用于定义重分类操作"
+"的行为。"
 
 #. Tag: para
 #, no-c-format
@@ -27912,170 +27919,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_SRID\"/>, <xref "
 "linkend=\"postgis_gdal_enabled_drivers\"/>"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"<refpurpose>Generates a set of vector contours from the provided raster "
-"band, using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"contouring algorithm</link>.</refpurpose>"
-msgstr ""
-"<refpurpose>使用 <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\"> "
-"GDAL 轮廓算法</link>从提供的栅格波段生成一组矢量轮廓。</refpurpose>"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<para>Generates a set of vector contours from the provided raster band, "
-"using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"contouring algorithm</link>.</para>"
-msgstr ""
-"<para>使用<link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\"> "
-"GDAL 轮廓算法</link>从提供的栅格带生成一组矢量轮廓。</para>"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"When the <varname>fixed_levels</varname> parameter is a non-empty array, the "
-"<varname>level_interval</varname> and <varname>level_base</varname> "
-"parameters are ignored."
-msgstr ""
-"当<varname>fixed_levels</varname>参数为非空数组时，<varname>level_interval</"
-"varname>和<varname>level_base</varname>参数被忽略。"
-
-#. Tag: para
-#, no-c-format
-msgid "Input parameters are:"
-msgstr "输入参数为："
-
-#. Tag: para
-#, no-c-format
-msgid "The raster to generate the contour of"
-msgstr "生成等高线的栅格"
-
-#. Tag: para
-#, no-c-format
-msgid "The band to generate the contour of"
-msgstr "用于生成等高线的波段"
-
-#. Tag: para
-#, no-c-format
-msgid "The elevation interval between contours generated"
-msgstr "生成的等高线之间的高程间隔"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The \"base\" relative to which contour intervals are applied, this is "
-"normally zero, but could be different. To generate 10m contours at 5, 15, "
-"25, ... the LEVEL_BASE would be 5."
-msgstr ""
-"用于应用等高线间隔的 “基准”通常为零，但也可以是不同的值。要生成高程为10米的等"
-"高线，间隔为5、15、25、...，LEVEL_BASE 将设为5。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If <literal>true</literal>, contour polygons will be created, rather than "
-"polygon lines."
-msgstr "如果 <literal>true</literal>，将创建等高线多边形，而不是多边形线。"
-
-#. Tag: para
-#, no-c-format
-msgid "Return values are a set of records with the following attributes:"
-msgstr "返回值是一组具有以下属性的记录："
-
-#. Tag: para
-#, no-c-format
-msgid "The geometry of the contour line."
-msgstr "轮廓线的几何形状。"
-
-#. Tag: para
-#, no-c-format
-msgid "A unique identifier given to the contour line by GDAL."
-msgstr "GDAL 赋予轮廓线的唯一标识符。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The raster value the line represents. For an elevation DEM input, this would "
-"be the elevation of the output contour."
-msgstr "该线代表的栅格值。 对于高程 DEM 输入，这将是输出等高线的高程。"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Interpolates a gridded surface based on an input set of 3-d points, using "
-"the X- and Y-values to position the points on the grid and the Z-value of "
-"the points as the surface elevation."
-msgstr ""
-"基于输入的 3 维点集插值网格表面，使用 X 和 Y 值在网格上定位点，并使用点的 Z "
-"值作为表面高程。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Interpolates a gridded surface based on an input set of 3-d points, using "
-"the X- and Y-values to position the points on the grid and the Z-value of "
-"the points as the surface elevation. There are five interpolation algorithms "
-"available: inverse distance, inverse distance nearest-neighbor, moving "
-"average, nearest neighbor, and linear interpolation. See the <link xlink:"
-"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">gdal_grid documentation</link> for more details on the "
-"algorithms and their parameters. For more information on how interpolations "
-"are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
-"gdal_grid_tut.html\">GDAL grid tutorial</link>."
-msgstr ""
-"基于输入的 3 维点集插值网格表面，使用 X 和 Y 值在网格上定位点，并使用点的 Z "
-"值作为表面高程。 有五种可用的插值算法：反距离、反距离最近邻、移动平均、最近邻"
-"和线性插值。 有关算法及其参数的更多详细信息，请参阅 <link xlink:"
-"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-algorithms\"> "
-"gdal_grid 文档</link>。 有关如何计算插值的更多信息，请参阅<link xlink:"
-"href=\"https://gdal.org/tutorials/gdal_grid_tut.html\"> GDAL 网格教程</"
-"link>。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The points to drive the interpolation. Any geometry with Z-values is "
-"acceptable, all points in the input will be used."
-msgstr ""
-"驱动插值的点。 任何具有 Z 值的几何图形都是可接受的，将使用输入中的所有点。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A string defining the algorithm and algorithm options, in the format used by "
-"<link xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">gdal_grid</link>. For example, for an inverse-distance "
-"interpolation with a smoothing of 2, you would use \"invdist:smoothing=2.0\""
-msgstr ""
-"定义算法和算法选项的字符串，采用<link xlink:href=\"https://gdal.org/programs/"
-"gdal_grid.html#interpolation-algorithms\"> gdal_grid </link>使用的格式。 例"
-"如，对于平滑度为 2 的反距离插值，您可以使用“invdist:smoothing=2.0”"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A raster template to drive the geometry of the output raster. The width, "
-"height, pixel size, spatial extent and pixel type will be read from this "
-"template."
-msgstr ""
-"用于驱动输出栅格几何形状的栅格模板。 宽度、高度、像素大小、空间范围和像素类型"
-"将从该模板中读取。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"By default the first band in the template raster is used to drive the output "
-"raster, but that can be adjusted with this parameter."
-msgstr ""
-"默认情况下，模板栅格中的第一个波段用于驱动输出栅格，但可以使用此参数进行调"
-"整。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31399,9 +31242,9 @@ msgid ""
 "given raster band of a raster or raster coverage. Band 1 is assumed if no "
 "band is specified."
 msgstr ""
-"返回指定栅格或栅格覆盖中某个波段的统计摘要，包括像元数量（count）、总和（sum"
-"）、均值（mean）、标准差（stddev）、最小值（min）和最大值（max）。若未指定波"
-"段，默认使用第 1 波段。"
+"返回指定栅格或栅格覆盖中某个波段的统计摘要，包括像元数量（count）、总和"
+"（sum）、均值（mean）、标准差（stddev）、最小值（min）和最大值（max）。若未指"
+"定波段，默认使用第 1 波段。"
 
 #. Tag: para
 #, no-c-format
@@ -31483,9 +31326,9 @@ msgid ""
 "max for a given raster band of a set of raster. Band 1 is assumed if no band "
 "is specified."
 msgstr ""
-"聚合函数。返回一组栅格中指定波段的统计摘要，包括像元数量（count）、总和（sum"
-"）、均值（mean）、标准差（stddev）、最小值（min）和最大值。若未指定波段，"
-"默认使用第 1 波段。"
+"聚合函数。返回一组栅格中指定波段的统计摘要，包括像元数量（count）、总和"
+"（sum）、均值（mean）、标准差（stddev）、最小值（min）和最大值。若未指定波"
+"段，默认使用第 1 波段。"
 
 #. Tag: para
 #, no-c-format
@@ -33780,9 +33623,9 @@ msgid ""
 "target band. Bands not designated are returned unchanged."
 msgstr ""
 "新栅格将具有与原始栅格相同的地理参考、宽度和高度。新栅格的波段像元类型由 "
-"<varname>pixeltype</varname> 指定。如果指定了 "
-"<varname>reclassargset</varname>，则每个 <varname>reclassarg</varname> "
-"用于定义目标波段的类型，未指定的波段将保持不变返回。"
+"<varname>pixeltype</varname> 指定。如果指定了 <varname>reclassargset</"
+"varname>，则每个 <varname>reclassarg</varname> 用于定义目标波段的类型，未指定"
+"的波段将保持不变返回。"
 
 #. Tag: title
 #, no-c-format
@@ -33846,8 +33689,9 @@ msgid ""
 "Creates a new raster composed of bands reclassified from original, using a "
 "1:1 mapping from values in the original band to new values in the "
 "destination band."
-msgstr "创建一个新栅格，其波段通过对原始波段进行 1:1 "
-"映射重分类生成，将原波段中的值映射为目标波段中的新值。"
+msgstr ""
+"创建一个新栅格，其波段通过对原始波段进行 1:1 映射重分类生成，将原波段中的值映"
+"射为目标波段中的新值。"
 
 #. Tag: para
 #, no-c-format
@@ -33869,8 +33713,8 @@ msgid ""
 "<varname>pixeltype</varname> parameter. If no <varname>bandnumber</varname> "
 "is specified band 1 is assumed."
 msgstr ""
-"输出像元类型默认设为 float，但可通过 <varname>pixeltype</varname> "
-"参数进行指定。若未指定 <varname>bandnumber</varname>，则默认使用第 1 波段。"
+"输出像元类型默认设为 float，但可通过 <varname>pixeltype</varname> 参数进行指"
+"定。若未指定 <varname>bandnumber</varname>，则默认使用第 1 波段。"
 
 #. Tag: para
 #, no-c-format
@@ -34618,6 +34462,170 @@ msgstr ""
 "linkend=\"RT_ST_Slope\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
 "linkend=\"RT_ST_Aspect\"/>"
 
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Interpolates a gridded surface based on an input set of 3-d points, using "
+"the X- and Y-values to position the points on the grid and the Z-value of "
+"the points as the surface elevation."
+msgstr ""
+"基于输入的 3 维点集插值网格表面，使用 X 和 Y 值在网格上定位点，并使用点的 Z "
+"值作为表面高程。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Interpolates a gridded surface based on an input set of 3-d points, using "
+"the X- and Y-values to position the points on the grid and the Z-value of "
+"the points as the surface elevation. There are five interpolation algorithms "
+"available: inverse distance, inverse distance nearest-neighbor, moving "
+"average, nearest neighbor, and linear interpolation. See the <link xlink:"
+"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"algorithms\">gdal_grid documentation</link> for more details on the "
+"algorithms and their parameters. For more information on how interpolations "
+"are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
+"gdal_grid_tut.html\">GDAL grid tutorial</link>."
+msgstr ""
+"基于输入的 3 维点集插值网格表面，使用 X 和 Y 值在网格上定位点，并使用点的 Z "
+"值作为表面高程。 有五种可用的插值算法：反距离、反距离最近邻、移动平均、最近邻"
+"和线性插值。 有关算法及其参数的更多详细信息，请参阅 <link xlink:"
+"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-algorithms\"> "
+"gdal_grid 文档</link>。 有关如何计算插值的更多信息，请参阅<link xlink:"
+"href=\"https://gdal.org/tutorials/gdal_grid_tut.html\"> GDAL 网格教程</"
+"link>。"
+
+#. Tag: para
+#, no-c-format
+msgid "Input parameters are:"
+msgstr "输入参数为："
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The points to drive the interpolation. Any geometry with Z-values is "
+"acceptable, all points in the input will be used."
+msgstr ""
+"驱动插值的点。 任何具有 Z 值的几何图形都是可接受的，将使用输入中的所有点。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A string defining the algorithm and algorithm options, in the format used by "
+"<link xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"algorithms\">gdal_grid</link>. For example, for an inverse-distance "
+"interpolation with a smoothing of 2, you would use \"invdist:smoothing=2.0\""
+msgstr ""
+"定义算法和算法选项的字符串，采用<link xlink:href=\"https://gdal.org/programs/"
+"gdal_grid.html#interpolation-algorithms\"> gdal_grid </link>使用的格式。 例"
+"如，对于平滑度为 2 的反距离插值，您可以使用“invdist:smoothing=2.0”"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A raster template to drive the geometry of the output raster. The width, "
+"height, pixel size, spatial extent and pixel type will be read from this "
+"template."
+msgstr ""
+"用于驱动输出栅格几何形状的栅格模板。 宽度、高度、像素大小、空间范围和像素类型"
+"将从该模板中读取。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"By default the first band in the template raster is used to drive the output "
+"raster, but that can be adjusted with this parameter."
+msgstr ""
+"默认情况下，模板栅格中的第一个波段用于驱动输出栅格，但可以使用此参数进行调"
+"整。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"<refpurpose>Generates a set of vector contours from the provided raster "
+"band, using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
+"contouring algorithm</link>.</refpurpose>"
+msgstr ""
+"<refpurpose>使用 <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\"> "
+"GDAL 轮廓算法</link>从提供的栅格波段生成一组矢量轮廓。</refpurpose>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<para>Generates a set of vector contours from the provided raster band, "
+"using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
+"contouring algorithm</link>.</para>"
+msgstr ""
+"<para>使用<link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\"> "
+"GDAL 轮廓算法</link>从提供的栅格带生成一组矢量轮廓。</para>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When the <varname>fixed_levels</varname> parameter is a non-empty array, the "
+"<varname>level_interval</varname> and <varname>level_base</varname> "
+"parameters are ignored."
+msgstr ""
+"当<varname>fixed_levels</varname>参数为非空数组时，<varname>level_interval</"
+"varname>和<varname>level_base</varname>参数被忽略。"
+
+#. Tag: para
+#, no-c-format
+msgid "The raster to generate the contour of"
+msgstr "生成等高线的栅格"
+
+#. Tag: para
+#, no-c-format
+msgid "The band to generate the contour of"
+msgstr "用于生成等高线的波段"
+
+#. Tag: para
+#, no-c-format
+msgid "The elevation interval between contours generated"
+msgstr "生成的等高线之间的高程间隔"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The \"base\" relative to which contour intervals are applied, this is "
+"normally zero, but could be different. To generate 10m contours at 5, 15, "
+"25, ... the LEVEL_BASE would be 5."
+msgstr ""
+"用于应用等高线间隔的 “基准”通常为零，但也可以是不同的值。要生成高程为10米的等"
+"高线，间隔为5、15、25、...，LEVEL_BASE 将设为5。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If <literal>true</literal>, contour polygons will be created, rather than "
+"polygon lines."
+msgstr "如果 <literal>true</literal>，将创建等高线多边形，而不是多边形线。"
+
+#. Tag: para
+#, no-c-format
+msgid "Return values are a set of records with the following attributes:"
+msgstr "返回值是一组具有以下属性的记录："
+
+#. Tag: para
+#, no-c-format
+msgid "The geometry of the contour line."
+msgstr "轮廓线的几何形状。"
+
+#. Tag: para
+#, no-c-format
+msgid "A unique identifier given to the contour line by GDAL."
+msgstr "GDAL 赋予轮廓线的唯一标识符。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The raster value the line represents. For an elevation DEM input, this would "
+"be the elevation of the output contour."
+msgstr "该线代表的栅格值。 对于高程 DEM 输入，这将是输出等高线的高程。"
+
 #. Tag: title
 #, no-c-format
 msgid "Raster Processing: Raster to Geometry"
@@ -34868,6 +34876,31 @@ msgid ""
 "Changed: 2.1.0 In prior versions would sometimes return a polygon, changed "
 "to always return multipolygon."
 msgstr "更改：2.1.0 在之前的版本中有时会返回多边形，更改为始终返回多多边形。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Calculates the fraction of each raster cell that is covered by a given "
+"geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Calculates the fraction of each raster cell that is covered by a given "
+"geometry. The first argument is a raster, which defines the grid geometry to "
+"use for the calculation. The extent and cell size are read from the raster "
+"parameter. The second argument is a geometry, which is overlaid with the "
+"grid, and each grid populated based on overlaying the geometry on the grid. "
+"For polygons, the value returned for each cell is the proportion of its area "
+"that is covered by the geometry. For linestrings, the value returned for "
+"each cell is the length contained in the cell."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0 Requires GEOS 3.14 or higher."
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -38423,8 +38456,9 @@ msgid ""
 "linkend=\"CG_StraightSkeleton\"/>, <xref "
 "linkend=\"CG_StraightSkeletonPartition\"/>"
 msgstr ""
-", <xref linkend=\"CG_ExtrudeStraightSkeleton\"/>, <xref linkend="
-"\"CG_StraightSkeleton\"/>, <xref linkend=\"CG_StraightSkeletonPartition\"/>"
+", <xref linkend=\"CG_ExtrudeStraightSkeleton\"/>, <xref "
+"linkend=\"CG_StraightSkeleton\"/>, <xref "
+"linkend=\"CG_StraightSkeletonPartition\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -41362,18 +41396,18 @@ msgstr "发行说明"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0beta1"
+msgid "PostGIS 3.6.0rc1"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/07/19"
+msgid "2025/08/18"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12-18beta2, GEOS 3.8 or higher, and Proj "
+"This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj "
 "6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
 "advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
 msgstr ""
@@ -41445,9 +41479,28 @@ msgid ""
 "Census Bureau)"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+"ticket/5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/"
+"postgis/postgis/pulls/260\">GT-260</link> [tiger_geocoder] Use @extschema:"
+"extension@ for PG &gt;= 16 to schema qualify dependent extensions, switch to "
+"use typmod for tiger tables (Regina Obe)"
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Removed / Deprecate signatures"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</link> "
+"Drop st_approxquantile(raster, double precision), wasn't usable as it "
+"triggered is not unique error when used (Regina Obe)"
 msgstr ""
 
 #. Tag: title
@@ -41538,9 +41591,9 @@ msgid ""
 "link>, Change interrupt handling to remove use of pqsignal to support PG 18 "
 "(Paul Ramsey)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\""
-">#5841</link>，更改中断处理机制，移除对 pqsignal 的使用，以支持 PostgreSQL "
-"18（Paul Ramsey 提供）"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\">#5841</"
+"link>，更改中断处理机制，移除对 pqsignal 的使用，以支持 PostgreSQL 18（Paul "
+"Ramsey 提供）"
 
 #. Tag: para
 #, no-c-format
@@ -41548,13 +41601,23 @@ msgid ""
 "Add ST_CoverageClean to edge match and gap remove polygonal coverages (Paul "
 "Ramsey) from GEOS 3.14 (Martin Davis)"
 msgstr ""
-"新增 ST_CoverageClean，用于边界匹配与缝隙消除多边形覆盖图（由 Paul Ramsey "
-"提供，基于 GEOS 3.14 的功能，Martin Davis 开发）"
+"新增 ST_CoverageClean，用于边界匹配与缝隙消除多边形覆盖图（由 Paul Ramsey 提"
+"供，基于 GEOS 3.14 的功能，Martin Davis 开发）"
 
 #. Tag: para
 #, no-c-format
-msgid "Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
-msgstr "新增 ST_ReclassExact，用于快速重映射栅格中的值（Paul Ramsey 提供）"
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. "
+"Census Bureau)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"[raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -47283,6 +47346,10 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
+
+#, no-c-format
+#~ msgid "Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
+#~ msgstr "新增 ST_ReclassExact，用于快速重映射栅格中的值（Paul Ramsey 提供）"
 
 #, no-c-format
 #~ msgid ""

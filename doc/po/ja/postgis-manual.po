@@ -12,8 +12,8 @@ msgstr ""
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
 "PO-Revision-Date: 2025-07-30 01:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8113,11 +8113,10 @@ msgid ""
 "PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
 "org\"> https://www.postgresql.org </link>18 ."
 msgstr ""
-"PostgreSQL &min_postgres_version; - &max_postgres_version;、18。"
-"PostgreSQLの完全なインストール "
-"(サーバプログラムのヘッダファイルを含む)が必要です。PostgreSQLは <link "
-"xlink:href=\"https://www.postgresql.org/\"> https://www.postgresql.org "
-"</link>にあります。"
+"PostgreSQL &min_postgres_version; - &max_postgres_version;、18。PostgreSQLの"
+"完全なインストール (サーバプログラムのヘッダファイルを含む)が必要です。"
+"PostgreSQLは <link xlink:href=\"https://www.postgresql.org/\"> https://www."
+"postgresql.org </link>にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -8178,10 +8177,9 @@ msgid ""
 "GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
 "\"> https://libgeos.org </link>."
 msgstr ""
-"ジオメトリライブラリ GEOS、&min_geos_version;以上ですが、"
-"新しい関数と機能を完全に活用するにはGEOS 3.14が必要です。GEOSは<link "
-"xlink:href=\"https://libgeos.org/\"> https://libgeos.org/ "
-"</link>からダウンロードできます。"
+"ジオメトリライブラリ GEOS、&min_geos_version;以上ですが、新しい関数と機能を完"
+"全に活用するにはGEOS 3.14が必要です。GEOSは<link xlink:href=\"https://"
+"libgeos.org/\"> https://libgeos.org/ </link>からダウンロードできます。"
 
 #. Tag: para
 #, no-c-format
@@ -29593,180 +29591,6 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid ""
-"<refpurpose>Generates a set of vector contours from the provided raster "
-"band, using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"contouring algorithm</link>.</refpurpose>"
-msgstr ""
-"<refpurpose>与えられたラスタバンドから等高線ベクタを生成します。<link xlink:"
-"href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL"
-"等高線生成アルゴリズム</link>を使います。</refpurpose>"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<para>Generates a set of vector contours from the provided raster band, "
-"using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"contouring algorithm</link>.</para>"
-msgstr ""
-"<para>与えられたラスタバンドから等高線ベクタを生成します。<link xlink:"
-"href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL"
-"等高線生成アルゴリズム</link>を使います。</para>"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"When the <varname>fixed_levels</varname> parameter is a non-empty array, the "
-"<varname>level_interval</varname> and <varname>level_base</varname> "
-"parameters are ignored."
-msgstr ""
-"<varname>fixed_levels</varname>パラメータが空でない配列である時、"
-"<varname>level_interval</varname>と<varname>level_base</varname>とは無視され"
-"ます。"
-
-#. Tag: para
-#, no-c-format
-msgid "Input parameters are:"
-msgstr "入力パラメータは次の通りです:"
-
-#. Tag: para
-#, no-c-format
-msgid "The raster to generate the contour of"
-msgstr "等高線を生成するラスタ"
-
-#. Tag: para
-#, no-c-format
-msgid "The band to generate the contour of"
-msgstr "等高線を生成するバンド"
-
-#. Tag: para
-#, no-c-format
-msgid "The elevation interval between contours generated"
-msgstr "生成する等高線の標高間隔"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The \"base\" relative to which contour intervals are applied, this is "
-"normally zero, but could be different. To generate 10m contours at 5, 15, "
-"25, ... the LEVEL_BASE would be 5."
-msgstr ""
-"等高線の標高間隔に適用される相対値の「基礎値」です。通常は0ですが、そうでない"
-"場合もあります。10m等高線であって、5, 15, 25 ...で等高線を生成する場合には、"
-"LEVEL_BASEは5になります。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If <literal>true</literal>, contour polygons will be created, rather than "
-"polygon lines."
-msgstr ""
-"<literal>true</literal> の場合には、等高線ポリゴンが作られます。ラインストリ"
-"ングではありません。"
-
-#. Tag: para
-#, no-c-format
-msgid "Return values are a set of records with the following attributes:"
-msgstr "返り値は次に示す属性を持つ行の集合です。"
-
-#. Tag: para
-#, no-c-format
-msgid "The geometry of the contour line."
-msgstr "等高線のジオメトリ。"
-
-#. Tag: para
-#, no-c-format
-msgid "A unique identifier given to the contour line by GDAL."
-msgstr "GDALが等高線に与える一意の識別子。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The raster value the line represents. For an elevation DEM input, this would "
-"be the elevation of the output contour."
-msgstr ""
-"ラインが表現するラスタ値。標高DEM入力の場合、出力等高線の標高となります。"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Interpolates a gridded surface based on an input set of 3-d points, using "
-"the X- and Y-values to position the points on the grid and the Z-value of "
-"the points as the surface elevation."
-msgstr ""
-"X値とY値を使用してグリッド上のポイントを配置し、ポイントのZ値をサーフェス標高"
-"として配置し、3次元ポイントの入力セットに基づいてグリッドサーフェスを補間しま"
-"す。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Interpolates a gridded surface based on an input set of 3-d points, using "
-"the X- and Y-values to position the points on the grid and the Z-value of "
-"the points as the surface elevation. There are five interpolation algorithms "
-"available: inverse distance, inverse distance nearest-neighbor, moving "
-"average, nearest neighbor, and linear interpolation. See the <link xlink:"
-"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">gdal_grid documentation</link> for more details on the "
-"algorithms and their parameters. For more information on how interpolations "
-"are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
-"gdal_grid_tut.html\">GDAL grid tutorial</link>."
-msgstr ""
-"X値とY値を使用してグリッド上のポイントを配置し、ポイントのZ値をサーフェス標高"
-"として配置し、3次元ポイントの入力セットに基づいてグリッドサーフェスを補間しま"
-"す。逆距離、逆距離最近傍、移動平均、最近傍、線形補間の五つの補間アルゴリズム"
-"が使用できます。アルゴリズムとそれらのパラメータに関する詳細情報については"
-"<link xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">gdal_grid documentation</link>を参照して下さい。どのように補間計"
-"算が行われているかの詳細情報については<link xlink:href=\"https://gdal.org/"
-"tutorials/gdal_grid_tut.html\">GDAL grid tutorial</link>をご覧下さい。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The points to drive the interpolation. Any geometry with Z-values is "
-"acceptable, all points in the input will be used."
-msgstr ""
-"補間を駆動するポイント。Z値を持つジオメトリなら全て受け付けられ、全ての入力ポ"
-"イントが使用されます。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A string defining the algorithm and algorithm options, in the format used by "
-"<link xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">gdal_grid</link>. For example, for an inverse-distance "
-"interpolation with a smoothing of 2, you would use \"invdist:smoothing=2.0\""
-msgstr ""
-"アルゴリズムとそのオプションを定義する文字列で、<link xlink:href=\"https://"
-"gdal.org/programs/gdal_grid.html#interpolation-algorithms\">gdal_grid</link>"
-"で使われる書式で記述します。たとえば、逆距離補間"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A raster template to drive the geometry of the output raster. The width, "
-"height, pixel size, spatial extent and pixel type will be read from this "
-"template."
-msgstr ""
-"出力ラスタのジオメトリを駆動するためのラスタテンプレート。幅、高さ、ピクセル"
-"ｙサイズ、空間範囲、ピクセルタイプがこのテンプレートから読み込まれます。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"By default the first band in the template raster is used to drive the output "
-"raster, but that can be adjusted with this parameter."
-msgstr ""
-"デフォルトではテンプレートラスタの最初のバンドが出力ラスタの駆動に使われます"
-"が、このパラメータで調整できます。"
-
-#. Tag: refpurpose
-#, no-c-format
 msgid "Change the SRID of all rasters in the user-specified column and table."
 msgstr ""
 "ユーザが指定したカラムとテーブルにあるラスタの全てについてSRIDを変更します。"
@@ -36624,6 +36448,180 @@ msgstr ""
 "linkend=\"RT_ST_Slope\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
 "linkend=\"RT_ST_Aspect\"/>"
 
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Interpolates a gridded surface based on an input set of 3-d points, using "
+"the X- and Y-values to position the points on the grid and the Z-value of "
+"the points as the surface elevation."
+msgstr ""
+"X値とY値を使用してグリッド上のポイントを配置し、ポイントのZ値をサーフェス標高"
+"として配置し、3次元ポイントの入力セットに基づいてグリッドサーフェスを補間しま"
+"す。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Interpolates a gridded surface based on an input set of 3-d points, using "
+"the X- and Y-values to position the points on the grid and the Z-value of "
+"the points as the surface elevation. There are five interpolation algorithms "
+"available: inverse distance, inverse distance nearest-neighbor, moving "
+"average, nearest neighbor, and linear interpolation. See the <link xlink:"
+"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"algorithms\">gdal_grid documentation</link> for more details on the "
+"algorithms and their parameters. For more information on how interpolations "
+"are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
+"gdal_grid_tut.html\">GDAL grid tutorial</link>."
+msgstr ""
+"X値とY値を使用してグリッド上のポイントを配置し、ポイントのZ値をサーフェス標高"
+"として配置し、3次元ポイントの入力セットに基づいてグリッドサーフェスを補間しま"
+"す。逆距離、逆距離最近傍、移動平均、最近傍、線形補間の五つの補間アルゴリズム"
+"が使用できます。アルゴリズムとそれらのパラメータに関する詳細情報については"
+"<link xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"algorithms\">gdal_grid documentation</link>を参照して下さい。どのように補間計"
+"算が行われているかの詳細情報については<link xlink:href=\"https://gdal.org/"
+"tutorials/gdal_grid_tut.html\">GDAL grid tutorial</link>をご覧下さい。"
+
+#. Tag: para
+#, no-c-format
+msgid "Input parameters are:"
+msgstr "入力パラメータは次の通りです:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The points to drive the interpolation. Any geometry with Z-values is "
+"acceptable, all points in the input will be used."
+msgstr ""
+"補間を駆動するポイント。Z値を持つジオメトリなら全て受け付けられ、全ての入力ポ"
+"イントが使用されます。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A string defining the algorithm and algorithm options, in the format used by "
+"<link xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"algorithms\">gdal_grid</link>. For example, for an inverse-distance "
+"interpolation with a smoothing of 2, you would use \"invdist:smoothing=2.0\""
+msgstr ""
+"アルゴリズムとそのオプションを定義する文字列で、<link xlink:href=\"https://"
+"gdal.org/programs/gdal_grid.html#interpolation-algorithms\">gdal_grid</link>"
+"で使われる書式で記述します。たとえば、逆距離補間"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A raster template to drive the geometry of the output raster. The width, "
+"height, pixel size, spatial extent and pixel type will be read from this "
+"template."
+msgstr ""
+"出力ラスタのジオメトリを駆動するためのラスタテンプレート。幅、高さ、ピクセル"
+"ｙサイズ、空間範囲、ピクセルタイプがこのテンプレートから読み込まれます。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"By default the first band in the template raster is used to drive the output "
+"raster, but that can be adjusted with this parameter."
+msgstr ""
+"デフォルトではテンプレートラスタの最初のバンドが出力ラスタの駆動に使われます"
+"が、このパラメータで調整できます。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"<refpurpose>Generates a set of vector contours from the provided raster "
+"band, using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
+"contouring algorithm</link>.</refpurpose>"
+msgstr ""
+"<refpurpose>与えられたラスタバンドから等高線ベクタを生成します。<link xlink:"
+"href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL"
+"等高線生成アルゴリズム</link>を使います。</refpurpose>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<para>Generates a set of vector contours from the provided raster band, "
+"using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
+"contouring algorithm</link>.</para>"
+msgstr ""
+"<para>与えられたラスタバンドから等高線ベクタを生成します。<link xlink:"
+"href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL"
+"等高線生成アルゴリズム</link>を使います。</para>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When the <varname>fixed_levels</varname> parameter is a non-empty array, the "
+"<varname>level_interval</varname> and <varname>level_base</varname> "
+"parameters are ignored."
+msgstr ""
+"<varname>fixed_levels</varname>パラメータが空でない配列である時、"
+"<varname>level_interval</varname>と<varname>level_base</varname>とは無視され"
+"ます。"
+
+#. Tag: para
+#, no-c-format
+msgid "The raster to generate the contour of"
+msgstr "等高線を生成するラスタ"
+
+#. Tag: para
+#, no-c-format
+msgid "The band to generate the contour of"
+msgstr "等高線を生成するバンド"
+
+#. Tag: para
+#, no-c-format
+msgid "The elevation interval between contours generated"
+msgstr "生成する等高線の標高間隔"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The \"base\" relative to which contour intervals are applied, this is "
+"normally zero, but could be different. To generate 10m contours at 5, 15, "
+"25, ... the LEVEL_BASE would be 5."
+msgstr ""
+"等高線の標高間隔に適用される相対値の「基礎値」です。通常は0ですが、そうでない"
+"場合もあります。10m等高線であって、5, 15, 25 ...で等高線を生成する場合には、"
+"LEVEL_BASEは5になります。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If <literal>true</literal>, contour polygons will be created, rather than "
+"polygon lines."
+msgstr ""
+"<literal>true</literal> の場合には、等高線ポリゴンが作られます。ラインストリ"
+"ングではありません。"
+
+#. Tag: para
+#, no-c-format
+msgid "Return values are a set of records with the following attributes:"
+msgstr "返り値は次に示す属性を持つ行の集合です。"
+
+#. Tag: para
+#, no-c-format
+msgid "The geometry of the contour line."
+msgstr "等高線のジオメトリ。"
+
+#. Tag: para
+#, no-c-format
+msgid "A unique identifier given to the contour line by GDAL."
+msgstr "GDALが等高線に与える一意の識別子。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The raster value the line represents. For an elevation DEM input, this would "
+"be the elevation of the output contour."
+msgstr ""
+"ラインが表現するラスタ値。標高DEM入力の場合、出力等高線の標高となります。"
+
 #. Tag: title
 #, no-c-format
 msgid "Raster Processing: Raster to Geometry"
@@ -36885,6 +36883,31 @@ msgid ""
 msgstr ""
 "Changed: 2.1.0 以前の版では、時々ポリゴンを返しましたが、常にマルチポリゴンを"
 "返すように変更しました。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Calculates the fraction of each raster cell that is covered by a given "
+"geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Calculates the fraction of each raster cell that is covered by a given "
+"geometry. The first argument is a raster, which defines the grid geometry to "
+"use for the calculation. The extent and cell size are read from the raster "
+"parameter. The second argument is a geometry, which is overlaid with the "
+"grid, and each grid populated based on overlaying the geometry on the grid. "
+"For polygons, the value returned for each cell is the proportion of its area "
+"that is covered by the geometry. For linestrings, the value returned for "
+"each cell is the length contained in the cell."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0 Requires GEOS 3.14 or higher."
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -39981,9 +40004,9 @@ msgid ""
 "linkend=\"ST_MakeSolid\"/>. Areal geometries have no volume. Here is an "
 "example to demonstrate."
 msgstr ""
-"WKTで閉じた面を生成する時、それは立体でなく面として扱われます。"
-"立体にするには<xref linkend=\"ST_MakeSolid\""
-"/>を使います。面ジオメトリは体積を持ちません。例を挙げます。"
+"WKTで閉じた面を生成する時、それは立体でなく面として扱われます。立体にするには"
+"<xref linkend=\"ST_MakeSolid\"/>を使います。面ジオメトリは体積を持ちません。"
+"例を挙げます。"
 
 #. Tag: para
 #, no-c-format
@@ -43737,24 +43760,21 @@ msgstr "リリースノート"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0beta1"
-msgstr "PostGIS 3.6.0beta1"
+msgid "PostGIS 3.6.0rc1"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/07/19"
-msgstr "2025/07/19"
+msgid "2025/08/18"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12-18beta2, GEOS 3.8 or higher, and Proj "
+"This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj "
 "6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
 "advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
 msgstr ""
-"このバージョンではPostgreSQL 12-18beta2、GEOS 3.8以上、Proj 6."
-"1以上が必要です。全ての機能を活用するにはGEOS 3.14以上が必要です。"
-"SFCGALの全ての機能を活用するにはSFCGAL 2.2以上が必要です。"
 
 #. Tag: para
 #, no-c-format
@@ -43811,8 +43831,8 @@ msgid ""
 "Adesugba, U.S. Census Bureau)"
 msgstr ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"255\">GT-255</link>, [topology] ドメインのアップグレードへの対応 (Ayo "
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/255\">GT-255</link>, [topology] ドメインのアップグレードへの対応 (Ayo "
 "Adesugbaさん、米国国勢調査局)"
 
 #. Tag: para
@@ -43837,14 +43857,33 @@ msgid ""
 "Census Bureau)"
 msgstr ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"242\">GT-242</link>, [topology] BIGINTへの対応 (Ayo "
-"Adesugbaさん、米国国勢調査局)"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/242\">GT-242</link>, [topology] BIGINTへの対応 (Ayo Adesugbaさん、米国"
+"国勢調査局)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+"ticket/5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/"
+"postgis/postgis/pulls/260\">GT-260</link> [tiger_geocoder] Use @extschema:"
+"extension@ for PG &gt;= 16 to schema qualify dependent extensions, switch to "
+"use typmod for tiger tables (Regina Obe)"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
 msgid "Removed / Deprecate signatures"
 msgstr "シグネチャーの削除/廃止"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</link> "
+"Drop st_approxquantile(raster, double precision), wasn't usable as it "
+"triggered is not unique error when used (Regina Obe)"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -43975,8 +44014,22 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
-msgstr "素早いラスタ値の再設定を行うST_ReclassExactを追加 (Paul Ramseyさん)"
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. "
+"Census Bureau)"
+msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/242\">GT-242</link> [トポロジー] bigintに対応 (Ayo Adesugbaさん, 米国国"
+"勢調査局)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"[raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -50083,6 +50136,28 @@ msgid "Supports geography"
 msgstr "ジオグラフィ対応"
 
 #, no-c-format
+#~ msgid "PostGIS 3.6.0beta1"
+#~ msgstr "PostGIS 3.6.0beta1"
+
+#, no-c-format
+#~ msgid "2025/07/19"
+#~ msgstr "2025/07/19"
+
+#, no-c-format
+#~ msgid ""
+#~ "This version requires PostgreSQL 12-18beta2, GEOS 3.8 or higher, and Proj "
+#~ "6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
+#~ "advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
+#~ msgstr ""
+#~ "このバージョンではPostgreSQL 12-18beta2、GEOS 3.8以上、Proj 6.1以上が必要"
+#~ "です。全ての機能を活用するにはGEOS 3.14以上が必要です。SFCGALの全ての機能"
+#~ "を活用するにはSFCGAL 2.2以上が必要です。"
+
+#, no-c-format
+#~ msgid "Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
+#~ msgstr "素早いラスタ値の再設定を行うST_ReclassExactを追加 (Paul Ramseyさん)"
+
+#, no-c-format
 #~ msgid ""
 #~ "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
 #~ "installation of PostgreSQL (including server headers) is required. "
@@ -50131,18 +50206,6 @@ msgstr "ジオグラフィ対応"
 #~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
 #~ "pulls/255\">GT-255</link> [トポロジー] アップグレード時にドメインのアップ"
 #~ "グレードに対応 (Ayo Adesugbaさん, 米国国勢調査局)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-#~ "pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U."
-#~ "S. Census Bureau)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-#~ "pulls/242\">GT-242</link> [トポロジー] bigintに対応 (Ayo Adesugbaさん, 米"
-#~ "国国勢調査局)"
 
 #, no-c-format
 #~ msgid ""

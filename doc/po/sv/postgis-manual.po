@@ -7,8 +7,8 @@ msgstr ""
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
 "PO-Revision-Date: 2025-07-20 08:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
-"Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/sv/>\n"
+"Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8288,8 +8288,8 @@ msgid ""
 msgstr ""
 "PostgreSQL &min_postgres_version; - &max_postgres_version;. En fullständig "
 "installation av PostgreSQL (inklusive serverhuvuden) krävs. PostgreSQL finns "
-"tillgängligt på <link xlink:href=\"https://www.postgresql.org\"> https://"
-"www.postgresql.org </link>18 ."
+"tillgängligt på <link xlink:href=\"https://www.postgresql.org\"> https://www."
+"postgresql.org </link>18 ."
 
 #. Tag: para
 #, no-c-format
@@ -8351,10 +8351,10 @@ msgid ""
 "GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
 "\"> https://libgeos.org </link>."
 msgstr ""
-"GEOS geometribibliotek, version &min_geos_version; eller högre, men GEOS 3."
-"14+ krävs för att kunna utnyttja alla nya funktioner och egenskaper fullt "
-"ut. GEOS finns tillgängligt för hämtning från <link "
-"xlink:href=\"https://libgeos.org/\"> https://libgeos.org </link>."
+"GEOS geometribibliotek, version &min_geos_version; eller högre, men GEOS "
+"3.14+ krävs för att kunna utnyttja alla nya funktioner och egenskaper fullt "
+"ut. GEOS finns tillgängligt för hämtning från <link xlink:href=\"https://"
+"libgeos.org/\"> https://libgeos.org </link>."
 
 #. Tag: para
 #, no-c-format
@@ -30366,188 +30366,6 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid ""
-"<refpurpose>Generates a set of vector contours from the provided raster "
-"band, using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"contouring algorithm</link>.</refpurpose>"
-msgstr ""
-"<refpurpose>Skapar en uppsättning vektorkonturer från det tillhandahållna "
-"rasterbandet med hjälp av <link xlink:href=\"https://gdal.org/api/gdal_alg."
-"html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL-"
-"konturalgoritmen</link>.</refpurpose>"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<para>Generates a set of vector contours from the provided raster band, "
-"using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"contouring algorithm</link>.</para>"
-msgstr ""
-"<para>Skapar en uppsättning vektorkonturer från det tillhandahållna "
-"rasterbandet med hjälp av <link xlink:href=\"https://gdal.org/api/gdal_alg."
-"html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL-"
-"konturalgoritmen</link>.</para>"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"When the <varname>fixed_levels</varname> parameter is a non-empty array, the "
-"<varname>level_interval</varname> and <varname>level_base</varname> "
-"parameters are ignored."
-msgstr ""
-"När parametern <varname>fixed_levels</varname> är en icke-tom array "
-"ignoreras parametrarna <varname>level_interval</varname> och "
-"<varname>level_base</varname>."
-
-#. Tag: para
-#, no-c-format
-msgid "Input parameters are:"
-msgstr "Inmatningsparametrar är:"
-
-#. Tag: para
-#, no-c-format
-msgid "The raster to generate the contour of"
-msgstr "Rastret för att generera konturen av"
-
-#. Tag: para
-#, no-c-format
-msgid "The band to generate the contour of"
-msgstr "Bandet för att generera konturen av"
-
-#. Tag: para
-#, no-c-format
-msgid "The elevation interval between contours generated"
-msgstr "Höjdintervallet mellan genererade konturer"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The \"base\" relative to which contour intervals are applied, this is "
-"normally zero, but could be different. To generate 10m contours at 5, 15, "
-"25, ... the LEVEL_BASE would be 5."
-msgstr ""
-"Den \"bas\" i förhållande till vilken konturintervallen tillämpas, normalt "
-"noll, men kan vara annorlunda. För att generera konturer på 10 m vid 5, 15, "
-"25, ... skulle LEVEL_BASE vara 5."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If <literal>true</literal>, contour polygons will be created, rather than "
-"polygon lines."
-msgstr ""
-"Om <literal>true</literal>, kommer konturpolygoner att skapas i stället för "
-"polygonlinjer."
-
-#. Tag: para
-#, no-c-format
-msgid "Return values are a set of records with the following attributes:"
-msgstr "Returvärdena är en uppsättning poster med följande attribut:"
-
-#. Tag: para
-#, no-c-format
-msgid "The geometry of the contour line."
-msgstr "Konturlinjens geometri."
-
-#. Tag: para
-#, no-c-format
-msgid "A unique identifier given to the contour line by GDAL."
-msgstr "En unik identifierare som GDAL ger till konturlinjen."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The raster value the line represents. For an elevation DEM input, this would "
-"be the elevation of the output contour."
-msgstr ""
-"Det rastervärde som linjen representerar. För en höjd-DEM-indata skulle "
-"detta vara höjden på den utgående konturen."
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Interpolates a gridded surface based on an input set of 3-d points, using "
-"the X- and Y-values to position the points on the grid and the Z-value of "
-"the points as the surface elevation."
-msgstr ""
-"Interpolerar en rutnätsyta baserat på en indatauppsättning av 3D-punkter, "
-"med hjälp av X- och Y-värdena för att positionera punkterna i rutnätet och "
-"punkternas Z-värde som ytans höjd."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Interpolates a gridded surface based on an input set of 3-d points, using "
-"the X- and Y-values to position the points on the grid and the Z-value of "
-"the points as the surface elevation. There are five interpolation algorithms "
-"available: inverse distance, inverse distance nearest-neighbor, moving "
-"average, nearest neighbor, and linear interpolation. See the <link xlink:"
-"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">gdal_grid documentation</link> for more details on the "
-"algorithms and their parameters. For more information on how interpolations "
-"are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
-"gdal_grid_tut.html\">GDAL grid tutorial</link>."
-msgstr ""
-"Interpolerar en yta i rutnät baserat på en indatauppsättning med 3D-punkter, "
-"med hjälp av X- och Y-värdena för att positionera punkterna i rutnätet och "
-"punkternas Z-värde som ytans höjd. Det finns fem interpolationsalgoritmer "
-"tillgängliga: invers avstånd, invers avstånd närmaste granne, glidande "
-"medelvärde, närmaste granne och linjär interpolation. Se <link xlink:"
-"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">dokumentationen för gdal_grid</link> för mer information om "
-"algoritmerna och deras parametrar. Mer information om hur interpoleringar "
-"beräknas finns i <link xlink:href=\"https://gdal.org/tutorials/gdal_grid_tut."
-"html\">GDAL Grid Tutorial</link>."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The points to drive the interpolation. Any geometry with Z-values is "
-"acceptable, all points in the input will be used."
-msgstr ""
-"De punkter som ska driva interpoleringen. Alla geometrier med Z-värden är "
-"acceptabla, alla punkter i indata kommer att användas."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A string defining the algorithm and algorithm options, in the format used by "
-"<link xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">gdal_grid</link>. For example, for an inverse-distance "
-"interpolation with a smoothing of 2, you would use \"invdist:smoothing=2.0\""
-msgstr ""
-"En sträng som definierar algoritmen och algoritmalternativen, i det format "
-"som används av <link xlink:href=\"https://gdal.org/programs/gdal_grid."
-"html#interpolation-algorithms\">gdal_grid</link>. Om du t.ex. vill göra en "
-"interpolering med omvänt avstånd och en utjämning på 2 använder du \"invdist:"
-"smoothing=2.0\""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A raster template to drive the geometry of the output raster. The width, "
-"height, pixel size, spatial extent and pixel type will be read from this "
-"template."
-msgstr ""
-"En rastermall för att styra geometrin i utdatarastret. Bredd, höjd, "
-"pixelstorlek, spatial utsträckning och pixeltyp kommer att läsas från denna "
-"mall."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"By default the first band in the template raster is used to drive the output "
-"raster, but that can be adjusted with this parameter."
-msgstr ""
-"Som standard används det första bandet i mallrastret för att driva "
-"utdatarastret, men det kan justeras med den här parametern."
-
-#. Tag: refpurpose
-#, no-c-format
 msgid "Change the SRID of all rasters in the user-specified column and table."
 msgstr ""
 "Ändra SRID för alla raster i den användarspecifika kolumnen och tabellen."
@@ -37639,6 +37457,188 @@ msgstr ""
 "linkend=\"RT_ST_Slope\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
 "linkend=\"RT_ST_Aspect\"/>"
 
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Interpolates a gridded surface based on an input set of 3-d points, using "
+"the X- and Y-values to position the points on the grid and the Z-value of "
+"the points as the surface elevation."
+msgstr ""
+"Interpolerar en rutnätsyta baserat på en indatauppsättning av 3D-punkter, "
+"med hjälp av X- och Y-värdena för att positionera punkterna i rutnätet och "
+"punkternas Z-värde som ytans höjd."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Interpolates a gridded surface based on an input set of 3-d points, using "
+"the X- and Y-values to position the points on the grid and the Z-value of "
+"the points as the surface elevation. There are five interpolation algorithms "
+"available: inverse distance, inverse distance nearest-neighbor, moving "
+"average, nearest neighbor, and linear interpolation. See the <link xlink:"
+"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"algorithms\">gdal_grid documentation</link> for more details on the "
+"algorithms and their parameters. For more information on how interpolations "
+"are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
+"gdal_grid_tut.html\">GDAL grid tutorial</link>."
+msgstr ""
+"Interpolerar en yta i rutnät baserat på en indatauppsättning med 3D-punkter, "
+"med hjälp av X- och Y-värdena för att positionera punkterna i rutnätet och "
+"punkternas Z-värde som ytans höjd. Det finns fem interpolationsalgoritmer "
+"tillgängliga: invers avstånd, invers avstånd närmaste granne, glidande "
+"medelvärde, närmaste granne och linjär interpolation. Se <link xlink:"
+"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"algorithms\">dokumentationen för gdal_grid</link> för mer information om "
+"algoritmerna och deras parametrar. Mer information om hur interpoleringar "
+"beräknas finns i <link xlink:href=\"https://gdal.org/tutorials/gdal_grid_tut."
+"html\">GDAL Grid Tutorial</link>."
+
+#. Tag: para
+#, no-c-format
+msgid "Input parameters are:"
+msgstr "Inmatningsparametrar är:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The points to drive the interpolation. Any geometry with Z-values is "
+"acceptable, all points in the input will be used."
+msgstr ""
+"De punkter som ska driva interpoleringen. Alla geometrier med Z-värden är "
+"acceptabla, alla punkter i indata kommer att användas."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A string defining the algorithm and algorithm options, in the format used by "
+"<link xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"algorithms\">gdal_grid</link>. For example, for an inverse-distance "
+"interpolation with a smoothing of 2, you would use \"invdist:smoothing=2.0\""
+msgstr ""
+"En sträng som definierar algoritmen och algoritmalternativen, i det format "
+"som används av <link xlink:href=\"https://gdal.org/programs/gdal_grid."
+"html#interpolation-algorithms\">gdal_grid</link>. Om du t.ex. vill göra en "
+"interpolering med omvänt avstånd och en utjämning på 2 använder du \"invdist:"
+"smoothing=2.0\""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A raster template to drive the geometry of the output raster. The width, "
+"height, pixel size, spatial extent and pixel type will be read from this "
+"template."
+msgstr ""
+"En rastermall för att styra geometrin i utdatarastret. Bredd, höjd, "
+"pixelstorlek, spatial utsträckning och pixeltyp kommer att läsas från denna "
+"mall."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"By default the first band in the template raster is used to drive the output "
+"raster, but that can be adjusted with this parameter."
+msgstr ""
+"Som standard används det första bandet i mallrastret för att driva "
+"utdatarastret, men det kan justeras med den här parametern."
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"<refpurpose>Generates a set of vector contours from the provided raster "
+"band, using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
+"contouring algorithm</link>.</refpurpose>"
+msgstr ""
+"<refpurpose>Skapar en uppsättning vektorkonturer från det tillhandahållna "
+"rasterbandet med hjälp av <link xlink:href=\"https://gdal.org/api/gdal_alg."
+"html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL-"
+"konturalgoritmen</link>.</refpurpose>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<para>Generates a set of vector contours from the provided raster band, "
+"using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
+"contouring algorithm</link>.</para>"
+msgstr ""
+"<para>Skapar en uppsättning vektorkonturer från det tillhandahållna "
+"rasterbandet med hjälp av <link xlink:href=\"https://gdal.org/api/gdal_alg."
+"html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL-"
+"konturalgoritmen</link>.</para>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When the <varname>fixed_levels</varname> parameter is a non-empty array, the "
+"<varname>level_interval</varname> and <varname>level_base</varname> "
+"parameters are ignored."
+msgstr ""
+"När parametern <varname>fixed_levels</varname> är en icke-tom array "
+"ignoreras parametrarna <varname>level_interval</varname> och "
+"<varname>level_base</varname>."
+
+#. Tag: para
+#, no-c-format
+msgid "The raster to generate the contour of"
+msgstr "Rastret för att generera konturen av"
+
+#. Tag: para
+#, no-c-format
+msgid "The band to generate the contour of"
+msgstr "Bandet för att generera konturen av"
+
+#. Tag: para
+#, no-c-format
+msgid "The elevation interval between contours generated"
+msgstr "Höjdintervallet mellan genererade konturer"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The \"base\" relative to which contour intervals are applied, this is "
+"normally zero, but could be different. To generate 10m contours at 5, 15, "
+"25, ... the LEVEL_BASE would be 5."
+msgstr ""
+"Den \"bas\" i förhållande till vilken konturintervallen tillämpas, normalt "
+"noll, men kan vara annorlunda. För att generera konturer på 10 m vid 5, 15, "
+"25, ... skulle LEVEL_BASE vara 5."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If <literal>true</literal>, contour polygons will be created, rather than "
+"polygon lines."
+msgstr ""
+"Om <literal>true</literal>, kommer konturpolygoner att skapas i stället för "
+"polygonlinjer."
+
+#. Tag: para
+#, no-c-format
+msgid "Return values are a set of records with the following attributes:"
+msgstr "Returvärdena är en uppsättning poster med följande attribut:"
+
+#. Tag: para
+#, no-c-format
+msgid "The geometry of the contour line."
+msgstr "Konturlinjens geometri."
+
+#. Tag: para
+#, no-c-format
+msgid "A unique identifier given to the contour line by GDAL."
+msgstr "En unik identifierare som GDAL ger till konturlinjen."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The raster value the line represents. For an elevation DEM input, this would "
+"be the elevation of the output contour."
+msgstr ""
+"Det rastervärde som linjen representerar. För en höjd-DEM-indata skulle "
+"detta vara höjden på den utgående konturen."
+
 #. Tag: title
 #, no-c-format
 msgid "Raster Processing: Raster to Geometry"
@@ -37906,6 +37906,31 @@ msgid ""
 msgstr ""
 "Ändrad: 2.1.0 I tidigare versioner returnerades ibland en polygon, ändrat "
 "till att alltid returnera multipolygon."
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Calculates the fraction of each raster cell that is covered by a given "
+"geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Calculates the fraction of each raster cell that is covered by a given "
+"geometry. The first argument is a raster, which defines the grid geometry to "
+"use for the calculation. The extent and cell size are read from the raster "
+"parameter. The second argument is a geometry, which is overlaid with the "
+"grid, and each grid populated based on overlaying the geometry on the grid. "
+"For polygons, the value returned for each cell is the proportion of its area "
+"that is covered by the geometry. For linestrings, the value returned for "
+"each cell is the length contained in the cell."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0 Requires GEOS 3.14 or higher."
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -44970,24 +44995,21 @@ msgstr "Anteckningar för release"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0beta1"
-msgstr "PostGIS 3.6.0beta1"
+msgid "PostGIS 3.6.0rc1"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/07/19"
-msgstr "2025-07-19"
+msgid "2025/08/18"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12-18beta2, GEOS 3.8 or higher, and Proj "
+"This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj "
 "6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
 "advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
 msgstr ""
-"Denna version kräver PostgreSQL 12-18beta2, GEOS 3.8 eller högre och Proj 6."
-"1+. För att kunna använda alla funktioner krävs GEOS 3.14+. För att kunna "
-"använda alla SFCGAL-funktioner krävs SFCGAL 2.2+."
 
 #. Tag: para
 #, no-c-format
@@ -45042,9 +45064,9 @@ msgid ""
 "pulls/255\">GT-255</link>, [topology] Support for upgrading domains (Ayo "
 "Adesugba, U.S. Census Bureau)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</link>, "
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"255\">GT-255</link>, [topologi] Stöd för uppgradering av domäner (Ayo "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/255\">GT-255</link>, [topologi] Stöd för uppgradering av domäner (Ayo "
 "Adesugba, U.S. Census Bureau)"
 
 #. Tag: para
@@ -45068,15 +45090,34 @@ msgid ""
 "pulls/242\">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, U.S. "
 "Census Bureau)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</link>, "
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"242\">GT-242</link>, [topologi] Stöd för bigint (Ayo Adesugba, U.S. Census "
-"Bureau)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/242\">GT-242</link>, [topologi] Stöd för bigint (Ayo Adesugba, U.S. "
+"Census Bureau)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+"ticket/5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/"
+"postgis/postgis/pulls/260\">GT-260</link> [tiger_geocoder] Use @extschema:"
+"extension@ for PG &gt;= 16 to schema qualify dependent extensions, switch to "
+"use typmod for tiger tables (Regina Obe)"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
 msgid "Removed / Deprecate signatures"
 msgstr "Borttagna/föråldrade signaturer"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</link> "
+"Drop st_approxquantile(raster, double precision), wasn't usable as it "
+"triggered is not unique error when used (Regina Obe)"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -45208,10 +45249,22 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. "
+"Census Bureau)"
 msgstr ""
-"Lägg till ST_ReclassExact för att snabbt mappa om värden i raster (Paul "
-"Ramsey)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/242\">GT-242</link> [topologi] Stöd för bigint (Ayo Adesugba, U.S. "
+"Census Bureau)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"[raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -51519,6 +51572,30 @@ msgid "Supports geography"
 msgstr "Stödjer geografi"
 
 #, no-c-format
+#~ msgid "PostGIS 3.6.0beta1"
+#~ msgstr "PostGIS 3.6.0beta1"
+
+#, no-c-format
+#~ msgid "2025/07/19"
+#~ msgstr "2025-07-19"
+
+#, no-c-format
+#~ msgid ""
+#~ "This version requires PostgreSQL 12-18beta2, GEOS 3.8 or higher, and Proj "
+#~ "6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
+#~ "advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
+#~ msgstr ""
+#~ "Denna version kräver PostgreSQL 12-18beta2, GEOS 3.8 eller högre och Proj "
+#~ "6.1+. För att kunna använda alla funktioner krävs GEOS 3.14+. För att "
+#~ "kunna använda alla SFCGAL-funktioner krävs SFCGAL 2.2+."
+
+#, no-c-format
+#~ msgid "Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
+#~ msgstr ""
+#~ "Lägg till ST_ReclassExact för att snabbt mappa om värden i raster (Paul "
+#~ "Ramsey)"
+
+#, no-c-format
 #~ msgid ""
 #~ "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
 #~ "installation of PostgreSQL (including server headers) is required. "
@@ -51567,18 +51644,6 @@ msgstr "Stödjer geografi"
 #~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
 #~ "pulls/255\">GT-255</link> [topologi] Stöd för uppgradering av domäner "
 #~ "(Ayo Adesugba, U.S. Census Bureau)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-#~ "pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U."
-#~ "S. Census Bureau)"
-#~ msgstr ""
-#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-#~ "pulls/242\">GT-242</link> [topologi] Stöd för bigint (Ayo Adesugba, U.S. "
-#~ "Census Bureau)"
 
 #, no-c-format
 #~ msgid ""

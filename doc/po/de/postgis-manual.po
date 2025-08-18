@@ -31177,194 +31177,6 @@ msgstr ""
 "linkend=\"postgis_gdal_enabled_drivers\"/>"
 
 #. Tag: refpurpose
-#, fuzzy, no-c-format
-msgid ""
-"<refpurpose>Generates a set of vector contours from the provided raster "
-"band, using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"contouring algorithm</link>.</refpurpose>"
-msgstr ""
-"<refpurpose>Erzeugt einen Satz von Vektorkonturen aus dem angegebenen "
-"Rasterband unter Verwendung des <link xlink:href=\"https://gdal.org/api/"
-"gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL-"
-"Konturierungsalgorithmus</link>.</refpurpose>"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<para>Generates a set of vector contours from the provided raster band, "
-"using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"contouring algorithm</link>.</para>"
-msgstr ""
-"<para>Erzeugt eine Reihe von Vektorkonturen aus dem angegebenen Rasterband, "
-"unter Verwendung des <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"Konturierungsalgorithmus</link>.</para>"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"When the <varname>fixed_levels</varname> parameter is a non-empty array, the "
-"<varname>level_interval</varname> and <varname>level_base</varname> "
-"parameters are ignored."
-msgstr ""
-"Wenn der Parameter <varname>fixed_levels</varname> ein nicht-leeres Array "
-"ist, werden die Parameter <varname>level_interval</varname> und "
-"<varname>level_base</varname> ignoriert."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "Input parameters are:"
-msgstr "Die Eingabeparameter sind:"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "The raster to generate the contour of"
-msgstr "Das Raster zur Erzeugung der Kontur von"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "The band to generate the contour of"
-msgstr "Das Band zur Erzeugung der Kontur von"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "The elevation interval between contours generated"
-msgstr "Der Höhenabstand zwischen den erzeugten Konturen"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"The \"base\" relative to which contour intervals are applied, this is "
-"normally zero, but could be different. To generate 10m contours at 5, 15, "
-"25, ... the LEVEL_BASE would be 5."
-msgstr ""
-"Die \"Basis\", auf die sich die Konturintervalle beziehen. Normalerweise ist "
-"dies Null, kann aber auch anders sein. Um 10m-Konturen bei 5, 15, 25, ... zu "
-"erzeugen, wäre die LEVEL_BASE 5."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"If <literal>true</literal>, contour polygons will be created, rather than "
-"polygon lines."
-msgstr ""
-"Wenn <literal>true</literal>, werden Konturpolygone anstelle von "
-"Polygonlinien erstellt."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "Return values are a set of records with the following attributes:"
-msgstr ""
-"Die Rückgabewerte sind eine Reihe von Datensätzen mit den folgenden "
-"Attributen:"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "The geometry of the contour line."
-msgstr "Die Geometrie der Konturlinie."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "A unique identifier given to the contour line by GDAL."
-msgstr ""
-"Ein eindeutiger Bezeichner, der der Höhenlinie von GDAL zugewiesen wird."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"The raster value the line represents. For an elevation DEM input, this would "
-"be the elevation of the output contour."
-msgstr ""
-"Der Rasterwert, den die Linie darstellt. Bei einer DEM-Höheneingabe wäre "
-"dies die Höhe der Ausgangskontur."
-
-#. Tag: refpurpose
-#, fuzzy, no-c-format
-msgid ""
-"Interpolates a gridded surface based on an input set of 3-d points, using "
-"the X- and Y-values to position the points on the grid and the Z-value of "
-"the points as the surface elevation."
-msgstr ""
-"Interpoliert eine gerasterte Oberfläche auf der Grundlage eines "
-"Eingabesatzes von 3D-Punkten, wobei die X- und Y-Werte zur Positionierung "
-"der Punkte auf dem Gitter und der Z-Wert der Punkte als Oberflächenhöhe "
-"verwendet werden."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"Interpolates a gridded surface based on an input set of 3-d points, using "
-"the X- and Y-values to position the points on the grid and the Z-value of "
-"the points as the surface elevation. There are five interpolation algorithms "
-"available: inverse distance, inverse distance nearest-neighbor, moving "
-"average, nearest neighbor, and linear interpolation. See the <link xlink:"
-"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">gdal_grid documentation</link> for more details on the "
-"algorithms and their parameters. For more information on how interpolations "
-"are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
-"gdal_grid_tut.html\">GDAL grid tutorial</link>."
-msgstr ""
-"Interpoliert eine gerasterte Oberfläche auf der Grundlage eines "
-"Eingabesatzes von 3D-Punkten, wobei die X- und Y-Werte zur Positionierung "
-"der Punkte auf dem Gitter und der Z-Wert der Punkte als Oberflächenhöhe "
-"verwendet werden. Es stehen fünf Interpolationsalgorithmen zur Verfügung: "
-"inverser Abstand, inverser Abstand nächster Nachbar, gleitender "
-"Durchschnitt, nächster Nachbar und lineare Interpolation. Weitere "
-"Einzelheiten zu den Algorithmen und ihren Parametern finden Sie in der <link "
-"xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">gdal_grid Dokumentation</link>. Weitere Informationen darüber, "
-"wie Interpolationen berechnet werden, finden Sie im <link xlink:"
-"href=\"https://gdal.org/tutorials/gdal_grid_tut.html\">GDAL-Grid-Tutorial</"
-"link>."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"The points to drive the interpolation. Any geometry with Z-values is "
-"acceptable, all points in the input will be used."
-msgstr ""
-"Die Punkte, die die Interpolation steuern. Jede Geometrie mit Z-Werten ist "
-"akzeptabel, alle Punkte in der Eingabe werden verwendet."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"A string defining the algorithm and algorithm options, in the format used by "
-"<link xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">gdal_grid</link>. For example, for an inverse-distance "
-"interpolation with a smoothing of 2, you would use \"invdist:smoothing=2.0\""
-msgstr ""
-"Eine Zeichenkette, die den Algorithmus und die Algorithmusoptionen "
-"definiert, im Format von <link xlink:href=\"https://gdal.org/programs/"
-"gdal_grid.html#interpolation-algorithms\">gdal_grid</link>. Für eine "
-"Interpolation mit inversem Abstand und einer Glättung von 2 würde man zum "
-"Beispiel \"invdist:smoothing=2.0\" verwenden."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"A raster template to drive the geometry of the output raster. The width, "
-"height, pixel size, spatial extent and pixel type will be read from this "
-"template."
-msgstr ""
-"Eine Rastervorlage zur Steuerung der Geometrie des Ausgaberasters. Die "
-"Breite, Höhe, Pixelgröße, räumliche Ausdehnung und der Pixeltyp werden aus "
-"dieser Vorlage gelesen."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"By default the first band in the template raster is used to drive the output "
-"raster, but that can be adjusted with this parameter."
-msgstr ""
-"Standardmäßig wird das erste Band im Vorlagenraster für die Steuerung des "
-"Ausgaberasters verwendet, aber das kann mit diesem Parameter angepasst "
-"werden."
-
-#. Tag: refpurpose
 #, no-c-format
 msgid "Change the SRID of all rasters in the user-specified column and table."
 msgstr ""
@@ -38620,6 +38432,194 @@ msgstr ""
 "linkend=\"RT_ST_Slope\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
 "linkend=\"RT_ST_Aspect\"/>"
 
+#. Tag: refpurpose
+#, fuzzy, no-c-format
+msgid ""
+"Interpolates a gridded surface based on an input set of 3-d points, using "
+"the X- and Y-values to position the points on the grid and the Z-value of "
+"the points as the surface elevation."
+msgstr ""
+"Interpoliert eine gerasterte Oberfläche auf der Grundlage eines "
+"Eingabesatzes von 3D-Punkten, wobei die X- und Y-Werte zur Positionierung "
+"der Punkte auf dem Gitter und der Z-Wert der Punkte als Oberflächenhöhe "
+"verwendet werden."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Interpolates a gridded surface based on an input set of 3-d points, using "
+"the X- and Y-values to position the points on the grid and the Z-value of "
+"the points as the surface elevation. There are five interpolation algorithms "
+"available: inverse distance, inverse distance nearest-neighbor, moving "
+"average, nearest neighbor, and linear interpolation. See the <link xlink:"
+"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"algorithms\">gdal_grid documentation</link> for more details on the "
+"algorithms and their parameters. For more information on how interpolations "
+"are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
+"gdal_grid_tut.html\">GDAL grid tutorial</link>."
+msgstr ""
+"Interpoliert eine gerasterte Oberfläche auf der Grundlage eines "
+"Eingabesatzes von 3D-Punkten, wobei die X- und Y-Werte zur Positionierung "
+"der Punkte auf dem Gitter und der Z-Wert der Punkte als Oberflächenhöhe "
+"verwendet werden. Es stehen fünf Interpolationsalgorithmen zur Verfügung: "
+"inverser Abstand, inverser Abstand nächster Nachbar, gleitender "
+"Durchschnitt, nächster Nachbar und lineare Interpolation. Weitere "
+"Einzelheiten zu den Algorithmen und ihren Parametern finden Sie in der <link "
+"xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"algorithms\">gdal_grid Dokumentation</link>. Weitere Informationen darüber, "
+"wie Interpolationen berechnet werden, finden Sie im <link xlink:"
+"href=\"https://gdal.org/tutorials/gdal_grid_tut.html\">GDAL-Grid-Tutorial</"
+"link>."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "Input parameters are:"
+msgstr "Die Eingabeparameter sind:"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The points to drive the interpolation. Any geometry with Z-values is "
+"acceptable, all points in the input will be used."
+msgstr ""
+"Die Punkte, die die Interpolation steuern. Jede Geometrie mit Z-Werten ist "
+"akzeptabel, alle Punkte in der Eingabe werden verwendet."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"A string defining the algorithm and algorithm options, in the format used by "
+"<link xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"algorithms\">gdal_grid</link>. For example, for an inverse-distance "
+"interpolation with a smoothing of 2, you would use \"invdist:smoothing=2.0\""
+msgstr ""
+"Eine Zeichenkette, die den Algorithmus und die Algorithmusoptionen "
+"definiert, im Format von <link xlink:href=\"https://gdal.org/programs/"
+"gdal_grid.html#interpolation-algorithms\">gdal_grid</link>. Für eine "
+"Interpolation mit inversem Abstand und einer Glättung von 2 würde man zum "
+"Beispiel \"invdist:smoothing=2.0\" verwenden."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"A raster template to drive the geometry of the output raster. The width, "
+"height, pixel size, spatial extent and pixel type will be read from this "
+"template."
+msgstr ""
+"Eine Rastervorlage zur Steuerung der Geometrie des Ausgaberasters. Die "
+"Breite, Höhe, Pixelgröße, räumliche Ausdehnung und der Pixeltyp werden aus "
+"dieser Vorlage gelesen."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"By default the first band in the template raster is used to drive the output "
+"raster, but that can be adjusted with this parameter."
+msgstr ""
+"Standardmäßig wird das erste Band im Vorlagenraster für die Steuerung des "
+"Ausgaberasters verwendet, aber das kann mit diesem Parameter angepasst "
+"werden."
+
+#. Tag: refpurpose
+#, fuzzy, no-c-format
+msgid ""
+"<refpurpose>Generates a set of vector contours from the provided raster "
+"band, using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
+"contouring algorithm</link>.</refpurpose>"
+msgstr ""
+"<refpurpose>Erzeugt einen Satz von Vektorkonturen aus dem angegebenen "
+"Rasterband unter Verwendung des <link xlink:href=\"https://gdal.org/api/"
+"gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL-"
+"Konturierungsalgorithmus</link>.</refpurpose>"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<para>Generates a set of vector contours from the provided raster band, "
+"using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
+"contouring algorithm</link>.</para>"
+msgstr ""
+"<para>Erzeugt eine Reihe von Vektorkonturen aus dem angegebenen Rasterband, "
+"unter Verwendung des <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
+"Konturierungsalgorithmus</link>.</para>"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"When the <varname>fixed_levels</varname> parameter is a non-empty array, the "
+"<varname>level_interval</varname> and <varname>level_base</varname> "
+"parameters are ignored."
+msgstr ""
+"Wenn der Parameter <varname>fixed_levels</varname> ein nicht-leeres Array "
+"ist, werden die Parameter <varname>level_interval</varname> und "
+"<varname>level_base</varname> ignoriert."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "The raster to generate the contour of"
+msgstr "Das Raster zur Erzeugung der Kontur von"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "The band to generate the contour of"
+msgstr "Das Band zur Erzeugung der Kontur von"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "The elevation interval between contours generated"
+msgstr "Der Höhenabstand zwischen den erzeugten Konturen"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The \"base\" relative to which contour intervals are applied, this is "
+"normally zero, but could be different. To generate 10m contours at 5, 15, "
+"25, ... the LEVEL_BASE would be 5."
+msgstr ""
+"Die \"Basis\", auf die sich die Konturintervalle beziehen. Normalerweise ist "
+"dies Null, kann aber auch anders sein. Um 10m-Konturen bei 5, 15, 25, ... zu "
+"erzeugen, wäre die LEVEL_BASE 5."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"If <literal>true</literal>, contour polygons will be created, rather than "
+"polygon lines."
+msgstr ""
+"Wenn <literal>true</literal>, werden Konturpolygone anstelle von "
+"Polygonlinien erstellt."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "Return values are a set of records with the following attributes:"
+msgstr ""
+"Die Rückgabewerte sind eine Reihe von Datensätzen mit den folgenden "
+"Attributen:"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "The geometry of the contour line."
+msgstr "Die Geometrie der Konturlinie."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "A unique identifier given to the contour line by GDAL."
+msgstr ""
+"Ein eindeutiger Bezeichner, der der Höhenlinie von GDAL zugewiesen wird."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The raster value the line represents. For an elevation DEM input, this would "
+"be the elevation of the output contour."
+msgstr ""
+"Der Rasterwert, den die Linie darstellt. Bei einer DEM-Höheneingabe wäre "
+"dies die Höhe der Ausgangskontur."
+
 #. Tag: title
 #, fuzzy, no-c-format
 msgid "Raster Processing: Raster to Geometry"
@@ -38893,6 +38893,31 @@ msgstr ""
 "Änderung: 2.1.0 In Vorgängerversionen wurde manchmal ein Polygon "
 "zurückgegeben; dies wurde geändert so dass jetzt immer ein Mehrfachpolygon "
 "zurückgegeben wird."
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Calculates the fraction of each raster cell that is covered by a given "
+"geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Calculates the fraction of each raster cell that is covered by a given "
+"geometry. The first argument is a raster, which defines the grid geometry to "
+"use for the calculation. The extent and cell size are read from the raster "
+"parameter. The second argument is a geometry, which is overlaid with the "
+"grid, and each grid populated based on overlaying the geometry on the grid. "
+"For polygons, the value returned for each cell is the proportion of its area "
+"that is covered by the geometry. For linestrings, the value returned for "
+"each cell is the length contained in the cell."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0 Requires GEOS 3.14 or higher."
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -45908,18 +45933,18 @@ msgstr "Anmerkungen zur Release"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0beta1"
+msgid "PostGIS 3.6.0rc1"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/07/19"
+msgid "2025/08/18"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12-18beta2, GEOS 3.8 or higher, and Proj "
+"This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj "
 "6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
 "advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
 msgstr ""
@@ -45991,9 +46016,28 @@ msgid ""
 "Census Bureau)"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+"ticket/5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/"
+"postgis/postgis/pulls/260\">GT-260</link> [tiger_geocoder] Use @extschema:"
+"extension@ for PG &gt;= 16 to schema qualify dependent extensions, switch to "
+"use typmod for tiger tables (Regina Obe)"
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Removed / Deprecate signatures"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</link> "
+"Drop st_approxquantile(raster, double precision), wasn't usable as it "
+"triggered is not unique error when used (Regina Obe)"
 msgstr ""
 
 #. Tag: title
@@ -46094,7 +46138,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+"pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. "
+"Census Bureau)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"[raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
 msgstr ""
 
 #. Tag: title
