@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-19 17:47+0000\n"
+"PO-Revision-Date: 2025-08-19 18:59+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -15640,7 +15640,7 @@ msgid ""
 "LEFT JOIN ensures all provinces are included even if they have no lakes."
 msgstr ""
 "Створити набір меж провінцій з отворами, що позначають озера. Вхідними "
-"даними є таблиця полігонів/багатокутників провінцій та таблиця лінійних "
+"даними є таблиця полігонів/мультиполігонів провінцій та таблиця лінійних "
 "об'єктів, що позначають водойми. Лінії, що утворюють озера, визначаються за "
 "допомогою <xref linkend=\"ST_IsClosed\"/>. Лінії провінцій витягуються за "
 "допомогою <xref linkend=\"ST_Boundary\"/>. Відповідно до вимог "
@@ -16294,7 +16294,7 @@ msgid ""
 "with the fonts having a height of 1000 units from the bottom of the "
 "descenders to the tops of the capitals."
 msgstr ""
-"Використовує вбудований шрифт для відображення рядка як багатокутної "
+"Використовує вбудований шрифт для відображення рядка як мультиполігональної "
 "геометрії. За замовчуванням висота тексту становить 100,0, відстань від "
 "нижньої частини нижнього виступу до верхньої частини великої літери. За "
 "замовчуванням початкова позиція розміщує початок базової лінії в точці "
@@ -17264,8 +17264,8 @@ msgid ""
 "curved representation returns back same as input."
 msgstr ""
 "Перетворює геометрію в її криве представлення, якщо це можливо: лінії стають "
-"складеними кривими, багатолінії стають багатокривими, полігони стають "
-"криволінійними полігонами, багатокутники стають багатоповерхневими. Якщо "
+"складеними кривими, мультилінії стають мультикривими, полігони стають "
+"криволінійними полігонами, мультиполігоанми стають багатоповерхневими. Якщо "
 "вхідна геометрія вже є кривим представленням, повертається те саме, що і "
 "вхідні дані."
 
@@ -18043,7 +18043,7 @@ msgstr "MULTILINESTRING EMPTY."
 msgid ""
 "Example: ST_RemoveSmallParts() applied to a multi-polygon. Blue parts remain."
 msgstr ""
-"Приклад: ST_RemoveSmallParts() застосовано до багатокутника. Сині частини "
+"Приклад: ST_RemoveSmallParts() застосовано до мультиполігону. Сині частини "
 "залишаються."
 
 #. Tag: refpurpose
@@ -18344,6 +18344,8 @@ msgid ""
 "The returned geometry might lose its simplicity (see <xref "
 "linkend=\"ST_IsSimple\"/>)."
 msgstr ""
+"Повернена геометрія може втратити свою простоту (див. <xref linkend="
+"\"ST_IsSimple\"/>)."
 
 #. Tag: para
 #, no-c-format
@@ -18353,16 +18355,21 @@ msgid ""
 "one with higher dimension values untouched. Use the version taking a second "
 "geometry argument to define all grid dimensions."
 msgstr ""
+"До версії 1.1.0 ця функція завжди повертала 2D-геометрію. Починаючи з версії "
+"1.1.0, повернена геометрія матиме ту саму розмірність, що й вхідна, а "
+"значення вищих розмірностей залишатимуться незмінними. Використовуйте "
+"версію, що приймає другий аргумент геометрії, щоб визначити всі розмірності "
+"сітки."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.0.0RC1"
-msgstr ""
+msgstr "Доступність: 1.0.0RC1"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.1.0 - Z and M support"
-msgstr ""
+msgstr "Доступність: 1.1.0 - підтримка Z і M"
 
 #. Tag: para
 #, no-c-format
@@ -18371,6 +18378,9 @@ msgid ""
 "linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref "
 "linkend=\"ST_Simplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+"linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref "
+"linkend=\"ST_Simplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18378,6 +18388,8 @@ msgid ""
 "Snap segments and vertices of input geometry to vertices of a reference "
 "geometry."
 msgstr ""
+"Прив'язати сегменти та вершини вхідної геометрії до вершин еталонної "
+"геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -18387,6 +18399,10 @@ msgid ""
 "performed. The result geometry is the input geometry with the vertices "
 "snapped. If no snapping occurs then the input geometry is returned unchanged."
 msgstr ""
+"Прив'язує вершини та сегменти геометрії до вершин іншої геометрії. Для "
+"контролю місця прив'язки використовується допуск відстані прив'язки. "
+"Результатом є геометрія з прив'язаними вершинами. Якщо прив'язка не "
+"відбувається, геометрія залишається без змін."
 
 #. Tag: para
 #, no-c-format
@@ -18395,6 +18411,9 @@ msgid ""
 "operations by eliminating nearly-coincident edges (which cause problems "
 "during noding and intersection calculation)."
 msgstr ""
+"З'єднання однієї геометрії з іншою може підвищити надійність операцій "
+"накладання, усуваючи майже збіжні краї (які спричиняють проблеми під час "
+"обчислення вузлів і перетинів)."
 
 #. Tag: para
 #, no-c-format
@@ -18404,6 +18423,10 @@ msgid ""
 "determine when it is safe to snap. This can result in some potential snaps "
 "being omitted, however."
 msgstr ""
+"Занадто часте прив'язування може призвести до створення некоректної "
+"топології, тому кількість і розташування прив'язаних вершин визначається за "
+"допомогою евристичних методів, які визначають, коли прив'язування є "
+"безпечним. Однак це може призвести до пропуску деяких потенційних прив'язок."
 
 #. Tag: para
 #, no-c-format
@@ -18411,11 +18434,13 @@ msgid ""
 "The returned geometry might lose its simplicity (see <xref "
 "linkend=\"ST_IsSimple\"/>) and validity (see <xref linkend=\"ST_IsValid\"/>)."
 msgstr ""
+"Повернена геометрія може втратити свою простоту (див. <xref linkend="
+"\"ST_IsSimple\"/>) та валідність (див. <xref linkend=\"ST_IsValid\"/>)."
 
 #. Tag: para
 #, no-c-format
 msgid "A multipolygon shown with a linestring (before any snapping)"
-msgstr ""
+msgstr "Мультиполігон, показаний лінією (до будь-якого прив'язування)"
 
 #. Tag: para
 #, no-c-format
@@ -18423,6 +18448,8 @@ msgid ""
 "A multipolygon snapped to linestring to tolerance: 1.01 of distance. The new "
 "multipolygon is shown with reference linestring"
 msgstr ""
+"Мультиполігон, прив'язаний до лінії з точністю до 1,01 відстані. Новий "
+"мультиполігону відображається з посиланням на лінію"
 
 #. Tag: para
 #, no-c-format
@@ -18430,6 +18457,8 @@ msgid ""
 "A multipolygon snapped to linestring to tolerance: 1.25 of distance. The new "
 "multipolygon is shown with reference linestring"
 msgstr ""
+"Мультиполігон, прив'язаний до лінії з допуском: 1,25 відстані. Новий "
+"мультиполігон відображається з посиланням на лінію"
 
 #. Tag: para
 #, no-c-format
@@ -18437,6 +18466,8 @@ msgid ""
 "The linestring snapped to the original multipolygon at tolerance 1.01 of "
 "distance. The new linestring is shown with reference multipolygon"
 msgstr ""
+"Лінія прив'язалася до вихідного мультиполігону з допуском 1,01 відстані. "
+"Нова лінія відображається з посиланням на мультиполігон"
 
 #. Tag: para
 #, no-c-format
@@ -18444,29 +18475,33 @@ msgid ""
 "The linestring snapped to the original multipolygon at tolerance 1.25 of "
 "distance. The new linestring is shown with reference multipolygon"
 msgstr ""
+"Лінія прив'язалася до вихідного мультиполігону з допуском 1,25 відстані. "
+"Нова лінія відображається з посиланням на мультиполігон"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns a version of the given geometry with given ordinate values swapped."
-msgstr ""
+msgstr "Повертає версію заданої геометрії із заміненими значеннями ординат."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns a version of the given geometry with given ordinates swapped."
-msgstr ""
+msgstr "Повертає версію заданої геометрії із заміненими заданими координатами."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <varname>ords</varname> parameter is a 2-characters string naming the "
 "ordinates to swap. Valid names are: x,y,z and m."
 msgstr ""
+"Параметр </varname> — це 2-символьний рядок, що позначає координати, які "
+"потрібно поміняти місцями. Допустимі значення: x, y, z та m."
 
 #. Tag: title
 #, no-c-format
 msgid "Exceptional Functions"
-msgstr ""
+msgstr "Особливі функції"
 
 #. Tag: para
 #, no-c-format
@@ -18475,11 +18510,14 @@ msgid ""
 "data is corrupted in someway. They are used for troubleshooting corruption "
 "and also fixing things that should under normal circumstances, never happen."
 msgstr ""
+"Ці функції використовуються рідко і застосовуються лише у випадку "
+"пошкодження даних. Вони призначені для усунення несправностей та виправлення "
+"помилок, які за звичайних обставин не повинні виникати."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Add bounding box to the geometry."
-msgstr ""
+msgstr "Додати обмежувальну рамку до геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -18487,6 +18525,8 @@ msgid ""
 "Add bounding box to the geometry. This would make bounding box based queries "
 "faster, but will increase the size of the geometry."
 msgstr ""
+"Додати обмежувальну рамку до геометрії. Це пришвидшить запити на основі "
+"обмежувальної рамки, але збільшить розмір геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -18496,16 +18536,20 @@ msgid ""
 "you have an old install that is lacking bounding boxes. Then you need to "
 "drop the old and re-add."
 msgstr ""
+"Обмежувальні рамки автоматично додаються до геометрій, тому, як правило, це "
+"не потрібно, якщо тільки створена обмежувальна рамка якимось чином не "
+"пошкодилася або у вас стара версія, в якій відсутні обмежувальні рамки. Тоді "
+"вам потрібно видалити стару і додати нову."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_HasBBox\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Drop the bounding box cache from the geometry."
-msgstr ""
+msgstr "Видалити кеш обмежувальної рамки з геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -18516,6 +18560,11 @@ msgid ""
 "when your ST_Intersects and other relation queries leave out geometries that "
 "rightfully should return true."
 msgstr ""
+"Видалити кеш обмежувальної рамки з геометрії. Це зменшує розмір геометрії, "
+"але уповільнює запити на основі обмежувальної рамки. Також використовується "
+"для видалення пошкодженої обмежувальної рамки. Ознакою пошкодження кешованої "
+"обмежувальної рамки є те, що ST_Intersects та інші запити на відношення "
+"пропускають геометрії, які повинні повертати значення true."
 
 #. Tag: para
 #, no-c-format
@@ -18529,16 +18578,26 @@ msgid ""
 "version without a dump reload will not correct already corrupted boxes. So "
 "one can manually correct using below and re-add the bbox or do a dump reload."
 msgstr ""
+"Обмежувальні рамки автоматично додаються до геометрій і покращують швидкість "
+"запитів, тому, як правило, це не потрібно, якщо тільки створена обмежувальна "
+"рамка якимось чином не пошкодилася або у вас стара версія, в якій відсутні "
+"обмежувальні рамки. У такому випадку потрібно видалити старі та додати "
+"заново. Таке пошкодження спостерігалося в серіях 8.3-8.3.6, де кешовані "
+"bboxes не завжди перераховувалися при зміні геометрії, і оновлення до нової "
+"версії без перезавантаження дампа не виправляє вже пошкоджені рамки. Тому "
+"можна вручну виправити за допомогою наведеного нижче коду та додати bbox "
+"заново або виконати перезавантаження дампа."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns TRUE if the bbox of this geometry is cached, FALSE otherwise."
 msgstr ""
+"Повертає TRUE, якщо bbox цієї геометрії кешована, і FALSE в іншому випадку."
 
 #. Tag: para
 #, no-c-format
@@ -18547,16 +18606,19 @@ msgid ""
 "<xref linkend=\"PostGIS_AddBBox\"/> and <xref linkend=\"PostGIS_DropBBox\"/> "
 "to control caching."
 msgstr ""
+"Повертає TRUE, якщо bbox цієї геометрії кешована, і FALSE в іншому випадку. "
+"Використовуйте <xref linkend=\"PostGIS_AddBBox\"/>та <xref linkend="
+"\"PostGIS_DropBBox\"/>для керування кешуванням."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_DropBBox\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"PostGIS_DropBBox\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Grand Unified Custom Variables (GUCs)"
-msgstr ""
+msgstr "Великі уніфіковані змінні (GUC)"
 
 #. Tag: para
 #, no-c-format
@@ -18565,6 +18627,10 @@ msgid ""
 "These can be set globally, by database, by session or by transaction. Best "
 "set at global or database level."
 msgstr ""
+"У цьому розділі перелічено власні великі уніфіковані змінні PostGIS (GUC). "
+"Їх можна налаштувати глобально, для бази даних, для сеансу або для "
+"транзакції. Найкраще налаштовувати на глобальному рівні або на рівні бази "
+"даних."
 
 #. Tag: para
 #, no-c-format
@@ -18574,6 +18640,10 @@ msgid ""
 "href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
 "ALTER SYSTEM</link>"
 msgstr ""
+"Більше прикладів використання див. <link xlink:href=«https://www.postgresql."
+"org/docs/current/sql-set.html»>SQL SET</link> та <link "
+"xlink:href=«https://www.postgresql.org/docs/current/sql-altersystem.html»"
+">SQL ALTER SYSTEM</link>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18581,6 +18651,9 @@ msgid ""
 "A configuration option to assign the value of GDAL's GDAL_DATA option. If "
 "not set, the environmentally set GDAL_DATA variable is used."
 msgstr ""
+"Параметр конфігурації для призначення значення параметра GDAL_DATA GDAL. "
+"Якщо не встановлено, використовується змінна GDAL_DATA, встановлена в "
+"середовищі."
 
 #. Tag: para
 #, no-c-format
@@ -18589,6 +18662,9 @@ msgid ""
 "The <varname>postgis.gdal_datapath</varname> value should be the complete "
 "physical path to GDAL's data files."
 msgstr ""
+"Змінна PostgreSQL GUC для встановлення значення опції GDAL_DATA GDAL. "
+"Значення <varname>postgis.gdal_datapath</varname> повинно бути повним "
+"фізичним шляхом до файлів даних GDAL."
 
 #. Tag: para
 #, no-c-format
@@ -18597,6 +18673,9 @@ msgid ""
 "data files path is not hard-coded. This option should also be set when "
 "GDAL's data files are not located in GDAL's expected path."
 msgstr ""
+"Ця опція конфігурації найбільш корисна для платформ Windows, де шлях до "
+"файлів даних GDAL не є жорстко заданим. Цю опцію також слід встановити, якщо "
+"файли даних GDAL не знаходяться в очікуваному GDAL шляху."
 
 #. Tag: para
 #, no-c-format
@@ -18604,6 +18683,9 @@ msgid ""
 "This option can be set in PostgreSQL's configuration file postgresql.conf. "
 "It can also be set by connection or transaction."
 msgstr ""
+"Цей параметр можна встановити у файлі конфігурації PostgreSQL "
+"postgresql.conf. Його також можна встановити для окремого з'єднання або "
+"транзакції."
 
 #. Tag: para
 #, no-c-format
@@ -18612,21 +18694,24 @@ msgid ""
 "href=\"https://gdal.org/user/configoptions.html\">Configuration Options</"
 "link>."
 msgstr ""
+"Додаткова інформація про GDAL_DATA доступна в розділі «Параметри "
+"конфігурації» на сайті GDAL <link xlink:href=«https://gdal.org/user/"
+"configoptions.html»>."
 
 #. Tag: para
 #, no-c-format
 msgid "Set and reset <varname>postgis.gdal_datapath</varname>"
-msgstr ""
+msgstr "Встановити та скинути <varname>postgis.gdal_datapath</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "Setting on windows for a particular database"
-msgstr ""
+msgstr "Налаштування Windows для певної бази даних"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Transform\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18634,6 +18719,8 @@ msgid ""
 "A configuration option to set the enabled GDAL drivers in the PostGIS "
 "environment. Affects the GDAL configuration variable GDAL_SKIP."
 msgstr ""
+"Параметр конфігурації для встановлення увімкнених драйверів GDAL у "
+"середовищі PostGIS. Впливає на змінну конфігурації GDAL GDAL_SKIP."
 
 #. Tag: para
 #, no-c-format
@@ -18643,6 +18730,10 @@ msgid ""
 "can be set in PostgreSQL's configuration file: postgresql.conf. It can also "
 "be set by connection or transaction."
 msgstr ""
+"Параметр конфігурації для встановлення увімкнених драйверів GDAL у "
+"середовищі PostGIS. Впливає на змінну конфігурації GDAL GDAL_SKIP. Цей "
+"параметр можна встановити у файлі конфігурації PostgreSQL: postgresql.conf. "
+"Його також можна встановити для з'єднання або транзакції."
 
 #. Tag: para
 #, no-c-format
@@ -18652,6 +18743,10 @@ msgid ""
 "<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> with the list of enabled "
 "drivers to the process starting PostgreSQL."
 msgstr ""
+"Початкове значення <varname>postgis.gdal_enabled_drivers</varname> також "
+"можна встановити, передавши змінну середовища "
+"<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> зі списком увімкнених "
+"драйверів процесу, що запускає PostgreSQL."
 
 #. Tag: para
 #, no-c-format
@@ -18661,6 +18756,10 @@ msgid ""
 "href=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</link>. "
 "Multiple drivers can be specified by putting a space between each driver."
 msgstr ""
+"Увімкнені драйвери GDAL можна вказати за короткою назвою або кодом драйвера. "
+"Короткі назви або коди драйверів можна знайти за посиланням <link "
+"xlink:href=«http://www.gdal.org/formats_list.html»>GDAL Raster Formats</"
+"link>. Можна вказати кілька драйверів, розділивши їх пробілом."
 
 #. Tag: para
 #, no-c-format
@@ -18668,6 +18767,8 @@ msgid ""
 "There are three special codes available for <varname>postgis."
 "gdal_enabled_drivers</varname>. The codes are case-sensitive."
 msgstr ""
+"Для <varname>postgis.gdal_enabled_drivers</varname> доступні три спеціальні "
+"коди. Коди чутливі до регістру."
 
 #. Tag: para
 #, no-c-format
@@ -18676,11 +18777,14 @@ msgid ""
 "<varname>DISABLE_ALL</varname> overrides all other values in "
 "<varname>postgis.gdal_enabled_drivers</varname>."
 msgstr ""
+"<varname>DISABLE_ALL</varname> вимикає всі драйвери GDAL. Якщо присутній, "
+"<varname>DISABLE_ALL</varname> замінює всі інші значення в <varname>postgis."
+"gdal_enabled_drivers</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>ENABLE_ALL</varname> enables all GDAL drivers."
-msgstr ""
+msgstr "<varname>ENABLE_ALL</varname> вмикає всі драйвери GDAL."
 
 #. Tag: para
 #, no-c-format
@@ -18688,6 +18792,8 @@ msgid ""
 "<varname>VSICURL</varname> enables GDAL's <varname>/vsicurl/</varname> "
 "virtual file system."
 msgstr ""
+"<varname>VSICURL</varname> вмикає віртуальну файлову систему GDAL <varname>/"
+"vsicurl/</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -18696,6 +18802,10 @@ msgid ""
 "attempts to use out-db rasters, ST_FromGDALRaster(), ST_AsGDALRaster(), "
 "ST_AsTIFF(), ST_AsJPEG() and ST_AsPNG() will result in error messages."
 msgstr ""
+"Коли <varname>postgis.gdal_enabled_drivers</varname> встановлено на "
+"DISABLE_ALL, спроби використання растрів out-db, ST_FromGDALRaster(), "
+"ST_AsGDALRaster(), ST_AsTIFF(), ST_AsJPEG() та ST_AsPNG() призведуть до "
+"появи повідомлень про помилки."
 
 #. Tag: para
 #, no-c-format
@@ -18703,6 +18813,8 @@ msgid ""
 "In the standard PostGIS installation, <varname>postgis.gdal_enabled_drivers</"
 "varname> is set to DISABLE_ALL."
 msgstr ""
+"У стандартній установці PostGIS <varname>postgis.gdal_enabled_drivers</"
+"varname> встановлено на DISABLE_ALL."
 
 #. Tag: para
 #, no-c-format
@@ -18711,6 +18823,9 @@ msgid ""
 "href=\"https://gdal.org/user/configoptions.html\">Configuration Options</"
 "link>."
 msgstr ""
+"Додаткова інформація про GDAL_SKIP доступна в розділі «Параметри "
+"конфігурації» на сайті GDAL <link xlink:href=«https://gdal.org/user/"
+"configoptions.html»>."
 
 #. Tag: para
 #, no-c-format
@@ -18718,11 +18833,14 @@ msgid ""
 "To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current "
 "session"
 msgstr ""
+"Встановити та скинути <varname>postgis.gdal_enabled_drivers</varname> для "
+"поточного сеансу"
 
 #. Tag: para
 #, no-c-format
 msgid "Set for all new connections to a specific database to specific drivers"
 msgstr ""
+"Встановити для всіх нових підключень до певної бази даних конкретні драйвери"
 
 #. Tag: para
 #, no-c-format
@@ -18731,6 +18849,9 @@ msgid ""
 "user access. Also note that database, session, and user settings override "
 "this."
 msgstr ""
+"Налаштування для всього кластера бази даних, щоб увімкнути всі драйвери. "
+"Потрібен доступ суперкористувача. Також зверніть увагу, що налаштування бази "
+"даних, сеансу та користувача мають пріоритет над цими налаштуваннями."
 
 #. Tag: para
 #, no-c-format
@@ -18739,11 +18860,15 @@ msgid ""
 "<xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsJPEG\"/>, <xref "
 "linkend=\"postgis_enable_outdb_rasters\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>, "
+"<xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsJPEG\"/>, <xref "
+"linkend=\"postgis_enable_outdb_rasters\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "A boolean configuration option to enable access to out-db raster bands."
 msgstr ""
+"Булева опція конфігурації для увімкнення доступу до растрових смуг out-db."
 
 #. Tag: para
 #, no-c-format
@@ -18752,6 +18877,9 @@ msgid ""
 "option can be set in PostgreSQL's configuration file: postgresql.conf. It "
 "can also be set by connection or transaction."
 msgstr ""
+"Булева опція конфігурації для увімкнення доступу до растрових смуг out-db. "
+"Цю опцію можна встановити у файлі конфігурації PostgreSQL: postgresql.conf. "
+"Її також можна встановити для з'єднання або транзакції."
 
 #. Tag: para
 #, no-c-format
@@ -18761,6 +18889,10 @@ msgid ""
 "<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> with a non-zero value to the "
 "process starting PostgreSQL."
 msgstr ""
+"Початкове значення <varname>postgis.enable_outdb_rasters</varname> також "
+"можна встановити, передавши змінну середовища "
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> з значенням, відмінним від "
+"нуля, процесу, що запускає PostgreSQL."
 
 #. Tag: para
 #, no-c-format
@@ -18769,6 +18901,9 @@ msgid ""
 "<varname>postgis.gdal_enabled_drivers</varname> determines the accessible "
 "raster formats."
 msgstr ""
+"Навіть якщо <varname>postgis.enable_outdb_rasters</varname> має значення "
+"True, доступні растрові формати визначаються GUC <varname>postgis."
+"gdal_enabled_drivers</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -18776,6 +18911,8 @@ msgid ""
 "In the standard PostGIS installation, <varname>postgis.enable_outdb_rasters</"
 "varname> is set to False."
 msgstr ""
+"У стандартній установці PostGIS <varname>postgis.enable_outdb_rasters</"
+"varname> встановлено на False."
 
 #. Tag: para
 #, no-c-format
@@ -18783,11 +18920,13 @@ msgid ""
 "Set and reset <varname>postgis.enable_outdb_rasters</varname> for current "
 "session"
 msgstr ""
+"Встановити та скинути <varname>postgis.enable_outdb_rasters</varname> для "
+"поточної сесії"
 
 #. Tag: para
 #, no-c-format
 msgid "Set for all new connections to a specific database"
-msgstr ""
+msgstr "Встановити для всіх нових підключень до певної бази даних"
 
 #. Tag: para
 #, no-c-format
@@ -18795,6 +18934,9 @@ msgid ""
 "Setting for whole database cluster. Requires super user access. Also note "
 "that database, session, and user settings override this."
 msgstr ""
+"Налаштування для всього кластера бази даних. Потрібен доступ "
+"суперкористувача. Також зверніть увагу, що налаштування бази даних, сеансу "
+"та користувача мають пріоритет над цими налаштуваннями."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18802,6 +18944,8 @@ msgid ""
 "A string configuration to set options used when working with an out-db "
 "raster."
 msgstr ""
+"Конфігурація рядка для встановлення параметрів, що використовуються під час "
+"роботи з растровим файлом out-db."
 
 #. Tag: para
 #, no-c-format
@@ -18812,11 +18956,17 @@ msgid ""
 "allocates to local data cache, whether to read overviews, and what access "
 "keys to use for remote out-db data sources."
 msgstr ""
+"Конфігурація рядка для встановлення опцій, що використовуються під час "
+"роботи з растровим файлом out-db. <link xlink:href=«https://gdal.org/user/"
+"configoptions.html»>Опції конфігурації</link> контролюють такі параметри, як "
+"обсяг простору, що GDAL виділяє для локального кешу даних, чи читати огляди "
+"та які ключі доступу використовувати для віддалених джерел даних out-db."
 
 #. Tag: para
 #, no-c-format
 msgid "Set <varname>postgis.gdal_vsi_options</varname> for current session:"
 msgstr ""
+"Встановити <varname>postgis.gdal_vsi_options</varname> для поточної сесії:"
 
 #. Tag: para
 #, no-c-format
@@ -18825,12 +18975,17 @@ msgid ""
 "<emphasis>current transaction</emphasis> using the <varname>LOCAL</varname> "
 "keyword:"
 msgstr ""
+"Встановіть <varname>postgis.gdal_vsi_options</varname> тільки для "
+"<emphasis>поточної транзакції</emphasis> за допомогою ключового слова "
+"<varname>LOCAL</varname>:"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "A boolean configuration to turn logging of GDAL debug messages on and off."
 msgstr ""
+"Булева конфігурація для ввімкнення та вимкнення реєстрації повідомлень про "
+"налагодження GDAL."
 
 #. Tag: para
 #, no-c-format
@@ -18840,11 +18995,16 @@ msgid ""
 "logging to be sent into the PostgreSQL logging stream, so you can see more "
 "or less of it by altering the <code>client_min_message</code> PostgreSQL GUC."
 msgstr ""
+"За замовчуванням, журнали GDAL друкуються на stderr, а повідомлення нижчого "
+"рівня не друкуються взагалі. Встановлення цього GUC на true призведе до "
+"надсилання журналів GDAL до потоку журналів PostgreSQL, тож ви зможете "
+"бачити більше або менше з них, змінюючи <code>client_min_message</code> "
+"PostgreSQL GUC."
 
 #. Tag: title
 #, no-c-format
 msgid "Geometry Input"
-msgstr ""
+msgstr "Введення геометрії"
 
 #. Tag: para
 #, no-c-format
@@ -18852,11 +19012,13 @@ msgid ""
 "These functions create geometry objects from various textual or binary "
 "formats."
 msgstr ""
+"Ці функції створюють геометричні об'єкти з різних текстових або бінарних "
+"форматів."
 
 #. Tag: title
 #, no-c-format
 msgid "Well-Known Text (WKT)"
-msgstr ""
+msgstr "Well-Known Text (WKT)"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18864,6 +19026,9 @@ msgid ""
 "<refpurpose>Construct a Polygon given an arbitrary collection of closed "
 "linestrings as a MultiLineString Well-Known text representation.</refpurpose>"
 msgstr ""
+"<refpurpose>Побудувати полігон, заданий довільною сукупністю замкнутих "
+"лінійних відрізків у вигляді добре відомого текстового представлення "
+"MultiLineString.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -18871,6 +19036,9 @@ msgid ""
 "<para>Construct a Polygon given an arbitrary collection of closed "
 "linestrings as a MultiLineString Well-Known text representation.</para>"
 msgstr ""
+"<para>Побудувати полігон, заданий довільною сукупністю замкнутих лінійних "
+"відрізків у вигляді добре відомого текстового представлення "
+"MultiLineString.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -18879,16 +19047,19 @@ msgid ""
 "is a MULTIPOLYGON; use ST_BdMPolyFromText in that case, or see "
 "ST_BuildArea() for a postgis-specific approach."
 msgstr ""
+"Видає помилку, якщо WKT не є MULTILINESTRING. Видає помилку, якщо вихідні "
+"дані є MULTIPOLYGON; у цьому випадку використовуйте ST_BdMPolyFromText або "
+"дивіться ST_BuildArea() для підходу, специфічного для postgis."
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s3.2.6.2"
-msgstr ""
+msgstr "&sfs_compliant; s3.2.6.2"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_BdMPolyFromText\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_BdMPolyFromText\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18896,6 +19067,9 @@ msgid ""
 "Construct a MultiPolygon given an arbitrary collection of closed linestrings "
 "as a MultiLineString text representation Well-Known text representation."
 msgstr ""
+"Побудувати мультиполігон на основі довільної сукупності замкнутих лінійних "
+"відрізків у вигляді текстового представлення MultiLineString. Загальновідоме "
+"текстове представлення."
 
 #. Tag: para
 #, no-c-format
@@ -18903,6 +19077,8 @@ msgid ""
 "Construct a Polygon given an arbitrary collection of closed linestrings, "
 "polygons, MultiLineStrings as Well-Known text representation."
 msgstr ""
+"Побудувати полігон, заданий довільною сукупністю замкнутих ліній, полігонів, "
+"багатолінійних ліній у вигляді добре відомого текстового представлення."
 
 #. Tag: para
 #, no-c-format
@@ -18914,11 +19090,17 @@ msgid ""
 "linkend=\"ST_BuildArea\">ST_BuildArea()</link> for a postgis-specific "
 "approach."
 msgstr ""
+"Видає помилку, якщо WKT не є MULTILINESTRING. Примусово виводить "
+"MULTIPOLYGON, навіть якщо результат насправді складається лише з одного "
+"POLYGON; використовуйте <link linkend=\"ST_BdPolyFromText\""
+">ST_BdPolyFromText</link>, якщо ви впевнені, що в результаті операції буде "
+"отримано один POLYGON, або дивіться <link linkend=\"ST_BuildArea\""
+">ST_BuildArea()</link> для підходу, специфічного для postgis."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_BdPolyFromText\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_BdPolyFromText\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18926,6 +19108,8 @@ msgid ""
 "Return a specified geography value from Well-Known Text representation or "
 "extended (WKT)."
 msgstr ""
+"Повернути вказане географічне значення з представлення Well-Known Text або "
+"розширеного (WKT)."
 
 #. Tag: para
 #, no-c-format
@@ -18934,11 +19118,14 @@ msgid ""
 "representation. SRID 4326 is assumed if unspecified. This is an alias for "
 "ST_GeographyFromText. Points are always expressed in long lat form."
 msgstr ""
+"Повертає географічний об'єкт із відомого тексту або розширеного відомого "
+"представлення. Якщо не вказано, використовується SRID 4326. Це псевдонім для "
+"ST_GeographyFromText. Точки завжди виражаються у форматі довготи та широти."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeographyFromText\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeographyFromText\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -18946,11 +19133,13 @@ msgid ""
 "Returns a geography object from the well-known text representation. SRID "
 "4326 is assumed if unspecified."
 msgstr ""
+"Повертає географічний об'єкт із загальновідомого текстового представлення. "
+"Якщо не вказано, використовується SRID 4326."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsText\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18958,6 +19147,8 @@ msgid ""
 "Makes a collection Geometry from collection WKT with the given SRID. If SRID "
 "is not given, it defaults to 0."
 msgstr ""
+"Створює колекцію Geometry з колекції WKT із заданим SRID. Якщо SRID не "
+"задано, за замовчуванням використовується 0."
 
 #. Tag: para
 #, no-c-format
@@ -18965,16 +19156,18 @@ msgid ""
 "Makes a collection Geometry from the Well-Known-Text (WKT) representation "
 "with the given SRID. If SRID is not given, it defaults to 0."
 msgstr ""
+"Створює колекцію Geometry з представлення Well-Known-Text (WKT) із заданим "
+"SRID. Якщо SRID не вказано, за замовчуванням використовується 0."
 
 #. Tag: para
 #, no-c-format
 msgid "OGC SPEC 3.2.6.2 - option SRID is from the conformance suite"
-msgstr ""
+msgstr "OGC SPEC 3.2.6.2 — опція SRID взята з набору вимог відповідності"
 
 #. Tag: para
 #, no-c-format
 msgid "Returns null if the WKT is not a GEOMETRYCOLLECTION"
-msgstr ""
+msgstr "Повертає null, якщо WKT не є GEOMETRYCOLLECTION"
 
 #. Tag: para
 #, no-c-format
@@ -18983,11 +19176,14 @@ msgid ""
 "use this function. It is slower than ST_GeomFromText since it adds an "
 "additional validation step."
 msgstr ""
+"Якщо ви абсолютно впевнені, що всі ваші геометрії WKT є колекціями, не "
+"використовуйте цю функцію. Вона працює повільніше, ніж ST_GeomFromText, "
+"оскільки додає додатковий крок перевірки."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_SRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_SRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18995,6 +19191,8 @@ msgid ""
 "Return a specified ST_Geometry value from Extended Well-Known Text "
 "representation (EWKT)."
 msgstr ""
+"Повернути вказане значення ST_Geometry з розширеного представлення добре "
+"відомого тексту (EWKT)."
 
 #. Tag: para
 #, no-c-format
@@ -19002,6 +19200,8 @@ msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC Extended Well-Known "
 "text (EWKT) representation."
 msgstr ""
+"Створює об'єкт PostGIS ST_Geometry з представлення OGC Extended Well-Known "
+"text (EWKT)."
 
 #. Tag: para
 #, no-c-format
@@ -19009,6 +19209,8 @@ msgid ""
 "The EWKT format is not an OGC standard, but an PostGIS specific format that "
 "includes the spatial reference system (SRID) identifier"
 msgstr ""
+"Формат EWKT не є стандартом OGC, а специфічним форматом PostGIS, що включає "
+"ідентифікатор просторової системи координат (SRID)."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19016,6 +19218,8 @@ msgid ""
 "Takes MARC21/XML geographic data as input and returns a PostGIS geometry "
 "object."
 msgstr ""
+"Приймає географічні дані MARC21/XML як вхідні дані та повертає геометричний "
+"об'єкт PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -19028,21 +19232,28 @@ msgid ""
 "<varname>GEOMETRYCOLLECTION</varname> will be returned. It returns NULL if "
 "the MARC21/XML record does not contain any geographic data (datafield:034)."
 msgstr ""
+"Ця функція створює геометрію PostGIS з запису MARC21/XML, який може містити "
+"<varname>POINT</varname> або <varname>POLYGON</varname>. У разі наявності "
+"декількох географічних даних в одному записі MARC21/XML, буде повернуто "
+"<varname>MULTIPOINT</varname> або <varname>MULTIPOLYGON</varname>. Якщо "
+"запис містить змішані типи геометрії, буде повернуто "
+"<varname>GEOMETRYCOLLECTION</varname>. Повертає NULL, якщо запис MARC21/XML "
+"не містить географічних даних (поле даних: 034)."
 
 #. Tag: para
 #, no-c-format
 msgid "LOC MARC21/XML versions supported:"
-msgstr ""
+msgstr "Підтримувані версії LOC MARC21/XML:"
 
 #. Tag: link
 #, no-c-format
 msgid "MARC21/XML 1.1"
-msgstr ""
+msgstr "MARC21/XML 1.1"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.3.0, requires libxml2 2.6+"
-msgstr ""
+msgstr "Доступність: 3.3.0, вимагає libxml2 2.6+"
 
 #. Tag: para
 #, no-c-format
@@ -19052,6 +19263,9 @@ msgid ""
 "coordinates, so this function will always return a geometry with "
 "<varname>SRID 0</varname>."
 msgstr ""
+"Кодовані картографічні математичні дані MARC21/XML наразі не надають жодних "
+"засобів для опису просторової системи координат закодованих координат, тому "
+"ця функція завжди повертатиме геометрію з <varname>SRID 0</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -19059,6 +19273,8 @@ msgid ""
 "Returned <varname>POLYGON</varname> geometries will always be clockwise "
 "oriented."
 msgstr ""
+"Повернуті геометрії <varname>POLYGON</varname> завжди будуть орієнтовані за "
+"годинниковою стрілкою."
 
 #. Tag: para
 #, no-c-format
@@ -19066,6 +19282,8 @@ msgid ""
 "Converting MARC21/XML geographic data containing a single <varname>POINT</"
 "varname> encoded as <varname>hddd.dddddd</varname>"
 msgstr ""
+"Перетворення географічних даних MARC21/XML, що містять один <varname>POINT</"
+"varname>, закодований як <varname>hddd.dddddd</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -19073,6 +19291,8 @@ msgid ""
 "Converting MARC21/XML geographic data containing a single <varname>POLYGON</"
 "varname> encoded as <varname>hdddmmss</varname>"
 msgstr ""
+"Перетворення географічних даних MARC21/XML, що містять один "
+"<varname>POLYGON</varname>, закодований як <varname>hdddmmss</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -19080,6 +19300,8 @@ msgid ""
 "Converting MARC21/XML geographic data containing a <varname>POLYGON</"
 "varname> and a <varname>POINT</varname>:"
 msgstr ""
+"Перетворення географічних даних MARC21/XML, що містять <varname>POLYGON</"
+"varname> та <varname>POINT</varname>:"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19087,11 +19309,13 @@ msgid ""
 "Return a specified ST_Geometry value from Well-Known Text representation "
 "(WKT). This is an alias name for ST_GeomFromText"
 msgstr ""
+"Повертає вказане значення ST_Geometry з представлення Well-Known Text (WKT). "
+"Це псевдонім для ST_GeomFromText."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.40"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.4"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19099,6 +19323,7 @@ msgid ""
 "Return a specified ST_Geometry value from Well-Known Text representation "
 "(WKT)."
 msgstr ""
+"Повертає вказане значення ST_Geometry з представлення Well-Known Text (WKT)."
 
 #. Tag: para
 #, no-c-format
@@ -19106,6 +19331,8 @@ msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC Well-Known text "
 "representation."
 msgstr ""
+"Створює об'єкт PostGIS ST_Geometry на основі текстового представлення OGC "
+"Well-Known."
 
 #. Tag: para
 #, no-c-format
@@ -19115,11 +19342,16 @@ msgid ""
 "The second takes a SRID as the second argument and returns a geometry that "
 "includes this SRID as part of its metadata."
 msgstr ""
+"Існує два варіанти функції ST_GeomFromText. Перший не приймає SRID і "
+"повертає геометрію без визначеної системи просторових координат (SRID=0). "
+"Другий приймає SRID як другий аргумент і повертає геометрію, яка включає цей "
+"SRID як частину своїх метаданих."
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s3.2.6.2 - option SRID is from the conformance suite."
 msgstr ""
+"&sfs_compliant; s3.2.6.2 - опція SRID належить до набору вимог відповідності."
 
 #. Tag: para
 #, no-c-format
@@ -19130,6 +19362,11 @@ msgid ""
 "speed to <xref linkend=\"ST_MakePoint\"/> and is OGC-compliant, but doesn't "
 "support anything but 2D points."
 msgstr ""
+"Хоча <xref linkend=\"ST_MakePoint\"/> не відповідає стандарту OGC, він "
+"працює швидше, ніж ST_GeomFromText і ST_PointFromText. Він також простіший у "
+"використанні для числових значень координат. <xref linkend=\"ST_Point\"/> — "
+"це інший варіант, схожий за швидкістю на <xref linkend=\"ST_MakePoint\"/> і "
+"сумісний з OGC, але підтримує тільки 2D-точки."
 
 #. Tag: para
 #, no-c-format
@@ -19139,11 +19376,15 @@ msgid ""
 "illegal in PostGIS 2.0.0 to better conform with SQL/MM standards. This "
 "should now be written as ST_GeomFromText('GEOMETRYCOLLECTION EMPTY')"
 msgstr ""
+"Змінено: 2.0.0 У попередніх версіях PostGIS "
+"ST_GeomFromText(“GEOMETRYCOLLECTION(EMPTY)”) було дозволено. Тепер це є "
+"некоректним у PostGIS 2.0.0 для кращої відповідності стандартам SQL/MM. "
+"Тепер це слід писати як ST_GeomFromText(“GEOMETRYCOLLECTION EMPTY”)"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromWKB\"/>, <xref linkend=\"ST_SRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeomFromWKB\"/>, <xref linkend=\"ST_SRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19151,6 +19392,8 @@ msgid ""
 "Makes a Geometry from WKT representation with the given SRID. If SRID is not "
 "given, it defaults to 0."
 msgstr ""
+"Створює геометрію з представлення WKT із заданим SRID. Якщо SRID не задано, "
+"за замовчуванням використовується 0."
 
 #. Tag: para
 #, no-c-format
@@ -19158,11 +19401,14 @@ msgid ""
 "Makes a Geometry from WKT with the given SRID. If SRID is not given, it "
 "defaults to 0. If WKT passed in is not a LINESTRING, then null is returned."
 msgstr ""
+"Створює геометрію з WKT із заданим SRID. Якщо SRID не вказано, за "
+"замовчуванням використовується 0. Якщо переданий WKT не є LINESTRING, "
+"повертається null."
 
 #. Tag: para
 #, no-c-format
 msgid "OGC SPEC 3.2.6.2 - option SRID is from the conformance suite."
-msgstr ""
+msgstr "OGC SPEC 3.2.6.2 — опція SRID належить до набору вимог відповідності."
 
 #. Tag: para
 #, no-c-format
@@ -19171,16 +19417,19 @@ msgid ""
 "use ST_GeomFromText. This just calls ST_GeomFromText and adds additional "
 "validation that it returns a linestring."
 msgstr ""
+"Якщо ви знаєте, що всі ваші геометрії є LINESTRINGS, ефективніше просто "
+"використовувати ST_GeomFromText. Це просто викликає ST_GeomFromText і додає "
+"додаткову перевірку, що він повертає лінійний рядок."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.8"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.8"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return a specified ST_MultiLineString value from WKT representation."
-msgstr ""
+msgstr "Повернути вказане значення ST_MultiLineString з представлення WKT."
 
 #. Tag: para
 #, no-c-format
@@ -19188,11 +19437,13 @@ msgid ""
 "Makes a Geometry from Well-Known-Text (WKT) with the given SRID. If SRID is "
 "not given, it defaults to 0."
 msgstr ""
+"Створює геометрію з добре відомого тексту (WKT) із заданим SRID. Якщо SRID "
+"не задано, за замовчуванням використовується 0."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns null if the WKT is not a MULTILINESTRING"
-msgstr ""
+msgstr "Повертає null, якщо WKT не є MULTILINESTRING"
 
 #. Tag: para
 #, no-c-format
@@ -19201,11 +19452,14 @@ msgid ""
 "this function. It is slower than ST_GeomFromText since it adds an additional "
 "validation step."
 msgstr ""
+"Якщо ви абсолютно впевнені, що всі ваші геометрії WKT є точками, не "
+"використовуйте цю функцію. Вона працює повільніше, ніж ST_GeomFromText, "
+"оскільки додає додатковий крок перевірки."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant;SQL-MM 3: 9.4.4"
-msgstr ""
+msgstr "&sqlmm_compliant;SQL-MM 3: 9.4.4"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19213,6 +19467,8 @@ msgid ""
 "<refpurpose>Makes a Geometry from WKT with the given SRID. If SRID is not "
 "given, it defaults to 0.</refpurpose>"
 msgstr ""
+"<refpurpose>Створює геометрію з WKT із заданим SRID. Якщо SRID не вказано, "
+"за замовчуванням використовується 0.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -19220,21 +19476,23 @@ msgid ""
 "<para>Makes a Geometry from WKT with the given SRID. If SRID is not given, "
 "it defaults to 0.</para>"
 msgstr ""
+"<para>Створює геометрію з WKT із заданим SRID. Якщо SRID не вказано, за "
+"замовчуванням використовується значення 0.</para>"
 
 #. Tag: para
 #, no-c-format
 msgid "Returns null if the WKT is not a MULTIPOINT"
-msgstr ""
+msgstr "Повертає null, якщо WKT не є MULTIPOINT"
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; 3.2.6.2"
-msgstr ""
+msgstr "&sfs_compliant; 3.2.6.2"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.2.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 9.2.4"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19242,6 +19500,8 @@ msgid ""
 "Makes a MultiPolygon Geometry from WKT with the given SRID. If SRID is not "
 "given, it defaults to 0."
 msgstr ""
+"Створює геометрію MultiPolygon з WKT із заданим SRID. Якщо SRID не задано, "
+"за замовчуванням використовується 0."
 
 #. Tag: para
 #, no-c-format
@@ -19249,11 +19509,13 @@ msgid ""
 "Makes a MultiPolygon from WKT with the given SRID. If SRID is not given, it "
 "defaults to 0."
 msgstr ""
+"Створює багатокутник з WKT із заданим SRID. Якщо SRID не задано, за "
+"замовчуванням використовується 0."
 
 #. Tag: para
 #, no-c-format
 msgid "Throws an error if the WKT is not a MULTIPOLYGON"
-msgstr ""
+msgstr "Видає помилку, якщо WKT не є MULTIPOLYGON"
 
 #. Tag: para
 #, no-c-format
@@ -19262,11 +19524,14 @@ msgid ""
 "use this function. It is slower than ST_GeomFromText since it adds an "
 "additional validation step."
 msgstr ""
+"Якщо ви абсолютно впевнені, що всі ваші геометрії WKT є багатокутниками, не "
+"використовуйте цю функцію. Вона працює повільніше, ніж ST_GeomFromText, "
+"оскільки додає додатковий крок перевірки."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.6.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 9.6.4"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19274,6 +19539,8 @@ msgid ""
 "Makes a point Geometry from WKT with the given SRID. If SRID is not given, "
 "it defaults to unknown."
 msgstr ""
+"Створює точку Геометрія з WKT із заданим SRID. Якщо SRID не вказано, за "
+"замовчуванням використовується невідомий."
 
 #. Tag: para
 #, no-c-format
@@ -19283,6 +19550,10 @@ msgid ""
 "If geometry is not a WKT point representation, returns null. If completely "
 "invalid WKT, then throws an error."
 msgstr ""
+"Створює об'єкт точки PostGIS ST_Geometry з текстового представлення OGC Well-"
+"Known. Якщо SRID не вказано, за замовчуванням використовується невідоме "
+"значення (наразі 0). Якщо геометрія не є представленням точки WKT, повертає "
+"null. Якщо WKT повністю недійсне, видає помилку."
 
 #. Tag: para
 #, no-c-format
@@ -19293,6 +19564,11 @@ msgid ""
 "ST_Geometry that includes this srid as part of its meta-data. The srid must "
 "be defined in the spatial_ref_sys table."
 msgstr ""
+"Існує 2 варіанти функції ST_PointFromText, перший не приймає SRID і повертає "
+"геометрію без визначеної системи просторових координат. Другий приймає "
+"ідентифікатор просторової координатної системи як другий аргумент і повертає "
+"ST_Geometry, що включає цей srid як частину своїх метаданих. SRID повинен "
+"бути визначений у таблиці spatial_ref_sys."
 
 #. Tag: para
 #, no-c-format
@@ -19304,11 +19580,17 @@ msgid ""
 "linkend=\"ST_MakePoint\"/> or OGC compliant alias <xref linkend=\"ST_Point\"/"
 ">."
 msgstr ""
+"Якщо ви абсолютно впевнені, що всі ваші геометрії WKT є точками, не "
+"використовуйте цю функцію. Вона працює повільніше, ніж ST_GeomFromText, "
+"оскільки додає додатковий крок перевірки. Якщо ви створюєте точки з "
+"координат довготи та широти і для вас важливіша продуктивність та точність, "
+"ніж відповідність OGC, використовуйте <xref linkend=\"ST_MakePoint\"/>або "
+"псевдонім, що відповідає OGC <xref linkend=\"ST_Point\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.8"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.8"
 
 #. Tag: para
 #, no-c-format
@@ -19316,6 +19598,8 @@ msgid ""
 ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_Point\"/>, <xref "
 "linkend=\"ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -19323,6 +19607,8 @@ msgid ""
 "Makes a Geometry from WKT with the given SRID. If SRID is not given, it "
 "defaults to 0. Returns null if WKT is not a polygon."
 msgstr ""
+"Створює геометрію з WKT із заданим SRID. Якщо SRID не задано, за "
+"замовчуванням використовується 0. Повертає null, якщо WKT не є полігоном."
 
 #. Tag: para
 #, no-c-format
@@ -19331,21 +19617,24 @@ msgid ""
 "this function. It is slower than ST_GeomFromText since it adds an additional "
 "validation step."
 msgstr ""
+"Якщо ви абсолютно впевнені, що всі ваші геометрії WKT є полігонами, не "
+"використовуйте цю функцію. Вона працює повільніше, ніж ST_GeomFromText, "
+"оскільки додає додатковий крок перевірки."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.3.6"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.3.6"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.34"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.34"
 
 #. Tag: title
 #, no-c-format
 msgid "Well-Known Binary (WKB)"
-msgstr ""
+msgstr "Добре відомий бінарний файл (WKB)"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19353,6 +19642,9 @@ msgid ""
 "Creates a geography instance from a Well-Known Binary geometry "
 "representation (WKB) or extended Well Known Binary (EWKB)."
 msgstr ""
+"Створює географічний екземпляр на основі добре відомого двійкового "
+"геометричного представлення (WKB) або розширеного добре відомого двійкового "
+"представлення (EWKB)."
 
 #. Tag: para
 #, no-c-format
@@ -19362,16 +19654,21 @@ msgid ""
 "instance of the appropriate geography type. This function plays the role of "
 "the Geometry Factory in SQL."
 msgstr ""
+"Функція <varname>ST_GeogFromWKB</varname> бере добре відоме двійкове "
+"представлення (WKB) геометрії або PostGIS Extended WKB і створює екземпляр "
+"відповідного типу географії. Ця функція виконує роль Geometry Factory в SQL."
 
 #. Tag: para
 #, no-c-format
 msgid "If SRID is not specified, it defaults to 4326 (WGS 84 long lat)."
 msgstr ""
+"Якщо SRID не вказано, за замовчуванням використовується значення 4326 (WGS "
+"84 long lat)."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsBinary\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsBinary\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19379,6 +19676,8 @@ msgid ""
 "Return a specified ST_Geometry value from Extended Well-Known Binary "
 "representation (EWKB)."
 msgstr ""
+"Повернути вказане значення ST_Geometry з розширеного добре відомого "
+"двійкового представлення (EWKB)."
 
 #. Tag: para
 #, no-c-format
@@ -19386,6 +19685,8 @@ msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC Extended Well-Known "
 "binary (EWKT) representation."
 msgstr ""
+"Створює об'єкт PostGIS ST_Geometry з представлення OGC Extended Well-Known "
+"binary (EWKT)."
 
 #. Tag: para
 #, no-c-format
@@ -19393,6 +19694,8 @@ msgid ""
 "The EWKB format is not an OGC standard, but a PostGIS specific format that "
 "includes the spatial reference system (SRID) identifier"
 msgstr ""
+"Формат EWKB не є стандартом OGC, а специфічним форматом PostGIS, що включає "
+"ідентифікатор просторової системи координат (SRID)"
 
 #. Tag: para
 #, no-c-format
@@ -19400,6 +19703,8 @@ msgid ""
 "line string binary rep 0f LINESTRING(-71.160281 42.258729,-71.160837 "
 "42.259113,-71.161144 42.25932) in NAD 83 long lat (4269)."
 msgstr ""
+"лінія бінарне представлення LINESTRING(-71.160281 42.258729,-71.160837 42."
+"259113,-71.161144 42.25932) in NAD 83 long lat (4269)."
 
 #. Tag: para
 #, no-c-format
@@ -19408,6 +19713,10 @@ msgid ""
 "to escape both out with \\ and '' if standard_conforming_strings is off. So "
 "it does not look exactly like its AsEWKB representation."
 msgstr ""
+"ПРИМІТКА: Незважаючи на те, що масиви байтів розділяються символом \\ і "
+"можуть містити символ “, нам потрібно екранувати обидва символи за допомогою "
+"\\ і ”', якщо стандарт standard_conforming_strings вимкнено. Тому це не "
+"виглядає точно так, як його представлення в AsEWKB."
 
 #. Tag: para
 #, no-c-format
@@ -19418,11 +19727,17 @@ msgid ""
 "you would do it with standard_conforming_strings = on. In this case we "
 "escape the ' with standard ansi ', but slashes are not escaped"
 msgstr ""
+"У PostgreSQL 9.1+ - standard_conforming_strings за замовчуванням встановлено "
+"на on, тоді як у попередніх версіях було встановлено на off. Ви можете "
+"змінити значення за замовчуванням за потреби для окремого запиту або на "
+"рівні бази даних чи сервера. Нижче наведено, як це зробити, якщо "
+"standard_conforming_strings = on. У цьому випадку ми екрануємо “ за "
+"допомогою стандартного ansi ”, але коси риски не екрануються"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_GeomFromWKB\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_GeomFromWKB\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19430,6 +19745,8 @@ msgid ""
 "Creates a geometry instance from a Well-Known Binary geometry representation "
 "(WKB) and optional SRID."
 msgstr ""
+"Створює екземпляр геометрії з добре відомого двійкового представлення "
+"геометрії (WKB) та опціонального SRID."
 
 #. Tag: para
 #, no-c-format
@@ -19440,32 +19757,40 @@ msgid ""
 "geometry type. This function plays the role of the Geometry Factory in SQL. "
 "This is an alternate name for ST_WKBToSQL."
 msgstr ""
+"Функція <varname>ST_GeomFromWKB</varname> приймає добре відоме двійкове "
+"представлення геометрії та ідентифікатор просторової системи відліку "
+"(<varname>SRID</varname>) і створює екземпляр відповідного типу геометрії. "
+"Ця функція виконує роль Geometry Factory в SQL. Це альтернативна назва для "
+"ST_WKBToSQL."
 
 #. Tag: para
 #, no-c-format
 msgid "If SRID is not specified, it defaults to 0 (Unknown)."
 msgstr ""
+"Якщо SRID не вказано, за замовчуванням використовується значення 0 "
+"(Невідомо)."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "&sfs_compliant; s3.2.7.2 - the optional SRID is from the conformance suite"
 msgstr ""
+"&sfs_compliant; s3.2.7.2 - необов'язковий SRID з набору вимог відповідності"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.41"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.41"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_GeomFromEWKB\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_GeomFromEWKB\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Makes a <varname>LINESTRING</varname> from WKB with the given SRID"
-msgstr ""
+msgstr "Створює <varname>LINESTRING</varname> з WKB із заданим SRID"
 
 #. Tag: para
 #, no-c-format
@@ -19476,6 +19801,11 @@ msgid ""
 "case, a <varname>LINESTRING</varname> geometry. This function plays the role "
 "of the Geometry Factory in SQL."
 msgstr ""
+"Функція <varname>ST_LineFromWKB</varname> приймає добре відоме двійкове "
+"представлення геометрії та ідентифікатор просторової системи відліку "
+"(<varname>SRID</varname>) і створює екземпляр відповідного типу геометрії — "
+"у цьому випадку геометрії <varname>LINESTRING</varname>. Ця функція виконує "
+"роль Geometry Factory в SQL."
 
 #. Tag: para
 #, no-c-format
@@ -19484,6 +19814,9 @@ msgid ""
 "returned if the input <varname>bytea</varname> does not represent a "
 "<varname>LINESTRING</varname>."
 msgstr ""
+"Якщо SRID не вказано, за замовчуванням використовується значення 0. Якщо "
+"вхідний параметр <varname>bytea</varname> не представляє "
+"<varname>LINESTRING</varname>, повертається <varname>NULL</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -19493,21 +19826,25 @@ msgid ""
 "calls <xref linkend=\"ST_GeomFromWKB\"/> and adds additional validation that "
 "it returns a linestring."
 msgstr ""
+"Якщо ви знаєте, що всі ваші геометрії є <varname>LINESTRING</varname>s, "
+"ефективніше просто використовувати <xref linkend=\"ST_GeomFromWKB\"/>. Ця "
+"функція просто викликає <xref linkend=\"ST_GeomFromWKB\"/> і додає додаткову "
+"перевірку, що вона повертає лінійний рядок."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.9"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.9"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_LinestringFromWKB\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LinestringFromWKB\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Makes a geometry from WKB with the given SRID."
-msgstr ""
+msgstr "Створює геометрію з WKB із заданим SRID."
 
 #. Tag: para
 #, no-c-format
@@ -19518,6 +19855,11 @@ msgid ""
 "geometry type - in this case, a <varname>LINESTRING</varname> geometry. This "
 "function plays the role of the Geometry Factory in SQL."
 msgstr ""
+"Функція <varname>ST_LinestringFromWKB</varname> приймає добре відоме "
+"двійкове представлення геометрії та ідентифікатор просторової системи "
+"координат (<varname>SRID</varname>) і створює екземпляр відповідного типу "
+"геометрії — у цьому випадку геометрії <varname>LINESTRING</varname>. Ця "
+"функція виконує роль фабрики геометрії в SQL."
 
 #. Tag: para
 #, no-c-format
@@ -19527,11 +19869,16 @@ msgid ""
 "<varname>LINESTRING</varname> geometry. This an alias for <xref "
 "linkend=\"ST_LineFromWKB\"/>."
 msgstr ""
+"Якщо SRID не вказано, за замовчуванням використовується 0. <varname>NULL</"
+"varname> повертається, якщо вхідний <varname>bytea</varname> не представляє "
+"геометрію <varname>LINESTRING</varname>. Це псевдонім для <xref linkend="
+"\"ST_LineFromWKB\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "OGC SPEC 3.2.6.2 - optional SRID is from the conformance suite."
 msgstr ""
+"OGC SPEC 3.2.6.2 — необов'язковий SRID взято з набору вимог відповідності."
 
 #. Tag: para
 #, no-c-format
@@ -19541,16 +19888,20 @@ msgid ""
 "just calls <xref linkend=\"ST_GeomFromWKB\"/> and adds additional validation "
 "that it returns a <varname>LINESTRING</varname>."
 msgstr ""
+"Якщо ви знаєте, що всі ваші геометрії є <varname>LINESTRING</varname>s, "
+"ефективніше просто використовувати <xref linkend=\"ST_GeomFromWKB\"/>. Ця "
+"функція просто викликає <xref linkend=\"ST_GeomFromWKB\"/> і додає додаткову "
+"перевірку, що вона повертає <varname>LINESTRING</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineFromWKB\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LineFromWKB\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Makes a geometry from WKB with the given SRID"
-msgstr ""
+msgstr "Створює геометрію з WKB із заданим SRID"
 
 #. Tag: para
 #, no-c-format
@@ -19561,6 +19912,11 @@ msgid ""
 "case, a <varname>POINT</varname> geometry. This function plays the role of "
 "the Geometry Factory in SQL."
 msgstr ""
+"Функція <varname>ST_PointFromWKB</varname> приймає добре відоме двійкове "
+"представлення геометрії та ідентифікатор просторової системи відліку "
+"(<varname>SRID</varname>) і створює екземпляр відповідного типу геометрії — "
+"у цьому випадку геометрії <varname>POINT</varname>. Ця функція виконує роль "
+"Geometry Factory в SQL."
 
 #. Tag: para
 #, no-c-format
@@ -19569,16 +19925,19 @@ msgid ""
 "returned if the input <varname>bytea</varname> does not represent a "
 "<varname>POINT</varname> geometry."
 msgstr ""
+"Якщо SRID не вказано, за замовчуванням використовується 0. Якщо вхідний "
+"параметр <varname>bytea</varname> не представляє геометрію <varname>POINT</"
+"varname>, повертається <varname>NULL</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s3.2.7.2"
-msgstr ""
+msgstr "&sfs_compliant; s3.2.7.2"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.9"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.9"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19586,26 +19945,28 @@ msgid ""
 "Return a specified ST_Geometry value from Well-Known Binary representation "
 "(WKB). This is an alias name for ST_GeomFromWKB that takes no srid"
 msgstr ""
+"Повертає вказане значення ST_Geometry з добре відомого двійкового "
+"представлення (WKB). Це псевдонім для ST_GeomFromWKB, який не приймає srid."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.36"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.36"
 
 #. Tag: title
 #, no-c-format
 msgid "Other Formats"
-msgstr ""
+msgstr "Інші формати"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "<refpurpose>Return a BOX2D from a GeoHash string.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>Повернути BOX2D із рядка GeoHash.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Return a BOX2D from a GeoHash string.</para>"
-msgstr ""
+msgstr "<para>Повернути BOX2D із рядка GeoHash.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -19613,6 +19974,8 @@ msgid ""
 "If no <varname>precision</varname> is specified ST_Box2dFromGeoHash returns "
 "a BOX2D based on full precision of the input GeoHash string."
 msgstr ""
+"Якщо не вказано <varname>precision</varname>, ST_Box2dFromGeoHash повертає "
+"BOX2D на основі повної точності вхідного рядка GeoHash."
 
 #. Tag: para
 #, no-c-format
@@ -19621,6 +19984,9 @@ msgid ""
 "that many characters from the GeoHash to create the BOX2D. Lower precision "
 "values results in larger BOX2Ds and larger values increase the precision."
 msgstr ""
+"Якщо вказано <varname>precision</varname>, ST_Box2dFromGeoHash використає "
+"стільки символів з GeoHash, щоб створити BOX2D. Менші значення точності "
+"дають більші BOX2D, а більші значення збільшують точність."
 
 #. Tag: para
 #, no-c-format
@@ -19628,11 +19994,13 @@ msgid ""
 ", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref "
 "linkend=\"ST_PointFromGeoHash\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return a geometry from a GeoHash string."
-msgstr ""
+msgstr "Повернути геометрію з рядка GeoHash."
 
 #. Tag: para
 #, no-c-format
@@ -19640,6 +20008,8 @@ msgid ""
 "Return a geometry from a GeoHash string. The geometry will be a polygon "
 "representing the GeoHash bounds."
 msgstr ""
+"Повернути геометрію з рядка GeoHash. Геометрія буде полігоном, що "
+"представляє межі GeoHash."
 
 #. Tag: para
 #, no-c-format
@@ -19647,6 +20017,8 @@ msgid ""
 "If no <varname>precision</varname> is specified ST_GeomFromGeoHash returns a "
 "polygon based on full precision of the input GeoHash string."
 msgstr ""
+"Якщо не вказано <varname>precision</varname>, ST_GeomFromGeoHash повертає "
+"полігон на основі повної точності вхідного рядка GeoHash."
 
 #. Tag: para
 #, no-c-format
@@ -19654,6 +20026,8 @@ msgid ""
 "If <varname>precision</varname> is specified ST_GeomFromGeoHash will use "
 "that many characters from the GeoHash to create the polygon."
 msgstr ""
+"Якщо вказано <varname>precision</varname>, ST_GeomFromGeoHash використає "
+"стільки символів з GeoHash, щоб створити полігон."
 
 #. Tag: para
 #, no-c-format
@@ -19661,6 +20035,8 @@ msgid ""
 ",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
 "linkend=\"ST_PointFromGeoHash\"/>"
 msgstr ""
+",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19668,12 +20044,14 @@ msgid ""
 "Takes as input GML representation of geometry and outputs a PostGIS geometry "
 "object"
 msgstr ""
+"Приймає в якості вхідних даних GML-представлення геометрії та видає об'єкт "
+"геометрії PostGIS"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC GML representation."
-msgstr ""
+msgstr "Створює об'єкт PostGIS ST_Geometry з представлення OGC GML."
 
 #. Tag: para
 #, no-c-format
@@ -19681,6 +20059,8 @@ msgid ""
 "ST_GeomFromGML works only for GML Geometry fragments. It throws an error if "
 "you try to use it on a whole GML document."
 msgstr ""
+"ST_GeomFromGML працює тільки для фрагментів геометрії GML. При спробі "
+"використання на всьому документі GML видає помилку."
 
 #. Tag: para
 #, no-c-format
@@ -19692,16 +20072,22 @@ msgid ""
 "GML standards, cf: <link xlink:href=\"http://www.opengeospatial.org/"
 "standards/gml\">http://www.opengeospatial.org/standards/gml</link>:"
 msgstr ""
+"Підтримувані версії OGC GML: <itemizedlist> <listitem> <para>GML 3.2.1 "
+"Namespace</para> </listitem> <listitem> <para>GML 3.1.1 Simple Features "
+"profile SF-2 (з сумісністю з GML 3.1.0 та 3.0.0)</пара> </listitem> "
+"<listitem> <пара>GML 2.1.2</пара> </listitem> </itemizedlist> Стандарти OGC "
+"GML, див.: <link xlink:href=«http://www.opengeospatial.org/standards/"
+"gml»>http://www.opengeospatial.org/standards/gml</link>:"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.5, requires libxml2 1.6+"
-msgstr ""
+msgstr "Доступність: 1.5, вимагає libxml2 1.6+"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0.0 default srid optional parameter added."
-msgstr ""
+msgstr "Покращено: 2.0.0 додано опціональний параметр srid за замовчуванням."
 
 #. Tag: para
 #, no-c-format
@@ -19710,6 +20096,9 @@ msgid ""
 "instance). As PostGIS geometries don't, ST_GeomFromGML convert the whole "
 "geometry to 2D if a missing Z dimension is found once."
 msgstr ""
+"GML дозволяє змішані розміри (наприклад, 2D і 3D в одній MultiGeometry). "
+"Оскільки геометрії PostGIS цього не дозволяють, ST_GeomFromGML перетворює "
+"всю геометрію в 2D, якщо знаходить відсутній розмір Z."
 
 #. Tag: para
 #, no-c-format
@@ -19719,6 +20108,10 @@ msgid ""
 "root node. If no srsName attribute available for the GML root node, the "
 "function throw an error."
 msgstr ""
+"GML підтримує змішані SRS всередині одного MultiGeometry. Оскільки геометрії "
+"PostGIS цього не роблять, ST_GeomFromGML у цьому випадку перепроектує всі "
+"підгеометрії до кореневого вузла SRS. Якщо для кореневого вузла GML "
+"недоступний атрибут srsName, функція видає помилку."
 
 #. Tag: para
 #, no-c-format
@@ -19727,31 +20120,34 @@ msgid ""
 "could avoid to mention it explicitly for common usages. But you need it if "
 "you want to use XLink feature inside GML."
 msgstr ""
+"Функція ST_GeomFromGML не є педантичною щодо явного простору імен GML. Ви "
+"можете не згадувати його явно для загального використання. Але він "
+"необхідний, якщо ви хочете використовувати функцію XLink всередині GML."
 
 #. Tag: para
 #, no-c-format
 msgid "ST_GeomFromGML function not support SQL/MM curves geometries."
-msgstr ""
+msgstr "Функція ST_GeomFromGML не підтримує геометрії кривих SQL/MM."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples - A single geometry with srsName"
-msgstr ""
+msgstr "Приклади - Одинарна геометрія з srsName"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples - XLink usage"
-msgstr ""
+msgstr "Приклади - Використання XLink"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples - Polyhedral Surface"
-msgstr ""
+msgstr "Приклади - Поліедральна поверхня"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsGML\"/>, <xref linkend=\"ST_GMLToSQL\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsGML\"/>, <xref linkend=\"ST_GMLToSQL\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19759,11 +20155,13 @@ msgid ""
 "Takes as input a geojson representation of a geometry and outputs a PostGIS "
 "geometry object"
 msgstr ""
+"Приймає в якості вхідних даних геометричне представлення у форматі geojson і "
+"видає геометричний об'єкт PostGIS"
 
 #. Tag: para
 #, no-c-format
 msgid "Constructs a PostGIS geometry object from the GeoJSON representation."
-msgstr ""
+msgstr "Створює об'єкт геометрії PostGIS з представлення GeoJSON."
 
 #. Tag: para
 #, no-c-format
@@ -19771,6 +20169,8 @@ msgid ""
 "ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an "
 "error if you try to use it on a whole JSON document."
 msgstr ""
+"ST_GeomFromGeoJSON працює тільки для фрагментів JSON Geometry. При спробі "
+"використання на всьому документі JSON видається помилка."
 
 #. Tag: para
 #, no-c-format
@@ -19778,16 +20178,18 @@ msgid ""
 "Enhanced: 3.0.0 parsed geometry defaults to SRID=4326 if not specified "
 "otherwise."
 msgstr ""
+"Покращено: 3.0.0, якщо не вказано інше, геометрія за замовчуванням "
+"аналізується як SRID=4326."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.5.0 can now accept json and jsonb as inputs."
-msgstr ""
+msgstr "Покращено: версія 2.5.0 тепер підтримує json та jsonb як вхідні дані."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.0.0 requires - JSON-C &gt;= 0.9"
-msgstr ""
+msgstr "Доступність: 2.0.0 вимагає - JSON-C &gt;= 0.9"
 
 #. Tag: para
 #, no-c-format
@@ -19797,6 +20199,9 @@ msgid ""
 "path/to/json-c. See <xref linkend=\"installation_configuration\"/> for "
 "details."
 msgstr ""
+"Якщо JSON-C не ввімкнено, замість виводу ви отримаєте повідомлення про "
+"помилку. Щоб увімкнути JSON-C, запустіть configure --with-jsondir=/path/to/"
+"json-c. Детальніше див. <xref linkend=\"installation_configuration\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -19804,6 +20209,8 @@ msgid ""
 ", <xref linkend=\"ST_AsGeoJSON\"/>, <xref "
 "linkend=\"installation_configuration\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsGeoJSON\"/>, <xref linkend="
+"\"installation_configuration\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19811,12 +20218,14 @@ msgid ""
 "Takes as input KML representation of geometry and outputs a PostGIS geometry "
 "object"
 msgstr ""
+"Приймає в якості вхідних даних KML-представлення геометрії та видає об'єкт "
+"геометрії PostGIS"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC KML representation."
-msgstr ""
+msgstr "Створює об'єкт PostGIS ST_Geometry з представлення OGC KML."
 
 #. Tag: para
 #, no-c-format
@@ -19824,6 +20233,8 @@ msgid ""
 "ST_GeomFromKML works only for KML Geometry fragments. It throws an error if "
 "you try to use it on a whole KML document."
 msgstr ""
+"ST_GeomFromKML працює тільки для фрагментів геометрії KML. При спробі "
+"використання на всьому документі KML видається помилка."
 
 #. Tag: para
 #, no-c-format
@@ -19833,21 +20244,25 @@ msgid ""
 "xlink:href=\"http://www.opengeospatial.org/standards/kml\">http://www."
 "opengeospatial.org/standards/kml</link>:"
 msgstr ""
+"Підтримувані версії OGC KML: <itemizedlist> <listitem> <para>Простір імен "
+"KML 2.2.0</para> </listitem> </itemizedlist> Стандарти OGC KML, див.: <link "
+"xlink:href=«http://www.opengeospatial.org/standards/kml»>http://www."
+"opengeospatial.org/standards/kml</link>:"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.5, requires libxml2 2.6+"
-msgstr ""
+msgstr "Доступність: 1.5, вимагає libxml2 2.6+"
 
 #. Tag: para
 #, no-c-format
 msgid "ST_GeomFromKML function not support SQL/MM curves geometries."
-msgstr ""
+msgstr "Функція ST_GeomFromKML не підтримує геометрії кривих SQL/MM."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsKML\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsKML\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19856,6 +20271,9 @@ msgid ""
 "com/TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</"
 "link>\") geometry representation."
 msgstr ""
+"Створює екземпляр геометрії з представлення геометрії TWKB («<link "
+"xlink:href=»https://github.com/TWKB/Specification/blob/master/twkb.md«>Tiny "
+"Well-Known Binary</link>»)."
 
 #. Tag: para
 #, no-c-format
@@ -19865,6 +20283,10 @@ msgid ""
 "md\">Tiny Well-Known Binary</link>\") geometry representation (WKB) and "
 "creates an instance of the appropriate geometry type."
 msgstr ""
+"Функція <varname>ST_GeomFromTWKB</varname> приймає геометричне представлення "
+"TWKB («<link xlink:href=»https://github.com/TWKB/Specification/blob/master/"
+"twkb.md«>Tiny Well-Known Binary</link>») (WKB) і створює екземпляр "
+"відповідного типу геометрії."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19872,26 +20294,28 @@ msgid ""
 "Return a specified ST_Geometry value from GML representation. This is an "
 "alias name for ST_GeomFromGML"
 msgstr ""
+"Повертає вказане значення ST_Geometry з представлення GML. Це псевдонім для "
+"ST_GeomFromGML."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support)."
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.50 (крім підтримки кривих)."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromGML\"/>, <xref linkend=\"ST_AsGML\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeomFromGML\"/>, <xref linkend=\"ST_AsGML\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Creates a LineString from an Encoded Polyline."
-msgstr ""
+msgstr "Створює LineString з закодованої полілінії."
 
 #. Tag: para
 #, no-c-format
 msgid "Creates a LineString from an Encoded Polyline string."
-msgstr ""
+msgstr "Створює об'єкт LineString із кодованого рядка полілінії."
 
 #. Tag: para
 #, no-c-format
@@ -19900,6 +20324,10 @@ msgid ""
 "be preserved in Encoded Polyline. Value should be the same on encoding and "
 "decoding, or coordinates will be incorrect."
 msgstr ""
+"Опціональний параметр <varname>precision</varname> визначає, скільки "
+"десяткових знаків буде збережено в кодованій полілінії. Значення повинно "
+"бути однаковим при кодуванні та декодуванні, інакше координати будуть "
+"неправильними."
 
 #. Tag: para
 #, no-c-format
@@ -19907,11 +20335,13 @@ msgid ""
 "See http://developers.google.com/maps/documentation/utilities/"
 "polylinealgorithm"
 msgstr ""
+"Див. http://developers.google.com/maps/documentation/utilities/"
+"polylinealgorithm"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return a point from a GeoHash string."
-msgstr ""
+msgstr "Повернути точку з рядка GeoHash."
 
 #. Tag: para
 #, no-c-format
@@ -19919,6 +20349,7 @@ msgid ""
 "Return a point from a GeoHash string. The point represents the center point "
 "of the GeoHash."
 msgstr ""
+"Повернути точку з рядка GeoHash. Точка представляє центральну точку GeoHash."
 
 #. Tag: para
 #, no-c-format
@@ -19926,6 +20357,8 @@ msgid ""
 "If no <varname>precision</varname> is specified ST_PointFromGeoHash returns "
 "a point based on full precision of the input GeoHash string."
 msgstr ""
+"Якщо не вказано <varname>precision</varname>, ST_PointFromGeoHash повертає "
+"точку на основі повної точності вхідного рядка GeoHash."
 
 #. Tag: para
 #, no-c-format
@@ -19933,6 +20366,8 @@ msgid ""
 "If <varname>precision</varname> is specified ST_PointFromGeoHash will use "
 "that many characters from the GeoHash to create the point."
 msgstr ""
+"Якщо вказано <varname>precision</varname>, ST_PointFromGeoHash використає "
+"стільки символів з GeoHash, скільки потрібно для створення точки."
 
 #. Tag: para
 #, no-c-format
@@ -19940,11 +20375,13 @@ msgid ""
 ", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
 "linkend=\"ST_GeomFromGeoHash\"/>"
 msgstr ""
+", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_GeomFromGeoHash"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Creates a table based on the structure of FlatGeobuf data."
-msgstr ""
+msgstr "Створює таблицю на основі структури даних FlatGeobuf."
 
 #. Tag: para
 #, no-c-format
@@ -19952,26 +20389,28 @@ msgid ""
 "Creates a table based on the structure of FlatGeobuf data. (<link xlink:"
 "href=\"http://flatgeobuf.org\">http://flatgeobuf.org</link>)."
 msgstr ""
+"Створює таблицю на основі структури даних FlatGeobuf. (<link "
+"xlink:href=«http://flatgeobuf.org»>http://flatgeobuf.org</link>)."
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>schema</varname> Schema name."
-msgstr ""
+msgstr "<varname>schema</varname> Ім'я схеми."
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>table</varname> Table name."
-msgstr ""
+msgstr "<varname>table</varname> Ім'я таблиці."
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>data</varname> Input FlatGeobuf data."
-msgstr ""
+msgstr "<varname>data</varname> Введіть дані FlatGeobuf."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Reads FlatGeobuf data."
-msgstr ""
+msgstr "Зчитує дані FlatGeobuf."
 
 #. Tag: para
 #, no-c-format
@@ -19979,26 +20418,29 @@ msgid ""
 "Reads FlatGeobuf data (<link xlink:href=\"http://flatgeobuf.org\">http://"
 "flatgeobuf.org</link>). NOTE: PostgreSQL bytea cannot exceed 1GB."
 msgstr ""
+"Читає дані FlatGeobuf (<link xlink:href=«http://flatgeobuf."
+"org»>http://flatgeobuf.org</link>). ПРИМІТКА: PostgreSQL bytea не може "
+"перевищувати 1 ГБ."
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>tabletype</varname> reference to a table type."
-msgstr ""
+msgstr "<varname>tabletype</varname> посилання на тип таблиці."
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>data</varname> input FlatGeobuf data."
-msgstr ""
+msgstr "<varname>data</varname> вхідні дані FlatGeobuf."
 
 #. Tag: title
 #, no-c-format
 msgid "Linear Referencing"
-msgstr ""
+msgstr "Лінійне посилання"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a point interpolated along a line at a fractional location."
-msgstr ""
+msgstr "Повертає точку, інтерпольовану вздовж лінії в дробовому місці."
 
 #. Tag: para
 #, no-c-format
@@ -20008,6 +20450,10 @@ msgid ""
 "representing the fraction of line length where the point is to be located. "
 "The Z and M values are interpolated if present."
 msgstr ""
+"Повертає точку, інтерпольовану вздовж лінії в дробовому місці. Перший "
+"аргумент повинен бути LINESTRING. Другий аргумент — це число з плаваючою "
+"комою від 0 до 1, що позначає дрібну частину довжини лінії, де має бути "
+"розташована точка. Значення Z і M інтерполюються, якщо вони є."
 
 #. Tag: para
 #, no-c-format
@@ -20015,6 +20461,8 @@ msgid ""
 "See <xref linkend=\"ST_LineLocatePoint\"/> for computing the line location "
 "nearest to a Point."
 msgstr ""
+"Див. <xref linkend=\"ST_LineLocatePoint\"/>для обчислення найближчого до "
+"точки місця розташування лінії."
 
 #. Tag: para
 #, no-c-format
@@ -20023,6 +20471,8 @@ msgid ""
 "M, while <xref linkend=\"ST_3DLineInterpolatePoint\"/> computes points in 3D "
 "and only interpolates the M value."
 msgstr ""
+"<xref linkend=\"ST_3DLineInterpolatePoint\"/> обчислює точки в 3D і "
+"інтерполює тільки значення M."
 
 #. Tag: para
 #, no-c-format
@@ -20030,31 +20480,35 @@ msgid ""
 "Since release 1.1.1 this function also interpolates M and Z values (when "
 "present), while prior releases set them to 0.0."
 msgstr ""
+"Починаючи з версії 1.1.1, ця функція також інтерполює значення M і Z (якщо "
+"вони присутні), тоді як у попередніх версіях вони встановлювалися на 0,0."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 0.8.2, Z and M supported added in 1.1.1"
-msgstr ""
+msgstr "Доступність: 0.8.2, підтримка Z і M додана в 1.1.1"
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Interpolate_Point."
 msgstr ""
+"Змінено: 2.1.0. До версії 2.0.x ця функція називалася "
+"ST_Line_Interpolate_Point."
 
 #. Tag: para
 #, no-c-format
 msgid "A LineString with the interpolated point at 20% position (0.20)"
-msgstr ""
+msgstr "LineString з інтерпольованою точкою в положенні 20% (0,20)"
 
 #. Tag: para
 #, no-c-format
 msgid "The mid-point of a 3D line:"
-msgstr ""
+msgstr "Середина 3D лінії:"
 
 #. Tag: para
 #, no-c-format
 msgid "The closest point on a line to a point:"
-msgstr ""
+msgstr "Найближча точка на прямій до точки:"
 
 #. Tag: para
 #, no-c-format
@@ -20062,11 +20516,13 @@ msgid ""
 ", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref "
 "linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
+", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref linkend="
+"\"ST_LineLocatePoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a point interpolated along a 3D line at a fractional location."
-msgstr ""
+msgstr "Повертає точку, інтерпольовану вздовж 3D-лінії в дробовому місці."
 
 #. Tag: para
 #, no-c-format
@@ -20076,6 +20532,10 @@ msgid ""
 "representing the point location as a fraction of line length. The M value is "
 "interpolated if present."
 msgstr ""
+"Повертає точку, інтерпольовану вздовж 3D-лінії в дробовому місці. Перший "
+"аргумент повинен бути LINESTRING. Другий аргумент — це число з плаваючою "
+"комою від 0 до 1, що позначає місце розташування точки як дробу довжини "
+"лінії. Якщо значення M присутнє, воно інтерполюється."
 
 #. Tag: para
 #, no-c-format
@@ -20083,11 +20543,13 @@ msgid ""
 "computes points in 2D and then interpolates the values for Z and M, while "
 "this function computes points in 3D and only interpolates the M value."
 msgstr ""
+"обчислює точки в 2D, а потім інтерполює значення для Z і M, тоді як ця "
+"функція обчислює точки в 3D і інтерполює тільки значення M."
 
 #. Tag: para
 #, no-c-format
 msgid "Return point 20% along 3D line"
-msgstr ""
+msgstr "Точка повернення 20% вздовж 3D лінії"
 
 #. Tag: para
 #, no-c-format
@@ -20095,11 +20557,13 @@ msgid ""
 ", <xref linkend=\"ST_LineInterpolatePoints\"/>, <xref "
 "linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
+", <xref linkend=\"ST_LineInterpolatePoints\"/>, <xref linkend="
+"\"ST_LineLocatePoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns points interpolated along a line at a fractional interval."
-msgstr ""
+msgstr "Повертає точки, інтерпольовані вздовж лінії з дробовим інтервалом."
 
 #. Tag: para
 #, no-c-format
@@ -20111,6 +20575,11 @@ msgid ""
 "will be constructed (which is equivalent to <xref "
 "linkend=\"ST_LineInterpolatePoint\"/>.)"
 msgstr ""
+"Повертає одну або кілька точок, інтерпольованих вздовж лінії з дробовим "
+"інтервалом. Перший аргумент повинен бути LINESTRING. Другий аргумент — це "
+"float8 від 0 до 1, що представляє відстань між точками як дріб довжини "
+"лінії. Якщо третій аргумент має значення false, буде побудовано не більше "
+"однієї точки (що еквівалентно <xref linkend=\"ST_LineInterpolatePoint\"/>)"
 
 #. Tag: para
 #, no-c-format
@@ -20118,22 +20587,26 @@ msgid ""
 "If the result has zero or one points, it is returned as a POINT. If it has "
 "two or more points, it is returned as a MULTIPOINT."
 msgstr ""
+"Якщо результат має нуль або один пункт, він повертається як POINT. Якщо він "
+"має два або більше пунктів, він повертається як MULTIPOINT."
 
 #. Tag: para
 #, no-c-format
 msgid "A LineString with points interpolated every 20%"
-msgstr ""
+msgstr "Лінія String з точками, інтерпольованими кожні 20%"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineLocatePoint\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LineLocatePoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the fractional location of the closest point on a line to a point."
 msgstr ""
+"Повертає дробове значення відстані найближчої точки на лінії до заданої "
+"точки."
 
 #. Tag: para
 #, no-c-format
@@ -20142,6 +20615,9 @@ msgid ""
 "point on a LineString to the given Point, as a fraction of <link "
 "linkend=\"ST_Length2D\">2d line</link> length."
 msgstr ""
+"Повертає число з плаваючою комою в діапазоні від 0 до 1, що представляє "
+"розташування найближчої точки на LineString до заданої точки Point, як "
+"частку довжини <link linkend=\"ST_Length2D\">2d line</link>."
 
 #. Tag: para
 #, no-c-format
@@ -20150,16 +20626,19 @@ msgid ""
 "linkend=\"ST_LineInterpolatePoint\"/>) or a substring (<xref "
 "linkend=\"ST_LineSubstring\"/>)."
 msgstr ""
+"Ви можете використовувати повернуте місце розташування для вилучення точки ("
+"<xref linkend=\"ST_LineInterpolatePoint\"/>) або підрядка (<xref linkend="
+"\"ST_LineSubstring\"/>)."
 
 #. Tag: para
 #, no-c-format
 msgid "This is useful for approximating numbers of addresses"
-msgstr ""
+msgstr "Це корисно для наближення кількості адрес"
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Locate_Point."
-msgstr ""
+msgstr "Змінено: 2.1.0. До версії 2.0.x це називалося ST_Line_Locate_Point."
 
 #. Tag: para
 #, no-c-format
@@ -20167,11 +20646,13 @@ msgid ""
 ", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
 ">, <xref linkend=\"ST_LineSubstring\"/>"
 msgstr ""
+", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
+">, <xref linkend=\"ST_LineSubstring\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the part of a line between two fractional locations."
-msgstr ""
+msgstr "Повертає частину рядка між двома дробовими позиціями."
 
 #. Tag: para
 #, no-c-format
@@ -20182,6 +20663,11 @@ msgid ""
 "the start and end locations as fractions of line length. The Z and M values "
 "are interpolated for added endpoints if present."
 msgstr ""
+"Обчислює лінію, яка є ділянкою вхідної лінії, що починається і закінчується "
+"в заданих дробових точках. Перший аргумент повинен бути LINESTRING. Другий і "
+"третій аргументи є значеннями в діапазоні [0, 1], що представляють початкову "
+"і кінцеву точки як дроби довжини лінії. Значення Z і M інтерполюються для "
+"доданих кінцевих точок, якщо вони є."
 
 #. Tag: para
 #, no-c-format
@@ -20190,6 +20676,9 @@ msgid ""
 "the same value this is equivalent to <xref "
 "linkend=\"ST_LineInterpolatePoint\"/>."
 msgstr ""
+"Якщо <varname>startfraction</varname> та <varname>endfraction</varname> "
+"мають однакове значення, це еквівалентно <xref linkend="
+"\"ST_LineInterpolatePoint\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -20197,6 +20686,9 @@ msgid ""
 "This only works with LINESTRINGs. To use on contiguous MULTILINESTRINGs "
 "first join them with <xref linkend=\"ST_LineMerge\"/>."
 msgstr ""
+"Це працює тільки з LINESTRING. Щоб використовувати на суміжних "
+"MULTILINESTRING, спочатку об'єднайте їх за допомогою <xref linkend="
+"\"ST_LineMerge\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -20204,31 +20696,34 @@ msgid ""
 "Since release 1.1.1 this function interpolates M and Z values. Prior "
 "releases set Z and M to unspecified values."
 msgstr ""
+"Починаючи з версії 1.1.1, ця функція інтерполює значення M і Z. У попередніх "
+"версіях Z і M встановлювалися на невизначені значення."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.4.0 - Support for geography was introduced."
-msgstr ""
+msgstr "Покращено: 3.4.0 - Додано підтримку географії."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Substring."
-msgstr ""
+msgstr "Змінено: 2.1.0. До версії 2.0.x це називалося ST_Line_Substring."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.1.0, Z and M supported added in 1.1.1"
-msgstr ""
+msgstr "Доступність: 1.1.0, підтримка Z і M додана в 1.1.1"
 
 #. Tag: para
 #, no-c-format
 msgid "A LineString seen with 1/3 midrange overlaid (0.333, 0.666)"
 msgstr ""
+"Лінія LineString, на яку накладено 1/3 середнього діапазону (0,333, 0,666)"
 
 #. Tag: para
 #, no-c-format
 msgid "If start and end locations are the same, the result is a POINT."
-msgstr ""
+msgstr "Якщо початкова та кінцева точки однакові, результатом є ТОЧКА."
 
 #. Tag: para
 #, no-c-format
@@ -20237,12 +20732,15 @@ msgid ""
 "<varname>generate_series()</varname> with a CROSS JOIN LATERAL to produce "
 "the equivalent of a FOR loop."
 msgstr ""
+"Запит для розрізання LineString на секції довжиною 100 або менше. Він "
+"використовує <varname>generate_series()</varname> з CROSS JOIN LATERAL для "
+"створення еквівалента циклу FOR."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Geography implementation measures along a spheroid, geometry along a line"
-msgstr ""
+msgstr "Заходи з реалізації географії вздовж сфероїда, геометрія вздовж лінії"
 
 #. Tag: para
 #, no-c-format
@@ -20250,11 +20748,13 @@ msgid ""
 ", <xref linkend=\"ST_LineExtend\"/>, <xref "
 "linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge\"/>"
 msgstr ""
+", <xref linkend=\"ST_LineExtend\"/>, <xref linkend=\"ST_LineInterpolatePoint"
+"\"/>, <xref linkend=\"ST_LineMerge\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the point(s) on a geometry that match a measure value."
-msgstr ""
+msgstr "Повертає точку (точки) на геометрії, яка відповідає значенню міри."
 
 #. Tag: para
 #, no-c-format
@@ -20263,6 +20763,9 @@ msgid ""
 "measure values. The result is a Point or MultiPoint. Polygonal inputs are "
 "not supported."
 msgstr ""
+"Повертає місцезнаходження вздовж виміряної геометрії, яке має задані "
+"значення вимірювання. Результатом є точка або багатоточка. Полігональні "
+"вхідні дані не підтримуються."
 
 #. Tag: para
 #, no-c-format
@@ -20271,11 +20774,15 @@ msgid ""
 "or right of the input line by the specified distance. A positive offset will "
 "be to the left, and a negative one to the right."
 msgstr ""
+"Якщо вказано <varname>offset</varname>, результат буде зміщений вліво або "
+"вправо від рядка введення на вказану відстань. Позитивне зміщення буде "
+"вліво, а негативне — вправо."
 
 #. Tag: para
 #, no-c-format
 msgid "Use this function only for linear geometries with an M component"
 msgstr ""
+"Використовуйте цю функцію тільки для лінійних геометрій з компонентом M."
 
 #. Tag: para
 #, no-c-format
