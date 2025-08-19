@@ -12,8 +12,8 @@ msgstr ""
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
 "PO-Revision-Date: 2025-08-19 05:21+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -36889,7 +36889,8 @@ msgstr ""
 msgid ""
 "Calculates the fraction of each raster cell that is covered by a given "
 "geometry."
-msgstr "ラスタ上の個々のセルのうち与えられたジオメトリで覆われたものの断片を計算しま"
+msgstr ""
+"ラスタ上の個々のセルのうち与えられたジオメトリで覆われたものの断片を計算しま"
 "す。"
 
 #. Tag: para
@@ -43782,9 +43783,9 @@ msgid ""
 "6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
 "advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
 msgstr ""
-"このバージョンでは、PostgreSQL 12-18beta3、GEOS 3.,8以上、Proj 6."
-"1以上が必要です。全ての機能を活用するには、GEOS 3."
-"14以上が必要です。SFCGAL機能を活用するには、SFCGAL 2.2以上が必要です。"
+"このバージョンでは、PostgreSQL 12-18beta3、GEOS 3.,8以上、Proj 6.1以上が必要"
+"です。全ての機能を活用するには、GEOS 3.14以上が必要です。SFCGAL機能を活用する"
+"には、SFCGAL 2.2以上が必要です。"
 
 #. Tag: para
 #, no-c-format
@@ -44039,7 +44040,8 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 "[raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
-msgstr "[raster] 素早く再ラスタの値の再割り当てを行うST_ReclassExactを追加 (Paul "
+msgstr ""
+"[raster] 素早く再ラスタの値の再割り当てを行うST_ReclassExactを追加 (Paul "
 "Ramseyさん)"
 
 #. Tag: title
