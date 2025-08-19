@@ -52,6 +52,7 @@ all:
 
 distclean: clean
 	rm -f Makefile
+	rm -f tests.mk
 
 clean:
 	$(RM) -f rtpostgis.sql
