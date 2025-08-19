@@ -10,10 +10,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-07-30 01:47+0000\n"
+"PO-Revision-Date: 2025-08-19 05:21+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -36889,10 +36889,11 @@ msgstr ""
 msgid ""
 "Calculates the fraction of each raster cell that is covered by a given "
 "geometry."
-msgstr ""
+msgstr "ラスタ上の個々のセルのうち与えられたジオメトリで覆われたものの断片を計算しま"
+"す。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Calculates the fraction of each raster cell that is covered by a given "
 "geometry. The first argument is a raster, which defines the grid geometry to "
@@ -36903,11 +36904,17 @@ msgid ""
 "that is covered by the geometry. For linestrings, the value returned for "
 "each cell is the length contained in the cell."
 msgstr ""
+"ラスタ上の個々のセルのうち与えられたジオメトリで覆われたものの断片を計算しま"
+"す。一つ目の引数はラスタで、計算に使うジオメトリグリッドを定義します。範囲と"
+"セルサイズはこのラスタから読みます。二つ目の引数はジオメトリです。グリッドを"
+"覆うもので、個々のグリッドはグリッドを覆うジオメトリに基づいて個々のグリッド"
+"を入力します。ポリゴンの場合には、個々のセルから返される値はジオメトリに覆わ"
+"れた領域の形状となり、セルごとに返される値はセル内に含まれる長さです。"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0 Requires GEOS 3.14 or higher."
-msgstr ""
+msgstr "Availability: 3.6.0 GEOS 3.14以上が必要です。"
 
 #. Tag: title
 #, no-c-format
@@ -43761,12 +43768,12 @@ msgstr "リリースノート"
 #. Tag: title
 #, no-c-format
 msgid "PostGIS 3.6.0rc1"
-msgstr ""
+msgstr "PostGIS 3.6.0rc1"
 
 #. Tag: para
 #, no-c-format
 msgid "2025/08/18"
-msgstr ""
+msgstr "2025/08/18"
 
 #. Tag: para
 #, no-c-format
@@ -43775,6 +43782,9 @@ msgid ""
 "6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
 "advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
 msgstr ""
+"このバージョンでは、PostgreSQL 12-18beta3、GEOS 3.,8以上、Proj 6."
+"1以上が必要です。全ての機能を活用するには、GEOS 3."
+"14以上が必要です。SFCGAL機能を活用するには、SFCGAL 2.2以上が必要です。"
 
 #. Tag: para
 #, no-c-format
@@ -44026,10 +44036,11 @@ msgstr ""
 "勢調査局)"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "[raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
-msgstr ""
+msgstr "[raster] 素早く再ラスタの値の再割り当てを行うST_ReclassExactを追加 (Paul "
+"Ramseyさん)"
 
 #. Tag: title
 #, no-c-format
