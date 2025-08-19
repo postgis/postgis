@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-19 14:10+0000\n"
-"Last-Translator: Weblate <noreply-mt-weblate@weblate.org>\n"
+"PO-Revision-Date: 2025-08-19 15:47+0000\n"
+"Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
 "Language: uk\n"
@@ -11757,7 +11757,7 @@ msgstr "Агрегатні функції PostGIS"
 #. Tag: section
 #, no-c-format
 msgid "&list_aggregates;"
-msgstr ""
+msgstr "&list_aggregates;"
 
 #. Tag: para
 #, no-c-format
@@ -11766,16 +11766,18 @@ msgid ""
 "same way as SQL aggregate function such as <code>sum</code> and "
 "<code>average</code>."
 msgstr ""
+"Нижче наведено просторові агрегатні функції, які використовуються так само, "
+"як і агрегатні функції SQL, такі як <code>sum</code> та <code>average</code>."
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Window Functions"
-msgstr ""
+msgstr "Віконні функції PostGIS"
 
 #. Tag: section
 #, no-c-format
 msgid "&list_window_functions;"
-msgstr ""
+msgstr "&list_window_functions;"
 
 #. Tag: para
 #, no-c-format
@@ -11785,16 +11787,20 @@ msgid ""
 "code>, and <code>lag()</code>. They must be followed by an <code>OVER()</"
 "code> clause."
 msgstr ""
+"Наведені нижче функції є віконними просторовими функціями, які "
+"використовуються так само, як і віконні функції SQL, такі як "
+"<code>row_number()</code>, <code>lead()</code> та <code>lag()</code>. За "
+"ними має слідувати оператор <code>OVER()</code>."
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS SQL-MM Compliant Functions"
-msgstr ""
+msgstr "Функції, сумісні з PostGIS SQL-MM"
 
 #. Tag: section
 #, no-c-format
 msgid "&list_sqlmm_functions;"
-msgstr ""
+msgstr "&list_sqlmm_functions;"
 
 #. Tag: para
 #, no-c-format
@@ -11802,11 +11808,13 @@ msgid ""
 "The functions given below are PostGIS functions that conform to the SQL/MM 3 "
 "standard"
 msgstr ""
+"Наведені нижче функції є функціями PostGIS, які відповідають стандарту SQL/"
+"MM 3"
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Geography Support Functions"
-msgstr ""
+msgstr "Функції підтримки географії PostGIS"
 
 #. Tag: para
 #, no-c-format
@@ -11815,6 +11823,9 @@ msgid ""
 "take as input or return as output a <link "
 "linkend=\"PostGIS_Geography\">geography</link> data type object."
 msgstr ""
+"Наведені нижче функції та оператори є функціями/операторами PostGIS, які "
+"приймають як вхідні дані або повертають як вихідні дані об'єкт типу даних "
+"<link linkend=\"PostGIS_Geography\">geography</link>."
 
 #. Tag: para
 #, no-c-format
@@ -11826,16 +11837,23 @@ msgid ""
 "transform - (favoring UTM, Lambert Azimuthal (North/South), and falling back "
 "on mercator in worst case scenario)"
 msgstr ""
+"Функції з (T) не є вбудованими геодезичними функціями і використовують "
+"виклик ST_Transform до та з геометрії для виконання операції. Як результат, "
+"вони можуть поводитися не так, як очікується, при перетині лінії зміни дати, "
+"полюсів, а також для великих геометрій або пар геометрій, що охоплюють "
+"більше однієї зони UTM. Базове перетворення - (віддаючи перевагу UTM, "
+"азимутальному проектуванню Ламберта (північ/південь) і, в гіршому випадку, "
+"проектуванню Меркатора)"
 
 #. Tag: section
 #, no-c-format
 msgid "&list_geography_functions;"
-msgstr ""
+msgstr "&list_geography_functions;"
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Raster Support Functions"
-msgstr ""
+msgstr "Функції підтримки растрових даних PostGIS"
 
 #. Tag: para
 #, no-c-format
@@ -11844,21 +11862,24 @@ msgid ""
 "take as input or return as output a <xref linkend=\"raster\"/> data type "
 "object. Listed in alphabetical order."
 msgstr ""
+"Наведені нижче функції та оператори є функціями/операторами PostGIS, які "
+"приймають як вхідні дані або повертають як вихідні дані об'єкт типу даних "
+"<xref linkend=\"raster\"/>. Перелічені в алфавітному порядку."
 
 #. Tag: section
 #, no-c-format
 msgid "&list_raster_functions;"
-msgstr ""
+msgstr "&list_raster_functions;"
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Geometry / Geography / Raster Dump Functions"
-msgstr ""
+msgstr "Функції PostGIS для геометрії / географії / растрового дампа"
 
 #. Tag: section
 #, no-c-format
 msgid "&list_dump_functions;"
-msgstr ""
+msgstr "&list_dump_functions;"
 
 #. Tag: para
 #, no-c-format
@@ -11867,11 +11888,15 @@ msgid ""
 "as output a set of or single <link linkend=\"geometry_dump\">geometry_dump</"
 "link> or <link linkend=\"geomval\">geomval</link> data type object."
 msgstr ""
+"Наведені нижче функції є функціями PostGIS, які приймають як вхідні дані або "
+"повертають як вихідні дані набір або окремий об'єкт типу даних <link linkend="
+"\"geometry_dump\">geometry_dump</link> або <link linkend=\"geomval\""
+">geomval</link>."
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Box Functions"
-msgstr ""
+msgstr "Функції PostGIS Box"
 
 #. Tag: para
 #, no-c-format
@@ -11881,38 +11906,42 @@ msgid ""
 "consists of <link linkend=\"box2d_type\">box2d</link>, and <link "
 "linkend=\"box3d_type\">box3d</link>"
 msgstr ""
+"Наведені нижче функції є функціями PostGIS, які приймають як вхідні дані або "
+"повертають як вихідні дані сімейство просторових типів PostGIS box*. "
+"Сімейство типів box складається з <link linkend=\"box2d_type\">box2d</link> "
+"та <link linkend=\"box3d_type\">box3d</link>"
 
 #. Tag: section
 #, no-c-format
 msgid "&list_box_functions;"
-msgstr ""
+msgstr "&list_box_functions;"
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Functions that support 3D"
-msgstr ""
+msgstr "Функції PostGIS, що підтримують 3D"
 
 #. Tag: section
 #, no-c-format
 msgid "&list_3d_functions;"
-msgstr ""
+msgstr "&list_3d_functions;"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The functions given below are PostGIS functions that do not throw away the Z-"
 "Index."
-msgstr ""
+msgstr "Наведені нижче функції є функціями PostGIS, які не відкидають Z-індекс."
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Curved Geometry Support Functions"
-msgstr ""
+msgstr "Функції підтримки вигнутої геометрії PostGIS"
 
 #. Tag: section
 #, no-c-format
 msgid "&list_curved_geometry_functions;"
-msgstr ""
+msgstr "&list_curved_geometry_functions;"
 
 #. Tag: para
 #, no-c-format
@@ -11920,16 +11949,18 @@ msgid ""
 "The functions given below are PostGIS functions that can use CIRCULARSTRING, "
 "CURVEPOLYGON, and other curved geometry types"
 msgstr ""
+"Наведені нижче функції є функціями PostGIS, які можуть використовувати "
+"CIRCULARSTRING, CURVEPOLYGON та інші типи кривої геометрії"
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Polyhedral Surface Support Functions"
-msgstr ""
+msgstr "Функції підтримки багатогранних поверхонь PostGIS"
 
 #. Tag: section
 #, no-c-format
 msgid "&list_polyhedral_geometry_functions;"
-msgstr ""
+msgstr "&list_polyhedral_geometry_functions;"
 
 #. Tag: para
 #, no-c-format
@@ -11937,11 +11968,13 @@ msgid ""
 "The functions given below are PostGIS functions that can use "
 "POLYHEDRALSURFACE, POLYHEDRALSURFACEM geometries"
 msgstr ""
+"Наведені нижче функції є функціями PostGIS, які можуть використовувати "
+"геометрії POLYHEDRALSURFACE, POLYHEDRALSURFACEM"
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Function Support Matrix"
-msgstr ""
+msgstr "Матриця підтримки функцій PostGIS"
 
 #. Tag: para
 #, no-c-format
@@ -11950,6 +11983,9 @@ msgid ""
 "and the kinds of spatial types they work with or OGC/SQL compliance they try "
 "to conform to."
 msgstr ""
+"Нижче наведено алфавітний перелік просторових функцій у PostGIS та типи "
+"просторових даних, з якими вони працюють, або відповідність стандартам OGC/"
+"SQL, яких вони намагаються дотримуватися."
 
 #. Tag: simpara
 #, no-c-format
@@ -11958,6 +11994,9 @@ msgid ""
 "matrix_checkmark.png\"/></imageobject></inlinemediaobject> means the "
 "function works with the type or subtype natively."
 msgstr ""
+"A <inlinemediaobject><imageobject><imagedata fileref=\"images"
+"/matrix_checkmark.png\"/></imageobject></inlinemediaobject> означає, що "
+"функція працює з типом або підтипом вбудовано."
 
 #. Tag: simpara
 #, no-c-format
@@ -11968,6 +12007,13 @@ msgid ""
 "\"best srid\" spatial ref and then cast back. Results may not be as expected "
 "for large areas or areas at poles and may accumulate floating point junk."
 msgstr ""
+"A <inlinemediaobject><imageobject><imagedata fileref=\"images"
+"/matrix_transform.png\"/></imageobject></inlinemediaobject> означає, що це "
+"працює, але з вбудованим перетворенням за допомогою cast to geometry, "
+"перетворенням у просторове посилання «best srid», а потім зворотним "
+"перетворенням. Результати можуть не відповідати очікуваним для великих "
+"областей або областей на полюсах і можуть накопичувати сміття з плаваючою "
+"комою."
 
 #. Tag: simpara
 #, no-c-format
@@ -11977,6 +12023,10 @@ msgid ""
 "works with the type because of a auto-cast to another such as to box3d "
 "rather than direct type support."
 msgstr ""
+"A <inlinemediaobject><imageobject><imagedata fileref=\"images/matrix_autocast"
+".png\"/></imageobject></inlinemediaobject> означає, що функція працює з "
+"типом завдяки автоматичному перетворенню в інший тип, наприклад box3d, а не "
+"завдяки прямій підтримці типу."
 
 #. Tag: simpara
 #, no-c-format
@@ -11985,91 +12035,94 @@ msgid ""
 "matrix_sfcgal_required.png\"/></imageobject></inlinemediaobject> means the "
 "function only available if PostGIS compiled with SFCGAL support."
 msgstr ""
+"A <inlinemediaobject><imageobject><imagedata fileref=\"images"
+"/matrix_sfcgal_required.png\"/></imageobject></inlinemediaobject> означає, "
+"що функція доступна тільки якщо PostGIS скомпільовано з підтримкою SFCGAL."
 
 #. Tag: simpara
 #, no-c-format
 msgid "geom - Basic 2D geometry support (x,y)."
-msgstr ""
+msgstr "geom - Базова підтримка 2D-геометрії (x, y)."
 
 #. Tag: simpara
 #, no-c-format
 msgid "geog - Basic 2D geography support (x,y)."
-msgstr ""
+msgstr "geog - Базова підтримка 2D географії (x, y)."
 
 #. Tag: simpara
 #, no-c-format
 msgid "2.5D - basic 2D geometries in 3 D/4D space (has Z or M coord)."
-msgstr ""
+msgstr "2.5D — базові 2D-геометрії в 3D/4D-просторі (має координати Z або M)."
 
 #. Tag: simpara
 #, no-c-format
 msgid "PS - Polyhedral surfaces"
-msgstr ""
+msgstr "PS - Поліедральні поверхні"
 
 #. Tag: simpara
 #, no-c-format
 msgid "T - Triangles and Triangulated Irregular Network surfaces (TIN)"
-msgstr ""
+msgstr "T - Трикутники та трикутні нерегулярні мережеві поверхні (TIN)"
 
 #. Tag: entry
 #, no-c-format
 msgid "Function"
-msgstr ""
+msgstr "Функція"
 
 #. Tag: entry
 #, no-c-format
 msgid "geom"
-msgstr ""
+msgstr "geom"
 
 #. Tag: entry
 #, no-c-format
 msgid "geog"
-msgstr ""
+msgstr "geog"
 
 #. Tag: entry
 #, no-c-format
 msgid "2.5D"
-msgstr ""
+msgstr "2.5D"
 
 #. Tag: entry
 #, no-c-format
 msgid "Curves"
-msgstr ""
+msgstr "Криві"
 
 #. Tag: entry
 #, no-c-format
 msgid "SQL MM"
-msgstr ""
+msgstr "SQL MM"
 
 #. Tag: entry
 #, no-c-format
 msgid "<entry>PS</entry>"
-msgstr ""
+msgstr "<entry>PS</entry>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<entry>T</entry>"
-msgstr ""
+msgstr "<entry>T</entry>"
 
 #. Tag: tgroup
 #, no-c-format
 msgid "&table_body_function_support_matrix;"
-msgstr ""
+msgstr "&table_body_function_support_matrix;"
 
 #. Tag: section
 #, no-c-format
 msgid "&list_new_functions;"
-msgstr ""
+msgstr "&list_new_functions;"
 
 #. Tag: title
 #, no-c-format
 msgid "New, Enhanced or changed PostGIS Functions"
-msgstr ""
+msgstr "Нові, вдосконалені або змінені функції PostGIS"
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Reference"
-msgstr ""
+msgstr "Довідка PostGIS"
 
 #. Tag: para
 #, no-c-format
@@ -12078,6 +12131,9 @@ msgid ""
 "need. There are other functions which are required support functions to the "
 "PostGIS objects which are not of use to a general user."
 msgstr ""
+"Нижче наведено функції, які можуть знадобитися користувачеві PostGIS. "
+"Існують також інші функції, які є необхідними допоміжними функціями для "
+"об'єктів PostGIS, але не використовуються звичайними користувачами."
 
 #. Tag: para
 #, no-c-format
@@ -12090,6 +12146,13 @@ msgid ""
 "documentation are deprecated and will be removed in a future release so STOP "
 "USING THEM."
 msgstr ""
+"PostGIS розпочав перехід від існуючої конвенції іменування до конвенції, "
+"орієнтованої на SQL-MM. В результаті, більшість функцій, які ви знаєте і "
+"любите, були перейменовані з використанням стандартного префікса "
+"просторового типу (ST). Попередні функції все ще доступні, хоча вони не "
+"вказані в цьому документі, де наведено оновлені функції, які є "
+"еквівалентними. Функції, що не вказані в цій документації, є застарілими і "
+"будуть видалені в майбутніх версіях, тому ПРИПИНІТЬ ЇХ ВИКОРИСТОВУВАТИ."
 
 #. Tag: chapter
 #, no-c-format
@@ -12102,16 +12165,23 @@ msgid ""
 "&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
 "&reference_version; &reference_guc; &reference_troubleshooting;"
 msgstr ""
+"&reference_type; &reference_management; &reference_constructor; "
+"&reference_accessor; &reference_editor; &reference_validation; "
+"&reference_srs; &reference_input; &reference_output; &reference_operator; "
+"&reference_relationship; &reference_measure; &reference_overlay; "
+"&reference_processing; &reference_coverage; &reference_transformation; "
+"&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
+"&reference_version; &reference_guc; &reference_troubleshooting;"
 
 #. Tag: title
 #, no-c-format
 msgid "Geometry Accessors"
-msgstr ""
+msgstr "Доступ до геометрії"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the type of a geometry as text."
-msgstr ""
+msgstr "Повертає тип геометрії у вигляді тексту."
 
 #. Tag: para
 #, no-c-format
@@ -12119,6 +12189,8 @@ msgid ""
 "Returns the type of the geometry as a string. Eg: 'LINESTRING', 'POLYGON', "
 "'MULTIPOINT', etc."
 msgstr ""
+"Повертає тип геометрії у вигляді рядка. Наприклад: “LINESTRING”, “POLYGON”, "
+"“MULTIPOINT” тощо."
 
 #. Tag: para
 #, no-c-format
@@ -12127,6 +12199,9 @@ msgid ""
 "of which this Geometry instance is a member. The name of the instantiable "
 "subtype of Geometry is returned as a string."
 msgstr ""
+"OGC SPEC s2.1.1.1 - Повертає ім'я підтипу Geometry, який можна "
+"інстанціювати, до якого належить цей екземпляр Geometry. Ім'я підтипу "
+"Geometry, який можна інстанціювати, повертається у вигляді рядка."
 
 #. Tag: para
 #, no-c-format
@@ -12134,6 +12209,8 @@ msgid ""
 "This function also indicates if the geometry is measured, by returning a "
 "string of the form 'POINTM'."
 msgstr ""
+"Ця функція також вказує, чи вимірюється геометрія, повертаючи рядок у "
+"вигляді “POINTM”."
 
 #. Tag: para
 #, no-c-format
@@ -12141,31 +12218,32 @@ msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
 "introduced."
 msgstr ""
+"Покращено: 2.0.0 додано підтримку багатогранних поверхонь, трикутників і TIN."
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant;"
-msgstr ""
+msgstr "&sfs_compliant;"
 
 #. Tag: para
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: para
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the boundary of a geometry."
-msgstr ""
+msgstr "Повертає межі геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -12177,11 +12255,16 @@ msgid ""
 "representational geometry primitives as discussed in the OGC SPEC, section "
 "3.12.2."
 msgstr ""
+"Повертає закриття комбінаторної межі цієї геометрії. Комбінаторна межа "
+"визначається, як описано в розділі 3.12.3.2 специфікації OGC. Оскільки "
+"результат цієї функції є закриттям, а отже, топологічно замкнутим, отриману "
+"межу можна представити за допомогою примітивних елементів геометрії, як "
+"описано в розділі 3.12.2 специфікації OGC."
 
 #. Tag: para
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr ""
+msgstr "Виконано модулем GEOS"
 
 #. Tag: para
 #, no-c-format
@@ -12190,48 +12273,52 @@ msgid ""
 "<varname>GEOMETRYCOLLECTION</varname>. From 2.0.0 up it will return NULL "
 "instead (unsupported input)."
 msgstr ""
+"До версії 2.0.0 ця функція викликає виняток, якщо використовується з "
+"<varname>GEOMETRYCOLLECTION</varname>. Починаючи з версії 2.0.0, вона "
+"повертає NULL (непідтримуваний вхідний параметр)."
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; OGC SPEC s2.1.1.1"
-msgstr ""
+msgstr "&sfs_compliant; OGC SPEC s2.1.1.1"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for Triangle was introduced"
-msgstr ""
+msgstr "Покращено: 2.1.0 додано підтримку Triangle"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Changed: 3.2.0 support for TIN, does not use geos, does not linearize curves"
-msgstr ""
+msgstr "Змінено: 3.2.0 підтримка TIN, не використовує geos, не лінеаризує криві"
 
 #. Tag: para
 #, no-c-format
 msgid "Linestring with boundary points overlaid"
-msgstr ""
+msgstr "Лінія з накладеними граничними точками"
 
 #. Tag: para
 #, no-c-format
 msgid "polygon holes with boundary multilinestring"
-msgstr ""
+msgstr "отвори полігону з межею, що складається з декількох ліній"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 msgstr ""
+", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the diagonal of a geometry's bounding box."
-msgstr ""
+msgstr "Повертає діагональ обмежувального прямокутника геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -12241,6 +12328,10 @@ msgid ""
 "each dimension in its start point and the maximum values in its end point. "
 "If the input geometry is empty, the diagonal line is a LINESTRING EMPTY."
 msgstr ""
+"Повертає діагональ обмежувальної рамки наданої геометрії у вигляді "
+"LineString. Діагональ — це 2-точковий LineString із мінімальними значеннями "
+"кожного виміру в початковій точці та максимальними значеннями в кінцевій "
+"точці. Якщо вхідна геометрія порожня, діагональна лінія є LINESTRING EMPTY."
 
 #. Tag: para
 #, no-c-format
@@ -12251,6 +12342,11 @@ msgid ""
 "either case, the bounding box of the returned diagonal line always covers "
 "the input geometry."
 msgstr ""
+"Додатковий параметр <varname>fits</varname> визначає, чи потрібно знайти "
+"найкраще співпадіння. Якщо значення false, можна прийняти діагональ дещо "
+"більшої обмежувальної рамки (що швидше обчислюється для геометрій з великою "
+"кількістю вершин). У будь-якому випадку обмежувальна рамка поверненої "
+"діагональної лінії завжди охоплює вхідну геометрію."
 
 #. Tag: para
 #, no-c-format
@@ -12258,6 +12354,8 @@ msgid ""
 "The returned geometry retains the SRID and dimensionality (Z and M presence) "
 "of the input geometry."
 msgstr ""
+"Повернена геометрія зберігає SRID та розмірність (наявність Z та M) вхідної "
+"геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -12266,11 +12364,14 @@ msgid ""
 "will be formally invalid (no interior). The result is still topologically "
 "valid."
 msgstr ""
+"У виняткових випадках (тобто, якщо у вхідних даних є лише одна вершина) "
+"повернутий ланцюжок ліній буде формально недійсним (не має внутрішньої "
+"частини). Результат все одно залишається топологічно правильним."
 
 #. Tag: para
 #, no-c-format
 msgid "&M_support;"
-msgstr ""
+msgstr "&M_support;"
 
 #. Tag: para
 #, no-c-format
@@ -12279,31 +12380,34 @@ msgid ""
 "linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, "
 "<xref linkend=\"ST_Envelope\"/>"
 msgstr ""
+", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
+"\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, <xref "
+"linkend=\"ST_Envelope\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return the coordinate dimension of a geometry."
-msgstr ""
+msgstr "Повертає розмірність координат геометрії."
 
 #. Tag: para
 #, no-c-format
 msgid "Return the coordinate dimension of the ST_Geometry value."
-msgstr ""
+msgstr "Повертає розмірність координат значення ST_Geometry."
 
 #. Tag: para
 #, no-c-format
 msgid "This is the MM compliant alias name for <xref linkend=\"ST_NDims\"/>"
-msgstr ""
+msgstr "Це ім'я псевдоніма, що відповідає MM, для <xref linkend=\"ST_NDims\"/>"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.3"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the topological dimension of a geometry."
-msgstr ""
+msgstr "Повертає топологічну розмірність геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -12315,11 +12419,17 @@ msgid ""
 "<varname>GEOMETRYCOLLECTION</varname>. If the dimension is unknown (e.g. for "
 "an empty <varname>GEOMETRYCOLLECTION</varname>) 0 is returned."
 msgstr ""
+"Повертає топологічну розмірність цього об'єкта Geometry, яка повинна бути "
+"меншою або дорівнювати розмірності координат. OGC SPEC s2.1.1.1 - повертає 0 "
+"для <varname>POINT</varname>, 1 для <varname>LINESTRING</varname>, 2 для "
+"<varname>POLYGON</varname> і найбільший вимір компонентів "
+"<varname>GEOMETRYCOLLECTION</varname>. Якщо розмір невідомий (наприклад, для "
+"порожнього <varname>GEOMETRYCOLLECTION</varname>), повертається 0."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.2"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.2"
 
 #. Tag: para
 #, no-c-format
@@ -12327,6 +12437,8 @@ msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces and TINs was introduced. No "
 "longer throws an exception if given empty geometry."
 msgstr ""
+"Покращено: 2.0.0 додано підтримку багатогранних поверхонь і TIN. Більше не "
+"виникає виняток, якщо задано порожню геометрію."
 
 #. Tag: para
 #, no-c-format
@@ -12334,6 +12446,8 @@ msgid ""
 "Prior to 2.0.0, this function throws an exception if used with empty "
 "geometry."
 msgstr ""
+"До версії 2.0.0 ця функція викликає виняток, якщо використовується з "
+"порожньою геометрією."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -12341,6 +12455,8 @@ msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the components of "
 "a geometry."
 msgstr ""
+"Повертає набір рядків <varname>geometry_dump</varname> для компонентів "
+"геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -12350,6 +12466,10 @@ msgid ""
 "a geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
+"Функція повернення набору (SRF), яка витягує компоненти геометрії. Вона "
+"повертає набір <xref linkend=\"geometry_dump\"/>рядків, кожен з яких містить "
+"геометрію (поле <parameter>geom</parameter>) та масив цілих чисел (поле "
+"<parameter>path</parameter>)."
 
 #. Tag: para
 #, no-c-format
@@ -12361,6 +12481,11 @@ msgid ""
 "<parameter>path</parameter> denotes the position of the component inside the "
 "collection."
 msgstr ""
+"Для типу атомарної геометрії (POINT, LINESTRING, POLYGON) повертається один "
+"запис з порожнім масивом <parameter>path</parameter> і вхідною геометрією як "
+"<parameter>geom</parameter>. Для колекції або мультигеометрії повертається "
+"запис для кожного компонента колекції, а <parameter>path</parameter> "
+"позначає положення компонента всередині колекції."
 
 #. Tag: para
 #, no-c-format
@@ -12369,11 +12494,14 @@ msgid ""
 "linkend=\"ST_Collect\"/> / GROUP BY, in that it creates new rows. For "
 "example it can be use to expand MULTIPOLYGONS into POLYGONS."
 msgstr ""
+"ST_Dump корисний для розширення геометрій. Він є оберненим до <xref linkend="
+"\"ST_Collect\"/>/ GROUP BY, оскільки створює нові рядки. Наприклад, його "
+"можна використовувати для розширення MULTIPOLYGONS в POLYGONS."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher."
-msgstr ""
+msgstr "Доступність: PostGIS 1.0.0RC1. Потрібна PostgreSQL 7.3 або вище."
 
 #. Tag: para
 #, no-c-format
@@ -12381,16 +12509,18 @@ msgid ""
 "Prior to 1.3.4, this function crashes if used with geometries that contain "
 "CURVES. This is fixed in 1.3.4+"
 msgstr ""
+"До версії 1.3.4 ця функція виходила з ладу при використанні з геометріями, "
+"що містять КРИВІ. Ця проблема вирішена у версії 1.3.4+"
 
 #. Tag: title
 #, no-c-format
 msgid "Standard Examples"
-msgstr ""
+msgstr "Стандартні приклади"
 
 #. Tag: title
 #, no-c-format
 msgid "Polyhedral Surfaces, TIN and Triangle Examples"
-msgstr ""
+msgstr "Багатогранні поверхні, TIN і приклади трикутників"
 
 #. Tag: para
 #, no-c-format
@@ -12398,6 +12528,8 @@ msgid ""
 ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
 "linkend=\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
+"\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -12405,6 +12537,8 @@ msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the coordinates "
 "in a geometry."
 msgstr ""
+"Повертає набір рядків <varname>geometry_dump</varname> для координат у "
+"геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -12414,6 +12548,10 @@ msgid ""
 "containing a geometry (<parameter>geom</parameter> field) and an array of "
 "integers (<parameter>path</parameter> field)."
 msgstr ""
+"Функція повернення набору (SRF), яка витягує координати (вершини) геометрії. "
+"Вона повертає набір <xref linkend=\"geometry_dump\"/>рядків, кожен з яких "
+"містить геометрію (поле <parameter>geom</parameter>) та масив цілих чисел ("
+"поле <parameter>path</parameter>)."
 
 #. Tag: para
 #, no-c-format
@@ -12421,6 +12559,8 @@ msgid ""
 "the <parameter>geom</parameter> field <varname>POINT</varname>s represent "
 "the coordinates of the supplied geometry."
 msgstr ""
+"поле <parameter>geom</parameter> <varname>POINT</varname>s представляє "
+"координати наданої геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -12435,6 +12575,15 @@ msgid ""
 "(1 is outer; inner rings follow) and <varname>j</varname> is the coordinate "
 "position in the ring."
 msgstr ""
+"the <parameter>path</parameter> field (an <varname>integer[]</varname>) is "
+"an index enumerating the coordinate positions in the elements of the "
+"supplied geometry. The indices are 1-based. For example, for a "
+"<varname>LINESTRING</varname> the paths are <varname>{i}</varname> where "
+"<varname>i</varname> is the <varname>nth</varname> coordinate in the "
+"<varname>LINESTRING</varname>. For a <varname>POLYGON</varname> the paths "
+"are <varname>{i,j}</varname> where <varname>i</varname> is the ring number ("
+"1 is outer; inner rings follow) and <varname>j</varname> is the coordinate "
+"position in the ring."
 
 #. Tag: para
 #, no-c-format
@@ -12442,21 +12591,23 @@ msgid ""
 "To obtain a single geometry containing the coordinates use <xref "
 "linkend=\"ST_Points\"/>."
 msgstr ""
+"Щоб отримати єдину геометрію, що містить координати, використовуйте <xref "
+"linkend=\"ST_Points\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 Faster speed. Reimplemented as native-C."
-msgstr ""
+msgstr "Покращено: 2.1.0 Вища швидкість. Перероблено як native-C."
 
 #. Tag: title
 #, no-c-format
 msgid "Classic Explode a Table of LineStrings into nodes"
-msgstr ""
+msgstr "Класичний розрив таблиці рядків у вузли"
 
 #. Tag: title
 #, no-c-format
 msgid "Standard Geometry Examples"
-msgstr ""
+msgstr "Приклади стандартної геометрії"
 
 #. Tag: para
 #, no-c-format
@@ -12465,6 +12616,8 @@ msgid ""
 "linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>, <xref "
 "linkend=\"ST_Points\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_DumpRings\"/>, <xref linkend=\"ST_Points\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -12472,6 +12625,8 @@ msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the segments in a "
 "geometry."
 msgstr ""
+"Повертає набір рядків <varname>geometry_dump</varname> для сегментів у "
+"геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -12481,6 +12636,10 @@ msgid ""
 "geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
+"Функція повернення набору (SRF), яка витягує сегменти геометрії. Вона "
+"повертає набір <xref linkend=\"geometry_dump\"/>рядків, кожен з яких містить "
+"геометрію (поле <parameter>geom</parameter>) та масив цілих чисел (поле "
+"<parameter>path</parameter>)."
 
 #. Tag: para
 #, no-c-format
@@ -12489,6 +12648,9 @@ msgid ""
 "represent the linear segments of the supplied geometry, while the "
 "<varname>CIRCULARSTRING</varname>s represent the arc segments."
 msgstr ""
+"поле <parameter>geom</parameter> <varname>LINESTRING</varname>s представляє "
+"лінійні сегменти наданої геометрії, а <varname>CIRCULARSTRING</varname>s "
+"представляє сегменти дуги."
 
 #. Tag: para
 #, no-c-format
@@ -12503,11 +12665,20 @@ msgid ""
 "number (1 is outer; inner rings follow) and <varname>j</varname> is the "
 "segment start point position in the ring."
 msgstr ""
+"поле <parameter>path</parameter> (тип <varname>integer[]</varname>) є "
+"індексом, що перелічує позиції початкових точок сегментів в елементах "
+"наданої геометрії. Індекси починаються з 1. Наприклад, для "
+"<varname>LINESTRING</varname> шляхи є <varname>{i}</varname>, де <varname>i</"
+"varname> є <varname>n-тою</varname> початковою точкою сегмента в "
+"<varname>LINESTRING</varname>. Для <varname>POLYGON</varname> шляхи мають "
+"вигляд <varname>{i,j}</varname>, де <varname>i</varname> — номер кільця (1 — "
+"зовнішнє, внутрішні кільця йдуть за ним), а <varname>j</varname> — позиція "
+"початку сегмента в кільці."
 
 #. Tag: title
 #, no-c-format
 msgid "TIN and Triangle Examples"
-msgstr ""
+msgstr "Приклади TIN і трикутників"
 
 #. Tag: para
 #, no-c-format
@@ -12515,6 +12686,8 @@ msgid ""
 ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
 "linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_DumpRings\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -12522,6 +12695,8 @@ msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the exterior and "
 "interior rings of a Polygon."
 msgstr ""
+"Повертає набір рядків <varname>geometry_dump</varname> для зовнішнього та "
+"внутрішнього кілець полігону."
 
 #. Tag: para
 #, no-c-format
@@ -12531,6 +12706,10 @@ msgid ""
 "geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
+"Функція повернення набору (SRF), яка витягує кільця полігону. Вона повертає "
+"набір <xref linkend=\"geometry_dump\"/>рядків, кожен з яких містить "
+"геометрію (поле <parameter>geom</parameter>) та масив цілих чисел (поле "
+"<parameter>path</parameter>)."
 
 #. Tag: para
 #, no-c-format
@@ -12540,27 +12719,31 @@ msgid ""
 "the polygon ring index. The exterior ring (shell) has index 0. The interior "
 "rings (holes) have indices of 1 and higher."
 msgstr ""
+"Поле <parameter>geom</parameter> містить кожне кільце як POLYGON. Поле "
+"<parameter>path</parameter> є цілочисельним масивом довжиною 1, що містить "
+"індекс кільця полігону. Зовнішнє кільце (оболонка) має індекс 0. Внутрішні "
+"кільця (отвори) мають індекси 1 і вище."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This only works for POLYGON geometries. It does not work for MULTIPOLYGONS"
-msgstr ""
+msgstr "Це працює тільки для геометрії POLYGON. Не працює для MULTIPOLYGONS"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher."
-msgstr ""
+msgstr "Доступність: PostGIS 1.1.3. Вимагає PostgreSQL 7.3 або вище."
 
 #. Tag: para
 #, no-c-format
 msgid "General form of query."
-msgstr ""
+msgstr "Загальна форма запиту."
 
 #. Tag: para
 #, no-c-format
 msgid "A polygon with a single hole."
-msgstr ""
+msgstr "Полігон з одним отвором."
 
 #. Tag: para
 #, no-c-format
@@ -12569,11 +12752,14 @@ msgid ""
 "linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
 "linkend=\"ST_InteriorRingN\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_InteriorRingN\""
+"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the last point of a LineString or CircularLineString."
-msgstr ""
+msgstr "Повертає останню точку LineString або CircularLineString."
 
 #. Tag: para
 #, no-c-format
@@ -12583,11 +12769,15 @@ msgid ""
 "varname>. Returns <varname>NULL</varname> if the input is not a "
 "<varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>."
 msgstr ""
+"Повертає останню точку геометрії <varname>LINESTRING</varname> або "
+"<varname>CIRCULARLINESTRING</varname> як <varname>POINT</varname>. Повертає "
+"<varname>NULL</varname>, якщо вхідні дані не є <varname>LINESTRING</varname> "
+"або <varname>CIRCULARLINESTRING</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.4"
 
 #. Tag: para
 #, no-c-format
@@ -12599,36 +12789,42 @@ msgid ""
 "who assumed they had their data stored as LINESTRING may experience these "
 "returning NULL in 2.0.0."
 msgstr ""
+"Змінено: 2.0.0 більше не працює з одномірними MultiLineStrings. У старих "
+"версіях PostGIS одномірний MultiLineString працював з цією функцією і "
+"повертав кінцеву точку. У 2.0.0 він повертає NULL, як і будь-який інший "
+"MultiLineString. Стара поведінка була недокументованою функцією, але "
+"користувачі, які вважали, що їхні дані зберігаються як LINESTRING, можуть "
+"зіткнутися з поверненням NULL у 2.0.0."
 
 #. Tag: para
 #, no-c-format
 msgid "End point of a LineString"
-msgstr ""
+msgstr "End point of a LineString"
 
 #. Tag: para
 #, no-c-format
 msgid "End point of a non-LineString is NULL"
-msgstr ""
+msgstr "Кінцева точка нелінійного об'єкта LineString має значення NULL"
 
 #. Tag: para
 #, no-c-format
 msgid "End point of a 3D LineString"
-msgstr ""
+msgstr "Кінцева точка 3D-лінії"
 
 #. Tag: para
 #, no-c-format
 msgid "End point of a CircularString"
-msgstr ""
+msgstr "Кінцева точка CircularString"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_StartPoint\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_StartPoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a geometry representing the bounding box of a geometry."
-msgstr ""
+msgstr "Повертає геометрію, що представляє обмежувальну рамку геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -12642,6 +12838,14 @@ msgid ""
 "will add a <varname>ZMIN</varname>/<varname>ZMAX</varname> coordinate as "
 "well)."
 msgstr ""
+"Повертає мінімальну обмежувальну коробку подвійної точності (float8) для "
+"заданої геометрії у вигляді геометрії. Полігон визначається кутовими точками "
+"обмежувальної рамки ((<varname>MINX</varname>, <varname>MINY</varname>), "
+"(<varname>MINX</varname>, <varname>MAXY</varname>), (<varname>MAXX</"
+"varname>, <varname>MAXY</varname>), (<varname>MAXX</varname>, "
+"<varname>MINY</varname>), (<varname>MINX</varname>, <varname>MINY</varname>))"
+". (PostGIS також додасть координати "
+"<varname>ZMIN</varname>/<varname>ZMAX</varname>)."
 
 #. Tag: para
 #, no-c-format
@@ -12650,6 +12854,9 @@ msgid ""
 "dimension than <varname>POLYGON</varname>, ie. <varname>POINT</varname> or "
 "<varname>LINESTRING</varname>."
 msgstr ""
+"У виняткових випадках (вертикальні лінії, точки) буде повернено геометрію з "
+"розмірністю, меншою за <varname>POLYGON</varname>, тобто <varname>POINT</"
+"varname> або <varname>LINESTRING</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -12657,26 +12864,28 @@ msgid ""
 "Availability: 1.5.0 behavior changed to output double precision instead of "
 "float4"
 msgstr ""
+"Доступність: 1.5.0 поведінка змінена на виведення подвійної точності замість "
+"float4"
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.1"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.1.1"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.19"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.19"
 
 #. Tag: para
 #, no-c-format
 msgid "Envelope of a point and linestring."
-msgstr ""
+msgstr "Огинаюча точки та лінійного відрізка."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"Box3D\"/>, <xref linkend=\"ST_OrientedEnvelope\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"Box3D\"/>, <xref linkend=\"ST_OrientedEnvelope\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -12688,7 +12897,7 @@ msgstr ""
 msgid ""
 "Returns a LINESTRING representing the exterior ring (shell) of a POLYGON. "
 "Returns NULL if the geometry is not a polygon."
-msgstr ""
+msgstr "Повертає LineString, що представляє зовнішнє кільце полігону."
 
 #. Tag: para
 #, no-c-format
@@ -12697,27 +12906,30 @@ msgid ""
 "conjunction with <xref linkend=\"ST_GeometryN\"/> or <xref "
 "linkend=\"ST_Dump\"/>"
 msgstr ""
+"Ця функція не підтримує MULTIPOLYGON. Для MULTIPOLYGON використовуйте разом "
+"з <xref linkend=\"ST_GeometryN\"/>або <xref linkend=\"ST_Dump\"/>"
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; 2.1.5.1"
-msgstr ""
+msgstr "&sfs_compliant; 2.1.5.1"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.3, 8.3.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.3, 8.3.3"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
 msgstr ""
+", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return an element of a geometry collection."
-msgstr ""
+msgstr "Повернути елемент колекції геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -12726,6 +12938,9 @@ msgid ""
 "GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTI)POLYGON, "
 "or POLYHEDRALSURFACE. Otherwise, returns NULL."
 msgstr ""
+"Повертає N-й елемент геометрії, починаючи з 1, вхідної геометрії, яка є "
+"GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTI)POLYGON "
+"або POLYHEDRALSURFACE. В іншому випадку повертає NULL."
 
 #. Tag: para
 #, no-c-format
@@ -12733,6 +12948,8 @@ msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Previous versions "
 "implemented this as 0-based instead."
 msgstr ""
+"Індекс базується на 1, як і в специфікаціях OGC, починаючи з версії 0.8.0. У "
+"попередніх версіях це реалізовано на основі 0."
 
 #. Tag: para
 #, no-c-format
@@ -12740,6 +12957,8 @@ msgid ""
 "To extract all elements of a geometry, <xref linkend=\"ST_Dump\"/> is more "
 "efficient and works for atomic geometries."
 msgstr ""
+"Щоб витягти всі елементи геометрії, <xref linkend=\"ST_Dump\"/>є більш "
+"ефективним і працює для атомних геометрій."
 
 #. Tag: para
 #, no-c-format
@@ -12747,21 +12966,23 @@ msgid ""
 "Changed: 2.0.0 Prior versions would return NULL for singular geometries. "
 "This was changed to return the geometry for ST_GeometryN(..,1) case."
 msgstr ""
+"Змінено: 2.0.0 Попередні версії повертали NULL для геометрій в однині. Це "
+"було змінено, щоб повертати геометрію для випадку ST_GeometryN(..,1)."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.1.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 9.1.5"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_NumGeometries\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the SQL-MM type of a geometry as text."
-msgstr ""
+msgstr "Повертає тип SQL-MM геометрії у вигляді тексту."
 
 #. Tag: para
 #, no-c-format
@@ -12772,42 +12993,47 @@ msgid ""
 "returned, as well as the fact that it will not indicate whether the geometry "
 "is measured."
 msgstr ""
+"Повертає тип геометрії у вигляді рядка. Наприклад: “ST_LineString”, "
+"“ST_Polygon”,'ST_MultiPolygon' тощо. Ця функція відрізняється від "
+"GeometryType(geometry) тим, що повертає рядок і ST на початку, а також тим, "
+"що не вказує, чи виміряно геометрію."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
-msgstr ""
+msgstr "Покращено: 2.0.0 додано підтримку багатогранних поверхонь."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.4"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if a geometry contains a circular arc"
-msgstr ""
+msgstr "Тестує, чи містить геометрія кругову дугу"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Returns true if a geometry or geometry collection contains a circular string"
 msgstr ""
+"Повертає true, якщо геометрія або колекція геометрій містить циклічний рядок"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.2.3?"
-msgstr ""
+msgstr "Доступність: 1.2.3?"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineToCurve\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LineToCurve\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the Nth interior ring (hole) of a Polygon."
-msgstr ""
+msgstr "Повертає N-те внутрішнє кільце (отвір) полігону."
 
 #. Tag: para
 #, no-c-format
@@ -12816,11 +13042,14 @@ msgid ""
 "The index starts at 1. Returns NULL if the geometry is not a polygon or the "
 "index is out of range."
 msgstr ""
+"Повертає N-те внутрішнє кільце (отвір) геометрії POLYGON як LINESTRING. "
+"Індекс починається з 1. Повертає NULL, якщо геометрія не є полігоном або "
+"індекс виходить за межі діапазону."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5"
 
 #. Tag: para
 #, no-c-format
@@ -12829,11 +13058,14 @@ msgid ""
 "linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>, <xref "
 "linkend=\"ST_NumInteriorRings\"/>"
 msgstr ""
+", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>, <xref linkend="
+"\"ST_NumInteriorRings\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return the number of component curves in a CompoundCurve."
-msgstr ""
+msgstr "Повернути кількість кривих компонентів у CompoundCurve."
 
 #. Tag: para
 #, no-c-format
@@ -12841,6 +13073,8 @@ msgid ""
 "Return the number of component curves in a CompoundCurve, zero for an empty "
 "CompoundCurve, or NULL for a non-CompoundCurve input."
 msgstr ""
+"Повертає кількість компонентних кривих у CompoundCurve, нуль для порожнього "
+"CompoundCurve або NULL для вхідних даних, що не є CompoundCurve."
 
 #. Tag: para
 #, no-c-format
@@ -12848,11 +13082,13 @@ msgid ""
 ", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
 "linkend=\"ST_NumInteriorRings\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 msgstr ""
+", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
+"linkend=\"ST_NumInteriorRings\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the Nth component curve geometry of a CompoundCurve."
-msgstr ""
+msgstr "Повертає геометрію N-го компонента кривої CompoundCurve."
 
 #. Tag: para
 #, no-c-format
@@ -12861,6 +13097,9 @@ msgid ""
 "starts at 1. Returns NULL if the geometry is not a CompoundCurve or the "
 "index is out of range."
 msgstr ""
+"Повертає геометрію N-го компонента кривої CompoundCurve. Індекс починається "
+"з 1. Повертає NULL, якщо геометрія не є CompoundCurve або індекс знаходиться "
+"поза діапазоном."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -12868,6 +13107,8 @@ msgid ""
 "Tests if a LineStrings's start and end points are coincident. For a "
 "PolyhedralSurface tests if it is closed (volumetric)."
 msgstr ""
+"Перевіряє, чи збігаються початкова та кінцева точки LineStrings. Для "
+"PolyhedralSurface перевіряє, чи є вона закритою (об'ємною)."
 
 #. Tag: para
 #, no-c-format
@@ -12876,11 +13117,14 @@ msgid ""
 "and end points are coincident. For Polyhedral Surfaces, reports if the "
 "surface is areal (open) or volumetric (closed)."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо початкова та кінцева точки "
+"<varname>LINESTRING</varname> збігаються. Для поліедральних поверхонь "
+"повідомляє, чи поверхня є плоскою (відкритою) чи об'ємною (закритою)."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3"
 
 #. Tag: para
 #, no-c-format
@@ -12888,21 +13132,23 @@ msgid ""
 "SQL-MM defines the result of <code>ST_IsClosed(NULL)</code> to be 0, while "
 "PostGIS returns <varname>NULL</varname>."
 msgstr ""
+"SQL-MM визначає результат <code>ST_IsClosed(NULL)</code> як 0, тоді як "
+"PostGIS повертає <varname>NULL</varname>."
 
 #. Tag: title
 #, no-c-format
 msgid "Line String and Point Examples"
-msgstr ""
+msgstr "Приклади LineString і Point"
 
 #. Tag: title
 #, no-c-format
 msgid "Polyhedral Surface Examples"
-msgstr ""
+msgstr "Приклади багатогранних поверхонь"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if a geometry is a geometry collection type."
-msgstr ""
+msgstr "Перевіряє, чи є геометрія типом колекції геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -12910,21 +13156,23 @@ msgid ""
 "Returns <varname>TRUE</varname> if the geometry type of the argument a "
 "geometry collection type. Collection types are the following:"
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо тип геометрії аргументу є типом "
+"колекції геометрії. Типи колекцій є такими:"
 
 #. Tag: para
 #, no-c-format
 msgid "GEOMETRYCOLLECTION"
-msgstr ""
+msgstr "GEOMETRYCOLLECTION"
 
 #. Tag: para
 #, no-c-format
 msgid "MULTI{POINT,POLYGON,LINESTRING,CURVE,SURFACE}"
-msgstr ""
+msgstr "MULTI{POINT,POLYGON,LINESTRING,CURVE,SURFACE}"
 
 #. Tag: para
 #, no-c-format
 msgid "COMPOUNDCURVE"
-msgstr ""
+msgstr "COMPOUNDCURVE"
 
 #. Tag: para
 #, no-c-format
@@ -12933,11 +13181,13 @@ msgid ""
 "return <varname>TRUE</varname> on collections that are empty or that contain "
 "a single element."
 msgstr ""
+"Ця функція аналізує тип геометрії. Це означає, що вона поверне "
+"<varname>TRUE</varname> для колекцій, які порожні або містять один елемент."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if a geometry is empty."
-msgstr ""
+msgstr "Перевіряє, чи геометрія порожня."
 
 #. Tag: para
 #, no-c-format
@@ -12945,6 +13195,8 @@ msgid ""
 "Returns true if this Geometry is an empty geometry. If true, then this "
 "Geometry represents an empty geometry collection, polygon, point etc."
 msgstr ""
+"Повертає true, якщо ця геометрія є порожньою. Якщо true, то ця геометрія "
+"представляє порожню колекцію геометрії, полігон, точку тощо."
 
 #. Tag: para
 #, no-c-format
@@ -12952,11 +13204,13 @@ msgid ""
 "SQL-MM defines the result of ST_IsEmpty(NULL) to be 0, while PostGIS returns "
 "NULL."
 msgstr ""
+"SQL-MM визначає результат ST_IsEmpty(NULL) як 0, тоді як PostGIS повертає "
+"NULL."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.7"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.7"
 
 #. Tag: para
 #, no-c-format
@@ -12965,6 +13219,9 @@ msgid ""
 "ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed. This is now "
 "illegal in PostGIS 2.0.0 to better conform with SQL/MM standards"
 msgstr ""
+"Змінено: 2.0.0 У попередніх версіях PostGIS "
+"ST_GeomFromText(“GEOMETRYCOLLECTION(EMPTY)”) було дозволено. Тепер це є "
+"незаконним у PostGIS 2.0.0 для кращої відповідності стандартам SQL/MM"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -12972,6 +13229,8 @@ msgid ""
 "Tests if Polygons have exterior rings oriented counter-clockwise and "
 "interior rings oriented clockwise."
 msgstr ""
+"Перевіряє, чи мають полігони зовнішні кільця, орієнтовані проти годинникової "
+"стрілки, і внутрішні кільця, орієнтовані за годинниковою стрілкою."
 
 #. Tag: para
 #, no-c-format
@@ -12980,11 +13239,14 @@ msgid ""
 "clockwise orientation for their exterior ring, and a clockwise direction for "
 "all interior rings."
 msgstr ""
+"Повертає true, якщо всі полігональні компоненти вхідної геометрії "
+"використовують орієнтацію проти годинникової стрілки для зовнішнього кільця "
+"і за годинниковою стрілкою для всіх внутрішніх кілець."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns true if the geometry has no polygonal components."
-msgstr ""
+msgstr "Повертає true, якщо геометрія не має полігональних компонентів."
 
 #. Tag: para
 #, no-c-format
@@ -12993,6 +13255,9 @@ msgid ""
 "still get a true return by passing a single closed linestring no matter its "
 "orientation."
 msgstr ""
+"Закриті лінії не вважаються полігональними компонентами, тому ви все одно "
+"отримаєте правильний результат, передавши одну закриту лінію незалежно від "
+"її орієнтації."
 
 #. Tag: para
 #, no-c-format
@@ -13002,17 +13267,22 @@ msgid ""
 "an exterior ring) then both ST_IsPolygonCW and ST_IsPolygonCCW will return "
 "false."
 msgstr ""
+"Якщо полігональна геометрія не використовує зворотну орієнтацію для "
+"внутрішніх кілець (тобто, якщо одне або більше внутрішніх кілець орієнтовані "
+"в тому ж напрямку, що і зовнішнє кільце), то обидва ST_IsPolygonCW і "
+"ST_IsPolygonCCW повернуть false."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.4.0"
-msgstr ""
+msgstr "Доступність: 2.4.0"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 msgstr ""
+", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -13020,6 +13290,8 @@ msgid ""
 "Tests if Polygons have exterior rings oriented clockwise and interior rings "
 "oriented counter-clockwise."
 msgstr ""
+"Перевіряє, чи полігони мають зовнішні кільця, орієнтовані за годинниковою "
+"стрілкою, а внутрішні кільця — проти годинникової стрілки."
 
 #. Tag: para
 #, no-c-format
@@ -13028,11 +13300,14 @@ msgid ""
 "clockwise orientation for their exterior ring, and a counter-clockwise "
 "direction for all interior rings."
 msgstr ""
+"Повертає true, якщо всі полігональні компоненти вхідної геометрії "
+"використовують орієнтацію за годинниковою стрілкою для зовнішнього кільця і "
+"проти годинникової стрілки для всіх внутрішніх кілець."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if a LineString is closed and simple."
-msgstr ""
+msgstr "Перевіряє, чи лінія LineString є замкнутою та простою."
 
 #. Tag: para
 #, no-c-format
@@ -13042,11 +13317,15 @@ msgid ""
 "ST_Endpoint(g)</code>) and <xref linkend=\"ST_IsSimple\"/> (does not self "
 "intersect)."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо цей <varname>LINESTRING</varname> є "
+"одночасно <xref linkend=\"ST_IsClosed\"/>(<code>ST_StartPoint(g) ~= "
+"ST_Endpoint(g)</code>) і <xref linkend=\"ST_IsSimple\"/>(не перетинається "
+"сам із собою)."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.6"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.6"
 
 #. Tag: para
 #, no-c-format
@@ -13054,6 +13333,8 @@ msgid ""
 "SQL-MM defines the result of <code>ST_IsRing(NULL)</code> to be 0, while "
 "PostGIS returns <varname>NULL</varname>."
 msgstr ""
+"SQL-MM визначає результат <code>ST_IsRing(NULL)</code> як 0, тоді як PostGIS "
+"повертає <varname>NULL</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -13061,12 +13342,14 @@ msgid ""
 ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_StartPoint\"/>, <xref "
 "linkend=\"ST_EndPoint\"/>"
 msgstr ""
+", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_StartPoint\"/>, <xref "
+"linkend=\"ST_EndPoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Tests if a geometry has no points of self-intersection or self-tangency."
-msgstr ""
+msgstr "Перевіряє, чи геометрія не має точок самоперетину або самодотику."
 
 #. Tag: para
 #, no-c-format
@@ -13076,6 +13359,11 @@ msgid ""
 "definition of geometry simplicity and validity, refer to <link "
 "linkend=\"OGC_Validity\">\"Ensuring OpenGIS compliance of geometries\"</link>"
 msgstr ""
+"Повертає значення true, якщо ця геометрія не має аномальних геометричних "
+"точок, таких як самоперетин або самодотичність. Для отримання додаткової "
+"інформації про визначення простоти та валідності геометрії OGC див. <link "
+"linkend=\"OGC_Validity\">«Забезпечення відповідності геометрій стандарту "
+"OpenGIS»</link>"
 
 #. Tag: para
 #, no-c-format
@@ -13083,16 +13371,18 @@ msgid ""
 "SQL-MM defines the result of ST_IsSimple(NULL) to be 0, while PostGIS "
 "returns NULL."
 msgstr ""
+"SQL-MM визначає результат ST_IsSimple(NULL) як 0, тоді як PostGIS повертає "
+"NULL."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.8"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.8"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the M coordinate of a Point."
-msgstr ""
+msgstr "Повертає координату M точки."
 
 #. Tag: para
 #, no-c-format
@@ -13100,6 +13390,8 @@ msgid ""
 "Return the M coordinate of a Point, or NULL if not available. Input must be "
 "a Point."
 msgstr ""
+"Повертає координату M точки або NULL, якщо вона недоступна. Вхідні дані "
+"повинні бути точкою."
 
 #. Tag: para
 #, no-c-format
@@ -13107,11 +13399,13 @@ msgid ""
 "This is not (yet) part of the OGC spec, but is listed here to complete the "
 "point coordinate extractor function list."
 msgstr ""
+"Це (поки що) не є частиною специфікації OGC, але наведено тут для повноти "
+"переліку функцій вилучення координат точок."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant;"
-msgstr ""
+msgstr "&sqlmm_compliant;"
 
 #. Tag: para
 #, no-c-format
@@ -13119,16 +13413,18 @@ msgid ""
 ", <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/"
 ">"
 msgstr ""
+", <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\""
+"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the amount of memory space a geometry takes."
-msgstr ""
+msgstr "Повертає обсяг пам'яті, який займає геометрія."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns the amount of memory space (in bytes) the geometry takes."
-msgstr ""
+msgstr "Повертає обсяг пам'яті (у байтах), який займає геометрія."
 
 #. Tag: para
 #, no-c-format
@@ -13138,6 +13434,10 @@ msgid ""
 "DBOBJECT\">database object functions</link> pg_column_size, pg_size_pretty, "
 "pg_relation_size, pg_total_relation_size."
 msgstr ""
+"Це доповнює вбудовані в PostgreSQL <link xlink:href=«https://www.postgresql."
+"org/docs/current/functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT»>функції "
+"об'єктів бази даних</link> pg_column_size, pg_size_pretty, pg_relation_size, "
+"pg_total_relation_size."
 
 #. Tag: para
 #, no-c-format
@@ -13146,13 +13446,17 @@ msgid ""
 "lower than ST_MemSize. This is because pg_relation_size does not add toasted "
 "table contribution and large geometries are stored in TOAST tables."
 msgstr ""
+"pg_relation_size, що повертає розмір таблиці в байтах, може повернути "
+"розмір, менший за ST_MemSize. Це відбувається тому, що pg_relation_size не "
+"додає розмір тостованих таблиць, а великі геометрії зберігаються в таблицях "
+"TOAST."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "pg_total_relation_size - includes, the table, the toasted tables, and the "
 "indexes."
-msgstr ""
+msgstr "pg_total_relation_size - включає таблицю, тостовані таблиці та індекси."
 
 #. Tag: para
 #, no-c-format
@@ -13160,16 +13464,19 @@ msgid ""
 "pg_column_size returns how much space a geometry would take in a column "
 "considering compression, so may be lower than ST_MemSize"
 msgstr ""
+"pg_column_size повертає, скільки місця займає геометрія в стовпці з "
+"урахуванням стиснення, тому може бути менше, ніж ST_MemSize."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.2.0 name changed to ST_MemSize to follow naming convention."
 msgstr ""
+"Змінено: 2.2.0 назва змінено на ST_MemSize відповідно до правил іменування."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the coordinate dimension of a geometry."
-msgstr ""
+msgstr "Повертає розмір координат геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -13178,26 +13485,28 @@ msgid ""
 "y) , 3 - (x,y,z) or 2D with measure - x,y,m, and 4 - 3D with measure space x,"
 "y,z,m"
 msgstr ""
+"Повертає розмірність координат геометрії. PostGIS підтримує 2 - (x,y) , 3 - "
+"(x,y,z) або 2D з мірою - x,y,m, і 4 - 3D з мірою простору x,y,z,m"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the number of points (vertices) in a geometry."
-msgstr ""
+msgstr "Повертає кількість точок (вершин) у геометрії."
 
 #. Tag: para
 #, no-c-format
 msgid "Return the number of points in a geometry. Works for all geometries."
-msgstr ""
+msgstr "Повертає кількість точок у геометрії. Працює для всіх геометрій."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the number of rings in a polygonal geometry."
-msgstr ""
+msgstr "Повертає кількість кілець у полігональній геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -13205,11 +13514,13 @@ msgid ""
 "If the geometry is a polygon or multi-polygon returns the number of rings. "
 "Unlike NumInteriorRings, it counts the outer rings as well."
 msgstr ""
+"Якщо геометрія є полігоном або мультиполігоном, повертає кількість кілець. "
+"На відміну від NumInteriorRings, враховує також зовнішні кільця."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the number of elements in a geometry collection."
-msgstr ""
+msgstr "Повертає кількість елементів у колекції геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -13218,6 +13529,9 @@ msgid ""
 "or MULTI*). For non-empty atomic geometries returns 1. For empty geometries "
 "returns 0."
 msgstr ""
+"Повертає кількість елементів у колекції геометрій (GEOMETRYCOLLECTION або "
+"MULTI*). Для не порожніх атомарних геометрій повертає 1. Для порожніх "
+"геометрій повертає 0."
 
 #. Tag: para
 #, no-c-format
@@ -13226,21 +13540,24 @@ msgid ""
 "not a collection/MULTI type. 2.0.0+ now returns 1 for single geometries e.g "
 "POLYGON, LINESTRING, POINT."
 msgstr ""
+"Змінено: 2.0.0 У попередніх версіях це повертало NULL, якщо геометрія не "
+"була типом колекції/MULTI. 2.0.0+ тепер повертає 1 для одиночних геометрій, "
+"наприклад POLYGON, LINESTRING, POINT."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.1.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 9.1.4"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Multi\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Multi\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the number of interior rings (holes) of a Polygon."
-msgstr ""
+msgstr "Повертає кількість внутрішніх кілець (отворів) полігону."
 
 #. Tag: para
 #, no-c-format
@@ -13248,11 +13565,13 @@ msgid ""
 "Return the number of interior rings of a polygon geometry. Return NULL if "
 "the geometry is not a polygon."
 msgstr ""
+"Повертає кількість внутрішніх кілець геометрії полігону. Повертає NULL, якщо "
+"геометрія не є полігоном."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.5"
 
 #. Tag: para
 #, no-c-format
@@ -13260,11 +13579,13 @@ msgid ""
 "Changed: 2.0.0 - in prior versions it would allow passing a MULTIPOLYGON, "
 "returning the number of interior rings of first POLYGON."
 msgstr ""
+"Змінено: 2.0.0 - у попередніх версіях дозволялося передавати MULTIPOLYGON, "
+"повертаючи кількість внутрішніх кілець першого POLYGON."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_InteriorRingN\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_InteriorRingN\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -13272,6 +13593,8 @@ msgid ""
 "Returns the number of interior rings (holes) of a Polygon. Aias for "
 "ST_NumInteriorRings"
 msgstr ""
+"Повертає кількість внутрішніх кілець (отворів) полігону. Aias для "
+"ST_NumInteriorRings"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -13279,6 +13602,8 @@ msgid ""
 "Return the number of faces on a Polyhedral Surface. Will return null for non-"
 "polyhedral geometries."
 msgstr ""
+"Повертає кількість граней на багатогранній поверхні. Для небагатогранних "
+"геометрій повертає нуль."
 
 #. Tag: para
 #, no-c-format
@@ -13287,16 +13612,20 @@ msgid ""
 "polyhedral geometries. This is an alias for ST_NumGeometries to support MM "
 "naming. Faster to use ST_NumGeometries if you don't care about MM convention."
 msgstr ""
+"Повертає кількість граней на багатогранній поверхні. Для геометрій, що не є "
+"багатогранними, повертає нуль. Це псевдонім для ST_NumGeometries для "
+"підтримки іменування MM. Якщо вам не важлива конвенція MM, швидше "
+"використовувати ST_NumGeometries."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the number of points in a LineString or CircularString."
-msgstr ""
+msgstr "Повертає кількість точок у LineString або CircularString."
 
 #. Tag: para
 #, no-c-format
@@ -13307,16 +13636,21 @@ msgid ""
 "not just linestrings. Consider using ST_NPoints instead which is multi-"
 "purpose and works with many geometry types."
 msgstr ""
+"Повертає кількість точок у значенні ST_LineString або ST_CircularString. До "
+"версії 1.4 працює тільки з лінійними рядками, як зазначено в специфікації. "
+"Починаючи з версії 1.4, це псевдонім для ST_NPoints, який повертає кількість "
+"вершин не тільки для лінійних рядків. Розгляньте можливість використання "
+"ST_NPoints, який є багатоцільовим і працює з багатьма типами геометрії."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.4"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the Nth geometry (face) of a PolyhedralSurface."
-msgstr ""
+msgstr "Повертає N-ту геометрію (грань) багатогранної поверхні."
 
 #. Tag: para
 #, no-c-format
@@ -13326,11 +13660,15 @@ msgid ""
 "returns the same answer as ST_GeometryN for PolyhedralSurfaces. Using "
 "ST_GeometryN is faster."
 msgstr ""
+"Повертає N-ту геометрію (грань), починаючи з 1, якщо геометрія є "
+"POLYHEDRALSURFACE або POLYHEDRALSURFACEM. В іншому випадку повертає NULL. "
+"Повертає той самий результат, що й ST_GeometryN для PolyhedralSurfaces. "
+"Використання ST_GeometryN є швидшим."
 
 #. Tag: para
 #, no-c-format
 msgid "Index is 1-based."
-msgstr ""
+msgstr "Індекс починається з 1."
 
 #. Tag: para
 #, no-c-format
@@ -13338,6 +13676,8 @@ msgid ""
 "If you want to extract all elements of a geometry <xref linkend=\"ST_Dump\"/"
 "> is more efficient."
 msgstr ""
+"Якщо ви хочете витягти всі елементи геометрії, <xref linkend=\"ST_Dump\"/>є "
+"більш ефективним."
 
 #. Tag: para
 #, no-c-format
@@ -13345,6 +13685,8 @@ msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
+"linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -13352,6 +13694,8 @@ msgid ""
 "Returns the Nth point in the first LineString or circular LineString in a "
 "geometry."
 msgstr ""
+"Повертає N-ту точку в першому LineString або круговому LineString в "
+"геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -13361,6 +13705,9 @@ msgid ""
 "LineString, so that -1 is the last point. Returns NULL if there is no "
 "linestring in the geometry."
 msgstr ""
+"Повертає N-ту точку в одній лінійній або круговій лінійній геометрії. "
+"Негативні значення відраховуються назад від кінця LineString, так що -1 є "
+"останньою точкою. Повертає NULL, якщо в геометрії немає лінійної геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -13369,6 +13716,9 @@ msgid ""
 "(negative index) is not in OGC Previous versions implemented this as 0-based "
 "instead."
 msgstr ""
+"Індекс починається з 1, як і в специфікаціях OGC, починаючи з версії 0.8.0. "
+"Зворотне індексування (негативний індекс) не передбачено в OGC. У попередніх "
+"версіях це реалізовано як індекс, що починається з 0."
 
 #. Tag: para
 #, no-c-format
@@ -13376,11 +13726,13 @@ msgid ""
 "If you want to get the Nth point of each LineString in a MultiLineString, "
 "use in conjunction with ST_Dump"
 msgstr ""
+"Якщо ви хочете отримати N-ту точку кожного LineString у MultiLineString, "
+"використовуйте разом із ST_Dump"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5"
 
 #. Tag: para
 #, no-c-format
@@ -13390,16 +13742,20 @@ msgid ""
 "happily with this function and return the start point. In 2.0.0 it just "
 "returns NULL like any other multilinestring."
 msgstr ""
+"Змінено: 2.0.0 більше не працює з одногеометричними мультилінійними рядками. "
+"У старіших версіях PostGIS — однолінійний мультилінійний рядок працював би з "
+"цією функцією без проблем і повертав би початкову точку. У 2.0.0 він просто "
+"повертає NULL, як і будь-який інший мультилінійний рядок."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.3.0 : negative indexing available (-1 is last point)"
-msgstr ""
+msgstr "Змінено: 2.3.0: доступне негативне індексування (-1 — останній пункт)"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a MultiPoint containing the coordinates of a geometry."
-msgstr ""
+msgstr "Повертає об'єкт MultiPoint, що містить координати геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -13409,6 +13765,10 @@ msgid ""
 "(If desired, duplicate points can be removed by calling <xref "
 "linkend=\"ST_RemoveRepeatedPoints\"/> on the result)."
 msgstr ""
+"Повертає MultiPoint, що містить усі координати геометрії. Дублікати точок "
+"зберігаються, включаючи початкову та кінцеву точки кільцевих геометрій. (За "
+"бажанням дублікати точок можна видалити, викликавши <xref linkend="
+"\"ST_RemoveRepeatedPoints\"/> на результаті)."
 
 #. Tag: para
 #, no-c-format
@@ -13416,21 +13776,23 @@ msgid ""
 "To obtain information about the position of each coordinate in the parent "
 "geometry use <xref linkend=\"ST_DumpPoints\"/>."
 msgstr ""
+"Щоб отримати інформацію про положення кожної координати в батьківській "
+"геометрії, використовуйте <xref linkend=\"ST_DumpPoints\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "M and Z coordinates are preserved if present."
-msgstr ""
+msgstr "Координати M і Z зберігаються, якщо вони є."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_DumpPoints\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_DumpPoints\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the first point of a LineString."
-msgstr ""
+msgstr "Повертає першу точку LineString."
 
 #. Tag: para
 #, no-c-format
@@ -13440,11 +13802,15 @@ msgid ""
 "varname>. Returns <varname>NULL</varname> if the input is not a "
 "<varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>."
 msgstr ""
+"Повертає першу точку геометрії <varname>LINESTRING</varname> або "
+"<varname>CIRCULARLINESTRING</varname> як <varname>POINT</varname>. Повертає "
+"<varname>NULL</varname>, якщо вхідні дані не є <varname>LINESTRING</varname> "
+"або <varname>CIRCULARLINESTRING</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.3"
 
 #. Tag: para
 #, no-c-format
@@ -13452,6 +13818,8 @@ msgid ""
 "Enhanced: 3.2.0 returns a point for all geometries. Prior behavior returns "
 "NULLs if input was not a LineString."
 msgstr ""
+"Покращено: 3.2.0 повертає точку для всіх геометрій. Попередня поведінка "
+"повертала NULL, якщо вхідні дані не були LineString."
 
 #. Tag: para
 #, no-c-format
@@ -13463,41 +13831,47 @@ msgid ""
 "feature, but people who assumed they had their data stored as LINESTRING may "
 "experience these returning NULL in 2.0.0."
 msgstr ""
+"Змінено: 2.0.0 більше не працює з одномірними геометричними об'єктами "
+"MultiLineStrings. У старих версіях PostGIS одномірний MultiLineString "
+"працював з цією функцією без проблем і повертав початкову точку. У 2.0.0 він "
+"просто повертає NULL, як і будь-який інший MultiLineString. Стара поведінка "
+"була недокументованою функцією, але користувачі, які вважали, що їхні дані "
+"зберігаються як LINESTRING, можуть зіткнутися з поверненням NULL у 2.0.0."
 
 #. Tag: para
 #, no-c-format
 msgid "Start point of a LineString"
-msgstr ""
+msgstr "Початкова точка лінії"
 
 #. Tag: para
 #, no-c-format
 msgid "Start point of a non-LineString is NULL"
-msgstr ""
+msgstr "Початкова точка нелінійного об'єкта LineString має значення NULL"
 
 #. Tag: para
 #, no-c-format
 msgid "Start point of a 3D LineString"
-msgstr ""
+msgstr "Початкова точка 3D-лінії"
 
 #. Tag: para
 #, no-c-format
 msgid "Start point of a CircularString"
-msgstr ""
+msgstr "Початкова точка CircularString"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_PointN\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_PointN\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a text summary of the contents of a geometry."
-msgstr ""
+msgstr "Повертає текстовий підсумок вмісту геометрії."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns a text summary of the contents of the geometry."
-msgstr ""
+msgstr "Повертає текстовий підсумок вмісту геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -13505,52 +13879,56 @@ msgid ""
 "Flags shown square brackets after the geometry type have the following "
 "meaning:"
 msgstr ""
+"Прапорці, що відображаються в квадратних дужках після типу геометрії, мають "
+"таке значення:"
 
 #. Tag: para
 #, no-c-format
 msgid "M: has M coordinate"
-msgstr ""
+msgstr "M: має координату M"
 
 #. Tag: para
 #, no-c-format
 msgid "Z: has Z coordinate"
-msgstr ""
+msgstr "Z: має координату Z"
 
 #. Tag: para
 #, no-c-format
 msgid "B: has a cached bounding box"
-msgstr ""
+msgstr "B: має кешовану обмежувальну рамку"
 
 #. Tag: para
 #, no-c-format
 msgid "G: is geodetic (geography)"
-msgstr ""
+msgstr "G: геодезичний (географія)"
 
 #. Tag: para
 #, no-c-format
 msgid "S: has spatial reference system"
-msgstr ""
+msgstr "S: має просторову систему координат"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.2.2"
-msgstr ""
+msgstr "Доступність: 1.2.2"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0.0 added support for geography"
-msgstr ""
+msgstr "Покращено: у версії 2.0.0 додано підтримку географії"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 S flag to denote if has a known spatial reference system"
 msgstr ""
+"Покращено: 2.1.0 Прапор S для позначення наявності відомої системи "
+"просторових координат"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.2.0 Added support for TIN and Curves"
-msgstr ""
+msgstr "Покращено: 2.2.0 Додано підтримку TIN і кривих"
 
 #. Tag: para
 #, no-c-format
@@ -13559,6 +13937,9 @@ msgid ""
 "<xref linkend=\"ST_Force_3DZ\"/>, <xref linkend=\"ST_Force2D\"/>, <xref "
 "linkend=\"geography\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_AddBBox\"/>, <xref linkend=\"ST_Force_3DM\"/>, "
+"<xref linkend=\"ST_Force_3DZ\"/>, <xref linkend=\"ST_Force2D\"/>, <xref "
+"linkend=\"geography\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -13566,11 +13947,13 @@ msgid ""
 ", <xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_IsValidReason\"/>, "
 "<xref linkend=\"ST_IsValidDetail\"/>"
 msgstr ""
+", <xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_IsValidReason\"/>, "
+"<xref linkend=\"ST_IsValidDetail\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the X coordinate of a Point."
-msgstr ""
+msgstr "Повертає координату X точки."
 
 #. Tag: para
 #, no-c-format
@@ -13578,6 +13961,8 @@ msgid ""
 "Return the X coordinate of the point, or NULL if not available. Input must "
 "be a point."
 msgstr ""
+"Повертає координату X точки або NULL, якщо вона недоступна. Вхідні дані "
+"повинні бути точкою."
 
 #. Tag: para
 #, no-c-format
@@ -13585,11 +13970,14 @@ msgid ""
 "To get the minimum and maximum X value of geometry coordinates use the "
 "functions <xref linkend=\"ST_XMin\"/> and <xref linkend=\"ST_XMax\"/>."
 msgstr ""
+"Щоб отримати мінімальне та максимальне значення X координат геометрії, "
+"використовуйте функції <xref linkend=\"ST_XMin\"/> та <xref linkend=\"ST_XMax"
+"\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.3"
 
 #. Tag: para
 #, no-c-format
@@ -13598,11 +13986,14 @@ msgid ""
 "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_Y\"/"
 ">, <xref linkend=\"ST_Z\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref "
+"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_Y\"/"
+">, <xref linkend=\"ST_Z\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the Y coordinate of a Point."
-msgstr ""
+msgstr "Повертає координату Y точки."
 
 #. Tag: para
 #, no-c-format
@@ -13610,6 +14001,8 @@ msgid ""
 "Return the Y coordinate of the point, or NULL if not available. Input must "
 "be a point."
 msgstr ""
+"Повертає координату Y точки або NULL, якщо вона недоступна. Вхідні дані "
+"повинні бути точкою."
 
 #. Tag: para
 #, no-c-format
@@ -13617,11 +14010,14 @@ msgid ""
 "To get the minimum and maximum Y value of geometry coordinates use the "
 "functions <xref linkend=\"ST_YMin\"/> and <xref linkend=\"ST_YMax\"/>."
 msgstr ""
+"Щоб отримати мінімальне та максимальне значення Y координат геометрії, "
+"використовуйте функції <xref linkend=\"ST_YMin\"/> та <xref linkend=\"ST_YMax"
+"\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.4"
 
 #. Tag: para
 #, no-c-format
@@ -13630,11 +14026,14 @@ msgid ""
 "linkend=\"ST_X\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/"
 ">, <xref linkend=\"ST_Z\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref "
+"linkend=\"ST_X\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/"
+">, <xref linkend=\"ST_Z\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the Z coordinate of a Point."
-msgstr ""
+msgstr "Повертає координату Z точки."
 
 #. Tag: para
 #, no-c-format
@@ -13642,6 +14041,8 @@ msgid ""
 "Return the Z coordinate of the point, or NULL if not available. Input must "
 "be a point."
 msgstr ""
+"Повертає координату Z точки або NULL, якщо вона недоступна. Вхідні дані "
+"повинні бути точкою."
 
 #. Tag: para
 #, no-c-format
@@ -13649,6 +14050,9 @@ msgid ""
 "To get the minimum and maximum Z value of geometry coordinates use the "
 "functions <xref linkend=\"ST_ZMin\"/> and <xref linkend=\"ST_ZMax\"/>."
 msgstr ""
+"Щоб отримати мінімальне та максимальне значення Z координат геометрії, "
+"використовуйте функції <xref linkend=\"ST_ZMin\"/> та <xref linkend=\"ST_ZMax"
+"\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -13656,6 +14060,8 @@ msgid ""
 ", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
 ">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 msgstr ""
+", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
+">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -13663,6 +14069,8 @@ msgid ""
 "<refpurpose>Returns a code indicating the ZM coordinate dimension of a "
 "geometry.</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає код, що вказує на розмірність координат ZM "
+"геометрії.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -13670,21 +14078,22 @@ msgid ""
 "<para>Returns a code indicating the ZM coordinate dimension of a geometry.</"
 "para>"
 msgstr ""
+"<para>Повертає код, що вказує на розмірність координат ZM геометрії.</para>"
 
 #. Tag: para
 #, no-c-format
 msgid "Values are: 0 = 2D, 1 = 3D-M, 2 = 3D-Z, 3 = 4D."
-msgstr ""
+msgstr "Значення: 0 = 2D, 1 = 3D-M, 2 = 3D-Z, 3 = 4D."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Checks if a geometry has a Z dimension."
-msgstr ""
+msgstr "Перевіряє, чи має геометрія розмір Z."
 
 #. Tag: para
 #, no-c-format
@@ -13693,6 +14102,8 @@ msgid ""
 "If the geometry has a Z dimension, it returns true; otherwise, it returns "
 "false."
 msgstr ""
+"Перевіряє, чи має вхідна геометрія розмір Z, і повертає логічне значення. "
+"Якщо геометрія має розмір Z, повертає true; інакше повертає false."
 
 #. Tag: para
 #, no-c-format
@@ -13700,6 +14111,8 @@ msgid ""
 "Geometry objects with a Z dimension typically represent three-dimensional "
 "(3D) geometries, while those without it are two-dimensional (2D) geometries."
 msgstr ""
+"Геометричні об'єкти з розміром Z зазвичай представляють тривимірні (3D) "
+"геометрії, тоді як об'єкти без цього розміру є двовимірними (2D) геометріями."
 
 #. Tag: para
 #, no-c-format
@@ -13707,11 +14120,12 @@ msgid ""
 "This function is useful for determining if a geometry has elevation or "
 "height information."
 msgstr ""
+"Ця функція корисна для визначення, чи має геометрія інформацію про висоту."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Checks if a geometry has an M (measure) dimension."
-msgstr ""
+msgstr "Перевіряє, чи має геометрія розмір M (вимір)."
 
 #. Tag: para
 #, no-c-format
@@ -13720,6 +14134,8 @@ msgid ""
 "boolean value. If the geometry has an M dimension, it returns true; "
 "otherwise, it returns false."
 msgstr ""
+"Перевіряє, чи має вхідна геометрія розмір M (вимір), і повертає булеве "
+"значення. Якщо геометрія має розмір M, повертає true; інакше повертає false."
 
 #. Tag: para
 #, no-c-format
@@ -13727,6 +14143,8 @@ msgid ""
 "Geometry objects with an M dimension typically represent measurements or "
 "additional data associated with spatial features."
 msgstr ""
+"Геометричні об'єкти з розмірністю M зазвичай представляють вимірювання або "
+"додаткові дані, пов'язані з просторовими характеристиками."
 
 #. Tag: para
 #, no-c-format
@@ -13734,11 +14152,13 @@ msgid ""
 "This function is useful for determining if a geometry includes measure "
 "information."
 msgstr ""
+"Ця функція корисна для визначення, чи містить геометрія інформацію про "
+"виміри."
 
 #. Tag: title
 #, no-c-format
 msgid "Bounding Box Functions"
-msgstr ""
+msgstr "Функції обмежувальної рамки"
 
 #. Tag: para
 #, no-c-format
@@ -13746,16 +14166,19 @@ msgid ""
 "These functions produce or operate on bounding boxes. They can also provide "
 "and accept geometry values, by using automatic or explicit casts."
 msgstr ""
+"Ці функції створюють або оперують обмежувальними рамками. Вони також можуть "
+"надавати та приймати значення геометрії, використовуючи автоматичні або явні "
+"приведення типів."
 
 #. Tag: para
 #, no-c-format
 msgid "See also <xref linkend=\"PostGIS_BoxFunctions\"/>."
-msgstr ""
+msgstr "Див. також <xref linkend=\"PostGIS_BoxFunctions\"/>."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a BOX2D representing the 2D extent of a geometry."
-msgstr ""
+msgstr "Повертає BOX2D, що представляє 2D розмір геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -13763,16 +14186,17 @@ msgid ""
 "Returns a <xref linkend=\"box2d_type\"/> representing the 2D extent of the "
 "geometry."
 msgstr ""
+"Повертає <xref linkend=\"box2d_type\"/>, що представляє 2D розмір геометрії."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromText\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeomFromText\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a BOX3D representing the 3D extent of a geometry."
-msgstr ""
+msgstr "Повертає BOX3D, що представляє 3D-розмір геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -13780,16 +14204,17 @@ msgid ""
 "Returns a <xref linkend=\"box3d_type\"/> representing the 3D extent of the "
 "geometry."
 msgstr ""
+"Повертає <xref linkend=\"box3d_type\"/>, що представляє 3D-розмір геометрії."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromEWKT\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the estimated extent of a spatial table."
-msgstr ""
+msgstr "Повертає приблизний діапазон просторової таблиці."
 
 #. Tag: para
 #, no-c-format
@@ -13800,6 +14225,11 @@ msgid ""
 "usually much faster than computing the exact extent of the table using <xref "
 "linkend=\"ST_Extent\"/> or <xref linkend=\"ST_3DExtent\"/>."
 msgstr ""
+"Повертає приблизний діапазон просторової таблиці у вигляді <xref linkend="
+"\"box2d_type\"/>. Якщо не вказано, використовується поточна схема. "
+"Приблизний діапазон береться зі статистики стовпця геометрії. Зазвичай це "
+"набагато швидше, ніж обчислення точного діапазону таблиці за допомогою <xref "
+"linkend=\"ST_Extent\"/> або <xref linkend=\"ST_3DExtent\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -13809,6 +14239,10 @@ msgid ""
 "set to TRUE, only statistics for the given table are used and child tables "
 "are ignored."
 msgstr ""
+"За замовчуванням також використовуються статистичні дані, зібрані з дочірніх "
+"таблиць (таблиць з INHERITS), якщо вони доступні. Якщо <varname>parent_only</"
+"varname> встановлено на TRUE, використовуються тільки статистичні дані для "
+"заданої таблиці, а дочірні таблиці ігноруються."
 
 #. Tag: para
 #, no-c-format
@@ -13818,6 +14252,10 @@ msgid ""
 "statistics are gathered by running <code>update_geometry_stats()</code> and "
 "the result extent is exact."
 msgstr ""
+"Для PostgreSQL &gt;= 8.0.0 статистика збирається за допомогою VACUUM "
+"ANALYZE, а результат буде приблизно 95% від фактичного. Для PostgreSQL &lt;"
+"8.0.0 статистика збирається за допомогою <code>update_geometry_stats()</"
+"code>, а результат є точним."
 
 #. Tag: para
 #, no-c-format
@@ -13826,6 +14264,8 @@ msgid ""
 "function returns NULL. Prior to version 1.5.4 an exception was thrown "
 "instead."
 msgstr ""
+"За відсутності статистики (порожня таблиця або не викликано ANALYZE) ця "
+"функція повертає NULL. До версії 1.5.4 замість цього виникало виключення."
 
 #. Tag: para
 #, no-c-format
@@ -13836,22 +14276,29 @@ msgid ""
 "afterwards remove the first and last double-quote character. For geometry "
 "column pass as is.\""
 msgstr ""
+"Для імен таблиць та/або просторів імен, що містять спеціальні символи та "
+"лапки, може знадобитися спеціальна обробка. Користувач зазначає: «Для схем і "
+"таблиць використовуйте правила екранування ідентифікаторів, щоб створити "
+"рядок у подвійних лапках, а потім видаліть перший і останній символи "
+"подвійних лапок. Для стовпця геометрії передайте як є»."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Estimated_Extent."
-msgstr ""
+msgstr "Змінено: 2.1.0. До версії 2.0.x це називалося ST_Estimated_Extent."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DExtent\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_3DExtent\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns a bounding box expanded from another bounding box or a geometry."
 msgstr ""
+"Повертає обмежувальну рамку, розширену з іншої обмежувальної рамки або "
+"геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -13862,6 +14309,12 @@ msgid ""
 "precision. Can be used for distance queries, or to add a bounding box filter "
 "to a query to take advantage of a spatial index."
 msgstr ""
+"Повертає обмежувальну рамку, розширену від обмежувальної рамки вхідних "
+"даних, або шляхом вказання єдиної відстані, на яку слід розширити рамку по "
+"обох осях, або шляхом вказання відстані розширення для кожної осі. "
+"Використовує подвійну точність. Може використовуватися для запитів відстані "
+"або для додавання фільтра обмежувальної рамки до запиту, щоб скористатися "
+"перевагами просторового індексу."
 
 #. Tag: para
 #, no-c-format
@@ -13870,12 +14323,16 @@ msgid ""
 "variants are provided that accept and return <xref linkend=\"box2d_type\"/> "
 "and <xref linkend=\"box3d_type\"/> data types."
 msgstr ""
+"На додаток до версії ST_Expand, яка приймає та повертає геометрію, надаються "
+"варіанти, які приймають та повертають типи даних <xref linkend=\"box2d_type\""
+"/> та <xref linkend=\"box3d_type\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Distances are in the units of the spatial reference system of the input."
 msgstr ""
+"Відстані вказані в одиницях просторової системи координат вхідних даних."
 
 #. Tag: para
 #, no-c-format
@@ -13884,6 +14341,9 @@ msgid ""
 "buffering expands a geometry in all directions, ST_Expand expands the "
 "bounding box along each axis."
 msgstr ""
+"ST_Expand схожий на <xref linkend=\"ST_Buffer\"/>, за винятком того, що під "
+"час буферизації геометрія розширюється в усіх напрямках, а ST_Expand "
+"розширює обмежувальну рамку вздовж кожної осі."
 
 #. Tag: para
 #, no-c-format
@@ -13894,6 +14354,11 @@ msgid ""
 "'POINT(10 20)') &lt; 10</code>. This has been replaced by the simpler and "
 "more efficient <xref linkend=\"ST_DWithin\"/> function."
 msgstr ""
+"До версії 1.3 ST_Expand використовувався разом з <xref linkend=\"ST_Distance"
+"\"/> для виконання індексованих запитів на відстань. Наприклад, <code>geom "
+"&amp;&amp;ST_Expand(“POINT(10 20)”, 10) AND ST_Distance(geom, “POINT(10 20)”)"
+" &lt;10</code>. Це було замінено простішою та ефективнішою функцією <xref "
+"linkend=\"ST_DWithin\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -13901,6 +14366,8 @@ msgid ""
 "Availability: 1.5.0 behavior changed to output double precision instead of "
 "float4 coordinates."
 msgstr ""
+"Доступність: 1.5.0 поведінка змінена на виведення координат подвійної "
+"точності замість float4."
 
 #. Tag: para
 #, no-c-format
@@ -13908,6 +14375,8 @@ msgid ""
 "Enhanced: 2.3.0 support was added to expand a box by different amounts in "
 "different dimensions."
 msgstr ""
+"Покращено: додано підтримку версії 2.3.0 для розширення поля на різну "
+"величину в різних вимірах."
 
 #. Tag: para
 #, no-c-format
@@ -13915,16 +14384,18 @@ msgid ""
 "Examples below use US National Atlas Equal Area (SRID=2163) which is a meter "
 "projection"
 msgstr ""
+"У наведених нижче прикладах використовується карта США National Atlas Equal "
+"Area (SRID=2163), яка є метровою проекцією"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Aggregate function that returns the bounding box of geometries."
-msgstr ""
+msgstr "Агрегатна функція, яка повертає обмежувальну рамку геометрій."
 
 #. Tag: para
 #, no-c-format
@@ -13932,6 +14403,8 @@ msgid ""
 "An aggregate function that returns a <xref linkend=\"box2d_type\"/> bounding "
 "box that bounds a set of geometries."
 msgstr ""
+"Агрегатна функція, яка повертає обмежувальну рамку <xref linkend=\"box2d_type"
+"\"/>, що обмежує набір геометрій."
 
 #. Tag: para
 #, no-c-format
@@ -13939,12 +14412,15 @@ msgid ""
 "The bounding box coordinates are in the spatial reference system of the "
 "input geometries."
 msgstr ""
+"Координати обмежувальної рамки знаходяться в просторовій системі координат "
+"вхідних геометрій."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "ST_Extent is similar in concept to Oracle Spatial/Locator's SDO_AGGR_MBR."
 msgstr ""
+"ST_Extent за своєю концепцією схожий на SDO_AGGR_MBR Oracle Spatial/Locator."
 
 #. Tag: para
 #, no-c-format
@@ -13952,6 +14428,9 @@ msgid ""
 "ST_Extent returns boxes with only X and Y ordinates even with 3D geometries. "
 "To return XYZ ordinates use <xref linkend=\"ST_3DExtent\"/>."
 msgstr ""
+"ST_Extent повертає прямокутники тільки з координатами X і Y, навіть для 3D-"
+"геометрій. Щоб повернути координати XYZ, використовуйте <xref linkend="
+"\"ST_3DExtent\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -13960,21 +14439,26 @@ msgid ""
 "linkend=\"ST_SetSRID\"/> to convert it into a geometry with SRID metadata. "
 "The SRID is the same as the input geometries."
 msgstr ""
+"Повернене значення <code>box3d</code> не містить SRID. Використовуйте <xref "
+"linkend=\"ST_SetSRID\"/>, щоб перетворити його на геометрію з метаданими "
+"SRID. SRID є таким самим, як і вхідні геометрії."
 
 #. Tag: para
 #, no-c-format
 msgid "Examples below use Massachusetts State Plane ft (SRID=2249)"
 msgstr ""
+"У наведених нижче прикладах використовується система координат штату "
+"Массачусетс (SRID=2249)"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DExtent\"/>, <xref linkend=\"ST_SetSRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_3DExtent\"/>, <xref linkend=\"ST_SetSRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Aggregate function that returns the 3D bounding box of geometries."
-msgstr ""
+msgstr "Агрегатна функція, яка повертає 3D обмежувальну рамку геометрій."
 
 #. Tag: para
 #, no-c-format
@@ -13982,21 +14466,23 @@ msgid ""
 "An aggregate function that returns a <xref linkend=\"box3d_type\"/> "
 "(includes Z ordinate) bounding box that bounds a set of geometries."
 msgstr ""
+"Агрегатна функція, яка повертає обмежувальну рамку <xref linkend=\"box3d_type"
+"\"/>(включає координату Z), що обмежує набір геометрій."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_Extent3D"
-msgstr ""
+msgstr "Змінено: 2.0.0 У попередніх версіях це називалося ST_Extent3D"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Force_3DZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Force_3DZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Creates a BOX2D defined by two 2D point geometries."
-msgstr ""
+msgstr "Створює BOX2D, визначений двома 2D точковими геометріями."
 
 #. Tag: para
 #, no-c-format
@@ -14004,32 +14490,36 @@ msgid ""
 "Creates a <xref linkend=\"box2d_type\"/> defined by two Point geometries. "
 "This is useful for doing range queries."
 msgstr ""
+"Створює <xref linkend=\"box2d_type\"/>, визначений двома геометріями Point. "
+"Це корисно для виконання запитів діапазону."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Creates a BOX3D defined by two 3D point geometries."
-msgstr ""
+msgstr "Створює BOX3D, визначений двома геометріями 3D-точок."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Creates a <xref linkend=\"box3d_type\"/> defined by two 3D Point geometries."
 msgstr ""
+"Створює <xref linkend=\"box3d_type\"/>, визначений двома геометріями 3D "
+"Point."
 
 #. Tag: para
 #, no-c-format
 msgid "This function supports 3D and will not drop the z-index."
-msgstr ""
+msgstr "Ця функція підтримує 3D і не знижує z-індекс."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_MakeBox3D"
-msgstr ""
+msgstr "Змінено: 2.0.0 У попередніх версіях це називалося ST_MakeBox3D."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14037,12 +14527,15 @@ msgid ""
 "<refpurpose>Returns the X maxima of a 2D or 3D bounding box or a geometry.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Повертає X максимум 2D або 3D обмежувальної рамки або "
+"геометрії.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<para>Returns the X maxima of a 2D or 3D bounding box or a geometry.</para>"
 msgstr ""
+"<para>Повертає X максимум 2D або 3D обмежувальної рамки або геометрії.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -14051,6 +14544,10 @@ msgid ""
 "and geometry values due to automatic casting. However, it will not accept a "
 "geometry or box2d text representation, since those do not auto-cast."
 msgstr ""
+"Хоча ця функція визначена тільки для box3d, вона також працює для значень "
+"box2d і geometry завдяки автоматичному перетворенню. Однак вона не приймає "
+"текстове представлення geometry або box2d, оскільки вони не перетворюються "
+"автоматично."
 
 #. Tag: para
 #, no-c-format
@@ -14058,6 +14555,8 @@ msgid ""
 ", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 msgstr ""
+", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14065,12 +14564,16 @@ msgid ""
 "<refpurpose>Returns the X minima of a 2D or 3D bounding box or a geometry.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Повертає мінімальне значення X для 2D або 3D обмежувальної рамки "
+"або геометрії.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<para>Returns the X minima of a 2D or 3D bounding box or a geometry.</para>"
 msgstr ""
+"<para>Повертає мінімальне значення X для 2D або 3D обмежувальної рамки або "
+"геометрії.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -14079,6 +14582,10 @@ msgid ""
 "and geometry values due to automatic casting. However it will not accept a "
 "geometry or box2d text representation, since those do not auto-cast."
 msgstr ""
+"Хоча ця функція визначена тільки для box3d, вона також працює для значень "
+"box2d і geometry завдяки автоматичному перетворенню. Однак вона не приймає "
+"текстове представлення geometry або box2d, оскільки вони не перетворюються "
+"автоматично."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14086,12 +14593,16 @@ msgid ""
 "<refpurpose>Returns the Y maxima of a 2D or 3D bounding box or a geometry.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Повертає максимальне значення Y 2D або 3D обмежувальної рамки "
+"або геометрії.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<para>Returns the Y maxima of a 2D or 3D bounding box or a geometry.</para>"
 msgstr ""
+"<para>Повертає максимальне значення Y 2D або 3D обмежувальної рамки або "
+"геометрії.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -14099,6 +14610,8 @@ msgid ""
 ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 msgstr ""
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14106,12 +14619,16 @@ msgid ""
 "<refpurpose>Returns the Y minima of a 2D or 3D bounding box or a geometry.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Повертає мінімальне значення Y для 2D або 3D обмежувальної рамки "
+"або геометрії.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<para>Returns the Y minima of a 2D or 3D bounding box or a geometry.</para>"
 msgstr ""
+"<para>Повертає мінімальне значення Y 2D або 3D обмежувальної рамки або "
+"геометрії.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -14120,6 +14637,8 @@ msgid ""
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
 "linkend=\"ST_ZMin\"/>"
 msgstr ""
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14127,12 +14646,16 @@ msgid ""
 "<refpurpose>Returns the Z maxima of a 2D or 3D bounding box or a geometry.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Повертає максимальне значення Z для 2D або 3D обмежувальної "
+"рамки або геометрії.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<para>Returns the Z maxima of a 2D or 3D bounding box or a geometry.</para>"
 msgstr ""
+"<para>Повертає максимальне значення Z для 2D або 3D обмежувальної рамки або "
+"геометрії..</para>"
 
 #. Tag: para
 #, no-c-format
@@ -14141,6 +14664,8 @@ msgid ""
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>"
 msgstr ""
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14148,12 +14673,16 @@ msgid ""
 "<refpurpose>Returns the Z minima of a 2D or 3D bounding box or a geometry.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Повертає мінімальне значення Z для 2D або 3D обмежувальної рамки "
+"або геометрії.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<para>Returns the Z minima of a 2D or 3D bounding box or a geometry.</para>"
 msgstr ""
+"<para>Повертає мінімальне значення Z 2D- або 3D-обмежувальної рамки або "
+"геометрії.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -14162,16 +14691,19 @@ msgid ""
 "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
 "linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
+"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\""
+"/>, <xref linkend=\"ST_ZMax\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Clustering Functions"
-msgstr ""
+msgstr "Функції кластеризації"
 
 #. Tag: para
 #, no-c-format
 msgid "These functions implement clustering algorithms for sets of geometries."
-msgstr ""
+msgstr "Ці функції реалізують алгоритми кластеризації для наборів геометрій."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14179,6 +14711,8 @@ msgid ""
 "Window function that returns a cluster id for each input geometry using the "
 "DBSCAN algorithm."
 msgstr ""
+"Функція вікна, яка повертає ідентифікатор кластера для кожної вхідної "
+"геометрії за допомогою алгоритму DBSCAN."
 
 #. Tag: para
 #, no-c-format
@@ -14192,11 +14726,19 @@ msgid ""
 "varname>) and density (<varname>minpoints</varname>) parameters to determine "
 "each cluster."
 msgstr ""
+"Віконна функція, яка повертає номер кластера для кожної вхідної геометрії, "
+"використовуючи 2D <link xlink:href=«https://en.wikipedia.org/wiki/DBSCAN»"
+">алгоритм просторового кластеризації додатків на основі щільності з шумом "
+"(DBSCAN)</link>. На відміну від <xref linkend=\"ST_ClusterKMeans\"/>, вона "
+"не вимагає вказання кількості кластерів, а замість цього використовує бажані "
+"параметри <link linkend=\"ST_Distance\">відстань</link> "
+"(<varname>eps</varname>) та щільність (<varname>minpoints</varname>) для "
+"визначення кожного кластера."
 
 #. Tag: para
 #, no-c-format
 msgid "An input geometry is added to a cluster if it is either:"
-msgstr ""
+msgstr "Геометрія входу додається до кластера, якщо вона:"
 
 #. Tag: para
 #, no-c-format
@@ -14205,6 +14747,9 @@ msgid ""
 "linkend=\"ST_Distance\">distance</link> of at least <varname>minpoints</"
 "varname> input geometries (including itself); or"
 msgstr ""
+"«Основна» геометрія, яка знаходиться в межах <varname>eps</varname> <link "
+"linkend=\"ST_Distance\">відстань</link> щонайменше <varname>minpoints</"
+"varname> вхідних геометрій (включно з самою собою); або"
 
 #. Tag: para
 #, no-c-format
@@ -14212,6 +14757,8 @@ msgid ""
 "A \"border\" geometry, that is within <varname>eps</varname> <link "
 "linkend=\"ST_Distance\">distance</link> of a core geometry."
 msgstr ""
+"Геометрія «border», що знаходиться в межах <varname>eps</varname> <link "
+"linkend=\"ST_Distance\">відстань</link> від геометрії ядра."
 
 #. Tag: para
 #, no-c-format
@@ -14226,6 +14773,16 @@ msgid ""
 "code> clause in the window definition. Ambiguous cluster assignments may "
 "differ from other DBSCAN implementations."
 msgstr ""
+"Зверніть увагу, що геометрії меж можуть знаходитися на відстані "
+"<varname>eps</varname> від геометрій ядра в більш ніж одному кластері. Будь-"
+"яке призначення буде правильним, тому геометрія межі буде довільно "
+"призначена одному з доступних кластерів. У цій ситуації можливе створення "
+"правильного кластера з меншою кількістю геометрій, ніж <varname>minpoints</"
+"varname>. Щоб забезпечити детермінований прив'язку геометрій меж (так, щоб "
+"повторні виклики ST_ClusterDBSCAN давали однакові результати), "
+"використовуйте оператор <code>ORDER BY</code> у визначенні вікна. "
+"Неоднозначні прив'язки кластерів можуть відрізнятися від інших реалізацій "
+"DBSCAN."
 
 #. Tag: para
 #, no-c-format
@@ -14233,6 +14790,8 @@ msgid ""
 "Geometries that do not meet the criteria to join any cluster are assigned a "
 "cluster number of NULL."
 msgstr ""
+"Геометріям, які не відповідають критеріям для приєднання до будь-якого "
+"кластера, присвоюється номер кластера NULL."
 
 #. Tag: para
 #, no-c-format
@@ -14240,6 +14799,8 @@ msgid ""
 "Clustering polygon within 50 meters of each other, and requiring at least 2 "
 "polygons per cluster."
 msgstr ""
+"Групування полігонів на відстані 50 метрів один від одного, при цьому в "
+"кожній групі має бути не менше 2 полігонів."
 
 #. Tag: para
 #, no-c-format
@@ -14247,6 +14808,8 @@ msgid ""
 "Clusters within 50 meters with at least 2 items per cluster. Singletons have "
 "NULL for cid"
 msgstr ""
+"Кластери в межах 50 метрів з щонайменше 2 елементами в кожному кластері. "
+"Одиночні елементи мають NULL для cid."
 
 #. Tag: para
 #, no-c-format
@@ -14254,6 +14817,8 @@ msgid ""
 "A example showing combining parcels with the same cluster number into "
 "geometry collections."
 msgstr ""
+"Приклад об'єднання ділянок з однаковим номером кластера в геометричні "
+"колекції."
 
 #. Tag: para
 #, no-c-format
@@ -14263,11 +14828,14 @@ msgid ""
 "linkend=\"ST_ClusterIntersectingWin\"/>, <xref linkend=\"ST_ClusterWithin\"/"
 ">, <xref linkend=\"ST_ClusterWithinWin\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterIntersectingWin\"/>, "
+"<xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_ClusterWithinWin\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Aggregate function that clusters input geometries into connected sets."
-msgstr ""
+msgstr "Агрегуюча функція, яка групує вхідні геометрії у зв'язані набори."
 
 #. Tag: para
 #, no-c-format
@@ -14277,6 +14845,10 @@ msgid ""
 "Each geometry in a cluster intersects at least one other geometry in the "
 "cluster, and does not intersect any geometry in other clusters."
 msgstr ""
+"Агрегатна функція, яка повертає масив GeometryCollections, розділяючи вхідні "
+"геометрії на з'єднані кластери, які не перетинаються. Кожна геометрія в "
+"кластері перетинається принаймні з однією іншою геометрією в кластері і не "
+"перетинається з жодною геометрією в інших кластерах."
 
 #. Tag: para
 #, no-c-format
@@ -14284,6 +14856,8 @@ msgid ""
 ", <xref linkend=\"ST_ClusterWithin\"/>, <xref "
 "linkend=\"ST_ClusterWithinWin\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_ClusterWithinWin\""
+"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14291,6 +14865,8 @@ msgid ""
 "Window function that returns a cluster id for each input geometry, "
 "clustering input geometries into connected sets."
 msgstr ""
+"Віконна функція, яка повертає ідентифікатор кластера для кожної вхідної "
+"геометрії, групуючи вхідні геометрії у пов'язані набори."
 
 #. Tag: para
 #, no-c-format
@@ -14300,6 +14876,10 @@ msgid ""
 "leaving the cluster. The return value is the cluster number that the "
 "geometry argument participates in, or null for null inputs."
 msgstr ""
+"Віконна функція, яка будує з'єднані кластери геометрій, що перетинаються. "
+"Можна пройти всі геометрії в кластері, не виходячи з нього. Повертається "
+"номер кластера, до якого належить аргумент геометрії, або null для нульових "
+"вхідних даних."
 
 #. Tag: refpurpose
 #, no-c-format
