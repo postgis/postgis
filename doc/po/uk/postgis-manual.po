@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-19 18:59+0000\n"
+"PO-Revision-Date: 2025-08-19 20:02+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -12995,7 +12995,7 @@ msgid ""
 msgstr ""
 "Повертає тип геометрії у вигляді рядка. Наприклад: “ST_LineString”, "
 "“ST_Polygon”,'ST_MultiPolygon' тощо. Ця функція відрізняється від "
-"GeometryType(geometry) тим, що повертає рядок і ST на початку, а також тим, "
+"GeometryType(geometry) тим, що повертає строку і ST на початку, а також тим, "
 "що не вказує, чи виміряно геометрію."
 
 #. Tag: para
@@ -13018,7 +13018,7 @@ msgstr "Тестує, чи містить геометрія кругову ду
 msgid ""
 "Returns true if a geometry or geometry collection contains a circular string"
 msgstr ""
-"Повертає true, якщо геометрія або колекція геометрій містить циклічний рядок"
+"Повертає true, якщо геометрія або колекція геометрій містить циклічну строку"
 
 #. Tag: para
 #, no-c-format
@@ -13637,10 +13637,10 @@ msgid ""
 "purpose and works with many geometry types."
 msgstr ""
 "Повертає кількість точок у значенні ST_LineString або ST_CircularString. До "
-"версії 1.4 працює тільки з лінійними рядками, як зазначено в специфікації. "
-"Починаючи з версії 1.4, це псевдонім для ST_NPoints, який повертає кількість "
-"вершин не тільки для лінійних рядків. Розгляньте можливість використання "
-"ST_NPoints, який є багатоцільовим і працює з багатьма типами геометрії."
+"версії 1.4 працює тільки з лініями, як зазначено в специфікації. Починаючи з "
+"версії 1.4, це псевдонім для ST_NPoints, який повертає кількість вершин не "
+"тільки для лінійних рядків. Розгляньте можливість використання ST_NPoints, "
+"який є багатоцільовим і працює з багатьма типами геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -13742,10 +13742,10 @@ msgid ""
 "happily with this function and return the start point. In 2.0.0 it just "
 "returns NULL like any other multilinestring."
 msgstr ""
-"Змінено: 2.0.0 більше не працює з одногеометричними мультилінійними рядками. "
-"У старіших версіях PostGIS — однолінійний мультилінійний рядок працював би з "
-"цією функцією без проблем і повертав би початкову точку. У 2.0.0 він просто "
-"повертає NULL, як і будь-який інший мультилінійний рядок."
+"Змінено: 2.0.0 більше не працює з одногеометричними мультилініями. У "
+"старіших версіях PostGIS — одинарну мультилінію працював би з цією функцією "
+"без проблем і повертав би початкову точку. У 2.0.0 він просто повертає NULL, "
+"як і будь-який інший мультилінії."
 
 #. Tag: para
 #, no-c-format
@@ -15316,7 +15316,7 @@ msgstr ""
 "Повторювані вузли на початку вхідних рядків LineStrings об'єднуються в одну "
 "точку. Повторювані точки у вхідних даних Point і MultiPoint не об'єднуються. "
 "<xref linkend=\"ST_RemoveRepeatedPoints\"/>можна використовувати для "
-"об'єднання повторюваних точок з вихідного рядка LineString."
+"об'єднання повторюваних точок з вихідної лінії."
 
 #. Tag: para
 #, no-c-format
@@ -15367,7 +15367,7 @@ msgstr "Приклади: Варіант масиву"
 #. Tag: para
 #, no-c-format
 msgid "Create a line from an array formed by a subquery with ordering."
-msgstr "Створити рядок з масиву, сформованого підзапитом із сортуванням."
+msgstr "Створити лінію з масиву, сформованого підзапитом із сортуванням."
 
 #. Tag: para
 #, no-c-format
@@ -15563,7 +15563,7 @@ msgstr ""
 msgid ""
 "<emphasis role=\"bold\">Variant 1:</emphasis> Accepts one shell LineString."
 msgstr ""
-"<emphasis role=\"bold\">Варіант 1:</emphasis> Приймає один рядок LineString."
+"<emphasis role=\"bold\">Варіант 1:</emphasis> Приймає оболонку LineString."
 
 #. Tag: para
 #, no-c-format
@@ -17370,7 +17370,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a line extended forwards and backwards by specified distances."
-msgstr "Повертає рядок, розширений вперед і назад на вказані відстані."
+msgstr "Повертає лінію, розширений вперед і назад на вказані відстані."
 
 #. Tag: para
 #, no-c-format
@@ -18011,8 +18011,8 @@ msgid ""
 "For linestring types, evaluation is done for each linestring which can lead "
 "to one of the following results:"
 msgstr ""
-"Для типів лінійних рядків оцінка виконується для кожного лінійного рядка, що "
-"може призвести до одного з таких результатів:"
+"Для типів лінійних рядків оцінка виконується для кожної лінії, що може "
+"призвести до одного з таких результатів:"
 
 #. Tag: para
 #, no-c-format
@@ -18490,13 +18490,13 @@ msgid "Returns a version of the given geometry with given ordinates swapped."
 msgstr "Повертає версію заданої геометрії із заміненими заданими координатами."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>ords</varname> parameter is a 2-characters string naming the "
 "ordinates to swap. Valid names are: x,y,z and m."
 msgstr ""
-"Параметр </varname> — це 2-символьний рядок, що позначає координати, які "
-"потрібно поміняти місцями. Допустимі значення: x, y, z та m."
+"Параметр <varname>ords</varname> — це 2-символьний рядок, що позначає "
+"координати, які потрібно поміняти місцями. Допустимі імена: x, y, z та m."
 
 #. Tag: title
 #, no-c-format
@@ -19419,7 +19419,7 @@ msgid ""
 msgstr ""
 "Якщо ви знаєте, що всі ваші геометрії є LINESTRINGS, ефективніше просто "
 "використовувати ST_GeomFromText. Це просто викликає ST_GeomFromText і додає "
-"додаткову перевірку, що він повертає лінійний рядок."
+"додаткову перевірку, що він повертає лінію."
 
 #. Tag: para
 #, no-c-format
@@ -19829,7 +19829,7 @@ msgstr ""
 "Якщо ви знаєте, що всі ваші геометрії є <varname>LINESTRING</varname>s, "
 "ефективніше просто використовувати <xref linkend=\"ST_GeomFromWKB\"/>. Ця "
 "функція просто викликає <xref linkend=\"ST_GeomFromWKB\"/> і додає додаткову "
-"перевірку, що вона повертає лінійний рядок."
+"перевірку, що вона повертає лінію."
 
 #. Tag: para
 #, no-c-format
@@ -20315,7 +20315,7 @@ msgstr "Створює LineString з закодованої полілінії."
 #. Tag: para
 #, no-c-format
 msgid "Creates a LineString from an Encoded Polyline string."
-msgstr "Створює об'єкт LineString із кодованого рядка полілінії."
+msgstr "Створює об'єкт LineString із кодованої полілінії."
 
 #. Tag: para
 #, no-c-format
@@ -20652,7 +20652,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the part of a line between two fractional locations."
-msgstr "Повертає частину рядка між двома дробовими позиціями."
+msgstr "Повертає частину лінії між двома дробовими позиціями."
 
 #. Tag: para
 #, no-c-format
@@ -20775,14 +20775,13 @@ msgid ""
 "be to the left, and a negative one to the right."
 msgstr ""
 "Якщо вказано <varname>offset</varname>, результат буде зміщений вліво або "
-"вправо від рядка введення на вказану відстань. Позитивне зміщення буде "
+"вправо від лінії введення на вказану відстань. Позитивне зміщення буде "
 "вліво, а негативне — вправо."
 
 #. Tag: para
 #, no-c-format
 msgid "Use this function only for linear geometries with an M component"
-msgstr ""
-"Використовуйте цю функцію тільки для лінійних геометрій з компонентом M."
+msgstr "Використовуйте цю функцію тільки для лінійних геометрій з компонентом M"
 
 #. Tag: para
 #, no-c-format
@@ -20790,11 +20789,13 @@ msgid ""
 "The semantic is specified by the <emphasis>ISO/IEC 13249-3 SQL/MM Spatial</"
 "emphasis> standard."
 msgstr ""
+"Семантика визначається стандартом <emphasis>ISO/IEC 13249-3 SQL/MM "
+"Spatial</emphasis>."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.1.0 by old name ST_Locate_Along_Measure."
-msgstr ""
+msgstr "Доступність: 1.1.0 під старою назвою ST_Locate_Along_Measure."
 
 #. Tag: para
 #, no-c-format
@@ -20802,11 +20803,12 @@ msgid ""
 "Changed: 2.0.0 in prior versions this used to be called "
 "ST_Locate_Along_Measure."
 msgstr ""
+"Змінено: 2.0.0 у попередніх версіях це називалося ST_Locate_Along_Measure."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.13"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.13"
 
 #. Tag: para
 #, no-c-format
@@ -20814,11 +20816,13 @@ msgid ""
 ", <xref linkend=\"ST_LocateBetweenElevations\"/>, <xref "
 "linkend=\"ST_InterpolatePoint\"/>"
 msgstr ""
+", <xref linkend=\"ST_LocateBetweenElevations\"/>, <xref linkend="
+"\"ST_InterpolatePoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the portions of a geometry that match a measure range."
-msgstr ""
+msgstr "Повертає частини геометрії, які відповідають діапазону вимірювання."
 
 #. Tag: para
 #, no-c-format
@@ -20826,6 +20830,8 @@ msgid ""
 "Return a geometry (collection) with the portions of the input measured "
 "geometry that match the specified measure range (inclusively)."
 msgstr ""
+"Повернути геометрію (колекцію) з частинами виміряної геометрії вхідних "
+"даних, які відповідають заданому діапазону вимірювання (включно)."
 
 #. Tag: para
 #, no-c-format
@@ -20834,16 +20840,19 @@ msgid ""
 "left or right of the input line by the specified distance. A positive offset "
 "will be to the left, and a negative one to the right."
 msgstr ""
+"Якщо вказано <varname>offset</varname>, результат буде зміщений вліво або "
+"вправо від вхідної лінії на вказану відстань. Позитивне зміщення буде вліво, "
+"а негативне — вправо."
 
 #. Tag: para
 #, no-c-format
 msgid "Clipping a non-convex POLYGON may produce invalid geometry."
-msgstr ""
+msgstr "Обрізка не опуклого полігону може призвести до некоректної геометрії."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.1.0 by old name ST_Locate_Between_Measures."
-msgstr ""
+msgstr "Доступність: 1.1.0 під старою назвою ST_Locate_Between_Measures."
 
 #. Tag: para
 #, no-c-format
@@ -20851,11 +20860,14 @@ msgid ""
 "Changed: 2.0.0 - in prior versions this used to be called "
 "ST_Locate_Between_Measures."
 msgstr ""
+"Змінено: 2.0.0 — у попередніх версіях ця функція називалася "
+"ST_Locate_Between_Measures.Змінено: 2.0.0 — у попередніх версіях ця функція "
+"називалася ST_Locate_Between_Measures."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE."
-msgstr ""
+msgstr "Покращено: 3.0.0 - додано підтримку POLYGON, TIN, TRIANGLE."
 
 #. Tag: para
 #, no-c-format
