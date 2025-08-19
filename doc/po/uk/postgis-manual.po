@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-19 00:48+0000\n"
-"Last-Translator: Weblate <noreply-mt-weblate@weblate.org>\n"
+"PO-Revision-Date: 2025-08-19 13:24+0000\n"
+"Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
 "Language: uk\n"
@@ -11506,7 +11506,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Workarounds"
-msgstr ""
+msgstr "Обхідні шляхи"
 
 #. Tag: para
 #, no-c-format
@@ -11514,6 +11514,8 @@ msgid ""
 "The PostgreSQL people are trying to solve this issue by making the query "
 "estimation TOAST-aware. For now, here are two workarounds:"
 msgstr ""
+"Розробники PostgreSQL намагаються вирішити цю проблему, зробивши оцінку "
+"запиту TOAST-сумісною. Наразі існують два обхідні шляхи:"
 
 #. Tag: para
 #, no-c-format
@@ -11525,6 +11527,14 @@ msgid ""
 "every connection, and it causes the query planner to make misestimations in "
 "other cases, so you should \"SET enable_seqscan TO on;\" after the query."
 msgstr ""
+"Перший спосіб вирішення проблеми полягає в тому, щоб змусити планувальник "
+"запитів використовувати індекс. Перед відправкою запиту надішліть на сервер "
+"команду «SET enable_seqscan TO off;». Це змусить планувальник запитів "
+"уникати послідовного сканування, коли це можливо. Таким чином, він буде "
+"використовувати індекс GIST, як зазвичай. Але цей прапор потрібно "
+"встановлювати для кожного з'єднання, і це призводить до неправильних оцінок "
+"планувальника запитів в інших випадках, тому після запиту слід виконати "
+"команду «SET enable_seqscan TO on;»."
 
 #. Tag: para
 #, no-c-format
@@ -11534,6 +11544,10 @@ msgid ""
 "\"caches\" the bbox, and matching against this. In our example, the commands "
 "are like:"
 msgstr ""
+"Другий спосіб вирішення проблеми полягає в тому, щоб зробити послідовне "
+"сканування таким же швидким, як вважає планувальник запитів. Це можна "
+"досягти, створивши додатковий стовпець, який «кешує» bbox, і зіставляючи "
+"його з цим стовпцем. У нашому прикладі команди виглядають так:"
 
 #. Tag: para
 #, no-c-format
@@ -11541,6 +11555,8 @@ msgid ""
 "Now change your query to use the &amp;&amp; operator against bbox instead of "
 "geom_column, like:"
 msgstr ""
+"Тепер змініть запит, щоб використовувати оператор &amp;&amp; для bbox "
+"замість geom_column, наприклад:"
 
 #. Tag: para
 #, no-c-format
@@ -11550,11 +11566,15 @@ msgid ""
 "also can modify your application to keep the bbox column current or run the "
 "UPDATE query above after every modification."
 msgstr ""
+"Звичайно, якщо ви змінюєте або додаєте рядки до таблиці mytable, ви повинні "
+"синхронізувати bbox. Найпростіший спосіб зробити це — використовувати "
+"тригери, але ви також можете змінити свою програму, щоб стовпець bbox завжди "
+"був актуальним, або виконувати запит UPDATE після кожної зміни."
 
 #. Tag: title
 #, no-c-format
 msgid "CLUSTERing on geometry indices"
-msgstr ""
+msgstr "Кластеризація за геометричними індексами"
 
 #. Tag: para
 #, no-c-format
@@ -11569,6 +11589,15 @@ msgid ""
 "data pages. (Feel invited to read the CLUSTER command documentation from the "
 "PostgreSQL manual at this point.)"
 msgstr ""
+"Для таблиць, які в основному є тільки для читання і де для більшості запитів "
+"використовується один індекс, PostgreSQL пропонує команду CLUSTER. Ця "
+"команда фізично перевпорядковує всі рядки даних у тому ж порядку, що й "
+"критерії індексу, що дає дві переваги в продуктивності: По-перше, для "
+"сканування діапазону індексу кількість пошуків у таблиці даних значно "
+"зменшується. По-друге, якщо робочий набір зосереджений на невеликих "
+"інтервалах індексів, ви отримуєте більш ефективне кешування, оскільки рядки "
+"даних розподіляються між меншою кількістю сторінок даних. (Запрошуємо вас "
+"ознайомитися з документацією команди CLUSTER у посібнику PostgreSQL.)"
 
 #. Tag: para
 #, no-c-format
@@ -11577,6 +11606,9 @@ msgid ""
 "indices because GIST indices simply ignores NULL values, you get an error "
 "message like:"
 msgstr ""
+"Однак на даний момент PostgreSQL не дозволяє кластеризацію на індексах "
+"PostGIS GIST, оскільки індекси GIST просто ігнорують значення NULL, і ви "
+"отримуєте таке повідомлення про помилку:"
 
 #. Tag: para
 #, no-c-format
@@ -11584,6 +11616,8 @@ msgid ""
 "As the HINT message tells you, one can work around this deficiency by adding "
 "a \"not null\" constraint to the table:"
 msgstr ""
+"Як вказує повідомлення HINT, цю недоліку можна обійти, додавши до таблиці "
+"обмеження «not null»:"
 
 #. Tag: para
 #, no-c-format
@@ -11593,11 +11627,15 @@ msgid ""
 "constraint, using a CHECK constraint like \"ALTER TABLE blubb ADD CHECK "
 "(geometry is not null);\" will not work."
 msgstr ""
+"Звичайно, це не спрацює, якщо вам насправді потрібні значення NULL у стовпці "
+"геометрії. Крім того, ви повинні використовувати вищезазначений метод для "
+"додавання обмеження, використання обмеження CHECK, такого як «ALTER TABLE "
+"blubb ADD CHECK (geometry is not null);» не спрацює."
 
 #. Tag: title
 #, no-c-format
 msgid "Avoiding dimension conversion"
-msgstr ""
+msgstr "Уникнення перетворення вимірів"
 
 #. Tag: para
 #, no-c-format
@@ -11609,6 +11647,12 @@ msgid ""
 "avoid this overhead, it may be feasible to pre-drop those additional "
 "dimensions once and forever:"
 msgstr ""
+"Іноді в таблиці трапляються дані 3D або 4D, але доступ до них завжди "
+"здійснюється за допомогою функцій ST_AsText() або ST_AsBinary(), сумісних з "
+"OpenGIS, які виводять тільки 2D-геометрії. Вони роблять це шляхом "
+"внутрішнього виклику функції ST_Force2D(), що створює значне навантаження "
+"для великих геометрій. Щоб уникнути цього навантаження, можна попередньо "
+"видалити ці додаткові виміри один раз і назавжди:"
 
 #. Tag: para
 #, no-c-format
@@ -11618,6 +11662,10 @@ msgid ""
 "to drop the constraint. Remember to update the entry in the geometry_columns "
 "table and recreate the constraint afterwards."
 msgstr ""
+"Зверніть увагу, що якщо ви додали стовпець геометрії за допомогою "
+"AddGeometryColumn(), буде обмеження на розмір геометрії. Щоб обійти це "
+"обмеження, вам потрібно буде видалити обмеження. Не забудьте оновити запис у "
+"таблиці geometry_columns і потім знову створити обмеження."
 
 #. Tag: para
 #, no-c-format
@@ -11630,6 +11678,13 @@ msgid ""
 "geometries, restricting the UPDATE by \"WHERE dimension(geom)&gt;2\" skips "
 "re-writing of geometries that already are in 2D."
 msgstr ""
+"У разі великих таблиць може бути доцільним розділити це оновлення на менші "
+"частини, обмеживши оновлення частиною таблиці за допомогою оператора WHERE "
+"та вашого первинного ключа або іншого можливого критерію, а також виконавши "
+"просту команду «VACUUM;» між оновленнями. Це значно зменшує потребу в "
+"тимчасовому дисковому просторі. Крім того, якщо ви маєте змішані геометрії "
+"розмірів, обмеження UPDATE за допомогою «WHERE dimension(geom)&gt;2» "
+"пропускає перезапис геометрій, які вже є у 2D."
 
 #. Tag: title
 #, no-c-format
