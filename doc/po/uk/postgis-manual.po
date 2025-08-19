@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-19 13:24+0000\n"
+"PO-Revision-Date: 2025-08-19 14:09+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -11689,12 +11689,12 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS &last_release_version; Manual"
-msgstr ""
+msgstr "PostGIS &last_release_version; Посібник користувача"
 
 #. Tag: orgname
 #, no-c-format
 msgid "The PostGIS Development Group"
-msgstr ""
+msgstr "Група розробників PostGIS"
 
 #. Tag: affiliation
 #, no-c-format
@@ -11704,6 +11704,10 @@ msgid ""
 "state> <country>Canada</country> <email>pramsey@cleverelephant.ca</email></"
 "address>"
 msgstr ""
+"<orgname><link xlink:href=«http://www.cleverelephant.ca»>clever "
+"elephant</link></orgname> <address><city>Вікторія</city> <state>Британська "
+"Колумбія</state> <country>Канада</country> <email>pramsey@cleverelephant."
+"ca</email></address>"
 
 #. Tag: para
 #, no-c-format
@@ -11714,11 +11718,16 @@ msgid ""
 "PostGIS includes support for GiST-based R-Tree spatial indexes, and "
 "functions for analysis and processing of GIS objects."
 msgstr ""
+"PostGIS — це розширення для об'єктно-реляційної системи баз даних <link "
+"xlink:href=«https://www.postgresql.org/»>PostgreSQL</link>, яке дозволяє "
+"зберігати об'єкти ГІС (географічних інформаційних систем) у базі даних. "
+"PostGIS підтримує просторові індекси R-Tree на основі GiST, а також функції "
+"для аналізу та обробки об'єктів ГІС."
 
 #. Tag: para
 #, no-c-format
 msgid "This is the manual for version &last_release_version;"
-msgstr ""
+msgstr "Це інструкція для версії &last_release_version;"
 
 #. Tag: para
 #, no-c-format
@@ -11729,21 +11738,26 @@ msgid ""
 "attribute credit to the PostGIS Project and wherever possible, a link back "
 "to <link xlink:href=\"https://postgis.net\">https://postgis.net</link>."
 msgstr ""
+"Ця робота ліцензована за ліцензією <link xlink:href=«http://creativecommons."
+"org/licenses/by-sa/3.0/»>Creative Commons Attribution-Share Alike 3.0 "
+"License</link>. Ви можете використовувати цей матеріал будь-яким чином, але "
+"просимо вас вказати посилання на проект PostGIS та, по можливості, на <link "
+"xlink:href=«https://postgis.net»>https://postgis.net</link>."
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Special Functions Index"
-msgstr ""
+msgstr "Спеціальні функції PostGIS Вказівник"
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Aggregate Functions"
-msgstr ""
+msgstr "Агрегатні функції PostGIS"
 
 #. Tag: section
 #, no-c-format
 msgid "&list_aggregates;"
-msgstr ""
+msgstr "&list_aggregates;"
 
 #. Tag: para
 #, no-c-format
