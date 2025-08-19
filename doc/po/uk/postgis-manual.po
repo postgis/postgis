@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-19 20:02+0000\n"
+"PO-Revision-Date: 2025-08-19 23:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -10819,7 +10819,7 @@ msgstr "Маркус Шабер"
 #. Tag: member
 #, no-c-format
 msgid "Markus Wanner"
-msgstr ""
+msgstr "Маркус Ваннер"
 
 #. Tag: member
 #, no-c-format
@@ -12890,7 +12890,7 @@ msgstr ", <xref linkend=\"Box3D\"/>, <xref linkend=\"ST_OrientedEnvelope\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a LineString representing the exterior ring of a Polygon."
-msgstr ""
+msgstr "Повертає LineString, що представляє зовнішнє кільце полігону"
 
 #. Tag: para
 #, no-c-format
@@ -20872,23 +20872,23 @@ msgstr "Покращено: 3.0.0 - додано підтримку POLYGON, TIN
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "A LineString with the section between measures 2 and 8, offset to the left"
-msgstr ""
+msgstr "LineString із відрізком між мірками 2 та 8, зміщений ліворуч"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the portions of a geometry that lie in an elevation (Z) range."
-msgstr ""
+msgstr "Повертає частини геометрії, що лежать у діапазоні висоти (Z)."
 
 #. Tag: para
 #, no-c-format
@@ -20896,21 +20896,23 @@ msgid ""
 "Returns a geometry (collection) with the portions of a geometry that lie in "
 "an elevation (Z) range."
 msgstr ""
+"Повертає геометрію (колекцію) з частинами геометрії, що лежать у діапазоні "
+"висоти (Z)."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.4.0"
-msgstr ""
+msgstr "Доступність: 1.4.0"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_LocateBetween\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the interpolated measure of a geometry closest to a point."
-msgstr ""
+msgstr "Повертає інтерпольоване значення геометрії, найближчої до точки."
 
 #. Tag: para
 #, no-c-format
@@ -20918,17 +20920,20 @@ msgid ""
 "Returns an interpolated measure value of a linear measured geometry at the "
 "location closest to the given point."
 msgstr ""
+"Повертає інтерпольоване значення вимірювання лінійної геометрії в місці, "
+"найближчому до заданої точки."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 msgstr ""
+", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Interpolates measures along a linear geometry."
-msgstr ""
+msgstr "Інтерполює виміри вздовж лінійної геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -20938,21 +20943,26 @@ msgid ""
 "added. If the geometry has a measure dimension, it is over-written with new "
 "values. Only LINESTRINGS and MULTILINESTRINGS are supported."
 msgstr ""
+"Повертає похідну геометрію з лінійно інтерпольованими значеннями вимірювання "
+"між початковою та кінцевою точками. Якщо геометрія не має вимірювального "
+"виміру, він додається. Якщо геометрія має вимірювальний вимір, він "
+"перезаписується новими значеннями. Підтримуються лише LINESTRINGS та "
+"MULTILINESTRINGS."
 
 #. Tag: title
 #, no-c-format
 msgid "Table Management Functions"
-msgstr ""
+msgstr "Функції управління таблицями"
 
 #. Tag: para
 #, no-c-format
 msgid "These functions assist in defining tables containing geometry columns."
-msgstr ""
+msgstr "Ці функції допомагають визначати таблиці, що містять стовпці геометрії."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Adds a geometry column to an existing table."
-msgstr ""
+msgstr "Додає стовпець геометрії до існуючої таблиці."
 
 #. Tag: para
 #, no-c-format
@@ -20966,6 +20976,13 @@ msgid ""
 "current search_path) or the specified SRID, geometry type, or dimension is "
 "invalid."
 msgstr ""
+"Додає стовпець геометрії до існуючої таблиці атрибутів. "
+"<varname>schema_name</varname> — це ім'я схеми таблиці. <varname>srid</"
+"varname> має бути цілочисельним значенням, що посилається на запис у таблиці "
+"SPATIAL_REF_SYS. <varname>type</varname> повинен бути рядком, що відповідає "
+"типу геометрії, наприклад, “POLYGON” або “MULTILINESTRING” . Якщо "
+"schema_name не існує (або не видно в поточному search_path) або вказаний "
+"SRID, тип геометрії або розмір є недійсними, виникає помилка."
 
 #. Tag: para
 #, no-c-format
@@ -20977,6 +20994,12 @@ msgid ""
 "column with this function is now equivalent to: <code>ALTER TABLE some_table "
 "ADD COLUMN geom geometry(Point,4326);</code>"
 msgstr ""
+"Змінено: 2.0.0 Ця функція більше не оновлює geometry_columns, оскільки "
+"geometry_columns є поданням, яке зчитує дані з системних каталогів. За "
+"замовчуванням вона також не створює обмежень, а замість цього використовує "
+"вбудовану поведінку модифікатора типу PostgreSQL. Наприклад, створення "
+"стовпця wgs84 POINT за допомогою цієї функції тепер еквівалентно: "
+"<code>ALTER TABLE some_table ADD COLUMN geom geometry(Point,4326);</code>"
 
 #. Tag: para
 #, no-c-format
@@ -20984,6 +21007,9 @@ msgid ""
 "Changed: 2.0.0 If you require the old behavior of constraints use the "
 "default <varname>use_typmod</varname>, but set it to false."
 msgstr ""
+"Змінено: 2.0.0 Якщо вам потрібна стара поведінка обмежень, використовуйте "
+"стандартне значення <varname>use_typmod</varname>, але встановіть його на "
+"false."
 
 #. Tag: para
 #, no-c-format
@@ -20997,6 +21023,14 @@ msgid ""
 "registered correctly in geometry_columns. Refer to <xref "
 "linkend=\"Manual_Register_Spatial_Column\"/>."
 msgstr ""
+"Змінено: 2.0.0 Види більше не можна реєструвати вручну в geometry_columns, "
+"однак види, побудовані на основі геометрій таблиць типу typmod і "
+"використовувані без функцій-обгортки, реєструватимуться правильно, оскільки "
+"вони успадковують поведінку типу typmod стовпця батьківської таблиці. Види, "
+"які використовують функції геометрії, що виводять інші геометрії, потрібно "
+"буде перетворити на геометрії типу typmod, щоб ці стовпці геометрії виду "
+"були зареєстровані правильно в geometry_columns. Див. <xref linkend="
+"\"Manual_Register_Spatial_Column\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -21004,6 +21038,8 @@ msgid ""
 "Enhanced: 2.0.0 use_typmod argument introduced. Defaults to creating typmod "
 "geometry column instead of constraint-based."
 msgstr ""
+"Покращено: 2.0.0 Додано аргумент use_typmod. За замовчуванням створюється "
+"стовпець геометрії typmod замість стовпця на основі обмежень."
 
 #. Tag: para
 #, no-c-format
@@ -21011,11 +21047,13 @@ msgid ""
 ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/"
 ">, <xref linkend=\"Manual_Register_Spatial_Column\"/>"
 msgstr ""
+", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/"
+">, <xref linkend=\"Manual_Register_Spatial_Column\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Removes a geometry column from a spatial table."
-msgstr ""
+msgstr "Видаляє стовпець геометрії з просторової таблиці."
 
 #. Tag: para
 #, no-c-format
@@ -21024,6 +21062,9 @@ msgid ""
 "need to match the f_table_schema field of the table's row in the "
 "geometry_columns table."
 msgstr ""
+"Видаляє стовпець геометрії з просторової таблиці. Зверніть увагу, що "
+"schema_name повинен відповідати полю f_table_schema рядка таблиці в таблиці "
+"geometry_columns."
 
 #. Tag: para
 #, no-c-format
@@ -21033,17 +21074,22 @@ msgid ""
 "can drop a geometry column like any other table column using <code>ALTER "
 "TABLE</code>"
 msgstr ""
+"Змінено: 2.0.0 Ця функція надається для забезпечення зворотної сумісності. "
+"Тепер, коли geometry_columns є видом системних каталогів, ви можете видалити "
+"стовпець geometry так само, як і будь-який інший стовпець таблиці, за "
+"допомогою <code>ALTER TABLE</code>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/>"
 msgstr ""
+", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Drops a table and all its references in geometry_columns."
-msgstr ""
+msgstr "Видаляє таблицю та всі її посилання в geometry_columns."
 
 #. Tag: para
 #, no-c-format
@@ -21052,6 +21098,9 @@ msgid ""
 "current_schema() on schema-aware pgsql installations if schema is not "
 "provided."
 msgstr ""
+"Видаляє таблицю та всі її посилання в geometry_columns. Примітка: "
+"використовує current_schema() в установках pgsql, що підтримують схеми, якщо "
+"схема не вказана."
 
 #. Tag: para
 #, no-c-format
@@ -21061,6 +21110,10 @@ msgid ""
 "can drop a table with geometry columns like any other table using <code>DROP "
 "TABLE</code>"
 msgstr ""
+"Змінено: 2.0.0 Ця функція надається для забезпечення зворотної сумісності. "
+"Тепер, коли geometry_columns є переглядом системних каталогів, ви можете "
+"видалити таблицю з геометричними стовпцями, як і будь-яку іншу таблицю, за "
+"допомогою <code>DROP TABLE</code>"
 
 #. Tag: para
 #, no-c-format
@@ -21068,11 +21121,13 @@ msgid ""
 ", <xref linkend=\"DropGeometryColumn\"/>, <xref linkend=\"geometry_columns\"/"
 ">"
 msgstr ""
+", <xref linkend=\"DropGeometryColumn\"/>, <xref linkend=\"geometry_columns\""
+"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the SRID defined for a geometry column."
-msgstr ""
+msgstr "Повертає SRID, визначений для стовпця геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -21082,6 +21137,10 @@ msgid ""
 "properly added (e.g. with the <xref linkend=\"AddGeometryColumn\"/> "
 "function), this function will not work."
 msgstr ""
+"Повертає ціле значення SRID вказаного стовпця геометрії, шукаючи його в "
+"таблиці GEOMETRY_COLUMNS. Якщо стовпець геометрії не був доданий належним "
+"чином (наприклад, за допомогою функції <xref linkend=\"AddGeometryColumn\"/>)"
+", ця функція не працюватиме."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -21089,6 +21148,8 @@ msgid ""
 "Ensures geometry columns are defined with type modifiers or have appropriate "
 "spatial constraints."
 msgstr ""
+"Забезпечує, щоб стовпці геометрії були визначені з модифікаторами типу або "
+"мали відповідні просторові обмеження."
 
 #. Tag: para
 #, no-c-format
@@ -21098,6 +21159,10 @@ msgid ""
 "<varname>geometry_columns</varname> view. By default will convert all "
 "geometry columns with no type modifier to ones with type modifiers."
 msgstr ""
+"Забезпечує, щоб стовпці геометрії мали відповідні модифікатори типу або "
+"просторові обмеження, щоб гарантувати їх правильну реєстрацію в перегляді "
+"<varname>geometry_columns</varname>. За замовчуванням перетворює всі стовпці "
+"геометрії без модифікатора типу на стовпці з модифікаторами типу."
 
 #. Tag: para
 #, no-c-format
@@ -21111,6 +21176,14 @@ msgid ""
 "particular, this means that every geometry column belonging to a table has "
 "at least three constraints:"
 msgstr ""
+"Для забезпечення зворотної сумісності та для просторових потреб, таких як "
+"успадкування таблиць, де кожна дочірня таблиця може мати різний тип "
+"геометрії, все ще підтримується старе поведінка перевірки обмежень. Якщо вам "
+"потрібна стара поведінка, потрібно передати новий необов'язковий аргумент як "
+"false <varname>use_typmod=false</varname>. Після цього стовпці геометрії "
+"будуть створені без модифікаторів типу, але з 3 визначеними обмеженнями. "
+"Зокрема, це означає, що кожен стовпець геометрії, що належить до таблиці, "
+"має принаймні три обмеження:"
 
 #. Tag: para
 #, no-c-format
@@ -21118,6 +21191,8 @@ msgid ""
 "<varname>enforce_dims_geom</varname> - ensures every geometry has the same "
 "dimension (see <xref linkend=\"ST_NDims\"/>)"
 msgstr ""
+"<varname>enforce_dims_geom</varname> - гарантує, що всі геометричні об'єкти "
+"мають однакові розміри (див. <xref linkend=\"ST_NDims\"/>)"
 
 #. Tag: para
 #, no-c-format
@@ -21125,6 +21200,8 @@ msgid ""
 "<varname>enforce_geotype_geom</varname> - ensures every geometry is of the "
 "same type (see <xref linkend=\"GeometryType\"/>)"
 msgstr ""
+"<varname>enforce_geotype_geom</varname> - гарантує, що всі геометричні "
+"об'єкти мають однаковий тип (див. <xref linkend=\"GeometryType\"/>)"
 
 #. Tag: para
 #, no-c-format
@@ -21132,6 +21209,8 @@ msgid ""
 "<varname>enforce_srid_geom</varname> - ensures every geometry is in the same "
 "projection (see <xref linkend=\"ST_SRID\"/>)"
 msgstr ""
+"<varname>enforce_srid_geom</varname> - гарантує, що всі геометричні об'єкти "
+"мають однакову проекцію (див. <xref linkend=\"ST_SRID\"/>)"
 
 #. Tag: para
 #, no-c-format
@@ -21142,6 +21221,11 @@ msgid ""
 "row is inserted into the geometry_columns table, otherwise, the exception is "
 "caught and an error notice is raised describing the problem."
 msgstr ""
+"Якщо вказано таблицю <varname>oid</varname>, ця функція намагається "
+"визначити srid, розмірність та тип геометрії всіх стовпців геометрії в "
+"таблиці, додаючи обмеження за необхідності. У разі успіху відповідний рядок "
+"вставляється в таблицю geometry_columns, інакше виникає виняток і "
+"з'являється повідомлення про помилку з описом проблеми."
 
 #. Tag: para
 #, no-c-format
@@ -21152,6 +21236,10 @@ msgid ""
 "<varname>geometry_columns</varname> table, but nothing is done to enforce "
 "constraints."
 msgstr ""
+"Якщо вказано <varname>oid</varname> перегляду, як і в разі табличного oid, "
+"ця функція намагається визначити srid, розмірність і тип усіх геометрій у "
+"перегляді, вставляючи відповідні записи в таблицю <varname>geometry_columns</"
+"varname>, але не виконує жодних дій для забезпечення обмежень."
 
 #. Tag: para
 #, no-c-format
@@ -21165,6 +21253,13 @@ msgid ""
 "returns the number of rows inserted into the <varname>geometry_columns</"
 "varname> table."
 msgstr ""
+"Варіант без параметрів є простим обгорткою для параметризованого варіанту, "
+"який спочатку обрізає і заповнює таблицю geometry_columns для кожної "
+"просторової таблиці і перегляду в базі даних, додаючи просторові обмеження "
+"до таблиць, де це доречно. Він повертає підсумок кількості стовпців "
+"геометрії, виявлених в базі даних, і кількості, які були вставлені в таблицю "
+"<varname>geometry_columns</varname>. Параметризована версія просто повертає "
+"кількість рядків, вставлених у таблицю <varname>geometry_columns</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -21174,6 +21269,10 @@ msgid ""
 "behavior instead by using the new <varname>use_typmod</varname> and setting "
 "it to false."
 msgstr ""
+"Змінено: 2.0.0 За замовчуванням тепер для обмеження типів геометрії "
+"використовуються модифікатори типів замість обмежень перевірки. Ви все ще "
+"можете використовувати поведінку обмежень перевірки, використовуючи новий "
+"параметр <varname>use_typmod</varname> і встановивши його значення false."
 
 #. Tag: para
 #, no-c-format
@@ -21182,13 +21281,16 @@ msgid ""
 "introduced that allows controlling if columns are created with typmodifiers "
 "or with check constraints."
 msgstr ""
+"Покращено: 2.0.0 <varname>use_typmod</varname> додано опціональний аргумент, "
+"який дозволяє контролювати, чи створюються стовпці з типовими модифікаторами "
+"або з перевірками обмежень."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Updates the SRID of all features in a geometry column, and the table "
 "metadata."
-msgstr ""
+msgstr "Оновлює SRID всіх об'єктів у стовпці геометрії та метадані таблиці."
 
 #. Tag: para
 #, no-c-format
@@ -21198,6 +21300,11 @@ msgid ""
 "definition, the type definition will be changed. Note: uses current_schema() "
 "on schema-aware pgsql installations if schema is not provided."
 msgstr ""
+"Оновлює SRID всіх об'єктів у стовпці геометрії, оновлюючи обмеження та "
+"посилання в geometry_columns. Якщо стовпець був застосований за допомогою "
+"визначення типу, визначення типу буде змінено. Примітка: використовує "
+"current_schema() в установках pgsql, що підтримують схеми, якщо схема не "
+"вказана."
 
 #. Tag: para
 #, no-c-format
@@ -21205,6 +21312,8 @@ msgid ""
 "Insert geometries into roads table with a SRID set already using <link "
 "linkend=\"ST_GeomFromEWKT\">EWKT format</link>:"
 msgstr ""
+"Вставте геометрії в таблицю доріг із вже встановленим SRID, використовуючи "
+"формат <link linkend=\"ST_GeomFromEWKT\">EWKT</link>:"
 
 #. Tag: para
 #, no-c-format
@@ -21212,11 +21321,12 @@ msgid ""
 "This will change the srid of the roads table to 4326 from whatever it was "
 "before:"
 msgstr ""
+"Це змінить srid таблиці доріг на 4326 з будь-якого попереднього значення:"
 
 #. Tag: para
 #, no-c-format
 msgid "The prior example is equivalent to this DDL statement:"
-msgstr ""
+msgstr "Попередній приклад еквівалентний цій DDL-інструкція:"
 
 #. Tag: para
 #, no-c-format
@@ -21226,6 +21336,10 @@ msgid ""
 "DDL but there is no equivalent PostGIS management function to do so in one "
 "go."
 msgstr ""
+"Якщо ви неправильно вказали проекцію (або вказали її як невідому) під час "
+"завантаження і хочете перетворити все в веб-меркатор за один раз, ви можете "
+"зробити це за допомогою DDL, але в PostGIS немає еквівалентної функції для "
+"виконання цієї операції за один раз."
 
 #. Tag: para
 #, no-c-format
@@ -21233,11 +21347,13 @@ msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Measurement Functions"
-msgstr ""
+msgstr "Функції вимірювання"
 
 #. Tag: para
 #, no-c-format
@@ -21245,11 +21361,13 @@ msgid ""
 "These functions compute measurements of distance, area and angles. There are "
 "also functions to compute geometry values determined by measurements."
 msgstr ""
+"Ці функції обчислюють відстані, площі та кути. Існують також функції для "
+"обчислення геометричних величин, визначених за вимірами."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the area of a polygonal geometry."
-msgstr ""
+msgstr "Повертає площу полігональної геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -21260,11 +21378,16 @@ msgid ""
 "meters. To compute the area using the faster but less accurate spherical "
 "model use <varname>ST_Area(geog,false)</varname>."
 msgstr ""
+"Повертає площу полігональної геометрії. Для типів геометрії обчислюється "
+"площина 2D (плоска) з одиницями, визначеними SRID. Для типів географії за "
+"замовчуванням площа визначається на сфероїді з одиницями в квадратних "
+"метрах. Для обчислення площі за допомогою швидшої, але менш точної сферичної "
+"моделі використовуйте <varname>ST_Area(geog,false)</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0.0 - support for 2D polyhedral surfaces was introduced."
-msgstr ""
+msgstr "Покращено: 2.0.0 - додано підтримку 2D багатогранних поверхонь."
 
 #. Tag: para
 #, no-c-format
@@ -21273,16 +21396,19 @@ msgid ""
 "improved accuracy and robustness. Requires PROJ &gt;= 4.9.0 to take "
 "advantage of the new feature."
 msgstr ""
+"Покращено: 2.2.0 — вимірювання на сфероїді виконується за допомогою "
+"GeographicLib для підвищення точності та надійності. Для використання нової "
+"функції потрібно PROJ &gt;= 4.9.0."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 3.0.0 - does not depend on SFCGAL anymore."
-msgstr ""
+msgstr "Змінено: 3.0.0 - більше не залежить від SFCGAL."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3"
 
 #. Tag: para
 #, no-c-format
@@ -21291,6 +21417,9 @@ msgid ""
 "For 2.5D, may give a non-zero answer, but only for the faces that sit "
 "completely in XY plane."
 msgstr ""
+"Для багатогранних поверхонь підтримуються тільки 2D багатогранні поверхні ("
+"не 2.5D). Для 2.5D може бути надано відповідь, відмінну від нуля, але тільки "
+"для граней, які повністю лежать у площині XY."
 
 #. Tag: para
 #, no-c-format
@@ -21299,6 +21428,10 @@ msgid ""
 "conversion to get square meters. Note this is in square feet because "
 "EPSG:2249 is Massachusetts State Plane Feet"
 msgstr ""
+"Площа ділянки в квадратних футах для ділянки землі в штаті Массачусетс і "
+"помножте на коефіцієнт перетворення, щоб отримати квадратні метри. Зверніть "
+"увагу, що це квадратні фути, оскільки EPSG:2249 — це система координат штату "
+"Массачусетс"
 
 #. Tag: para
 #, no-c-format
@@ -21308,6 +21441,11 @@ msgid ""
 "is Massachusetts State Plane Feet and transformed area is in square meters "
 "since EPSG:26986 is state plane Massachusetts meters"
 msgstr ""
+"Введіть площу в квадратних футах і переведіть її в метри площини штату "
+"Массачусетс (EPSG:26986), щоб отримати площу в квадратних метрах. Зверніть "
+"увагу, що значення вказано в квадратних футах, оскільки 2249 — це фути "
+"площини штату Массачусетс, а перетворена площа вказана в квадратних метрах, "
+"оскільки EPSG:26986 — це метри площини штату Массачусетс."
 
 #. Tag: para
 #, no-c-format
@@ -21318,11 +21456,17 @@ msgid ""
 "meters. This is just for demonstration to compare. Normally your table will "
 "be stored in geography data type already."
 msgstr ""
+"Поверніть площу в квадратних футах і квадратних метрах, використовуючи тип "
+"даних «географія». Зверніть увагу, що ми перетворюємо геометрію в географію ("
+"перед тим, як це зробити, переконайтеся, що ваша геометрія відповідає "
+"стандарту WGS 84 long lat 4326). Географія завжди вимірюється в метрах. Це "
+"лише для демонстрації та порівняння. Зазвичай ваша таблиця вже зберігається "
+"в типі даних «географія»."
 
 #. Tag: para
 #, no-c-format
 msgid "If your data is in geography already:"
-msgstr ""
+msgstr "Якщо ваші дані вже знаходяться в географії:"
 
 #. Tag: para
 #, no-c-format
@@ -21331,11 +21475,13 @@ msgid ""
 "linkend=\"ST_GeographyFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
 "linkend=\"ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeographyFromText\""
+"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the north-based azimuth of a line between two points."
-msgstr ""
+msgstr "Повертає азимут на північ від лінії між двома точками."
 
 #. Tag: para
 #, no-c-format
@@ -21347,6 +21493,12 @@ msgid ""
 "Southeast = 3&#x03C0;/4; South = &#x03C0;; Southwest 5&#x03C0;/4; West = "
 "3&#x03C0;/2; Northwest = 7&#x03C0;/4."
 msgstr ""
+"Повертає азимут в радіанах від точки відліку до точки призначення або NULL, "
+"якщо ці дві точки збігаються. Кут азимута є додатним кутом за годинниковою "
+"стрілкою, відлічуваним від додатної осі Y (геометрія) або північного "
+"меридіана (географія): Північ = 0; Північний схід = &#x03C0;/4; Схід = "
+"&#x03C0;/2; Південний схід = 3&#x03C0;/4; Південь = &#x03C0;; Південний "
+"захід 5&#x03C0;/4; Захід = 3&#x03C0;/2; Північний захід = 7&#x03C0;/4."
 
 #. Tag: para
 #, no-c-format
@@ -21355,6 +21507,9 @@ msgid ""
 "href=\"https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid\">inverse "
 "geodesic problem</link>."
 msgstr ""
+"Для типу географії рішення азимута відоме як <link xlink:href=«https://en."
+"wikipedia.org/wiki/Geodesics_on_an_ellipsoid»>обернена геодезична "
+"задача</link>."
 
 #. Tag: para
 #, no-c-format
@@ -21364,6 +21519,10 @@ msgid ""
 "value in radians can be converted to degrees using the PostgreSQL function "
 "<varname>degrees()</varname>."
 msgstr ""
+"Азимут — це математичне поняття, яке визначається як кут між опорним "
+"вектором і точкою, вимірюється в радіанах. Результат у радіанах можна "
+"перетворити в градуси за допомогою функції PostgreSQL "
+"<varname>degrees()</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -21375,11 +21534,16 @@ msgid ""
 "UsersWikiplpgsqlfunctions\">PostGIS wiki</link> for an implementation of "
 "this."
 msgstr ""
+"Азимут можна використовувати разом з <xref linkend=\"ST_Translate\"/> для "
+"зміщення об'єкта вздовж його перпендикулярної осі. Дивіться функцію "
+"<varname>upgis_lineshift()</varname> у <link xlink:href=«http://trac.osgeo."
+"org/postgis/wiki/UsersWikiplpgsqlfunctions»>PostGIS wiki</link> для "
+"реалізації цього."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for geography was introduced."
-msgstr ""
+msgstr "Покращено: 2.0.0 додано підтримку географії."
 
 #. Tag: para
 #, no-c-format
@@ -21388,11 +21552,14 @@ msgid ""
 "improved accuracy and robustness. Requires PROJ &gt;= 4.9.0 to take "
 "advantage of the new feature."
 msgstr ""
+"Покращено: вимірювання 2.2.0 на сфероїді, виконане за допомогою "
+"GeographicLib для підвищення точності та надійності. Для використання нової "
+"функції потрібно PROJ &gt;= 4.9.0."
 
 #. Tag: para
 #, no-c-format
 msgid "Geometry Azimuth in degrees"
-msgstr ""
+msgstr "Геометрія Азимут у градусах"
 
 #. Tag: para
 #, no-c-format
@@ -21400,6 +21567,8 @@ msgid ""
 "Blue: origin Point(25,45); Green: target Point(75, 100); Yellow: Y axis or "
 "North; Red: azimuth angle."
 msgstr ""
+"Синій: точка відліку (25,45); Зелений: точка призначення (75, 100); Жовтий: "
+"вісь Y або північ; Червоний: кут азимута."
 
 #. Tag: para
 #, no-c-format
@@ -21407,6 +21576,8 @@ msgid ""
 "Blue: origin Point(75, 100); Green: target Point(25, 45); Yellow: Y axis or "
 "North; Red: azimuth angle."
 msgstr ""
+"Синій: точка відліку (75, 100); Зелений: точка призначення (25, 45); Жовтий: "
+"вісь Y або північ; Червоний: кут азимута."
 
 #. Tag: para
 #, no-c-format
@@ -21415,17 +21586,22 @@ msgid ""
 "linkend=\"ST_Project\"/>, <link xlink:href=\"http://www.postgresql.org/docs/"
 "current/interactive/functions-math.html\">PostgreSQL Math Functions</link>"
 msgstr ""
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
+"linkend=\"ST_Project\"/>, <link xlink:href=«http://www.postgresql.org/docs/"
+"current/interactive/functions-math.html»>Математичні функції "
+"PostgreSQL</link>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the angle between two vectors defined by 3 or 4 points, or 2 lines."
 msgstr ""
+"Повертає кут між двома векторами, визначеними 3 або 4 точками, або 2 лініями."
 
 #. Tag: para
 #, no-c-format
 msgid "Computes the clockwise angle between two vectors."
-msgstr ""
+msgstr "Обчислює кут за годинниковою стрілкою між двома векторами."
 
 #. Tag: para
 #, no-c-format
@@ -21434,6 +21610,9 @@ msgid ""
 "the points P1-P2-P3. If a 4th point provided computes the angle points P1-P2 "
 "and P3-P4"
 msgstr ""
+"<emphasis role=\"bold\">Варіант 1:</emphasis> обчислює кут, утворений "
+"точками P1-P2-P3. Якщо вказано четверту точку, обчислюється кут між точками "
+"P1-P2 і P3-P4"
 
 #. Tag: para
 #, no-c-format
@@ -21442,6 +21621,9 @@ msgid ""
 "vectors S1-E1 and S2-E2, defined by the start and end points of the input "
 "lines"
 msgstr ""
+"<emphasis role=\"bold\">Варіант 2:</emphasis> обчислює кут між двома "
+"векторами S1-E1 і S2-E2, визначеними початковою і кінцевою точками вхідних "
+"ліній"
 
 #. Tag: para
 #, no-c-format
@@ -21450,27 +21632,32 @@ msgid ""
 "result can be converted to degrees using the PostgreSQL function "
 "<varname>degrees()</varname>."
 msgstr ""
+"Результатом є позитивний кут між 0 і 2&#x03C0; радіанами. Результат у "
+"радіанах можна перетворити на градуси за допомогою функції PostgreSQL "
+"<varname>degrees()</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Note that <varname>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</varname>."
 msgstr ""
+"Зверніть увагу, що <varname>ST_Angle(P1,P2,P3) = "
+"ST_Angle(P2,P1,P2,P3)</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "Angle between three points"
-msgstr ""
+msgstr "Кут між трьома точками"
 
 #. Tag: para
 #, no-c-format
 msgid "Angle between vectors defined by four points"
-msgstr ""
+msgstr "Кут між векторами, визначеними чотирма точками"
 
 #. Tag: para
 #, no-c-format
 msgid "Angle between vectors defined by the start and end points of lines"
-msgstr ""
+msgstr "Кут між векторами, визначеними початковою та кінцевою точками ліній"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -21478,6 +21665,8 @@ msgid ""
 "Returns the 2D point on g1 that is closest to g2. This is the first point of "
 "the shortest line from one geometry to the other."
 msgstr ""
+"Повертає 2D точку на g1, яка найближча до g2. Це перша точка найкоротшої "
+"лінії від однієї геометрії до іншої."
 
 #. Tag: para
 #, no-c-format
@@ -21486,6 +21675,9 @@ msgid ""
 "to <varname>geom2</varname>. This is the first point of the shortest line "
 "between the geometries (as computed by <xref linkend=\"ST_ShortestLine\"/>)."
 msgstr ""
+"Повертає двовимірну точку на <varname>geom1</varname>, яка найближча до "
+"<varname>geom2</varname>. Це перша точка найкоротшої лінії між геометріями ("
+"розрахована за допомогою <xref linkend=\"ST_ShortestLine\"/>)."
 
 #. Tag: para
 #, no-c-format
@@ -21493,11 +21685,13 @@ msgid ""
 "If you have a 3D Geometry, you may prefer to use <xref "
 "linkend=\"ST_3DClosestPoint\"/>."
 msgstr ""
+"Якщо у вас є 3D-геометрія, ви можете скористатися <xref linkend="
+"\"ST_3DClosestPoint\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.4.0 - Support for geography."
-msgstr ""
+msgstr "Покращено: 3.4.0 - Підтримка географії."
 
 #. Tag: para
 #, no-c-format
@@ -21505,11 +21699,13 @@ msgid ""
 "The closest point for a Point and a LineString is the point itself. The "
 "closest point for a LineString and a Point is a point on the line."
 msgstr ""
+"Найближчою точкою для точки та лінійного елемента є сама точка. Найближчою "
+"точкою для лінійного елемента та точки є точка на лінії."
 
 #. Tag: para
 #, no-c-format
 msgid "The closest point on polygon A to polygon B"
-msgstr ""
+msgstr "Найближча точка полігону A до полігону B"
 
 #. Tag: para
 #, no-c-format
@@ -21517,6 +21713,8 @@ msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
 "linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_MaxDistance\"/>"
 msgstr ""
+", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
+"linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_MaxDistance\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -21524,6 +21722,8 @@ msgid ""
 "Returns the 3D point on g1 that is closest to g2. This is the first point of "
 "the 3D shortest line."
 msgstr ""
+"Повертає 3D точку на g1, яка найближча до g2. Це перша точка найкоротшої 3D "
+"лінії."
 
 #. Tag: para
 #, no-c-format
@@ -21532,6 +21732,8 @@ msgid ""
 "first point of the 3D shortest line. The 3D length of the 3D shortest line "
 "is the 3D distance."
 msgstr ""
+"Повертає тривимірну точку на g1, яка найближча до g2. Це перша точка "
+"найкоротшої лінії в 3D. Довжина найкоротшої лінії в 3D є відстанню в 3D."
 
 #. Tag: para
 #, no-c-format
@@ -21540,21 +21742,24 @@ msgid ""
 "(instead of old behavior assuming 0 for missing Z). In case of 2D and 3D, Z "
 "is no longer assumed to be 0 for missing Z."
 msgstr ""
+"Змінено: 2.2.0 - якщо введено 2 2D геометрії, повертається 2D точка (замість "
+"старого поведінки, що припускає 0 для відсутнього Z). У випадку 2D і 3D, Z "
+"більше не вважається 0 для відсутнього Z."
 
 #. Tag: para
 #, no-c-format
 msgid "linestring and point -- both 3d and 2d closest point"
-msgstr ""
+msgstr "лінія та точка — як 3D, так і 2D найближча точка"
 
 #. Tag: para
 #, no-c-format
 msgid "linestring and multipoint -- both 3d and 2d closest point"
-msgstr ""
+msgstr "лінія та багатоточка — як 3D, так і 2D найближча точка"
 
 #. Tag: para
 #, no-c-format
 msgid "Multilinestring and polygon both 3d and 2d closest point"
-msgstr ""
+msgstr "Багатолінійні та полігони, як 3D, так і 2D, найближчі точки"
 
 #. Tag: para
 #, no-c-format
@@ -21562,11 +21767,13 @@ msgid ""
 ", <xref linkend=\"ST_ClosestPoint\"/>, <xref linkend=\"ST_3DDistance\"/>, "
 "<xref linkend=\"ST_3DShortestLine\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClosestPoint\"/>, <xref linkend=\"ST_3DDistance\"/>, "
+"<xref linkend=\"ST_3DShortestLine\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the distance between two geometry or geography values."
-msgstr ""
+msgstr "Повертає відстань між двома геометричними або географічними значеннями."
 
 #. Tag: para
 #, no-c-format
@@ -21575,6 +21782,9 @@ msgid ""
 "(planar) distance between two geometries, in projected units (spatial ref "
 "units)."
 msgstr ""
+"Для типів <xref linkend=\"geometry\"/> повертає мінімальну 2D декартову "
+"(плоску) відстань між двома геометріями в проекційних одиницях (одиницях "
+"просторової прив'язки)."
 
 #. Tag: para
 #, no-c-format
@@ -21584,11 +21794,15 @@ msgid ""
 "determined by the SRID. If <varname>use_spheroid</varname> is false, a "
 "faster spherical calculation is used."
 msgstr ""
+"Для типів <xref linkend=\"geography\"/> за замовчуванням повертається "
+"мінімальна геодезична відстань між двома географічними об'єктами в метрах, "
+"обчислена на сфероїді, визначеному SRID. Якщо <varname>use_spheroid</"
+"varname> має значення false, використовується швидший сферичний розрахунок."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.23"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.23"
 
 #. Tag: para
 #, no-c-format
@@ -21596,6 +21810,9 @@ msgid ""
 "Availability: 1.5.0 geography support was introduced in 1.5. Speed "
 "improvements for planar to better handle large or many vertex geometries"
 msgstr ""
+"Доступність: 1.5.0 Підтримка географії була впроваджена в версії 1.5. "
+"Покращення швидкості для плоских об'єктів для кращої обробки великих або "
+"численних вершин геометрії"
 
 #. Tag: para
 #, no-c-format
@@ -21604,16 +21821,20 @@ msgid ""
 "web.archive.org/web/20160827203903/http://boundlessgeo.com/2012/07/making-"
 "geography-faster/\">Making Geography faster</link> for details."
 msgstr ""
+"Покращено: 2.1.0 покращено швидкість роботи з географією. Детальніше див. "
+"<link xlink:href=«https://web.archive.org/web/20160827203903/"
+"http://boundlessgeo.com/2012/07/making-geography-faster/»>Пришвидшення "
+"роботи з географією</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 - support for curved geometries was introduced."
-msgstr ""
+msgstr "Покращено: 2.1.0 — додано підтримку кривих геометрій."
 
 #. Tag: title
 #, no-c-format
 msgid "Geometry Examples"
-msgstr ""
+msgstr "Приклади геометрії"
 
 #. Tag: para
 #, no-c-format
@@ -21621,6 +21842,8 @@ msgid ""
 "Geometry example - units in planar degrees 4326 is WGS 84 long lat, units "
 "are degrees."
 msgstr ""
+"Приклад геометрії - одиниці виміру в плоских градусах 4326 - це довжина в "
+"градусах за системою WGS 84, одиниці виміру - градуси."
 
 #. Tag: para
 #, no-c-format
@@ -21629,6 +21852,10 @@ msgid ""
 "popular web maps). Although the value is off, nearby ones can be compared "
 "correctly, which makes it a good choice for algorithms like KNN or KMeans."
 msgstr ""
+"Приклад геометрії — одиниці виміру в метрах (SRID: 3857, пропорційно до "
+"пікселів на популярних веб-мапах). Хоча значення не відповідає дійсності, "
+"сусідні значення можна порівняти правильно, що робить цей вибір хорошим для "
+"таких алгоритмів, як KNN або KMeans."
 
 #. Tag: para
 #, no-c-format
@@ -21636,6 +21863,8 @@ msgid ""
 "Geometry example - units in meters (SRID: 3857 as above, but corrected by "
 "cos(lat) to account for distortion)"
 msgstr ""
+"Приклад геометрії — одиниці виміру в метрах (SRID: 3857, як вище, але "
+"скориговано за допомогою cos(lat) для врахування спотворення)"
 
 #. Tag: para
 #, no-c-format
@@ -21643,6 +21872,8 @@ msgid ""
 "Geometry example - units in meters (SRID: 26986 Massachusetts state plane "
 "meters) (most accurate for Massachusetts)"
 msgstr ""
+"Приклад геометрії — одиниці виміру в метрах (SRID: 26986 метри площини штату "
+"Массачусетс) (найточніше для штату Массачусетс)"
 
 #. Tag: para
 #, no-c-format
@@ -21650,11 +21881,13 @@ msgid ""
 "Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) "
 "(least accurate)"
 msgstr ""
+"Приклад геометрії — одиниці виміру в метрах (SRID: 2163 US National Atlas "
+"Equal area) (найменша точність)"
 
 #. Tag: title
 #, no-c-format
 msgid "Geography Examples"
-msgstr ""
+msgstr "Приклади з географії"
 
 #. Tag: para
 #, no-c-format
@@ -21662,6 +21895,9 @@ msgid ""
 "Same as geometry example but note units in meters - use sphere for slightly "
 "faster and less accurate computation."
 msgstr ""
+"Те саме, що й у прикладі з геометрією, але зверніть увагу на одиниці виміру "
+"в метрах — для трохи швидшого та менш точного обчислення використовуйте "
+"сферу."
 
 #. Tag: para
 #, no-c-format
@@ -21671,6 +21907,10 @@ msgid ""
 ">, <xref linkend=\"ST_HausdorffDistance\"/>, <xref "
 "linkend=\"ST_FrechetDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DistanceSphere\"/>, "
+"<xref linkend=\"ST_Distance_Spheroid\"/>, <xref linkend=\"ST_MaxDistance\"/"
+">, <xref linkend=\"ST_HausdorffDistance\"/>, <xref linkend="
+"\"ST_FrechetDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -21678,6 +21918,8 @@ msgid ""
 "Returns the 3D cartesian minimum distance (based on spatial ref) between two "
 "geometries in projected units."
 msgstr ""
+"Повертає мінімальну 3D декартову відстань (на основі просторової референції) "
+"між двома геометріями в проекційних одиницях."
 
 #. Tag: para
 #, no-c-format
@@ -21685,11 +21927,13 @@ msgid ""
 "Returns the 3-dimensional minimum cartesian distance between two geometries "
 "in projected units (spatial ref units)."
 msgstr ""
+"Повертає 3-вимірну мінімальну декартову відстань між двома геометріями в "
+"проекційних одиницях (одиницях просторової прив'язки)."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3"
 
 #. Tag: para
 #, no-c-format
@@ -21697,11 +21941,13 @@ msgid ""
 "Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for "
 "missing Z."
 msgstr ""
+"Змінено: 2.2.0 - У випадку 2D та 3D, Z більше не вважається рівним 0 для "
+"відсутнього Z."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 3.0.0 - SFCGAL version removed"
-msgstr ""
+msgstr "Змінено: 3.0.0 - Вилучено версію SFCGAL"
 
 #. Tag: para
 #, no-c-format
@@ -21710,6 +21956,9 @@ msgid ""
 "<xref linkend=\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_3DShortestLine\"/>, "
 "<xref linkend=\"ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"ST_3DClosestPoint\"/>, <xref linkend=\"ST_3DDWithin\"/>, "
+"<xref linkend=\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_3DShortestLine\"/>, "
+"<xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -21717,6 +21966,8 @@ msgid ""
 "Returns minimum distance in meters between two lon/lat geometries using a "
 "spherical earth model."
 msgstr ""
+"Повертає мінімальну відстань у метрах між двома геометріями довготи/широти, "
+"використовуючи модель сферичної Землі."
 
 #. Tag: para
 #, no-c-format
@@ -21726,6 +21977,10 @@ msgid ""
 "Faster than <xref linkend=\"ST_Distance_Spheroid\"/>, but less accurate. "
 "PostGIS Versions prior to 1.5 only implemented for points."
 msgstr ""
+"Повертає мінімальну відстань у метрах між двома точками lon/lat. "
+"Використовує сферичну Землю та радіус, отриманий із сфероїда, визначеного "
+"SRID. Швидше, ніж <xref linkend=\"ST_Distance_Spheroid\"/>, але менш точне. "
+"У версіях PostGIS до 1.5 реалізовано тільки для точок."
 
 #. Tag: para
 #, no-c-format
@@ -21733,17 +21988,19 @@ msgid ""
 "Availability: 1.5 - support for other geometry types besides points was "
 "introduced. Prior versions only work with points."
 msgstr ""
+"Доступність: 1.5 — додано підтримку інших типів геометрії, крім точок. "
+"Попередні версії працюють тільки з точками."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 In prior versions this used to be called ST_Distance_Sphere"
-msgstr ""
+msgstr "Змінено: 2.2.0 У попередніх версіях це називалося ST_Distance_Sphere"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Distance_Spheroid\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Distance_Spheroid\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -21751,6 +22008,8 @@ msgid ""
 "Returns the minimum distance between two lon/lat geometries using a "
 "spheroidal earth model."
 msgstr ""
+"Повертає мінімальну відстань між двома геометріями lon/lat, використовуючи "
+"сфероїдальну модель Землі."
 
 #. Tag: para
 #, no-c-format
@@ -21759,6 +22018,9 @@ msgid ""
 "particular spheroid. See the explanation of spheroids given for <xref "
 "linkend=\"ST_Length_Spheroid\"/>."
 msgstr ""
+"Повертає мінімальну відстань у метрах між двома геометріями lon/lat, "
+"заданими для певного сфероїда. Див. пояснення сфероїдів, наведене для <xref "
+"linkend=\"ST_Length_Spheroid\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -21766,21 +22028,23 @@ msgid ""
 "This function does not look at the SRID of the geometry. It assumes the "
 "geometry coordinates are based on the provided spheroid."
 msgstr ""
+"Ця функція не враховує SRID геометрії. Вона припускає, що координати "
+"геометрії базуються на наданому сфероїді."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.2.0 In prior versions this was called ST_Distance_Spheroid"
-msgstr ""
+msgstr "Змінено: 2.2.0 У попередніх версіях це називалося ST_Distance_Spheroid"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_DistanceSphere\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_DistanceSphere\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the Fréchet distance between two geometries."
-msgstr ""
+msgstr "Повертає відстань Фреше між двома геометріями."
 
 #. Tag: para
 #, no-c-format
@@ -21793,6 +22057,12 @@ msgid ""
 "points along the curves. Therefore it is often better than the Hausdorff "
 "distance."
 msgstr ""
+"Реалізує алгоритм обчислення відстані Фреше, обмеженої дискретними точками "
+"для обох геометрій, на основі <link xlink:href=«http://www.kr.tuwien.ac.at/"
+"staff/eiter/et-archive/cdtr9464.pdf»>Computing Discrete Fréchet Distance</"
+"link>. Відстань Фреше — це міра подібності кривих, що враховує розташування "
+"та порядок точок уздовж кривих. Тому вона часто є кращою за відстань "
+"Гаусдорфа."
 
 #. Tag: para
 #, no-c-format
@@ -21803,12 +22073,19 @@ msgid ""
 "Each segment will be split into a number of equal-length subsegments, whose "
 "fraction of the total length is closest to the given fraction."
 msgstr ""
+"Коли вказано опціональний параметр densifyFrac, ця функція виконує "
+"ущільнення сегментів перед обчисленням дискретної відстані Фреше. Параметр "
+"densifyFrac встановлює частку, на яку ущільнюється кожен сегмент. Кожен "
+"сегмент буде розділений на декілька підсегментів однакової довжини, частка "
+"яких у загальній довжині найближча до заданої частки."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Units are in the units of the spatial reference system of the geometries."
 msgstr ""
+"Одиниці вимірювання відповідають одиницям просторової системи координат "
+"геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -21816,6 +22093,8 @@ msgid ""
 "The current implementation supports only vertices as the discrete locations. "
 "This could be extended to allow an arbitrary density of points to be used."
 msgstr ""
+"Поточна реалізація підтримує тільки вершини як дискретні місця розташування. "
+"Це можна розширити, щоб дозволити використання довільної щільності точок."
 
 #. Tag: para
 #, no-c-format
@@ -21824,16 +22103,19 @@ msgid ""
 "get. But, the computation time and the memory usage increase with the square "
 "of the number of subsegments."
 msgstr ""
+"Чим менше значення densifyFrac ми вказуємо, тим точніше буде відстань Фреше. "
+"Однак час обчислення та використання пам'яті зростають пропорційно до "
+"квадрату кількості підсегментів."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Availability: 2.4.0 - requires GEOS &gt;= 3.7.0"
-msgstr ""
+msgstr "Availability: 2.4.0 - requires GEOS &gt;= 3.7.0"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the Hausdorff distance between two geometries."
-msgstr ""
+msgstr "Повертає відстань Гаусдорфа між двома геометріями."
 
 #. Tag: para
 #, no-c-format
@@ -21843,6 +22125,9 @@ msgid ""
 "Hausdorff distance is a measure of how similar or dissimilar 2 geometries "
 "are."
 msgstr ""
+"Повертає <link xlink:href=«http://en.wikipedia.org/wiki/Hausdorff_distance»"
+">відстань Гаусдорфа</link> між двома геометріями. Відстань Гаусдорфа — це "
+"міра схожості або відмінності двох геометрій."
 
 #. Tag: para
 #, no-c-format
@@ -21855,6 +22140,12 @@ msgid ""
 "subsegments whose fraction of the segment length is closest to the given "
 "fraction."
 msgstr ""
+"Функція фактично обчислює «дискретну відстань Гаусдорфа». Це відстань "
+"Гаусдорфа, обчислена в дискретних точках геометрії. Параметр "
+"<parameter>densifyFrac</parameter> можна вказати, щоб отримати більш точний "
+"результат шляхом ущільнення сегментів перед обчисленням дискретної відстані "
+"Гаусдорфа. Кожен сегмент розділяється на кілька підсегментів однакової "
+"довжини, частка яких у довжині сегмента найближча до заданої частки."
 
 #. Tag: para
 #, no-c-format
@@ -21865,11 +22156,16 @@ msgid ""
 "each other, and roughly equal in length. This is a useful metric for line "
 "matching."
 msgstr ""
+"Цей алгоритм НЕ є еквівалентним стандартній відстані Гаусдорфа. Однак він "
+"обчислює наближення, яке є правильним для великої підмножини корисних "
+"випадків. Одним з важливих випадків є лінійні рядки, які приблизно "
+"паралельні один одному і мають приблизно однакову довжину. Це корисний "
+"показник для зіставлення ліній."
 
 #. Tag: para
 #, no-c-format
 msgid "Hausdorff distance (red) and distance (yellow) between two lines"
-msgstr ""
+msgstr "Відстань Гаусдорфа (червоний) і відстань (жовтий) між двома лініями"
 
 #. Tag: para
 #, no-c-format
@@ -21877,6 +22173,7 @@ msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Hausdorff distance with "
 "densification."
 msgstr ""
+"<emphasis role=\"bold\">Приклад:</emphasis> Відстань Гаусдорфа з ущільненням."
 
 #. Tag: para
 #, no-c-format
@@ -21887,11 +22184,16 @@ msgid ""
 "building listed only once. <code>ORDER BY .. ST_HausdorffDistance</code> "
 "selects the parcel that is most similar to the building."
 msgstr ""
+"<emphasis role=\"bold\">Приклад:</emphasis> Для кожної будівлі знайдіть "
+"ділянку, яка найкраще її представляє. Спочатку ми вимагаємо, щоб ділянка "
+"перетиналася з геометрією будівлі. <code>DISTINCT ON</code> гарантує, що "
+"кожна будівля буде вказана тільки один раз. <code>ORDER BY .. "
+"ST_HausdorffDistance</code> вибирає ділянку, яка найбільш схожа на будівлю."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the 2D length of a linear geometry."
-msgstr ""
+msgstr "Повертає 2D довжину лінійної геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -21901,6 +22203,11 @@ msgid ""
 "0 is returned; use <xref linkend=\"ST_Perimeter\"/> instead. The units of "
 "length is determined by the spatial reference system of the geometry."
 msgstr ""
+"Для типів геометрії: повертає двовимірну декартову довжину геометрії, якщо "
+"це LineString, MultiLineString, ST_Curve, ST_MultiCurve. Для плоских "
+"геометрій повертається 0; замість цього використовуйте <xref linkend="
+"\"ST_Perimeter\"/>. Одиниці довжини визначаються просторовою системою "
+"відліку геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -21911,6 +22218,11 @@ msgid ""
 "is exclusive to WGS84. If <varname>use_spheroid = false</varname>, then the "
 "calculation is based on a sphere instead of a spheroid."
 msgstr ""
+"Для географічних типів: обчислення виконується за допомогою оберненого "
+"геодезичного розрахунку. Одиниці довжини вказані в метрах. Якщо PostGIS "
+"скомпільовано з PROJ версії 4.8.0 або пізнішої, сфероїд визначається за "
+"SRID, інакше він є ексклюзивним для WGS84. Якщо <varname>use_spheroid = "
+"false</varname>, обчислення базується на сфері, а не на сфероїді."
 
 #. Tag: para
 #, no-c-format
@@ -21918,6 +22230,8 @@ msgid ""
 "Currently for geometry this is an alias for ST_Length2D, but this may change "
 "to support higher dimensions."
 msgstr ""
+"Наразі для геометрії це псевдонім для ST_Length2D, але це може змінитися для "
+"підтримки вищих вимірів."
 
 #. Tag: para
 #, no-c-format
@@ -21928,6 +22242,10 @@ msgid ""
 "geometry behavior. Please use ST_Perimeter if you want the perimeter of a "
 "polygon"
 msgstr ""
+"Змінено: 2.0.0 Істотна зміна — у попередніх версіях застосування цього до "
+"MULTI/POLYGON типу geography давало периметр POLYGON/MULTIPOLYGON. У 2.0.0 "
+"це було змінено, щоб повертати 0 відповідно до поведінки геометрії. Будь "
+"ласка, використовуйте ST_Perimeter, якщо ви хочете отримати периметр полігону"
 
 #. Tag: para
 #, no-c-format
@@ -21935,21 +22253,24 @@ msgid ""
 "For geography the calculation defaults to using a spheroidal model. To use "
 "the faster but less accurate spherical calculation use ST_Length(gg,false);"
 msgstr ""
+"Для географії за замовчуванням використовується сфероїдальна модель. Щоб "
+"скористатися швидшим, але менш точним сферичним розрахунком, використовуйте "
+"ST_Length(gg,false);"
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s2.1.5.1"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.5.1"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.2, 9.3.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.2, 9.3.4"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.5.0 geography support was introduced in 1.5."
-msgstr ""
+msgstr "Доступність: підтримка географії 1.5.0 була введена в версії 1.5."
 
 #. Tag: para
 #, no-c-format
@@ -21957,11 +22278,13 @@ msgid ""
 "Return length in feet for line string. Note this is in feet because "
 "EPSG:2249 is Massachusetts State Plane Feet"
 msgstr ""
+"Довжина повернення в футах для рядка рядка. Зверніть увагу, що це в футах, "
+"оскільки EPSG:2249 - це фути штату Массачусетс"
 
 #. Tag: para
 #, no-c-format
 msgid "Return length of WGS 84 geography line"
-msgstr ""
+msgstr "Повернути довжину географічної лінії WGS 84"
 
 #. Tag: para
 #, no-c-format
@@ -21969,6 +22292,8 @@ msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Length_Spheroid\"/"
 ">, <xref linkend=\"ST_Perimeter\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Length_Spheroid\"/"
+">, <xref linkend=\"ST_Perimeter\"/>, <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -21976,6 +22301,8 @@ msgid ""
 "Returns the 2D length of a linear geometry. Alias for <varname>ST_Length</"
 "varname>"
 msgstr ""
+"Повертає 2D довжину лінійної геометрії. Псевдонім для "
+"<varname>ST_Length</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -21983,16 +22310,18 @@ msgid ""
 "Returns the 2D length of the geometry if it is a linestring or multi-"
 "linestring. This is an alias for <varname>ST_Length</varname>"
 msgstr ""
+"Повертає 2D довжину геометрії, якщо це лінія або багатолінійна лінія. Це "
+"псевдонім для <varname>ST_Length</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DLength\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_3DLength\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the 3D length of a linear geometry."
-msgstr ""
+msgstr "Повертає 3D довжину лінійної геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -22001,16 +22330,19 @@ msgid ""
 "LineString or MultiLineString. For 2-d lines it will just return the 2-d "
 "length (same as ST_Length and ST_Length2D)"
 msgstr ""
+"Повертає тривимірну або двовимірну довжину геометрії, якщо це LineString або "
+"MultiLineString. Для двовимірних ліній повертається лише двовимірна довжина ("
+"так само, як ST_Length і ST_Length2D)"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 7.1, 10.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 7.1, 10.3"
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_Length3D"
-msgstr ""
+msgstr "Змінено: 2.0.0 У попередніх версіях це називалося ST_Length3D"
 
 #. Tag: para
 #, no-c-format
@@ -22018,17 +22350,19 @@ msgid ""
 "Return length in feet for a 3D cable. Note this is in feet because EPSG:2249 "
 "is Massachusetts State Plane Feet"
 msgstr ""
+"Довжина повернення в футах для 3D-кабелю. Зверніть увагу, що це в футах, "
+"оскільки EPSG:2249 — це фути штату Массачусетс"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Length2D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Length2D\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the 2D or 3D length/perimeter of a lon/lat geometry on a spheroid."
-msgstr ""
+msgstr "Повертає 2D або 3D довжину/периметр геометрії lon/lat на сфероїді."
 
 #. Tag: para
 #, no-c-format
@@ -22038,6 +22372,9 @@ msgid ""
 "length is desired without reprojection. The spheroid is specified by a text "
 "value as follows:"
 msgstr ""
+"Обчислює довжину або периметр геометрії на еліпсоїді. Це корисно, якщо "
+"координати геометрії задані в градусах довготи/широти, а довжина потрібна "
+"без перепроекції. Сфероїд задається текстовим значенням у такому форматі:"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -22050,16 +22387,18 @@ msgid ""
 "Changed: 2.2.0 In prior versions this was called ST_Length_Spheroid and had "
 "the alias ST_3DLength_Spheroid"
 msgstr ""
+"Змінено: 2.2.0 У попередніх версіях ця функція називалася ST_Length_Spheroid "
+"і мала псевдонім ST_3DLength_Spheroid"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Length\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Length\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the 2D longest line between two geometries."
-msgstr ""
+msgstr "Повертає найдовшу 2D лінію між двома геометріями."
 
 #. Tag: para
 #, no-c-format
@@ -22068,6 +22407,9 @@ msgid ""
 "The line returned starts on <varname>g1</varname> and ends on <varname>g2</"
 "varname>."
 msgstr ""
+"Повертає найдовшу двовимірну лінію між точками двох геометрій. Повернена "
+"лінія починається в точці <varname>g1</varname> і закінчується в точці "
+"<varname>g2</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -22076,6 +22418,9 @@ msgid ""
 "the first longest line if more than one is found. The length of the line is "
 "equal to the distance returned by <xref linkend=\"ST_MaxDistance\"/>."
 msgstr ""
+"Найдовша лінія завжди проходить між двома вершинами. Якщо знайдено більше "
+"однієї лінії, функція повертає першу найдовшу лінію. Довжина лінії дорівнює "
+"відстані, поверненій функцією <xref linkend=\"ST_MaxDistance\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -22084,16 +22429,19 @@ msgid ""
 "vertices farthest apart in the geometry. The endpoints of the line lie on "
 "the circle computed by <xref linkend=\"ST_MinimumBoundingCircle\"/>."
 msgstr ""
+"Якщо g1 і g2 мають однакову геометрію, повертає лінію між двома "
+"найвіддаленішими вершинами в геометрії. Кінцеві точки лінії лежать на колі, "
+"обчисленому за допомогою <xref linkend=\"ST_MinimumBoundingCircle\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Longest line between a point and a line"
-msgstr ""
+msgstr "Найдовша лінія між точкою і прямою"
 
 #. Tag: para
 #, no-c-format
 msgid "Longest line between two polygons"
-msgstr ""
+msgstr "Найдовша лінія між двома полігонами"
 
 #. Tag: para
 #, no-c-format
@@ -22102,6 +22450,9 @@ msgid ""
 "the Maximum Distance. The endpoints of the line lie on the Minimum Bounding "
 "Circle."
 msgstr ""
+"Найдовша лінія, що проходить через одну геометрію. Довжина лінії дорівнює "
+"максимальній відстані. Кінцеві точки лінії лежать на мінімальному "
+"обмежувальному колі."
 
 #. Tag: para
 #, no-c-format
@@ -22109,11 +22460,13 @@ msgid ""
 ", <xref linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_3DLongestLine\"/>, "
 "<xref linkend=\"ST_MinimumBoundingCircle\"/>"
 msgstr ""
+", <xref linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_3DLongestLine\"/>, "
+"<xref linkend=\"ST_MinimumBoundingCircle\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the 3D longest line between two geometries"
-msgstr ""
+msgstr "Повертає найдовшу 3D лінію між двома геометріями"
 
 #. Tag: para
 #, no-c-format
@@ -22123,21 +22476,25 @@ msgid ""
 "g1 and ends in g2. The 3D length of the line is equal to the distance "
 "returned by <xref linkend=\"ST_3DMaxDistance\"/>."
 msgstr ""
+"Повертає найдовшу тривимірну лінію між двома геометріями. Якщо таких ліній "
+"більше однієї, функція повертає першу найдовшу лінію. Повернена лінія "
+"починається в g1 і закінчується в g2. Тривимірна довжина лінії дорівнює "
+"відстані, поверненій функцією <xref linkend=\"ST_3DMaxDistance\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "linestring and point -- both 3d and 2d longest line"
-msgstr ""
+msgstr "лінія та точка — найдовша лінія у 3D та 2D"
 
 #. Tag: para
 #, no-c-format
 msgid "linestring and multipoint -- both 3d and 2d longest line"
-msgstr ""
+msgstr "лінія та мультиточка — найдовша лінія в 3D та 2D"
 
 #. Tag: para
 #, no-c-format
 msgid "MultiLineString and Polygon both 3d and 2d longest line"
-msgstr ""
+msgstr "MultiLineString і Polygon, як 3D, так і 2D найдовша лінія"
 
 #. Tag: para
 #, no-c-format
@@ -22145,12 +22502,15 @@ msgid ""
 ", <xref linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_LongestLine\"/>, "
 "<xref linkend=\"ST_3DShortestLine\"/>, <xref linkend=\"ST_3DMaxDistance\"/>"
 msgstr ""
+", <xref linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_LongestLine\"/>, "
+"<xref linkend=\"ST_3DShortestLine\"/>, <xref linkend=\"ST_3DMaxDistance\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the 2D largest distance between two geometries in projected units."
 msgstr ""
+"Повертає найбільшу відстань між двома геометріями в проекційних одиницях."
 
 #. Tag: para
 #, no-c-format
@@ -22160,6 +22520,10 @@ msgid ""
 "This is the length of the line returned by <xref linkend=\"ST_LongestLine\"/"
 ">."
 msgstr ""
+"Повертає максимальну відстань між двома геометріями у двовимірному просторі, "
+"в проекційних одиницях. Максимальна відстань завжди виникає між двома "
+"вершинами. Це довжина лінії, повернена функцією <xref linkend="
+"\"ST_LongestLine\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -22167,22 +22531,25 @@ msgid ""
 "If g1 and g2 are the same geometry, returns the distance between the two "
 "vertices farthest apart in that geometry."
 msgstr ""
+"Якщо g1 і g2 мають однакову геометрію, повертає відстань між двома "
+"найвіддаленішими вершинами в цій геометрії."
 
 #. Tag: para
 #, no-c-format
 msgid "Maximum distance between a point and lines."
-msgstr ""
+msgstr "Максимальна відстань між точкою та лініями."
 
 #. Tag: para
 #, no-c-format
 msgid "Maximum distance between vertices of a single geometry."
-msgstr ""
+msgstr "Максимальна відстань між вершинами однієї геометрії."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LongestLine\"/>, <xref linkend=\"ST_DFullyWithin\"/>"
 msgstr ""
+", <xref linkend=\"ST_LongestLine\"/>, <xref linkend=\"ST_DFullyWithin\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22190,6 +22557,8 @@ msgid ""
 "Returns the 3D cartesian maximum distance (based on spatial ref) between two "
 "geometries in projected units."
 msgstr ""
+"Повертає максимальну 3D-відстань (на основі просторової референції) між "
+"двома геометріями в проекційних одиницях."
 
 #. Tag: para
 #, no-c-format
@@ -22197,6 +22566,8 @@ msgid ""
 "Returns the 3-dimensional maximum cartesian distance between two geometries "
 "in projected units (spatial ref units)."
 msgstr ""
+"Повертає тривимірну максимальну декартову відстань між двома геометріями в "
+"проекційних одиницях (одиницях просторової прив'язки)."
 
 #. Tag: para
 #, no-c-format
@@ -22204,13 +22575,15 @@ msgid ""
 ", <xref linkend=\"ST_3DDWithin\"/>, <xref linkend=\"ST_3DMaxDistance\"/>, "
 "<xref linkend=\"ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"ST_3DDWithin\"/>, <xref linkend=\"ST_3DMaxDistance\"/>, "
+"<xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the minimum clearance of a geometry, a measure of a geometry's "
 "robustness."
-msgstr ""
+msgstr "Повертає мінімальний зазор геометрії, міру міцності геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -22222,6 +22595,13 @@ msgid ""
 "formats (such as WKT, KML, GML, GeoJSON), or binary formats that do not use "
 "double-precision floating point coordinates (e.g. MapInfo TAB)."
 msgstr ""
+"Геометрія може відповідати критеріям валідності згідно з <xref linkend="
+"\"ST_IsValid\"/>(полігони) або <xref linkend=\"ST_IsSimple\"/>(лінії), але "
+"стати невалідною, якщо одна з її вершин буде переміщена на невелику "
+"відстань. Це може статися через втрату точності під час перетворення в "
+"текстові формати (такі як WKT, KML, GML, GeoJSON) або бінарні формати, які "
+"не використовують координати з подвійною точністю з плаваючою комою ("
+"наприклад, MapInfo TAB)."
 
 #. Tag: para
 #, no-c-format
@@ -22231,11 +22611,15 @@ msgid ""
 "vertices of the geometry can be moved without creating an invalid geometry. "
 "Larger values of minimum clearance indicate greater robustness."
 msgstr ""
+"Мінімальний зазор — це кількісна міра стійкості геометрії до зміни точності "
+"координат. Це найбільша відстань, на яку можна перемістити вершини "
+"геометрії, не порушуючи її цілісності. Більші значення мінімального зазору "
+"вказують на більшу стійкість."
 
 #. Tag: para
 #, no-c-format
 msgid "If a geometry has a minimum clearance of <varname>e</varname>, then:"
-msgstr ""
+msgstr "Якщо геометрія має мінімальний зазор <varname>e</varname>, то:"
 
 #. Tag: para
 #, no-c-format
@@ -22243,6 +22627,8 @@ msgid ""
 "No two distinct vertices in the geometry are closer than the distance "
 "<varname>e</varname>."
 msgstr ""
+"У геометрії немає двох різних вершин, відстань між якими менша за "
+"<varname>e</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -22250,6 +22636,8 @@ msgid ""
 "No vertex is closer than <varname>e</varname> to a line segment of which it "
 "is not an endpoint."
 msgstr ""
+"Жодна вершина не знаходиться ближче, ніж <varname>e</varname> до відрізка "
+"лінії, кінцевою точкою якого вона не є."
 
 #. Tag: para
 #, no-c-format
@@ -22258,6 +22646,9 @@ msgid ""
 "MultiPoint whose points are identical), the return value is "
 "<varname>Infinity</varname>."
 msgstr ""
+"Якщо для геометрії не існує мінімального зазору (наприклад, для окремої "
+"точки або для MultiPoint, точки якого є ідентичними), повертається значення "
+"<varname>Infinity</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -22266,6 +22657,9 @@ msgid ""
 "linkend=\"ST_ReducePrecision\"/> can reduce coordinate precision while "
 "ensuring that polygonal geometry remains valid."
 msgstr ""
+"Щоб уникнути проблем з валідністю, спричинених втратою точності, <xref "
+"linkend=\"ST_ReducePrecision\"/>може зменшити точність координат, гарантуючи "
+"при цьому валідність полігональної геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -22273,12 +22667,16 @@ msgid ""
 ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_IsValid\"/>, <xref "
 "linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
+", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_IsValid\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the two-point LineString spanning a geometry's minimum clearance."
 msgstr ""
+"Повертає двоточкову лінію LineString, що охоплює мінімальний простір "
+"геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -22287,17 +22685,20 @@ msgid ""
 "the geometry does not have a minimum clearance, <varname>LINESTRING EMPTY</"
 "varname> is returned."
 msgstr ""
+"Повертає двоточкову лінію LineString, що охоплює мінімальний зазор "
+"геометрії. Якщо геометрія не має мінімального зазору, повертається "
+"<varname>LINESTRING EMPTY</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.3.0 - requires GEOS &gt;= 3.6.0"
-msgstr ""
+msgstr "Доступність: 2.3.0 - вимагає GEOS &gt;= 3.6.0"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the length of the boundary of a polygonal geometry or geography."
-msgstr ""
+msgstr "Повертає довжину межі полігональної геометрії або географії."
 
 #. Tag: para
 #, no-c-format
@@ -22308,6 +22709,11 @@ msgid ""
 "geometry types, units for perimeter measures are specified by the spatial "
 "reference system of the geometry."
 msgstr ""
+"Повертає 2D периметр геометрії/географії, якщо це ST_Surface, "
+"ST_MultiSurface (Polygon, MultiPolygon). Для геометрій, що не мають площі, "
+"повертається 0. Для лінійних геометрій використовуйте <xref linkend="
+"\"ST_Length\"/>. Для типів геометрії одиниці виміру периметра визначаються "
+"просторовою системою відліку геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -22318,6 +22724,11 @@ msgid ""
 "SRID, otherwise it is exclusive to WGS84. If <varname>use_spheroid = false</"
 "varname>, then calculations will approximate a sphere instead of a spheroid."
 msgstr ""
+"Для географічних типів обчислення виконуються за допомогою оберненої "
+"геодезичної задачі, де одиниці периметра вимірюються в метрах. Якщо PostGIS "
+"скомпільовано з PROJ версії 4.8.0 або пізнішої, сфероїд визначається SRID, "
+"інакше він є ексклюзивним для WGS84. Якщо <varname>use_spheroid = false</"
+"varname>, обчислення будуть наближатися до сфери, а не до сфероїда."
 
 #. Tag: para
 #, no-c-format
@@ -22325,16 +22736,18 @@ msgid ""
 "Currently this is an alias for ST_Perimeter2D, but this may change to "
 "support higher dimensions."
 msgstr ""
+"Наразі це псевдонім для ST_Perimeter2D, але це може змінитися для підтримки "
+"вищих вимірів."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.1.3, 9.5.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.1.3, 9.5.4"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability 2.0.0: Support for geography was introduced"
-msgstr ""
+msgstr "Доступність 2.0.0: додано підтримку географії"
 
 #. Tag: para
 #, no-c-format
@@ -22342,6 +22755,8 @@ msgid ""
 "Return perimeter in feet for Polygon and MultiPolygon. Note this is in feet "
 "because EPSG:2249 is Massachusetts State Plane Feet"
 msgstr ""
+"Повернути периметр у футах для полігону та мультиполігону. Зверніть увагу, "
+"що це фути, оскільки EPSG:2249 — це фути штату Массачусетс."
 
 #. Tag: para
 #, no-c-format
@@ -22349,11 +22764,13 @@ msgid ""
 "Return perimeter in meters and feet for Polygon and MultiPolygon. Note this "
 "is geography (WGS 84 long lat)"
 msgstr ""
+"Повернути периметр у метрах і футах для полігону та мультиполігону. Зверніть "
+"увагу, що це географічні координати (WGS 84 long lat)"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_Length\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_Length\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22361,11 +22778,13 @@ msgid ""
 "Returns the 2D perimeter of a polygonal geometry. Alias for "
 "<varname>ST_Perimeter</varname>."
 msgstr ""
+"Повертає 2D периметр полігональної геометрії. Псевдонім для "
+"<varname>ST_Perimeter</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns the 2-dimensional perimeter of a polygonal geometry."
-msgstr ""
+msgstr "Повертає двовимірний периметр багатокутної геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -22374,11 +22793,13 @@ msgid ""
 "may return the highest dimension perimeter for a geometry. This is still "
 "under consideration"
 msgstr ""
+"Наразі це псевдонім для ST_Perimeter. У майбутніх версіях ST_Perimeter може "
+"повертати найбільший периметр для геометрії. Це питання ще розглядається"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the 3D perimeter of a polygonal geometry."
-msgstr ""
+msgstr "Повертає 3D периметр полігональної геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -22387,16 +22808,18 @@ msgid ""
 "multi-polygon. If the geometry is 2-dimensional, then the 2-dimensional "
 "perimeter is returned."
 msgstr ""
+"Повертає тривимірний периметр геометрії, якщо це полігон або мультиполігон. "
+"Якщо геометрія двовимірна, то повертається двовимірний периметр."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.1, 10.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.1, 10.5"
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_Perimeter3D"
-msgstr ""
+msgstr "Змінено: 2.0.0 У попередніх версіях це називалося ST_Perimeter3D"
 
 #. Tag: para
 #, no-c-format
@@ -22404,16 +22827,18 @@ msgid ""
 "Perimeter of a slightly elevated polygon in the air in Massachusetts state "
 "plane feet"
 msgstr ""
+"Периметр злегка піднятого полігону в повітрі в штаті Массачусетс, фути "
+"площини штату"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Perimeter\"/>, <xref linkend=\"ST_Perimeter2D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Perimeter\"/>, <xref linkend=\"ST_Perimeter2D\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the 2D shortest line between two geometries"
-msgstr ""
+msgstr "Повертає найкоротшу 2D лінію між двома геометріями"
 
 #. Tag: para
 #, no-c-format
@@ -22425,21 +22850,27 @@ msgid ""
 "of the line is the same as <xref linkend=\"ST_Distance\"/> returns for g1 "
 "and g2."
 msgstr ""
+"Повертає найкоротшу двовимірну лінію між двома геометріями. Повернена лінія "
+"починається в <varname>geom1</varname> і закінчується в <varname>geom2</"
+"varname>. Якщо <varname>geom1</varname> і <varname>geom2</varname> "
+"перетинаються, результатом є лінія, що починається і закінчується в точці "
+"перетину. Довжина лінії дорівнює значенню, яке повертає <xref linkend="
+"\"ST_Distance\"/> для g1 і g2."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.4.0 - support for geography."
-msgstr ""
+msgstr "Покращено: 3.4.0 - підтримка географії."
 
 #. Tag: para
 #, no-c-format
 msgid "Shortest line between Point and LineString"
-msgstr ""
+msgstr "Найкоротша лінія між точкою та лінією"
 
 #. Tag: para
 #, no-c-format
 msgid "Shortest line between Polygons"
-msgstr ""
+msgstr "Найкоротша лінія між полігонами"
 
 #. Tag: para
 #, no-c-format
@@ -22447,11 +22878,13 @@ msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
 "linkend=\"ST_MaxDistance\"/>"
 msgstr ""
+", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
+"linkend=\"ST_MaxDistance\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the 3D shortest line between two geometries"
-msgstr ""
+msgstr "Повертає найкоротшу 3D лінію між двома геометріями"
 
 #. Tag: para
 #, no-c-format
@@ -22466,21 +22899,30 @@ msgid ""
 "length of the line this function returns will always be the same as <xref "
 "linkend=\"ST_3DDistance\"/> returns for g1 and g2."
 msgstr ""
+"Повертає найкоротшу тривимірну лінію між двома геометріями. Якщо функція "
+"знаходить більше однієї найкоротшої лінії, вона повертає тільки першу. Якщо "
+"g1 і g2 перетинаються тільки в одній точці, функція повертає лінію, початок "
+"і кінець якої знаходяться в цій точці перетину. Якщо g1 і g2 перетинаються в "
+"більш ніж одній точці, функція поверне лінію, початок і кінець якої "
+"знаходяться в одній точці, але це може бути будь-яка з точок перетину. "
+"Повернена лінія завжди починатиметься в g1 і закінчуватиметься в g2. "
+"Тривимірна довжина лінії, яку повертає ця функція, завжди буде такою ж, як "
+"<xref linkend=\"ST_3DDistance\"/>повертає для g1 і g2."
 
 #. Tag: para
 #, no-c-format
 msgid "linestring and point -- both 3d and 2d shortest line"
-msgstr ""
+msgstr "лінія та точка — найкоротша лінія в 3D та 2D"
 
 #. Tag: para
 #, no-c-format
 msgid "linestring and multipoint -- both 3d and 2d shortest line"
-msgstr ""
+msgstr "лінія та мультиточка — найкоротша лінія в 3D та 2D"
 
 #. Tag: para
 #, no-c-format
 msgid "MultiLineString and polygon both 3d and 2d shortest line"
-msgstr ""
+msgstr "MultiLineString і полігон, як 3D, так і 2D найкоротша лінія"
 
 #. Tag: para
 #, no-c-format
@@ -22488,16 +22930,18 @@ msgid ""
 ", <xref linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_LongestLine\"/>, "
 "<xref linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_3DMaxDistance\"/>"
 msgstr ""
+", <xref linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_LongestLine\"/>, "
+"<xref linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_3DMaxDistance\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Operators"
-msgstr ""
+msgstr "Оператори"
 
 #. Tag: title
 #, no-c-format
 msgid "Bounding Box Operators"
-msgstr ""
+msgstr "Оператори обмежувальної рамки"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22505,6 +22949,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's 2D bounding box intersects B's 2D "
 "bounding box."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо 2D обмежувальна рамка A перетинається "
+"з 2D обмежувальною рамкою B."
 
 #. Tag: para
 #, no-c-format
@@ -22513,6 +22959,9 @@ msgid ""
 "if the 2D bounding box of geometry A intersects the 2D bounding box of "
 "geometry B."
 msgstr ""
+"Оператор <varname>&amp;&amp;</varname> повертає <varname>TRUE</varname>, "
+"якщо 2D обмежувальна рамка геометрії A перетинає 2D обмежувальну рамку "
+"геометрії B."
 
 #. Tag: para
 #, no-c-format
@@ -22520,11 +22969,13 @@ msgid ""
 "This operand will make use of any indexes that may be available on the "
 "geometries."
 msgstr ""
+"Цей операнд буде використовувати будь-які індекси, які можуть бути доступні "
+"для геометрій."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.5.0 support for geography was introduced."
-msgstr ""
+msgstr "Доступність: 1.5.0 додано підтримку географії."
 
 #. Tag: para
 #, no-c-format
@@ -22535,6 +22986,10 @@ msgid ""
 ">, <xref linkend=\"ST_Geometry_Contain\"/>, <xref "
 "linkend=\"ST_Geometry_Contained\"/>"
 msgstr ""
+", <xref linkend=\"ST_Extent\"/>, <xref linkend=\"ST_Geometry_Overabove\"/>, "
+"<xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
+"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22542,6 +22997,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if a geometry's (cached) 2D bounding box "
 "intersects a 2D float precision bounding box (BOX2DF)."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо (кешована) 2D обмежувальна рамка "
+"геометрії перетинає 2D обмежувальну рамку з плаваючою точністю (BOX2DF)."
 
 #. Tag: para
 #, no-c-format
@@ -22552,6 +23009,11 @@ msgid ""
 "box2d, it will be internally converted to a float precision 2D bounding box "
 "(BOX2DF)"
 msgstr ""
+"Оператор <varname>&amp;&amp;</varname> повертає <varname>TRUE</varname>, "
+"якщо кешована 2D обмежувальна рамка геометрії A перетинає 2D обмежувальну "
+"рамку B, використовуючи точність float. Це означає, що якщо B є (подвійної "
+"точності) box2d, вона буде внутрішньо перетворена в 2D обмежувальну рамку з "
+"точністю float (BOX2DF)"
 
 #. Tag: para
 #, no-c-format
@@ -22559,6 +23021,8 @@ msgid ""
 "This operand is intended to be used internally by BRIN indexes, more than by "
 "users."
 msgstr ""
+"Цей операнд призначений для внутрішнього використання індексами BRIN, а не "
+"користувачами."
 
 #. Tag: para
 #, no-c-format
@@ -22566,6 +23030,8 @@ msgid ""
 "Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. "
 "Requires PostgreSQL 9.5+."
 msgstr ""
+"Доступність: 2.3.0 додано підтримку індексів діапазону блоків (BRIN). "
+"Потрібна PostgreSQL 9.5+."
 
 #. Tag: para
 #, no-c-format
@@ -22578,6 +23044,12 @@ msgid ""
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
+", <xref linkend=\"overlaps_box2df_box2df\"/>, <xref linkend="
+"\"contains_geometry_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/"
+">, <xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22585,6 +23057,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if a 2D float precision bounding box "
 "(BOX2DF) intersects a geometry's (cached) 2D bounding box."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо 2D обмежувальна рамка з плаваючою "
+"точністю (BOX2DF) перетинає (кешовану) 2D обмежувальну рамку геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -22595,6 +23069,11 @@ msgid ""
 "box2d, it will be internally converted to a float precision 2D bounding box "
 "(BOX2DF)"
 msgstr ""
+"Оператор <varname>&amp;&amp;</varname> повертає <varname>TRUE</varname>, "
+"якщо 2D обмежувальна рамка A перетинає кешовану 2D обмежувальну рамку "
+"геометрії B, використовуючи точність float. Це означає, що якщо A є ("
+"подвійної точності) box2d, вона буде внутрішньо перетворена в 2D "
+"обмежувальну рамку з точністю float (BOX2DF)"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22602,6 +23081,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if two 2D float precision bounding boxes "
 "(BOX2DF) intersect each other."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо дві обмежувальні рамки 2D з плаваючою "
+"точністю (BOX2DF) перетинаються між собою."
 
 #. Tag: para
 #, no-c-format
@@ -22611,6 +23092,10 @@ msgid ""
 "precision. This means that if A (or B) is a (double precision) box2d, it "
 "will be internally converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
+"Оператор <varname>&amp;&amp;</varname> повертає <varname>TRUE</varname>, "
+"якщо дві 2D обмежувальні рамки A і B перетинаються, використовуючи точність "
+"float. Це означає, що якщо A (або B) є (подвійної точності) box2d, вона буде "
+"внутрішньо перетворена в 2D обмежувальну рамку (BOX2DF) з точністю float"
 
 #. Tag: para
 #, no-c-format
@@ -22618,6 +23103,8 @@ msgid ""
 "This operator is intended to be used internally by BRIN indexes, more than "
 "by users."
 msgstr ""
+"Цей оператор призначений для внутрішнього використання індексами BRIN, а не "
+"користувачами."
 
 #. Tag: para
 #, no-c-format
@@ -22630,6 +23117,12 @@ msgid ""
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"contains_geometry_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/"
+">, <xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22637,6 +23130,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's n-D bounding box intersects B's n-D "
 "bounding box."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо n-D обмежувальна рамка A "
+"перетинається з n-D обмежувальною рамкою B."
 
 #. Tag: para
 #, no-c-format
@@ -22645,16 +23140,19 @@ msgid ""
 "varname> if the n-D bounding box of geometry A intersects the n-D bounding "
 "box of geometry B."
 msgstr ""
+"Оператор <varname>&amp;&amp;&amp;</varname> повертає <varname>TRUE</"
+"varname>, якщо n-вимірна обмежувальна рамка геометрії A перетинає n-вимірну "
+"обмежувальну рамку геометрії B."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: 3D LineStrings"
-msgstr ""
+msgstr "Приклади: 3D лінійні об'єкти"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: 3M LineStrings"
-msgstr ""
+msgstr "Приклади: 3M LineStrings"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22662,6 +23160,9 @@ msgid ""
 "Returns <varname>TRUE</varname> if a geometry's (cached) n-D bounding box "
 "intersects a n-D float precision bounding box (GIDX)."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо (кешована) n-вимірна обмежувальна "
+"рамка геометрії перетинає n-вимірну обмежувальну рамку з плаваючою точністю "
+"(GIDX)."
 
 #. Tag: para
 #, no-c-format
@@ -22672,11 +23173,16 @@ msgid ""
 "precision) box3d, it will be internally converted to a float precision 3D "
 "bounding box (GIDX)"
 msgstr ""
+"Оператор <varname>&amp;&amp;&amp;</varname> повертає <varname>TRUE</"
+"varname>, якщо кешована n-вимірна обмежувальна рамка геометрії A перетинає n-"
+"вимірну обмежувальну рамку B, використовуючи точність float. Це означає, що "
+"якщо B є (подвійної точності) box3d, вона буде внутрішньо перетворена в "
+"обмежувальну рамку 3D з точністю float (GIDX)"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"overlaps_nd_gidx_gidx\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"overlaps_nd_gidx_gidx\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22684,6 +23190,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if a n-D float precision bounding box (GIDX) "
 "intersects a geometry's (cached) n-D bounding box."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка з n-вимірною "
+"точністю (GIDX) перетинає (кешовану) n-вимірну обмежувальну рамку геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -22694,6 +23202,11 @@ msgid ""
 "precision) box3d, it will be internally converted to a float precision 3D "
 "bounding box (GIDX)"
 msgstr ""
+"Оператор <varname>&amp;&amp;&amp;</varname> повертає <varname>TRUE</"
+"varname>, якщо n-вимірна обмежувальна рамка A перетинає кешовану n-вимірну "
+"обмежувальну рамку геометрії B, використовуючи точність float. Це означає, "
+"що якщо A є (подвійної точності) box3d, вона буде внутрішньо перетворена в "
+"3D обмежувальну рамку (GIDX) з точністю float"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22701,6 +23214,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if two n-D float precision bounding boxes "
 "(GIDX) intersect each other."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо дві n-вимірні обмежувальні рамки "
+"(GIDX) з плаваючою точністю перетинаються між собою."
 
 #. Tag: para
 #, no-c-format
@@ -22710,11 +23225,16 @@ msgid ""
 "precision. This means that if A (or B) is a (double precision) box3d, it "
 "will be internally converted to a float precision 3D bounding box (GIDX)"
 msgstr ""
+"Оператор <varname>&amp;&amp;&amp;</varname> повертає <varname>TRUE</"
+"varname>, якщо дві n-вимірні обмежувальні рамки A і B перетинаються, "
+"використовуючи точність float. Це означає, що якщо A (або B) є (подвійної "
+"точності) box3d, вона буде внутрішньо перетворена в обмежувальну рамку 3D з "
+"точністю float (GIDX)"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"overlaps_nd_gidx_geometry\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"overlaps_nd_gidx_geometry\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22722,6 +23242,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box overlaps or is to the "
 "left of B's."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A перекриває або "
+"знаходиться ліворуч від обмежувальної рамки B."
 
 #. Tag: para
 #, no-c-format
@@ -22731,6 +23253,10 @@ msgid ""
 "box of geometry B, or more accurately, overlaps or is NOT to the right of "
 "the bounding box of geometry B."
 msgstr ""
+"Оператор <varname>&amp;&lt;</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка геометрії A перекриває або знаходиться ліворуч від "
+"обмежувальної рамки геометрії B, або, точніше, перекриває або НЕ знаходиться "
+"праворуч від обмежувальної рамки геометрії B."
 
 #. Tag: para
 #, no-c-format
@@ -22739,12 +23265,16 @@ msgid ""
 "linkend=\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overbelow\"/"
 ">"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
+"\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overbelow\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box overlaps or is below B's."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A перекриває або "
+"знаходиться нижче обмежувальної рамки B."
 
 #. Tag: para
 #, no-c-format
@@ -22754,6 +23284,10 @@ msgid ""
 "of geometry B, or more accurately, overlaps or is NOT above the bounding box "
 "of geometry B."
 msgstr ""
+"Оператор <varname>&amp;&lt;|</varname> повертає <varname>TRUE</varname>, "
+"якщо обмежувальна рамка геометрії A перекриває або знаходиться нижче "
+"обмежувальної рамки геометрії B, або, точніше, перекриває або НЕ знаходиться "
+"вище обмежувальної рамки геометрії B."
 
 #. Tag: para
 #, no-c-format
@@ -22761,6 +23295,8 @@ msgid ""
 ", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref "
 "linkend=\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
+"\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22768,6 +23304,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A' bounding box overlaps or is to the "
 "right of B's."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A перекриває або "
+"знаходиться праворуч від обмежувальної рамки B."
 
 #. Tag: para
 #, no-c-format
@@ -22777,6 +23315,10 @@ msgid ""
 "box of geometry B, or more accurately, overlaps or is NOT to the left of the "
 "bounding box of geometry B."
 msgstr ""
+"Оператор <varname>&amp;&gt;</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка геометрії A перекриває або знаходиться праворуч від "
+"обмежувальної рамки геометрії B, або, точніше, перекриває або НЕ знаходиться "
+"ліворуч від обмежувальної рамки геометрії B."
 
 #. Tag: para
 #, no-c-format
@@ -22784,6 +23326,8 @@ msgid ""
 ", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref "
 "linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22791,6 +23335,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is strictly to the left "
 "of B's."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A знаходиться "
+"строго ліворуч від B."
 
 #. Tag: para
 #, no-c-format
@@ -22799,6 +23345,9 @@ msgid ""
 "the bounding box of geometry A is strictly to the left of the bounding box "
 "of geometry B."
 msgstr ""
+"Оператор <varname>&lt;&lt;</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка геометрії A знаходиться строго ліворуч від обмежувальної "
+"рамки геометрії B."
 
 #. Tag: para
 #, no-c-format
@@ -22806,12 +23355,16 @@ msgid ""
 ", <xref linkend=\"ST_Geometry_Above\"/>, <xref linkend=\"ST_Geometry_Below\"/"
 ">"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Above\"/>, <xref linkend=\"ST_Geometry_Below\""
+"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is strictly below B's."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A знаходиться "
+"строго нижче B."
 
 #. Tag: para
 #, no-c-format
@@ -22820,6 +23373,9 @@ msgid ""
 "the bounding box of geometry A is strictly below the bounding box of "
 "geometry B."
 msgstr ""
+"Оператор <varname>&lt;&lt;|</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка геометрії A знаходиться строго нижче обмежувальної рамки "
+"геометрії B."
 
 #. Tag: para
 #, no-c-format
@@ -22827,6 +23383,8 @@ msgid ""
 ", <xref linkend=\"ST_Geometry_Right\"/>, <xref linkend=\"ST_Geometry_Above\"/"
 ">"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Right\"/>, <xref linkend=\"ST_Geometry_Above\""
+"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22835,6 +23393,9 @@ msgid ""
 "geometry/geography A are the same as the coordinates and coordinate order of "
 "geometry/geography B."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо координати та порядок координат "
+"геометрії/географії A збігаються з координатами та порядком координат "
+"геометрії/географії B."
 
 #. Tag: para
 #, no-c-format
@@ -22846,6 +23407,12 @@ msgid ""
 "orderings and comparison of geometries (ie. in a GROUP BY or ORDER BY "
 "clause)."
 msgstr ""
+"Оператор <varname>&#61;</varname> повертає <varname>TRUE</varname>, якщо "
+"координати та порядок координат геометрії/географії A збігаються з "
+"координатами та порядком координат геометрії/географії B. PostgreSQL "
+"використовує оператори =, &lt; та &gt;, визначені для геометрій, для "
+"виконання внутрішнього впорядкування та порівняння геометрій (тобто в "
+"операторах GROUP BY або ORDER BY)."
 
 #. Tag: para
 #, no-c-format
@@ -22857,6 +23424,12 @@ msgid ""
 "representations, use <xref linkend=\"ST_OrderingEquals\"/> or <xref "
 "linkend=\"ST_Equals\"/>"
 msgstr ""
+"Цей оператор вважає рівними лише геометрію/географію, які є абсолютно "
+"однаковими в усіх відношеннях, мають однакові координати в однаковому "
+"порядку. Для «просторової рівності», яка ігнорує такі речі, як порядок "
+"координат, і може виявляти об'єкти, що займають однакову просторову площу, "
+"але мають різне представлення, використовуйте <xref linkend="
+"\"ST_OrderingEquals\"/>або <xref linkend=\"ST_Equals\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -22865,6 +23438,9 @@ msgid ""
 "geometries. For an index assisted exact equality test, combine &#61; with "
 "&amp;&amp;."
 msgstr ""
+"Цей операнд НЕ використовуватиме жодних індексів, які можуть бути доступні "
+"для геометрій. Для перевірки точної рівності за допомогою індексу поєднайте "
+"&#61; з &amp;&amp;."
 
 #. Tag: para
 #, no-c-format
@@ -22873,12 +23449,16 @@ msgid ""
 "geometric equality. If you need bounding box equality, use <xref "
 "linkend=\"ST_Geometry_Same\"/> instead."
 msgstr ""
+"Змінено: 2.4.0, у попередніх версіях це була рівність обмежувальної рамки, а "
+"не геометрична рівність. Якщо вам потрібна рівність обмежувальної рамки, "
+"використовуйте замість цього <xref linkend=\"ST_Geometry_Same\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_Same\"/>"
 msgstr ""
+", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_Same\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22886,6 +23466,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is strictly to the right "
 "of B's."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A знаходиться "
+"строго праворуч від B."
 
 #. Tag: para
 #, no-c-format
@@ -22894,12 +23476,17 @@ msgid ""
 "the bounding box of geometry A is strictly to the right of the bounding box "
 "of geometry B."
 msgstr ""
+"Оператор <varname>&gt;&gt;</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка геометрії A знаходиться строго праворуч від обмежувальної "
+"рамки геометрії B."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is contained by B's."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A міститься в "
+"обмежувальній рамці B."
 
 #. Tag: para
 #, no-c-format
@@ -22908,11 +23495,14 @@ msgid ""
 "bounding box of geometry A is completely contained by the bounding box of "
 "geometry B."
 msgstr ""
+"Оператор <varname>@</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка геометрії A повністю міститься в обмежувальній рамці "
+"геометрії B."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"geometry_overlaps\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"geometry_overlaps\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22920,6 +23510,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if a geometry's 2D bounding box is contained "
 "into a 2D float precision bounding box (BOX2DF)."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо 2D обмежувальна рамка геометрії "
+"міститься в 2D обмежувальній рамці з плаваючою точністю (BOX2DF)."
 
 #. Tag: para
 #, no-c-format
@@ -22929,6 +23521,11 @@ msgid ""
 "precision. This means that if B is a (double precision) box2d, it will be "
 "internally converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
+"Оператор <varname>@</varname> повертає <varname>TRUE</varname>, якщо 2D "
+"обмежувальна рамка геометрії A міститься в 2D обмежувальній рамці B, "
+"використовуючи точність float. Це означає, що якщо B є (подвійної точності) "
+"box2d, вона буде внутрішньо перетворена в 2D обмежувальну рамку з точністю "
+"float (BOX2DF)"
 
 #. Tag: para
 #, no-c-format
@@ -22941,6 +23538,11 @@ msgid ""
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_box2df_geometry\"/"
+">, <xref linkend=\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22948,6 +23550,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if a 2D float precision bounding box "
 "(BOX2DF) is contained into a geometry's 2D bounding box."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо 2D обмежувальна рамка з плаваючою "
+"точністю (BOX2DF) міститься в 2D обмежувальній рамці геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -22957,6 +23561,11 @@ msgid ""
 "float precision. This means that if B is a (double precision) box2d, it will "
 "be internally converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
+"Оператор <varname>@</varname> повертає <varname>TRUE</varname>, якщо 2D "
+"обмежувальна рамка A міститься в 2D обмежувальній рамці геометрії B, "
+"використовуючи точність float. Це означає, що якщо B є (подвійної точності) "
+"box2d, вона буде внутрішньо перетворена в 2D обмежувальну рамку з точністю "
+"float (BOX2DF)"
 
 #. Tag: para
 #, no-c-format
@@ -22969,6 +23578,11 @@ msgid ""
 "linkend=\"is_contained_geometry_box2df\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_geometry_box2df\"/"
+">, <xref linkend=\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22976,6 +23590,9 @@ msgid ""
 "Returns <varname>TRUE</varname> if a 2D float precision bounding box "
 "(BOX2DF) is contained into another 2D float precision bounding box."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо 2D обмежувальна рамка з плаваючою "
+"точністю (BOX2DF) міститься в іншій 2D обмежувальній рамці з плаваючою "
+"точністю."
 
 #. Tag: para
 #, no-c-format
@@ -22985,6 +23602,11 @@ msgid ""
 "precision. This means that if A (or B) is a (double precision) box2d, it "
 "will be internally converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
+"Оператор <varname>@</varname> повертає <varname>TRUE</varname>, якщо 2D "
+"обмежувальна рамка A міститься в 2D обмежувальній рамці B, використовуючи "
+"точність float. Це означає, що якщо A (або B) є (подвійної точності) box2d, "
+"вона буде внутрішньо перетворена в 2D обмежувальну рамку з точністю float "
+"(BOX2DF)"
 
 #. Tag: para
 #, no-c-format
@@ -22997,12 +23619,19 @@ msgid ""
 "linkend=\"is_contained_geometry_box2df\"/>, <xref "
 "linkend=\"is_contained_box2df_geometry\"/>"
 msgstr ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_geometry_box2df\"/"
+">, <xref linkend=\"is_contained_box2df_geometry\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box overlaps or is above B's."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A перекриває або "
+"знаходиться над обмежувальною рамкою B."
 
 #. Tag: para
 #, no-c-format
@@ -23012,6 +23641,10 @@ msgid ""
 "geometry B, or more accurately, overlaps or is NOT below the bounding box of "
 "geometry B."
 msgstr ""
+"Оператор <varname>|&amp;&gt;</varname> повертає <varname>TRUE</varname>, "
+"якщо обмежувальна рамка геометрії A перекриває або знаходиться над "
+"обмежувальною рамкою геометрії B, або, точніше, перекриває або НЕ "
+"знаходиться нижче обмежувальної рамки геометрії B."
 
 #. Tag: para
 #, no-c-format
@@ -23019,12 +23652,16 @@ msgid ""
 ", <xref linkend=\"ST_Geometry_Overright\"/>, <xref "
 "linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is strictly above B's."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A знаходиться "
+"строго над обмежувальною рамкою B."
 
 #. Tag: para
 #, no-c-format
@@ -23033,6 +23670,9 @@ msgid ""
 "the bounding box of geometry A is strictly above the bounding box of "
 "geometry B."
 msgstr ""
+"Оператор <varname>|&gt;&gt;</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка геометрії A знаходиться строго над обмежувальною рамкою "
+"геометрії B."
 
 #. Tag: para
 #, no-c-format
@@ -23040,11 +23680,13 @@ msgid ""
 ", <xref linkend=\"ST_Geometry_Right\"/>, <xref linkend=\"ST_Geometry_Below\"/"
 ">"
 msgstr ""
+", <xref linkend=\"ST_Geometry_Right\"/>, <xref linkend=\"ST_Geometry_Below\""
+"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns <varname>TRUE</varname> if A's bounding box contains B's."
-msgstr ""
+msgstr "Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A містить B."
 
 #. Tag: para
 #, no-c-format
@@ -23053,6 +23695,9 @@ msgid ""
 "bounding box of geometry A completely contains the bounding box of geometry "
 "B."
 msgstr ""
+"Оператор <varname>~</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка геометрії A повністю містить обмежувальну рамку геометрії "
+"B."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23060,6 +23705,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if a geometry's 2D bonding box contains a 2D "
 "float precision bounding box (GIDX)."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо 2D обмежувальна рамка геометрії "
+"містить 2D обмежувальну рамку з плаваючою точністю (GIDX)."
 
 #. Tag: para
 #, no-c-format
@@ -23069,6 +23716,11 @@ msgid ""
 "precision. This means that if B is a (double precision) box2d, it will be "
 "internally converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
+"Оператор <varname>~</varname> повертає <varname>TRUE</varname>, якщо 2D "
+"обмежувальна рамка геометрії A містить 2D обмежувальну рамку B, "
+"використовуючи точність float. Це означає, що якщо B є (подвійної точності) "
+"box2d, вона буде внутрішньо перетворена в 2D обмежувальну рамку з точністю "
+"float (BOX2DF)"
 
 #. Tag: para
 #, no-c-format
@@ -23081,6 +23733,12 @@ msgid ""
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/>, "
+"<xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23088,6 +23746,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if a 2D float precision bounding box "
 "(BOX2DF) contains a geometry's 2D bonding box."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка з плаваючою "
+"точністю 2D (BOX2DF) містить обмежувальну рамку 2D геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -23097,6 +23757,10 @@ msgid ""
 "precision. This means that if A is a (double precision) box2d, it will be "
 "internally converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
+"Оператор <varname>~</varname> повертає <varname>TRUE</varname>, якщо 2D "
+"обмежувальна рамка A містить обмежувальну рамку геометрії B, використовуючи "
+"точність float. Це означає, що якщо A є (подвійної точності) box2d, вона "
+"буде внутрішньо перетворена в 2D обмежувальну рамку з точністю float (BOX2DF)"
 
 #. Tag: para
 #, no-c-format
@@ -23109,6 +23773,12 @@ msgid ""
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23116,6 +23786,9 @@ msgid ""
 "Returns <varname>TRUE</varname> if a 2D float precision bounding box "
 "(BOX2DF) contains another 2D float precision bounding box (BOX2DF)."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка з точністю до 2D "
+"float (BOX2DF) містить іншу обмежувальну рамку з точністю до 2D float "
+"(BOX2DF)."
 
 #. Tag: para
 #, no-c-format
@@ -23125,6 +23798,10 @@ msgid ""
 "means that if A is a (double precision) box2d, it will be internally "
 "converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
+"Оператор <varname>~</varname> повертає <varname>TRUE</varname>, якщо 2D "
+"обмежувальна рамка A містить 2D обмежувальну рамку B, використовуючи "
+"точність float. Це означає, що якщо A є (подвійної точності) box2d, вона "
+"буде внутрішньо перетворена в 2D обмежувальну рамку з точністю float (BOX2DF)"
 
 #. Tag: para
 #, no-c-format
@@ -23137,11 +23814,19 @@ msgid ""
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns <varname>TRUE</varname> if A's bounding box is the same as B's."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A збігається з "
+"обмежувальною рамкою B."
 
 #. Tag: para
 #, no-c-format
@@ -23150,11 +23835,14 @@ msgid ""
 "bounding box of geometry/geography A is the same as the bounding box of "
 "geometry/geography B."
 msgstr ""
+"Оператор <varname>~=</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка геометрії/географії A збігається з обмежувальною рамкою "
+"геометрії/географії B."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.5.0 changed behavior"
-msgstr ""
+msgstr "Доступність: 1.5.0 змінено поведінку"
 
 #. Tag: para
 #, no-c-format
@@ -23166,22 +23854,30 @@ msgid ""
 "can run the query below. To check for true equality use <xref "
 "linkend=\"ST_OrderingEquals\"/> or <xref linkend=\"ST_Equals\"/>."
 msgstr ""
+"У PostGIS 1.5 поведінка цього оператора змінилася: замість перевірки "
+"фактичної геометричної рівності тепер перевіряється лише рівність "
+"обмежувальної рамки. Щоб ускладнити справу, поведінка оператора також "
+"залежить від того, чи було оновлення жорстким чи м'яким. Щоб дізнатися, яку "
+"поведінку має ваша база даних, виконайте запит, наведений нижче. Щоб "
+"перевірити справжню рівність, використовуйте <xref linkend="
+"\"ST_OrderingEquals\"/>або <xref linkend=\"ST_Equals\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_EQ\"/>"
 msgstr ""
+", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_EQ\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Distance Operators"
-msgstr ""
+msgstr "Оператори відстані"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the 2D distance between A and B."
-msgstr ""
+msgstr "Повертає 2D відстань між A і B."
 
 #. Tag: para
 #, no-c-format
@@ -23193,6 +23889,12 @@ msgid ""
 "search giving true distance between geometries, and distance sphere for "
 "geographies."
 msgstr ""
+"Оператор <varname>&lt;-&gt;</varname> повертає двовимірну відстань між двома "
+"геометріями. Використовується в розділі «ORDER BY» для отримання наборів "
+"результатів найближчих сусідів за допомогою індексу. Для PostgreSQL нижче "
+"9.5 повертає тільки відстань до центроїда обмежувальних рамок, а для "
+"PostgreSQL 9.5+ виконує пошук справжньої відстані KNN, що дає справжню "
+"відстань між геометріями та відстань до сфери для географічних об'єктів."
 
 #. Tag: para
 #, no-c-format
@@ -23202,6 +23904,10 @@ msgid ""
 "that the spatial index is only used when the operator is in the ORDER BY "
 "clause."
 msgstr ""
+"Цей операнд використовує 2D-індекси GiST, які можуть бути доступні для "
+"геометрій. Він відрізняється від інших операторів, що використовують "
+"просторові індекси, тим, що просторовий індекс використовується тільки тоді, "
+"коли оператор знаходиться в розділі ORDER BY."
 
 #. Tag: para
 #, no-c-format
@@ -23210,6 +23916,9 @@ msgid ""
 "subquery/cte). e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a."
 "geom"
 msgstr ""
+"Індекс спрацьовує тільки в тому випадку, якщо одна з геометрій є константою ("
+"не знаходиться в підзапиті/cte). Наприклад, “SRID=3005;POINT(1011102 "
+"450541)”::geometry замість a.geom"
 
 #. Tag: para
 #, no-c-format
@@ -23218,6 +23927,8 @@ msgid ""
 "html\">PostGIS workshop: Nearest-Neighbor Searching</link> for a detailed "
 "example."
 msgstr ""
+"Детальний приклад див. у <link xlink:href=«https://postgis.net/workshops/"
+"postgis-intro/knn.html»>семінарі PostGIS: Пошук найближчих сусідів</link>."
 
 #. Tag: para
 #, no-c-format
@@ -23227,6 +23938,10 @@ msgid ""
 "rather than spheroid. For PostgreSQL 9.4 and below, geography support is new "
 "but only supports centroid box."
 msgstr ""
+"Покращено: 2.2.0 — Поведінка True KNN («K найближчих сусідів») для геометрії "
+"та географії для PostgreSQL 9.5+. Примітка щодо географії: KNN базується на "
+"сфері, а не на сфероїді. Для PostgreSQL 9.4 та нижчих версій підтримка "
+"географії є новою, але підтримує лише центроїдні прямокутники."
 
 #. Tag: para
 #, no-c-format
@@ -23235,6 +23950,9 @@ msgid ""
 "so you'll want to get rid of that hack if you are running your code only on "
 "PostGIS 2.2+ 9.5+. See examples below."
 msgstr ""
+"Змінено: 2.2.0 — Для користувачів PostgreSQL 9.5 старий гібридний синтаксис "
+"може працювати повільніше, тому вам слід позбутися цього хаку, якщо ви "
+"виконуєте свій код тільки на PostGIS 2.2+ 9.5+. Дивіться приклади нижче."
 
 #. Tag: para
 #, no-c-format
@@ -23243,11 +23961,15 @@ msgid ""
 "centroid distances instead of true distances. Exact results for points, "
 "inexact for all other types. Available for PostgreSQL 9.1+"
 msgstr ""
+"Доступність: 2.0.0 — Weak KNN надає найближчих сусідів на основі "
+"геометричних відстаней до центроїдів замість реальних відстаней. Точні "
+"результати для точок, неточні для всіх інших типів. Доступно для PostgreSQL 9"
+".1+"
 
 #. Tag: para
 #, no-c-format
 msgid "Then the KNN raw answer:"
-msgstr ""
+msgstr "Потім необроблена відповідь KNN:"
 
 #. Tag: para
 #, no-c-format
@@ -23255,6 +23977,8 @@ msgid ""
 "If you run \"EXPLAIN ANALYZE\" on the two queries you would see a "
 "performance improvement for the second."
 msgstr ""
+"Якщо ви виконаєте «EXPLAIN ANALYZE» для двох запитів, ви побачите підвищення "
+"продуктивності для другого."
 
 #. Tag: para
 #, no-c-format
@@ -23263,12 +23987,17 @@ msgid ""
 "true nearest neighbors. First a CTE query using the index-assisted KNN, then "
 "an exact query to get correct ordering:"
 msgstr ""
+"Для користувачів, які працюють з PostgreSQL &lt; 9.5, використовуйте "
+"гібридний запит, щоб знайти найближчих сусідів. Спочатку виконайте запит CTE "
+"з використанням KNN з індексом, а потім точний запит, щоб отримати "
+"правильний порядок:"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_box\"/>"
 msgstr ""
+", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_box\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23276,6 +24005,7 @@ msgid ""
 "Returns the distance between A and B trajectories at their closest point of "
 "approach."
 msgstr ""
+"Повертає відстань між траєкторіями A і B у найближчій точці їх зближення."
 
 #. Tag: para
 #, no-c-format
@@ -23286,6 +24016,11 @@ msgid ""
 "for doing nearest neighbor searches using an N-dimensional index (requires "
 "PostgreSQL 9.5.0 or higher)."
 msgstr ""
+"Оператор <varname>|=|</varname> повертає 3D відстань між двома траєкторіями ("
+"див. <xref linkend=\"ST_IsValidTrajectory\"/>). Це те саме, що <xref linkend="
+"\"ST_DistanceCPA\"/>, але як оператор його можна використовувати для пошуку "
+"найближчих сусідів за допомогою N-вимірного індексу (потрібна PostgreSQL "
+"9.5.0 або вище)."
 
 #. Tag: para
 #, no-c-format
@@ -23295,6 +24030,10 @@ msgid ""
 "that the spatial index is only used when the operator is in the ORDER BY "
 "clause."
 msgstr ""
+"Цей операнд використовує індекси ND GiST, які можуть бути доступні для "
+"геометрій. Він відрізняється від інших операторів, що використовують "
+"просторові індекси, тим, що просторовий індекс використовується тільки тоді, "
+"коли оператор знаходиться в розділі ORDER BY."
 
 #. Tag: para
 #, no-c-format
@@ -23303,11 +24042,15 @@ msgid ""
 "subquery/cte). e.g. 'SRID=3005;LINESTRINGM(0 0 0,0 0 1)'::geometry instead "
 "of a.geom"
 msgstr ""
+"Індекс спрацьовує тільки в тому випадку, якщо одна з геометрій є константою ("
+"не в підзапиті/cte). Наприклад, “SRID=3005;LINESTRINGM(0 0 0,0 0 1)”::"
+"geometry замість a.geom."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.2.0. Index-supported only available for PostgreSQL 9.5+"
 msgstr ""
+"Доступність: 2.2.0. Підтримка індексу доступна тільки для PostgreSQL 9.5+"
 
 #. Tag: para
 #, no-c-format
@@ -23315,11 +24058,13 @@ msgid ""
 ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
 "linkend=\"ST_IsValidTrajectory\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
+"\"ST_IsValidTrajectory\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the 2D distance between A and B bounding boxes."
-msgstr ""
+msgstr "Повертає 2D відстань між обмежувальними рамками A і B."
 
 #. Tag: para
 #, no-c-format
@@ -23329,6 +24074,11 @@ msgid ""
 "(PostgreSQL 9.1+ required). Useful for doing nearest neighbor <emphasis "
 "role=\"strong\">approximate</emphasis> distance ordering."
 msgstr ""
+"Оператор <varname>&lt;#&gt;</varname> повертає відстань між двома "
+"обмежувальними рамками з плаваючою точкою, можливо зчитуючи їх з "
+"просторового індексу (потрібна PostgreSQL 9.1+). Корисно для <emphasis role="
+"\"strong\">наближеного</emphasis> упорядкування найближчих сусідів за "
+"відстанню."
 
 #. Tag: para
 #, no-c-format
@@ -23338,6 +24088,10 @@ msgid ""
 "that the spatial index is only used when the operator is in the ORDER BY "
 "clause."
 msgstr ""
+"Цей операнд використовує всі індекси, які можуть бути доступні для "
+"геометрій. Він відрізняється від інших операторів, які використовують "
+"просторові індекси, тим, що просторовий індекс використовується тільки тоді, "
+"коли оператор знаходиться в розділі ORDER BY."
 
 #. Tag: para
 #, no-c-format
@@ -23345,23 +24099,28 @@ msgid ""
 "Index only kicks in if one of the geometries is a constant e.g. ORDER BY "
 "(ST_GeomFromText('POINT(1 2)') &lt;#&gt; geom) instead of g1.geom &lt;#&gt;."
 msgstr ""
+"Індекс спрацьовує тільки в тому випадку, якщо одна з геометрій є константою, "
+"наприклад ORDER BY (ST_GeomFromText(“POINT(1 2)”) &lt;#&gt; geom) замість "
+"g1.geom &lt;#&gt;."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+"
-msgstr ""
+msgstr "Доступність: 2.0.0 — KNN доступний тільки для PostgreSQL 9.1+"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_knn\"/>"
 msgstr ""
+", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_knn\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the n-D distance between the A and B geometries or bounding boxes"
 msgstr ""
+"Повертає n-вимірну відстань між геометріями A і B або обмежувальними рамками"
 
 #. Tag: para
 #, no-c-format
@@ -23371,6 +24130,10 @@ msgid ""
 "geometries. Useful for doing nearest neighbor <emphasis "
 "role=\"strong\">approximate</emphasis> distance ordering."
 msgstr ""
+"Оператор <varname>&lt;&lt;-&gt;&gt;</varname> повертає n-вимірну (евклідову) "
+"відстань між центроїдами обмежувальних рамок двох геометрій. Корисний для "
+"<emphasis role=\"strong\">наближеного</emphasis> упорядкування найближчих "
+"сусідів за відстанню."
 
 #. Tag: para
 #, no-c-format
@@ -23380,16 +24143,20 @@ msgid ""
 "that the spatial index is only used when the operator is in the ORDER BY "
 "clause."
 msgstr ""
+"Цей операнд використовує індекси n-D GiST, які можуть бути доступні для "
+"геометрій. Він відрізняється від інших операторів, що використовують "
+"просторові індекси, тим, що просторовий індекс використовується тільки тоді, "
+"коли оператор знаходиться в розділі ORDER BY."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+"
-msgstr ""
+msgstr "Доступність: 2.2.0 — KNN доступний тільки для PostgreSQL 9.1+"
 
 #. Tag: title
 #, no-c-format
 msgid "Geometry Output"
-msgstr ""
+msgstr "Вивід геометрії"
 
 #. Tag: para
 #, no-c-format
@@ -23397,6 +24164,8 @@ msgid ""
 "These functions convert geometry objects into various textual or binary "
 "formats."
 msgstr ""
+"Ці функції перетворюють геометричні об'єкти в різні текстові або двійкові "
+"формати."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23404,6 +24173,8 @@ msgid ""
 "Return the Well-Known Text (WKT) representation of the geometry with SRID "
 "meta data."
 msgstr ""
+"Повернути представлення геометрії у вигляді добре відомого тексту (WKT) з "
+"метаданими SRID."
 
 #. Tag: para
 #, no-c-format
@@ -23413,6 +24184,10 @@ msgid ""
 "used to reduce the maximum number of decimal digits after floating point "
 "used in output (defaults to 15)."
 msgstr ""
+"Повертає добре відоме текстове представлення геометрії з префіксом SRID. "
+"Опціональний аргумент <parameter>maxdecimaldigits</parameter> може "
+"використовуватися для зменшення максимальної кількості десяткових цифр після "
+"плаваючої коми, що використовуються у вихідних даних (за замовчуванням — 15)."
 
 #. Tag: para
 #, no-c-format
@@ -23420,6 +24195,8 @@ msgid ""
 "To perform the inverse conversion of EWKT representation to PostGIS geometry "
 "use <xref linkend=\"ST_GeomFromEWKT\"/>."
 msgstr ""
+"Для виконання зворотного перетворення представлення EWKT у геометрію PostGIS "
+"використовуйте <xref linkend=\"ST_GeomFromEWKT\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -23428,6 +24205,10 @@ msgid ""
 "geometry to become invalid. To avoid this use <xref "
 "linkend=\"ST_ReducePrecision\"/> with a suitable gridsize first."
 msgstr ""
+"Використання параметра <parameter>maxdecimaldigits</parameter> може "
+"призвести до некоректності геометрії вихідних даних. Щоб уникнути цього, "
+"спочатку використовуйте <xref linkend=\"ST_ReducePrecision\"/> з відповідним "
+"розміром сітки."
 
 #. Tag: para
 #, no-c-format
@@ -23435,6 +24216,8 @@ msgid ""
 "The WKT spec does not include the SRID. To get the OGC WKT format use <xref "
 "linkend=\"ST_AsText\"/>."
 msgstr ""
+"Специфікація WKT не включає SRID. Щоб отримати формат OGC WKT, "
+"використовуйте <xref linkend=\"ST_AsText\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -23443,11 +24226,14 @@ msgid ""
 "use <xref linkend=\"ST_AsBinary\"/> or <xref linkend=\"ST_AsEWKB\"/> format "
 "for transport."
 msgstr ""
+"Формат WKT не зберігає точність, тому щоб запобігти обрізанню плаваючої "
+"точки, для передачі використовуйте формат <xref linkend=\"ST_AsBinary\"/>або "
+"<xref linkend=\"ST_AsEWKB\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.1.0 support for optional precision parameter."
-msgstr ""
+msgstr "Покращено: 3.1.0 підтримка опціонального параметра точності."
 
 #. Tag: para
 #, no-c-format
@@ -23455,6 +24241,8 @@ msgid ""
 "Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and "
 "TIN was introduced."
 msgstr ""
+"Покращено: 2.0.0 додано підтримку географії, багатогранних поверхонь, "
+"трикутників і TIN."
 
 #. Tag: para
 #, no-c-format
@@ -23462,6 +24250,8 @@ msgid ""
 ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
 "linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+"linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23469,6 +24259,8 @@ msgid ""
 "Return the Well-Known Text (WKT) representation of the geometry/geography "
 "without SRID metadata."
 msgstr ""
+"Повернути представлення геометрії/географії у вигляді добре відомого тексту "
+"(WKT) без метаданих SRID."
 
 #. Tag: para
 #, no-c-format
@@ -23479,6 +24271,11 @@ msgid ""
 "number of digits after the decimal point in output ordinates (defaults to "
 "15)."
 msgstr ""
+"Повертає представлення геометрії/географії у форматі OGC <link linkend="
+"\"OpenGISWKBWKT\">Well-Known Text</link> (WKT). Опціональний аргумент "
+"<parameter>maxdecimaldigits</parameter> може використовуватися для обмеження "
+"кількості цифр після десяткової крапки у вихідних координатах (за "
+"замовчуванням — 15)."
 
 #. Tag: para
 #, no-c-format
@@ -23486,6 +24283,8 @@ msgid ""
 "To perform the inverse conversion of WKT representation to PostGIS geometry "
 "use <xref linkend=\"ST_GeomFromText\"/>."
 msgstr ""
+"Для виконання зворотного перетворення представлення WKT в геометрію PostGIS "
+"використовуйте <xref linkend=\"ST_GeomFromText\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -23494,6 +24293,9 @@ msgid ""
 "the SRID as part of the output representation, use the non-standard PostGIS "
 "function <xref linkend=\"ST_AsEWKT\"/>"
 msgstr ""
+"Стандартне представлення OGC WKT не включає SRID. Щоб включити SRID як "
+"частину вихідного представлення, використовуйте нестандартну функцію PostGIS "
+"<xref linkend=\"ST_AsEWKT\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -23504,26 +24306,31 @@ msgid ""
 "format (see <xref linkend=\"ST_AsBinary\"/> and <parameter>maxdecimaldigits</"
 "parameter>)."
 msgstr ""
+"Текстове представлення чисел у WKT може не зберігати повну точність з "
+"плаваючою комою. Щоб забезпечити повну точність зберігання або передачі "
+"даних, найкраще використовувати формат <link linkend=\"OpenGISWKBWKT\">Well-"
+"Known Binary</link> (WKB) (див. <xref linkend=\"ST_AsBinary\"/>та "
+"<parameter>maxdecimaldigits</parameter>)."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.5 - support for geography was introduced."
-msgstr ""
+msgstr "Доступність: 1.5 — додано підтримку географії."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.5 - optional parameter precision introduced."
-msgstr ""
+msgstr "Покращено: 2.5 — додано опційний параметр точності."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.25"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.25"
 
 #. Tag: para
 #, no-c-format
 msgid "Full precision output is the default."
-msgstr ""
+msgstr "Повна точність виводу є стандартною настройкою."
 
 #. Tag: para
 #, no-c-format
@@ -23531,6 +24338,8 @@ msgid ""
 "The <parameter>maxdecimaldigits</parameter> argument can be used to limit "
 "output precision."
 msgstr ""
+"Аргумент <parameter>maxdecimaldigits</parameter> можна використовувати для "
+"обмеження точності виводу."
 
 #. Tag: para
 #, no-c-format
@@ -23538,6 +24347,8 @@ msgid ""
 ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
 "linkend=\"ST_GeomFromText\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
+"linkend=\"ST_GeomFromText\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23545,6 +24356,8 @@ msgid ""
 "Return the OGC/ISO Well-Known Binary (WKB) representation of the geometry/"
 "geography without SRID meta data."
 msgstr ""
+"Повернути представлення геометрії/географії у форматі OGC/ISO Well-Known "
+"Binary (WKB) без метаданих SRID."
 
 #. Tag: para
 #, no-c-format
@@ -23556,6 +24369,12 @@ msgid ""
 "endian; or 'XDR' for big-endian. Supplying unknown arguments will result in "
 "little-endian output."
 msgstr ""
+"Повертає представлення геометрії у форматі OGC/ISO <link linkend="
+"\"OpenGISWKBWKT\">Well-Known Binary</link> (WKB). Перший варіант функції за "
+"замовчуванням використовує кодування, що відповідає ендіану сервера. Другий "
+"варіант функції приймає текстовий аргумент, що визначає кодування ендіана: "
+"“NDR” для little-endian або “XDR” для big-endian. Введення невідомих "
+"аргументів призведе до виведення little-endian."
 
 #. Tag: para
 #, no-c-format
@@ -23564,6 +24383,9 @@ msgid ""
 "full numeric precision. This avoids the precision rounding that can happen "
 "with text formats such as WKT."
 msgstr ""
+"Формат WKB корисний для читання геометричних даних з бази даних та "
+"збереження повної числової точності. Це дозволяє уникнути округлення "
+"точності, яке може відбуватися у текстових форматах, таких як WKT."
 
 #. Tag: para
 #, no-c-format
@@ -23571,6 +24393,8 @@ msgid ""
 "To perform the inverse conversion of WKB to PostGIS geometry use <xref "
 "linkend=\"ST_GeomFromWKB\"/>."
 msgstr ""
+"Для виконання зворотного перетворення WKB в геометрію PostGIS використовуйте "
+"<xref linkend=\"ST_GeomFromWKB\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -23578,6 +24402,8 @@ msgid ""
 "The OGC/ISO WKB format does not include the SRID. To get the EWKB format "
 "which does include the SRID use <xref linkend=\"ST_AsEWKB\"/>"
 msgstr ""
+"Формат OGC/ISO WKB не включає SRID. Щоб отримати формат EWKB, який включає "
+"SRID, використовуйте <xref linkend=\"ST_AsEWKB\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -23586,23 +24412,28 @@ msgid ""
 "hex encoding. If your GUI tools require the old behavior, then SET "
 "bytea_output='escape' in your database."
 msgstr ""
+"Стандартна поведінка в PostgreSQL 9.0 була змінена на виведення bytea в "
+"шістнадцятковому кодуванні. Якщо ваші графічні інструменти вимагають старої "
+"поведінки, то встановіть SET bytea_output=“escape” у вашій базі даних."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 support for higher coordinate dimensions was introduced."
-msgstr ""
+msgstr "Покращено: 2.0.0 додано підтримку вищих розмірностей координат."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 support for specifying endian with geography was introduced."
 msgstr ""
+"Покращено: 2.0.0 додано підтримку вказання ендіанності для географічних "
+"даних."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.5.0 geography support was introduced."
-msgstr ""
+msgstr "Доступність: 1.5.0 додано підтримку географії."
 
 #. Tag: para
 #, no-c-format
@@ -23614,11 +24445,17 @@ msgid ""
 "<code>ST_AsBinary('POINT(1 2)'::geometry);</code>. If that is not possible, "
 "then install <filename>legacy.sql</filename>."
 msgstr ""
+"Змінено: 2.0.0 Вхідні дані для цієї функції не можуть бути невідомими — вони "
+"повинні бути геометрією. Такі конструкції, як <code>ST_AsBinary(“POINT(1 "
+"2)”)</code>, більше не є дійсними, і ви отримаєте помилку <code>n "
+"st_asbinary(unknown) is not unique</code>. Такий код потрібно змінити на "
+"<code>ST_AsBinary(“POINT(1 2)”::geometry);</code>. Якщо це неможливо, "
+"встановіть <filename>legacy.sql</filename>."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.37"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.37"
 
 #. Tag: para
 #, no-c-format
@@ -23626,6 +24463,8 @@ msgid ""
 ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsTWKB\"/>, <xref "
 "linkend=\"ST_AsText\"/>,"
 msgstr ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsTWKB\"/>, <xref "
+"linkend=\"ST_AsText\"/>,"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23633,6 +24472,8 @@ msgid ""
 "Return the Extended Well-Known Binary (EWKB) representation of the geometry "
 "with SRID meta data."
 msgstr ""
+"Повернути розширене добре відоме двійкове (EWKB) представлення геометрії з "
+"метаданими SRID."
 
 #. Tag: para
 #, no-c-format
@@ -23644,6 +24485,12 @@ msgid ""
 "either 'NDR' for little-endian; or 'XDR' for big-endian. Supplying unknown "
 "arguments will result in little-endian output."
 msgstr ""
+"Повертає представлення геометрії у форматі <link linkend=\"EWKB_EWKT\""
+">Extended Well-Known Binary</link> (EWKB) з метаданими SRID. Перший варіант "
+"функції за замовчуванням використовує кодування, що відповідає порядку "
+"байтів на сервері. Другий варіант функції приймає текстовий аргумент, що "
+"визначає кодування ендіана: “NDR” для little-endian або “XDR” для big-"
+"endian. Введення невідомих аргументів призведе до виведення little-endian."
 
 #. Tag: para
 #, no-c-format
@@ -23651,6 +24498,8 @@ msgid ""
 "To perform the inverse conversion of EWKB to PostGIS geometry use <xref "
 "linkend=\"ST_GeomFromEWKB\"/>."
 msgstr ""
+"Для виконання зворотного перетворення EWKB в геометрію PostGIS "
+"використовуйте <xref linkend=\"ST_GeomFromEWKB\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -23658,11 +24507,13 @@ msgid ""
 "To get the OGC/ISO WKB format use <xref linkend=\"ST_AsBinary\"/>. Note that "
 "OGC/ISO WKB format does not include the SRID."
 msgstr ""
+"Щоб отримати формат OGC/ISO WKB, використовуйте <xref linkend=\"ST_AsBinary\""
+"/>. Зверніть увагу, що формат OGC/ISO WKB не включає SRID."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromEWKB\"/>, <xref linkend=\"ST_SRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeomFromEWKB\"/>, <xref linkend=\"ST_SRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23670,6 +24521,8 @@ msgid ""
 "Returns a Geometry in HEXEWKB format (as text) using either little-endian "
 "(NDR) or big-endian (XDR) encoding."
 msgstr ""
+"Повертає геометрію у форматі HEXEWKB (у вигляді тексту) з використанням "
+"кодування little-endian (NDR) або big-endian (XDR)."
 
 #. Tag: para
 #, no-c-format
@@ -23678,11 +24531,14 @@ msgid ""
 "(NDR) or big-endian (XDR) encoding. If no encoding is specified, then NDR is "
 "used."
 msgstr ""
+"Повертає геометрію у форматі HEXEWKB (у вигляді тексту) з використанням "
+"кодування little-endian (NDR) або big-endian (XDR). Якщо кодування не "
+"вказано, використовується NDR."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns an Encoded Polyline from a LineString geometry."
-msgstr ""
+msgstr "Повертає закодовану полілінію з геометрії LineString."
 
 #. Tag: para
 #, no-c-format
@@ -23691,11 +24547,14 @@ msgid ""
 "Maps with precision=5 and by Open Source Routing Machine with precision=5 "
 "and 6."
 msgstr ""
+"Повертає геометрію у вигляді закодованої полілінії. Цей формат "
+"використовується Google Maps з точністю = 5 та Open Source Routing Machine з "
+"точністю = 5 і 6."
 
 #. Tag: para
 #, no-c-format
 msgid "Basic"
-msgstr ""
+msgstr "Базовий"
 
 #. Tag: para
 #, no-c-format
@@ -23703,6 +24562,8 @@ msgid ""
 "Use in conjunction with geography linestring and geography segmentize, and "
 "put on google maps"
 msgstr ""
+"Використовуйте разом із географічними лініями та географічною сегментацією, "
+"а також розмістіть на картах Google"
 
 #. Tag: para
 #, no-c-format
@@ -23710,16 +24571,18 @@ msgid ""
 "javascript will look something like this where $ variable you replace with "
 "query result"
 msgstr ""
+"javascript буде виглядати приблизно так, де змінну $ ви замінюєте "
+"результатом запиту"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Segmentize\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Segmentize\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return a FlatGeobuf representation of a set of rows."
-msgstr ""
+msgstr "Повернути представлення FlatGeobuf набору рядків."
 
 #. Tag: para
 #, no-c-format
@@ -23728,17 +24591,23 @@ msgid ""
 "org\">http://flatgeobuf.org</link>) of a set of rows corresponding to a "
 "FeatureCollection. NOTE: PostgreSQL bytea cannot exceed 1GB."
 msgstr ""
+"Повертає представлення FlatGeobuf (<link xlink:href=«http://flatgeobuf."
+"org»>http://flatgeobuf.org</link>) набору рядків, що відповідають "
+"FeatureCollection. ПРИМІТКА: PostgreSQL bytea не може перевищувати 1 ГБ."
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>row</varname> row data with at least a geometry column."
 msgstr ""
+"<varname>row</varname> дані рядка, що містять принаймні стовпець геометрії."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>index</varname> toggle spatial index creation. Default is false."
 msgstr ""
+"<varname>index</varname> вмикає/вимикає створення просторового індексу. За "
+"замовчуванням встановлено значення false."
 
 #. Tag: para
 #, no-c-format
@@ -23746,11 +24615,14 @@ msgid ""
 "<varname>geom_name</varname> is the name of the geometry column in the row "
 "data. If NULL it will default to the first found geometry column."
 msgstr ""
+"<varname>geom_name</varname> — це назва стовпця геометрії в даних рядка. "
+"Якщо NULL, за замовчуванням буде використано перший знайдений стовпець "
+"геометрії."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return a Geobuf representation of a set of rows."
-msgstr ""
+msgstr "Повернути представлення Geobuf набору рядків."
 
 #. Tag: para
 #, no-c-format
@@ -23762,11 +24634,17 @@ msgid ""
 "current form cannot be streamed so the full output will be assembled in "
 "memory."
 msgstr ""
+"Повертає представлення Geobuf (<link xlink:href=«https://github.com/mapbox/"
+"geobuf»>https://github.com/mapbox/geobuf</link>) набору рядків, що "
+"відповідають FeatureCollection. Кожна вхідна геометрія аналізується для "
+"визначення максимальної точності для оптимального зберігання. Зверніть "
+"увагу, що Geobuf у його поточній формі не може бути переданий потоком, тому "
+"повний вихід буде зібраний у пам'яті."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return a geometry or feature in GeoJSON format."
-msgstr ""
+msgstr "Повернути геометрію або об'єкт у форматі GeoJSON."
 
 #. Tag: para
 #, no-c-format
@@ -23774,6 +24652,8 @@ msgid ""
 "Returns a geometry as a GeoJSON \"geometry\" object, or a row as a GeoJSON "
 "\"feature\" object."
 msgstr ""
+"Повертає геометрію як об'єкт GeoJSON «geometry» або рядок як об'єкт GeoJSON "
+"«feature»."
 
 #. Tag: para
 #, no-c-format
@@ -23788,6 +24668,15 @@ msgid ""
 "and 3D Geometries are both supported. GeoJSON only supports SFS 1.1 geometry "
 "types (no curve support for example)."
 msgstr ""
+"Отримані геометричні та об'єктні представлення GeoJSON відповідають <link "
+"xlink:href=«https://tools.ietf.org/html/rfc7946»>специфікаціям GeoJSON RFC "
+"7946</link>, за винятком випадків, коли розібрані геометрії посилаються на "
+"CRS, відмінну від WGS84 довготи та широти (<link xlink:href=\"https://epsg."
+"io/4326«>EPSG:4326</link>, <link xlink:href=»http://epsg.io/4326.gml\""
+">urn:ogc:def:crs:OGC::CRS84</link>); у такому випадку до об'єкта геометрії "
+"GeoJSON за замовчуванням буде додано короткий ідентифікатор CRS SRID. "
+"Підтримуються як 2D, так і 3D геометрії. GeoJSON підтримує тільки типи "
+"геометрії SFS 1.1 (наприклад, не підтримуються криві)."
 
 #. Tag: para
 #, no-c-format
@@ -23797,6 +24686,10 @@ msgid ""
 "record will be determined. Conversely, passing the parameter will save "
 "column type lookups."
 msgstr ""
+"Параметр <varname>geom_column</varname> використовується для розрізнення "
+"декількох стовпців геометрії. Якщо його опустити, буде визначено перший "
+"стовпець геометрії в записі. І навпаки, передача цього параметра збереже "
+"пошуки типів стовпців."
 
 #. Tag: para
 #, no-c-format
@@ -23806,6 +24699,11 @@ msgid ""
 "using EPSG:4326 and are outputting the geometry only for display, "
 "<varname>maxdecimaldigits</varname>=6 can be a good choice for many maps."
 msgstr ""
+"Аргумент <varname>maxdecimaldigits</varname> можна використовувати для "
+"зменшення максимальної кількості десяткових знаків, що використовуються у "
+"вихідних даних (за замовчуванням — 9). Якщо ви використовуєте EPSG:4326 і "
+"виводите геометрію тільки для відображення, для багатьох карт хорошим "
+"вибором може бути <varname>maxdecimaldigits</varname>=6."
 
 #. Tag: para
 #, no-c-format
@@ -23813,31 +24711,33 @@ msgid ""
 "The <varname>options</varname> argument can be used to add BBOX or CRS in "
 "GeoJSON output:"
 msgstr ""
+"Аргумент <varname>options</varname> можна використовувати для додавання BBOX "
+"або CRS у вихідні дані GeoJSON:"
 
 #. Tag: para
 #, no-c-format
 msgid "0: means no option"
-msgstr ""
+msgstr "0: означає відсутність опції"
 
 #. Tag: para
 #, no-c-format
 msgid "1: GeoJSON BBOX"
-msgstr ""
+msgstr "1: GeoJSON BBOX"
 
 #. Tag: para
 #, no-c-format
 msgid "2: GeoJSON Short CRS (e.g EPSG:4326)"
-msgstr ""
+msgstr "2: GeoJSON коротка CRS (наприклад, EPSG:4326)"
 
 #. Tag: para
 #, no-c-format
 msgid "4: GeoJSON Long CRS (e.g urn:ogc:def:crs:EPSG::4326)"
-msgstr ""
+msgstr "4: GeoJSON Long CRS (наприклад, urn:ogc:def:crs:EPSG::4326)"
 
 #. Tag: para
 #, no-c-format
 msgid "8: GeoJSON Short CRS if not EPSG:4326 (default)"
-msgstr ""
+msgstr "8: GeoJSON Короткий CRS, якщо не EPSG:4326 (за замовчуванням)"
 
 #. Tag: para
 #, no-c-format
@@ -23849,6 +24749,12 @@ msgid ""
 "any columns other than the geometry, including any potential keys, will just "
 "end up inside the feature’s \"properties\" member."
 msgstr ""
+"Параметр <varname>id_column</varname> використовується для встановлення "
+"елемента «id» повернутих об'єктів GeoJSON. Відповідно до GeoJSON RFC, це "
+"ПОВИННО використовуватися, коли елемент має загальновживаний ідентифікатор, "
+"такий як первинний ключ. Якщо це не вказано, створені елементи не отримають "
+"елемент «id», а всі стовпці, крім геометрії, включаючи будь-які потенційні "
+"ключі, просто потраплять в елемент «properties» елемента."
 
 #. Tag: para
 #, no-c-format
@@ -23860,6 +24766,12 @@ msgid ""
 "necessary geometry can be projected into WGS84 using <xref "
 "linkend=\"ST_Transform\"/>: <code>ST_Transform( geom, 4326 )</code>."
 msgstr ""
+"Специфікація GeoJSON визначає, що полігони орієнтуються за правилом правої "
+"руки, і деякі клієнти вимагають такої орієнтації. Це можна забезпечити за "
+"допомогою <xref linkend=\"ST_ForcePolygonCCW\"/>. Специфікація також "
+"вимагає, щоб геометрія була в системі координат WGS84 (SRID = 4326). За "
+"необхідності геометрію можна спроектувати в WGS84 за допомогою <xref linkend="
+"\"ST_Transform\"/>: <code>ST_Transform( geom, 4326 )</code>."
 
 #. Tag: para
 #, no-c-format
@@ -23868,56 +24780,62 @@ msgid ""
 "io/\">geojson.io</link> and <link xlink:href=\"http://geojson.io/"
 "\">geojsonlint.com</link>. It is widely supported by web mapping frameworks:"
 msgstr ""
+"GeoJSON можна протестувати та переглянути онлайн за адресами <link "
+"xlink:href=«http://geojson.io/»>geojson.io</link> та <link "
+"xlink:href=«http://geojson.io/»>geojsonlint.com</link>. Він широко "
+"підтримується веб-картографічними фреймворками:"
 
 #. Tag: link
 #, no-c-format
 msgid "OpenLayers GeoJSON Example"
-msgstr ""
+msgstr "Приклад OpenLayers GeoJSON"
 
 #. Tag: link
 #, no-c-format
 msgid "Leaflet GeoJSON Example"
-msgstr ""
+msgstr "Приклад GeoJSON для листівки"
 
 #. Tag: link
 #, no-c-format
 msgid "Mapbox GL GeoJSON Example"
-msgstr ""
+msgstr "Приклад Mapbox GL GeoJSON"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.3.4"
-msgstr ""
+msgstr "Доступність: 1.3.4"
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.0.0 support default args and named args."
 msgstr ""
+"Змінено: 2.0.0 підтримка аргументів за замовчуванням та іменованих "
+"аргументів."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 3.0.0 support records as input"
-msgstr ""
+msgstr "Змінено: 3.0.0 підтримка записів як вхідних даних"
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 3.0.0 output SRID if not EPSG:4326."
-msgstr ""
+msgstr "Змінено: 3.0.0 виведення SRID, якщо не EPSG:4326."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 3.5.0 allow specifying the column containing the feature id"
-msgstr ""
+msgstr "Змінено: 3.5.0 Дозволено вказувати стовпець, що містить feature id"
 
 #. Tag: para
 #, no-c-format
 msgid "Generate a FeatureCollection:"
-msgstr ""
+msgstr "Створити колекцію об'єктів:"
 
 #. Tag: para
 #, no-c-format
 msgid "Generate a Feature:"
-msgstr ""
+msgstr "Створити Feature:"
 
 #. Tag: para
 #, no-c-format
@@ -23925,27 +24843,32 @@ msgid ""
 "Don't forget to transform your data to WGS84 longitude, latitude to conform "
 "with the GeoJSON specification:"
 msgstr ""
+"Не забудьте перетворити дані в довготу WGS84, широту, щоб вони відповідали "
+"специфікації GeoJSON:"
 
 #. Tag: para
 #, no-c-format
 msgid "3D geometries are supported:"
-msgstr ""
+msgstr "Підтримуються 3D-геометрії:"
 
 #. Tag: para
 #, no-c-format
 msgid "Options argument can be used to add BBOX and CRS in GeoJSON output:"
 msgstr ""
+"Аргумент Options можна використовувати для додавання BBOX і CRS у вихідні "
+"дані GeoJSON:"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return the geometry as a GML version 2 or 3 element."
-msgstr ""
+msgstr "Повернути геометрію як елемент GML версії 2 або 3."
 
 #. Tag: para
 #, no-c-format
@@ -23956,11 +24879,17 @@ msgid ""
 "<varname>maxdecimaldigits</varname> argument may be used to reduce the "
 "maximum number of decimal places used in output (defaults to 15)."
 msgstr ""
+"Повернути геометрію як елемент мови географічної розмітки (GML). Параметр "
+"version, якщо вказано, може мати значення 2 або 3. Якщо параметр version не "
+"вказано, за замовчуванням використовується значення 2. Аргумент "
+"<varname>maxdecimaldigits</varname> можна використовувати для зменшення "
+"максимальної кількості десяткових знаків, що використовуються у вихідних "
+"даних (за замовчуванням 15)."
 
 #. Tag: para
 #, no-c-format
 msgid "GML 2 refer to 2.1.2 version, GML 3 to 3.1.1 version"
-msgstr ""
+msgstr "GML 2 відноситься до версії 2.1.2, GML 3 – до версії 3.1.1"
 
 #. Tag: para
 #, no-c-format
@@ -23968,21 +24897,23 @@ msgid ""
 "The 'options' argument is a bitfield. It could be used to define CRS output "
 "type in GML output, and to declare data as lat/lon:"
 msgstr ""
+"Аргумент «options» є бітовим полем. Він може використовуватися для "
+"визначення типу виводу CRS у виводі GML та для оголошення даних як lat/lon:"
 
 #. Tag: para
 #, no-c-format
 msgid "0: GML Short CRS (e.g EPSG:4326), default value"
-msgstr ""
+msgstr "0: Коротка CRS GML (наприклад, EPSG:4326), значення за замовчуванням"
 
 #. Tag: para
 #, no-c-format
 msgid "1: GML Long CRS (e.g urn:ogc:def:crs:EPSG::4326)"
-msgstr ""
+msgstr "1: GML Long CRS (наприклад, urn:ogc:def:crs:EPSG::4326)"
 
 #. Tag: para
 #, no-c-format
 msgid "2: For GML 3 only, remove srsDimension attribute from output."
-msgstr ""
+msgstr "2: Тільки для GML 3, видаліть атрибут srsDimension з вихідних даних."
 
 #. Tag: para
 #, no-c-format
@@ -23990,6 +24921,8 @@ msgid ""
 "4: For GML 3 only, use &lt;LineString&gt; rather than &lt;Curve&gt; tag for "
 "lines."
 msgstr ""
+"4: Тільки для GML 3 використовуйте тег &lt;LineString&gt; замість "
+"&lt;Curve&gt; для ліній."
 
 #. Tag: para
 #, no-c-format
@@ -23999,11 +24932,16 @@ msgid ""
 "to axis order. So if you set it, it will swap the coordinates so order is "
 "lat lon instead of database lon lat."
 msgstr ""
+"16: Заявити, що дані є широтою/довготою (наприклад, srid=4326). За "
+"замовчуванням вважається, що дані є планарними. Ця опція корисна тільки для "
+"виводу GML 3.1.1, пов'язаного з порядком осей. Тому, якщо ви її встановите, "
+"координати будуть поміняні місцями, і порядок буде широта-довгота замість "
+"довгота-широта, як у базі даних."
 
 #. Tag: para
 #, no-c-format
 msgid "32: Output the box of the geometry (envelope)."
-msgstr ""
+msgstr "32: Вивести прямокутник геометрії (контур)."
 
 #. Tag: para
 #, no-c-format
@@ -24011,11 +24949,14 @@ msgid ""
 "The 'namespace prefix' argument may be used to specify a custom namespace "
 "prefix or no prefix (if empty). If null or omitted 'gml' prefix is used"
 msgstr ""
+"Аргумент «namespace prefix» може використовуватися для вказання власного "
+"префікса простору імен або відсутності префікса (якщо поле порожнє). Якщо "
+"префікс «gml» нульовий або пропущений, використовується префікс «gml»"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.3.2"
-msgstr ""
+msgstr "Доступність: 1.3.2"
 
 #. Tag: para
 #, no-c-format
@@ -24025,41 +24966,45 @@ msgid ""
 "Support for Polyhedral surfaces and TINS was introduced. Option 32 was "
 "introduced to output the box."
 msgstr ""
+"Покращено: додано підтримку префікса 2.0.0. Додано опцію 4 для GML3, що "
+"дозволяє використовувати тег LineString замість Curve для ліній. Додано "
+"підтримку GML3 для багатогранних поверхонь і TINS. Додано опцію 32 для "
+"виведення прямокутника."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.0.0 use default named args"
-msgstr ""
+msgstr "Змінено: 2.0.0 використання аргументів із стандартними іменами"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 id support was introduced, for GML 3."
-msgstr ""
+msgstr "Покращено: 2.1.0 Додано підтримку ідентифікаторів для GML 3."
 
 #. Tag: para
 #, no-c-format
 msgid "Only version 3+ of ST_AsGML supports Polyhedral Surfaces and TINS."
-msgstr ""
+msgstr "Тільки версія 3+ ST_AsGML підтримує багатогранні поверхні та TINS."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 17.2"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 17.2"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Version 2"
-msgstr ""
+msgstr "Приклади: Версія 2"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Version 3"
-msgstr ""
+msgstr "Приклади: Версія 3"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return the geometry as a KML element."
-msgstr ""
+msgstr "Повернути геометрію як елемент KML."
 
 #. Tag: para
 #, no-c-format
@@ -24067,6 +25012,9 @@ msgid ""
 "Return the geometry as a Keyhole Markup Language (KML) element. default "
 "maximum number of decimal places is 15, default namespace is no prefix."
 msgstr ""
+"Повернути геометрію як елемент мови розмітки Keyhole (KML). Максимальна "
+"кількість десяткових знаків за замовчуванням — 15, простір імен за "
+"замовчуванням — без префікса."
 
 #. Tag: para
 #, no-c-format
@@ -24075,42 +25023,49 @@ msgid ""
 "linkend=\"PostGIS_Full_Version\"/> to confirm you have proj support compiled "
 "in."
 msgstr ""
+"Потрібно, щоб PostGIS було скомпільовано з підтримкою Proj. Використовуйте "
+"<xref linkend=\"PostGIS_Full_Version\"/>, щоб підтвердити, що підтримка proj "
+"скомпільована."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Availability: 1.2.2 - later variants that include version param came in 1.3.2"
 msgstr ""
+"Доступність: 1.2.2 — пізніші варіанти, що містять параметр версії, з'явилися "
+"в 1.3.2"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0.0 - Add prefix namespace, use default and named args"
 msgstr ""
+"Покращено: 2.0.0 - Додано префікс простору імен, використання аргументів за "
+"замовчуванням та іменованих аргументів"
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 3.0.0 - Removed the \"versioned\" variant signature"
-msgstr ""
+msgstr "Змінено: 3.0.0 - Вилучено підпис варіанту «versioned»"
 
 #. Tag: para
 #, no-c-format
 msgid "AsKML output will not work with geometries that do not have an SRID"
-msgstr ""
+msgstr "Вихідні дані AsKML не працюватимуть з геометріями, які не мають SRID"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsGML\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsGML\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return the Degrees, Minutes, Seconds representation of the given point."
-msgstr ""
+msgstr "Повернути представлення градусів, хвилин, секунд заданої точки."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns the Degrees, Minutes, Seconds representation of the point."
-msgstr ""
+msgstr "Повертає представлення точки у градусах, хвилинах і секундах."
 
 #. Tag: para
 #, no-c-format
@@ -24119,6 +25074,9 @@ msgid ""
 "coordinates are normalized in the output to the \"normal\" range (-180 to "
 "+180 for lon, -90 to +90 for lat)."
 msgstr ""
+"Передбачається, що точка знаходиться в проекції широти/довготи. Координати X "
+"(довгота) та Y (широта) у вихідних даних нормалізовано до «нормального» "
+"діапазону (-180 до +180 для довготи, -90 до +90 для широти)."
 
 #. Tag: para
 #, no-c-format
@@ -24129,6 +25087,11 @@ msgid ""
 "direction (NSEW). DMS tokens may be repeated to indicate desired width and "
 "precision (\"SSS.SSSS\" means \" 1.0023\")."
 msgstr ""
+"Параметр text є рядком формату, що містить формат для отриманого тексту, "
+"подібний до рядка формату дати. Допустимі символи: «D» для градусів, «M» для "
+"хвилин, «S» для секунд і «C» для основних напрямків (NSEW). Символи DMS "
+"можна повторювати, щоб вказати бажану ширину та точність («SSS.SSSS» означає "
+"«1,0023»)."
 
 #. Tag: para
 #, no-c-format
@@ -24139,6 +25102,11 @@ msgid ""
 "is also omitted, degrees are shown as decimal with as many digits precision "
 "as you specify."
 msgstr ""
+"«M», «S» та «C» є необов'язковими. Якщо «C» опущено, градуси позначаються "
+"знаком «-», якщо вони південні або західні. Якщо «S» опущено, хвилини "
+"відображаються у вигляді десяткових чисел із точністю до заданої кількості "
+"цифр. Якщо «M» також опущено, градуси відображаються у вигляді десяткових "
+"чисел із точністю до заданої кількості цифр."
 
 #. Tag: para
 #, no-c-format
@@ -24146,42 +25114,46 @@ msgid ""
 "If the format string is omitted (or zero-length) a default format will be "
 "used."
 msgstr ""
+"Якщо рядок формату пропущено (або має нульову довжину), буде використано "
+"формат за замовчуванням."
 
 #. Tag: para
 #, no-c-format
 msgid "Default format."
-msgstr ""
+msgstr "Формат за замовчуванням."
 
 #. Tag: para
 #, no-c-format
 msgid "Providing a format (same as the default)."
-msgstr ""
+msgstr "Надання формату (такого самого, як за замовчуванням)."
 
 #. Tag: para
 #, no-c-format
 msgid "Characters other than D, M, S, C and . are just passed through."
-msgstr ""
+msgstr "Символи, крім D, M, S, C і ., просто пропускаються."
 
 #. Tag: para
 #, no-c-format
 msgid "Signed degrees instead of cardinal directions."
-msgstr ""
+msgstr "Підписані ступені замість основних напрямків."
 
 #. Tag: para
 #, no-c-format
 msgid "Decimal degrees."
-msgstr ""
+msgstr "Десятичні градуси."
 
 #. Tag: para
 #, no-c-format
 msgid "Excessively large values are normalized."
-msgstr ""
+msgstr "Надмірно великі значення нормалізуються."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns geometry as a MARC21/XML record with a geographic datafield (034)."
 msgstr ""
+"Повертає геометрію у вигляді запису MARC21/XML із полем географічних даних "
+"(034)."
 
 #. Tag: para
 #, no-c-format
@@ -24194,6 +25166,13 @@ msgid ""
 "and <varname>$g</varname> in all formats supported by the MARC21/XML "
 "standard. Valid formats are:"
 msgstr ""
+"Ця функція повертає запис MARC21/XML з <link xlink:href=«https://www.loc.gov/"
+"marc/bibliographic/bd034.html»>Кодованими картографічними математичними "
+"даними</link>, що представляють обмежувальну рамку заданої геометрії. "
+"Параметр <varname>format</varname> дозволяє кодувати координати в підполях "
+"<varname>$d</varname>,<varname>$e</varname>,<varname>$f</varname> та "
+"<varname>$g</varname> у всіх форматах, що підтримуються стандартом MARC21/"
+"XML. Допустимі формати:"
 
 #. Tag: para
 #, no-c-format
@@ -24201,40 +25180,48 @@ msgid ""
 "cardinal direction, degrees, minutes and seconds (default): "
 "<varname>hdddmmss</varname>"
 msgstr ""
+"основний напрямок, градуси, хвилини та секунди (за замовчуванням): "
+"<varname>hdddmmss</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "decimal degrees with cardinal direction: <varname>hddd.dddddd</varname>"
 msgstr ""
+"десятиградусні градуси з основним напрямком: <varname>hddd.dddddd</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "decimal degrees without cardinal direction: <varname>ddd.dddddd</varname>"
 msgstr ""
+"десятиградусні градуси без вказівки сторони світу: <varname>ddd."
+"dddddd</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "decimal minutes with cardinal direction: <varname>hdddmm.mmmm</varname>"
 msgstr ""
+"десятикратні хвилини з основним напрямком: <varname>hdddmm.mmmm</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "decimal minutes without cardinal direction: <varname>dddmm.mmmm</varname>"
-msgstr ""
+msgstr "десятинні хвилини без вказівки напрямку: <varname>dddmm.mmmm</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "decimal seconds with cardinal direction: <varname>hdddmmss.sss</varname>"
-msgstr ""
+msgstr "десятинні секунди з основним напрямком: <varname>hdddmmss.sss</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The decimal sign may be also a comma, e.g. <varname>hdddmm,mmmm</varname>."
 msgstr ""
+"Знак десяткового числа може бути також комою, наприклад "
+"<varname>hdddmm,mmmm</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -24243,11 +25230,14 @@ msgid ""
 "after the decimal sign, e.g. <varname>hdddmm.mm</varname> for decimal "
 "minutes with a precision of two decimals."
 msgstr ""
+"Точність десяткових форматів може бути обмежена кількістю символів після "
+"десяткового знака, наприклад <varname>hdddmm.mm</varname> для десяткових "
+"хвилин з точністю до двох десяткових знаків."
 
 #. Tag: para
 #, no-c-format
 msgid "This function ignores the Z and M dimensions."
-msgstr ""
+msgstr "Ця функція ігнорує розміри Z і M."
 
 #. Tag: para
 #, no-c-format
@@ -24255,6 +25245,8 @@ msgid ""
 "This function does not support non lon/lat geometries, as they are not "
 "supported by the MARC21/XML standard (Coded Cartographic Mathematical Data)."
 msgstr ""
+"Ця функція не підтримує геометрії, що не є lon/lat, оскільки вони не "
+"підтримуються стандартом MARC21/XML (Coded Cartographic Mathematical Data)."
 
 #. Tag: para
 #, no-c-format
@@ -24263,6 +25255,10 @@ msgid ""
 "reference system for Coded Cartographic Mathematical Data, which means that "
 "this information will be lost after conversion to MARC21/XML."
 msgstr ""
+"Стандарт MARC21/XML не передбачає жодних засобів для анотування просторової "
+"системи координат для кодованих картографічних математичних даних, що "
+"означає, що ця інформація буде втрачена після перетворення у формат MARC21/"
+"XML."
 
 #. Tag: para
 #, no-c-format
@@ -24270,6 +25266,8 @@ msgid ""
 "Converting a <varname>POINT</varname> to MARC21/XML formatted as hdddmmss "
 "(default)"
 msgstr ""
+"Перетворення <varname>POINT</varname> у формат MARC21/XML у вигляді hdddmmss "
+"(за замовчуванням)"
 
 #. Tag: para
 #, no-c-format
@@ -24277,6 +25275,8 @@ msgid ""
 "Converting a <varname>POLYGON</varname> to MARC21/XML formatted in decimal "
 "degrees"
 msgstr ""
+"Перетворення <varname>POLYGON</varname> у формат MARC21/XML з десятковими "
+"градусами"
 
 #. Tag: para
 #, no-c-format
@@ -24285,11 +25285,14 @@ msgid ""
 "in decimal minutes. The geometries order in the MARC21/XML output correspond "
 "to their order in the collection."
 msgstr ""
+"Перетворення <varname>GEOMETRYCOLLECTION</varname> у формат MARC21/XML з "
+"десятковими хвилинами. Порядок геометрій у вихідних даних MARC21/XML "
+"відповідає їхньому порядку в колекції."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Transforms a geometry into the coordinate space of a MVT tile."
-msgstr ""
+msgstr "Перетворює геометрію в координатну систему плитки MVT."
 
 #. Tag: para
 #, no-c-format
@@ -24302,6 +25305,12 @@ msgid ""
 "href=\"https://en.wikipedia.org/wiki/Web_Mercator_projection\">Web Mercator</"
 "link> (SRID:3857)."
 msgstr ""
+"Перетворює геометрію в координатну систему плитки MVT (<link "
+"xlink:href=«https://www.mapbox.com/vector-tiles/»>Mapbox Vector Tile</link>)"
+", обрізаючи її до меж плитки, якщо потрібно. Геометрія повинна бути в "
+"системі координат цільової карти (використовуючи <xref linkend=\"ST_Transform"
+"\"/>, якщо потрібно). Зазвичай це <link xlink:href=«https://en.wikipedia.org/"
+"wiki/Web_Mercator_projection»>Web Mercator</link> (SRID:3857)."
 
 #. Tag: para
 #, no-c-format
@@ -24309,6 +25318,9 @@ msgid ""
 "The function attempts to preserve geometry validity, and corrects it if "
 "needed. This may cause the result geometry to collapse to a lower dimension."
 msgstr ""
+"Функція намагається зберегти правильність геометрії та виправити її, якщо це "
+"необхідно. Це може призвести до скорочення геометрії результату до нижчого "
+"виміру."
 
 #. Tag: para
 #, no-c-format
@@ -24317,6 +25329,10 @@ msgid ""
 "be provided, so the geometry can be transformed, and clipped if required. "
 "The bounds can be generated using <xref linkend=\"ST_TileEnvelope\"/>."
 msgstr ""
+"Необхідно вказати прямокутні межі плитки в просторі координат цільової "
+"карти, щоб можна було трансформувати геометрію та обрізати її за "
+"необхідності. Межі можна створити за допомогою <xref linkend="
+"\"ST_TileEnvelope\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -24324,6 +25340,8 @@ msgid ""
 "This function is used to convert geometry into the tile coordinate space "
 "required by <xref linkend=\"ST_AsMVT\"/>."
 msgstr ""
+"Ця функція використовується для перетворення геометрії в координатну систему "
+"плиток, необхідну для <xref linkend=\"ST_AsMVT\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -24331,6 +25349,8 @@ msgid ""
 "<varname>geom</varname> is the geometry to transform, in the coordinate "
 "system of the target map."
 msgstr ""
+"<varname>geom</varname> — геометрія, яку потрібно трансформувати в системі "
+"координат цільової карти."
 
 #. Tag: para
 #, no-c-format
@@ -24338,6 +25358,8 @@ msgid ""
 "<varname>bounds</varname> is the rectangular bounds of the tile in map "
 "coordinate space, with no buffer."
 msgstr ""
+"<varname>bounds</varname> — прямокутні межі плитки в просторі координат "
+"карти, без буфера."
 
 #. Tag: para
 #, no-c-format
@@ -24346,6 +25368,9 @@ msgid ""
 "as defined by the <link xlink:href=\"https://www.mapbox.com/vector-tiles/"
 "specification/\">MVT specification</link>. Defaults to 4096."
 msgstr ""
+"<varname>extent</varname> — розмір площі плитки в просторі координат плитки, "
+"як визначено в <link xlink:href=«https://www.mapbox.com/vector-tiles/"
+"specification/»>специфікації MVT</link>. За замовчуванням — 4096."
 
 #. Tag: para
 #, no-c-format
