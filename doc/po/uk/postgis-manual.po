@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-20 04:47+0000\n"
+"PO-Revision-Date: 2025-08-20 21:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -27740,6 +27740,11 @@ msgid ""
 "\"shrink-wrapping\" the geometries. A convex hull is often used to determine "
 "an affected area based on a set of point observations."
 msgstr ""
+"Опуклу оболонку можна уявити як геометрію, отриману шляхом обертання гумової "
+"стрічки навколо набору геометрій. Це відрізняється від <link linkend="
+"\"ST_ConcaveHull\">увігнутої оболонки</link>, яка аналогічна «упаковці» "
+"геометрій. Опукла оболонка часто використовується для визначення зони впливу "
+"на основі набору точкових спостережень."
 
 #. Tag: para
 #, no-c-format
@@ -27748,6 +27753,9 @@ msgid ""
 "more collinear points is a two-point LineString. The convex hull of one or "
 "more identical points is a Point."
 msgstr ""
+"У загальному випадку опукла оболонка є полігоном. Опукла оболонка двох або "
+"більше колінеарних точок є двоточковою лінією. Опукла оболонка однієї або "
+"більше однакових точок є точкою."
 
 #. Tag: para
 #, no-c-format
@@ -27756,21 +27764,26 @@ msgid ""
 "geometries, use <xref linkend=\"ST_Collect\"/> to aggregate them into a "
 "geometry collection (e.g. <code>ST_ConvexHull(ST_Collect(geom))</code>."
 msgstr ""
+"Це не агрегатна функція. Щоб обчислити опуклу оболонку набору геометрій, "
+"використовуйте <xref linkend=\"ST_Collect\"/>, щоб об'єднати їх у колекцію "
+"геометрій (наприклад, <code>ST_ConvexHull(ST_Collect(geom))</code>."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.16"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.16"
 
 #. Tag: para
 #, no-c-format
 msgid "Convex Hull of a MultiLinestring and a MultiPoint"
-msgstr ""
+msgstr "Опукла оболонка багатолінійної та мультиточкової фігури"
 
 #. Tag: para
 #, no-c-format
 msgid "Using with ST_Collect to compute the convex hulls of geometry sets."
 msgstr ""
+"Використання разом із ST_Collect для обчислення опуклих оболонок наборів "
+"геометричних фігур."
 
 #. Tag: para
 #, no-c-format
@@ -27778,11 +27791,13 @@ msgid ""
 ", <xref linkend=\"ST_ConcaveHull\"/>, <xref "
 "linkend=\"ST_MinimumBoundingCircle\"/>"
 msgstr ""
+", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend="
+"\"ST_MinimumBoundingCircle\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the Delaunay triangulation of the vertices of a geometry."
-msgstr ""
+msgstr "Повертає триангуляцію Делауея вершин геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -27795,26 +27810,34 @@ msgid ""
 "vertices. The result geometry representation is determined by the "
 "<varname>flags</varname> code:"
 msgstr ""
+"Обчислює <link xlink:href=«http://en.wikipedia.org/wiki/"
+"Delaunay_triangulation»>триангуляцію Делоне</link> вершин вхідної геометрії. "
+"Опціональний параметр <varname>tolerance</varname> можна використовувати для "
+"з'єднання сусідніх вхідних вершин, що в деяких ситуаціях підвищує "
+"надійність. Результуюча геометрія обмежується опуклою оболонкою вхідних "
+"вершин. Представлення результуючої геометрії визначається кодом "
+"<varname>flags</varname>:"
 
 #. Tag: para
 #, no-c-format
 msgid "<code>0</code> - a GEOMETRYCOLLECTION of triangular POLYGONs (default)"
 msgstr ""
+"<code>0</code> - GEOMETRYCOLLECTION трикутних полігонів (за замовчуванням)"
 
 #. Tag: para
 #, no-c-format
 msgid "<code>1</code> - a MULTILINESTRING of the edges of the triangulation"
-msgstr ""
+msgstr "<code>1</code> - MULTILINESTRING граней триангуляції"
 
 #. Tag: para
 #, no-c-format
 msgid "<code>2</code> - A TIN of the triangulation"
-msgstr ""
+msgstr "<code>2</code> - TIN триангуляції"
 
 #. Tag: para
 #, no-c-format
 msgid "Original polygons"
-msgstr ""
+msgstr "Оригінальні полігони"
 
 #. Tag: para
 #, no-c-format
@@ -27822,21 +27845,23 @@ msgid ""
 "ST_DelaunayTriangles of 2 polygons: delaunay triangle polygons each triangle "
 "themed in different color"
 msgstr ""
+"ST_DelaunayTriangles з 2 полігонів: трикутники Делоне, кожен трикутник "
+"виділений різним кольором"
 
 #. Tag: para
 #, no-c-format
 msgid "-- delaunay triangles as multilinestring"
-msgstr ""
+msgstr "-- трикутники Делоне як мультилінія"
 
 #. Tag: para
 #, no-c-format
 msgid "-- delaunay triangles of 45 points as 55 triangle polygons"
-msgstr ""
+msgstr "-- трикутники Делоне з 45 точками як 55 трикутних полігонів"
 
 #. Tag: para
 #, no-c-format
 msgid "Example using vertices with Z values."
-msgstr ""
+msgstr "Приклад використання вершин із значеннями Z."
 
 #. Tag: para
 #, no-c-format
@@ -27845,11 +27870,14 @@ msgid ""
 "linkend=\"ST_ConstrainedDelaunayTriangles\"/>, <xref "
 "linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_ConvexHull\"/>"
 msgstr ""
+", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend="
+"\"ST_ConstrainedDelaunayTriangles\"/>, <xref linkend=\"ST_VoronoiLines\"/>, "
+"<xref linkend=\"ST_ConvexHull\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Removes vertices based on their M value"
-msgstr ""
+msgstr "Видаляє вершини на основі їхнього значення M"
 
 #. Tag: para
 #, no-c-format
@@ -27863,6 +27891,15 @@ msgid ""
 "geometry collection geometries without enough points will just be left out "
 "silently."
 msgstr ""
+"Відфільтровує вершинні точки на основі їх M-значення. Повертає геометрію, що "
+"містить тільки вершинні точки, M-значення яких більше або дорівнює "
+"мінімальному значенню і менше або дорівнює максимальному значенню. Якщо "
+"аргумент max-value не вказано, враховується тільки значення min. Якщо "
+"четвертий аргумент не вказано, m-значення не буде включено в результуючу "
+"геометрію. Якщо в результуючій геометрії залишилося занадто мало вершинних "
+"точок для її типу, буде повернута порожня геометрія. У колекції геометрій "
+"геометрії без достатньої кількості точок просто пропускаються без "
+"повідомлення."
 
 #. Tag: para
 #, no-c-format
@@ -27967,6 +28004,8 @@ msgid ""
 "If a <varname>tolerance</varname> argument is not provided, the tolerance "
 "value is calculated based on the extent of the input geometry."
 msgstr ""
+"Якщо аргумент <varname>tolerance</varname> не вказано, значення допуску "
+"обчислюється на основі розмірів вхідної геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -27974,11 +28013,12 @@ msgid ""
 "If present, the input point M values are interpreted as their relative "
 "weights."
 msgstr ""
+"Якщо присутні, значення вхідної точки M інтерпретуються як їх відносні ваги."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.5.0 Added support for M as weight of points."
-msgstr ""
+msgstr "Покращено: 2.5.0 Додано підтримку M як ваги точок."
 
 #. Tag: para
 #, no-c-format
@@ -27986,11 +28026,13 @@ msgid ""
 "Comparison of the geometric median (red) and centroid (turquoise) of a "
 "MultiPoint."
 msgstr ""
+"Порівняння геометричної медіани (червоний) та центроїда (бірюзовий) "
+"MultiPoint."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return the lines formed by sewing together a MultiLineString."
-msgstr ""
+msgstr "Повернути лінії, утворені зшиванням MultiLineString."
 
 #. Tag: para
 #, no-c-format
@@ -28000,6 +28042,10 @@ msgid ""
 "intersections. Lines are not joined across intersections of 3-way or greater "
 "degree."
 msgstr ""
+"Повертає LineString або MultiLineString, утворений шляхом з'єднання лінійних "
+"елементів MultiLineString. Лінії з'єднуються в кінцевих точках на "
+"двосторонніх перетинах. Лінії не з'єднуються на перетинах з трьома або "
+"більше точками."
 
 #. Tag: para
 #, no-c-format
@@ -28008,6 +28054,9 @@ msgid ""
 "will not change point order within LineStrings, so lines with opposite "
 "directions will not be merged"
 msgstr ""
+"Якщо <emphasis role=\"bold\">directed</emphasis> має значення TRUE, то "
+"ST_LineMerge не змінюватиме порядок точок у LineStrings, тому лінії з "
+"протилежними напрямками не будуть об'єднані"
 
 #. Tag: para
 #, no-c-format
@@ -28015,31 +28064,33 @@ msgid ""
 "Only use with MultiLineString/LineStrings. Other geometry types return an "
 "empty GeometryCollection"
 msgstr ""
+"Використовуйте тільки з MultiLineString/LineStrings. Інші типи геометрії "
+"повертають порожній GeometryCollection"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.3.0 accept a directed parameter."
-msgstr ""
+msgstr "Покращено: 3.3.0 приймає спрямований параметр."
 
 #. Tag: para
 #, no-c-format
 msgid "Requires GEOS &gt;= 3.11.0 to use the directed parameter."
-msgstr ""
+msgstr "Для використання параметра directed необхідна версія GEOS &gt;= 3.11.0."
 
 #. Tag: para
 #, no-c-format
 msgid "This function strips the M dimension."
-msgstr ""
+msgstr "Ця функція видаляє розмірність M."
 
 #. Tag: para
 #, no-c-format
 msgid "Merging lines with different orientation."
-msgstr ""
+msgstr "Об'єднання ліній з різною орієнтацією."
 
 #. Tag: para
 #, no-c-format
 msgid "Lines are not merged across intersections with degree &gt; 2."
-msgstr ""
+msgstr "Лінії не об'єднуються на перетинах зі ступенем &gt; 2."
 
 #. Tag: para
 #, no-c-format
@@ -28047,26 +28098,28 @@ msgid ""
 "If merging is not possible due to non-touching lines, the original "
 "MultiLineString is returned."
 msgstr ""
+"Якщо об'єднання неможливе через непересічні лінії, повертається оригінальний "
+"MultiLineString."
 
 #. Tag: para
 #, no-c-format
 msgid "Lines with opposite directions are not merged if directed = TRUE."
-msgstr ""
+msgstr "Лінії з протилежними напрямками не об'єднуються, якщо directed = TRUE."
 
 #. Tag: para
 #, no-c-format
 msgid "Example showing Z-dimension handling."
-msgstr ""
+msgstr "Приклад, що ілюструє обробку Z-виміру."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineSubstring\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LineSubstring\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the largest circle contained within a geometry."
-msgstr ""
+msgstr "Обчислює найбільше коло, що міститься в геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -28074,22 +28127,24 @@ msgid ""
 "Finds the largest circle that is contained within a (multi)polygon, or which "
 "does not overlap any lines and points. Returns a record with fields:"
 msgstr ""
+"Знаходить найбільше коло, яке міститься в (мульти)полігоні або не "
+"перетинається з лініями та точками. Повертає запис із полями:"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>center</varname> - center point of the circle"
-msgstr ""
+msgstr "<varname>center</varname> - центр кола"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>nearest</varname> - a point on the geometry nearest to the center"
-msgstr ""
+msgstr "<varname>nearest</varname> - точка на геометрії, найближча до центру"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>radius</varname> - radius of the circle"
-msgstr ""
+msgstr "<varname>radius</varname> - радіус кола"
 
 #. Tag: para
 #, no-c-format
@@ -28099,16 +28154,20 @@ msgid ""
 "circle is inscribed within the convex hull of the input, using the input "
 "lines and points as further boundaries."
 msgstr ""
+"Для полігональних вхідних даних коло вписується в межі кільця, "
+"використовуючи внутрішні кільця як межі. Для лінійних і точкових вхідних "
+"даних коло вписується в опуклу оболонку вхідних даних, використовуючи лінії "
+"і точки вхідних даних як додаткові межі."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.1.0."
-msgstr ""
+msgstr "Доступність: 3.1.0."
 
 #. Tag: para
 #, no-c-format
 msgid "Requires GEOS &gt;= 3.9.0."
-msgstr ""
+msgstr "Потрібна версія GEOS &gt;= 3.9.0."
 
 #. Tag: para
 #, no-c-format
@@ -28116,6 +28175,8 @@ msgid ""
 "Maximum inscribed circle of a polygon. Center, nearest point, and radius are "
 "returned."
 msgstr ""
+"Максимальне вписане коло полігону. Повертаються центр, найближча точка та "
+"радіус."
 
 #. Tag: para
 #, no-c-format
@@ -28123,16 +28184,18 @@ msgid ""
 "Maximum inscribed circle of a multi-linestring. Center, nearest point, and "
 "radius are returned."
 msgstr ""
+"Максимальне вписане коло багатолінійної фігури. Повертаються центр, "
+"найближча точка та радіус."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_LargestEmptyCircle\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LargestEmptyCircle\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the largest circle not overlapping a geometry."
-msgstr ""
+msgstr "Обчислює найбільше коло, яке не перетинається з геометрією."
 
 #. Tag: para
 #, no-c-format
@@ -28146,6 +28209,13 @@ msgid ""
 "itself is provided by the center point and a nearest point lying on an "
 "obstacle determining the circle radius."
 msgstr ""
+"Знаходить найбільше коло, яке не перетинається з набором точкових і лінійних "
+"перешкод. (Полігональні геометрії можуть бути включені як перешкоди, але "
+"використовуються тільки їх межі.) Центр кола обмежений межами полігональної "
+"фігури, яка за замовчуванням є опуклою оболонкою вхідної геометрії. Центр "
+"кола — це точка всередині межі, яка має найбільшу відстань від перешкод. "
+"Саме коло задається центром і найближчою точкою, що лежить на перешкоді, яка "
+"визначає радіус кола."
 
 #. Tag: para
 #, no-c-format
@@ -28154,11 +28224,14 @@ msgid ""
 "tolerance, using an iterative algorithm. If the accuracy distance is not "
 "specified a reasonable default is used."
 msgstr ""
+"Центр кола визначається з заданою точністю, яка визначається допуском на "
+"відстань, за допомогою ітераційного алгоритму. Якщо точність відстані не "
+"вказана, використовується розумне значення за замовчуванням."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns a record with fields:"
-msgstr ""
+msgstr "Повертає запис із полями:"
 
 #. Tag: para
 #, no-c-format
@@ -28166,16 +28239,18 @@ msgid ""
 "To find the largest empty circle in the interior of a polygon, see <xref "
 "linkend=\"ST_MaximumInscribedCircle\"/>."
 msgstr ""
+"Щоб знайти найбільше порожнє коло всередині полігону, див. <xref linkend="
+"\"ST_MaximumInscribedCircle\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.4.0."
-msgstr ""
+msgstr "Доступність: 3.4.0."
 
 #. Tag: para
 #, no-c-format
 msgid "Largest Empty Circle within a set of lines."
-msgstr ""
+msgstr "Найбільше порожнє коло в наборі ліній."
 
 #. Tag: para
 #, no-c-format
@@ -28184,6 +28259,9 @@ msgid ""
 "polygon. The constraint polygon boundary must be included as an obstacle, as "
 "well as specified as the constraint for the circle center."
 msgstr ""
+"Найбільше порожнє коло в наборі точок, обмежене полігоном. Межа полігону "
+"обмеження повинна бути включена як перешкода, а також вказана як обмеження "
+"для центру кола."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -28191,12 +28269,14 @@ msgid ""
 "<refpurpose>Returns the smallest circle polygon that contains a geometry.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Повертає найменший полігон кола, що містить "
+"геометрію.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<para>Returns the smallest circle polygon that contains a geometry.</para>"
-msgstr ""
+msgstr "<para>Повертає найменший полігон кола, що містить геометрію.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -28208,6 +28288,12 @@ msgid ""
 "increasing the number of segments. For applications where an approximation "
 "is not suitable <xref linkend=\"ST_MinimumBoundingRadius\"/> may be used."
 msgstr ""
+"Обмежувальне коло наближається полігоном із 48 сегментами на чверть кола за "
+"замовчуванням. Оскільки полігон є наближенням мінімального обмежувального "
+"кола, деякі точки в геометрії вхідних даних можуть не міститися в полігоні. "
+"Наближення можна поліпшити, збільшивши кількість сегментів. Для додатків, де "
+"наближення не підходить, можна використовувати <xref linkend="
+"\"ST_MinimumBoundingRadius\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -28215,6 +28301,8 @@ msgid ""
 "Use with <xref linkend=\"ST_Collect\"/> to get the minimum bounding circle "
 "of a set of geometries."
 msgstr ""
+"Використовуйте з <xref linkend=\"ST_Collect\"/>, щоб отримати мінімальне "
+"обмежуюче коло набору геометрій."
 
 #. Tag: para
 #, no-c-format
@@ -28222,6 +28310,8 @@ msgid ""
 "To compute two points lying on the minimum circle (the \"maximum diameter\") "
 "use <xref linkend=\"ST_LongestLine\"/>."
 msgstr ""
+"Щоб обчислити дві точки, що лежать на мінімальному колі (максимальний "
+"діаметр), використовуйте <xref linkend=\"ST_LongestLine\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -28230,6 +28320,8 @@ msgid ""
 "Bounding Circle is referred to as the <emphasis>Reock compactness score</"
 "emphasis>."
 msgstr ""
+"Відношення площі полігону до площі його мінімального обмежувального кола "
+"називається <emphasis>коефіцієнтом компактності Реока</emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -28237,6 +28329,8 @@ msgid ""
 "Minimum bounding circle of a point and linestring. Using 8 segs to "
 "approximate a quarter circle"
 msgstr ""
+"Мінімальне обмежуюче коло точки та лінії. Використання 8 сегментів для "
+"наближення чверті кола"
 
 #. Tag: para
 #, no-c-format
@@ -28244,13 +28338,15 @@ msgid ""
 ", <xref linkend=\"ST_MinimumBoundingRadius\"/>, <xref "
 "linkend=\"ST_LargestEmptyCircle\"/>, <xref linkend=\"ST_LongestLine\"/>"
 msgstr ""
+", <xref linkend=\"ST_MinimumBoundingRadius\"/>, <xref linkend="
+"\"ST_LargestEmptyCircle\"/>, <xref linkend=\"ST_LongestLine\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the center point and radius of the smallest circle that contains a "
 "geometry."
-msgstr ""
+msgstr "Повертає центр і радіус найменшого кола, що містить геометрію."
 
 #. Tag: para
 #, no-c-format
@@ -28258,11 +28354,13 @@ msgid ""
 "Computes the center point and radius of the smallest circle that contains a "
 "geometry. Returns a record with fields:"
 msgstr ""
+"Обчислює центр і радіус найменшого кола, що містить геометрію. Повертає "
+"запис із полями:"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability - 2.3.0"
-msgstr ""
+msgstr "Доступність - 2.3.0"
 
 #. Tag: para
 #, no-c-format
@@ -28270,11 +28368,13 @@ msgid ""
 ", <xref linkend=\"ST_MinimumBoundingCircle\"/>, <xref "
 "linkend=\"ST_LongestLine\"/>"
 msgstr ""
+", <xref linkend=\"ST_MinimumBoundingCircle\"/>, <xref linkend="
+"\"ST_LongestLine\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a minimum-area rectangle containing a geometry."
-msgstr ""
+msgstr "Повертає прямокутник з мінімальною площею, що містить геометрію."
 
 #. Tag: para
 #, no-c-format
@@ -28283,6 +28383,9 @@ msgid ""
 "more than one such rectangle may exist. May return a Point or LineString in "
 "the case of degenerate inputs."
 msgstr ""
+"Повертає прямокутник з мінімальною площею, що охоплює геометрію. Зверніть "
+"увагу, що може існувати більше одного такого прямокутника. У разі вироджених "
+"вхідних даних може повертати Point або LineString."
 
 #. Tag: para
 #, no-c-format
