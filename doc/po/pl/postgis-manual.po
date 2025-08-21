@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-20 04:11+0000\n"
+"POT-Creation-Date: 2025-08-21 03:28+0000\n"
 "PO-Revision-Date: 2023-09-22 19:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Polish <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -8139,6 +8139,11 @@ msgstr "David Zwarg"
 #, fuzzy, no-c-format
 msgid "David Techer"
 msgstr "David Zwarg"
+
+#. Tag: member
+#, no-c-format
+msgid "Denys Kovshun"
+msgstr ""
 
 #. Tag: member
 #, no-c-format
@@ -35382,12 +35387,12 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0rc1"
+msgid "PostGIS 3.6.0"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/08/18"
+msgid "2025/xx/xx"
 msgstr ""
 
 #. Tag: para
@@ -35416,6 +35421,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Denys Kovshun (Ukrainian Team)"
 msgstr ""
 
 #. Tag: title

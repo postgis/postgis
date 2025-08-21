@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-20 04:11+0000\n"
+"POT-Creation-Date: 2025-08-21 03:28+0000\n"
 "PO-Revision-Date: 2025-07-28 08:47+0000\n"
 "Last-Translator: Weblate <noreply-mt-weblate@weblate.org>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -9658,6 +9658,11 @@ msgstr "David Skea"
 #, no-c-format
 msgid "David Techer"
 msgstr "David Techer"
+
+#. Tag: member
+#, no-c-format
+msgid "Denys Kovshun"
+msgstr ""
 
 #. Tag: member
 #, no-c-format
@@ -41396,13 +41401,13 @@ msgstr "发行说明"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0rc1"
-msgstr ""
+msgid "PostGIS 3.6.0"
+msgstr "PostGIS 3.6.0"
 
 #. Tag: para
 #, no-c-format
-msgid "2025/08/18"
-msgstr ""
+msgid "2025/xx/xx"
+msgstr "2025/xx/xx"
 
 #. Tag: para
 #, no-c-format
@@ -41430,6 +41435,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Denys Kovshun (Ukrainian Team)"
 msgstr ""
 
 #. Tag: title
@@ -47566,14 +47576,6 @@ msgstr "支持地理"
 #~ "成几何体周围的立体表示。<parameter>segments</parameter> 参数指定缓冲区曲线"
 #~ "部分的近似分割数。<parameter>buffer_type</parameter> 参数指定缓冲区生成类"
 #~ "型：0: 球形缓冲区（默认）1: 平面缓冲区2: 方形缓冲区"
-
-#, no-c-format
-#~ msgid "PostGIS 3.6.0"
-#~ msgstr "PostGIS 3.6.0"
-
-#, no-c-format
-#~ msgid "2025/xx/xx"
-#~ msgstr "2025/xx/xx"
 
 #, no-c-format
 #~ msgid ""

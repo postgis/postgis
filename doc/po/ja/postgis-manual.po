@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-20 04:11+0000\n"
+"POT-Creation-Date: 2025-08-21 03:28+0000\n"
 "PO-Revision-Date: 2025-08-19 05:21+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -10352,6 +10352,11 @@ msgstr "David Skea"
 #, no-c-format
 msgid "David Techer"
 msgstr "David Techer"
+
+#. Tag: member
+#, no-c-format
+msgid "Denys Kovshun"
+msgstr ""
 
 #. Tag: member
 #, no-c-format
@@ -43768,13 +43773,13 @@ msgstr "リリースノート"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0rc1"
-msgstr "PostGIS 3.6.0rc1"
+msgid "PostGIS 3.6.0"
+msgstr "PostGIS 3.6.0"
 
 #. Tag: para
 #, no-c-format
-msgid "2025/08/18"
-msgstr "2025/08/18"
+msgid "2025/xx/xx"
+msgstr "2025/xx/xx"
 
 #. Tag: para
 #, no-c-format
@@ -43806,6 +43811,11 @@ msgstr "Daniel Nylanderさん (スウェーデン語チーム)"
 #, no-c-format
 msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
 msgstr "HighGoのDapeng Wangさん、Zuo Chenweiさん (中国語チーム)"
+
+#. Tag: para
+#, no-c-format
+msgid "Denys Kovshun (Ukrainian Team)"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -50149,6 +50159,14 @@ msgid "Supports geography"
 msgstr "ジオグラフィ対応"
 
 #, no-c-format
+#~ msgid "PostGIS 3.6.0rc1"
+#~ msgstr "PostGIS 3.6.0rc1"
+
+#, no-c-format
+#~ msgid "2025/08/18"
+#~ msgstr "2025/08/18"
+
+#, no-c-format
 #~ msgid "PostGIS 3.6.0beta1"
 #~ msgstr "PostGIS 3.6.0beta1"
 
@@ -50446,14 +50464,6 @@ msgstr "ジオグラフィ対応"
 #~ "を指定するものです。<parameter>buffer_type</parameter>は、バッファ生成タイ"
 #~ "プを指定します。0: 球形バッファ (デフォルト) 1: 平面バッファ 2: 四角形バッ"
 #~ "ファ (訳注: ST_Bufferの端点処理を参照して下さい)"
-
-#, no-c-format
-#~ msgid "PostGIS 3.6.0"
-#~ msgstr "PostGIS 3.6.0"
-
-#, no-c-format
-#~ msgid "2025/xx/xx"
-#~ msgstr "2025/xx/xx"
 
 #, no-c-format
 #~ msgid ""
