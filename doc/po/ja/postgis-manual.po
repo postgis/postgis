@@ -10,10 +10,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-08-19 05:21+0000\n"
+"PO-Revision-Date: 2025-08-21 07:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10356,7 +10356,7 @@ msgstr "David Techer"
 #. Tag: member
 #, no-c-format
 msgid "Denys Kovshun"
-msgstr ""
+msgstr "Denys Kovshun"
 
 #. Tag: member
 #, no-c-format
@@ -43815,7 +43815,7 @@ msgstr "HighGoのDapeng Wangさん、Zuo Chenweiさん (中国語チーム)"
 #. Tag: para
 #, no-c-format
 msgid "Denys Kovshun (Ukrainian Team)"
-msgstr ""
+msgstr "Denys Kovshunさん (ウクライナ語チーム)"
 
 #. Tag: title
 #, no-c-format
@@ -43892,6 +43892,12 @@ msgid ""
 "extension@ for PG &gt;= 16 to schema qualify dependent extensions, switch to "
 "use typmod for tiger tables (Regina Obe)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5897\""
+">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/"
+"postgis/pulls/260\">GT-260</link> [tiger_geocoder] PG &gt;= "
+"16の依存エクステンションのスキーマ修飾での@extschema:extension@の使用、"
+"TIGERのテーブルでのtypemod使用への切替え (Regina Obe)"
 
 #. Tag: title
 #, no-c-format
@@ -43905,6 +43911,9 @@ msgid ""
 "Drop st_approxquantile(raster, double precision), wasn't usable as it "
 "triggered is not unique error when used (Regina Obe)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</link> "
+"使用時に一意でないエラーで使用できなかったためst_approxquantile(raster, "
+"double precision)を削除 (Regina Obeさん)"
 
 #. Tag: title
 #, no-c-format
@@ -44047,11 +44056,10 @@ msgstr ""
 "勢調査局)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "[raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
-msgstr ""
-"[raster] 素早く再ラスタの値の再割り当てを行うST_ReclassExactを追加 (Paul "
+msgstr "[raster] 素早くラスタの値の再割り当てを行うST_ReclassExactを追加 (Paul "
 "Ramseyさん)"
 
 #. Tag: title
