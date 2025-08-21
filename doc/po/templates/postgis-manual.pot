@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-20 04:11+0000\n"
+"POT-Creation-Date: 2025-08-21 03:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -8097,6 +8097,11 @@ msgstr ""
 #. Tag: member
 #, no-c-format
 msgid "David Techer"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Denys Kovshun"
 msgstr ""
 
 #. Tag: member
@@ -35186,12 +35191,12 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0rc1"
+msgid "PostGIS 3.6.0"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/08/18"
+msgid "2025/xx/xx"
 msgstr ""
 
 #. Tag: para
@@ -35220,6 +35225,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Denys Kovshun (Ukrainian Team)"
 msgstr ""
 
 #. Tag: title

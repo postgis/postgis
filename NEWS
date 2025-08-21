@@ -1,5 +1,5 @@
-PostGIS 3.6.0rc1
-2025/08/18
+PostGIS 3.6.0
+2025/xx/xx
 
 This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.14+ is needed.
@@ -10,6 +10,7 @@ Many thanks to our translation teams, in particular:
 Teramoto Ikuhiro (Japanese Team)
 Daniel Nylander (Swedish Team)
 Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)
+Denys Kovshun (Ukrainian Team)
 
 * Breaking Changes *
 

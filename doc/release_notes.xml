@@ -3,8 +3,8 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
         <section>
-            <title>PostGIS 3.6.0rc1</title>
-            <para>2025/08/18</para>
+            <title>PostGIS 3.6.0</title>
+            <para>2025/xx/xx</para>
                         <para>This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj 6.1+.
             To take advantage of all features, GEOS 3.14+ is needed.
             To take advantage of all SFCGAL features, SFCGAL 2.2+ is needed.</para>
@@ -13,6 +13,7 @@
             <para>Teramoto Ikuhiro (Japanese Team)</para>
             <para>Daniel Nylander (Swedish Team)</para>
             <para>Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)</para>
+            <para>Denys Kovshun (Ukrainian Team)</para>
 
 
 
