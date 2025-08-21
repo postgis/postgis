@@ -1,24 +1,22 @@
 -------------------------------------------------------------------------
-
-TITLE:  PostGIS Developer How-To
-
-AUTHOR:	Name: Regina Obe
-
-DATE:   2025-08-12
-
-CATEGORY: Development Docs
-
+title:  PostGIS Developer How-To
+author:	Name: Regina Obe
+date:   "2025-08-12"
+category: Development Docs
 -------------------------------------------------------------------------
-Terminology
-============
 
-* PostGIS versions are 3 digits separated by a period
+# PostGIS Developer How-To
+## Terminology
+
+* PostGIS version naming are 3 digits separated by a period
 
   Major.Minor.Patch
 
-  - 3.0.0 is a major version
-  - 3.6.0 is a minor version
-  - 3.5.3 is a patch version
+| Version | Meaning | Example |
+|---------|---------|---------|
+| `3.0.0` | Major release (new API surface) | First release of a major version |
+| `3.6.0` | Minor release (new features, backwards‑compatible) | Added new functions |
+| `3.0.1` | Patch release (bug fixes, data changes) | Small fixes to `3.0.0` |
 
 * SQL Api functions are functions that are exposed to the user in the database.
   They are either SQL, plpgsql, or C backed functions.
@@ -49,8 +47,7 @@ for easier testing in the same cluster.
 
 To take advantage of this feature, when configuring postgis compile, use the switch *--with-library-minor-version*
 
-Does and Don'ts
-===================
+## Does and Don'ts
 
 * Don't introduce new SQL Api functions in a Patch release.
 * Don't change structure definitions e.g. geometry_columns, geometry/raster type
@@ -61,12 +58,13 @@ Does and Don'ts
 * Only major versions can remove SQL api functions
   or C api functions without stubbing (which we will cover shortly).
 
-* Only major versions can introduce functionality that requires a pg_dump / pg_restore. 
+* Only PostGIS first release of a major can introduce functionality that requires a pg_dump / pg_restore. 
+* Don't require newer versions of library in a micro, but you can require new versions in first release of a minor.
+  For example we often drop support for older versions of GEOS and PostgreSQL in a new minor release.
 
 
 
-When removing objects impacts upgrade
-==========================================================
+## When removing objects impacts upgrade
 
 There are several types of removals that impact user upgrades and should be carefully thought thru.
 
@@ -77,8 +75,8 @@ There are several types of removals that impact user upgrades and should be care
 Functions internal to postgis that are never exposed and only used within postgis libraries 
 can be shuffled around to your hearts content.
 
-UPGRADING C Api functions 
-==========================
+
+## UPGRADING C Api functions 
 
 You should avoid ever removing C Api function in Minor and patch releases of PostGIS.
 
@@ -122,18 +120,19 @@ if you try to overlay the old def structures onto the new extension install.
 So this whole care of legacy functions is to appease pg_upgrade.
 
 
-UPGRADING SQL Api functions 
-============================
+## UPGRADING SQL Api functions 
 
 For most SQL Api functions, nothing special needs to be done beyond
 noting a CHANGED in version or AVAILABILITY in the respective .sql.in files.
 
 The SQL Api definitions are found in following places:
 
-* postgis extension, postgis/postgis_sql.in, geography.sql.in, postgis.bin.sql.in, or postgis_spgist.sql.in
-* postgis_raster extension  raster/rt_pg/rtpostgis.sql.in 
-* postgis_sfcgal extension sfcgal/sfcgal.sql.in
-* postgis_topology - topology/sql/*.sql.in
+| Extension | Relevant Files |
+|-----------|----------------|
+| `postgis` | `postgis/postgis_sql.in`, `postgis/geography_sql.in`, `postgis/postgis_bin_sql.in`, `postgis/postgis_spgist_sql.in` |
+| `postgis_raster` | `raster/rt_pg/rtpostgis_sql.in` |
+| `postgis_sfcgal` | `sfcgal/sfcgal_sql.in` |
+| `postgis_topology` | `topology/sql/*.sql.in` |
 
 We use perl scripts to stitch together these various SQL and 
 read meta comments to determine what to do during an upgrade.
@@ -144,8 +143,10 @@ The various notes you put in .sql.in files take the following form and precede t
 * -- Availability: Is only informational 2.0.0 where 2.0.0 represents the version it was introduced in.
 * -- Changed: Is only informational. You'll often see an Availability comment followed by a changed comment.
     e.g. 
+
         -- Availability: 0.1.0
         -- Changed: 2.0.0 use gserialized selectivity estimators
+  
 * -- Replaces: is both informational and also instructs the perl upgrade script to protect the user from some upgrade pains.
      You use Replaces instead of just a simple Changed, if you are changing inputs to the function or changing 
      outputs of the function. So any change to the api
@@ -156,7 +157,8 @@ The various notes you put in .sql.in files take the following form and precede t
       -- Changed: 3.1.0 - add zvalue=0.0 parameter
       -- Replaces ST_Force3D(geometry) deprecated in 3.1.0
 
-    When utils/create_upgrade.pl script comes across a Replaces clause, the perl script will change the statement to do the following 
+    When utils/create_upgrade.pl script comes across a Replaces clause, the perl script will change the statement to do the following:
+
      1) Finds the old definition
      2) renames the old definition to ST_Force3D_deprecated_by_postgis_310 
      3) Installs the new version of the function.
@@ -178,9 +180,9 @@ The relevant files for each extension are as follows:
 
 * postgis - postgis/postgis_before_upgrade.sql , postgis/postgis_after_upgrade.sql
 * postgis_raster - raster/rtpostgis_drop.sql.in, rtpostgis_upgrade_cleanup.sql.in 
-    (the rtpostgis_upgrade_cleanup.sql.in is equivalent to the after_ugprade script of other extensions)
+    (the rtpostgis_upgrade_cleanup.sql.in is equivalent to the after_upgrade script of other extensions)
 * postgis_sfcgal - sfcgal/sfcgal_before_upgrade.sql.in, sfcgal/sfcgal_after_upgrade.sql.in
-* postgis_topology - sfcgal/topology_before_upgrade.sql.in, sfcgal/topology_after_upgrade.sql.in
+* postgis_topology - topology/topology_before_upgrade.sql.in, topology/topology_after_upgrade.sql.in
 
 Helper function calls you'll find in these scripts are the following and are defined in postgis/common_before_upgrade.sql and dropped in 
 postgis/common_after_upgrade.sql
@@ -207,19 +209,65 @@ you'll see guards in the SQL files as well.
 We have guards in place in the code to handle these for dependency libraries
 
 * PostgreSQL
-  - sql, c:  ``#if POSTGIS_PGSQL_VERSION >= 150``
+  - sql.in and c files
+    
+    ```c
+    #if POSTGIS_PGSQL_VERSION >= 150
+    /* code that requires PostgreSQL 15+ */
+    #endif
+    ```
   - regress/../tests.mk.in
+
+
 * GEOS 
-  - c: ``#if POSTGIS_GEOS_VERSION < 31000``
-  - tests: shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 30900
-    * regress/../tests.mk.in
-    * raster/rt_pg/tests/tests.mi.in
+  - c: 
+    ```c
+      #if POSTGIS_GEOS_VERSION < 31000
+      /* GEOS < 3.1 code goes here */
+      #endif
+    ```
+  - test files:
+      * **`regress/**/tests.mk.in`** 
+      * raster/rt_pg/tests/tests.mi.in
+
+    ```makefile
+       ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31000),1)
+        TESTS += \
+          # add tests that require GEOS 3.1 or higher to run
+       endif
+    ```
+
 * SFCGAL
-  - c: ``#if POSTGIS_SFCGAL_VERSION >= 10400``
-  - tests: ``ifeq ($(shell expr "$(POSTGIS_SFCGAL_VERSION)" ">=" 10401),1)``
+  - c files
+    ```c
+      #if POSTGIS_SFCGAL_VERSION >= 20100
+      /* SFCGAL 2.1+ required */
+      #endif
+    ```
+  - tests: 
     * sfcgal/regress/tests.mk.in
+
+    ```makefile
+    ifeq ($(shell expr "$(POSTGIS_SFCGAL_VERSION)" ">=" 20100),1)
+      TESTS += \
+        # add tests that require SFCGAL 2.1 or higher
+    endif
+    ```
 * PROJ
+  - c files
+    ```c
+      #if POSTGIS_PROJ_VERSION > 60000
+        /* Code to run for Proj 6.0 or higher */
+      #endif
+    ```
+
 * GDAL
+  - c files 
+    ```c
+      #if POSTGIS_GDAL_VERSION < 30700
+          /* Logic for GDAL < 3.7 **/
+      #endif
+    ``` 
 
 Even if a user can't use a certain function, that function still needs to be exposed,
 but instead of doing something functional, will output an error that the extension needs to be compiled
