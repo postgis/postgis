@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-08-21 07:47+0000\n"
+"PO-Revision-Date: 2025-08-21 10:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -36899,7 +36899,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Calculates the fraction of each raster cell that is covered by a given "
 "geometry. The first argument is a raster, which defines the grid geometry to "
@@ -36910,12 +36910,13 @@ msgid ""
 "that is covered by the geometry. For linestrings, the value returned for "
 "each cell is the length contained in the cell."
 msgstr ""
-"ラスタ上の個々のセルのうち与えられたジオメトリで覆われたものの断片を計算しま"
-"す。一つ目の引数はラスタで、計算に使うジオメトリグリッドを定義します。範囲と"
-"セルサイズはこのラスタから読みます。二つ目の引数はジオメトリです。グリッドを"
-"覆うもので、個々のグリッドはグリッドを覆うジオメトリに基づいて個々のグリッド"
-"を入力します。ポリゴンの場合には、個々のセルから返される値はジオメトリに覆わ"
-"れた領域の形状となり、セルごとに返される値はセル内に含まれる長さです。"
+"ラスタ上の個々のセルのうち与えられたジオメトリで覆われている割合を計算します"
+"。一つ目の引数はラスタで、計算に使うジオメトリグリッドを定義します。範囲とセ"
+"ルサイズはこのラスタから読みます。二つ目の引数はジオメトリです。グリッドを覆"
+"っていて、個々のグリッドの値は、ジオメトリが覆うグリッドに基づいて設定されま"
+"す。ポリゴンについては、個々のセルについて返される値は、ジオメトリに覆われた"
+"領域の割合です。ラインストリングについては、個々のセルから返される値はセルに"
+"含まれる長さです。"
 
 #. Tag: para
 #, no-c-format
