@@ -71,6 +71,9 @@ $(top_builddir)/raster/rt_pg/uninstall_rtpostgis.sql:
 $(top_builddir)/raster/rt_pg/rtpostgis_upgrade.sql:
 	$(MAKE) -C ../raster/rt_pg rtpostgis_upgrade.sql
 
+$(top_builddir)/topology/topology_upgrade.sql:
+	$(MAKE) -C ../topology/ topology_upgrade.sql
+
 
 $(top_builddir)/topology/uninstall_topology.sql:
 	$(MAKE) -C ../topology/ uninstall_topology.sql
