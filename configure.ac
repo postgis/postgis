@@ -1488,6 +1488,23 @@ fi
 
 AC_SUBST([ADDRESS_STANDARDIZER])
 
+dnl ====================================
+dnl tiger_geocoder stuff
+dnl ====================================
+AC_ARG_WITH([tiger],
+    [AS_HELP_STRING([--without-tiger],
+                    [Disable the tiger geocoder extension])],
+    [], [])
+
+if test "x$with_tiger" != "xno"; then
+    TIGER="tiger"
+    AC_MSG_RESULT([TIGER: Tiger geocoder support requested])
+else
+    AC_MSG_RESULT([TIGER: Tiger geocoder support disabled])
+fi
+
+AC_SUBST([TIGER])
+
 CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $PROTOBUF_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $PCRE_CPPFLAGS $CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
 
@@ -1527,7 +1544,6 @@ if test "x$with_interrupt_tests" = "xno"; then
 fi
 
 AC_SUBST([INTERRUPTTESTS])
-
 
 
 dnl ===========================================================================
@@ -2026,6 +2042,12 @@ if test "x$ADDRESS_STANDARDIZER" = "xaddress_standardizer"; then
     AC_MSG_RESULT([  Address Standardizer support:       enabled])
 else
     AC_MSG_RESULT([  Address Standardizer support:       disabled])
+fi
+
+if test "x$TIGER" = "xtiger"; then
+    AC_MSG_RESULT([  PostGIS Tiger Geocoder:                   enabled])
+else
+    AC_MSG_RESULT([  PostGIS Tiger Geocoder:                   disabled])
 fi
 
 AC_MSG_RESULT()

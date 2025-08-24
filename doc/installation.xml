@@ -498,11 +498,18 @@ sh autogen.sh
 		  </listitem>
 		</varlistentry>
 		<varlistentry>
+		  <term><option>--without-tiger</option></term>
+		  <listitem>
+			<para>
+			  Disables tiger geocoder support.
+			</para>
+		  </listitem>
+		</varlistentry>
+		<varlistentry>
 		  <term><option>--without-topology</option></term>
 		  <listitem>
 			<para>
-			  Disable topology support. There is no corresponding library
-			  as all logic needed for topology is in postgis-&last_release_version; library.
+			  Compile without topology support.
 			</para>
 		  </listitem>
 		</varlistentry>
