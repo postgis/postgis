@@ -101,24 +101,29 @@ LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${LZ4_PATH}/lib -L${PROJECTS
 
 make -j 4
 make install
-make check RUNTESTFLAGS=-v
+
+# don't run tests twice. Only run regular if extension test is not asked for
+if [ "$MAKE_EXTENSION" == "" ]; then
+  make check RUNTESTFLAGS=-v
+fi 
+
 
 if [ "$MAKE_EXTENSION" == "1" ]; then
  export PGUSER=postgres
  #need to copy install files to EDB install (since not done by make install
  cd ${POSTGIS_SRC}
  echo "Postgis src dir is ${POSTGIS_SRC}"
- strip postgis/postgis-*.dll
- strip raster/rt_pg/postgis_raster-*.dll
- strip sfcgal/*.dll
+ #strip postgis/postgis-*.dll
+ #strip raster/rt_pg/postgis_raster-*.dll
+ #strip sfcgal/*.dll
 
- if [ $REGRESS_WITHOUT_TOPOLOGY == ""]; then 
+ if [ $REGRESS_WITHOUT_TOPOLOGY == "" ]; then 
     cp -r topology/*.dll ${PGPATHEDB}/lib
  fi
  cp postgis/postgis*.dll ${PGPATHEDB}/lib
  cp sfcgal/*.dll ${PGPATHEDB}/lib
 
- if [ $REGRESS_WITHOUT_RASTER == ""]; then 
+ if [ $REGRESS_WITHOUT_RASTER == "" ]; then 
     cp raster/rt_pg/postgis_raster-*.dll ${PGPATHEDB}/lib
  fi
 

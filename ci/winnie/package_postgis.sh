@@ -107,7 +107,7 @@ if [ "$POSTGIS_MAJOR_VERSION" > "1" ] ; then
   cp -rp  ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal $outdir/gdal-data
 
 	# needed for address standardizer
-  cp -p ${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/bin/libpcre-1*.dll $outdir/bin
+  cp -p ${PCRE_PATH}/bin/*.dll $outdir/bin
 
 fi;
 
