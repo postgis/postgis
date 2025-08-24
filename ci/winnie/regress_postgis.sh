@@ -68,6 +68,14 @@ if [ $INCLUDE_MINOR_LIB == "1" ]; then
   EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --with-library-minor-version"
 fi
 
+if [ $REGRESS_WITHOUT_TOPOLOGY == "1" ]; then 
+   EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --without-topology"
+fi
+
+if [ $REGRESS_WITHOUT_RASTER == "1" ]; then 
+   EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --without-raster"
+fi
+
 #CPPFLAGS="-I${PGPATH}/include -I${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include" \
 #CFLAGS="-Wall -fno-omit-frame-pointer"
 
@@ -83,7 +91,6 @@ LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${LZ4_PATH}/lib -L${PROJECTS
   --with-gui --with-gettext=no \
   --with-sfcgal=${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/sfcgal-config \
   --prefix=${PROJECTS}/postgis/liblwgeom-${POSTGIS_VER}w${OS_BUILD}${GCC_TYPE} --with-library-minor-version \
-  --without-topology \
   ${EXTRA_CONFIGURE_ARGS}
 
 
@@ -104,10 +111,17 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  strip postgis/postgis-*.dll
  strip raster/rt_pg/postgis_raster-*.dll
  strip sfcgal/*.dll
- cp topology/*.dll ${PGPATHEDB}/lib
+
+ if [ $REGRESS_WITHOUT_TOPOLOGY == ""]; then 
+    cp -r topology/*.dll ${PGPATHEDB}/lib
+ fi
  cp postgis/postgis*.dll ${PGPATHEDB}/lib
  cp sfcgal/*.dll ${PGPATHEDB}/lib
- cp raster/rt_pg/postgis_raster-*.dll ${PGPATHEDB}/lib
+
+ if [ $REGRESS_WITHOUT_RASTER == ""]; then 
+    cp raster/rt_pg/postgis_raster-*.dll ${PGPATHEDB}/lib
+ fi
+
 
 export POSTGIS_MINOR_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 export POSTGIS_MINOR_MAX_VER="ANY"
@@ -120,8 +134,20 @@ value=${value//UPGRADEABLE_VERSIONS = /}
 #echo $value
 export UPGRADEABLE_VERSIONS=$value
 export WIN_RELEASED_VERSIONS="2.0.0 2.0.1 2.0.3 2.0.4 2.0.6 2.1.4 2.1.7 2.1.8 2.2.0 2.2.3 2.3.0 2.3.7 2.4.0 2.4.4"
+export extensions_to_install="postgis postgis_sfcgal postgis_tiger_geocoder address_standardizer"
+
+if [ $REGRESS_WITHOUT_TOPOLOGY == "" ]; then 
+  extensions_to_install="${extensions_to_install} postgis_topology"
+fi
+
+if [ $REGRESS_WITHOUT_RASTER == "" ]; then 
+  extensions_to_install="${extensions_to_install} postgis_raster"
+fi
+
+
 #echo "Versions are:  $UPGRADEABLE_VERSIONS"
-for EXTNAME in postgis postgis_raster postgis_sfcgal postgis_tiger_geocoder address_standardizer postgis_topology; do
+for EXTNAME in $extensions_to_install; do
+  
 	cp extensions/$EXTNAME/sql/*  ${PGPATHEDB}/share/extension
 	cp extensions/$EXTNAME/sql/$EXTNAME--TEMPLATED--TO--ANY.sql  ${PGPATHEDB}/share/extension/$EXTNAME--$POSTGIS_MICRO_VER--${POSTGIS_MINOR_MAX_VER}.sql;
 
@@ -143,10 +169,10 @@ done
  #cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}.sql ${PGPATHEDB}/share/extension
  #cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${PGPATHEDB}/share/extension
  #cp -r ${PGPATH}/share/extension/address_standardizer*${POSTGIS_MICRO_VER}.sql ${PGPATHEDB}/share/extension
- cp -r extensions/*/*.control ${PGPATHEDB}/share/extension
- cp -r extensions/*/*.dll ${PGPATHEDB}/lib
+cp -r extensions/*/*.control ${PGPATHEDB}/share/extension
+cp -r extensions/*/*.dll ${PGPATHEDB}/lib
 
- make check RUNTESTFLAGS="--extension -v"
+make check RUNTESTFLAGS="--extension -v"
 
 if [ "$UPGRADE_TEST" == "1" ]; then
   export CURRENTVERSION=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}
