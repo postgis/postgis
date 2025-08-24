@@ -46,7 +46,7 @@
 #include <string.h>
 
 /* Prototype */
-static LWGEOM *parse_geojson(json_object *geojson, int *hasz);
+LWGEOM *parse_geojson(json_object *geojson, int *hasz);
 
 static inline json_object *
 findMemberByName(json_object *poObj, const char *pszName)
@@ -102,7 +102,7 @@ parse_coordinates(json_object *geojson)
 }
 
 
-static inline int
+inline int
 parse_geojson_coord(json_object *poObj, int *hasz, POINTARRAY *pa)
 {
 	POINT4D pt = {0, 0, 0, 0};
