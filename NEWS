@@ -1,3 +1,24 @@
+PostGIS 3.6.0rc2
+2025/08/xx
+This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj 6.1+.
+To take advantage of all features, GEOS 3.14+ is needed.
+To take advantage of all SFCGAL features, SFCGAL 2.2+ is needed.
+
+Many thanks to our translation teams, in particular:
+
+Teramoto Ikuhiro (Japanese Team)
+Daniel Nylander (Swedish Team)
+Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)
+Denys Kovshun (Ukrainian Team)
+
+CHANGES since PostGIS 3.6.0rc1
+
+ - Doc updates
+ - #5968, Remove raster generated files in distclean target (Bas Couwenberg)
+ - #5969, Fix issue when building --without-topology (Regina Obe)
+ - #5971, Option to build --without-tiger (Regina Obe)
+
+
 PostGIS 3.6.0
 2025/xx/xx
 
