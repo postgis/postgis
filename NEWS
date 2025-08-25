@@ -6,6 +6,7 @@ Proj 6.1+ required.
 
 * Bug Fixes *
 
+  - #5977, Fix downgrade protection with standard conforming strings off (Sandro Santilli)
   - #5947, [topology] Fix crash in ST_ModEdgeHeal (Sandro Santilli)
   - #5951, [topology] Fix crash in ST_GetFaceEdges with corrupted topology (Sandro Santilli)
   - #5925, #5946, [topology] Have GetFaceContainingPoint survive EMPTY edges (Sandro Santilli)
