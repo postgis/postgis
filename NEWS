@@ -13,6 +13,7 @@ Denys Kovshun (Ukrainian Team)
 
 CHANGES since PostGIS 3.6.0rc1
 
+ - #5977, Fix downgrade protection with standard conforming strings off (Sandro Santilli)
  - Doc updates
  - #5968, Remove raster generated files in distclean target (Bas Couwenberg)
  - #5969, Fix issue when building --without-topology (Regina Obe)
