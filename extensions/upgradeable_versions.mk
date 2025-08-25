@@ -115,4 +115,4 @@ UPGRADEABLE_VERSIONS = \
 	3.6.0alpha1 \
 	3.6.0beta1 \
 	3.6.0rc1 \
-	3.6.0dev
+	3.6.0rc2
