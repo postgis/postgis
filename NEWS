@@ -6,6 +6,7 @@ Proj 4.9+ required.
 
 * Bug Fixes and Enhancements *
 
+ - #5977, Fix downgrade protection with standard conforming strings off (Sandro Santilli)
  - #5951, [topology] Fix crash in ST_GetFaceEdges with corrupted topology (Sandro Santilli)
  - #5947, [topology] Fix crash in ST_ModEdgeHeal (Sandro Santilli)
  - #5922, [topology] Fix crash in TopoGeo_AddLinestring with EMPTY input (Sandro Santilli)
