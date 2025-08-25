@@ -1754,6 +1754,10 @@ extern lwvarlena_t* lwgeom_to_encoded_polyline(const LWGEOM *geom, int precision
  */
 extern LWGEOM* lwgeom_from_geojson(const char *geojson, char **srs);
 
+#if defined(HAVE_LIBJSON)
+extern LWGEOM *parse_geojson(json_object *geojson, int *hasz)
+#endif /* HAVE_LIBJSON */
+
 /**
  * Create an LWGEOM object from an Encoded Polyline representation
  *
