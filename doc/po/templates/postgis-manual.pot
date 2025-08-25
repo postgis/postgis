@@ -6686,9 +6686,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Disable topology support. There is no corresponding library as all logic "
-"needed for topology is in postgis-&last_release_version; library."
+msgid "Disables tiger geocoder support."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Compile without topology support."
 msgstr ""
 
 #. Tag: para
@@ -35191,12 +35194,12 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0"
+msgid "PostGIS 3.6.0rc2"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/xx/xx"
+msgid "2025/08/25"
 msgstr ""
 
 #. Tag: para

@@ -1,5 +1,5 @@
 PostGIS 3.6.0rc2
-2025/08/xx
+2025/08/25
 This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.14+ is needed.
 To take advantage of all SFCGAL features, SFCGAL 2.2+ is needed.
@@ -45,9 +45,9 @@ Denys Kovshun (Ukrainian Team)
     to schema qualify dependent extensions, switch to use typmod for tiger tables
     (Regina Obe)
 
-* Deprecated / Removed signatures * 
+* Deprecated / Removed signatures *
 
- - #3110, GT-242, [topology] numerous topology functions that accepted integer 
+ - #3110, GT-242, [topology] numerous topology functions that accepted integer
           replaced with bigint versions to support both integer and bigint inputs
           (Ayo Adesugba, U.S. Census Bureau)
  - #5498 Drop st_approxquantile(raster, double precision), wasn't usable as it triggered
