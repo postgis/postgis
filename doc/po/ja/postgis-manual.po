@@ -10,10 +10,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-08-22 10:47+0000\n"
+"PO-Revision-Date: 2025-08-25 08:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8572,12 +8572,12 @@ msgstr "ラスタ機能なしでコンパイルします。"
 #. Tag: para
 #, no-c-format
 msgid "Disables tiger geocoder support."
-msgstr ""
+msgstr "Tigerジオコーダー機能を無効にします。"
 
 #. Tag: para
 #, no-c-format
 msgid "Compile without topology support."
-msgstr ""
+msgstr "トポロジー機能なしでコンパイルします。"
 
 #. Tag: para
 #, no-c-format
@@ -43775,12 +43775,12 @@ msgstr "リリースノート"
 #. Tag: title
 #, no-c-format
 msgid "PostGIS 3.6.0rc2"
-msgstr ""
+msgstr "PostGIS 3.6.0rc2"
 
 #. Tag: para
 #, no-c-format
 msgid "2025/08/25"
-msgstr ""
+msgstr "2025/08/25"
 
 #. Tag: para
 #, no-c-format
