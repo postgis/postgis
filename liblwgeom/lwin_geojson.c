@@ -102,7 +102,7 @@ parse_coordinates(json_object *geojson)
 }
 
 
-inline int
+static inline int
 parse_geojson_coord(json_object *poObj, int *hasz, POINTARRAY *pa)
 {
 	POINT4D pt = {0, 0, 0, 0};
@@ -359,7 +359,7 @@ parse_geojson_geometrycollection(json_object *geojson, int *hasz)
 	return geom;
 }
 
-static inline LWGEOM *
+inline LWGEOM *
 parse_geojson(json_object *geojson, int *hasz)
 {
 	json_object *type = NULL;
