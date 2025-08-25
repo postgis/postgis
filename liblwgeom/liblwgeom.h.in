@@ -1757,7 +1757,7 @@ extern LWGEOM* lwgeom_from_geojson(const char *geojson, char **srs);
 #if defined(HAVE_LIBJSON)
 /* Forward-declare to avoid exposing json-c headers in a public API */
 struct json_object;
-extern LWGEOM *parse_geojson(json_object *geojson, int *hasz);
+extern LWGEOM *parse_geojson(struct json_object *geojson, int *hasz);
 #endif /* HAVE_LIBJSON */
 
 /**
