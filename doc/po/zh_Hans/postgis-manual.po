@@ -7988,12 +7988,13 @@ msgstr "在没有栅格功能的情况下进行编译。"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Disable topology support. There is no corresponding library as all logic "
-"needed for topology is in postgis-&last_release_version; library."
+msgid "Disables tiger geocoder support."
 msgstr ""
-"在没有拓扑支持的情况下进行编译。 拓扑所需的所有逻辑都是在postgis-"
-"&last_release_version; 库中创建的，因此没有关联的库。"
+
+#. Tag: para
+#, no-c-format
+msgid "Compile without topology support."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -41401,13 +41402,13 @@ msgstr "发行说明"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0"
-msgstr "PostGIS 3.6.0"
+msgid "PostGIS 3.6.0rc2"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/xx/xx"
-msgstr "2025/xx/xx"
+msgid "2025/08/25"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -47356,6 +47357,22 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
+
+#, no-c-format
+#~ msgid ""
+#~ "Disable topology support. There is no corresponding library as all logic "
+#~ "needed for topology is in postgis-&last_release_version; library."
+#~ msgstr ""
+#~ "在没有拓扑支持的情况下进行编译。 拓扑所需的所有逻辑都是在postgis-"
+#~ "&last_release_version; 库中创建的，因此没有关联的库。"
+
+#, no-c-format
+#~ msgid "PostGIS 3.6.0"
+#~ msgstr "PostGIS 3.6.0"
+
+#, no-c-format
+#~ msgid "2025/xx/xx"
+#~ msgstr "2025/xx/xx"
 
 #, no-c-format
 #~ msgid "Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"

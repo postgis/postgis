@@ -8963,13 +8963,13 @@ msgstr "Ohne Rasterunterstützung kompilieren."
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Disable topology support. There is no corresponding library as all logic "
-"needed for topology is in postgis-&last_release_version; library."
+msgid "Disables tiger geocoder support."
 msgstr ""
-"Ausschalten der Topologie Unterstützung. Es existiert keine entsprechende "
-"Bibliothek, da sich die gesamte benötigte Logik in der postgis-"
-"&last_release_version; Bibliothek befindet."
+
+#. Tag: para
+#, no-c-format
+msgid "Compile without topology support."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -45938,12 +45938,12 @@ msgstr "Anmerkungen zur Release"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0"
+msgid "PostGIS 3.6.0rc2"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/xx/xx"
+msgid "2025/08/25"
 msgstr ""
 
 #. Tag: para
@@ -52673,6 +52673,15 @@ msgstr "2.5/3D-Unterstützung"
 #, fuzzy, no-c-format
 msgid "Supports geography"
 msgstr "Unterstützt Geographie"
+
+#, no-c-format
+#~ msgid ""
+#~ "Disable topology support. There is no corresponding library as all logic "
+#~ "needed for topology is in postgis-&last_release_version; library."
+#~ msgstr ""
+#~ "Ausschalten der Topologie Unterstützung. Es existiert keine entsprechende "
+#~ "Bibliothek, da sich die gesamte benötigte Logik in der postgis-"
+#~ "&last_release_version; Bibliothek befindet."
 
 #, fuzzy, no-c-format
 #~ msgid ""
