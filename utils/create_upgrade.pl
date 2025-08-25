@@ -695,7 +695,7 @@ BEGIN
         new_ver_int := pg_catalog.string_to_array(
             pg_catalog.regexp_replace(
                 new_scripts,
-                '[^\d.].*',
+                E'[^\\d.].*',
                 ''
             ),
             '.'
@@ -708,7 +708,7 @@ BEGIN
         old_ver_int := pg_catalog.string_to_array(
             pg_catalog.regexp_replace(
                 old_scripts,
-                '[^\d.].*',
+                E'[^\\d.].*',
                 ''
             ),
             '.'
