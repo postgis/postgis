@@ -29,6 +29,12 @@
 #ifndef _LIBLWGEOM_H
 #define _LIBLWGEOM_H 1
 
+#ifdef _WIN32
+#  define PGDLLEXPORT __declspec(dllexport)
+#else
+#  define PGDLLEXPORT
+#endif
+
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
