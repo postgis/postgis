@@ -7,7 +7,6 @@ TMPDIR=/tmp/check_all_upgrades-$$-tmp
 PGVER=`pg_config --version | awk '{print $2}'`
 PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//' | sed 's/\(alpha\|beta\|rc\).*//' )
 SKIP_LABEL_REGEXP=
-echo "INFO: PostgreSQL version: ${PGVER} [${PGVER_MAJOR}]"
 MAKE=$(which gmake make | head -1)
 BUILDDIR=$PWD # TODO: allow override ?
 
@@ -183,14 +182,26 @@ check_downgrade()
   fi
 }
 
+
 to_version=$to_version_param
 if expr $to_version : ':auto' >/dev/null; then
-  to_version=`psql -XAtc "select default_version from pg_available_extensions where name = 'postgis'"` || exit 1
-elif expr $to_version : '.*!$' >/dev/null; then
-  to_version=$(echo "${to_version}" | sed 's/\!$//')
+  ARGS=
+  if test -n "${SKIP_LABEL_REGEXP}"; then
+    ARGS="${ARGS} --skip ${SKIP_LABEL_REGEXP}"
+  fi
+  if test $EXIT_ON_FIRST_FAILURE != 0; then
+    ARGS="${ARGS} -s"
+  fi
+  for version in $(
+    psql -XAtc "select version from pg_available_extension_versions where name = 'postgis' and version ~ '^[0-9]'"
+  ); do
+    $0 ${ARGS} ${version} || failed
+  done
+  exit $failures
 fi
 
 
+echo "INFO: PostgreSQL version: ${PGVER} [${PGVER_MAJOR}]"
 PGIS_MIN_VERSION=`minimum_postgis_version_for_postgresql_major_version "${PGVER_MAJOR}"`
 echo "INFO: minimum PostGIS version supporting PostgreSQL ${PGVER_MAJOR}: ${PGIS_MIN_VERSION}"
 
