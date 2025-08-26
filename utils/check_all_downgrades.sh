@@ -172,7 +172,7 @@ check_downgrade()
     tail ${TMPDIR}/log
     failed
   else
-    ERR=$( grep 'Downgrade .* forbidden' ${TMPDIR}/log )
+    ERR=$( grep 'ERROR:.*Downgrade .* forbidden' ${TMPDIR}/log )
     test -n "$ERR" && {
       echo "PASS: ${test_label} gave $ERR"
     } || {
