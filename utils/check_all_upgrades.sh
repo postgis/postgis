@@ -135,6 +135,21 @@ kept_label()
   return 0;
 }
 
+# Usage: compatible_from <label> <from>
+compatible_from()
+{
+  label=$1
+  from=$2
+  cmp=`semver_compare "${PGIS_MIN_VERSION}" "${from}"`
+  if test $cmp -gt 0; then
+    echo "SKIP: $label ($from older than ${PGIS_MIN_VERSION}, which is required to run in PostgreSQL ${PGVER})"
+    return 1
+  fi
+
+  return 0
+}
+
+# Usage: compatible_upgrade <label> <from> <to>
 compatible_upgrade()
 {
   label=$1
@@ -152,13 +167,32 @@ compatible_upgrade()
     echo "SKIP: $label ($to is not newer than $from)"
     return 1
   fi
-  cmp=`semver_compare "${PGIS_MIN_VERSION}" "${from}"`
-  if test $cmp -gt 0; then
-    echo "SKIP: $label ($from older than ${PGIS_MIN_VERSION}, which is required to run in PostgreSQL ${PGVER})"
+
+  if compatible_from $label $from; then
+    return 0
+  else
     return 1
   fi
+}
 
-  return 0
+check_downgrade()
+{
+  RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+  ${MAKE} -C ${REGDIR} check "TESTS=${SRCDIR}/regress/core/regress.sql" ${MAKE_ARGS} > ${TMPDIR}/log 2>&1
+  if test $? = 0; then
+    echo "FAIL: ${test_label} did not error out:"
+    tail ${TMPDIR}/log
+    failed
+  else
+    ERR=$( grep 'ERROR:.*Downgrade .* forbidden' ${TMPDIR}/log )
+    test -n "$ERR" && {
+      echo "PASS: ${test_label} gave $ERR"
+    } || {
+      echo "FAIL: ${test_label} gave some other error:"
+      tail ${TMPDIR}/log
+      failed
+    }
+  fi
 }
 
 report_missing_versions()
@@ -233,12 +267,26 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
       continue;
     fi
     UPGRADE_PATH="${from_version}--${to_version_param}"
-    test_label="${EXT} extension upgrade ${UPGRADE_PATH}"
+
+    cmp=`semver_compare "${from_version}" "${to_version}"`
+    #echo "INFO: semver_compare ${from} ${to} returned $cmp"
+    if test $cmp -eq 0; then
+      echo "SKIP: ${from_version} -> ${to_version} (we won't test same-version upgrade/downgrade here)"
+      continue;
+    fi
+
+    if test $cmp -lt 0; then
+      test_label="${EXT} extension upgrade ${UPGRADE_PATH}"
+    else
+      test_label="${EXT} extension downgrade ${UPGRADE_PATH}"
+    fi
+
     if expr $to_version_param : ':auto' >/dev/null; then
       test_label="${test_label} ($to_version)"
     fi
+
     kept_label "${test_label}" || continue
-    compatible_upgrade "${test_label}" ${from_version} ${to_version} || continue
+
     path=$( psql -XAtc "
         SELECT path
         FROM pg_catalog.pg_extension_update_paths('${EXT}')
@@ -250,14 +298,30 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
       MISSING_EXT_UPGRADES="${from_version} ${MISSING_EXT_UPGRADES}"
       continue
     fi
+
+    compatible_from "${test_label}" ${from_version} || continue
+
     echo "Testing ${test_label}"
-    RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-    ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
-      echo "PASS: ${test_label}"
-    } || {
-      echo "FAIL: ${test_label}"
-      failed
-    }
+
+    if expr "${test_label}" : '^.*upgrade' > /dev/null; then
+      RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+      ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
+        echo "PASS: ${test_label}"
+      } || {
+        echo "FAIL: ${test_label}"
+        failed
+      }
+    else
+      check_downgrade
+
+      test_label="${test_label} with standard-conforming-strings off"
+      echo "Testing ${test_label}"
+      USERTESTFLAGS="\
+        ${USERTESTFLAGS} \
+        --before-upgrade-script ${SRCDIR}/regress/hooks/standard-conforming-strings-off.sql \
+      " check_downgrade
+    fi
+
   done
 
   if ! kept_label "unpackaged"; then
@@ -296,7 +360,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
 
   # Check unpackaged->unpackaged upgrades (if target version == current version)
 #  CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
-  CURRENTVERSION=$(grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | tr '\n' '.')
+  CURRENTVERSION=$(grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | tr '\n' '.' | sed 's/\.$//')
 
   if test "${to_version}" != "${CURRENTVERSION}"; then #{
     echo "SKIP: ${EXT} script-based upgrades (${to_version_param} [${to_version}] does not match built version ${CURRENTVERSION})"
