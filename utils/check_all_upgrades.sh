@@ -178,7 +178,7 @@ compatible_upgrade()
 check_downgrade()
 {
   RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-  ${MAKE} -C ${REGDIR} check "TESTS=${SRCDIR}/regress/core/regress.sql" ${MAKE_ARGS} > ${TMPDIR}/log 2>&1
+  unbuffer ${MAKE} -C ${REGDIR} check "TESTS=${SRCDIR}/regress/core/regress.sql" ${MAKE_ARGS} > ${TMPDIR}/log 2>&1
   if test $? = 0; then
     echo "FAIL: ${test_label} did not error out:"
     tail ${TMPDIR}/log
