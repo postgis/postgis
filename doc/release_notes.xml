@@ -3,8 +3,8 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
         <section>
-            <title>PostGIS 3.6.0rc2</title>
-            <para>2025/08/25</para>
+            <title>PostGIS 3.6.0</title>
+            <para>2025/09/01</para>
                         <para>This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj 6.1+.
             To take advantage of all features, GEOS 3.14+ is needed.
             To take advantage of all SFCGAL features, SFCGAL 2.2+ is needed.</para>
@@ -53,7 +53,7 @@
                     coverages (Paul Ramsey) from GEOS 3.14 (Martin Davis)</para>
                 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/3110">#3110</link>, <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/242">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)</para>
                 <para>[raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)</para>
-                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/3110">#3110</link>, <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/pulls/242">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5971">#5971</link>, [tiger] Option to build --without-tiger (Regina Obe)</para>
             </simplesect>
         </section>
 </appendix>

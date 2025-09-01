@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-07-20 08:47+0000\n"
+"PO-Revision-Date: 2025-08-25 19:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/sv/>\n"
@@ -8756,12 +8756,12 @@ msgstr "Kompilera utan stöd för raster."
 #. Tag: para
 #, no-c-format
 msgid "Disables tiger geocoder support."
-msgstr ""
+msgstr "Inaktiverar stöd för tiger geocoder."
 
 #. Tag: para
 #, no-c-format
 msgid "Compile without topology support."
-msgstr ""
+msgstr "Kompilera utan topologistöd."
 
 #. Tag: para
 #, no-c-format
@@ -10574,7 +10574,7 @@ msgstr "David Techer"
 #. Tag: member
 #, no-c-format
 msgid "Denys Kovshun"
-msgstr ""
+msgstr "Denys Kovshun"
 
 #. Tag: member
 #, no-c-format
@@ -37917,7 +37917,7 @@ msgstr ""
 msgid ""
 "Calculates the fraction of each raster cell that is covered by a given "
 "geometry."
-msgstr ""
+msgstr "Beräknar den del av varje rastercell som täcks av en given geometri."
 
 #. Tag: para
 #, no-c-format
@@ -37931,11 +37931,19 @@ msgid ""
 "that is covered by the geometry. For linestrings, the value returned for "
 "each cell is the length contained in the cell."
 msgstr ""
+"Beräknar den del av varje rastercell som täcks av en given geometri. Det "
+"första argumentet är en raster som definierar rutnätets geometri som ska "
+"användas för beräkningen. Omfattningen och cellstorleken läses från "
+"rasterparametern. Det andra argumentet är en geometri som läggs över "
+"rutnätet, och varje rutnät fylls i baserat på överlagringen av geometrin på "
+"rutnätet. För polygoner är det värde som returneras för varje cell andelen "
+"av dess area som täcks av geometrin. För linjesträngar är det värde som "
+"returneras för varje cell längden som ingår i cellen."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0 Requires GEOS 3.14 or higher."
-msgstr ""
+msgstr "Tillgänglighet: 3.6.0 Kräver GEOS 3.14 eller högre."
 
 #. Tag: title
 #, no-c-format
@@ -45001,12 +45009,12 @@ msgstr "Anteckningar för release"
 #. Tag: title
 #, no-c-format
 msgid "PostGIS 3.6.0rc2"
-msgstr ""
+msgstr "PostGIS 3.6.0rc2"
 
 #. Tag: para
 #, no-c-format
 msgid "2025/08/25"
-msgstr ""
+msgstr "2025-08-25"
 
 #. Tag: para
 #, no-c-format
@@ -45015,6 +45023,9 @@ msgid ""
 "6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
 "advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
 msgstr ""
+"Denna version kräver PostgreSQL 12-18beta3, GEOS 3.8 eller högre och Proj "
+"6.1+. För att kunna utnyttja alla funktioner krävs GEOS 3.14+. För att kunna "
+"utnyttja alla SFCGAL-funktioner krävs SFCGAL 2.2+."
 
 #. Tag: para
 #, no-c-format
@@ -45039,7 +45050,7 @@ msgstr "Dapeng Wang, Zuo Chenwei från HighGo (kinesiska teamet)"
 #. Tag: para
 #, no-c-format
 msgid "Denys Kovshun (Ukrainian Team)"
-msgstr ""
+msgstr "Denys Kovshun (Ukrainska teamet)"
 
 #. Tag: title
 #, no-c-format
@@ -45115,6 +45126,12 @@ msgid ""
 "extension@ for PG &gt;= 16 to schema qualify dependent extensions, switch to "
 "use typmod for tiger tables (Regina Obe)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+"ticket/5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/"
+"postgis/postgis/pulls/260\">GT-260</link> [tiger_geocoder] Använd @extschema:"
+"extension@ för PG &gt;= 16 för att schema-kvalificera beroende tillägg, byt "
+"till typmod för tiger-tabeller (Regina Obe)"
 
 #. Tag: title
 #, no-c-format
@@ -45128,6 +45145,10 @@ msgid ""
 "Drop st_approxquantile(raster, double precision), wasn't usable as it "
 "triggered is not unique error when used (Regina Obe)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</link> "
+"Ta bort st_approxquantile(raster, double precision), kunde inte användas "
+"eftersom det utlöste ett felmeddelande om att det inte var unikt när det "
+"användes (Regina Obe)"
 
 #. Tag: title
 #, no-c-format
@@ -45275,6 +45296,8 @@ msgstr ""
 msgid ""
 "[raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
 msgstr ""
+"[raster] Lägg till ST_ReclassExact för att snabbt ommappa värden i raster "
+"(Paul Ramsey)"
 
 #. Tag: title
 #, no-c-format

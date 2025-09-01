@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-20 04:11+0000\n"
-"PO-Revision-Date: 2025-08-20 21:47+0000\n"
+"PO-Revision-Date: 2025-08-31 21:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -27350,7 +27350,7 @@ msgstr "Вхідні лінії"
 #. Tag: para
 #, no-c-format
 msgid "Area result"
-msgstr "Площа результату"
+msgstr "Результати за площею"
 
 #. Tag: para
 #, no-c-format
