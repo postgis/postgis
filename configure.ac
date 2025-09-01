@@ -2058,12 +2058,12 @@ AC_MSG_RESULT([  dblatex:              ${DBLATEX}])
 AC_MSG_RESULT([  convert:              ${CONVERT}])
 AC_MSG_RESULT()
 
-if test "$POSTGIS_GEOS_VERSION" -lt 31200; then
+if test "$POSTGIS_GEOS_VERSION" -lt 31400; then
 AC_MSG_WARN([ --------- GEOS VERSION WARNING ------------ ])
 AC_MSG_WARN([  You are building against GEOS ${GEOS_VERSION}.])
 AC_MSG_WARN([])
 AC_MSG_WARN([  To take advantage of _all_ the features of ])
-AC_MSG_WARN([  PostGIS, GEOS 3.12.0 or higher is required.])
+AC_MSG_WARN([  PostGIS, GEOS 3.14.0 or higher is required.])
 AC_MSG_WARN([])
 AC_MSG_WARN([  You can download the latest versions from ])
 AC_MSG_WARN([  http://geos.osgeo.org/ ])
