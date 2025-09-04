@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
 "PO-Revision-Date: 2025-09-04 22:22+0000\n"
-"Last-Translator: Paulo Cesar Coronado <paulocoronado@udistrital.edu.co>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/es/>\n"
 "Language: es\n"
@@ -79,6 +79,8 @@ msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
 msgstr ""
+"Para habilitar todos los controladores de GDAL disponibles en su instalación "
+"de GDAL, configure esta variable de entorno del siguiente modo"
 
 #. Tag: para
 #, no-c-format
@@ -86,11 +88,13 @@ msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
 msgstr ""
+"Si sólo desea habilitar controladores específicos, configure su variable de "
+"entorno de la siguiente manera:"
 
 #. Tag: para
 #, no-c-format
 msgid "If you are on windows, do not quote the driver list"
-msgstr ""
+msgstr "Si está en windows, no cite la lista de controladores"
 
 #. Tag: para
 #, no-c-format
@@ -128,7 +132,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Spatially enable database using EXTENSION"
-msgstr ""
+msgstr "Habilitar espacialmente la base de datos mediante EXTENSION"
 
 #. Tag: para
 #, no-c-format
