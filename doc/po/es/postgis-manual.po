@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
 "PO-Revision-Date: 2025-09-04 22:22+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"Last-Translator: Paulo Cesar Coronado <paulocoronado@udistrital.edu.co>\n"
 "Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/es/>\n"
 "Language: es\n"
@@ -132,7 +132,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Spatially enable database using EXTENSION"
-msgstr "Habilitar espacialmente la base de datos mediante EXTENSION"
+msgstr "Habilitar la base de datos espacial mediante EXTENSION"
 
 #. Tag: para
 #, no-c-format
