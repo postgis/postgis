@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
 "PO-Revision-Date: 2025-09-04 23:47+0000\n"
-"Last-Translator: Paulo Cesar Coronado <paulocoronado@udistrital.edu.co>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/es/>\n"
 "Language: es\n"
@@ -105,6 +105,12 @@ msgid ""
 "<replaceable>main</replaceable>/environment</filename> where 10 refers to "
 "version of PostgreSQL and main refers to the cluster."
 msgstr ""
+"La configuración de las variables de entorno varía en función del sistema "
+"operativo. Para PostgreSQL instalado en Ubuntu o Debian a través de apt-"
+"postgresql, la forma preferida es editar <filename>/etc/postgresql/"
+"<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</"
+"filename> donde 10 se refiere a la versión de PostgreSQL y main se refiere "
+"al cluster."
 
 #. Tag: para
 #, no-c-format
@@ -152,17 +158,24 @@ msgid ""
 "the functions and comments. Raster and topology are packaged as a separate "
 "extension."
 msgstr ""
+"El núcleo de la extensión postgis incluye geometría, geografía, "
+"spatial_ref_sys y todas las funciones y comentarios. Raster y topología se "
+"empaquetan como una extensión separada."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Run the following SQL snippet in the database you want to enable spatially:"
 msgstr ""
+"Ejecute el siguiente fragmento de SQL en la base de datos que desee "
+"habilitar espacialmente:"
 
 #. Tag: title
 #, no-c-format
 msgid "Spatially enable database without using EXTENSION (discouraged)"
 msgstr ""
+"Habilitar espacialmente la base de datos sin utilizar EXTENSION "
+"(desaconsejado)"
 
 #. Tag: para
 #, no-c-format
@@ -171,6 +184,9 @@ msgid ""
 "installed in the PostgreSQL extension directory (for example during testing, "
 "development or in a restricted environment)."
 msgstr ""
+"Por lo general, esto sólo es necesario si no puede o no quiere tener PostGIS "
+"instalado en el directorio de extensión de PostgreSQL (por ejemplo, durante "
+"las pruebas, el desarrollo o en un entorno restringido)."
 
 #. Tag: para
 #, no-c-format
