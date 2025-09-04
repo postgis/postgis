@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
 "PO-Revision-Date: 2025-09-04 22:20+0000\n"
-"Last-Translator: Paulo Cesar Coronado <paulocoronado@udistrital.edu.co>\n"
+"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
 "Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/es/>\n"
 "Language: es\n"
@@ -70,6 +70,8 @@ msgstr "Si desea activar raster sin conexión:"
 #, no-c-format
 msgid "Any other setting or no setting at all will disable out of db rasters."
 msgstr ""
+"Cualquier otro ajuste o ningún ajuste desactivará los rasterizados fuera de "
+"db."
 
 #. Tag: para
 #, no-c-format
