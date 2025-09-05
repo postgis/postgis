@@ -1561,3 +1561,22 @@ SELECT '#5747', ST_Length('MULTISURFACE (((0 0, 1 0, 1 1, 0 1, 0 0)), CURVEPOLYG
 SELECT '#5876', ST_AsText(ST_AddPoint(
 		'LINESTRING (1 1, 2 2)'::geometry,
 		'POINT EMPTY'::geometry), 2);
+
+-- -------------------------------------------------------------------------------------
+-- #5978, geometry_columns not showing right SRID and Type
+-- #5829, SELECT geometry_columns returns unexpected error
+CREATE TABLE test5829 (
+  geom geometry);
+ALTER TABLE test5829
+  ADD CONSTRAINT c1
+  CHECK (ST_SRID(geom)=4326 and ST_IsValid(geom));
+CREATE TABLE public.test5978 (
+  OBJECTID SERIAL NOT NULL,
+  PKEY     INTEGER,
+  PRIMARY KEY (OBJECTID));
+SELECT AddGeometryColumn('public', 'test5978', 'shape',  4326, upper('POINT'), 2, false);
+SELECT AddGeometryColumn('public', 'test5978', 'geometry',  4326, upper('POINT'), 2, true);
+SELECT f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type
+ FROM geometry_columns WHERE f_table_name IN ('test5829', 'test5978')
+ ORDER BY f_table_name, f_geometry_column;
+DROP TABLE IF EXISTS test5829, test5978;

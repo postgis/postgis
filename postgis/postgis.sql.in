@@ -6399,28 +6399,28 @@ CREATE OR REPLACE VIEW geometry_columns AS
 	 LEFT JOIN ( SELECT s.connamespace,
 			s.conrelid,
 			s.conkey,
-			(regexp_match(s.consrc, E'geometrytype\(\w+\)\s*=\s*(\w+)', E'i'))[1]::text AS type
+			(regexp_match(s.consrc, $$geometrytype\(\w+\)\s*=\s*'(\w+)'$$, 'i'))[1]::text AS type
 		   FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 				FROM pg_constraint) AS s
-		  WHERE s.consrc ~* E'geometrytype(\w+)\s*=\s*\w+'::text
+		  WHERE s.consrc ~* $$geometrytype\(\w+\)\s*=\s*'\w+'$$::text
 
 ) st ON st.connamespace = n.oid AND st.conrelid = c.oid AND (a.attnum = ANY (st.conkey))
 	 LEFT JOIN ( SELECT s.connamespace,
 			s.conrelid,
 			s.conkey,
-			(regexp_match(s.consrc, E'ndims\(\w+\)\s*=\s*(\d+)', E'i'))[1]::integer AS ndims
+			(regexp_match(s.consrc, $$ndims\(\w+\)\s*=\s*(\d+)$$, 'i'))[1]::integer AS ndims
 		   FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 			FROM pg_constraint) AS s
-		  WHERE s.consrc ~* E'ndims(\w+)\s*=\s*\d+'::text
+		  WHERE s.consrc ~* $$ndims\(\w+\)\s*=\s*\d+$$::text
 
 ) sn ON sn.connamespace = n.oid AND sn.conrelid = c.oid AND (a.attnum = ANY (sn.conkey))
 	 LEFT JOIN ( SELECT s.connamespace,
 			s.conrelid,
 			s.conkey,
-			(regexp_match(s.consrc, E'srid\(\w+\)\s*=\s*(\d+)', E'i'))[1]::integer As srid
+			(regexp_match(s.consrc, $$srid\(\w+\)\s*=\s*(\d+)$$, 'i'))[1]::integer As srid
 		   FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 			FROM pg_constraint) AS s
-		  WHERE s.consrc ~* E'srid(\w+)\s*=\s*\d+'::text
+		  WHERE s.consrc ~* $$srid\(\w+\)\s*=\s*\d+$$::text
 
 ) sr ON sr.connamespace = n.oid AND sr.conrelid = c.oid AND (a.attnum = ANY (sr.conkey))
   WHERE (c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"]))
