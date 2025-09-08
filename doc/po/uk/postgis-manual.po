@@ -7,7 +7,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
 "PO-Revision-Date: 2025-09-08 11:47+0000\n"
-"Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
+"Last-Translator: Weblate <noreply-mt-weblate@weblate.org>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
 "Language: uk\n"
@@ -36566,7 +36566,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Spatial Relationships"
-msgstr ""
+msgstr "Просторові відносини"
 
 #. Tag: para
 #, no-c-format
