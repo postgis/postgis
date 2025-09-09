@@ -1490,7 +1490,14 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 
 	LWDEBUGF(3, "plen %g, tlen %g", plen, tlen);
 
-	return plen/tlen;
+	/* Floating point arithmetic is not reliable, make sure we return values [0,1] */
+	double result = plen / tlen;
+	if ( result < 0.0 ) {
+		result = 0.0;
+	} else if ( result > 1.0 ) {
+		result = 1.0;
+	}
+	return result;
 }
 
 /**

@@ -473,6 +473,7 @@ ERROR:  Geometry contains invalid coordinates
 #5647|intersects_empty false|within_empty false|contains_empty false|coveredby_empty false|covers_empty false|intersects_mixed_empty true|within_mixed_empty false|contains_mixed_empty false|coveredby_mixed_empty true|covers_mixed_empty true
 #5647|intersects_empty false|within_empty false|contains_empty false|coveredby_empty false|covers_empty false|intersects_mixed_empty true|within_mixed_empty false|contains_mixed_empty false|coveredby_mixed_empty true|covers_mixed_empty true
 #5876|LINESTRING(1 1,2 2)
+#5082|t
 public.test5978.shape SRID:4326 TYPE:POINT DIMS:2 
 public.test5978.geometry SRID:4326 TYPE:POINT DIMS:2 
 public|test5829|geom|2|4326|GEOMETRY
