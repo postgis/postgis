@@ -482,6 +482,7 @@ ERROR:  Geometry contains invalid coordinates
 #5686|0
 #5747|0
 #5876|LINESTRING(1 1,2 2)
+#5082|t
 public.test5978.shape SRID:4326 TYPE:POINT DIMS:2 
 public.test5978.geometry SRID:4326 TYPE:POINT DIMS:2 
 public|test5829|geom|2|4326|GEOMETRY
