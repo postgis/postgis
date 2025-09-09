@@ -1580,6 +1580,14 @@ SELECT '#5876', ST_AsText(ST_AddPoint(
 		'LINESTRING (1 1, 2 2)'::geometry,
 		'POINT EMPTY'::geometry), 2);
 
+
+-- https://trac.osgeo.org/postgis/ticket/5082 st_linelocatepoint returns value over 1
+select '#5082', ST_LineLocatePoint(
+	'LINESTRING (614506.766313283 390577.5124384557, 614494.089082674 390574.5586551775, 614494.8569439995 390562.1301508558, 614493.5246928157 390549.7664042029, 614486.5713433414 390544.32637928444, 614487.6296766759 390492.9548792321, 614487.6296766759 390492.9548792321)'::geometry,
+	'POINT (614487.6296766759 390492.9548792321)'::geometry
+	) <= 1.0;
+
+
 -- -------------------------------------------------------------------------------------
 -- #5978, geometry_columns not showing right SRID and Type
 -- #5829, SELECT geometry_columns returns unexpected error

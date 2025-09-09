@@ -548,7 +548,14 @@ ptarray_locate_point_spheroid(
 	if ( (seg >= (pa->npoints-2)) && p2d_same(&proj, p) )
 		return 1.0;
 
-	return partlength / totlength;
+	/* Floating point arithmetic is not reliable, make sure we return values [0,1] */
+	double result = partlength / totlength;
+	if ( result < 0.0 ) {
+		result = 0.0;
+	} else if ( result > 1.0 ) {
+		result = 1.0;
+	}
+	return result;
 }
 
 /*****************************************************************************/
