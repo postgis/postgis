@@ -1,5 +1,4 @@
-
-PostGIS 2.5.11
+PostGIS 2.5.11 - EOL for 2.5
 2024/02/14
 This Valentines Day release addresses an error in the last release
 which did not include the full repair patch.
