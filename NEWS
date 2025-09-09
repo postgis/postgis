@@ -29,6 +29,7 @@ Proj 6.1+ required.
   - #5909, ST_ValueCount crashes on empty table (Paul Ramsey)
   - #5917, ST_Relate becomes unresponsive (Paul Ramsey)
   - Support build under Pg19 (Paul Ramsey)
+  - #5082, LRS proportions clamped to [0,1] (Pawel Ostrowski)
 
 
 PostGIS 3.4.4
