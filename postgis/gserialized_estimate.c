@@ -2603,7 +2603,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	int16 attnum, idx_attnum;
 	Oid atttypid = InvalidOid;
 	char nsp_tbl[2*NAMEDATALEN+6];
-	char *tbl;
+	char *tbl = NULL;
 	Oid tbl_oid, idx_oid = 0;
 	ND_STATS *nd_stats;
 	GBOX *gbox = NULL;
