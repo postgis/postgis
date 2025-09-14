@@ -4,7 +4,7 @@ xxxx/xx/xx
   - #5978, return ability of geometry_columns to read constraints
 
 PostGIS 3.6.0
-2025/xx/xx
+2025/09/01
 
 This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.14+ is needed.
@@ -59,4 +59,5 @@ Denys Kovshun (Ukrainian Team)
   - #3110, GT-242 [topology] Support for bigint (Ayo Adesugba, U.S. Census Bureau)
   - [raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)
   - #5963, [raster] add ST_IntersectionFractions - Requires GEOS 3.14 (Paul Ramsey)
+  - #5971, Option to build --without-tiger (Regina Obe)
 
