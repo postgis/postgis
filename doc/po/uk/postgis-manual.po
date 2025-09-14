@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-09-08 11:47+0000\n"
-"Last-Translator: Weblate <noreply-mt-weblate@weblate.org>\n"
+"PO-Revision-Date: 2025-09-14 17:47+0000\n"
+"Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
 "Language: uk\n"
@@ -8768,12 +8768,12 @@ msgstr "Скомпілюйте без підтримки растрових зо
 #. Tag: para
 #, no-c-format
 msgid "Disables tiger geocoder support."
-msgstr ""
+msgstr "Вимикає підтримку геокодера Tiger."
 
 #. Tag: para
 #, no-c-format
 msgid "Compile without topology support."
-msgstr ""
+msgstr "Компілювати без підтримки топології."
 
 #. Tag: para
 #, no-c-format
@@ -10587,7 +10587,7 @@ msgstr "Девід Течер"
 #. Tag: member
 #, no-c-format
 msgid "Denys Kovshun"
-msgstr ""
+msgstr "Денис Ковшун"
 
 #. Tag: member
 #, no-c-format
@@ -28519,7 +28519,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Units of distance are measured in units of the spatial reference system."
-msgstr ""
+msgstr "Одиниці відстані вимірюються в одиницях просторової системи координат."
 
 #. Tag: para
 #, no-c-format
@@ -28534,6 +28534,8 @@ msgid ""
 "The optional third parameter allows specifying a list of blank-separated "
 "key=value pairs to tweak operations as follows:"
 msgstr ""
+"Додатковий третій параметр дозволяє вказати список пар ключ=значення, "
+"розділених пробілами, для налаштування операцій наступним чином:"
 
 #. Tag: para
 #, no-c-format
@@ -28541,6 +28543,8 @@ msgid ""
 "'quad_segs=#' : number of segments used to approximate a quarter circle "
 "(defaults to 8)."
 msgstr ""
+"“quad_segs=#” : кількість сегментів, що використовуються для апроксимації "
+"чверті кола (за замовчуванням 8)."
 
 #. Tag: para
 #, no-c-format
@@ -28548,6 +28552,8 @@ msgid ""
 "'join=round|mitre|bevel' : join style (defaults to \"round\"). 'miter' is "
 "also accepted as a synonym for 'mitre'."
 msgstr ""
+"“join=round|mitre|bevel” : стиль з'єднання (за замовчуванням «round»). "
+"“miter” також приймається як синонім “mitre”."
 
 #. Tag: para
 #, no-c-format
@@ -28555,6 +28561,8 @@ msgid ""
 "'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). "
 "'miter_limit' is also accepted as a synonym for 'mitre_limit'."
 msgstr ""
+"“mitre_limit=#.#” : обмеження коефіцієнта mitre (впливає тільки на стиль "
+"mitred). “miter_limit” також приймається як синонім “mitre_limit”."
 
 #. Tag: para
 #, no-c-format
@@ -28562,27 +28570,32 @@ msgid ""
 "Behavior changed in GEOS 3.11 so offset curves now have the same direction "
 "as the input line, for both positive and negative offsets."
 msgstr ""
+"У GEOS 3.11 поведінка змінилася, тому криві зміщення тепер мають той самий "
+"напрямок, що й лінія введення, як для позитивних, так і для негативних "
+"зміщень."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Enhanced: 2.5 - added support for GEOMETRYCOLLECTION and MULTILINESTRING"
-msgstr ""
+msgstr "Покращено: 2.5 — додано підтримку GEOMETRYCOLLECTION та MULTILINESTRING"
 
 #. Tag: para
 #, no-c-format
 msgid "Compute an open buffer around roads"
-msgstr ""
+msgstr "Обчислити відкритий буфер навколо доріг"
 
 #. Tag: para
 #, no-c-format
 msgid "15, 'quad_segs=4 join=round' original line and its offset 15 units."
 msgstr ""
+"15, «quad_segs=4 join=round» оригінальна лінія та її зміщення на 15 одиниць."
 
 #. Tag: para
 #, no-c-format
 msgid "-15, 'quad_segs=4 join=round' original line and its offset -15 units"
 msgstr ""
+"-15, «quad_segs=4 join=round» оригінальна лінія та її зміщення -15 одиниць"
 
 #. Tag: para
 #, no-c-format
@@ -28590,6 +28603,8 @@ msgid ""
 "double-offset to get more curvy, note the first reverses direction, so -30 + "
 "15 = -15"
 msgstr ""
+"подвійне зміщення для отримання більш вигнутої кривої, зверніть увагу, що "
+"перше зміщення змінює напрямок, тому -30 + 15 = -15"
 
 #. Tag: para
 #, no-c-format
@@ -28597,6 +28612,8 @@ msgid ""
 "double-offset to get more curvy,combined with regular offset 15 to get "
 "parallel lines. Overlaid with original."
 msgstr ""
+"подвійне зміщення для отримання більш вигнутих ліній, поєднане зі звичайним "
+"зміщенням 15 для отримання паралельних ліній. Накладено на оригінал."
 
 #. Tag: para
 #, no-c-format
@@ -28951,29 +28968,36 @@ msgid ""
 "This function does not preserve boundaries shared between polygons. Use "
 "<xref linkend=\"ST_CoverageSimplify\"/> if this is required."
 msgstr ""
+"Ця функція не зберігає межі, спільні для полігонів. Якщо це необхідно, "
+"використовуйте <xref linkend=\"ST_CoverageSimplify\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "A circle simplified too much becomes a triangle, medium an octagon,"
 msgstr ""
+"Занадто спрощене коло перетворюється на трикутник, середнє — на восьмикутник,"
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a set of lines. Lines may intersect after simplification."
-msgstr ""
+msgstr "Спрощення набору ліній. Після спрощення лінії можуть перетинатися."
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a MultiPolygon. Polygonal results may be invalid."
 msgstr ""
+"Спрощення багатокутника. Результати багатокутника можуть бути недійсними."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref "
 "linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, "
 "Topology <xref linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+"\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, Topology <xref "
+"linkend=\"TP_ST_Simplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -28981,6 +29005,8 @@ msgid ""
 "Returns a simplified and valid representation of a geometry, using the "
 "Douglas-Peucker algorithm."
 msgstr ""
+"Повертає спрощене та дійсне представлення геометрії, використовуючи алгоритм "
+"Дугласа-Пьюкера."
 
 #. Tag: para
 #, no-c-format
@@ -28994,6 +29020,15 @@ msgid ""
 "are within the tolerance distance of the simplified linework, as long as "
 "topology is preserved. The result will be valid and simple if the input is."
 msgstr ""
+"Обчислює спрощене представлення геометрії за допомогою варіанту <link "
+"xlink:href=«https://en.wikipedia.org/wiki/"
+"Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm»>алгоритму Дугласа-Пьюкера</"
+"link>, який обмежує спрощення, щоб забезпечити топологію результату, "
+"ідентичну топології вхідних даних. Допуск спрощення <varname>tolerance</"
+"varname> є значенням відстані в одиницях вхідної SRS. Спрощення видаляє "
+"вершини, які знаходяться в межах допуску відстані спрощеної лінії, за умови "
+"збереження топології. Результат буде дійсним і простим, якщо вхідні дані є "
+"такими."
 
 #. Tag: para
 #, no-c-format
@@ -29006,11 +29041,18 @@ msgid ""
 "not intersect if they did not do so in the original geometry. Endpoints of "
 "linear geometry are preserved."
 msgstr ""
+"Функцію можна викликати з будь-яким типом геометрії (включаючи "
+"GeometryCollections), але спрощуються тільки елементи лінії та полігону. Для "
+"полігональних вхідних даних результат матиме таку саму кількість кілець ("
+"оболонок і отворів), і кільця не перетинатимуться. Кінцеві точки кілець "
+"можуть бути спрощені. Для лінійних вхідних даних результат матиме таку саму "
+"кількість ліній, і лінії не перетинатимуться, якщо вони не перетиналися в "
+"оригінальній геометрії. Кінцеві точки лінійної геометрії зберігаються."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.3.3"
-msgstr ""
+msgstr "Доступність: 1.3.3"
 
 #. Tag: para
 #, no-c-format
@@ -29019,23 +29061,28 @@ msgid ""
 "ST_SimplifyPreserveTopology prevents oversimplification. The circle can at "
 "most become a square."
 msgstr ""
+"Для того ж прикладу, що і <xref linkend=\"ST_Simplify\"/>, "
+"ST_SimplifyPreserveTopology запобігає надмірному спрощенню. Коло може стати "
+"щонайбільше квадратом."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Simplifying a set of lines, preserving topology of non-intersecting lines."
 msgstr ""
+"Спрощення набору ліній із збереженням топології ліній, що не перетинаються."
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a MultiPolygon, preserving topology of shells and holes."
-msgstr ""
+msgstr "Спрощення мультиполігону із збереженням топології оболонок і отворів."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29043,6 +29090,8 @@ msgid ""
 "Computes a simplified topology-preserving outer or inner hull of a polygonal "
 "geometry."
 msgstr ""
+"Обчислює спрощену зовнішню або внутрішню оболонку полігональної геометрії із "
+"збереженням топології."
 
 #. Tag: para
 #, no-c-format
@@ -29053,6 +29102,12 @@ msgid ""
 "geometry formed by a subset of the input vertices. MultiPolygons and holes "
 "are handled and produce a result with the same structure as the input."
 msgstr ""
+"Обчислює спрощену зовнішню або внутрішню оболонку полігональної геометрії, "
+"що зберігає топологію. Зовнішня оболонка повністю покриває вхідну геометрію. "
+"Внутрішня оболонка повністю покривається вхідною геометрією. Результатом є "
+"полігональна геометрія, утворена підмножиною вхідних вершин. Мультиполігони "
+"та отвори обробляються і дають результат з такою ж структурою, як і вхідні "
+"дані."
 
 #. Tag: para
 #, no-c-format
@@ -29064,6 +29119,12 @@ msgid ""
 "geometry. For outer hulls a value of 0.0 produces the convex hull (for a "
 "single polygon); for inner hulls it produces a triangle."
 msgstr ""
+"Зменшення кількості вершин контролюється параметром "
+"<varname>vertex_fraction</varname>, який є числом в діапазоні від 0 до 1. "
+"Менші значення дають простіші результати, з меншою кількістю вершин і меншою "
+"увігнутістю. Як для зовнішніх, так і для внутрішніх оболонок частка вершин "
+"1,0 дає вихідну геометрію. Для зовнішніх оболонок значення 0,0 дає опуклу "
+"оболонку (для одного полігона); для внутрішніх оболонок воно дає трикутник."
 
 #. Tag: para
 #, no-c-format
@@ -29073,6 +29134,10 @@ msgid ""
 "is reached. It prevents edges from crossing, so the result is always a valid "
 "polygonal geometry."
 msgstr ""
+"Процес спрощення працює шляхом поступового видалення увігнутих кутів, які "
+"містять найменшу площу, до досягнення цільового значення кількості вершин. "
+"Це запобігає перетину ребер, тому результатом завжди є дійсна полігональна "
+"геометрія."
 
 #. Tag: para
 #, no-c-format
@@ -29080,38 +29145,43 @@ msgid ""
 "To get better results with geometries that contain relatively long line "
 "segments, it might be necessary to \"segmentize\" the input, as shown below."
 msgstr ""
+"Щоб отримати кращі результати з геометріями, що містять відносно довгі "
+"відрізки ліній, може знадобитися «сегментувати» вхідні дані, як показано "
+"нижче."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.3.0."
-msgstr ""
+msgstr "Доступність: 3.3.0."
 
 #. Tag: para
 #, no-c-format
 msgid "Requires GEOS &gt;= 3.11.0."
-msgstr ""
+msgstr "Вимагає GEOS &gt;= 3.11.0."
 
 #. Tag: para
 #, no-c-format
 msgid "Outer hull of a Polygon"
-msgstr ""
+msgstr "Зовнішня оболонка полігону"
 
 #. Tag: para
 #, no-c-format
 msgid "Inner hull of a Polygon"
-msgstr ""
+msgstr "Внутрішня оболонка полігону"
 
 #. Tag: para
 #, no-c-format
 msgid "Outer hull simplification of a MultiPolygon, with segmentization"
-msgstr ""
+msgstr "Спрощення зовнішньої оболонки мультиполігону з сегментацією"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_ConcaveHull\"/>, "
 "<xref linkend=\"ST_Segmentize\"/>"
 msgstr ""
+", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_ConcaveHull\"/>, "
+"<xref linkend=\"ST_Segmentize\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29119,6 +29189,8 @@ msgid ""
 "Returns a simplified representation of a geometry, using the Visvalingam-"
 "Whyatt algorithm"
 msgstr ""
+"Повертає спрощене представлення геометрії, використовуючи алгоритм "
+"Вісвалінгама-Вайатта"
 
 #. Tag: para
 #, no-c-format
@@ -29131,6 +29203,13 @@ msgid ""
 "\"corners\" with area less than the tolerance. The result may not be valid "
 "even if the input is."
 msgstr ""
+"Повертає спрощене представлення геометрії за допомогою алгоритму <link "
+"xlink:href=«https://en.wikipedia.org/wiki/"
+"Visvalingam%E2%80%93Whyatt_algorithm»>Visvalingam-Whyatt</link>. Спрощення "
+"<varname>tolerance</varname> є значенням площі в одиницях вхідної SRS. "
+"Спрощення видаляє вершини, які утворюють «кути» з площею, меншою за "
+"толерантність. Результат може бути недійсним, навіть якщо вхідні дані є "
+"дійсними."
 
 #. Tag: para
 #, no-c-format
@@ -29142,27 +29221,33 @@ msgid ""
 "validity. <xref linkend=\"ST_CoverageSimplify\"/> also preserves topology "
 "and validity."
 msgstr ""
+"Повернена геометрія може втратити свою простоту (див. <xref linkend="
+"\"ST_IsSimple\"/>), топологія може не зберегтися, а полігональні результати "
+"можуть бути недійсними (див. <xref linkend=\"ST_IsValid\"/>). Використовуйте "
+"<xref linkend=\"ST_SimplifyPreserveTopology\"/>, щоб зберегти топологію та "
+"забезпечити дійсність. <xref linkend=\"ST_CoverageSimplify\"/>також зберігає "
+"топологію та дійсність."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This function handles 3D and the third dimension will affect the result."
-msgstr ""
+msgstr "Ця функція обробляє 3D, і третій вимір впливатиме на результат."
 
 #. Tag: para
 #, no-c-format
 msgid "A LineString is simplified with a minimum-area tolerance of 30."
-msgstr ""
+msgstr "Лінія (LineString) спрощується з мінімальним допуском площі 30."
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a line."
-msgstr ""
+msgstr "Спрощення лінії."
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a polygon."
-msgstr ""
+msgstr "Спрощення полігону."
 
 #. Tag: para
 #, no-c-format
@@ -29172,6 +29257,9 @@ msgid ""
 "linkend=\"ST_CoverageSimplify\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/"
 ">"
 msgstr ""
+", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
+"\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, "
+"Топологія <xref linkend=\"TP_ST_Simplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29179,6 +29267,8 @@ msgid ""
 "Sets the effective area for each vertex, using the Visvalingam-Whyatt "
 "algorithm."
 msgstr ""
+"Встановлює ефективну площу для кожної вершини, використовуючи алгоритм "
+"Вісвалінгама-Вайатта."
 
 #. Tag: para
 #, no-c-format
@@ -29189,6 +29279,11 @@ msgid ""
 "returned, containing only vertices with an effective area greater than or "
 "equal to the threshold value."
 msgstr ""
+"Встановлює ефективну площу для кожної вершини, використовуючи алгоритм "
+"Вісвалінгама-Вайатта. Ефективна площа зберігається як M-значення вершини. "
+"Якщо використовується опціональний параметр «threshold», буде повернуто "
+"спрощену геометрію, що містить тільки вершини з ефективною площею, більшою "
+"або рівною значенню порогу."
 
 #. Tag: para
 #, no-c-format
@@ -29198,6 +29293,10 @@ msgid ""
 "the full geometry will be returned with effective areas as M-values, which "
 "can be used by the client to simplify very quickly."
 msgstr ""
+"Ця функція може бути використана для спрощення на стороні сервера, коли "
+"вказано поріг. Інший варіант – використання порогового значення нуль. У "
+"цьому випадку буде повернуто повну геометрію з ефективними площами у вигляді "
+"M-значень, які клієнт може використовувати для дуже швидкого спрощення."
 
 #. Tag: para
 #, no-c-format
@@ -29207,6 +29306,10 @@ msgid ""
 "occurs on a object-by-object basis you can also feed a GeometryCollection to "
 "this function."
 msgstr ""
+"Фактично виконує операції тільки з (мульти)лініями та (мульти)полігонами, "
+"але ви можете безпечно викликати її з будь-яким типом геометрії. Оскільки "
+"спрощення відбувається на основі окремих об'єктів, ви також можете передати "
+"цій функції GeometryCollection."
 
 #. Tag: para
 #, no-c-format
@@ -29214,6 +29317,8 @@ msgid ""
 "Note that returned geometry might lose its simplicity (see <xref "
 "linkend=\"ST_IsSimple\"/>)"
 msgstr ""
+"Зверніть увагу, що повернена геометрія може втратити свою простоту (див. "
+"<xref linkend=\"ST_IsSimple\"/>)"
 
 #. Tag: para
 #, no-c-format
@@ -29221,18 +29326,21 @@ msgid ""
 "Note topology may not be preserved and may result in invalid geometries. Use "
 "(see <xref linkend=\"ST_SimplifyPreserveTopology\"/>) to preserve topology."
 msgstr ""
+"Зверніть увагу, що топологія може не зберегтися, що може призвести до "
+"недійсних геометрій. Для збереження топології використовуйте (див. <xref "
+"linkend=\"ST_SimplifyPreserveTopology\"/>)."
 
 #. Tag: para
 #, no-c-format
 msgid "The output geometry will lose all previous information in the M-values"
-msgstr ""
+msgstr "Геометрія виводу втратить всю попередню інформацію в значеннях M"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This function handles 3D and the third dimension will affect the effective "
 "area"
-msgstr ""
+msgstr "Ця функція обробляє 3D, і третій вимір впливатиме на ефективну площу"
 
 #. Tag: para
 #, no-c-format
@@ -29240,11 +29348,13 @@ msgid ""
 "Calculating the effective area of a LineString. Because we use a threshold "
 "value of zero, all vertices in the input geometry are returned."
 msgstr ""
+"Обчислення ефективної площі LineString. Оскільки ми використовуємо порогове "
+"значення нуль, повертаються всі вершини вхідної геометрії."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the constrained Delaunay triangulation of polygons"
-msgstr ""
+msgstr "Обчислює обмежену триангуляцію Делоне полігонів"
 
 #. Tag: para
 #, no-c-format
@@ -29252,6 +29362,8 @@ msgid ""
 "Computes the constrained Delaunay triangulation of polygons. Holes and "
 "Multipolygons are supported."
 msgstr ""
+"Обчислює обмежену триангуляцію Делоне для полігонів. Підтримуються отвори та "
+"мультиполігони."
 
 #. Tag: para
 #, no-c-format
@@ -29261,53 +29373,58 @@ msgid ""
 "with the maximum total interior angle over all possible triangulations. It "
 "provides the \"best quality\" triangulation of the polygon."
 msgstr ""
+"«Обмежена триангуляція Делоне» полігону — це набір трикутників, утворених з "
+"вершин полігону, які точно його покривають, з максимальним сумарним "
+"внутрішнім кутом серед усіх можливих триангуляцій. Вона забезпечує «найкращу "
+"якість» триангуляції полігону."
 
 #. Tag: para
 #, no-c-format
 msgid "Triangulation of a square."
-msgstr ""
+msgstr "Тріангуляція квадрата."
 
 #. Tag: para
 #, no-c-format
 msgid "Triangulation of the letter P."
-msgstr ""
+msgstr "Тріангуляція літери P."
 
 #. Tag: para
 #, no-c-format
 msgid "Polygon Triangulation"
-msgstr ""
+msgstr "Триангуляція полігонів"
 
 #. Tag: title
 #, no-c-format
 msgid "Same example as ST_Tesselate"
-msgstr ""
+msgstr "Такий самий приклад, як ST_Tesselate"
 
 #. Tag: para
 #, no-c-format
 msgid "ST_AsText output"
-msgstr ""
+msgstr "Вихідні дані ST_AsText"
 
 #. Tag: para
 #, no-c-format
 msgid "Original polygon"
-msgstr ""
+msgstr "Оригінальний полігон"
 
 #. Tag: para
 #, no-c-format
 msgid "Triangulated Polygon"
-msgstr ""
+msgstr "Трикутний полігон"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend=\"ST_Tesselate\"/>"
 msgstr ""
+", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend=\"ST_Tesselate\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the boundaries of the Voronoi diagram of the vertices of a geometry."
-msgstr ""
+msgstr "Повертає межі діаграми Вороного вершин геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -29320,11 +29437,17 @@ msgid ""
 "an empty geometry collection if the <varname>extend_to</varname> envelope "
 "has zero area."
 msgstr ""
+"Обчислює двовимірну <link xlink:href=«https://en.wikipedia.org/wiki/"
+"Voronoi_diagram»>діаграму Вороного</link> з вершин наданої геометрії та "
+"повертає межі між комірками в діаграмі як MultiLineString. Повертає null, "
+"якщо вхідна геометрія є null. Повертає порожню колекцію геометрії, якщо "
+"вхідна геометрія містить тільки одну вершину. Повертає порожню колекцію "
+"геометрії, якщо контур <varname>extend_to</varname> має нульову площу."
 
 #. Tag: para
 #, no-c-format
 msgid "Optional parameters:"
-msgstr ""
+msgstr "Додаткові параметри:"
 
 #. Tag: para
 #, no-c-format
@@ -29333,6 +29456,9 @@ msgid ""
 "considered equivalent. Robustness of the algorithm can be improved by "
 "supplying a nonzero tolerance distance. (default = 0.0)"
 msgstr ""
+"<varname>tolerance</varname>: Відстань, в межах якої вершини будуть "
+"вважатися еквівалентними. Надійність алгоритму можна підвищити, вказавши "
+"відстань толерантності, відмінну від нуля. (за замовчуванням = 0,0)"
 
 #. Tag: para
 #, no-c-format
@@ -29342,21 +29468,25 @@ msgid ""
 "envelope (default = NULL, default envelope is the bounding box of the input "
 "expanded by about 50%)."
 msgstr ""
+"<varname>extend_to</varname>: Якщо присутній, діаграма розширюється, щоб "
+"охопити контур заданої геометрії, якщо він не менший за контур за "
+"замовчуванням (за замовчуванням = NULL, контур за замовчуванням — це "
+"обмежувальний прямокутник вхідних даних, розширений приблизно на 50%)."
 
 #. Tag: para
 #, no-c-format
 msgid "Voronoi diagram lines, with tolerance of 30 units"
-msgstr ""
+msgstr "Лінії діаграми Вороного з допуском 30 одиниць"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiPolygons\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_VoronoiPolygons\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the cells of the Voronoi diagram of the vertices of a geometry."
-msgstr ""
+msgstr "Повертає комірки діаграми Вороного вершин геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -29369,26 +29499,33 @@ msgid ""
 "contains only one vertex. Returns an empty geometry collection if the "
 "<varname>extend_to</varname> envelope has zero area."
 msgstr ""
+"Обчислює двовимірну <link xlink:href=«https://en.wikipedia.org/wiki/"
+"Voronoi_diagram»>діаграму Вороного</link> на основі вершин наданої "
+"геометрії. Результатом є GEOMETRYCOLLECTION з POLYGON, що охоплює оболонку, "
+"більшу за розмір вхідних вершин. Повертає null, якщо вхідна геометрія є "
+"null. Повертає порожню колекцію геометрії, якщо вхідна геометрія містить "
+"тільки одну вершину. Повертає порожню колекцію геометрії, якщо контур "
+"<varname>extend_to</varname> має нульову площу."
 
 #. Tag: para
 #, no-c-format
 msgid "Points overlaid on top of Voronoi diagram"
-msgstr ""
+msgstr "Точки, накладені на діаграму Вороного"
 
 #. Tag: para
 #, no-c-format
 msgid "Voronoi diagram, with tolerance of 30 units"
-msgstr ""
+msgstr "Діаграма Вороного з толерантністю 30 одиниць"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiLines\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_VoronoiLines\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Reference"
-msgstr ""
+msgstr "Растрова довідка"
 
 #. Tag: para
 #, no-c-format
@@ -29396,6 +29533,8 @@ msgid ""
 "<varname>raster</varname> is a PostGIS type for storing and analyzing raster "
 "data."
 msgstr ""
+"<varname>raster</varname> — це тип PostGIS для зберігання та аналізу "
+"растрових даних."
 
 #. Tag: para
 #, no-c-format
@@ -29403,6 +29542,8 @@ msgid ""
 "For loading rasters from raster files please refer to <xref "
 "linkend=\"RT_Loading_Rasters\"/>"
 msgstr ""
+"Для завантаження растрів з растрових файлів див. <xref linkend="
+"\"RT_Loading_Rasters\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -29410,6 +29551,8 @@ msgid ""
 "Some examples in this reference use a raster table of dummy data, created "
 "with the following code:"
 msgstr ""
+"Деякі приклади в цьому довіднику використовують растрову таблицю фіктивних "
+"даних, створену за допомогою наступного коду:"
 
 #. Tag: para
 #, no-c-format
@@ -29418,11 +29561,14 @@ msgid ""
 "need. There are other raster support functions which are not of interest to "
 "a general user."
 msgstr ""
+"Нижче наведено функції, які можуть знадобитися користувачеві PostGIS Raster. "
+"Існують також інші функції підтримки растрових даних, які не представляють "
+"інтересу для звичайного користувача."
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Support Data types"
-msgstr ""
+msgstr "Типи даних растрової підтримки"
 
 #. Tag: para
 #, no-c-format
@@ -29430,6 +29576,8 @@ msgid ""
 "This section lists the PostgreSQL data types specifically created to support "
 "raster functionality."
 msgstr ""
+"У цьому розділі перелічено типи даних PostgreSQL, спеціально створені для "
+"підтримки растрової функціональності."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29437,6 +29585,8 @@ msgid ""
 "A spatial datatype with two fields - geom (holding a geometry object) and "
 "val (holding a double precision pixel value from a raster band)."
 msgstr ""
+"Просторовий тип даних із двома полями — geom (містить об’єкт геометрії) та "
+"val (містить значення пікселя з растрового шару у форматі double precision)."
 
 #. Tag: para
 #, no-c-format
@@ -29447,6 +29597,12 @@ msgid ""
 "by the ST_DumpAsPolygon and Raster intersection family of functions as an "
 "output type to explode a raster band into geometry polygons."
 msgstr ""
+"geomval — це складений тип даних, що складається з геометричного об’єкта, на "
+"який посилається поле .geom, та val — числа з подвійною точністю, яке "
+"представляє значення пікселя в певній геометричній точці в растровому шарі. "
+"Він використовується функціями ST_DumpAsPolygon та сімейством функцій "
+"перетину растрових даних як вихідний тип для розбиття растрового шару на "
+"геометричні полігони."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29454,6 +29610,9 @@ msgid ""
 "<refpurpose>A composite type used as input into the ST_AddBand function "
 "defining the attributes and initial value of the new band.</refpurpose>"
 msgstr ""
+"<refpurpose>Складений тип, що використовується як вхідний параметр у функції "
+"ST_AddBand для визначення атрибутів та початкового значення нового "
+"шару.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -29461,6 +29620,9 @@ msgid ""
 "<para>A composite type used as input into the ST_AddBand function defining "
 "the attributes and initial value of the new band.</para>"
 msgstr ""
+"<para>Складений тип, що використовується як вхідний параметр у функції "
+"ST_AddBand для визначення атрибутів та початкового значення нового "
+"растра</para>"
 
 #. Tag: para
 #, no-c-format
@@ -29469,6 +29631,9 @@ msgid ""
 "amongst the raster's bands. If NULL, the new band will be added at the end "
 "of the raster's bands."
 msgstr ""
+"Значення з відліком від 1, яке вказує позицію, куди буде додано новий шар "
+"серед шарів растра. Якщо вказано NULL, новий шар буде додано в кінець списку "
+"шарів растра."
 
 #. Tag: para
 #, no-c-format
@@ -29476,11 +29641,13 @@ msgid ""
 "Pixel type of the new band. One of defined pixel types as described in <xref "
 "linkend=\"RT_ST_BandPixelType\"/>."
 msgstr ""
+"Тип пікселя нового шару. Один із визначених типів пікселів, описаних у <xref "
+"linkend=\"RT_ST_BandPixelType\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Initial value that all pixels of new band will be set to."
-msgstr ""
+msgstr "Початкове значення, яке буде встановлено для всіх пікселів нового шару."
 
 #. Tag: para
 #, no-c-format
@@ -29488,6 +29655,8 @@ msgid ""
 "NODATA value of the new band. If NULL, the new band will not have a NODATA "
 "value assigned."
 msgstr ""
+"Значення NODATA для нового шару. Якщо встановлено NULL, новий шар не матиме "
+"призначеного значення NODATA."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29495,6 +29664,8 @@ msgid ""
 "<refpurpose>A composite type for use when needing to express a raster and a "
 "band index of that raster.</refpurpose>"
 msgstr ""
+"<refpurpose>Композитний тип, який використовується, коли потрібно виразити "
+"растр і індекс смуги цього растра.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -29502,6 +29673,8 @@ msgid ""
 "<para>A composite type for use when needing to express a raster and a band "
 "index of that raster.</para>"
 msgstr ""
+"<para>Комбінований тип, який використовується, коли потрібно виразити растр "
+"і індекс смуги цього растру.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -29511,12 +29684,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "1-based value indicating the band of raster"
-msgstr ""
+msgstr "Значення з відліком від 1, що вказує на конкретний шар растра"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "raster spatial data type."
-msgstr ""
+msgstr "растровий тип просторових даних."
 
 #. Tag: para
 #, no-c-format
@@ -29526,6 +29699,10 @@ msgid ""
 "1 or more bands each having a set of pixel values. Rasters can be "
 "georeferenced."
 msgstr ""
+"Растр — це тип просторових даних, що використовується для представлення "
+"растрових даних, таких як дані, імпортовані з файлів JPEG, TIFF, PNG, "
+"цифрових моделей рельєфу. Кожен растр має 1 або більше шарів, кожен з яких "
+"має набір значень пікселів. Растри можуть бути геореферентними."
 
 #. Tag: para
 #, no-c-format
@@ -29535,6 +29712,10 @@ msgid ""
 "linkend=\"RT_ST_ConvexHull\"/> of the raster. This auto casting may be "
 "removed in the near future so don't rely on it."
 msgstr ""
+"Вимагає компіляції PostGIS з підтримкою GDAL. Наразі растри можуть бути "
+"неявним чином перетворені на геометричний тип, але перетворення повертає "
+"<xref linkend=\"RT_ST_ConvexHull\"/>растра. Це автоматичне перетворення може "
+"бути видалене в найближчому майбутньому, тому не покладайтеся на нього."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29542,6 +29723,8 @@ msgid ""
 "A composite type used as input into the ST_Reclass function defining the "
 "behavior of reclassification."
 msgstr ""
+"Композитний тип, що використовується як вхідні дані для функції ST_Reclass, "
+"яка визначає поведінку перекласифікації."
 
 #. Tag: para
 #, no-c-format
@@ -29549,11 +29732,13 @@ msgid ""
 "A composite type used as input into the <xref linkend=\"RT_ST_Reclass\"/> "
 "function defining the behavior of reclassification."
 msgstr ""
+"Композитний тип, що використовується як вхідні дані для функції <xref "
+"linkend=\"RT_ST_Reclass\"/>, яка визначає поведінку перекласифікації."
 
 #. Tag: para
 #, no-c-format
 msgid "The band number of band to reclassify."
-msgstr ""
+msgstr "Номер каналу, який потрібно перекласифікувати."
 
 #. Tag: para
 #, no-c-format
