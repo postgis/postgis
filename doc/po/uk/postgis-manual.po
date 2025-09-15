@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-09-14 17:47+0000\n"
+"PO-Revision-Date: 2025-09-15 12:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -29586,7 +29586,8 @@ msgid ""
 "val (holding a double precision pixel value from a raster band)."
 msgstr ""
 "Просторовий тип даних із двома полями — geom (містить об’єкт геометрії) та "
-"val (містить значення пікселя з растрового шару у форматі double precision)."
+"val (містить значення пікселя з растрового каналу у форматі double "
+"precision)."
 
 #. Tag: para
 #, no-c-format
@@ -29599,10 +29600,10 @@ msgid ""
 msgstr ""
 "geomval — це складений тип даних, що складається з геометричного об’єкта, на "
 "який посилається поле .geom, та val — числа з подвійною точністю, яке "
-"представляє значення пікселя в певній геометричній точці в растровому шарі. "
-"Він використовується функціями ST_DumpAsPolygon та сімейством функцій "
-"перетину растрових даних як вихідний тип для розбиття растрового шару на "
-"геометричні полігони."
+"представляє значення пікселя в певній геометричній точці в растровому "
+"каналі. Він використовується функціями ST_DumpAsPolygon та сімейством "
+"функцій перетину растрових даних як вихідний тип для розбиття растрового "
+"шару на геометричні полігони."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29612,7 +29613,7 @@ msgid ""
 msgstr ""
 "<refpurpose>Складений тип, що використовується як вхідний параметр у функції "
 "ST_AddBand для визначення атрибутів та початкового значення нового "
-"шару.</refpurpose>"
+"каналу.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -29622,7 +29623,7 @@ msgid ""
 msgstr ""
 "<para>Складений тип, що використовується як вхідний параметр у функції "
 "ST_AddBand для визначення атрибутів та початкового значення нового "
-"растра</para>"
+"каналу</para>"
 
 #. Tag: para
 #, no-c-format
@@ -29632,8 +29633,8 @@ msgid ""
 "of the raster's bands."
 msgstr ""
 "Значення з відліком від 1, яке вказує позицію, куди буде додано новий шар "
-"серед шарів растра. Якщо вказано NULL, новий шар буде додано в кінець списку "
-"шарів растра."
+"серед каналів растра. Якщо вказано NULL, новий канал буде додано в кінець "
+"списку шарів растра."
 
 #. Tag: para
 #, no-c-format
@@ -29641,13 +29642,14 @@ msgid ""
 "Pixel type of the new band. One of defined pixel types as described in <xref "
 "linkend=\"RT_ST_BandPixelType\"/>."
 msgstr ""
-"Тип пікселя нового шару. Один із визначених типів пікселів, описаних у <xref "
-"linkend=\"RT_ST_BandPixelType\"/>."
+"Тип пікселя нового каналу. Один із визначених типів пікселів, описаних у "
+"<xref linkend=\"RT_ST_BandPixelType\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Initial value that all pixels of new band will be set to."
-msgstr "Початкове значення, яке буде встановлено для всіх пікселів нового шару."
+msgstr ""
+"Початкове значення, яке буде встановлено для всіх пікселів нового каналу."
 
 #. Tag: para
 #, no-c-format
@@ -29655,8 +29657,8 @@ msgid ""
 "NODATA value of the new band. If NULL, the new band will not have a NODATA "
 "value assigned."
 msgstr ""
-"Значення NODATA для нового шару. Якщо встановлено NULL, новий шар не матиме "
-"призначеного значення NODATA."
+"Значення NODATA для нового каналу. Якщо встановлено NULL, новий канал не "
+"матиме призначеного значення NODATA."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29665,7 +29667,7 @@ msgid ""
 "band index of that raster.</refpurpose>"
 msgstr ""
 "<refpurpose>Композитний тип, який використовується, коли потрібно виразити "
-"растр і індекс смуги цього растра.</refpurpose>"
+"растр і індекс каналу цього растра.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -29674,7 +29676,7 @@ msgid ""
 "index of that raster.</para>"
 msgstr ""
 "<para>Комбінований тип, який використовується, коли потрібно виразити растр "
-"і індекс смуги цього растру.</para>"
+"і індекс каналу цього растру.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -29684,7 +29686,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "1-based value indicating the band of raster"
-msgstr "Значення з відліком від 1, що вказує на конкретний шар растра"
+msgstr "Значення з відліком від 1, що вказує на конкретний канал растра"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29701,7 +29703,7 @@ msgid ""
 msgstr ""
 "Растр — це тип просторових даних, що використовується для представлення "
 "растрових даних, таких як дані, імпортовані з файлів JPEG, TIFF, PNG, "
-"цифрових моделей рельєфу. Кожен растр має 1 або більше шарів, кожен з яких "
+"цифрових моделей рельєфу. Кожен растр має 1 або більше каналів, кожен з яких "
 "має набір значень пікселів. Растри можуть бути геореферентними."
 
 #. Tag: para
@@ -29748,11 +29750,15 @@ msgid ""
 "values. ( means &gt;, ) means less than, ] &lt; or equal, [ means &gt; or "
 "equal"
 msgstr ""
+"вираз діапазону, що складається з розділених комами відображень діапазону:"
+"map_range. : для визначення відображення, яке визначає, як відображати старі "
+"значення діапазону на нові значення діапазону. ( означає &gt;, ) означає "
+"менше, ] &lt; або дорівнює, [ означає &gt; або дорівнює"
 
 #. Tag: para
 #, no-c-format
 msgid "( notation is optional so a-b means the same as (a-b)"
-msgstr ""
+msgstr "(нотація є необов'язковою, тому a-b означає те саме, що (a-b)"
 
 #. Tag: para
 #, no-c-format
@@ -29760,6 +29766,8 @@ msgid ""
 "One of defined pixel types as described in <xref "
 "linkend=\"RT_ST_BandPixelType\"/>"
 msgstr ""
+"Один із визначених типів пікселів, як описано в <xref linkend="
+"\"RT_ST_BandPixelType\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -29767,16 +29775,19 @@ msgid ""
 "Value to treat as no data. For image outputs that support transparency, "
 "these will be blank."
 msgstr ""
+"Значення, яке слід розглядати як відсутність даних. Для зображень, що "
+"підтримують прозорість, ці поля будуть порожніми."
 
 #. Tag: title
 #, no-c-format
 msgid "Example: Reclassify band 2 as an 8BUI where 255 is nodata value"
-msgstr ""
+msgstr "Приклад: Перекласифікуйте діапазон 2 як 8BUI, де 255 є значенням nodata"
 
 #. Tag: title
 #, no-c-format
 msgid "Example: Reclassify band 1 as an 1BB and no nodata value defined"
 msgstr ""
+"Приклад: Перекласифікуйте діапазон 1 як 1BB і не визначайте значення nodata"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29784,6 +29795,8 @@ msgid ""
 "A composite type returned by the ST_SummaryStats and ST_SummaryStatsAgg "
 "functions."
 msgstr ""
+"Композитний тип, що повертається функціями ST_SummaryStats та "
+"ST_SummaryStatsAgg."
 
 #. Tag: para
 #, no-c-format
@@ -29791,71 +29804,73 @@ msgid ""
 "A composite type returned by the <xref linkend=\"RT_ST_SummaryStats\"/> and "
 "<xref linkend=\"RT_ST_SummaryStatsAgg\"/> functions."
 msgstr ""
+"Композитний тип, що повертається функціями <xref linkend=\"RT_ST_SummaryStats"
+"\"/> та <xref linkend=\"RT_ST_SummaryStatsAgg\"/>."
 
 #. Tag: term
 #, no-c-format
 msgid "count integer"
-msgstr ""
+msgstr "лічильник цілого числа"
 
 #. Tag: para
 #, no-c-format
 msgid "Number of pixels counted for the summary statistics."
-msgstr ""
+msgstr "Кількість пікселів, що враховуються для зведеної статистики."
 
 #. Tag: term
 #, no-c-format
 msgid "sum double precision"
-msgstr ""
+msgstr "сума подвійної точності"
 
 #. Tag: para
 #, no-c-format
 msgid "Sum of all counted pixel values."
-msgstr ""
+msgstr "Сума всіх підрахованих значень пікселів."
 
 #. Tag: term
 #, no-c-format
 msgid "mean double precision"
-msgstr ""
+msgstr "середня подвійна точність"
 
 #. Tag: para
 #, no-c-format
 msgid "Arithmetic mean of all counted pixel values."
-msgstr ""
+msgstr "Арифметичне середнє всіх підрахованих значень пікселів."
 
 #. Tag: term
 #, no-c-format
 msgid "stddev double precision"
-msgstr ""
+msgstr "stddev подвійна точність"
 
 #. Tag: para
 #, no-c-format
 msgid "Standard deviation of all counted pixel values."
-msgstr ""
+msgstr "Стандартне відхилення всіх підрахованих значень пікселів."
 
 #. Tag: term
 #, no-c-format
 msgid "min double precision"
-msgstr ""
+msgstr "мінімальна подвійна точність"
 
 #. Tag: para
 #, no-c-format
 msgid "Minimum value of counted pixel values."
-msgstr ""
+msgstr "Мінімальне значення підрахованих значень пікселів."
 
 #. Tag: term
 #, no-c-format
 msgid "max double precision"
-msgstr ""
+msgstr "максимальна подвійна точність"
 
 #. Tag: para
 #, no-c-format
 msgid "Maximum value of counted pixel values."
-msgstr ""
+msgstr "Максимальне значення підрахованих значень пікселів."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29864,6 +29879,9 @@ msgid ""
 "defining the bands to be processed and behavior of the UNION operation.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Композитний тип, що використовується як вхідні дані для функції "
+"ST_Union, яка визначає смуги, що підлягають обробці, та поведінку операції "
+"UNION.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -29871,11 +29889,16 @@ msgid ""
 "<para>A composite type used as input into the ST_Union function defining the "
 "bands to be processed and behavior of the UNION operation.</para>"
 msgstr ""
+"<para>Композитний тип, що використовується як вхідні дані для функції "
+"ST_Union, яка визначає смуги, що підлягають обробці, та поведінку операції "
+"UNION.</para>"
 
 #. Tag: para
 #, no-c-format
 msgid "1-based value indicating the band of each input raster to be processed."
 msgstr ""
+"Значення на основі 1, що вказує діапазон кожного вхідного растра, який "
+"підлягає обробці."
 
 #. Tag: para
 #, no-c-format
@@ -29883,11 +29906,13 @@ msgid ""
 "Type of UNION operation. One of defined types as described in <xref "
 "linkend=\"RT_ST_Union\"/>."
 msgstr ""
+"Тип операції UNION. Один із визначених типів, описаних у <xref linkend="
+"\"RT_ST_Union\"/>."
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Management"
-msgstr ""
+msgstr "Управління растром"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29898,6 +29923,12 @@ msgid ""
 "loaded with data for the constraints to be inferred. Returns true if the "
 "constraint setting was accomplished and issues a notice otherwise."
 msgstr ""
+"Додає обмеження растру до завантаженої таблиці растру для певного стовпця, "
+"що обмежує просторове посилання, масштабування, розмір блоку, вирівнювання, "
+"смуги, тип смуги та прапорець, що позначає, чи стовпець растру регулярно "
+"блокується. Таблиця повинна бути завантажена даними, щоб обмеження могли "
+"бути виведені. Повертає значення true, якщо налаштування обмеження було "
+"виконано, і видає повідомлення в іншому випадку."
 
 #. Tag: para
 #, no-c-format
@@ -29908,6 +29939,11 @@ msgid ""
 "resides in. The <varname>srid</varname> must be an integer value reference "
 "to an entry in the SPATIAL_REF_SYS table."
 msgstr ""
+"Створює обмеження для стовпця растра, які використовуються для відображення "
+"інформації в каталозі растра <varname>raster_columns</varname>. "
+"<varname>rastschema</varname> — це назва схеми таблиці, в якій знаходиться "
+"таблиця. <varname>srid</varname> має бути цілим числом, що посилається на "
+"запис у таблиці SPATIAL_REF_SYS."
 
 #. Tag: para
 #, no-c-format
@@ -29915,6 +29951,8 @@ msgid ""
 "<varname>raster2pgsql</varname> loader uses this function to register raster "
 "tables"
 msgstr ""
+"Завантажувач <varname>raster2pgsql</varname> використовує цю функцію для "
+"реєстрації растрових таблиць"
 
 #. Tag: para
 #, no-c-format
@@ -29922,23 +29960,31 @@ msgid ""
 "Valid constraint names to pass in: refer to <xref "
 "linkend=\"RT_Raster_Columns\"/> for more details."
 msgstr ""
+"Дійсні імена обмежень для передачі: детальнішу інформацію див. у <xref "
+"linkend=\"RT_Raster_Columns\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>blocksize</varname> sets both X and Y blocksize"
 msgstr ""
+"<varname>blocksize</varname> встановлює розмір блоку як по осі X, так і по "
+"осі Y"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>blocksize_x</varname> sets X tile (width in pixels of each tile)"
 msgstr ""
+"<varname>blocksize_x</varname> встановлює розмір плитки X (ширина кожної "
+"плитки в пікселях)"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>blocksize_y</varname> sets Y tile (height in pixels of each tile)"
 msgstr ""
+"<varname>blocksize_y</varname> встановлює Y-плитку (висоту кожної плитки в "
+"пікселях)"
 
 #. Tag: para
 #, no-c-format
@@ -29946,11 +29992,13 @@ msgid ""
 "<varname>extent</varname> computes extent of whole table and applies "
 "constraint all rasters must be within that extent"
 msgstr ""
+"<varname>extent</varname> обчислює розмір всієї таблиці та застосовує "
+"обмеження, згідно з яким усі растри повинні знаходитися в межах цього розміру"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>num_bands</varname> number of bands"
-msgstr ""
+msgstr "<varname>num_bands</varname> кількість смуг"
 
 #. Tag: para
 #, no-c-format
@@ -29958,6 +30006,8 @@ msgid ""
 "<varname>pixel_types</varname> reads array of pixel types for each band "
 "ensure all band n have same pixel type"
 msgstr ""
+"<varname>pixel_types</varname> зчитує масив типів пікселів для кожного "
+"діапазону, щоб переконатися, що всі діапазони n мають однаковий тип пікселів"
 
 #. Tag: para
 #, no-c-format
@@ -29966,6 +30016,9 @@ msgid ""
 "can be spatially the same) and coverage tile (raster is aligned to a "
 "coverage) constraints"
 msgstr ""
+"<varname>regular_blocking</varname> встановлює обмеження просторової "
+"унікальності (жодні два растри не можуть бути просторово однаковими) та "
+"покриття плитки (растр вирівнюється до покриття)"
 
 #. Tag: para
 #, no-c-format
@@ -29974,16 +30027,19 @@ msgid ""
 "meaning any two tiles you compare will return true for. Refer to <xref "
 "linkend=\"RT_ST_SameAlignment\"/>."
 msgstr ""
+"<varname>same_alignment</varname> гарантує, що всі вони мають однакове "
+"вирівнювання, тобто будь-які дві плитки, які ви порівнюєте, будуть повертати "
+"значення true. Див. <xref linkend=\"RT_ST_SameAlignment\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>srid</varname> ensures all have same srid"
-msgstr ""
+msgstr "<varname>srid</varname> гарантує, що всі мають однаковий srid"
 
 #. Tag: para
 #, no-c-format
 msgid "More -- any listed as inputs into the above functions"
-msgstr ""
+msgstr "Більше — все, що вказано як вхідні дані для вищезазначених функцій"
 
 #. Tag: para
 #, no-c-format
@@ -29992,6 +30048,9 @@ msgid ""
 "table. As such for it to work, you must create the raster column first and "
 "then load it with data."
 msgstr ""
+"Ця функція виводить обмеження на основі даних, що вже містяться в таблиці. "
+"Щоб вона працювала, спочатку потрібно створити стовпець растрових даних, а "
+"потім завантажити в нього дані."
 
 #. Tag: para
 #, no-c-format
@@ -30000,16 +30059,19 @@ msgid ""
 "constraints, you may want to run the DropRasterConstraints if the extent of "
 "your data has changed."
 msgstr ""
+"Якщо вам потрібно завантажити більше даних у таблиці після того, як ви вже "
+"застосували обмеження, ви можете запустити DropRasterConstraints, якщо обсяг "
+"ваших даних змінився."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Apply all possible constraints on column based on data"
-msgstr ""
+msgstr "Приклади: Застосувати всі можливі обмеження до стовпця на основі даних"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Apply single constraint"
-msgstr ""
+msgstr "Приклади: Застосувати одне обмеження"
 
 #. Tag: para
 #, no-c-format
@@ -30018,6 +30080,9 @@ msgid ""
 ">, <xref linkend=\"RT_DropRasterConstraints\"/>, <xref "
 "linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_MakeEmptyRaster\"/"
+">, <xref linkend=\"RT_DropRasterConstraints\"/>, <xref linkend="
+"\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -30025,6 +30090,9 @@ msgid ""
 "Drops PostGIS raster constraints that refer to a raster table column. Useful "
 "if you need to reload data or update your raster column data."
 msgstr ""
+"Видаляє обмеження PostGIS растра, які посилаються на стовпець таблиці "
+"растра. Корисно, якщо потрібно перезавантажити дані або оновити дані стовпця "
+"растра."
 
 #. Tag: para
 #, no-c-format
@@ -30034,11 +30102,16 @@ msgid ""
 "need to load more data or update your raster column data. You do not need to "
 "do this if you want to get rid of a raster table or a raster column."
 msgstr ""
+"Видаляє обмеження растра PostGIS, що посилаються на стовпець таблиці растра, "
+"які були додані за допомогою <xref linkend=\"RT_AddRasterConstraints\"/>. "
+"Корисно, якщо вам потрібно завантажити більше даних або оновити дані стовпця "
+"растра. Вам не потрібно це робити, якщо ви хочете позбутися таблиці растра "
+"або стовпця растра."
 
 #. Tag: para
 #, no-c-format
 msgid "To drop a raster table use the standard"
-msgstr ""
+msgstr "Щоб скинути растрову таблицю, використовуйте стандартну команду"
 
 #. Tag: para
 #, no-c-format
@@ -30046,6 +30119,8 @@ msgid ""
 "To drop just a raster column and leave the rest of the table, use standard "
 "SQL"
 msgstr ""
+"Щоб видалити тільки стовпець растрових даних і залишити решту таблиці, "
+"використовуйте стандартний SQL"
 
 #. Tag: para
 #, no-c-format
@@ -30056,11 +30131,16 @@ msgid ""
 "<varname>raster_columns</varname> catalog, but there will be no other "
 "information about it aside from the column name and table."
 msgstr ""
+"таблиця зникне з каталогу <varname>raster_columns</varname>, якщо стовпець "
+"або таблиця будуть видалені. Однак, якщо будуть видалені тільки обмеження, "
+"стовпець растра все одно буде вказаний у каталозі <varname>raster_columns</"
+"varname>, але крім імені стовпця та таблиці про нього не буде жодної іншої "
+"інформації."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tag a raster column as being an overview of another."
-msgstr ""
+msgstr "Позначте стовпець растрових даних як огляд іншого стовпця."
 
 #. Tag: para
 #, no-c-format
@@ -30068,6 +30148,8 @@ msgid ""
 "Adds constraints on a raster column that are used to display information in "
 "the <varname>raster_overviews</varname> raster catalog."
 msgstr ""
+"Додає обмеження до стовпця растра, які використовуються для відображення "
+"інформації в каталозі растрів <varname>raster_overviews</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -30075,6 +30157,8 @@ msgid ""
 "The <varname>ovfactor</varname> parameter represents the scale multiplier in "
 "the overview column: higher overview factors have lower resolution."
 msgstr ""
+"Параметр <varname>ovfactor</varname> представляє коефіцієнт масштабування в "
+"стовпці огляду: вищі коефіцієнти огляду мають нижчу роздільну здатність."
 
 #. Tag: para
 #, no-c-format
@@ -30083,6 +30167,9 @@ msgid ""
 "parameters are omitted, the first table found scanning the "
 "<varname>search_path</varname> will be used."
 msgstr ""
+"Якщо параметри <varname>ovschema</varname> та <varname>refschema</varname> "
+"пропущені, буде використана перша таблиця, знайдена під час сканування "
+"<varname>search_path</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -30090,11 +30177,15 @@ msgid ""
 ", <xref linkend=\"RT_DropOverviewConstraints\"/>, <xref "
 "linkend=\"RT_CreateOverview\"/>, <xref linkend=\"RT_AddRasterConstraints\"/>"
 msgstr ""
+", <xref linkend=\"RT_DropOverviewConstraints\"/>, <xref linkend="
+"\"RT_CreateOverview\"/>, <xref linkend=\"RT_AddRasterConstraints\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Untag a raster column from being an overview of another."
 msgstr ""
+"Зніміть позначку стовпця растрового зображення, щоб він не був "
+"представленням іншого."
 
 #. Tag: para
 #, no-c-format
@@ -30103,6 +30194,9 @@ msgid ""
 "overview of another in the <varname>raster_overviews</varname> raster "
 "catalog."
 msgstr ""
+"Видалити з колонки растра обмеження, що використовуються для відображення її "
+"як представлення іншого растра в каталозі растрів "
+"<varname>raster_overviews</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -30110,6 +30204,8 @@ msgid ""
 "When the <varname>ovschema</varname> parameter is omitted, the first table "
 "found scanning the <varname>search_path</varname> will be used."
 msgstr ""
+"Якщо параметр <varname>ovschema</varname> пропущено, буде використано першу "
+"таблицю, знайдено під час сканування <varname>search_path</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -30117,11 +30213,13 @@ msgid ""
 ", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref "
 "linkend=\"RT_DropRasterConstraints\"/>"
 msgstr ""
+", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref linkend="
+"\"RT_DropRasterConstraints\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Reports the version of the GDAL library in use by PostGIS."
-msgstr ""
+msgstr "Повідомляє про версію бібліотеки GDAL, яка використовується PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -30129,16 +30227,18 @@ msgid ""
 "Reports the version of the GDAL library in use by PostGIS. Will also check "
 "and report if GDAL can find its data files."
 msgstr ""
+"Повідомляє про версію бібліотеки GDAL, яка використовується PostGIS. Також "
+"перевіряє і повідомляє, чи може GDAL знайти свої файли даних."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Reports full raster library build date."
-msgstr ""
+msgstr "Повідомляє дату створення повної растрової бібліотеки."
 
 #. Tag: para
 #, no-c-format
 msgid "Reports raster build date"
-msgstr ""
+msgstr "Звіти про дату створення растру"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -30146,11 +30246,15 @@ msgid ""
 "<refpurpose>Reports full raster version and build configuration infos.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Повідомляє про повну растрову версію та інформацію про "
+"конфігурацію збірки.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Reports full raster version and build configuration infos.</para>"
 msgstr ""
+"<para>Повідомляє про повну растрову версію та інформацію про конфігурацію "
+"збірки.</para>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -30158,6 +30262,8 @@ msgid ""
 "Returns a list of raster formats supported by PostGIS through GDAL. Only "
 "those formats with can_write=True can be used by ST_AsGDALRaster"
 msgstr ""
+"Повертає список растрових форматів, що підтримуються PostGIS через GDAL. "
+"Тільки формати з can_write=True можуть використовуватися ST_AsGDALRaster."
 
 #. Tag: para
 #, no-c-format
