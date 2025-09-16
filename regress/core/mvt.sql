@@ -520,6 +520,7 @@ SELECT 'TA12', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (
 	UNION
 	SELECT NULL AS c1, 2.0 AS c2, ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
 		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+	ORDER BY c1
 ) AS q;
 
 SELECT 'TA13', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (
@@ -527,6 +528,7 @@ SELECT 'TA13', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (
 		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
 	UNION
 	SELECT 5 AS c1, 2.0 AS c2, null AS geom
+	ORDER BY c1
 ) AS q;
 
 -- Extra geometry as parameter (casted as string)
