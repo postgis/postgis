@@ -4,7 +4,8 @@ PostGIS 3.6.1
 
 * Fixes *
 
-  - #5978, geometry_columns needs to still parse table constraints  
+  - #5978, geometry_columns needs to still parse table constraints (Paul Ramsey)
+  - #5987, ST_GeometryN fails for non-collections (Paul Ramsey)  
 
 
 PostGIS 3.6.0

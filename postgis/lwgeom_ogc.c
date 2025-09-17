@@ -384,20 +384,14 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	if (!subgeom)
 		PG_RETURN_NULL();
 
-	/* If returning the original geometry */
-	if (subgeom == lwgeom)
+	/* If not returning the original geometry */
+	if (subgeom != lwgeom)
 	{
-		lwgeom_free(lwgeom);
-		PG_FREE_IF_COPY(geom, 0);
-		PG_RETURN_POINTER(geom);
+		subgeom->srid = lwgeom->srid;
+		/* COMPUTE_BBOX==TAINTING */
+		if (lwgeom->bbox) lwgeom_add_bbox(subgeom);
 	}
-
-	subgeom->srid = lwgeom->srid;
-	/* COMPUTE_BBOX==TAINTING */
-	if (lwgeom->bbox) lwgeom_add_bbox(subgeom);
-
 	result = geometry_serialize(subgeom);
-	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
 }
