@@ -484,3 +484,8 @@ ERROR:  Geometry contains invalid coordinates
 #5747|0
 #5855|Knosesmauet
 #5876|LINESTRING(1 1,2 2)
+public.test5978.shape SRID:4326 TYPE:POINT DIMS:2 
+public.test5978.geometry SRID:4326 TYPE:POINT DIMS:2 
+public|test5829|geom|2|4326|GEOMETRY
+public|test5978|geometry|2|4326|POINT
+public|test5978|shape|2|4326|POINT
