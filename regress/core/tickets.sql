@@ -1606,3 +1606,10 @@ SELECT f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, t
  FROM geometry_columns WHERE f_table_name IN ('test5829', 'test5978')
  ORDER BY f_table_name, f_geometry_column;
 DROP TABLE IF EXISTS test5829, test5978;
+
+-- -------------------------------------------------------------------------------------
+-- #5987, ST_GeometryN broken on unitary geoms
+CREATE TABLE test5987 (geom geometry(Geometry,4326));
+INSERT INTO test5987 VALUES('LINESTRING(20 20,20.1 20,20.2 19.9)'::geometry);
+SELECT '#5987', ST_AsText(geom), ST_AsText(ST_GeometryN(geom, 1)) FROM test5987;
+DROP TABLE IF EXISTS test5987;
