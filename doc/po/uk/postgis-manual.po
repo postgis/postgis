@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-09-15 12:47+0000\n"
+"PO-Revision-Date: 2025-09-20 23:11+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -28527,6 +28527,8 @@ msgid ""
 "Note that output may be a MULTILINESTRING or EMPTY for some jigsaw-shaped "
 "input geometries."
 msgstr ""
+"Зверніть увагу, що результат може бути MULTILINESTRING або EMPTY для деяких "
+"вхідних геометрій із «фігурою пазла»."
 
 #. Tag: para
 #, no-c-format
@@ -30277,11 +30279,20 @@ msgid ""
 "varname>, <varname>description</varname> and set of <varname>VALUE</varname> "
 "for each creator option for the specific driver."
 msgstr ""
+"Повертає список растрових форматів short_name, long_name та опцій creator "
+"для кожного формату, що підтримується GDAL. Використовуйте short_name як "
+"вхідні дані в параметрі <varname>format</varname> <xref linkend="
+"\"RT_ST_AsGDALRaster\"/>. Опції залежать від драйверів, з якими було "
+"скомпільовано libgdal. <varname>create_options</varname> повертає набір "
+"CreationOptionList/Option у форматі xml, що складається з імені та "
+"опціональних <varname>type</varname>, <varname>description</varname> та "
+"набору <varname>VALUE</varname> для кожної опції creator для конкретного "
+"драйвера."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.5.0 - add can_read and can_write columns."
-msgstr ""
+msgstr "Змінено: 2.5.0 — додано стовпці can_read та can_write."
 
 #. Tag: para
 #, no-c-format
@@ -30289,21 +30300,23 @@ msgid ""
 "Changed: 2.0.6, 2.1.3 - by default no drivers are enabled, unless GUC or "
 "Environment variable gdal_enabled_drivers is set."
 msgstr ""
+"Змінено: 2.0.6, 2.1.3 — за замовчуванням драйвери не ввімкнені, якщо не "
+"встановлено GUC або змінну середовища gdal_enabled_drivers."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.0.0 - requires GDAL &gt;= 1.6.0."
-msgstr ""
+msgstr "Доступність: 2.0.0 — вимагає GDAL &gt;= 1.6.0."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: List of Drivers"
-msgstr ""
+msgstr "Приклади: Список драйверів"
 
 #. Tag: title
 #, no-c-format
 msgid "Example: List of options for each driver"
-msgstr ""
+msgstr "Приклад: Список опцій для кожного драйвера"
 
 #. Tag: para
 #, no-c-format
@@ -30311,11 +30324,13 @@ msgid ""
 ", <xref linkend=\"ST_SRID\"/>, <xref "
 "linkend=\"postgis_gdal_enabled_drivers\"/>"
 msgstr ""
+", <xref linkend=\"ST_SRID\"/>, <xref linkend=\"postgis_gdal_enabled_drivers\""
+"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Change the SRID of all rasters in the user-specified column and table."
-msgstr ""
+msgstr "Змінити SRID всіх растрів у вказаній користувачем колонці та таблиці."
 
 #. Tag: para
 #, no-c-format
@@ -30324,6 +30339,9 @@ msgid ""
 "function will drop all appropriate column constraints (extent, alignment and "
 "SRID) before changing the SRID of the specified column's rasters."
 msgstr ""
+"Змінити SRID всіх растрів у вказаній користувачем колонці та таблиці. Перед "
+"зміною SRID растрів у вказаній колонці функція видалить усі відповідні "
+"обмеження колонки (розмір, вирівнювання та SRID)."
 
 #. Tag: para
 #, no-c-format
@@ -30331,11 +30349,15 @@ msgid ""
 "The data (band pixel values) of the rasters are not touched by this "
 "function. Only the raster's metadata is changed."
 msgstr ""
+"Ця функція не впливає на дані (значення пікселів смуги) растрів. Змінюються "
+"лише метадані растра."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Create an reduced resolution version of a given raster coverage."
 msgstr ""
+"Створити версію заданого растрового покриття зі зниженою роздільною "
+"здатністю."
 
 #. Tag: para
 #, no-c-format
@@ -30345,6 +30367,10 @@ msgid ""
 "extent with a lower resolution (pixel size will be 1/<varname>factor</"
 "varname> of the original in both directions)."
 msgstr ""
+"Створіть оглядову таблицю з передискретизованими плитками з вихідної "
+"таблиці. Вихідні плитки матимуть той самий розмір, що й вхідні, і "
+"покриватимуть ту саму просторову площу з меншою роздільною здатністю (розмір "
+"пікселя буде 1/<varname>factor</varname> від оригіналу в обох напрямках)."
 
 #. Tag: para
 #, no-c-format
@@ -30352,6 +30378,8 @@ msgid ""
 "The overview table will be made available in the <varname>raster_overviews</"
 "varname> catalog and will have raster constraints enforced."
 msgstr ""
+"Таблиця огляду буде доступна в каталозі <varname>raster_overviews</varname> "
+"і матиме обмеження растрового формату."
 
 #. Tag: para
 #, no-c-format
@@ -30360,16 +30388,20 @@ msgid ""
 "'CubicSpline', and 'Lanczos'. Refer to: <link xlink:href=\"http://www.gdal."
 "org/gdalwarp.html\">GDAL Warp resampling methods</link> for more details."
 msgstr ""
+"Варіанти алгоритму: «NearestNeighbor», «Bilinear», «Cubic», «CubicSpline» та "
+"«Lanczos». Докладнішу інформацію див. у розділі: <link xlink:href=«http://www"
+".gdal.org/gdalwarp.html»>Методи передискретизації GDAL Warp</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "Output to generally better quality but slower to product format"
 msgstr ""
+"Вихідна якість загалом краща, але формат продукту створюється повільніше"
 
 #. Tag: para
 #, no-c-format
 msgid "Output to faster to process default nearest neighbor"
-msgstr ""
+msgstr "Вивід для швидшої обробки найближчого сусіда за замовчуванням"
 
 #. Tag: para
 #, no-c-format
@@ -30378,11 +30410,13 @@ msgid ""
 "linkend=\"RT_AddRasterConstraints\"/>, <xref linkend=\"RT_Raster_Overviews\"/"
 ">"
 msgstr ""
+", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref linkend="
+"\"RT_AddRasterConstraints\"/>, <xref linkend=\"RT_Raster_Overviews\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Constructors"
-msgstr ""
+msgstr "Растрові конструктори"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -30391,6 +30425,9 @@ msgid ""
 "value in the given index location. If no index is specified, the band is "
 "added to the end."
 msgstr ""
+"Повертає растр з новим каналом (каналами) заданого типу, доданим із заданим "
+"початковим значенням у заданому місці індексу. Якщо індекс не вказано, "
+"діапазон додається в кінець."
 
 #. Tag: para
 #, no-c-format
@@ -30405,6 +30442,15 @@ msgid ""
 "is specified, then the initial value is set to the highest value allowed by "
 "the pixel type."
 msgstr ""
+"Повертає растр з новим каналом, доданим у заданому положенні (індексі), "
+"заданого типу, заданого початкового значення та заданого значення nodata. "
+"Якщо індекс не вказано, діапазон додається в кінець. Якщо <varname>fromband</"
+"varname> не вказано, вважається, що це діапазон 1. Тип пікселя — це рядкове "
+"представлення одного з типів пікселів, зазначених у <xref linkend="
+"\"RT_ST_BandPixelType\"/>. Якщо вказано існуючий індекс, усі наступні смуги "
+"&gt;= цей індекс збільшуються на 1. Якщо вказано початкове значення, яке "
+"перевищує максимальне значення типу пікселя, то початкове значення "
+"встановлюється на найвище значення, дозволене типом пікселя."
 
 #. Tag: para
 #, no-c-format
@@ -30414,6 +30460,10 @@ msgid ""
 "at the time when the band described by that addbandarg is being added to the "
 "raster. See the Multiple New Bands example below."
 msgstr ""
+"Для варіанту, що приймає масив <xref linkend=\"addbandarg\"/>(Варіант 1), "
+"конкретне значення індексу addbandarg є відносним до растру на момент "
+"додавання до растру каналу, описаної цим addbandarg. Дивіться приклад «"
+"Кілька нових каналів» нижче."
 
 #. Tag: para
 #, no-c-format
@@ -30422,6 +30472,9 @@ msgid ""
 "<varname>torast</varname> is NULL then the <varname>fromband</varname> band "
 "of each raster in the array is accumulated into a new raster."
 msgstr ""
+"Для варіанту, який приймає масив растрів (Варіант 5), якщо <varname>torast</"
+"varname> дорівнює NULL, то канал <varname>fromband</varname> кожного растра "
+"в масиві накопичується в новому растрі."
 
 #. Tag: para
 #, no-c-format
@@ -30430,31 +30483,34 @@ msgid ""
 "the value must include the full path to the raster file. The file must also "
 "be accessible to the postgres server process."
 msgstr ""
+"Для варіантів, які приймають <varname>outdbfile</varname> (варіанти 6 і 7), "
+"значення повинно містити повний шлях до растрового файлу. Файл також повинен "
+"бути доступним для процесу сервера postgres."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for addbandarg added."
-msgstr ""
+msgstr "Покращено: додано підтримку addbandarg 2.1.0."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for new out-db bands added."
-msgstr ""
+msgstr "Покращено: додано підтримку 2.1.0 для нових діапазонів out-db."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Single New Band"
-msgstr ""
+msgstr "Приклади: Односмуговий новий канал"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Multiple New Bands"
-msgstr ""
+msgstr "Приклади: кілька нових каналів"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: New Out-db band"
-msgstr ""
+msgstr "Приклади: Новий канал Out-db"
 
 #. Tag: para
 #, no-c-format
@@ -30463,11 +30519,14 @@ msgid ""
 "linkend=\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"RT_ST_MetaData\"/>, "
 "<xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref linkend="
+"\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"RT_ST_MetaData\"/>, <xref "
+"linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Converts a PostGIS geometry to a PostGIS raster."
-msgstr ""
+msgstr "Перетворює геометрію PostGIS у растр PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -30476,6 +30535,9 @@ msgid ""
 "three groups of possibilities for setting the alignment and pixelsize of the "
 "resulting raster."
 msgstr ""
+"Перетворює геометрію PostGIS у растр PostGIS. Багато варіантів пропонують "
+"три групи можливостей для налаштування вирівнювання та розміру пікселів "
+"отриманого растру."
 
 #. Tag: para
 #, no-c-format
@@ -30487,6 +30549,12 @@ msgid ""
 "reference raster by joining the table containing the geometry with the table "
 "containing the reference raster."
 msgstr ""
+"Перша група, що складається з двох перших варіантів, створює растр, який має "
+"таке саме вирівнювання (<varname>scalex</varname>, <varname>scaley</"
+"varname>, <varname>gridx</varname> та <varname>gridy</varname>), тип "
+"пікселів та значення nodata, як і наданий еталонний растр. Зазвичай цей "
+"еталонний растр передається шляхом об'єднання таблиці, що містить геометрію, "
+"з таблицею, що містить еталонний растр."
 
 #. Tag: para
 #, no-c-format
@@ -30500,6 +30568,14 @@ msgid ""
 "<varname>scalex</varname> &amp; <varname>scaley</varname> arguments to "
 "double precision so that PostgreSQL choose the right variant."
 msgstr ""
+"Друга група, що складається з чотирьох варіантів, дозволяє встановити "
+"розміри растру, задавши параметри розміру пікселя (<varname>scalex</varname> "
+"&amp;<varname>scaley</varname> та <varname>skewx</varname> "
+"&amp;<varname>skewy</varname>). Ширина <varname>width</varname> та висота "
+"<varname>height</varname> отриманого растра будуть скориговані відповідно до "
+"розмірів геометрії. У більшості випадків необхідно перетворити цілі "
+"аргументи <varname>scalex</varname> та <varname>scaley</varname> у подвійну "
+"точність, щоб PostgreSQL вибрав правильний варіант."
 
 #. Tag: para
 #, no-c-format
@@ -30511,6 +30587,12 @@ msgid ""
 "<varname>skewx</varname> &amp; <varname>skewy</varname>) of the resulting "
 "raster will be adjusted to fit the extent of the geometry."
 msgstr ""
+"Третя група, що складається з чотирьох варіантів, дозволяє зафіксувати "
+"розміри растра, вказавши розміри растра (<varname>width</varname> "
+"&amp;<varname>height</varname>). Параметри розміру пікселя (<varname>scalex</"
+"varname> &amp;<varname>scaley</varname> та <varname>skewx</varname> "
+"&amp;<varname>skewy</varname>) отриманого растра будуть скориговані "
+"відповідно до розмірів геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -30521,6 +30603,11 @@ msgid ""
 "upper left corner (<varname>upperleftx</varname> &amp; <varname>upperlefty</"
 "varname>)."
 msgstr ""
+"Два перших варіанти кожної з цих двох останніх груп дозволяють вказати "
+"вирівнювання за допомогою довільного кута сітки вирівнювання "
+"(<varname>gridx</varname> &amp;<varname>gridy</varname>), а два останніх "
+"варіанти використовують верхній лівий кут (<varname>upperleftx</varname> "
+"&amp;<varname>upperlefty</varname>)."
 
 #. Tag: para
 #, no-c-format
@@ -30532,6 +30619,12 @@ msgid ""
 "(<varname>nodataval</varname>). If not provided pixeltyped defaults to 8BUI, "
 "values to 1 and nodataval to 0."
 msgstr ""
+"Кожна група варіантів дозволяє створити односмуговий або багатосмуговий "
+"растр. Щоб створити багатосмуговий растр, необхідно вказати масив типів "
+"пікселів (<varname>pixeltype[]</varname>), масив початкових значень "
+"(<varname>value</varname>) та масив значень nodata "
+"(<varname>nodataval</varname>). Якщо не вказано, pixeltyped за замовчуванням "
+"дорівнює 8BUI, values дорівнює 1, а nodataval дорівнює 0."
 
 #. Tag: para
 #, no-c-format
