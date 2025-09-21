@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-09-20 23:11+0000\n"
+"PO-Revision-Date: 2025-09-21 01:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -30634,6 +30634,9 @@ msgid ""
 "this case the resulting raster will get the same SRID as the reference "
 "raster."
 msgstr ""
+"Вихідний растр буде мати ту саму просторову систему координат, що й вихідна "
+"геометрія. Єдиним винятком є варіанти з еталонним растром. У цьому випадку "
+"вихідний растр отримає той самий SRID, що й еталонний растр."
 
 #. Tag: para
 #, no-c-format
@@ -30643,6 +30646,11 @@ msgid ""
 "touched by lines or polygons will be burned. Not just those on the line "
 "render path, or whose center point is within the polygon."
 msgstr ""
+"Опціональний параметр <varname>touched</varname> за замовчуванням має "
+"значення false і відповідає опції растрування GDAL ALL_TOUCHED, яка "
+"визначає, чи будуть спалені пікселі, до яких торкаються лінії або полігони. "
+"Не тільки ті, що знаходяться на шляху рендерингу лінії, або ті, центральна "
+"точка яких знаходиться всередині полігону."
 
 #. Tag: para
 #, no-c-format
@@ -30652,6 +30660,10 @@ msgid ""
 "linkend=\"RT_ST_AsPNG\"/> and other <xref linkend=\"RT_ST_AsGDALRaster\"/> "
 "family of functions."
 msgstr ""
+"Це особливо корисно для візуалізації jpeg- та png-файлів геометрій "
+"безпосередньо з бази даних при використанні в поєднанні з <xref linkend="
+"\"RT_ST_AsPNG\"/>та іншими функціями сімейства <xref linkend="
+"\"RT_ST_AsGDALRaster\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -30659,21 +30671,24 @@ msgid ""
 "Not yet capable of rendering complex geometry types such as curves, TINS, "
 "and PolyhedralSurfaces, but should be able too once GDAL can."
 msgstr ""
+"Поки що не здатний відтворювати складні типи геометрії, такі як криві, TINS "
+"та PolyhedralSurfaces, але повинен бути здатним до цього, як тільки GDAL "
+"зможе це робити."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Output geometries as PNG files"
-msgstr ""
+msgstr "Приклади: Вихідні геометрії у вигляді файлів PNG"
 
 #. Tag: para
 #, no-c-format
 msgid "black circle"
-msgstr ""
+msgstr "чорне коло"
 
 #. Tag: para
 #, no-c-format
 msgid "example from buffer rendered with just PostGIS"
-msgstr ""
+msgstr "приклад з буфера, відтвореного лише за допомогою PostGIS"
 
 #. Tag: para
 #, no-c-format
@@ -30682,11 +30697,14 @@ msgid ""
 "<xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, "
 "<xref linkend=\"RT_ST_AsJPEG\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"ST_Buffer\"/>, <xref linkend=\"RT_ST_GDALDrivers\"/>, "
+"<xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, "
+"<xref linkend=\"RT_ST_AsJPEG\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Aggregate. Renders PostGIS geometries into a new raster."
-msgstr ""
+msgstr "Агрегація. Перетворює геометрії PostGIS у новий растр."
 
 #. Tag: para
 #, no-c-format
@@ -30694,12 +30712,15 @@ msgid ""
 "Returns a single-band raster containing the rendered version of all incoming "
 "geometries, each with its associated value."
 msgstr ""
+"Повертає одноканальний растр, що містить відтворену версію всіх вхідних "
+"геометрій, кожна з яких має відповідне значення."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_Union\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_Union\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -30707,6 +30728,8 @@ msgid ""
 "Returns one or more bands of an existing raster as a new raster. Useful for "
 "building new rasters from existing rasters."
 msgstr ""
+"Повертає один або декілька каналів існуючого растру як новий растр. Корисно "
+"для створення нових растрів на основі існуючих."
 
 #. Tag: para
 #, no-c-format
@@ -30718,6 +30741,12 @@ msgid ""
 "bands are returned. Used as a helper function in various functions such as "
 "for deleting a band."
 msgstr ""
+"Повертає один або декілька каналів існуючого растра як новий растр. Корисно "
+"для створення нових растрів з існуючих растрів або експорту лише вибраних "
+"каналів растра, або для зміни порядку каналів у растрі. Якщо канал не "
+"вказано або будь-який із вказаних каналів не існує в растрі, то повертаються "
+"всі канали. Використовується як допоміжна функція в різних функціях, "
+"наприклад для видалення каналів."
 
 #. Tag: para
 #, no-c-format
@@ -30730,21 +30759,29 @@ msgid ""
 "<code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> "
 "list of bands form may be removed in future versions of PostGIS."
 msgstr ""
+"Для <code>nbands</code> як текстового варіанту функції, роздільником за "
+"замовчуванням є <code>,</code>, що означає, що ви можете запитувати "
+"<code>“1,2,3”</code>, а якщо ви хочете використовувати інший роздільник, ви "
+"повинні ввести <code>ST_Band(rast, “1@2@3”, “@”)</code>. Для запиту "
+"декількох каналів ми настійно рекомендуємо використовувати масивну форму "
+"цієї функції, наприклад <code>ST_Band(rast, “{1,2,3}”::int[]);</code>, "
+"оскільки форма <code>text</code> списку смуг може бути видалена в майбутніх "
+"версіях PostGIS."
 
 #. Tag: para
 #, no-c-format
 msgid "original (column rast)"
-msgstr ""
+msgstr "оригінал (стовпчик rast)"
 
 #. Tag: para
 #, no-c-format
 msgid "dupe_band"
-msgstr ""
+msgstr "dupe_band"
 
 #. Tag: para
 #, no-c-format
 msgid "sing_band"
-msgstr ""
+msgstr "sing_band"
 
 #. Tag: para
 #, no-c-format
@@ -30752,11 +30789,13 @@ msgid ""
 ", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>, "
 "<xref linkend=\"RT_reference\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>, "
+"<xref linkend=\"RT_reference\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Cover georeferenced area with a grid of empty raster tiles."
-msgstr ""
+msgstr "Покрийте геореференційну область сіткою порожніх растрових плиток."
 
 #. Tag: para
 #, no-c-format
@@ -30770,6 +30809,15 @@ msgid ""
 "<varname>scalex</varname>, <varname>upperlefty</varname> + <varname>height</"
 "varname> * <varname>scaley</varname>)."
 msgstr ""
+"Створіть набір растрових плиток за допомогою <xref linkend="
+"\"RT_ST_MakeEmptyRaster\"/>. Розмір сітки становить <varname>width</varname> "
+"та <varname>height</varname>. Розмір плитки становить <varname>tilewidth</"
+"varname> та <varname>tileheight</varname>. Область, що охоплюється "
+"геореференцією, простягається від верхнього лівого кута "
+"(<varname>upperleftx</varname>, <varname>upperlefty</varname>) до нижнього "
+"правого кута (<varname>upperleftx</varname> + <varname>width</varname> * "
+"<varname>scalex</varname>, <varname>upperlefty</varname> + <varname>height</"
+"varname> * <varname>scaley</varname>)."
 
 #. Tag: para
 #, no-c-format
@@ -30778,11 +30826,14 @@ msgid ""
 "positive. So lower right corner will have a lower y value and higher x value "
 "than the upper left corner."
 msgstr ""
+"Зверніть увагу, що scaley зазвичай є від'ємним для растрів, а scalex — "
+"додатним. Отже, нижній правий кут матиме нижче значення y і вище значення x, "
+"ніж верхній лівий кут."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples Basic"
-msgstr ""
+msgstr "Базові приклади"
 
 #. Tag: para
 #, no-c-format
@@ -30790,6 +30841,8 @@ msgid ""
 "Create 16 tiles in a 4x4 grid to cover the WGS84 area from upper left corner "
 "(22, 77) to lower right corner (55, 33)."
 msgstr ""
+"Створіть 16 плиток у сітці 4x4, щоб покрити область WGS84 від верхнього "
+"лівого кута (22, 77) до нижнього правого кута (55, 33)."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31164,6 +31217,13 @@ msgid ""
 "the raster assuming the raster's grid is applicable outside the raster's "
 "bounds."
 msgstr ""
+"Повертає верхній лівий кут у вигляді геометричних координат X та Y (довгота "
+"та широта) за заданим стовпцем та рядком. Повернені координати X та Y "
+"виражені в геометричних одиницях растру з геореференцією. Нумерація стовпців "
+"і рядків починається з 1, але якщо будь-який параметр передається як нуль, "
+"від'ємне число або число, більше за відповідний розмір растра, то будуть "
+"повернуті координати за межами растра, припускаючи, що сітка растра "
+"застосовується за межами растра."
 
 #. Tag: para
 #, no-c-format
@@ -31171,6 +31231,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
 "linkend=\"RT_ST_SetSkew\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31178,6 +31240,8 @@ msgid ""
 "Returns the geometric X coordinate upper left of a raster, column and row. "
 "Numbering of columns and rows starts at 1."
 msgstr ""
+"Повертає геометричну координату X у верхньому лівому куті растра, стовпця та "
+"рядка. Нумерація стовпців та рядків починається з 1."
 
 #. Tag: para
 #, no-c-format
@@ -31189,6 +31253,12 @@ msgid ""
 "or right with the assumption that the skew and pixel sizes are same as "
 "selected raster."
 msgstr ""
+"Повертає верхню ліву координату X рядка стовпця растра в геометричних "
+"одиницях геореферентного растра. Нумерація стовпців і рядків починається з "
+"1, але якщо ви передасте від'ємне число або число, яке перевищує кількість "
+"стовпців у растрі, ви отримаєте координати поза межами файлу растра ліворуч "
+"або праворуч, припускаючи, що нахил і розміри пікселів такі самі, як у "
+"вибраному растрі."
 
 #. Tag: para
 #, no-c-format
@@ -31198,11 +31268,16 @@ msgid ""
 "ST_SkewX and row and column. An error will be raised if you give just the X "
 "column for a skewed raster."
 msgstr ""
+"Для невикривлених растрів достатньо вказати стовпець X. Для викривлених "
+"растрів геореферентна координата є функцією ST_ScaleX і ST_SkewX, а також "
+"рядка і стовпця. Якщо для викривленого растру вказати тільки стовпець X, "
+"буде видано помилку."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.1.0 In prior versions, this was called ST_Raster2WorldCoordX"
 msgstr ""
+"Змінено: 2.1.0 У попередніх версіях це називалося ST_Raster2WorldCoordX."
 
 #. Tag: para
 #, no-c-format
@@ -31210,6 +31285,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
 "linkend=\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewX\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewX\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31217,6 +31294,8 @@ msgid ""
 "Returns the geometric Y coordinate upper left corner of a raster, column and "
 "row. Numbering of columns and rows starts at 1."
 msgstr ""
+"Повертає геометричну координату Y верхнього лівого кута растра, стовпця та "
+"рядка. Нумерація стовпців та рядків починається з 1."
 
 #. Tag: para
 #, no-c-format
@@ -31228,6 +31307,12 @@ msgid ""
 "left or right with the assumption that the skew and pixel sizes are same as "
 "selected raster tile."
 msgstr ""
+"Повертає верхню ліву координату Y рядка стовпця растра в геометричних "
+"одиницях геореферентного растра. Нумерація стовпців і рядків починається з "
+"1, але якщо ви введете від'ємне число або число, яке перевищує кількість "
+"стовпців/рядків у растрі, ви отримаєте координати поза межами файлу растра "
+"ліворуч або праворуч, припускаючи, що нахил і розміри пікселів такі самі, як "
+"у вибраній растровій плитці."
 
 #. Tag: para
 #, no-c-format
@@ -31237,11 +31322,15 @@ msgid ""
 "ST_SkewY and row and column. An error will be raised if you give just the Y "
 "row for a skewed raster."
 msgstr ""
+"Для невикривлених растрів достатньо вказати стовпець Y. Для викривлених "
+"растрів геореферентна координата є функцією ST_ScaleY і ST_SkewY, а також "
+"рядка і стовпця. Якщо для викривленого растра вказати тільки рядок Y, буде "
+"видано повідомлення про помилку."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.1.0 In prior versions, this was called ST_Raster2WorldCoordY"
-msgstr ""
+msgstr "Змінено: 2.1.0 У попередніх версіях це називалося ST_Raster2WorldCoordY"
 
 #. Tag: para
 #, no-c-format
@@ -31249,11 +31338,13 @@ msgid ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref "
 "linkend=\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the rotation of the raster in radian."
-msgstr ""
+msgstr "Повертає величину повороту растра в радіанах."
 
 #. Tag: para
 #, no-c-format
@@ -31262,16 +31353,20 @@ msgid ""
 "have uniform rotation, NaN is returned. Refer to <link xlink:href=\"http://"
 "en.wikipedia.org/wiki/World_file\">World File</link> for more details."
 msgstr ""
+"Повертає рівномірне обертання растру в радіанах. Якщо растр не має "
+"рівномірного обертання, повертається NaN. Докладнішу інформацію див. у "
+"розділі <link xlink:href=«http://en.wikipedia.org/wiki/World_file»>World "
+"File</link>."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetScale\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SetScale\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the georeference X skew (or rotation parameter)."
-msgstr ""
+msgstr "Повертає геоприв'язку X skew (або параметр обертання)."
 
 #. Tag: para
 #, no-c-format
@@ -31280,16 +31375,19 @@ msgid ""
 "xlink:href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for "
 "more details."
 msgstr ""
+"Повертає геоприв'язку X skew (або параметр обертання). Докладнішу інформацію "
+"див. у <link xlink:href=«http://en.wikipedia.org/wiki/World_file»>World "
+"File</link>."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SkewY\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SkewY\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the georeference Y skew (or rotation parameter)."
-msgstr ""
+msgstr "Повертає геоприв'язку Y skew (або параметр обертання)."
 
 #. Tag: para
 #, no-c-format
@@ -31298,11 +31396,14 @@ msgid ""
 "xlink:href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for "
 "more details."
 msgstr ""
+"Повертає геоприв'язку Y skew (або параметр обертання). Докладнішу інформацію "
+"див. у <link xlink:href=«http://en.wikipedia.org/wiki/World_file»>World "
+"File</link>."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31310,6 +31411,8 @@ msgid ""
 "Returns the spatial reference identifier of the raster as defined in "
 "spatial_ref_sys table."
 msgstr ""
+"Повертає ідентифікатор просторової системи координат растра, як визначено в "
+"таблиці spatial_ref_sys."
 
 #. Tag: para
 #, no-c-format
@@ -31317,6 +31420,8 @@ msgid ""
 "Returns the spatial reference identifier of the raster object as defined in "
 "the spatial_ref_sys table."
 msgstr ""
+"Повертає ідентифікатор просторової системи координат растрового об'єкта, як "
+"визначено в таблиці spatial_ref_sys."
 
 #. Tag: para
 #, no-c-format
@@ -31324,18 +31429,20 @@ msgid ""
 "From PostGIS 2.0+ the srid of a non-georeferenced raster/geometry is 0 "
 "instead of the prior -1."
 msgstr ""
+"Починаючи з PostGIS 2.0+, srid растрового/геометричного об'єкта без "
+"геоприв'язки орівнює 0 замість попереднього значення -1."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "<refpurpose>Returns a text summary of the contents of the raster.</"
 "refpurpose>"
-msgstr ""
+msgstr "<refpurpose>Повертає текстовий підсумок вмісту растру.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Returns a text summary of the contents of the raster.</para>"
-msgstr ""
+msgstr "<para>Повертає текстовий підсумок вмісту растру.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -31343,6 +31450,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_BandMetaData\"/>, <xref linkend=\"ST_Summary\"/> "
 "<xref linkend=\"ST_Extent\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_BandMetaData\"/>, <xref linkend=\"ST_Summary\"/> "
+"<xref linkend=\"ST_Extent\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31350,6 +31459,8 @@ msgid ""
 "<refpurpose>Returns the upper left X coordinate of raster in projected "
 "spatial ref.</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає верхню ліву координату X растру в проекційній "
+"просторовій системі координат.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -31357,11 +31468,13 @@ msgid ""
 "<para>Returns the upper left X coordinate of raster in projected spatial ref."
 "</para>"
 msgstr ""
+"<para>Повертає верхню ліву координату X растра в проекційній просторовій "
+"системі відліку.</para>"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_GeoReference\"/>, <xref linkend=\"RT_Box3D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_GeoReference\"/>, <xref linkend=\"RT_Box3D\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31369,6 +31482,8 @@ msgid ""
 "<refpurpose>Returns the upper left Y coordinate of raster in projected "
 "spatial ref.</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає верхню ліву координату Y растру в проекційній "
+"просторовій системі координат.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -31376,16 +31491,18 @@ msgid ""
 "<para>Returns the upper left Y coordinate of raster in projected spatial ref."
 "</para>"
 msgstr ""
+"<para>Повертає верхню ліву координату Y растру в проекційній просторовій "
+"системі координат.</para>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "<refpurpose>Returns the width of the raster in pixels.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>Повертає ширину растру в пікселях.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Returns the width of the raster in pixels.</para>"
-msgstr ""
+msgstr "<para>Повертає ширину растра в пікселях.</para>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31394,6 +31511,9 @@ msgid ""
 "(longitude and latitude) or a point geometry expressed in the spatial "
 "reference coordinate system of the raster."
 msgstr ""
+"Повертає верхній лівий кут як стовпець і рядок, задані геометричними "
+"координатами X і Y (довгота і широта) або геометрією точки, вираженою в "
+"системі координат просторової прив'язки растру."
 
 #. Tag: para
 #, no-c-format
@@ -31404,6 +31524,11 @@ msgid ""
 "extent of the raster. Geometric X and Y must be expressed in the spatial "
 "reference coordinate system of the raster."
 msgstr ""
+"Повертає верхній лівий кут як стовпець і рядок, задані геометричними X і Y ("
+"довгота і широта) або геометрією точки. Ця функція працює незалежно від "
+"того, чи знаходяться геометричні X і Y або геометрія точки за межами растра. "
+"Геометричні X і Y повинні бути виражені в системі координат просторової "
+"прив'язки растра."
 
 #. Tag: para
 #, no-c-format
@@ -31412,6 +31537,9 @@ msgid ""
 "linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref "
 "linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_WorldToRasterCoordY\"/>, <xref linkend="
+"\"RT_ST_RasterToWorldCoordX\"/>, <xref linkend=\"RT_ST_RasterToWorldCoordY\"/"
+">, <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31420,6 +31548,8 @@ msgid ""
 "world coordinate (xw, yw) represented in world spatial reference system of "
 "raster."
 msgstr ""
+"Повертає стовпець у растрі геометрії точки (pt) або світові координати X та "
+"Y (xw, yw), представлені у світовій просторовій системі відліку растру."
 
 #. Tag: para
 #, no-c-format
@@ -31430,11 +31560,15 @@ msgid ""
 "sufficient. World coordinates are in the spatial reference coordinate system "
 "of the raster."
 msgstr ""
+"Повертає стовпець у растрі геометрії точки (pt) або світові координати X і Y "
+"(xw, yw). Точка або (якщо растр перекошений, потрібні обидві світові "
+"координати xw і yw). Якщо растр не перекошений, достатньо xw. Світові "
+"координати знаходяться в просторовій системі координат растра."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.1.0 In prior versions, this was called ST_World2RasterCoordX"
-msgstr ""
+msgstr "Змінено: 2.1.0 У попередніх версіях це називалося ST_World2RasterCoordX"
 
 #. Tag: para
 #, no-c-format
@@ -31442,6 +31576,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
 "linkend=\"RT_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend=\"RT_ST_SRID\""
+"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31449,6 +31585,8 @@ msgid ""
 "Returns the row in the raster of the point geometry (pt) or a X and Y world "
 "coordinate (xw, yw) represented in world spatial reference system of raster."
 msgstr ""
+"Повертає рядок у растрі геометрії точки (pt) або світові координати X і Y ("
+"xw, yw), представлені у світовій просторовій системі координат растра."
 
 #. Tag: para
 #, no-c-format
@@ -31459,16 +31597,20 @@ msgid ""
 "sufficient. World coordinates are in the spatial reference coordinate system "
 "of the raster."
 msgstr ""
+"Повертає рядок у растрі геометрії точки (pt) або світові координати X і Y ("
+"xw, yw). Точка або (якщо растр перекошений, потрібні обидві світові "
+"координати xw і yw). Якщо растр не перекошений, достатньо xw. Світові "
+"координати знаходяться в просторовій системі координат растра."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.1.0 In prior versions, this was called ST_World2RasterCoordY"
-msgstr ""
+msgstr "Змінено: 2.1.0 У попередніх версіях це називалося ST_World2RasterCoordY"
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Band Accessors"
-msgstr ""
+msgstr "Аксесуари для растрових каналів"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31476,6 +31618,8 @@ msgid ""
 "Returns basic meta data for a specific raster band. band num 1 is assumed if "
 "none-specified."
 msgstr ""
+"Повертає основні метадані для конкретного растрового каналу. Якщо не "
+"вказано, припускається канал № 1."
 
 #. Tag: para
 #, no-c-format
@@ -31483,16 +31627,18 @@ msgid ""
 "Returns basic meta data about a raster band. Columns returned: pixeltype, "
 "nodatavalue, isoutdb, path, outdbbandnum, filesize, filetimestamp."
 msgstr ""
+"Повертає основні метадані про растровий канал. Повертаються стовпці: "
+"pixeltype, nodatavalue, isoutdb, path, outdbbandnum, filesize, filetimestamp."
 
 #. Tag: para
 #, no-c-format
 msgid "If raster contains no bands then an error is thrown."
-msgstr ""
+msgstr "Якщо растр не містить каналів, то видається помилка."
 
 #. Tag: para
 #, no-c-format
 msgid "If band has no NODATA value, nodatavalue are NULL."
-msgstr ""
+msgstr "Якщо канал не має значення NODATA, nodatavalue дорівнює NULL."
 
 #. Tag: para
 #, no-c-format
@@ -31501,6 +31647,9 @@ msgid ""
 "NULL. If outdb access is disabled, filesize and filetimestamp will also be "
 "NULL."
 msgstr ""
+"Якщо isoutdb має значення False, path, outdbbandnum, filesize та "
+"filetimestamp мають значення NULL. Якщо доступ до outdb вимкнено, filesize "
+"та filetimestamp також матимуть значення NULL."
 
 #. Tag: para
 #, no-c-format
@@ -31509,21 +31658,24 @@ msgid ""
 "<emphasis>filesize</emphasis> and <emphasis>filetimestamp</emphasis> for "
 "outdb rasters."
 msgstr ""
+"Покращено: 2.5.0, додано <emphasis>outdbbandnum</emphasis>, "
+"<emphasis>filesize</emphasis> та <emphasis>filetimestamp</emphasis> для "
+"растрів outdb."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Variant 1"
-msgstr ""
+msgstr "Приклади: Варіант 1"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Variant 2"
-msgstr ""
+msgstr "Приклади: Варіант 2"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_BandPixelType\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_BandPixelType\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31531,16 +31683,18 @@ msgid ""
 "Returns the value in a given band that represents no data. If no band num 1 "
 "is assumed."
 msgstr ""
+"Повертає значення в заданому каналі, яке не представляє даних. Якщо карал № "
+"1 не задано."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns the value that represents no data for the band"
-msgstr ""
+msgstr "Повертає значення, яке не представляє даних для каналу"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns true if the band is filled with only nodata values."
-msgstr ""
+msgstr "Повертає значення true, якщо канал заповнений тільки значеннями nodata."
 
 #. Tag: para
 #, no-c-format
@@ -31551,6 +31705,11 @@ msgid ""
 "the isnodata flag for the band. The default value for this parameter is "
 "FALSE, if not specified."
 msgstr ""
+"Повертає значення true, якщо канал заповнений тільки значеннями nodata. Якщо "
+"не вказано, припускається канал 1. Якщо останній аргумент дорівнює TRUE, "
+"весь канал перевіряється піксель за пікселем. В іншому випадку функція "
+"просто повертає значення прапорця isnodata для каналу. Якщо не вказано, "
+"значенням за замовчуванням для цього параметра є FALSE."
 
 #. Tag: para
 #, no-c-format
@@ -31560,6 +31719,11 @@ msgid ""
 "true, by using ST_SetBandIsNodata(), or ST_SetBandNodataValue() with TRUE as "
 "last argument. See <xref linkend=\"RT_ST_SetBandIsNoData\"/>."
 msgstr ""
+"Якщо прапор dirty (тобто результат відрізняється при використанні TRUE як "
+"останнього параметра і без його використання), слід оновити растр, щоб "
+"встановити цей прапор на true, використовуючи ST_SetBandIsNodata() або "
+"ST_SetBandNodataValue() з TRUE як останнім аргументом. Див. <xref linkend="
+"\"RT_ST_SetBandIsNoData\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -31568,6 +31732,8 @@ msgid ""
 "linkend=\"RT_ST_SetBandNoDataValue\"/>, <xref "
 "linkend=\"RT_ST_SetBandIsNoData\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend="
+"\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_SetBandIsNoData\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31575,6 +31741,8 @@ msgid ""
 "Returns system file path to a band stored in file system. If no bandnum "
 "specified, 1 is assumed."
 msgstr ""
+"Повертає шлях до системного файлу каналу, що зберігається у файловій "
+"системі. Якщо номер каналу не вказано, приймається значення 1."
 
 #. Tag: para
 #, no-c-format
@@ -31582,6 +31750,8 @@ msgid ""
 "Returns system file path to a band. Throws an error if called with an in db "
 "band."
 msgstr ""
+"Повертає шлях до системного файлу каналу растра. Видає помилку, якщо "
+"викликається з каналом в db."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31589,6 +31759,8 @@ msgid ""
 "Returns the file size of a band stored in file system. If no bandnum "
 "specified, 1 is assumed."
 msgstr ""
+"Повертає розмір файлу каналу, що зберігається у файловій системі. Якщо номер "
+"каналу не вказано, вважається, що він дорівнює 1."
 
 #. Tag: para
 #, no-c-format
@@ -31596,6 +31768,8 @@ msgid ""
 "Returns the file size of a band stored in file system. Throws an error if "
 "called with an in db band, or if outdb access is not enabled."
 msgstr ""
+"Повертає розмір файлу каналу, що зберігається у файловій системі. Видає "
+"помилку, якщо викликається зі каналу в db або якщо доступ outdb не ввімкнено."
 
 #. Tag: para
 #, no-c-format
