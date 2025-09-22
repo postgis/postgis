@@ -5087,6 +5087,7 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
   GSERIALIZED *geom;
   LWGEOM *lwgeom;
   LWLINE *ln;
+  int max_new_edges = -1; /* defaults to unlimited */
   LWT_TOPOLOGY *topo;
   FuncCallContext *funcctx;
   MemoryContext oldcontext, newcontext;
@@ -5104,6 +5105,11 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
     {
       lwpgerror("SQL/MM Spatial exception - null argument");
       PG_RETURN_NULL();
+    }
+
+    if (PG_NARGS() > 3 && !PG_ARGISNULL(3))
+    {
+      max_new_edges = PG_GETARG_INT32(3);
     }
 
     toponame_text = PG_GETARG_TEXT_P(0);
@@ -5166,7 +5172,7 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
     }
 
     POSTGIS_DEBUG(1, "Calling lwt_AddLine");
-    elems = lwt_AddLine(topo, ln, tol, &nelems);
+    elems = lwt_AddLine(topo, ln, tol, &nelems, max_new_edges);
     POSTGIS_DEBUG(1, "lwt_AddLine returned");
     lwgeom_free(lwgeom);
     PG_FREE_IF_COPY(geom, 1);

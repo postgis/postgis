@@ -228,3 +228,8 @@ b5234.0|1
 b5234.1|1
 t5568|invalidities at start|
 t5568|invalidities at end|
+#5993.0|existing-data|1
+ERROR:  Adding line to topology requires creating more edges than the requested limit of 0
+ERROR:  Adding line to topology requires creating more edges than the requested limit of 1
+#5993.3|double-split-in-limit|1
+ERROR:  Adding line to topology requires creating more edges than the requested limit of 1

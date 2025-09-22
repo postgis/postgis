@@ -741,7 +741,7 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint g
 --
 -- Changed: 3.6.0 uses bigint for IDs
 -- Replaces topogeo_addlinestring(varchar, geometry, float8) deprecated in 3.6.0
-CREATE OR REPLACE FUNCTION topology.TopoGeo_AddLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT 0)
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT 0, max_edges int DEFAULT -1)
 	RETURNS SETOF bigint AS
 	'MODULE_PATHNAME', 'TopoGeo_AddLinestring'
   LANGUAGE 'c' VOLATILE;

@@ -6747,10 +6747,12 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY* topo, LWT_ISO_EDGE *edges, uint64_t nu
  *        isolated)
  * @param moved if not-null will be set to 0 if the point was added
  *              w/out any snapping or 1 otherwise.
+ * @param numSplitEdges if not-null will be set to the number of edges
+ *                      split by this point.
  */
 static LWT_ELEMID
 _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
-              findFace, int *moved)
+              findFace, int *moved, int *numSplitEdges)
 {
   uint64_t num, i;
   double mindist = FLT_MAX;
@@ -6779,6 +6781,9 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
     PGTOPO_BE_ERROR();
     return -1;
   }
+
+  if ( numSplitEdges ) *numSplitEdges = 0;
+
   if ( num )
   {
     LWDEBUGF(1, "New point is within %.15g units of %llu nodes", tol, num);
@@ -6846,6 +6851,7 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
   {
     id = _lwt_SplitAllEdgesToNewNode(topo, edges, num, lwgeom_as_lwpoint(pt), tol, moved);
     _lwt_release_edges(edges, num);
+    if ( numSplitEdges ) *numSplitEdges = num;
   }
 
   if ( id == 0 )
@@ -6869,7 +6875,7 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
 LWT_ELEMID
 lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
 {
-  return _lwt_AddPoint(topo, point, tol, 1, NULL);
+  return _lwt_AddPoint(topo, point, tol, 1, NULL, NULL);
 }
 
 /*
@@ -6881,15 +6887,21 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
  *        would create new faces accordingly. Otherwise it will
  *        set left_face and right_face to null (-1)
  *
- * @param forward output parameter, will be populated if
- *        a pre-existing edge was found in the topology,
- *        in which case a value of 1 means the incoming
- *        line will have the same direction of the edge,
- *        and 0 that the incomine line has opposite direction
+ * @param forward output parameter, will be set to 1
+ *        if the returned edge has the same direction
+ *        as the requested line and 0 if it goes the
+ *        opposite direction. For new edges this will
+ *        always be 1.
+ *
+ * @param numNewEdges output parameter, if not-null will be set to
+ *                    the number of new edges resulting from this
+ *                    incoming new edge, taking into account edges
+ *                    created due to splitting of existing edges.
+ *
  */
 static LWT_ELEMID
 _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
-                  int handleFaceSplit, int *forward )
+                  int handleFaceSplit, int *forward, int *numNewEdges )
 {
   LWCOLLECTION *col;
   LWPOINT *start_point, *end_point;
@@ -6900,6 +6912,9 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   POINT4D p4d;
   uint64_t nn, i;
   int moved=0, mm;
+  int pointSplitEdges = -666;
+
+  if ( numNewEdges ) *numNewEdges = 0;
 
   LWDEBUGG(1, lwline_as_lwgeom(edge), "_lwtAddLineEdge");
   LWDEBUGF(1, "_lwtAddLineEdge with tolerance %g", tol);
@@ -6912,11 +6927,12 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   }
   nid[0] = _lwt_AddPoint( topo, start_point,
                           _lwt_minTolerance(lwpoint_as_lwgeom(start_point)),
-                          handleFaceSplit, &mm );
+                          handleFaceSplit, &mm, &pointSplitEdges );
   lwpoint_free(start_point); /* too late if lwt_AddPoint calls lwerror */
   if ( nid[0] == -1 ) return -1; /* lwerror should have been called */
+  if ( numNewEdges ) *numNewEdges += pointSplitEdges;
   moved += mm;
-  LWDEBUGF(1, "node for start point added or found to be %" LWTFMT_ELEMID " (moved ? %d)", nid[0], mm);
+  LWDEBUGF(1, "node for start point added or found to be %" LWTFMT_ELEMID " (moved ? %d; split %d edges)", nid[0], mm, pointSplitEdges);
 
 
   end_point = lwline_get_lwpoint(edge, edge->points->npoints-1);
@@ -6928,11 +6944,12 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   }
   nid[1] = _lwt_AddPoint( topo, end_point,
                           _lwt_minTolerance(lwpoint_as_lwgeom(end_point)),
-                          handleFaceSplit, &mm );
+                          handleFaceSplit, &mm, &pointSplitEdges );
   lwpoint_free(end_point); /* too late if lwt_AddPoint calls lwerror */
   if ( nid[1] == -1 ) return -1; /* lwerror should have been called */
+  if ( numNewEdges ) *numNewEdges += pointSplitEdges;
   moved += mm;
-  LWDEBUGF(1, "node for end point added or found to be %" LWTFMT_ELEMID " (moved ? %d)", nid[1], mm);
+  LWDEBUGF(1, "node for end point added or found to be %" LWTFMT_ELEMID " (moved ? %d; split %d edges)", nid[1], mm, pointSplitEdges);
 
   /*
     -- Added endpoints may have drifted due to tolerance, so
@@ -7037,7 +7054,8 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
     return id;
   }
 
-  /* No previously existing edge was found, we'll add one */
+  /* No previously existing edge was found, we'll check after
+   * decimating, if a tolerance was given */
 
   /* Remove consecutive vertices below given tolerance
    * on edge addition */
@@ -7072,6 +7090,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
     }
   }}
 
+  /* No previously existing edge was found, we'll add one */
 
   /* TODO: skip checks ? */
   id = _lwt_AddEdge( topo, nid[0], nid[1], edge, 0, handleFaceSplit ?  1 : -1 );
@@ -7083,7 +7102,9 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   }
   lwgeom_free(tmp); /* possibly takes "edge" down with it */
 
+  if ( numNewEdges ) ++*numNewEdges;
   *forward = 1;
+
   return id;
 }
 
@@ -7113,7 +7134,7 @@ _lwt_split_by_nodes(const LWGEOM *g, const LWGEOM *nodes)
 
 static LWT_ELEMID*
 _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
-            int handleFaceSplit)
+            int handleFaceSplit, int maxNewEdges)
 {
   LWGEOM *geomsbuf[1];
   LWGEOM **geoms;
@@ -7124,6 +7145,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   LWT_ISO_EDGE *edges;
   LWT_ISO_NODE *nodes;
   uint64_t num, numedges = 0, numnodes = 0;
+  int num_new_edges = 0;
   uint64_t i;
   GBOX qbox;
   int forward;
@@ -7453,6 +7475,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   num = 0;
   for ( i=0; i<ngeoms; ++i )
   {
+    int edgeNewEdges;
     LWT_ELEMID id;
     LWGEOM *g = geoms[i];
     g->srid = noded->srid;
@@ -7466,14 +7489,33 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     }
 #endif
 
-    id = _lwt_AddLineEdge( topo, lwgeom_as_lwline(g), tol, handleFaceSplit, &forward );
-    LWDEBUGF(1, "_lwt_AddLineEdge returned %" LWTFMT_ELEMID, id);
+    forward = -1; /* will be set to either 0 or 1 if the edge already existed */
+    id = _lwt_AddLineEdge( topo, lwgeom_as_lwline(g), tol, handleFaceSplit, &forward, &edgeNewEdges );
+    num_new_edges += edgeNewEdges;
+    /* if forward is still == -1 this was NOT an existing edge ? */
+    if ( forward == -1 )
+    {
+      ++num_new_edges;
+    }
+
+    LWDEBUGF(1, "_lwt_AddLineEdge returned %" LWTFMT_ELEMID
+      " (forward ? %d), reported to create %d new edges (total new edges: %d)",
+      id, forward, edgeNewEdges, num_new_edges);
     if ( id < 0 )
     {
       lwgeom_free(noded);
       lwfree(ids);
       return NULL;
     }
+
+    if ( maxNewEdges >= 0 && num_new_edges > maxNewEdges )
+    {
+      lwgeom_free(noded);
+      lwfree(ids);
+      lwerror("Adding line to topology requires creating more edges than the requested limit of %d", maxNewEdges);
+      return NULL;
+    }
+
     if ( ! id )
     {
       LWDEBUGF(1, "Component %llu of split line collapsed", i);
@@ -7495,31 +7537,31 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
 }
 
 LWT_ELEMID*
-lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
+lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges, int max_new_edges)
 {
-  return _lwt_AddLine(topo, line, tol, nedges, 1);
+  return _lwt_AddLine(topo, line, tol, nedges, 1, max_new_edges);
 }
 
 LWT_ELEMID*
 lwt_AddLineNoFace(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
 {
-  return _lwt_AddLine(topo, line, tol, nedges, 0);
+  return _lwt_AddLine(topo, line, tol, nedges, 0, -1);
 }
 
 static void
 lwt_LoadPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
 {
-  _lwt_AddPoint(topo, point, tol, 1, NULL);
+  _lwt_AddPoint(topo, point, tol, 1, NULL, NULL);
 }
 
 static void
-lwt_LoadLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol)
+lwt_LoadLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int max_new_edges)
 {
   LWT_ELEMID* ids;
   int nedges;
 
   /* TODO: avoid allocating edge ids */
-  ids = lwt_AddLine(topo, line, tol, &nedges);
+  ids = lwt_AddLine(topo, line, tol, &nedges, max_new_edges);
   if ( nedges > 0 ) lwfree(ids);
 }
 
@@ -7537,7 +7579,7 @@ lwt_LoadPolygon(LWT_TOPOLOGY* topo, const LWPOLY* poly, double tol)
     /* TODO: avoid the clone here */
     pa = ptarray_clone(poly->rings[i]);
     line = lwline_construct(topo->srid, NULL, pa);
-    lwt_LoadLine(topo, line, tol);
+    lwt_LoadLine(topo, line, tol, -1);
     lwline_free(line);
   }
 }
@@ -8035,7 +8077,7 @@ _lwt_LoadGeometryRecursive(LWT_TOPOLOGY* topo, LWGEOM* geom, double tol)
       return;
 
     case LINETYPE:
-      lwt_LoadLine(topo, lwgeom_as_lwline(geom), tol);
+      lwt_LoadLine(topo, lwgeom_as_lwline(geom), tol, -1);
       return;
 
     case POLYGONTYPE:

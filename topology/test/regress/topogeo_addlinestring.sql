@@ -556,3 +556,36 @@ SELECT NULL FROM topology.TopoGeo_addLinestring('t5782',
 );
 SELECT '#5782', 'valid_after', * FROM topology.ValidateTopology('t5782');
 ROLLBACK;
+
+-- See https://trac.osgeo.org/postgis/ticket/5993
+SELECT NULL FROM topology.CreateTopology ('t5993');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t5993',
+'LINESTRING(0 2, 100 2)'
+);
+-- We expect this to succeed, as we added no new edges
+SELECT '#5993.0', 'existing-data', count(*) FROM topology.TopoGeo_addLinestring('t5993',
+  'LINESTRING(0 2,100 2)', max_edges => 0
+);
+-- This should fail because the existing edge is split
+-- creating a new edge while we limit to 0
+SELECT '#5993.1', 'single-split', count(*) FROM topology.TopoGeo_addLinestring('t5993',
+  'LINESTRING(0 2,80 2)', max_edges => 0
+);
+-- This should fail because the existing edge is split
+-- creating two new edge while we limit to 1
+SELECT '#5993.2', 'double-split-off-limit', count(*) FROM topology.TopoGeo_addLinestring('t5993',
+  'LINESTRING(10 2,80 2)', max_edges => 1
+);
+-- This should succeed because the existing edge is split
+-- creating two new edge while we limit to 1
+SELECT '#5993.3', 'double-split-in-limit', count(*) FROM topology.TopoGeo_addLinestring('t5993',
+  'LINESTRING(10 2,80 2)', max_edges => 2
+);
+-- This should fail because the existing edge is snap-split
+-- creating two new edge while we limit to 1
+SELECT '#5993.4', 'snap-split-off-limit', * FROM topology.TopoGeo_addLinestring('t5993',
+  ST_MakeLine(ST_MakePoint(5, 0), ST_MakePoint(5, 2 - 1e-20)),
+  max_edges => 1,
+  tolerance => 2
+);
+SELECT NULL FROM topology.DropTopology ('t5993');

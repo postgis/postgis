@@ -1669,6 +1669,7 @@ Adds a linestring to an existing topology using a tolerance and possibly splitti
 						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
+						<paramdef choice="opt"><type>int </type> <parameter>max_edges</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -1678,10 +1679,24 @@ Adds a linestring to an existing topology using a tolerance and possibly splitti
 
                 <para>
 Adds a linestring to an existing topology and returns a set of signed edge identifiers forming it up
-(negative identifies mean the edge goes in the opposite direction of
-the input linestring).
+(negative identifies mean the edge goes in the opposite direction of the input linestring).
+                </para>
+
+                <para>
 The given line will snap to existing nodes or edges within given tolerance.
-Existing edges and faces may be split by the line.  New nodes and faces may be added.
+Existing edges and faces may be split by the line.  New nodes and faces may be added, in addition to new edges.
+                </para>
+
+                <para>
+The returned edge identifiers may be either existing edges or newly
+created edges as needed to fully represent the input line as closely
+as possible.
+                </para>
+
+<para>
+The number of newly created edges (either covering space previously
+uncovered or resulting from split of existing edges) may be limited
+by the <varname>max_edges</varname> parameter.
                 </para>
 
                 <note><para>
@@ -1692,6 +1707,7 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
                 <!-- use this format if new function -->
                 <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
                 <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 added support for returning signed identifier.</para>
+                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 added support for limiting the number of new edges created in the topology.</para>
 			</refsection>
 
 

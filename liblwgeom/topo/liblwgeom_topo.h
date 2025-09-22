@@ -1060,13 +1060,17 @@ LWT_ELEMID lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol);
  * @param nedges output parameter, will be set to number of edges the
  *               line was split into, or -1 on error
  *               (liblwgeom error handler will be invoked with error message)
+ * @param max_edges the maximum number of edges to allow the input
+ *                  line to be split into. 0 for no limits.
+ *                  An error will be returned if number of edges would
+ *                  exceed this number.
  *
  * @return an array of <nedges> edge identifiers that sewed together
  *         will build up the input linestring (after snapping). Caller
  *         will need to free the array using lwfree(), if not null.
  */
 LWT_ELEMID* lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol,
-                        int* nedges);
+                        int* nedges, int max_edges);
 
 /**
  * Adds a linestring to the topology without determining generated faces
