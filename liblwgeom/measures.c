@@ -74,6 +74,18 @@ lw_dist2d_distpts_init(DISTPTS *dl, int mode)
 		dl->distance = -1 * FLT_MAX;
 }
 
+static void
+lw_dist2d_distpts_set(DISTPTS *dl, double distance, const POINT2D *p1, const POINT2D *p2)
+{
+	int update = (dl->mode == DIST_MIN) ? (distance < dl->distance) : (distance > dl->distance);
+	if (update)
+	{
+		dl->distance = distance;
+		dl->p1 = *p1;
+		dl->p2 = *p2;
+	}
+}
+
 /**
 Function initializing shortestline and longestline calculations.
 */
@@ -615,9 +627,7 @@ lw_dist2d_point_tri(LWPOINT *point, LWTRIANGLE *tri, DISTPTS *dl)
 	/* Is point inside triangle? */
 	if (dl->mode == DIST_MIN && ptarray_contains_point(tri->points, pt) != LW_OUTSIDE)
 	{
-		dl->distance = 0.0;
-		dl->p1.x = dl->p2.x = pt->x;
-		dl->p1.y = dl->p2.y = pt->y;
+		lw_dist2d_distpts_set(dl, 0.0, pt, pt);
 		return LW_TRUE;
 	}
 
@@ -661,9 +671,7 @@ lw_dist2d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS *dl)
 			return lw_dist2d_pt_ptarray(p, poly->rings[i], dl);
 
 	/* Is inside the polygon */
-	dl->distance = 0.0;
-	dl->p1.x = dl->p2.x = p->x;
-	dl->p1.y = dl->p2.y = p->y;
+	lw_dist2d_distpts_set(dl, 0.0, p, p);
 	return LW_TRUE;
 }
 
@@ -688,9 +696,7 @@ lw_dist2d_point_curvepoly(LWPOINT *point, LWCURVEPOLY *poly, DISTPTS *dl)
 			return lw_dist2d_recursive((LWGEOM *)point, poly->rings[i], dl);
 
 	/* Is inside the polygon */
-	dl->distance = 0.0;
-	dl->p1.x = dl->p2.x = p->x;
-	dl->p1.y = dl->p2.y = p->y;
+	lw_dist2d_distpts_set(dl, 0.0, p, p);
 	return LW_TRUE;
 }
 
@@ -709,9 +715,7 @@ lw_dist2d_line_tri(LWLINE *line, LWTRIANGLE *tri, DISTPTS *dl)
 	/* Is there a point inside triangle? */
 	if (dl->mode == DIST_MIN && ptarray_contains_point(tri->points, pt) != LW_OUTSIDE)
 	{
-		dl->distance = 0.0;
-		dl->p1.x = dl->p2.x = pt->x;
-		dl->p1.y = dl->p2.y = pt->y;
+		lw_dist2d_distpts_set(dl, 0.0, pt, pt);
 		return LW_TRUE;
 	}
 
@@ -763,9 +767,7 @@ lw_dist2d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS *dl)
 	/* Not in hole, so inside polygon */
 	if (dl->mode == DIST_MIN)
 	{
-		dl->distance = 0.0;
-		dl->p1.x = dl->p2.x = pt->x;
-		dl->p1.y = dl->p2.y = pt->y;
+		lw_dist2d_distpts_set(dl, 0.0, pt, pt);
 	}
 	return LW_TRUE;
 }
@@ -797,9 +799,7 @@ lw_dist2d_line_curvepoly(LWLINE *line, LWCURVEPOLY *poly, DISTPTS *dl)
 	/* Not in hole, so inside polygon */
 	if (dl->mode == DIST_MIN)
 	{
-		dl->distance = 0.0;
-		dl->p1.x = dl->p2.x = pt->x;
-		dl->p1.y = dl->p2.y = pt->y;
+		lw_dist2d_distpts_set(dl, 0.0, pt, pt);
 	}
 	return LW_TRUE;
 }
@@ -812,18 +812,14 @@ lw_dist2d_tri_tri(LWTRIANGLE *tri1, LWTRIANGLE *tri2, DISTPTS *dl)
 	const POINT2D *pt = getPoint2d_cp(pa2, 0);
 	if (dl->mode == DIST_MIN && ptarray_contains_point(pa1, pt) != LW_OUTSIDE)
 	{
-		dl->distance = 0.0;
-		dl->p1.x = dl->p2.x = pt->x;
-		dl->p1.y = dl->p2.y = pt->y;
+		lw_dist2d_distpts_set(dl, 0.0, pt, pt);
 		return LW_TRUE;
 	}
 
 	pt = getPoint2d_cp(pa1, 0);
 	if (dl->mode == DIST_MIN && ptarray_contains_point(pa2, pt) != LW_OUTSIDE)
 	{
-		dl->distance = 0.0;
-		dl->p1.x = dl->p2.x = pt->x;
-		dl->p1.y = dl->p2.y = pt->y;
+		lw_dist2d_distpts_set(dl, 0.0, pt, pt);
 		return LW_TRUE;
 	}
 
@@ -854,9 +850,7 @@ lw_dist2d_tri_poly(LWTRIANGLE *tri, LWPOLY *poly, DISTPTS *dl)
 		const POINT2D *pt2 = getPoint2d_cp(poly->rings[0], 0);
 		if (ptarray_contains_point(pa, pt2) != LW_OUTSIDE)
 		{
-			dl->distance = 0.0;
-			dl->p1.x = dl->p2.x = pt2->x;
-			dl->p1.y = dl->p2.y = pt2->y;
+			lw_dist2d_distpts_set(dl, 0.0, pt2, pt2);
 			return LW_TRUE;
 		}
 	}
@@ -877,9 +871,7 @@ lw_dist2d_tri_poly(LWTRIANGLE *tri, LWPOLY *poly, DISTPTS *dl)
 			return LW_TRUE;
 
 	/* Not in hole, so inside polygon */
-	dl->distance = 0.0;
-	dl->p1.x = dl->p2.x = pt->x;
-	dl->p1.y = dl->p2.y = pt->y;
+	lw_dist2d_distpts_set(dl, 0.0, pt, pt);
 	return LW_TRUE;
 }
 static const POINT2D *
@@ -920,9 +912,7 @@ lw_dist2d_tri_curvepoly(LWTRIANGLE *tri, LWCURVEPOLY *poly, DISTPTS *dl)
 		/* Maybe poly is inside triangle? */
 		if (lwgeom_contains_point((LWGEOM *)tri, lw_curvering_getfirstpoint2d_cp(poly->rings[0])) != LW_OUTSIDE)
 		{
-			dl->distance = 0.0;
-			dl->p1.x = dl->p2.x = pt->x;
-			dl->p1.y = dl->p2.y = pt->y;
+			lw_dist2d_distpts_set(dl, 0.0, pt, pt);
 			return LW_TRUE;
 		}
 	}
@@ -943,9 +933,7 @@ lw_dist2d_tri_curvepoly(LWTRIANGLE *tri, LWCURVEPOLY *poly, DISTPTS *dl)
 			return LW_TRUE;
 
 	/* Not in hole, so inside polygon */
-	dl->distance = 0.0;
-	dl->p1.x = dl->p2.x = pt->x;
-	dl->p1.y = dl->p2.y = pt->y;
+	lw_dist2d_distpts_set(dl, 0.0, pt, pt);
 	return LW_TRUE;
 }
 
@@ -955,9 +943,7 @@ lw_dist2d_tri_circstring(LWTRIANGLE *tri, LWCIRCSTRING *line, DISTPTS *dl)
 	const POINT2D *pt = lw_curvering_getfirstpoint2d_cp((LWGEOM *)line);
 	if (ptarray_contains_point(tri->points, pt) != LW_OUTSIDE && dl->mode == DIST_MIN)
 	{
-		dl->distance = 0.0;
-		dl->p1.x = dl->p2.x = pt->x;
-		dl->p1.y = dl->p2.y = pt->y;
+		lw_dist2d_distpts_set(dl, 0.0, pt, pt);
 		return LW_TRUE;
 	}
 
@@ -1014,18 +1000,14 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 	pt = getPoint2d_cp(poly1->rings[0], 0);
 	if (ptarray_contains_point(poly2->rings[0], pt) != LW_OUTSIDE)
 	{
-		dl->distance = 0.0;
-		dl->p1.x = dl->p2.x = pt->x;
-		dl->p1.y = dl->p2.y = pt->y;
+		lw_dist2d_distpts_set(dl, 0.0, pt, pt);
 		return LW_TRUE;
 	}
 
 	pt = getPoint2d_cp(poly2->rings[0], 0);
 	if (ptarray_contains_point(poly1->rings[0], pt) != LW_OUTSIDE)
 	{
-		dl->distance = 0.0;
-		dl->p1.x = dl->p2.x = pt->x;
-		dl->p1.y = dl->p2.y = pt->y;
+		lw_dist2d_distpts_set(dl, 0.0, pt, pt);
 		return LW_TRUE;
 	}
 
@@ -1102,18 +1084,14 @@ lw_dist2d_curvepoly_curvepoly(LWCURVEPOLY *poly1, LWCURVEPOLY *poly2, DISTPTS *d
 	pt = lw_curvering_getfirstpoint2d_cp(poly1->rings[0]);
 	if (lwgeom_contains_point(poly2->rings[0], pt) != LW_OUTSIDE)
 	{
-		dl->distance = 0.0;
-		dl->p1.x = dl->p2.x = pt->x;
-		dl->p1.y = dl->p2.y = pt->y;
+		lw_dist2d_distpts_set(dl, 0.0, pt, pt);
 		return LW_TRUE;
 	}
 
 	pt = lw_curvering_getfirstpoint2d_cp(poly2->rings[0]);
 	if (lwgeom_contains_point(poly1->rings[0], pt) != LW_OUTSIDE)
 	{
-		dl->distance = 0.0;
-		dl->p1.x = dl->p2.x = pt->x;
-		dl->p1.y = dl->p2.y = pt->y;
+		lw_dist2d_distpts_set(dl, 0.0, pt, pt);
 		return LW_TRUE;
 	}
 
@@ -1421,9 +1399,7 @@ lw_dist2d_seg_arc(const POINT2D *A1,
 
 		if (pt_in_arc && pt_in_seg)
 		{
-			dl->distance = 0.0;
-			dl->p1 = E;
-			dl->p2 = E;
+			lw_dist2d_distpts_set(dl, 0.0, &E, &E);
 			return LW_TRUE;
 		}
 
@@ -1433,9 +1409,7 @@ lw_dist2d_seg_arc(const POINT2D *A1,
 
 		if (pt_in_arc && pt_in_seg)
 		{
-			dl->distance = 0.0;
-			dl->p1 = F;
-			dl->p2 = F;
+			lw_dist2d_distpts_set(dl, 0.0, &F, &F);
 			return LW_TRUE;
 		}
 	}
@@ -1452,9 +1426,7 @@ lw_dist2d_seg_arc(const POINT2D *A1,
 		/* Is D contained in both A and B? */
 		if (pt_in_arc && pt_in_seg)
 		{
-			dl->distance = 0.0;
-			dl->p1 = D;
-			dl->p2 = D;
+			lw_dist2d_distpts_set(dl, 0.0, &D, &D);
 			return LW_TRUE;
 		}
 	}
@@ -1535,9 +1507,7 @@ lw_dist2d_pt_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const P
 	/* P is the center of the circle */
 	if (FP_EQUALS(d, 0.0))
 	{
-		dl->distance = radius_A;
-		dl->p1 = *A1;
-		dl->p2 = *P;
+		lw_dist2d_distpts_set(dl, radius_A, A1, P);
 		return LW_TRUE;
 	}
 
@@ -1656,9 +1626,7 @@ lw_dist2d_arc_arc(const POINT2D *A1,
 		/* Arcs do touch at D, return it */
 		if (pt_in_arc_A && pt_in_arc_B)
 		{
-			dl->distance = 0.0;
-			dl->p1 = D;
-			dl->p2 = D;
+			lw_dist2d_distpts_set(dl, 0.0, &D, &D);
 			return LW_TRUE;
 		}
 	}
@@ -1710,8 +1678,7 @@ lw_dist2d_arc_arc(const POINT2D *A1,
 
 		if (pt_in_arc_A && pt_in_arc_B)
 		{
-			dl->p1 = dl->p2 = E;
-			dl->distance = 0.0;
+			lw_dist2d_distpts_set(dl, 0.0, &E, &E);
 			return LW_TRUE;
 		}
 
@@ -1725,8 +1692,7 @@ lw_dist2d_arc_arc(const POINT2D *A1,
 
 		if (pt_in_arc_A && pt_in_arc_B)
 		{
-			dl->p1 = dl->p2 = F;
-			dl->distance = 0.0;
+			lw_dist2d_distpts_set(dl, 0.0, &F, &F);
 			return LW_TRUE;
 		}
 	}
@@ -1789,32 +1755,24 @@ lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 		seg_size = lw_segment_side(A1, A3, A2);
 		if (seg_size == lw_segment_side(A1, A3, B1))
 		{
-			dl->p1 = *B1;
-			dl->p2 = *B1;
-			dl->distance = 0;
+			lw_dist2d_distpts_set(dl, 0.0, B1, B1);
 			return LW_TRUE;
 		}
 		if (seg_size == lw_segment_side(A1, A3, B3))
 		{
-			dl->p1 = *B3;
-			dl->p2 = *B3;
-			dl->distance = 0;
+			lw_dist2d_distpts_set(dl, 0.0, B3, B3);
 			return LW_TRUE;
 		}
 		/* Check if A1 or A3 are in the same side as B2 in the B1-B3 arc */
 		seg_size = lw_segment_side(B1, B3, B2);
 		if (seg_size == lw_segment_side(B1, B3, A1))
 		{
-			dl->p1 = *A1;
-			dl->p2 = *A1;
-			dl->distance = 0;
+			lw_dist2d_distpts_set(dl, 0.0, A1, A1);
 			return LW_TRUE;
 		}
 		if (seg_size == lw_segment_side(B1, B3, A3))
 		{
-			dl->p1 = *A3;
-			dl->p2 = *A3;
-			dl->distance = 0;
+			lw_dist2d_distpts_set(dl, 0.0, A3, A3);
 			return LW_TRUE;
 		}
 	}
@@ -1829,9 +1787,7 @@ lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 
 		if (seg_size == lw_segment_side(A1, A3, &proj))
 		{
-			dl->p1 = proj;
-			dl->p2 = *B1;
-			dl->distance = fabs(radius_A - radius_B);
+			lw_dist2d_distpts_set(dl, fabs(radius_A - radius_B), &proj, B1);
 			return LW_TRUE;
 		}
 		/* B3 */
@@ -1839,9 +1795,7 @@ lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 		proj.y = CENTER->y + (B3->y - CENTER->y) * radius_A / radius_B;
 		if (seg_size == lw_segment_side(A1, A3, &proj))
 		{
-			dl->p1 = proj;
-			dl->p2 = *B3;
-			dl->distance = fabs(radius_A - radius_B);
+			lw_dist2d_distpts_set(dl, fabs(radius_A - radius_B), &proj, B3);
 			return LW_TRUE;
 		}
 
@@ -1853,9 +1807,7 @@ lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 		proj.y = CENTER->y + (A1->y - CENTER->y) * radius_B / radius_A;
 		if (seg_size == lw_segment_side(B1, B3, &proj))
 		{
-			dl->p1 = proj;
-			dl->p2 = *A1;
-			dl->distance = fabs(radius_A - radius_B);
+			lw_dist2d_distpts_set(dl, fabs(radius_A - radius_B), &proj, A1);
 			return LW_TRUE;
 		}
 
@@ -1864,9 +1816,7 @@ lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 		proj.y = CENTER->y + (A3->y - CENTER->y) * radius_B / radius_A;
 		if (seg_size == lw_segment_side(B1, B3, &proj))
 		{
-			dl->p1 = proj;
-			dl->p2 = *A3;
-			dl->distance = fabs(radius_A - radius_B);
+			lw_dist2d_distpts_set(dl, fabs(radius_A - radius_B), &proj, A3);
 			return LW_TRUE;
 		}
 	}
@@ -1900,10 +1850,7 @@ lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 		P2 = B3;
 	}
 
-	dl->p1 = *P1;
-	dl->p2 = *P2;
-	dl->distance = sqrt(shortest_sqr);
-
+	lw_dist2d_distpts_set(dl, sqrt(shortest_sqr), P1, P2);
 	return LW_TRUE;
 }
 
@@ -2008,9 +1955,7 @@ lw_dist2d_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const PO
 				theP.x = A->x + r * (B->x - A->x);
 				theP.y = A->y + r * (B->y - A->y);
 			}
-			dl->distance = 0.0;
-			dl->p1 = theP;
-			dl->p2 = theP;
+			lw_dist2d_distpts_set(dl, 0, &theP, &theP);
 		}
 		return LW_TRUE;
 	}
@@ -2346,9 +2291,7 @@ lw_dist2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B, DISTPTS *
 	/*If the point p is on the segment this is a more robust way to find out that*/
 	if ((((A->y - p->y) * (B->x - A->x) == (A->x - p->x) * (B->y - A->y))) && (dl->mode == DIST_MIN))
 	{
-		dl->distance = 0.0;
-		dl->p1 = *p;
-		dl->p2 = *p;
+		lw_dist2d_distpts_set(dl, 0, p, p);
 	}
 
 	/*If the projection of point p on the segment is between A and B
