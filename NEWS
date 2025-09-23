@@ -1,8 +1,6 @@
 PostGIS 3.7.0dev
 xxxx/xx/xx
 
-  - #5978, return ability of geometry_columns to read constraints
-
 PostGIS 3.6.0
 2025/09/01
 
