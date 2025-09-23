@@ -31,6 +31,7 @@ Proj 6.1+ required.
   - Support build under Pg19 (Paul Ramsey)
   - #5082, LRS proportions clamped to [0,1] (Pawel Ostrowski)
   - #5985, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro Santilli)
+  - #5991, CircularString distance error (Paul Ramsey)
 
 
 PostGIS 3.4.4
