@@ -3,6 +3,8 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - GH-831, Document why ST_Subdivide can change geography boundaries
+     (Nikolai Berkoff)
  - #2951, Check geography input before deserializing ST_Centroid
      (Maksim Korotkov)
  - #6020, Resolve ST_MPointFromText in the PostGIS schema (Paul Ramsey)
