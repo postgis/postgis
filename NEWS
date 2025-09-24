@@ -3,6 +3,8 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - GH-831, Document why ST_Subdivide can change geography boundaries
+      (Nikolai Berkoff)
   - GH-1187, [raster] Handle failed raster-to-geometry conversions
       (Maksim Korotkov)
   - #6048, [raster] Preserve requested band order in ST_Clip
