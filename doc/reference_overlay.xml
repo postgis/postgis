@@ -655,6 +655,11 @@ SELECT ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS snapped_split,
             executed by the index recheck process fewer points.
         </para>
         <note><para>
+            When casting a subdivided geometry to geography, the resulting geography may differ from the original.
+            Subdivision adds vertices in planar (geometry) space. If vertices are inserted along the boundary, they will alter the geographical representation, where edges are interpreted as geodesic segments.
+            To minimize distortion, first densify the geography using <xref linkend="ST_Segmentize"/> to add geodesic vertices, then cast to geometry before subdivision.
+        </para></note>
+        <note><para>
             This is a <link xlink:href="https://www.postgresql.org/docs/current/queries-table-expressions.html#QUERIES-TABLEFUNCTIONS">set-returning function</link>
             (SRF) that return a set of rows containing single geometry values.
             It can be used in a SELECT list or a FROM clause
@@ -703,6 +708,8 @@ SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
         <para><emphasis role="bold">Example:</emphasis>
         Densify a long geography line using ST_Segmentize(geography, distance),
         and use ST_Subdivide to split the resulting line into sublines of 8 vertices.
+        Densification minimizes the impact of changes to the geography representation of a geometry
+        when subdividing.
         </para>
         <informalfigure>
             <mediaobject>
