@@ -59,7 +59,7 @@
  */
 LWNURBSCURVE *
 lwnurbscurve_construct(int32_t srid, GBOX *bbox, uint32_t degree, POINTARRAY *points,
-                      double *weights, double *knots, uint32_t nweights, uint32_t nknots)
+                      const double *weights, const double *knots, uint32_t nweights, uint32_t nknots)
 {
 	LWNURBSCURVE *result;
 
@@ -228,15 +228,10 @@ lwnurbscurve_generate_uniform_knots(uint32_t degree, uint32_t npoints, uint32_t 
 
 	/* Input validation to prevent underflow */
 	if (degree == 0 || npoints < degree + 1) {
-		*nknots_out = 0;
-		return NULL;
-	}
-
-	/* Standard NURBS constraint: knot vector size */
-	if (npoints < degree + 1) {
 		if (nknots_out) *nknots_out = 0;
 		return NULL;
 	}
+
 	nknots = npoints + degree + 1;
 
 	knots = lwalloc(sizeof(double) * nknots);

@@ -1561,7 +1561,7 @@ extern LWPOLY* lwpoly_construct(int32_t srid, GBOX *bbox, uint32_t nrings, POINT
 extern LWCURVEPOLY* lwcurvepoly_construct(int32_t srid, GBOX *bbox, uint32_t nrings, LWGEOM **geoms);
 extern LWTRIANGLE* lwtriangle_construct(int32_t srid, GBOX *bbox, POINTARRAY *points);
 extern LWCOLLECTION* lwcollection_construct(uint8_t type, int32_t srid, GBOX *bbox, uint32_t ngeoms, LWGEOM **geoms);
-extern LWNURBSCURVE* lwnurbscurve_construct(int32_t srid, GBOX *bbox, uint32_t degree, POINTARRAY *points, double *weights, double *knots, uint32_t nweights, uint32_t nknots);
+extern LWNURBSCURVE* lwnurbscurve_construct(int32_t srid, GBOX *bbox, uint32_t degree, POINTARRAY *points, const double *weights, const double *knots, uint32_t nweights, uint32_t nknots);
 
 /*
 * Empty geometry constructors.
@@ -2702,6 +2702,8 @@ int * lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k, double
 extern POINTARRAY* lwnurbscurve_get_control_points(const LWNURBSCURVE *curve);
 extern LWLINE* lwnurbscurve_stroke(const LWNURBSCURVE *curve, uint32_t segments);
 extern int lwnurbscurve_validate(const LWNURBSCURVE *curve);
+extern LWPOINT* lwnurbscurve_evaluate(const LWNURBSCURVE *curve, double t);
+extern LWLINE* lwnurbscurve_to_linestring(const LWNURBSCURVE *curve, uint32_t num_segments);
 
 #include "lwinline.h"
 
