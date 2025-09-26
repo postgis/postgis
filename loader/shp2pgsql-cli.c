@@ -308,6 +308,12 @@ main (int argc, char **argv)
 		char *shp_file = strdup(config->shp_file);
 		char *ptr;
 
+		if ( shp_file == NULL )
+		{
+			fprintf(stderr, "Unable to allocate memory for shapefile name\n");
+			exit(1);
+		}
+
 		/* Remove the extension, if present */
 		for ( ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr-- )
 		{
