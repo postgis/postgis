@@ -773,7 +773,7 @@ Datum ST_NurbsCurveIsRational(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *pnurbs;
 	LWGEOM *geom;
-	LWNURBSCURVE *nurbs;
+	const LWNURBSCURVE *nurbs;
 	bool is_rational;
 
 	if (PG_ARGISNULL(0)) {
