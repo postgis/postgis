@@ -2250,6 +2250,9 @@ quote_identifier(const char *s)
 	char	   *result = malloc(strlen(s) * 2 + 3);
 	char	   *r = result;
 
+	if (result == NULL)
+		return NULL;
+
 	*r++ = '"';
 	while (*s)
 	{
