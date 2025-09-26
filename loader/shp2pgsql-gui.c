@@ -913,9 +913,22 @@ create_new_file_config(const char *filename)
 	   type set in set_loader_config_defaults() and each config needs its own copy
 	   of any referenced items */
 	loader_file_config->encoding = strdup(global_loader_config->encoding);
+	if ( loader_file_config->encoding == NULL )
+	{
+		free(loader_file_config);
+		pgui_seterr("Unable to allocate memory for encoding");
+		return 0;
+	}
 
 	/* Copy the filename (we'll remove the .shp extension in a sec) */
 	loader_file_config->shp_file = strdup(filename);
+	if ( loader_file_config->shp_file == NULL )
+	{
+		free(loader_file_config->encoding);
+		free(loader_file_config);
+		pgui_seterr("Unable to allocate memory for filename");
+		return 0;
+	}
 
 	/* Generate the default table name from the filename */
 	table_start = loader_file_config->shp_file + strlen(loader_file_config->shp_file);
@@ -1319,6 +1332,12 @@ pgui_action_open_file_dialog(GtkWidget *widget, gpointer data)
 			filename = g_slist_nth_data(filename_item, 0);
 
 			loader_file_config = create_new_file_config(filename);
+			if (loader_file_config == NULL) {
+				pgui_raise_error_dialogue();
+				g_free(filename);
+				filename_item = g_slist_next(filename_item);
+				continue;
+			}
 			add_loader_file_config_to_list(loader_file_config);
 
 			/* Grab the next filename */
@@ -2005,6 +2024,12 @@ process_single_uri(char *uri)
 
 	/* Create a new row in the listview */
 	loader_file_config = create_new_file_config(filename);
+	if (loader_file_config == NULL) {
+		pgui_raise_error_dialogue();
+		g_free(filename);
+		g_free(hostname);
+		return;
+	}
 	add_loader_file_config_to_list(loader_file_config);
 
 	g_free(filename);
@@ -2622,11 +2647,11 @@ pgui_create_folderchooser_dialog(void)
 }
 
 static void
-pgui_create_progress_dialog()
+pgui_create_progress_dialog(void)
 {
 	GtkWidget *vbox_progress, *table_progress;
 
-	dialog_progress = gtk_dialog_new_with_buttons(_("Working..."), GTK_WINDOW(window_main), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, NULL);
+	dialog_progress = gtk_dialog_new_with_buttons(_("Working..."), GTK_WINDOW(window_main), GTK_DIALOG_DESTROY_WITH_PARENT, "_Cancel", GTK_RESPONSE_CANCEL, NULL);
 
 	gtk_window_set_modal(GTK_WINDOW(dialog_progress), TRUE);
 	gtk_window_set_keep_above(GTK_WINDOW(dialog_progress), TRUE);
