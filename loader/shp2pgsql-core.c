@@ -531,9 +531,13 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 
 		pt.x = inner->list[0].x;
 		pt.y = inner->list[0].y;
+		pt.z = 0.0;
+		pt.m = 0.0;
 
 		pt2.x = inner->list[1].x;
 		pt2.y = inner->list[1].y;
+		pt2.z = 0.0;
+		pt2.m = 0.0;
 
 		/*
 		* If we assume that the case of the "big polygon w/o hole
