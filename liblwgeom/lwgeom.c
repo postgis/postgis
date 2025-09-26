@@ -1355,7 +1355,7 @@ int lwgeom_needs_bbox(const LWGEOM *geom)
 	}
 	else if ( geom->type == NURBSCURVETYPE )
 	{
-		LWNURBSCURVE *nurbs = (LWNURBSCURVE*)geom;
+		const LWNURBSCURVE *nurbs = (LWNURBSCURVE*)geom;
 		/* Empty curves don't need bbox */
 		if ( !nurbs->points || nurbs->points->npoints == 0 )
 			return LW_FALSE;
