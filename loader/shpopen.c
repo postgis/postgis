@@ -367,6 +367,8 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
 /*  Initialize the info structure.                  */
 /* -------------------------------------------------------------------- */
     psSHP = STATIC_CAST(SHPHandle, calloc(sizeof(SHPInfo),1));
+    if( psSHP == SHPLIB_NULLPTR )
+        return SHPLIB_NULLPTR;
 
     psSHP->bUpdated = FALSE;
     memcpy( &(psSHP->sHooks), psHooks, sizeof(SAHooks) );
@@ -377,6 +379,11 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
 /* -------------------------------------------------------------------- */
     nLenWithoutExtension = SHPGetLenWithoutExtension(pszLayer);
     pszFullname = STATIC_CAST(char *, malloc(nLenWithoutExtension + 5));
+    if( pszFullname == SHPLIB_NULLPTR )
+    {
+        free( psSHP );
+        return SHPLIB_NULLPTR;
+    }
     memcpy(pszFullname, pszLayer, nLenWithoutExtension);
     memcpy(pszFullname + nLenWithoutExtension, ".shp", 5);
     psSHP->fpSHP = psSHP->sHooks.FOpen(pszFullname, pszAccess );
@@ -746,6 +753,8 @@ SHPRestoreSHX ( const char * pszLayer, const char * pszAccess, SAHooks *psHooks 
 /* -------------------------------------------------------------------- */
     nLenWithoutExtension = SHPGetLenWithoutExtension(pszLayer);
     pszFullname = STATIC_CAST(char *, malloc(nLenWithoutExtension + 5));
+    if( pszFullname == SHPLIB_NULLPTR )
+        return FALSE;
     memcpy(pszFullname, pszLayer, nLenWithoutExtension);
     memcpy(pszFullname + nLenWithoutExtension, ".shp", 5);
     fpSHP = psHooks->FOpen(pszFullname, pszAccess );
@@ -1023,6 +1032,8 @@ SHPCreateLL( const char * pszLayer, int nShapeType, SAHooks *psHooks )
 /* -------------------------------------------------------------------- */
     nLenWithoutExtension = SHPGetLenWithoutExtension(pszLayer);
     pszFullname = STATIC_CAST(char *, malloc(nLenWithoutExtension + 5));
+    if( pszFullname == SHPLIB_NULLPTR )
+        return SHPLIB_NULLPTR;
     memcpy(pszFullname, pszLayer, nLenWithoutExtension);
     memcpy(pszFullname + nLenWithoutExtension, ".shp", 5);
     fpSHP = psHooks->FOpen(pszFullname, "wb" );
