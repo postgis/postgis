@@ -349,3 +349,186 @@ lwnurbscurve_get_control_points(const LWNURBSCURVE *curve)
 	if ( curve == NULL ) return NULL;
 	return curve->points;
 }
+
+/**
+ * Evaluates the Cox-de Boor basis function recursively.
+ *
+ * This is the fundamental building block for NURBS curve evaluation.
+ * The Cox-de Boor recursion formula:
+ *   N_{i,0}(u) = 1 if knots[i] <= u < knots[i+1], 0 otherwise
+ *   N_{i,p}(u) = ((u - knots[i]) / (knots[i+p] - knots[i])) * N_{i,p-1}(u) +
+ *                ((knots[i+p+1] - u) / (knots[i+p+1] - knots[i+1])) * N_{i+1,p-1}(u)
+ *
+ * @param i knot span index
+ * @param p degree of the basis function
+ * @param u parameter value
+ * @param knots knot vector
+ * @param nknots number of knots
+ * @return basis function value at parameter u
+ */
+static double
+lwnurbscurve_basis_function(int i, int p, double u, const double *knots, int nknots)
+{
+	/* Bounds checking */
+	if (i < 0 || i + p + 1 >= nknots) return 0.0;
+
+	/* Base case: degree 0 (piecewise constant) */
+	if (p == 0) {
+		return (knots[i] <= u && u < knots[i + 1]) ? 1.0 : 0.0;
+	}
+
+	/* First term: (u - knots[i]) / (knots[i+p] - knots[i]) * N_{i,p-1}(u) */
+	double denom1 = knots[i + p] - knots[i];
+	double term1 = 0.0;
+	if (denom1 != 0.0) {
+		term1 = (u - knots[i]) / denom1 * lwnurbscurve_basis_function(i, p - 1, u, knots, nknots);
+	}
+
+	/* Second term: (knots[i+p+1] - u) / (knots[i+p+1] - knots[i+1]) * N_{i+1,p-1}(u) */
+	double denom2 = knots[i + p + 1] - knots[i + 1];
+	double term2 = 0.0;
+	if (denom2 != 0.0) {
+		term2 = (knots[i + p + 1] - u) / denom2 * lwnurbscurve_basis_function(i + 1, p - 1, u, knots, nknots);
+	}
+
+	return term1 + term2;
+}
+
+/**
+ * Evaluates a NURBS curve at parameter t.
+ *
+ * Uses the rational basis function formula:
+ * C(t) = Σ(w_i * N_{i,p}(t) * P_i) / Σ(w_i * N_{i,p}(t))
+ * where N_{i,p}(t) are B-spline basis functions computed using Cox-de Boor recursion.
+ *
+ * @param curve NURBS curve to evaluate
+ * @param t parameter value (typically in [0,1])
+ * @return point on the curve at parameter t, or empty point if curve is invalid
+ */
+LWPOINT *
+lwnurbscurve_evaluate(const LWNURBSCURVE *curve, double t)
+{
+	POINT4D result;
+	uint32_t i;
+	double *knots;
+	uint32_t nknots;
+	double x = 0.0, y = 0.0, z = 0.0, m = 0.0;
+	double denom = 0.0;
+	char hasz, hasm;
+	LWPOINT *lwpoint;
+
+	/* Validate input */
+	if (!curve || !curve->points || curve->points->npoints == 0)
+		return lwpoint_construct_empty(SRID_UNKNOWN, 0, 0);
+
+	/* Get dimensional flags */
+	hasz = FLAGS_GET_Z(curve->flags);
+	hasm = FLAGS_GET_M(curve->flags);
+
+	/* Clamp parameter t to valid range [0,1] */
+	if (t <= 0.0) {
+		getPoint4d_p(curve->points, 0, &result);
+		goto create_result;
+	}
+	if (t >= 1.0) {
+		getPoint4d_p(curve->points, curve->points->npoints - 1, &result);
+		goto create_result;
+	}
+
+	/* Get knot vector for evaluation */
+	knots = lwnurbscurve_get_knots_for_wkb(curve, &nknots);
+	if (!knots || nknots == 0) {
+		lwfree(knots);
+		return lwpoint_construct_empty(curve->srid, hasz, hasm);
+	}
+
+	/* NURBS curve evaluation using rational basis functions */
+	for (i = 0; i < curve->points->npoints; i++) {
+		POINT4D ctrl_pt;
+		double N, w, wN;
+
+		getPoint4d_p(curve->points, i, &ctrl_pt);
+
+		/* Compute basis function value */
+		N = lwnurbscurve_basis_function(i, curve->degree, t, knots, nknots);
+
+		/* Get weight (1.0 if non-rational) */
+		w = (curve->weights && i < curve->nweights) ? curve->weights[i] : 1.0;
+
+		wN = w * N;
+
+		x += wN * ctrl_pt.x;
+		y += wN * ctrl_pt.y;
+		if (hasz) z += wN * ctrl_pt.z;
+		if (hasm) m += wN * ctrl_pt.m;
+		denom += wN;
+	}
+
+	/* For rational curves, divide by the denominator */
+	if (curve->weights && denom != 0.0) {
+		x /= denom;
+		y /= denom;
+		if (hasz) z /= denom;
+		if (hasm) m /= denom;
+	}
+
+	result.x = x;
+	result.y = y;
+	result.z = hasz ? z : 0.0;
+	result.m = hasm ? m : 0.0;
+
+	lwfree(knots);
+
+create_result:
+	lwpoint = lwpoint_construct(curve->srid, NULL, ptarray_construct_empty(hasz, hasm, 1));
+	ptarray_append_point(lwpoint->point, &result, LW_TRUE);
+	return lwpoint;
+}
+
+/**
+ * Converts a NURBS curve to a LineString by uniform sampling.
+ *
+ * Evaluates the NURBS curve at uniformly distributed parameter values
+ * to create a piecewise linear approximation.
+ *
+ * @param curve NURBS curve to convert
+ * @param num_segments number of segments in the resulting LineString
+ * @return LineString approximation of the NURBS curve
+ */
+LWLINE *
+lwnurbscurve_to_linestring(const LWNURBSCURVE *curve, uint32_t num_segments)
+{
+	POINTARRAY *pts;
+	uint32_t i;
+	char hasz, hasm;
+
+	/* Validate input */
+	if (!curve || !curve->points || curve->points->npoints == 0)
+		return lwline_construct_empty(SRID_UNKNOWN, 0, 0);
+
+	/* Ensure minimum number of segments */
+	if (num_segments < 2) num_segments = 2;
+
+	/* Get dimensional flags */
+	hasz = FLAGS_GET_Z(curve->flags);
+	hasm = FLAGS_GET_M(curve->flags);
+
+	/* Create point array for result */
+	pts = ptarray_construct_empty(hasz, hasm, num_segments + 1);
+
+	/* Sample the curve at uniform parameter intervals */
+	for (i = 0; i <= num_segments; i++) {
+		double t = (double)i / num_segments;
+		LWPOINT *pt = lwnurbscurve_evaluate(curve, t);
+		POINT4D p4d;
+
+		if (pt && pt->point && pt->point->npoints > 0) {
+			getPoint4d_p(pt->point, 0, &p4d);
+			ptarray_append_point(pts, &p4d, LW_TRUE);
+		}
+
+		if (pt) lwpoint_free(pt);
+	}
+
+	return lwline_construct(curve->srid, NULL, pts);
+}

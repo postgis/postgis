@@ -46,6 +46,8 @@ Datum ST_NurbsCurveKnots(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveNumControlPoints(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveIsRational(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveIsValid(PG_FUNCTION_ARGS);
+Datum ST_NurbsEvaluate(PG_FUNCTION_ARGS);
+Datum ST_NurbsToLineString(PG_FUNCTION_ARGS);
 
 static ArrayType* float8_array_from_double_array(double *values, int count);
 static double* double_array_from_float8_array(ArrayType *array, int *count);
@@ -880,4 +882,140 @@ Datum ST_NurbsCurveIsValid(PG_FUNCTION_ARGS)
 cleanup:
 	lwgeom_free(geom);
 	PG_RETURN_BOOL(is_valid);
+}
+
+/* ST_NurbsEvaluate(nurbscurve, parameter) - Evaluate NURBS curve at parameter */
+PG_FUNCTION_INFO_V1(ST_NurbsEvaluate);
+/**
+ * Evaluate a NURBS curve at a specific parameter value.
+ *
+ * Returns a POINT representing the position on the NURBS curve at the given
+ * parameter value. The parameter should typically be in the range [0,1], where
+ * 0 corresponds to the start of the curve and 1 to the end.
+ *
+ * Parameters:
+ * - nurbscurve: A GSERIALIZED NURBS curve
+ * - parameter: A float8 parameter value for evaluation
+ *
+ * Returns:
+ * - A POINT geometry representing the evaluated position
+ * - NULL if either input is NULL or the curve is invalid
+ *
+ * Example:
+ * SELECT ST_NurbsEvaluate(nurbs_curve, 0.5); -- Get midpoint of curve
+ */
+Datum ST_NurbsEvaluate(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *pnurbs;
+	double parameter;
+	LWGEOM *geom;
+	LWNURBSCURVE *nurbs;
+	LWPOINT *result_point;
+	GSERIALIZED *result;
+
+	if (PG_ARGISNULL(0) || PG_ARGISNULL(1)) {
+		PG_RETURN_NULL();
+	}
+
+	pnurbs = PG_GETARG_GSERIALIZED_P(0);
+	parameter = PG_GETARG_FLOAT8(1);
+
+	geom = lwgeom_from_gserialized(pnurbs);
+	if (!geom || geom->type != NURBSCURVETYPE) {
+		lwgeom_free(geom);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+			errmsg("Input must be a NURBS curve")));
+	}
+
+	nurbs = (LWNURBSCURVE*)geom;
+
+	/* Evaluate the curve at the given parameter */
+	result_point = lwnurbscurve_evaluate(nurbs, parameter);
+	if (!result_point) {
+		lwgeom_free(geom);
+		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),
+			errmsg("Failed to evaluate NURBS curve at parameter %g", parameter)));
+	}
+
+	result = geometry_serialize((LWGEOM*)result_point);
+
+	lwgeom_free(geom);
+	lwpoint_free(result_point);
+
+	PG_RETURN_POINTER(result);
+}
+
+/* ST_NurbsToLineString(nurbscurve, num_segments) - Convert NURBS to LineString */
+PG_FUNCTION_INFO_V1(ST_NurbsToLineString);
+/**
+ * Convert a NURBS curve to a LineString by sampling at uniform intervals.
+ *
+ * Creates a piecewise linear approximation of the NURBS curve by evaluating
+ * it at uniformly distributed parameter values and connecting the resulting
+ * points with straight line segments.
+ *
+ * Parameters:
+ * - nurbscurve: A GSERIALIZED NURBS curve
+ * - num_segments: Number of line segments in the output (default: 32)
+ *
+ * Returns:
+ * - A LINESTRING geometry approximating the NURBS curve
+ * - NULL if the input is NULL or invalid
+ *
+ * Example:
+ * SELECT ST_NurbsToLineString(nurbs_curve, 64); -- High-quality approximation
+ * SELECT ST_NurbsToLineString(nurbs_curve, 16); -- Lower-quality, faster
+ */
+Datum ST_NurbsToLineString(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *pnurbs;
+	uint32_t num_segments = 32; /* Default number of segments */
+	LWGEOM *geom;
+	LWNURBSCURVE *nurbs;
+	LWLINE *result_line;
+	GSERIALIZED *result;
+
+	if (PG_ARGISNULL(0)) {
+		PG_RETURN_NULL();
+	}
+
+	pnurbs = PG_GETARG_GSERIALIZED_P(0);
+
+	/* Get optional number of segments parameter */
+	if (!PG_ARGISNULL(1)) {
+		int32_t segments_arg = PG_GETARG_INT32(1);
+		if (segments_arg < 2) {
+			ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("Number of segments must be at least 2, got %d", segments_arg)));
+		}
+		if (segments_arg > 10000) {
+			ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("Number of segments too large, got %d (maximum 10000)", segments_arg)));
+		}
+		num_segments = (uint32_t)segments_arg;
+	}
+
+	geom = lwgeom_from_gserialized(pnurbs);
+	if (!geom || geom->type != NURBSCURVETYPE) {
+		lwgeom_free(geom);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+			errmsg("Input must be a NURBS curve")));
+	}
+
+	nurbs = (LWNURBSCURVE*)geom;
+
+	/* Convert NURBS to LineString */
+	result_line = lwnurbscurve_to_linestring(nurbs, num_segments);
+	if (!result_line) {
+		lwgeom_free(geom);
+		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),
+			errmsg("Failed to convert NURBS curve to LineString")));
+	}
+
+	result = geometry_serialize((LWGEOM*)result_line);
+
+	lwgeom_free(geom);
+	lwline_free(result_line);
+
+	PG_RETURN_POINTER(result);
 }

@@ -142,3 +142,32 @@ CREATE OR REPLACE FUNCTION ST_IsNurbsCurve(geometry)
     $$
     LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
     COST 5;
+
+-- ST_NurbsEvaluate(nurbscurve, parameter)
+-- Evaluates a NURBS curve at a specific parameter value
+-- Uses Cox-de Boor recursion for basis function calculation
+-- Parameters:
+--   nurbscurve: Input NURBS curve geometry
+--   parameter: Parameter value for evaluation (typically 0.0 to 1.0)
+-- Returns: POINT geometry representing the position on the curve
+-- Example: SELECT ST_NurbsEvaluate(nurbs_curve, 0.5); -- Get midpoint
+CREATE OR REPLACE FUNCTION ST_NurbsEvaluate(nurbscurve geometry, parameter double precision)
+    RETURNS geometry
+    AS 'MODULE_PATHNAME', 'ST_NurbsEvaluate'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 100;
+
+-- ST_NurbsToLineString(nurbscurve, num_segments)
+-- Converts a NURBS curve to a LineString by uniform sampling
+-- Creates piecewise linear approximation without SFCGAL dependency
+-- Parameters:
+--   nurbscurve: Input NURBS curve geometry
+--   num_segments: Number of line segments (default: 32, range: 2-10000)
+-- Returns: LINESTRING geometry approximating the NURBS curve
+-- Example: SELECT ST_NurbsToLineString(nurbs_curve, 64); -- High quality
+-- Example: SELECT ST_NurbsToLineString(nurbs_curve); -- Default quality
+CREATE OR REPLACE FUNCTION ST_NurbsToLineString(nurbscurve geometry, num_segments integer DEFAULT 32)
+    RETURNS geometry
+    AS 'MODULE_PATHNAME', 'ST_NurbsToLineString'
+    LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+    COST 200;

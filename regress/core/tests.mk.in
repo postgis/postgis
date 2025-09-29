@@ -146,6 +146,7 @@ TESTS += \
 	$(top_srcdir)/regress/core/out_geojson \
   $(top_srcdir)/regress/core/wrapx \
 	$(top_srcdir)/regress/core/computed_columns \
+	$(top_srcdir)/regress/core/nurbs_eval \
 	$(top_srcdir)/regress/core/nurbs_wkt \
 	$(top_srcdir)/regress/core/nurbs_wkb
 
