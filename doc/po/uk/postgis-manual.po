@@ -28528,7 +28528,7 @@ msgid ""
 "input geometries."
 msgstr ""
 "Зверніть увагу, що результат може бути MULTILINESTRING або EMPTY для деяких "
-"вхідних геометрій із «фігурою пазла»."
+"вхідних геометрій із \"фігурою пазла\"."
 
 #. Tag: para
 #, no-c-format
@@ -28554,7 +28554,7 @@ msgid ""
 "'join=round|mitre|bevel' : join style (defaults to \"round\"). 'miter' is "
 "also accepted as a synonym for 'mitre'."
 msgstr ""
-"“join=round|mitre|bevel” : стиль з'єднання (за замовчуванням «round»). "
+"“join=round|mitre|bevel” : стиль з'єднання (за замовчуванням \"round\"). "
 "“miter” також приймається як синонім “mitre”."
 
 #. Tag: para
@@ -28591,13 +28591,13 @@ msgstr "Обчислити відкритий буфер навколо дорі
 #, no-c-format
 msgid "15, 'quad_segs=4 join=round' original line and its offset 15 units."
 msgstr ""
-"15, «quad_segs=4 join=round» оригінальна лінія та її зміщення на 15 одиниць."
+"15, \"quad_segs=4 join=round\" оригінальна лінія та її зміщення на 15 одиниць."
 
 #. Tag: para
 #, no-c-format
 msgid "-15, 'quad_segs=4 join=round' original line and its offset -15 units"
 msgstr ""
-"-15, «quad_segs=4 join=round» оригінальна лінія та її зміщення -15 одиниць"
+"-15, \"quad_segs=4 join=round\" оригінальна лінія та її зміщення -15 одиниць"
 
 #. Tag: para
 #, no-c-format
@@ -28620,7 +28620,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "15, 'quad_segs=4 join=bevel' shown with original line"
-msgstr "15, «quad_segs=4 join=bevel» показано з оригінальною лінією"
+msgstr "15, \"quad_segs=4 join=bevel\" показано з оригінальною лінією"
 
 #. Tag: para
 #, no-c-format
@@ -29023,8 +29023,8 @@ msgid ""
 "topology is preserved. The result will be valid and simple if the input is."
 msgstr ""
 "Обчислює спрощене представлення геометрії за допомогою варіанту <link "
-"xlink:href=«https://en.wikipedia.org/wiki/"
-"Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm»>алгоритму Дугласа-Пьюкера</"
+"xlink:href=\"https://en.wikipedia.org/wiki/"
+"Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm\">алгоритму Дугласа-Пьюкера</"
 "link>, який обмежує спрощення, щоб забезпечити топологію результату, "
 "ідентичну топології вхідних даних. Допуск спрощення <varname>tolerance</"
 "varname> є значенням відстані в одиницях вхідної SRS. Спрощення видаляє "
@@ -29148,7 +29148,7 @@ msgid ""
 "segments, it might be necessary to \"segmentize\" the input, as shown below."
 msgstr ""
 "Щоб отримати кращі результати з геометріями, що містять відносно довгі "
-"відрізки ліній, може знадобитися «сегментувати» вхідні дані, як показано "
+"відрізки ліній, може знадобитися \"сегментувати\" вхідні дані, як показано "
 "нижче."
 
 #. Tag: para
@@ -29206,10 +29206,10 @@ msgid ""
 "even if the input is."
 msgstr ""
 "Повертає спрощене представлення геометрії за допомогою алгоритму <link "
-"xlink:href=«https://en.wikipedia.org/wiki/"
-"Visvalingam%E2%80%93Whyatt_algorithm»>Visvalingam-Whyatt</link>. Спрощення "
+"xlink:href=\"https://en.wikipedia.org/wiki/"
+"Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam-Whyatt</link>. Спрощення "
 "<varname>tolerance</varname> є значенням площі в одиницях вхідної SRS. "
-"Спрощення видаляє вершини, які утворюють «кути» з площею, меншою за "
+"Спрощення видаляє вершини, які утворюють \"кути\" з площею, меншою за "
 "толерантність. Результат може бути недійсним, навіть якщо вхідні дані є "
 "дійсними."
 
@@ -29283,7 +29283,7 @@ msgid ""
 msgstr ""
 "Встановлює ефективну площу для кожної вершини, використовуючи алгоритм "
 "Вісвалінгама-Вайатта. Ефективна площа зберігається як M-значення вершини. "
-"Якщо використовується опціональний параметр «threshold», буде повернуто "
+"Якщо використовується опціональний параметр \"threshold\", буде повернуто "
 "спрощену геометрію, що містить тільки вершини з ефективною площею, більшою "
 "або рівною значенню порогу."
 
@@ -29375,10 +29375,10 @@ msgid ""
 "with the maximum total interior angle over all possible triangulations. It "
 "provides the \"best quality\" triangulation of the polygon."
 msgstr ""
-"«Обмежена триангуляція Делоне» полігону — це набір трикутників, утворених з "
+"\"Обмежена триангуляція Делоне\" полігону — це набір трикутників, утворених з "
 "вершин полігону, які точно його покривають, з максимальним сумарним "
-"внутрішнім кутом серед усіх можливих триангуляцій. Вона забезпечує «найкращу "
-"якість» триангуляції полігону."
+"внутрішнім кутом серед усіх можливих триангуляцій. Вона забезпечує \"найкращу "
+"якість\" триангуляції полігону."
 
 #. Tag: para
 #, no-c-format
@@ -29439,8 +29439,8 @@ msgid ""
 "an empty geometry collection if the <varname>extend_to</varname> envelope "
 "has zero area."
 msgstr ""
-"Обчислює двовимірну <link xlink:href=«https://en.wikipedia.org/wiki/"
-"Voronoi_diagram»>діаграму Вороного</link> з вершин наданої геометрії та "
+"Обчислює двовимірну <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Voronoi_diagram\">діаграму Вороного</link> з вершин наданої геометрії та "
 "повертає межі між комірками в діаграмі як MultiLineString. Повертає null, "
 "якщо вхідна геометрія є null. Повертає порожню колекцію геометрії, якщо "
 "вхідна геометрія містить тільки одну вершину. Повертає порожню колекцію "
@@ -29501,8 +29501,8 @@ msgid ""
 "contains only one vertex. Returns an empty geometry collection if the "
 "<varname>extend_to</varname> envelope has zero area."
 msgstr ""
-"Обчислює двовимірну <link xlink:href=«https://en.wikipedia.org/wiki/"
-"Voronoi_diagram»>діаграму Вороного</link> на основі вершин наданої "
+"Обчислює двовимірну <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Voronoi_diagram\">діаграму Вороного</link> на основі вершин наданої "
 "геометрії. Результатом є GEOMETRYCOLLECTION з POLYGON, що охоплює оболонку, "
 "більшу за розмір вхідних вершин. Повертає null, якщо вхідна геометрія є "
 "null. Повертає порожню колекцію геометрії, якщо вхідна геометрія містить "
@@ -30388,9 +30388,9 @@ msgid ""
 "'CubicSpline', and 'Lanczos'. Refer to: <link xlink:href=\"http://www.gdal."
 "org/gdalwarp.html\">GDAL Warp resampling methods</link> for more details."
 msgstr ""
-"Варіанти алгоритму: «NearestNeighbor», «Bilinear», «Cubic», «CubicSpline» та "
-"«Lanczos». Докладнішу інформацію див. у розділі: <link xlink:href=«http://www"
-".gdal.org/gdalwarp.html»>Методи передискретизації GDAL Warp</link>."
+"Варіанти алгоритму: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline' та "
+"'Lanczos'. Докладнішу інформацію див. у розділі: <link xlink:href=\"http://www"
+".gdal.org/gdalwarp.html\">Методи передискретизації GDAL Warp</link>."
 
 #. Tag: para
 #, no-c-format
@@ -30462,8 +30462,8 @@ msgid ""
 msgstr ""
 "Для варіанту, що приймає масив <xref linkend=\"addbandarg\"/>(Варіант 1), "
 "конкретне значення індексу addbandarg є відносним до растру на момент "
-"додавання до растру каналу, описаної цим addbandarg. Дивіться приклад «"
-"Кілька нових каналів» нижче."
+"додавання до растру каналу, описаної цим addbandarg. Дивіться приклад \""
+"Кілька нових каналів\" нижче."
 
 #. Tag: para
 #, no-c-format
@@ -31355,7 +31355,7 @@ msgid ""
 msgstr ""
 "Повертає рівномірне обертання растру в радіанах. Якщо растр не має "
 "рівномірного обертання, повертається NaN. Докладнішу інформацію див. у "
-"розділі <link xlink:href=«http://en.wikipedia.org/wiki/World_file»>World "
+"розділі <link xlink:href=\"http://en.wikipedia.org/wiki/World_file\">World "
 "File</link>."
 
 #. Tag: para
@@ -31376,7 +31376,7 @@ msgid ""
 "more details."
 msgstr ""
 "Повертає геоприв'язку X skew (або параметр обертання). Докладнішу інформацію "
-"див. у <link xlink:href=«http://en.wikipedia.org/wiki/World_file»>World "
+"див. у <link xlink:href=\"http://en.wikipedia.org/wiki/World_file\">World "
 "File</link>."
 
 #. Tag: para
@@ -31397,7 +31397,7 @@ msgid ""
 "more details."
 msgstr ""
 "Повертає геоприв'язку Y skew (або параметр обертання). Докладнішу інформацію "
-"див. у <link xlink:href=«http://en.wikipedia.org/wiki/World_file»>World "
+"див. у <link xlink:href=\"http://en.wikipedia.org/wiki/World_file\">World "
 "File</link>."
 
 #. Tag: para
