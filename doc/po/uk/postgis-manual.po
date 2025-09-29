@@ -7684,7 +7684,7 @@ msgstr ""
 "використовується для відстеження відвіданих елементів Node та Edge, щоб "
 "використовувати перехресні посилання (xlink:xref) замість дублювання "
 "визначень. Таблиця повинна мати (принаймні) два цілочисельні поля: "
-"“element_type” та “element_id”. Користувач, який викликає функцію, повинен "
+"'element_type' та 'element_id'. Користувач, який викликає функцію, повинен "
 "мати права на читання та запис у вказаній таблиці. Для найкращої "
 "продуктивності слід визначити індекс для <varname>element_type</varname> та "
 "<varname>element_id</varname> у такому порядку. Такий індекс буде створено "
@@ -12209,8 +12209,8 @@ msgid ""
 "Returns the type of the geometry as a string. Eg: 'LINESTRING', 'POLYGON', "
 "'MULTIPOINT', etc."
 msgstr ""
-"Повертає тип геометрії у вигляді рядка. Наприклад: “LINESTRING”, “POLYGON”, "
-"“MULTIPOINT” тощо."
+"Повертає тип геометрії у вигляді рядка. Наприклад: 'LINESTRING', 'POLYGON', "
+"'MULTIPOINT' тощо."
 
 #. Tag: para
 #, no-c-format
@@ -12230,7 +12230,7 @@ msgid ""
 "string of the form 'POINTM'."
 msgstr ""
 "Ця функція також вказує, чи вимірюється геометрія, повертаючи рядок у "
-"вигляді “POINTM”."
+"вигляді 'POINTM'."
 
 #. Tag: para
 #, no-c-format
@@ -13014,8 +13014,8 @@ msgid ""
 "returned, as well as the fact that it will not indicate whether the geometry "
 "is measured."
 msgstr ""
-"Повертає тип геометрії у вигляді рядка. Наприклад: “ST_LineString”, "
-"“ST_Polygon”,'ST_MultiPolygon' тощо. Ця функція відрізняється від "
+"Повертає тип геометрії у вигляді рядка. Наприклад: 'ST_LineString', "
+"'ST_Polygon','ST_MultiPolygon' тощо. Ця функція відрізняється від "
 "GeometryType(geometry) тим, що повертає строку і ST на початку, а також тим, "
 "що не вказує, чи виміряно геометрію."
 
@@ -13241,7 +13241,7 @@ msgid ""
 "illegal in PostGIS 2.0.0 to better conform with SQL/MM standards"
 msgstr ""
 "Змінено: 2.0.0 У попередніх версіях PostGIS "
-"ST_GeomFromText(“GEOMETRYCOLLECTION(EMPTY)”) було дозволено. Тепер це є "
+"ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') було дозволено. Тепер це є "
 "незаконним у PostGIS 2.0.0 для кращої відповідності стандартам SQL/MM"
 
 #. Tag: refpurpose
@@ -14379,8 +14379,8 @@ msgid ""
 msgstr ""
 "До версії 1.3 ST_Expand використовувався разом з <xref "
 "linkend=\"ST_Distance\"/> для виконання індексованих запитів на відстань. "
-"Наприклад, <code>geom &amp;&amp;ST_Expand(“POINT(10 20)”, 10) AND "
-"ST_Distance(geom, “POINT(10 20)”) &lt;10</code>. Це було замінено простішою "
+"Наприклад, <code>geom &amp;&amp;ST_Expand('POINT(10 20)', 10) AND "
+"ST_Distance(geom, 'POINT(10 20)') &lt;10</code>. Це було замінено простішою "
 "та ефективнішою функцією <xref linkend=\"ST_DWithin\"/>."
 
 #. Tag: para
@@ -18190,11 +18190,11 @@ msgid ""
 "code>"
 msgstr ""
 "Змінено: 2.1.0 В результаті впровадження підтримки географії використання "
-"<code>ST_Segmentize(“LINESTRING(1 2, 3 4)”, 0.5)</code> спричиняє помилку "
+"<code>ST_Segmentize('LINESTRING(1 2, 3 4)', 0.5)</code> спричиняє помилку "
 "неоднозначної функції. Вхідні дані потрібно правильно вказати як геометрію "
 "або географію. Використовуйте ST_GeomFromText, ST_GeogFromText або "
 "перетворення до необхідного типу (наприклад, "
-"<code>ST_Segmentize(“LINESTRING(1 2, 3 4)”::geometry, 0.5) )</code>"
+"<code>ST_Segmentize('LINESTRING(1 2, 3 4)'::geometry, 0.5) )</code>"
 
 #. Tag: para
 #, no-c-format
@@ -18323,9 +18323,9 @@ msgid ""
 "'move' parameter, finally re-unioning the pieces together."
 msgstr ""
 "Ця функція розділяє вхідні геометрії, а потім переміщує кожен отриманий "
-"компонент, що потрапляє праворуч (для від'ємного значення “move”) або "
-"ліворуч (для додатного значення “move”) від заданої лінії “wrap” у напрямку, "
-"визначеному параметром “move”, і нарешті знову об'єднує частини разом."
+"компонент, що потрапляє праворуч (для від'ємного значення 'move') або "
+"ліворуч (для додатного значення 'move') від заданої лінії 'wrap' у напрямку, "
+"визначеному параметром 'move', і нарешті знову об'єднує частини разом."
 
 #. Tag: para
 #, no-c-format
@@ -19414,9 +19414,9 @@ msgid ""
 "should now be written as ST_GeomFromText('GEOMETRYCOLLECTION EMPTY')"
 msgstr ""
 "Змінено: 2.0.0 У попередніх версіях PostGIS "
-"ST_GeomFromText(“GEOMETRYCOLLECTION(EMPTY)”) було дозволено. Тепер це є "
+"ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') було дозволено. Тепер це є "
 "некоректним у PostGIS 2.0.0 для кращої відповідності стандартам SQL/MM. "
-"Тепер це слід писати як ST_GeomFromText(“GEOMETRYCOLLECTION EMPTY”)"
+"Тепер це слід писати як ST_GeomFromText('GEOMETRYCOLLECTION EMPTY')"
 
 #. Tag: para
 #, no-c-format
@@ -19751,8 +19751,8 @@ msgid ""
 "it does not look exactly like its AsEWKB representation."
 msgstr ""
 "ПРИМІТКА: Незважаючи на те, що масиви байтів розділяються символом \\ і "
-"можуть містити символ “, нам потрібно екранувати обидва символи за допомогою "
-"\\ і ”', якщо стандарт standard_conforming_strings вимкнено. Тому це не "
+"можуть містити символ ', нам потрібно екранувати обидва символи за допомогою "
+"\\ і '', якщо стандарт standard_conforming_strings вимкнено. Тому це не "
 "виглядає точно так, як його представлення в AsEWKB."
 
 #. Tag: para
@@ -19768,8 +19768,8 @@ msgstr ""
 "на on, тоді як у попередніх версіях було встановлено на off. Ви можете "
 "змінити значення за замовчуванням за потреби для окремого запиту або на "
 "рівні бази даних чи сервера. Нижче наведено, як це зробити, якщо "
-"standard_conforming_strings = on. У цьому випадку ми екрануємо “ за "
-"допомогою стандартного ansi ”, але коси риски не екрануються"
+"standard_conforming_strings = on. У цьому випадку ми екрануємо ' за "
+"допомогою стандартного ansi ', але коси риски не екрануються"
 
 #. Tag: para
 #, no-c-format
@@ -21018,7 +21018,7 @@ msgstr ""
 "<varname>schema_name</varname> — це ім'я схеми таблиці. <varname>srid</"
 "varname> має бути цілочисельним значенням, що посилається на запис у таблиці "
 "SPATIAL_REF_SYS. <varname>type</varname> повинен бути рядком, що відповідає "
-"типу геометрії, наприклад, “POLYGON” або “MULTILINESTRING” . Якщо "
+"типу геометрії, наприклад, 'POLYGON' або 'MULTILINESTRING' . Якщо "
 "schema_name не існує (або не видно в поточному search_path) або вказаний "
 "SRID, тип геометрії або розмір є недійсними, виникає помилка."
 
@@ -23970,8 +23970,8 @@ msgid ""
 "geom"
 msgstr ""
 "Індекс спрацьовує тільки в тому випадку, якщо одна з геометрій є константою "
-"(не знаходиться в підзапиті/cte). Наприклад, “SRID=3005;POINT(1011102 "
-"450541)”::geometry замість a.geom"
+"(не знаходиться в підзапиті/cte). Наприклад, 'SRID=3005;POINT(1011102 "
+"450541)'::geometry замість a.geom"
 
 #. Tag: para
 #, no-c-format
@@ -24096,7 +24096,7 @@ msgid ""
 "of a.geom"
 msgstr ""
 "Індекс спрацьовує тільки в тому випадку, якщо одна з геометрій є константою "
-"(не в підзапиті/cte). Наприклад, “SRID=3005;LINESTRINGM(0 0 0,0 0 1)”::"
+"(не в підзапиті/cte). Наприклад, 'SRID=3005;LINESTRINGM(0 0 0,0 0 1)'::"
 "geometry замість a.geom."
 
 #. Tag: para
@@ -24153,7 +24153,7 @@ msgid ""
 "(ST_GeomFromText('POINT(1 2)') &lt;#&gt; geom) instead of g1.geom &lt;#&gt;."
 msgstr ""
 "Індекс спрацьовує тільки в тому випадку, якщо одна з геометрій є константою, "
-"наприклад ORDER BY (ST_GeomFromText(“POINT(1 2)”) &lt;#&gt; geom) замість g1."
+"наприклад ORDER BY (ST_GeomFromText('POINT(1 2)') &lt;#&gt; geom) замість g1."
 "geom &lt;#&gt;."
 
 #. Tag: para
@@ -24426,7 +24426,7 @@ msgstr ""
 "linkend=\"OpenGISWKBWKT\">Well-Known Binary</link> (WKB). Перший варіант "
 "функції за замовчуванням використовує кодування, що відповідає ендіану "
 "сервера. Другий варіант функції приймає текстовий аргумент, що визначає "
-"кодування ендіана: “NDR” для little-endian або “XDR” для big-endian. "
+"кодування ендіана: 'NDR' для little-endian або 'XDR' для big-endian. "
 "Введення невідомих аргументів призведе до виведення little-endian."
 
 #. Tag: para
@@ -24467,7 +24467,7 @@ msgid ""
 msgstr ""
 "Стандартна поведінка в PostgreSQL 9.0 була змінена на виведення bytea в "
 "шістнадцятковому кодуванні. Якщо ваші графічні інструменти вимагають старої "
-"поведінки, то встановіть SET bytea_output=“escape” у вашій базі даних."
+"поведінки, то встановіть SET bytea_output='escape' у вашій базі даних."
 
 #. Tag: para
 #, no-c-format
@@ -24499,10 +24499,10 @@ msgid ""
 "then install <filename>legacy.sql</filename>."
 msgstr ""
 "Змінено: 2.0.0 Вхідні дані для цієї функції не можуть бути невідомими — вони "
-"повинні бути геометрією. Такі конструкції, як <code>ST_AsBinary(“POINT(1 "
-"2)”)</code>, більше не є дійсними, і ви отримаєте помилку <code>n "
+"повинні бути геометрією. Такі конструкції, як <code>ST_AsBinary('POINT(1 "
+"2)')</code>, більше не є дійсними, і ви отримаєте помилку <code>n "
 "st_asbinary(unknown) is not unique</code>. Такий код потрібно змінити на "
-"<code>ST_AsBinary(“POINT(1 2)”::geometry);</code>. Якщо це неможливо, "
+"<code>ST_AsBinary('POINT(1 2)'::geometry);</code>. Якщо це неможливо, "
 "встановіть <filename>legacy.sql</filename>."
 
 #. Tag: para
@@ -24542,8 +24542,8 @@ msgstr ""
 "linkend=\"EWKB_EWKT\">Extended Well-Known Binary</link> (EWKB) з метаданими "
 "SRID. Перший варіант функції за замовчуванням використовує кодування, що "
 "відповідає порядку байтів на сервері. Другий варіант функції приймає "
-"текстовий аргумент, що визначає кодування ендіана: “NDR” для little-endian "
-"або “XDR” для big-endian. Введення невідомих аргументів призведе до "
+"текстовий аргумент, що визначає кодування ендіана: 'NDR' для little-endian "
+"або 'XDR' для big-endian. Введення невідомих аргументів призведе до "
 "виведення little-endian."
 
 #. Tag: para
@@ -25629,7 +25629,7 @@ msgstr ""
 "абсолютні переміщення. Третій аргумент може бути використаний для зменшення "
 "максимальної кількості десяткових цифр, що використовуються у вихідних даних "
 "(за замовчуванням 15). Точкові геометрії будуть відображатися як cx/cy, коли "
-"аргумент “rel” дорівнює 0, x/y, коли “rel” дорівнює 1. Багатоточкові "
+"аргумент 'rel' дорівнює 0, x/y, коли 'rel' дорівнює 1. Багатоточкові "
 "геометрії розділяються комами (\",\"), геометрії GeometryCollection "
 "розділяються крапками з комою (\";\")."
 
@@ -25895,9 +25895,9 @@ msgstr ""
 "org/documents/specifications/19775-1/V3.2/Part01/components/geodata."
 "html#Specifyingaspatialreference\">Дивіться специфікації X3D, що визначають "
 "систему просторових координат.</link>. Стандартним результатом буде "
-"<code>GeoCoordinate geoSystem=“\"GD\" \"WE\" \"longitude_first\"”</code>. "
+"<code>GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"'</code>. "
 "Якщо ви віддаєте перевагу стандартному для X3D <code>GeoCoordinate "
-"geoSystem=“\"GD\" “WE” \"latitude_first\"”</code>, використовуйте <code>(2 + "
+"geoSystem='\"GD\" 'WE' \"latitude_first\"'</code>, використовуйте <code>(2 + "
 "1)</code> = <code>3</code>."
 
 #. Tag: entry
@@ -27144,7 +27144,7 @@ msgid ""
 "'quad_segs=#' : number of line segments used to approximate a quarter circle "
 "(default is 8)."
 msgstr ""
-"“quad_segs=#” : кількість відрізків лінії, що використовуються для "
+"'quad_segs=#' : кількість відрізків лінії, що використовуються для "
 "апроксимації чверті кола (за замовчуванням — 8)."
 
 #. Tag: para
@@ -27153,8 +27153,8 @@ msgid ""
 "'endcap=round|flat|square' : endcap style (defaults to \"round\"). 'butt' is "
 "accepted as a synonym for 'flat'."
 msgstr ""
-"“endcap=round|flat|square” : стиль кінцевої частини (за замовчуванням "
-"\"round\"). “butt” приймається як синонім “flat”."
+"'endcap=round|flat|square' : стиль кінцевої частини (за замовчуванням "
+"\"round\"). 'butt' приймається як синонім 'flat'."
 
 #. Tag: para
 #, no-c-format
@@ -27162,8 +27162,8 @@ msgid ""
 "'join=round|mitre|bevel' : join style (defaults to \"round\"). 'miter' is "
 "accepted as a synonym for 'mitre'."
 msgstr ""
-"“join=round|mitre|bevel” : стиль з'єднання (за замовчуванням \"round\"). "
-"“miter” приймається як синонім “mitre”."
+"'join=round|mitre|bevel' : стиль з'єднання (за замовчуванням \"round\"). "
+"'miter' приймається як синонім 'mitre'."
 
 #. Tag: para
 #, no-c-format
@@ -27171,8 +27171,8 @@ msgid ""
 "'mitre_limit=#.#' : mitre ratio limit (only affects mitered join style). "
 "'miter_limit' is accepted as a synonym for 'mitre_limit'."
 msgstr ""
-"“mitre_limit=#.#” : обмеження кута зрізу (впливає тільки на стиль з'єднання "
-"з кутом зрізу). “miter_limit” приймається як синонім “mitre_limit”."
+"'mitre_limit=#.#' : обмеження кута зрізу (впливає тільки на стиль з'єднання "
+"з кутом зрізу). 'miter_limit' приймається як синонім 'mitre_limit'."
 
 #. Tag: para
 #, no-c-format
@@ -27182,7 +27182,7 @@ msgid ""
 "This is only applicable to LINESTRING geometry and does not affect POINT or "
 "POLYGON geometries. By default end caps are square."
 msgstr ""
-"“side=both|left|right” : “left” або “right” виконує односторонній буфер на "
+"'side=both|left|right' : 'left' або 'right' виконує односторонній буфер на "
 "геометрії, причому сторона буфера відносна до напрямку лінії. Це "
 "застосовується тільки до геометрії LINESTRING і не впливає на геометрії "
 "POINT або POLYGON. За замовчуванням кінці є квадратними."
@@ -28545,7 +28545,7 @@ msgid ""
 "'quad_segs=#' : number of segments used to approximate a quarter circle "
 "(defaults to 8)."
 msgstr ""
-"“quad_segs=#” : кількість сегментів, що використовуються для апроксимації "
+"'quad_segs=#' : кількість сегментів, що використовуються для апроксимації "
 "чверті кола (за замовчуванням 8)."
 
 #. Tag: para
@@ -28554,8 +28554,8 @@ msgid ""
 "'join=round|mitre|bevel' : join style (defaults to \"round\"). 'miter' is "
 "also accepted as a synonym for 'mitre'."
 msgstr ""
-"“join=round|mitre|bevel” : стиль з'єднання (за замовчуванням \"round\"). "
-"“miter” також приймається як синонім “mitre”."
+"'join=round|mitre|bevel' : стиль з'єднання (за замовчуванням \"round\"). "
+"'miter' також приймається як синонім 'mitre'."
 
 #. Tag: para
 #, no-c-format
@@ -28563,8 +28563,8 @@ msgid ""
 "'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). "
 "'miter_limit' is also accepted as a synonym for 'mitre_limit'."
 msgstr ""
-"“mitre_limit=#.#” : обмеження коефіцієнта mitre (впливає тільки на стиль "
-"mitred). “miter_limit” також приймається як синонім “mitre_limit”."
+"'mitre_limit=#.#' : обмеження коефіцієнта mitre (впливає тільки на стиль "
+"mitred). 'miter_limit' також приймається як синонім 'mitre_limit'."
 
 #. Tag: para
 #, no-c-format
@@ -28597,7 +28597,7 @@ msgstr ""
 #, no-c-format
 msgid "-15, 'quad_segs=4 join=round' original line and its offset -15 units"
 msgstr ""
-"-15, \"quad_segs=4 join=round\" оригінальна лінія та її зміщення -15 одиниць"
+"-15, 'quad_segs=4 join=round' оригінальна лінія та її зміщення -15 одиниць"
 
 #. Tag: para
 #, no-c-format
@@ -30761,10 +30761,10 @@ msgid ""
 msgstr ""
 "Для <code>nbands</code> як текстового варіанту функції, роздільником за "
 "замовчуванням є <code>,</code>, що означає, що ви можете запитувати "
-"<code>“1,2,3”</code>, а якщо ви хочете використовувати інший роздільник, ви "
-"повинні ввести <code>ST_Band(rast, “1@2@3”, “@”)</code>. Для запиту "
+"<code>'1,2,3'</code>, а якщо ви хочете використовувати інший роздільник, ви "
+"повинні ввести <code>ST_Band(rast, '1@2@3', '@')</code>. Для запиту "
 "декількох каналів ми настійно рекомендуємо використовувати масивну форму "
-"цієї функції, наприклад <code>ST_Band(rast, “{1,2,3}”::int[]);</code>, "
+"цієї функції, наприклад <code>ST_Band(rast, '{1,2,3}'::int[]);</code>, "
 "оскільки форма <code>text</code> списку смуг може бути видалена в майбутніх "
 "версіях PostGIS."
 
