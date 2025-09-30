@@ -91,7 +91,7 @@ ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
 	text        *id_column_text = PG_GETARG_TEXT_P(4);
 	StringInfo	result;
 	char        *geom_column = text_to_cstring(geom_column_text);
-	char        *id_column = text_to_cstring(id_column_text);
+	char        *id_column = id_column_text == NULL ? "" : text_to_cstring(id_column_text);
 	Oid geom_oid = InvalidOid;
 	Oid geog_oid = InvalidOid;
 
