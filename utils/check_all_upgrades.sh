@@ -19,9 +19,10 @@ cd - > /dev/null
 export PGDATABASE=template1
 
 usage() {
-  echo "Usage: $0 [-s] <to_version>"
+  echo "Usage: $0 [<option> ...] <to_version>"
   echo "Options:"
-  echo "\t-s  Stop on first failure"
+  echo "\t--help|-h        Print this usage text"
+  echo "\t-s               Stop on first failure"
   echo "\t--skip <regexp>  Do not run tests with label matching given extended regexp"
 }
 
@@ -31,6 +32,9 @@ while test -n "$1"; do
   elif test "$1" = "--skip"; then
     shift
     SKIP_LABEL_REGEXP=$1
+  elif test "$1" = "-h" -o "$1" = "--help"; then
+    usage
+    exit 0
   elif test -z "$to_version_param"; then
     to_version_param="$1"
   else
