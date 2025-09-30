@@ -7,6 +7,7 @@ PostGIS 3.6.1
   - #5978, geometry_columns needs to still parse table constraints (Paul Ramsey)
   - #5987, ST_GeometryN fails for non-collections (Paul Ramsey)  
   - #5991, CircularString distance error (Paul Ramsey)
+  - #5994, Null pointer in ST_AsGeoJsonRow (Alexander Kukushkin)
 
 
 PostGIS 3.6.0
