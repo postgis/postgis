@@ -86,12 +86,12 @@ ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
 {
 	Datum		array = PG_GETARG_DATUM(0);
 	text        *geom_column_text = PG_GETARG_TEXT_P(1);
+	char        *geom_column = PG_ARGISNULL(1) ? "" : text_to_cstring(geom_column_text);
 	int32       maxdecimaldigits = PG_GETARG_INT32(2);
 	bool		do_pretty = PG_GETARG_BOOL(3);
 	text        *id_column_text = PG_GETARG_TEXT_P(4);
-	StringInfo	result;
-	char        *geom_column = text_to_cstring(geom_column_text);
-	char        *id_column = text_to_cstring(id_column_text);
+	char        *id_column = PG_ARGISNULL(4) ? "" : text_to_cstring(id_column_text);
+	StringInfoData result;
 	Oid geom_oid = InvalidOid;
 	Oid geog_oid = InvalidOid;
 
@@ -105,11 +105,11 @@ ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
 	if (strlen(id_column) == 0)
 		id_column = NULL;
 
-	result = makeStringInfo();
+	initStringInfo(&result);
 
-	composite_to_geojson(fcinfo, array, geom_column, id_column, maxdecimaldigits, result, do_pretty, geom_oid, geog_oid);
+	composite_to_geojson(fcinfo, array, geom_column, id_column, maxdecimaldigits, &result, do_pretty, geom_oid, geog_oid);
 
-	PG_RETURN_TEXT_P(cstring_to_text_with_len(result->data, result->len));
+	PG_RETURN_TEXT_P(cstring_to_text_with_len(result.data, result.len));
 }
 
 /*
