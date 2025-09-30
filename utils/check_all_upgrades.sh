@@ -24,6 +24,8 @@ usage() {
   echo "\t--help|-h        Print this usage text"
   echo "\t-s               Stop on first failure"
   echo "\t--skip <regexp>  Do not run tests with label matching given extended regexp"
+  echo "Positional parameters:"
+  echo "\t<to_version>     Target upgrade version. See regress/run_test.pl help on --upgrade-path <to> parameter."
 }
 
 while test -n "$1"; do
