@@ -433,14 +433,14 @@ static void test_ptarrayarc_contains_point()
 {
 	/* int ptarrayarc_contains_point(const POINTARRAY *pa, const POINT2D *pt) */
 
-	LWLINE *lwline;
+	LWCIRCSTRING *lwcirc;
 	POINTARRAY *pa;
 	POINT2D pt;
 	int rv;
 
 	/*** Collection of semi-circles surrounding unit square ***/
-	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 -1, -2 0, -1 1, 0 2, 1 1, 2 0, 1 -1, 0 -2, -1 -1)"));
-	pa = lwline->points;
+	lwcirc = lwgeom_as_lwcircstring(lwgeom_from_text("CIRCULARSTRING(-1 -1, -2 0, -1 1, 0 2, 1 1, 2 0, 1 -1, 0 -2, -1 -1)"));
+	pa = lwcirc->points;
 
 	/* Point in middle of square */
 	pt.x = 0;
@@ -473,9 +473,9 @@ static void test_ptarrayarc_contains_point()
 	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);
 
 	/*** Two-edge ring made up of semi-circles (really, a circle) ***/
-	lwline_free(lwline);
-	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 0 1, 1 0, 0 -1, -1 0)"));
-	pa = lwline->points;
+	lwcircstring_free(lwcirc);
+	lwcirc = lwgeom_as_lwcircstring(lwgeom_from_text("CIRCULARSTRING(-1 0, 0 1, 1 0, 0 -1, -1 0)"));
+	pa = lwcirc->points;
 
 	/* Point outside */
 	pt.x = -1.5;
@@ -514,9 +514,9 @@ static void test_ptarrayarc_contains_point()
 	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);
 
 	/*** Two-edge ring, closed ***/
-	lwline_free(lwline);
-	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(1 6, 6 1, 9 7, 6 10, 1 6)"));
-	pa = lwline->points;
+	lwcircstring_free(lwcirc);
+	lwcirc = lwgeom_as_lwcircstring(lwgeom_from_text("CIRCULARSTRING(1 6, 6 1, 9 7, 6 10, 1 6)"));
+	pa = lwcirc->points;
 
 	/* Point to left of ring */
 	pt.x = 20;
@@ -525,9 +525,9 @@ static void test_ptarrayarc_contains_point()
 	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);
 
 	/*** One-edge ring, closed circle ***/
-	lwline_free(lwline);
-	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 1 0, -1 0)"));
-	pa = lwline->points;
+	lwcircstring_free(lwcirc);
+	lwcirc = lwgeom_as_lwcircstring(lwgeom_from_text("CIRCULARSTRING(-1 0, 1 0, -1 0)"));
+	pa = lwcirc->points;
 
 	/* Point inside */
 	pt.x = 0;
@@ -548,23 +548,23 @@ static void test_ptarrayarc_contains_point()
 	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);
 
 	/*** Overshort ring ***/
-	lwline_free(lwline);
-	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 1 0)"));
-	pa = lwline->points;
+	lwcircstring_free(lwcirc);
+	lwcirc = lwgeom_as_lwcircstring(lwgeom_from_text("CIRCULARSTRING(-1 0, 1 0)"));
+	pa = lwcirc->points;
 	cu_error_msg_reset();
 	rv = ptarrayarc_contains_point(pa, &pt);
 	//printf("%s\n", cu_error_msg);
-	ASSERT_STRING_EQUAL("ptarrayarc_contains_point called with even number of points", cu_error_msg);
+	ASSERT_STRING_EQUAL(cu_error_msg, "ptarrayarc_raycast_intersections called with even number of points");
 
 	/*** Unclosed ring ***/
-	lwline_free(lwline);
-	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 1 0, 2 0)"));
-	pa = lwline->points;
+	lwcircstring_free(lwcirc);
+	lwcirc = lwgeom_as_lwcircstring(lwgeom_from_text("CIRCULARSTRING(-1 0, 1 0, 2 0)"));
+	pa = lwcirc->points;
 	cu_error_msg_reset();
 	rv = ptarrayarc_contains_point(pa, &pt);
-	ASSERT_STRING_EQUAL("ptarrayarc_contains_point called on unclosed ring", cu_error_msg);
+	ASSERT_STRING_EQUAL(cu_error_msg, "ptarrayarc_contains_point called on unclosed ring");
 
-	lwline_free(lwline);
+	lwcircstring_free(lwcirc);
 }
 
 static void test_ptarray_scale()

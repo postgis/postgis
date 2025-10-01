@@ -222,6 +222,11 @@ static void test_mindistance2d_tolerance(void)
 	DIST2DTEST(
 		"CURVEPOLYGON(CIRCULARSTRING(7874821 8715927,8907663 8715927,8844683 7750316,7937800 7750316,7874821 8715927))",
 		"POINT(5433865 8243495)", 2271704.2698450615, default_accepted_error);
+
+	/* Ticket 5989 */
+	DIST2DTEST(
+		"CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0, -1 5, 0 10), (0 10, -10 10, -10 0, 0 0)))",
+		"POINT(-0.5 5)", 0.5, default_accepted_error);
 }
 
 static void
@@ -918,6 +923,25 @@ test_lw_dist2d_arc_arc(void)
 	B2.x = 0 ; B2.y = 1;
 	B3.x = 1 ; B3.y = 0;
 
+	/* Arc inside the semicircle */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x =  0;   A1.y = .5;
+	A2.x = -0.3; A2.y = .5;
+	A3.x =  0;   A3.y = .6;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	printf("%g\n", dl.distance);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.271798, 0.000001);
+
+	/* Arc inside the semicircle */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -0.5; A1.y = .5;
+	A2.x = -0.4; A2.y = .2;
+	A3.x =  0;   A3.y = 0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.292893, 0.000001);
+
 	/* Arc above the unit semicircle */
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	A1.x = -1; A1.y = 3;
@@ -953,6 +977,15 @@ test_lw_dist2d_arc_arc(void)
 	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
+
+	/* Closed circle */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -2.0; A1.y = -0.1;
+	A2.x =  1.5; A2.y = -0.1;
+	A3.x =  -2.0; A3.y = -0.1;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.480742, 0.0001);
 
 	/* Concentric: and fully parallel */
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
