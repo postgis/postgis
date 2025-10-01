@@ -366,7 +366,7 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
 /* -------------------------------------------------------------------- */
 /*  Initialize the info structure.                  */
 /* -------------------------------------------------------------------- */
-    psSHP = STATIC_CAST(SHPHandle, calloc(sizeof(SHPInfo),1));
+    psSHP = STATIC_CAST(SHPHandle, calloc(1,sizeof(SHPInfo)));
     if( psSHP == SHPLIB_NULLPTR )
         return SHPLIB_NULLPTR;
 
@@ -1259,7 +1259,7 @@ SHPCreateObject( int nSHPType, int nShapeId, int nParts,
         psObject->nParts = MAX(1,nParts);
 
         psObject->panPartStart = STATIC_CAST(int *,
-            calloc(sizeof(int), psObject->nParts));
+            calloc(psObject->nParts, sizeof(int)));
         psObject->panPartType = STATIC_CAST(int *,
             malloc(sizeof(int) * psObject->nParts));
 
@@ -1288,13 +1288,13 @@ SHPCreateObject( int nSHPType, int nShapeId, int nParts,
     {
         size_t nSize = sizeof(double) * nVertices;
         psObject->padfX = STATIC_CAST(double *, padfX ? malloc(nSize) :
-                                             calloc(sizeof(double),nVertices));
+                                             calloc(nVertices, sizeof(double)));
         psObject->padfY = STATIC_CAST(double *, padfY ? malloc(nSize) :
-                                             calloc(sizeof(double),nVertices));
+                                             calloc(nVertices, sizeof(double)));
         psObject->padfZ = STATIC_CAST(double *, padfZ && bHasZ ? malloc(nSize) :
-                                             calloc(sizeof(double),nVertices));
+                                             calloc(nVertices, sizeof(double)));
         psObject->padfM = STATIC_CAST(double *, padfM && bHasM ? malloc(nSize) :
-                                             calloc(sizeof(double),nVertices));
+                                             calloc(nVertices, sizeof(double)));
         if( padfX != SHPLIB_NULLPTR )
             memcpy(psObject->padfX, padfX, nSize);
         if( padfY != SHPLIB_NULLPTR )
