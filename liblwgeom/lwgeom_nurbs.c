@@ -63,7 +63,7 @@ lwnurbscurve_construct(int32_t srid, GBOX *bbox, uint32_t degree, POINTARRAY *po
 {
 	LWNURBSCURVE *result;
 
-	/* Validate degree: must be between 1 and 10 for practical use */
+	/* Validate degree: must be between 1 and 10 */
 	if (degree < 1 || degree > 10)
 		return NULL;
 
@@ -75,7 +75,7 @@ lwnurbscurve_construct(int32_t srid, GBOX *bbox, uint32_t degree, POINTARRAY *po
 	result = lwalloc(sizeof(LWNURBSCURVE));
 	result->type = NURBSCURVETYPE;
 	result->srid = srid;
-	result->bbox = bbox; /* Use provided bbox */
+	result->bbox = bbox;
 	result->degree = degree;
 	result->nweights = nweights;
 	result->nknots = nknots;
@@ -128,14 +128,14 @@ lwnurbscurve_construct_empty(int32_t srid, char hasz, char hasm)
 {
 	LWNURBSCURVE *result = lwalloc(sizeof(LWNURBSCURVE));
 	result->type = NURBSCURVETYPE;
-	result->flags = lwflags(hasz, hasm, 0); /* Set dimensional flags */
+	result->flags = lwflags(hasz, hasm, 0);
 	result->srid = srid;
-	result->bbox = NULL; /* No bounding box for empty geometry */
-	result->degree = 1; /* Minimum valid degree */
-	result->points = ptarray_construct_empty(hasz, hasm, 1); /* Empty point array */
-	result->weights = NULL; /* No weights for empty curve */
+	result->bbox = NULL;
+	result->degree = 1;
+	result->points = ptarray_construct_empty(hasz, hasm, 1);
+	result->weights = NULL;
 	result->nweights = 0;
-	result->knots = NULL; /* No knots for empty curve */
+	result->knots = NULL;
 	result->nknots = 0;
 	return result;
 }
@@ -154,23 +154,18 @@ lwnurbscurve_free(LWNURBSCURVE *curve)
 {
 	if (!curve) return;
 
-	/* Free bounding box if computed */
 	if (curve->bbox)
 		lwfree(curve->bbox);
 
-	/* Free control points array */
 	if (curve->points)
 		ptarray_free(curve->points);
 
-	/* Free weights array for rational curves */
 	if (curve->weights)
 		lwfree(curve->weights);
 
-	/* Free knot vector */
 	if (curve->knots)
 		lwfree(curve->knots);
 
-	/* Free the curve structure itself */
 	lwfree(curve);
 }
 

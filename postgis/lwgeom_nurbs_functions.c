@@ -132,7 +132,6 @@ double_array_from_float8_array(ArrayType *array, int *count)
 	return result;
 }
 
-/* ST_MakeNurbsCurve(degree, control_points) - Basic constructor */
 PG_FUNCTION_INFO_V1(ST_MakeNurbsCurve);
 /**
  * Construct a non-rational NURBS curve from a control LINESTRING and a degree.
@@ -224,7 +223,6 @@ Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/* ST_MakeNurbsCurve(degree, control_points, weights) - Constructor with weights */
 PG_FUNCTION_INFO_V1(ST_MakeNurbsCurveWithWeights);
 /**
  * Construct a NURBS curve using a degree, control points LINESTRING, and per-control-point weights.
@@ -346,7 +344,7 @@ Datum ST_MakeNurbsCurveWithWeights(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
-/* ST_MakeNurbsCurve(degree, control_points, weights, knots) - Complete constructor */
+
 PG_FUNCTION_INFO_V1(ST_MakeNurbsCurveComplete);
 /**
  * Construct a NURBS curve from degree, control points, and optional weights and knots.
@@ -522,7 +520,6 @@ Datum ST_MakeNurbsCurveComplete(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/* ST_NurbsCurveControlPoints(nurbscurve) - Extract control points */
 PG_FUNCTION_INFO_V1(ST_NurbsCurveControlPoints);
 /**
  * Return the control points of a NURBS curve as a MULTIPOINT geometry.
@@ -578,7 +575,6 @@ Datum ST_NurbsCurveControlPoints(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/* ST_NurbsCurveDegree(nurbscurve) - Get degree */
 PG_FUNCTION_INFO_V1(ST_NurbsCurveDegree);
 /**
  * Return the polynomial degree of a NURBS curve.
@@ -617,7 +613,6 @@ Datum ST_NurbsCurveDegree(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(degree);
 }
 
-/* ST_NurbsCurveWeights(nurbscurve) - Get weights array */
 PG_FUNCTION_INFO_V1(ST_NurbsCurveWeights);
 /**
  * Return the weight vector of a NURBS curve as a PostgreSQL float8 array.
@@ -666,7 +661,6 @@ Datum ST_NurbsCurveWeights(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/* ST_NurbsCurveKnots(nurbscurve) - Get knots array */
 PG_FUNCTION_INFO_V1(ST_NurbsCurveKnots);
 /**
  * Return the knot vector of a NURBS curve as a PostgreSQL float8 array.
@@ -721,7 +715,6 @@ Datum ST_NurbsCurveKnots(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/* ST_NurbsCurveNumControlPoints(nurbscurve) - Get number of control points */
 PG_FUNCTION_INFO_V1(ST_NurbsCurveNumControlPoints);
 /**
  * Get number of control points in a NURBS curve.
@@ -759,7 +752,6 @@ Datum ST_NurbsCurveNumControlPoints(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(npoints);
 }
 
-/* ST_NurbsCurveIsRational(nurbscurve) - Check if curve is rational */
 PG_FUNCTION_INFO_V1(ST_NurbsCurveIsRational);
 /**
  * Determine whether a NURBS curve is rational (has weights).
@@ -798,7 +790,6 @@ Datum ST_NurbsCurveIsRational(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(is_rational);
 }
 
-/* ST_NurbsCurveIsValid(nurbscurve) - Validate NURBS curve */
 PG_FUNCTION_INFO_V1(ST_NurbsCurveIsValid);
 /**
  * Validate a NURBS curve geometry.
@@ -884,7 +875,6 @@ cleanup:
 	PG_RETURN_BOOL(is_valid);
 }
 
-/* ST_NurbsEvaluate(nurbscurve, parameter) - Evaluate NURBS curve at parameter */
 PG_FUNCTION_INFO_V1(ST_NurbsEvaluate);
 /**
  * Evaluate a NURBS curve at a specific parameter value.
@@ -945,7 +935,6 @@ Datum ST_NurbsEvaluate(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/* ST_NurbsToLineString(nurbscurve, num_segments) - Convert NURBS to LineString */
 PG_FUNCTION_INFO_V1(ST_NurbsToLineString);
 /**
  * Convert a NURBS curve to a LineString by sampling at uniform intervals.

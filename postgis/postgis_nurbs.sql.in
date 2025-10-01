@@ -1,5 +1,5 @@
 -- ST_MakeNurbsCurve(degree, control_points)
--- Creates a basic NURBS curve with uniform weights (B-spline)
+-- Creates a NURBS curve with uniform weights (B-spline)
 -- Parameters:
 --   degree: Polynomial degree (1-10), higher = smoother
 --   control_points: LINESTRING geometry defining curve shape
@@ -26,7 +26,7 @@ CREATE OR REPLACE FUNCTION ST_MakeNurbsCurve(degree integer, control_points geom
     COST 100;
 
 -- ST_MakeNurbsCurve(degree, control_points, weights, knots)
--- Creates a complete NURBS curve with custom knot vector
+-- Creates a NURBS curve with custom knot vector
 -- Parameters:
 --   degree: Polynomial degree (1-10)
 --   control_points: LINESTRING geometry defining curve shape
@@ -110,7 +110,7 @@ CREATE OR REPLACE FUNCTION ST_NurbsCurveIsRational(nurbscurve geometry)
     COST 10;
 
 -- ST_NurbsCurveIsValid(nurbscurve)
--- Comprehensive mathematical validation of NURBS curve
+-- Mathematical validation of NURBS curve
 -- Checks:
 --   - Sufficient control points for degree
 --   - Positive weights (if rational)
@@ -144,7 +144,6 @@ CREATE OR REPLACE FUNCTION ST_IsNurbsCurve(geometry)
 
 -- ST_NurbsEvaluate(nurbscurve, parameter)
 -- Evaluates a NURBS curve at a specific parameter value
--- Uses Cox-de Boor recursion for basis function calculation
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 --   parameter: Parameter value for evaluation (typically 0.0 to 1.0)
@@ -158,7 +157,7 @@ CREATE OR REPLACE FUNCTION ST_NurbsEvaluate(nurbscurve geometry, parameter doubl
 
 -- ST_NurbsToLineString(nurbscurve, num_segments)
 -- Converts a NURBS curve to a LineString by uniform sampling
--- Creates piecewise linear approximation without SFCGAL dependency
+-- Creates piecewise linear approximation
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 --   num_segments: Number of line segments (default: 32, range: 2-10000)
