@@ -1975,12 +1975,11 @@ DBFReorderFields( DBFHandle psDBF, int* panMap )
         return FALSE;
 
     /* a simple malloc() would be enough, but calloc() helps clang static analyzer */
-    panFieldOffsetNew = STATIC_CAST(int *, calloc(sizeof(int), psDBF->nFields));
-    panFieldSizeNew = STATIC_CAST(int *, calloc(sizeof(int),  psDBF->nFields));
-    panFieldDecimalsNew = STATIC_CAST(int *, calloc(sizeof(int), psDBF->nFields));
-    pachFieldTypeNew = STATIC_CAST(char *, calloc(sizeof(char), psDBF->nFields));
-    pszHeaderNew = STATIC_CAST(char*, malloc(sizeof(char) * XBASE_FLDHDR_SZ *
-                                  psDBF->nFields));
+    panFieldOffsetNew = STATIC_CAST(int *, calloc(psDBF->nFields, sizeof(int)));
+    panFieldSizeNew = STATIC_CAST(int *, calloc(psDBF->nFields, sizeof(int)));
+    panFieldDecimalsNew = STATIC_CAST(int *, calloc(psDBF->nFields, sizeof(int)));
+    pachFieldTypeNew = STATIC_CAST(char *, calloc(psDBF->nFields, sizeof(char)));
+    pszHeaderNew = STATIC_CAST(char*, malloc(sizeof(char) * XBASE_FLDHDR_SZ * psDBF->nFields));
 
     if( panFieldOffsetNew == SHPLIB_NULLPTR || panFieldSizeNew == SHPLIB_NULLPTR ||
         panFieldDecimalsNew == SHPLIB_NULLPTR || pachFieldTypeNew == SHPLIB_NULLPTR ||
