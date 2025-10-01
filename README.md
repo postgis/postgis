@@ -25,7 +25,7 @@ Matrix room, also bridged to the irc://irc.libera.chat/#postgis
 
 ## Official source tarball releases
 
-http://postgis.net/source
+http://postgis.net/development/source_code/
 
 If you would like to contribute to this project, please refer to our
 [contributing guidelines](CONTRIBUTING.md).
