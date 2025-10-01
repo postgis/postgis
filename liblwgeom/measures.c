@@ -1622,7 +1622,7 @@ lw_dist2d_circle_intersections(
  * @return int The number of intersection points found (1 or 2). Returns 0 if
  * the centers are coincident or another error occurs.
  */
-static int
+static uint32_t
 lw_dist2d_circle_circle_intersections(
 	const POINT2D *cA, double rA,
 	const POINT2D *cB, double rB,
@@ -1741,7 +1741,7 @@ lw_dist2d_arc_arc(
 		/*
 		 * Find the two points the circles intersect at.
 		 */
-		int npoints = lw_dist2d_circle_circle_intersections(
+		uint32_t npoints = lw_dist2d_circle_circle_intersections(
 			&center_A, radius_A,
 			&center_B, radius_B,
 			intersectionPts);
