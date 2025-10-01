@@ -830,9 +830,9 @@ static size_t lwnurbscurve_to_wkb_size(const LWNURBSCURVE *curve, uint8_t varian
 			/* Inconsistent state - got count but no array */
 			lwerror("Failed to get knots for NURBS curve");
 			return 0;
- 		}
+		}
 
-    return size;
+	return size;
 }
 
 /**

@@ -44,11 +44,10 @@ CREATE OR REPLACE FUNCTION ST_MakeNurbsCurve(degree integer, control_points geom
 
 
 -- ST_NurbsCurveControlPoints(nurbscurve)
--- Extracts control points as euclidean coordinates (removes weight influence)
+-- Extracts control points from a NURBS curve
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
--- Returns: MULTIPOINT of control points in euclidean space
--- Note: For rational curves, divides homogeneous coordinates by weights
+-- Returns: MULTIPOINT geometry containing the control points
 CREATE OR REPLACE FUNCTION ST_NurbsCurveControlPoints(nurbscurve geometry)
     RETURNS geometry
     AS 'MODULE_PATHNAME', 'ST_NurbsCurveControlPoints'

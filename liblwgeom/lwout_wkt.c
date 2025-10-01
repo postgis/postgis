@@ -685,34 +685,34 @@ static void lwnurbscurve_to_wkt_sb(const LWNURBSCURVE *curve, stringbuffer_t *sb
     }
 
     /* Output weights */
-    if (output_weights) {
-        stringbuffer_append_len(sb, ",(", 2);
-        if (curve->weights && curve->nweights > 0) {
-            for (uint32_t i = 0; i < curve->nweights; i++) {
-                if (i > 0) stringbuffer_append_len(sb, ",", 1);
-	    	stringbuffer_append_double(sb, curve->weights[i], precision);
-            }
-        } else {
-            /* Generate default uniform weights (1.0 for each control point) */
-	    for (uint32_t i = 0; i < curve->points->npoints; i++) {
-                if (i > 0) stringbuffer_append_len(sb, ",", 1);
-                stringbuffer_append_double(sb, 1.0, precision);
-            }
-        }
-        stringbuffer_append_len(sb, ")", 1);
-    }
+	if (output_weights) {
+		stringbuffer_append_len(sb, ",(", 2);
+		if (curve->weights && curve->nweights > 0) {
+			for (uint32_t i = 0; i < curve->nweights; i++) {
+				if (i > 0) stringbuffer_append_len(sb, ",", 1);
+				stringbuffer_append_double(sb, curve->weights[i], precision);
+			}
+		} else {
+			/* Generate default uniform weights (1.0 for each control point) */
+			for (uint32_t i = 0; i < curve->points->npoints; i++) {
+				if (i > 0) stringbuffer_append_len(sb, ",", 1);
+				stringbuffer_append_double(sb, 1.0, precision);
+			}
+		}
+		stringbuffer_append_len(sb, ")", 1);
+	}
 
-    /* Knot vector if present */
-    if (output_knots) {
-        stringbuffer_append_len(sb, ",(", 2);
-        for (uint32_t i = 0; i < curve->nknots; i++) {
-            if (i > 0) stringbuffer_append_len(sb, ",", 1);
-	    stringbuffer_append_double(sb, curve->knots[i], precision);
-        }
-        stringbuffer_append_len(sb, ")", 1);
-    }
+	/* Knot vector if present */
+	if (output_knots) {
+		stringbuffer_append_len(sb, ",(", 2);
+		for (uint32_t i = 0; i < curve->nknots; i++) {
+			if (i > 0) stringbuffer_append_len(sb, ",", 1);
+			stringbuffer_append_double(sb, curve->knots[i], precision);
+		}
+		stringbuffer_append_len(sb, ")", 1);
+	}
 
-    stringbuffer_append_len(sb, ")", 1);
+	stringbuffer_append_len(sb, ")", 1);
 }
 
 /**

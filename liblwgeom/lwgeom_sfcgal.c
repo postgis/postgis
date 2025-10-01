@@ -383,11 +383,11 @@ lwgeom_nurbs_to_sfcgal_nurbs(const LWNURBSCURVE *nurbs)
 
 	for (i = 0; i < nurbs->points->npoints; i++)
 	{
-    if (!getPoint4d_p(nurbs->points, i, &pt)) {
-        for (uint32_t j = 0; j < i; j++) sfcgal_geometry_delete(points[j]);
-        lwfree(points);
-        return NULL;
-    }
+		if (!getPoint4d_p(nurbs->points, i, &pt)) {
+			for (uint32_t j = 0; j < i; j++) sfcgal_geometry_delete(points[j]);
+			lwfree(points);
+			return NULL;
+		}
 		if (FLAGS_GET_Z(nurbs->flags) && FLAGS_GET_M(nurbs->flags))
 			points[i] = sfcgal_point_create_from_xyzm(pt.x, pt.y, pt.z, pt.m);
 		else if (FLAGS_GET_Z(nurbs->flags))
@@ -524,8 +524,8 @@ sfcgal_nurbs_to_lwgeom_nurbs(const sfcgal_geometry_t* sfcgal_nurbs, int srid)
 		weights ? num_points : 0, num_knots);
 
 	if (!result) {
-	 if (pa) ptarray_free(pa);
-	 /* weights/knots freed below */
+		if (pa) ptarray_free(pa);
+		/* weights/knots freed below */
 	}
 
 	/* Free temporary buffers after constructor deep-copies them */
