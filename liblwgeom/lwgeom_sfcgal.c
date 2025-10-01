@@ -292,7 +292,7 @@ ptarray_to_SFCGAL(const POINTARRAY *pa, int type)
 LWGEOM *
 SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t srid)
 {
-	uint32_t ngeoms, nshells, nsolids;
+	uint32_t ngeoms = 0, nshells = 0, nsolids = 0;
 	uint32_t i, j, k;
 	int want3d;
 
