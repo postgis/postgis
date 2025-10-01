@@ -962,7 +962,7 @@ ptarrayarc_raycast_intersections(const POINTARRAY *pa, const POINT2D *p, int *on
 		const POINT2D* p0 = getPoint2d_cp(pa, i-1);
 		const POINT2D* p1 = getPoint2d_cp(pa, i);
 		const POINT2D* p2 = getPoint2d_cp(pa, i+1);
-		POINT2D center;
+		POINT2D center = {0,0};
 		double radius, d;
 		GBOX gbox;
 
