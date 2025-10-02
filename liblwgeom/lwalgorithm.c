@@ -82,7 +82,9 @@ lw_seg_length(const POINT2D *A1, const POINT2D *A2)
 int
 lw_pt_in_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 {
-	return lw_segment_side(A1, A3, A2) == lw_segment_side(A1, A3, P);
+	int pt_side = lw_segment_side(A1, A3, P);
+	int arc_side = lw_segment_side(A1, A3, A2);
+	return pt_side == 0 || pt_side == arc_side;
 }
 
 /**
@@ -94,6 +96,28 @@ lw_pt_in_seg(const POINT2D *P, const POINT2D *A1, const POINT2D *A2)
 {
 	return ((A1->x <= P->x && P->x < A2->x) || (A1->x >= P->x && P->x > A2->x)) ||
 	       ((A1->y <= P->y && P->y < A2->y) || (A1->y >= P->y && P->y > A2->y));
+}
+
+int
+lw_pt_on_segment(const POINT2D* p1, const POINT2D* p2, const POINT2D* p)
+{
+    // Check if the point is within the bounding box of the segment
+    if (p->x < FP_MIN(p1->x, p2->x) || p->x > FP_MAX(p1->x, p2->x) ||
+        p->y < FP_MIN(p1->y, p2->y) || p->y > FP_MAX(p1->y, p2->y))
+    {
+        return LW_FALSE;
+    }
+
+    // Check for collinearity using the 2D cross-product.
+    // (p.y - p1.y) * (p2.x - p1.x) - (p.x - p1.x) * (p2.y - p1.y)
+    double cross_product = (p->y - p1->y) * (p2->x - p1->x) - (p->x - p1->x) * (p2->y - p1->y);
+
+    if (fabs(cross_product) < DBL_EPSILON)
+    {
+        return LW_TRUE; // Point is collinear and within the bounding box
+    }
+
+    return LW_TRUE;
 }
 
 /**

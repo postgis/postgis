@@ -141,63 +141,49 @@ int lwgeom_contains_point(const LWGEOM *geom, const POINT2D *pt)
 	return LW_FAILURE;
 }
 
+/*
+ * Use a ray-casting count to determine if the point
+ * is inside or outside of the compound curve. Ray-casting
+ * is run against each component of the overall arc, and
+ * the even/odd test run against the total of all components.
+ * Returns LW_INSIDE / LW_BOUNDARY / LW_OUTSIDE
+ */
 int
 lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt)
 {
-	uint32_t i;
-	LWLINE *lwline;
-	LWCIRCSTRING *lwcirc;
-	int wn = 0;
-	int winding_number = 0;
-	int result;
+	int intersections = 0;
 
-	for ( i = 0; i < comp->ngeoms; i++ )
-	{
-		LWGEOM *lwgeom = comp->geoms[i];
-		if ( lwgeom->type == LINETYPE )
-		{
-			lwline = lwgeom_as_lwline(lwgeom);
-			if ( comp->ngeoms == 1 )
-			{
-				return ptarray_contains_point(lwline->points, pt);
-			}
-			else
-			{
-				/* Don't check closure while doing p-i-p test */
-				result = ptarray_contains_point_partial(lwline->points, pt, LW_FALSE, &winding_number);
-			}
-		}
-		else
-		{
-			lwcirc = lwgeom_as_lwcircstring(lwgeom);
-			if ( ! lwcirc ) {
-				lwerror("Unexpected component of type %s in compound curve", lwtype_name(lwgeom->type));
-				return 0;
-			}
-			if ( comp->ngeoms == 1 )
-			{
-				return ptarrayarc_contains_point(lwcirc->points, pt);
-			}
-			else
-			{
-				/* Don't check closure while doing p-i-p test */
-				result = ptarrayarc_contains_point_partial(lwcirc->points, pt, LW_FALSE, &winding_number);
-			}
-		}
-
-		/* Propogate boundary condition */
-		if ( result == LW_BOUNDARY )
-			return LW_BOUNDARY;
-
-		wn += winding_number;
-	}
-
-	/* Outside */
-	if (wn == 0)
+	if (lwgeom_is_empty(lwcompound_as_lwgeom(comp)))
 		return LW_OUTSIDE;
 
-	/* Inside */
-	return LW_INSIDE;
+	for (uint32_t j = 0; j < comp->ngeoms; j++)
+ 	{
+		int on_boundary = LW_FALSE;
+		const LWGEOM *sub = comp->geoms[j];
+		if (sub->type == LINETYPE)
+		{
+			LWLINE *lwline = lwgeom_as_lwline(sub);
+			intersections += ptarray_raycast_intersections(lwline->points, pt, &on_boundary);
+		}
+		else if (sub->type == CIRCSTRINGTYPE)
+ 		{
+			LWCIRCSTRING *lwcirc = lwgeom_as_lwcircstring(sub);
+			intersections += ptarrayarc_raycast_intersections(lwcirc->points, pt, &on_boundary);
+ 		}
+ 		else
+ 		{
+			lwerror("%s: unsupported type %s", __func__, lwtype_name(sub->type));
+ 		}
+
+		if (on_boundary)
+			return LW_BOUNDARY;
+	}
+
+	/*
+	 * Odd number of intersections means inside.
+	 * Even means outside.
+	 */
+	return (intersections % 2) ? LW_INSIDE : LW_OUTSIDE;
 }
 
 LWCOMPOUND *
