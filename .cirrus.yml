@@ -1,0 +1,95 @@
+task:
+  only_if: $CIRRUS_BRANCH =~ 'pull/.*'
+  name: FreeBSD
+  alias: test-freebsd
+  #env:
+    #MAKE_FLAGS: -j 8
+
+  install_script:
+    - sed -i.bak -e 's,pkg+http://pkg.FreeBSD.org/\${ABI}/quarterly,pkg+http://pkg.FreeBSD.org/\${ABI}/latest,' /etc/pkg/FreeBSD.conf
+    - ASSUME_ALWAYS_YES=yes pkg bootstrap -f
+    - pkg install -y
+        autoconf
+        automake
+        bison
+        cunit
+        docbook
+        gdal
+        geos
+        gmake
+        iconv
+        json-c
+        libtool
+        libxml2
+        libxslt
+        pcre
+        pkgconf
+        postgresql13-contrib
+        postgresql13-server
+        proj
+        protobuf-c
+        sfcgal
+    - projsync --system-directory --source-id us_noaa
+    - projsync --system-directory --source-id ch_swisstopo
+
+  patch_script:
+    # will be removed
+    - find . -name "*.pl" | xargs sed -i -r 's|/usr/bin/perl|/usr/bin/env perl|'
+  build_script:
+    - ./autogen.sh
+    - ./configure PKG_CONFIG=/usr/local/bin/pkgconf CFLAGS="-isystem /usr/local/include -Wall -fno-omit-frame-pointer -Werror" LDFLAGS="-L/usr/local/lib" --with-libiconv-prefix=/usr/local --without-gui --with-topology --without-raster  --with-sfcgal=/usr/local/bin/sfcgal-config --with-address-standardizer --with-protobuf
+    - service postgresql oneinitdb
+    - service postgresql onestart
+    - su postgres -c "createuser -s `whoami`"
+    - gmake || { service postgresql onestop; exit 1;}
+    - gmake check RUNTESTFLAGS="-v" || { service postgresql onestop; exit 1;}
+    - gmake install || { service postgresql onestop; exit 1;}
+    - gmake check RUNTESTFLAGS="-v --extension" || { service postgresql onestop; exit 1;}
+    - gmake check RUNTESTFLAGS="-v --extension --dumprestore" || { service postgresql onestop; exit 1;}
+    - service postgresql onestop
+
+  freebsd_instance:
+    cpu: 8
+    memory: 24g
+  matrix:
+    # - name: 14-CURRENT
+    #   freebsd_instance:
+    #     image_family: freebsd-14-0-snap
+    - name: 13.2-RELEASE
+      freebsd_instance:
+        image_family: freebsd-13-2
+
+task:
+  name: macOS
+  alias: test-macos
+  test_script:
+    - brew update
+    - brew install
+        autoconf
+        automake
+        cunit
+        docbook
+        docbook-xsl
+        gdal
+        geos
+        gpp
+        json-c
+        libtool
+        pcre2
+        pkg-config
+        postgresql@14
+        proj
+        sfcgal
+    - ./autogen.sh
+    - ./configure --without-gui --without-interrupt-tests --without-topology --without-raster  --with-sfcgal --with-address-standardizer --without-protobuf --with-pgconfig=/opt/homebrew/opt/postgresql@14/bin/pg_config
+    - brew services start postgresql@14
+    - postgres -V
+    - make -j8 || { brew services stop postgresql@14; exit 1;}
+    - make -j8 check || { brew services stop postgresql@14; exit 1;}
+    - brew services stop postgresql@14
+
+  matrix:
+    macos_instance:
+      image: ghcr.io/cirruslabs/macos-ventura-base:latest
+  #  macos_instance:
+  #    image: ghcr.io/cirruslabs/macos-monterey-base:latest
