@@ -346,55 +346,61 @@ lwnurbscurve_get_control_points(const LWNURBSCURVE *curve)
 }
 
 /**
- * Evaluates the Cox-de Boor basis function recursively.
+ * Find the knot span index for parameter u (Algorithm A2.1 from "The NURBS Book").
  *
- * This is the fundamental building block for NURBS curve evaluation.
- * The Cox-de Boor recursion formula:
- *   N_{i,0}(u) = 1 if knots[i] <= u < knots[i+1], 0 otherwise
- *   N_{i,p}(u) = ((u - knots[i]) / (knots[i+p] - knots[i])) * N_{i,p-1}(u) +
- *                ((knots[i+p+1] - u) / (knots[i+p+1] - knots[i+1])) * N_{i+1,p-1}(u)
+ * Uses binary search to find the knot span [u_i, u_{i+1}) containing parameter u.
+ * This is the index i such that knots[i] <= u < knots[i+1].
  *
- * @param i knot span index
- * @param p degree of the basis function
- * @param u parameter value
- * @param knots knot vector
- * @param nknots number of knots
- * @return basis function value at parameter u
+ * For a NURBS curve with n control points and degree p, the knot vector has
+ * n + p + 1 knots. Valid parameter values are in [knots[p], knots[n]].
+ *
+ * @param degree polynomial degree of the NURBS curve
+ * @param u parameter value to locate
+ * @param knots knot vector array
+ * @param npoints number of control points
+ * @return knot span index i where knots[i] <= u < knots[i+1]
  */
-static double
-lwnurbscurve_basis_function(int i, int p, double u, const double *knots, int nknots)
+static uint32_t
+lwnurbscurve_find_span(uint32_t degree, double u, const double *knots, uint32_t npoints)
 {
-	/* Bounds checking */
-	if (i < 0 || i + p + 1 >= nknots) return 0.0;
+	uint32_t low, high, mid;
 
-	/* Base case: degree 0 (piecewise constant) */
-	if (p == 0) {
-		return (knots[i] <= u && u < knots[i + 1]) ? 1.0 : 0.0;
+	/* Special case: u at end of parameter range */
+	if (u >= knots[npoints]) {
+		return npoints - 1;
 	}
 
-	/* First term: (u - knots[i]) / (knots[i+p] - knots[i]) * N_{i,p-1}(u) */
-	double denom1 = knots[i + p] - knots[i];
-	double term1 = 0.0;
-	if (denom1 != 0.0) {
-		term1 = (u - knots[i]) / denom1 * lwnurbscurve_basis_function(i, p - 1, u, knots, nknots);
+	/* Special case: u at start of parameter range */
+	if (u <= knots[degree]) {
+		return degree;
 	}
 
-	/* Second term: (knots[i+p+1] - u) / (knots[i+p+1] - knots[i+1]) * N_{i+1,p-1}(u) */
-	double denom2 = knots[i + p + 1] - knots[i + 1];
-	double term2 = 0.0;
-	if (denom2 != 0.0) {
-		term2 = (knots[i + p + 1] - u) / denom2 * lwnurbscurve_basis_function(i + 1, p - 1, u, knots, nknots);
+	/* Binary search for the knot span */
+	low = degree;
+	high = npoints;
+	mid = (low + high) / 2;
+
+	while (u < knots[mid] || u >= knots[mid + 1]) {
+		if (u < knots[mid]) {
+			high = mid;
+		} else {
+			low = mid;
+		}
+		mid = (low + high) / 2;
 	}
 
-	return term1 + term2;
+	return mid;
 }
 
 /**
- * Evaluates a NURBS curve at parameter t.
+ * Evaluates a NURBS curve at parameter t using De Boor's algorithm.
  *
- * Uses the rational basis function formula:
- * C(t) = Σ(w_i * N_{i,p}(t) * P_i) / Σ(w_i * N_{i,p}(t))
- * where N_{i,p}(t) are B-spline basis functions computed using Cox-de Boor recursion.
+ * Implements Algorithm A4.1 from "The NURBS Book" (Piegl & Tiller).
+ * This iterative algorithm is O(p^2) where p is the degree, compared to
+ * O(2^p) for the naive recursive Cox-de Boor approach.
+ *
+ * For rational NURBS, uses homogeneous coordinates (wx, wy, wz, w) throughout
+ * the computation, then projects back to Cartesian coordinates at the end.
  *
  * @param curve NURBS curve to evaluate
  * @param t parameter value (typically in [0,1])
@@ -404,13 +410,16 @@ LWPOINT *
 lwnurbscurve_evaluate(const LWNURBSCURVE *curve, double t)
 {
 	POINT4D result;
-	uint32_t i;
+	uint32_t j, k;
 	double *knots;
 	uint32_t nknots;
-	double x = 0.0, y = 0.0, z = 0.0, m = 0.0;
-	double denom = 0.0;
 	char hasz, hasm;
 	LWPOINT *lwpoint;
+	uint32_t span;
+	uint32_t degree;
+	POINT4D *temp;  /* Temporary array for De Boor algorithm */
+	double alpha;
+	double *weights;  /* Temporary weights array for De Boor algorithm */
 
 	/* Validate input */
 	if (!curve || !curve->points || curve->points->npoints == 0)
@@ -419,6 +428,7 @@ lwnurbscurve_evaluate(const LWNURBSCURVE *curve, double t)
 	/* Get dimensional flags */
 	hasz = FLAGS_GET_Z(curve->flags);
 	hasm = FLAGS_GET_M(curve->flags);
+	degree = curve->degree;
 
 	/* Clamp parameter t to valid range [0,1] */
 	if (t <= 0.0) {
@@ -437,41 +447,68 @@ lwnurbscurve_evaluate(const LWNURBSCURVE *curve, double t)
 		return lwpoint_construct_empty(curve->srid, hasz, hasm);
 	}
 
-	/* NURBS curve evaluation using rational basis functions */
-	for (i = 0; i < curve->points->npoints; i++) {
-		POINT4D ctrl_pt;
-		double N, w, wN;
+	/* Remap parameter from [0,1] to knot vector range [knots[degree], knots[npoints]] */
+	t = knots[degree] + t * (knots[curve->points->npoints] - knots[degree]);
 
-		getPoint4d_p(curve->points, i, &ctrl_pt);
+	/* Find the knot span containing parameter t (Algorithm A2.1) */
+	span = lwnurbscurve_find_span(degree, t, knots, curve->points->npoints);
 
-		/* Compute basis function value */
-		N = lwnurbscurve_basis_function(i, curve->degree, t, knots, nknots);
+	/* Allocate temporary arrays for De Boor iteration (degree+1 points) */
+	temp = lwalloc(sizeof(POINT4D) * (degree + 1));
+	weights = lwalloc(sizeof(double) * (degree + 1));
 
-		/* Get weight (1.0 if non-rational) */
-		w = (curve->weights && i < curve->nweights) ? curve->weights[i] : 1.0;
+	/* Initialize temp array with control points and weights.
+	 * For rational curves: store (w*x, w*y, w*z, w) in homogeneous coordinates
+	 * For non-rational: weights are 1.0 */
+	for (j = 0; j <= degree; j++) {
+		uint32_t cp_idx = span - degree + j;
+		POINT4D cp;
 
-		wN = w * N;
+		getPoint4d_p(curve->points, cp_idx, &cp);
+		weights[j] = (curve->weights && cp_idx < curve->nweights) ?
+		              curve->weights[cp_idx] : 1.0;
 
-		x += wN * ctrl_pt.x;
-		y += wN * ctrl_pt.y;
-		if (hasz) z += wN * ctrl_pt.z;
-		if (hasm) m += wN * ctrl_pt.m;
-		denom += wN;
+		/* Store in homogeneous coordinates (w*P) */
+		temp[j].x = cp.x * weights[j];
+		temp[j].y = cp.y * weights[j];
+		temp[j].z = hasz ? cp.z * weights[j] : 0.0;
+		temp[j].m = hasm ? cp.m * weights[j] : 0.0;
 	}
 
-	/* For rational curves, divide by the denominator */
-	if (curve->weights && denom != 0.0) {
-		x /= denom;
-		y /= denom;
-		if (hasz) z /= denom;
-		if (hasm) m /= denom;
+	/* De Boor iteration (Algorithm A4.1) in homogeneous space */
+	for (k = 1; k <= degree; k++) {
+		for (j = degree; j >= k; j--) {
+			uint32_t knot_idx = span - degree + j;
+			double denom = knots[knot_idx + degree - k + 1] - knots[knot_idx];
+
+			if (denom != 0.0) {
+				alpha = (t - knots[knot_idx]) / denom;
+
+				/* Linear interpolation in homogeneous space */
+				temp[j].x = (1.0 - alpha) * temp[j-1].x + alpha * temp[j].x;
+				temp[j].y = (1.0 - alpha) * temp[j-1].y + alpha * temp[j].y;
+				if (hasz) temp[j].z = (1.0 - alpha) * temp[j-1].z + alpha * temp[j].z;
+				if (hasm) temp[j].m = (1.0 - alpha) * temp[j-1].m + alpha * temp[j].m;
+
+				/* Also interpolate weights */
+				weights[j] = (1.0 - alpha) * weights[j-1] + alpha * weights[j];
+			}
+		}
 	}
 
-	result.x = x;
-	result.y = y;
-	result.z = hasz ? z : 0.0;
-	result.m = hasm ? m : 0.0;
+	/* Result is in temp[degree], stored in homogeneous coordinates (w*P)
+	 * Project back to Cartesian by dividing by weight */
+	result = temp[degree];
+	if (weights[degree] != 0.0 && weights[degree] != 1.0) {
+		result.x /= weights[degree];
+		result.y /= weights[degree];
+		if (hasz) result.z /= weights[degree];
+		if (hasm) result.m /= weights[degree];
+	}
 
+	lwfree(weights);
+
+	lwfree(temp);
 	lwfree(knots);
 
 create_result:
