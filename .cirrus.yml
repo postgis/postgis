@@ -49,15 +49,12 @@ task:
     - service postgresql onestop
 
   freebsd_instance:
-    cpu: 8
-    memory: 24g
+    cpu: ${NCPU}
+    memory: 24G
   matrix:
-    # - name: 14-CURRENT
-    #   freebsd_instance:
-    #     image_family: freebsd-14-0-snap
-    - name: 13.2-RELEASE
+    - name: 14.2-RELEASE
       freebsd_instance:
-        image_family: freebsd-13-2
+        image_family: freebsd-14-2
 
 task:
   name: macOS
