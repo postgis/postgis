@@ -31,6 +31,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 - #5985, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro Santilli)
 - #5991, CircularString distance error (Paul Ramsey)
 - #5994, Null pointer in ST_AsGeoJsonRow (Alexander Kukushkin)
+- #5989, ST_Distance error on CurvePolygon (Paul Ramsey)
 
 
 PostGIS 3.5.3
