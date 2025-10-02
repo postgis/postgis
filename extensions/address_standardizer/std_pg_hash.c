@@ -251,8 +251,8 @@ GetStdFromPortalCache(StdPortalCache *STDCache,  char *lextab, char *gaztab, cha
     for (i=0; i<STD_CACHE_ITEMS; i++) {
         StdCacheItem *ci = &STDCache->StdCache[i];
         if (ci->lextab && !strcmp(ci->lextab, lextab) &&
-            ci->lextab && !strcmp(ci->gaztab, gaztab) &&
-            ci->lextab && !strcmp(ci->rultab, rultab))
+            ci->gaztab && !strcmp(ci->gaztab, gaztab) &&
+            ci->rultab && !strcmp(ci->rultab, rultab))
                 return STDCache->StdCache[i].std;
     }
 
