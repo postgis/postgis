@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-10-03 17:47+0000\n"
+"PO-Revision-Date: 2025-10-03 19:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -36698,12 +36698,14 @@ msgid ""
 "Raster processing function that calculates the standard deviation of pixel "
 "values in a neighborhood."
 msgstr ""
+"Функція обробки растра, яка обчислює стандартне відхилення значень сусідніх "
+"пікселів."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Calculate the standard deviation of pixel values in a neighborhood of pixels."
-msgstr ""
+msgstr "Обчисліть стандартне відхилення значень пікселів у сусідніх пікселях."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36711,11 +36713,12 @@ msgid ""
 "Raster processing function that calculates the sum of all pixel values in a "
 "neighborhood."
 msgstr ""
+"Функція обробки растру, яка обчислює суму всіх значень сусідніх пікселів."
 
 #. Tag: para
 #, no-c-format
 msgid "Calculate the sum of all pixel values in a neighborhood of pixels."
-msgstr ""
+msgstr "Обчисліть суму всіх значень пікселів у сусідніх пікселях."
 
 #. Tag: para
 #, no-c-format
@@ -36725,11 +36728,15 @@ msgid ""
 "linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
 "linkend=\"RT_ST_StdDev4ma\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Min4ma\"/>, "
+"<xref linkend=\"RT_ST_Max4ma\"/>, <xref linkend=\"RT_ST_Mean4ma\"/>, <xref "
+"linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
+"linkend=\"RT_ST_StdDev4ma\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Processing: DEM (Elevation)"
-msgstr ""
+msgstr "Растрова обробка: DEM (висота над рівнем моря)"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36737,6 +36744,8 @@ msgid ""
 "Returns the aspect (in degrees by default) of an elevation raster band. "
 "Useful for analyzing terrain."
 msgstr ""
+"Повертає аспект (за замовчуванням у градусах) растрового каналу висоти. "
+"Корисно для аналізу рельєфу місцевості."
 
 #. Tag: para
 #, no-c-format
@@ -36744,6 +36753,9 @@ msgid ""
 "Returns the aspect (in degrees by default) of an elevation raster band. "
 "Utilizes map algebra and applies the aspect equation to neighboring pixels."
 msgstr ""
+"Повертає аспект (за замовчуванням у градусах) каналу растрового зображення "
+"висоти. Використовує алгебру карт і застосовує рівняння аспекту до сусідніх "
+"пікселів."
 
 #. Tag: para
 #, no-c-format
@@ -36751,6 +36763,8 @@ msgid ""
 "<varname>units</varname> indicates the units of the aspect. Possible values "
 "are: RADIANS, DEGREES (default)."
 msgstr ""
+"<varname>units</varname> вказує одиниці виміру аспекту. Можливі значення: "
+"RADIANS, DEGREES (за замовчуванням)."
 
 #. Tag: para
 #, no-c-format
@@ -36758,6 +36772,8 @@ msgid ""
 "When <varname>units</varname> = RADIANS, values are between 0 and 2 * pi "
 "radians measured clockwise from North."
 msgstr ""
+"Коли <varname>units</varname> = RADIANS, значення знаходяться в діапазоні "
+"від 0 до 2 * pi радіан, виміряних за годинниковою стрілкою від півночі."
 
 #. Tag: para
 #, no-c-format
@@ -36765,11 +36781,13 @@ msgid ""
 "When <varname>units</varname> = DEGREES, values are between 0 and 360 "
 "degrees measured clockwise from North."
 msgstr ""
+"Коли <varname>units</varname> = DEGREES, значення знаходяться в діапазоні "
+"від 0 до 360 градусів, виміряних за годинниковою стрілкою від півночі."
 
 #. Tag: para
 #, no-c-format
 msgid "If slope of pixel is zero, aspect of pixel is -1."
-msgstr ""
+msgstr "Якщо поворот пікселя дорівнює нулю, аспект пікселя дорівнює -1."
 
 #. Tag: para
 #, no-c-format
@@ -36781,6 +36799,12 @@ msgid ""
 "html/wwhelp.htm?context=FieldGuide&amp;file=Aspect_Images.html\">ERDAS Field "
 "Guide - Aspect Images</link>."
 msgstr ""
+"Для отримання додаткової інформації про поворот, експозицію та тіньове "
+"затінення див. <link xlink:href=\"http://webhelp.esri.com/arcgisdesktop/9.3/"
+"index.cfm? TopicName=How%20Hillshade%20works«>ESRI - Як працює тіньове "
+"затінення</link> та <link xlink:href=»http://e2b.erdas.com/fieldguide/wwhelp/"
+"wwhimpl/common/html/wwhelp.htm?context=FieldGuide&file=Aspect_Images.html\""
+">Польовий посібник ERDAS - Зображення аспектів</link>."
 
 #. Tag: para
 #, no-c-format
@@ -36788,6 +36812,8 @@ msgid ""
 "Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional "
 "<varname>interpolate_nodata</varname> function parameter"
 msgstr ""
+"Покращено: 2.1.0 Використовує ST_MapAlgebra() та додано опціональний "
+"параметр функції <varname>interpolate_nodata</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -36795,6 +36821,8 @@ msgid ""
 "Changed: 2.1.0 In prior versions, return values were in radians. Now, return "
 "values default to degrees"
 msgstr ""
+"Змінено: 2.1.0 У попередніх версіях значення повороту були в радіанах. Тепер "
+"значення повороту за замовчуванням в градусах"
 
 #. Tag: para
 #, no-c-format
@@ -36802,6 +36830,8 @@ msgid ""
 "Complete example of tiles of a coverage. This query only works with "
 "PostgreSQL 9.1 or higher."
 msgstr ""
+"Повний приклад плиток покриття. Цей запит працює тільки з PostgreSQL 9.1 або "
+"вище."
 
 #. Tag: para
 #, no-c-format
@@ -36810,6 +36840,9 @@ msgid ""
 "linkend=\"RT_ST_Roughness\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
 "linkend=\"RT_ST_Slope\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_TRI\"/>, <xref linkend=\"RT_ST_TPI\"/>, <xref "
+"linkend=\"RT_ST_Roughness\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
+"linkend=\"RT_ST_Slope\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36817,6 +36850,8 @@ msgid ""
 "Returns the hypothetical illumination of an elevation raster band using "
 "provided azimuth, altitude, brightness and scale inputs."
 msgstr ""
+"Повертає гіпотетичне освітлення растрового каналу висоти за допомогою "
+"введених значень азимута, висоти, яскравості та масштабу."
 
 #. Tag: para
 #, no-c-format
@@ -36826,6 +36861,10 @@ msgid ""
 "applies the hill shade equation to neighboring pixels. Return pixel values "
 "are between 0 and 255."
 msgstr ""
+"Повертає гіпотетичне освітлення растрового каналу висоти за допомогою "
+"вхідних даних азимута, висоти, яскравості та масштабу. Використовує алгебру "
+"карт і застосовує рівняння затінення пагорбів до сусідніх пікселів. Значення "
+"пікселів, що повертаються, знаходяться в діапазоні від 0 до 255."
 
 #. Tag: para
 #, no-c-format
@@ -36833,6 +36872,8 @@ msgid ""
 "<varname>azimuth</varname> is a value between 0 and 360 degrees measured "
 "clockwise from North."
 msgstr ""
+"<varname>azimuth</varname> — це значення від 0 до 360 градусів, виміряне за "
+"годинниковою стрілкою від півночі."
 
 #. Tag: para
 #, no-c-format
@@ -36840,6 +36881,8 @@ msgid ""
 "<varname>altitude</varname> is a value between 0 and 90 degrees where 0 "
 "degrees is at the horizon and 90 degrees is directly overhead."
 msgstr ""
+"<varname>altitude</varname> — це значення від 0 до 90 градусів, де 0 "
+"градусів відповідає горизонту, а 90 градусів — прямо над головою."
 
 #. Tag: para
 #, no-c-format
@@ -36847,6 +36890,8 @@ msgid ""
 "<varname>max_bright</varname> is a value between 0 and 255 with 0 as no "
 "brightness and 255 as max brightness."
 msgstr ""
+"<varname>max_bright</varname> — це значення від 0 до 255, де 0 означає "
+"відсутність яскравості, а 255 — максимальну яскравість."
 
 #. Tag: para
 #, no-c-format
@@ -36854,6 +36899,9 @@ msgid ""
 "<varname>scale</varname> is the ratio of vertical units to horizontal. For "
 "Feet:LatLon use scale=370400, for Meters:LatLon use scale=111120."
 msgstr ""
+"<varname>scale</varname> — це співвідношення вертикальних одиниць до "
+"горизонтальних. Для Feet:LatLon використовуйте scale=370400, для Meters:"
+"LatLon використовуйте scale=111120."
 
 #. Tag: para
 #, no-c-format
@@ -36863,6 +36911,10 @@ msgid ""
 "linkend=\"RT_ST_InvDistWeight4ma\"/> before computing the hillshade "
 "illumination."
 msgstr ""
+"Якщо <varname>interpolate_nodata</varname> має значення TRUE, значення "
+"пікселів NODATA з вхідного растру будуть інтерпольовані за допомогою <xref "
+"linkend=\"RT_ST_InvDistWeight4ma\"/>перед обчисленням освітлення тіньового "
+"рельєфу."
 
 #. Tag: para
 #, no-c-format
@@ -36871,6 +36923,9 @@ msgid ""
 "href=\"http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?"
 "TopicName=How%20Hillshade%20works\">How hillshade works</link>."
 msgstr ""
+"Для отримання додаткової інформації про Hillshade, будь ласка, зверніться до "
+"<link xlink:href=«http://webhelp.esri.com/arcgisdesktop/9.3/index."
+"cfm?TopicName=How%20Hillshade%20works»>Як працює hillshade</link>."
 
 #. Tag: para
 #, no-c-format
@@ -36878,6 +36933,8 @@ msgid ""
 "Changed: 2.1.0 In prior versions, azimuth and altitude were expressed in "
 "radians. Now, azimuth and altitude are expressed in degrees"
 msgstr ""
+"Змінено: 2.1.0 У попередніх версіях азимут і висота виражалися в радіанах. "
+"Тепер азимут і висота виражаються в градусах"
 
 #. Tag: para
 #, no-c-format
@@ -36886,11 +36943,14 @@ msgid ""
 "linkend=\"RT_ST_Roughness\"/>, <xref linkend=\"RT_ST_Aspect\"/>, <xref "
 "linkend=\"RT_ST_Slope\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_TRI\"/>, <xref linkend=\"RT_ST_TPI\"/>, <xref "
+"linkend=\"RT_ST_Roughness\"/>, <xref linkend=\"RT_ST_Aspect\"/>, <xref "
+"linkend=\"RT_ST_Slope\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a raster with the calculated \"roughness\" of a DEM."
-msgstr ""
+msgstr "Повертає растр з обчисленою «шорсткістю» цифрової моделі рельєфу (DEM)."
 
 #. Tag: para
 #, no-c-format
@@ -36898,6 +36958,8 @@ msgid ""
 "Calculates the \"roughness\" of a DEM, by subtracting the maximum from the "
 "minimum for a given area."
 msgstr ""
+"Обчислює «шорсткість» цифрової моделі рельєфу (DEM), віднімаючи максимальне "
+"значення від мінімального для заданої області."
 
 #. Tag: para
 #, no-c-format
@@ -36906,6 +36968,9 @@ msgid ""
 "linkend=\"RT_ST_Slope\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
 "linkend=\"RT_ST_Aspect\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_TRI\"/>, <xref linkend=\"RT_ST_TPI\"/>, <xref "
+"linkend=\"RT_ST_Slope\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
+"linkend=\"RT_ST_Aspect\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36913,6 +36978,8 @@ msgid ""
 "Returns the slope (in degrees by default) of an elevation raster band. "
 "Useful for analyzing terrain."
 msgstr ""
+"Повертає нахил (за замовчуванням у градусах) растрового діапазону висот. "
+"Корисно для аналізу рельєфу місцевості."
 
 #. Tag: para
 #, no-c-format
@@ -36920,6 +36987,8 @@ msgid ""
 "Returns the slope (in degrees by default) of an elevation raster band. "
 "Utilizes map algebra and applies the slope equation to neighboring pixels."
 msgstr ""
+"Повертає нахил (за замовчуванням у градусах) растрового діапазону висот. "
+"Використовує алгебру карт і застосовує рівняння нахилу до сусідніх пікселів."
 
 #. Tag: para
 #, no-c-format
@@ -36927,6 +36996,8 @@ msgid ""
 "<varname>units</varname> indicates the units of the slope. Possible values "
 "are: RADIANS, DEGREES (default), PERCENT."
 msgstr ""
+"<varname>units</varname> вказує одиниці виміру нахилу. Можливі значення: "
+"RADIANS, DEGREES (за замовчуванням), PERCENT."
 
 #. Tag: para
 #, no-c-format
@@ -36935,6 +37006,9 @@ msgid ""
 "from the input raster will be interpolated using <xref "
 "linkend=\"RT_ST_InvDistWeight4ma\"/> before computing the surface slope."
 msgstr ""
+"Якщо <varname>interpolate_nodata</varname> має значення TRUE, значення "
+"пікселів NODATA з вхідного растру будуть інтерпольовані за допомогою <xref "
+"linkend=\"RT_ST_InvDistWeight4ma\"/>перед обчисленням нахилу поверхні."
 
 #. Tag: para
 #, no-c-format
@@ -36946,6 +37020,12 @@ msgid ""
 "html/wwhelp.htm?context=FieldGuide&amp;file=Slope_Images.html\">ERDAS Field "
 "Guide - Slope Images</link>."
 msgstr ""
+"Для отримання додаткової інформації про нахил, експозицію та тіньове "
+"затінення див. <link xlink:href=\"http://webhelp.esri.com/arcgisdesktop/9.3/"
+"index.cfm? TopicName=How%20Hillshade%20works«>ESRI - Як працює тіньове "
+"затінення</link> та <link xlink:href=»http://e2b.erdas.com/fieldguide/wwhelp/"
+"wwhimpl/common/html/wwhelp.htm?context=FieldGuide&file=Slope_Images.html\""
+">Польовий посібник ERDAS - Зображення схилів</link>."
 
 #. Tag: para
 #, no-c-format
@@ -36954,6 +37034,9 @@ msgid ""
 "varname>, <varname>scale</varname>, <varname>interpolate_nodata</varname> "
 "function parameters"
 msgstr ""
+"Покращено: 2.1.0 Використовує ST_MapAlgebra() та додано опціональні "
+"параметри функції <varname>units</varname>, <varname>scale</varname>, "
+"<varname>interpolate_nodata</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -36962,11 +37045,14 @@ msgid ""
 "linkend=\"RT_ST_Roughness\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
 "linkend=\"RT_ST_Aspect\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_TRI\"/>, <xref linkend=\"RT_ST_TPI\"/>, <xref "
+"linkend=\"RT_ST_Roughness\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
+"linkend=\"RT_ST_Aspect\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a raster with the calculated Topographic Position Index."
-msgstr ""
+msgstr "Повертає растр з обчисленим індексом топографічного положення."
 
 #. Tag: para
 #, no-c-format
@@ -36974,11 +37060,13 @@ msgid ""
 "Calculates the Topographic Position Index, which is defined as the focal "
 "mean with radius of one minus the center cell."
 msgstr ""
+"Обчислює індекс топографічного положення, який визначається як фокальне "
+"середнє значення з радіусом, що дорівнює одиниці мінус центральна комірка."
 
 #. Tag: para
 #, no-c-format
 msgid "This function only supports a focalmean radius of one."
-msgstr ""
+msgstr "Ця функція підтримує тільки фокальний середній радіус, рівний одиниці."
 
 #. Tag: para
 #, no-c-format
@@ -36987,11 +37075,14 @@ msgid ""
 "linkend=\"RT_ST_Slope\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
 "linkend=\"RT_ST_Aspect\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_TRI\"/>, <xref linkend=\"RT_ST_Roughness\"/>, <xref "
+"linkend=\"RT_ST_Slope\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
+"linkend=\"RT_ST_Aspect\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a raster with the calculated Terrain Ruggedness Index."
-msgstr ""
+msgstr "Повертає растр з обчисленим індексом нерівності рельєфу."
 
 #. Tag: para
 #, no-c-format
@@ -37000,6 +37091,9 @@ msgid ""
 "neighbors, taking the absolute values of the differences, and averaging the "
 "result."
 msgstr ""
+"Індекс нерівності рельєфу розраховується шляхом порівняння центрального "
+"пікселя з сусідніми, вирахування абсолютних значень різниць і усереднення "
+"результату."
 
 #. Tag: para
 #, no-c-format
@@ -37008,6 +37102,9 @@ msgid ""
 "linkend=\"RT_ST_Slope\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
 "linkend=\"RT_ST_Aspect\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Roughness\"/>, <xref linkend=\"RT_ST_TPI\"/>, <xref "
+"linkend=\"RT_ST_Slope\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
+"linkend=\"RT_ST_Aspect\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37016,6 +37113,9 @@ msgid ""
 "the X- and Y-values to position the points on the grid and the Z-value of "
 "the points as the surface elevation."
 msgstr ""
+"Інтерполює поверхню сітки на основі вхідного набору 3-D точок, "
+"використовуючи значення X і Y для позиціонування точок на сітці, а значення "
+"Z точок — як висоту поверхні."
 
 #. Tag: para
 #, no-c-format
@@ -37031,11 +37131,21 @@ msgid ""
 "are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
 "gdal_grid_tut.html\">GDAL grid tutorial</link>."
 msgstr ""
+"Інтерполює поверхню сітки на основі вхідного набору 3-вимірних точок, "
+"використовуючи значення X і Y для позиціонування точок на сітці, а значення "
+"Z точок — як висоту поверхні. Доступно п'ять алгоритмів інтерполяції: "
+"обернена відстань, обернена відстань найближчого сусіда, ковзна середня, "
+"найближчий сусід і лінійна інтерполяція. Більш детальну інформацію про "
+"алгоритми та їхні параметри див. у <link xlink:href=«https://gdal.org/"
+"programs/gdal_grid.html#interpolation-algorithms»>документації gdal_grid</"
+"link>. Більше інформації про те, як обчислюються інтерполяції, див. <link "
+"xlink:href=«https://gdal.org/tutorials/gdal_grid_tut.html»>посібник з роботи "
+"з сіткою GDAL</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "Input parameters are:"
-msgstr ""
+msgstr "Вхідні параметри:"
 
 #. Tag: para
 #, no-c-format
@@ -37043,6 +37153,8 @@ msgid ""
 "The points to drive the interpolation. Any geometry with Z-values is "
 "acceptable, all points in the input will be used."
 msgstr ""
+"Точки для інтерполяції. Прийнятна будь-яка геометрія із значеннями Z, будуть "
+"використані всі точки у вхідних даних."
 
 #. Tag: para
 #, no-c-format
@@ -37052,6 +37164,11 @@ msgid ""
 "algorithms\">gdal_grid</link>. For example, for an inverse-distance "
 "interpolation with a smoothing of 2, you would use \"invdist:smoothing=2.0\""
 msgstr ""
+"Рядок, що визначає алгоритм та параметри алгоритму, у форматі, який "
+"використовується <link xlink:href=«https://gdal.org/programs/gdal_grid.html"
+"#interpolation-algorithms»>gdal_grid</link>. Наприклад, для інтерполяції з "
+"оберненою відстанню та згладжуванням 2 слід використовувати \"invdist"
+":smoothing=2.0\""
 
 #. Tag: para
 #, no-c-format
@@ -37060,6 +37177,9 @@ msgid ""
 "height, pixel size, spatial extent and pixel type will be read from this "
 "template."
 msgstr ""
+"Растровий шаблон для управління геометрією вихідного растра. Ширина, висота, "
+"розмір пікселя, просторова протяжність і тип пікселя будуть зчитуватися з "
+"цього шаблону."
 
 #. Tag: para
 #, no-c-format
@@ -37067,6 +37187,9 @@ msgid ""
 "By default the first band in the template raster is used to drive the output "
 "raster, but that can be adjusted with this parameter."
 msgstr ""
+"За замовчуванням для керування вихідним растром використовується перший "
+"канал у шаблоні растра, але це можна налаштувати за допомогою цього "
+"параметра."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37076,6 +37199,11 @@ msgid ""
 "highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
 "contouring algorithm</link>.</refpurpose>"
 msgstr ""
+"<refpurpose>Генерує набір векторних контурів із наданого растрового каналу, "
+"використовуючи <link xlink:href=\"https://gdal.org/api/gdal_alg.html? "
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstL"
+"ist16GDALProgressFuncPv\">алгоритм контурного відображення "
+"GDAL</link>.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -37085,6 +37213,11 @@ msgid ""
 "highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
 "contouring algorithm</link>.</para>"
 msgstr ""
+"<para>Генерує набір векторних контурів із наданого растрового rfyfke, "
+"використовуючи <link xlink:href=\"https://gdal.org/api/gdal_alg.html? "
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstL"
+"ist16GDALProgressFuncPv\">алгоритму контурного відображення "
+"GDAL</link>.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -37093,21 +37226,24 @@ msgid ""
 "<varname>level_interval</varname> and <varname>level_base</varname> "
 "parameters are ignored."
 msgstr ""
+"Коли параметр <varname>fixed_levels</varname> є не порожнім масивом, "
+"параметри <varname>level_interval</varname> та <varname>level_base</varname> "
+"ігноруються."
 
 #. Tag: para
 #, no-c-format
 msgid "The raster to generate the contour of"
-msgstr ""
+msgstr "Растр для створення контуру"
 
 #. Tag: para
 #, no-c-format
 msgid "The band to generate the contour of"
-msgstr ""
+msgstr "Смуга для формування контуру"
 
 #. Tag: para
 #, no-c-format
 msgid "The elevation interval between contours generated"
-msgstr ""
+msgstr "Інтервал висоти між створеними контурами"
 
 #. Tag: para
 #, no-c-format
@@ -37116,6 +37252,9 @@ msgid ""
 "normally zero, but could be different. To generate 10m contours at 5, 15, "
 "25, ... the LEVEL_BASE would be 5."
 msgstr ""
+"«База», відносно якої застосовуються інтервали контурів, зазвичай дорівнює "
+"нулю, але може бути іншою. Щоб створити 10-метрові контури на 5, 15, 25, ... "
+"LEVEL_BASE дорівнюватиме 5."
 
 #. Tag: para
 #, no-c-format
@@ -37123,21 +37262,23 @@ msgid ""
 "If <literal>true</literal>, contour polygons will be created, rather than "
 "polygon lines."
 msgstr ""
+"Якщо <literal>true</literal>, будуть створені контурні полігони, а не "
+"полігональні лінії."
 
 #. Tag: para
 #, no-c-format
 msgid "Return values are a set of records with the following attributes:"
-msgstr ""
+msgstr "Значення, що повертаються, — це набір записів із такими атрибутами:"
 
 #. Tag: para
 #, no-c-format
 msgid "The geometry of the contour line."
-msgstr ""
+msgstr "Геометрія контурної лінії."
 
 #. Tag: para
 #, no-c-format
 msgid "A unique identifier given to the contour line by GDAL."
-msgstr ""
+msgstr "Унікальний ідентифікатор, присвоєний контурній лінії GDAL."
 
 #. Tag: para
 #, no-c-format
@@ -37145,21 +37286,23 @@ msgid ""
 "The raster value the line represents. For an elevation DEM input, this would "
 "be the elevation of the output contour."
 msgstr ""
+"Растрове значення, яке представляє лінія. Для вхідних даних DEM висоти це "
+"буде висота вихідного контуру."
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Processing: Raster to Geometry"
-msgstr ""
+msgstr "Обробка растрових даних: перетворення растрових даних у геометричні"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the box 3d representation of the enclosing box of the raster."
-msgstr ""
+msgstr "Повертає 3D-представлення обмежувальної рамки растра."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns the box representing the extent of the raster."
-msgstr ""
+msgstr "Повертає поле, що представляє розмір растру."
 
 #. Tag: para
 #, no-c-format
@@ -37168,6 +37311,9 @@ msgid ""
 "((<varname>MINX</varname>, <varname>MINY</varname>), (<varname>MAXX</"
 "varname>, <varname>MAXY</varname>))"
 msgstr ""
+"Багатокутник визначається кутовими точками обмежувального прямокутника "
+"((<varname>MINX</varname>, <varname>MINY</varname>), (<varname>MAXX</"
+"varname>, <varname>MAXY</varname>))"
 
 #. Tag: para
 #, no-c-format
@@ -37175,6 +37321,8 @@ msgid ""
 "Changed: 2.0.0 In pre-2.0 versions, there used to be a box2d instead of "
 "box3d. Since box2d is a deprecated type, this was changed to box3d."
 msgstr ""
+"Змінено: 2.0.0 У версіях до 2.0 замість box3d використовувався box2d. "
+"Оскільки box2d є застарілим типом, його було змінено на box3d."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37184,6 +37332,10 @@ msgid ""
 "the same result as ST_Envelope so only useful for irregularly shaped or "
 "skewed rasters."
 msgstr ""
+"Повертає геометрію опуклої оболонки растра, включаючи значення пікселів, "
+"рівні BandNoDataValue. Для растрів правильної форми та без нахилу це дає той "
+"самий результат, що й ST_Envelope, тому корисно лише для растрів "
+"неправильної форми або з нахилом."
 
 #. Tag: para
 #, no-c-format
@@ -37193,6 +37345,10 @@ msgid ""
 "less the same result as ST_Envelope so only useful for irregularly shaped or "
 "skewed rasters."
 msgstr ""
+"Повертає геометрію опуклої оболонки растра, включаючи пікселі каналу "
+"NoDataBandValue. Для растрів правильної форми та без нахилу це дає приблизно "
+"той самий результат, що й ST_Envelope, тому корисно лише для растрів "
+"неправильної форми або з нахилом."
 
 #. Tag: para
 #, no-c-format
@@ -37201,6 +37357,9 @@ msgid ""
 "raster so the answer is subtly different from ST_ConvexHull which does not "
 "floor."
 msgstr ""
+"ST_Envelope округлює координати і, отже, додає невеликий буфер навколо "
+"растра, тому результат дещо відрізняється від ST_ConvexHull, який не "
+"округлює."
 
 #. Tag: para
 #, no-c-format
@@ -37209,6 +37368,9 @@ msgid ""
 "SpecificationWorking01\">PostGIS Raster Specification</link> for a diagram "
 "of this."
 msgstr ""
+"Дивіться <link xlink:href=«http://trac.osgeo.org/postgis/wiki/WKTRaster/"
+"SpecificationWorking01»>Специфікація PostGIS Raster</link> для ознайомлення "
+"з діаграмою."
 
 #. Tag: para
 #, no-c-format
@@ -37216,6 +37378,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_MinConvexHull\"/>, <xref linkend=\"ST_ConvexHull\"/"
 ">, <xref linkend=\"ST_AsText\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_MinConvexHull\"/>, <xref linkend=\"ST_ConvexHull\"/"
+">, <xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37223,6 +37387,8 @@ msgid ""
 "Returns a set of geomval (geom,val) rows, from a given raster band. If no "
 "band number is specified, band num defaults to 1."
 msgstr ""
+"Повертає набір рядків geomval (geom,val) із заданого растрового каналу. Якщо "
+"номер каналу не вказано, за замовчуванням використовується канал 1."
 
 #. Tag: para
 #, no-c-format
@@ -37232,6 +37398,10 @@ msgid ""
 "the union of all pixels for that band that have the same pixel value denoted "
 "by val."
 msgstr ""
+"Це функція, що повертає набір (SRF). Вона повертає набір рядків geomval, "
+"сформованих геометрією (geom) та значенням піксельів каналу (val). Кожен "
+"багатокутник є об'єднанням усіх пікселів для ціього каналу, які мають "
+"однакове значення пікселя, позначене val."
 
 #. Tag: para
 #, no-c-format
@@ -37240,6 +37410,9 @@ msgid ""
 "GROUP BY in that it creates new rows. For example it can be used to expand a "
 "single raster into multiple POLYGONS/MULTIPOLYGONS."
 msgstr ""
+"ST_DumpAsPolygon корисний для полігонізації растрів. Він є зворотним до "
+"GROUP BY, оскільки створює нові рядки. Наприклад, його можна використовувати "
+"для розширення одного растра на кілька POLYGONS/MULTIPOLYGONS."
 
 #. Tag: para
 #, no-c-format
@@ -37247,11 +37420,13 @@ msgid ""
 "Changed 3.3.0, validation and fixing is disabled to improve performance. May "
 "result invalid geometries."
 msgstr ""
+"Змінено 3.3.0, перевірка та виправлення вимкнені для покращення "
+"продуктивності. Може призвести до недійсних геометрій."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: Requires GDAL 1.7 or higher."
-msgstr ""
+msgstr "Доступність: Потрібна версія GDAL 1.7 або вище."
 
 #. Tag: para
 #, no-c-format
@@ -37259,6 +37434,8 @@ msgid ""
 "If there is a no data value set for a band, pixels with that value will not "
 "be returned except in the case of exclude_nodata_value=false."
 msgstr ""
+"Якщо для діапазону не встановлено значення даних, пікселі з цим значенням не "
+"будуть повертатися, за винятком випадків, коли exclude_nodata_value=false."
 
 #. Tag: para
 #, no-c-format
@@ -37266,6 +37443,8 @@ msgid ""
 "If you only care about count of pixels with a given value in a raster, it is "
 "faster to use <xref linkend=\"RT_ST_ValueCount\"/>."
 msgstr ""
+"Якщо вас цікавить лише кількість пікселів із заданим значенням у растрі, "
+"швидше буде використати <xref linkend=\"RT_ST_ValueCount\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -37273,6 +37452,8 @@ msgid ""
 "This is different than ST_PixelAsPolygons where one geometry is returned for "
 "each pixel regardless of pixel value."
 msgstr ""
+"Це відрізняється від ST_PixelAsPolygons, де для кожного пікселя повертається "
+"одна геометрія, незалежно від значення пікселя."
 
 #. Tag: para
 #, no-c-format
@@ -37280,11 +37461,13 @@ msgid ""
 ", <xref linkend=\"RT_ST_AsRasterAgg\"/>, <xref linkend=\"RT_ST_Value\"/>, "
 "<xref linkend=\"RT_ST_Polygon\"/>, <xref linkend=\"RT_ST_ValueCount\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AsRasterAgg\"/>, <xref linkend=\"RT_ST_Value\"/>, "
+"<xref linkend=\"RT_ST_Polygon\"/>, <xref linkend=\"RT_ST_ValueCount\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the polygon representation of the extent of the raster."
-msgstr ""
+msgstr "Повертає полігон, що відображає межі растру."
 
 #. Tag: para
 #, no-c-format
@@ -37293,6 +37476,9 @@ msgid ""
 "coordinate units defined by srid. It is a float8 minimum bounding box "
 "represented as a polygon."
 msgstr ""
+"Повертає полігональне представлення меж растра в одиницях просторових "
+"координат, визначених srid. Це мінімальна обмежувальна рамка float8, "
+"представлена у вигляді полігону."
 
 #. Tag: para
 #, no-c-format
@@ -37303,16 +37489,21 @@ msgid ""
 "varname>), (<varname>MAXX</varname>, <varname>MINY</varname>), "
 "(<varname>MINX</varname>, <varname>MINY</varname>))"
 msgstr ""
+"Полігон визначається кутовими точками обмежувальної рамки ((<varname>MINX</"
+"varname>, <varname>MINY</varname>), (<varname>MINX</varname>, "
+"<varname>MAXY</varname>), (<varname>MAXX</varname>, <varname>MAXY</varname>)"
+", (<varname>MAXX</varname>, <varname>MINY</varname>), (<varname>MINX</"
+"varname>, <varname>MINY</varname>))"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"RT_ST_SRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return the convex hull geometry of the raster excluding NODATA pixels."
-msgstr ""
+msgstr "Повернути геометрію опуклої оболонки растра, виключаючи пікселі NODATA."
 
 #. Tag: para
 #, no-c-format
@@ -37320,6 +37511,8 @@ msgid ""
 "Return the convex hull geometry of the raster excluding NODATA pixels. If "
 "<varname>nband</varname> is NULL, all bands of the raster are considered."
 msgstr ""
+"Повертає геометрію опуклої оболонки растра, виключаючи пікселі NODATA. Якщо "
+"<varname>nband</varname> дорівнює NULL, враховуються всі канали растра."
 
 #. Tag: para
 #, no-c-format
@@ -37327,6 +37520,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_ConvexHull\"/>, <xref linkend=\"ST_ConvexHull\"/>, "
 "<xref linkend=\"ST_AsText\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_ConvexHull\"/>, <xref linkend=\"ST_ConvexHull\"/>, "
+"<xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37335,11 +37530,14 @@ msgid ""
 "pixel value that is not no data value. If no band number is specified, band "
 "num defaults to 1."
 msgstr ""
+"Повертає багатокутну геометрію, утворену об'єднанням пікселів, значення яких "
+"не дорівнює нулю. Якщо номер каналу не вказано, за замовчуванням "
+"використовується 1."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 0.1.6 Requires GDAL 1.7 or higher."
-msgstr ""
+msgstr "Доступність: 0.1.6 Вимагає GDAL 1.7 або вище."
 
 #. Tag: para
 #, no-c-format
@@ -37347,6 +37545,8 @@ msgid ""
 "Enhanced: 2.1.0 Improved Speed (fully C-Based) and the returning "
 "multipolygon is ensured to be valid."
 msgstr ""
+"Покращено: 2.1.0 Покращена швидкість (повністю на основі C) та гарантована "
+"валідність поверненого багатокутника."
 
 #. Tag: para
 #, no-c-format
@@ -37354,6 +37554,8 @@ msgid ""
 "Changed: 2.1.0 In prior versions would sometimes return a polygon, changed "
 "to always return multipolygon."
 msgstr ""
+"Змінено: 2.1.0 У попередніх версіях іноді повертався полігон, змінено на "
+"завжди повертати мультиполігон."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37361,6 +37563,7 @@ msgid ""
 "Calculates the fraction of each raster cell that is covered by a given "
 "geometry."
 msgstr ""
+"Обчислює частку кожної растрової комірки, яка покрита заданою геометрією."
 
 #. Tag: para
 #, no-c-format
@@ -37374,16 +37577,24 @@ msgid ""
 "that is covered by the geometry. For linestrings, the value returned for "
 "each cell is the length contained in the cell."
 msgstr ""
+"Обчислює частку кожної растрової комірки, яка покрита заданою геометрією. "
+"Перший аргумент — це растр, який визначає геометрію сітки, що "
+"використовується для обчислення. Розмір і розмір комірки зчитуються з "
+"параметра растра. Другий аргумент — це геометрія, яка накладається на сітку, "
+"і кожна комірка заповнюється на основі накладення геометрії на сітку. Для "
+"полігонів значення, що повертається для кожної комірки, є часткою її площі, "
+"яка покрита геометрією. Для лінійних об'єктів значення, що повертається для "
+"кожної комірки, є довжиною, що міститься в комірці."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.0 Requires GEOS 3.14 or higher."
-msgstr ""
+msgstr "Доступність: 3.6.0 Вимагає GEOS 3.14 або вище."
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Operators"
-msgstr ""
+msgstr "Растрові оператори"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37391,6 +37602,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box intersects B's bounding "
 "box."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A перетинається з "
+"обмежувальною рамкою B."
 
 #. Tag: para
 #, no-c-format
@@ -37399,6 +37612,9 @@ msgid ""
 "if the bounding box of raster/geometr A intersects the bounding box of "
 "raster/geometr B."
 msgstr ""
+"Оператор <varname>&amp;&amp;</varname> повертає <varname>TRUE</varname>, "
+"якщо обмежувальна рамка растра/геометрії A перетинає обмежувальну рамку "
+"растра/геометрії B."
 
 #. Tag: para
 #, no-c-format
@@ -37406,12 +37622,16 @@ msgid ""
 "This operand will make use of any indexes that may be available on the "
 "rasters."
 msgstr ""
+"Цей операнд буде використовувати будь-які індекси, які можуть бути доступні "
+"на растрах."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is to the left of B's."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A знаходиться "
+"ліворуч від B."
 
 #. Tag: para
 #, no-c-format
@@ -37421,12 +37641,18 @@ msgid ""
 "of raster B, or more accurately, overlaps or is NOT to the right of the "
 "bounding box of raster B."
 msgstr ""
+"Оператор <varname>&amp;&lt;</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка растру A перекриває або знаходиться ліворуч від "
+"обмежувальної рамки растру B, або, точніше, перекриває або НЕ знаходиться "
+"праворуч від обмежувальної рамки растру B."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is to the right of B's."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A знаходиться "
+"праворуч від обмежувальної рамки B."
 
 #. Tag: para
 #, no-c-format
@@ -37436,6 +37662,10 @@ msgid ""
 "of raster B, or more accurately, overlaps or is NOT to the left of the "
 "bounding box of raster B."
 msgstr ""
+"Оператор <varname>&amp;&gt;</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка растра A перекриває або знаходиться праворуч від "
+"обмежувальної рамки растра B, або, точніше, перекриває або НЕ знаходиться "
+"ліворуч від обмежувальної рамки растра B."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37443,6 +37673,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is the same as B's. Uses "
 "double precision bounding box."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A збігається з "
+"обмежувальною рамкою B. Використовує обмежувальну рамку подвійної точності."
 
 #. Tag: para
 #, no-c-format
@@ -37453,6 +37685,11 @@ msgid ""
 "perform internal orderings and comparison of rasters (ie. in a GROUP BY or "
 "ORDER BY clause)."
 msgstr ""
+"Оператор <varname>&#61;</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка растра A збігається з обмежувальною рамкою растра B. "
+"PostgreSQL використовує оператори =, &lt; та &gt;, визначені для растрів, "
+"для виконання внутрішнього впорядкування та порівняння растрів (тобто в "
+"операторі GROUP BY або ORDER BY). ."
 
 #. Tag: para
 #, no-c-format
@@ -37461,6 +37698,10 @@ msgid ""
 "rasters. Use <xref linkend=\"RT_Raster_Same\"/> instead. This operator "
 "exists mostly so one can group by the raster column."
 msgstr ""
+"Цей операнд НЕ використовуватиме жодних індексів, які можуть бути доступні "
+"на растрах. Замість цього використовуйте <xref linkend=\"RT_Raster_Same\"/>. "
+"Цей оператор існує переважно для того, щоб можна було групувати за стовпцем "
+"растра."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37468,6 +37709,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is contained by B's. "
 "Uses double precision bounding box."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A міститься в "
+"обмежувальній рамці B. Використовує обмежувальну рамку подвійної точності."
 
 #. Tag: para
 #, no-c-format
@@ -37476,21 +37719,24 @@ msgid ""
 "bounding box of raster/geometry A is contained by bounding box of raster/"
 "geometr B."
 msgstr ""
+"Оператор <varname>@</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка растру/геометрії A міститься в обмежувальній рамці растру/"
+"геометрії B."
 
 #. Tag: para
 #, no-c-format
 msgid "This operand will use spatial indexes on the rasters."
-msgstr ""
+msgstr "Цей операнд буде використовувати просторові індекси на растрах."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.0.0 raster @ raster, raster @ geometry introduced"
-msgstr ""
+msgstr "Доступність: 2.0.0 растр @ растр, растр @ геометрія введено"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.0.5 geometry @ raster introduced"
-msgstr ""
+msgstr "Доступність: 2.0.5 геометрія @ растр введена"
 
 #. Tag: para
 #, no-c-format
@@ -37498,6 +37744,8 @@ msgid ""
 "The <varname>~=</varname> operator returns <varname>TRUE</varname> if the "
 "bounding box of raster A is the same as the bounding box of raster B."
 msgstr ""
+"Оператор <varname>~=</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка растра A збігається з обмежувальною рамкою растра B."
 
 #. Tag: para
 #, no-c-format
@@ -37506,11 +37754,14 @@ msgid ""
 "of the same chunk but represent different themes and creating a multi-band "
 "raster"
 msgstr ""
+"Дуже корисним випадком використання є взяття двох наборів односмугових "
+"растрів, які є частиною одного і того ж фрагмента, але представляють різні "
+"теми, і створення багатоканального растра"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_Raster_EQ\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_Raster_EQ\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37518,6 +37769,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is contains B's. Uses "
 "double precision bounding box."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо обмежувальна рамка A містить B. "
+"Використовує обмежувальну рамку подвійної точності."
 
 #. Tag: para
 #, no-c-format
@@ -37526,11 +37779,14 @@ msgid ""
 "bounding box of raster/geometry A is contains bounding box of raster/geometr "
 "B."
 msgstr ""
+"Оператор <varname>~</varname> повертає <varname>TRUE</varname>, якщо "
+"обмежувальна рамка растра/геометрії A містить обмежувальну рамку растра/"
+"геометрії B."
 
 #. Tag: title
 #, no-c-format
 msgid "Raster and Raster Band Spatial Relationships"
-msgstr ""
+msgstr "Просторові відносини між растром і растровоим каналом"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37539,6 +37795,8 @@ msgid ""
 "and at least one point of the interior of rastB lies in the interior of "
 "rastA."
 msgstr ""
+"Повертає true, якщо жодна точка растра rastB не лежить зовні растра rastA і "
+"принаймні одна точка всередині rastB лежить всередині rastA."
 
 #. Tag: para
 #, no-c-format
@@ -37550,6 +37808,11 @@ msgid ""
 "number is provided, only those pixels with value (not NODATA) are considered "
 "in the test."
 msgstr ""
+"Растр rastA містить rastB тоді і тільки тоді, коли жодна точка rastB не "
+"лежить зовні rastA і принаймні одна точка всередині rastB лежить всередині "
+"rastA. Якщо номер каналу не вказано (або встановлено на NULL), у тесті "
+"враховується тільки опукла оболонка растра. Якщо номер каналу вказано, у "
+"тесті враховуються тільки ті пікселі, які мають значення (не NODATA)."
 
 #. Tag: para
 #, no-c-format
