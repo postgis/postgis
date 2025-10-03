@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-09-21 01:47+0000\n"
+"PO-Revision-Date: 2025-10-03 15:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -30853,6 +30853,11 @@ msgid ""
 "a new raster with the same size, alignment and SRID. If srid is left out, "
 "the spatial ref is set to unknown (0)."
 msgstr ""
+"Повертає порожній растр (без каналів) заданих розмірів (ширина і висота), "
+"верхнього лівого кута X і Y, розміру пікселя і повороту (scalex, scaley, "
+"skewx і skewy) та системи координат (srid). Якщо передано растр, повертає "
+"новий растр з тим самим розміром, вирівнюванням та SRID. Якщо srid не "
+"вказано, просторова система координат встановлюється на невідому (0)."
 
 #. Tag: para
 #, no-c-format
@@ -30862,6 +30867,10 @@ msgid ""
 "X (upperleftx), upper left Y (upperlefty), pixel size and rotation (scalex, "
 "scaley, skewx &amp; skewy) and reference system (srid)."
 msgstr ""
+"Повертає порожній растр (без каналу) заданих розмірів (ширина та висота) з "
+"геореференцією в просторових (або світових) координатах з верхнім лівим X "
+"(upperleftx), верхнім лівим Y (upperlefty), розміром пікселя та обертанням ("
+"scalex, scaley, skewx та skewy) і системи координат (srid)."
 
 #. Tag: para
 #, no-c-format
@@ -30870,6 +30879,10 @@ msgid ""
 "(pixelsize). scalex is set to this argument and scaley is set to the "
 "negative value of this argument. skewx and skewy are set to 0."
 msgstr ""
+"В останній версії для визначення розміру пікселя (pixelsize) "
+"використовується єдиний параметр. scalex встановлюється на значення цього "
+"аргументу, а scaley — на від'ємне значення цього аргументу. skewx і skewy "
+"встановлюються на 0."
 
 #. Tag: para
 #, no-c-format
@@ -30877,6 +30890,8 @@ msgid ""
 "If an existing raster is passed in, it returns a new raster with the same "
 "meta data settings (without the bands)."
 msgstr ""
+"Якщо передається існуючий растр, він повертає новий растр з тими ж "
+"налаштуваннями метаданих (без каналів)."
 
 #. Tag: para
 #, no-c-format
@@ -30886,6 +30901,11 @@ msgid ""
 "linkend=\"RT_ST_AddBand\"/> to define bands and <xref "
 "linkend=\"RT_ST_SetValue\"/> to set initial pixel values."
 msgstr ""
+"Якщо srid не вказано, за замовчуванням використовується значення 0. Після "
+"створення порожнього растру ви, ймовірно, захочете додати до нього канали і, "
+"можливо, відредагувати його. Дивіться <xref linkend=\"RT_ST_AddBand\"/>для "
+"визначення каналів і <xref linkend=\"RT_ST_SetValue\"/>для встановлення "
+"початкових значень пікселів."
 
 #. Tag: para
 #, no-c-format
@@ -30894,6 +30914,9 @@ msgid ""
 "<xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_SetValue\"/>, <xref "
 "linkend=\"RT_ST_SkewX\"/>, , <xref linkend=\"RT_ST_SkewY\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_MetaData\"/>, <xref linkend=\"RT_ST_ScaleX\"/>, "
+"<xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_SetValue\"/>, <xref "
+"linkend=\"RT_ST_SkewX\"/>, , <xref linkend=\"RT_ST_SkewY\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -30901,6 +30924,8 @@ msgid ""
 "<refpurpose>Returns a set of rasters resulting from the split of the input "
 "raster based upon the desired dimensions of the output rasters.</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає набір растрів, отриманих в результаті розділення "
+"вхідного растра на основі бажаних розмірів вихідних растрів.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -30908,6 +30933,8 @@ msgid ""
 "<para>Returns a set of rasters resulting from the split of the input raster "
 "based upon the desired dimensions of the output rasters.</para>"
 msgstr ""
+"<para>Повертає набір растрів, отриманих в результаті розділення вхідного "
+"растра на основі бажаних розмірів вихідних растрів.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -30919,6 +30946,12 @@ msgid ""
 "NODATA values. If raster band(s) do not have NODATA value(s) specified, one "
 "can be specified by setting <varname>nodataval</varname>."
 msgstr ""
+"Якщо <varname>padwithnodata</varname> = FALSE, крайні плитки з правого та "
+"нижнього боків растра можуть мати інші розміри, ніж решта плиток. Якщо "
+"<varname>padwithnodata</varname> = TRUE, всі плитки матимуть однакові "
+"розміри, при цьому крайні плитки можуть бути заповнені значеннями NODATA. "
+"Якщо для растрових смуг не вказано значення NODATA, його можна вказати, "
+"встановивши <varname>nodataval</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -30926,17 +30959,21 @@ msgid ""
 "If a specified band of the input raster is out-of-db, the corresponding band "
 "in the output rasters will also be out-of-db."
 msgstr ""
+"Якщо вказаний діапазон вхідного растра знаходиться поза межами бази даних, "
+"відповідний діапазон у вихідних растрах також буде поза межами бази даних."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_Retile\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_Retile\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Return a set of configured tiles from an arbitrarily tiled raster coverage."
 msgstr ""
+"Повернути набір налаштованих плиток з довільно розбитого на плитки "
+"растрового покриття."
 
 #. Tag: para
 #, no-c-format
@@ -30947,11 +30984,16 @@ msgid ""
 "data coming from the specified raster coverage (<varname>tab</varname>, "
 "<varname>col</varname>)."
 msgstr ""
+"Повернути набір плиток із заданим масштабом (<varname>sfx</varname>, "
+"<varname>sfy</varname>) і максимальний розмір (<varname>tw</varname>, "
+"<varname>th</varname>), що покривають вказану площу (<varname>ext</varname>) "
+"з даними, що надходять із вказаного растрового покриття (<varname>tab</"
+"varname>, <varname>col</varname>)."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a raster from a supported GDAL raster file."
-msgstr ""
+msgstr "Повертає растр із підтримуваного файлу растра GDAL."
 
 #. Tag: para
 #, no-c-format
@@ -30959,6 +31001,8 @@ msgid ""
 "Returns a raster from a supported GDAL raster file. <varname>gdaldata</"
 "varname> is of type bytea and should be the contents of the GDAL raster file."
 msgstr ""
+"Повертає растр із підтримуваного файлу растра GDAL. <varname>gdaldata</"
+"varname> має тип bytea і повинен містити вміст файлу растра GDAL."
 
 #. Tag: para
 #, no-c-format
@@ -30967,11 +31011,14 @@ msgid ""
 "assign the SRID from the GDAL raster. If <varname>srid</varname> is "
 "provided, the value provided will override any automatically assigned SRID."
 msgstr ""
+"Якщо <varname>srid</varname> має значення NULL, функція спробує автоматично "
+"призначити SRID з растру GDAL. Якщо <varname>srid</varname> вказано, надане "
+"значення замінить будь-який автоматично призначений SRID."
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Accessors"
-msgstr ""
+msgstr "Растрові аксесори"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -30979,6 +31026,8 @@ msgid ""
 "Returns the georeference meta data in GDAL or ESRI format as commonly seen "
 "in a world file. Default is GDAL."
 msgstr ""
+"Повертає метадані геореференції у форматі GDAL або ESRI, як це зазвичай "
+"зустрічається у світовому файлі. За замовчуванням використовується GDAL."
 
 #. Tag: para
 #, no-c-format
@@ -30988,36 +31037,40 @@ msgid ""
 "World_file\">world file</link>. Default is GDAL if no type specified. type "
 "is string 'GDAL' or 'ESRI'."
 msgstr ""
+"Повертає метадані геореференції, включаючи повернення каретки, у форматі "
+"GDAL або ESRI, як це зазвичай бачимо у <link xlink:href=«http://en.wikipedia."
+"org/wiki/World_file»>файлі world</link>. За замовчуванням використовується "
+"GDAL, якщо тип не вказано. Тип — це рядок «GDAL» або «ESRI»."
 
 #. Tag: para
 #, no-c-format
 msgid "Difference between format representations is as follows:"
-msgstr ""
+msgstr "Різниця між форматами представлення полягає в наступному:"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>GDAL</varname>:"
-msgstr ""
+msgstr "<varname>GDAL</varname>:"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>ESRI</varname>:"
-msgstr ""
+msgstr "<varname>ESRI</varname>:"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the height of the raster in pixels."
-msgstr ""
+msgstr "Повертає висоту растра в пікселях."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns the height of the raster."
-msgstr ""
+msgstr "Повертає висоту растру."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31025,6 +31078,8 @@ msgid ""
 "<refpurpose>Returns true if the raster is empty (width = 0 and height = 0). "
 "Otherwise, returns false.</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає значення true, якщо растр порожній (ширина = 0 і висота "
+"= 0). В іншому випадку повертає значення false.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -31032,6 +31087,8 @@ msgid ""
 "<para>Returns true if the raster is empty (width = 0 and height = 0). "
 "Otherwise, returns false.</para>"
 msgstr ""
+"<para>Повертає значення true, якщо растр порожній (ширина = 0 і висота = 0). "
+"В іншому випадку повертає значення false.</para>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31039,11 +31096,13 @@ msgid ""
 "<refpurpose>Returns the amount of space (in bytes) the raster takes.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Повертає обсяг простору (у байтах), який займає "
+"растр.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Returns the amount of space (in bytes) the raster takes.</para>"
-msgstr ""
+msgstr "<para>Повертає обсяг простору (у байтах), який займає растр.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -31051,6 +31110,8 @@ msgid ""
 "This is a nice compliment to PostgreSQL built in functions pg_column_size, "
 "pg_size_pretty, pg_relation_size, pg_total_relation_size."
 msgstr ""
+"Це гарне доповнення до вбудованих функцій PostgreSQL pg_column_size, "
+"pg_size_pretty, pg_relation_size, pg_total_relation_size."
 
 #. Tag: para
 #, no-c-format
@@ -31060,6 +31121,11 @@ msgid ""
 "table contribution and large geometries are stored in TOAST tables. "
 "pg_column_size might return lower because it returns the compressed size."
 msgstr ""
+"pg_relation_size, що визначає розмір таблиці в байтах, може повертати "
+"розмір, менший за ST_MemSize. Це пов'язано з тим, що pg_relation_size не "
+"додає розмір тостованих таблиць, а великі геометрії зберігаються в таблицях "
+"TOAST. pg_column_size може повертати менший розмір, оскільки він повертає "
+"стислий розмір."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31067,6 +31133,8 @@ msgid ""
 "Returns basic meta data about a raster object such as pixel size, rotation "
 "(skew), upper, lower left, etc."
 msgstr ""
+"Повертає основні метадані про растровий об'єкт, такі як розмір пікселя, "
+"поворот (перекос), верхній, нижній лівий кут тощо."
 
 #. Tag: para
 #, no-c-format
@@ -31075,28 +31143,35 @@ msgid ""
 "(skew), upper, lower left, etc. Columns returned: upperleftx | upperlefty | "
 "width | height | scalex | scaley | skewx | skewy | srid | numbands"
 msgstr ""
+"Повертає основні метадані про растровий об'єкт, такі як розмір пікселя, "
+"поворот (перекос), верхній, нижній лівий кут тощо. Повертаються стовпці: "
+"upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | "
+"srid | numbands"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_NumBands\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_NumBands\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "<refpurpose>Returns the number of bands in the raster object.</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає кількість каналів у растровому об'єкті.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Returns the number of bands in the raster object.</para>"
-msgstr ""
+msgstr "<para>Повертає кількість каналів у растровому об'єкті.</para>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the pixel height in geometric units of the spatial reference system."
 msgstr ""
+"Повертає висоту пікселя в геометричних одиницях просторової системи "
+"координат."
 
 #. Tag: para
 #, no-c-format
@@ -31105,6 +31180,10 @@ msgid ""
 "system. In the common case where there is no skew, the pixel height is just "
 "the scale ratio between geometric coordinates and raster pixels."
 msgstr ""
+"Повертає висоту пікселя в геометричних одиницях просторової системи "
+"координат. У звичайному випадку, коли немає нахилу, висота пікселя дорівнює "
+"співвідношенню масштабу між геометричними координатами та растровими "
+"пікселями."
 
 #. Tag: para
 #, no-c-format
@@ -31112,16 +31191,18 @@ msgid ""
 "Refer to <xref linkend=\"RT_ST_PixelWidth\"/> for a diagrammatic "
 "visualization of the relationship."
 msgstr ""
+"Дивіться <xref linkend=\"RT_ST_PixelWidth\"/>для схематичного зображення "
+"цього взаємозв'язку."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Rasters with no skew"
-msgstr ""
+msgstr "Приклади: Растри без нахилу"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Rasters with skew different than 0"
-msgstr ""
+msgstr "Приклади: Растери з нахилом, відмінним від 0"
 
 #. Tag: para
 #, no-c-format
@@ -31129,12 +31210,16 @@ msgid ""
 ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
 "linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
+"linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the pixel width in geometric units of the spatial reference system."
 msgstr ""
+"Повертає ширину пікселя в геометричних одиницях просторової системи "
+"координат."
 
 #. Tag: para
 #, no-c-format
@@ -31143,28 +31228,32 @@ msgid ""
 "system. In the common case where there is no skew, the pixel width is just "
 "the scale ratio between geometric coordinates and raster pixels."
 msgstr ""
+"Повертає ширину пікселя в геометричних одиницях просторової системи "
+"координат. У звичайному випадку, коли немає нахилу, ширина пікселя дорівнює "
+"співвідношенню масштабу між геометричними координатами та растровими "
+"пікселями."
 
 #. Tag: para
 #, no-c-format
 msgid "The following diagram demonstrates the relationship:"
-msgstr ""
+msgstr "Наступна діаграма ілюструє взаємозв'язок:"
 
 #. Tag: para
 #, no-c-format
 msgid "Pixel Height: Pixel size in the j direction"
-msgstr ""
+msgstr "Висота пікселя: розмір пікселя в напрямку j"
 
 #. Tag: para
 #, no-c-format
 msgid "Pixel Width: Pixel size in the i direction"
-msgstr ""
+msgstr "Ширина пікселя: Розмір пікселя в напрямку i"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the X component of the pixel width in units of coordinate reference "
 "system."
-msgstr ""
+msgstr "Повертає X-компоненту ширини пікселя в одиницях системи координат."
 
 #. Tag: para
 #, no-c-format
@@ -31173,18 +31262,21 @@ msgid ""
 "system. Refer to <link xlink:href=\"http://en.wikipedia.org/wiki/"
 "World_file\">World File</link> for more details."
 msgstr ""
+"Повертає компонент X ширини пікселя в одиницях системи координат. Докладнішу "
+"інформацію див. у <link xlink:href=«http://en.wikipedia.org/wiki/World_file»"
+">World File</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeX."
-msgstr ""
+msgstr "Змінено: 2.0.0. У версіях WKTRaster це називалося ST_PixelSizeX."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the Y component of the pixel height in units of coordinate reference "
 "system."
-msgstr ""
+msgstr "Повертає компонент Y висоти пікселя в одиницях системи координат."
 
 #. Tag: para
 #, no-c-format
@@ -31193,11 +31285,14 @@ msgid ""
 "system. May be negative. Refer to <link xlink:href=\"http://en.wikipedia.org/"
 "wiki/World_file\">World File</link> for more details."
 msgstr ""
+"Повертає компонент Y висоти пікселя в одиницях системи координат. Може бути "
+"від'ємним. Докладнішу інформацію див. у <link xlink:href=«http://en.wikipedia"
+".org/wiki/World_file»>World File</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeY."
-msgstr ""
+msgstr "Змінено: 2.0.0. У версіях WKTRaster це називалося ST_PixelSizeY."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31205,6 +31300,9 @@ msgid ""
 "Returns the raster's upper left corner as geometric X and Y (longitude and "
 "latitude) given a column and row. Column and row starts at 1."
 msgstr ""
+"Повертає верхній лівий кут растра у вигляді геометричних координат X та Y ("
+"довгота та широта) за заданим стовпцем та рядком. Стовпець та рядок "
+"починаються з 1."
 
 #. Tag: para
 #, no-c-format
@@ -31778,6 +31876,10 @@ msgid ""
 "ST_BandFileTimestamp() so a client can determine if the filename of a outdb "
 "raster as seen by it is the same as the one seen by the server."
 msgstr ""
+"Ця функція зазвичай використовується разом із ST_BandPath() та "
+"ST_BandFileTimestamp(), щоб клієнт міг визначити, чи ім'я файлу растрового "
+"зображення outdb, яке він бачить, збігається з ім'ям файлу, яке бачить "
+"сервер."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31785,6 +31887,8 @@ msgid ""
 "Returns the file timestamp of a band stored in file system. If no bandnum "
 "specified, 1 is assumed."
 msgstr ""
+"Повертає мітку часу файлу смуги, що зберігається у файловій системі. Якщо "
+"номер смуги не вказано, вважається, що він дорівнює 1."
 
 #. Tag: para
 #, no-c-format
@@ -31793,6 +31897,9 @@ msgid ""
 "UTC) of a band stored in file system. Throws an error if called with an in "
 "db band, or if outdb access is not enabled."
 msgstr ""
+"Повертає мітку часу файлу (кількість секунд з 1 січня 1970 року 00:00:00 UTC)"
+" смуги, що зберігається у файловій системі. Видає помилку, якщо викликається "
+"зі смугою в базі даних або якщо доступ outdb не ввімкнено."
 
 #. Tag: para
 #, no-c-format
@@ -31801,6 +31908,10 @@ msgid ""
 "ST_BandFileSize() so a client can determine if the filename of a outdb "
 "raster as seen by it is the same as the one seen by the server."
 msgstr ""
+"Ця функція зазвичай використовується разом з ST_BandPath() та "
+"ST_BandFileSize(), щоб клієнт міг визначити, чи ім'я файлу растрового "
+"зображення outdb, яке він бачить, збігається з ім'ям файлу, яке бачить "
+"сервер."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31808,6 +31919,8 @@ msgid ""
 "Returns the type of pixel for given band. If no bandnum specified, 1 is "
 "assumed."
 msgstr ""
+"Повертає тип пікселя для заданого діапазону. Якщо діапазон не вказано, "
+"приймається значення 1."
 
 #. Tag: para
 #, no-c-format
@@ -31815,77 +31928,83 @@ msgid ""
 "Returns name describing data type and size of values stored in each cell of "
 "given band."
 msgstr ""
+"Повертає ім'я, що описує тип даних і розмір значень, що зберігаються в "
+"кожній комірці заданого діапазону."
 
 #. Tag: para
 #, no-c-format
 msgid "There are 11 pixel types. Pixel Types supported are as follows:"
-msgstr ""
+msgstr "Існує 11 типів пікселів. Підтримуються такі типи пікселів:"
 
 #. Tag: para
 #, no-c-format
 msgid "1BB - 1-bit boolean"
-msgstr ""
+msgstr "1BB - 1-бітний логічний"
 
 #. Tag: para
 #, no-c-format
 msgid "2BUI - 2-bit unsigned integer"
-msgstr ""
+msgstr "2BUI - 2-бітне ціле число без знака"
 
 #. Tag: para
 #, no-c-format
 msgid "4BUI - 4-bit unsigned integer"
-msgstr ""
+msgstr "4BUI - 4-бітне ціле число без знака"
 
 #. Tag: para
 #, no-c-format
 msgid "8BSI - 8-bit signed integer"
-msgstr ""
+msgstr "8BSI – 8-бітне ціле число зі знаком"
 
 #. Tag: para
 #, no-c-format
 msgid "8BUI - 8-bit unsigned integer"
-msgstr ""
+msgstr "8BUI – 8-бітне ціле число без знака"
 
 #. Tag: para
 #, no-c-format
 msgid "16BSI - 16-bit signed integer"
-msgstr ""
+msgstr "16BSI – 16-бітне ціле число зі знаком"
 
 #. Tag: para
 #, no-c-format
 msgid "16BUI - 16-bit unsigned integer"
-msgstr ""
+msgstr "16BUI – 16-бітне ціле число без знака"
 
 #. Tag: para
 #, no-c-format
 msgid "32BSI - 32-bit signed integer"
-msgstr ""
+msgstr "32BSI – 32-бітне ціле число без знака"
 
 #. Tag: para
 #, no-c-format
 msgid "32BUI - 32-bit unsigned integer"
-msgstr ""
+msgstr "32BUI – 32-бітне ціле число без знака"
 
 #. Tag: para
 #, no-c-format
 msgid "32BF - 32-bit float"
-msgstr ""
+msgstr "32BF - 32-бітний з плаваючою комою"
 
 #. Tag: para
 #, no-c-format
 msgid "64BF - 64-bit float"
-msgstr ""
+msgstr "64BF - 64-бітний з плаваючою комою"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "<refpurpose>Returns the minimum value this pixeltype can store.</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає мінімальне значення, яке може зберігати цей тип "
+"пікселів.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Returns the minimum value this pixeltype can store.</para>"
 msgstr ""
+"<para>Повертає мінімальне значення, яке може зберігати цей тип "
+"пікселів.</para>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31893,6 +32012,9 @@ msgid ""
 "<refpurpose>Returns true if there is no band with given band number. If no "
 "band number is specified, then band number 1 is assumed.</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає значення true, якщо немає діапазону з вказаним номером. "
+"Якщо номер діапазону не вказано, то вважається, що це діапазон № "
+"1.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -31900,11 +32022,13 @@ msgid ""
 "<para>Returns true if there is no band with given band number. If no band "
 "number is specified, then band number 1 is assumed.</para>"
 msgstr ""
+"<para>Повертає значення true, якщо немає діапазону з вказаним номером. Якщо "
+"номер діапазону не вказано, то вважається, що це діапазон № 1.</para>"
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Pixel Accessors and Setters"
-msgstr ""
+msgstr "Доступ до растрових пікселів та їх налаштування"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31912,6 +32036,8 @@ msgid ""
 "<refpurpose>Returns the polygon geometry that bounds the pixel for a "
 "particular row and column.</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає геометрію полігону, що обмежує піксель для певного "
+"рядка та стовпця.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -31919,6 +32045,8 @@ msgid ""
 "<para>Returns the polygon geometry that bounds the pixel for a particular "
 "row and column.</para>"
 msgstr ""
+"<para>Повертає геометрію полігону, що обмежує піксель для певного рядка та "
+"стовпця.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -31929,6 +32057,10 @@ msgid ""
 "linkend=\"RT_ST_PixelAsCentroids\"/>, <xref linkend=\"RT_ST_Intersection\"/"
 ">, <xref linkend=\"ST_AsText\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend="
+"\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\""
+"/>, <xref linkend=\"RT_ST_Intersection\"/>, <xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31936,6 +32068,8 @@ msgid ""
 "Returns the polygon geometry that bounds every pixel of a raster band along "
 "with the value, the X and the Y raster coordinates of each pixel."
 msgstr ""
+"Повертає геометрію полігону, що обмежує кожен піксель растрового каналу, "
+"разом із значенням, X- та Y-координатами кожного пікселя."
 
 #. Tag: para
 #, no-c-format
@@ -31944,14 +32078,20 @@ msgid ""
 "with the value (double precision), the X and the Y raster coordinates "
 "(integers) of each pixel."
 msgstr ""
+"Повертає геометрію полігону, що обмежує кожен піксель растрового каналу, "
+"разом із значенням (подвійна точність), X- та Y-координатами растру (цілими "
+"числами) кожного пікселя."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Return record format: <parameter>geom</parameter> <xref linkend=\"geometry\"/"
 ">, <parameter>val</parameter> double precision, <parameter>x</parameter> "
 "integer, <parameter>y</parameter> integers."
 msgstr ""
+"Формат запису повернення: <параметр>geom</параметр> <xref linkend=\"geometry"
+"\"/>, <параметр>val</параметр> подвійна точність, <parameter>x</parameter> "
+"ціле число, <parameter>y</parameter> цілі числа."
 
 #. Tag: para
 #, no-c-format
@@ -31959,6 +32099,8 @@ msgid ""
 "When <parameter>exclude_nodata_value</parameter> = TRUE, only those pixels "
 "whose values are not NODATA are returned as points."
 msgstr ""
+"Коли <parameter>exclude_nodata_value</parameter> = TRUE, як точки "
+"повертаються тільки ті пікселі, значення яких не є NODATA."
 
 #. Tag: para
 #, no-c-format
@@ -31967,16 +32109,19 @@ msgid ""
 "different than ST_DumpAsPolygons where each geometry represents one or more "
 "pixels with the same pixel value."
 msgstr ""
+"ST_PixelAsPolygons повертає одну геометрію полігону для кожного пікселя. Це "
+"відрізняється від ST_DumpAsPolygons, де кожна геометрія представляє один або "
+"кілька пікселів з однаковим значенням пікселя."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 exclude_nodata_value optional argument was added."
-msgstr ""
+msgstr "Покращено: 2.1.0 додано опціональний аргумент exclude_nodata_value."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.1.1 Changed behavior of exclude_nodata_value."
-msgstr ""
+msgstr "Змінено: 2.1.1 Змінено поведінку exclude_nodata_value."
 
 #. Tag: para
 #, no-c-format
@@ -31986,6 +32131,10 @@ msgid ""
 "<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>, <xref linkend=\"ST_AsText\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\""
+"/>, <xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31993,11 +32142,13 @@ msgid ""
 "<refpurpose>Returns a point geometry of the pixel's upper-left corner.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Повертає геометрію точки верхнього лівого кута "
+"пікселя.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Returns a point geometry of the pixel's upper-left corner.</para>"
-msgstr ""
+msgstr "<para>Повертає точкову геометрію верхнього лівого кута пікселя.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -32007,6 +32158,10 @@ msgid ""
 ">, <xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\""
+"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32016,6 +32171,10 @@ msgid ""
 "coordinates of the point geometry are of the pixel's upper-left corner.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Повертає точкову геометрію для кожного пікселя растрового "
+"діапазону разом із значенням, X- та Y-координатами кожного пікселя. "
+"Координати точкової геометрії відповідають верхньому лівому куту "
+"пікселя.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -32024,6 +32183,9 @@ msgid ""
 "the value, the X and the Y raster coordinates of each pixel. The coordinates "
 "of the point geometry are of the pixel's upper-left corner.</para>"
 msgstr ""
+"<para>Повертає точкову геометрію для кожного пікселя растрового діапазону "
+"разом із значенням, X- та Y-координатами кожного пікселя. Координати "
+"точкової геометрії відповідають верхньому лівому куту пікселя.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -32033,6 +32195,10 @@ msgid ""
 "<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\""
+"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32040,6 +32206,8 @@ msgid ""
 "<refpurpose>Returns the centroid (point geometry) of the area represented by "
 "a pixel.</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає центроїд (точкову геометрію) області, представленої "
+"пікселем.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -32047,11 +32215,13 @@ msgid ""
 "<para>Returns the centroid (point geometry) of the area represented by a "
 "pixel.</para>"
 msgstr ""
+"<para>Повертає центроїд (точкову геометрію) області, представленої "
+"пікселем.</para>"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.2.0 Faster now implemented in C."
-msgstr ""
+msgstr "Покращено: 3.2.0 Тепер швидше реалізовано в C."
 
 #. Tag: para
 #, no-c-format
@@ -32061,6 +32231,9 @@ msgid ""
 "<xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPoints\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32070,6 +32243,9 @@ msgid ""
 "The point geometry is the centroid of the area represented by a pixel.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Повертає центроїд ( точкову геометрію) для кожного пікселя "
+"растрового каналу разом із значенням, X- та Y-координатами кожного пікселя. "
+"Точкова геометрія — це центроїд області, представленої пікселем.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -32078,6 +32254,9 @@ msgid ""
 "along with the value, the X and the Y raster coordinates of each pixel. The "
 "point geometry is the centroid of the area represented by a pixel.</para>"
 msgstr ""
+"<para>Повертає центроїд ( точкову геометрію) для кожного пікселя растрового "
+"каналу разом із значенням, X- та Y-координатами кожного пікселя. Точкова "
+"геометрія є центроїдом області, представленої пікселем..</para>"
 
 #. Tag: para
 #, no-c-format
@@ -32087,6 +32266,9 @@ msgid ""
 "<xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroid\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPoints\"/>, <xref linkend=\"RT_ST_PixelAsCentroid\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32098,6 +32280,13 @@ msgid ""
 "intersect and return value. If <varname>exclude_nodata_value</varname> is "
 "not passed in then reads it from metadata of raster."
 msgstr ""
+"Повертає значення заданого каналу в заданому стовпці x, рядку y пікселя або "
+"в певній геометричній точці. Номери смуг починаються з 1 і, якщо не вказано, "
+"приймаються за 1. Якщо <varname>exclude_nodata_value</varname> встановлено "
+"на false, то всі пікселі, включаючи пікселі <varname>nodata</varname>, "
+"вважаються пересічними і повертають значення. Якщо "
+"<varname>exclude_nodata_value</varname> не передано, то воно зчитується з "
+"метаданих растру."
 
 #. Tag: para
 #, no-c-format
@@ -32106,6 +32295,9 @@ msgid ""
 "given geometry point. Band numbers start at 1 and band is assumed to be 1 if "
 "not specified."
 msgstr ""
+"Повертає значення заданого каналу в заданому стовпці x, рядку y пікселя або "
+"в заданій геометричній точці. Номери діапазонів починаються з 1, і якщо "
+"діапазон не вказано, то вважається, що він дорівнює 1."
 
 #. Tag: para
 #, no-c-format
@@ -32115,6 +32307,10 @@ msgid ""
 "<varname>exclude_nodata_value</varname> is set to false, then all pixels are "
 "considered."
 msgstr ""
+"Якщо <varname>exclude_nodata_value</varname> встановлено на true, то "
+"враховуються тільки пікселі, що не є <varname>nodata</varname>. Якщо "
+"<varname>exclude_nodata_value</varname> встановлено на false, то "
+"враховуються всі пікселі."
 
 #. Tag: para
 #, no-c-format
@@ -32125,16 +32321,21 @@ msgid ""
 "wiki/Bilinear_interpolation\">bilinear interpolation</link> to estimate the "
 "value between pixel centers."
 msgstr ""
+"Допустимими значеннями параметра <varname>resample</varname> є «nearest», що "
+"виконує стандартне ресемплювання за найближчим сусідом, та «bilinear», що "
+"виконує <link xlink:href=«https://en.wikipedia.org/wiki/"
+"Bilinear_interpolation»>білінійну інтерполяцію</link> для оцінки значення "
+"між центрами пікселів."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.2.0 resample optional argument was added."
-msgstr ""
+msgstr "Покращено: 3.2.0 додано опціональний аргумент resample."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0.0 exclude_nodata_value optional argument was added."
-msgstr ""
+msgstr "Покращено: 2.0.0 додано опціональний аргумент exclude_nodata_value."
 
 #. Tag: para
 #, no-c-format
@@ -32148,6 +32349,13 @@ msgid ""
 "linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
 "linkend=\"ST_Intersection\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_DumpAsPolygons\"/"
+">, <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_PixelAsPolygon\""
+"/>, <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, "
+"<xref linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>, "
+"<xref linkend=\"RT_ST_SRID\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend="
+"\"ST_Point\"/>, <xref linkend=\"ST_MakeEnvelope\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32156,6 +32364,10 @@ msgid ""
 "pixel specified by a columnx and rowy or a geometric point expressed in the "
 "same spatial reference coordinate system as the raster."
 msgstr ""
+"Повертає найближче значення, яке не є <varname>NODATA</varname>, пікселя "
+"заданого діапазону, визначеного стовпцем x і рядком y, або геометричної "
+"точки, вираженої в тій самій системі координат просторової прив'язки, що й "
+"растр."
 
 #. Tag: para
 #, no-c-format
@@ -32166,6 +32378,12 @@ msgid ""
 "varname>, the function will find the nearest pixel to the columnx, rowy "
 "pixel or geometric point whose value is not <varname>NODATA</varname>."
 msgstr ""
+"Повертає найближче значення, яке не є <varname>NODATA</varname>, заданого "
+"діапазону в заданому стовпці x, рядку y пікселя або в конкретній "
+"геометричній точці. Якщо стовпець x, рядок y пікселя або піксель у заданій "
+"геометричній точці є <varname>NODATA</varname>, функція знайде найближчий "
+"піксель до стовпця x, рядка y пікселя або геометричної точки, значення якого "
+"не є <varname>NODATA</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -32176,16 +32394,22 @@ msgid ""
 "intersect and return value. If <varname>exclude_nodata_value</varname> is "
 "not passed in then reads it from metadata of raster."
 msgstr ""
+"Номери смуг починаються з 1, і якщо не вказано інше, то <varname>bandnum</"
+"varname> вважається рівним 1. Якщо <varname>exclude_nodata_value</varname> "
+"встановлено на false, то всі пікселі, включаючи пікселі <varname>nodata</"
+"varname>, вважаються пересічними і повертають значення. Якщо "
+"<varname>exclude_nodata_value</varname> не передається, то воно зчитується з "
+"метаданих растра."
 
 #. Tag: para
 #, no-c-format
 msgid "ST_NearestValue is a drop-in replacement for ST_Value."
-msgstr ""
+msgstr "ST_NearestValue є повноцінною заміною для ST_Value."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Value\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Value\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32194,6 +32418,9 @@ msgid ""
 "values from the raster copied into the Z dimension using the requested "
 "resample algorithm."
 msgstr ""
+"Повертає геометрію з тими самими координатами X/Y, що й вхідна геометрія, та "
+"значеннями з растру, скопійованими у вимір Z за допомогою заданого алгоритму "
+"ресемплювання."
 
 #. Tag: para
 #, no-c-format
@@ -32202,6 +32429,9 @@ msgid ""
 "values from the raster copied into the Z dimensions using the requested "
 "resample algorithm."
 msgstr ""
+"Повертає геометрію з тими самими координатами X/Y, що й вхідна геометрія, та "
+"значеннями з растру, скопійованими у вимір Z за допомогою заданого алгоритму "
+"ресемплювання."
 
 #. Tag: para
 #, no-c-format
@@ -32212,11 +32442,16 @@ msgid ""
 "Bilinear_interpolation\">bilinear interpolation</link> to calculate a value "
 "that takes neighboring cells into account also."
 msgstr ""
+"Параметр <varname>resample</varname> можна встановити на значення «nearest», "
+"щоб скопіювати значення з комірки, в яку потрапляє кожна вершина, або "
+"«bilinear», щоб використовувати <link xlink:href=«https://en.wikipedia.org/"
+"wiki/Bilinear_interpolation»>білінійну інтерполяцію</link> для обчислення "
+"значення, яке також враховує сусідні комірки."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetM\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SetM\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32225,6 +32460,9 @@ msgid ""
 "values from the raster copied into the M dimension using the requested "
 "resample algorithm."
 msgstr ""
+"Повертає геометрію з тими самими координатами X/Y, що й вхідна геометрія, та "
+"значеннями з растра, скопійованими в розмірність M за допомогою заданого "
+"алгоритму ресемплювання."
 
 #. Tag: para
 #, no-c-format
@@ -32233,11 +32471,14 @@ msgid ""
 "values from the raster copied into the M dimensions using the requested "
 "resample algorithm."
 msgstr ""
+"Повертає геометрію з тими самими координатами X/Y, що й вхідна геометрія, та "
+"значеннями з растру, скопійованими в M виміри за допомогою запитуваного "
+"алгоритму ресемплювання."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetZ\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SetZ\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32247,6 +32488,10 @@ msgid ""
 "a geometric point expressed in the same spatial reference coordinate system "
 "as the raster."
 msgstr ""
+"Повертає двовимірний масив подвійної точності значень, що не є "
+"<varname>NODATA</varname>, навколо пікселя заданого діапазону, визначеного "
+"або стовпцемX і рядкомY, або геометричною точкою, вираженою в тій самій "
+"системі координат просторової прив'язки, що й растр."
 
 #. Tag: para
 #, no-c-format
@@ -32261,6 +32506,16 @@ msgid ""
 "interest. The center value of the 2-D array will be the value at the pixel "
 "specified by the columnX and rowY or the geometric point."
 msgstr ""
+"Повертає двовимірний масив подвійної точності значень, що не є "
+"<varname>NODATA</varname>, навколо пікселя заданого діапазону, визначеного "
+"або стовпцемX і рядкомY, або геометричною точкою, вираженою в тій самій "
+"системі координат просторової прив'язки, що й растр. Параметри "
+"<varname>distanceX</varname> та <varname>distanceY</varname> визначають "
+"кількість пікселів навколо заданого пікселя по осях X та Y, наприклад, я "
+"хочу отримати всі значення в межах 3 пікселів по осі X та 2 пікселів по осі "
+"Y навколо пікселя, що мене цікавить. Центральним значенням двовимірного "
+"масиву буде значення в пікселі, вказаному стовпцем X і рядком Y, або "
+"геометричною точкою."
 
 #. Tag: para
 #, no-c-format
@@ -32270,6 +32525,10 @@ msgid ""
 "<varname>distanceX</varname> and <varname>distanceY</varname> of 1, the "
 "returning array will be 3x3."
 msgstr ""
+"Кількість елементів уздовж кожної осі двовимірного масиву, що повертається, "
+"дорівнює 2 * (<varname>distanceX</varname>|<varname>distanceY</varname>) + "
+"1. Отже, для <varname>distanceX</varname> і <varname>distanceY</varname> "
+"рівних 1 масив, що повертається, буде 3x3."
 
 #. Tag: para
 #, no-c-format
@@ -32277,6 +32536,8 @@ msgid ""
 "The 2-D array output can be passed to any of the raster processing builtin "
 "functions, e.g. ST_Min4ma, ST_Sum4ma, ST_Mean4ma."
 msgstr ""
+"Вихідні дані двовимірного масиву можна передати до будь-якої з вбудованих "
+"функцій обробки растрових даних, наприклад ST_Min4ma, ST_Sum4ma, ST_Mean4ma."
 
 #. Tag: para
 #, no-c-format
@@ -32286,6 +32547,10 @@ msgid ""
 "linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
 "linkend=\"RT_ST_StdDev4ma\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Min4ma\"/>, <xref linkend=\"RT_ST_Max4ma\"/>, <xref "
+"linkend=\"RT_ST_Sum4ma\"/>, <xref linkend=\"RT_ST_Mean4ma\"/>, <xref linkend="
+"\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref linkend="
+"\"RT_ST_StdDev4ma\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32294,6 +32559,10 @@ msgid ""
 "a given columnx, rowy pixel or the pixels that intersect a particular "
 "geometry. Band numbers start at 1 and assumed to be 1 if not specified."
 msgstr ""
+"Повертає модифікований растр, отриманий в результаті встановлення значення "
+"заданого каналу в заданому стовпці x, рядку y пікселя або пікселів, що "
+"перетинають певну геометрію. Номери каналів починаються з 1 і, якщо не "
+"вказано інше, приймаються за 1."
 
 #. Tag: para
 #, no-c-format
@@ -32302,6 +32571,10 @@ msgid ""
 "to new value for the designated band given the raster's row and column or a "
 "geometry. If no band is specified, then band 1 is assumed."
 msgstr ""
+"Повертає модифікований растр, отриманий в результаті встановлення значень "
+"вказаних пікселів на нове значення для призначеного каналу, враховуючи рядок "
+"і стовпець растра або геометрію. Якщо канал не вказано, то вважається, що це "
+"діапазон 1."
 
 #. Tag: para
 #, no-c-format
@@ -32310,17 +32583,22 @@ msgid ""
 "type, not just point. The geometry variant is a wrapper around the geomval[] "
 "variant of ST_SetValues()"
 msgstr ""
+"Покращено: 2.1.0 Варіант геометрії ST_SetValue() тепер підтримує будь-який "
+"тип геометрії, а не тільки точку. Варіант геометрії є обгорткою навколо "
+"варіанту geomval[] функції ST_SetValues()"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns modified raster resulting from setting the values of a given band."
 msgstr ""
+"Повертає змінений растр, отриманий в результаті встановлення значень "
+"заданого каналу."
 
 #. Tag: para
 #, no-c-format
@@ -32329,6 +32607,9 @@ msgid ""
 "value(s) for the designated band. <varname>columnx</varname> and "
 "<varname>rowy</varname> are 1-indexed."
 msgstr ""
+"Повертає змінений растр, отриманий в результаті встановлення зазначених "
+"пікселів на нові значення для вказаного каналу. <varname>columnx</varname> "
+"та <varname>rowy</varname> індексуються з 1."
 
 #. Tag: para
 #, no-c-format
