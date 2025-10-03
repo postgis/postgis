@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-10-03 15:47+0000\n"
+"PO-Revision-Date: 2025-10-03 17:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -32618,6 +32618,9 @@ msgid ""
 "NODATA will not be set with the corresponding value in <varname>newvalueset</"
 "varname>."
 msgstr ""
+"Якщо <varname>keepnodata</varname> має значення TRUE, пікселі, значення яких "
+"є NODATA, не будуть встановлені з відповідним значенням у "
+"<varname>newvalueset</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -32629,6 +32632,12 @@ msgid ""
 "<varname>newvalueset</varname> from being set (due to PostgreSQL not "
 "permitting ragged/jagged arrays). See example Variant 1."
 msgstr ""
+"Для варіанту 1 конкретні пікселі, які потрібно встановити, визначаються "
+"координатами пікселів <varname>columnx</varname>, <varname>rowy</varname> та "
+"розмірами масиву <varname>newvalueset</varname>. <varname>noset</varname> "
+"можна використовувати, щоб запобігти встановленню пікселів із значеннями, "
+"присутніми в <varname>newvalueset</varname> (оскільки PostgreSQL не дозволяє "
+"використовувати нерівномірні/нерівні масиви). Див. приклад варіанту 1."
 
 #. Tag: para
 #, no-c-format
@@ -32638,6 +32647,11 @@ msgid ""
 "array. Elements in <varname>newvalueset</varname> with the "
 "<varname>nosetvalue</varname> value with be skipped. See example Variant 2."
 msgstr ""
+"Варіант 2 схожий на варіант 1, але замість масиву булевих значень "
+"<varname>noset</varname> використовується проста подвійна точність "
+"<varname>nosetvalue</varname>. Елементи в <varname>newvalueset</varname> із "
+"значенням <varname>nosetvalue</varname> будуть пропущені. Див. приклад "
+"варіанту 2."
 
 #. Tag: para
 #, no-c-format
@@ -32647,6 +32661,10 @@ msgid ""
 "<varname>width</varname> and <varname>height</varname>. See example Variant "
 "3."
 msgstr ""
+"Для варіанту 3 конкретні пікселі, які потрібно встановити, визначаються "
+"координатами пікселів <varname>columnx</varname>, <varname>rowy</varname>, "
+"<varname>width</varname> та <varname>height</varname>. Див. приклад варіанту "
+"3."
 
 #. Tag: para
 #, no-c-format
@@ -32654,6 +32672,8 @@ msgid ""
 "Variant 4 is the same as Variant 3 with the exception that it assumes that "
 "the first band's pixels of <varname>rast</varname> will be set."
 msgstr ""
+"Варіант 4 аналогічний варіанту 3, за винятком того, що він передбачає, що "
+"пікселі першого каналу <varname>rast</varname> будуть встановлені."
 
 #. Tag: para
 #, no-c-format
@@ -32665,16 +32685,22 @@ msgid ""
 "geometries are converted to rasters and then iterated through in one pass. "
 "See example Variant 5."
 msgstr ""
+"Для варіанту 5 масив <xref linkend=\"geomval\"/> використовується для "
+"визначення конкретних пікселів, які потрібно встановити. Якщо всі геометрії "
+"в масиві мають тип POINT або MULTIPOINT, функція використовує скорочення, де "
+"довгота і широта кожної точки використовуються для безпосереднього "
+"встановлення пікселя. В іншому випадку геометрії перетворюються на растри, а "
+"потім проходять ітерацію за один прохід. Див. приклад варіанту 5."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Variant 3"
-msgstr ""
+msgstr "Приклади: Варіант 3"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Variant 5"
-msgstr ""
+msgstr "Приклади: Варіант 5"
 
 #. Tag: para
 #, no-c-format
@@ -32682,11 +32708,13 @@ msgid ""
 "The following shows that geomvals later in the array can overwrite prior "
 "geomvals"
 msgstr ""
+"Нижче показано, що geomvals, розташовані далі в масиві, можуть перезаписати "
+"попередні geomvals"
 
 #. Tag: para
 #, no-c-format
 msgid "This example is the opposite of the prior example"
-msgstr ""
+msgstr "Цей приклад є протилежним до попереднього прикладу"
 
 #. Tag: para
 #, no-c-format
@@ -32694,11 +32722,13 @@ msgid ""
 ", <xref linkend=\"RT_ST_SetValue\"/>, <xref "
 "linkend=\"RT_ST_PixelAsPolygons\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_PixelAsPolygons\""
+"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Get the values of the specified band as a 2-dimension array."
-msgstr ""
+msgstr "Отримати значення вказаного каналу у вигляді двовимірного масиву."
 
 #. Tag: para
 #, no-c-format
@@ -32707,12 +32737,16 @@ msgid ""
 "row, second is column). If <varname>nband</varname> is NULL or not provided, "
 "all raster bands are processed."
 msgstr ""
+"Отримати значення вказаного каналу у вигляді двовимірного масиву (перший "
+"індекс — рядок, другий — стовпець). Якщо <varname>nband</varname> дорівнює "
+"NULL або не вказано, обробляються всі растрові канали."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_SetValues\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_SetValues\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32720,6 +32754,8 @@ msgid ""
 "Get the columnx, rowy coordinates of the pixel whose value equals the search "
 "value."
 msgstr ""
+"Отримати координати columnx, rowy пікселя, значення якого дорівнює значенню "
+"пошуку."
 
 #. Tag: para
 #, no-c-format
@@ -32727,11 +32763,13 @@ msgid ""
 "Get the columnx, rowy coordinates of the pixel whose value equals the search "
 "value. If no band is specified, then band 1 is assumed."
 msgstr ""
+"Отримайте координати columnx, rowy пікселя, значення якого дорівнює значенню "
+"пошуку. Якщо канал не вказаний, то вважається, що це канал 1."
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Editors"
-msgstr ""
+msgstr "Редактори растрових зображень"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32740,6 +32778,9 @@ msgid ""
 "be separated by white space. Accepts inputs in GDAL or ESRI format. Default "
 "is GDAL."
 msgstr ""
+"Встановити геореференцію 6 параметрів геореференції в одному виклику. Числа "
+"слід розділяти пробілами. Приймає вхідні дані у форматі GDAL або ESRI. За "
+"замовчуванням використовується GDAL."
 
 #. Tag: para
 #, no-c-format
@@ -32748,6 +32789,9 @@ msgid ""
 "in 'GDAL' or 'ESRI' format. Default is GDAL. If 6 coordinates are not "
 "provided will return null."
 msgstr ""
+"Встановити геореференцію 6 параметрів геореференції за один виклик. Приймає "
+"вхідні дані у форматі «GDAL» або «ESRI». За замовчуванням використовується "
+"GDAL. Якщо 6 координат не вказано, повертається нульове значення."
 
 #. Tag: para
 #, no-c-format
@@ -32755,6 +32799,9 @@ msgid ""
 "If the raster has out-db bands, changing the georeference may result in "
 "incorrect access of the band's externally stored data."
 msgstr ""
+"Якщо растр має канали, що виходять за межі бази даних, зміна геореференції "
+"може призвести до неправильного доступу до даних каналу, що зберігаються "
+"зовні."
 
 #. Tag: para
 #, no-c-format
@@ -32762,6 +32809,8 @@ msgid ""
 "Enhanced: 2.1.0 Addition of ST_SetGeoReference(raster, double "
 "precision, ...) variant"
 msgstr ""
+"Покращено: 2.1.0 Додано варіант ST_SetGeoReference(raster, double precision, "
+"...)"
 
 #. Tag: para
 #, no-c-format
@@ -32769,11 +32818,13 @@ msgid ""
 ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
 "linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
+"linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Set the rotation of the raster in radian."
-msgstr ""
+msgstr "Встановіть поворот растра в радіанах."
 
 #. Tag: para
 #, no-c-format
@@ -32782,6 +32833,9 @@ msgid ""
 "href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for more "
 "details."
 msgstr ""
+"Рівномірно повертає растр. Поворот вимірюється в радіанах. Докладнішу "
+"інформацію див. у <link xlink:href=«http://en.wikipedia.org/wiki/World_file»"
+">World File</link>."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32789,6 +32843,8 @@ msgid ""
 "Sets the X and Y size of pixels in units of coordinate reference system. "
 "Number units/pixel width/height."
 msgstr ""
+"Встановлює розмір пікселів по осях X та Y в одиницях системи координат. "
+"Кількість одиниць/ширина пікселя/висота."
 
 #. Tag: para
 #, no-c-format
@@ -32797,6 +32853,9 @@ msgid ""
 "Number units/pixel width/height. If only one unit passed in, assumed X and Y "
 "are the same number."
 msgstr ""
+"Встановлює розмір пікселів по осях X та Y в одиницях системи координат. "
+"Кількість одиниць/ширина/висота пікселя. Якщо передано лише одну одиницю, "
+"вважається, що X та Y мають однакове значення."
 
 #. Tag: para
 #, no-c-format
@@ -32809,6 +32868,12 @@ msgid ""
 "input raster. ST_SetScale do not modify the width, nor the height of the "
 "raster."
 msgstr ""
+"ST_SetScale відрізняється від <xref linkend=\"RT_ST_Rescale\"/> тим, що "
+"ST_SetScale не передискретизує растр для відповідності розмірам растра. Він "
+"лише змінює метадані (або геореференцію) растра, щоб виправити спочатку "
+"неправильно вказане масштабування. ST_Rescale призводить до того, що растр "
+"має різну ширину і висоту, обчислені для відповідності географічному розміру "
+"вхідного растра. ST_SetScale не змінює ні ширину, ні висоту растра."
 
 #. Tag: para
 #, no-c-format
@@ -32816,6 +32881,8 @@ msgid ""
 "Changed: 2.0.0 In WKTRaster versions this was called ST_SetPixelSize. This "
 "was changed in 2.0.0."
 msgstr ""
+"Змінено: 2.0.0 У версіях WKTRaster це називалося ST_SetPixelSize. Це було "
+"змінено у версії 2.0.0."
 
 #. Tag: para
 #, no-c-format
@@ -33869,7 +33936,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_AsBinary\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_AsBinary\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33878,13 +33945,17 @@ msgid ""
 "are one of those supported by your compiled library. Use ST_GDALDrivers() to "
 "get a list of formats supported by your library."
 msgstr ""
+"Повертає растрову плитку у визначеному форматі GDAL Raster. Растрові формати "
+"є одними з тих, що підтримуються вашою скомпільованою бібліотекою. "
+"Використовуйте ST_GDALDrivers(), щоб отримати список форматів, що "
+"підтримуються вашою бібліотекою."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Returns the raster tile in the designated format. Arguments are itemized "
 "below:"
-msgstr ""
+msgstr "Повертає растрову плитку у вказаному форматі. Аргументи наведені нижче:"
 
 #. Tag: para
 #, no-c-format
@@ -33894,6 +33965,10 @@ msgid ""
 "'PNG'. Use <xref linkend=\"RT_ST_GDALDrivers\"/> to get a list of formats "
 "supported by your library."
 msgstr ""
+"Формат <varname>format</varname> для виводу. Це залежить від драйверів, "
+"скомпільованих у вашій бібліотеці libgdal. Зазвичай доступні формати «JPEG», "
+"«GTIff», «PNG». Використовуйте <xref linkend=\"RT_ST_GDALDrivers\"/>, щоб "
+"отримати список форматів, які підтримує ваша бібліотека."
 
 #. Tag: para
 #, no-c-format
@@ -33902,6 +33977,10 @@ msgid ""
 "dependent on the format. Refer to <link xlink:href=\"http://www.gdal.org/"
 "frmt_various.html\">GDAL Raster format options</link> for more details."
 msgstr ""
+"<varname>options</varname> текстовий масив опцій GDAL. Допустимі опції "
+"залежать від формату. Докладнішу інформацію див. у розділі <link "
+"xlink:href=«http://www.gdal.org/frmt_various.html»>Опції формату GDAL "
+"Raster</link>."
 
 #. Tag: para
 #, no-c-format
@@ -33909,16 +33988,20 @@ msgid ""
 "<varname>srs</varname> The proj4text or srtext (from spatial_ref_sys) to "
 "embed in the image"
 msgstr ""
+"<varname>srs</varname> Проект proj4text або srtext (з spatial_ref_sys) для "
+"вбудовування в зображення"
 
 #. Tag: title
 #, no-c-format
 msgid "JPEG Output Example, multiple tiles as single raster"
-msgstr ""
+msgstr "Приклад виводу JPEG, кілька плиток як єдиний растр"
 
 #. Tag: title
 #, no-c-format
 msgid "Using PostgreSQL Large Object Support to export raster"
 msgstr ""
+"Використання підтримки великих об'єктів PostgreSQL для експорту растрових "
+"даних"
 
 #. Tag: para
 #, no-c-format
@@ -33932,16 +34015,25 @@ msgid ""
 "equivalent lo_ functions which export to the local file system instead of "
 "the server file system."
 msgstr ""
+"Один із способів експортувати растр в інший формат — це використання <link "
+"xlink:href=«https://www.postgresql.org/docs/current/static/lo-funcs.html»"
+">функцій експорту великих об'єктів PostgreSQL</link>. Ми повторимо "
+"попередній приклад, але також виконаємо експорт. Зверніть увагу, що для "
+"цього вам знадобиться доступ суперкористувача до бази даних, оскільки "
+"використовуються функції lo на стороні сервера. Експорт також "
+"відбуватиметься в шлях у мережі сервера. Якщо вам потрібно експортувати "
+"локально, використовуйте еквівалентні функції psql lo_, які експортують у "
+"локальну файлову систему, а не у файлову систему сервера."
 
 #. Tag: title
 #, no-c-format
 msgid "GTIFF Output Examples"
-msgstr ""
+msgstr "Приклади виводу GTIFF"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref linkend=\"RT_ST_SRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33951,6 +34043,11 @@ msgid ""
 "3 bands, then only the first band is used. If only 3 bands then all 3 bands "
 "are used and mapped to RGB."
 msgstr ""
+"Повертає вибрані канали растрової плитки як одне зображення у форматі Joint "
+"Photographic Exports Group (JPEG) (масив байтів). Якщо канал не вказаний і є "
+"1 або більше 3 каналів, то використовується тільки перший канал. Якщо є "
+"тільки 3 канали, то використовуються всі 3 канали і відображаються у форматі "
+"RGB."
 
 #. Tag: para
 #, no-c-format
@@ -33962,11 +34059,17 @@ msgid ""
 "all 3 bands are used. There are many variants of the function with many "
 "options. These are itemized below:"
 msgstr ""
+"Повертає вибрані канали растра як єдине зображення Joint Photographic "
+"Exports Group Image (JPEG). Використовуйте <xref linkend=\"RT_ST_AsGDALRaster"
+"\"/>, якщо вам потрібно експортувати менш поширені типи растрів. Якщо смуга "
+"не вказана і 1 або більше 3 каналів, то використовується тільки перший "
+"канал. Якщо 3 канали, то використовуються всі 3 канали. Існує багато "
+"варіантів функції з багатьма опціями. Вони перераховані нижче:"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>nband</varname> is for single band exports."
-msgstr ""
+msgstr "<varname>nband</varname> призначений для експорту одного каналу."
 
 #. Tag: para
 #, no-c-format
@@ -33975,6 +34078,10 @@ msgid ""
 "for JPEG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band "
 "3 to Red, band 2 to green and band 1 to blue"
 msgstr ""
+"<varname>nbands</varname> — це масив каналів, які потрібно експортувати ("
+"зверніть увагу, що для JPEG максимальне значення становить 3), а порядок "
+"каналів — RGB. Наприклад, ARRAY[3,2,1] означає, що канал 3 відповідає "
+"червоному кольору, канал 2 — зеленому, а канал 1 — синьому"
 
 #. Tag: para
 #, no-c-format
@@ -33982,6 +34089,8 @@ msgid ""
 "<varname>quality</varname> number from 0 to 100. The higher the number the "
 "crisper the image."
 msgstr ""
+"<varname>quality</varname> число від 0 до 100. Чим вище число, тим чіткіше "
+"зображення."
 
 #. Tag: para
 #, no-c-format
@@ -33993,11 +34102,17 @@ msgid ""
 "<link xlink:href=\"http://www.gdal.org/frmt_various.html\">GDAL Raster "
 "format options</link> for more details."
 msgstr ""
+"<varname>options</varname> текст Масив опцій GDAL, як визначено для JPEG ("
+"див. create_options для JPEG <xref linkend=\"RT_ST_GDALDrivers\"/>). Для "
+"JPEG дійсними є <varname>PROGRESSIVE</varname> ON або OFF і "
+"<varname>QUALITY</varname> в діапазоні від 0 до 100, а за замовчуванням — "
+"75. Докладнішу інформацію див. у <link xlink:href=«http://www.gdal.org/"
+"frmt_various.html»>Параметри формату GDAL Raster</link>."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Output"
-msgstr ""
+msgstr "Приклади: Вихідні дані"
 
 #. Tag: para
 #, no-c-format
@@ -34006,6 +34121,8 @@ msgid ""
 "linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref "
 "linkend=\"RT_ST_AsTIFF\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref linkend=\"RT_ST_AsGDALRaster\""
+"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -34016,6 +34133,11 @@ msgid ""
 "bands specified, then only band 1 is used. Bands are mapped to RGB or RGBA "
 "space."
 msgstr ""
+"уПовертає вибрані канали растрової плитки як одне зображення у форматі PNG ("
+"масив байтів). Якщо в растрі вказано 1, 3 або 4 канали і не вказано жодного "
+"каналу, то використовуються всі канали. Якщо вказано більше 2 або більше 4 "
+"каналів і не вказано жодного каналу, то використовується тільки канал 1. "
+"Канали відображаються в просторі RGB або RGBA."
 
 #. Tag: para
 #, no-c-format
@@ -34027,6 +34149,12 @@ msgid ""
 "many options. If no <varname>srid</varname> is specified then then srid of "
 "the raster is used. These are itemized below:"
 msgstr ""
+"Повертає вибрані канали растра як єдине зображення Portable Network Graphics "
+"Image (PNG). Використовуйте <xref linkend=\"RT_ST_AsGDALRaster\"/>, якщо вам "
+"потрібно експортувати менш поширені типи растрів. Якщо канал не вказаний, "
+"експортуються перші 3 канали. Існує багато варіантів функції з багатьма "
+"опціями. Якщо не вказано <varname>srid</varname>, то використовується srid "
+"растру. Вони перераховані нижче:"
 
 #. Tag: para
 #, no-c-format
@@ -34035,6 +34163,10 @@ msgid ""
 "for PNG) and the order of the bands is RGBA. e.g ARRAY[3,2,1] means map band "
 "3 to Red, band 2 to green and band 1 to blue"
 msgstr ""
+"<varname>nbands</varname> — це масив каналів, які потрібно експортувати ("
+"зверніть увагу, що для PNG максимальне значення становить 4), а порядок "
+"каналів — RGBA. Наприклад, ARRAY[3,2,1] означає, що канал 3 відповідає "
+"червоному кольору, канал 2 — зеленому, а канал 1 — синьому"
 
 #. Tag: para
 #, no-c-format
@@ -34042,6 +34174,8 @@ msgid ""
 "<varname>compression</varname> number from 1 to 9. The higher the number the "
 "greater the compression."
 msgstr ""
+"<varname>compression</varname> число від 1 до 9. Чим вище число, тим "
+"сильніше стиснення."
 
 #. Tag: para
 #, no-c-format
@@ -34054,6 +34188,13 @@ msgid ""
 "href=\"http://www.gdal.org/frmt_various.html\">GDAL Raster format options</"
 "link> for more details."
 msgstr ""
+"<varname>options</varname> текст Масив опцій GDAL, як визначено для PNG ("
+"дивіться create_options для PNG у <xref linkend=\"RT_ST_GDALDrivers\"/>). "
+"Для PNG дійсним є тільки ZLEVEL (кількість часу, що витрачається на "
+"стиснення — за замовчуванням 6), наприклад ARRAY[“ZLEVEL=9”]. WORLDFILE не "
+"допускається, оскільки функція повинна видавати два результати. Докладнішу "
+"інформацію див. у <link xlink:href=«http://www.gdal.org/frmt_various.html»"
+">Параметри формату GDAL Raster</link>."
 
 #. Tag: para
 #, no-c-format
@@ -34061,6 +34202,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_ColorMap\"/>, <xref linkend=\"RT_ST_GDALDrivers\"/>, "
 "<xref linkend=\"RT_Raster_Applications\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_ColorMap\"/>, <xref linkend=\"RT_ST_GDALDrivers\"/>, "
+"<xref linkend=\"RT_Raster_Applications\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -34069,6 +34212,9 @@ msgid ""
 "band is specified or any of specified bands does not exist in the raster, "
 "then will try to use all bands."
 msgstr ""
+"Повертає вибрані канали растра як одне зображення TIFF (масив байтів). Якщо "
+"канал не вказана або будь-яка із вказаних смуг не існує в растрі, то буде "
+"зроблена спроба використати всі канали."
 
 #. Tag: para
 #, no-c-format
@@ -34081,6 +34227,13 @@ msgid ""
 "spatial reference SRS text is present, the spatial reference of the raster "
 "is used. These are itemized below:"
 msgstr ""
+"Повертає вибрані канали растра у вигляді єдиного файлу формату TIFF (Tagged "
+"Image File Format). Якщо канал не вказано, буде зроблена спроба використати "
+"всі канали. Це обгортка навколо <xref linkend=\"RT_ST_AsGDALRaster\"/>. "
+"Використовуйте <xref linkend=\"RT_ST_AsGDALRaster\"/>, якщо вам потрібно "
+"експортувати менш поширені типи растрів. Існує багато варіантів функції з "
+"багатьма опціями. Якщо текст просторової системи координат (SRS) відсутній, "
+"використовується просторова система координат растра. Вони перелічені нижче:"
 
 #. Tag: para
 #, no-c-format
@@ -34089,6 +34242,10 @@ msgid ""
 "for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band "
 "3 to Red, band 2 to green and band 1 to blue"
 msgstr ""
+"<varname>nbands</varname> — це масив каналів, які потрібно експортувати ("
+"зверніть увагу, що для PNG максимальне значення становить 3), а порядок "
+"каналів — RGB. Наприклад, ARRAY[3,2,1] означає, що канал 3 відповідає "
+"червоному кольору, канал 2 — зеленому, а канал 1 — синьому"
 
 #. Tag: para
 #, no-c-format
@@ -34096,6 +34253,8 @@ msgid ""
 "<varname>compression</varname> Compression expression -- JPEG90 (or some "
 "other percent), LZW, JPEG, DEFLATE9."
 msgstr ""
+"<varname>compression</varname> Вираз стиснення — JPEG90 (або інший відсоток)"
+", LZW, JPEG, DEFLATE9."
 
 #. Tag: para
 #, no-c-format
@@ -34106,6 +34265,11 @@ msgid ""
 "gdal.org/frmt_various.html\">GDAL Raster format options</link> for more "
 "details."
 msgstr ""
+"<varname>options</varname> текст Масив опцій створення GDAL, як визначено "
+"для GTiff (дивіться create_options для GTiff у <xref linkend="
+"\"RT_ST_GDALDrivers\"/>). або дивіться <link xlink:href=«http://www.gdal.org/"
+"frmt_various.html»>Опції формату GDAL Raster</link> для більш детальної "
+"інформації."
 
 #. Tag: para
 #, no-c-format
@@ -34113,22 +34277,25 @@ msgid ""
 "<varname>srid</varname> srid of spatial_ref_sys of the raster. This is used "
 "to populate the georeference information"
 msgstr ""
+"<varname>srid</varname> srid просторової системи координат растра. "
+"Використовується для заповнення геореференційної інформації"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Use jpeg compression 90%"
-msgstr ""
+msgstr "Приклади: Використовуйте стиснення jpeg 90%"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Processing: Map Algebra"
-msgstr ""
+msgstr "Растрова обробка: алгебра карт"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -34139,6 +34306,11 @@ msgid ""
 "varname> is set to TRUE, then touched pixels are included, otherwise only if "
 "the center of the pixel is in the geometry it is included."
 msgstr ""
+"Повертає растр, обрізаний вхідною геометрією. Якщо номер каналу не вказано, "
+"обробляються всі канали. Якщо <varname>crop</varname> не вказано або TRUE, "
+"вихідний растр обрізається. Якщо <varname>touched</varname> встановлено на "
+"TRUE, то долучаються дотичні пікселі, інакше долучається тільки той піксель, "
+"центр якого знаходиться в геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -34146,6 +34318,8 @@ msgid ""
 "Returns a raster that is clipped by the input geometry <varname>geom</"
 "varname>. If band index is not specified, all bands are processed."
 msgstr ""
+"Повертає растр, обрізаний вхідною геометрією <varname>geom</varname>. Якщо "
+"індекс канал не вказано, обробляються всі канали."
 
 #. Tag: para
 #, no-c-format
@@ -34160,6 +34334,16 @@ msgid ""
 "variants accepting an array of nodata values also accept a single value "
 "which will be assigned to each band."
 msgstr ""
+"Растери, отримані в результаті ST_Clip, повинні мати значення nodata, "
+"призначене для обрізаних областей, по одному для кожного каналу. Якщо такі "
+"значення не вказані, а вхідний растр не має визначеного значення nodata, "
+"значення nodata результуючого растра встановлюються на "
+"ST_MinPossibleValue(ST_BandPixelType(rast, band)). Якщо кількість значень "
+"nodata в масиві менша за кількість каналів, для решти каналів "
+"використовується останнє значення в масиві. Якщо кількість значень nodata "
+"більша за кількість каналів, зайві значення nodata ігноруються. Усі "
+"варіанти, що приймають масив значень nodata, також приймають одне значення, "
+"яке буде присвоєно кожному каналі."
 
 #. Tag: para
 #, no-c-format
@@ -34171,6 +34355,12 @@ msgid ""
 "varname>. If <varname>touched</varname> is set to true, then all pixels in "
 "the <varname>rast</varname> that intersect the geometry are selected."
 msgstr ""
+"Якщо <varname>crop</varname> не вказано, вважається, що значення true, тобто "
+"вихідний растр обрізається до перетину меж <varname>geom</varname> та "
+"<varname>rast</varname>. Якщо <varname>crop</varname> встановлено на false, "
+"новий растр отримує ті ж межі, що і <varname>rast</varname>. Якщо "
+"<varname>touched</varname> встановлено на true, то вибираються всі пікселі в "
+"<varname>rast</varname>, які перетинають геометрію."
 
 #. Tag: para
 #, no-c-format
@@ -34178,16 +34368,18 @@ msgid ""
 "The default behavior is touched=false, which will only select pixels where "
 "the center of the pixel is covered by the geometry."
 msgstr ""
+"За замовчуванням використовується значення touched=false, яке вибирає тільки "
+"ті пікселі, центр яких покритий геометрією."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.5.0 - touched argument added."
-msgstr ""
+msgstr "Покращено: 3.5.0 - додано аргумент touched."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 Rewritten in C"
-msgstr ""
+msgstr "Покращено: 2.1.0 Переписано на C"
 
 #. Tag: para
 #, no-c-format
@@ -34196,42 +34388,49 @@ msgid ""
 "xlink:href=\"https://www.mass.gov/info-details/massgis-data-20082009-aerial-"
 "imagery\">MassGIS Aerial Orthos</link>."
 msgstr ""
+"У наведених прикладах використовуються аерофотознімки штату Массачусетс, "
+"доступні на сайті MassGIS <link xlink:href=«https://www.mass.gov/"
+"info-details/massgis-data-20082009-aerial-imagery»>MassGIS Aerial "
+"Orthos</link>."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Comparing selecting all touched vs. not all touched"
 msgstr ""
+"Приклади: Порівняння вибору всіх торканих елементів та не всіх торканих "
+"елементів"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: 1 band clipping (not touched)"
-msgstr ""
+msgstr "Приклади: 1 канал обрізається (не торкається)"
 
 #. Tag: para
 #, no-c-format
 msgid "Full raster tile before clipping"
-msgstr ""
+msgstr "Повна растрова плитка перед обрізанням"
 
 #. Tag: para
 #, no-c-format
 msgid "After Clipping"
-msgstr ""
+msgstr "Після обрізання"
 
 #. Tag: title
 #, no-c-format
 msgid ""
 "Examples: 1 band clipping with no crop and add back other bands unchanged"
 msgstr ""
+"Приклади: обрізання 1 каналу без обрізки та додавання інших каналів без змін"
 
 #. Tag: para
 #, no-c-format
 msgid "After Clipping - surreal"
-msgstr ""
+msgstr "Після обрізки - сюрреалістично"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Clip all bands"
-msgstr ""
+msgstr "Приклади: Обрізати всі канали"
 
 #. Tag: para
 #, no-c-format
@@ -34239,6 +34438,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_Count\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>, "
 "<xref linkend=\"RT_ST_Intersection\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Count\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>, "
+"<xref linkend=\"RT_ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -34255,11 +34456,18 @@ msgid ""
 "8BUI bands. The number of 8BUI bands in the new raster is determined by the "
 "number of color components defined in <varname>colormap</varname>."
 msgstr ""
+"Застосуйте <varname>colormap</varname> до каналу на <varname>nband</varname> "
+"з <varname>rast</varname>, в результаті чого буде створено новий растр, що "
+"складатиметься з чотирьох 8BUI каналів. Кількість каналів 8BUI у новому "
+"растрі визначається кількістю компонентів кольору, визначених у "
+"<varname>colormap</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "If <varname>nband</varname> is not specified, then band 1 is assumed."
 msgstr ""
+"Якщо <varname>nband</varname> не вказано, то вважається, що використовується "
+"канал 1."
 
 #. Tag: para
 #, no-c-format
@@ -34267,11 +34475,14 @@ msgid ""
 "<varname>colormap</varname> can be a keyword of a pre-defined colormap or a "
 "set of lines defining the value and the color components."
 msgstr ""
+"<varname>colormap</varname> може бути ключовим словом заздалегідь визначеної "
+"колірної карти або набором рядків, що визначають значення та колірні "
+"компоненти."
 
 #. Tag: para
 #, no-c-format
 msgid "Valid pre-defined <varname>colormap</varname> keyword:"
-msgstr ""
+msgstr "Дійсне заздалегідь визначене ключове слово <varname>colormap</varname>:"
 
 #. Tag: para
 #, no-c-format
@@ -34279,6 +34490,8 @@ msgid ""
 "<varname>grayscale</varname> or <varname>greyscale</varname> for a one 8BUI "
 "band raster of shades of gray."
 msgstr ""
+"<varname>grayscale</varname> або <varname>greyscale</varname> для одного "
+"8BUI-діапазону растру відтінків сірого."
 
 #. Tag: para
 #, no-c-format
@@ -34286,6 +34499,8 @@ msgid ""
 "<varname>pseudocolor</varname> for a four 8BUI (RGBA) band raster with "
 "colors going from blue to green to red."
 msgstr ""
+"<varname>pseudocolor</varname> для чотирьох 8BUI (RGBA) канального растру з "
+"кольорами від синього до зеленого до червоного."
 
 #. Tag: para
 #, no-c-format
@@ -34293,6 +34508,8 @@ msgid ""
 "<varname>fire</varname> for a four 8BUI (RGBA) band raster with colors going "
 "from black to red to pale yellow."
 msgstr ""
+"<varname>fire</varname> для чотирьох 8BUI (RGBA) канального растру з "
+"кольорами від чорного до червоного та блідо-жовтого."
 
 #. Tag: para
 #, no-c-format
@@ -34300,6 +34517,8 @@ msgid ""
 "<varname>bluered</varname> for a four 8BUI (RGBA) band raster with colors "
 "going from blue to pale white to red."
 msgstr ""
+"<varname>bluered</varname> для чотирьох 8BUI (RGBA) канального растру з "
+"кольорами від синього до блідо-білого та червоного."
 
 #. Tag: para
 #, no-c-format
@@ -34314,6 +34533,16 @@ msgid ""
 "<emphasis>null</emphasis> or <emphasis>nodata</emphasis> for the NODATA "
 "value. An example is provided below."
 msgstr ""
+"Користувачі можуть передати набір записів (по одному на рядок) до "
+"<varname>colormap</varname>, щоб вказати власні колірні карти. Кожен запис "
+"зазвичай складається з п'яти значень: значення пікселя та відповідні "
+"компоненти червоного, зеленого, синього та альфа (компоненти кольору від 0 "
+"до 255). Замість значень пікселів можна використовувати процентні значення, "
+"де 0% і 100% є мінімальним і максимальним значеннями, що зустрічаються в "
+"растровому каналі. Значення можна розділяти комами (“,”), табуляцією, "
+"двокрапкою (“:”) та/або пробілами. Значення пікселя можна встановити як "
+"<emphasis>nv</emphasis>, <emphasis>null</emphasis> або <emphasis>nodata</"
+"emphasis> для значення NODATA. Приклад наведено нижче."
 
 #. Tag: para
 #, no-c-format
@@ -34322,11 +34551,14 @@ msgid ""
 "relief mode of GDAL <link xlink:href=\"http://www.gdal.org/gdaldem."
 "html#gdaldem_color_relief\">gdaldem</link>."
 msgstr ""
+"Синтаксис <varname>colormap</varname> схожий на синтаксис режиму кольорового "
+"рельєфу GDAL <link xlink:href=«http://www.gdal.org/gdaldem."
+"html#gdaldem_color_relief»>gdaldem</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "Valid keywords for <varname>method</varname>:"
-msgstr ""
+msgstr "Дійсні ключові слова для <varname>method</varname>:"
 
 #. Tag: para
 #, no-c-format
@@ -34334,6 +34566,8 @@ msgid ""
 "<varname>INTERPOLATE</varname> to use linear interpolation to smoothly blend "
 "the colors between the given pixel values"
 msgstr ""
+"<varname>INTERPOLATE</varname> для використання лінійної інтерполяції для "
+"плавного змішування кольорів між заданими значеннями пікселів"
 
 #. Tag: para
 #, no-c-format
@@ -34342,6 +34576,9 @@ msgid ""
 "the colormap. Pixels whose value does not match a colormap entry will be set "
 "to 0 0 0 0 (RGBA)"
 msgstr ""
+"<varname>EXACT</varname> для точного збігу тільки тих значень пікселів, які "
+"знаходяться в колірній карті. Пікселі, значення яких не збігаються із "
+"записом у колірній карті, будуть встановлені на 0 0 0 0 (RGBA)"
 
 #. Tag: para
 #, no-c-format
@@ -34349,6 +34586,8 @@ msgid ""
 "<varname>NEAREST</varname> to use the colormap entry whose value is closest "
 "to the pixel value"
 msgstr ""
+"<varname>NEAREST</varname> для використання запису колірної карти, значення "
+"якого найближче до значення пікселя"
 
 #. Tag: para
 #, no-c-format
@@ -34356,6 +34595,8 @@ msgid ""
 "A great reference for colormaps is <link xlink:href=\"http://www."
 "colorbrewer2.org\">ColorBrewer</link>."
 msgstr ""
+"Чудовим джерелом інформації про колірні карти є <link xlink:href=«http://www."
+"colorbrewer2.org»>ColorBrewer</link>."
 
 #. Tag: para
 #, no-c-format
@@ -34364,46 +34605,51 @@ msgid ""
 "linkend=\"RT_ST_SetBandNoDataValue\"/> to set a NODATA value if one is "
 "needed."
 msgstr ""
+"У отриманих каналах нового растра не буде встановлено значення NODATA. "
+"Використовуйте <xref linkend=\"RT_ST_SetBandNoDataValue\"/>, щоб встановити "
+"значення NODATA, якщо це необхідно."
 
 #. Tag: para
 #, no-c-format
 msgid "This is a junk table to play with"
-msgstr ""
+msgstr "Це чорнова таблиця, з якою можжна погратися"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Compare different color map looks using ST_AsPNG"
 msgstr ""
+"Приклади: Порівняйте різні варіанти відображення кольорової карти за "
+"допомогою ST_AsPNG"
 
 #. Tag: para
 #, no-c-format
 msgid "orig_png"
-msgstr ""
+msgstr "orig_png"
 
 #. Tag: para
 #, no-c-format
 msgid "grey_png"
-msgstr ""
+msgstr "grey_png"
 
 #. Tag: para
 #, no-c-format
 msgid "pseudo_png"
-msgstr ""
+msgstr "pseudo_png"
 
 #. Tag: para
 #, no-c-format
 msgid "fire_png"
-msgstr ""
+msgstr "fire_png"
 
 #. Tag: para
 #, no-c-format
 msgid "bluered_png"
-msgstr ""
+msgstr "bluered_png"
 
 #. Tag: para
 #, no-c-format
 msgid "red_png"
-msgstr ""
+msgstr "red_png"
 
 #. Tag: para
 #, no-c-format
@@ -34413,6 +34659,10 @@ msgid ""
 "<xref linkend=\"RT_ST_Reclass\"/>, <xref "
 "linkend=\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_Union\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AsRaster\"/> <xref linkend=\"RT_ST_MapAlgebra\"/>, "
+"<xref linkend=\"RT_ST_Grayscale\"/> <xref linkend=\"RT_ST_NumBands\"/>, "
+"<xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_SetBandNoDataValue\""
+"/>, <xref linkend=\"RT_ST_Union\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -34420,6 +34670,8 @@ msgid ""
 "Creates a new one-8BUI band raster from the source raster and specified "
 "bands representing Red, Green and Blue"
 msgstr ""
+"Створює новий растр з одним каналом 8BUI на основі вихідного растра та "
+"вказаних каналів, що представляють червоний, зелений та синій кольори"
 
 #. Tag: para
 #, no-c-format
@@ -34428,6 +34680,9 @@ msgid ""
 "rasters). Any input band whose pixel type is not 8BUI will be reclassified "
 "using <xref linkend=\"RT_ST_Reclass\"/>."
 msgstr ""
+"Створіть растр з одним каналом 8BUI, маючи три вхідні канали (з одного або "
+"декількох растрів). Будь-який вхідний канал, тип пікселів якого не є 8BUI, "
+"буде перекласифіковано за допомогою <xref linkend=\"RT_ST_Reclass\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -34438,21 +34693,26 @@ msgid ""
 "the following equation for converting RGB to Grayscale: 0.2989 * RED + "
 "0.5870 * GREEN + 0.1140 * BLUE"
 msgstr ""
+"Ця функція не схожа на <xref linkend=\"RT_ST_ColorMap\"/> з ключовим словом "
+"<varname>grayscale</varname>, оскільки ST_ColorMap працює тільки з одним "
+"каналом, а ця функція очікує три канали для RGB. Ця функція застосовує "
+"наступне рівняння для перетворення RGB у сірий: 0,2989 * RED + 0,5870 * "
+"GREEN + 0,1140 * BLUE"
 
 #. Tag: para
 #, no-c-format
 msgid "original_png"
-msgstr ""
+msgstr "original_png"
 
 #. Tag: para
 #, no-c-format
 msgid "grayscale_png"
-msgstr ""
+msgstr "grayscale_png"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_ColorMap\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_ColorMap\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -34461,6 +34721,9 @@ msgid ""
 "representing the shared portion of two rasters or the geometrical "
 "intersection of a vectorization of the raster and a geometry.</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає растр або набір пар геометрія-піксельне значення, що "
+"представляють спільну частину двох растрів або геометричне перетин "
+"векторизації растра і геометрії.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -34469,6 +34732,9 @@ msgid ""
 "the shared portion of two rasters or the geometrical intersection of a "
 "vectorization of the raster and a geometry.</para>"
 msgstr ""
+"<para>Повертає растр або набір пар геометрія-піксель, що представляють "
+"спільну частину двох растрів або геометричне перетин векторизації растру і "
+"геометрії.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -34482,6 +34748,14 @@ msgid ""
 "results by the proper usage of <xref linkend=\"RT_ST_Intersects\"/> in the "
 "WHERE clause."
 msgstr ""
+"Перші три варіанти, що повертають набір geomval, працюють у векторному "
+"просторі. Растр спочатку векторизується (за допомогою <xref linkend="
+"\"RT_ST_DumpAsPolygons\"/>) у набір рядків geomval, а потім ці рядки "
+"перетинаються з геометрією за допомогою функції PostGIS <xref linkend="
+"\"ST_Intersection\"/>(geometry, geometry). Геометрії, що перетинаються "
+"тільки з областю растра зі значенням nodata, повертають порожню геометрію. "
+"Зазвичай вони виключаються з результатів за допомогою правильного "
+"використання <xref linkend=\"RT_ST_Intersects\"/> в розділі WHERE."
 
 #. Tag: para
 #, no-c-format
@@ -34490,6 +34764,9 @@ msgid ""
 "geomval by surrounding them with parenthesis and adding '.geom' or '.val' at "
 "the end of the expression. e.g. (ST_Intersection(rast, geom)).geom"
 msgstr ""
+"Ви можете отримати доступ до геометрії та значень результативного набору "
+"geomval, обернувши їх у дужки та додавши “.geom” або “.val” в кінці виразу. "
+"Наприклад, (ST_Intersection(rast, geom)).geom"
 
 #. Tag: para
 #, no-c-format
@@ -34498,6 +34775,9 @@ msgid ""
 "using the two rasters version of ST_MapAlgebraExpr to perform the "
 "intersection."
 msgstr ""
+"Інші варіанти, що повертають растр, працюють у растровому просторі. Вони "
+"використовують версію ST_MapAlgebraExpr з двома растрами для виконання "
+"перетину."
 
 #. Tag: para
 #, no-c-format
@@ -34510,6 +34790,13 @@ msgid ""
 "words, any pixel intersecting with a nodata value pixel becomes a nodata "
 "value pixel in the result."
 msgstr ""
+"Межі отриманого растра відповідають геометричному перетину двох меж растра. "
+"Отриманий растр включає канали «BAND1», «BAND2» або «BOTH», відповідно до "
+"того, що передається як параметр <varname>returnband</varname>. Області з "
+"значенням nodata, присутні в будь-якій смузі, призводять до появи областей з "
+"значенням nodata в усіх смугах результату. Іншими словами, будь-який "
+"піксель, що перетинається з пікселем із значенням nodata, стає пікселем із "
+"значенням nodata в результаті."
 
 #. Tag: para
 #, no-c-format
@@ -34525,6 +34812,17 @@ msgid ""
 "an array of nodata value can also accept a single value which will be "
 "assigned to each requested band."
 msgstr ""
+"Растри, отримані в результаті ST_Intersection, повинні мати значення nodata, "
+"призначене для областей, що не перетинаються. Ви можете визначити або "
+"замінити значення nodata для будь-якого отриманого каналу, надавши масив "
+"<varname>nodataval[]</varname> з одним або двома значеннями nodata, залежно "
+"від того, чи ви запитуєте канали «BAND1», «BAND2» або «BOTH». Перше значення "
+"в масиві замінює значення nodata в першому каналі, а друге значення замінює "
+"значення nodata в другому каналі. Якщо один вхідний канал не має визначеного "
+"значення nodata і жодне значення не вказано в масиві, воно вибирається за "
+"допомогою функції ST_MinPossibleValue. Усі варіанти, що приймають масив "
+"значень nodata, також можуть приймати одне значення, яке буде присвоєно "
+"кожному запитуваному каналу."
 
 #. Tag: para
 #, no-c-format
@@ -34533,6 +34831,9 @@ msgid ""
 "need an intersection between a raster and geometry that returns a raster, "
 "refer to <xref linkend=\"RT_ST_Clip\"/>."
 msgstr ""
+"У всіх варіантах, якщо номер каналу не вказано, вважається, що це каналу 1. "
+"Якщо вам потрібна перетин між растром і геометрією, який повертає растр, "
+"зверніться до <xref linkend=\"RT_ST_Clip\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -34541,6 +34842,9 @@ msgid ""
 "encountering a nodata value, use the two rasters version of <xref "
 "linkend=\"RT_ST_MapAlgebraExpr2\"/>."
 msgstr ""
+"Щоб отримати більший контроль над результатом або над тим, що повертати при "
+"зустрічі значення nodata, використовуйте версію з двома растрами <xref "
+"linkend=\"RT_ST_MapAlgebraExpr2\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -34549,6 +34853,9 @@ msgid ""
 "space, use <xref linkend=\"RT_ST_Clip\"/>. ST_Clip works on multiple bands "
 "rasters and does not return a band corresponding to the rasterized geometry."
 msgstr ""
+"Щоб обчислити перетин каналу растра з геометрією в растровому просторі, "
+"використовуйте <xref linkend=\"RT_ST_Clip\"/>. ST_Clip працює з растрами з "
+"декількома каналами і не повертає канал, що відповідає растрованій геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -34557,6 +34864,8 @@ msgid ""
 "linkend=\"RT_ST_Intersects\"/> and an index on the raster column and/or the "
 "geometry column."
 msgstr ""
+"ST_Intersection слід використовувати разом з <xref linkend=\"RT_ST_Intersects"
+"\"/> та індексом у стовпці растру та/або стовпці геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -34565,11 +34874,13 @@ msgid ""
 "earlier pre-2.0.0 versions, only intersection performed in vector space were "
 "supported."
 msgstr ""
+"Покращено: 2.0.0 — додано перетин у растровому просторі. У попередніх "
+"версіях до 2.0.0 підтримувався лише перетин у векторному просторі."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Geometry, Raster -- resulting in geometry vals"
-msgstr ""
+msgstr "Приклади: Геометрія, Растр — результатом є значення геометрії"
 
 #. Tag: para
 #, no-c-format
@@ -34578,6 +34889,8 @@ msgid ""
 "linkend=\"RT_ST_MapAlgebraExpr2\"/>, <xref linkend=\"RT_ST_Clip\"/>, <xref "
 "linkend=\"ST_AsText\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Intersects\"/>, <xref linkend=\"RT_ST_MapAlgebraExpr2"
+"\"/>, <xref linkend=\"RT_ST_Clip\"/>, <xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -34585,6 +34898,9 @@ msgid ""
 "Callback function version - Returns a one-band raster given one or more "
 "input rasters, band indexes and one user-specified callback function."
 msgstr ""
+"Версія функції зворотного виклику - Повертає односмуговий растр, заданий "
+"одним або декількома вхідними растрами, індексами каналів і однією функцією "
+"зворотного виклику, заданою користувачем."
 
 #. Tag: para
 #, no-c-format
@@ -34592,11 +34908,14 @@ msgid ""
 "Returns a one-band raster given one or more input rasters, band indexes and "
 "one user-specified callback function."
 msgstr ""
+"Повертає одноканальний растр, заданий одним або декількома вхідними "
+"растрами, індексами каналів і однією функцією зворотного виклику, заданою "
+"користувачем."
 
 #. Tag: para
 #, no-c-format
 msgid "Rasters on which the map algebra process is evaluated."
-msgstr ""
+msgstr "Растри, на яких оцінюється процес алгебри карт."
 
 #. Tag: para
 #, no-c-format
@@ -34604,6 +34923,8 @@ msgid ""
 "<varname>rastbandargset</varname> allows the use of a map algebra operation "
 "on many rasters and/or many bands. See example Variant 1."
 msgstr ""
+"<varname>rastbandargset</varname> дозволяє використовувати операцію алгебри "
+"карт на багатьох растрах та/або багатьох каналах. Див. приклад Варіант 1."
 
 #. Tag: para
 #, no-c-format
@@ -34612,6 +34933,9 @@ msgid ""
 "integer[] denoting the bands. nband1 is band on rast1 and nband2 is band on "
 "rast2 for the 2 raster/2band case."
 msgstr ""
+"Номери каналів растра, що підлягають оцінці. nband може бути цілим числом "
+"або цілим числом [], що позначає каналу. nband1 — це канал на rast1, а "
+"nband2 — канал на rast2 для випадку 2 raster/2band."
 
 #. Tag: para
 #, no-c-format
@@ -34620,6 +34944,9 @@ msgid ""
 "of an SQL or PL/pgSQL function, cast to a regprocedure. An example PL/pgSQL "
 "function example is:"
 msgstr ""
+"Параметр <varname>callbackfunc</varname> повинен бути ім'ям і сигнатурою "
+"функції SQL або PL/pgSQL, перетвореною в regprocedure. Приклад функції PL/"
+"pgSQL:"
 
 #. Tag: para
 #, no-c-format
@@ -34637,6 +34964,17 @@ msgid ""
 "<varname>userargs</varname> is for passing through any user-specified "
 "arguments."
 msgstr ""
+"Функція <varname>callbackfunc</varname> повинна мати три аргументи: "
+"тривимірний масив подвійної точності, двовимірний масив цілих чисел і "
+"варіативний одновимірний текстовий масив. Перший аргумент <varname>value</"
+"varname> — це набір значень (подвійної точності) з усіх вхідних растрів. Три "
+"виміри (де індекси починаються з 1) є такими: растр №, рядок y, стовпець x. "
+"Другий аргумент <varname>position</varname> є набором позицій пікселів з "
+"вихідного растру та вхідних растрів. Зовнішній вимір (де індекси починаються "
+"з 0) — це растр #. Позиція при зовнішньому індексі виміру 0 — це позиція "
+"пікселя вихідного растра. Для кожного зовнішнього виміру є два елементи у "
+"внутрішньому вимірі для X та Y. Третій аргумент <varname>userargs</varname> "
+"призначений для передачі будь-яких аргументів, заданих користувачем."
 
 #. Tag: para
 #, no-c-format
@@ -34646,6 +34984,10 @@ msgid ""
 "type> type. To pass the above example PL/pgSQL function as an argument, the "
 "SQL for the argument is:"
 msgstr ""
+"Для передачі аргументу <type>regprocedure</type> до функції SQL необхідно "
+"передати повну сигнатуру функції, а потім перетворити її до типу "
+"<type>regprocedure</type>. Щоб передати вищезазначену функцію PL/pgSQL як "
+"аргумент, SQL для аргументу буде таким:"
 
 #. Tag: para
 #, no-c-format
@@ -34654,6 +34996,9 @@ msgid ""
 "function arguments, quotes around the name and argument types, and a cast to "
 "a <type>regprocedure</type>."
 msgstr ""
+"Зверніть увагу, що аргумент містить ім'я функції, типи аргументів функції, "
+"лапки навколо імені та типів аргументів, а також приведення до типу "
+"<type>regprocedure</type>."
 
 #. Tag: para
 #, no-c-format
@@ -34664,6 +35009,12 @@ msgid ""
 "weight is set to true, then the values, are used as multipliers to multiple "
 "the pixel value of that value in the neighborhood position."
 msgstr ""
+"N-вимірний масив (матриця) чисел, що використовується для фільтрації "
+"комірок, які передаються до функції зворотного виклику алгебри мап. 0 "
+"означає, що значення сусідньої комірки слід розглядати як відсутність даних, "
+"а 1 означає, що значення слід розглядати як дані. Якщо вага встановлена як "
+"true, то значення використовуються як множники для множення значення пікселя "
+"цього значення в сусідній позиції."
 
 #. Tag: para
 #, no-c-format
@@ -34672,6 +35023,9 @@ msgid ""
 "(multiplied by original value) or not (only applies to proto that takes a "
 "mask)."
 msgstr ""
+"булеве значення (true/false) для позначення того, чи слід зважувати значення "
+"маски (помножити на вихідне значення), чи ні (застосовується тільки до "
+"прототипу, який приймає маску)."
 
 #. Tag: para
 #, no-c-format
@@ -34683,6 +35037,12 @@ msgid ""
 "specified band of the appropriate raster (for extent types: SECOND, LAST). "
 "If in doubt, always specify <varname>pixeltype</varname>."
 msgstr ""
+"Якщо передано <varname>pixeltype</varname>, одон канал нового растру буде "
+"мати цей тип пікселів. Якщо pixeltype передається як NULL або пропускається, "
+"новий растровий канал матиме той самий тип пікселів, що й вказаний канал "
+"першого растру (для типів розширення: INTERSECTION, UNION, FIRST, CUSTOM) "
+"або вказаний канал відповідного растру (для типів розширення: SECOND, LAST). "
+"У разі сумнівів завжди вказуйте <varname>pixeltype</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -34690,6 +35050,9 @@ msgid ""
 "The resulting pixel type of the output raster must be one listed in <xref "
 "linkend=\"RT_ST_BandPixelType\"/> or left out or set to NULL."
 msgstr ""
+"Тип пікселів вихідного растру повинен бути одним із типів, перелічених у "
+"<xref linkend=\"RT_ST_BandPixelType\"/>, або пропущений, або встановлений як "
+"NULL."
 
 #. Tag: para
 #, no-c-format
@@ -34697,6 +35060,8 @@ msgid ""
 "Possible values are INTERSECTION (default), UNION, FIRST (default for one "
 "raster variants), SECOND, LAST, CUSTOM."
 msgstr ""
+"Можливі значення: INTERSECTION (за замовчуванням), UNION, FIRST (за "
+"замовчуванням для одного растрового варіанту), SECOND, LAST, CUSTOM."
 
 #. Tag: para
 #, no-c-format
@@ -34704,6 +35069,9 @@ msgid ""
 "If <varname>extentype</varname> is CUSTOM, a raster must be provided for "
 "<varname>customextent</varname>. See example 4 of Variant 1."
 msgstr ""
+"Якщо <varname>extentype</varname> дорівнює CUSTOM, для "
+"<varname>customextent</varname> необхідно вказати растр. Див. приклад 4 "
+"варіанту 1."
 
 #. Tag: para
 #, no-c-format
@@ -34712,6 +35080,9 @@ msgid ""
 "resulting matrix would be <code>2*distancex + 1</code>.If not specified only "
 "the reference cell is considered (neighborhood of 0)."
 msgstr ""
+"Відстань у пікселях від опорної комірки в напрямку x. Отже, ширина "
+"результуючої матриці буде дорівнювати <code>2*distancex + 1</code>. Якщо не "
+"вказано, враховується лише опорна комірка (околиця 0)."
 
 #. Tag: para
 #, no-c-format
@@ -34720,6 +35091,9 @@ msgid ""
 "resulting matrix would be <code>2*distancey + 1</code> .If not specified "
 "only the reference cell is considered (neighborhood of 0)."
 msgstr ""
+"Відстань у пікселях від опорної комірки у напрямку y. Висота отриманої "
+"матриці буде дорівнювати <code>2*distancey + 1</code>. Якщо не вказано, "
+"враховується тільки опорна комірка (околиця 0)."
 
 #. Tag: para
 #, no-c-format
@@ -34729,6 +35103,10 @@ msgid ""
 "through to the specified <varname>callbackfunc</varname>, and are contained "
 "in the <varname>userargs</varname> argument."
 msgstr ""
+"Третій аргумент для <varname>callbackfunc</varname> є масивом <type>variadic "
+"text</type>. Усі кінцеві текстові аргументи передаються до вказаного "
+"<varname>callbackfunc</varname> і містяться в аргументі "
+"<varname>userargs</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -34738,6 +35116,10 @@ msgid ""
 "Arguments\" section of <link xlink:href=\"http://www.postgresql.org/docs/"
 "current/static/xfunc-sql.html\">Query Language (SQL) Functions</link>."
 msgstr ""
+"Для отримання додаткової інформації про ключове слово VARIADIC зверніться до "
+"документації PostgreSQL та розділу «Функції SQL із змінною кількістю "
+"аргументів» у <link xlink:href=«http://www.postgresql.org/docs/current/"
+"static/xfunc-sql.html»>Функції мови запитів (SQL)</link>."
 
 #. Tag: para
 #, no-c-format
@@ -34746,6 +35128,9 @@ msgid ""
 "required, regardless of whether you choose to pass any arguments to the "
 "callback function for processing or not."
 msgstr ""
+"Аргумент <type>text[]</type> для <varname>callbackfunc</varname> є "
+"обов'язковим, незалежно від того, чи ви вирішили передати аргументи до "
+"функції зворотного виклику для обробки, чи ні."
 
 #. Tag: para
 #, no-c-format
@@ -34754,6 +35139,9 @@ msgid ""
 "use of a map algebra operation on many rasters and/or many bands. See "
 "example Variant 1."
 msgstr ""
+"Варіант 1 приймає масив <varname>rastbandarg</varname>, що дозволяє "
+"використовувати операцію алгебри карт на багатьох растрах та/або багатьох "
+"каналах. Див. приклад Варіант 1."
 
 #. Tag: para
 #, no-c-format
@@ -34761,6 +35149,8 @@ msgid ""
 "Variants 2 and 3 operate upon one or more bands of one raster. See example "
 "Variant 2 and 3."
 msgstr ""
+"Варіанти 2 і 3 працюють з одним або декількома каналами одного растра. Див. "
+"приклад варіантів 2 і 3."
 
 #. Tag: para
 #, no-c-format
@@ -34768,26 +35158,28 @@ msgid ""
 "Variant 4 operate upon two rasters with one band per raster. See example "
 "Variant 4."
 msgstr ""
+"Варіант 4 працює з двома растрами з одним каналом на растр. Див. приклад "
+"Варіант 4."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.2.0: Ability to add a mask"
-msgstr ""
+msgstr "Доступність: 2.2.0: Можливість додавання маски"
 
 #. Tag: para
 #, no-c-format
 msgid "One raster, one band"
-msgstr ""
+msgstr "Один растр, один канал"
 
 #. Tag: para
 #, no-c-format
 msgid "One raster, several bands"
-msgstr ""
+msgstr "Один растр, кілька каналів"
 
 #. Tag: para
 #, no-c-format
 msgid "Several rasters, several bands"
-msgstr ""
+msgstr "Кілька растрів, кілька каналів"
 
 #. Tag: para
 #, no-c-format
@@ -34795,6 +35187,8 @@ msgid ""
 "Complete example of tiles of a coverage with neighborhood. This query only "
 "works with PostgreSQL 9.1 or higher."
 msgstr ""
+"Повний приклад плиток покриття з сусідством. Цей запит працює тільки з "
+"PostgreSQL 9.1 або вище."
 
 #. Tag: para
 #, no-c-format
@@ -34802,41 +35196,43 @@ msgid ""
 "Example like the prior one for tiles of a coverage with neighborhood but "
 "works with PostgreSQL 9.0."
 msgstr ""
+"Приклад, подібний до попереднього, для плиток покриття з сусідством, але "
+"працює з PostgreSQL 9.0."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Variants 2 and 3"
-msgstr ""
+msgstr "Приклади: Варіанти 2 і 3"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Variant 4"
-msgstr ""
+msgstr "Приклади: Варіант 4"
 
 #. Tag: para
 #, no-c-format
 msgid "Two rasters, two bands"
-msgstr ""
+msgstr "Два растри, два канали"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Using Masks"
-msgstr ""
+msgstr "Приклади: використання масок"
 
 #. Tag: para
 #, no-c-format
 msgid "original"
-msgstr ""
+msgstr "оригінальний"
 
 #. Tag: para
 #, no-c-format
 msgid "no mask mean value (same as having all 1s in mask matrix)"
-msgstr ""
+msgstr "значення без маски (те саме, що мати всі 1 у матриці маски)"
 
 #. Tag: para
 #, no-c-format
 msgid "mask only consider neighbors, exclude center"
-msgstr ""
+msgstr "маска враховує тільки сусідів, виключає центр"
 
 #. Tag: para
 #, no-c-format
@@ -34844,12 +35240,15 @@ msgid ""
 "mask weighted only consider neighbors, exclude center multi other pixel "
 "values by 2"
 msgstr ""
+"маска зважена враховує тільки сусідні пікселі, виключає центральні та інші "
+"значення пікселів з коефіцієнтом 2"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra_expr\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra_expr\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -34858,6 +35257,9 @@ msgid ""
 "input rasters, band indexes and one or more user-specified SQL expressions.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Версія виразу — повертає одноканальний растр, заданий одним або "
+"двома вхідними растрами, індексами каналів і одним або декількома "
+"визначеними користувачем виразами SQL.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -34865,11 +35267,14 @@ msgid ""
 "<para>Expression version - Returns a one-band raster given one or two input "
 "rasters, band indexes and one or more user-specified SQL expressions.</para>"
 msgstr ""
+"<para>Версія виразу — повертає одноканальний растр на основі одного або двох "
+"вхідних растрів, індексів каналів та одного або декількох визначених "
+"користувачем виразів SQL.</para>"
 
 #. Tag: title
 #, no-c-format
 msgid "Description: Variants 1 and 2 (one raster)"
-msgstr ""
+msgstr "Опис: Варіанти 1 і 2 (один растр)"
 
 #. Tag: para
 #, no-c-format
@@ -34880,6 +35285,12 @@ msgid ""
 "provided, band 1 is assumed. The new raster will have the same georeference, "
 "width, and height as the original raster but will only have one band."
 msgstr ""
+"Створює новий одноканальний растр, сформований шляхом застосування дійсної "
+"алгебраїчної операції PostgreSQL, визначеної виразом <varname>expression</"
+"varname> на вхідному растрі (<varname>rast</varname>). Якщо <varname>nband</"
+"varname> не вказано, припускається, що це канал 1. Новий растр матиме ті ж "
+"геореференцію, ширину та висоту, що й оригінальний растр, але матиме лише "
+"один канал."
 
 #. Tag: para
 #, no-c-format
@@ -34888,38 +35299,45 @@ msgid ""
 "a band of that pixeltype. If pixeltype is passed NULL, then the new raster "
 "band will have the same pixeltype as the input <varname>rast</varname> band."
 msgstr ""
+"Якщо передано <varname>pixeltype</varname>, то новий растр матиме канал "
+"цього типу пікселів. Якщо передано NULL, то новий канал растра матиме той "
+"самий тип пікселів, що й вхідний канал <varname>rast</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "Keywords permitted for <varname>expression</varname>"
-msgstr ""
+msgstr "Ключові слова, дозволені для <varname>expression</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>[rast]</varname> - Pixel value of the pixel of interest"
-msgstr ""
+msgstr "<varname>[rast]</varname> - Значення пікселя, що цікавить"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>[rast.val]</varname> - Pixel value of the pixel of interest"
-msgstr ""
+msgstr "<varname>[rast.val]</varname> - Значення пікселя, що цікавить"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>[rast.x]</varname> - 1-based pixel column of the pixel of interest"
 msgstr ""
+"<varname>[rast.x]</varname> - стовпець пікселів з індексом 1, що представляє "
+"піксель, який нас цікавить"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<varname>[rast.y]</varname> - 1-based pixel row of the pixel of interest"
 msgstr ""
+"<ім'я змінної>[rast.y]</ім'я змінної> - ряд пікселів, що починається з 1, "
+"який представляє піксель, що нас цікавить"
 
 #. Tag: title
 #, no-c-format
 msgid "Description: Variants 3 and 4 (two raster)"
-msgstr ""
+msgstr "Опис: Варіанти 3 і 4 (два растри)"
 
 #. Tag: para
 #, no-c-format
@@ -34933,6 +35351,14 @@ msgid ""
 "raster. The resulting raster will have the extent defined by the "
 "<varname>extenttype</varname> parameter."
 msgstr ""
+"Створює новий одноканальний растр, сформований шляхом застосування дійсної "
+"алгебраїчної операції PostgreSQL до двох каналів, визначених виразом "
+"<varname>expression</varname> на двох вхідних растрових каналах "
+"<varname>rast1</varname>, (<varname>rast2</varname>). Якщо не вказано "
+"<varname>band1</varname>, <varname>band2</varname>, то вважається, що це "
+"канал 1. Отриманий растр буде вирівняний (масштаб, нахил і кути пікселів) на "
+"сітці, визначеній першим растром. Отриманий растр матиме розмір, визначений "
+"параметром <varname>extenttype</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -34941,6 +35367,9 @@ msgid ""
 "defined functions/operators that will define the pixel value when pixels "
 "intersect. e.g. (([rast1] + [rast2])/2.0)::integer"
 msgstr ""
+"Алгебраїчний вираз PostgreSQL, що включає два растри та визначені функції/"
+"оператори PostgreSQL, які визначатимуть значення пікселя при перетині "
+"пікселів. Наприклад, (([rast1] + [rast2])/2.0)::integer"
 
 #. Tag: para
 #, no-c-format
@@ -34949,11 +35378,15 @@ msgid ""
 "linkend=\"RT_ST_BandPixelType\"/>, left out or set to NULL. If not passed in "
 "or set to NULL, will default to the pixeltype of the first raster."
 msgstr ""
+"Тип пікселів вихідного растру. Повинен бути одним із типів, перелічених у "
+"<xref linkend=\"RT_ST_BandPixelType\"/>, пропущений або встановлений як "
+"NULL. Якщо не переданий або встановлений як NULL, за замовчуванням буде "
+"використовуватися тип пікселів першого растру."
 
 #. Tag: para
 #, no-c-format
 msgid "Controls the extent of resulting raster"
-msgstr ""
+msgstr "Контролює розмір отриманого растру"
 
 #. Tag: para
 #, no-c-format
@@ -34961,6 +35394,8 @@ msgid ""
 "<varname>INTERSECTION</varname> - The extent of the new raster is the "
 "intersection of the two rasters. This is the default."
 msgstr ""
+"<varname>INTERSECTION</varname> — розмір нового растра дорівнює перетину "
+"двох растрів. Це значення є типовим."
 
 #. Tag: para
 #, no-c-format
@@ -34968,6 +35403,7 @@ msgid ""
 "<varname>UNION</varname> - The extent of the new raster is the union of the "
 "two rasters."
 msgstr ""
+"<varname>UNION</varname> - Розмір нового растра є об'єднанням двох растрів."
 
 #. Tag: para
 #, no-c-format
@@ -34975,6 +35411,8 @@ msgid ""
 "<varname>FIRST</varname> - The extent of the new raster is the same as the "
 "one of the first raster."
 msgstr ""
+"<varname>FIRST</varname> - Розмір нового растра такий самий, як і розмір "
+"першого растра."
 
 #. Tag: para
 #, no-c-format
@@ -34982,6 +35420,8 @@ msgid ""
 "<varname>SECOND</varname> - The extent of the new raster is the same as the "
 "one of the second raster."
 msgstr ""
+"<varname>SECOND</varname> - Розмір нового растра такий самий, як і розмір "
+"другого растра."
 
 #. Tag: para
 #, no-c-format
@@ -34990,6 +35430,9 @@ msgid ""
 "constant that defines what to return when pixels of <varname>rast1</varname> "
 "are nodata values and spatially corresponding rast2 pixels have values."
 msgstr ""
+"Алгебраїчний вираз, що містить тільки <varname>rast2</varname> або "
+"константу, яка визначає, що повертати, коли пікселі <varname>rast1</varname> "
+"є значеннями nodata, а просторово відповідні пікселі rast2 мають значення."
 
 #. Tag: para
 #, no-c-format
@@ -34998,6 +35441,9 @@ msgid ""
 "constant that defines what to return when pixels of <varname>rast2</varname> "
 "are nodata values and spatially corresponding rast1 pixels have values."
 msgstr ""
+"Алгебраїчний вираз, що містить тільки <varname>rast1</varname> або "
+"константу, яка визначає, що повертати, коли пікселі <varname>rast2</varname> "
+"є значеннями nodata, а просторово відповідні пікселі rast1 мають значення."
 
 #. Tag: para
 #, no-c-format
@@ -35005,6 +35451,8 @@ msgid ""
 "A numeric constant to return when spatially corresponding rast1 and rast2 "
 "pixels are both nodata values."
 msgstr ""
+"Числова константа, яка повертається, коли просторово відповідні пікселі "
+"rast1 і rast2 мають значення nodata."
 
 #. Tag: para
 #, no-c-format
@@ -35012,6 +35460,8 @@ msgid ""
 "Keywords permitted in <varname>expression</varname>, <varname>nodata1expr</"
 "varname> and <varname>nodata2expr</varname>"
 msgstr ""
+"Ключові слова, дозволені в <varname>expression</varname>, "
+"<varname>nodata1expr</varname> та <varname>nodata2expr</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -35019,6 +35469,8 @@ msgid ""
 "<varname>[rast1]</varname> - Pixel value of the pixel of interest from "
 "<varname>rast1</varname>"
 msgstr ""
+"<varname>[rast1]</varname> - Значення пікселя, що цікавить, з "
+"<varname>rast1</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -35026,6 +35478,8 @@ msgid ""
 "<varname>[rast1.val]</varname> - Pixel value of the pixel of interest from "
 "<varname>rast1</varname>"
 msgstr ""
+"<varname>[rast1.val]</varname> - Значення пікселя, що цікавить, з "
+"<varname>rast1</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -35033,6 +35487,8 @@ msgid ""
 "<varname>[rast1.x]</varname> - 1-based pixel column of the pixel of interest "
 "from <varname>rast1</varname>"
 msgstr ""
+"<varname>[rast1.x]</varname> - стовпець пікселів з індексом 1, що "
+"представляє піксель, який цікавить, з <varname>rast1</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -35040,6 +35496,8 @@ msgid ""
 "<varname>[rast1.y]</varname> - 1-based pixel row of the pixel of interest "
 "from <varname>rast1</varname>"
 msgstr ""
+"<varname>[rast1.y]</varname> - ряд пікселів, що починається з 1, пікселів, "
+"що цікавлять, з <varname>rast1</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -35047,6 +35505,8 @@ msgid ""
 "<varname>[rast2]</varname> - Pixel value of the pixel of interest from "
 "<varname>rast2</varname>"
 msgstr ""
+"<varname>[rast2]</varname> - Значення пікселя, що цікавить, з "
+"<varname>rast2</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -35054,6 +35514,8 @@ msgid ""
 "<varname>[rast2.val]</varname> - Pixel value of the pixel of interest from "
 "<varname>rast2</varname>"
 msgstr ""
+"<varname>[rast2.val]</varname> - Значення пікселя, що цікавить, з "
+"<varname>rast2</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -35061,6 +35523,8 @@ msgid ""
 "<varname>[rast2.x]</varname> - 1-based pixel column of the pixel of interest "
 "from <varname>rast2</varname>"
 msgstr ""
+"<varname>[rast2.x]</varname> - стовпець пікселів з індексом 1, що "
+"представляє піксель, який нас цікавить, з <varname>rast2</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -35068,21 +35532,23 @@ msgid ""
 "<varname>[rast2.y]</varname> - 1-based pixel row of the pixel of interest "
 "from <varname>rast2</varname>"
 msgstr ""
+"<varname>[rast2.y]</varname> - ряд пікселів, що починається з 1, пікселя, що "
+"цікавить, з <varname>rast2</varname>"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Variants 1 and 2"
-msgstr ""
+msgstr "Приклади: Варіанти 1 і 2"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Variant 3 and 4"
-msgstr ""
+msgstr "Приклади: Варіанти 3 і 4"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35091,6 +35557,10 @@ msgid ""
 "valid PostgreSQL algebraic operation on the input raster band and of "
 "pixeltype provided. Band 1 is assumed if no band is specified."
 msgstr ""
+"Версія з 1 растровим каналом: створює новий одноканальний растр, сформований "
+"шляхом застосування дійсної алгебраїчної операції PostgreSQL до вхідного "
+"растрового каналу та наданого типу пікселів. Якщо діапазон не вказано, "
+"передбачається діапазон 1."
 
 #. Tag: para
 #, no-c-format
@@ -35098,6 +35568,8 @@ msgid ""
 "is deprecated as of 2.1.0. Use <xref linkend=\"RT_ST_MapAlgebra_expr\"/> "
 "instead."
 msgstr ""
+"є застарілим починаючи з версії 2.1.0. Замість нього використовуйте <xref "
+"linkend=\"RT_ST_MapAlgebra_expr\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -35108,6 +35580,12 @@ msgid ""
 "specified band 1 is assumed. The new raster will have the same georeference, "
 "width, and height as the original raster but will only have one band."
 msgstr ""
+"Створює новий одноканальний растр, сформований шляхом застосування дійсної "
+"алгебраїчної операції PostgreSQL, визначеної виразом <varname>expression</"
+"varname> на вхідному растрі (<varname>rast</varname>). Якщо не вказано "
+"<varname>band</varname>, то вважається, що це канал 1. Новий растр матиме ті "
+"ж геореференцію, ширину та висоту, що й оригінальний растр, але матиме лише "
+"один канал."
 
 #. Tag: para
 #, no-c-format
@@ -35117,6 +35595,10 @@ msgid ""
 "to the 1-based pixel column index, <varname>[rast.y]</varname> to refer to "
 "the 1-based pixel row index."
 msgstr ""
+"У виразі можна використовувати термін <varname>[rast]</varname> для "
+"посилання на значення пікселя оригінального каналу, <varname>[rast.x]</"
+"varname> для посилання на індекс стовпця пікселя з базою 1, <varname>[rast."
+"y]</varname> для посилання на індекс рядка пікселя з базою 1."
 
 #. Tag: para
 #, no-c-format
@@ -35124,6 +35606,8 @@ msgid ""
 "Create a new 1 band raster from our original that is a function of modulo 2 "
 "of the original raster band."
 msgstr ""
+"Створіть новий одноканальний растр на основі нашого оригіналу, який є "
+"функцією модуля 2 від каналу оригінального растра."
 
 #. Tag: para
 #, no-c-format
@@ -35131,16 +35615,18 @@ msgid ""
 "Create a new 1 band raster of pixel-type 2BUI from our original that is "
 "reclassified and set the nodata value to be 0."
 msgstr ""
+"Створіть новий одноканальний растр піксельного типу 2BUI з нашого оригіналу, "
+"який перекласифіковано, і встановіть значення nodata на 0."
 
 #. Tag: para
 #, no-c-format
 msgid "original (column rast_view)"
-msgstr ""
+msgstr "оригінал (стовпець rast_view)"
 
 #. Tag: para
 #, no-c-format
 msgid "rast_view_ma"
-msgstr ""
+msgstr "rast_view_ma"
 
 #. Tag: para
 #, no-c-format
@@ -35148,6 +35634,9 @@ msgid ""
 "Create a new 3 band raster same pixel type from our original 3 band raster "
 "with first band altered by map algebra and remaining 2 bands unaltered."
 msgstr ""
+"Створіть новий 3-канальний растр того ж типу пікселів, що і наш оригінальний "
+"3-канальний растр, з першим каналом, зміненим за допомогою алгебри карт, і "
+"двома іншими каналами, що залишилися без змін."
 
 #. Tag: para
 #, no-c-format
@@ -35156,6 +35645,9 @@ msgid ""
 "linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference\"/>, "
 "<xref linkend=\"RT_ST_Value\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_MapAlgebraFct\"/>, <xref linkend="
+"\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference\"/>, <xref "
+"linkend=\"RT_ST_Value\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35168,6 +35660,13 @@ msgid ""
 "by the \"extenttype\" parameter. Values for \"extenttype\" can be: "
 "INTERSECTION, UNION, FIRST, SECOND."
 msgstr ""
+"2-канальна версія растра: створює новий одноканальний растр, сформований "
+"шляхом застосування дійсної алгебраїчної операції PostgreSQL до двох вхідних "
+"растрових каналів та наданого типу пікселів. Якщо номери каналів не вказані, "
+"то за замовчуванням використовується канал 1 кожного растру. Результуючий "
+"растр буде вирівняний (масштаб, нахил і кути пікселів) на сітці, визначеній "
+"першим растром, а його розмір буде визначений параметром «extenttype». "
+"Значення для «extenttype» можуть бути: INTERSECTION, UNION, FIRST, SECOND."
 
 #. Tag: para
 #, no-c-format
@@ -35177,6 +35676,10 @@ msgid ""
 "specified, then the new raster band will have the same pixeltype as the "
 "input <varname>rast1</varname> band."
 msgstr ""
+"Якщо передано <varname>pixeltype</varname>, то новий растр матиме канал "
+"цього типу пікселів. Якщо pixeltype передано NULL або тип пікселів не "
+"вказано, то новий канал растра матиме той самий тип пікселів, що й вхіднатй "
+"канал <varname>rast1</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -35186,57 +35689,61 @@ msgid ""
 "x]</varname>, <varname>[rast1.y]</varname> etc. to refer to the column / row "
 "positions of the pixels."
 msgstr ""
+"Використовуйте термін <varname>[rast1.val]</varname> <varname>[rast2.val]</"
+"varname> для посилання на значення пікселів оригінальних растрових каналів і "
+"<varname>[rast1.x]</varname>, <varname>[rast1.y]</varname> тощо для "
+"посилання на позиції стовпців/рядків пікселів."
 
 #. Tag: title
 #, no-c-format
 msgid "Example: 2 Band Intersection and Union"
-msgstr ""
+msgstr "Приклад: 2-канальний перетин і об'єднання"
 
 #. Tag: para
 #, no-c-format
 msgid "mapalgebra intersection"
-msgstr ""
+msgstr "перетин алгебри карт"
 
 #. Tag: para
 #, no-c-format
 msgid "map algebra union"
-msgstr ""
+msgstr "об'єднання алгебри карт"
 
 #. Tag: title
 #, no-c-format
 msgid "Example: Overlaying rasters on a canvas as separate bands"
-msgstr ""
+msgstr "Приклад: Накладання растрів на полотно у вигляді окремих каналів"
 
 #. Tag: para
 #, no-c-format
 msgid "rast1"
-msgstr ""
+msgstr "rast1"
 
 #. Tag: para
 #, no-c-format
 msgid "rast2"
-msgstr ""
+msgstr "rast2"
 
 #. Tag: para
 #, no-c-format
 msgid "rast3"
-msgstr ""
+msgstr "rast3"
 
 #. Tag: para
 #, no-c-format
 msgid "final_rast"
-msgstr ""
+msgstr "final_rast"
 
 #. Tag: title
 #, no-c-format
 msgid ""
 "Example: Overlay 2 meter boundary of select parcels over an aerial imagery"
-msgstr ""
+msgstr "Приклад: Накладення 2-метрової межі вибраних ділянок на аерофотознімки"
 
 #. Tag: para
 #, no-c-format
 msgid "The blue lines are the boundaries of select parcels"
-msgstr ""
+msgstr "Сині лінії — межі окремих ділянок"
 
 #. Tag: para
 #, no-c-format
@@ -35247,6 +35754,11 @@ msgid ""
 "<xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Union\"/>, <xref "
 "linkend=\"ST_Union\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref "
+"linkend=\"RT_ST_AsRaster\"/>, <xref linkend=\"RT_ST_MapAlgebraFct\"/>, <xref "
+"linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference\"/>, "
+"<xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Union\"/>, <xref "
+"linkend=\"ST_Union\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35255,12 +35767,17 @@ msgid ""
 "PostgreSQL function on the input raster band and of pixeltype provided. Band "
 "1 is assumed if no band is specified."
 msgstr ""
+"Версія з 1 каналом - Створює новий одноканальний растр, сформований шляхом "
+"застосування дійсної функції PostgreSQL до вхідного каналу растра та "
+"наданого типу пікселів. Якщо канал не вказаний, передбачається канал 1."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 2.1.0. Use <xref linkend=\"RT_ST_MapAlgebra\"/> instead."
 msgstr ""
+"є застарілим з версії 2.1.0. Замість нього використовуйте <xref linkend="
+"\"RT_ST_MapAlgebra\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -35271,6 +35788,11 @@ msgid ""
 "1 is assumed. The new raster will have the same georeference, width, and "
 "height as the original raster but will only have one band."
 msgstr ""
+"Створює новий одноканальний растр, сформований шляхом застосування дійсної "
+"функції PostgreSQL, вказаної в <varname>onerasteruserfunc</varname>, до "
+"вхідного растра (<varname>rast</varname>). Якщо <varname>band</varname> не "
+"вказано, вважається, що це канал 1. Новий растр матиме ті ж геореференцію, "
+"ширину та висоту, що й оригінальний растр, але матиме лише один канал."
 
 #. Tag: para
 #, no-c-format
@@ -35279,6 +35801,9 @@ msgid ""
 "signature of a SQL or PL/pgSQL function, cast to a regprocedure. A very "
 "simple and quite useless PL/pgSQL function example is:"
 msgstr ""
+"Параметр <varname>onerasteruserfunc</varname> повинен бути ім'ям і "
+"сигнатурою функції SQL або PL/pgSQL, перетвореної в regprocedure. Дуже "
+"простий і досить марний приклад функції PL/pgSQL:"
 
 #. Tag: para
 #, no-c-format
@@ -35291,6 +35816,13 @@ msgid ""
 "parameters to <xref linkend=\"RT_ST_MapAlgebraFct\"/> shall be passed "
 "through to the <varname>userfunction</varname>."
 msgstr ""
+"Функція <varname>userfunction</varname> може приймати два або три аргументи: "
+"значення типу float, опціональний масив цілих чисел та масив тексту з "
+"змінною кількістю елементів. Перший аргумент — це значення окремої комірки "
+"растра (незалежно від типу даних растра). Другий аргумент — це позиція "
+"поточної оброблюваної комірки у вигляді «{x,y}». Третій аргумент вказує, що "
+"всі інші параметри для <xref linkend=\"RT_ST_MapAlgebraFct\"/> мають бути "
+"передані до <varname>userfunction</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -35300,6 +35832,10 @@ msgid ""
 "type> type. To pass the above example PL/pgSQL function as an argument, the "
 "SQL for the argument is:"
 msgstr ""
+"Для передачі аргументу <type>regprodedure</type> до функції SQL необхідно "
+"передати повну сигнатуру функції, а потім перетворити її на тип "
+"<type>regprocedure</type>. Щоб передати вищезазначену функцію PL/pgSQL як "
+"аргумент, SQL для аргументу буде таким:"
 
 #. Tag: para
 #, no-c-format
@@ -35310,6 +35846,11 @@ msgid ""
 "<varname>userfunction</varname>, and are contained in the <varname>args</"
 "varname> argument."
 msgstr ""
+"Третім аргументом для <varname>userfunction</varname> є масив <type>variadic "
+"text</type>. Усі кінцеві текстові аргументи для будь-якого виклику <xref "
+"linkend=\"RT_ST_MapAlgebraFct\"/> передаються до вказаної "
+"<varname>userfunction</varname> і містяться в аргументі "
+"<varname>args</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -35318,6 +35859,9 @@ msgid ""
 "required, regardless of whether you choose to pass any arguments to your "
 "user function for processing or not."
 msgstr ""
+"Аргумент <type>text[]</type> для <varname>userfunction</varname> є "
+"обов'язковим, незалежно від того, чи ви вирішили передати аргументи до вашої "
+"функції користувача для обробки, чи ні."
 
 #. Tag: para
 #, no-c-format
@@ -35326,11 +35870,14 @@ msgid ""
 "reclassified and set the nodata value to a passed parameter to the user "
 "function (0)."
 msgstr ""
+"Створіть новий 1-канальний растр піксельного типу 2BUI з нашого оригіналу, "
+"який перекласифіковано, і встановіть значення nodata як параметр, переданий "
+"до функції користувача (0)."
 
 #. Tag: para
 #, no-c-format
 msgid "original (column rast-view)"
-msgstr ""
+msgstr "оригінал (колонка rast-view)"
 
 #. Tag: para
 #, no-c-format
@@ -35338,6 +35885,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref "
 "linkend=\"RT_ST_GeoReference\"/>, <xref linkend=\"RT_ST_SetValue\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference"
+"\"/>, <xref linkend=\"RT_ST_SetValue\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35347,6 +35896,11 @@ msgid ""
 "Band 1 is assumed if no band is specified. Extent type defaults to "
 "INTERSECTION if not specified."
 msgstr ""
+"2-канальна версія - Створює новий одноканальний растр, сформований шляхом "
+"застосування дійсної функції PostgreSQL до 2 вхідних каналів растра та "
+"наданого типу пікселів. Якщо канал не вказано, то за замовчуванням "
+"використовується канал 1. Тип розширення за замовчуванням - INTERSECTION, "
+"якщо не вказано інше."
 
 #. Tag: para
 #, no-c-format
@@ -35358,6 +35912,12 @@ msgid ""
 "new raster will have the same georeference, width, and height as the "
 "original rasters but will only have one band."
 msgstr ""
+"Створює новий одноканальний растр, сформований шляхом застосування дійсної "
+"функції PostgreSQL, вказаної в <varname>tworastuserfunc</varname>, до "
+"вхідного растру <varname>rast1</varname>, <varname>rast2</varname>. Якщо не "
+"вказано <varname>band1</varname> або <varname>band2</varname>, то "
+"вважається, що це канал 1. Новий растр матиме ті ж геореференцію, ширину та "
+"висоту, що й оригінальні растри, але матиме лише однин канал."
 
 #. Tag: para
 #, no-c-format
@@ -35367,6 +35927,10 @@ msgid ""
 "new raster band will have the same pixeltype as the input <varname>rast1</"
 "varname> band."
 msgstr ""
+"Якщо передано <varname>pixeltype</varname>, то новий растр матиме канал "
+"цього типу пікселів. Якщо pixeltype передано NULL або пропущено, то новий "
+"канал растра матиме той самий тип пікселів, що і вхідний канал "
+"<varname>rast1</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -35375,6 +35939,9 @@ msgid ""
 "signature of an SQL or PL/pgSQL function, cast to a regprocedure. An example "
 "PL/pgSQL function example is:"
 msgstr ""
+"Параметр <varname>tworastuserfunc</varname> повинен бути ім'ям і сигнатурою "
+"функції SQL або PL/pgSQL, перетвореною в regprocedure. Приклад функції PL/"
+"pgSQL:"
 
 #. Tag: para
 #, no-c-format
@@ -35389,6 +35956,15 @@ msgid ""
 "parameters to <xref linkend=\"RT_ST_MapAlgebraFct2\"/> shall be passed "
 "through to the <varname>tworastuserfunc</varname>."
 msgstr ""
+"<varname>tworastuserfunc</varname> може приймати три або чотири аргументи: "
+"значення подвійної точності, значення подвійної точності, опціональний масив "
+"цілих чисел та масив тексту змінної довжини. Перший аргумент — це значення "
+"окремої комірки растра в <varname>rast1</varname> (незалежно від типу даних "
+"растра). Другий аргумент — це значення окремої комірки растра в "
+"<varname>rast2</varname>. Третій аргумент — це позиція поточної комірки "
+"обробки у формі «{x,y}». Четвертий аргумент вказує, що всі інші параметри "
+"<xref linkend=\"RT_ST_MapAlgebraFct2\"/>мають бути передані до "
+"<varname>tworastuserfunc</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -35399,6 +35975,11 @@ msgid ""
 "<varname>tworastuserfunc</varname>, and are contained in the "
 "<varname>userargs</varname> argument."
 msgstr ""
+"Четвертий аргумент для <varname>tworastuserfunc</varname> є масивом "
+"<type>variadic text</type>. Усі кінцеві текстові аргументи до будь-якого "
+"виклику <xref linkend=\"RT_ST_MapAlgebraFct2\"/> передаються до вказаного "
+"<varname>tworastuserfunc</varname> і містяться в аргументі "
+"<varname>userargs</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -35407,21 +35988,28 @@ msgid ""
 "is required, regardless of whether you choose to pass any arguments to your "
 "user function for processing or not."
 msgstr ""
+"Аргумент <type>text[]</type> для <varname>tworastuserfunc</varname> є "
+"обов'язковим, незалежно від того, чи ви вирішили передати аргументи до вашої "
+"користувацької функції для обробки, чи ні."
 
 #. Tag: para
 #, no-c-format
 msgid "map bands overlay (canvas) (R: small road, G: circle, B: big road)"
 msgstr ""
+"накладення каналів карти (полотно) (R: невелика дорога, G: коло, B: велика "
+"дорога)"
 
 #. Tag: title
 #, no-c-format
 msgid "User Defined function that takes extra args"
-msgstr ""
+msgstr "Визначена користувачем функція, яка приймає додаткові аргументи"
 
 #. Tag: para
 #, no-c-format
 msgid "user defined with extra args and different bands from same raster"
 msgstr ""
+"визначений користувачем з додатковими аргументами та різними каналами з того "
+"самого растру"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35430,6 +36018,10 @@ msgid ""
 "function. Return a raster which values are the result of a PLPGSQL user "
 "function involving a neighborhood of values from the input raster band."
 msgstr ""
+"1-канальна версія: Map Algebra Nearest Neighbor з використанням визначеної "
+"користувачем функції PostgreSQL. Повертає растр, значення якого є "
+"результатом функції користувача PLPGSQL, що включає сусідство значень із "
+"вхідної каналу растра."
 
 #. Tag: para
 #, no-c-format
@@ -35440,16 +36032,21 @@ msgid ""
 "array of numbers, for each pixel, returns the result from the user function, "
 "replacing pixel value of currently inspected pixel with the function result."
 msgstr ""
+"(одно растрова версія) Повертає растр, значення якого є результатом функції "
+"користувача PLPGSQL, що включає сусідство значень з вхідного растрового "
+"каналу. Функція користувача приймає сусідство значень пікселів як масив "
+"чисел, для кожного пікселя повертає результат функції користувача, замінюючи "
+"значення пікселя, що перевіряється в даний момент, результатом функції."
 
 #. Tag: para
 #, no-c-format
 msgid "Raster on which the user function is evaluated."
-msgstr ""
+msgstr "Растр, на якому оцінюється функція користувача."
 
 #. Tag: para
 #, no-c-format
 msgid "Band number of the raster to be evaluated. Default to 1."
-msgstr ""
+msgstr "Номер каналу растра, що оцінюється. За замовчуванням — 1."
 
 #. Tag: para
 #, no-c-format
@@ -35460,16 +36057,21 @@ msgid ""
 "varname>. Results are truncated if they are larger than what is allowed for "
 "the pixeltype."
 msgstr ""
+"Тип пікселів вихідного растру. Повинен бути вказаний у <xref linkend="
+"\"RT_ST_BandPixelType\"/>або пропущений, або встановлений як NULL. Якщо не "
+"вказаний або встановлений як NULL, за замовчуванням буде використовуватися "
+"тип пікселів <varname>rast</varname>. Результати обрізаються, якщо вони "
+"перевищують дозволений для типу пікселів розмір."
 
 #. Tag: para
 #, no-c-format
 msgid "The width of the neighborhood, in cells."
-msgstr ""
+msgstr "Ширина оточення, в клітинках."
 
 #. Tag: para
 #, no-c-format
 msgid "The height of the neighborhood, in cells."
-msgstr ""
+msgstr "Висота оточення, в клітинках."
 
 #. Tag: para
 #, no-c-format
@@ -35478,6 +36080,9 @@ msgid ""
 "of a raster. The first element is a 2-dimensional array of numbers "
 "representing the rectangular pixel neighborhood"
 msgstr ""
+"Користувацька функція PLPGSQL/psql для застосування до сусідніх пікселів "
+"одного каналу растру. Перший елемент — це двовимірний масив чисел, що "
+"представляють прямокутне оточення пікселя"
 
 #. Tag: para
 #, no-c-format
@@ -35485,6 +36090,8 @@ msgid ""
 "Defines what value to pass to the function for a neighborhood pixel that is "
 "nodata or NULL"
 msgstr ""
+"Визначає, яке значення передавати функції для сусідніх пікселів, які не "
+"містять даних або мають значення NULL"
 
 #. Tag: para
 #, no-c-format
@@ -35493,6 +36100,10 @@ msgid ""
 "the computation -- this flag must be sent to the user callback function, and "
 "the user function decides how to ignore it."
 msgstr ""
+"«ignore»: будь-які значення NODATA, що зустрічаються в оточенні, ігноруються "
+"під час обчислення — цей прапор повинен бути надісланий до функції "
+"зворотного виклику користувача, і функція користувача вирішує, як його "
+"ігнорувати."
 
 #. Tag: para
 #, no-c-format
@@ -35501,6 +36112,9 @@ msgid ""
 "resulting pixel to be NULL -- the user callback function is skipped in this "
 "case."
 msgstr ""
+"“NULL”: будь-які значення NODATA, що зустрічаються в оточенні, призведуть до "
+"того, що результуючий піксель буде NULL — у цьому випадку функція зворотного "
+"виклику користувача пропускається."
 
 #. Tag: para
 #, no-c-format
@@ -35510,11 +36124,15 @@ msgid ""
 "if this value is NODATA, the behavior is the same as 'NULL' (for the "
 "affected neighborhood)"
 msgstr ""
+"«value»: будь-які значення NODATA, що зустрічаються в оточенні, замінюються "
+"пікселем-посиланням (тим, що знаходиться в центрі оточення). Зверніть увагу, "
+"що якщо це значення є NODATA, поведінка буде такою ж, як і для «NULL» (для "
+"відповідного оточення)"
 
 #. Tag: para
 #, no-c-format
 msgid "Arguments to pass into the user function."
-msgstr ""
+msgstr "Аргументи, які передаються в користувацьку функцію."
 
 #. Tag: para
 #, no-c-format
@@ -35524,22 +36142,28 @@ msgid ""
 "html\">https://gdal.org/user/drivers/raster/postgisraster.html</link> and "
 "then prepared in the <xref linkend=\"RT_ST_Rescale\"/> examples"
 msgstr ""
+"Приклади використовують растр «katrina», завантажений як окремий фрагмент, "
+"описаний у <link xlink:href=«https://gdal.org/user/drivers/raster/"
+"postgisraster.html»>https://gdal.org/user/drivers/raster/postgisraster.html</"
+"link>, а потім підготовлений у прикладах <xref linkend=\"RT_ST_Rescale\"/>"
 
 #. Tag: para
 #, no-c-format
 msgid "First band of our raster"
-msgstr ""
+msgstr "Перший канал нашого растра"
 
 #. Tag: para
 #, no-c-format
 msgid "new raster after averaging pixels within 4x4 pixels of each other"
 msgstr ""
+"новий растр після усереднення пікселів у межах 4x4 пікселів один від одного"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_MapAlgebraExpr\"/>, <xref linkend=\"RT_ST_Rescale\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_MapAlgebraExpr\"/>, <xref linkend=\"RT_ST_Rescale\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35549,6 +36173,11 @@ msgid ""
 "All other bands are returned unchanged. Use case: convert a 16BUI band to a "
 "8BUI and so forth for simpler rendering as viewable formats."
 msgstr ""
+"Створює новий растр, складений з типів каналів, перекласифікованих з "
+"оригінальних. nband — це канал, який буде змінена. Якщо nband не вказано, "
+"вважається, що він дорівнює 1. Всі інші канали повертаються без змін. "
+"Приклад використання: перетворення каналу 16BUI на 8BUI і так далі для "
+"спрощення візуалізації у вигляді форматів, придатних для перегляду."
 
 #. Tag: para
 #, no-c-format
@@ -35559,6 +36188,11 @@ msgid ""
 "reclassification expressions. If no <varname>band</varname> is specified "
 "band 1 is assumed."
 msgstr ""
+"Створює новий растр, сформований шляхом застосування операції "
+"перекласифікації, визначеної <varname>reclassexpr</varname> на вхідному "
+"растрі (<varname>rast</varname>). Опис виразів перекласифікації див. у <xref "
+"linkend=\"reclassarg\"/>. Якщо <varname>band</varname> не вказано, "
+"вважається, що це смуга 1."
 
 #. Tag: para
 #, no-c-format
@@ -35569,11 +36203,16 @@ msgid ""
 "specified then each <varname>reclassarg</varname> defines the type of the "
 "target band. Bands not designated are returned unchanged."
 msgstr ""
+"Новий растр матиме ті ж геореференцію, ширину та висоту, що й оригінальний "
+"растр. Канали нового растра мають тип пікселів <varname>pixeltype</varname>. "
+"Якщо вказано <varname>reclassargset</varname>, то кожен <varname>reclassarg</"
+"varname> визначає тип цільового каналу. Незазначені канали повертаються без "
+"змін."
 
 #. Tag: title
 #, no-c-format
 msgid "Example: Basic"
-msgstr ""
+msgstr "Приклад: Основний"
 
 #. Tag: para
 #, no-c-format
@@ -35581,11 +36220,13 @@ msgid ""
 "Create a new raster from the original where band 2 is converted from 8BUI to "
 "4BUI and all values from 101-254 are set to nodata value."
 msgstr ""
+"Створіть новий растр з оригіналу, де канал 2 перетворюється з 8BUI на 4BUI, "
+"а всі значення від 101 до 254 встановлюються на значення nodata."
 
 #. Tag: title
 #, no-c-format
 msgid "Example: Advanced using multiple reclassargs"
-msgstr ""
+msgstr "Приклад: Розширене використання декількох reclassargs"
 
 #. Tag: para
 #, no-c-format
@@ -35595,12 +36236,19 @@ msgid ""
 "<varname>reclassarg</varname> argument which can take as input an indefinite "
 "number of reclassargs (theoretically as many bands as you have)"
 msgstr ""
+"Створіть новий растр з оригіналу, де канали 1,2,3 перетворюються відповідно "
+"на 1BB,4BUI, 4BUI і перекласифікуються. Зверніть увагу, що тут "
+"використовується аргумент <varname>reclassarg</varname> з змінною кількістю "
+"параметрів, який може приймати як вхідні дані необмежену кількість "
+"reclassargs (теоретично стільки смуг, скільки у вас є)"
 
 #. Tag: title
 #, no-c-format
 msgid ""
 "Example: Advanced Map a single band 32BF raster to multiple viewable bands"
 msgstr ""
+"Приклад: Розширена карта одного каналу 32BF растру до декількох видимих "
+"каналів"
 
 #. Tag: para
 #, no-c-format
@@ -35608,6 +36256,8 @@ msgid ""
 "Create a new 3 band (8BUI,8BUI,8BUI viewable raster) from a raster that has "
 "only one 32bf band"
 msgstr ""
+"Створити новий 3-канальний (8BUI, 8BUI, 8BUI видимий растр) з растра, який "
+"має тільки один канал 32bf"
 
 #. Tag: para
 #, no-c-format
@@ -35616,6 +36266,9 @@ msgid ""
 "<xref linkend=\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"reclassarg\"/>, "
 "<xref linkend=\"RT_ST_Value\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Band\"/>, <xref linkend=\"RT_ST_BandPixelType\"/>, "
+"<xref linkend=\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"reclassarg\"/>, "
+"<xref linkend=\"RT_ST_Value\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35624,6 +36277,9 @@ msgid ""
 "1:1 mapping from values in the original band to new values in the "
 "destination band."
 msgstr ""
+"Створює новий растр, що складається з каналів, перекласифікованих з "
+"оригінальних, використовуючи співвідношення 1:1 між значеннями в "
+"оригінальному каналі та новими значеннями в каналі призначення."
 
 #. Tag: para
 #, no-c-format
@@ -35634,6 +36290,11 @@ msgid ""
 "corresponding value in the output array. All other pixel values are mapped "
 "to the <varname>nodatavalue</varname>."
 msgstr ""
+"Створює новий растр, сформований шляхом застосування операції "
+"перекласифікації, визначеної масивами <varname>inputvalues</varname> та "
+"<varname>outputvalues</varname>. Значення пікселів, знайдені у вхідному "
+"масиві, відображаються на відповідні значення у вихідному масиві. Усі інші "
+"значення пікселів відображаються на <varname>nodatavalue</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -35642,6 +36303,9 @@ msgid ""
 "<varname>pixeltype</varname> parameter. If no <varname>bandnumber</varname> "
 "is specified band 1 is assumed."
 msgstr ""
+"Тип вихідного пікселя за замовчуванням є float, але його можна вказати за "
+"допомогою параметра <varname>pixeltype</varname>. Якщо не вказано "
+"<varname>bandnumber</varname>, то вважається, що це канал 1."
 
 #. Tag: para
 #, no-c-format
@@ -35649,11 +36313,13 @@ msgid ""
 "The new raster will have the same georeference, width, and height as the "
 "original raster. Bands not designated are returned unchanged."
 msgstr ""
+"Новий растр матиме ті ж геореференцію, ширину та висоту, що й оригінальний "
+"растр. Невизначені канали повертаються без змін."
 
 #. Tag: para
 #, no-c-format
 msgid "Create a small raster and map its pixels to new values."
-msgstr ""
+msgstr "Створіть невеликий растр і зіставте його пікселі з новими значеннями."
 
 #. Tag: para
 #, no-c-format
@@ -35661,6 +36327,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_Band\"/>, <xref "
 "linkend=\"RT_ST_MakeEmptyRaster\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_Band\"/>, <xref "
+"linkend=\"RT_ST_MakeEmptyRaster\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35668,6 +36336,8 @@ msgid ""
 "Returns the union of a set of raster tiles into a single raster composed of "
 "1 or more bands."
 msgstr ""
+"Повертає об'єднання набору растрових плиток в один растр, що складається з 1 "
+"або більше каналів."
 
 #. Tag: para
 #, no-c-format
@@ -35678,6 +36348,11 @@ msgid ""
 "<varname>uniontype</varname> which is one of the following: LAST (default), "
 "FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE."
 msgstr ""
+"Повертає об'єднання набору растрових плиток в один растр, що складається з "
+"принаймні одного каналу. Розмір отриманого растру дорівнює розміру всього "
+"набору. У разі перетину отримане значення визначається <varname>uniontype</"
+"varname>, яке може бути одним із таких: LAST (за замовчуванням), FIRST, MIN, "
+"MAX, COUNT, SUM, MEAN, RANGE."
 
 #. Tag: para
 #, no-c-format
@@ -35688,16 +36363,22 @@ msgid ""
 "way to fix alignment issues is to use <xref linkend=\"RT_ST_Resample\"/> and "
 "use the same reference raster for alignment."
 msgstr ""
+"Щоб растри могли бути об'єднані, вони повинні мати однакове вирівнювання. "
+"Для отримання додаткової інформації та допомоги використовуйте <xref linkend="
+"\"RT_ST_SameAlignment\"/> та <xref linkend=\"RT_ST_NotSameAlignmentReason\"/"
+">. Одним із способів виправлення проблем з вирівнюванням є використання "
+"<xref linkend=\"RT_ST_Resample\"/> та використання одного і того ж "
+"еталонного растру для вирівнювання."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 Improved Speed (fully C-Based)."
-msgstr ""
+msgstr "Покращено: 2.1.0 Покращена швидкість (повністю на базі C)."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.1.0 ST_Union(rast, unionarg) variant was introduced."
-msgstr ""
+msgstr "Доступність: 2.1.0 Введено варіант ST_Union(rast, unionarg)."
 
 #. Tag: para
 #, no-c-format
@@ -35705,6 +36386,8 @@ msgid ""
 "Enhanced: 2.1.0 ST_Union(rast) (variant 1) unions all bands of all input "
 "rasters. Prior versions of PostGIS assumed the first band."
 msgstr ""
+"Покращено: 2.1.0 ST_Union(rast) (варіант 1) об'єднує всі канали всіх вхідних "
+"растрів. Попередні версії PostGIS використовували першу канал."
 
 #. Tag: para
 #, no-c-format
@@ -35712,11 +36395,13 @@ msgid ""
 "Enhanced: 2.1.0 ST_Union(rast, uniontype) (variant 4) unions all bands of "
 "all input rasters."
 msgstr ""
+"Покращено: 2.1.0 ST_Union(rast, uniontype) (варіант 4) об'єднує всі канали "
+"всіх вхідних растрів."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Reconstitute a single band chunked raster tile"
-msgstr ""
+msgstr "Приклади: Відновлення одноканального фрагментованої растрової плитки"
 
 #. Tag: title
 #, no-c-format
@@ -35724,6 +36409,8 @@ msgid ""
 "Examples: Return a multi-band raster that is the union of tiles intersecting "
 "geometry"
 msgstr ""
+"Приклади: Повернути мультиканальний растр, який є об'єднанням плиток, що "
+"перетинають геометрію"
 
 #. Tag: para
 #, no-c-format
@@ -35731,6 +36418,8 @@ msgid ""
 "Here we use the longer syntax if we only wanted a subset of bands or we want "
 "to change order of bands"
 msgstr ""
+"Тут ми використовуємо довший синтаксис, якщо нам потрібна лише частина "
+"каналів або ми хочемо змінити порядок каналів"
 
 #. Tag: para
 #, no-c-format
@@ -35738,11 +36427,13 @@ msgid ""
 ", <xref linkend=\"RT_ST_Envelope\"/>, <xref linkend=\"RT_ST_ConvexHull\"/>, "
 "<xref linkend=\"RT_ST_Clip\"/>, <xref linkend=\"ST_Union\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Envelope\"/>, <xref linkend=\"RT_ST_ConvexHull\"/>, "
+"<xref linkend=\"RT_ST_Clip\"/>, <xref linkend=\"ST_Union\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Built-in Map Algebra Callback Functions"
-msgstr ""
+msgstr "Вбудовані функції зворотного виклику алгебри карт"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35750,12 +36441,14 @@ msgid ""
 "Raster processing function that calculates the number of unique pixel values "
 "in a neighborhood."
 msgstr ""
+"Функція обробки растру, яка обчислює кількість унікальних значень у сусідніх "
+"пікселях."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Calculate the number of unique pixel values in a neighborhood of pixels."
-msgstr ""
+msgstr "Обчисліть кількість унікальних значень пікселів у сусідніх пікселях."
 
 #. Tag: para
 #, no-c-format
@@ -35763,6 +36456,8 @@ msgid ""
 "Variant 1 is a specialized callback function for use as a callback parameter "
 "to <xref linkend=\"RT_ST_MapAlgebraFctNgb\"/>."
 msgstr ""
+"Варіант 1 — це спеціалізована функція зворотного виклику для використання як "
+"параметр зворотного виклику до <xref linkend=\"RT_ST_MapAlgebraFctNgb\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -35770,6 +36465,8 @@ msgid ""
 "Variant 2 is a specialized callback function for use as a callback parameter "
 "to <xref linkend=\"RT_ST_MapAlgebra\"/>."
 msgstr ""
+"Варіант 2 — це спеціалізована функція зворотного виклику для використання як "
+"параметр зворотного виклику до <xref linkend=\"RT_ST_MapAlgebra\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -35777,11 +36474,13 @@ msgid ""
 "Use of Variant 1 is discouraged since <xref "
 "linkend=\"RT_ST_MapAlgebraFctNgb\"/> has been deprecated as of 2.1.0."
 msgstr ""
+"Не рекомендується використовувати варіант 1, оскільки <xref linkend="
+"\"RT_ST_MapAlgebraFctNgb\"/>був визнаний застарілим у версії 2.1.0."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 Addition of Variant 2"
-msgstr ""
+msgstr "Покращено: 2.1.0 Додано варіант 2"
 
 #. Tag: para
 #, no-c-format
@@ -35791,6 +36490,10 @@ msgid ""
 "linkend=\"RT_ST_Mean4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
 "linkend=\"RT_ST_StdDev4ma\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Min4ma\"/>, "
+"<xref linkend=\"RT_ST_Max4ma\"/>, <xref linkend=\"RT_ST_Sum4ma\"/>, <xref "
+"linkend=\"RT_ST_Mean4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
+"linkend=\"RT_ST_StdDev4ma\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35798,6 +36501,8 @@ msgid ""
 "Raster processing function that interpolates a pixel's value from the "
 "pixel's neighborhood."
 msgstr ""
+"Функція растрової обробки, яка інтерполює значення пікселя з сусідніх "
+"пікселів."
 
 #. Tag: para
 #, no-c-format
@@ -35805,6 +36510,8 @@ msgid ""
 "Calculate an interpolated value for a pixel using the Inverse Distance "
 "Weighted method."
 msgstr ""
+"Обчисліть інтерпольоване значення для пікселя за допомогою методу зваженого "
+"оберненого відстані."
 
 #. Tag: para
 #, no-c-format
@@ -35818,16 +36525,24 @@ msgid ""
 "If not specified and the pixel of interest has a value, that value is "
 "returned."
 msgstr ""
+"Існує два опціональних параметри, які можна передати через "
+"<varname>userargs</varname>. Перший параметр — це коефіцієнт потужності ("
+"змінна k у наведеному нижче рівнянні) від 0 до 1, який використовується в "
+"рівнянні зваженої оберненої відстані. Якщо не вказано, значення за "
+"замовчуванням дорівнює 1. Другий параметр — це відсоток ваги, який "
+"застосовується тільки тоді, коли значення пікселя, що цікавить, включено до "
+"інтерпольованого значення з сусідства. Якщо не вказано, а піксель, що "
+"цікавить, має значення, то це значення повертається."
 
 #. Tag: para
 #, no-c-format
 msgid "The basic inverse distance weight equation is:"
-msgstr ""
+msgstr "Основне рівняння зворотної відстані становить:"
 
 #. Tag: para
 #, no-c-format
 msgid "k = power factor, a real number between 0 and 1"
-msgstr ""
+msgstr "k = коефіцієнт потужності, дійсне число від 0 до 1"
 
 #. Tag: para
 #, no-c-format
@@ -35835,11 +36550,13 @@ msgid ""
 "This function is a specialized callback function for use as a callback "
 "parameter to <xref linkend=\"RT_ST_MapAlgebra\"/>."
 msgstr ""
+"Ця функція є спеціалізованою функцією зворотного виклику для використання як "
+"параметр зворотного виклику до <xref linkend=\"RT_ST_MapAlgebra\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_MinDist4ma\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_MinDist4ma\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35847,11 +36564,12 @@ msgid ""
 "Raster processing function that calculates the maximum pixel value in a "
 "neighborhood."
 msgstr ""
+"Функція обробки растру, яка обчислює максимальне значення пікселя в околиці."
 
 #. Tag: para
 #, no-c-format
 msgid "Calculate the maximum pixel value in a neighborhood of pixels."
-msgstr ""
+msgstr "Обчисліть максимальне значення пікселя в околі пікселів."
 
 #. Tag: para
 #, no-c-format
@@ -35859,6 +36577,8 @@ msgid ""
 "For Variant 2, a substitution value for NODATA pixels can be specified by "
 "passing that value to userargs."
 msgstr ""
+"Для варіанту 2 заміну значення для пікселів NODATA можна вказати, передавши "
+"це значення в userargs."
 
 #. Tag: para
 #, no-c-format
@@ -35868,6 +36588,10 @@ msgid ""
 "linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
 "linkend=\"RT_ST_StdDev4ma\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Min4ma\"/>, "
+"<xref linkend=\"RT_ST_Sum4ma\"/>, <xref linkend=\"RT_ST_Mean4ma\"/>, <xref "
+"linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
+"linkend=\"RT_ST_StdDev4ma\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35875,11 +36599,12 @@ msgid ""
 "Raster processing function that calculates the mean pixel value in a "
 "neighborhood."
 msgstr ""
+"Функція обробки растру, яка обчислює середнє значення пікселя в оточенні."
 
 #. Tag: para
 #, no-c-format
 msgid "Calculate the mean pixel value in a neighborhood of pixels."
-msgstr ""
+msgstr "Обчислити середнє значення пікселя в оточенні пікселів."
 
 #. Tag: para
 #, no-c-format
@@ -35888,6 +36613,9 @@ msgid ""
 "<xref linkend=\"RT_ST_Max4ma\"/>, <xref linkend=\"RT_ST_Sum4ma\"/>, <xref "
 "linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_StdDev4ma\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Min4ma\"/>, "
+"<xref linkend=\"RT_ST_Max4ma\"/>, <xref linkend=\"RT_ST_Sum4ma\"/>, <xref "
+"linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_StdDev4ma\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35895,11 +36623,12 @@ msgid ""
 "Raster processing function that calculates the minimum pixel value in a "
 "neighborhood."
 msgstr ""
+"Функція обробки растру, яка обчислює мінімальне значення пікселя в оточенні."
 
 #. Tag: para
 #, no-c-format
 msgid "Calculate the minimum pixel value in a neighborhood of pixels."
-msgstr ""
+msgstr "Обчисліть мінімальне значення пікселя в оточенні пікселів."
 
 #. Tag: para
 #, no-c-format
@@ -35909,6 +36638,10 @@ msgid ""
 "linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
 "linkend=\"RT_ST_StdDev4ma\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Max4ma\"/>, "
+"<xref linkend=\"RT_ST_Sum4ma\"/>, <xref linkend=\"RT_ST_Mean4ma\"/>, <xref "
+"linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
+"linkend=\"RT_ST_StdDev4ma\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35916,6 +36649,8 @@ msgid ""
 "Raster processing function that returns the minimum distance (in number of "
 "pixels) between the pixel of interest and a neighboring pixel with value."
 msgstr ""
+"Функція обробки растру, яка повертає мінімальну відстань (у пікселях) між "
+"пікселем, що цікавить, та сусіднім пікселем із значенням."
 
 #. Tag: para
 #, no-c-format
@@ -35923,6 +36658,8 @@ msgid ""
 "Return the shortest distance (in number of pixels) between the pixel of "
 "interest and the closest pixel with value in the neighborhood."
 msgstr ""
+"Повернути найкоротшу відстань (у пікселях) між пікселем, що цікавить, і "
+"найближчим пікселем із значенням у його околиці."
 
 #. Tag: para
 #, no-c-format
@@ -35932,11 +36669,15 @@ msgid ""
 "from <xref linkend=\"RT_ST_InvDistWeight4ma\"/>. This function is "
 "particularly useful when the neighborhood is sparsely populated."
 msgstr ""
+"Мета цієї функції — надати інформативний пункт даних, який допомагає зробити "
+"висновок про корисність інтерпольованого значення пікселя, що цікавить, з "
+"<xref linkend=\"RT_ST_InvDistWeight4ma\"/>. Ця функція особливо корисна, "
+"коли оточення є малонаселеним."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_InvDistWeight4ma\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_InvDistWeight4ma\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35944,11 +36685,12 @@ msgid ""
 "Raster processing function that calculates the range of pixel values in a "
 "neighborhood."
 msgstr ""
+"Функція обробки растру, яка обчислює діапазон значень у сусідніх пікселях."
 
 #. Tag: para
 #, no-c-format
 msgid "Calculate the range of pixel values in a neighborhood of pixels."
-msgstr ""
+msgstr "Обчисліть діапазон значень пікселів у сусідніх пікселях."
 
 #. Tag: refpurpose
 #, no-c-format
