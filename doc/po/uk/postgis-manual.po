@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-10-03 19:47+0000\n"
+"PO-Revision-Date: 2025-10-04 15:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -32887,7 +32887,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_Box3D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_Box3D\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32895,6 +32895,8 @@ msgid ""
 "Sets the georeference X and Y skew (or rotation parameter). If only one is "
 "passed in, sets X and Y to the same value."
 msgstr ""
+"Встановлює геореференцію X і Y (або параметр обертання). Якщо передається "
+"тільки один параметр, X і Y встановлюються на одне і те ж значення."
 
 #. Tag: para
 #, no-c-format
@@ -32904,6 +32906,10 @@ msgid ""
 "href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for more "
 "details."
 msgstr ""
+"Встановлює геореференцію X і Y (або параметр обертання). Якщо передається "
+"тільки один параметр, X і Y встановлюються на одне і те ж значення. "
+"Докладнішу інформацію див. у <link xlink:href=«http://en.wikipedia.org/wiki/"
+"World_file»>World File</link>."
 
 #. Tag: para
 #, no-c-format
@@ -32911,6 +32917,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_SetGeoReference\"/>, <xref linkend=\"RT_ST_SkewX\"/"
 ">, <xref linkend=\"RT_ST_SkewY\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_SetGeoReference\"/>, <xref linkend=\"RT_ST_SkewX\"/"
+">, <xref linkend=\"RT_ST_SkewY\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32918,11 +32926,13 @@ msgid ""
 "Sets the SRID of a raster to a particular integer srid defined in the "
 "spatial_ref_sys table."
 msgstr ""
+"Встановлює SRID растра на певне ціле число srid, визначене в таблиці "
+"spatial_ref_sys."
 
 #. Tag: para
 #, no-c-format
 msgid "Sets the SRID on a raster to a particular integer value."
-msgstr ""
+msgstr "Встановлює SRID на растрі на певне ціле значення."
 
 #. Tag: para
 #, no-c-format
@@ -32931,11 +32941,14 @@ msgid ""
 "data defining the spatial ref of the coordinate reference system that it's "
 "currently in. Useful for transformations later."
 msgstr ""
+"Ця функція жодним чином не трансформує растр — вона просто встановлює "
+"метадані, що визначають просторову референцію системи координат, в якій він "
+"зараз знаходиться. Корисно для подальших трансформацій."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32943,6 +32956,8 @@ msgid ""
 "Sets the value of the upper left corner of the pixel of the raster to "
 "projected X and Y coordinates."
 msgstr ""
+"Встановлює значення верхнього лівого кута пікселя растру на проектовані "
+"координати X і Y."
 
 #. Tag: para
 #, no-c-format
@@ -32950,11 +32965,13 @@ msgid ""
 "Set the value of the upper left corner of raster to the projected X and Y "
 "coordinates"
 msgstr ""
+"Встановіть значення верхнього лівого кута растра на проектовані координати X "
+"і Y"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_UpperLeftY\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_UpperLeftY\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32963,6 +32980,9 @@ msgid ""
 "arbitrary grid corner and a set of raster georeferencing attributes defined "
 "or borrowed from another raster."
 msgstr ""
+"Передискретизуйте растр, використовуючи вказаний алгоритм ресемплінгу, нові "
+"розміри, довільний кут сітки та набір атрибутів геореференціювання растра, "
+"визначених або запозичених з іншого растра."
 
 #. Tag: para
 #, no-c-format
@@ -32973,6 +32993,11 @@ msgid ""
 "borrowed from another raster. If using a reference raster, the two rasters "
 "must have the same SRID."
 msgstr ""
+"Ресемплуйте растр, використовуючи вказаний алгоритм ресемплінгу, нові "
+"розміри (ширина та висота), кут сітки (gridx та gridy) та набір атрибутів "
+"геореференціювання растра (scalex, scaley, skewx та skewy), визначених або "
+"запозичених з іншого растра. Якщо використовується еталонний растр, обидва "
+"растри повинні мати однаковий SRID."
 
 #. Tag: para
 #, no-c-format
@@ -32980,41 +33005,43 @@ msgid ""
 "New pixel values are computed using one of the following resampling "
 "algorithms:"
 msgstr ""
+"Нові значення пікселів обчислюються за допомогою одного з наступних "
+"алгоритмів ресемплінгу:"
 
 #. Tag: para
 #, no-c-format
 msgid "NearestNeighbor (english or american spelling)"
-msgstr ""
+msgstr "NearestNeighbor (англійська або американська орфографія)"
 
 #. Tag: para
 #, no-c-format
 msgid "Bilinear"
-msgstr ""
+msgstr "Bilinear"
 
 #. Tag: para
 #, no-c-format
 msgid "Cubic"
-msgstr ""
+msgstr "Cubic"
 
 #. Tag: para
 #, no-c-format
 msgid "CubicSpline"
-msgstr ""
+msgstr "CubicSpline"
 
 #. Tag: para
 #, no-c-format
 msgid "Lanczos"
-msgstr ""
+msgstr "Lanczos"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Max</para>"
-msgstr ""
+msgstr "<para>Max</para>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Min</para>"
-msgstr ""
+msgstr "<para>Min</para>"
 
 #. Tag: para
 #, no-c-format
@@ -33022,6 +33049,8 @@ msgid ""
 "The default is NearestNeighbor which is the fastest but results in the worst "
 "interpolation."
 msgstr ""
+"За замовчуванням використовується NearestNeighbor, який є найшвидшим, але "
+"дає найгірші результати інтерполяції."
 
 #. Tag: para
 #, no-c-format
@@ -33029,6 +33058,8 @@ msgid ""
 "A maxerror percent of 0.125 is used if no <varname>maxerr</varname> is "
 "specified."
 msgstr ""
+"Якщо не вказано <varname>maxerr</varname>, використовується максимальна "
+"похибка 0,125%."
 
 #. Tag: para
 #, no-c-format
@@ -33036,21 +33067,25 @@ msgid ""
 "Refer to: <link xlink:href=\"http://www.gdal.org/gdalwarp.html\">GDAL Warp "
 "resampling methods</link> for more details."
 msgstr ""
+"Докладнішу інформацію див.: <link xlink:href=«http://www.gdal.org/gdalwarp."
+"html»>Методи ресемплювання GDAL Warp</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.0.0 Requires GDAL 1.6.1+"
-msgstr ""
+msgstr "Доступність: 2.0.0 Вимагає GDAL 1.6.1+"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.4.0 max and min resampling options added"
 msgstr ""
+"Покращено: додано опції максимального та мінімального значення ресемплювання "
+"3.4.0"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Resize\"/>, <xref linkend=\"RT_ST_Transform\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Resize\"/>, <xref linkend=\"RT_ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33060,6 +33095,11 @@ msgid ""
 "spelling), Bilinear, Cubic, CubicSpline, Lanczos, Max or Min resampling "
 "algorithm. Default is NearestNeighbor."
 msgstr ""
+"Виконує ресемплінг растра, змінивши тільки його масштаб (або розмір пікселя)"
+". Нові значення пікселів обчислюються за допомогою алгоритму ресемплінгу "
+"NearestNeighbor (англійська або американська орфографія), Bilinear, Cubic, "
+"CubicSpline, Lanczos, Max або Min. За замовчуванням використовується "
+"NearestNeighbor."
 
 #. Tag: para
 #, no-c-format
@@ -33067,6 +33107,9 @@ msgid ""
 "Resample a raster by adjusting only its scale (or pixel size). New pixel "
 "values are computed using one of the following resampling algorithms:"
 msgstr ""
+"Виконує ресемплінг растра, змінивши тільки його масштаб (або розмір пікселя)"
+". Нові значення пікселів обчислюються за допомогою одного з наступних "
+"алгоритмів ресемплінгу:"
 
 #. Tag: para
 #, no-c-format
@@ -33074,6 +33117,9 @@ msgid ""
 "<varname>scalex</varname> and <varname>scaley</varname> define the new pixel "
 "size. scaley must often be negative to get well oriented raster."
 msgstr ""
+"<varname>scalex</varname> та <varname>scaley</varname> визначають новий "
+"розмір пікселя. scaley часто повинен бути від'ємним, щоб отримати добре "
+"орієнтований растр."
 
 #. Tag: para
 #, no-c-format
@@ -33083,6 +33129,10 @@ msgid ""
 "extent of the provided raster. If you want to be sure to retain exact input "
 "extent see <xref linkend=\"RT_ST_Resize\"/>"
 msgstr ""
+"Коли новий scalex або scaley не є дільником ширини або висоти растра, розмір "
+"отриманого растра розширюється, щоб охопити розмір наданого растра. Якщо ви "
+"хочете бути впевнені, що точний розмір вхідних даних буде збережено, див. "
+"<xref linkend=\"RT_ST_Resize\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -33092,6 +33142,11 @@ msgid ""
 "no <varname>maxerr</varname> is specified, which is the same value used in "
 "GDAL gdalwarp utility. If set to zero, no approximation takes place."
 msgstr ""
+"<varname>maxerr</varname> — це поріг для наближення перетворення за "
+"допомогою алгоритму ресемплінгу (в пікселях). Якщо <varname>maxerr</varname> "
+"не вказано, використовується значення за замовчуванням 0,125, яке є таким "
+"самим, як і в утиліті GDAL gdalwarp. Якщо встановлено нульове значення, "
+"наближення не відбувається."
 
 #. Tag: para
 #, no-c-format
@@ -33104,11 +33159,18 @@ msgid ""
 "the input raster. ST_SetScale do not modify the width, nor the height of the "
 "raster."
 msgstr ""
+"ST_Rescale відрізняється від <xref linkend=\"RT_ST_SetScale\"/> тим, що "
+"ST_SetScale не виконує ресемплінг растру для відповідності розмірам растру. "
+"ST_SetScale лише змінює метадані (або геореференцію) растра, щоб виправити "
+"спочатку неправильно вказане масштабування. ST_Rescale призводить до того, "
+"що растр має різну ширину і висоту, обчислені для відповідності "
+"географічному розміру вхідного растра. ST_SetScale не змінює ні ширину, ні "
+"висоту растра."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.1.0 Works on rasters with no SRID"
-msgstr ""
+msgstr "Змінено: 2.1.0 Працює з растрами без SRID"
 
 #. Tag: para
 #, no-c-format
@@ -33116,6 +33178,8 @@ msgid ""
 "A simple example rescaling a raster from a pixel size of 0.001 degree to a "
 "pixel size of 0.0015 degree."
 msgstr ""
+"Простий приклад перемасштабування растру з розміру пікселя 0,001 градуса до "
+"розміру пікселя 0,0015 градуса."
 
 #. Tag: para
 #, no-c-format
@@ -33124,6 +33188,9 @@ msgid ""
 "<xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
 "linkend=\"RT_ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Resample\"/>, <xref linkend=\"RT_ST_SetScale\"/>, "
+"<xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
+"linkend=\"RT_ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33133,6 +33200,11 @@ msgid ""
 "spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. "
 "Default is NearestNeighbor."
 msgstr ""
+"Виконує ресемплінг растра, регулюючи тільки його нахил (або параметри "
+"обертання). Нові значення пікселів обчислюються за допомогою алгоритму "
+"ресемплінгу NearestNeighbor (англійське або американське написання), "
+"Bilinear, Cubic, CubicSpline або Lanczos. За замовчуванням використовується "
+"NearestNeighbor."
 
 #. Tag: para
 #, no-c-format
@@ -33143,25 +33215,34 @@ msgid ""
 "default is NearestNeighbor which is the fastest but results in the worst "
 "interpolation."
 msgstr ""
+"Виконує ресемплінг растра, регулюючи тільки його нахил (або параметри "
+"обертання). Нові значення пікселів обчислюються за допомогою алгоритму "
+"ресемплінгу NearestNeighbor (англійське або американське написання), "
+"Bilinear, Cubic, CubicSpline або Lanczos. За замовчуванням використовується "
+"NearestNeighbor, який є найшвидшим, але дає найгіршу інтерполяцію."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>skewx</varname> and <varname>skewy</varname> define the new skew."
 msgstr ""
+"<varname>skewx</varname> та <varname>skewy</varname> визначають новий кут "
+"нахилу."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The extent of the new raster will encompass the extent of the provided "
 "raster."
-msgstr ""
+msgstr "Розмір нового растра буде відповідати розміру наданого растра."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "A maxerror percent of 0.125 if no <varname>maxerr</varname> is specified."
 msgstr ""
+"Відсоток максимальної похибки 0,125, якщо не вказано "
+"<varname>maxerr</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -33174,12 +33255,18 @@ msgid ""
 "input raster. ST_SetSkew do not modify the width, nor the height of the "
 "raster."
 msgstr ""
+"ST_Reskew відрізняється від <xref linkend=\"RT_ST_SetSkew\"/> тим, що "
+"ST_SetSkew не виконує ресемплінгу растра для відповідності розмірам растра. "
+"ST_SetSkew лише змінює метадані (або геореференцію) растра, щоб виправити "
+"спочатку неправильно вказаний нахил. ST_Reskew призводить до того, що растр "
+"має різну ширину і висоту, обчислені для відповідності географічному розміру "
+"вхідного растра. ST_SetSkew не змінює ні ширину, ні висоту растра."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "A simple example reskewing a raster from a skew of 0.0 to a skew of 0.0015."
-msgstr ""
+msgstr "Простий приклад вирівнювання растру з нахилом від 0,0 до 0,0015."
 
 #. Tag: para
 #, no-c-format
@@ -33188,6 +33275,9 @@ msgid ""
 "<xref linkend=\"RT_ST_SetRotation\"/>, <xref linkend=\"RT_ST_SkewX\"/>, "
 "<xref linkend=\"RT_ST_SkewY\"/>, <xref linkend=\"RT_ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Rescale\"/>, <xref linkend=\"RT_ST_SetSkew\"/>, "
+"<xref linkend=\"RT_ST_SetRotation\"/>, <xref linkend=\"RT_ST_SkewX\"/>, "
+"<xref linkend=\"RT_ST_SkewY\"/>, <xref linkend=\"RT_ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33196,6 +33286,10 @@ msgid ""
 "using the NearestNeighbor (english or american spelling), Bilinear, Cubic, "
 "CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor."
 msgstr ""
+"Виконує ресемплінг растра, прив'язавши його до сітки. Нові значення пікселів "
+"обчислюються за допомогою алгоритму ресемплінгу NearestNeighbor (англійське "
+"або американське написання), Bilinear, Cubic, CubicSpline або Lanczos. За "
+"замовчуванням використовується NearestNeighbor."
 
 #. Tag: para
 #, no-c-format
@@ -33207,6 +33301,12 @@ msgid ""
 "algorithm. The default is NearestNeighbor which is the fastest but results "
 "in the worst interpolation."
 msgstr ""
+"Виконує ресемплінг растра, прив'язуючи його до сітки, визначеної довільним "
+"кутом пікселя (gridx &amp; gridy) і, за бажанням, розміром пікселя (scalex "
+"&amp; scaley). Нові значення пікселів обчислюються за допомогою алгоритму "
+"передискретизації NearestNeighbor (англійська або американська орфографія), "
+"Bilinear, Cubic, CubicSpline або Lanczos. За замовчуванням використовується "
+"NearestNeighbor, який є найшвидшим, але дає найгіршу інтерполяцію."
 
 #. Tag: para
 #, no-c-format
@@ -33216,6 +33316,10 @@ msgid ""
 "of the new raster and it does not have to be inside or on the edge of the "
 "new raster extent."
 msgstr ""
+"<varname>gridx</varname> та <varname>gridy</varname> визначають будь-який "
+"довільний піксельний кут нової сітки. Це не обов'язково верхній лівий кут "
+"нового растра, і він не обов'язково повинен знаходитися всередині або на "
+"краю нового растрового простору."
 
 #. Tag: para
 #, no-c-format
@@ -33223,6 +33327,8 @@ msgid ""
 "You can optionally define the pixel size of the new grid with "
 "<varname>scalex</varname> and <varname>scaley</varname>."
 msgstr ""
+"Ви можете додатково визначити розмір пікселів нової сітки за допомогою "
+"<varname>scalex</varname> та <varname>scaley</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -33230,11 +33336,13 @@ msgid ""
 "Use <xref linkend=\"RT_ST_Resample\"/> if you need more control over the "
 "grid parameters."
 msgstr ""
+"Використовуйте <xref linkend=\"RT_ST_Resample\"/>, якщо вам потрібно більше "
+"контролю над параметрами сітки."
 
 #. Tag: para
 #, no-c-format
 msgid "A simple example snapping a raster to a slightly different grid."
-msgstr ""
+msgstr "Простий приклад прив'язки растру до дещо іншої сітки."
 
 #. Tag: para
 #, no-c-format
@@ -33242,11 +33350,13 @@ msgid ""
 ", <xref linkend=\"RT_ST_Rescale\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, "
 "<xref linkend=\"RT_ST_UpperLeftY\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Rescale\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, "
+"<xref linkend=\"RT_ST_UpperLeftY\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Resize a raster to a new width/height"
-msgstr ""
+msgstr "Змінити розмір растру до нової ширини/висоти"
 
 #. Tag: para
 #, no-c-format
@@ -33256,6 +33366,9 @@ msgid ""
 "extent of the the new raster will be the same as the extent of the provided "
 "raster."
 msgstr ""
+"Змінити розмір растру до нової ширини/висоти. Нову ширину/висоту можна "
+"вказати у вигляді точної кількості пікселів або відсотка від ширини/висоти "
+"растру. Розмір нового растру буде таким самим, як розмір наданого растру."
 
 #. Tag: para
 #, no-c-format
@@ -33265,11 +33378,15 @@ msgid ""
 "default is NearestNeighbor which is the fastest but results in the worst "
 "interpolation."
 msgstr ""
+"Нові значення пікселів обчислюються за допомогою алгоритму передискретизації "
+"NearestNeighbor (англійське або американське написання), Bilinear, Cubic, "
+"CubicSpline або Lanczos. За замовчуванням використовується NearestNeighbor, "
+"який є найшвидшим, але дає найгіршу інтерполяцію."
 
 #. Tag: para
 #, no-c-format
 msgid "Variant 1 expects the actual width/height of the output raster."
-msgstr ""
+msgstr "Варіант 1 очікує фактичну ширину/висоту вихідного растру."
 
 #. Tag: para
 #, no-c-format
@@ -33277,6 +33394,8 @@ msgid ""
 "Variant 2 expects decimal values between zero (0) and one (1) indicating the "
 "percentage of the input raster's width/height."
 msgstr ""
+"Варіант 2 очікує десяткові значення від нуля (0) до одиниці (1), що вказують "
+"відсоток ширини/висоти вхідного растра."
 
 #. Tag: para
 #, no-c-format
@@ -33285,11 +33404,13 @@ msgid ""
 "textual percentage (\"20%\") indicating the percentage of the input raster's "
 "width/height."
 msgstr ""
+"Варіант 3 приймає або фактичну ширину/висоту вихідного растра, або текстовий "
+"відсоток («20%»), що вказує відсоток ширини/висоти вхідного растра."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.1.0 Requires GDAL 1.6.1+"
-msgstr ""
+msgstr "Доступність: 2.1.0 Вимагає GDAL 1.6.1+"
 
 #. Tag: para
 #, no-c-format
@@ -33297,6 +33418,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_Rescale\"/>, <xref linkend=\"RT_ST_Reskew\"/>, <xref "
 "linkend=\"RT_ST_SnapToGrid\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Rescale\"/>, <xref linkend=\"RT_ST_Reskew\"/>, <xref "
+"linkend=\"RT_ST_SnapToGrid\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33667,6 +33790,9 @@ msgid ""
 "of the sample or population. Thus, a value could be examined to be at the "
 "raster's 25%, 50%, 75% percentile.</para>"
 msgstr ""
+"<para>Обчисліть квантилі для покриття растра або таблиці растра в контексті "
+"вибірки або сукупності. Таким чином, значення може бути перевірено на "
+"відповідність 25%, 50% та 75% процентилю растра.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -33674,11 +33800,13 @@ msgid ""
 "If <varname>exclude_nodata_value</varname> is set to false, will also count "
 "pixels with no data."
 msgstr ""
+"Якщо <varname>exclude_nodata_value</varname> встановлено на false, також "
+"будуть підраховуватися пікселі без даних."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 3.1.0 Removed ST_Quantile(table_name, column_name) variant."
-msgstr ""
+msgstr "Змінено: 3.1.0 Вилучено варіант ST_Quantile(table_name, column_name)."
 
 #. Tag: para
 #, no-c-format
@@ -33687,6 +33815,8 @@ msgid ""
 "linkend=\"RT_ST_SummaryStatsAgg\"/>, <xref "
 "linkend=\"RT_ST_SetBandNoDataValue\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref linkend="
+"\"RT_ST_SummaryStatsAgg\"/>, <xref linkend=\"RT_ST_SetBandNoDataValue\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33695,6 +33825,10 @@ msgid ""
 "given raster band of a raster or raster coverage. Band 1 is assumed if no "
 "band is specified."
 msgstr ""
+"Повертає зведені статистичні дані, що складаються з кількості, суми, "
+"середнього значення, стандартного відхилення, мінімального та максимального "
+"значень для заданого растрового каналу растрового зображення або растрового "
+"покриття. Якщо діапазон не вказано, то вважається, що це канал 1."
 
 #. Tag: para
 #, no-c-format
@@ -33703,6 +33837,11 @@ msgid ""
 "stddev, min, max for a given raster band of a raster or raster coverage. If "
 "no band is specified <varname>nband</varname> defaults to 1."
 msgstr ""
+"Повертає <xref linkend=\"summarystats\"/>, що складається з кількості, суми, "
+"середнього значення, стандартного відхилення, мінімального та максимального "
+"значень для заданого растрового каналу растрового зображення або растрового "
+"покриття. Якщо діапазон не вказано, <varname>nband</varname> за "
+"замовчуванням дорівнює 1."
 
 #. Tag: para
 #, no-c-format
@@ -33711,6 +33850,10 @@ msgid ""
 "varname> value. Set <varname>exclude_nodata_value</varname> to false to get "
 "count of all pixels."
 msgstr ""
+"За замовчуванням враховуються тільки значення пікселів, які не дорівнюють "
+"значенню <varname>nodata</varname>. Встановіть "
+"<varname>exclude_nodata_value</varname> на false, щоб отримати кількість "
+"всіх пікселів."
 
 #. Tag: para
 #, no-c-format
@@ -33718,6 +33861,8 @@ msgid ""
 "By default will sample all pixels. To get faster response, set "
 "<varname>sample_percent</varname> to lower than 1"
 msgstr ""
+"За замовчуванням буде зразковано всі пікселі. Щоб отримати швидшу відповідь, "
+"встановіть <varname>sample_percent</varname> нижче 1"
 
 #. Tag: para
 #, no-c-format
@@ -33725,16 +33870,21 @@ msgid ""
 "Changed: 3.1.0 ST_SummaryStats(rastertable, rastercolumn, ...) variants are "
 "removed. Use <xref linkend=\"RT_ST_SummaryStatsAgg\"/> instead."
 msgstr ""
+"Змінено: 3.1.0 Варіанти ST_SummaryStats(rastertable, rastercolumn, ...) "
+"видалено. Замість них використовуйте <xref linkend=\"RT_ST_SummaryStatsAgg\""
+"/>."
 
 #. Tag: title
 #, no-c-format
 msgid "Example: Single raster tile"
-msgstr ""
+msgstr "Приклад: Одинарна растрова плитка"
 
 #. Tag: title
 #, no-c-format
 msgid "Example: Summarize pixels that intersect buildings of interest"
 msgstr ""
+"Приклад: Підсумуйте пікселі, які перетинають будівлі, що представляють "
+"інтерес"
 
 #. Tag: para
 #, no-c-format
@@ -33743,11 +33893,14 @@ msgid ""
 "Buildings and aerial Tiles (tiles each 150x150 pixels ~ 134,000 tiles), "
 "~102,000 building records"
 msgstr ""
+"Цей приклад зайняв 574 мс на PostGIS Windows 64-біт з усіма будівлями "
+"Бостона та повітряними плитками (плитки розміром 150x150 пікселів ~ 134 000 "
+"плиток), ~102 000 записів про будівлі"
 
 #. Tag: title
 #, no-c-format
 msgid "Example: Raster coverage"
-msgstr ""
+msgstr "Приклад: Растрове покриття"
 
 #. Tag: para
 #, no-c-format
@@ -33755,6 +33908,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>, <xref linkend=\"RT_ST_Count\"/"
 ">, <xref linkend=\"RT_ST_Clip\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>, <xref linkend=\"RT_ST_Count\"/"
+">, <xref linkend=\"RT_ST_Clip\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33763,6 +33918,10 @@ msgid ""
 "max for a given raster band of a set of raster. Band 1 is assumed if no band "
 "is specified."
 msgstr ""
+"Агрегат. Повертає зведені статистичні дані, що складаються з кількості, "
+"суми, середнього значення, стандартного відхилення, мінімального та "
+"максимального значень для заданого растрового каналу набору растрів. Якщо "
+"діапазон не вказано, передбачається канал 1."
 
 #. Tag: para
 #, no-c-format
@@ -33771,6 +33930,10 @@ msgid ""
 "varname> value. Set <varname>exclude_nodata_value</varname> to False to get "
 "count of all pixels."
 msgstr ""
+"За замовчуванням враховуються тільки значення пікселів, які не дорівнюють "
+"значенню <varname>NODATA</varname>. Встановіть "
+"<varname>exclude_nodata_value</varname> на False, щоб отримати кількість "
+"всіх пікселів."
 
 #. Tag: para
 #, no-c-format
@@ -33778,6 +33941,8 @@ msgid ""
 "By default will sample all pixels. To get faster response, set "
 "<varname>sample_percent</varname> to value between 0 and 1"
 msgstr ""
+"За замовчуванням буде зразковано всі пікселі. Щоб отримати швидшу відповідь, "
+"встановіть <varname>sample_percent</varname> на значення від 0 до 1"
 
 #. Tag: para
 #, no-c-format
@@ -33785,6 +33950,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref linkend=\"RT_ST_Count\"/>, "
 "<xref linkend=\"RT_ST_Clip\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref linkend=\"RT_ST_Count\"/>, "
+"<xref linkend=\"RT_ST_Clip\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33795,6 +33962,12 @@ msgid ""
 "default nodata value pixels are not counted. and all other values in the "
 "pixel are output and pixel band values are rounded to the nearest integer."
 msgstr ""
+"Повертає набір записів, що містять значення піксельної смуги та кількість "
+"пікселів у заданому каналі растра (або растрового покриття), які мають "
+"заданий набір значень. Якщо канал не вказана, за замовчуванням "
+"використовується смуга 1. За замовчуванням пікселі з значенням nodata не "
+"враховуються. Виводяться всі інші значення пікселя, а значення пікселя "
+"каналу округлюються до найближчого цілого числа."
 
 #. Tag: para
 #, no-c-format
@@ -33803,6 +33976,9 @@ msgid ""
 "<varname>count</varname> which contain the pixel band value and count of "
 "pixels in the raster tile or raster coverage of selected band."
 msgstr ""
+"Повертає набір записів із стовпцями <varname>value</varname> <varname>count</"
+"varname>, які містять значення пікселя каналу та кількість пікселів у "
+"растровій плитці або растровому покритті вибраного каналу."
 
 #. Tag: para
 #, no-c-format
@@ -33813,26 +33989,31 @@ msgid ""
 "return an integer instead of records denoting the count of pixels having "
 "that pixel band value"
 msgstr ""
+"Якщо канал не вказано, <varname>nband</varname> за замовчуванням дорівнює 1. "
+"Якщо <varname>searchvalues</varname> не вказано, повертаються всі значення "
+"пікселів, знайдені в растрі або растровому покритті. Якщо вказано одне "
+"значення пошуку, повертається ціле число замість записів, що позначають "
+"кількість пікселів, які мають це значення пікселів каналу"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetBandNoDataValue\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SetBandNoDataValue\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Inputs"
-msgstr ""
+msgstr "Введення растрових даних"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return a raster value from a Well-Known Binary (WKB) raster."
-msgstr ""
+msgstr "Повернути растрове значення з растрового файлу Well-Known Binary (WKB)."
 
 #. Tag: para
 #, no-c-format
 msgid "Given a Well-Known Binary (WKB) raster, return a raster."
-msgstr ""
+msgstr "За заданим растром Well-Known Binary (WKB) повернути растр."
 
 #. Tag: para
 #, no-c-format
@@ -33840,6 +34021,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_RastFromHexWKB\"/>, <xref linkend=\"RT_ST_AsBinary\"/"
 ">, <xref linkend=\"RT_ST_AsHexWKB\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_RastFromHexWKB\"/>, <xref linkend=\"RT_ST_AsBinary\"/"
+">, <xref linkend=\"RT_ST_AsHexWKB\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33847,6 +34030,8 @@ msgid ""
 "Return a raster value from a Hex representation of Well-Known Binary (WKB) "
 "raster."
 msgstr ""
+"Повернути растрове значення з шестнадцяткового представлення растру Well-"
+"Known Binary (WKB)."
 
 #. Tag: para
 #, no-c-format
@@ -33854,6 +34039,8 @@ msgid ""
 "Given a Well-Known Binary (WKB) raster in Hex representation, return a "
 "raster."
 msgstr ""
+"За заданим растром Well-Known Binary (WKB) у шістнадцятковому представленні "
+"повернути растр."
 
 #. Tag: para
 #, no-c-format
@@ -33861,16 +34048,19 @@ msgid ""
 ", <xref linkend=\"RT_ST_RastFromWKB\"/>, <xref linkend=\"RT_ST_AsBinary\"/>, "
 "<xref linkend=\"RT_ST_AsHexWKB\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_RastFromWKB\"/>, <xref linkend=\"RT_ST_AsBinary\"/>, "
+"<xref linkend=\"RT_ST_AsHexWKB\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Outputs"
-msgstr ""
+msgstr "Вивід растрових зображень"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return the Well-Known Binary (WKB) representation of the raster."
 msgstr ""
+"Повернути представлення растру у вигляді добре відомого бінарного коду (WKB)."
 
 #. Tag: para
 #, no-c-format
@@ -33880,6 +34070,10 @@ msgid ""
 "RFC2-WellKnownBinaryFormat located in the PostGIS source folder for details "
 "of the representation."
 msgstr ""
+"Повертає двійкове представлення растру. Якщо <varname>outasin</varname> має "
+"значення TRUE, смуги out-db обробляються як in-db. Детальні відомості про "
+"представлення див. у файлі raster/doc/RFC2-WellKnownBinaryFormat, що "
+"міститься в папці джерел PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -33887,6 +34081,8 @@ msgid ""
 "This is useful in binary cursors to pull data out of the database without "
 "converting it to a string representation."
 msgstr ""
+"Це корисно в бінарних курсорах для вилучення даних з бази даних без "
+"перетворення їх у рядкове представлення."
 
 #. Tag: para
 #, no-c-format
@@ -33895,26 +34091,31 @@ msgid ""
 "the client does not have access to the raster file underlying an out-db "
 "band, set <varname>outasin</varname> to TRUE."
 msgstr ""
+"За замовчуванням, вихідні дані WKB містять зовнішній шлях до файлу для смуг "
+"out-db. Якщо клієнт не має доступу до растрового файлу, що лежить в основі "
+"смуги out-db, встановіть <varname>outasin</varname> на TRUE."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 Addition of <varname>outasin</varname>"
-msgstr ""
+msgstr "Покращено: 2.1.0 Додано <varname>outasin</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.5.0 Addition of <varname>ST_AsWKB</varname>"
-msgstr ""
+msgstr "Покращено: 2.5.0 Додано <varname>ST_AsWKB</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_AsHexWKB\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_AsHexWKB\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return the Well-Known Binary (WKB) in Hex representation of the raster."
 msgstr ""
+"Повернути добре відомий бінарний файл (WKB) у шістнадцятковому представленні "
+"растру."
 
 #. Tag: para
 #, no-c-format
@@ -33924,6 +34125,10 @@ msgid ""
 "to raster/doc/RFC2-WellKnownBinaryFormat located in the PostGIS source "
 "folder for details of the representation."
 msgstr ""
+"Повертає двійкове представлення у шістнадцятковому форматі растра. Якщо "
+"<varname>outasin</varname> дорівнює TRUE, смуги out-db обробляються як in-"
+"db. Детальніше про представлення див. raster/doc/RFC2-WellKnownBinaryFormat "
+"у папці джерел PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -33932,6 +34137,9 @@ msgid ""
 "If the client does not have access to the raster file underlying an out-db "
 "band, set <varname>outasin</varname> to TRUE."
 msgstr ""
+"За замовчуванням вихідні дані Hex WKB містять зовнішній шлях до файлу для "
+"смуг out-db. Якщо клієнт не має доступу до растрового файлу, що лежить в "
+"основі смуги out-db, встановіть <varname>outasin</varname> на TRUE."
 
 #. Tag: para
 #, no-c-format
@@ -34447,6 +34655,9 @@ msgid ""
 "Creates a new raster of up to four 8BUI bands (grayscale, RGB, RGBA) from "
 "the source raster and a specified band. Band 1 is assumed if not specified."
 msgstr ""
+"Створює новий растр з максимум чотирма смугами 8BUI (відтінки сірого, RGB, "
+"RGBA) на основі вихідного растра та вказаної смуги. Якщо смуга не вказана, "
+"за замовчуванням використовується смуга 1."
 
 #. Tag: para
 #, no-c-format
@@ -37820,6 +38031,8 @@ msgid ""
 "This function will make use of any indexes that may be available on the "
 "rasters."
 msgstr ""
+"Ця функція буде використовувати будь-які індекси, які можуть бути доступні "
+"на растрах."
 
 #. Tag: para
 #, no-c-format
@@ -37828,6 +38041,9 @@ msgid ""
 "on the raster, e.g. ST_Contains(ST_Polygon(raster), geometry) or "
 "ST_Contains(geometry, ST_Polygon(raster))."
 msgstr ""
+"Щоб перевірити просторові відносини між растром і геометрією, використовуйте "
+"ST_Polygon на растрі, наприклад ST_Contains(ST_Polygon(raster), geometry) "
+"або ST_Contains(geometry, ST_Polygon(raster))."
 
 #. Tag: para
 #, no-c-format
@@ -37835,11 +38051,13 @@ msgid ""
 "ST_Contains() is the inverse of ST_Within(). So, ST_Contains(rastA, rastB) "
 "implies ST_Within(rastB, rastA)."
 msgstr ""
+"ST_Contains() є оберненою функцією до ST_Within(). Отже, ST_Contains(rastA, "
+"rastB) означає ST_Within(rastB, rastA)."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Within\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Within\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37847,6 +38065,8 @@ msgid ""
 "Return true if rastB intersects the interior of rastA but not the boundary "
 "or exterior of rastA."
 msgstr ""
+"Повертає true, якщо rastB перетинає внутрішню частину rastA, але не межу або "
+"зовнішню частину rastA."
 
 #. Tag: para
 #, no-c-format
@@ -37857,11 +38077,16 @@ msgid ""
 "in the test. If the band number is provided, only those pixels with value "
 "(not NODATA) are considered in the test."
 msgstr ""
+"Растр rastA містить rastB, якщо rastB перетинає внутрішню частину rastA, але "
+"не межу або зовнішню частину rastA. Якщо номер каналу не вказано (або "
+"встановлено на NULL), у тесті враховується тільки опукла оболонка растра. "
+"Якщо номер каналу вказано, у тесті враховуються тільки ті пікселі, які мають "
+"значення (не NODATA)."
 
 #. Tag: para
 #, no-c-format
 msgid "Raster rastA does not contain properly itself but does contain itself."
-msgstr ""
+msgstr "Растр rastA не містить сам себе належним чином, але містить сам себе."
 
 #. Tag: para
 #, no-c-format
@@ -37870,16 +38095,21 @@ msgid ""
 "on the raster, e.g. ST_ContainsProperly(ST_Polygon(raster), geometry) or "
 "ST_ContainsProperly(geometry, ST_Polygon(raster))."
 msgstr ""
+"Щоб перевірити просторові відносини між растром і геометрією, використовуйте "
+"ST_Polygon на растрі, наприклад ST_ContainsProperly(ST_Polygon(raster), "
+"geometry) або ST_ContainsProperly(geometry, ST_Polygon(raster))."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Contains\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Contains\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return true if no points of raster rastB lie outside raster rastA."
 msgstr ""
+"Повертає true, якщо жодна точка растра rastB не лежить за межами растра "
+"rastA."
 
 #. Tag: para
 #, no-c-format
@@ -37890,6 +38120,11 @@ msgid ""
 "is provided, only those pixels with value (not NODATA) are considered in the "
 "test."
 msgstr ""
+"Растр rastA покриває rastB тоді і тільки тоді, коли жодна точка rastB не "
+"лежить за межами rastA. Якщо номер каналу не вказано (або встановлено NULL), "
+"у тесті враховується тільки опукла оболонка растра. Якщо номер каналу "
+"вказано, у тесті враховуються тільки ті пікселі, які мають значення (не "
+"NODATA)."
 
 #. Tag: para
 #, no-c-format
@@ -37898,16 +38133,21 @@ msgid ""
 "on the raster, e.g. ST_Covers(ST_Polygon(raster), geometry) or "
 "ST_Covers(geometry, ST_Polygon(raster))."
 msgstr ""
+"Щоб перевірити просторові відносини між растром і геометрією, використовуйте "
+"ST_Polygon на растрі, наприклад ST_Covers(ST_Polygon(raster), geometry) або "
+"ST_Covers(geometry, ST_Polygon(raster))."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_CoveredBy\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_CoveredBy\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return true if no points of raster rastA lie outside raster rastB."
 msgstr ""
+"Повертає true, якщо жодна точка растра rastA не лежить за межами растра "
+"rastB."
 
 #. Tag: para
 #, no-c-format
@@ -37918,6 +38158,11 @@ msgid ""
 "number is provided, only those pixels with value (not NODATA) are considered "
 "in the test."
 msgstr ""
+"Растр rastA покривається rastB тоді і тільки тоді, коли жодна точка rastA не "
+"лежить за межами rastB. Якщо номер каналу не вказано (або встановлено NULL), "
+"у тесті враховується тільки опукла оболонка растра. Якщо номер каналу "
+"вказано, у тесті враховуються тільки ті пікселі, які мають значення (не "
+"NODATA)."
 
 #. Tag: para
 #, no-c-format
@@ -37926,16 +38171,19 @@ msgid ""
 "on the raster, e.g. ST_CoveredBy(ST_Polygon(raster), geometry) or "
 "ST_CoveredBy(geometry, ST_Polygon(raster))."
 msgstr ""
+"Щоб перевірити просторові відносини між растром і геометрією, використовуйте "
+"ST_Polygon на растрі, наприклад ST_CoveredBy(ST_Polygon(raster), geometry) "
+"або ST_CoveredBy(geometry, ST_Polygon(raster))."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Covers\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Covers\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return true if raster rastA does not spatially intersect rastB."
-msgstr ""
+msgstr "Повертає true, якщо растр rastA не перетинається в просторі з rastB."
 
 #. Tag: para
 #, no-c-format
@@ -37946,11 +38194,15 @@ msgid ""
 "provided, only those pixels with value (not NODATA) are considered in the "
 "test."
 msgstr ""
+"Растери rastA і rastB є роз'єднаними, якщо вони не мають спільного простору. "
+"Якщо номер каналу не вказано (або встановлено на NULL), у тесті враховується "
+"лише опукла оболонка растра. Якщо номер каналу вказано, у тесті враховуються "
+"лише ті пікселі, які мають значення (не NODATA)."
 
 #. Tag: para
 #, no-c-format
 msgid "This function does NOT use any indexes."
-msgstr ""
+msgstr "Ця функція НЕ використовує жодних індексів."
 
 #. Tag: para
 #, no-c-format
@@ -37958,11 +38210,14 @@ msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
 "on the raster, e.g. ST_Disjoint(ST_Polygon(raster), geometry)."
 msgstr ""
+"Щоб перевірити просторові відносини між растром і геометрією, використовуйте "
+"ST_Polygon на растрі, наприклад ST_Disjoint(ST_Polygon(raster), geometry)."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return true if raster rastA spatially intersects raster rastB."
 msgstr ""
+"Повертає true, якщо растр rastA просторово перетинається з растром rastB."
 
 #. Tag: para
 #, no-c-format
@@ -37972,11 +38227,15 @@ msgid ""
 "is considered in the test. If the band number is provided, only those pixels "
 "with value (not NODATA) are considered in the test."
 msgstr ""
+"Повертає true, якщо растр rastA просторово перетинає растр rastB. Якщо номер "
+"каналу не вказано (або встановлено NULL), у тесті враховується лише опукла "
+"оболонка растра. Якщо номер канал вказано, у тесті враховуються лише ті "
+"пікселі, які мають значення (не NODATA)."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0.0 support raster/raster intersects was introduced."
-msgstr ""
+msgstr "Покращено: 2.0.0 додано підтримку растрових/растрових перетинів."
 
 #. Tag: para
 #, no-c-format
@@ -37984,11 +38243,13 @@ msgid ""
 "Changed: 2.1.0 The behavior of the ST_Intersects(raster, geometry) variants "
 "changed to match that of ST_Intersects(geometry, raster)."
 msgstr ""
+"Змінено: 2.1.0 Поведінка варіантів ST_Intersects(raster, geometry) змінена, "
+"щоб відповідати поведінці ST_Intersects(geometry, raster)."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Disjoint\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Disjoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37996,6 +38257,8 @@ msgid ""
 "Return true if raster rastA and rastB intersect but one does not completely "
 "contain the other."
 msgstr ""
+"Повертає true, якщо растри rastA і rastB перетинаються, але один не повністю "
+"містить інший."
 
 #. Tag: para
 #, no-c-format
@@ -38006,6 +38269,11 @@ msgid ""
 "the raster is considered in the test. If the band number is provided, only "
 "those pixels with value (not NODATA) are considered in the test."
 msgstr ""
+"Повертає true, якщо растр rastA просторово перекриває растр rastB. Це "
+"означає, що rastA і rastB перетинаються, але один не містить повністю інший. "
+"Якщо номер каналу не вказано (або встановлено NULL), у тесті враховується "
+"тільки опукла оболонка растра. Якщо номер каналу вказано, у тесті "
+"враховуються тільки ті пікселі, які мають значення (не NODATA)."
 
 #. Tag: para
 #, no-c-format
@@ -38013,6 +38281,8 @@ msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
 "on the raster, e.g. ST_Overlaps(ST_Polygon(raster), geometry)."
 msgstr ""
+"Щоб перевірити просторові відносини між растром і геометрією, використовуйте "
+"ST_Polygon на растрі, наприклад ST_Overlaps(ST_Polygon(raster), geometry)."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38020,6 +38290,8 @@ msgid ""
 "Return true if raster rastA and rastB have at least one point in common but "
 "their interiors do not intersect."
 msgstr ""
+"Повертає true, якщо растрові зображення rastA і rastB мають принаймні одну "
+"спільну точку, але їх внутрішні частини не перетинаються."
 
 #. Tag: para
 #, no-c-format
@@ -38031,6 +38303,12 @@ msgid ""
 "provided, only those pixels with value (not NODATA) are considered in the "
 "test."
 msgstr ""
+"Повертає true, якщо растр rastA просторово торкається растра rastB. Це "
+"означає, що rastA і rastB мають принаймні одну спільну точку, але їх "
+"внутрішні частини не перетинаються. Якщо номер каналу не вказано (або "
+"встановлено на NULL), у тесті враховується лише опукла оболонка растра. Якщо "
+"номер каналу вказано, у тесті враховуються лише ті пікселі, які мають "
+"значення (не NODATA)."
 
 #. Tag: para
 #, no-c-format
@@ -38038,6 +38316,8 @@ msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
 "on the raster, e.g. ST_Touches(ST_Polygon(raster), geometry)."
 msgstr ""
+"Щоб перевірити просторові відносини між растром і геометрією, використовуйте "
+"ST_Polygon на растрі, наприклад ST_Touches(ST_Polygon(raster), geometry)."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38046,6 +38326,10 @@ msgid ""
 "(pixels can be put on same grid without cutting into pixels) and false if "
 "they don't with notice detailing issue."
 msgstr ""
+"Повертає значення true, якщо растри мають однаковий нахил, масштаб, "
+"просторову прив'язку та зміщення (пікселі можна розмістити на одній сітці "
+"без розрізання на пікселі), і false, якщо вони не відповідають цим "
+"критеріям, з повідомленням, що детально описує проблему."
 
 #. Tag: para
 #, no-c-format
@@ -38057,6 +38341,12 @@ msgid ""
 "of the other raster. Returns false if they don't and a NOTICE detailing the "
 "alignment issue."
 msgstr ""
+"Неагрегована версія (варіанти 1 і 2): Повертає значення true, якщо два "
+"растри (надані безпосередньо або створені з використанням значень upperleft, "
+"scale, skew і srid) мають однаковий масштаб, нахил, srid і принаймні один з "
+"чотирьох кутів будь-якого пікселя одного растра припадає на будь-який кут "
+"сітки іншого растра. Повертає false, якщо вони не мають, і ПОВІДОМЛЕННЯ з "
+"детальною інформацією про проблему вирівнювання."
 
 #. Tag: para
 #, no-c-format
@@ -38066,16 +38356,20 @@ msgid ""
 "\"aggregate\" function in the terminology of PostgreSQL. That means that it "
 "operates on rows of data, in the same way the SUM() and AVG() functions do."
 msgstr ""
+"Агрегатна версія (Варіант 3): З набору растрів повертає значення true, якщо "
+"всі растри в наборі вирівняні. Функція ST_SameAlignment() є «агрегатною» "
+"функцією в термінології PostgreSQL. Це означає, що вона оперує рядками даних "
+"так само, як функції SUM() і AVG()."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 addition of Aggregate variant"
-msgstr ""
+msgstr "Покращено: 2.1.0 додавання варіанту Aggregate"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Rasters"
-msgstr ""
+msgstr "Приклади: Растри"
 
 #. Tag: para
 #, no-c-format
@@ -38083,6 +38377,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_NotSameAlignmentReason\"/>, <xref "
 "linkend=\"RT_ST_MakeEmptyRaster\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_NotSameAlignmentReason\"/>, <xref linkend="
+"\"RT_ST_MakeEmptyRaster\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38090,6 +38386,8 @@ msgid ""
 "<refpurpose>Returns text stating if rasters are aligned and if not aligned, "
 "a reason why.</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає текст, що вказує, чи вирівняні растри, а якщо ні, то "
+"причину цього.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -38097,6 +38395,8 @@ msgid ""
 "<para>Returns text stating if rasters are aligned and if not aligned, a "
 "reason why.</para>"
 msgstr ""
+"<para>Повертає текст, що вказує, чи растри вирівняні, а якщо ні, то причину "
+"цього.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -38104,11 +38404,13 @@ msgid ""
 "If there are several reasons why the rasters are not aligned, only one "
 "reason (the first test to fail) will be returned."
 msgstr ""
+"Якщо існує кілька причин, через які растри не вирівняні, буде повернуто лише "
+"одну причину (перший тест, який не пройшов)."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SameAlignment\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SameAlignment\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38117,6 +38419,8 @@ msgid ""
 "and at least one point of the interior of rastA lies in the interior of "
 "rastB."
 msgstr ""
+"Повертає true, якщо жодна точка растра rastA не лежить зовні растра rastB і "
+"принаймні одна точка всередині rastA лежить всередині rastB."
 
 #. Tag: para
 #, no-c-format
@@ -38128,6 +38432,12 @@ msgid ""
 "number is provided, only those pixels with value (not NODATA) are considered "
 "in the test."
 msgstr ""
+"Растр rastA знаходиться в межах rastB тоді і тільки тоді, коли жодна точка "
+"rastA не лежить за межами rastB і принаймні одна точка внутрішньої області "
+"rastA лежить у внутрішній області rastB. Якщо номер каналу не вказано (або "
+"встановлено на NULL), у тесті враховується тільки опукла оболонка растра. "
+"Якщо номер каналу вказано, у тесті враховуються тільки ті пікселі, які мають "
+"значення (не NODATA)."
 
 #. Tag: para
 #, no-c-format
@@ -38136,6 +38446,9 @@ msgid ""
 "on the raster, e.g. ST_Within(ST_Polygon(raster), geometry) or "
 "ST_Within(geometry, ST_Polygon(raster))."
 msgstr ""
+"Щоб перевірити просторові відносини між растром і геометрією, використовуйте "
+"ST_Polygon на растрі, наприклад ST_Within(ST_Polygon(raster), geometry) або "
+"ST_Within(geometry, ST_Polygon(raster))."
 
 #. Tag: para
 #, no-c-format
@@ -38143,6 +38456,8 @@ msgid ""
 "ST_Within() is the inverse of ST_Contains(). So, ST_Within(rastA, rastB) "
 "implies ST_Contains(rastB, rastA)."
 msgstr ""
+"ST_Within() є оберненою функцією до ST_Contains(). Отже, ST_Within(rastA, "
+"rastB) означає ST_Contains(rastB, rastA)."
 
 #. Tag: para
 #, no-c-format
@@ -38150,6 +38465,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_Contains\"/>, <xref linkend=\"RT_ST_DWithin\"/>, "
 "<xref linkend=\"RT_ST_DFullyWithin\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Contains\"/>, <xref linkend=\"RT_ST_DWithin\"/>, "
+"<xref linkend=\"RT_ST_DFullyWithin\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38157,6 +38474,8 @@ msgid ""
 "Return true if rasters rastA and rastB are within the specified distance of "
 "each other."
 msgstr ""
+"Повертає true, якщо растри rastA і rastB знаходяться на заданій відстані "
+"один від одного."
 
 #. Tag: para
 #, no-c-format
@@ -38167,6 +38486,10 @@ msgid ""
 "provided, only those pixels with value (not NODATA) are considered in the "
 "test."
 msgstr ""
+"Повертає true, якщо растри rastA і rastB знаходяться на заданій відстані "
+"один від одного. Якщо номер каналу не вказано (або встановлено NULL), у "
+"тесті враховується тільки опукла оболонка растра. Якщо номер каналу вказано, "
+"у тесті враховуються тільки ті пікселі, які мають значення (не NODATA)."
 
 #. Tag: para
 #, no-c-format
@@ -38175,6 +38498,9 @@ msgid ""
 "of the rasters. For this function to make sense, the source rasters must "
 "both be of the same coordinate projection, having the same SRID."
 msgstr ""
+"Відстань вказується в одиницях, визначених системою просторових координат "
+"растрів. Щоб ця функція мала сенс, вихідні растри повинні мати однакову "
+"проекцію координат і однаковий SRID."
 
 #. Tag: para
 #, no-c-format
@@ -38182,11 +38508,13 @@ msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
 "on the raster, e.g. ST_DWithin(ST_Polygon(raster), geometry)."
 msgstr ""
+"Щоб перевірити просторові відносини між растром і геометрією, використовуйте "
+"ST_Polygon на растрі, наприклад ST_DWithin(ST_Polygon(raster), geometry)."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DFullyWithin\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_DFullyWithin\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38194,6 +38522,8 @@ msgid ""
 "Return true if rasters rastA and rastB are fully within the specified "
 "distance of each other."
 msgstr ""
+"Повертає значення true, якщо растри rastA і rastB повністю знаходяться на "
+"заданій відстані один від одного."
 
 #. Tag: para
 #, no-c-format
@@ -38204,6 +38534,11 @@ msgid ""
 "number is provided, only those pixels with value (not NODATA) are considered "
 "in the test."
 msgstr ""
+"Повертає true, якщо растри rastA і rastB повністю знаходяться на заданій "
+"відстані один від одного. Якщо номер каналу не вказано (або встановлено NULL)"
+", у тесті враховується тільки опукла оболонка растра. Якщо номер каналу "
+"вказано, у тесті враховуються тільки ті пікселі, які мають значення (не "
+"NODATA)."
 
 #. Tag: para
 #, no-c-format
@@ -38211,32 +38546,37 @@ msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
 "on the raster, e.g. ST_DFullyWithin(ST_Polygon(raster), geometry)."
 msgstr ""
+"Щоб перевірити просторові відносини між растром і геометрією, використовуйте "
+"ST_Polygon на растрі, наприклад ST_DFullyWithin(ST_Polygon(raster), "
+"geometry)."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DWithin\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_DWithin\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Tips"
-msgstr ""
+msgstr "Поради щодо растру"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This section documents various gotchas and tips related to PostGIS Raster."
 msgstr ""
+"У цьому розділі описано різні підводні камені та поради, пов'язані з PostGIS "
+"Raster."
 
 #. Tag: title
 #, no-c-format
 msgid "Out-DB Rasters"
-msgstr ""
+msgstr "Растри Out-DB"
 
 #. Tag: title
 #, no-c-format
 msgid "Directory containing many files"
-msgstr ""
+msgstr "Каталог, що містить багато файлів"
 
 #. Tag: para
 #, no-c-format
@@ -38246,6 +38586,11 @@ msgid ""
 "thousands, millions), opening that file becomes extremely slow (especially "
 "if that file happens to be on a network drive such as NFS)."
 msgstr ""
+"Коли GDAL відкриває файл, GDAL ретельно сканує каталог цього файлу, щоб "
+"створити каталог інших файлів. Якщо цей каталог містить багато файлів ("
+"наприклад, тисячі, мільйони), відкриття цього файлу стає надзвичайно "
+"повільним (особливо якщо цей файл знаходиться на мережевому диску, такому як "
+"NFS)."
 
 #. Tag: para
 #, no-c-format
@@ -38256,6 +38601,11 @@ msgid ""
 "<varname>GDAL_DISABLE_READDIR_ON_OPEN</varname> to <varname>TRUE</varname> "
 "to disable directory scanning."
 msgstr ""
+"Для контролю цієї поведінки GDAL надає наступну змінну середовища: <link "
+"xlink:href=«https://gdal.org/user/configoptions.html#config-"
+"GDAL_DISABLE_READDIR_ON_OPEN»>GDAL_DISABLE_READDIR_ON_OPEN</link>. "
+"Встановіть <varname>GDAL_DISABLE_READDIR_ON_OPEN</varname> на <varname>TRUE</"
+"varname>, щоб вимкнути сканування каталогів."
 
 #. Tag: para
 #, no-c-format
@@ -38267,11 +38617,17 @@ msgid ""
 "is the name of the cluster, e.g. maindb). You can also set PostGIS "
 "environment variables here as well."
 msgstr ""
+"В Ubuntu (і якщо ви використовуєте пакети PostgreSQL для Ubuntu), "
+"<varname>GDAL_DISABLE_READDIR_ON_OPEN</varname> можна встановити в "
+"<emphasis>/etc/postgresql/POSTGRESQL_VERSION/CLUSTER_NAME/environment</"
+"emphasis> (де POSTGRESQL_VERSION — це версія PostgreSQL, наприклад 9.6, а "
+"CLUSTER_NAME — це назва кластера, наприклад maindb). Тут також можна "
+"встановити змінні середовища PostGIS."
 
 #. Tag: title
 #, no-c-format
 msgid "Maximum Number of Open Files"
-msgstr ""
+msgstr "Максимальна кількість відкритих файлів"
 
 #. Tag: para
 #, no-c-format
@@ -38284,6 +38640,13 @@ msgid ""
 "temperatures and we want to know the absolute min and max value for a pixel "
 "in that dataset)."
 msgstr ""
+"Максимальна кількість відкритих файлів, дозволена Linux і PostgreSQL, "
+"зазвичай є консервативною (зазвичай 1024 відкритих файлів на процес), "
+"виходячи з припущення, що система використовується людьми. Для растрів Out-"
+"DB один дійсний запит може легко перевищити цей ліміт (наприклад, набір "
+"даних за 10 років з одним растром для кожного дня, що містить мінімальні та "
+"максимальні температури, і ми хочемо знати абсолютне мінімальне та "
+"максимальне значення для пікселя в цьому наборі даних)."
 
 #. Tag: para
 #, no-c-format
@@ -38298,6 +38661,16 @@ msgid ""
 "<emphasis>/etc/postgresql/POSTGRESQL_VERSION/CLUSTER_NAME/postgresql.conf</"
 "emphasis> in Ubuntu environments)."
 msgstr ""
+"Найпростішою зміною є наступне налаштування PostgreSQL: <link "
+"xlink:href=«https://www.postgresql.org/docs/current/static/runtime-config-"
+"resource.html#GUC-MAX-FILES-PER-PROCESS»>max_files_per_process</link>. За "
+"замовчуванням встановлено значення 1000, що є занадто низьким для Out-DB "
+"Rasters. Безпечним початковим значенням може бути 65536, але це насправді "
+"залежить від ваших наборів даних і запитів, що виконуються для цих наборів "
+"даних. Це налаштування можна виконати тільки під час запуску сервера і, "
+"ймовірно, тільки в файлі конфігурації PostgreSQL (наприклад, <emphasis>/etc/"
+"postgresql/POSTGRESQL_VERSION/CLUSTER_NAME/postgresql.conf</emphasis> в "
+"середовищах Ubuntu)."
 
 #. Tag: para
 #, no-c-format
@@ -38305,21 +38678,23 @@ msgid ""
 "The major change to make is the Linux kernel's open files limits. There are "
 "two parts to this:"
 msgstr ""
+"Основна зміна, яку потрібно внести, стосується обмежень відкритих файлів "
+"ядра Linux. Вона складається з двох частин:"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Maximum number of open files for the entire system</para>"
-msgstr ""
+msgstr "<para>Максимальна кількість відкритих файлів для всієї системи</para>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Maximum number of open files per process</para>"
-msgstr ""
+msgstr "<para>Максимальна кількість відкритих файлів на процес</para>"
 
 #. Tag: title
 #, no-c-format
 msgid "<title>Maximum number of open files for the entire system</title>"
-msgstr ""
+msgstr "<title>Максимальна кількість відкритих файлів для всієї системи</title>"
 
 #. Tag: para
 #, no-c-format
@@ -38327,6 +38702,8 @@ msgid ""
 "You can inspect the current maximum number of open files for the entire "
 "system with the following example:"
 msgstr ""
+"Ви можете перевірити поточну максимальну кількість відкритих файлів для "
+"всієї системи за допомогою наступного прикладу:"
 
 #. Tag: para
 #, no-c-format
@@ -38334,11 +38711,13 @@ msgid ""
 "If the value returned is not large enough, add a file to <emphasis>/etc/"
 "sysctl.d/</emphasis> as per the following example:"
 msgstr ""
+"Якщо повернуте значення недостатньо велике, додайте файл до <emphasis>/etc/"
+"sysctl.d/</emphasis> відповідно до наступного прикладу:"
 
 #. Tag: title
 #, no-c-format
 msgid "<title>Maximum number of open files per process</title>"
-msgstr ""
+msgstr "<title>Максимальна кількість відкритих файлів на процес</title>"
 
 #. Tag: para
 #, no-c-format
@@ -38346,6 +38725,8 @@ msgid ""
 "We need to increase the maximum number of open files per process for the "
 "PostgreSQL server processes."
 msgstr ""
+"Нам потрібно збільшити максимальну кількість відкритих файлів на процес для "
+"процесів сервера PostgreSQL."
 
 #. Tag: para
 #, no-c-format
@@ -38354,6 +38735,9 @@ msgid ""
 "number of open files, do as per the following example (make sure to have "
 "PostgreSQL running):"
 msgstr ""
+"Щоб побачити, яку кількість відкритих файлів використовують поточні процеси "
+"служби PostgreSQL, виконайте наступні дії (переконайтеся, що PostgreSQL "
+"працює):"
 
 #. Tag: para
 #, no-c-format
@@ -38362,6 +38746,10 @@ msgid ""
 "It doesn't matter which PostgreSQL process, any of them will do. The "
 "response we are interested in is <emphasis>Max open files</emphasis>."
 msgstr ""
+"У наведеному вище прикладі ми перевірили обмеження відкритих файлів для "
+"процесу 31718. Не має значення, який саме процес PostgreSQL, будь-який з них "
+"підійде. Відповідь, яка нас цікавить, — це <emphasis>Максимальна кількість "
+"відкритих файлів</emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -38372,6 +38760,12 @@ msgid ""
 "<varname>max_files_per_process</varname>. In our example, we set "
 "<varname>max_files_per_process</varname> to 65536."
 msgstr ""
+"Ми хочемо збільшити <emphasis>М'яке обмеження</emphasis> та "
+"<emphasis>Жорстке обмеження</emphasis> для <emphasis>Максимальної кількості "
+"відкритих файлів</emphasis>, щоб вони були більшими за значення, яке ми "
+"вказали для налаштування PostgreSQL <varname>max_files_per_process</"
+"varname>. У нашому прикладі ми встановили <varname>max_files_per_process</"
+"varname> на 65536."
 
 #. Tag: para
 #, no-c-format
@@ -38382,6 +38776,11 @@ msgid ""
 "postgresql</emphasis> (SysV) or <emphasis role=\"strong\">/lib/systemd/"
 "system/postgresql*.service</emphasis> (systemd)."
 msgstr ""
+"В Ubuntu (і припускаючи, що ви використовуєте пакети PostgreSQL для Ubuntu), "
+"найпростіший спосіб змінити <emphasis>Soft Limit</emphasis> та "
+"<emphasis>Hard Limit</emphasis> — це відредагувати <emphasis role=\"strong\""
+">/etc/init.d/postgresql</emphasis> (SysV) або <emphasis role=\"strong\">/lib/"
+"systemd/system/postgresql*.service</emphasis> (systemd)."
 
 #. Tag: para
 #, no-c-format
@@ -38391,6 +38790,10 @@ msgid ""
 "role=\"strong\">ulimit -n 131072</emphasis> to <emphasis role=\"strong\">/"
 "etc/init.d/postgresql</emphasis>."
 msgstr ""
+"Спочатку розглянемо випадок SysV Ubuntu, де ми додаємо <emphasis role="
+"\"strong\">ulimit -H -n 262144</emphasis> та <emphasis role=\"strong\""
+">ulimit -n 131072</emphasis> до <emphasis role=\"strong\">/etc/init.d/"
+"postgresql</emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -38400,12 +38803,16 @@ msgid ""
 "role=\"strong\">/lib/systemd/system/postgresql*.service</emphasis> file in "
 "the <emphasis role=\"strong\">[Service]</emphasis> section."
 msgstr ""
+"Тепер розглянемо випадок systemd Ubuntu. Ми додамо <emphasis role=\"strong\""
+">LimitNOFILE=131072</emphasis> до кожного файлу <emphasis role=\"strong\">/"
+"lib/systemd/system/postgresql*.service</emphasis> у розділі <emphasis role="
+"\"strong\">[Service]</emphasis>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "After making the necessary systemd changes, make sure to reload the daemon"
-msgstr ""
+msgstr "Після внесення необхідних змін до systemd перезавантажте демон"
 
 #. Tag: title
 #, no-c-format
@@ -38415,12 +38822,12 @@ msgstr "Просторові відносини"
 #. Tag: para
 #, no-c-format
 msgid "These functions determine spatial relationships between geometries."
-msgstr ""
+msgstr "Ці функції визначають просторові відносини між геометріями."
 
 #. Tag: title
 #, no-c-format
 msgid "Topological Relationships"
-msgstr ""
+msgstr "Топологічні відносини"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38428,6 +38835,8 @@ msgid ""
 "Tests if two geometries spatially intersect in 3D - only for points, "
 "linestrings, polygons, polyhedral surface (area)"
 msgstr ""
+"Перевіряє, чи дві геометрії перетинаються в просторі 3D - тільки для точок, "
+"лінійних відрізків, полігонів, багатогранних поверхонь (площ)"
 
 #. Tag: para
 #, no-c-format
@@ -38436,11 +38845,14 @@ msgid ""
 "aforementioned returns true, then the geometries also spatially intersect. "
 "Disjoint implies false for spatial intersection."
 msgstr ""
+"Перекриття, дотики, всередині всі означають просторове перетин. Якщо будь-"
+"яке з вищезазначених повертає значення true, то геометрії також просторово "
+"перетинаються. Роз'єднаність означає false для просторового перетину."
 
 #. Tag: para
 #, no-c-format
 msgid "&index_aware;"
-msgstr ""
+msgstr "&index_aware;"
 
 #. Tag: para
 #, no-c-format
@@ -38451,21 +38863,26 @@ msgid ""
 "kind of issues where a distance of a centimeter you want to just consider as "
 "intersecting, use <xref linkend=\"ST_3DDWithin\"/>."
 msgstr ""
+"Через помилки плаваючої стійкості геометрії не завжди перетинаються так, як "
+"ви очікуєте після геометричної обробки. Наприклад, найближча точка на лінії "
+"до геометрії може не лежати на лінії. Для таких випадків, коли відстань в "
+"один сантиметр ви хочете вважати перетином, використовуйте <xref linkend="
+"\"ST_3DDWithin\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 3.0.0 SFCGAL backend removed, GEOS backend supports TINs."
-msgstr ""
+msgstr "Змінено: 3.0.0 Вилучено бекенд SFCGAL, бекенд GEOS підтримує TIN."
 
 #. Tag: title
 #, no-c-format
 msgid "TIN Examples"
-msgstr ""
+msgstr "Приклади TIN"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Intersects\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Intersects\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38473,6 +38890,8 @@ msgid ""
 "Tests if every point of B lies in A, and their interiors have a point in "
 "common"
 msgstr ""
+"Перевіряє, чи кожна точка B лежить в A, і чи мають їхні внутрішні частини "
+"спільну точку"
 
 #. Tag: para
 #, no-c-format
@@ -38482,6 +38901,10 @@ msgid ""
 "equivalently, no points of B lie in the exterior of A), and the interiors of "
 "A and B have at least one point in common."
 msgstr ""
+"Повертає TRUE, якщо геометрія A містить геометрію B. A містить B тоді і "
+"тільки тоді, коли всі точки B лежать всередині (тобто у внутрішній частині "
+"або на межі) A (або, що еквівалентно, жодна точка B не лежить поза межами A)"
+", а внутрішні частини A і B мають принаймні одну спільну точку."
 
 #. Tag: para
 #, no-c-format
@@ -38489,6 +38912,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Contains(A, B) ⇔ (A ⋂ B = B) ∧ (Int(A) ⋂ "
 "Int(B) ≠ ∅) </emphasis>"
 msgstr ""
+"У математичних термінах: <emphasis>ST_Contains(A, B) ⇔ (A ⋂ B = B) ∧ (Int(A) "
+"⋂ Int(B) ≠ ∅) </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -38500,6 +38925,12 @@ msgid ""
 "<code>ST_Contains(B,A) = true</code>, then the two geometries must be "
 "topologically equal (<code>ST_Equals(A,B) = true</code>)."
 msgstr ""
+"Відношення «містить» є рефлексивним: кожна геометрія містить саму себе. (На "
+"відміну від цього, у предикаті <xref linkend=\"ST_ContainsProperly\"/> "
+"геометрія <emphasis>не</emphasis> містить саму себе належним чином). "
+"Відношення є антисиметричним: якщо <code>ST_Contains(A,B) = true</code> і "
+"<code>ST_Contains(B,A) = true</code>, то дві геометрії повинні бути "
+"топологічно рівними (<code>ST_Equals(A,B) = true</code>)."
 
 #. Tag: para
 #, no-c-format
@@ -38507,6 +38938,8 @@ msgid ""
 "ST_Contains is the converse of <xref linkend=\"ST_Within\"/>. So, "
 "<code>ST_Contains(A,B) = ST_Within(B,A)</code>."
 msgstr ""
+"ST_Contains є оберненим до <xref linkend=\"ST_Within\"/>. Отже, "
+"<code>ST_Contains(A,B) = ST_Within(B,A)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -38519,6 +38952,13 @@ msgid ""
 "<xref linkend=\"ST_Covers\"/> predicate provides a more inclusive "
 "relationship."
 msgstr ""
+"Оскільки внутрішні частини повинні мати спільну точку, тонкість визначення "
+"полягає в тому, що полігони та лінії <emphasis>не</emphasis> містять лінії "
+"та точки, що повністю лежать у їхніх межах. Для отримання додаткової "
+"інформації див. <link xlink:href=«http://lin-ear-th-inking.blogspot.com/2007/"
+"06/subtleties-of-ogc-covers-spatial.html»>Тонкощі OGC Covers, Contains, "
+"Within</link>. Предикат <xref linkend=\"ST_Covers\"/> забезпечує більш "
+"всеосяжне відношення."
 
 #. Tag: para
 #, no-c-format
@@ -38526,6 +38966,8 @@ msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_Contains</"
 "function>."
 msgstr ""
+"&index_aware; Щоб уникнути використання індексу, використовуйте функцію "
+"<function>_ST_Contains</function>."
 
 #. Tag: para
 #, no-c-format
@@ -38533,12 +38975,16 @@ msgid ""
 "Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support "
 "MultiPoints with few points. Prior versions only supported point in polygon."
 msgstr ""
+"Покращено: 2.3.0 Покращення короткого замикання PIP розширено для підтримки "
+"MultiPoints з невеликою кількістю точок. Попередні версії підтримували "
+"тільки точки в багатокутнику."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname>"
 msgstr ""
+"Покращено: 3.0.0 увімкнув підтримку для <varname>GEOMETRYCOLLECTION</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -38546,6 +38992,8 @@ msgid ""
 "Do not use this function with invalid geometries. You will get unexpected "
 "results."
 msgstr ""
+"Не використовуйте цю функцію з недійсними геометріями. Ви отримаєте "
+"несподівані результати."
 
 #. Tag: para
 #, no-c-format
@@ -38553,6 +39001,8 @@ msgid ""
 "NOTE: this is the \"allowable\" version that returns a boolean, not an "
 "integer."
 msgstr ""
+"ПРИМІТКА: це «допустима» версія, яка повертає логічне значення, а не ціле "
+"число."
 
 #. Tag: para
 #, no-c-format
@@ -38560,11 +39010,13 @@ msgid ""
 "&sfs_compliant; s2.1.1.2 // s2.1.13.3 - same as within(geometry B, geometry "
 "A)"
 msgstr ""
+"&sfs_compliant; s2.1.1.2 // s2.1.13.3 - те саме, що і в (geometry B, "
+"geometry A)"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.31"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.31"
 
 #. Tag: para
 #, no-c-format
@@ -38572,26 +39024,28 @@ msgid ""
 "<function>ST_Contains</function> returns <varname>TRUE</varname> in the "
 "following situations:"
 msgstr ""
+"<function>ST_Contains</function> повертає <varname>TRUE</varname> у таких "
+"випадках:"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>MULTIPOINT</varname>"
-msgstr ""
+msgstr "<varname>LINESTRING</varname> / <varname>MULTIPOINT</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>POLYGON</varname> / <varname>POINT</varname>"
-msgstr ""
+msgstr "<varname>POLYGON</varname> / <varname>POINT</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>POLYGON</varname> / <varname>LINESTRING</varname>"
-msgstr ""
+msgstr "<varname>POLYGON</varname> / <varname>LINESTRING</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>POLYGON</varname> / <varname>POLYGON</varname>"
-msgstr ""
+msgstr "<varname>POLYGON</varname> / <varname>POLYGON</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -38599,11 +39053,13 @@ msgid ""
 "<function>ST_Contains</function> returns <varname>FALSE</varname> in the "
 "following situations:"
 msgstr ""
+"<function>ST_Contains</function> повертає <varname>FALSE</varname> у таких "
+"ситуаціях:"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>POLYGON</varname> / <varname>MULTIPOINT</varname>"
-msgstr ""
+msgstr "<varname>POLYGON</varname> / <varname>MULTIPOINT</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -38612,11 +39068,14 @@ msgid ""
 "returns <varname>FALSE</varname> in the following situations (whereas "
 "<function>ST_Covers</function> returns <varname>TRUE</varname>):"
 msgstr ""
+"Через умову внутрішнього перетину <function>ST_Contains</function> повертає "
+"<varname>FALSE</varname> у таких ситуаціях (тоді як <function>ST_Covers</"
+"function> повертає <varname>TRUE</varname>):"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>POINT</varname>"
-msgstr ""
+msgstr "<varname>LINESTRING</varname> / <varname>POINT</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -38625,11 +39084,14 @@ msgid ""
 "<xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Equals\"/>, <xref "
 "linkend=\"ST_Within\"/>"
 msgstr ""
+", <xref linkend=\"ST_ContainsProperly\"/>, <xref linkend=\"ST_Covers\"/>, "
+"<xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Equals\"/>, <xref "
+"linkend=\"ST_Within\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if every point of B lies in the interior of A"
-msgstr ""
+msgstr "Перевіряє, чи кожна точка B лежить у внутрішній частині A"
 
 #. Tag: para
 #, no-c-format
@@ -38637,6 +39099,9 @@ msgid ""
 "Returns <varname>true</varname> if every point of B lies in the interior of "
 "A (or equivalently, no point of B lies in the the boundary or exterior of A)."
 msgstr ""
+"Повертає <varname>true</varname>, якщо кожна точка B лежить у внутрішній "
+"частині A (або, що еквівалентно, жодна точка B не лежить на межі або зовні "
+"A)."
 
 #. Tag: para
 #, no-c-format
@@ -38644,6 +39109,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_ContainsProperly(A, B) ⇔ Int(A) ⋂ B = B "
 "</emphasis>"
 msgstr ""
+"У математичних термінах: <emphasis>ST_ContainsProperly(A, B) ⇔ Int(A) ⋂ B = "
+"B </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -38651,11 +39118,13 @@ msgid ""
 "A contains B properly if the DE-9IM Intersection Matrix for the two "
 "geometries matches [T**FF*FF*]"
 msgstr ""
+"A містить B належним чином, якщо матриця перетину DE-9IM для двох геометрій "
+"збігається [T**FF*FF*]"
 
 #. Tag: para
 #, no-c-format
 msgid "A does not properly contain itself, but does contain itself."
-msgstr ""
+msgstr "A не містить себе належним чином, але містить себе."
 
 #. Tag: para
 #, no-c-format
@@ -38666,6 +39135,11 @@ msgid ""
 "out test geometries which lie fully inside the area. In these cases the "
 "intersection is known a priori to be exactly the original test geometry."
 msgstr ""
+"Цей предикат використовується для обчислення перетинів набору геометрій з "
+"великою полігональною геометрією. Оскільки перетин є досить повільною "
+"операцією, ефективніше використовувати containsProperly для відфільтрування "
+"тестових геометрій, які повністю лежать всередині області. У цих випадках "
+"перетин апріорі відомий як точна оригінальна тестова геометрія."
 
 #. Tag: para
 #, no-c-format
@@ -38673,6 +39147,8 @@ msgid ""
 "&index_aware; To avoid index use, use the function "
 "<function>_ST_ContainsProperly</function>."
 msgstr ""
+"&index_aware; Щоб уникнути використання індексу, використовуйте функцію "
+"<function>_ST_ContainsProperly</function>."
 
 #. Tag: para
 #, no-c-format
@@ -38681,6 +39157,9 @@ msgid ""
 "<xref linkend=\"ST_Intersects\"/> is that it can be computed more "
 "efficiently, with no need to compute topology at individual points."
 msgstr ""
+"Перевага цього предиката над <xref linkend=\"ST_Contains\"/> та <xref "
+"linkend=\"ST_Intersects\"/> полягає в тому, що його можна обчислювати "
+"ефективніше, без необхідності обчислювати топологію в окремих точках."
 
 #. Tag: para
 #, no-c-format
@@ -38690,11 +39169,14 @@ msgid ""
 "linkend=\"ST_Equals\"/>, <xref linkend=\"ST_Relate\"/>, <xref "
 "linkend=\"ST_Within\"/>"
 msgstr ""
+", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_Contains\"/>, <xref "
+"linkend=\"ST_Covers\"/>, <xref linkend=\"ST_CoveredBy\"/>, <xref linkend="
+"\"ST_Equals\"/>, <xref linkend=\"ST_Relate\"/>, <xref linkend=\"ST_Within\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if every point of A lies in B"
-msgstr ""
+msgstr "Перевіряє, чи кожна точка A лежить в B"
 
 #. Tag: para
 #, no-c-format
@@ -38703,12 +39185,17 @@ msgid ""
 "inside (i.e. intersects the interior or boundary of) Geometry/Geography B. "
 "Equivalently, tests that no point of A lies outside (in the exterior of) B."
 msgstr ""
+"Повертає <varname>true</varname>, якщо кожна точка в геометрії/географії A "
+"лежить всередині (тобто перетинає внутрішню частину або межу) геометрії/"
+"географії B. Еквівалентно, перевіряє, що жодна точка A не лежить поза (зовні)"
+" B."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_CoveredBy(A, B) ⇔ A ⋂ B = A </emphasis>"
 msgstr ""
+"У математичних термінах: <emphasis>ST_CoveredBy(A, B) ⇔ A ⋂ B = A </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -38897,22 +39384,22 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "<varname>MULTIPOINT</varname> / <varname>LINESTRING</varname>"
-msgstr ""
+msgstr "<varname>MULTIPOINT</varname> / <varname>LINESTRING</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>MULTIPOINT</varname> / <varname>POLYGON</varname>"
-msgstr ""
+msgstr "<varname>MULTIPOINT</varname> / <varname>POLYGON</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>POLYGON</varname>"
-msgstr ""
+msgstr "<varname>LINESTRING</varname> / <varname>POLYGON</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>LINESTRING</varname>"
-msgstr ""
+msgstr "<varname>LINESTRING</varname> / <varname>LINESTRING</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -39010,12 +39497,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.1.2"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.24"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.24"
 
 #. Tag: para
 #, no-c-format
@@ -39030,6 +39517,8 @@ msgid ""
 ", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Reverse\"/>, "
 "<xref linkend=\"ST_Within\"/>"
 msgstr ""
+", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Reverse\"/>, "
+"<xref linkend=\"ST_Within\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
