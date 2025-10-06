@@ -1613,3 +1613,13 @@ CREATE TABLE test5987 (geom geometry(Geometry,4326));
 INSERT INTO test5987 VALUES('LINESTRING(20 20,20.1 20,20.2 19.9)'::geometry);
 SELECT '#5987', ST_AsText(geom), ST_AsText(ST_GeometryN(geom, 1)) FROM test5987;
 DROP TABLE IF EXISTS test5987;
+
+-- -------------------------------------------------------------------------------------
+-- #5962
+SELECT '#5962',
+    ST_AsText(ST_ClipByBox2D(
+        ST_GeomFromText('MULTIPOINT((1 1),(3 4),(5 4))'),
+        ST_MakeEnvelope(0, 0, 5, 5)), 2),
+    ST_AsText(ST_ClipByBox2D(
+        ST_GeomFromText('MULTIPOINT((1 1),(6 4),(5 4))'),
+        ST_MakeEnvelope(0, 0, 5, 5 )), 2);
