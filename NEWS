@@ -21,6 +21,7 @@ Proj 4.9+ required.
  - #5909, ST_ValueCount crashes on empty table (Paul Ramsey)
  - #5917, ST_Relate becomes unresponsive (Paul Ramsey)
  - #5991, CircularString distance error (Paul Ramsey)
+ - #5962, Consistent clipping of MULTI/POINT (Paul Ramsey)
 
 
 PostGIS 3.2.8
