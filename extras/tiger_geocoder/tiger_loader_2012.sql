@@ -57,18 +57,14 @@ $$
 DO
 $$
 BEGIN
-  IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name = 'loader_platform' AND table_schema = 'tiger') THEN
-      CREATE TABLE loader_platform(os varchar(50) PRIMARY KEY, declare_sect text, pgbin text, wget text, unzip_command text, psql text, path_sep text, loader text, environ_set_command text, county_process_command text);
-  END IF;
+   CREATE TABLE IF NOT EXISTS loader_platform(os varchar(50) PRIMARY KEY, declare_sect text, pgbin text, wget text, unzip_command text, psql text, path_sep text, loader text, environ_set_command text, county_process_command text);
 END
 $$ LANGUAGE 'plpgsql';
 
 DO
 $$
 BEGIN
-  IF NOT EXISTS (SELECT * FROM information_schema.schemata WHERE schema_name = 'tiger_data') THEN
-       CREATE SCHEMA tiger_data;
-  END IF;
+    CREATE SCHEMA IF NOT EXISTS tiger_data;
 END
 $$ LANGUAGE 'plpgsql';
 
@@ -125,9 +121,7 @@ done');
 -- variables table
 DO $$
 BEGIN
-  IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name = 'loader_variables' AND table_schema = 'tiger') THEN
-      CREATE TABLE loader_variables(tiger_year varchar(4) PRIMARY KEY, website_root text, staging_fold text, data_schema text, staging_schema text);
-  END IF;
+    CREATE TABLE IF NOT EXISTS loader_variables(tiger_year varchar(4) PRIMARY KEY, website_root text, staging_fold text, data_schema text, staging_schema text);
 END
 $$ LANGUAGE 'plpgsql';
 
@@ -138,8 +132,7 @@ GRANT SELECT ON TABLE loader_variables TO public;
 
 DO $$
 BEGIN
-  IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name = 'loader_lookuptables' AND table_schema = 'tiger') THEN
-   CREATE TABLE loader_lookuptables(process_order integer NOT NULL DEFAULT 1000,
+   CREATE TABLE IF NOT EXISTS loader_lookuptables(process_order integer NOT NULL DEFAULT 1000,
 		lookup_name text primary key,
 		table_name text, single_mode boolean NOT NULL DEFAULT true,
 		load boolean NOT NULL DEFAULT true,
@@ -149,7 +142,6 @@ BEGIN
 		post_load_process text, single_geom_mode boolean DEFAULT false,
 		insert_mode char(1) NOT NULL DEFAULT 'c',
 		pre_load_process text,columns_exclude text[], website_root_override text);
-  END IF;
 END
 $$ LANGUAGE 'plpgsql';
 
