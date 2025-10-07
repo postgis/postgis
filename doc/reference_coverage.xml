@@ -329,9 +329,9 @@ MULTIPOLYGON (((10 150, 80 190, 110 150, 140 80, 120 10, 10 10, 10 150), (50 60,
           <paramdef><type>geometry winset</type>
             <parameter>geom</parameter></paramdef>
           <paramdef choice="opt"><type>float8 </type>
-            <parameter>snappingDistance = -1</parameter></paramdef>
-          <paramdef choice="opt"><type>float8 </type>
             <parameter>gapMaximumWidth = 0</parameter></paramdef>
+          <paramdef choice="opt"><type>float8 </type>
+            <parameter>snappingDistance = -1</parameter></paramdef>
           <paramdef choice="opt"><type>text </type>
             <parameter>overlapMergeStrategy = 'MERGE_LONGEST_BORDER'</parameter></paramdef>
         </funcprototype>
