@@ -49,10 +49,8 @@ p3d_same(const POINT3D *p1, const POINT3D *p2)
 int
 p2d_same(const POINT2D *p1, const POINT2D *p2)
 {
-	if( FP_EQUALS(p1->x,p2->x) && FP_EQUALS(p1->y,p2->y) )
-		return LW_TRUE;
-	else
-		return LW_FALSE;
+	return FP_EQUALS(p1->x, p2->x)
+	    && FP_EQUALS(p1->y, p2->y);
 }
 
 /**
@@ -85,7 +83,9 @@ lw_seg_length(const POINT2D *A1, const POINT2D *A2)
 int
 lw_pt_in_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 {
-	return lw_segment_side(A1, A3, A2) == lw_segment_side(A1, A3, P);
+	int pt_side = lw_segment_side(A1, A3, P);
+	int arc_side = lw_segment_side(A1, A3, A2);
+	return pt_side == 0 || pt_side == arc_side;
 }
 
 /**
@@ -97,6 +97,14 @@ lw_pt_in_seg(const POINT2D *P, const POINT2D *A1, const POINT2D *A2)
 {
 	return ((A1->x <= P->x && P->x < A2->x) || (A1->x >= P->x && P->x > A2->x)) ||
 	       ((A1->y <= P->y && P->y < A2->y) || (A1->y >= P->y && P->y > A2->y));
+}
+
+int
+lw_pt_on_segment(const POINT2D* A1, const POINT2D* A2, const POINT2D* P)
+{
+	int side = lw_segment_side(A1, A2, P);
+	if (side != 0) return LW_FALSE;
+	return lw_pt_in_seg(P, A1, A2);
 }
 
 /**

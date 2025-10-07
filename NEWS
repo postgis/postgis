@@ -25,6 +25,7 @@ Proj 4.9+ required.
  - #5985, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro Santilli)
  - #5991, CircularString distance error (Paul Ramsey)
  - #5962, Consistent clipping of MULTI/POINT (Paul Ramsey)
+ - #5989, CurvePolygon distance error (Paul Ramsey)
 
 
 PostGIS 3.3.8

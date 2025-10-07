@@ -554,7 +554,7 @@ static void test_ptarrayarc_contains_point()
 	cu_error_msg_reset();
 	rv = ptarrayarc_contains_point(pa, &pt);
 	//printf("%s\n", cu_error_msg);
-	ASSERT_STRING_EQUAL("ptarrayarc_contains_point called with even number of points", cu_error_msg);
+	ASSERT_STRING_EQUAL("ptarrayarc_raycast_intersections called with even number of points", cu_error_msg);
 
 	/*** Unclosed ring ***/
 	lwline_free(lwline);

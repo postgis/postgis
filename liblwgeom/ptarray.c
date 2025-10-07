@@ -733,13 +733,284 @@ ptarray_is_closed_z(const POINTARRAY *in)
 }
 
 /**
-* Return 1 if the point is inside the POINTARRAY, -1 if it is outside,
-* and 0 if it is on the boundary.
-*/
+ * The following is based on the "Fast Winding Number Inclusion of a Point
+ * in a Polygon" algorithm by Dan Sunday.
+ * http://softsurfer.com/Archive/algorithm_0103/algorithm_0103.htm#Winding%20Number
+ *
+ * Return:
+ *  - LW_INSIDE (1) if the point is inside the POINTARRAY
+ *  - LW_BOUNDARY (0) if it is on the boundary.
+ *  - LW_OUTSIDE (-1) if it is outside
+ */
 int
 ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 {
-	return ptarray_contains_point_partial(pa, pt, LW_TRUE, NULL);
+	const POINT2D *seg1, *seg2;
+	int wn = 0;
+
+	seg1 = getPoint2d_cp(pa, 0);
+	seg2 = getPoint2d_cp(pa, pa->npoints-1);
+	if (!p2d_same(seg1, seg2))
+		lwerror("ptarray_contains_point called on unclosed ring");
+
+	for (uint32_t i = 1; i < pa->npoints; i++)
+	{
+		double side, ymin, ymax;
+
+		seg2 = getPoint2d_cp(pa, i);
+
+		/* Zero length segments are ignored. */
+		if (p2d_same(seg1, seg2))
+		{
+			seg1 = seg2;
+			continue;
+		}
+
+		ymin = FP_MIN(seg1->y, seg2->y);
+		ymax = FP_MAX(seg1->y, seg2->y);
+
+		/* Only test segments in our vertical range */
+		if (pt->y > ymax || pt->y < ymin)
+		{
+			seg1 = seg2;
+			continue;
+		}
+
+		side = lw_segment_side(seg1, seg2, pt);
+
+		/*
+		* A point on the boundary of a ring is not contained.
+		* WAS: if (fabs(side) < 1e-12), see #852
+		*/
+		if ((side == 0) && lw_pt_in_seg(pt, seg1, seg2))
+		{
+			return LW_BOUNDARY;
+		}
+
+		/*
+		* If the point is to the left of the line, and it's rising,
+		* then the line is to the right of the point and
+		* circling counter-clockwise, so increment.
+		*/
+		if ((side < 0) && (seg1->y <= pt->y) && (pt->y < seg2->y))
+		{
+			wn++;
+		}
+
+		/*
+		* If the point is to the right of the line, and it's falling,
+		* then the line is to the right of the point and circling
+		* clockwise, so decrement.
+		*/
+		else if ( (side > 0) && (seg2->y <= pt->y) && (pt->y < seg1->y) )
+		{
+			wn--;
+		}
+
+		seg1 = seg2;
+	}
+
+	/* wn == 0 => Outside, wn != 0 => Inside */
+	return wn == 0 ? LW_OUTSIDE : LW_INSIDE;
+}
+
+int
+ptarray_raycast_intersections(const POINTARRAY *pa, const POINT2D *p, int *on_boundary)
+{
+	// A valid linestring must have at least 2 point
+	if (pa->npoints < 2)
+		lwerror("%s called on invalid linestring", __func__);
+
+	int intersections = 0;
+	double px = p->x;
+	double py = p->y;
+
+	// Iterate through each edge of the polygon
+	for (uint32_t i = 0; i < pa->npoints-1; ++i)
+	{
+		const POINT2D* p1 = getPoint2d_cp(pa, i);
+		const POINT2D* p2 = getPoint2d_cp(pa, i+1);
+
+		/* Skip zero-length edges */
+		if (p2d_same(p1, p2))
+			continue;
+
+		/* --- Step 1: Check if the point is ON the boundary edge --- */
+		if (lw_pt_on_segment(p1, p2, p))
+		{
+			*on_boundary = LW_TRUE;
+			return 0;
+		}
+
+		/* --- Step 2: Perform the Ray Casting intersection test --- */
+
+		/*
+		 * Check if the horizontal ray from p intersects the edge (p1, p2).
+		 * This is the core condition for handling vertices correctly:
+		 *   - One vertex must be strictly above the ray (py < vertex.y)
+		 *   - The other must be on or below the ray (py >= vertex.y)
+		 */
+		if (((p1->y <= py) && (py < p2->y)) || ((p2->y <= py) && (py < p1->y)))
+		{
+			/*
+			 * Calculate the x-coordinate where the edge intersects the ray's horizontal line.
+			 * Formula: x = x1 + (y - y1) * (x2 - x1) / (y2 - y1)
+			 */
+			double x_intersection = p1->x + (py - p1->y) * (p2->x - p1->x) / (p2->y - p1->y);
+
+			/*
+			 * If the intersection point is to the right of our test point,
+			 * it's a valid "crossing".
+			 */
+			if (x_intersection > px)
+			{
+				intersections++;
+			}
+		}
+	}
+
+	return intersections;
+}
+
+
+/**
+ * @brief Calculates the intersection points of a circle and a horizontal line.
+ *
+ * The equation of a circle is (x - cx)^2 + (y - cy)^2 = r^2.
+ * The equation of the horizontal line is y = y_line.
+ * Substituting y_line into the circle equation gives:
+ * (x - cx)^2 = r^2 - (y_line - cy)^2
+ * This function solves for x.
+ *
+ * @param center A pointer to the center point of the circle.
+ * @param radius The radius of the circle.
+ * @param ray The y-coordinate of the horizontal line.
+ * @param i0 A pointer to a POINT2D to store the first intersection point.
+ * @param i1 A pointer to a POINT2D to store the second intersection point.
+ *
+ * @return The number of intersection points found (0, 1, or 2).
+ */
+static int
+circle_raycast_intersections(const POINT2D *center, double radius, double ray, POINT2D *i0, POINT2D *i1)
+{
+	// Calculate the vertical distance from the circle's center to the horizontal line.
+	double dy = ray - center->y;
+
+	// If the absolute vertical distance is greater than the radius, there are no intersections.
+	if (fabs(dy) > radius)
+		return 0;
+
+	// Use the Pythagorean theorem to find the horizontal distance (dx) from the
+	// center's x-coordinate to the intersection points.
+	// dx^2 + dy^2 = radius^2  =>  dx^2 = radius^2 - dy^2
+	double dx_squared = radius * radius - dy * dy;
+
+	// Case 1: One intersection (tangent)
+	// This occurs when the line just touches the top or bottom of the circle.
+	// dx_squared will be zero. We check against a small epsilon for floating-point safety.
+	if (FP_EQUALS(dx_squared, 0.0))
+	{
+		i0->x = center->x;
+		i0->y = ray;
+		return 1;
+	}
+
+	// Case 2: Two intersections
+	// The line cuts through the circle.
+	double dx = sqrt(dx_squared);
+
+	// The first intersection point has the smaller x-value.
+	i0->x = center->x - dx;
+	i0->y = ray;
+
+	// The second intersection point has the larger x-value.
+	i1->x = center->x + dx;
+	i1->y = ray;
+
+	return 2;
+}
+
+
+int
+ptarrayarc_raycast_intersections(const POINTARRAY *pa, const POINT2D *p, int *on_boundary)
+{
+	int intersections = 0;
+	double px = p->x;
+	double py = p->y;
+
+	assert(on_boundary);
+
+	// A valid circular arc must have at least 3 vertices (circle).
+	if (pa->npoints < 3)
+		lwerror("%s called on invalid circularstring", __func__);
+
+	if (pa->npoints % 2 == 0)
+		lwerror("%s called with even number of points", __func__);
+
+	// Iterate through each arc of the circularstring
+	for (uint32_t i = 1; i < pa->npoints-1; i +=2)
+	{
+		const POINT2D* p0 = getPoint2d_cp(pa, i-1);
+		const POINT2D* p1 = getPoint2d_cp(pa, i);
+		const POINT2D* p2 = getPoint2d_cp(pa, i+1);
+		POINT2D center = {0,0};
+		double radius, d;
+		GBOX gbox;
+
+		// Skip zero-length arc
+		if (lw_arc_is_pt(p0, p1, p2))
+			continue;
+
+		// --- Step 1: Check if the point is ON the boundary edge ---
+		if (p2d_same(p0, p) || p2d_same(p1, p) || p2d_same(p2, p))
+		{
+			*on_boundary = LW_TRUE;
+			return 0;
+		}
+
+		// Calculate some important pieces
+		radius = lw_arc_center(p0, p1, p2, &center);
+
+		d = distance2d_pt_pt(p, &center);
+		if (FP_EQUALS(d, radius) && lw_pt_in_arc(p, p0, p1, p2))
+		{
+			*on_boundary = LW_TRUE;
+			return 0;
+		}
+
+		// --- Step 2: Perform the Ray Casting intersection test ---
+
+		// Only process arcs that our ray crosses
+		lw_arc_calculate_gbox_cartesian_2d(p0, p1, p2, &gbox);
+		if ((gbox.ymin <= py) && (py < gbox.ymax))
+		{
+			// Point of intersection on the circle that defines the arc
+			POINT2D i0, i1;
+
+			// How many points of intersection are there
+			int iCount = circle_raycast_intersections(&center, radius, py, &i0, &i1);
+
+			// Nothing to see here
+			if (iCount == 0)
+				continue;
+
+			// Cannot think of a case where a grazing is not a
+			// no-op
+			if (iCount == 1)
+				continue;
+
+			// So we must have 2 intersections
+			// Only increment the counter for intersections to the right
+			// of the test point
+			if (i0.x > px && lw_pt_in_arc(&i0, p0, p1, p2))
+				intersections++;
+
+			if (i1.x > px && lw_pt_in_arc(&i1, p0, p1, p2))
+				intersections++;
+		}
+	}
+
+	return intersections;
 }
 
 int
@@ -838,7 +1109,16 @@ ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int chec
 int
 ptarrayarc_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 {
-	return ptarrayarc_contains_point_partial(pa, pt, LW_TRUE /* Check closed*/, NULL);
+	int on_boundary = LW_FALSE;
+	int intersections;
+	if (!ptarray_is_closed_2d(pa))
+		lwerror("%s called on unclosed ring", __func__);
+
+	intersections = ptarrayarc_raycast_intersections(pa, pt, &on_boundary);
+	if (on_boundary)
+		return LW_BOUNDARY;
+	else
+		return (intersections % 2) ? LW_INSIDE : LW_OUTSIDE;
 }
 
 int
