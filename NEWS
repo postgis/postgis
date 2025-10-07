@@ -12,7 +12,8 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
   - #6027, Fix RemoveUnusedPrimitives without topology in search_path (Sandro Santilli)
   - #6028, crash indexing malformed empty polygon (Paul Ramsey)
   - GH-841, small memory leak in address_standardizer (Maxim Korotkov)
-
+  - #5998, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
+              by extension are owned by extension
 
 PostGIS 3.5.4
 2025/10/16

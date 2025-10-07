@@ -22,10 +22,16 @@ BEGIN
 	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'geocode_settings')  THEN
 		CREATE TABLE geocode_settings(name text primary key, setting text, unit text, category text, short_desc text);
 		GRANT SELECT ON geocode_settings TO public;
+	ELSE
+		-- Insist on invoking Postgres logic of owning table by extension. This prevent attacks like CVE-2022-2625.
+		CREATE TABLE IF NOT EXISTS geocode_settings(name text primary key, setting text, unit text, category text, short_desc text);
 	END IF;
 	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'geocode_settings_default')  THEN
 		CREATE TABLE geocode_settings_default(name text primary key, setting text, unit text, category text, short_desc text);
 		GRANT SELECT ON geocode_settings_default TO public;
+	ELSE
+		-- Same as above.
+		CREATE TABLE IF NOT EXISTS geocode_settings_default(name text primary key, setting text, unit text, category text, short_desc text);
 	END IF;
 	--recreate defaults
 	TRUNCATE TABLE geocode_settings_default;
