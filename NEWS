@@ -22,6 +22,7 @@ Proj 4.9+ required.
  - #5917, ST_Relate becomes unresponsive (Paul Ramsey)
  - #5991, CircularString distance error (Paul Ramsey)
  - #5962, Consistent clipping of MULTI/POINT (Paul Ramsey)
+ - #5989, CurvePolygon distance error (Paul Ramsey)
 
 
 PostGIS 3.2.8
