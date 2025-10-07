@@ -1541,24 +1541,153 @@ int lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 				 const POINT2D *CENTER,
 				 DISTPTS *dl);
 
-int
-lw_dist2d_arc_arc(const POINT2D *A1,
-		  const POINT2D *A2,
-		  const POINT2D *A3,
-		  const POINT2D *B1,
-		  const POINT2D *B2,
-		  const POINT2D *B3,
-		  DISTPTS *dl)
+
+/**
+ * @brief Calculates the intersection points of a circle and line.
+ *
+ * This function assumes the center and test point are distinct.
+ * Finds the line between the circle center and test point, and
+ * the two intersection points on the circle defined by that line.
+ * If those points fall within the provided arc (A1,A2,A3) then
+ * the points are added to the provided array (I) and the array
+ * length counter is incremented.
+ *
+ * @param A1   Point of arc
+ * @param A2   Point of arc
+ * @param A3   Point of arc
+ * @param center_A   Center of arc A circle
+ * @param radius_A   Radius of arc A circle
+ * @param P    Point to use in calculating intersection line
+ * @param I    [out] Pointer to an return value array
+ * @param ni   [out] Pointer to return array size counter
+ * @return int
+ */
+static int
+lw_dist2d_circle_intersections(
+	const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
+	const POINT2D *center_A,
+	double radius_A,
+	const POINT2D *P,
+	POINT2D *I,
+	uint32_t *ni)
 {
-	POINT2D CA, CB;               /* Center points of arcs A and B */
+	POINT2D R;
+
+	// If the test point is on the center of the other
+	// arc, some other point has to be closer, by definition.
+	if (p2d_same(center_A, P))
+		return 0;
+
+	// Calculate vector from the center to the pt
+	double dir_x = center_A->x - P->x;
+	double dir_y = center_A->y - P->y;
+	double dist = sqrt(dir_x * dir_x + dir_y * dir_y);
+
+	// Normalize the direction vector to get a unit vector (length = 1)
+	double unit_x = dir_x / dist;
+	double unit_y = dir_y / dist;
+
+	// Calculate the two intersection points on the circle
+	// Point 1: Move from center_A along the unit vector by distance radius_A
+	R.x = center_A->x + unit_x * radius_A;
+	R.y = center_A->y + unit_y * radius_A;
+	if (lw_pt_in_arc(&R, A1, A2, A3))
+		I[(*ni)++] = R;
+
+	// Point 2: Move from center_A against the unit vector by distance radius_A
+	R.x = center_A->x - unit_x * radius_A;
+	R.y = center_A->y - unit_y * radius_A;
+	if (lw_pt_in_arc(&R, A1, A2, A3))
+		I[(*ni)++] = R;
+
+	return 0;
+}
+
+
+/**
+ * @brief Calculates the intersection points of two overlapping circles.
+ *
+ * This function assumes the circles are known to intersect at one or two points.
+ * Specifically, the distance 'd' between their centers must satisfy:
+ * d < (rA + rB)  and  d > fabs(rA - rB)
+ * If these conditions are not met, the results are undefined.
+ *
+ * @param cA   [in] Pointer to the center point of the first circle (A).
+ * @param rA   [in] The radius of the first circle (A).
+ * @param cB   [in] Pointer to the center point of the second circle (B).
+ * @param rB   [in] The radius of the second circle (B).
+ * @param I    [out] Pointer to an array of at least 2 POINT2D structs to store the results.
+ * I[0] will contain the first intersection point.
+ * If a second exists, it will be in I[1].
+ * @return int The number of intersection points found (1 or 2). Returns 0 if
+ * the centers are coincident or another error occurs.
+ */
+static uint32_t
+lw_dist2d_circle_circle_intersections(
+	const POINT2D *cA, double rA,
+	const POINT2D *cB, double rB,
+	POINT2D *I)
+{
+	// Vector from center A to center B
+	double dx = cB->x - cA->x;
+	double dy = cB->y - cA->y;
+
+	// Distance between the centers
+	double d = sqrt(dx * dx + dy * dy);
+
+	// 'a' is the distance from the center of circle A to the point P,
+	// which is the base of the right triangle formed by cA, P, and an intersection point.
+	double a = (rA * rA - rB * rB + d * d) / (2.0 * d);
+
+	// 'h' is the height of that right triangle.
+	double h_squared = rA * rA - a * a;
+
+	// Due to floating point errors, h_squared can be slightly negative.
+	// This happens when the circles are perfectly tangent. Clamp to 0.
+	if (h_squared < 0.0)
+		h_squared = 0.0;
+
+	double h = sqrt(h_squared);
+
+	// Find the coordinates of point P
+	double Px = cA->x + a * (dx / d);
+	double Py = cA->y + a * (dy / d);
+
+	// The two intersection points are found by moving from P by a distance 'h'
+	// in directions perpendicular to the line connecting the centers.
+	// The perpendicular vector to (dx, dy) is (-dy, dx).
+
+	// Intersection point 1
+	I[0].x = Px - h * (dy / d);
+	I[0].y = Py + h * (dx / d);
+
+	// If h is very close to 0, the circles are tangent and there's only one intersection point.
+	if (FP_IS_ZERO(h))
+		return 1;
+
+	// Intersection point 2
+	I[1].x = Px + h * (dy / d);
+	I[1].y = Py - h * (dx / d);
+
+	return 2;
+}
+
+int
+lw_dist2d_arc_arc(
+	const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
+	const POINT2D *B1, const POINT2D *B2, const POINT2D *B3,
+	DISTPTS *dl)
+{
+	POINT2D pts_A[16];            /* Points on A that might be the nearest */
+	POINT2D pts_B[16];            /* Points on B that might be the nearest */
+	uint32_t ai = 0, bi = 0;      /* Number of points in pts_A and pts_B */
+	POINT2D center_A, center_B;   /* Center points of arcs A and B */
 	double radius_A, radius_B, d; /* Radii of arcs A and B */
-	POINT2D D;                    /* Mid-point between the centers CA and CB */
-	int pt_in_arc_A, pt_in_arc_B; /* Test whether potential intersection point is within the arc */
+	int is_disjoint, is_overlapping, is_contained, is_same_center;
+	POINT2D intersectionPts[2];
 
 	if (dl->mode != DIST_MIN)
 		lwerror("lw_dist2d_arc_arc only supports mindistance");
-
-	/* TODO: Handle case where arc is closed circle (A1 = A3) */
 
 	/* What if one or both of our "arcs" is actually a point? */
 	if (lw_arc_is_pt(B1, B2, B3) && lw_arc_is_pt(A1, A2, A3))
@@ -1569,8 +1698,8 @@ lw_dist2d_arc_arc(const POINT2D *A1,
 		return lw_dist2d_pt_arc(A1, B1, B2, B3, dl);
 
 	/* Calculate centers and radii of circles. */
-	radius_A = lw_arc_center(A1, A2, A3, &CA);
-	radius_B = lw_arc_center(B1, B2, B3, &CB);
+	radius_A = lw_arc_center(A1, A2, A3, &center_A);
+	radius_B = lw_arc_center(B1, B2, B3, &center_B);
 
 	/* Two co-linear arcs?!? That's two segments. */
 	if (radius_A < 0 && radius_B < 0)
@@ -1584,275 +1713,112 @@ lw_dist2d_arc_arc(const POINT2D *A1,
 	if (radius_B < 0)
 		return lw_dist2d_seg_arc(B1, B3, A1, A2, A3, dl);
 
-	/* Center-center distance */
-	d = distance2d_pt_pt(&CA, &CB);
+	/* Circle relationships */
+	d = distance2d_pt_pt(&center_A, &center_B);
+	is_disjoint = (d > (radius_A + radius_B));
+	is_contained = (d < fabs(radius_A - radius_B));
+	is_same_center = p2d_same(&center_A, &center_B);
+	is_overlapping = ! (is_disjoint || is_contained || is_same_center);
 
-	/* Concentric arcs */
-	if (FP_EQUALS(d, 0.0))
-		return lw_dist2d_arc_arc_concentric(A1, A2, A3, radius_A, B1, B2, B3, radius_B, &CA, dl);
+	/*
+	 * Prime the array of potential closest points with the
+	 * arc end points, which frequently participate in closest
+	 * points.
+	 */
+	pts_A[ai++] = *A1;
+	pts_A[ai++] = *A3;
+	pts_B[bi++] = *B1;
+	pts_B[bi++] = *B3;
 
-	/* Make sure that arc "A" has the bigger radius */
-	if (radius_B > radius_A)
+	/*
+	 * Overlapping circles might have a zero distance
+	 * case if the circle intersection points are inside both
+	 * arcs.
+	 */
+	if (is_overlapping)
 	{
-		const POINT2D *tmp;
-		POINT2D TP; /* Temporary point P */
-		double td;
-		tmp = B1;
-		B1 = A1;
-		A1 = tmp;
-		tmp = B2;
-		B2 = A2;
-		A2 = tmp;
-		tmp = B3;
-		B3 = A3;
-		A3 = tmp;
-		TP = CB;
-		CB = CA;
-		CA = TP;
-		td = radius_B;
-		radius_B = radius_A;
-		radius_A = td;
-	}
-
-	/* Circles touch at a point. Is that point within the arcs? */
-	if (d == (radius_A + radius_B))
-	{
-		D.x = CA.x + (CB.x - CA.x) * radius_A / d;
-		D.y = CA.y + (CB.y - CA.y) * radius_A / d;
-
-		pt_in_arc_A = lw_pt_in_arc(&D, A1, A2, A3);
-		pt_in_arc_B = lw_pt_in_arc(&D, B1, B2, B3);
-
-		/* Arcs do touch at D, return it */
-		if (pt_in_arc_A && pt_in_arc_B)
+		/*
+		 * Find the two points the circles intersect at.
+		 */
+		uint32_t npoints = lw_dist2d_circle_circle_intersections(
+			&center_A, radius_A,
+			&center_B, radius_B,
+			intersectionPts);
+		for (uint32_t i = 0; i < npoints; i++)
 		{
-			lw_dist2d_distpts_set(dl, 0.0, &D, &D);
-			return LW_TRUE;
+			/*
+			 * If an intersection point is contained in both
+			 * arcs, that is a location of zero distance, so
+			 * we are done calculating.
+			 */
+			if (lw_pt_in_arc(&intersectionPts[i], A1, A2, A3) &&
+				lw_pt_in_arc(&intersectionPts[i], B1, B2, B3))
+			{
+				lw_dist2d_distpts_set(dl, 0.0, &intersectionPts[i], &intersectionPts[i]);
+				return LW_TRUE;
+			}
 		}
 	}
-	/* Disjoint or contained circles don't intersect. Closest point may be on */
-	/* the line joining CA to CB. */
-	else if (d > (radius_A + radius_B) /* Disjoint */ || d < (radius_A - radius_B) /* Contained */)
+
+	/*
+	 * Join the circle centers and find the places that
+	 * line intersects the circles. Where those places
+	 * are in the arcs, they are potential sites of the
+	 * closest points.
+	 */
+	if (is_disjoint || is_contained || is_overlapping)
 	{
-		POINT2D XA, XB; /* Points where the line from CA to CB cross their circle bounds */
-
-		/* Calculate hypothetical nearest points, the places on the */
-		/* two circles where the center-center line crosses. If both */
-		/* arcs contain their hypothetical points, that's the crossing distance */
-		XA.x = CA.x + (CB.x - CA.x) * radius_A / d;
-		XA.y = CA.y + (CB.y - CA.y) * radius_A / d;
-		XB.x = CB.x + (CA.x - CB.x) * radius_B / d;
-		XB.y = CB.y + (CA.y - CB.y) * radius_B / d;
-
-		pt_in_arc_A = lw_pt_in_arc(&XA, A1, A2, A3);
-		pt_in_arc_B = lw_pt_in_arc(&XB, B1, B2, B3);
-
-		/* If the nearest points are both within the arcs, that's our answer */
-		/* the shortest distance is at the nearest points */
-		if (pt_in_arc_A && pt_in_arc_B)
+		if (!is_same_center)
 		{
-			return lw_dist2d_pt_pt(&XA, &XB, dl);
-		}
-	}
-	/* Circles cross at two points, are either of those points in both arcs? */
-	/* http://paulbourke.net/geometry/2circle/ */
-	else if (d < (radius_A + radius_B))
-	{
-		POINT2D E, F; /* Points where circle(A) and circle(B) cross */
-		/* Distance from CA to D */
-		double a = (radius_A * radius_A - radius_B * radius_B + d * d) / (2 * d);
-		/* Distance from D to E or F */
-		double h = sqrt(radius_A * radius_A - a * a);
+			/* Add points on A that intersect line from center_A to center_B */
+			lw_dist2d_circle_intersections(
+			    A1, A2, A3,
+			    &center_A, radius_A, &center_B,
+			    pts_A, &ai);
 
-		/* Location of D */
-		D.x = CA.x + (CB.x - CA.x) * a / d;
-		D.y = CA.y + (CB.y - CA.y) * a / d;
-
-		/* Start from D and project h units perpendicular to CA-D to get E */
-		E.x = D.x + (D.y - CA.y) * h / a;
-		E.y = D.y + (D.x - CA.x) * h / a;
-
-		/* Crossing point E contained in arcs? */
-		pt_in_arc_A = lw_pt_in_arc(&E, A1, A2, A3);
-		pt_in_arc_B = lw_pt_in_arc(&E, B1, B2, B3);
-
-		if (pt_in_arc_A && pt_in_arc_B)
-		{
-			lw_dist2d_distpts_set(dl, 0.0, &E, &E);
-			return LW_TRUE;
+			/* Add points on B that intersect line from center_B to center_A */
+			lw_dist2d_circle_intersections(
+			    B1, B2, B3,
+			    &center_B, radius_B, &center_A,
+			    pts_B, &bi);
 		}
 
-		/* Start from D and project h units perpendicular to CA-D to get F */
-		F.x = D.x - (D.y - CA.y) * h / a;
-		F.y = D.y - (D.x - CA.x) * h / a;
+		/* Add points on A that intersect line to B1 */
+		lw_dist2d_circle_intersections(
+		    A1, A2, A3,
+		    &center_A, radius_A, B1,
+		    pts_A, &ai);
 
-		/* Crossing point F contained in arcs? */
-		pt_in_arc_A = lw_pt_in_arc(&F, A1, A2, A3);
-		pt_in_arc_B = lw_pt_in_arc(&F, B1, B2, B3);
+		/* Add points on A that intersect line to B3 */
+		lw_dist2d_circle_intersections(
+		    A1, A2, A3,
+		    &center_A, radius_A, B3,
+		    pts_A, &ai);
 
-		if (pt_in_arc_A && pt_in_arc_B)
-		{
-			lw_dist2d_distpts_set(dl, 0.0, &F, &F);
-			return LW_TRUE;
-		}
-	}
-	else
-	{
-		lwerror("lw_dist2d_arc_arc: arcs neither touch, intersect nor are disjoint! INCONCEIVABLE!");
-		return LW_FALSE;
+		/* Add points on B that intersect line to A1 */
+		lw_dist2d_circle_intersections(
+		    B1, B2, B3,
+		    &center_B, radius_B, A1,
+		    pts_B, &bi);
+
+		/* Add points on B that intersect line to A3 */
+		lw_dist2d_circle_intersections(
+		    B1, B2, B3,
+		    &center_B, radius_B, A3,
+		    pts_B, &bi);
 	}
 
-	/* Closest point is in the arc A, but not in the arc B, so */
-	/* one of the B end points must be the closest. */
-	if (pt_in_arc_A && !pt_in_arc_B)
-	{
-		lw_dist2d_pt_arc(B1, A1, A2, A3, dl);
-		lw_dist2d_pt_arc(B3, A1, A2, A3, dl);
-		return LW_TRUE;
-	}
-	/* Closest point is in the arc B, but not in the arc A, so */
-	/* one of the A end points must be the closest. */
-	else if (pt_in_arc_B && !pt_in_arc_A)
-	{
-		lw_dist2d_pt_arc(A1, B1, B2, B3, dl);
-		lw_dist2d_pt_arc(A3, B1, B2, B3, dl);
-		return LW_TRUE;
-	}
-	/* Finally, one of the end-point to end-point combos is the closest. */
-	else
-	{
-		lw_dist2d_pt_pt(A1, B1, dl);
-		lw_dist2d_pt_pt(A1, B3, dl);
-		lw_dist2d_pt_pt(A3, B1, dl);
-		lw_dist2d_pt_pt(A3, B3, dl);
-		return LW_TRUE;
-	}
+	/*
+	 * Now just brute force check all pairs of participating
+	 * points, to find the pair that is closest together.
+	 */
+	for (uint32_t i = 0; i < ai; i++)
+		for (uint32_t j = 0; j < bi; j++)
+			lw_dist2d_pt_pt(&pts_A[i], &pts_B[j], dl);
 
 	return LW_TRUE;
 }
 
-int
-lw_dist2d_arc_arc_concentric(const POINT2D *A1,
-			     const POINT2D *A2,
-			     const POINT2D *A3,
-			     double radius_A,
-			     const POINT2D *B1,
-			     const POINT2D *B2,
-			     const POINT2D *B3,
-			     double radius_B,
-			     const POINT2D *CENTER,
-			     DISTPTS *dl)
-{
-	int seg_size;
-	double dist_sqr, shortest_sqr;
-	const POINT2D *P1;
-	const POINT2D *P2;
-	POINT2D proj;
-
-	if (radius_A == radius_B)
-	{
-		/* Check if B1 or B3 are in the same side as A2 in the A1-A3 arc */
-		seg_size = lw_segment_side(A1, A3, A2);
-		if (seg_size == lw_segment_side(A1, A3, B1))
-		{
-			lw_dist2d_distpts_set(dl, 0.0, B1, B1);
-			return LW_TRUE;
-		}
-		if (seg_size == lw_segment_side(A1, A3, B3))
-		{
-			lw_dist2d_distpts_set(dl, 0.0, B3, B3);
-			return LW_TRUE;
-		}
-		/* Check if A1 or A3 are in the same side as B2 in the B1-B3 arc */
-		seg_size = lw_segment_side(B1, B3, B2);
-		if (seg_size == lw_segment_side(B1, B3, A1))
-		{
-			lw_dist2d_distpts_set(dl, 0.0, A1, A1);
-			return LW_TRUE;
-		}
-		if (seg_size == lw_segment_side(B1, B3, A3))
-		{
-			lw_dist2d_distpts_set(dl, 0.0, A3, A3);
-			return LW_TRUE;
-		}
-	}
-	else
-	{
-		/* Check if any projection of B ends are in A*/
-		seg_size = lw_segment_side(A1, A3, A2);
-
-		/* B1 */
-		proj.x = CENTER->x + (B1->x - CENTER->x) * radius_A / radius_B;
-		proj.y = CENTER->y + (B1->y - CENTER->y) * radius_A / radius_B;
-
-		if (seg_size == lw_segment_side(A1, A3, &proj))
-		{
-			lw_dist2d_distpts_set(dl, fabs(radius_A - radius_B), &proj, B1);
-			return LW_TRUE;
-		}
-		/* B3 */
-		proj.x = CENTER->x + (B3->x - CENTER->x) * radius_A / radius_B;
-		proj.y = CENTER->y + (B3->y - CENTER->y) * radius_A / radius_B;
-		if (seg_size == lw_segment_side(A1, A3, &proj))
-		{
-			lw_dist2d_distpts_set(dl, fabs(radius_A - radius_B), &proj, B3);
-			return LW_TRUE;
-		}
-
-		/* Now check projections of A in B */
-		seg_size = lw_segment_side(B1, B3, B2);
-
-		/* A1 */
-		proj.x = CENTER->x + (A1->x - CENTER->x) * radius_B / radius_A;
-		proj.y = CENTER->y + (A1->y - CENTER->y) * radius_B / radius_A;
-		if (seg_size == lw_segment_side(B1, B3, &proj))
-		{
-			lw_dist2d_distpts_set(dl, fabs(radius_A - radius_B), &proj, A1);
-			return LW_TRUE;
-		}
-
-		/* A3 */
-		proj.x = CENTER->x + (A3->x - CENTER->x) * radius_B / radius_A;
-		proj.y = CENTER->y + (A3->y - CENTER->y) * radius_B / radius_A;
-		if (seg_size == lw_segment_side(B1, B3, &proj))
-		{
-			lw_dist2d_distpts_set(dl, fabs(radius_A - radius_B), &proj, A3);
-			return LW_TRUE;
-		}
-	}
-
-	/* Check the shortest between the distances of the 4 ends */
-	shortest_sqr = dist_sqr = distance2d_sqr_pt_pt(A1, B1);
-	P1 = A1;
-	P2 = B1;
-
-	dist_sqr = distance2d_sqr_pt_pt(A1, B3);
-	if (dist_sqr < shortest_sqr)
-	{
-		shortest_sqr = dist_sqr;
-		P1 = A1;
-		P2 = B3;
-	}
-
-	dist_sqr = distance2d_sqr_pt_pt(A3, B1);
-	if (dist_sqr < shortest_sqr)
-	{
-		shortest_sqr = dist_sqr;
-		P1 = A3;
-		P2 = B1;
-	}
-
-	dist_sqr = distance2d_sqr_pt_pt(A3, B3);
-	if (dist_sqr < shortest_sqr)
-	{
-		shortest_sqr = dist_sqr;
-		P1 = A3;
-		P2 = B3;
-	}
-
-	lw_dist2d_distpts_set(dl, sqrt(shortest_sqr), P1, P2);
-	return LW_TRUE;
-}
 
 /**
 Finds the shortest distance between two segments.
