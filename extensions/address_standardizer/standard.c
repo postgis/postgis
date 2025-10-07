@@ -623,6 +623,7 @@ STAND_PARAM *init_stand_context(PAGC_GLOBAL *__pagc_global__,ERR_PARAM *__err_pa
 	PAGC_CALLOC_STRUC(__stand_param__,STAND_PARAM,1,__err_param__,NULL) ;
 	if ((__stand_param__->stz_info = create_segments(__err_param__)) == NULL)
 	{
+		FREE_AND_NULL(__stand_param__);
 		return NULL ;
 	}
 	PAGC_CALLOC_2D_ARRAY(__stand_param__->standard_fields, char, MAXOUTSYM, MAXFLDLEN, __err_param__, NULL) ;
