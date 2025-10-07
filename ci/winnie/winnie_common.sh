@@ -65,6 +65,18 @@ fi;
 
 echo "LZ4_VER ${LZ4_VER}"
 
+if  [[ "${REGRESS_WITHOUT_TOPOLOGY}" == '' ]] ; then
+  export REGRESS_WITHOUT_TOPOLOGY=0
+fi;
+
+if  [[ "${REGRESS_WITHOUT_RASTER}" == '' ]] ; then
+  export REGRESS_WITHOUT_RASTER=0
+fi;
+
+if  [[ "${MAKE_EXTENSION}" == '' ]] ; then
+  export MAKE_EXTENSION=0
+fi;
+
 
 #set to something even if override is on but not set
 if  [[ "${ZLIB_VER}" == '' ]] ; then
