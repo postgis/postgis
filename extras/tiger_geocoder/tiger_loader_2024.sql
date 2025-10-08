@@ -245,12 +245,6 @@ BEGIN
 END
 $$ LANGUAGE 'plpgsql';
 
-DO
-$$
-BEGIN
-    CREATE SCHEMA IF NOT EXISTS tiger_data;
-END
-$$ LANGUAGE 'plpgsql';
 
 DELETE FROM loader_platform WHERE os IN ('sh', 'windows');
 GRANT SELECT ON TABLE loader_platform TO public;
