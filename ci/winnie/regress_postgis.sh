@@ -39,10 +39,10 @@ echo PATH AFTER: $PATH
 
 echo WORKSPACE IS $WORKSPACE
 #mkdir ${PROJECTS}/postgis/tmp
-export PGIS_REG_TMPDIR=${PROJECTS}/postgis/tmp/${POSTGIS_MICRO_VER}_pg${PG_VER}_geos${GEOS_VER}_gdal${GDAL_VER}w${OS_BUILD}
-rm -rf ${PGIS_REG_TMPDIR}
-mkdir ${PGIS_REG_TMPDIR}
-export TMPDIR=${PGIS_REG_TMPDIR}
+#export PGIS_REG_TMPDIR=${PROJECTS}/postgis/tmp/${POSTGIS_MICRO_VER}_pg${PG_VER}_geos${GEOS_VER}_gdal${GDAL_VER}w${OS_BUILD}
+#rm -rf ${PGIS_REG_TMPDIR}
+#mkdir ${PGIS_REG_TMPDIR}
+#export TMPDIR=${PGIS_REG_TMPDIR}
 
 #rm -rf ${PGIS_REG_TMPDIR}
 #TMPDIR=${PROJECTS}/postgis/tmp/${POSTGIS_VER}_${PG_VER}_${GEOS_VERSION}_${PROJ_VER}
@@ -99,7 +99,7 @@ LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${LZ4_PATH}/lib -L${PROJECTS
 #patch liblwgeom generated make to get rid of dynamic linking
 #sed -i 's/LDFLAGS += -no-undefined//g' liblwgeom/Makefile
 
-make -j 4
+make -j 2
 make install
 
 # don't run tests twice. Only run regular if extension test is not asked for
