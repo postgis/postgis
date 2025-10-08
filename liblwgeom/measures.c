@@ -261,6 +261,22 @@ lw_dist2d_is_collection(const LWGEOM *g)
 	}
 }
 
+
+/* Check for overlapping bboxes */
+static int
+lw_dist2d_check_overlap(const LWGEOM *lwg1, const LWGEOM *lwg2)
+{
+	assert(lwg1 && lwg2 && lwg1->bbox && lwg2->bbox);
+
+	/* Check if the geometries intersect. */
+	if ((lwg1->bbox->xmax < lwg2->bbox->xmin || lwg1->bbox->xmin > lwg2->bbox->xmax ||
+	     lwg1->bbox->ymax < lwg2->bbox->ymin || lwg1->bbox->ymin > lwg2->bbox->ymax))
+	{
+		return LW_FALSE;
+	}
+	return LW_TRUE;
+}
+
 /**
 This is a recursive function delivering every possible combination of subgeometries
 */
@@ -298,6 +314,8 @@ lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 		else
 			g1 = (LWGEOM *)lwg1;
 
+		if (!g1) continue;
+
 		if (lwgeom_is_empty(g1))
 			continue;
 
@@ -314,6 +332,8 @@ lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 				g2 = c2->geoms[j];
 			else
 				g2 = (LWGEOM *)lwg2;
+
+			if (!g2) continue;
 
 			if (lw_dist2d_is_collection(g2))
 			{
@@ -512,26 +532,6 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 	return LW_FALSE;
 }
 
-/* Check for overlapping bboxes */
-int
-lw_dist2d_check_overlap(LWGEOM *lwg1, LWGEOM *lwg2)
-{
-	LWDEBUG(2, "lw_dist2d_check_overlap is called");
-	if (!lwg1->bbox)
-		lwgeom_calculate_gbox(lwg1, lwg1->bbox);
-	if (!lwg2->bbox)
-		lwgeom_calculate_gbox(lwg2, lwg2->bbox);
-
-	/* Check if the geometries intersect. */
-	if ((lwg1->bbox->xmax < lwg2->bbox->xmin || lwg1->bbox->xmin > lwg2->bbox->xmax ||
-	     lwg1->bbox->ymax < lwg2->bbox->ymin || lwg1->bbox->ymin > lwg2->bbox->ymax))
-	{
-		LWDEBUG(3, "geometries bboxes did not overlap");
-		return LW_FALSE;
-	}
-	LWDEBUG(3, "geometries bboxes overlap");
-	return LW_TRUE;
-}
 
 /** Geometries are distributed for the new faster distance-calculations */
 int
