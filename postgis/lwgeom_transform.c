@@ -22,13 +22,16 @@
  *
  **********************************************************************/
 
+#include "../postgis_config.h"
 
 #include "postgres.h"
 #include "fmgr.h"
 #include "funcapi.h"
+#if POSTGIS_PGSQL_VERSION >= 190
+#include "access/htup_details.h"
+#endif
 #include "utils/builtins.h"
 
-#include "../postgis_config.h"
 #include "liblwgeom.h"
 #include "lwgeodetic.h"
 #include "stringbuffer.h"
