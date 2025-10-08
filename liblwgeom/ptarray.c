@@ -184,7 +184,7 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 	/* Check for pathology */
 	if( ! pa1 || ! pa2 )
 	{
-		lwerror("ptarray_append_ptarray: null input");
+		lwerror("%s: null input", __func__);
 		return LW_FAILURE;
 	}
 
@@ -194,13 +194,13 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 
 	if( FLAGS_GET_READONLY(pa1->flags) )
 	{
-		lwerror("ptarray_append_ptarray: target pointarray is read-only");
+		lwerror("%s: target pointarray is read-only", __func__);
 		return LW_FAILURE;
 	}
 
 	if( FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags) )
 	{
-		lwerror("ptarray_append_ptarray: appending mixed dimensionality is not allowed");
+		lwerror("%s: appending mixed dimensionality is not allowed", __func__);
 		return LW_FAILURE;
 	}
 
@@ -209,17 +209,17 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 	/* Check for duplicate end point */
 	if ( pa1->npoints )
 	{
-		POINT2D tmp1, tmp2;
-		getPoint2d_p(pa1, pa1->npoints-1, &tmp1);
-		getPoint2d_p(pa2, 0, &tmp2);
+		const POINT2D *tmp1, *tmp2;
+		tmp1 = getPoint2d_cp(pa1, pa1->npoints-1);
+		tmp2 = getPoint2d_cp(pa2, 0);
 
 		/* If the end point and start point are the same, then don't copy start point */
-		if (p2d_same(&tmp1, &tmp2)) {
+		if (p2d_same(tmp1, tmp2)) {
 			poff = 1;
 			--npoints;
 		}
-		else if ( gap_tolerance == 0 || ( gap_tolerance > 0 &&
-		           distance2d_pt_pt(&tmp1, &tmp2) > gap_tolerance ) )
+		else if ((gap_tolerance == 0) ||
+		         (gap_tolerance > 0 && distance2d_pt_pt(tmp1, tmp2) > gap_tolerance) )
 		{
 			lwerror("Second line start point too far from first line end point");
 			return LW_FAILURE;

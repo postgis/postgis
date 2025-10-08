@@ -192,6 +192,16 @@ lwline_from_lwgeom_array(int32_t srid, uint32_t ngeoms, LWGEOM **geoms)
 			 */
 			ptarray_append_ptarray(pa, ((LWLINE*)g)->points, -1);
 		}
+		else if ( g->type == MULTILINETYPE )
+		{
+			LWMLINE *mline = lwgeom_as_lwmline(g);
+			for ( uint32_t j = 0; j < mline->ngeoms; j++ )
+			{
+				LWLINE *line = mline->geoms[j];
+				if (lwline_is_empty(line)) continue;
+				ptarray_append_ptarray(pa, line->points, -1);
+			}
+		}
 		else if ( g->type == MULTIPOINTTYPE )
 		{
 			it = lwpointiterator_create(g);

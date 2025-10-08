@@ -5,7 +5,7 @@ xxxx/xx/xx
 
  - #5993, [topology] Add max_edges parameter to TopoGeo_AddLinestring
           (Sandro Santilli)
-
+ - #6001, support MultiLineString in ST_MakeLine (Paul Ramsey)
 
 
 PostGIS 3.6.0

@@ -36,3 +36,11 @@ select ST_makebox2d('POINT(0 0)', 'SRID=3;POINT(1 1)');
 
 select ST_3DMakeBox('SRID=3;POINT(0 0)', 'SRID=3;POINT(1 1)');
 select ST_3DMakeBox('POINT(0 0)', 'SRID=3;POINT(1 1)');
+
+SELECT 'ST_MakeLine2', ST_AsText(ST_MakeLine(geom))
+FROM (
+  VALUES
+  ('LINESTRING(0 0, 1 1)'),
+  ('MULTILINESTRING((1 1, 2 2), (2 2, 3 3))'),
+  ('MULTILINESTRING(EMPTY, (4 4, 5 5))')
+  ) AS geoms(geom);
