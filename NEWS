@@ -5,11 +5,14 @@ PostGIS 3.6.1
 * Fixes *
 
   - #5978, geometry_columns needs to still parse table constraints (Paul Ramsey)
-  - #5987, ST_GeometryN fails for non-collections (Paul Ramsey)  
+  - #5987, ST_GeometryN fails for non-collections (Paul Ramsey)
   - #5991, CircularString distance error (Paul Ramsey)
   - #5994, Null pointer in ST_AsGeoJsonRow (Alexander Kukushkin)
   - #5998, ST_Distance error on CurvePolygon (Paul Ramsey)
   - #5962, Consistent clipping of MULTI/POINT (Paul Ramsey)
+  - #5998, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
+              by extension are owned by extension
+              authored: Andrey Borodin (Yandex), reported by Sergey Bobrov (Kaspersky)
 
 
 PostGIS 3.6.0
