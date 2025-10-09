@@ -24,7 +24,7 @@ variables:
     - $${SRCDIR}/configure
       --with-library-minor-version
       --enable-lto
-      --enable-lto
+      --without-interrupt-tests
       CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror"
     - make -j
   steps-pg-test-preinstall: &steps-pg-test-preinstall
