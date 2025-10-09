@@ -12,7 +12,7 @@ DWN=${WEB}/download
 #export PG_VER=9.2beta2
 
 if [ -n "$SOURCE_FOLDER" ]; then
-  export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
+  	export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
 	cd $POSTGIS_SRC
 fi
 
@@ -55,7 +55,7 @@ cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libstdc++-6.dll $outdir/bi
 cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libgcc*.dll $outdir/bin
 
 # don't package postgisgui if we don't have gtk2
-if [ -n "${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}" ]; then
+if [ -d "${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}" ]; then
 	mkdir $outdir/bin/postgisgui
 	mkdir $outdir/bin/postgisgui/share
 	mkdir $outdir/bin/postgisgui/lib
