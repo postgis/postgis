@@ -39,10 +39,10 @@ echo PATH AFTER: $PATH
 
 echo WORKSPACE IS $WORKSPACE
 #mkdir ${PROJECTS}/postgis/tmp
-export PGIS_REG_TMPDIR=${PROJECTS}/postgis/tmp/${POSTGIS_MICRO_VER}_pg${PG_VER}_geos${GEOS_VER}_gdal${GDAL_VER}w${OS_BUILD}
-rm -rf ${PGIS_REG_TMPDIR}
-mkdir ${PGIS_REG_TMPDIR}
-export TMPDIR=${PGIS_REG_TMPDIR}
+#export PGIS_REG_TMPDIR=${PROJECTS}/postgis/tmp/${POSTGIS_MICRO_VER}_pg${PG_VER}_geos${GEOS_VER}_gdal${GDAL_VER}w${OS_BUILD}
+#rm -rf ${PGIS_REG_TMPDIR}
+#mkdir ${PGIS_REG_TMPDIR}
+#export TMPDIR=${PGIS_REG_TMPDIR}
 
 #rm -rf ${PGIS_REG_TMPDIR}
 #TMPDIR=${PROJECTS}/postgis/tmp/${POSTGIS_VER}_${PG_VER}_${GEOS_VERSION}_${PROJ_VER}
@@ -68,11 +68,11 @@ if [ $INCLUDE_MINOR_LIB == "1" ]; then
   EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --with-library-minor-version"
 fi
 
-if [ $REGRESS_WITHOUT_TOPOLOGY == "1" ]; then 
+if [ $REGRESS_WITHOUT_TOPOLOGY == "1" ]; then
    EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --without-topology"
 fi
 
-if [ $REGRESS_WITHOUT_RASTER == "1" ]; then 
+if [ $REGRESS_WITHOUT_RASTER == "1" ]; then
    EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --without-raster"
 fi
 
@@ -99,13 +99,13 @@ LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${LZ4_PATH}/lib -L${PROJECTS
 #patch liblwgeom generated make to get rid of dynamic linking
 #sed -i 's/LDFLAGS += -no-undefined//g' liblwgeom/Makefile
 
-make -j 4
+make -j 2
 make install
 
 # don't run tests twice. Only run regular if extension test is not asked for
-if [ "$MAKE_EXTENSION" == "" ]; then
+if [ "$MAKE_EXTENSION" == "0" ]; then
   make check RUNTESTFLAGS=-v
-fi 
+fi
 
 
 if [ "$MAKE_EXTENSION" == "1" ]; then
@@ -117,13 +117,13 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  #strip raster/rt_pg/postgis_raster-*.dll
  #strip sfcgal/*.dll
 
- if [ $REGRESS_WITHOUT_TOPOLOGY == "" ]; then 
+ if [ $REGRESS_WITHOUT_TOPOLOGY == "0" ]; then
     cp -r topology/*.dll ${PGPATHEDB}/lib
  fi
  cp postgis/postgis*.dll ${PGPATHEDB}/lib
  cp sfcgal/*.dll ${PGPATHEDB}/lib
 
- if [ $REGRESS_WITHOUT_RASTER == "" ]; then 
+ if [ $REGRESS_WITHOUT_RASTER == "0" ]; then
     cp raster/rt_pg/postgis_raster-*.dll ${PGPATHEDB}/lib
  fi
 
@@ -141,18 +141,18 @@ export UPGRADEABLE_VERSIONS=$value
 export WIN_RELEASED_VERSIONS="2.0.0 2.0.1 2.0.3 2.0.4 2.0.6 2.1.4 2.1.7 2.1.8 2.2.0 2.2.3 2.3.0 2.3.7 2.4.0 2.4.4"
 export extensions_to_install="postgis postgis_sfcgal postgis_tiger_geocoder address_standardizer"
 
-if [ $REGRESS_WITHOUT_TOPOLOGY == "" ]; then 
+if [ $REGRESS_WITHOUT_TOPOLOGY == "0" ]; then
   extensions_to_install="${extensions_to_install} postgis_topology"
 fi
 
-if [ $REGRESS_WITHOUT_RASTER == "" ]; then 
+if [ $REGRESS_WITHOUT_RASTER == "0" ]; then
   extensions_to_install="${extensions_to_install} postgis_raster"
 fi
 
 
 #echo "Versions are:  $UPGRADEABLE_VERSIONS"
 for EXTNAME in $extensions_to_install; do
-  
+
 	cp extensions/$EXTNAME/sql/*  ${PGPATHEDB}/share/extension
 	cp extensions/$EXTNAME/sql/$EXTNAME--TEMPLATED--TO--ANY.sql  ${PGPATHEDB}/share/extension/$EXTNAME--$POSTGIS_MICRO_VER--${POSTGIS_MINOR_MAX_VER}.sql;
 
