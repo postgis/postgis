@@ -21,18 +21,21 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 	export ZLIB_VER=1.2.13
 	export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
-	export JSON_VER=0.12
+	export JSON_VER=0.16
 	export PROJSO=libproj_8_2.dll
 	export LZ4_VER=1.9.3
 fi;
 
 if [[ ${PCRE_VER} == '' ]]; then
-	PCRE_VER=10.40
+	PCRE_VER=10.42
 fi;
 
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
-export JSON_VER=0.12
+
+if [[ ${JSON_VER} == '' ]]; then
+	export JSON_VER=0.16
+fi;
 
 
 
