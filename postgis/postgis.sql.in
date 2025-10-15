@@ -1592,10 +1592,11 @@ CREATE OR REPLACE FUNCTION ST_ForcePolygonCW(geometry)
 	_COST_LOW;
 
 -- Availability: 2.4.0
+-- Changed: 3.7.0 - C implementation
 CREATE OR REPLACE FUNCTION ST_ForcePolygonCCW(geometry)
 	RETURNS geometry
-	AS $$ SELECT @extschema@.ST_Reverse(@extschema@.ST_ForcePolygonCW($1)) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	AS 'MODULE_PATHNAME', 'ST_ForcePolygonCCW'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
 -- Availability: 1.2.2
