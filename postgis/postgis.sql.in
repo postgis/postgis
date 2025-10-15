@@ -1584,27 +1584,6 @@ CREATE OR REPLACE FUNCTION ST_Scroll(geometry, geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
--- Availability: 2.4.0
-CREATE OR REPLACE FUNCTION ST_ForcePolygonCW(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_clockwise_poly'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
-
--- Availability: 2.4.0
-CREATE OR REPLACE FUNCTION ST_ForcePolygonCCW(geometry)
-	RETURNS geometry
-	AS $$ SELECT @extschema@.ST_Reverse(@extschema@.ST_ForcePolygonCW($1)) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_ForceRHR(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_clockwise_poly'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
-
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_noop(geometry)
 	RETURNS geometry
@@ -5476,6 +5455,30 @@ CREATE OR REPLACE FUNCTION ST_GeometryType(geometry)
 	AS 'MODULE_PATHNAME', 'geometry_geometrytype'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_DEFAULT;
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION ST_ForcePolygonCW(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_clockwise_poly'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_ForceRHR(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_clockwise_poly'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION ST_ForcePolygonCCW(geometry)
+	RETURNS geometry
+	AS $$ SELECT
+	  CASE WHEN @extschema@.ST_GeometryType($1) IN ('ST_Polygon', 'ST_MultiPolygon')
+	  THEN @extschema@.ST_Reverse(@extschema@.ST_ForcePolygonCW($1))
+	  ELSE $1 END $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
 
 -- PostGIS equivalent function: PointN(geometry,integer)
 CREATE OR REPLACE FUNCTION ST_PointN(geometry,integer)
