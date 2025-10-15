@@ -265,38 +265,37 @@ lwpoly_add_ring(LWPOLY *poly, POINTARRAY *pa)
 }
 
 void
-lwpoly_force_clockwise(LWPOLY *poly)
+lwpoly_force_orientation(LWPOLY *poly, int orientation)
 {
-	uint32_t i;
+	/* No-op no orientation */
+	if (orientation == LW_NONE) return;
 
 	/* No-op empties */
-	if ( lwpoly_is_empty(poly) )
-		return;
+	if (lwpoly_is_empty(poly)) return;
 
 	/* External ring */
-	if ( ptarray_isccw(poly->rings[0]) )
+	if (!ptarray_has_orientation(poly->rings[0], orientation))
 		ptarray_reverse_in_place(poly->rings[0]);
 
-	/* Internal rings */
-	for (i=1; i<poly->nrings; i++)
-		if ( ! ptarray_isccw(poly->rings[i]) )
+	/* Internal rings must run opposite to external */
+	for (uint32_t i = 1; i < poly->nrings; i++)
+		if (!ptarray_has_orientation(poly->rings[i], -1 * orientation))
 			ptarray_reverse_in_place(poly->rings[i]);
-
 }
 
 int
-lwpoly_is_clockwise(LWPOLY *poly)
+lwpoly_has_orientation(const LWPOLY *poly, int orientation)
 {
-	uint32_t i;
-
-	if ( lwpoly_is_empty(poly) )
+	if (lwpoly_is_empty(poly))
 		return LW_TRUE;
 
-	if ( ptarray_isccw(poly->rings[0]) )
+	/* Exterior ring matches orientation? */
+	if(!ptarray_has_orientation(poly->rings[0], orientation))
 		return LW_FALSE;
 
-	for ( i = 1; i < poly->nrings; i++)
-		if ( !ptarray_isccw(poly->rings[i]) )
+	/* Interior rings are opposite of orientation? */
+	for (uint32_t i = 1; i < poly->nrings; i++)
+		if (!ptarray_has_orientation(poly->rings[i], -1 * orientation))
 			return LW_FALSE;
 
 	return LW_TRUE;

@@ -1379,10 +1379,12 @@ extern int lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt);
 extern void interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, double F);
 
 /**
-* Ensure the outer ring is clockwise oriented and all inner rings
-* are counter-clockwise.
+* Tests that geometry is oriented LW_CLOCKWISE or LW_COUNTERCLOCKWISE.
+* Ensure the outer ring is oriented and all inner rings
+* are anti-oriented. Returns LW_TRUE for oriented or non-orientable (empty
+* or non-polygonal geometry) and LW_FALSE for misoriented.
 */
-extern int lwgeom_is_clockwise(LWGEOM *lwgeom);
+extern int lwgeom_has_orientation(const LWGEOM *lwgeom, int orientation);
 
 
 /**
@@ -1427,6 +1429,7 @@ extern void lwgeom_grid_in_place(LWGEOM *lwgeom, gridspec *grid);
 
 extern void lwgeom_reverse_in_place(LWGEOM *lwgeom);
 extern void lwgeom_force_clockwise(LWGEOM *lwgeom);
+extern void lwgeom_force_counterclockwise(LWGEOM *lwgeom);
 extern void lwgeom_longitude_shift(LWGEOM *lwgeom);
 extern int lwgeom_simplify_in_place(LWGEOM *igeom, double dist, int preserve_collapsed);
 extern void lwgeom_affine(LWGEOM *geom, const AFFINE *affine);

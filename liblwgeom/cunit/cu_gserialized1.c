@@ -751,8 +751,9 @@ static void test_lwgeom_force_clockwise(void)
 
 	/* counterclockwise, must be reversed */
 	geom = lwgeom_from_wkt("POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", LW_PARSER_CHECK_NONE);
-	CU_ASSERT_FALSE(lwgeom_is_clockwise(geom));
+	CU_ASSERT(lwgeom_has_orientation(geom,LW_COUNTERCLOCKWISE));
 	lwgeom_force_clockwise(geom);
+	CU_ASSERT(lwgeom_has_orientation(geom,LW_CLOCKWISE));
 	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0))";
 	out_ewkt = lwgeom_to_ewkt(geom);
 	if (strcmp(in_ewkt, out_ewkt))
@@ -763,8 +764,9 @@ static void test_lwgeom_force_clockwise(void)
 
 	/* clockwise, fine as is */
 	geom = lwgeom_from_wkt("POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))", LW_PARSER_CHECK_NONE);
-	CU_ASSERT_TRUE(lwgeom_is_clockwise(geom));
+	CU_ASSERT(lwgeom_has_orientation(geom,LW_CLOCKWISE));
 	lwgeom_force_clockwise(geom);
+	CU_ASSERT(lwgeom_has_orientation(geom,LW_CLOCKWISE));
 	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0))";
 	out_ewkt = lwgeom_to_ewkt(geom);
 	if (strcmp(in_ewkt, out_ewkt))
@@ -775,8 +777,8 @@ static void test_lwgeom_force_clockwise(void)
 
 	/* counterclockwise shell (must be reversed), mixed-wise holes */
 	geom = lwgeom_from_wkt("POLYGON((0 0,10 0,10 10,0 10,0 0),(2 2,2 4,4 2,2 2),(6 2,8 2,8 4,6 2))", LW_PARSER_CHECK_NONE);
-	CU_ASSERT_FALSE(lwgeom_is_clockwise(geom));
 	lwgeom_force_clockwise(geom);
+	CU_ASSERT(lwgeom_has_orientation(geom,LW_CLOCKWISE));
 	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,2 4,2 2),(6 2,8 2,8 4,6 2))";
 	out_ewkt = lwgeom_to_ewkt(geom);
 	if (strcmp(in_ewkt, out_ewkt))
@@ -785,10 +787,11 @@ static void test_lwgeom_force_clockwise(void)
 	lwfree(out_ewkt);
 	lwgeom_free(geom);
 
-	/* clockwise shell (fine), mixed-wise holes */
+	/* clockwise shell (fine), mixed-wise holes, so not oriented */
 	geom = lwgeom_from_wkt("POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,2 4,2 2),(6 2,8 4,8 2,6 2))", LW_PARSER_CHECK_NONE);
-	CU_ASSERT_FALSE(lwgeom_is_clockwise(geom));
+	/* fix it and then it is oriented */
 	lwgeom_force_clockwise(geom);
+	CU_ASSERT(lwgeom_has_orientation(geom,LW_CLOCKWISE));
 	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,2 4,2 2),(6 2,8 2,8 4,6 2))";
 	out_ewkt = lwgeom_to_ewkt(geom);
 	if (strcmp(in_ewkt, out_ewkt))
@@ -803,10 +806,11 @@ static void test_lwgeom_force_clockwise(void)
 	geom = lwgeom_from_hexwkb(in_ewkt, LW_PARSER_CHECK_NONE);
 	geom2 = lwgeom_from_hexwkb(in_ewkt, LW_PARSER_CHECK_NONE);
 	lwgeom_force_clockwise(geom2);
+	CU_ASSERT(lwgeom_has_orientation(geom,LW_CLOCKWISE));
 
 	/** use same check instead of strcmp to account
 	  for difference in endianness **/
-	CU_ASSERT( lwgeom_same(geom, geom2) );
+	CU_ASSERT(lwgeom_same(geom, geom2));
 	lwgeom_free(geom);
 	lwgeom_free(geom2);
 }

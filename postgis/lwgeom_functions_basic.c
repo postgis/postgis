@@ -1934,6 +1934,31 @@ Datum LWGEOM_force_clockwise_poly(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(outgeom);
 }
 
+
+/**
+ * Force polygon exterior rings to circle counter-clockwise,
+ * and interior rings to circle clockwise.
+ */
+PG_FUNCTION_INFO_V1(ST_ForcePolygonCCW);
+Datum ST_ForcePolygonCCW(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *ingeom, *outgeom;
+	LWGEOM *lwgeom;
+
+	POSTGIS_DEBUG(2, "ST_ForcePolygonCCW called");
+
+	ingeom = PG_GETARG_GSERIALIZED_P_COPY(0);
+
+	lwgeom = lwgeom_from_gserialized(ingeom);
+	lwgeom_force_counterclockwise(lwgeom);
+
+	outgeom = geometry_serialize(lwgeom);
+
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(ingeom, 0);
+	PG_RETURN_POINTER(outgeom);
+}
+
 /** Test deserialize/serialize operations */
 PG_FUNCTION_INFO_V1(LWGEOM_noop);
 Datum LWGEOM_noop(PG_FUNCTION_ARGS)

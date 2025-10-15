@@ -1171,12 +1171,17 @@ ptarray_signed_area(const POINTARRAY *pa)
 }
 
 int
-ptarray_isccw(const POINTARRAY *pa)
+ptarray_has_orientation(const POINTARRAY *pa, int orientation)
 {
-	double area = 0;
-	area = ptarray_signed_area(pa);
-	if ( area > 0 ) return LW_FALSE;
-	else return LW_TRUE;
+	if (ptarray_signed_area(pa) > 0)
+		return orientation == LW_CLOCKWISE;
+	else
+		return orientation == LW_COUNTERCLOCKWISE;
+}
+
+int ptarray_isccw(const POINTARRAY *pa)
+{
+	return ptarray_has_orientation(pa, LW_COUNTERCLOCKWISE);
 }
 
 POINTARRAY*

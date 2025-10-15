@@ -1623,3 +1623,9 @@ SELECT '#5962',
     ST_AsText(ST_ClipByBox2D(
         ST_GeomFromText('MULTIPOINT((1 1),(6 4),(5 4))'),
         ST_MakeEnvelope(0, 0, 5, 5 )), 2);
+
+SELECT '#5754' AS Ticket,
+    ST_AsText(ST_ForcePolygonCCW('LINESTRING(0 0, 1 1, 2 0, 3 1, 4 0)'::geometry), 1) AS LsCcw,
+    ST_AsText(ST_ForcePolygonCW('LINESTRING(0 0, 1 1, 2 0, 3 1, 4 0)'::geometry), 1) AS LsCw,
+	ST_AsText(ST_ForcePolygonCCW('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry), 1) AS PlyCcw1,
+	ST_AsText(ST_ForcePolygonCCW('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1))'::geometry), 1)  AS PlyCcw2

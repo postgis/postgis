@@ -33,61 +33,89 @@
 
 #define out_stack_size 32
 
-/** Force Right-hand-rule on LWGEOM polygons **/
-void
-lwgeom_force_clockwise(LWGEOM *lwgeom)
-{
-	LWCOLLECTION *coll;
-	uint32_t i;
 
-	switch (lwgeom->type)
-	{
-	case POLYGONTYPE:
-		lwpoly_force_clockwise((LWPOLY *)lwgeom);
-		return;
-
-	case TRIANGLETYPE:
-		lwtriangle_force_clockwise((LWTRIANGLE *)lwgeom);
-		return;
-
-		/* Not handle POLYHEDRALSURFACE and TIN
-		   as they are supposed to be well oriented */
-	case MULTIPOLYGONTYPE:
-	case COLLECTIONTYPE:
-		coll = (LWCOLLECTION *)lwgeom;
-		for (i=0; i<coll->ngeoms; i++)
-			lwgeom_force_clockwise(coll->geoms[i]);
-		return;
-	}
-}
-
-/** Check clockwise orientation on LWGEOM polygons **/
-int
-lwgeom_is_clockwise(LWGEOM *lwgeom)
+/**
+ * Force an orientation onto geometries made up of rings,
+ * so the rings circle in a particular direction, clockwise
+ * or counter-clockwise. The orientation is one of
+ * LW_CLOCKWISE or LW_COUNTERCLOCKWISE. Non-polygonal
+ * geometries are ignored and returned untouched.
+ */
+static void
+lwgeom_force_orientation(LWGEOM *lwgeom, int orientation)
 {
 	switch (lwgeom->type)
 	{
 		case POLYGONTYPE:
-			return lwpoly_is_clockwise((LWPOLY *)lwgeom);
+			lwpoly_force_orientation(lwgeom_as_lwpoly(lwgeom), orientation);
+			return;
 
 		case TRIANGLETYPE:
-			return lwtriangle_is_clockwise((LWTRIANGLE *)lwgeom);
+			lwtriangle_force_orientation(lwgeom_as_lwtriangle(lwgeom), orientation);
+			return;
+
+		/* Not handle POLYHEDRALSURFACE and TIN
+		   as they are supposed to be well oriented */
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+		{
+			LWCOLLECTION* coll = lwgeom_as_lwcollection(lwgeom);
+			for (uint32_t i = 0; coll && i < coll->ngeoms; i++)
+			{
+				lwgeom_force_orientation(coll->geoms[i], orientation);
+			}
+			return;
+		}
+	}
+}
+
+void
+lwgeom_force_clockwise(LWGEOM *lwgeom)
+{
+	return lwgeom_force_orientation(lwgeom, LW_CLOCKWISE);
+}
+
+void
+lwgeom_force_counterclockwise(LWGEOM *lwgeom)
+{
+	return lwgeom_force_orientation(lwgeom, LW_COUNTERCLOCKWISE);
+}
+
+
+/**
+ * Check clockwise orientation on LWGEOM polygons
+ * returns LW_CLOCKWISE, LW_NONE, LW_COUNTERCLOCKWISE
+ * Non-polygonal geometries return LW_NONE
+ * Geometries must have *all* rings correctly oriented
+ * to return a non-none orientation
+ */
+int
+lwgeom_has_orientation(const LWGEOM *lwgeom, int orientation)
+{
+	switch (lwgeom->type)
+	{
+		case POLYGONTYPE:
+			return lwpoly_has_orientation(lwgeom_as_lwpoly(lwgeom), orientation);
+
+		case TRIANGLETYPE:
+			return lwtriangle_has_orientation(lwgeom_as_lwtriangle(lwgeom), orientation);
 
 		case MULTIPOLYGONTYPE:
 		case COLLECTIONTYPE:
 		{
-			uint32_t i;
-			LWCOLLECTION* coll = (LWCOLLECTION *)lwgeom;
-
-			for (i=0; i < coll->ngeoms; i++)
-				if (!lwgeom_is_clockwise(coll->geoms[i]))
+			LWCOLLECTION* coll = lwgeom_as_lwcollection(lwgeom);
+			for (uint32_t i = 0; coll && i < coll->ngeoms; i++)
+			{
+				if(!lwgeom_has_orientation(coll->geoms[i], orientation))
 					return LW_FALSE;
+			}
 			return LW_TRUE;
 		}
+
 		default:
 			return LW_TRUE;
-		return LW_FALSE;
 	}
+	return LW_FALSE;
 }
 
 LWGEOM *
@@ -1178,7 +1206,7 @@ lwtype_is_collection(uint8_t type)
 	case MULTICURVETYPE:
 	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
-  case TINTYPE:
+	case TINTYPE:
 		return LW_TRUE;
 		break;
 

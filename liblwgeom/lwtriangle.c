@@ -102,17 +102,17 @@ lwtriangle_clone(const LWTRIANGLE *g)
 	return (LWTRIANGLE *)lwline_clone((const LWLINE *)g);
 }
 
-void
-lwtriangle_force_clockwise(LWTRIANGLE *triangle)
+int
+lwtriangle_has_orientation(const LWTRIANGLE *triangle, int orientation)
 {
-	if ( ptarray_isccw(triangle->points) )
-		ptarray_reverse_in_place(triangle->points);
+	return ptarray_has_orientation(triangle->points, orientation);
 }
 
-int
-lwtriangle_is_clockwise(LWTRIANGLE *triangle)
+void
+lwtriangle_force_orientation(LWTRIANGLE *triangle, int orientation)
 {
-	return !ptarray_isccw(triangle->points);
+	if (!lwtriangle_has_orientation(triangle, orientation))
+		ptarray_reverse_in_place(triangle->points);
 }
 
 void

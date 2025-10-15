@@ -157,6 +157,13 @@
 #define LW_BOUNDARY 0
 #define LW_OUTSIDE -1
 
+/**
+* Constants for orientation checking and forcing
+*/
+#define LW_CLOCKWISE 1
+#define LW_NONE 0
+#define LW_COUNTERCLOCKWISE -1
+
 /*
 * Internal prototypes
 */
@@ -361,12 +368,13 @@ LWCOLLECTION *lwcollection_clone_deep(const LWCOLLECTION *lwgeom);
 GBOX *gbox_clone(const GBOX *gbox);
 
 /*
-* Clockwise
+* Orientation (LW_CLOCKWISE and LW_COUNTERCLOCKWISE)
 */
-void lwpoly_force_clockwise(LWPOLY *poly);
-void lwtriangle_force_clockwise(LWTRIANGLE *triangle);
-int lwpoly_is_clockwise(LWPOLY *poly);
-int lwtriangle_is_clockwise(LWTRIANGLE *triangle);
+void lwpoly_force_orientation(LWPOLY *poly, int orientation);
+void lwtriangle_force_orientation(LWTRIANGLE *triangle, int orientation);
+int lwpoly_has_orientation(const LWPOLY *poly, int orientation);
+int lwtriangle_has_orientation(const LWTRIANGLE *triangle, int orientation);
+int ptarray_has_orientation(const POINTARRAY *pa, int orientation);
 int ptarray_isccw(const POINTARRAY *pa);
 
 /*
