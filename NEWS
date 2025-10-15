@@ -34,6 +34,7 @@ Proj 6.1+ required.
   - #5991, CircularString distance error (Paul Ramsey)
   - #5989, ST_Distance error on CurvePolygon (Paul Ramsey)
   - #5962, Consistent clipping of MULTI/POINT (Paul Ramsey)
+  - #5754, ST_ForcePolygonCCW reverses lines (Paul Ramsey)
 
 
 PostGIS 3.4.4
