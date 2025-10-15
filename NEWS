@@ -33,6 +33,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 - #5994, Null pointer in ST_AsGeoJsonRow (Alexander Kukushkin)
 - #5989, ST_Distance error on CurvePolygon (Paul Ramsey)
 - #5962, Consistent clipping of MULTI/POINT (Paul Ramsey)
+- #5754, ST_ForcePolygonCCW reverses lines (Paul Ramsey)
 
 
 PostGIS 3.5.3
