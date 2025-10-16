@@ -1,40 +1,40 @@
-PostGIS 3.5.4dev
-xxxx/xx/xx
+PostGIS 3.5.4
+2025/10/16
+
 To take advantage of all postgis_sfcgal extension features SFCGAL 1.5+ is needed.
 PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 
 * Bug fixes *
 
-- #5977, Fix downgrade protection with standard conforming strings off (Sandro Santilli)
-- #5951, Fix crash in ST_GetFaceEdges with corrupted topology (Sandro Santilli)
-- #5947, [topology] Fix crash in ST_ModEdgeHeal (Sandro Santilli)
-- #5925, #5946, [topology] Have GetFaceContainingPoint survive EMPTY edges (Sandro Santilli)
-- #5936, [topology] Do script-based upgrade in a single transaction (Sandro Santilli)
-- #5908, [topology] Fix crash in GetFaceContainingPoint (Sandro Santilli)
-- #5907, [topology] Fix crash in TopoGeo_AddPolygon with EMPTY input (Sandro Santilli)
-- #5922, [topology] Fix crash in TopoGeo_AddLinestring with EMPTY input (Sandro Santilli)
-- #5921, Crash freeing uninitialized pointer (Arsenii Mukhin)
-- #5912, Crash on GML with xlink and no prefix (Paul Ramsey)
-- #5905, Crash on deeply nested geometries (Paul Ramsey)
-- #5909, ST_ValueCount crashes on empty table (Paul Ramsey)
-- #5917, ST_Relate becomes unresponsive (Paul Ramsey)
-- #5923, CG_ExtrudeStraightSkeleton crashes on empty polygon (Loïc Bartoletti)
-- #5935, Require GDAL 2.4 for postgis_raster
-         and switch to GDALGetDataTypeSizeBytes (Laurențiu Nicola)
-- GT-257, fix issue with xsltproc with path has spaces (Laurențiu Nicola)
-- #5938, incorrect parameter order in ST_Relate caching (Paul Ramsey)
-- #5927, ST_IsCollection throwing exception (Paul Ramsey)
-- #5902, ST_PointFromText cannot create geometries with M (Paul Ramsey)
-- #5943, Memory leak in handling GEOS GeometryFactory (Megan Ma)
-- #5407, Use memset in place of bzero (Paul Ramsey)
-- #5082, LRS proportions clamped to [0,1] (Pawel Ostrowski)
-- #5985, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro Santilli)
-- #5991, CircularString distance error (Paul Ramsey)
-- #5994, Null pointer in ST_AsGeoJsonRow (Alexander Kukushkin)
-- #5989, ST_Distance error on CurvePolygon (Paul Ramsey)
-- #5962, Consistent clipping of MULTI/POINT (Paul Ramsey)
-- #5754, ST_ForcePolygonCCW reverses lines (Paul Ramsey)
-
+  - #5977, Fix downgrade protection with standard conforming strings off (Sandro Santilli)
+  - #5951, Fix crash in ST_GetFaceEdges with corrupted topology (Sandro Santilli)
+  - #5947, [topology] Fix crash in ST_ModEdgeHeal (Sandro Santilli)
+  - #5925, #5946, [topology] Have GetFaceContainingPoint survive EMPTY edges (Sandro Santilli)
+  - #5936, [topology] Do script-based upgrade in a single transaction (Sandro Santilli)
+  - #5908, [topology] Fix crash in GetFaceContainingPoint (Sandro Santilli)
+  - #5907, [topology] Fix crash in TopoGeo_AddPolygon with EMPTY input (Sandro Santilli)
+  - #5922, [topology] Fix crash in TopoGeo_AddLinestring with EMPTY input (Sandro Santilli)
+  - #5921, Crash freeing uninitialized pointer (Arsenii Mukhin)
+  - #5912, Crash on GML with xlink and no prefix (Paul Ramsey)
+  - #5905, Crash on deeply nested geometries (Paul Ramsey)
+  - #5909, ST_ValueCount crashes on empty table (Paul Ramsey)
+  - #5917, ST_Relate becomes unresponsive (Paul Ramsey)
+  - #5923, CG_ExtrudeStraightSkeleton crashes on empty polygon (Loïc Bartoletti)
+  - #5935, Require GDAL 2.4 for postgis_raster
+           and switch to GDALGetDataTypeSizeBytes (Laurențiu Nicola)
+  - GT-257, fix issue with xsltproc with path has spaces (Laurențiu Nicola)
+  - #5938, incorrect parameter order in ST_Relate caching (Paul Ramsey)
+  - #5927, ST_IsCollection throwing exception (Paul Ramsey)
+  - #5902, ST_PointFromText cannot create geometries with M (Paul Ramsey)
+  - #5943, Memory leak in handling GEOS GeometryFactory (Megan Ma)
+  - #5407, Use memset in place of bzero (Paul Ramsey)
+  - #5082, LRS proportions clamped to [0,1] (Pawel Ostrowski)
+  - #5985, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro Santilli)
+  - #5991, CircularString distance error (Paul Ramsey)
+  - #5994, Null pointer in ST_AsGeoJsonRow (Alexander Kukushkin)
+  - #5989, ST_Distance error on CurvePolygon (Paul Ramsey)
+  - #5962, Consistent clipping of MULTI/POINT (Paul Ramsey)
+  - #5754, ST_ForcePolygonCCW reverses lines (Paul Ramsey)
 
 PostGIS 3.5.3
 2025/05/17
@@ -44,21 +44,21 @@ PostgreSQL 12-18beta1 required. GEOS 3.8+ required. Proj 6.1+ required.
 
 * Bug fixes *
 
-- Do not complain about illegal option when calling shp2pgsql -?
-  (Sandro Santilli, Giovanni Zezza)
-- #5862, [topology] Prevent another topology corruption with
-         TopoGeo_addPoint near almost collinear edges (Sandro Santilli)
-- #5841, Change approach to interrupt handling to conform to PgSQL
-         recommended practice (Paul Ramsey)
-- #5855, Fix index binding in ST_DFullyWithin (Paul Ramsey)
-- #5819, Support longer names in estimated extent (Paul Ramsey)
-- Fix misassignment of result in _lwt_HealEdges (Maxim Korotkov)
-- #5876, ST_AddPoint with empty argument adds garbage (Paul Ramsey)
-- #5874, Line substring returns wrong answer (Paul Ramsey)
-- #5829, geometry_columns with non-standard constraints (Paul Ramsey)
-- #5818, [sfcgal] GT-244 Fix CG_IsSolid function (Loïc Bartoletti)
-- #5885, Fix documentation about grid-based overlay operations (Sandro Santilli)
-- For [sfcgal] SFCGAL 2.1.0+ prevent using deprecated functions (Regina Obe)
+  - Do not complain about illegal option when calling shp2pgsql -?
+    (Sandro Santilli, Giovanni Zezza)
+  - #5862, [topology] Prevent another topology corruption with
+           TopoGeo_addPoint near almost collinear edges (Sandro Santilli)
+  - #5841, Change approach to interrupt handling to conform to PgSQL
+           recommended practice (Paul Ramsey)
+  - #5855, Fix index binding in ST_DFullyWithin (Paul Ramsey)
+  - #5819, Support longer names in estimated extent (Paul Ramsey)
+  - Fix misassignment of result in _lwt_HealEdges (Maxim Korotkov)
+  - #5876, ST_AddPoint with empty argument adds garbage (Paul Ramsey)
+  - #5874, Line substring returns wrong answer (Paul Ramsey)
+  - #5829, geometry_columns with non-standard constraints (Paul Ramsey)
+  - #5818, [sfcgal] GT-244 Fix CG_IsSolid function (Loïc Bartoletti)
+  - #5885, Fix documentation about grid-based overlay operations (Sandro Santilli)
+  - For [sfcgal] SFCGAL 2.1.0+ prevent using deprecated functions (Regina Obe)
 
 PostGIS 3.5.2
 2025/01/18
@@ -68,11 +68,10 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
 
 * Bug fixes *
 
-- #5677, Retain SRID during unary union (Paul Ramsey)
-- #5833, pg_upgrade fix for postgis_sfcgal (Regina Obe)
-- #5564, BRIN crash fix and support for parallel in PG17+
-         (Paul Ramsey, Regina Obe)
-
+  - #5677, Retain SRID during unary union (Paul Ramsey)
+  - #5833, pg_upgrade fix for postgis_sfcgal (Regina Obe)
+  - #5564, BRIN crash fix and support for parallel in PG17+
+           (Paul Ramsey, Regina Obe)
 
 PostGIS 3.5.1
 2024/12/22
@@ -82,37 +81,34 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
 
 * Bug fixes *
 
-- #5792, [topology] Prevent topology corruption with TopoGeo_addPoint near almost
-         collinear edges (Sandro Santilli)
-- #5795, [topology] Fix ST_NewEdgesSplit can cause invalid topology
-         (Björn Harrtell)
-- #5794, Fix crash in TopoGeo_addPoint (Sandro Santilli)
-- #5785, [raster] ST_MapAlgebra segfaults when expression references
-         a supernumerary rast argument (Dian M Fay)
-- #5787, [topology] Check that ST_ChangeEdgeGeom doesn't change winding of rings
-         (Sandro Santilli)
-- #5791, Add legacy stubs for old transaction functions
-         to allow pg_upgrade (Regina Obe)
-- #5800, PROJ compiled version reading the wrong minor and micro
-         (Regina Obe)
-- #5790, Non-schema qualified calls causing issue with
-         materialized views (Regina Obe)
-- #5812, Performance regression in ST_Within (Paul Ramsey)
-- #5815, Remove hash/merge promise from <> operator (Paul Ramsey)
-- #5823, Build support for Pg18 (Paul Ramsey)
+  - #5792, [topology] Prevent topology corruption with TopoGeo_addPoint near almost
+           collinear edges (Sandro Santilli)
+  - #5795, [topology] Fix ST_NewEdgesSplit can cause invalid topology
+           (Björn Harrtell)
+  - #5794, Fix crash in TopoGeo_addPoint (Sandro Santilli)
+  - #5785, [raster] ST_MapAlgebra segfaults when expression references
+           a supernumerary rast argument (Dian M Fay)
+  - #5787, [topology] Check that ST_ChangeEdgeGeom doesn't change winding of rings
+           (Sandro Santilli)
+  - #5791, Add legacy stubs for old transaction functions
+           to allow pg_upgrade (Regina Obe)
+  - #5800, PROJ compiled version reading the wrong minor and micro
+           (Regina Obe)
+  - #5790, Non-schema qualified calls causing issue with
+           materialized views (Regina Obe)
+  - #5812, Performance regression in ST_Within (Paul Ramsey)
+  - #5815, Remove hash/merge promise from <> operator (Paul Ramsey)
+  - #5823, Build support for Pg18 (Paul Ramsey)
 
 * Enhancements *
 
   - #5782, Improve robustness of min distance calculation (Sandro Santilli)
-  - [topology] Speedup topology building when closing large rings with many
-    holes (Björn Harrtell)
+  - [topology] Speedup topology building when closing large rings with many holes (Björn Harrtell)
   - #5810, [tiger_geocoder] Update tiger geocoder to handle TIGER 2024 data (Regina Obe)
 
 * Breaking Changes *
 
-  - #5799, make ST_TileEnvelope clip envelopes to tile plane
-           extent (Paul Ramsey)
-
+  - #5799, make ST_TileEnvelope clip envelopes to tile plane extent (Paul Ramsey)
 
 PostGIS 3.5.0
 2024/09/25
@@ -122,9 +118,9 @@ PostgreSQL 12-17 required. GEOS 3.8+ required. Proj 6.1+ required.
 
 Many thanks to our translation teams, in particular:
 
-Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)
-Teramoto Ikuhiro (Japanese Team)
-Andreas Schild (German Team)
+  - Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)
+  - Teramoto Ikuhiro (Japanese Team)
+  - Andreas Schild (German Team)
 
 * Breaking Changes *
 
@@ -149,17 +145,15 @@ Andreas Schild (German Team)
            will need rebuilding to upgrade to new signature
            (Jan Tojnar)
   - #5496, ST_Clip all variants replaced, will require
-           rebuilding of materialized views that use them
-           (funding from The National Institute for Agricultural
-            and Food Research and Technology (INIA-CSIC)),
-            Regina Obe)
+    rebuilding of materialized views that use them
+    (funding from The National Institute for Agricultural
+    and Food Research and Technology (INIA-CSIC)),
+    Regina Obe)
   - #5659, ST_DFullyWithin behaviour has changed to
            be ST_Contains(ST_Buffer(A, R), B) (Paul Ramsey)
   - Remove the WFS_locks extra package. (Paul Ramsey)
   - #5747, GH-776, ST_Length: Return 0 for CurvePolygon (Dan Baston)
-  - #5770, support for GEOS 3.13 and RelateNG. Most functionality
-           remains the same, but new GEOS predicate implementation
-           has a few small changes.
+  - #5770, support for GEOS 3.13 and RelateNG. Most functionality remains the same, but new GEOS predicate implementation has a few small changes.
       - Boundary Node Rule relate matrices might be different when
         using the "multi-valent end point" rule.
       - Relate matrices for situations with invalid MultiPolygons
@@ -222,7 +216,6 @@ Andreas Schild (German Team)
             (was ST_StraightSkeleton) to use m as a distance in result (Hannes Janetzek, Loïc Bartoletti)
 
 
-
 PostGIS 3.4.0
 2023/08/15
 
@@ -242,6 +235,7 @@ There are 2 new ./configure switches:
     raster2pgsql and shp2pgsql even if PostgreSQL is not installed
 
 * New Features *
+
   - #5055, complete manual internationalization (Sandro Santilli)
   - #5052, target version support in postgis_extensions_upgrade
     (Sandro Santilli)
@@ -262,45 +256,43 @@ There are 2 new ./configure switches:
   - #5267, ST_LineExtend for extending linestrings (Paul Ramsey)
   - New coverage functions ST_CoverageInvalidEdges, ST_CoverageSimplify, ST_CoverageUnion (Paul Ramsey)
 
-
 * Enhancements *
   - #5194, do not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)
-  - #5092, reduce number of upgrade paths installed on system,
-           by providing an ANY intermediary path that all upgrades will
-           go thru (Sandro Santilli)
+  - #5092, reduce number of upgrade paths installed on system, by providing an ANY intermediary path that all upgrades will go thru (Sandro Santilli)
   - #635, honour --bindir (and --prefix) configure switch for executables (Sandro Santilli)
   - Honour --mandir (and --prefix) configure switch for man pages install path (Sandro Santilli)
-  - Honour --htmldir (and --docdir and --prefix) configure switch for
-    html pages install path (Sandro Santilli)
+  - Honour --htmldir (and --docdir and --prefix) configure switch for html pages install path (Sandro Santilli)
   - [postgis_topology] Speed up check of topology faces without edges (Sandro Santilli)
   - [postgis_topology] Speed up coincident nodes check in topology validation  (Sandro Santilli)
   - GH718, ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)
   - Repair spatial planner stats to use computed selectivity for contains/within queries (Paul Ramsey)
-  - GH734, Additional metadata on Proj installation in postgis_proj_version (Paul Ramsey)
+  - GH734, Additional metadata on Proj installation in postgis_proj_version
+    (Paul Ramsey)
   - #5177, Allow building tools without PostgreSQL server headers (Sandro Santilli)
   - #5447, Manual pages added for postgis and postgis_restore utilities
     (Sandro Santilli)
   - ST_Project signature for geometry, and two-point signature (Paul Ramsey)
-  - #4913, ST_AsSVG support for curve types CircularString, CompoundCurve, MultiCurve,
-           and MultiSurface (Regina Obe)
+  - #4913, ST_AsSVG support for curve types CircularString, CompoundCurve,
+    MultiCurve, and MultiSurface (Regina Obe)
   - #5266, #5460 ST_ClosestPoint, ST_ShortestLine support for geography type
     (MobilityDB Esteban Zimanyi, Maxime Schoemans, Paul Ramsey)
 
 * Breaking Changes *
+
   - #5229, Drop support for Proj < 6.1 and PG 11 (Regina Obe)
   - #5306, GH734, postgis_full_version() and postgis_proj_version()
     now output more information about proj network configuration
     and data paths. GEOS compile-time version
     also shown if different from run-time
     (Paul Ramsey, Sandro Santilli)
- - #5447, postgis_restore.pl renamed to postgis_restore
- (Sandro Santilli)
- - Utilities now installed in OS bin or
-   user specified --bindir and --prefix
-   instead of postgresql bin
-   and extension stripped except on windows
-   (postgis, postgis_restore, shp2pgsql, raster2pgsql, pgsql2shp,
-   pgtopo_import, pgtopo_export)
+  - #5447, postgis_restore.pl renamed to postgis_restore
+    (Sandro Santilli)
+  - Utilities now installed in OS bin or
+    user specified --bindir and --prefix
+    instead of postgresql bin
+    and extension stripped except on windows
+    (postgis, postgis_restore, shp2pgsql, raster2pgsql, pgsql2shp,
+    pgtopo_import, pgtopo_export)
 
 PostGIS 3.3.0
 2022/08/26
