@@ -2,6 +2,44 @@
 <appendix xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+
+        <section>
+            <title>PostGIS 3.5.4</title>
+            <para>2025/10/16</para>
+            <para>This version requires PostgreSQL 12-18beta1, GEOS 3.8 or higher, and Proj 6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take advantage of all SFCGAL features, SFCGAL 1.5.0+ is needed.</para>
+            <simplesect>
+                <title>Bug Fixes</title>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5977">5977</link>, Fix downgrade protection with standard conforming strings off (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5951">5951</link>, Fix crash in ST_GetFaceEdges with corrupted topology (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5947">5947</link>, [topology] Fix crash in ST_ModEdgeHeal (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5925">5925</link>, <link xlink:href="https://trac.osgeo.org/postgis/ticket/5946">5946</link>, [topology] Have GetFaceContainingPoint survive EMPTY edges (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5936">5936</link>, [topology] Do script-based upgrade in a single transaction (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5908">5908</link>, [topology] Fix crash in GetFaceContainingPoint (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5907">5907</link>, [topology] Fix crash in TopoGeo_AddPolygon with EMPTY input (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5922">5922</link>, [topology] Fix crash in TopoGeo_AddLinestring with EMPTY input (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5921">5921</link>, Crash freeing uninitialized pointer (Arsenii Mukhin)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5912">5912</link>, Crash on GML with xlink and no prefix (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5905">5905</link>, Crash on deeply nested geometries (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5909">5909</link>, ST_ValueCount crashes on empty table (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5917">5917</link>, ST_Relate becomes unresponsive (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5923">5923</link>, CG_ExtrudeStraightSkeleton crashes on empty polygon (Loïc Bartoletti)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5935">5935</link>, Require GDAL 2.4 for postgis_raster and switch to GDALGetDataTypeSizeBytes (Laurențiu Nicola)</para>
+                <para>GT-257, fix issue with xsltproc with path has spaces (Laurențiu Nicola)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5938">5938</link>, incorrect parameter order in ST_Relate caching (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5927">5927</link>, ST_IsCollection throwing exception (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5902">5902</link>, ST_PointFromText cannot create geometries with M (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5943">5943</link>, Memory leak in handling GEOS GeometryFactory (Megan Ma)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5407">5407</link>, Use memset in place of bzero (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5082">5082</link>, LRS proportions clamped to [0,1] (Pawel Ostrowski)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5985">5985</link>, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5991">5991</link>, CircularString distance error (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5994">5994</link>, Null pointer in ST_AsGeoJsonRow (Alexander Kukushkin)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5989">5989</link>, ST_Distance error on CurvePolygon (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5962">5962</link>, Consistent clipping of MULTI/POINT (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5754">5754</link>, ST_ForcePolygonCCW reverses lines (Paul Ramsey)</para>
+            </simplesect>
+        </section>
+
         <section>
             <title>PostGIS 3.5.3</title>
             <para>2025/05/17</para>
