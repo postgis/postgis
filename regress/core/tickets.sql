@@ -1628,4 +1628,14 @@ SELECT '#5754' AS Ticket,
     ST_AsText(ST_ForcePolygonCCW('LINESTRING(0 0, 1 1, 2 0, 3 1, 4 0)'::geometry), 1) AS LsCcw,
     ST_AsText(ST_ForcePolygonCW('LINESTRING(0 0, 1 1, 2 0, 3 1, 4 0)'::geometry), 1) AS LsCw,
 	ST_AsText(ST_ForcePolygonCCW('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry), 1) AS PlyCcw1,
-	ST_AsText(ST_ForcePolygonCCW('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1))'::geometry), 1)  AS PlyCcw2
+	ST_AsText(ST_ForcePolygonCCW('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1))'::geometry), 1)  AS PlyCcw2;
+
+-- -------------------------------------------------------------------------------------
+-- #5938
+SELECT
+  '#5938',
+  ST_Relate(a.geom, b.geom),
+  ST_Relate(a.geom, b.geom, '1FF00F212')
+FROM
+(VALUES ('LINESTRING (170 290, 205 272)'),('LINESTRING (120 215, 176 197)'),('LINESTRING (170 290, 205 272)')) AS a(geom),
+(VALUES ('POLYGON ((100 200, 140 230, 180 310, 280 310, 390 270, 400 210, 320 140, 215 141, 150 170, 100 200))')) AS b(geom);
