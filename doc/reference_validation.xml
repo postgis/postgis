@@ -351,22 +351,35 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
 
     <itemizedlist>
     <listitem>
-        <para>"linework" is the original algorithm, and builds valid geometries
+        <para>"linework" is the default algorithm, and builds valid geometries
         by first extracting all lines, noding that linework together, then building
-        a value output from the linework.</para>
+        a value output from the linework. The requirement that no vertices are
+        lost can generate complex collections as outputs.</para>
     </listitem>
     <listitem>
         <para>"structure" is an algorithm that distinguishes between
         interior and exterior rings, building new geometry by unioning
-        exterior rings, and then differencing all interior rings.</para>
+        exterior rings, and then differencing all interior rings. The results
+        tend to be more intuitive, where collapsed lines are discarded in
+        the output.</para>
     </listitem>
     </itemizedlist>
 
     <para>The "keepcollapsed" key is only valid for the "structure" algorithm,
-    and takes a value of "true" or "false". When set to "false",
-    geometry components that collapse to a lower dimensionality,
-    for example a one-point linestring would be dropped.
-    </para>
+    and takes a value of "true" or "false".</para>
+
+    <itemizedlist>
+    <listitem>
+        <para>Keep collapsed of "false" is the default, and means that
+        geometry components that collapse to a lower dimensionality,
+        for example a one-point linestring will be dropped.</para>
+    </listitem>
+    <listitem>
+        <para>Keep collapsed of "true" means
+        geometry components that collapse to a lower dimensionality
+        will be retained.</para>
+    </listitem>
+    </itemizedlist>
 
     <para>Performed by the GEOS module.</para>
 
