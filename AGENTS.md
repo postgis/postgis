@@ -186,6 +186,33 @@ Additional targets of interest:
   the same PostgreSQL instance before invoking this.
 * `make installcheck` – runs tests against an installed copy (after `make install`).
 
+### Running a single C unit test
+
+After building the tree (Section 5), you can exercise one CUnit suite in
+isolation. From the repository root run:
+
+```bash
+cd liblwgeom/cunit
+make cu_tester
+./cu_tester geodetic    # replace "geodetic" with another suite or test name as needed
+```
+
+The `cu_tester` binary also accepts individual test names if you need to drill
+down further.
+
+### Running a single SQL regression test
+
+With PostgreSQL running as configured above and the extension installed via
+`sudo make install`, target one SQL file by passing it to the regression driver:
+
+```bash
+export PGPASSWORD=postgres   # or reuse another password if you kept SCRAM auth
+make -C regress check RUNTESTFLAGS="--extension" TESTS="$(pwd)/regress/core/affine"
+```
+
+Swap `regress/core/affine` for the test you need.
+
+
 ## 7. Inspecting coverage results
 
 Coverage builds rely on the `lcov` utilities. After executing the coverage `make check` run:
@@ -238,7 +265,10 @@ reflow a specific range, or pass `--extensions c,cpp,h` when touching files with
 non-standard suffixes. Validate that the resulting diff stays focused on the
 code you touched.
 
-Review STYLE file in root of the repository for other stylistic preferences.
+Review `STYLE` file in root of the repository for other stylistic preferences.
+For release policies, upgrade implications, and naming
+conventions for new features, skim `doc/developer.md` (PostGIS Developer
+How-To) for a concise overview of those workflows.
 
 The Codecov upload commands in `ci/github/run_coverage.sh` and
 `ci/github/run_garden.sh` require outbound network access; they are harmless to
