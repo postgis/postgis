@@ -5,28 +5,32 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-10-17 20:47+0000\n"
+"Last-Translator: Darafei <komzpa@gmail.com>\n"
+"Language-Team: Belarusian <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/be/>\n"
 "Language: be\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.4.3\n"
 
 #. Tag: chapter
 #, no-c-format
 msgid "&database_tuning;"
-msgstr ""
+msgstr "&database_tuning;"
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Administration"
-msgstr ""
+msgstr "Адміністраванне PostGIS"
 
 #. Tag: title
 #, no-c-format
 msgid "Configuring raster support"
-msgstr ""
+msgstr "Наладжванне падтрымкі растраў"
 
 #. Tag: para
 #, no-c-format
@@ -34,6 +38,7 @@ msgid ""
 "If you enabled raster support you may want to read below how to properly "
 "configure it."
 msgstr ""
+"Калі вы ўключылі падтрымку растраў, ніжэй апісана, як яе правільна наладзіць."
 
 #. Tag: para
 #, no-c-format
@@ -45,16 +50,24 @@ msgid ""
 "For PostGIS 2.2, you can use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
+"Пачынаючы з PostGIS 2.1.3, пазабазавыя растры і ўсе драйверы растраў па "
+"змаўчанні адключаны. Каб іх уключыць, задайце ў асяроддзі сервера пераменныя "
+"<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> і "
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>. У PostGIS 2.2 можна "
+"скарыстацца больш кросплатформенным падыходам і выставіць адпаведныя <xref "
+"linkend=\"PostGIS_GUC\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "If you want to enable offline raster:"
-msgstr ""
+msgstr "Калі вы хочаце ўключыць пазабазавыя растры:"
 
 #. Tag: para
 #, no-c-format
 msgid "Any other setting or no setting at all will disable out of db rasters."
 msgstr ""
+"Любы іншы параметр або яго адсутнасць прывядзе да выключэння пазабазавых "
+"растраў."
 
 #. Tag: para
 #, no-c-format
@@ -62,6 +75,8 @@ msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
 msgstr ""
+"Каб уключыць усе драйверы GDAL, даступныя ў вашай устаноўцы GDAL, задайце "
+"пераменную асяроддзя наступным чынам"
 
 #. Tag: para
 #, no-c-format
@@ -69,11 +84,12 @@ msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
 msgstr ""
+"Калі трэба ўключыць толькі пэўныя драйверы, задайце пераменную асяроддзя так:"
 
 #. Tag: para
 #, no-c-format
 msgid "If you are on windows, do not quote the driver list"
-msgstr ""
+msgstr "У Windows не бярыце спіс драйвераў у двукоссі."
 
 #. Tag: para
 #, no-c-format
@@ -84,6 +100,11 @@ msgid ""
 "<replaceable>main</replaceable>/environment</filename> where 10 refers to "
 "version of PostgreSQL and main refers to the cluster."
 msgstr ""
+"Налада пераменных асяроддзя залежыць ад АС. Для PostgreSQL, усталяванага ў "
+"Ubuntu або Debian праз apt-postgresql, пераважна рэдагаваць <filename>/etc/"
+"postgresql/"
+"<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</"
+"filename>, дзе 10 — версія PostgreSQL, а main — назва кластара."
 
 #. Tag: para
 #, no-c-format
@@ -95,6 +116,11 @@ msgid ""
 "clicking <emphasis>Advanced System Settings -&gt;Advanced-&gt;Environment "
 "Variables</emphasis> and adding new system variables."
 msgstr ""
+"У Windows, калі PostgreSQL працуе як служба, задайце Сістэмныя пераменныя: "
+"ПКМ па Computer -&gt; Properties -&gt; Advanced System Settings, або праз "
+"<varname>Control Panel\\All Control Panel Items\\System</varname>. Далей "
+"<emphasis>Advanced System Settings -&gt; Advanced -&gt; Environment "
+"Variables</emphasis> і дадайце новыя сістэмныя пераменныя."
 
 #. Tag: para
 #, no-c-format
@@ -102,16 +128,18 @@ msgid ""
 "After you set the environment variables, you'll need to restart your "
 "PostgreSQL service for the changes to take effect."
 msgstr ""
+"Пасля зменаў у пераменных асяроддзя перазапусціце службу PostgreSQL, каб яны "
+"ўступілі ў сілу."
 
 #. Tag: title
 #, no-c-format
 msgid "Creating spatial databases"
-msgstr ""
+msgstr "Стварэнне прасторавых баз дадзеных"
 
 #. Tag: title
 #, no-c-format
 msgid "Spatially enable database using EXTENSION"
-msgstr ""
+msgstr "Прасторавае ўключэнне базы праз EXTENSION"
 
 #. Tag: para
 #, no-c-format
@@ -120,6 +148,9 @@ msgid ""
 "extensions/postgis modules, you can turn a database into a spatial one using "
 "the EXTENSION mechanism."
 msgstr ""
+"Калі вы выкарыстоўваеце PostgreSQL 9.1+ і сабралі ды ўсталявалі модулі "
+"extensions/postgis, вы можаце зрабіць базу прасторавай праз механізм "
+"EXTENSION."
 
 #. Tag: para
 #, no-c-format
@@ -128,17 +159,19 @@ msgid ""
 "the functions and comments. Raster and topology are packaged as a separate "
 "extension."
 msgstr ""
+"Базавае пашырэнне postgis уключае geometry, geography, spatial_ref_sys і ўсе "
+"функцыі з каментарамі. Raster і topology пастаўляюцца як асобныя пашырэнні."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Run the following SQL snippet in the database you want to enable spatially:"
-msgstr ""
+msgstr "Выканаеце наступны фрагмент SQL у базе, якую трэба прасторава ўключыць:"
 
 #. Tag: title
 #, no-c-format
 msgid "Spatially enable database without using EXTENSION (discouraged)"
-msgstr ""
+msgstr "Прасторавае ўключэнне базы без EXTENSION (не рэкамендуецца)"
 
 #. Tag: para
 #, no-c-format
@@ -147,148 +180,181 @@ msgid ""
 "installed in the PostgreSQL extension directory (for example during testing, "
 "development or in a restricted environment)."
 msgstr ""
+"Гэта патрэбна толькі калі вы не можаце або не хочаце ўсталёўваць PostGIS у "
+"дырэкторыю пашырэнняў PostgreSQL (напрыклад для тэставання, распрацоўкі або "
+"ў абмежаваным асяроддзі)."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Adding PostGIS objects and function definitions into your database is done "
 "by loading the various sql files located in <filename>[prefix]/share/"
 "contrib</filename> as specified during the build phase."
 msgstr ""
+"Дадаванне аб'ектаў і функцый PostGIS у базу робіцца загрузкай sql-файлаў з "
+"<filename>[prefix]/share/contrib</filename>, як было вызначана падчас зборкі."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The core PostGIS objects (geometry and geography types, and their support "
 "functions) are in the <filename>postgis.sql</filename> script. Raster "
 "objects are in the <filename>rtpostgis.sql</filename> script. Topology "
 "objects are in the <filename>topology.sql</filename> script."
 msgstr ""
+"Асноўныя аб'екты PostGIS (тыпі geometry і geography і іх функцыі) у "
+"<filename>postgis.sql</filename>. Растры — у <filename>rtpostgis.sql</"
+"filename>. Тапалогія — у <filename>topology.sql</filename>."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "For a complete set of EPSG coordinate system definition identifiers, you can "
 "also load the <filename>spatial_ref_sys.sql</filename> definitions file and "
 "populate the <varname>spatial_ref_sys</varname> table. This will permit you "
 "to perform ST_Transform() operations on geometries."
 msgstr ""
+"Для поўнага набору ідэнтыфікатараў EPSG можна загрузіць "
+"<filename>spatial_ref_sys.sql</filename> і запоўніць табліцу "
+"<varname>spatial_ref_sys</varname>. Гэта дазволіць карыстацца ST_Transform()."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If you wish to add comments to the PostGIS functions, you can find them in "
 "the <filename>postgis_comments.sql</filename> script. Comments can be viewed "
 "by simply typing <command>\\dd [function_name]</command> from a "
 "<command>psql</command> terminal window."
 msgstr ""
+"Каментары да функцый PostGIS знаходзяцца ў <filename>postgis_comments.sql</"
+"filename>. Прагледзець іх можна праз <command>\\dd [function_name]</command> "
+"у <command>psql</command>."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Run the following Shell commands in your terminal:"
-msgstr ""
+msgstr "Выканаеце ў тэрмінале наступныя каманды Shell:"
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Upgrading spatial databases"
-msgstr ""
+msgstr "Абнаўленне прасторавых баз дадзеных"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Upgrading existing spatial databases can be tricky as it requires "
 "replacement or introduction of new PostGIS object definitions."
 msgstr ""
+"Абнаўленне існуючых прасторавых баз можа быць складаным, бо патрабуе замены "
+"або дадання новых вызначэнняў аб'ектаў PostGIS."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Unfortunately not all definitions can be easily replaced in a live database, "
 "so sometimes your best bet is a dump/reload process."
 msgstr ""
+"Не ўсе вызначэнні можна проста замяніць у жывой базе, таму часам лепш за ўсё "
+"зрабіць дамп і аднаўленне."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases, and "
 "a HARD UPGRADE procedure for major releases."
 msgstr ""
+"PostGIS прапануе працэдуры МЯГКОГА абнаўлення для мінорных і выпраўляючых "
+"рэлізаў і ЦВЁРДАЕ абнаўленне для мажорных."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Before attempting to upgrade PostGIS, it is always worth to backup your "
 "data. If you use the -Fc flag to pg_dump you will always be able to restore "
 "the dump with a HARD UPGRADE."
 msgstr ""
+"Перад абнаўленнем зрабіце рэзервавае капіраванне даных. Калі выкарыстоўваць "
+"сцяг -Fc у pg_dump, вы заўсёды зможаце аднавіць дамп пры ЦВЁРДЫМ абнаўленні."
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Soft upgrade"
-msgstr ""
+msgstr "Мяккае абнаўленне"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If you installed your database using extensions, you'll need to upgrade "
 "using the extension model as well. If you installed using the old sql script "
 "way, you are advised to switch your install to extensions because the script "
 "way is no longer supported."
 msgstr ""
+"Калі база ўсталяваная праз extensions, абнаўляць трэба таксама праз іх. Калі "
+"установак рабіўся старымі sql-скрыптамі, раім перайсці на extensions, бо "
+"спосаб са скрыптамі больш не падтрымліваецца."
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Soft Upgrade 9.1+ using extensions"
-msgstr ""
+msgstr "Мяккае абнаўленне 9.1+ праз extensions"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If you originally installed PostGIS with extensions, then you need to "
 "upgrade using extensions as well. Doing a minor upgrade with extensions, is "
 "fairly painless."
 msgstr ""
+"Калі PostGIS быў усталяваны праз extensions, абнаўленне таксама робіцца праз "
+"іх. Мінорнае абнаўленне праз extensions звычайна бязбольнае."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If you are running PostGIS 3 or above, then you should use the <xref "
 "linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the latest "
 "version you have installed."
 msgstr ""
+"У PostGIS 3 і вышэй карыстайцеся функцыяй <xref linkend="
+"\"PostGIS_Extensions_Upgrade\"/>, каб перайсці на апошнюю ўсталяваную версію."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "If you are running PostGIS 2.5 or lower, then do the following:"
-msgstr ""
+msgstr "Калі ў вас PostGIS 2.5 або ніжэй, зрабіце наступнае:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If you have multiple versions of PostGIS installed, and you don't want to "
 "upgrade to the latest, you can explicitly specify the version as follows:"
 msgstr ""
+"Калі ўсталявана некалькі версій PostGIS і вы не хочаце абнаўляцца да самай "
+"новай, можна выразна пазначыць патрэбную версію так:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "If you get an error notice something like:"
-msgstr ""
+msgstr "Калі вы атрымалі паведамленне пра памылку, накшталт:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Then you'll need to backup your database, create a fresh one as described in "
 "<xref linkend=\"create_new_db_extensions\"/> and then restore your backup on "
 "top of this new database."
 msgstr ""
+"Трэба зрабіць бэкап базы, стварыць новую, як апісана ў <xref linkend="
+"\"create_new_db_extensions\"/>, і аднавіць бэкап у яе."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "If you get a notice message like:"
-msgstr ""
+msgstr "Калі вы ўбачылі паведамленне накшталт:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Then everything is already up to date and you can safely ignore it. "
 "<emphasis role=\"bold\">UNLESS</emphasis> you're attempting to upgrade from "
@@ -296,97 +362,125 @@ msgid ""
 "in that case you can append \"next\" to the version string, and next time "
 "you'll need to drop the \"next\" suffix again:"
 msgstr ""
+"Значыць, усё ўжо актуальнае, і гэта можна ігнараваць. <emphasis role=\"bold\""
+">АКРАМЯ</emphasis> пераходу з development-версіі на наступную без новага "
+"нумара. Тады можна дадаць суфікс \"next\" да радка версіі, а ў наступны раз "
+"яго трэба будзе прыбраць:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If you installed PostGIS originally without a version specified, you can "
 "often skip the reinstallation of postgis extension before restoring since "
 "the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
 "the newest latest version during restore."
 msgstr ""
+"Калі PostGIS першапачаткова ўсталёўваўся без пазначэння версіі, часта можна "
+"не пераўсталёўваць пашырэнне перад аднаўленнем: у бэкапе будзе <code>CREATE "
+"EXTENSION postgis</code>, і пры аднаўленні падцягнецца найноўшая версія."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If you are upgrading PostGIS extension from a version prior to 3.0.0, you "
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
 "safely drop, if you don't need raster support. You can drop as follows:"
 msgstr ""
+"Калі абнаўляецеся з версіі старэйшай за 3.0.0, з'явіцца новае пашырэнне "
+"<emphasis>postgis_raster</emphasis>. Калі растры не патрэбныя, яго можна "
+"бяспечна выдаліць так:"
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Soft Upgrade Pre 9.1+ or without extensions"
-msgstr ""
+msgstr "Мяккае абнаўленне для Pre 9.1+ або без extensions"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "This section applies only to those who installed PostGIS not using "
 "extensions. If you have extensions and try to upgrade with this approach "
 "you'll get messages like:"
 msgstr ""
+"Гэты раздзел толькі для ўстаноўкі без extensions. Калі яны ў вас ёсць і вы "
+"паспрабуеце гэты падыход, атрымаеце паведамленні кшталту:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* "
 "prior to r7409, you cannot use this procedure but would rather need to do a "
 "<link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
 msgstr ""
+"Заўвага: пры пераходзе з PostGIS 1.* на 2.* або з PostGIS 2.* да r7409 "
+"карыстацца гэтай працэдурай нельга — патрэбна <link linkend=\"hard_upgrade\""
+">ЦВЁРДАЕ АБНАЎЛЕННЕ</link>."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "After compiling and installing (make install) you should find a set of "
 "<filename>*_upgrade.sql</filename> files in the installation folders. You "
 "can list them all with:"
 msgstr ""
+"Пасля зборкі і ўстаноўкі (make install) вы знойдзеце набор файлаў "
+"<filename>*_upgrade.sql</filename> у ўсталявальных тэчках. Паглядзець іх "
+"спіс можна так:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Load them all in turn, starting from <filename>postgis_upgrade.sql</"
 "filename>."
 msgstr ""
+"Загрузіце іх усе па парадку, пачынаючы з <filename>postgis_upgrade."
+"sql</filename>."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The same procedure applies to raster, topology and sfcgal extensions, with "
 "upgrade files named <filename>rtpostgis_upgrade.sql</filename>, "
 "<filename>topology_upgrade.sql</filename> and <filename>sfcgal_upgrade.sql</"
 "filename> respectively. If you need them:"
 msgstr ""
+"Аналагічна для raster, topology і sfcgal: файлы <filename>rtpostgis_upgrade."
+"sql</filename>, <filename>topology_upgrade.sql</filename> і "
+"<filename>sfcgal_upgrade.sql</filename> адпаведна. Калі яны патрэбныя:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "You are advised to switch to an extension based install by running"
-msgstr ""
+msgstr "Рэкамендуем перайсці на ўстаноўку праз extensions, выканаўшы"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If you can't find the <filename>postgis_upgrade.sql</filename> specific for "
 "upgrading your version you are using a version too early for a soft upgrade "
 "and need to do a <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
 msgstr ""
+"Калі не знаходзіце адпаведны вашай версіі <filename>postgis_upgrade.sql</"
+"filename>, ваша версія занадта старая для мяккага абнаўлення — патрэбна "
+"<link linkend=\"hard_upgrade\">ЦВЁРДАЕ АБНАЎЛЕННЕ</link>."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <xref linkend=\"PostGIS_Full_Version\"/> function should inform you "
 "about the need to run this kind of upgrade using a \"procs need upgrade\" "
 "message."
 msgstr ""
+"Функцыя <xref linkend=\"PostGIS_Full_Version\"/> паведаміць пра патрэбу ў "
+"такім абнаўленні радком \"procs need upgrade\"."
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Hard upgrade"
-msgstr ""
+msgstr "Цвёрдае абнаўленне"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "By HARD UPGRADE we mean full dump/reload of postgis-enabled databases. You "
 "need a HARD UPGRADE when PostGIS objects' internal storage changes or when "
@@ -394,9 +488,13 @@ msgid ""
 "Notes</link> appendix reports for each version whether you need a dump/"
 "reload (HARD UPGRADE) to upgrade."
 msgstr ""
+"ЦВЁРДАЕ АБНАЎЛЕННЕ — гэта поўны дамп і аднаўленне баз з PostGIS. Яно "
+"патрэбна пры змене ўнутранага фармату аб'ектаў PostGIS або калі мяккае "
+"абнаўленне немагчыма. У <link linkend=\"release_notes\">Release Notes</link> "
+"паказваецца, ці патрэбны дамп і аднаўленне для кожнай версіі."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The dump/reload process is assisted by the postgis_restore script which "
 "takes care of skipping from the dump all definitions which belong to PostGIS "
@@ -404,40 +502,52 @@ msgid ""
 "database with PostGIS installed without getting duplicate symbol errors or "
 "bringing forward deprecated objects."
 msgstr ""
+"Скрыпт postgis_restore дапамагае прапусціць у дампе ўсе вызначэнні, якія "
+"адносяцца да PostGIS (у тым ліку старыя), што дазваляе аднавіць схемы і "
+"даныя ў базу з ужо ўсталяваным PostGIS без дубляў і без пераносу састарэлых "
+"аб'ектаў."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Supplementary instructions for windows users are available at <link xlink:"
 "href=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
 "upgrade</link>."
 msgstr ""
+"Дадатковыя інструкцыі для Windows: <link xlink:href=\"http://trac.osgeo.org/"
+"postgis/wiki/UsersWikiWinUpgrade\">Windows Hard upgrade</link>."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "The Procedure is as follows:"
-msgstr ""
+msgstr "Працэдура наступная:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Create a \"custom-format\" dump of the database you want to upgrade (let's "
 "call it <varname>olddb</varname>) include binary blobs (-b) and verbose (-v) "
 "output. The user can be the owner of the db, need not be postgres super "
 "account."
 msgstr ""
+"Стварыце дамп у фармаце \"custom\" для базы <varname>olddb</varname>, "
+"ўключыўшы бінарныя аб'екты (-b) і падрабязны вывад (-v). Карыстальнік можа "
+"быць уладальнікам базы, не абавязкова superuser."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Do a fresh install of PostGIS in a new database -- we'll refer to this "
 "database as <varname>newdb</varname>. Please refer to <xref "
 "linkend=\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> "
 "for instructions on how to do this."
 msgstr ""
+"Зрабіце чыстую ўстаноўку PostGIS у новай базе — назавем яе <varname>newdb</"
+"varname>. Падрабязнасці ў <xref linkend=\"create_new_db\"/> і <xref linkend="
+"\"create_new_db_extensions\"/>."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The spatial_ref_sys entries found in your dump will be restored, but they "
 "will not override existing ones in spatial_ref_sys. This is to ensure that "
@@ -445,9 +555,13 @@ msgid ""
 "If for any reason you really want your own overrides of standard entries "
 "just don't load the spatial_ref_sys.sql file when creating the new db."
 msgstr ""
+"Запісы spatial_ref_sys з дампа будуць адноўлены, але не перапішуць існуючыя. "
+"Гэта гарантуе, што выпраўленні з афіцыйнага набора трапяць у адноўленыя "
+"базы. Калі вам патрэбна свае перазапісы стандартных запісаў, проста не "
+"загружайце spatial_ref_sys.sql пры стварэнні новай базы."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If your database is really old or you know you've been using long deprecated "
 "functions in your views and functions, you might need to load "
@@ -457,22 +571,29 @@ msgid ""
 "functions can be later removed by loading <filename>uninstall_legacy.sql</"
 "filename>."
 msgstr ""
+"Калі база вельмі старая або вы карысталіся даўно скасаванымі функцыямі ў "
+"view і function, можа спатрэбіцца загрузіць <filename>legacy.sql</filename>, "
+"каб усё вярнулася. Рабіце гэта толькі калі сапраўды трэба. Лепш, калі "
+"магчыма, абнавіць view і function перад дампам. Састарэлае можна затым "
+"прыбраць праз <filename>uninstall_legacy.sql</filename>."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Restore your backup into your fresh <varname>newdb</varname> database using "
 "postgis_restore. Unexpected errors, if any, will be printed to the standard "
 "error stream by psql. Keep a log of those."
 msgstr ""
+"Аднавіце бэкап у новую базу <varname>newdb</varname> праз postgis_restore. "
+"Нечаканыя памылкі psql выведзе ў stderr. Захоўвайце лог."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Errors may arise in the following cases:"
-msgstr ""
+msgstr "Памылкі магчымыя ў наступных выпадках:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Some of your views or functions make use of deprecated PostGIS objects. In "
 "order to fix this you may try loading <filename>legacy.sql</filename> script "
@@ -482,9 +603,14 @@ msgid ""
 "to fix your code to stop using deprecated functions and drop them loading "
 "<filename>uninstall_legacy.sql</filename>."
 msgstr ""
+"Некаторыя вашы view або function выкарыстоўваюць састарэлыя аб'екты PostGIS. "
+"Паспрабуйце загрузіць <filename>legacy.sql</filename> перад аднаўленнем або "
+"аднаўляйцеся ў версію PostGIS, дзе яны яшчэ ёсць, і пасля мігруйце код. Калі "
+"шлях з <filename>legacy.sql</filename> падышоў, не забудзьцеся абнавіць код "
+"і прыбраць састарэлае праз <filename>uninstall_legacy.sql</filename>."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Some custom records of spatial_ref_sys in dump file have an invalid SRID "
 "value. Valid SRID values are bigger than 0 and smaller than 999000. Values "
@@ -495,15 +621,26 @@ msgid ""
 "invariant to hold and possibly also its primary key ( when multiple invalid "
 "SRIDS get converted to the same reserved SRID value )."
 msgstr ""
+"Некаторыя вашы ўласныя запісы spatial_ref_sys у дампе маюць нерэчаісны SRID. "
+"Карэктныя SRID — больш за 0 і менш за 999000. Дыяпазон 999000..999999 "
+"зарэзерваваны для ўнутранага выкарыстання, а значэнні &gt; 999999 "
+"недапушчальныя. Усе вашы такія запісы будуць захаваныя, пры гэтым значэнні "
+"&gt; 999999 будуць перанесены ў зарэзерваваны дыяпазон, але ў табліцы "
+"spatial_ref_sys знікне праверка і, магчыма, першасны ключ (калі некалькі "
+"нерэчаісных SRID пераўтварыліся ў адзін зарэзерваваны SRID)."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "In order to fix this you should copy your custom SRS to a SRID with a valid "
 "value (maybe in the 910000..910999 range), convert all your tables to the "
 "new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the invalid "
 "entry from spatial_ref_sys and re-construct the check(s) with:"
 msgstr ""
+"Каб выправіць, скапіруйце ваш SRS на карэктны SRID (напрыклад 910000..910999)"
+", пераканвертуйце ўсе табліцы на новы SRID (гл. <xref linkend="
+"\"UpdateGeometrySRID\"/>), выдаліце некарэктны запіс з spatial_ref_sys і "
+"аднавіце праверкі:"
 
 #. Tag: para
 #, no-c-format
@@ -538,90 +675,106 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Performance Tuning"
-msgstr ""
+msgstr "Наладка прадукцыйнасці"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Tuning for PostGIS performance is much like tuning for any PostgreSQL "
 "workload. The only additional consideration is that geometries and rasters "
 "are usually large, so memory-related optimizations generally have more of an "
 "impact on PostGIS than other types of PostgreSQL queries."
 msgstr ""
+"Наладка прадукцыйнасці PostGIS падобная да наладкі любога нагрузачнага "
+"сцэнарыя PostgreSQL. Асаблівасць у тым, што геаметрыі і растры часта "
+"вялікія, таму аптымізацыі, звязаныя з памяццю, маюць яшчэ большае значэнне."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "For general details about optimizing PostgreSQL, refer to <link xlink:"
 "href=\"https://wiki.postgresql.org/wiki/"
 "Tuning_Your_PostgreSQL_Server\">Tuning your PostgreSQL Server</link>."
 msgstr ""
+"Падрабязней пра агульную аптымізацыю PostgreSQL: <link xlink:href=\"https"
+"://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server\">Tuning your "
+"PostgreSQL Server</link>."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "For PostgreSQL 9.4+ configuration can be set at the server level without "
 "touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</code> "
 "by using the <code>ALTER SYSTEM</code> command."
 msgstr ""
+"У PostgreSQL 9.4+ можна задаваць канфігурацыю на ўзроўні сервера камандай "
+"<code>ALTER SYSTEM</code> без змянення <code>postgresql.conf</code> або "
+"<code>postgresql.auto.conf</code>."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "In addition to the Postgres settings, PostGIS has some custom settings which "
 "are listed in <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
+"Акрамя налад Postgres, у PostGIS ёсць свае налады — глядзіце <xref linkend="
+"\"PostGIS_GUC\"/>."
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Startup"
-msgstr ""
+msgstr "Запуск"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "These settings are configured in <code>postgresql.conf</code>:"
-msgstr ""
+msgstr "Гэтыя параметры наладжваюцца ў <code>postgresql.conf</code>:"
 
 #. Tag: link
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "constraint_exclusion"
-msgstr ""
+msgstr "constraint_exclusion"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Default: partition"
-msgstr ""
+msgstr "Па змаўчанні: partition"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "This is generally used for table partitioning. The default for this is set "
 "to \"partition\" which is ideal for PostgreSQL 8.4 and above since it will "
 "force the planner to only analyze tables for constraint consideration if "
 "they are in an inherited hierarchy and not pay the planner penalty otherwise."
 msgstr ""
+"Выкарыстоўваецца для партыцыянавання табліц. Значэнне \"partition\" "
+"аптымальнае пачынаючы з PostgreSQL 8.4: планавальнік улічвае абмежаванні "
+"толькі для табліц у іерархіі спадкавання і не марнуе рэсурсы дарэмна."
 
 #. Tag: link
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "shared_buffers"
-msgstr ""
+msgstr "shared_buffers"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Default: ~128MB in PostgreSQL 9.6"
-msgstr ""
+msgstr "Па змаўчанні: каля 128 МБ у PostgreSQL 9.6"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Set to about 25% to 40% of available RAM. On windows you may not be able to "
 "set as high."
 msgstr ""
+"Ставце каля 25%–40% даступнай RAM. У Windows можа не атрымлівацца паставіць "
+"так высока."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
 "config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</link> "
@@ -629,84 +782,100 @@ msgid ""
 "setting has additional importance in that it controls the max number of "
 "processes you can have for parallel queries."
 msgstr ""
+"<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
+"config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</link> "
+"Даступна з PostgreSQL 9.4+. У 9.6+ таксама абмяжоўвае максімум працэсаў для "
+"паралельных запытаў."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Default: 8"
-msgstr ""
+msgstr "Па змаўчанні: 8"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Sets the maximum number of background processes that the system can support. "
 "This parameter can only be set at server start."
 msgstr ""
+"Вызначае максімальную колькасць фонавых працэсаў. Можна задаць толькі пры "
+"старце сервера."
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Runtime"
-msgstr ""
+msgstr "Час выканання"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
 "config-resource.html#GUC-WORK-MEM\">work_mem</link> - sets the size of "
 "memory used for sort operations and complex queries"
 msgstr ""
+"<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
+"config-resource.html#GUC-WORK-MEM\">work_mem</link> — памер памяці для "
+"сартавання і складаных аперацый"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Default: 1-4MB"
-msgstr ""
+msgstr "Па змаўчанні: 1–4 МБ"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Adjust up for large dbs, complex queries, lots of RAM"
-msgstr ""
+msgstr "Павялічвайце для вялікіх баз, складаных запытаў і калі шмат RAM"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Adjust down for many concurrent users or low RAM."
-msgstr ""
+msgstr "Змяншайце пры вялікай канкурэнтнасці або недахопе RAM."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "If you have lots of RAM and few developers:"
-msgstr ""
+msgstr "Калі шмат RAM і мала адначасовых карыстальнікаў:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
 "config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> "
 "- the memory size used for VACUUM, CREATE INDEX, etc."
 msgstr ""
+"<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
+"config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> —"
+" памяць для VACUUM, CREATE INDEX і інш."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Default: 16-64MB"
-msgstr ""
+msgstr "Па змаўчанні: 16–64 МБ"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Generally too low - ties up I/O, locks objects while swapping memory"
 msgstr ""
+"Звычайна занадта мала — тармозіць I/O і блакуе аб'екты, калі пачынаецца "
+"свопінг памяці."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Recommend 32MB to 1GB on production servers w/lots of RAM, but depends on "
 "the # of concurrent users. If you have lots of RAM and few developers:"
 msgstr ""
+"Рэкамендуем 32 МБ — 1 ГБ на прадакшн-серверах з вялікай RAM, але залежыць ад "
+"канкурэнтнасці. Калі RAM шмат і карыстальнікаў мала:"
 
 #. Tag: link
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "max_parallel_workers_per_gather"
-msgstr ""
+msgstr "max_parallel_workers_per_gather"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "This setting is only available for PostgreSQL 9.6+ and will only affect "
 "PostGIS 2.3+, since only PostGIS 2.3+ supports parallel queries. If set to "
@@ -717,14 +886,19 @@ msgid ""
 "make sure to bump up <code>max_worker_processes</code> to at least as high "
 "as this number."
 msgstr ""
+"Даступна ў PostgreSQL 9.6+ і ўплывае на PostGIS 2.3+, бо толькі ён "
+"падтрымлівае паралельныя запыты. Калі &gt; 0, некаторыя запыты (напрыклад з "
+"<code>ST_Intersects</code>) змогуць працаваць у некалькіх працэсах і "
+"паскараюцца ў разы. Калі працэсараў шмат — пастаўце адпаведнае значэнне і "
+"павялічце <code>max_worker_processes</code> як мінімум да гэтага ж узроўню."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Default: 0"
-msgstr ""
+msgstr "Па змаўчанні: 0"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Sets the maximum number of workers that can be started by a single "
 "<varname>Gather</varname> node. Parallel workers are taken from the pool of "
@@ -734,11 +908,15 @@ msgid ""
 "may be inefficient. Setting this value to 0, which is the default, disables "
 "parallel query execution."
 msgstr ""
+"Максімум воркераў для аднаго вузла <varname>Gather</varname>. Воркеры "
+"бяруцца з пулу <varname>max_worker_processes</varname>. Фактычна даступная "
+"колькасць можа быць меншай, і план пойдзе з меншай колькасцю воркераў. "
+"Значэнне 0 адключае паралельнасць."
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "PostGIS Extras"
-msgstr ""
+msgstr "Дадаткі PostGIS"
 
 #. Tag: para
 #, no-c-format
