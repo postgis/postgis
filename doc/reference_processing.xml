@@ -1468,6 +1468,8 @@ FROM test;
 
 		<refsection>
 			<title>Examples</title>
+      <refsect1>
+        <title>Cardinality 2</title>
       <para>
           <informalfigure>
               <mediaobject>
@@ -1476,7 +1478,7 @@ FROM test;
                     </imageobject>
 
                     <caption>
-                        <para>Merging lines with different orientation.
+                        <para>Nodes with cardinality 2 are merged away.
                         </para>
                     </caption>
               </mediaobject>
@@ -1488,7 +1490,9 @@ FROM test;
 --------------------------------------------
  LINESTRING(10 160,60 120,120 140,180 120)
 </programlisting>
-
+</refsect1>
+<refsect1>
+<title>Cardinality 3 or More</title>
       <para>
           <informalfigure>
               <mediaobject>
@@ -1509,7 +1513,10 @@ FROM test;
 --------------------------------------------
  MULTILINESTRING((10 160,60 120,120 140),(100 180,120 140),(120 140,180 120))
 </programlisting>
+</refsect1>
 
+<refsect1>
+  <title>Non-Touching Lines</title>
 <para>If merging is not possible due to non-touching lines,
 the original MultiLineString is returned.</para>
 <programlisting>
@@ -1519,7 +1526,10 @@ SELECT ST_AsText(ST_LineMerge(
 ----------------
 MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 </programlisting>
+</refsect1>
 
+<refsect1>
+  <title>Directed Parameter</title>
 <para>
 	<informalfigure>
 		<mediaobject>
@@ -1539,15 +1549,18 @@ TRUE));
 -------------------------------------------------------
  MULTILINESTRING((120 50,60 30,10 70),(120 50,180 30))
 </programlisting>
+</refsect1>
 
-<para>Example showing Z-dimension handling.</para>
+<refsect1>
+<title>Z-dimension Handling</title>
 <programlisting>
 SELECT ST_AsText(ST_LineMerge(
       'MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 6), (-29 -27 12,-30 -29.7 5), (-45 -33 1,-46 -32 11))'
         ));
---------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11)
 </programlisting>
+</refsect1>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
