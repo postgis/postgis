@@ -185,7 +185,7 @@ PostGIS 3.4.0
 
 This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.12+ is needed.
-To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
+To take advantage of all SFCGAL features, SFCGAL 1.4.1+ is needed.
 
 Many thanks to our translation teams, in particular:
 
@@ -371,7 +371,7 @@ with the new fast index build that requires PG14,
 we have decided to disable the feature by default
 until we get more user testing
 as to the true impact of real-world queries.
-If you are running PG14+, you can reenable it by doing
+If you are running PG14+, you can re-enable it by doing
 
 ALTER OPERATOR FAMILY gist_geometry_ops_2d USING gist
      ADD FUNCTION 11 (geometry)
@@ -516,7 +516,7 @@ Additional features are enabled if you are running GEOS 3.9.
   - #4710, ST_ClusterKMeans now works with 3D geometries (Darafei Praliaskouski)
   - #4801, ST_ClusterKMeans supports weights in POINT[Z]M geometries
            (Darafei Praliaskouski)
-  - #4805, _ST_SortableHash exposed to work around parallel soring performance issue
+  - #4805, _ST_SortableHash exposed to work around parallel sorting performance issue
            in Postgres. If your table is huge, use ORDER BY _ST_SortableHash(geom)
            instead of ORDER BY geom to make parallel sort faster (Darafei Praliaskouski)
   - #4625, Correlation statistics now calculated.
@@ -528,7 +528,7 @@ Additional features are enabled if you are running GEOS 3.9.
   - #4789, Sped up TopoJSON output for areal TopoGeometry with
            many holes (Sandro Santilli)
   - #4758, Improved topology noding robustness (Sandro Santilli)
-  - Make ST_Subdivide interruptable (Sandro Santilli)
+  - Make ST_Subdivide interruptible (Sandro Santilli)
   - #4660, Changes in double / coordinate printing (Raúl Marín)
          - Use the shortest representation (enough to guarantee roundtrip).
          - Uses scientific notation for absolute numbers smaller than 1e-8.
@@ -591,7 +591,7 @@ and GEOS 3.8.0
            and postgis.backend switch (Darafei Praliaskouski)
   - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
   - #4268, Bump minimum SFCGAL version to 1.3.1 (Darafei Praliaskouski)
-  - #4331, ST_3DMakeBox now returns error instead of a miniscule box (Regina Obe)
+  - #4331, ST_3DMakeBox now returns error instead of a minuscule box (Regina Obe)
   - #4342, Removed "versioned" variants of ST_AsGeoJSON and ST_AsKML (Paul Ramsey)
   - #4356, ST_Accum removed. Use array_agg instead. (Darafei Praliaskouski)
   - #4414, Include version number in address_standardizer lib (Raúl Marín)
@@ -1481,7 +1481,7 @@ PostGIS 2.1.0
   - #2026, ST_Union(raster) now unions all bands of all rasters
   - #2089, liblwgeom: lwgeom_set_handlers replaces lwgeom_init_allocators.
   - #2150, regular_blocking is no longer a constraint. column of same name
-           in raster_columns now checks for existance of spatially_unique
+           in raster_columns now checks for existence of spatially_unique
            and coverage_tile constraints
   - ST_Intersects(raster, geometry) behaves in the same manner as
     ST_Intersects(geometry, raster).
@@ -1910,7 +1910,7 @@ PostGIS 2.0.0
     (eg CREATE TABLE t (g GEOMETRY(Polgyon, 4326)))
   - ST_AsBinary and ST_AsText now return 3D/4D results in ISO SQL/MM
     format when called on 3D/4D features.
-  - The "unknonwn SRID" is now 0, not -1.
+  - The "unknown SRID" is now 0, not -1.
     (eg ST_SRID(ST_GeomFromText('POINT(0 0)')) returns 0)
   - ST_NumGeometries returns 1 for singletons. ST_GeometryN returns the
     the geometry for singletons.
@@ -2452,7 +2452,7 @@ PostGIS 1.1.3
 PostGIS 1.1.2
 2006/03/30
 
- - Regress tests can now be run *before* postgis intallation
+ - Regress tests can now be run *before* postgis installation
  - BUGFIX in SnapToGrid() computation of output bounding box
  - More portable ./configure script
  - Changed ./run_test script to have more sane default behaviour
@@ -2502,7 +2502,7 @@ PostGIS 1.1.0
 
  - Bug fixes:
    - Fixed memory leak in polygonize()
-   - Fixed bug in lwgeom_as_anytype cast funcions
+   - Fixed bug in lwgeom_as_anytype cast functions
    - Fixed USE_GEOS, USE_PROJ and USE_STATS elements
    of postgis_version() output to always reflect
    library state.
@@ -2512,7 +2512,7 @@ PostGIS 1.1.0
    - Changed Z() function to return NULL if requested
    dimension is not available
 
- - Peformance improvements:
+ - Performance improvements:
    - Much faster transform() function, caching proj4 objects
    - Removed automatic call to fix_geometry_columns() in
    AddGeometryColumns() and update_geometry_stats()
@@ -2632,7 +2632,7 @@ PostGIS 1.0.0
  - NEW -p flag for shp2pgsql
  - BUGFIX in transform() releasing random memory address
  - BUGFIX in force_3dm() allocating less memory then required
- - NEW chapter about OGC compliancy enforcement
+ - NEW chapter about OGC compliance enforcement
  - BUGFIX in shp2pgsql escape of values starting with "'" or "\t"
  - NEW autoconf support for JTS lib
  - BUGFIX in estimator testers (support for LWGEOM and schema parsing)
@@ -2661,7 +2661,7 @@ PostGIS 1.0.0RC4
  - jdbc2: code cleanups, Makefile improvements
  - FLEX & YACC variables set *after* pgsql Makefile.global
    is included and only if the pgsql *stripped* version
-   evaulates to the empty string
+   evaluates to the empty string
  - added already generated parser in release
  - build scripts refinements
  - MultiLine handling BUG fix in loader and dumper
@@ -2731,10 +2731,10 @@ PostGIS 1.0.0RC1
   - Objects are all now "lightweight" with a smaller disk
   and index representation. Large databases should see a moderate
   to large performance increase.
-  - Objects now have a hexidecimal canonical representation.
+  - Objects now have a hexadecimal canonical representation.
   To see a "user friendly" version of the objects use the
   AsText() function.
-  - The loader and dumper use the hexidecimal canonical representation,
+  - The loader and dumper use the hexadecimal canonical representation,
   so coordinate drift due to floating point string parsing is now
   eliminated.
   - New functions: UpdateGeometrySRID(), AsGML(), SnapToGrid(),
@@ -2890,7 +2890,7 @@ PostGIS 0.7.0
   - xmin(),ymin(),zmin(),xmax(),ymax(),zmax() functions
 - Bug Fixes
   - transform() more graceful when grid shifts are missing
-  - setsrid() made cachable
+  - setsrid() made cacheable
   - patches to loader/dumper
 
 
