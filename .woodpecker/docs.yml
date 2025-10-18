@@ -251,6 +251,17 @@ steps:
           include:
             - "doc/po/uk/*.po"
 
+  check-xml-be:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/be local-check-xml
+    depends_on: prepare
+    when:
+       - path:
+          include:
+            - "doc/po/be/*.po"
+
 ### TARGET html
   html-it_IT:
     image: *test_image
@@ -416,6 +427,17 @@ steps:
        - path:
           include:
             - "doc/po/uk/*.po"
+
+  html-be:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/be local-html
+    depends_on: check-xml-be
+    when:
+       - path:
+          include:
+            - "doc/po/be/*.po"
 
 ### TARGET cheatsheets
   cheatsheets-it_IT:
@@ -583,6 +605,17 @@ steps:
           include:
             - "doc/po/uk/*.po"
 
+  cheatsheets-be:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/be local-cheatsheets
+    depends_on: check-xml-be
+    when:
+       - path:
+          include:
+            - "doc/po/be/*.po"
+
 ### TARGET check-cheatsheets
   check-cheatsheets-it_IT:
     image: *test_image
@@ -748,4 +781,15 @@ steps:
        - path:
           include:
             - "doc/po/uk/*.po"
+
+  check-cheatsheets-be:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/be local-check-cheatsheets
+    depends_on: [ cheatsheets-be, build-cheatsheets ]
+    when:
+       - path:
+          include:
+            - "doc/po/be/*.po"
 
