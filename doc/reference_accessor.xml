@@ -918,28 +918,21 @@ FROM (
 
 	  <refsection>
 		<title>Examples</title>
-        <para>General form of query.</para>
+        <para>Extracting all rings as polygons.</para>
 		<programlisting>SELECT polyTable.field1, polyTable.field1,
 	  (ST_DumpRings(polyTable.geom)).geom As geom
 FROM polyTable;
 </programlisting>
-        <para>A polygon with a single hole.</para>
-<programlisting>SELECT path, ST_AsEWKT(geom) As geom
+        <para>Extracting shell and holes from a polygon.</para>
+<programlisting>SELECT path, ST_AsText(geom) As geom
 	FROM ST_DumpRings(
-		ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,-8148941 5132466 1,-8148924 5132394 1,
-		-8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,
-		-8150305 5132788 1,-8149064 5133092 1),
-		(-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))')
-		)  as foo;
- path |                                            geom
-----------------------------------------------------------------------------------------------------------------
-  {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,
-	  |          -8148941 5132466 1,-8148924 5132394 1,
-	  |          -8148903 5132210 1,-8148930 5131967 1,
-	  |          -8148992 5131978 1,-8149237 5132093 1,
-	  |          -8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,-8150305 5132788 1,-8149064 5133092 1))
-  {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,
-	  |          -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))</programlisting>
+		    'POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 2, 2 3, 3 3, 3 2, 2 2), (4 2, 4 4, 6 4, 6 2, 4 2))');
+
+ path |              geom              
+------+--------------------------------
+ {0}  | POLYGON((1 9,9 9,9 1,1 1,1 9))
+ {1}  | POLYGON((2 2,2 3,3 3,3 2,2 2))
+ {2}  | POLYGON((4 2,4 4,6 4,6 2,4 2))</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
