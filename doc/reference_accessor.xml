@@ -906,7 +906,11 @@ FROM (
         The exterior ring (shell) has index 0.  The interior rings (holes) have indices of 1 and higher.
         </para>
 
-		<note><para>This only works for POLYGON geometries. It does not work for MULTIPOLYGONS</para></note>
+		<note>This only works for POLYGON geometries, not MULTIPOLYGONs.
+		Use <xref linkend="ST_Dump"/> to extract polygon elements from polygonal geometries:
+		<code>ST_DumpRings( (ST_Dump(geom)).geom )</code>
+		</note>
+
 		<para role="availability" conformance="1.1.3.">Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher.</para>
 		<para>&Z_support;</para>
 	  </refsection>
