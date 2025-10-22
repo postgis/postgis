@@ -455,6 +455,41 @@ Datum BOX3D_zmax(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(Max(box->zmin, box->zmax));
 }
 
+
+Datum ST_MMin(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_MMin);
+Datum ST_MMin(PG_FUNCTION_ARGS)
+{
+	GBOX gbox;
+	GSERIALIZED *gser = PG_GETARG_GSERIALIZED_P(0);
+
+	if (gserialized_get_gbox_p(gser, &gbox) != LW_TRUE)
+		PG_RETURN_NULL();
+
+	if (!FLAGS_GET_M(gbox.flags))
+		PG_RETURN_NULL();
+
+	PG_RETURN_FLOAT8(Min(gbox.mmin, gbox.mmax));
+}
+
+
+Datum ST_MMax(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_MMax);
+Datum ST_MMax(PG_FUNCTION_ARGS)
+{
+	GBOX gbox;
+	GSERIALIZED *gser = PG_GETARG_GSERIALIZED_P(0);
+
+	if (gserialized_get_gbox_p(gser, &gbox) != LW_TRUE)
+		PG_RETURN_NULL();
+
+	if (!FLAGS_GET_M(gbox.flags))
+		PG_RETURN_NULL();
+
+	PG_RETURN_FLOAT8(Max(gbox.mmin, gbox.mmax));
+}
+
+
 /**
  * Used in the ST_Extent and ST_Extent3D aggregates, does not read the
  * serialized cached bounding box (since that is floating point)

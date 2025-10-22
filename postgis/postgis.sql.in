@@ -1098,6 +1098,20 @@ CREATE OR REPLACE FUNCTION ST_ZMax(box3d)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_DEFAULT;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_MMin(geometry)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','ST_MMin'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_DEFAULT;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_MMax(geometry)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','ST_MMax'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_DEFAULT;
+
 -----------------------------------------------------------------------------
 --  BOX2D FUNCTIONS
 -----------------------------------------------------------------------------

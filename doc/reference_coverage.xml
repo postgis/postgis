@@ -177,14 +177,14 @@ SELECT true = ALL (
       and can be input to coverage processing functions.
       </para>
 
-      <note>To aid in determining a maximum gap width,
+      <note><para>To aid in determining a maximum gap width,
       gaps can be computed by cleaning with <code>gapMaximumWidth => 0</code> 
       and using <xref linkend="ST_CoverageUnion"/> to union the result coverage. 
       Holes in the union correspond to gaps in the original dataset.
       Gap widths can be measured by extracting the holes as polygons 
       and running <xref linkend="ST_MaximumInscribedCircle"/>
       on them; the gap width is twice the computed radius.
-      </note>
+      </para></note>
 
       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires GEOS &gt;= 3.14.0</para>
     </refsection>

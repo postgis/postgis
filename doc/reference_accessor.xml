@@ -906,10 +906,10 @@ FROM (
         The exterior ring (shell) has index 0.  The interior rings (holes) have indices of 1 and higher.
         </para>
 
-		<note>This only works for POLYGON geometries, not MULTIPOLYGONs.
+		<note><para>This only works for POLYGON geometries, not MULTIPOLYGONs.
 		Use <xref linkend="ST_Dump"/> to extract polygon elements from polygonal geometries:
 		<code>ST_DumpRings( (ST_Dump(geom)).geom )</code>
-		</note>
+		</para></note>
 
 		<para role="availability" conformance="1.1.3.">Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher.</para>
 		<para>&Z_support;</para>
@@ -921,7 +921,7 @@ FROM (
         <para>Extracting all rings as polygons.</para>
 		<programlisting>SELECT polyTable.field1, polyTable.field1,
 	  (ST_DumpRings(polyTable.geom)).geom As geom
-FROM polyTable;
+FROM polyTable
 </programlisting>
         <para>Extracting shell and holes from a polygon.</para>
 <programlisting>SELECT path, ST_AsText(geom) As geom
