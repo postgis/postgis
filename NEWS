@@ -13,7 +13,8 @@ xxxx/xx/xx
  - #5993, [topology] Add max_edges parameter to TopoGeo_AddLinestring
           (Sandro Santilli)
  - #6001, support MultiLineString in ST_MakeLine (Paul Ramsey)
- - #2858, ST_MMin and STMMax (Paul Ramsey)
+ - #2858, ST_MMin and ST_MMax (Paul Ramsey)
+ - #5992, Optimize GiST index for repeated edge subdivision in topology (Darafei Praliaskouski)
 
 
 PostGIS 3.6.0

@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright 2017-2022 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2017-2025 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -1260,6 +1260,27 @@ box2df_penalty(const BOX2DF *b1, const BOX2DF *b2)
 	return 0;
 }
 
+static inline float
+box2df_penalty_single(const BOX2DF *box)
+{
+	float boxxmin = box->xmin, boxxmax = box->xmax;
+	float boxymin = box->ymin, boxymax = box->ymax;
+
+	float dx = boxxmax - boxxmin, dy = boxymax - boxymin;
+
+	float area = dx * dy;
+	float edge = dx + dy;
+
+	/* REALM 1: Area is nonzero, return it */
+	if (area > FLT_EPSILON)
+		return pack_float(area, 1);
+	/* REALM 0: Area is zero, return edge  */
+	else if (edge > FLT_EPSILON)
+		return pack_float(edge, 0);
+
+	return 0;
+}
+
 /*
 ** GiST support function. Calculate the "penalty" cost of adding this entry into an existing entry.
 ** Calculate the change in volume of the old entry once the new entry is added.
@@ -1764,9 +1785,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	OffsetNumber i,
 				maxoff;
 	ConsiderSplitContext context;
-	BOX2DF	   *box,
-			   *leftBox,
-			   *rightBox;
+	BOX2DF *leftBox, *rightBox;
 	int			dim,
 				commonEntriesCount;
 	SplitInterval *intervalsLower,
@@ -1790,7 +1809,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	 */
 	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
 	{
-		box = (BOX2DF *) DatumGetPointer(entryvec->vector[i].key);
+		BOX2DF *box = (BOX2DF *)DatumGetPointer(entryvec->vector[i].key);
 		if (i == FirstOffsetNumber)
 			context.boundingBox = *box;
 		else
@@ -1814,7 +1833,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		/* Project each entry as an interval on the selected axis. */
 		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
 		{
-			box = (BOX2DF *) DatumGetPointer(entryvec->vector[i].key);
+			BOX2DF *box = (BOX2DF *)DatumGetPointer(entryvec->vector[i].key);
 			if (dim == 0)
 			{
 				intervalsLower[i - FirstOffsetNumber].lower = box->xmin;
@@ -2010,7 +2029,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		/*
 		 * Get upper and lower bounds along selected axis.
 		 */
-		box = (BOX2DF *) DatumGetPointer(entryvec->vector[i].key);
+		BOX2DF *box = (BOX2DF *)DatumGetPointer(entryvec->vector[i].key);
 		if (context.dim == 0)
 		{
 			lower = box->xmin;
@@ -2065,42 +2084,43 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		if (nentries > INDEX_TUPLES_PER_PAGE && nentries <= 2 * INDEX_TUPLES_PER_PAGE)
 			m = Max(m, nentries - INDEX_TUPLES_PER_PAGE);
 
-		/*
-		 * Calculate delta between penalties of join "common entries" to
-		 * different groups.
-		 */
+		Assert(m >= 1);
+
 		for (i = 0; i < (OffsetNumber)commonEntriesCount; i++)
 		{
-			box = (BOX2DF *) DatumGetPointer(entryvec->vector[
-												commonEntries[i].index].key);
-			/** PG!6 Abs was removed in favor of standard c lib **/
-			commonEntries[i].delta = fabs(box2df_penalty(leftBox, box) - box2df_penalty(rightBox, box));
+			BOX2DF *box = (BOX2DF *)DatumGetPointer(entryvec->vector[commonEntries[i].index].key);
+
+			if (v->spl_nright > 0 && v->spl_nleft > 0)
+			{
+				/* Calculate delta between penalties of join "common entries" to different groups. */
+				commonEntries[i].delta =
+				    fabsf(box2df_penalty(leftBox, box) - box2df_penalty(rightBox, box));
+			}
+			else
+			{
+				/* One group became degenerate during split - distribute boxes by their size */
+				commonEntries[i].delta = -box2df_penalty_single(box);
+			}
 		}
 
-		/*
-		 * Sort "common entries" by calculated deltas in order to distribute
-		 * the most ambiguous entries first.
-		 */
+		/* Sort "common entries" to distribute the most ambiguous entries first. */
 		qsort(commonEntries, commonEntriesCount, sizeof(CommonEntry), common_entry_cmp);
 
-		/*
-		 * Distribute "common entries" between groups.
-		 */
+		/* Distribute "common entries" between groups. */
 		for (i = 0; i < (OffsetNumber)commonEntriesCount; i++)
 		{
-			float right_penalty, left_penalty;
 			bool place_right = true;
-			box = (BOX2DF *)DatumGetPointer(entryvec->vector[commonEntries[i].index].key);
+			BOX2DF *box = (BOX2DF *)DatumGetPointer(entryvec->vector[commonEntries[i].index].key);
 
 			/* Recheck penalties. After we put undecided tuples to some side they're changed */
-			left_penalty = box2df_penalty(leftBox, box);
-			right_penalty = box2df_penalty(rightBox, box);
+			float left_penalty = box2df_penalty(leftBox, box);
+			float right_penalty = box2df_penalty(rightBox, box);
 
-			/* Check if penalty is absolutely telling a tuple should go to some side */
-			if (right_penalty > 0 && left_penalty == 0)
-				place_right = false;
-			else if (right_penalty == 0 && left_penalty > 0)
+			/* Guarantee at least one tuple on each side to make Postgres happy */
+			if (v->spl_nright == 0 && v->spl_nleft > 0)
 				place_right = true;
+			else if (v->spl_nleft == 0 && v->spl_nright > 0)
+				place_right = false;
 			/* Check if we have to place this entry in either group to achieve LIMIT_RATIO */
 			else if (v->spl_nleft + (commonEntriesCount - i) <= m)
 				place_right = false;
