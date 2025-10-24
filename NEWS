@@ -15,6 +15,7 @@ xxxx/xx/xx
  - #6001, support MultiLineString in ST_MakeLine (Paul Ramsey)
  - #2858, ST_MMin and ST_MMax (Paul Ramsey)
  - #5992, Optimize GiST index for repeated edge subdivision in topology (Darafei Praliaskouski)
+ - #5702, Allow the compiler to detect the parallelism -flto=auto (Darafei Praliaskouski)
 
 
 PostGIS 3.6.0
