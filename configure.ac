@@ -1335,8 +1335,19 @@ if test $ENABLE_DEBUG -eq 1; then
 else
   CFLAGS="$CFLAGS -O2"
   if test $ENABLE_LTO -eq 1; then
-    _LT_COMPILER_OPTION([if $compiler supports -flto],[_cv_flto],[-flto],[],[CFLAGS="$CFLAGS -flto"],[])
-    _LT_LINKER_OPTION([if $compiler supports -flto],[_cv_flto],[[-flto]],[LDFLAGS="$LDFLAGS -flto"])
+    if test "$GCC" = yes; then
+      _LT_COMPILER_OPTION([if $compiler supports -flto=auto],[_cv_flto_auto],[-flto=auto],[],[CFLAGS="$CFLAGS -flto=auto"],[])
+      if test "$_cv_flto_auto" != yes; then
+        _LT_COMPILER_OPTION([if $compiler supports -flto],[_cv_flto],[-flto],[],[CFLAGS="$CFLAGS -flto"],[])
+      fi
+      _LT_LINKER_OPTION([if the linker supports -flto=auto],[_cv_ld_flto_auto],[[-flto=auto]],[LDFLAGS="$LDFLAGS -flto=auto"])
+      if test "$_cv_ld_flto_auto" != yes; then
+        _LT_LINKER_OPTION([if the linker supports -flto],[_cv_ld_flto],[[-flto]],[LDFLAGS="$LDFLAGS -flto"])
+      fi
+    else
+      _LT_COMPILER_OPTION([if $compiler supports -flto],[_cv_flto],[-flto],[],[CFLAGS="$CFLAGS -flto"],[])
+      _LT_LINKER_OPTION([if $compiler supports -flto],[_cv_flto],[[-flto]],[LDFLAGS="$LDFLAGS -flto"])
+    fi
   fi
 fi
 
