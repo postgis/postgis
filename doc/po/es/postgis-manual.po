@@ -3,13 +3,15 @@
 #
 # DeepL <noreply-mt-deepl@weblate.org>, 2025.
 # Paulo Cesar Coronado <paulocoronado@udistrital.edu.co>, 2025.
+# juan sebastian jimenez aldana <jusjimeneza@udistrital.edu.co>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-09-04 23:47+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
+"PO-Revision-Date: 2025-10-24 17:47+0000\n"
+"Last-Translator: juan sebastian jimenez aldana <jusjimeneza@udistrital.edu."
+"co>\n"
 "Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/es/>\n"
 "Language: es\n"
@@ -113,7 +115,7 @@ msgstr ""
 "al cluster."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "On windows, if you are running as a service, you can set via System "
 "variables which for Windows 7 you can get to by right-clicking on Computer-"
@@ -122,6 +124,14 @@ msgid ""
 "clicking <emphasis>Advanced System Settings -&gt;Advanced-&gt;Environment "
 "Variables</emphasis> and adding new system variables."
 msgstr ""
+"En Windows, si se ejecuta como un servicio, se puede configurar a través de "
+"las variables del sistema, a las que se puede acceder en Windows 7 haciendo "
+"clic con el botón derecho del ratón en Equipo-&gt; Propiedades Configuración "
+"avanzada del sistema o en el explorador navegando hasta <varname>Panel de "
+"control\\Todos los elementos del panel de control\\Sistema</varname>. A "
+"continuación, haga clic en <emphasis>Configuración avanzada del sistema -&gt "
+"> Avanzadas -&gt> Variables de entorno <emphasis> y añada nuevas variables "
+"del sistema."
 
 #. Tag: para
 #, no-c-format
@@ -129,11 +139,13 @@ msgid ""
 "After you set the environment variables, you'll need to restart your "
 "PostgreSQL service for the changes to take effect."
 msgstr ""
+"Después de configurar las variables de entorno, deberá reiniciar el servicio "
+"PostgreSQL para que los cambios surtan efecto."
 
 #. Tag: title
 #, no-c-format
 msgid "Creating spatial databases"
-msgstr ""
+msgstr "Creación de bases de datos espaciales"
 
 #. Tag: title
 #, no-c-format
@@ -195,6 +207,9 @@ msgid ""
 "by loading the various sql files located in <filename>[prefix]/share/"
 "contrib</filename> as specified during the build phase."
 msgstr ""
+"Para agregar objetos PostGIS y definiciones de funciones a su base de datos, "
+"cargue los distintos archivos sql ubicados en <filename>[prefix]/share/"
+"contrib</filename>, tal y como se especifica durante la fase de compilación."
 
 #. Tag: para
 #, no-c-format
@@ -204,6 +219,11 @@ msgid ""
 "objects are in the <filename>rtpostgis.sql</filename> script. Topology "
 "objects are in the <filename>topology.sql</filename> script."
 msgstr ""
+"Los objetos principales de PostGIS (tipos geométricos y geográficos, y sus "
+"funciones de soporte) se encuentran en el script <filename>postgis.sql</"
+"filename>. Los objetos ráster se encuentran en el script <filename>rtpostgis."
+"sql</filename>. Los objetos topológicos se encuentran en el script "
+"<filename>topology.sql</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -213,6 +233,11 @@ msgid ""
 "populate the <varname>spatial_ref_sys</varname> table. This will permit you "
 "to perform ST_Transform() operations on geometries."
 msgstr ""
+"Para obtener un conjunto completo de identificadores de definición del "
+"sistema de coordenadas EPSG, también puede cargar el archivo de definiciones "
+"<filename>spatial_ref_sys.sql</filename> y rellenar la tabla "
+"<varname>spatial_ref_sys</varname>. Esto le permitirá realizar operaciones "
+"ST_Transform() en geometrías."
 
 #. Tag: para
 #, no-c-format
@@ -222,16 +247,20 @@ msgid ""
 "by simply typing <command>\\dd [function_name]</command> from a "
 "<command>psql</command> terminal window."
 msgstr ""
+"Si desea añadir comentarios a las funciones de PostGIS, los encontrará en el "
+"script <filename>postgis_comments.sql</filename>. Los comentarios se pueden "
+"ver simplemente escribiendo <command>\\dd [nombre_función]</command> desde "
+"una ventana de terminal <command>psql</command>."
 
 #. Tag: para
 #, no-c-format
 msgid "Run the following Shell commands in your terminal:"
-msgstr ""
+msgstr "Ejecute los siguientes comandos Shell en su terminal:"
 
 #. Tag: title
 #, no-c-format
 msgid "Upgrading spatial databases"
-msgstr ""
+msgstr "Actualización de bases de datos espaciales"
 
 #. Tag: para
 #, no-c-format
@@ -239,6 +268,9 @@ msgid ""
 "Upgrading existing spatial databases can be tricky as it requires "
 "replacement or introduction of new PostGIS object definitions."
 msgstr ""
+"Actualizar las bases de datos espaciales existentes puede resultar "
+"complicado, ya que requiere sustituir o introducir nuevas definiciones de "
+"objetos PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -246,6 +278,9 @@ msgid ""
 "Unfortunately not all definitions can be easily replaced in a live database, "
 "so sometimes your best bet is a dump/reload process."
 msgstr ""
+"Desafortunadamente, no todas las definiciones se pueden reemplazar "
+"fácilmente en una base de datos activa, por lo que a veces la mejor opción "
+"es un proceso de volcado/recarga."
 
 #. Tag: para
 #, no-c-format
@@ -253,6 +288,9 @@ msgid ""
 "PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases, and "
 "a HARD UPGRADE procedure for major releases."
 msgstr ""
+"PostGIS proporciona un procedimiento de ACTUALIZACIÓN SUAVE para versiones "
+"menores o correcciones de errores, y un procedimiento de ACTUALIZACIÓN "
+"COMPLETA para versiones principales."
 
 #. Tag: para
 #, no-c-format
@@ -261,11 +299,14 @@ msgid ""
 "data. If you use the -Fc flag to pg_dump you will always be able to restore "
 "the dump with a HARD UPGRADE."
 msgstr ""
+"Antes de intentar actualizar PostGIS, siempre es recomendable hacer una "
+"copia de seguridad de sus datos. Si utiliza el indicador -Fc con pg_dump, "
+"siempre podrá restaurar el volcado con una ACTUALIZACIÓN DURO."
 
 #. Tag: title
 #, no-c-format
 msgid "Soft upgrade"
-msgstr ""
+msgstr "Actualización suave"
 
 #. Tag: para
 #, no-c-format
@@ -275,11 +316,15 @@ msgid ""
 "way, you are advised to switch your install to extensions because the script "
 "way is no longer supported."
 msgstr ""
+"Si instaló su base de datos utilizando extensiones, también deberá "
+"actualizarla utilizando el modelo de extensiones. Si la instaló utilizando "
+"el antiguo método de script sql, le recomendamos que cambie su instalación a "
+"extensiones, ya que el método de script ya no es compatible."
 
 #. Tag: title
 #, no-c-format
 msgid "Soft Upgrade 9.1+ using extensions"
-msgstr ""
+msgstr "Actualización suave 9.1+ utilizando extensiones"
 
 #. Tag: para
 #, no-c-format
@@ -288,6 +333,9 @@ msgid ""
 "upgrade using extensions as well. Doing a minor upgrade with extensions, is "
 "fairly painless."
 msgstr ""
+"Si instaló PostGIS originalmente con extensiones, entonces también deberá "
+"actualizarlo utilizando extensiones. Realizar una actualización menor con "
+"extensiones es bastante sencillo."
 
 #. Tag: para
 #, no-c-format
@@ -296,11 +344,14 @@ msgid ""
 "linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the latest "
 "version you have installed."
 msgstr ""
+"Si utiliza PostGIS 3 o superior, debe utilizar la función <xref linkend="
+"\"PostGIS_Extensions_Upgrade\"/> para actualizar a la última versión que "
+"tenga instalada."
 
 #. Tag: para
 #, no-c-format
 msgid "If you are running PostGIS 2.5 or lower, then do the following:"
-msgstr ""
+msgstr "Si utiliza PostGIS 2.5 o una versión anterior, haga lo siguiente:"
 
 #. Tag: para
 #, no-c-format
@@ -308,11 +359,13 @@ msgid ""
 "If you have multiple versions of PostGIS installed, and you don't want to "
 "upgrade to the latest, you can explicitly specify the version as follows:"
 msgstr ""
+"Si tiene varias versiones de PostGIS instaladas y no desea actualizar a la "
+"última, puede especificar explícitamente la versión de la siguiente manera:"
 
 #. Tag: para
 #, no-c-format
 msgid "If you get an error notice something like:"
-msgstr ""
+msgstr "Si recibe un aviso de error similar al siguiente:"
 
 #. Tag: para
 #, no-c-format
@@ -321,11 +374,15 @@ msgid ""
 "<xref linkend=\"create_new_db_extensions\"/> and then restore your backup on "
 "top of this new database."
 msgstr ""
+"A continuación, deberá realizar una copia de seguridad de su base de datos, "
+"crear una nueva tal y como se describe en <xref linkend="
+"\"create_new_db_extensions\"/> y, a continuación, restaurar su copia de "
+"seguridad sobre esta nueva base de datos."
 
 #. Tag: para
 #, no-c-format
 msgid "If you get a notice message like:"
-msgstr ""
+msgstr "Si recibe un mensaje de aviso como:"
 
 #. Tag: para
 #, no-c-format
@@ -336,6 +393,11 @@ msgid ""
 "in that case you can append \"next\" to the version string, and next time "
 "you'll need to drop the \"next\" suffix again:"
 msgstr ""
+"Entonces todo estará ya actualizado y podrá ignorarlo sin problema. "
+"<emphasis role=\"bold\">UNLESS</emphasis> que esté intentando actualizar de "
+"una versión de desarrollo a la siguiente (que no tiene un nuevo número de "
+"versión); en ese caso, puede añadir «next» a la cadena de la versión, y la "
+"próxima vez tendrá que eliminar el sufijo «next» de nuevo:"
 
 #. Tag: para
 #, no-c-format
@@ -345,6 +407,10 @@ msgid ""
 "the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
 "the newest latest version during restore."
 msgstr ""
+"Si instaló PostGIS originalmente sin especificar una versión, a menudo puede "
+"omitir la reinstalación de la extensión postgis antes de restaurar, ya que "
+"la copia de seguridad solo tiene <code>CREATE EXTENSION postgis</code> y, "
+"por lo tanto, toma la última versión más reciente durante la restauración."
 
 #. Tag: para
 #, no-c-format
@@ -353,11 +419,15 @@ msgid ""
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
 "safely drop, if you don't need raster support. You can drop as follows:"
 msgstr ""
+"Si está actualizando la extensión PostGIS desde una versión anterior a la "
+"3.0.0, tendrá una nueva extensión <emphasis>postgis_raster</emphasis> que "
+"puede eliminar de forma segura si no necesita compatibilidad con ráster. "
+"Puede eliminarla de la siguiente manera:"
 
 #. Tag: title
 #, no-c-format
 msgid "Soft Upgrade Pre 9.1+ or without extensions"
-msgstr ""
+msgstr "Actualización suave Pre 9.1+ o sin extensiones"
 
 #. Tag: para
 #, no-c-format
@@ -366,6 +436,9 @@ msgid ""
 "extensions. If you have extensions and try to upgrade with this approach "
 "you'll get messages like:"
 msgstr ""
+"Esta sección solo se aplica a aquellos que hayan instalado PostGIS sin "
+"utilizar extensiones. Si tiene extensiones e intenta actualizar con este "
+"método, aparecerán mensajes como:"
 
 #. Tag: para
 #, no-c-format
@@ -374,6 +447,9 @@ msgid ""
 "prior to r7409, you cannot use this procedure but would rather need to do a "
 "<link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
 msgstr ""
+"NOTA: si está migrando de PostGIS 1.* a PostGIS 2.* o de PostGIS 2.* "
+"anterior a r7409, no puede utilizar este procedimiento, sino que deberá "
+"realizar una <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
 
 #. Tag: para
 #, no-c-format
@@ -382,6 +458,9 @@ msgid ""
 "<filename>*_upgrade.sql</filename> files in the installation folders. You "
 "can list them all with:"
 msgstr ""
+"Después de compilar e instalar (make install), debería encontrar un conjunto "
+"de archivos <filename>*_upgrade.sql</filename> en las carpetas de "
+"instalación. Puede enumerarlos todos con:"
 
 #. Tag: para
 #, no-c-format
@@ -389,6 +468,8 @@ msgid ""
 "Load them all in turn, starting from <filename>postgis_upgrade.sql</"
 "filename>."
 msgstr ""
+"Cárguelos todos por orden, empezando por <filename>postgis_upgrade."
+"sql</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -398,11 +479,16 @@ msgid ""
 "<filename>topology_upgrade.sql</filename> and <filename>sfcgal_upgrade.sql</"
 "filename> respectively. If you need them:"
 msgstr ""
+"El mismo procedimiento se aplica a las extensiones raster, topology y "
+"sfcgal, con archivos de actualización denominados <filename>rtpostgis_upgrade"
+".sql</filename>, <filename>topology_upgrade.sql</filename> y "
+"<filename>sfcgal_upgrade.sql</filename>, respectivamente. Si los necesita:"
 
 #. Tag: para
 #, no-c-format
 msgid "You are advised to switch to an extension based install by running"
 msgstr ""
+"Se recomienda cambiar a una instalación basada en extensiones ejecutando"
 
 #. Tag: para
 #, no-c-format
@@ -411,6 +497,10 @@ msgid ""
 "upgrading your version you are using a version too early for a soft upgrade "
 "and need to do a <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
 msgstr ""
+"Si no encuentra el archivo <filename>postgis_upgrade.sql</filename> "
+"específico para actualizar su versión, significa que está utilizando una "
+"versión demasiado antigua para realizar una actualización suave y debe "
+"realizar una <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
 
 #. Tag: para
 #, no-c-format
@@ -419,11 +509,14 @@ msgid ""
 "about the need to run this kind of upgrade using a \"procs need upgrade\" "
 "message."
 msgstr ""
+"La función <xref linkend=\"PostGIS_Full_Version\"/> debería informarle sobre "
+"la necesidad de ejecutar este tipo de actualización mediante un mensaje «"
+"procs need upgrade» (los procedimientos necesitan actualización)."
 
 #. Tag: title
 #, no-c-format
 msgid "Hard upgrade"
-msgstr ""
+msgstr "Actualización difícil"
 
 #. Tag: para
 #, no-c-format
@@ -434,6 +527,13 @@ msgid ""
 "Notes</link> appendix reports for each version whether you need a dump/"
 "reload (HARD UPGRADE) to upgrade."
 msgstr ""
+"Por ACTUALIZACIÓN COMPLETA nos referimos al volcado/recarga completa de "
+"bases de datos habilitadas para PostGIS. Necesita una ACTUALIZACIÓN COMPLETA "
+"cuando cambia el almacenamiento interno de los objetos PostGIS o cuando no "
+"es posible realizar una ACTUALIZACIÓN PARCIAL. El apéndice <link linkend="
+"\"release_notes\">Notas de la versión</link> indica para cada versión si es "
+"necesario realizar un volcado/recarga (ACTUALIZACIÓN COMPLETA) para "
+"actualizar."
 
 #. Tag: para
 #, no-c-format
@@ -444,6 +544,11 @@ msgid ""
 "database with PostGIS installed without getting duplicate symbol errors or "
 "bringing forward deprecated objects."
 msgstr ""
+"El proceso de volcado/recarga cuenta con la ayuda del script "
+"postgis_restore, que se encarga de omitir del volcado todas las definiciones "
+"que pertenecen a PostGIS (incluidas las antiguas), lo que le permite "
+"restaurar sus esquemas y datos en una base de datos con PostGIS instalado "
+"sin obtener errores de símbolos duplicados ni transferir objetos obsoletos."
 
 #. Tag: para
 #, no-c-format
@@ -452,11 +557,14 @@ msgid ""
 "href=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
 "upgrade</link>."
 msgstr ""
+"Las instrucciones complementarias para usuarios de Windows están disponibles "
+"en <link xlink:href=\"http://trac.osgeo.org/postgis/wiki/"
+"UsersWikiWinUpgrade\">Windows Hard upgrade</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "The Procedure is as follows:"
-msgstr ""
+msgstr "El procedimiento es el siguiente:"
 
 #. Tag: para
 #, no-c-format
@@ -466,6 +574,10 @@ msgid ""
 "output. The user can be the owner of the db, need not be postgres super "
 "account."
 msgstr ""
+"Cree un volcado con «formato personalizado» de la base de datos que desea "
+"actualizar (llamémosla <varname>olddb</varname>) e incluya blobs binarios "
+"(-b) y salida detallada (-v). El usuario puede ser el propietario de la base "
+"de datos, no es necesario que sea la cuenta superusuario de Postgres."
 
 #. Tag: para
 #, no-c-format
@@ -475,6 +587,10 @@ msgid ""
 "linkend=\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> "
 "for instructions on how to do this."
 msgstr ""
+"Realice una nueva instalación de PostGIS en una nueva base de datos; nos "
+"referiremos a esta base de datos como <varname>newdb</varname>. Consulte "
+"<xref linkend=\"create_new_db\"/> y <xref linkend=\"create_new_db_extensions"
+"\"/> para obtener instrucciones sobre cómo hacerlo."
 
 #. Tag: para
 #, no-c-format
@@ -485,6 +601,12 @@ msgid ""
 "If for any reason you really want your own overrides of standard entries "
 "just don't load the spatial_ref_sys.sql file when creating the new db."
 msgstr ""
+"Las entradas spatial_ref_sys que se encuentren en su volcado se restaurarán, "
+"pero no sustituirán a las existentes en spatial_ref_sys. Esto es para "
+"garantizar que las correcciones del conjunto oficial se propaguen "
+"correctamente a las bases de datos restauradas. Si por cualquier motivo "
+"desea realmente sustituir las entradas estándar, simplemente no cargue el "
+"archivo spatial_ref_sys.sql al crear la nueva base de datos."
 
 #. Tag: para
 #, no-c-format
@@ -497,6 +619,13 @@ msgid ""
 "functions can be later removed by loading <filename>uninstall_legacy.sql</"
 "filename>."
 msgstr ""
+"Si su base de datos es muy antigua o sabe que ha estado utilizando funciones "
+"obsoletas en sus vistas y funciones, es posible que tenga que cargar "
+"<filename>legacy.sql</filename> para que todas sus funciones y vistas, etc., "
+"vuelvan a funcionar correctamente. Haga esto solo si es realmente necesario. "
+"Si es posible, considere actualizar sus vistas y funciones antes de realizar "
+"el volcado. Las funciones obsoletas se pueden eliminar posteriormente "
+"cargando <filename>uninstall_legacy.sql</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -505,11 +634,15 @@ msgid ""
 "postgis_restore. Unexpected errors, if any, will be printed to the standard "
 "error stream by psql. Keep a log of those."
 msgstr ""
+"Restaure su copia de seguridad en su nueva base de datos <varname>newdb</"
+"varname> utilizando postgis_restore. Si se produce algún error inesperado, "
+"psql lo imprimirá en el flujo de errores estándar. Mantenga un registro de "
+"dichos errores."
 
 #. Tag: para
 #, no-c-format
 msgid "Errors may arise in the following cases:"
-msgstr ""
+msgstr "Pueden surgir errores en los siguientes casos:"
 
 #. Tag: para
 #, no-c-format
@@ -522,6 +655,13 @@ msgid ""
 "to fix your code to stop using deprecated functions and drop them loading "
 "<filename>uninstall_legacy.sql</filename>."
 msgstr ""
+"Algunas de sus vistas o funciones utilizan objetos PostGIS obsoletos. Para "
+"solucionar esto, puede intentar cargar el script <filename>legacy.sql</"
+"filename> antes de restaurar o tendrá que restaurar a una versión de PostGIS "
+"que aún contenga esos objetos e intentar la migración de nuevo después de "
+"portar su código. Si la forma <filename>legacy.sql</filename> le funciona, "
+"no olvide corregir su código para dejar de utilizar funciones obsoletas y "
+"eliminarlas cargando <filename>uninstall_legacy.sql</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -535,6 +675,16 @@ msgid ""
 "invariant to hold and possibly also its primary key ( when multiple invalid "
 "SRIDS get converted to the same reserved SRID value )."
 msgstr ""
+"Algunos registros personalizados de spatial_ref_sys en el archivo de volcado "
+"tienen un valor SRID no válido. Los valores SRID válidos son mayores que 0 y "
+"menores que 999000. Los valores en el rango 999000.999999 están reservados "
+"para uso interno, mientras que los valores &gt;999999 no se pueden utilizar "
+"en absoluto. Todos los registros personalizados con SRID no válidos se "
+"conservarán, y los valores &gt; 999999 se moverán al rango reservado, pero "
+"la tabla spatial_ref_sys perdería una restricción de verificación que "
+"garantiza que se mantenga esa invariante y, posiblemente, también su clave "
+"principal (cuando varios SRID no válidos se convierten al mismo valor SRID "
+"reservado)."
 
 #. Tag: para
 #, no-c-format
@@ -544,6 +694,11 @@ msgid ""
 "new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the invalid "
 "entry from spatial_ref_sys and re-construct the check(s) with:"
 msgstr ""
+"Para solucionar esto, debe copiar su SRS personalizado a un SRID con un "
+"valor válido (tal vez en el rango 910000..910999), convertir todas sus "
+"tablas al nuevo srid (consulte <xref linkend=\"UpdateGeometrySRID\"/>), "
+"eliminar la entrada no válida de spatial_ref_sys y reconstruir las "
+"verificaciones con:"
 
 #. Tag: para
 #, no-c-format
@@ -553,6 +708,10 @@ msgid ""
 "IGN </link> cartography, you will have probably SRIDs out of range and you "
 "will see, when importing your database, issues like this :"
 msgstr ""
+"Si está actualizando una base de datos antigua que contiene cartografía "
+"francesa <link xlink:href=\"https://en.wikipedia.org/wiki/Institut_g%C3%"
+"A9ographique_national\"> IGN </link>, es probable que los SRID estén fuera "
+"de rango y que, al importar la base de datos, aparezcan problemas como este:"
 
 #. Tag: para
 #, no-c-format
@@ -561,11 +720,14 @@ msgid ""
 "IGN from the sql which is resulting from postgis_restore. So, after having "
 "run :"
 msgstr ""
+"En este caso, puede intentar seguir los siguientes pasos: primero, elimine "
+"completamente el IGN del sql que resulta de postgis_restore. Por lo tanto, "
+"después de ejecutar:"
 
 #. Tag: para
 #, no-c-format
 msgid "run this command :"
-msgstr ""
+msgstr "corre este comando:"
 
 #. Tag: para
 #, no-c-format
@@ -576,11 +738,16 @@ msgid ""
 "Put_IGN_SRS_into_Postgis.sql\"> this script </link> After these operations, "
 "import your data :"
 msgstr ""
+"Cree su nueva base de datos, active las extensiones Postgis necesarias e "
+"inserte correctamente el sistema francés IGN con: <link xlink:href=\"https"
+"://raw.githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/"
+"Put_IGN_SRS_into_Postgis.sql\"> este script </link> Después de estas "
+"operaciones, importe sus datos:"
 
 #. Tag: title
 #, no-c-format
 msgid "Performance Tuning"
-msgstr ""
+msgstr "Optimización del rendimiento"
 
 #. Tag: para
 #, no-c-format
@@ -590,6 +757,11 @@ msgid ""
 "are usually large, so memory-related optimizations generally have more of an "
 "impact on PostGIS than other types of PostgreSQL queries."
 msgstr ""
+"El ajuste del rendimiento de PostGIS es muy similar al ajuste de cualquier "
+"carga de trabajo de PostgreSQL. La única consideración adicional es que las "
+"geometrías y las ráster suelen ser grandes, por lo que las optimizaciones "
+"relacionadas con la memoria suelen tener un mayor impacto en PostGIS que en "
+"otros tipos de consultas de PostgreSQL."
 
 #. Tag: para
 #, no-c-format
@@ -598,6 +770,9 @@ msgid ""
 "href=\"https://wiki.postgresql.org/wiki/"
 "Tuning_Your_PostgreSQL_Server\">Tuning your PostgreSQL Server</link>."
 msgstr ""
+"Para obtener información general sobre cómo optimizar PostgreSQL, consulte "
+"<link xlink:href=\"https://wiki.postgresql.org/wiki/"
+"Tuning_Your_PostgreSQL_Server\">Ajustar su servidor PostgreSQL</link>."
 
 #. Tag: para
 #, no-c-format
@@ -606,6 +781,9 @@ msgid ""
 "touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</code> "
 "by using the <code>ALTER SYSTEM</code> command."
 msgstr ""
+"Para PostgreSQL 9.4+, la configuración se puede establecer a nivel del "
+"servidor sin tocar <code>postgresql.conf</code> o <code>postgresql.auto."
+"conf</code> utilizando el comando <code>ALTER SYSTEM</code>."
 
 #. Tag: para
 #, no-c-format
@@ -613,16 +791,19 @@ msgid ""
 "In addition to the Postgres settings, PostGIS has some custom settings which "
 "are listed in <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
+"Además de la configuración de Postgres, PostGIS tiene algunas "
+"configuraciones personalizadas que se enumeran en <xref linkend=\"PostGIS_GUC"
+"\"/>."
 
 #. Tag: title
 #, no-c-format
 msgid "Startup"
-msgstr ""
+msgstr "Inicio"
 
 #. Tag: para
 #, no-c-format
 msgid "These settings are configured in <code>postgresql.conf</code>:"
-msgstr ""
+msgstr "Estos ajustes se configuran en <code>postgresql.conf</code>:"
 
 #. Tag: link
 #, fuzzy, no-c-format
@@ -632,7 +813,7 @@ msgstr "constraint_exclusion"
 #. Tag: para
 #, no-c-format
 msgid "Default: partition"
-msgstr ""
+msgstr "Predeterminado: partición"
 
 #. Tag: para
 #, no-c-format
@@ -642,16 +823,21 @@ msgid ""
 "force the planner to only analyze tables for constraint consideration if "
 "they are in an inherited hierarchy and not pay the planner penalty otherwise."
 msgstr ""
+"Esto se utiliza generalmente para la partición de tablas. El valor "
+"predeterminado es «partición», lo cual es ideal para PostgreSQL 8.4 y "
+"versiones posteriores, ya que obliga al planificador a analizar las tablas "
+"solo para considerar las restricciones si se encuentran en una jerarquía "
+"heredada y, en caso contrario, no paga la penalización del planificador."
 
 #. Tag: link
 #, no-c-format
 msgid "shared_buffers"
-msgstr ""
+msgstr "buffers_compartidos"
 
 #. Tag: para
 #, no-c-format
 msgid "Default: ~128MB in PostgreSQL 9.6"
-msgstr ""
+msgstr "Predeterminado: ~128 MB en PostgreSQL 9.6"
 
 #. Tag: para
 #, no-c-format
@@ -659,6 +845,8 @@ msgid ""
 "Set to about 25% to 40% of available RAM. On windows you may not be able to "
 "set as high."
 msgstr ""
+"Configúre entre el 25 % y el 40 % de la RAM disponible. En Windows es "
+"posible que no pueda configurar un valor tan alto."
 
 #. Tag: para
 #, no-c-format
@@ -669,6 +857,12 @@ msgid ""
 "setting has additional importance in that it controls the max number of "
 "processes you can have for parallel queries."
 msgstr ""
+"<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
+"config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</link> "
+"Esta configuración solo está disponible para PostgreSQL 9.4+. Para "
+"PostgreSQL 9.6+, esta configuración tiene una importancia adicional, ya que "
+"controla el número máximo de procesos que se pueden tener para consultas "
+"paralelas."
 
 #. Tag: para
 #, no-c-format
@@ -681,6 +875,8 @@ msgid ""
 "Sets the maximum number of background processes that the system can support. "
 "This parameter can only be set at server start."
 msgstr ""
+"Establece el número máximo de procesos en segundo plano que el sistema puede "
+"admitir. Este parámetro solo se puede configurar al iniciar el servidor."
 
 #. Tag: title
 #, no-c-format
