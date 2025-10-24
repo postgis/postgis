@@ -1442,6 +1442,18 @@ FROM
         ST_SetSRID(ST_MakePoint(7, 51), 4326) geom
     ) data;
 
+-- https://trac.osgeo.org/postgis/ticket/4798
+SET client_min_messages TO WARNING;
+SELECT
+    '#4798', ST_AsGeoJSON(data.*)
+FROM
+    (SELECT
+        1 AS column,
+        2 AS column,
+        ST_SetSRID(ST_MakePoint(7, 51), 4326) AS geom
+    ) AS data;
+RESET client_min_messages;
+
 
 -- https://trac.osgeo.org/postgis/ticket/5008
 SELECT

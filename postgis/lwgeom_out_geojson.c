@@ -19,6 +19,7 @@
 #include "utils/datetime.h"
 #include "utils/lsyscache.h"
 #include "utils/json.h"
+#include "utils/hsearch.h"
 #if POSTGIS_PGSQL_VERSION < 130
 #include "utils/jsonapi.h"
 #else
@@ -47,10 +48,20 @@ typedef enum					/* type categories for datum_to_json */
 	JSONTYPE_OTHER				/* all else */
 } JsonTypeCategory;
 
-static void array_dim_to_json(StringInfo result, int dim, int ndims, int *dims,
-				  Datum *vals, bool *nulls, int *valcount,
-				  JsonTypeCategory tcategory, Oid outfuncoid,
-				  bool use_line_feeds);
+typedef struct GeoJsonPropKey {
+	char key[NAMEDATALEN];
+} GeoJsonPropKey;
+
+static void array_dim_to_json(StringInfo result,
+			      int dim,
+			      int ndims,
+			      int *dims,
+			      Datum *vals,
+			      bool *nulls,
+			      int *valcount,
+			      JsonTypeCategory tcategory,
+			      Oid outfuncoid,
+			      bool use_line_feeds);
 static void array_to_json_internal(Datum array, StringInfo result,
 								   bool use_line_feeds);
 static void composite_to_geojson(FunctionCallInfo fcinfo,
@@ -127,18 +138,24 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 		     Oid geog_oid)
 {
 	HeapTupleHeader td;
-	Oid			tupType;
-	int32		tupTypmod;
-	TupleDesc	tupdesc;
-	HeapTupleData tmptup,
-			   *tuple;
-	int			i;
-	bool		needsep = false;
+	Oid tupType;
+	int32 tupTypmod;
+	TupleDesc tupdesc;
+	HeapTupleData tmptup, *tuple;
+	int i;
+	bool needsep = false;
 	const char *sep;
-	StringInfo	props = makeStringInfo();
-	StringInfo	id = makeStringInfo();
-	bool		geom_column_found = false;
-	bool		id_column_found = false;
+	StringInfo props = makeStringInfo();
+	StringInfo id = makeStringInfo();
+	bool geom_column_found = false;
+	bool id_column_found = false;
+	HTAB *prop_keys = NULL;
+	HASHCTL ctl;
+
+	MemSet(&ctl, 0, sizeof(ctl));
+	ctl.keysize = NAMEDATALEN;
+	ctl.entrysize = sizeof(GeoJsonPropKey);
+	ctl.hcxt = CurrentMemoryContext;
 
 	sep = use_line_feeds ? ",\n " : ", ";
 
@@ -149,6 +166,15 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 	tupTypmod = HeapTupleHeaderGetTypMod(td);
 	tupdesc = lookup_rowtype_tupdesc(tupType, tupTypmod);
 
+	/*
+	 * Keep track of property names for this feature so that we can warn
+	 * when SQL supplies duplicate aliases.  GeoJSON accepts repeated keys,
+	 * yet downstream PostgreSQL jsonb casts retain only the last value, so
+	 * surfacing the issue here prevents silent information loss.
+	 */
+	prop_keys =
+	    hash_create("GeoJSON property keys", Max(tupdesc->natts, 8), &ctl, HASH_ELEM | HASH_CONTEXT | HASH_STRINGS);
+
 	/* Build a temporary HeapTuple control structure */
 	tmptup.t_len = HeapTupleHeaderGetDatumLength(td);
 	tmptup.t_data = td;
@@ -158,14 +184,14 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 
 	for (i = 0; i < tupdesc->natts; i++)
 	{
-		Datum		val;
-		bool		isnull;
-		char	   *attname;
+		Datum val;
+		bool isnull;
+		char *attname;
 		JsonTypeCategory tcategory;
-		Oid			outfuncoid;
+		Oid outfuncoid;
 		Form_pg_attribute att = TupleDescAttr(tupdesc, i);
-		bool        is_geom_column = false;
-		bool        is_id_column = false;
+		bool is_geom_column = false;
+		bool is_id_column = false;
 
 		if (att->attisdropped)
 			continue;
@@ -220,9 +246,21 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 		}
 		else
 		{
+			bool found;
+
 			if (needsep)
 				appendStringInfoString(props, sep);
 			needsep = true;
+
+			(void)hash_search(prop_keys, attname, HASH_ENTER, &found);
+			if (found)
+			{
+				ereport(
+				    WARNING,
+				    (errmsg("duplicate key \"%s\" encountered while building GeoJSON properties",
+					    attname),
+				     errhint("Only the last value for each key is preserved when casting to JSONB.")));
+			}
 
 			escape_json(props, attname);
 			appendStringInfoString(props, ": ");
@@ -242,16 +280,14 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 	}
 
 	if (!geom_column_found)
-		ereport(ERROR,
-				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-				 errmsg("geometry column is missing")));
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE), errmsg("geometry column is missing")));
 
 	if (id_column_name)
 	{
 		if (!id_column_found)
 			ereport(ERROR,
-					(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-					 errmsg("Specified id column \"%s\" is missing", id_column_name)));
+				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				 errmsg("Specified id column \"%s\" is missing", id_column_name)));
 
 		appendStringInfoString(result, ", \"id\": ");
 		appendStringInfo(result, "%s", id->data);
@@ -261,6 +297,7 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 	appendStringInfo(result, "%s", props->data);
 
 	appendStringInfoString(result, "}}");
+	hash_destroy(prop_keys);
 	ReleaseTupleDesc(tupdesc);
 }
 

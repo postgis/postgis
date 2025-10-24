@@ -1,4 +1,3 @@
-<!-- Converted by db4-upgrade version 1.1 -->
 <section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Geometry_Outputs">
     <title>Geometry Output</title><info>
       <abstract>
@@ -706,6 +705,8 @@ Conversely, passing the parameter will save column type lookups.
 
             <para>The <varname>id_column</varname> parameter is used to set the "id" member of the returned GeoJSON features. As per GeoJSON RFC, this SHOULD be used whenever a feature has a commonly used identifier, such as a primary key. When not specified, the produced features will not get an "id" member and any columns other than the geometry, including any potential keys, will just end up inside the feature’s "properties" member.</para>
 
+            <para>When the input record includes duplicate column names, the resulting "properties" object will contain repeated keys. <function>ST_AsGeoJSON</function> raises a warning in that case because PostgreSQL <type>jsonb</type> keeps only the last value for duplicate keys.</para>
+
             <para>The GeoJSON specification states that polygons are oriented using the Right-Hand Rule,
             and some clients require this orientation.
             This can be ensured by using <xref linkend="ST_ForcePolygonCCW"/>.
@@ -730,7 +731,8 @@ Conversely, passing the parameter will save column type lookups.
       <para role="changed" conformance="2.0.0">Changed: 2.0.0 support default args and named args.</para>
       <para role="changed" conformance="3.0.0">Changed: 3.0.0 support records as input</para>
       <para role="changed" conformance="3.0.0">Changed: 3.0.0 output SRID if not EPSG:4326.</para>
-            <para role="changed" conformance="3.5.0">Changed: 3.5.0 allow specifying the column containing the feature id</para>
+      <para role="changed" conformance="3.5.0">Changed: 3.5.0 allow specifying the column containing the feature id</para>
+      <para role="changed" conformance="3.7.0">Changed: 3.7.0 added warning about duplicate keys</para>
       <para>&Z_support;</para>
     </refsection>
 

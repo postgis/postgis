@@ -16,6 +16,7 @@ xxxx/xx/xx
  - #2858, ST_MMin and ST_MMax (Paul Ramsey)
  - #5992, Optimize GiST index for repeated edge subdivision in topology (Darafei Praliaskouski)
  - #5702, Allow the compiler to detect the parallelism -flto=auto (Darafei Praliaskouski)
+ - #4798, ST_AsGeoJSON warns about duplicate property keys (Darafei Praliaskouski)
 
 
 PostGIS 3.6.0

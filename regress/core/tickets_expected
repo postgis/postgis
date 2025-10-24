@@ -460,6 +460,8 @@ ERROR:  LWGEOM_addpoint: Invalid offset
 #4770.c|POINT(0 0)|300
 #4770.c|MULTIPOINT((0 0),(1 1))|602
 #4799|{"type": "Feature", "geometry": {"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:25832"}},"coordinates":[359667,5651729]}, "properties": {"id": 1, "geom1": {"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:3035"}},"coordinates":[4110471,3103061]}}}
+WARNING:  duplicate key "column" encountered while building GeoJSON properties
+#4798|{"type": "Feature", "geometry": {"type":"Point","coordinates":[7,51]}, "properties": {"column": 1, "column": 2}}
 #5008|f|f
 ERROR:  Line has no points
 #5350|M 0 0 l 1 -1
