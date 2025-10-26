@@ -173,7 +173,11 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 	 * surfacing the issue here prevents silent information loss.
 	 */
 	prop_keys =
+#if POSTGIS_PGSQL_VERSION <= 130
+	    hash_create("GeoJSON property keys", Max(tupdesc->natts, 8), &ctl, HASH_ELEM | HASH_CONTEXT);
+#else
 	    hash_create("GeoJSON property keys", Max(tupdesc->natts, 8), &ctl, HASH_ELEM | HASH_CONTEXT | HASH_STRINGS);
+#endif
 
 	/* Build a temporary HeapTuple control structure */
 	tmptup.t_len = HeapTupleHeaderGetDatumLength(td);
