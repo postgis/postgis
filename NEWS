@@ -15,6 +15,10 @@ PostGIS 3.6.1
               authored: Andrey Borodin (Yandex), reported by Sergey Bobrov (Kaspersky)
   - #5754, ST_ForcePolygonCCW reverses lines (Paul Ramsey)
 
+* Bug Fixes *
+
+ - #5959, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
+
 
 PostGIS 3.6.0
 2025/09/01
