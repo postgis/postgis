@@ -152,6 +152,46 @@ histogram_cell_budget(double total_rows, int ndims, int attstattarget)
 }
 
 /*
+ * Allocate histogram buckets along a single axis in proportion to the observed
+ * density variation.  The caller passes in the global histogram target along
+ * with the number of axes that exhibited variation in the sampled data and the
+ * relative contribution of the current axis (edge_ratio).  Earlier versions
+ * evaluated the pow() call directly in the caller, which exposed the planner to
+ * NaN propagation on some amd64 builds when the ratio was denormal or negative
+ * (see #5959).  Keeping the calculation in one place allows us to clamp the
+ * inputs and provide a predictable fallback for problematic floating point
+ * combinations.
+ */
+static inline int
+histogram_axis_cells(int histo_cells_target, int histo_ndims, double edge_ratio)
+{
+	double scaled;
+	double axis_cells;
+
+	if (histo_cells_target <= 0 || histo_ndims <= 0)
+		return 1;
+
+	if (!(edge_ratio > 0.0) || !isfinite(edge_ratio))
+		return 1;
+
+	scaled = (double)histo_cells_target * (double)histo_ndims * edge_ratio;
+	if (!(scaled > 0.0) || !isfinite(scaled))
+		return 1;
+
+	axis_cells = pow(scaled, 1.0 / (double)histo_ndims);
+	if (!(axis_cells > 0.0) || !isfinite(axis_cells))
+		return 1;
+
+	if (axis_cells >= (double)INT_MAX)
+		return INT_MAX;
+
+	if (axis_cells <= 1.0)
+		return 1;
+
+	return (int)axis_cells;
+}
+
+/*
  * Compute the portion of 'target' covered by 'cover'.  The caller supplies the
  * dimensionality because ND_BOX always carries four slots.  Degenerate volumes
  * fold to zero, allowing the callers to detect slabs that ANALYZE sometimes

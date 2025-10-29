@@ -1516,11 +1516,10 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 				 * Scale the target cells number by the # of dims and ratio,
 				 * then take the appropriate root to get the estimated number of cells
 				 * on this axis (eg, pow(0.5) for 2d, pow(0.333) for 3d, pow(0.25) for 4d)
-				*/
-				histo_size[d] = (int)pow((double)histo_cells_target * histo_ndims * edge_ratio, 1/(double)histo_ndims);
-				/* If something goes awry, just give this dim one slot */
-				if ( ! histo_size[d] )
-					histo_size[d] = 1;
+				 * The dedicated helper clamps pathological floating point inputs so we
+				 * do not resurrect the NaN propagation reported in #5959 on amd64.
+				 */
+				histo_size[d] = histogram_axis_cells(histo_cells_target, histo_ndims, edge_ratio);
 			}
 			histo_cells_new *= histo_size[d];
 		}
