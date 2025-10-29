@@ -1905,6 +1905,7 @@ AC_CONFIG_FILES([GNUmakefile
    libpgcommon/Makefile
    libpgcommon/cunit/Makefile
    postgis/Makefile
+   postgis/cunit/Makefile
    postgis/sqldefines.h
    sfcgal/Makefile
    $SFCGAL_MAKEFILE_LIST

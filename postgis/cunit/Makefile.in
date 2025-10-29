@@ -1,0 +1,43 @@
+# **********************************************************************
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.net
+# *
+# * Copyright 2025 Darafei Praliaskouski <me@komzpa.net>
+# *
+# * This is free software; you can redistribute and/or modify it under
+# * the terms of the GNU General Public Licence. See the COPYING file.
+# *
+# **********************************************************************
+
+srcdir = @srcdir@
+top_builddir = @top_builddir@
+
+CC=@CC@
+LIBTOOL=@LIBTOOL@
+CFLAGS = @CFLAGS@ @CPPFLAGS@ @PGSQL_BE_CPPFLAGS@ @CUNIT_CPPFLAGS@ -I.. -I$(top_builddir) -I@top_srcdir@/liblwgeom -I@top_builddir@/liblwgeom -I@top_srcdir@/libpgcommon -I@top_builddir@/libpgcommon
+LDFLAGS = @CUNIT_LDFLAGS@ -lm
+
+VPATH = $(srcdir)
+
+OBJS = cu_tester.o
+
+# Build the standalone histogram helper tester.
+all: cu_tester
+
+# Execute the suite directly; no installation step is required.
+check: all
+	$(LIBTOOL) --mode=execute ./cu_tester
+
+# Link the tester with libtool; all helper code is header-only.
+cu_tester: $(OBJS)
+	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+clean:
+	rm -f $(OBJS) cu_tester
+
+clobber distclean: clean
+	rm -f Makefile

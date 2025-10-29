@@ -8,6 +8,10 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 
 
 
+* Bug Fixes *
+
+ - #5959, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
+
 
 PostGIS 3.5.4
 2025/10/16
