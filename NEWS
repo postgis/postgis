@@ -18,6 +18,10 @@ xxxx/xx/xx
  - #5702, Allow the compiler to detect the parallelism -flto=auto (Darafei Praliaskouski)
  - #4798, ST_AsGeoJSON warns about duplicate property keys (Darafei Praliaskouski)
 
+* Bug Fixes *
+
+ - #5959, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
+
 
 PostGIS 3.6.0
 2025/09/01
