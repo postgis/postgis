@@ -28,6 +28,7 @@
 
 #include <CUnit/Basic.h>
 #include <limits.h>
+#include <math.h>
 #include <string.h>
 
 #include "../gserialized_estimate_support.h"
@@ -80,6 +81,23 @@ histogram_budget_clamps(void)
 
 	/* Trigger the INT_MAX guard once both other caps exceed it. */
 	CU_ASSERT_EQUAL(histogram_cell_budget((double)INT_MAX, 50000, INT_MAX), INT_MAX);
+}
+
+static void
+histogram_axis_allocation_guards(void)
+{
+	/* Baseline: evenly split a 10k target over two varying dimensions. */
+	CU_ASSERT_EQUAL(histogram_axis_cells(10000, 2, 0.5), 100);
+
+	/* Skewed axis ratios that collapse to tiny powers still return one cell. */
+	CU_ASSERT_EQUAL(histogram_axis_cells(10000, 2, 1e-9), 1);
+
+	/* Denormals, NaNs and negative ratios should not leak to the histogram. */
+	CU_ASSERT_EQUAL(histogram_axis_cells(10000, 2, NAN), 1);
+	CU_ASSERT_EQUAL(histogram_axis_cells(10000, 2, -0.5), 1);
+
+	/* Extremely aggressive ratios remain bounded by the square root of the budget. */
+	CU_ASSERT_EQUAL(histogram_axis_cells(INT_MAX, 2, 1.0), (int)sqrt((double)INT_MAX * 2.0));
 }
 
 static void
@@ -138,6 +156,7 @@ main(void)
 		goto cleanup;
 
 	if (!CU_add_test(suite, "histogram budget clamps", histogram_budget_clamps) ||
+	    !CU_add_test(suite, "histogram axis guards", histogram_axis_allocation_guards) ||
 	    !CU_add_test(suite, "nd_stats value index guards", nd_stats_indexing_behaviour) ||
 	    !CU_add_test(suite, "nd_box ratio edge cases", nd_box_ratio_cases))
 	{
