@@ -39,5 +39,12 @@ Notes about running individual regression tests
 The script run_test.pl can be called directly to run individual
 regression tests. Run it without parameters for info about its usage.
 
+When the account invoking the harness lacks database ownership or extension
+creation privileges, export `POSTGIS_REGRESS_DB_OWNER` to nominate a role that
+will own the temporary regression database. If extension installation must be
+delegated further, set `POSTGIS_REGRESS_ROLE_EXT_CREATOR`. These variables allow
+tests to succeed from sandboxed environments without elevating the calling
+account.
+
 Note that tests run in a staged install which is created by running
 make staged-install. This step is a part of the complete make check.

@@ -758,23 +758,41 @@ CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;
 		</para>
 	  </note>
 
-	  <caution>
-		<para>
-		  Currently, the <command>make check</command> relies on the
-		  <code>PATH</code> and <code>PGPORT</code> environment variables when
-		  performing the checks - it does <emphasis>not</emphasis> use the
-		  PostgreSQL version that may have been specified using the
-		  configuration parameter <command>--with-pgconfig</command>. So make
-		  sure to modify your PATH to match the detected PostgreSQL installation
-		  during configuration or be prepared to deal with the impending
-		  headaches.
-		</para>
-	  </caution>
+          <caution>
+                <para>
+                  Currently, the <command>make check</command> relies on the
+                  <code>PATH</code> and <code>PGPORT</code> environment variables when
+                  performing the checks - it does <emphasis>not</emphasis> use the
+                  PostgreSQL version that may have been specified using the
+                  configuration parameter <command>--with-pgconfig</command>. So make
+                  sure to modify your PATH to match the detected PostgreSQL installation
+                  during configuration or be prepared to deal with the impending
+                  headaches.
+                </para>
+          </caution>
 
-	  <para>
-		If successful, make check will produce the output of almost 500 tests.  The results will look similar to the
-		following (numerous lines omitted below):
-	  </para>
+          <note>
+                <para>
+                  Sandboxed build accounts that are not PostgreSQL superusers can
+                  delegate database ownership during the regression cycle by exporting
+                  <varname>POSTGIS_REGRESS_DB_OWNER</varname>. The harness will create
+                  the temporary regression database owned by the nominated role while
+                  continuing to connect using the less privileged account. Combine this
+                  with <varname>POSTGIS_REGRESS_ROLE_EXT_CREATOR</varname> when the
+                  extension creation role must differ from the database owner.
+                </para>
+                <para>
+                  These variables allow automated environments to exercise the full
+                  upgrade and extension install paths without promoting the calling
+                  account to superuser, provided the target PostgreSQL instance permits
+                  extension installation by those delegate roles.
+                </para>
+          </note>
+
+          <para>
+                If successful, make check will produce the output of almost 500 tests.  The results will look similar to the
+                following (numerous lines omitted below):
+          </para>
 
 	  <programlisting>
 
