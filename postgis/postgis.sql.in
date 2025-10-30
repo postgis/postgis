@@ -6398,6 +6398,14 @@ LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE _COST_MEDIUM;
 -- Changed: 2.5.2 replace use of pg_constraint.consrc with pg_get_constraintdef, consrc removed pg12
 
 CREATE OR REPLACE VIEW geometry_columns AS
+WITH constraint_defs AS (
+    -- Trim trailing NOT VALID so metadata inference works before constraint validation (#4828).
+    SELECT connamespace,
+           conrelid,
+           conkey,
+           regexp_replace(pg_get_constraintdef(oid), $$\s+NOT\s+VALID$$, '', 'i') AS consrc
+      FROM pg_constraint
+)
 SELECT current_database()::character varying(256) AS f_table_catalog,
     n.nspname AS f_table_schema,
     c.relname AS f_table_name,
@@ -6409,32 +6417,30 @@ SELECT current_database()::character varying(256) AS f_table_catalog,
      JOIN pg_attribute a ON a.attrelid = c.oid AND NOT a.attisdropped
      JOIN pg_namespace n ON c.relnamespace = n.oid
      JOIN pg_type t ON a.atttypid = t.oid
-     LEFT JOIN ( SELECT s.connamespace,
-            s.conrelid,
-            s.conkey,
-            (regexp_match(s.consrc, $$geometrytype\(\w+\)\s*=\s*'(\w+)'$$, 'i'))[1]::text AS type
-           FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
-                FROM pg_constraint) AS s
-          WHERE s.consrc ~* $$geometrytype\(\w+\)\s*=\s*'\w+'$$::text
-
-) st ON st.connamespace = n.oid AND st.conrelid = c.oid AND (a.attnum = ANY (st.conkey))
-     LEFT JOIN ( SELECT s.connamespace,
-            s.conrelid,
-            s.conkey,
-            (regexp_match(s.consrc, $$ndims\(\w+\)\s*=\s*(\d+)$$, 'i'))[1]::integer AS ndims
-           FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
-            FROM pg_constraint) AS s
-          WHERE s.consrc ~* $$ndims\(\w+\)\s*=\s*\d+$$::text
-) sn ON sn.connamespace = n.oid AND sn.conrelid = c.oid AND (a.attnum = ANY (sn.conkey))
-     LEFT JOIN ( SELECT s.connamespace,
-            s.conrelid,
-            s.conkey,
-            (regexp_match(s.consrc, $$srid\(\w+\)\s*=\s*(\d+)$$, 'i'))[1]::integer As srid
-           FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
-            FROM pg_constraint) AS s
-          WHERE s.consrc ~* $$srid\(\w+\)\s*=\s*\d+$$::text
-
-) sr ON sr.connamespace = n.oid AND sr.conrelid = c.oid AND (a.attnum = ANY (sr.conkey))
+     LEFT JOIN (
+           SELECT s.connamespace,
+                  s.conrelid,
+                  s.conkey,
+                  (regexp_match(s.consrc, $$geometrytype\(\w+\)\s*=\s*'(\w+)'$$, 'i'))[1]::text AS type
+             FROM constraint_defs AS s
+            WHERE s.consrc ~* $$geometrytype\(\w+\)\s*=\s*'\w+'$$::text
+     ) st ON st.connamespace = n.oid AND st.conrelid = c.oid AND (a.attnum = ANY (st.conkey))
+     LEFT JOIN (
+           SELECT s.connamespace,
+                  s.conrelid,
+                  s.conkey,
+                  (regexp_match(s.consrc, $$ndims\(\w+\)\s*=\s*(\d+)$$, 'i'))[1]::integer AS ndims
+             FROM constraint_defs AS s
+            WHERE s.consrc ~* $$ndims\(\w+\)\s*=\s*\d+$$::text
+     ) sn ON sn.connamespace = n.oid AND sn.conrelid = c.oid AND (a.attnum = ANY (sn.conkey))
+     LEFT JOIN (
+           SELECT s.connamespace,
+                  s.conrelid,
+                  s.conkey,
+                  (regexp_match(s.consrc, $$srid\(\w+\)\s*=\s*(\d+)$$, 'i'))[1]::integer As srid
+             FROM constraint_defs AS s
+            WHERE s.consrc ~* $$srid\(\w+\)\s*=\s*\d+$$::text
+     ) sr ON sr.connamespace = n.oid AND sr.conrelid = c.oid AND (a.attnum = ANY (sr.conkey))
   WHERE (c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"]))
   AND NOT c.relname = 'raster_columns'::name AND t.typname = 'geometry'::name
   AND NOT pg_is_other_temp_schema(c.relnamespace) AND has_table_privilege(c.oid, 'SELECT'::text);

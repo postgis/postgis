@@ -1620,6 +1620,19 @@ SELECT f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, t
 DROP TABLE IF EXISTS test5829, test5978;
 
 -- -------------------------------------------------------------------------------------
+-- #4828, geometry_columns should ignore pending NOT VALID SRID checks
+CREATE TABLE test4828 (
+  geom geometry
+);
+ALTER TABLE test4828
+  ADD CONSTRAINT test4828_srid CHECK (ST_SRID(geom) = 4326) NOT VALID;
+SELECT '#4828', srid
+  FROM geometry_columns
+ WHERE f_table_name = 'test4828'
+   AND f_geometry_column = 'geom';
+DROP TABLE IF EXISTS test4828;
+
+-- -------------------------------------------------------------------------------------
 -- #5987, ST_GeometryN broken on unitary geoms
 CREATE TABLE test5987 (geom geometry(Geometry,4326));
 INSERT INTO test5987 VALUES('LINESTRING(20 20,20.1 20,20.2 19.9)'::geometry);

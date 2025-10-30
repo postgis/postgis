@@ -22,6 +22,7 @@ xxxx/xx/xx
 * Bug Fixes *
 
  - #5959, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
+ - #4828, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)
 
 
 PostGIS 3.6.0
