@@ -18,10 +18,10 @@ category: Development Docs
 | `3.6.0` | Minor release (new features, backwards‑compatible) | Added new functions |
 | `3.0.1` | Patch release (bug fixes, data changes) | Small fixes to `3.0.0` |
 
-* SQL Api functions are functions that are exposed to the user in the database.
+* SQL API functions are functions that are exposed to the user in the database.
   They are either SQL, plpgsql, or C backed functions.
 
-* C Api functions are library functions that back SQL Api functions.
+* C API functions are library functions that back SQL API functions.
 
 Naming of library files
 ========================
@@ -49,38 +49,36 @@ To take advantage of this feature, when configuring postgis compile, use the swi
 
 ## Does and Don'ts
 
-* Don't introduce new SQL Api functions in a Patch release.
+* Don't introduce new SQL API functions in a Patch release.
 * Don't change structure definitions e.g. geometry_columns, geometry/raster type
   in a patch release.
 
-* Do introduce new SQL Api functions in a Minor release.
-* Functions that are not exposed via the SQL Api can be introduced any time.
-* Only major versions can remove SQL api functions
-  or C api functions without stubbing (which we will cover shortly).
+* Do introduce new SQL API functions in a Minor release.
+* Functions that are not exposed via the SQL API can be introduced any time.
+* Only major versions can remove SQL API functions
+  or C API functions without stubbing (which we will cover shortly).
 
 * Only PostGIS first release of a major can introduce functionality that requires a pg_dump / pg_restore.
 * Don't require newer versions of library in a micro, but you can require new versions in first release of a minor.
   For example we often drop support for older versions of GEOS and PostgreSQL in a new minor release.
 
-
-
 ## When removing objects impacts upgrade
 
 There are several types of removals that impact user upgrades and should be carefully thought thru.
 
-* SQL Api functions
-* C Api functions
-* Types, Views, Tables are also exposed via SQL Api
+* SQL API functions
+* C API functions
+* Types, Views, Tables are also exposed via SQL API
 
 Functions internal to postgis that are never exposed and only used within postgis libraries
 can be shuffled around to your hearts content.
 
 
-## UPGRADING C Api functions
+## Upgrading C API functions
 
-You should avoid ever removing C Api function in Minor and patch releases of PostGIS.
+You should avoid ever removing C API function in Minor and patch releases of PostGIS.
 
-If there is a C Api function that you badly want to remove you need to stub it so the signature still
+If there is a C API function that you badly want to remove you need to stub it so the signature still
 exists but throws an error.
 
 These functions should be removed from whatever file
@@ -98,7 +96,7 @@ run ALTER EXTENSION or SELECT postgis_extensions_upgrade() in a micro, so taking
 
     Note the specification of the version it was removed and the name of the function
 
-  * For postgis_sfcgal, deprecated C api functions should go in sfcgal/postgis_sfcgal_legacy.c
+  * For postgis_sfcgal, deprecated C API functions should go in sfcgal/postgis_sfcgal_legacy.c
   * For postgis_raster, raster/rt_pg/rtpg_legacy.c
   * postgis_topology extension has never had any deprecated functions so there is currently no legacy file for it.
     If there comes a need to deprecate C functions, then a file topology/postgis_topology_legacy.c will be created to store these.
@@ -120,12 +118,12 @@ if you try to overlay the old def structures onto the new extension install.
 So this whole care of legacy functions is to appease pg_upgrade.
 
 
-## UPGRADING SQL Api functions
+## UPGRADING SQL API functions
 
-For most SQL Api functions, nothing special needs to be done beyond
+For most SQL API functions, nothing special needs to be done beyond
 noting a CHANGED in version or AVAILABILITY in the respective .sql.in files.
 
-The SQL Api definitions are found in following places:
+The SQL API definitions are found in following places:
 
 | Extension | Relevant Files |
 |-----------|----------------|
@@ -149,7 +147,7 @@ The various notes you put in .sql.in files take the following form and precede t
 
 * -- Replaces: is both informational and also instructs the perl upgrade script to protect the user from some upgrade pains.
      You use Replaces instead of just a simple Changed, if you are changing inputs to the function or changing
-     outputs of the function. So any change to the api
+     outputs of the function. So any change to the API
 
     Such a comment would look something like:
 
@@ -196,8 +194,77 @@ These ones are new in 3.6.0 to handle the very delicate major upgrade of topolog
 * _postgis_add_column_to_table
 
 
-Dependency Library Guarding
-============================
+### SQL scripting rules so our parsers don’t mangle your changes
+
+Keep these rules when writing or editing SQL in `postgis/*.sql.in` and upgrade scripts. They match how our Perl generators parse and build upgrades/uninstalls.
+
+1. **Use `$$` as the DO delimiter**
+
+* Do not use named delimiters like `$func$`.
+
+```sql
+DO $$
+BEGIN
+  -- your block
+END;
+$$ LANGUAGE plpgsql;
+```
+
+2. **Left-align `CREATE` statements inside `DO`**
+
+* Anything created in a `DO` block is auto-picked up by uninstall **only if** the `CREATE ...` lines are not indented.
+
+```sql
+DO $$
+BEGIN
+CREATE OR REPLACE FUNCTION public.myfunc(...) RETURNS ...
+LANGUAGE sql AS $$ SELECT 1 $$;
+END;
+$$;
+-- Good: CREATE starts at column 1
+```
+
+3. **When changing signatures or arg names, use the drop hooks**
+
+* Use `postgis_drop_before.sql` to drop or de-alias old signatures before install/upgrade runs.
+* Use `postgis_drop_after.sql` to clean up stragglers after new objects exist.
+* Typical cases:
+
+  * adding default args to a function that previously had none,
+  * renaming argument names that would create ambiguity across versions,
+  * replacing one signature with another without leaving duplicates.
+
+```sql
+-- postgis_drop_before.sql
+DROP FUNCTION IF EXISTS public.myfunc(oldtype, oldtype);
+
+-- main install/upgrade then creates the new signature(s)
+```
+
+4. **Record `Availability:` and `Changed:` in the script comments**
+
+* Add concise lines at the top of each object definition.
+* The upgrade generator scans these markers to:
+
+  * decide which upgrades need to ship an object (based on first `Availability:`),
+  * emit notes into generated upgrade paths about behavior/ABI changes (`Changed:`).
+
+```sql
+-- Availability: 3.7.0
+-- Changed: 3.8.0 behavior on NULL input
+CREATE OR REPLACE FUNCTION public.myfunc(...) RETURNS ...
+...
+```
+
+**Quick checklist**
+
+* `DO` uses `$$`, not `$func$`.
+* `CREATE` lines start at column 1 inside `DO`.
+* For signature/arg changes, stage drops in `postgis_drop_before.sql` (and `*_after.sql` if needed).
+* Keep `Availability:` / `Changed:` lines current and minimal.
+
+
+## Dependency Library Guarding
 
 On many occasions, we'll introduce functionality that can only be used if PostGIS is compiled
 with a dependency library higher than X? Where X is some version of a dependency library.
@@ -275,8 +342,8 @@ with lib xxx or higher. Also the function has to be available in the C lib, as s
 on the C lib side and very rarely on the sql files.
 
 
-Regression harness privileges
-=============================
+## Regression harness privileges
+
 
 Continuous integration workers are frequently configured with sandboxed PostgreSQL roles
 that cannot create databases or install extensions. The regression harness accepts two
