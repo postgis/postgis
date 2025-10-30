@@ -149,6 +149,47 @@ pre, .literallayout {
     border-radius: 1em;
 }
 
+/*
+ * Fix #5645: localized manuals apply aggressive word breaking to code tokens,
+ * splitting operators like "=>" into "= >". Force verbatim behaviour for
+ * program listings and inline code regardless of :lang overrides.
+ */
+pre,
+code,
+kbd,
+samp,
+.programlisting,
+.screen,
+.literallayout {
+    white-space: pre;
+    word-break: normal;
+    overflow-wrap: normal;
+    hyphens: none;
+    line-break: auto;
+}
+
+pre,
+.programlisting,
+.screen,
+.literallayout {
+    overflow: auto;
+}
+
+:lang(zh) pre,
+:lang(zh-CN) pre,
+:lang(zh-Hans) pre,
+:lang(ja) pre,
+:lang(ko) pre,
+:lang(zh) code,
+:lang(zh-CN) code,
+:lang(zh-Hans) code,
+:lang(ja) code,
+:lang(ko) code {
+    white-space: pre !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+}
+
 div.note {
     font-size: 0.9em;
     border-color: #dd5;

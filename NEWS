@@ -23,7 +23,8 @@ xxxx/xx/xx
 
  - #5959, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
  - #4828, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)
-
+ - #5645, Docs: keep code operators ("=>") intact in translated manuals
+          by enforcing verbatim CSS (Darafei Praliaskouski)
 
 PostGIS 3.6.0
 2025/09/01
