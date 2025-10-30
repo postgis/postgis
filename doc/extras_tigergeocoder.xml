@@ -9,10 +9,10 @@
             <para>A plpgsql based geocoder written to work with the <link xlink:href="https://www2.census.gov/geo/tiger/">TIGER (Topologically Integrated Geographic Encoding and Referencing system ) / Line and Master Address database export</link> released by the US Census Bureau.   </para>
             <para>There are four components to the geocoder: the data loader functions, the address normalizer, the address geocoder, and the reverse geocoder. </para>
             <para>Although it is designed specifically for the US, a lot of the concepts and functions are applicable and can be adapted to work with other country address and road networks.</para>
-            <para>The script builds a schema called <varname>tiger</varname> to house all the tiger related functions, reusable lookup data such as road type prefixes, suffixes, states, various control tables for managing data load, and skeleton base tables from which all the tiger loaded tables inherit from.</para>
-            <para>Another schema called <varname>tiger_data</varname> is also created which houses all the census data for each state that the loader downloads from Census site and loads into the database. In the current model, each set of state tables is
-                prefixed with the state code e.g <varname>ma_addr</varname>, <varname>ma_edges</varname> etc with constraints to enforce only that state data.  Each of these tables inherits from the tables <varname>addr</varname>, <varname>faces</varname>, <varname>edges</varname>, etc located in the <varname>tiger schema</varname>. </para>
-            <para>All the geocode functions only reference the base tables, so there is no requirement that the data schema be called <varname>tiger_data</varname> or that data can't be further partitioned into other schemas -- e.g a different schema
+            <para>The script builds a schema called <varname>tiger</varname> to house all the TIGER-related functions, reusable lookup data such as road type prefixes, suffixes, states, various control tables for managing data load, and skeleton base tables from which all the TIGER-loaded tables inherit.</para>
+            <para>Another schema called <varname>tiger_data</varname> is also created which houses all the census data for each state that the loader downloads from the Census site and loads into the database. In the current model, each set of state tables is
+                prefixed with the state code e.g <varname>ma_addr</varname>, <varname>ma_edges</varname> etc with constraints to enforce only that state data.  Each of these tables inherits from the tables <varname>addr</varname>, <varname>faces</varname>, <varname>edges</varname>, etc located in the <varname>tiger</varname> schema. </para>
+            <para>All the geocode functions only reference the base tables, so there is no requirement that the data schema be called <varname>tiger_data</varname> or that data can't be further partitioned into other schemas -- e.g. a different schema
             for each state, as long as all the tables inherit from the tables in the <varname>tiger</varname> schema.</para>
 
 
@@ -26,8 +26,7 @@ you can upgrade the scripts using the accompanying upgrade_geocoder.bat
               </para></note>
 
               <note>
-              <para>New in PostGIS 2.2.0 release is support for TIGER 2015 data and inclusion of Address Standardizer as part of PostGIS.</para>
-              <para>New in PostGIS 2.1.0 release is ability to install the TIGER Geocoder with the PostgreSQL extension model. Refer to <xref linkend="install_tiger_geocoder_extension"/> for details.</para></note>
+              <para>You can install the TIGER Geocoder with the PostgreSQL extension model. Refer to <xref linkend="install_tiger_geocoder_extension"/> for details.</para></note>
               </para>
 
               <para>The <xref linkend="Pagc_Normalize_Address"/> function as a drop in replacement for in-built <xref linkend="Normalize_Address"/>. Refer to <xref linkend="installing_pagc_address_standardizer"/> for compile and installation instructions.</para>
@@ -841,9 +840,9 @@ rm -f ${TMPDIR}/*.*
             <para><varname>loader_lookuptables</varname> each record defines a kind of table (state, county), whether to process records in it and how to load them in.  Defines the steps to import data, stage data, add, removes columns, indexes, and constraints for each.  Each table is prefixed with the state and inherits from a table in the tiger schema. e.g. creates <varname>tiger_data.ma_faces</varname> which inherits from <varname>tiger.faces</varname></para>
           </listitem>
         </orderedlist>
-        <para role="enhanced" conformance="2.4.1">Enhanced: 2.4.1 zip code 5 tabulation area (zcta5) load step was fixed and when enabled, zcta5 data is loaded as a single table called zcta5_all as part of the nation script load.</para>
+        <para role="enhanced" conformance="2.4.1">Enhanced: 2.4.1 ZIP Code 5 tabulation area (zcta5) load step was fixed and when enabled, zcta5 data is loaded as a single table called zcta5_all as part of the nation script load.</para>
         <para role="availability" conformance="2.1.0">Availability: 2.1.0 </para>
-        <note><para>If you want zip code 5 tabulation area (zcta5) to be included in your nation script load, do the following:</para> <programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = 'zcta510';</programlisting></note>
+        <note><para>If you want ZIP Code 5 tabulation area (zcta5) to be included in your nation script load, do the following:</para> <programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = 'zcta510';</programlisting></note>
         <note><para>If you were running <varname>tiger_2010</varname> version and you want to reload as state with newer tiger data, you'll need to for the very first load generate and run drop statements <xref linkend="Drop_Nation_Tables_Generate_Script"/> before you run this script.</para></note>
 
       </refsection>
@@ -980,7 +979,7 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
             <para><varname>parsed</varname> boolean - denotes if address was formed from normalize process. The normalize_address function sets this to true before returning the address.</para>
           </listitem>
           <listitem>
-            <para><varname>zip4</varname> last 4 digits of a 9 digit zip code. Availability: PostGIS 2.4.0.</para>
+            <para><varname>zip4</varname> last 4 digits of a 9 digit ZIP Code. Availability: PostGIS 2.4.0.</para>
           </listitem>
           <listitem>
             <para><varname>address_alphanumeric</varname> Full street number even if it has alpha characters like 17R. Parsing of this is better using <xref linkend="Pagc_Normalize_Address"/> function.  Availability: PostGIS 2.4.0.</para>
@@ -1084,7 +1083,7 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
             <para><varname>parsed</varname> boolean - denotes if address was formed from normalize process. The normalize_address function sets this to true before returning the address.</para>
           </listitem>
           <listitem>
-            <para><varname>zip4</varname> last 4 digits of a 9 digit zip code. Availability: PostGIS 2.4.0.</para>
+            <para><varname>zip4</varname> last 4 digits of a 9 digit ZIP Code. Availability: PostGIS 2.4.0.</para>
           </listitem>
           <listitem>
             <para><varname>address_alphanumeric</varname> Full street number even if it has alpha characters like 17R. Parsing of this is better using <xref linkend="Pagc_Normalize_Address"/> function.  Availability: PostGIS 2.4.0.</para>

@@ -8,7 +8,7 @@
     <section>
       <title>Problem description</title>
 
-      <para>Current PostgreSQL versions (including 9.6) suffer from a query
+      <para>Current PostgreSQL versions suffer from a query
       optimizer weakness regarding TOAST tables. TOAST tables are a kind of
       "extension room" used to store large (in the sense of data size) values
       that do not fit into normal data pages (like long texts, images or

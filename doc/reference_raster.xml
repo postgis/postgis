@@ -3419,7 +3419,7 @@ FROM dummy_rast;
                 <title>Description</title>
 
                 <para>Returns the spatial reference identifier of the raster object as defined in the spatial_ref_sys table.</para>
-                <note><para>From PostGIS 2.0+ the srid of a non-georeferenced raster/geometry is 0 instead of the prior -1.</para></note>
+                <note><para>Non-georeferenced rasters and geometries use SRID 0.</para></note>
             </refsection>
 
             <refsection>

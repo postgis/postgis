@@ -218,7 +218,7 @@ Datum BOX2D_union(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_same(PG_FUNCTION_ARGS);
 
-/** needed for sp-gist support PostgreSQL 11+ **/
+/** needed for SP-GiST support **/
 Datum BOX3D_construct(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_to_BOX2DF(PG_FUNCTION_ARGS);

@@ -1710,7 +1710,7 @@ SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
         <para>Below is how we currently map PostGIS 2D/3D types to X3D types</para>
     </note>
 
-        <para>The 'options' argument is a bitfield. For PostGIS 2.2+, this is used to denote whether to represent coordinates with X3D GeoCoordinates Geospatial node and also whether to flip the x/y axis.  By default, <code>ST_AsX3D</code> outputs in database form (long,lat or X,Y), but X3D default of lat/lon, y/x may be preferred.</para>
+        <para>The 'options' argument is a bitfield that denotes whether to represent coordinates with the X3D GeoCoordinates geospatial node and whether to flip the x/y axis.  By default, <code>ST_AsX3D</code> outputs in database form (long,lat or X,Y), but the X3D default of lat/lon, y/x may be preferred.</para>
 
         <itemizedlist>
             <listitem>

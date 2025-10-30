@@ -314,7 +314,7 @@ into includes in the future for easier maintenance.</para></listitem>
 						<varlistentry>
 								<term><varname>QUINT</varname></term>
 								<listitem>
-									<para>(28). A 5 digit number. Identifies a Zip Code</para>
+                                                                    <para>(28). A 5 digit number. Identifies a ZIP code</para>
 								</listitem>
 						</varlistentry>
 
@@ -387,7 +387,7 @@ into includes in the future for easier maintenance.</para></listitem>
                      <varlistentry>
                             <term><varname>POSTAL</varname></term>
                             <listitem>
-                                <para>(token number "13").  (SADS elements "ZIP CODE" , "PLUS 4" ). This attribute is used for both the US Zip and the Canadian Postal Codes.</para>
+                                <para>(token number "13").  (SADS elements "ZIP CODE" , "PLUS 4" ). This attribute is used for both the US ZIP and the Canadian postal codes.</para>
                             </listitem>
                     </varlistentry>
                 </variablelist>
