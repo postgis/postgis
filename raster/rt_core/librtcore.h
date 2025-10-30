@@ -2373,6 +2373,9 @@ rt_util_gdal_register_all(int force_register_all);
 int
 rt_util_gdal_driver_registered(const char *drv);
 
+int
+rt_util_gdal_progress_func(double dfComplete, const char *pszMessage, void *pProgressArg);
+
 /*
 	wrapper for GDALOpen and GDALOpenShared
 */

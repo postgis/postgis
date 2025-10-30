@@ -14169,6 +14169,7 @@ FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast
                     can be used to expand a single raster into multiple POLYGONS/MULTIPOLYGONS.</para>
 
                     <para>Changed 3.3.0, validation and fixing is disabled to improve performance. May result invalid geometries.</para>
+                    <para>Changed 3.7.0, the polygonization honours PostgreSQL interrupts so cancellations and statement timeouts halt processing promptly.</para>
                     <para role="availability" conformance="1.7">Availability: Requires GDAL 1.7 or higher.</para>
                     <note><para>If there is a no data value set for a band, pixels with that value will not be returned except in the case of exclude_nodata_value=false.</para></note>
                     <note><para>If you only care about count of pixels with a given value in a raster, it is faster to use <xref linkend="RT_ST_ValueCount"/>.</para></note>

@@ -19,6 +19,7 @@ xxxx/xx/xx
  - #4798, ST_AsGeoJSON warns about duplicate property keys (Darafei Praliaskouski)
  - #5950, Document POSTGIS_REGRESS_DB_OWNER for sandboxed regression roles (Darafei Praliaskouski)
  - #4332, Clarify the scope of several Function Reference categories (Darafei Praliaskouski)
+ - #4222, [raster] ST_DumpAsPolygons honours PostgreSQL interrupts (Darafei Praliaskouski)
 
 
 * Bug Fixes *

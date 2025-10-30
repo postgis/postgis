@@ -4,6 +4,7 @@
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
  * Copyright (C) 2021 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -55,10 +56,14 @@ typedef struct
 /*  GDAL progress callback for interrupt handling */
 /* ---------------------------------------------------------------- */
 
-static int rt_util_gdal_progress_func(
-	double dfComplete,
-	const char *pszMessage,
-	void *pProgressArg)
+/*
+ * WHY: We surface a single callback so every GDAL routine invoked from the
+ * raster core can honour PostgreSQL cancellations consistently.  Returning
+ * FALSE forces the GDAL algorithm to unwind immediately when liblwgeom has
+ * recorded an interrupt request (#4222).
+ */
+int
+rt_util_gdal_progress_func(double dfComplete, const char *pszMessage, void *pProgressArg)
 {
 	(void)dfComplete;
 	(void)pszMessage;
@@ -66,7 +71,7 @@ static int rt_util_gdal_progress_func(
 	if (_lwgeom_interrupt_requested)
 	{
 		// rtwarn("%s interrupted at %g", (const char*)pProgressArg, dfComplete);
-		_lwgeom_interrupt_requested = 0;
+		lwgeom_cancel_interrupt();
 		return FALSE;
 	}
 	else

@@ -10,6 +10,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -1136,8 +1137,12 @@ rt_raster_gdal_polygonize(
 		return NULL;
 	}
 
-	/* We don't need a raster mask band. Each band has a nodata value. */
-	cplerr = GDALFPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
+	/*
+	 * Why: We pass the shared interrupt-aware progress callback so GDAL can
+	 * unwind promptly when PostgreSQL requests cancellation (#4222).
+	 */
+	cplerr = GDALFPolygonize(
+	    gdal_band, NULL, hLayer, iPixVal, NULL, rt_util_gdal_progress_func, (void *)"GDALFPolygonize");
 
 	if (cplerr != CE_None) {
 		rterror("rt_raster_gdal_polygonize: Could not polygonize GDAL band");

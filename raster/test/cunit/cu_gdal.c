@@ -4,6 +4,7 @@
  *
  * Copyright (C) 2012 Regents of the University of California
  *   <bkpark@ucdavis.edu>
+ * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -274,6 +275,29 @@ static void test_gdal_polygonize() {
 	CU_ASSERT_DOUBLE_EQUAL(total_val, 1.8 + 0.0 + 2.8 + 0.0, FLT_EPSILON);
 	CU_ASSERT_DOUBLE_EQUAL(total_area, 81, FLT_EPSILON);
 	rtdealloc(gv);
+	cu_free_raster(rt);
+}
+
+static void
+test_gdal_polygonize_interrupt(void)
+{
+	rt_raster rt;
+	int nPols = 0;
+	rt_geomval gv = NULL;
+
+	rt = fillRasterToPolygonize(0, 0.0);
+	CU_ASSERT(rt != NULL);
+
+	/* Why: confirm that the GDAL callback honours liblwgeom interrupts (#4222). */
+	lwgeom_request_interrupt();
+	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
+	lwgeom_cancel_interrupt();
+
+	CU_ASSERT_PTR_NULL(gv);
+	CU_ASSERT_EQUAL(nPols, 0);
+
+	if (gv)
+		rtdealloc(gv);
 	cu_free_raster(rt);
 }
 
@@ -608,6 +632,7 @@ void gdal_suite_setup(void)
 	PG_ADD_TEST(suite, test_gdal_drivers);
 	PG_ADD_TEST(suite, test_gdal_rasterize);
 	PG_ADD_TEST(suite, test_gdal_polygonize);
+	PG_ADD_TEST(suite, test_gdal_polygonize_interrupt);
 	PG_ADD_TEST(suite, test_raster_to_gdal);
 	PG_ADD_TEST(suite, test_gdal_to_raster);
 	PG_ADD_TEST(suite, test_gdal_warp);
