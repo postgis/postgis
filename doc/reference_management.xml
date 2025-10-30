@@ -267,8 +267,8 @@ SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims
 ------------------------------------------------------
  my_schema.my_spatial_table.geom effectively removed.
 
--- In PostGIS 2.0+ the above is also equivalent to the standard
--- the standard alter table.  Both will deregister from geometry_columns
+-- The above is also equivalent to the standard
+-- ALTER TABLE command.  Both will deregister from geometry_columns
 ALTER TABLE my_schema.my_spatial_table DROP column geom;
 		</programlisting>
 	  </refsection>

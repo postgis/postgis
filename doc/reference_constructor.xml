@@ -343,7 +343,7 @@ SELECT gps.track_id, ST_MakeLine(gps.geom ORDER BY gps_time) As geom
     FROM gps_points As gps
     GROUP BY track_id;</programlisting>
 
-<para>Prior to PostgreSQL 9, ordering in a subquery can be used.
+<para>When ordering within the aggregate is not possible, ordering in a subquery can be used.
 However, sometimes the query plan may not respect the order of the subquery.</para>
         <programlisting>
 SELECT gps.track_id, ST_MakeLine(gps.geom) As geom

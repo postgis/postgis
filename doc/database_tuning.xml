@@ -8,7 +8,7 @@
 
   <para>For general details about optimizing PostgreSQL, refer to <link xlink:href="https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server">Tuning your PostgreSQL Server</link>.</para>
 
-  <para>For PostgreSQL 9.4+ configuration can be set at the server level without touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</code>
+  <para>PostgreSQL configuration can be set at the server level without touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</code>
   by using the <code>ALTER SYSTEM</code> command.</para>
   <programlisting>ALTER SYSTEM SET work_mem = '256MB';
 -- this forces non-startup configs to take effect for new connections
@@ -38,9 +38,8 @@ SHOW work_mem;</programlisting>
         </listitem>
         <listitem>
           <para>
-            This is generally used for table partitioning. The default for this is set to "partition" which is ideal for PostgreSQL 8.4 and above since
-      it will force the planner to only analyze tables for constraint consideration if they are in an inherited hierarchy
-      and not pay the planner penalty otherwise.
+            This is generally used for table partitioning. The default of "partition" forces the planner to only analyze tables for constraint consideration if they are in an inherited hierarchy
+      and avoids paying the planner penalty otherwise.
           </para>
         </listitem>
       </itemizedlist>
@@ -52,7 +51,7 @@ SHOW work_mem;</programlisting>
       <itemizedlist>
         <listitem>
           <para>
-            Default: ~128MB in PostgreSQL 9.6
+            Default: ~128MB
           </para>
         </listitem>
         <listitem>
@@ -65,8 +64,8 @@ SHOW work_mem;</programlisting>
 
      <para>
         <link xlink:href="https://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-WORKER-PROCESSES">max_worker_processes</link>
-        This setting is only available for PostgreSQL 9.4+.  For PostgreSQL 9.6+ this setting has additional importance in that it controls the
-        max number of processes you can have for parallel queries.
+        controls the maximum number of background processes available to the server and therefore
+        also bounds how many workers can participate in parallel queries.
       </para>
 
       <itemizedlist>
@@ -146,8 +145,8 @@ SHOW work_mem;</programlisting>
         <link xlink:href="https://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-PARALLEL-WORKERS-PER-GATHER">max_parallel_workers_per_gather</link>
       </para>
       <para>
-        This setting is only available for PostgreSQL 9.6+ and will only affect PostGIS 2.3+, since only PostGIS 2.3+ supports parallel queries.
-        If set to higher than 0, then some queries such as those involving relation functions like <code>ST_Intersects</code> can use multiple processes and can run
+        Parallel query support in modern PostgreSQL and PostGIS uses this setting to decide how many workers
+        a plan may request.  If set to higher than 0, then some queries such as those involving relation functions like <code>ST_Intersects</code> can use multiple processes and can run
         more than twice as fast when doing so.  If you have a lot of processors to spare, you should change the value of this to as many processors as you have.
         Also make sure to bump up <code>max_worker_processes</code> to at least as high as this number.
       </para>

@@ -630,8 +630,7 @@ geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
 	  <para>Like the geometry data type, geography data is associated
       with a spatial reference system via a spatial reference system identifier (SRID).
         Any geodetic (long/lat based) spatial reference system defined in the <varname>spatial_ref_sys</varname> table can be used.
-        (Prior to PostGIS 2.2, the geography type supported only WGS 84 geodetic (SRID:4326)).
-		You can add your own custom geodetic spatial reference system as described in <xref linkend="user-spatial-ref-sys"/>.</para>
+                You can add your own custom geodetic spatial reference system as described in <xref linkend="user-spatial-ref-sys"/>.</para>
 
 	  <para>For all spatial reference systems the units returned by measurement functions
       (e.g. <xref linkend="ST_Distance"/>, <xref linkend="ST_Length"/>, <xref linkend="ST_Perimeter"/>, <xref linkend="ST_Area"/>)
@@ -1749,8 +1748,7 @@ CREATE INDEX my_special_pois_geom_gist_nd
 -- to make the column typmod based.
 SELECT populate_geometry_columns('myschema.my_special_pois'::regclass);
 
--- If you are using PostGIS 2.0 and for whatever reason, you
--- you need the constraint based definition behavior
+-- To retain the constraint-based definition behavior
 -- (such as case of inherited tables where all children do not have the same type and srid)
 -- set optional use_typmod argument to false
 SELECT populate_geometry_columns('myschema.my_special_pois'::regclass, false); </programlisting>
@@ -2436,7 +2434,7 @@ pgsql2shp [<options>] <database> <query>
 	<title>BRIN Indexes</title>
 
     <para>BRIN stands for "Block Range Index". It is a general-purpose
-    index method introduced in PostgreSQL 9.5.
+    index method provided by PostgreSQL.
     BRIN is a <emphasis>lossy</emphasis>
     index method, meaning that a secondary check is required to confirm
     that a record matches a given search condition

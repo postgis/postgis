@@ -583,7 +583,7 @@ if (!empty( $_REQUEST['srid'] ) &amp;&amp; is_numeric( $_REQUEST['srid']) ){
 		$input_srid = intval($_REQUEST['srid']);
 }
 else { $input_srid = 26986; }
-/** The set bytea_output may be needed for PostgreSQL 9.0+, but not for 8.4 **/
+/** The set bytea_output ensures bytea values are returned using escape format. **/
 $sql = "set bytea_output='escape';
 SELECT ST_AsPNG(ST_Transform(
 			ST_AddBand(ST_Union(rast,1), ARRAY[ST_Union(rast,2),ST_Union(rast,3)])

@@ -13,8 +13,8 @@
     below how to properly configure it.
 	</para>
 
-	<para>As of PostGIS 2.1.3, out-of-db rasters and all raster drivers are disabled by default. In order to re-enable these, you need to set the following environment variables
-	<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in the server environment. For PostGIS 2.2, you can use the more cross-platform approach of setting the corresponding <xref linkend="PostGIS_GUC"/>.</para>
+        <para>Out-of-db rasters and all raster drivers are disabled by default. In order to re-enable these, you need to set the following environment variables
+        <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in the server environment. You can also use the more cross-platform approach of setting the corresponding <xref linkend="PostGIS_GUC"/>.</para>
 
 	<para>If you want to enable offline raster:</para>
 	<programlisting>POSTGIS_ENABLE_OUTDB_RASTERS=1</programlisting>
@@ -27,7 +27,7 @@
 	<note><para>If you are on windows, do not quote the driver list</para></note>
 
 	<para>Setting environment variables varies depending on OS.  For PostgreSQL installed on Ubuntu or Debian via apt-postgresql, the preferred way is to
-	edit <filename>/etc/postgresql/<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</filename> where 10 refers to version of PostgreSQL and main refers to the cluster.</para>
+        edit <filename>/etc/postgresql/<replaceable>MAJOR</replaceable>/<replaceable>CLUSTER</replaceable>/environment</filename> where the placeholders refer to the PostgreSQL major version and cluster name.</para>
 
 	<para>On windows, if you are running as a service, you can set via System variables which for Windows 7 you can get to by right-clicking on Computer-&gt;Properties Advanced System Settings or in explorer navigating to <varname>Control Panel\All Control Panel Items\System</varname>.
 	Then clicking <emphasis>Advanced System Settings -&gt;Advanced-&gt;Environment Variables</emphasis> and adding new system variables.</para>
@@ -42,8 +42,8 @@
 	<title>Spatially enable database using EXTENSION</title>
 
 	<para>
-	 If you are using PostgreSQL 9.1+ and have compiled and installed the extensions/postgis modules, you
-	 can turn a database into a spatial one using the EXTENSION mechanism.
+         If you have compiled and installed the extensions/postgis modules, you
+         can turn a database into a spatial one using the EXTENSION mechanism.
 	</para>
 
 	<para>

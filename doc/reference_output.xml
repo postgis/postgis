@@ -264,8 +264,8 @@ F000000000000000000000000000000000000000000000000');
       </note>
 
       <note>
-        <para>The default behavior in PostgreSQL 9.0 has been changed to output bytea in hex encoding.
-                If your GUI tools require the old behavior, then SET bytea_output='escape' in your database.</para>
+        <para>PostgreSQL outputs <varname>bytea</varname> values in hex encoding by default.
+                If your GUI tools require the old behavior, then SET <code>bytea_output='escape'</code> in your database.</para>
       </note>
 
       <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>

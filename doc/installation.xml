@@ -613,9 +613,9 @@ sh autogen.sh
 	<section xml:id="make_install_postgis_extensions">
 	  <title>Building PostGIS Extensions and Deploying them</title>
 
-	  <para>
-		The PostGIS extensions are built and installed automatically if you are using PostgreSQL 9.1+.
-	  </para>
+          <para>
+                The PostGIS extensions are built and installed automatically when PostgreSQL extension support is available.
+          </para>
 	  <para>If you are building from source repository, you need to build the function descriptions first. These get built if you have docbook installed. You can also manually build with the statement:
     </para>
 	  <para>

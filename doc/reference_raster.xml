@@ -1612,8 +1612,7 @@ FROM ST_BandMetadata(
                 <programlisting>
 -- Aggregate the 1st band of a table of like rasters into a single raster
 -- with as many bands as there are test_types and as many rows (new rasters) as there are mice
--- NOTE: The ORDER BY test_type is only supported in PostgreSQL 9.0+
--- for 8.4 and below it usually works to order your data in a subselect (but not guaranteed)
+-- NOTE: The ORDER BY test_type clause relies on aggregate ORDER BY support.
 -- The resulting raster will have a band for each test_type alphabetical by test_type
 -- For mouse lovers: No mice were harmed in this exercise
 SELECT
@@ -4724,7 +4723,7 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 
             <refsection>
                 <title>Examples</title>
-                <programlisting> --LATERAL syntax requires PostgreSQL 9.3+
+                <programlisting> -- Uses LATERAL syntax
 SELECT x, y, val, ST_AsText(geom)
     FROM (SELECT dp.* FROM dummy_rast, LATERAL ST_PixelAsCentroids(rast, 1) AS dp WHERE rid = 2) foo;
  x | y | val |           st_astext
@@ -7261,7 +7260,7 @@ SELECT rid, (meta).* FROM bar
 
                 <note>
                     <para>
-                        If you find your transformation support is not working right, you may need to set the environment variable PROJSO to the .so or .dll projection library your PostGIS is using.  This just needs to have the name of the file. So for example on windows, you would in Control Panel -&gt; System -&gt; Environment Variables add a system variable called <varname>PROJSO</varname> and set it to <varname>libproj.dll</varname> (if you are using proj 4.6.1).  You'll have to restart your PostgreSQL service/daemon after this change.
+                        If you find your transformation support is not working right, you may need to set the environment variable PROJSO to the projection library your PostGIS build is using.  This just needs to have the name of the file. So for example on windows, you would in Control Panel -&gt; System -&gt; Environment Variables add a system variable called <varname>PROJSO</varname> and set it to <varname>libproj.dll</varname>.  You'll have to restart your PostgreSQL service/daemon after this change.
                     </para>
                 </note>
 
@@ -10446,7 +10445,7 @@ WHERE t1.rid = 1
     AND t2.rid = 2
                     </programlisting>
 
-                    <para>Complete example of tiles of a coverage with neighborhood.  This query only works with PostgreSQL 9.1 or higher.</para>
+                    <para>Complete example of tiles of a coverage with neighborhood.</para>
                     <programlisting>
 WITH foo AS (
     SELECT 0 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0) AS rast UNION ALL
@@ -10478,7 +10477,7 @@ WHERE t1.rid = 4
 GROUP BY t1.rid, t1.rast
                     </programlisting>
 
-                    <para>Example like the prior one for tiles of a coverage with neighborhood but works with PostgreSQL 9.0.</para>
+                    <para>Example like the prior one for tiles of a coverage with neighborhood but using only basic SQL features.</para>
                     <programlisting>
 WITH src AS (
     SELECT 0 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0) AS rast UNION ALL
@@ -13350,7 +13349,7 @@ FROM foo
                 <refsection>
                     <title>Examples: Variant 2</title>
 
-                    <para>Complete example of tiles of a coverage.  This query only works with PostgreSQL 9.1 or higher.</para>
+                    <para>Complete example of tiles of a coverage.</para>
 
                     <programlisting>
 WITH foo AS (
@@ -13498,7 +13497,7 @@ FROM foo
                 <refsection>
                     <title>Examples: Variant 2</title>
 
-                    <para>Complete example of tiles of a coverage.  This query only works with PostgreSQL 9.1 or higher.</para>
+                    <para>Complete example of tiles of a coverage.</para>
 
                     <programlisting>
 WITH foo AS (
@@ -13681,7 +13680,7 @@ FROM foo
                 <refsection>
                     <title>Examples: Variant 2</title>
 
-                    <para>Complete example of tiles of a coverage.  This query only works with PostgreSQL 9.1 or higher.</para>
+                    <para>Complete example of tiles of a coverage.</para>
 
                     <programlisting>
 WITH foo AS (
