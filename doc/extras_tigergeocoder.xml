@@ -20,14 +20,14 @@
 
 
              <para> <note><para>
-If you are using tiger geocoder (tiger_2010),
+If you are using the TIGER Geocoder (tiger_2010),
 you can upgrade the scripts using the accompanying upgrade_geocoder.bat
 / .sh scripts in extras/tiger.  One major change between <varname>tiger_2010</varname> and <varname>tiger_2011+</varname> is that the <varname>county</varname> and <varname>state</varname> tables are no longer broken out by state.    If you have data from tiger_2010 and want to replace with tiger_2015, refer to <xref linkend="upgrade_tiger_geocoder"/>
               </para></note>
 
               <note>
-              <para>New in PostGIS 2.2.0 release is support for Tiger 2015 data and inclusion of Address Standardizer as part of PostGIS.</para>
-              <para>New in PostGIS 2.1.0 release is ability to install tiger geocoder with PostgreSQL extension model if you are running PostgreSQL 9.1+. Refer to <xref linkend="install_tiger_geocoder_extension"/> for details.</para></note>
+              <para>New in PostGIS 2.2.0 release is support for TIGER 2015 data and inclusion of Address Standardizer as part of PostGIS.</para>
+              <para>New in PostGIS 2.1.0 release is ability to install the TIGER Geocoder with the PostgreSQL extension model. Refer to <xref linkend="install_tiger_geocoder_extension"/> for details.</para></note>
               </para>
 
               <para>The <xref linkend="Pagc_Normalize_Address"/> function as a drop in replacement for in-built <xref linkend="Normalize_Address"/>. Refer to <xref linkend="installing_pagc_address_standardizer"/> for compile and installation instructions.</para>
@@ -48,11 +48,11 @@ you can upgrade the scripts using the accompanying upgrade_geocoder.bat
      </info>
 
 
-     <para>There are a couple other open source geocoders for PostGIS, that unlike tiger geocoder have the advantage of multi-country geocoding support</para>
+     <para>There are a couple other open source geocoders for PostGIS, that unlike the TIGER Geocoder have the advantage of multi-country geocoding support</para>
      <itemizedlist>
          <listitem><para><link xlink:href="http://wiki.openstreetmap.org/wiki/Nominatim">Nominatim</link>
      uses OpenStreetMap gazeteer formatted data.  It requires osm2pgsql for loading the data together with PostgreSQL and PostGIS.  It is packaged as a webservice interface and seems designed to be called as a webservice.
-     Just like the tiger geocoder, it has both a geocoder and a reverse geocoder component.  From the documentation, it is unclear if it has a pure SQL interface like the tiger geocoder, or if a good deal of the logic is implemented in the web interface.</para></listitem>
+     Just like the TIGER Geocoder, it has both a geocoder and a reverse geocoder component.  From the documentation, it is unclear if it has a pure SQL interface like the TIGER Geocoder, or if a good deal of the logic is implemented in the web interface.</para></listitem>
          <listitem><para><link xlink:href="http://www.gisgraphy.com/">GIS Graphy</link> also utilizes PostGIS and like Nominatim works with OpenStreetMap (OSM) data.  It comes with a loader to load OSM data and similar to Nominatim is capable of geocoding not just US. Much like Nominatim, it runs as a webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-platform and also has a reverse geocoder among some other neat features.</para></listitem>
      </itemizedlist>
 
@@ -632,7 +632,7 @@ tract_id
           </listitem>
         </orderedlist>
         <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
-        <note><para><xref linkend="Loader_Generate_Script"/> includes this logic, but if you installed the tiger geocoder with older scripts, rerun it on the states you have already processed
+        <note><para><xref linkend="Loader_Generate_Script"/> includes this logic, but if you installed the TIGER Geocoder with older scripts, rerun it on the states you have already processed
             to get these additional tables.</para></note>
       </refsection>
 
@@ -646,7 +646,7 @@ set STATEDIR="\gisdata\www2.census.gov\geo\pvs\tiger2010st\25_Massachusetts"
 set TMPDIR=\gisdata\temp\
 set UNZIPTOOL="C:\Program Files\7-Zip\7z.exe"
 set WGETTOOL="C:\wget\wget.exe"
-set PGBIN=C:\projects\pg\pg<version>win\bin\
+set PGBIN=C:\projects\pg\pg[version]win\bin\
 set PGPORT=5432
 set PGHOST=localhost
 set PGUSER=postgres
@@ -675,7 +675,7 @@ cd %TMPDIR%
 TMPDIR="/gisdata/temp/"
 UNZIPTOOL=unzip
 WGETTOOL="/usr/bin/wget"
-export PGBIN=/usr/pgsql-<version>/bin
+export PGBIN=/usr/pgsql-[version]/bin
 export PGPORT=5432
 export PGHOST=localhost
 export PGUSER=postgres
@@ -759,7 +759,7 @@ for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
 set TMPDIR=\gisdata\temp\
 set UNZIPTOOL="C:\Program Files\7-Zip\7z.exe"
 set WGETTOOL="C:\wget\wget.exe"
-set PGBIN=C:\Program Files\PostgreSQL\<version>\bin\
+set PGBIN=C:\Program Files\PostgreSQL\[version]\bin\
 set PGPORT=5432
 set PGHOST=localhost
 set PGUSER=postgres
@@ -780,7 +780,7 @@ cd \gisdata/ftp2.census.gov/geo/tiger/TIGER2015/PLACE
 TMPDIR="/gisdata/temp/"
 UNZIPTOOL=unzip
 WGETTOOL="/usr/bin/wget"
-export PGBIN=/usr/lib/postgresql/<version>/bin
+export PGBIN=/usr/lib/postgresql/[version]/bin
 -- variables used by psql: https://www.postgresql.org/docs/current/static/libpq-envars.html
 export PGPORT=5432
 export PGHOST=localhost

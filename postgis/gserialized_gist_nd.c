@@ -1087,8 +1087,8 @@ Datum gserialized_gist_consistent(PG_FUNCTION_ARGS)
 	char gidxmem[GIDX_MAX_SIZE];
 	GIDX *query_gbox_index = (GIDX *)gidxmem;
 
-	/* PostgreSQL 8.4 and later require the RECHECK flag to be set here,
-	   rather than being supplied as part of the operator class definition */
+        /* PostgreSQL requires the RECHECK flag to be set here,
+           rather than being supplied as part of the operator class definition */
 	bool *recheck = (bool *)PG_GETARG_POINTER(4);
 
 	/* We set recheck to false to avoid repeatedly pulling every "possibly matched" geometry

@@ -1012,7 +1012,7 @@ SELECT DISTINCT ON (buildings.gid) buildings.gid, parcels.parcel_id
 				The units of length is determined by the
 				spatial reference system of the geometry.</para>
 			<para>For geography types: computation is performed using the inverse geodesic calculation. Units of length are in meters.
-				If PostGIS is compiled with PROJ version 4.8.0 or later, the spheroid is specified by the SRID, otherwise it is exclusive to WGS84.
+                                The spheroid is specified by the SRID; when no SRID is provided, WGS84 is used.
 				If <varname>use_spheroid = false</varname>, then the calculation is based on a sphere instead of a spheroid.
 				</para>
 
@@ -1722,7 +1722,7 @@ LINESTRING(0.5 0.00032,0.5 0)
 				non-areal geometries.  For linear geometries use <xref linkend="ST_Length"/>.  For geometry types, units for perimeter measures are specified by the
 				spatial reference system of the geometry.</para>
 			<para>For geography types, the calculations are performed using the inverse geodesic problem, where perimeter units are in meters.
-				If PostGIS is compiled with PROJ version 4.8.0 or later, the spheroid is specified by the SRID, otherwise it is exclusive to WGS84.
+                                The spheroid is specified by the SRID; when no SRID is provided, WGS84 is used.
 				If <varname>use_spheroid = false</varname>, then calculations will approximate a sphere instead of a spheroid.</para>
 
 			<para>Currently this is an alias for ST_Perimeter2D, but this may change to support higher dimensions.</para>

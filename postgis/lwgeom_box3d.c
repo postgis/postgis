@@ -631,7 +631,7 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/** needed for sp-gist support PostgreSQL 11+ **/
+/** Needed for SP-GiST support. **/
 /*****************************************************************************
  * BOX3D functions
  *****************************************************************************/

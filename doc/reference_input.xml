@@ -1076,8 +1076,8 @@ ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\
 \\312Q\\300\\366{b\\235*!E@\\225|\\354.P\\312Q
 \\300p\\231\\323e1!E@');</programlisting>
 
-		<note><para>In PostgreSQL 9.1+ - standard_conforming_strings is set to on by default, where as in past versions it was set to off.  You can change defaults as needed
-		    for a single query or at the database or server level.  Below is how you would do it with standard_conforming_strings = on.  In this case we escape the ' with standard ansi ',
+           <note><para>In PostgreSQL, standard_conforming_strings is set to on by default. You can change the default as needed
+                    for a single query or at the database or server level.  Below is how you would do it with standard_conforming_strings = on.  In this case we escape the ' with standard ANSI ',
 		    but slashes are not escaped</para></note>
 	<programlisting>
 	    set standard_conforming_strings = on;

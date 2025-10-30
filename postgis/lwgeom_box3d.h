@@ -63,7 +63,7 @@ bool BOX3D_back_internal(BOX3D *box1, BOX3D *box2);
 bool BOX3D_overback_internal(BOX3D *box1, BOX3D *box2);
 double BOX3D_distance_internal(BOX3D *box1, BOX3D *box2);
 
-/** needed for sp-gist support PostgreSQL 11+ **/
+/** Needed for SP-GiST support. **/
 Datum BOX3D_contains(PG_FUNCTION_ARGS);
 Datum BOX3D_contained(PG_FUNCTION_ARGS);
 Datum BOX3D_overlaps(PG_FUNCTION_ARGS);

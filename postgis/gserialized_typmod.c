@@ -332,7 +332,7 @@ static uint32 gserialized_typmod_in(ArrayType *arr, int is_geography)
 /*
 ** geography_typmod_in(cstring[]) returns int32
 **
-** Modified from ArrayGetIntegerTypmods in PostgreSQL 8.3
+** Modified from ArrayGetIntegerTypmods in PostgreSQL
 */
 PG_FUNCTION_INFO_V1(geography_typmod_in);
 Datum geography_typmod_in(PG_FUNCTION_ARGS)
@@ -349,7 +349,7 @@ Datum geography_typmod_in(PG_FUNCTION_ARGS)
 /*
 ** geometry_typmod_in(cstring[]) returns int32
 **
-** Modified from ArrayGetIntegerTypmods in PostgreSQL 8.3
+** Modified from ArrayGetIntegerTypmods in PostgreSQL
 */
 PG_FUNCTION_INFO_V1(geometry_typmod_in);
 Datum geometry_typmod_in(PG_FUNCTION_ARGS)

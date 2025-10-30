@@ -1,15 +1,10 @@
 PostGIS Extension for PostgreSQL
 ================================
 
-PostgreSQL 9.6 (and up) supports PostGIS extensions. A database can easily be
-extended to use PostGIS using the syntax::
+A database can easily be extended to use PostGIS using the syntax::
 
   CREATE EXTENSION postgis;           -- Includes raster
   CREATE EXTENSION postgis_topology;  -- Depends on postgis
-
-Requirements
-------------
- * PostgreSQL 9.6 or later
 
 Building and installing
 -----------------------

@@ -14181,7 +14181,7 @@ FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast
 
               <refsection>
                     <title>Examples</title>
-                    <programlisting> -- this syntax requires PostgreSQL 9.3+
+                    <programlisting> -- this syntax uses a LATERAL join
 SELECT val, ST_AsText(geom) As geomwkt
 FROM (
 SELECT dp.*

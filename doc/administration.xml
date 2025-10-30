@@ -384,7 +384,5 @@ ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));
 
 	</section>
   </section>
-
-
-
+  </section>
 </chapter>
