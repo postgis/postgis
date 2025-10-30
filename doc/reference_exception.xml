@@ -1,8 +1,12 @@
 <!-- Converted by db4-upgrade version 1.1 -->
 <section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Exceptional_Functions">
-	<title>Exceptional Functions</title>
-	<para>These functions are rarely used functions that should only be used if your data is corrupted in someway.  They are used for troubleshooting corruption
-		and also fixing things that should under normal circumstances, never happen.</para>
+        <title>Exceptional Functions</title><info>
+        <abstract>
+        <para>These routines are reserved for diagnosing and repairing data
+        corruption. They provide last-resort maintenance operations that are not
+        required during normal spatial workflows.</para>
+        </abstract>
+        </info>
 
 	<refentry xml:id="PostGIS_AddBBox">
 		  <refnamediv>

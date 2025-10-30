@@ -1,6 +1,13 @@
 <!-- Converted by db4-upgrade version 1.1 -->
 <section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Geometry_Accessors">
-	<title>Geometry Accessors</title>
+        <title>Geometry Accessors</title><info>
+        <abstract>
+        <para>These functions expose structural information about an existing geometry
+        without changing it. They provide access to metadata such as geometry
+        type, dimensionality, or coordinate components so that spatial
+        expressions can interrogate complex objects in a controlled way.</para>
+        </abstract>
+        </info>
 
 	<refentry xml:id="GeometryType">
 	  <refnamediv>

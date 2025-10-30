@@ -1,6 +1,15 @@
 <!-- Converted by db4-upgrade version 1.1 -->
 <section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Operators">
-	<title>Operators</title>
+        <title>Operators</title><info>
+        <abstract>
+        <para>These entries document the spatial operators defined by PostGIS.
+        Operators complement the function catalogue by supplying concise
+        symbolic predicates for bounding-box interactions and spatial
+        relationships. Their semantics follow the same geometric rules as the
+        corresponding functions but are optimised for use in SQL expressions
+        and index-supported filtering.</para>
+        </abstract>
+        </info>
 
 	    <section xml:id="operators-bbox">
       <title>Bounding Box Operators</title>

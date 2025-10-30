@@ -1,6 +1,13 @@
 <!-- Converted by db4-upgrade version 1.1 -->
 <section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Linear_Referencing">
-	  <title>Linear Referencing</title>
+          <title>Linear Referencing</title><info>
+          <abstract>
+          <para>These functions measure and locate events along linear features.
+          They support the classic linear referencing workflow of expressing
+          positions as fractions or measures along routes and of projecting
+          those measures back into spatial coordinates.</para>
+          </abstract>
+          </info>
 
 		<refentry xml:id="ST_LineInterpolatePoint">
 		  <refnamediv>

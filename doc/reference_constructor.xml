@@ -1,6 +1,12 @@
 <!-- Converted by db4-upgrade version 1.1 -->
 <section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Geometry_Constructors">
-      <title>Geometry Constructors</title>
+      <title>Geometry Constructors</title><info>
+      <abstract>
+      <para>These functions instantiate new geometry or geography values. They
+      assemble primitives, coordinate sequences, or existing geometries into
+      well-formed spatial objects that can participate in subsequent analysis.</para>
+      </abstract>
+      </info>
 
     <refentry xml:id="ST_Collect">
       <refnamediv>

@@ -18,6 +18,8 @@ xxxx/xx/xx
  - #5702, Allow the compiler to detect the parallelism -flto=auto (Darafei Praliaskouski)
  - #4798, ST_AsGeoJSON warns about duplicate property keys (Darafei Praliaskouski)
  - #5950, Document POSTGIS_REGRESS_DB_OWNER for sandboxed regression roles (Darafei Praliaskouski)
+ - #4332, Clarify the scope of several Function Reference categories (Darafei Praliaskouski)
+
 
 * Bug Fixes *
 
