@@ -20,6 +20,7 @@ xxxx/xx/xx
  - #5950, Document POSTGIS_REGRESS_DB_OWNER for sandboxed regression roles (Darafei Praliaskouski)
  - #4332, Clarify the scope of several Function Reference categories (Darafei Praliaskouski)
  - #4222, [raster] ST_DumpAsPolygons honours PostgreSQL interrupts (Darafei Praliaskouski)
+ - #5109, Document the meaning of topology.next_left_edge and topology.next_right_edge links (Darafei Praliaskouski)
 
 
 * Bug Fixes *

@@ -17,9 +17,27 @@ how is it used, and various FOSS4G tools that support it in <link xlink:href="ht
 	<para>Details of this project can be found at <link xlink:href="http://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology">PostGIS Topology Wiki</link></para>
 	<para>All functions and tables associated with this module are installed in a schema called <varname>topology</varname>.</para>
 	<para>Functions that are defined in SQL/MM standard are prefixed with ST_ and functions specific to PostGIS are not prefixed.</para>
-	<para>Topology support is build by default starting with PostGIS 2.0, and can be disabled specifying --without-topology configure option at build time as described in <xref linkend="postgis_installation"/></para>
+        <para>Topology support is build by default starting with PostGIS 2.0, and can be disabled specifying --without-topology configure option at build time as described in <xref linkend="postgis_installation"/></para>
 
-	<section xml:id="Topology_Types">
+        <section xml:id="Topology_PrimitiveTables">
+            <title>Topology Primitive Tables</title>
+            <para>The core primitives of any topology are stored in the <varname>edge_data</varname>, <varname>node</varname>, and <varname>face</varname> tables that live in the schema created by <xref linkend="CreateTopology"/>.  Each row of <varname>edge_data</varname> represents an oriented edge: it records a directed curve from <varname>start_node</varname> to <varname>end_node</varname> together with the identifier of the face encountered on the left of that direction (<varname>left_face</varname>) and the face encountered on the right (<varname>right_face</varname>).  The same geometric segment may therefore appear twice—once for each orientation—when it belongs to two faces.</para>
+            <para>The <varname>next_left_edge</varname> and <varname>next_right_edge</varname> columns complete this orientation information by encoding how to keep walking around a face.  They store signed integers whose absolute value is the identifier of the next oriented edge and whose sign determines whether the stored orientation has to be followed as-is or reversed when traversing.  Formally, the following rules hold for every edge <varname>e</varname>:</para>
+            <itemizedlist>
+                <listitem>
+                    <para><varname>abs(next_left_edge)</varname> is the identifier of the edge reached by continuing around the face that lies to the left of <varname>e</varname>.  If the value is positive the walk continues from the end node of <varname>e</varname> along the stored orientation of the referenced edge; if it is negative the referenced edge must be followed backwards so that the shared face remains on the walker’s left.</para>
+                </listitem>
+                <listitem>
+                    <para><varname>abs(next_right_edge)</varname> analogously follows the boundary of the face located on the right of <varname>e</varname>.  A positive value means that the next edge is taken with its recorded orientation starting from the end node of <varname>e</varname>, whereas a negative value instructs to traverse the referenced edge in reverse, starting from its end node, so that the right-hand face is preserved.</para>
+                </listitem>
+                <listitem>
+                    <para>A zero value indicates that the edge is dangling on the corresponding side (for example an isolated edge whose incident face is the universal face <varname>0</varname>).  The <varname>abs_next_left_edge</varname> and <varname>abs_next_right_edge</varname> columns exposed by the <varname>edge</varname> view are convenience projections of these absolute values.</para>
+                </listitem>
+            </itemizedlist>
+            <para>This representation is a variant of a doubly connected edge list and is exploited by many topology routines.  Functions such as <xref linkend="GetRingEdges"/> and <xref linkend="ValidateTopology"/> rely on it to reconstruct face boundaries and to diagnose inconsistencies—hence the “invalid next_left_edge” and “invalid next_right_edge” diagnostics reported during validation.  Constructors like <xref linkend="AddEdge"/> initialise the <varname>next_*</varname> attributes with trivial self references, while editing routines including <xref linkend="ST_AddEdgeModFace"/> and <xref linkend="ST_RemEdgeModFace"/> update the links as edges are inserted or removed.  Other bulk operations (for example <xref linkend="TopologyPolygonize"/>) may intentionally leave the fields unset, which is why the documentation flags their behaviour explicitly.</para>
+        </section>
+
+        <section xml:id="Topology_Types">
         <title>Topology Types</title><info>
             <abstract>
                 <para>This section lists the PostgreSQL data types installed by PostGIS Topology.  Note we describe the casting behavior of these which is very
