@@ -12,7 +12,7 @@ DWN=${WEB}/download
 #export PG_VER=9.2beta2
 
 if [ -n "$SOURCE_FOLDER" ]; then
-  export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
+  	export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
 	cd $POSTGIS_SRC
 fi
 
@@ -47,46 +47,54 @@ mkdir -p $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}/proj
 mkdir -p $outdir/share/extension
 mkdir $outdir/bin
 mkdir $outdir/lib
-mkdir $outdir/bin/postgisgui
-mkdir $outdir/bin/postgisgui/share
-mkdir $outdir/bin/postgisgui/lib
+
 mkdir $outdir/utils
-cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin/postgisgui
-
-cp ${PGPATH}/bin/libpq.dll  $outdir/bin/postgisgui
-#cp ${PGPATHEDB}/bin/libiconv2.dll  $outdir/bin/postgisgui
-cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
-cp ${PGPATHEDB}/bin/libintl*.dll $outdir/bin/postgisgui
-
-#cp ${PGPATHEDB}/bin/ssleay32.dll $outdir/bin/postgisgui
-#cp ${PGPATHEDB}/bin/libeay32.dll $outdir/bin/postgisgui
-#cp ${PGPATHEDB}/bin/libcrypto-1_1-x64.dll $outdir/bin/postgisgui
-#cp ${PGPATHEDB}/bin/libssl-1_1-x64.dll $outdir/bin/postgisgui
-
-#pg 15 is shipping with newer ssl
-cp ${PGPATHEDB}/bin/libcrypto-3-x64.dll $outdir/bin/postgisgui
-cp ${PGPATHEDB}/bin/libssl-3-x64.dll $outdir/bin/postgisgui
 
 
 cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libstdc++-6.dll $outdir/bin
 cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libgcc*.dll $outdir/bin
-cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
-cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libstdc++-6.dll $outdir/bin/postgisgui
-cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libgcc*.dll $outdir/bin/postgisgui
-cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/etc $outdir/bin/postgisgui
-cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/share/themes $outdir/bin/postgisgui/share
-cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/gtk-2.0 $outdir/bin/postgisgui/lib
-cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin/postgisgui/lib
-cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/gdk-pixbuf-2.0 $outdir/bin/postgisgui/lib
+
+# don't package postgisgui if we don't have gtk2
+if [ -d "${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}" ]; then
+	mkdir $outdir/bin/postgisgui
+	mkdir $outdir/bin/postgisgui/share
+	mkdir $outdir/bin/postgisgui/lib
+	#pg 15 is shipping with newer ssl
+	cp ${PGPATHEDB}/bin/libcrypto-3-x64.dll $outdir/bin/postgisgui
+	cp ${PGPATHEDB}/bin/libssl-3-x64.dll $outdir/bin/postgisgui
+	cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
+	cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libstdc++-6.dll $outdir/bin/postgisgui
+	cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libgcc*.dll $outdir/bin/postgisgui
+	cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/etc $outdir/bin/postgisgui
+	cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/share/themes $outdir/bin/postgisgui/share
+	cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/gtk-2.0 $outdir/bin/postgisgui/lib
+	cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin/postgisgui/lib
+	cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/gdk-pixbuf-2.0 $outdir/bin/postgisgui/lib
+	cp ${PGPATHEDB}/bin/libintl*.dll $outdir/bin/postgisgui
+	cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin/postgisgui
+
+	cp ${PGPATH}/bin/libpq.dll  $outdir/bin/postgisgui
+	#cp ${PGPATHEDB}/bin/libiconv2.dll  $outdir/bin/postgisgui
+	cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
+	#proj
+	cp ${PROJ_PATH}/bin/*.dll $outdir/bin/postgisgui
+	#geos
+	cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
+
+	cp loader/shp2pgsql-gui.exe ${RELDIR}/${RELVERDIR}/bin/postgisgui
+	cp loader/.libs/shp2pgsql-gui.exe ${RELDIR}/${RELVERDIR}/bin/postgisgui
+
+	#shp2pgsql-gui now has dependency on geos (though in theory it shouldn't)
+	cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
+fi;
 
 # proj
 cp ${PROJ_LIB}/* $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}/proj
 cp ${PROJ_PATH}/bin/*.dll $outdir/bin
-cp ${PROJ_PATH}/bin/*.dll $outdir/bin/postgisgui
+
 
 # geos
 cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
-cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 
 #for protobuf
 cp ${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin/libprotobuf-c-*.dll $outdir/bin
@@ -99,7 +107,7 @@ if [ "$POSTGIS_MAJOR_VERSION" > "1" ] ; then
   cp -rp  ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal $outdir/gdal-data
 
 	# needed for address standardizer
-  cp -p ${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/bin/libpcre-1*.dll $outdir/bin
+  cp -p ${PCRE_PATH}/bin/*.dll $outdir/bin
 
 fi;
 
@@ -116,8 +124,6 @@ if [ -n "$SFCGAL_VER"  ]; then
 
 	#cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
 	cp -p ${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin
-	# cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
-	# cp -p ${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin/postgisgui
 fi;
 
 echo "PROTOBUF VERSION: ${PROTOBUF_VER} https://github.com/google/protobuf" >> $verfile
@@ -147,14 +153,10 @@ cp loader/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/pgsql2shp.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/pgsql2shp.exe ${RELDIR}/${RELVERDIR}/bin
-cp loader/shp2pgsql-gui.exe ${RELDIR}/${RELVERDIR}/bin/postgisgui
-cp loader/.libs/shp2pgsql-gui.exe ${RELDIR}/${RELVERDIR}/bin/postgisgui
 cp topology/loader/* ${RELDIR}/${RELVERDIR}/bin
 
 #cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
 
-#shp2pgsql-gui now has dependency on geos (though in theory it shouldn't)
-cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
 cp spatial_ref_sys.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp topology/topology.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 #cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}

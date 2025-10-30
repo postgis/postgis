@@ -48,10 +48,6 @@ git describe --long --all --tags # Report where we are at
 
 sh autogen.sh
 
-if [ -n "$PCRE_VER" ]; then
-    export PATH="${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/include:${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
-fi
-
 export LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${LZ4_PATH}/bin -L${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/lib -L${PROJECTS}/zlib/rel-zlib-${ZLIB_VER}w${OS_BUILD}${GCC_TYPE}/lib"
 
 if [$INCLUDE_MINOR_LIB == "1"]; then
