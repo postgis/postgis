@@ -1,21 +1,21 @@
 {
-   "abstract" : "PostGIS 2.2 OGC/SQL-MM compliant spatial extender for PostgreSQL",
-   "release_status" : "stable",
-   "license" : "gpl_2",
-   "generated_by" : "Regina O. Obe",
-   "description" : "This module provides GIS geometry, geography, raster types, functions, and tables",
-   "version" : "2.2.0",
-   "resources" : {
-      "bugtracker" : {
-         "web" : "http://trac.osgeo.org/postgis"
+   "abstract": "PostGIS OGC/SQL-MM compliant spatial extender for PostgreSQL",
+   "release_status": "stable",
+   "license": "gpl_2",
+   "generated_by": "Regina O. Obe",
+   "description": "This module provides GIS geometry, geography, raster types, functions, and tables",
+   "version": "3.7.0dev",
+   "resources": {
+      "bugtracker": {
+         "web": "http://trac.osgeo.org/postgis"
       },
-      "repository" : {
-         "type" : "git",
-         "web" : "http://postgis.net",
-         "url" : "https://git.osgeo.org/gitea/postgis/postgis.git"
+      "repository": {
+         "type": "git",
+         "web": "http://postgis.net",
+         "url": "https://git.osgeo.org/gitea/postgis/postgis.git"
       }
    },
-   "tags" : [
+   "tags": [
       "gis",
       "spatial",
       "geometry",
@@ -23,30 +23,30 @@
       "geography",
       "location"
    ],
-   "meta-spec" : {
-      "version" : "1.0.0",
-      "url" : "http://pgxn.org/meta/spec.txt"
+   "meta-spec": {
+      "version": "1.0.0",
+      "url": "http://pgxn.org/meta/spec.txt"
    },
-   "provides" : {
-      "spatial_ref_sys" : {
-         "version" : "2.2.0",
-         "file" : "sql/spatial_ref_sys.sql",
-         "abstract" : "Directory of spatial reference systems needed for geometry transformation between different spatial reference systems"
+   "provides": {
+      "spatial_ref_sys": {
+         "version": "3.7.0dev",
+         "file": "sql/spatial_ref_sys.sql",
+         "abstract": "Directory of spatial reference systems needed for geometry transformation between different spatial reference systems"
       },
-      "postgis" : {
-         "abstract" : "PostGIS GIS types, indexes and functions",
-         "docfile" : "doc/postgis.md",
-         "file" : "sql/postgis.sql",
-         "version" : "2.2.0"
+      "postgis": {
+         "abstract": "PostGIS GIS types, indexes and functions",
+         "docfile": "doc/postgis.md",
+         "file": "sql/postgis.sql",
+         "version": "3.7.0dev"
       }
    },
-   "name" : "postgis",
-   "maintainer" : "PostGIS Steering Committee",
-   "prereqs" : {
-      "runtime" : {
-         "requires" : {
-            "PostgreSQL" : "9.1.0",
-            "plpgsql" : 0
+   "name": "postgis",
+   "maintainer": "PostGIS Steering Committee",
+   "prereqs": {
+      "runtime": {
+         "requires": {
+            "PostgreSQL": "12",
+            "plpgsql": 0
          }
       }
    }

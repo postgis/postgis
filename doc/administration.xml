@@ -155,12 +155,12 @@ environment).</para></note>
 
 	  <para>If you installed your database using extensions, you'll need to upgrade using the extension model as well.  If you installed using the old sql script way, you are advised to switch your install to extensions because the script way is no longer supported. </para>
 
-	<section xml:id="soft_upgrade_extensions"><title>Soft Upgrade 9.1+ using extensions</title>
-		<para>If you originally installed PostGIS with extensions, then you need to upgrade using extensions as well.  Doing a minor upgrade with extensions, is fairly painless.</para>
-        <para>If you are running PostGIS 3 or above, then you should use the <xref linkend="PostGIS_Extensions_Upgrade"/> function to upgrade to the latest version you have installed.</para>
+        <section xml:id="soft_upgrade_extensions"><title>Soft upgrade using extensions</title>
+                <para>If you originally installed PostGIS with extensions, then you need to upgrade using extensions as well.  Doing a minor upgrade with extensions is fairly painless.</para>
+        <para>Use the <xref linkend="PostGIS_Extensions_Upgrade"/> function to upgrade to the latest version you have installed.</para>
         <programlisting>SELECT postgis_extensions_upgrade();</programlisting>
 
-        <para>If you are running PostGIS 2.5 or lower, then do the following:</para>
+        <para>If you are upgrading a database that still runs PostGIS 2.5, issue an <command>ALTER EXTENSION</command> followed by <function>postgis_extensions_upgrade()</function> to make sure the legacy <varname>postgis_raster</varname> objects are folded back into the main extension.</para>
         <programlisting>ALTER EXTENSION postgis UPDATE;
 SELECT postgis_extensions_upgrade();
 -- This second call is needed to rebundle postgis_raster extension
@@ -195,71 +195,12 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 	</section>
 
      <section xml:id="soft_upgrade_sql_script">
-		<title>Soft Upgrade Pre 9.1+ or without extensions</title>
+                <title>Soft upgrade without extensions</title>
 
-	  <para>This section applies only to those who installed PostGIS
-	  not using extensions.  If you have extensions and try to
-	  upgrade with this approach you'll get messages like:</para>
+          <para>Extensions have been the supported installation method for many releases. If you still rely on an unpackaged installation, perform a <link linkend="hard_upgrade">HARD UPGRADE</link> into a database created with extensions and migrate your data there.</para>
+          </section>
 
-		<programlisting>can't drop … because postgis extension depends on it</programlisting>
-
-		<para>NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from
-		PostGIS 2.* prior to r7409, you cannot use this procedure but
-		would rather need to do a
-		<link linkend="hard_upgrade">HARD UPGRADE</link>.
-		</para>
-
-		<para>
-			After compiling and installing (make install) you should
-			find a set of	<filename>*_upgrade.sql</filename>
-			files in the installation folders. You can list
-			them all with:
-		</para>
-
-		<programlisting>ls `pg_config --sharedir`/contrib/postgis-&last_release_version;/*_upgrade.sql</programlisting>
-
-		<para>
-			Load them all in turn, starting from <filename>postgis_upgrade.sql</filename>.
-		</para>
-
-		<programlisting>psql -f postgis_upgrade.sql -d your_spatial_database</programlisting>
-
-		<para>
-			The same procedure applies to raster,
-			topology and sfcgal extensions, with upgrade files named
-			<filename>rtpostgis_upgrade.sql</filename>,
-			<filename>topology_upgrade.sql</filename> and
-			<filename>sfcgal_upgrade.sql</filename> respectively.
-			If you need them:
-		</para>
-
-		<programlisting>psql -f rtpostgis_upgrade.sql -d your_spatial_database</programlisting>
-		<programlisting>psql -f topology_upgrade.sql -d your_spatial_database</programlisting>
-		<programlisting>psql -f sfcgal_upgrade.sql -d your_spatial_database</programlisting>
-
-        <para>You are advised to switch to an extension based install by running</para>
-        <programlisting>psql -c "SELECT postgis_extensions_upgrade();"</programlisting>
-
-	  <note>
-		<para>
-		  If you can't find the
-		  <filename>postgis_upgrade.sql</filename> specific for
-		  upgrading your version you are using a version too
-		  early for a soft upgrade and need to do a
-			<link linkend="hard_upgrade">HARD UPGRADE</link>.
-		</para>
-	  </note>
-
-	  <para>
-		The <xref linkend="PostGIS_Full_Version"/> function
-		should inform you about the need to run this kind of
-		upgrade using a "procs need upgrade" message.
-	  </para>
-	  </section>
-
-	</section>
-
-	<section xml:id="hard_upgrade">
+        <section xml:id="hard_upgrade">
 	  <title>Hard upgrade</title>
 
 	  <para>

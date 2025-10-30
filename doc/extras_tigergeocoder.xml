@@ -37,7 +37,7 @@ you can upgrade the scripts using the accompanying upgrade_geocoder.bat
             <para>Design:</para>
             <para>The goal of this project is to build a fully functional geocoder that can process an arbitrary
             United States address string and using normalized TIGER census data, produce a point geometry and rating reflecting the location of the given address and likeliness of the location. The higher the rating number the worse the result.</para>
-            <para>The <varname>reverse_geocode</varname> function, introduced in PostGIS 2.0.0 is useful for deriving the street address and cross streets of a GPS location.</para>
+            <para>The <varname>reverse_geocode</varname> function is useful for deriving the street address and cross streets of a GPS location.</para>
             <para>The geocoder should be simple for anyone familiar with PostGIS to install and use, and should be easily installable and usable on all platforms supported by PostGIS.</para>
             <para>It should be robust enough to function properly despite formatting and spelling errors.</para>
             <para>It should be extensible enough to be used with future data updates, or alternate data sources with a minimum of coding changes.</para>
@@ -51,7 +51,7 @@ you can upgrade the scripts using the accompanying upgrade_geocoder.bat
      <para>There are a couple other open source geocoders for PostGIS, that unlike tiger geocoder have the advantage of multi-country geocoding support</para>
      <itemizedlist>
          <listitem><para><link xlink:href="http://wiki.openstreetmap.org/wiki/Nominatim">Nominatim</link>
-     uses OpenStreetMap gazeteer formatted data.  It requires osm2pgsql for loading the data, PostgreSQL 8.4+ and PostGIS 1.5+ to function.  It is packaged as a webservice interface and seems designed to be called as a webservice.
+     uses OpenStreetMap gazeteer formatted data.  It requires osm2pgsql for loading the data together with PostgreSQL and PostGIS.  It is packaged as a webservice interface and seems designed to be called as a webservice.
      Just like the tiger geocoder, it has both a geocoder and a reverse geocoder component.  From the documentation, it is unclear if it has a pure SQL interface like the tiger geocoder, or if a good deal of the logic is implemented in the web interface.</para></listitem>
          <listitem><para><link xlink:href="http://www.gisgraphy.com/">GIS Graphy</link> also utilizes PostGIS and like Nominatim works with OpenStreetMap (OSM) data.  It comes with a loader to load OSM data and similar to Nominatim is capable of geocoding not just US. Much like Nominatim, it runs as a webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-platform and also has a reverse geocoder among some other neat features.</para></listitem>
      </itemizedlist>
@@ -278,7 +278,6 @@ DROP TABLE tiger_data.pa_zip_state_loc;
 
       <refsection>
         <title>Examples: Basic</title>
-        <para>The below examples timings are on a 3.0 GHZ single processor Windows 7 machine with 2GB ram running PostgreSQL 9.1rc1/PostGIS 2.0 loaded with all of MA,MN,CA, RI state Tiger data loaded.</para>
         <para>Exact matches are faster to compute (61ms)</para>
         <programlisting>SELECT g.rating, ST_X(g.geomout) As lon, ST_Y(g.geomout) As lat,
     (addy).address As stno, (addy).streetname As street,
@@ -418,8 +417,6 @@ Time: 622.939 ms
 
       <refsection>
         <title>Examples: Basic</title>
-        <para>The below examples timings are on a 3.0 GHZ single processor Windows 7 machine with 2GB ram running PostgreSQL 9.0/PostGIS 1.5 loaded with all of MA state Tiger data loaded. Currently a bit slow (3000 ms)</para>
-        <para>Testing on Windows 2003 64-bit 8GB on PostGIS 2.0 PostgreSQL 64-bit Tiger 2011 data loaded -- (41ms)</para>
         <programlisting>SELECT pprint_addy(addy), st_astext(geomout),rating
             FROM geocode_intersection( 'Haverford St','Germania St', 'MA', 'Boston', '02130',1);
            pprint_addy            |         st_astext          | rating
@@ -635,7 +632,7 @@ tract_id
           </listitem>
         </orderedlist>
         <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
-        <note><para><xref linkend="Loader_Generate_Script"/> includes this logic, but if you installed tiger geocoder prior to PostGIS 2.0.0 alpha5, you'll need to run this on the states you have already done
+        <note><para><xref linkend="Loader_Generate_Script"/> includes this logic, but if you installed the tiger geocoder with older scripts, rerun it on the states you have already processed
             to get these additional tables.</para></note>
       </refsection>
 
@@ -649,7 +646,7 @@ set STATEDIR="\gisdata\www2.census.gov\geo\pvs\tiger2010st\25_Massachusetts"
 set TMPDIR=\gisdata\temp\
 set UNZIPTOOL="C:\Program Files\7-Zip\7z.exe"
 set WGETTOOL="C:\wget\wget.exe"
-set PGBIN=C:\projects\pg\pg91win\bin\
+set PGBIN=C:\projects\pg\pg<version>win\bin\
 set PGPORT=5432
 set PGHOST=localhost
 set PGUSER=postgres
@@ -678,7 +675,7 @@ cd %TMPDIR%
 TMPDIR="/gisdata/temp/"
 UNZIPTOOL=unzip
 WGETTOOL="/usr/bin/wget"
-export PGBIN=/usr/pgsql-9.0/bin
+export PGBIN=/usr/pgsql-<version>/bin
 export PGPORT=5432
 export PGHOST=localhost
 export PGUSER=postgres
@@ -762,7 +759,7 @@ for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
 set TMPDIR=\gisdata\temp\
 set UNZIPTOOL="C:\Program Files\7-Zip\7z.exe"
 set WGETTOOL="C:\wget\wget.exe"
-set PGBIN=C:\Program Files\PostgreSQL\9.4\bin\
+set PGBIN=C:\Program Files\PostgreSQL\<version>\bin\
 set PGPORT=5432
 set PGHOST=localhost
 set PGUSER=postgres
@@ -783,7 +780,7 @@ cd \gisdata/ftp2.census.gov/geo/tiger/TIGER2015/PLACE
 TMPDIR="/gisdata/temp/"
 UNZIPTOOL=unzip
 WGETTOOL="/usr/bin/wget"
-export PGBIN=/usr/lib/postgresql/9.4/bin
+export PGBIN=/usr/lib/postgresql/<version>/bin
 -- variables used by psql: https://www.postgresql.org/docs/current/static/libpq-envars.html
 export PGPORT=5432
 export PGHOST=localhost
@@ -1355,7 +1352,6 @@ FROM (SELECT address As actual_addr, lon, lat,
 createtopology
 --------------
    15
--- 60,902 ms ~ 1 minute on windows 7 desktop running 9.1 (with 5 states tiger data loaded)
 SELECT tiger.topology_load_tiger('topo_boston', 'place', '2507000');
 -- topology_loader_tiger --
 29722 edges holding in temporary. 11108 faces added. 1875 edges of faces added.  20576 nodes added.

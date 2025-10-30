@@ -12,12 +12,12 @@ Vincent Picavet provides a good synopsis and overview of what is Topology,
 how is it used, and various FOSS4G tools that support it in <link xlink:href="https://gitlab.com/Oslandia/documentation/presentations/-/blob/master/2012/pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology.pdf">PostGIS Topology PGConf EU 2012</link>.
     </para>
     <para>An example of a topologically based GIS database is the <link xlink:href="https://www.census.gov/geo/maps-data/data/tiger.html">US Census Topologically Integrated Geographic Encoding and Referencing System (TIGER)</link> database. If you want to experiment with PostGIS topology and need some data, check out <xref linkend="Topology_Load_Tiger"/>.</para>
-	<para>The PostGIS topology module has existed in prior versions of PostGIS but was never part of the Official PostGIS documentation.
-	    In PostGIS 2.0.0 major cleanup is going on to remove use of all deprecated functions in it, fix known usability issues, better document the features and functions, add new functions, and enhance to closer conform to SQL-MM standards.</para>
+	<para>The PostGIS topology module has existed for a long time but was not always part of the official documentation.
+	    Extensive cleanup removed deprecated functions, fixed known usability issues, documented the features and functions, added new functionality, and improved SQL-MM compliance.</para>
 	<para>Details of this project can be found at <link xlink:href="http://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology">PostGIS Topology Wiki</link></para>
 	<para>All functions and tables associated with this module are installed in a schema called <varname>topology</varname>.</para>
 	<para>Functions that are defined in SQL/MM standard are prefixed with ST_ and functions specific to PostGIS are not prefixed.</para>
-        <para>Topology support is build by default starting with PostGIS 2.0, and can be disabled specifying --without-topology configure option at build time as described in <xref linkend="postgis_installation"/></para>
+        <para>Topology support is built by default and can be disabled by specifying the --without-topology configure option at build time as described in <xref linkend="postgis_installation"/></para>
 
         <section xml:id="Topology_PrimitiveTables">
             <title>Topology Primitive Tables</title>

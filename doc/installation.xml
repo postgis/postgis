@@ -585,24 +585,24 @@ sh autogen.sh
 		successfully. Ready to install.</code>"
 	  </para>
 
-	  <para>
-		As of PostGIS v1.4.0, all the functions have comments generated from the
-		documentation. If you wish to install these comments into your spatial
-		databases later, run the command which requires docbook.  The postgis_comments.sql and other
-		package comments files raster_comments.sql, topology_comments.sql are
-			also packaged in the tar.gz distribution in the doc folder so no need to make comments
-			if installing from the tar ball.  Comments are also included as part of the CREATE EXTENSION install.
-	  </para>
+          <para>
+                All the functions have comments generated from the
+                documentation. If you wish to install these comments into your spatial
+                databases later, run the command which requires docbook.  The postgis_comments.sql and other
+                package comment files are
+                        also packaged in the tar.gz distribution in the doc folder so no need to make comments
+                        if installing from the tar ball.  Comments are also included as part of the CREATE EXTENSION install.
+          </para>
 
 	  <para>
 		<command>make comments</command>
 	  </para>
 
-	  <para>
-		Introduced in PostGIS 2.0. This generates html cheat sheets suitable for quick reference or for student handouts.
-		This requires xsltproc to build and will generate 4 files in doc folder <filename>topology_cheatsheet.html</filename>, <filename>tiger_geocoder_cheatsheet.html</filename>,
-			<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet.html</filename>
-	  </para>
+          <para>
+                The <command>make cheatsheets</command> target generates html cheat sheets suitable for quick reference or for student handouts.
+                This requires xsltproc to build and will generate 4 files in doc folder <filename>topology_cheatsheet.html</filename>, <filename>tiger_geocoder_cheatsheet.html</filename>,
+                        <filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet.html</filename>
+          </para>
 	  <para>You can download some pre-built ones available in html and pdf from <link xlink:href="http://www.postgis.us/study_guides">PostGIS / PostgreSQL Study Guides</link></para>
 
 	  <para>
@@ -715,9 +715,9 @@ Schema      | topology
 Description | PostGIS topology spatial types and functions</screen>
 
 <warning><para>Extension tables <varname>spatial_ref_sys</varname>, <varname>layer</varname>, <varname>topology</varname> can not be explicitly backed up.  They can only
-be backed up when the respective <varname>postgis</varname> or <varname>postgis_topology</varname> extension is backed up, which only seems to happen when you backup the whole database.
-As of PostGIS 2.0.1, only srid records not packaged with PostGIS are backed up when the database is backed up so don't go around changing srids we package and expect your changes to be there. Put in a ticket if you find an issue.  The structures of extension tables are never backed up since they are created with <code>CREATE EXTENSION</code>
-and assumed to be the same for a given version of an extension. These behaviors are built into the current PostgreSQL extension model, so nothing we can do about it.</para></warning>
+be backed up when the respective <varname>postgis</varname> or <varname>postgis_topology</varname> extension is backed up, which only happens when you back up the whole database.
+Only srid records not packaged with PostGIS are captured in backups, so don't change the entries we ship and expect the modifications to persist. Put in a ticket if you find an issue.  The structures of extension tables are never backed up since they are created with <code>CREATE EXTENSION</code>
+and assumed to be the same for a given version of an extension. These behaviors are built into the current PostgreSQL extension model.</para></warning>
 
 <para>If you installed &last_release_version;, without using our
 wonderful extension system, you can change it to be extension based by
@@ -1004,8 +1004,8 @@ All 2 tests passed.
   </section>
 
   <section xml:id="installing_pagc_address_standardizer"><title>Installing and Using the address standardizer</title>
-		<para>The <code>address_standardizer</code> extension used to be a separate package that required separate download. From PostGIS 2.2 on, it is now bundled in.
-		For more information about the address_standardize, what it does, and how to configure it for your needs, refer to <xref linkend="Address_Standardizer"/>.</para>
+        <para>The <code>address_standardizer</code> extension is bundled with PostGIS.
+                For more information about the address_standardizer, what it does, and how to configure it for your needs, refer to <xref linkend="Address_Standardizer"/>.</para>
 		<para>This standardizer can be used in conjunction with the PostGIS packaged tiger geocoder extension as a replacement for the <xref linkend="Normalize_Address"/> discussed.
 		To use as replacement refer to  <xref linkend="tiger_pagc_address_standardizing"/>.
 		You can also use it as a building block for your own geocoder or use it to standardize your addresses for easier compare of addresses.</para>
@@ -1013,7 +1013,7 @@ All 2 tests passed.
 		<para>The address standardizer relies on PCRE which is usually already installed on many Nix systems,
 but you can download the latest at: <link xlink:href="http://www.pcre.org">http://www.pcre.org</link>. If during <xref linkend="installation_configuration"/>, PCRE is found, then the address standardizer extension will automatically be built.  If you have a custom pcre install you want to use instead, pass to configure <code>--with-pcredir=/path/to/pcre</code> where <filename>/path/to/pcre</filename> is the root folder for your pcre include and lib directories.</para>
 
-		<para>For Windows users, the PostGIS 2.1+ bundle is packaged with the address_standardizer already so no need to compile and can move straight to <code>CREATE EXTENSION</code> step.</para>
+        <para>Windows installation packages include the address_standardizer so you can move straight to the <code>CREATE EXTENSION</code> step.</para>
 
 
       <para>Once you have installed, you can connect to your database and run the SQL:</para>
@@ -1072,7 +1072,7 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 
 				<para>If you don't edit this  <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the script is generated.</para>
 			</listitem>
-			<listitem><para>As of PostGIS 2.4.1 the Zip code-5 digit tabulation area <varname>zcta5</varname> load step was revised to load current zcta5 data and is part of the  <xref linkend="Loader_Generate_Nation_Script"/> when enabled.
+                        <listitem><para>The Zip code-5 digit tabulation area <varname>zcta5</varname> load step uses current ZCTA data and is part of the  <xref linkend="Loader_Generate_Nation_Script"/> when enabled.
 It is turned off by default because it takes quite a bit of time to load (20 to 60 minutes), takes up quite a bit of disk space, and is not used that often.</para>
 <para>To enable it, do the following:</para>
 <programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = 'zcta520';</programlisting>

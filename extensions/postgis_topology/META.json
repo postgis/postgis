@@ -1,47 +1,49 @@
 {
-	"name": "postgis_topology",
-	"abstract": "PostGIS 2.0 Topology OGC/SQL-MM compliant spatial extender for PostgreSQL",
-	"description": "This module provides GIS Topology geometry types and functions",
-	"version": "2.0.0",
-	"release_status": "unstable",
-	"maintainer": "PostGIS Steering Committee",
-	"license": "gpl_2",
-	"provides": {
-		"postgis_raster": {
-			"abstract": "PostGIS SQL/MM Topology types and functions",
-			"version": "2.0.0",
-			"file": "sql/postgis_topology.sql",
-			"docfile": "doc/postgis.md"
-		}
-	}
-	"prereqs": {
+   "name": "postgis_topology",
+   "abstract": "PostGIS Topology OGC/SQL-MM compliant spatial extender for PostgreSQL",
+   "description": "This module provides GIS Topology geometry types and functions",
+   "version": "3.7.0dev",
+   "release_status": "stable",
+   "maintainer": "PostGIS Steering Committee",
+   "license": "gpl_2",
+   "provides": {
+      "postgis_raster": {
+         "abstract": "PostGIS SQL/MM Topology types and functions",
+         "version": "3.7.0dev",
+         "file": "sql/postgis_topology.sql",
+         "docfile": "doc/postgis.md"
+      }
+   },
+   "prereqs": {
       "runtime": {
          "requires": {
             "plpgsql": 0,
-            "PostgreSQL": "8.4.0",
-            "postgis_core": "2.0.0"
+            "PostgreSQL": "12",
+            "postgis_core": "3.7.0dev"
          }
       }
-    },
-    "generated_by": "Regina O. Obe",
-	"resources": {
-		"bugtracker": {
-			"web": "http://trac.osgeo.org/postgis"
-		},
-		"repository": {
-			"url": "https://git.osgeo.org/gitea/postgis/postgis.git",
-			"web": "http://postgis.net",
-			"type": "git"
-		}
-	},
-	"meta-spec": {
-		"version": "1.0.0",
-		"url": "http://pgxn.org/meta/spec.txt"
-	},
-	"tags": [
-		"gis",
-		"spatial",
-		"geometry",
-		"location", "topology", "sql/mm"
-	]
+   },
+   "generated_by": "Regina O. Obe",
+   "resources": {
+      "bugtracker": {
+         "web": "http://trac.osgeo.org/postgis"
+      },
+      "repository": {
+         "url": "https://git.osgeo.org/gitea/postgis/postgis.git",
+         "web": "http://postgis.net",
+         "type": "git"
+      }
+   },
+   "meta-spec": {
+      "version": "1.0.0",
+      "url": "http://pgxn.org/meta/spec.txt"
+   },
+   "tags": [
+      "gis",
+      "spatial",
+      "geometry",
+      "location",
+      "topology",
+      "sql/mm"
+   ]
 }

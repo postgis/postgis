@@ -11,7 +11,7 @@
 		</abstract>
 
      </info>
-     <note><para>The <varname>history_table</varname> was also packaged in PostGIS 1.5, but added to the documentation in PostGIS 2.0.  This package is written in plpgsql and located in the <varname>extras/history_table</varname> of PostGIS source tar balls and source repository.</para></note>
+     <note><para>The <varname>history_table</varname> extension is written in plpgsql and located in the <varname>extras/history_table</varname> directory of the PostGIS source tree.</para></note>
      <para>If you have a table 'roads', this module will maintain a 'roads_history' side table, which contains all the columns of the parent table, and the following additional columns:</para>
 <programlisting>history_id      | integer                     | not null default
  date_added      | timestamp without time zone | not null default now()
