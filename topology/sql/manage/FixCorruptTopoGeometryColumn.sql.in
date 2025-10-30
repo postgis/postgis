@@ -1,0 +1,63 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- https://postgis.net
+--
+-- Copyright (C) 2025 Regina Obe <lr@pcorp.us>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public License. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--{
+--  FixCorruptTopGeometryColumn((layerSchema name, layerTable name, layerColumn name)
+--
+-- Needed to fix corruption of topogeometries caused by upgrade from < 3.6.0 to 3.6.0 and higher
+--
+-- Availability: 3.6.1
+CREATE OR REPLACE FUNCTION topology.FixCorruptTopoGeometryColumn(layerSchema name, layerTable name, layerColumn name)
+RETURNS text AS
+$$
+DECLARE var_sql text; var_row_count bigint; result text;
+BEGIN
+	-- if topogeometry is bigint, then fix damaged integer, need to upgrade to bigint
+	IF EXISTS ( SELECT 1
+		FROM  pg_catalog.pg_type AS pg_type
+			JOIN pg_catalog.pg_class AS pg_class ON pg_class.oid = pg_type.typrelid
+			JOIN pg_catalog.pg_attribute AS pga  ON pga.attrelid = pg_class.oid
+			JOIN pg_catalog.pg_type AS pg_attr_type on pg_attr_type.oid = pga.atttypid
+WHERE pg_type.typname::regtype::text = 'topogeometry' AND pga.attname = 'id'
+			AND
+		pg_type.typnamespace::regnamespace::text = 'topology' AND  pga.atttypid::regtype::text = 'bigint' ) THEN
+	 var_sql =  format('UPDATE %1$I.%2$I
+	 	SET
+	   %3$I = (
+	     (%3$I).topology_id,
+	    (%3$I).layer_id,
+	     (%3$I).id & 0xFFFFFFFF,
+	     (%3$I).id >> 32
+	   )::topology.topogeometry
+	 WHERE (  (%3$I).id & 0xFFFFFFFF ) <> (%3$I).id OR  (  (%3$I).id >> 32 ) = (%3$I).type  ', layerSchema, layerTable, layerColumn);
+
+	 EXECUTE var_sql;
+	 GET DIAGNOSTICS var_row_count = ROW_COUNT;
+	 result = format('%s rows updated for %s.%s.%s column to bigint id type', var_row_count, layerSchema, layerTable, layerColumn);
+  ELSE --we are coming from bigint and going back to integer
+  	var_sql =  format('UPDATE %1$I.%2$I
+	 	SET
+	   %3$I = (
+	     (%3$I).topology_id,
+	    (%3$I).layer_id,
+	     (%3$I).id,
+	     l.feature_type
+	   )::topogeometry
+	   FROM topology.layer AS l
+	 WHERE  l.topology_id = (%3$I).topology_id AND l.layer_id =  (%3$I).layer_id AND (%3$I).type <> l.feature_type  ', topo_schema, topo_table, topo_column);
+	 EXECUTE var_sql;
+	 GET DIAGNOSTICS var_row_count = ROW_COUNT;
+	 result = format('%s rows updated for %s.%s.%s column back to integer id type', var_row_count, topo_schema, topo_table, topo_column);
+  END IF;
+  RETURN result;
+END
+$$ language plpgsql;
+--}

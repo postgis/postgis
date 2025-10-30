@@ -141,6 +141,7 @@ topology.sql: \
 	sql/manage/CreateTopology.sql.in \
 	sql/manage/FindLayer.sql.in \
 	sql/manage/FindTopology.sql.in \
+	sql/manage/FixCorruptTopoGeometryColumn.sql.in \
 	sql/manage/ManageHelper.sql.in \
 	sql/manage/MakeTopologyPrecise.sql.in \
 	sql/manage/TotalTopologySize.sql.in \
