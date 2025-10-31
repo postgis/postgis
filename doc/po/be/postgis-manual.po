@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-10-17 20:47+0000\n"
+"PO-Revision-Date: 2025-10-31 20:28+0000\n"
 "Last-Translator: Darafei <komzpa@gmail.com>\n"
 "Language-Team: Belarusian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/be/>\n"
@@ -185,7 +185,7 @@ msgstr ""
 "ў абмежаваным асяроддзі)."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Adding PostGIS objects and function definitions into your database is done "
 "by loading the various sql files located in <filename>[prefix]/share/"
@@ -195,7 +195,7 @@ msgstr ""
 "<filename>[prefix]/share/contrib</filename>, як было вызначана падчас зборкі."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The core PostGIS objects (geometry and geography types, and their support "
 "functions) are in the <filename>postgis.sql</filename> script. Raster "
@@ -203,11 +203,11 @@ msgid ""
 "objects are in the <filename>topology.sql</filename> script."
 msgstr ""
 "Асноўныя аб'екты PostGIS (тыпі geometry і geography і іх функцыі) у "
-"<filename>postgis.sql</filename>. Растры — у <filename>rtpostgis.sql</"
-"filename>. Тапалогія — у <filename>topology.sql</filename>."
+"<filename>postgis.sql</filename>. Растры - у <filename>rtpostgis.sql</"
+"filename>. Тапалогія - у <filename>topology.sql</filename>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "For a complete set of EPSG coordinate system definition identifiers, you can "
 "also load the <filename>spatial_ref_sys.sql</filename> definitions file and "
@@ -219,7 +219,7 @@ msgstr ""
 "<varname>spatial_ref_sys</varname>. Гэта дазволіць карыстацца ST_Transform()."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you wish to add comments to the PostGIS functions, you can find them in "
 "the <filename>postgis_comments.sql</filename> script. Comments can be viewed "
@@ -236,12 +236,12 @@ msgid "Run the following Shell commands in your terminal:"
 msgstr "Выканаеце ў тэрмінале наступныя каманды Shell:"
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Upgrading spatial databases"
 msgstr "Абнаўленне прасторавых баз дадзеных"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Upgrading existing spatial databases can be tricky as it requires "
 "replacement or introduction of new PostGIS object definitions."
@@ -278,7 +278,7 @@ msgstr ""
 "сцяг -Fc у pg_dump, вы заўсёды зможаце аднавіць дамп пры ЦВЁРДЫМ абнаўленні."
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Soft upgrade"
 msgstr "Мяккае абнаўленне"
 
@@ -325,7 +325,7 @@ msgid "If you are running PostGIS 2.5 or lower, then do the following:"
 msgstr "Калі ў вас PostGIS 2.5 або ніжэй, зрабіце наступнае:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you have multiple versions of PostGIS installed, and you don't want to "
 "upgrade to the latest, you can explicitly specify the version as follows:"
@@ -334,27 +334,27 @@ msgstr ""
 "новай, можна выразна пазначыць патрэбную версію так:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "If you get an error notice something like:"
 msgstr "Калі вы атрымалі паведамленне пра памылку, накшталт:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Then you'll need to backup your database, create a fresh one as described in "
 "<xref linkend=\"create_new_db_extensions\"/> and then restore your backup on "
 "top of this new database."
 msgstr ""
-"Трэба зрабіць бэкап базы, стварыць новую, як апісана ў <xref linkend="
-"\"create_new_db_extensions\"/>, і аднавіць бэкап у яе."
+"Трэба зрабіць рэзервовую копію базы, стварыць новую, як апісана ў <xref "
+"linkend=\"create_new_db_extensions\"/>, і аднавіць копію ў яе."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "If you get a notice message like:"
 msgstr "Калі вы ўбачылі паведамленне накшталт:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Then everything is already up to date and you can safely ignore it. "
 "<emphasis role=\"bold\">UNLESS</emphasis> you're attempting to upgrade from "
@@ -368,7 +368,7 @@ msgstr ""
 "яго трэба будзе прыбраць:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you installed PostGIS originally without a version specified, you can "
 "often skip the reinstallation of postgis extension before restoring since "
@@ -380,7 +380,7 @@ msgstr ""
 "EXTENSION postgis</code>, і пры аднаўленні падцягнецца найноўшая версія."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you are upgrading PostGIS extension from a version prior to 3.0.0, you "
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
@@ -494,7 +494,7 @@ msgstr ""
 "паказваецца, ці патрэбны дамп і аднаўленне для кожнай версіі."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The dump/reload process is assisted by the postgis_restore script which "
 "takes care of skipping from the dump all definitions which belong to PostGIS "
@@ -502,13 +502,13 @@ msgid ""
 "database with PostGIS installed without getting duplicate symbol errors or "
 "bringing forward deprecated objects."
 msgstr ""
-"Скрыпт postgis_restore дапамагае прапусціць у дампе ўсе вызначэнні, якія "
+"Скрыпт postgis_restore дапамагае прапусціць у выгрузцы ўсе вызначэнні, якія "
 "адносяцца да PostGIS (у тым ліку старыя), што дазваляе аднавіць схемы і "
 "даныя ў базу з ужо ўсталяваным PostGIS без дубляў і без пераносу састарэлых "
 "аб'ектаў."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Supplementary instructions for windows users are available at <link xlink:"
 "href=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
@@ -518,36 +518,36 @@ msgstr ""
 "postgis/wiki/UsersWikiWinUpgrade\">Windows Hard upgrade</link>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The Procedure is as follows:"
 msgstr "Працэдура наступная:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Create a \"custom-format\" dump of the database you want to upgrade (let's "
 "call it <varname>olddb</varname>) include binary blobs (-b) and verbose (-v) "
 "output. The user can be the owner of the db, need not be postgres super "
 "account."
 msgstr ""
-"Стварыце дамп у фармаце \"custom\" для базы <varname>olddb</varname>, "
+"Стварыце выгрузку ў фармаце \"custom\" для базы <varname>olddb</varname>, "
 "ўключыўшы бінарныя аб'екты (-b) і падрабязны вывад (-v). Карыстальнік можа "
 "быць уладальнікам базы, не абавязкова superuser."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Do a fresh install of PostGIS in a new database -- we'll refer to this "
 "database as <varname>newdb</varname>. Please refer to <xref "
 "linkend=\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> "
 "for instructions on how to do this."
 msgstr ""
-"Зрабіце чыстую ўстаноўку PostGIS у новай базе — назавем яе <varname>newdb</"
+"Зрабіце чыстую ўстаноўку PostGIS у новай базе - назавем яе <varname>newdb</"
 "varname>. Падрабязнасці ў <xref linkend=\"create_new_db\"/> і <xref linkend="
 "\"create_new_db_extensions\"/>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The spatial_ref_sys entries found in your dump will be restored, but they "
 "will not override existing ones in spatial_ref_sys. This is to ensure that "
@@ -555,10 +555,10 @@ msgid ""
 "If for any reason you really want your own overrides of standard entries "
 "just don't load the spatial_ref_sys.sql file when creating the new db."
 msgstr ""
-"Запісы spatial_ref_sys з дампа будуць адноўлены, але не перапішуць існуючыя. "
-"Гэта гарантуе, што выпраўленні з афіцыйнага набора трапяць у адноўленыя "
-"базы. Калі вам патрэбна свае перазапісы стандартных запісаў, проста не "
-"загружайце spatial_ref_sys.sql пры стварэнні новай базы."
+"Запісы spatial_ref_sys з вашай выгрузкі будуць адноўлены, але не перапішуць "
+"існуючыя. Гэта гарантуе, што выпраўленні з афіцыйнага набора трапяць у "
+"адноўленыя базы. Калі вам патрэбна свае перазапісы стандартных запісаў, "
+"проста не загружайце spatial_ref_sys.sql пры стварэнні новай базы."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -588,7 +588,7 @@ msgstr ""
 "Нечаканыя памылкі psql выведзе ў stderr. Захоўвайце лог."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Errors may arise in the following cases:"
 msgstr "Памылкі магчымыя ў наступных выпадках:"
 
@@ -610,7 +610,7 @@ msgstr ""
 "і прыбраць састарэлае праз <filename>uninstall_legacy.sql</filename>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Some custom records of spatial_ref_sys in dump file have an invalid SRID "
 "value. Valid SRID values are bigger than 0 and smaller than 999000. Values "
@@ -621,16 +621,16 @@ msgid ""
 "invariant to hold and possibly also its primary key ( when multiple invalid "
 "SRIDS get converted to the same reserved SRID value )."
 msgstr ""
-"Некаторыя вашы ўласныя запісы spatial_ref_sys у дампе маюць нерэчаісны SRID. "
-"Карэктныя SRID — больш за 0 і менш за 999000. Дыяпазон 999000..999999 "
-"зарэзерваваны для ўнутранага выкарыстання, а значэнні &gt; 999999 "
-"недапушчальныя. Усе вашы такія запісы будуць захаваныя, пры гэтым значэнні "
-"&gt; 999999 будуць перанесены ў зарэзерваваны дыяпазон, але ў табліцы "
-"spatial_ref_sys знікне праверка і, магчыма, першасны ключ (калі некалькі "
-"нерэчаісных SRID пераўтварыліся ў адзін зарэзерваваны SRID)."
+"Некаторыя вашы ўласныя запісы spatial_ref_sys у файле выгрузкі маюць "
+"нерэчаісны SRID. Карэктныя SRID - больш за 0 і менш за 999000. Дыяпазон "
+"999000..999999 зарэзерваваны для ўнутранага выкарыстання, а значэнні &gt; "
+"999999 недапушчальныя. Усе вашы такія запісы будуць захаваныя, пры гэтым "
+"значэнні &gt; 999999 будуць перанесены ў зарэзерваваны дыяпазон, але ў "
+"табліцы spatial_ref_sys знікне праверка і, магчыма, першасны ключ (калі "
+"некалькі нерэчаісных SRID пераўтварыліся ў адзін зарэзерваваны SRID)."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In order to fix this you should copy your custom SRS to a SRID with a valid "
 "value (maybe in the 910000..910999 range), convert all your tables to the "
@@ -692,7 +692,7 @@ msgstr ""
 "вялікія, таму аптымізацыі, звязаныя з памяццю, маюць яшчэ большае значэнне."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "For general details about optimizing PostgreSQL, refer to <link xlink:"
 "href=\"https://wiki.postgresql.org/wiki/"
@@ -714,31 +714,31 @@ msgstr ""
 "<code>postgresql.auto.conf</code>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In addition to the Postgres settings, PostGIS has some custom settings which "
 "are listed in <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
-"Акрамя налад Postgres, у PostGIS ёсць свае налады — глядзіце <xref linkend="
+"Акрамя налад Postgres, у PostGIS ёсць свае налады - глядзіце <xref linkend="
 "\"PostGIS_GUC\"/>."
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Startup"
 msgstr "Запуск"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "These settings are configured in <code>postgresql.conf</code>:"
 msgstr "Гэтыя параметры наладжваюцца ў <code>postgresql.conf</code>:"
 
 #. Tag: link
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "constraint_exclusion"
 msgstr "constraint_exclusion"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Default: partition"
 msgstr "Па змаўчанні: partition"
 
@@ -755,7 +755,7 @@ msgstr ""
 "толькі для табліц у іерархіі спадкавання і не марнуе рэсурсы дарэмна."
 
 #. Tag: link
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "shared_buffers"
 msgstr "shared_buffers"
 
@@ -788,12 +788,12 @@ msgstr ""
 "паралельных запытаў."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Default: 8"
 msgstr "Па змаўчанні: 8"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Sets the maximum number of background processes that the system can support. "
 "This parameter can only be set at server start."
@@ -802,28 +802,28 @@ msgstr ""
 "старце сервера."
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Runtime"
 msgstr "Час выканання"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
 "config-resource.html#GUC-WORK-MEM\">work_mem</link> - sets the size of "
 "memory used for sort operations and complex queries"
 msgstr ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
-"config-resource.html#GUC-WORK-MEM\">work_mem</link> — памер памяці для "
+"config-resource.html#GUC-WORK-MEM\">work_mem</link> - памер памяці для "
 "сартавання і складаных аперацый"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Default: 1-4MB"
-msgstr "Па змаўчанні: 1–4 МБ"
+msgstr "Па змаўчанні: 1-4 МБ"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Adjust up for large dbs, complex queries, lots of RAM"
 msgstr "Павялічвайце для вялікіх баз, складаных запытаў і калі шмат RAM"
 
@@ -833,31 +833,31 @@ msgid "Adjust down for many concurrent users or low RAM."
 msgstr "Змяншайце пры вялікай канкурэнтнасці або недахопе RAM."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "If you have lots of RAM and few developers:"
 msgstr "Калі шмат RAM і мала адначасовых карыстальнікаў:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
 "config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> "
 "- the memory size used for VACUUM, CREATE INDEX, etc."
 msgstr ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
-"config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> —"
+"config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> -"
 " памяць для VACUUM, CREATE INDEX і інш."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Default: 16-64MB"
-msgstr "Па змаўчанні: 16–64 МБ"
+msgstr "Па змаўчанні: 16-64 МБ"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Generally too low - ties up I/O, locks objects while swapping memory"
 msgstr ""
-"Звычайна занадта мала — тармозіць I/O і блакуе аб'екты, калі пачынаецца "
+"Звычайна занадта мала - тармозіць I/O і блакуе аб'екты, калі пачынаецца "
 "свопінг памяці."
 
 #. Tag: para
@@ -870,7 +870,7 @@ msgstr ""
 "канкурэнтнасці. Калі RAM шмат і карыстальнікаў мала:"
 
 #. Tag: link
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "max_parallel_workers_per_gather"
 msgstr "max_parallel_workers_per_gather"
 
@@ -893,7 +893,7 @@ msgstr ""
 "павялічце <code>max_worker_processes</code> як мінімум да гэтага ж узроўню."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Default: 0"
 msgstr "Па змаўчанні: 0"
 
@@ -930,12 +930,12 @@ msgstr ""
 #. Tag: chapter
 #, no-c-format
 msgid "&extras_address_standardizer; &extras_tigergeocoder;"
-msgstr ""
+msgstr "&extras_address_standardizer; &extras_tigergeocoder;"
 
 #. Tag: title
 #, no-c-format
 msgid "Address Standardizer"
-msgstr ""
+msgstr "Стандартызатар адрасоў"
 
 #. Tag: para
 #, no-c-format
@@ -945,6 +945,10 @@ msgid ""
 "<link xlink:href=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-"
 "refactor/postgresql\">PAGC PostgreSQL Address Standardizer</link>)."
 msgstr ""
+"Гэта форк <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-11.html\""
+">стандартызатара PAGC</link> (першапачатковы код гэтага кампаненту - <link "
+"xlink:href=\"http://sourceforge.net/p/pagc/code/360/tree/branches/"
+"sew-refactor/postgresql\">PAGC PostgreSQL Address Standardizer</link>)."
 
 #. Tag: para
 #, no-c-format
@@ -953,6 +957,9 @@ msgid ""
 "address and normalizes it based on a set of rules stored in a table and "
 "helper lex and gaz tables."
 msgstr ""
+"Стандартызатар адрасоў - гэта парсер аднарадковых адрасоў, які прымае "
+"уваходны адрас і нармалізуе яго паводле набора правілаў у табліцы і "
+"дапаможных табліцах lex і gaz."
 
 #. Tag: para
 #, no-c-format
@@ -965,6 +972,13 @@ msgid ""
 "contains gaz, lex, and rules tables for US data. This extensions can be "
 "installed via: <code>CREATE EXTENSION address_standardizer_data_us;</code>"
 msgstr ""
+"Код сабраны ў адну бібліятэку пашырэння PostgreSQL з назвай "
+"<code>address_standardizer</code>, якую можна ўсталяваць праз <code>CREATE "
+"EXTENSION address_standardizer;</code>. Дадаткова да пашырэння "
+"address_standardizer будуецца ўзоравае пашырэнне даных "
+"<code>address_standardizer_data_us</code>, якое змяшчае табліцы gaz, lex і "
+"rules для даных ЗША. Яго можна ўсталяваць так: <code>CREATE EXTENSION "
+"address_standardizer_data_us;</code>"
 
 #. Tag: para
 #, no-c-format
@@ -972,6 +986,8 @@ msgid ""
 "The code for this extension can be found in the PostGIS <filename>extensions/"
 "address_standardizer</filename> and is currently self-contained."
 msgstr ""
+"Код гэтага пашырэння знаходзіцца ў PostGIS у каталозе <filename>extensions/"
+"address_standardizer</filename> і цяпер самадастатковае."
 
 #. Tag: para
 #, no-c-format
@@ -979,11 +995,13 @@ msgid ""
 "For installation instructions refer to: <xref "
 "linkend=\"installing_pagc_address_standardizer\"/>."
 msgstr ""
+"Інструкцыі па ўсталяванні: <xref linkend="
+"\"installing_pagc_address_standardizer\"/>."
 
 #. Tag: title
 #, no-c-format
 msgid "How the Parser Works"
-msgstr ""
+msgstr "Як працуе парсер"
 
 #. Tag: para
 #, no-c-format
@@ -7775,7 +7793,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Introduction"
-msgstr ""
+msgstr "Уводзіны"
 
 #. Tag: para
 #, no-c-format
@@ -7808,7 +7826,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Project Steering Committee"
-msgstr ""
+msgstr "Кіраўнічы камітэт праекта"
 
 #. Tag: para
 #, no-c-format
@@ -7849,7 +7867,7 @@ msgstr ""
 #. Tag: term
 #, no-c-format
 msgid "Darafei Praliaskouski"
-msgstr ""
+msgstr "Дарафей Праляскоўскі"
 
 #. Tag: para
 #, no-c-format
@@ -7889,7 +7907,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Core Contributors Present"
-msgstr ""
+msgstr "Асноўныя ўдзельнікі (цяперашнія)"
 
 #. Tag: term
 #, no-c-format
@@ -7961,7 +7979,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Core Contributors Past"
-msgstr ""
+msgstr "Асноўныя ўдзельнікі (мінулыя)"
 
 #. Tag: term
 #, no-c-format
@@ -8107,7 +8125,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Other Contributors"
-msgstr ""
+msgstr "Іншыя ўдзельнікі"
 
 #. Tag: term
 #, no-c-format
@@ -9087,12 +9105,12 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Small tables of large geometries"
-msgstr ""
+msgstr "Невялікія табліцы з буйнымі геаметрыямі"
 
 #. Tag: title
 #, no-c-format
 msgid "Problem description"
-msgstr ""
+msgstr "Апісанне праблемы"
 
 #. Tag: para
 #, no-c-format
@@ -9200,7 +9218,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "CLUSTERing on geometry indices"
-msgstr ""
+msgstr "Кластэрызацыя па індэксах геаметрый"
 
 #. Tag: para
 #, no-c-format
@@ -9280,7 +9298,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS &last_release_version; Manual"
-msgstr ""
+msgstr "Кіраўніцтва PostGIS &last_release_version;"
 
 #. Tag: orgname
 #, no-c-format
@@ -9329,7 +9347,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Aggregate Functions"
-msgstr ""
+msgstr "Агрэгатныя функцыі PostGIS"
 
 #. Tag: section
 #, no-c-format
@@ -9347,7 +9365,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Window Functions"
-msgstr ""
+msgstr "Ваконныя функцыі PostGIS"
 
 #. Tag: section
 #, no-c-format
@@ -9366,7 +9384,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS SQL-MM Compliant Functions"
-msgstr ""
+msgstr "Функцыі PostGIS, сумяшчальныя з SQL-MM"
 
 #. Tag: section
 #, no-c-format
@@ -9383,7 +9401,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Geography Support Functions"
-msgstr ""
+msgstr "Функцыі падтрымкі геаграфіі PostGIS"
 
 #. Tag: para
 #, no-c-format
@@ -9412,7 +9430,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Raster Support Functions"
-msgstr ""
+msgstr "Функцыі падтрымкі растраў PostGIS"
 
 #. Tag: para
 #, no-c-format
@@ -9430,7 +9448,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Geometry / Geography / Raster Dump Functions"
-msgstr ""
+msgstr "Функцыі разгрупавання геаметрыі/геаграфіі/растраў PostGIS"
 
 #. Tag: section
 #, no-c-format
@@ -9448,7 +9466,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Box Functions"
-msgstr ""
+msgstr "Функцыі працы з прамакутнікамі PostGIS"
 
 #. Tag: para
 #, no-c-format
@@ -9467,7 +9485,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Functions that support 3D"
-msgstr ""
+msgstr "Функцыі PostGIS з падтрымкай 3D"
 
 #. Tag: section
 #, no-c-format
@@ -9484,7 +9502,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Curved Geometry Support Functions"
-msgstr ""
+msgstr "Функцыі PostGIS для крывалінейных геаметрый"
 
 #. Tag: section
 #, no-c-format
@@ -9501,7 +9519,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Polyhedral Surface Support Functions"
-msgstr ""
+msgstr "Функцыі PostGIS для шматгранных паверхняў"
 
 #. Tag: section
 #, no-c-format
@@ -9518,7 +9536,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Function Support Matrix"
-msgstr ""
+msgstr "Матрыца падтрымкі функцый PostGIS"
 
 #. Tag: para
 #, no-c-format
@@ -9641,12 +9659,12 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "New, Enhanced or changed PostGIS Functions"
-msgstr ""
+msgstr "Новыя, палепшаныя і змененыя функцыі PostGIS"
 
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Reference"
-msgstr ""
+msgstr "Даведнік PostGIS"
 
 #. Tag: para
 #, no-c-format
@@ -9655,6 +9673,9 @@ msgid ""
 "need. There are other functions which are required support functions to the "
 "PostGIS objects which are not of use to a general user."
 msgstr ""
+"Ніжэй прыведзены функцыі, якія, хутчэй за ўсё, спатрэбяцца карыстальніку "
+"PostGIS. Ёсць і іншыя функцыі падтрымкі аб'ектаў PostGIS, якія звычайна не "
+"патрабуюцца шырокаму колу карыстальнікаў."
 
 #. Tag: para
 #, no-c-format
@@ -9683,12 +9704,12 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Geometry Accessors"
-msgstr ""
+msgstr "Функцыі доступу да геаметрый"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the type of a geometry as text."
-msgstr ""
+msgstr "Вяртае тып геаметрыі як тэкст."
 
 #. Tag: para
 #, no-c-format
@@ -9696,6 +9717,8 @@ msgid ""
 "Returns the type of the geometry as a string. Eg: 'LINESTRING', 'POLYGON', "
 "'MULTIPOINT', etc."
 msgstr ""
+"Вяртае тып геаметрыі ў выглядзе радка. Напр.: 'LINESTRING', 'POLYGON', "
+"'MULTIPOINT' і інш."
 
 #. Tag: para
 #, no-c-format
@@ -9718,31 +9741,33 @@ msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
 "introduced."
 msgstr ""
+"Паляпшэнні: 2.0.0 - дададзена падтрымка шматгранных паверхняў, трохкутнікаў "
+"і TIN."
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant;"
-msgstr ""
+msgstr "&sfs_compliant;"
 
 #. Tag: para
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: para
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the boundary of a geometry."
-msgstr ""
+msgstr "Вяртае мяжу геаметрыі."
 
 #. Tag: para
 #, no-c-format
@@ -9754,11 +9779,15 @@ msgid ""
 "representational geometry primitives as discussed in the OGC SPEC, section "
 "3.12.2."
 msgstr ""
+"Вяртае замыканне камбінатарнай мяжы гэтай геаметрыі. Камбінатарная мяжа "
+"вызначана ў раздзеле 3.12.3.2 спецыфікацыі OGC. Паколькі вынік - замкнёны з "
+"тапалагічнага пункту гледжання аб'ект, мяжу можна прадстаўляць праз базавыя "
+"геаметрычныя прымітывы, як апісана ў раздзеле 3.12.2 OGC SPEC."
 
 #. Tag: para
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr ""
+msgstr "Выконваецца модулем GEOS"
 
 #. Tag: para
 #, no-c-format
@@ -9771,12 +9800,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; OGC SPEC s2.1.1.1"
-msgstr ""
+msgstr "&sfs_compliant; OGC SPEC s2.1.1.1"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
 
 #. Tag: para
 #, no-c-format
@@ -9804,6 +9833,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 msgstr ""
+", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -9847,7 +9877,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&M_support;"
-msgstr ""
+msgstr "&M_support;"
 
 #. Tag: para
 #, no-c-format
@@ -9856,6 +9886,9 @@ msgid ""
 "linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, "
 "<xref linkend=\"ST_Envelope\"/>"
 msgstr ""
+", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
+"\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, <xref "
+"linkend=\"ST_Envelope\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -10092,6 +10125,8 @@ msgid ""
 ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
 "linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_DumpRings\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -10146,6 +10181,9 @@ msgid ""
 "linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
 "linkend=\"ST_InteriorRingN\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_InteriorRingN\""
+"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -10164,7 +10202,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.4"
 
 #. Tag: para
 #, no-c-format
@@ -10278,18 +10316,19 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; 2.1.5.1"
-msgstr ""
+msgstr "&sfs_compliant; 2.1.5.1"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.3, 8.3.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.3, 8.3.3"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
 msgstr ""
+", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -10328,12 +10367,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.1.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 9.1.5"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_NumGeometries\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -10358,7 +10397,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.4"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -10379,7 +10418,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineToCurve\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LineToCurve\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -10397,7 +10436,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5"
 
 #. Tag: para
 #, no-c-format
@@ -10529,11 +10568,13 @@ msgid ""
 "SQL-MM defines the result of ST_IsEmpty(NULL) to be 0, while PostGIS returns "
 "NULL."
 msgstr ""
+"SQL-MM вызначае вынік <code>ST_IsEmpty(NULL)</code> як 0, у PostGIS "
+"вяртаецца <varname>NULL</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.7"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.7"
 
 #. Tag: para
 #, no-c-format
@@ -10542,6 +10583,8 @@ msgid ""
 "ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed. This is now "
 "illegal in PostGIS 2.0.0 to better conform with SQL/MM standards"
 msgstr ""
+"Змены: 2.0.0 - раней дапускаўся ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)')"
+". Цяпер гэта забаронена для лепшай адпаведнасці SQL/MM."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -10579,24 +10622,27 @@ msgid ""
 "an exterior ring) then both ST_IsPolygonCW and ST_IsPolygonCCW will return "
 "false."
 msgstr ""
+"Калі ўнутраныя кальцы не процілеглай арыентацыі (супадаюць з знешнім), то і "
+"ST_IsPolygonCW, і ST_IsPolygonCCW вернуць false."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.4.0"
-msgstr ""
+msgstr "Даступнасць: 2.4.0"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 msgstr ""
+", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Tests if Polygons have exterior rings oriented clockwise and interior rings "
 "oriented counter-clockwise."
-msgstr ""
+msgstr "Правярае, ці знешнія кальцы па гадзіннікавай, а ўнутраныя - супраць."
 
 #. Tag: para
 #, no-c-format
@@ -10609,21 +10655,24 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if a LineString is closed and simple."
-msgstr ""
+msgstr "Правярае, ці LINESTRING замкнёны і просты."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if this <varname>LINESTRING</varname> is "
 "both <xref linkend=\"ST_IsClosed\"/> (<code>ST_StartPoint(g) ~= "
 "ST_Endpoint(g)</code>) and <xref linkend=\"ST_IsSimple\"/> (does not self "
 "intersect)."
 msgstr ""
+"Вяртае TRUE, калі <varname>LINESTRING</varname> адначасова <xref linkend="
+"\"ST_IsClosed\"/> (<code>ST_StartPoint(g) ~= ST_EndPoint(g)</code>) і <xref "
+"linkend=\"ST_IsSimple\"/> (не мае самаперасячэнняў)."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.6"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.6"
 
 #. Tag: para
 #, no-c-format
@@ -10631,6 +10680,8 @@ msgid ""
 "SQL-MM defines the result of <code>ST_IsRing(NULL)</code> to be 0, while "
 "PostGIS returns <varname>NULL</varname>."
 msgstr ""
+"SQL-MM вызначае вынік <code>ST_IsRing(NULL)</code> як 0, у PostGIS вяртаецца "
+"<varname>NULL</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -11315,7 +11366,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Bounding Box Functions"
-msgstr ""
+msgstr "Функцыі абмежавальнага прамакутніка"
 
 #. Tag: para
 #, no-c-format
@@ -12024,7 +12075,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Geometry Constructors"
-msgstr ""
+msgstr "Канструктары геаметрый"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -13042,7 +13093,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Coverages"
-msgstr ""
+msgstr "Пакрыцці"
 
 #. Tag: para
 #, no-c-format
@@ -13306,7 +13357,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Geometry Editors"
-msgstr ""
+msgstr "Рэдактары геаметрый"
 
 #. Tag: para
 #, no-c-format
@@ -14076,7 +14127,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Technical Background"
-msgstr ""
+msgstr "Тэхнічныя звесткі"
 
 #. Tag: para
 #, no-c-format
@@ -14759,7 +14810,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Exceptional Functions"
-msgstr ""
+msgstr "Выключныя функцыі"
 
 #. Tag: para
 #, no-c-format
