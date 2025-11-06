@@ -199,7 +199,7 @@ SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTILINESTRING((1 1 1,0 0 0.5, -1
 
 st_asewkt
 ----------
-MULTIPOINT((-1 1 1),(1 1 1))
+MULTIPOINT((1 1 1),(-1 1 1))
 </programlisting>
 		</refsection>
 		<refsection>
