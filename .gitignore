@@ -144,6 +144,7 @@ postgis/uninstall_legacy.sql
 postgis/uninstall_postgis.sql
 postgis/vector_tile.pb-c.c
 postgis/vector_tile.pb-c.h
+postgis/cunit/Makefile
 raster/loader/Makefile
 raster/loader/raster2pgsql
 raster/Makefile
