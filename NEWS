@@ -14,10 +14,7 @@ PostGIS 3.6.1
               by extension are owned by extension
               authored: Andrey Borodin (Yandex), reported by Sergey Bobrov (Kaspersky)
   - #5754, ST_ForcePolygonCCW reverses lines (Paul Ramsey)
-
-* Bug Fixes *
-
- - #5959, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
+  - #5959, #5984, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
 
 
 PostGIS 3.6.0
