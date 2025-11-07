@@ -15,6 +15,7 @@ PostGIS 3.6.1
               authored: Andrey Borodin (Yandex), reported by Sergey Bobrov (Kaspersky)
   - #5754, ST_ForcePolygonCCW reverses lines (Paul Ramsey)
   - #5959, #5984, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
+  - #6012, Remove memory leak from lwcircstring_from_lwpointarray (Paul Ramsey)
 
 
 PostGIS 3.6.0
