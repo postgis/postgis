@@ -34,12 +34,11 @@
 void printLWCIRCSTRING(LWCIRCSTRING *curve);
 void lwcircstring_release(LWCIRCSTRING *lwcirc);
 char lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you);
-LWCIRCSTRING *lwcircstring_from_lwpointarray(int32_t srid, uint32_t npoints, LWPOINT **points);
+LWCIRCSTRING *lwcircstring_from_lwpointarray(int32_t srid, uint32_t npoints, const LWPOINT **points);
 LWCIRCSTRING *lwcircstring_from_lwmpoint(int32_t srid, LWMPOINT *mpoint);
 LWCIRCSTRING *lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, uint32_t where);
 LWCIRCSTRING *lwcircstring_removepoint(LWCIRCSTRING *curve, uint32_t index);
 void lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32_t index, POINT4D *newpoint);
-
 
 
 /*
@@ -138,49 +137,44 @@ lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you)
  * LWCIRCSTRING dimensions are large enough to host all input dimensions.
  */
 LWCIRCSTRING *
-lwcircstring_from_lwpointarray(int32_t srid, uint32_t npoints, LWPOINT **points)
+lwcircstring_from_lwpointarray(int32_t srid, uint32_t npoints, const LWPOINT **points)
 {
-	int zmflag=0;
 	uint32_t i;
 	POINTARRAY *pa;
-	uint8_t *newpoints, *ptr;
-	size_t ptsize, size;
+	int has_z = 0, has_m = 0;
+	POINT4D pt;
 
 	/*
 	 * Find output dimensions, check integrity
 	 */
 	for (i = 0; i < npoints; i++)
 	{
-		if (points[i]->type != POINTTYPE)
+		const LWGEOM *lwg = (LWGEOM*)points[i];
+		if (lwg->type != POINTTYPE)
 		{
-			lwerror("lwcurve_from_lwpointarray: invalid input type: %s",
-			        lwtype_name(points[i]->type));
+			lwerror("%s: invalid input type: %s", __func__, lwtype_name(lwg->type));
 			return NULL;
 		}
-		if (FLAGS_GET_Z(points[i]->flags)) zmflag |= 2;
-		if (FLAGS_GET_M(points[i]->flags)) zmflag |= 1;
-		if (zmflag == 3) break;
+		has_z |= lwgeom_has_z(lwg);
+		has_m |= lwgeom_has_m(lwg);
+		if (has_z && has_m) break;
 	}
-
-	if (zmflag == 0) ptsize = 2 * sizeof(double);
-	else if (zmflag == 3) ptsize = 4 * sizeof(double);
-	else ptsize = 3 * sizeof(double);
 
 	/*
 	 * Allocate output points array
 	 */
-	size = ptsize * npoints;
-	newpoints = lwalloc(size);
-	memset(newpoints, 0, size);
+	pa = ptarray_construct(has_z, has_m, npoints);
 
-	ptr = newpoints;
 	for (i = 0; i < npoints; i++)
 	{
-		size = ptarray_point_size(points[i]->point);
-		memcpy(ptr, getPoint_internal(points[i]->point, 0), size);
-		ptr += ptsize;
+		const LWPOINT *lwpt = points[i];
+		if (!getPoint4d_p(lwpt->point, 0, &pt))
+		{
+			lwerror("%s: failed getPoint4d_p", __func__);
+			return NULL;
+		}
+		ptarray_set_point4d(pa, i, &pt);
 	}
-	pa = ptarray_construct_reference_data(zmflag&2, zmflag&1, npoints, newpoints);
 
 	return lwcircstring_construct(srid, NULL, pa);
 }
