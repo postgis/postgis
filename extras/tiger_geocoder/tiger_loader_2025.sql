@@ -304,7 +304,7 @@ $$ LANGUAGE 'plpgsql';
 
 TRUNCATE TABLE loader_variables;
 INSERT INTO loader_variables(tiger_year, website_root , staging_fold, data_schema, staging_schema)
-	VALUES('2024', 'https://www2.census.gov/geo/tiger/TIGER2025', '/gisdata', 'tiger_data', 'tiger_staging');
+	VALUES('2025', 'https://www2.census.gov/geo/tiger/TIGER2025', '/gisdata', 'tiger_data', 'tiger_staging');
 GRANT SELECT ON TABLE loader_variables TO public;
 
 DO $$
