@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-10-04 15:47+0000\n"
+"PO-Revision-Date: 2025-11-10 10:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -33429,6 +33429,10 @@ msgid ""
 "NearestNeighbor, Bilinear, Cubic, CubicSpline, Lanczos defaulting to "
 "NearestNeighbor."
 msgstr ""
+"Перепроектує растр у відомій системі просторових координат в іншу відому "
+"систему просторових координат, використовуючи вказаний алгоритм "
+"передискретизації. Доступні опції: NearestNeighbor, Bilinear, Cubic, "
+"CubicSpline, Lanczos. За замовчуванням використовується NearestNeighbor."
 
 #. Tag: para
 #, no-c-format
@@ -33438,6 +33442,10 @@ msgid ""
 "'NearestNeighbor' if no algorithm is specified and maxerror percent of 0.125 "
 "if no maxerr is specified."
 msgstr ""
+"Перепроектує растр у відомій системі просторових координат в іншу відому "
+"систему просторових координат, використовуючи вказаний алгоритм деформації "
+"пікселів. Використовує «NearestNeighbor», якщо алгоритм не вказано, і "
+"maxerror у відсотках 0,125, якщо maxerr не вказано."
 
 #. Tag: para
 #, no-c-format
@@ -33447,6 +33455,10 @@ msgid ""
 "one spatial reference system to another, while ST_SetSRID() simply changes "
 "the SRID identifier of the raster."
 msgstr ""
+"ST_Transform часто плутають з ST_SetSRID(). ST_Transform фактично змінює "
+"координати растра (і перераховує значення пікселів) з однієї системи "
+"просторових координат в іншу, тоді як ST_SetSRID() просто змінює "
+"ідентифікатор SRID растра."
 
 #. Tag: para
 #, no-c-format
@@ -33456,6 +33468,10 @@ msgid ""
 "the spatial reference system (SRID) of the reference raster and be aligned "
 "(ST_SameAlignment = TRUE) to the reference raster."
 msgstr ""
+"На відміну від інших варіантів, варіант 3 вимагає використання опорного "
+"растра як <varname>alignto</varname>. Перетворений растр буде перетворений у "
+"просторову систему координат (SRID) опорного растра і вирівняний ("
+"ST_SameAlignment = TRUE) з опорним растром."
 
 #. Tag: para
 #, no-c-format
@@ -33468,6 +33484,14 @@ msgid ""
 "and set it to <varname>libproj.dll</varname> (if you are using proj 4.6.1). "
 "You'll have to restart your PostgreSQL service/daemon after this change."
 msgstr ""
+"Якщо ви виявили, що підтримка перетворення не працює належним чином, "
+"можливо, вам доведеться встановити змінну середовища PROJSO на бібліотеку "
+"проекції .so або .dll, яку використовує PostGIS. Для цього потрібно лише "
+"вказати ім'я файлу. Наприклад, у Windows у панелі керування -&gt; System "
+"-&gt; Environment Variables додайте системну змінну з назвою "
+"<varname>PROJSO</varname> і встановіть її значенням <varname>libproj.dll</"
+"varname> (якщо ви використовуєте proj 4.6.1). Після цієї зміни вам "
+"доведеться перезапустити службу/демон PostgreSQL."
 
 #. Tag: para
 #, no-c-format
@@ -33476,21 +33500,24 @@ msgid ""
 "reference raster to insure same alignment and no gaps in your tiles as "
 "demonstrated in example: Variant 3."
 msgstr ""
+"При трансформації покриття плиток майже завжди потрібно використовувати "
+"опорний растр, щоб забезпечити однакове вирівнювання і відсутність проміжків "
+"у плитках, як показано в прикладі: Варіант 3."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 Addition of ST_Transform(rast, alignto) variant"
-msgstr ""
+msgstr "Покращено: 2.1.0 Додано варіант ST_Transform(rast, alignto)"
 
 #. Tag: para
 #, no-c-format
 msgid "original mass state plane meters (mass_stm)"
-msgstr ""
+msgstr "оригінальні метри площини маси (mass_stm)"
 
 #. Tag: para
 #, no-c-format
 msgid "After transform to wgs 84 long lat (wgs_84)"
-msgstr ""
+msgstr "Після перетворення в wgs 84 long lat (wgs_84)"
 
 #. Tag: para
 #, no-c-format
@@ -33498,6 +33525,8 @@ msgid ""
 "After transform to wgs 84 long lat with bilinear algorithm instead of NN "
 "default (wgs_84_bilin)"
 msgstr ""
+"Після перетворення в wgs 84 long lat за допомогою білінійного алгоритму "
+"замість стандартного NN (wgs_84_bilin)"
 
 #. Tag: para
 #, no-c-format
@@ -33505,26 +33534,28 @@ msgid ""
 "The following shows the difference between using ST_Transform(raster, srid) "
 "and ST_Transform(raster, alignto)"
 msgstr ""
+"Нижче показано різницю між використанням ST_Transform(raster, srid) та "
+"ST_Transform(raster, alignto)"
 
 #. Tag: para
 #, no-c-format
 msgid "not_aligned"
-msgstr ""
+msgstr "not_aligned"
 
 #. Tag: para
 #, no-c-format
 msgid "aligned"
-msgstr ""
+msgstr "aligned"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetSRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SetSRID\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Band Editors"
-msgstr ""
+msgstr "Редактори растрових каналів"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33533,6 +33564,9 @@ msgid ""
 "if no band is specified. To mark a band as having no nodata value, set the "
 "nodata value = NULL."
 msgstr ""
+"Встановлює значення для заданого каналу, яке не представляє даних. Якщо "
+"канал не вказано, вважається, що це канао 1. Щоб позначити канал як такий, "
+"що не має значення nodata, встановіть значення nodata = NULL."
 
 #. Tag: para
 #, no-c-format
@@ -33542,11 +33576,15 @@ msgid ""
 ">, <xref linkend=\"RT_ST_DumpAsPolygons\"/>, and the ST_PixelAs...() "
 "functions."
 msgstr ""
+"Встановлює значення, яке не представляє даних для каналу. Якщо не вказано, "
+"припускається канал 1. Це вплине на результати функцій <xref linkend="
+"\"RT_ST_Polygon\"/>, <xref linkend=\"RT_ST_DumpAsPolygons\"/> та "
+"ST_PixelAs...()."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Sets the isnodata flag of the band to TRUE."
-msgstr ""
+msgstr "Встановлює прапор isnodata каналу на TRUE."
 
 #. Tag: para
 #, no-c-format
@@ -33556,6 +33594,11 @@ msgid ""
 "dirty. That is, when the result calling <xref linkend=\"RT_ST_BandIsNoData\"/"
 "> is different using TRUE as last argument and without using it"
 msgstr ""
+"Встановлює прапор isnodata для каналу на true. Якщо не вказано, "
+"припускається канал 1. Цю функцію слід викликати тільки тоді, коли прапор "
+"вважається брудним. Тобто, коли результат виклику <xref linkend="
+"\"RT_ST_BandIsNoData\"/> відрізняється при використанні TRUE як останнього "
+"аргументу і без його використання"
 
 #. Tag: para
 #, no-c-format
@@ -33564,17 +33607,21 @@ msgid ""
 "linkend=\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_BandIsNoData\"/"
 ">"
 msgstr ""
+", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend="
+"\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_BandIsNoData\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Update the external path and band number of an out-db band"
-msgstr ""
+msgstr "Оновлює шля та номер зовнішнього каналу out-db"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Updates an out-db band's external raster file path and external band number."
 msgstr ""
+"Оновлює шлях до зовнішнього растрового файлу та номер зовнішнього каналу out-"
+"db."
 
 #. Tag: para
 #, no-c-format
@@ -33584,16 +33631,20 @@ msgid ""
 "file and the PostGIS raster. This mode is intended for file system changes "
 "where the external raster resides."
 msgstr ""
+"Якщо <varname>force</varname> встановлено на true, не виконуються жодні "
+"тести для забезпечення сумісності (наприклад, вирівнювання, підтримка "
+"пікселів) між зовнішнім растровим файлом та растром PostGIS. Цей режим "
+"призначений для змін файлової системи, в якій знаходиться зовнішній растр."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetBandIndex\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SetBandIndex\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Update the external band number of an out-db band"
-msgstr ""
+msgstr "Оновити номер зовнішнього каналу out-db"
 
 #. Tag: para
 #, no-c-format
@@ -33601,6 +33652,8 @@ msgid ""
 "Updates an out-db band's external band number. This does not touch the "
 "external raster file associated with the out-db band"
 msgstr ""
+"Оновлює зовнішній номер каналу out-db. Це не впливає на зовнішній растровий "
+"файл, пов'язаний з каналом out-db"
 
 #. Tag: para
 #, no-c-format
@@ -33610,6 +33663,10 @@ msgid ""
 "file and the PostGIS raster. This mode is intended for where bands are moved "
 "around in the external raster file."
 msgstr ""
+"Якщо <varname>force</varname> встановлено на true, тести на сумісність ("
+"наприклад, вирівнювання, підтримка пікселів) між зовнішнім растровим файлом "
+"і растром PostGIS не виконуються. Цей режим призначений для випадків, коли "
+"канали переміщуються в зовнішньому растровому файлі."
 
 #. Tag: para
 #, no-c-format
@@ -33618,16 +33675,18 @@ msgid ""
 "<varname>band</varname> with a new band instead of updating the existing "
 "path information."
 msgstr ""
+"Внутрішньо цей метод замінює канал растра PostGIS за індексом <varname>band</"
+"varname> новим каналом замість оновлення існуючої інформації про шлях."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetBandPath\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SetBandPath\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Band Statistics and Analytics"
-msgstr ""
+msgstr "Статистика та аналітика растрових каналів"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33636,6 +33695,10 @@ msgid ""
 "If no band is specified defaults to band 1. If exclude_nodata_value is set "
 "to true, will only count pixels that are not equal to the nodata value."
 msgstr ""
+"Повертає кількість пікселів у заданому каналі растрового зображення або "
+"растрового покриття. Якщо канал не вказано, за замовчуванням "
+"використовується канал 1. Якщо exclude_nodata_value встановлено на true, "
+"враховуватимуться лише пікселі, які не дорівнюють значенню nodata."
 
 #. Tag: para
 #, no-c-format
@@ -33643,6 +33706,9 @@ msgid ""
 "Returns the number of pixels in a given band of a raster or raster coverage. "
 "If no band is specified <varname>nband</varname> defaults to 1."
 msgstr ""
+"Повертає кількість пікселів у заданому каналі растрового зображення або "
+"растрового покриття. Якщо канал не вказано, <varname>nband</varname> за "
+"замовчуванням дорівнює 1."
 
 #. Tag: para
 #, no-c-format
@@ -33652,6 +33718,10 @@ msgid ""
 "raster. Set <varname>exclude_nodata_value</varname> to false to get count "
 "all pixels"
 msgstr ""
+"Якщо <varname>exclude_nodata_value</varname> встановлено на true, будуть "
+"підраховуватися тільки пікселі, значення яких не дорівнює значенню "
+"<varname>nodata</varname> растра. Встановіть <varname>exclude_nodata_value</"
+"varname> на false, щоб підрахувати всі пікселі"
 
 #. Tag: para
 #, no-c-format
@@ -33659,6 +33729,8 @@ msgid ""
 "Changed: 3.1.0 - The ST_Count(rastertable, rastercolumn, ...) variants "
 "removed. Use <xref linkend=\"RT_ST_CountAgg\"/> instead."
 msgstr ""
+"Змінено: 3.1.0 - Вилучено варіанти ST_Count(rastertable, rastercolumn, ...). "
+"Замість цього використовуйте <xref linkend=\"RT_ST_CountAgg\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -33666,6 +33738,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
 "linkend=\"RT_ST_SetBandNoDataValue\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref linkend="
+"\"RT_ST_SetBandNoDataValue\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33674,6 +33748,10 @@ msgid ""
 "If no band is specified defaults to band 1. If exclude_nodata_value is set "
 "to true, will only count pixels that are not equal to the NODATA value."
 msgstr ""
+"Агрегат. Повертає кількість пікселів у заданому каналі набору растрів. Якщо "
+"канал не вказано, за замовчуванням використовується канал 1. Якщо "
+"exclude_nodata_value встановлено на true, враховуватимуться лише пікселі, "
+"які не дорівнюють значенню NODATA."
 
 #. Tag: para
 #, no-c-format
@@ -33681,6 +33759,8 @@ msgid ""
 "Returns the number of pixels in a given band of a set of rasters. If no band "
 "is specified <varname>nband</varname> defaults to 1."
 msgstr ""
+"Повертає кількість пікселів у заданому каналі набору растрів. Якщо канал не "
+"вказано, <varname>nband</varname> за замовчуванням дорівнює 1."
 
 #. Tag: para
 #, no-c-format
@@ -33690,6 +33770,10 @@ msgid ""
 "raster. Set <varname>exclude_nodata_value</varname> to false to get count "
 "all pixels"
 msgstr ""
+"Якщо <varname>exclude_nodata_value</varname> встановлено на true, будуть "
+"підраховуватися тільки пікселі, значення яких не дорівнює значенню "
+"<varname>NODATA</varname> растра. Встановіть <varname>exclude_nodata_value</"
+"varname> на false, щоб підрахувати всі пікселі"
 
 #. Tag: para
 #, no-c-format
@@ -33697,6 +33781,9 @@ msgid ""
 "By default will sample all pixels. To get faster response, set "
 "<varname>sample_percent</varname> to value between zero (0) and one (1)"
 msgstr ""
+"За замовчуванням буде зразковано всі пікселі. Щоб отримати швидшу відповідь, "
+"встановіть <varname>sample_percent</varname> на значення від нуля (0) до "
+"одиниці (1)"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39344,11 +39431,13 @@ msgstr ""
 msgid ""
 "<code>T*****T**</code> for Line/Point, Area/Point, and Area/Line situations"
 msgstr ""
+"<code>T*****T**</code> для ситуацій «лінія/точка», «площа/точка» та "
+"«площа/лінія»"
 
 #. Tag: para
 #, no-c-format
 msgid "<code>0********</code> for Line/Line situations"
-msgstr ""
+msgstr "<code>0********</code> для ситуацій «лінія/лінія»"
 
 #. Tag: para
 #, no-c-format
@@ -39356,6 +39445,8 @@ msgid ""
 "the result is <varname>false</varname> for Point/Point and Area/Area "
 "situations"
 msgstr ""
+"результатом є <varname>false</varname> для ситуацій «точка/точка» та "
+"«площа/площа»"
 
 #. Tag: para
 #, no-c-format
@@ -39365,21 +39456,28 @@ msgid ""
 "extends the definition to apply to Line/Point, Area/Point and Area/Line "
 "situations as well. This makes the relation symmetric."
 msgstr ""
+"Специфікація OpenGIS Simple Features визначає цей предикат тільки для "
+"ситуацій «Точка/Лінія», «Точка/Площа», «Лінія/Лінія» та «Лінія/Площа». JTS / "
+"GEOS розширює визначення, щоб воно застосовувалося також до ситуацій "
+"«Лінія/Точка», «Площа/Точка» та «Площа/Лінія». Це робить відношення "
+"симетричним."
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s2.1.13.3"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.13.3"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.29"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.29"
 
 #. Tag: para
 #, no-c-format
 msgid "The following situations all return <varname>true</varname>."
 msgstr ""
+"У всіх наведених нижче ситуаціях повертається значення "
+"<varname>true</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -39407,22 +39505,26 @@ msgid ""
 "Consider a situation where a user has two tables: a table of roads and a "
 "table of highways."
 msgstr ""
+"Розглянемо ситуацію, коли користувач має дві таблиці: таблицю доріг і "
+"таблицю автомагістралей."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "To determine a list of roads that cross a highway, use a query similar to:"
 msgstr ""
+"Щоб визначити список доріг, які перетинають шосе, використовуйте запит, "
+"подібний до:"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Overlaps\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Overlaps\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if two geometries have no points in common"
-msgstr ""
+msgstr "Перевіряє, чи дві геометрії не мають спільних точок"
 
 #. Tag: para
 #, no-c-format
@@ -39430,6 +39532,8 @@ msgid ""
 "Returns <varname>true</varname> if two geometries are disjoint. Geometries "
 "are disjoint if they have no point in common."
 msgstr ""
+"Повертає <varname>true</varname>, якщо дві геометрії не перетинаються. "
+"Геометрії не перетинаються, якщо вони не мають спільних точок."
 
 #. Tag: para
 #, no-c-format
