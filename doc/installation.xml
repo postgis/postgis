@@ -1092,7 +1092,7 @@ sh nation_script_load.sh</programlisting>
 <screen>
  count
 -------
-  33931
+  33933
 (1 row)
 </screen>
       </listitem>

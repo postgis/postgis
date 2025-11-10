@@ -16,6 +16,7 @@ PostGIS 3.6.1
   - #5754, ST_ForcePolygonCCW reverses lines (Paul Ramsey)
   - #5959, #5984, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
   - #6012, Remove memory leak from lwcircstring_from_lwpointarray (Paul Ramsey)
+  - #6013, [tiger_geocoder] Load Tiger 2025 data (Regina Obe)
 
 
 PostGIS 3.6.0
