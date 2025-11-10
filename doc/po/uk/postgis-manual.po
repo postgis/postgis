@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-11-10 10:47+0000\n"
+"PO-Revision-Date: 2025-11-10 19:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -33792,6 +33792,9 @@ msgid ""
 "distribution separate bin ranges. Number of bins are autocomputed if not "
 "specified."
 msgstr ""
+"Повертає набір записів, що підсумовують розподіл даних растрового або "
+"растрового покриття за окремими діапазонами бінів. Кількість бінів "
+"обчислюється автоматично, якщо не вказано інше."
 
 #. Tag: para
 #, no-c-format
@@ -33800,6 +33803,10 @@ msgid ""
 "raster band for each bin. If no band is specified <varname>nband</varname> "
 "defaults to 1."
 msgstr ""
+"Повертає набір записів, що складається з мінімального, максимального "
+"значення, кількості та відсотка для заданого растрового діапазону для "
+"кожного біна. Якщо діапазон не вказано, <varname>nband</varname> за "
+"замовчуванням дорівнює 1."
 
 #. Tag: para
 #, no-c-format
@@ -33808,6 +33815,10 @@ msgid ""
 "varname> value . Set <varname>exclude_nodata_value</varname> to false to get "
 "count all pixels."
 msgstr ""
+"За замовчуванням враховуються тільки значення пікселів, які не дорівнюють "
+"значенню <varname>nodata</varname>. Встановіть "
+"<varname>exclude_nodata_value</varname> на false, щоб підрахувати всі "
+"пікселі."
 
 #. Tag: para
 #, no-c-format
@@ -33815,6 +33826,8 @@ msgid ""
 "width: an array indicating the width of each category/bin. If the number of "
 "bins is greater than the number of widths, the widths are repeated."
 msgstr ""
+"width: масив, що вказує ширину кожної категорії/біну. Якщо кількість бінів "
+"перевищує кількість ширин, ширини повторюються."
 
 #. Tag: para
 #, no-c-format
@@ -33822,6 +33835,8 @@ msgid ""
 "Example: 9 bins, widths are [a, b, c] will have the output be [a, b, c, a, "
 "b, c, a, b, c]"
 msgstr ""
+"Приклад: 9 контейнерів, ширина яких становить [a, b, c], дадуть результат ["
+"a, b, c, a, b, c, a, b, c]"
 
 #. Tag: para
 #, no-c-format
@@ -33830,6 +33845,9 @@ msgid ""
 "the function if specified. If not specified then the number of breakouts is "
 "autocomputed."
 msgstr ""
+"Кількість розривів — це кількість записів, які ви отримаєте від функції, "
+"якщо вони вказані. Якщо вони не вказані, кількість розривів обчислюється "
+"автоматично."
 
 #. Tag: para
 #, no-c-format
@@ -33837,11 +33855,13 @@ msgid ""
 "compute the histogram from the right rather than from the left (default). "
 "This changes the criteria for evaluating a value x from [a, b) to (a, b]"
 msgstr ""
+"обчислювати гістограму справа, а не зліва (за замовчуванням). Це змінює "
+"критерії оцінки значення x з [a, b) на (a, b]"
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 3.1.0 Removed ST_Histogram(table_name, column_name) variant."
-msgstr ""
+msgstr "Змінено: 3.1.0 Вилучено варіант ST_Histogram(table_name, column_name)."
 
 #. Tag: title
 #, no-c-format
@@ -33849,11 +33869,13 @@ msgid ""
 "Example: Single raster tile - compute histograms for bands 1, 2, 3 and "
 "autocompute bins"
 msgstr ""
+"Приклад: Одинарна растрова плитка — обчислення гістограм для смуг 1, 2, 3 та "
+"автоматичне обчислення бінів"
 
 #. Tag: title
 #, no-c-format
 msgid "Example: Just band 2 but for 6 bins"
-msgstr ""
+msgstr "Приклад: Тільки діапазон 2, але для 6 бінів"
 
 #. Tag: para
 #, no-c-format
@@ -33861,6 +33883,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
 "linkend=\"RT_ST_SummaryStatsAgg\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref linkend="
+"\"RT_ST_SummaryStatsAgg\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33869,6 +33893,10 @@ msgid ""
 "context of the sample or population. Thus, a value could be examined to be "
 "at the raster's 25%, 50%, 75% percentile.</refpurpose>"
 msgstr ""
+"<refpurpose>Обчислюйте квантилі для покриття растрового зображення або "
+"растрової таблиці в контексті вибірки або сукупності. Таким чином, значення "
+"може бути перевірено на відповідність 25%, 50% та 75% процентилю растрового "
+"зображення.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -39290,6 +39318,8 @@ msgid ""
 "ST_CoveredBy is the converse of <xref linkend=\"ST_Covers\"/>. So, "
 "<code>ST_CoveredBy(A,B) = ST_Covers(B,A)</code>."
 msgstr ""
+"ST_CoveredBy є оберненим до <xref linkend=\"ST_Covers\"/>. Отже, "
+"<code>ST_CoveredBy(A,B) = ST_Covers(B,A)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -39298,6 +39328,9 @@ msgid ""
 "linkend=\"ST_Within\"/>, since it has a simpler definition which does not "
 "have the quirk that \"boundaries are not within their geometry\"."
 msgstr ""
+"Як правило, цю функцію слід використовувати замість <xref linkend=\"ST_Within"
+"\"/>, оскільки вона має простіше визначення, яке не містить особливості, що «"
+"межі не знаходяться всередині їх геометрії»."
 
 #. Tag: para
 #, no-c-format
@@ -39305,11 +39338,13 @@ msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_CoveredBy</"
 "function>."
 msgstr ""
+"&index_aware; Щоб уникнути використання індексу, використовуйте функцію "
+"<function>_ST_CoveredBy</function>."
 
 #. Tag: para
 #, no-c-format
 msgid "Not an OGC standard, but Oracle has it too."
-msgstr ""
+msgstr "Це не стандарт OGC, але Oracle теж його має."
 
 #. Tag: para
 #, no-c-format
@@ -39317,11 +39352,13 @@ msgid ""
 ", <xref linkend=\"ST_Covers\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
 "linkend=\"ST_Within\"/>"
 msgstr ""
+", <xref linkend=\"ST_Covers\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
+"linkend=\"ST_Within\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if every point of B lies in A"
-msgstr ""
+msgstr "Перевіряє, чи кожна точка B лежить в A"
 
 #. Tag: para
 #, no-c-format
@@ -39330,12 +39367,17 @@ msgid ""
 "inside (i.e. intersects the interior or boundary of) Geometry/Geography A. "
 "Equivalently, tests that no point of B lies outside (in the exterior of) A."
 msgstr ""
+"Повертає <varname>true</varname>, якщо кожна точка в геометрії/географії B "
+"лежить всередині (тобто перетинає внутрішню частину або межу) геометрії/"
+"географії A. Еквівалентно, перевіряє, що жодна точка B не лежить поза (зовні)"
+" A."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_Covers(A, B) ⇔ A ⋂ B = B </emphasis>"
 msgstr ""
+"У математичних термінах: <emphasis>ST_Covers(A, B) ⇔ A ⋂ B = B </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -39343,6 +39385,8 @@ msgid ""
 "ST_Covers is the converse of <xref linkend=\"ST_CoveredBy\"/>. So, "
 "<code>ST_Covers(A,B) = ST_CoveredBy(B,A)</code>."
 msgstr ""
+"ST_Covers є оберненим до <xref linkend=\"ST_CoveredBy\"/>. Отже, "
+"<code>ST_Covers(A,B) = ST_CoveredBy(B,A)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -39351,6 +39395,9 @@ msgid ""
 "linkend=\"ST_Contains\"/>, since it has a simpler definition which does not "
 "have the quirk that \"geometries do not contain their boundary\"."
 msgstr ""
+"Як правило, цю функцію слід використовувати замість <xref linkend="
+"\"ST_Contains\"/>, оскільки вона має простіше визначення, яке не містить "
+"особливості, що «геометрії не містять своїх меж»."
 
 #. Tag: para
 #, no-c-format
@@ -39358,6 +39405,8 @@ msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_Covers</"
 "function>."
 msgstr ""
+"&index_aware; Щоб уникнути використання індексу, використовуйте функцію "
+"<function>_ST_Covers</function>."
 
 #. Tag: para
 #, no-c-format
@@ -39365,6 +39414,8 @@ msgid ""
 "Enhanced: 2.4.0 Support for polygon in polygon and line in polygon added for "
 "geography type"
 msgstr ""
+"Покращено: 2.4.0 Додано підтримку полігону в полігоні та лінії в полігоні "
+"для типу географії"
 
 #. Tag: para
 #, no-c-format
@@ -39373,27 +39424,31 @@ msgid ""
 "support MultiPoints with few points. Prior versions only supported point in "
 "polygon."
 msgstr ""
+"Покращено: 2.3.0 Покращення короткого замикання PIP для геометрії, розширене "
+"для підтримки MultiPoints з невеликою кількістю точок. Попередні версії "
+"підтримували тільки точки в багатокутниках."
 
 #. Tag: para
 #, no-c-format
 msgid "Geometry example"
-msgstr ""
+msgstr "Приклад геометрії"
 
 #. Tag: para
 #, no-c-format
 msgid "Geeography Example"
-msgstr ""
+msgstr "Приклад географії"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Within\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Within\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Tests if two geometries have some, but not all, interior points in common"
 msgstr ""
+"Перевіряє, чи дві геометрії мають деякі, але не всі внутрішні точки спільні"
 
 #. Tag: para
 #, no-c-format
@@ -39406,6 +39461,13 @@ msgid ""
 "geometries must not equal either geometry. Otherwise, it returns "
 "<varname>false</varname>. The crosses relation is symmetric and irreflexive."
 msgstr ""
+"Порівнює два геометричні об'єкти і повертає <varname>true</varname>, якщо їх "
+"перетин «просторово перетинається», тобто геометрії мають деякі, але не всі "
+"внутрішні точки спільні. Перетин внутрішніх частин геометрій повинен бути не "
+"порожнім і мати розмірність, меншу за максимальну розмірність двох вхідних "
+"геометрій, а перетин двох геометрій не повинен дорівнювати жодній з "
+"геометрій. В іншому випадку повертається <varname>false</varname>. "
+"Відношення перетину є симетричним і нерефлексивним."
 
 #. Tag: para
 #, no-c-format
@@ -39414,17 +39476,22 @@ msgid ""
 "&lt; max( dim( Int(A) ), dim( Int(B) ) )) ∧ (A ⋂ B ≠ A) ∧ (A ⋂ B ≠ B) </"
 "emphasis>"
 msgstr ""
+"У математичних термінах: <emphasis>ST_Crosses(A, B) ⇔ (dim( Int(A) ⋂ Int(B) )"
+" &lt;max( dim( Int(A) ), dim( Int(B) ) )) ∧ (A ⋂ B ≠ A) ∧ (A ⋂ B ≠ B) "
+"</emphasis>"
 
 #. Tag: para
 #, no-c-format
 msgid "Geometries cross if their DE-9IM Intersection Matrix matches:"
-msgstr ""
+msgstr "Геометрії перетинаються, якщо їх матриця перетину DE-9IM збігається:"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<code>T*T******</code> for Point/Line, Point/Area, and Line/Area situations"
 msgstr ""
+"<code>T*T******</code> для ситуацій «точка/лінія», «точка/площа» та "
+"«лінія/площа»"
 
 #. Tag: para
 #, no-c-format
@@ -39542,12 +39609,16 @@ msgid ""
 "not disjoint. Disjoint implies that <xref linkend=\"ST_Intersects\"/> is "
 "false."
 msgstr ""
+"Якщо для пари геометрій справедливе будь-яке інше просторове відношення, "
+"вони не є роз'єднаними. Роз'єднаність означає, що <xref linkend="
+"\"ST_Intersects\"/> є хибним."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_Disjoint(A, B) ⇔ A ⋂ B = ∅ </emphasis>"
 msgstr ""
+"У математичних термінах: <emphasis>ST_Disjoint(A, B) ⇔ A ⋂ B = ∅ </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -39557,21 +39628,25 @@ msgid ""
 "alternative that uses indexes: <code>ST_Disjoint(A,B) = NOT ST_Intersects(A,"
 "B)</code>"
 msgstr ""
+"Цей виклик функції не використовує індекси. Негативний предикат <xref "
+"linkend=\"ST_Intersects\"/>можна використовувати як більш ефективну "
+"альтернативу, яка використовує індекси: <code>ST_Disjoint(A,B) = NOT "
+"ST_Intersects(A,B)</code>"
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2 //s2.1.13.3 - a.Relate(b, 'FF*FF****')"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.1.2 //s2.1.13.3 - a.Relate(b, 'FF*FF****')"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.26"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.26"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if two geometries include the same set of points"
-msgstr ""
+msgstr "Перевіряє, чи дві геометрії містять однаковий набір точок"
 
 #. Tag: para
 #, no-c-format
@@ -39585,11 +39660,19 @@ msgid ""
 "ST_OrderingEquals is a little more stringent than simply verifying order of "
 "points are the same)."
 msgstr ""
+"Повертає <varname>true</varname>, якщо задані геометрії є «топологічно "
+"рівними». Використовуйте це для отримання «кращої» відповіді, ніж «=». "
+"Топологічна рівність означає, що геометрії мають однаковий розмір, а їхні "
+"набори точок займають однаковий простір. Це означає, що порядок вершин може "
+"бути різним у топологічно рівних геометріях. Щоб перевірити, чи порядок "
+"точок є послідовним, використовуйте <xref linkend=\"ST_OrderingEquals\"/> ("
+"слід зауважити, що ST_OrderingEquals є дещо суворішим, ніж проста перевірка "
+"того, чи порядок точок є однаковим)."
 
 #. Tag: para
 #, no-c-format
 msgid "In mathematical terms: <emphasis>ST_Equals(A, B) ⇔ A = B </emphasis>"
-msgstr ""
+msgstr "У математичних термінах: <emphasis>ST_Equals(A, B) ⇔ A = B </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -39597,6 +39680,8 @@ msgid ""
 "The following relation holds: <emphasis>ST_Equals(A, B) ⇔ ST_Within(A,B) ∧ "
 "ST_Within(B,A) </emphasis>"
 msgstr ""
+"Діє наступне співвідношення: <emphasis>ST_Equals(A, B) ⇔ ST_Within(A,B) ∧ "
+"ST_Within(B,A) </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -39614,6 +39699,8 @@ msgid ""
 "Changed: 2.2.0 Returns true even for invalid geometries if they are binary "
 "equal"
 msgstr ""
+"Змінено: 2.2.0 Повертає true навіть для недійсних геометрій, якщо вони є "
+"бінарними рівними"
 
 #. Tag: para
 #, no-c-format
@@ -39629,6 +39716,8 @@ msgstr ""
 msgid ""
 "Tests if two geometries intersect (they have at least one point in common)"
 msgstr ""
+"Перевіряє, чи перетинаються дві геометрії (чи мають вони хоча б одну спільну "
+"точку)"
 
 #. Tag: para
 #, no-c-format
@@ -39636,6 +39725,8 @@ msgid ""
 "Returns <varname>true</varname> if two geometries intersect. Geometries "
 "intersect if they have any point in common."
 msgstr ""
+"Повертає <varname>true</varname>, якщо дві геометрії перетинаються. "
+"Геометрії перетинаються, якщо вони мають спільну точку."
 
 #. Tag: para
 #, no-c-format
@@ -39643,18 +39734,24 @@ msgid ""
 "For geography, a distance tolerance of 0.00001 meters is used (so points "
 "that are very close are considered to intersect)."
 msgstr ""
+"Для географії використовується допуск відстані 0,00001 метра (тобто точки, "
+"які знаходяться дуже близько одна до одної, вважаються пересічними)."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_Intersects(A, B) ⇔ A ⋂ B ≠ ∅ </emphasis>"
 msgstr ""
+"У математичних термінах: <emphasis>ST_Intersects(A, B) ⇔ A ⋂ B ≠ ∅ "
+"</emphasis>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Geometries intersect if their DE-9IM Intersection Matrix matches one of:"
 msgstr ""
+"Геометрії перетинаються, якщо їх матриця перетину DE-9IM відповідає одній з "
+"наступних:"
 
 #. Tag: para
 #, no-c-format
@@ -39663,27 +39760,31 @@ msgid ""
 "except <xref linkend=\"ST_Disjoint\"/>, which tests that geometries do NOT "
 "intersect."
 msgstr ""
+"Просторове перетин передбачається всіма іншими тестами просторових відносин, "
+"за винятком <xref linkend=\"ST_Disjoint\"/>, який перевіряє, що геометрії НЕ "
+"перетинаються."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Changed: 3.0.0 SFCGAL version removed and native support for 2D TINS added."
 msgstr ""
+"Змінено: 3.0.0 Вилучено версію SFCGAL та додано вбудовану підтримку 2D TINS."
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.5.0 Supports GEOMETRYCOLLECTION."
-msgstr ""
+msgstr "Покращено: 2.5.0 Підтримує GEOMETRYCOLLECTION."
 
 #. Tag: para
 #, no-c-format
 msgid "Performed by the GEOS module (for geometry), geography is native"
-msgstr ""
+msgstr "Виконується модулем GEOS (для геометрії), географія є рідною"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.5 support for geography was introduced."
-msgstr ""
+msgstr "Доступність: 1.5 було впроваджено підтримку географії."
 
 #. Tag: para
 #, no-c-format
@@ -39691,6 +39792,8 @@ msgid ""
 "For geography, this function has a distance tolerance of about 0.00001 "
 "meters and uses the sphere rather than spheroid calculation."
 msgstr ""
+"Для географії ця функція має похибку відстані приблизно 0,00001 метра і "
+"використовує обчислення сфери, а не сфероїда."
 
 #. Tag: para
 #, no-c-format
@@ -39698,21 +39801,23 @@ msgid ""
 "&sfs_compliant; s2.1.1.2 //s2.1.13.3 - ST_Intersects(g1, g2 ) --&gt; Not "
 "(ST_Disjoint(g1, g2 ))"
 msgstr ""
+"&sfs_compliant; s2.1.1.2 //s2.1.13.3 - ST_Intersects(g1, g2 ) --&gt; Not "
+"(ST_Disjoint(g1, g2 ))"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.27"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.27"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DIntersects\"/>, <xref linkend=\"ST_Disjoint\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_3DIntersects\"/>, <xref linkend=\"ST_Disjoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a number indicating the crossing behavior of two LineStrings"
-msgstr ""
+msgstr "Повертає число, що вказує на поведінку перетину двох LineStrings"
 
 #. Tag: para
 #, no-c-format
