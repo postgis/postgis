@@ -553,6 +553,57 @@ Rename a topology from <varname>topo_stage</varname> to <varname>topo_prod</varn
 			</refsection>
 		</refentry>
 
+        <refentry xml:id="FixCorruptTopoGeometryColumn">
+			<refnamediv>
+				<refname>FixCorruptTopoGeometryColumn</refname>
+				<refpurpose>Fixes topogeometry corruption caused by upgrade to postgis_topology 3.6.0 and higher</refpurpose>
+			</refnamediv>
+            <refsynopsisdiv>
+                <funcsynopsis>
+                     <funcprototype>
+                        <funcdef>text <function>FixCorruptTopoGeometryColumn</function></funcdef>
+                        <paramdef><type>name </type>
+                        <parameter>layerSchema</parameter></paramdef>
+                        <paramdef><type>name </type>
+                        <parameter>layerTable</parameter></paramdef>
+                        <paramdef><type>name </type>
+                        <parameter>layerColumn </parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+When upgrading from PostGIS topology &lt;3.6.0 to version &gt;3.6.0+, the topogeometry column definition was changed.
+This caused corruption in topogeometries created before the upgrade. This function fixes this corruption in affected tables.
+                </para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="3.6.1">Availability: 3.6.1</para>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+                <para>Fix all topology columns</para>
+				<programlisting>
+SELECT topology.FixCorruptTopoGeometryColumn(schema_name, table_name, feature_column)
+    FROM topology.layer;
+                </programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+
+				<para>
+				  <xref linkend="UpgradeTopology"/>
+				</para>
+			</refsection>
+		</refentry>
+
 		<refentry xml:id="Populate_Topology_Layer">
 			<refnamediv>
 				<refname>Populate_Topology_Layer</refname>

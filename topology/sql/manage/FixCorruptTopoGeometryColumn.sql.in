@@ -18,30 +18,50 @@
 CREATE OR REPLACE FUNCTION topology.FixCorruptTopoGeometryColumn(layerSchema name, layerTable name, layerColumn name)
 RETURNS text AS
 $$
-DECLARE var_sql text; var_row_count bigint; result text;
+DECLARE var_sql text; var_row_count bigint; result text; var_create_index_sql text; var_drop_index_sql text;
 BEGIN
+    result = '';
 	-- if topogeometry is bigint, then fix damaged integer, need to upgrade to bigint
 	IF EXISTS ( SELECT 1
 		FROM  pg_catalog.pg_type AS pg_type
 			JOIN pg_catalog.pg_class AS pg_class ON pg_class.oid = pg_type.typrelid
 			JOIN pg_catalog.pg_attribute AS pga  ON pga.attrelid = pg_class.oid
 			JOIN pg_catalog.pg_type AS pg_attr_type on pg_attr_type.oid = pga.atttypid
-WHERE pg_type.typname::regtype::text = 'topogeometry' AND pga.attname = 'id'
+WHERE pg_type.typname = 'topogeometry' AND pga.attname = 'id'
 			AND
 		pg_type.typnamespace::regnamespace::text = 'topology' AND  pga.atttypid::regtype::text = 'bigint' ) THEN
+
+    -- generate index scripts to create and drop indexes that are based on the column
+    IF EXISTS( SELECT 1 FROM pg_indexes WHERE schemaname = layerSchema AND tablename = layerTable AND indexdef LIKE '%(' || layerColumn || ')%' ) THEN
+        SELECT string_agg(indexdef, ';'),  string_agg('DROP INDEX ' || quote_ident(schemaname) || '.' || quote_ident(indexname), ';')  INTO var_create_index_sql, var_drop_index_sql
+            FROM pg_indexes
+             WHERE schemaname = layerSchema
+                AND tablename = layerTable AND indexdef LIKE ('%(' || layerColumn || ')%');
+    END IF;
+
+    IF var_drop_index_sql > '' THEN
+        EXECUTE var_drop_index_sql;
+    END IF;
+
+    -- correct any corrupt topogeometries and fix
 	 var_sql =  format('UPDATE %1$I.%2$I
 	 	SET
 	   %3$I = (
 	     (%3$I).topology_id,
 	    (%3$I).layer_id,
-	     (%3$I).id & 0xFFFFFFFF,
-	     (%3$I).id >> 32
+	     ((%3$I).id & 0xFFFFFFFF)::bigint,
+	     ((%3$I).id >> 32)::integer
 	   )::topology.topogeometry
-	 WHERE (  (%3$I).id & 0xFFFFFFFF ) <> (%3$I).id OR  (  (%3$I).id >> 32 ) = (%3$I).type  ', layerSchema, layerTable, layerColumn);
+	 WHERE (  (%3$I).id & 0xFFFFFFFF )::bigint <> (%3$I).id OR  (  (%3$I).id >> 32 )::integer = (%3$I).type  ', layerSchema, layerTable, layerColumn);
 
 	 EXECUTE var_sql;
 	 GET DIAGNOSTICS var_row_count = ROW_COUNT;
-	 result = format('%s rows updated for %s.%s.%s column to bigint id type', var_row_count, layerSchema, layerTable, layerColumn);
+
+    IF var_create_index_sql > '' THEN
+        EXECUTE var_create_index_sql;
+        result = result || E'\n' || 'Recreating indexes';
+    END IF;
+	result = result || E'\n' || format('%s rows updated for %s.%s.%s column to bigint id type', var_row_count, layerSchema, layerTable, layerColumn);
   ELSE --we are coming from bigint and going back to integer
   	var_sql =  format('UPDATE %1$I.%2$I
 	 	SET
@@ -55,7 +75,7 @@ WHERE pg_type.typname::regtype::text = 'topogeometry' AND pga.attname = 'id'
 	 WHERE  l.topology_id = (%3$I).topology_id AND l.layer_id =  (%3$I).layer_id AND (%3$I).type <> l.feature_type  ', topo_schema, topo_table, topo_column);
 	 EXECUTE var_sql;
 	 GET DIAGNOSTICS var_row_count = ROW_COUNT;
-	 result = format('%s rows updated for %s.%s.%s column back to integer id type', var_row_count, topo_schema, topo_table, topo_column);
+	 result = result || format('%s rows updated for %s.%s.%s column back to integer id type', var_row_count, topo_schema, topo_table, topo_column);
   END IF;
   RETURN result;
 END
