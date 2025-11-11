@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-11-10 19:47+0000\n"
+"PO-Revision-Date: 2025-11-11 14:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -39826,51 +39826,54 @@ msgid ""
 "kind of crossing behavior exists between them. 0 indicates no crossing. This "
 "is only supported for <varname>LINESTRING</varname>s."
 msgstr ""
+"Задано дві лінії, повертає ціле число від -3 до 3, що вказує на тип перетину "
+"між ними. 0 означає відсутність перетину. Підтримується тільки для "
+"<varname>LINESTRING</varname>s."
 
 #. Tag: para
 #, no-c-format
 msgid "The crossing number has the following meaning:"
-msgstr ""
+msgstr "Номер перетину має таке значення:"
 
 #. Tag: para
 #, no-c-format
 msgid "0: LINE NO CROSS"
-msgstr ""
+msgstr "0: ЛІНІЯ БЕЗ ПЕРЕТИНУ"
 
 #. Tag: para
 #, no-c-format
 msgid "-1: LINE CROSS LEFT"
-msgstr ""
+msgstr "-1: ПЕРЕТИН ЛІНІЇ ЗЛІВА"
 
 #. Tag: para
 #, no-c-format
 msgid "1: LINE CROSS RIGHT"
-msgstr ""
+msgstr "1: ПЕРЕТИН ЛІНІЇ СПРАВА"
 
 #. Tag: para
 #, no-c-format
 msgid "-2: LINE MULTICROSS END LEFT"
-msgstr ""
+msgstr "-2: КІНЕЦЬ ЛІНІЇ МУЛЬТИКРОС ЛІВОРУЧ"
 
 #. Tag: para
 #, no-c-format
 msgid "2: LINE MULTICROSS END RIGHT"
-msgstr ""
+msgstr "2: ЛІНІЯ МУЛЬТИКРОС КІНЕЦЬ СПРАВА"
 
 #. Tag: para
 #, no-c-format
 msgid "-3: LINE MULTICROSS END SAME FIRST LEFT"
-msgstr ""
+msgstr "-3: ЛІНІЯ МУЛЬТИКРОС КІНЕЦЬ ТОЙ Ж САМИЙ ПЕРШИЙ ЗЛІВА"
 
 #. Tag: para
 #, no-c-format
 msgid "3: LINE MULTICROSS END SAME FIRST RIGHT"
-msgstr ""
+msgstr "3: ЛІНІЯ МУЛЬТИКРОС КІНЕЦЬ ТОЙ Ж САМИЙ ПЕРШИЙ ПРАВОРУЧ"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.4"
-msgstr ""
+msgstr "Доступність: 1.4"
 
 #. Tag: para
 #, no-c-format
@@ -39878,18 +39881,20 @@ msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> LINE CROSS LEFT and LINE CROSS "
 "RIGHT"
 msgstr ""
+"<emphasis role=\"bold\">Приклад:</emphasis> ЛІНІЯ ПЕРЕТИНАЄ ЛІВОРУЧ і ЛІНІЯ "
+"ПЕРЕТИНАЄ ПРАВОРУЧ"
 
 #. Tag: para
 #, no-c-format
 msgid "Blue: Line A; Green: Line B"
-msgstr ""
+msgstr "Синій: лінія A; Зелений: лінія B"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> LINE MULTICROSS END SAME FIRST "
 "LEFT and LINE MULTICROSS END SAME FIRST RIGHT"
-msgstr ""
+msgstr "<emphasis role=\"bold\">Приклад:</emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -39897,12 +39902,16 @@ msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> LINE MULTICROSS END LEFT and "
 "LINE MULTICROSS END RIGHT"
 msgstr ""
+"<emphasis role=\"bold\">Приклад:</emphasis> ЛІНІЯ МУЛЬТИКРОС КІНЕЦЬ ТОЙ "
+"САМИЙ ПЕРШИЙ ЛІВИЙ і ЛІНІЯ МУЛЬТИКРОС КІНЕЦЬ ТОЙ САМИЙ ПЕРШИЙ ПРАВИЙ"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Finds all streets that cross"
 msgstr ""
+"<emphasis role=\"bold\">Приклад:</emphasis>Знаходить всі вулиці, які "
+"перетинаються"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39910,6 +39919,8 @@ msgid ""
 "Tests if two geometries represent the same geometry and have points in the "
 "same directional order"
 msgstr ""
+"Перевіряє, чи дві геометрії представляють одну і ту ж геометрію і мають "
+"точки в одному і тому ж порядку напрямків"
 
 #. Tag: para
 #, no-c-format
@@ -39918,6 +39929,9 @@ msgid ""
 "geometries are equal and the coordinates are in the same order; otherwise it "
 "returns f (FALSE)."
 msgstr ""
+"ST_OrderingEquals порівнює дві геометрії і повертає t (TRUE), якщо геометрії "
+"рівні і координати мають однаковий порядок; в іншому випадку повертає f "
+"(FALSE)."
 
 #. Tag: para
 #, no-c-format
@@ -39926,16 +39940,18 @@ msgid ""
 "SQL-MM. http://edndoc.esri.com/arcsde/9.1/sql_api/sqlapi3."
 "htm#ST_OrderingEquals"
 msgstr ""
+"Ця функція реалізована відповідно до специфікації ArcSDE SQL, а не SQL-MM. "
+"http://edndoc.esri.com/arcsde/9.1/sql_api/sqlapi3.htm#ST_OrderingEquals"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.43"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.43"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Equals\"/>, <xref linkend=\"ST_Reverse\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Equals\"/>, <xref linkend=\"ST_Reverse\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39943,6 +39959,8 @@ msgid ""
 "Tests if two geometries have the same dimension and intersect, but each has "
 "at least one point not in the other"
 msgstr ""
+"Перевіряє, чи дві геометрії мають однакові розміри і перетинаються, але "
+"кожна з них має принаймні одну точку, яка не належить до іншої"
 
 #. Tag: para
 #, no-c-format
@@ -39953,6 +39971,11 @@ msgid ""
 "equivalently, neither one covers the other). The overlaps relation is "
 "symmetric and irreflexive."
 msgstr ""
+"Повертає TRUE, якщо геометрії A і B «просторово перекриваються». Дві "
+"геометрії перекриваються, якщо вони мають однаковий розмір, їх внутрішні "
+"частини перетинаються в цьому розмірі і кожна з них має принаймні одну точку "
+"всередині іншої (або, що еквівалентно, жодна з них не покриває іншу). "
+"Відношення перекриття є симетричним і нерефлексивним."
 
 #. Tag: para
 #, no-c-format
@@ -39960,6 +39983,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Overlaps(A, B) ⇔ ( dim(A) = dim(B) = "
 "dim( Int(A) ⋂ Int(B) )) ∧ (A ⋂ B ≠ A) ∧ (A ⋂ B ≠ B) </emphasis>"
 msgstr ""
+"У математичних термінах: <emphasis>ST_Overlaps(A, B) ⇔ ( dim(A) = dim(B) = "
+"dim( Int(A) ⋂ Int(B) )) ∧ (A ⋂ B ≠ A) ∧ (A ⋂ B ≠ B) </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -39967,16 +39992,18 @@ msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_Overlaps</"
 "function>."
 msgstr ""
+"&index_aware; Щоб уникнути використання індексу, використовуйте функцію "
+"<function>_ST_Overlaps</function>."
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2 // s2.1.13.3"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.1.2 // s2.1.13.3"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.32"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.32"
 
 #. Tag: para
 #, no-c-format
@@ -39984,11 +40011,13 @@ msgid ""
 "<function>ST_Overlaps</function> returns <varname>TRUE</varname> in the "
 "following situations:"
 msgstr ""
+"<function>ST_Overlaps</function> повертає <varname>TRUE</varname> у таких "
+"ситуаціях:"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>MULTIPOINT</varname> / <varname>MULTIPOINT</varname>"
-msgstr ""
+msgstr "<varname>MULTIPOINT</varname> / <varname>MULTIPOINT</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -39996,6 +40025,8 @@ msgid ""
 "A Point on a LineString is contained, but since it has lower dimension it "
 "does not overlap or cross."
 msgstr ""
+"Точка на лінійному елементі міститься, але оскільки вона має менший розмір, "
+"вона не перетинається і не перекривається."
 
 #. Tag: para
 #, no-c-format
@@ -40003,6 +40034,8 @@ msgid ""
 "A LineString that partly covers a Polygon intersects and crosses, but does "
 "not overlap since it has different dimension."
 msgstr ""
+"Лінія, яка частково покриває багатокутник, перетинається і перетинає його, "
+"але не перекриває, оскільки має інший розмір."
 
 #. Tag: para
 #, no-c-format
@@ -40010,6 +40043,9 @@ msgid ""
 "Two Polygons that intersect but with neither contained by the other overlap, "
 "but do not cross because their intersection has the same dimension."
 msgstr ""
+"Два багатокутники, які перетинаються, але жоден з них не міститься в іншому, "
+"перекриваються, але не перетинаються, оскільки їх перетин має однаковий "
+"розмір."
 
 #. Tag: para
 #, no-c-format
@@ -40017,6 +40053,8 @@ msgid ""
 ", <xref linkend=\"ST_Crosses\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
 "linkend=\"ST_Intersects\"/>"
 msgstr ""
+", <xref linkend=\"ST_Crosses\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
+"linkend=\"ST_Intersects\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40024,6 +40062,8 @@ msgid ""
 "Tests if two geometries have a topological relationship matching an "
 "Intersection Matrix pattern, or computes their Intersection Matrix"
 msgstr ""
+"Перевіряє, чи дві геометрії мають топологічний зв'язок, що відповідає "
+"шаблону матриці перетину, або обчислює їх матрицю перетину"
 
 #. Tag: para
 #, no-c-format
@@ -40033,6 +40073,10 @@ msgid ""
 "href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
 "Intersection Model</link> (DE-9IM)."
 msgstr ""
+"Ці функції дозволяють перевіряти та оцінювати просторові (топологічні) "
+"відносини між двома геометріями, як визначено в <link xlink:href=«http://en."
+"wikipedia.org/wiki/DE-9IM»>Моделі з розширеними розмірами 9-перетину</link> "
+"(DE-9IM)."
 
 #. Tag: para
 #, no-c-format
@@ -40042,6 +40086,10 @@ msgid ""
 "geometries. It is represented by a 9-character text string using the symbols "
 "'F', '0', '1', '2' (e.g. <code>'FF1FF0102'</code>)."
 msgstr ""
+"DE-9IM визначається як 9-елементна матриця, що вказує розмір перетинів між "
+"внутрішньою, межовою та зовнішньою частинами двох геометрій. Він "
+"представлений 9-символьним текстовим рядком із використанням символів «F», "
+"«0», «1», «2» (наприклад, <code>“FF1FF0102”</code>)."
 
 #. Tag: para
 #, no-c-format
@@ -40062,11 +40110,28 @@ msgid ""
 "\"Interior-Intersects\" has the DE-9IM pattern <code>T********</code>, which "
 "is not evaluated by any named predicate."
 msgstr ""
+"Певний тип просторових відносин можна перевірити, зіставивши матрицю "
+"перетину з <emphasis>шаблоном матриці перетину</emphasis>. Шаблони можуть "
+"містити додаткові символи «T» (що означає «перетин не порожній») та «*» (що "
+"означає «будь-яке значення»). Загальні просторові відносини забезпечуються "
+"названими функціями <xref linkend=\"ST_Contains\"/>, <xref linkend="
+"\"ST_ContainsProperly\"/>, <xref linkend=\"ST_Covers\"/>, <xref linkend="
+"\"ST_CoveredBy\"/>, <xref linkend=\"ST_Crosses\"/>, <xref linkend="
+"\"ST_Disjoint\"/>, <xref linkend=\"ST_Equals\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref linkend="
+"\"ST_Touches\"/> та <xref linkend=\"ST_Within\"/>. Використання явного "
+"шаблону дозволяє перевірити кілька умов перетину, перехрещення тощо за один "
+"крок. Це також дозволяє перевірити просторові відносини, які не мають "
+"іменованої функції просторових відносин. Наприклад, відношення «Внутрішнє "
+"перетинання» має шаблон DE-9IM <code>T********</code>, який не оцінюється "
+"жодним іменованим предикатом."
 
 #. Tag: para
 #, no-c-format
 msgid "For more information refer to <xref linkend=\"eval_spatial_rel\"/>."
 msgstr ""
+"Для отримання додаткової інформації див. <xref linkend=\"eval_spatial_rel\""
+"/>."
 
 #. Tag: para
 #, no-c-format
@@ -40075,6 +40140,9 @@ msgid ""
 "spatially related according to the given <varname>intersectionMatrixPattern</"
 "varname>."
 msgstr ""
+"<emphasis role=\"bold\">Варіант 1:</emphasis> Перевіряє, чи дві геометрії "
+"пов'язані просторово відповідно до заданого "
+"<varname>intersectionMatrixPattern</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -40085,6 +40153,11 @@ msgid ""
 "using a relationship pattern that requires intersection, then include the "
 "&amp;&amp; index call."
 msgstr ""
+"На відміну від більшості названих предикатів просторових відносин, це НЕ "
+"включає автоматичний виклик індексу. Причина полягає в тому, що деякі "
+"відносини є істинними для геометрій, які НЕ перетинаються (наприклад, "
+"Disjoint). Якщо ви використовуєте шаблон відносин, який вимагає перетину, "
+"включіть виклик індексу &amp;&amp;."
 
 #. Tag: para
 #, no-c-format
@@ -40094,6 +40167,10 @@ msgid ""
 "performance optimizations which are not available with full relate "
 "evaluation."
 msgstr ""
+"Краще використовувати функцію іменованих відносин, якщо вона доступна, "
+"оскільки вона автоматично використовує просторовий індекс, якщо такий існує. "
+"Крім того, вона може реалізовувати оптимізацію продуктивності, яка "
+"недоступна при повній оцінці відносин."
 
 #. Tag: para
 #, no-c-format
@@ -40103,6 +40180,10 @@ msgid ""
 "matrix string can be tested for matching a DE-9IM pattern using <xref "
 "linkend=\"ST_RelateMatch\"/>."
 msgstr ""
+"<emphasis role=\"bold\">Варіант 2:</emphasis> Повертає матричний рядок DE-"
+"9IM для просторового відношення між двома вхідними геометріями. Матричний "
+"рядок можна перевірити на відповідність шаблону DE-9IM за допомогою <xref "
+"linkend=\"ST_RelateMatch\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -40113,6 +40194,11 @@ msgid ""
 "MultiLineStrings are considered to lie in the DE-9IM Interior or Boundary. "
 "The <varname>boundaryNodeRule</varname> values are:"
 msgstr ""
+"<emphasis role=\"bold\">Варіант 3:</emphasis> Як і варіант 2, але дозволяє "
+"вказати <emphasis role=\"bold\">правило межового вузла</emphasis>. Правило "
+"межового вузла дозволяє більш точно контролювати, чи кінцеві точки "
+"MultiLineStrings вважаються такими, що лежать у внутрішній частині DE-9IM "
+"або на межі. Значення <varname>boundaryNodeRule</varname> є такими:"
 
 #. Tag: para
 #, no-c-format
