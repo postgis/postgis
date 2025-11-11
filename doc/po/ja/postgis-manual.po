@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-11-11 01:51+0000\n"
+"PO-Revision-Date: 2025-11-11 04:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -50055,16 +50055,15 @@ msgstr "このメソッドは曲線ストリングと曲線に対応していま
 #, no-c-format
 msgid ""
 "For geography this is a thin wrapper around the geometry implementation."
-msgstr "この関数のジオグラフィ版はジオメトリ実装にかぶせた薄いラッパです。"
+msgstr "この関数のジオグラフィー版はジオメトリ実装にかぶせた薄いラッパーです。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This function automatically includes a bounding box comparison that makes "
 "use of any spatial indexes that are available on the geometries."
-msgstr ""
-"この関数の呼び出しによって、ジオメトリで使用可能なインデックスを使用するバウ"
-"ンディングボックスの比較が自動的に行われます。"
+msgstr "この関数を実行すると、対象ジオメトリにおいて使用できるインデックスを使用した"
+"バウンディングボックスによる比較が自動的に行われます。"
 
 #. Tag: para
 #, no-c-format
@@ -50094,8 +50093,8 @@ msgid ""
 "</link>"
 msgstr ""
 "このメソッドは<link xlink:href=\"http://www.opengeospatial.org/standards/"
-"sfs\">OGC Simple Features Implementation Specification for SQL 1.1</link>の実"
-"装です。"
+"sfs\">OGC Simple Features Implementation Specification for SQL 1."
+"1</link>の実装です。"
 
 #. Tag: para
 #, no-c-format
