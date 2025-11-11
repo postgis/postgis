@@ -129,8 +129,8 @@ msgstr ""
 "clic con el botón derecho del ratón en Equipo-&gt; Propiedades Configuración "
 "avanzada del sistema o en el explorador navegando hasta <varname>Panel de "
 "control\\Todos los elementos del panel de control\\Sistema</varname>. A "
-"continuación, haga clic en <emphasis>Configuración avanzada del sistema -&gt "
-"> Avanzadas -&gt> Variables de entorno <emphasis> y añada nuevas variables "
+"continuación, haga clic en <emphasis>Configuración avanzada del sistema -&gt; "
+"> Avanzadas -&gt;> Variables de entorno </emphasis> y añada nuevas variables "
 "del sistema."
 
 #. Tag: para
