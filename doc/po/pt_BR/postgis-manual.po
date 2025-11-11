@@ -1,13 +1,14 @@
 # Portuguese translations for postgis package.
 # Automatically generated, 2023.
 #
+# Rodrigo Smarzaro <smarzaro@gmail.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2023-09-22 19:23+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2025-11-11 12:47+0000\n"
+"Last-Translator: Rodrigo Smarzaro <smarzaro@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -15,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.0\n"
+"X-Generator: Weblate 5.4.3\n"
 
 #. Tag: chapter
 #, no-c-format
@@ -812,9 +813,8 @@ msgid ""
 "The code for this extension can be found in the PostGIS <filename>extensions/"
 "address_standardizer</filename> and is currently self-contained."
 msgstr ""
-"O código para esta extensão pode ser encontrado no PostGIS "
-"<filename>extensions/address_standardizer</filename> e está atualmente "
-"autocontido. "
+"O código para esta extensão pode ser encontrado no PostGIS <filename>"
+"extensions/address_standardizer</filename> e está atualmente autocontido."
 
 #. Tag: para
 #, no-c-format
@@ -874,7 +874,7 @@ msgid ""
 msgstr ""
 "Esses são reconhecidos utilizando expressões Perl compatíveis. Esses regexs "
 "estão atualmente no parseaddress-api.c e são relativamente fáceis de "
-"alterar, caso seja necessário. "
+"alterar, caso seja necessário."
 
 #. Tag: term
 #, no-c-format
@@ -890,7 +890,7 @@ msgid ""
 msgstr ""
 "Esses são reconhecidos utilizando expressões Perl compatíveis. Esses regexs "
 "estão atualmente no parseaddress-api.c e são relativamente fáceis de "
-"alterar, caso seja necessário. "
+"alterar, caso seja necessário."
 
 #. Tag: title
 #, no-c-format
@@ -976,7 +976,7 @@ msgid ""
 "North, South, East, West etc."
 msgstr ""
 "é um texto (número token <code>2</code>): NOME DA RUA PRE-DIRECTIONAL como "
-"Norte, Sul, Leste, Oeste etc. "
+"Norte, Sul, Leste, Oeste etc."
 
 #. Tag: para
 #, no-c-format
@@ -1158,7 +1158,7 @@ msgstr ""
 "negativos inteiros representando atributos postais, terminados por um -1, "
 "seguidos por um inteiro representando um tipo de regra, seguido por um "
 "inteiro representando o rank da regra. As regras são ranqueadas de 0 (menor) "
-"até 17 (maior). "
+"até 17 (maior)."
 
 #. Tag: para
 #, no-c-format
@@ -1384,7 +1384,7 @@ msgid ""
 "last 3 characters of a Canadian postal code."
 msgstr ""
 "(26). Uma sequência de número letra número de 3 caracteres. Identifica um "
-"LDU, os 3 últimos caracteres de um código postal canadense. "
+"LDU, os 3 últimos caracteres de um código postal canadense."
 
 #. Tag: emphasis
 #, no-c-format
@@ -1692,7 +1692,7 @@ msgid ""
 "more columns if you wish for your own purposes."
 msgstr ""
 "Uma gaz table tem pelo menos as colunas a seguir na table. Você talvez "
-"adicione mais colunas para seus próprios propósitos. "
+"adicione mais colunas para seus próprios propósitos."
 
 #. Tag: para
 #, no-c-format
@@ -2104,7 +2104,7 @@ msgid ""
 msgstr ""
 "Embora seja desenvolvido especificamente pelos EUA, muitos conceitos e "
 "funções são aplicáveis e podem ser adaptados a trabalhar com endereços de "
-"outros países e outras road networks. "
+"outros países e outras road networks."
 
 #. Tag: para
 #, no-c-format
@@ -2118,7 +2118,7 @@ msgstr ""
 "todas as funções tiger relacionadas, dados reutilizáveis como os prefixos de "
 "tipos de rua, sufixos, estados, várias tables de controle para administrar "
 "carregamento de dados, e tables da base do esqueleto do qual todas as tables "
-"tiger carregadas herdaram.   "
+"tiger carregadas herdaram."
 
 #. Tag: para
 #, no-c-format
@@ -2193,7 +2193,7 @@ msgid ""
 "Address Standardizer as part of PostGIS."
 msgstr ""
 "O suporte para dados Tiger 2015 e a inclusão do Padronizador de Endereços "
-"como parte do PostGIS, são novos no lançamento do PostGIS 2.2.0. "
+"como parte do PostGIS, são novos no lançamento do PostGIS 2.2.0."
 
 #. Tag: para
 #, no-c-format
@@ -2204,8 +2204,8 @@ msgid ""
 msgstr ""
 "O lançamento do PostGIS 2.1.0 tem de novo a habilidade de instalar o "
 "geocoder tiger com o modelo de extensão PostgreSQL se você estiver usando o "
-"PostgreSQL 9.1+. Refira-se a <xref "
-"linkend=\"install_tiger_geocoder_extension\"/> para mais detalhes. "
+"PostgreSQL 9.1+. Refira-se a <xref linkend=\"install_tiger_geocoder_extension"
+"\"/> para mais detalhes."
 
 #. Tag: para
 #, no-c-format
@@ -2238,7 +2238,7 @@ msgstr ""
 "pode processar uma string eventual de endereço dos Estados Unidos e, usando "
 "os dados normalizados do censo TIGER, produzir um ponto de geometria e "
 "avaliação refletindo a localização do endereço dado e likeliness da "
-"localização. Quanto maior o número de avaliação, pior o resultado. "
+"localização. Quanto maior o número de avaliação, pior o resultado."
 
 #. Tag: para
 #, no-c-format
@@ -2259,7 +2259,7 @@ msgid ""
 msgstr ""
 "O geocoder deve ser simples de instalar e usar para qualquer pessoa familiar "
 "com o PotGIS, e deve ser mais fácil de instalar e usar em todas as "
-"plataformas suportadas pelo PostGIS. "
+"plataformas suportadas pelo PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -2278,7 +2278,7 @@ msgid ""
 msgstr ""
 "Isso deve ser extensível o suficiente para ser utilizado com dados de "
 "atualização futuras, ou fontes de dados alternativas com mudanças mínimas de "
-"coding. "
+"coding."
 
 #. Tag: para
 #, no-c-format
@@ -2317,7 +2317,7 @@ msgstr ""
 "para ser chamado como webservice. Assim como o geocoder, ele tem dois "
 "componentes: o geocoder e o geocoder reverso. Na documentação não fica claro "
 "se ele tem uma interface SQL pura conforme o geocoder ou se tem um bom "
-"acordo da lógica implementado na interface da web. "
+"acordo da lógica implementado na interface da web."
 
 #. Tag: para
 #, no-c-format
@@ -2424,7 +2424,7 @@ msgid ""
 msgstr ""
 "Gera uma script que derruba todas as tables no esquema específico que estão "
 "prefixados com abreviação do estado. Padroniza o esquema para "
-"<varname>tiger_data</varname> se nenhum esquema estiver especificado. "
+"<varname>tiger_data</varname> se nenhum esquema estiver especificado."
 
 #. Tag: para
 #, no-c-format
@@ -2439,7 +2439,7 @@ msgstr ""
 "prefixados com abreviação do estado. Padroniza o esquema para "
 "<varname>tiger_data</varname> se nenhum esquema estiver especificado. Essa "
 "função é útil para derrubar tables de um estado antes de recarregar um "
-"estado em caso de algo ter dado errado durante seu carregamento anterior. "
+"estado em caso de algo ter dado errado durante seu carregamento anterior."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2496,7 +2496,7 @@ msgstr ""
 "revisada para melhorar a velocidade, exatidão do geocoding e para compensar "
 "ponto da linha central para o lado do endereço que a rua está localizada. O "
 "novo parâmetro <varname>max_results</varname> é útil para especificar "
-"números dos melhores resultados ou apenas retornar o melhor resultado. "
+"números dos melhores resultados ou apenas retornar o melhor resultado."
 
 #. Tag: title
 #, no-c-format
@@ -2512,7 +2512,7 @@ msgid ""
 msgstr ""
 "Os exemplos abaixo estão em um único processador 3.0 GHZ no Windows 7 com "
 "2GB ram executando PostgreSQL 9.1rc1/PostGIS 2.0 carregados com todos os "
-"dados de estado Tiger  MA,MN,CA, RI. "
+"dados de estado Tiger MA,MN,CA, RI."
 
 #. Tag: para
 #, no-c-format
@@ -2582,7 +2582,7 @@ msgstr ""
 "localização, e a avaliação. Quanto menor a avaliação, maior a chance de "
 "combinar. Os resultados são separados com menor avaliação em primeiro lugar. "
 "Pode passar nos resultados máximos, até 10. Usa dados Tiger (limites, faces, "
-"addr), string confusa do PostgreSQL (soundex, evenshtein). "
+"addr), string confusa do PostgreSQL (soundex, evenshtein)."
 
 #. Tag: para
 #, no-c-format
@@ -2673,7 +2673,7 @@ msgid ""
 msgstr ""
 "Alterações: 2.2.0 : configurações padrão são guardadas em uma table chamada "
 "geocode_settings_default. As configurações personalizadas estão em "
-"geocode_settings e só contém aquelas que foram configuradas pelo usuário. "
+"geocode_settings e só contém aquelas que foram configuradas pelo usuário."
 
 #. Tag: title
 #, no-c-format
@@ -2734,7 +2734,7 @@ msgid ""
 msgstr ""
 "Encontra todas as tables com colunas chave usadas no ingresso geocoder e "
 "condições de filtros que estão perdendo os indexes usados nessas colunas e "
-"irão adicionar elas. "
+"irão adicionar elas."
 
 #. Tag: para
 #, no-c-format
@@ -2769,9 +2769,9 @@ msgid ""
 "is returned as a separate record."
 msgstr ""
 "Gera uma shell script para a plataforma específica para os estados que irão "
-"baixar o trecho do censo de estado Tiger, bg e dados de tables  tabblocks, "
+"baixar o trecho do censo de estado Tiger, bg e dados de tables tabblocks, "
 "arranjar e carregar dentro do esquema <varname>tiger_data</varname>. Cada "
-"state script retornou como um relato separado.   "
+"state script retornou como um relato separado."
 
 #. Tag: para
 #, no-c-format
@@ -2786,7 +2786,7 @@ msgstr ""
 "baixar <varname>tract</varname> do censo de estado Tiger, block groups "
 "<varname>bg</varname> e dados de tables <varname>tabblocks</varname>, "
 "arranja e carrega dentro do esquema <varname>tiger_data</varname>. Cada "
-"state script retornou como um relato separado.   "
+"state script retornou como um relato separado."
 
 #. Tag: para
 #, no-c-format
@@ -2799,7 +2799,7 @@ msgstr ""
 "Utiliza unzip no Linux (7-zip no Windows por padrão) e wget para fazer o "
 "download. Usa <xref linkend=\"shp2pgsql_usage\"/> para carregar nos dados. "
 "Note que a menor unidade que ele faz é um estado inteiro. Ele só irá "
-"processar os arquivos nas pastas representativas e temporárias. "
+"processar os arquivos nas pastas representativas e temporárias."
 
 #. Tag: para
 #, no-c-format
@@ -2828,7 +2828,7 @@ msgid ""
 msgstr ""
 "<varname>loader_platform</varname> perfis de numerosas plataformas e onde as "
 "várias executáveis estão localizadas. Está com o windows e linux. Mais pode "
-"ser adicionado. "
+"ser adicionado."
 
 #. Tag: para
 #, no-c-format
@@ -2856,7 +2856,7 @@ msgid ""
 msgstr ""
 "inclui essa lógica, mas se você instalou o geocoder tiger antes para o "
 "PostGIS 2.0.0 alpha5, você vai precisar executar esse nos estados que já fez "
-"para pegar essas tables adicionais. "
+"para pegar essas tables adicionais."
 
 #. Tag: para
 #, no-c-format
@@ -2865,7 +2865,7 @@ msgid ""
 "format."
 msgstr ""
 "Gerar script para carregar dados para selecionar estados no formato script "
-"shell do Windows. "
+"shell do Windows."
 
 #. Tag: para
 #, no-c-format
@@ -2885,7 +2885,7 @@ msgstr ""
 "baixar dados Tiger, arranjar e carregar dentro do esquema "
 "<varname>tiger_data</varname>. Cada state script retorna como um registro "
 "separado. A versão mais nova suporta mudanças estruturais do Tiger 2010 e "
-"também carrega trecho do censo, block groups, e block tables.  "
+"também carrega trecho do censo, block groups, e block tables."
 
 #. Tag: para
 #, no-c-format
@@ -2897,7 +2897,7 @@ msgstr ""
 "Gera uma shell script para a plataforma específica para os estados que irão "
 "baixar dados do Tiger, arranjar e carregar dentro do esquema "
 "<varname>tiger_data</varname>. Cada state script retorna como um registro "
-"separado.   "
+"separado."
 
 #. Tag: para
 #, no-c-format
@@ -2912,7 +2912,7 @@ msgstr ""
 "download. Usa <xref linkend=\"shp2pgsql_usage\"/> para carregar nos dados. "
 "Note que a menor unidade que ele faz é um estado inteiro, mas você pode "
 "sobrescrever baixando os arquivos por conta própria. Ele só irá processar os "
-"arquivos nas pastas representativas e temporárias. "
+"arquivos nas pastas representativas e temporárias."
 
 #. Tag: para
 #, no-c-format
@@ -2921,7 +2921,7 @@ msgid ""
 "tract (tract), block groups (bg), and blocks (tabblocks) tables ."
 msgstr ""
 "Disponibilidade: 2.0.0 para suportar tiger 2010 dados estruturados e carrega "
-"trecho (trecho) do censo , block groups (bg), e block (tabblocks) tables. "
+"trecho (trecho) do censo , block groups (bg), e block (tabblocks) tables."
 
 #. Tag: para
 #, no-c-format
@@ -2945,7 +2945,7 @@ msgid ""
 "Generate script to load up data for 2 states in Windows shell script format."
 msgstr ""
 "Gerar script para carregar dados para 2 estados na script de formato shell "
-"do Windows. "
+"do Windows."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -2961,7 +2961,7 @@ msgid ""
 "and state lookup tables."
 msgstr ""
 "Gerar uma script shell para a plataforma especificada que carrega as lookup "
-"tables de condado e estado. "
+"tables de condado e estado."
 
 #. Tag: para
 #, no-c-format
@@ -2987,7 +2987,7 @@ msgid ""
 "downloading. It uses <xref linkend=\"shp2pgsql_usage\"/> to load in the data."
 msgstr ""
 "Utiliza unzip no Linux (7-zip no Windows por padrão) e wget para fazer o "
-"download. Usa <xref linkend=\"shp2pgsql_usage\"/> para carregar nos dados. "
+"download. Usa <xref linkend=\"shp2pgsql_usage\"/> para carregar nos dados."
 
 #. Tag: para
 #, no-c-format
@@ -3011,7 +3011,7 @@ msgid ""
 msgstr ""
 "<varname>loader_platform</varname> perfis de numerosas plataformas e onde as "
 "várias executáveis estão localizadas. Está com o windows e linux/unix. Mais "
-"pode ser adicionado. "
+"pode ser adicionado."
 
 #. Tag: para
 #, no-c-format
@@ -3036,21 +3036,20 @@ msgid ""
 "load generate and run drop statements <xref "
 "linkend=\"Drop_Nation_Tables_Generate_Script\"/> before you run this script."
 msgstr ""
-"Se você estiver executando a versão  <varname>tiger_2010</varname> e quer "
+"Se você estiver executando a versão <varname>tiger_2010</varname> e quer "
 "recarregar como estado com <varname>tiger_2011</varname>, você vai precisar, "
-"para o primeiro carregamento, gerar e executar drop statements <xref "
-"linkend=\"Drop_Nation_Tables_Generate_Script\"/> antes de executar essa "
-"script. "
+"para o primeiro carregamento, gerar e executar drop statements <xref linkend="
+"\"Drop_Nation_Tables_Generate_Script\"/> antes de executar essa script."
 
 #. Tag: para
 #, no-c-format
 msgid "Generate script script to load nation data Windows."
-msgstr "Gerar script para carregar dados de uma nação no Windows. "
+msgstr "Gerar script para carregar dados de uma nação no Windows."
 
 #. Tag: para
 #, no-c-format
 msgid "Generate script to load up data for Linux/Unix systems."
-msgstr "Gerar script para carregar dados para os sistemas Linux/Unix. "
+msgstr "Gerar script para carregar dados para os sistemas Linux/Unix."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -3088,7 +3087,7 @@ msgstr ""
 "perdidas no carregamento. Assim como o geocoder é melhorado, essa função "
 "será atualizada para acomodar novos indexes que estão sendo usados. Se essa "
 "função não gera nada, significa que suas tables possuem o que achamos ser os "
-"indexes chave no lugar certo. "
+"indexes chave no lugar certo."
 
 #. Tag: para
 #, no-c-format
@@ -3108,7 +3107,7 @@ msgstr ""
 "<varname>norm_addy</varname> que não tem um sufixo, prefixo e tipo "
 "padronizado, rua, nome de rua etc. quebrado e, campos separados. Essa função "
 "irá funcionar com os dados lookup compactados com o tiger_geocoder (dados do "
-"censo tiger não são necessários). "
+"censo tiger não são necessários)."
 
 #. Tag: para
 #, no-c-format
@@ -3124,7 +3123,7 @@ msgstr ""
 "padronizado, rua, nome de rua etc. quebrado e, campos separados. Esse é o "
 "primeiro passo no processo de geocodificação para tornar todos os endereços "
 "normalizados no formato postal. Nenhum outro dado é requerido à parte do que "
-"está compactado com o geocoder.  "
+"está compactado com o geocoder."
 
 #. Tag: para
 #, no-c-format
@@ -3150,7 +3149,7 @@ msgid ""
 "schema to normalize the input address."
 msgstr ""
 "Utiliza várias tables lookup de controle localizadas no esquema "
-"<varname>tiger</varname> para normalizar o endereço de entrada. "
+"<varname>tiger</varname> para normalizar o endereço de entrada."
 
 #. Tag: para
 #, no-c-format
@@ -3246,7 +3245,7 @@ msgid ""
 msgstr ""
 "Os estados varchar <varname>stateAbbrev</varname> dos EUA de dois "
 "caracteres. ex: MA, NY, MI. Estes são controlados pela table "
-"<varname>state_lookup</varname>. "
+"<varname>state_lookup</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -3262,7 +3261,7 @@ msgid ""
 msgstr ""
 "<varname>parsed</varname> booleana - indica se um endereço foi formado pelo "
 "processo normalizador. A função normalize_address coloca isso como verdade "
-"antes de retornar o endereço. "
+"antes de retornar o endereço."
 
 #. Tag: para
 #, no-c-format
@@ -3411,7 +3410,7 @@ msgid ""
 msgstr ""
 "Dado um objeto de tipo composto  <varname>norm_addy</varname>, retorna uma "
 "representação impressa dele. Não é necessário nenhum outro tipo de dados "
-"além do que estão compactados com o geocoder. "
+"além do que estão compactados com o geocoder."
 
 #. Tag: para
 #, no-c-format
@@ -3440,7 +3439,7 @@ msgstr ""
 "Pega um ponto em um sistema de referência espacial conehcido e retorna um "
 "relato que contém um banco de dados de, teoricamente, possíveis endereços e "
 "um banco de dados de ruas cruzadas. Se include_strnum_range = verdade, "
-"inclui o alcance da rua nas ruas cruzadas. "
+"inclui o alcance da rua nas ruas cruzadas."
 
 #. Tag: para
 #, no-c-format
@@ -3457,7 +3456,7 @@ msgstr ""
 "um banco de dados de ruas cruzadas. Se include_strnum_range = verdade, "
 "inclui o alcance da rua nas ruas cruzadas. include_strnum_range se torna "
 "falso se não passar. Os endereços são separados de acordo com qual rua um "
-"ponto é mais próximo, então, o primeiro endereço é o mais certo. "
+"ponto é mais próximo, então, o primeiro endereço é o mais certo."
 
 #. Tag: para
 #, no-c-format
@@ -3492,7 +3491,7 @@ msgid ""
 msgstr ""
 "Nota: Esta função confia nos dados Tiger. Se você não carregou dados  "
 "cobrindo a região deste ponto, então, você terá que ter um relato cheio de "
-"NULOS. "
+"NULOS."
 
 #. Tag: para
 #, no-c-format
@@ -3508,7 +3507,7 @@ msgid ""
 msgstr ""
 "<varname>intpt</varname> é um arranjo de pontos: Estes são os pontos da "
 "linha central na rua mais próxima ao ponto de entrada. Existem vários "
-"pontos, assim com existem muitos endereços.  "
+"pontos, assim com existem muitos endereços."
 
 #. Tag: para
 #, no-c-format
@@ -3523,8 +3522,7 @@ msgstr ""
 "Estes são arranjos de possíveis endereços que se encaixam no ponto de "
 "entrada. O primeiro no arranjo é o que mais se encaixa. Geralmente, deveria "
 "ter apenas um, exceto no caso de um ponto que esteja na esquina de 2 ou 3 "
-"ruas, ou do ponto que esteja em algum lugar na estrada e não ao lado da "
-"rua.  "
+"ruas, ou do ponto que esteja em algum lugar na estrada e não ao lado da rua."
 
 #. Tag: para
 #, no-c-format
@@ -3534,7 +3532,7 @@ msgid ""
 "to be on)."
 msgstr ""
 "<varname>street</varname> um arranjo de varchar: Estes são ruas cruzadas (ou "
-"a rua) (ruas que interseccionam ou são as ruas que o ponto está projetado). "
+"a rua) (ruas que interseccionam ou são as ruas que o ponto está projetado)."
 
 #. Tag: para
 #, no-c-format
@@ -3568,7 +3566,7 @@ msgid ""
 msgstr ""
 "Aqui, nós escolhemos não incluir as variedades de endereços para as ruas "
 "cruzadas e escolhemos uma localização realmente próxima de uma esquina de 2 "
-"ruas, assim, pode ser conhecido por dois endereços diferentes. "
+"ruas, assim, pode ser conhecido por dois endereços diferentes."
 
 #. Tag: para
 #, no-c-format
@@ -3576,9 +3574,8 @@ msgid ""
 "For this one we reuse our geocoded example from <xref linkend=\"Geocode\"/> "
 "and we only want the primary address and at most 2 cross streets."
 msgstr ""
-"Para este, nó reutilizamos nosso exemplo geocodificado de <xref "
-"linkend=\"Geocode\"/> e só queremos o endereço primário e no máximo 2 ruas "
-"cruzadas. "
+"Para este, nó reutilizamos nosso exemplo geocodificado de <xref linkend="
+"\"Geocode\"/> e só queremos o endereço primário e no máximo 2 ruas cruzadas."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -3596,7 +3593,7 @@ msgid ""
 msgstr ""
 "Carrega uma região definida de dados tiger em uma Topologia PostGIS e "
 "transforma os dados tiger para referência espacial da topologia e rompe para "
-"a tolerância precisa da topologia.  "
+"a tolerância precisa da topologia."
 
 #. Tag: para
 #, no-c-format
@@ -3614,7 +3611,7 @@ msgstr ""
 "de uma topologia alvo e pontos são estalados à tolerância da topologia alvo. "
 "As faces, nós e limites criados, mantêm as mesmas identidades dos originais "
 "dos dados Tiger, para os datasets serem reconciliados mais facilmente no "
-"futuro com os dados tiger. Retorna detalhes resumidos do processo.   "
+"futuro com os dados tiger. Retorna detalhes resumidos do processo."
 
 #. Tag: para
 #, no-c-format
@@ -3625,7 +3622,7 @@ msgid ""
 msgstr ""
 "Seria útil, por exemplo, para dividir em novos distritos os dados onde você "
 "requer que os polígonos formados sigam as linhas centrais das ruas e para os "
-"polígonos resultantes não se sobreporem. "
+"polígonos resultantes não se sobreporem."
 
 #. Tag: para
 #, no-c-format
@@ -3638,11 +3635,11 @@ msgid ""
 "not created a topology using the topology functions."
 msgstr ""
 "Esta função confia nos dados tiger, bem como o módulo de instalação da "
-"topologia do PostGIS. para maiores informações, veja: <xref "
-"linkend=\"Topology\"/> e <xref linkend=\"installation_configuration\"/>. Se "
-"você não carregou os dados cobrindo a região de interesse, nenhum relato de "
-"topologia será criado, Esta função também falhará se você não tiver criado "
-"uma topologia usando as funções dela. "
+"topologia do PostGIS. para maiores informações, veja: <xref linkend="
+"\"Topology\"/> e <xref linkend=\"installation_configuration\"/>. Se você não "
+"carregou os dados cobrindo a região de interesse, nenhum relato de topologia "
+"será criado, Esta função também falhará se você não tiver criado uma "
+"topologia usando as funções dela."
 
 #. Tag: para
 #, no-c-format
@@ -3656,7 +3653,7 @@ msgstr ""
 "de tolerância, nas quais depois da transformação os pontos limites não se "
 "alinham ou sobrepõem. Para remediar esta situação, você talvez queira "
 "aumentar ou diminuir a precisão, se você tiver falhas na validação da "
-"topologia. "
+"topologia."
 
 #. Tag: para
 #, no-c-format
@@ -3730,7 +3727,7 @@ msgid ""
 msgstr ""
 "Criar uma topologia para uffolk, Massachusetts in Mass State Plane Meters "
 "(26986), com tolerância 0.25 metros e então carregar no condado de Suffolk "
-"faces, limites e nós tiger. "
+"faces, limites e nós tiger."
 
 #. Tag: para
 #, no-c-format
@@ -3758,7 +3755,8 @@ msgstr ""
 "Estabelece valor de uma configuração específica armazenada na table "
 "<varname>tiger.geocode_settings</varname>. Configurações permitem que você "
 "comute depuração de funções. Os planos futuros serão para controlar "
-"avaliação com configurações. A lista atual de configurações está em: "
+"avaliação com configurações. A lista atual de configurações está em <xref "
+"linkend=\"Get_Geocode_Setting\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -3767,7 +3765,7 @@ msgid ""
 "NOTICE log will output timing and queries."
 msgstr ""
 "Se você executar <xref linkend=\"Geocode\"/> quando esta função for verdade, "
-"o log NOTICE irá gerar horas e pesquisas. "
+"o log NOTICE irá gerar horas e pesquisas."
 
 #. Tag: title
 #, no-c-format
@@ -3949,7 +3947,7 @@ msgid ""
 msgstr ""
 "<varname>layer_id</varname> é um inteiro: A layer_id nas layers tables que a "
 "TopoGEometry pertence. A combinação de topology_id, layer_id fornece uma "
-"referência única na table topology.layers. "
+"referência única na table topology.layers."
 
 #. Tag: para
 #, no-c-format
@@ -4023,7 +4021,7 @@ msgstr ""
 "Um tipo composto que consiste em uma mensagem de erro e dois inteiros. A "
 "função <xref linkend=\"ValidateTopology\"/> retorna um conjunto para indicar "
 "erros de validação e a id1 e id2 para indicar as ids dos objetos da "
-"topologia envolvidas no erro. "
+"topologia envolvidas no erro."
 
 #. Tag: para
 #, no-c-format
@@ -4118,9 +4116,9 @@ msgid ""
 "for the layer of the TopoGeometry being defined."
 msgstr ""
 "Para qualquer uma das TopoGeometrias hierárquicas dadas, todos os elementos "
-"das TopoGeometrias filhas virão da mesma camada,  assim com está "
-"especificado no relato topology.layer para a camada da TopoGeometria que "
-"está sendo definida. "
+"das TopoGeometrias filhas virão da mesma camada, assim com está especificado "
+"no relato topology.layer para a camada da TopoGeometria que está sendo "
+"definida."
 
 #. Tag: para
 #, no-c-format
@@ -4145,7 +4143,7 @@ msgid ""
 "components of TopoGeometry objects."
 msgstr ""
 "Um arranjo de 1 ou mais objetos TopoGeometria, geralmente usado para "
-"circular componentes dos objetos de TopoGeometrias. "
+"circular componentes dos objetos de TopoGeometrias."
 
 #. Tag: para
 #, no-c-format
@@ -4200,8 +4198,8 @@ msgid ""
 "This function will both add the requested column to the table and add a "
 "record to the topology.layer table with all the given info."
 msgstr ""
-"Esta função irá adicionar a coluna pedida e um relato para a table topology."
-"layer com todas as informações dadas. "
+"Esta função irá adicionar a coluna pedida e um relato para a table "
+"topology.layer com todas as informações dadas."
 
 #. Tag: para
 #, no-c-format
@@ -4211,10 +4209,10 @@ msgid ""
 "Otherwise this layer will contain hierarchical TopoGeometries (composed by "
 "TopoGeometries from the child_layer)."
 msgstr ""
-"Se você não especificar  [child_layer] (ou configurar para NULO) essa camada "
+"Se você não especificar [child_layer] (ou configurar para NULO) essa camada "
 "irá conter TopoGeometrias Básicas (compostas por elementos de topologia "
-"primitivos). Senão essa camada conterá TopoGeometrias hierárquicas "
-"(compostas por TopoGeometrias da child_layer). "
+"primitivos). Senão essa camada conterá TopoGeometrias hierárquicas ("
+"compostas por TopoGeometrias da child_layer)."
 
 #. Tag: para
 #, no-c-format
@@ -4327,8 +4325,8 @@ msgid ""
 "varname> in schema <varname>schema_name</varname> and unregisters the "
 "columns from topology.layer table."
 msgstr ""
-"Derruba a coluna topogeometria da table nomeada <varname>table_name</"
-"varname> no esquema <varname>schema_name</varname> e tira os registros da "
+"Derruba a coluna topogeometry da table nomeada <varname>table_name</varname> "
+"no esquema <varname>schema_name</varname> e tira os registros da"
 
 #. Tag: para
 #, no-c-format
@@ -4343,7 +4341,7 @@ msgstr ""
 "varname> no esquema <varname>schema_name</varname> e tira os registros da "
 "colunas da table topology.layer. Retorna um resumo do drop status. NOTA: ela "
 "primeiro configura todos os valores para NULO antes de derrubar checks de "
-"integridade referencial.  "
+"integridade referencial."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4753,7 +4751,7 @@ msgid ""
 "positives that were existent in prior versions."
 msgstr ""
 "Melhorias: 2.0.0 limite mais eficiente cruzando detenção e consertos para "
-"falsos positivos que existiam em versões anteriores.  "
+"falsos positivos que existiam em versões anteriores."
 
 #. Tag: para
 #, no-c-format
@@ -5250,7 +5248,8 @@ msgid ""
 "SQL/MM."
 msgstr ""
 "Esta seção cobre as funções da topologia para adicionar, mover, deletar e "
-"dividir limites, faces e nós. Todas essas funções são definidas pelo "
+"dividir limites, faces e nós. Todas essas funções são definidas pelo ISO SQL/"
+"MM."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5282,10 +5281,10 @@ msgid ""
 "node, an exception is thrown."
 msgstr ""
 "O sistema de referência espacial (srid) da geometria pontual não é o mesmo "
-"que a topologia, o  <varname>apoint</varname> não é uma geometria pontual, o "
+"que a topologia, o <varname>apoint</varname> não é uma geometria pontual, o "
 "ponto é nulo, ou o ponto intersecta um limite existente (mesmo nos limites), "
 "então uma exceção é aberta. Se o ponto já existe como um nó, uma exceção é "
-"aberta. "
+"aberta."
 
 #. Tag: para
 #, no-c-format
@@ -5294,7 +5293,7 @@ msgid ""
 "not within the face, then an exception is thrown."
 msgstr ""
 "Se <varname>aface</varname> não é nula e o <varname>apoint</varname> não "
-"está dentro da face, então, uma exceção é aberta. "
+"está dentro da face, então, uma exceção é aberta."
 
 #. Tag: para
 #, no-c-format
@@ -5370,7 +5369,7 @@ msgid ""
 msgstr ""
 "Se o <varname>anode</varname> e <varname>anothernode</varname> não são os "
 "pontos de começo e fim da <varname>alinestring</varname> então, uma exceção "
-"é aberta. "
+"é aberta."
 
 #. Tag: para
 #, no-c-format
@@ -5391,7 +5390,7 @@ msgid ""
 "face and replace it with two new faces."
 msgstr ""
 "Adiciona um novo limite e, se uma face for dividida, deleta a face original "
-"e substitui por duas novas faces.  "
+"e substitui por duas novas faces."
 
 #. Tag: para
 #, no-c-format
@@ -5401,13 +5400,12 @@ msgid ""
 "edge."
 msgstr ""
 "Adiciona um novo limite e, se uma face for dividida, deleta a face original "
-"e substitui por duas novas faces. Retorna a id do novo limite adicionado.  "
+"e substitui por duas novas faces. Retorna a id do novo limite adicionado."
 
 #. Tag: para
 #, no-c-format
 msgid "Updates all existing joined edges and relationships accordingly."
-msgstr ""
-"Atualiza todos os limites existentes e relacionamentos em conformidade. "
+msgstr "Atualiza todos os limites existentes e relacionamentos em conformidade."
 
 #. Tag: para
 #, no-c-format
@@ -5447,7 +5445,7 @@ msgid ""
 "face and add a new face."
 msgstr ""
 "Adiciona um novo limite e, se uma face for dividida, modifica a face "
-"original e adiciona uma nova face.  "
+"original e adiciona uma nova face."
 
 #. Tag: para
 #, no-c-format
@@ -5456,7 +5454,7 @@ msgid ""
 "add a new one."
 msgstr ""
 "Adiciona um novo limite e, se uma face for dividida, modifica a face "
-"original e adiciona uma nova.  "
+"original e adiciona uma nova."
 
 #. Tag: para
 #, no-c-format
@@ -5510,7 +5508,7 @@ msgstr ""
 "Retorna a id de uma face nova criada ou NULA, se nenhuma face nova for "
 "criada. Nenhuma face nova é criada quando o limite removido está pendurado, "
 "isolado ou confinado na face universal (possivelmente fazendo a inundação "
-"universal dentro da face no outro lado). "
+"universal dentro da face no outro lado)."
 
 #. Tag: para
 #, no-c-format
@@ -5529,7 +5527,7 @@ msgid ""
 msgstr ""
 "Se qualquer argumento for nulo, o limite dado é desconhecido (deve existir "
 "na table <varname>edge</varname> do esquema de topologia), o nome da "
-"topologia é inválido, logo, um erro é lançado. "
+"topologia é inválido, logo, um erro é lançado."
 
 #. Tag: para
 #, no-c-format
@@ -5629,7 +5627,7 @@ msgid ""
 "original edge and adding a new edge."
 msgstr ""
 "Divide um limite criando um novo nó junto de um limite existente, "
-"modificando o limite original e adicionando um novo limite. "
+"modificando o limite original e adicionando um novo limite."
 
 #. Tag: para
 #, no-c-format
@@ -5768,7 +5766,7 @@ msgstr ""
 "nó com uma localização de ponto <varname>apoint</varname> junto co i limite "
 "atual, deletando o limite original e substituindo-o por dois novos. Retorna "
 "a id do novo nó criado que se une aos novos limites. Atualiza todos os "
-"limites unidos e relacionamentos em conformidade. "
+"limites unidos e relacionamentos em conformidade."
 
 #. Tag: para
 #, no-c-format
@@ -5780,10 +5778,10 @@ msgid ""
 "exception is thrown."
 msgstr ""
 "Se o sistema de referência espacial (srid) da geometria pontual não é o "
-"mesmo que a topologia, o  <varname>apoint</varname> não é uma geometria "
+"mesmo que a topologia, o <varname>apoint</varname> não é uma geometria "
 "pontual, o ponto é nulo, o ponto já existe como um nó, o limite não "
 "corresponde a um limite existente ou o ponto não está dentro do limite, "
-"então, uma exceção é aberta. "
+"então, uma exceção é aberta."
 
 #. Tag: para
 #, no-c-format
@@ -6054,7 +6052,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the name of a topology (schema) given the id of the topology."
-msgstr "Retorna o nome de uma topologia (esquema) dada a id da topologia. "
+msgstr "Retorna o nome de uma topologia (esquema) dada a id da topologia."
 
 #. Tag: para
 #, no-c-format
@@ -6078,8 +6076,8 @@ msgstr ""
 #, no-c-format
 msgid "Returns a set of ordered edges that bound <varname>aface</varname>."
 msgstr ""
-"Retorna um conjunto de limites ordenados que amarram <varname>aface</"
-"varname>. "
+"Retorna um conjunto de limites ordenados que amarram "
+"<varname>aface</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -6118,7 +6116,7 @@ msgstr ", <xref linkend=\"AddFace\"/>, <xref linkend=\"ST_GetFaceGeometry\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the polygon in the given topology with the specified face id."
-msgstr "Retorna o polígono na topologia dada com a id de face especificada. "
+msgstr "Retorna o polígono na topologia dada com a id de face especificada."
 
 #. Tag: para
 #, no-c-format
@@ -6143,7 +6141,7 @@ msgid ""
 "given edge side."
 msgstr ""
 "Retorna o conjunto ordenado de identificadores de limites assinados, "
-"conhecidos caminhando em um lado da beirada.  "
+"conhecidos caminhando em um lado da beirada."
 
 #. Tag: para
 #, no-c-format
@@ -6166,7 +6164,7 @@ msgid ""
 msgstr ""
 "Se você passa uma id limite positiva, a caminhada começa no lado esquerdo do "
 "limite correspondente e segue sua direção. Se você passa uma id limite "
-"negativa, a caminhada começa no lado direito dele e orienta-se para trás. "
+"negativa, a caminhada começa no lado direito dele e orienta-se para trás."
 
 #. Tag: para
 #, no-c-format
@@ -6177,12 +6175,12 @@ msgid ""
 msgstr ""
 "Se <varname>max_edges</varname> não é nulo, não mais que aqueles relatos são "
 "retornados pela função. Isto foi feito para ser um parâmetro seguro ao lidar "
-"com topologias possivelmente inválidas. "
+"com topologias possivelmente inválidas."
 
 #. Tag: para
 #, no-c-format
 msgid "This function uses edge ring linking metadata."
-msgstr "Esta função utiliza anel limite vinculando metadados. "
+msgstr "Esta função utiliza anel limite vinculando metadados."
 
 #. Tag: para
 #, no-c-format
@@ -6207,7 +6205,7 @@ msgstr ""
 "uma sequência e uma id limite assinada. Os números sequência começam com o "
 "valor 1. Um limite positivo começa no dado nó. Um limite negativo termina no "
 "dado nó. Limites fechado aparecerão duas vezes (com ambos sinais). A ordem é "
-"sentido horário, começando do norte. "
+"sentido horário, começando do norte."
 
 #. Tag: para
 #, no-c-format
@@ -6216,7 +6214,7 @@ msgid ""
 "thus usable to build edge ring linking."
 msgstr ""
 "Esta função computa ordenação em vez de derivação dos metadados e é, assim, "
-"útil para construir o vínculo do limite anel. "
+"útil para construir o vínculo do limite anel."
 
 #. Tag: para
 #, no-c-format
@@ -6235,7 +6233,7 @@ msgid ""
 "ways."
 msgstr ""
 "Esta seção cobre as funções para processar topologias de maneiras não "
-"padronizadas. "
+"padronizadas."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6356,8 +6354,7 @@ msgstr ""
 "Adiciona uma borda à edge table e nós associados às nodes tables do esquema "
 "<varname>toponame</varname> especificado, usando a linestring geometria "
 "específica e retorna a bordaid do novo ou já existente relato. A nova borda "
-"adicionada tem a face \"universal\" nos dois lados e se conecta com si "
-"mesma. "
+"adicionada tem a face \"universal\" nos dois lados e se conecta com si mesma."
 
 #. Tag: para
 #, no-c-format
@@ -6378,7 +6375,7 @@ msgid ""
 msgstr ""
 "A geometria da <varname>aline</varname> deve ter o mesmo <varname>srid</"
 "varname> definido para a topologia, senão um erro inválido é lançado no "
-"sistema de referência espacial. "
+"sistema de referência espacial."
 
 #. Tag: para
 #, no-c-format
@@ -6471,7 +6468,7 @@ msgid ""
 msgstr ""
 "A geometria da <varname>apolygon</varname>  deve ter o mesmo <varname>srid</"
 "varname> definido para a topologia, senão um erro inválido é lançado no "
-"sistema de referência espacial. "
+"sistema de referência espacial."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6554,7 +6551,7 @@ msgstr "Construtores de TopoGeometria"
 msgid ""
 "This section covers the topology functions for creating new topogeometries."
 msgstr ""
-"Esta seção cobre as funções da topologia para criar novas topogeometrias. "
+"Esta seção cobre as funções da topologia para criar novas topogeometrias."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6775,8 +6772,8 @@ msgid ""
 "This section covers the topology functions for editing existing "
 "topogeometries."
 msgstr ""
-"Esta seção cobre as funções da topologia para editar  topogeometrias "
-"existentes. "
+"Esta seção cobre as funções da topologia para editar topogeometrias "
+"existentes."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6905,7 +6902,7 @@ msgstr ""
 "Retorna um <xref linkend=\"topoelementarray\"/> contendo os tipos e "
 "elementos da dada TopoGeometria (elementos primitivos). Isto é parecido com "
 "GetTopoGeomElements, mas em vez de retornar os elementos como dataset, "
-"retorna como um arranjo. "
+"retorna como um arranjo."
 
 #. Tag: para
 #, no-c-format
@@ -6999,7 +6996,7 @@ msgstr ""
 "varname> é usado. Passa em uma string vazia para nsprefix para pegar um "
 "espaço não qualificado. A precisão (padrão: 15) e parâmetros (padrão 1) de "
 "opções, se dados, são passados inalterados para a chamada subjacente para "
-"ST_AsGML. "
+"ST_AsGML."
 
 #. Tag: para
 #, no-c-format
@@ -7031,7 +7028,7 @@ msgid ""
 "Edge and Node tag identifiers."
 msgstr ""
 "O parâmetro <varname>idprefix</varname>, se dado, será antecipado aos "
-"identificadores tag de bordas e nós. "
+"identificadores tag de bordas e nós."
 
 #. Tag: para
 #, no-c-format
@@ -7084,10 +7081,9 @@ msgid ""
 "\"serial\" and an \"edge_id\" of type integer; the code will query the table "
 "for \"edge_id\" so it is recommended to add an index on that field."
 msgstr ""
-"É esperado que a tabela, se dada, tenha um campo  \"arc_id\" do tipo "
-"\"serial\" e uma \"edge_id\" de tipo inteiro; o código irá consultar a "
-"tabela para \"edge_id\", então é recomendado adicionar um index naquele "
-"campo. "
+"É esperado que a tabela, se dada, tenha um campo \"arc_id\" do tipo \"serial"
+"\" e uma \"edge_id\" de tipo inteiro; o código irá consultar a tabela para "
+"\"edge_id\", então é recomendado adicionar um index naquele campo."
 
 #. Tag: para
 #, no-c-format
@@ -7980,7 +7976,7 @@ msgstr ""
 "osgeo.org/postgis/ticket/748</link> para um exemplo de problema resolvido "
 "configurando com este. NOTA: que você não está perdendo muito desligando "
 "isso. É usado para ajuda internacional para o carregador GUI que ainda não "
-"está documentado e permanece experimental. "
+"está documentado e permanece experimental."
 
 #. Tag: para
 #, no-c-format
@@ -8334,7 +8330,7 @@ msgid ""
 msgstr ""
 "Se você configurou o PostGIS usando o não padronizado PostgreSQL, GEOS, ou "
 "Proj4 localizações, talvez você precise adicionar a biblioteca de "
-"localizações deles à LD_LIBRARY_PATH variável de ambiente.  "
+"localizações deles à LD_LIBRARY_PATH variável de ambiente."
 
 #. Tag: para
 #, no-c-format
@@ -8349,12 +8345,12 @@ msgid ""
 msgstr ""
 "Atualmente, o <command>faz verificação</command> confia nas variáveis de "
 "ambiente <code>PATH</code> e <code>PGPORT</code> quando vai fazer as "
-"verificações - ele  <emphasis>não</emphasis> usa a versão PostgreSQL que "
+"verificações - ele <emphasis>não</emphasis> usa a versão PostgreSQL que "
 "talvez tenha sido especificada utilizando o parâmetro de configuração "
 "<command>--with-pgconfig</command>. Portanto, certifique-se que para "
 "modificar seu PATH para ser compatível com a instalação do PostgreSQL "
 "detectada durante a configuração ou esteja preparado para iminentes "
-"aborrecimentos. "
+"aborrecimentos."
 
 #. Tag: para
 #, no-c-format
@@ -8507,12 +8503,12 @@ msgid ""
 "a building block for your own geocoder or use it to standardize your "
 "addresses for easier compare of addresses."
 msgstr ""
-"O padronizador pode ser usado em conjunção com a extensão tiger geocoder  "
-"PostGIS compactada como uma reposição para a <xref "
-"linkend=\"Normalize_Address\"/> discutida. Para usar como reposição <xref "
-"linkend=\"tiger_pagc_address_standardizing\"/>. Você também pode utilizar "
-"como um building block para seu próprio geocoder ou como padronizar seu "
-"endereço para uma comparação de endereços mais fácil. "
+"O padronizador pode ser usado em conjunção com a extensão tiger geocoder "
+"PostGIS compactada como uma reposição para a <xref linkend="
+"\"Normalize_Address\"/> discutida. Para usar como reposição <xref linkend="
+"\"tiger_pagc_address_standardizing\"/>. Você também pode utilizar como um "
+"building block para seu próprio geocoder ou como padronizar seu endereço "
+"para uma comparação de endereços mais fácil."
 
 #. Tag: para
 #, no-c-format
@@ -8556,7 +8552,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "The following test requires no rules, gaz, or lex tables"
-msgstr "O teste seguinte não requere tables rules, gaz ou lex."
+msgstr "O teste seguinte não requer tables rules, gaz ou lex."
 
 #. Tag: para
 #, no-c-format
@@ -8723,7 +8719,7 @@ msgstr ""
 "loader_variables</varname>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Create a folder called temp in the <filename>gisdata</filename> folder or "
 "wherever you designated the <varname>staging_fold</varname> to be. This will "
@@ -8731,7 +8727,7 @@ msgid ""
 msgstr ""
 "Criar uma pasta chamada temp na pasta <filename>gisdata</filename> ou onde "
 "designar a <varname>staging_fold</varname>. Esta será a pasta onde o "
-"carregador extrai os dados tiger baixados. "
+"carregador extrai os dados tiger baixados."
 
 #. Tag: para
 #, no-c-format
@@ -8828,9 +8824,9 @@ msgstr ""
 "tentar corrigir suas imperfeições demanda um grande número de recursos. Como "
 "tal nós integramos com outro projeto que tem um mecanismo de padronizador de "
 "endereços muito melhor. Para usar esse novo address_standardizer, você "
-"compila a extensão como está descrito em <xref "
-"linkend=\"installing_pagc_address_standardizer\"/> e instala como uma "
-"extensão no seu banco de dados. "
+"compila a extensão como está descrito em <xref linkend="
+"\"installing_pagc_address_standardizer\"/> e instala como uma extensão no "
+"seu banco de dados."
 
 #. Tag: para
 #, no-c-format
@@ -8965,11 +8961,11 @@ msgid ""
 "Note that you can install these piecemeal. You don't have to load all the "
 "states you want all at once. You can load them as you need them."
 msgstr ""
-"Para carregar dados do estado referir-se a <xref "
-"linkend=\"Loader_Generate_Script\"/> para gerar uma script de dados de "
-"carregamento para sua plataforma para os estados que deseja. Note que você "
-"pode instalar estes gradativamente. Você não precisa carregar todos os "
-"estados de uma só vez. Pode carregá-los à medida que for precisando deles. "
+"Para carregar dados do estado referir-se a <xref linkend="
+"\"Loader_Generate_Script\"/> para gerar uma script de dados de carregamento "
+"para sua plataforma para os estados que deseja. Note que você pode instalar "
+"estes gradativamente. Você não precisa carregar todos os estados de uma só "
+"vez. Pode carregá-los à medida que for precisando deles."
 
 #. Tag: para
 #, no-c-format
@@ -9065,7 +9061,7 @@ msgid ""
 "go as you expected."
 msgstr ""
 "Existem várias coisas para averiguar quando a instalação ou atualização não "
-"saem como o esperado. "
+"saem como o esperado."
 
 #. Tag: para
 #, no-c-format
@@ -9108,16 +9104,16 @@ msgid ""
 "already has PostGIS installed."
 msgstr ""
 "Se sua atualização falhar, certifique-se que você está restaurando em um "
-"banco de dados que já possui o PostGIS instalado. "
+"banco de dados que já possui o PostGIS instalado."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Also check that configure has correctly detected the location and version of "
 "PostgreSQL, the Proj library and the GEOS library."
 msgstr ""
 "Também certifique que a configuração detectou a localização e versão "
-"corretas do PostgreSQL, da biblioteca do Proj4 e da biblioteca do GEOS. "
+"corretas do PostgreSQL, da biblioteca do Proj4 e da biblioteca do GEOS."
 
 #. Tag: para
 #, no-c-format
@@ -9131,7 +9127,7 @@ msgstr ""
 "<filename>postgis_config.h</filename>. Verifique que as variáveis "
 "<varname>POSTGIS_PGSQL_VERSION</varname>, <varname>POSTGIS_PROJ_VERSION</"
 "varname> e <varname>POSTGIS_GEOS_VERSION</varname>  foram configuradas "
-"corretamente. "
+"corretamente."
 
 #. Tag: title
 #, no-c-format
