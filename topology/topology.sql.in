@@ -1417,6 +1417,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 #include "sql/manage/CopyTopology.sql.in"
 #include "sql/manage/FindTopology.sql.in"
 #include "sql/manage/FindLayer.sql.in"
+#include "sql/manage/FixCorruptTopoGeometryColumn.sql.in"
 #include "sql/manage/populate_topology_layer.sql.in"
 #include "sql/manage/RenameTopology.sql.in"
 #include "sql/manage/ValidateTopology.sql.in"

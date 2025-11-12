@@ -1,0 +1,7 @@
+0 rows updated for features.land_parcels.feature column to bigint id type
+0 rows updated for features.traffic_signs.feature column to bigint id type
+0 rows updated for features.city_streets.feature column to bigint id type
+0 rows updated for features.big_parcels.feature column to bigint id type
+0 rows updated for features.big_streets.feature column to bigint id type
+0 rows updated for features.big_signs.feature column to bigint id type
+Topology 'city_data' dropped

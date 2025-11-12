@@ -1,6 +1,16 @@
 
 PostGIS 3.6.1
-2025/xx/xx
+2025/11/xx
+
+This version requires PostgreSQL 12-18, GEOS 3.8 or higher, and Proj 6.1+.
+To take advantage of all features, GEOS 3.14+ is needed.
+To take advantage of all SFCGAL features, SFCGAL 2.2+ is needed.
+
+If you are upgrading postgis_topology and have topogeometry columns, make sure to run
+after the upgrade to fix topogeometry corruption:
+
+SELECT topology.FixCorruptTopoGeometryColumn(schema_name, table_name, feature_column)
+    FROM topology.layer;
 
 * Fixes *
 
@@ -17,6 +27,8 @@ PostGIS 3.6.1
   - #5959, #5984, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
   - #6012, Remove memory leak from lwcircstring_from_lwpointarray (Paul Ramsey)
   - #6013, [tiger_geocoder] Load Tiger 2025 data (Regina Obe)
+  - #5983, [topology] topology.FixCorruptTopoGeometryColumn
+              to fix corruption caused by 3.6.0 upgrade (Regina Obe, Francois Bonzon)
 
 
 PostGIS 3.6.0
