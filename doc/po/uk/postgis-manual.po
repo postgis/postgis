@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-11-12 09:47+0000\n"
+"PO-Revision-Date: 2025-11-12 10:02+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -40780,17 +40780,18 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.2"
-msgstr ""
+msgstr "Доступність: 1.2"
 
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.2.0 In prior versions this was called ST_Point_Inside_Circle"
 msgstr ""
+"Змінено: 2.2.0 У попередніх версіях це називалося ST_Point_Inside_Circle"
 
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Functions Reference"
-msgstr ""
+msgstr "Довідник функцій SFCGAL"
 
 #. Tag: para
 #, no-c-format
@@ -40799,6 +40800,9 @@ msgid ""
 "spatial functions. For robustness, geometry coordinates have an exact "
 "rational number representation."
 msgstr ""
+"SFCGAL — це бібліотека-обгортка C++ навколо CGAL, яка надає розширені 2D- та "
+"3D-просторові функції. Для надійності координати геометрії мають точне "
+"раціональне числове представлення."
 
 #. Tag: para
 #, no-c-format
@@ -41550,16 +41554,27 @@ msgid ""
 "Though the triangulation-based approximation algorithm often results in "
 "fewer convex pieces, this is not always the case."
 msgstr ""
+"Розбиття багатокутника P — це набір полігонів, внутрішні частини яких не "
+"перетинаються, а об'єднання полігонів дорівнює внутрішній частині вихідного "
+"полігону P. Функції CG_ApproxConvexPartition і "
+"CG_GreeneApproxConvexPartition створюють приблизно оптимальні опуклі "
+"розбиття. Обидві ці функції створюють опуклі розбиття, спочатку розбиваючи "
+"полігон на простіші полігони. CG_ApproxConvexPartition використовує "
+"триангуляцію, а CG_GreeneApproxConvexPartition — монотонний поділ. Обидві ці "
+"функції гарантують, що вони створюють не більше ніж в чотири рази більше "
+"опуклих частин, ніж оптимальна кількість, але вони відрізняються за "
+"складністю виконання. Хоча алгоритм наближення на основі триангуляції часто "
+"дає менше опуклих частин, це не завжди так."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
-msgstr ""
+msgstr "Доступність: 3.5.0 — вимагає SFCGAL &gt;= 1.5.0."
 
 #. Tag: para
 #, no-c-format
 msgid "Requires SFCGAL &gt;= 1.5.0"
-msgstr ""
+msgstr "Вимагає SFCGAL &gt;= 1.5.0"
 
 #. Tag: para
 #, no-c-format
@@ -41569,6 +41584,9 @@ msgid ""
 "linkend=\"CG_GreeneApproxConvexPartition\"/> and <xref "
 "linkend=\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
+"Наближене опукле розділення (той самий приклад, що й <xref linkend="
+"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_GreeneApproxConvexPartition\""
+"/> та <xref linkend=\"CG_OptimalConvexPartition\"/>)"
 
 #. Tag: para
 #, no-c-format
@@ -41576,11 +41594,13 @@ msgid ""
 ", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref "
 "linkend=\"CG_OptimalConvexPartition\"/>"
 msgstr ""
+", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Compute the approximate medial axis of an areal geometry."
-msgstr ""
+msgstr "Обчисліть приблизну медіальну вісь плоскої геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -41588,6 +41608,8 @@ msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_ApproximateMedialAxis\"/> "
 "instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_ApproximateMedialAxis\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -41597,22 +41619,27 @@ msgid ""
 "(1.2.0+). Otherwise the function is just a wrapper around "
 "CG_StraightSkeleton (slower case)."
 msgstr ""
+"Повертає приблизну медіальну вісь для введеної площі на основі її прямого "
+"скелета. Використовує специфічний API SFCGAL, якщо побудований на основі "
+"сумісної версії (1.2.0+). В іншому випадку функція є лише обгорткою навколо "
+"CG_StraightSkeleton (повільніший варіант)."
 
 #. Tag: para
 #, no-c-format
 msgid "A polygon and its approximate medial axis"
-msgstr ""
+msgstr "Полігон і його наближена медіальна вісь"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Return a constrained Delaunay triangulation around the given input geometry."
 msgstr ""
+"Повернути обмежену триангуляцію Делоне навколо заданої вхідної геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -41620,6 +41647,8 @@ msgid ""
 "is deprecated as of 3.5.0. Use <xref "
 "linkend=\"CG_ConstrainedDelaunayTriangles\"/> instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_ConstrainedDelaunayTriangles\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -41628,16 +41657,19 @@ msgid ""
 "Constrained_Delaunay_triangulation\">Constrained Delaunay triangulation</"
 "link> around the vertices of the input geometry. Output is a TIN."
 msgstr ""
+"Повертає <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Constrained_Delaunay_triangulation\">обмежену триангуляцію Делоне</link> "
+"навколо вершин вхідної геометрії. Вихідними даними є TIN."
 
 #. Tag: para
 #, no-c-format
 msgid "CG_ConstrainedDelaunayTriangles of 2 polygons"
-msgstr ""
+msgstr "CG_Обмежені трикутники Делоне з 2 полігонів"
 
 #. Tag: para
 #, no-c-format
 msgid "of 2 polygons. Triangle edges cross polygon boundaries."
-msgstr ""
+msgstr "2 полігонів. Краї трикутника перетинають межі полігонів."
 
 #. Tag: para
 #, no-c-format
@@ -41645,21 +41677,25 @@ msgid ""
 ", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"CG_Tesselate\"/"
 ">, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
 msgstr ""
+", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"CG_Tesselate\"/"
+">, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Extrude a surface to a related volume"
-msgstr ""
+msgstr "Видавити поверхню до відповідного об'єму"
 
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Extrude\"/> instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_Extrude\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Original octagon formed from buffering point"
-msgstr ""
+msgstr "Оригінальний восьмикутник, сформований з точки буферизації"
 
 #. Tag: para
 #, no-c-format
