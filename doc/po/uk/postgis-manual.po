@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-11-11 14:47+0000\n"
+"PO-Revision-Date: 2025-11-12 09:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -40208,6 +40208,10 @@ msgid ""
 "defined by the OGC SFS standard, and is the default for <function>ST_Relate</"
 "function>."
 msgstr ""
+"<code>1</code>: <emphasis role=\"bold\">OGC-Mod2</emphasis> — кінцеві точки "
+"лінії знаходяться в межах межі, якщо їх кількість непарна. Це правило "
+"визначено стандартом OGC SFS і є стандартним для функції "
+"<function>ST_Relate</function>."
 
 #. Tag: para
 #, no-c-format
@@ -40215,6 +40219,8 @@ msgid ""
 "<code>2</code>: <emphasis role=\"bold\">Endpoint</emphasis> - all endpoints "
 "are in the Boundary."
 msgstr ""
+"<code>2</code>: <emphasis role=\"bold\">Кінцева точка</emphasis> — всі "
+"кінцеві точки знаходяться в межі."
 
 #. Tag: para
 #, no-c-format
@@ -40224,6 +40230,10 @@ msgid ""
 "the boundary is all the \"attached\" or \"inner\" endpoints (but not the "
 "\"unattached/outer\" ones)."
 msgstr ""
+"<code>3</code>: <emphasis role=\"bold\">MultivalentEndpoint</emphasis> - "
+"кінцеві точки знаходяться в межі, якщо вони зустрічаються більше одного "
+"разу. Іншими словами, межа - це всі «приєднані» або «внутрішні» кінцеві "
+"точки (але не «неприєднані/зовнішні»)."
 
 #. Tag: para
 #, no-c-format
@@ -40232,21 +40242,28 @@ msgid ""
 "endpoints are in the Boundary if they occur only once. In other words, the "
 "boundary is all the \"unattached\" or \"outer\" endpoints."
 msgstr ""
+"<code>4</code>: <emphasis role=\"bold\">MonovalentEndpoint</emphasis> - "
+"кінцеві точки знаходяться в межі, якщо вони зустрічаються тільки один раз. "
+"Іншими словами, межа - це всі «неприєднані» або «зовнішні» кінцеві точки."
 
 #. Tag: para
 #, no-c-format
 msgid "This function is not in the OGC spec, but is implied. see s2.1.13.2"
 msgstr ""
+"Ця функція не входить до специфікації OGC, але є імпліцитною. Див. s2.1.13.2"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0.0 - added support for specifying boundary node rule."
 msgstr ""
+"Покращено: 2.0.0 — додано підтримку для визначення правила граничного вузла."
 
 #. Tag: para
 #, no-c-format
 msgid "Using the boolean-valued function to test spatial relationships."
 msgstr ""
+"Використання функції з булевим значенням для перевірки просторових "
+"взаємозв'язків."
 
 #. Tag: para
 #, no-c-format
@@ -40254,11 +40271,14 @@ msgid ""
 "Testing a custom spatial relationship pattern as a query condition, with "
 "<code>&amp;&amp;</code> to enable using a spatial index."
 msgstr ""
+"Тестування власного шаблону просторових відносин як умови запиту за "
+"допомогою <code>&amp;&amp;</code> для уможливлення використання просторового "
+"індексу."
 
 #. Tag: para
 #, no-c-format
 msgid "Computing the intersection matrix for spatial relationships."
-msgstr ""
+msgstr "Обчислення матриці перетину для просторових відносин."
 
 #. Tag: para
 #, no-c-format
@@ -40267,6 +40287,9 @@ msgid ""
 "between a LineString and a MultiLineString with a duplicate endpoint "
 "<code>(3 3)</code>:"
 msgstr ""
+"Використання різних правил граничних вузлів для обчислення просторових "
+"відносин між LineString і MultiLineString з дублюючою кінцевою точкою <code>("
+"3 3)</code>:"
 
 #. Tag: para
 #, no-c-format
@@ -40276,6 +40299,10 @@ msgid ""
 "MultiLineString, so the DE-9IM matrix entry [aB:bI] is <code>0</code> and "
 "[aB:bB] is <code>F</code>."
 msgstr ""
+"Використовуючи правило <emphasis role=\"bold\">OGC-Mod2</emphasis> (1), "
+"дубльована кінцева точка знаходиться в <emphasis role=\"bold\">всередині</"
+"emphasis> MultiLineString, тому запис матриці DE-9IM [aB:bI] дорівнює "
+"<code>0</code>, а [aB:bB] дорівнює <code>F</code>."
 
 #. Tag: para
 #, no-c-format
@@ -40285,6 +40312,10 @@ msgid ""
 "MultiLineString, so the DE-9IM matrix entry [aB:bI] is <code>F</code> and "
 "[aB:bB] is <code>0</code>."
 msgstr ""
+"Використовуючи правило <emphasis role=\"bold\">Endpoint</emphasis> (2), "
+"дубльована кінцева точка знаходиться в <emphasis role=\"bold\">межі</"
+"emphasis> MultiLineString, тому запис матриці DE-9IM [aB:bI] дорівнює "
+"<code>F</code>, а [aB:bB] дорівнює <code>0</code>."
 
 #. Tag: para
 #, no-c-format
@@ -40296,12 +40327,19 @@ msgid ""
 "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref "
 "linkend=\"ST_Touches\"/>, <xref linkend=\"ST_Within\"/>"
 msgstr ""
+", <xref linkend=\"ST_RelateMatch\"/>, <xref linkend=\"ST_Contains\"/>, <xref "
+"linkend=\"ST_ContainsProperly\"/>, <xref linkend=\"ST_Covers\"/>, <xref "
+"linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Crosses\"/>, <xref linkend="
+"\"ST_Disjoint\"/>, <xref linkend=\"ST_Equals\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref linkend="
+"\"ST_Touches\"/>, <xref linkend=\"ST_Within\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Tests if a DE-9IM Intersection Matrix matches an Intersection Matrix pattern"
 msgstr ""
+"Перевіряє, чи відповідає матриця перетину DE-9IM шаблону матриці перетину"
 
 #. Tag: para
 #, no-c-format
@@ -40312,6 +40350,11 @@ msgid ""
 "<varname>intersectionMatrixPattern</varname>. Intersection matrix values can "
 "be computed by <xref linkend=\"ST_Relate\"/>."
 msgstr ""
+"Перевіряє, чи значення <varname>intersectionMatrix</varname> моделі <link "
+"xlink:href=«http://en.wikipedia.org/wiki/DE-9IM»>Dimensionally Extended 9-"
+"Intersection Model</link> (DE-9IM) відповідає "
+"<varname>intersectionMatrixPattern</varname>. Значення матриці перетину "
+"можна обчислити за допомогою <xref linkend=\"ST_Relate\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -40319,11 +40362,13 @@ msgid ""
 "Patterns for common spatial relationships matched against intersection "
 "matrix values, for a line in various positions relative to a polygon"
 msgstr ""
+"Шаблони для загальних просторових відносин, що відповідають значенням "
+"матриці перетину, для лінії в різних положеннях відносно багатокутника"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Relate\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Relate\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40331,6 +40376,8 @@ msgid ""
 "Tests if two geometries have at least one point in common, but their "
 "interiors do not intersect"
 msgstr ""
+"Перевіряє, чи мають дві геометрії хоча б одну спільну точку, але їхні "
+"внутрішні частини не перетинаються"
 
 #. Tag: para
 #, no-c-format
@@ -40341,6 +40388,11 @@ msgid ""
 "relationship is always <varname>FALSE</varname>, since points do not have a "
 "boundary."
 msgstr ""
+"Повертає <varname>TRUE</varname>, якщо A і B перетинаються, але їх внутрішні "
+"частини не перетинаються. Іншими словами, A і B мають принаймні одну спільну "
+"точку, і спільні точки лежать принаймні на одній межі. Для вхідних даних "
+"Point/Point відношення завжди є <varname>FALSE</varname>, оскільки точки не "
+"мають меж."
 
 #. Tag: para
 #, no-c-format
@@ -40348,6 +40400,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) = ∅) ∧ "
 "(A ⋂ B ≠ ∅) </emphasis>"
 msgstr ""
+"У математичних термінах: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) = ∅) ∧"
+" (A ⋂ B ≠ ∅) </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -40355,21 +40409,23 @@ msgid ""
 "This relationship holds if the DE-9IM Intersection Matrix for the two "
 "geometries matches one of:"
 msgstr ""
+"Ця залежність зберігається, якщо матриця перетину DE-9IM для двох геометрій "
+"відповідає одній з наступних:"
 
 #. Tag: markup
 #, no-c-format
 msgid "FT*******"
-msgstr ""
+msgstr "FT*******"
 
 #. Tag: markup
 #, no-c-format
 msgid "F**T*****"
-msgstr ""
+msgstr "F**T*****"
 
 #. Tag: markup
 #, no-c-format
 msgid "F***T****"
-msgstr ""
+msgstr "F***T****"
 
 #. Tag: para
 #, no-c-format
@@ -40377,11 +40433,13 @@ msgid ""
 "&index_aware; To avoid using an index, use <function>_ST_Touches</function> "
 "instead."
 msgstr ""
+"&index_aware; Щоб уникнути використання індексу, замість цього "
+"використовуйте <function>_ST_Touches</function>."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.28"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.28"
 
 #. Tag: para
 #, no-c-format
@@ -40389,6 +40447,8 @@ msgid ""
 "The <function>ST_Touches</function> predicate returns <varname>TRUE</"
 "varname> in the following examples."
 msgstr ""
+"Предикат <function>ST_Touches</function> повертає <varname>TRUE</varname> у "
+"наведених нижче прикладах."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40396,6 +40456,8 @@ msgid ""
 "Tests if every point of A lies in B, and their interiors have a point in "
 "common"
 msgstr ""
+"Перевіряє, чи кожна точка A лежить в B, і чи мають їхні внутрішні частини "
+"спільну точку"
 
 #. Tag: para
 #, no-c-format
@@ -40405,6 +40467,11 @@ msgid ""
 "equivalently, no points of A lie in the exterior of B), and the interiors of "
 "A and B have at least one point in common."
 msgstr ""
+"Повертає TRUE, якщо геометрія A знаходиться всередині геометрії B. A "
+"знаходиться всередині B тоді і тільки тоді, коли всі точки A лежать "
+"всередині (тобто в середині або на межі) B (або, що еквівалентно, жодна "
+"точка A не лежить поза межами B), і внутрішні частини A і B мають принаймні "
+"одну спільну точку."
 
 #. Tag: para
 #, no-c-format
@@ -40412,6 +40479,8 @@ msgid ""
 "For this function to make sense, the source geometries must both be of the "
 "same coordinate projection, having the same SRID."
 msgstr ""
+"Щоб ця функція мала сенс, геометрії джерел повинні мати однакову проекцію "
+"координат та однаковий SRID."
 
 #. Tag: para
 #, no-c-format
@@ -40419,6 +40488,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Within(A, B) ⇔ (A ⋂ B = A) ∧ (Int(A) ⋂ "
 "Int(B) ≠ ∅) </emphasis>"
 msgstr ""
+"У математичних термінах: <emphasis>ST_Within(A, B) ⇔ (A ⋂ B = A) ∧ (Int(A) ⋂ "
+"Int(B) ≠ ∅) </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -40428,6 +40499,10 @@ msgid ""
 "<code>ST_Within(B,A) = true</code>, then the two geometries must be "
 "topologically equal (<code>ST_Equals(A,B) = true</code>)."
 msgstr ""
+"Внутрішнє відношення є рефлексивним: кожна геометрія знаходиться всередині "
+"себе. Відношення є антисиметричним: якщо <code>ST_Within(A,B) = true</code> "
+"і <code>ST_Within(B,A) = true</code>, то дві геометрії повинні бути "
+"топологічно рівними (<code>ST_Equals(A,B) = true</code>)."
 
 #. Tag: para
 #, no-c-format
@@ -40435,6 +40510,8 @@ msgid ""
 "ST_Within is the converse of <xref linkend=\"ST_Contains\"/>. So, "
 "<code>ST_Within(A,B) = ST_Contains(B,A)</code>."
 msgstr ""
+"ST_Within є оберненим до <xref linkend=\"ST_Contains\"/>. Отже, "
+"<code>ST_Within(A,B) = ST_Contains(B,A)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -40447,6 +40524,13 @@ msgid ""
 "link>. The <xref linkend=\"ST_CoveredBy\"/> predicate provides a more "
 "inclusive relationship."
 msgstr ""
+"Оскільки внутрішні частини повинні мати спільну точку, тонкість визначення "
+"полягає в тому, що лінії та точки, які повністю лежать на межі полігонів або "
+"ліній, <emphasis>не</emphasis> входять до геометрії. Для отримання "
+"додаткової інформації див. <link xlink:href=«http://lin-ear-th-inking."
+"blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html»>Тонкощі OGC "
+"Covers, Contains, Within</link>. Предикат <xref linkend=\"ST_CoveredBy\"/> "
+"забезпечує більш всеосяжне відношення."
 
 #. Tag: para
 #, no-c-format
@@ -40454,16 +40538,18 @@ msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_Within</"
 "function>."
 msgstr ""
+"&index_aware; Щоб уникнути використання індексу, використовуйте функцію "
+"<function>_ST_Within</function>."
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2 // s2.1.13.3 - a.Relate(b, 'T*F**F***')"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.1.2 // s2.1.13.3 - a.Relate(b, 'T*F**F***')"
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.30"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.30"
 
 #. Tag: para
 #, no-c-format
@@ -40471,16 +40557,18 @@ msgid ""
 ", <xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Equals\"/>, <xref "
 "linkend=\"ST_IsValid\"/>"
 msgstr ""
+", <xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Equals\"/>, <xref "
+"linkend=\"ST_IsValid\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Distance Relationships"
-msgstr ""
+msgstr "Відношення дистанції"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if two 3D geometries are within a given 3D distance"
-msgstr ""
+msgstr "Перевіряє, чи дві 3D-геометрії знаходяться в межах заданої 3D-відстані"
 
 #. Tag: para
 #, no-c-format
@@ -40491,11 +40579,16 @@ msgid ""
 "function to make sense the source geometries must be in the same coordinate "
 "system (have the same SRID)."
 msgstr ""
+"Повертає значення true, якщо 3D-відстань між двома геометричними значеннями "
+"не перевищує відстань <varname>distance_of_srid</varname>. Відстань "
+"вказується в одиницях, визначених просторовою системою координат геометрій. "
+"Щоб ця функція мала сенс, вихідні геометрії повинні бути в одній системі "
+"координат (мати однаковий SRID)."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ?"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM ?"
 
 #. Tag: para
 #, no-c-format
@@ -40504,11 +40597,16 @@ msgid ""
 "linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_Distance\"/>, <xref "
 "linkend=\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
+"linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_Distance\"/>, <xref linkend="
+"\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if two 3D geometries are entirely within a given 3D distance"
 msgstr ""
+"Перевіряє, чи дві 3D-геометрії повністю знаходяться в межах заданої "
+"3D-відстані"
 
 #. Tag: para
 #, no-c-format
@@ -40519,6 +40617,10 @@ msgid ""
 "source geometries must both be of the same coordinate projection, having the "
 "same SRID."
 msgstr ""
+"Повертає значення true, якщо 3D-геометрії повністю знаходяться на заданій "
+"відстані одна від одної. Відстань задається в одиницях, визначених "
+"просторовою системою координат геометрій. Щоб ця функція мала сенс, вихідні "
+"геометрії повинні мати однакову проекцію координат і однаковий SRID."
 
 #. Tag: para
 #, no-c-format
@@ -40526,11 +40628,13 @@ msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
 "linkend=\"ST_3DMaxDistance\"/>"
 msgstr ""
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
+"linkend=\"ST_3DMaxDistance\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if a geometry is entirely inside a distance of another"
-msgstr ""
+msgstr "Перевіряє, чи геометрія повністю знаходиться в межах відстані від іншої"
 
 #. Tag: para
 #, no-c-format
@@ -40541,6 +40645,11 @@ msgid ""
 "distance is specified in units defined by the spatial reference system of "
 "the geometries."
 msgstr ""
+"Повертає значення true, якщо <code>g2</code> повністю знаходиться в межах "
+"<code>distance</code> від <code>g1</code>. Візуально умова є істинною, якщо "
+"<code>g2</code> знаходиться в межах буфера <code>distance</code> від "
+"<code>g1</code>. Відстань вказується в одиницях, визначених просторовою "
+"системою координат геометрій."
 
 #. Tag: para
 #, no-c-format
@@ -40550,6 +40659,9 @@ msgid ""
 "Results will differ from prior versions, but should be closer to user "
 "expectations."
 msgstr ""
+"Змінено: 3.5.0: логіка функції тепер використовує перевірку вмісту в буфері, "
+"а не алгоритм ST_MaxDistance. Результати будуть відрізнятися від попередніх "
+"версій, але повинні бути ближчими до очікувань користувачів."
 
 #. Tag: para
 #, no-c-format
@@ -40557,16 +40669,20 @@ msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_3DDWithin\"/>, <xref "
 "linkend=\"ST_3DDFullyWithin\"/>"
 msgstr ""
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_3DDWithin\"/>, <xref "
+"linkend=\"ST_3DDFullyWithin\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if two geometries are within a given distance"
 msgstr ""
+"Перевіряє, чи дві геометрії знаходяться на заданій відстані одна від одної"
 
 #. Tag: para
 #, no-c-format
 msgid "Returns true if the geometries are within a given distance"
 msgstr ""
+"Повертає значення true, якщо геометрії знаходяться в межах заданої відстані"
 
 #. Tag: para
 #, no-c-format
@@ -40576,6 +40692,9 @@ msgid ""
 "the source geometries must be in the same coordinate system (have the same "
 "SRID)."
 msgstr ""
+"Для <type>geometry</type>: Відстань вказується в одиницях, визначених "
+"просторовою системою координат геометрій. Щоб ця функція мала сенс, вихідні "
+"геометрії повинні бути в одній системі координат (мати однаковий SRID)."
 
 #. Tag: para
 #, no-c-format
@@ -40584,11 +40703,15 @@ msgid ""
 "defaults to <varname>use_spheroid = true</varname>. For faster evaluation "
 "use <varname>use_spheroid = false</varname> to measure on the sphere."
 msgstr ""
+"Для <type>geography</type>: одиниці виміру в метрах, а вимірювання відстані "
+"за замовчуванням виконується за допомогою <varname>use_spheroid = true</"
+"varname>. Для прискорення обчислень використовуйте <varname>use_spheroid = "
+"false</varname> для вимірювання на сфері."
 
 #. Tag: para
 #, no-c-format
 msgid "Use <xref linkend=\"ST_3DDWithin\"/> for 3D geometries."
-msgstr ""
+msgstr "Для 3D-геометрій використовуйте <xref linkend=\"ST_3DDWithin\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -40596,16 +40719,18 @@ msgid ""
 "This function call includes a bounding box comparison that makes use of any "
 "indexes that are available on the geometries."
 msgstr ""
+"Цей виклик функції включає порівняння обмежувальної рамки, яке використовує "
+"будь-які індекси, доступні для геометрій."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.5.0 support for geography was introduced"
-msgstr ""
+msgstr "Доступність: 1.5.0 було впроваджено підтримку географії"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for curved geometries was introduced."
-msgstr ""
+msgstr "Покращено: 2.1.0 додано підтримку кривих геометрій."
 
 #. Tag: para
 #, no-c-format
@@ -40615,17 +40740,23 @@ msgid ""
 "function used that logic. From 1.3.4, ST_DWithin uses a faster short-circuit "
 "distance function."
 msgstr ""
+"До версії 1.3 функція <xref linkend=\"ST_Expand\"/> зазвичай "
+"використовувалася разом з &amp;&amp; та ST_Distance для перевірки відстані, "
+"і до версії 1.3.4 ця функція використовувала таку логіку. Починаючи з версії "
+"1.3.4, ST_DWithin використовує швидшу функцію короткого замикання відстані."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DDWithin\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_3DDWithin\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Tests if a point geometry is inside a circle defined by a center and radius"
 msgstr ""
+"Перевіряє, чи геометрія точки знаходиться всередині кола, визначеного "
+"центром і радіусом"
 
 #. Tag: para
 #, no-c-format
@@ -40634,12 +40765,17 @@ msgid ""
 "<varname>center_x</varname>,<varname>center_y</varname> and radius "
 "<varname>radius</varname>."
 msgstr ""
+"Повертає значення true, якщо геометрія є точкою і знаходиться всередині кола "
+"з центром <varname>center_x</varname>,<varname>center_y</varname> і радіусом "
+"<varname>radius</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Does not use spatial indexes. Use <xref linkend=\"ST_DWithin\"/> instead."
 msgstr ""
+"Не використовує просторові індекси. Замість цього використовуйте <xref "
+"linkend=\"ST_DWithin\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -40820,6 +40956,8 @@ msgid ""
 ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>, <xref "
 "linkend=\"CG_Area\"/>"
 msgstr ""
+", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>, <xref "
+"linkend=\"CG_Area\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40827,11 +40965,13 @@ msgid ""
 "Computes the volume of a 3D solid. If applied to surface (even closed) "
 "geometries will return 0."
 msgstr ""
+"Обчислює об'єм 3D-тіла. Якщо застосовується до поверхневих (навіть закритих) "
+"геометрій, повертає 0."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as CG_3DVolume)"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as CG_3DVolume)"
 
 #. Tag: para
 #, no-c-format
@@ -40841,21 +40981,29 @@ msgid ""
 "linkend=\"CG_MakeSolid\"/>. Areal geometries have no volume. Here is an "
 "example to demonstrate."
 msgstr ""
+"Коли закриті поверхні створюються за допомогою WKT, вони розглядаються як "
+"площі, а не як тверді тіла. Щоб зробити їх твердими, потрібно "
+"використовувати <xref linkend=\"CG_MakeSolid\"/>. Площі не мають об'єму. Ось "
+"приклад для ілюстрації."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_IsSolid\"/>"
 
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_ForceLHR\"/> instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_ForceLHR\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_IsPlanar\"/> instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_IsPlanar\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -40863,17 +41011,23 @@ msgid ""
 "Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
 "out in 2.1 release."
 msgstr ""
+"Доступність: 2.2.0: Це було задокументовано в 2.1.0, але випадково пропущено "
+"у випуску 2.1."
 
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_IsSolid\"/> instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_IsSolid\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_MakeSolid\"/> instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_MakeSolid\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -40885,6 +41039,8 @@ msgstr ""
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DArea\"/> instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_3DArea\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -40892,16 +41048,20 @@ msgid ""
 ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
 "linkend=\"ST_Area\"/>"
 msgstr ""
+", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
+"linkend=\"ST_Area\"/>"
 
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Volume\"/> instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_Volume\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (такий самий, як ST_3DVolume)"
 
 #. Tag: para
 #, no-c-format
@@ -40911,31 +41071,35 @@ msgid ""
 "linkend=\"ST_MakeSolid\"/>. Areal geometries have no volume. Here is an "
 "example to demonstrate."
 msgstr ""
+"Коли закриті поверхні створюються за допомогою WKT, вони розглядаються як "
+"площі, а не як тверді тіла. Щоб зробити їх твердими, потрібно "
+"використовувати <xref linkend=\"ST_MakeSolid\"/>. Площі не мають об'єму. Ось "
+"приклад для ілюстрації."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Processing and Relationship Functions"
-msgstr ""
+msgstr "Функції обробки та взаємозв'язків SFCGAL"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the intersection of two geometries"
-msgstr ""
+msgstr "Обчислює перетин двох геометрій"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes the intersection of two geometries."
-msgstr ""
+msgstr "Обчислює перетин двох геометрій."
 
 #. Tag: para
 #, no-c-format
 msgid "NOTE: this function returns a geometry representing the intersection."
-msgstr ""
+msgstr "ПРИМІТКА: ця функція повертає геометрію, що представляє перетин."
 
 #. Tag: para
 #, no-c-format
@@ -40943,11 +41107,13 @@ msgid ""
 ", <xref linkend=\"ST_3DIntersects\"/>, <xref linkend=\"ST_Intersects\"/>, "
 "<xref linkend=\"ST_Disjoint\"/>"
 msgstr ""
+", <xref linkend=\"ST_3DIntersects\"/>, <xref linkend=\"ST_Intersects\"/>, "
+"<xref linkend=\"ST_Disjoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if two 3D geometries intersect"
-msgstr ""
+msgstr "Перевіряє, чи перетинаються дві 3D-геометрії"
 
 #. Tag: para
 #, no-c-format
@@ -40955,11 +41121,13 @@ msgid ""
 "Tests if two 3D geometries intersect. 3D geometries intersect if they have "
 "any point in common in the three-dimensional space."
 msgstr ""
+"Перевіряє, чи перетинаються дві 3D-геометрії. 3D-геометрії перетинаються, "
+"якщо вони мають спільну точку в тривимірному просторі."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the geometric difference between two geometries"
-msgstr ""
+msgstr "Обчислює геометричну різницю між двома геометріями"
 
 #. Tag: para
 #, no-c-format
@@ -40967,32 +41135,36 @@ msgid ""
 "Computes the geometric difference between two geometries. The resulting "
 "geometry is a set of points that are present in geomA but not in geomB."
 msgstr ""
+"Обчислює геометричну різницю між двома геометріями. Результуюча геометрія є "
+"набором точок, які присутні в geomA, але відсутні в geomB."
 
 #. Tag: para
 #, no-c-format
 msgid "NOTE: this function returns a geometry."
-msgstr ""
+msgstr "ПРИМІТКА: ця функція повертає геометрію."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Difference\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Difference\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Perform 3D difference"
-msgstr ""
+msgstr "Виконати 3D-різницю"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DDifference\"/> instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_3DDifference\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns that part of geom1 that is not part of geom2."
-msgstr ""
+msgstr "Повертає ту частину geom1, яка не входить до geom2."
 
 #. Tag: para
 #, no-c-format
@@ -41001,17 +41173,21 @@ msgid ""
 "rendering in HTML using <link xlink:href=\"http://www.x3dom.org\">X3Dom HTML "
 "Javascript rendering library</link>."
 msgstr ""
+"3D-зображення були створені за допомогою PostGIS <xref linkend=\"ST_AsX3D\"/"
+"> і відтворені в HTML за допомогою <link xlink:href=«http://www.x3dom.org»"
+">бібліотеки відтворення X3Dom HTML Javascript</link>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Original 3D geometries overlaid. geom2 is the part that will be removed."
 msgstr ""
+"Накладені оригінальні 3D-геометрії. geom2 — це частина, яка буде видалена."
 
 #. Tag: para
 #, no-c-format
 msgid "What's left after removing geom2"
-msgstr ""
+msgstr "Що залишається після видалення geom2"
 
 #. Tag: para
 #, no-c-format
@@ -41019,16 +41195,18 @@ msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
 "linkend=\"CG_3DUnion\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
+"linkend=\"CG_3DUnion\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the minimum distance between two geometries"
-msgstr ""
+msgstr "Обчислює мінімальну відстань між двома геометріями"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes the minimum distance between two geometries."
-msgstr ""
+msgstr "Обчислює мінімальну відстань між двома геометріями."
 
 #. Tag: para
 #, no-c-format
@@ -41036,21 +41214,23 @@ msgid ""
 "NOTE: this function returns a double precision value representing the "
 "distance."
 msgstr ""
+"ПРИМІТКА: ця функція повертає значення подвійної точності, що представляє "
+"відстань."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_Distance\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_Distance\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the minimum 3D distance between two geometries"
-msgstr ""
+msgstr "Обчислює мінімальну 3D відстань між двома геометріями"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes the minimum 3D distance between two geometries."
-msgstr ""
+msgstr "Обчислює мінімальну 3D відстань між двома геометріями."
 
 #. Tag: para
 #, no-c-format
@@ -41058,68 +41238,74 @@ msgid ""
 "NOTE: this function returns a double precision value representing the 3D "
 "distance."
 msgstr ""
+"ПРИМІТКА: ця функція повертає значення подвійної точності, що представляє "
+"3D-відстань."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DDistance\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_3DDistance\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the 3D convex hull of a geometry."
-msgstr ""
+msgstr "Обчислює 3D опуклу оболонку геометрії."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DConvexHull\"/> instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_3DConvexHull\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Original geometry overlaid with 3D convex hull"
-msgstr ""
+msgstr "Оригінальна геометрія, накладена на 3D опуклу оболонку"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsX3D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsX3D\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Perform 3D intersection"
-msgstr ""
+msgstr "Виконати 3D перетин"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DIntersection\"/> instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_3DIntersection\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Return a geometry that is the shared portion between geom1 and geom2."
-msgstr ""
+msgstr "Повернути геометрію, яка є спільною частиною між geom1 і geom2."
 
 #. Tag: para
 #, no-c-format
 msgid "Original 3D geometries overlaid. geom2 is shown semi-transparent"
-msgstr ""
+msgstr "Накладені оригінальні 3D-геометрії. geom2 показано напівпрозорим"
 
 #. Tag: para
 #, no-c-format
 msgid "Intersection of geom1 and geom2"
-msgstr ""
+msgstr "Перетин geom1 і geom2"
 
 #. Tag: para
 #, no-c-format
 msgid "3D linestrings and polygons"
-msgstr ""
+msgstr "3D лінійні ланцюжки та багатокутники"
 
 #. Tag: para
 #, no-c-format
 msgid "Cube (closed Polyhedral Surface) and Polygon Z"
-msgstr ""
+msgstr "Куб (закрита багатогранна поверхня) і багатокутник Z"
 
 #. Tag: para
 #, no-c-format
@@ -41127,36 +41313,40 @@ msgid ""
 "Intersection of 2 solids that result in volumetric intersection is also a "
 "solid (ST_Dimension returns 3)"
 msgstr ""
+"Перетин двох твердих тіл, що призводить до об'ємного перетину, також є "
+"твердим тілом (ST_Dimension повертає 3)"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the union of two geometries"
-msgstr ""
+msgstr "Обчислює об'єднання двох геометрій"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes the union of two geometries."
-msgstr ""
+msgstr "Обчислює об'єднання двох геометрій."
 
 #. Tag: para
 #, no-c-format
 msgid "NOTE: this function returns a geometry representing the union."
-msgstr ""
+msgstr "ПРИМІТКА: ця функція повертає геометрію, що представляє об'єднання."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Perform 3D union."
-msgstr ""
+msgstr "Виконайте об'єднання 3D."
 
 #. Tag: para
 #, no-c-format
 msgid "is deprecated as of 3.5.0. Use <xref linkend=\"CG_3DUnion\"/> instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_3DUnion\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.3.0 aggregate variant was added"
-msgstr ""
+msgstr "Доступність: додано агрегований варіант 3.3.0"
 
 #. Tag: para
 #, no-c-format
@@ -41167,11 +41357,16 @@ msgid ""
 "it operates on rows of data, in the same way the SUM() and AVG() functions "
 "do and like most aggregates, it also ignores NULL geometries."
 msgstr ""
+"<emphasis role=\"bold\">Агрегатний варіант:</emphasis> повертає геометрію, "
+"яка є 3D об'єднанням набору рядків геометрій. Функція ST_3DUnion() є "
+"«агрегатною» функцією в термінології PostgreSQL. Це означає, що вона оперує "
+"рядками даних так само, як функції SUM() і AVG(), і, як і більшість "
+"агрегатів, ігнорує геометрії NULL."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Perform 3D union using postgis_sfcgal."
-msgstr ""
+msgstr "Виконайте об'єднання 3D за допомогою postgis_sfcgal."
 
 #. Tag: para
 #, no-c-format
@@ -41182,16 +41377,21 @@ msgid ""
 "it operates on rows of data, in the same way the SUM() and AVG() functions "
 "do and like most aggregates, it also ignores NULL geometries."
 msgstr ""
+"<emphasis role=\"bold\">Агрегатний варіант:</emphasis> повертає геометрію, "
+"яка є 3D об'єднанням набору рядків геометрій. Функція CG_3DUnion() є "
+"«агрегатною» функцією в термінології PostgreSQL. Це означає, що вона оперує "
+"рядками даних так само, як функції SUM() і AVG(), і, як і більшість "
+"агрегатів, ігнорує геометрії NULL."
 
 #. Tag: para
 #, no-c-format
 msgid "Original 3D geometries overlaid. geom2 is the one with transparency."
-msgstr ""
+msgstr "Накладені оригінальні 3D-геометрії. geom2 — це та, що має прозорість."
 
 #. Tag: para
 #, no-c-format
 msgid "Union of geom1 and geom2"
-msgstr ""
+msgstr "Об'єднання geom1 і geom2"
 
 #. Tag: para
 #, no-c-format
@@ -41199,17 +41399,21 @@ msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
 "linkend=\"CG_3DDifference\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"CG_3DIntersection\"/> <xref "
+"linkend=\"CG_3DDifference\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes an Alpha-shape enclosing a geometry"
-msgstr ""
+msgstr "Обчислює альфа-форму, що охоплює геометрію"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_AlphaShape\"/> instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_AlphaShape\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -41221,6 +41425,12 @@ msgid ""
 "shape provides a closer fit to the shape of the input than the shape "
 "produced by the <link linkend=\"ST_ConvexHull\">convex hull</link>."
 msgstr ""
+"Обчислює <link xlink:href=«https://en.wikipedia.org/wiki/"
+"Alpha_shape»>альфа-форму</link> точок у геометрії. Альфа-форма — це "
+"(зазвичай) увігнута багатокутна геометрія, яка містить усі вершини вхідних "
+"даних і вершини якої є підмножиною вершин вхідних даних. Альфа-форма "
+"забезпечує більш точне наближення до форми вхідних даних, ніж форма, "
+"створена <link linkend=\"ST_ConvexHull\">опуклою оболонкою</link>."
 
 #. Tag: para
 #, no-c-format
@@ -41230,6 +41440,10 @@ msgid ""
 "produce more concave results. Alpha values greater than some data-dependent "
 "value produce the convex hull of the input."
 msgstr ""
+"«Тіснота прилягання» контролюється параметром <varname>alpha</varname>, який "
+"може мати значення від 0 до нескінченності. Менші значення альфа дають більш "
+"увігнуті результати. Значення альфа, більші за певне значення, що залежить "
+"від даних, дають опуклу оболонку вхідних даних."
 
 #. Tag: para
 #, no-c-format
@@ -41242,6 +41456,13 @@ msgid ""
 "information. This is different from the original definition of alpha-shapes, "
 "which defines alpha as the radius of the eroding disc."
 msgstr ""
+"Після впровадження CGAL значення альфа є <emphasis>квадратом</emphasis> "
+"радіуса диска, що використовується в алгоритмі Alpha-Shape для «ерозії» "
+"триангуляції Делоне вхідних точок. Докладнішу інформацію див. у <link "
+"xlink:href=«https://doc.cgal.org/latest/Alpha_shapes_2/index."
+"html#Chapter_2D_Alpha_Shapes»>CGAL Alpha-Shapes</link>. Це відрізняється від "
+"оригінального визначення альфа-форм, яке визначає альфа як радіус ерозійного "
+"диска."
 
 #. Tag: para
 #, no-c-format
@@ -41249,6 +41470,8 @@ msgid ""
 "The computed shape does not contain holes unless the optional "
 "<varname>allow_holes</varname> argument is specified as true."
 msgstr ""
+"Обчислена форма не містить отворів, якщо опціональний аргумент "
+"<varname>allow_holes</varname> не вказаний як true."
 
 #. Tag: para
 #, no-c-format
@@ -41257,11 +41480,13 @@ msgid ""
 "way to <xref linkend=\"ST_ConcaveHull\"/>, but uses CGAL and a different "
 "algorithm."
 msgstr ""
+"Ця функція ефективно обчислює увігнуту оболонку геометрії подібно до <xref "
+"linkend=\"ST_ConcaveHull\"/>, але використовує CGAL та інший алгоритм."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.4.1."
-msgstr ""
+msgstr "Доступність: 3.5.0 — вимагає SFCGAL &gt;= 1.4.1."
 
 #. Tag: para
 #, no-c-format
@@ -41269,6 +41494,8 @@ msgid ""
 "Alpha-shape of a MultiPoint (same example As <xref "
 "linkend=\"CG_OptimalAlphaShape\"/>)"
 msgstr ""
+"Альфа-форма MultiPoint (той самий приклад, що й <xref linkend="
+"\"CG_OptimalAlphaShape\"/>)"
 
 #. Tag: para
 #, no-c-format
@@ -41276,6 +41503,8 @@ msgid ""
 "Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
 "linkend=\"CG_OptimalAlphaShape\"/>)"
 msgstr ""
+"Альфа-форма MultiPoint, що допускає отвори (той самий приклад, що і <xref "
+"linkend=\"CG_OptimalAlphaShape\"/>)"
 
 #. Tag: para
 #, no-c-format
@@ -41283,16 +41512,18 @@ msgid ""
 "Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
 "linkend=\"ST_ConcaveHull\"/>)"
 msgstr ""
+"Альфа-форма MultiPoint, що допускає отвори (той самий приклад, що і <xref "
+"linkend=\"ST_ConcaveHull\"/>)"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_OptimalAlphaShape\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_OptimalAlphaShape\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes approximal convex partition of the polygon geometry"
-msgstr ""
+msgstr "Обчислює наближене опукле розбиття геометрії багатокутника"
 
 #. Tag: para
 #, no-c-format
@@ -41300,6 +41531,8 @@ msgid ""
 "Computes approximal convex partition of the polygon geometry (using a "
 "triangulation)."
 msgstr ""
+"Обчислює наближене опукле розбиття геометрії полігону (за допомогою "
+"триангуляції)."
 
 #. Tag: para
 #, no-c-format
