@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-08-21 03:28+0000\n"
-"PO-Revision-Date: 2025-11-12 10:02+0000\n"
+"PO-Revision-Date: 2025-11-12 11:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -40527,8 +40527,8 @@ msgstr ""
 "Оскільки внутрішні частини повинні мати спільну точку, тонкість визначення "
 "полягає в тому, що лінії та точки, які повністю лежать на межі полігонів або "
 "ліній, <emphasis>не</emphasis> входять до геометрії. Для отримання "
-"додаткової інформації див. <link xlink:href=«http://lin-ear-th-inking."
-"blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html»>Тонкощі OGC "
+"додаткової інформації див. <link xlink:href=\"http://lin-ear-th-inking."
+"blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html\">Тонкощі OGC "
 "Covers, Contains, Within</link>. Предикат <xref linkend=\"ST_CoveredBy\"/> "
 "забезпечує більш всеосяжне відношення."
 
@@ -40812,11 +40812,15 @@ msgid ""
 "link>). To enable the functions use <code>create extension postgis_sfcgal</"
 "code>."
 msgstr ""
+"Інструкції з інсталяції бібліотеки можна знайти на домашній сторінці SFCGAL "
+"<link xlink:href=\"http://www.sfcgal.org\">http://www.sfcgal.org</link>). "
+"Щоб увімкнути функції, скористайтеся командою <code>create extension "
+"postgis_sfcgal</code>."
 
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Management Functions"
-msgstr ""
+msgstr "Функції управління SFCGAL"
 
 #. Tag: para
 #, no-c-format
@@ -40824,21 +40828,23 @@ msgid ""
 "This section lists functions for determining version of SFCGAL and library "
 "dependencies you are running."
 msgstr ""
+"У цьому розділі перелічено функції для визначення версії SFCGAL та "
+"залежностей бібліотек, які ви використовуєте."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "<refpurpose>Returns the version of SFCGAL in use</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>Повертає версію SFCGAL, що використовується</refpurpose>"
 
 #. Tag: funcdef
 #, no-c-format
 msgid "text <function>postgis_sfcgal_version</function>"
-msgstr ""
+msgstr "текст <function>postgis_sfcgal_version</function>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Returns the version of SFCGAL in use</para>"
-msgstr ""
+msgstr "<para>Повертає версію SFCGAL, що використовується</para>"
 
 #. Tag: para
 #, no-c-format
@@ -40851,11 +40857,13 @@ msgid ""
 "<refpurpose>Returns the full version of SFCGAL in use including CGAL and "
 "Boost versions</refpurpose>"
 msgstr ""
+"<refpurpose>Повертає повну версію SFCGAL, що використовується, включаючи "
+"версії CGAL та Boost</refpurpose>"
 
 #. Tag: funcdef
 #, no-c-format
 msgid "text <function>postgis_sfcgal_full_version</function>"
-msgstr ""
+msgstr "текст <function>postgis_sfcgal_full_version</function>"
 
 #. Tag: para
 #, no-c-format
@@ -40863,11 +40871,13 @@ msgid ""
 "<para>Returns the full version of SFCGAL in use including CGAL and Boost "
 "versions</para>"
 msgstr ""
+"<para>Повертає повну версію SFCGAL, що використовується, включаючи версії "
+"CGAL і Boost</para>"
 
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Accessors and Setters"
-msgstr ""
+msgstr "SFCGAL Аксесори та сетери"
 
 #. Tag: para
 #, no-c-format
@@ -40875,16 +40885,19 @@ msgid ""
 "These functions access or set properties of geometries. Geometries primarily "
 "supported by these functions are TINS and Polyhedral Surfaces."
 msgstr ""
+"Ці функції забезпечують доступ до властивостей геометрій або їх "
+"налаштування. Геометрії, які в першу чергу підтримуються цими функціями, — "
+"це TINS і поліедральні поверхні."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Force LHR orientation"
-msgstr ""
+msgstr "Примусова орієнтація LHR"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Check if a surface is or not planar"
-msgstr ""
+msgstr "Перевірте, чи є поверхня плоскою"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40902,7 +40915,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Determine surface orientation"
-msgstr ""
+msgstr "Визначте орієнтацію поверхні"
 
 #. Tag: para
 #, no-c-format
@@ -40910,32 +40923,37 @@ msgid ""
 "The function only applies to polygons. It returns -1 if the polygon is "
 "counterclockwise oriented and 1 if the polygon is clockwise oriented."
 msgstr ""
+"Функція застосовується тільки до полігонів. Вона повертає -1, якщо полігон "
+"орієнтований проти годинникової стрілки, і 1, якщо полігон орієнтований за "
+"годинниковою стрілкою."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Calculates the area of a geometry"
-msgstr ""
+msgstr "Обчислює площу геометрії"
 
 #. Tag: para
 #, no-c-format
 msgid "Calculates the area of a geometry."
-msgstr ""
+msgstr "Обчислює площу геометричної фігури."
 
 #. Tag: para
 #, no-c-format
 msgid "Performed by the SFCGAL module"
-msgstr ""
+msgstr "Виконується модулем SFCGAL"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "NOTE: this function returns a double precision value representing the area."
 msgstr ""
+"ПРИМІТКА: ця функція повертає значення подвійної точності, що представляє "
+"площу."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Area\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Area\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40945,7 +40963,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5"
 
 #. Tag: para
 #, no-c-format
@@ -40985,10 +41003,6 @@ msgid ""
 "linkend=\"CG_MakeSolid\"/>. Areal geometries have no volume. Here is an "
 "example to demonstrate."
 msgstr ""
-"Коли закриті поверхні створюються за допомогою WKT, вони розглядаються як "
-"площі, а не як тверді тіла. Щоб зробити їх твердими, потрібно "
-"використовувати <xref linkend=\"CG_MakeSolid\"/>. Площі не мають об'єму. Ось "
-"приклад для ілюстрації."
 
 #. Tag: para
 #, no-c-format
@@ -41038,6 +41052,8 @@ msgstr ""
 msgid ""
 "is deprecated as of 3.5.0. Use <xref linkend=\"CG_Orientation\"/> instead."
 msgstr ""
+"є застарілим з версії 3.5.0. Замість нього використовуйте <xref linkend="
+"\"CG_Orientation\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -41178,7 +41194,7 @@ msgid ""
 "Javascript rendering library</link>."
 msgstr ""
 "3D-зображення були створені за допомогою PostGIS <xref linkend=\"ST_AsX3D\"/"
-"> і відтворені в HTML за допомогою <link xlink:href=«http://www.x3dom.org»"
+"> і відтворені в HTML за допомогою <link xlink:href=\"http://www.x3dom.org\""
 ">бібліотеки відтворення X3Dom HTML Javascript</link>."
 
 #. Tag: para
@@ -41429,12 +41445,12 @@ msgid ""
 "shape provides a closer fit to the shape of the input than the shape "
 "produced by the <link linkend=\"ST_ConvexHull\">convex hull</link>."
 msgstr ""
-"Обчислює <link xlink:href=«https://en.wikipedia.org/wiki/"
-"Alpha_shape»>альфа-форму</link> точок у геометрії. Альфа-форма — це "
-"(зазвичай) увігнута багатокутна геометрія, яка містить усі вершини вхідних "
-"даних і вершини якої є підмножиною вершин вхідних даних. Альфа-форма "
-"забезпечує більш точне наближення до форми вхідних даних, ніж форма, "
-"створена <link linkend=\"ST_ConvexHull\">опуклою оболонкою</link>."
+"Обчислює <link xlink:href=\"https://en.wikipedia.org/wiki/Alpha_shape\""
+">альфа-форму</link> точок у геометрії. Альфа-форма — це (зазвичай) увігнута "
+"багатокутна геометрія, яка містить усі вершини вхідних даних і вершини якої "
+"є підмножиною вершин вхідних даних. Альфа-форма забезпечує більш точне "
+"наближення до форми вхідних даних, ніж форма, створена <link linkend="
+"\"ST_ConvexHull\">опуклою оболонкою</link>."
 
 #. Tag: para
 #, no-c-format
@@ -41463,8 +41479,8 @@ msgstr ""
 "Після впровадження CGAL значення альфа є <emphasis>квадратом</emphasis> "
 "радіуса диска, що використовується в алгоритмі Alpha-Shape для «ерозії» "
 "триангуляції Делоне вхідних точок. Докладнішу інформацію див. у <link "
-"xlink:href=«https://doc.cgal.org/latest/Alpha_shapes_2/index."
-"html#Chapter_2D_Alpha_Shapes»>CGAL Alpha-Shapes</link>. Це відрізняється від "
+"xlink:href=\"https://doc.cgal.org/latest/Alpha_shapes_2/index.html#"
+"Chapter_2D_Alpha_Shapes\">CGAL Alpha-Shapes</link>. Це відрізняється від "
 "оригінального визначення альфа-форм, яке визначає альфа як радіус ерозійного "
 "диска."
 
