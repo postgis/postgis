@@ -49,10 +49,10 @@ WHERE pg_type.typname = 'topogeometry' AND pga.attname = 'id'
 	   %3$I = (
 	     (%3$I).topology_id,
 	    (%3$I).layer_id,
-	     ((%3$I).id & 0xFFFFFFFF)::bigint,
+	     ((%3$I).id & 4294967295 )::bigint,
 	     ((%3$I).id >> 32)::integer
 	   )::topology.topogeometry
-	 WHERE (  (%3$I).id & 0xFFFFFFFF )::bigint <> (%3$I).id OR  (  (%3$I).id >> 32 )::integer = (%3$I).type  ', layerSchema, layerTable, layerColumn);
+	 WHERE (  (%3$I).id &  4294967295 )::bigint <> (%3$I).id OR  (  (%3$I).id >> 32 )::integer = (%3$I).type  ', layerSchema, layerTable, layerColumn);
 
 	 EXECUTE var_sql;
 	 GET DIAGNOSTICS var_row_count = ROW_COUNT;
