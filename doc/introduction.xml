@@ -115,6 +115,15 @@
 			  <para>Geometry Processing, PostgreSQL gist, general bug fixing</para>
 			</listitem>
 		</varlistentry>
+
+        <varlistentry>
+			<term>Laurențiu Nicola</term>
+			<listitem>
+			  <para>Bug fixes, maintenance, stability, and performance</para>
+			</listitem>
+		</varlistentry>
+
+
 	</variablelist>
   </section>
 
