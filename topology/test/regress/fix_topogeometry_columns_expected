@@ -1,13 +1,7 @@
-162|1|features|land_parcels|feature|3|0|
-162|2|features|traffic_signs|feature|1|0|
-162|3|features|city_streets|feature|2|0|
-162|4|features|big_parcels|feature|3|1|1
-162|5|features|big_streets|feature|2|1|3
-162|6|features|big_signs|feature|1|1|2
+0 rows updated for features.big_parcels.feature column to bigint id type
+0 rows updated for features.big_signs.feature column to bigint id type
+0 rows updated for features.big_streets.feature column to bigint id type
+0 rows updated for features.city_streets.feature column to bigint id type
 0 rows updated for features.land_parcels.feature column to bigint id type
 0 rows updated for features.traffic_signs.feature column to bigint id type
-0 rows updated for features.city_streets.feature column to bigint id type
-0 rows updated for features.big_parcels.feature column to bigint id type
-0 rows updated for features.big_streets.feature column to bigint id type
-0 rows updated for features.big_signs.feature column to bigint id type
 Topology 'city_data' dropped
