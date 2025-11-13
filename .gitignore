@@ -128,6 +128,7 @@ macros/ltversion.m4
 *.o
 postgis_config.h
 postgis/Makefile
+postgis/cunit/Makefile
 postgis/geobuf.pb-c.c
 postgis/geobuf.pb-c.h
 postgis/legacy_gist.sql

@@ -2,6 +2,30 @@
 <appendix xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+
+        <section>
+            <title>PostGIS 3.6.1</title>
+            <para>2025/11/13</para>
+
+            <para>If you are upgrading postgis_topology and have topogeometry columns, make sure to run after the upgrade to fix topogeometry corruption: <code>SELECT topology.FixCorruptTopoGeometryColumn(schema_name, table_name, feature_column) FROM topology.layer</code></para>
+
+            <simplesect>
+                <title>Fixes</title>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5978">#5978</link>, geometry_columns needs to still parse table constraints (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5987">#5987</link>, ST_GeometryN fails for non-collections (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5991">#5991</link>, CircularString distance error (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5994">#5994</link>, Null pointer in ST_AsGeoJsonRow (Alexander Kukushkin)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5998">#5998</link>, ST_Distance error on CurvePolygon (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5962">#5962</link>, Consistent clipping of MULTI/POINT (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5998">#5998</link>, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires by extension are owned by extension authored: Andrey Borodin (Yandex), reported by Sergey Bobrov (Kaspersky)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5754">#5754</link>, ST_ForcePolygonCCW reverses lines (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5959">#5959</link>, <link xlink:href="https://trac.osgeo.org/postgis/ticket/5984">#5984</link>, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6012">#6012</link>, Remove memory leak from lwcircstring_from_lwpointarray (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6013">#6013</link>, [tiger_geocoder] Load Tiger 2025 data (Regina Obe)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5983">#5983</link>, [topology] topology.FixCorruptTopoGeometryColumn to fix corruption caused by 3.6.0 upgrade (Regina Obe, Francois Bonzon)</para>
+            </simplesect>
+        </section>
+
         <section>
             <title>PostGIS 3.6.0</title>
             <para>2025/09/01</para>

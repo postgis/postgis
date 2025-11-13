@@ -1,6 +1,6 @@
 
 PostGIS 3.6.1
-2025/11/xx
+2025/11/13
 
 This version requires PostgreSQL 12-18, GEOS 3.8 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.14+ is needed.
@@ -21,14 +21,15 @@ SELECT topology.FixCorruptTopoGeometryColumn(schema_name, table_name, feature_co
   - #5998, ST_Distance error on CurvePolygon (Paul Ramsey)
   - #5962, Consistent clipping of MULTI/POINT (Paul Ramsey)
   - #5998, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
-              by extension are owned by extension
-              authored: Andrey Borodin (Yandex), reported by Sergey Bobrov (Kaspersky)
+           by extension are owned by extension
+           authored: Andrey Borodin (Yandex), reported by Sergey Bobrov (Kaspersky)
   - #5754, ST_ForcePolygonCCW reverses lines (Paul Ramsey)
-  - #5959, #5984, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
+  - #5959, #5984, Prevent histogram target overflow when analysing massive
+           tables (Darafei Praliaskouski)
   - #6012, Remove memory leak from lwcircstring_from_lwpointarray (Paul Ramsey)
   - #6013, [tiger_geocoder] Load Tiger 2025 data (Regina Obe)
   - #5983, [topology] topology.FixCorruptTopoGeometryColumn
-              to fix corruption caused by 3.6.0 upgrade (Regina Obe, Francois Bonzon)
+           to fix corruption caused by 3.6.0 upgrade (Regina Obe, Francois Bonzon)
 
 
 PostGIS 3.6.0
