@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-08-21 03:28+0000\n"
+"POT-Creation-Date: 2025-11-13 16:23+0000\n"
 "PO-Revision-Date: 2024-12-17 12:47+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -47,19 +47,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"As of PostGIS 2.1.3, out-of-db rasters and all raster drivers are disabled "
-"by default. In order to re-enable these, you need to set the following "
-"environment variables <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and "
+"Out-of-db rasters and all raster drivers are disabled by default. In order "
+"to re-enable these, you need to set the following environment variables "
+"<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and "
 "<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in the server environment. "
-"For PostGIS 2.2, you can use the more cross-platform approach of setting the "
+"You can also use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
-"Ab PostGIS 2.1.3 sind out-of-db-Raster und alle Rastertreiber von vornherein "
-"deaktiviert. Um diese zu aktivieren, müssen Sie die folgenden "
-"Umgebungsvariablen <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> und "
-"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in der Serverumgebung "
-"setzen. Ab PostGIS 2.2 können Sie einen plattformübergreifenderen Ansatz mit "
-"Hilfe der entsprechenden <xref linkend=\"PostGIS_GUC\"/> verwenden."
 
 #. Tag: para
 #, no-c-format
@@ -101,15 +95,10 @@ msgstr ""
 msgid ""
 "Setting environment variables varies depending on OS. For PostgreSQL "
 "installed on Ubuntu or Debian via apt-postgresql, the preferred way is to "
-"edit <filename>/etc/postgresql/<replaceable>10</replaceable>/"
-"<replaceable>main</replaceable>/environment</filename> where 10 refers to "
-"version of PostgreSQL and main refers to the cluster."
+"edit <filename>/etc/postgresql/<replaceable>MAJOR</replaceable>/"
+"<replaceable>CLUSTER</replaceable>/environment</filename> where the "
+"placeholders refer to the PostgreSQL major version and cluster name."
 msgstr ""
-"Das Setzen von Umgebungsvariablen variiert je nach Betriebssystem. Für eine "
-"PostgreSQL Installation unter Ubuntu oder Debian mit apt-postgresql, sollte "
-"<filename>/etc/postgresql/<replaceable>10</replaceable>/<replaceable>main</"
-"replaceable>/environment</filename> editiert werden, wobei sich 10 auf die "
-"PostgreSQL-Version und main auf den Cluster bezieht."
 
 #. Tag: para
 #, no-c-format
@@ -150,13 +139,9 @@ msgstr "Die spatiale Datenbankerweiterung mittels EXTENSION aktivieren"
 #. Tag: para
 #, no-c-format
 msgid ""
-"If you are using PostgreSQL 9.1+ and have compiled and installed the "
-"extensions/postgis modules, you can turn a database into a spatial one using "
-"the EXTENSION mechanism."
+"If you have compiled and installed the extensions/postgis modules, you can "
+"turn a database into a spatial one using the EXTENSION mechanism."
 msgstr ""
-"Wenn ab PostgreSQL 9.1 die Extensions/Postgis-Module installiert sind, kann "
-"die Datenbank mit Hilfe des EXTENSION-Mechanismus in eine spatiale Datenbank "
-"verwandelt werden."
 
 #. Tag: para
 #, no-c-format
@@ -316,37 +301,33 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "Soft Upgrade 9.1+ using extensions"
-msgstr "Sanfte Aktualisierung 9.1+ mittels Erweiterungen"
+msgid "Soft upgrade using extensions"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If you originally installed PostGIS with extensions, then you need to "
-"upgrade using extensions as well. Doing a minor upgrade with extensions, is "
+"upgrade using extensions as well. Doing a minor upgrade with extensions is "
 "fairly painless."
 msgstr ""
-"Wenn Sie PostGIS ursprünglich mithilfe von EXTENSION installiert haben, "
-"müssen Sie das Upgrade ebenfalls über EXTENSION durchführen. Ein kleines "
-"Upgrade mit Erweiterungen ist relativ unkompliziert."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"If you are running PostGIS 3 or above, then you should use the <xref "
-"linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the latest "
-"version you have installed."
+"Use the <xref linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade "
+"to the latest version you have installed."
 msgstr ""
-"Wenn Sie PostGIS 3 oder höher verwenden, sollten Sie die Funktion <xref "
-"linkend=\"PostGIS_Extensions_Upgrade\"/> nutzen, um auf die neueste "
-"installierte Version zu aktualisieren."
 
 #. Tag: para
 #, no-c-format
-msgid "If you are running PostGIS 2.5 or lower, then do the following:"
+msgid ""
+"If you are upgrading a database that still runs PostGIS 2.5, issue an "
+"<command>ALTER EXTENSION</command> followed by "
+"<function>postgis_extensions_upgrade()</function> to make sure the legacy "
+"<varname>postgis_raster</varname> objects are folded back into the main "
+"extension."
 msgstr ""
-"Falls Sie PostGIS 2.5 oder niedriger verwenden, gehen Sie bitte wie folgt "
-"vor:"
 
 #. Tag: para
 #, no-c-format
@@ -425,95 +406,17 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "Soft Upgrade Pre 9.1+ or without extensions"
+msgid "Soft upgrade without extensions"
 msgstr ""
-"<xref linkend=\"create_new_db\"/>Sanfte Aktualisierung bei Version kleiner "
-"9.1 oder wenn nicht mittels Erweiterungen installiert wurde"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"This section applies only to those who installed PostGIS not using "
-"extensions. If you have extensions and try to upgrade with this approach "
-"you'll get messages like:"
+"Extensions have been the supported installation method for many releases. If "
+"you still rely on an unpackaged installation, perform a <link "
+"linkend=\"hard_upgrade\">HARD UPGRADE</link> into a database created with "
+"extensions and migrate your data there."
 msgstr ""
-"Dieser Abschnitt gilt nur, wenn PostGIS ohne Erweiterungen installiert "
-"wurde. Wenn Erweiterungen existieren und eine Aktualiserung mit diesem "
-"Ansatz versucht wird, erhalten Sie eine Meldungen wie:"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* "
-"prior to r7409, you cannot use this procedure but would rather need to do a "
-"<link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
-msgstr ""
-"HINWEIS: Wenn Sie von PostGIS 1.* zu PostGIS 2.* oder von PostGIS 2.* vor "
-"r7409 wechseln, können Sie dieses Verfahren nicht verwenden, sondern müssen "
-"ein <link linkend=\"hard_upgrade\">HARD UPGRADE</link> durchführen."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"After compiling and installing (make install) you should find a set of "
-"<filename>*_upgrade.sql</filename> files in the installation folders. You "
-"can list them all with:"
-msgstr ""
-"Nach dem Kompilieren und Installieren (make install) sollten Sie eine Reihe "
-"von <filename>*_upgrade.sql</filename> Dateien in den Installationsordnern "
-"finden. Sie können alle wie folgt auflisten:"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Load them all in turn, starting from <filename>postgis_upgrade.sql</"
-"filename>."
-msgstr ""
-"Laden Sie diese alle nacheinander, beginnend mit <filename>postgis_upgrade."
-"sql</filename>."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The same procedure applies to raster, topology and sfcgal extensions, with "
-"upgrade files named <filename>rtpostgis_upgrade.sql</filename>, "
-"<filename>topology_upgrade.sql</filename> and <filename>sfcgal_upgrade.sql</"
-"filename> respectively. If you need them:"
-msgstr ""
-"Das gleiche Verfahren gilt auch für die Raster-, Topologie- und sfcgal-"
-"Erweiterungen, mit den Upgrade-Dateien <filename>rtpostgis_upgrade.sql</"
-"filename>, <filename>topology_upgrade.sql</filename> und "
-"<filename>sfcgal_upgrade.sql</filename>. Falls Sie diese benötigen:"
-
-#. Tag: para
-#, no-c-format
-msgid "You are advised to switch to an extension based install by running"
-msgstr ""
-"Wir empfehlen Ihnen, zu einer Installation mit EXTENSION zu wechseln, indem "
-"Sie folgendes ausführen"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you can't find the <filename>postgis_upgrade.sql</filename> specific for "
-"upgrading your version you are using a version too early for a soft upgrade "
-"and need to do a <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
-msgstr ""
-"Wenn Sie <filename>postgis_upgrade.sql</filename> für das Upgrade Ihrer "
-"Version nicht finden können, so liegt das daran, dass die Version für ein "
-"Soft-Upgrade zu niedrig ist und Sie daher ein <link "
-"linkend=\"hard_upgrade\">HARD UPGRADE</link> durchführen müssen."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The <xref linkend=\"PostGIS_Full_Version\"/> function should inform you "
-"about the need to run this kind of upgrade using a \"procs need upgrade\" "
-"message."
-msgstr ""
-"Die Funktion <xref linkend=\"PostGIS_Full_Version\"/> sollte Sie über die "
-"Meldung \"procs need upgrade\" von der Notwendigkeit eines solchen Upgrades "
-"informieren."
 
 #. Tag: title
 #, no-c-format
@@ -784,15 +687,12 @@ msgstr ""
 "Tuning_Your_PostgreSQL_Server\">Tuning your PostgreSQL Server</link>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"For PostgreSQL 9.4+ configuration can be set at the server level without "
-"touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</code> "
-"by using the <code>ALTER SYSTEM</code> command."
+"PostgreSQL configuration can be set at the server level without touching "
+"<code>postgresql.conf</code> or <code>postgresql.auto.conf</code> by using "
+"the <code>ALTER SYSTEM</code> command."
 msgstr ""
-"Für PostgreSQL 9.4+ kann die Konfiguration auf Serverebene eingestellt "
-"werden, ohne <code>postgresql.conf</code> oder <code>postgresql.auto.conf</"
-"code> zu berühren, indem der Befehl <code>ALTER SYSTEM</code> verwendet wird."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -828,17 +728,11 @@ msgstr "Standard: Partition"
 #. Tag: para
 #, no-c-format
 msgid ""
-"This is generally used for table partitioning. The default for this is set "
-"to \"partition\" which is ideal for PostgreSQL 8.4 and above since it will "
-"force the planner to only analyze tables for constraint consideration if "
-"they are in an inherited hierarchy and not pay the planner penalty otherwise."
+"This is generally used for table partitioning. The default of \"partition\" "
+"forces the planner to only analyze tables for constraint consideration if "
+"they are in an inherited hierarchy and avoids paying the planner penalty "
+"otherwise."
 msgstr ""
-"Dies wird im Allgemeinen für die Partitionierung von Tabellen verwendet. Die "
-"Voreinstellung hierfür ist \"partition\", was ideal für PostgreSQL 8.4 und "
-"höher ist, da es den Planer dazu zwingt, Tabellen nur dann auf "
-"Einschränkungen zu analysieren, wenn sie sich in einer vererbten Hierarchie "
-"befinden, und so im gegensätzlichen Fall keine unnötigen Kosten durch den "
-"Planer versursacht werden."
 
 #. Tag: link
 #, no-c-format
@@ -847,8 +741,8 @@ msgstr "shared_buffers"
 
 #. Tag: para
 #, no-c-format
-msgid "Default: ~128MB in PostgreSQL 9.6"
-msgstr "Standardwert: ~128MB in PostgreSQL 9.6"
+msgid "Default: ~128MB"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -864,15 +758,10 @@ msgstr ""
 msgid ""
 "<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
 "config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</link> "
-"This setting is only available for PostgreSQL 9.4+. For PostgreSQL 9.6+ this "
-"setting has additional importance in that it controls the max number of "
-"processes you can have for parallel queries."
+"controls the maximum number of background processes available to the server "
+"and therefore also bounds how many workers can participate in parallel "
+"queries."
 msgstr ""
-"<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
-"config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</link> "
-"Diese Einstellung ist ab PostgreSQL 9.4 verfügbar. Ab PostgreSQL 9.6 kann "
-"mit dieser Einstellung zusätzlich die maximale Anzahl von Prozessen bei "
-"parallelen Abfragen eingestellt werden."
 
 #. Tag: para
 #, no-c-format
@@ -968,26 +857,17 @@ msgid "max_parallel_workers_per_gather"
 msgstr "max_parallel_Arbeiter_pro_Gruppe"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"This setting is only available for PostgreSQL 9.6+ and will only affect "
-"PostGIS 2.3+, since only PostGIS 2.3+ supports parallel queries. If set to "
-"higher than 0, then some queries such as those involving relation functions "
-"like <code>ST_Intersects</code> can use multiple processes and can run more "
-"than twice as fast when doing so. If you have a lot of processors to spare, "
-"you should change the value of this to as many processors as you have. Also "
-"make sure to bump up <code>max_worker_processes</code> to at least as high "
-"as this number."
+"Parallel query support in modern PostgreSQL and PostGIS uses this setting to "
+"decide how many workers a plan may request. If set to higher than 0, then "
+"some queries such as those involving relation functions like "
+"<code>ST_Intersects</code> can use multiple processes and can run more than "
+"twice as fast when doing so. If you have a lot of processors to spare, you "
+"should change the value of this to as many processors as you have. Also make "
+"sure to bump up <code>max_worker_processes</code> to at least as high as "
+"this number."
 msgstr ""
-"Diese Einstellung ist nur für PostgreSQL 9.6+ verfügbar und wirkt sich nur "
-"auf PostGIS 2.3+ aus, da nur PostGIS 2.3+ parallele Abfragen unterstützt. "
-"Wenn sie auf einen Wert größer als 0 gesetzt wird, können einige Abfragen, z."
-"B. solche, die Beziehungsfunktionen wie <code>ST_Intersects</code> "
-"beinhalten, mehrere Prozesse verwenden und können dabei mehr als doppelt so "
-"schnell laufen. Wenn Sie viele Prozessoren zur Verfügung haben, sollten Sie "
-"den Wert auf so viele Prozessoren ändern, wie Sie haben. Stellen Sie "
-"außerdem sicher, dass <code>max_worker_processes</code> mindestens so hoch "
-"ist wie diese Zahl."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -1648,8 +1528,8 @@ msgstr "Eingabezeichen für den Postleitzahltyp"
 
 #. Tag: para
 #, no-c-format
-msgid "(28). A 5 digit number. Identifies a Zip Code"
-msgstr "(28). Eine 5-stellige Nummer. Gibt den Zip Code an"
+msgid "(28). A 5 digit number. Identifies a ZIP code"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -1780,11 +1660,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). This "
-"attribute is used for both the US Zip and the Canadian Postal Codes."
+"attribute is used for both the US ZIP and the Canadian postal codes."
 msgstr ""
-"(Token Nummer \"13\"). (SADS Elemente \"ZIP CODE\" , \"PLUS 4\" ). Dieses "
-"Attribut wird für die Postleitzahlen-Codes der USA (ZIP-Code) und Kanada "
-"(Postal Code) verwendet."
 
 #. Tag: para
 #, no-c-format
@@ -2288,16 +2165,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The <varname>history_table</varname> was also packaged in PostGIS 1.5, but "
-"added to the documentation in PostGIS 2.0. This package is written in "
-"plpgsql and located in the <varname>extras/history_table</varname> of "
-"PostGIS source tar balls and source repository."
+"The <varname>history_table</varname> extension is written in plpgsql and "
+"located in the <varname>extras/history_table</varname> directory of the "
+"PostGIS source tree."
 msgstr ""
-"Das Modul <varname>history_table</varname> wurde zwar schon in PostGIS 1.5 "
-"mitpaketiert, ist dieser Dokumentation aber erst ab PostGIS 2.0 hinzugefügt "
-"worden. Das Modul wurde in PL/pgSQL geschrieben und befindet sich im "
-"Verzeichnis <varname>extras/history_table</varname> des PostGIS Quellcode "
-"Tarball und des Quellcode-Repository."
 
 #. Tag: para
 #, no-c-format
@@ -2466,52 +2337,33 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The script builds a schema called <varname>tiger</varname> to house all the "
-"tiger related functions, reusable lookup data such as road type prefixes, "
+"TIGER-related functions, reusable lookup data such as road type prefixes, "
 "suffixes, states, various control tables for managing data load, and "
-"skeleton base tables from which all the tiger loaded tables inherit from."
+"skeleton base tables from which all the TIGER-loaded tables inherit."
 msgstr ""
-"Das Skript erstellt ein Schema mit der Bezeichnung <varname>tiger</varname>, "
-"in dem sich alle auf TIGER bezogenen Funktionen befinden, sowie "
-"wiederverwendbare Daten, wie Präfixe für Straßentypen, Suffixe, Länder, "
-"verschiedene Kontrolltabellen zum Bewerkstelligen des Ladens von Daten, und "
-"Schablonen für die Basistabellen von denen alle geladenen TIGER-Tabellen "
-"erben."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Another schema called <varname>tiger_data</varname> is also created which "
-"houses all the census data for each state that the loader downloads from "
+"houses all the census data for each state that the loader downloads from the "
 "Census site and loads into the database. In the current model, each set of "
 "state tables is prefixed with the state code e.g <varname>ma_addr</varname>, "
 "<varname>ma_edges</varname> etc with constraints to enforce only that state "
 "data. Each of these tables inherits from the tables <varname>addr</varname>, "
 "<varname>faces</varname>, <varname>edges</varname>, etc located in the "
-"<varname>tiger schema</varname>."
+"<varname>tiger</varname> schema."
 msgstr ""
-"Eine weiteres Schema mit der Bezeichnung <varname>tiger_data</varname> "
-"enthält die Volkszählungsdaten aller Länder, die der Loader von der Census "
-"Seite in die Datenbank lädt. Im aktuellen Datenmodell erhalten die Tabellen "
-"eines Landes den Ländercode als Präfix - z.B. <varname>ma_addr</varname>, "
-"<varname>ma_edges</varname> etc. - und werden mit Constraints versehen, "
-"welche die Daten auf das jeweilige Land beschränken. Diese Tabellen erben "
-"alle von den Tabellen <varname>addr</varname>, <varname>faces</varname>, "
-"edges, etc., die sich in dem Schema <varname>tiger</varname> befinden."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "All the geocode functions only reference the base tables, so there is no "
 "requirement that the data schema be called <varname>tiger_data</varname> or "
-"that data can't be further partitioned into other schemas -- e.g a different "
-"schema for each state, as long as all the tables inherit from the tables in "
-"the <varname>tiger</varname> schema."
+"that data can't be further partitioned into other schemas -- e.g. a "
+"different schema for each state, as long as all the tables inherit from the "
+"tables in the <varname>tiger</varname> schema."
 msgstr ""
-"Da die Funktionen zur Geokodierung nur auf die Basistabellen verweisen, muss "
-"das Datenschema nicht notwendigerweise <varname>tiger_data</varname> "
-"heissen. Solange alle Tabellen von den Tabellen im Schema <varname>tiger</"
-"varname> erben, können die Daten auch auf andere Schemata weiter aufgeteilt "
-"werden -- z.B. ein anderes Schema für jedes Land."
 
 #. Tag: para
 #, no-c-format
@@ -2527,43 +2379,21 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"If you are using tiger geocoder (tiger_2010), you can upgrade the scripts "
-"using the accompanying upgrade_geocoder.bat / .sh scripts in extras/tiger. "
-"One major change between <varname>tiger_2010</varname> and "
+"If you are using the TIGER Geocoder (tiger_2010), you can upgrade the "
+"scripts using the accompanying upgrade_geocoder.bat / .sh scripts in extras/"
+"tiger. One major change between <varname>tiger_2010</varname> and "
 "<varname>tiger_2011+</varname> is that the <varname>county</varname> and "
 "<varname>state</varname> tables are no longer broken out by state. If you "
 "have data from tiger_2010 and want to replace with tiger_2015, refer to "
 "<xref linkend=\"upgrade_tiger_geocoder\"/>"
 msgstr ""
-"Wenn Sie den Tiger Geokodierer (tiger_2010) verwenden, können Sie die "
-"Skripts mit den beigefügten Shell-Skripts \"upgrade_geocoder.bat\" unter "
-"\"extras/tiger\" aktualisieren. Eine wesentliche Änderung zwischen "
-"<varname>tiger_2010</varname> und <varname>tiger_2011+</varname> ist, dass "
-"die Tabellen <varname>county</varname> und <varname>state</varname> nicht "
-"länger nach den Bundesstaaten gegliedert sind. Wenn Sie Daten von tiger_2010 "
-"haben und diese mit tiger_2015 ersetzen wollen, siehe <xref "
-"linkend=\"upgrade_tiger_geocoder\"/>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"New in PostGIS 2.2.0 release is support for Tiger 2015 data and inclusion of "
-"Address Standardizer as part of PostGIS."
+"You can install the TIGER Geocoder with the PostgreSQL extension model. "
+"Refer to <xref linkend=\"install_tiger_geocoder_extension\"/> for details."
 msgstr ""
-"Neu in der PostGIS 2.2.0 Release ist die Unterstützung von Tiger 2015 Daten "
-"und die Einbindung des Adressennormierers als Teil von PostGIS."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"New in PostGIS 2.1.0 release is ability to install tiger geocoder with "
-"PostgreSQL extension model if you are running PostgreSQL 9.1+. Refer to "
-"<xref linkend=\"install_tiger_geocoder_extension\"/> for details."
-msgstr ""
-"Falls Sie mit PostgreSQL 9.1+ arbeiten, haben Sie mit der PostGIS 2.1.0 "
-"Release die neue Möglichkeit, den Tiger Geokodierer mittels dem PostgreSQL "
-"Extension Modell zu installieren. Siehe <xref "
-"linkend=\"install_tiger_geocoder_extension\"/> für Details."
 
 #. Tag: para
 #, no-c-format
@@ -2602,13 +2432,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The <varname>reverse_geocode</varname> function, introduced in PostGIS 2.0.0 "
-"is useful for deriving the street address and cross streets of a GPS "
-"location."
+"The <varname>reverse_geocode</varname> function is useful for deriving the "
+"street address and cross streets of a GPS location."
 msgstr ""
-"Mit der Funktion <varname>reverse_geocode</varname>, die in PostGIS 2.0.0 "
-"eingeführt wurde, können mittels Geokoordinaten textuelle Lokationsangaben, "
-"wie Adressen und Straßenkreuzungen bestimmt werden."
 
 #. Tag: para
 #, no-c-format
@@ -2652,34 +2478,22 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"There are a couple other open source geocoders for PostGIS, that unlike "
-"tiger geocoder have the advantage of multi-country geocoding support"
+"There are a couple other open source geocoders for PostGIS, that unlike the "
+"TIGER Geocoder have the advantage of multi-country geocoding support"
 msgstr ""
-"Es existieren eine Reihe weiterer Open Source Geokodierer füf PostGIS, "
-"welche im Gegensatz zu dem Tiger Geokodierer den Vorteil haben, dass sie "
-"mehrere Länder unterstützen "
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<link xlink:href=\"http://wiki.openstreetmap.org/wiki/Nominatim\">Nominatim</"
 "link> uses OpenStreetMap gazeteer formatted data. It requires osm2pgsql for "
-"loading the data, PostgreSQL 8.4+ and PostGIS 1.5+ to function. It is "
-"packaged as a webservice interface and seems designed to be called as a "
-"webservice. Just like the tiger geocoder, it has both a geocoder and a "
-"reverse geocoder component. From the documentation, it is unclear if it has "
-"a pure SQL interface like the tiger geocoder, or if a good deal of the logic "
-"is implemented in the web interface."
+"loading the data together with PostgreSQL and PostGIS. It is packaged as a "
+"webservice interface and seems designed to be called as a webservice. Just "
+"like the TIGER Geocoder, it has both a geocoder and a reverse geocoder "
+"component. From the documentation, it is unclear if it has a pure SQL "
+"interface like the TIGER Geocoder, or if a good deal of the logic is "
+"implemented in the web interface."
 msgstr ""
-"<link xlink:href=\"http://wiki.openstreetmap.org/wiki/Nominatim\">Nominatim</"
-"link> verwendet Daten von OpenStreetMap, die mittels Gazetteer formatiert "
-"werden. Es benötigt osm2pgsql zum Laden der Daten, PostgreSQL 8.4+ und "
-"PostGIS 1.5+ um zu funktionieren. Es ist als Webinterface paketiert und wird "
-"vermutlich als Webservice aufgerufen. So wie der Tiger Geokodierer besteht "
-"es aus einem Geokodierer und einer inversen Komponente des Geokodierers. Aus "
-"der Dokumentation ist nicht ersichtlich, ob es wie der Tiger Geokodierer "
-"auch eine reine SQL Schnittstelle aufweist, oder ob ein größerer Anteil der "
-"Logik in das Webinterface implementiert wurde."
 
 #. Tag: para
 #, no-c-format
@@ -2885,17 +2699,6 @@ msgstr "Beispiele: Grundlagen"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"The below examples timings are on a 3.0 GHZ single processor Windows 7 "
-"machine with 2GB ram running PostgreSQL 9.1rc1/PostGIS 2.0 loaded with all "
-"of MA,MN,CA, RI state Tiger data loaded."
-msgstr ""
-"Die Zeitangaben für die unteren Beispiele beziehen sich auf einen 3.0 GHZ "
-"Prozessor mit Windows 7, 2GB RAM, PostgreSQL 9.1rc1/PostGIS 2.0 und den "
-"geladenen TIGER-Daten der Staaten MA, MN, CA und RI."
-
-#. Tag: para
-#, no-c-format
 msgid "Exact matches are faster to compute (61ms)"
 msgstr "Genaue Übereinstimmungen haben eine kürzere Rechenzeit (61ms)"
 
@@ -2993,26 +2796,6 @@ msgstr ""
 "(addy), die Punktgeometrie \"geomout\" in NAD 83 Länge/Breite und ein Rating "
 "zurück. Verwendet TIGER Daten (Kanten, Maschen, Adressen) und Fuzzy String "
 "Matching (soundex, levenshtein) von PostgreSQL."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The below examples timings are on a 3.0 GHZ single processor Windows 7 "
-"machine with 2GB ram running PostgreSQL 9.0/PostGIS 1.5 loaded with all of "
-"MA state Tiger data loaded. Currently a bit slow (3000 ms)"
-msgstr ""
-"Die Zeitangaben für die unteren Beispiele beziehen sich auf einen 3.0 GHZ "
-"Prozessor mit Windows 7, 2GB RAM, PostgreSQL 9.0/PostGIS 1.5 und den "
-"geladenen TIGER-Daten des Staates MA. Zurzeit ein bißchen langsam (3000ms)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Testing on Windows 2003 64-bit 8GB on PostGIS 2.0 PostgreSQL 64-bit Tiger "
-"2011 data loaded -- (41ms)"
-msgstr ""
-"Testlauf auf Windows 2003 64-bit 8GB mit PostGIS 2.0, PostgreSQL 64-bit und "
-"geladenen TIGER-Daten von 2011 -- (41ms)"
 
 #. Tag: para
 #, no-c-format
@@ -3251,13 +3034,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"includes this logic, but if you installed tiger geocoder prior to PostGIS "
-"2.0.0 alpha5, you'll need to run this on the states you have already done to "
-"get these additional tables."
+"includes this logic, but if you installed the TIGER Geocoder with older "
+"scripts, rerun it on the states you have already processed to get these "
+"additional tables."
 msgstr ""
-"beinhaltet diese Logik; wenn Sie aber den TIGER Geokodierer vor PostGIS "
-"2.0.0 alpha5 installiert haben, müssen Sie dies für bereits importierte "
-"Bundesstaaten ausführen, um die zusätzlichen Tabellen zu erhalten."
 
 #. Tag: para
 #, no-c-format
@@ -3426,24 +3206,19 @@ msgstr ""
 "Unix. Weitere können hinzugefügt werden."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"Enhanced: 2.4.1 zip code 5 tabulation area (zcta5) load step was fixed and "
+"Enhanced: 2.4.1 ZIP Code 5 tabulation area (zcta5) load step was fixed and "
 "when enabled, zcta5 data is loaded as a single table called zcta5_all as "
 "part of the nation script load."
 msgstr ""
-"Verbessert: 2.4.1 zip code 5 tabulation area (zcta5) Ladeschritt wurde "
-"korrigiert und wenn aktiviert, werden zcta5 Daten als eine einzige Tabelle "
-"namens zcta5_all als Teil des Nationenskripts geladen."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"If you want zip code 5 tabulation area (zcta5) to be included in your nation "
+"If you want ZIP Code 5 tabulation area (zcta5) to be included in your nation "
 "script load, do the following:"
 msgstr ""
-"Wenn Sie möchten, dass der Tabellierungsbereich der Postleitzahl 5 (zcta5) "
-"in Ihr Nationenskript geladen wird, gehen Sie wie folgt vor:"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -3694,11 +3469,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<varname>zip4</varname> last 4 digits of a 9 digit zip code. Availability: "
+"<varname>zip4</varname> last 4 digits of a 9 digit ZIP Code. Availability: "
 "PostGIS 2.4.0."
 msgstr ""
-"<varname>zip4</varname> die letzten 4 Zeichen des 9 Zeichen langen Zip-"
-"Codes. Verfügbarkeit: PostGIS 2.4.0."
 
 #. Tag: para
 #, no-c-format
@@ -4288,19 +4061,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The PostGIS topology module has existed in prior versions of PostGIS but was "
-"never part of the Official PostGIS documentation. In PostGIS 2.0.0 major "
-"cleanup is going on to remove use of all deprecated functions in it, fix "
-"known usability issues, better document the features and functions, add new "
-"functions, and enhance to closer conform to SQL-MM standards."
+"The PostGIS topology module has existed for a long time but was not always "
+"part of the official documentation. Extensive cleanup removed deprecated "
+"functions, fixed known usability issues, documented the features and "
+"functions, added new functionality, and improved SQL-MM compliance."
 msgstr ""
-"Das PostGIS Modul \"Topologie\" gab es auch schon in früheren Versionen von "
-"PostGIS, es war aber nie Teil der offiziellen PostGIS Dokumentation. In "
-"PostGIS 2.0.0 fand eine umfangreiche Überarbeitung statt, um überholte "
-"Funktionen zu entfernen, bekannte Probleme mit der Bedienbarkeit zu "
-"bereinigen, bessere Dokumentation der Funktionalität, Einführung neuer "
-"Funktionen, und eine bessere Übereinstimmung mit den SQL-MM Normen zu "
-"erreichen."
 
 #. Tag: para
 #, no-c-format
@@ -4333,14 +4098,90 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Topology support is build by default starting with PostGIS 2.0, and can be "
-"disabled specifying --without-topology configure option at build time as "
-"described in <xref linkend=\"postgis_installation\"/>"
+"Topology support is built by default and can be disabled by specifying the --"
+"without-topology configure option at build time as described in <xref "
+"linkend=\"postgis_installation\"/>"
 msgstr ""
-"Ab PostGIS 2.0 wird die Topologie Unterstützung standardmäßig mitkompiliert "
-"und kann bei der Konfiguration mittels der Konfigurationsoption \"--without-"
-"topology\",  wie in <xref linkend=\"postgis_installation\"/> beschrieben, "
-"deaktiviert werden."
+
+#. Tag: title
+#, no-c-format
+msgid "Topology Primitive Tables"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The core primitives of any topology are stored in the <varname>edge_data</"
+"varname>, <varname>node</varname>, and <varname>face</varname> tables that "
+"live in the schema created by <xref linkend=\"CreateTopology\"/>. Each row "
+"of <varname>edge_data</varname> represents an oriented edge: it records a "
+"directed curve from <varname>start_node</varname> to <varname>end_node</"
+"varname> together with the identifier of the face encountered on the left of "
+"that direction (<varname>left_face</varname>) and the face encountered on "
+"the right (<varname>right_face</varname>). The same geometric segment may "
+"therefore appear twice—once for each orientation—when it belongs to two "
+"faces."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <varname>next_left_edge</varname> and <varname>next_right_edge</varname> "
+"columns complete this orientation information by encoding how to keep "
+"walking around a face. They store signed integers whose absolute value is "
+"the identifier of the next oriented edge and whose sign determines whether "
+"the stored orientation has to be followed as-is or reversed when traversing. "
+"Formally, the following rules hold for every edge <varname>e</varname>:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>abs(next_left_edge)</varname> is the identifier of the edge reached "
+"by continuing around the face that lies to the left of <varname>e</varname>. "
+"If the value is positive the walk continues from the end node of <varname>e</"
+"varname> along the stored orientation of the referenced edge; if it is "
+"negative the referenced edge must be followed backwards so that the shared "
+"face remains on the walker’s left."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>abs(next_right_edge)</varname> analogously follows the boundary of "
+"the face located on the right of <varname>e</varname>. A positive value "
+"means that the next edge is taken with its recorded orientation starting "
+"from the end node of <varname>e</varname>, whereas a negative value "
+"instructs to traverse the referenced edge in reverse, starting from its end "
+"node, so that the right-hand face is preserved."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A zero value indicates that the edge is dangling on the corresponding side "
+"(for example an isolated edge whose incident face is the universal face "
+"<varname>0</varname>). The <varname>abs_next_left_edge</varname> and "
+"<varname>abs_next_right_edge</varname> columns exposed by the <varname>edge</"
+"varname> view are convenience projections of these absolute values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This representation is a variant of a doubly connected edge list and is "
+"exploited by many topology routines. Functions such as <xref "
+"linkend=\"GetRingEdges\"/> and <xref linkend=\"ValidateTopology\"/> rely on "
+"it to reconstruct face boundaries and to diagnose inconsistencies—hence the "
+"“invalid next_left_edge” and “invalid next_right_edge” diagnostics reported "
+"during validation. Constructors like <xref linkend=\"AddEdge\"/> initialise "
+"the <varname>next_*</varname> attributes with trivial self references, while "
+"editing routines including <xref linkend=\"ST_AddEdgeModFace\"/> and <xref "
+"linkend=\"ST_RemEdgeModFace\"/> update the links as edges are inserted or "
+"removed. Other bulk operations (for example <xref "
+"linkend=\"TopologyPolygonize\"/>) may intentionally leave the fields unset, "
+"which is why the documentation flags their behaviour explicitly."
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -4856,6 +4697,32 @@ msgstr ""
 "Gibt eine Zusammenfassung des Löschstatus aus. ANMERKUNG: vor dem Löschen "
 "werden alle Werte auf NULL gesetzt, um die Überprüfung der referenziellen "
 "Integrität zu umgehen."
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Fixes topogeometry corruption caused by upgrade to postgis_topology 3.6.0 "
+"and higher"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When upgrading from PostGIS topology &lt;3.6.0 to version &gt;3.6.0+, the "
+"topogeometry column definition was changed. This caused corruption in "
+"topogeometries created before the upgrade. This function fixes this "
+"corruption in affected tables."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.1"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Fix all topology columns"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5614,9 +5481,16 @@ msgstr ""
 "Funktionen."
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Enhanced: 2.0 added the signature accepting hasZ"
-msgstr "Verbessert: 2.0 fügte die Signatur hinzu, die hasZ akzeptiert"
+#, no-c-format
+msgid "Enhanced: 2.0 added support for <varname>hasZ</varname>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Enhanced: 3.6.0 added <varname>topoid</varname> and <varname>usesLargeIDs</"
+"varname> parameters."
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -5805,17 +5679,31 @@ msgstr ""
 msgid ""
 "Adds a linestring to an existing topology and returns a set of signed edge "
 "identifiers forming it up (negative identifies mean the edge goes in the "
-"opposite direction of the input linestring). The given line will snap to "
-"existing nodes or edges within given tolerance. Existing edges and faces may "
-"be split by the line. New nodes and faces may be added."
+"opposite direction of the input linestring)."
 msgstr ""
-"Fügt einen Linienzug zu einer bestehenden Topologie hinzu und gibt einen "
-"Satz vorzeichenbehafteter Kantenbezeichner zurück, aus denen dieser "
-"aufgebaut ist (ein negativer Bezeichner bedeutet, dass die Kante in die "
-"entgegengesetzte Richtung des gegebenen Linienzugs verläuft). Die angegebene "
-"Linie rastet an vorhandenen Knoten oder Kanten innerhalb einer gegebenen "
-"Toleranz ein. Vorhandene Kanten und Maschen können an der Linie aufgetrennt "
-"werden. Neue Knoten und Maschen können hinzugefügt werden."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The given line will snap to existing nodes or edges within given tolerance. "
+"Existing edges and faces may be split by the line. New nodes and faces may "
+"be added, in addition to new edges."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The returned edge identifiers may be either existing edges or newly created "
+"edges as needed to fully represent the input line as closely as possible."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The number of newly created edges (either covering space previously "
+"uncovered or resulting from split of existing edges) may be limited by the "
+"<varname>max_edges</varname> parameter."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -5833,6 +5721,13 @@ msgid "Enhanced: 3.2.0 added support for returning signed identifier."
 msgstr ""
 "Erweitert: In Version 3.2.0 wurde Unterstützung für die Rückgabe signierter "
 "Identifikatoren hinzugefügt."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Enhanced: 3.7.0 added support for limiting the number of new edges created "
+"in the topology."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -7506,10 +7401,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "When <varname>tolerance</varname> is given it will be used to snap the input "
-"geometry to existing primitives."
+"geometry to existing primitives. The special value -1 (default) means use "
+"the topology precision as tolerance."
 msgstr ""
-"Wenn <varname>tolerance</varname> angegeben ist, wird diese zum Fangen der "
-"Eingabegeometrie an bestehenden Elementarstrukturen verwendet."
 
 #. Tag: para
 #, no-c-format
@@ -7543,6 +7437,13 @@ msgid "Enhanced: 2.1.0 adds the version taking an existing TopoGeometry."
 msgstr ""
 "Erweiterung: 2.1.0 die Version, welche eine bestehende TopoGeometry "
 "entgegennimmt, wurde hinzugefügt."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Changed: 3.7.0 changes meaning of tolerance 0 to really mean 0 and -1 (new "
+"default) to request using the topology precision."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -9070,41 +8971,25 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"As of PostGIS v1.4.0, all the functions have comments generated from the "
-"documentation. If you wish to install these comments into your spatial "
-"databases later, run the command which requires docbook. The "
-"postgis_comments.sql and other package comments files raster_comments.sql, "
-"topology_comments.sql are also packaged in the tar.gz distribution in the "
-"doc folder so no need to make comments if installing from the tar ball. "
-"Comments are also included as part of the CREATE EXTENSION install."
+"All the functions have comments generated from the documentation. If you "
+"wish to install these comments into your spatial databases later, run the "
+"command which requires docbook. The postgis_comments.sql and other package "
+"comment files are also packaged in the tar.gz distribution in the doc folder "
+"so no need to make comments if installing from the tar ball. Comments are "
+"also included as part of the CREATE EXTENSION install."
 msgstr ""
-"Seit PostGIS v1.4.0 haben alle Funktionen Kommentare, welche aus der "
-"Dokumentation erstellt werden. Wenn Sie diese Kommentare später in die "
-"räumliche Datenbank importieren wollen, können Sie den Befehl ausführen der "
-"\"docbook\" benötigt. Die Dateien \"postgis_comments.sql\", "
-"\"raster_comments.sql\" und \"topology_comments.sql\" sind im Ordner \"doc\" "
-"der \"tar.gz\"-Distribution mit paketiert, weshalb Sie bei einer "
-"Installation vom \"tar ball\" her, die Kommentare nicht selbst erstellen "
-"müssen. Die Kommentare werden auch als Teil der Installation \"CREATE "
-"EXTENSION\" angelegt."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Introduced in PostGIS 2.0. This generates html cheat sheets suitable for "
-"quick reference or for student handouts. This requires xsltproc to build and "
-"will generate 4 files in doc folder <filename>topology_cheatsheet.html</"
-"filename>, <filename>tiger_geocoder_cheatsheet.html</filename>, "
-"<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet."
-"html</filename>"
-msgstr ""
-"Eingeführt in PostGIS 2.0. Erzeugt HTML-Spickzettel, die als schnelle "
-"Referenz oder als Handzettel für Studenten geeignet sind. Dies benötigt "
-"xsltproc zur Kompilation und erzeugt 4 Dateien in dem Ordner \"doc\": "
-"<filename>topology_cheatsheet.html</filename>,"
+"The <command>make cheatsheets</command> target generates html cheat sheets "
+"suitable for quick reference or for student handouts. This requires xsltproc "
+"to build and will generate 4 files in doc folder "
+"<filename>topology_cheatsheet.html</filename>, "
 "<filename>tiger_geocoder_cheatsheet.html</filename>, "
 "<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet."
 "html</filename>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -9125,11 +9010,9 @@ msgstr "Build-Prozess für die PostGIS Extensions und deren Bereitstellung"
 #. Tag: para
 #, no-c-format
 msgid ""
-"The PostGIS extensions are built and installed automatically if you are "
-"using PostgreSQL 9.1+."
+"The PostGIS extensions are built and installed automatically when PostgreSQL "
+"extension support is available."
 msgstr ""
-"Die PostGIS Erweiterungen/Extensions werden ab PostgreSQL 9.1+ automatisch "
-"kompiliert und installiert."
 
 #. Tag: para
 #, no-c-format
@@ -9297,30 +9180,15 @@ msgid ""
 "Extension tables <varname>spatial_ref_sys</varname>, <varname>layer</"
 "varname>, <varname>topology</varname> can not be explicitly backed up. They "
 "can only be backed up when the respective <varname>postgis</varname> or "
-"<varname>postgis_topology</varname> extension is backed up, which only seems "
-"to happen when you backup the whole database. As of PostGIS 2.0.1, only srid "
-"records not packaged with PostGIS are backed up when the database is backed "
-"up so don't go around changing srids we package and expect your changes to "
-"be there. Put in a ticket if you find an issue. The structures of extension "
-"tables are never backed up since they are created with <code>CREATE "
-"EXTENSION</code> and assumed to be the same for a given version of an "
-"extension. These behaviors are built into the current PostgreSQL extension "
-"model, so nothing we can do about it."
+"<varname>postgis_topology</varname> extension is backed up, which only "
+"happens when you back up the whole database. Only srid records not packaged "
+"with PostGIS are captured in backups, so don't change the entries we ship "
+"and expect the modifications to persist. Put in a ticket if you find an "
+"issue. The structures of extension tables are never backed up since they are "
+"created with <code>CREATE EXTENSION</code> and assumed to be the same for a "
+"given version of an extension. These behaviors are built into the current "
+"PostgreSQL extension model."
 msgstr ""
-"Die Erweiterungstabellen <varname>spatial_ref_sys</varname>. <varname>layer</"
-"varname> und <varname>topology</varname> können nicht explizit gesichert "
-"werden. Sie können nur mit der entsprechenden <varname>postgis</varname> "
-"oder <varname>postgis_topology</varname> Erweiterung gesichert werden, was "
-"nur geschieht, wenn Sie die ganze Datenbank sichern. Ab PostGIS 2.0.2 werden "
-"nur diejenigen Datensätze von SRID beim Backup der Datenbank gesichert, die "
-"nicht mit PostGIS paketiert sind. Sie sollten daher keine paketierte SRID "
-"ändern und Sie können erwarten, dass Ihre Änderungen gesichert werden. Wenn "
-"Sie irgendein Problem finden, reichen Sie bitte ein Ticket ein. Die Struktur "
-"der Erweiterungstabellen wird niemals gesichert, da diese mit <code>CREATE "
-"EXTENSION</code> erstellt wurde und angenommen wird, dass sie für eine "
-"bestimmten Version einer Erweiterung gleich ist. Dieses Verhalten ist in dem "
-"aktuellen PostgreSQL Extension Model eingebaut, weshalb wir daran nichts "
-"ändern können."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -9385,6 +9253,27 @@ msgstr ""
 "wurde. Daher stellen Sie sicher, dass die Variable PATH mit der während der "
 "Konfiguration dedektierten Installation von PostgreSQL übereinstimmt, oder "
 "seien Sie auf drohende Kopfschmerzen vorbereitet."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Sandboxed build accounts that are not PostgreSQL superusers can delegate "
+"database ownership during the regression cycle by exporting "
+"<varname>POSTGIS_REGRESS_DB_OWNER</varname>. The harness will create the "
+"temporary regression database owned by the nominated role while continuing "
+"to connect using the less privileged account. Combine this with "
+"<varname>POSTGIS_REGRESS_ROLE_EXT_CREATOR</varname> when the extension "
+"creation role must differ from the database owner."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"These variables allow automated environments to exercise the full upgrade "
+"and extension install paths without promoting the calling account to "
+"superuser, provided the target PostgreSQL instance permits extension "
+"installation by those delegate roles."
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -9520,17 +9409,11 @@ msgstr "Installation und Verwendung des Adressennormierers"
 #. Tag: para
 #, no-c-format
 msgid ""
-"The <code>address_standardizer</code> extension used to be a separate "
-"package that required separate download. From PostGIS 2.2 on, it is now "
-"bundled in. For more information about the address_standardize, what it "
-"does, and how to configure it for your needs, refer to <xref "
-"linkend=\"Address_Standardizer\"/>."
+"The <code>address_standardizer</code> extension is bundled with PostGIS. For "
+"more information about the address_standardizer, what it does, and how to "
+"configure it for your needs, refer to <xref linkend=\"Address_Standardizer\"/"
+">."
 msgstr ""
-"Die Erweiterung <code>address_standardizer</code> musste als getrenntes "
-"Paket heruntergeladen werden. Ab PostGIS 2.2 ist es mitgebündelt. Für "
-"weitere Informationen zu dem address_standardizer, was er kann und wie man "
-"ihn für spezielle Bedürfnisse konfigurieren kann, siehe <xref "
-"linkend=\"Address_Standardizer\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -9575,14 +9458,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For Windows users, the PostGIS 2.1+ bundle is packaged with the "
-"address_standardizer already so no need to compile and can move straight to "
-"<code>CREATE EXTENSION</code> step."
+"Windows installation packages include the address_standardizer so you can "
+"move straight to the <code>CREATE EXTENSION</code> step."
 msgstr ""
-"Für Windows Benutzer ist ab PostGIS 2.1+ die Erweiterung "
-"\"address_standardizer\" bereits mitpaketiert. Somit besteht keine "
-"Notwendigkeit zu Kompilieren und es kann sofort der Schritt <code>CREATE "
-"EXTENSION</code> ausgeführt werden."
 
 #. Tag: para
 #, no-c-format
@@ -9735,19 +9613,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"As of PostGIS 2.4.1 the Zip code-5 digit tabulation area <varname>zcta5</"
-"varname> load step was revised to load current zcta5 data and is part of the "
-"<xref linkend=\"Loader_Generate_Nation_Script\"/> when enabled. It is turned "
-"off by default because it takes quite a bit of time to load (20 to 60 "
-"minutes), takes up quite a bit of disk space, and is not used that often."
+"The Zip code-5 digit tabulation area <varname>zcta5</varname> load step uses "
+"current ZCTA data and is part of the <xref "
+"linkend=\"Loader_Generate_Nation_Script\"/> when enabled. It is turned off "
+"by default because it takes quite a bit of time to load (20 to 60 minutes), "
+"takes up quite a bit of disk space, and is not used that often."
 msgstr ""
-"Ab PostGIS 2.4.1 wurde der Ladevorgang der \"Zip code-5 digit tabulation "
-"area\" <varname>zcta5</varname> überarbeitet, um aktuelle zcta5 Daten zu "
-"laden und ist nun ein Teil von <xref "
-"linkend=\"Loader_Generate_Nation_Script\"/>, falls aktiviert. Standardmäßig "
-"ausgeschaltet, da der Ladevorgang ziemlich viel Zeit benötigt (20 bis 60 "
-"Minuten), ziemlich viel Festplattenspeicher beansprucht wird und es nur "
-"selten verwendet wird."
 
 #. Tag: para
 #, no-c-format
@@ -10482,6 +10353,16 @@ msgstr "Aliaksandr Kalenik"
 msgid "Geometry Processing, PostgreSQL gist, general bug fixing"
 msgstr "Geometrieverarbeitung, PostgreSQL gist, allgemeine Fehlerbehebung"
 
+#. Tag: term
+#, no-c-format
+msgid "<term>Laurențiu Nicola</term>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Bug fixes, maintenance, stability, and performance"
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Core Contributors Past"
@@ -11023,7 +10904,7 @@ msgstr "Kris Jurka"
 
 #. Tag: member
 #, no-c-format
-msgid "Laurențiu Nicola"
+msgid "<member>Laurențiu Nicola</member>"
 msgstr ""
 
 #. Tag: member
@@ -11582,13 +11463,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"PostGIS 2.0.0 was the first release we tried this strategy. We used <link "
-"xlink:href=\"http://www.pledgebank.com\">PledgeBank</link> and we got two "
-"successful campaigns out of it."
+"PostGIS has experimented with community fundraising for features in the "
+"past. We used <link xlink:href=\"http://www.pledgebank.com\">PledgeBank</"
+"link> and we got two successful campaigns out of it."
 msgstr ""
-"PostGIS 2.0.0 war die erste Version, mit der wir diese Strategie verfolgten. "
-"Wir benutzten <link xlink:href=\"http://www.pledgebank.com\">PledgeBank</"
-"link> und hatten zwei erfolgreiche Kampagnen."
 
 #. Tag: para
 #, no-c-format
@@ -11687,22 +11565,14 @@ msgstr "Problembeschreibung"
 #. Tag: para
 #, no-c-format
 msgid ""
-"Current PostgreSQL versions (including 9.6) suffer from a query optimizer "
-"weakness regarding TOAST tables. TOAST tables are a kind of \"extension "
-"room\" used to store large (in the sense of data size) values that do not "
-"fit into normal data pages (like long texts, images or complex geometries "
-"with lots of vertices), see <link xlink:href=\"http://www.postgresql.org/"
-"docs/current/static/storage-toast.html\">the PostgreSQL Documentation for "
-"TOAST</link> for more information)."
+"Current PostgreSQL versions suffer from a query optimizer weakness regarding "
+"TOAST tables. TOAST tables are a kind of \"extension room\" used to store "
+"large (in the sense of data size) values that do not fit into normal data "
+"pages (like long texts, images or complex geometries with lots of vertices), "
+"see <link xlink:href=\"http://www.postgresql.org/docs/current/static/storage-"
+"toast.html\">the PostgreSQL Documentation for TOAST</link> for more "
+"information)."
 msgstr ""
-"Aktuelle PostgreSQL Versionen (inklusive 9.6) haben eine Schwäche des "
-"Optimizers in Bezug auf TOAST Tabellen. TOAST Tabellen bieten eine Art "
-"\"Erweiterungsraum\", der benutzt wird um große Werte (im Sinne der "
-"Datengröße), welche nicht in die üblichen Datenspeicherseiten passen (wie "
-"lange Texte, Bilder oder eine komplexe Geometrie mit vielen Stützpunkten) "
-"auszulagern, siehe  <link xlink:href=\"http://www.postgresql.org/docs/"
-"current/static/storage-toast.html\">the PostgreSQL Documentation for TOAST</"
-"link> für mehr Information)."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -12465,6 +12335,15 @@ msgstr ""
 msgid "Geometry Accessors"
 msgstr "Geometrische Zugriffsfunktionen"
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"These functions expose structural information about an existing geometry "
+"without changing it. They provide access to metadata such as geometry type, "
+"dimensionality, or coordinate components so that spatial expressions can "
+"interrogate complex objects in a controlled way."
+msgstr ""
+
 #. Tag: refpurpose
 #, fuzzy, no-c-format
 msgid "Returns the type of a geometry as text."
@@ -13029,12 +12908,12 @@ msgstr ""
 "inneren Ringe (Löcher) haben Indizes von 1 und höher."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"This only works for POLYGON geometries. It does not work for MULTIPOLYGONS"
+"This only works for POLYGON geometries, not MULTIPOLYGONs. Use <xref "
+"linkend=\"ST_Dump\"/> to extract polygon elements from polygonal geometries: "
+"<code>ST_DumpRings( (ST_Dump(geom)).geom )</code>"
 msgstr ""
-"Dies funktioniert nicht mit MULTIPOLYGONen. Verwenden Sie die Funktion bitte "
-"in Zusammenhang mit ST_Dump um sie auf MULTIPOLYGONe anzuwenden."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -13042,14 +12921,14 @@ msgid "Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher."
 msgstr "Verfügbarkeit: PostGIS 1.1.3. Benötigt PostgreSQL 7.3 oder höher."
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "General form of query."
-msgstr "Allgemeine Form der Abfrage."
+#, no-c-format
+msgid "Extracting all rings as polygons."
+msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "A polygon with a single hole."
-msgstr "Ein Polygon mit einem einzigen Loch."
+#, no-c-format
+msgid "Extracting shell and holes from a polygon."
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -14938,13 +14817,12 @@ msgstr ""
 "nicht automatisch gecastet werden."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
-"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
+"linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
+"linkend=\"ST_MMin\"/>, <xref linkend=\"ST_MMax\"/>"
 msgstr ""
-", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
-"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -14993,13 +14871,12 @@ msgstr ""
 "Geometrie zurück.</para>"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
-"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+"linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
+"linkend=\"ST_MMin\"/>, <xref linkend=\"ST_MMax\"/>"
 msgstr ""
-", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
-"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -15019,15 +14896,13 @@ msgstr ""
 "Geometrie zurück.</para>"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
-"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
-"linkend=\"ST_ZMin\"/>"
+"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref "
+"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMin\"/>, <xref "
+"linkend=\"ST_MMax\"/>"
 msgstr ""
-", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
-"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
-"linkend=\"ST_ZMin\"/>"
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -15047,15 +14922,13 @@ msgstr ""
 "Geometrie zurück.</para>"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
-"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
-"linkend=\"ST_ZMax\"/>"
+"linkend=\"ST_YMin\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
+"linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_MMin\"/>, <xref "
+"linkend=\"ST_MMax\"/>"
 msgstr ""
-", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
-"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
-"linkend=\"ST_ZMax\"/>"
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -15075,15 +14948,40 @@ msgstr ""
 "Geometrie zurück.</para>"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
-"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
-"linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
+"linkend=\"ST_MMin\"/>, <xref linkend=\"ST_MMax\"/>"
 msgstr ""
-", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
-"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
-"linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Returns the M minima of a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the M minima of a geometry, or null of the geometry lacks M values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref "
+"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMax\"/>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref "
+"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMin\"/>"
+msgstr ""
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -15475,6 +15373,14 @@ msgstr ""
 msgid "Geometry Constructors"
 msgstr "Geometrische Konstruktoren"
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"These functions instantiate new geometry or geography values. They assemble "
+"primitives, coordinate sequences, or existing geometries into well-formed "
+"spatial objects that can participate in subsequent analysis."
+msgstr ""
+
 #. Tag: refpurpose
 #, fuzzy, no-c-format
 msgid ""
@@ -15729,18 +15635,21 @@ msgstr ""
 "Klausel."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Repeated nodes at the beginning of input LineStrings are collapsed to a "
 "single point. Repeated points in Point and MultiPoint inputs are not "
-"collapsed. <xref linkend=\"ST_RemoveRepeatedPoints\"/> can be used to "
-"collapse repeated points from the output LineString."
+"collapsed. Components of MultiLineString are handled in the order they "
+"appear in the collection. <xref linkend=\"ST_RemoveRepeatedPoints\"/> can be "
+"used to collapse repeated points from the output LineString."
 msgstr ""
-"Wiederholte Knoten am Anfang von Eingabe-LineStrings werden zu einem "
-"einzigen Punkt zusammengezogen. Wiederholte Punkte in Punkt- und Multipunkt-"
-"Eingaben werden nicht zusammengeklappt. <xref "
-"linkend=\"ST_RemoveRepeatedPoints\"/> kann verwendet werden, um wiederholte "
-"Punkte aus dem Ausgabe-LineString zu klappen."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Availability: 3.7.0 - Support for MultiLineString input elements was "
+"introduced"
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -15834,14 +15743,12 @@ msgstr ""
 "korrekt geordneten LineString."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"Prior to PostgreSQL 9, ordering in a subquery can be used. However, "
-"sometimes the query plan may not respect the order of the subquery."
+"When ordering within the aggregate is not possible, ordering in a subquery "
+"can be used. However, sometimes the query plan may not respect the order of "
+"the subquery."
 msgstr ""
-"Vor PostgreSQL 9 kann die Reihenfolge in einer Subquery verwendet werden. "
-"Allerdings kann es vorkommen, dass der Abfrageplan die Reihenfolge der "
-"Unterabfrage nicht berücksichtigt."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -16917,6 +16824,132 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Computes a clean (edge matched, non-overlapping, gap-cleared) polygonal "
+"coverage, given a non-clean input."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A window function which adjusts the edges of a set of valid polygonal "
+"geometries to produce a clean coverage. Cleaning involves:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"snapping vertices and edges to remove small discrepancies and ensure common "
+"edges are identically noded"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "merging overlaps into a parent polygon"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "merging narrow gaps into adjacent polygons"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<parameter>gapMaximumWidth</parameter> controls which gaps between polygons "
+"are merged. Gaps with width &lt;= this distance are merged into an adjacent "
+"polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<parameter>snappingDistance</parameter> controls snapping of vertices and "
+"edges. The default (-1) automatically determines a snapping distance based "
+"on the input extent. Set to 0.0 to turn off snapping."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<parameter>overlapMergeStrategy</parameter> specifies how overlaps are "
+"merged into a parent polygon:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<code>MERGE_LONGEST_BORDER</code> - merges into polygon with longest common "
+"border"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<code>MERGE_MAX_AREA</code> - merges into polygon with maximum area"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<code>MERGE_MIN_AREA</code> - merges into polygon with minimum area"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<code>MERGE_MIN_INDEX</code> - merges into polygon with smallest input index "
+"(defined by order of input polygons)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The result is a clean polygonal coverage that will pass validation by <xref "
+"linkend=\"ST_CoverageInvalidEdges\"/> and can be input to coverage "
+"processing functions."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"To aid in determining a maximum gap width, gaps can be computed by cleaning "
+"with <code>gapMaximumWidth => 0</code> and using <xref "
+"linkend=\"ST_CoverageUnion\"/> to union the result coverage. Holes in the "
+"union correspond to gaps in the original dataset. Gap widths can be measured "
+"by extracting the holes as polygons and running <xref "
+"linkend=\"ST_MaximumInscribedCircle\"/> on them; the gap width is twice the "
+"computed radius."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.6.0 - requires GEOS &gt;= 3.14.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Polygons with overlaps and gaps"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Invalid coverage edges"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Clean polygonal coverage, with overlaps and narrow gaps removed"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_CoverageUnion\"/>, <xref "
+"linkend=\"ST_CoverageSimplify\"/>, <xref "
+"linkend=\"ST_MaximumInscribedCircle\"/>"
+msgstr ""
+
+#. Tag: refpurpose
 #, fuzzy, no-c-format
 msgid "Window function that simplifies the edges of a polygonal coverage."
 msgstr ""
@@ -17044,77 +17077,6 @@ msgstr "Unionsergebnis"
 msgid ""
 ", <xref linkend=\"ST_CoverageSimplify\"/>, <xref "
 "linkend=\"ST_CoverageClean\"/>, <xref linkend=\"ST_Union\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Computes a clean (edge matched, non-overlapping, gap-cleared) polygonal "
-"coverage, given a non-clean input."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A window function which alters the edges of a polygonal coverage to ensure "
-"that none of the polygons overlap, that small gaps are snapped away, and "
-"that all shared edges are exactly identical. The result is a clean coverage "
-"that will pass validation tests like <xref "
-"linkend=\"ST_CoverageInvalidEdges\"/>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The <parameter>gapMaximumWidth</parameter> controls the cleaning of gaps "
-"between polygons. Gaps smaller than this tolerance will be closed."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The <parameter>snappingDistance</parameter> controls the node snapping step, "
-"when nearby vertices are snapped together. The default setting (-1) applies "
-"an automatic snapping distance based on an analysis of the input. Set to 0.0 "
-"to turn off all snapping."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The <parameter>overlapMergeStrategy</parameter> controls the algorithm used "
-"to determine which neighboring polygons to merge overlapping areas into."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<code>MERGE_LONGEST_BORDER</code> chooses polygon with longest common border"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "<code>MERGE_MAX_AREA</code> chooses polygon with maximum area"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "<code>MERGE_MIN_AREA</code> chooses polygon with minimum area"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "<code>MERGE_MIN_INDEX</code> chooses polygon with smallest input index"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 3.6.0 - requires GEOS &gt;= 3.14.0"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_Union\"/> <xref linkend=\"ST_CoverageSimplify\"/>"
 msgstr ""
 
 #. Tag: title
@@ -19022,13 +18984,10 @@ msgstr "Außergewöhnliche Funktionen"
 #. Tag: para
 #, no-c-format
 msgid ""
-"These functions are rarely used functions that should only be used if your "
-"data is corrupted in someway. They are used for troubleshooting corruption "
-"and also fixing things that should under normal circumstances, never happen."
+"These routines are reserved for diagnosing and repairing data corruption. "
+"They provide last-resort maintenance operations that are not required during "
+"normal spatial workflows."
 msgstr ""
-"Diese selten genutzten Funktionen sollten nur im Fall beschädigter Daten "
-"verwendet werden. Sie werden zur Fehlerbeseitigung und zur Reperatur von "
-"Dingen verwendet, die unter normalen Umständen nicht vorkommen sollten."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -20260,18 +20219,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"In PostgreSQL 9.1+ - standard_conforming_strings is set to on by default, "
-"where as in past versions it was set to off. You can change defaults as "
-"needed for a single query or at the database or server level. Below is how "
-"you would do it with standard_conforming_strings = on. In this case we "
-"escape the ' with standard ansi ', but slashes are not escaped"
+"In PostgreSQL, standard_conforming_strings is set to on by default. You can "
+"change the default as needed for a single query or at the database or server "
+"level. Below is how you would do it with standard_conforming_strings = on. "
+"In this case we escape the ' with standard ANSI ', but slashes are not "
+"escaped"
 msgstr ""
-"Ab PostgreSQL 9.1 - ist standard_conforming_strings standardmäßig auf \"on\" "
-"gesetzt. Bei Vorgängerversionen war es \"off\". Sie können die "
-"Standardvorgaben für eine einzelne Abfrage ändern oder auf Datenbank- oder "
-"Serverebene setzen. Unterhalb steht, wie Sie dies mit "
-"standard_conforming_strings = on umsetzten können. In diesem Fall maskieren "
-"wir das ' mit dem ANSI Zeichen ', aber Schrägstriche werden nicht maskiert"
 
 #. Tag: para
 #, no-c-format
@@ -21003,6 +20956,15 @@ msgstr "<varname>data</varname> Eingabe FlatGeobuf-Daten."
 #, no-c-format
 msgid "Linear Referencing"
 msgstr "Kilometrierung"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"These functions measure and locate events along linear features. They "
+"support the classic linear referencing workflow of expressing positions as "
+"fractions or measures along routes and of projecting those measures back "
+"into spatial coordinates."
+msgstr ""
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -22884,20 +22846,14 @@ msgstr ""
 "Koordinatenreferenzsystem festgelegt."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "For geography types: computation is performed using the inverse geodesic "
-"calculation. Units of length are in meters. If PostGIS is compiled with PROJ "
-"version 4.8.0 or later, the spheroid is specified by the SRID, otherwise it "
-"is exclusive to WGS84. If <varname>use_spheroid = false</varname>, then the "
-"calculation is based on a sphere instead of a spheroid."
+"calculation. Units of length are in meters. The spheroid is specified by the "
+"SRID; when no SRID is provided, WGS84 is used. If <varname>use_spheroid = "
+"false</varname>, then the calculation is based on a sphere instead of a "
+"spheroid."
 msgstr ""
-"Für Geografietypen: Die Berechnung erfolgt über die inverse geodätische "
-"Berechnung. Die Längeneinheiten sind in Meter. Wenn PostGIS mit PROJ Version "
-"4.8.0 oder später kompiliert wurde, wird das Sphäroid durch den SRID "
-"angegeben, andernfalls ausschließlich WGS84. Wenn <varname>use_spheroid = "
-"false</varname>, dann basiert die Berechnung auf einer Kugel anstelle eines "
-"Sphäroids."
 
 #. Tag: para
 #, no-c-format
@@ -23420,20 +23376,14 @@ msgstr ""
 "Koordinatenreferenzsystem der Geometrie festgelegt."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "For geography types, the calculations are performed using the inverse "
-"geodesic problem, where perimeter units are in meters. If PostGIS is "
-"compiled with PROJ version 4.8.0 or later, the spheroid is specified by the "
-"SRID, otherwise it is exclusive to WGS84. If <varname>use_spheroid = false</"
-"varname>, then calculations will approximate a sphere instead of a spheroid."
+"geodesic problem, where perimeter units are in meters. The spheroid is "
+"specified by the SRID; when no SRID is provided, WGS84 is used. If "
+"<varname>use_spheroid = false</varname>, then calculations will approximate "
+"a sphere instead of a spheroid."
 msgstr ""
-"Bei geographischen Typen werden die Berechnungen mit dem inversen "
-"geodätischen Problem durchgeführt, wobei die Perimetereinheiten in Metern "
-"angegeben werden. Wenn PostGIS mit PROJ Version 4.8.0 oder später kompiliert "
-"wurde, wird das Sphäroid durch den SRID spezifiziert, andernfalls ist es "
-"ausschließlich WGS84. Wenn <varname>use_spheroid = false</varname>, dann "
-"werden die Berechnungen eine Kugel anstelle eines Sphäroids approximieren."
 
 #. Tag: para
 #, no-c-format
@@ -23656,6 +23606,16 @@ msgstr ""
 msgid "Operators"
 msgstr "Operatoren"
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"These entries document the spatial operators defined by PostGIS. Operators "
+"complement the function catalogue by supplying concise symbolic predicates "
+"for bounding-box interactions and spatial relationships. Their semantics "
+"follow the same geometric rules as the corresponding functions but are "
+"optimised for use in SQL expressions and index-supported filtering."
+msgstr ""
+
 #. Tag: title
 #, fuzzy, no-c-format
 msgid "Bounding Box Operators"
@@ -23748,11 +23708,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. "
-"Requires PostgreSQL 9.5+."
+"Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced."
 msgstr ""
-"Verfügbarkeit: Mit 2.3.0 wurde die Unterstützung von Block Range INdexes "
-"(BRIN) eingeführt. Erfordert PostgreSQL 9.5+."
 
 #. Tag: para
 #, no-c-format
@@ -24620,18 +24577,9 @@ msgstr "Gibt die 2D Entfernung zwischen A und B zurück."
 msgid ""
 "The <varname>&lt;-&gt;</varname> operator returns the 2D distance between "
 "two geometries. Used in the \"ORDER BY\" clause provides index-assisted "
-"nearest-neighbor result sets. For PostgreSQL below 9.5 only gives centroid "
-"distance of bounding boxes and for PostgreSQL 9.5+, does true KNN distance "
-"search giving true distance between geometries, and distance sphere for "
-"geographies."
+"nearest-neighbor result sets with true KNN distance search for geometries, "
+"and distance on the sphere for geographies."
 msgstr ""
-"Der <varname>&lt;-&gt;</varname> Operator gibt die 2D Entfernung zwischen "
-"zwei Geometrien zurück. Wird er in einer \"ORDER BY\" Klausel verwendet, so "
-"liefert er Index-unterstützte nearest-neighbor Ergebnismengen. PostgreSQL "
-"Versionen unter 9.5 geben jedoch lediglich die Entfernung der Centroide der  "
-"bounding boxes zurück, während PostgreSQL 9.5+ mittels   KNN-Methode die "
-"tatsächliche Entfernung zwischen den Geometrien, bei geographischen "
-"Koordinaten die Entfernung auf der Späre, widergibt."
 
 #. Tag: para
 #, no-c-format
@@ -24672,38 +24620,24 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Enhanced: 2.2.0 -- True KNN (\"K nearest neighbor\") behavior for geometry "
-"and geography for PostgreSQL 9.5+. Note for geography KNN is based on sphere "
-"rather than spheroid. For PostgreSQL 9.4 and below, geography support is new "
-"but only supports centroid box."
+"and geography. Note for geography KNN is based on sphere rather than "
+"spheroid."
 msgstr ""
-"Verbesserung: 2.2.0  -- Echtes KNN (\"K nearest neighbor\") Verhalten für "
-"Geometrie und Geographie ab PostgreSQL 9.5+. Beachten Sie bitte, das KNN für "
-"Geographie auf der Späre und nicht auf dem Sphäroid beruht.  Für PostgreSQL "
-"9.4 und darunter, wird die Berechnung nur auf Basis des Centroids der Box "
-"unterstützt."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Changed: 2.2.0 -- For PostgreSQL 9.5 users, old Hybrid syntax may be slower, "
-"so you'll want to get rid of that hack if you are running your code only on "
-"PostGIS 2.2+ 9.5+. See examples below."
+"Changed: 2.2.0 -- Old hybrid-syntax workarounds may be slower once true KNN "
+"is available. See examples below."
 msgstr ""
-"Änderung: 2.2.0 -- Da für Anwender von PostgreSQL 9.5 der alte hybride "
-"Syntax langsamer sein kann, möchten sie diesen Hack eventuell loswerden, "
-"falls der Code nur auf PostGIS 2.2+ 9.5+ läuft. Siehe die unteren Beispiele."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Availability: 2.0.0 -- Weak KNN provides nearest neighbors based on geometry "
 "centroid distances instead of true distances. Exact results for points, "
-"inexact for all other types. Available for PostgreSQL 9.1+"
+"inexact for all other types."
 msgstr ""
-"Verfügbarkeit: 2.0.0 -- Weak KNN liefert nearest neighbors, welche sich auf "
-"die Entfernung der Centroide der Geometrien, anstatt auf den tatsächlichen "
-"Entfernungen, stützen. Genaue Ergebnisse für Punkte, ungenau für alle "
-"anderen Geometrietypen. Verfügbar ab PostgreSQL 9.1+."
 
 #. Tag: para
 #, no-c-format
@@ -24722,14 +24656,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For users running with PostgreSQL &lt; 9.5, use a hybrid query to find the "
-"true nearest neighbors. First a CTE query using the index-assisted KNN, then "
-"an exact query to get correct ordering:"
+"When a plan cannot produce exact distances directly, use a hybrid query to "
+"find the true nearest neighbors. First a CTE query using the index-assisted "
+"KNN, then an exact query to get correct ordering:"
 msgstr ""
-"Anwender von PostgreSQL &lt; 9.5 können eine hybride Abfrage erstellen, um "
-"die echten nearest neighbors aufzufinden. Zuerst eine CTE-Abfrage, welche "
-"die Index-unterstützten KNN-Methode anwendet, dann eine exakte Abfrage um "
-"eine korrekte Sortierung zu erhalten:"
 
 #. Tag: para
 #, no-c-format
@@ -24748,19 +24678,13 @@ msgstr ""
 "Annäherung, an."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>|=|</varname> operator returns the 3D distance between two "
 "trajectories (See <xref linkend=\"ST_IsValidTrajectory\"/>). This is the "
 "same as <xref linkend=\"ST_DistanceCPA\"/> but as an operator it can be used "
-"for doing nearest neighbor searches using an N-dimensional index (requires "
-"PostgreSQL 9.5.0 or higher)."
+"for doing nearest neighbor searches using an N-dimensional index."
 msgstr ""
-"Der <varname>|=|</varname> Operator gibt die 3D Entfernung zwischen zwei "
-"Trajektorien (Siehe <xref linkend=\"ST_IsValidTrajectory\"/>). Dieser "
-"entspricht <xref linkend=\"ST_DistanceCPA\"/>, da es sich jedoch um einen "
-"Operator handelt, kann dieser für nearest neightbor searches mittels eines N-"
-"dimensionalen Index verwendet werden (verlangt PostgreSQL 9.5.0 oder höher)."
 
 #. Tag: para
 #, no-c-format
@@ -24789,10 +24713,8 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Availability: 2.2.0. Index-supported only available for PostgreSQL 9.5+"
+msgid "Availability: 2.2.0."
 msgstr ""
-"Verfügbarkeit: 2.2.0. Index-unterstützt steht erst ab PostgreSQL 9.5+ zur "
-"Verfügung."
 
 #. Tag: para
 #, no-c-format
@@ -24812,15 +24734,10 @@ msgstr "Gibt die 2D Entfernung zwischen den Bounding Boxes von A und B zurück"
 #, no-c-format
 msgid ""
 "The <varname>&lt;#&gt;</varname> operator returns distance between two "
-"floating point bounding boxes, possibly reading them from a spatial index "
-"(PostgreSQL 9.1+ required). Useful for doing nearest neighbor <emphasis "
-"role=\"strong\">approximate</emphasis> distance ordering."
+"floating point bounding boxes, possibly reading them from a spatial index. "
+"Useful for doing nearest neighbor <emphasis role=\"strong\">approximate</"
+"emphasis> distance ordering."
 msgstr ""
-"Der <varname>&lt;#&gt;</varname> Operator gibt die Entfernung zwischen zwei "
-"floating point bounding boxes zurück, wobei diese eventuell vom räumlichen "
-"Index ausgelesen wird (PostgreSQL 9.1+ vorausgesetzt). Praktikabel falls man "
-"eine nearest neighbor Abfrage <emphasis role=\"strong\">approximate</"
-"emphasis> nach der Entfernung sortieren will."
 
 #. Tag: para
 #, no-c-format
@@ -24848,9 +24765,8 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+"
+msgid "Availability: 2.0.0."
 msgstr ""
-"Verfügbarkeit: 2.0.0 -- KNN steht erst ab PostgreSQL 9.1+ zur Verfügung"
 
 #. Tag: para
 #, no-c-format
@@ -24892,12 +24808,6 @@ msgstr ""
 "vorhanden sind. Er unterscheidet sich insofern von anderen Operatoren, die "
 "räumliche Indizes verwenden, indem der räumliche Index nur dann verwendet "
 "wird, wenn sich der Operator in einer ORDER BY Klausel befindet."
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+"
-msgstr ""
-"Verfügbarkeit: 2.2.0 -- KNN steht erst ab PostgreSQL 9.1+ zur Verfügung."
 
 #. Tag: title
 #, no-c-format
@@ -25148,15 +25058,12 @@ msgstr ""
 "das den SRID enthält, verwenden Sie <xref linkend=\"ST_AsEWKB\"/>"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"The default behavior in PostgreSQL 9.0 has been changed to output bytea in "
-"hex encoding. If your GUI tools require the old behavior, then SET "
-"bytea_output='escape' in your database."
+"PostgreSQL outputs <varname>bytea</varname> values in hex encoding by "
+"default. If your GUI tools require the old behavior, then SET "
+"<code>bytea_output='escape'</code> in your database."
 msgstr ""
-"Das Standardverhalten in PostgreSQL 9.0 wurde geändert, um bytea in Hex-"
-"Kodierung auszugeben. Wenn Ihre GUI-Tools das alte Verhalten erfordern, dann "
-"setzen Sie SET bytea_output='escape' in Ihrer Datenbank."
 
 #. Tag: para
 #, no-c-format
@@ -25499,6 +25406,15 @@ msgstr ""
 "Schlüssel, landen einfach im \"properties\"-Mitglied des Features."
 
 #. Tag: para
+#, no-c-format
+msgid ""
+"When the input record includes duplicate column names, the resulting "
+"\"properties\" object will contain repeated keys. <function>ST_AsGeoJSON</"
+"function> raises a warning in that case because PostgreSQL <type>jsonb</"
+"type> keeps only the last value for duplicate keys."
+msgstr ""
+
+#. Tag: para
 #, fuzzy, no-c-format
 msgid ""
 "The GeoJSON specification states that polygons are oriented using the Right-"
@@ -25569,6 +25485,11 @@ msgstr "Änderung: 3.0.0 Ausgabe der SRID wenn nicht EPSG:4326"
 msgid "Changed: 3.5.0 allow specifying the column containing the feature id"
 msgstr ""
 "Geändert: 3.5.0 erlaubt die Angabe der Spalte, die die Feature-ID enthält"
+
+#. Tag: para
+#, no-c-format
+msgid "Changed: 3.7.0 added warning about duplicate keys"
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -26543,18 +26464,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The 'options' argument is a bitfield. For PostGIS 2.2+, this is used to "
-"denote whether to represent coordinates with X3D GeoCoordinates Geospatial "
-"node and also whether to flip the x/y axis. By default, <code>ST_AsX3D</"
-"code> outputs in database form (long,lat or X,Y), but X3D default of lat/"
-"lon, y/x may be preferred."
+"The 'options' argument is a bitfield that denotes whether to represent "
+"coordinates with the X3D GeoCoordinates geospatial node and whether to flip "
+"the x/y axis. By default, <code>ST_AsX3D</code> outputs in database form "
+"(long,lat or X,Y), but the X3D default of lat/lon, y/x may be preferred."
 msgstr ""
-"Das Argument 'options' ist ein Bitfeld. Ab PostGIS 2.2+ wird dieses "
-"verwendet, um anzuzeigen ob die Koordinaten als X3D geospatiale Knoten in "
-"GeoKoordinaten dargestellt werden und auch ob X- und Y-Achse vertauscht "
-"werden sollen. Standardmäßig erfolgt die Ausgabe durch <code>ST_AsX3D</code> "
-"im Datenbankformat (Länge, Breite oder X,Y), aber es kann auch der X3D "
-"Standard mit Breite/Länge oder Y/X bevorzugt werden."
 
 #. Tag: para
 #, no-c-format
@@ -27450,6 +27364,18 @@ msgstr ""
 "verarbeiten."
 
 #. Tag: para
+#, no-c-format
+msgid ""
+"When casting a subdivided geometry to geography, the resulting geography may "
+"differ from the original. Subdivision adds vertices in planar (geometry) "
+"space. If vertices are inserted along the boundary, they will alter the "
+"geographical representation, where edges are interpreted as geodesic "
+"segments. To minimize distortion, first densify the geography using <xref "
+"linkend=\"ST_Segmentize\"/> to add geodesic vertices, then cast to geometry "
+"before subdivision."
+msgstr ""
+
+#. Tag: para
 #, fuzzy, no-c-format
 msgid ""
 "This is a <link xlink:href=\"https://www.postgresql.org/docs/current/queries-"
@@ -27490,16 +27416,14 @@ msgid "Subdivided to maximum 10 vertices"
 msgstr "Unterteilt in maximal 10 Scheitelpunkte"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Densify a long geography line "
 "using ST_Segmentize(geography, distance), and use ST_Subdivide to split the "
-"resulting line into sublines of 8 vertices."
+"resulting line into sublines of 8 vertices. Densification minimizes the "
+"impact of changes to the geography representation of a geometry when "
+"subdividing."
 msgstr ""
-"<emphasis role=\"bold\">Beispiel:</emphasis> Verdichten Sie eine lange "
-"geografische Linie mit ST_Segmentize(geography, distance), und verwenden Sie "
-"ST_Subdivide, um die resultierende Linie in Unterlinien mit 8 "
-"Scheitelpunkten zu unterteilen."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -27912,18 +27836,14 @@ msgstr ""
 "akzeptiert."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"'side=both|left|right' : 'left' or 'right' performs a single-sided buffer on "
-"the geometry, with the buffered side relative to the direction of the line. "
-"This is only applicable to LINESTRING geometry and does not affect POINT or "
-"POLYGON geometries. By default end caps are square."
+"'side=both|left|right' : defaults to 'both'. 'left' or 'right' performs a "
+"single-sided buffer on the geometry, with the buffered side relative to the "
+"direction of the line. This is only applicable to LINESTRING geometry and "
+"does not affect POINT or POLYGON geometries. By default end caps are square "
+"when 'left' or 'right' are specified."
 msgstr ""
-"side=both|left|right' : 'left' oder 'right' führt eine einseitige Pufferung "
-"der Geometrie durch, wobei sich die gepufferte Seite auf die Richtung der "
-"Linie bezieht. Dies gilt nur für LINESTRING-Geometrien und wirkt sich nicht "
-"auf POINT- oder POLYGON-Geometrien aus. Standardmäßig sind die Endkappen "
-"quadratisch."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -28930,16 +28850,31 @@ msgstr "Erfordert GEOS &gt;= 3.11.0 zur Verwendung des gerichteten Parameters."
 msgid "This function strips the M dimension."
 msgstr "Diese Funktion entfernt die Dimension M."
 
+#. Tag: title
+#, no-c-format
+msgid "Cardinality 2"
+msgstr ""
+
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Merging lines with different orientation."
-msgstr "Zusammenführen von Linien mit unterschiedlicher Ausrichtung."
+#, no-c-format
+msgid "Nodes with cardinality 2 are merged away."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Cardinality 3 or More"
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "Lines are not merged across intersections with degree &gt; 2."
 msgstr ""
 "Linien werden nicht über Schnittpunkte mit dem Grad &gt; 2 zusammengeführt."
+
+#. Tag: title
+#, no-c-format
+msgid "Non-Touching Lines"
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -28950,6 +28885,11 @@ msgstr ""
 "Ist das Zusammenführen aufgrund von sich nicht berührenden Zeilen nicht "
 "möglich, wird der ursprüngliche MultiLineString zurückgegeben."
 
+#. Tag: title
+#, no-c-format
+msgid "Directed Parameter"
+msgstr ""
+
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "Lines with opposite directions are not merged if directed = TRUE."
@@ -28957,10 +28897,10 @@ msgstr ""
 "Linien mit entgegengesetzten Richtungen werden nicht zusammengeführt, wenn "
 "directed = TRUE."
 
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "Example showing Z-dimension handling."
-msgstr "Beispiel für die Handhabung der Z-Dimension."
+#. Tag: title
+#, no-c-format
+msgid "Z-dimension Handling"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -32415,12 +32355,8 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"From PostGIS 2.0+ the srid of a non-georeferenced raster/geometry is 0 "
-"instead of the prior -1."
+msgid "Non-georeferenced rasters and geometries use SRID 0."
 msgstr ""
-"Ab PostGIS 2.0 ist die SRID eines nicht georeferenzierten Rasters/Geometrie "
-"0 anstelle wie früher -1."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -34419,24 +34355,16 @@ msgstr ""
 "dem Referenzraster ausgerichtet (ST_SameAlignment = TRUE)."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you find your transformation support is not working right, you may need "
-"to set the environment variable PROJSO to the .so or .dll projection library "
-"your PostGIS is using. This just needs to have the name of the file. So for "
+"to set the environment variable PROJSO to the projection library your "
+"PostGIS build is using. This just needs to have the name of the file. So for "
 "example on windows, you would in Control Panel -&gt; System -&gt; "
 "Environment Variables add a system variable called <varname>PROJSO</varname> "
-"and set it to <varname>libproj.dll</varname> (if you are using proj 4.6.1). "
-"You'll have to restart your PostgreSQL service/daemon after this change."
+"and set it to <varname>libproj.dll</varname>. You'll have to restart your "
+"PostgreSQL service/daemon after this change."
 msgstr ""
-"Wenn Sie feststellen, dass Ihre Transformationsunterstützung nicht richtig "
-"funktioniert, müssen Sie möglicherweise die Umgebungsvariable PROJSO auf "
-"die .so- oder .dll-Projektionsbibliothek setzen, die Ihr PostGIS verwendet. "
-"Sie muss nur den Namen der Datei enthalten. Unter Windows würden Sie zum "
-"Beispiel in der Systemsteuerung -&gt; System -&gt; Umgebungsvariablen eine "
-"Systemvariable namens <varname>PROJSO</varname> hinzufügen und sie auf "
-"<varname>libproj.dll</varname> setzen (wenn Sie proj 4.6.1 verwenden). Nach "
-"dieser Änderung müssen Sie Ihren PostgreSQL-Dienst/Daemon neu starten."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -36498,21 +36426,15 @@ msgstr "Mehrere Raster, mehrere Bänder"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Complete example of tiles of a coverage with neighborhood. This query only "
-"works with PostgreSQL 9.1 or higher."
+msgid "Complete example of tiles of a coverage with neighborhood."
 msgstr ""
-"Ein vollständiges Beispiel mit Coveragekacheln und Nachbarschaft. Diese "
-"Abfrage funktioniert nur mit PostgreSQL 9.1 oder höher."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Example like the prior one for tiles of a coverage with neighborhood but "
-"works with PostgreSQL 9.0."
+"using only basic SQL features."
 msgstr ""
-"Das selbe Beispiel wie vorher, mit Coveragekacheln und Nachbarschaft, das "
-"aber auch mit PostgreSQL 9.0 funktioniert."
 
 #. Tag: title
 #, no-c-format
@@ -38155,12 +38077,8 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Complete example of tiles of a coverage. This query only works with "
-"PostgreSQL 9.1 or higher."
+msgid "Complete example of tiles of a coverage."
 msgstr ""
-"Ein vollständiges Beispiel mit Coveragekacheln. Diese Abfrage funktioniert "
-"nur mit PostgreSQL 9.1 oder höher."
 
 #. Tag: para
 #, no-c-format
@@ -38761,6 +38679,13 @@ msgid ""
 msgstr ""
 "Geändert 3.3.0, Validierung und Fixierung ist deaktiviert, um die Leistung "
 "zu verbessern. Kann zu ungültigen Geometrien führen."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Changed 3.7.0, the polygonization honours PostgreSQL interrupts so "
+"cancellations and statement timeouts halt processing promptly."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -45378,39 +45303,44 @@ msgid "The \"method\" key has two values."
 msgstr "Der Schlüssel \"Methode\" hat zwei Werte."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"\"linework\" is the original algorithm, and builds valid geometries by first "
+"\"linework\" is the default algorithm, and builds valid geometries by first "
 "extracting all lines, noding that linework together, then building a value "
-"output from the linework."
+"output from the linework. The requirement that no vertices are lost can "
+"generate complex collections as outputs."
 msgstr ""
-"\"linework\" ist der ursprüngliche Algorithmus, der gültige Geometrien "
-"erstellt, indem er zunächst alle Linien extrahiert, diese Linien zusammen "
-"kodiert und dann einen Wert aus dem Linienwerk ausgibt."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "\"structure\" is an algorithm that distinguishes between interior and "
 "exterior rings, building new geometry by unioning exterior rings, and then "
-"differencing all interior rings."
+"differencing all interior rings. The results tend to be more intuitive, "
+"where collapsed lines are discarded in the output."
 msgstr ""
-"\"Struktur\" ist ein Algorithmus, der zwischen inneren und äußeren Ringen "
-"unterscheidet und eine neue Geometrie erstellt, indem er äußere Ringe "
-"zusammenfasst und dann alle inneren Ringe differenziert."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The \"keepcollapsed\" key is only valid for the \"structure\" algorithm, and "
-"takes a value of \"true\" or \"false\". When set to \"false\", geometry "
-"components that collapse to a lower dimensionality, for example a one-point "
-"linestring would be dropped."
+"takes a value of \"true\" or \"false\"."
 msgstr ""
-"Der Schlüssel \"keepcollapsed\" ist nur für den Algorithmus \"structure\" "
-"gültig und nimmt den Wert \"true\" oder \"false\" an. Wenn er auf \"false\" "
-"gesetzt ist, werden Geometriekomponenten, die auf eine niedrigere "
-"Dimensionalität kollabieren, z. B. ein Ein-Punkt-Linienzug, fallengelassen."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Keep collapsed of \"false\" is the default, and means that geometry "
+"components that collapse to a lower dimensionality, for example a one-point "
+"linestring will be dropped."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Keep collapsed of \"true\" means geometry components that collapse to a "
+"lower dimensionality will be retained."
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -47435,23 +47365,15 @@ msgstr ""
 "Geometrie und Geografie hin- und herwechseln."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Like the geometry data type, geography data is associated with a spatial "
 "reference system via a spatial reference system identifier (SRID). Any "
 "geodetic (long/lat based) spatial reference system defined in the "
-"<varname>spatial_ref_sys</varname> table can be used. (Prior to PostGIS 2.2, "
-"the geography type supported only WGS 84 geodetic (SRID:4326)). You can add "
-"your own custom geodetic spatial reference system as described in <xref "
+"<varname>spatial_ref_sys</varname> table can be used. You can add your own "
+"custom geodetic spatial reference system as described in <xref "
 "linkend=\"user-spatial-ref-sys\"/>."
 msgstr ""
-"Wie der Datentyp Geometrie sind auch die Geodaten über einen Spatial "
-"Reference System Identifier (SRID) mit einem räumlichen Bezugssystem "
-"verbunden. Jedes in der Tabelle <varname>spatial_ref_sys</varname> "
-"definierte geodätische (long/lat-basierte) Raumbezugssystem kann verwendet "
-"werden. (Vor PostGIS 2.2 unterstützte der Geografietyp nur das geodätische "
-"WGS 84 (SRID:4326)). Sie können Ihr eigenes geodätisches Raumbezugssystem "
-"hinzufügen, wie in <xref linkend=\"user-spatial-ref-sys\"/> beschrieben."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -49804,12 +49726,12 @@ msgid "BRIN Indexes"
 msgstr "BRIN Indizes"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "BRIN stands for \"Block Range Index\". It is a general-purpose index method "
-"introduced in PostgreSQL 9.5. BRIN is a <emphasis>lossy</emphasis> index "
-"method, meaning that a secondary check is required to confirm that a record "
-"matches a given search condition (which is the case for all provided spatial "
+"provided by PostgreSQL. BRIN is a <emphasis>lossy</emphasis> index method, "
+"meaning that a secondary check is required to confirm that a record matches "
+"a given search condition (which is the case for all provided spatial "
 "indexes). It provides much faster index creation and much smaller index "
 "size, with reasonable read performance. Its primary purpose is to support "
 "indexing very large tables on columns which have a correlation with their "
@@ -49819,20 +49741,6 @@ msgid ""
 "href=\"https://www.postgresql.org/docs/current/brin.html\">PostgreSQL "
 "manual</link>."
 msgstr ""
-"BRIN steht für \"Block Range Index\". Es handelt sich um eine allgemeine "
-"Indexmethode, die in PostgreSQL 9.5 eingeführt wurde. BRIN ist eine "
-"<emphasis>lossy</emphasis> Indexmethode, was bedeutet, dass eine sekundäre "
-"Prüfung erforderlich ist, um zu bestätigen, dass ein Datensatz mit einer "
-"bestimmten Suchbedingung übereinstimmt (was für alle bereitgestellten "
-"räumlichen Indizes der Fall ist). Sie ermöglicht eine viel schnellere "
-"Indexerstellung und eine viel geringere Indexgröße bei einer angemessenen "
-"Leseleistung. Sein Hauptzweck besteht darin, die Indizierung sehr großer "
-"Tabellen auf Spalten zu unterstützen, die eine Korrelation mit ihrer "
-"physischen Position innerhalb der Tabelle aufweisen. Zusätzlich zur "
-"räumlichen Indizierung kann BRIN die Suche auf verschiedenen Arten von "
-"Attributdatenstrukturen (Integer, Arrays usw.) beschleunigen. Weitere "
-"Informationen finden Sie im <link xlink:href=\"https://www.postgresql.org/"
-"docs/current/brin.html\">PostgreSQL-Handbuch</link>."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -52673,6 +52581,1099 @@ msgstr "2.5/3D-Unterstützung"
 #, fuzzy, no-c-format
 msgid "Supports geography"
 msgstr "Unterstützt Geographie"
+
+#, no-c-format
+#~ msgid ""
+#~ "As of PostGIS 2.1.3, out-of-db rasters and all raster drivers are "
+#~ "disabled by default. In order to re-enable these, you need to set the "
+#~ "following environment variables <varname>POSTGIS_GDAL_ENABLED_DRIVERS</"
+#~ "varname> and <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in the "
+#~ "server environment. For PostGIS 2.2, you can use the more cross-platform "
+#~ "approach of setting the corresponding <xref linkend=\"PostGIS_GUC\"/>."
+#~ msgstr ""
+#~ "Ab PostGIS 2.1.3 sind out-of-db-Raster und alle Rastertreiber von "
+#~ "vornherein deaktiviert. Um diese zu aktivieren, müssen Sie die folgenden "
+#~ "Umgebungsvariablen <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> und "
+#~ "<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in der Serverumgebung "
+#~ "setzen. Ab PostGIS 2.2 können Sie einen plattformübergreifenderen Ansatz "
+#~ "mit Hilfe der entsprechenden <xref linkend=\"PostGIS_GUC\"/> verwenden."
+
+#, no-c-format
+#~ msgid ""
+#~ "Setting environment variables varies depending on OS. For PostgreSQL "
+#~ "installed on Ubuntu or Debian via apt-postgresql, the preferred way is to "
+#~ "edit <filename>/etc/postgresql/<replaceable>10</replaceable>/"
+#~ "<replaceable>main</replaceable>/environment</filename> where 10 refers to "
+#~ "version of PostgreSQL and main refers to the cluster."
+#~ msgstr ""
+#~ "Das Setzen von Umgebungsvariablen variiert je nach Betriebssystem. Für "
+#~ "eine PostgreSQL Installation unter Ubuntu oder Debian mit apt-postgresql, "
+#~ "sollte <filename>/etc/postgresql/<replaceable>10</replaceable>/"
+#~ "<replaceable>main</replaceable>/environment</filename> editiert werden, "
+#~ "wobei sich 10 auf die PostgreSQL-Version und main auf den Cluster bezieht."
+
+#, no-c-format
+#~ msgid ""
+#~ "If you are using PostgreSQL 9.1+ and have compiled and installed the "
+#~ "extensions/postgis modules, you can turn a database into a spatial one "
+#~ "using the EXTENSION mechanism."
+#~ msgstr ""
+#~ "Wenn ab PostgreSQL 9.1 die Extensions/Postgis-Module installiert sind, "
+#~ "kann die Datenbank mit Hilfe des EXTENSION-Mechanismus in eine spatiale "
+#~ "Datenbank verwandelt werden."
+
+#, no-c-format
+#~ msgid "Soft Upgrade 9.1+ using extensions"
+#~ msgstr "Sanfte Aktualisierung 9.1+ mittels Erweiterungen"
+
+#, no-c-format
+#~ msgid ""
+#~ "If you originally installed PostGIS with extensions, then you need to "
+#~ "upgrade using extensions as well. Doing a minor upgrade with extensions, "
+#~ "is fairly painless."
+#~ msgstr ""
+#~ "Wenn Sie PostGIS ursprünglich mithilfe von EXTENSION installiert haben, "
+#~ "müssen Sie das Upgrade ebenfalls über EXTENSION durchführen. Ein kleines "
+#~ "Upgrade mit Erweiterungen ist relativ unkompliziert."
+
+#, no-c-format
+#~ msgid ""
+#~ "If you are running PostGIS 3 or above, then you should use the <xref "
+#~ "linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the "
+#~ "latest version you have installed."
+#~ msgstr ""
+#~ "Wenn Sie PostGIS 3 oder höher verwenden, sollten Sie die Funktion <xref "
+#~ "linkend=\"PostGIS_Extensions_Upgrade\"/> nutzen, um auf die neueste "
+#~ "installierte Version zu aktualisieren."
+
+#, no-c-format
+#~ msgid "If you are running PostGIS 2.5 or lower, then do the following:"
+#~ msgstr ""
+#~ "Falls Sie PostGIS 2.5 oder niedriger verwenden, gehen Sie bitte wie folgt "
+#~ "vor:"
+
+#, no-c-format
+#~ msgid "Soft Upgrade Pre 9.1+ or without extensions"
+#~ msgstr ""
+#~ "<xref linkend=\"create_new_db\"/>Sanfte Aktualisierung bei Version "
+#~ "kleiner 9.1 oder wenn nicht mittels Erweiterungen installiert wurde"
+
+#, no-c-format
+#~ msgid ""
+#~ "This section applies only to those who installed PostGIS not using "
+#~ "extensions. If you have extensions and try to upgrade with this approach "
+#~ "you'll get messages like:"
+#~ msgstr ""
+#~ "Dieser Abschnitt gilt nur, wenn PostGIS ohne Erweiterungen installiert "
+#~ "wurde. Wenn Erweiterungen existieren und eine Aktualiserung mit diesem "
+#~ "Ansatz versucht wird, erhalten Sie eine Meldungen wie:"
+
+#, no-c-format
+#~ msgid ""
+#~ "NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2."
+#~ "* prior to r7409, you cannot use this procedure but would rather need to "
+#~ "do a <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
+#~ msgstr ""
+#~ "HINWEIS: Wenn Sie von PostGIS 1.* zu PostGIS 2.* oder von PostGIS 2.* vor "
+#~ "r7409 wechseln, können Sie dieses Verfahren nicht verwenden, sondern "
+#~ "müssen ein <link linkend=\"hard_upgrade\">HARD UPGRADE</link> durchführen."
+
+#, no-c-format
+#~ msgid ""
+#~ "After compiling and installing (make install) you should find a set of "
+#~ "<filename>*_upgrade.sql</filename> files in the installation folders. You "
+#~ "can list them all with:"
+#~ msgstr ""
+#~ "Nach dem Kompilieren und Installieren (make install) sollten Sie eine "
+#~ "Reihe von <filename>*_upgrade.sql</filename> Dateien in den "
+#~ "Installationsordnern finden. Sie können alle wie folgt auflisten:"
+
+#, no-c-format
+#~ msgid ""
+#~ "Load them all in turn, starting from <filename>postgis_upgrade.sql</"
+#~ "filename>."
+#~ msgstr ""
+#~ "Laden Sie diese alle nacheinander, beginnend mit "
+#~ "<filename>postgis_upgrade.sql</filename>."
+
+#, no-c-format
+#~ msgid ""
+#~ "The same procedure applies to raster, topology and sfcgal extensions, "
+#~ "with upgrade files named <filename>rtpostgis_upgrade.sql</filename>, "
+#~ "<filename>topology_upgrade.sql</filename> and <filename>sfcgal_upgrade."
+#~ "sql</filename> respectively. If you need them:"
+#~ msgstr ""
+#~ "Das gleiche Verfahren gilt auch für die Raster-, Topologie- und sfcgal-"
+#~ "Erweiterungen, mit den Upgrade-Dateien <filename>rtpostgis_upgrade.sql</"
+#~ "filename>, <filename>topology_upgrade.sql</filename> und "
+#~ "<filename>sfcgal_upgrade.sql</filename>. Falls Sie diese benötigen:"
+
+#, no-c-format
+#~ msgid "You are advised to switch to an extension based install by running"
+#~ msgstr ""
+#~ "Wir empfehlen Ihnen, zu einer Installation mit EXTENSION zu wechseln, "
+#~ "indem Sie folgendes ausführen"
+
+#, no-c-format
+#~ msgid ""
+#~ "If you can't find the <filename>postgis_upgrade.sql</filename> specific "
+#~ "for upgrading your version you are using a version too early for a soft "
+#~ "upgrade and need to do a <link linkend=\"hard_upgrade\">HARD UPGRADE</"
+#~ "link>."
+#~ msgstr ""
+#~ "Wenn Sie <filename>postgis_upgrade.sql</filename> für das Upgrade Ihrer "
+#~ "Version nicht finden können, so liegt das daran, dass die Version für ein "
+#~ "Soft-Upgrade zu niedrig ist und Sie daher ein <link "
+#~ "linkend=\"hard_upgrade\">HARD UPGRADE</link> durchführen müssen."
+
+#, no-c-format
+#~ msgid ""
+#~ "The <xref linkend=\"PostGIS_Full_Version\"/> function should inform you "
+#~ "about the need to run this kind of upgrade using a \"procs need upgrade\" "
+#~ "message."
+#~ msgstr ""
+#~ "Die Funktion <xref linkend=\"PostGIS_Full_Version\"/> sollte Sie über die "
+#~ "Meldung \"procs need upgrade\" von der Notwendigkeit eines solchen "
+#~ "Upgrades informieren."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "For PostgreSQL 9.4+ configuration can be set at the server level without "
+#~ "touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</"
+#~ "code> by using the <code>ALTER SYSTEM</code> command."
+#~ msgstr ""
+#~ "Für PostgreSQL 9.4+ kann die Konfiguration auf Serverebene eingestellt "
+#~ "werden, ohne <code>postgresql.conf</code> oder <code>postgresql.auto."
+#~ "conf</code> zu berühren, indem der Befehl <code>ALTER SYSTEM</code> "
+#~ "verwendet wird."
+
+#, no-c-format
+#~ msgid ""
+#~ "This is generally used for table partitioning. The default for this is "
+#~ "set to \"partition\" which is ideal for PostgreSQL 8.4 and above since it "
+#~ "will force the planner to only analyze tables for constraint "
+#~ "consideration if they are in an inherited hierarchy and not pay the "
+#~ "planner penalty otherwise."
+#~ msgstr ""
+#~ "Dies wird im Allgemeinen für die Partitionierung von Tabellen verwendet. "
+#~ "Die Voreinstellung hierfür ist \"partition\", was ideal für PostgreSQL "
+#~ "8.4 und höher ist, da es den Planer dazu zwingt, Tabellen nur dann auf "
+#~ "Einschränkungen zu analysieren, wenn sie sich in einer vererbten "
+#~ "Hierarchie befinden, und so im gegensätzlichen Fall keine unnötigen "
+#~ "Kosten durch den Planer versursacht werden."
+
+#, no-c-format
+#~ msgid "Default: ~128MB in PostgreSQL 9.6"
+#~ msgstr "Standardwert: ~128MB in PostgreSQL 9.6"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
+#~ "config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</"
+#~ "link> This setting is only available for PostgreSQL 9.4+. For PostgreSQL "
+#~ "9.6+ this setting has additional importance in that it controls the max "
+#~ "number of processes you can have for parallel queries."
+#~ msgstr ""
+#~ "<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
+#~ "config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</"
+#~ "link> Diese Einstellung ist ab PostgreSQL 9.4 verfügbar. Ab PostgreSQL "
+#~ "9.6 kann mit dieser Einstellung zusätzlich die maximale Anzahl von "
+#~ "Prozessen bei parallelen Abfragen eingestellt werden."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "This setting is only available for PostgreSQL 9.6+ and will only affect "
+#~ "PostGIS 2.3+, since only PostGIS 2.3+ supports parallel queries. If set "
+#~ "to higher than 0, then some queries such as those involving relation "
+#~ "functions like <code>ST_Intersects</code> can use multiple processes and "
+#~ "can run more than twice as fast when doing so. If you have a lot of "
+#~ "processors to spare, you should change the value of this to as many "
+#~ "processors as you have. Also make sure to bump up "
+#~ "<code>max_worker_processes</code> to at least as high as this number."
+#~ msgstr ""
+#~ "Diese Einstellung ist nur für PostgreSQL 9.6+ verfügbar und wirkt sich "
+#~ "nur auf PostGIS 2.3+ aus, da nur PostGIS 2.3+ parallele Abfragen "
+#~ "unterstützt. Wenn sie auf einen Wert größer als 0 gesetzt wird, können "
+#~ "einige Abfragen, z.B. solche, die Beziehungsfunktionen wie "
+#~ "<code>ST_Intersects</code> beinhalten, mehrere Prozesse verwenden und "
+#~ "können dabei mehr als doppelt so schnell laufen. Wenn Sie viele "
+#~ "Prozessoren zur Verfügung haben, sollten Sie den Wert auf so viele "
+#~ "Prozessoren ändern, wie Sie haben. Stellen Sie außerdem sicher, dass "
+#~ "<code>max_worker_processes</code> mindestens so hoch ist wie diese Zahl."
+
+#, no-c-format
+#~ msgid "(28). A 5 digit number. Identifies a Zip Code"
+#~ msgstr "(28). Eine 5-stellige Nummer. Gibt den Zip Code an"
+
+#, no-c-format
+#~ msgid ""
+#~ "(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). This "
+#~ "attribute is used for both the US Zip and the Canadian Postal Codes."
+#~ msgstr ""
+#~ "(Token Nummer \"13\"). (SADS Elemente \"ZIP CODE\" , \"PLUS 4\" ). Dieses "
+#~ "Attribut wird für die Postleitzahlen-Codes der USA (ZIP-Code) und Kanada "
+#~ "(Postal Code) verwendet."
+
+#, no-c-format
+#~ msgid ""
+#~ "The <varname>history_table</varname> was also packaged in PostGIS 1.5, "
+#~ "but added to the documentation in PostGIS 2.0. This package is written in "
+#~ "plpgsql and located in the <varname>extras/history_table</varname> of "
+#~ "PostGIS source tar balls and source repository."
+#~ msgstr ""
+#~ "Das Modul <varname>history_table</varname> wurde zwar schon in PostGIS "
+#~ "1.5 mitpaketiert, ist dieser Dokumentation aber erst ab PostGIS 2.0 "
+#~ "hinzugefügt worden. Das Modul wurde in PL/pgSQL geschrieben und befindet "
+#~ "sich im Verzeichnis <varname>extras/history_table</varname> des PostGIS "
+#~ "Quellcode Tarball und des Quellcode-Repository."
+
+#, no-c-format
+#~ msgid ""
+#~ "The script builds a schema called <varname>tiger</varname> to house all "
+#~ "the tiger related functions, reusable lookup data such as road type "
+#~ "prefixes, suffixes, states, various control tables for managing data "
+#~ "load, and skeleton base tables from which all the tiger loaded tables "
+#~ "inherit from."
+#~ msgstr ""
+#~ "Das Skript erstellt ein Schema mit der Bezeichnung <varname>tiger</"
+#~ "varname>, in dem sich alle auf TIGER bezogenen Funktionen befinden, sowie "
+#~ "wiederverwendbare Daten, wie Präfixe für Straßentypen, Suffixe, Länder, "
+#~ "verschiedene Kontrolltabellen zum Bewerkstelligen des Ladens von Daten, "
+#~ "und Schablonen für die Basistabellen von denen alle geladenen TIGER-"
+#~ "Tabellen erben."
+
+#, no-c-format
+#~ msgid ""
+#~ "Another schema called <varname>tiger_data</varname> is also created which "
+#~ "houses all the census data for each state that the loader downloads from "
+#~ "Census site and loads into the database. In the current model, each set "
+#~ "of state tables is prefixed with the state code e.g <varname>ma_addr</"
+#~ "varname>, <varname>ma_edges</varname> etc with constraints to enforce "
+#~ "only that state data. Each of these tables inherits from the tables "
+#~ "<varname>addr</varname>, <varname>faces</varname>, <varname>edges</"
+#~ "varname>, etc located in the <varname>tiger schema</varname>."
+#~ msgstr ""
+#~ "Eine weiteres Schema mit der Bezeichnung <varname>tiger_data</varname> "
+#~ "enthält die Volkszählungsdaten aller Länder, die der Loader von der "
+#~ "Census Seite in die Datenbank lädt. Im aktuellen Datenmodell erhalten die "
+#~ "Tabellen eines Landes den Ländercode als Präfix - z.B. <varname>ma_addr</"
+#~ "varname>, <varname>ma_edges</varname> etc. - und werden mit Constraints "
+#~ "versehen, welche die Daten auf das jeweilige Land beschränken. Diese "
+#~ "Tabellen erben alle von den Tabellen <varname>addr</varname>, "
+#~ "<varname>faces</varname>, edges, etc., die sich in dem Schema "
+#~ "<varname>tiger</varname> befinden."
+
+#, no-c-format
+#~ msgid ""
+#~ "All the geocode functions only reference the base tables, so there is no "
+#~ "requirement that the data schema be called <varname>tiger_data</varname> "
+#~ "or that data can't be further partitioned into other schemas -- e.g a "
+#~ "different schema for each state, as long as all the tables inherit from "
+#~ "the tables in the <varname>tiger</varname> schema."
+#~ msgstr ""
+#~ "Da die Funktionen zur Geokodierung nur auf die Basistabellen verweisen, "
+#~ "muss das Datenschema nicht notwendigerweise <varname>tiger_data</varname> "
+#~ "heissen. Solange alle Tabellen von den Tabellen im Schema <varname>tiger</"
+#~ "varname> erben, können die Daten auch auf andere Schemata weiter "
+#~ "aufgeteilt werden -- z.B. ein anderes Schema für jedes Land."
+
+#, no-c-format
+#~ msgid ""
+#~ "If you are using tiger geocoder (tiger_2010), you can upgrade the scripts "
+#~ "using the accompanying upgrade_geocoder.bat / .sh scripts in extras/"
+#~ "tiger. One major change between <varname>tiger_2010</varname> and "
+#~ "<varname>tiger_2011+</varname> is that the <varname>county</varname> and "
+#~ "<varname>state</varname> tables are no longer broken out by state. If you "
+#~ "have data from tiger_2010 and want to replace with tiger_2015, refer to "
+#~ "<xref linkend=\"upgrade_tiger_geocoder\"/>"
+#~ msgstr ""
+#~ "Wenn Sie den Tiger Geokodierer (tiger_2010) verwenden, können Sie die "
+#~ "Skripts mit den beigefügten Shell-Skripts \"upgrade_geocoder.bat\" unter "
+#~ "\"extras/tiger\" aktualisieren. Eine wesentliche Änderung zwischen "
+#~ "<varname>tiger_2010</varname> und <varname>tiger_2011+</varname> ist, "
+#~ "dass die Tabellen <varname>county</varname> und <varname>state</varname> "
+#~ "nicht länger nach den Bundesstaaten gegliedert sind. Wenn Sie Daten von "
+#~ "tiger_2010 haben und diese mit tiger_2015 ersetzen wollen, siehe <xref "
+#~ "linkend=\"upgrade_tiger_geocoder\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "New in PostGIS 2.2.0 release is support for Tiger 2015 data and inclusion "
+#~ "of Address Standardizer as part of PostGIS."
+#~ msgstr ""
+#~ "Neu in der PostGIS 2.2.0 Release ist die Unterstützung von Tiger 2015 "
+#~ "Daten und die Einbindung des Adressennormierers als Teil von PostGIS."
+
+#, no-c-format
+#~ msgid ""
+#~ "New in PostGIS 2.1.0 release is ability to install tiger geocoder with "
+#~ "PostgreSQL extension model if you are running PostgreSQL 9.1+. Refer to "
+#~ "<xref linkend=\"install_tiger_geocoder_extension\"/> for details."
+#~ msgstr ""
+#~ "Falls Sie mit PostgreSQL 9.1+ arbeiten, haben Sie mit der PostGIS 2.1.0 "
+#~ "Release die neue Möglichkeit, den Tiger Geokodierer mittels dem "
+#~ "PostgreSQL Extension Modell zu installieren. Siehe <xref "
+#~ "linkend=\"install_tiger_geocoder_extension\"/> für Details."
+
+#, no-c-format
+#~ msgid ""
+#~ "The <varname>reverse_geocode</varname> function, introduced in PostGIS "
+#~ "2.0.0 is useful for deriving the street address and cross streets of a "
+#~ "GPS location."
+#~ msgstr ""
+#~ "Mit der Funktion <varname>reverse_geocode</varname>, die in PostGIS 2.0.0 "
+#~ "eingeführt wurde, können mittels Geokoordinaten textuelle "
+#~ "Lokationsangaben, wie Adressen und Straßenkreuzungen bestimmt werden."
+
+#, no-c-format
+#~ msgid ""
+#~ "There are a couple other open source geocoders for PostGIS, that unlike "
+#~ "tiger geocoder have the advantage of multi-country geocoding support"
+#~ msgstr ""
+#~ "Es existieren eine Reihe weiterer Open Source Geokodierer füf PostGIS, "
+#~ "welche im Gegensatz zu dem Tiger Geokodierer den Vorteil haben, dass sie "
+#~ "mehrere Länder unterstützen "
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"http://wiki.openstreetmap.org/wiki/"
+#~ "Nominatim\">Nominatim</link> uses OpenStreetMap gazeteer formatted data. "
+#~ "It requires osm2pgsql for loading the data, PostgreSQL 8.4+ and PostGIS "
+#~ "1.5+ to function. It is packaged as a webservice interface and seems "
+#~ "designed to be called as a webservice. Just like the tiger geocoder, it "
+#~ "has both a geocoder and a reverse geocoder component. From the "
+#~ "documentation, it is unclear if it has a pure SQL interface like the "
+#~ "tiger geocoder, or if a good deal of the logic is implemented in the web "
+#~ "interface."
+#~ msgstr ""
+#~ "<link xlink:href=\"http://wiki.openstreetmap.org/wiki/"
+#~ "Nominatim\">Nominatim</link> verwendet Daten von OpenStreetMap, die "
+#~ "mittels Gazetteer formatiert werden. Es benötigt osm2pgsql zum Laden der "
+#~ "Daten, PostgreSQL 8.4+ und PostGIS 1.5+ um zu funktionieren. Es ist als "
+#~ "Webinterface paketiert und wird vermutlich als Webservice aufgerufen. So "
+#~ "wie der Tiger Geokodierer besteht es aus einem Geokodierer und einer "
+#~ "inversen Komponente des Geokodierers. Aus der Dokumentation ist nicht "
+#~ "ersichtlich, ob es wie der Tiger Geokodierer auch eine reine SQL "
+#~ "Schnittstelle aufweist, oder ob ein größerer Anteil der Logik in das "
+#~ "Webinterface implementiert wurde."
+
+#, no-c-format
+#~ msgid ""
+#~ "The below examples timings are on a 3.0 GHZ single processor Windows 7 "
+#~ "machine with 2GB ram running PostgreSQL 9.1rc1/PostGIS 2.0 loaded with "
+#~ "all of MA,MN,CA, RI state Tiger data loaded."
+#~ msgstr ""
+#~ "Die Zeitangaben für die unteren Beispiele beziehen sich auf einen 3.0 GHZ "
+#~ "Prozessor mit Windows 7, 2GB RAM, PostgreSQL 9.1rc1/PostGIS 2.0 und den "
+#~ "geladenen TIGER-Daten der Staaten MA, MN, CA und RI."
+
+#, no-c-format
+#~ msgid ""
+#~ "The below examples timings are on a 3.0 GHZ single processor Windows 7 "
+#~ "machine with 2GB ram running PostgreSQL 9.0/PostGIS 1.5 loaded with all "
+#~ "of MA state Tiger data loaded. Currently a bit slow (3000 ms)"
+#~ msgstr ""
+#~ "Die Zeitangaben für die unteren Beispiele beziehen sich auf einen 3.0 GHZ "
+#~ "Prozessor mit Windows 7, 2GB RAM, PostgreSQL 9.0/PostGIS 1.5 und den "
+#~ "geladenen TIGER-Daten des Staates MA. Zurzeit ein bißchen langsam (3000ms)"
+
+#, no-c-format
+#~ msgid ""
+#~ "Testing on Windows 2003 64-bit 8GB on PostGIS 2.0 PostgreSQL 64-bit Tiger "
+#~ "2011 data loaded -- (41ms)"
+#~ msgstr ""
+#~ "Testlauf auf Windows 2003 64-bit 8GB mit PostGIS 2.0, PostgreSQL 64-bit "
+#~ "und geladenen TIGER-Daten von 2011 -- (41ms)"
+
+#, no-c-format
+#~ msgid ""
+#~ "includes this logic, but if you installed tiger geocoder prior to PostGIS "
+#~ "2.0.0 alpha5, you'll need to run this on the states you have already done "
+#~ "to get these additional tables."
+#~ msgstr ""
+#~ "beinhaltet diese Logik; wenn Sie aber den TIGER Geokodierer vor PostGIS "
+#~ "2.0.0 alpha5 installiert haben, müssen Sie dies für bereits importierte "
+#~ "Bundesstaaten ausführen, um die zusätzlichen Tabellen zu erhalten."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Enhanced: 2.4.1 zip code 5 tabulation area (zcta5) load step was fixed "
+#~ "and when enabled, zcta5 data is loaded as a single table called zcta5_all "
+#~ "as part of the nation script load."
+#~ msgstr ""
+#~ "Verbessert: 2.4.1 zip code 5 tabulation area (zcta5) Ladeschritt wurde "
+#~ "korrigiert und wenn aktiviert, werden zcta5 Daten als eine einzige "
+#~ "Tabelle namens zcta5_all als Teil des Nationenskripts geladen."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "If you want zip code 5 tabulation area (zcta5) to be included in your "
+#~ "nation script load, do the following:"
+#~ msgstr ""
+#~ "Wenn Sie möchten, dass der Tabellierungsbereich der Postleitzahl 5 "
+#~ "(zcta5) in Ihr Nationenskript geladen wird, gehen Sie wie folgt vor:"
+
+#, no-c-format
+#~ msgid ""
+#~ "<varname>zip4</varname> last 4 digits of a 9 digit zip code. "
+#~ "Availability: PostGIS 2.4.0."
+#~ msgstr ""
+#~ "<varname>zip4</varname> die letzten 4 Zeichen des 9 Zeichen langen Zip-"
+#~ "Codes. Verfügbarkeit: PostGIS 2.4.0."
+
+#, no-c-format
+#~ msgid ""
+#~ "The PostGIS topology module has existed in prior versions of PostGIS but "
+#~ "was never part of the Official PostGIS documentation. In PostGIS 2.0.0 "
+#~ "major cleanup is going on to remove use of all deprecated functions in "
+#~ "it, fix known usability issues, better document the features and "
+#~ "functions, add new functions, and enhance to closer conform to SQL-MM "
+#~ "standards."
+#~ msgstr ""
+#~ "Das PostGIS Modul \"Topologie\" gab es auch schon in früheren Versionen "
+#~ "von PostGIS, es war aber nie Teil der offiziellen PostGIS Dokumentation. "
+#~ "In PostGIS 2.0.0 fand eine umfangreiche Überarbeitung statt, um überholte "
+#~ "Funktionen zu entfernen, bekannte Probleme mit der Bedienbarkeit zu "
+#~ "bereinigen, bessere Dokumentation der Funktionalität, Einführung neuer "
+#~ "Funktionen, und eine bessere Übereinstimmung mit den SQL-MM Normen zu "
+#~ "erreichen."
+
+#, no-c-format
+#~ msgid ""
+#~ "Topology support is build by default starting with PostGIS 2.0, and can "
+#~ "be disabled specifying --without-topology configure option at build time "
+#~ "as described in <xref linkend=\"postgis_installation\"/>"
+#~ msgstr ""
+#~ "Ab PostGIS 2.0 wird die Topologie Unterstützung standardmäßig "
+#~ "mitkompiliert und kann bei der Konfiguration mittels der "
+#~ "Konfigurationsoption \"--without-topology\",  wie in <xref "
+#~ "linkend=\"postgis_installation\"/> beschrieben, deaktiviert werden."
+
+#, fuzzy, no-c-format
+#~ msgid "Enhanced: 2.0 added the signature accepting hasZ"
+#~ msgstr "Verbessert: 2.0 fügte die Signatur hinzu, die hasZ akzeptiert"
+
+#, no-c-format
+#~ msgid ""
+#~ "Adds a linestring to an existing topology and returns a set of signed "
+#~ "edge identifiers forming it up (negative identifies mean the edge goes in "
+#~ "the opposite direction of the input linestring). The given line will snap "
+#~ "to existing nodes or edges within given tolerance. Existing edges and "
+#~ "faces may be split by the line. New nodes and faces may be added."
+#~ msgstr ""
+#~ "Fügt einen Linienzug zu einer bestehenden Topologie hinzu und gibt einen "
+#~ "Satz vorzeichenbehafteter Kantenbezeichner zurück, aus denen dieser "
+#~ "aufgebaut ist (ein negativer Bezeichner bedeutet, dass die Kante in die "
+#~ "entgegengesetzte Richtung des gegebenen Linienzugs verläuft). Die "
+#~ "angegebene Linie rastet an vorhandenen Knoten oder Kanten innerhalb einer "
+#~ "gegebenen Toleranz ein. Vorhandene Kanten und Maschen können an der Linie "
+#~ "aufgetrennt werden. Neue Knoten und Maschen können hinzugefügt werden."
+
+#, no-c-format
+#~ msgid ""
+#~ "When <varname>tolerance</varname> is given it will be used to snap the "
+#~ "input geometry to existing primitives."
+#~ msgstr ""
+#~ "Wenn <varname>tolerance</varname> angegeben ist, wird diese zum Fangen "
+#~ "der Eingabegeometrie an bestehenden Elementarstrukturen verwendet."
+
+#, no-c-format
+#~ msgid ""
+#~ "As of PostGIS v1.4.0, all the functions have comments generated from the "
+#~ "documentation. If you wish to install these comments into your spatial "
+#~ "databases later, run the command which requires docbook. The "
+#~ "postgis_comments.sql and other package comments files raster_comments."
+#~ "sql, topology_comments.sql are also packaged in the tar.gz distribution "
+#~ "in the doc folder so no need to make comments if installing from the tar "
+#~ "ball. Comments are also included as part of the CREATE EXTENSION install."
+#~ msgstr ""
+#~ "Seit PostGIS v1.4.0 haben alle Funktionen Kommentare, welche aus der "
+#~ "Dokumentation erstellt werden. Wenn Sie diese Kommentare später in die "
+#~ "räumliche Datenbank importieren wollen, können Sie den Befehl ausführen "
+#~ "der \"docbook\" benötigt. Die Dateien \"postgis_comments.sql\", "
+#~ "\"raster_comments.sql\" und \"topology_comments.sql\" sind im Ordner "
+#~ "\"doc\" der \"tar.gz\"-Distribution mit paketiert, weshalb Sie bei einer "
+#~ "Installation vom \"tar ball\" her, die Kommentare nicht selbst erstellen "
+#~ "müssen. Die Kommentare werden auch als Teil der Installation \"CREATE "
+#~ "EXTENSION\" angelegt."
+
+#, no-c-format
+#~ msgid ""
+#~ "Introduced in PostGIS 2.0. This generates html cheat sheets suitable for "
+#~ "quick reference or for student handouts. This requires xsltproc to build "
+#~ "and will generate 4 files in doc folder <filename>topology_cheatsheet."
+#~ "html</filename>, <filename>tiger_geocoder_cheatsheet.html</filename>, "
+#~ "<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet."
+#~ "html</filename>"
+#~ msgstr ""
+#~ "Eingeführt in PostGIS 2.0. Erzeugt HTML-Spickzettel, die als schnelle "
+#~ "Referenz oder als Handzettel für Studenten geeignet sind. Dies benötigt "
+#~ "xsltproc zur Kompilation und erzeugt 4 Dateien in dem Ordner \"doc\": "
+#~ "<filename>topology_cheatsheet.html</filename>,"
+#~ "<filename>tiger_geocoder_cheatsheet.html</filename>, "
+#~ "<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet."
+#~ "html</filename>"
+
+#, no-c-format
+#~ msgid ""
+#~ "The PostGIS extensions are built and installed automatically if you are "
+#~ "using PostgreSQL 9.1+."
+#~ msgstr ""
+#~ "Die PostGIS Erweiterungen/Extensions werden ab PostgreSQL 9.1+ "
+#~ "automatisch kompiliert und installiert."
+
+#, no-c-format
+#~ msgid ""
+#~ "Extension tables <varname>spatial_ref_sys</varname>, <varname>layer</"
+#~ "varname>, <varname>topology</varname> can not be explicitly backed up. "
+#~ "They can only be backed up when the respective <varname>postgis</varname> "
+#~ "or <varname>postgis_topology</varname> extension is backed up, which only "
+#~ "seems to happen when you backup the whole database. As of PostGIS 2.0.1, "
+#~ "only srid records not packaged with PostGIS are backed up when the "
+#~ "database is backed up so don't go around changing srids we package and "
+#~ "expect your changes to be there. Put in a ticket if you find an issue. "
+#~ "The structures of extension tables are never backed up since they are "
+#~ "created with <code>CREATE EXTENSION</code> and assumed to be the same for "
+#~ "a given version of an extension. These behaviors are built into the "
+#~ "current PostgreSQL extension model, so nothing we can do about it."
+#~ msgstr ""
+#~ "Die Erweiterungstabellen <varname>spatial_ref_sys</varname>. "
+#~ "<varname>layer</varname> und <varname>topology</varname> können nicht "
+#~ "explizit gesichert werden. Sie können nur mit der entsprechenden "
+#~ "<varname>postgis</varname> oder <varname>postgis_topology</varname> "
+#~ "Erweiterung gesichert werden, was nur geschieht, wenn Sie die ganze "
+#~ "Datenbank sichern. Ab PostGIS 2.0.2 werden nur diejenigen Datensätze von "
+#~ "SRID beim Backup der Datenbank gesichert, die nicht mit PostGIS paketiert "
+#~ "sind. Sie sollten daher keine paketierte SRID ändern und Sie können "
+#~ "erwarten, dass Ihre Änderungen gesichert werden. Wenn Sie irgendein "
+#~ "Problem finden, reichen Sie bitte ein Ticket ein. Die Struktur der "
+#~ "Erweiterungstabellen wird niemals gesichert, da diese mit <code>CREATE "
+#~ "EXTENSION</code> erstellt wurde und angenommen wird, dass sie für eine "
+#~ "bestimmten Version einer Erweiterung gleich ist. Dieses Verhalten ist in "
+#~ "dem aktuellen PostgreSQL Extension Model eingebaut, weshalb wir daran "
+#~ "nichts ändern können."
+
+#, no-c-format
+#~ msgid ""
+#~ "The <code>address_standardizer</code> extension used to be a separate "
+#~ "package that required separate download. From PostGIS 2.2 on, it is now "
+#~ "bundled in. For more information about the address_standardize, what it "
+#~ "does, and how to configure it for your needs, refer to <xref "
+#~ "linkend=\"Address_Standardizer\"/>."
+#~ msgstr ""
+#~ "Die Erweiterung <code>address_standardizer</code> musste als getrenntes "
+#~ "Paket heruntergeladen werden. Ab PostGIS 2.2 ist es mitgebündelt. Für "
+#~ "weitere Informationen zu dem address_standardizer, was er kann und wie "
+#~ "man ihn für spezielle Bedürfnisse konfigurieren kann, siehe <xref "
+#~ "linkend=\"Address_Standardizer\"/>."
+
+#, no-c-format
+#~ msgid ""
+#~ "For Windows users, the PostGIS 2.1+ bundle is packaged with the "
+#~ "address_standardizer already so no need to compile and can move straight "
+#~ "to <code>CREATE EXTENSION</code> step."
+#~ msgstr ""
+#~ "Für Windows Benutzer ist ab PostGIS 2.1+ die Erweiterung "
+#~ "\"address_standardizer\" bereits mitpaketiert. Somit besteht keine "
+#~ "Notwendigkeit zu Kompilieren und es kann sofort der Schritt <code>CREATE "
+#~ "EXTENSION</code> ausgeführt werden."
+
+#, no-c-format
+#~ msgid ""
+#~ "As of PostGIS 2.4.1 the Zip code-5 digit tabulation area <varname>zcta5</"
+#~ "varname> load step was revised to load current zcta5 data and is part of "
+#~ "the <xref linkend=\"Loader_Generate_Nation_Script\"/> when enabled. It is "
+#~ "turned off by default because it takes quite a bit of time to load (20 to "
+#~ "60 minutes), takes up quite a bit of disk space, and is not used that "
+#~ "often."
+#~ msgstr ""
+#~ "Ab PostGIS 2.4.1 wurde der Ladevorgang der \"Zip code-5 digit tabulation "
+#~ "area\" <varname>zcta5</varname> überarbeitet, um aktuelle zcta5 Daten zu "
+#~ "laden und ist nun ein Teil von <xref "
+#~ "linkend=\"Loader_Generate_Nation_Script\"/>, falls aktiviert. "
+#~ "Standardmäßig ausgeschaltet, da der Ladevorgang ziemlich viel Zeit "
+#~ "benötigt (20 bis 60 Minuten), ziemlich viel Festplattenspeicher "
+#~ "beansprucht wird und es nur selten verwendet wird."
+
+#, no-c-format
+#~ msgid ""
+#~ "PostGIS 2.0.0 was the first release we tried this strategy. We used <link "
+#~ "xlink:href=\"http://www.pledgebank.com\">PledgeBank</link> and we got two "
+#~ "successful campaigns out of it."
+#~ msgstr ""
+#~ "PostGIS 2.0.0 war die erste Version, mit der wir diese Strategie "
+#~ "verfolgten. Wir benutzten <link xlink:href=\"http://www.pledgebank."
+#~ "com\">PledgeBank</link> und hatten zwei erfolgreiche Kampagnen."
+
+#, no-c-format
+#~ msgid ""
+#~ "Current PostgreSQL versions (including 9.6) suffer from a query optimizer "
+#~ "weakness regarding TOAST tables. TOAST tables are a kind of \"extension "
+#~ "room\" used to store large (in the sense of data size) values that do not "
+#~ "fit into normal data pages (like long texts, images or complex geometries "
+#~ "with lots of vertices), see <link xlink:href=\"http://www.postgresql.org/"
+#~ "docs/current/static/storage-toast.html\">the PostgreSQL Documentation for "
+#~ "TOAST</link> for more information)."
+#~ msgstr ""
+#~ "Aktuelle PostgreSQL Versionen (inklusive 9.6) haben eine Schwäche des "
+#~ "Optimizers in Bezug auf TOAST Tabellen. TOAST Tabellen bieten eine Art "
+#~ "\"Erweiterungsraum\", der benutzt wird um große Werte (im Sinne der "
+#~ "Datengröße), welche nicht in die üblichen Datenspeicherseiten passen (wie "
+#~ "lange Texte, Bilder oder eine komplexe Geometrie mit vielen Stützpunkten) "
+#~ "auszulagern, siehe  <link xlink:href=\"http://www.postgresql.org/docs/"
+#~ "current/static/storage-toast.html\">the PostgreSQL Documentation for "
+#~ "TOAST</link> für mehr Information)."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "This only works for POLYGON geometries. It does not work for MULTIPOLYGONS"
+#~ msgstr ""
+#~ "Dies funktioniert nicht mit MULTIPOLYGONen. Verwenden Sie die Funktion "
+#~ "bitte in Zusammenhang mit ST_Dump um sie auf MULTIPOLYGONe anzuwenden."
+
+#, fuzzy, no-c-format
+#~ msgid "General form of query."
+#~ msgstr "Allgemeine Form der Abfrage."
+
+#, fuzzy, no-c-format
+#~ msgid "A polygon with a single hole."
+#~ msgstr "Ein Polygon mit einem einzigen Loch."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+#~ "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+#~ "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+#~ "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+#~ "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
+#~ "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
+#~ "linkend=\"ST_ZMin\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
+#~ "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
+#~ "linkend=\"ST_ZMin\"/>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
+#~ "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+#~ "linkend=\"ST_ZMax\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
+#~ "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+#~ "linkend=\"ST_ZMax\"/>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
+#~ "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
+#~ "linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
+#~ "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
+#~ "linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Repeated nodes at the beginning of input LineStrings are collapsed to a "
+#~ "single point. Repeated points in Point and MultiPoint inputs are not "
+#~ "collapsed. <xref linkend=\"ST_RemoveRepeatedPoints\"/> can be used to "
+#~ "collapse repeated points from the output LineString."
+#~ msgstr ""
+#~ "Wiederholte Knoten am Anfang von Eingabe-LineStrings werden zu einem "
+#~ "einzigen Punkt zusammengezogen. Wiederholte Punkte in Punkt- und "
+#~ "Multipunkt-Eingaben werden nicht zusammengeklappt. <xref "
+#~ "linkend=\"ST_RemoveRepeatedPoints\"/> kann verwendet werden, um "
+#~ "wiederholte Punkte aus dem Ausgabe-LineString zu klappen."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Prior to PostgreSQL 9, ordering in a subquery can be used. However, "
+#~ "sometimes the query plan may not respect the order of the subquery."
+#~ msgstr ""
+#~ "Vor PostgreSQL 9 kann die Reihenfolge in einer Subquery verwendet werden. "
+#~ "Allerdings kann es vorkommen, dass der Abfrageplan die Reihenfolge der "
+#~ "Unterabfrage nicht berücksichtigt."
+
+#, no-c-format
+#~ msgid ""
+#~ "These functions are rarely used functions that should only be used if "
+#~ "your data is corrupted in someway. They are used for troubleshooting "
+#~ "corruption and also fixing things that should under normal circumstances, "
+#~ "never happen."
+#~ msgstr ""
+#~ "Diese selten genutzten Funktionen sollten nur im Fall beschädigter Daten "
+#~ "verwendet werden. Sie werden zur Fehlerbeseitigung und zur Reperatur von "
+#~ "Dingen verwendet, die unter normalen Umständen nicht vorkommen sollten."
+
+#, no-c-format
+#~ msgid ""
+#~ "In PostgreSQL 9.1+ - standard_conforming_strings is set to on by default, "
+#~ "where as in past versions it was set to off. You can change defaults as "
+#~ "needed for a single query or at the database or server level. Below is "
+#~ "how you would do it with standard_conforming_strings = on. In this case "
+#~ "we escape the ' with standard ansi ', but slashes are not escaped"
+#~ msgstr ""
+#~ "Ab PostgreSQL 9.1 - ist standard_conforming_strings standardmäßig auf "
+#~ "\"on\" gesetzt. Bei Vorgängerversionen war es \"off\". Sie können die "
+#~ "Standardvorgaben für eine einzelne Abfrage ändern oder auf Datenbank- "
+#~ "oder Serverebene setzen. Unterhalb steht, wie Sie dies mit "
+#~ "standard_conforming_strings = on umsetzten können. In diesem Fall "
+#~ "maskieren wir das ' mit dem ANSI Zeichen ', aber Schrägstriche werden "
+#~ "nicht maskiert"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "For geography types: computation is performed using the inverse geodesic "
+#~ "calculation. Units of length are in meters. If PostGIS is compiled with "
+#~ "PROJ version 4.8.0 or later, the spheroid is specified by the SRID, "
+#~ "otherwise it is exclusive to WGS84. If <varname>use_spheroid = false</"
+#~ "varname>, then the calculation is based on a sphere instead of a spheroid."
+#~ msgstr ""
+#~ "Für Geografietypen: Die Berechnung erfolgt über die inverse geodätische "
+#~ "Berechnung. Die Längeneinheiten sind in Meter. Wenn PostGIS mit PROJ "
+#~ "Version 4.8.0 oder später kompiliert wurde, wird das Sphäroid durch den "
+#~ "SRID angegeben, andernfalls ausschließlich WGS84. Wenn "
+#~ "<varname>use_spheroid = false</varname>, dann basiert die Berechnung auf "
+#~ "einer Kugel anstelle eines Sphäroids."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "For geography types, the calculations are performed using the inverse "
+#~ "geodesic problem, where perimeter units are in meters. If PostGIS is "
+#~ "compiled with PROJ version 4.8.0 or later, the spheroid is specified by "
+#~ "the SRID, otherwise it is exclusive to WGS84. If <varname>use_spheroid = "
+#~ "false</varname>, then calculations will approximate a sphere instead of a "
+#~ "spheroid."
+#~ msgstr ""
+#~ "Bei geographischen Typen werden die Berechnungen mit dem inversen "
+#~ "geodätischen Problem durchgeführt, wobei die Perimetereinheiten in Metern "
+#~ "angegeben werden. Wenn PostGIS mit PROJ Version 4.8.0 oder später "
+#~ "kompiliert wurde, wird das Sphäroid durch den SRID spezifiziert, "
+#~ "andernfalls ist es ausschließlich WGS84. Wenn <varname>use_spheroid = "
+#~ "false</varname>, dann werden die Berechnungen eine Kugel anstelle eines "
+#~ "Sphäroids approximieren."
+
+#, no-c-format
+#~ msgid ""
+#~ "Availability: 2.3.0 support for Block Range INdexes (BRIN) was "
+#~ "introduced. Requires PostgreSQL 9.5+."
+#~ msgstr ""
+#~ "Verfügbarkeit: Mit 2.3.0 wurde die Unterstützung von Block Range INdexes "
+#~ "(BRIN) eingeführt. Erfordert PostgreSQL 9.5+."
+
+#, no-c-format
+#~ msgid ""
+#~ "The <varname>&lt;-&gt;</varname> operator returns the 2D distance between "
+#~ "two geometries. Used in the \"ORDER BY\" clause provides index-assisted "
+#~ "nearest-neighbor result sets. For PostgreSQL below 9.5 only gives "
+#~ "centroid distance of bounding boxes and for PostgreSQL 9.5+, does true "
+#~ "KNN distance search giving true distance between geometries, and distance "
+#~ "sphere for geographies."
+#~ msgstr ""
+#~ "Der <varname>&lt;-&gt;</varname> Operator gibt die 2D Entfernung zwischen "
+#~ "zwei Geometrien zurück. Wird er in einer \"ORDER BY\" Klausel verwendet, "
+#~ "so liefert er Index-unterstützte nearest-neighbor Ergebnismengen. "
+#~ "PostgreSQL Versionen unter 9.5 geben jedoch lediglich die Entfernung der "
+#~ "Centroide der  bounding boxes zurück, während PostgreSQL 9.5+ mittels   "
+#~ "KNN-Methode die tatsächliche Entfernung zwischen den Geometrien, bei "
+#~ "geographischen Koordinaten die Entfernung auf der Späre, widergibt."
+
+#, no-c-format
+#~ msgid ""
+#~ "Enhanced: 2.2.0 -- True KNN (\"K nearest neighbor\") behavior for "
+#~ "geometry and geography for PostgreSQL 9.5+. Note for geography KNN is "
+#~ "based on sphere rather than spheroid. For PostgreSQL 9.4 and below, "
+#~ "geography support is new but only supports centroid box."
+#~ msgstr ""
+#~ "Verbesserung: 2.2.0  -- Echtes KNN (\"K nearest neighbor\") Verhalten für "
+#~ "Geometrie und Geographie ab PostgreSQL 9.5+. Beachten Sie bitte, das KNN "
+#~ "für Geographie auf der Späre und nicht auf dem Sphäroid beruht.  Für "
+#~ "PostgreSQL 9.4 und darunter, wird die Berechnung nur auf Basis des "
+#~ "Centroids der Box unterstützt."
+
+#, no-c-format
+#~ msgid ""
+#~ "Changed: 2.2.0 -- For PostgreSQL 9.5 users, old Hybrid syntax may be "
+#~ "slower, so you'll want to get rid of that hack if you are running your "
+#~ "code only on PostGIS 2.2+ 9.5+. See examples below."
+#~ msgstr ""
+#~ "Änderung: 2.2.0 -- Da für Anwender von PostgreSQL 9.5 der alte hybride "
+#~ "Syntax langsamer sein kann, möchten sie diesen Hack eventuell loswerden, "
+#~ "falls der Code nur auf PostGIS 2.2+ 9.5+ läuft. Siehe die unteren "
+#~ "Beispiele."
+
+#, no-c-format
+#~ msgid ""
+#~ "Availability: 2.0.0 -- Weak KNN provides nearest neighbors based on "
+#~ "geometry centroid distances instead of true distances. Exact results for "
+#~ "points, inexact for all other types. Available for PostgreSQL 9.1+"
+#~ msgstr ""
+#~ "Verfügbarkeit: 2.0.0 -- Weak KNN liefert nearest neighbors, welche sich "
+#~ "auf die Entfernung der Centroide der Geometrien, anstatt auf den "
+#~ "tatsächlichen Entfernungen, stützen. Genaue Ergebnisse für Punkte, "
+#~ "ungenau für alle anderen Geometrietypen. Verfügbar ab PostgreSQL 9.1+."
+
+#, no-c-format
+#~ msgid ""
+#~ "For users running with PostgreSQL &lt; 9.5, use a hybrid query to find "
+#~ "the true nearest neighbors. First a CTE query using the index-assisted "
+#~ "KNN, then an exact query to get correct ordering:"
+#~ msgstr ""
+#~ "Anwender von PostgreSQL &lt; 9.5 können eine hybride Abfrage erstellen, "
+#~ "um die echten nearest neighbors aufzufinden. Zuerst eine CTE-Abfrage, "
+#~ "welche die Index-unterstützten KNN-Methode anwendet, dann eine exakte "
+#~ "Abfrage um eine korrekte Sortierung zu erhalten:"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "The <varname>|=|</varname> operator returns the 3D distance between two "
+#~ "trajectories (See <xref linkend=\"ST_IsValidTrajectory\"/>). This is the "
+#~ "same as <xref linkend=\"ST_DistanceCPA\"/> but as an operator it can be "
+#~ "used for doing nearest neighbor searches using an N-dimensional index "
+#~ "(requires PostgreSQL 9.5.0 or higher)."
+#~ msgstr ""
+#~ "Der <varname>|=|</varname> Operator gibt die 3D Entfernung zwischen zwei "
+#~ "Trajektorien (Siehe <xref linkend=\"ST_IsValidTrajectory\"/>). Dieser "
+#~ "entspricht <xref linkend=\"ST_DistanceCPA\"/>, da es sich jedoch um einen "
+#~ "Operator handelt, kann dieser für nearest neightbor searches mittels "
+#~ "eines N-dimensionalen Index verwendet werden (verlangt PostgreSQL 9.5.0 "
+#~ "oder höher)."
+
+#, no-c-format
+#~ msgid ""
+#~ "Availability: 2.2.0. Index-supported only available for PostgreSQL 9.5+"
+#~ msgstr ""
+#~ "Verfügbarkeit: 2.2.0. Index-unterstützt steht erst ab PostgreSQL 9.5+ zur "
+#~ "Verfügung."
+
+#, no-c-format
+#~ msgid ""
+#~ "The <varname>&lt;#&gt;</varname> operator returns distance between two "
+#~ "floating point bounding boxes, possibly reading them from a spatial index "
+#~ "(PostgreSQL 9.1+ required). Useful for doing nearest neighbor <emphasis "
+#~ "role=\"strong\">approximate</emphasis> distance ordering."
+#~ msgstr ""
+#~ "Der <varname>&lt;#&gt;</varname> Operator gibt die Entfernung zwischen "
+#~ "zwei floating point bounding boxes zurück, wobei diese eventuell vom "
+#~ "räumlichen Index ausgelesen wird (PostgreSQL 9.1+ vorausgesetzt). "
+#~ "Praktikabel falls man eine nearest neighbor Abfrage <emphasis "
+#~ "role=\"strong\">approximate</emphasis> nach der Entfernung sortieren will."
+
+#, no-c-format
+#~ msgid "Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+"
+#~ msgstr ""
+#~ "Verfügbarkeit: 2.0.0 -- KNN steht erst ab PostgreSQL 9.1+ zur Verfügung"
+
+#, no-c-format
+#~ msgid "Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+"
+#~ msgstr ""
+#~ "Verfügbarkeit: 2.2.0 -- KNN steht erst ab PostgreSQL 9.1+ zur Verfügung."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "The default behavior in PostgreSQL 9.0 has been changed to output bytea "
+#~ "in hex encoding. If your GUI tools require the old behavior, then SET "
+#~ "bytea_output='escape' in your database."
+#~ msgstr ""
+#~ "Das Standardverhalten in PostgreSQL 9.0 wurde geändert, um bytea in Hex-"
+#~ "Kodierung auszugeben. Wenn Ihre GUI-Tools das alte Verhalten erfordern, "
+#~ "dann setzen Sie SET bytea_output='escape' in Ihrer Datenbank."
+
+#, no-c-format
+#~ msgid ""
+#~ "The 'options' argument is a bitfield. For PostGIS 2.2+, this is used to "
+#~ "denote whether to represent coordinates with X3D GeoCoordinates "
+#~ "Geospatial node and also whether to flip the x/y axis. By default, "
+#~ "<code>ST_AsX3D</code> outputs in database form (long,lat or X,Y), but X3D "
+#~ "default of lat/lon, y/x may be preferred."
+#~ msgstr ""
+#~ "Das Argument 'options' ist ein Bitfeld. Ab PostGIS 2.2+ wird dieses "
+#~ "verwendet, um anzuzeigen ob die Koordinaten als X3D geospatiale Knoten in "
+#~ "GeoKoordinaten dargestellt werden und auch ob X- und Y-Achse vertauscht "
+#~ "werden sollen. Standardmäßig erfolgt die Ausgabe durch <code>ST_AsX3D</"
+#~ "code> im Datenbankformat (Länge, Breite oder X,Y), aber es kann auch der "
+#~ "X3D Standard mit Breite/Länge oder Y/X bevorzugt werden."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "<emphasis role=\"bold\">Example:</emphasis> Densify a long geography line "
+#~ "using ST_Segmentize(geography, distance), and use ST_Subdivide to split "
+#~ "the resulting line into sublines of 8 vertices."
+#~ msgstr ""
+#~ "<emphasis role=\"bold\">Beispiel:</emphasis> Verdichten Sie eine lange "
+#~ "geografische Linie mit ST_Segmentize(geography, distance), und verwenden "
+#~ "Sie ST_Subdivide, um die resultierende Linie in Unterlinien mit 8 "
+#~ "Scheitelpunkten zu unterteilen."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "'side=both|left|right' : 'left' or 'right' performs a single-sided buffer "
+#~ "on the geometry, with the buffered side relative to the direction of the "
+#~ "line. This is only applicable to LINESTRING geometry and does not affect "
+#~ "POINT or POLYGON geometries. By default end caps are square."
+#~ msgstr ""
+#~ "side=both|left|right' : 'left' oder 'right' führt eine einseitige "
+#~ "Pufferung der Geometrie durch, wobei sich die gepufferte Seite auf die "
+#~ "Richtung der Linie bezieht. Dies gilt nur für LINESTRING-Geometrien und "
+#~ "wirkt sich nicht auf POINT- oder POLYGON-Geometrien aus. Standardmäßig "
+#~ "sind die Endkappen quadratisch."
+
+#, fuzzy, no-c-format
+#~ msgid "Merging lines with different orientation."
+#~ msgstr "Zusammenführen von Linien mit unterschiedlicher Ausrichtung."
+
+#, fuzzy, no-c-format
+#~ msgid "Example showing Z-dimension handling."
+#~ msgstr "Beispiel für die Handhabung der Z-Dimension."
+
+#, no-c-format
+#~ msgid ""
+#~ "From PostGIS 2.0+ the srid of a non-georeferenced raster/geometry is 0 "
+#~ "instead of the prior -1."
+#~ msgstr ""
+#~ "Ab PostGIS 2.0 ist die SRID eines nicht georeferenzierten Rasters/"
+#~ "Geometrie 0 anstelle wie früher -1."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "If you find your transformation support is not working right, you may "
+#~ "need to set the environment variable PROJSO to the .so or .dll projection "
+#~ "library your PostGIS is using. This just needs to have the name of the "
+#~ "file. So for example on windows, you would in Control Panel -&gt; System -"
+#~ "&gt; Environment Variables add a system variable called <varname>PROJSO</"
+#~ "varname> and set it to <varname>libproj.dll</varname> (if you are using "
+#~ "proj 4.6.1). You'll have to restart your PostgreSQL service/daemon after "
+#~ "this change."
+#~ msgstr ""
+#~ "Wenn Sie feststellen, dass Ihre Transformationsunterstützung nicht "
+#~ "richtig funktioniert, müssen Sie möglicherweise die Umgebungsvariable "
+#~ "PROJSO auf die .so- oder .dll-Projektionsbibliothek setzen, die Ihr "
+#~ "PostGIS verwendet. Sie muss nur den Namen der Datei enthalten. Unter "
+#~ "Windows würden Sie zum Beispiel in der Systemsteuerung -&gt; System -&gt; "
+#~ "Umgebungsvariablen eine Systemvariable namens <varname>PROJSO</varname> "
+#~ "hinzufügen und sie auf <varname>libproj.dll</varname> setzen (wenn Sie "
+#~ "proj 4.6.1 verwenden). Nach dieser Änderung müssen Sie Ihren PostgreSQL-"
+#~ "Dienst/Daemon neu starten."
+
+#, no-c-format
+#~ msgid ""
+#~ "Complete example of tiles of a coverage with neighborhood. This query "
+#~ "only works with PostgreSQL 9.1 or higher."
+#~ msgstr ""
+#~ "Ein vollständiges Beispiel mit Coveragekacheln und Nachbarschaft. Diese "
+#~ "Abfrage funktioniert nur mit PostgreSQL 9.1 oder höher."
+
+#, no-c-format
+#~ msgid ""
+#~ "Example like the prior one for tiles of a coverage with neighborhood but "
+#~ "works with PostgreSQL 9.0."
+#~ msgstr ""
+#~ "Das selbe Beispiel wie vorher, mit Coveragekacheln und Nachbarschaft, das "
+#~ "aber auch mit PostgreSQL 9.0 funktioniert."
+
+#, no-c-format
+#~ msgid ""
+#~ "Complete example of tiles of a coverage. This query only works with "
+#~ "PostgreSQL 9.1 or higher."
+#~ msgstr ""
+#~ "Ein vollständiges Beispiel mit Coveragekacheln. Diese Abfrage "
+#~ "funktioniert nur mit PostgreSQL 9.1 oder höher."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "\"linework\" is the original algorithm, and builds valid geometries by "
+#~ "first extracting all lines, noding that linework together, then building "
+#~ "a value output from the linework."
+#~ msgstr ""
+#~ "\"linework\" ist der ursprüngliche Algorithmus, der gültige Geometrien "
+#~ "erstellt, indem er zunächst alle Linien extrahiert, diese Linien zusammen "
+#~ "kodiert und dann einen Wert aus dem Linienwerk ausgibt."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "\"structure\" is an algorithm that distinguishes between interior and "
+#~ "exterior rings, building new geometry by unioning exterior rings, and "
+#~ "then differencing all interior rings."
+#~ msgstr ""
+#~ "\"Struktur\" ist ein Algorithmus, der zwischen inneren und äußeren Ringen "
+#~ "unterscheidet und eine neue Geometrie erstellt, indem er äußere Ringe "
+#~ "zusammenfasst und dann alle inneren Ringe differenziert."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "The \"keepcollapsed\" key is only valid for the \"structure\" algorithm, "
+#~ "and takes a value of \"true\" or \"false\". When set to \"false\", "
+#~ "geometry components that collapse to a lower dimensionality, for example "
+#~ "a one-point linestring would be dropped."
+#~ msgstr ""
+#~ "Der Schlüssel \"keepcollapsed\" ist nur für den Algorithmus \"structure\" "
+#~ "gültig und nimmt den Wert \"true\" oder \"false\" an. Wenn er auf "
+#~ "\"false\" gesetzt ist, werden Geometriekomponenten, die auf eine "
+#~ "niedrigere Dimensionalität kollabieren, z. B. ein Ein-Punkt-Linienzug, "
+#~ "fallengelassen."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Like the geometry data type, geography data is associated with a spatial "
+#~ "reference system via a spatial reference system identifier (SRID). Any "
+#~ "geodetic (long/lat based) spatial reference system defined in the "
+#~ "<varname>spatial_ref_sys</varname> table can be used. (Prior to PostGIS "
+#~ "2.2, the geography type supported only WGS 84 geodetic (SRID:4326)). You "
+#~ "can add your own custom geodetic spatial reference system as described in "
+#~ "<xref linkend=\"user-spatial-ref-sys\"/>."
+#~ msgstr ""
+#~ "Wie der Datentyp Geometrie sind auch die Geodaten über einen Spatial "
+#~ "Reference System Identifier (SRID) mit einem räumlichen Bezugssystem "
+#~ "verbunden. Jedes in der Tabelle <varname>spatial_ref_sys</varname> "
+#~ "definierte geodätische (long/lat-basierte) Raumbezugssystem kann "
+#~ "verwendet werden. (Vor PostGIS 2.2 unterstützte der Geografietyp nur das "
+#~ "geodätische WGS 84 (SRID:4326)). Sie können Ihr eigenes geodätisches "
+#~ "Raumbezugssystem hinzufügen, wie in <xref linkend=\"user-spatial-ref-"
+#~ "sys\"/> beschrieben."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "BRIN stands for \"Block Range Index\". It is a general-purpose index "
+#~ "method introduced in PostgreSQL 9.5. BRIN is a <emphasis>lossy</emphasis> "
+#~ "index method, meaning that a secondary check is required to confirm that "
+#~ "a record matches a given search condition (which is the case for all "
+#~ "provided spatial indexes). It provides much faster index creation and "
+#~ "much smaller index size, with reasonable read performance. Its primary "
+#~ "purpose is to support indexing very large tables on columns which have a "
+#~ "correlation with their physical location within the table. In addition to "
+#~ "spatial indexing, BRIN can speed up searches on various kinds of "
+#~ "attribute data structures (integer, arrays etc). For more information see "
+#~ "the <link xlink:href=\"https://www.postgresql.org/docs/current/brin."
+#~ "html\">PostgreSQL manual</link>."
+#~ msgstr ""
+#~ "BRIN steht für \"Block Range Index\". Es handelt sich um eine allgemeine "
+#~ "Indexmethode, die in PostgreSQL 9.5 eingeführt wurde. BRIN ist eine "
+#~ "<emphasis>lossy</emphasis> Indexmethode, was bedeutet, dass eine "
+#~ "sekundäre Prüfung erforderlich ist, um zu bestätigen, dass ein Datensatz "
+#~ "mit einer bestimmten Suchbedingung übereinstimmt (was für alle "
+#~ "bereitgestellten räumlichen Indizes der Fall ist). Sie ermöglicht eine "
+#~ "viel schnellere Indexerstellung und eine viel geringere Indexgröße bei "
+#~ "einer angemessenen Leseleistung. Sein Hauptzweck besteht darin, die "
+#~ "Indizierung sehr großer Tabellen auf Spalten zu unterstützen, die eine "
+#~ "Korrelation mit ihrer physischen Position innerhalb der Tabelle "
+#~ "aufweisen. Zusätzlich zur räumlichen Indizierung kann BRIN die Suche auf "
+#~ "verschiedenen Arten von Attributdatenstrukturen (Integer, Arrays usw.) "
+#~ "beschleunigen. Weitere Informationen finden Sie im <link xlink:"
+#~ "href=\"https://www.postgresql.org/docs/current/brin.html\">PostgreSQL-"
+#~ "Handbuch</link>."
 
 #, no-c-format
 #~ msgid ""
