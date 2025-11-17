@@ -74,7 +74,7 @@ sql/test-normalize_address.sql: sql_bits/test_tuples_only_unaligned.sql.in ../..
 sql/test-upgrade.sql: | sql
 	echo 'ALTER EXTENSION ${EXTENSION} UPDATE TO "ANY"; ALTER EXTENSION ${EXTENSION} UPDATE TO "$(EXTVERSION)"' > $@
 
-## no_relocate clause is only availabe in PostgreSQL 16 and above, so strip it for lower
+## no_relocate clause is only available in PostgreSQL 16 and above, so strip it for lower
 ifeq ($(shell expr "$(POSTGIS_PGSQL_VERSION)" "<" 160),1)
 %.control: %.control.in Makefile
 	$(PERL) -lpe 's/^no_relocate.*//g; s/\@EXTVERSION\@/$(EXTVERSION)/g'  < "$<" > "$@"
