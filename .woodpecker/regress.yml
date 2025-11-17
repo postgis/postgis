@@ -26,7 +26,7 @@ variables:
       --enable-lto
       --without-interrupt-tests
       CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror"
-    - make -j
+    - make -j $(nproc)
   steps-pg-test-preinstall: &steps-pg-test-preinstall
     - cd build/pg$${PGVER}
     - make check

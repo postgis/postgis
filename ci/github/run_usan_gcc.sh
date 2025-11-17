@@ -10,5 +10,5 @@ LDFLAGS_STD="-Wl,-Bsymbolic-functions -Wl,-z,relro"
 
 # Build with GCC and usan flags
 ./configure CC=gcc CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}"
-bash ./ci/github/logbt -- make -j
+bash ./ci/github/logbt -- make -j $(nproc)
 bash ./ci/github/logbt -- make check RUNTESTFLAGS=--verbose

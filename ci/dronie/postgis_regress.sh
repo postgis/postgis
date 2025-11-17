@@ -24,7 +24,7 @@ cd "${BUILDDIR}"
 ${SRCDIR}/configure \
   CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror" \
   --enable-lto
-make -j
+make -j $(nproc)
 
 # we should maybe wait for postgresql service to startup here...
 psql -c "select version()" template1

@@ -17,7 +17,7 @@ export CUNIT_VALGRIND_FLAGS="--leak-check=full --error-exitcode=1"
 # Standard build
 ./configure CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}"
 #bash ./ci/github/logbt --
-make -j
+make -j $(nproc)
 #bash ./ci/github/logbt \ --
 sudo make install
 export POSTGIS_MAJOR_VERSION=`grep ^POSTGIS_MAJOR_VERSION Version.config | cut -d= -f2`

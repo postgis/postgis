@@ -8,6 +8,6 @@ LDFLAGS_STD="--coverage"
 /usr/local/pgsql/bin/pg_ctl -c -l /tmp/logfile -o '-F' start
 ./autogen.sh
 ./configure CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}" --enable-debug
-make -j
+make -j $(nproc)
 bash ./ci/github/logbt -- make garden
 (curl -S -f https://codecov.io/bash -o .github/codecov.bash && bash .github/codecov.bash) || echo "Coverage report failed"
