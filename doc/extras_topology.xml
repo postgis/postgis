@@ -135,6 +135,56 @@ and <varname>GetNodeEdges</varname> functions.
 		</refentry>
 	</section>
 
+	<section xml:id="Topology_Metadata_Tables">
+        <title>Topology Metadata Tables</title><info>
+            <abstract>
+                <para>
+This section lists the metadata tables installed by PostGIS Topology.
+These tables can be used like a catalog of topology elements.
+                </para>
+            </abstract>
+        </info>
+
+        <refentry xml:id="topology.topology">
+            <refnamediv>
+                <refname>topology.topology</refname>
+                <refpurpose>A table listing all known topologies in the database.</refpurpose>
+            </refnamediv>
+            <refsection>
+                <title>Description</title>
+                <para>
+TODO
+                </para>
+            </refsection>
+            <refsection>
+                <title>See Also</title>
+                <para>
+                  <xref linkend="topology.layer"/>
+                </para>
+            </refsection>
+        </refentry>
+
+        <refentry xml:id="topology.layer">
+            <refnamediv>
+                <refname>topology.layer</refname>
+                <refpurpose>A table listing all known topology layers in the database.</refpurpose>
+            </refnamediv>
+            <refsection>
+                <title>Description</title>
+                <para>
+TODO
+                </para>
+            </refsection>
+            <refsection>
+                <title>See Also</title>
+                <para>
+                  <xref linkend="topology.topology"/>
+                </para>
+            </refsection>
+        </refentry>
+
+	</section>
+
 	<section xml:id="Topology_Domains">
         <title>Topology Domains</title><info>
             <abstract>
