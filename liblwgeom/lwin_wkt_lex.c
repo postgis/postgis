@@ -290,7 +290,8 @@
 
 /* C99 systems have <inttypes.h>. Non-C99 systems may or may not. */
 
-#if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#if defined(__FreeBSD__) || \
+    (defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 
 /* C99 says to define __STDC_LIMIT_MACROS before including stdint.h,
  * if you want the limit (max/min) macros for int types. 
@@ -519,6 +520,7 @@ static YY_BUFFER_STATE * yy_buffer_stack = NULL; /**< Stack as an array. */
 #define YY_CURRENT_BUFFER ( (yy_buffer_stack) \
                           ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
                           : NULL)
+#define yy_current_buffer YY_CURRENT_BUFFER
 /* Same as previous macro, but useful when we know that the buffer stack is not
  * NULL or when we need an lvalue. For internal use only.
  */
@@ -903,10 +905,10 @@ static void wkt_lexer_unknown()
 #define NAN 0.0/0.0
 #endif
 
-#line 906 "lwin_wkt_lex.c"
+#line 908 "lwin_wkt_lex.c"
 #define YY_NO_INPUT 1
 /* Suppress the default implementations. */
-#line 909 "lwin_wkt_lex.c"
+#line 911 "lwin_wkt_lex.c"
 
 #define INITIAL 0
 
@@ -1124,7 +1126,7 @@ YY_DECL
 #line 60 "lwin_wkt_lex.l"
 
 
-#line 1127 "lwin_wkt_lex.c"
+#line 1129 "lwin_wkt_lex.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1337,7 +1339,7 @@ YY_RULE_SETUP
 #line 118 "lwin_wkt_lex.l"
 ECHO;
 	YY_BREAK
-#line 1340 "lwin_wkt_lex.c"
+#line 1342 "lwin_wkt_lex.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1724,7 +1726,11 @@ static int yy_get_next_buffer (void)
 				case EOB_ACT_END_OF_FILE:
 					{
 					if ( yywrap(  ) )
+#ifdef YY_FLEX_LEX_COMPAT
 						return 0;
+#else
+						return EOF;
+#endif
 
 					if ( ! (yy_did_buffer_switch_on_eof) )
 						YY_NEW_FILE;

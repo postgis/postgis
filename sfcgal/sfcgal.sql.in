@@ -609,4 +609,16 @@ AS 'MODULE_PATHNAME', 'sfcgal_alphawrapping_3d'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 _COST_LOW;
 
+-- Availability: 3.6.0
+-- Repairs invalid polygons using CGAL's 2D Polygon Repair algorithm
+-- repair_rule: 0 = EVEN_ODD (CGAL 6.0+, default)
+--              1 = NON_ZERO (CGAL 6.1+)
+--              2 = UNION (CGAL 6.1+)
+--              3 = INTERSECTION (CGAL 6.1+)
+CREATE OR REPLACE FUNCTION CG_PolygonRepair(geom geometry, repair_rule int DEFAULT 0)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_polygon_repair'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_MEDIUM;
+
 COMMIT;

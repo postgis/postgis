@@ -3802,5 +3802,82 @@ SELECT (ST_Dump(CG_Simplify(geom, 0.5, false))).geom FROM depts_pds;
    </refsection>
 </refentry>
 
+<refentry xml:id="CG_PolygonRepair">
+    <refnamediv>
+        <refname>CG_PolygonRepair</refname>
+        <refpurpose>Repairs invalid polygons using CGAL's 2D Polygon Repair algorithm</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>CG_PolygonRepair</function></funcdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geom</parameter>
+                </paramdef>
+                <paramdef choice="opt">
+                    <type>integer</type>
+                    <parameter>repair_rule</parameter>
+                    <initializer>0</initializer>
+                </paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Description</title>
+        <para>Repairs invalid polygons using CGAL's 2D Polygon Repair algorithm. This function takes a Polygon or MultiPolygon geometry and attempts to repair any topological issues such as self-intersections, holes, and overlapping rings.</para>
+
+        <para>The <varname>repair_rule</varname> parameter specifies the repair strategy to use:</para>
+        <itemizedlist>
+            <listitem><para><emphasis>0 = EVEN_ODD</emphasis> (default): Even-odd rule, available in CGAL 6.0+</para></listitem>
+            <listitem><para><emphasis>1 = NON_ZERO</emphasis>: Non-zero winding rule, requires CGAL 6.1+</para></listitem>
+            <listitem><para><emphasis>2 = UNION</emphasis>: Union of all polygons, requires CGAL 6.1+</para></listitem>
+            <listitem><para><emphasis>3 = INTERSECTION</emphasis>: Intersection of all polygons, requires CGAL 6.1+</para></listitem>
+        </itemizedlist>
+
+        <para>Performed by the SFCGAL module</para>
+        <note>
+            <para>The input geometry must be a Polygon or MultiPolygon. Other geometry types will result in an error.</para>
+            <para>Rules 1, 2, and 3 (NON_ZERO, UNION, INTERSECTION) require CGAL 6.1 or later.</para>
+        </note>
+        <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL 2.3.0</para>
+        <para>&sfcgal_required;</para>
+    </refsection>
+    <refsection>
+        <title>Examples</title>
+        <para>Repair a bowtie polygon using the default EVEN_ODD rule:</para>
+        <programlisting>SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0, 10 10, 10 0, 0 10, 0 0))'));
+                   st_astext
+------------------------------------------------
+ MULTIPOLYGON(((0 0,5 5,0 10,0 0)),((5 5,10 0,10 10,5 5)))
+(1 row)</programlisting>
+
+        <para>Repair a winding polygon using NON_ZERO rule:</para>
+        <programlisting>SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0, 10 0, 10 6, 6 6, 6 4 , 10 4, 10 10, 0 10, 0 0))', 1));
+                      st_astext
+-----------------------------------------------------
+ MULTIPOLYGON(((0 0,10 0,10 4,10 6,10 10,0 10,0 0)))
+(1 row)</programlisting>
+
+        <para>Repair a multipolygon with overlapping rings using UNION:</para>
+        <programlisting>SELECT ST_AsText(CG_PolygonRepair('MULTIPOLYGON(((0 0, 20 0, 20 20, 0 20, 0 0), (1 1, 1 19, 19 19, 19 1, 1 1)) , ((10 -2, 12 -2, 12 22, 10 22, 10 -2)))', 2));
+                   st_astext
+------------------------------------------------
+ MULTIPOLYGON(((0 0,10 0,10 -2,12 -2,12 0,20 0,20 20,12 20,12 22,10 22,10 20,0 20,0 0),(1 1,1 19,10 19,10 1,1 1),(12 1,12 19,19 19,19 1,12 1)))
+(1 row)</programlisting>
+
+        <para>Repair a self-intersecting polygon with INTERSECTION rule (requires CGAL 6.1+):</para>
+        <programlisting>SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0, 10 0, 10 6, 6 6, 6 4 , 10 4, 10 10, 0 10, 0 0))', 3));
+                          st_astext
+-------------------------------------------------------------
+ MULTIPOLYGON(((0 0,10 0,10 4,6 4,6 6,10 6,10 10,0 10,0 0)))
+(1 ligne)</programlisting>
+    </refsection>
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_MakeValid"/></para>
+    </refsection>
+</refentry>
+
     </section>
 </chapter>
