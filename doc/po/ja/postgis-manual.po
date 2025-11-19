@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-11-19 02:47+0000\n"
+"PO-Revision-Date: 2025-11-19 06:41+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -417,13 +417,17 @@ msgid "Soft upgrade without extensions"
 msgstr "エクステンションを使わないソフトアップグレード"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Extensions have been the supported installation method for many releases. If "
 "you still rely on an unpackaged installation, perform a <link "
 "linkend=\"hard_upgrade\">HARD UPGRADE</link> into a database created with "
 "extensions and migrate your data there."
 msgstr ""
+"エクステンションは多数のリリースのために対応したインストールメソッドです。ま"
+"だアパッケージ化されていないものをインストールしているのなら、"
+"エクステンションで作られたデータベース内で<link linkend=\"hard_upgrade\""
+">HARD UPGRADE</link>を実行してそこで保持データを移行させて下さい。"
 
 #. Tag: title
 #, no-c-format
@@ -721,6 +725,10 @@ msgid ""
 "they are in an inherited hierarchy and avoids paying the planner penalty "
 "otherwise."
 msgstr ""
+"これは一般的にテーブルのパーティショニングに使われます。"
+"デフォルトの\"partition\"では、テーブルが継承階層の中にある場合にはプランナー"
+"に制約を考慮するテーブル解析だけを強制し、他の場合にはプランナーペナルティを"
+"払うのを避けるようにします。"
 
 #. Tag: link
 #, no-c-format
@@ -850,7 +858,7 @@ msgid "max_parallel_workers_per_gather"
 msgstr "max_parallel_workers_per_gather"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Parallel query support in modern PostgreSQL and PostGIS uses this setting to "
 "decide how many workers a plan may request. If set to higher than 0, then "
@@ -861,6 +869,13 @@ msgid ""
 "sure to bump up <code>max_worker_processes</code> to at least as high as "
 "this number."
 msgstr ""
+"最近のPostgreSQLとPostGISのパラレルクエリー機能では、1回のプランで要求する可"
+"能性のあるワーカー数を決定するためにこの設定が使われます。0より大きい数を設定"
+"した場合には、これらの関係する <code>ST_Intersects</code> のような関数のよう"
+"なクエリーが複数のプロセスを使うことができ、そうすると2倍を超える速度になりま"
+"す。多数の予備プロセスがあるなら、この値を持っているプロセス数まで上げるべき"
+"です。少なくともこの数と同じまで<code>max_worker_processes</code>を増やすのを"
+"忘れないでください。"
 
 #. Tag: para
 #, no-c-format
@@ -1496,7 +1511,7 @@ msgstr "郵便型入力トークン"
 #. Tag: para
 #, no-c-format
 msgid "(28). A 5 digit number. Identifies a ZIP code"
-msgstr ""
+msgstr "(28) 5桁の番号。ZIPコードです。"
 
 #. Tag: para
 #, no-c-format
@@ -1624,6 +1639,8 @@ msgid ""
 "(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). This "
 "attribute is used for both the US ZIP and the Canadian postal codes."
 msgstr ""
+"(トークン番号 \"13\") (SADS要素の\"ZIP CODE\" , \"PLUS 4\" ). 米国ZIP (訳注: "
+"郵便番号)とカナダ郵便番号の両方で使われる属性です。"
 
 #. Tag: para
 #, no-c-format
@@ -2101,6 +2118,9 @@ msgid ""
 "located in the <varname>extras/history_table</varname> directory of the "
 "PostGIS source tree."
 msgstr ""
+"<varname>history_table</varname>エクステンションはPL/"
+"pgSQLで書かれていて、PostGISソースツリーの<varname>extras/"
+"history_table</varname>ディレクトリ内にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -2261,6 +2281,10 @@ msgid ""
 "suffixes, states, various control tables for managing data load, and "
 "skeleton base tables from which all the TIGER-loaded tables inherit."
 msgstr ""
+"Tiger関連の関数や、道路型前置辞、道路型後置辞、州、データロード管理用の様々な"
+"制御テーブル、全てのロードされたテーブル継承するスケルトンベーステーブルとい"
+"った再利用可能なデータを収容するための<varname>tiger</varname>というスキーマ"
+"がスクリプトによって作成されます。"
 
 #. Tag: para
 #, no-c-format
@@ -3075,13 +3099,17 @@ msgid ""
 "when enabled, zcta5 data is loaded as a single table called zcta5_all as "
 "part of the nation script load."
 msgstr ""
+"Enhanced: 2.4.1 5桁郵便番号集計地域 (zcta5)のロードが修正され、zcta5データは"
+"、有効な時には、国スクリプトロードの一部としてzcta5_allという単一テーブルとし"
+"てロードされるようになりました。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If you want ZIP Code 5 tabulation area (zcta5) to be included in your nation "
 "script load, do the following:"
-msgstr ""
+msgstr "5桁郵便番号集計地域 "
+"(zcta5)を国スクリプトのロードで取り込む場合には次のようにします:"
 
 #. Tag: para
 #, no-c-format
@@ -3312,7 +3340,8 @@ msgstr ""
 msgid ""
 "<varname>zip4</varname> last 4 digits of a 9 digit ZIP Code. Availability: "
 "PostGIS 2.4.0."
-msgstr ""
+msgstr "<varname>zip4</varname> 9桁郵便番号の後半4桁です。Availability: PostGIS 2.4."
+"0。"
 
 #. Tag: para
 #, no-c-format
@@ -3863,6 +3892,10 @@ msgid ""
 "functions, fixed known usability issues, documented the features and "
 "functions, added new functionality, and improved SQL-MM compliance."
 msgstr ""
+"PostGISトポロジーモジュールは長い間存在していましたが、公式ドキュメントには常"
+"に存在しているわけではありませんでした。広範なクリーンアップで非推奨関数を削"
+"除し、既知の使い勝手に関する問題の修正、機能と関数の文書化、新機能追加、SQL-"
+"MM適合性の改善がなされました。"
 
 #. Tag: para
 #, no-c-format
@@ -3898,11 +3931,15 @@ msgid ""
 "without-topology configure option at build time as described in <xref "
 "linkend=\"postgis_installation\"/>"
 msgstr ""
+"トポロジー機能はデフォルトでビルドされます。<xref linkend="
+"\"postgis_installation\"/>で説明されている通り、"
+"ビルド時のコンフィギュアオプション --without-topology "
+"を指定することで、無効にできます。"
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Topology Primitive Tables"
-msgstr ""
+msgstr "トポロジープリミティブテーブル"
 
 #. Tag: para
 #, no-c-format
