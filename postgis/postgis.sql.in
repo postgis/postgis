@@ -5744,7 +5744,7 @@ CREATE OR REPLACE FUNCTION ST_MPointFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''MULTIPOINT''
-	THEN ST_GeomFromText($1, $2)
+	THEN @extschema@.ST_GeomFromText($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
