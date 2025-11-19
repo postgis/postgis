@@ -7,6 +7,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 * Bug fixes *
 
   - #5959, #5984, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
+  - #6020, schema qualify call in ST_MPointFromText (Paul Ramsey)
 
 
 PostGIS 3.5.4
