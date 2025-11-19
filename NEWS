@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - #6020, Resolve ST_MPointFromText in the PostGIS schema (Paul Ramsey)
  - GH-1187, [raster] Handle failed raster-to-geometry conversions
      (Maksim Korotkov)
  - #6048, [raster] Preserve requested band order in ST_Clip
