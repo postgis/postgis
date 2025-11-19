@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #6020, Resolve ST_MPointFromText in the PostGIS schema (Paul Ramsey)
  - GH-1187, [raster] Handle failed raster-to-geometry conversions
      (Maksim Korotkov)
  - Handle a failed point clone during ST_WrapX (Maksim Korotkov)
