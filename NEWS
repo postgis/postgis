@@ -1,5 +1,7 @@
+
 PostGIS 3.6.2
 2025/xx/xx
+
 This version requires PostgreSQL 12-18, GEOS 3.8 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.14+ is needed.
 To take advantage of all SFCGAL features, SFCGAL 2.2+ is needed.
@@ -14,6 +16,8 @@ SELECT topology.FixCorruptTopoGeometryColumn(schema_name, table_name, feature_co
 
 - #6019, make clean does not remove cunit generated files
            (Bas Couwenberg)
+- #6020, schema qualify call in ST_MPointFromText (Paul Ramsey)
+
 
 PostGIS 3.6.1
 2025/11/13
