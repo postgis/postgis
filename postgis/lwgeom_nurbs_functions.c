@@ -39,7 +39,7 @@
 Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS);
 Datum ST_ControlPoints(PG_FUNCTION_ARGS);
 Datum ST_Degree(PG_FUNCTION_ARGS);
-Datum ST_NurbsCurveWeights(PG_FUNCTION_ARGS);
+Datum ST_Weights(PG_FUNCTION_ARGS);
 Datum ST_Knots(PG_FUNCTION_ARGS);
 Datum ST_NumControlPoints(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveIsRational(PG_FUNCTION_ARGS);
@@ -398,7 +398,7 @@ Datum ST_Degree(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(degree);
 }
 
-PG_FUNCTION_INFO_V1(ST_NurbsCurveWeights);
+PG_FUNCTION_INFO_V1(ST_Weights);
 /**
  * Return the weight vector of a NURBS curve as a PostgreSQL float8 array.
  *
@@ -410,7 +410,7 @@ PG_FUNCTION_INFO_V1(ST_NurbsCurveWeights);
  *
  * @return float8[] of length equal to the number of control points, or NULL.
  */
-Datum ST_NurbsCurveWeights(PG_FUNCTION_ARGS)
+Datum ST_Weights(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *pnurbs;
 	LWGEOM *geom;
