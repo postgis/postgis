@@ -42,14 +42,14 @@ CREATE OR REPLACE FUNCTION ST_Degree(nurbscurve geometry)
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
     COST 10;
 
--- ST_NurbsCurveWeights(nurbscurve)
+-- ST_Weights(nurbscurve)
 -- Extracts weight values for rational NURBS curves
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 -- Returns: Array of weight values, NULL for non-rational curves
-CREATE OR REPLACE FUNCTION ST_NurbsCurveWeights(nurbscurve geometry)
+CREATE OR REPLACE FUNCTION ST_Weights(nurbscurve geometry)
     RETURNS double precision[]
-    AS 'MODULE_PATHNAME', 'ST_NurbsCurveWeights'
+    AS 'MODULE_PATHNAME', 'ST_Weights'
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
     COST 25;
 
@@ -64,14 +64,14 @@ CREATE OR REPLACE FUNCTION ST_Knots(nurbscurve geometry)
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
     COST 25;
 
--- ST_NurbsCurveNumControlPoints(nurbscurve)
+-- ST_NumControlPoints(nurbscurve)
 -- Returns the number of control points
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 -- Returns: Number of control points (integer)
-CREATE OR REPLACE FUNCTION ST_NurbsCurveNumControlPoints(nurbscurve geometry)
+CREATE OR REPLACE FUNCTION ST_NumControlPoints(nurbscurve geometry)
     RETURNS integer
-    AS 'MODULE_PATHNAME', 'ST_NurbsCurveNumControlPoints'
+    AS 'MODULE_PATHNAME', 'ST_NumControlPoints'
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
     COST 10;
 
@@ -103,16 +103,16 @@ CREATE OR REPLACE FUNCTION ST_IsNurbsCurve(geometry)
     LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
     COST 5;
 
--- ST_NurbsEvaluate(nurbscurve, parameter)
+-- ST_Evaluate(nurbscurve, parameter)
 -- Evaluates a NURBS curve at a specific parameter value
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 --   parameter: Parameter value for evaluation (typically 0.0 to 1.0)
 -- Returns: POINT geometry representing the position on the curve
--- Example: SELECT ST_NurbsEvaluate(nurbs_curve, 0.5); -- Get midpoint
-CREATE OR REPLACE FUNCTION ST_NurbsEvaluate(nurbscurve geometry, parameter double precision)
+-- Example: SELECT ST_Evaluate(nurbs_curve, 0.5); -- Get midpoint
+CREATE OR REPLACE FUNCTION ST_Evaluate(nurbscurve geometry, parameter double precision)
     RETURNS geometry
-    AS 'MODULE_PATHNAME', 'ST_NurbsEvaluate'
+    AS 'MODULE_PATHNAME', 'ST_Evaluate'
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
     COST 100;
 

@@ -1017,7 +1017,7 @@ SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
 
 <para>End point of a CircularString</para>
 <programlisting>
-SELECT ST_AsText(ST_EndPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 3)'::geometry));
+SELECT ST_AsText(ST_EndPoint('CIRCULARSTRING(5 2,-3 2, -2 1, -4 2, 6 3)'::geometry));
  st_astext
 ------------
  POINT(6 3)
@@ -2899,7 +2899,7 @@ SELECT ST_AsEWKT(ST_StartPoint('LINESTRING(0 1 1, 0 2 2)'::geometry));
 
 <para>Start point of a CircularString</para>
 <programlisting>
-SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 3)'::geometry));
+SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 2, -2 1, -4 2, 6 3)'::geometry));
  st_astext
 ------------
  POINT(5 2)
@@ -2920,6 +2920,289 @@ SELECT ST_AsText(ST_StartPoint('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry));
 	  <para><xref linkend="ST_EndPoint"/>, <xref linkend="ST_PointN"/></para>
 	</refsection>
   </refentry>
+
+	<refentry xml:id="ST_StartM">
+	<refnamediv>
+	  <refname>ST_StartM</refname>
+
+	  <refpurpose>Returns the M coordinate of the first point of a LineString, CircularLineString, or NURBSCurve.</refpurpose>
+	</refnamediv>
+
+	<refsynopsisdiv>
+	  <funcsynopsis>
+		<funcprototype>
+		  <funcdef>float8 <function>ST_StartM</function></funcdef>
+
+		  <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+		</funcprototype>
+	  </funcsynopsis>
+	</refsynopsisdiv>
+
+	<refsection>
+	  <title>Description</title>
+
+	  <para>Returns the M coordinate of the first point of a <varname>LINESTRING</varname>,
+      <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname> geometry.
+      Returns <varname>NULL</varname> if the input geometry does not have an M dimension or
+	  is not a <varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname>.</para>
+
+	  <para>&curve_support;</para>
+	</refsection>
+
+	<refsection>
+	  <title>Examples</title>
+<para>Start M value of a LineString</para>
+	  <programlisting>SELECT ST_StartM('LINESTRING M(0 0 10, 1 1 20, 2 0 30)'::geometry);
+ st_startm
+-----------
+        10
+</programlisting>
+
+<para>Start M value of a CircularString</para>
+<programlisting>
+SELECT ST_StartM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry);
+ st_startm
+-----------
+         5
+</programlisting>
+
+<para>Start M value of a NURBSCurve</para>
+<programlisting>
+SELECT ST_StartM('NURBSCURVE M(2, (0 0 100, 1 1 200, 2 0 300))'::geometry);
+ st_startm
+-----------
+       100
+</programlisting>
+
+<para>Geometry without M dimension returns NULL</para>
+<programlisting>
+SELECT ST_StartM('LINESTRING(0 0, 1 1)'::geometry) IS NULL AS is_null;
+ is_null
+---------
+ t
+</programlisting>
+	</refsection>
+
+	<refsection>
+	  <title>See Also</title>
+
+	  <para><xref linkend="ST_EndM"/>, <xref linkend="ST_SetStartM"/>, <xref linkend="ST_StartPoint"/></para>
+	</refsection>
+  </refentry>
+
+	<refentry xml:id="ST_EndM">
+	<refnamediv>
+	  <refname>ST_EndM</refname>
+
+	  <refpurpose>Returns the M coordinate of the last point of a LineString, CircularLineString, or NURBSCurve.</refpurpose>
+	</refnamediv>
+
+	<refsynopsisdiv>
+	  <funcsynopsis>
+		<funcprototype>
+		  <funcdef>float8 <function>ST_EndM</function></funcdef>
+
+		  <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+		</funcprototype>
+	  </funcsynopsis>
+	</refsynopsisdiv>
+
+	<refsection>
+	  <title>Description</title>
+
+	  <para>Returns the M coordinate of the last point of a <varname>LINESTRING</varname>,
+      <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname> geometry.
+      Returns <varname>NULL</varname> if the input geometry does not have an M dimension or
+	  is not a <varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname>.</para>
+
+	  <para>&curve_support;</para>
+	</refsection>
+
+	<refsection>
+	  <title>Examples</title>
+<para>End M value of a LineString</para>
+	  <programlisting>SELECT ST_EndM('LINESTRING M(0 0 10, 1 1 20, 2 0 30)'::geometry);
+ st_endm
+---------
+      30
+</programlisting>
+
+<para>End M value of a CircularString</para>
+<programlisting>
+SELECT ST_EndM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry);
+ st_endm
+---------
+      15
+</programlisting>
+
+<para>End M value of a NURBSCurve</para>
+<programlisting>
+SELECT ST_EndM('NURBSCURVE M(2, (0 0 100, 1 1 200, 2 0 300))'::geometry);
+ st_endm
+---------
+     300
+</programlisting>
+
+<para>Geometry without M dimension returns NULL</para>
+<programlisting>
+SELECT ST_EndM('LINESTRING(0 0, 1 1)'::geometry) IS NULL AS is_null;
+ is_null
+---------
+ t
+</programlisting>
+	</refsection>
+
+	<refsection>
+	  <title>See Also</title>
+
+	  <para><xref linkend="ST_StartM"/>, <xref linkend="ST_SetEndM"/>, <xref linkend="ST_EndPoint"/></para>
+	</refsection>
+  </refentry>
+
+	<refentry xml:id="ST_SetStartM">
+	<refnamediv>
+	  <refname>ST_SetStartM</refname>
+
+	  <refpurpose>Sets the M coordinate of the first point of a LineString, CircularLineString, or NURBSCurve.</refpurpose>
+	</refnamediv>
+
+	<refsynopsisdiv>
+	  <funcsynopsis>
+		<funcprototype>
+		  <funcdef>geometry <function>ST_SetStartM</function></funcdef>
+
+		  <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+		  <paramdef><type>float8 </type> <parameter>m</parameter></paramdef>
+		</funcprototype>
+	  </funcsynopsis>
+	</refsynopsisdiv>
+
+	<refsection>
+	  <title>Description</title>
+
+	  <para>Returns a copy of the input <varname>LINESTRING</varname>,
+      <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname> geometry
+      with the M coordinate of the first point set to the specified value.
+      If the input geometry does not have an M dimension, it will be added.
+      Returns <varname>NULL</varname> if the input
+	  is not a <varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname>.</para>
+
+	  <para>&curve_support;</para>
+	</refsection>
+
+	<refsection>
+	  <title>Examples</title>
+<para>Set start M value of a LineString</para>
+	  <programlisting>SELECT ST_AsText(ST_SetStartM('LINESTRING M(0 0 10, 1 1 20, 2 0 30)'::geometry, 100));
+        st_astext
+------------------------
+ LINESTRING M (0 0 100,1 1 20,2 0 30)
+</programlisting>
+
+<para>Add M dimension and set start M value</para>
+<programlisting>
+SELECT ST_AsText(ST_SetStartM('LINESTRING(0 0, 1 1, 2 0)'::geometry, 50));
+        st_astext
+------------------------
+ LINESTRING M (0 0 50,1 1 0,2 0 0)
+</programlisting>
+
+<para>Set start M value of a CircularString</para>
+<programlisting>
+SELECT ST_AsText(ST_SetStartM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry, 99));
+        st_astext
+------------------------
+ CIRCULARSTRING M (0 0 99,1 1 10,2 0 15)
+</programlisting>
+
+<para>Set start M value of a NURBSCurve</para>
+<programlisting>
+SELECT ST_AsText(ST_SetStartM('NURBSCURVE M(2, (0 0 100, 1 1 200, 2 0 300))'::geometry, 500));
+        st_astext
+------------------------
+ NURBSCURVE M (2,(0 0 500,1 1 200,2 0 300))
+</programlisting>
+	</refsection>
+
+	<refsection>
+	  <title>See Also</title>
+
+	  <para><xref linkend="ST_SetEndM"/>, <xref linkend="ST_StartM"/>, <xref linkend="ST_StartPoint"/></para>
+	</refsection>
+  </refentry>
+
+	<refentry xml:id="ST_SetEndM">
+	<refnamediv>
+	  <refname>ST_SetEndM</refname>
+
+	  <refpurpose>Sets the M coordinate of the last point of a LineString, CircularLineString, or NURBSCurve.</refpurpose>
+	</refnamediv>
+
+	<refsynopsisdiv>
+	  <funcsynopsis>
+		<funcprototype>
+		  <funcdef>geometry <function>ST_SetEndM</function></funcdef>
+
+		  <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+		  <paramdef><type>float8 </type> <parameter>m</parameter></paramdef>
+		</funcprototype>
+	  </funcsynopsis>
+	</refsynopsisdiv>
+
+	<refsection>
+	  <title>Description</title>
+
+	  <para>Returns a copy of the input <varname>LINESTRING</varname>,
+      <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname> geometry
+      with the M coordinate of the last point set to the specified value.
+      If the input geometry does not have an M dimension, it will be added.
+      Returns <varname>NULL</varname> if the input
+	  is not a <varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname>.</para>
+
+	  <para>&curve_support;</para>
+	</refsection>
+
+	<refsection>
+	  <title>Examples</title>
+<para>Set end M value of a LineString</para>
+	  <programlisting>SELECT ST_AsText(ST_SetEndM('LINESTRING M(0 0 10, 1 1 20, 2 0 30)'::geometry, 999));
+        st_astext
+------------------------
+ LINESTRING M (0 0 10,1 1 20,2 0 999)
+</programlisting>
+
+<para>Add M dimension and set end M value</para>
+<programlisting>
+SELECT ST_AsText(ST_SetEndM('LINESTRING(0 0, 1 1, 2 0)'::geometry, 75));
+        st_astext
+------------------------
+ LINESTRING M (0 0 0,1 1 0,2 0 75)
+</programlisting>
+
+<para>Set end M value of a CircularString</para>
+<programlisting>
+SELECT ST_AsText(ST_SetEndM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry, 88));
+        st_astext
+------------------------
+ CIRCULARSTRING M (0 0 5,1 1 10,2 0 88)
+</programlisting>
+
+<para>Set end M value of a NURBSCurve</para>
+<programlisting>
+SELECT ST_AsText(ST_SetEndM('NURBSCURVE M(2, (0 0 100, 1 1 200, 2 0 300))'::geometry, 999));
+        st_astext
+------------------------
+ NURBSCURVE M (2,(0 0 100,1 1 200,2 0 999))
+</programlisting>
+	</refsection>
+
+	<refsection>
+	  <title>See Also</title>
+
+	  <para><xref linkend="ST_SetStartM"/>, <xref linkend="ST_EndM"/>, <xref linkend="ST_EndPoint"/></para>
+	</refsection>
+  </refentry>
+
 	<refentry xml:id="ST_Summary">
 	  <refnamediv>
 		<refname>ST_Summary</refname>

@@ -39,12 +39,12 @@
 Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS);
 Datum ST_ControlPoints(PG_FUNCTION_ARGS);
 Datum ST_Degree(PG_FUNCTION_ARGS);
-Datum ST_NurbsCurveWeights(PG_FUNCTION_ARGS);
+Datum ST_Weights(PG_FUNCTION_ARGS);
 Datum ST_Knots(PG_FUNCTION_ARGS);
-Datum ST_NurbsCurveNumControlPoints(PG_FUNCTION_ARGS);
+Datum ST_NumControlPoints(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveIsRational(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveIsValid(PG_FUNCTION_ARGS);
-Datum ST_NurbsEvaluate(PG_FUNCTION_ARGS);
+Datum ST_Evaluate(PG_FUNCTION_ARGS);
 Datum ST_NurbsToLineString(PG_FUNCTION_ARGS);
 
 static ArrayType* float8_array_from_double_array(double *values, int count);
@@ -255,12 +255,13 @@ Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS)
 		/* Validate knot vector length: should be npoints + degree + 1 */
 		expected_knots = line->points->npoints + degree + 1;
 		if (knot_count != expected_knots) {
+			uint32_t npoints = line->points->npoints;
 			pfree(knots);
 			if (weights) pfree(weights);
 			lwgeom_free(control_geom);
 			ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 				errmsg("Knot vector must have %d elements for %d control points and degree %d, got %d",
-					expected_knots, line->points->npoints, degree, knot_count)));
+					expected_knots, npoints, degree, knot_count)));
 		}
 
 		/* Validate knot vector is non-decreasing */
@@ -398,7 +399,7 @@ Datum ST_Degree(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(degree);
 }
 
-PG_FUNCTION_INFO_V1(ST_NurbsCurveWeights);
+PG_FUNCTION_INFO_V1(ST_Weights);
 /**
  * Return the weight vector of a NURBS curve as a PostgreSQL float8 array.
  *
@@ -410,7 +411,7 @@ PG_FUNCTION_INFO_V1(ST_NurbsCurveWeights);
  *
  * @return float8[] of length equal to the number of control points, or NULL.
  */
-Datum ST_NurbsCurveWeights(PG_FUNCTION_ARGS)
+Datum ST_Weights(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *pnurbs;
 	LWGEOM *geom;
@@ -500,7 +501,7 @@ Datum ST_Knots(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-PG_FUNCTION_INFO_V1(ST_NurbsCurveNumControlPoints);
+PG_FUNCTION_INFO_V1(ST_NumControlPoints);
 /**
  * Get number of control points in a NURBS curve.
  *
@@ -510,7 +511,7 @@ PG_FUNCTION_INFO_V1(ST_NurbsCurveNumControlPoints);
  * @returns int32 number of control points (0 if the curve has no control points).
  * @throws ERROR if the input is not a NURBS curve.
  */
-Datum ST_NurbsCurveNumControlPoints(PG_FUNCTION_ARGS)
+Datum ST_NumControlPoints(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *pnurbs;
 	LWGEOM *geom;
@@ -660,7 +661,7 @@ cleanup:
 	PG_RETURN_BOOL(is_valid);
 }
 
-PG_FUNCTION_INFO_V1(ST_NurbsEvaluate);
+PG_FUNCTION_INFO_V1(ST_Evaluate);
 /**
  * Evaluate a NURBS curve at a specific parameter value.
  *
@@ -677,9 +678,9 @@ PG_FUNCTION_INFO_V1(ST_NurbsEvaluate);
  * - NULL if either input is NULL or the curve is invalid
  *
  * Example:
- * SELECT ST_NurbsEvaluate(nurbs_curve, 0.5); -- Get midpoint of curve
+ * SELECT ST_Evaluate(nurbs_curve, 0.5); -- Get midpoint of curve
  */
-Datum ST_NurbsEvaluate(PG_FUNCTION_ARGS)
+Datum ST_Evaluate(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *pnurbs;
 	double parameter;
