@@ -3747,4 +3747,46 @@ SELECT ST_Weights('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
 		</refsection>
 	</refentry>
 
+	<refentry xml:id="ST_Knots">
+		<refnamediv>
+			<refname>ST_Knots</refname>
+			<refpurpose>Returns the knot vector of a NURBS curve.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>float8[] <function>ST_Knots</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Returns the knot vector of a NURBS curve as an array of double precision values. The knot vector defines the parameter space and controls where and how the control points affect the curve. It must be a non-decreasing sequence with length equal to (number of control points + degree + 1).</para>
+
+			<para>Returns NULL if the curve uses the default uniform clamped knot vector or if the input is NULL. Raises an error if the input is not a NURBS curve.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Get knots from a NURBS curve with custom knot vector
+SELECT ST_Knots(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry,
+                 ARRAY[1.0, 2.0, 1.0], ARRAY[0,0,0,1,1,1]));
+-- Result: {0,0,0,1,1,1}
+
+-- Check if a curve uses default knot vector
+SELECT ST_Knots('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
+-- Result: NULL (uniform clamped knot vector)</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_Degree"/>, <xref linkend="ST_NumControlPoints"/></para>
+		</refsection>
+	</refentry>
+
   </section>
