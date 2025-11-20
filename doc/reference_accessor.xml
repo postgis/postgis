@@ -3789,4 +3789,46 @@ SELECT ST_Knots('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
 		</refsection>
 	</refentry>
 
+	<refentry xml:id="ST_NumControlPoints">
+		<refnamediv>
+			<refname>ST_NumControlPoints</refname>
+			<refpurpose>Returns the number of control points in a NURBS curve.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>integer <function>ST_NumControlPoints</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Returns the number of control points in a NURBS curve. The number of control points must be at least (degree + 1) for a valid NURBS curve.</para>
+
+			<para>Raises an error if the input is not a NURBS curve. Returns NULL if the input is NULL.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Get the number of control points
+SELECT ST_NumControlPoints('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
+-- Result: 3
+
+-- Verify curve has enough control points for its degree
+SELECT ST_NumControlPoints(curve) >= ST_Degree(curve) + 1 AS valid
+FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS t;
+-- Result: true</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_ControlPoints"/>, <xref linkend="ST_Degree"/></para>
+		</refsection>
+	</refentry>
+
   </section>
