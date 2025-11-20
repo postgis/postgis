@@ -935,7 +935,7 @@ FROM polyTable
 	FROM ST_DumpRings(
 		    'POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 2, 2 3, 3 3, 3 2, 2 2), (4 2, 4 4, 6 4, 6 2, 4 2))');
 
- path |              geom              
+ path |              geom
 ------+--------------------------------
  {0}  | POLYGON((1 9,9 9,9 1,1 1,1 9))
  {1}  | POLYGON((2 2,2 3,3 3,3 2,2 2))
@@ -3913,6 +3913,48 @@ SELECT ST_IsNurbsCurve('LINESTRING(0 0, 10 10)'::geometry);
 		<refsection>
 			<title>See Also</title>
 			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_GeometryType"/>, <xref linkend="ST_NurbsCurveIsRational"/></para>
+		</refsection>
+	</refentry>
+
+	<refentry xml:id="ST_Evaluate">
+		<refnamediv>
+			<refname>ST_Evaluate</refname>
+			<refpurpose>Evaluates a NURBS curve at a specific parameter value and returns the resulting point.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>geometry <function>ST_Evaluate</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
+					<paramdef><type>float8</type> <parameter>parameter</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Evaluates a NURBS curve at the specified parameter value and returns a POINT geometry representing the position on the curve. The parameter typically ranges from 0.0 (start of curve) to 1.0 (end of curve), though the actual range depends on the knot vector.</para>
+
+			<para>Raises an error if the input is not a NURBS curve or if evaluation fails. Returns NULL if either input is NULL.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Get the midpoint of a NURBS curve
+SELECT ST_AsText(ST_Evaluate('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 0.5));
+
+-- Sample multiple points along a curve
+SELECT t, ST_AsText(ST_Evaluate(curve, t)) AS point
+FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS c,
+     generate_series(0, 1, 0.25) AS t;</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_NurbsToLineString"/></para>
 		</refsection>
 	</refentry>
 
