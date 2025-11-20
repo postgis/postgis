@@ -2435,6 +2435,8 @@ lwgeom_startpoint(const LWGEOM *lwgeom, POINT4D *pt)
 		case CIRCSTRINGTYPE:
 		case LINETYPE:
 			return ptarray_startpoint(((LWLINE*)lwgeom)->points, pt);
+		case NURBSCURVETYPE:
+			return ptarray_startpoint(((LWNURBSCURVE*)lwgeom)->points, pt);
 		case POLYGONTYPE:
 			return lwpoly_startpoint((LWPOLY*)lwgeom, pt);
 		case TINTYPE:
