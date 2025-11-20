@@ -3875,4 +3875,45 @@ SELECT ST_NurbsCurveIsRational('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
 		</refsection>
 	</refentry>
 
+	<refentry xml:id="ST_IsNurbsCurve">
+		<refnamediv>
+			<refname>ST_IsNurbsCurve</refname>
+			<refpurpose>Checks if a geometry is a NURBS curve.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_IsNurbsCurve</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Returns TRUE if the geometry is a NURBS curve, FALSE otherwise. This function can be used to test geometry types before applying NURBS-specific functions.</para>
+
+			<para>Returns NULL if the input is NULL.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Check if geometry is a NURBS curve
+SELECT ST_IsNurbsCurve('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
+-- Result: true
+
+-- Test a regular linestring
+SELECT ST_IsNurbsCurve('LINESTRING(0 0, 10 10)'::geometry);
+-- Result: false</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_GeometryType"/>, <xref linkend="ST_NurbsCurveIsRational"/></para>
+		</refsection>
+	</refentry>
+
   </section>
