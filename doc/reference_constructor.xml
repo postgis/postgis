@@ -1307,5 +1307,55 @@ has an unknown SRID (as is the case by default).</para>
         </refsection>
     </refentry>
 
+	<refentry xml:id="ST_MakeNurbsCurve">
+		<refnamediv>
+			<refname>ST_MakeNurbsCurve</refname>
+			<refpurpose>Creates a NURBS (Non-Uniform Rational B-Spline) curve from control points, optional weights, and optional knot vector.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>geometry <function>ST_MakeNurbsCurve</function></funcdef>
+					<paramdef><type>integer</type> <parameter>degree</parameter></paramdef>
+					<paramdef><type>geometry</type> <parameter>control_points</parameter></paramdef>
+					<paramdef choice="opt"><type>float8[]</type> <parameter>weights</parameter></paramdef>
+					<paramdef choice="opt"><type>float8[]</type> <parameter>knots</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Creates a NURBS (Non-Uniform Rational B-Spline) curve geometry from the specified parameters. NURBS curves are smooth parametric curves that provide precise control over curve shape through control points, weights, and knot values.</para>
+
+			<para>The <varname>degree</varname> parameter specifies the polynomial degree of the curve (must be between 1 and 10). Higher degrees produce smoother curves.</para>
+
+			<para>The <varname>control_points</varname> must be a LINESTRING geometry defining the control polygon. The number of control points must be at least <varname>degree</varname> + 1.</para>
+
+			<para>The optional <varname>weights</varname> array assigns a weight to each control point. All weights must be positive. If NULL or omitted, uniform weights (1.0) are used, resulting in a non-rational B-spline.</para>
+
+			<para>The optional <varname>knots</varname> array defines the parameter space. If NULL or omitted, a uniform clamped knot vector is automatically generated. If provided, the knot vector must have exactly (<varname>npoints</varname> + <varname>degree</varname> + 1) elements and must be non-decreasing.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Create a degree-2 NURBS curve with uniform weights
+SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry);
+
+-- Create a rational NURBS curve with custom weights
+SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]);
+
+-- Create a NURBS curve with custom weights and knots
+SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0], ARRAY[0,0,0,0.5,1,1,1]);</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_NurbsToLineString"/>, <xref linkend="ST_Evaluate"/>, <xref linkend="ST_ControlPoints"/></para>
+		</refsection>
+	</refentry>
 
   </section>
