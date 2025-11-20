@@ -157,6 +157,8 @@ SELECT 'overlaps', ST_overlaps('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometr
 SELECT 'isvalid', ST_isvalid('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
 SELECT 'isvalid', ST_isvalid('POLYGON((0 0, 0 10, 10 10, -5 10, 10 0, 0 0))'::geometry);
 SELECT 'isvalid', ST_isvalid('GEOMETRYCOLLECTION EMPTY'::geometry);
+SELECT 'isvalid_nurbs1', ST_isvalid('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry);
+SELECT 'isvalid_nurbs2', ST_isvalid('NURBSCURVE M(2, (0 0 100, 1 1 200, 2 0 300))'::geometry);
 SELECT 'intersection', ST_astext(ST_intersection('LINESTRING(0 10, 0 -10)'::geometry, 'LINESTRING(0 0, 1 1)'::geometry));
 SELECT 'difference', ST_astext(ST_Normalize(ST_difference('LINESTRING(0 10, 0 -10)'::GEOMETRY, 'LINESTRING(0 2, 0 -2)'::GEOMETRY)));
 SELECT 'boundary', ST_astext(ST_boundary('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2))'::geometry));
