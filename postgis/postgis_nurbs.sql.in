@@ -10,7 +10,7 @@
 -- Examples:
 --   SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry);
 --   SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]);
---   SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0], ARRAY[0,0,0,0.5,1,1,1]);
+--   SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0], ARRAY[0,0,0,1,1,1]);
 CREATE OR REPLACE FUNCTION ST_MakeNurbsCurve(degree integer, control_points geometry,
                                            weights double precision[] DEFAULT NULL,
                                            knots double precision[] DEFAULT NULL)

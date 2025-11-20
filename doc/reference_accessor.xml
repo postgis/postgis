@@ -3624,5 +3624,383 @@ SELECT ST_Zmflag(ST_GeomFromEWKT('POINT(1 2 3 4)'));
   </refsection>
 </refentry>
 
+	<refentry xml:id="ST_ControlPoints">
+		<refnamediv>
+			<refname>ST_ControlPoints</refname>
+			<refpurpose>Returns the control points of a NURBS curve as a MULTIPOINT geometry.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>geometry <function>ST_ControlPoints</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Extracts the control points from a NURBS curve and returns them as a MULTIPOINT geometry. Control points define the control polygon that influences the shape of the NURBS curve.</para>
+
+			<para>The function raises an error if the input is not a NURBS curve. Returns NULL if the input is NULL.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Extract control points from a NURBS curve
+SELECT ST_AsText(ST_ControlPoints('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry));
+-- Result: MULTIPOINT((0 0),(5 10),(10 0))
+
+-- Count the number of control points
+SELECT ST_NPoints(ST_ControlPoints('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry));
+-- Result: 3</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_NumControlPoints"/>, <xref linkend="ST_Weights"/></para>
+		</refsection>
+	</refentry>
+
+	<refentry xml:id="ST_Degree">
+		<refnamediv>
+			<refname>ST_Degree</refname>
+			<refpurpose>Returns the polynomial degree of a NURBS curve.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>integer <function>ST_Degree</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Returns the polynomial degree of a NURBS curve as an integer. The degree determines the curve's smoothness and flexibility. Higher degrees produce smoother curves but require more control points.</para>
+
+			<para>The function raises an error if the input is not a NURBS curve. Returns NULL if the input is NULL.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Get the degree of a NURBS curve
+SELECT ST_Degree('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
+-- Result: 2
+
+-- Check if a NURBS curve is cubic
+SELECT ST_Degree('NURBSCURVE(3, (0 0, 2 5, 5 8, 10 0))'::geometry) = 3;
+-- Result: true</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_NumControlPoints"/></para>
+		</refsection>
+	</refentry>
+
+	<refentry xml:id="ST_Weights">
+		<refnamediv>
+			<refname>ST_Weights</refname>
+			<refpurpose>Returns the weight array of a rational NURBS curve.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>float8[] <function>ST_Weights</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Returns the weight values of a rational NURBS curve as an array of double precision values. Weights control the influence of each control point on the curve shape. Higher weights pull the curve closer to the corresponding control point.</para>
+
+			<para>Returns NULL if the curve has no weights (non-rational B-spline) or if the input is NULL. Raises an error if the input is not a NURBS curve.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Get weights from a rational NURBS curve
+SELECT ST_Weights(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]));
+-- Result: {1,2,1}
+
+-- Check if a curve has uniform weights
+SELECT ST_Weights('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
+-- Result: NULL (non-rational curve)</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_NurbsCurveIsRational"/>, <xref linkend="ST_ControlPoints"/></para>
+		</refsection>
+	</refentry>
+
+	<refentry xml:id="ST_Knots">
+		<refnamediv>
+			<refname>ST_Knots</refname>
+			<refpurpose>Returns the knot vector of a NURBS curve.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>float8[] <function>ST_Knots</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Returns the knot vector of a NURBS curve as an array of double precision values. The knot vector defines the parameter space and controls where and how the control points affect the curve. It must be a non-decreasing sequence with length equal to (number of control points + degree + 1).</para>
+
+			<para>Returns NULL if the curve uses the default uniform clamped knot vector or if the input is NULL. Raises an error if the input is not a NURBS curve.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Get knots from a NURBS curve with custom knot vector
+SELECT ST_Knots(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry,
+                 ARRAY[1.0, 2.0, 1.0], ARRAY[0,0,0,1,1,1]));
+-- Result: {0,0,0,1,1,1}
+
+-- Check if a curve uses default knot vector
+SELECT ST_Knots('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
+-- Result: NULL (uniform clamped knot vector)</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_Degree"/>, <xref linkend="ST_NumControlPoints"/></para>
+		</refsection>
+	</refentry>
+
+	<refentry xml:id="ST_NumControlPoints">
+		<refnamediv>
+			<refname>ST_NumControlPoints</refname>
+			<refpurpose>Returns the number of control points in a NURBS curve.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>integer <function>ST_NumControlPoints</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Returns the number of control points in a NURBS curve. The number of control points must be at least (degree + 1) for a valid NURBS curve.</para>
+
+			<para>Raises an error if the input is not a NURBS curve. Returns NULL if the input is NULL.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Get the number of control points
+SELECT ST_NumControlPoints('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
+-- Result: 3
+
+-- Verify curve has enough control points for its degree
+SELECT ST_NumControlPoints(curve) >= ST_Degree(curve) + 1 AS valid
+FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS t;
+-- Result: true</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_ControlPoints"/>, <xref linkend="ST_Degree"/></para>
+		</refsection>
+	</refentry>
+
+	<refentry xml:id="ST_NurbsCurveIsRational">
+		<refnamediv>
+			<refname>ST_NurbsCurveIsRational</refname>
+			<refpurpose>Checks if a NURBS curve is rational (has weights).</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_NurbsCurveIsRational</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Returns TRUE if the NURBS curve has weights assigned to its control points (rational NURBS), FALSE if it uses uniform weights (non-rational B-spline).</para>
+
+			<para>Rational NURBS curves provide more flexibility in curve shape control through variable weights. Non-rational B-splines use uniform weights and are a special case of NURBS curves.</para>
+
+			<para>Raises an error if the input is not a NURBS curve. Returns NULL if the input is NULL.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Check if a curve is rational
+SELECT ST_NurbsCurveIsRational(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry,
+                                ARRAY[1.0, 2.0, 1.0]));
+-- Result: true
+
+-- Non-rational curve
+SELECT ST_NurbsCurveIsRational('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
+-- Result: false</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_Weights"/>, <xref linkend="ST_IsNurbsCurve"/></para>
+		</refsection>
+	</refentry>
+
+	<refentry xml:id="ST_IsNurbsCurve">
+		<refnamediv>
+			<refname>ST_IsNurbsCurve</refname>
+			<refpurpose>Checks if a geometry is a NURBS curve.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_IsNurbsCurve</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Returns TRUE if the geometry is a NURBS curve, FALSE otherwise. This function can be used to test geometry types before applying NURBS-specific functions.</para>
+
+			<para>Returns NULL if the input is NULL.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Check if geometry is a NURBS curve
+SELECT ST_IsNurbsCurve('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
+-- Result: true
+
+-- Test a regular linestring
+SELECT ST_IsNurbsCurve('LINESTRING(0 0, 10 10)'::geometry);
+-- Result: false</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_GeometryType"/>, <xref linkend="ST_NurbsCurveIsRational"/></para>
+		</refsection>
+	</refentry>
+
+	<refentry xml:id="ST_Evaluate">
+		<refnamediv>
+			<refname>ST_Evaluate</refname>
+			<refpurpose>Evaluates a NURBS curve at a specific parameter value and returns the resulting point.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>geometry <function>ST_Evaluate</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
+					<paramdef><type>float8</type> <parameter>parameter</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Evaluates a NURBS curve at the specified parameter value and returns a POINT geometry representing the position on the curve. The parameter typically ranges from 0.0 (start of curve) to 1.0 (end of curve), though the actual range depends on the knot vector.</para>
+
+			<para>Raises an error if the input is not a NURBS curve or if evaluation fails. Returns NULL if either input is NULL.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Get the midpoint of a NURBS curve
+SELECT ST_AsText(ST_Evaluate('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 0.5));
+
+-- Sample multiple points along a curve
+SELECT t, ST_AsText(ST_Evaluate(curve, t)) AS point
+FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS c,
+     generate_series(0, 1, 0.25) AS t;</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_NurbsToLineString"/></para>
+		</refsection>
+	</refentry>
+
+	<refentry xml:id="ST_NurbsToLineString">
+		<refnamediv>
+			<refname>ST_NurbsToLineString</refname>
+			<refpurpose>Converts a NURBS curve to a LINESTRING by uniform sampling.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>geometry <function>ST_NurbsToLineString</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
+					<paramdef choice="opt"><type>integer</type> <parameter>num_segments</parameter> <default>32</default></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Converts a NURBS curve to a LINESTRING geometry by creating a piecewise linear approximation. The curve is sampled at uniformly distributed parameter values and the resulting points are connected with straight line segments.</para>
+
+			<para>The optional <varname>num_segments</varname> parameter specifies the number of line segments in the output (default: 32, range: 2-10000). Higher values produce smoother approximations but increase geometry complexity.</para>
+
+			<para>Raises an error if the input is not a NURBS curve. Returns NULL if the input is NULL.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Convert NURBS to linestring with default quality
+SELECT ST_AsText(ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry));
+
+-- High-quality approximation with 64 segments
+SELECT ST_AsText(ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 64));
+
+-- Lower quality, faster conversion with 16 segments
+SELECT ST_AsText(ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 16));</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_Evaluate"/>, <xref linkend="ST_Segmentize"/></para>
+		</refsection>
+	</refentry>
 
   </section>
