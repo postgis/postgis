@@ -1629,17 +1629,7 @@ static int yy_get_next_buffer (void)
 	return ret_val;
 }
 
-/**
- * Compute the DFA state immediately before the end-of-buffer (EOB) character.
- *
- * Simulates feeding the scanner's transition table with the characters between
- * (yytext_ptr + YY_MORE_ADJ) and yy_c_buf_p to determine the lexer state that
- * existed just prior to encountering the EOB marker. While scanning it updates
- * the globals yy_last_accepting_state and yy_last_accepting_cpos when an
- * accepting state is encountered.
- *
- * @return The yy_state_type value representing the state just before the EOB.
- */
+/* yy_get_previous_state - get the state just before the EOB char was reached */
 
     static yy_state_type yy_get_previous_state (void)
 {
@@ -1668,16 +1658,10 @@ static int yy_get_next_buffer (void)
 	return yy_current_state;
 }
 
-/**
- * Attempt a DFA state transition on the NUL/input-end character.
+/* yy_try_NUL_trans - try to make a transition on the NUL character
  *
- * Evaluates the scanner's transition tables to compute the next state when
- * the special NUL/end-of-buffer character is processed. If the provided
- * state is an accepting state, updates scanner last-accepting location state
- * and position globals as a side effect.
- *
- * @param yy_current_state Current DFA state to transition from.
- * @returns The next DFA state, or 0 if the transition jams (no valid transition).
+ * synopsis
+ *	next_state = yy_try_NUL_trans( current_state );
  */
     static yy_state_type yy_try_NUL_trans  (yy_state_type yy_current_state )
 {
@@ -2320,14 +2304,6 @@ static int yy_flex_strlen (const char * s )
 #line 119 "lwin_wkt_lex.l"
 
 
-/**
- * Allocate memory for the lexer.
- *
- * Wrapper around the project's lwalloc allocator that requests `size` bytes.
- *
- * @param size Number of bytes to allocate.
- * @return Pointer to the allocated memory, or NULL if allocation failed.
- */
 void *wkt_yyalloc (yy_size_t  size )
 {
 	return (void *) lwalloc( size );
