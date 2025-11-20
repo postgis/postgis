@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-11-20 01:47+0000\n"
+"PO-Revision-Date: 2025-11-20 03:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -4586,7 +4586,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Fix all topology columns"
-msgstr ""
+msgstr "全てのトポロジーカラムの修正"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5369,7 +5369,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0 added support for <varname>hasZ</varname>."
-msgstr ""
+msgstr "Enhanced: 2.0 <varname>hasZ</varname>対応の追加。"
 
 #. Tag: para
 #, no-c-format
@@ -5377,6 +5377,8 @@ msgid ""
 "Enhanced: 3.6.0 added <varname>topoid</varname> and <varname>usesLargeIDs</"
 "varname> parameters."
 msgstr ""
+"Enhanced: 3.6.0 <varname>topoid</varname>と<varname>usesLargeIDs</varname>パ"
+"ラメーターの追加。"
 
 #. Tag: para
 #, no-c-format
@@ -5563,6 +5565,9 @@ msgid ""
 "identifiers forming it up (negative identifies mean the edge goes in the "
 "opposite direction of the input linestring)."
 msgstr ""
+"ラインストリングを既存のトポロジーに追加して、"
+"整列させた符号付エッジ識別番号を返す "
+"(負数は入力ラインストリングと逆方向であることを示します)。"
 
 #. Tag: para
 #, no-c-format
