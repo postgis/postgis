@@ -1,45 +1,22 @@
--- ST_MakeNurbsCurve(degree, control_points)
--- Creates a NURBS curve with uniform weights (B-spline)
+-- ST_MakeNurbsCurve(degree, control_points [, weights] [, knots])
+-- Creates a NURBS (Non-Uniform Rational B-Spline) curve
 -- Parameters:
 --   degree: Polynomial degree (1-10), higher = smoother
 --   control_points: LINESTRING geometry defining curve shape
+--   weights: Optional array of positive weights, one per control point (NULL for uniform weights)
+--   knots: Optional knot vector defining parameter space (NULL for uniform clamped spacing)
 -- Returns: NURBS curve geometry
--- Example: SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry);
-CREATE OR REPLACE FUNCTION ST_MakeNurbsCurve(degree integer, control_points geometry)
+-- Note: Knot vector must have (npoints + degree + 1) elements and be non-decreasing
+-- Examples:
+--   SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry);
+--   SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]);
+--   SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0], ARRAY[0,0,0,0.5,1,1,1]);
+CREATE OR REPLACE FUNCTION ST_MakeNurbsCurve(degree integer, control_points geometry,
+                                           weights double precision[] DEFAULT NULL,
+                                           knots double precision[] DEFAULT NULL)
     RETURNS geometry
     AS 'MODULE_PATHNAME', 'ST_MakeNurbsCurve'
-    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-    COST 50;
-
--- ST_MakeNurbsCurve(degree, control_points, weights)
--- Creates a rational NURBS curve with explicit weights
--- Parameters:
---   degree: Polynomial degree (1-10)
---   control_points: LINESTRING geometry defining curve shape
---   weights: Array of positive weights, one per control point
--- Returns: Weighted NURBS curve geometry
--- Example: SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]);
-CREATE OR REPLACE FUNCTION ST_MakeNurbsCurve(degree integer, control_points geometry, weights double precision[])
-    RETURNS geometry
-    AS 'MODULE_PATHNAME', 'ST_MakeNurbsCurveWithWeights'
-    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-    COST 100;
-
--- ST_MakeNurbsCurve(degree, control_points, weights, knots)
--- Creates a NURBS curve with custom knot vector
--- Parameters:
---   degree: Polynomial degree (1-10)
---   control_points: LINESTRING geometry defining curve shape
---   weights: Array of positive weights (NULL for uniform weights)
---   knots: Knot vector defining parameter space (NULL for uniform spacing)
--- Returns: Complete NURBS curve geometry
--- Note: Knot vector must have (npoints + degree + 1) elements and be non-decreasing
--- Example: SELECT ST_MakeNurbsCurve(2, pts, weights, ARRAY[0,0,0,0.5,1,1,1]);
-CREATE OR REPLACE FUNCTION ST_MakeNurbsCurve(degree integer, control_points geometry,
-                                           weights double precision[], knots double precision[])
-    RETURNS geometry
-    AS 'MODULE_PATHNAME', 'ST_MakeNurbsCurveComplete'
-    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
     COST 150;
 
 
