@@ -3831,4 +3831,48 @@ FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS t;
 		</refsection>
 	</refentry>
 
+	<refentry xml:id="ST_NurbsCurveIsRational">
+		<refnamediv>
+			<refname>ST_NurbsCurveIsRational</refname>
+			<refpurpose>Checks if a NURBS curve is rational (has weights).</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_NurbsCurveIsRational</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Returns TRUE if the NURBS curve has weights assigned to its control points (rational NURBS), FALSE if it uses uniform weights (non-rational B-spline).</para>
+
+			<para>Rational NURBS curves provide more flexibility in curve shape control through variable weights. Non-rational B-splines use uniform weights and are a special case of NURBS curves.</para>
+
+			<para>Raises an error if the input is not a NURBS curve. Returns NULL if the input is NULL.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Check if a curve is rational
+SELECT ST_NurbsCurveIsRational(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry,
+                                ARRAY[1.0, 2.0, 1.0]));
+-- Result: true
+
+-- Non-rational curve
+SELECT ST_NurbsCurveIsRational('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
+-- Result: false</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_Weights"/>, <xref linkend="ST_IsNurbsCurve"/></para>
+		</refsection>
+	</refentry>
+
   </section>
