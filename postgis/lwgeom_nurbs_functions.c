@@ -40,7 +40,7 @@ Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS);
 Datum ST_ControlPoints(PG_FUNCTION_ARGS);
 Datum ST_Degree(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveWeights(PG_FUNCTION_ARGS);
-Datum ST_NurbsCurveKnots(PG_FUNCTION_ARGS);
+Datum ST_Knots(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveNumControlPoints(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveIsRational(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveIsValid(PG_FUNCTION_ARGS);
@@ -446,7 +446,7 @@ Datum ST_NurbsCurveWeights(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-PG_FUNCTION_INFO_V1(ST_NurbsCurveKnots);
+PG_FUNCTION_INFO_V1(ST_Knots);
 /**
  * Return the knot vector of a NURBS curve as a PostgreSQL float8 array.
  *
@@ -457,7 +457,7 @@ PG_FUNCTION_INFO_V1(ST_NurbsCurveKnots);
  * @param pnurbs GSERIALIZED pointer to a NURBS curve
  * @return float8[] PostgreSQL array containing the knot vector, or NULL
  */
-Datum ST_NurbsCurveKnots(PG_FUNCTION_ARGS)
+Datum ST_Knots(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *pnurbs;
 	LWGEOM *geom;

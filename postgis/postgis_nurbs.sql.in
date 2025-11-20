@@ -53,14 +53,14 @@ CREATE OR REPLACE FUNCTION ST_NurbsCurveWeights(nurbscurve geometry)
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
     COST 25;
 
--- ST_NurbsCurveKnots(nurbscurve)
+-- ST_Knots(nurbscurve)
 -- Extracts the knot vector defining parameter space
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 -- Returns: Array of knot values, NULL for uniform parameterization
-CREATE OR REPLACE FUNCTION ST_NurbsCurveKnots(nurbscurve geometry)
+CREATE OR REPLACE FUNCTION ST_Knots(nurbscurve geometry)
     RETURNS double precision[]
-    AS 'MODULE_PATHNAME', 'ST_NurbsCurveKnots'
+    AS 'MODULE_PATHNAME', 'ST_Knots'
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
     COST 25;
 
