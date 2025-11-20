@@ -37,7 +37,7 @@
 #include "lwgeom_pg.h"
 
 Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS);
-Datum ST_NurbsCurveControlPoints(PG_FUNCTION_ARGS);
+Datum ST_ControlPoints(PG_FUNCTION_ARGS);
 Datum ST_Degree(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveWeights(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveKnots(PG_FUNCTION_ARGS);
@@ -305,7 +305,7 @@ Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-PG_FUNCTION_INFO_V1(ST_NurbsCurveControlPoints);
+PG_FUNCTION_INFO_V1(ST_ControlPoints);
 /**
  * Return the control points of a NURBS curve as a MULTIPOINT geometry.
  *
@@ -317,7 +317,7 @@ PG_FUNCTION_INFO_V1(ST_NurbsCurveControlPoints);
  * - Raises an error if the NURBS curve has no control points.
  * - Raises an internal error if the MULTIPOINT cannot be created.
  */
-Datum ST_NurbsCurveControlPoints(PG_FUNCTION_ARGS)
+Datum ST_ControlPoints(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *pnurbs;
 	LWGEOM *geom;
