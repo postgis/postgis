@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-11-19 08:47+0000\n"
+"PO-Revision-Date: 2025-11-20 01:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -2314,6 +2314,10 @@ msgid ""
 "different schema for each state, as long as all the tables inherit from the "
 "tables in the <varname>tiger</varname> schema."
 msgstr ""
+"ジオコード関数は基本テーブルだけを参照します。<varname>tiger_data</varname> "
+"というスキーマは不要ですし、データが他のスキーマに分割されても構いません。例"
+"えば、全てのテーブルが <varname>tiger</varname>スキーマ内のテーブルから継承さ"
+"れているなら、州ごとに違うスキーマでも構いません。"
 
 #. Tag: para
 #, no-c-format
@@ -2337,6 +2341,13 @@ msgid ""
 "have data from tiger_2010 and want to replace with tiger_2015, refer to "
 "<xref linkend=\"upgrade_tiger_geocoder\"/>"
 msgstr ""
+"TIGERジオコーダー (tiger_2010)を使っている場合には、extras/"
+"tiger内にあるupgrade_geocoder.bat / .sh "
+"を使ってアップグレードすることができます。 <varname>tiger_2010</varname> と "
+"<varname>tiger_2011</varname> 以上での大きな変更点は、<varname>county</varnam"
+"e>テーブルと<varname>state</varname>テーブルが、州ごとに出現することがなくな"
+"っています。tiger_2010からのデータを持っていて、tiger_2015に置き換えたい場合"
+"には、 <xref linkend=\"upgrade_tiger_geocoder\"/>を参照して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -2344,6 +2355,9 @@ msgid ""
 "You can install the TIGER Geocoder with the PostgreSQL extension model. "
 "Refer to <xref linkend=\"install_tiger_geocoder_extension\"/> for details."
 msgstr ""
+"TIGERジオコーダーはPostgreSQLエクステンションモデルでインストールできます。"
+"詳細については<xref linkend=\"install_tiger_geocoder_extension\""
+"/>をご覧ください。"
 
 #. Tag: para
 #, no-c-format
@@ -2382,7 +2396,8 @@ msgstr ""
 msgid ""
 "The <varname>reverse_geocode</varname> function is useful for deriving the "
 "street address and cross streets of a GPS location."
-msgstr ""
+msgstr "<varname>reverse_geocode</varname>関数はGPS位置のストリート住所と交差点を得る"
+"のに使えます。"
 
 #. Tag: para
 #, no-c-format
@@ -2428,6 +2443,8 @@ msgid ""
 "There are a couple other open source geocoders for PostGIS, that unlike the "
 "TIGER Geocoder have the advantage of multi-country geocoding support"
 msgstr ""
+"PostGIS用の二つのオープンソースジオコーダがあります。これらはTIGERジオコーダ"
+"ーと違い、他国のジオコーディングに対応している利点があります。"
 
 #. Tag: para
 #, no-c-format
@@ -2441,6 +2458,13 @@ msgid ""
 "interface like the TIGER Geocoder, or if a good deal of the logic is "
 "implemented in the web interface."
 msgstr ""
+"<link xlink:href=\"http://wiki.openstreetmap.org/wiki/Nominatim\">Nominatim</"
+"link>は、OpenStreetMapの地名集データを使います。PostgreSQLとPostGISの両方でデ"
+"ータをロードするにはosm2pgsqlが必要です。Webサービスのインタフェースとして作"
+"られていて、Webサービスとして呼ばれる設計のように見えます。TIGERジオコーダと"
+"同じように、ジオコーダーと逆ジオコーダーの要素を持ちます。文書からでは、TIGER"
+"ジオコーダのような純粋なSQLインタフェースを持っているのか、多くの処理がWebイ"
+"ンタフェースに実装されているのかは明確ではありません。"
 
 #. Tag: para
 #, no-c-format
@@ -2937,6 +2961,9 @@ msgid ""
 "scripts, rerun it on the states you have already processed to get these "
 "additional tables."
 msgstr ""
+"は、このロジックを含んでいますが、古いスクリプトでTIGERジオコーダーをインスト"
+"ールした場合には、これらの追加テーブルの取得処理が済んでいる州の上でLoader_Ge"
+"nerate_Scriptを実行します。"
 
 #. Tag: para
 #, no-c-format
@@ -3963,6 +3990,15 @@ msgid ""
 "therefore appear twice—once for each orientation—when it belongs to two "
 "faces."
 msgstr ""
+"あらゆるトポロジーの中核的なプリミティブは<varname>edge_data</varname>、 "
+"<varname>node</varname>,、<varname>face</varname>テーブルに格納されます。"
+"これらのテーブルは<xref linkend=\"CreateTopology\"/>で生成されたスキーマ内に"
+"あります。<varname>edge_data</varname>の各タプルは有向エッジを表現しています"
+"。<varname>start_node</varname>から<varname>end_node</varname>への有向曲線と"
+"、その曲線の進行方向左側にあるフェイスの識別番号 "
+"(<varname>left_face</varname>)と右側のもの (<varname>right_face</varname>)と"
+"を併せて記録しています。このため、ジオメトリ線分が2個のフェイスに属するとき、"
+"同じ線分が2度 (方向ごとに1度ずつ)出現することがあります。"
 
 #. Tag: para
 #, no-c-format
@@ -3974,9 +4010,14 @@ msgid ""
 "the stored orientation has to be followed as-is or reversed when traversing. "
 "Formally, the following rules hold for every edge <varname>e</varname>:"
 msgstr ""
+"<varname>next_left_edge</varname>カラムと<varname>next_right_edge</varname>カ"
+"ラムはフェイスを辿る方法をエンコードしてこの方向情報を完全にしています。正負"
+"符号付整数を格納していて、絶対値は進行方向を向いた時の次のエッジを示し、正負"
+"符号で次のエッジが順方向化逆方向かを決定しています。正式には、"
+"次の規則があります (エッジを <varname>e</varname>とします):"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<varname>abs(next_left_edge)</varname> is the identifier of the edge reached "
 "by continuing around the face that lies to the left of <varname>e</varname>. "
@@ -3985,6 +4026,11 @@ msgid ""
 "negative the referenced edge must be followed backwards so that the shared "
 "face remains on the walker’s left."
 msgstr ""
+"<varname>abs(next_left_edge)</varname>は<varname>e</varname>の左にあるフェイ"
+"スを辿る場合に次に到達するエッジの識別番号です。値が正数の場合には<varname>e<"
+"/varname>の終端ノードから次のエッジの格納されている通りの方向に進みます。負数"
+"の場合には次のエッジは逆向きにたどることになるので、共有するフェイスは辿って"
+"いる者から見たら左側にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -3996,6 +4042,13 @@ msgid ""
 "instructs to traverse the referenced edge in reverse, starting from its end "
 "node, so that the right-hand face is preserved."
 msgstr ""
+"<varname>abs(next_right_edge)</varname>は<varname>e</varname>の右にあるフェイ"
+"スを辿る場合に次に到達するエッジの識別番号です。値が正数の場合には次のエッジ"
+"が<varname>e</varname>の終端ノードから始まり次のエッジの格納されている通りの"
+"方向に進みます。負数の場合には次のエッジは逆向きにたどることになるので、共有"
+"するフェイスは辿っている者から見たら左側にあります。負数の場合には次のエッジ"
+"を逆方向で辿る、すなわちエッジの終端から始めることになり、右側のフェイスが保"
+"存されます。"
 
 #. Tag: para
 #, no-c-format
