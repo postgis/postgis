@@ -38,7 +38,7 @@
 
 Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveControlPoints(PG_FUNCTION_ARGS);
-Datum ST_NurbsCurveDegree(PG_FUNCTION_ARGS);
+Datum ST_Degree(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveWeights(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveKnots(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveNumControlPoints(PG_FUNCTION_ARGS);
@@ -360,7 +360,7 @@ Datum ST_NurbsCurveControlPoints(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-PG_FUNCTION_INFO_V1(ST_NurbsCurveDegree);
+PG_FUNCTION_INFO_V1(ST_Degree);
 /**
  * Return the polynomial degree of a NURBS curve.
  *
@@ -371,7 +371,7 @@ PG_FUNCTION_INFO_V1(ST_NurbsCurveDegree);
  * @param nurbsgs A GSERIALIZED representing a NURBS curve (NULL allowed).
  * @return degree of the NURBS curve as int32, or NULL when input is NULL.
  */
-Datum ST_NurbsCurveDegree(PG_FUNCTION_ARGS)
+Datum ST_Degree(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *pnurbs;
 	LWGEOM *geom;

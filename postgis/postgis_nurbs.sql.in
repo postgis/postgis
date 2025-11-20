@@ -31,14 +31,14 @@ CREATE OR REPLACE FUNCTION ST_NurbsCurveControlPoints(nurbscurve geometry)
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
     COST 50;
 
--- ST_NurbsCurveDegree(nurbscurve)
+-- ST_Degree(nurbscurve)
 -- Returns the polynomial degree of the NURBS curve
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 -- Returns: Integer degree (1-10)
-CREATE OR REPLACE FUNCTION ST_NurbsCurveDegree(nurbscurve geometry)
+CREATE OR REPLACE FUNCTION ST_Degree(nurbscurve geometry)
     RETURNS integer
-    AS 'MODULE_PATHNAME', 'ST_NurbsCurveDegree'
+    AS 'MODULE_PATHNAME', 'ST_Degree'
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
     COST 10;
 
