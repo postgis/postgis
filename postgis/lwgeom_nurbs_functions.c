@@ -41,7 +41,7 @@ Datum ST_ControlPoints(PG_FUNCTION_ARGS);
 Datum ST_Degree(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveWeights(PG_FUNCTION_ARGS);
 Datum ST_Knots(PG_FUNCTION_ARGS);
-Datum ST_NurbsCurveNumControlPoints(PG_FUNCTION_ARGS);
+Datum ST_NumControlPoints(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveIsRational(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveIsValid(PG_FUNCTION_ARGS);
 Datum ST_NurbsEvaluate(PG_FUNCTION_ARGS);
@@ -500,7 +500,7 @@ Datum ST_Knots(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-PG_FUNCTION_INFO_V1(ST_NurbsCurveNumControlPoints);
+PG_FUNCTION_INFO_V1(ST_NumControlPoints);
 /**
  * Get number of control points in a NURBS curve.
  *
@@ -510,7 +510,7 @@ PG_FUNCTION_INFO_V1(ST_NurbsCurveNumControlPoints);
  * @returns int32 number of control points (0 if the curve has no control points).
  * @throws ERROR if the input is not a NURBS curve.
  */
-Datum ST_NurbsCurveNumControlPoints(PG_FUNCTION_ARGS)
+Datum ST_NumControlPoints(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *pnurbs;
 	LWGEOM *geom;

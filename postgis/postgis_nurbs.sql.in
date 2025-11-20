@@ -64,14 +64,14 @@ CREATE OR REPLACE FUNCTION ST_Knots(nurbscurve geometry)
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
     COST 25;
 
--- ST_NurbsCurveNumControlPoints(nurbscurve)
+-- ST_NumControlPoints(nurbscurve)
 -- Returns the number of control points
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 -- Returns: Number of control points (integer)
-CREATE OR REPLACE FUNCTION ST_NurbsCurveNumControlPoints(nurbscurve geometry)
+CREATE OR REPLACE FUNCTION ST_NumControlPoints(nurbscurve geometry)
     RETURNS integer
-    AS 'MODULE_PATHNAME', 'ST_NurbsCurveNumControlPoints'
+    AS 'MODULE_PATHNAME', 'ST_NumControlPoints'
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
     COST 10;
 
