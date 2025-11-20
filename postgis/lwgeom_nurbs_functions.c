@@ -44,7 +44,7 @@ Datum ST_Knots(PG_FUNCTION_ARGS);
 Datum ST_NumControlPoints(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveIsRational(PG_FUNCTION_ARGS);
 Datum ST_NurbsCurveIsValid(PG_FUNCTION_ARGS);
-Datum ST_NurbsEvaluate(PG_FUNCTION_ARGS);
+Datum ST_Evaluate(PG_FUNCTION_ARGS);
 Datum ST_NurbsToLineString(PG_FUNCTION_ARGS);
 
 static ArrayType* float8_array_from_double_array(double *values, int count);
@@ -660,7 +660,7 @@ cleanup:
 	PG_RETURN_BOOL(is_valid);
 }
 
-PG_FUNCTION_INFO_V1(ST_NurbsEvaluate);
+PG_FUNCTION_INFO_V1(ST_Evaluate);
 /**
  * Evaluate a NURBS curve at a specific parameter value.
  *
@@ -677,9 +677,9 @@ PG_FUNCTION_INFO_V1(ST_NurbsEvaluate);
  * - NULL if either input is NULL or the curve is invalid
  *
  * Example:
- * SELECT ST_NurbsEvaluate(nurbs_curve, 0.5); -- Get midpoint of curve
+ * SELECT ST_Evaluate(nurbs_curve, 0.5); -- Get midpoint of curve
  */
-Datum ST_NurbsEvaluate(PG_FUNCTION_ARGS)
+Datum ST_Evaluate(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *pnurbs;
 	double parameter;
