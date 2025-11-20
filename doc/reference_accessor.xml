@@ -3706,4 +3706,45 @@ SELECT ST_Degree('NURBSCURVE(3, (0 0, 2 5, 5 8, 10 0))'::geometry) = 3;
 		</refsection>
 	</refentry>
 
+	<refentry xml:id="ST_Weights">
+		<refnamediv>
+			<refname>ST_Weights</refname>
+			<refpurpose>Returns the weight array of a rational NURBS curve.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>float8[] <function>ST_Weights</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>Returns the weight values of a rational NURBS curve as an array of double precision values. Weights control the influence of each control point on the curve shape. Higher weights pull the curve closer to the corresponding control point.</para>
+
+			<para>Returns NULL if the curve has no weights (non-rational B-spline) or if the input is NULL. Raises an error if the input is not a NURBS curve.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>-- Get weights from a rational NURBS curve
+SELECT ST_Weights(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]));
+-- Result: {1,2,1}
+
+-- Check if a curve has uniform weights
+SELECT ST_Weights('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
+-- Result: NULL (non-rational curve)</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeNurbsCurve"/>, <xref linkend="ST_NurbsCurveIsRational"/>, <xref linkend="ST_ControlPoints"/></para>
+		</refsection>
+	</refentry>
+
   </section>
