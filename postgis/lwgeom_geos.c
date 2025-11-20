@@ -1546,6 +1546,9 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 
 /*---------------------------------------------*/
 
+/* Forward declaration for ST_NurbsCurveIsValid */
+extern Datum ST_NurbsCurveIsValid(PG_FUNCTION_ARGS);
+
 PG_FUNCTION_INFO_V1(isvalid);
 Datum isvalid(PG_FUNCTION_ARGS)
 {
@@ -1560,13 +1563,22 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	if ( gserialized_is_empty(geom1) )
 		PG_RETURN_BOOL(true);
 
-	initGEOS(lwpgnotice, lwgeom_geos_error);
-
+	/* Check for NURBSCURVE: GEOS doesn't support it, use NURBS-specific validation */
 	lwgeom = lwgeom_from_gserialized(geom1);
 	if ( ! lwgeom )
 	{
 		lwpgerror("unable to deserialize input");
 	}
+
+	if ( lwgeom->type == NURBSCURVETYPE )
+	{
+		lwgeom_free(lwgeom);
+		/* Delegate to ST_NurbsCurveIsValid */
+		return DirectFunctionCall1(ST_NurbsCurveIsValid, PG_GETARG_DATUM(0));
+	}
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
 	g1 = LWGEOM2GEOS(lwgeom, 0);
 	lwgeom_free(lwgeom);
 
