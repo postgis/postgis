@@ -218,3 +218,16 @@ select 'ST_StartPoint9',ST_AsText(ST_StartPoint('MULTILINESTRING((1 1, 2 2), (3 
 select 'ST_StartPoint10',ST_AsText(ST_StartPoint('GEOMETRYCOLLECTION(POINT(1 2), LINESTRING(3 4, 5 6))'::geometry));
 select 'ST_StartPoint11',ST_AsText(ST_StartPoint(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 1 1, 2 0)'::geometry)));
 select 'ST_StartPoint12',ST_AsText(ST_StartPoint(ST_MakeNurbsCurve(2, 'LINESTRING(0 0 0, 1 1 1, 2 0 2)'::geometry)));
+
+select 'ST_StartM1', ST_StartM('LINESTRING M (0 0 10, 1 1 20, 2 0 30)'::geometry);
+select 'ST_StartM2', ST_StartM('LINESTRING(0 0, 1 1, 2 0)'::geometry);
+select 'ST_StartM3', ST_StartM('CIRCULARSTRING M (0 0 5, 1 1 10, 2 0 15)'::geometry);
+select 'ST_StartM4', ST_StartM('COMPOUNDCURVE M ((0 0 10, 1 1 20), CIRCULARSTRING(1 1 20, 2 0 25, 3 1 30))'::geometry);
+select 'ST_StartM5', ST_StartM('NURBSCURVE M(2, (0 0 100, 1 1 200, 2 0 300))'::geometry);
+select 'ST_StartM6', ST_StartM('LINESTRING M EMPTY'::geometry);
+select 'ST_EndM1', ST_EndM('LINESTRING M (0 0 10, 1 1 20, 2 0 30)'::geometry);
+select 'ST_EndM2', ST_EndM('LINESTRING(0 0, 1 1, 2 0)'::geometry);
+select 'ST_EndM3', ST_EndM('CIRCULARSTRING M (0 0 5, 1 1 10, 2 0 15)'::geometry);
+select 'ST_EndM4', ST_EndM('COMPOUNDCURVE M ((0 0 10, 1 1 20), CIRCULARSTRING(1 1 20, 2 0 25, 3 1 30))'::geometry);
+select 'ST_EndM5', ST_EndM('NURBSCURVE M(2, (0 0 100, 1 1 200, 2 0 300))'::geometry);
+select 'ST_EndM6', ST_EndM('LINESTRING M EMPTY'::geometry);

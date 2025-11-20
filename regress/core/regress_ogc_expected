@@ -133,3 +133,15 @@ ST_StartPoint9|POINT(1 1)
 ST_StartPoint10|POINT(1 2)
 ST_StartPoint11|POINT(0 0)
 ST_StartPoint12|POINT Z (0 0 0)
+ST_StartM1|10
+ST_StartM2|
+ST_StartM3|5
+ST_StartM4|10
+ST_StartM5|100
+ST_StartM6|
+ST_EndM1|30
+ST_EndM2|
+ST_EndM3|15
+ST_EndM4|30
+ST_EndM5|300
+ST_EndM6|

@@ -246,6 +246,22 @@ CREATE OR REPLACE FUNCTION ST_M(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT
 	PARALLEL SAFE _COST_DEFAULT;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_StartM(geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','LWGEOM_startm_curve'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	PARALLEL SAFE
+	COST 10;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_EndM(geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','LWGEOM_endm_curve'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	PARALLEL SAFE
+	COST 10;
+
 -------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION box3d_in(cstring)
