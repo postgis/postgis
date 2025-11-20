@@ -190,6 +190,8 @@ select 'ST_GeometryN', ST_asewkt(ST_GeometryN('LINESTRING(0 0, 1 1)'::geometry, 
 select 'ST_NumGeometries', ST_NumGeometries('LINESTRING(0 0, 1 1)'::geometry);
 select 'ST_Union1', ST_AsText(ST_Normalize(ST_Union(ARRAY['POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 'POLYGON((0.5 0.5, 1.5 0.5, 1.5 1.5, 0.5 1.5, 0.5 0.5))'::geometry])));
 select 'ST_EndPoint1', ST_AsText(ST_Endpoint('LINESTRING(0 0, 1 1, 2 2)'::geometry));
+select 'ST_EndPoint2', ST_AsText(ST_EndPoint(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 1 1, 2 0)'::geometry)));
+select 'ST_EndPoint3', ST_AsText(ST_EndPoint(ST_MakeNurbsCurve(2, 'LINESTRING(0 0 0, 1 1 1, 2 0 2)'::geometry)));
 select 'ST_PointN1', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2)'::geometry,2));
 select 'ST_PointN2', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2)'::geometry,3));
 select 'ST_PointN3',  ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2)'::geometry,4));
@@ -214,3 +216,5 @@ select 'ST_StartPoint7',ST_AsText(ST_StartPoint('MULTIPOINT(1 1, 2 2)'::geometry
 select 'ST_StartPoint8',ST_AsText(ST_StartPoint('MULTIPOLYGON(((1 1, 2 2, 3 3, 1 1)))'::geometry));
 select 'ST_StartPoint9',ST_AsText(ST_StartPoint('MULTILINESTRING((1 1, 2 2), (3 3, 4 4))'::geometry));
 select 'ST_StartPoint10',ST_AsText(ST_StartPoint('GEOMETRYCOLLECTION(POINT(1 2), LINESTRING(3 4, 5 6))'::geometry));
+select 'ST_StartPoint11',ST_AsText(ST_StartPoint(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 1 1, 2 0)'::geometry)));
+select 'ST_StartPoint12',ST_AsText(ST_StartPoint(ST_MakeNurbsCurve(2, 'LINESTRING(0 0 0, 1 1 1, 2 0 2)'::geometry)));

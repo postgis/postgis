@@ -954,7 +954,7 @@ FROM polyTable
 	  <refnamediv>
 		<refname>ST_EndPoint</refname>
 
-		<refpurpose>Returns the last point of a LineString or CircularLineString.</refpurpose>
+		<refpurpose>Returns the last point of a LineString, CircularLineString, or NURBSCurve.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -970,11 +970,11 @@ FROM polyTable
 	  <refsection>
 		<title>Description</title>
 
-	  <para>Returns the last point of a <varname>LINESTRING</varname>
-      or <varname>CIRCULARLINESTRING</varname> geometry
+	  <para>Returns the last point of a <varname>LINESTRING</varname>,
+      <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname> geometry
 	  as a <varname>POINT</varname>.
       Returns <varname>NULL</varname> if the input
-	  is not a <varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>.</para>
+	  is not a <varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname>.</para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 7.1.4</para>
 		<para>&Z_support;</para>
@@ -1021,6 +1021,14 @@ SELECT ST_AsText(ST_EndPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 3)':
  st_astext
 ------------
  POINT(6 3)
+</programlisting>
+
+<para>End point of a NURBSCurve</para>
+<programlisting>
+SELECT ST_AsText(ST_EndPoint('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry));
+ st_astext
+------------
+ POINT(2 0)
 </programlisting>
 	  </refsection>
 
@@ -2826,7 +2834,7 @@ MULTIPOINT Z ((30 10 4),(10 30 5),(40 40 6),(30 10 4))
 	<refnamediv>
 	  <refname>ST_StartPoint</refname>
 
-	  <refpurpose>Returns the first point of a LineString.</refpurpose>
+	  <refpurpose>Returns the first point of a LineString, CircularLineString, or NURBSCurve.</refpurpose>
 	</refnamediv>
 
 	<refsynopsisdiv>
@@ -2842,11 +2850,11 @@ MULTIPOINT Z ((30 10 4),(10 30 5),(40 40 6),(30 10 4))
 	<refsection>
 	  <title>Description</title>
 
-	  <para>Returns the first point of a <varname>LINESTRING</varname>
-      or <varname>CIRCULARLINESTRING</varname> geometry
+	  <para>Returns the first point of a <varname>LINESTRING</varname>,
+      <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname> geometry
 	  as a <varname>POINT</varname>.
       Returns <varname>NULL</varname> if the input
-	  is not a <varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>.</para>
+	  is not a <varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname>.</para>
 
 	  <para>&sqlmm_compliant; SQL-MM 3: 7.1.3</para>
 	  <para>&Z_support;</para>
@@ -2895,6 +2903,14 @@ SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 3)
  st_astext
 ------------
  POINT(5 2)
+</programlisting>
+
+<para>Start point of a NURBSCurve</para>
+<programlisting>
+SELECT ST_AsText(ST_StartPoint('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry));
+ st_astext
+------------
+ POINT(0 0)
 </programlisting>
 	</refsection>
 

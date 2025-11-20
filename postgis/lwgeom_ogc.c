@@ -855,9 +855,9 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(ret);
 }
 
-/** EndPoint(GEOMETRY) -- find the first linestring in GEOMETRY,
+/** EndPoint(GEOMETRY) -- find the first linestring or NURBS curve in GEOMETRY,
  * @return the last point.
- * 	Return NULL if there is no LINESTRING(..) in GEOMETRY
+ * 	Return NULL if there is no LINESTRING(..) or NURBSCURVE(..) in GEOMETRY
  */
 PG_FUNCTION_INFO_V1(LWGEOM_endpoint_linestring);
 Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
@@ -872,6 +872,15 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 		LWLINE *line = (LWLINE*)lwgeom;
 		if ( line->points )
 			lwpoint = lwline_get_lwpoint((LWLINE*)lwgeom, line->points->npoints - 1);
+	}
+	else if ( type == NURBSCURVETYPE )
+	{
+		LWNURBSCURVE *curve = (LWNURBSCURVE*)lwgeom;
+		if ( curve->points )
+			lwpoint = lwpoint_make(curve->srid,
+			                       FLAGS_GET_Z(curve->flags),
+			                       FLAGS_GET_M(curve->flags),
+			                       getPoint4d_cp(curve->points, curve->points->npoints - 1));
 	}
 	else if ( type == COMPOUNDTYPE )
 	{
