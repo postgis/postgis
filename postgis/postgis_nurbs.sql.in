@@ -86,22 +86,6 @@ CREATE OR REPLACE FUNCTION ST_NurbsCurveIsRational(nurbscurve geometry)
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
     COST 10;
 
--- ST_NurbsCurveIsValid(nurbscurve)
--- Mathematical validation of NURBS curve
--- Checks:
---   - Sufficient control points for degree
---   - Positive weights (if rational)
---   - Non-decreasing knot vector
---   - Correct knot vector length: npoints + degree + 1
--- Parameters:
---   nurbscurve: Input NURBS curve geometry
--- Returns: TRUE if mathematically valid, FALSE otherwise
-CREATE OR REPLACE FUNCTION ST_NurbsCurveIsValid(nurbscurve geometry)
-    RETURNS boolean
-    AS 'MODULE_PATHNAME', 'ST_NurbsCurveIsValid'
-    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-    COST 50;
-
 -- ST_IsNurbsCurve(geometry)
 -- Tests if geometry is a NURBS curve type
 -- Parameters:

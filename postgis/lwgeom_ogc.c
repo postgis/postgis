@@ -79,6 +79,14 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS);
 Datum LWGEOM_z_point(PG_FUNCTION_ARGS);
 /* ---- M(geometry) */
 Datum LWGEOM_m_point(PG_FUNCTION_ARGS);
+/* ---- StartM(geometry) */
+Datum LWGEOM_startm_curve(PG_FUNCTION_ARGS);
+/* ---- EndM(geometry) */
+Datum LWGEOM_endm_curve(PG_FUNCTION_ARGS);
+/* ---- SetStartM(geometry, double precision) */
+Datum LWGEOM_setstartm_curve(PG_FUNCTION_ARGS);
+/* ---- SetEndM(geometry, double precision) */
+Datum LWGEOM_setendm_curve(PG_FUNCTION_ARGS);
 /* ---- StartPoint(geometry) */
 Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS);
 /* ---- EndPoint(geometry) */
@@ -825,6 +833,248 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 	PG_RETURN_FLOAT8(pt.m);
+}
+
+/**
+* ST_StartM(GEOMETRY)
+* Returns the M coordinate of the start point of a curve geometry.
+* Supports LINESTRING, CIRCULARSTRING, COMPOUNDCURVE, and NURBSCURVE.
+* @return M value as double precision, or NULL if geometry has no M dimension
+*/
+PG_FUNCTION_INFO_V1(LWGEOM_startm_curve);
+Datum LWGEOM_startm_curve(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	POINT4D pt;
+
+	/* Check if geometry has M dimension */
+	if (!lwgeom_has_m(lwgeom))
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* Get the start point */
+	if (lwgeom_startpoint(lwgeom, &pt) == LW_FAILURE)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
+
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_FLOAT8(pt.m);
+}
+
+/**
+* ST_EndM(GEOMETRY)
+* Returns the M coordinate of the end point of a curve geometry.
+* Supports LINESTRING, CIRCULARSTRING, COMPOUNDCURVE, and NURBSCURVE.
+* @return M value as double precision, or NULL if geometry has no M dimension
+*/
+PG_FUNCTION_INFO_V1(LWGEOM_endm_curve);
+Datum LWGEOM_endm_curve(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	POINT4D pt;
+	int type = lwgeom->type;
+	POINTARRAY *pa = NULL;
+
+	/* Check if geometry has M dimension */
+	if (!lwgeom_has_m(lwgeom))
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* Get the endpoint based on geometry type */
+	if (type == LINETYPE || type == CIRCSTRINGTYPE)
+	{
+		LWLINE *line = (LWLINE*)lwgeom;
+		pa = line->points;
+	}
+	else if (type == NURBSCURVETYPE)
+	{
+		LWNURBSCURVE *curve = (LWNURBSCURVE*)lwgeom;
+		pa = curve->points;
+	}
+	else if (type == COMPOUNDTYPE)
+	{
+		LWCOMPOUND *comp = (LWCOMPOUND*)lwgeom;
+		LWGEOM *last = comp->geoms[comp->ngeoms - 1];
+		if (last->type == LINETYPE || last->type == CIRCSTRINGTYPE)
+		{
+			pa = ((LWLINE*)last)->points;
+		}
+		else if (last->type == NURBSCURVETYPE)
+		{
+			pa = ((LWNURBSCURVE*)last)->points;
+		}
+	}
+
+	/* Extract M coordinate from last point */
+	if (pa && pa->npoints > 0)
+	{
+		getPoint4d_p(pa, pa->npoints - 1, &pt);
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_FLOAT8(pt.m);
+	}
+
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_NULL();
+}
+
+/**
+* ST_SetStartM(GEOMETRY, M)
+* Sets the M coordinate of the start point of a curve geometry.
+* Supports LINESTRING, CIRCULARSTRING, COMPOUNDCURVE, and NURBSCURVE.
+* If geometry doesn't have M dimension, it will be added.
+* @return Modified geometry with new M value at start point
+*/
+PG_FUNCTION_INFO_V1(LWGEOM_setstartm_curve);
+Datum LWGEOM_setstartm_curve(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	double mval = PG_GETARG_FLOAT8(1);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	LWGEOM *lwgeom_result;
+	GSERIALIZED *result;
+	POINT4D pt;
+	POINTARRAY *pa = NULL;
+	int type = lwgeom->type;
+
+	/* Ensure geometry has M dimension */
+	if (!lwgeom_has_m(lwgeom))
+	{
+		lwgeom_result = lwgeom_has_z(lwgeom) ?
+			lwgeom_force_4d(lwgeom, 0.0, 0.0) :
+			lwgeom_force_3dm(lwgeom, 0.0);
+		lwgeom_free(lwgeom);
+		lwgeom = lwgeom_result;
+	}
+	else
+	{
+		/* Clone geometry to avoid modifying input */
+		lwgeom_result = lwgeom_clone_deep(lwgeom);
+		lwgeom_free(lwgeom);
+		lwgeom = lwgeom_result;
+	}
+
+	/* Get pointarray based on geometry type */
+	if (type == LINETYPE || type == CIRCSTRINGTYPE)
+	{
+		pa = ((LWLINE*)lwgeom)->points;
+	}
+	else if (type == NURBSCURVETYPE)
+	{
+		pa = ((LWNURBSCURVE*)lwgeom)->points;
+	}
+	else if (type == COMPOUNDTYPE)
+	{
+		LWCOMPOUND *comp = (LWCOMPOUND*)lwgeom;
+		LWGEOM *first = comp->geoms[0];
+		if (first->type == LINETYPE || first->type == CIRCSTRINGTYPE)
+		{
+			pa = ((LWLINE*)first)->points;
+		}
+		else if (first->type == NURBSCURVETYPE)
+		{
+			pa = ((LWNURBSCURVE*)first)->points;
+		}
+	}
+
+	/* Set M value on first point */
+	if (pa && pa->npoints > 0)
+	{
+		getPoint4d_p(pa, 0, &pt);
+		pt.m = mval;
+		ptarray_set_point4d(pa, 0, &pt);
+	}
+
+	result = geometry_serialize(lwgeom);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(result);
+}
+
+/**
+* ST_SetEndM(GEOMETRY, M)
+* Sets the M coordinate of the end point of a curve geometry.
+* Supports LINESTRING, CIRCULARSTRING, COMPOUNDCURVE, and NURBSCURVE.
+* If geometry doesn't have M dimension, it will be added.
+* @return Modified geometry with new M value at end point
+*/
+PG_FUNCTION_INFO_V1(LWGEOM_setendm_curve);
+Datum LWGEOM_setendm_curve(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	double mval = PG_GETARG_FLOAT8(1);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	LWGEOM *lwgeom_result;
+	GSERIALIZED *result;
+	POINT4D pt;
+	POINTARRAY *pa = NULL;
+	int type = lwgeom->type;
+
+	/* Ensure geometry has M dimension */
+	if (!lwgeom_has_m(lwgeom))
+	{
+		lwgeom_result = lwgeom_has_z(lwgeom) ?
+			lwgeom_force_4d(lwgeom, 0.0, 0.0) :
+			lwgeom_force_3dm(lwgeom, 0.0);
+		lwgeom_free(lwgeom);
+		lwgeom = lwgeom_result;
+	}
+	else
+	{
+		/* Clone geometry to avoid modifying input */
+		lwgeom_result = lwgeom_clone_deep(lwgeom);
+		lwgeom_free(lwgeom);
+		lwgeom = lwgeom_result;
+	}
+
+	/* Get pointarray based on geometry type */
+	if (type == LINETYPE || type == CIRCSTRINGTYPE)
+	{
+		pa = ((LWLINE*)lwgeom)->points;
+	}
+	else if (type == NURBSCURVETYPE)
+	{
+		pa = ((LWNURBSCURVE*)lwgeom)->points;
+	}
+	else if (type == COMPOUNDTYPE)
+	{
+		LWCOMPOUND *comp = (LWCOMPOUND*)lwgeom;
+		LWGEOM *last = comp->geoms[comp->ngeoms - 1];
+		if (last->type == LINETYPE || last->type == CIRCSTRINGTYPE)
+		{
+			pa = ((LWLINE*)last)->points;
+		}
+		else if (last->type == NURBSCURVETYPE)
+		{
+			pa = ((LWNURBSCURVE*)last)->points;
+		}
+	}
+
+	/* Set M value on last point */
+	if (pa && pa->npoints > 0)
+	{
+		getPoint4d_p(pa, pa->npoints - 1, &pt);
+		pt.m = mval;
+		ptarray_set_point4d(pa, pa->npoints - 1, &pt);
+	}
+
+	result = geometry_serialize(lwgeom);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(result);
 }
 
 /**
