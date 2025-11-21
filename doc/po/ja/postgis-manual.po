@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-11-21 03:47+0000\n"
+"PO-Revision-Date: 2025-11-21 08:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -8773,6 +8773,13 @@ msgid ""
 "<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet."
 "html</filename>"
 msgstr ""
+"<command>make cheatsheets</command>でHTMLのチートシートを生成します。早見表ま"
+"たは生徒への配布資料に適しています。チートシート生成にはxsltprocが必要です。d"
+"ocフォルダに<filename>topology_cheatsheet."
+"html</filename>、<filename>tiger_geocoder_cheatsheet."
+"html</filename>、<filename>raster_cheatsheet."
+"html</filename>、<filename>postgis_cheatsheet."
+"html</filename>の4個のファイルが生成されます。"
 
 #. Tag: para
 #, no-c-format
@@ -8794,7 +8801,8 @@ msgstr "PostGISエクステンションのビルドとデプロイ"
 msgid ""
 "The PostGIS extensions are built and installed automatically when PostgreSQL "
 "extension support is available."
-msgstr ""
+msgstr "PostGISエクステンションはPostgreSQLエクステンション機能が有効なら自動でビルド"
+"、インストールされます。"
 
 #. Tag: para
 #, no-c-format
@@ -9225,6 +9233,8 @@ msgid ""
 "Windows installation packages include the address_standardizer so you can "
 "move straight to the <code>CREATE EXTENSION</code> step."
 msgstr ""
+"Windows用パッケージにはaddress_standardizerがあるので、<code>CREATE "
+"EXTENSION</code>に進んでください。"
 
 #. Tag: para
 #, no-c-format
