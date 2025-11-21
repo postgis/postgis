@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-11-20 09:47+0000\n"
+"PO-Revision-Date: 2025-11-21 03:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -4577,7 +4577,8 @@ msgstr ""
 msgid ""
 "Fixes topogeometry corruption caused by upgrade to postgis_topology 3.6.0 "
 "and higher"
-msgstr ""
+msgstr "postgis_topologyを3.6."
+"0以上にアップグレードする際に発生するポジオメトリーの間違いを訂正します。"
 
 #. Tag: para
 #, no-c-format
@@ -4587,11 +4588,15 @@ msgid ""
 "topogeometries created before the upgrade. This function fixes this "
 "corruption in affected tables."
 msgstr ""
+"PostGISトポロジー 3.6.0未満から3.6.0以上にアップグレードする時、トポジオメト"
+"リーカラムの定義が変更されました。このためアップグレード前に作られたトポジオ"
+"メトリーで間違いが発生します。この関数は影響を受けるテーブルの該当する間違い"
+"を1修正します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.1"
-msgstr ""
+msgstr "Availability: 3.6.1"
 
 #. Tag: para
 #, no-c-format
@@ -5586,6 +5591,9 @@ msgid ""
 "Existing edges and faces may be split by the line. New nodes and faces may "
 "be added, in addition to new edges."
 msgstr ""
+"与えられたラインは与えられた許容値内にある既存のノードまたはエッジににスナッ"
+"プします。既存のエッジとフェイスはラインで分割される場合があります。新規エッ"
+"ジ追加に加えて、新しいノードとフェイスは追加される場合があります。"
 
 #. Tag: para
 #, no-c-format
