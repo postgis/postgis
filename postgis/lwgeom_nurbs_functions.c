@@ -255,12 +255,13 @@ Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS)
 		/* Validate knot vector length: should be npoints + degree + 1 */
 		expected_knots = line->points->npoints + degree + 1;
 		if (knot_count != expected_knots) {
+			uint32_t npoints = line->points->npoints;
 			pfree(knots);
 			if (weights) pfree(weights);
 			lwgeom_free(control_geom);
 			ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 				errmsg("Knot vector must have %d elements for %d control points and degree %d, got %d",
-					expected_knots, line->points->npoints, degree, knot_count)));
+					expected_knots, npoints, degree, knot_count)));
 		}
 
 		/* Validate knot vector is non-decreasing */
