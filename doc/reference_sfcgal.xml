@@ -3802,5 +3802,193 @@ SELECT (ST_Dump(CG_Simplify(geom, 0.5, false))).geom FROM depts_pds;
    </refsection>
 </refentry>
 
+<refentry xml:id="CG_NurbsCurveInterpolate">
+    <refnamediv>
+        <refname>CG_NurbsCurveInterpolate</refname>
+        <refpurpose>Creates an interpolating NURBS curve passing through all given data points</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>CG_NurbsCurveInterpolate</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>data_points</parameter></paramdef>
+                <paramdef><type>integer</type> <parameter>degree</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+        <title>Description</title>
+
+        <para>Creates a NURBS curve that interpolates through all provided data points. The resulting curve passes exactly through each point in the input geometry.</para>
+
+        <para>Parameters:</para>
+        <itemizedlist>
+            <listitem><para><varname>data_points</varname> - A LINESTRING or MULTIPOINT geometry containing the points to interpolate through.</para></listitem>
+            <listitem><para><varname>degree</varname> - Polynomial degree of the NURBS curve (typically 2 or 3).</para></listitem>
+        </itemizedlist>
+
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+        <para>&sfcgal_required;</para>
+        <para>&Z_support;</para>
+    </refsection>
+
+    <refsection>
+        <title>Examples</title>
+        <programlisting>-- Create a smooth curve interpolating through 5 points
+SELECT CG_NurbsCurveInterpolate(
+    'LINESTRING(0 0, 1 2, 3 3, 5 1, 6 0)'::geometry,
+    3
+);
+
+-- 3D interpolation
+SELECT CG_NurbsCurveInterpolate(
+    'LINESTRING Z(0 0 0, 1 2 1, 3 3 0, 5 1 -1, 6 0 0)'::geometry,
+    2
+);
+</programlisting>
+    </refsection>
+
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="CG_NurbsCurveApproximate"/>, <xref linkend="ST_MakeNurbsCurve"/></para>
+    </refsection>
+</refentry>
+
+<refentry xml:id="CG_NurbsCurveApproximate">
+    <refnamediv>
+        <refname>CG_NurbsCurveApproximate</refname>
+        <refpurpose>Creates an approximating NURBS curve fitting data points within a tolerance</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>CG_NurbsCurveApproximate</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>data_points</parameter></paramdef>
+                <paramdef><type>integer</type> <parameter>degree</parameter></paramdef>
+                <paramdef><type>float8</type> <parameter>tolerance</parameter></paramdef>
+                <paramdef choice="opt"><type>integer</type> <parameter>max_control_points</parameter> <default>100</default></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+        <title>Description</title>
+
+        <para>Creates a NURBS curve that approximates the given data points within the specified tolerance. Unlike interpolation, the curve does not necessarily pass through all points but provides a smooth fit with fewer control points.</para>
+
+        <para>Parameters:</para>
+        <itemizedlist>
+            <listitem><para><varname>data_points</varname> - A LINESTRING or MULTIPOINT geometry containing the points to approximate.</para></listitem>
+            <listitem><para><varname>degree</varname> - Polynomial degree of the NURBS curve.</para></listitem>
+            <listitem><para><varname>tolerance</varname> - Maximum allowed distance between the curve and data points.</para></listitem>
+            <listitem><para><varname>max_control_points</varname> - Optional maximum number of control points (default: 100). Limits curve complexity.</para></listitem>
+        </itemizedlist>
+
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+        <para>&sfcgal_required;</para>
+        <para>&Z_support;</para>
+    </refsection>
+
+    <refsection>
+        <title>Examples</title>
+        <programlisting>-- Approximate noisy data with tolerance
+SELECT CG_NurbsCurveApproximate(
+    'LINESTRING(0 0, 1 2.1, 2 1.9, 3 3.2, 4 2.8, 5 1)'::geometry,
+    2,
+    0.5
+);
+
+-- Control maximum complexity
+SELECT CG_NurbsCurveApproximate(
+    'LINESTRING(0 0, 1 2, 2 2, 3 3, 4 3, 5 1, 6 0, 7 -1, 8 0)'::geometry,
+    3,
+    0.2,
+    20  -- max 20 control points
+);
+</programlisting>
+    </refsection>
+
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="CG_NurbsCurveInterpolate"/>, <xref linkend="ST_MakeNurbsCurve"/></para>
+    </refsection>
+</refentry>
+
+<refentry xml:id="CG_NurbsCurveDerivative">
+    <refnamediv>
+        <refname>CG_NurbsCurveDerivative</refname>
+        <refpurpose>Computes the derivative (tangent, curvature) of a NURBS curve at a given parameter</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>CG_NurbsCurveDerivative</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
+                <paramdef><type>float8</type> <parameter>parameter</parameter></paramdef>
+                <paramdef><type>integer</type> <parameter>derivative_order</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+        <title>Description</title>
+
+        <para>Computes the derivative of a NURBS curve at a specific parameter value. The derivative represents the rate of change at that point:</para>
+        <itemizedlist>
+            <listitem><para>Order 1: Tangent vector (direction and speed)</para></listitem>
+            <listitem><para>Order 2: Curvature vector (how the tangent changes)</para></listitem>
+            <listitem><para>Higher orders: Additional geometric properties</para></listitem>
+        </itemizedlist>
+
+        <para>Parameters:</para>
+        <itemizedlist>
+            <listitem><para><varname>nurbscurve</varname> - A NURBS curve geometry.</para></listitem>
+            <listitem><para><varname>parameter</varname> - Parameter value for evaluation (typically 0.0 to 1.0).</para></listitem>
+            <listitem><para><varname>derivative_order</varname> - Order of derivative to compute (1 for tangent, 2 for curvature, etc.).</para></listitem>
+        </itemizedlist>
+
+        <para>Returns a POINT geometry representing the derivative vector at the specified parameter.</para>
+
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+        <para>&sfcgal_required;</para>
+        <para>&Z_support;</para>
+    </refsection>
+
+    <refsection>
+        <title>Examples</title>
+        <programlisting>-- Get tangent vector at curve midpoint
+WITH nurbs AS (
+    SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry) AS geom
+)
+SELECT CG_NurbsCurveDerivative(geom, 0.5, 1) FROM nurbs;
+
+-- Get curvature at start of curve
+WITH nurbs AS (
+    SELECT ST_MakeNurbsCurve(3, 'LINESTRING(0 0, 2 5, 5 5, 8 2, 10 0)'::geometry) AS geom
+)
+SELECT CG_NurbsCurveDerivative(geom, 0.0, 2) FROM nurbs;
+
+-- Analyze tangent at multiple points
+WITH nurbs AS (
+    SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry) AS geom
+)
+SELECT
+    t.param,
+    CG_NurbsCurveDerivative(n.geom, t.param, 1) AS tangent
+FROM nurbs n
+CROSS JOIN (VALUES (0.0), (0.25), (0.5), (0.75), (1.0)) AS t(param);
+</programlisting>
+    </refsection>
+
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_Evaluate"/>, <xref linkend="ST_MakeNurbsCurve"/></para>
+    </refsection>
+</refentry>
+
     </section>
 </chapter>
