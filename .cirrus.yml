@@ -56,9 +56,9 @@ task:
     cpu: ${NCPU}
     memory: 24G
   matrix:
-    - name: 14.2-RELEASE
+    - name: 14.3-RELEASE
       freebsd_instance:
-        image_family: freebsd-14-2
+        image_family: freebsd-14-3
 
 task:
   name: macOS
