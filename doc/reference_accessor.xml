@@ -3969,7 +3969,7 @@ FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS c,
 				<funcprototype>
 					<funcdef>geometry <function>ST_NurbsToLineString</function></funcdef>
 					<paramdef><type>geometry</type> <parameter>nurbscurve</parameter></paramdef>
-					<paramdef choice="opt"><type>integer</type> <parameter>num_segments</parameter> <default>32</default></paramdef>
+					<paramdef choice="opt"><type>integer</type> <parameter>num_segments=32</parameter></paramdef>
 				</funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
