@@ -2192,19 +2192,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link> also "
-"utilizes PostGIS and like Nominatim works with OpenStreetMap (OSM) data. It "
-"comes with a loader to load OSM data and similar to Nominatim is capable of "
-"geocoding not just US. Much like Nominatim, it runs as a webservice and "
-"relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-platform and also "
-"has a reverse geocoder among some other neat features."
+"<link xlink:href=\"https://www.gisgraphy.com/\">GIS Graphy</link> can "
+"utilize PostGIS and like Nominatim uses OpenStreetMap (OSM) data along with "
+"some other sources. It comes with a loader to load OSM data and similar to "
+"Nominatim is capable of geocoding not just US. Much like Nominatim, it runs "
+"as a webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is "
+"cross-platform and also has a reverse geocoder among some other neat "
+"features."
 msgstr ""
-"<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link> 또한 PostGIS"
-"를 활용하며 Nominatim처럼 OSM(OpenStreetMap) 데이터를 이용합니다. OSM 데이터"
-"를 로드하기 위한 로더를 갖추고 있고, Nominatim와 유사하게 미국 이외의 국가의 "
-"지오코딩도 할 수 있습니다. Nominatim과 마찬가지로, 웹서비스로 실행되며 Java "
-"1.5, Servlet apps, Solr에 의존합니다. GIS Graphy는 여러 플랫폼 상에서 실행되"
-"며, 몇몇 멋진 기능과 함께 역 지오코딩 도구도 가지고 있습니다."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -45437,6 +45432,23 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link> also "
+#~ "utilizes PostGIS and like Nominatim works with OpenStreetMap (OSM) data. "
+#~ "It comes with a loader to load OSM data and similar to Nominatim is "
+#~ "capable of geocoding not just US. Much like Nominatim, it runs as a "
+#~ "webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-"
+#~ "platform and also has a reverse geocoder among some other neat features."
+#~ msgstr ""
+#~ "<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link> 또한 "
+#~ "PostGIS를 활용하며 Nominatim처럼 OSM(OpenStreetMap) 데이터를 이용합니다. "
+#~ "OSM 데이터를 로드하기 위한 로더를 갖추고 있고, Nominatim와 유사하게 미국 "
+#~ "이외의 국가의 지오코딩도 할 수 있습니다. Nominatim과 마찬가지로, 웹서비스"
+#~ "로 실행되며 Java 1.5, Servlet apps, Solr에 의존합니다. GIS Graphy는 여러 "
+#~ "플랫폼 상에서 실행되며, 몇몇 멋진 기능과 함께 역 지오코딩 도구도 가지고 있"
+#~ "습니다."
 
 #, no-c-format
 #~ msgid "(28). A 5 digit number. Identifies a Zip Code"

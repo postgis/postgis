@@ -2448,20 +2448,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link> also "
-"utilizes PostGIS and like Nominatim works with OpenStreetMap (OSM) data. It "
-"comes with a loader to load OSM data and similar to Nominatim is capable of "
-"geocoding not just US. Much like Nominatim, it runs as a webservice and "
-"relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-platform and also "
-"has a reverse geocoder among some other neat features."
+"<link xlink:href=\"https://www.gisgraphy.com/\">GIS Graphy</link> can "
+"utilize PostGIS and like Nominatim uses OpenStreetMap (OSM) data along with "
+"some other sources. It comes with a loader to load OSM data and similar to "
+"Nominatim is capable of geocoding not just US. Much like Nominatim, it runs "
+"as a webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is "
+"cross-platform and also has a reverse geocoder among some other neat "
+"features."
 msgstr ""
-"<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link> також "
-"використовує PostGIS і, як і Nominatim, працює з даними OpenStreetMap (OSM). "
-"Він постачається з завантажувачем для завантаження даних OSM і, подібно до "
-"Nominatim, здатний геокодувати не тільки США. Подібно до Nominatim, він "
-"працює як веб-сервіс і використовує Java 1.5, додатки Servlet, Solr. "
-"GisGraphy є кросплатформовим і має, серед інших корисних функцій, зворотний "
-"геокодер."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -49314,6 +49308,23 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link> also "
+#~ "utilizes PostGIS and like Nominatim works with OpenStreetMap (OSM) data. "
+#~ "It comes with a loader to load OSM data and similar to Nominatim is "
+#~ "capable of geocoding not just US. Much like Nominatim, it runs as a "
+#~ "webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-"
+#~ "platform and also has a reverse geocoder among some other neat features."
+#~ msgstr ""
+#~ "<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link> також "
+#~ "використовує PostGIS і, як і Nominatim, працює з даними OpenStreetMap "
+#~ "(OSM). Він постачається з завантажувачем для завантаження даних OSM і, "
+#~ "подібно до Nominatim, здатний геокодувати не тільки США. Подібно до "
+#~ "Nominatim, він працює як веб-сервіс і використовує Java 1.5, додатки "
+#~ "Servlet, Solr. GisGraphy є кросплатформовим і має, серед інших корисних "
+#~ "функцій, зворотний геокодер."
 
 #, no-c-format
 #~ msgid ""

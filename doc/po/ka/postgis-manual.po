@@ -1939,12 +1939,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link> also "
-"utilizes PostGIS and like Nominatim works with OpenStreetMap (OSM) data. It "
-"comes with a loader to load OSM data and similar to Nominatim is capable of "
-"geocoding not just US. Much like Nominatim, it runs as a webservice and "
-"relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-platform and also "
-"has a reverse geocoder among some other neat features."
+"<link xlink:href=\"https://www.gisgraphy.com/\">GIS Graphy</link> can "
+"utilize PostGIS and like Nominatim uses OpenStreetMap (OSM) data along with "
+"some other sources. It comes with a loader to load OSM data and similar to "
+"Nominatim is capable of geocoding not just US. Much like Nominatim, it runs "
+"as a webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is "
+"cross-platform and also has a reverse geocoder among some other neat "
+"features."
 msgstr ""
 
 #. Tag: refpurpose

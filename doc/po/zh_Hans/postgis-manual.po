@@ -2274,18 +2274,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link> also "
-"utilizes PostGIS and like Nominatim works with OpenStreetMap (OSM) data. It "
-"comes with a loader to load OSM data and similar to Nominatim is capable of "
-"geocoding not just US. Much like Nominatim, it runs as a webservice and "
-"relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-platform and also "
-"has a reverse geocoder among some other neat features."
+"<link xlink:href=\"https://www.gisgraphy.com/\">GIS Graphy</link> can "
+"utilize PostGIS and like Nominatim uses OpenStreetMap (OSM) data along with "
+"some other sources. It comes with a loader to load OSM data and similar to "
+"Nominatim is capable of geocoding not just US. Much like Nominatim, it runs "
+"as a webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is "
+"cross-platform and also has a reverse geocoder among some other neat "
+"features."
 msgstr ""
-"<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy </link>还利用 "
-"PostGIS，并且像 Nominatim 一样使用 OpenStreetMap (OSM) 数据。 它配备了一个加"
-"载器来加载 OSM 数据，并且与 Nominatim 类似，不仅能够进行美国地理编码。 与 "
-"Nominatim 非常相似，它作为 Web 服务运行并依赖于 Java 1.5、Servlet 应用程序、"
-"Solr。 GisGraphy 是跨平台的，并且还具有反向地理编码器以及其他一些简洁的功能。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -47394,6 +47390,22 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link> also "
+#~ "utilizes PostGIS and like Nominatim works with OpenStreetMap (OSM) data. "
+#~ "It comes with a loader to load OSM data and similar to Nominatim is "
+#~ "capable of geocoding not just US. Much like Nominatim, it runs as a "
+#~ "webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-"
+#~ "platform and also has a reverse geocoder among some other neat features."
+#~ msgstr ""
+#~ "<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy </link>还利用 "
+#~ "PostGIS，并且像 Nominatim 一样使用 OpenStreetMap (OSM) 数据。 它配备了一个"
+#~ "加载器来加载 OSM 数据，并且与 Nominatim 类似，不仅能够进行美国地理编码。 "
+#~ "与 Nominatim 非常相似，它作为 Web 服务运行并依赖于 Java 1.5、Servlet 应用"
+#~ "程序、Solr。 GisGraphy 是跨平台的，并且还具有反向地理编码器以及其他一些简"
+#~ "洁的功能。"
 
 #, no-c-format
 #~ msgid ""

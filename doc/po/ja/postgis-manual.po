@@ -12,8 +12,8 @@ msgstr ""
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
 "PO-Revision-Date: 2025-11-21 08:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -54,10 +54,10 @@ msgid ""
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
 "データベース外ラスターとすべてのラスタードライバーはデフォルトでは無効です。"
-"有効にするには、サーバー側で環境変数 <varname>POSTGIS_GDAL_ENABLED_DRIVERS</v"
-"arname>と<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> "
-"とを設定する必要があります。よりクロスプラットフォームにするなら、"
-"対応する<xref linkend=\"PostGIS_GUC\"/>を設定します。"
+"有効にするには、サーバー側で環境変数 <varname>POSTGIS_GDAL_ENABLED_DRIVERS</"
+"varname>と<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> とを設定する必要が"
+"あります。よりクロスプラットフォームにするなら、対応する<xref "
+"linkend=\"PostGIS_GUC\"/>を設定します。"
 
 #. Tag: para
 #, no-c-format
@@ -101,11 +101,11 @@ msgid ""
 "<replaceable>CLUSTER</replaceable>/environment</filename> where the "
 "placeholders refer to the PostgreSQL major version and cluster name."
 msgstr ""
-"環境変数はOSによって変化します。UbuntuやDebian上でapt-"
-"postgresqlを介してPostgreSQLをインストールした場合には、<filename>/etc/"
-"postgresql/<replaceable>MAJOR</replaceable>/<replaceable>CLUSTER</replaceable"
-">/environment</filename> (MAJROはメジャーバージョン、CLUSTERはクラスター名が"
-"入ります)を編集する方が良いです。"
+"環境変数はOSによって変化します。UbuntuやDebian上でapt-postgresqlを介して"
+"PostgreSQLをインストールした場合には、<filename>/etc/postgresql/"
+"<replaceable>MAJOR</replaceable>/<replaceable>CLUSTER</replaceable>/"
+"environment</filename> (MAJROはメジャーバージョン、CLUSTERはクラスター名が入"
+"ります)を編集する方が良いです。"
 
 #. Tag: para
 #, no-c-format
@@ -149,8 +149,9 @@ msgid ""
 "If you have compiled and installed the extensions/postgis modules, you can "
 "turn a database into a spatial one using the EXTENSION mechanism."
 msgstr ""
-"extensions/postgisモジュールをコンパイル、インストール済みの場合には、EXTENSI"
-"ON機構を使うことでデータベースを空間データベースに切り替えることができます。"
+"extensions/postgisモジュールをコンパイル、インストール済みの場合には、"
+"EXTENSION機構を使うことでデータベースを空間データベースに切り替えることができ"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -325,8 +326,8 @@ msgid ""
 "Use the <xref linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade "
 "to the latest version you have installed."
 msgstr ""
-"インストール済みのバージョンのうち最新バージョンにアップグレードするには<xref"
-" linkend=\"PostGIS_Extensions_Upgrade\"/> 関数を使います。"
+"インストール済みのバージョンのうち最新バージョンにアップグレードするには"
+"<xref linkend=\"PostGIS_Extensions_Upgrade\"/> 関数を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -338,10 +339,10 @@ msgid ""
 "extension."
 msgstr ""
 "PostGIS 2.5をまだ使っているデータベースをアップグレードするときには、 "
-"<command>ALTER EXTENSION</command>を<function>postgis_extensions_upgrade()</f"
-"unction>に先立って使います。 ラスターエクステンションが独立する前の<varname>p"
-"ostgis_raster</varname>オブジェクトを確実に主エクステンションに折り込むように"
-"するためです。"
+"<command>ALTER EXTENSION</command>を<function>postgis_extensions_upgrade()</"
+"function>に先立って使います。 ラスターエクステンションが独立する前の"
+"<varname>postgis_raster</varname>オブジェクトを確実に主エクステンションに折り"
+"込むようにするためです。"
 
 #. Tag: para
 #, no-c-format
@@ -425,9 +426,9 @@ msgid ""
 "extensions and migrate your data there."
 msgstr ""
 "エクステンションは多数のリリースのために対応したインストールメソッドです。ま"
-"だアパッケージ化されていないものをインストールしているのなら、"
-"エクステンションで作られたデータベース内で<link linkend=\"hard_upgrade\""
-">HARD UPGRADE</link>を実行してそこで保持データを移行させて下さい。"
+"だアパッケージ化されていないものをインストールしているのなら、エクステンショ"
+"ンで作られたデータベース内で<link linkend=\"hard_upgrade\">HARD UPGRADE</"
+"link>を実行してそこで保持データを移行させて下さい。"
 
 #. Tag: title
 #, no-c-format
@@ -684,9 +685,9 @@ msgid ""
 "<code>postgresql.conf</code> or <code>postgresql.auto.conf</code> by using "
 "the <code>ALTER SYSTEM</code> command."
 msgstr ""
-"<code>postgresql.conf</code>または<code>postgresql.auto."
-"conf</code>を触らなくても、 <code>ALTER "
-"SYSTEM</code>コマンドでサーバーレベルのコンフィギュレーションが可能です。"
+"<code>postgresql.conf</code>または<code>postgresql.auto.conf</code>を触らなく"
+"ても、 <code>ALTER SYSTEM</code>コマンドでサーバーレベルのコンフィギュレー"
+"ションが可能です。"
 
 #. Tag: para
 #, no-c-format
@@ -725,10 +726,10 @@ msgid ""
 "they are in an inherited hierarchy and avoids paying the planner penalty "
 "otherwise."
 msgstr ""
-"これは一般的にテーブルのパーティショニングに使われます。"
-"デフォルトの\"partition\"では、テーブルが継承階層の中にある場合にはプランナー"
-"に制約を考慮するテーブル解析だけを強制し、他の場合にはプランナーペナルティを"
-"払うのを避けるようにします。"
+"これは一般的にテーブルのパーティショニングに使われます。デフォルトの"
+"\"partition\"では、テーブルが継承階層の中にある場合にはプランナーに制約を考慮"
+"するテーブル解析だけを強制し、他の場合にはプランナーペナルティを払うのを避け"
+"るようにします。"
 
 #. Tag: link
 #, no-c-format
@@ -1258,9 +1259,9 @@ msgid ""
 msgstr ""
 "本節では、住所標準化が住所の正規化に使うPostgreSQLテーブルの書式を挙げます。"
 "これらのテーブルはここで参照している名前と同じである必要はありません。例また"
-"は独自ジオコーダーのために、国ごとに異なるlex (lexicon, 語彙)、gaz ("
-"gazetteer, 地名集)およびrulesテーブルを持つことができます。これらのテーブルの"
-"名前は、住所標準化関数に渡されます。"
+"は独自ジオコーダーのために、国ごとに異なるlex (lexicon, 語彙)、gaz "
+"(gazetteer, 地名集)およびrulesテーブルを持つことができます。これらのテーブル"
+"の名前は、住所標準化関数に渡されます。"
 
 #. Tag: para
 #, no-c-format
@@ -2061,8 +2062,9 @@ msgid ""
 "Using tables packaged with tiger geocoder. This example only works if you "
 "installed <varname>postgis_tiger_geocoder</varname>."
 msgstr ""
-"TIGERジオコーダーに同梱されているテーブルを使います。この例は<varname>postgis"
-"_tiger_geocoder</varname>をインストールしている場合のみ動作します。"
+"TIGERジオコーダーに同梱されているテーブルを使います。この例は"
+"<varname>postgis_tiger_geocoder</varname>をインストールしている場合のみ動作し"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -2117,9 +2119,9 @@ msgid ""
 "located in the <varname>extras/history_table</varname> directory of the "
 "PostGIS source tree."
 msgstr ""
-"<varname>history_table</varname>エクステンションはPL/"
-"pgSQLで書かれていて、PostGISソースツリーの<varname>extras/"
-"history_table</varname>ディレクトリ内にあります。"
+"<varname>history_table</varname>エクステンションはPL/pgSQLで書かれていて、"
+"PostGISソースツリーの<varname>extras/history_table</varname>ディレクトリ内に"
+"あります。"
 
 #. Tag: para
 #, no-c-format
@@ -2249,15 +2251,16 @@ msgid ""
 msgstr ""
 "米国統計局が公開している<link xlink:href=\"https://www2.census.gov/geo/tiger/"
 "\">TIGER (Topologically Integrated Geographic Encoding and Referencing "
-"system ) / Line and Master Address database "
-"export</link>と連動するように書かれたPL/pgSQLベースのジオコーダーです。"
+"system ) / Line and Master Address database export</link>と連動するように書か"
+"れたPL/pgSQLベースのジオコーダーです。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "There are four components to the geocoder: the data loader functions, the "
 "address normalizer, the address geocoder, and the reverse geocoder."
-msgstr "データローダ機能、住所正規化、住所ジオコーダーおよび逆ジオコーダー、の四つの"
+msgstr ""
+"データローダ機能、住所正規化、住所ジオコーダーおよび逆ジオコーダー、の四つの"
 "要素があります。"
 
 #. Tag: para
@@ -2280,9 +2283,9 @@ msgid ""
 "skeleton base tables from which all the TIGER-loaded tables inherit."
 msgstr ""
 "TIGER関連の関数や、道路型前置辞、道路型後置辞、州、データロード管理用の様々な"
-"制御テーブル、全てのロードされたテーブル継承するスケルトンベーステーブルとい"
-"った再利用可能なデータを収容するための<varname>tiger</varname>というスキーマ"
-"がスクリプトによって作成されます。"
+"制御テーブル、全てのロードされたテーブル継承するスケルトンベーステーブルと"
+"いった再利用可能なデータを収容するための<varname>tiger</varname>というスキー"
+"マがスクリプトによって作成されます。"
 
 #. Tag: para
 #, no-c-format
@@ -2296,14 +2299,14 @@ msgid ""
 "<varname>faces</varname>, <varname>edges</varname>, etc located in the "
 "<varname>tiger</varname> schema."
 msgstr ""
-"もう一つの<varname>tiger_data</varname>と呼ばれるスキーマも生成されていて、ロ"
-"ーダーが国勢調査サイトからダウンロードしてデータベースにロードする州の全ての"
-"国勢調査データを保存します。現在のモデルでは、州ごとのテーブル群のテーブル名"
-"の接頭辞として<varname>ma_addr</varname>、<varname>ma_edges</varname>などの州"
-"コードが付きます。また、その州のデータだけに強制する制約を付けています。<varn"
-"ame>addr</varname>、<varname>faces</varname>、<varname>edges</"
-"varname>などのテーブルから継承したテーブルは "
-"<varname>tiger</varname>スキーマ内に位置します。"
+"もう一つの<varname>tiger_data</varname>と呼ばれるスキーマも生成されていて、"
+"ローダーが国勢調査サイトからダウンロードしてデータベースにロードする州の全て"
+"の国勢調査データを保存します。現在のモデルでは、州ごとのテーブル群のテーブル"
+"名の接頭辞として<varname>ma_addr</varname>、<varname>ma_edges</varname>などの"
+"州コードが付きます。また、その州のデータだけに強制する制約を付けています。"
+"<varname>addr</varname>、<varname>faces</varname>、<varname>edges</varname>な"
+"どのテーブルから継承したテーブルは <varname>tiger</varname>スキーマ内に位置し"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -2341,13 +2344,13 @@ msgid ""
 "have data from tiger_2010 and want to replace with tiger_2015, refer to "
 "<xref linkend=\"upgrade_tiger_geocoder\"/>"
 msgstr ""
-"TIGERジオコーダー (tiger_2010)を使っている場合には、extras/"
-"tiger内にあるupgrade_geocoder.bat / .sh "
-"を使ってアップグレードすることができます。 <varname>tiger_2010</varname> と "
-"<varname>tiger_2011</varname> 以上での大きな変更点は、<varname>county</varnam"
-"e>テーブルと<varname>state</varname>テーブルが、州ごとに出現することがなくな"
-"っています。tiger_2010からのデータを持っていて、tiger_2015に置き換えたい場合"
-"には、 <xref linkend=\"upgrade_tiger_geocoder\"/>を参照して下さい。"
+"TIGERジオコーダー (tiger_2010)を使っている場合には、extras/tiger内にある"
+"upgrade_geocoder.bat / .sh を使ってアップグレードすることができます。 "
+"<varname>tiger_2010</varname> と <varname>tiger_2011</varname> 以上での大きな"
+"変更点は、<varname>county</varname>テーブルと<varname>state</varname>テーブル"
+"が、州ごとに出現することがなくなっています。tiger_2010からのデータを持ってい"
+"て、tiger_2015に置き換えたい場合には、 <xref "
+"linkend=\"upgrade_tiger_geocoder\"/>を参照して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -2355,9 +2358,9 @@ msgid ""
 "You can install the TIGER Geocoder with the PostgreSQL extension model. "
 "Refer to <xref linkend=\"install_tiger_geocoder_extension\"/> for details."
 msgstr ""
-"TIGERジオコーダーはPostgreSQLエクステンションモデルでインストールできます。"
-"詳細については<xref linkend=\"install_tiger_geocoder_extension\""
-"/>をご覧ください。"
+"TIGERジオコーダーはPostgreSQLエクステンションモデルでインストールできます。詳"
+"細については<xref linkend=\"install_tiger_geocoder_extension\"/>をご覧くださ"
+"い。"
 
 #. Tag: para
 #, no-c-format
@@ -2387,16 +2390,17 @@ msgid ""
 "number the worse the result."
 msgstr ""
 "このプロジェクトの目標は、任意の米国住所文字列を処理し、正規化したTIGER国勢調"
-"査データを使ってポイントジオメトリを生成し、与えられた住所の位置や、位置のも"
-"っともらしさを反映した評価値を算出する、十分に実用的なジオコーダーを構築する"
-"ことです。なお、評価値は高いほど悪い結果とします。"
+"査データを使ってポイントジオメトリを生成し、与えられた住所の位置や、位置の"
+"もっともらしさを反映した評価値を算出する、十分に実用的なジオコーダーを構築す"
+"ることです。なお、評価値は高いほど悪い結果とします。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The <varname>reverse_geocode</varname> function is useful for deriving the "
 "street address and cross streets of a GPS location."
-msgstr "<varname>reverse_geocode</varname>関数はGPS位置のストリート住所と交差点を得る"
+msgstr ""
+"<varname>reverse_geocode</varname>関数はGPS位置のストリート住所と交差点を得る"
 "のに使えます。"
 
 #. Tag: para
@@ -2443,8 +2447,8 @@ msgid ""
 "There are a couple other open source geocoders for PostGIS, that unlike the "
 "TIGER Geocoder have the advantage of multi-country geocoding support"
 msgstr ""
-"PostGIS用の二つのオープンソースジオコーダがあります。これらはTIGERジオコーダ"
-"ーと違い、他国のジオコーディングに対応している利点があります。"
+"PostGIS用の二つのオープンソースジオコーダがあります。これらはTIGERジオコー"
+"ダーと違い、他国のジオコーディングに対応している利点があります。"
 
 #. Tag: para
 #, no-c-format
@@ -2459,30 +2463,24 @@ msgid ""
 "implemented in the web interface."
 msgstr ""
 "<link xlink:href=\"http://wiki.openstreetmap.org/wiki/Nominatim\">Nominatim</"
-"link>は、OpenStreetMapの地名集データを使います。PostgreSQLとPostGISの両方でデ"
-"ータをロードするにはosm2pgsqlが必要です。Webサービスのインタフェースとして作"
-"られていて、Webサービスとして呼ばれる設計のように見えます。TIGERジオコーダと"
-"同じように、ジオコーダーと逆ジオコーダーの要素を持ちます。文書からでは、TIGER"
-"ジオコーダのような純粋なSQLインタフェースを持っているのか、多くの処理がWebイ"
-"ンタフェースに実装されているのかは明確ではありません。"
+"link>は、OpenStreetMapの地名集データを使います。PostgreSQLとPostGISの両方で"
+"データをロードするにはosm2pgsqlが必要です。Webサービスのインタフェースとして"
+"作られていて、Webサービスとして呼ばれる設計のように見えます。TIGERジオコーダ"
+"と同じように、ジオコーダーと逆ジオコーダーの要素を持ちます。文書からでは、"
+"TIGERジオコーダのような純粋なSQLインタフェースを持っているのか、多くの処理が"
+"Webインタフェースに実装されているのかは明確ではありません。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link> also "
-"utilizes PostGIS and like Nominatim works with OpenStreetMap (OSM) data. It "
-"comes with a loader to load OSM data and similar to Nominatim is capable of "
-"geocoding not just US. Much like Nominatim, it runs as a webservice and "
-"relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-platform and also "
-"has a reverse geocoder among some other neat features."
+"<link xlink:href=\"https://www.gisgraphy.com/\">GIS Graphy</link> can "
+"utilize PostGIS and like Nominatim uses OpenStreetMap (OSM) data along with "
+"some other sources. It comes with a loader to load OSM data and similar to "
+"Nominatim is capable of geocoding not just US. Much like Nominatim, it runs "
+"as a webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is "
+"cross-platform and also has a reverse geocoder among some other neat "
+"features."
 msgstr ""
-"<link xlink:href=\"http://www.gisgraphy.com/\">GIS "
-"Graphy</link>も、PostGISを使用したもので、NominatimのようにOpenStreetMap (OSM"
-")データを使用します。OSMデータのロードを行うローダとNominatimのように米国だけ"
-"でなくジオコーディングを行う能力があります。Nominatimとよく似ていて、Webサー"
-"ビスとして動作し、Java 1.5、サーブレットアプリケーション、Apache Solrに依存し"
-"ています。GisGraphyは、複数プラットフォームで動作し、他の機能の中には逆ジオコ"
-"ーダーがあります。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2514,10 +2512,10 @@ msgid ""
 "linkend=\"Install_Missing_Indexes\"/> to add just the indexes used by the "
 "geocoder."
 msgstr ""
-"PostgreSQLのクエリプランナを混乱させる可能性があり、不要なディスク容量を取る"
-"、インデックスの膨張を最小化するために使います。"
-"ジオコーダーで使われるインデックスを追加する関数<xref linkend="
-"\"Install_Missing_Indexes\"/>を併用します。"
+"PostgreSQLのクエリプランナを混乱させる可能性があり、不要なディスク容量を取"
+"る、インデックスの膨張を最小化するために使います。ジオコーダーで使われるイン"
+"デックスを追加する関数<xref linkend=\"Install_Missing_Indexes\"/>を併用しま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -2616,15 +2614,14 @@ msgid ""
 "to offset 10 meters from center-line off to side (L/R) of street address is "
 "located on."
 msgstr ""
-"文字列住所 (または正規化された住所)を引数に取り、NAD "
-"83経度緯度のポイントジオメトリ (geomout)、個々の<varname>normalized_address</"
-"varname> (addy)、評価値 (rating)からなる、可能性のある位置の集合を出力します"
-"。評価値が低いほど合致度が高くなります。TIGERデータ "
-"(エッジ、フェイス、住所)、PostgreSQLあいまい文字列合致 (soundex,levenshtein)"
-"を使い、TIGERデータのエッジに沿った住所の補間のためにPostGIS線補間関数を使用"
-"っています。評価値が高いほどジオコードの正確度が低くなります。ジオコードされ"
-"たポイントは、ストリート住所を中心線から左/右に移動しますが、デフォルトでは10"
-"メートルです。"
+"文字列住所 (または正規化された住所)を引数に取り、NAD 83経度緯度のポイントジオ"
+"メトリ (geomout)、個々の<varname>normalized_address</varname> (addy)、評価値 "
+"(rating)からなる、可能性のある位置の集合を出力します。評価値が低いほど合致度"
+"が高くなります。TIGERデータ (エッジ、フェイス、住所)、PostgreSQLあいまい文字"
+"列合致 (soundex,levenshtein)を使い、TIGERデータのエッジに沿った住所の補間のた"
+"めにPostGIS線補間関数を使用っています。評価値が高いほどジオコードの正確度が低"
+"くなります。ジオコードされたポイントは、ストリート住所を中心線から左/右に移動"
+"しますが、デフォルトでは10メートルです。"
 
 #. Tag: para
 #, no-c-format
@@ -2729,12 +2726,12 @@ msgstr ""
 "インタセクトする二つのストリート、州コード、市名、郵便番号を引数に取り、最初"
 "の交差点の可能性のある位置の集合を出力します。集合の要素は、NAD83経度緯度のポ"
 "イント、正規化された住所、評価値を持ちます。評価値が低いほど合致度が高くなり"
-"ます。結果は評価値の低い順にソートされます。最大結果数を渡すことができ、デフ"
-"ォルトは10です。<varname>normalized_address</varname> (addy)、NAD83経度緯度の"
-"ポイントとしてgeomout、評価値としてratingを返します。評価値が低いほど合致度が"
-"高くなります。結果は評価値の低い順にソートされます。TIGERデータ "
-"(エッジ、フェイス、住所)と、PostgreSQLあいまい文字列合致 (soundex, "
-"levenshtein)を使います。"
+"ます。結果は評価値の低い順にソートされます。最大結果数を渡すことができ、デ"
+"フォルトは10です。<varname>normalized_address</varname> (addy)、NAD83経度緯度"
+"のポイントとしてgeomout、評価値としてratingを返します。評価値が低いほど合致度"
+"が高くなります。結果は評価値の低い順にソートされます。TIGERデータ (エッジ、"
+"フェイス、住所)と、PostgreSQLあいまい文字列合致 (soundex, levenshtein)を使い"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -2742,8 +2739,8 @@ msgid ""
 "Even if zip is not passed in the geocoder can guess (took about 3500 ms on "
 "the windows 7 box), on the windows 2003 64-bit 741 ms"
 msgstr ""
-"郵便番号をジオコーダーに渡さない場合でも動作し、Windows 2003 "
-"64ビットで741ミリ秒でした(Windows 7機で3500ミリ秒)。"
+"郵便番号をジオコーダーに渡さない場合でも動作し、Windows 2003 64ビットで741ミ"
+"リ秒でした(Windows 7機で3500ミリ秒)。"
 
 #. Tag: para
 #, no-c-format
@@ -2841,7 +2838,8 @@ msgstr "&gt;"
 msgid ""
 "Finds all tables with key columns used in geocoder joins and filter "
 "conditions that are missing used indexes on those columns and will add them."
-msgstr "ジオコーダーで結合や検索条件に使われ、インデックスが付いていなキーカラムを持"
+msgstr ""
+"ジオコーダーで結合や検索条件に使われ、インデックスが付いていなキーカラムを持"
 "つ全てのテーブルを探し、インデックスを追加します。"
 
 #. Tag: para
@@ -2861,11 +2859,10 @@ msgstr ""
 "つ、<varname>tiger</varname>スキーマと<varname>tiger_data</varname>スキーマ内"
 "の全てのテーブルを探し、これらのテーブルにインデックスを追加するためのSQLデー"
 "タ定義言語を出力し、実行します。これは、クエリの動作速度を上げるのに必要であ"
-"るのにロード処理で失われたインデックスを追加するのを助ける関数です。"
-"インデックス追加スクリプトの生成と実行を行う<xref linkend="
-"\"Missing_Indexes_Generate_Script\""
-"/>の仲間です。この関数は<filename>update_geocode."
-"sql</filename>更新スクリプトの一部として呼ばれます。"
+"るのにロード処理で失われたインデックスを追加するのを助ける関数です。インデッ"
+"クス追加スクリプトの生成と実行を行う<xref "
+"linkend=\"Missing_Indexes_Generate_Script\"/>の仲間です。この関数は"
+"<filename>update_geocode.sql</filename>更新スクリプトの一部として呼ばれます。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2961,9 +2958,9 @@ msgid ""
 "scripts, rerun it on the states you have already processed to get these "
 "additional tables."
 msgstr ""
-"は、このロジックを含んでいますが、古いスクリプトでTIGERジオコーダーをインスト"
-"ールした場合には、これらの追加テーブルの取得処理が済んでいる州の上でLoader_Ge"
-"nerate_Scriptを実行します。"
+"は、このロジックを含んでいますが、古いスクリプトでTIGERジオコーダーをインス"
+"トールした場合には、これらの追加テーブルの取得処理が済んでいる州の上で"
+"Loader_Generate_Scriptを実行します。"
 
 #. Tag: para
 #, no-c-format
@@ -2990,9 +2987,9 @@ msgid ""
 msgstr ""
 "指定したプラットフォーム用の、指定した州のTIGERデータをダウンロードし、格納準"
 "備を行い、<varname>tiger_data</varname>スキーマに格納するシェルスクリプトを生"
-"成します。行ごとに州ごとのスクリプトが返ります。最新版ではTIGER "
-"2010のデータ構造変更に対応していて、国勢統計区、細分区グループ、細分区 "
-"(tabblocks)テーブルをダウンロードすることができます。"
+"成します。行ごとに州ごとのスクリプトが返ります。最新版ではTIGER 2010のデータ"
+"構造変更に対応していて、国勢統計区、細分区グループ、細分区 (tabblocks)テーブ"
+"ルをダウンロードすることができます。"
 
 #. Tag: para
 #, no-c-format
@@ -3027,8 +3024,8 @@ msgid ""
 "tract (tract), block groups (bg), and blocks (tabblocks) tables ."
 msgstr ""
 "Availability: 2.0.0 TIGER 2010構造のデータに対応しました。国勢統計区 "
-"(tract)、細分区グループ (\"block groups\", bg)、細分区 "
-"(tabblocks)テーブルをダウンロードします。"
+"(tract)、細分区グループ (\"block groups\", bg)、細分区 (tabblocks)テーブルを"
+"ダウンロードします。"
 
 #. Tag: para
 #, no-c-format
@@ -3134,17 +3131,18 @@ msgid ""
 "when enabled, zcta5 data is loaded as a single table called zcta5_all as "
 "part of the nation script load."
 msgstr ""
-"Enhanced: 2.4.1 5桁郵便番号集計地域 (zcta5)のロードが修正され、zcta5データは"
-"、有効な時には、国スクリプトロードの一部としてzcta5_allという単一テーブルとし"
-"てロードされるようになりました。"
+"Enhanced: 2.4.1 5桁郵便番号集計地域 (zcta5)のロードが修正され、zcta5データ"
+"は、有効な時には、国スクリプトロードの一部としてzcta5_allという単一テーブルと"
+"してロードされるようになりました。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If you want ZIP Code 5 tabulation area (zcta5) to be included in your nation "
 "script load, do the following:"
-msgstr "5桁郵便番号集計地域 "
-"(zcta5)を国スクリプトのロードで取り込む場合には次のようにします:"
+msgstr ""
+"5桁郵便番号集計地域 (zcta5)を国スクリプトのロードで取り込む場合には次のように"
+"します:"
 
 #. Tag: para
 #, no-c-format
@@ -3155,9 +3153,9 @@ msgid ""
 "linkend=\"Drop_Nation_Tables_Generate_Script\"/> before you run this script."
 msgstr ""
 "<varname>tiger_2010</varname>を実行して、それより新しいTIGERデータで州データ"
-"の再ロードを行うには、このスクリプトを実行する前に、最初に、<xref linkend="
-"\"Drop_Nation_Tables_Generate_Script\""
-"/>によって、テーブル削除スクリプトを生成、実行する必要があります。"
+"の再ロードを行うには、このスクリプトを実行する前に、最初に、<xref "
+"linkend=\"Drop_Nation_Tables_Generate_Script\"/>によって、テーブル削除スクリ"
+"プトを生成、実行する必要があります。"
 
 #. Tag: para
 #, no-c-format
@@ -3201,9 +3199,10 @@ msgstr ""
 "オコーダで結合に使われ、インデックスが付いていないキーカラムを持つ全てのテー"
 "ブルを検索し、インデックスを付けるSQLデータ定義言語を出力します。これは、クエ"
 "リの動作速度を上げるのに必要であるのにロード処理で失われたインデックスを追加"
-"するのを助ける関数です。ジオコーダーが改善されますが、使用される新しいインデ"
-"ックスを受け入れるために、この関数は更新されます。この関数の出力が無い場合が"
-"ありますが、これは、全てのテーブルにインデックスが付いていると考えられます。"
+"するのを助ける関数です。ジオコーダーが改善されますが、使用される新しいイン"
+"デックスを受け入れるために、この関数は更新されます。この関数の出力が無い場合"
+"がありますが、これは、全てのテーブルにインデックスが付いていると考えられま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -3221,8 +3220,8 @@ msgid ""
 msgstr ""
 "文字列で住所が与えられると、道路後置辞、前置辞、正規化された種別、番地、スト"
 "リート名等をフィールドに分けて持つ<varname>norm_addy</varname>複合型を返しま"
-"す。tiger_geocoderに同梱されているルックアップデータで動作します "
-"(TIGER国勢調査データ自体は不要です)。"
+"す。tiger_geocoderに同梱されているルックアップデータで動作します (TIGER国勢調"
+"査データ自体は不要です)。"
 
 #. Tag: para
 #, no-c-format
@@ -3249,10 +3248,10 @@ msgid ""
 "<varname>tiger</varname> schema."
 msgstr ""
 "tiger_geocoderによって前もってロードされ、<varname>tiger</varname>スキーマに"
-"格納される、様々な方角/州/後置辞のルックアップテーブルを使います。よって、TIG"
-"ER国勢調査データをダウンロードしたり、追加データをする必要はありません。<varn"
-"ame>tiger</varname>スキーマ内のルックアップテーブルに略語や別名の追加が必要に"
-"なることがあります。"
+"格納される、様々な方角/州/後置辞のルックアップテーブルを使います。よって、"
+"TIGER国勢調査データをダウンロードしたり、追加データをする必要はありません。"
+"<varname>tiger</varname>スキーマ内のルックアップテーブルに略語や別名の追加が"
+"必要になることがあります。"
 
 #. Tag: para
 #, no-c-format
@@ -3375,8 +3374,9 @@ msgstr ""
 msgid ""
 "<varname>zip4</varname> last 4 digits of a 9 digit ZIP Code. Availability: "
 "PostGIS 2.4.0."
-msgstr "<varname>zip4</varname> 9桁郵便番号の後半4桁です。Availability: PostGIS 2.4."
-"0。"
+msgstr ""
+"<varname>zip4</varname> 9桁郵便番号の後半4桁です。Availability: PostGIS "
+"2.4.0。"
 
 #. Tag: para
 #, no-c-format
@@ -3427,10 +3427,11 @@ msgid ""
 "alternative namings to the various lookup tables in the <varname>tiger</"
 "varname> schema."
 msgstr ""
-"この関数は、TIGERジオコーダーとともにロードされ、<varname>tiger</varname>スキ"
-"ーマに置かれる、種々のpagc_+ルックアップテーブルだけを使うので、TIGERデータや"
-"他のデータをダウンロードする必要はありません。略語や別名を<varname>tiger</var"
-"name>スキーマのルックアップテーブルに追加しなければならない場合もあります。"
+"この関数は、TIGERジオコーダーとともにロードされ、<varname>tiger</varname>ス"
+"キーマに置かれる、種々のpagc_+ルックアップテーブルだけを使うので、TIGERデータ"
+"や他のデータをダウンロードする必要はありません。略語や別名を<varname>tiger</"
+"varname>スキーマのルックアップテーブルに追加しなければならない場合もありま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -3513,8 +3514,8 @@ msgid ""
 "print representation of it. No other data is required aside from what is "
 "packaged with the geocoder."
 msgstr ""
-"<varname>norm_addy</varname>複合型オブジェクトを与えると、印刷表現を返します"
-"。TIGERジオコーダー同梱のデータ以外は不要です。"
+"<varname>norm_addy</varname>複合型オブジェクトを与えると、印刷表現を返しま"
+"す。TIGERジオコーダー同梱のデータ以外は不要です。"
 
 #. Tag: para
 #, no-c-format
@@ -3577,13 +3578,12 @@ msgid ""
 msgstr ""
 "実際の住所ではなく理論的な住所と書いているのには理由があります。TIGERデータは"
 "本当の住所ではなく、番地の範囲を持っています。そのため、理論的な住所は番地範"
-"囲に基づいて補間したものです。補間する場合には、たとえば、26 Court Sq."
-"が存在しないにもかかわらず、26 Court St. と 26 Court Sq.が返る、といったこと"
-"があります。これは、ポイントが二つのストリートの角にあるのが原因で、両方のス"
-"トリートに沿って補間を行うためです。住所はストリートに沿って等間隔になってい"
-"ると仮定しています。非常に多くの番地範囲を取ってしまっている自治体の建物があ"
-"り、他の建物がストリートの終わりにかたまっているため、ストリートの方向が悪い"
-"です。"
+"囲に基づいて補間したものです。補間する場合には、たとえば、26 Court Sq.が存在"
+"しないにもかかわらず、26 Court St. と 26 Court Sq.が返る、といったことがあり"
+"ます。これは、ポイントが二つのストリートの角にあるのが原因で、両方のストリー"
+"トに沿って補間を行うためです。住所はストリートに沿って等間隔になっていると仮"
+"定しています。非常に多くの番地範囲を取ってしまっている自治体の建物があり、他"
+"の建物がストリートの終わりにかたまっているため、ストリートの方向が悪いです。"
 
 #. Tag: para
 #, no-c-format
@@ -3712,10 +3712,10 @@ msgid ""
 "about the process."
 msgstr ""
 "TIGERデータの定義領域をPostGISトポロジにロードします。フェイス、ノード、エッ"
-"ジは対象トポロジの空間参照系に投影変換され、点は対象トポロジの許容精度にスナ"
-"ップされます。生成されたフェイス、ノード、エッジは、元のTIGERデータのフェイス"
-"、ノード、エッジの識別値を維持するので、将来、データセットをより簡単にTIGERデ"
-"ータに一致させることができます。処理の詳細に関する要約を返します。"
+"ジは対象トポロジの空間参照系に投影変換され、点は対象トポロジの許容精度にス"
+"ナップされます。生成されたフェイス、ノード、エッジは、元のTIGERデータのフェイ"
+"ス、ノード、エッジの識別値を維持するので、将来、データセットをより簡単にTIGER"
+"データに一致させることができます。処理の詳細に関する要約を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -3738,10 +3738,10 @@ msgid ""
 "not created a topology using the topology functions."
 msgstr ""
 "この関数はPostGISトポロジモジュールとTIGERデータに依存しています。詳細情報に"
-"ついては、<xref linkend=\"Topology\"/>と<xref linkend="
-"\"installation_configuration\"/>を参照して下さい。対象領域を含むデータを持っ"
-"ていない場合には、トポロジは作られません。トポロジ関数を使ってトポロジが生成"
-"されない場合も失敗します。"
+"ついては、<xref linkend=\"Topology\"/>と<xref "
+"linkend=\"installation_configuration\"/>を参照して下さい。対象領域を含むデー"
+"タを持っていない場合には、トポロジは作られません。トポロジ関数を使ってトポロ"
+"ジが生成されない場合も失敗します。"
 
 #. Tag: para
 #, no-c-format
@@ -3806,9 +3806,9 @@ msgid ""
 "with tolerance 0.25 feet and then load in Boston city tiger faces, edges, "
 "nodes."
 msgstr ""
-"マサチューセッツ州ボストンのトポロジをマサチューセッツ州フィート平面 "
-"(2249)、許容範囲0.25フィートで生成し、ボストンのTIGERデータのフェイス、エッジ"
-"、ノードをロードします。"
+"マサチューセッツ州ボストンのトポロジをマサチューセッツ州フィート平面 (2249)、"
+"許容範囲0.25フィートで生成し、ボストンのTIGERデータのフェイス、エッジ、ノード"
+"をロードします。"
 
 #. Tag: title
 #, no-c-format
@@ -3823,8 +3823,8 @@ msgid ""
 "faces, edges, nodes."
 msgstr ""
 "マサチューセッツ州サフォークのトポロジを、マサチューセッツ州メートル平面 "
-"(26986)、許容範囲0.25メートルで生成し、サフォークのTIGERデータのフェイス、エ"
-"ッジ、ノードをロードします。"
+"(26986)、許容範囲0.25メートルで生成し、サフォークのTIGERデータのフェイス、"
+"エッジ、ノードをロードします。"
 
 #. Tag: para
 #, no-c-format
@@ -3966,10 +3966,9 @@ msgid ""
 "without-topology configure option at build time as described in <xref "
 "linkend=\"postgis_installation\"/>"
 msgstr ""
-"トポロジー機能はデフォルトでビルドされます。<xref linkend="
-"\"postgis_installation\"/>で説明されている通り、"
-"ビルド時のコンフィギュアオプション --without-topology "
-"を指定することで、無効にできます。"
+"トポロジー機能はデフォルトでビルドされます。<xref "
+"linkend=\"postgis_installation\"/>で説明されている通り、ビルド時のコンフィ"
+"ギュアオプション --without-topology を指定することで、無効にできます。"
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -3991,14 +3990,14 @@ msgid ""
 "faces."
 msgstr ""
 "あらゆるトポロジーの中核的なプリミティブは<varname>edge_data</varname>、 "
-"<varname>node</varname>,、<varname>face</varname>テーブルに格納されます。"
-"これらのテーブルは<xref linkend=\"CreateTopology\"/>で生成されたスキーマ内に"
-"あります。<varname>edge_data</varname>の各タプルは有向エッジを表現しています"
-"。<varname>start_node</varname>から<varname>end_node</varname>への有向曲線と"
-"、その曲線の進行方向左側にあるフェイスの識別番号 "
-"(<varname>left_face</varname>)と右側のもの (<varname>right_face</varname>)と"
-"を併せて記録しています。このため、ジオメトリ線分が2個のフェイスに属するとき、"
-"同じ線分が2度 (方向ごとに1度ずつ)出現することがあります。"
+"<varname>node</varname>,、<varname>face</varname>テーブルに格納されます。これ"
+"らのテーブルは<xref linkend=\"CreateTopology\"/>で生成されたスキーマ内にあり"
+"ます。<varname>edge_data</varname>の各タプルは有向エッジを表現しています。"
+"<varname>start_node</varname>から<varname>end_node</varname>への有向曲線と、"
+"その曲線の進行方向左側にあるフェイスの識別番号 (<varname>left_face</varname>)"
+"と右側のもの (<varname>right_face</varname>)とを併せて記録しています。このた"
+"め、ジオメトリ線分が2個のフェイスに属するとき、同じ線分が2度 (方向ごとに1度ず"
+"つ)出現することがあります。"
 
 #. Tag: para
 #, no-c-format
@@ -4013,8 +4012,8 @@ msgstr ""
 "<varname>next_left_edge</varname>カラムと<varname>next_right_edge</varname>カ"
 "ラムはフェイスを辿る方法をエンコードしてこの方向情報を完全にしています。正負"
 "符号付整数を格納していて、絶対値は進行方向を向いた時の次のエッジを示し、正負"
-"符号で次のエッジが順方向化逆方向かを決定しています。正式には、"
-"次の規則があります (エッジを <varname>e</varname>とします):"
+"符号で次のエッジが順方向化逆方向かを決定しています。正式には、次の規則があり"
+"ます (エッジを <varname>e</varname>とします):"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -4027,10 +4026,10 @@ msgid ""
 "face remains on the walker’s left."
 msgstr ""
 "<varname>abs(next_left_edge)</varname>は<varname>e</varname>の左にあるフェイ"
-"スを辿る場合に次に到達するエッジの識別番号です。値が正数の場合には<varname>e<"
-"/varname>の終端ノードから次のエッジの格納されている通りの方向に進みます。負数"
-"の場合には次のエッジは逆向きにたどることになるので、共有するフェイスは辿って"
-"いる者から見たら左側にあります。"
+"スを辿る場合に次に到達するエッジの識別番号です。値が正数の場合には"
+"<varname>e</varname>の終端ノードから次のエッジの格納されている通りの方向に進"
+"みます。負数の場合には次のエッジは逆向きにたどることになるので、共有するフェ"
+"イスは辿っている者から見たら左側にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -4080,12 +4079,13 @@ msgstr ""
 "<xref linkend=\"GetRingEdges\"/>や<xref linkend=\"ValidateTopology\"/>といっ"
 "た関数によるフェイス境界の再構築や矛盾の診断に使われます。したがって評価時に"
 "「不正なnext_left_edge」と「不正なnext_right_edge」診断が報告されます。 "
-"<xref linkend=\"AddEdge\"/>のようなコンストラクターは<varname>next_*</varname"
-">属性を普通の自己参照で初期化します。<xref linkend=\"ST_AddEdgeModFace\"/"
-">と<xref linkend=\"ST_RemEdgeModFace\"/>を含む編集ルーチンは、エッジが挿入さ"
-"れるか削除されると同時にリンクを更新します。他の大量処理 (たとえば<xref "
-"linkend=\"TopologyPolygonize\"/>)は意図的にカラムに値を設定しないことがあり、"
-"文書ではふるまいに関する注意を明示的に出しています。"
+"<xref linkend=\"AddEdge\"/>のようなコンストラクターは<varname>next_*</"
+"varname>属性を普通の自己参照で初期化します。<xref "
+"linkend=\"ST_AddEdgeModFace\"/>と<xref linkend=\"ST_RemEdgeModFace\"/>を含む"
+"編集ルーチンは、エッジが挿入されるか削除されると同時にリンクを更新します。他"
+"の大量処理 (たとえば<xref linkend=\"TopologyPolygonize\"/>)は意図的にカラムに"
+"値を設定しないことがあり、文書ではふるまいに関する注意を明示的に出していま"
+"す。"
 
 #. Tag: title
 #, no-c-format
@@ -4577,8 +4577,9 @@ msgstr ""
 msgid ""
 "Fixes topogeometry corruption caused by upgrade to postgis_topology 3.6.0 "
 "and higher"
-msgstr "postgis_topologyを3.6."
-"0以上にアップグレードする際に発生するポジオメトリーの間違いを訂正します。"
+msgstr ""
+"postgis_topologyを3.6.0以上にアップグレードする際に発生するポジオメトリーの間"
+"違いを訂正します。"
 
 #. Tag: para
 #, no-c-format
@@ -5580,9 +5581,8 @@ msgid ""
 "identifiers forming it up (negative identifies mean the edge goes in the "
 "opposite direction of the input linestring)."
 msgstr ""
-"ラインストリングを既存のトポロジーに追加して、"
-"整列させた符号付エッジ識別番号を返す "
-"(負数は入力ラインストリングと逆方向であることを示します)。"
+"ラインストリングを既存のトポロジーに追加して、整列させた符号付エッジ識別番号"
+"を返す (負数は入力ラインストリングと逆方向であることを示します)。"
 
 #. Tag: para
 #, no-c-format
@@ -8774,11 +8774,10 @@ msgid ""
 "html</filename>"
 msgstr ""
 "<command>make cheatsheets</command>でHTMLのチートシートを生成します。早見表ま"
-"たは生徒への配布資料に適しています。チートシート生成にはxsltprocが必要です。d"
-"ocフォルダに<filename>topology_cheatsheet."
-"html</filename>、<filename>tiger_geocoder_cheatsheet."
-"html</filename>、<filename>raster_cheatsheet."
-"html</filename>、<filename>postgis_cheatsheet."
+"たは生徒への配布資料に適しています。チートシート生成にはxsltprocが必要です。"
+"docフォルダに<filename>topology_cheatsheet.html</filename>、"
+"<filename>tiger_geocoder_cheatsheet.html</filename>、"
+"<filename>raster_cheatsheet.html</filename>、<filename>postgis_cheatsheet."
 "html</filename>の4個のファイルが生成されます。"
 
 #. Tag: para
@@ -8801,8 +8800,9 @@ msgstr "PostGISエクステンションのビルドとデプロイ"
 msgid ""
 "The PostGIS extensions are built and installed automatically when PostgreSQL "
 "extension support is available."
-msgstr "PostGISエクステンションはPostgreSQLエクステンション機能が有効なら自動でビルド"
-"、インストールされます。"
+msgstr ""
+"PostGISエクステンションはPostgreSQLエクステンション機能が有効なら自動でビル"
+"ド、インストールされます。"
 
 #. Tag: para
 #, no-c-format
@@ -9096,9 +9096,9 @@ msgid ""
 "available in your PostgreSQL instance. The address_standardizer tests will "
 "also kick in if you built postgis with address_standardizer support:"
 msgstr ""
-"TIGERジオコーダーを使う場合には、使用するPostgreSQLインスタンス内にPostGISとf"
-"uzzystrmatchのエクステンションが必要です。PostGISをaddress_standardizer機能付"
-"きでビルドした場合は、address_standardizerのテストも行います。"
+"TIGERジオコーダーを使う場合には、使用するPostgreSQLインスタンス内にPostGISと"
+"fuzzystrmatchのエクステンションが必要です。PostGISをaddress_standardizer機能"
+"付きでビルドした場合は、address_standardizerのテストも行います。"
 
 #. Tag: para
 #, no-c-format
@@ -9200,11 +9200,11 @@ msgid ""
 "a building block for your own geocoder or use it to standardize your "
 "addresses for easier compare of addresses."
 msgstr ""
-"標準化エクステンションは、<xref linkend=\"Normalize_Address\"/>の後継で、Post"
-"GISに入っているTIGERジオコーダーエクステンションに使うことができます。"
-"この場合の使い方については<xref linkend=\"tiger_pagc_address_standardizing\"/"
-">を参照して下さい。また、ユーザ自身がつくるジオコーダーの要素として使用したり"
-"、住所の比較を簡単にするために住所を標準化するために使うことができます。"
+"標準化エクステンションは、<xref linkend=\"Normalize_Address\"/>の後継で、"
+"PostGISに入っているTIGERジオコーダーエクステンションに使うことができます。こ"
+"の場合の使い方については<xref linkend=\"tiger_pagc_address_standardizing\"/>"
+"を参照して下さい。また、ユーザ自身がつくるジオコーダーの要素として使用した"
+"り、住所の比較を簡単にするために住所を標準化するために使うことができます。"
 
 #. Tag: para
 #, no-c-format
@@ -9272,11 +9272,11 @@ msgstr ""
 "TIGERジオコーダーのような拡張機能はPostGISディストリビューションに同梱されて"
 "いません。TIGERジオコーダーエクステンションが無かったり、インストールしている"
 "ものより新しい版のものが欲しい場合には、<link xlink:href=\"http://postgis."
-"net/windows_downloads/\">Windows Unreleased "
-"Versions</link>でPostgreSQLの版に合ったパッケージにある<filename>share/"
-"extension/postgis_tiger_geocoder.*</filename>ファイルを使います。これらのパッ"
-"ケージはWindows用ですが、postgis_tige_geocoderエクステンションファイルは、SQL"
-"とPL/pgSQLだけですので、他のOSでも動作します。"
+"net/windows_downloads/\">Windows Unreleased Versions</link>でPostgreSQLの版に"
+"合ったパッケージにある<filename>share/extension/postgis_tiger_geocoder.*</"
+"filename>ファイルを使います。これらのパッケージはWindows用ですが、"
+"postgis_tige_geocoderエクステンションファイルは、SQLとPL/pgSQLだけですので、"
+"他のOSでも動作します。"
 
 #. Tag: title
 #, no-c-format
@@ -9416,11 +9416,12 @@ msgid ""
 "<varname>staging_fold</varname> in the <varname>tiger.loader_variables</"
 "varname> table."
 msgstr ""
-"サーバまたはローカル (サーバへのネットワーク接続が早い場合)のルートに<filenam"
-"e>gisdata</filename>というフォルダを作成します。このフォルダはTIGERファイルが"
-"ダウンロードされ、処理される場所です。サーバのルートにフォルダを作ると不幸に"
-"なる場合や、単に他のフォルダに移したい場合には、<varname>tiger.loader_variabl"
-"es</varname>テーブルの<varname>staging_fold</varname>フィールドを編集します。"
+"サーバまたはローカル (サーバへのネットワーク接続が早い場合)のルートに"
+"<filename>gisdata</filename>というフォルダを作成します。このフォルダはTIGER"
+"ファイルがダウンロードされ、処理される場所です。サーバのルートにフォルダを作"
+"ると不幸になる場合や、単に他のフォルダに移したい場合には、<varname>tiger."
+"loader_variables</varname>テーブルの<varname>staging_fold</varname>フィールド"
+"を編集します。"
 
 #. Tag: para
 #, no-c-format
@@ -9475,10 +9476,10 @@ msgid ""
 "population statistics. If you wish to load them as part of your state loads, "
 "run the following statement to enable them."
 msgstr ""
-"デフォルトでは<varname>bg</varname>, <varname>tract</varname>, <varname>tabbl"
-"ock20</varname>に対応するテーブルはロードされません。ジオコーダーはこれらのテ"
-"ーブルを使いませんが、一般に、人口統計に使います。州データのロードの一部とし"
-"てロードするには、次の手続きを実行して有効にします。"
+"デフォルトでは<varname>bg</varname>, <varname>tract</varname>, "
+"<varname>tabblock20</varname>に対応するテーブルはロードされません。ジオコー"
+"ダーはこれらのテーブルを使いませんが、一般に、人口統計に使います。州データの"
+"ロードの一部としてロードするには、次の手続きを実行して有効にします。"
 
 #. Tag: para
 #, no-c-format
@@ -9525,7 +9526,8 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Using Address Standardizer Extension with Tiger geocoder"
-msgstr "TIGERジオコーダーをPostGISデータベースで有効にする: エクステンションを使用"
+msgstr ""
+"TIGERジオコーダーをPostGISデータベースで有効にする: エクステンションを使用"
 
 #. Tag: para
 #, no-c-format
@@ -9562,11 +9564,11 @@ msgid ""
 "update to improve your standardizing experience for your own needs."
 msgstr ""
 "このエクステンションを<code>postgis_tiger_geocoder</code>をインストールしてい"
-"るデータベースにインストールすると、<xref linkend=\"Pagc_Normalize_Address\""
-"/>を、<xref linkend=\"Normalize_Address\"/>の代わりに使うことができます。この"
+"るデータベースにインストールすると、<xref linkend=\"Pagc_Normalize_Address\"/"
+">を、<xref linkend=\"Normalize_Address\"/>の代わりに使うことができます。この"
 "エクステンションはTIGERジオコーダーからは見えないので、国際的な住所といった他"
-"のデータソースでも使えます。TIGERジオコーダーエクステンションは、"
-"その版の<xref linkend=\"rulestab\"/> (<code>tiger.pagc_rules</code>), <xref "
+"のデータソースでも使えます。TIGERジオコーダーエクステンションは、その版の"
+"<xref linkend=\"rulestab\"/> (<code>tiger.pagc_rules</code>), <xref "
 "linkend=\"gaztab\"/> (<code>tiger.pagc_gaz</code>), <xref linkend=\"lextab\"/"
 "> (<code>tiger.pagc_lex</code>)を同梱しています。これらは、必要に応じて標準化"
 "の改善のために追加や更新ができます。"
@@ -9665,13 +9667,13 @@ msgid ""
 "time step that should be done for upgrading (from a prior year tiger census "
 "data) and for new installs."
 msgstr ""
-"tiger_2010からアップグレードする場合には、最初に<xref linkend="
-"\"Drop_Nation_Tables_Generate_Script\""
-"/>を生成、実行する必要があります。どの州データもロードする前に、<xref "
+"tiger_2010からアップグレードする場合には、最初に<xref "
+"linkend=\"Drop_Nation_Tables_Generate_Script\"/>を生成、実行する必要がありま"
+"す。どの州データもロードする前に、<xref "
 "linkend=\"Loader_Generate_Nation_Script\"/>で全国的なデータをロードする必要が"
 "あります。これによりローダスクリプトが生成されます。(以前の年のTIGER国勢調査"
-"データからの)アップグレードや新規インストールで行う<xref linkend="
-"\"Loader_Generate_Nation_Script\"/>の回数は1回です。"
+"データからの)アップグレードや新規インストールで行う<xref "
+"linkend=\"Loader_Generate_Nation_Script\"/>の回数は1回です。"
 
 #. Tag: para
 #, no-c-format
@@ -9704,8 +9706,8 @@ msgid ""
 "To test that things are working as they should, try to run a geocode on an "
 "address in your state using <xref linkend=\"Geocode\"/>"
 msgstr ""
-"行うべきことができたかをテストするために、<xref linkend=\"Geocode\""
-"/>を使用する州の中の住所についてジオコーダーを実行してみます。"
+"行うべきことができたかをテストするために、<xref linkend=\"Geocode\"/>を使用す"
+"る州の中の住所についてジオコーダーを実行してみます。"
 
 #. Tag: title
 #, no-c-format
@@ -9949,8 +9951,8 @@ msgid ""
 "TIGER geocoder support, management functions."
 msgstr ""
 "継続的インテグレーションとウェブサイトのメンテナンス、Windows版と試験版のビル"
-"ド、ドキュメンテーション、PostgreSQLとの調整、X3D対応、TIGERジオコーダー機能"
-"、関数管理。"
+"ド、ドキュメンテーション、PostgreSQLとの調整、X3D対応、TIGERジオコーダー機"
+"能、関数管理。"
 
 #. Tag: term
 #, no-c-format
@@ -17437,9 +17439,8 @@ msgid ""
 msgstr ""
 "PostGIS はすべての座標値を倍精度浮動小数点数として格納し、15桁の有効桁数を確"
 "実に表すことができます。ただし、PostGISでは、本質的に15桁未満のデータの管理が"
-"できます。例としては、"
-"小数点以下6桁の精度の地理座標として提供されるTIGERデータがあります "
-"(故に、必要な有効桁数は、経度は9桁、緯度は8桁です)。"
+"できます。例としては、小数点以下6桁の精度の地理座標として提供されるTIGERデー"
+"タがあります (故に、必要な有効桁数は、経度は9桁、緯度は8桁です)。"
 
 #. Tag: para
 #, no-c-format
@@ -50287,6 +50288,23 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link> also "
+#~ "utilizes PostGIS and like Nominatim works with OpenStreetMap (OSM) data. "
+#~ "It comes with a loader to load OSM data and similar to Nominatim is "
+#~ "capable of geocoding not just US. Much like Nominatim, it runs as a "
+#~ "webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-"
+#~ "platform and also has a reverse geocoder among some other neat features."
+#~ msgstr ""
+#~ "<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy</link>も、"
+#~ "PostGISを使用したもので、NominatimのようにOpenStreetMap (OSM)データを使用"
+#~ "します。OSMデータのロードを行うローダとNominatimのように米国だけでなくジオ"
+#~ "コーディングを行う能力があります。Nominatimとよく似ていて、Webサービスとし"
+#~ "て動作し、Java 1.5、サーブレットアプリケーション、Apache Solrに依存してい"
+#~ "ます。GisGraphyは、複数プラットフォームで動作し、他の機能の中には逆ジオ"
+#~ "コーダーがあります。"
 
 #, no-c-format
 #~ msgid ""
