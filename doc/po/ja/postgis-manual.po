@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-11-26 03:47+0000\n"
+"PO-Revision-Date: 2025-11-26 08:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -8775,6 +8775,12 @@ msgid ""
 "so no need to make comments if installing from the tar ball. Comments are "
 "also included as part of the CREATE EXTENSION install."
 msgstr ""
+"全ての関数は文書から生成されたコメントを持っています。後でコメントを手持ちの"
+"空間データベースにインストールしたい場合には、docbookが必要なコマンドを実行し"
+"ます。postgis_comments.sqlと他のパッケージのコメントファイルはtar."
+"gzディストリビューションのdocフォルダ内に同梱されています。この "
+"tarボールからインストールする場合にはコメントを生成する必要がありません。"
+"コメントはCREATE EXTENSIONインストールにも含まれています。"
 
 #. Tag: para
 #, no-c-format
@@ -10098,7 +10104,7 @@ msgstr "ジオメトリ処理、PostgreSQL GiST、共通部の誤り修正"
 #. Tag: term
 #, no-c-format
 msgid "<term>Laurențiu Nicola</term>"
-msgstr ""
+msgstr "<term>Laurențiu Nicola</term>"
 
 #. Tag: para
 #, no-c-format
