@@ -10,10 +10,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-11-21 08:47+0000\n"
+"PO-Revision-Date: 2025-11-26 03:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4050,7 +4050,7 @@ msgstr ""
 "存されます。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "A zero value indicates that the edge is dangling on the corresponding side "
 "(for example an isolated edge whose incident face is the universal face "
@@ -4058,6 +4058,11 @@ msgid ""
 "<varname>abs_next_right_edge</varname> columns exposed by the <varname>edge</"
 "varname> view are convenience projections of these absolute values."
 msgstr ""
+"ゼロは対応する側でエッジがぶら下がっていることを示します ("
+"たとえば接続するフェイスが "
+"<varname>0</varname>のユニバーサルフェイスになっている孤立エッジ)。 <varname>"
+"edge</varname>ビューにある<varname>abs_next_left_edge</varname>カラムと<varna"
+"me>abs_next_right_edge</varname>カラムは絶対値にして扱いすくしたものです。"
 
 #. Tag: para
 #, no-c-format
@@ -5596,19 +5601,23 @@ msgstr ""
 "ジ追加に加えて、新しいノードとフェイスは追加される場合があります。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The returned edge identifiers may be either existing edges or newly created "
 "edges as needed to fully represent the input line as closely as possible."
-msgstr ""
+msgstr "返されるエッジ識別番号は、入力ラインの表現を可能な限り完全に表現するのに必要"
+"となるので、既存エッジか新規生成されたエッジかになります。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The number of newly created edges (either covering space previously "
 "uncovered or resulting from split of existing edges) may be limited by the "
 "<varname>max_edges</varname> parameter."
 msgstr ""
+"新規生成されたエッジの数 "
+"(覆っていなかった空間を覆うエッジか、既存エッジの分割から得られた結果)は "
+"<varname>max_edges</varname>パラメータで制限されることがあります。"
 
 #. Tag: para
 #, no-c-format
@@ -5629,7 +5638,7 @@ msgstr "Enhanced: 3.2.0 符号付き識別子を返す機能が追加されま�
 msgid ""
 "Enhanced: 3.7.0 added support for limiting the number of new edges created "
 "in the topology."
-msgstr ""
+msgstr "Enhanced: 3.7.0 トポロジー内で生成されるエッジ数の制限機能の追加。"
 
 #. Tag: para
 #, no-c-format
@@ -7227,6 +7236,9 @@ msgid ""
 "geometry to existing primitives. The special value -1 (default) means use "
 "the topology precision as tolerance."
 msgstr ""
+"<varname>tolerance</varname>が与えられた場合には、入力ジオメトリを既存のプリ"
+"ミティブにスナップします。特別な値である -1 "
+"(デフォルト)ではトポロジーの精度を許容値として使うことになります。"
 
 #. Tag: para
 #, no-c-format
@@ -7263,6 +7275,8 @@ msgid ""
 "Changed: 3.7.0 changes meaning of tolerance 0 to really mean 0 and -1 (new "
 "default) to request using the topology precision."
 msgstr ""
+"Changed: 3.7.0 許容値 0を実際の 0として扱い、-1 "
+"(新デフォルト値)をそのトポロジーの精度を使うよう求めるように変更されました。"
 
 #. Tag: para
 #, no-c-format
