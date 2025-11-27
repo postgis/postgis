@@ -59,112 +59,71 @@ steps:
     commands:
       - ./autogen.sh
 
-  build-pg13:
+  build-pg14:
     image: *test-image
     depends_on: autogen
     environment:
-      PGVER: 13
+      PGVER: 14
     commands:
       - <<: *steps-env
       - <<: *steps-pg-build
 
-  build-pg15:
+  build-pg18:
     image: *test-image
     depends_on: autogen
     environment:
-      PGVER: 15
+       PGVER: 18
     commands:
       - <<: *steps-env
       - <<: *steps-pg-build
 
-  build-pg17:
+  check-pg14:
     image: *test-image
-    depends_on: autogen
+    depends_on: build-pg14
     environment:
-       PGVER: 17
-    commands:
-      - <<: *steps-env
-      - <<: *steps-pg-build
-
-  check-pg13:
-    image: *test-image
-    depends_on: build-pg13
-    environment:
-      PGVER: 13
+      PGVER: 14
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
       - <<: *steps-pg-test-preinstall
 
-  check-pg15:
+  check-pg18:
     image: *test-image
-    depends_on: build-pg15
+    depends_on: build-pg18
     environment:
-      PGVER: 15
+       PGVER: 18
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
       - <<: *steps-pg-test-preinstall
 
-  check-pg17:
+  installcheck-pg14:
     image: *test-image
-    depends_on: build-pg17
+    depends_on: build-pg14
     environment:
-       PGVER: 17
-    commands:
-      - <<: *steps-env
-      - <<: *steps-start-postgresql
-      - <<: *steps-pg-test-preinstall
-
-  installcheck-pg13:
-    image: *test-image
-    depends_on: build-pg13
-    environment:
-      PGVER: 13
+      PGVER: 14
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
       - <<: *steps-pg-install
       - <<: *steps-pg-test-install
 
-  installcheck-pg15:
+  installcheck-pg18:
     image: *test-image
-    depends_on: build-pg15
+    depends_on: build-pg18
     environment:
-      PGVER: 15
+      PGVER: 18
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
       - <<: *steps-pg-install
       - <<: *steps-pg-test-install
 
-  installcheck-pg17:
+  upgradecheck-pg14:
     image: *test-image
-    depends_on: build-pg17
+    depends_on: installcheck-pg14
     environment:
-      PGVER: 17
-    commands:
-      - <<: *steps-env
-      - <<: *steps-start-postgresql
-      - <<: *steps-pg-install
-      - <<: *steps-pg-test-install
-
-  upgradecheck-pg13:
-    image: *test-image
-    depends_on: installcheck-pg13
-    environment:
-      PGVER: 13
-    commands:
-      - <<: *steps-env
-      - <<: *steps-start-postgresql
-      - <<: *steps-pg-install
-      - <<: *steps-pg-test-all-upgrades
-
-  upgradecheck-pg17:
-    image: *test-image
-    depends_on: installcheck-pg17
-    environment:
-      PGVER: 17
+      PGVER: 14
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
