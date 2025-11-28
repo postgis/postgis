@@ -309,5 +309,5 @@ check-spell:
 ifneq (@CODESPELL@,)
 	cd $(top_srcdir) && @CODESPELL@
 else
-	@echo "SKIP: codespell not installed, cannot check spell"
+	@echo "SKIP: spell checking disabled"
 endif
