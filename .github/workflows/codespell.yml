@@ -1,0 +1,29 @@
+name: Codespell Check
+
+on:
+  push:
+    branches-ignore:
+      - 'main'
+  pull_request: ~
+
+jobs:
+  linux:
+
+    runs-on: ubuntu-latest
+
+    name: "CI Codespell"
+
+
+    steps:
+
+    - name: 'Check Out'
+      uses: actions/checkout@v4
+
+    - name: 'Install codespell'
+      run: |
+        sudo pip install codespell
+
+    - name: 'Build & Test'
+      run: |
+        codespell --version
+        codespell -I ".codespell.ignore"
