@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-11-28 01:47+0000\n"
+"PO-Revision-Date: 2025-11-28 03:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -27672,7 +27672,7 @@ msgstr "インタセクト位置で方向数 &gt; 2 となるラインはマー�
 #. Tag: title
 #, no-c-format
 msgid "Non-Touching Lines"
-msgstr ""
+msgstr "接触していないライン"
 
 #. Tag: para
 #, no-c-format
@@ -27686,7 +27686,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Directed Parameter"
-msgstr ""
+msgstr "directedパラメーター"
 
 #. Tag: para
 #, no-c-format
@@ -27696,7 +27696,7 @@ msgstr "directed = TRUEの場合には、対応方向のラインはマージさ
 #. Tag: title
 #, no-c-format
 msgid "Z-dimension Handling"
-msgstr ""
+msgstr "Z値を取り扱う"
 
 #. Tag: para
 #, no-c-format
@@ -30909,7 +30909,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Non-georeferenced rasters and geometries use SRID 0."
-msgstr ""
+msgstr "地理参照を施していないラスターとジオメトリーのSRIDは0です。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36327,7 +36327,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Complete example of tiles of a coverage."
-msgstr ""
+msgstr "カバレッジのタイルの完全な例。"
 
 #. Tag: para
 #, no-c-format
@@ -36905,7 +36905,8 @@ msgstr ""
 msgid ""
 "Changed 3.7.0, the polygonization honours PostgreSQL interrupts so "
 "cancellations and statement timeouts halt processing promptly."
-msgstr ""
+msgstr "Changed 3.7.0, PostgreSQLの処理中断を尊重して、キャンセルや手続時間切れによる"
+"処理の停止を即座に行うようになりました。"
 
 #. Tag: para
 #, no-c-format
