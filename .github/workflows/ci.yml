@@ -35,6 +35,8 @@ jobs:
         - { tag: latest, mode: garden }
         - { tag: pg13-geos38-gdal31-proj71, mode: tests }
         - { tag: pg12-geos38-gdal30-proj611, mode: tests }
+        - { tag: latest, mode: usan_clang }
+        - { tag: latest, mode: asan_clang }
 
     runs-on: ubuntu-latest
     steps:
