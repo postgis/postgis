@@ -32,6 +32,8 @@ PostGIS 3.6.5
   ring-orientation precision regressions (Darafei Praliaskouski)
 - GH-1146, Reset interrupt callbacks when PostgreSQL clears
   cancellation state (Darafei Praliaskouski)
+- #5948, [topology] Prevent MakeTopologyPrecise from erasing edges when
+          grid size exceeds their extent (Darafei Praliaskouski)
 
 
 PostGIS 3.6.4

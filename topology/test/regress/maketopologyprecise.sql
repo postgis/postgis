@@ -11,6 +11,12 @@ SELECT 'prec5', 'e', edge_id, ST_AsEWKT(geom) FROM topo.edge ORDER BY edge_id;
 
 SET client_min_messages TO WARNING;
 
+-- A tiny topology exercises the guard against collapsing edges into EMPTY.
+SELECT NULL FROM topology.CreateTopology('tiny');
+SELECT NULL FROM topology.TopoGeo_addLineString('tiny', 'LINESTRING(0 0, 1 0)');
+SELECT topology.MakeTopologyPrecise('tiny', gridSize => 5);
+SELECT NULL FROM topology.DropTopology('tiny');
+
 -- TODO: test bbox limited made-precise topology
 
 -- Cleanup
