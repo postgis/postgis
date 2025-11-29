@@ -7,4 +7,5 @@ steps:
     image: repo.osgeo.org/postgis/build-test:debian13
     pull: true
     commands:
+      - codespell --version
       - codespell
