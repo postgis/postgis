@@ -1121,6 +1121,13 @@ parameter, optionally limiting the operation to the objects
 intersecting the area specified by the <varname>bbox</varname> parameter.
                 </para>
 
+                <para>
+Using a <varname>gridSize</varname> larger than the smallest edge extent
+raises an exception rather than collapsing the edge into an empty
+geometry. This safeguards adjacent topological relationships by
+preventing precision snapping from removing primitives altogether.
+                </para>
+
 <note>
 <para>
 Snapping could make the topology invalid, so it is recommended to

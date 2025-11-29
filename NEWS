@@ -25,6 +25,8 @@ xxxx/xx/xx
 
 * Bug Fixes *
 
+ - #5948, [topology] Prevent MakeTopologyPrecise from erasing edges when
+          grid size exceeds their extent (Darafei Praliaskouski)
  - #5959, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
  - #4828, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)
  - #5645, Docs: keep code operators ("=>") intact in translated manuals
