@@ -4,7 +4,7 @@ when:
   event: [push, pull_request, tag]
 steps:
   build:
-    image: repo.osgeo.org/postgis/build-test:universal
+    image: repo.osgeo.org/postgis/build-test:debian13
     pull: true
     commands:
       - sh ci/dronie/postgis_tools.sh

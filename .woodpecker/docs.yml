@@ -3,7 +3,7 @@ labels:
 when:
   event: [push, pull_request, tag]
 variables:
-  - &test_image 'repo.osgeo.org/postgis/build-test:universal'
+  - &test_image 'repo.osgeo.org/postgis/build-test:debian13'
   - common_doc_paths: &common_doc_paths
       # related config files
       - ".woodpecker/docs.yml"

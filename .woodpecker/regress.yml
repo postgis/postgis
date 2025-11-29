@@ -3,7 +3,7 @@ labels:
 when:
   event: [push, pull_request, tag]
 variables:
-  test-image: &test-image repo.osgeo.org/postgis/build-test:universal
+  test-image: &test-image repo.osgeo.org/postgis/build-test:debian13
   steps-env: &steps-env
     - export PATH=/usr/lib/postgresql/$${PGVER}/bin:$${PATH}
     - export PGPORT=$$(grep ^port /etc/postgresql/$${PGVER}/main/postgresql.conf | awk '{print $$3}')
@@ -23,8 +23,10 @@ variables:
     - cd "$${BUILDDIR}"
     - $${SRCDIR}/configure
       --with-library-minor-version
+      --without-code-spell
       --enable-lto
       --without-interrupt-tests
+      --disable-spellcheck-tests
       CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror"
     - make -j
   steps-pg-test-preinstall: &steps-pg-test-preinstall
