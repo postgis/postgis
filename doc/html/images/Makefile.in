@@ -301,12 +301,9 @@ generator: $(OBJS) ../../../liblwgeom/.libs/liblwgeom.a
 clean:
 	rm -f $(OBJS)
 	rm -f generator
-	rm -rf generator-temp-*
 
 distclean: clean
 	rm -f Makefile
 
 images-clean:
 	rm -f $(ALL_IMAGES)
-
-.NOTPARALLEL:

@@ -85,7 +85,9 @@ To generate the html files and the comments:
  * xmllint - http://xmlsoft.org
 
 To generate the images:
- * ImageMagick - http://www.imagemagick.org/
+ * GraphicsMagick - http://www.graphicsmagick.org/ (preferred)
+ * ImageMagick - https://imagemagick.org/script/download.php ("convert" or
+   "magick convert" binaries)
 
 To generate the PDFs:
  * dblatex - http://dblatex.sourceforge.net
@@ -105,8 +107,23 @@ To generate the localized PDFs:
 How to
 ------
 
-To generate images used in the documentation, follow these instructions on the
-PostGIS wiki: http://trac.osgeo.org/postgis/wiki/DevWikiDocNewFeature
+Manual images for the reference documentation live in ``doc/html/images``.
+Each ``.wkt`` file stores one drawing, optionally split into named layers by
+prefixing a line with ``StyleName;WKT``. The generator associates each layer
+with ``styles.conf`` and streams the resulting GraphicsMagick command without
+ever writing intermediate files, so building all figures in parallel is safe.
+
+To regenerate the helper binary and PNG artwork:
+
+1. ``make -C doc/html/images generator``
+2. ``make -C doc/html/images`` (use ``-j`` for parallel builds)
+
+Invoke ``doc/html/images/generator`` directly to spot-check new artwork. The
+``-v`` flag prints the exact GraphicsMagick or ImageMagick command, ``-s``
+overrides the canvas size, and passing a second filename overrides the default
+``.png`` output. Set ``POSTGIS_DOC_CONVERTER`` to the GraphicsMagick/ImageMagick
+binary if autodetection cannot find ``gm``, ``magick``, or ``convert`` in
+``PATH``.
 
 To run garden tests against functions, follow these instructions on the PostGIS
 dev wiki: http://trac.osgeo.org/postgis/wiki/DevWikiGardenTest

@@ -3,6 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
+ * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
  * Copyright (C) 2022-2023 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2022 Martin Davis
  * Copyright (C) 2008 Kevin Neufeld
@@ -17,10 +18,11 @@
  * fill color, etc).
  * The styles are specified in the adjacent styles.conf file.
  *
- * In order to generate a png file, ImageMagicK must be installed in the
- * user's path as system calls are invoked to "convert".  In this manner,
- * WKT files are converted into SVG syntax and rasterized as png.  (PostGIS's
- * internal SVG methods could not be used dues to syntax issues with ImageMagick)
+ * In order to generate a png file, GraphicsMagick or ImageMagick must be
+ * installed in the user's path as system calls are invoked to "gm convert",
+ * "magick convert", or the classic "convert" binary. In this manner, WKT
+ * files are converted into SVG syntax and rasterized as png using their
+ * command-line interfaces.
  *
  * The goal of this application is to dynamically generate all the spatial
  * pictures used in PostGIS's documentation pages.
@@ -33,7 +35,7 @@
  * Usage:
  *  generator [-v] [-s <width>x<height>] <source_wktfile> [<output_pngfile>]
  *
- * -v - show generated Imagemagick commands
+ * -v - show generated GraphicsMagick commands
  * -s - output dimension, if omitted defaults to 200x200
  *
  * If <output_pngfile> is omitted the output image PNG file has the
@@ -44,459 +46,783 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h> /* for rmdir */
 #include <ctype.h>
-#include <sys/wait.h> /* for WEXITSTATUS */
+#include <math.h>
 #include <stdbool.h>
-#include <sys/types.h>
-#include <dirent.h>
+#include <sys/wait.h> /* for WEXITSTATUS */
+#ifndef _WIN32
+#include <unistd.h>
+#else
+#include <io.h>
+#ifndef X_OK
+#define X_OK 0
+#endif
+#define access _access
+#endif
 
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
+#include "stringbuffer.h"
 #include "styles.h"
 
-#define SHOW_DIGS_DOUBLE 15
-#define MAX_DOUBLE_PRECISION 15
-#define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 2) /* +2 for dot and sign */
+typedef struct generator_options {
+	bool verbose;
+	const char *image_size;
+} generator_options;
 
-bool optionVerbose = false;
+/**
+ * Emit the command-line synopsis expected by documentation maintainers.
+ *
+ * The helper keeps the main routine compact and ensures both -h and --help
+ * share the exact same prose, which simplifies future updates to the option
+ * set.
+ */
+static void
+print_usage(FILE *stream, const char *progname)
+{
+	fprintf(stream,
+		"Usage: %s [-v] [-s <width>x<height>] <source_wktfile> [<output_pngfile>]\n"
+		"\n"
+		"Options:\n"
+		"  -v             Emit the assembled GraphicsMagick/ImageMagick command.\n"
+		"  -s <WxH>       Override the output canvas size (default: 200x200).\n"
+		"  -h, --help     Display this help text and exit.\n"
+		"\n"
+		"If <output_pngfile> is omitted the generator derives it from the source\n"
+		"WKT filename.\n",
+		progname);
+}
 
-// Some global styling variables
-const char *imageSize = "200x200";
-
-char tempdir_template[] = "generator-XXXXXX";
-char *tmpdir = NULL;
-
-typedef struct draw_context_t {
-	LAYERSTYLE *style;
-	const char *tmpdir;
-	int drawNum; /* number of draw commands */
-} GEOMETRY_DRAW_CONTEXT;
+typedef struct generator_job {
+	generator_options options;
+	const char *converter_cli;
+	LAYERSTYLE *styles;
+	stringbuffer_t command;
+} generator_job;
 
 static void
-initializeGeometryDrawContext(GEOMETRY_DRAW_CONTEXT *ctx) {
-	ctx->style = NULL;
-	ctx->tmpdir = NULL;
-	ctx->drawNum = 0;
+generator_job_init(generator_job *job, const generator_options *options)
+{
+	job->options = *options;
+	job->converter_cli = NULL;
+	job->styles = NULL;
+	stringbuffer_init(&job->command);
 }
 
 static void
-checked_system(const char* cmd)
+generator_job_reset(generator_job *job)
 {
-  int ret = system(cmd);
-	if ( WEXITSTATUS(ret) != 0 ) {
-		fprintf(stderr, "Failure return code (%d) from command: %s", WEXITSTATUS(ret), cmd);
+	if (job->styles)
+	{
+		freeStyles(&job->styles);
+		job->styles = NULL;
+	}
+
+	stringbuffer_release(&job->command);
+}
+
+typedef struct draw_context_t {
+	LAYERSTYLE *style;
+} GEOMETRY_DRAW_CONTEXT;
+
+static GEOMETRY_DRAW_CONTEXT
+geometry_draw_context_init(void)
+{
+	GEOMETRY_DRAW_CONTEXT ctx;
+	ctx.style = NULL;
+	return ctx;
+}
+
+/**
+ * Execute an external command and abort on failure.
+ *
+ * Several raster utilities also rely on libc's \c system() to orchestrate
+ * external programs, so keeping this helper self-contained makes it trivial to
+ * promote into a shared header if we ever need the same GraphicsMagick
+ * pipeline while testing rasters.
+ */
+static void
+checked_system(const char *cmd)
+{
+	int ret = system(cmd);
+
+	if (ret == -1)
+	{
+		perror("system");
+		fprintf(stderr, "Unable to execute command: %s\n", cmd);
+		exit(EXIT_FAILURE);
+	}
+
+	if (!WIFEXITED(ret) || WEXITSTATUS(ret) != 0)
+	{
+		fprintf(stderr, "Failure return code (%d) from command: %s\n", WEXITSTATUS(ret), cmd);
 		exit(EXIT_FAILURE);
 	}
 }
 
-static void
-cleanupTempDir(const char *dir)
+/*
+ * Locate executables in PATH using liblwgeom's stringbuffer helpers so the
+ * probing logic can be promoted to the raster tooling if it ever needs the
+ * same GraphicsMagick/ImageMagick detection.
+ */
+static bool
+command_exists(const char *cmd)
 {
-	struct dirent *p;
-	DIR *d = opendir(dir);
-	char *buf;
-	size_t maxlen;
+	const char *path_env;
+	const char *cursor;
 
-	if ( NULL == d ) {
-		perror( dir );
-		exit(EXIT_FAILURE); /* or be tolerant ? */
+	if (cmd == NULL || *cmd == '\0')
+		return false;
+
+#ifdef _WIN32
+	if (strchr(cmd, ':') || strchr(cmd, '\\'))
+	{
+		return access(cmd, X_OK) == 0;
+	}
+#else
+	if (strchr(cmd, '/'))
+	{
+		return access(cmd, X_OK) == 0;
+	}
+#endif
+
+	path_env = getenv("PATH");
+	if (!path_env || !*path_env)
+		return false;
+
+	cursor = path_env;
+	while (*cursor)
+	{
+		const char *sep;
+		size_t dir_len;
+		stringbuffer_t candidate;
+
+		sep = strchr(cursor,
+#ifdef _WIN32
+			     ';'
+#else
+			     ':'
+#endif
+		);
+		dir_len = sep ? (size_t)(sep - cursor) : strlen(cursor);
+
+		stringbuffer_init(&candidate);
+		if (dir_len == 0)
+		{
+			stringbuffer_append(&candidate, ".");
+		}
+		else
+		{
+			stringbuffer_append_len(&candidate, cursor, dir_len);
+		}
+
+		if (stringbuffer_getlength(&candidate) > 0)
+		{
+			char last = stringbuffer_lastchar(&candidate);
+#ifdef _WIN32
+			if (last != '/' && last != '\\')
+				stringbuffer_append_char(&candidate, '\\');
+#else
+			if (last != '/')
+				stringbuffer_append_char(&candidate, '/');
+#endif
+		}
+
+		stringbuffer_append(&candidate, cmd);
+
+		if (access(stringbuffer_getstring(&candidate), X_OK) == 0)
+		{
+			stringbuffer_release(&candidate);
+			return true;
+		}
+
+#ifdef _WIN32
+		stringbuffer_append(&candidate, ".exe");
+		if (access(stringbuffer_getstring(&candidate), X_OK) == 0)
+		{
+			stringbuffer_release(&candidate);
+			return true;
+		}
+#endif
+
+		stringbuffer_release(&candidate);
+
+		if (!sep)
+			break;
+		cursor = sep + 1;
 	}
 
-	maxlen = strlen(dir) + 64;
-	buf = malloc(maxlen);
+	return false;
+}
 
-	while ( (p=readdir(d)) ) {
-		if ( strcmp(p->d_name, ".") == 0 ) continue;
-		if ( strcmp(p->d_name, ".." ) == 0) continue;
-		snprintf(buf, maxlen-1, "%s/%s", dir, p->d_name);
-		remove(buf);
+/*
+ * Prefer GraphicsMagick but gracefully fall back to ImageMagick 7 ("magick")
+ * or the legacy "convert" binary so older documentation builds keep working.
+ */
+static const char *
+select_converter_cli(void)
+{
+	const char *override = getenv("POSTGIS_DOC_CONVERTER");
+	if (override && *override)
+		return override;
+
+	if (command_exists("gm"))
+		return "gm convert";
+
+	if (command_exists("magick"))
+		return "magick convert";
+
+	if (command_exists("convert"))
+		return "convert";
+
+	return NULL;
+}
+
+static char *
+derive_styles_path(const char *source_path)
+{
+	const char *styles_basename = "styles.conf";
+	const char *slash = strrchr(source_path, '/');
+	char *resolved;
+
+	if (!slash)
+		return lwstrdup(styles_basename);
+
+	{
+		size_t dir_len = (size_t)(slash - source_path);
+		size_t basename_len = strlen(styles_basename);
+		size_t total = dir_len + 1 + basename_len + 1;
+
+		resolved = lwalloc(total);
+		if (!resolved)
+			return NULL;
+
+		memcpy(resolved, source_path, dir_len);
+		resolved[dir_len] = '/';
+		memcpy(resolved + dir_len + 1, styles_basename, basename_len + 1);
 	}
 
-	closedir(d);
-	rmdir(dir);
+	return resolved;
+}
+
+static char *
+derive_output_path(const char *source_path, const char *override_path)
+{
+	size_t len;
+	char *result;
+
+	if (override_path && *override_path)
+		return lwstrdup(override_path);
+
+	len = strlen(source_path);
+	result = lwstrdup(source_path);
+	if (!result)
+		return NULL;
+
+	if (len >= 3)
+		memcpy(result + len - 3, "png", 3);
+
+	return result;
 }
 
 /**
- * Writes the coordinates of a POINTARRAY to a FILE* where ordinates are
- * separated by a comma and coordinates by a space so that the coordinate
- * pairs can be interpreted by ImageMagick's SVG draw command.
- *
- * @param output a file to write the POINTARRAY to
- * @param pa a reference to a POINTARRAY
- * @return the numbers of character written to *output
+ * Append a coordinate pair as "x,y" so the resulting buffer can be reused by
+ * both the documentation generator and raster command builders that already
+ * rely on liblwgeom's stringbuffer helpers.
  */
-static size_t
-pointarrayToFile(FILE *output, POINTARRAY *pa)
+static void
+append_coord_pair(stringbuffer_t *sb, double x, double y)
 {
-	char x[OUT_DOUBLE_BUFFER_SIZE];
-	char y[OUT_DOUBLE_BUFFER_SIZE];
-	unsigned int i, written = 0;
+	stringbuffer_append_double(sb, x, 10);
+	stringbuffer_append_char(sb, ',');
+	stringbuffer_append_double(sb, y, 10);
+}
 
-	for ( i=0; i < pa->npoints; i++ )
+static void
+pointarrayToBuffer(stringbuffer_t *output, POINTARRAY *pa)
+{
+	unsigned int i;
+
+	for (i = 0; i < pa->npoints; i++)
 	{
 		POINT2D pt;
 		getPoint2d_p(pa, i, &pt);
 
-		lwprint_double(pt.x, 10, x);
-		lwprint_double(pt.y, 10, y);
-
-		if ( i ) written += fprintf(output, " ");
-		written += fprintf(output, "%s,%s", x, y);
+		if (i)
+			stringbuffer_append_char(output, ' ');
+		append_coord_pair(output, pt.x, pt.y);
 	}
-
-	return written;
 }
 
 /**
- * Draws a point in a POINTARRAY to a char* using ImageMagick SVG for styling.
+ * Draws a point in a POINTARRAY to a char* using GraphicsMagick SVG for styling.
 
  * @param output a char reference to write the LWPOINT to
  * @param lwp a reference to a LWPOINT
- * @return the numbers of character written to *output
+ *
+ * The drawing commands are appended directly to the supplied buffer.
  */
-static size_t
-drawPointSymbol(char *output, POINTARRAY *pa, unsigned int index, int size, char* color)
+static void
+drawPointSymbol(stringbuffer_t *output, POINTARRAY *pa, unsigned int index, int size, const char *color)
 {
 	// short-circuit no-op
-	if (size <= 0) return 0;
-
-	char x[OUT_DOUBLE_BUFFER_SIZE];
-	char y1[OUT_DOUBLE_BUFFER_SIZE];
-	char y2[OUT_DOUBLE_BUFFER_SIZE];
-	char *ptr = output;
+	if (size <= 0)
+		return;
 
 	POINT2D p;
 	getPoint2d_p(pa, index, &p);
 
-	lwprint_double(p.x, 10, x);
-	lwprint_double(p.y, 10, y1);
-	lwprint_double(p.y + size, 10, y2);
-
-	ptr += sprintf(ptr, "-fill %s -strokewidth 0 ", color);
-	ptr += sprintf(ptr, "-draw \"circle %s,%s %s,%s", x, y1, x, y2);
-	ptr += sprintf(ptr, "'\" ");
-
-	return (ptr - output);
+	stringbuffer_aprintf(output, "-fill %s -strokewidth 0 ", color);
+	stringbuffer_append(output, "-draw \"circle ");
+	append_coord_pair(output, p.x, p.y);
+	stringbuffer_append_char(output, ' ');
+	append_coord_pair(output, p.x, p.y + size);
+	stringbuffer_append(output, "\" ");
 }
 
 /**
- * Draws a point in a POINTARRAY to a char* using ImageMagick SVG for styling.
+ * Draws a point in a POINTARRAY to a char* using GraphicsMagick SVG for styling.
 
  * @param output a char reference to write the LWPOINT to
  * @param lwp a reference to a LWPOINT
- * @return the numbers of character written to *output
+ *
+ * The drawing commands are appended directly to the supplied buffer.
  */
-static size_t
-drawLineArrow(char *output, POINTARRAY *pa, int size, int strokeWidth, char* color)
+static void
+drawLineArrow(stringbuffer_t *output, POINTARRAY *pa, int size, int strokeWidth, const char *color)
 {
 	// short-circuit no-op
-	if (size <= 0) return 0;
-	if (pa->npoints <= 1) return 0;
-
-	char s0x[OUT_DOUBLE_BUFFER_SIZE];
-	char s0y[OUT_DOUBLE_BUFFER_SIZE];
-	char s1x[OUT_DOUBLE_BUFFER_SIZE];
-	char s1y[OUT_DOUBLE_BUFFER_SIZE];
-	char s2x[OUT_DOUBLE_BUFFER_SIZE];
-	char s2y[OUT_DOUBLE_BUFFER_SIZE];
+	if (size <= 0)
+		return;
+	if (pa->npoints <= 1)
+		return;
 
 	POINT2D pn;
-	getPoint2d_p(pa, pa->npoints-1, &pn);
+	getPoint2d_p(pa, pa->npoints - 1, &pn);
 	POINT2D pn1;
-	getPoint2d_p(pa, pa->npoints-2, &pn1);
+	getPoint2d_p(pa, pa->npoints - 2, &pn1);
 
 	double dx = pn1.x - pn.x;
 	double dy = pn1.y - pn.y;
-	double len = sqrt(dx*dx + dy*dy);
+	double len = sqrt(dx * dx + dy * dy);
 	//-- abort if final line segment has length 0
-	if (len <= 0) return 0;
+	if (len <= 0)
+		return;
 
-	double offx = -0.5 * size * dy/len;
-	double offy =  0.5 * size * dx/len;
-
+	double offx = -0.5 * size * dy / len;
+	double offy = 0.5 * size * dx / len;
 
 	double p1x = pn.x + size * dx / len + offx;
 	double p1y = pn.y + size * dy / len + offy;
 	double p2x = pn.x + size * dx / len - offx;
 	double p2y = pn.y + size * dy / len - offy;
 
-	lwprint_double(pn.x, 10, s0x);
-	lwprint_double(pn.y, 10, s0y);
-	lwprint_double(p1x,  10, s1x);
-	lwprint_double(p1y,  10, s1y);
-	lwprint_double(p2x,  10, s2x);
-	lwprint_double(p2y,  10, s2y);
-
-	char *ptr = output;
-	ptr += sprintf(ptr, "-fill %s -strokewidth %d ", color, 2);
-	ptr += sprintf(ptr, "-draw \"path 'M %s,%s %s,%s %s,%s %s,%s'\" ", s0x, s0y, s1x, s1y, s2x, s2y, s0x, s0y);
-
-	return (ptr - output);
+	stringbuffer_aprintf(output, "-fill %s -strokewidth %d ", color, 2);
+	stringbuffer_append(output, "-draw \"path 'M ");
+	append_coord_pair(output, pn.x, pn.y);
+	stringbuffer_append_char(output, ' ');
+	append_coord_pair(output, p1x, p1y);
+	stringbuffer_append_char(output, ' ');
+	append_coord_pair(output, p2x, p2y);
+	stringbuffer_append_char(output, ' ');
+	append_coord_pair(output, pn.x, pn.y);
+	stringbuffer_append(output, "'\" ");
 }
 
 /**
  * Serializes a LWPOINT to a char*.  This is a helper function that partially
  * writes the appropriate draw and fill commands used to generate an SVG image
- * using ImageMagick's "convert" command.
+ * using GraphicsMagick's "gm convert" command.
 
  * @param output a char reference to write the LWPOINT to
  * @param lwp a reference to a LWPOINT
- * @return the numbers of character written to *output
+ *
+ * The drawing commands are appended directly to the supplied buffer.
  */
-static size_t
-drawPoint(char *output, LWPOINT *lwp, GEOMETRY_DRAW_CONTEXT *ctx)
+static void
+drawPoint(stringbuffer_t *output, LWPOINT *lwp, GEOMETRY_DRAW_CONTEXT *ctx)
 {
-	char x[OUT_DOUBLE_BUFFER_SIZE];
-	char y1[OUT_DOUBLE_BUFFER_SIZE];
-	char y2[OUT_DOUBLE_BUFFER_SIZE];
-	char *ptr = output;
 	LAYERSTYLE *styles = ctx->style;
 	POINTARRAY *pa = lwp->point;
 	POINT2D p;
 	getPoint2d_p(pa, 0, &p);
 
 	LWDEBUGF(4, "%s", "drawPoint called");
-	LWDEBUGF( 4, "point = %s", lwgeom_to_ewkt((LWGEOM*)lwp) );
+	LWDEBUGF(4, "point = %s", lwgeom_to_ewkt((LWGEOM *)lwp));
 
-	lwprint_double(p.x, 10, x);
-	lwprint_double(p.y, 10, y1);
-	lwprint_double(p.y + styles->pointSize, 10, y2);
-
-	ptr += sprintf(ptr, "-fill %s -strokewidth 0 ", styles->pointColor);
-	ptr += sprintf(ptr, "-draw \"circle %s,%s %s,%s", x, y1, x, y2);
-	ptr += sprintf(ptr, "'\" ");
-
-	return (ptr - output);
+	stringbuffer_aprintf(output, "-fill %s -strokewidth 0 ", styles->pointColor);
+	stringbuffer_append(output, "-draw \"circle ");
+	append_coord_pair(output, p.x, p.y);
+	stringbuffer_append_char(output, ' ');
+	append_coord_pair(output, p.x, p.y + styles->pointSize);
+	stringbuffer_append(output, "\" ");
 }
 
 /**
  * Serializes a LWLINE to a char*.  This is a helper function that partially
  * writes the appropriate draw and stroke commands used to generate an SVG image
- * using ImageMagick's "convert" command.
+ * using GraphicsMagick's "gm convert" command.
 
  * @param output a char reference to write the LWLINE to
  * @param lwl a reference to a LWLINE
- * @return the numbers of character written to *output
+ *
+ * The drawing commands are appended directly to the supplied buffer.
  */
-static size_t
-drawLineString(char *output, LWLINE *lwl, GEOMETRY_DRAW_CONTEXT *ctx)
+static void
+drawLineString(stringbuffer_t *output, LWLINE *lwl, GEOMETRY_DRAW_CONTEXT *ctx)
 {
-	char *ptr = output;
 	LAYERSTYLE *style = ctx->style;
-	char *drawFname;
-	FILE *drawFile;
-
 	LWDEBUGF(4, "%s", "drawLineString called");
-	LWDEBUGF( 4, "line = %s", lwgeom_to_ewkt((LWGEOM*)lwl) );
+	LWDEBUGF(4, "line = %s", lwgeom_to_ewkt((LWGEOM *)lwl));
 
-	ptr += sprintf(ptr, "-fill none -stroke %s -strokewidth %d ", style->lineColor, style->lineWidth);
+	stringbuffer_aprintf(output, "-fill none -stroke %s -strokewidth %d ", style->lineColor, style->lineWidth);
 
-	ptr += sprintf(ptr, "-draw '@");
-	drawFname = ptr; /* hack to save allocating a new string just for the filename */
-	ptr += sprintf(ptr, "%s/draw%d", ctx->tmpdir, ctx->drawNum++);
-	drawFile = fopen(drawFname, "w");
-	if ( NULL == drawFile ) {
-		perror( drawFname );
-		exit(EXIT_FAILURE); /* or be tolerant ? */
-	}
-	ptr += sprintf(ptr, "' "); /* from now on drawFname is invalid */
+	stringbuffer_t path;
+	stringbuffer_init(&path);
+	stringbuffer_append(&path, "stroke-linecap round stroke-linejoin round path 'M ");
+	pointarrayToBuffer(&path, lwl->points);
+	stringbuffer_append(&path, "'");
 
-	fprintf(drawFile, "stroke-linecap round stroke-linejoin round path 'M ");
-	pointarrayToFile(drawFile, lwl->points );
-	fprintf(drawFile, "'");
+	stringbuffer_append(output, "-draw \"");
+	stringbuffer_append(output, stringbuffer_getstring(&path));
+	stringbuffer_append(output, "\" ");
 
-	fclose(drawFile);
+	stringbuffer_release(&path);
 
-	ptr += drawPointSymbol(ptr, lwl->points, 0, style->lineStartSize, style->lineColor);
-	ptr += drawPointSymbol(ptr, lwl->points, lwl->points->npoints-1, style->lineEndSize, style->lineColor);
-	ptr += drawLineArrow(ptr, lwl->points, style->lineArrowSize, style->lineWidth, style->lineColor);
-
-	return (ptr - output);
+	drawPointSymbol(output, lwl->points, 0, style->lineStartSize, style->lineColor);
+	drawPointSymbol(output, lwl->points, lwl->points->npoints - 1, style->lineEndSize, style->lineColor);
+	drawLineArrow(output, lwl->points, style->lineArrowSize, style->lineWidth, style->lineColor);
 }
 
 /**
  * Serializes a LWPOLY to a char*.  This is a helper function that partially
  * writes the appropriate draw and fill commands used to generate an SVG image
- * using ImageMagick's "convert" command.
+ * using GraphicsMagick's "gm convert" command.
 
  * @param output a char reference to write the LWPOLY to
  * @param lwp a reference to a LWPOLY
- * @return the numbers of character written to *output
+ *
+ * The drawing commands are appended directly to the supplied buffer.
  */
-static size_t
-drawPolygon(char *output, LWPOLY *lwp, GEOMETRY_DRAW_CONTEXT *ctx)
+static void
+drawPolygon(stringbuffer_t *output, LWPOLY *lwp, GEOMETRY_DRAW_CONTEXT *ctx)
 {
-	char *ptr = output;
 	unsigned int i;
 	LAYERSTYLE *style = ctx->style;
-	char *drawFname;
-	FILE *drawFile;
 
 	LWDEBUGF(4, "%s", "drawPolygon called");
-	LWDEBUGF( 4, "poly = %s", lwgeom_to_ewkt((LWGEOM*)lwp) );
+	LWDEBUGF(4, "poly = %s", lwgeom_to_ewkt((LWGEOM *)lwp));
 
-	ptr += sprintf(ptr, "-fill %s -stroke %s -strokewidth %d ", style->polygonFillColor, style->polygonStrokeColor, style->polygonStrokeWidth );
+	stringbuffer_aprintf(output,
+			     "-fill %s -stroke %s -strokewidth %d ",
+			     style->polygonFillColor,
+			     style->polygonStrokeColor,
+			     style->polygonStrokeWidth);
 
-	ptr += sprintf(ptr, "-draw '@");
-	drawFname = ptr; /* hack to save allocating a new string just for the filename */
-	ptr += sprintf(ptr, "%s/draw%d", ctx->tmpdir, ctx->drawNum++);
-	drawFile = fopen(drawFname, "w");
-	if ( NULL == drawFile ) {
-		perror( drawFname );
-		exit(EXIT_FAILURE); /* or be tolerant ? */
-	}
-	ptr += sprintf(ptr, "' "); /* from now on drawFname is invalid */
-
-	fprintf(drawFile, "path '");
-	for (i=0; i<lwp->nrings; i++)
+	stringbuffer_t path;
+	stringbuffer_init(&path);
+	stringbuffer_append(&path, "path '");
+	for (i = 0; i < lwp->nrings; i++)
 	{
-		fprintf(drawFile, "M ");
-		pointarrayToFile(drawFile, lwp->rings[i] );
-		fprintf(drawFile, " ");
+		stringbuffer_append(&path, "M ");
+		pointarrayToBuffer(&path, lwp->rings[i]);
+		stringbuffer_append_char(&path, ' ');
 	}
-	fprintf(drawFile, "'");
+	stringbuffer_append(&path, "'");
 
-	fclose(drawFile);
+	stringbuffer_append(output, "-draw \"");
+	stringbuffer_append(output, stringbuffer_getstring(&path));
+	stringbuffer_append(output, "\" ");
 
-	return (ptr - output);
+	stringbuffer_release(&path);
 }
 
 /**
  * Serializes a LWGEOM to a char*.  This is a helper function that partially
  * writes the appropriate draw, stroke, and fill commands used to generate an
- * SVG image using ImageMagick's "convert" command.
+ * SVG image using GraphicsMagick's "gm convert" command.
 
  * @param output a char reference to write the LWGEOM to
  * @param lwgeom a reference to a LWGEOM
  * @param ctx drawing context
- * @return the numbers of character written to *output
+ *
+ * The drawing commands are appended directly to the supplied buffer.
  */
-static size_t
-drawGeometry(char *output, const LWGEOM *lwgeom, GEOMETRY_DRAW_CONTEXT *ctx)
+static void
+drawGeometry(stringbuffer_t *output, const LWGEOM *lwgeom, GEOMETRY_DRAW_CONTEXT *ctx)
 {
-	char *ptr = output;
 	unsigned int i;
 	int type = lwgeom->type;
 
 	switch (type)
 	{
 	case POINTTYPE:
-		ptr += drawPoint(ptr, (LWPOINT*)lwgeom, ctx );
+		drawPoint(output, (LWPOINT *)lwgeom, ctx);
 		break;
 	case LINETYPE:
-		ptr += drawLineString(ptr, (LWLINE*)lwgeom, ctx );
+		drawLineString(output, (LWLINE *)lwgeom, ctx);
 		break;
 	case POLYGONTYPE:
-		ptr += drawPolygon(ptr, (LWPOLY*)lwgeom, ctx );
+		drawPolygon(output, (LWPOLY *)lwgeom, ctx);
 		break;
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
-		for (i=0; i<((LWCOLLECTION*)lwgeom)->ngeoms; i++)
+		for (i = 0; i < ((LWCOLLECTION *)lwgeom)->ngeoms; i++)
 		{
-			ptr += drawGeometry( ptr, lwcollection_getsubgeom ((LWCOLLECTION*)lwgeom, i), ctx );
+			drawGeometry(output, lwcollection_getsubgeom((LWCOLLECTION *)lwgeom, i), ctx);
 		}
 		break;
 	}
-
-	return (ptr - output);
 }
 
 /**
- * Invokes a system call to ImageMagick's "convert" command that reduces
- * the overall filesize
- *
- * @param filename the current working image.
+ * Extract an optional "style;WKT" prefix and return both pieces.  When the
+ * prefix is absent the caller falls back to the "Default" block in
+ * styles.conf while keeping the full line as WKT input.
  */
 static void
-optimizeImage(char* filename)
+parse_layer_line(const char *line, char **style_name, const char **wkt_literal, bool *uses_default)
 {
-	char *str;
-	str = malloc( (18 + (2*strlen(filename)) + 1) * sizeof(char) );
-	sprintf(str, "convert %s -depth 8 %s", filename, filename);
-	if (optionVerbose) {
-		puts(str);
+	const char *separator = strrchr(line, ';');
+
+	if (separator == NULL)
+	{
+		*style_name = lwstrdup("Default");
+		if (!*style_name)
+		{
+			lwerror("Out of memory while reading style name");
+			*wkt_literal = NULL;
+			*uses_default = true;
+			return;
+		}
+		*wkt_literal = line;
+		*uses_default = true;
+		return;
 	}
-	checked_system(str);
-	free(str);
+
+	{
+		size_t style_len = (size_t)(separator - line);
+		*style_name = lwalloc(style_len + 1);
+		if (!*style_name)
+		{
+			lwerror("Out of memory while reading style name");
+			*style_name = NULL;
+			*wkt_literal = NULL;
+			*uses_default = true;
+			return;
+		}
+
+		memcpy(*style_name, line, style_len);
+		(*style_name)[style_len] = '\0';
+	}
+
+	*wkt_literal = separator + 1;
+	*uses_default = false;
 }
 
 /**
- * Flattens all the temporary processing png files into a single image
+ * Stream all non-empty layers from @a source into @a job's command buffer.
+ * The helper mirrors the raster tooling, which prefers to marshal draw
+ * commands in memory before forking external utilities.
  */
-static void
-flattenLayers(char* filename)
-{
-	char *str = malloc( (48 + strlen(filename) + strlen(tmpdir) + 2) * sizeof(char) );
-	sprintf(str, "convert %s/tmp*.png -background white -flatten %s", tmpdir, filename);
-	if (optionVerbose) {
-		puts(str);
-	}
-
-	LWDEBUGF(4, "%s", str);
-	checked_system(str);
-	free(str);
-}
-
-
-// TODO: comments
 static int
-getStyleName(char **styleName, const char* line)
+append_layers(generator_job *job, FILE *source)
 {
-	char *ptr = strrchr(line, ';');
-	if (ptr == NULL)
+	char line[65536];
+	int layer_index = 0;
+
+	while (fgets(line, sizeof line, source) != NULL)
 	{
-		*styleName = strdup("Default");
-		return 1;
+		if (isspace((unsigned char)line[0]))
+			break;
+
+		GEOMETRY_DRAW_CONTEXT ctx = geometry_draw_context_init();
+		char *style_name = NULL;
+		const char *wkt_literal = NULL;
+		bool uses_default_style = false;
+		LWGEOM *lwgeom;
+
+		parse_layer_line(line, &style_name, &wkt_literal, &uses_default_style);
+
+		if (!style_name || !wkt_literal)
+		{
+			lwfree(style_name);
+			return -1;
+		}
+
+		if (uses_default_style)
+			printf("   Warning: using Default style for layer %d\n", layer_index);
+
+		lwgeom = lwgeom_from_wkt(wkt_literal, LW_PARSER_CHECK_NONE);
+		if (!lwgeom)
+		{
+			lwerror("Could not parse geometry for layer %d", layer_index);
+			lwfree(style_name);
+			return -1;
+		}
+
+		LWDEBUGF(4, "geom = %s", lwgeom_to_ewkt(lwgeom));
+
+		ctx.style = getStyle(job->styles, style_name);
+		if (!ctx.style)
+		{
+			lwgeom_free(lwgeom);
+			lwerror("Could not find style named %s", style_name);
+			lwfree(style_name);
+			return -1;
+		}
+
+		drawGeometry(&job->command, lwgeom, &ctx);
+
+		lwgeom_free(lwgeom);
+		lwfree(style_name);
+		layer_index++;
 	}
-	else
-	{
-		*styleName = malloc( ptr - line + 1);
-		strncpy(*styleName, line, ptr - line);
-		(*styleName)[ptr - line] = '\0';
-		LWDEBUGF( 4, "%s", *styleName );
-		return 0;
-	}
+
+	return layer_index;
 }
 
-int parseOptions(int argc, const char* argv[] )
+/**
+ * Parse command-line switches shared with the historical ImageMagick driver.
+ * The generator continues to accept the same options so existing Makefile
+ * rules and scripts do not need updates.
+ */
+static int
+parse_options(int argc, const char *argv[], generator_options *opts, bool *show_help)
 {
-	if (argc <= 1) return 1;
+	int arg_pos = 1;
 
-	int argPos = 1;
-	while (argPos < argc && strncmp(argv[argPos], "-", 1) == 0) {
-		if (strncmp(argv[argPos], "-v", 2) == 0) {
-			optionVerbose = true;
+	opts->verbose = false;
+	opts->image_size = "200x200";
+	*show_help = false;
+
+	if (argc <= 1)
+		return -1;
+
+	while (arg_pos < argc && argv[arg_pos][0] == '-')
+	{
+		if (strcmp(argv[arg_pos], "-h") == 0 || strcmp(argv[arg_pos], "--help") == 0)
+		{
+			*show_help = true;
+			return argc;
 		}
-		if (strncmp(argv[argPos], "-s", 2) == 0) {
-			if ( ++argPos >= argc ) return 1;
-			imageSize = argv[argPos];
+
+		if (strncmp(argv[arg_pos], "-v", 2) == 0)
+		{
+			opts->verbose = true;
+			arg_pos++;
+			continue;
 		}
-		argPos++;
+
+		if (strncmp(argv[arg_pos], "-s", 2) == 0)
+		{
+			if (++arg_pos >= argc)
+				return -1;
+			opts->image_size = argv[arg_pos];
+			arg_pos++;
+			continue;
+		}
+
+		return -1;
 	}
-	return argPos;
+
+	return arg_pos;
+}
+
+static int
+generator_render(const generator_options *options, const char *source_path, const char *target_override)
+{
+	generator_job job;
+	FILE *source = NULL;
+	char *styles_path = NULL;
+	char *target_path = NULL;
+	int rc = -1;
+	const char *converter_cli;
+
+	generator_job_init(&job, options);
+
+	converter_cli = select_converter_cli();
+	if (!converter_cli)
+	{
+		lwerror(
+		    "Could not find GraphicsMagick or ImageMagick executables (gm, magick, convert). Set POSTGIS_DOC_CONVERTER to the desired command.");
+		goto cleanup;
+	}
+	job.converter_cli = converter_cli;
+
+	source = fopen(source_path, "r");
+	if (!source)
+	{
+		perror(source_path);
+		goto cleanup;
+	}
+
+	styles_path = derive_styles_path(source_path);
+	if (!styles_path)
+	{
+		lwerror("Out of memory while resolving styles");
+		goto cleanup;
+	}
+
+	printf("reading styles from %s\n", styles_path);
+	getStyles(styles_path, &job.styles);
+
+	target_path = derive_output_path(source_path, target_override);
+	if (!target_path)
+	{
+		lwerror("Out of memory while preparing output filename");
+		goto cleanup;
+	}
+
+	printf("generating %s\n", target_path);
+
+	stringbuffer_aprintf(&job.command, "%s -size %s xc:none ", job.converter_cli, job.options.image_size);
+
+	if (append_layers(&job, source) < 0)
+		goto cleanup;
+
+	stringbuffer_append(&job.command, "-flip -depth 8 ");
+	stringbuffer_append(&job.command, target_path);
+
+	if (job.options.verbose)
+		puts(stringbuffer_getstring(&job.command));
+
+	checked_system(stringbuffer_getstring(&job.command));
+
+	rc = 0;
+
+cleanup:
+	if (source)
+		fclose(source);
+	if (styles_path)
+		lwfree(styles_path);
+	if (target_path)
+		lwfree(target_path);
+	generator_job_reset(&job);
+	return rc;
 }
 
 /**
  * Main Application.
  */
-int main( int argc, const char* argv[] )
+int
+main(int argc, const char *argv[])
 {
-	FILE *pfile;
-	LWGEOM *lwgeom;
-	char line [65536];
-	char *filename;
-	int layerCount;
-	LAYERSTYLE *styles;
-	char *stylefile_path;
+	generator_options options;
 	const char *image_src;
-	char *ptr;
-	const char *stylefilename = "styles.conf";
+	const char *target_override = NULL;
+	bool show_help;
 
-	int filePos = parseOptions(argc, argv);
-	if ( filePos >= argc || strlen(argv[filePos]) < 3)
+	int filePos = parse_options(argc, argv, &options, &show_help);
+	if (show_help)
+	{
+		print_usage(stdout, argv[0]);
+		return 0;
+	}
+
+	if (filePos < 0 || filePos >= argc || strlen(argv[filePos]) < 3)
 	{
 		lwerror("Usage: %s [-v] [-s <width>x<height>] <source_wktfile> [<output_pngfile>]", argv[0]);
 		return -1;
@@ -504,106 +830,11 @@ int main( int argc, const char* argv[] )
 
 	image_src = argv[filePos];
 
-	if ( (pfile = fopen(image_src, "r")) == NULL)
-	{
-		perror ( image_src );
+	if (argc - filePos >= 2)
+		target_override = argv[filePos + 1];
+
+	if (generator_render(&options, image_src, target_override) != 0)
 		return -1;
-	}
-
-	/* Get style */
-	ptr = rindex( image_src, '/' );
-	if ( ptr ) /* source image file has a slash */
-	{
-		size_t dirname_len = (ptr - image_src);
-		stylefile_path = malloc( strlen(stylefilename) + dirname_len + 2);
-		/* copy the directory name */
-		memcpy(stylefile_path, image_src, dirname_len);
-		sprintf(stylefile_path + dirname_len, "/%s", stylefilename);
-	}
-	else /* source image file has no slash, use CWD */
-	{
-		stylefile_path = strdup(stylefilename);
-	}
-	printf("reading styles from %s\n", stylefile_path);
-	getStyles(stylefile_path, &styles);
-	free(stylefile_path);
-
-	if ( argc - filePos >= 2 )
-	{
-		filename = strdup(argv[filePos + 1]);
-	}
-	else
-	{
-		filename = strdup(image_src);
-		sprintf(filename + strlen(image_src) - 3, "png" );
-	}
-
-	tmpdir = mkdtemp(tempdir_template);
-	if ( NULL == tmpdir ) {
-		perror ( image_src );
-		exit(EXIT_FAILURE);
-	}
-
-	printf( "generating %s\n", filename );
-
-	layerCount = 0;
-	while ( fgets ( line, sizeof line, pfile ) != NULL && !isspace(*line) )
-	{
-		GEOMETRY_DRAW_CONTEXT ctx;
-		char output[32768];
-		char *ptr = output;
-		char *styleName;
-		int useDefaultStyle;
-
-		initializeGeometryDrawContext(&ctx);
-		ctx.tmpdir = tmpdir;
-
-		ptr += sprintf( ptr, "convert -size %s xc:none ", imageSize );
-
-		useDefaultStyle = getStyleName(&styleName, line);
-		LWDEBUGF( 4, "%s", styleName );
-
-		if (useDefaultStyle)
-		{
-			printf("   Warning: using Default style for layer %d\n", layerCount);
-			lwgeom = lwgeom_from_wkt( line, LW_PARSER_CHECK_NONE );
-		}
-		else
-			lwgeom = lwgeom_from_wkt( line+strlen(styleName)+1, LW_PARSER_CHECK_NONE );
-
-		LWDEBUGF( 4, "geom = %s", lwgeom_to_ewkt((LWGEOM*)lwgeom) );
-
-		ctx.style = getStyle(styles, styleName);
-		if ( ! ctx.style ) {
-		  lwerror("Could not find style named %s", styleName);
-			free(styleName);
-		  return -1;
-		}
-		free(styleName);
-
-		ptr += drawGeometry( ptr, lwgeom, &ctx );
-
-		ptr += sprintf( ptr, "-flip %s/tmp%d.png", tmpdir, layerCount );
-
-		lwgeom_free( lwgeom );
-
-		LWDEBUGF( 4, "%s", output );
-		if (optionVerbose) {
-			puts(output);
-		}
-		checked_system(output);
-
-		layerCount++;
-	}
-
-	flattenLayers(filename);
-	optimizeImage(filename);
-
-	fclose(pfile);
-	free(filename);
-	freeStyles(&styles);
-
-	cleanupTempDir(tmpdir);
 
 	return 0;
 }
