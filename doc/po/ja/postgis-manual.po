@@ -12,8 +12,8 @@ msgstr ""
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
 "PO-Revision-Date: 2025-11-28 08:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4058,11 +4058,11 @@ msgid ""
 "<varname>abs_next_right_edge</varname> columns exposed by the <varname>edge</"
 "varname> view are convenience projections of these absolute values."
 msgstr ""
-"ゼロは対応する側でエッジがぶら下がっていることを示します ("
-"たとえば接続するフェイスが "
-"<varname>0</varname>のユニバーサルフェイスになっている孤立エッジ)。 <varname>"
-"edge</varname>ビューにある<varname>abs_next_left_edge</varname>カラムと<varna"
-"me>abs_next_right_edge</varname>カラムは絶対値にして扱いすくしたものです。"
+"ゼロは対応する側でエッジがぶら下がっていることを示します (たとえば接続する"
+"フェイスが <varname>0</varname>のユニバーサルフェイスになっている孤立エッ"
+"ジ)。 <varname>edge</varname>ビューにある<varname>abs_next_left_edge</"
+"varname>カラムと<varname>abs_next_right_edge</varname>カラムは絶対値にして扱"
+"いすくしたものです。"
 
 #. Tag: para
 #, no-c-format
@@ -5605,7 +5605,8 @@ msgstr ""
 msgid ""
 "The returned edge identifiers may be either existing edges or newly created "
 "edges as needed to fully represent the input line as closely as possible."
-msgstr "返されるエッジ識別番号は、入力ラインの表現を可能な限り完全に表現するのに必要"
+msgstr ""
+"返されるエッジ識別番号は、入力ラインの表現を可能な限り完全に表現するのに必要"
 "となるので、既存エッジか新規生成されたエッジかになります。"
 
 #. Tag: para
@@ -5615,9 +5616,9 @@ msgid ""
 "uncovered or resulting from split of existing edges) may be limited by the "
 "<varname>max_edges</varname> parameter."
 msgstr ""
-"新規生成されたエッジの数 "
-"(覆っていなかった空間を覆うエッジか、既存エッジの分割から得られた結果)は "
-"<varname>max_edges</varname>パラメータで制限されることがあります。"
+"新規生成されたエッジの数 (覆っていなかった空間を覆うエッジか、既存エッジの分"
+"割から得られた結果)は <varname>max_edges</varname>パラメータで制限されること"
+"があります。"
 
 #. Tag: para
 #, no-c-format
@@ -7237,8 +7238,8 @@ msgid ""
 "the topology precision as tolerance."
 msgstr ""
 "<varname>tolerance</varname>が与えられた場合には、入力ジオメトリを既存のプリ"
-"ミティブにスナップします。特別な値である -1 "
-"(デフォルト)ではトポロジーの精度を許容値として使うことになります。"
+"ミティブにスナップします。特別な値である -1 (デフォルト)ではトポロジーの精度"
+"を許容値として使うことになります。"
 
 #. Tag: para
 #, no-c-format
@@ -7275,8 +7276,8 @@ msgid ""
 "Changed: 3.7.0 changes meaning of tolerance 0 to really mean 0 and -1 (new "
 "default) to request using the topology precision."
 msgstr ""
-"Changed: 3.7.0 許容値 0を実際の 0として扱い、-1 "
-"(新デフォルト値)をそのトポロジーの精度を使うよう求めるように変更されました。"
+"Changed: 3.7.0 許容値 0を実際の 0として扱い、-1 (新デフォルト値)をそのトポロ"
+"ジーの精度を使うよう求めるように変更されました。"
 
 #. Tag: para
 #, no-c-format
@@ -8450,13 +8451,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"ImageMagick (<filename>convert</filename>) is required to generate the "
-"images used in the documentation. ImageMagick is available from <link xlink:"
-"href=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </link> ."
+"GraphicsMagick (<filename>gm convert</filename>) is required to generate the "
+"images used in the documentation. GraphicsMagick is available from <link "
+"xlink:href=\"http://www.graphicsmagick.org/\"> http://www.graphicsmagick."
+"org/ </link> ."
 msgstr ""
-"ImageMagick (<filename>convert</filename>)。文書で使う画像を生成するのに必要"
-"です。<link xlink:href=\"http://www.imagemagick.org/\">http://www."
-"imagemagick.org/</link>にあります。"
 
 #. Tag: title
 #, no-c-format
@@ -8777,10 +8776,10 @@ msgid ""
 msgstr ""
 "全ての関数は文書から生成されたコメントを持っています。後でコメントを手持ちの"
 "空間データベースにインストールしたい場合には、docbookが必要なコマンドを実行し"
-"ます。postgis_comments.sqlと他のパッケージのコメントファイルはtar."
-"gzディストリビューションのdocフォルダ内に同梱されています。この "
-"tarボールからインストールする場合にはコメントを生成する必要がありません。"
-"コメントはCREATE EXTENSIONインストールにも含まれています。"
+"ます。postgis_comments.sqlと他のパッケージのコメントファイルはtar.gzディスト"
+"リビューションのdocフォルダ内に同梱されています。この tarボールからインストー"
+"ルする場合にはコメントを生成する必要がありません。コメントはCREATE EXTENSION"
+"インストールにも含まれています。"
 
 #. Tag: para
 #, no-c-format
@@ -36910,7 +36909,8 @@ msgstr ""
 msgid ""
 "Changed 3.7.0, the polygonization honours PostgreSQL interrupts so "
 "cancellations and statement timeouts halt processing promptly."
-msgstr "Changed 3.7.0, PostgreSQLの処理中断を尊重して、キャンセルや手続時間切れによる"
+msgstr ""
+"Changed 3.7.0, PostgreSQLの処理中断を尊重して、キャンセルや手続時間切れによる"
 "処理の停止を即座に行うようになりました。"
 
 #. Tag: para
@@ -43413,8 +43413,8 @@ msgid ""
 "The \"keepcollapsed\" key is only valid for the \"structure\" algorithm, and "
 "takes a value of \"true\" or \"false\"."
 msgstr ""
-"\"keepcollapsed\"キーは\"structure\"アルゴリズムの時だけ見られて、\"true"
-"\"または\"false\"を取ります。"
+"\"keepcollapsed\"キーは\"structure\"アルゴリズムの時だけ見られて、\"true\"ま"
+"たは\"false\"を取ります。"
 
 #. Tag: para
 #, no-c-format
@@ -43431,8 +43431,9 @@ msgstr ""
 msgid ""
 "Keep collapsed of \"true\" means geometry components that collapse to a "
 "lower dimensionality will be retained."
-msgstr "\"keepcollapsed\"が\"true\"の場合には"
-"、低い空間次元に崩壊するジオメトリー要素も保持されます。"
+msgstr ""
+"\"keepcollapsed\"が\"true\"の場合には、低い空間次元に崩壊するジオメトリー要素"
+"も保持されます。"
 
 #. Tag: para
 #, no-c-format
@@ -47669,15 +47670,14 @@ msgid ""
 "manual</link>."
 msgstr ""
 "BRINは\"Block Range Index\"の意味です。PostgreSQLが提供する汎用インデックスで"
-"す。BRINは<emphasis>不可逆</emphasis>インデックスですので、"
-"レコードが検索条件に合致するか確認する二次チェックが必要です (これは提供され"
-"ているすべての空間インデックスと同じです)。BRINは、インデックス生成が非常に高"
-"速で、インデックスサイズが非常に小さく、読込み効率がそこそこ良いものです。こ"
-"れの主目的は、巨大テーブルに対してテーブル内の物理位置と相関するカラムの上に"
-"インデックスを生成することです。BRINは各種属性データ構造 "
-"(整数、配列など)の高速検索が可能です。詳細情報については<link xlink:href="
-"\"https://www.postgresql.org/docs/current/brin.html\">PostgreSQL "
-"manual</link>を参照してください。"
+"す。BRINは<emphasis>不可逆</emphasis>インデックスですので、レコードが検索条件"
+"に合致するか確認する二次チェックが必要です (これは提供されているすべての空間"
+"インデックスと同じです)。BRINは、インデックス生成が非常に高速で、インデックス"
+"サイズが非常に小さく、読込み効率がそこそこ良いものです。これの主目的は、巨大"
+"テーブルに対してテーブル内の物理位置と相関するカラムの上にインデックスを生成"
+"することです。BRINは各種属性データ構造 (整数、配列など)の高速検索が可能です。"
+"詳細情報については<link xlink:href=\"https://www.postgresql.org/docs/current/"
+"brin.html\">PostgreSQL manual</link>を参照してください。"
 
 #. Tag: para
 #, no-c-format
@@ -50340,6 +50340,17 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid ""
+#~ "ImageMagick (<filename>convert</filename>) is required to generate the "
+#~ "images used in the documentation. ImageMagick is available from <link "
+#~ "xlink:href=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </"
+#~ "link> ."
+#~ msgstr ""
+#~ "ImageMagick (<filename>convert</filename>)。文書で使う画像を生成するのに必"
+#~ "要です。<link xlink:href=\"http://www.imagemagick.org/\">http://www."
+#~ "imagemagick.org/</link>にあります。"
 
 #, no-c-format
 #~ msgid ""

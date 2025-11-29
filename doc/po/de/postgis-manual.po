@@ -8628,14 +8628,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"ImageMagick (<filename>convert</filename>) is required to generate the "
-"images used in the documentation. ImageMagick is available from <link xlink:"
-"href=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </link> ."
+"GraphicsMagick (<filename>gm convert</filename>) is required to generate the "
+"images used in the documentation. GraphicsMagick is available from <link "
+"xlink:href=\"http://www.graphicsmagick.org/\"> http://www.graphicsmagick."
+"org/ </link> ."
 msgstr ""
-"ImageMagick (<filename>convert</filename>) wird zur Erzeugung von Bildern "
-"für die Dokumentation benötigt. ImageMagick kann von <link xlink:"
-"href=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </link> "
-"bezogen werden."
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -52574,6 +52571,18 @@ msgstr "2.5/3D-Unterstützung"
 #, fuzzy, no-c-format
 msgid "Supports geography"
 msgstr "Unterstützt Geographie"
+
+#, no-c-format
+#~ msgid ""
+#~ "ImageMagick (<filename>convert</filename>) is required to generate the "
+#~ "images used in the documentation. ImageMagick is available from <link "
+#~ "xlink:href=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </"
+#~ "link> ."
+#~ msgstr ""
+#~ "ImageMagick (<filename>convert</filename>) wird zur Erzeugung von Bildern "
+#~ "für die Dokumentation benötigt. ImageMagick kann von <link xlink:"
+#~ "href=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </link> "
+#~ "bezogen werden."
 
 #, no-c-format
 #~ msgid ""

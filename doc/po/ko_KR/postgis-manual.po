@@ -7672,13 +7672,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"ImageMagick (<filename>convert</filename>) is required to generate the "
-"images used in the documentation. ImageMagick is available from <link xlink:"
-"href=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </link> ."
+"GraphicsMagick (<filename>gm convert</filename>) is required to generate the "
+"images used in the documentation. GraphicsMagick is available from <link "
+"xlink:href=\"http://www.graphicsmagick.org/\"> http://www.graphicsmagick."
+"org/ </link> ."
 msgstr ""
-"ImageMagick(<filename>convert</filename>)은 문서에 사용되는 이미지를 생성하"
-"는 데 필요합니다. ImageMagick은 <link xlink:href=\"http://www.imagemagick."
-"org/\"> http://www.imagemagick.org/ </link>에서 다운로드할 수 있습니다."
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -45432,6 +45430,18 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "ImageMagick (<filename>convert</filename>) is required to generate the "
+#~ "images used in the documentation. ImageMagick is available from <link "
+#~ "xlink:href=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </"
+#~ "link> ."
+#~ msgstr ""
+#~ "ImageMagick(<filename>convert</filename>)은 문서에 사용되는 이미지를 생성"
+#~ "하는 데 필요합니다. ImageMagick은 <link xlink:href=\"http://www."
+#~ "imagemagick.org/\"> http://www.imagemagick.org/ </link>에서 다운로드할 수 "
+#~ "있습니다."
 
 #, no-c-format
 #~ msgid ""
