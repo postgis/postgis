@@ -10,6 +10,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -1683,11 +1684,14 @@ rt_band_get_value_count(
 				roundto = 0;
 				break;
 			/* floating points, check the rounding */
+			case PT_16BF:
 			case PT_32BF:
 			case PT_64BF:
-				for (scale = 0; scale <= 20; scale++) {
+				for (scale = 0; scale <= 20; scale++)
+				{
 					tmpd = roundto * pow(10, scale);
-					if (FLT_EQ((tmpd - ((int) tmpd)), 0.0)) break;
+					if (FLT_EQ((tmpd - ((int)tmpd)), 0.0))
+						break;
 				}
 				break;
 			case PT_END:

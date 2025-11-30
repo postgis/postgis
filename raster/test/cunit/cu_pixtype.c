@@ -4,6 +4,7 @@
  *
  * Copyright (C) 2012 Regents of the University of California
  *   <bkpark@ucdavis.edu>
+ * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,6 +33,7 @@ static void test_pixtype_size() {
 	CU_ASSERT_EQUAL(rt_pixtype_size(PT_8BSI), 1);
 	CU_ASSERT_EQUAL(rt_pixtype_size(PT_16BUI), 2);
 	CU_ASSERT_EQUAL(rt_pixtype_size(PT_16BSI), 2);
+	CU_ASSERT_EQUAL(rt_pixtype_size(PT_16BF), 2);
 	CU_ASSERT_EQUAL(rt_pixtype_size(PT_32BUI), 4);
 	CU_ASSERT_EQUAL(rt_pixtype_size(PT_32BSI), 4);
 	CU_ASSERT_EQUAL(rt_pixtype_size(PT_32BF), 4);
@@ -52,6 +54,7 @@ static void test_pixtype_name() {
 	CU_ASSERT_STRING_EQUAL(rt_pixtype_name(PT_8BSI), "8BSI");
 	CU_ASSERT_STRING_EQUAL(rt_pixtype_name(PT_16BUI), "16BUI");
 	CU_ASSERT_STRING_EQUAL(rt_pixtype_name(PT_16BSI), "16BSI");
+	CU_ASSERT_STRING_EQUAL(rt_pixtype_name(PT_16BF), "16BF");
 	CU_ASSERT_STRING_EQUAL(rt_pixtype_name(PT_32BUI), "32BUI");
 	CU_ASSERT_STRING_EQUAL(rt_pixtype_name(PT_32BSI), "32BSI");
 	CU_ASSERT_STRING_EQUAL(rt_pixtype_name(PT_32BF), "32BF");
@@ -68,6 +71,7 @@ static void test_pixtype_index_from_name() {
 	CU_ASSERT_EQUAL(rt_pixtype_index_from_name("8BSI"), PT_8BSI);
 	CU_ASSERT_EQUAL(rt_pixtype_index_from_name("16BUI"), PT_16BUI);
 	CU_ASSERT_EQUAL(rt_pixtype_index_from_name("16BSI"), PT_16BSI);
+	CU_ASSERT_EQUAL(rt_pixtype_index_from_name("16BF"), PT_16BF);
 	CU_ASSERT_EQUAL(rt_pixtype_index_from_name("32BUI"), PT_32BUI);
 	CU_ASSERT_EQUAL(rt_pixtype_index_from_name("32BSI"), PT_32BSI);
 	CU_ASSERT_EQUAL(rt_pixtype_index_from_name("32BF"), PT_32BF);
@@ -84,11 +88,17 @@ static void test_pixtype_get_min_value() {
 	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_2BUI), rt_util_clamp_to_2BUI((double) CHAR_MIN), DBL_EPSILON);
 	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_4BUI), rt_util_clamp_to_4BUI((double) CHAR_MIN), DBL_EPSILON);
 	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_8BUI), rt_util_clamp_to_8BUI((double) CHAR_MIN), DBL_EPSILON);
-	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_8BSI), rt_util_clamp_to_8BSI((double) SCHAR_MIN), DBL_EPSILON);
-	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_16BUI), rt_util_clamp_to_16BUI((double) SHRT_MIN), DBL_EPSILON);
-	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_16BSI), rt_util_clamp_to_16BSI((double) SHRT_MIN), DBL_EPSILON);
-	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_32BUI), rt_util_clamp_to_32BUI((double) INT_MIN), DBL_EPSILON);
-	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_32BSI), rt_util_clamp_to_32BSI((double) INT_MIN), DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(
+	    rt_pixtype_get_min_value(PT_8BSI), rt_util_clamp_to_8BSI((double)SCHAR_MIN), DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(
+	    rt_pixtype_get_min_value(PT_16BUI), rt_util_clamp_to_16BUI((double)SHRT_MIN), DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(
+	    rt_pixtype_get_min_value(PT_16BSI), rt_util_clamp_to_16BSI((double)SHRT_MIN), DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_16BF), -POSTGIS_RT_16F_MAX, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(
+	    rt_pixtype_get_min_value(PT_32BUI), rt_util_clamp_to_32BUI((double)INT_MIN), DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(
+	    rt_pixtype_get_min_value(PT_32BSI), rt_util_clamp_to_32BSI((double)INT_MIN), DBL_EPSILON);
 	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_32BF), -FLT_MAX, DBL_EPSILON);
 	CU_ASSERT_DOUBLE_EQUAL(rt_pixtype_get_min_value(PT_64BF), -DBL_MAX, DBL_EPSILON);
 
@@ -198,6 +208,14 @@ static void test_pixtype_compare_clamped_values() {
 	CU_ASSERT_EQUAL(rt_pixtype_compare_clamped_values(PT_16BSI, 0, -32768, &isequal), ES_NONE);
 	CU_ASSERT(!isequal);
 	CU_ASSERT_EQUAL(rt_pixtype_compare_clamped_values(PT_16BSI, 32767, -32767, &isequal), ES_NONE);
+	CU_ASSERT(!isequal);
+
+	/* 16BF */
+	CU_ASSERT_EQUAL(rt_pixtype_compare_clamped_values(PT_16BF, 1.5, 1.5, &isequal), ES_NONE);
+	CU_ASSERT(isequal);
+	CU_ASSERT_EQUAL(rt_pixtype_compare_clamped_values(PT_16BF, 70000.0, 65504.0, &isequal), ES_NONE);
+	CU_ASSERT(isequal);
+	CU_ASSERT_EQUAL(rt_pixtype_compare_clamped_values(PT_16BF, -70000.0, 0.0, &isequal), ES_NONE);
 	CU_ASSERT(!isequal);
 
 	/* 32BUI */

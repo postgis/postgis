@@ -11,6 +11,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -189,8 +190,7 @@ rt_band_init_value(
 			checkvalint = ptr[0];
 			break;
 		}
-		case PT_16BUI:
-		{
+		case PT_16BUI: {
 			uint16_t *ptr = mem;
 			uint16_t clamped_initval = rt_util_clamp_to_16BUI(initval);
 			for (uint32_t i = 0; i < numval; i++)
@@ -198,8 +198,16 @@ rt_band_init_value(
 			checkvalint = ptr[0];
 			break;
 		}
-		case PT_32BSI:
-		{
+		case PT_16BF: {
+			uint16_t *ptr = mem;
+			float clamped_initval = rt_util_clamp_to_16F(initval);
+			uint16_t packed = rt_util_float_to_float16(clamped_initval);
+			for (uint32_t i = 0; i < numval; i++)
+				ptr[i] = packed;
+			checkvalfloat = rt_util_float16_to_float(ptr[0]);
+			break;
+		}
+		case PT_32BSI: {
 			int32_t *ptr = mem;
 			int32_t clamped_initval = rt_util_clamp_to_32BSI(initval);
 			for (uint32_t i = 0; i < numval; i++)
@@ -944,6 +952,13 @@ rt_band_set_nodata(rt_band band, double val, int *converted) {
 			checkvaluint = band->nodataval;
 			break;
 		}
+		case PT_16BF: {
+			float half = rt_util_clamp_to_16F(val);
+			/* Persist the exact half-float encoding so nodata comparisons stay bitwise-stable. */
+			band->nodataval = rt_util_float16_to_float(rt_util_float_to_float16(half));
+			checkvalfloat = (float)band->nodataval;
+			break;
+		}
 		case PT_32BF: {
 			band->nodataval = rt_util_clamp_to_32F(val);
 			checkvalfloat = band->nodataval;
@@ -1178,12 +1193,13 @@ rt_band_set_pixel(
 	data = rt_band_get_data(band);
 	offset = x + (y * band->width);
 
-	switch (pixtype) {
-		case PT_1BB: {
-			data[offset] = rt_util_clamp_to_1BB(val);
-			checkvalint = data[offset];
-			break;
-		}
+	switch (pixtype)
+	{
+	case PT_1BB: {
+		data[offset] = rt_util_clamp_to_1BB(val);
+		checkvalint = data[offset];
+		break;
+	}
 		case PT_2BUI: {
 			data[offset] = rt_util_clamp_to_2BUI(val);
 			checkvalint = data[offset];
@@ -1223,13 +1239,21 @@ rt_band_set_pixel(
 			break;
 		}
 		case PT_32BUI: {
-			uint32_t *ptr = (uint32_t*) data; /* we assume correct alignment */
+			uint32_t *ptr = (uint32_t *)data; /* we assume correct alignment */
 			ptr[offset] = rt_util_clamp_to_32BUI(val);
 			checkvaluint = ptr[offset];
 			break;
 		}
+		case PT_16BF: {
+			uint16_t *ptr = (uint16_t *)data; /* we assume correct alignment */
+			float clamped = rt_util_clamp_to_16F(val);
+			/* Pack via explicit converter to mirror GDAL's Float16 representation. */
+			ptr[offset] = rt_util_float_to_float16(clamped);
+			checkvalfloat = rt_util_float16_to_float(ptr[offset]);
+			break;
+		}
 		case PT_32BF: {
-			float *ptr = (float*) data; /* we assume correct alignment */
+			float *ptr = (float *)data; /* we assume correct alignment */
 			ptr[offset] = rt_util_clamp_to_32F(val);
 			checkvalfloat = ptr[offset];
 			break;
@@ -1244,7 +1268,7 @@ rt_band_set_pixel(
 			rterror("rt_band_set_pixel: Unknown pixeltype %d", pixtype);
 			return ES_ERROR;
 		}
-	}
+		}
 
 	/* If the stored value is not NODATA, reset the isnodata flag */
 	if (!rt_band_clamped_value_is_nodata(band, val)) {
@@ -1631,12 +1655,17 @@ rt_band_get_pixel(
 			break;
 		}
 		case PT_32BUI: {
-			uint32_t *ptr = (uint32_t*) data; /* we assume correct alignment */
+			uint32_t *ptr = (uint32_t *)data; /* we assume correct alignment */
 			*value = ptr[offset];
 			break;
 		}
+		case PT_16BF: {
+			uint16_t *ptr = (uint16_t *)data; /* we assume correct alignment */
+			*value = rt_util_float16_to_float(ptr[offset]);
+			break;
+		}
 		case PT_32BF: {
-			float *ptr = (float*) data; /* we assume correct alignment */
+			float *ptr = (float *)data; /* we assume correct alignment */
 			*value = ptr[offset];
 			break;
 		}
@@ -2212,6 +2241,12 @@ rt_band_corrected_clamped_value(
 				(*newval)++;
 			else
 				(*newval)--;
+			break;
+		case PT_16BF:
+			if (FLT_EQ(rt_util_clamp_to_16F(val), rt_util_clamp_to_16F(minval)))
+				*newval += FLT_EPSILON;
+			else
+				*newval -= FLT_EPSILON;
 			break;
 		case PT_32BF:
 			if (FLT_EQ(rt_util_clamp_to_32F(val), rt_util_clamp_to_32F(minval)))

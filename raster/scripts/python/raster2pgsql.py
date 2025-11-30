@@ -222,6 +222,9 @@ def gdt2pt(gdt):
         gdalc.GDT_Float32 : { 'name': 'PT_32BF',  'id': 10 },
         gdalc.GDT_Float64 : { 'name': 'PT_64BF',  'id': 11 }
         }
+
+    if hasattr(gdalc, 'GDT_Float16'):
+        pixtypes[gdalc.GDT_Float16] = { 'name': 'PT_16BF', 'id': 9 }
     
     # XXX: Uncomment these logs to debug types translation
     #logit('MSG: Input GDAL pixel type: %s (%d)\n' % (gdal.GetDataTypeName(gdt), gdt))
@@ -240,6 +243,8 @@ def pt2numpy(pt):
         gdalc.GDT_Float32: numpy.float32,
         gdalc.GDT_Float64: numpy.float64
         }
+    if hasattr(gdalc, 'GDT_Float16'):
+        ptnumpy[gdalc.GDT_Float16] = numpy.float16
     return ptnumpy.get(pt, numpy.uint8)
 
 def pt2fmt(pt):
@@ -250,6 +255,7 @@ def pt2fmt(pt):
         6: 'H', # PT_16BUI
         7: 'i', # PT_32BSI
         8: 'I', # PT_32BUI
+        9: 'e', # PT_16BF
         10: 'f', # PT_32BF
         11: 'd'  # PT_64BF
         }
@@ -264,6 +270,7 @@ def fmt2printfmt(fmt):
         'H': '%d', # PT_16BUI
         'i': '%d', # PT_32BSI
         'I': '%d', # PT_32BUI
+        'e': '%.8f', # PT_16BF
         'f': '%.15f', # PT_32BF
         'd': '%.15f', # PT_64BF
         's': '%s'

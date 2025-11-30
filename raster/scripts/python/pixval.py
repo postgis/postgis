@@ -39,6 +39,8 @@ def pt2fmt(pt):
         gdalc.GDT_Float32: 'f',
         gdalc.GDT_Float64: 'f'
         }
+    if hasattr(gdalc, 'GDT_Float16'):
+        fmttypes[gdalc.GDT_Float16] = 'e'
     return fmttypes.get(pt, 'x')
 
 if len(sys.argv) < 5 or len(sys.argv) > 6:

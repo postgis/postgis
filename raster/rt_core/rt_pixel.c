@@ -11,6 +11,7 @@
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2013  Nathaniel Hunter Clay <clay.nathaniel@gmail.com>
+ * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -49,6 +50,7 @@ rt_pixtype_size(rt_pixtype pixtype) {
 			break;
 		case PT_16BSI:
 		case PT_16BUI:
+		case PT_16BF:
 			pixbytes = 2;
 			break;
 		case PT_32BSI:
@@ -94,6 +96,8 @@ rt_pixtype_index_from_name(const char* pixname) {
 		return PT_16BSI;
 	else if (strcmp(pixname, "16BUI") == 0)
 		return PT_16BUI;
+	else if (strcmp(pixname, "16BF") == 0)
+		return PT_16BF;
 	else if (strcmp(pixname, "32BSI") == 0)
 		return PT_32BSI;
 	else if (strcmp(pixname, "32BUI") == 0)
@@ -125,6 +129,8 @@ rt_pixtype_name(rt_pixtype pixtype) {
 			return "16BSI";
 		case PT_16BUI:
 			return "16BUI";
+		case PT_16BF:
+			return "16BF";
 		case PT_32BSI:
 			return "32BSI";
 		case PT_32BUI:
@@ -170,8 +176,11 @@ rt_pixtype_get_min_value(rt_pixtype pixtype) {
 		case PT_16BUI: {
 			return 0;
 		}
+		case PT_16BF: {
+			return (double)-POSTGIS_RT_16F_MAX;
+		}
 		case PT_32BSI: {
-			return (double) rt_util_clamp_to_32BSI((double) INT_MIN);
+			return (double)rt_util_clamp_to_32BSI((double)INT_MIN);
 		}
 		case PT_32BUI: {
 			return 0;
@@ -234,6 +243,10 @@ rt_errorstate rt_pixtype_compare_clamped_values(
 			break;
 		case PT_16BUI:
 			if (rt_util_clamp_to_16BUI(val) == rt_util_clamp_to_16BUI(refval))
+				*isequal = 1;
+			break;
+		case PT_16BF:
+			if (FLT_EQ(rt_util_clamp_to_16F(val), rt_util_clamp_to_16F(refval)))
 				*isequal = 1;
 			break;
 		case PT_32BSI:

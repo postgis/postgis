@@ -10,6 +10,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -653,6 +654,12 @@ rt_raster_serialize(rt_raster raster) {
 				ptr += 4;
 				break;
 			}
+			case PT_16BF: {
+				uint16_t v = rt_util_float_to_float16((float)band->nodataval);
+				memcpy(ptr, &v, 2);
+				ptr += 2;
+				break;
+			}
 			case PT_32BF: {
 				float v = band->nodataval;
 				memcpy(ptr, &v, 4);
@@ -847,6 +854,10 @@ rt_raster_deserialize(void* serialized, int header_only) {
 			}
 			case PT_32BUI: {
 				band->nodataval = read_uint32(&ptr, littleEndian);
+				break;
+			}
+			case PT_16BF: {
+				band->nodataval = rt_util_float16_to_float(read_uint16(&ptr, littleEndian));
 				break;
 			}
 			case PT_32BF: {

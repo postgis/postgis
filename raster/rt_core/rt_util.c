@@ -10,6 +10,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -83,6 +84,94 @@ rt_util_clamp_to_32F(double value) {
 	return (float)fmin(fmax((value), -FLT_MAX), FLT_MAX);
 }
 
+float
+rt_util_clamp_to_16F(double value)
+{
+	/*
+	 * GDAL exposes Float16 samples as raw 16-bit words, so we clamp to the
+	 * representable range before packing them manually rather than
+	 * depending on a runtime helper.
+	 */
+	if (isnan(value))
+		return (float)value;
+	return (float)fmin(fmax((value), -POSTGIS_RT_16F_MAX), POSTGIS_RT_16F_MAX);
+}
+
+uint16_t
+rt_util_float_to_float16(float value)
+{
+	/*
+	 * Manual half-float conversion keeps raster I/O independent of GDAL's
+	 * optional Float16 helpers while preserving IEEE semantics.
+	 */
+	union {
+		float f;
+		uint32_t u;
+	} v;
+
+	v.f = value;
+
+	uint32_t sign = (v.u >> 16) & 0x8000U;
+	uint32_t mantissa = v.u & 0x7fffffU;
+	int32_t exponent = ((int32_t)((v.u >> 23) & 0xffU)) - 127 + 15;
+
+	if (exponent <= 0)
+	{
+		if (exponent < -10)
+			return (uint16_t)sign;
+
+		mantissa = (mantissa | 0x800000U) >> (uint32_t)(1 - exponent);
+		return (uint16_t)(sign | ((mantissa + 0x1000U) >> 13));
+	}
+
+	if (exponent >= 31)
+		return (uint16_t)(sign | 0x7c00U | (mantissa ? 0x200U : 0));
+
+	return (uint16_t)(sign | ((uint32_t)exponent << 10) | ((mantissa + 0x1000U) >> 13));
+}
+
+float
+rt_util_float16_to_float(uint16_t value)
+{
+	union {
+		uint32_t u;
+		float f;
+	} v;
+
+	uint32_t sign = (uint32_t)(value & 0x8000U) << 16;
+	uint32_t exponent = (value >> 10) & 0x1fU;
+	uint32_t mantissa = value & 0x3ffU;
+
+	if (exponent == 0)
+	{
+		if (mantissa == 0)
+		{
+			v.u = sign;
+		}
+		else
+		{
+			exponent = 1;
+			while ((mantissa & 0x400U) == 0)
+			{
+				mantissa <<= 1;
+				exponent--;
+			}
+			mantissa &= 0x3ffU;
+			v.u = sign | ((exponent + 127 - 15) << 23) | (mantissa << 13);
+		}
+	}
+	else if (exponent == 31)
+	{
+		v.u = sign | 0x7f800000U | (mantissa << 13);
+	}
+	else
+	{
+		v.u = sign | ((exponent + 127 - 15) << 23) | (mantissa << 13);
+	}
+
+	return v.f;
+}
+
 /**
  * Convert cstring name to GDAL Resample Algorithm
  *
@@ -140,6 +229,10 @@ rt_util_pixtype_to_gdal_datatype(rt_pixtype pt) {
 			return GDT_Int32;
 		case PT_32BUI:
 			return GDT_UInt32;
+#if POSTGIS_GDAL_VERSION >= 31100 && defined(GDT_Float16)
+		case PT_16BF:
+			return GDT_Float16;
+#endif
 		case PT_32BF:
 			return GDT_Float32;
 		case PT_64BF:
@@ -179,11 +272,15 @@ rt_util_gdal_datatype_to_pixtype(GDALDataType gdt) {
 			return PT_32BF;
 		case GDT_Float64:
 			return PT_64BF;
+#if POSTGIS_GDAL_VERSION >= 31100 && defined(GDT_Float16)
+		case GDT_Float16:
+			return PT_16BF;
+#endif
 		default:
 			return PT_END;
-	}
+		}
 
-	return PT_END;
+		return PT_END;
 }
 
 /*
@@ -717,12 +814,13 @@ rt_util_dbl_trunc_warning(
 			break;
 		}
 		case PT_32BUI: {
-			if (fabs(checkvaluint - initialvalue) >= 1) {
+			if (fabs(checkvaluint - initialvalue) >= 1)
+			{
 #if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
 				rtwarn("Value set for %s band got clamped from %f to %u",
-					rt_pixtype_name(pixtype),
-					initialvalue, checkvaluint
-				);
+				       rt_pixtype_name(pixtype),
+				       initialvalue,
+				       checkvaluint);
 #endif
 				result = 1;
 			}
@@ -738,6 +836,7 @@ rt_util_dbl_trunc_warning(
 			}
 			break;
 		}
+		case PT_16BF:
 		case PT_32BF: {
 			/*
 				For float, because the initial value is a double,

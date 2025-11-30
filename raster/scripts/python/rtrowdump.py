@@ -47,6 +47,8 @@ def pt2gdt(pt):
         '32BF' : osgeo.gdalconst.GDT_Float32,
         '64BF' : osgeo.gdalconst.GDT_Float64
         }
+    if hasattr(osgeo.gdalconst, 'GDT_Float16'):
+        pixtypes['16BF'] = osgeo.gdalconst.GDT_Float16
     return pixtypes.get(pt, 'UNKNOWN')
 
 def pt2numpy(pt):
@@ -60,6 +62,8 @@ def pt2numpy(pt):
         '32BF' : numpy.float32,
         '64BF' : numpy.float64
         }
+    if hasattr(numpy, 'float16'):
+        numpytypes['16BF'] = numpy.float16
     return numpytypes.get(pt, numpy.uint8)
 
 ###############################################################################

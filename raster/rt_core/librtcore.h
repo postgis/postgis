@@ -184,19 +184,21 @@ typedef enum {
 } rt_errorstate;
 
 /* Pixel types */
-typedef enum {
-    PT_1BB=0,     /* 1-bit boolean            */
-    PT_2BUI=1,    /* 2-bit unsigned integer   */
-    PT_4BUI=2,    /* 4-bit unsigned integer   */
-    PT_8BSI=3,    /* 8-bit signed integer     */
-    PT_8BUI=4,    /* 8-bit unsigned integer   */
-    PT_16BSI=5,   /* 16-bit signed integer    */
-    PT_16BUI=6,   /* 16-bit unsigned integer  */
-    PT_32BSI=7,   /* 32-bit signed integer    */
-    PT_32BUI=8,   /* 32-bit unsigned integer  */
-    PT_32BF=10,   /* 32-bit float             */
-    PT_64BF=11,   /* 64-bit float             */
-    PT_END=13
+typedef enum
+{
+	PT_1BB = 0,   /* 1-bit boolean            */
+	PT_2BUI = 1,  /* 2-bit unsigned integer   */
+	PT_4BUI = 2,  /* 4-bit unsigned integer   */
+	PT_8BSI = 3,  /* 8-bit signed integer     */
+	PT_8BUI = 4,  /* 8-bit unsigned integer   */
+	PT_16BSI = 5, /* 16-bit signed integer    */
+	PT_16BUI = 6, /* 16-bit unsigned integer  */
+	PT_32BSI = 7, /* 32-bit signed integer    */
+	PT_32BUI = 8, /* 32-bit unsigned integer  */
+	PT_16BF = 9,  /* 16-bit float             */
+	PT_32BF = 10, /* 32-bit float             */
+	PT_64BF = 11, /* 64-bit float             */
+	PT_END = 13
 } rt_pixtype;
 
 typedef enum {
@@ -2249,6 +2251,7 @@ extern void rtdealloc(void *mem);
 #define POSTGIS_RT_1BBMAX 1
 #define POSTGIS_RT_2BUIMAX 3
 #define POSTGIS_RT_4BUIMAX 15
+#define POSTGIS_RT_16F_MAX 65504.0F
 
 uint8_t
 rt_util_clamp_to_1BB(double value);
@@ -2279,6 +2282,12 @@ rt_util_clamp_to_32BUI(double value);
 
 float
 rt_util_clamp_to_32F(double value);
+
+float rt_util_clamp_to_16F(double value);
+
+uint16_t rt_util_float_to_float16(float value);
+
+float rt_util_float16_to_float(uint16_t value);
 
 int
 rt_util_dbl_trunc_warning(

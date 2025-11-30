@@ -114,7 +114,7 @@ will be of 7 bytes.
  as part of the datum or is to be found on the server's
  filesystem.
 
- There are currently 11 supported pixel value types, so 4
+ There are currently 12 supported pixel value types, so 4
  bits are enough to account for all. We'll reserve
  the upper 4 bits for generic flags and define upmost as
  storage flag:
@@ -135,7 +135,7 @@ will be of 7 bytes.
     - PT_1BB, PT_2BUI, PT_4BUI, PT_8BSI, PT_8BUI:
       No alignment required, each value is 1 byte.
 
-    - PT_16BSI, PT_16BUI:
+    - PT_16BSI, PT_16BUI, PT_16BF:
       Data must be aligned to 2-bytes boundary.
 
     - PT_32BSI, PT_32BUI, PT_32BF:
