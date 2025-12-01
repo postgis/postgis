@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-01 02:47+0000\n"
+"PO-Revision-Date: 2025-12-01 10:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -10112,7 +10112,7 @@ msgstr "<term>Laurențiu Nicola</term>"
 #. Tag: para
 #, no-c-format
 msgid "Bug fixes, maintenance, stability, and performance"
-msgstr ""
+msgstr "誤り修正、メンテナンス、安定化、効率化"
 
 #. Tag: title
 #, no-c-format
@@ -10645,7 +10645,7 @@ msgstr "Kris Jurka"
 #. Tag: member
 #, no-c-format
 msgid "<member>Laurențiu Nicola</member>"
-msgstr ""
+msgstr "<member>Laurențiu Nicola</member>"
 
 #. Tag: member
 #, no-c-format
@@ -11206,6 +11206,9 @@ msgid ""
 "past. We used <link xlink:href=\"http://www.pledgebank.com\">PledgeBank</"
 "link> and we got two successful campaigns out of it."
 msgstr ""
+"PostGISは核に機能のコミュニティでの資金集めを試しています。<link xlink:href="
+"\"http://www.pledgebank.com\""
+">PledgeBank</link>を使って、2件の成功事例がありました。"
 
 #. Tag: para
 #, no-c-format
@@ -11306,6 +11309,12 @@ msgid ""
 "toast.html\">the PostgreSQL Documentation for TOAST</link> for more "
 "information)."
 msgstr ""
+"現版のPostgreSQLではTOASTテーブルに関するクエリオプティマイザの弱さに苦しみま"
+"す。TOASTテーブルは、(長いテキスト、イメージ、多数の頂点を持つ複合ジオメトリ"
+"といった)通常のデータページに適合しない、(データサイズという意味では)巨大な値"
+"を納めるための「拡張部屋」の一種です。詳細情報は<link xlink:href=\"https"
+"://www.postgresql.jp/document/current/html/storage-toast.html\""
+">PostgreSQLドキュメントのTOAST</link>をご覧ください。"
 
 #. Tag: para
 #, no-c-format
@@ -12038,6 +12047,9 @@ msgid ""
 "dimensionality, or coordinate components so that spatial expressions can "
 "interrogate complex objects in a controlled way."
 msgstr ""
+"これらの関数は既存のジオメトリを変更せずに、その構造情報を見せるものです。ジ"
+"オメトリタイプ、次元、座標要素のようなメタデータへのアクセスを提供していて、"
+"空間数式は、複雑なオブジェクトを制御された手法で問合せをすることができます。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -12582,6 +12594,10 @@ msgid ""
 "linkend=\"ST_Dump\"/> to extract polygon elements from polygonal geometries: "
 "<code>ST_DumpRings( (ST_Dump(geom)).geom )</code>"
 msgstr ""
+"POLYGONジオメトリでのみ動作します。MULTIPOLYGONでは動作しません。"
+"ポリゴン系ジオメトリから単一ポリゴン要素を抽出するには<xref linkend=\"ST_Dump"
+"\"/>を使います。次の通りとします: <code>ST_DumpRings( (ST_Dump(geom)).geom "
+")</code>"
 
 #. Tag: para
 #, no-c-format
@@ -12591,12 +12607,12 @@ msgstr "Availability: PostGIS 1.1.3 PostgreSQL 7.3以上が必要です。"
 #. Tag: para
 #, no-c-format
 msgid "Extracting all rings as polygons."
-msgstr ""
+msgstr "全てのリングのポリゴンとしての抽出。"
 
 #. Tag: para
 #, no-c-format
 msgid "Extracting shell and holes from a polygon."
-msgstr ""
+msgstr "ポリゴンから外殻と穴の抽出。"
 
 #. Tag: para
 #, no-c-format
@@ -14381,6 +14397,9 @@ msgid ""
 "linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
 "linkend=\"ST_MMin\"/>, <xref linkend=\"ST_MMax\"/>"
 msgstr ""
+", <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend="
+"\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMin\"/>, "
+"<xref linkend=\"ST_MMax\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14434,6 +14453,9 @@ msgid ""
 "linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
 "linkend=\"ST_MMin\"/>, <xref linkend=\"ST_MMax\"/>"
 msgstr ""
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMin\"/>, "
+"<xref linkend=\"ST_MMax\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14460,6 +14482,9 @@ msgid ""
 "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMin\"/>, <xref "
 "linkend=\"ST_MMax\"/>"
 msgstr ""
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, "
+"<xref linkend=\"ST_MMin\"/>, <xref linkend=\"ST_MMax\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14486,6 +14511,9 @@ msgid ""
 "linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_MMin\"/>, <xref "
 "linkend=\"ST_MMax\"/>"
 msgstr ""
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+"\"ST_YMin\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, "
+"<xref linkend=\"ST_MMin\"/>, <xref linkend=\"ST_MMax\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14512,17 +14540,21 @@ msgid ""
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
 "linkend=\"ST_MMin\"/>, <xref linkend=\"ST_MMax\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
+"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_YMax\""
+"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMin\"/>, <xref linkend="
+"\"ST_MMax\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the M minima of a geometry."
-msgstr ""
+msgstr "ジオメトリのM値の最小値を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Returns the M minima of a geometry, or null of the geometry lacks M values."
-msgstr ""
+msgstr "ジオメトリのM値の最小値を返します。M値を持たない場合にはNULLを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -14531,6 +14563,9 @@ msgid ""
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMax\"/>"
 msgstr ""
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, "
+"<xref linkend=\"ST_MMax\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -14539,6 +14574,9 @@ msgid ""
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMin\"/>"
 msgstr ""
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, "
+"<xref linkend=\"ST_MMin\"/>"
 
 #. Tag: title
 #, no-c-format
