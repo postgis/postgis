@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-02 11:47+0000\n"
+"PO-Revision-Date: 2025-12-03 01:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -9212,6 +9212,10 @@ msgid ""
 "configure it for your needs, refer to <xref linkend=\"Address_Standardizer\"/"
 ">."
 msgstr ""
+"<code>address_standardizer</code>エクステンションはPostGISに同梱されています"
+"。address_standardizerの何をするものか、"
+"設定方法などの詳細情報については<xref linkend=\"Address_Standardizer\""
+"/>をご覧ください。"
 
 #. Tag: para
 #, no-c-format
@@ -9409,6 +9413,12 @@ msgid ""
 "by default because it takes quite a bit of time to load (20 to 60 minutes), "
 "takes up quite a bit of disk space, and is not used that often."
 msgstr ""
+"有効にしたときには<varname>zcta5</varname> (Zip Code 5 digit Tabulation "
+"Area, 5桁郵便番号集計エリア)ロード手順はZCTAデータを使用して、"
+"有効にすると<xref linkend=\"Loader_Generate_Nation_Script\""
+"/>の一部として実行されます。ロードにやや時間がかかる (20から60分ぐらい)のと、"
+"からいのディスク容量を使うのと、頻繁には使わないものですから、デフォルトでは"
+"無効になっています。"
 
 #. Tag: para
 #, no-c-format
@@ -14960,6 +14970,9 @@ msgid ""
 "primitives, coordinate sequences, or existing geometries into well-formed "
 "spatial objects that can participate in subsequent analysis."
 msgstr ""
+"これらの関数は、ジオメトリーまたはジオグラフィーの値を生成します。プリミティ"
+"ブ、座標値列、既存のジオメトリーを組み立てて、これに続く分析に使うのに適切な"
+"空間オブジェクトにします。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15207,13 +15220,18 @@ msgid ""
 "appear in the collection. <xref linkend=\"ST_RemoveRepeatedPoints\"/> can be "
 "used to collapse repeated points from the output LineString."
 msgstr ""
+"入力ラインストリングの開始位置で重複するノードはひとつのポイントに減らされま"
+"す。ポイントとマルチポイントの入力での重複するポイントは減らされません。マル"
+"チラインストリングの要素は、コレクション内の出現順で処理されます。"
+"出力ラインストリングから重複ポイントを削除するには<xref linkend="
+"\"ST_RemoveRepeatedPoints\"/>が使えます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Availability: 3.7.0 - Support for MultiLineString input elements was "
 "introduced"
-msgstr ""
+msgstr "Availability: 3.7.0 - マルチラインストリング入力要素への対応が導入されました"
 
 #. Tag: para
 #, no-c-format
@@ -15302,7 +15320,8 @@ msgid ""
 "When ordering within the aggregate is not possible, ordering in a subquery "
 "can be used. However, sometimes the query plan may not respect the order of "
 "the subquery."
-msgstr ""
+msgstr "集約内での整列ができない時は、サブクエリーで整列させます。ただし、クエリープ"
+"ランにサブクエリーの整列が反映されない場合があります。"
 
 #. Tag: para
 #, no-c-format
@@ -16330,24 +16349,26 @@ msgstr ""
 msgid ""
 "A window function which adjusts the edges of a set of valid polygonal "
 "geometries to produce a clean coverage. Cleaning involves:"
-msgstr ""
+msgstr "妥当なポリゴン系ジオメトリーの集合のエッジを調整して、きれいなカバレッジを生"
+"成するウィンドウ関数です。きれいにする処理には次を含みます:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "snapping vertices and edges to remove small discrepancies and ensure common "
 "edges are identically noded"
-msgstr ""
+msgstr "小さな不一致を取り除き、共有されるエッジに同じようにノードが打たれるのを確実"
+"にするために、頂点とエッジをスナップさせる"
 
 #. Tag: para
 #, no-c-format
 msgid "merging overlaps into a parent polygon"
-msgstr ""
+msgstr "オーバーラップするポリゴンをひとつの親ポリゴンとしてマージする"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "merging narrow gaps into adjacent polygons"
-msgstr ""
+msgstr "小さい隙間を隣接ポリゴンとしてマージする"
 
 #. Tag: para
 #, no-c-format
@@ -16356,6 +16377,8 @@ msgid ""
 "are merged. Gaps with width &lt;= this distance are merged into an adjacent "
 "polygon."
 msgstr ""
+"<parameter>gapMaximumWidth</parameter>でポリゴンをマージする隙間の条件を制御"
+"します。隙間の幅がこの値以下なら隣接ポリゴンとしてマージします。"
 
 #. Tag: para
 #, no-c-format
@@ -16364,6 +16387,9 @@ msgid ""
 "edges. The default (-1) automatically determines a snapping distance based "
 "on the input extent. Set to 0.0 to turn off snapping."
 msgstr ""
+"<parameter>snappingDistance</parameter>で頂点とエッジのスナップを制御します。"
+"デフォルト (-1)では自動的にスナップ距離が入力の範囲に応じて決定されます。0."
+"0が指定されるとスナップを行いません。"
 
 #. Tag: para
 #, no-c-format
@@ -16371,30 +16397,33 @@ msgid ""
 "<parameter>overlapMergeStrategy</parameter> specifies how overlaps are "
 "merged into a parent polygon:"
 msgstr ""
+"<parameter>overlapMergeStrategy</parameter>でどれぐらいのオーバーラップまで親"
+"ポリゴンとしてマージするかが指定されます:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<code>MERGE_LONGEST_BORDER</code> - merges into polygon with longest common "
 "border"
-msgstr ""
+msgstr "<code>MERGE_LONGEST_BORDER</code> - 最長共有境界でマージします"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "<code>MERGE_MAX_AREA</code> - merges into polygon with maximum area"
-msgstr ""
+msgstr "<code>MERGE_MAX_AREA</code> - 最大面積でマージします"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "<code>MERGE_MIN_AREA</code> - merges into polygon with minimum area"
-msgstr ""
+msgstr "<code>MERGE_MIN_AREA</code> - 最小面積でマージします"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<code>MERGE_MIN_INDEX</code> - merges into polygon with smallest input index "
 "(defined by order of input polygons)"
-msgstr ""
+msgstr "<code>MERGE_MIN_INDEX</code> - 入力インデックス "
+"(入力ポリゴンの順番で決まります)の最小値でマージします"
 
 #. Tag: para
 #, no-c-format
@@ -16403,6 +16432,8 @@ msgid ""
 "linkend=\"ST_CoverageInvalidEdges\"/> and can be input to coverage "
 "processing functions."
 msgstr ""
+"結果はきれいなポリゴンカバレッジで、<xref linkend=\"ST_CoverageInvalidEdges\""
+"/>が通り、カバレッジ処理関数の入力にすることができます。"
 
 #. Tag: para
 #, no-c-format
