@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-03 03:47+0000\n"
+"PO-Revision-Date: 2025-12-03 05:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -23772,13 +23772,17 @@ msgid ""
 msgstr "AトラジェクトリとBトラジェクトリとの最接近する時の距離を返します。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <varname>|=|</varname> operator returns the 3D distance between two "
 "trajectories (See <xref linkend=\"ST_IsValidTrajectory\"/>). This is the "
 "same as <xref linkend=\"ST_DistanceCPA\"/> but as an operator it can be used "
 "for doing nearest neighbor searches using an N-dimensional index."
 msgstr ""
+"<varname>|=|</varname>演算子は二つの軌跡 (<xref linkend="
+"\"ST_IsValidTrajectory\"/>参照)の間の3次元距離を返します。<xref linkend="
+"\"ST_DistanceCPA\""
+"/>と同じですが、これはN次元インデックスを使った最近傍探索を行う演算子です。"
 
 #. Tag: para
 #, no-c-format
@@ -23806,7 +23810,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.2.0."
-msgstr ""
+msgstr "Availability: 2.2.0."
 
 #. Tag: para
 #, no-c-format
@@ -23831,6 +23835,9 @@ msgid ""
 "Useful for doing nearest neighbor <emphasis role=\"strong\">approximate</"
 "emphasis> distance ordering."
 msgstr ""
+"<varname>&lt;#&gt;</varname>演算子は、二つの浮動小数点数型ボックスの間の距離"
+"を返します。場合によっては空間インデックスから読みます。最近傍の<emphasis "
+"role=\"strong\">概算</emphasis>距離での並び替えに使えます。"
 
 #. Tag: para
 #, no-c-format
@@ -23856,7 +23863,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.0.0."
-msgstr ""
+msgstr "Availability: 2.0.0."
 
 #. Tag: para
 #, no-c-format
@@ -24146,6 +24153,9 @@ msgid ""
 "default. If your GUI tools require the old behavior, then SET "
 "<code>bytea_output='escape'</code> in your database."
 msgstr ""
+"デフォルトではPostgreSQLは16進エンコードがされた <varname>bytea</varname>値を"
+"出力します。お使いのGUIツールが古い振舞いを求める場合には、データベースで<cod"
+"e>bytea_output='escape'</code>を設定します。"
 
 #. Tag: para
 #, no-c-format
@@ -24484,6 +24494,10 @@ msgid ""
 "function> raises a warning in that case because PostgreSQL <type>jsonb</"
 "type> keeps only the last value for duplicate keys."
 msgstr ""
+"入力レコードのカラム名に重複があるとき、\"properties"
+"\"オブジェクトは重複キーを持つことになります"
+"。この場合には<function>ST_AsGeoJSON</function>は警告を出します。 PostgreSQL"
+"の<type>jsonb</type>は重複キーがあると最後の値だけをキープするためです。"
 
 #. Tag: para
 #, no-c-format
@@ -24556,7 +24570,7 @@ msgstr "Changed: 3.5.0 地物のidを含むカラムを指定できるように�
 #. Tag: para
 #, no-c-format
 msgid "Changed: 3.7.0 added warning about duplicate keys"
-msgstr ""
+msgstr "Changed: 3.7.0 キー重複に関する警告の追加"
 
 #. Tag: para
 #, no-c-format
@@ -26339,6 +26353,12 @@ msgid ""
 "linkend=\"ST_Segmentize\"/> to add geodesic vertices, then cast to geometry "
 "before subdivision."
 msgstr ""
+"分割したジオメトリーをジオグラフィーにキャストすると、得られるジオグラフィー"
+"は元のものと異なることになる場合があります。分割によって平面空間 (ジオメトリ)"
+"に頂点が追加されます。頂点が境界に沿って挿入される場合には、ジオグラフィー表"
+"現のエッジは測地線上の辺として補間されます。歪みを最小化するには、"
+"最初に<xref linkend=\"ST_Segmentize\"/>を使って測地線上に頂点を追加してジオグ"
+"ラフィーを高密度化して、それから分割までの間にジオメトリーにキャストします。"
 
 #. Tag: para
 #, no-c-format
@@ -26386,6 +26406,10 @@ msgid ""
 "impact of changes to the geography representation of a geometry when "
 "subdividing."
 msgstr ""
+"<emphasis role=\"bold\">例:</emphasis> ST_Segmentize(geography, distance)を使"
+"って長いジオグラフィー型のラインの高密度化を行い、ST_Subdivideを使って結果ラ"
+"インを8頂点のラインに分割します。高密度化することで、分割時にジオメトリーのジ"
+"オグラフィー表現への変更によって与えられる影響が最小化されます。"
 
 #. Tag: para
 #, no-c-format
@@ -34856,14 +34880,15 @@ msgstr "複数のラスタ、複数のバンド"
 #. Tag: para
 #, no-c-format
 msgid "Complete example of tiles of a coverage with neighborhood."
-msgstr ""
+msgstr "近隣ピクセルを併用したカバレッジのタイルの完全な例です。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Example like the prior one for tiles of a coverage with neighborhood but "
 "using only basic SQL features."
-msgstr ""
+msgstr "前の例である近隣ピクセルを併用したカバレッジのタイルに似ていますが基本的なSQL"
+"機能だけを使用しています。"
 
 #. Tag: title
 #, no-c-format
