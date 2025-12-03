@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-03 05:47+0000\n"
+"PO-Revision-Date: 2025-12-03 07:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -22806,7 +22806,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced."
-msgstr ""
+msgstr "Availability: 2.3.0 BRIN (Block Range INdexes)が導入されました。"
 
 #. Tag: para
 #, no-c-format
@@ -23678,6 +23678,10 @@ msgid ""
 "nearest-neighbor result sets with true KNN distance search for geometries, "
 "and distance on the sphere for geographies."
 msgstr ""
+"<varname>&lt;-&gt;</varname>演算子は二つのジオメトリーの2次元距離を返します。"
+"\"ORDER BY\"句内で使われ、インデックスの援助を受けた近傍結果集合の結果を返し"
+"ます。ジオメトリーではデカルト距離を使い、ジオグラフィでは球面上の距離を計算"
+"します。"
 
 #. Tag: para
 #, no-c-format
@@ -23719,13 +23723,16 @@ msgid ""
 "and geography. Note for geography KNN is based on sphere rather than "
 "spheroid."
 msgstr ""
+"Enhanced: 2.2.0 -- 真のKNN (k近傍法)のジオメトリーとジオグラフィーのふるまい"
+"。ジオグラフィーのKNNは回転楕円体でなく球面に基づきます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 -- Old hybrid-syntax workarounds may be slower once true KNN "
 "is available. See examples below."
-msgstr ""
+msgstr "Changed: 2.2.0 -- 真のKNNが有効になると、古いハイブリッド法による回避策は遅く"
+"なることがあります。下の例を見てください。"
 
 #. Tag: para
 #, no-c-format
@@ -23734,6 +23741,9 @@ msgid ""
 "centroid distances instead of true distances. Exact results for points, "
 "inexact for all other types."
 msgstr ""
+"Availability: 2.0.0 -- 弱いKNNによって、実際の距離の代わりにジオメトリーの重"
+"心に基づく近傍が得られます。ポイントは確実な結果を得て、他のタイプは全て不確"
+"実な結果を得ます。"
 
 #. Tag: para
 #, no-c-format
@@ -23756,6 +23766,10 @@ msgid ""
 "find the true nearest neighbors. First a CTE query using the index-assisted "
 "KNN, then an exact query to get correct ordering:"
 msgstr ""
+"プランで直接確実な距離を生成できない時には、真の近傍を見つけるには複合クエリ"
+"ーを追加居ます。まずインデックスを使ったKNNによるCTE (Common Table "
+"Expression, WITH句)クエリーを実行し、その後に正しい順序を得るための確実なクエ"
+"リーを実施します。次のようにします:"
 
 #. Tag: para
 #, no-c-format
@@ -25486,6 +25500,11 @@ msgid ""
 "the x/y axis. By default, <code>ST_AsX3D</code> outputs in database form "
 "(long,lat or X,Y), but the X3D default of lat/lon, y/x may be preferred."
 msgstr ""
+"'options'引数はビットフィールドです。X3D GeoCoordinates "
+"Geospatialノードを表現するかどうか、また、X/"
+"Y軸を反対にするかどうかで使います。<code>ST_AsX3D</code>は、"
+"デフォルトではデータベースの形式 (経度, 緯度またはX, Y)で出力しますが、X3Dの"
+"lat/lon, y/xのデフォルトが好まれることがあります。"
 
 #. Tag: para
 #, no-c-format
