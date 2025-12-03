@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-03 01:47+0000\n"
+"PO-Revision-Date: 2025-12-03 03:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -16446,6 +16446,12 @@ msgid ""
 "linkend=\"ST_MaximumInscribedCircle\"/> on them; the gap width is twice the "
 "computed radius."
 msgstr ""
+"最大隙間幅の判定を助けるために、<code>gapMaximumWidth => "
+"0</code>できれいにして、<xref linkend=\"ST_CoverageUnion\"/>を使って結果カバ"
+"レッジを結合することで隙間が計算できます。結合した際にできる穴は、元のデータ"
+"セットにある隙間に対応してします。隙間幅は、穴をポリゴンとして抽出して、"
+"<xref linkend=\"ST_MaximumInscribedCircle\""
+"/>を実行して得られた半径の2倍として計測できます。"
 
 #. Tag: para
 #, no-c-format
@@ -16455,17 +16461,17 @@ msgstr "Availability: 3.6.0 - GEOS &gt;= 3.14.0が必要です"
 #. Tag: para
 #, no-c-format
 msgid "Polygons with overlaps and gaps"
-msgstr ""
+msgstr "重複部と隙間があるポリゴン"
 
 #. Tag: para
 #, no-c-format
 msgid "Invalid coverage edges"
-msgstr ""
+msgstr "不正なカバレッジのエッジ"
 
 #. Tag: para
 #, no-c-format
 msgid "Clean polygonal coverage, with overlaps and narrow gaps removed"
-msgstr ""
+msgstr "重複部と狭い隙間の消去でポリゴンカバレッジをきれいにします"
 
 #. Tag: para
 #, no-c-format
@@ -16474,6 +16480,8 @@ msgid ""
 "linkend=\"ST_CoverageSimplify\"/>, <xref "
 "linkend=\"ST_MaximumInscribedCircle\"/>"
 msgstr ""
+", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageSimplify\""
+"/>, <xref linkend=\"ST_MaximumInscribedCircle\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19559,6 +19567,11 @@ msgid ""
 "In this case we escape the ' with standard ANSI ', but slashes are not "
 "escaped"
 msgstr ""
+"PostgreSQLではデフォルトでstandard_conforming_stringsが設定されています。単体"
+"クエリーでの必要に応じて、またはデータベースやサーバーレベルで、デフォルトを"
+"変更することができます。次にstandard_conforming_strings = "
+"onでどう動作するかを示します。この場合には標準ANSIの ' "
+"がエスケープされますがバックスラッシュはエスケープされません"
 
 #. Tag: para
 #, no-c-format
