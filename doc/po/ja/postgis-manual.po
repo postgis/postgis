@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-04 08:47+0000\n"
+"PO-Revision-Date: 2025-12-04 10:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -20300,6 +20300,9 @@ msgid ""
 "fractions or measures along routes and of projecting those measures back "
 "into spatial coordinates."
 msgstr ""
+"これらの関数は、測定とイベント (地物に沿った計測値)の位置特定を行います。これ"
+"らの関数は、ルートに沿った割合や計測値としての位置表現とこれらの計測値の座標"
+"への変換との古典的な線形参照の処理に対応します。"
 
 #. Tag: refpurpose
 #, no-c-format
