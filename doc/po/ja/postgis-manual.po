@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-03 07:47+0000\n"
+"PO-Revision-Date: 2025-12-04 02:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -18385,7 +18385,8 @@ msgid ""
 "These routines are reserved for diagnosing and repairing data corruption. "
 "They provide last-resort maintenance operations that are not required during "
 "normal spatial workflows."
-msgstr ""
+msgstr "これらのルーチンはデータ崩壊の診断と修復のために用意されています。通常の空間"
+"処理で求められないメンテナンスの最終手段です。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22010,6 +22011,10 @@ msgid ""
 "false</varname>, then the calculation is based on a sphere instead of a "
 "spheroid."
 msgstr ""
+"ジオグラフィー型: 測地線の逆解法を用います。周囲長の単位はメートルです。回転"
+"楕円体はSRIDで指定されますが、SRIDが指定されていない場合にはWGS84が使われます"
+"。<varname>use_spheroid = "
+"false</varname>の場合には回転楕円体面の代わりに球面で計算します。"
 
 #. Tag: para
 #, no-c-format
@@ -22500,6 +22505,10 @@ msgid ""
 "<varname>use_spheroid = false</varname>, then calculations will approximate "
 "a sphere instead of a spheroid."
 msgstr ""
+"ジオグラフィー型では、測地線の逆解法を用います。この際、周囲長の単位はメート"
+"ルです。回転楕円体はSRIDで指定されますが、SRIDが指定されていない場合にはWGS84"
+"が使われます。<varname>use_spheroid = "
+"false</varname>の場合には回転楕円体面の代わりに球面で近似します。"
 
 #. Tag: para
 #, no-c-format
@@ -22715,6 +22724,10 @@ msgid ""
 "follow the same geometric rules as the corresponding functions but are "
 "optimised for use in SQL expressions and index-supported filtering."
 msgstr ""
+"ここではPostGISで定義されている空間演算子について記述しています。演算子はバウ"
+"ンディングボックスの相互作用および空間関係に関する簡潔な記号による述語で関数"
+"を補うものです。関連する関数と同じ処理ルールに従って動作しますが、SQL式での利"
+"用やインデックス対応のフィルタリングでの利用に最適化されています。"
 
 #. Tag: title
 #, no-c-format
