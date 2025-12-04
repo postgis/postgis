@@ -7,10 +7,10 @@ ERROR:  SQL/MM Spatial exception - invalid topology name
 ERROR:  SQL/MM Spatial exception - not within face
 ERROR:  SQL/MM Spatial exception - not within face
 ERROR:  SQL/MM Spatial exception - not within face
-ERROR:  SQL/MM Spatial exception - coincident node
-ERROR:  SQL/MM Spatial exception - coincident node
-ERROR:  SQL/MM Spatial exception - coincident node
-ERROR:  SQL/MM Spatial exception - edge crosses node.
+ERROR:  SQL/MM Spatial exception - coincident node at POINT(21 22)
+ERROR:  SQL/MM Spatial exception - coincident node at POINT(21 22)
+ERROR:  SQL/MM Spatial exception - coincident node at POINT(21 22)
+ERROR:  SQL/MM Spatial exception - edge crosses node. at POINT(28 14)
 T1|23|5
 T2|24|0
 T3|25|9

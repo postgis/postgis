@@ -23,7 +23,7 @@ xxxx/xx/xx
  - #4332, Clarify the scope of several Function Reference categories (Darafei Praliaskouski)
  - #4222, [raster] ST_DumpAsPolygons honours PostgreSQL interrupts (Darafei Praliaskouski)
  - #5109, Document the meaning of topology.next_left_edge and topology.next_right_edge links (Darafei Praliaskouski)
-
+ - #5889, [topology] Include representative locations in topology build errors (Darafei Praliaskouski)
 
 * Bug Fixes *
 

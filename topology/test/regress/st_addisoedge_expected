@@ -15,7 +15,7 @@ ERROR:  SQL/MM Spatial exception - curve not simple
 ERROR:  SQL/MM Spatial exception - non-existent node
 ERROR:  SQL/MM Spatial exception - end node not geometry end point.
 ERROR:  SQL/MM Spatial exception - start node not geometry start point.
-ERROR:  SQL/MM Spatial exception - geometry crosses a node
+ERROR:  SQL/MM Spatial exception - geometry crosses a node at POINT(5 0)
 E1
 E2
 N1|
@@ -29,5 +29,5 @@ ERROR:  SQL/MM Spatial exception - not isolated node
 ERROR:  SQL/MM Spatial exception - not isolated node
 ERROR:  Closed edges would not be isolated, try ST_AddEdgeNewFaces
 ERROR:  SQL/MM Spatial exception - not isolated node
-ERROR:  SQL/MM Spatial exception - geometry crosses edge 2
+ERROR:  SQL/MM Spatial exception - geometry crosses edge 2 at POINT(10 3.33333333333333)
 Topology 'tt' dropped

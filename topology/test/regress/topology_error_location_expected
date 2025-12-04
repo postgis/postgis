@@ -1,0 +1,9 @@
+created|t
+n1|1
+n2|2
+n3|3
+n4|4
+NOTICE:  duplicate node: SQL/MM Spatial exception - coincident node at POINT(0 0)
+base_edge|1
+NOTICE:  crossing edge: SQL/MM Spatial exception - geometry crosses edge 1 at POINT(5 0)
+dropped|t

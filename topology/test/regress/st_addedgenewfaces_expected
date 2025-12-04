@@ -1,16 +1,16 @@
 ERROR:  SQL/MM Spatial exception - start node not geometry start point.
 ERROR:  SQL/MM Spatial exception - end node not geometry end point.
 ERROR:  SQL/MM Spatial exception - end node not geometry end point.
-ERROR:  SQL/MM Spatial exception - geometry crosses a node
+ERROR:  SQL/MM Spatial exception - geometry crosses a node at POINT(41 40)
 ERROR:  SQL/MM Spatial exception - non-existent node
 ERROR:  SQL/MM Spatial exception - non-existent node
 ERROR:  SQL/MM Spatial exception - curve not simple
 ERROR:  Invalid edge (no two distinct vertices exist)
 ERROR:  Invalid edge (no two distinct vertices exist)
-ERROR:  SQL/MM Spatial exception - coincident edge 8
-ERROR:  SQL/MM Spatial exception - geometry crosses edge 5
-ERROR:  SQL/MM Spatial exception - geometry crosses edge 4
-ERROR:  Spatial exception - geometry intersects edge 4
+ERROR:  SQL/MM Spatial exception - coincident edge 8 at POINT(35 22)
+ERROR:  SQL/MM Spatial exception - geometry crosses edge 5 at POINT(48.0714285714286 41.9285714285714)
+ERROR:  SQL/MM Spatial exception - geometry crosses edge 4 at POINT(45 32)
+ERROR:  Spatial exception - geometry intersects edge 4 at POINT(36 38)
 L1
 L2
 T1|E7|8|-19|0|11

@@ -88,6 +88,7 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/topogeometry_srid.sql \
 	$(top_srcdir)/topology/test/regress/topogeometry_type.sql \
 	$(top_srcdir)/topology/test/regress/topojson.sql \
+	$(top_srcdir)/topology/test/regress/topology_error_location.sql \
 	$(top_srcdir)/topology/test/regress/topologysummary.sql \
 	$(top_srcdir)/topology/test/regress/totaltopologysize.sql \
 	$(top_srcdir)/topology/test/regress/totopogeom.sql \

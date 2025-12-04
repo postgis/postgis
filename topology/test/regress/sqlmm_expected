@@ -9,15 +9,15 @@ ERROR:  SQL/MM Spatial exception - null argument
 4
 5
 6
-ERROR:  SQL/MM Spatial exception - coincident node
-ERROR:  SQL/MM Spatial exception - coincident node
+ERROR:  SQL/MM Spatial exception - coincident node at POINT(0 0)
+ERROR:  SQL/MM Spatial exception - coincident node at POINT(10 0)
 7
 8
 ERROR:  SQL/MM Spatial exception - not within face
 ERROR:  SQL/MM Spatial exception - invalid point
-ERROR:  SQL/MM Spatial exception - coincident node
-ERROR:  SQL/MM Spatial exception - coincident node
-ERROR:  SQL/MM Spatial exception - coincident node
+ERROR:  SQL/MM Spatial exception - coincident node at POINT(10 0)
+ERROR:  SQL/MM Spatial exception - coincident node at POINT(0 0)
+ERROR:  SQL/MM Spatial exception - coincident node at POINT(10 0)
 -- ST_AddIsoEdge ------------------------
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument
@@ -28,14 +28,14 @@ ERROR:  SQL/MM Spatial exception - curve not simple
 ERROR:  SQL/MM Spatial exception - non-existent node
 ERROR:  SQL/MM Spatial exception - end node not geometry end point.
 ERROR:  SQL/MM Spatial exception - start node not geometry start point.
-ERROR:  SQL/MM Spatial exception - geometry crosses a node
+ERROR:  SQL/MM Spatial exception - geometry crosses a node at POINT(5 0)
 1
 2
 ERROR:  SQL/MM Spatial exception - not isolated node
 ERROR:  SQL/MM Spatial exception - not isolated node
 ERROR:  SQL/MM Spatial exception - not isolated node
 -- ST_AddIsoNode(2) ------------------------
-ERROR:  SQL/MM Spatial exception - edge crosses node.
+ERROR:  SQL/MM Spatial exception - edge crosses node. at POINT(5 9.5)
 -- ST_RemoveIsoEdge ---------------------
 #3351.1|4|
 #3351.1|5|

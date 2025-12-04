@@ -1,11 +1,11 @@
 T1|Edge 25 changed
 ERROR:  SQL/MM Spatial exception - start node not geometry start point.
 ERROR:  SQL/MM Spatial exception - end node not geometry end point.
-ERROR:  SQL/MM Spatial exception - geometry crosses a node
+ERROR:  SQL/MM Spatial exception - geometry crosses a node at POINT(20 37)
 ERROR:  SQL/MM Spatial exception - curve not simple
 ERROR:  Invalid edge (no two distinct vertices exist)
 ERROR:  SQL/MM Spatial exception - non-existent edge 666
-ERROR:  SQL/MM Spatial exception - geometry crosses edge 1
+ERROR:  SQL/MM Spatial exception - geometry crosses edge 1 at POINT(11.8 38)
 T2|Edge 5 changed
 T3|Edge 5 changed
 T4|Edge 26 changed

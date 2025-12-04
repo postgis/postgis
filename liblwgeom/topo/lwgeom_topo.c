@@ -19,10 +19,9 @@
  **********************************************************************
  *
  * Copyright (C) 2015-2024 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
-
-
 
 #include "../postgis_config.h"
 
@@ -37,6 +36,67 @@
 #include "lwgeom_geos.h"
 
 #include <inttypes.h>
+
+/*
+ * Report a human readable location along with topology errors so callers can
+ * narrow down robustness issues such as #5886/#5889 without further tracing.
+ * Using a point-on-surface keeps the message compact while remaining
+ * representative for any dimensionality of the offending intersection.
+ */
+static bool
+_lwt_describe_intersection_point(const GEOSGeometry *g1, const GEOSGeometry *g2, char *buf, size_t bufsize)
+{
+	unsigned int n = 0;
+	POINT2D pt;
+	GEOSGeometry *isect;
+	GEOSGeometry *surface_pt;
+	const GEOSCoordSequence *seq;
+
+	isect = GEOSIntersection(g1, g2);
+	if (!isect)
+		return false;
+
+	surface_pt = GEOSPointOnSurface(isect);
+	GEOSGeom_destroy(isect);
+	if (!surface_pt)
+		return false;
+
+	seq = GEOSGeom_getCoordSeq(surface_pt);
+	if (!seq)
+	{
+		GEOSGeom_destroy(surface_pt);
+		return false;
+	}
+
+	if (!GEOSCoordSeq_getSize(seq, &n) || !n)
+	{
+		GEOSGeom_destroy(surface_pt);
+		return false;
+	}
+
+	if (!GEOSCoordSeq_getX(seq, 0, &pt.x) || !GEOSCoordSeq_getY(seq, 0, &pt.y))
+	{
+		GEOSGeom_destroy(surface_pt);
+		return false;
+	}
+
+	GEOSGeom_destroy(surface_pt);
+	snprintf(buf, bufsize, " at POINT(%.15g %.15g)", pt.x, pt.y);
+	return true;
+}
+
+static bool
+_lwt_describe_point(const LWPOINT *pt, char *buf, size_t bufsize)
+{
+	POINT2D p;
+
+	if (!pt || !pt->point || !pt->point->npoints)
+		return false;
+
+	getPoint2d_p(pt->point, 0, &p);
+	snprintf(buf, bufsize, " at POINT(%.15g %.15g)", p.x, p.y);
+	return true;
+}
 
 /*********************************************************************
  *
@@ -527,6 +587,8 @@ _lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
                 LWPOINT* pt, int skipISOChecks, int checkFace )
 {
   LWT_ELEMID foundInFace = -1;
+  char locinfo[128] = "";
+  const char *locsuffix = _lwt_describe_point(pt, locinfo, sizeof(locinfo)) ? locinfo : "";
 
   if ( lwpoint_is_empty(pt) )
   {
@@ -539,13 +601,13 @@ _lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
   {
     if ( lwt_be_ExistsCoincidentNode(topo, pt) ) /*x*/
     {
-      lwerror("SQL/MM Spatial exception - coincident node");
-      return -1;
+	    lwerror("SQL/MM Spatial exception - coincident node%s", locsuffix);
+	    return -1;
     }
     if ( lwt_be_ExistsEdgeIntersectingPoint(topo, pt) ) /*x*/
     {
-      lwerror("SQL/MM Spatial exception - edge crosses node.");
-      return -1;
+	    lwerror("SQL/MM Spatial exception - edge crosses node.%s", locsuffix);
+	    return -1;
     }
   }
 
@@ -634,21 +696,33 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
   }
   for ( i=0; i<num_nodes; ++i )
   {
-    const POINT2D *pt;
-    LWT_ISO_NODE* node = &(nodes[i]);
-    if ( node->node_id == start_node ) continue;
-    if ( node->node_id == end_node ) continue;
-    /* check if the edge contains this node (not on boundary) */
-    /* ST_RelateMatch(rec.relate, 'T********') */
-    pt = getPoint2d_cp(node->geom->point, 0);
-    int contains = ptarray_contains_point_partial(geom->points, pt, LW_FALSE, NULL) == LW_BOUNDARY;
-    if ( contains )
-    {
-      GEOSGeom_destroy(edgegg);
-      _lwt_release_nodes(nodes, num_nodes);
-      lwerror("SQL/MM Spatial exception - geometry crosses a node");
-      return -1;
-    }
+	  POINT2D p;
+	  LWT_ISO_NODE *node = &(nodes[i]);
+	  if (node->node_id == start_node)
+		  continue;
+	  if (node->node_id == end_node)
+		  continue;
+	  /* check if the edge contains this node (not on boundary) */
+	  /* ST_RelateMatch(rec.relate, 'T********') */
+	  if (!node->geom || !node->geom->point || !node->geom->point->npoints)
+	  {
+		  GEOSGeom_destroy(edgegg);
+		  _lwt_release_nodes(nodes, num_nodes);
+		  lwerror("SQL/MM Spatial exception - geometry crosses a node");
+		  return -1;
+	  }
+
+	  getPoint2d_p(node->geom->point, 0, &p);
+	  int contains = ptarray_contains_point_partial(geom->points, &p, LW_FALSE, NULL) == LW_BOUNDARY;
+	  if (contains)
+	  {
+		  char locinfo[128] = "";
+		  snprintf(locinfo, sizeof(locinfo), " at POINT(%.15g %.15g)", p.x, p.y);
+		  GEOSGeom_destroy(edgegg);
+		  _lwt_release_nodes(nodes, num_nodes);
+		  lwerror("SQL/MM Spatial exception - geometry crosses a node%s", locinfo);
+		  return -1;
+	  }
   }
   if ( nodes ) _lwt_release_nodes(nodes, num_nodes);
                /* may be NULL if num_nodes == 0 */
@@ -691,12 +765,12 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     /* check if the edge has a non-boundary-boundary intersection with our edge */
 
     relate = GEOSRelateBoundaryNodeRule(eegg, edgegg, 2);
-    GEOSGeom_destroy(eegg);
     if ( ! relate ) {
-      GEOSGeom_destroy(edgegg);
-      _lwt_release_edges(edges, num_edges);
-      lwerror("GEOSRelateBoundaryNodeRule error: %s", lwgeom_geos_errmsg);
-      return -1;
+	    GEOSGeom_destroy(eegg);
+	    GEOSGeom_destroy(edgegg);
+	    _lwt_release_edges(edges, num_edges);
+	    lwerror("GEOSRelateBoundaryNodeRule error: %s", lwgeom_geos_errmsg);
+	    return -1;
     }
 
     LWDEBUGF(2, "Edge %" LWTFMT_ELEMID " relate pattern is %s", edge_id, relate);
@@ -705,87 +779,130 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     if ( match ) {
       /* error or no interior intersection */
       GEOSFree(relate);
+      GEOSGeom_destroy(eegg);
       if ( match == 2 ) {
         _lwt_release_edges(edges, num_edges);
         GEOSGeom_destroy(edgegg);
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
         return -1;
       }
-      else continue; /* no interior intersection */
+      continue; /* no interior intersection */
     }
 
     match = GEOSRelatePatternMatch(relate, "1FFF*FFF2");
     if ( match ) {
-      _lwt_release_edges(edges, num_edges);
-      GEOSGeom_destroy(edgegg);
-      GEOSFree(relate);
-      if ( match == 2 ) {
-        lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
-      } else {
-        lwerror("SQL/MM Spatial exception - coincident edge %" LWTFMT_ELEMID,
-                edge_id);
-      }
+	    char locinfo[128] = "";
+	    const char *locsuffix = match == 2                                                                 ? ""
+				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo)) ? locinfo
+													       : "";
+	    GEOSGeom_destroy(eegg);
+	    GEOSGeom_destroy(edgegg);
+	    _lwt_release_edges(edges, num_edges);
+	    GEOSFree(relate);
+	    if (match == 2)
+	    {
+		    lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
+	    }
+	    else
+	    {
+		    lwerror("SQL/MM Spatial exception - coincident edge %" LWTFMT_ELEMID "%s", edge_id, locsuffix);
+	    }
       return -1;
     }
 
     match = GEOSRelatePatternMatch(relate, "1********");
     if ( match ) {
-      _lwt_release_edges(edges, num_edges);
-      GEOSGeom_destroy(edgegg);
-      GEOSFree(relate);
-      if ( match == 2 ) {
-        lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
-      } else {
-        lwerror("Spatial exception - geometry intersects edge %"
-                LWTFMT_ELEMID, edge_id);
-      }
+	    char locinfo[128] = "";
+	    const char *locsuffix = match == 2                                                                 ? ""
+				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo)) ? locinfo
+													       : "";
+	    GEOSGeom_destroy(eegg);
+	    GEOSGeom_destroy(edgegg);
+	    _lwt_release_edges(edges, num_edges);
+	    GEOSFree(relate);
+	    if (match == 2)
+	    {
+		    lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
+	    }
+	    else
+	    {
+		    lwerror("Spatial exception - geometry intersects edge %" LWTFMT_ELEMID "%s", edge_id, locsuffix);
+	    }
       return -1;
     }
 
     match = GEOSRelatePatternMatch(relate, "T********");
     if ( match ) {
-      _lwt_release_edges(edges, num_edges);
-      GEOSGeom_destroy(edgegg);
-      GEOSFree(relate);
-      if ( match == 2 ) {
-        lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
-      } else {
-        lwerror("SQL/MM Spatial exception - geometry crosses edge %"
-                LWTFMT_ELEMID, edge_id);
-      }
+	    char locinfo[128] = "";
+	    const char *locsuffix = match == 2                                                                 ? ""
+				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo)) ? locinfo
+													       : "";
+	    GEOSGeom_destroy(eegg);
+	    GEOSGeom_destroy(edgegg);
+	    _lwt_release_edges(edges, num_edges);
+	    GEOSFree(relate);
+	    if (match == 2)
+	    {
+		    lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
+	    }
+	    else
+	    {
+		    lwerror(
+			"SQL/MM Spatial exception - geometry crosses edge %" LWTFMT_ELEMID "%s", edge_id, locsuffix);
+	    }
       return -1;
     }
 
     match = GEOSRelatePatternMatch(relate, "*T*******");
     if ( match ) {
-      _lwt_release_edges(edges, num_edges);
-      GEOSGeom_destroy(edgegg);
-      GEOSFree(relate);
-      if ( match == 2 ) {
-        lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
-      } else {
-        lwerror("Spatial exception - geometry boundary touches interior of edge %"
-                LWTFMT_ELEMID, edge_id);
-      }
+	    char locinfo[128] = "";
+	    const char *locsuffix = match == 2                                                                 ? ""
+				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo)) ? locinfo
+													       : "";
+	    GEOSGeom_destroy(eegg);
+	    GEOSGeom_destroy(edgegg);
+	    _lwt_release_edges(edges, num_edges);
+	    GEOSFree(relate);
+	    if (match == 2)
+	    {
+		    lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
+	    }
+	    else
+	    {
+		    lwerror("Spatial exception - geometry boundary touches interior of edge %" LWTFMT_ELEMID "%s",
+			    edge_id,
+			    locsuffix);
+	    }
       return -1;
     }
 
     match = GEOSRelatePatternMatch(relate, "***T*****");
     if ( match ) {
-      _lwt_release_edges(edges, num_edges);
-      GEOSGeom_destroy(edgegg);
-      GEOSFree(relate);
-      if ( match == 2 ) {
-        lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
-      } else {
-        lwerror("Spatial exception - boundary of edge %" LWTFMT_ELEMID" touches interior of geometry", edge_id);
-      }
+	    char locinfo[128] = "";
+	    const char *locsuffix = match == 2                                                                 ? ""
+				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo)) ? locinfo
+													       : "";
+	    GEOSGeom_destroy(eegg);
+	    GEOSGeom_destroy(edgegg);
+	    _lwt_release_edges(edges, num_edges);
+	    GEOSFree(relate);
+	    if (match == 2)
+	    {
+		    lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
+	    }
+	    else
+	    {
+		    lwerror("Spatial exception - boundary of edge %" LWTFMT_ELEMID " touches interior of geometry%s",
+			    edge_id,
+			    locsuffix);
+	    }
       return -1;
     }
 
     LWDEBUGF(2, "Edge %" LWTFMT_ELEMID " analysis completed, it does no harm", edge_id);
 
     GEOSFree(relate);
+    GEOSGeom_destroy(eegg);
   }
   LWDEBUGF(1, "No edge crossing detected among the %llu candidate edges", num_edges);
   if ( edges ) _lwt_release_edges(edges, num_edges);
