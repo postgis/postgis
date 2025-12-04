@@ -578,9 +578,9 @@ if test "x$SUPPORT_POSTGRESQL" = "xyes"; then dnl {
   PGSQL_SHAREDIR=`"$PG_CONFIG" --sharedir`
 
   AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
-  dnl Ensure that we are using PostgreSQL >= 12
-  if test $POSTGIS_PGSQL_VERSION -lt 120; then
-    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 12])
+  dnl Ensure that we are using PostgreSQL >= 14
+  if test $POSTGIS_PGSQL_VERSION -lt 140; then
+    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 14])
   fi
 
   HAVE_SPGIST=yes

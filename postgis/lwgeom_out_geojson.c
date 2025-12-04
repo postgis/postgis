@@ -20,11 +20,7 @@
 #include "utils/lsyscache.h"
 #include "utils/json.h"
 #include "utils/hsearch.h"
-#if POSTGIS_PGSQL_VERSION < 130
-#include "utils/jsonapi.h"
-#else
 #include "common/jsonapi.h"
-#endif
 #include "utils/typcache.h"
 #include "utils/syscache.h"
 

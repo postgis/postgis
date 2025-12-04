@@ -20,11 +20,7 @@
 #include "../postgis_config.h"
 
 /* Include for VARATT_EXTERNAL_GET_POINTER */
-#if POSTGIS_PGSQL_VERSION < 130
-#include "access/tuptoaster.h"
-#else
 #include "access/detoast.h"
-#endif
 
 #include "lwgeom_cache.h"
 

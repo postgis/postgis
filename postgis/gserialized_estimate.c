@@ -65,11 +65,7 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include "access/gist.h"
 #include "access/gist_private.h"
 #include "access/gistscan.h"
-#if PG_VERSION_NUM < 130000
-#include "access/tuptoaster.h" /* For toast_raw_datum_size */
-#else
 #include "access/detoast.h" /* For toast_raw_datum_size */
-#endif
 #include "utils/datum.h"
 #include "access/heapam.h"
 #include "catalog/index.h"

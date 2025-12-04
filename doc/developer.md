@@ -363,7 +363,18 @@ run. This avoids the traps described in <https://trac.osgeo.org/postgis/ticket/5
 while keeping the CI account unprivileged.
 
 
+## Removing support for versions of PostgreSQL
 
+* Edit configure.ac, starting at: replace 14 with minimum version allowed
+  `dnl Ensure that we are using PostgreSQL >= 14`
+
+* Remove all PostgreSQL guards in files for versions lower than minimum supported
+  You can find these by looking for `POSTGIS_PGSQL_VERSION`, might also find older syntax
+  `PG_VERSION_NUM`
+
+* Edit doc/postgis.xml and change entity  `min_postgres_version` to new minimum version
+
+* Add to NEWS Breaking Changes section, your removal of said versions
 
 
 
