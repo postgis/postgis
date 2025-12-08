@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-04 10:47+0000\n"
+"PO-Revision-Date: 2025-12-08 02:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -418,17 +418,17 @@ msgid "Soft upgrade without extensions"
 msgstr "エクステンションを使わないソフトアップグレード"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Extensions have been the supported installation method for many releases. If "
 "you still rely on an unpackaged installation, perform a <link "
 "linkend=\"hard_upgrade\">HARD UPGRADE</link> into a database created with "
 "extensions and migrate your data there."
 msgstr ""
-"エクステンションは多数のリリースのために対応したインストールメソッドです。ま"
-"だアパッケージ化されていないものをインストールしているのなら、エクステンショ"
-"ンで作られたデータベース内で<link linkend=\"hard_upgrade\">HARD UPGRADE</"
-"link>を実行してそこで保持データを移行させて下さい。"
+"エクステンションはこれまでの多数のリリースに対応したインストール手法です。今"
+"なおパッケージ化されていないものをインストールしているのなら、"
+"エクステンションで作られたデータベース内で<link linkend=\"hard_upgrade\""
+">HARD UPGRADE</link>を実行して、保持データをそちらに移行させて下さい。"
 
 #. Tag: title
 #, no-c-format
@@ -859,7 +859,7 @@ msgid "max_parallel_workers_per_gather"
 msgstr "max_parallel_workers_per_gather"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Parallel query support in modern PostgreSQL and PostGIS uses this setting to "
 "decide how many workers a plan may request. If set to higher than 0, then "
@@ -872,11 +872,11 @@ msgid ""
 msgstr ""
 "最近のPostgreSQLとPostGISのパラレルクエリー機能では、1回のプランで要求する可"
 "能性のあるワーカー数を決定するためにこの設定が使われます。0より大きい数を設定"
-"した場合には、これらの関係する <code>ST_Intersects</code> のような関数のよう"
-"なクエリーが複数のプロセスを使うことができ、そうすると2倍を超える速度になりま"
-"す。多数の予備プロセスがあるなら、この値を持っているプロセス数まで上げるべき"
-"です。少なくともこの数と同じまで<code>max_worker_processes</code>を増やすのを"
-"忘れないでください。"
+"した場合には、これらの関係する <code>ST_Intersects</code> のような関係関数を"
+"含むクエリーが複数のプロセスを使うことができ、そうすると2倍を超える速度になり"
+"ます。多数の予備プロセスがあるなら、この値を持っているプロセス数まで上げるべ"
+"きです。ただし、これにあわせて<code>max_worker_processes</code>を少なくともこ"
+"の数と同じまで増やすのを忘れないでください。"
 
 #. Tag: para
 #, no-c-format
