@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-08 02:47+0000\n"
+"PO-Revision-Date: 2025-12-08 06:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -3997,14 +3997,14 @@ msgid ""
 "faces."
 msgstr ""
 "あらゆるトポロジーの中核的なプリミティブは<varname>edge_data</varname>、 "
-"<varname>node</varname>,、<varname>face</varname>テーブルに格納されます。これ"
-"らのテーブルは<xref linkend=\"CreateTopology\"/>で生成されたスキーマ内にあり"
-"ます。<varname>edge_data</varname>の各タプルは有向エッジを表現しています。"
-"<varname>start_node</varname>から<varname>end_node</varname>への有向曲線と、"
-"その曲線の進行方向左側にあるフェイスの識別番号 (<varname>left_face</varname>)"
-"と右側のもの (<varname>right_face</varname>)とを併せて記録しています。このた"
-"め、ジオメトリ線分が2個のフェイスに属するとき、同じ線分が2度 (方向ごとに1度ず"
-"つ)出現することがあります。"
+"<varname>node</varname>、<varname>face</varname>テーブルに格納されます。"
+"これらのテーブルは<xref linkend=\"CreateTopology\"/>で生成されたスキーマ内に"
+"あります。<varname>edge_data</varname>の各タプルは有向エッジを表現しています"
+"。<varname>start_node</varname>から<varname>end_node</varname>への有向曲線と"
+"、その曲線の進行方向左側にあるフェイスの識別番号 "
+"(<varname>left_face</varname>)と右側のもの (<varname>right_face</varname>)と"
+"を併せて記録しています。このため、ジオメトリ線分が2個のフェイスに属するとき、"
+"同じ線分が2度 (方向ごとに1度ずつ)出現することがあります。"
 
 #. Tag: para
 #, no-c-format
@@ -5593,8 +5593,9 @@ msgid ""
 "identifiers forming it up (negative identifies mean the edge goes in the "
 "opposite direction of the input linestring)."
 msgstr ""
-"ラインストリングを既存のトポロジーに追加して、整列させた符号付エッジ識別番号"
-"を返す (負数は入力ラインストリングと逆方向であることを示します)。"
+"ラインストリングを既存のトポロジーに追加して、"
+"整列させた符号付エッジ識別番号を返します "
+"(負数は入力ラインストリングと逆方向であることを示します)。"
 
 #. Tag: para
 #, no-c-format
@@ -5603,18 +5604,19 @@ msgid ""
 "Existing edges and faces may be split by the line. New nodes and faces may "
 "be added, in addition to new edges."
 msgstr ""
-"与えられたラインは与えられた許容値内にある既存のノードまたはエッジににスナッ"
-"プします。既存のエッジとフェイスはラインで分割される場合があります。新規エッ"
-"ジ追加に加えて、新しいノードとフェイスは追加される場合があります。"
+"与えられたラインは与えられた許容値内にある既存のノードまたはエッジにスナップ"
+"します。既存のエッジとフェイスはラインで分割される場合があります。新規エッジ"
+"追加に加えて、新しいノードとフェイスが追加される場合があります。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The returned edge identifiers may be either existing edges or newly created "
 "edges as needed to fully represent the input line as closely as possible."
 msgstr ""
-"返されるエッジ識別番号は、入力ラインの表現を可能な限り完全に表現するのに必要"
-"となるので、既存エッジか新規生成されたエッジかになります。"
+"返されるエッジ識別番号は、入力ラインを可能な限り忠実になるような表現を完全に"
+"行うために、既存のエッジまたは新規生成されるエッジのいずれかの番号になります"
+"。"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -16395,7 +16397,7 @@ msgid "merging overlaps into a parent polygon"
 msgstr "オーバーラップするポリゴンをひとつの親ポリゴンとしてマージする"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "merging narrow gaps into adjacent polygons"
 msgstr "小さい隙間を隣接ポリゴンとしてマージする"
 
@@ -23831,17 +23833,17 @@ msgid ""
 msgstr "AトラジェクトリとBトラジェクトリとの最接近する時の距離を返します。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>|=|</varname> operator returns the 3D distance between two "
 "trajectories (See <xref linkend=\"ST_IsValidTrajectory\"/>). This is the "
 "same as <xref linkend=\"ST_DistanceCPA\"/> but as an operator it can be used "
 "for doing nearest neighbor searches using an N-dimensional index."
 msgstr ""
-"<varname>|=|</varname>演算子は二つの軌跡 (<xref linkend="
+"<varname>|=|</varname>演算子は二つのトラジェクトりー (<xref linkend="
 "\"ST_IsValidTrajectory\"/>参照)の間の3次元距離を返します。<xref linkend="
 "\"ST_DistanceCPA\""
-"/>と同じですが、これはN次元インデックスを使った最近傍探索を行う演算子です。"
+"/>と同じですが、この演算子はN次元インデックスを使った最近傍探索を行います。"
 
 #. Tag: para
 #, no-c-format
@@ -27828,17 +27830,17 @@ msgid "This function strips the M dimension."
 msgstr "この関数はM値を取り除きます。"
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Cardinality 2"
 msgstr "次数2"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Nodes with cardinality 2 are merged away."
 msgstr "次数2のノードはマージされます。"
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Cardinality 3 or More"
 msgstr "次数3以上"
 
