@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-08 06:47+0000\n"
+"PO-Revision-Date: 2025-12-09 04:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -3978,7 +3978,7 @@ msgstr ""
 "ギュアオプション --without-topology を指定することで、無効にできます。"
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Topology Primitive Tables"
 msgstr "トポロジープリミティブテーブル"
 
@@ -5619,15 +5619,15 @@ msgstr ""
 "。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The number of newly created edges (either covering space previously "
 "uncovered or resulting from split of existing edges) may be limited by the "
 "<varname>max_edges</varname> parameter."
 msgstr ""
-"新規生成されたエッジの数 (覆っていなかった空間を覆うエッジか、既存エッジの分"
-"割から得られた結果)は <varname>max_edges</varname>パラメータで制限されること"
-"があります。"
+"新規生成されるエッジ "
+"(及んでいなかった範囲の空間に及ぶか、既存エッジの分割から得られた結果)の数は "
+"<varname>max_edges</varname>パラメータで制限されます。"
 
 #. Tag: para
 #, no-c-format
