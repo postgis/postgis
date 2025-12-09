@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-09 04:47+0000\n"
+"PO-Revision-Date: 2025-12-09 06:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -16428,33 +16428,34 @@ msgid ""
 "<parameter>overlapMergeStrategy</parameter> specifies how overlaps are "
 "merged into a parent polygon:"
 msgstr ""
-"<parameter>overlapMergeStrategy</parameter>でどれぐらいのオーバーラップまで親"
-"ポリゴンとしてマージするかが指定されます:"
+"<parameter>overlapMergeStrategy</parameter>で、どれぐらいオーバーラップしてい"
+"るポリゴンを親ポリゴンにマージするかが指定されます:"
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
 "<code>MERGE_LONGEST_BORDER</code> - merges into polygon with longest common "
 "border"
-msgstr "<code>MERGE_LONGEST_BORDER</code> - 最長共有境界でマージします"
+msgstr "<code>MERGE_LONGEST_BORDER</code> - 共有境界が最長のポリゴンにマージします"
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "<code>MERGE_MAX_AREA</code> - merges into polygon with maximum area"
-msgstr "<code>MERGE_MAX_AREA</code> - 最大面積でマージします"
+msgstr "<code>MERGE_MAX_AREA</code> - 最大面積のポリゴンにマージします"
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "<code>MERGE_MIN_AREA</code> - merges into polygon with minimum area"
-msgstr "<code>MERGE_MIN_AREA</code> - 最小面積でマージします"
+msgstr "<code>MERGE_MIN_AREA</code> - 最小面積のポリゴンにマージします"
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
 "<code>MERGE_MIN_INDEX</code> - merges into polygon with smallest input index "
 "(defined by order of input polygons)"
-msgstr "<code>MERGE_MIN_INDEX</code> - 入力インデックス "
-"(入力ポリゴンの順番で決まります)の最小値でマージします"
+msgstr ""
+"<code>MERGE_MIN_INDEX</code> - 入力インデックス "
+"(入力ポリゴンの順番で決まります)の最小値を持つポリゴンにマージします"
 
 #. Tag: para
 #, no-c-format
