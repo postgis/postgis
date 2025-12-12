@@ -454,7 +454,12 @@ struct geomtype_struct geomtype_struct_array[] =
 	{ "POINTZM", POINTTYPE, 1, 1 },
 	{ "POINTZ", POINTTYPE, 1, 0 },
 	{ "POINTM", POINTTYPE, 0, 1 },
-	{ "POINT", POINTTYPE, 0, 0 }
+	{ "POINT", POINTTYPE, 0, 0 },
+
+	{ "NURBSCURVEZM", NURBSCURVETYPE, 1, 1 },
+	{ "NURBSCURVEZ", NURBSCURVETYPE, 1, 0 },
+	{ "NURBSCURVEM", NURBSCURVETYPE, 0, 1 },
+	{ "NURBSCURVE", NURBSCURVETYPE, 0, 0 }
 
 };
 #define GEOMTYPE_STRUCT_ARRAY_LEN (sizeof geomtype_struct_array/sizeof(struct geomtype_struct))
