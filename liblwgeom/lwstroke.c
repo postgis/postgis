@@ -45,6 +45,7 @@ LWGEOM* lwmline_unstroke(const LWMLINE *mline);
 LWGEOM* lwmpolygon_unstroke(const LWMPOLY *mpoly);
 LWGEOM* lwcollection_unstroke(const LWCOLLECTION *c);
 LWGEOM* lwgeom_unstroke(const LWGEOM *geom);
+static LWLINE* lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol, LW_LINEARIZE_TOLERANCE_TYPE tolerance_type, int flags);
 
 
 /*
@@ -72,6 +73,7 @@ lwgeom_has_arc(const LWGEOM *geom)
 	case TINTYPE:
 		return LW_FALSE;
 	case CIRCSTRINGTYPE:
+	case NURBSCURVETYPE:
 		return LW_TRUE;
 	/* It's a collection that MAY contain an arc */
 	default:
@@ -92,6 +94,7 @@ lwgeom_type_arc(const LWGEOM *geom)
 	{
 	case COMPOUNDTYPE:
 	case CIRCSTRINGTYPE:
+	case NURBSCURVETYPE:
 	case CURVEPOLYTYPE:
 	case MULTISURFACETYPE:
 	case MULTICURVETYPE:
@@ -817,6 +820,9 @@ lwcollection_linearize(const LWCOLLECTION *collection, double tol,
 		case CIRCSTRINGTYPE:
 			geoms[i] = (LWGEOM *)lwcircstring_linearize((LWCIRCSTRING *)tmp, tol, type, flags);
 			break;
+		case NURBSCURVETYPE:
+			geoms[i] = (LWGEOM *)lwnurbscurve_linearize((LWNURBSCURVE *)tmp, tol, type, flags);
+			break;
 		case COMPOUNDTYPE:
 			geoms[i] = (LWGEOM *)lwcompound_linearize((LWCOMPOUND *)tmp, tol, type, flags);
 			break;
@@ -837,6 +843,53 @@ lwcollection_linearize(const LWCOLLECTION *collection, double tol,
 	return ocol;
 }
 
+/*
+ * @param curve input NURBS curve
+ * @param tol tolerance, semantic driven by tolerance_type
+ * @param tolerance_type see LW_LINEARIZE_TOLERANCE_TYPE
+ * @param flags see flags in lwarc_linearize
+ *
+ * @return a newly allocated LWLINE
+ */
+static LWLINE *
+lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol,
+                        LW_LINEARIZE_TOLERANCE_TYPE tolerance_type,
+                        int flags)
+{
+	uint32_t num_segments;
+
+	LWDEBUG(2, "lwnurbscurve_linearize called.");
+
+	if (!curve)
+		return NULL;
+
+	/*
+	 * For NURBS, we interpret the tolerance parameter based on tolerance_type:
+	 * - LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD: tol * 4 segments (quad = 1/4 curve)
+	 * - LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION: use default 32 segments
+	 *   (proper deviation-based calculation would require more complex analysis)
+	 * - LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE: use default 32 segments
+	 *   (proper angle-based calculation would require more complex analysis)
+	 */
+	switch (tolerance_type)
+	{
+	case LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD:
+		num_segments = (uint32_t)(tol * 4);
+		if (num_segments < 8) num_segments = 8;
+		break;
+	case LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION:
+	case LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE:
+	default:
+		/* Default to 32 segments for a reasonable approximation */
+		num_segments = 32;
+		break;
+	}
+
+	(void)flags; /* Currently unused for NURBS linearization */
+
+	return lwnurbscurve_to_linestring(curve, num_segments);
+}
+
 LWGEOM *
 lwcurve_linearize(const LWGEOM *geom, double tol,
                   LW_LINEARIZE_TOLERANCE_TYPE type,
@@ -847,6 +900,9 @@ lwcurve_linearize(const LWGEOM *geom, double tol,
 	{
 	case CIRCSTRINGTYPE:
 		ogeom = (LWGEOM *)lwcircstring_linearize((LWCIRCSTRING *)geom, tol, type, flags);
+		break;
+	case NURBSCURVETYPE:
+		ogeom = (LWGEOM *)lwnurbscurve_linearize((LWNURBSCURVE *)geom, tol, type, flags);
 		break;
 	case COMPOUNDTYPE:
 		ogeom = (LWGEOM *)lwcompound_linearize((LWCOMPOUND *)geom, tol, type, flags);
