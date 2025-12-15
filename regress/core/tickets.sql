@@ -1664,3 +1664,15 @@ SELECT
 FROM
 (VALUES ('LINESTRING (170 290, 205 272)'),('LINESTRING (120 215, 176 197)'),('LINESTRING (170 290, 205 272)')) AS a(geom),
 (VALUES ('POLYGON ((100 200, 140 230, 180 310, 280 310, 390 270, 400 210, 320 140, 215 141, 150 170, 100 200))')) AS b(geom);
+
+
+-- -------------------------------------------------------------------------------------
+-- #6028
+
+CREATE TABLE fault6028 (fid integer, geom geometry(Polygon,5015));
+CREATE INDEX fault6028_x ON fault6028 USING GIST (geom);
+INSERT INTO fault6028 (fid, geom)
+  VALUES (1, '0103000020971300000100000000000000'::GEOMETRY);
+SELECT * FROM fault6028;
+DROP TABLE IF EXISTS fault6028;
+
