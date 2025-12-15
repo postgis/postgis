@@ -224,16 +224,19 @@ void gserialized2_set_srid(GSERIALIZED *g, int32_t srid)
 static size_t gserialized2_is_empty_recurse(const uint8_t *p, int *isempty);
 static size_t gserialized2_is_empty_recurse(const uint8_t *p, int *isempty)
 {
-	int i;
-	int32_t type, num;
+	uint32_t type = 0, num = 0;
+
+	/* Short circuit if we found any non-empty component */
+	if (!*isempty) return 0;
 
 	memcpy(&type, p, 4);
 	memcpy(&num, p+4, 4);
 
 	if (lwtype_is_collection(type))
 	{
+		/* Recurse into collections */
 		size_t lz = 8;
-		for ( i = 0; i < num; i++ )
+		for ( uint32_t i = 0; i < num; i++ )
 		{
 			lz += gserialized2_is_empty_recurse(p+lz, isempty);
 			if (!*isempty)
@@ -244,14 +247,44 @@ static size_t gserialized2_is_empty_recurse(const uint8_t *p, int *isempty)
 	}
 	else
 	{
-		*isempty = (num == 0 ? LW_TRUE : LW_FALSE);
-		return 8;
+		size_t lz = 8;
+		/* Any non-collection with zero elements is empty */
+		if ( num == 0 )
+		{
+			*isempty = LW_TRUE;
+		}
+		/*
+		 * Special case to handle polygon with a non-zero
+		 * set of empty rings
+		 * https://trac.osgeo.org/postgis/ticket/6028
+		 */
+		else if ( num > 0 && type == POLYGONTYPE )
+		{
+			for ( uint32_t i = 0; i < num; i++ )
+			{
+				uint32_t lrnum;
+				memcpy(&lrnum, p+lz, 4);
+				lz += 4;
+				if ( lrnum > 0 )
+				{
+					*isempty = LW_FALSE;
+					return lz;
+				}
+			}
+			*isempty = LW_TRUE;
+		}
+		/* Any other non-collection with more than zero elements is not empty */
+		else
+		{
+			*isempty = LW_FALSE;
+		}
+		return lz;
 	}
 }
 
 int gserialized2_is_empty(const GSERIALIZED *g)
 {
-	int isempty = 0;
+	int isempty = LW_TRUE;
 	uint8_t *p = gserialized2_get_geometry_p(g);
 	gserialized2_is_empty_recurse(p, &isempty);
 	return isempty;

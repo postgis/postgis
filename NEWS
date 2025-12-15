@@ -17,6 +17,7 @@ SELECT topology.FixCorruptTopoGeometryColumn(schema_name, table_name, feature_co
 - #6019, make clean does not remove cunit generated files
            (Bas Couwenberg)
 - #6020, schema qualify call in ST_MPointFromText (Paul Ramsey)
+- #6028, crash indexing malformed empty polygon (Paul Ramsey)
 
 
 PostGIS 3.6.1
