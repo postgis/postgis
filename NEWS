@@ -23,6 +23,7 @@ Proj 4.9+ required.
  - #5991, CircularString distance error (Paul Ramsey)
  - #5962, Consistent clipping of MULTI/POINT (Paul Ramsey)
  - #5989, CurvePolygon distance error (Paul Ramsey)
+ - #6028, Crash indexing malformed empty polygon (Paul Ramsey)
 
 
 PostGIS 3.2.8
