@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-09 06:47+0000\n"
+"PO-Revision-Date: 2025-12-15 01:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -4023,7 +4023,7 @@ msgstr ""
 "ます (エッジを <varname>e</varname>とします):"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>abs(next_left_edge)</varname> is the identifier of the edge reached "
 "by continuing around the face that lies to the left of <varname>e</varname>. "
@@ -4033,10 +4033,10 @@ msgid ""
 "face remains on the walker’s left."
 msgstr ""
 "<varname>abs(next_left_edge)</varname>は<varname>e</varname>の左にあるフェイ"
-"スを辿る場合に次に到達するエッジの識別番号です。値が正数の場合には"
-"<varname>e</varname>の終端ノードから次のエッジの格納されている通りの方向に進"
-"みます。負数の場合には次のエッジは逆向きにたどることになるので、共有するフェ"
-"イスは辿っている者から見たら左側にあります。"
+"スを辿る場合に次に到達するエッジの識別番号です。値が正数の場合には<varname>e<"
+"/varname>の終端ノードから次のエッジの格納されている通りの方向に進みます。負数"
+"の場合には次のエッジは逆向きに辿ることになるので、共有するフェイスは辿ってい"
+"る者から見たら左側にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -4057,7 +4057,7 @@ msgstr ""
 "存されます。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A zero value indicates that the edge is dangling on the corresponding side "
 "(for example an isolated edge whose incident face is the universal face "
@@ -4065,11 +4065,11 @@ msgid ""
 "<varname>abs_next_right_edge</varname> columns exposed by the <varname>edge</"
 "varname> view are convenience projections of these absolute values."
 msgstr ""
-"ゼロは対応する側でエッジがぶら下がっていることを示します (たとえば接続する"
-"フェイスが <varname>0</varname>のユニバーサルフェイスになっている孤立エッ"
-"ジ)。 <varname>edge</varname>ビューにある<varname>abs_next_left_edge</"
-"varname>カラムと<varname>abs_next_right_edge</varname>カラムは絶対値にして扱"
-"いすくしたものです。"
+"ゼロは対応する側でエッジがぶら下がっていることを示します ("
+"たとえば接続するフェイスが "
+"<varname>0</varname>のユニバーサルフェイスになっている孤立エッジ)。 <varname>"
+"edge</varname>ビューにある<varname>abs_next_left_edge</varname>カラムと<varna"
+"me>abs_next_right_edge</varname>カラムは絶対値にして扱いすくしたものです。"
 
 #. Tag: para
 #, no-c-format
@@ -16384,12 +16384,12 @@ msgstr "妥当なポリゴン系ジオメトリーの集合のエッジを調整
 "成するウィンドウ関数です。きれいにする処理には次を含みます:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "snapping vertices and edges to remove small discrepancies and ensure common "
 "edges are identically noded"
-msgstr "小さな不一致を取り除き、共有されるエッジに同じようにノードが打たれるのを確実"
-"にするために、頂点とエッジをスナップさせる"
+msgstr "小さな不一致を取り除き、共有されるエッジに同じノードが打たれるようにするため"
+"に、頂点とエッジをスナップさせる"
 
 #. Tag: para
 #, no-c-format
@@ -16432,24 +16432,24 @@ msgstr ""
 "るポリゴンを親ポリゴンにマージするかが指定されます:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<code>MERGE_LONGEST_BORDER</code> - merges into polygon with longest common "
 "border"
 msgstr "<code>MERGE_LONGEST_BORDER</code> - 共有境界が最長のポリゴンにマージします"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<code>MERGE_MAX_AREA</code> - merges into polygon with maximum area"
 msgstr "<code>MERGE_MAX_AREA</code> - 最大面積のポリゴンにマージします"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<code>MERGE_MIN_AREA</code> - merges into polygon with minimum area"
 msgstr "<code>MERGE_MIN_AREA</code> - 最小面積のポリゴンにマージします"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<code>MERGE_MIN_INDEX</code> - merges into polygon with smallest input index "
 "(defined by order of input polygons)"
