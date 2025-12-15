@@ -36,6 +36,7 @@ Proj 6.1+ required.
   - #5962, Consistent clipping of MULTI/POINT (Paul Ramsey)
   - #5754, ST_ForcePolygonCCW reverses lines (Paul Ramsey)
   - #6020, schema qualify call in ST_MPointFromText (Paul Ramsey)
+  - #6028, crash indexing malformed empty polygon (Paul Ramsey)
 
 
 PostGIS 3.4.4
