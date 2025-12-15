@@ -18,6 +18,7 @@ YYYY/MM/DD
  - #5917, ST_Relate becomes unresponsive (Paul Ramsey)
  - #5991, CircularString distance error (Paul Ramsey)
  - #5962, Consistent clipping of MULTI/POINT (Paul Ramsey)
+ - #6028, Crash indexing malformed empty polygon (Paul Ramsey)
 
 
 PostGIS 3.1.12
