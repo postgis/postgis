@@ -11,9 +11,9 @@
 			using a garden variety of geometries.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>3.6.0</xsl:variable>
+	<xsl:variable name='testversion'>3.7.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
-	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable CG_Visibility CG_YMonotonePartition ST_AlphaShape ST_OptimalAlphaShape</xsl:variable>
+	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported or tested separately -->
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>
@@ -36,7 +36,7 @@
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
 	<xsl:variable name='var_geom_name'>the_geom</xsl:variable>
-	<xsl:variable name='var_logtable'>postgis_garden_log36</xsl:variable>
+	<xsl:variable name='var_logtable'>postgis_garden_log37</xsl:variable>
 	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp()
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
 		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
@@ -278,6 +278,11 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 			UNION ALL SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(1 2, 1 2,1 2, 1 2, 3 2, 1 2)',4326)) As the_geom
 		)
 		</pgis:gset>
+		<pgis:gset ID="Malformed Polygon 1 ring with 0 points" GeometryType="POLYGON" createtable="true">(SELECT  ST_SetSRID('0103000020971300000100000000000000'::GEOMETRY,4326) AS the_geom
+		)
+		</pgis:gset>
+
+
 		<pgis:gset ID="Infinite Polygons" GeometryType="POLYGON" createtable="true">(SELECT '0106000020E61000000100000001030000000100000005000000000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F'::geometry  AS the_geom
 		)
 		</pgis:gset>
