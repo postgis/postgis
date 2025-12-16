@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-15 01:47+0000\n"
+"PO-Revision-Date: 2025-12-16 10:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -76,21 +76,19 @@ msgstr ""
 msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
-msgstr ""
-"インストールしたGDALのドライバを有効にするには、次の環境変数を設定します:"
+msgstr "インストールしたGDALのドライバーを有効にするには、次の環境変数を設定します:"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
-msgstr ""
-"一部のドライバのみ有効にしたい場合には、環境変数を次のように設定します:"
+msgstr "一部のドライバーのみ有効にしたい場合には、環境変数を次のように設定します:"
 
 #. Tag: para
 #, no-c-format
 msgid "If you are on windows, do not quote the driver list"
-msgstr "Windows環境の場合は、ドライバリストに引用符をつけないで下さい"
+msgstr "Windows環境の場合は、ドライバーリストに引用符をつけないで下さい"
 
 #. Tag: para
 #, no-c-format
@@ -8345,9 +8343,9 @@ msgid ""
 "Also make sure to enable the drivers you want to use as described in <xref "
 "linkend=\"raster_configuration\"/>."
 msgstr ""
-"GDAL (擬似的任意)。ラスタが必要ない場合に限り不要です。<xref "
-"linkend=\"raster_configuration\"/>の説明に従って使用したいドライバを有効にし"
-"てください。"
+"GDAL (擬似的任意)。ラスターが必要ない場合に限り不要です。<xref linkend="
+"\"raster_configuration\""
+"/>の説明に従って使用したいドライバーを有効にしてください。"
 
 #. Tag: para
 #, no-c-format
@@ -10199,7 +10197,7 @@ msgstr "Jorge Arévalo"
 #. Tag: para
 #, no-c-format
 msgid "Raster development, GDAL driver support, loader"
-msgstr "ラスタ開発、GDALドライバ機能、ローダ。"
+msgstr "ラスター開発、GDALドライバー機能、ローダー。"
 
 #. Tag: term
 #, no-c-format
@@ -18625,7 +18623,7 @@ msgid ""
 "A configuration option to set the enabled GDAL drivers in the PostGIS "
 "environment. Affects the GDAL configuration variable GDAL_SKIP."
 msgstr ""
-"PostGIS環境でGDALドライバを有効にするコンフィギュレーションオプションです。"
+"PostGIS環境でGDALドライバーを有効にするコンフィギュレーションオプションです。"
 "GDALコンフィギュレーション変数GDAL_SKIPに影響を与えます。"
 
 #. Tag: para
@@ -18636,10 +18634,10 @@ msgid ""
 "can be set in PostgreSQL's configuration file: postgresql.conf. It can also "
 "be set by connection or transaction."
 msgstr ""
-"PostGIS環境でGDALドライバを有効にするコンフィギュレーションオプションです。"
-"GDALコンフィギュレーション変数GDAL_SKIPに影響を与えます。このオプションは、"
-"PostgreSQLのコンフィギュレーションファイルpostgresql.confで設定できます。コネ"
-"クションまたはトランザクションでも設定できます。"
+"PostGIS環境でGDALドライバーを有効にするコンフィギュレーションオプションです。"
+"GDALコンフィギュレーション変数GDAL_SKIPに影響を与えます。このオプションは、Po"
+"stgreSQLのコンフィギュレーションファイルpostgresql."
+"confで設定できます。コネクションまたはトランザクションでも設定できます。"
 
 #. Tag: para
 #, no-c-format
@@ -18650,8 +18648,8 @@ msgid ""
 "drivers to the process starting PostgreSQL."
 msgstr ""
 "<varname>postgis.gdal_enabled_drivers</varname>の初期値は、PostgreSQL開始プロ"
-"セスに渡される、有効とするドライバの一覧からなる環境変数"
-"<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname>によって設定されます。"
+"セスに渡される、有効とするドライバーの一覧からなる環境変数<varname>POSTGIS_GD"
+"AL_ENABLED_DRIVERS</varname>によって設定されます。"
 
 #. Tag: para
 #, no-c-format
@@ -18661,10 +18659,10 @@ msgid ""
 "href=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</link>. "
 "Multiple drivers can be specified by putting a space between each driver."
 msgstr ""
-"有効にするGDALドライバは、ドライバの短縮名またはコードで指定します。ドライバ"
-"の短縮名またはコードは<link xlink:href=\"http://www.gdal.org/formats_list."
-"html\">GDAL Raster Formats</link>にあります。複数のドライバを指定するには、ド"
-"ライバの間に一つの空白を置きます。"
+"有効にするGDALドライバーは、ドライバーの短縮名またはコードで指定します。"
+"ドライバーの短縮名またはコードは<link xlink:href=\"http://www.gdal.org/"
+"formats_list.html\">GDAL Raster Formats</link>にあります。複数のドライバーを"
+"指定するには、ドライバーの間に一つの空白を置きます。"
 
 #. Tag: para
 #, no-c-format
@@ -18682,14 +18680,14 @@ msgid ""
 "<varname>DISABLE_ALL</varname> overrides all other values in "
 "<varname>postgis.gdal_enabled_drivers</varname>."
 msgstr ""
-"<varname>DISABLE_ALL</varname> 全てのGDALドライバを無効にします。"
-"<varname>DISABLE_ALL</varname>は<varname>postgis.gdal_enabled_drivers</"
-"varname>にある他の全ての値を上書きします。"
+"<varname>DISABLE_ALL</varname> 全てのGDALドライバーを無効にします。<varname>D"
+"ISABLE_ALL</varname>は<varname>postgis."
+"gdal_enabled_drivers</varname>にある他の全ての値を上書きします。"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>ENABLE_ALL</varname> enables all GDAL drivers."
-msgstr "<varname>ENABLE_ALL</varname> 全てのGDALドライバを有効にします。"
+msgstr "<varname>ENABLE_ALL</varname> 全てのGDALドライバーを有効にします。"
 
 #. Tag: para
 #, no-c-format
@@ -18743,7 +18741,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Set for all new connections to a specific database to specific drivers"
-msgstr "特定データベースへの新しい接続の全てに対する特定のドライバの設定"
+msgstr "特定データベースへの新しい接続の全てに対する特定のドライバーの設定"
 
 #. Tag: para
 #, no-c-format
@@ -18752,9 +18750,9 @@ msgid ""
 "user access. Also note that database, session, and user settings override "
 "this."
 msgstr ""
-"データベースクラスタの全体に対して全てのドライバを有効にする設定。スーパー"
-"ユーザアカウントが必要です。データベース、セッション、ユーザの設定が優先され"
-"ることに注意して下さい。"
+"データベースクラスターの全体に対して全てのドライバーを有効にする設定。スーパ"
+"ーユーザーアカウントが必要です。データベース、セッション、ユーザーの設定が優"
+"先されることに注意して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -29880,7 +29878,7 @@ msgstr ""
 "can_write=TrueとなっているものだけがST_AsGDALRasterで使えます。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Returns a list of raster formats short_name,long_name and creator options of "
 "each format supported by GDAL. Use the short_name as input in the "
@@ -29891,13 +29889,14 @@ msgid ""
 "varname>, <varname>description</varname> and set of <varname>VALUE</varname> "
 "for each creator option for the specific driver."
 msgstr ""
-"使用しているGDALライブラリが対応するラスタ書式のshort_name, long_nameと作成オ"
-"プションの一覧を返します。short_nameは、<xref linkend=\"RT_ST_AsGDALRaster\"/"
-">の<varname>format</varname>パラメタに使います。オプションはGDALライブラリの"
-"コンパイルに使ったドライバに依存します。<varname>create_options</varname>は、"
-"XML形式のCretionOptionList/Optionの集合で、ドライバごとの生成オプションごと"
-"に、名前を持ち、追加情報の<varname>type</varname>, <varname>description</"
-"varname>と<varname>VALUE</varname>の集合を持ちます。"
+"使用しているGDALライブラリが対応するラスタ書式のshort_name, "
+"long_nameと作成オプションの一覧を返します。short_nameは、<xref linkend="
+"\"RT_ST_AsGDALRaster\"/>の<varname>format</varname>パラメーターに使います。オ"
+"プションはGDALライブラリのコンパイルに使ったドライバーに依存します。<varname>"
+"create_options</varname>は、XML形式のCretionOptionList/Optionの集合で、ドライ"
+"バーごとの生成オプションごとに、名前を持ち、追加情報の<varname>type</"
+"varname>, "
+"<varname>description</varname>と<varname>VALUE</varname>の集合を持ちます。"
 
 #. Tag: para
 #, no-c-format
@@ -29911,8 +29910,8 @@ msgid ""
 "Environment variable gdal_enabled_drivers is set."
 msgstr ""
 "Changed: 2.0.6, 2.1.3 - GUC (訳注: Grand Unified Configurationの略で、動的に"
-"変更できるPostgreSQLパラメータ)または環境変数gdal_enabled_driversが設定されて"
-"いないデフォルトではドライバが全て無効になりました。"
+"変更できるPostgreSQLパラメーター)または環境変数gdal_enabled_driversが設定され"
+"ていないデフォルトではドライバーが全て無効になりました。"
 
 #. Tag: para
 #, no-c-format
@@ -29922,12 +29921,12 @@ msgstr "Availability: 2.0.0 - GDAL 1.6.0以上が必要です。"
 #. Tag: title
 #, no-c-format
 msgid "Examples: List of Drivers"
-msgstr "例: ドライバ一覧"
+msgstr "例: ドライバー一覧"
 
 #. Tag: title
 #, no-c-format
 msgid "Example: List of options for each driver"
-msgstr "例: ドライバ毎のオプション一覧"
+msgstr "例: ドライバー毎のオプション一覧"
 
 #. Tag: para
 #, no-c-format
@@ -33762,10 +33761,11 @@ msgid ""
 "'PNG'. Use <xref linkend=\"RT_ST_GDALDrivers\"/> to get a list of formats "
 "supported by your library."
 msgstr ""
-"<varname>format</varname> 出力書式です。libgdalライブラリでコンパイルしたドラ"
-"イバに依存します。一般的には'JPEG', 'GTIff', 'PNG'が有効になっています。ライ"
-"ブラリが対応する形式の一覧を得るには<xref linkend=\"RT_ST_GDALDrivers\"/>を使"
-"います。"
+"<varname>format</varname> "
+"出力書式です。libgdalライブラリでコンパイルしたドライバーに依存します。"
+"一般的には'JPEG', 'GTIff', 'PNG'が有効になっています。"
+"ライブラリが対応する形式の一覧を得るには<xref linkend=\"RT_ST_GDALDrivers\""
+"/>を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -50214,9 +50214,9 @@ msgid ""
 "band 1,2,3 of a raster to a PHP request stream that can then be embedded in "
 "an img src html tag."
 msgstr ""
-"本節では、PHPのPostgreSQLドライバと<xref linkend=\"RT_ST_AsGDALRaster\"/>等の"
-"関数を使って、HTML imgタグに埋め込むことができるPHPリクエストストリームにラス"
-"タの1、2、3バンドを出力する方法を示します。"
+"本節では、PHPのPostgreSQLドライバーと<xref linkend=\"RT_ST_AsGDALRaster\""
+"/>等の関数を使って、HTML imgタグに埋め込むことができるPHPリクエストストリーム"
+"にラスターの1、2、3バンドを出力する方法を示します。"
 
 #. Tag: para
 #, no-c-format
@@ -50260,9 +50260,9 @@ msgid ""
 "band 1,2,3 of a raster to a PHP request stream that can then be embedded in "
 "an img src html tag."
 msgstr ""
-"本節では、Npgsql PostgreSQL .NETドライバと<xref "
-"linkend=\"RT_ST_AsGDALRaster\"/>等の関数を使って、HTML imgタグに埋め込むこと"
-"ができるように、ラスタの1、2、3バンドを出力する方法を示します。"
+"本節では、Npgsql PostgreSQL .NETドライバーと<xref linkend="
+"\"RT_ST_AsGDALRaster\"/>等の関数を使って、HTML imgタグに埋め込むことができる"
+"ように、ラスターの1、2、3バンドを出力する方法を示します。"
 
 #. Tag: para
 #, no-c-format
@@ -50273,10 +50273,10 @@ msgid ""
 "download the latest and drop into your ASP.NET bin folder and you'll be good "
 "to go."
 msgstr ""
-"この例ではNpgsql .NET PostgreSQLドライバが必要です。最新版は<link xlink:"
-"href=\"http://npgsql.projects.postgresql.org/\">http://npgsql.projects."
-"postgresql.org/</link>にあります。最新版をダウンロードして、ASP.NET の bin"
-"フォルダに入れるだけでうまくいきます。"
+"この例ではNpgsql .NET PostgreSQLドライバーが必要です。最新版は<link "
+"xlink:href=\"http://npgsql.projects.postgresql.org/\">http://npgsql.projects."
+"postgresql.org/</link>にあります。最新版をダウンロードして、ASP.NET の "
+"binフォルダに入れるだけでうまくいきます。"
 
 #. Tag: para
 #, no-c-format
@@ -50319,9 +50319,9 @@ msgid ""
 "href=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/"
 "download.html</link>"
 msgstr ""
-"最新のPostgreSQL JDBCドライバは<link xlink:href=\"http://jdbc.postgresql.org/"
-"download.html\">http://jdbc.postgresql.org/download.html</link>からダウンロー"
-"ドできます。"
+"最新のPostgreSQL JDBCドライバーは<link xlink:href=\"http://jdbc.postgresql."
+"org/download.html\">http://jdbc.postgresql.org/download."
+"html</link>からダウンロードできます。"
 
 #. Tag: para
 #, no-c-format
