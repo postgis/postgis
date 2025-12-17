@@ -6,10 +6,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-11-12 11:47+0000\n"
+"PO-Revision-Date: 2025-12-17 06:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
-"Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/uk/>\n"
+"Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -52,6 +52,12 @@ msgid ""
 "You can also use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
+"Растери поза базою даних та всі драйвери растерів за замовчуванням вимкнені. "
+"Щоб знову ввімкнути їх, потрібно встановити такі змінні середовища "
+"<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> та "
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> у середовищі сервера. Ви "
+"також можете використовувати більш міжплатформний підхід, встановивши "
+"відповідний <xref linkend=\"PostGIS_GUC\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -97,6 +103,12 @@ msgid ""
 "<replaceable>CLUSTER</replaceable>/environment</filename> where the "
 "placeholders refer to the PostgreSQL major version and cluster name."
 msgstr ""
+"Налаштування змінних середовища залежить від операційної системи. Для "
+"PostgreSQL, встановленого на Ubuntu або Debian за допомогою apt-postgresql, "
+"найкращим способом є редагування файлу <filename>/etc/postgresql/<replaceable"
+">MAJOR</replaceable>/<replaceable>CLUSTER</replaceable>/environment</"
+"filename>, де замінні символи позначають основну версію PostgreSQL та ім'я "
+"кластера."
 
 #. Tag: para
 #, no-c-format
@@ -141,6 +153,8 @@ msgid ""
 "If you have compiled and installed the extensions/postgis modules, you can "
 "turn a database into a spatial one using the EXTENSION mechanism."
 msgstr ""
+"Якщо ви скомпілювали та встановили модулі extensions/postgis, ви можете "
+"перетворити базу даних на просторову за допомогою механізму EXTENSION."
 
 #. Tag: para
 #, no-c-format
@@ -298,7 +312,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Soft upgrade using extensions"
-msgstr ""
+msgstr "М'яке оновлення за допомогою розширень"
 
 #. Tag: para
 #, no-c-format
@@ -307,6 +321,8 @@ msgid ""
 "upgrade using extensions as well. Doing a minor upgrade with extensions is "
 "fairly painless."
 msgstr ""
+"Якщо ви спочатку встановили PostGIS з розширеннями, то вам потрібно також "
+"оновити розширення. Незначне оновлення з розширеннями є досить простим."
 
 #. Tag: para
 #, no-c-format
@@ -314,6 +330,8 @@ msgid ""
 "Use the <xref linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade "
 "to the latest version you have installed."
 msgstr ""
+"Використовуйте функцію <xref linkend=\"PostGIS_Extensions_Upgrade\"/> для "
+"оновлення до останньої версії, яку ви встановили."
 
 #. Tag: para
 #, no-c-format
@@ -324,6 +342,11 @@ msgid ""
 "<varname>postgis_raster</varname> objects are folded back into the main "
 "extension."
 msgstr ""
+"Якщо ви оновлюєте базу даних, яка все ще працює на PostGIS 2.5, виконайте "
+"команду <command>ALTER EXTENSION</command>, а потім "
+"<function>postgis_extensions_upgrade()</function>, щоб переконатися, що "
+"застарілі об'єкти <varname>postgis_raster</varname> повернуті в основне "
+"розширення."
 
 #. Tag: para
 #, no-c-format
@@ -397,7 +420,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Soft upgrade without extensions"
-msgstr ""
+msgstr "М'яке оновлення без розширень"
 
 #. Tag: para
 #, no-c-format
@@ -407,6 +430,10 @@ msgid ""
 "linkend=\"hard_upgrade\">HARD UPGRADE</link> into a database created with "
 "extensions and migrate your data there."
 msgstr ""
+"Розширення є підтримуваним методом інсталяції для багатьох версій. Якщо ви "
+"все ще використовуєте інсталяцію без пакетів, виконайте <link linkend="
+"\"hard_upgrade\">ЖОРСТКЕ ОНОВЛЕННЯ</link> у базу даних, створену за "
+"допомогою розширень, і перенесіть туди свої дані."
 
 #. Tag: title
 #, no-c-format
@@ -675,6 +702,9 @@ msgid ""
 "<code>postgresql.conf</code> or <code>postgresql.auto.conf</code> by using "
 "the <code>ALTER SYSTEM</code> command."
 msgstr ""
+"Конфігурацію PostgreSQL можна налаштувати на рівні сервера, не торкаючись "
+"файлів <code>postgresql.conf</code> або <code>postgresql.auto.conf</code>, "
+"за допомогою команди <code>ALTER SYSTEM</code>."
 
 #. Tag: para
 #, no-c-format
@@ -713,6 +743,10 @@ msgid ""
 "they are in an inherited hierarchy and avoids paying the planner penalty "
 "otherwise."
 msgstr ""
+"Зазвичай використовується для розділення таблиць. За замовчуванням "
+"\"partition\" змушує планувальник аналізувати таблиці на предмет обмежень "
+"тільки в тому випадку, якщо вони знаходяться в успадкованій ієрархії, і "
+"дозволяє уникнути штрафних санкцій планувальника в інших випадках."
 
 #. Tag: link
 #, no-c-format
@@ -722,7 +756,7 @@ msgstr "shared_buffers"
 #. Tag: para
 #, no-c-format
 msgid "Default: ~128MB"
-msgstr ""
+msgstr "За замовчуванням: ~128 МБ"
 
 #. Tag: para
 #, no-c-format
@@ -742,6 +776,11 @@ msgid ""
 "and therefore also bounds how many workers can participate in parallel "
 "queries."
 msgstr ""
+"<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
+"config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</link> "
+"контролює максимальну кількість фонових процесів, доступних для сервера, і, "
+"отже, також обмежує кількість працівників, які можуть брати участь у "
+"паралельних запитах."
 
 #. Tag: para
 #, no-c-format
@@ -847,6 +886,14 @@ msgid ""
 "sure to bump up <code>max_worker_processes</code> to at least as high as "
 "this number."
 msgstr ""
+"Підтримка паралельних запитів у сучасних PostgreSQL та PostGIS використовує "
+"це налаштування для визначення кількості робочих процесів, які може вимагати "
+"план. Якщо значення встановлено вище 0, то деякі запити, наприклад ті, що "
+"містять функції відношення, такі як <code>ST_Intersects</code>, можуть "
+"використовувати кілька процесів і при цьому працювати удвічі швидше. Якщо у "
+"вас є багато вільних процесорів, вам слід змінити значення цього параметра "
+"на кількість процесорів, які у вас є. Також переконайтеся, що значення "
+"<code>max_worker_processes</code> збільшено принаймні до цього числа."
 
 #. Tag: para
 #, no-c-format
@@ -1500,7 +1547,7 @@ msgstr "Токени введення поштового типу"
 #. Tag: para
 #, no-c-format
 msgid "(28). A 5 digit number. Identifies a ZIP code"
-msgstr ""
+msgstr "(28). 5-значне число. Ідентифікує поштовий індекс"
 
 #. Tag: para
 #, no-c-format
@@ -1630,6 +1677,9 @@ msgid ""
 "(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). This "
 "attribute is used for both the US ZIP and the Canadian postal codes."
 msgstr ""
+"(номер токена «13»). (Елементи SADS «ZIP CODE» , «PLUS 4» ). Цей атрибут "
+"використовується як для поштових індексів США, так і для поштових індексів "
+"Канади."
 
 #. Tag: para
 #, no-c-format
@@ -2125,6 +2175,9 @@ msgid ""
 "located in the <varname>extras/history_table</varname> directory of the "
 "PostGIS source tree."
 msgstr ""
+"Розширення <varname>history_table</varname> написано на мові plpgsql і "
+"знаходиться в каталозі <varname>extras/history_table</varname> дерева "
+"вихідного коду PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -2293,6 +2346,11 @@ msgid ""
 "suffixes, states, various control tables for managing data load, and "
 "skeleton base tables from which all the TIGER-loaded tables inherit."
 msgstr ""
+"Скрипт створює схему під назвою <varname>tiger</varname> для розміщення всіх "
+"функцій, пов'язаних з TIGER, даних для повторного використання, таких як "
+"префікси типів доріг, суфікси, штати, різні таблиці управління для керування "
+"завантаженням даних, а також базові таблиці-скелети, від яких успадковуються "
+"всі таблиці, завантажені TIGER."
 
 #. Tag: para
 #, no-c-format
@@ -2306,6 +2364,15 @@ msgid ""
 "<varname>faces</varname>, <varname>edges</varname>, etc located in the "
 "<varname>tiger</varname> schema."
 msgstr ""
+"Також створюється інша схема під назвою <varname>tiger_data</varname>, яка "
+"містить усі дані перепису населення для кожного штату, які завантажувач "
+"завантажує з веб-сайту Census і завантажує в базу даних. У поточній моделі "
+"кожен набір таблиць штатів має префікс з кодом штату, наприклад "
+"<varname>ma_addr</varname>, <varname>ma_edges</varname> тощо, з обмеженнями, "
+"що забезпечують використання тільки даних цього штату. Кожна з цих таблиць "
+"успадковується від таблиць <varname>addr</varname>, <varname>faces</"
+"varname>, <varname>edges</varname> тощо, розташованих у схемі "
+"<varname>tiger</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -2316,6 +2383,11 @@ msgid ""
 "different schema for each state, as long as all the tables inherit from the "
 "tables in the <varname>tiger</varname> schema."
 msgstr ""
+"Всі функції геокодування посилаються тільки на базові таблиці, тому немає "
+"вимоги, щоб схема даних називалася <varname>tiger_data</varname> або щоб "
+"дані не могли бути додатково розділені на інші схеми — наприклад, окрема "
+"схема для кожного штату, якщо всі таблиці успадковуються від таблиць у схемі "
+"<varname>tiger</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -2339,6 +2411,13 @@ msgid ""
 "have data from tiger_2010 and want to replace with tiger_2015, refer to "
 "<xref linkend=\"upgrade_tiger_geocoder\"/>"
 msgstr ""
+"Якщо ви використовуєте TIGER Geocoder (tiger_2010), ви можете оновити "
+"скрипти за допомогою супутніх скриптів upgrade_geocoder.bat / .sh в extras/"
+"tiger. Однією з основних змін між <varname>tiger_2010</varname> і "
+"<varname>tiger_2011+</varname> є те, що таблиці <varname>county</varname> і "
+"<varname>state</varname> більше не розбиваються за штатами. Якщо у вас є "
+"дані з tiger_2010 і ви хочете замінити їх на tiger_2015, зверніться до <xref "
+"linkend=\"upgrade_tiger_geocoder\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -2346,6 +2425,8 @@ msgid ""
 "You can install the TIGER Geocoder with the PostgreSQL extension model. "
 "Refer to <xref linkend=\"install_tiger_geocoder_extension\"/> for details."
 msgstr ""
+"Ви можете встановити TIGER Geocoder з розширенням PostgreSQL. Детальнішу "
+"інформацію див. у <xref linkend=\"install_tiger_geocoder_extension\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -2385,6 +2466,8 @@ msgid ""
 "The <varname>reverse_geocode</varname> function is useful for deriving the "
 "street address and cross streets of a GPS location."
 msgstr ""
+"Функція <varname>reverse_geocode</varname> корисна для визначення адреси та "
+"перехресть вулиць за GPS-координатами."
 
 #. Tag: para
 #, no-c-format
@@ -2431,6 +2514,9 @@ msgid ""
 "There are a couple other open source geocoders for PostGIS, that unlike the "
 "TIGER Geocoder have the advantage of multi-country geocoding support"
 msgstr ""
+"Існує ще кілька геокодерів з відкритим кодом для PostGIS, які, на відміну "
+"від TIGER Geocoder, мають перевагу у вигляді підтримки геокодування для "
+"декількох країн"
 
 #. Tag: para
 #, no-c-format
@@ -2444,6 +2530,14 @@ msgid ""
 "interface like the TIGER Geocoder, or if a good deal of the logic is "
 "implemented in the web interface."
 msgstr ""
+"<link xlink:href=\"http://wiki.openstreetmap.org/wiki/Nominatim\">Nominatim</"
+"link> використовує дані у форматі OpenStreetMap gazeteer. Для завантаження "
+"даних разом із PostgreSQL та PostGIS необхідний osm2pgsql. Він упакований як "
+"інтерфейс веб-сервісу і, здається, призначений для виклику як веб-сервіс. "
+"Так само, як і TIGER Geocoder, він має як геокодер, так і компонент "
+"зворотного геокодера. З документації не зрозуміло, чи має він чистий "
+"інтерфейс SQL, як TIGER Geocoder, чи значна частина логіки реалізована у "
+"веб-інтерфейсі."
 
 #. Tag: para
 #, no-c-format
@@ -2456,6 +2550,13 @@ msgid ""
 "cross-platform and also has a reverse geocoder among some other neat "
 "features."
 msgstr ""
+"<link xlink:href=\"https://www.gisgraphy.com/\">GIS Graphy</link> може "
+"використовувати PostGIS і, як і Nominatim, використовує дані OpenStreetMap "
+"(OSM) разом з деякими іншими джерелами. Він поставляється з завантажувачем "
+"для завантаження даних OSM і, подібно до Nominatim, здатний геокодувати не "
+"тільки США. Як і Nominatim, він працює як веб-сервіс і базується на Java "
+"1.5, додатках Servlet та Solr. GisGraphy є кросплатформовим і має, серед "
+"інших корисних функцій, зворотний геокодер."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2955,6 +3056,9 @@ msgid ""
 "scripts, rerun it on the states you have already processed to get these "
 "additional tables."
 msgstr ""
+"включає цю логіку, але якщо ви встановили TIGER Geocoder зі старими "
+"скриптами, запустіть його знову для вже оброблених штатів, щоб отримати ці "
+"додаткові таблиці."
 
 #. Tag: para
 #, no-c-format
@@ -3128,6 +3232,10 @@ msgid ""
 "when enabled, zcta5 data is loaded as a single table called zcta5_all as "
 "part of the nation script load."
 msgstr ""
+"Покращено: 2.4.1 Виправлено завантаження табуляційного району 5 за поштовим "
+"індексом (zcta5), і коли ця функція увімкнена, дані zcta5 завантажуються як "
+"одна таблиця під назвою zcta5_all у рамках завантаження національного "
+"скрипта."
 
 #. Tag: para
 #, no-c-format
@@ -3135,6 +3243,8 @@ msgid ""
 "If you want ZIP Code 5 tabulation area (zcta5) to be included in your nation "
 "script load, do the following:"
 msgstr ""
+"Якщо ви хочете, щоб область табуляції ZIP-коду 5 (zcta5) була включена у ваш "
+"національний скрипт, виконайте наступні дії:"
 
 #. Tag: para
 #, no-c-format
@@ -3382,6 +3492,8 @@ msgid ""
 "<varname>zip4</varname> last 4 digits of a 9 digit ZIP Code. Availability: "
 "PostGIS 2.4.0."
 msgstr ""
+"<varname>zip4</varname> останні 4 цифри 9-значного поштового індексу. "
+"Доступність: PostGIS 2.4.0."
 
 #. Tag: para
 #, no-c-format
@@ -3957,6 +4069,11 @@ msgid ""
 "functions, fixed known usability issues, documented the features and "
 "functions, added new functionality, and improved SQL-MM compliance."
 msgstr ""
+"Модуль топології PostGIS існує вже давно, але не завжди був частиною "
+"офіційної документації. В результаті масштабного очищення були видалені "
+"застарілі функції, виправлені відомі проблеми з користувацькою зручністю, "
+"задокументовані можливості та функції, додані нові функції та покращено "
+"відповідність SQL-MM."
 
 #. Tag: para
 #, no-c-format
@@ -3993,11 +4110,14 @@ msgid ""
 "without-topology configure option at build time as described in <xref "
 "linkend=\"postgis_installation\"/>"
 msgstr ""
+"Підтримка топології вбудована за замовчуванням і може бути вимкнена шляхом "
+"вказання опції конфігурації --without-topology під час компіляції, як "
+"описано в <xref linkend=\"postgis_installation\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Topology Primitive Tables"
-msgstr ""
+msgstr "Таблиці топологічних примітивів"
 
 #. Tag: para
 #, no-c-format
@@ -4013,6 +4133,17 @@ msgid ""
 "therefore appear twice—once for each orientation—when it belongs to two "
 "faces."
 msgstr ""
+"Основні примітиви будь-якої топології зберігаються в таблицях "
+"<varname>edge_data</varname>, <varname>node</varname> та <varname>face</"
+"varname>, які знаходяться в схемі, створеній за допомогою <xref linkend="
+"\"CreateTopology\"/>. Кожен рядок таблиці <varname>edge_data</varname> "
+"представляє орієнтовану грань: він записує спрямовану криву від "
+"<varname>start_node</varname> до <varname>end_node</varname> разом з "
+"ідентифікатором грані, що зустрічається зліва від цього напрямку "
+"(<varname>left_face</varname>), та грані, що зустрічається справа "
+"(<varname>right_face</varname>). Таким чином, один і той самий геометричний "
+"сегмент може з'являтися двічі — по одному разу для кожного напрямку — якщо "
+"він належить до двох граней."
 
 #. Tag: para
 #, no-c-format
@@ -4024,6 +4155,13 @@ msgid ""
 "the stored orientation has to be followed as-is or reversed when traversing. "
 "Formally, the following rules hold for every edge <varname>e</varname>:"
 msgstr ""
+"Стовпці <varname>next_left_edge</varname> та <varname>next_right_edge</"
+"varname> доповнюють цю інформацію про орієнтацію, кодуючи спосіб продовження "
+"руху навколо грані. Вони зберігають цілочисельні значення зі знаком, "
+"абсолютна величина яких є ідентифікатором наступної орієнтованої грані, а "
+"знак визначає, чи слід дотримуватися збереженої орієнтації без змін, чи слід "
+"її змінити на протилежну під час проходження. Формально для кожної ребра "
+"<varname>e</varname> діють такі правила:"
 
 #. Tag: para
 #, no-c-format
@@ -4035,6 +4173,12 @@ msgid ""
 "negative the referenced edge must be followed backwards so that the shared "
 "face remains on the walker’s left."
 msgstr ""
+"<varname>abs(next_left_edge)</varname> — це ідентифікатор ребра, до якого "
+"можна дістатися, продовжуючи рух навколо грані, що лежить ліворуч від "
+"<varname>e</varname>. Якщо значення є додатним, проходження продовжується "
+"від кінцевого вузла <varname>e</varname> вздовж збереженої орієнтації "
+"посилального ребра; якщо воно є від'ємним, посилальне ребро необхідно пройти "
+"назад, щоб спільна грань залишалася ліворуч від об'єкта проходження."
 
 #. Tag: para
 #, no-c-format
@@ -4046,6 +4190,12 @@ msgid ""
 "instructs to traverse the referenced edge in reverse, starting from its end "
 "node, so that the right-hand face is preserved."
 msgstr ""
+"<varname>abs(next_right_edge)</varname> аналогічно слідує за межею грані, "
+"розташованої праворуч від <varname>e</varname>. Позитивне значення означає, "
+"що наступна грань береться з її записаною орієнтацією, починаючи з кінцевого "
+"вузла <varname>e</varname>, тоді як негативне значення вказує на "
+"необхідність проходження по вказаній грані у зворотному напрямку, починаючи "
+"з її кінцевого вузла, щоб зберегти праву грань."
 
 #. Tag: para
 #, no-c-format
@@ -4056,6 +4206,11 @@ msgid ""
 "<varname>abs_next_right_edge</varname> columns exposed by the <varname>edge</"
 "varname> view are convenience projections of these absolute values."
 msgstr ""
+"Значення нуль вказує на те, що ребро звисає з відповідного боку (наприклад, "
+"ізольоване ребро, дотична грань якого є універсальною гранью "
+"<varname>0</varname>). Стовпці <varname>abs_next_left_edge</varname> та "
+"<varname>abs_next_right_edge</varname>, що відображаються у вигляді "
+"<varname>edge</varname>, є зручними проекціями цих абсолютних значень."
 
 #. Tag: para
 #, no-c-format
@@ -4571,6 +4726,8 @@ msgid ""
 "Fixes topogeometry corruption caused by upgrade to postgis_topology 3.6.0 "
 "and higher"
 msgstr ""
+"Виправлено пошкодження топогеометрії, спричинене оновленням до "
+"postgis_topology 3.6.0 та вище"
 
 #. Tag: para
 #, no-c-format
