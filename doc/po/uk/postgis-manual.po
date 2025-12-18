@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-17 06:47+0000\n"
+"PO-Revision-Date: 2025-12-18 12:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -4228,6 +4228,19 @@ msgid ""
 "linkend=\"TopologyPolygonize\"/>) may intentionally leave the fields unset, "
 "which is why the documentation flags their behaviour explicitly."
 msgstr ""
+"Ця репрезентація є варіантом подвійно зв'язаного списку ребер і "
+"використовується багатьма топологічними процедурами. Такі функції, як <xref "
+"linkend=\"GetRingEdges\"/> та <xref linkend=\"ValidateTopology\"/>, "
+"покладаються на неї для відновлення меж граней та діагностики "
+"невідповідностей — звідси і діагностичні повідомлення «invalid "
+"next_left_edge» та «invalid next_right_edge», що з'являються під час "
+"перевірки. Конструктори, такі як <xref linkend=\"AddEdge\"/>, ініціалізують "
+"атрибути <varname>next_*</varname> з тривіальними самопосиланнями, тоді як "
+"процедури редагування, включаючи <xref linkend=\"ST_AddEdgeModFace\"/> та "
+"<xref linkend=\"ST_RemEdgeModFace\"/>, оновлюють посилання під час "
+"вставлення або видалення ребер. Інші масові операції (наприклад, <xref "
+"linkend=\"TopologyPolygonize\"/>) можуть навмисно залишати поля "
+"невизначеними, тому в документації їхня поведінка чітко позначена."
 
 #. Tag: title
 #, no-c-format
@@ -4737,16 +4750,20 @@ msgid ""
 "topogeometries created before the upgrade. This function fixes this "
 "corruption in affected tables."
 msgstr ""
+"При оновленні топології PostGIS <3.6.0 до версії >3.6.0+ було змінено "
+"визначення стовпця topogeometry. Це спричинило пошкодження топогеометрій, "
+"створених до оновлення. Ця функція виправляє це пошкодження в уражених "
+"таблицях."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.6.1"
-msgstr ""
+msgstr "Доступність: 3.6.1"
 
 #. Tag: para
 #, no-c-format
 msgid "Fix all topology columns"
-msgstr ""
+msgstr "Виправити всі стовпці топології"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5533,7 +5550,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0 added support for <varname>hasZ</varname>."
-msgstr ""
+msgstr "Покращено: у версії 2.0 додано підтримку <varname>hasZ</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -5541,6 +5558,8 @@ msgid ""
 "Enhanced: 3.6.0 added <varname>topoid</varname> and <varname>usesLargeIDs</"
 "varname> parameters."
 msgstr ""
+"Покращено: у версії 3.6.0 додано параметри <varname>topoid</varname> та "
+"<varname>usesLargeIDs</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -5728,6 +5747,9 @@ msgid ""
 "identifiers forming it up (negative identifies mean the edge goes in the "
 "opposite direction of the input linestring)."
 msgstr ""
+"Додає лінію до існуючої топології та повертає набір ідентифікаторів ребер із "
+"знаком, що її утворюють (негативні ідентифікатори означають, що ребро йде в "
+"протилежному напрямку від вхідної лінії)."
 
 #. Tag: para
 #, no-c-format
@@ -5736,6 +5758,9 @@ msgid ""
 "Existing edges and faces may be split by the line. New nodes and faces may "
 "be added, in addition to new edges."
 msgstr ""
+"Дана лінія прив'яжеться до існуючих вузлів або ребер в межах заданої "
+"похибки. Існуючі ребра і грані можуть бути розділені лінією. Крім нових "
+"ребер, можуть бути додані нові вузли і грані."
 
 #. Tag: para
 #, no-c-format
@@ -5743,6 +5768,9 @@ msgid ""
 "The returned edge identifiers may be either existing edges or newly created "
 "edges as needed to fully represent the input line as closely as possible."
 msgstr ""
+"Повернені ідентифікатори ребер можуть бути як існуючими ребрами, так і "
+"новоствореними ребрами, залежно від необхідності, щоб якомога точніше "
+"відобразити введену лінію."
 
 #. Tag: para
 #, no-c-format
@@ -5751,6 +5779,9 @@ msgid ""
 "uncovered or resulting from split of existing edges) may be limited by the "
 "<varname>max_edges</varname> parameter."
 msgstr ""
+"Кількість новостворених ребер (які покривають раніше непокритий простір або "
+"є результатом розділення існуючих ребер) може бути обмежена параметром "
+"<varname>max_edges</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -5775,6 +5806,8 @@ msgid ""
 "Enhanced: 3.7.0 added support for limiting the number of new edges created "
 "in the topology."
 msgstr ""
+"Покращено: у версії 3.7.0 додано підтримку обмеження кількості нових ребер, "
+"що створюються в топології."
 
 #. Tag: para
 #, no-c-format
@@ -7373,6 +7406,9 @@ msgid ""
 "geometry to existing primitives. The special value -1 (default) means use "
 "the topology precision as tolerance."
 msgstr ""
+"Коли вказано <varname>tolerance</varname>, воно буде використовуватися для "
+"прив'язки вхідної геометрії до існуючих примітивів. Спеціальне значення -1 ("
+"за замовчуванням) означає використання точності топології як допуску."
 
 #. Tag: para
 #, no-c-format
@@ -7411,6 +7447,9 @@ msgid ""
 "Changed: 3.7.0 changes meaning of tolerance 0 to really mean 0 and -1 (new "
 "default) to request using the topology precision."
 msgstr ""
+"Змінено: у версії 3.7.0 змінено значення толерантності 0, яке тепер означає "
+"0 і -1 (нове значення за замовчуванням), щоб вимагати використання точності "
+"топології."
 
 #. Tag: para
 #, no-c-format
@@ -8612,6 +8651,10 @@ msgid ""
 "xlink:href=\"http://www.graphicsmagick.org/\"> http://www.graphicsmagick."
 "org/ </link> ."
 msgstr ""
+"Для створення зображень, що використовуються в документації, необхідна "
+"програма GraphicsMagick (<filename>gm convert</filename>). GraphicsMagick "
+"доступна за адресою <link xlink:href=«http://www.graphicsmagick.org/»> "
+"http://www.graphicsmagick.org/ </link> ."
 
 #. Tag: title
 #, no-c-format
@@ -8940,6 +8983,12 @@ msgid ""
 "so no need to make comments if installing from the tar ball. Comments are "
 "also included as part of the CREATE EXTENSION install."
 msgstr ""
+"Усі функції мають коментарі, згенеровані з документації. Якщо ви бажаєте "
+"пізніше встановити ці коментарі у свої просторові бази даних, виконайте "
+"команду, яка вимагає docbook. Файли postgis_comments.sql та інші файли "
+"коментарів пакета також упаковані у дистрибутив tar.gz у папці doc, тому "
+"немає потреби створювати коментарі, якщо ви встановлюєте з tar-архіву. "
+"Коментарі також включені як частина інсталяції CREATE EXTENSION."
 
 #. Tag: para
 #, no-c-format
@@ -8952,6 +9001,12 @@ msgid ""
 "<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet."
 "html</filename>"
 msgstr ""
+"Ціль <command>make cheatsheets</command> генерує html-шпаргалки, придатні "
+"для швидкого ознайомлення або для роздачі студентам. Для цього потрібно "
+"xsltproc, який створить 4 файли в папці doc: <filename>topology_cheatsheet."
+"html</filename>, <filename>tiger_geocoder_cheatsheet.html</filename>, "
+"<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet."
+"html</filename>"
 
 #. Tag: para
 #, no-c-format
@@ -8975,6 +9030,8 @@ msgid ""
 "The PostGIS extensions are built and installed automatically when PostgreSQL "
 "extension support is available."
 msgstr ""
+"Розширення PostGIS створюються та встановлюються автоматично, якщо доступна "
+"підтримка розширень PostgreSQL."
 
 #. Tag: para
 #, no-c-format
@@ -9145,6 +9202,18 @@ msgid ""
 "given version of an extension. These behaviors are built into the current "
 "PostgreSQL extension model."
 msgstr ""
+"Розширені таблиці <varname>spatial_ref_sys</varname>, <varname>layer</"
+"varname>, <varname>topology</varname> не можуть бути явно скопійовані. Їх "
+"можна створити лише під час резервного копіювання відповідного розширення "
+"<varname>postgis</varname> або <varname>postgis_topology</varname>, що "
+"відбувається лише під час резервного копіювання всієї бази даних. У "
+"резервних копіях зберігаються лише записи srid, що не входять до складу "
+"PostGIS, тому не змінюйте записи, які ми надаємо, і не очікуйте, що зміни "
+"будуть збережені. Якщо ви виявили проблему, створіть квиток. Структури "
+"таблиць розширень ніколи не резервуються, оскільки вони створюються за "
+"допомогою <code>CREATE EXTENSION</code> і вважаються однаковими для даної "
+"версії розширення. Ці особливості вбудовані в поточну модель розширень "
+"PostgreSQL."
 
 #. Tag: para
 #, no-c-format
@@ -9220,6 +9289,13 @@ msgid ""
 "<varname>POSTGIS_REGRESS_ROLE_EXT_CREATOR</varname> when the extension "
 "creation role must differ from the database owner."
 msgstr ""
+"Сандбоксні облікові записи, які не є суперкористувачами PostgreSQL, можуть "
+"делегувати права власності на базу даних під час циклу регресії, експортуючи "
+"<varname>POSTGIS_REGRESS_DB_OWNER</varname>. Харнес створить тимчасову базу "
+"даних регресії, що належить призначеній ролі, продовжуючи підключатися за "
+"допомогою облікового запису з меншими привілеями. Поєднайте це з "
+"<varname>POSTGIS_REGRESS_ROLE_EXT_CREATOR</varname>, коли роль створення "
+"розширення повинна відрізнятися від власника бази даних."
 
 #. Tag: para
 #, no-c-format
@@ -9229,6 +9305,10 @@ msgid ""
 "superuser, provided the target PostgreSQL instance permits extension "
 "installation by those delegate roles."
 msgstr ""
+"Ці змінні дозволяють автоматизованим середовищам виконувати повні шляхи "
+"оновлення та встановлення розширень без підвищення облікового запису, що "
+"викликає, до суперкористувача, за умови, що цільовий екземпляр PostgreSQL "
+"дозволяє встановлення розширень цими делегованими ролями."
 
 #. Tag: para
 #, no-c-format
@@ -9364,6 +9444,10 @@ msgid ""
 "configure it for your needs, refer to <xref linkend=\"Address_Standardizer\"/"
 ">."
 msgstr ""
+"Розширення <code>address_standardizer</code> входить до складу PostGIS. Для "
+"отримання додаткової інформації про address_standardizer, його функції та "
+"налаштування відповідно до ваших потреб, зверніться до <xref linkend="
+"\"Address_Standardizer\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -9409,6 +9493,8 @@ msgid ""
 "Windows installation packages include the address_standardizer so you can "
 "move straight to the <code>CREATE EXTENSION</code> step."
 msgstr ""
+"Інсталяційні пакети Windows містять address_standardizer, тому ви можете "
+"перейти безпосередньо до кроку <code>CREATE EXTENSION</code>."
 
 #. Tag: para
 #, no-c-format
@@ -9564,6 +9650,11 @@ msgid ""
 "by default because it takes quite a bit of time to load (20 to 60 minutes), "
 "takes up quite a bit of disk space, and is not used that often."
 msgstr ""
+"Етап завантаження 5-значного поштового індексу <varname>zcta5</varname> "
+"використовує поточні дані ZCTA і є частиною <xref linkend="
+"\"Loader_Generate_Nation_Script\"/>, коли він увімкнений. Він вимкнений за "
+"замовчуванням, оскільки завантаження займає досить багато часу (від 20 до 60 "
+"хвилин), займає чимало місця на диску і використовується не так часто."
 
 #. Tag: para
 #, no-c-format
@@ -10278,12 +10369,13 @@ msgstr "Обробка геометрії, PostgreSQL gist, загальне в�
 #. Tag: term
 #, no-c-format
 msgid "<term>Laurențiu Nicola</term>"
-msgstr ""
+msgstr "<term>Лаурентіу Нікола</term>"
 
 #. Tag: para
 #, no-c-format
 msgid "Bug fixes, maintenance, stability, and performance"
 msgstr ""
+"Виправлення помилок, технічне обслуговування, стабільність та продуктивність"
 
 #. Tag: title
 #, no-c-format
@@ -10821,7 +10913,7 @@ msgstr "Кріс Юрка"
 #. Tag: member
 #, no-c-format
 msgid "<member>Laurențiu Nicola</member>"
-msgstr ""
+msgstr "<member>Лаурентіу Нікола</member>"
 
 #. Tag: member
 #, no-c-format
@@ -11383,6 +11475,9 @@ msgid ""
 "past. We used <link xlink:href=\"http://www.pledgebank.com\">PledgeBank</"
 "link> and we got two successful campaigns out of it."
 msgstr ""
+"PostGIS вже експериментував із залученням коштів від спільноти для розробки "
+"нових функцій. Ми використовували <link xlink:href=\"http://www.pledgebank."
+"com\">PledgeBank</link> і провели дві успішні кампанії."
 
 #. Tag: para
 #, no-c-format
@@ -11487,6 +11582,14 @@ msgid ""
 "toast.html\">the PostgreSQL Documentation for TOAST</link> for more "
 "information)."
 msgstr ""
+"Поточні версії PostgreSQL мають слабкість оптимізатора запитів щодо таблиць "
+"TOAST. Таблиці TOAST — це свого роду «додатковий простір», що "
+"використовується для зберігання великих (у сенсі розміру даних) значень, які "
+"не вміщуються у звичайні сторінки даних (наприклад, довгі тексти, зображення "
+"або складні геометрії з великою кількістю вершин). Див. <link xlink:href="
+"\"http://www.postgresql.org/docs/current/static/storage-toast.html \""
+">документацію PostgreSQL щодо TOAST</link> для отримання додаткової "
+"інформації)."
 
 #. Tag: para
 #, no-c-format
@@ -12239,6 +12342,10 @@ msgid ""
 "dimensionality, or coordinate components so that spatial expressions can "
 "interrogate complex objects in a controlled way."
 msgstr ""
+"Ці функції розкривають структурну інформацію про існуючу геометрію, не "
+"змінюючи її. Вони надають доступ до метаданих, таких як тип геометрії, "
+"розмірність або координатні компоненти, щоб просторові вирази могли "
+"контролювати запити до складних об'єктів."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -12795,6 +12902,9 @@ msgid ""
 "linkend=\"ST_Dump\"/> to extract polygon elements from polygonal geometries: "
 "<code>ST_DumpRings( (ST_Dump(geom)).geom )</code>"
 msgstr ""
+"Це працює тільки для геометрій POLYGON, а не для MULTIPOLYGON. "
+"Використовуйте <xref linkend=\"ST_Dump\"/>, щоб витягти елементи полігону з "
+"полігональних геометрій: <code>ST_DumpRings( (ST_Dump(geom)).geom )</code>"
 
 #. Tag: para
 #, no-c-format
@@ -12804,12 +12914,12 @@ msgstr "Доступність: PostGIS 1.1.3. Вимагає PostgreSQL 7.3 а�
 #. Tag: para
 #, no-c-format
 msgid "Extracting all rings as polygons."
-msgstr ""
+msgstr "Витяг усіх кілець як полігонів."
 
 #. Tag: para
 #, no-c-format
 msgid "Extracting shell and holes from a polygon."
-msgstr ""
+msgstr "Вилучення оболонки та отворів з полігона."
 
 #. Tag: para
 #, no-c-format
@@ -14623,6 +14733,9 @@ msgid ""
 "linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
 "linkend=\"ST_MMin\"/>, <xref linkend=\"ST_MMax\"/>"
 msgstr ""
+", <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend="
+"\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMin\"/>, "
+"<xref linkend=\"ST_MMax\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14677,6 +14790,9 @@ msgid ""
 "linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
 "linkend=\"ST_MMin\"/>, <xref linkend=\"ST_MMax\"/>"
 msgstr ""
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMin\"/>, "
+"<xref linkend=\"ST_MMax\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14703,6 +14819,9 @@ msgid ""
 "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMin\"/>, <xref "
 "linkend=\"ST_MMax\"/>"
 msgstr ""
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, "
+"<xref linkend=\"ST_MMin\"/>, <xref linkend=\"ST_MMax\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14729,6 +14848,9 @@ msgid ""
 "linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_MMin\"/>, <xref "
 "linkend=\"ST_MMax\"/>"
 msgstr ""
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+"\"ST_YMin\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, "
+"<xref linkend=\"ST_MMin\"/>, <xref linkend=\"ST_MMax\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14755,17 +14877,21 @@ msgid ""
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
 "linkend=\"ST_MMin\"/>, <xref linkend=\"ST_MMax\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
+"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_YMax\""
+"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMin\"/>, <xref linkend="
+"\"ST_MMax\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the M minima of a geometry."
-msgstr ""
+msgstr "Повертає M-мінімум геометрії."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Returns the M minima of a geometry, or null of the geometry lacks M values."
-msgstr ""
+msgstr "Повертає M-мінімум геометрії або нуль, якщо геометрія не має M значень."
 
 #. Tag: para
 #, no-c-format
@@ -14774,6 +14900,9 @@ msgid ""
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMax\"/>"
 msgstr ""
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, "
+"<xref linkend=\"ST_MMax\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -14782,6 +14911,9 @@ msgid ""
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMin\"/>"
 msgstr ""
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref linkend=\"ST_ZMax\"/>, "
+"<xref linkend=\"ST_MMin\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -15172,6 +15304,9 @@ msgid ""
 "primitives, coordinate sequences, or existing geometries into well-formed "
 "spatial objects that can participate in subsequent analysis."
 msgstr ""
+"Ці функції створюють нові значення геометрії або географії. Вони об'єднують "
+"примітиви, послідовності координат або існуючі геометрії в добре сформовані "
+"просторові об'єкти, які можуть брати участь у подальшому аналізі."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15413,6 +15548,11 @@ msgid ""
 "appear in the collection. <xref linkend=\"ST_RemoveRepeatedPoints\"/> can be "
 "used to collapse repeated points from the output LineString."
 msgstr ""
+"Повторювані вузли на початку вхідних LineStrings зводиться до однієї точки. "
+"Повторювані точки у вхідних Point і MultiPoint не зводяться. Компоненти "
+"MultiLineString обробляються в порядку їх появи в колекції. <xref linkend="
+"\"ST_RemoveRepeatedPoints\"/>може використовуватися для зведення "
+"повторюваних точок з вихідного LineString."
 
 #. Tag: para
 #, no-c-format
@@ -15420,6 +15560,7 @@ msgid ""
 "Availability: 3.7.0 - Support for MultiLineString input elements was "
 "introduced"
 msgstr ""
+"Доступність: 3.7.0 — додано підтримку елементів введення MultiLineString"
 
 #. Tag: para
 #, no-c-format
@@ -15509,6 +15650,8 @@ msgid ""
 "can be used. However, sometimes the query plan may not respect the order of "
 "the subquery."
 msgstr ""
+"Якщо сортування в межах агрегату неможливе, можна скористатися сортуванням у "
+"підзапиті. Однак іноді план запиту може не враховувати порядок підзапиту."
 
 #. Tag: para
 #, no-c-format
@@ -16577,6 +16720,8 @@ msgid ""
 "A window function which adjusts the edges of a set of valid polygonal "
 "geometries to produce a clean coverage. Cleaning involves:"
 msgstr ""
+"Віконна функція, яка коригує грані набору дійсних полігональних геометрій "
+"для отримання чистого покриття. Очищення включає:"
 
 #. Tag: para
 #, no-c-format
@@ -16584,16 +16729,18 @@ msgid ""
 "snapping vertices and edges to remove small discrepancies and ensure common "
 "edges are identically noded"
 msgstr ""
+"прив'язування вершин і ребер для усунення невеликих розбіжностей і "
+"забезпечення однакового вузла спільних ребер"
 
 #. Tag: para
 #, no-c-format
 msgid "merging overlaps into a parent polygon"
-msgstr ""
+msgstr "об'єднання перекриттів у батьківський багатокутник"
 
 #. Tag: para
 #, no-c-format
 msgid "merging narrow gaps into adjacent polygons"
-msgstr ""
+msgstr "об'єднання вузьких проміжків у сусідні багатокутники"
 
 #. Tag: para
 #, no-c-format
@@ -16602,6 +16749,9 @@ msgid ""
 "are merged. Gaps with width &lt;= this distance are merged into an adjacent "
 "polygon."
 msgstr ""
+"<parameter>gapMaximumWidth</parameter> контролює, які проміжки між "
+"полігонами об'єднуються. Проміжки шириною &lt;= ця відстань об'єднуються в "
+"сусідній полігон."
 
 #. Tag: para
 #, no-c-format
@@ -16610,6 +16760,9 @@ msgid ""
 "edges. The default (-1) automatically determines a snapping distance based "
 "on the input extent. Set to 0.0 to turn off snapping."
 msgstr ""
+"<parameter>snappingDistance</parameter> контролює прив'язку вершин і ребер. "
+"За замовчуванням (-1) автоматично визначається відстань прив'язки на основі "
+"введеного розміру. Встановіть значення 0,0, щоб вимкнути прив'язку."
 
 #. Tag: para
 #, no-c-format
@@ -16617,6 +16770,8 @@ msgid ""
 "<parameter>overlapMergeStrategy</parameter> specifies how overlaps are "
 "merged into a parent polygon:"
 msgstr ""
+"<parameter>overlapMergeStrategy</parameter> визначає, як перекриття "
+"об'єднуються в батьківський багатокутник:"
 
 #. Tag: para
 #, no-c-format
@@ -16624,16 +16779,20 @@ msgid ""
 "<code>MERGE_LONGEST_BORDER</code> - merges into polygon with longest common "
 "border"
 msgstr ""
+"<code>MERGE_LONGEST_BORDER</code> — об'єднує в багатокутник з найдовшою "
+"спільною межею"
 
 #. Tag: para
 #, no-c-format
 msgid "<code>MERGE_MAX_AREA</code> - merges into polygon with maximum area"
 msgstr ""
+"<code>MERGE_MAX_AREA</code> - об'єднує в багатокутник з максимальною площею"
 
 #. Tag: para
 #, no-c-format
 msgid "<code>MERGE_MIN_AREA</code> - merges into polygon with minimum area"
 msgstr ""
+"<code>MERGE_MIN_AREA</code> - об'єднує в багатокутник з мінімальною площею"
 
 #. Tag: para
 #, no-c-format
@@ -16641,6 +16800,8 @@ msgid ""
 "<code>MERGE_MIN_INDEX</code> - merges into polygon with smallest input index "
 "(defined by order of input polygons)"
 msgstr ""
+"<code>MERGE_MIN_INDEX</code> - об'єднує в багатокутник з найменшим індексом "
+"введення (визначається порядком введення багатокутників)"
 
 #. Tag: para
 #, no-c-format
@@ -16649,6 +16810,9 @@ msgid ""
 "linkend=\"ST_CoverageInvalidEdges\"/> and can be input to coverage "
 "processing functions."
 msgstr ""
+"Результатом є чисте полігональне покриття, яке пройде перевірку за допомогою "
+"<xref linkend=\"ST_CoverageInvalidEdges\"/> і може бути введено в функції "
+"обробки покриття."
 
 #. Tag: para
 #, no-c-format
@@ -16661,6 +16825,13 @@ msgid ""
 "linkend=\"ST_MaximumInscribedCircle\"/> on them; the gap width is twice the "
 "computed radius."
 msgstr ""
+"Щоб полегшити визначення максимальної ширини проміжків, їх можна обчислити, "
+"очистивши за допомогою <code>gapMaximumWidth => 0</code> і використовуючи "
+"<xref linkend=\"ST_CoverageUnion\"/>для об'єднання результату покриття. "
+"Дірки в об'єднанні відповідають проміжкам в оригінальному наборі даних. "
+"Ширину проміжків можна виміряти, витягнувши отвори у вигляді багатокутників "
+"і виконавши на них <xref linkend=\"ST_MaximumInscribedCircle\"/>; ширина "
+"проміжку дорівнює подвійному обчисленому радіусу."
 
 #. Tag: para
 #, no-c-format
@@ -16670,17 +16841,18 @@ msgstr "Доступність: 3.6.0 - вимагає GEOS &gt;= 3.14.0"
 #. Tag: para
 #, no-c-format
 msgid "Polygons with overlaps and gaps"
-msgstr ""
+msgstr "Полігони з перекриттями та розривами"
 
 #. Tag: para
 #, no-c-format
 msgid "Invalid coverage edges"
-msgstr ""
+msgstr "Недійсні грані покриття"
 
 #. Tag: para
 #, no-c-format
 msgid "Clean polygonal coverage, with overlaps and narrow gaps removed"
 msgstr ""
+"Чисте полігональне покриття, з усуненням перекриттів і вузьких проміжків"
 
 #. Tag: para
 #, no-c-format
@@ -16689,6 +16861,8 @@ msgid ""
 "linkend=\"ST_CoverageSimplify\"/>, <xref "
 "linkend=\"ST_MaximumInscribedCircle\"/>"
 msgstr ""
+", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageSimplify\""
+"/>, <xref linkend=\"ST_MaximumInscribedCircle\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18659,6 +18833,9 @@ msgid ""
 "They provide last-resort maintenance operations that are not required during "
 "normal spatial workflows."
 msgstr ""
+"Ці процедури призначені для діагностики та відновлення пошкоджених даних. "
+"Вони забезпечують операції технічного обслуговування в крайньому випадку, "
+"які не потрібні під час звичайних просторових робочих процесів."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19874,6 +20051,12 @@ msgid ""
 "In this case we escape the ' with standard ANSI ', but slashes are not "
 "escaped"
 msgstr ""
+"У PostgreSQL стандарт standard_conforming_strings за замовчуванням "
+"встановлений на on. Ви можете змінити значення за замовчуванням за "
+"необхідності для окремого запиту або на рівні бази даних чи сервера. Нижче "
+"наведено, як це зробити, якщо standard_conforming_strings = on. У цьому "
+"випадку ми екрануємо “ за допомогою стандартного ANSI ”, але слэши не "
+"екрануються"
 
 #. Tag: para
 #, no-c-format
@@ -20585,6 +20768,10 @@ msgid ""
 "fractions or measures along routes and of projecting those measures back "
 "into spatial coordinates."
 msgstr ""
+"Ці функції вимірюють і визначають місце розташування подій уздовж лінійних "
+"об'єктів. Вони підтримують класичний робочий процес лінійного посилання, що "
+"полягає у вираженні позицій у вигляді дробів або вимірів уздовж маршрутів і "
+"перетворенні цих вимірів назад у просторові координати."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22371,6 +22558,11 @@ msgid ""
 "false</varname>, then the calculation is based on a sphere instead of a "
 "spheroid."
 msgstr ""
+"Для географічних типів: обчислення виконується за допомогою оберненого "
+"геодезичного розрахунку. Одиниці довжини вимірюються в метрах. Сфероїд "
+"визначається SRID; якщо SRID не вказано, використовується WGS84. Якщо "
+"<varname>use_spheroid = false</varname>, обчислення базується на сфері, а не "
+"на сфероїді."
 
 #. Tag: para
 #, no-c-format
@@ -22872,6 +23064,11 @@ msgid ""
 "<varname>use_spheroid = false</varname>, then calculations will approximate "
 "a sphere instead of a spheroid."
 msgstr ""
+"Для географічних типів обчислення виконуються за допомогою оберненої "
+"геодезичної задачі, де одиниці периметра вимірюються в метрах. Сфероїд "
+"визначається SRID; якщо SRID не вказано, використовується WGS84. Якщо "
+"<varname>use_spheroid = false</varname>, обчислення будуть наближатися до "
+"сфери, а не до сфероїда."
 
 #. Tag: para
 #, no-c-format
