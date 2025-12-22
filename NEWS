@@ -6,16 +6,20 @@ This version requires PostgreSQL 12-18, GEOS 3.8 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.14+ is needed.
 To take advantage of all SFCGAL features, SFCGAL 2.2+ is needed.
 
-If you are upgrading postgis_topology from a version before 3.6.1 and have topogeometry columns, make sure to run
-after the upgrade to fix topogeometry corruption:
+If you are upgrading postgis_topology from a version before 3.6.1 and
+have topogeometry columns, make sure to run after the upgrade to fix
+topogeometry corruption:
 
-SELECT topology.FixCorruptTopoGeometryColumn(schema_name, table_name, feature_column)
-    FROM topology.layer;
+  SELECT topology.FixCorruptTopoGeometryColumn(
+    schema_name, table_name, feature_column
+  ) FROM topology.layer;
 
 * Fixes *
 
+- #6027, Fix RemoveUnusedPrimitives without topology in search_path
+         (Sandro Santilli)
 - #6019, make clean does not remove cunit generated files
-           (Bas Couwenberg)
+         (Bas Couwenberg)
 - #6020, schema qualify call in ST_MPointFromText (Paul Ramsey)
 - #6028, crash indexing malformed empty polygon (Paul Ramsey)
 
