@@ -6,6 +6,7 @@ Proj 6.1+ required.
 
 * Bug Fixes *
 
+  - #6027, Fix RemoveUnusedPrimitives without topology in search_path (Sandro Santilli)
   - #5978, fix parsing of constraints in geometry_columns (Paul Ramsey)
   - #5977, Fix downgrade protection with standard conforming strings off (Sandro Santilli)
   - #5947, [topology] Fix crash in ST_ModEdgeHeal (Sandro Santilli)
