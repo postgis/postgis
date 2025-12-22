@@ -203,7 +203,7 @@ On many occasions, we'll introduce functionality that can only be used if PostGI
 with a dependency library higher than X? Where X is some version of a dependency library.
 
 Dependency guards need to be put in both the C library files and our test files.
-On some occassions where we need to do something different based on version of PostgreSQL,
+On some occasions where we need to do something different based on version of PostgreSQL,
 you'll see guards in the SQL files as well.
 
 We have guards in place in the code to handle these for dependency libraries
