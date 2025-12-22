@@ -27,7 +27,7 @@ DECLARE
   moreMergedFaces INT[];
 BEGIN
 
-  topo := findTopology(atopology);
+  topo := topology.findTopology(atopology);
   IF topo.id IS NULL THEN
     RAISE EXCEPTION 'Could not find topology "%"', atopology;
   END IF;
