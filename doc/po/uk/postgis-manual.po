@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-25 17:47+0000\n"
+"PO-Revision-Date: 2025-12-25 20:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -44278,6 +44278,8 @@ msgid ""
 "All data types can be cast to <varname>text</varname>, so this does not need "
 "to be specified explicitly."
 msgstr ""
+"Всі типи даних можуть бути перетворені в <varname>text</varname>, тому це не "
+"потрібно вказувати явно."
 
 #. Tag: refpurpose
 #, no-c-format
