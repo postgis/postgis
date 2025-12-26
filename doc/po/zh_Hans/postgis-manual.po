@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-07-28 08:47+0000\n"
-"Last-Translator: Weblate <noreply-mt-weblate@weblate.org>\n"
+"PO-Revision-Date: 2025-12-26 05:41+0000\n"
+"Last-Translator: Wangdapeng <wangdapeng20191008@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -54,6 +54,11 @@ msgid ""
 "You can also use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
+"Out-of-db 栅格（就是放在数据库外部的 raster）和所有 raster "
+"驱动默认都是禁用的。要重新启用它们，需要在服务器环境里设置环境变量 "
+"<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> 和 "
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>。你也可以采用更跨平台的方式，"
+"直接设置对应的 <xref linkend=\"PostGIS_GUC\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -93,6 +98,10 @@ msgid ""
 "<replaceable>CLUSTER</replaceable>/environment</filename> where the "
 "placeholders refer to the PostgreSQL major version and cluster name."
 msgstr ""
+"设置环境变量的方式会因操作系统而异。如果是在 Ubuntu 或 Debian 上通过 apt-"
+"postgresql 安装的 PostgreSQL，推荐的方式是编辑<filename>/etc/postgresql/<repl"
+"aceable>MAJOR</replaceable>/<replaceable>CLUSTER</replaceable>/environment</"
+"filename> 文件，其中占位符分别表示 PostgreSQL 的主版本号和集群名称。"
 
 #. Tag: para
 #, no-c-format
@@ -131,7 +140,8 @@ msgstr "使用扩展（EXTENSION）启用空间数据库"
 msgid ""
 "If you have compiled and installed the extensions/postgis modules, you can "
 "turn a database into a spatial one using the EXTENSION mechanism."
-msgstr ""
+msgstr "如果你已经编译并安装好了 extensions/postgis 模块，就可以通过 EXTENSION "
+"机制把一个普通数据库变成空间数据库。"
 
 #. Tag: para
 #, no-c-format
@@ -273,7 +283,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Soft upgrade using extensions"
-msgstr ""
+msgstr "使用 EXTENSION 软升级"
 
 #. Tag: para
 #, no-c-format
@@ -282,6 +292,8 @@ msgid ""
 "upgrade using extensions as well. Doing a minor upgrade with extensions is "
 "fairly painless."
 msgstr ""
+"如果你最初是用 EXTENSION 的方式安装 PostGIS，那升级的时候也必须继续用 "
+"EXTENSION 的方式。用 EXTENSION 做小版本升级一般都比较省心，过程也挺简单。"
 
 #. Tag: para
 #, no-c-format
@@ -289,6 +301,8 @@ msgid ""
 "Use the <xref linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade "
 "to the latest version you have installed."
 msgstr ""
+"使用 <xref linkend=\"PostGIS_Extensions_Upgrade\"/> 函数可以把 PostGIS "
+"升级到你当前已安装的最新版本。"
 
 #. Tag: para
 #, no-c-format
@@ -299,6 +313,10 @@ msgid ""
 "<varname>postgis_raster</varname> objects are folded back into the main "
 "extension."
 msgstr ""
+"如果你要升级的数据库还在跑 PostGIS 2.5，先执行一次 <command>ALTER "
+"EXTENSION</command>，然后再调用 "
+"<function>postgis_extensions_upgrade()</function>，这样可以把旧的 "
+"<varname>postgis_raster</varname> 遗留对象合并回主扩展，避免残留在外面。"
 
 #. Tag: para
 #, no-c-format
@@ -369,7 +387,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Soft upgrade without extensions"
-msgstr ""
+msgstr "不使用 EXTENSION 软升级"
 
 #. Tag: para
 #, no-c-format
@@ -379,6 +397,9 @@ msgid ""
 "linkend=\"hard_upgrade\">HARD UPGRADE</link> into a database created with "
 "extensions and migrate your data there."
 msgstr ""
+"扩展是 PostGIS 官方支持的安装方式。如果你现在还依赖非打包安装，"
+"那就需要执行一次 <link linkend=\"hard_upgrade\">HARD "
+"UPGRADE</link>，在一个用扩展方式创建的新库里完成升级，然后把数据迁移过去。"
 
 #. Tag: title
 #, no-c-format
@@ -620,6 +641,9 @@ msgid ""
 "<code>postgresql.conf</code> or <code>postgresql.auto.conf</code> by using "
 "the <code>ALTER SYSTEM</code> command."
 msgstr ""
+"可以通过 <code>ALTER SYSTEM</code> 命令在服务器层面设置 PostgreSQL 配置，"
+"这样就不用去改 <code>postgresql.conf</code> 或 <code>postgresql.auto.conf</"
+"code> 。"
 
 #. Tag: para
 #, no-c-format
@@ -658,6 +682,8 @@ msgid ""
 "they are in an inherited hierarchy and avoids paying the planner penalty "
 "otherwise."
 msgstr ""
+"这一般用在分区表场景。默认值 \"partition\" 的含义是：只有当表位于继承层级结构"
+"里时，优化器才会去做约束检查；否则就不分析，避免白白增加优化器的开销。"
 
 #. Tag: link
 #, no-c-format
@@ -667,7 +693,7 @@ msgstr "共享缓冲区"
 #. Tag: para
 #, no-c-format
 msgid "Default: ~128MB"
-msgstr ""
+msgstr "Default: ~128MB"
 
 #. Tag: para
 #, no-c-format
@@ -686,6 +712,9 @@ msgid ""
 "and therefore also bounds how many workers can participate in parallel "
 "queries."
 msgstr ""
+"<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
+"config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</link> "
+"用来控制服务器可用的后台进程数量上限，限制能参与并行查询的工作进程数量。"
 
 #. Tag: para
 #, no-c-format
@@ -782,6 +811,12 @@ msgid ""
 "sure to bump up <code>max_worker_processes</code> to at least as high as "
 "this number."
 msgstr ""
+"PostgreSQL / PostGIS "
+"的并行查询机制会根据这个设置来决定一个执行计划最多能申请多少个并行工作进程。"
+"只要把它设成大于 0，像 <code>ST_Intersects</code> "
+"这类关系函数的就能利用多个进程来跑，速度有机会提升到原来的两倍以上。"
+"如果你的机器 CPU 富余，建议把这个值调到你拥有的处理器数量。同时要把 "
+"<code>max_worker_processes</code> 也一起调高，至少不小于这个数。"
 
 #. Tag: para
 #, no-c-format
@@ -1385,7 +1420,7 @@ msgstr "邮政类型输入令牌"
 #. Tag: para
 #, no-c-format
 msgid "(28). A 5 digit number. Identifies a ZIP code"
-msgstr ""
+msgstr "(28). 一个5位数字，用来标识 ZIP Code"
 
 #. Tag: para
 #, no-c-format
@@ -1510,6 +1545,8 @@ msgid ""
 "(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). This "
 "attribute is used for both the US ZIP and the Canadian postal codes."
 msgstr ""
+"(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). "
+"这个属性同时用于美国 ZIP 和 加拿大邮政编码。"
 
 #. Tag: para
 #, no-c-format
@@ -1974,6 +2011,8 @@ msgid ""
 "located in the <varname>extras/history_table</varname> directory of the "
 "PostGIS source tree."
 msgstr ""
+"<varname>history_table</varname> 扩展是用 plpgsql 写的，位于PostGIS源码的 "
+"<varname>extras/history_table</varname> 目录下。"
 
 #. Tag: para
 #, no-c-format
@@ -2126,6 +2165,9 @@ msgid ""
 "suffixes, states, various control tables for managing data load, and "
 "skeleton base tables from which all the TIGER-loaded tables inherit."
 msgstr ""
+"这个脚本会创建一个名为 <varname>tiger</varname> 的 schema，用来存放所有 "
+"TIGER 相关的函数、可复用的查找数据、用于管理数据加载的控制表，以及所有 TIGER "
+"加载表继承的基础骨架表。"
 
 #. Tag: para
 #, no-c-format
@@ -2139,6 +2181,13 @@ msgid ""
 "<varname>faces</varname>, <varname>edges</varname>, etc located in the "
 "<varname>tiger</varname> schema."
 msgstr ""
+"会创建另一个名为 <varname>tiger_data</varname> 的 schema，用来存放加载器从 "
+"Census 站点下载并导入数据库的各州普查数据。在当前模型下，每一批州的数据表都会"
+"带上州代码前缀，比如 <varname>ma_addr</varname>、<varname>ma_edges</varname> "
+"等，同时通过约束保证这些表里只存放对应州的数据。每张这类表都会继承自 "
+"<varname>tiger</varname> schema 下的基础表 "
+"<varname>addr</varname>、<varname>faces</varname>、<varname>edges</varname> "
+"等。"
 
 #. Tag: para
 #, no-c-format
@@ -2149,6 +2198,10 @@ msgid ""
 "different schema for each state, as long as all the tables inherit from the "
 "tables in the <varname>tiger</varname> schema."
 msgstr ""
+"所有地理编码函数只会引用那些基础表，所以数据所在的 schema 并不必须叫做 "
+"<varname>tiger_data</varname>，数据也完全可以继续拆分到其他 schema —— "
+"比如给每个州单独一个 schema。只要这些表都继承自 <varname>tiger</varname> "
+"schema 里的基础表，就不会有问题。"
 
 #. Tag: para
 #, no-c-format
@@ -2171,6 +2224,12 @@ msgid ""
 "have data from tiger_2010 and want to replace with tiger_2015, refer to "
 "<xref linkend=\"upgrade_tiger_geocoder\"/>"
 msgstr ""
+"如果你在用 TIGER Geocoder (tiger_2010)，可以使用 extras/tiger 目录下的 "
+"upgrade_geocoder.bat / .sh 脚本来升级相关脚本。<varname>tiger_2010</varname> "
+"和 <varname>tiger_2011+</varname> 之间的一个主要变化是：<varname>county</"
+"varname> 和 <varname>state</varname> "
+"表不再按州拆分。如果你已经有数据并且想替换为tiger_2015，请参考 <xref linkend="
+"\"upgrade_tiger_geocoder\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -2178,6 +2237,8 @@ msgid ""
 "You can install the TIGER Geocoder with the PostgreSQL extension model. "
 "Refer to <xref linkend=\"install_tiger_geocoder_extension\"/> for details."
 msgstr ""
+"你可以用 PostgreSQL 的扩展方式安装 TIGER Geocoder，具体步骤请参考 <xref "
+"linkend=\"install_tiger_geocoder_extension\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -2214,7 +2275,8 @@ msgstr ""
 msgid ""
 "The <varname>reverse_geocode</varname> function is useful for deriving the "
 "street address and cross streets of a GPS location."
-msgstr ""
+msgstr "<varname>reverse_geocode</varname> 函数可用于从 GPS "
+"坐标反查出街道地址以及附近的交叉路口信息。"
 
 #. Tag: para
 #, no-c-format
@@ -2256,7 +2318,8 @@ msgstr ""
 msgid ""
 "There are a couple other open source geocoders for PostGIS, that unlike the "
 "TIGER Geocoder have the advantage of multi-country geocoding support"
-msgstr ""
+msgstr "还有其他几个开源的 PostGIS 地理编码器，不同于 TIGER "
+"Geocoder，它们的优势是支持多国家的地理编码"
 
 #. Tag: para
 #, no-c-format
@@ -2270,6 +2333,13 @@ msgid ""
 "interface like the TIGER Geocoder, or if a good deal of the logic is "
 "implemented in the web interface."
 msgstr ""
+"<link xlink:href=\"http://wiki.openstreetmap.org/wiki/Nominatim\">Nominatim</"
+"link> 使用 OpenStreetMap 的地名词典格式数据，需要配合 osm2pgsql 来加载数据，"
+"同时依赖 PostgreSQL 和 PostGIS。它被封装成一个 Web Service 接口，"
+"设计上就是面向 Web 调用的。和 TIGER Geocoder "
+"一样，它也同时具备正向地理编码和反向地理编码的能力。从现有文档来看，"
+"还不清楚它是否像 TIGER Geocoder 那样提供纯 SQL 接口，"
+"还是有相当一部分逻辑落在了 Web 层。"
 
 #. Tag: para
 #, no-c-format
@@ -41639,6 +41709,8 @@ msgid ""
 "[raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages and "
 "routes them into the PostgreSQL logging system. (Paul Ramsey)"
 msgstr ""
+"[raster] 新增 GUC postgis.gdal_cpl_debug，用于开启 GDAL 调试信息，"
+"并将其输出到 PostgreSQL 日志系统。（Paul Ramsey）"
 
 #. Tag: para
 #, no-c-format
@@ -41668,6 +41740,9 @@ msgid ""
 "pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. "
 "Census Bureau)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"242\">GT-242</link> [topology] 对bigint支持(Ayo Adesugba, U.S. Census Bureau)"
 
 #. Tag: para
 #, no-c-format
