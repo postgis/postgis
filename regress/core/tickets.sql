@@ -67,6 +67,14 @@ SELECT '#80', ST_AsText(ST_Multi('MULTILINESTRING((0 0,1 1))'));
 -- #83 --
 SELECT '#83', ST_AsText(ST_Multi(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)')));
 
+-- ST_Multi with PolyhedralSurface -> MultiPolygon
+SELECT 'ST_Multi_psurface', ST_GeometryType(ST_Multi('POLYHEDRALSURFACE Z(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,0 1 0,0 1 1,0 0 1,0 0 0)))'::geometry));
+SELECT 'ST_Multi_psurface_empty', ST_GeometryType(ST_Multi('POLYHEDRALSURFACE EMPTY'::geometry));
+
+-- ST_Multi with TIN -> MultiPolygon
+SELECT 'ST_Multi_tin', ST_GeometryType(ST_Multi('TIN Z(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 1 0,0 0 0)))'::geometry));
+SELECT 'ST_Multi_tin_empty', ST_GeometryType(ST_Multi('TIN EMPTY'::geometry));
+
 -- #85 --
 SELECT '#85', ST_Distance(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'), ST_Point(220268, 150415));
 

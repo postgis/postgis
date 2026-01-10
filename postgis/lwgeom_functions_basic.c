@@ -532,7 +532,6 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 		case COLLECTIONTYPE:
 		case MULTICURVETYPE:
 		case MULTISURFACETYPE:
-		case TINTYPE:
 			PG_RETURN_POINTER(geom);
 		default:
 			break;

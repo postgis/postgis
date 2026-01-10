@@ -414,6 +414,43 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 
 	type = lwgeom->type;
 
+	/*
+	* PolyhedralSurface and MultiPolygon have identical structures
+	* (both are collections of LWPOLY). Convert PolyhedralSurface
+	* to MultiPolygon by cloning and changing the type.
+	*/
+	if (type == POLYHEDRALSURFACETYPE)
+	{
+		ogeom = (LWGEOM *)lwcollection_clone((LWCOLLECTION *)lwgeom);
+		ogeom->type = MULTIPOLYGONTYPE;
+		return ogeom;
+	}
+
+	/*
+	* TIN to MultiPolygon: convert each triangle to a polygon.
+	* LWTRIANGLE and LWLINE have compatible memory layouts,
+	* so we can use lwpoly_from_lwlines to create polygons.
+	*/
+	if (type == TINTYPE)
+	{
+		uint32_t i;
+		LWCOLLECTION *col = (LWCOLLECTION *)lwgeom;
+		LWMPOLY *mpoly = lwmpoly_construct_empty(lwgeom->srid,
+			FLAGS_GET_Z(lwgeom->flags),
+			FLAGS_GET_M(lwgeom->flags));
+
+		for (i = 0; i < col->ngeoms; i++)
+		{
+			LWPOLY *poly = lwpoly_from_lwlines((LWLINE *)col->geoms[i], 0, NULL);
+			lwmpoly_add_lwpoly(mpoly, poly);
+		}
+
+		if (lwgeom->bbox)
+			mpoly->bbox = gbox_clone(lwgeom->bbox);
+
+		return lwmpoly_as_lwgeom(mpoly);
+	}
+
 	if ( ! MULTITYPE[type] ) return lwgeom_clone(lwgeom);
 
 	if( lwgeom_is_empty(lwgeom) )
