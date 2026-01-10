@@ -1,12 +1,12 @@
 # SOME DESCRIPTIVE TITLE.
-# Denys Kovshun <deniskovshun@gmail.com>, 2025.
+# Denys Kovshun <deniskovshun@gmail.com>, 2025, 2026.
 # Weblate <noreply-mt-weblate@weblate.org>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-25 20:47+0000\n"
+"PO-Revision-Date: 2026-01-10 13:47+0000\n"
 "Last-Translator: Denys Kovshun <deniskovshun@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/uk/>\n"
@@ -42414,7 +42414,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Compute a straight skeleton from a geometry"
-msgstr ""
+msgstr "Обчислити прямий скелет з геомeтрії"
 
 #. Tag: para
 #, no-c-format
@@ -42636,6 +42636,14 @@ msgid ""
 "parameter> specifies the type of buffer to create: 0: Rounded buffer "
 "(default) 1: Flat buffer 2: Square buffer"
 msgstr ""
+"Створює 3D-буфер навколо вхідної геометрії <parameter>geom</parameter> із "
+"заданим <parameter>radius</parameter>. Буфер будується в 3D-просторі, "
+"створюючи об'ємне представлення оточення геометрії. Параметр "
+"<parameter>segments</parameter> визначає кількість сегментів, що "
+"використовуються для апроксимації вигнутих ділянок буфера, з мінімальним "
+"значенням 4 сегменти. Параметр <parameter>buffer_type</parameter> визначає "
+"тип буфера, що створюється: 0: округлений буфер (за замовчуванням) 1: "
+"плоский буфер 2: квадратний буфер"
 
 #. Tag: para
 #, no-c-format
@@ -43287,6 +43295,17 @@ msgid ""
 "functions with <varname>from_proj</varname>, input geometries must have a "
 "defined SRID."
 msgstr ""
+"Повертає нову геометрію з координатами, перетвореними в іншу систему "
+"просторових координат. Просторова система координат призначення "
+"<varname>to_srid</varname> може бути ідентифікована за допомогою дійсного "
+"цілочисельного параметра SRID (тобто вона повинна існувати в таблиці "
+"<varname>spatial_ref_sys</varname>). Як альтернатива, для <varname>to_proj</"
+"varname> та/або <varname>from_proj</varname> можна використовувати "
+"просторову систему координат, визначену як рядок PROJ.4, однак ці методи не "
+"є оптимізованими. Якщо просторова система координат призначення виражена "
+"рядком PROJ.4 замість SRID, SRID вихідної геометрії буде встановлено на "
+"нуль. За винятком функцій з <varname>from_proj</varname>, вхідні геометрії "
+"повинні мати визначений SRID."
 
 #. Tag: para
 #, no-c-format
@@ -43387,6 +43406,14 @@ msgid ""
 "<varname>proj4text</varname> value within the <varname>spatial_ref_sys</"
 "varname> table."
 msgstr ""
+"Іноді перетворення координат із зміщенням сітки може завершитися невдачею, "
+"наприклад, якщо PROJ.4 не було створено з файлами зміщення сітки або "
+"координати не лежать у діапазоні, для якого визначено зміщення сітки. За "
+"замовчуванням PostGIS видасть помилку, якщо файл зміщення сітки відсутній, "
+"але цю поведінку можна налаштувати для кожного SRID окремо, або шляхом "
+"тестування різних значень <varname>to_proj</varname> тексту PROJ.4, або "
+"шляхом зміни значення <varname>proj4text</varname> в таблиці "
+"<varname>spatial_ref_sys</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -44271,6 +44298,15 @@ msgid ""
 "function\" error. To prevent the error use an explicit cast to the desired "
 "box type."
 msgstr ""
+"Деякі приведення мають <emphasis role=\"bold\">явну</emphasis> поведінку, що "
+"означає, що приведення повинно бути вказано за допомогою синтаксису "
+"<varname>CAST(myval As sometype)</varname> або <varname>myval::sometype</"
+"varname>. Явне приведення типів дозволяє уникнути проблеми неоднозначних "
+"приведень, яка може виникнути при використанні перевантаженої функції, що не "
+"підтримує певний тип. Наприклад, функція може приймати box2d або box3d, але "
+"не geometry. Оскільки geometry має автоматичне приведення до обох типів box, "
+"це призводить до помилки «неоднозначна функція». Щоб запобігти помилці, "
+"використовуйте явне приведення до бажаного типу box."
 
 #. Tag: para
 #, no-c-format
@@ -44284,7 +44320,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "The type representing a 2-dimensional bounding box."
-msgstr ""
+msgstr "Тип, що представляє двовимірну обмежувальну рамку."
 
 #. Tag: para
 #, no-c-format
@@ -44294,6 +44330,10 @@ msgid ""
 "For example, the <xref linkend=\"ST_Extent\"/> aggregate function returns a "
 "<varname>box2d</varname> object."
 msgstr ""
+"<varname>box2d</varname> — це тип просторових даних, що використовується для "
+"представлення двовимірної обмежувальної рамки, яка охоплює геометрію або "
+"сукупність геометрій. Наприклад, агрегатна функція <xref linkend=\"ST_Extent"
+"\"/> повертає об'єкт <varname>box2d</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -44301,6 +44341,8 @@ msgid ""
 "The representation contains the values <varname>xmin, ymin, xmax, ymax</"
 "varname>. These are the minimum and maximum values of the X and Y extents."
 msgstr ""
+"Представлення містить значення <varname>xmin, ymin, xmax, ymax</varname>. Це "
+"мінімальні та максимальні значення розмірів X та Y."
 
 #. Tag: para
 #, no-c-format
@@ -44308,27 +44350,31 @@ msgid ""
 "<varname>box2d</varname> objects have a text representation which looks like "
 "<code>BOX(1 2,5 6)</code>."
 msgstr ""
+"Об'єкти <varname>box2d</varname> мають текстове представлення, яке виглядає "
+"як <code>BOX(1 2,5 6)</code>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This table lists the automatic and explicit casts allowed for this data type:"
 msgstr ""
+"У цій таблиці наведено автоматичні та явні перетворення, дозволені для цього "
+"типу даних:"
 
 #. Tag: entry
 #, no-c-format
 msgid "<entry>box3d</entry>"
-msgstr ""
+msgstr "<entry>box3d</entry>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<entry>geometry</entry>"
-msgstr ""
+msgstr "<entry>geometry</entry>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "The type representing a 3-dimensional bounding box."
-msgstr ""
+msgstr "Тип, що представляє тривимірну обмежувальну рамку."
 
 #. Tag: para
 #, no-c-format
@@ -44338,6 +44384,10 @@ msgid ""
 "geometries. For example, the <xref linkend=\"ST_3DExtent\"/> aggregate "
 "function returns a <varname>box3d</varname> object."
 msgstr ""
+"<varname>box3d</varname> — це тип просторових даних PostGIS, який "
+"використовується для представлення тривимірної обмежувальної рамки, що "
+"охоплює геометрію або сукупність геометрій. Наприклад, агрегатна функція "
+"<xref linkend=\"ST_3DExtent\"/> повертає об'єкт <varname>box3d</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -44346,6 +44396,8 @@ msgid ""
 "ymax, zmax</varname>. These are the minimum and maximum values of the X, Y "
 "and Z extents."
 msgstr ""
+"Представлення містить значення <varname>xmin, ymin, zmin, xmax, ymax, zmax</"
+"varname>. Це мінімальні та максимальні значення розмірів X, Y та Z."
 
 #. Tag: para
 #, no-c-format
@@ -44353,21 +44405,23 @@ msgid ""
 "<varname>box3d</varname> objects have a text representation which looks like "
 "<code>BOX3D(1 2 3,5 6 5)</code>."
 msgstr ""
+"Об'єкти <varname>box3d</varname> мають текстове представлення, яке виглядає "
+"як <code>BOX3D(1 2 3,5 6 5)</code>."
 
 #. Tag: entry
 #, no-c-format
 msgid "<entry>box</entry>"
-msgstr ""
+msgstr "<entry>box</entry>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<entry>box2d</entry>"
-msgstr ""
+msgstr "<entry>box2d</entry>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "The type representing spatial features with planar coordinate systems."
-msgstr ""
+msgstr "Тип, що представляє просторові об'єкти з плоскими системами координат."
 
 #. Tag: para
 #, no-c-format
@@ -44375,6 +44429,9 @@ msgid ""
 "<varname>geometry</varname> is a fundamental PostGIS spatial data type used "
 "to represent a feature in planar (Euclidean) coordinate systems."
 msgstr ""
+"<varname>geometry</varname> — це основний тип просторових даних PostGIS, "
+"який використовується для представлення об'єкта в планарних (евклідових) "
+"системах координат."
 
 #. Tag: para
 #, no-c-format
@@ -44382,31 +44439,34 @@ msgid ""
 "All spatial operations on geometry use the units of the Spatial Reference "
 "System the geometry is in."
 msgstr ""
+"Усі просторові операції над геометрією використовують одиниці виміру "
+"просторової системи координат, в якій знаходиться геометрія."
 
 #. Tag: entry
 #, no-c-format
 msgid "bytea"
-msgstr ""
+msgstr "bytea"
 
 #. Tag: entry
 #, no-c-format
 msgid "<entry>geography</entry>"
-msgstr ""
+msgstr "<entry>geography</entry>"
 
 #. Tag: entry
 #, no-c-format
 msgid "text"
-msgstr ""
+msgstr "text"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_SQLMM_Functions\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"PostGIS_SQLMM_Functions\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "A composite type used to describe the parts of complex geometry."
 msgstr ""
+"Композитний тип, що використовується для опису частин складної геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -44415,6 +44475,9 @@ msgid ""
 "postgresql.org/docs/current/rowtypes.html\">composite data type</link> "
 "containing the fields:"
 msgstr ""
+"<varname>geometry_dump</varname> — це <link xlink:href=«https://www."
+"postgresql.org/docs/current/rowtypes.html»>складний тип даних</link>, що "
+"містить такі поля:"
 
 #. Tag: para
 #, no-c-format
@@ -44422,6 +44485,8 @@ msgid ""
 "<varname>geom</varname> - a geometry representing a component of the dumped "
 "geometry. The geometry type depends on the originating function."
 msgstr ""
+"<varname>geom</varname> — геометрія, що представляє компонент скинутої "
+"геометрії. Тип геометрії залежить від вихідної функції."
 
 #. Tag: para
 #, no-c-format
@@ -44431,6 +44496,9 @@ msgid ""
 "The path array is 1-based (i.e. <varname>path[1]</varname> is the first "
 "element.)"
 msgstr ""
+"<varname>path[]</varname> — масив цілих чисел, що визначає шлях навігації в "
+"межах скинутої геометрії до компонента <varname>geom</varname>. Масив шляхів "
+"базується на 1 (тобто <varname>path[1]</varname> є першим елементом)"
 
 #. Tag: para
 #, no-c-format
@@ -44438,6 +44506,8 @@ msgid ""
 "It is used by the <varname>ST_Dump*</varname> family of functions as an "
 "output type to explode a complex geometry into its constituent parts."
 msgstr ""
+"Він використовується сімейством функцій <varname>ST_Dump*</varname> як тип "
+"виводу для розбиття складної геометрії на складові частини."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -44445,6 +44515,8 @@ msgid ""
 "The type representing spatial features with geodetic (ellipsoidal) "
 "coordinate systems."
 msgstr ""
+"Тип, що представляє просторові об'єкти з геодезичними (еліпсоїдальними) "
+"системами координат."
 
 #. Tag: para
 #, no-c-format
@@ -44453,6 +44525,9 @@ msgid ""
 "feature in geodetic coordinate systems. Geodetic coordinate systems model "
 "the earth using an ellipsoid."
 msgstr ""
+"<varname>geography</varname> — це тип просторових даних, що використовується "
+"для представлення об'єкта в геодезичних системах координат. Геодезичні "
+"системи координат моделюють Землю за допомогою еліпсоїда."
 
 #. Tag: para
 #, no-c-format
@@ -44460,21 +44535,23 @@ msgid ""
 "Spatial operations on the geography type provide more accurate results by "
 "taking the ellipsoidal model into account."
 msgstr ""
+"Просторові операції з типом географії забезпечують більш точні результати "
+"завдяки врахуванню еліпсоїдальної моделі."
 
 #. Tag: entry
 #, no-c-format
 msgid "explicit"
-msgstr ""
+msgstr "explicit"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_GeographyFunctions\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"PostGIS_GeographyFunctions\"/>"
 
 #. Tag: title
 #, no-c-format
 msgid "Geometry Validation"
-msgstr ""
+msgstr "Перевірка геометрії"
 
 #. Tag: para
 #, no-c-format
@@ -44484,11 +44561,15 @@ msgid ""
 "invalidity. There is also a function to create a valid geometry out of an "
 "invalid one."
 msgstr ""
+"Ці функції перевіряють, чи геометрії є дійсними відповідно до стандарту OGC "
+"SFS. Вони також надають інформацію про характер і місце розташування "
+"недійсних елементів. Існує також функція для створення дійсної геометрії з "
+"недійсної."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if a geometry is well-formed in 2D."
-msgstr ""
+msgstr "Перевіряє, чи геометрія має правильну форму в 2D."
 
 #. Tag: para
 #, no-c-format
@@ -44498,6 +44579,11 @@ msgid ""
 "only tested in 2 dimensions. For geometries that are invalid, a PostgreSQL "
 "NOTICE is emitted providing details of why it is not valid."
 msgstr ""
+"Перевіряє, чи значення ST_Geometry є правильно сформованим і дійсним у 2D "
+"відповідно до правил OGC. Для геометрій з 3 і 4 вимірами дійсність все ще "
+"перевіряється тільки у 2 вимірах. Для геометрій, які є недійсними, видається "
+"повідомлення PostgreSQL NOTICE з детальною інформацією про причини "
+"недійсності."
 
 #. Tag: para
 #, no-c-format
@@ -44506,6 +44592,9 @@ msgid ""
 "values are documented in <xref linkend=\"ST_IsValidDetail\"/> This version "
 "does not print a NOTICE explaining invalidity."
 msgstr ""
+"Для версії з параметром <varname>flags</varname> підтримувані значення "
+"задокументовані в <xref linkend=\"ST_IsValidDetail\"/>Ця версія не друкує "
+"ПОВІДОМЛЕННЯ, що пояснює недійсність."
 
 #. Tag: para
 #, no-c-format
@@ -44513,6 +44602,8 @@ msgid ""
 "For more information on the definition of geometry validity, refer to <xref "
 "linkend=\"OGC_Validity\"/>"
 msgstr ""
+"Більш детальну інформацію про визначення геометричної валідності див. <xref "
+"linkend=\"OGC_Validity\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -44520,16 +44611,18 @@ msgid ""
 "SQL-MM defines the result of ST_IsValid(NULL) to be 0, while PostGIS returns "
 "NULL."
 msgstr ""
+"SQL-MM визначає результат ST_IsValid(NULL) як 0, тоді як PostGIS повертає "
+"NULL."
 
 #. Tag: para
 #, no-c-format
 msgid "The version accepting flags is available starting with 2.0.0."
-msgstr ""
+msgstr "Версія, що підтримує прапорці, доступна починаючи з 2.0.0."
 
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.9"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.9"
 
 #. Tag: para
 #, no-c-format
@@ -44537,12 +44630,15 @@ msgid ""
 "Neither OGC-SFS nor SQL-MM specifications include a flag argument for "
 "ST_IsValid. The flag is a PostGIS extension."
 msgstr ""
+"Ні специфікації OGC-SFS, ні SQL-MM не містять аргументу прапорця для "
+"ST_IsValid. Прапорець є розширенням PostGIS."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail\"/>,"
 msgstr ""
+", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail\"/>,"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -44550,6 +44646,8 @@ msgid ""
 "Returns a <varname>valid_detail</varname> row stating if a geometry is valid "
 "or if not a reason and a location."
 msgstr ""
+"Повертає рядок <varname>valid_detail</varname>, в якому вказано, чи є "
+"геометрія дійсною, а якщо ні, то причина та місце розташування."
 
 #. Tag: para
 #, no-c-format
@@ -44559,6 +44657,11 @@ msgid ""
 "(<varname>reason</varname>) stating a reason why it is invalid and a "
 "geometry (<varname>location</varname>) pointing out where it is invalid."
 msgstr ""
+"Повертає рядок <varname>valid_detail</varname>, що містить логічне значення "
+"(<varname>valid</varname>), яке вказує, чи є геометрія дійсною, рядок "
+"varchar (<varname>reason</varname>), що вказує причину, чому вона є "
+"недійсною, та геометрію (<varname>location</varname>), що вказує, де вона є "
+"недійсною."
 
 #. Tag: para
 #, no-c-format
@@ -44567,6 +44670,9 @@ msgid ""
 "<xref linkend=\"ST_IsValidReason\"/> to generate a detailed report of "
 "invalid geometries."
 msgstr ""
+"Корисно для поліпшення комбінації <xref linkend=\"ST_IsValid\"/> та <xref "
+"linkend=\"ST_IsValidReason\"/> для створення детального звіту про недійсні "
+"геометрії."
 
 #. Tag: para
 #, no-c-format
@@ -44574,11 +44680,13 @@ msgid ""
 "The optional <varname>flags</varname> parameter is a bitfield. It can have "
 "the following values:"
 msgstr ""
+"Опціональний параметр <varname>flags</varname> є бітовим полем. Він може "
+"мати такі значення:"
 
 #. Tag: para
 #, no-c-format
 msgid "0: Use usual OGC SFS validity semantics."
-msgstr ""
+msgstr "0: Використовуйте звичайну семантику валідності OGC SFS."
 
 #. Tag: para
 #, no-c-format
@@ -44592,7 +44700,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_IsValidReason\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_IsValidReason\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
