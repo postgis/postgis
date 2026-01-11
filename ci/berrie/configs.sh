@@ -1,5 +1,5 @@
 export WORKSPACE=/home/jenkins/workspace
-export GEOS_VER=3.12.4
+export GEOS_VER=3.15.0
 
 export OS_BUILD=32
 export PG_VER=15
