@@ -17,6 +17,7 @@ sh autogen.sh
 ./configure --with-pgconfig=${PGPATH}/bin/pg_config \
   --with-geosconfig=${GEOS_PATH}/bin/geos-config \
 	--without-protobuf --with-library-minor-version \
+	--without-topology \
 	--enable-lto --prefix=${PGPATH}
 #make clean
 make
