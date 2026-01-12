@@ -380,8 +380,8 @@ static void test_gdal_to_raster() {
 
 	rt_raster raster;
 	rt_raster rast;
-	const uint32_t width = 100;
-	const uint32_t height = 100;
+	static uint32_t width = 100;
+	static uint32_t height = 100;
 	uint32_t x;
 	uint32_t y;
 	int v;
