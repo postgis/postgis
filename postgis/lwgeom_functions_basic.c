@@ -66,7 +66,7 @@ Datum ST_Distance(PG_FUNCTION_ARGS);
 Datum LWGEOM_closestpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_shortestline2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS);
-Datum LWGEOM_dwithin(PG_FUNCTION_ARGS);
+Datum ST_DWithinUncached(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_maxdistance3d(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS);
@@ -727,8 +727,8 @@ Returns boolean describing if
 mininimum 2d distance between objects in
 geom1 and geom2 is shorter than tolerance
 */
-PG_FUNCTION_INFO_V1(LWGEOM_dwithin);
-Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_DWithinUncached);
+Datum ST_DWithinUncached(PG_FUNCTION_ARGS)
 {
 	double mindist;
 	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);

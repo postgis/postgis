@@ -4674,6 +4674,14 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry, float8)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+-- Availability: 3.7.0
+-- Purpose: Uncomment for testing against cached version of ST_DWithin
+-- CREATE OR REPLACE FUNCTION ST_DWithinUncached(geom1 geometry, geom2 geometry, float8)
+-- 	RETURNS boolean
+-- 	AS 'MODULE_PATHNAME', 'ST_DWithinUncached'
+-- 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+-- 	_COST_HIGH;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Touches(geom1 geometry, geom2 geometry)
 	RETURNS boolean
