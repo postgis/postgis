@@ -97,7 +97,7 @@ lw_pt_in_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const POINT
 
 /**
 * Returns true if P is between A1/A2. Only makes sense if P has already been
-* deterined to be on the line defined by A1/A2.
+* determined to be on the line defined by A1/A2.
 */
 int
 lw_pt_in_seg(const POINT2D *P, const POINT2D *A1, const POINT2D *A2)
