@@ -1,6 +1,6 @@
 
-PostGIS 3.6.2
-2025/xx/xx
+PostGIS 3.6.2dev
+2026/xx/xx
 
 This version requires PostgreSQL 12-18, GEOS 3.8 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.14+ is needed.
@@ -16,6 +16,7 @@ topogeometry corruption:
 
 * Fixes *
 
+- #6023, Fix robustness issue in ptarray_contains_point (Sandro Santilli)
 - #6027, Fix RemoveUnusedPrimitives without topology in search_path
          (Sandro Santilli)
 - #6019, make clean does not remove cunit generated files
