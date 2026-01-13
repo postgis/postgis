@@ -2238,7 +2238,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       if ( found ) continue;
       LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " is not a known edge of the new ring", e->edge_id);
 
-      /* Check if the edge is now binding a different face */
+      /* Check if the edge is inside the new face */
 
       if ( ! getPoint2d_p(e->geom->points, 0, &ep) )
       {
