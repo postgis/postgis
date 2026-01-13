@@ -589,3 +589,27 @@ SELECT '#5993.4', 'snap-split-off-limit', * FROM topology.TopoGeo_addLinestring(
   tolerance => 2
 );
 SELECT NULL FROM topology.DropTopology ('t5993');
+
+
+
+-- See https://trac.osgeo.org/postgis/ticket/6023
+SELECT NULL FROM topology.CreateTopology ('t6023');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t6023',
+  'LINESTRING(
+    11.230021066287687 62.84898276648437,
+    11.230170431987244 62.84904481447776,
+    11.230117909393426 62.8489943480894,
+    11.230121356631185 62.848967479934664,
+    11.230021066287687 62.84898276648437
+  )',-1);
+SELECT 't6023.1', 'errors', (array_agg(v.error))[1] FROM topology.ValidateTopology('t6023') v;
+SELECT NULL FROM topology.TopoGeo_addLinestring('t6023',
+    'LINESTRING(
+       11.230170431987244 62.84904481447776,
+       11.23020501303477 62.84900750109812,
+       11.230120879533905 62.8489711984873,
+       11.230120879533454 62.84897119848748
+    )', 0);
+SELECT 't6023.2', 'errors', (array_agg(v.error))[1] FROM topology.ValidateTopology('t6023') v;
+SELECT NULL FROM topology.DropTopology ('t6023');
+
