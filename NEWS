@@ -6,6 +6,7 @@ Proj 6.1+ required.
 
 * Bug Fixes *
 
+  - #6023, Fix robustness issue in ptarray_contains_point (Sandro Santilli)
   - #6027, Fix RemoveUnusedPrimitives without topology in search_path (Sandro Santilli)
   - #5978, fix parsing of constraints in geometry_columns (Paul Ramsey)
   - #5977, Fix downgrade protection with standard conforming strings off (Sandro Santilli)

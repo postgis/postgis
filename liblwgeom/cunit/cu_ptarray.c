@@ -427,6 +427,17 @@ static void test_ptarray_contains_point()
 	CU_ASSERT_EQUAL(rv, LW_INSIDE);
 
 	lwline_free(lwline);
+
+
+	/* Test for https://trac.osgeo.org/postgis/ticket/6023 */
+	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(11.230120879533454 62.84897119848748,11.230120879533905 62.8489711984873,11.23020501303477 62.84900750109812,11.230170431987244 62.84904481447776,11.230117909393426 62.8489943480894,11.230120879533454 62.84897119848748)"));
+	pa = lwline->points;
+	pt = getPoint2d(lwline->points, 0);
+	rv = ptarray_contains_point(pa, &pt);
+	ASSERT_INT_EQUAL(rv, LW_BOUNDARY);
+
+
+	lwline_free(lwline);
 }
 
 static void test_ptarrayarc_contains_point()

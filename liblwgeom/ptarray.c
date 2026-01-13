@@ -772,6 +772,12 @@ ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int chec
 	{
 		seg2 = getPoint2d_cp(pa, i);
 
+		/* This is required for robustness, see #6023 */
+		if (p2d_same(seg1, pt))
+		{
+			return LW_BOUNDARY;
+		}
+
 		/* Zero length segments are ignored. */
 		if ( seg1->x == seg2->x && seg1->y == seg2->y )
 		{
