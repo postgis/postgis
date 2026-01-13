@@ -6,6 +6,7 @@ Proj 4.9+ required.
 
 * Bug Fixes  *
 
+ - #6023, Fix robustness issue in ptarray_contains_point (Sandro Santilli)
  - #5951, [topology] Fix crash in ST_GetFaceEdges with corrupted topology (Sandro Santilli)
  - #5947, [topology] Fix crash in ST_ModEdgeHeal (Sandro Santilli)
  - #5925, #5946, [topology] Have GetFaceContainingPoint survive EMPTY edges (Sandro Santilli)
