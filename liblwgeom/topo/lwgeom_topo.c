@@ -698,17 +698,21 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
   {
 	  POINT2D p;
 	  LWT_ISO_NODE *node = &(nodes[i]);
-	  if (node->node_id == start_node)
-		  continue;
-	  if (node->node_id == end_node)
-		  continue;
+	  LWT_ELEMID node_id = node->node_id;
+
 	  /* check if the edge contains this node (not on boundary) */
 	  /* ST_RelateMatch(rec.relate, 'T********') */
+
+	  /* skip boundary nodes */
+	  if (node_id == start_node) continue;
+	  if (node_id == end_node) continue;
+
 	  if (!node->geom || !node->geom->point || !node->geom->point->npoints)
 	  {
 		  GEOSGeom_destroy(edgegg);
 		  _lwt_release_nodes(nodes, num_nodes);
-		  lwerror("SQL/MM Spatial exception - geometry crosses a node");
+		  lwerror("Internal error: lwt_be_getNodeWithinBox2D returned node %"
+		          LWTFMT_ELEMID " with no vertices", node_id);
 		  return -1;
 	  }
 
