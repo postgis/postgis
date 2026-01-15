@@ -688,7 +688,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
   /* loop over each node within the edge's gbox */
   nodes = lwt_be_getNodeWithinBox2D( topo, edgebox, &num_nodes,
                                             LWT_COL_NODE_ALL, 0 );
-  LWDEBUGF(1, "lwt_be_getNodeWithinBox2D returned %llu nodes", num_nodes);
+  LWDEBUGF(1, "lwt_be_getNodeWithinBox2D returned %" PRIu64 " nodes", num_nodes);
   if (num_nodes == UINT64_MAX)
   {
     PGTOPO_BE_ERROR();
@@ -733,7 +733,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
 
   /* loop over each edge within the edge's gbox */
   edges = lwt_be_getEdgeWithinBox2D( topo, edgebox, &num_edges, LWT_COL_EDGE_ALL, 0 );
-  LWDEBUGF(1, "lwt_be_getEdgeWithinBox2D returned %llu edges", num_edges);
+  LWDEBUGF(1, "lwt_be_getEdgeWithinBox2D returned %" PRIu64 " edges", num_edges);
   if (num_edges == UINT64_MAX)
   {
     GEOSGeom_destroy(edgegg);
@@ -908,7 +908,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     GEOSFree(relate);
     GEOSGeom_destroy(eegg);
   }
-  LWDEBUGF(1, "No edge crossing detected among the %llu candidate edges", num_edges);
+  LWDEBUGF(1, "No edge crossing detected among the %" PRIu64 " candidate edges", num_edges);
   if ( edges ) _lwt_release_edges(edges, num_edges);
               /* would be NULL if num_edges was 0 */
 
@@ -1098,7 +1098,7 @@ _lwt_EdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, int skipISOChe
   LWDEBUGG(2, lwline_as_lwgeom(oldedge[0]->geom), "Edge to be split");
   if ( ! *oldedge )
   {
-    LWDEBUGF(1, "lwt_be_getEdgeById returned NULL and set i=%llu", i);
+    LWDEBUGF(1, "lwt_be_getEdgeById returned NULL and set i=%" PRIu64 "", i);
     if (i == UINT64_MAX)
     {
       PGTOPO_BE_ERROR();
@@ -1677,7 +1677,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
     return 0;
   }
 
-  LWDEBUGF(1, "getEdgeByNode returned %llu edges, minaz=%g, maxaz=%g",
+  LWDEBUGF(1, "getEdgeByNode returned %" PRIu64 " edges, minaz=%g, maxaz=%g",
               numedges, minaz, maxaz);
 
   /* For each incident edge-end (1 or 2): */
@@ -1943,7 +1943,7 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num
   for ( i=0; i<num_signed_edge_ids; ++i )
   {
     LWT_ELEMID eid = signed_edge_ids[i];
-    LWDEBUGF(2, "Edge %llu in ring is edge %" LWTFMT_ELEMID, i, eid);
+    LWDEBUGF(2, "Edge %" PRIu64 " in ring is edge %" LWTFMT_ELEMID, i, eid);
     LWT_ISO_EDGE *edge = NULL;
     POINTARRAY *epa;
     for ( j=0; j<numedges; ++j )
@@ -2032,7 +2032,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     PGTOPO_BE_ERROR();
     return -2;
   }
-  LWDEBUGF(1, "getRingEdges returned %llu edges", num_signed_edge_ids);
+  LWDEBUGF(1, "getRingEdges returned %" PRIu64 " edges", num_signed_edge_ids);
 
   /* You can't get to the other side of an edge forming a ring */
   for (i=0; i<num_signed_edge_ids; ++i) {
@@ -2199,7 +2199,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     PGTOPO_BE_ERROR();
     return -2;
   }
-  LWDEBUGF(1, "_lwt_AddFaceSplit: lwt_be_getEdgeByFace(%" LWTFMT_ELEMID ") returned %llu edges", face, numfaceedges);
+  LWDEBUGF(1, "_lwt_AddFaceSplit: lwt_be_getEdgeByFace(%" LWTFMT_ELEMID ") returned %" PRIu64 " edges", face, numfaceedges);
 
   if ( numfaceedges )
   {
@@ -2988,7 +2988,7 @@ lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID faceid)
     PGTOPO_BE_ERROR();
     return NULL;
   }
-  LWDEBUGF(1, "lwt_GetFaceGeometry: lwt_be_getEdgeByFace returned %llu edges", numfaceedges);
+  LWDEBUGF(1, "lwt_GetFaceGeometry: lwt_be_getEdgeByFace returned %" PRIu64 " edges", numfaceedges);
 
   if ( numfaceedges == 0 )
   {
@@ -3236,7 +3236,7 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
     return -1;
   }
   if ( ! numfaceedges ) return 0; /* no edges in output */
-  LWDEBUGF(1, "lwt_GetFaceEdges: lwt_be_getEdgeByFace returned %llu edges", numfaceedges);
+  LWDEBUGF(1, "lwt_GetFaceEdges: lwt_be_getEdgeByFace returned %" PRIu64 " edges", numfaceedges);
 
   /* order edges by occurrence in face */
 
@@ -3399,7 +3399,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   if ( ! oldedge )
   {
     LWDEBUGF(1, "lwt_ChangeEdgeGeom: "
-                "lwt_be_getEdgeById returned NULL and set i=%llu", i);
+                "lwt_be_getEdgeById returned NULL and set i=%" PRIu64 "", i);
     if (i == UINT64_MAX)
     {
       PGTOPO_BE_ERROR();
@@ -3516,7 +3516,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   uint64_t numnodes;
   nodes = lwt_be_getNodeWithinBox2D(topo, &mbox, &numnodes,
                                           LWT_COL_NODE_ALL, 0);
-  LWDEBUGF(1, "lwt_be_getNodeWithinBox2D returned %llu nodes", numnodes);
+  LWDEBUGF(1, "lwt_be_getNodeWithinBox2D returned %" PRIu64 " nodes", numnodes);
   if (numnodes == UINT64_MAX)
   {
     _lwt_release_edges(oldedge, 1);
@@ -3599,7 +3599,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
       PGTOPO_BE_ERROR();
       return -1;
     }
-    LWDEBUGF(1, "getRingEdges returned %llu edges", num_signed_edge_ids);
+    LWDEBUGF(1, "getRingEdges returned %" PRIu64 " edges", num_signed_edge_ids);
 
     shell = _lwt_MakeRingShell(topo, signed_edge_ids, num_signed_edge_ids);
     if ( ! shell ) {
@@ -3703,7 +3703,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
       PGTOPO_BE_ERROR();
       return -1;
     }
-    LWDEBUGF(1, "getRingEdges returned %llu edges", num_signed_edge_ids);
+    LWDEBUGF(1, "getRingEdges returned %" PRIu64 " edges", num_signed_edge_ids);
 
     shell = _lwt_MakeRingShell(topo, signed_edge_ids, num_signed_edge_ids);
     if ( ! shell ) {
@@ -3784,7 +3784,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
       /* ownership transferred to faces[] */
       faces[facestoupdate++].mbr = updatedBox;
     }
-    LWDEBUGF(1, "%llu faces to update", facestoupdate);
+    LWDEBUGF(1, "%" PRIu64 " faces to update", facestoupdate);
     if ( facestoupdate )
     {
       uint64_t updatedFaces = lwt_be_updateFacesById(topo, &(faces[0]), facestoupdate);
@@ -4121,7 +4121,7 @@ _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
   edge = lwt_be_getEdgeById(topo, &edge_id, &i, LWT_COL_EDGE_ALL);
   if (!edge)
   {
-    LWDEBUGF(1, "lwt_be_getEdgeById returned NULL and set i=%llu", i);
+    LWDEBUGF(1, "lwt_be_getEdgeById returned NULL and set i=%" PRIu64 "", i);
     if (i == UINT64_MAX)
     {
       PGTOPO_BE_ERROR();
@@ -4235,7 +4235,7 @@ _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
       return -1;
     }
   }
-  LWDEBUGF(1, "releasing %llu updateable edges in %p", nedges, upd_edge);
+  LWDEBUGF(1, "releasing %" PRIu64 " updateable edges in %p", nedges, upd_edge);
   lwfree(upd_edge);
 
   /* Id of face that will take up all the space previously
@@ -5496,7 +5496,7 @@ _lwt_SnapEdgeToExistingNode(
     existingEdges[n] = NULL;
     if ( existingEdgeId == 0 )
     {
-      LWDEBUGF(1, "Split component %llu is a new edge, computing edgeEndInfo", n);
+      LWDEBUGF(1, "Split component %" PRIu64 " is a new edge, computing edgeEndInfo", n);
       {
         // Compute nextCW and nextCCW of the split edge now
         // incident to the split point
@@ -5537,7 +5537,7 @@ _lwt_SnapEdgeToExistingNode(
           );
           return -1;
         }
-        LWDEBUGF(1, "Azimuth of split component %llu edgeend [%.15g %.15g,%.15g %.15g] is %.15g",
+        LWDEBUGF(1, "Azimuth of split component %" PRIu64 " edgeend [%.15g %.15g,%.15g %.15g] is %.15g",
           n, op.x, op.y, pt->x, pt->y, splitNodeEdgeEnds[n].myaz);
         ret = _lwt_FindAdjacentEdges( topo, node->node_id, &(splitNodeEdgeEnds[n]), NULL, -1 );
         if ( ! ret ) {
@@ -5547,14 +5547,14 @@ _lwt_SnapEdgeToExistingNode(
               node->node_id, edge->edge_id);
             return -1;
         }
-        LWDEBUGF(1, "Component %llu of split edge %" LWTFMT_ELEMID
+        LWDEBUGF(1, "Component %" PRIu64 " of split edge %" LWTFMT_ELEMID
 					" next CW is %" LWTFMT_ELEMID ", next CCW is %" LWTFMT_ELEMID,
           n, edge->edge_id, splitNodeEdgeEnds[n].nextCW, splitNodeEdgeEnds[n].nextCCW);
       }
     }
     else
     {
-      LWDEBUGF(1, "Split component %llu matches existing edge %" LWTFMT_ELEMID
+      LWDEBUGF(1, "Split component %" PRIu64 " matches existing edge %" LWTFMT_ELEMID
         " (%s)", n, existingEdgeId, forward ? "forward" : "backward" );
       /* Get existing edge */
       for ( uint64_t t=0; t<splitNodeEdges->numEdges; t++ )
@@ -5774,7 +5774,7 @@ _lwt_SnapEdgeToExistingNode(
 
       LWDEBUGF(1, "Looking for next CCW edge of split edge %"
           LWTFMT_ELEMID " on common node %" LWTFMT_ELEMID
-          " having %llu attached edges",
+          " having %" PRIu64 " attached edges",
           edge->edge_id,
           commonNodeID, commonNodeEdges->numEdges
       );
@@ -6907,7 +6907,7 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
 
   if ( num )
   {
-    LWDEBUGF(1, "New point is within %.15g units of %llu nodes", tol, num);
+    LWDEBUGF(1, "New point is within %.15g units of %" PRIu64 " nodes", tol, num);
     /* Order by distance if there are more than a single return */
     if ( num > 1 )
     {{
@@ -6967,7 +6967,7 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
     PGTOPO_BE_ERROR();
     return -1;
   }
-  LWDEBUGF(1, "New point is within %.15g units of %llu edges", tol, num);
+  LWDEBUGF(1, "New point is within %.15g units of %" PRIu64 " edges", tol, num);
   if ( num )
   {
     id = _lwt_SplitAllEdgesToNewNode(topo, edges, num, lwgeom_as_lwpoint(pt), tol, moved);
@@ -7326,7 +7326,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     PGTOPO_BE_ERROR();
     return NULL;
   }
-  LWDEBUGF(1, "Line has %u points, its bbox intersects %llu edges bboxes",
+  LWDEBUGF(1, "Line has %u points, its bbox intersects %" PRIu64 " edges bboxes",
     line->points->npoints, numedges);
   if ( numedges )
   {{
@@ -7370,7 +7370,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     PGTOPO_BE_ERROR();
     return NULL;
   }
-  LWDEBUGF(1, "Line bbox intersects %llu nodes bboxes", numnodes);
+  LWDEBUGF(1, "Line bbox intersects %" PRIu64 " nodes bboxes", numnodes);
   if ( numnodes )
   {{
     /* collect those whose distance from us is < tol */
@@ -7605,7 +7605,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     {
       size_t sz;
       char *wkt1 = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &sz);
-      LWDEBUGF(1, "Component %llu of split line is: %s", i, wkt1);
+      LWDEBUGF(1, "Component %" PRIu64 " of split line is: %s", i, wkt1);
       lwfree(wkt1);
     }
 #endif
@@ -7639,11 +7639,11 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
 
     if ( ! id )
     {
-      LWDEBUGF(1, "Component %llu of split line collapsed", i);
+      LWDEBUGF(1, "Component %" PRIu64 " of split line collapsed", i);
       continue;
     }
 
-    LWDEBUGF(1, "Component %llu of split line is %s edge %" LWTFMT_ELEMID,
+    LWDEBUGF(1, "Component %" PRIu64 " of split line is %s edge %" LWTFMT_ELEMID,
                   i, forward ? "forward" : "backward", id);
     ids[num++] = forward ? id : -id; /* TODO: skip duplicates */
   }
