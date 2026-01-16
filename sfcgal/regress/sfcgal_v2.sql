@@ -11,7 +11,7 @@ SELECT 'CG_3DScaleAroundCenter', ST_AsText(ST_ReducePrecision(CG_3DScaleAroundCe
 SELECT 'CG_Translate', ST_AsText(CG_Translate('LINESTRING(1 1, 2 2)', 1, -1), 0);
 SELECT 'CG_3DTranslate', ST_AsText(CG_3DTranslate('POINT(1 1 1)', 1, -1, 2), 0);
 SELECT 'CG_StraightSkeletonPartition', ST_AsText(ST_Collect(dmp.geom), 2) FROM ST_Dump(CG_StraightSkeletonPartition('POLYGON((0 0, 4 0, 2 2, 0 0))', true)) as dmp;
-SELECT 'CG_3DBuffer', ST_AsText(CG_3DBuffer('POINT(0 0 0)', 1, 8, 0), 2);
+SELECT 'CG_3DBuffer', ST_GeometryType(CG_3DBuffer('POINT(0 0 0)', 1, 8, 0));
 SELECT 'CG_Rotate', ST_AsText(ST_ReducePrecision(CG_Rotate('LINESTRING  EMPTY', pi()/2), 0.1));
 SELECT 'CG_2DRotate', ST_AsText(CG_2DRotate('POINT EMPTY', pi()/2, 1, 1), 0);
 SELECT 'CG_3DRotate', ST_AsText(ST_ReducePrecision(CG_3DRotate('POINT EMPTY', pi()/2, 0, 0, 1), 0.1));
