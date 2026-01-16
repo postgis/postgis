@@ -14,8 +14,13 @@
 #include "std_pg_hash.h"
 #include "parseaddress-api.h"
 
-#ifdef PG_MODULE_MAGIC
-PG_MODULE_MAGIC;
+#include "../../postgis_config.h"
+
+#ifdef PG_MODULE_MAGIC_EXT
+PG_MODULE_MAGIC_EXT(
+	.name = "address_standardizer",
+	.version = POSTGIS_LIB_VERSION
+	);
 #endif
 
 Datum debug_standardize_address(PG_FUNCTION_ARGS);

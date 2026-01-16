@@ -50,7 +50,14 @@
 /*
  * This is required for builds against pgsql
  */
+#ifdef PG_MODULE_MAGIC_EXT
+PG_MODULE_MAGIC_EXT(
+  .name = "postgis_topology",
+  .version = POSTGIS_LIB_VERSION
+  );
+#else
 PG_MODULE_MAGIC;
+#endif
 
 static LWT_BE_IFACE* be_iface;
 

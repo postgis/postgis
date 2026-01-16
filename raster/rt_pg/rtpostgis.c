@@ -157,7 +157,14 @@
 /*
  * This is required for builds against pgsql
  */
+#ifdef PG_MODULE_MAGIC_EXT
+PG_MODULE_MAGIC_EXT(
+	.name = "postgis_raster",
+	.version = POSTGIS_LIB_VERSION
+	);
+#else
 PG_MODULE_MAGIC;
+#endif
 
 /* Module load callback */
 void _PG_init(void);
