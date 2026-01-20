@@ -25,6 +25,7 @@ Proj 4.9+ required.
  - #5962, Consistent clipping of MULTI/POINT (Paul Ramsey)
  - #5989, CurvePolygon distance error (Paul Ramsey)
  - #6028, Crash indexing malformed empty polygon (Paul Ramsey)
+ - GH-841, small memory leak in address_standardizer (Maxim Korotkov)
 
 
 PostGIS 3.2.8
