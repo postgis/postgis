@@ -390,7 +390,6 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 
 	oldContext = MemoryContextSwitchTo(PROJCache->PROJSRSCacheContext);
 
-
 	LWPROJ *projection = NULL;
 	/* Try combinations of AUTH_NAME:AUTH_SRID/SRTEXT/PROJ4TEXT until we find */
 	/* one that gives us a usable transform. Note that we prefer */
@@ -410,7 +409,13 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 	}
 	if (!projection)
 	{
-		elog(ERROR, "could not form projection (LWPROJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);
+		elog(ERROR,
+		    "could not form projection (LWPROJ) from srid %d ('%s') to srid %d ('%s')",
+		    srid_from,
+				( pj_from_str ? pj_from_str : "(null)" ),
+				srid_to,
+				( pj_to_str ? pj_to_str : "(null)" )
+		);
 		return NULL;
 	}
 
