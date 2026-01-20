@@ -379,13 +379,15 @@ void std_free(STANDARDIZER *std)
 {
     if ( std == NULL ) return;
     DBG("Calling close_stand_process");
-    if ( std -> pagc_p != NULL ) close_stand_process( std -> pagc_p ) ;
-    if ( std -> pagc_p -> process_errors != NULL ) {
-        DBG("Calling close_errors");
-        close_errors( std -> pagc_p -> process_errors );
-        DBG("Calling FREE_AND_NULL");
-        FREE_AND_NULL( std -> pagc_p ) ;
-    }
+    if ( std -> pagc_p != NULL ) {
+		close_stand_process( std -> pagc_p ) ;
+		if ( std -> pagc_p -> process_errors != NULL ) {
+			DBG("Calling close_errors");
+			close_errors( std -> pagc_p -> process_errors );
+		}
+		DBG("Calling FREE_AND_NULL");
+		FREE_AND_NULL( std -> pagc_p );
+	}
     DBG("Calling close_stand_context");
     close_stand_context( std -> misc_stand );
     DBG("Calling free");
