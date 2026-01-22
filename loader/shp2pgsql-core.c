@@ -300,6 +300,7 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 	if ( !mem )
 	{
 		snprintf(state->message, SHPLOADERMSGLEN, "unable to write geometry");
+		lwgeom_free(lwgeom);
 		return SHPLOADERERR;
 	}
 
