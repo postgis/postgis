@@ -3,6 +3,8 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #2951, Check geography input before deserializing ST_Centroid
+     (Maksim Korotkov)
  - #6020, Resolve ST_MPointFromText in the PostGIS schema (Paul Ramsey)
  - GH-1187, [raster] Handle failed raster-to-geometry conversions
      (Maksim Korotkov)
