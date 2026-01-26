@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Clear the shapefile loader GUI progress path after freeing it (Maksim Korotkov)
  - Avoid a use-after-free in the shapefile loader GUI (Maksim Korotkov)
  - Avoid overlapping memory copies in ST_Simplify (Maksim Korotkov)
  - #6141, [raster] Initialize the out-of-db flag when loading the raster library
