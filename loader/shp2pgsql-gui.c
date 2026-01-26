@@ -1755,8 +1755,8 @@ import_cleanup:
 		ShpLoaderDestroy(state);
 
 		/* Tidy up */
-		if (progress_shapefile)
-			free(progress_shapefile);
+		free(progress_shapefile);
+		progress_shapefile = NULL;
 
 		/* Get next entry */
 		is_valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(import_file_list_store), &iter);
