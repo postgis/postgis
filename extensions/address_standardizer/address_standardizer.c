@@ -21,6 +21,8 @@ PG_MODULE_MAGIC_EXT(
 	.name = "address_standardizer",
 	.version = POSTGIS_LIB_VERSION
 	);
+#else
+	PG_MODULE_MAGIC;
 #endif
 
 Datum debug_standardize_address(PG_FUNCTION_ARGS);
