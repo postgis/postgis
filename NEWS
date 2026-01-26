@@ -3,6 +3,7 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- Avoid a use-after-free in the shapefile loader GUI (Maksim Korotkov)
 - Avoid overlapping memory copies in ST_Simplify (Maksim Korotkov)
 - GH-1168, Handle an empty MVT aggregate context during serialization
     (Svyatoslav Bogdanov)
