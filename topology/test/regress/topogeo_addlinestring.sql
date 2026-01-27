@@ -390,7 +390,7 @@ SELECT 't4757.1', topology.TopoGeo_addLinestring('bug4757',
   'LINESTRING(0 -0.1,1 0,1 1,0 1,0 -0.1)', 1);
 SELECT 't4757.end', topology.DropTopology('bug4757');
 
--- See https://trac.osgeo.org/postgis/ticket/t4758
+-- See https://trac.osgeo.org/postgis/ticket/4758
 select 't4758.start', topology.CreateTopology ('t4758', 0, 1e-06) > 0;
 select 't4758.0', topology.TopoGeo_addLinestring('t4758',
   'LINESTRING(11.38327215  60.4081942, 11.3826176   60.4089484)');
