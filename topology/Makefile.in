@@ -130,12 +130,13 @@ topology.sql: \
 	sql/polygonize.sql.in \
 	sql/export/gml.sql.in \
 	sql/export/TopoJSON.sql.in \
-	sql/query/getnodebypoint.sql.in \
+	sql/query/FindVertexSegmentPairsBelowDistance.sql.in \
 	sql/query/getedgebypoint.sql.in \
 	sql/query/getfacebypoint.sql.in \
-	sql/query/GetRingEdges.sql.in \
-	sql/query/GetNodeEdges.sql.in \
 	sql/query/GetFaceContainingPoint.sql.in \
+	sql/query/getnodebypoint.sql.in \
+	sql/query/GetNodeEdges.sql.in \
+	sql/query/GetRingEdges.sql.in \
 	sql/manage/AddTopoGeometryColumn.sql.in \
 	sql/manage/CopyTopology.sql.in \
 	sql/manage/CreateTopology.sql.in \

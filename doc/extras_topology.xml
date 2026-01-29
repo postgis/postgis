@@ -3313,6 +3313,47 @@ and is thus usable to build edge ring linking.
 			</refsection>
 		</refentry>
 
+		<refentry xml:id="FindVertexSegmentPairsBelowDistance">
+			<refnamediv>
+				<refname>FindVertexSegmentPairsBelowDistance</refname>
+
+				<refpurpose>
+                    Find pairs of topology vertex/segment that are closer than tolerated distance
+				</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>setof record <function>FindVertexSegmentPairsBelowDistance</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>tolerance</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Returns a relation in which each tuple is a pair of vertex/segment where
+the vertex is NOT an endpoint of the segment but the distance between
+them is below the given tolerance.
+                </para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="3.7">Availability: 3.7</para>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para>
+<xref linkend="ValidateTopologyPrecision"/>
+				</para>
+			</refsection>
+		</refentry>
+
 	</section>
 
 
