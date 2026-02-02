@@ -467,8 +467,8 @@ void flatgeobuf_decode_row(struct flatgeobuf_decode_ctx *ctx)
 	HeapTuple heapTuple;
 	uint32_t natts = ctx->tupdesc->natts;
 
-	Datum *values = palloc0(natts * sizeof(Datum *));
-	bool *isnull = palloc0(natts * sizeof(bool *));
+	Datum *values = palloc0(natts * sizeof(Datum));
+	bool *isnull = palloc0(natts * sizeof(bool));
 
 	values[0] = Int32GetDatum(ctx->fid);
 
