@@ -812,11 +812,11 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 		latwidth = latmax - latmin;
 		latmaxadjust = lonmaxadjust = latminadjust = lonminadjust = 0.0;
 
-		if ( minx > lonmin + lonwidth / 2.0 )
+		if ( minx >= lonmin + lonwidth / 2.0 )
 		{
 			lonminadjust = lonwidth / 2.0;
 		}
-		else if ( maxx < lonmax - lonwidth / 2.0 )
+		else if ( maxx <= lonmax - lonwidth / 2.0 )
 		{
 			lonmaxadjust = -1 * lonwidth / 2.0;
 		}
@@ -833,11 +833,11 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 			break;
 		}
 
-		if ( miny > latmin + latwidth / 2.0 )
+		if ( miny >= latmin + latwidth / 2.0 )
 		{
 			latminadjust = latwidth / 2.0;
 		}
-		else if (maxy < latmax - latwidth / 2.0 )
+		else if (maxy <= latmax - latwidth / 2.0 )
 		{
 			latmaxadjust = -1 * latwidth / 2.0;
 		}
