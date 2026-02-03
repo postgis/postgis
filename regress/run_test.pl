@@ -166,6 +166,8 @@ if ( "${TOP_BUILDDIR}" eq "" )
         }
     }
 }
+# Make sure TOP_BUILDDIR is absolute
+$TOP_BUILDDIR=abs_path("${TOP_BUILDDIR}");
 
 # Prepend scripts' build dirs to path
 # TODO: make this conditional ?
