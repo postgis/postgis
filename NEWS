@@ -19,6 +19,8 @@ YYYY/MM/DD
  - #5991, CircularString distance error (Paul Ramsey)
  - #5962, Consistent clipping of MULTI/POINT (Paul Ramsey)
  - #6028, Crash indexing malformed empty polygon (Paul Ramsey)
+ - #5998, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
+           by extension are owned by extension
 
 
 PostGIS 3.1.12
