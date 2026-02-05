@@ -1,5 +1,5 @@
-PostGIS 3.0.12dev
-xxxx/xx/xx
+PostGIS 3.0.12 (EOL)
+2026/02/xx
 PostgreSQL 9.5-13 required. GEOS 3.6+ required but GEOS 3.9+ to take advantage of all features.
 Proj 4.9+ required.
 
@@ -13,6 +13,8 @@ Proj 4.9+ required.
  - Handle null returns from wkb parser, Paul Ramsey
  - #5818, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)
  - #6028, Crash indexing malformed empty polygon (Paul Ramsey)
+ - #5998, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
+           by extension are owned by extension
 
 
 PostGIS 3.0.11
