@@ -26,7 +26,9 @@ Proj 4.9+ required.
  - #5989, CurvePolygon distance error (Paul Ramsey)
  - #6028, Crash indexing malformed empty polygon (Paul Ramsey)
  - GH-841, small memory leak in address_standardizer (Maxim Korotkov)
-
+ - #5998, [tiger_geocoder] [security] CVE-2022-2625, make sure tables required
+        by extension are owned by extension
+        authored: Andrey Borodin (Yandex), reported by Sergey Bobrov (Kaspersky)
 
 PostGIS 3.2.8
 2024/12/22

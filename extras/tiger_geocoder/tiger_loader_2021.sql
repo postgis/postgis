@@ -89,6 +89,72 @@ IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_sche
 	  CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4269)
 	);
 	COMMENT ON TABLE tiger.bg IS 'block groups';
+ELSE
+	-- Insist on invoking Postgres logic of owning table by extension. This prevent attacks like CVE-2022-2625.
+	CREATE TABLE IF NOT EXISTS tract
+	(
+	  gid serial NOT NULL,
+	  statefp varchar(2),
+	  countyfp varchar(3),
+	  tractce varchar(6),
+	  tract_id varchar(11) PRIMARY KEY,
+	  name varchar(7),
+	  namelsad varchar(20),
+	  mtfcc varchar(5),
+	  funcstat varchar(1),
+	  aland double precision,
+	  awater double precision,
+	  intptlat varchar(11),
+	  intptlon varchar(12),
+	  the_geom geometry,
+	  CONSTRAINT enforce_dims_geom CHECK (st_ndims(the_geom) = 2),
+	  CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
+	  CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4269)
+	);
+
+	CREATE TABLE IF NOT EXISTS tabblock
+	(
+	  gid serial NOT NULL,
+	  statefp varchar(2),
+	  countyfp varchar(3),
+	  tractce varchar(6),
+	  blockce varchar(4),
+	  tabblock_id varchar(16) PRIMARY KEY,
+	  name varchar(20),
+	  mtfcc varchar(5),
+	  ur varchar(1),
+	  uace varchar(5),
+	  funcstat varchar(1),
+	  aland double precision,
+	  awater double precision,
+	  intptlat varchar(11),
+	  intptlon varchar(12),
+	  the_geom geometry,
+	  CONSTRAINT enforce_dims_geom CHECK (st_ndims(the_geom) = 2),
+	  CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
+	  CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4269)
+	);
+
+	CREATE TABLE IF NOT EXISTS bg
+	(
+	  gid serial NOT NULL,
+	  statefp varchar(2),
+	  countyfp varchar(3),
+	  tractce varchar(6),
+	  blkgrpce varchar(1),
+	  bg_id varchar(12) PRIMARY KEY,
+	  namelsad varchar(13),
+	  mtfcc varchar(5),
+	  funcstat varchar(1),
+	  aland double precision,
+	  awater double precision,
+	  intptlat varchar(11),
+	  intptlon varchar(12),
+	  the_geom geometry,
+	  CONSTRAINT enforce_dims_geom CHECK (st_ndims(the_geom) = 2),
+	  CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
+	  CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4269)
+	);
 END IF;
 
 IF EXISTS(SELECT * FROM information_schema.columns WHERE table_schema = 'tiger' AND column_name = 'tabblock_id' AND table_name = 'tabblock' AND character_maximum_length < 16)  THEN -- size of name and tabblock_id fields need to be increased
@@ -172,18 +238,14 @@ $$
 DO
 $$
 BEGIN
-  IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name = 'loader_platform' AND table_schema = 'tiger') THEN
-      CREATE TABLE loader_platform(os varchar(50) PRIMARY KEY, declare_sect text, pgbin text, wget text, unzip_command text, psql text, path_sep text, loader text, environ_set_command text, county_process_command text);
-  END IF;
+    CREATE TABLE IF NOT EXISTS loader_platform(os varchar(50) PRIMARY KEY, declare_sect text, pgbin text, wget text, unzip_command text, psql text, path_sep text, loader text, environ_set_command text, county_process_command text);
 END
 $$ LANGUAGE 'plpgsql';
 
 DO
 $$
 BEGIN
-  IF NOT EXISTS (SELECT * FROM information_schema.schemata WHERE schema_name = 'tiger_data') THEN
-       CREATE SCHEMA tiger_data;
-  END IF;
+    CREATE SCHEMA IF NOT EXISTS tiger_data;
 END
 $$ LANGUAGE 'plpgsql';
 
@@ -239,9 +301,7 @@ done');
 -- variables table
 DO $$
 BEGIN
-  IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name = 'loader_variables' AND table_schema = 'tiger') THEN
-      CREATE TABLE loader_variables(tiger_year varchar(4) PRIMARY KEY, website_root text, staging_fold text, data_schema text, staging_schema text);
-  END IF;
+    CREATE TABLE IF NOT EXISTS loader_variables(tiger_year varchar(4) PRIMARY KEY, website_root text, staging_fold text, data_schema text, staging_schema text);
 END
 $$ LANGUAGE 'plpgsql';
 
@@ -252,8 +312,7 @@ GRANT SELECT ON TABLE loader_variables TO public;
 
 DO $$
 BEGIN
-  IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name = 'loader_lookuptables' AND table_schema = 'tiger') THEN
-   CREATE TABLE loader_lookuptables(process_order integer NOT NULL DEFAULT 1000,
+   CREATE TABLE IF NOT EXISTS loader_lookuptables(process_order integer NOT NULL DEFAULT 1000,
 		lookup_name text primary key,
 		table_name text, single_mode boolean NOT NULL DEFAULT true,
 		load boolean NOT NULL DEFAULT true,
@@ -263,7 +322,6 @@ BEGIN
 		post_load_process text, single_geom_mode boolean DEFAULT false,
 		insert_mode char(1) NOT NULL DEFAULT 'c',
 		pre_load_process text,columns_exclude text[], website_root_override text);
-  END IF;
 END
 $$ LANGUAGE 'plpgsql';
 

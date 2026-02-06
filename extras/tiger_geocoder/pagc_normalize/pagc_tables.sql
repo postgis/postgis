@@ -11,14 +11,23 @@ BEGIN
 	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_gaz')  THEN
 		CREATE TABLE pagc_gaz (id serial NOT NULL primary key ,seq integer ,word text, stdword text, token integer,is_custom boolean NOT NULL default true);
 		GRANT SELECT ON pagc_gaz TO public;
+	ELSE
+		-- Insist on invoking Postgres logic of owning table by extension. This prevent attacks like CVE-2022-2625.
+		CREATE TABLE IF NOT EXISTS pagc_gaz (id serial NOT NULL primary key ,seq integer ,word text, stdword text, token integer,is_custom boolean NOT NULL default true);
 	END IF;
 	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_lex')  THEN
 		CREATE TABLE pagc_lex (id serial NOT NULL primary key,seq integer,word text,stdword text,token integer,is_custom boolean NOT NULL default true);
 		GRANT SELECT ON pagc_lex TO public;
+	ELSE
+		-- Same as above.
+		CREATE TABLE IF NOT EXISTS pagc_lex (id serial NOT NULL primary key,seq integer,word text,stdword text,token integer,is_custom boolean NOT NULL default true);
 	END IF;
 	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_rules')  THEN
 		CREATE TABLE pagc_rules (id serial NOT NULL primary key,rule text, is_custom boolean DEFAULT true);
 		GRANT SELECT ON pagc_rules TO public;
+	ELSE
+		-- Same as above.
+		CREATE TABLE IF NOT EXISTS pagc_rules (id serial NOT NULL primary key,rule text, is_custom boolean DEFAULT true);
 	END IF;
 	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_gaz' AND data_type='text')  THEN
 	-- its probably old table structure change type of lex and gaz columns
