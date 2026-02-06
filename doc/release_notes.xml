@@ -3,6 +3,32 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+        <title>Release 3.1.13 (EOL)</title>
+        <para>This release works with PostgreSQL 9.6-14.</para>
+        <simplesect>
+            <title>Bug Fixes</title>
+            <para>Release date: 2026/02/06</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5951">5951</ulink>, [topology] Fix crash in ST_GetFaceEdges with corrupted topology (Sandro Santilli)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5947">5947</ulink>, [topology] Fix crash in ST_ModEdgeHeal (Sandro Santilli)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5922">5922</ulink>, [topology] Fix crash in TopoGeo_AddLinestring with EMPTY input (Sandro Santilli)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5907">5907</ulink>, [topology] Fix crash in TopoGeo_AddPolygon with EMPTY input (Sandro Santilli)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5876">5876</ulink>, Fix ST_AddPoint with empty point argument (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5818">5818</ulink>, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5885">5885</ulink>, Fix documentation about grid-based overlay operations (Sandro Santilli)</para>
+            <para>PCRE2 support for more modern systems (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5921">5921</ulink>, Crash freeing uninitialized pointer (Arsenii Mukhin)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5912">5912</ulink>, Crash on GML with xlink and no prefix (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5905">5905</ulink>, Crash on deeply nested geometries (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5909">5909</ulink>, ST_ValueCount crashes on empty table (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5917">5917</ulink>, ST_Relate becomes unresponsive (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5991">5991</ulink>, CircularString distance error (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5962">5962</ulink>, Consistent clipping of MULTI/POINT (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/6028">6028</ulink>, Crash indexing malformed empty polygon (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5998">5998</ulink>, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
+                    by extension are owned by extension</para>
+        </simplesect>
+    </sect1>
+    <sect1>
         <title>Release 3.1.12</title>
         <para>This release works with PostgreSQL 9.6-14.</para>
         <simplesect>
