@@ -350,6 +350,90 @@ Datum ST_ClusterIntersectingWin(PG_FUNCTION_ARGS)
 }
 
 
+extern Datum ST_ClusterRelateWin(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_ClusterRelateWin);
+Datum ST_ClusterRelateWin(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 31300
+	lwpgerror("The GEOS version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'ST_ClusterRelateWin' function (3.13.0+ required)",
+	          POSTGIS_GEOS_VERSION);
+	          PG_RETURN_NULL();
+#else
+
+	WindowObject win_obj = PG_WINDOW_OBJECT();
+	uint32_t row = WinGetCurrentPosition(win_obj);
+	uint32_t ngeoms = WinGetPartitionRowCount(win_obj);
+	cluster_context* context = fetch_cluster_context(win_obj, ngeoms);
+
+	if (row == 0) /* beginning of the partition; do all of the work now */
+	{
+		bool matrix_is_null = false;
+		uint32_t i;
+		uint32_t* result_ids;
+		GEOSGeometry** geoms = palloc0(ngeoms * sizeof(GEOSGeometry*));
+		UNIONFIND* uf = UF_create(ngeoms);
+		char *matrix;
+		text *txtIm = DatumGetTextP(WinGetFuncArgCurrent(win_obj, 1, &matrix_is_null));
+		if (matrix_is_null || VARSIZE_ANY_EXHDR(txtIm) != 9)
+		{
+			elog(ERROR,"Invalid relate matrix provided");
+			PG_RETURN_NULL();
+		}
+		matrix = text_to_cstring(txtIm);
+
+		context->is_error = LW_TRUE; /* until proven otherwise */
+		initGEOS(lwpgnotice, lwgeom_geos_error);
+
+		for (i = 0; i < ngeoms; i++)
+		{
+			bool geom_is_null;
+			geoms[i] = read_geos_from_partition(win_obj, i, &geom_is_null);
+			context->clusters[i].is_null = geom_is_null;
+
+			if (!geoms[i])
+			{
+				elog(ERROR, "Error reading geometry");
+				PG_RETURN_NULL();
+			}
+		}
+
+		if (union_related_pairs(geoms, ngeoms, matrix, uf) == LW_SUCCESS)
+			context->is_error = LW_FALSE;
+
+		for (i = 0; i < ngeoms; i++)
+		{
+			GEOSGeom_destroy(geoms[i]);
+		}
+		pfree(geoms);
+		pfree(matrix);
+
+		if (context->is_error)
+		{
+			UF_destroy(uf);
+			elog(ERROR, "Error during clustering");
+			PG_RETURN_NULL();
+		}
+
+		result_ids = UF_get_collapsed_cluster_ids(uf, NULL);
+		for (i = 0; i < ngeoms; i++)
+		{
+			context->clusters[i].cluster_id = result_ids[i];
+		}
+
+		pfree(result_ids);
+		UF_destroy(uf);
+	}
+
+	if (context->clusters[row].is_null)
+		PG_RETURN_NULL();
+
+	PG_RETURN_INT32(context->clusters[row].cluster_id);
+#endif
+}
+
+
 extern Datum ST_ClusterKMeans(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_ClusterKMeans);
 Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)

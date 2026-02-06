@@ -80,6 +80,7 @@ GENERATED_IMAGES= \
 	st_closestpoint01.png \
 	st_closestpoint02.png \
 	st_clusterkmeans02.png \
+	st_clusterrelatewin01.png \
 	st_centroid01.png \
 	st_centroid02.png \
 	st_centroid03.png \

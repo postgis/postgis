@@ -1941,6 +1941,13 @@ CREATE OR REPLACE FUNCTION ST_ClusterIntersectingWin(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
 	_COST_HIGH;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_ClusterRelateWin(geom geometry, relate_matrix text)
+	RETURNS int
+	AS 'MODULE_PATHNAME', 'ST_ClusterRelateWin'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	_COST_HIGH;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 	RETURNS geometry

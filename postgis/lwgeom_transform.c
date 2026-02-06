@@ -509,6 +509,7 @@ srs_find_planar(const char *auth_name, const LWGEOM *bounds, struct srs_data *st
 
 	while (crs_list && *crs_list)
 	{
+		uint32_t num_entries = state->num_entries;
 		/* Read current crs and move forward one entry */
 		PROJ_CRS_INFO *crs = *crs_list++;
 
@@ -524,10 +525,10 @@ srs_find_planar(const char *auth_name, const LWGEOM *bounds, struct srs_data *st
 		srs_state_memcheck(state);
 
 		/* Write the entry into the entry list and increment */
-		state->entries[state->num_entries].auth_name = cstring_to_text(crs->auth_name);
-		state->entries[state->num_entries].auth_code = cstring_to_text(crs->code);
-		state->entries[state->num_entries].sort = area;
-		state->num_entries++;
+		state->entries[num_entries].auth_name = cstring_to_text(crs->auth_name);
+		state->entries[num_entries].auth_code = cstring_to_text(crs->code);
+		state->entries[num_entries].sort = area;
+		state->num_entries = num_entries + 1;
 	}
 
 	/* Put the list of entries into order of area size, smallest to largest */

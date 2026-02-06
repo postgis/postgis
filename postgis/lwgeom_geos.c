@@ -2031,7 +2031,8 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 	ArrayType *array, *result;
 	int is3d = 0;
 	uint32 nelems, nclusters, i;
-	GEOSGeometry **geos_inputs, **geos_results;
+	GEOSGeometry **geos_inputs;
+	GEOSGeometry **geos_results;
 	int32_t srid = SRID_UNKNOWN;
 
 	/* Parameters used to construct a result array */

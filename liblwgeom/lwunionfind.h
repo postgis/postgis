@@ -22,9 +22,7 @@
  *
  **********************************************************************/
 
-
-#ifndef _LWUNIONFIND
-#define _LWUNIONFIND 1
+#pragma once
 
 #include "liblwgeom.h"
 
@@ -61,4 +59,3 @@ uint32_t* UF_ordered_by_cluster(UNIONFIND* uf);
  * */
 uint32_t* UF_get_collapsed_cluster_ids(UNIONFIND* uf, const char* is_in_cluster);
 
-#endif

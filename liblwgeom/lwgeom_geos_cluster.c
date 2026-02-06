@@ -239,6 +239,100 @@ union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf
 	return success;
 }
 
+
+
+/*
+ * Identify geometries that match the relate pattern
+ * and mark them as being in the same set
+ */
+int
+union_related_pairs(
+	GEOSGeometry** geoms,
+	uint32_t num_geoms,
+	const char* matrix,
+	UNIONFIND* uf)
+{
+#if POSTGIS_GEOS_VERSION >= 31300
+	int success = LW_SUCCESS;
+	uint32_t p, i;
+	struct STRTree tree;
+	struct QueryContext cxt =
+	{
+		.items_found = NULL,
+		.num_items_found = 0,
+		.items_found_size = 0
+	};
+
+	if (num_geoms <= 1)
+		return LW_SUCCESS;
+
+	tree = make_strtree((void**) geoms, num_geoms, LW_FALSE);
+	if (tree.tree == NULL)
+	{
+		destroy_strtree(&tree);
+		return LW_FAILURE;
+	}
+
+	for (p = 0; p < num_geoms; p++)
+	{
+		const GEOSPreparedGeometry* prep = NULL;
+
+		if (!geoms[p] || GEOSisEmpty(geoms[p]))
+			continue;
+
+		cxt.num_items_found = 0;
+		GEOSSTRtree_query(tree.tree, geoms[p], &query_accumulate, &cxt);
+
+		/*
+		 * II BI EI
+		 * IB BB EB
+		 * IE BE EE
+		 */
+		for (i = 0; i < cxt.num_items_found; i++)
+		{
+			uint32_t q = *((uint32_t*) cxt.items_found[i]);
+
+			if (p != q && UF_find(uf, p) != UF_find(uf, q))
+			{
+				int geos_result;
+
+				if (prep == NULL)
+				{
+					prep = GEOSPrepare(geoms[p]);
+				}
+				geos_result = GEOSPreparedRelatePattern(prep, geoms[q], matrix);
+
+				if (geos_result > 1)
+				{
+					success = LW_FAILURE;
+					break;
+				}
+				else if (geos_result)
+				{
+					UF_union(uf, p, q);
+				}
+			}
+		}
+
+		if (prep)
+			GEOSPreparedGeom_destroy(prep);
+
+		if (!success)
+			break;
+	}
+
+	if (cxt.items_found)
+		lwfree(cxt.items_found);
+
+	destroy_strtree(&tree);
+	return success;
+
+#else /* POSTGIS_GEOS_VERSION >= 31300 */
+	return LW_FAILURE;
+#endif
+}
+
+
 /** Takes an array of GEOSGeometry* and constructs an array of GEOSGeometry*, where each element in the constructed
  *  array is a GeometryCollection representing a set of interconnected geometries. Caller is responsible for
  *  freeing the input array, but not for destroying the GEOSGeometry* items inside it.  */

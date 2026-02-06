@@ -281,6 +281,89 @@ FROM testdata;
     </refentry>
 
 
+
+    <refentry xml:id="ST_ClusterRelateWin">
+      <refnamediv>
+        <refname>ST_ClusterRelateWin</refname>
+
+        <refpurpose>Window function that returns a cluster id for each input geometry, clustering input geometries into connected sets using the relate pattern to determine whether the geometries are connected.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>integer <function>ST_ClusterRelateWin</function></funcdef>
+            <paramdef><type>geometry winset </type> <parameter>geom</parameter></paramdef>
+            <paramdef><type>text </type> <parameter>relate_matrix</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>A window function that builds connected clusters of geometries that intersect. Geometries are added to a cluster if they share a pairwise DE9IM relationship with another member of the cluster. With this function it is possible to build a cluster of all objects that touch at boundaries, but exclude those that merely overlap.</para>
+
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+        <para>This collection of line strings would form a single cluster using <xref linkend="ST_ClusterIntersectingWin"/>, but using <xref linkend="ST_ClusterRelateWin"/> can be clustered into three groups that connect only via their end points.</para>
+
+        <para>
+          <informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_clusterrelatewin01.png"/>
+                </imageobject>
+                <caption><para>Connected and overlapping linestrings</para></caption>
+            </mediaobject>
+          </informalfigure>
+        </para>
+
+        <programlisting>
+CREATE TABLE clusterrelate (
+  id serial,
+  geom geometry);
+
+INSERT INTO clusterrelate (geom)
+  VALUES
+  ('LINESTRING(0 0,1 1)'),
+  ('LINESTRING(2 2,1 1)'),
+  ('LINESTRING(0 1,1 0)'),
+  ('LINESTRING(0 1,0 4)'),
+  ('LINESTRING(2 2,2 4)'),
+  ('LINESTRING(1.5 2.5,2.5 3.5)');
+
+SELECT id,
+  ST_AsText(geom),
+  ST_ClusterRelateWin(geom, '****0****') OVER () AS cluster
+FROM clusterrelate;
+
+ id |          st_astext          | cluster
+----+-----------------------------+---------
+  1 | LINESTRING(0 0,1 1)         |       0
+  2 | LINESTRING(2 2,1 1)         |       0
+  3 | LINESTRING(0 1,1 0)         |       1
+  4 | LINESTRING(0 1,0 4)         |       1
+  5 | LINESTRING(2 2,2 4)         |       0
+  6 | LINESTRING(1.5 2.5,2.5 3.5) |       2
+        </programlisting>
+      </refsection>
+      <refsection>
+        <title>See Also</title>
+        <para>
+            <xref linkend="ST_Relate"/>,
+            <xref linkend="ST_ClusterIntersectingWin"/>,
+            <xref linkend="ST_ClusterWithinWin"/>
+        </para>
+      </refsection>
+
+    </refentry>
+
+
+
 	<refentry xml:id="ST_ClusterKMeans">
 	  <refnamediv>
 		<refname>ST_ClusterKMeans</refname>
