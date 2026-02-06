@@ -89,6 +89,72 @@ IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_sche
 	  CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4269)
 	);
 	COMMENT ON TABLE tiger.bg IS 'block groups';
+ELSE
+	-- Insist on invoking Postgres logic of owning table by extension. This prevent attacks like CVE-2022-2625.
+	CREATE TABLE IF NOT EXISTS tract
+	(
+	  gid serial NOT NULL,
+	  statefp varchar(2),
+	  countyfp varchar(3),
+	  tractce varchar(6),
+	  tract_id varchar(11) PRIMARY KEY,
+	  name varchar(7),
+	  namelsad varchar(20),
+	  mtfcc varchar(5),
+	  funcstat varchar(1),
+	  aland double precision,
+	  awater double precision,
+	  intptlat varchar(11),
+	  intptlon varchar(12),
+	  the_geom geometry,
+	  CONSTRAINT enforce_dims_geom CHECK (st_ndims(the_geom) = 2),
+	  CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
+	  CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4269)
+	);
+
+	CREATE TABLE IF NOT EXISTS tabblock
+	(
+	  gid serial NOT NULL,
+	  statefp varchar(2),
+	  countyfp varchar(3),
+	  tractce varchar(6),
+	  blockce varchar(4),
+	  tabblock_id varchar(16) PRIMARY KEY,
+	  name varchar(20),
+	  mtfcc varchar(5),
+	  ur varchar(1),
+	  uace varchar(5),
+	  funcstat varchar(1),
+	  aland double precision,
+	  awater double precision,
+	  intptlat varchar(11),
+	  intptlon varchar(12),
+	  the_geom geometry,
+	  CONSTRAINT enforce_dims_geom CHECK (st_ndims(the_geom) = 2),
+	  CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
+	  CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4269)
+	);
+
+	CREATE TABLE IF NOT EXISTS bg
+	(
+	  gid serial NOT NULL,
+	  statefp varchar(2),
+	  countyfp varchar(3),
+	  tractce varchar(6),
+	  blkgrpce varchar(1),
+	  bg_id varchar(12) PRIMARY KEY,
+	  namelsad varchar(13),
+	  mtfcc varchar(5),
+	  funcstat varchar(1),
+	  aland double precision,
+	  awater double precision,
+	  intptlat varchar(11),
+	  intptlon varchar(12),
+	  the_geom geometry,
+	  CONSTRAINT enforce_dims_geom CHECK (st_ndims(the_geom) = 2),
+	  CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
+	  CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4269)
+	);
 END IF;
 
 IF EXISTS(SELECT * FROM information_schema.columns WHERE table_schema = 'tiger' AND column_name = 'tabblock_id' AND table_name = 'tabblock' AND character_maximum_length < 16)  THEN -- size of name and tabblock_id fields need to be increased
@@ -175,18 +241,14 @@ $$
 DO
 $$
 BEGIN
-  IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name = 'loader_platform' AND table_schema = 'tiger') THEN
-      CREATE TABLE loader_platform(os varchar(50) PRIMARY KEY, declare_sect text, pgbin text, wget text, unzip_command text, psql text, path_sep text, loader text, environ_set_command text, county_process_command text);
-  END IF;
+    CREATE TABLE IF NOT EXISTS loader_platform(os varchar(50) PRIMARY KEY, declare_sect text, pgbin text, wget text, unzip_command text, psql text, path_sep text, loader text, environ_set_command text, county_process_command text);
 END
 $$ LANGUAGE 'plpgsql';
 
 DO
 $$
 BEGIN
-  IF NOT EXISTS (SELECT * FROM information_schema.schemata WHERE schema_name = 'tiger_data') THEN
-       CREATE SCHEMA tiger_data;
-  END IF;
+    CREATE SCHEMA IF NOT EXISTS tiger_data;
 END
 $$ LANGUAGE 'plpgsql';
 
@@ -242,21 +304,18 @@ done');
 -- variables table
 DO $$
 BEGIN
-  IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name = 'loader_variables' AND table_schema = 'tiger') THEN
-      CREATE TABLE loader_variables(tiger_year varchar(4) PRIMARY KEY, website_root text, staging_fold text, data_schema text, staging_schema text);
-  END IF;
+    CREATE TABLE IF NOT EXISTS loader_variables(tiger_year varchar(4) PRIMARY KEY, website_root text, staging_fold text, data_schema text, staging_schema text);
 END
 $$ LANGUAGE 'plpgsql';
 
 TRUNCATE TABLE loader_variables;
 INSERT INTO loader_variables(tiger_year, website_root , staging_fold, data_schema, staging_schema)
-	VALUES('rd22', 'https://www2.census.gov/geo/tiger/TIGER_RD18/LAYER', '/gisdata', 'tiger_data', 'tiger_staging');
+	VALUES('2023', 'https://www2.census.gov/geo/tiger/TIGER2023', '/gisdata', 'tiger_data', 'tiger_staging');
 GRANT SELECT ON TABLE loader_variables TO public;
 
 DO $$
 BEGIN
-  IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name = 'loader_lookuptables' AND table_schema = 'tiger') THEN
-   CREATE TABLE loader_lookuptables(process_order integer NOT NULL DEFAULT 1000,
+   CREATE TABLE IF NOT EXISTS loader_lookuptables(process_order integer NOT NULL DEFAULT 1000,
 		lookup_name text primary key,
 		table_name text, single_mode boolean NOT NULL DEFAULT true,
 		load boolean NOT NULL DEFAULT true,
@@ -266,7 +325,6 @@ BEGIN
 		post_load_process text, single_geom_mode boolean DEFAULT false,
 		insert_mode char(1) NOT NULL DEFAULT 'c',
 		pre_load_process text,columns_exclude text[], website_root_override text);
-  END IF;
 END
 $$ LANGUAGE 'plpgsql';
 
@@ -288,7 +346,7 @@ VALUES(10, 'tract', 'tract', true, false, true,false, 'c',
 	'${psql} -c "ALTER TABLE ${staging_schema}.${state_abbrev}_${table_name} RENAME geoid TO tract_id; SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}'')); "
 	${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${lookup_name}_the_geom_gist ON ${data_schema}.${state_abbrev}_${lookup_name} USING gist(the_geom);"
 	${psql} -c "VACUUM ANALYZE ${data_schema}.${state_abbrev}_${lookup_name};"
-	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"', ARRAY['gid']);
+	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"', ARRAY['gid', 'geoidfq']);
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
 VALUES(11, 'tabblock20', 'tabblock20', true, false, true,false, 'c',
@@ -296,7 +354,7 @@ VALUES(11, 'tabblock20', 'tabblock20', true, false, true,false, 'c',
 '${psql} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}'')); "
 ${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
 ${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${lookup_name}_the_geom_gist ON ${data_schema}.${state_abbrev}_${lookup_name} USING gist(the_geom);"
-${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"', '{gid}'::text[]);
+${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"', '{gid, geoidfq20, uatype}'::text[]);
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
 VALUES(12, 'bg', 'bg', false,false, true,false, 'c',
@@ -304,7 +362,7 @@ VALUES(12, 'bg', 'bg', false,false, true,false, 'c',
 '${psql} -c "ALTER TABLE ${staging_schema}.${state_abbrev}_${table_name} RENAME geoid TO bg_id;  SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}'')); "
 ${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
 ${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${lookup_name}_the_geom_gist ON ${data_schema}.${state_abbrev}_${lookup_name} USING gist(the_geom);"
-${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"', ARRAY['gid']);
+${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"', ARRAY['gid', 'geoidfq']);
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state,  level_nation, single_geom_mode, pre_load_process, post_load_process)
 VALUES(2, 'county_all', 'county', true, false, false, true,
@@ -347,7 +405,7 @@ $post_load$${psql} -c "ALTER TABLE tiger.zcta5 DROP CONSTRAINT IF EXISTS enforce
 ${psql} -c "SELECT loader_load_staged_data(lower('${table_name}'), lower('${lookup_name}'));"
 ${psql} -c "INSERT INTO ${data_schema}.zcta5_all(statefp, zcta5ce, classfp, mtfcc, funcstat, aland, awater, intptlat, intptlon, partflg, the_geom) SELECT  s.statefp, z.zcta5,  z.classfp, z.mtfcc, z.funcstat, z.aland, z.awater, z.intptlat, z.intptlon, CASE WHEN ST_Covers(s.the_geom, z.the_geom) THEN 'N' ELSE 'Y' END, ST_SnapToGrid(ST_Transform(CASE WHEN ST_Covers(s.the_geom, z.the_geom) THEN ST_SimplifyPreserveTopology(ST_Transform(z.the_geom,2163),1000) ELSE ST_SimplifyPreserveTopology(ST_Intersection(ST_Transform(s.the_geom,2163), ST_Transform(z.the_geom,2163)),1000)  END,4269), 0.000001) As geom FROM ${data_schema}.zcta5_raw AS z INNER JOIN tiger.state AS s ON (ST_Covers(s.the_geom, z.the_geom) or ST_Overlaps(s.the_geom, z.the_geom) );"
 	${psql} -c "DROP TABLE ${data_schema}.zcta5_raw; CREATE INDEX idx_${data_schema}_zcta5_all_the_geom_gist ON ${data_schema}.zcta5_all USING gist(the_geom);"$post_load$
-, ARRAY['gid','geoid','geoid10', 'geoid20', 'partflg']);
+, ARRAY['gid','geoid','geoid10', 'geoid20', 'geoidfq20', 'partflg']);
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
 VALUES(6, 'faces', 'faces', true, true, false,false, 'c',
@@ -356,13 +414,12 @@ VALUES(6, 'faces', 'faces', true, true, false,false, 'c',
 	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_tfid ON ${data_schema}.${state_abbrev}_${lookup_name} USING btree (tfid);"
 	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${table_name}_countyfp ON ${data_schema}.${state_abbrev}_${table_name} USING btree (countyfp);"
 	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
-	${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"', ARRAY['gid', 'geoid','cpi','suffix1ce', 'statefp00', 'statefp10', 'countyfp00','countyfp10'
+	${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"', ARRAY['gid', 'geoid','geoidfq', 'cpi','suffix1ce', 'statefp00', 'statefp10', 'countyfp00','countyfp10'
    ,'tractce00','tractce10', 'blkgrpce00', 'blkgrpce10', 'blockce00', 'blockce10'
       , 'cousubfp00', 'submcdfp00', 'conctyfp00', 'placefp00', 'aiannhfp00', 'aiannhce00',
        'comptyp00', 'trsubfp00', 'trsubce00', 'anrcfp00', 'elsdlea00', 'scsdlea00',
        'unsdlea00', 'uace00', 'cd108fp', 'sldust00', 'sldlst00', 'vtdst00', 'zcta5ce00',
-       'tazce00', 'ugace00', 'puma5ce00','vtdst10','tazce10','uace10','puma5ce10','tazce', 'uace', 'vtdst',  'zcta5ce10', 'puma5ce', 'ugace10','pumace10', 'estatefp', 'ugace', 'blockce', 'pumace20', 'sdadmlea', 'uace20']);
-
+       'tazce00', 'ugace00', 'puma5ce00','vtdst10','tazce10','uace10','puma5ce10','tazce', 'uace', 'vtdst',  'zcta5ce10', 'puma5ce', 'ugace10','pumace10', 'estatefp', 'ugace', 'blockce', 'pumace20', 'sdadmlea', 'uace20', 'cnectafp', 'nctadvfp','nectafp']);
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
 VALUES(7, 'featnames', 'featnames', true, true, false,false, 'a',
 '${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${table_name}(CONSTRAINT pk_${state_abbrev}_${table_name} PRIMARY KEY (gid)) INHERITS(tiger.${table_name});ALTER TABLE ${data_schema}.${state_abbrev}_${table_name} ALTER COLUMN statefp SET DEFAULT ''${state_fips}'';" ',
@@ -370,7 +427,7 @@ VALUES(7, 'featnames', 'featnames', true, true, false,false, 'a',
 ${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_lname ON ${data_schema}.${state_abbrev}_${table_name} USING btree (lower(name));"
 ${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_tlid_statefp ON ${data_schema}.${state_abbrev}_${table_name} USING btree (tlid,statefp);"
 ${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
-${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"', ARRAY['gid','statefp']);
+${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"', ARRAY['gid','statefp', 'geoidfq']);
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
 VALUES(8, 'edges', 'edges', true, true, false,false, 'a',
@@ -391,7 +448,7 @@ ${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_zip_state_loc;"
 ${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_zip_lookup_base(CONSTRAINT pk_${state_abbrev}_zip_state_loc_city PRIMARY KEY(zip,state, county, city, statefp)) INHERITS(tiger.zip_lookup_base);"
 ${psql} -c "INSERT INTO ${data_schema}.${state_abbrev}_zip_lookup_base(zip,state,county,city, statefp) SELECT DISTINCT e.zipl, ''${state_abbrev}'', c.name,p.name,''${state_fips}''  FROM ${data_schema}.${state_abbrev}_edges AS e INNER JOIN tiger.county As c  ON (e.countyfp = c.countyfp AND e.statefp = c.statefp AND e.statefp = ''${state_fips}'') INNER JOIN ${data_schema}.${state_abbrev}_faces AS f ON (e.tfidl = f.tfid OR e.tfidr = f.tfid) INNER JOIN ${data_schema}.${state_abbrev}_place As p ON(f.statefp = p.statefp AND f.placefp = p.placefp ) WHERE e.zipl IS NOT NULL;"
 ${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_zip_lookup_base ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
-${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_zip_lookup_base_citysnd ON ${data_schema}.${state_abbrev}_zip_lookup_base USING btree(soundex(city));"',  ARRAY['gid', 'geoid','divroad'] );
+${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_zip_lookup_base_citysnd ON ${data_schema}.${state_abbrev}_zip_lookup_base USING btree(soundex(city));"',  ARRAY['gid', 'geoid', 'geoidfq', 'divroad'] );
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process,columns_exclude )
 VALUES(9, 'addr', 'addr', true, true, false,false, 'a',
@@ -403,7 +460,7 @@ VALUES(9, 'addr', 'addr', true, true, false,false, 'a',
 	${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_zip_state(CONSTRAINT pk_${state_abbrev}_zip_state PRIMARY KEY(zip,stusps)) INHERITS(tiger.zip_state); "
 	${psql} -c "INSERT INTO ${data_schema}.${state_abbrev}_zip_state(zip,stusps,statefp) SELECT DISTINCT zip, ''${state_abbrev}'', ''${state_fips}'' FROM ${data_schema}.${state_abbrev}_${lookup_name} WHERE zip is not null;"
 	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_zip_state ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
-	${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"',  ARRAY['gid','statefp','fromarmid', 'toarmid']);
+	${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"',  ARRAY['gid','geoidfq', 'statefp','fromarmid', 'toarmid']);
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process,columns_exclude )
 VALUES(9, 'addrfeat', 'addrfeat', false, true, false,true, 'a',
@@ -548,12 +605,12 @@ RETURNS integer AS
 $$
 -- exclude this set list of columns if no exclusion list is specified
 
-   SELECT  loader_load_staged_data($1, $2,(SELECT COALESCE(columns_exclude,ARRAY['gid', 'geoid','cpi','suffix1ce', 'statefp00', 'statefp10', 'countyfp00','countyfp10'
+   SELECT  tiger.loader_load_staged_data($1, $2,(SELECT COALESCE(columns_exclude,ARRAY['gid', 'geoid',  'geoidfq20', 'cpi','suffix1ce', 'statefp00', 'statefp10', 'countyfp00','countyfp10'
    ,'tractce00','tractce10', 'blkgrpce00', 'blkgrpce10', 'blockce00', 'blockce10'
-      , 'cousubfp00', 'submcdfp00', 'conctyfp00', 'placefp00', 'aiannhfp00', 'aiannhce00',
-       'comptyp00', 'trsubfp00', 'trsubce00', 'anrcfp00', 'elsdlea00', 'scsdlea00',
+      , 'cousubfp00', 'submcdfp00', 'conctyfp00', 'placefp00', 'aiannhfp00', 'aiannhce00'
+      , 'comptyp00', 'trsubfp00', 'trsubce00', 'anrcfp00', 'elsdlea00', 'scsdlea00',
        'unsdlea00', 'uace00', 'cd108fp', 'sldust00', 'sldlst00', 'vtdst00', 'zcta5ce00',
-       'tazce00', 'ugace00', 'puma5ce00','vtdst10','tazce10','uace10','puma5ce10','tazce', 'uace', 'vtdst', 'zcta5ce', 'zcta5ce10', 'puma5ce', 'ugace10','pumace10', 'estatefp', 'ugace', 'blockce']) FROM loader_lookuptables WHERE $2 LIKE '%' || lookup_name))
+       'tazce00', 'ugace00', 'puma5ce00','vtdst10','tazce10','uace10','puma5ce10','tazce', 'uace', 'vtdst', 'zcta5ce', 'zcta5ce10', 'puma5ce', 'ugace10','pumace10', 'estatefp', 'ugace', 'blockce', 'cnectafp', 'geoidfq', 'nctadvfp', 'nectafp','pcinecta' ]) FROM loader_lookuptables WHERE $2 LIKE '%' || lookup_name))
 $$
 language 'sql' VOLATILE;
 

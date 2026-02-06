@@ -40,7 +40,8 @@ Proj 6.1+ required.
   - #6020, schema qualify call in ST_MPointFromText (Paul Ramsey)
   - #6028, crash indexing malformed empty polygon (Paul Ramsey)
   - GH-841, small memory leak in address_standardizer (Maxim Korotkov)
-
+  - #5998, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
+      by extension are owned by extension (Andrey Borodin, Yandex)
 
 PostGIS 3.4.4
 2024/12/22
