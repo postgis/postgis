@@ -2,6 +2,26 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+      <sect1>
+      <title>Release 3.0.11 (EOL)</title>
+      <para>Release date: 2026/02/06</para>
+      <para>This is a bug and security release and the final release of 3.0 series. This version requires PostgreSQL 9.5+-13 and GEOS &gt;= 3.6+
+            Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12+, and GEOS 3.8</para>
+      <simplesect>
+        <title>Bug Fixes</title>
+          <para><ulink url="https://trac.osgeo.org/postgis/ticket/5951">5951</ulink>, [topology] Fix crash in ST_GetFaceEdges with corrupted topology (Sandro Santilli)</para>
+          <para><ulink url="https://trac.osgeo.org/postgis/ticket/5947">5947</ulink>, [topology] Fix crash in ST_ModEdgeHeal (Sandro Santilli)</para>
+          <para><ulink url="https://trac.osgeo.org/postgis/ticket/5922">5922</ulink>, [topology] Fix crash in TopoGeo_AddLinestring with EMPTY input (Sandro Santilli)</para>
+          <para><ulink url="https://trac.osgeo.org/postgis/ticket/5907">5907</ulink>, [topology] Fix crash in TopoGeo_AddPolygon with EMPTY input (Sandro Santilli)</para>
+          <para><ulink url="https://trac.osgeo.org/postgis/ticket/5795">5795</ulink>, [topology] Fix ST_NewEdgesSplit can cause invalid topology (Björn Harrtell)</para>
+          <para>Handle null returns from wkb parser, Paul Ramsey</para>
+          <para><ulink url="https://trac.osgeo.org/postgis/ticket/5818">5818</ulink>, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)</para>
+          <para><ulink url="https://trac.osgeo.org/postgis/ticket/6028">6028</ulink>, Crash indexing malformed empty polygon (Paul Ramsey)</para>
+          <para><ulink url="https://trac.osgeo.org/postgis/ticket/5998">5998</ulink>, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
+                    by extension are owned by extension</para>
+      </simplesect>
+    </sect1>
+
     <sect1>
       <title>Release 3.0.11</title>
       <para>Release date: 2024/02/06</para>
