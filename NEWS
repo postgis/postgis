@@ -29,7 +29,10 @@ Proj 4.9+ required.
  - #6023, Fix robustness issue in ptarray_contains_point (Sandro Santilli)
  - #6027, Fix RemoveUnusedPrimitives without topology in search_path (Sandro Santilli)
  - #6028, crash indexing malformed empty polygon (Paul Ramsey)
-  - GH-841, small memory leak in address_standardizer (Maxim Korotkov)
+ - GH-841, small memory leak in address_standardizer (Maxim Korotkov)
+ - #5998, [tiger_geocoder] [security] CVE-2022-2625, make sure tables required
+           by extension are owned by extension
+           authored: Andrey Borodin (Yandex), reported by Sergey Bobrov (Kaspersky)
 
 
 PostGIS 3.3.8
