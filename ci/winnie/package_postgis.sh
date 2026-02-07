@@ -1,88 +1,11 @@
-#### $Id: package_postgis210.sh 10291 2012-09-15 05:37:23Z robe $
+#!/usr/bin/env bash
 ### this script is used to zip up the compiled binaries
 ## PostgreSQL, OS_BUILD denote the last build to be packaged
 ## and are passed in by the jenkins job process
-## the scp to postgis website is done using Jenkins scp plugin as a final step
 ###
-#export OS_BUILD=64
-#export PGPORT=8442
-#POSTGIS_MAJOR_VERSION=2
-#POSTGIS_MINOR_VERSION=1
-#POSTGIS_MICRO_VERSION=0dev
-#export OS_BUILD=32
 
-#export GCC_TYPE=
-#if no override is set - use these values
-#otherwise use the ones jenkins passes thru
-#!/usr/bin/env bash
-if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.10.3
-	export GDAL_VER=3.4.3
-	export PROJ_VER=7.2.1
-	export SFCGAL_VER=1.4.1
-	export CGAL_VER=5.3
-	export ICON_VER=1.16
-	export ZLIB_VER=1.2.11
-  export PROTOBUF_VER=3.2.0
-	export PROTOBUFC_VER=1.2.1
-	export JSON_VER=0.12
-	export PROJSO=libproj-19.dll
-	export CURL_VER=7.73
-fi;
+. $(dirname $0)/winnie_common.sh
 
-export PROTOBUF_VER=3.2.0
-export PROTOBUFC_VER=1.2.1
-export JSON_VER=0.12
-export PCRE_VER=8.33
-
-if  [[ "${ICON_VER}" == '' ]] ; then
-  export ICON_VER=1.15
-fi;
-
-echo "ICON_VER ${ICON_VER}"
-
-if  [[ "${CURL_VER}" == '' ]] ; then
-  export CURL_VER=7.73
-fi;
-
-echo "CURL_VER ${CURL_VER}"
-
-#set to something even if override is on but not set
-if  [[ "${ZLIB_VER}" == '' ]] ; then
-  export ZLIB_VER=1.2.11
-fi;
-
-
-#set to something even if override is on but not set
-if  [[ "${LIBXML_VER}" == '' ]] ; then
-  export LIBXML_VER=2.9.9
-fi;
-
-#set to something even if override is on but not set
-if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=5.3
-fi;
-
-echo "ZLIB_VER $ZLIB_VER"
-echo "PROJ_VER $PROJ_VER"
-echo "LIBXML_VER $LIBXML_VER"
-echo "CGAL_VER $CGAL_VER"
-
-
-export PROJECTS=/projects
-export PROJECTS=/projects
-export PATHOLD=$PATH
-
-
-export PGHOST=localhost
-
-export PGUSER=postgres
-
-export PATHOLD=$PATH
-WEB=/home/www/postgis/htdocs
-DWN=${WEB}/download
-
-export PATHOLD="/mingw/bin:/mingw/include:/c/Windows/system32:/c/Windows:.:/bin:/include:/usr/local/bin"
 #export PG_VER=9.2beta2
 
 echo PATH BEFORE: $PATH

@@ -1,76 +1,14 @@
 #!/usr/bin/env bash
-set -e
-if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.10.3
-	export GDAL_VER=3.4.3
-	export PROJ_VER=7.2.1
-	export SFCGAL_VER=1.4.0
-	export CGAL_VER=5.3.0
-	export ICON_VER=1.15
-	export ZLIB_VER=1.2.11
-  export PROTOBUF_VER=3.2.0
-	export PROTOBUFC_VER=1.2.1
-	export JSON_VER=0.12
-	export PROJSO=libproj-19.dll
-fi;
 
-export PROTOBUF_VER=3.2.0
-export PROTOBUFC_VER=1.2.1
-export JSON_VER=0.12
-export PCRE_VER=8.33
+. $(dirname $0)/winnie_common.sh
 
-if  [[ "${ICON_VER}" == '' ]] ; then
-  export ICON_VER=1.16
-fi;
-
-echo "ICON_VER ${ICON_VER}"
-
-#set to something even if override is on but not set
-if  [[ "${ZLIB_VER}" == '' ]] ; then
-  export ZLIB_VER=1.2.11
-fi;
-
-
-#set to something even if override is on but not set
-if  [[ "${LIBXML_VER}" == '' ]] ; then
-  export LIBXML_VER=2.9.9
-fi;
-
-#set to something even if override is on but not set
-if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=5.3
-fi;
-
-echo "ZLIB_VER $ZLIB_VER"
-echo "PROJ_VER $PROJ_VER"
-echo "LIBXML_VER $LIBXML_VER"
-echo "CGAL_VER $CGAL_VER"
-echo "ZLIB_VER $ZLIB_VER"
-echo "PROJ_VER $PROJ_VER"
-echo "LIBXML_VER $LIBXML_VER"
-export PROJECTS=/projects
-export MINGPROJECTS=/projects
-export PATHOLD=$PATH
-
-
-if [ "$OS_BUILD" == "64" ] ; then
-	export MINGHOST=x86_64-w64-mingw32
-else
-	export MINGHOST=i686-w64-mingw32
-fi;
+echo "MSYS2_ARG_CONV_EXCL=$MSYS2_ARG_CONV_EXCL"
 
 echo PATH AFTER: $PATH
 #export PG_VER=9.2beta2
 export PGWINVER=${PG_VER}edb
 export WORKSPACE=`pwd`
 
-echo PATH BEFORE: $PATH
-
-#export PGHOST=localhost
-#export PGPORT=8442
-export PGUSER=postgres
-#export GEOS_VER=3.4.0dev
-#export GDAL_VER=1.9.1
 export PGPATH=${PROJECTS}/postgresql/rel/pg${PG_VER}w${OS_BUILD}${GCC_TYPE}
 export PGPATHEDB=${PROJECTS}/postgresql/rel/pg${PG_VER}w${OS_BUILD}${GCC_TYPE}edb
 
@@ -79,6 +17,7 @@ export POSTGIS_MICRO_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POS
 
 if [ -n "$SOURCE_FOLDER" ]; then
   export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
+  cd $POSTGIS_SRC
 else
   if [[ "$POSTGIS_MICRO_VERSION"  == *SVN* || "$POSTGIS_MICRO_VERSION"  == *dev* ]] ; then
     export POSTGIS_SRC=${PROJECTS}/postgis/branches/${POSTGIS_VER}
@@ -88,22 +27,16 @@ else
   fi;
 fi;
 
+export POSTGIS_MAJOR_VERSION=`grep ^POSTGIS_MAJOR_VERSION Version.config | cut -d= -f2`
+export POSTGIS_MINOR_VERSION=`grep ^POSTGIS_MINOR_VERSION Version.config | cut -d= -f2`
+export POSTGIS_MICRO_VERSION=`grep ^POSTGIS_MICRO_VERSION Version.config | cut -d= -f2`
+echo "Version ${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}"
+
 #export POSTGIS_SRC=${PROJECTS}/postgis/trunk
 export GDAL_DATA="${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal"
 
 export RELVERDIR=postgis-pg${REL_PGVER}-binaries-${POSTGIS_MICRO_VER}w${OS_BUILD}
 
-export PATH="${PATHOLD}:${PGPATH}/bin:${PGPATH}/lib"
-export PATH="${PROJECTS}/xsltproc:${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include:${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin:${MINGPROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/zlib/rel-zlib-${ZLIB_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/zlib/rel-zlib-${ZLIB_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
-export PKG_CONFIG_PATH="${PROJECTS}/sqlite/rel-sqlite3w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/zlib/rel-zlib-${ZLIB_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/json-c/rel-${JSON_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/zlib/rel-zlib-${ZLIB_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/pkgconfig:/mingw/${MINGHOST}/lib/pkgconfig"
-export SHLIB_LINK="-static-libstdc++ -lstdc++ -Wl,-Bdynamic -lm"
-CPPFLAGS="-I${PGPATH}/include -I${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include"
-
-#needed for proj.db to be found during cunit - for some reason on winnie it doesn't set
-export PROJ_LIB=${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/share/proj
-
-#add protobuf
-export PATH="${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
 
 echo PATH AFTER: $PATH
 
@@ -146,6 +79,7 @@ if [ -n "$SFCGAL_VER" ]; then
 
 #LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/lib -L${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/lib" \
 
+CPPFLAGS="-I${PGPATH}/include -I${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include" \
 LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/lib -L${PROJECTS}/zlib/rel-zlib-${ZLIB_VER}w${OS_BUILD}${GCC_TYPE}/lib" \
 ./configure \
   --host=${MINGHOST} --with-xml2config=${PROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}${GCC_TYPE}/bin/xml2-config  \
