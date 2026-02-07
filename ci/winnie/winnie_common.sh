@@ -11,7 +11,7 @@ export PROJECTS=/projects
 export MSYS2_ARG_CONV_EXCL=/config/tags
 
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.13.1
+	export GEOS_VER=3.14.1
 	export GDAL_VER=3.9.2
 	export PROJ_VER=8.2.1
 	export SFCGAL_VER=1.5.2
@@ -64,6 +64,7 @@ fi;
 export CGAL_VER=5.6.1
 BOOST_VER=1.84.0
 export BOOST_VER_WU=1_84_0
+export XMLLINT=
 
 
 export LZ4_PATH=${PROJECTS}/lz4/rel-lz4-${LZ4_VER}w${OS_BUILD}${GCC_TYPE}

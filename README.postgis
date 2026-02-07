@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 3.3.7
-:Date: 2024-09-05
+:Version: 3.3.9
+:Date: 2026-02-07
 :Website: https://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
