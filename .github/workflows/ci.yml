@@ -21,7 +21,7 @@ jobs:
         # - { tag: latest, mode: tests }
         - { tag: pg11-geos37-gdal24-proj52, mode: tests }
         - { tag: pg10-geos36-gdal23-proj49, mode: tests }
-        #- { tag: pg96-geos36-gdal22-proj49, mode: tests }
+        - { tag: pg96-geos36-gdal22-proj49, mode: tests }
         #- { tag: pg95-geos36-gdal21-proj48, mode: tests }
 
     runs-on: ubuntu-latest
