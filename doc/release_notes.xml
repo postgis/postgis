@@ -19,6 +19,7 @@
           <para><ulink url="https://trac.osgeo.org/postgis/ticket/6028">6028</ulink>, Crash indexing malformed empty polygon (Paul Ramsey)</para>
           <para><ulink url="https://trac.osgeo.org/postgis/ticket/5998">5998</ulink>, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
                     by extension are owned by extension</para>
+          <para><ulink url="https://trac.osgeo.org/postgis/ticket/5985">5985</ulink>, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro Santilli)</para>
       </simplesect>
     </sect1>
 

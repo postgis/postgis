@@ -15,6 +15,7 @@ Proj 4.9+ required.
  - #6028, Crash indexing malformed empty polygon (Paul Ramsey)
  - #5998, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
            by extension are owned by extension
+ - #5985, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro Santilli)
 
 
 PostGIS 3.0.11
