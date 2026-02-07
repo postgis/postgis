@@ -62,8 +62,12 @@ if [ ! ${LIBTOOLIZE} ]; then
     echo "Missing libtoolize!"
     exit 1
 fi
-LIBTOOLIZE_VER=`${LIBTOOLIZE} --version | ${GREP} -E "^.*[0-9]\.[0-9]" | ${SED} 's/^.* //'`
+# Debian12: libtoolize (GNU libtool) 2.4.7
+# Debian13: libtoolize (GNU libtool) 2.5.4 Debian-2.5.4-4
+LIBTOOLIZE_VER=`${LIBTOOLIZE} --version | ${GREP} -E "^.*[0-9]\.[0-9]" | ${SED} 's/^[^0-9]*//;s/ .*//'`
+echo "LIBTOOLIZE_VER=${LIBTOOLIZE_VER}"
 LIBTOOLIZE_MAJOR_VER=`echo ${LIBTOOLIZE_VER} | cut -f1 -d'.'`
+echo "LIBTOOLIZE_MAJOR_VER=${LIBTOOLIZE_MAJOR_VER}"
 
 # TODO: Check libtool version and add --install option only for 1.9b+
 LTOPTS="--force --copy"
