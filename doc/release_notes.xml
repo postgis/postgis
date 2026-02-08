@@ -9,15 +9,15 @@
             <para>This version requires PostgreSQL 12-18, GEOS 3.8 or higher, and Proj 6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take advantage of all SFCGAL features, SFCGAL 1.5.0+ is needed.</para>
             <simplesect>
                 <title>Bug Fixes</title>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5959">5959</ulink>, #5984, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/6020">6020</ulink>, schema qualify call in ST_MPointFromText (Paul Ramsey)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/6023">6023</ulink>, Fix robustness issue in ptarray_contains_point (Sandro Santilli)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/6027">6027</ulink>, Fix RemoveUnusedPrimitives without topology in search_path (Sandro Santilli)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/6028">6028</ulink>, crash indexing malformed empty polygon (Paul Ramsey)</para>
-                <para><ulink url="https://github.com/postgis/postgis/pull/841">GH-841</ulink>, small memory leak in address_standardizer (Maxim Korotkov)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5998">5998</ulink>, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5959">5959</link>, #5984, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6020">6020</link>, schema qualify call in ST_MPointFromText (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6023">6023</link>, Fix robustness issue in ptarray_contains_point (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6027">6027</link>, Fix RemoveUnusedPrimitives without topology in search_path (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6028">6028</link>, crash indexing malformed empty polygon (Paul Ramsey)</para>
+                <para><link xlink:href="https://github.com/postgis/postgis/pull/841">GH-841</link>, small memory leak in address_standardizer (Maxim Korotkov)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5998">5998</link>, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
                             by extension are owned by extension</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5853">5853</ulink>, Issue with topology and tiger geocoder upgrade scripts (Regina Obe, Spencer Bryson)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5853">5853</link>, Issue with topology and tiger geocoder upgrade scripts (Regina Obe, Spencer Bryson)</para>
             </simplesect>
         </section>
 
