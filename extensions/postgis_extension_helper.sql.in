@@ -16,7 +16,7 @@
 ---------------------------
 -- postgis_extension_remove_objects: This function removes objects of a particular class from an extension
 -- this is needed because there is no ALTER EXTENSION DROP FUNCTION/AGGREGATE command
--- and we can't CREATE OR REPALCe functions whose signatures have changed and we can drop them if they are part of an extension
+-- and we can't CREATE OR REPALCe functions whose signatures have changed and we can drop them if they are part of an extention
 -- So we use this to remove it from extension first before we drop
 CREATE FUNCTION postgis_extension_remove_objects(param_extension text, param_type text)
   RETURNS boolean AS
@@ -30,7 +30,7 @@ DECLARE
 	var_sql_list text := '';
 	var_pgsql_version integer := pg_catalog.current_setting('server_version_num');
 BEGIN
-		var_class := CASE WHEN pg_catalog.lower(param_type) OPERATOR(pg_catalog.=) 'function' OR pg_catalog.lower(param_type) OPERATOR(pg_catalog.=) 'aggregate' THEN 'pg_proc' ELSE '' END;
+		var_class := CASE WHEN pg_catalog.lower(param_type) OPERATOR(pg_catalog.=)'function' OR pg_catalog.lower(param_type) OPERATOR(pg_catalog.=) 'aggregate' THEN 'pg_catalog.pg_proc' ELSE '' END;
 		var_is_aggregate := CASE WHEN pg_catalog.lower(param_type) OPERATOR(pg_catalog.=) 'aggregate' THEN true ELSE false END;
 
 		IF var_pgsql_version OPERATOR(pg_catalog.<) 110000 THEN
