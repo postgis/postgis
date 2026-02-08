@@ -1,5 +1,5 @@
-PostGIS 3.4.5dev
-xxxx/xx/xx
+PostGIS 3.4.5
+2026/02/07
 
 PostgreSQL 12-17 required. GEOS 3.6+ required but GEOS 3.12+ to take advantage of all features.
 Proj 6.1+ required.
@@ -42,6 +42,7 @@ Proj 6.1+ required.
   - GH-841, small memory leak in address_standardizer (Maxim Korotkov)
   - #5998, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
       by extension are owned by extension (Andrey Borodin, Yandex)
+  - #5853, Issue with topology and tiger geocoder upgrade scripts (Regina Obe, Spencer Bryson)
 
 PostGIS 3.4.4
 2024/12/22

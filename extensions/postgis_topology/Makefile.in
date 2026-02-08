@@ -43,7 +43,6 @@ DATA_built = \
 EXTENSION_UPGRADE_SCRIPTS = \
 	extlock.sql \
 	../postgis_extension_helper.sql \
-	sql_bits/remove_from_extension.sql.in \
 	sql/topology_upgrade.sql \
 	sql_bits/mark_editable_objects.sql.in \
 	sql/topology_comments.sql \
