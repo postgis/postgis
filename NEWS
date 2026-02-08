@@ -1,5 +1,5 @@
-PostGIS 3.5.5dev
-xxxx/xx/xx
+PostGIS 3.5.5
+2026/02/08
 
 To take advantage of all postgis_sfcgal extension features SFCGAL 1.5+ is needed.
 PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
@@ -14,6 +14,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
   - GH-841, small memory leak in address_standardizer (Maxim Korotkov)
   - #5998, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
               by extension are owned by extension
+  - #5853, Issue with topology and tiger geocoder upgrade scripts (Regina Obe, Spencer Bryson)
 
 PostGIS 3.5.4
 2025/10/16

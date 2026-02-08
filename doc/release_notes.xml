@@ -3,6 +3,24 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
 
+       <section>
+            <title>PostGIS 3.5.5</title>
+            <para>2026/02/08</para>
+            <para>This version requires PostgreSQL 12-18, GEOS 3.8 or higher, and Proj 6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take advantage of all SFCGAL features, SFCGAL 1.5.0+ is needed.</para>
+            <simplesect>
+                <title>Bug Fixes</title>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5959">5959</ulink>, #5984, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/6020">6020</ulink>, schema qualify call in ST_MPointFromText (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/6023">6023</ulink>, Fix robustness issue in ptarray_contains_point (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/6027">6027</ulink>, Fix RemoveUnusedPrimitives without topology in search_path (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/6028">6028</ulink>, crash indexing malformed empty polygon (Paul Ramsey)</para>
+                <para><ulink url="https://github.com/postgis/postgis/pull/841">GH-841</ulink>, small memory leak in address_standardizer (Maxim Korotkov)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5998">5998</ulink>, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
+                            by extension are owned by extension</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5853">5853</ulink>, Issue with topology and tiger geocoder upgrade scripts (Regina Obe, Spencer Bryson)</para>
+            </simplesect>
+        </section>
+
         <section>
             <title>PostGIS 3.5.4</title>
             <para>2025/10/16</para>
@@ -161,7 +179,7 @@
            (Jan Tojnar)</para>
 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5496">#5496</link>, ST_Clip all variants replaced, will require
            rebuilding of materialized views that use them (funding from The National Institute for Agricultural
-            and Food Research and Technology (INIA-CSIC)), 
+            and Food Research and Technology (INIA-CSIC)),
             Regina Obe</para>
 <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5659">#5659</link>, ST_DFullyWithin behaviour has changed to
            be ST_Contains(ST_Buffer(A, R), B) (Paul Ramsey)</para>
