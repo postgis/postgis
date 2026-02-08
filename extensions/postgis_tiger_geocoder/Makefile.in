@@ -85,7 +85,7 @@ sql/$(EXTENSION).sql: sql/$(EXTENSION)_pre.sql ../../utils/create_or_replace_to_
 		| $(PERL) @top_srcdir@/utils/create_or_replace_to_create.pl sql/$(EXTENSION)_pre.sql \
 		> $@
 
-sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in | sql
+sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in | sql
 	cat $^ > $@
 	echo "SELECT postgis_extension_drop_if_exists('${EXTENSION}', 'DROP SCHEMA tiger_data');" >> $@
 	cat @srcdir@/../postgis_extension_helper_uninstall.sql  >> $@
