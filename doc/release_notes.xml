@@ -3,6 +3,63 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
         <sect1>
+            <title>PostGIS 3.4.5</title>
+            <para>2025/02/07</para>
+            <para>PostgreSQL 12-17 required. GEOS 3.6+ required but GEOS 3.12+ to take advantage of all features. Proj 6.1+ required.</para>
+
+            <simplesect>
+                <title>Bug Fixes</title>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/6023">6023</ulink>, Fix robustness issue in ptarray_contains_point (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/6027">6027</ulink>, Fix RemoveUnusedPrimitives without topology in search_path (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5978">5978</ulink>, fix parsing of constraints in geometry_columns (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5977">5977</ulink>, Fix downgrade protection with standard conforming strings off (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5947">5947</ulink>, [topology] Fix crash in ST_ModEdgeHeal (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5951">5951</ulink>, [topology] Fix crash in ST_GetFaceEdges with corrupted topology (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5925">5925</ulink>, #5946, [topology] Have GetFaceContainingPoint survive EMPTY edges (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5936">5936</ulink>, [topology] Do script-based upgrade in a single transaction (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5922">5922</ulink>, [topology] Fix crash in TopoGeo_AddLinestring with EMPTY input (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5908">5908</ulink>, [topology] Fix crash in GetFaceContainingPoint (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5907">5907</ulink>, [topology] Fix crash in TopoGeo_AddPolygon with EMPTY input (Sandro Santilli)</para>
+                <para>Do not complain about illegal option when calling shp2pgsql -?</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5564">5564</ulink>, BRIN crash fix and support for parallel in PG17+
+                        (Paul Ramsey, Regina Obe)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5876">5876</ulink>, Fix ST_AddPoint with empty point argument</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5874">5874</ulink>, Line substring returns wrong answer (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5829">5829</ulink>, geometry_columns with non-standard constraints (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5818">5818</ulink>, GT-244 Fix CG_IsSolid function (Loïc Bartoletti)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5885">5885</ulink>, Fix documentation about grid-based overlay operations (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5921">5921</ulink>, Crash freeing uninitialized pointer (Arsenii Mukhin)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5912">5912</ulink>, Crash on GML with xlink and no prefix (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5905">5905</ulink>, Crash on deeply nested geometries (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5909">5909</ulink>, ST_ValueCount crashes on empty table (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5917">5917</ulink>, ST_Relate becomes unresponsive (Paul Ramsey)</para>
+                <para>Support build under Pg19 (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5082">5082</ulink>, LRS proportions clamped to [0,1] (Pawel Ostrowski)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5985">5985</ulink>, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5991">5991</ulink>, CircularString distance error (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5989">5989</ulink>, ST_Distance error on CurvePolygon (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5962">5962</ulink>, Consistent clipping of MULTI/POINT (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5754">5754</ulink>, ST_ForcePolygonCCW reverses lines (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/6020">6020</ulink>, schema qualify call in ST_MPointFromText (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/6028">6028</ulink>, crash indexing malformed empty polygon (Paul Ramsey)</para>
+                <para><ulink url="https://github.com/postgis/postgis/pull/841">GH-841</ulink>, small memory leak in address_standardizer (Maxim Korotkov)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5998">5998</ulink>, [tiger_geocoder] [security] CVE-2022-2625, make sure tables requires
+                    by extension are owned by extension (Andrey Borodin, Yandex)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5853">5853</ulink>, Issue with topology and tiger geocoder upgrade scripts (Regina Obe, Spencer Bryson)</para>
+
+            </simplesect>
+
+            <simplesect>
+                <title>Enhancements</title>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5782">5782</ulink>, Improve robustness of min distance calculation (Sandro Santilli)</para>
+            </simplesect>
+
+            <simplesect>
+                <title>Breaking Changes </title>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5799">5799</ulink>, make ST_TileEnvelope clips envelopes to tile plane extent (Paul Ramsey)</para>
+            </simplesect>
+        </sect1>
+        <sect1>
             <title>PostGIS 3.4.4</title>
             <para>2024/09/04</para>
             <simplesect>
