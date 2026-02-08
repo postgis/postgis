@@ -35,6 +35,7 @@
                 <para><ulink url="https://trac.osgeo.org/postgis/ticket/5998">5998</ulink>, [tiger_geocoder] [security] CVE-2022-2625, make sure tables required
                         by extension are owned by extension
                         authored: Andrey Borodin (Yandex), reported by Sergey Bobrov (Kaspersky)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5853">5853</ulink>, Issue with topology and tiger geocoder upgrade scripts (Regina Obe, Spencer Bryson)</para>
             </simplesect>
         </sect1>
         <sect1>
