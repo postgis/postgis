@@ -764,6 +764,10 @@ if test ! "$POSTGIS_GEOS_VERSION" -ge 30600; then
 	AC_MSG_ERROR([PostGIS requires GEOS >= 3.6.0])
 fi
 
+dnl Extract the linker and include flags
+GEOS_LDFLAGS=`$GEOSCONFIG --clibs`
+GEOS_CPPFLAGS=`$GEOSCONFIG --cflags`
+
 #
 # MacOS with XCode > 15 now requires rpath entries for
 # libraries like GEOS/Proj that might be flexibly installed
@@ -780,9 +784,6 @@ case $host_os in
 	;;
 esac
 
-dnl Extract the linker and include flags
-GEOS_LDFLAGS=`$GEOSCONFIG --clibs`
-GEOS_CPPFLAGS=`$GEOSCONFIG --cflags`
 AC_SUBST([GEOS_LDFLAGS])
 AC_SUBST([GEOS_CPPFLAGS])
 
