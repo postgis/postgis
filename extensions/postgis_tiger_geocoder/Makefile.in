@@ -31,6 +31,12 @@ DATA_built = \
 
 REGRESS = test-normalize_address test-upgrade
 REGRESS_OPTS = --load-extension=fuzzystrmatch --load-extension=postgis --load-extension=$(EXTENSION)
+EXTSCHEMA_SUPPORTED = yes
+
+## PostgreSQL < 16 doesn't understand new @extschema:extname@ syntax, so strip it
+ifeq ($(shell expr "$(POSTGIS_PGSQL_VERSION)" "<" 160),1)
+EXTSCHEMA_SUPPORTED = no
+endif
 
 SQL_BITS     = $(wildcard sql_bits/*.sql)
 EXTRA_CLEAN = sql expected ${SQL_BITS}
@@ -51,14 +57,14 @@ expected:
 sql:
 	mkdir -p $@
 
-
-## PostgreSQL < 16 doesn't understand new @extschema:extname@ syntax, so strip it
-ifeq ($(shell expr "$(POSTGIS_PGSQL_VERSION)" "<" 160),1)
+ifeq ($(EXTSCHEMA_SUPPORTED),yes)
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
-	$(PERL) -lpe "s/\@extschema:[a-z]+\@\./ /g" < $< > $@
-else
- sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
 	cp $< $@
+else
+# PG < 16 doesn't support new @extschema:<extension_name>@
+# so we need to strip those out
+sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
+	$(PERL) -lpe "s/\@extschema:[^@]+\@\./ /g" < $< > $@
 endif
 
 expected/test-normalize_address.out: sql_bits/test_tuples_only_unaligned.sql.in ../../extras/tiger_geocoder/regress/normalize_address_regress | expected
@@ -74,14 +80,14 @@ sql/test-normalize_address.sql: sql_bits/test_tuples_only_unaligned.sql.in ../..
 sql/test-upgrade.sql: | sql
 	echo 'ALTER EXTENSION ${EXTENSION} UPDATE TO "ANY"; ALTER EXTENSION ${EXTENSION} UPDATE TO "$(EXTVERSION)"' > $@
 
-## no_relocate clause is only availabe in PostgreSQL 16 and above, so strip it for lower
-ifeq ($(shell expr "$(POSTGIS_PGSQL_VERSION)" "<" 160),1)
-%.control: %.control.in Makefile
-	$(PERL) -lpe 's/^no_relocate.*//g; s/\@EXTVERSION\@/$(EXTVERSION)/g'  < "$<" > "$@"
-else
+## no_relocate clause is only available in PostgreSQL 16 and above, so strip it for lower
+ifeq ($(EXTSCHEMA_SUPPORTED),yes)
 %.control: %.control.in Makefile
 	$(PERL) -lpe "s'@EXTVERSION@'$(EXTVERSION)'g" \
 		  < "$<" > "$@"
+else
+%.control: %.control.in Makefile
+	$(PERL) -lpe 's/^no_relocate.*//g; s/\@EXTVERSION\@/$(EXTVERSION)/g'  < "$<" > "$@"
 endif
 
 expected/test-upgrade.out: sql/test-upgrade.sql | expected
@@ -98,7 +104,7 @@ sql/$(EXTENSION).sql: sql/$(EXTENSION)_pre.sql ../../utils/create_or_replace_to_
 		| $(PERL) @top_srcdir@/utils/create_or_replace_to_create.pl sql/$(EXTENSION)_pre.sql \
 		> $@
 
-sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in | sql
+sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in | sql
 	cat $^ > $@
 	echo "SELECT postgis_extension_drop_if_exists('${EXTENSION}', 'DROP SCHEMA tiger_data');" >> $@
 	cat @srcdir@/../postgis_extension_helper_uninstall.sql  >> $@
@@ -205,9 +211,14 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/tiger_geocoder--unpack
 #aggregates are special
 #they can be dropped but we need to remove
 #them from the extension first
+ifeq ($(EXTSCHEMA_SUPPORTED),yes)
 sql/tiger_geocoder_upgrade_minor.sql:  sql/tiger_geocoder_minor.sql.in | sql
-	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
-	 	 $< > $@
+	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
+else
+sql/tiger_geocoder_upgrade_minor.sql:  sql/tiger_geocoder_minor.sql.in | sql
+	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g ; s/\@extschema:[^@]+\@\.//g' $< > $@
+endif
+
 
 #only extension files
 EXTRA_CLEAN += $(wildcard expected/*--*.out)
