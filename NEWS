@@ -1,5 +1,5 @@
 PostGIS 3.5.5
-2026/02/08
+2026/02/09
 
 To take advantage of all postgis_sfcgal extension features SFCGAL 1.5+ is needed.
 PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
