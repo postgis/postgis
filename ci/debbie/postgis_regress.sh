@@ -17,7 +17,8 @@ export MAKE_EXTENSION=1
 export DUMP_RESTORE=0
 export MAKE_LOGBT=0
 export NO_SFCGAL=0
-export MAKE_UPGRADE=0
+export CHECK_UPGRADES=1
+export CHECK_DOWNGRADES=0 # also requires CHECK_UPGRADES=1 to really check downgrades
 
 ## end variables passed in by jenkins
 
@@ -114,9 +115,13 @@ if [ "$MAKE_GARDEN" = "1" ]; then
 fi
 
 # Test all available upgrades
-# TODO: protect via some variable ?
-if [ "$MAKE_UPGRADE" = "1" ]; then
+if [ "$CHECK_UPGRADES" = "1" ]; then
+ UPGRADE_CHECK_OPTS=""
+ if [ "$CHECK_DOWNGRADES" = "0" ]; then
+  UPGRADE_CHECK_OPTS="--skip upgrade"
+ fi
  utils/check_all_upgrades.sh \
+        ${UPGRADE_CHECK_OPTS} \
         `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
  if [ "$?" != "0" ]; then
   exit $?
