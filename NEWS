@@ -1,5 +1,5 @@
-PostGIS 3.2.9dev
-xxxx/xx/xx
+PostGIS 3.2.9
+2026/02/08
 
 PostgreSQL 9.6-15 required. GEOS 3.6+ required but GEOS 3.9+ to take advantage of all features.
 Proj 4.9+ required.
@@ -29,9 +29,7 @@ Proj 4.9+ required.
  - #5998, [tiger_geocoder] [security] CVE-2022-2625, make sure tables required
         by extension are owned by extension
         authored: Andrey Borodin (Yandex), reported by Sergey Bobrov (Kaspersky)
- - #5985, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro Santilli)
- - #6043, assignment of read-only member
-            ‘postgis_flatbuffers::span<T, Extent>::count_  (Regina Obe)
+ - #5985, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro
 
 PostGIS 3.2.8
 2024/12/22

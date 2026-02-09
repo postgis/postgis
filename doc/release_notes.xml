@@ -4,7 +4,7 @@
    <subtitle>Release Notes</subtitle>
     <sect1>
         <title>PostGIS 3.2.9</title>
-        <para>2026/02/07</para>
+        <para>2026/02/08</para>
         <para>PostgreSQL 9.6-15 required. GEOS 3.6+ required but GEOS 3.9+ to take advantage of all features. Proj 4.9+ required.</para>
         <simplesect>
             <title>Bug Fixes</title>
@@ -30,6 +30,7 @@
             <para><ulink url="https://github.com/postgis/postgis/pull/841">GH-841</ulink>, small memory leak in address_standardizer (Maxim Korotkov)</para>
             <para><ulink url="https://trac.osgeo.org/postgis/ticket/5998">5998</ulink>, [tiger_geocoder] [security] CVE-2022-2625, make sure tables required by extension are owned by extension authored: Andrey Borodin (Yandex), reported by Sergey Bobrov (Kaspersky)</para>
             <para><ulink url="https://trac.osgeo.org/postgis/ticket/5985">5985</ulink>, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro Santilli)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/6043">6043</ulink>,  assignment of read-only member postgis_flatbuffers::span&lt;T, Extent&gt;::count_  (Regina Obe)</para>
         </simplesect>
 
     </sect1>
