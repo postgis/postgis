@@ -1,5 +1,5 @@
 PostGIS 3.3.9
-2026-02-07
+2026-02-09
 
 PostgreSQL 11-17 required. GEOS 3.6+ required but GEOS 3.11+ to take advantage of all features.
 Proj 4.9+ required.
