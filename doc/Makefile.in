@@ -1,6 +1,6 @@
 #
 # PostGIS - Spatial Types for PostgreSQL
-# http://www.postgis.net
+# https://postgis.net
 #
 # This is free software; you can redistribute and/or modify it under
 # the terms of the GNU General Public Licence. See the COPYING file.
@@ -249,6 +249,7 @@ GENERATED_CHEATSHEET_FILES = $(patsubst \
 VPATH = $(srcdir)
 
 .PHONY: $(XML_INPUTS_POT)
+CAN_CHECK_XML = yes
 ifeq ($(XML2POT),)
 $(XML_INPUTS_POT): requirements_not_met_xml2pot
 else
@@ -564,15 +565,24 @@ endif
 %_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql: xsl/postgis_gardentest.sql.xsl postgis-out.xml
 	$(XSLTPROC) -o $@ $(XSLTPROC_PATH_OPT) $^
 
-check: check-unit
-check-regress:
-
-check-unit: check-xml
-
 ifeq ($(XMLLINT),)
 check-xml: requirements_not_met_xmllint
 check-cheatsheets: requirements_not_met_xmllint
-else
+CAN_CHECK_XML = no
+endif
+
+ifeq ($(XSLBASE),)
+check-xml: requirements_not_met_xmlcatalog
+CAN_CHECK_XML = no
+endif
+
+CHECK_UNIT_TARGET =
+
+ifeq ($(CAN_CHECK_XML),yes)
+CHECK_UNIT_TARGET = check-xml
+endif
+
+
 check-xml: $(XML_INPUTS)
 	$(XMLLINT) --loaddtd $(XSLTPROC_PATH_OPT) --xinclude --valid postgis-out.xml --noout
 
@@ -581,8 +591,11 @@ check-cheatsheets: cheatsheets
 		$(abs_top_srcdir)/utils/check_localized_cheatsheets.sh $${f} en $(patsubst -%,%,$(DOCSUFFIX)) || exit 1; \
 	done
 
-endif
 
+check: check-unit
+check-regress:
+
+check-unit: $(CHECK_UNIT_TARGET)
 
 requirements_not_met_xsltproc:
 	@echo
@@ -602,7 +615,7 @@ requirements_not_met_xmllint:
 	@echo "Install xmllint and then re-run configure. Alternatively "
 	@echo "refer to online manual:"
 	@echo
-	@echo "  http://postgis.net/documentation"
+	@echo "  https://postgis.net/documentation"
 	@echo
 	@false
 
