@@ -30,6 +30,8 @@ Proj 4.9+ required.
         by extension are owned by extension
         authored: Andrey Borodin (Yandex), reported by Sergey Bobrov (Kaspersky)
  - #5985, Fix configure issue with Debian 12 and 13 (Regina Obe, Sandro Santilli)
+ - #6043, assignment of read-only member
+            ‘postgis_flatbuffers::span<T, Extent>::count_  (Regina Obe)
 
 PostGIS 3.2.8
 2024/12/22
