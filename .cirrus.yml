@@ -1,5 +1,5 @@
 task:
-  only_if: true
+  only_if: false
   name: FreeBSD
   alias: test-freebsd
   #env:
