@@ -2,7 +2,28 @@
 <appendix xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+        <section>
+            <title>PostGIS 3.6.2</title>
+            <para>2026/02/09</para>
 
+            <para>If you are upgrading postgis_topology and have topogeometry columns, make sure to run after the upgrade to fix topogeometry corruption: <code>SELECT topology.FixCorruptTopoGeometryColumn(schema_name, table_name, feature_column) FROM topology.layer</code></para>
+
+            <simplesect>
+                <title>Fixes</title>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6023">6023</link>, Fix robustness issue in ptarray_contains_point (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6027">6027</link>, Fix RemoveUnusedPrimitives without topology in search_path
+                        (Sandro Santilli)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6019">6019</link>, make clean does not remove cunit generated files
+                        (Bas Couwenberg)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6020">6020</link>, schema qualify call in ST_MPointFromText (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6028">6028</link>, crash indexing malformed empty polygon (Paul Ramsey)</para>
+                <para><link xlink:href="https://github.com/postgis/postgis/pull/841">GH-841</link>, small memory leak in address_standardizer (Maxim Korotkov)
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5853">5853</link>, Issue with topology and tiger geocoder upgrade scripts
+                        (Regina Obe, Spencer Bryson)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6032">6032</link>, Fix postgis_tiger_geocoder upgrade for PostgreSQL &lt; 16
+                        (Regina Obe)</para>
+            </simplesect>
+        </section>
         <section>
             <title>PostGIS 3.6.1</title>
             <para>2025/11/13</para>

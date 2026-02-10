@@ -1,6 +1,6 @@
 
-PostGIS 3.6.2dev
-2026/xx/xx
+PostGIS 3.6.2
+2026/02/09
 
 This version requires PostgreSQL 12-18, GEOS 3.8 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.14+ is needed.
@@ -24,6 +24,10 @@ topogeometry corruption:
 - #6020, schema qualify call in ST_MPointFromText (Paul Ramsey)
 - #6028, crash indexing malformed empty polygon (Paul Ramsey)
 - GH-841, small memory leak in address_standardizer (Maxim Korotkov)
+- #5853, Issue with topology and tiger geocoder upgrade scripts
+           (Regina Obe, Spencer Bryson)
+- #6032, Fix postgis_tiger_geocoder upgrade for PostgreSQL < 16
+          (Regina Obe)
 
 
 PostGIS 3.6.1
