@@ -1,3 +1,20 @@
+PostGIS 3.6.3dev
+2026/xx/xx
+
+This version requires PostgreSQL 12-18, GEOS 3.8 or higher, and Proj 6.1+.
+To take advantage of all features, GEOS 3.14+ is needed.
+To take advantage of all SFCGAL features, SFCGAL 2.2+ is needed.
+
+If you are upgrading postgis_topology from a version before 3.6.1 and
+have topogeometry columns, make sure to run after the upgrade to fix
+topogeometry corruption:
+
+  SELECT topology.FixCorruptTopoGeometryColumn(
+    schema_name, table_name, feature_column
+  ) FROM topology.layer;
+
+* Fixes *
+
 
 PostGIS 3.6.2
 2026/02/09
