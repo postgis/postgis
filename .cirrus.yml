@@ -53,12 +53,12 @@ task:
       gmake ${MAKEJOBS} check RUNTESTFLAGS="-v --extension --dumprestore" || { service postgresql onestop; exit 1; }
       service postgresql onestop
   freebsd_instance:
-    cpu: ${NCPU}
-    memory: 24G
+    cpu: 2
+    memory: 8G
   matrix:
-    - name: 14.2-RELEASE
+    - name: 14.3-RELEASE
       freebsd_instance:
-        image_family: freebsd-14-2
+        image_family: freebsd-14-3
 
 task:
   name: macOS
