@@ -4,13 +4,13 @@
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023, 2024, 2025.
 # Yoichi Kayama <yoichi.kayama@gmail.com>, 2024.
 # Weblate <noreply-mt-weblate@weblate.org>, 2025.
-# Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>, 2025.
+# Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>, 2025, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-16 10:47+0000\n"
+"PO-Revision-Date: 2026-02-12 06:47+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -54,10 +54,10 @@ msgid ""
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
 "データベース外ラスターとすべてのラスタードライバーはデフォルトでは無効です。"
-"有効にするには、サーバー側で環境変数 <varname>POSTGIS_GDAL_ENABLED_DRIVERS</"
-"varname>と<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> とを設定する必要が"
-"あります。よりクロスプラットフォームにするなら、対応する<xref "
-"linkend=\"PostGIS_GUC\"/>を設定します。"
+"有効にするには、サーバー側で環境変数 <varname>POSTGIS_GDAL_ENABLED_DRIVERS</v"
+"arname>と<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> "
+"とを設定する必要があります。よりクロスプラットフォームな方法として、"
+"対応する<xref linkend=\"PostGIS_GUC\"/>を設定することができます。"
 
 #. Tag: para
 #, no-c-format
@@ -76,7 +76,8 @@ msgstr ""
 msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
-msgstr "インストールしたGDALのドライバーを有効にするには、次の環境変数を設定します:"
+msgstr "インストールしたGDALで利用可能なドライバーの全てを有効にするには、次の環境変"
+"数を設定します:"
 
 #. Tag: para
 #, no-c-format
@@ -88,7 +89,7 @@ msgstr "一部のドライバーのみ有効にしたい場合には、環境変
 #. Tag: para
 #, no-c-format
 msgid "If you are on windows, do not quote the driver list"
-msgstr "Windows環境の場合は、ドライバーリストに引用符をつけないで下さい"
+msgstr "Windows環境の場合には、ドライバーリストに引用符をつけないで下さい"
 
 #. Tag: para
 #, no-c-format
