@@ -1704,8 +1704,6 @@ static LWGEOM* parse_gml_mline(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 	if (xnode == NULL)
 		gml_lwpgerror("invalid GML representation", 30);
-	if (xnode == NULL)
-		gml_lwpgerror("invalid GML representation", 30);
 
 	parse_gml_srs(xnode, &srs);
 	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
