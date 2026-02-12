@@ -1,6 +1,11 @@
 PostGIS 3.3.10
 2026-xx-xx
 
+* Bug Fixes and Enhancements *
+
+ - #5998, [tiger_geododer] Do not create tiger_data as part
+  		       of postgis_tiger_geocoder extension, create/update (Regina Obe)
+
 PostGIS 3.3.9
 2026-02-09
 
