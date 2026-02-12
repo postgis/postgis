@@ -242,13 +242,6 @@ BEGIN
 END
 $$ LANGUAGE 'plpgsql';
 
-DO
-$$
-BEGIN
-    CREATE SCHEMA IF NOT EXISTS tiger_data;
-END
-$$ LANGUAGE 'plpgsql';
-
 DELETE FROM loader_platform WHERE os IN ('sh', 'windows');
 GRANT SELECT ON TABLE loader_platform TO public;
 INSERT INTO loader_platform(os, wget, pgbin, declare_sect, unzip_command, psql,path_sep,loader, environ_set_command, county_process_command)
