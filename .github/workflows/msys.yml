@@ -5,7 +5,7 @@ jobs:
   mingw:
     # TODO: check to see if we need to disable again
     #if: github.repository == 'master'
-    if: false
+    if: true
     name: mingw
     runs-on: windows-latest
     strategy:
