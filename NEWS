@@ -26,7 +26,7 @@ xxxx/xx/xx
  - #5109, Document the meaning of topology.next_left_edge and topology.next_right_edge links (Darafei Praliaskouski)
  - #5889, [topology] Include representative locations in topology build errors (Darafei Praliaskouski)
  - #2614, Use GEOSPreparedDistance and caching to accelerate ST_DWithin (Paul Ramsey)
- - GH-839, ST_Multi support for TIN and surfaces (Luca Bartoletti)
+ - GH-839, ST_Multi support for TIN and surfaces (Loïc Bartoletti)
 
 * Bug Fixes *
 
