@@ -39,6 +39,7 @@ xxxx/xx/xx
  - #5593, Docs: render manual images with GraphicsMagick without temporary files,
           enabling parallel builds, keeping ImageMagick fallbacks working, and
           documenting the generator workflow for contributors (Darafei Praliaskouski)
+ - GH-848, CG_AlphaShape now returns a MultiPolygon (Jean Felder)
 
 PostGIS 3.6.0
 2025/09/01
