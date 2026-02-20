@@ -3,6 +3,8 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - [tiger_geocoder] Resolve the fuzzy location helper in the tiger schema
+   (Regina Obe)
  - #6160, Clarify the vector tile format schema license (Bas Couwenberg)
  - GH-836, Correct the ST_Boundary multiline example (Peter Nguyen)
  - Handle allocation failure when creating a geometry string buffer (Maksim Korotkov)
