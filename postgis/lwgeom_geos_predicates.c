@@ -1039,15 +1039,6 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 	double tolerance = PG_GETARG_FLOAT8(2);
 	double mindist;
 
-#if POSTGIS_GEOS_VERSION < 31000
-	const GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
-	const GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
-	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
-	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-	mindist = lwgeom_mindistance2d_tolerance(lwgeom1, lwgeom2, tolerance);
-	PG_RETURN_BOOL(tolerance >= mindist);
-
-#else
 	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
@@ -1111,8 +1102,6 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 	}
 
 	PG_RETURN_BOOL(is_dwithin);
-
-#endif
 }
 
 

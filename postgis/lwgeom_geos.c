@@ -265,15 +265,6 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_MaximumInscribedCircle);
 Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 30900
-
-	lwpgerror("The GEOS version this PostGIS binary "
-	          "was compiled against (%d) doesn't support "
-	          "'GEOSMaximumInscribedCircle' function (3.9.0+ required)",
-	          POSTGIS_GEOS_VERSION);
-	          PG_RETURN_NULL();
-
-#else /* POSTGIS_GEOS_VERSION >= 30900 */
 	GSERIALIZED* geom;
 	GSERIALIZED* center;
 	GSERIALIZED* nearest;
@@ -381,8 +372,6 @@ Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 	result = HeapTupleGetDatum(resultTuple);
 
 	PG_RETURN_DATUM(result);
-
-#endif /* POSTGIS_GEOS_VERSION >= 30900 */
 }
 
 
@@ -390,15 +379,6 @@ Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_LargestEmptyCircle);
 Datum ST_LargestEmptyCircle(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 30900
-
-	lwpgerror("The GEOS version this PostGIS binary "
-	          "was compiled against (%d) doesn't support "
-	          "'GEOSMaximumInscribedCircle' function (3.9.0+ required)",
-	          POSTGIS_GEOS_VERSION);
-	          PG_RETURN_NULL();
-
-#else /* POSTGIS_GEOS_VERSION >= 30900 */
 	GSERIALIZED* geom;
 	GSERIALIZED* boundary;
 	GSERIALIZED* center;
@@ -510,8 +490,6 @@ Datum ST_LargestEmptyCircle(PG_FUNCTION_ARGS)
 	result = HeapTupleGetDatum(resultTuple);
 
 	PG_RETURN_DATUM(result);
-
-#endif /* POSTGIS_GEOS_VERSION >= 30900 */
 }
 
 

@@ -289,8 +289,8 @@ We have guards in place in the code to handle these for dependency libraries
 * GEOS
   - c:
     ```c
-      #if POSTGIS_GEOS_VERSION < 31000
-      /* GEOS < 3.1 code goes here */
+      #if POSTGIS_GEOS_VERSION < 31300
+      /* GEOS < 3.13 code goes here */
       #endif
     ```
   - test files:
@@ -298,9 +298,9 @@ We have guards in place in the code to handle these for dependency libraries
       * raster/rt_pg/tests/tests.mi.in
 
     ```makefile
-       ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31000),1)
+       ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31300),1)
         TESTS += \
-          # add tests that require GEOS 3.1 or higher to run
+          # add tests that require GEOS 3.13 or higher to run
        endif
     ```
 

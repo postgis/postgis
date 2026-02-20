@@ -33,137 +33,129 @@ TESTS += \
 	$(top_srcdir)/regress/core/binary \
 	$(top_srcdir)/regress/core/boundary \
 	$(top_srcdir)/regress/core/chaikin \
-	$(top_srcdir)/regress/core/filterm \
+	$(top_srcdir)/regress/core/clean \
+	$(top_srcdir)/regress/core/clipbybox2d \
 	$(top_srcdir)/regress/core/cluster \
+	$(top_srcdir)/regress/core/computed_columns \
 	$(top_srcdir)/regress/core/ctors \
 	$(top_srcdir)/regress/core/curvetoline \
+	$(top_srcdir)/regress/core/delaunaytriangles \
 	$(top_srcdir)/regress/core/dump \
 	$(top_srcdir)/regress/core/dumppoints \
 	$(top_srcdir)/regress/core/dumpsegments \
 	$(top_srcdir)/regress/core/empty \
 	$(top_srcdir)/regress/core/estimatedextent \
-	$(top_srcdir)/regress/core/forcecurve \
+	$(top_srcdir)/regress/core/filterm \
+	$(top_srcdir)/regress/core/fixedoverlay \
 	$(top_srcdir)/regress/core/flatgeobuf \
+	$(top_srcdir)/regress/core/forcecurve \
 	$(top_srcdir)/regress/core/frechet \
 	$(top_srcdir)/regress/core/generate_points \
 	$(top_srcdir)/regress/core/geography \
 	$(top_srcdir)/regress/core/geography_centroid \
 	$(top_srcdir)/regress/core/geography_covers \
 	$(top_srcdir)/regress/core/geometric_median \
-	$(top_srcdir)/regress/core/geos_noop \
+	$(top_srcdir)/regress/core/geos310 \
 	$(top_srcdir)/regress/core/geos38 \
+	$(top_srcdir)/regress/core/geos39 \
+	$(top_srcdir)/regress/core/geos_noop \
 	$(top_srcdir)/regress/core/hausdorff \
+	$(top_srcdir)/regress/core/in_encodedpolyline \
 	$(top_srcdir)/regress/core/in_flatgeobuf \
 	$(top_srcdir)/regress/core/in_geohash \
 	$(top_srcdir)/regress/core/in_gml \
 	$(top_srcdir)/regress/core/in_kml \
 	$(top_srcdir)/regress/core/in_marc21 \
-	$(top_srcdir)/regress/core/out_marc21 \
-	$(top_srcdir)/regress/core/in_encodedpolyline \
 	$(top_srcdir)/regress/core/iscollection \
+	$(top_srcdir)/regress/core/isvaliddetail \
 	$(top_srcdir)/regress/core/legacy \
 	$(top_srcdir)/regress/core/letters \
 	$(top_srcdir)/regress/core/lwgeom_regress \
 	$(top_srcdir)/regress/core/measures \
 	$(top_srcdir)/regress/core/minimum_bounding_circle \
+	$(top_srcdir)/regress/core/minimum_clearance \
+	$(top_srcdir)/regress/core/node \
 	$(top_srcdir)/regress/core/normalize \
+	$(top_srcdir)/regress/core/offsetcurve \
 	$(top_srcdir)/regress/core/operators \
 	$(top_srcdir)/regress/core/orientation \
+	$(top_srcdir)/regress/core/oriented_envelope \
 	$(top_srcdir)/regress/core/out_flatgeobuf \
-	$(top_srcdir)/regress/core/out_geometry \
 	$(top_srcdir)/regress/core/out_geography \
+	$(top_srcdir)/regress/core/out_geojson \
+	$(top_srcdir)/regress/core/out_geometry \
 	$(top_srcdir)/regress/core/out_gml \
+	$(top_srcdir)/regress/core/out_marc21 \
+	$(top_srcdir)/regress/core/point_coordinates \
 	$(top_srcdir)/regress/core/polygonize \
 	$(top_srcdir)/regress/core/polyhedralsurface \
 	$(top_srcdir)/regress/core/postgis_type_name \
 	$(top_srcdir)/regress/core/quantize_coordinates \
 	$(top_srcdir)/regress/core/regress \
 	$(top_srcdir)/regress/core/regress_bdpoly \
+	$(top_srcdir)/regress/core/regress_brin_index \
+	$(top_srcdir)/regress/core/regress_brin_index_3d \
+	$(top_srcdir)/regress/core/regress_brin_index_geography \
 	$(top_srcdir)/regress/core/regress_buffer_params \
 	$(top_srcdir)/regress/core/regress_gist_index_nd \
 	$(top_srcdir)/regress/core/regress_index \
 	$(top_srcdir)/regress/core/regress_index_nulls \
-	$(top_srcdir)/regress/core/regress_management \
-	$(top_srcdir)/regress/core/regress_selectivity \
 	$(top_srcdir)/regress/core/regress_lrs \
+	$(top_srcdir)/regress/core/regress_management \
 	$(top_srcdir)/regress/core/regress_ogc \
 	$(top_srcdir)/regress/core/regress_ogc_cover \
 	$(top_srcdir)/regress/core/regress_ogc_prep \
-	$(top_srcdir)/regress/core/regress_proj_basic \
-	$(top_srcdir)/regress/core/regress_proj_adhoc \
-	$(top_srcdir)/regress/core/regress_proj_cache_overflow \
 	$(top_srcdir)/regress/core/regress_proj_4890 \
+	$(top_srcdir)/regress/core/regress_proj_adhoc \
+	$(top_srcdir)/regress/core/regress_proj_basic \
+	$(top_srcdir)/regress/core/regress_proj_cache_overflow \
 	$(top_srcdir)/regress/core/regress_proj_pipeline \
+	$(top_srcdir)/regress/core/regress_selectivity \
 	$(top_srcdir)/regress/core/relate \
+	$(top_srcdir)/regress/core/relatematch \
 	$(top_srcdir)/regress/core/remove_irrelevant_points_for_view \
+	$(top_srcdir)/regress/core/removepoint \
 	$(top_srcdir)/regress/core/remove_repeated_points \
 	$(top_srcdir)/regress/core/remove_small_parts \
-	$(top_srcdir)/regress/core/removepoint \
 	$(top_srcdir)/regress/core/reverse \
 	$(top_srcdir)/regress/core/scroll \
 	$(top_srcdir)/regress/core/setpoint \
+	$(top_srcdir)/regress/core/sharedpaths \
 	$(top_srcdir)/regress/core/simplify \
 	$(top_srcdir)/regress/core/simplifyvw \
 	$(top_srcdir)/regress/core/size \
+	$(top_srcdir)/regress/core/snap \
 	$(top_srcdir)/regress/core/snaptogrid \
 	$(top_srcdir)/regress/core/split \
-	$(top_srcdir)/regress/core/sql-mm-serialize \
 	$(top_srcdir)/regress/core/sql-mm-circularstring \
 	$(top_srcdir)/regress/core/sql-mm-compoundcurve \
 	$(top_srcdir)/regress/core/sql-mm-curvepoly \
 	$(top_srcdir)/regress/core/sql-mm-general \
 	$(top_srcdir)/regress/core/sql-mm-multicurve \
 	$(top_srcdir)/regress/core/sql-mm-multisurface \
-	$(top_srcdir)/regress/core/swapordinates \
+	$(top_srcdir)/regress/core/sql-mm-serialize \
+	$(top_srcdir)/regress/core/subdivide \
 	$(top_srcdir)/regress/core/summary \
+	$(top_srcdir)/regress/core/swapordinates \
 	$(top_srcdir)/regress/core/temporal \
 	$(top_srcdir)/regress/core/temporal_knn \
 	$(top_srcdir)/regress/core/tickets \
 	$(top_srcdir)/regress/core/triangulatedsurface \
 	$(top_srcdir)/regress/core/twkb \
 	$(top_srcdir)/regress/core/typmod \
+	$(top_srcdir)/regress/core/unaryunion \
+	$(top_srcdir)/regress/core/union \
+	$(top_srcdir)/regress/core/voronoi \
 	$(top_srcdir)/regress/core/wkb \
 	$(top_srcdir)/regress/core/wkt \
 	$(top_srcdir)/regress/core/wmsservers \
-	$(top_srcdir)/regress/core/offsetcurve \
-	$(top_srcdir)/regress/core/relatematch \
-	$(top_srcdir)/regress/core/isvaliddetail \
-	$(top_srcdir)/regress/core/sharedpaths \
-	$(top_srcdir)/regress/core/snap \
-	$(top_srcdir)/regress/core/node \
-	$(top_srcdir)/regress/core/unaryunion \
-	$(top_srcdir)/regress/core/union \
-	$(top_srcdir)/regress/core/clean \
-	$(top_srcdir)/regress/core/delaunaytriangles \
-	$(top_srcdir)/regress/core/clipbybox2d \
-	$(top_srcdir)/regress/core/subdivide \
-	$(top_srcdir)/regress/core/voronoi \
-	$(top_srcdir)/regress/core/regress_brin_index \
-	$(top_srcdir)/regress/core/regress_brin_index_3d \
-	$(top_srcdir)/regress/core/regress_brin_index_geography \
-	$(top_srcdir)/regress/core/minimum_clearance \
-	$(top_srcdir)/regress/core/oriented_envelope \
-	$(top_srcdir)/regress/core/point_coordinates \
-	$(top_srcdir)/regress/core/out_geojson \
-  $(top_srcdir)/regress/core/wrapx \
-	$(top_srcdir)/regress/core/computed_columns
+  $(top_srcdir)/regress/core/wrapx
 
 # Slow slow tests
 TESTS_SLOW = \
 	$(top_srcdir)/regress/core/concave_hull_hard \
 	$(top_srcdir)/regress/core/knn_recheck
 
-ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 30900),1)
-	# GEOS-3.9 adds stable maximuminscribedcircle implementation
-	TESTS += \
-		$(top_srcdir)/regress/core/geos39 \
-		$(top_srcdir)/regress/core/fixedoverlay
-endif
-
-ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31000),1)
-	TESTS += \
-		$(top_srcdir)/regress/core/geos310
-endif
 
 ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31100),1)
 	TESTS += \

@@ -146,10 +146,6 @@ ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d)
 	uint32_t dims = 2;
 	POINTARRAY* pa;
 	uint32_t size = 0;
-#if POSTGIS_GEOS_VERSION < 31000
-	uint32_t i;
-	POINT4D point = { 0.0, 0.0, 0.0, 0.0 };
-#endif
 
 	LWDEBUG(2, "ptarray_fromGEOSCoordSeq called");
 
@@ -170,22 +166,8 @@ ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d)
 	LWDEBUGF(4, " output dimensions: %d", dims);
 
 	pa = ptarray_construct((dims == 3), 0, size);
-#if POSTGIS_GEOS_VERSION >= 31000
 	GEOSCoordSeq_copyToBuffer(cs, (double*) pa->serialized_pointlist, (dims == 3), 0);
 	return pa;
-#else
-	for (i = 0; i < size; i++)
-	{
-		if (dims >= 3)
-			GEOSCoordSeq_getXYZ(cs, i, &(point.x), &(point.y), &(point.z));
-		else
-			GEOSCoordSeq_getXY(cs, i, &(point.x), &(point.y));
-
-		ptarray_set_point4d(pa, i, &point);
-	}
-
-	return pa;
-#endif
 }
 
 /* Return an LWGEOM from a Geometry */
@@ -297,7 +279,6 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 		}
 	}
 
-#if POSTGIS_GEOS_VERSION >= 31000
 	if (append_points == 0) {
 		sq = GEOSCoordSeq_copyFromBuffer((const double*) pa->serialized_pointlist, pa->npoints, FLAGS_GET_Z(pa->flags), FLAGS_GET_M(pa->flags));
 		if (!sq)
@@ -306,7 +287,6 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 		}
 		return sq;
 	}
-#endif
 	if (!(sq = GEOSCoordSeq_create(pa->npoints + append_points, dims)))
 	{
 		GEOS_FAIL();
@@ -710,13 +690,7 @@ lwgeom_intersection_prec(const LWGEOM* geom1, const LWGEOM* geom2, double prec)
 	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	if ( prec >= 0) {
-#if POSTGIS_GEOS_VERSION < 30900
-		lwgeom_geos_error_minversion("Fixed-precision intersection", "3.9");
-		GEOS_FREE_AND_FAIL(g1, g2);
-		return NULL;
-#else
 		g3 = GEOSIntersectionPrec(g1, g2, prec);
-#endif
 	}
 	else
 	{
@@ -807,13 +781,7 @@ lwgeom_unaryunion_prec(const LWGEOM* geom, double prec)
 	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
 	if ( prec >= 0) {
-#if POSTGIS_GEOS_VERSION < 30900
-		lwgeom_geos_error_minversion("Fixed-precision unary union", "3.9");
-		GEOS_FREE_AND_FAIL(g1);
-		return NULL;
-#else
 		g3 = GEOSUnaryUnionPrec(g1, prec);
-#endif
 	}
 	else
 	{
@@ -859,13 +827,7 @@ lwgeom_difference_prec(const LWGEOM* geom1, const LWGEOM* geom2, double prec)
 	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	if ( prec >= 0) {
-#if POSTGIS_GEOS_VERSION < 30900
-		lwgeom_geos_error_minversion("Fixed-precision difference", "3.9");
-		GEOS_FREE_AND_FAIL(g1, g2);
-		return NULL;
-#else
 		g3 = GEOSDifferencePrec(g1, g2, prec);
-#endif
 	}
 	else
 	{
@@ -910,13 +872,7 @@ lwgeom_symdifference_prec(const LWGEOM* geom1, const LWGEOM* geom2, double prec)
 	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	if ( prec >= 0) {
-#if POSTGIS_GEOS_VERSION < 30900
-		lwgeom_geos_error_minversion("Fixed-precision symdifference", "3.9");
-		GEOS_FREE_AND_FAIL(g1, g2);
-		return NULL;
-#else
 		g3 = GEOSSymDifferencePrec(g1, g2, prec);
-#endif
 	}
 	else
 	{
@@ -969,11 +925,6 @@ lwgeom_centroid(const LWGEOM* geom)
 LWGEOM*
 lwgeom_reduceprecision(const LWGEOM* geom, double gridSize)
 {
-#if POSTGIS_GEOS_VERSION < 30900
-	lwgeom_geos_error_minversion("Precision reduction", "3.9");
-	return NULL;
-#else
-
 	LWGEOM* result;
 	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
@@ -999,7 +950,6 @@ lwgeom_reduceprecision(const LWGEOM* geom, double gridSize)
 	GEOS_FREE(g1, g3);
 
 	return result;
-#endif
 }
 
 LWGEOM *
@@ -1063,13 +1013,7 @@ lwgeom_union_prec(const LWGEOM* geom1, const LWGEOM* geom2, double gridSize)
 	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	if ( gridSize >= 0) {
-#if POSTGIS_GEOS_VERSION < 30900
-		lwgeom_geos_error_minversion("Fixed-precision union", "3.9");
-		GEOS_FREE_AND_FAIL(g1, g2);
-		return NULL;
-#else
 		g3 = GEOSUnionPrec(g1, g2, gridSize);
-#endif
 	}
 	else
 	{
@@ -1814,11 +1758,7 @@ lwgeom_get_geos_coordseq_2d(const LWGEOM* g, uint32_t num_points)
 			return NULL;
 		}
 
-#if POSTGIS_GEOS_VERSION < 30800
-		if (!GEOSCoordSeq_setX(coords, i, tmp.x) || !GEOSCoordSeq_setY(coords, i, tmp.y))
-#else
 		if (!GEOSCoordSeq_setXY(coords, i, tmp.x, tmp.y))
-#endif
 		{
 			GEOSCoordSeq_destroy(coords);
 			lwpointiterator_destroy(it);

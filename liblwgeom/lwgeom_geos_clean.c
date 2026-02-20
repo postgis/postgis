@@ -327,9 +327,6 @@ lwgeom_make_valid_params(LWGEOM* lwgeom_in, char* make_valid_params)
 		LWDEBUG(4, "geom converted to GEOS");
 	}
 
-#if POSTGIS_GEOS_VERSION < 31000
-	geosout = GEOSMakeValid(geosgeom);
-#else
 	if (!make_valid_params) {
 		geosout = GEOSMakeValid(geosgeom);
 	}
@@ -378,7 +375,6 @@ lwgeom_make_valid_params(LWGEOM* lwgeom_in, char* make_valid_params)
 		geosout = GEOSMakeValidWithParams(geosgeom, params);
 		GEOSMakeValidParams_destroy(params);
 	}
-#endif
 	GEOSGeom_destroy(geosgeom);
 	if (!geosout) return NULL;
 
