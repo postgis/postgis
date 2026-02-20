@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2023-10-14 20:23+0000\n"
+"PO-Revision-Date: 2026-02-20 12:51+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ko/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.0\n"
+"X-Generator: Weblate 5.16\n"
 
 #. Tag: chapter
 #, no-c-format
@@ -911,7 +911,7 @@ msgstr ""
 "있습니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "is a text (token number <code>1</code>): This is the street number on a "
 "street. Example <emphasis>75</emphasis> in <code>75 State Street</code>."
@@ -929,7 +929,7 @@ msgstr ""
 "향을 나타내는 도로명 접두사(STREET NAME PRE-DIRECTIONAL)입니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example "
 "<emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>."
@@ -951,7 +951,7 @@ msgid "is text (token number <code>5</code>): STREET NAME"
 msgstr "문자형(토큰 번호 <code>5</code>)입니다: 도로명(STREET NAME)입니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "is text (token number <code>6</code>): STREET POST TYPE e.g. St, Ave, Cir. A "
 "street type following the root street name. Example <emphasis>STREET</"
@@ -962,7 +962,7 @@ msgstr ""
 "<code>75 State Street</code> 에서 <emphasis>STREET</emphasis>"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional "
 "modifier that follows the street name.. Example <emphasis>WEST</emphasis> in "
@@ -990,7 +990,7 @@ msgid "is text (token number <code>10</code>): Example Boston."
 msgstr "문자형(토큰 번호 <code>10</code>)입니다: 예: 보스턴 시"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "is text (token number <code>11</code>): Example <code>MASSACHUSETTS</code>"
 msgstr "문자형(토큰 번호 <code>11</code>)입니다: 예: 매사추세츠 주"
@@ -1010,7 +1010,7 @@ msgstr ""
 "<code>02109</code>"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "is text POSTAL BOX NUMBER (token number <code>14 and 15</code>): Example "
 "<code>02109</code>"
@@ -1019,7 +1019,7 @@ msgstr ""
 "NUMBER)입니다: 예: <code>02109</code>"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "is text Apartment number or Suite Number (token number <code>17</code>): "
 "Example <emphasis>3B</emphasis> in <code>APT 3B</code>."
@@ -1503,7 +1503,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "(token number <code>15</code>): The <emphasis role=\"bold\">3B</emphasis> in "
 "<code>BOX 3B</code>"
@@ -1512,16 +1512,16 @@ msgstr ""
 "role=\"bold\">3B</emphasis>"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "(token number <code>8</code>): The <emphasis role=\"bold\">RR</emphasis> in "
 "<code>RR 7</code>"
 msgstr ""
-"(토큰 번호 <code>8</code>): <code>RR 7</code> 에서 <emphasis "
-"role=\"bold\">RR</emphasis>"
+"(토큰 번호 <code>8</code>): <code>RR 7</code> 에서 <emphasis role=\"bold\">"
+"RR</emphasis>"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "(token number <code>16</code>): The <emphasis role=\"bold\">APT</emphasis> "
 "in <code>APT 3B</code>"
@@ -1530,7 +1530,7 @@ msgstr ""
 "role=\"bold\">APT</emphasis>"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "(token number <code>17</code>): The <emphasis role=\"bold\">3B</emphasis> in "
 "<code>APT 3B</code>"
@@ -1796,7 +1796,7 @@ msgid "Variant 1: Takes an address as a single line."
 msgstr "변종 1: 주소를 단일 행으로 입력받습니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Variant 2: Takes an address as 2 parts. A <varname>micro</varname> "
 "consisting of standard first line of postal address e.g. <code>house_num "
@@ -1805,8 +1805,8 @@ msgid ""
 msgstr ""
 "변종 2: 주소를 두 부분으로 입력받습니다. <code>house_num street</code> 같은 "
 "우편 주소의 표준 첫 번째 행으로 이루어진 <varname>micro</varname> 절과,  "
-"<code>city, state postal_code country</code> 같은 우편 주소의 표준 두 번째 행"
-"으로 이루어진 <varname>macro</varname> 절입니다."
+"<code>city, state postal_code country</code> 같은 우편 주소의 표준 두 번째 "
+"행으로 이루어진 <varname>macro</varname> 절입니다."
 
 #. Tag: para
 #, no-c-format
@@ -2416,7 +2416,7 @@ msgstr ""
 "linkend=\"ST_Y\"/>"
 
 #. Tag: refpurpose
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Takes in 2 streets that intersect and a state, city, zip, and outputs a set "
 "of possible locations on the first cross street that is at the intersection, "
@@ -2427,13 +2427,14 @@ msgid ""
 "10. Uses Tiger data (edges, faces, addr), PostgreSQL fuzzy string matching "
 "(soundex, levenshtein)."
 msgstr ""
-"교차하는 도로 2개와 주, 시, 집코드를 입력받아 NAD83 경위도로 투영된 포인트 위"
-"치인 <varname>geomout</varname>, 각 위치에 대한 <varname>normalized_address</"
-"varname> (addy) 및 순위도 포함하는, 교차점에서 처음 가로지르는 도로에 있는 가"
-"능성 있는 위치들의 집합을 출력합니다. 순위가 낮을수록 주소와 위치가 일치할 가"
-"능성이 커집니다. 결과를 순위가 낮은 순서로 정렬합니다. 결과의 최대 개수(기본"
-"값 10) 옵션 파라미터를 넘겨줄 수 있습니다. TIGER 데이터(edge, face, addr) 및 "
-"PostgreSQL 퍼지 문자열 매칭(soundex, levenshtein)을 이용합니다."
+"교차하는 도로 2개와 주, 시, 집코드를 입력받아 NAD83 경위도로 투영된 포인트 "
+"위치인 <varname>geomout</varname>, 각 위치에 대한 <varname>"
+"normalized_address</varname> (addy) 및 순위도 포함하는, 교차점에서 처음 "
+"가로지르는 도로에 있는 가능성 있는 위치들의 집합을 출력합니다. 순위가 "
+"낮을수록 주소와 위치가 일치할 가능성이 커집니다. 결과를 순위가 낮은 순서로 "
+"정렬합니다. 결과의 최대 개수(기본값 10) 옵션 파라미터를 넘겨줄 수 있습니다. "
+"TIGER 데이터(edge, face, addr) 및 PostgreSQL 퍼지 문자열 매칭(soundex, "
+"levenshtein)을 이용합니다."
 
 #. Tag: para
 #, no-c-format
@@ -3495,7 +3496,7 @@ msgstr ""
 "블입니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<varname>region_id</varname> This is what TIGER calls the geoid. It is the "
 "unique identifier of the region in the table. For place it is the "
@@ -3503,11 +3504,11 @@ msgid ""
 "county it is the <varname>cntyidfp</varname> column in <varname>tiger."
 "county</varname>"
 msgstr ""
-"<varname>region_id</varname> - TIGER가 지리 ID(geoid)라고 부르는 식별자입니"
-"다. 테이블에 있는 지역의 유일한 식별자입니다. <varname>place</varname> 의 경"
-"우 <varname>tiger.place</varname> 테이블에 있는 <varname>plcidfp</varname> 열"
-"입니다. <varname>county</varname> 의 경우 <varname>tiger.county</varname> 테"
-"이블에 있는 <varname>cntyidfp</varname> 열입니다."
+"<varname>region_id</varname> - TIGER가 지리 ID(geoid)라고 부르는 "
+"식별자입니다. 테이블에 있는 지역의 유일한 식별자입니다. <varname>place</"
+"varname> 의 경우 <varname>tiger.place</varname> 테이블에 있는 <varname>"
+"plcidfp</varname> 열입니다. <varname>county</varname> 의 경우 <varname>"
+"tiger.county</varname> 테이블에 있는 <varname>cntyidfp</varname> 열입니다."
 
 #. Tag: title
 #, no-c-format
@@ -5005,13 +5006,13 @@ msgstr ""
 "세하게 설명하는 메시지를 반환합니다.</refpurpose>"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<para>Adds a collection of geometries to a given empty topology and returns "
 "a message detailing success.</para>"
 msgstr ""
-"<refpurpose>텅 빈 입력 지형에 도형들의 집합을 추가한 다음 작업 성공 여부를 상"
-"세하게 설명하는 메시지를 반환합니다.</refpurpose>"
+"<refpurpose>텅 빈 입력 지형에 도형들의 집합을 추가한 다음 작업 성공 여부를 "
+"상세하게 설명하는 메시지를 반환합니다.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -6300,15 +6301,15 @@ msgstr ""
 "거나, 또는 담고 있을 경우 오류가 발생하고 경계선을 추가하지 않습니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The geometry of <varname>aline</varname> must have the same <varname>srid</"
 "varname> as defined for the topology otherwise an invalid spatial reference "
 "sys error will be thrown."
 msgstr ""
-"<varname>aline</varname> 도형의 <varname>srid</varname> 와 지형에 대해 정의"
-"된 <varname>srid</varname> 가 동일해야만 합니다. 그렇지 않을 경우 유효하지 않"
-"은 공간 참조 시스템 오류가 발생할 것입니다."
+"<varname>aline</varname> 도형의 <varname>srid</varname> 와 지형에 대해 "
+"정의된 <varname>srid</varname> 가 동일해야만 합니다. 그렇지 않을 경우 "
+"유효하지 않은 공간 참조 시스템 오류가 발생할 것입니다."
 
 #. Tag: para
 #, no-c-format
@@ -6393,15 +6394,15 @@ msgstr ""
 "가 해결해야 할 문제입니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <varname>apolygon</varname> geometry must have the same <varname>srid</"
 "varname> as defined for the topology otherwise an invalid spatial reference "
 "sys error will be thrown."
 msgstr ""
-"<varname>apolygon</varname> 도형의 <varname>srid</varname> 와 지형에 대해 정"
-"의된 <varname>srid</varname> 가 동일해야만 합니다. 그렇지 않을 경우 유효하지 "
-"않은 공간 참조 시스템 오류가 발생할 것입니다."
+"<varname>apolygon</varname> 도형의 <varname>srid</varname> 와 지형에 대해 "
+"정의된 <varname>srid</varname> 가 동일해야만 합니다. 그렇지 않을 경우 "
+"유효하지 않은 공간 참조 시스템 오류가 발생할 것입니다."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6717,7 +6718,7 @@ msgid "Clears the content of a topo geometry."
 msgstr ""
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Clears the content a <xref linkend=\"topogeometry\"/> turning it into an "
 "empty one. Mostly useful in conjunction with <xref linkend=\"toTopoGeom\"/> "
@@ -6725,9 +6726,9 @@ msgid ""
 "hierarchical levels."
 msgstr ""
 "<xref linkend=\"topogeometry\"/> 의 내용을 지워서 텅 빈 <xref "
-"linkend=\"topogeometry\"/> 로 바꿉니다. <xref linkend=\"toTopoGeom\"/> 함수"
-"와 결합해서 기존 객체 및 더 높은 계층 레벨에 있는 모든 의존적인 객체의 형상"
-"을 교체하는 데 가장 유용합니다."
+"linkend=\"topogeometry\"/> 로 바꿉니다. <xref linkend=\"toTopoGeom\"/> "
+"함수와 결합해서 기존 객체 및 더 높은 계층 레벨에 있는 모든 의존적인 객체의 "
+"형상을 교체하는 데 가장 유용합니다."
 
 #. Tag: para
 #, no-c-format
@@ -7498,7 +7499,7 @@ msgstr ""
 "했을 경우 오류가 훨씬 적게 발생합니다. "
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "GNU Make (<filename>gmake</filename> or <filename>make</filename>). For many "
 "systems, GNU <filename>make</filename> is the default version of make. Check "
@@ -7506,8 +7507,8 @@ msgid ""
 "<filename>make</filename> may not process the PostGIS <filename>Makefile</"
 "filename> properly."
 msgstr ""
-"GNU Make(<filename>gmake</filename> 또는 <filename>make</filename>). 많은 시"
-"스템들에서 GNU <filename>make</filename> 는 make의 기본 버전입니다. "
+"GNU Make(<filename>gmake</filename> 또는 <filename>make</filename>). 많은 "
+"시스템들에서 GNU <filename>make</filename> 는 make의 기본 버전입니다. "
 "<filename>make -v</filename>를 통해 버전을 확인하십시오. 다른 버전의 make는 "
 "PostGIS <filename>Makefile</filename>을 제대로 처리하지 못 할 수도 있습니다."
 
@@ -8220,7 +8221,7 @@ msgstr ""
 "LD_LIBRARY_PATH 환경 변수에 해당 라이브러리 경로를 설정해주어야 합니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Currently, the <command>make check</command> relies on the <code>PATH</code> "
 "and <code>PGPORT</code> environment variables when performing the checks - "
@@ -8233,8 +8234,8 @@ msgstr ""
 "현재, <command>make check</command> 검사들을 실시할 때에는 <code>PATH</code>"
 "와 <code>PGPORT</code> 환경 변수를 따릅니다. PostgreSQL의 설정 매개변수인 "
 "<command>--with-pgconfig</command>에 명시되어 있어도 이것을 적용하지 "
-"<emphasis>않습니다</emphasis>. 따라서, PostgreSQL 설치시의 환경설정과 일치하"
-"도록 PATH를 수정해주십시오."
+"<emphasis>않습니다</emphasis>. 따라서, PostgreSQL 설치시의 환경설정과 "
+"일치하도록 PATH를 수정해주십시오."
 
 #. Tag: para
 #, no-c-format
@@ -8351,29 +8352,29 @@ msgid ""
 msgstr "PostGIS 라이브러리들은 <filename>[prefix]/lib</filename>에 설치됩니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If you previously ran the <command>make comments</command> command to "
 "generate the <filename>postgis_comments.sql</filename>, "
 "<filename>raster_comments.sql</filename> file, install the sql file by "
 "running"
 msgstr ""
-"만약 기존에 <filename>postgis_comments.sql</filename>, "
-"<filename>raster_comments.sql</filename>  파일을 생성하기 위해 <command>make "
-"comments</command> 명령어를 실행한 적이 있으시다면, 다음을 실행해 sql 파일을 "
+"만약 기존에 <filename>postgis_comments.sql</filename>, <filename>"
+"raster_comments.sql</filename>  파일을 생성하기 위해 <command>make comments</"
+"command> 명령어를 실행한 적이 있으시다면, 다음을 실행해 sql 파일을 "
 "설치하십시오."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<filename>postgis_comments.sql</filename>, <filename>raster_comments.sql</"
 "filename>, <filename>topology_comments.sql</filename> was separated from the "
 "typical build and installation targets since with it comes the extra "
 "dependency of <command>xsltproc</command>."
 msgstr ""
-"<command>xsltproc</command>의 적용 이후 일반적인 설치로부터 "
-"<filename>postgis_comments.sql</filename>, <filename>raster_comments.sql</"
-"filename>, <filename>topology_comments.sql</filename>는 분리되었습니다."
+"<command>xsltproc</command>의 적용 이후 일반적인 설치로부터 <filename>"
+"postgis_comments.sql</filename>, <filename>raster_comments.sql</filename>, "
+"<filename>topology_comments.sql</filename>는 분리되었습니다."
 
 #. Tag: title
 #, no-c-format
@@ -8845,14 +8846,14 @@ msgstr ""
 "정구역을 한번에 로드하지 않아도 됩니다. 필요할 때마다 로드할 수 있습니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "After the states you desire have been loaded, make sure to run the: "
 "<programlisting>SELECT install_missing_indexes();</programlisting> as "
 "described in <xref linkend=\"Install_Missing_Indexes\"/>."
 msgstr ""
-"원하는 데이터가 로딩이 된 후  <xref linkend=\"Install_Missing_Indexes\"/>에"
-"서 설명된 대로 다음을 실행하십시오: <programlisting>SELECT "
+"원하는 데이터가 로딩이 된 후  <xref linkend=\"Install_Missing_Indexes\"/>"
+"에서 설명된 대로 다음을 실행하십시오: <programlisting>SELECT "
 "install_missing_indexes();</programlisting>"
 
 #. Tag: para
@@ -17804,7 +17805,7 @@ msgstr ""
 "장(Geometry Factory) 역할을 합니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
 "returned if the input <varname>bytea</varname> does not represent a "
@@ -17856,7 +17857,7 @@ msgstr ""
 "SQL에서 도형 공장(Geometry Factory) 역할을 합니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
 "returned if the input <varname>bytea</varname> does not represent a "
@@ -17912,7 +17913,7 @@ msgstr ""
 "(Geometry Factory) 역할을 합니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
 "returned if the input <varname>bytea</varname> does not represent a "
@@ -19165,7 +19166,7 @@ msgstr ""
 "니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If the <varname>oid</varname> of a view is provided, as with a table oid, "
 "this function tries to determine the srid, dimension, and type of all the "
@@ -19173,10 +19174,10 @@ msgid ""
 "<varname>geometry_columns</varname> table, but nothing is done to enforce "
 "constraints."
 msgstr ""
-"<varname>oid</varname> 테이블과 함께 <varname>oid</varname> 뷰가 제공될 경"
-"우, 이 함수는 <varname>geometry_columns</varname> 테이블에 올바른 항목을 삽입"
-"하며 뷰에 있는 모든 도형의 SRID, 차원, 유형을 결정하려 하지만, 제약조건을 강"
-"제하지는 않습니다."
+"<varname>oid</varname> 테이블과 함께 <varname>oid</varname> 뷰가 제공될 "
+"경우, 이 함수는 <varname>geometry_columns</varname> 테이블에 올바른 항목을 "
+"삽입하며 뷰에 있는 모든 도형의 SRID, 차원, 유형을 결정하려 하지만, "
+"제약조건을 강제하지는 않습니다."
 
 #. Tag: para
 #, no-c-format
@@ -26733,7 +26734,7 @@ msgstr ""
 "는 래스터 열에 제약조건을 추가합니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <varname>ovfactor</varname> parameter represents the scale multiplier in "
 "the overview column: higher overview factors have lower resolution."
@@ -27028,15 +27029,15 @@ msgstr ""
 "누계(累計)합니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "For the variants that take <varname>outdbfile</varname> (Variants 6 and 7), "
 "the value must include the full path to the raster file. The file must also "
 "be accessible to the postgres server process."
 msgstr ""
-"<varname>outdbfile</varname> 을 입력받는 변종 6 및 7의 경우, "
-"<varname>outdbfile</varname> 값이 래스터 파일을 가리키는 전체 경로를 포함해야"
-"만 합니다. PostgreSQL 서버 프로세스도 해당 파일에 접근할 수 있어야만 합니다."
+"<varname>outdbfile</varname> 을 입력받는 변종 6 및 7의 경우, <varname>"
+"outdbfile</varname> 값이 래스터 파일을 가리키는 전체 경로를 포함해야만 "
+"합니다. PostgreSQL 서버 프로세스도 해당 파일에 접근할 수 있어야만 합니다."
 
 #. Tag: para
 #, no-c-format
@@ -30432,7 +30433,7 @@ msgstr ""
 "코드 집합을 반환합니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If no band is specified <varname>nband</varname> defaults to 1. If no "
 "<varname>searchvalues</varname> are specified, will return all pixel values "
@@ -30441,10 +30442,10 @@ msgid ""
 "that pixel band value"
 msgstr ""
 "밴드를 따로 설정하지 않을 경우 <varname>nband</varname> 의 기본값은 1입니다. "
-"<varname>searchvalues</varname> 를 설정하지 않을 경우, 래스터 또는 래스터 커"
-"버리지에서 발견된 모든 픽셀 값을 반환할 것입니다. <varname>searchvalues</"
-"varname> 를 하나만 설정하면, 레코드 대신 해당 픽셀 밴드 값을 가진 픽셀의 개수"
-"를 나타내는 정수를 반환할 것입니다."
+"<varname>searchvalues</varname> 를 설정하지 않을 경우, 래스터 또는 래스터 "
+"커버리지에서 발견된 모든 픽셀 값을 반환할 것입니다. <varname>searchvalues</"
+"varname> 를 하나만 설정하면, 레코드 대신 해당 픽셀 밴드 값을 가진 픽셀의 "
+"개수를 나타내는 정수를 반환할 것입니다."
 
 #. Tag: para
 #, no-c-format
@@ -31563,7 +31564,7 @@ msgstr ""
 "는 최초 버전에만 적용할지)를 표시하는 불 값(참/거짓)입니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If <varname>pixeltype</varname> is passed in, the one band of the new raster "
 "will be of that pixeltype. If pixeltype is passed NULL or left out, the new "
@@ -31572,12 +31573,13 @@ msgid ""
 "specified band of the appropriate raster (for extent types: SECOND, LAST). "
 "If in doubt, always specify <varname>pixeltype</varname>."
 msgstr ""
-"<varname>pixeltype</varname> 을 설정할 경우, 새 래스터의 밴드 하나가 해당 픽"
-"셀 유형이 될 것입니다. <varname>pixeltype</varname> 이 NULL이거나 생략된 경"
-"우, 새 래스터 밴드가 첫 번째 래스터의 지정된 밴드와(범위 유형의 경우: "
+"<varname>pixeltype</varname> 을 설정할 경우, 새 래스터의 밴드 하나가 해당 "
+"픽셀 유형이 될 것입니다. <varname>pixeltype</varname> 이 NULL이거나 생략된 "
+"경우, 새 래스터 밴드가 첫 번째 래스터의 지정된 밴드와(범위 유형의 경우: "
 "INTERSECTION, UNION, FIRST, CUSTOM), 또는 적절한 래스터의 지정된 밴드와(범위 "
-"유형의 경우: SECOND, LAST) 동일한 픽셀 유형을 가지게 될 것입니다. 어떤 유형인"
-"지 확신하지 못 한다면, 언제나 <varname>pixeltype</varname> 을 설정하십시오."
+"유형의 경우: SECOND, LAST) 동일한 픽셀 유형을 가지게 될 것입니다. 어떤 "
+"유형인지 확신하지 못 한다면, 언제나 <varname>pixeltype</varname> 을 "
+"설정하십시오."
 
 #. Tag: para
 #, no-c-format
@@ -31653,15 +31655,15 @@ msgstr ""
 "의 \"SQL Functions with Variable Numbers of Arguments\" 단원을 참조하십시오."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>callbackfunc</varname> is "
 "required, regardless of whether you choose to pass any arguments to the "
 "callback function for processing or not."
 msgstr ""
-"사용자가 처리하기 위해 콜백 함수에 어떤 인수를 넘겨주기로 하고 말고에 상관없"
-"이, <varname>callbackfunc</varname> 에 들어가는 <type>text[]</type> 인수는 필"
-"요합니다."
+"사용자가 처리하기 위해 콜백 함수에 어떤 인수를 넘겨주기로 하고 말고에 "
+"상관없이, <varname>callbackfunc</varname> 에 들어가는 <type>text[]</type> "
+"인수는 필요합니다."
 
 #. Tag: para
 #, no-c-format
@@ -31814,15 +31816,15 @@ msgstr ""
 "만, 밴드는 1개만 가질 것입니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If <varname>pixeltype</varname> is passed in, then the new raster will have "
 "a band of that pixeltype. If pixeltype is passed NULL, then the new raster "
 "band will have the same pixeltype as the input <varname>rast</varname> band."
 msgstr ""
-"<varname>pixeltype</varname> 을 설정할 경우, 새 래스터의 밴드가 해당 픽셀 유"
-"형이 될 것입니다. <varname>pixeltype</varname> 이 NULL일 경우, 새 래스터의 밴"
-"드는 입력 <varname>rast</varname> 의 밴드와 동일한 픽셀 유형이 될 것입니다."
+"<varname>pixeltype</varname> 을 설정할 경우, 새 래스터의 밴드가 해당 픽셀 "
+"유형이 될 것입니다. <varname>pixeltype</varname> 이 NULL일 경우, 새 래스터의 "
+"밴드는 입력 <varname>rast</varname> 의 밴드와 동일한 픽셀 유형이 될 것입니다."
 
 #. Tag: para
 #, no-c-format
@@ -31940,7 +31942,7 @@ msgstr ""
 "니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "An algebraic expression involving only <varname>rast2</varname> or a "
 "constant that defines what to return when pixels of <varname>rast1</varname> "
@@ -31951,7 +31953,7 @@ msgstr ""
 "정의하는 상수만, 또는 <varname>rast2</varname> 와만 관련된 대수 표현식입니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "An algebraic expression involving only <varname>rast1</varname> or a "
 "constant that defines what to return when pixels of <varname>rast2</varname> "
@@ -32183,17 +32185,17 @@ msgstr ""
 "UNION, FIRST, SECOND가 될 수 있습니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If <varname>pixeltype</varname> is passed in, then the new raster will have "
 "a band of that pixeltype. If pixeltype is passed NULL or no pixel type "
 "specified, then the new raster band will have the same pixeltype as the "
 "input <varname>rast1</varname> band."
 msgstr ""
-"<varname>pixeltype</varname> 을 설정할 경우, 새 래스터의 밴드가 해당 픽셀 유"
-"형이 될 것입니다. <varname>pixeltype</varname> 이 NULL이거나 따로 설정하지 않"
-"을 경우, 새 래스터의 밴드는 입력 <varname>rast1</varname> 의 밴드와 동일한 픽"
-"셀 유형이 될 것입니다."
+"<varname>pixeltype</varname> 을 설정할 경우, 새 래스터의 밴드가 해당 픽셀 "
+"유형이 될 것입니다. <varname>pixeltype</varname> 이 NULL이거나 따로 설정하지 "
+"않을 경우, 새 래스터의 밴드는 입력 <varname>rast1</varname> 의 밴드와 동일한 "
+"픽셀 유형이 될 것입니다."
 
 #. Tag: para
 #, no-c-format
@@ -32352,15 +32354,15 @@ msgstr ""
 "varname> 에 넘겨지며, <varname>args</varname> 인수에 담겨집니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>userfunction</varname> is "
 "required, regardless of whether you choose to pass any arguments to your "
 "user function for processing or not."
 msgstr ""
 "공간 처리를 위해 사용자 함수에 어떤 인수를 넘겨주기로 하고 말고에 상관없이, "
-"<varname>userfunction</varname> 에 들어가는 <type>text[]</type> 인수는 필요합"
-"니다."
+"<varname>userfunction</varname> 에 들어가는 <type>text[]</type> 인수는 "
+"필요합니다."
 
 #. Tag: para
 #, no-c-format
@@ -32417,17 +32419,17 @@ msgstr ""
 "것입니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If <varname>pixeltype</varname> is passed in, then the new raster will have "
 "a band of that pixeltype. If pixeltype is passed NULL or left out, then the "
 "new raster band will have the same pixeltype as the input <varname>rast1</"
 "varname> band."
 msgstr ""
-"<varname>pixeltype</varname> 을 설정할 경우, 새 래스터의 밴드가 해당 픽셀 유"
-"형이 될 것입니다. <varname>pixeltype</varname> 이 NULL이거나 따로 설정하지 않"
-"을 경우, 새 래스터의 밴드는 입력 <varname>rast1</varname> 의 밴드와 동일한 픽"
-"셀 유형이 될 것입니다."
+"<varname>pixeltype</varname> 을 설정할 경우, 새 래스터의 밴드가 해당 픽셀 "
+"유형이 될 것입니다. <varname>pixeltype</varname> 이 NULL이거나 따로 설정하지 "
+"않을 경우, 새 래스터의 밴드는 입력 <varname>rast1</varname> 의 밴드와 동일한 "
+"픽셀 유형이 될 것입니다."
 
 #. Tag: para
 #, no-c-format
@@ -32462,15 +32464,15 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>tworastuserfunc</varname> "
 "is required, regardless of whether you choose to pass any arguments to your "
 "user function for processing or not."
 msgstr ""
 "공간 처리를 위해 사용자 함수에 어떤 인수를 넘겨주기로 하고 말고에 상관없이, "
-"<varname>tworastuserfunc</varname> 에 들어가는 <type>text[]</type> 인수는 필"
-"요합니다."
+"<varname>tworastuserfunc</varname> 에 들어가는 <type>text[]</type> 인수는 "
+"필요합니다."
 
 #. Tag: para
 #, no-c-format
@@ -32782,7 +32784,7 @@ msgstr ""
 "래스터 타일 집합을 1개 이상의 밴드로 이루어진 단일 래스터로 통합합니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Returns the union of a set of raster tiles into a single raster composed of "
 "at least one band. The resulting raster's extent is the extent of the whole "
@@ -32791,10 +32793,10 @@ msgid ""
 "FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE."
 msgstr ""
 "래스터 타일 집합을 최소한 밴드 1개로 이루어진 단일 래스터로 통합합니다. 출력 "
-"래스터의 범위는 전체 집합의 범위입니다. 교차 부분의 경우, "
-"<varname>uniontype</varname> 이 결과 값을 정의합니다. <varname>uniontype</"
-"varname> 의 값은 LAST(기본값), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE 가운"
-"데 하나입니다."
+"래스터의 범위는 전체 집합의 범위입니다. 교차 부분의 경우, <varname>"
+"uniontype</varname> 이 결과 값을 정의합니다. <varname>uniontype</varname> 의 "
+"값은 LAST(기본값), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE 가운데 "
+"하나입니다."
 
 #. Tag: para
 #, no-c-format
@@ -41478,14 +41480,15 @@ msgstr ""
 "emphasis> 입니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<varname>MULTIPOINT</varname>s are <emphasis>simple</emphasis> if no two "
 "coordinates (<varname>POINT</varname>s) are equal (have identical coordinate "
 "values)."
 msgstr ""
-"<varname>MULTIPOINT</varname> 는 어떤 두 좌표(<varname>POINT</varname>)도 동"
-"일하지 않은 (동일한 좌표를 공유하지 않는) <emphasis>단순형</emphasis> 입니다."
+"<varname>MULTIPOINT</varname> 는 어떤 두 좌표(<varname>POINT</varname>)도 "
+"동일하지 않은 (동일한 좌표를 공유하지 않는) <emphasis>단순형</emphasis> "
+"입니다."
 
 #. Tag: para
 #, no-c-format
@@ -44708,7 +44711,7 @@ msgstr ""
 "다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If you created your tables not with the loader or forgot to specify the "
 "<varname>-C</varname> flag during load, you can enforce the constraints "
@@ -44717,9 +44720,9 @@ msgid ""
 "about your raster tiles."
 msgstr ""
 "로더를 통해 사용자 테이블을 생성하지 않았거나 로드 과정에서 <varname>-C</"
-"varname> 플래그 설정을 잊었을 경우, 테이블 생성 후에 "
-"<varname>raster_columns</varname> 카탈로그가 사용자의 래스터 타일에 관한 일"
-"반 정보를 등록하도록 <xref linkend=\"RT_AddRasterConstraints\"/> 함수를 통해 "
+"varname> 플래그 설정을 잊었을 경우, 테이블 생성 후에 <varname>"
+"raster_columns</varname> 카탈로그가 사용자의 래스터 타일에 관한 일반 정보를 "
+"등록하도록 <xref linkend=\"RT_AddRasterConstraints\"/> 함수를 통해 "
 "제약조건을 강제할 수 있습니다."
 
 #. Tag: para
@@ -44769,17 +44772,17 @@ msgstr ""
 "linkend=\"spatial_ref_sys\"/> 목록에 있는 항목이어야 합니다."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<varname>scale_x</varname> The scaling between geometric spatial coordinates "
 "and pixel. This is only available if all tiles in the raster column have the "
 "same <varname>scale_x</varname> and this constraint is applied. Refer to "
 "<xref linkend=\"RT_ST_ScaleX\"/> for more details."
 msgstr ""
-"<varname>scale_x</varname> 기하하적 공간 좌표와 픽셀의 비례(축척)입니다. 래스"
-"터 열에 있는 모든 타일이 동일한 <varname>scale_x</varname> 를 가지며, "
-"<varname>scale_x</varname> 제약조건이 적용될 경우에만 사용할 수 있습니다. 자"
-"세한 내용은 <xref linkend=\"RT_ST_ScaleX\"/> 를 참조하십시오."
+"<varname>scale_x</varname> 기하하적 공간 좌표와 픽셀의 비례(축척)입니다. "
+"래스터 열에 있는 모든 타일이 동일한 <varname>scale_x</varname> 를 가지며, "
+"<varname>scale_x</varname> 제약조건이 적용될 경우에만 사용할 수 있습니다. "
+"자세한 내용은 <xref linkend=\"RT_ST_ScaleX\"/> 를 참조하십시오."
 
 #. Tag: para
 #, no-c-format
