@@ -147,6 +147,9 @@ UF_get_collapsed_cluster_ids(UNIONFIND* uf, const char* is_in_cluster)
 {
 	uint32_t* ordered_components = UF_ordered_by_cluster(uf);
 	uint32_t* new_ids = lwalloc(uf->N * sizeof(uint32_t));
+	// memset(new_ids, 0xFF, uf->N * sizeof(uint32_t)); /* set all to UINT32_MAX */
+  for (int i = 0; i < uf->N; i++)
+    new_ids[i] = UINT32_MAX;
 	uint32_t last_old_id, current_new_id, i;
 	char encountered_cluster = LW_FALSE;
 
