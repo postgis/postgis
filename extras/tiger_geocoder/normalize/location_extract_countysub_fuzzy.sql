@@ -55,9 +55,9 @@ BEGIN
         END LOOP;
         IF test THEN
           -- The soundex matched, determine if the distance is better.
-          IF tiger.@extschema:fuzzystrmatch@.levenshtein_ignore_case(rec.name, tempString) < tempInt THEN
+          IF tiger.levenshtein_ignore_case(rec.name, tempString) < tempInt THEN
                 location := tempString;
-            tempInt := tiger.@extschema:fuzzystrmatch@.levenshtein_ignore_case(rec.name, tempString);
+            tempInt := tiger.levenshtein_ignore_case(rec.name, tempString);
           END IF;
         END IF;
       END LOOP;
@@ -75,9 +75,9 @@ BEGIN
         END LOOP;
         IF test THEN
           -- The soundex matched, determine if the distance is better.
-          IF tiger.@extschema:fuzzystrmatch@.levenshtein_ignore_case(rec.name, tempString) < tempInt THEN
+          IF tiger.levenshtein_ignore_case(rec.name, tempString) < tempInt THEN
                 location := tempString;
-            tempInt := tiger.@extschema:fuzzystrmatch@.levenshtein_ignore_case(rec.name, tempString);
+            tempInt := tiger.levenshtein_ignore_case(rec.name, tempString);
           END IF;
         END IF;
       END LOOP;
