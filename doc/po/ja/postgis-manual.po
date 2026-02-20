@@ -10,16 +10,16 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2026-02-12 06:47+0000\n"
-"Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"PO-Revision-Date: 2026-02-20 12:51+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.4.3\n"
+"X-Generator: Weblate 5.16\n"
 
 #. Tag: chapter
 #, no-c-format
@@ -1715,7 +1715,7 @@ msgid "(token number <code>0</code>): Unparsed building identifiers and types."
 msgstr "(トークン番号 <code>0</code>): パースされていない建物識別子と種別。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "(token number <code>14</code>): The <emphasis role=\"bold\">BOX</emphasis> "
 "in <code>BOX 3B</code>"
@@ -1724,7 +1724,7 @@ msgstr ""
 "role=\"bold\">BOX</emphasis>にあたります。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "(token number <code>15</code>): The <emphasis role=\"bold\">3B</emphasis> in "
 "<code>BOX 3B</code>"
@@ -1733,16 +1733,16 @@ msgstr ""
 "role=\"bold\">3B</emphasis>にあたります。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "(token number <code>8</code>): The <emphasis role=\"bold\">RR</emphasis> in "
 "<code>RR 7</code>"
 msgstr ""
-"(トークン番号 <code>8</code>): <code>RR 7</code>内の<emphasis "
-"role=\"bold\">RR</emphasis>にあたります。"
+"(トークン番号 <code>8</code>): <code>RR 7</code>内の<emphasis role=\"bold\">"
+"RR</emphasis>にあたります。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "(token number <code>16</code>): The <emphasis role=\"bold\">APT</emphasis> "
 "in <code>APT 3B</code>"
@@ -1751,7 +1751,7 @@ msgstr ""
 "role=\"bold\">APT</emphasis>にあたります。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "(token number <code>17</code>): The <emphasis role=\"bold\">3B</emphasis> in "
 "<code>APT 3B</code>"
@@ -2037,17 +2037,17 @@ msgid "Variant 1: Takes an address as a single line."
 msgstr "1番目の形式: 単一行で住所を取る形式です。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Variant 2: Takes an address as 2 parts. A <varname>micro</varname> "
 "consisting of standard first line of postal address e.g. <code>house_num "
 "street</code>, and a macro consisting of standard postal second line of an "
 "address e.g <code>city, state postal_code country</code>."
 msgstr ""
-"2番目の形式: 住所を二つの部分から取ります。<varname>micro</varname>は"
-"<code>house_num street</code>等のような、標準的な宛先書式の1行目です。"
-"<varname>macro</varname>は、<code>city, state postal_code country</code>等の"
-"ような、標準的な宛先書式の2行目です。"
+"2番目の形式: 住所を二つの部分から取ります。<varname>micro</varname>は<code>"
+"house_num street</code>等のような、標準的な宛先書式の1行目です。<varname>"
+"macro</varname>は、<code>city, state postal_code country</code>等のような、標"
+"準的な宛先書式の2行目です。"
 
 #. Tag: para
 #, no-c-format
@@ -7514,7 +7514,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Returns a set of element_id,element_type (topoelements) corresponding to "
 "primitive topology elements <xref linkend=\"topoelement\"/> (1: nodes, 2: "
@@ -9059,7 +9059,7 @@ msgstr ""
 "あるかも知れません。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Currently, the <command>make check</command> relies on the <code>PATH</code> "
 "and <code>PGPORT</code> environment variables when performing the checks - "
@@ -9069,12 +9069,12 @@ msgid ""
 "installation during configuration or be prepared to deal with the impending "
 "headaches."
 msgstr ""
-"現在のところ<command>make check</command>は、チェックを行う際に 環境変数"
-"<code>PATH</code>と<code>PGPORT</code>によっています。コンフィギュレーション"
-"パラメータ<command>--with-pgconfig</command>を使って特定したPostgreSQLでは"
-"<emphasis>ありません</emphasis>。PATHを編集して、コンフィギュレーションの際に"
-"検出したPostgreSQLと一致するようにして下さい。もしくは、間もなく襲ってくる頭"
-"痛の準備をしておいて下さい。"
+"現在のところ<command>make check</command>は、チェックを行う際に 環境変"
+"数<code>PATH</code>と<code>PGPORT</code>によっています。"
+"コンフィギュレーションパラメータ<command>--with-pgconfig</command>を使って特"
+"定したPostgreSQLでは<emphasis>ありません</emphasis>。PATHを編集して、"
+"コンフィギュレーションの際に検出したPostgreSQLと一致するようにして下さい。も"
+"しくは、間もなく襲ってくる頭痛の準備をしておいて下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -9753,7 +9753,7 @@ msgstr ""
 "要なだけダウンロードできます。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "After the states you desire have been loaded, make sure to run the: "
 "<programlisting>SELECT install_missing_indexes();</programlisting> as "
@@ -12365,17 +12365,17 @@ msgstr ""
 "ジオメトリの要素となる<varname>geometry_dump</varname>行の集合を返します。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "A set-returning function (SRF) that extracts the components of a geometry. "
 "It returns a set of <xref linkend=\"geometry_dump\"/> rows, each containing "
 "a geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
-"ジオメトリ要素を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。ジ"
-"オメトリ (<parameter>geom</parameter>フィールド)と整数配列 (<parameter>path</"
-"parameter>フィールド)からなる<xref linkend=\"geometry_dump\"/>行の集合を返し"
-"ます。"
+"ジオメトリ要素を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。"
+"ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 (<parameter>"
+"path</parameter>フィールド)からなる<xref linkend=\"geometry_dump\"/>行の集合"
+"を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -12446,7 +12446,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "A set-returning function (SRF) that extracts the coordinates (vertices) of a "
 "geometry. It returns a set of <xref linkend=\"geometry_dump\"/> rows, each "
@@ -12534,17 +12534,17 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "A set-returning function (SRF) that extracts the segments of a geometry. It "
 "returns a set of <xref linkend=\"geometry_dump\"/> rows, each containing a "
 "geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
-"ジオメトリの辺を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。ジ"
-"オメトリ (<parameter>geom</parameter>フィールド)と整数配列 (<parameter>path</"
-"parameter>フィールド)からなる<xref linkend=\"geometry_dump\"/>行の集合を返し"
-"ます。"
+"ジオメトリの辺を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。"
+"ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 (<parameter>"
+"path</parameter>フィールド)からなる<xref linkend=\"geometry_dump\"/>行の集合"
+"を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -12602,30 +12602,30 @@ msgstr ""
 "ポリゴンのリングごとの<varname>geometry_dump</varname>行の集合を返します。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "A set-returning function (SRF) that extracts the rings of a polygon. It "
 "returns a set of <xref linkend=\"geometry_dump\"/> rows, each containing a "
 "geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
-"ジオメトリ要素を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。ジ"
-"オメトリ (<parameter>geom</parameter>フィールド)と整数配列 (<parameter>path</"
-"parameter>フィールド)からなる<xref linkend=\"geometry_dump\"/>行の集合を返し"
-"ます。"
+"ジオメトリ要素を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。"
+"ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 (<parameter>"
+"path</parameter>フィールド)からなる<xref linkend=\"geometry_dump\"/>行の集合"
+"を返します。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <parameter>geom</parameter> field contains each ring as a POLYGON. The "
 "<parameter>path</parameter> field is an integer array of length 1 containing "
 "the polygon ring index. The exterior ring (shell) has index 0. The interior "
 "rings (holes) have indices of 1 and higher."
 msgstr ""
-"ジオメトリ要素を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。ジ"
-"オメトリ (<parameter>geom</parameter>フィールド)と整数配列 (<parameter>path</"
-"parameter>フィールド)からなる<xref linkend=\"geometry_dump\"/>行の集合を返し"
-"ます。"
+"ジオメトリ要素を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。"
+"ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 (<parameter>"
+"path</parameter>フィールド)からなる<xref linkend=\"geometry_dump\"/>行の集合"
+"を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -13214,17 +13214,16 @@ msgid "Tests if a LineString is closed and simple."
 msgstr "ラインストリングが閉じていてかつ単純であるかをテストします。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if this <varname>LINESTRING</varname> is "
 "both <xref linkend=\"ST_IsClosed\"/> (<code>ST_StartPoint(g) ~= "
 "ST_Endpoint(g)</code>) and <xref linkend=\"ST_IsSimple\"/> (does not self "
 "intersect)."
 msgstr ""
-"この<varname>LINESTRING</varname>が<xref linkend=\"ST_IsClosed\"/"
-">(<code>ST_StartPoint(g) ~= ST_Endpoint(g)</code>)かつ<xref "
-"linkend=\"ST_IsSimple\"/>(自己交差していない)場合には<varname>TRUE</varname>"
-"を返します。"
+"この<varname>LINESTRING</varname>が<xref linkend=\"ST_IsClosed\"/>(<code>"
+"ST_StartPoint(g) ~= ST_Endpoint(g)</code>)かつ<xref linkend=\"ST_IsSimple\"/>"
+"(自己交差していない)場合には<varname>TRUE</varname>を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -14665,14 +14664,14 @@ msgid "An input geometry is added to a cluster if it is either:"
 msgstr "入力ジオメトリは、次のいずれかの場合にはクラスタに追加されます:"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "A \"core\" geometry, that is within <varname>eps</varname> <link "
 "linkend=\"ST_Distance\">distance</link> of at least <varname>minpoints</"
 "varname> input geometries (including itself); or"
 msgstr ""
-"「核」ジオメトリという、入力ジオメトリ (自分を含む)のうち少なくとも"
-"<varname>minpoints</varname>個が<varname>eps</varname>で指定した<link "
+"「核」ジオメトリという、入力ジオメトリ (自分を含む)のうち少なくとも<varname>"
+"minpoints</varname>個が<varname>eps</varname>で指定した<link "
 "linkend=\"ST_Distance\">距離</link>の範囲内にあるもの。または"
 
 #. Tag: para
@@ -21062,7 +21061,7 @@ msgstr ""
 "ることを確実にします (<xref linkend=\"ST_SRID\"/>をご覧下さい)"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If a table <varname>oid</varname> is provided, this function tries to "
 "determine the srid, dimension, and geometry type of all geometry columns in "
@@ -21070,11 +21069,11 @@ msgid ""
 "row is inserted into the geometry_columns table, otherwise, the exception is "
 "caught and an error notice is raised describing the problem."
 msgstr ""
-"テーブルに<varname>oid</varname>がある場合には、この関数はテーブルのジオメト"
-"リカラム全てについて、SRIDと次元とジオメトリタイプを判定して、必要に応じて制"
-"約を追加しようとします。 成功した場合には、<varname>geometry_columns</"
-"varname>に適切な行が追加され、その他の場合には、例外が捕まえられ、問題を記述"
-"したエラーが通知されます。"
+"テーブルに<varname>oid</varname>がある場合には、この関数はテーブルの"
+"ジオメトリカラム全てについて、SRIDと次元とジオメトリタイプを判定して、必要に"
+"応じて制約を追加しようとします。 成功した場合には、<varname>"
+"geometry_columns</varname>に適切な行が追加され、その他の場合には、例外が捕ま"
+"えられ、問題を記述したエラーが通知されます。"
 
 #. Tag: para
 #, no-c-format
@@ -21090,7 +21089,7 @@ msgstr ""
 "varname>テーブルに挿入しますが、制約の追加はされません。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The parameterless variant is a simple wrapper for the parameterized variant "
 "that first truncates and repopulates the geometry_columns table for every "
@@ -21101,11 +21100,11 @@ msgid ""
 "returns the number of rows inserted into the <varname>geometry_columns</"
 "varname> table."
 msgstr ""
-"パラメタの無い形式は、<varname>geometry_columns</varname>の行を削除したうえ"
-"で、全ての空間テーブルと空間ビューについて再挿入し、適切な空間制約をテーブル"
-"に追加する、パラメタ付きの形式の単純なラッパです。パラメタが無い形式は、検出"
-"したジオメトリカラムの数の要約と<varname>geometry_columns</varname>に挿入され"
-"た行の数とを返します。パラメタ付きの形式は単純に<varname>geometry_columns</"
+"パラメタの無い形式は、<varname>geometry_columns</varname>の行を削除したうえで"
+"、全ての空間テーブルと空間ビューについて再挿入し、適切な空間制約をテーブルに"
+"追加する、パラメタ付きの形式の単純なラッパです。パラメタが無い形式は、検出し"
+"たジオメトリカラムの数の要約と<varname>geometry_columns</varname>に挿入された"
+"行の数とを返します。パラメタ付きの形式は単純に<varname>geometry_columns</"
 "varname>に挿入された行の数を返します。"
 
 #. Tag: para
@@ -31635,15 +31634,15 @@ msgstr ""
 "度浮動小数点数)とラスタ座標系のXとY (ともに整数)とを付けて返します。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Return record format: <parameter>geom</parameter> <xref linkend=\"geometry\"/"
 ">, <parameter>val</parameter> double precision, <parameter>x</parameter> "
 "integer, <parameter>y</parameter> integers."
 msgstr ""
 "返されるレコードの書式は、<xref linkend=\"geometry\"/>型の<parameter>geom</"
-"parameter>、倍精度浮動小数点数の<parameter>val</parameter>、整数の"
-"<parameter>x</parameter>、整数の<parameter>y</parameter>です。"
+"parameter>、倍精度浮動小数点数の<parameter>val</parameter>、整数の<parameter>"
+"x</parameter>、整数の<parameter>y</parameter>です。"
 
 #. Tag: para
 #, no-c-format
@@ -34887,7 +34886,7 @@ msgstr ""
 "Arguments\" (訳注: 日本語版は「可変長引数を取るSQL関数」)節を参照して下さい。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>callbackfunc</varname> is "
 "required, regardless of whether you choose to pass any arguments to the "
@@ -35593,7 +35592,7 @@ msgstr ""
 "<varname>args</varname>引数内に入ります。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>userfunction</varname> is "
 "required, regardless of whether you choose to pass any arguments to your "
@@ -35714,7 +35713,7 @@ msgstr ""
 "<varname>userargs</varname>引数内に入ります。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>tworastuserfunc</varname> "
 "is required, regardless of whether you choose to pass any arguments to your "
@@ -39851,7 +39850,7 @@ msgstr ""
 "二つの3次元ジオメトリが与えらえれた3次元距離内にあるかどうかをテストします。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Returns true if the 3D distance between two geometry values is no larger "
 "than distance <varname>distance_of_srid</varname>. The distance is specified "
@@ -39859,9 +39858,9 @@ msgid ""
 "function to make sense the source geometries must be in the same coordinate "
 "system (have the same SRID)."
 msgstr ""
-"二つのジオメトリ値の3次元距離が<varname>distance_of_srid</varname>以下なら"
-"<varname>TRUE</varname>を返します。距離の単位はジオメトリの空間参照系の単位で"
-"す。この関数から意味のある結果を得るには、引数に使うジオメトリを同じ空間系 "
+"二つのジオメトリ値の3次元距離が<varname>distance_of_srid</varname>以下な"
+"ら<varname>TRUE</varname>を返します。距離の単位はジオメトリの空間参照系の単位"
+"です。この関数から意味のある結果を得るには、引数に使うジオメトリを同じ空間系 "
 "(同じSRIDを持つ)にしなければなりません。"
 
 #. Tag: para
@@ -45255,7 +45254,7 @@ msgid "Geometry Data Type"
 msgstr "ジオメトリデータタイプ"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "PostGIS implements the OGC Simple Features model by defining a PostgreSQL "
 "data type called <varname>geometry</varname>. It represents all of the "
@@ -46085,7 +46084,7 @@ msgstr ""
 "</emphasis>です。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<varname>MULTIPOINT</varname>s are <emphasis>simple</emphasis> if no two "
 "coordinates (<varname>POINT</varname>s) are equal (have identical coordinate "
@@ -48002,7 +48001,7 @@ msgstr ""
 "の次元数の最小値となる演算子クラスを選択します。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <code>geography</code> datatype is supported for BRIN indexing. The "
 "syntax for building a BRIN index on a geography column is:"
@@ -48278,7 +48277,7 @@ msgstr ""
 "のクエリでは通常操作にすることを忘れないでください。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If <command>SET ENABLE_SEQSCAN TO OFF;</command> helps your query to run "
 "faster, your Postgres is likely not tuned for your hardware. If you find the "
@@ -48290,13 +48289,13 @@ msgid ""
 "planner more likely to use index scans."
 msgstr ""
 "<command>SET ENABLE_SEQSCAN TO OFF;</command>でクエリ速度が向上する場合には、"
-"PostgreSQLのハードウェア関連のチューンが行われていないのかも知れません。プラ"
-"ンナがシーケンシャル対インデックスのコストが誤っている場合には、"
-"<code>postgresql.conf</code>内にある<varname>RANDOM_PAGE_COST</varname>の値を"
-"変更してみて下さい。<command>SET RANDOM_PAGE_COST TO 1.1;</command>とします。"
-"<varname>RANDOM_PAGE_COST</varname>のデフォルト値は4.0です。1.1 (SSDの場合)ま"
-"たは2.0 (高速磁気ディスクの場合)を試してみて下さい。値を小さくするほど、プラ"
-"ンナがインデックススキャンをしやすくなります。"
+"PostgreSQLのハードウェア関連のチューンが行われていないのかも知れません。"
+"プランナがシーケンシャル対インデックスのコストが誤っている場合には、<code>"
+"postgresql.conf</code>内にある<varname>RANDOM_PAGE_COST</varname>の値を変更し"
+"てみて下さい。<command>SET RANDOM_PAGE_COST TO 1.1;</command>とします"
+"。<varname>RANDOM_PAGE_COST</varname>のデフォルト値は4.0です。1.1 (SSDの場合)"
+"または2.0 (高速磁気ディスクの場合)を試してみて下さい。値を小さくするほど、"
+"プランナがインデックススキャンをしやすくなります。"
 
 #. Tag: para
 #, no-c-format
