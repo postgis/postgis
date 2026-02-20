@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2024-12-17 12:47+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"PO-Revision-Date: 2026-02-20 12:51+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/de/>\n"
 "Language: de\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.4.3\n"
+"X-Generator: Weblate 5.16\n"
 
 #. Tag: chapter
 #, no-c-format
@@ -3315,7 +3315,7 @@ msgstr ""
 "sind, benötigt."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "This function just uses the various direction/state/suffix lookup tables "
 "preloaded with the tiger_geocoder and located in the <varname>tiger</"
@@ -3969,7 +3969,7 @@ msgstr ""
 "Geokodierers beeinflussen."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Sets value of specific setting stored in <varname>tiger.geocode_settings</"
 "varname> table. Settings allow you to toggle debugging of functions. Later "
@@ -9933,7 +9933,7 @@ msgstr ""
 "können sie laden wenn Sie diese benötigen."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "After the states you desire have been loaded, make sure to run the: "
 "<programlisting>SELECT install_missing_indexes();</programlisting> as "
@@ -24069,7 +24069,7 @@ msgstr ""
 "Geographie B ident sind."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <varname>&#61;</varname> operator returns <varname>TRUE</varname> if the "
 "coordinates and coordinate order geometry/geography A are the same as the "
@@ -24082,7 +24082,7 @@ msgstr ""
 "und die Reihenfolge der Koordinaten der Geometrie/Geographie A und der "
 "Geometrie/Geographie B ident sind. PostgreSQL verwendet die =, &lt;, und "
 "&gt; Operatoren um die interne Sortierung und den Vergleich von Geometrien "
-"durchzuführen (z.B.: in einer GROUP BY oder ORDER BY Klausel). "
+"durchzuführen (z.B.: in einer GROUP BY oder ORDER BY Klausel)."
 
 #. Tag: para
 #, no-c-format
@@ -34821,7 +34821,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Returns <xref linkend=\"summarystats\"/> consisting of count, sum, mean, "
 "stddev, min, max for a given raster band of a raster or raster coverage. If "
@@ -39762,7 +39762,7 @@ msgid "<para>Maximum number of open files per process</para>"
 msgstr "<para>Die maximale Anzahl geöffneter Dateien pro Prozess</para>"
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "<title>Maximum number of open files for the entire system</title>"
 msgstr ""
 "<para>Die maximale Anzahl geöffneter Dateien für das ganze System</para>"
@@ -50234,7 +50234,7 @@ msgid "Spatial Queries"
 msgstr "Räumliche Abfrage"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <emphasis>raison d'etre</emphasis> of spatial databases is to perform "
 "queries inside the database which would ordinarily require desktop GIS "
