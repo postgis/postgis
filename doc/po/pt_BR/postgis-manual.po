@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2025-12-09 16:47+0000\n"
-"Last-Translator: Rodrigo Smarzaro <smarzaro@gmail.com>\n"
+"PO-Revision-Date: 2026-02-20 12:51+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.4.3\n"
+"X-Generator: Weblate 5.16\n"
 
 #. Tag: chapter
 #, no-c-format
@@ -5872,9 +5872,9 @@ msgid "Performed by the GEOS module."
 msgstr "Desempenhado pelo módulo GEOS."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "These examples use edges we created in <xref linkend=\"AddEdge\"/>"
-msgstr "Estes exemplos utilizam limites que criamos em "
+msgstr "Estes exemplos utilizam limites que criamos em"
 
 #. Tag: para
 #, no-c-format
@@ -32206,7 +32206,7 @@ msgid "Description: Variants 3 and 4 (two raster)"
 msgstr "Descrição: Variantes 3 e 4 (dois rasters)"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Creates a new one band raster formed by applying a valid PostgreSQL "
 "algebraic operation to the two bands defined by the <varname>expression</"
@@ -32219,12 +32219,12 @@ msgid ""
 msgstr ""
 "Cria uma nova banda raster formada pela aplicação válida de uma operação "
 "algébrica PostgreSQL definida pela <varname>expression</varname> no raster "
-"de saída (<varname>rast</varname>). Se <varname>nband</varname>, "
-"<varname>band2</varname> não forem especificados, a banda 1 é assumida. O "
-"raster resultante será alinhado (escala, inclinação e cantos de pixel) na "
-"grade definida pelo primeiro raster. O raster resultante terá de ser "
-"definido pelo primeiro raster. O raster resultante terá a extensão definida "
-"pelo parâmetro <varname>extenttype</varname>."
+"de saída (<varname>rast</varname>). Se <varname>nband</varname>, <varname>"
+"band2</varname> não forem especificados, a banda 1 é assumida. O raster "
+"resultante será alinhado (escala, inclinação e cantos de pixel) na grade "
+"definida pelo primeiro raster. O raster resultante terá de ser definido pelo "
+"primeiro raster. O raster resultante terá a extensão definida pelo parâmetro "
+"<varname>extenttype</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -44942,10 +44942,10 @@ msgstr ""
 "derrubar estes e  substituí-los com índice de casco convexo. "
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Apply raster constraints using <xref linkend=\"RT_AddRasterConstraints\"/>"
-msgstr "Aplique restrições rasters usando "
+msgstr "Aplique restrições rasters usando"
 
 #. Tag: title
 #, no-c-format
