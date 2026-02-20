@@ -64,15 +64,11 @@ For apt-based systems you can run this command to install the below dependencies
 
     https://proj.org
 
-* GEOS (Required, Version 3.8 or higher)
+* GEOS (Required, Version 3.10 or higher)
   - 3.14+ for ST_CoverageClean, raster ST_IntersectionFractions
   - 3.12+ for ST_CoverageSimplify and ST_CoverageInvalidEdges
   - 3.11+ for improved ST_ConcaveHull, ST_lineMerge,
     and new functions ST_SimplifyPolygonHull, ST_TriangulatePolygon
-  - 3.10+ for ST_MakeValid enhancements
-  - 3.9+ is needed to take advantage of
-    fixed precision enhancements in overlay functions
-  - 3.7+ is needed just for the ST_FrechetDistance function
 
   The GEOS library provides support for exact topological tests such as
   ST_Touches(), ST_Contains(), ST_Disjoint() and spatial operations such as

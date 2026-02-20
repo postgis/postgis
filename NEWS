@@ -1,6 +1,8 @@
 PostGIS 3.7.0dev
 xxxx/xx/xx
 
+This version requires GEOS 3.10 or higher
+
 * Breaking Changes *
 
  - #5688, [topology] topology building functions now interpret tolerance 0
