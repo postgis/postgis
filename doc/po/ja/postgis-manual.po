@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2026-02-20 12:51+0000\n"
+"PO-Revision-Date: 2026-02-27 07:51+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.16\n"
+"X-Generator: Weblate 5.16.1\n"
 
 #. Tag: chapter
 #, no-c-format
@@ -12365,17 +12365,17 @@ msgstr ""
 "ジオメトリの要素となる<varname>geometry_dump</varname>行の集合を返します。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A set-returning function (SRF) that extracts the components of a geometry. "
 "It returns a set of <xref linkend=\"geometry_dump\"/> rows, each containing "
 "a geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
-"ジオメトリ要素を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。"
-"ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 (<parameter>"
-"path</parameter>フィールド)からなる<xref linkend=\"geometry_dump\"/>行の集合"
-"を返します。"
+"ジオメトリ要素を抽出する、集合を返す関数 (SRF=Set-Returning Function)です"
+"。<xref linkend=\"geometry_dump\"/>行の集合を返します。各要素はジオメトリ "
+"(<parameter>geom</parameter>フィールド)と整数配列 (<parameter>path</"
+"parameter>フィールド)からなります。"
 
 #. Tag: para
 #, no-c-format
@@ -12446,7 +12446,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A set-returning function (SRF) that extracts the coordinates (vertices) of a "
 "geometry. It returns a set of <xref linkend=\"geometry_dump\"/> rows, each "
@@ -12454,9 +12454,9 @@ msgid ""
 "integers (<parameter>path</parameter> field)."
 msgstr ""
 "ジオメトリの座標 (頂点)を抽出する、集合を返す関数 (SRF=Set-Returning "
-"Function)です。ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 "
-"(<parameter>path</parameter>フィールド)からなる<xref "
-"linkend=\"geometry_dump\"/>行の集合を返します。"
+"Function)です。<xref linkend=\"geometry_dump\"/>行の集合を返します。各要素は"
+"ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 (<parameter>"
+"path</parameter>フィールド)からなります。"
 
 #. Tag: para
 #, no-c-format
@@ -12534,17 +12534,17 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A set-returning function (SRF) that extracts the segments of a geometry. It "
 "returns a set of <xref linkend=\"geometry_dump\"/> rows, each containing a "
 "geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
-"ジオメトリの辺を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。"
-"ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 (<parameter>"
-"path</parameter>フィールド)からなる<xref linkend=\"geometry_dump\"/>行の集合"
-"を返します。"
+"ジオメトリの辺を抽出する、集合を返す関数 (SRF=Set-Returning Function)です"
+"。<xref linkend=\"geometry_dump\"/>行の集合を返します。各要素はジオメトリ "
+"(<parameter>geom</parameter>フィールド)と整数配列 (<parameter>path</"
+"parameter>フィールド)からなります。"
 
 #. Tag: para
 #, no-c-format
@@ -12602,30 +12602,30 @@ msgstr ""
 "ポリゴンのリングごとの<varname>geometry_dump</varname>行の集合を返します。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A set-returning function (SRF) that extracts the rings of a polygon. It "
 "returns a set of <xref linkend=\"geometry_dump\"/> rows, each containing a "
 "geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
-"ジオメトリ要素を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。"
-"ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 (<parameter>"
-"path</parameter>フィールド)からなる<xref linkend=\"geometry_dump\"/>行の集合"
-"を返します。"
+"ジオメトリ要素を抽出する、集合を返す関数 (SRF=Set-Returning Function)です"
+"。<xref linkend=\"geometry_dump\"/>行の集合を返します。各要素はジオメトリ "
+"(<parameter>geom</parameter>フィールド)と整数配列 (<parameter>path</"
+"parameter>フィールド)からなります。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <parameter>geom</parameter> field contains each ring as a POLYGON. The "
 "<parameter>path</parameter> field is an integer array of length 1 containing "
 "the polygon ring index. The exterior ring (shell) has index 0. The interior "
 "rings (holes) have indices of 1 and higher."
 msgstr ""
-"ジオメトリ要素を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。"
-"ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 (<parameter>"
-"path</parameter>フィールド)からなる<xref linkend=\"geometry_dump\"/>行の集合"
-"を返します。"
+"<parameter>geom</parameter>フィールドは、各々のリングをPOLYGONとして持ります"
+"。<parameter>path</parameter>フィールドはリングのインデックス番号を持つ配列長"
+"1の整数配列です。外側リング (外周)はインデックス番号が0番になります。内側"
+"リング (穴)は1以上になります。"
 
 #. Tag: para
 #, no-c-format
@@ -35894,7 +35894,7 @@ msgstr ""
 "バンドを8BUIバンドに変換する、等のために使います。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Creates a new raster formed by applying a reclassification operation defined "
 "by the <varname>reclassexpr</varname> on the input raster (<varname>rast</"
@@ -35903,8 +35903,9 @@ msgid ""
 "band 1 is assumed."
 msgstr ""
 "<varname>reclassexpr</varname>によって定義される入力ラスター (<varname>rast</"
-"varname>)の再分類処理を適用して新しいラスターを生成します。<varname>band</"
-"varname>を指定しない場合には、1番を仮定します。"
+"varname>)の再分類処理を適用して新しいラスターを生成します。再分類の数式に関す"
+"る説明は <xref linkend=\"reclassarg\"/>にあります。<varname>band</varname>を"
+"指定しない場合には、1番を仮定します。"
 
 #. Tag: para
 #, no-c-format
@@ -39850,7 +39851,7 @@ msgstr ""
 "二つの3次元ジオメトリが与えらえれた3次元距離内にあるかどうかをテストします。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns true if the 3D distance between two geometry values is no larger "
 "than distance <varname>distance_of_srid</varname>. The distance is specified "
@@ -39858,10 +39859,10 @@ msgid ""
 "function to make sense the source geometries must be in the same coordinate "
 "system (have the same SRID)."
 msgstr ""
-"二つのジオメトリ値の3次元距離が<varname>distance_of_srid</varname>以下な"
-"ら<varname>TRUE</varname>を返します。距離の単位はジオメトリの空間参照系の単位"
-"です。この関数から意味のある結果を得るには、引数に使うジオメトリを同じ空間系 "
-"(同じSRIDを持つ)にしなければなりません。"
+"二つのジオメトリ値の3次元距離が<varname>distance_of_srid</varname>以下なら"
+"TRUEを返します。距離の単位はジオメトリの空間参照系の単位です。この関数から意"
+"味のある結果を得るには、引数に使うジオメトリを同じ座標系 (同じSRIDを持つ)にし"
+"なければなりません。"
 
 #. Tag: para
 #, no-c-format
@@ -45254,7 +45255,7 @@ msgid "Geometry Data Type"
 msgstr "ジオメトリデータタイプ"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "PostGIS implements the OGC Simple Features model by defining a PostgreSQL "
 "data type called <varname>geometry</varname>. It represents all of the "
@@ -45263,11 +45264,12 @@ msgid ""
 "allows modelling spatial features as rows of tables defined with a column of "
 "type <varname>geometry</varname>."
 msgstr ""
-"PostGISは、<varname>geometry</varname>というPostgreSQIデータ型を定義して、"
+"PostGISは、<varname>geometry</varname>というPostgreSQLデータ型を定義して、"
 "OGC Simple Features model を実装しています。これで、内部タイプコード (<xref "
 "linkend=\"GeometryType\"/>と<xref linkend=\"ST_GeometryType\"/>参照)で全ての"
-"ジオメトリのサブタイプを表現します。これにより、カラム型で定義されたテーブル"
-"の行として、空間地物をモデリングすることが可能となります。"
+"ジオメトリのサブタイプを表現します。これにより、 <varname>geometry</varname>"
+"型のカラムを持つよう定義されたテーブルの行として、空間地物をモデリングするこ"
+"とが可能となります。"
 
 #. Tag: para
 #, no-c-format
@@ -48001,13 +48003,13 @@ msgstr ""
 "の次元数の最小値となる演算子クラスを選択します。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <code>geography</code> datatype is supported for BRIN indexing. The "
 "syntax for building a BRIN index on a geography column is:"
 msgstr ""
-"「ジオグラフィ」型もまたBRINインデックスに対応しています。BRINインデックスを"
-"「ジオグラフィ」カラムに構築するための文は次の通りです。"
+"<code>geography</code>型もBRINインデックスに対応しています。BRINインデックス"
+"をジオグラフィカラムに構築するための文は次の通りです:"
 
 #. Tag: para
 #, no-c-format
