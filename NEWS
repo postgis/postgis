@@ -41,6 +41,10 @@ This version requires GEOS 3.10 or higher
  - #5593, Docs: render manual images with GraphicsMagick without temporary files,
           enabling parallel builds, keeping ImageMagick fallbacks working, and
           documenting the generator workflow for contributors (Darafei Praliaskouski)
+ - [fuzzers] Centralize OSS-Fuzz build/dependency logic in PostGIS scripts,
+          prefer requested CXX over pg_config --cc for internal C++ checks, and
+          make fuzzer linking/runtime dependency packaging portable
+          (Darafei Praliaskouski)
  - GH-848, CG_AlphaShape now returns a MultiPolygon (Jean Felder)
 
 PostGIS 3.6.0
@@ -3061,5 +3065,3 @@ PostGIS 0.1
 - truely_inside()
 - rtree index support functions
 - gist index support functions
-
-

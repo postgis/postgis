@@ -1774,7 +1774,7 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
     AC_SUBST([WAGYU_LIB])
 
     dnl ============================================================
-    dnl We force  to use the same compiler as Postgresql
+    dnl Prefer user/toolchain CXX, falling back to PostgreSQL compiler when needed.
     dnl ============================================================
     CXX_SAVE="$CXX"
     CC_SAVE="$CC"
@@ -1784,7 +1784,13 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
     LDFLAGS_SAVE="$LDFLAGS"
     LIBS_SAVE="$LIBS"
 
-    WAGYU_CXX=`"$PG_CONFIG" --cc`
+    dnl Prefer the requested C++ toolchain when provided (for example by OSS-Fuzz),
+    dnl and only fall back to PostgreSQL's compiler when CXX is unset.
+    if test "x$CXX_SAVE" != "x"; then
+        WAGYU_CXX="$CXX_SAVE"
+    else
+        WAGYU_CXX=`"$PG_CONFIG" --cc`
+    fi
     CPPFLAGS="-x c++"
     CFLAGS=""
     LDFLAGS=""
@@ -1847,7 +1853,7 @@ FLATGEOBUF_LIB=libflatgeobuf.la
 AC_SUBST([FLATGEOBUF_LIB])
 
 dnl ============================================================
-dnl We force  to use the same compiler as Postgresql
+dnl Prefer user/toolchain CXX, falling back to PostgreSQL compiler when needed.
 dnl ============================================================
 CXX_SAVE="$CXX"
 CC_SAVE="$CC"
@@ -1857,7 +1863,11 @@ CPPFLAGS_SAVE="$CPPFLAGS"
 LDFLAGS_SAVE="$LDFLAGS"
 LIBS_SAVE="$LIBS"
 
-FLATGEOBUF_CXX=`"$PG_CONFIG" --cc`
+if test "x$CXX_SAVE" != "x"; then
+	FLATGEOBUF_CXX="$CXX_SAVE"
+else
+	FLATGEOBUF_CXX=`"$PG_CONFIG" --cc`
+fi
 CPPFLAGS="-x c++"
 CFLAGS=""
 LDFLAGS=""
