@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2026-03-04 01:51+0000\n"
+"PO-Revision-Date: 2026-03-04 11:51+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -7597,9 +7597,9 @@ msgid ""
 msgstr ""
 "GML3の書式でTopoGeometryのGML表現を返します。<varname>nsprefix_in</varname>が"
 "指定されていない場合には、<varname>gml</varname>が使われます。非修飾名前空間"
-"を得るにはnsprefixに空文字列を渡します。精度 (デフォルトは15)とoptions (デ"
-"フォルトは1)パラメタは、与えられた場合には、裏で呼んでいるST_AsGMLにそのまま"
-"渡します。"
+"を得るにはnsprefixに空文字列を渡します。精度 (デフォルトは15)とoptions "
+"(デフォルトは1)パラメーターは、与えられた場合には、裏で呼んでいるST_AsGMLにそ"
+"のまま渡します。"
 
 #. Tag: para
 #, no-c-format
@@ -7614,9 +7614,9 @@ msgid ""
 "be created automatically by adding a unique constraint to the fields. "
 "Example:"
 msgstr ""
-"<varname>visitedTable</varname>パラメタは、与えられた場合には、訪問したノード"
-"要素とエッジ要素のトラックを保持するために使われ、重複定義になるところで相互"
-"参照 (xlink:xref)を使います。テーブルは 整数カラムであ"
+"<varname>visitedTable</varname>パラメーターは、与えられた場合には、訪問した"
+"ノード要素とエッジ要素のトラックを保持するために使われ、重複定義になるところ"
+"で相互参照 (xlink:xref)を使います。テーブルは 整数カラムであ"
 "る'element_type'と'element_id'とを持つことを期待されます。この関数を呼び出し"
 "たユーザは、このテーブルへの読み込み権限と書き込み権限とが必要です。効率よく"
 "するには、 <varname>element_type</varname>と<varname>element_id</varname>に、"
@@ -7629,8 +7629,8 @@ msgid ""
 "The <varname>idprefix</varname> parameter, if given, will be prepended to "
 "Edge and Node tag identifiers."
 msgstr ""
-"<varname>idprefix</varname>パラメタは、指定された場合には、Edgeタグ識別子と"
-"Nodeタグ識別子の前に付きます。"
+"<varname>idprefix</varname>パラメーターは、指定された場合には、Edgeタグ識別子"
+"とNodeタグ識別子の前に付きます。"
 
 #. Tag: para
 #, no-c-format
@@ -7638,7 +7638,7 @@ msgid ""
 "The <varname>gmlver</varname> parameter, if given, will be passed to the "
 "underlying ST_AsGML. Defaults to 3."
 msgstr ""
-"<varname>gmlver</varname>パラメタは、指定された場合には、裏で呼んでいる"
+"<varname>gmlver</varname>パラメーターは、指定された場合には、裏で呼んでいる"
 "ST_AsGMLに渡されます。デフォルトは3です。"
 
 #. Tag: para
@@ -7684,9 +7684,9 @@ msgid ""
 "\"serial\" and an \"edge_id\" of type integer; the code will query the table "
 "for \"edge_id\" so it is recommended to add an index on that field."
 msgstr ""
-"このテーブルは、与えられた場合には、\"serial\"型の\"arc_id\"カラムと整数型の"
-"\"edge_id\"とを持つことが期待されます。関数はこのテーブルに\"edge_id\"を問い"
-"合わせるので、このカラムにインデクスを追加することが推奨されます。"
+"このテーブルは、与えられた場合には、\"serial\"型の\"arc_id\"カラムと整数型"
+"の\"edge_id\"とを持つことが期待されます。関数はこのテーブルに\"edge_id\"を問"
+"い合わせるので、このカラムにインデックスを追加することが推奨されます。"
 
 #. Tag: para
 #, no-c-format
@@ -10045,10 +10045,11 @@ msgid ""
 "integration and alignment with GEOS releases, alignment of PostGIS with "
 "PostgreSQL releases, loader/dumper, and Shapefile GUI loader."
 msgstr ""
-"PostGISプロジェクトの副創始者。総合的なバグフィクス、ジオグラフィ機能、ジオグ"
-"ラフィとジオメトリのインデックス機能 (2次元,、3次元、n次元インデクスとあらゆ"
-"る空間インデクス)、ジオメトリ内部構造、GEOS機能の統合とGEOSリリースとの調整、"
-"PostgreSQLのリリースとの調整、ローダ/ダンパ、シェープファイルGUIローダ。"
+"PostGISプロジェクトの副創始者。総合的なバグフィクス、ジオグラフィ機能、"
+"ジオグラフィとジオメトリのインデックス機能 (2次元,、3次元、n次元インデックス"
+"とあらゆる空間インデックス)、ジオメトリ内部構造、GEOS機能の統合とGEOSリリース"
+"との調整、PostgreSQLのリリースとの調整、ローダ/ダンパ、シェープファイルGUI"
+"ローダ。"
 
 #. Tag: term
 #, no-c-format
@@ -10266,8 +10267,8 @@ msgid ""
 "The original developer/Co-founder of PostGIS. Dave wrote the server side "
 "objects, index bindings, and many of the server side analytical functions."
 msgstr ""
-"PostGISのオリジナルの開発/副創始者。サーバサイドのオブジェクト、インデクスの"
-"バインディングや多数のサーバサイドの解析機能を記述。"
+"PostGISのオリジナルの開発/副創始者。サーバサイドのオブジェクト、インデックス"
+"のバインディングや多数のサーバサイドの解析機能を記述。"
 
 #. Tag: term
 #, no-c-format
@@ -11632,10 +11633,11 @@ msgid ""
 "PostGIS includes support for GiST-based R-Tree spatial indexes, and "
 "functions for analysis and processing of GIS objects."
 msgstr ""
-"PostGISは、オブジェクトRDBである<link xlink:href=\"https://www.postgresql."
-"org/\">PostgreSQL</link>の拡張で、GIS (地理情報システム)オブジェクトを格納す"
-"ることができます。PostGISは、GiSTベースのR木空間インデクスをサポートし、GISオ"
-"ブジェクトの解析および処理を行う機能を持ちます。"
+"PostGISは、オブジェクトRDBである<link xlink:href=\"https://"
+"www.postgresql.org/\">PostgreSQL</link>の拡張で、GIS (地理情報システム)"
+"オブジェクトを格納することができます。PostGISは、GiSTベースのR木空間"
+"インデックスをサポートし、GISオブジェクトの解析および処理を行う機能を持ちます"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -11835,7 +11837,7 @@ msgstr "&list_3d_functions;"
 msgid ""
 "The functions given below are PostGIS functions that do not throw away the Z-"
 "Index."
-msgstr "次に示す関数は、Zインデクスを放り出さないPostGIS関数です。"
+msgstr "次に示す関数は、Zインデックスを放り出さないPostGIS関数です。"
 
 #. Tag: title
 #, no-c-format
@@ -12856,8 +12858,8 @@ msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Previous versions "
 "implemented this as 0-based instead."
 msgstr ""
-"OGC仕様のため0.8.0版からインデクスを1始まりにしています。これより前の版では0"
-"始まりになっています。"
+"OGC仕様のため0.8.0版からインデックスを1始まりにしています。これより前の版では"
+"0始まりになっています。"
 
 #. Tag: para
 #, no-c-format
@@ -13568,7 +13570,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Index is 1-based."
-msgstr "インデクスは1始まりです。"
+msgstr "インデックスは1始まりです。"
 
 #. Tag: para
 #, no-c-format
@@ -16331,10 +16333,10 @@ msgid ""
 "narrower gaps will also be returned as invalid."
 msgstr ""
 "この条件では、周囲のポリゴンがエッジ一致になっている限りは、妥当なカバレッジ"
-"は穴 (ポリゴン間の隙間)を含むことができます。しかしながら、非常に小さい隙間"
-"は、望まれないものとされることがしばしばあります。<parameter>tolerance</"
-"parameter>パラメタが0でない距離で指定されている場合には、小さい隙間を形成する"
-"エッジば不正なものとして返されます。"
+"は穴 (ポリゴン間の隙間)を含むことができます。しかしながら、非常に小さい隙間は"
+"、望まれないものとされることがしばしばあります。<parameter>tolerance</"
+"parameter>パラメーターが0でない距離で指定されている場合には、小さい隙間を形成"
+"するエッジば不正なものとして返されます。"
 
 #. Tag: para
 #, no-c-format
@@ -16552,7 +16554,8 @@ msgid ""
 "parameter to false."
 msgstr ""
 "カバレッジの「内部の」エッジ (二つのポリゴンに共有されている)だけを単純化する"
-"には、<parameter>simplifyBoundary</parameter>パラメタをFALSEに設定します。"
+"には、<parameter>simplifyBoundary</parameter>パラメーターをFALSEに設定します"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -18110,10 +18113,10 @@ msgid ""
 "useful in triggers when trying to maintain relationship of joints when one "
 "vertex moves."
 msgstr ""
-"ラインストリングのN番目を与えられたポイントに置き換えます。インデクスは0はじ"
-"まりです。負のインデックス値を与えると末尾から数えます。-1は末尾のポイントを"
-"指します。これは、頂点が一つ動いた時に接続のリレーションシップを維持しようと"
-"する場合のトリガに特に便利です。"
+"ラインストリングのN番目を与えられたポイントに置き換えます。インデックスは0は"
+"じまりです。負のインデックス値を与えると末尾から数えます。-1は末尾のポイント"
+"を指します。これは、頂点が一つ動いた時に接続のリレーションシップを維持しよう"
+"とする場合のトリガに特に便利です。"
 
 #. Tag: para
 #, no-c-format
@@ -19615,8 +19618,8 @@ msgid ""
 "Creates a geometry instance from a Well-Known Binary geometry representation "
 "(WKB) and optional SRID."
 msgstr ""
-"Well-Knwon Binaryジオメトリ表現 (WKB)と任意パラメタのSRIDからジオメトリインス"
-"タンスを生成します。"
+"Well-Knwon Binaryジオメトリ表現 (WKB)と任意パラメーターのSRIDから"
+"ジオメトリインスタンスを生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -21104,8 +21107,8 @@ msgstr ""
 "テーブルと空間ビューについて再挿入し、適切な空間制約をテーブルに追加する、"
 "パラメーター付きの形式の単純なラッパーです。パラメーターが無い形式は、検出し"
 "たジオメトリーカラムの数の要約と<varname>geometry_columns</varname>に挿入され"
-"た行の数とを返します。パラメタ付きの形式は単純に<varname>geometry_columns</"
-"varname>に挿入された行の数を返します。"
+"た行の数とを返します。パラメーター付きの形式は単純に<varname>"
+"geometry_columns</varname>に挿入された行の数を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -32306,8 +32309,8 @@ msgid ""
 "be separated by white space. Accepts inputs in GDAL or ESRI format. Default "
 "is GDAL."
 msgstr ""
-"地理参照6パラメタを一度に設定します。数値は空白で区切ります。GDALまたはESRI書"
-"式の入力を受け付けます。デフォルトはGDALです。"
+"地理参照6パラメーターを一度に設定します。数値は空白で区切ります。GDALまたは"
+"ESRI書式の入力を受け付けます。デフォルトはGDALです。"
 
 #. Tag: para
 #, no-c-format
@@ -32316,8 +32319,9 @@ msgid ""
 "in 'GDAL' or 'ESRI' format. Default is GDAL. If 6 coordinates are not "
 "provided will return null."
 msgstr ""
-"地理参照6パラメタを一度に設定します。'GDAL'または'ESRI'書式の入力を受け付けま"
-"す。デフォルトはGDALです。6パラメタが与えられない場合には、NULLを返します。"
+"地理参照6パラメーターを一度に設定します。'GDAL'または'ESRI'書式の入力を受け付"
+"けます。デフォルトはGDALです。6パラメーターが与えられない場合には、NULLを返し"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -32418,8 +32422,8 @@ msgid ""
 "Sets the georeference X and Y skew (or rotation parameter). If only one is "
 "passed in, sets X and Y to the same value."
 msgstr ""
-"地理参照のスキュー (回転パラメタ)のX値とY値を設定します。一つだけ渡した場合に"
-"は、X値とY値は同じ値に設定されます。"
+"地理参照のスキュー (回転パラメーター)のX値とY値を設定します。一つだけ渡した場"
+"合には、X値とY値は同じ値に設定されます。"
 
 #. Tag: para
 #, no-c-format
@@ -32429,10 +32433,10 @@ msgid ""
 "href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for more "
 "details."
 msgstr ""
-"地理参照のスキュー (回転パラメタ)のX値とY値を設定します。一つだけ渡した場合に"
-"は、X値とY値は同じ値に設定されます。詳細については<link xlink:href=\"http://"
-"en.wikipedia.org/wiki/World_file\">World File</link> (英語版WikiPedia)をご覧"
-"下さい。"
+"地理参照のスキュー (回転パラメーター)のX値とY値を設定します。一つだけ渡した場"
+"合には、X値とY値は同じ値に設定されます。詳細については<link "
+"xlink:href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> (英"
+"語版WikiPedia)をご覧下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -32704,9 +32708,9 @@ msgid ""
 "spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. "
 "Default is NearestNeighbor."
 msgstr ""
-"キュー (回転パラメタ)だけを調整するリサンプリングを行います。新しいピクセル値"
-"のリサンプリングアルゴリズムとして最近傍補間 ('NearestNeighbor' (米式綴り"
-"方))、双線形補間 ('Bilinear')、3次補間 ('Cubic')、3次スプライン補間 "
+"キュー (回転パラメーター)だけを調整するリサンプリングを行います。新しい"
+"ピクセル値のリサンプリングアルゴリズムとして最近傍補間 ('NearestNeighbor' (米"
+"式綴り方))、双線形補間 ('Bilinear')、3次補間 ('Cubic')、3次スプライン補間 "
 "('CubicSpline')、ランチョス補間 ('Lanczos')を用います。デフォルトは最近傍補間"
 "です。"
 
@@ -32719,9 +32723,9 @@ msgid ""
 "default is NearestNeighbor which is the fastest but results in the worst "
 "interpolation."
 msgstr ""
-"スキュー (回転パラメタ)だけを調整するリサンプリングを行います。新しいピクセル"
-"値のリサンプリングアルゴリズムとして最近傍補間 ('NearestNeighbor' (米式綴り"
-"方))、双線形補間 ('Bilinear')、3次補間 ('Cubic')、3次スプライン補間 "
+"スキュー (回転パラメーター)だけを調整するリサンプリングを行います。新しい"
+"ピクセル値のリサンプリングアルゴリズムとして最近傍補間 ('NearestNeighbor' (米"
+"式綴り方))、双線形補間 ('Bilinear')、3次補間 ('Cubic')、3次スプライン補間 "
 "('CubicSpline')、ランチョス補間 ('Lanczos')を用います。デフォルトは最も早いで"
 "すが最も悪い内挿を行う最近傍補間です。"
 
@@ -32837,7 +32841,7 @@ msgid ""
 "Use <xref linkend=\"RT_ST_Resample\"/> if you need more control over the "
 "grid parameters."
 msgstr ""
-"グリッドパラメタより多くの制御が必要な場合には、<xref "
+"グリッドパラメーターより多くの制御が必要な場合には、<xref "
 "linkend=\"RT_ST_Resample\"/>を使います。"
 
 #. Tag: para
@@ -33895,10 +33899,10 @@ msgid ""
 msgstr ""
 "<varname>options</varname> JPEGのために定義するGDALオプションの文字列配列で"
 "す (<xref linkend=\"RT_ST_GDALDrivers\"/>のcreate_optionsを見てください)。"
-"JPEGの妥当なパラメタは <varname>PROGRESSIVE</varname>の'ON'または'OFF'と、"
-"<varname>QUALITY</varname>の0から100までの数 (デフォルトは75)です。詳細につい"
-"ては <link xlink:href=\"http://www.gdal.org/frmt_various.html\">GDAL Raster "
-"format options</link>をご覧下さい。"
+"JPEGの妥当なパラメーターは <varname>PROGRESSIVE</varname>の'ON'または'OFF'と"
+"、<varname>QUALITY</varname>の0から100までの数 (デフォルトは75)です。詳細につ"
+"いては <link xlink:href=\"http://www.gdal.org/frmt_various.html\">GDAL "
+"Raster format options</link>をご覧下さい。"
 
 #. Tag: title
 #, no-c-format
@@ -33980,11 +33984,11 @@ msgid ""
 msgstr ""
 "<varname>options</varname> PNGのために定義するGDALオプションの文字列配列です "
 "(<xref linkend=\"RT_ST_GDALDrivers\"/>のcreate_optionsを見てください)。PNGの"
-"妥当なパラメタはZLEVEL (圧縮に費やす時間の合計で、デフォルトは6)です。"
-"ARRAY['ZLEVEL=9']というようにします。この関数が二つの出力を行う必要があるた"
-"め、ワールドファイルはPNGでは許されません。詳細については<link xlink:"
-"href=\"http://www.gdal.org/frmt_various.html\">GDAL Raster format options</"
-"link>をご覧下さい。"
+"妥当なパラメーターはZLEVEL (圧縮に費やす時間の合計で、デフォルトは6)です。"
+"ARRAY['ZLEVEL=9']というようにします。この関数が二つの出力を行う必要があるため"
+"、ワールドファイルはPNGでは許されません。詳細については<link "
+"xlink:href=\"http://www.gdal.org/frmt_various.html\">GDAL Raster format "
+"options</link>をご覧下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -39994,8 +39998,8 @@ msgid ""
 "This function call includes a bounding box comparison that makes use of any "
 "indexes that are available on the geometries."
 msgstr ""
-"この関数の呼び出しによって、ジオメトリで使用可能なインデクスを使用したバウン"
-"ディングボックスの比較が自動的に行われます。"
+"この関数の呼び出しによって、ジオメトリで使用可能なインデックスを使用した"
+"バウンディングボックスの比較が自動的に行われます。"
 
 #. Tag: para
 #, no-c-format
@@ -42159,8 +42163,8 @@ msgid ""
 "If using more than one transformation, it is useful to have a functional "
 "index on the commonly used transformations to take advantage of index usage."
 msgstr ""
-"一つ以上の変換を行う場合は、インデクスの利点を得るために、使用する変換に関す"
-"る関数インデクスを持つと便利です。"
+"一つ以上の変換を行う場合は、インデックスの利点を得るために、使用する変換に関"
+"する関数インデックスを持つと便利です。"
 
 #. Tag: para
 #, no-c-format
@@ -42187,9 +42191,9 @@ msgid ""
 "that leaves out null geometries which will both conserve space and make your "
 "index smaller and more efficient."
 msgstr ""
-"部分関数インデクスを作る例です。全てのジオメトリが入っているとは確信できない"
-"テーブルのためには、スペースの節約とインデクスを小さく効率的にするために、"
-"NULLジオメトリを無視する部分インデクスを使うのが最善です。"
+"部分関数インデックスを作る例です。全てのジオメトリが入っているとは確信できな"
+"いテーブルのためには、スペースの節約とインデックスを小さく効率的にするために"
+"、NULLジオメトリを無視する部分インデックスを使うのが最善です。"
 
 #. Tag: para
 #, no-c-format
@@ -42763,7 +42767,7 @@ msgstr ""
 msgid ""
 "Enhanced: 2.0.0 additional parameters for specifying the origin of rotation "
 "were added."
-msgstr "Enhanced: 2.0.0 回転の原点を指定するパラメタを追加しました。"
+msgstr "Enhanced: 2.0.0 回転の原点を指定するパラメーターを追加しました。"
 
 #. Tag: para
 #, no-c-format
@@ -43052,13 +43056,13 @@ msgid ""
 "automatic conversion of a function argument to a type supported by the "
 "function."
 msgstr ""
-"データ型ごとに、型キャストのふるまいが記述されています。<link xlink:"
-"href=\"https://www.postgresql.jp/document/current/html/sql-expressions."
-"html#SQL-SYNTAX-TYPE-CASTS\">型キャスト</link>によって、あるデータ型の値が他"
-"のデータ型に変換されます。PostgreSQLでは、型を変換するために使われる関数に加"
-"えて、ユーザ定義型のキャストのふるまいの定義が可能です。キャストは<emphasis "
-"role=\"bold\">自動</emphasis>的なふるまいを持つことができ、それによって、関数"
-"の引数をその関数が対応する型に自動的に変換できます。"
+"データ型ごとに、型キャストのふるまいが記述されています。<link "
+"xlink:href=\"https://www.postgresql.jp/document/current/html/sql-"
+"expressions.html#SQL-SYNTAX-TYPE-CASTS\">型キャスト</link>によって、ある"
+"データ型の値が他のデータ型に変換されます。PostgreSQLでは、型を変換するために"
+"使われる関数に加えて、ユーザー定義型のキャストのふるまいの定義が可能です。"
+"キャストは<emphasis role=\"bold\">自動</emphasis>的なふるまいを持つことができ"
+"、それによって、関数の引数をその関数が対応する型に自動的に変換できます。"
 
 #. Tag: para
 #, no-c-format
@@ -45325,8 +45329,8 @@ msgid ""
 "indexes, and spatial operators to use them. See <xref linkend=\"build-"
 "indexes\"/> and <xref linkend=\"using-query-indexes\"/> for details."
 msgstr ""
-"ジオメトリのクエリを効率的にするため、PostGISでは様々な種類の空間インデクスを"
-"定義しています。詳細については<xref linkend=\"build-indexes\"/>と<xref "
+"ジオメトリのクエリを効率的にするため、PostGISでは様々な種類の空間インデックス"
+"を定義しています。詳細については<xref linkend=\"build-indexes\"/>と<xref "
 "linkend=\"using-query-indexes\"/>をご覧下さい。"
 
 #. Tag: title
@@ -46753,7 +46757,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "User-Defined Spatial Reference Systems"
-msgstr "ユーザ定義空間参照系"
+msgstr "ユーザー定義空間参照系"
 
 #. Tag: para
 #, no-c-format
@@ -47192,10 +47196,10 @@ msgid ""
 "for one-off non-scripted loading or if you are new to PostGIS. It can also "
 "be configured as a plugin to PgAdminIII."
 msgstr ""
-"グラフィカルユーザインタフェースを持つ<filename>shp2pgsql-gui</filename>もあ"
-"ります。コマンドラインローダのオプションのほとんどが使えます。これは、スクリ"
-"プト化されていない1回限りのロードの場合や、PostGIS初心者がロードする場合に、"
-"簡単に使用できます。PgAdminIIIのプラグインとすることもできます。"
+"グラフィカルユーザーインタフェースを持つ<filename>shp2pgsql-gui</filename>も"
+"あります。コマンドラインローダのオプションのほとんどが使えます。これは、"
+"スクリプト化されていない1回限りのロードの場合や、PostGIS初心者がロードする場"
+"合に、簡単に使用できます。PgAdminIIIのプラグインとすることもできます。"
 
 #. Tag: term
 #, no-c-format
@@ -47612,7 +47616,7 @@ msgstr "データベースに接続するためのパスワード。"
 #. Tag: para
 #, no-c-format
 msgid "The username to use when connecting to the database."
-msgstr "データベースに接続する際のユーザ名。"
+msgstr "データベースに接続する際のユーザー名。"
 
 #. Tag: para
 #, no-c-format
@@ -49246,8 +49250,9 @@ msgid ""
 "will be created in the default schema of the database or user you are "
 "connecting with."
 msgstr ""
-"対象テーブル名の一部としてスキーマを指定しない場合には、テーブルはデータベー"
-"スのデフォルトスキーマ内かユーザが接続しているスキーマ内に作られます。"
+"対象テーブル名の一部としてスキーマを指定しない場合には、テーブルは"
+"データベースのデフォルトスキーマ内かユーザーが接続しているスキーマ内に作られ"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -49376,7 +49381,7 @@ msgid ""
 "index, separate with comma (,). If unspecified, all bands of raster will be "
 "extracted."
 msgstr ""
-"ラスタから抽出するバンドのインデクス (1始まり)。1より多いバンドを抽出するに"
+"ラスタから抽出するバンドのインデックス (1始まり)。1より多いバンドを抽出するに"
 "は、コンマ(,)で区切ります。指定しない場合、全てのバンドが抽出されます。"
 
 #. Tag: para
@@ -49466,7 +49471,7 @@ msgstr "PostgreSQL識別子に引用符を付けます。"
 #. Tag: para
 #, no-c-format
 msgid "Create a GiST index on the raster column."
-msgstr "ラスタカラムにGiSTインデクスを生成します。"
+msgstr "ラスタカラムにGiSTインデックスを生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -49492,8 +49497,8 @@ msgid ""
 "also used."
 msgstr ""
 "生成されるテーブルのテーブルスペースを指定します。-Xフラグを併用しない場合に"
-"は、インデクス (主キーを含む)はデフォルトのテーブルスペースを使用することにご"
-"注意ください。"
+"は、インデックス (主キーを含む)はデフォルトのテーブルスペースを使用することに"
+"ご注意ください。"
 
 #. Tag: para
 #, no-c-format
@@ -49501,8 +49506,8 @@ msgid ""
 "Specify the tablespace for the table's new index. This applies to the "
 "primary key and the spatial index if the -I flag is used."
 msgstr ""
-"テーブルの新しいインデクスに使うテーブル空間を指定します。主キーに適用され、-"
-"Iフラグがある場合においては空間インデクスにも適用されます。"
+"テーブルの新しいインデックスに使うテーブル空間を指定します。主キーに適用され"
+"、-Iフラグがある場合においては空間インデックスにも適用されます。"
 
 #. Tag: para
 #, no-c-format
@@ -49602,8 +49607,8 @@ msgid ""
 "Once you are done populating your table initially, you'll want to create a "
 "spatial index on the raster column with something like:"
 msgstr ""
-"はじめにテーブルにデータを入れたら、ラスタカラムに空間インデクスを生成したく"
-"なるでしょう:"
+"はじめにテーブルにデータを入れたら、ラスタカラムに空間インデックスを生成した"
+"くなるでしょう:"
 
 #. Tag: para
 #, no-c-format
@@ -49622,8 +49627,8 @@ msgid ""
 "those and replace with convex hull based index."
 msgstr ""
 "2.0より前の PostGIS ラスタは、エンベロープを基本にして、凸包ではありませんで"
-"した。空間インデクスを適切に働かせるには、エンベロープを基本にしたインデクス"
-"を削除して、凸包を元にしたインデクスに置き換えます。"
+"した。空間インデックスを適切に働かせるには、エンベロープを基本にした"
+"インデックスを削除して、凸包を元にしたインデックスに置き換えます。"
 
 #. Tag: para
 #, no-c-format
@@ -49989,8 +49994,8 @@ msgid ""
 "<varname>spatial_index</varname> A boolean that is true if raster column has "
 "a spatial index."
 msgstr ""
-"<varname>spatial_index</varname> 空間インデクスを持っているかどうかを示す真偽"
-"値です。"
+"<varname>spatial_index</varname> 空間インデックスを持っているかどうかを示す真"
+"偽値です。"
 
 #. Tag: title
 #, no-c-format
@@ -50230,11 +50235,11 @@ msgid ""
 "specified projection using <xref linkend=\"RT_ST_Transform\"/>, and then "
 "outputs the results as a png using <xref linkend=\"RT_ST_AsPNG\"/>."
 msgstr ""
-"サンプルクエリでは、 指定したWGS84バウンディングボックスにインタセクトするタ"
-"イルを取って、 <xref linkend=\"RT_ST_Union\"/>でインタセクトしたタイルを結合"
-"して全てのバンドを返し、<xref linkend=\"RT_ST_Transform\"/>でユーザ指定投影法"
-"に変換し、<xref linkend=\"RT_ST_AsPNG\"/>を使ってPNGで結果を出力するためのラ"
-"スタ関数群全体をまとめる方法を示します。"
+"サンプルクエリでは、 指定したWGS84バウンディングボックスにインタセクトする"
+"タイルを取って、 <xref linkend=\"RT_ST_Union\"/>でインタセクトしたタイルを結"
+"合して全てのバンドを返し、<xref linkend=\"RT_ST_Transform\"/>でユーザー指定投"
+"影法に変換し、<xref linkend=\"RT_ST_AsPNG\"/>を使ってPNGで結果を出力するため"
+"のラスタ関数群全体をまとめる方法を示します。"
 
 #. Tag: para
 #, no-c-format
