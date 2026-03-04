@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2026-02-27 07:51+0000\n"
+"PO-Revision-Date: 2026-03-04 01:51+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -21061,7 +21061,7 @@ msgstr ""
 "ることを確実にします (<xref linkend=\"ST_SRID\"/>をご覧下さい)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If a table <varname>oid</varname> is provided, this function tries to "
 "determine the srid, dimension, and geometry type of all geometry columns in "
@@ -21071,9 +21071,9 @@ msgid ""
 msgstr ""
 "テーブルに<varname>oid</varname>がある場合には、この関数はテーブルの"
 "ジオメトリカラム全てについて、SRIDと次元とジオメトリタイプを判定して、必要に"
-"応じて制約を追加しようとします。 成功した場合には、<varname>"
-"geometry_columns</varname>に適切な行が追加され、その他の場合には、例外が捕ま"
-"えられ、問題を記述したエラーが通知されます。"
+"応じて制約を追加しようとします。 成功した場合には、geometry_columnsに適切な行"
+"が追加され、その他の場合には、例外が捕まえられ、問題を記述したエラーが通知さ"
+"れます。"
 
 #. Tag: para
 #, no-c-format
@@ -21089,7 +21089,7 @@ msgstr ""
 "varname>テーブルに挿入しますが、制約の追加はされません。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The parameterless variant is a simple wrapper for the parameterized variant "
 "that first truncates and repopulates the geometry_columns table for every "
@@ -21100,11 +21100,11 @@ msgid ""
 "returns the number of rows inserted into the <varname>geometry_columns</"
 "varname> table."
 msgstr ""
-"パラメタの無い形式は、<varname>geometry_columns</varname>の行を削除したうえで"
-"、全ての空間テーブルと空間ビューについて再挿入し、適切な空間制約をテーブルに"
-"追加する、パラメタ付きの形式の単純なラッパです。パラメタが無い形式は、検出し"
-"たジオメトリカラムの数の要約と<varname>geometry_columns</varname>に挿入された"
-"行の数とを返します。パラメタ付きの形式は単純に<varname>geometry_columns</"
+"パラメーターの無い形式は、geometry_columnsの行を削除したうえで、全ての空間"
+"テーブルと空間ビューについて再挿入し、適切な空間制約をテーブルに追加する、"
+"パラメーター付きの形式の単純なラッパーです。パラメーターが無い形式は、検出し"
+"たジオメトリーカラムの数の要約と<varname>geometry_columns</varname>に挿入され"
+"た行の数とを返します。パラメタ付きの形式は単純に<varname>geometry_columns</"
 "varname>に挿入された行の数を返します。"
 
 #. Tag: para
@@ -31634,15 +31634,15 @@ msgstr ""
 "度浮動小数点数)とラスタ座標系のXとY (ともに整数)とを付けて返します。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return record format: <parameter>geom</parameter> <xref linkend=\"geometry\"/"
 ">, <parameter>val</parameter> double precision, <parameter>x</parameter> "
 "integer, <parameter>y</parameter> integers."
 msgstr ""
-"返されるレコードの書式は、<xref linkend=\"geometry\"/>型の<parameter>geom</"
-"parameter>、倍精度浮動小数点数の<parameter>val</parameter>、整数の<parameter>"
-"x</parameter>、整数の<parameter>y</parameter>です。"
+"返されるレコードの書式は、<parameter>geom</parameter> (<xref "
+"linkend=\"geometry\"/>型)、<parameter>val</parameter> (倍精度浮動小数点数型)"
+"、<parameter>x</parameter> (整数型)、<parameter>y</parameter> (整数型)です。"
 
 #. Tag: para
 #, no-c-format
@@ -35592,14 +35592,14 @@ msgstr ""
 "<varname>args</varname>引数内に入ります。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>userfunction</varname> is "
 "required, regardless of whether you choose to pass any arguments to your "
 "user function for processing or not."
 msgstr ""
-"<varname>userfunction</varname>への<type>text[]</type>引数は、あらゆる引数を"
-"処理のためにユーザ関数に渡すかどうかの選択にかかわらず求められます。"
+"<type>text[]</type>引数は、ユーザ関数 <varname>userfunction</varname>に処理用"
+"の引数を渡すかどうかにかかわらず求められます。"
 
 #. Tag: para
 #, no-c-format
@@ -35713,14 +35713,14 @@ msgstr ""
 "<varname>userargs</varname>引数内に入ります。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>tworastuserfunc</varname> "
 "is required, regardless of whether you choose to pass any arguments to your "
 "user function for processing or not."
 msgstr ""
-"<varname>tworastuserfunc</varname>への<type>text[]</type>引数は、あらゆる引数"
-"を処理のためにユーザ関数に渡すかどうかの選択にかかわらず求められます。"
+"<type>text[]</type>引数は、ユーザ関数 <varname>tworastuserfunc</varname>に処"
+"理用の引数を渡すかどうかにかかわらず求められます。"
 
 #. Tag: para
 #, no-c-format
@@ -48279,7 +48279,7 @@ msgstr ""
 "のクエリでは通常操作にすることを忘れないでください。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If <command>SET ENABLE_SEQSCAN TO OFF;</command> helps your query to run "
 "faster, your Postgres is likely not tuned for your hardware. If you find the "
@@ -48292,11 +48292,11 @@ msgid ""
 msgstr ""
 "<command>SET ENABLE_SEQSCAN TO OFF;</command>でクエリ速度が向上する場合には、"
 "PostgreSQLのハードウェア関連のチューンが行われていないのかも知れません。"
-"プランナがシーケンシャル対インデックスのコストが誤っている場合には、<code>"
-"postgresql.conf</code>内にある<varname>RANDOM_PAGE_COST</varname>の値を変更し"
-"てみて下さい。<command>SET RANDOM_PAGE_COST TO 1.1;</command>とします"
-"。<varname>RANDOM_PAGE_COST</varname>のデフォルト値は4.0です。1.1 (SSDの場合)"
-"または2.0 (高速磁気ディスクの場合)を試してみて下さい。値を小さくするほど、"
+"プランナがシーケンシャル対インデックスのコストが誤っている場合には、<varname>"
+"RANDOM_PAGE_COST</varname> (<code>postgresql.conf</code>内にあります)の値を変"
+"更してみて下さい。または<command>SET RANDOM_PAGE_COST TO 1.1;</command>としま"
+"す。<varname>RANDOM_PAGE_COST</varname>のデフォルト値は4.0です。1.1 (SSDの場"
+"合)または2.0 (高速磁気ディスクの場合)を試してみて下さい。値を小さくするほど、"
 "プランナがインデックススキャンをしやすくなります。"
 
 #. Tag: para
