@@ -54,4 +54,14 @@ jobs:
         MSYSTEM= ./autogen.sh
         MSYSTEM= ./configure --with-pgconfig=/${{ matrix.sys }}/bin/pg_config --without-protobuf
         MSYSTEM= make
-        MSYSTEM= make check
+        MSYSTEM= PGIS_REG_TMPDIR=D:/a/_tmp/pgis_reg make check || {
+          status=$?
+          echo "::group::Regression diffs"
+          for f in /d/a/_tmp/pgis_reg/test_*_diff; do
+            [ -f "$f" ] || continue
+            echo "===== $f ====="
+            sed -n '1,400p' "$f"
+          done
+          echo "::endgroup::"
+          exit "$status"
+        }
