@@ -369,8 +369,7 @@ AddToStdPortalCache(StdPortalCache *STDCache, char *lextab, char *gaztab, char *
     DBG("STDCache->NextSlot=%d", STDCache->NextSlot);
 }
 
-
-/* pubilc api */
+/* public api */
 StdCache
 GetStdCache(FunctionCallInfo fcinfo) {
     return (StdCache) GetStdPortalCache(fcinfo);
