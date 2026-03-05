@@ -37,17 +37,29 @@
 
 #include <inttypes.h>
 
+static bool
+_lwt_describe_point(const LWPOINT *pt, char *buf, size_t bufsize)
+{
+	POINT2D p;
+
+	if (!pt || !pt->point || !pt->point->npoints)
+		return false;
+
+	getPoint2d_p(pt->point, 0, &p);
+	snprintf(buf, bufsize, " at POINT(%.15g %.15g)", p.x, p.y);
+	return true;
+}
+
 /*
- * Report a human readable location along with topology errors so callers can
- * narrow down robustness issues such as #5886/#5889 without further tracing.
- * Using a point-on-surface keeps the message compact while remaining
- * representative for any dimensionality of the offending intersection.
+ * Report a deterministic GEOS-derived location for topology errors.
+ * Normalize the intersection geometry so PointOnSurface is stable
+ * across operand-order and platform differences.
  */
 static bool
 _lwt_describe_intersection_point(const GEOSGeometry *g1, const GEOSGeometry *g2, char *buf, size_t bufsize)
 {
 	unsigned int n = 0;
-	POINT2D pt;
+	POINT2D p;
 	GEOSGeometry *isect;
 	GEOSGeometry *surface_pt;
 	const GEOSCoordSequence *seq;
@@ -55,6 +67,12 @@ _lwt_describe_intersection_point(const GEOSGeometry *g1, const GEOSGeometry *g2,
 	isect = GEOSIntersection(g1, g2);
 	if (!isect)
 		return false;
+
+	if (GEOSNormalize(isect) != 0)
+	{
+		GEOSGeom_destroy(isect);
+		return false;
+	}
 
 	surface_pt = GEOSPointOnSurface(isect);
 	GEOSGeom_destroy(isect);
@@ -74,26 +92,13 @@ _lwt_describe_intersection_point(const GEOSGeometry *g1, const GEOSGeometry *g2,
 		return false;
 	}
 
-	if (!GEOSCoordSeq_getX(seq, 0, &pt.x) || !GEOSCoordSeq_getY(seq, 0, &pt.y))
+	if (!GEOSCoordSeq_getX(seq, 0, &p.x) || !GEOSCoordSeq_getY(seq, 0, &p.y))
 	{
 		GEOSGeom_destroy(surface_pt);
 		return false;
 	}
 
 	GEOSGeom_destroy(surface_pt);
-	snprintf(buf, bufsize, " at POINT(%.15g %.15g)", pt.x, pt.y);
-	return true;
-}
-
-static bool
-_lwt_describe_point(const LWPOINT *pt, char *buf, size_t bufsize)
-{
-	POINT2D p;
-
-	if (!pt || !pt->point || !pt->point->npoints)
-		return false;
-
-	getPoint2d_p(pt->point, 0, &p);
 	snprintf(buf, bufsize, " at POINT(%.15g %.15g)", p.x, p.y);
 	return true;
 }
@@ -796,9 +801,10 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     match = GEOSRelatePatternMatch(relate, "1FFF*FFF2");
     if ( match ) {
 	    char locinfo[128] = "";
-	    const char *locsuffix = match == 2                                                                 ? ""
-				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo)) ? locinfo
-													       : "";
+	    const char *locsuffix = match == 2                                                        ? ""
+				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo))
+					? locinfo
+					: "";
 	    GEOSGeom_destroy(eegg);
 	    GEOSGeom_destroy(edgegg);
 	    _lwt_release_edges(edges, num_edges);
@@ -817,9 +823,10 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     match = GEOSRelatePatternMatch(relate, "1********");
     if ( match ) {
 	    char locinfo[128] = "";
-	    const char *locsuffix = match == 2                                                                 ? ""
-				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo)) ? locinfo
-													       : "";
+	    const char *locsuffix = match == 2                                                        ? ""
+				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo))
+					? locinfo
+					: "";
 	    GEOSGeom_destroy(eegg);
 	    GEOSGeom_destroy(edgegg);
 	    _lwt_release_edges(edges, num_edges);
@@ -838,9 +845,10 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     match = GEOSRelatePatternMatch(relate, "T********");
     if ( match ) {
 	    char locinfo[128] = "";
-	    const char *locsuffix = match == 2                                                                 ? ""
-				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo)) ? locinfo
-													       : "";
+	    const char *locsuffix = match == 2                                                        ? ""
+				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo))
+					? locinfo
+					: "";
 	    GEOSGeom_destroy(eegg);
 	    GEOSGeom_destroy(edgegg);
 	    _lwt_release_edges(edges, num_edges);
@@ -860,9 +868,10 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     match = GEOSRelatePatternMatch(relate, "*T*******");
     if ( match ) {
 	    char locinfo[128] = "";
-	    const char *locsuffix = match == 2                                                                 ? ""
-				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo)) ? locinfo
-													       : "";
+	    const char *locsuffix = match == 2                                                        ? ""
+				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo))
+					? locinfo
+					: "";
 	    GEOSGeom_destroy(eegg);
 	    GEOSGeom_destroy(edgegg);
 	    _lwt_release_edges(edges, num_edges);
@@ -883,9 +892,10 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     match = GEOSRelatePatternMatch(relate, "***T*****");
     if ( match ) {
 	    char locinfo[128] = "";
-	    const char *locsuffix = match == 2                                                                 ? ""
-				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo)) ? locinfo
-													       : "";
+	    const char *locsuffix = match == 2                                                        ? ""
+				    : _lwt_describe_intersection_point(edgegg, eegg, locinfo, sizeof(locinfo))
+					? locinfo
+					: "";
 	    GEOSGeom_destroy(eegg);
 	    GEOSGeom_destroy(edgegg);
 	    _lwt_release_edges(edges, num_edges);
