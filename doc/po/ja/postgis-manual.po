@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2026-03-04 11:51+0000\n"
+"PO-Revision-Date: 2026-03-05 01:51+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -1715,49 +1715,49 @@ msgid "(token number <code>0</code>): Unparsed building identifiers and types."
 msgstr "(トークン番号 <code>0</code>): パースされていない建物識別子と種別。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "(token number <code>14</code>): The <emphasis role=\"bold\">BOX</emphasis> "
 "in <code>BOX 3B</code>"
 msgstr ""
-"(トークン番号 <code>14</code>): <code>BOX 3B</code>内の <emphasis "
-"role=\"bold\">BOX</emphasis>にあたります。"
+"(トークン番号 <code>14</code>): <emphasis role=\"bold\">BOX</emphasis>となっ"
+"ている場合には、たとえば<code>BOX 3B</code>から得られます。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "(token number <code>15</code>): The <emphasis role=\"bold\">3B</emphasis> in "
 "<code>BOX 3B</code>"
 msgstr ""
-"(トークン番号 <code>15</code>): <code>BOX 3B</code>内の<emphasis "
-"role=\"bold\">3B</emphasis>にあたります。"
+"(トークン番号 <code>15</code>): <emphasis role=\"bold\">3B</emphasis>となって"
+"いる場合には、たとえば<code>BOX 3B</code>から得られます。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "(token number <code>8</code>): The <emphasis role=\"bold\">RR</emphasis> in "
 "<code>RR 7</code>"
 msgstr ""
-"(トークン番号 <code>8</code>): <code>RR 7</code>内の<emphasis role=\"bold\">"
-"RR</emphasis>にあたります。"
+"(トークン番号 <code>8</code>): <emphasis role=\"bold\">RR</emphasis>となって"
+"いる場合には、たとえば<code>RR 7</code>から得られます。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "(token number <code>16</code>): The <emphasis role=\"bold\">APT</emphasis> "
 "in <code>APT 3B</code>"
 msgstr ""
-"(トークン番号 <code>16</code>): <code>APT 3B</code>内の<emphasis "
-"role=\"bold\">APT</emphasis>にあたります。"
+"(トークン番号 <code>16</code>): <emphasis role=\"bold\">APT</emphasis>となっ"
+"ている場合には、たとえば<code>APT 3B</code>から得られます。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "(token number <code>17</code>): The <emphasis role=\"bold\">3B</emphasis> in "
 "<code>APT 3B</code>"
 msgstr ""
-"(トークン番号<code>17</code>): <code>APT 3B</code>内の<emphasis "
-"role=\"bold\">3B</emphasis>にあたります。"
+"(トークン番号<code>17</code>): <emphasis role=\"bold\">3B</emphasis>となって"
+"いる場合には、たとえば<code>APT 3B</code>から得られます。"
 
 #. Tag: para
 #, no-c-format
@@ -2037,7 +2037,7 @@ msgid "Variant 1: Takes an address as a single line."
 msgstr "1番目の形式: 単一行で住所を取る形式です。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Variant 2: Takes an address as 2 parts. A <varname>micro</varname> "
 "consisting of standard first line of postal address e.g. <code>house_num "
@@ -2045,9 +2045,9 @@ msgid ""
 "address e.g <code>city, state postal_code country</code>."
 msgstr ""
 "2番目の形式: 住所を二つの部分から取ります。<varname>micro</varname>は<code>"
-"house_num street</code>等のような、標準的な宛先書式の1行目です。<varname>"
-"macro</varname>は、<code>city, state postal_code country</code>等のような、標"
-"準的な宛先書式の2行目です。"
+"house_num street</code>等のような、標準的な宛先書式の1行目です。macroは"
+"、<code>city, state postal_code country</code>等のような、標準的な宛先書式の2"
+"行目です。"
 
 #. Tag: para
 #, no-c-format
@@ -9753,15 +9753,15 @@ msgstr ""
 "要なだけダウンロードできます。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "After the states you desire have been loaded, make sure to run the: "
 "<programlisting>SELECT install_missing_indexes();</programlisting> as "
 "described in <xref linkend=\"Install_Missing_Indexes\"/>."
 msgstr ""
-"求める州データをロードした後は、<xref linkend=\"Install_Missing_Indexes\"/>に"
-"示すように、<programlisting>SELECT install_missing_indexes();</"
-"programlisting>を実行するようにして下さい。"
+"求める州データをロードした後は<programlisting>SELECT install_missing_indexes"
+"();</programlisting>を実行するようにして下さい。<xref "
+"linkend=\"Install_Missing_Indexes\"/>に記載があります。"
 
 #. Tag: para
 #, no-c-format
