@@ -524,7 +524,6 @@ print "  GDAL: $gdalver\n" if $gdalver;
 # allow hook scripts to perform arbitrary reports via output of INFO strings
 system("grep INFO $REGRESS_LOG | sed 's/INFO://'");
 
-
 ##################################################################
 # Run the tests
 ##################################################################

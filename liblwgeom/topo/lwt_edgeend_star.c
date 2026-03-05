@@ -135,6 +135,14 @@ lwt_edgeEnd_compare(const void *i1, const void *i2)
 		ret = -1;
 	else if ( ee1->azimuth > ee2->azimuth )
 		ret = 1;
+	else if (ee1->edge->edge_id < ee2->edge->edge_id)
+		ret = -1;
+	else if (ee1->edge->edge_id > ee2->edge->edge_id)
+		ret = 1;
+	else if (ee1->outgoing < ee2->outgoing)
+		ret = -1;
+	else if (ee1->outgoing > ee2->outgoing)
+		ret = 1;
 	else
 		ret = 0;
 

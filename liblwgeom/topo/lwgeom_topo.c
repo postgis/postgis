@@ -5193,22 +5193,48 @@ _lwt_minTolerance( LWGEOM *g )
 #define _LWT_MINTOLERANCE( topo, geom ) ( \
   topo->precision ?  topo->precision : _lwt_minTolerance(geom) )
 
-typedef struct scored_pointer_t {
-  void *ptr;
-  double score;
-} scored_pointer;
+typedef struct scored_node_t {
+	LWT_ISO_NODE *node;
+	double score;
+} scored_node;
 
 static int
-compare_scored_pointer(const void *si1, const void *si2)
+compare_scored_node(const void *si1, const void *si2)
 {
-  double a = ((scored_pointer *)si1)->score;
-  double b = ((scored_pointer *)si2)->score;
-  if ( a < b )
-    return -1;
-  else if ( a > b )
-    return 1;
-  else
-    return 0;
+	const scored_node *a = si1;
+	const scored_node *b = si2;
+	if (a->score < b->score)
+		return -1;
+	else if (a->score > b->score)
+		return 1;
+	else if (a->node->node_id < b->node->node_id)
+		return -1;
+	else if (a->node->node_id > b->node->node_id)
+		return 1;
+	else
+		return 0;
+}
+
+typedef struct scored_edge_t {
+	LWT_ISO_EDGE *edge;
+	double score;
+} scored_edge;
+
+static int
+compare_scored_edge(const void *si1, const void *si2)
+{
+	const scored_edge *a = si1;
+	const scored_edge *b = si2;
+	if (a->score < b->score)
+		return -1;
+	else if (a->score > b->score)
+		return 1;
+	else if (a->edge->edge_id < b->edge->edge_id)
+		return -1;
+	else if (a->edge->edge_id > b->edge->edge_id)
+		return 1;
+	else
+		return 0;
 }
 
 /* Return identifier of an equal edge, 0 if none or -1 on error
@@ -6646,7 +6672,7 @@ static LWT_ELEMID
 _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY* topo, LWT_ISO_EDGE *edges, uint64_t num, LWPOINT *point, double tol, int *moved)
 {
   uint64_t i, j;
-  scored_pointer *sorted = lwalloc(sizeof(scored_pointer)*num);
+  scored_edge *sorted = lwalloc(sizeof(scored_edge) * num);
   LWT_ISO_EDGE *edges2 = NULL;
   LWT_ISO_NODE node;
   node.node_id = 0; /* unneeded, but hushes a compiler warning */
@@ -6663,7 +6689,7 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY* topo, LWT_ISO_EDGE *edges, uint64_t nu
     dist = lwgeom_mindistance2d(lwline_as_lwgeom(edges[i].geom), lwpoint_as_lwgeom(point));
     LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " distance: %.15g", e->edge_id, dist);
     if ( dist >= tol ) continue;
-    sorted[j].ptr = e;
+    sorted[j].edge = e;
     sorted[j++].score = dist;
   }
   if ( ! j )
@@ -6673,18 +6699,18 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY* topo, LWT_ISO_EDGE *edges, uint64_t nu
   }
 
   num = j;
-  qsort(sorted, num, sizeof(scored_pointer), compare_scored_pointer);
+  qsort(sorted, num, sizeof(scored_edge), compare_scored_edge);
   edges2 = lwalloc(sizeof(LWT_ISO_EDGE)*num);
   for (j=0, i=0; i<num; ++i)
   {
     if ( sorted[i].score == sorted[0].score )
     {
-      edges2[j++] = *((LWT_ISO_EDGE*)sorted[i].ptr);
+	    edges2[j++] = *sorted[i].edge;
     }
     else
     {
-      edges2[j++] = *((LWT_ISO_EDGE*)sorted[i].ptr);
-      //lwline_free(((LWT_ISO_EDGE*)sorted[i].ptr)->geom);
+	    edges2[j++] = *sorted[i].edge;
+	    // lwline_free(sorted[i].edge->geom);
     }
   }
   num = j;
@@ -6890,7 +6916,7 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
   LWT_ISO_NODE *nodes, *nodes2;
   LWT_ISO_EDGE *edges;
   LWGEOM *pt = lwpoint_as_lwgeom(point);
-  scored_pointer *sorted;
+  scored_node *sorted;
   int flds;
   LWT_ELEMID id = 0;
 
@@ -6921,20 +6947,20 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
     /* Order by distance if there are more than a single return */
     if ( num > 1 )
     {{
-      sorted = lwalloc(sizeof(scored_pointer)*num);
-      for (i=0; i<num; ++i)
-      {
-        sorted[i].ptr = nodes+i;
-        sorted[i].score = lwgeom_mindistance2d(lwpoint_as_lwgeom(nodes[i].geom), pt);
-        LWDEBUGF(1, "Node %" LWTFMT_ELEMID " distance: %.15g",
-          ((LWT_ISO_NODE*)(sorted[i].ptr))->node_id, sorted[i].score);
-      }
-      qsort(sorted, num, sizeof(scored_pointer), compare_scored_pointer);
-      nodes2 = lwalloc(sizeof(LWT_ISO_NODE)*num);
-      for (i=0; i<num; ++i)
-      {
-        nodes2[i] = *((LWT_ISO_NODE*)sorted[i].ptr);
-      }
+		    sorted = lwalloc(sizeof(scored_node) * num);
+		    for (i = 0; i < num; ++i)
+		    {
+			    sorted[i].node = nodes + i;
+			    sorted[i].score = lwgeom_mindistance2d(lwpoint_as_lwgeom(nodes[i].geom), pt);
+			    LWDEBUGF(
+				1, "Node %" LWTFMT_ELEMID " distance: %.15g", sorted[i].node->node_id, sorted[i].score);
+		    }
+		    qsort(sorted, num, sizeof(scored_node), compare_scored_node);
+		    nodes2 = lwalloc(sizeof(LWT_ISO_NODE) * num);
+		    for (i = 0; i < num; ++i)
+		    {
+			    nodes2[i] = *sorted[i].node;
+		    }
       lwfree(sorted);
       lwfree(nodes);
       nodes = nodes2;
