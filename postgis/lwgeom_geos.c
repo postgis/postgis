@@ -741,17 +741,6 @@ Datum ST_Union(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/* This is retained for backward ABI compatibility
- * with PostGIS < 3.1.0 */
-PG_FUNCTION_INFO_V1(symdifference);
-Datum symdifference(PG_FUNCTION_ARGS)
-{
-  PG_RETURN_DATUM(DirectFunctionCall2(
-     ST_SymDifference,
-     PG_GETARG_DATUM(0), PG_GETARG_DATUM(1)
-  ));
-}
-
 /**
  *  @example symdifference {@link #symdifference} - SELECT ST_SymDifference(
  *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
