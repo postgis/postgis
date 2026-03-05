@@ -1572,9 +1572,8 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		srs = NULL;
 
 	/* determine number of bands */
-	/* MIN macro is from GDAL's cpl_port.h */
-	num_bands = MIN(pixtypes_len, values_len);
-	num_bands = MIN(num_bands, nodatavals_len);
+	num_bands = Min(pixtypes_len, values_len);
+	num_bands = Min(num_bands, nodatavals_len);
 	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: pixtypes_len = %d", pixtypes_len);
 	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: values_len = %d", values_len);
 	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: nodatavals_len = %d", nodatavals_len);

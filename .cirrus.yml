@@ -50,7 +50,29 @@ task:
       ccache -s
   test_script:
     - |
-      gmake ${MAKEJOBS} check RUNTESTFLAGS="-v --extension --dumprestore" || { service postgresql onestop; exit 1; }
+      show_regression_diffs() {
+        local tmpdir="${PGIS_REG_TMPDIR:-/tmp/pgis_reg}"
+        local found=0
+        for f in "${tmpdir}"/*_diff; do
+          [ -f "${f}" ] || continue
+          if [ "${found}" -eq 0 ]; then
+            echo "---- BEGIN REGRESSION DIFFS (${tmpdir}) ----"
+          fi
+          found=1
+          echo "---- ${f} ----"
+          cat "${f}"
+        done
+        if [ "${found}" -eq 0 ]; then
+          echo "No regression diff files found in ${tmpdir}"
+        else
+          echo "---- END REGRESSION DIFFS ----"
+        fi
+      }
+      gmake ${MAKEJOBS} check RUNTESTFLAGS="-v --extension --dumprestore" || {
+        show_regression_diffs
+        service postgresql onestop
+        exit 1
+      }
       service postgresql onestop
   freebsd_instance:
     cpu: ${NCPU}
@@ -85,6 +107,25 @@ task:
 
   test_script:
     - |
+      show_regression_diffs() {
+        local tmpdir="${PGIS_REG_TMPDIR:-/tmp/pgis_reg}"
+        local found=0
+        for f in "${tmpdir}"/*_diff; do
+          [ -f "${f}" ] || continue
+          if [ "${found}" -eq 0 ]; then
+            echo "---- BEGIN REGRESSION DIFFS (${tmpdir}) ----"
+          fi
+          found=1
+          echo "---- ${f} ----"
+          cat "${f}"
+        done
+        if [ "${found}" -eq 0 ]; then
+          echo "No regression diff files found in ${tmpdir}"
+        else
+          echo "---- END REGRESSION DIFFS ----"
+        fi
+      }
+
       export PGCONFIG="${HOMEBREW_PREFIX}/opt/postgresql@${PG}/bin/pg_config"
       export CFLAGS="-I${HOMEBREW_PREFIX}/opt/gettext/include \
                      -I${HOMEBREW_PREFIX}/opt/postgresql@${PG}/include \
@@ -105,7 +146,11 @@ task:
 
       brew services start postgresql@${PG}
       make -j$(sysctl -n hw.logicalcpu) || { brew services stop postgresql@${PG}; exit 1; }
-      make -j$(sysctl -n hw.logicalcpu) check || { brew services stop postgresql@${PG}; exit 1; }
+      make -j$(sysctl -n hw.logicalcpu) check || {
+        show_regression_diffs
+        brew services stop postgresql@${PG}
+        exit 1
+      }
       brew services stop postgresql@${PG}
 
   macos_cache:
