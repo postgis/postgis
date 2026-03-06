@@ -48,9 +48,14 @@ struct STRTree
 	uint32_t num_geoms;
 };
 
-static struct STRTree make_strtree(void** geoms, uint32_t num_geoms, char is_lwgeom);
+static struct STRTree make_strtree(void **geoms, uint32_t num_geoms, uint8_t is_lwgeom);
 static void destroy_strtree(struct STRTree * tree);
-static int combine_geometries(UNIONFIND* uf, void** geoms, uint32_t num_geoms, void*** clustersGeoms, uint32_t* num_clusters, char is_lwgeom);
+static int combine_geometries(UNIONFIND *uf,
+			      void **geoms,
+			      uint32_t num_geoms,
+			      void ***clustersGeoms,
+			      uint32_t *num_clusters,
+			      uint8_t is_lwgeom);
 
 /* Make a minimal GEOSGeometry* whose Envelope covers the same 2D extent as
  * the supplied GBOX.  This is faster and uses less memory than building a
@@ -77,7 +82,7 @@ geos_envelope_surrogate(const LWGEOM* g)
 /** Make a GEOSSTRtree that stores a pointer to a variable containing
  *  the array index of the input geoms */
 static struct STRTree
-make_strtree(void** geoms, uint32_t num_geoms, char is_lwgeom)
+make_strtree(void **geoms, uint32_t num_geoms, uint8_t is_lwgeom)
 {
 	struct STRTree tree;
 	tree.envelopes = 0;
@@ -385,7 +390,7 @@ dbscan_update_context(GEOSSTRtree* tree, struct QueryContext* cxt, LWGEOM** geom
  * Applicable to DBSCAN with minpoints > 1.
  */
 static void
-union_if_available(UNIONFIND* uf, uint32_t p, uint32_t q, char* is_in_core, char* in_a_cluster)
+union_if_available(UNIONFIND *uf, uint32_t p, uint32_t q, uint8_t *is_in_core, uint8_t *in_a_cluster)
 {
 	if (in_a_cluster[q])
 	{
@@ -411,7 +416,7 @@ union_if_available(UNIONFIND* uf, uint32_t p, uint32_t q, char* is_in_core, char
  * to avoid some distance computations altogether.
  */
 static int
-union_dbscan_minpoints_1(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, char** in_a_cluster_ret)
+union_dbscan_minpoints_1(LWGEOM **geoms, uint32_t num_geoms, UNIONFIND *uf, double eps, uint8_t **in_a_cluster_ret)
 {
 	uint32_t p, i;
 	struct STRTree tree;
@@ -425,7 +430,7 @@ union_dbscan_minpoints_1(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, doub
 
 	if (in_a_cluster_ret)
 	{
-		char* in_a_cluster = lwalloc(num_geoms * sizeof(char));
+		uint8_t *in_a_cluster = lwalloc(num_geoms * sizeof(uint8_t));
 		for (i = 0; i < num_geoms; i++)
 			in_a_cluster[i] = LW_TRUE;
 		*in_a_cluster_ret = in_a_cluster;
@@ -481,7 +486,12 @@ union_dbscan_minpoints_1(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, doub
 }
 
 static int
-union_dbscan_general(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint32_t min_points, char** in_a_cluster_ret)
+union_dbscan_general(LWGEOM **geoms,
+		     uint32_t num_geoms,
+		     UNIONFIND *uf,
+		     double eps,
+		     uint32_t min_points,
+		     uint8_t **in_a_cluster_ret)
 {
 	uint32_t p, i;
 	struct STRTree tree;
@@ -493,11 +503,11 @@ union_dbscan_general(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double e
 	};
 	int success = LW_SUCCESS;
 	uint32_t* neighbors;
-	char* in_a_cluster;
-	char* is_in_core;
+	uint8_t *in_a_cluster;
+	uint8_t *is_in_core;
 
-	in_a_cluster = lwalloc(num_geoms * sizeof(char));
-	memset(in_a_cluster, 0, num_geoms * sizeof(char));
+	in_a_cluster = lwalloc(num_geoms * sizeof(uint8_t));
+	memset(in_a_cluster, 0, num_geoms * sizeof(uint8_t));
 
 	if (in_a_cluster_ret)
 		*in_a_cluster_ret = in_a_cluster;
@@ -517,8 +527,8 @@ union_dbscan_general(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double e
 		return LW_FAILURE;
 	}
 
-	is_in_core = lwalloc(num_geoms * sizeof(char));
-	memset(is_in_core, 0, num_geoms * sizeof(char));
+	is_in_core = lwalloc(num_geoms * sizeof(uint8_t));
+	memset(is_in_core, 0, num_geoms * sizeof(uint8_t));
 	neighbors = lwalloc(min_points * sizeof(uint32_t));
 
 	for (p = 0; p < num_geoms; p++)
@@ -619,7 +629,13 @@ union_dbscan_general(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double e
 	return success;
 }
 
-int union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint32_t min_points, char** in_a_cluster_ret)
+int
+union_dbscan(LWGEOM **geoms,
+	     uint32_t num_geoms,
+	     UNIONFIND *uf,
+	     double eps,
+	     uint32_t min_points,
+	     uint8_t **in_a_cluster_ret)
 {
 	if (min_points <= 1)
 		return union_dbscan_minpoints_1(geoms, num_geoms, uf, eps, in_a_cluster_ret);
@@ -651,7 +667,12 @@ cluster_within_distance(LWGEOM** geoms, uint32_t num_geoms, double tolerance, LW
  *  GeometryCollections.  Supplied geometry array may be of either LWGEOM* or GEOSGeometry*; is_lwgeom is used to
  *  identify which. Caller is responsible for freeing input geometry array but not the items contained within it. */
 static int
-combine_geometries(UNIONFIND* uf, void** geoms, uint32_t num_geoms, void*** clusterGeoms, uint32_t* num_clusters, char is_lwgeom)
+combine_geometries(UNIONFIND *uf,
+		   void **geoms,
+		   uint32_t num_geoms,
+		   void ***clusterGeoms,
+		   uint32_t *num_clusters,
+		   uint8_t is_lwgeom)
 {
 	size_t i, j, k;
 

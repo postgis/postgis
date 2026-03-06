@@ -46,7 +46,12 @@ int cluster_intersecting(GEOSGeometry **geoms, uint32_t num_geoms, GEOSGeometry 
 int union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf);
 int union_related_pairs(GEOSGeometry** geoms, uint32_t num_geoms, const char* im, UNIONFIND* uf);
 int cluster_within_distance(LWGEOM **geoms, uint32_t num_geoms, double tolerance, LWGEOM ***clusterGeoms, uint32_t *num_clusters);
-int union_dbscan(LWGEOM **geoms, uint32_t num_geoms, UNIONFIND *uf, double eps, uint32_t min_points, char **is_in_cluster_ret);
+int union_dbscan(LWGEOM **geoms,
+		 uint32_t num_geoms,
+		 UNIONFIND *uf,
+		 double eps,
+		 uint32_t min_points,
+		 uint8_t **is_in_cluster_ret);
 
 POINTARRAY* ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d);
 

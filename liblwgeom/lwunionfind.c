@@ -142,13 +142,13 @@ UF_ordered_by_cluster(UNIONFIND* uf)
 	return ordered_ids;
 }
 
-uint32_t*
-UF_get_collapsed_cluster_ids(UNIONFIND* uf, const char* is_in_cluster)
+uint32_t *
+UF_get_collapsed_cluster_ids(UNIONFIND *uf, const uint8_t *is_in_cluster)
 {
 	uint32_t* ordered_components = UF_ordered_by_cluster(uf);
 	uint32_t* new_ids = lwalloc(uf->N * sizeof(uint32_t));
 	uint32_t last_old_id, current_new_id, i;
-	char encountered_cluster = LW_FALSE;
+	uint8_t encountered_cluster = LW_FALSE;
 
 	current_new_id = 0; last_old_id = 0;
 	for (i = 0; i < uf->N; i++)

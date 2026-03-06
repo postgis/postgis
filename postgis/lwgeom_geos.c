@@ -1551,7 +1551,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	LWGEOM *lwgeom;
-	char result;
+	int8_t result;
 	GEOSGeom g1;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -1628,7 +1628,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	char *reason = NULL;
 	GEOSGeometry *geos_location = NULL;
 	LWGEOM *location = NULL;
-	char valid = 0;
+	int8_t valid = 0;
 	HeapTupleHeader result;
 	TupleDesc tupdesc;
 	HeapTuple tuple;
@@ -1706,7 +1706,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom_in;
-	int result;
+	int8_t result;
 
 	POSTGIS_DEBUG(2, "issimple called");
 
@@ -1732,7 +1732,7 @@ Datum isring(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	GEOSGeometry *g1;
-	int result;
+	int8_t result;
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
@@ -1762,7 +1762,7 @@ Datum isring(PG_FUNCTION_ARGS)
 }
 
 GSERIALIZED *
-GEOS2POSTGIS(GEOSGeom geom, char want3d)
+GEOS2POSTGIS(GEOSGeom geom, uint8_t want3d)
 {
 	LWGEOM *lwgeom;
 	GSERIALIZED *result;
@@ -2662,7 +2662,7 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 	double radius = PG_GETARG_FLOAT8(2);
 	GEOSGeometry *buffer1 = NULL;
 	GEOSGeometry *geos1 = NULL, *geos2 = NULL;
-	char contained;
+	int8_t contained;
 
 	if (radius < 0.0)
 	{

@@ -1776,7 +1776,7 @@ lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int o
 {
 	uint32_t num_points = lwgeom_count_vertices(g);
 	LWGEOM* lwgeom_result;
-	char is_3d = LW_FALSE;
+	uint8_t is_3d = LW_FALSE;
 	int32_t srid = lwgeom_get_srid(g);
 	GEOSCoordSequence* coords;
 	GEOSGeometry* geos_geom;

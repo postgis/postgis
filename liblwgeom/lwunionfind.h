@@ -57,5 +57,4 @@ uint32_t* UF_ordered_by_cluster(UNIONFIND* uf);
  * If is_in_cluster array is provided, it will be used to skip any indexes
  * that are not in a cluster.
  * */
-uint32_t* UF_get_collapsed_cluster_ids(UNIONFIND* uf, const char* is_in_cluster);
-
+uint32_t *UF_get_collapsed_cluster_ids(UNIONFIND *uf, const uint8_t *is_in_cluster);

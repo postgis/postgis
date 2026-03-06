@@ -49,14 +49,14 @@ typedef struct {
 typedef struct
 {
 	uint32_t cluster_id;
-	char is_null;        /* NULL may result from a NULL geometry input, or it may be used by
-							algorithms such as DBSCAN that do not assign all inputs to a
-							cluster. */
+	uint8_t is_null; /* NULL may result from a NULL geometry input, or it may be used by
+							 algorithms such as DBSCAN that do not assign all inputs to a
+							 cluster. */
 } cluster_entry;
 
 typedef struct
 {
-	char is_error;
+	uint8_t is_error;
 	cluster_entry clusters[1];
 } cluster_context;
 
@@ -129,7 +129,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		uint32_t i;
 		uint32_t* result_ids;
 		LWGEOM** geoms;
-		char* is_in_cluster = NULL;
+		uint8_t *is_in_cluster = NULL;
 		UNIONFIND* uf;
 		bool tolerance_is_null;
 		bool minpoints_is_null;
@@ -1035,5 +1035,3 @@ Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
-
-
