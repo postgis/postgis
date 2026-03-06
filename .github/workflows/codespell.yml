@@ -22,11 +22,17 @@ jobs:
     - name: 'Install codespell'
       run: |
         sudo apt-get update
-        sudo apt-get install -y --no-install-recommends libxml2-utils docbook-xml docbook-xsl docbook-xsl-ns xsltproc
+        sudo apt-get install -y --no-install-recommends \
+          autoconf automake libtool pkg-config \
+          postgresql-server-dev-all \
+          libgeos-dev libproj-dev libxml2-dev \
+          libxml2-utils docbook-xml docbook-xsl docbook-xsl-ns xsltproc
         sudo pip install codespell
 
     - name: 'Build & Test'
       run: |
         codespell --version
+        ./autogen.sh
+        ./configure --without-raster --without-topology --without-sfcgal --without-json --without-protobuf
         make -C doc comments
-        ./utils/check_spelling.sh
+        codespell --config .codespellrc .

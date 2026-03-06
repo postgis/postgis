@@ -307,7 +307,7 @@ endif
 
 check-spell:
 ifneq (@CODESPELL@,)
-	cd $(top_srcdir) && ./utils/check_spelling.sh @CODESPELL@
+	cd $(top_srcdir) && @CODESPELL@ --config .codespellrc .
 else
 	@echo "SKIP: spell checking disabled"
 endif
