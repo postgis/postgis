@@ -23,11 +23,10 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends \
+          codespell \
           autoconf automake libtool pkg-config \
-          postgresql-server-dev-all \
           libgeos-dev libproj-dev libxml2-dev \
           libxml2-utils docbook-xml docbook-xsl docbook-xsl-ns xsltproc
-        sudo pip install codespell
 
     - name: 'Build & Test'
       run: |
