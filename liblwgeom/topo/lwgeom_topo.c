@@ -6138,7 +6138,10 @@ _lwt_SnapEdgeToExistingNode(
     newEdge.geom = lwgeom_as_lwline(splitC->geoms[1]);
     newEdge.end_node = edge->end_node;
     newEdge.start_node = node->node_id;
-    newEdge.next_right = -updatedEdge.edge_id; // to be assigned later, if needed
+    /* Seed the split pair with mutual linkage; nodeStar may replace these
+     * with the actual neighboring edges below.
+     */
+    newEdge.next_right = -edge->edge_id;
     if ( edge->next_left == -edge->edge_id ) {
       newEdge.next_left = -newEdge.edge_id;
     } else {
@@ -6151,7 +6154,7 @@ _lwt_SnapEdgeToExistingNode(
     updatedEdge.edge_id = edge->edge_id;
     updatedEdge.geom = lwgeom_as_lwline(splitC->geoms[0]);
     updatedEdge.end_node = node->node_id;
-    updatedEdge.next_left = newEdge.edge_id; // to be re-assigned later, if needed
+    updatedEdge.next_left = newEdge.edge_id;
 
 
     LWT_EDGEEND_STAR *nodeStar = lwt_edgeEndStar_init( node->node_id );
