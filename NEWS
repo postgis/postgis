@@ -6,6 +6,10 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
 
 * Bug fixes *
 
+  - #6055, Remove rare extension priv escalation case.
+           Reported by Sven Klemm (Tiger Data) and Allistair Ishmael Hakim (allistair.sh)
+
+
 PostGIS 3.5.5
 2026/02/09
 
