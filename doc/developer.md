@@ -374,7 +374,9 @@ while keeping the CI account unprivileged.
 
 * Edit doc/postgis.xml and change entity  `min_postgres_version` to new minimum version
 
-* Add to NEWS Breaking Changes section, your removal of said versions
+* Update any CI scripts that hard-code a PostgreSQL major for packaging or docs jobs,
+  notably `ci/debbie/postgis_make_dist.sh` and `ci/debbie/postgis_release_docs.sh`
 
+* Add to NEWS Breaking Changes section, your removal of said versions
 
 

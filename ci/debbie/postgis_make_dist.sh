@@ -2,7 +2,7 @@
 set -e
 ## begin variables passed in by jenkins
 
-export PG_VER=13
+export PG_VER=14
 # export PGPORT=8442
 export OS_BUILD=64
 # export POSTGIS_MAJOR_VERSION=2
