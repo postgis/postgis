@@ -16,10 +16,10 @@ DECLARE
 BEGIN
 	WITH settings AS (
 		SELECT unnest(setconfig) config
-		FROM pg_db_role_setting
+		FROM pg_catalog.pg_db_role_setting
 		WHERE setdatabase = (
 			SELECT oid
-			FROM pg_database
+			FROM pg_catalog.pg_database
 			WHERE datname = current_database()
 		) and setrole = 0
 	)
@@ -30,10 +30,10 @@ BEGIN
 	RAISE NOTICE 'cur_search_path from pg_db_role_setting is %', var_cur_search_path;
 
 	-- only run this test if person creating the extension is a super user
-	IF var_cur_search_path IS NULL AND (SELECT rolsuper FROM pg_roles where rolname = CURRENT_USER) THEN
+	IF var_cur_search_path IS NULL AND (SELECT rolsuper FROM pg_catalog.pg_roles where rolname = CURRENT_USER) THEN
 		SELECT setting
 		INTO var_cur_search_path
-		FROM pg_file_settings
+		FROM pg_catalog.pg_file_settings
 		WHERE name = 'search_path' AND applied;
 
 		RAISE NOTICE 'cur_search_path from pg_file_settings is %', var_cur_search_path;
@@ -42,7 +42,7 @@ BEGIN
 	IF var_cur_search_path IS NULL THEN
 		SELECT boot_val
 		INTO var_cur_search_path
-		FROM pg_settings
+		FROM pg_catalog.pg_settings
 		WHERE name = 'search_path';
 
 		RAISE NOTICE 'cur_search_path from pg_settings is %', var_cur_search_path;
@@ -63,7 +63,8 @@ BEGIN
   RETURN var_result;
 END
 $BODY$
-SET search_path = pg_catalog -- make safe
+-- explicitly move pg_temp after pg_catalog in search path
+SET search_path = pg_catalog, pg_temp
 LANGUAGE 'plpgsql' VOLATILE STRICT
 ;
 
