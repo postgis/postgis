@@ -24,6 +24,7 @@
 
         <xsl:template match="db:chapter">
 		<xsl:variable name="ap"><xsl:text>'</xsl:text></xsl:variable>
+		<xsl:variable name="apesc"><xsl:text>''</xsl:text></xsl:variable>
 <!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 		<xsl:for-each select="db:section[not(contains(@xml:id,'Operator'))]/db:refentry">
 		  <xsl:variable name='plaincomment'>
@@ -34,7 +35,7 @@
 			<xsl:call-template name="globalReplace">
 				<xsl:with-param name="outputString" select="$plaincomment"/>
 				<xsl:with-param name="target" select="$ap"/>
-				<xsl:with-param name="replacement" select="''"/>
+				<xsl:with-param name="replacement" select="$apesc"/>
 			</xsl:call-template>
 		</xsl:variable>
 <!-- For each function prototype generate the DDL comment statement
@@ -51,6 +52,7 @@ COMMENT ON <xsl:choose><xsl:when test="contains(db:paramdef/db:type,'geometry se
 	<xsl:template match="db:section[contains(@xml:id, 'Type')]">
         <xsl:for-each select="db:refentry">
             <xsl:variable name="ap"><xsl:text>'</xsl:text></xsl:variable>
+            <xsl:variable name="apesc"><xsl:text>''</xsl:text></xsl:variable>
     <!-- If this is a raster type grab the ref entry summary and refname to make type comment -->
 
             <xsl:variable name='plaincomment'>
@@ -61,7 +63,7 @@ COMMENT ON <xsl:choose><xsl:when test="contains(db:paramdef/db:type,'geometry se
                 <xsl:call-template name="globalReplace">
                     <xsl:with-param name="outputString" select="$plaincomment"/>
                     <xsl:with-param name="target" select="$ap"/>
-                    <xsl:with-param name="replacement" select="''"/>
+                    <xsl:with-param name="replacement" select="$apesc"/>
                 </xsl:call-template>
             </xsl:variable>
     COMMENT ON TYPE <xsl:value-of select="db:refnamediv/db:refname" /> IS 'postgis raster type: <xsl:value-of select='$comment' />';

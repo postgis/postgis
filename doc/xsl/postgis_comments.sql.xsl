@@ -22,6 +22,7 @@
 
         <xsl:template match="db:chapter">
 		<xsl:variable name="ap"><xsl:text>'</xsl:text></xsl:variable>
+		<xsl:variable name="apesc"><xsl:text>''</xsl:text></xsl:variable>
 <!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 		<xsl:for-each select="db:section[not(contains(@xml:id,'Operator') or contains(@xml:id,'sfcgal') or contains(@xml:id,'GUC') )]/db:refentry">
 		  <xsl:variable name='plaincomment'>
@@ -32,7 +33,7 @@
 			<xsl:call-template name="globalReplace">
 				<xsl:with-param name="outputString" select="$plaincomment"/>
 				<xsl:with-param name="target" select="$ap"/>
-				<xsl:with-param name="replacement" select="''"/>
+				<xsl:with-param name="replacement" select="$apesc"/>
 			</xsl:call-template>
 		</xsl:variable>
 		<xsl:choose>

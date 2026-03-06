@@ -21,9 +21,12 @@ jobs:
 
     - name: 'Install codespell'
       run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends libxml2-utils docbook-xml docbook-xsl docbook-xsl-ns xsltproc
         sudo pip install codespell
 
     - name: 'Build & Test'
       run: |
         codespell --version
-        codespell -I ".codespell.ignore"
+        make -C doc comments
+        ./utils/check_spelling.sh

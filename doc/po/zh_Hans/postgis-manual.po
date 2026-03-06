@@ -4346,7 +4346,7 @@ msgid ""
 "topogeometries created before the upgrade. This function fixes this "
 "corruption in affected tables."
 msgstr ""
-"从 PostGIS topology 版本 <3.6.0 升级到 >3.6.0+ 时，topogeometry "
+"从 PostGIS topology 版本 &lt;3.6.0 升级到 &gt;3.6.0+ 时，topogeometry "
 "列的定义发生了变化，导致升级前创建的 topogeometry "
 "数据出现损坏。这个函数用来修复受影响表中的这些损坏问题。"
 

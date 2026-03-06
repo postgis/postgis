@@ -1,3 +1,4 @@
 [codespell]
-skip = *.po,spatial_ref_sys.sql,./deps,./extensions/address_standardizer,./configure*,./autom4te.cache,./build-aux,./libtool,.git,build*
+# utils/check_spelling.sh builds a deterministic list of tracked files plus
+# generated comment SQL.
 ignore-words = .codespell.ignore
