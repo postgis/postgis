@@ -92,6 +92,7 @@ struct LWT_BE_TOPOLOGY_T
   int32_t srid;
   double precision;
   int hasZ;
+  bool usesLargeIDs;
   Oid geometryOID;
 };
 
@@ -180,8 +181,8 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
 
   argtypes[0] = CSTRINGOID;
   sql =
-    "SELECT id,srid,precision,null::geometry "
-    "FROM topology.topology WHERE name = $1::varchar";
+      "SELECT id,srid,precision,null::geometry,useslargeids "
+      "FROM topology.topology WHERE name = $1::varchar";
   if ( ! plan ) /* prepare on first call */
   {
     plan = SPI_prepare(sql, 1, argtypes);
@@ -226,6 +227,7 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   topo->be_data = (LWT_BE_DATA *)be; /* const cast.. */
   topo->name = pstrdup(name);
   topo->hasZ = 0;
+  topo->usesLargeIDs = false;
 
   dat = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
   if ( isnull )
@@ -260,6 +262,12 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   else
   {
     topo->precision = DatumGetFloat8(dat);
+  }
+
+  dat = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 5, &isnull);
+  if (!isnull)
+  {
+	  topo->usesLargeIDs = DatumGetBool(dat);
   }
 
   /* we're dynamically querying geometry type here */
@@ -666,6 +674,31 @@ addFaceValues(StringInfo str, LWT_ISO_FACE *face, int32_t srid)
   }
 }
 
+static int64
+tuple_get_int64(TupleDesc desc, int col, Datum dat)
+{
+	Oid typid = TupleDescAttr(desc, col - 1)->atttypid;
+
+	/*
+	 * Topology still defaults to INT4 primitive IDs unless usesLargeIDs is
+	 * requested, so SPI tuple readers must honor the actual column type here.
+	 */
+	switch (typid)
+	{
+	case INT2OID:
+		return DatumGetInt16(dat);
+	case INT4OID:
+		return DatumGetInt32(dat);
+	case INT8OID:
+		return DatumGetInt64(dat);
+	case OIDOID:
+		return DatumGetObjectId(dat);
+	default:
+		lwpgerror("Unexpected integer type %u for column %d", typid, col);
+		return -1;
+	}
+}
+
 static void
 fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
 {
@@ -689,11 +722,13 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     }
     else
     {
-      val = DatumGetInt64(dat);
-      POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (edge_id)"
-                     " has int64 val of %" LWTFMT_ELEMID,
-                     colno, val);
-      edge->edge_id = val;
+	    val = tuple_get_int64(rowdesc, colno, dat);
+	    POSTGIS_DEBUGF(2,
+			   "fillEdgeFields: colno%d (edge_id)"
+			   " has int64 val of %" LWTFMT_ELEMID,
+			   colno,
+			   val);
+	    edge->edge_id = val;
     }
 
   }
@@ -707,10 +742,13 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     }
     else
     {
-      val = DatumGetInt64(dat);
-      POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (start_node)"
-                     " has int64 val of %" LWTFMT_ELEMID, colno, val);
-      edge->start_node = val;
+	    val = tuple_get_int64(rowdesc, colno, dat);
+	    POSTGIS_DEBUGF(2,
+			   "fillEdgeFields: colno%d (start_node)"
+			   " has int64 val of %" LWTFMT_ELEMID,
+			   colno,
+			   val);
+	    edge->start_node = val;
     }
   }
   if ( fields & LWT_COL_EDGE_END_NODE )
@@ -723,10 +761,13 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     }
     else
     {
-      val = DatumGetInt64(dat);
-      POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (end_node)"
-                     " has int64 val of %" LWTFMT_ELEMID, colno, val);
-      edge->end_node = val;
+	    val = tuple_get_int64(rowdesc, colno, dat);
+	    POSTGIS_DEBUGF(2,
+			   "fillEdgeFields: colno%d (end_node)"
+			   " has int64 val of %" LWTFMT_ELEMID,
+			   colno,
+			   val);
+	    edge->end_node = val;
     }
   }
   if ( fields & LWT_COL_EDGE_FACE_LEFT )
@@ -739,10 +780,13 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     }
     else
     {
-      val = DatumGetInt64(dat);
-      POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (face_left)"
-                     " has int64 val of %" LWTFMT_ELEMID, colno, val);
-      edge->face_left = val;
+	    val = tuple_get_int64(rowdesc, colno, dat);
+	    POSTGIS_DEBUGF(2,
+			   "fillEdgeFields: colno%d (face_left)"
+			   " has int64 val of %" LWTFMT_ELEMID,
+			   colno,
+			   val);
+	    edge->face_left = val;
     }
   }
   if ( fields & LWT_COL_EDGE_FACE_RIGHT )
@@ -755,10 +799,13 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     }
     else
     {
-      val = DatumGetInt64(dat);
-      POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (face_right)"
-                     " has int64 val of %" LWTFMT_ELEMID, colno, val);
-      edge->face_right = val;
+	    val = tuple_get_int64(rowdesc, colno, dat);
+	    POSTGIS_DEBUGF(2,
+			   "fillEdgeFields: colno%d (face_right)"
+			   " has int64 val of %" LWTFMT_ELEMID,
+			   colno,
+			   val);
+	    edge->face_right = val;
     }
   }
   if ( fields & LWT_COL_EDGE_NEXT_LEFT )
@@ -771,10 +818,13 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     }
     else
     {
-      val = DatumGetInt64(dat);
-      POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (next_left)"
-                     " has int64 val of %" LWTFMT_ELEMID, colno, val);
-      edge->next_left = val;
+	    val = tuple_get_int64(rowdesc, colno, dat);
+	    POSTGIS_DEBUGF(2,
+			   "fillEdgeFields: colno%d (next_left)"
+			   " has int64 val of %" LWTFMT_ELEMID,
+			   colno,
+			   val);
+	    edge->next_left = val;
     }
   }
   if ( fields & LWT_COL_EDGE_NEXT_RIGHT )
@@ -787,10 +837,13 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     }
     else
     {
-      val = DatumGetInt64(dat);
-      POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (next_right)"
-                     " has int64 val of %" LWTFMT_ELEMID, colno, val);
-      edge->next_right = val;
+	    val = tuple_get_int64(rowdesc, colno, dat);
+	    POSTGIS_DEBUGF(2,
+			   "fillEdgeFields: colno%d (next_right)"
+			   " has int64 val of %" LWTFMT_ELEMID,
+			   colno,
+			   val);
+	    edge->next_right = val;
     }
   }
   if ( fields & LWT_COL_EDGE_GEOM )
@@ -830,13 +883,14 @@ fillNodeFields(LWT_ISO_NODE* node, HeapTuple row, TupleDesc rowdesc, int fields)
   if ( fields & LWT_COL_NODE_NODE_ID )
   {
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
-    node->node_id = DatumGetInt64(dat);
+    node->node_id = tuple_get_int64(rowdesc, colno, dat);
   }
   if ( fields & LWT_COL_NODE_CONTAINING_FACE )
   {
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( isnull ) node->containing_face = -1;
-    else node->containing_face = DatumGetInt64(dat);
+    else
+	    node->containing_face = tuple_get_int64(rowdesc, colno, dat);
   }
   if ( fields & LWT_COL_NODE_GEOM )
   {
@@ -870,7 +924,7 @@ fillFaceFields(LWT_ISO_FACE* face, HeapTuple row, TupleDesc rowdesc, int fields)
   if ( fields & LWT_COL_FACE_FACE_ID )
   {
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
-    face->face_id = DatumGetInt64(dat);
+    face->face_id = tuple_get_int64(rowdesc, colno, dat);
   }
   if ( fields & LWT_COL_FACE_MBR )
   {
@@ -923,7 +977,7 @@ getNotNullInt64( HeapTuple row, TupleDesc desc, int col, int64 *val )
   bool isnull;
   Datum dat = SPI_getbinval( row, desc, col, &isnull );
   if ( isnull ) return 0;
-  *val = DatumGetInt64(dat);
+  *val = tuple_get_int64(desc, col, dat);
   return 1;
 }
 
@@ -1058,12 +1112,24 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *n
   Datum *datum_ids;
   Datum values[2];
   Oid argtypes[2];
+  Oid idtype;
+  Oid idarraytype;
   int nargs = 1;
   GSERIALIZED *gser = NULL;
+  int16 typlen;
+  bool typbyval;
+  char typalign;
 
+  /* Match the callback argument type to the topology schema's chosen ID width. */
+  idtype = topo->usesLargeIDs ? INT8OID : INT4OID;
+  idarraytype = topo->usesLargeIDs ? INT8ARRAYOID : INT4ARRAYOID;
+  get_typlenbyvalalign(idtype, &typlen, &typbyval, &typalign);
   datum_ids = palloc(sizeof(Datum)*(*numelems));
-  for (i=0; i<*numelems; ++i) datum_ids[i] = Int64GetDatum(ids[i]);
-  array_ids = construct_array(datum_ids, *numelems, INT8OID, 8, true, 's');
+  for (i = 0; i < *numelems; ++i)
+  {
+	  datum_ids[i] = topo->usesLargeIDs ? Int64GetDatum(ids[i]) : Int32GetDatum(ids[i]);
+  }
+  array_ids = construct_array(datum_ids, *numelems, idtype, typlen, typbyval, typalign);
 
   initStringInfo(sql);
   appendStringInfoString(sql, "SELECT ");
@@ -1074,7 +1140,7 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *n
                    topo->name);
 
   values[0] = PointerGetDatum(array_ids);
-  argtypes[0] = INT8ARRAYOID;
+  argtypes[0] = idarraytype;
 
   if ( box )
   {
@@ -1256,7 +1322,7 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
       *numelems = UINT64_MAX;
       return NULL;
     }
-    val = DatumGetInt64(dat);
+    val = tuple_get_int64(rowdesc, 1, dat);
     edges[i] = val;
     POSTGIS_DEBUGF(1, "Component " UINT64_FORMAT " in ring of edge %" LWTFMT_ELEMID " is edge %d", i, edge, val);
 
@@ -1278,7 +1344,7 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
         *numelems = UINT64_MAX;
         return NULL;
       }
-      nextedge = DatumGetInt64(dat);
+      nextedge = tuple_get_int64(rowdesc, sidecol, dat);
       POSTGIS_DEBUGF(1, "Last component in ring of edge %"
                         LWTFMT_ELEMID " (%d) has next_%s_edge %d",
                         edge, val, sidetext, nextedge);

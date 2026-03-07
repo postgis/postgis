@@ -784,7 +784,9 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 			if (!isnull) tolerance = DatumGetFloat8(d);
 
 			d = WinGetFuncArgCurrent(winobj, 2, &isnull);
-			if (!isnull) simplifyBoundary = DatumGetFloat8(d);
+			/* The third SQL argument is boolean, which matters on 32-bit builds. */
+			if (!isnull)
+				simplifyBoundary = DatumGetBool(d);
 
 			/* GEOSCoverageSimplifyVW is "preserveBoundary" so we invert simplifyBoundary */
 			output = GEOSCoverageSimplifyVW(input, tolerance, !simplifyBoundary);

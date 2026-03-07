@@ -1188,8 +1188,8 @@ lwt_ModEdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   LWCOLLECTION *split_col;
   const LWGEOM *oldedge_geom;
   const LWGEOM *newedge_geom;
-  LWT_ISO_EDGE newedge1;
-  LWT_ISO_EDGE seledge, updedge, excedge;
+  LWT_ISO_EDGE newedge1 = {0};
+  LWT_ISO_EDGE seledge = {0}, updedge = {0}, excedge = {0};
   int ret;
 
   split_col = _lwt_EdgeSplit( topo, edge, pt, skipISOChecks, &oldedge );
@@ -1345,8 +1345,8 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   LWCOLLECTION *split_col;
   const LWGEOM *oldedge_geom;
   const LWGEOM *newedge_geom;
-  LWT_ISO_EDGE newedges[2];
-  LWT_ISO_EDGE seledge, updedge;
+  LWT_ISO_EDGE newedges[2] = {{0}};
+  LWT_ISO_EDGE seledge = {0}, updedge = {0};
   int ret;
 
   split_col = _lwt_EdgeSplit( topo, edge, pt, skipISOChecks, &oldedge );
@@ -5611,10 +5611,9 @@ _lwt_SnapEdgeToExistingNode(
     replacedBy[n] = existingEdgeId;
   }
 
-
-  LWT_ISO_EDGE updatedEdge;
+  LWT_ISO_EDGE updatedEdge = {0};
   int updateFlags;
-  LWT_ISO_EDGE selEdge;
+  LWT_ISO_EDGE selEdge = {0};
 
   if ( ( replacedBy[0] != 0 && replacedBy[1] == 0 ) ||
        ( replacedBy[1] != 0 && replacedBy[0] == 0 ) )
@@ -6129,7 +6128,7 @@ _lwt_SnapEdgeToExistingNode(
     /* Neither sides of the snapped edge collapsed to an existing edge */
 
     /* New edge is the outgoing one, by design */
-    LWT_ISO_EDGE newEdge;
+    LWT_ISO_EDGE newEdge = {0};
     newEdge.edge_id = lwt_be_getNextEdgeId( topo );
     if ( newEdge.edge_id == -1 ) {
       PGTOPO_BE_ERROR();
