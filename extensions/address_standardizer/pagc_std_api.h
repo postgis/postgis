@@ -65,9 +65,17 @@ void std_free(STANDARDIZER *std);
 
 STDADDR *std_standardize_one(STANDARDIZER *std, char *address_one_line, int options);
 
+/* Standardize caller-supplied micro and macro text. */
 STDADDR *std_standardize_mm(STANDARDIZER *std, char *micro, char *macro, int options);
 
-STDADDR *std_standardize(STANDARDIZER *std, char *address, char *city, char *state, char *postcode, char *country, int options);
+/* Standardize explicit address components; city/state/postcode/country are optional. */
+STDADDR *std_standardize(STANDARDIZER *std,
+			 char *address,
+			 const char *city,
+			 const char *state,
+			 const char *postcode,
+			 const char *country,
+			 int options);
 
 void stdaddr_free(STDADDR *stdaddr);
 void print_stdaddr(STDADDR *stdaddr);

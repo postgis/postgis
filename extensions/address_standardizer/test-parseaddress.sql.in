@@ -7,6 +7,8 @@ create table test_parse_address (
     outstring text
 );
 copy test_parse_address (instring, outstring) from stdin;
+	(,,,,,,,,)
+ , ,  	(,,,,,,,,)
 @@ sttype dirs dirs words$	
 123 oak ln e n mycity ny	(123,"oak ln e",,"123 oak ln e","n mycity",NY,,,US)
 123 oak lane east n mycity ny	(123,"oak lane east",,"123 oak lane east","n mycity",NY,,,US)

@@ -4,6 +4,14 @@ SELECT '#2981' As ticket, * FROM standardize_address('us_lex','us_gaz','us_rules
 SELECT '#2978a' As ticket, * FROM standardize_address('us_lex','us_gaz','us_rules', '10-20 DORRANCE ST PROVIDENCE RI' );
 SELECT '#2978b' As ticket, * FROM standardize_address('us_lex','us_gaz','us_rules', '10 20 DORRANCE ST PROVIDENCE RI' );
 SELECT '#2978c' As ticket, * FROM standardize_address('us_lex','us_gaz','us_rules', '10-20 DORRANCE ST, PROVIDENCE, RI');
+SELECT '#state_only_macro' AS ticket, * FROM standardize_address('us_lex','us_gaz','us_rules', '25 Prince Street, NC 09985');
 SELECT '#5299a' AS ticket, * FROM standardize_address('us_lex',  'us_gaz', 'us_rules','1 Timepiece Point','Boston, MA, 02220');
 SELECT '#5299b' AS ticket, * FROM standardize_address('us_lex',  'us_gaz', 'us_rules','50 Gold Piece Drive','Boston, MA, 02020');
 SELECT '#5695a' AS ticket, * FROM standardize_address('us_lex', 'us_gaz', 'us_rules', 'ONE E PIMA ST STE 999, TUCSON, AZ');
+DO $$
+BEGIN
+	PERFORM standardize_address('us_lex', 'us_gaz', 'us_rules', '   ');
+EXCEPTION WHEN OTHERS THEN
+	RAISE NOTICE 'blank-input: %', SQLERRM;
+END
+$$;

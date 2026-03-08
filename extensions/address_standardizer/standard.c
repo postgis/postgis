@@ -452,6 +452,37 @@ STDADDR *std_standardize_one(STANDARDIZER *std, char *address_one_line, int opti
 }
 */
 
+/*
+ * The string-based analyzer can collapse a supplied state into the city slot
+ * when there is no city component. When the caller provides structured macro
+ * components, preserve that split in the final STDADDR.
+ */
+static void
+apply_component_split_to_stdaddr(STDADDR *stdaddr, const char *city, const char *state)
+{
+	if (!stdaddr)
+		return;
+
+	if ((city && city[0] != '\0') || !state || state[0] == '\0')
+		return;
+
+	if (stdaddr->state && stdaddr->state[0] != '\0')
+		return;
+
+	if (stdaddr->city && stdaddr->city[0] != '\0')
+	{
+		stdaddr->state = stdaddr->city;
+		stdaddr->city = NULL;
+		return;
+	}
+
+	stdaddr->state = strdup(state);
+}
+
+/*
+ * String-based standardization entry point. Callers provide the already split
+ * micro and macro text that the analyzer consumes as MACRO then MICRO_M.
+ */
 STDADDR *std_standardize_mm(STANDARDIZER *std, char *micro, char *macro, int options)
 {
     STAND_PARAM *stand_address;
@@ -530,10 +561,64 @@ STDADDR *std_standardize_mm(STANDARDIZER *std, char *micro, char *macro, int opt
     return stdaddr;
 }
 
-
-STDADDR *std_standardize(STANDARDIZER *std, char *address, char *city, char *state, char *postcode, char *country, int options)
+/*
+ * Component-aware entry point. The analyzer still consumes macro text first
+ * and micro text second, so this wrapper formats the internal macro input and
+ * then reapplies the caller's component split to the resulting STDADDR.
+ */
+STDADDR *
+std_standardize(STANDARDIZER *std,
+		char *address,
+		const char *city,
+		const char *state,
+		const char *postcode,
+		const char *country,
+		int options)
 {
-    return NULL;
+	const char *components[4] = {city, state, postcode, country};
+	char *macro = NULL;
+	char *write_ptr;
+	STDADDR *stdaddr;
+	size_t macro_length = 1;
+
+	for (size_t i = 0; i < lengthof(components); i++)
+	{
+		if (!components[i] || components[i][0] == '\0')
+			continue;
+
+		macro_length += strlen(components[i]) + 1;
+	}
+
+	if (macro_length > 1)
+	{
+		macro = malloc(macro_length);
+		if (!macro)
+		{
+			RET_ERR("std_standardize: could not allocate macro buffer", std->err_p, NULL);
+		}
+
+		write_ptr = macro;
+		for (size_t i = 0; i < lengthof(components); i++)
+		{
+			size_t component_length;
+
+			if (!components[i] || components[i][0] == '\0')
+				continue;
+
+			component_length = strlen(components[i]);
+			memcpy(write_ptr, components[i], component_length);
+			write_ptr += component_length;
+			*write_ptr++ = ',';
+		}
+		*write_ptr = SENTINEL;
+	}
+
+	stdaddr = std_standardize_mm(std, address, macro, options);
+	if (macro)
+		free(macro);
+
+	apply_component_split_to_stdaddr(stdaddr, city, state);
+	return stdaddr;
 }
 
 #else
@@ -692,4 +777,3 @@ static int _Close_Stand_Field_(STAND_PARAM *__stand_param__)
 	}
 	RET_ERR("_Close_Stand_Field_: Address failed to standardize",__stand_param__->errors,FALSE) ;
 }
-

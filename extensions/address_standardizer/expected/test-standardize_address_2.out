@@ -1,3 +1,14 @@
+SELECT '#state_only_macro_5arg' AS ticket, * FROM standardize_address(
+    'us_lex',
+    'us_gaz',
+    'us_rules',
+    '25 Prince Street',
+    'NC 09985');
+         ticket         | building | house_num | predir | qual | pretype |  name  | suftype | sufdir | ruralroute | extra | city |     state      | country | postcode | box | unit 
+------------------------+----------+-----------+--------+------+---------+--------+---------+--------+------------+-------+------+----------------+---------+----------+-----+------
+ #state_only_macro_5arg |          | 25        |        |      |         | PRINCE | STREET  |        |            |       |      | NORTH CAROLINA |         | 09985    |     | 
+(1 row)
+
 drop table if exists addresses cascade;
 NOTICE:  table "addresses" does not exist, skipping
 create table addresses (

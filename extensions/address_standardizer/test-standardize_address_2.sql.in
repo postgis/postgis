@@ -1,3 +1,10 @@
+SELECT '#state_only_macro_5arg' AS ticket, * FROM standardize_address(
+    'us_lex',
+    'us_gaz',
+    'us_rules',
+    '25 Prince Street',
+    'NC 09985');
+
 drop table if exists addresses cascade;
 create table addresses (
   id serial not null primary key,

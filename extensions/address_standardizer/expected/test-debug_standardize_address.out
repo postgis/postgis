@@ -40,11 +40,56 @@ ORDER BY pos, stdword, word, token;
  #5299bt | 2   | PIECE | WORD  | PIECE
 (3 rows)
 
-SELECT r->>'score' AS score,r->>'rule_string' AS rule, r->>'rule_stub_string' AS rule_stub  FROM jsonb(debug_standardize_address('us_lex','us_gaz','us_rules', '25 Prince Street, NC 09985')) AS d, jsonb_array_elements(d->'rules') AS r;
-  score   |          rule          |      rule_stub      
-----------+------------------------+---------------------
- 0.902500 | 0 1 2 -1 1 5 6 -1 1 16 | 0 1 2 -1 1 5 6 -1 %
- 0.791875 | 0 1 2 -1 1 5 6 -1 1 16 | 0 1 2 -1 1 5 6 -1 %
- 0.661250 |                        | 0 1 2 -1 1 5 5 -1 %
+SELECT r->>'score' AS score, r->>'rule_type' AS rule_type, r->>'rule_weight' AS rule_weight, r->>'rule_string' AS rule, r->>'rule_stub_string' AS rule_stub FROM jsonb(debug_standardize_address('us_lex','us_gaz','us_rules', '25 Prince Street, NC 09985')) AS d, jsonb_array_elements(d->'rules') AS r;
+  score   | rule_type | rule_weight |          rule          |      rule_stub      
+----------+-----------+-------------+------------------------+---------------------
+ 0.902500 | MICRO     | 16          | 0 1 2 -1 1 5 6 -1 1 16 | 0 1 2 -1 1 5 6 -1 %
+ 0.791875 | MICRO     | 16          | 0 1 2 -1 1 5 6 -1 1 16 | 0 1 2 -1 1 5 6 -1 %
+ 0.661250 |           |             |                        | 0 1 2 -1 1 5 5 -1 %
 (3 rows)
+
+SELECT '#state_only_macro_5arg' AS ticket,
+       d->'stdaddr'->>'city' AS city,
+       d->'stdaddr'->>'state' AS state,
+       d->'stdaddr'->>'postcode' AS postcode
+FROM jsonb(debug_standardize_address('us_lex','us_gaz','us_rules', '25 Prince Street', 'NC 09985')) AS d;
+         ticket         | city |     state      | postcode 
+------------------------+------+----------------+----------
+ #state_only_macro_5arg |      | NORTH CAROLINA | 09985
+(1 row)
+
+WITH d AS (
+	SELECT jsonb(debug_standardize_address('us_lex','us_gaz','us_rules', '123 MAIN STREET APARTMENT 1 BUILDING A FLOOR 2 UNIT 3 ROOM 4', 'BOSTON MA 02101')) AS d
+),
+r AS (
+	SELECT value AS rule
+	FROM d, jsonb_array_elements(d->'rules')
+)
+SELECT
+	(SELECT jsonb_array_length(d->'input_tokens') FROM d) AS num_input_tokens,
+	(SELECT jsonb_array_length(d->'rules') FROM d) AS num_rules,
+	count(*) FILTER (WHERE rule->'rule_stub_string' = 'null'::jsonb) AS skipped_rule_lookups,
+	count(*) FILTER (WHERE rule->'rule_id' = 'null'::jsonb) AS null_rule_ids,
+	count(*) FILTER (WHERE rule->>'rule_id' = '-1') AS unmatched_rule_rows
+FROM r;
+ num_input_tokens | num_rules | skipped_rule_lookups | null_rule_ids | unmatched_rule_rows 
+------------------+-----------+----------------------+---------------+---------------------
+               17 |         6 |                    0 |             0 |                   6
+(1 row)
+
+WITH d AS (
+	SELECT jsonb(debug_standardize_address('us_lex','us_gaz','us_rules', '123 MAIN STREET APARTMENT 1 BUILDING A FLOOR 2 UNIT 3 ROOM 4', 'BOSTON MA 02101')) AS d
+),
+rule_tokens AS (
+	SELECT je->>'output-token' AS output_token
+	FROM d, jsonb_array_elements(d->'rules') AS r, jsonb_array_elements(r->'rule_tokens') AS je
+)
+SELECT
+	count(*) FILTER (WHERE output_token = 'NONE') AS none_output_tokens,
+	count(*) FILTER (WHERE output_token = 'INVALID') AS invalid_output_tokens
+FROM rule_tokens;
+ none_output_tokens | invalid_output_tokens 
+--------------------+-----------------------
+                  2 |                     0
+(1 row)
 

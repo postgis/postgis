@@ -27,6 +27,673 @@ Datum standardize_address(PG_FUNCTION_ARGS);
 Datum standardize_address1(PG_FUNCTION_ARGS);
 
 /*
+ * The debug serializer walks partially constructed candidates. These helpers
+ * keep that path descriptive and non-fatal even when a candidate is sparse.
+ */
+static const char *
+debug_effective_standardized_word(const DEF *definition, const char *input_word)
+{
+	if (!input_word)
+		return NULL;
+
+	if (!definition || definition->Protect || !definition->Standard)
+		return input_word;
+
+	return definition->Standard;
+}
+
+/* Debug output should label invalid input symbols instead of crashing. */
+static const char *
+debug_safe_input_symbol_name(SYMB input_symbol)
+{
+	const char *input_name;
+
+	if (input_symbol < 0 || input_symbol >= MAXINSYM)
+		return "INVALID";
+
+	input_name = in_symb_name(input_symbol);
+	return input_name ? input_name : "NONE";
+}
+
+static const char *
+debug_safe_output_symbol_name(SYMB output_symbol)
+{
+	const char *output_name;
+
+	/*
+	 * FAIL terminates a candidate path; it is not part of the printable
+	 * output-symbol table. The original analyzer debug output rendered this
+	 * sentinel as "NONE".
+	 */
+	if (output_symbol == FAIL)
+		return "NONE";
+
+	if (output_symbol < 0 || output_symbol >= MAXOUTSYM)
+		return "INVALID";
+
+	output_name = out_symb_name(output_symbol);
+	return output_name ? output_name : "NONE";
+}
+
+/* Mirror the analyzer's rule-type labels in the JSON debug output. */
+static const char *
+debug_rule_type_name(SYMB rule_type)
+{
+	switch (rule_type)
+	{
+	case MACRO_C:
+		return "MACRO";
+	case MICRO_C:
+		return "MICRO";
+	case ARC_C:
+		return "ARC";
+	case CIVIC_C:
+		return "CIVIC";
+	case EXTRA_C:
+		return "EXTRA";
+	default:
+		return "NONE";
+	}
+}
+
+/*
+ * The debug rule lookup returns the stored rule text. Parse the trailing
+ * "<rule_type> <rule_weight>" pair from that string so the JSON does not
+ * depend on internal analyzer pointers.
+ */
+static bool
+debug_parse_rule_metadata(const char *rule_string, SYMB *rule_type, SYMB *rule_weight)
+{
+	char *end_ptr;
+	long parsed_value;
+	SYMB penultimate_value = FAIL;
+	SYMB last_value = FAIL;
+	size_t value_count = 0;
+
+	if (!rule_string || !rule_type || !rule_weight)
+		return false;
+
+	/* The stored rule text ends with "... <rule_type> <rule_weight>". */
+	while (*rule_string != '\0')
+	{
+		while (*rule_string == ' ')
+			rule_string++;
+
+		if (*rule_string == '\0')
+			break;
+
+		parsed_value = strtol(rule_string, &end_ptr, 10);
+		if (end_ptr == rule_string)
+			return false;
+
+		penultimate_value = last_value;
+		last_value = (SYMB)parsed_value;
+		value_count++;
+		rule_string = end_ptr;
+	}
+
+	if (value_count < 2)
+		return false;
+
+	*rule_type = penultimate_value;
+	*rule_weight = last_value;
+	return true;
+}
+
+/* Keep rule_string even when the trailing metadata is absent or malformed. */
+static void
+debug_append_rule_metadata(StringInfo result, const char *matched_rule_string)
+{
+	SYMB rule_type;
+	SYMB rule_weight;
+
+	appendStringInfo(result, ", \"rule_string\": %s", quote_identifier(matched_rule_string));
+
+	if (debug_parse_rule_metadata(matched_rule_string, &rule_type, &rule_weight))
+	{
+		const char *rule_type_name = debug_rule_type_name(rule_type);
+
+		appendStringInfo(result,
+				 ", \"rule_type_code\": %d"
+				 ", \"rule_type\": %s"
+				 ", \"rule_weight\": %d",
+				 rule_type,
+				 quote_identifier(rule_type_name),
+				 rule_weight);
+		return;
+	}
+
+	appendStringInfoString(result,
+			       ", \"rule_type_code\": null"
+			       ", \"rule_type\": null"
+			       ", \"rule_weight\": null");
+}
+
+/* Emit every lexical interpretation that the standardizer considered. */
+static void
+debug_append_input_tokens_json(StringInfo result, const STAND_PARAM *stand_param)
+{
+	bool need_comma = false;
+
+	appendStringInfoString(result, "\"input_tokens\":[");
+	for (int lex_pos = FIRST_LEX_POS; lex_pos < stand_param->LexNum; lex_pos++)
+	{
+		const char *input_word = stand_param->lex_vector[lex_pos].Text;
+
+		for (DEF *definition = stand_param->lex_vector[lex_pos].DefList; definition;
+		     definition = definition->Next)
+		{
+			const char *input_token = debug_safe_input_symbol_name(definition->Type);
+			const char *mapped_word = debug_effective_standardized_word(definition, input_word);
+
+			if (!mapped_word)
+				continue;
+
+			if (need_comma)
+				appendStringInfoChar(result, ',');
+
+			appendStringInfo(result,
+					 "{\"pos\": %d,\"word\":%s,\"stdword\":%s,\"token\":%s,\"token-code\": %d}",
+					 lex_pos,
+					 quote_identifier(input_word),
+					 quote_identifier(mapped_word),
+					 quote_identifier(input_token),
+					 definition->Type);
+			elog(DEBUG2,
+			     "\t(%d) stdword: %s, tok: %d (%s)\n",
+			     lex_pos,
+			     mapped_word,
+			     definition->Type,
+			     input_token);
+			need_comma = true;
+		}
+	}
+	appendStringInfoChar(result, ']');
+}
+
+/*
+ * Build the emitted rule token list and the compact input/output sequences
+ * used for rule-table lookup. Sparse candidates remain visible in the debug
+ * output, but the returned flag lets the caller suppress untrustworthy lookup.
+ */
+static bool
+debug_append_candidate_rule_tokens_json(StringInfo result,
+					StringInfo rule_in,
+					StringInfo rule_out,
+					const STAND_PARAM *stand_param,
+					const STZ *candidate)
+{
+	bool need_comma = false;
+	bool candidate_has_sparse_tokens = false;
+
+	resetStringInfo(rule_in);
+	resetStringInfo(rule_out);
+	appendStringInfoString(result, "\"rule_tokens\":[");
+	for (int lex_pos = FIRST_LEX_POS; lex_pos < stand_param->LexNum; lex_pos++)
+	{
+		DEF *definition = candidate->definitions[lex_pos];
+		SYMB output_symbol = candidate->output[lex_pos];
+		const char *input_word = stand_param->lex_vector[lex_pos].Text;
+		const char *input_token;
+		const char *mapped_word;
+		const char *output_token;
+
+		/*
+		 * Debug output should never crash the backend if a candidate has
+		 * a sparse definition array or an unset token text.
+		 */
+		if (!definition || !input_word)
+		{
+			candidate_has_sparse_tokens = true;
+			continue;
+		}
+
+		input_token = debug_safe_input_symbol_name(definition->Type);
+		mapped_word = debug_effective_standardized_word(definition, input_word);
+		output_token = debug_safe_output_symbol_name(output_symbol);
+
+		if (need_comma)
+		{
+			appendStringInfoChar(result, ',');
+			appendStringInfoChar(rule_in, ' ');
+			appendStringInfoChar(rule_out, ' ');
+		}
+		appendStringInfo(rule_in, "%d", definition->Type);
+		appendStringInfo(rule_out, "%d", output_symbol);
+
+		appendStringInfo(result,
+				 "{\"pos\": %d,\"input-token-code\": %d,\"input-token\": %s,"
+				 "\"input-word\": %s,\"mapped-word\": %s,\"output-token-code\": %d,"
+				 "\"output-token\": %s}",
+				 lex_pos,
+				 definition->Type,
+				 quote_identifier(debug_safe_input_symbol_name(definition->Type)),
+				 quote_identifier(input_word),
+				 quote_identifier(mapped_word),
+				 output_symbol,
+				 quote_identifier(debug_safe_output_symbol_name(output_symbol)));
+		elog(DEBUG2,
+		     "\t(%d) Input %d (%s) text %s mapped to output %d (%s)\n",
+		     lex_pos,
+		     definition->Type,
+		     input_token,
+		     mapped_word,
+		     output_symbol,
+		     output_token);
+		need_comma = true;
+		if (output_symbol == FAIL)
+			break;
+	}
+	appendStringInfoChar(result, ']');
+	return candidate_has_sparse_tokens;
+}
+
+/* Attach the best matching stored rule row for a fully described candidate. */
+static void
+debug_lookup_matching_rule_json(StringInfo result,
+				const char *function_name,
+				const char *rule_sql,
+				SPIPlanPtr rule_plan,
+				StringInfo rule_stub,
+				StringInfo rule_in,
+				StringInfo rule_out)
+{
+	Datum rule_values[1];
+
+	resetStringInfo(rule_stub);
+	appendStringInfo(rule_stub, "%s -1 %s -1 %%", rule_in->data, rule_out->data);
+	appendStringInfo(result, ", \"rule_stub_string\": %s", quote_identifier(rule_stub->data));
+
+	/*
+	 * Match the candidate token sequence against the rule table. The pattern
+	 * is reliable once the candidate sequence is complete, whether it stopped
+	 * on FAIL or by consuming all input lexemes.
+	 */
+	rule_values[0] = CStringGetDatum(rule_stub->data);
+	if (SPI_execute_plan(rule_plan, rule_values, NULL, true, 1) != SPI_OK_SELECT)
+	{
+		elog(ERROR, "%s: unexpected return (%d) from query execution: %s", function_name, SPI_result, rule_sql);
+		return;
+	}
+
+	elog(DEBUG2, "%s: query success, sql: %s, parameter: %s", function_name, rule_sql, rule_stub->data);
+
+	if (SPI_processed > 0 && SPI_tuptable)
+	{
+		char *matched_rule_string;
+		Datum rule_value;
+		bool isnull;
+
+		elog(DEBUG2, "%s: Processing results for: %s, rule: %s", function_name, rule_sql, rule_stub->data);
+		rule_value = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
+		if (isnull)
+		{
+			elog(ERROR, "%s: rule lookup returned a NULL id for %s", function_name, rule_sql);
+			SPI_freetuptable(SPI_tuptable);
+			return;
+		}
+
+		appendStringInfo(result, ", \"rule_id\": %d", DatumGetInt32(rule_value));
+		rule_value = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 2, &isnull);
+		matched_rule_string = TextDatumGetCString(rule_value);
+		debug_append_rule_metadata(result, matched_rule_string);
+		SPI_freetuptable(SPI_tuptable);
+		return;
+	}
+
+	/*
+	 * Some candidate paths do not correspond to a stored rule row. Keep the
+	 * candidate in the debug stream and mark the lookup miss explicitly.
+	 */
+	elog(DEBUG2, "%s: no match found for, sql: %s, parameter: %s", function_name, rule_sql, rule_stub->data);
+	appendStringInfoString(result, ", \"rule_id\": -1");
+	appendStringInfoString(result,
+			       ", \"rule_string\": null"
+			       ", \"rule_type_code\": null"
+			       ", \"rule_type\": null"
+			       ", \"rule_weight\": null");
+}
+
+typedef struct StdAddrField {
+	const char *json_name;
+	size_t offset;
+} StdAddrField;
+
+/*
+ * Keep the debug JSON and composite tuple materialization in lockstep by
+ * describing the STDADDR layout once, next to the code that emits it.
+ */
+static const StdAddrField stdaddr_fields[] = {
+    {"building", offsetof(STDADDR, building)},
+    {"house_num", offsetof(STDADDR, house_num)},
+    {"predir", offsetof(STDADDR, predir)},
+    {"qual", offsetof(STDADDR, qual)},
+    {"pretype", offsetof(STDADDR, pretype)},
+    {"name", offsetof(STDADDR, name)},
+    {"suftype", offsetof(STDADDR, suftype)},
+    {"sufdir", offsetof(STDADDR, sufdir)},
+    {"ruralroute", offsetof(STDADDR, ruralroute)},
+    {"extra", offsetof(STDADDR, extra)},
+    {"city", offsetof(STDADDR, city)},
+    {"state", offsetof(STDADDR, state)},
+    {"country", offsetof(STDADDR, country)},
+    {"postcode", offsetof(STDADDR, postcode)},
+    {"box", offsetof(STDADDR, box)},
+    {"unit", offsetof(STDADDR, unit)},
+};
+
+static const char *
+stdaddr_field_value(const STDADDR *stdaddr, size_t offset)
+{
+	const char *const *field_value;
+
+	if (!stdaddr)
+		return NULL;
+
+	field_value = (const char *const *)((const char *)stdaddr + offset);
+	return *field_value;
+}
+
+/* Render the normalized address in the same field order as tuple output. */
+static void
+append_debug_stdaddr_json(StringInfo result, const STDADDR *stdaddr)
+{
+	bool need_comma = false;
+
+	appendStringInfoString(result, ",\"stdaddr\": {");
+	for (size_t i = 0; i < lengthof(stdaddr_fields); i++)
+	{
+		const char *field_value = stdaddr_field_value(stdaddr, stdaddr_fields[i].offset);
+
+		if (need_comma)
+			appendStringInfoChar(result, ',');
+
+		appendStringInfo(result,
+				 "\"%s\": %s",
+				 stdaddr_fields[i].json_name,
+				 field_value ? quote_identifier(field_value) : "null");
+		need_comma = true;
+	}
+	appendStringInfoChar(result, '}');
+}
+
+/*
+ * Parse an address-like string with the state hash loaded. parseaddress()
+ * rewrites its input buffer, so always hand it a private copy.
+ */
+static ADDRESS *
+parse_address_input(const char *function_name, const char *raw_address)
+{
+	ADDRESS *parsed_address;
+	char *parse_input;
+	HHash state_hash;
+	int err;
+
+	memset(&state_hash, 0, sizeof(state_hash));
+
+	err = load_state_hash(&state_hash);
+	if (err)
+	{
+		free_state_hash(&state_hash);
+		elog(ERROR, "%s: load_state_hash() failed(%d)!", function_name, err);
+		return NULL;
+	}
+
+	parse_input = raw_address ? pstrdup(raw_address) : NULL;
+	parsed_address = parseaddress(&state_hash, parse_input, &err);
+	free_state_hash(&state_hash);
+	if (parse_input)
+		pfree(parse_input);
+	if (!parsed_address)
+	{
+		elog(ERROR, "%s: parseaddress() failed!", function_name);
+		return NULL;
+	}
+
+	return parsed_address;
+}
+
+/*
+ * Shared input preparation for the one-string SQL entry points. It returns the
+ * parsed ADDRESS, materializes the micro string, and optionally renders a
+ * macro display string for debug output.
+ */
+static ADDRESS *
+parse_address_wrapper_input(const char *function_name, const char *raw_address, char **micro_out, StringInfo macro_out)
+{
+	ADDRESS *parsed_address = parse_address_input(function_name, raw_address);
+
+	if (parsed_address->street2)
+		elog(ERROR, "standardize_address() can not be passed an intersection.");
+	if (!parsed_address->address1)
+		elog(ERROR, "standardize_address() could not parse the address into components.");
+
+	*micro_out = pstrdup(parsed_address->address1);
+	if (macro_out)
+	{
+		const char *components[] = {
+		    parsed_address->city,
+		    parsed_address->st,
+		    parsed_address->zip,
+		    parsed_address->cc,
+		};
+
+		resetStringInfo(macro_out);
+		for (size_t i = 0; i < lengthof(components); i++)
+		{
+			if (components[i] && components[i][0] != '\0')
+				appendStringInfo(macro_out, "%s,", components[i]);
+		}
+	}
+	return parsed_address;
+}
+
+/*
+ * The explicit SQL macro argument models city/state/postcode text, not a full
+ * address. parseaddress() mostly gives us that split already, but when a city
+ * prefix is mistaken for address1 (for example "ST PAUL, MN 55105"), fold it
+ * back into the city component. Also ignore parseaddress()'s default country
+ * inference here, because the caller did not supply a country field.
+ */
+static ADDRESS *
+parse_macro_input(const char *function_name, const char *raw_macro)
+{
+	ADDRESS *parsed_macro = parse_address_input(function_name, raw_macro);
+	bool has_macro_tail =
+	    (parsed_macro->st && parsed_macro->st[0] != '\0') || (parsed_macro->zip && parsed_macro->zip[0] != '\0');
+
+	if (has_macro_tail && parsed_macro->address1 && parsed_macro->address1[0] != '\0' && !parsed_macro->num &&
+	    !parsed_macro->street && !parsed_macro->street2)
+	{
+		parsed_macro->city = (parsed_macro->city && parsed_macro->city[0] != '\0')
+					 ? psprintf("%s %s", parsed_macro->address1, parsed_macro->city)
+					 : pstrdup(parsed_macro->address1);
+		parsed_macro->address1 = NULL;
+	}
+
+	parsed_macro->cc = NULL;
+	return parsed_macro;
+}
+
+PG_FUNCTION_INFO_V1(debug_standardize_address);
+
+Datum
+debug_standardize_address(PG_FUNCTION_ARGS)
+{
+	STANDARDIZER *std;
+	char *lextab;
+	char *gaztab;
+	char *rultab;
+	char *micro;
+	StringInfo macro = makeStringInfo();
+	STDADDR *stdaddr;
+	ADDRESS *parsed_address = NULL;
+	ADDRESS *parsed_macro = NULL;
+	StringInfo result = makeStringInfo();
+
+	elog(DEBUG2, "Start %s", __func__);
+	initStringInfo(result);
+
+	appendStringInfoChar(result, '{');
+
+	lextab = text_to_cstring(PG_GETARG_TEXT_P(0));
+	gaztab = text_to_cstring(PG_GETARG_TEXT_P(1));
+	rultab = text_to_cstring(PG_GETARG_TEXT_P(2));
+	micro = text_to_cstring(PG_GETARG_TEXT_P(3));
+
+	if ((PG_NARGS() > 4) && (!PG_ARGISNULL(4)))
+	{
+		appendStringInfoString(macro, text_to_cstring(PG_GETARG_TEXT_P(4)));
+		if (macro->len > 0)
+			parsed_macro = parse_macro_input(__func__, macro->data);
+	}
+	else
+	{
+		parsed_address = parse_address_wrapper_input(__func__, micro, &micro, macro);
+	}
+
+	appendStringInfo(result, "\"micro\":%s,\"macro\":%s,", quote_identifier(micro), quote_identifier(macro->data));
+
+	std = GetStdUsingFCInfo(fcinfo, lextab, gaztab, rultab);
+	if (!std)
+	{
+		elog(ERROR, "%s failed to create the address standardizer object!", __func__);
+	}
+
+	if (parsed_address)
+	{
+		elog(DEBUG2, "%s: calling std_standardize('%s', ...)", __func__, micro);
+		stdaddr = std_standardize(
+		    std, micro, parsed_address->city, parsed_address->st, parsed_address->zip, parsed_address->cc, 0);
+	}
+	else if (parsed_macro)
+	{
+		elog(DEBUG2, "%s: calling std_standardize('%s', ... parsed macro)", __func__, micro);
+		stdaddr = std_standardize(
+		    std, micro, parsed_macro->city, parsed_macro->st, parsed_macro->zip, parsed_macro->cc, 0);
+	}
+	else
+	{
+		elog(DEBUG2, "%s: calling std_standardize_mm('%s', '%s')", __func__, micro, macro->data);
+		stdaddr = std_standardize_mm(std, micro, macro->data, 0);
+	}
+
+	{
+		bool need_rule_comma = false;
+		STAND_PARAM *stand_param = std->misc_stand;
+		STZ_PARAM *stz_info = stand_param->stz_info;
+		STZ **stz_list = stz_info->stz_array;
+		int stz_count = stz_info->stz_list_size;
+		StringInfoData rule_in;
+		StringInfoData rule_out;
+		StringInfoData rule_stub;
+		StringInfo rule_sql;
+		SPIPlanPtr rule_plan = NULL;
+		Oid rule_argtypes[1] = {CSTRINGOID};
+		int spi_connect_result;
+
+		elog(DEBUG2, "%s back from fetch_stdaddr", __func__);
+		initStringInfo(&rule_in);
+		initStringInfo(&rule_out);
+		initStringInfo(&rule_stub);
+
+		elog(DEBUG2, "Input tokenization candidates:\n");
+		debug_append_input_tokens_json(result, stand_param);
+
+		appendStringInfoString(result, ", \"rules\":[");
+		rule_sql = makeStringInfo();
+		appendStringInfo(
+		    rule_sql, "SELECT id, rule FROM %s WHERE rule LIKE $1::varchar", quote_identifier(rultab));
+
+		spi_connect_result = SPI_connect();
+		if (spi_connect_result != SPI_OK_CONNECT)
+		{
+			elog(ERROR, "%s: Could not connect to the SPI manager", __func__);
+			return -1;
+		}
+		rule_plan = SPI_prepare(rule_sql->data, 1, rule_argtypes);
+		if (!rule_plan)
+		{
+			elog(ERROR,
+			     "%s: unexpected return (%d) from query preparation: %s, (%d)",
+			     __func__,
+			     SPI_result,
+			     rule_sql->data,
+			     SPI_ERROR_UNCONNECTED);
+			return -1;
+		}
+		SPI_keepplan(rule_plan);
+
+		for (int stz_no = 0; stz_no < stz_count; stz_no++)
+		{
+			bool candidate_has_sparse_tokens;
+			STZ *candidate = stz_list[stz_no];
+
+			if (need_rule_comma)
+				appendStringInfoChar(result, ',');
+
+			need_rule_comma = true;
+
+			elog(DEBUG2, "Raw standardization %d with score %f:\n", stz_no, candidate->score);
+			appendStringInfo(result, "{\"score\": %f,", candidate->score);
+			appendStringInfo(result, "\"raw_score\": %f,", candidate->raw_score);
+			appendStringInfo(result, "\"no\": %d,", stz_no);
+
+			candidate_has_sparse_tokens = debug_append_candidate_rule_tokens_json(
+			    result, &rule_in, &rule_out, stand_param, candidate);
+			/*
+			 * This implementation only treats the rule-table lookup as reliable
+			 * when the candidate covers every lexeme position it claims to
+			 * describe. Sparse candidates may still be informative in debug
+			 * output, but a prefix lookup may bind them to an unrelated stored
+			 * rule row.
+			 */
+			if (!candidate_has_sparse_tokens)
+			{
+				debug_lookup_matching_rule_json(
+				    result, __func__, rule_sql->data, rule_plan, &rule_stub, &rule_in, &rule_out);
+			}
+			else
+			{
+				/*
+				 * Sparse or unterminated candidates may still be useful to inspect,
+				 * but their token stream is not complete enough for a trustworthy
+				 * rule-table lookup.
+				 */
+				appendStringInfoString(result,
+						       ", \"rule_stub_string\": null"
+						       ", \"rule_id\": null"
+						       ", \"rule_string\": null"
+						       ", \"rule_type_code\": null"
+						       ", \"rule_type\": null"
+						       ", \"rule_weight\": null");
+			}
+
+			appendStringInfoChar(result, '}');
+		}
+		SPI_finish();
+	}
+	appendStringInfoChar(result, ']');
+	elog(DEBUG2, "%s: setup values json", __func__);
+	append_debug_stdaddr_json(result, stdaddr);
+	stdaddr_free(stdaddr);
+	appendStringInfoChar(result, '}');
+	PG_RETURN_TEXT_P(cstring_to_text_with_len(result->data, result->len));
+}
+
+/* Mirror stdaddr_fields when materializing the SQL composite result. */
+static void
+fill_stdaddr_values(char **values, const STDADDR *stdaddr)
+{
+	for (size_t i = 0; i < lengthof(stdaddr_fields); i++)
+	{
+		const char *field_value = stdaddr_field_value(stdaddr, stdaddr_fields[i].offset);
+
+		values[i] = field_value ? pstrdup(field_value) : NULL;
+	}
+}
+
+/*
  * The signature for standardize_address follows. The lextab, gaztab and
  * rultab should not change once the reference has been standardized and
  * the same tables must be used for a geocode request as were used on the
@@ -58,394 +725,6 @@ Datum standardize_address1(PG_FUNCTION_ARGS);
  *
  *    rule text
  */
-PG_FUNCTION_INFO_V1(debug_standardize_address);
-
-Datum
-debug_standardize_address(PG_FUNCTION_ARGS)
-{
-	STANDARDIZER *std;
-	char *lextab;
-	char *gaztab;
-	char *rultab;
-	char *micro;
-	StringInfo macro = makeStringInfo();
-	STDADDR *stdaddr;
-	char rule_in[100];
-	char rule_out[100];
-	char temp[100];
-	int stz_no, n;
-	DEF *__def__;
-	STZ **__stz_list__;
-	STAND_PARAM *ms;
-	STZ_PARAM *__stz_info__;
-	int lex_pos;
-	int started;
-	STZ *__cur_stz__;
-	/**start: variables for filtering rules **/
-	StringInfo sql;
-	SPIPlanPtr plan = NULL;
-	Datum datrul;
-	bool isnull;
-	Datum values[1];
-	Oid argtypes[1];
-	int spi_result;
-	int spi_conn_ret;
-	/**stop: variables for filtering rules **/
-	StringInfo result = makeStringInfo();
-
-	elog(DEBUG2, "Start %s", __func__);
-	initStringInfo(result);
-
-	appendStringInfoChar(result, '{');
-
-	lextab = text_to_cstring(PG_GETARG_TEXT_P(0));
-	gaztab = text_to_cstring(PG_GETARG_TEXT_P(1));
-	rultab = text_to_cstring(PG_GETARG_TEXT_P(2));
-	micro = text_to_cstring(PG_GETARG_TEXT_P(3));
-
-	if ((PG_NARGS() > 4) && (!PG_ARGISNULL(4)))
-	{
-		initStringInfo(macro);
-		appendStringInfo(macro, "%s", text_to_cstring(PG_GETARG_TEXT_P(4)));
-	}
-	else
-	{
-		ADDRESS *paddr;
-		HHash *stH;
-		int err;
-		stH = (HHash *)palloc0(sizeof(HHash));
-		if (!stH)
-		{
-			elog(ERROR, "%s: Failed to allocate memory for hash!", __func__);
-			return -1;
-		}
-
-		elog(DEBUG1, "going to load_state_hash");
-
-		err = load_state_hash(stH);
-		if (err)
-		{
-			elog(DEBUG2, "got err=%d from load_state_hash().", err);
-#ifdef USE_HSEARCH
-			elog(DEBUG2, "calling hdestroy_r(stH).");
-			hdestroy_r(stH);
-#endif
-			elog(ERROR, "standardize_address: load_state_hash() failed(%d)!", err);
-			return -1;
-		}
-
-		elog(DEBUG2, "calling parseaddress()");
-		paddr = parseaddress(stH, micro, &err);
-
-		if (!paddr)
-		{
-			elog(ERROR, "parse_address: parseaddress() failed!");
-			return -1;
-		}
-
-		/* check for errors and comput length of macro string */
-		if (paddr->street2)
-			elog(ERROR, "standardize_address() can not be passed an intersection.");
-		if (!paddr->address1)
-			elog(ERROR, "standardize_address() could not parse the address into components.");
-
-		/* create micro and macro from paddr */
-		micro = pstrdup(paddr->address1);
-		initStringInfo(macro);
-
-		if (paddr->city)
-		{
-			appendStringInfo(macro, "%s,", paddr->city);
-		}
-		if (paddr->st)
-		{
-			appendStringInfo(macro, "%s,", paddr->st);
-		}
-		if (paddr->zip)
-		{
-			appendStringInfo(macro, "%s,", paddr->zip);
-		}
-		if (paddr->cc)
-		{
-			appendStringInfo(macro, "%s,", paddr->cc);
-		}
-	}
-	appendStringInfoString(result, "\"micro\":");
-	appendStringInfo(result, "%s", quote_identifier(micro));
-	appendStringInfoString(result, ",");
-
-	appendStringInfoString(result, "\"macro\":");
-	appendStringInfo(result, "%s", quote_identifier(macro->data));
-	appendStringInfoString(result, ",");
-
-	std = GetStdUsingFCInfo(fcinfo, lextab, gaztab, rultab);
-	if (!std)
-	{
-		elog(ERROR, "%s failed to create the address standardizer object!", __func__);
-	}
-
-	elog(DEBUG2, "%s: calling std_standardize_mm('%s', '%s')", __func__, micro, macro->data);
-	stdaddr = std_standardize_mm(std, micro, macro->data, 0);
-
-	ms = std->misc_stand;
-	__stz_info__ = ms->stz_info;
-	elog(DEBUG2, "%s back from fetch_stdaddr", __func__);
-
-	elog(DEBUG2, "Input tokenization candidates:\n");
-	appendStringInfoString(result, "\"input_tokens\":[");
-	started = 0;
-
-	for (lex_pos = FIRST_LEX_POS; lex_pos < ms->LexNum; lex_pos++)
-	{
-
-		for (__def__ = ms->lex_vector[lex_pos].DefList; __def__ != NULL; __def__ = __def__->Next)
-		{
-			if (started > 0)
-			{
-				appendStringInfoChar(result, ',');
-			}
-			appendStringInfo(result, "{\"pos\": %u,", lex_pos);
-			appendStringInfoString(result, "\"word\":");
-			appendStringInfoString(result, quote_identifier(ms->lex_vector[lex_pos].Text));
-			appendStringInfoString(result, ",\"stdword\":");
-			appendStringInfoString(
-			    result,
-			    quote_identifier(((__def__->Protect) ? ms->lex_vector[lex_pos].Text : __def__->Standard)));
-			appendStringInfoString(result, ",\"token\":");
-			appendStringInfoString(result, quote_identifier(in_symb_name(__def__->Type)));
-			appendStringInfo(result, ",\"token-code\": %u}", __def__->Type);
-			elog(DEBUG2,
-			     "\t(%d) stdword: %s, tok: %d (%s)\n",
-			     lex_pos,
-			     ((__def__->Protect) ? ms->lex_vector[lex_pos].Text : __def__->Standard),
-			     __def__->Type,
-			     in_symb_name(__def__->Type));
-			started++;
-		}
-	}
-	appendStringInfoChar(result, ']');
-
-	n = __stz_info__->stz_list_size;
-	__stz_list__ = __stz_info__->stz_array;
-	started = 0;
-
-	appendStringInfoString(result, ", \"rules\":[");
-	sql = makeStringInfo();
-	appendStringInfo(sql, "SELECT id, rule FROM %s ", quote_identifier(rultab));
-	appendStringInfoString(sql, "WHERE rule LIKE $1::varchar");
-	argtypes[0] = CSTRINGOID;
-
-	spi_conn_ret = 1;
-	spi_conn_ret = SPI_connect();
-	if (spi_conn_ret != SPI_OK_CONNECT)
-	{
-		elog(ERROR, "%s: Could not connect to the SPI manager", __func__);
-		return -1;
-	};
-	plan = SPI_prepare(sql->data, 1, argtypes);
-	// plan = SPI_prepare("SELECT id, rule FROM us_rules WHERE rule LIKE '1234%'", 0, NULL);
-	if (!plan)
-	{
-		elog(ERROR,
-		     "%s: unexpected return (%d) from query preparation: %s, (%d)",
-		     __func__,
-		     SPI_result,
-		     sql->data,
-		     SPI_ERROR_UNCONNECTED);
-		return -1;
-	}
-	SPI_keepplan(plan);
-
-	for (stz_no = 0; stz_no < n; stz_no++)
-	{
-		if (stz_no > 0)
-		{
-			appendStringInfoChar(result, ',');
-		}
-		strcpy(rule_in, "");
-		strcpy(rule_out, "");
-
-		__cur_stz__ = __stz_list__[stz_no];
-		elog(DEBUG2, "Raw standardization %d with score %f:\n", (stz_no), __cur_stz__->score);
-		appendStringInfo(result, "{\"score\": %f,", __cur_stz__->score);
-		appendStringInfo(result, "\"raw_score\": %f,", __cur_stz__->raw_score);
-		appendStringInfo(result, "\"no\": %d,", stz_no);
-
-		appendStringInfoString(result, "\"rule_tokens\":[");
-		started = 0;
-		for (lex_pos = FIRST_LEX_POS; lex_pos < ms->LexNum; lex_pos++)
-		{
-			SYMB k2;
-			__def__ = __cur_stz__->definitions[lex_pos];
-			k2 = __cur_stz__->output[lex_pos];
-			if (started > 0)
-			{
-				appendStringInfoChar(result, ',');
-				strcat(rule_out, " ");
-				strcat(rule_in, " ");
-			}
-			sprintf(temp, "%d", __def__->Type);
-			strcat(rule_in, temp);
-			sprintf(temp, "%d", k2);
-			strcat(rule_out, temp);
-
-			appendStringInfo(result, "{\"pos\": %u,", lex_pos);
-			appendStringInfo(result, "\"input-token-code\": %d,", __def__->Type);
-			appendStringInfo(result, "\"input-token\": %s,", quote_identifier(in_symb_name(__def__->Type)));
-			appendStringInfo(result, "\"input-word\": %s,", quote_identifier(ms->lex_vector[lex_pos].Text));
-			appendStringInfo(
-			    result,
-			    "\"mapped-word\": %s,",
-			    quote_identifier(((__def__->Protect) ? ms->lex_vector[lex_pos].Text : __def__->Standard)));
-			appendStringInfo(result, "\"output-token-code\": %d,", k2);
-			appendStringInfo(result, "\"output-token\": %s", quote_identifier(out_symb_name(k2)));
-			appendStringInfoChar(result, '}');
-			elog(DEBUG2,
-			     "\t(%d) Input %d (%s) text %s mapped to output %d (%s)\n",
-			     lex_pos,
-			     __def__->Type,
-			     in_symb_name(__def__->Type),
-			     ((__def__->Protect) ? ms->lex_vector[lex_pos].Text : __def__->Standard),
-			     k2,
-			     ((k2 == FAIL) ? "NONE" : out_symb_name(k2)));
-			started++;
-			if (k2 == FAIL)
-				break;
-		}
-
-		appendStringInfoString(result, "]");
-		/* get the sql for the matching rule records */
-		strcpy(temp, "");
-		strcat(temp, rule_in);
-		strcat(temp, " -1 ");
-		strcat(temp, rule_out);
-		strcat(temp, " -1 %");
-		/* execute */
-		values[0] = CStringGetDatum(temp);
-		spi_result = SPI_execute_plan(plan, values, NULL, true, 1);
-
-		// MemoryContextSwitchTo( oldcontext ); /* switch back */
-		if (spi_result != SPI_OK_SELECT)
-		{
-			elog(ERROR,
-			     "%s: unexpected return (%d) from query execution: %s",
-			     __func__,
-			     spi_result,
-			     sql->data);
-			return -1;
-		}
-		else
-		{
-
-			elog(DEBUG2, "%s: query success, sql: %s, parameter: %s", __func__, sql->data, temp);
-		}
-
-		appendStringInfo(result, ", \"rule_stub_string\": %s", quote_identifier(temp));
-
-		if (SPI_processed > 0 && SPI_tuptable != NULL)
-		{
-			elog(DEBUG2, "%s: Processing results for: %s, rule: %s", __func__, sql->data, temp);
-			datrul = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
-			if (isnull)
-			{
-				elog(NOTICE, "%s: No match %s", __func__, sql->data);
-				SPI_freetuptable(SPI_tuptable);
-				return -1;
-			}
-
-			appendStringInfo(result, ", \"rule_id\": %d", DatumGetInt32(datrul));
-			datrul = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 2, &isnull);
-			// char *srule = TextDatumGetCString(datrul);
-			appendStringInfo(
-			    result, ", \"rule_string\": %s", quote_identifier(TextDatumGetCString(datrul)));
-			// appendStringInfoString(result, " -1 ");
-			// appendStringInfo(result, "%s",rule_out);
-			SPI_freetuptable(SPI_tuptable);
-		}
-		else
-		{
-			/** TODO: Figure out why this happens a lot **/
-			elog(DEBUG2, "%s: no match found for, sql: %s, parameter: %s", __func__, sql->data, temp);
-			appendStringInfoString(result, ", \"rule_id\": -1");
-		}
-
-		/**
-		 * TODO:  Add type and weight of rule (parsed from rulestring)
-		 * **/
-		// appendStringInfo(result, " %d", ruleref->Type);
-		// elog(DEBUG2, "Rule  type  %d",  ruleref->Type);
-		/** rule weight **/
-		// appendStringInfo(result, " %d", ruleref->Weight);
-
-		appendStringInfoString(result, "}");
-	}
-	SPI_finish();
-	appendStringInfoChar(result, ']');
-	elog(DEBUG2, "%s: setup values json", __func__);
-	appendStringInfoString(result, ",\"stdaddr\": {");
-	if (stdaddr)
-	{
-		appendStringInfo(result,
-				 "\"building\": %s",
-				 (stdaddr->building ? quote_identifier(pstrdup(stdaddr->building)) : "null"));
-
-		appendStringInfo(result,
-				 ",\"house_num\": %s",
-				 (stdaddr->house_num ? quote_identifier(pstrdup(stdaddr->house_num)) : "null"));
-
-		appendStringInfo(
-		    result, ",\"predir\": %s", (stdaddr->predir ? quote_identifier(pstrdup(stdaddr->predir)) : "null"));
-
-		appendStringInfo(
-		    result, ",\"qual\": %s", (stdaddr->qual ? quote_identifier(pstrdup(stdaddr->qual)) : "null"));
-
-		appendStringInfo(result,
-				 ",\"pretype\": %s",
-				 (stdaddr->pretype ? quote_identifier(pstrdup(stdaddr->pretype)) : "null"));
-
-		appendStringInfo(
-		    result, ",\"name\": %s", (stdaddr->name ? quote_identifier(pstrdup(stdaddr->name)) : "null"));
-
-		appendStringInfo(result,
-				 ",\"suftype\": %s",
-				 (stdaddr->suftype ? quote_identifier(pstrdup(stdaddr->suftype)) : "null"));
-
-		appendStringInfo(
-		    result, ",\"sufdir\": %s", (stdaddr->sufdir ? quote_identifier(pstrdup(stdaddr->sufdir)) : "null"));
-
-		appendStringInfo(result,
-				 ",\"ruralroute\": %s",
-				 (stdaddr->ruralroute ? quote_identifier(pstrdup(stdaddr->ruralroute)) : "null"));
-
-		appendStringInfo(
-		    result, ",\"extra\": %s", (stdaddr->extra ? quote_identifier(pstrdup(stdaddr->extra)) : "null"));
-
-		appendStringInfo(
-		    result, ",\"city\": %s", (stdaddr->city ? quote_identifier(pstrdup(stdaddr->city)) : "null"));
-
-		appendStringInfo(
-		    result, ",\"state\": %s", (stdaddr->state ? quote_identifier(pstrdup(stdaddr->state)) : "null"));
-
-		appendStringInfo(result,
-				 ",\"country\": %s",
-				 (stdaddr->country ? quote_identifier(pstrdup(stdaddr->country)) : "null"));
-
-		appendStringInfo(result,
-				 ",\"postcode\": %s",
-				 (stdaddr->postcode ? quote_identifier(pstrdup(stdaddr->postcode)) : "null"));
-
-		appendStringInfo(
-		    result, ",\"box\": %s", (stdaddr->box ? quote_identifier(pstrdup(stdaddr->box)) : "null"));
-
-		appendStringInfo(
-		    result, ",\"unit\": %s", (stdaddr->unit ? quote_identifier(pstrdup(stdaddr->unit)) : "null"));
-	}
-	stdaddr_free(stdaddr);
-	appendStringInfoString(result, "}");
-	appendStringInfoString(result, "}");
-	PG_RETURN_TEXT_P(cstring_to_text_with_len(result->data, result->len));
-}
-
 PG_FUNCTION_INFO_V1(standardize_address);
 
 Datum
@@ -462,8 +741,8 @@ standardize_address(PG_FUNCTION_ARGS)
 	Datum result;
 	STDADDR *stdaddr;
 	char **values;
-	int k;
 	HeapTuple tuple;
+	ADDRESS *parsed_macro = NULL;
 
 	DBG("Start standardize_address");
 
@@ -475,9 +754,8 @@ standardize_address(PG_FUNCTION_ARGS)
 
 	DBG("calling RelationNameGetTupleDesc");
 	if (get_call_result_type(fcinfo, NULL, &tuple_desc) != TYPEFUNC_COMPOSITE)
-	{
 		elog(ERROR, "standardize_address() was called in a way that cannot accept record as a result");
-	}
+
 	BlessTupleDesc(tuple_desc);
 	attinmeta = TupleDescGetAttInMetadata(tuple_desc);
 
@@ -486,45 +764,33 @@ standardize_address(PG_FUNCTION_ARGS)
 	if (!std)
 		elog(ERROR, "standardize_address() failed to create the address standardizer object!");
 
-	DBG("calling std_standardize_mm('%s', '%s')", micro, macro);
-	stdaddr = std_standardize_mm(std, micro, macro, 0);
+	if (macro && macro[0] != '\0')
+		parsed_macro = parse_macro_input(__func__, macro);
+
+	if (parsed_macro)
+	{
+		DBG("calling std_standardize('%s', ... parsed macro)", micro);
+		stdaddr = std_standardize(
+		    std, micro, parsed_macro->city, parsed_macro->st, parsed_macro->zip, parsed_macro->cc, 0);
+	}
+	else
+	{
+		DBG("calling std_standardize_mm('%s', '%s')", micro, macro);
+		stdaddr = std_standardize_mm(std, micro, macro, 0);
+	}
 
 	DBG("back from fetch_stdaddr");
 
-	values = (char **)palloc(16 * sizeof(char *));
-	for (k = 0; k < 16; k++)
-	{
-		values[k] = NULL;
-	}
+	values = (char **)palloc0(16 * sizeof(char *));
 	DBG("setup values array for natts=%d", tuple_desc->natts);
-	if (stdaddr)
-	{
-		values[0] = stdaddr->building ? pstrdup(stdaddr->building) : NULL;
-		values[1] = stdaddr->house_num ? pstrdup(stdaddr->house_num) : NULL;
-		values[2] = stdaddr->predir ? pstrdup(stdaddr->predir) : NULL;
-		values[3] = stdaddr->qual ? pstrdup(stdaddr->qual) : NULL;
-		values[4] = stdaddr->pretype ? pstrdup(stdaddr->pretype) : NULL;
-		values[5] = stdaddr->name ? pstrdup(stdaddr->name) : NULL;
-		values[6] = stdaddr->suftype ? pstrdup(stdaddr->suftype) : NULL;
-		values[7] = stdaddr->sufdir ? pstrdup(stdaddr->sufdir) : NULL;
-		values[8] = stdaddr->ruralroute ? pstrdup(stdaddr->ruralroute) : NULL;
-		values[9] = stdaddr->extra ? pstrdup(stdaddr->extra) : NULL;
-		values[10] = stdaddr->city ? pstrdup(stdaddr->city) : NULL;
-		values[11] = stdaddr->state ? pstrdup(stdaddr->state) : NULL;
-		values[12] = stdaddr->country ? pstrdup(stdaddr->country) : NULL;
-		values[13] = stdaddr->postcode ? pstrdup(stdaddr->postcode) : NULL;
-		values[14] = stdaddr->box ? pstrdup(stdaddr->box) : NULL;
-		values[15] = stdaddr->unit ? pstrdup(stdaddr->unit) : NULL;
-	}
+	fill_stdaddr_values(values, stdaddr);
 
 	DBG("calling heap_form_tuple");
 	tuple = BuildTupleFromCStrings(attinmeta, values);
 
-	/* make the tuple into a datum */
 	DBG("calling HeapTupleGetDatum");
 	result = HeapTupleGetDatum(tuple);
 
-	/* clean up (this is not really necessary */
 	DBG("freeing values, nulls, and stdaddr");
 	stdaddr_free(stdaddr);
 
@@ -545,15 +811,11 @@ standardize_address1(PG_FUNCTION_ARGS)
 	char *rultab;
 	char *addr;
 	char *micro;
-	StringInfo macro = makeStringInfo();
 	Datum result;
 	STDADDR *stdaddr;
 	char **values;
-	int k;
 	HeapTuple tuple;
-	ADDRESS *paddr;
-	HHash *stH;
-	int err;
+	ADDRESS *parsed_address;
 
 	DBG("Start standardize_address");
 
@@ -564,119 +826,36 @@ standardize_address1(PG_FUNCTION_ARGS)
 
 	DBG("calling RelationNameGetTupleDesc");
 	if (get_call_result_type(fcinfo, NULL, &tuple_desc) != TYPEFUNC_COMPOSITE)
-	{
 		elog(ERROR, "standardize_address() was called in a way that cannot accept record as a result");
-	}
+
 	BlessTupleDesc(tuple_desc);
 	attinmeta = TupleDescGetAttInMetadata(tuple_desc);
 
-	DBG("Got tupdesc, allocating HHash");
-
-	stH = (HHash *)palloc0(sizeof(HHash));
-	if (!stH)
-	{
-		elog(ERROR, "standardize_address: Failed to allocate memory for hash!");
-		return -1;
-	}
-
-	DBG("going to load_state_hash");
-
-	err = load_state_hash(stH);
-	if (err)
-	{
-		DBG("got err=%d from load_state_hash().", err);
-#ifdef USE_HSEARCH
-		DBG("calling hdestroy_r(stH).");
-		hdestroy_r(stH);
-#endif
-		elog(ERROR, "standardize_address: load_state_hash() failed(%d)!", err);
-		return -1;
-	}
-
-	DBG("calling parseaddress()");
-	paddr = parseaddress(stH, addr, &err);
-	if (!paddr)
-	{
-		elog(ERROR, "parse_address: parseaddress() failed!");
-		return -1;
-	}
-
-	/* check for errors and comput length of macro string */
-	if (paddr->street2)
-		elog(ERROR, "standardize_address() can not be passed an intersection.");
-	if (!paddr->address1)
-		elog(ERROR, "standardize_address() could not parse the address into components.");
-
-	/* create micro and macro from paddr */
-	micro = pstrdup(paddr->address1);
-	initStringInfo(macro);
-
-	if (paddr->city)
-	{
-		appendStringInfo(macro, "%s,", paddr->city);
-	}
-	if (paddr->st)
-	{
-		appendStringInfo(macro, "%s,", paddr->st);
-	}
-	if (paddr->zip)
-	{
-		appendStringInfo(macro, "%s,", paddr->zip);
-	}
-	if (paddr->cc)
-	{
-		appendStringInfo(macro, "%s,", paddr->cc);
-	}
+	parsed_address = parse_address_wrapper_input(__func__, addr, &micro, NULL);
 
 	DBG("calling GetStdUsingFCInfo(fcinfo, '%s', '%s', '%s')", lextab, gaztab, rultab);
 	std = GetStdUsingFCInfo(fcinfo, lextab, gaztab, rultab);
 	if (!std)
 		elog(ERROR, "standardize_address() failed to create the address standardizer object!");
 
-	DBG("calling std_standardize_mm('%s', '%s')", micro, macro->data);
-	stdaddr = std_standardize_mm(std, micro, macro->data, 0);
+	DBG("calling std_standardize('%s', ...)", micro);
+	stdaddr = std_standardize(
+	    std, micro, parsed_address->city, parsed_address->st, parsed_address->zip, parsed_address->cc, 0);
 
 	DBG("back from fetch_stdaddr");
 
-	values = (char **)palloc(16 * sizeof(char *));
-	for (k = 0; k < 16; k++)
-	{
-		values[k] = NULL;
-	}
+	values = (char **)palloc0(16 * sizeof(char *));
 	DBG("setup values array for natts=%d", tuple_desc->natts);
-	if (stdaddr)
-	{
-		values[0] = stdaddr->building ? pstrdup(stdaddr->building) : NULL;
-		values[1] = stdaddr->house_num ? pstrdup(stdaddr->house_num) : NULL;
-		values[2] = stdaddr->predir ? pstrdup(stdaddr->predir) : NULL;
-		values[3] = stdaddr->qual ? pstrdup(stdaddr->qual) : NULL;
-		values[4] = stdaddr->pretype ? pstrdup(stdaddr->pretype) : NULL;
-		values[5] = stdaddr->name ? pstrdup(stdaddr->name) : NULL;
-		values[6] = stdaddr->suftype ? pstrdup(stdaddr->suftype) : NULL;
-		values[7] = stdaddr->sufdir ? pstrdup(stdaddr->sufdir) : NULL;
-		values[8] = stdaddr->ruralroute ? pstrdup(stdaddr->ruralroute) : NULL;
-		values[9] = stdaddr->extra ? pstrdup(stdaddr->extra) : NULL;
-		values[10] = stdaddr->city ? pstrdup(stdaddr->city) : NULL;
-		values[11] = stdaddr->state ? pstrdup(stdaddr->state) : NULL;
-		values[12] = stdaddr->country ? pstrdup(stdaddr->country) : NULL;
-		values[13] = stdaddr->postcode ? pstrdup(stdaddr->postcode) : NULL;
-		values[14] = stdaddr->box ? pstrdup(stdaddr->box) : NULL;
-		values[15] = stdaddr->unit ? pstrdup(stdaddr->unit) : NULL;
-	}
+	fill_stdaddr_values(values, stdaddr);
 
 	DBG("calling heap_form_tuple");
 	tuple = BuildTupleFromCStrings(attinmeta, values);
 
-	/* make the tuple into a datum */
 	DBG("calling HeapTupleGetDatum");
 	result = HeapTupleGetDatum(tuple);
 
-	/* clean up (this is not really necessary */
 	DBG("freeing values, nulls, and stdaddr");
 	stdaddr_free(stdaddr);
-
-	DBG("freeing values, hash, and paddr");
-	free_state_hash(stH);
 
 	DBG("returning standardized result");
 	PG_RETURN_DATUM(result);
