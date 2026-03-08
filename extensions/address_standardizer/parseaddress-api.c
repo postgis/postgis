@@ -12,8 +12,6 @@
  *
  * TODO:
  *   * add recognition of country before or after postalcode
- *   * have clean trailing punctionation return a code if a comma was removed
- *     if comma and no state then there is probably no city
  *
  */
 
@@ -45,24 +43,73 @@
 	} while (0)
 #endif
 
-const char *get_state_regex(char *st);
+const char *get_state_regex(const char *st);
 const char *parseaddress_cvsid();
 char *clean_leading_punct(char *s);
+static int is_parse_separator(unsigned char c);
+static size_t normalize_address_input(char *s);
+
+static int
+is_parse_separator(unsigned char c)
+{
+	return ispunct(c) || isspace(c);
+}
+
+static size_t
+normalize_address_input(char *s)
+{
+	size_t write_pos = 0;
+	bool previous_was_space = false;
+
+	if (!s)
+		return 0;
+
+	/*
+	 * Canonicalize the input in place before regex parsing:
+	 *   * periods behave like separators
+	 *   * repeated whitespace collapses to one space
+	 *   * trailing whitespace is removed
+	 */
+	for (size_t read_pos = 0; s[read_pos] != '\0'; read_pos++)
+	{
+		unsigned char current = (s[read_pos] == '.') ? ' ' : (unsigned char)s[read_pos];
+
+		if (isspace(current))
+		{
+			if (!write_pos || previous_was_space)
+				continue;
+
+			previous_was_space = true;
+		}
+		else
+		{
+			previous_was_space = false;
+		}
+
+		s[write_pos] = (char)current;
+		write_pos++;
+	}
+
+	if (write_pos && isspace((unsigned char)s[write_pos - 1]))
+		write_pos--;
+
+	s[write_pos] = '\0';
+	return write_pos;
+}
 
 const char *
-get_state_regex(char *st)
+get_state_regex(const char *st)
 {
-	int i;
-	int cmp;
 #include "parseaddress-stcities.h"
 
 	if (!st || strlen(st) != 2)
 		return NULL;
 
-	for (i = 0; i < NUM_STATES; i++)
+	for (int i = 0; i < NUM_STATES; i++)
 	{
-		cmp = strcmp(states[i], st);
-		if (cmp == 0)
+		int cmp = strcmp(states[i], st);
+
+		if (!cmp)
 			return stcities[i];
 		else if (cmp > 0)
 			return NULL;
@@ -70,18 +117,30 @@ get_state_regex(char *st)
 	return NULL;
 }
 
+/*
+ * Trim trailing punctuation and whitespace.
+ * Returns 1 if a trailing comma was removed, 0 otherwise.
+ */
 int
 clean_trailing_punct(char *s)
 {
-	size_t i;
+	size_t trim_pos;
 	int ret = 0;
 
-	i = strlen(s) - 1;
-	while (ispunct(s[i]) || isspace(s[i]))
+	if (!s || *s == '\0')
+		return 0;
+
+	trim_pos = strlen(s);
+	while (trim_pos > 0)
 	{
-		if (s[i] == ',')
+		char trailing = s[--trim_pos];
+
+		if (!is_parse_separator((unsigned char)trailing))
+			break;
+
+		if (trailing == ',')
 			ret = 1;
-		s[i--] = '\0';
+		s[trim_pos] = '\0';
 	}
 	return ret;
 }
@@ -89,22 +148,26 @@ clean_trailing_punct(char *s)
 char *
 clean_leading_punct(char *s)
 {
-	size_t i;
+	if (!s)
+		return NULL;
 
-	for (i = 0; i < strlen(s); i++)
-		if (!(ispunct(s[i]) || isspace(s[i])))
-			break;
+	while (*s != '\0' && is_parse_separator((unsigned char)*s))
+		s++;
 
-	return s + i;
+	return s;
 }
 
 void
 strtoupper(char *s)
 {
-	size_t i;
+	if (!s)
+		return;
 
-	for (i = 0; i < strlen(s); i++)
-		s[i] = toupper(s[i]);
+	while (*s != '\0')
+	{
+		*s = toupper((unsigned char)*s);
+		s++;
+	}
 }
 
 #if PCRE_VERSION <= 1
@@ -125,7 +188,7 @@ match(char *pattern, char *s, int *ovect, int options)
 
 	if (rc < 0)
 		return rc;
-	else if (rc == 0)
+	else if (!rc)
 		rc = OVECPAIRS; // more matches than ovect can hold
 
 	return rc;
@@ -139,8 +202,7 @@ match(char *pattern, char *s, int *ovect, int options)
 	pcre2_code *re;
 	int rc;
 	pcre2_match_data *match_data;
-	PCRE2_SIZE *ovect2;
-	int i;
+	const PCRE2_SIZE *ovect2;
 
 	re = pcre2_compile((PCRE2_SPTR8)pattern, PCRE2_ZERO_TERMINATED, options, &errorcode, &erroffset, NULL);
 	if (!re)
@@ -157,7 +219,7 @@ match(char *pattern, char *s, int *ovect, int options)
 		return rc;
 	}
 
-	if (rc == 0)
+	if (!rc)
 	{ // more matches than ovect can hold
 		rc = OVECPAIRS;
 	}
@@ -165,7 +227,7 @@ match(char *pattern, char *s, int *ovect, int options)
 	// copy the results out so we can free everything
 	// before returning
 	ovect2 = pcre2_get_ovector_pointer(match_data);
-	for (i = 0; i < rc; i++)
+	for (int i = 0; i < rc; i++)
 	{
 		ovect[2 * i] = ovect2[2 * i];
 		ovect[2 * i + 1] = ovect2[2 * i + 1];
@@ -191,13 +253,11 @@ parseaddress(HHash *stH, char *s, int *reterr)
 #include "parseaddress-regex.h"
 
 	int ovect[OVECCOUNT];
-	char c;
 	char *stregx;
 	char *caregx;
 	char *state = NULL;
 	char *regx;
-	int mi;
-	size_t ui, uj;
+	size_t normalized_length;
 	int rc;
 	ADDRESS *ret;
 #ifdef USE_HSEARCH
@@ -205,10 +265,13 @@ parseaddress(HHash *stH, char *s, int *reterr)
 	int err;
 #else
 	char *key;
-	char *val;
+	const char *val;
 #endif
 
 	ret = (ADDRESS *)palloc0(sizeof(ADDRESS));
+
+	if (!s || *s == '\0')
+		return ret;
 
 	/* check if we were passed a lat lon */
 	rc = match("^\\s*([-+]?\\d+(\\.\\d*)?)[\\,\\s]+([-+]?\\d+(\\.\\d*)?)\\s*$", s, ovect, 0);
@@ -220,26 +283,16 @@ parseaddress(HHash *stH, char *s, int *reterr)
 		return ret;
 	}
 
-	/* clean the string of multiple white spaces and . */
-
-	for (ui = 0, uj = 0; ui < strlen(s); ui++)
-	{
-		c = s[ui];
-		if (c == '.')
-			c = s[ui] = ' ';
-		if (uj == 0 && isspace(c))
-			continue;
-		if (ui && isspace(c) && isspace(s[ui - 1]))
-			continue;
-		s[uj] = s[ui];
-		uj++;
-	}
-	if (isspace(s[uj - 1]))
-		uj--;
-	s[uj] = '\0';
+	/* Normalize spacing before the heavier regex-based parsing begins. */
+	normalized_length = normalize_address_input(s);
+	if (!normalized_length)
+		return ret;
 
 	/* clean trailing punctuation */
 	(void)clean_trailing_punct(s);
+
+	if (*s == '\0')
+		return ret;
 
 	/* assume country code is US */
 
@@ -367,14 +420,12 @@ parseaddress(HHash *stH, char *s, int *reterr)
 
 	/* look for a comma */
 	DBG("parse_address: s=%s", s);
-	mi = 0;
 
 	regx = "(?:,\\s*)([^,]+)$";
 	rc = match((char *)regx, s, ovect, 0);
 	if (rc <= 0)
 	{
 		/* look for state specific regex */
-		mi = mi + 1;
 		regx = (char *)get_state_regex(ret->st);
 		if (regx)
 			rc = match((char *)regx, s, ovect, 0);
@@ -383,7 +434,6 @@ parseaddress(HHash *stH, char *s, int *reterr)
 	if (rc <= 0 && ret->st && strlen(ret->st))
 	{
 		/* look for state specific regex */
-		mi++;
 		regx = (char *)get_state_regex(ret->st);
 		if (regx)
 			rc = match((char *)regx, s, ovect, 0);
@@ -391,20 +441,20 @@ parseaddress(HHash *stH, char *s, int *reterr)
 	DBG("Checked for state-city: %d", rc);
 	if (rc <= 0)
 	{
-		int i;
 		/* run through the regx's and see if we get a match */
-		for (i = 0; i < nreg; i++)
+		for (int i = 0; i < nreg; i++)
 		{
-			mi++;
 			rc = match((char *)t_regx[i], s, ovect, 0);
 			DBG("    rc=%d, i=%d", rc, i);
 			if (rc > 0)
 				break;
 		}
-		DBG("rc=%d, i=%d", rc, i);
 	}
-	DBG("Checked regexs: %d, %d, %d", rc, ovect[2], ovect[3]);
-	if (rc > 0 && ovect[3] > ovect[2])
+	if (rc > 0)
+		DBG("Checked regexs: %d, %d, %d", rc, ovect[2], ovect[3]);
+	else
+		DBG("Checked regexs: %d", rc);
+	if (rc >= 2 && ovect[3] > ovect[2])
 	{
 		/* we have a match so process it */
 		ret->city = (char *)palloc0((ovect[3] - ovect[2] + 1) * sizeof(char));
@@ -570,9 +620,9 @@ load_state_hash(HHash *stH)
 	int err;
 #else
 	char *key;
-	char *val;
+	const char *val;
 #endif
-	int i, cnt;
+	int cnt;
 
 	/* count the entries above */
 	cnt = 0;
@@ -584,7 +634,7 @@ load_state_hash(HHash *stH)
 #ifdef USE_HSEARCH
 	if (!hcreate_r(cnt * 2, stH))
 		return 1001;
-	for (i = 0; i < cnt; i++)
+	for (int i = 0; i < cnt; i++)
 	{
 		e.key = words[i][0];
 		e.data = words[i][1];
@@ -602,15 +652,14 @@ load_state_hash(HHash *stH)
 #else
 	if (!stH)
 		return 1001;
-	for (i = 0; i < cnt; i++)
+	for (int i = 0; i < cnt; i++)
 	{
 		// DBG("load_hash i=%d", i);
 		key = words[i][0];
 		val = words[i][1];
 		hash_set(stH, key, (void *)val);
 		key = words[i][1];
-		val = words[i][1];
-		hash_set(stH, key, (void *)val);
+		hash_set(stH, key, (void *)words[i][1]);
 	}
 #endif
 	return 0;
