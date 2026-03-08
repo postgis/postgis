@@ -3,6 +3,8 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- #6048, [raster] Preserve requested band order in ST_Clip
+    (Darafei Praliaskouski)
 - Handle a failed point clone during ST_WrapX (Maksim Korotkov)
 - GH-1169, Handle connection-string allocation failure in the shapefile loader
     (Svyatoslav Bogdanov)
