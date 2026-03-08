@@ -11,6 +11,7 @@
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2013 Nathaniel Hunter Clay <clay.nathaniel@gmail.com>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -2993,8 +2994,6 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	bool typbyval;
 	char typalign;
 
-	int i = 0;
-	int j = 0;
 	int k = 0;
 	rtpg_clip_arg arg = NULL;
 	LWGEOM *tmpgeom = NULL;
@@ -3004,12 +3003,6 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	double nodataval;
 
 	double offset[4] = {0.};
-	int input_x = 0;
-	int input_y = 0;
-	int mask_x = 0;
-	int mask_y = 0;
-	int x = 0;
-	int y = 0;
 	int width = 0;
 	int height = 0;
 	int mask_width = 0;
@@ -3145,6 +3138,8 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 
 	/* nband (1) */
 	if (!PG_ARGISNULL(1)) {
+		uint32_t band_count = 0;
+
 		array = PG_GETARG_ARRAYTYPE_P(1);
 		etype = ARR_ELEMTYPE(array);
 		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
@@ -3177,23 +3172,26 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		for (i = 0, j = 0; i < arg->numbands; i++) {
-			if (nulls[i]) continue;
+		for (uint32_t i = 0; i < (uint32_t)arg->numbands; i++)
+		{
+			if (nulls[i])
+				continue;
 
 			switch (etype) {
 				case INT2OID:
-					arg->band[j].nband = DatumGetInt16(e[i]) - 1;
+					arg->band[band_count].nband = DatumGetInt16(e[i]) - 1;
 					break;
 				case INT4OID:
-					arg->band[j].nband = DatumGetInt32(e[i]) - 1;
+					arg->band[band_count].nband = DatumGetInt32(e[i]) - 1;
 					break;
 			}
 
-			j++;
+			band_count++;
 		}
 
-		if (j < arg->numbands) {
-			arg->band = repalloc(arg->band, sizeof(struct rtpg_clip_band_t) * j);
+		if (band_count < (uint32_t)arg->numbands)
+		{
+			arg->band = repalloc(arg->band, sizeof(struct rtpg_clip_band_t) * band_count);
 			if (arg->band == NULL) {
 				rtpg_clip_arg_destroy(arg);
 				PG_FREE_IF_COPY(pgraster, 0);
@@ -3202,12 +3200,14 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 			}
 
-			arg->numbands = j;
+			arg->numbands = (int)band_count;
 		}
 
 		/* validate band */
-		for (i = 0; i < arg->numbands; i++) {
-			if (!rt_raster_has_band(arg->raster, arg->band[i].nband)) {
+		for (uint32_t i = 0; i < (uint32_t)arg->numbands; i++)
+		{
+			if (!rt_raster_has_band(arg->raster, arg->band[i].nband))
+			{
 				elog(NOTICE, "Band at index %d not found in raster", arg->band[i].nband + 1);
 				rtpg_clip_arg_destroy(arg);
 				PG_FREE_IF_COPY(pgraster, 0);
@@ -3235,8 +3235,9 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 			}
 
-			for (i = 0; i < arg->numbands; i++) {
-				arg->band[i].nband = i;
+			for (uint32_t i = 0; i < (uint32_t)arg->numbands; i++)
+			{
+				arg->band[i].nband = (int)i;
 				arg->band[i].hasnodata = 0;
 				arg->band[i].nodataval = 0;
 			}
@@ -3269,7 +3270,8 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 		);
 
 		/* it doesn't matter if there are more nodataval */
-		for (i = 0, j = 0; i < arg->numbands; i++, j++) {
+		for (int32_t i = 0, j = 0; i < arg->numbands; i++, j++)
+		{
 			/* cap j to the last nodataval element */
 			if (j >= k)
 				j = k - 1;
@@ -3359,8 +3361,16 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 
 	mask_band = rt_raster_get_band(arg->mask, 0);
 
-	for (i = 0; i < arg->numbands; i++) {
+	for (uint32_t i = 0; i < (uint32_t)arg->numbands; i++)
+	{
 		input_band = rt_raster_get_band(arg->raster, arg->band[i].nband);
+		if (!input_band)
+		{
+			rtpg_clip_arg_destroy(arg);
+			PG_FREE_IF_COPY(pgraster, 0);
+			elog(ERROR, "RASTER_clip: Could not get input band at index %d", arg->band[i].nband);
+			PG_RETURN_NULL();
+		}
 
 		/* band metadata */
 		pixtype = rt_band_get_pixtype(input_band);
@@ -3378,7 +3388,8 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 			nodataval = rt_band_get_min_value(input_band);
 		}
 
-		if (rt_raster_generate_new_band(rtn, pixtype, nodataval, hasnodata, nodataval, i) < 0) {
+		if (rt_raster_generate_new_band(rtn, pixtype, nodataval, hasnodata, nodataval, (int)i) < 0)
+		{
 			rtpg_clip_arg_destroy(arg);
 			PG_FREE_IF_COPY(pgraster, 0);
 			elog(ERROR, "RASTER_clip: Could not add new band in output raster");
@@ -3389,16 +3400,32 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 			continue;
 		}
 
-		output_band = rt_raster_get_band(rtn, arg->band[i].nband);
+		/*
+		 * Output bands are packed densely in request order, regardless of
+		 * the source band numbers used to populate them.
+		 */
+		output_band = rt_raster_get_band(rtn, (int)i);
+		if (!output_band)
+		{
+			rtpg_clip_arg_destroy(arg);
+			PG_FREE_IF_COPY(pgraster, 0);
+			elog(ERROR, "RASTER_clip: Could not get output band at index %u", i);
+			PG_RETURN_NULL();
+		}
 
-		if (!mask_band) {
+		if (!mask_band)
+		{
 			continue;
 		}
 
-		for (y = 0; y < height; y++) {
-			for (x = 0; x < width; x++) {
-				mask_x = x - (int)offset[2];
-				mask_y = y - (int)offset[3];
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
+			{
+				int mask_x = x - (int)offset[2];
+				int mask_y = y - (int)offset[3];
+				int input_x = x - (int)offset[0];
+				int input_y = y - (int)offset[1];
 
 				if (!(
 					mask_x >= 0 &&
@@ -3419,9 +3446,6 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 				if (isnodata) {
 					continue;
 				}
-
-				input_x = x - (int)offset[0];
-				input_y = y - (int)offset[1];
 
 				if (rt_band_get_pixel(input_band, input_x, input_y, &value, &isnodata) != ES_NONE) {
 					rtpg_clip_arg_destroy(arg);

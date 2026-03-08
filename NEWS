@@ -39,6 +39,8 @@ This version requires GEOS 3.10 or higher
           grid size exceeds their extent (Darafei Praliaskouski)
  - #5959, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
  - #4828, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)
+ - #6048, [raster] ST_Clip no longer crashes when clipping sparse band
+          selections (Darafei Praliaskouski)
  - #5645, Docs: keep code operators ("=>") intact in translated manuals
           by enforcing verbatim CSS (Darafei Praliaskouski)
  - #5593, Docs: render manual images with GraphicsMagick without temporary files,
