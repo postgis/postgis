@@ -622,6 +622,15 @@ if test "x$SUPPORT_POSTGRESQL" = "xyes"; then dnl {
 
   AC_SUBST([PGSQL_BINDIR])
 
+  dnl Keep explicit --bindir, --exec-prefix, and --prefix overrides, but
+  dnl default utilities to the PostgreSQL bindir when the autoconf install
+  dnl directories were left entirely untouched.
+  if test "x$bindir" = 'x${exec_prefix}/bin' \
+     && test "x$exec_prefix" = xNONE \
+     && test "x$prefix" = xNONE; then
+    bindir="$PGSQL_BINDIR"
+  fi
+
   dnl Extract the share directory
   PGSQL_SHAREDIR=`"$PG_CONFIG" --sharedir`
 
@@ -670,6 +679,7 @@ if test "$prefix" != "NONE" -a "x$PG_CONFIG" != "xno"; then
   AC_MSG_RESULT([  ignore the --prefix. For your info, using the values determined from ])
   AC_MSG_RESULT([  $PG_CONFIG we will be installing:   ])
   AC_MSG_RESULT([    * postgis shared library in $PGSQL_LIBDIR ])
+  AC_MSG_RESULT([    * postgis utilities in $bindir ])
   AC_MSG_RESULT([    * postgis SQL files in $PGSQL_SHAREDIR/contrib/postgis-$POSTGIS_MAJOR_VERSION.$POSTGIS_MINOR_VERSION ])
   AC_MSG_RESULT([------------------------------------------------------------------------])
 fi
@@ -2023,6 +2033,8 @@ fi
 if test "x$SUPPORT_POSTGRESQL" = "xyes"; then
   AC_MSG_RESULT([  PostgreSQL config:    ${PG_CONFIG}])
   AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_FULL_VERSION}])
+  AC_MSG_RESULT([  PostgreSQL bindir:    ${PGSQL_BINDIR}])
+  AC_MSG_RESULT([  PostGIS utilities:    ${bindir}])
 else
   AC_MSG_RESULT([  PostgreSQL support:   DISABLED])
 fi

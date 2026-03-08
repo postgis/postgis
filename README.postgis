@@ -247,11 +247,9 @@ Installation paths will typically be derived by ``pg_config``:
 
  - Lib in ``pg_config --pkglibdir``
  - Binaries (loader/dumper) in ``pg_config --bindir``
- - Important support files in ``[prefix]/share/contrib``
- - Manual pages in ``[prefix]/man``
- - Documentation in in ``[prefix]/share/doc``
-
-Where `[prefix]` above is extracted from ``pg_config --configure``.
+ - Important support files in ``pg_config --sharedir``/contrib
+ - Manual pages in ``pg_config --mandir``
+ - Documentation in ``pg_config --docdir``
 
 You can change them using ``./configure`` switches. See CONFIGURATION section.
 
