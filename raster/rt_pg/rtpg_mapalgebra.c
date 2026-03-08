@@ -3388,7 +3388,8 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 			continue;
 		}
 
-		output_band = rt_raster_get_band(rtn, arg->band[i].nband);
+		/* Output bands are packed in request order. */
+		output_band = rt_raster_get_band(rtn, i);
 
 		if (!mask_band) {
 			continue;
