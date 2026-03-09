@@ -1,4 +1,0 @@
-# address standardizer us dataset
-comment = 'Address Standardizer US dataset example'
-default_version = '@EXTVERSION@'
-relocatable = true

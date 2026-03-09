@@ -59,13 +59,11 @@
 <!ENTITY extras_topology SYSTEM "extras_topology.xml">
 <!ENTITY extras_tigergeocoder SYSTEM "extras_tigergeocoder.xml">
 <!ENTITY extras_historytable SYSTEM "extras_historytable.xml">
-<!ENTITY extras_address_standardizer SYSTEM "extras_address_standardizer.xml">
 
 <!ENTITY sfs_compliant SYSTEM "sfs_compliant.tag">
 <!ENTITY sqlmm_compliant SYSTEM "sqlmm_compliant.tag">
 <!ENTITY sfcgal_enhanced SYSTEM "sfcgal_enhanced.tag">
 <!ENTITY sfcgal_required SYSTEM "sfcgal_required.tag">
-<!ENTITY address_standardizer_required SYSTEM "address_standardizer_required.tag">
 <!ENTITY curve_support SYSTEM "curve_support.tag">
 <!ENTITY Z_support SYSTEM "Z_support.tag">
 <!ENTITY M_support SYSTEM "M_support.tag">

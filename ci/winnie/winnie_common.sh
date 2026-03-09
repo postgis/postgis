@@ -172,11 +172,6 @@ CPPFLAGS="-I${PGPATH}/include -I${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}
 #add protobuf
 export PATH="${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
 
-# add pcre for address_standardizer
-if [ -n "$PCRE_PATH" ]; then
-    export PATH="${PCRE_PATH}/include:${PCRE_PATH}/lib:${PATH}"
-fi
-
 echo "PATH AFTER: $PATH"
 
 if  [[ "${INCLUDE_MINOR_LIB}" == '' ]] ; then

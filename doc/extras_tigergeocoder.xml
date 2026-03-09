@@ -1045,7 +1045,7 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
         <para>Fields in the <varname>norm_addy</varname> type object returned by this function in this order where  () indicates a field required by the geocoder, [] indicates an optional field:</para>
         <para>There are slight variations in casing and formatting over the <xref linkend="Normalize_Address"/>.</para>
         <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
-        <para>&address_standardizer_required;</para>
+        <para>Requires the <varname>address_standardizer</varname> extension.</para>
         <para>(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] [internal] [location] [stateAbbrev] [zip]</para>
         <para>The native standardaddr of address_standardizer extension is at this time a bit richer than norm_addy since its designed to support international addresses (including country).  standardaddr equivalent fields are:</para>
         <para>house_num,predir, name, suftype, sufdir, unit, city, state, postcode</para>

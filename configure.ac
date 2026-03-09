@@ -1423,109 +1423,6 @@ AC_SUBST([POSTGIS_SCRIPTS_VERSION])
 
 
 dnl ====================================
-dnl address standardizer stuff
-dnl ====================================
-AC_ARG_WITH([address-standardizer],
-    [AS_HELP_STRING([--without-address-standardizer],
-                    [Disable the address_standardizer extension])],
-    [], [])
-
-HAVE_PCRE1=no
-HAVE_PCRE2=no
-PCRE_SUPPORT="not found"
-ADDRESS_STANDARDIZER=""
-
-if test "x$with_address_standardizer" != "xno"; then
-    dnl ===========================================================================
-    dnl Detect the version of PCRE installed
-    dnl ===========================================================================
-
-
-    AC_ARG_WITH([pcredir],
-        [AS_HELP_STRING([--with-pcredir=PATH], [specify the PCRE installation directory])],
-        [PCREDIR="$withval"], [PCREDIR=""])
-
-    if test ! "x$PCREDIR" = "x"; then
-        dnl Make sure that the directory exists
-        if test "x$PCREDIR" = "xyes"; then
-            AC_MSG_ERROR([you must specify a parameter to --with-pcredir, e.g. --with-pcredir=/path/to])
-        else
-            if test -d "$PCREDIR"; then
-                AC_MSG_CHECKING([for PCRE in $PCREDIR...])
-
-                AC_CHECK_FILE("$PCREDIR/include/pcre2.h",
-                    [
-                        PCRE_CPPFLAGS="-I$PCREDIR/include"
-                        PCRE_LDFLAGS="-L$PCREDIR/lib -lpcre2-8"
-                        HAVE_PCRE2=yes
-                        ADDRESS_STANDARDIZER="address_standardizer"
-                        AC_MSG_RESULT([found pcre2.h])
-                    ],
-                    [
-                        AC_CHECK_FILE("$PCREDIR/include/pcre.h",
-                        [
-	                          PCRE_CPPFLAGS="-I$PCREDIR/include"
-	                          PCRE_LDFLAGS="-L$PCREDIR/lib -lpcre"
-	                          HAVE_PCRE1=yes
-	                          ADDRESS_STANDARDIZER="address_standardizer"
-                            AC_MSG_RESULT([found pcre.h])
-                        ],
-                        [
-                            AC_MSG_RESULT([no])
-                            AC_MSG_ERROR(["Could not find PCRE header in $PCREDIR/include"])
-                        ])
-                    ])
-            else
-                AC_MSG_ERROR([the --with-pcredir directory "$PCREDIR" cannot be found])
-            fi
-        fi
-    elif test ! -z "$PKG_CONFIG"; then
-        PKG_CHECK_MODULES([PCRE2], [libpcre2-8], [
-            PCRE_CPPFLAGS="$PCRE2_CFLAGS"
-            PCRE_LDFLAGS="$PCRE2_LIBS"
-            ADDRESS_STANDARDIZER="address_standardizer"
-            HAVE_PCRE2=yes
-        ],[
-            PKG_CHECK_MODULES([PCRE], [libpcre], [
-                PCRE_CPPFLAGS="$PCRE_CFLAGS"
-                PCRE_LDFLAGS="$PCRE_LIBS"
-                ADDRESS_STANDARDIZER="address_standardizer"
-                HAVE_PCRE1=yes
-            ],[
-                ADDRESS_STANDARDIZER=""
-            ])
-        ])
-    fi
-
-    if test "x$HAVE_PCRE2" = "xyes"; then
-        PCRE_SUPPORT="Version 2"
-        PCRE_VERSION=2
-    elif test "x$HAVE_PCRE1" = "xyes"; then
-        PCRE_SUPPORT="Version 1"
-        PCRE_VERSION=1
-    else
-        ADDRESS_STANDARDIZER=""
-        PCRE_SUPPORT="not found"
-        PCRE_VERSION=0
-        AC_MSG_RESULT([ADDRESS_STANDARDIZER support: disabled])
-    fi
-
-    AC_SUBST([PCRE_CPPFLAGS])
-    AC_SUBST([PCRE_LDFLAGS])
-    AC_SUBST([PCRE_LDFLAGS])
-    AC_SUBST([PCRE_VERSION])
-    ADDRESS_STANDARDIZER_MAKEFILE_LIST=extensions/address_standardizer/Makefile
-
-
-else
-    ADDRESS_STANDARDIZER=""
-    AC_MSG_RESULT([ADDRESS_STANDARDIZER support: disabled])
-    ADDRESS_STANDARDIZER_MAKEFILE_LIST=""
-fi
-
-AC_SUBST([ADDRESS_STANDARDIZER])
-
-dnl ====================================
 dnl tiger_geocoder stuff
 dnl ====================================
 AC_ARG_WITH([tiger],
@@ -1542,7 +1439,7 @@ fi
 
 AC_SUBST([TIGER])
 
-CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $PROTOBUF_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $PCRE_CPPFLAGS $CPPFLAGS"
+CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $PROTOBUF_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
 
 SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS $JSON_LDFLAGS $PROTOBUF_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS $EXCLUDELIBS_LDFLAGS $LDFLAGS"
@@ -2057,7 +1954,6 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
   AC_MSG_RESULT([  protobuf-c version:   ${PROTOC_VERSION}])
 fi
 
-AC_MSG_RESULT([  PCRE support:         ${PCRE_SUPPORT}])
 AC_MSG_RESULT([  Perl:                 ${PERL}])
 
 AC_MSG_RESULT()
@@ -2141,13 +2037,4 @@ if test ! -z "$PKG_CONFIG"; then
         AC_MSG_WARN([ | JSONC_LIBS to avoid the need to call pkg-config.                         |])
     fi
 
-    if test ! "x$PCREDIR" = "x"; then
-        AC_MSG_WARN()
-        AC_MSG_WARN([ | You are building using --with-pcredir. This option isn't standard and    |])
-        AC_MSG_WARN([ | might be incompatible with future releases of libpcre.                   |])
-        AC_MSG_WARN([ | You can instead adjust the PKG_CONFIG_PATH environment variable if you   |])
-        AC_MSG_WARN([ | installed software in a non-standard prefix.                             |])
-        AC_MSG_WARN([ | Alternatively, you may set the environment variables PCRE_CFLAGS and     |])
-        AC_MSG_WARN([ | PCRE_LIBS to avoid the need to call pkg-config.                          |])
-    fi
 fi
