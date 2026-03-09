@@ -29,7 +29,7 @@ you can upgrade the scripts using the accompanying upgrade_geocoder.bat
               <para>You can install the TIGER Geocoder with the PostgreSQL extension model. Refer to <xref linkend="install_tiger_geocoder_extension"/> for details.</para></note>
               </para>
 
-              <para>The <xref linkend="Pagc_Normalize_Address"/> function as a drop in replacement for in-built <xref linkend="Normalize_Address"/>. Refer to <link xref:href="https://github.com/postgis/address_standardizer">address_standardizer</link> for compile and installation instructions.</para>
+              <para>The <xref linkend="Pagc_Normalize_Address"/> function as a drop in replacement for in-built <xref linkend="Normalize_Address"/>. Refer to <link xlink:href="https://github.com/postgis/address_standardizer">address_standardizer</link> for compile and installation instructions.</para>
 
 
 
