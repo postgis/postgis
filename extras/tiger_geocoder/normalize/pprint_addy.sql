@@ -37,7 +37,13 @@ BEGIN
          || COALESCE(input.stateAbbrev || ' ' , '')
          || cull_null(input.zip) || COALESCE('-' || input.zip4, '');
 
-  RETURN trim(result);
+  result := trim(result);
+
+  IF result <> '' AND input.country IS NOT NULL THEN
+    result := result || ', ' || input.country;
+  END IF;
+
+  RETURN result;
 
 END;
 $_$ LANGUAGE plpgsql IMMUTABLE;

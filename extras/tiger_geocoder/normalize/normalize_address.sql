@@ -71,6 +71,8 @@ DECLARE
   rec RECORD;
   ws VARCHAR;
   rawInput VARCHAR;
+  parse_address_helper oid := to_regprocedure('parse_address(text)');
+  strip_country_helper oid := to_regprocedure('strip_explicit_country(text)');
   -- is this a highway
   -- (we treat these differently since the road name often comes after the streetType)
   isHighway boolean := false;
@@ -85,6 +87,22 @@ BEGIN
 
   IF rawInput IS NULL THEN
     RETURN result;
+  END IF;
+
+  /*
+   * Legacy tiger SQL can still be installed without address_standardizer.
+   * Probe for the newer country helpers before using them.
+   */
+  IF parse_address_helper IS NOT NULL THEN
+    EXECUTE 'SELECT NULLIF((parse_address($1)).country, '''')'
+      INTO result.country
+      USING rawInput;
+  END IF;
+
+  IF strip_country_helper IS NOT NULL THEN
+    EXECUTE 'SELECT strip_explicit_country($1)'
+      INTO rawInput
+      USING rawInput;
   END IF;
 
   ws := E'[ ,.\t\n\f\r]';

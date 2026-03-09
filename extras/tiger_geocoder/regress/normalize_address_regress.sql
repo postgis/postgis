@@ -3,6 +3,11 @@ SELECT '#887' As ticket, * FROM normalize_address('2450 N COLORADO ST, PHILADELP
 SELECT '#1051a' As ticket, * FROM normalize_address('212 3rd Ave N Suite 560, Minneapolis, MN 55401');
 SELECT '#1051b' As ticket, * FROM normalize_address('3937 43RD AVE S, MINNEAPOLIS, MN 55406');
 SELECT '#1051c' As ticket, * FROM normalize_address('212 N 3rd Ave, Minneapolis, MN 55401');
+SELECT '#1599' As ticket, * FROM normalize_address('212 n 3rd ave, Minneapolis, mn 55401, USA');
+SELECT '#1599b' As ticket, * FROM normalize_address('212 n 3rd ave, Minneapolis, mn 55401, France');
+SELECT '#1599c' As ticket, * FROM normalize_address('26 Court Street, Boston, Massachusetts 02109, France');
+SELECT '#1599d' As ticket, * FROM normalize_address('529 Main Street, Boston, MA 021, France');
+SELECT '#1599e' As ticket, * FROM normalize_address('26 Court Street, Boston, Massachusetts 02109, FR');
 -- City missing ,  -- NOTE this one won't normalize right if you don't have MN data loaded
 SELECT '#1051d' As ticket, * FROM normalize_address('212 3rd Ave N Minneapolis, MN 55401');
 -- comma in wrong spot
@@ -86,6 +91,7 @@ SELECT '#1125d' As ticket, pprint_addy(addy), addy.* FROM normalize_address('Int
 SELECT '#1125e' As ticket, pprint_addy(addy), addy.* FROM normalize_address('I-90,Boston, MA') As addy;
 --broke this one too
 SELECT '#1125f' As ticket, pprint_addy(addy), addy.* FROM normalize_address('I 90,Boston, MA') As addy;
+SELECT '#1599g' As ticket, pprint_addy(ROW(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,true,NULL,NULL,'US')::norm_addy);
 
 -- location with prefixes getting caught in post prefix
 SELECT '#1310a' As ticket, pprint_addy(addy), addy.* FROM normalize_address('1110 W CAPITOL AVE, WEST SACRAMENTO, CA') As addy;

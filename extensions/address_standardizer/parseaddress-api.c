@@ -2,6 +2,7 @@
  * parseaddres.c - utility to crack a string into address, city st zip
  *
  * Copyright 2006 Stephen Woodbridge
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This code is released under and MIT-X style license,
  *
@@ -9,13 +10,10 @@
  * woodbri@swoodbridge.com
  * woodbr@imaptools.com
  *
- *
- * TODO:
- *   * add recognition of country before or after postalcode
- *
  */
 
 #include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
 
@@ -48,6 +46,23 @@ const char *parseaddress_cvsid();
 char *clean_leading_punct(char *s);
 static int is_parse_separator(unsigned char c);
 static size_t normalize_address_input(char *s);
+static size_t normalize_country_token(const char *src, char *dst, size_t dst_size);
+static bool ends_with_supported_macro(const char *s);
+static bool extract_trailing_country(char *s, char *country_code);
+
+static const char *const us_zip_regex = "\\b(\\d{5})[-\\s]{0,1}?(\\d{0,4})?$";
+static const char *const canada_zip_regex = "\\b([a-z]\\d[a-z]\\s?\\d[a-z]\\d)$";
+static const char *const canada_province_regex = "^(?-xism:(?i:(?=[abmnopqsy])(?:n[ltsu]|[am]b|[bq]c|on|pe|sk|yt)))$";
+static const char *const us_ca_state_regex =
+    "\\b(?-xism:(?i:(?=[abcdfghiklmnopqrstuvwy])(?:a(?:l(?:a(?:bam|sk)a|berta)?|mer(?:ican)?\\ samoa|r(?:k(?:ansas)?|izona)?|[kszb])|s(?:a(?:moa|skatchewan)|outh\\ (?:carolin|dakot)a|\\ (?:carolin|dakot)a|[cdk])|c(?:a(?:lif(?:ornia)?)?|o(?:nn(?:ecticut)?|lorado)?|t)|d(?:e(?:la(?:ware)?)?|istrict\\ of\\ columbia|c)|f(?:l(?:(?:orid)?a)?|ederal\\ states\\ of\\ micronesia|m)|m(?:i(?:c(?:h(?:igan)?|ronesia)|nn(?:esota)?|ss(?:(?:issipp|our)i)?)?|a(?:r(?:shall(?:\\ is(?:l(?:and)?)?)?|yland)|ss(?:achusetts)?|ine|nitoba)?|o(?:nt(?:ana)?)?|[ehdnstpb])|g(?:u(?:am)?|(?:eorgi)?a)|h(?:awai)?i|i(?:d(?:aho)?|l(?:l(?:inois)?)?|n(?:d(?:iana)?)?|(?:ow)?a)|k(?:(?:ansa)?s|(?:entuck)?y)|l(?:a(?:bordor)?|ouisiana)|n(?:e(?:w(?:\\ (?:foundland(?:\\ and\\ labordor)?|hampshire|jersey|mexico|(?:yor|brunswic)k)|foundland)|(?:brask|vad)a)?|o(?:rth(?:\\ (?:mariana(?:\\ is(?:l(?:and)?)?)?|(?:carolin|dakot)a)|west\\ territor(?:ies|y))|va\\ scotia)|\\ (?:carolin|dakot)a|u(?:navut)?|[vhjmycdblsf]|w?t)|o(?:h(?:io)?|k(?:lahoma)?|r(?:egon)?|n(?:t(?:ario)?)?)|p(?:a(?:lau)?|e(?:nn(?:sylvania)?|i)?|r(?:ince\\ edward\\ island)?|w|uerto\\ rico)|r(?:hode\\ island|i)|t(?:e(?:nn(?:essee)?|xas)|[nx])|ut(?:ah)?|v(?:i(?:rgin(?:\\ islands|ia))?|(?:ermon)?t|a)|w(?:a(?:sh(?:ington)?)?|i(?:sc(?:onsin)?)?|y(?:oming)?|(?:est)?\\ virginia|v)|b(?:ritish\\ columbia|c)|q(?:uebe)?c|y(?:ukon|t))))$";
+typedef struct country_alias {
+	const char *alias;
+	const char *alpha2;
+} CountryAlias;
+
+static const CountryAlias country_aliases[] = {
+#include "parseaddress-countries.h"
+};
 
 static int
 is_parse_separator(unsigned char c)
@@ -95,6 +110,171 @@ normalize_address_input(char *s)
 
 	s[write_pos] = '\0';
 	return write_pos;
+}
+
+static size_t
+normalize_country_token(const char *src, char *dst, size_t dst_size)
+{
+	size_t write_pos = 0;
+	bool previous_was_space = false;
+
+	if (!src || !dst || !dst_size)
+		return 0;
+
+	for (; *src != '\0' && write_pos + 1 < dst_size; src++)
+	{
+		unsigned char current = (unsigned char)*src;
+
+		if (isalpha(current))
+		{
+			dst[write_pos++] = (char)toupper(current);
+			previous_was_space = false;
+			continue;
+		}
+
+		if (isspace(current) || ispunct(current))
+		{
+			if (!write_pos || previous_was_space)
+				continue;
+
+			dst[write_pos++] = ' ';
+			previous_was_space = true;
+		}
+	}
+
+	if (write_pos && dst[write_pos - 1] == ' ')
+		write_pos--;
+
+	dst[write_pos] = '\0';
+	return write_pos;
+}
+
+static int
+compare_country_alias(const void *lhs, const void *rhs)
+{
+	const CountryAlias *left = (const CountryAlias *)lhs;
+	const CountryAlias *right = (const CountryAlias *)rhs;
+
+	return strcmp(left->alias, right->alias);
+}
+
+const char *
+country_code_from_name(const char *country_name)
+{
+	CountryAlias key;
+	char normalized_country[128];
+	const CountryAlias *match;
+
+	if (!normalize_country_token(country_name, normalized_country, sizeof(normalized_country)))
+		return NULL;
+
+	key.alias = normalized_country;
+	key.alpha2 = NULL;
+	match = bsearch(
+	    &key, country_aliases, lengthof(country_aliases), sizeof(country_aliases[0]), compare_country_alias);
+
+	return match ? match->alpha2 : NULL;
+}
+
+/*
+ * Recognize the right-most macro shape that this parser already knows how to
+ * consume. That lets us conservatively strip trailing countries without
+ * erasing ordinary trailing qualifiers, and still supports short ZIP fragments
+ * once they are paired with a valid trailing state/province.
+ */
+static bool
+ends_with_supported_macro(const char *s)
+{
+	int macro_ovect[OVECCOUNT];
+	int rc;
+	char *state_probe;
+
+	if (!s || *s == '\0')
+		return false;
+
+	rc = match((char *)us_zip_regex, (char *)s, macro_ovect, 0);
+	if (rc >= 2)
+		return true;
+
+	rc = match((char *)canada_zip_regex, (char *)s, macro_ovect, PARSE_CASELESS);
+	if (rc >= 1)
+		return true;
+
+	rc = match((char *)us_ca_state_regex, (char *)s, macro_ovect, PARSE_CASELESS);
+	if (rc > 0)
+		return true;
+
+	rc = match("\\b(\\d{2,4})$", (char *)s, macro_ovect, 0);
+	if (rc < 2)
+		return false;
+
+	state_probe = pstrdup(s);
+	*(state_probe + macro_ovect[0]) = '\0';
+	(void)clean_trailing_punct(state_probe);
+
+	rc = match((char *)us_ca_state_regex, state_probe, macro_ovect, PARSE_CASELESS);
+	pfree(state_probe);
+
+	return rc > 0;
+}
+
+/*
+ * Strip a trailing country token before macro parsing so postcode and state
+ * extraction still see the expected right-most fields. Known US/CA country
+ * tokens update the country code; other recognized country names are stripped
+ * without changing the default country inference.
+ */
+static bool
+extract_trailing_country(char *s, char *country_code)
+{
+	int split_ovect[OVECCOUNT];
+	int rc;
+	const char *matched_country_code;
+	char saved;
+
+	if (!s || !country_code)
+		return false;
+
+	rc = match("([\\s,]+)([A-Za-z][A-Za-z\\s]{1,})$", s, split_ovect, 0);
+	if (rc < 3)
+		return false;
+
+	saved = s[split_ovect[0]];
+	s[split_ovect[0]] = '\0';
+
+	matched_country_code = country_code_from_name(s + split_ovect[4]);
+	if (!matched_country_code)
+	{
+		s[split_ovect[0]] = saved;
+		return false;
+	}
+
+	if (!ends_with_supported_macro(s))
+	{
+		s[split_ovect[0]] = saved;
+		return false;
+	}
+
+	strcpy(country_code, matched_country_code);
+
+	(void)clean_trailing_punct(s);
+	return true;
+}
+
+bool
+strip_explicit_country_token(char *s, char *country_code)
+{
+	size_t normalized_length;
+
+	if (!s || !country_code)
+		return false;
+
+	normalized_length = normalize_address_input(s);
+	if (!normalized_length)
+		return false;
+
+	(void)clean_trailing_punct(s);
+	return extract_trailing_country(s, country_code);
 }
 
 const char *
@@ -253,11 +433,10 @@ parseaddress(HHash *stH, char *s, int *reterr)
 #include "parseaddress-regex.h"
 
 	int ovect[OVECCOUNT];
-	char *stregx;
-	char *caregx;
 	char *state = NULL;
 	char *regx;
 	size_t normalized_length;
+	bool explicit_country = false;
 	int rc;
 	ADDRESS *ret;
 #ifdef USE_HSEARCH
@@ -299,14 +478,16 @@ parseaddress(HHash *stH, char *s, int *reterr)
 	ret->cc = (char *)palloc0(3 * sizeof(char));
 	strcpy(ret->cc, "US");
 
+	explicit_country = extract_trailing_country(s, ret->cc);
+
 	/* get US zipcode components */
 
-	rc = match("\\b(\\d{5})[-\\s]{0,1}?(\\d{0,4})?$", s, ovect, 0);
+	rc = match((char *)us_zip_regex, s, ovect, 0);
 	if (rc >= 2)
 	{
 		ret->zip = (char *)palloc0((ovect[3] - ovect[2] + 1) * sizeof(char));
 		strncpy(ret->zip, s + ovect[2], ovect[3] - ovect[2]);
-		if (rc >= 3)
+		if (rc >= 3 && ovect[5] > ovect[4])
 		{
 			ret->zipplus = (char *)palloc0((ovect[5] - ovect[4] + 1) * sizeof(char));
 			strncpy(ret->zipplus, s + ovect[4], ovect[5] - ovect[4]);
@@ -317,27 +498,54 @@ parseaddress(HHash *stH, char *s, int *reterr)
 	/* get canada zipcode components */
 	else
 	{
-		rc = match("\\b([a-z]\\d[a-z]\\s?\\d[a-z]\\d)$", s, ovect, PARSE_CASELESS);
+		rc = match((char *)canada_zip_regex, s, ovect, PARSE_CASELESS);
 		if (rc >= 1)
 		{
 			ret->zip = (char *)palloc0((ovect[1] - ovect[0] + 1) * sizeof(char));
 			strncpy(ret->zip, s + ovect[0], ovect[1] - ovect[0]);
-			strcpy(ret->cc, "CA");
+			if (!explicit_country)
+				strcpy(ret->cc, "CA");
 			/* truncate the postalcode off the string */
 			*(s + ovect[0]) = '\0';
+		}
+		else
+		{
+			int state_ovect[OVECCOUNT];
+			char *state_probe;
+
+			/*
+			 * Accept a short trailing ZIP fragment only when removing it exposes
+			 * a valid trailing state/province. That keeps "MA 021" working
+			 * without turning arbitrary suffixes like "Suite 201" into ZIPs.
+			 */
+			rc = match("\\b(\\d{2,4})$", s, ovect, 0);
+			if (rc >= 2)
+			{
+				state_probe = pstrdup(s);
+				*(state_probe + ovect[0]) = '\0';
+				(void)clean_trailing_punct(state_probe);
+
+				rc = match((char *)us_ca_state_regex, state_probe, state_ovect, PARSE_CASELESS);
+				pfree(state_probe);
+
+				if (rc > 0)
+				{
+					ret->zip = (char *)palloc0((ovect[3] - ovect[2] + 1) * sizeof(char));
+					strncpy(ret->zip, s + ovect[2], ovect[3] - ovect[2]);
+					*(s + ovect[0]) = '\0';
+				}
+			}
 		}
 	}
 
 	/* clean trailing punctuation */
 	(void)clean_trailing_punct(s);
+	explicit_country = extract_trailing_country(s, ret->cc) || explicit_country;
+	(void)clean_trailing_punct(s);
 
 	/* get state components */
 
-	caregx = "^(?-xism:(?i:(?=[abmnopqsy])(?:n[ltsu]|[am]b|[bq]c|on|pe|sk|yt)))$";
-	stregx =
-	    "\\b(?-xism:(?i:(?=[abcdfghiklmnopqrstuvwy])(?:a(?:l(?:a(?:bam|sk)a|berta)?|mer(?:ican)?\\ samoa|r(?:k(?:ansas)?|izona)?|[kszb])|s(?:a(?:moa|skatchewan)|outh\\ (?:carolin|dakot)a|\\ (?:carolin|dakot)a|[cdk])|c(?:a(?:lif(?:ornia)?)?|o(?:nn(?:ecticut)?|lorado)?|t)|d(?:e(?:la(?:ware)?)?|istrict\\ of\\ columbia|c)|f(?:l(?:(?:orid)?a)?|ederal\\ states\\ of\\ micronesia|m)|m(?:i(?:c(?:h(?:igan)?|ronesia)|nn(?:esota)?|ss(?:(?:issipp|our)i)?)?|a(?:r(?:shall(?:\\ is(?:l(?:and)?)?)?|yland)|ss(?:achusetts)?|ine|nitoba)?|o(?:nt(?:ana)?)?|[ehdnstpb])|g(?:u(?:am)?|(?:eorgi)?a)|h(?:awai)?i|i(?:d(?:aho)?|l(?:l(?:inois)?)?|n(?:d(?:iana)?)?|(?:ow)?a)|k(?:(?:ansa)?s|(?:entuck)?y)|l(?:a(?:bordor)?|ouisiana)|n(?:e(?:w(?:\\ (?:foundland(?:\\ and\\ labordor)?|hampshire|jersey|mexico|(?:yor|brunswic)k)|foundland)|(?:brask|vad)a)?|o(?:rth(?:\\ (?:mariana(?:\\ is(?:l(?:and)?)?)?|(?:carolin|dakot)a)|west\\ territor(?:ies|y))|va\\ scotia)|\\ (?:carolin|dakot)a|u(?:navut)?|[vhjmycdblsf]|w?t)|o(?:h(?:io)?|k(?:lahoma)?|r(?:egon)?|n(?:t(?:ario)?)?)|p(?:a(?:lau)?|e(?:nn(?:sylvania)?|i)?|r(?:ince\\ edward\\ island)?|w|uerto\\ rico)|r(?:hode\\ island|i)|t(?:e(?:nn(?:essee)?|xas)|[nx])|ut(?:ah)?|v(?:i(?:rgin(?:\\ islands|ia))?|(?:ermon)?t|a)|w(?:a(?:sh(?:ington)?)?|i(?:sc(?:onsin)?)?|y(?:oming)?|(?:est)?\\ virginia|v)|b(?:ritish\\ columbia|c)|q(?:uebe)?c|y(?:ukon|t))))$";
-
-	rc = match(stregx, s, ovect, PARSE_CASELESS);
+	rc = match((char *)us_ca_state_regex, s, ovect, PARSE_CASELESS);
 	if (rc > 0)
 	{
 		state = (char *)palloc0((ovect[1] - ovect[0] + 1) * sizeof(char));
@@ -371,8 +579,8 @@ parseaddress(HHash *stH, char *s, int *reterr)
 		}
 
 		/* check if it a Canadian Province */
-		rc = match(caregx, ret->st, ovect, PARSE_CASELESS);
-		if (rc > 0)
+		rc = match((char *)canada_province_regex, ret->st, ovect, PARSE_CASELESS);
+		if (rc > 0 && !explicit_country)
 		{
 			strcpy(ret->cc, "CA");
 			// if (ret->cc) printf("  CC: %s\n", ret->cc);

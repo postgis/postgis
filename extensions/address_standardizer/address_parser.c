@@ -21,8 +21,10 @@
 #endif
 
 Datum parse_address(PG_FUNCTION_ARGS);
+Datum strip_explicit_country(PG_FUNCTION_ARGS);
 
 PG_FUNCTION_INFO_V1(parse_address);
+PG_FUNCTION_INFO_V1(strip_explicit_country);
 
 Datum parse_address(PG_FUNCTION_ARGS)
 {
@@ -110,3 +112,18 @@ Datum parse_address(PG_FUNCTION_ARGS)
     return result;
 }
 
+Datum
+strip_explicit_country(PG_FUNCTION_ARGS)
+{
+	char *input;
+	char *working;
+	char country_code[3] = {0};
+
+	input = text_to_cstring(PG_GETARG_TEXT_P(0));
+	working = pstrdup(input);
+
+	if (strip_explicit_country_token(working, country_code))
+		PG_RETURN_TEXT_P(cstring_to_text(working));
+
+	PG_RETURN_TEXT_P(cstring_to_text(input));
+}

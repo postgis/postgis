@@ -57,6 +57,8 @@ typedef struct address_struct {
 int clean_trailing_punct(char *s);
 void strtoupper(char *s);
 int match(char *pattern, char *s, int *ovect, int options);
+const char *country_code_from_name(const char *country_name);
+bool strip_explicit_country_token(char *s, char *country_code);
 ADDRESS *parseaddress(HHash *stH, char *s, int *err);
 int load_state_hash(HHash *stH);
 void free_state_hash(HHash *stH);

@@ -28,12 +28,43 @@ ALTER TABLE state_lookup ADD CONSTRAINT state_lookup_statefp_key UNIQUE(statefp)
 -- these introduced in PostGIS 2.4
 DO language plpgsql
 $$
-    BEGIN
-        ALTER TYPE tiger.norm_addy ADD ATTRIBUTE zip4 varchar;
+DECLARE
+    norm_addy_relid oid := (SELECT typrelid FROM pg_type WHERE oid = 'tiger.norm_addy'::regtype);
+BEGIN
+    /*
+     * Check each attribute independently so upgrades from releases that already
+     * have zip4/address_alphanumeric still pick up newer additions like country.
+     */
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_attribute
+        WHERE attrelid = norm_addy_relid
+          AND attname = 'zip4'
+          AND NOT attisdropped
+    ) THEN
+        ALTER TYPE tiger.norm_addy ADD ATTRIBUTE zip4 varchar(4);
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_attribute
+        WHERE attrelid = norm_addy_relid
+          AND attname = 'address_alphanumeric'
+          AND NOT attisdropped
+    ) THEN
         ALTER TYPE tiger.norm_addy ADD ATTRIBUTE address_alphanumeric varchar;
-    EXCEPTION
-        WHEN others THEN  -- ignore the error probably cause it already exists
-    END;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_attribute
+        WHERE attrelid = norm_addy_relid
+          AND attname = 'country'
+          AND NOT attisdropped
+    ) THEN
+        ALTER TYPE tiger.norm_addy ADD ATTRIBUTE country varchar(2);
+    END IF;
+END;
 $$;
 
 CREATE INDEX idx_tiger_edges_countyfp ON edges USING btree(countyfp);

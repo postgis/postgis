@@ -34,7 +34,7 @@ CREATE TYPE norm_addy AS (
     location VARCHAR,
     stateAbbrev VARCHAR,
     zip VARCHAR,
-    parsed BOOLEAN, zip4 varchar, address_alphanumeric varchar);
+    parsed BOOLEAN, zip4 varchar(4), address_alphanumeric varchar, country varchar(2));
 
 -- System/General helper functions
 \i utility/utmzone.sql

@@ -20,10 +20,12 @@ BEGIN
 
   rawInput := trim(in_rawinput);
   var_parse_rec := parse_address(rawInput);
+
   result.location := var_parse_rec.city;
   result.stateAbbrev := trim(var_parse_rec.state);
   result.zip := var_parse_rec.zip;
   result.zip4 := NULLIF(var_parse_rec.zipplus,'');
+  result.country := NULLIF(var_parse_rec.country,'');
 
  var_rec := standardize_address('pagc_lex'
        , 'pagc_gaz'
@@ -39,6 +41,7 @@ BEGIN
   result.streetName := trim(var_rec.name);
   result.location := trim(var_rec.city);
   result.stateAbbrev := trim(var_rec.state);
+  result.country := COALESCE(NULLIF(var_rec.country,''), result.country);
   --this should be broken out separately like pagc, but normalizer doesn't have a slot for it
   result.streettypeAbbrev := trim(COALESCE(var_rec.suftype, var_rec.pretype));
   result.preDirAbbrev := trim(var_rec.predir);

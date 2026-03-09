@@ -925,7 +925,7 @@ test test-standardize_address_2 ... ok
 	  <programlisting>cd extensions/postgis_tiger_geocoder
 make install
 make installcheck
-	  </programlisting></para>
+		  </programlisting></para>
 	  <para>output should look like:
 	  <screen>============== dropping database "contrib_regression" ==============
 DROP DATABASE

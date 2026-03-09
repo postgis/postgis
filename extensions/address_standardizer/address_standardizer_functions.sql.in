@@ -47,3 +47,7 @@ CREATE OR REPLACE FUNCTION parse_address(IN text,
     AS  'MODULE_PATHNAME', 'parse_address'
     LANGUAGE 'c' IMMUTABLE STRICT;
 
+CREATE OR REPLACE FUNCTION strip_explicit_country(IN text)
+    RETURNS text
+    AS  'MODULE_PATHNAME', 'strip_explicit_country'
+    LANGUAGE 'c' IMMUTABLE STRICT;

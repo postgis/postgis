@@ -14,8 +14,9 @@
 		<para>The parser works from right to left looking first at the macro elements
 			for postcode, state/province, city, and then looks micro elements to determine
 if we are dealing with a house number street or intersection or landmark.
-It currently does not look for a country code or name, but that could be
-introduced in the future.</para>
+It conservatively recognizes trailing country tokens and canonicalizes them to
+ISO 3166-1 alpha-2 codes. Explicit country aliases update the parsed country,
+and otherwise the default US or CA inference still applies.</para>
 			<variablelist>
 				<varlistentry>
 						<term>Country code</term>

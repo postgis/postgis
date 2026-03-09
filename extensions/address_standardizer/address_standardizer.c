@@ -386,11 +386,19 @@ static const char *
 stdaddr_field_value(const STDADDR *stdaddr, size_t offset)
 {
 	const char *const *field_value;
+	const char *canonical_country;
 
 	if (!stdaddr)
 		return NULL;
 
 	field_value = (const char *const *)((const char *)stdaddr + offset);
+	if (offset == offsetof(STDADDR, country) && *field_value)
+	{
+		canonical_country = country_code_from_name(*field_value);
+		if (canonical_country)
+			return canonical_country;
+	}
+
 	return *field_value;
 }
 
