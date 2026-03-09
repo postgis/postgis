@@ -9,6 +9,7 @@ skip =
     ./doc/html/**,
     ./doc/po/**,
     ./doc/postgis-out.xml,
+    ./doc/*.sql,
     ./doc/postgis-nospecial.xml,
     ./postgis/*.sql,
     ./raster/rt_pg/*.sql,
