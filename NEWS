@@ -41,6 +41,9 @@ This version requires GEOS 3.10 or higher
  - #4828, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)
  - #6048, [raster] ST_Clip no longer crashes when clipping sparse band
           selections (Darafei Praliaskouski)
+ - #1461, [tiger geocoder] geocode_intersection now tolerates irregular
+          spacing in highway names such as `I- 635` vs `I-635`
+          (OpenAI)
  - #1599, [address_standardizer] parse_address() and normalize_address() now
           canonicalize trailing country tokens to ISO 3166-1 alpha-2 codes and
           expose country on normalized addresses

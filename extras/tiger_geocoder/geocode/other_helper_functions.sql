@@ -30,6 +30,24 @@ $$ SELECT abs(to_number( CASE WHEN trim(substring($1,1,5)) ~ '^[0-9]+$' THEN $1 
   LANGUAGE sql IMMUTABLE STRICT
   COST 200 PARALLEL SAFE;
 
+-- Canonicalize separator-only formatting differences in road names without
+-- collapsing all punctuation, so highway names like I-635 and I- 635
+-- compare equally while still distinguishing unrelated names.
+CREATE OR REPLACE FUNCTION normalize_street_name(input_street varchar)
+    RETURNS varchar AS
+$$
+    SELECT trim(
+        regexp_replace(
+            regexp_replace(lower($1), E'\\s*-\\s*', '-', 'g'),
+            E'\\s+',
+            ' ',
+            'g'
+        )
+    )::varchar;
+$$
+LANGUAGE sql IMMUTABLE STRICT
+COST 5 PARALLEL SAFE;
+
 -- function return  true or false if 2 numeric streets are equal such as 15th St, 23rd st
 -- it compares just the numeric part of the street for equality
 -- PURPOSE: handle bad formats such as 23th St so 23th St = 23rd St
