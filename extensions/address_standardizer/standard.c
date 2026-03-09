@@ -7,6 +7,7 @@ Prototype 7H08 (This file was written by Walter Sinclair).
 This file is part of PAGC.
 
 Copyright (c) 2009 Walter Bruce Sinclair
+Copyright (c) 2026 Darafei Praliaskouski <me@komzpa.net>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -452,31 +453,53 @@ STDADDR *std_standardize_one(STANDARDIZER *std, char *address_one_line, int opti
 }
 */
 
+/* Replace one STDADDR field with a caller-supplied structured component. */
+static void
+replace_stdaddr_component(char **field, const char *value)
+{
+	if (!field)
+		return;
+
+	if (*field)
+	{
+		free(*field);
+		*field = NULL;
+	}
+
+	if (value && value[0] != '\0')
+		*field = strdup(value);
+}
+
 /*
  * The string-based analyzer can collapse a supplied state into the city slot
- * when there is no city component. When the caller provides structured macro
- * components, preserve that split in the final STDADDR.
+ * when there is no city component. When callers provide structured city/state/
+ * postcode/country pieces, restore those values onto the final STDADDR.
  */
 static void
-apply_component_split_to_stdaddr(STDADDR *stdaddr, const char *city, const char *state)
+apply_component_values_to_stdaddr(
+    STDADDR *stdaddr, const char *city, const char *state, const char *postcode, const char *country)
 {
 	if (!stdaddr)
 		return;
 
-	if ((city && city[0] != '\0') || !state || state[0] == '\0')
-		return;
-
-	if (stdaddr->state && stdaddr->state[0] != '\0')
-		return;
-
-	if (stdaddr->city && stdaddr->city[0] != '\0')
+	if ((!city || city[0] == '\0') && state && state[0] != '\0' && (!stdaddr->state || stdaddr->state[0] == '\0'))
 	{
-		stdaddr->state = stdaddr->city;
-		stdaddr->city = NULL;
-		return;
+		if (stdaddr->city && stdaddr->city[0] != '\0')
+		{
+			stdaddr->state = stdaddr->city;
+			stdaddr->city = NULL;
+		}
+		else
+		{
+			stdaddr->state = strdup(state);
+		}
 	}
 
-	stdaddr->state = strdup(state);
+	if (postcode && postcode[0] != '\0')
+		replace_stdaddr_component(&stdaddr->postcode, postcode);
+
+	if (country && country[0] != '\0')
+		replace_stdaddr_component(&stdaddr->country, country);
 }
 
 /*
@@ -617,7 +640,7 @@ std_standardize(STANDARDIZER *std,
 	if (macro)
 		free(macro);
 
-	apply_component_split_to_stdaddr(stdaddr, city, state);
+	apply_component_values_to_stdaddr(stdaddr, city, state, postcode, country);
 	return stdaddr;
 }
 

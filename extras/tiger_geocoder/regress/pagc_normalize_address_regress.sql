@@ -112,6 +112,10 @@ SELECT '#2981' As ticket, * FROM normalize_address('1566 NEW STATE HWY, RAYNHAM,
 SELECT '#2978a' As ticket, * FROM normalize_address('10-20 DORRANCE ST PROVIDENCE RI' ) ;
 SELECT '#2978b' As ticket, * FROM normalize_address('10 20 DORRANCE ST PROVIDENCE RI' ) ;
 SELECT '#2978c' As ticket, * FROM normalize_address('10-20 DORRANCE ST, PROVIDENCE. RI' ) ;
+SELECT '#2459' As ticket, * FROM normalize_address(E'1000 S. Fremont Ave.,\nBldg. A-11,\nAlhambra, CA 91803');
+SELECT '#2459zipa' As ticket, * FROM normalize_address('02109');
+SELECT '#2459zipb' As ticket, * FROM normalize_address('02109-1234');
+SELECT '#2459zipc' As ticket, * FROM normalize_address('Minneapolis, MN 55401');
 
 --\timing
 SELECT set_geocode_setting('use_pagc_address_parser', 'false');

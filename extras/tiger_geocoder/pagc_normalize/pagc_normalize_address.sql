@@ -4,51 +4,51 @@
 -- zip code, depending on what can be found in the string.
 -- This is a drop in replacement for packaged normalize_address
 -- that uses the pagc address standardizer C library instead
+-- Keep the wrapper in plpgsql so the optional address_standardizer extension
+-- is only resolved when PAGC parsing is invoked, while still using a single
+-- standardize_address() call to preserve the wrapper speedup work.
 -- USAGE: SELECT * FROM tiger.pagc_normalize_address('One Devonshire Place, PH 301, Boston, MA 02109');
 SELECT tiger.SetSearchPathForInstall('tiger');
 CREATE OR REPLACE FUNCTION pagc_normalize_address(in_rawinput character varying)
   RETURNS norm_addy AS
 $$
 DECLARE
-  result norm_addy;
-  var_rec RECORD;
-  var_parse_rec RECORD;
-  rawInput VARCHAR;
-
+  sa RECORD;
+  parsed RECORD;
+  raw_input VARCHAR;
 BEGIN
-  result.parsed := FALSE;
+  raw_input := trim(in_rawinput);
 
-  rawInput := trim(in_rawinput);
-  var_parse_rec := parse_address(rawInput);
+  -- Preserve parse_address()'s macro-only ZIP and country detection for
+  -- non-street inputs while keeping a single standardize_address() call.
+  SELECT *
+    INTO parsed
+  FROM parse_address(raw_input);
 
-  result.location := var_parse_rec.city;
-  result.stateAbbrev := trim(var_parse_rec.state);
-  result.zip := var_parse_rec.zip;
-  result.zip4 := NULLIF(var_parse_rec.zipplus,'');
-  result.country := NULLIF(var_parse_rec.country,'');
+  SELECT *
+    INTO sa
+  FROM standardize_address(
+      'pagc_lex',
+      'pagc_gaz',
+      'pagc_rules',
+      raw_input
+  ) AS sa;
 
- var_rec := standardize_address('pagc_lex'
-       , 'pagc_gaz'
-       , 'pagc_rules'
-, COALESCE(var_parse_rec.address1,''),
-   COALESCE(var_parse_rec.city,'') || COALESCE(', ' || var_parse_rec.state, '') || COALESCE(' ' || var_parse_rec.zip,'')  ) ;
-
- -- For address number only put numbers and stop if reach a non-number e.g. 123-456 will return 123
-  result.address := to_number(substring(var_rec.house_num, '[0-9]+'), '99999999');
-  result.address_alphanumeric := var_rec.house_num;
-   --get rid of extraneous spaces before we return
-  result.zip := COALESCE(var_rec.postcode,result.zip);
-  result.streetName := trim(var_rec.name);
-  result.location := trim(var_rec.city);
-  result.stateAbbrev := trim(var_rec.state);
-  result.country := COALESCE(NULLIF(var_rec.country,''), result.country);
-  --this should be broken out separately like pagc, but normalizer doesn't have a slot for it
-  result.streettypeAbbrev := trim(COALESCE(var_rec.suftype, var_rec.pretype));
-  result.preDirAbbrev := trim(var_rec.predir);
-  result.postDirAbbrev := trim(var_rec.sufdir);
-  result.internal := trim(regexp_replace(replace(var_rec.unit, '#',''), '([0-9]+)\s+([A-Za-z]){0,1}', E'\\1\\2'));
-  result.parsed := TRUE;
-  RETURN result;
+  RETURN ROW(
+      to_number(substring(sa.house_num, '[0-9]+'), '99999999'),
+      NULLIF(trim(sa.predir), ''),
+      NULLIF(trim(sa.name), ''),
+      NULLIF(trim(COALESCE(sa.suftype, sa.pretype)), ''),
+      NULLIF(trim(sa.sufdir), ''),
+      NULLIF(trim(regexp_replace(replace(COALESCE(sa.unit, ''), '#', ''), '([0-9]+)\s+([A-Za-z]){0,1}', E'\\1\\2')), ''),
+      COALESCE(NULLIF(trim(sa.city), ''), NULLIF(trim(parsed.city), '')),
+      COALESCE(NULLIF(trim(sa.state), ''), NULLIF(trim(parsed.state), '')),
+      COALESCE(NULLIF(split_part(COALESCE(sa.postcode, ''), '-', 1), ''), NULLIF(parsed.zip, '')),
+      TRUE,
+      COALESCE(NULLIF(split_part(COALESCE(sa.postcode, ''), '-', 2), ''), NULLIF(parsed.zipplus, '')),
+      NULLIF(sa.house_num, ''),
+      COALESCE(NULLIF(trim(sa.country), ''), NULLIF(trim(parsed.country), ''), 'US')
+  )::norm_addy;
 END
 $$
   LANGUAGE plpgsql IMMUTABLE STRICT

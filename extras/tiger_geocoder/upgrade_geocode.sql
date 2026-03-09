@@ -286,8 +286,8 @@ SELECT create_census_base_tables();
 -- System/General helper functions
 \i utility/utmzone.sql
 \i utility/cull_null.sql
-\i utility/nullable_levenshtein.sql
 \i utility/levenshtein_ignore_case.sql
+\i utility/nullable_levenshtein.sql
 
 ---- Address normalizer
 -- General helpers

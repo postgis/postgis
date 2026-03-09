@@ -1,32 +1,4 @@
 -- rate_attributes(dirpA, dirpB, streetNameA, streetNameB, streetTypeA,
--- streetTypeB, dirsA, dirsB, locationA, locationB)
--- Rates the street based on the given attributes.  The locations must be
--- non-null.  The other eight values are handled by the other rate_attributes
--- function, so it's requirements must also be met.
--- changed: 2010-10-18 Regina Obe - all references to verbose to var_verbose since causes compile errors in 9.0
--- changed: 2011-06-25 revise to use real named args and fix direction rating typo
-CREATE OR REPLACE FUNCTION rate_attributes(dirpA VARCHAR, dirpB VARCHAR, streetNameA VARCHAR, streetNameB VARCHAR,
-    streetTypeA VARCHAR, streetTypeB VARCHAR, dirsA VARCHAR, dirsB VARCHAR,  locationA VARCHAR, locationB VARCHAR, prequalabr VARCHAR) RETURNS INTEGER
-AS $_$
-DECLARE
-  result INTEGER := 0;
-  locationWeight INTEGER := 14;
-  var_verbose BOOLEAN := FALSE;
-BEGIN
-  IF locationA IS NOT NULL AND locationB IS NOT NULL THEN
-    result := tiger.levenshtein_ignore_case(locationA, locationB);
-  ELSE
-    IF var_verbose THEN
-      RAISE NOTICE 'rate_attributes() - Location names cannot be null!';
-    END IF;
-    RETURN NULL;
-  END IF;
-  result := result + rate_attributes($1, $2, streetNameA, streetNameB, $5, $6, $7, $8,prequalabr);
-  RETURN result;
-END;
-$_$ LANGUAGE plpgsql IMMUTABLE;
-
--- rate_attributes(dirpA, dirpB, streetNameA, streetNameB, streetTypeA,
 -- streetTypeB, dirsA, dirsB)
 -- Rates the street based on the given attributes.  Only streetNames are
 -- required.  If any others are null (either A or B) they are treated as
@@ -76,3 +48,20 @@ BEGIN
   return result;
 END;
 $_$ LANGUAGE plpgsql IMMUTABLE;
+
+-- rate_attributes(dirpA, dirpB, streetNameA, streetNameB, streetTypeA,
+-- streetTypeB, dirsA, dirsB, locationA, locationB)
+-- Rates the street based on the given attributes.  The locations must be
+-- non-null.  The other eight values are handled by the other rate_attributes
+-- function, so it's requirements must also be met.
+-- changed: 2010-10-18 Regina Obe - all references to verbose to var_verbose since causes compile errors in 9.0
+-- changed: 2011-06-25 revise to use real named args and fix direction rating typo
+CREATE OR REPLACE FUNCTION rate_attributes(dirpA VARCHAR, dirpB VARCHAR, streetNameA VARCHAR, streetNameB VARCHAR,
+    streetTypeA VARCHAR, streetTypeB VARCHAR, dirsA VARCHAR, dirsB VARCHAR,  locationA VARCHAR, locationB VARCHAR, prequalabr VARCHAR) RETURNS INTEGER
+AS $$
+  SELECT CASE
+      WHEN locationA IS NULL OR locationB IS NULL THEN NULL
+      ELSE @extschema@.levenshtein_ignore_case(locationA, locationB)
+         + @extschema@.rate_attributes($1, $2, streetNameA, streetNameB, $5, $6, $7, $8, prequalabr)
+  END;
+$$ LANGUAGE sql IMMUTABLE;

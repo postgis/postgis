@@ -58,6 +58,18 @@ SELECT '#5695a' AS ticket, * FROM standardize_address('us_lex', 'us_gaz', 'us_ru
  #5695a |          | 1         | EAST   |      |         | PIMA | STREET  |        |            |       | TUCSON | ARIZONA | US      |          |     | SUITE 999
 (1 row)
 
+SELECT '#2459a' AS ticket, * FROM standardize_address('us_lex', 'us_gaz', 'us_rules', '26 Court Street, Boston, Massachusetts 02109, France');
+ ticket | building | house_num | predir | qual | pretype | name  | suftype | sufdir | ruralroute | extra |  city  |     state     | country | postcode | box | unit 
+--------+----------+-----------+--------+------+---------+-------+---------+--------+------------+-------+--------+---------------+---------+----------+-----+------
+ #2459a |          | 26        |        |      |         | COURT | STREET  |        |            |       | BOSTON | MASSACHUSETTS | FR      | 02109    |     | 
+(1 row)
+
+SELECT '#2459b' AS ticket, * FROM standardize_address('us_lex', 'us_gaz', 'us_rules', '212 3rd Ave N, MINNEAPOLIS, MN 553404');
+ ticket | building | house_num | predir | qual | pretype | name | suftype | sufdir | ruralroute | extra |    city     |   state   | country | postcode | box | unit 
+--------+----------+-----------+--------+------+---------+------+---------+--------+------------+-------+-------------+-----------+---------+----------+-----+------
+ #2459b |          | 212       |        |      |         | 3    | AVENUE  | NORTH  |            |       | MINNEAPOLIS | MINNESOTA | US      | 55340-4  |     | 
+(1 row)
+
 DO $$
 BEGIN
 	PERFORM standardize_address('us_lex', 'us_gaz', 'us_rules', '   ');

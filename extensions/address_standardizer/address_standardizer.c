@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 Darafei Praliaskouski <me@komzpa.net>
+ */
+
 #include "postgres.h"
 #include "fmgr.h"
 #include "funcapi.h"
@@ -497,6 +501,22 @@ parse_address_wrapper_input(const char *function_name, const char *raw_address, 
 }
 
 /*
+ * Preserve ZIP+4 details from structured parses so callers can reuse the
+ * standardized postcode without reparsing the original address text.
+ */
+static char *
+build_postcode_component(const ADDRESS *parsed_address)
+{
+	if (!parsed_address || !parsed_address->zip || parsed_address->zip[0] == '\0')
+		return NULL;
+
+	if (parsed_address->zipplus && parsed_address->zipplus[0] != '\0')
+		return psprintf("%s-%s", parsed_address->zip, parsed_address->zipplus);
+
+	return pstrdup(parsed_address->zip);
+}
+
+/*
  * The explicit SQL macro argument models city/state/postcode text, not a full
  * address. parseaddress() mostly gives us that split already, but when a city
  * prefix is mistaken for address1 (for example "ST PAUL, MN 55105"), fold it
@@ -523,6 +543,10 @@ parse_macro_input(const char *function_name, const char *raw_macro)
 	return parsed_macro;
 }
 
+/*
+ * Diagnostic entry point that returns tokenization, rule matching, and the
+ * final standardized address for either split or one-line input.
+ */
 PG_FUNCTION_INFO_V1(debug_standardize_address);
 
 Datum
@@ -751,6 +775,7 @@ standardize_address(PG_FUNCTION_ARGS)
 	char **values;
 	HeapTuple tuple;
 	ADDRESS *parsed_macro = NULL;
+	char *postcode = NULL;
 
 	DBG("Start standardize_address");
 
@@ -777,9 +802,10 @@ standardize_address(PG_FUNCTION_ARGS)
 
 	if (parsed_macro)
 	{
+		postcode = build_postcode_component(parsed_macro);
 		DBG("calling std_standardize('%s', ... parsed macro)", micro);
 		stdaddr = std_standardize(
-		    std, micro, parsed_macro->city, parsed_macro->st, parsed_macro->zip, parsed_macro->cc, 0);
+		    std, micro, parsed_macro->city, parsed_macro->st, postcode, parsed_macro->cc, 0);
 	}
 	else
 	{
@@ -806,6 +832,10 @@ standardize_address(PG_FUNCTION_ARGS)
 	PG_RETURN_DATUM(result);
 }
 
+/*
+ * One-line standardization entry point. Parse the raw address first so the
+ * structured postcode and country can be preserved during normalization.
+ */
 PG_FUNCTION_INFO_V1(standardize_address1);
 
 Datum
@@ -824,6 +854,7 @@ standardize_address1(PG_FUNCTION_ARGS)
 	char **values;
 	HeapTuple tuple;
 	ADDRESS *parsed_address;
+	char *postcode;
 
 	DBG("Start standardize_address");
 
@@ -840,6 +871,7 @@ standardize_address1(PG_FUNCTION_ARGS)
 	attinmeta = TupleDescGetAttInMetadata(tuple_desc);
 
 	parsed_address = parse_address_wrapper_input(__func__, addr, &micro, NULL);
+	postcode = build_postcode_component(parsed_address);
 
 	DBG("calling GetStdUsingFCInfo(fcinfo, '%s', '%s', '%s')", lextab, gaztab, rultab);
 	std = GetStdUsingFCInfo(fcinfo, lextab, gaztab, rultab);
@@ -848,7 +880,7 @@ standardize_address1(PG_FUNCTION_ARGS)
 
 	DBG("calling std_standardize('%s', ...)", micro);
 	stdaddr = std_standardize(
-	    std, micro, parsed_address->city, parsed_address->st, parsed_address->zip, parsed_address->cc, 0);
+	    std, micro, parsed_address->city, parsed_address->st, postcode, parsed_address->cc, 0);
 
 	DBG("back from fetch_stdaddr");
 

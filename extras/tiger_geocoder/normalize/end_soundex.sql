@@ -2,16 +2,8 @@
 -- Words are allowed to be separated by space, comma, period, new-line
 -- tab or form feed.
 CREATE OR REPLACE FUNCTION end_soundex(VARCHAR) RETURNS VARCHAR
-AS $_$
-DECLARE
-  tempString VARCHAR;
-BEGIN
-  tempString := substring($1, E'[ ,.\n\t\f]([a-zA-Z0-9]*)$');
-  IF tempString IS NOT NULL THEN
-    tempString := @extschema:fuzzystrmatch@.soundex(tempString);
-  ELSE
-    tempString := @extschema:fuzzystrmatch@.soundex($1);
-  END IF;
-  return tempString;
-END;
-$_$ LANGUAGE plpgsql IMMUTABLE;
+AS $$
+  SELECT @extschema:fuzzystrmatch@.soundex(
+      COALESCE(substring($1, E'[ ,.\n\t\f]([a-zA-Z0-9]*)$'), $1)
+  );
+$$ LANGUAGE sql IMMUTABLE;

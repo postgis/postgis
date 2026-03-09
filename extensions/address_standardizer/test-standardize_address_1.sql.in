@@ -8,6 +8,8 @@ SELECT '#state_only_macro' AS ticket, * FROM standardize_address('us_lex','us_ga
 SELECT '#5299a' AS ticket, * FROM standardize_address('us_lex',  'us_gaz', 'us_rules','1 Timepiece Point','Boston, MA, 02220');
 SELECT '#5299b' AS ticket, * FROM standardize_address('us_lex',  'us_gaz', 'us_rules','50 Gold Piece Drive','Boston, MA, 02020');
 SELECT '#5695a' AS ticket, * FROM standardize_address('us_lex', 'us_gaz', 'us_rules', 'ONE E PIMA ST STE 999, TUCSON, AZ');
+SELECT '#2459a' AS ticket, * FROM standardize_address('us_lex', 'us_gaz', 'us_rules', '26 Court Street, Boston, Massachusetts 02109, France');
+SELECT '#2459b' AS ticket, * FROM standardize_address('us_lex', 'us_gaz', 'us_rules', '212 3rd Ave N, MINNEAPOLIS, MN 553404');
 DO $$
 BEGIN
 	PERFORM standardize_address('us_lex', 'us_gaz', 'us_rules', '   ');

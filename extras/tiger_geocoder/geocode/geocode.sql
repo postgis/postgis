@@ -1,42 +1,5 @@
-CREATE OR REPLACE FUNCTION geocode(
-    input VARCHAR, max_results integer DEFAULT 10,
-    restrict_geom geometry DEFAULT NULL,
-    OUT ADDY NORM_ADDY,
-    OUT GEOMOUT GEOMETRY,
-    OUT RATING INTEGER
-) RETURNS SETOF RECORD
-AS $_$
-DECLARE
-  rec RECORD;
-BEGIN
-
-  IF input IS NULL THEN
-    RETURN;
-  END IF;
-
-  -- Pass the input string into the address normalizer
-  ADDY := normalize_address(input);
-  IF NOT ADDY.parsed THEN
-    RETURN;
-  END IF;
-
-/*  FOR rec IN SELECT * FROM geocode(ADDY)
-  LOOP
-
-    ADDY := rec.addy;
-    GEOMOUT := rec.geomout;
-    RATING := rec.rating;
-
-    RETURN NEXT;
-  END LOOP;*/
-
-  RETURN QUERY SELECT g.addy, g.geomout, g.rating FROM geocode(ADDY, max_results, restrict_geom) As g ORDER BY g.rating;
-
-END;
-$_$ LANGUAGE plpgsql COST 1000
-STABLE PARALLEL SAFE
-ROWS 1;
-
+-- Geocode an already parsed address, preferring precise address matches and
+-- falling back to broader location matches when needed.
 CREATE OR REPLACE FUNCTION geocode(
     IN_ADDY NORM_ADDY,
     max_results integer DEFAULT 10,
@@ -129,5 +92,32 @@ BEGIN
 END;
 $_$ LANGUAGE plpgsql
 COST 1000
+STABLE PARALLEL SAFE
+ROWS 1;
+
+-- Normalize free-form input once, then only delegate to the structured
+-- geocoder overload when parsing succeeds.
+CREATE OR REPLACE FUNCTION geocode(
+    input VARCHAR, max_results integer DEFAULT 10,
+    restrict_geom geometry DEFAULT NULL,
+    OUT ADDY NORM_ADDY,
+    OUT GEOMOUT GEOMETRY,
+    OUT RATING INTEGER
+) RETURNS SETOF RECORD
+AS $$
+  WITH normalized AS (
+      SELECT @extschema@.normalize_address(input) AS addy
+      WHERE input IS NOT NULL
+  ),
+  parsed AS (
+      SELECT addy
+      FROM normalized
+      WHERE (addy).parsed
+  )
+  SELECT g.addy, g.geomout, g.rating
+  FROM parsed
+    CROSS JOIN LATERAL @extschema@.geocode(addy, max_results, restrict_geom) AS g
+  ORDER BY g.rating;
+$$ LANGUAGE sql COST 1000
 STABLE PARALLEL SAFE
 ROWS 1;

@@ -1104,9 +1104,7 @@ FROM pagc_normalize_address('9000 E ROO ST STE 999, Springfield, CO') AS addy;
 ---------+--------------+------------+------------------+---------------+-----------+-------------+-------------+-----+--------
     9000 | E            | ROO        | ST               |               | SUITE 999 | SPRINGFIELD | CO          |     | t</programlisting>
 
-            <para>Batch call.  There are currently speed issues with the way postgis_tiger_geocoder wraps the address_standardizer.  These will hopefully
-be resolved in later editions.  To work around them, if you need speed for batch geocoding to call generate a normaddy  in batch mode, you are encouraged
-to directly call the address_standardizer standardize_address function as shown below which is similar exercise to what we did in <xref linkend="Normalize_Address"/> that uses data created in <xref linkend="Geocode"/>.</para>
+            <para>Batch call. <function>pagc_normalize_address</function> now follows the same single-address standardizer path internally, but for large set-based geocoding jobs you may still prefer to call <function>standardize_address</function> directly when materializing <varname>norm_addy</varname> rows in SQL, as shown below. This is similar to the exercise in <xref linkend="Normalize_Address"/> that uses data created in <xref linkend="Geocode"/>.</para>
 
     <programlisting>WITH g AS (SELECT address, ROW((sa).house_num, (sa).predir, (sa).name
   , (sa).suftype, (sa).sufdir, (sa).unit , (sa).city, (sa).state, (sa).postcode, true)::norm_addy As na
