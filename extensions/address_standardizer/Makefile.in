@@ -53,7 +53,7 @@ sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql sql/$(EXTENSION)_
 sql/test-init-extensions.sql sql/test-parseaddress.sql sql/test-standardize_address_1.sql sql/test-standardize_address_2.sql sql/test-debug_standardize_address.sql
 
 DOCS = README.address_standardizer
-PG_CPPFLAGS = @CFLAGS@ @CPPFLAGS@ -DPCRE_VERSION=@PCRE_VERSION@
+PG_CPPFLAGS = @CFLAGS@ @MODULE_CFLAGS@ @CPPFLAGS@ -DPCRE_VERSION=@PCRE_VERSION@
 
 SHLIB_LINK = @SHLIB_LINK@ @PCRE_LDFLAGS@
 EXTRA_CLEAN = sql/ usps-st-city-name.txt mk-st-regexp mk-city-regex test_main

@@ -32,6 +32,12 @@ This version requires GEOS 3.10 or higher
 
 * Bug Fixes *
 
+ - Build PostgreSQL extension modules with `-fno-semantic-interposition` when
+          available so LTO can optimize same-DSO calls to exported PostGIS
+          entry points directly instead of routing through the module PLT; in
+          a local PostgreSQL 18 `pgbench` microbenchmark over 100k four-point
+          groups this reduced `ST_Collect` aggregate latency by about 4%
+          (Darafei Praliaskouski)
  - #5973, Install PostGIS utilities under `pg_config --bindir` by default
           and document `pg_config`-derived install paths more accurately
           (Darafei Praliaskouski)

@@ -81,6 +81,15 @@ dnl
 PICFLAGS="$lt_prog_compiler_pic"
 AC_SUBST([PICFLAGS])
 
+dnl
+dnl PostgreSQL extension modules can call exported PostGIS entry points across
+dnl translation units. Disable semantic interposition when supported so the
+dnl compiler can optimize those same-DSO calls directly.
+dnl
+MODULE_CFLAGS=""
+_LT_COMPILER_OPTION([if $compiler supports -fno-semantic-interposition], [_cv_nosemanticinterposition], [-fno-semantic-interposition], [], [MODULE_CFLAGS="$MODULE_CFLAGS -fno-semantic-interposition"], [])
+AC_SUBST([MODULE_CFLAGS])
+
 _LT_COMPILER_OPTION([if $compiler supports -fno-math-errno], [_cv_nomatherrno], [-fno-math-errno], [], [CFLAGS="$CFLAGS -fno-math-errno"], [])
 _LT_COMPILER_OPTION([if $compiler supports -fno-signed-zeros], [_cv_nosignedzeros], [-fno-signed-zeros], [], [CFLAGS="$CFLAGS -fno-signed-zeros"], [])
 _LT_COMPILER_OPTION([if $compiler supports -std=gnu11], [_cv_std], -std=gnu11, [], [CFLAGS="-std=gnu11 $CFLAGS"], [])
