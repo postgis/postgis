@@ -2,7 +2,6 @@
 ignore-words = .codespell.ignore
 skip =
     ./deps/**,
-    ./extensions/address_standardizer/**,
     ./extensions/*/sql/**,
     ./extensions/*/sql_bits/*.sql,
     ./extensions/postgis_tiger_geocoder/sql_bits/*.sql.in,

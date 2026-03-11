@@ -41,14 +41,9 @@ endif
 SQL_BITS     = $(wildcard sql_bits/*.sql)
 EXTRA_CLEAN = sql expected ${SQL_BITS}
 
-#test address standardizer if also built
-ifeq (@ADDRESS_STANDARDIZER@,address_standardizer)
-	REGRESS +=  test-pagc_normalize_address
-	REGRESS_OPTS += --load-extension=address_standardizer
-endif
 REGRESS_OPTS += --load-extension=$(EXTENSION)
 
-all: sql/$(EXTENSION)_pre.sql sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql sql/test-normalize_address.sql sql/test-geocode_intersection_spacing.sql sql/test-pagc_normalize_address.sql expected/test-normalize_address.out expected/test-geocode_intersection_spacing.out expected/test-pagc_normalize_address.out sql/test-upgrade.sql expected/test-upgrade.out
+all: sql/$(EXTENSION)_pre.sql sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql sql/test-normalize_address.sql sql/test-geocode_intersection_spacing.sql expected/test-normalize_address.out expected/test-geocode_intersection_spacing.out sql/test-upgrade.sql expected/test-upgrade.out
 
 
 .PHONY: expected
@@ -74,9 +69,6 @@ expected/test-normalize_address.out: sql_bits/test_tuples_only_unaligned.sql.in 
 expected/test-geocode_intersection_spacing.out: sql_bits/test_tuples_only_unaligned.sql.in sql_bits/test-geocode_intersection_spacing.out.in | expected
 	cat $^ > $@
 
-expected/test-pagc_normalize_address.out: sql_bits/test_tuples_only_unaligned.sql.in ../../extras/tiger_geocoder/regress/pagc_normalize_address_regress | expected
-	cat $^ > $@
-
 ## adding \t .. to force output to be the same as what get in regular regress in tiger folder
 sql/test-normalize_address.sql: sql_bits/test_tuples_only_unaligned.sql.in ../../extras/tiger_geocoder/regress/normalize_address_regress.sql | sql
 	cat $^ > $@
@@ -99,9 +91,6 @@ endif
 
 expected/test-upgrade.out: sql/test-upgrade.sql | expected
 	cp $< $@
-
-sql/test-pagc_normalize_address.sql: sql_bits/test_tuples_only_unaligned.sql.in ../../extras/tiger_geocoder/regress/pagc_normalize_address_regress.sql | sql
-	cat $^ > $@
 
 sql/$(EXTENSION)_pre.sql: sql/tiger_geocoder.sql  sql_bits/mark_editable_objects.sql.in | sql
 	cat $^ > $@
@@ -142,8 +131,6 @@ sql/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/utility/set_search_
 	../../extras/tiger_geocoder/normalize/location_extract.sql \
 	../../extras/tiger_geocoder/normalize/normalize_address.sql \
 	../../extras/tiger_geocoder/normalize/pprint_addy.sql \
-	../../extras/tiger_geocoder/pagc_normalize/pagc_tables.sql \
-  ../../extras/tiger_geocoder/pagc_normalize/pagc_normalize_address.sql \
 	../../extras/tiger_geocoder/geocode/other_helper_functions.sql \
 	../../extras/tiger_geocoder/geocode/rate_attributes.sql \
 	../../extras/tiger_geocoder/geocode/includes_address.sql \
@@ -179,8 +166,6 @@ sql/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	../../extras/tiger_geocoder/normalize/location_extract.sql \
 	../../extras/tiger_geocoder/normalize/normalize_address.sql \
 	../../extras/tiger_geocoder/normalize/pprint_addy.sql \
-	../../extras/tiger_geocoder/pagc_normalize/pagc_tables.sql \
-    ../../extras/tiger_geocoder/pagc_normalize/pagc_normalize_address.sql \
 	../../extras/tiger_geocoder/geocode/other_helper_functions.sql \
 	../../extras/tiger_geocoder/geocode/rate_attributes.sql \
 	../../extras/tiger_geocoder/geocode/includes_address.sql \

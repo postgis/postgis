@@ -106,9 +106,6 @@ if [ "$POSTGIS_MAJOR_VERSION" > "1" ] ; then
   cp -p ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
   cp -rp  ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal $outdir/gdal-data
 
-	# needed for address standardizer
-  cp -p ${PCRE_PATH}/bin/*.dll $outdir/bin
-
 fi;
 
 if [ -n "$SFCGAL_VER"  ]; then
@@ -174,23 +171,14 @@ value=${value//UPGRADEABLE_VERSIONS = /}
 export UPGRADEABLE_VERSIONS=$value
 #echo "Versions are:  $UPGRADEABLE_VERSIONS"
 export WIN_RELEASED_VERSIONS="2.0.0 2.0.1 2.0.3 2.0.4 2.0.6 2.1.4 2.1.7 2.1.8 2.2.0 2.2.3 2.3.0 2.3.7 2.4.0 2.4.4"
-for EXTNAME in postgis postgis_raster postgis_topology postgis_sfcgal postgis_tiger_geocoder address_standardizer; do
+for EXTNAME in postgis postgis_raster postgis_topology postgis_sfcgal postgis_tiger_geocoder ; do
 	cp extensions/$EXTNAME/sql/*  ${RELDIR}/${RELVERDIR}/share/extension
 
 	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--${POSTGIS_MINOR_MAX_VER}--${POSTGIS_MICRO_VER}.sql
 
-
-	if test "$EXTNAME" = "address_standardizer"; then #repeat for address_standardizer_data_us
-		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
-		cp extensions//$EXTNAME/sql/${EXTNAME}_data_us--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
-	fi
-
 	for OLD_VERSION in $UPGRADEABLE_VERSIONS; do \
 		if [ "$OLD_VERSION" > "2.5" ] || [ "$OLD_VERSION" in $WIN_RELEASED_VERSIONS ]; then
 			cp extensions/$EXTNAME/sql/$EXTNAME--TEMPLATED--TO--ANY.sql  ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--$OLD_VERSION--${POSTGIS_MINOR_MAX_VER}.sql; \
-			if test "$EXTNAME" = "address_standardizer"; then
-				cp extensions/$EXTNAME/sql/$EXTNAME--TEMPLATED--TO--ANY.sql ${RELDIR}/${RELVERDIR}/share/extension/${EXTNAME}_data_us--$OLD_VERSION--${POSTGIS_MINOR_MAX_VER}.sql; \
-			fi
 		fi
 	done
 done
@@ -199,7 +187,7 @@ done
 #cp ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${RELDIR}/${RELVERDIR}/share/extension
 
 cp -r extensions/*/*.control ${RELDIR}/${RELVERDIR}/share/extension
-cp -r extensions/*/*.dll ${RELDIR}/${RELVERDIR}/lib #only address_standardizer in theory has this
+cp -r extensions/*/*.dll ${RELDIR}/${RELVERDIR}/lib
 #cp extensions/postgis_topology/sql/* ${RELDIR}/${RELVERDIR}/share/extension
 #cp extensions/postgis_topology/*.control ${RELDIR}/${RELVERDIR}/share/extension
 cp -r ${RELDIR}/packaging_notes/* ${RELDIR}/${RELVERDIR}/

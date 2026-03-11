@@ -36,7 +36,6 @@ sudo apt-get install -y --no-install-recommends \
   libgsl-dev \
   libjson-c-dev \
   libopenjp2-7-dev libpng-dev libtiff-dev libwebp-dev \
-  libpcre3-dev \
   libpq-dev \
   libproj-dev proj-bin \
   libprotobuf-c-dev protobuf-c-compiler \

@@ -162,7 +162,6 @@ all: $(BUILD_TARGET)
 XML_SOURCES = \
 	administration.xml \
 	database_tuning.xml \
-	extras_address_standardizer.xml \
 	extras_historytable.xml \
 	extras_tigergeocoder.xml \
 	extras_topology.xml \
@@ -221,7 +220,6 @@ XSL_GENERATED_SOURCES = \
 	list_polyhedral_functions.xsl.xml
 
 TAG_GENERATED_SOURCES = \
-	address_standardizer_required.tag \
 	curve_support.tag \
 	geography_transform.tag \
 	index_aware.tag \
