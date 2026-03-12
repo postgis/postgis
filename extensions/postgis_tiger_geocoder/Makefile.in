@@ -131,6 +131,8 @@ sql/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/utility/set_search_
 	../../extras/tiger_geocoder/normalize/location_extract.sql \
 	../../extras/tiger_geocoder/normalize/normalize_address.sql \
 	../../extras/tiger_geocoder/normalize/pprint_addy.sql \
+	../../extras/tiger_geocoder/pagc_normalize/pagc_tables.sql \
+    ../../extras/tiger_geocoder/pagc_normalize/pagc_normalize_address.sql \
 	../../extras/tiger_geocoder/geocode/other_helper_functions.sql \
 	../../extras/tiger_geocoder/geocode/rate_attributes.sql \
 	../../extras/tiger_geocoder/geocode/includes_address.sql \
