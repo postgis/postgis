@@ -161,7 +161,7 @@ done
  #cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}.sql ${PGPATHEDB}/share/extension
  #cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${PGPATHEDB}/share/extension
 cp -r extensions/*/*.control ${PGPATHEDB}/share/extension
-cp -r extensions/*/*.dll ${PGPATHEDB}/lib
+#cp -r extensions/*/*.dll ${PGPATHEDB}/lib
 
 make check RUNTESTFLAGS="--extension -v"
 
