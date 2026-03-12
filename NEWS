@@ -16,7 +16,8 @@ topogeometry corruption:
 * Fixes *
 
 - #6055, Remove rare extension priv escalation case.
-         Reported by Sven Klemm (Tiger Data) and Allistair Ishmael Hakim (allistair.sh)
+         Reported by Sven Klemm (Tiger Data), Allistair Ishmael Hakim (allistair.sh)
+         and Daniel Bakker
 
 
 PostGIS 3.6.2
