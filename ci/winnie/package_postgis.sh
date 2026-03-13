@@ -187,7 +187,7 @@ done
 #cp ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${RELDIR}/${RELVERDIR}/share/extension
 
 cp -r extensions/*/*.control ${RELDIR}/${RELVERDIR}/share/extension
-cp -r extensions/*/*.dll ${RELDIR}/${RELVERDIR}/lib
+#cp -r extensions/*/*.dll ${RELDIR}/${RELVERDIR}/lib
 #cp extensions/postgis_topology/sql/* ${RELDIR}/${RELVERDIR}/share/extension
 #cp extensions/postgis_topology/*.control ${RELDIR}/${RELVERDIR}/share/extension
 cp -r ${RELDIR}/packaging_notes/* ${RELDIR}/${RELVERDIR}/
