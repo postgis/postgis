@@ -41,10 +41,8 @@ DATA_built = \
 # NOTE: order matters
 EXTENSION_UPGRADE_SCRIPTS = \
 	extlock.sql \
-	../postgis_extension_helper.sql \
 	sql/topology_upgrade.sql \
-	sql_bits/mark_editable_objects.sql.in \
-	../postgis_extension_helper_uninstall.sql
+	sql_bits/mark_editable_objects.sql.in
 
 EXTRA_CLEAN = sql/
 
