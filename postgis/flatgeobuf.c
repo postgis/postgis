@@ -313,12 +313,12 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			break;
 		}
 		case flatgeobuf_column_type_byte: {
-			int8_t value;
-			if (offset + sizeof(int8_t) > size)
+			char value;
+			if (offset + sizeof(char) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for byte value");
-			memcpy(&value, data + offset, sizeof(int8_t));
-			values[ci] = Int8GetDatum(value);
-			offset += sizeof(int8_t);
+			memcpy(&value, data + offset, sizeof(char));
+			values[ci] = CharGetDatum(value);
+			offset += sizeof(char);
 			break;
 		}
 		case flatgeobuf_column_type_ubyte: {
