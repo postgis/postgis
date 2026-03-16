@@ -241,7 +241,10 @@ endif
 #
 %.sql: %.sql.in
 	$(SQLPP) -I@top_srcdir@/libpgcommon -I@builddir@ $< > $@.tmp
-	grep -v '^#' $@.tmp | $(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
+	grep -v '^#' $@.tmp | \
+		$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" | \
+		$(PERL) -lpe "s'@extschema@\.''g" | \
+		$(PERL) -lpe "s'@extschema@''g" > $@
 	rm -f $@.tmp
 
 #this is redundant but trying to fold in with extension just hangs
