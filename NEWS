@@ -3,6 +3,8 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - [raster] Fix ST_AsRaster builds with GDAL headers that omit MIN
+      (Paul Ramsey)
  - GT-675, Preserve TRIANGLE children while normalizing malformed TINs
    (Darafei Praliaskouski)
  - #6038, Avoid stale geometry_columns relation lookups after relations are
