@@ -42,7 +42,7 @@ DECLARE
 	postgis_namespace OID;
 	matching_function pg_catalog.pg_proc;
 	detail TEXT;
-	deprecated_suffix TEXT := '_deprecated_by_postgis_' || deprecated_in_version;
+	deprecated_suffix TEXT := pg_catalog.concat('_deprecated_by_postgis_', deprecated_in_version);
 BEGIN
 
 	-- Fetch install namespace for PostGIS
@@ -56,15 +56,15 @@ BEGIN
 	SELECT *
 	FROM pg_catalog.pg_proc p
 	WHERE pronamespace = postgis_namespace
-	AND pg_catalog.LOWER(p.proname) = pg_catalog.LOWER(function_name)
+	AND p.proname ILIKE function_name
 	AND pg_catalog.pg_function_is_visible(p.oid)
-	AND pg_catalog.LOWER(pg_catalog.pg_get_function_identity_arguments(p.oid)) = pg_catalog.LOWER(function_arguments)
+	AND pg_catalog.pg_get_function_identity_arguments(p.oid) ILIKE function_arguments
 	INTO matching_function;
 
 	IF matching_function.oid IS NOT NULL THEN
-		sql := format('ALTER FUNCTION %s RENAME TO %I',
+		sql := pg_catalog.format('ALTER FUNCTION %s RENAME TO %I',
 			matching_function.oid::regprocedure,
-			matching_function.proname || deprecated_suffix
+			pg_catalog.concat(matching_function.proname, deprecated_suffix)
 		);
 		RAISE DEBUG 'SQL query: %', sql;
 		BEGIN
@@ -79,7 +79,7 @@ BEGIN
 	END IF;
 
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION _postgis_drop_function_by_signature(
   function_signature text,
@@ -90,7 +90,7 @@ DECLARE
 	detail TEXT;
 	newname TEXT;
 	proc RECORD;
-	deprecated_suffix TEXT := '_deprecated_by_postgis_' || deprecated_in_version;
+	deprecated_suffix TEXT := pg_catalog.concat('_deprecated_by_postgis_', deprecated_in_version);
 BEGIN
 
 	-- Check if the deprecated function exists
@@ -116,7 +116,7 @@ BEGIN
 	sql := pg_catalog.format(
 		'ALTER FUNCTION %s RENAME TO %I',
 		proc.oid::regprocedure,
-		proc.proname || deprecated_suffix
+		pg_catalog.concat(proc.proname, deprecated_suffix)
 	);
 	EXECUTE sql;
 
