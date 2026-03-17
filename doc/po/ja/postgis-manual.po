@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2026-03-05 01:51+0000\n"
+"PO-Revision-Date: 2026-03-17 01:16+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.16.1\n"
+"X-Generator: Weblate 5.16.2\n"
 
 #. Tag: chapter
 #, no-c-format
@@ -9059,7 +9059,7 @@ msgstr ""
 "あるかも知れません。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Currently, the <command>make check</command> relies on the <code>PATH</code> "
 "and <code>PGPORT</code> environment variables when performing the checks - "
@@ -9069,12 +9069,12 @@ msgid ""
 "installation during configuration or be prepared to deal with the impending "
 "headaches."
 msgstr ""
-"現在のところ<command>make check</command>は、チェックを行う際に 環境変"
-"数<code>PATH</code>と<code>PGPORT</code>によっています。"
-"コンフィギュレーションパラメータ<command>--with-pgconfig</command>を使って特"
-"定したPostgreSQLでは<emphasis>ありません</emphasis>。PATHを編集して、"
+"現在のところ<command>make check</command>は、チェックを行う際に環境変数<code>"
+"PATH</code>と<code>PGPORT</code>を見ています。コンフィギュレーション時に指定"
+"したPostgreSQLとは<emphasis>限りません</emphasis>。つまり<command>--with-"
+"pgconfig</command>を使って特定したものではありません。PATHを編集して、"
 "コンフィギュレーションの際に検出したPostgreSQLと一致するようにして下さい。も"
-"しくは、間もなく襲ってくる頭痛の準備をしておいて下さい。"
+"しくは、間もなく襲ってくる頭痛に対処する準備をしておいて下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -34890,14 +34890,15 @@ msgstr ""
 "Arguments\" (訳注: 日本語版は「可変長引数を取るSQL関数」)節を参照して下さい。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>callbackfunc</varname> is "
 "required, regardless of whether you choose to pass any arguments to the "
 "callback function for processing or not."
 msgstr ""
-"<varname>callbackfunc</varname>への<type>text[]</type>引数は、あらゆる引数を"
-"処理のためにユーザ関数に渡すかどうかの選択にかかわらず求められます。"
+"<type>text[]</type>引数は<varname>callbackfunc</varname>に渡されるもので、"
+"ユーザ関数に渡して処理させる場合であっても、そうでない場合であっても、求めら"
+"れます。"
 
 #. Tag: para
 #, no-c-format
