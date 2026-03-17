@@ -97,7 +97,10 @@ sql/rtpostgis_for_extension.sql: ../../raster/rt_pg/rtpostgis.sql.in ../../postg
 	rm -f $@.tmp
 
 sql/rtpostgis_upgrade.sql: sql/rtpostgis_upgrade_for_extension.sql | sql
-	$(PERL) -pe "s/BEGIN\;//g ; s/COMMIT\;//g; s/^(DROP .*)\;/SELECT postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" $< > $@
+	cat $< | \
+	$(PERL) -lpe "s/BEGIN\;//g" | \
+	$(PERL) -lpe "s/COMMIT\;//g" | \
+	$(PERL) -lpe "s/^(DROP .*)\;/SELECT \@extschema\@.postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" > $@
 
 #this keeps the @extschema@. in place since extension machinery will replace during install
 sql/rtpostgis_upgrade_for_extension.sql: ../../postgis/common_before_upgrade.sql ../../raster/rt_pg/rtpostgis_upgrade_cleanup.sql sql/rtpostgis_upgrade_for_extension.sql.in ../../raster/rt_pg/rtpostgis_drop.sql ../../postgis/common_after_upgrade.sql | sql

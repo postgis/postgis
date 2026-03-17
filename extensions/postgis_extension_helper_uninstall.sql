@@ -13,6 +13,6 @@
 --
 -- This drops extension helper functions
 -- and should be called at the end of the extension upgrade file
-DROP FUNCTION postgis_extension_drop_if_exists(text, text);
+DROP FUNCTION IF EXISTS postgis_extension_drop_if_exists(text, text);
 DROP FUNCTION IF EXISTS postgis_extension_AddToSearchPath(varchar);
 DROP FUNCTION IF EXISTS postgis_extension_AddToSearchPath(text);
