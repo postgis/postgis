@@ -8,6 +8,7 @@ PostGIS 3.3.10
  - #6055, Remove rare extension priv escalation case.
           Reported by Sven Klemm (Tiger Data), Allistair Ishmael Hakim (allistair.sh)
           and Daniel Bakker
+ - GH-850 Use quote_identifier to build tables in pgis_tablefromflatgeobuf (Ariel Mashraki)
 
 
 PostGIS 3.3.9
