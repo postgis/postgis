@@ -158,6 +158,26 @@ select 'E1', id, bool_1, ST_AsText(geom), bool_2 from ST_FromFlatGeobuf(null::fl
     ) q)
 );
 
+select '--- Quoted identifiers ---';
+
+-- Verify that special characters in column names are properly quoted
+select ST_FromFlatGeobufToTable('public', 'flatgeobuf_qi', (
+    select ST_AsFlatGeobuf(q) from (
+        select null::geometry, null::text as "col name; with special--chars"
+    ) q
+));
+select 'QI1' where exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'flatgeobuf_qi'
+      and column_name = 'col name; with special--chars'
+);
+select 'QI2' where exists (
+    select 1 from information_schema.tables
+    where table_schema = 'public' and table_name = 'flatgeobuf_t1'
+);
+
 drop table if exists public.flatgeobuf_t1;
 drop table if exists public.flatgeobuf_a1;
 drop table if exists public.flatgeobuf_e1;
+drop table if exists public.flatgeobuf_qi;
