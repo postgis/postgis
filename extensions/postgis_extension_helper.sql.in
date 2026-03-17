@@ -18,7 +18,9 @@ CREATE FUNCTION postgis_extension_drop_if_exists(param_extension text, param_sta
   RETURNS boolean AS
 $$
 DECLARE
-	var_sql_ext text := 'ALTER EXTENSION ' OPERATOR(pg_catalog.||) pg_catalog.quote_ident(param_extension) OPERATOR(pg_catalog.||) ' ' OPERATOR(pg_catalog.||) pg_catalog.replace(param_statement, 'IF EXISTS', '');
+	var_sql_ext text := pg_catalog.format('ALTER EXTENSION %s %s',
+		pg_catalog.quote_ident(param_extension),
+		pg_catalog.replace(param_statement, 'IF EXISTS', ''));
 	var_result boolean := false;
 BEGIN
 	BEGIN
@@ -26,13 +28,13 @@ BEGIN
 		var_result := true;
 	EXCEPTION
 		WHEN OTHERS THEN
-			--this is to allow ignoring if the object does not exist in extension
+			-- This is to allow ignoring if the object does not exist in extension
 			var_result := false;
 	END;
 	RETURN var_result;
 END;
 $$
-LANGUAGE plpgsql VOLATILE;
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION postgis_extension_AddToSearchPath(a_schema_name text)
 #include "libpgcommon/sql/AddToSearchPath.sql.inc"
