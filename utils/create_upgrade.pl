@@ -125,9 +125,17 @@ while(<INPUT>)
 
         #last;
     }
+    elsif (/CREATE SCHEMA topology/)
+    {
+        $module = 'postgis_topology';
+    }
     elsif (/TYPE raster/)
     {
         $module = 'postgis_raster';
+    }
+    elsif (/FUNCTION postgis_sfcgal_noop/)
+    {
+        $module = 'postgis_sfcgal';
     }
     elsif (m@('\$libdir/[^']*')@)
     {
