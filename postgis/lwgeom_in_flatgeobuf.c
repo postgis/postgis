@@ -75,13 +75,9 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 	char *schema;
 	text *table_input;
 	char *table;
-	char *format;
-	char *sql;
 	bytea *data;
 	uint16_t i;
-	char **column_defs;
-	size_t column_defs_total_len;
-	char *column_defs_str;
+	StringInfoData sql;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
@@ -107,47 +103,33 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 	flatgeobuf_check_magicbytes(ctx);
 	flatgeobuf_decode_header(ctx->ctx);
 
-	column_defs = palloc(sizeof(char *) * ctx->ctx->columns_size);
-	column_defs_total_len = 0;
+	initStringInfo(&sql);
+	appendStringInfo(&sql, "create table %s.%s (id int, geom geometry",
+		quote_identifier(schema), quote_identifier(table));
+
 	POSTGIS_DEBUGF(2, "found %d columns", ctx->ctx->columns_size);
 	for (i = 0; i < ctx->ctx->columns_size; i++) {
 		flatgeobuf_column *column = ctx->ctx->columns[i];
 		const char *name = column->name;
 		uint8_t column_type = column->type;
 		char *pgtype = get_pgtype(column_type);
-		size_t len = strlen(name) + 1 + strlen(pgtype) + 1;
-		column_defs[i] = palloc0(sizeof(char) * len);
-		strcat(column_defs[i], name);
-		strcat(column_defs[i], " ");
-		strcat(column_defs[i], pgtype);
-		column_defs_total_len += len;
-	}
-	column_defs_str = palloc0(sizeof(char) * column_defs_total_len + (ctx->ctx->columns_size * 2) + 2 + 1);
-	if (ctx->ctx->columns_size > 0)
-		strcat(column_defs_str, ", ");
-	for (i = 0; i < ctx->ctx->columns_size; i++) {
-		strcat(column_defs_str, column_defs[i]);
-		if (i < ctx->ctx->columns_size - 1)
-			strcat(column_defs_str, ", ");
+		appendStringInfo(&sql, ", %s %s", quote_identifier(name), pgtype);
 	}
 
-	POSTGIS_DEBUGF(2, "column_defs_str %s", column_defs_str);
+	appendStringInfoChar(&sql, ')');
 
-	format = "create table %s.%s (id int, geom geometry%s)";
-	sql = palloc0(strlen(format) + strlen(schema) + strlen(table) + strlen(column_defs_str) + 1);
-
-	sprintf(sql, format, schema, table, column_defs_str);
-
-	POSTGIS_DEBUGF(3, "sql: %s", sql);
+	POSTGIS_DEBUGF(3, "sql: %s", sql.data);
 
 	if (SPI_connect() != SPI_OK_CONNECT)
 		elog(ERROR, "Failed to connect SPI");
 
-	if (SPI_execute(sql, false, 0) != SPI_OK_UTILITY)
+	if (SPI_execute(sql.data, false, 0) != SPI_OK_UTILITY)
 		elog(ERROR, "Failed to create table");
 
 	if (SPI_finish() != SPI_OK_FINISH)
 		elog(ERROR, "Failed to finish SPI");
+
+	pfree(sql.data);
 
 	POSTGIS_DEBUG(3, "finished");
 
