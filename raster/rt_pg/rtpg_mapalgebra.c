@@ -4773,7 +4773,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         };
 
         /* Execute the expression into newval */
-        ret = SPI_execute(initexpr, FALSE, 0);
+        ret = SPI_execute(initexpr, TRUE, 0);
 
         if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
 
@@ -5003,7 +5003,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 
                         }
 
-                        ret = SPI_execute_plan(spi_plan, values, nulls, FALSE, 0);
+                        ret = SPI_execute_plan(spi_plan, values, nulls, TRUE, 0);
                         if (ret != SPI_OK_SELECT || SPI_tuptable == NULL ||
                                 SPI_processed != 1) {
                             if (SPI_tuptable)
