@@ -160,6 +160,39 @@ SELECT 'T12',
     '[rast.x]'
   ) AS rast;
 
+-- Test read-only expression (prepared plan path via [rast.val])
+CREATE TABLE _rast_dml_guard (id int);
+SELECT 'T13', ST_MapAlgebraExpr(
+    ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0, 0), '8BUI'::text, 1, 0),
+    1, '8BUI'::text,
+    '[rast.val])::double precision; INSERT INTO _rast_dml_guard VALUES(1); SELECT (1'::text,
+    NULL::double precision
+) IS NULL;
+DROP TABLE _rast_dml_guard;
+
+-- Test read-only expression blocks COPY TO PROGRAM (constant expression path)
+SELECT 'T14', ST_MapAlgebraExpr(
+    ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0, 0), '8BUI'::text, 1, 0),
+    1, '8BUI'::text,
+    '1)::double precision; COPY (SELECT 1) TO PROGRAM ''touch /tmp/pwned''--'::text,
+    NULL::double precision
+) IS NULL;
+
+-- Parameterized queries do not prevent injection; expression is concatenated inside SPI_execute.
+CREATE TABLE _rast_drop_guard (id int);
+PREPARE _rast_safe_query(raster, int, text, text, float8) AS
+    SELECT ST_MapAlgebraExpr($1, $2, $3, $4, $5);
+EXECUTE _rast_safe_query(
+    ST_AddBand(ST_MakeEmptyRaster(1,1,0,0,1,1,0,0,0), '8BUI'::text, 1, 0),
+    1, '8BUI',
+    '1)::double precision FROM generate_series(1,1); DROP TABLE _rast_drop_guard; SELECT (1',
+    NULL
+);
+DEALLOCATE _rast_safe_query;
+-- Table must still exist after the blocked DROP
+SELECT 'T15', COUNT(*) = 0 FROM _rast_drop_guard;
+DROP TABLE _rast_drop_guard;
+
 DROP FUNCTION ST_TestRaster(ulx float8, uly float8, val float8);
 DROP FUNCTION raster_plus_twenty(pixel FLOAT, VARIADIC args TEXT[]);
 DROP FUNCTION raster_plus_arg1(pixel FLOAT, VARIADIC args TEXT[]);
