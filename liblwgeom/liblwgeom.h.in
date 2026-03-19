@@ -29,6 +29,12 @@
 #ifndef _LIBLWGEOM_H
 #define _LIBLWGEOM_H 1
 
+#ifdef _WIN32
+#  define PGDLLEXPORT __declspec(dllexport)
+#else
+#  define PGDLLEXPORT
+#endif
+
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -1755,6 +1761,12 @@ extern lwvarlena_t* lwgeom_to_encoded_polyline(const LWGEOM *geom, int precision
  *            If not null, the pointer must be freed with lwfree.
  */
 extern LWGEOM* lwgeom_from_geojson(const char *geojson, char **srs);
+
+#if defined(HAVE_LIBJSON)
+/* Forward-declare to avoid exposing json-c headers in a public API */
+struct json_object;
+extern LWGEOM *parse_geojson(struct json_object *geojson, int *hasz);
+#endif /* HAVE_LIBJSON */
 
 /**
  * Create an LWGEOM object from an Encoded Polyline representation
