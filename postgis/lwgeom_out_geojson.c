@@ -69,8 +69,12 @@ static void composite_to_geojson(FunctionCallInfo fcinfo,
 				 bool use_line_feeds,
 				 Oid geom_oid,
 				 Oid geog_oid);
+
+#if POSTGIS_PGSQL_VERSION < 190
 static void composite_to_json(Datum composite, StringInfo result,
 							  bool use_line_feeds);
+#endif
+
 static void datum_to_json(Datum val, bool is_null, StringInfo result,
 						  JsonTypeCategory tcategory, Oid outfuncoid,
 						  bool key_scalar);
@@ -570,6 +574,7 @@ array_to_json_internal(Datum array, StringInfo result, bool use_line_feeds)
 /*
  * Turn a composite / record into JSON.
  */
+#if POSTGIS_PGSQL_VERSION < 190
 static void
 composite_to_json(Datum composite, StringInfo result, bool use_line_feeds)
 {
@@ -635,6 +640,7 @@ composite_to_json(Datum composite, StringInfo result, bool use_line_feeds)
 	appendStringInfoChar(result, '}');
 	ReleaseTupleDesc(tupdesc);
 }
+#endif
 
 /*
  * Process a single dimension of an array.
