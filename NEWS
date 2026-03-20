@@ -19,6 +19,8 @@ topogeometry corruption:
          Reported by Sven Klemm (Tiger Data), Allistair Ishmael Hakim (allistair.sh)
          and Daniel Bakker
 - GH-850 Use quote_identifier to build tables in pgis_tablefromflatgeobuf (Ariel Mashraki)
+- #6058, Use Pg composite_to_json() function in 19+ (Paul Ramsey)
+
 
 
 PostGIS 3.6.2
