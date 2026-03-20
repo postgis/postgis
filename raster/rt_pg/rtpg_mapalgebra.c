@@ -6567,8 +6567,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	switch (extenttype) {
 		case ET_FIRST:
 			i = 0;
-			/* fall through */
-			__attribute__((fallthrough));
+			pg_fallthrough; /* FALLTHROUGH */
+
 		case ET_SECOND:
 			if (i > 1)
 				i = 1;
