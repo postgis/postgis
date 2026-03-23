@@ -36,5 +36,3 @@ END;
 $$
 LANGUAGE 'plpgsql' VOLATILE;
 
-CREATE FUNCTION postgis_extension_AddToSearchPath(a_schema_name text)
-#include "libpgcommon/sql/AddToSearchPath.sql.inc"
