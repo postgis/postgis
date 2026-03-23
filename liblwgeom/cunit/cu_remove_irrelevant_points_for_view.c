@@ -15,7 +15,6 @@
 
 #include "lwgeom_remove_irrelevant_points_for_view.h"
 
-// test case for lwgeom_remove_irrelevant_points_for_view()
 static void test_lwgeom_remove_irrelevant_points_for_view(void)
 {
 	LWGEOM *geom;
