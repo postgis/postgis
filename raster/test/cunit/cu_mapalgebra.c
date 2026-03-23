@@ -492,7 +492,7 @@ static int testRasterIterator7_callback(rt_iterator_arg arg, void *userarg, doub
 	return 1;
 }
 
-static void test_raster_iterator() {
+static void test_raster_iterator(void) {
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_raster rast3;
@@ -793,7 +793,7 @@ static void test_raster_iterator() {
 	if (rtn != NULL) cu_free_raster(rtn);
 }
 
-static void test_band_reclass() {
+static void test_band_reclass(void) {
 	rt_reclassexpr *exprset;
 
 	rt_raster raster;
@@ -879,7 +879,7 @@ static void test_band_reclass() {
 	rt_band_destroy(newband);
 }
 
-static void test_raster_colormap() {
+static void test_raster_colormap(void) {
 	rt_raster raster;
 	rt_raster rtn;
 	rt_band band;

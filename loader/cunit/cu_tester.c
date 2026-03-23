@@ -20,7 +20,7 @@
 ** Returns a CUE_SUCCESS on successful running, another
 ** CUnit error code on failure.
 */
-int main()
+int main(void)
 {
 
 	/* initialize the CUnit test registry */

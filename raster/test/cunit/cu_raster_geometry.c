@@ -24,7 +24,7 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_raster_envelope() {
+static void test_raster_envelope(void) {
 	rt_raster raster = NULL;
 	rt_envelope rtenv;
 
@@ -85,7 +85,7 @@ static void test_raster_envelope() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_envelope_geom() {
+static void test_raster_envelope_geom(void) {
 	rt_raster raster = NULL;
 	LWGEOM *env = NULL;
 	LWPOLY *poly = NULL;
@@ -163,7 +163,7 @@ static void test_raster_envelope_geom() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_convex_hull() {
+static void test_raster_convex_hull(void) {
 	rt_raster raster = NULL;
 	LWGEOM *hull = NULL;
 	LWPOLY *poly = NULL;
@@ -252,7 +252,7 @@ lwgeom_to_text(const LWGEOM *lwgeom) {
 	return wkt;
 }
 
-static void test_raster_surface() {
+static void test_raster_surface(void) {
 	rt_raster rast;
 	rt_band band;
 	const int maxX = 5;
@@ -374,7 +374,7 @@ static void test_raster_surface() {
 	cu_free_raster(rast);
 }
 
-static void test_raster_perimeter() {
+static void test_raster_perimeter(void) {
 	rt_raster rast;
 	rt_band band;
 	const int maxX = 5;
@@ -528,7 +528,7 @@ static void test_raster_perimeter() {
 	cu_free_raster(rast);
 }
 
-static void test_raster_pixel_as_polygon() {
+static void test_raster_pixel_as_polygon(void) {
 	rt_raster rast;
 	rt_band band;
 	uint32_t x, y;
@@ -576,7 +576,7 @@ static void test_raster_pixel_as_polygon() {
 
 
 
-static void test_raster_get_pixel_bilinear() {
+static void test_raster_get_pixel_bilinear(void) {
 	uint32_t width = 2;
 	uint32_t height = 2;
 	double ul_x = 0.0;

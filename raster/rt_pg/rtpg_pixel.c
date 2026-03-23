@@ -349,7 +349,7 @@ struct rtpg_dumpvalues_arg_t {
 	bool **nodata;
 };
 
-static rtpg_dumpvalues_arg rtpg_dumpvalues_arg_init() {
+static rtpg_dumpvalues_arg rtpg_dumpvalues_arg_init(void) {
 	rtpg_dumpvalues_arg arg = NULL;
 
 	arg = palloc(sizeof(struct rtpg_dumpvalues_arg_t));
