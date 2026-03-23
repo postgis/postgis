@@ -11,6 +11,7 @@ PostgreSQL 12-18 required. GEOS 3.8+ required. Proj 6.1+ required.
            and Daniel Bakker
   - GH-850 Use quote_identifier to build tables in pgis_tablefromflatgeobuf (Ariel Mashraki)
   - #6058, Use Pg composite_to_json() function in 19+ (Paul Ramsey)
+  - #6060, fully quality calls to helper functions (Paul Ramsey)
 
 
 PostGIS 3.5.5
