@@ -72,6 +72,21 @@
 #define STR_IEQUALS(A, B) (strcasecmp((A), (B)) == 0)
 #define STR_ISTARTS(A, B) (strncasecmp((A), (B), strlen((B))) == 0)
 
+#ifndef FALLTHROUGH
+    #if defined(__cplusplus) && __cplusplus >= 201703L
+        #define FALLTHROUGH [[fallthrough]]
+    #elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
+        #define FALLTHROUGH [[fallthrough]]
+    #elif defined(__clang__)
+        #define FALLTHROUGH __attribute__((fallthrough))
+    #elif defined(__GNUC__) && __GNUC__ >= 7
+        #define FALLTHROUGH __attribute__((fallthrough))
+    #elif defined(_MSC_VER) && _MSC_VER >= 1910
+        #define FALLTHROUGH [[fallthrough]]
+    #else
+        #define FALLTHROUGH ((void)0)
+    #endif
+#endif
 
 /*
 * this will change to NaN when I figure out how to

@@ -2294,18 +2294,18 @@ BEGIN
 			IF use_typmod THEN
 				BEGIN
 					EXECUTE 'ALTER TABLE ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' ALTER COLUMN ' || quote_ident(gcs.attname) ||
-						' TYPE geometry(' || postgis_type_name(gtype, gndims, true) || ', ' || gsrid::text  || ') ';
+						' TYPE geometry(' || @extschema@.postgis_type_name(gtype, gndims, true) || ', ' || gsrid::text  || ') ';
 					inserted := inserted + 1;
 				EXCEPTION
 						WHEN invalid_parameter_value OR feature_not_supported THEN
-						RAISE WARNING 'Could not convert ''%'' in ''%.%'' to use typmod with srid %, type %: %', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), gsrid, postgis_type_name(gtype, gndims, true), SQLERRM;
+						RAISE WARNING 'Could not convert ''%'' in ''%.%'' to use typmod with srid %, type %: %', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), gsrid, @extschema@.postgis_type_name(gtype, gndims, true), SQLERRM;
 							gc_is_valid := false;
 				END;
 
 			ELSE
 				-- Try to apply srid check to column
 				constraint_successful = false;
-				IF (gsrid > 0 AND postgis_constraint_srid(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
+				IF (gsrid > 0 AND @extschema@.postgis_constraint_srid(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
 					BEGIN
 						EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) ||
 								 ' ADD CONSTRAINT ' || quote_ident('enforce_srid_' || gcs.attname) ||
@@ -2319,7 +2319,7 @@ BEGIN
 				END IF;
 
 				-- Try to apply ndims check to column
-				IF (gndims IS NOT NULL AND postgis_constraint_dims(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
+				IF (gndims IS NOT NULL AND @extschema@.postgis_constraint_dims(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
 					BEGIN
 						EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 								 ADD CONSTRAINT ' || quote_ident('enforce_dims_' || gcs.attname) || '
@@ -2333,7 +2333,7 @@ BEGIN
 				END IF;
 
 				-- Try to apply geometrytype check to column
-				IF (gtype IS NOT NULL AND postgis_constraint_type(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
+				IF (gtype IS NOT NULL AND @extschema@.postgis_constraint_type(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
 					BEGIN
 						EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 						ADD CONSTRAINT ' || quote_ident('enforce_geotype_' || gcs.attname) || '
@@ -2390,7 +2390,7 @@ DECLARE
 BEGIN
 
 	-- Verify geometry type
-	IF (postgis_type_name(new_type,new_dim) IS NULL )
+	IF (@extschema@.postgis_type_name(new_type,new_dim) IS NULL )
 	THEN
 		RAISE EXCEPTION 'Invalid type name "%(%)" - valid ones are:
 	POINT, MULTIPOINT,
@@ -2795,7 +2795,7 @@ BEGIN
 		END IF;
 	END IF;
 
-	IF postgis_constraint_srid(real_schema, table_name, column_name) IS NOT NULL THEN
+	IF @extschema@.postgis_constraint_srid(real_schema, table_name, column_name) IS NOT NULL THEN
 	-- srid was enforced with constraints before, keep it that way.
 		-- Make up constraint name
 		cname = 'enforce_srid_'  || column_name;
