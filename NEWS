@@ -20,6 +20,7 @@ topogeometry corruption:
          and Daniel Bakker
 - GH-850 Use quote_identifier to build tables in pgis_tablefromflatgeobuf (Ariel Mashraki)
 - #6058, Use Pg composite_to_json() function in 19+ (Paul Ramsey)
+- #6060, fully quality calls to helper functions (Paul Ramsey)
 
 
 
