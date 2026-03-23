@@ -10,6 +10,7 @@ Proj 4.9+ required.
              of postgis_tiger_geocoder extension, create/update (Regina Obe)
  - #6054, Remove priv escalation scenario. Reported by Daniel Bakker
  - GH-850 Use quote_identifier to build tables in pgis_tablefromflatgeobuf (Ariel Mashraki)
+ - #6060, fully quality calls to helper functions (Paul Ramsey)
 
 
 PostGIS 3.2.9
