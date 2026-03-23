@@ -10,6 +10,7 @@ Proj 6.1+ required.
            Reported by Sven Klemm (Tiger Data), Allistair Ishmael Hakim (allistair.sh)
            and Daniel Bakker
   - GH-850 Use quote_identifier to build tables in pgis_tablefromflatgeobuf (Ariel Mashraki)
+  - #6060, fully quality calls to helper functions (Paul Ramsey)
 
 
 PostGIS 3.4.5
