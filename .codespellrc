@@ -4,7 +4,6 @@ skip =
     ./deps/**,
     ./extensions/*/sql/**,
     ./extensions/*/sql_bits/*.sql,
-    ./extensions/postgis_tiger_geocoder/sql_bits/*.sql.in,
     ./doc/html/**,
     ./doc/po/**,
     ./doc/postgis-out.xml,

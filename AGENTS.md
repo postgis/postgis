@@ -162,7 +162,7 @@ Execute the same test targets used in CI:
 
 ```bash
 # Standard compile + regression suite
-make check RUNTESTFLAGS="--verbose --extension --raster --topology --sfcgal --tiger"
+make check RUNTESTFLAGS="--verbose --extension --raster --topology --sfcgal"
 
 # Undefined behaviour sanitiser runs
 CC=clang ./configure CFLAGS="-g3 -O0 -fno-omit-frame-pointer -fsanitize=undefined" LDFLAGS="-fsanitize=undefined"

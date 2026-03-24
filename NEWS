@@ -10,7 +10,10 @@ This version requires GEOS 3.10 or higher
           "use topology precision" (Sandro Santilli)
  - #6024, Remove support for PostgreSQL 12 and 13 (Regina Obe)
  - #6040, ST_GeoHash round trip through ST_GeomFromGeoHash (Paul Ramsey)
-
+ - #6053, [address_standardizer] Extension removed and moved to
+       https://github.com/postgis/address_standardizer (Paul Ramsey)
+ - #6052, [tiger_geocoder] Extension removed and moved to
+            https://git.osgeo.org/postgis/postgis_tiger_geocoder (Regina Obe)
 
 * New Features *
 
@@ -47,20 +50,6 @@ This version requires GEOS 3.10 or higher
  - #4828, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)
  - #6048, [raster] ST_Clip no longer crashes when clipping sparse band
           selections (Darafei Praliaskouski)
- - #2459, [tiger geocoder] Speed up pagc_normalize_address by avoiding
-          redundant wrapper parsing while preserving ZIP+4 and country
-          details from the structured parser (Darafei Praliaskouski)
- - [tiger geocoder] Replace several expression-only PL/pgSQL wrappers with
-          SQL functions in helper and text geocode entry points while
-          preserving extension schema qualifications
-          (Darafei Praliaskouski)
- - #1461, [tiger geocoder] geocode_intersection now tolerates irregular
-          spacing in highway names such as `I- 635` vs `I-635`
-          (Darafei Praliaskouski)
- - #1599, [address_standardizer] parse_address() and normalize_address() now
-          canonicalize trailing country tokens to ISO 3166-1 alpha-2 codes and
-          expose country on normalized addresses
-          (Darafei Praliaskouski)
  - #5645, Docs: keep code operators ("=>") intact in translated manuals
           by enforcing verbatim CSS (Darafei Praliaskouski)
  - #5593, Docs: render manual images with GraphicsMagick without temporary files,

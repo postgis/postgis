@@ -3155,8 +3155,7 @@ BEGIN
 			'postgis',
 			'postgis_raster',
 			'postgis_sfcgal',
-			'postgis_topology',
-			'postgis_tiger_geocoder'
+			'postgis_topology'
 		)
 		ORDER BY length(name) -- this is to make sure 'postgis' is first !
 	LOOP --{
@@ -3191,10 +3190,6 @@ BEGIN
 							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
 							WHERE n.nspname = 'topology' AND c.relname = 'topology') )
 
-				 OR ( rec.name = 'postgis_tiger_geocoder' AND EXISTS (
-							SELECT 1 FROM pg_catalog.pg_class c
-							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
-							WHERE n.nspname = 'tiger' AND c.relname = 'geocode_settings') )
 			THEN --}{ -- the code is unpackaged
 				-- Force install in same schema as postgis
 				SELECT INTO var_schema n.nspname

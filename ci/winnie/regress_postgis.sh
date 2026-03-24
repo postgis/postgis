@@ -135,7 +135,7 @@ value=${value//UPGRADEABLE_VERSIONS = /}
 #echo $value
 export UPGRADEABLE_VERSIONS=$value
 export WIN_RELEASED_VERSIONS="2.0.0 2.0.1 2.0.3 2.0.4 2.0.6 2.1.4 2.1.7 2.1.8 2.2.0 2.2.3 2.3.0 2.3.7 2.4.0 2.4.4"
-export extensions_to_install="postgis postgis_sfcgal postgis_tiger_geocoder"
+export extensions_to_install="postgis postgis_sfcgal"
 
 if [ $REGRESS_WITHOUT_TOPOLOGY == "0" ]; then
   extensions_to_install="${extensions_to_install} postgis_topology"
@@ -170,14 +170,6 @@ if [ "$UPGRADE_TEST" == "1" ]; then
   RUNTESTFLAGS='--extension' ${POSTGIS_SRC}/utils/check_all_upgrades.sh -s "${CURRENTVERSION}" --skip "unpackaged"
 fi
 
-#test tiger geocoder
-#  cd ${POSTGIS_SRC}
-#  cd extensions/postgis_tiger_geocoder
-#  make installcheck
-#  if [ "$?" != "0" ]; then
-#   exit $?
-#  fi
-#end extension
 fi
 
 if [ "$DUMP_RESTORE" == "1" ]; then

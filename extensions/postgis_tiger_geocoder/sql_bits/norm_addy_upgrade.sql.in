@@ -1,3 +1,0 @@
-ALTER TYPE tiger.norm_addy ADD ATTRIBUTE zip4 varchar(4);
-ALTER TYPE  tiger.norm_addy ADD ATTRIBUTE  address_alphanumeric varchar;
-ALTER TYPE tiger.norm_addy ADD ATTRIBUTE country varchar(2);

@@ -100,7 +100,6 @@ run ALTER EXTENSION or SELECT postgis_extensions_upgrade() in a micro, so taking
   * For postgis_raster, raster/rt_pg/rtpg_legacy.c
   * postgis_topology extension has never had any deprecated functions so there is currently no legacy file for it.
     If there comes a need to deprecate C functions, then a file topology/postgis_topology_legacy.c will be created to store these.
-  * postgis_tiger_geocoder is all sql and plpgsql so it has no C backing functions.
 
 Why do we even bother replacing a good function with a function that throws an error?  Because of pg_upgrade tool used
 to upgrade PostgreSQL clusters. When pg_upgrade runs, it does not use the regular CREATE EXTENSION routine that loads function definitions from

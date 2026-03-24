@@ -37,7 +37,6 @@ my %SUPPORTED_EXTENSIONS = (
   'postgis' => 1,
   'postgis_raster' => 1,
   'postgis_sfcgal' => 1,
-  'postgis_tiger_geocoder' => 1,
   'postgis_topology' => 1
 );
 

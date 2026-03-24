@@ -12,7 +12,7 @@ BEGIN
 	EXECUTE format(
 		$$
 			ALTER DATABASE %I
-			SET extwlist.extensions='postgis,postgis_raster,postgis_topology,postgis_sfcgal,postgis_tiger_geocoder'
+			SET extwlist.extensions='postgis,postgis_raster,postgis_topology,postgis_sfcgal'
 		$$,
 		current_database()
 	);

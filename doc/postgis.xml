@@ -57,7 +57,6 @@
 <!ENTITY reference_raster SYSTEM "reference_raster.xml">
 <!ENTITY extras SYSTEM "extras.xml">
 <!ENTITY extras_topology SYSTEM "extras_topology.xml">
-<!ENTITY extras_tigergeocoder SYSTEM "extras_tigergeocoder.xml">
 <!ENTITY extras_historytable SYSTEM "extras_historytable.xml">
 
 <!ENTITY sfs_compliant SYSTEM "sfs_compliant.tag">

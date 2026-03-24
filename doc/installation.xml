@@ -485,14 +485,6 @@ sh autogen.sh
       </listitem>
     </varlistentry>
     <varlistentry>
-      <term><option>--without-tiger</option></term>
-      <listitem>
-      <para>
-        Disables tiger geocoder support.
-      </para>
-      </listitem>
-    </varlistentry>
-    <varlistentry>
       <term><option>--without-topology</option></term>
       <listitem>
       <para>
@@ -587,7 +579,7 @@ sh autogen.sh
 
           <para>
                 The <command>make cheatsheets</command> target generates html cheat sheets suitable for quick reference or for student handouts.
-                This requires xsltproc to build and will generate 4 files in doc folder <filename>topology_cheatsheet.html</filename>, <filename>tiger_geocoder_cheatsheet.html</filename>,
+                This requires xsltproc to build and will generate 4 files in doc folder <filename>topology_cheatsheet.html</filename>,
                         <filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet.html</filename>
           </para>
     <para>You can download some pre-built ones available in html and pdf from <link xlink:href="http://www.postgis.us/study_guides">PostGIS / PostgreSQL Study Guides</link></para>
@@ -653,7 +645,6 @@ FROM pg_available_extensions WHERE name LIKE 'postgis%';
  postgis                      | &last_release_version;         | &last_release_version;
  postgis_raster               | &last_release_version;         | &last_release_version;
  postgis_sfcgal               | &last_release_version;         |
- postgis_tiger_geocoder       | &last_release_version;         | &last_release_version;
  postgis_topology             | &last_release_version;         |
 (6 rows)</programlisting>
 
@@ -665,8 +656,6 @@ in the <varname>extensions</varname> section of the database browser tree and wi
 <programlisting>CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_raster;
 CREATE EXTENSION postgis_sfcgal;
-CREATE EXTENSION fuzzystrmatch; --needed for postgis_tiger_geocoder
-CREATE EXTENSION postgis_tiger_geocoder;
 CREATE EXTENSION postgis_topology;</programlisting>
 
 <para>In psql you can use to see what versions you have installed and also what schema they are installed. </para>
@@ -686,11 +675,6 @@ Version     | 3.0.0dev
 Schema      | public
 Description | PostGIS raster types and functions
 -[ RECORD 3 ]-------------------------------------------------
-Name        | postgis_tiger_geocoder
-Version     | &last_release_version;
-Schema      | tiger
-Description | PostGIS tiger geocoder and reverse geocoder
--[ RECORD 4 ]-------------------------------------------------
 Name        | postgis_topology
 Version     | &last_release_version;
 Schema      | topology
@@ -710,7 +694,6 @@ Installing using `unpackaged` was removed in PostgreSQL 13, so you are advised t
 CREATE EXTENSION postgis FROM unpackaged;
 CREATE EXTENSION postgis_raster FROM unpackaged;
 CREATE EXTENSION postgis_topology FROM unpackaged;
-CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;
 </programlisting>
 
   </section>
@@ -874,13 +857,7 @@ Run Summary:    Type  Total    Ran Passed Failed Inactive
                tests      4      4      4      0        0
              asserts      4      4      4      0      n/a</programlisting>
 
-    <para>The <varname>postgis_tiger_geocoder</varname> extension, currently only supports the standard PostgreSQL installcheck.  To test these use the below.  Note: the make install is not necessary if you already did make install at root of PostGIS code folder.</para>
 
-    <para>For tiger geocoder, make sure you have postgis and fuzzystrmatch extensions available in your PostgreSQL instance.
-    <programlisting>cd extensions/postgis_tiger_geocoder
-make install
-make installcheck
-      </programlisting></para>
     <para>output should look like:
     <screen>============== dropping database "contrib_regression" ==============
 DROP DATABASE
@@ -890,8 +867,6 @@ ALTER DATABASE
 ============== installing fuzzystrmatch               ==============
 CREATE EXTENSION
 ============== installing postgis                     ==============
-CREATE EXTENSION
-============== installing postgis_tiger_geocoder      ==============
 CREATE EXTENSION
 ============== running regression test queries        ==============
 test test-normalize_address   ... ok
@@ -961,163 +936,6 @@ All 2 tests passed.
   </section>
   </section>
 
-  <section xml:id="loading_extras_tiger_geocoder">
-  <title>Installing, Upgrading Tiger Geocoder, and loading data</title>
-
-  <para>Extras like Tiger geocoder may not be packaged in your PostGIS distribution. If you are missing the tiger geocoder extension or want a newer version than what your install comes with, then use
-  the <filename>share/extension/postgis_tiger_geocoder.*</filename> files from the packages in <link xlink:href="http://postgis.net/windows_downloads/">Windows Unreleased Versions</link> section for your version of PostgreSQL.
-  Although these packages are for windows, the postgis_tiger_geocoder extension files will work on any OS since the extension is an SQL/plpgsql only extension.</para>
-  <section xml:id="install_tiger_geocoder_extension">
-    <title>Tiger Geocoder Enabling your PostGIS database</title>
-    <orderedlist>
-      <listitem><para>These directions assume your PostgreSQL installation already has the postgis_tiger_geocoder extension installed.</para></listitem>
-      <listitem><para>Connect to your database via psql or pgAdmin or some other tool and run the following SQL commands.  Note that if you are installing in a database that already has postgis, you don't need to do the first step.  If you have <varname>fuzzystrmatch</varname> extension already installed, you don't need to do the second step either.</para>
-      <para><programlisting>CREATE EXTENSION postgis;
-CREATE EXTENSION fuzzystrmatch;
-CREATE EXTENSION postgis_tiger_geocoder;
-</programlisting></para>
-<para>If you already have postgis_tiger_geocoder extension installed, and just want to update to the latest run:</para>
-<programlisting>ALTER EXTENSION postgis UPDATE;
-ALTER EXTENSION postgis_tiger_geocoder UPDATE;</programlisting>
-<para>If you made custom entries or changes to <varname>tiger.loader_platform</varname> and <varname>tiger.loader_variables</varname> you may need to update these.</para>
-</listitem>
-      <listitem><para>To confirm your install is working correctly, run this sql in your database:</para>
-        <programlisting>SELECT na.address, na.streetname,na.streettypeabbrev, na.zip
-  FROM normalize_address('1 Devonshire Place, Boston, MA 02109') AS na;</programlisting>
-        <para>Which should output</para>
-        <para><screen> address | streetname | streettypeabbrev |  zip
----------+------------+------------------+-------
-     1 | Devonshire | Pl               | 02109</screen></para>
-      </listitem>
-      <listitem>
-                <para>Create a new record in <varname>tiger.loader_platform</varname> table with the paths of your executables and server. </para>
-        <para>So for example to create a profile called debbie that follows <code>sh</code> convention. You would do:</para>
-        <programlisting>INSERT INTO tiger.loader_platform(os, declare_sect, pgbin, wget, unzip_command, psql, path_sep,
-       loader, environ_set_command, county_process_command)
-SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
-     loader, environ_set_command, county_process_command
-  FROM tiger.loader_platform
-  WHERE os = 'sh';</programlisting>
-        <para>And then edit the paths in the <emphasis>declare_sect</emphasis> column to those that fit Debbie's pg, unzip,shp2pgsql, psql, etc path locations.</para>
-
-        <para>If you don't edit this  <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the script is generated.</para>
-      </listitem>
-                        <listitem><para>The Zip code-5 digit tabulation area <varname>zcta5</varname> load step uses current ZCTA data and is part of the  <xref linkend="Loader_Generate_Nation_Script"/> when enabled.
-It is turned off by default because it takes quite a bit of time to load (20 to 60 minutes), takes up quite a bit of disk space, and is not used that often.</para>
-<para>To enable it, do the following:</para>
-<programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = 'zcta520';</programlisting>
-<para>
-If present the <xref linkend="Geocode"/> function can use it if a boundary filter is added to limit to just zips in that boundary.
-The <xref linkend="Reverse_Geocode"/> function uses it if the returned address is missing a zip, which often happens with highway reverse geocoding.</para></listitem>
-      <listitem><para>Create a folder called <filename>gisdata</filename> on root of server or your local pc if you have a fast network connection to the server. This folder is
-where the tiger files will be downloaded to and processed.  If you are not happy with having the folder on the root of the server, or simply want to change to a different folder for staging, then edit the field <varname>staging_fold</varname> in the <varname>tiger.loader_variables</varname> table.</para></listitem>
-            <listitem><para>Create a folder called temp in the <filename>gisdata</filename> folder or wherever you designated the <varname>staging_fold</varname> to be.  This will be
-the folder where the loader extracts the downloaded tiger data.</para></listitem>
-      <listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script"/>  SQL function make sure to use the name of your custom profile and copy the script to a .sh or .bat file.  So for example to build  the nation load:</para>
-          <programlisting>psql -c "SELECT Loader_Generate_Nation_Script('debbie')" -d geocoder -tA &gt; /gisdata/nation_script_load.sh</programlisting>
-      </listitem>
-
-      <listitem><para>Run the generated nation load commandline scripts.</para>
-        <programlisting>cd /gisdata
-sh nation_script_load.sh</programlisting>
-      </listitem>
-
-      <listitem><para>After you are done running the nation script, you should have three tables in your <code>tiger_data</code> schema and they should be filled with data. Confirm you do by doing the following queries from psql or pgAdmin</para>
-        <programlisting>SELECT count(*) FROM tiger_data.county_all;</programlisting>
-<screen> count
--------
-  3235
-(1 row)</screen>
-        <programlisting>SELECT count(*) FROM tiger_data.state_all;</programlisting>
-<screen>
- count
--------
-    56
-(1 row)
-</screen>
-<para>This will only have data if you marked zcta5 to be loaded</para>
-        <programlisting>SELECT count(*) FROM tiger_data.zcta5_all;</programlisting>
-<screen>
- count
--------
-  33933
-(1 row)
-</screen>
-      </listitem>
-
-      <listitem><para>By default the tables corresponding to <varname>bg</varname>, <varname>tract</varname>, <varname>tabblock20</varname> are not loaded. These tables are not used by the geocoder but are used by folks for population statistics.
-       If you wish to load them as part of your state loads, run the following statement to enable them.</para>
-        <programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND lookup_name IN('tract', 'bg', 'tabblock20');</programlisting>
-        <para>Alternatively you can load just these tables after loading state data using the <xref linkend="Loader_Generate_Census_Script"/></para></listitem>
-
-      <listitem><para>For each state you want to load data for, generate a state script <xref linkend="Loader_Generate_Script"/>.</para><warning><para>DO NOT Generate the state script until you have already loaded the nation data, because the state script utilizes county list loaded by nation script.</para></warning></listitem>
-
-      <listitem><programlisting>psql -c "SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie')" -d geocoder -tA &gt; /gisdata/ma_load.sh</programlisting></listitem>
-
-      <listitem><para>Run the generated commandline scripts.</para>
-        <programlisting>cd /gisdata
-sh ma_load.sh</programlisting>
-      </listitem>
-      <listitem><para>After you are done loading all data or at a stopping point, it's a good idea to analyze all the tiger tables to update the stats (include inherited stats)</para>
-          <programlisting>SELECT install_missing_indexes();
-vacuum (analyze, verbose) tiger.addr;
-vacuum (analyze, verbose) tiger.edges;
-vacuum (analyze, verbose) tiger.faces;
-vacuum (analyze, verbose) tiger.featnames;
-vacuum (analyze, verbose) tiger.place;
-vacuum (analyze, verbose) tiger.cousub;
-vacuum (analyze, verbose) tiger.county;
-vacuum (analyze, verbose) tiger.state;
-vacuum (analyze, verbose) tiger.zcta5;
-vacuum (analyze, verbose) tiger.zip_lookup_base;
-vacuum (analyze, verbose) tiger.zip_state;
-vacuum (analyze, verbose) tiger.zip_state_loc;</programlisting>
-      </listitem>
-    </orderedlist>
-
-  </section>
-
-  <section xml:id="tiger_geocoder_required_tools">
-    <title>Required tools for tiger data loading</title>
-    <para>The load process downloads data from the census website for the respective nation files, states requested, extracts the files, and then loads each state into its own separate
-    set of state tables.  Each state table inherits from the tables defined in <varname>tiger</varname> schema so that its sufficient to just query those tables to access all the data and drop a set of state tables at any time using the <xref linkend="Drop_State_Tables_Generate_Script"/> if you need to reload a state or just don't need a state anymore.</para>
-    <para>In order to be able to load data you'll need the following tools:</para>
-    <itemizedlist>
-      <listitem><para>A tool to unzip the zip files from census website.</para>
-        <para>For Unix like systems: <varname>unzip</varname> executable which is usually already installed on most Unix like platforms.</para>
-        <para>For Windows, 7-zip which is a free compress/uncompress tool you can download from <link xlink:href="http://www.7-zip.org/">http://www.7-zip.org/</link> </para>
-      </listitem>
-      <listitem><para><filename>shp2pgsql</filename> commandline which is installed by default when you install PostGIS.</para></listitem>
-      <listitem><para><filename>wget</filename> which is a web grabber tool usually installed on most Unix/Linux systems.</para>
-        <para>If you are on windows, you can get pre-compiled binaries from <link xlink:href="http://gnuwin32.sourceforge.net/packages/wget.htm">http://gnuwin32.sourceforge.net/packages/wget.htm</link> </para>
-      </listitem>
-    </itemizedlist>
-    <para>If you are upgrading from tiger_2010, you'll need to first generate and run <xref linkend="Drop_Nation_Tables_Generate_Script"/>. Before you load any state data, you need to load the nation wide data which you do with  <xref linkend="Loader_Generate_Nation_Script"/>. Which will
-    generate a loader script for you.   <xref linkend="Loader_Generate_Nation_Script"/> is a one-time step that should be done for upgrading (from a prior year tiger census data) and for new installs.</para>
-    <para>To load state data refer to <xref linkend="Loader_Generate_Script"/> to generate a data load script for your platform for the states you desire.
-      Note that you can install these piecemeal. You don't have to load all the states you want all at once.  You can load them as you need them.</para>
-
-    <para>After the states you desire have been loaded, make sure to run the:
-    <programlisting>SELECT install_missing_indexes();</programlisting> as described in  <xref linkend="Install_Missing_Indexes"/>.</para>
-    <para>To test that things are working as they should, try to run a geocode on an address in your state using <xref linkend="Geocode"/> </para>
-  </section>
-  <section xml:id="upgrade_tiger_geocoder">
-    <title>Upgrading your Tiger Geocoder Install and Data</title>
-        <para>First upgrade your postgis_tiger_geocoder extension as follows:</para>
-        <programlisting>ALTER EXTENSION postgis_tiger_geocoder UPDATE;</programlisting>
-    <para>Next drop all nation tables and load up the new ones. Generate a drop script with this SQL statement as detailed in <xref linkend="Drop_Nation_Tables_Generate_Script"/></para>
-    <programlisting>SELECT drop_nation_tables_generate_script();</programlisting>
-    <para>Run the generated drop SQL statements.</para>
-    <para>Generate a nation load script with this SELECT statement as detailed in <xref linkend="Loader_Generate_Nation_Script"/></para>
-    <para><emphasis role="bold">For windows</emphasis></para>
-    <programlisting>SELECT loader_generate_nation_script('windows'); </programlisting>
-    <para><emphasis role="bold">For unix/linux</emphasis></para>
-    <programlisting>SELECT loader_generate_nation_script('sh');</programlisting>
-    <para>Refer to <xref linkend="install_tiger_geocoder_extension"/> for instructions on how to run the generate script. This only needs to be done once.</para>
-    <note><para>You can have a mix of different year state tables and can upgrade each state separately.  Before you upgrade a state you first need to drop the prior year state tables for that state using <xref linkend="Drop_State_Tables_Generate_Script"/>.</para></note>
-  </section>
-
-  </section>
 
 
   <section>

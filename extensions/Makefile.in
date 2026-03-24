@@ -18,9 +18,6 @@ SCRIPTS_BUILT = postgis_extension_helper.sql
 
 SUBDIRS = postgis
 
-ifeq (@TIGER@,tiger)
-	SUBDIRS += postgis_tiger_geocoder
-endif
 ifeq (@RASTER@,raster)
 	SUBDIRS += postgis_raster
 endif

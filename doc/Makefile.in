@@ -163,7 +163,6 @@ XML_SOURCES = \
 	administration.xml \
 	database_tuning.xml \
 	extras_historytable.xml \
-	extras_tigergeocoder.xml \
 	extras_topology.xml \
 	extras.xml \
 	installation.xml \
@@ -538,8 +537,7 @@ comments-install:
 	if test -e postgis_comments.sql  -a \
 	        -e raster_comments.sql   -a \
 	        -e topology_comments.sql -a \
-	        -e sfcgal_comments.sql -a \
-	        -e tiger_geocoder_comments.sql; then \
+	        -e sfcgal_comments.sql ; then \
 	  $(MAKE) -f Makefile.comments install; \
 	fi
 else

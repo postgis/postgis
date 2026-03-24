@@ -38,7 +38,7 @@ postgis_topology, postgis_sfcgal) to given or latest version.
     This is short-hand for doing multiple CREATE EXTENSION .. FROM
     unpackaged and ALTER EXTENSION .. UPDATE for each PostGIS extension.
 		Currently only tries to upgrade extensions postgis,
-    postgis_raster, postgis_sfcgal, postgis_topology, and postgis_tiger_geocoder.</para>
+    postgis_raster, postgis_sfcgal, and postgis_topology.</para>
 
 		<para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
 		<note>
@@ -56,13 +56,7 @@ postgis_topology, postgis_sfcgal) to given or latest version.
 NOTICE:  Packaging extension postgis
 NOTICE:  Packaging extension postgis_raster
 NOTICE:  Packaging extension postgis_sfcgal
-NOTICE:  Extension postgis_topology is not available or not packagable for some reason
-NOTICE:  Extension postgis_tiger_geocoder is not available or not packagable for some reason
-
-                    postgis_extensions_upgrade
--------------------------------------------------------------------
- Upgrade completed, run SELECT postgis_full_version(); for details
-(1 row)</screen>
+NOTICE:  Extension postgis_topology is not available or not packagable for some reason</screen>
 	  </refsection>
 
 	  <refsection>
