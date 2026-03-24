@@ -363,6 +363,67 @@ FROM clusterrelate;
     </refentry>
 
 
+    <refentry xml:id="ST_MinimumSpanningTree">
+      <refnamediv>
+        <refname>ST_MinimumSpanningTree</refname>
+
+        <refpurpose>Window function that returns a cluster id for each input geometry, clustering input geometries into connected sets using the Minimum Spanning Tree algorithm.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>integer <function>ST_MinimumSpanningTree</function></funcdef>
+            <paramdef><type>geometry winset </type> <parameter>geom</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>A window function that builds connected clusters of geometries based on the Minimum Spanning Tree (MST) of the input geometries. The return value is the cluster number that the geometry argument participates in.</para>
+        <para>The Minimum Spanning Tree connects all geometries in the window partition such that the total length of the connecting lines is minimized. If the graph is not fully connected (e.g. infinite distance between some geometries), it produces a Minimum Spanning Forest, and each connected component is assigned a unique cluster ID.</para>
+
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+        <para role="geos_requirement" conformance="3.15.0">Requires GEOS &gt;= 3.15.0</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+        <programlisting>
+WITH testdata AS (
+  SELECT id, geom::geometry FROM (
+  VALUES  (1, 'POINT(0 0)'),
+          (2, 'POINT(0 1)'),
+          (3, 'POINT(10 10)'),
+          (4, 'POINT(10 11)')) AS t(id, geom)
+)
+SELECT id,
+  ST_AsText(geom),
+  ST_MinimumSpanningTree(geom) OVER () AS cluster
+FROM testdata;
+
+ id |   st_astext    | cluster
+----+----------------+---------
+  1 | POINT(0 0)     |       0
+  2 | POINT(0 1)     |       0
+  3 | POINT(10 10)   |       1
+  4 | POINT(10 11)   |       1
+        </programlisting>
+      </refsection>
+      <refsection>
+        <title>See Also</title>
+        <para>
+            <xref linkend="ST_ClusterDBSCAN"/>,
+            <xref linkend="ST_ClusterKMeans"/>,
+            <xref linkend="ST_ClusterIntersectingWin"/>
+        </para>
+      </refsection>
+
+    </refentry>
+
+
 
 	<refentry xml:id="ST_ClusterKMeans">
 	  <refnamediv>

@@ -1,0 +1,11 @@
+connected|0
+connected|0
+connected|0
+disconnected|0|POINT(0 0)
+disconnected|0|POINT(0 1)
+disconnected|1|POINT(10 10)
+disconnected|1|POINT(10 11)
+nulls|0|POINT(0 0)
+nulls||
+empty|1|POINT EMPTY
+empty|0|POINT(0 0)

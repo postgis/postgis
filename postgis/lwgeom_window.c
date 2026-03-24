@@ -1037,3 +1037,86 @@ Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
+
+extern Datum ST_MinimumSpanningTree(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_MinimumSpanningTree);
+Datum ST_MinimumSpanningTree(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 31500
+	lwpgerror("The GEOS version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'ST_MinimumSpanningTree' function (3.15.0+ required)",
+	          POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else
+
+	WindowObject win_obj = PG_WINDOW_OBJECT();
+	uint32_t row = WinGetCurrentPosition(win_obj);
+	uint32_t ngeoms = WinGetPartitionRowCount(win_obj);
+	cluster_context* context = fetch_cluster_context(win_obj, ngeoms);
+
+	if (row == 0) /* beginning of the partition; do all of the work now */
+	{
+		uint32_t i;
+		GEOSGeometry** geoms = palloc(ngeoms * sizeof(GEOSGeometry*));
+		size_t* cluster_ids;
+
+		context->is_error = LW_TRUE; /* until proven otherwise */
+
+		initGEOS(lwpgnotice, lwgeom_geos_error);
+
+		for (i = 0; i < ngeoms; i++)
+		{
+			bool geom_is_null;
+			geoms[i] = read_geos_from_partition(win_obj, i, &geom_is_null);
+			context->clusters[i].is_null = geom_is_null;
+			/* If read_geos_from_partition returned a value (even empty) for a
+			   non-null input, we keep it. If it was null, is_null is true. */
+		}
+
+		/* Call GEOS */
+		/* Note: GEOSMinimumSpanningTree signature assumed:
+		   size_t* GEOSMinimumSpanningTree(GEOSGeometry* const* geoms, size_t ngeoms);
+		*/
+		cluster_ids = GEOSMinimumSpanningTree(geoms, ngeoms);
+
+		if (cluster_ids)
+		{
+			context->is_error = LW_FALSE;
+			for (i = 0; i < ngeoms; i++)
+			{
+				context->clusters[i].cluster_id = (uint32_t)cluster_ids[i];
+			}
+			/* Release the array returned by GEOS */
+			pfree(cluster_ids);
+		}
+		else
+		{
+			/* Usually GEOS functions return NULL on error, but also check for context error */
+			/* However, if ngeoms is 0, it might return NULL but that's handled by loop */
+			/* If GEOS failed, we error out */
+			if (ngeoms > 0)
+				lwpgerror("GEOSMinimumSpanningTree failed");
+			else
+				context->is_error = LW_FALSE; /* Empty set is fine */
+		}
+
+		for (i = 0; i < ngeoms; i++)
+		{
+			if (geoms[i]) GEOSGeom_destroy(geoms[i]);
+		}
+		pfree(geoms);
+
+		if (context->is_error)
+		{
+			lwpgerror("Error during MST clustering");
+			PG_RETURN_NULL();
+		}
+	}
+
+	if (context->clusters[row].is_null)
+		PG_RETURN_NULL();
+
+	PG_RETURN_INT32(context->clusters[row].cluster_id);
+#endif
+}

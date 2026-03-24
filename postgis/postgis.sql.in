@@ -1948,6 +1948,13 @@ CREATE OR REPLACE FUNCTION ST_ClusterRelateWin(geom geometry, relate_matrix text
 	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
 	_COST_HIGH;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_MinimumSpanningTree(geometry)
+	RETURNS int
+	AS 'MODULE_PATHNAME', 'ST_MinimumSpanningTree'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	_COST_HIGH;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 	RETURNS geometry
