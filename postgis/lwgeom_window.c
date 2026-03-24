@@ -1088,7 +1088,7 @@ Datum ST_MinimumSpanningTree(PG_FUNCTION_ARGS)
 				context->clusters[i].cluster_id = (uint32_t)cluster_ids[i];
 			}
 			/* Release the array returned by GEOS */
-			pfree(cluster_ids);
+			GEOSFree(cluster_ids);
 		}
 		else
 		{

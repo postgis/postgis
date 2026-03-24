@@ -1,27 +1,42 @@
-set client_min_messages to warning;
+
 -- Connected graph (all one cluster)
-SELECT 'connected', ST_MinimumSpanningTree(geom) OVER () FROM (VALUES
-    ('POINT(0 0)'::geometry),
-    ('POINT(0 1)'::geometry),
-    ('POINT(1 1)'::geometry)
-) AS t(geom);
+SELECT 'connected', id, ST_MinimumSpanningTree(geom) OVER () FROM (VALUES
+    (1, 'LINESTRING(0 0,1 0)'::geometry),
+    (2, 'LINESTRING(0 0,0 1)'::geometry),
+    (3, 'LINESTRING(1 1,0 1)'::geometry),
+    (4, 'LINESTRING(1 1,1 0)'::geometry),
+    (5, 'LINESTRING(0 0,1 1)'::geometry),
+    (6, 'LINESTRING(1 0,0 1)'::geometry)
+) AS t(id, geom);
 
 -- Disconnected graph (two clusters)
-SELECT 'disconnected', ST_MinimumSpanningTree(geom) OVER (ORDER BY geom), ST_AsText(geom) FROM (VALUES
-    ('POINT(0 0)'::geometry),
-    ('POINT(0 1)'::geometry),
-    ('POINT(10 10)'::geometry),
-    ('POINT(10 11)'::geometry)
-) AS t(geom) ORDER BY geom;
+SELECT 'disconnected', id, ST_MinimumSpanningTree(geom) OVER () FROM (VALUES
+    (1, 'LINESTRING(0 0,1 0)'::geometry),
+    (2, 'LINESTRING(0 0,0 1)'::geometry),
+    (3, 'LINESTRING(1 1,0 1)'::geometry),
+    (4, 'LINESTRING(11 11,11 10)'::geometry),
+    (5, 'LINESTRING(10 10,11 11)'::geometry),
+    (6, 'LINESTRING(11 10,10 11)'::geometry)
+) AS t(id, geom);
+
 
 -- NULL handling
-SELECT 'nulls', ST_MinimumSpanningTree(geom) OVER (ORDER BY geom), ST_AsText(geom) FROM (VALUES
-    ('POINT(0 0)'::geometry),
-    (NULL::geometry)
-) AS t(geom) ORDER BY geom;
+SELECT 'nulls', id, ST_MinimumSpanningTree(geom) OVER (), ST_AsText(geom) FROM (VALUES
+    (1, 'LINESTRING(0 0,1 0)'::geometry),
+    (2, 'LINESTRING(0 0,0 1)'::geometry),
+    (3, NULL::geometry),
+    (4, 'LINESTRING(1 1,1 0)'::geometry),
+    (5, 'LINESTRING(0 0,1 1)'::geometry),
+    (6, 'LINESTRING(1 0,0 1)'::geometry)
+) AS t(id, geom);
 
 -- Empty geometry handling
-SELECT 'empty', ST_MinimumSpanningTree(geom) OVER (ORDER BY geom), ST_AsText(geom) FROM (VALUES
-    ('POINT(0 0)'::geometry),
-    ('POINT EMPTY'::geometry)
-) AS t(geom) ORDER BY geom;
+SELECT 'empty', id, ST_MinimumSpanningTree(geom) OVER (), ST_AsText(geom) FROM (VALUES
+    (1, 'LINESTRING(0 0,1 0)'::geometry),
+    (2, 'LINESTRING EMPTY'::geometry),
+    (3, 'LINESTRING EMPTY'::geometry),
+    (4, 'LINESTRING(1 1,1 0)'::geometry),
+    (5, 'LINESTRING(0 0,1 1)'::geometry),
+    (6, 'LINESTRING(1 0,0 1)'::geometry)
+) AS t(id, geom);
+

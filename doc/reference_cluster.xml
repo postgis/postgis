@@ -367,7 +367,7 @@ FROM clusterrelate;
       <refnamediv>
         <refname>ST_MinimumSpanningTree</refname>
 
-        <refpurpose>Window function that returns a cluster id for each input geometry, clustering input geometries into connected sets using the Minimum Spanning Tree algorithm.</refpurpose>
+        <refpurpose>Window function that returns a tree id for each input geometry, clustering input geometries into connected trees using the Minimum Spanning Tree algorithm.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -382,8 +382,8 @@ FROM clusterrelate;
       <refsection>
         <title>Description</title>
 
-        <para>A window function that builds connected clusters of geometries based on the Minimum Spanning Tree (MST) of the input geometries. The return value is the cluster number that the geometry argument participates in.</para>
-        <para>The Minimum Spanning Tree connects all geometries in the window partition such that the total length of the connecting lines is minimized. If the graph is not fully connected (e.g. infinite distance between some geometries), it produces a Minimum Spanning Forest, and each connected component is assigned a unique cluster ID.</para>
+        <para>A window function that builds connected graphs of line strings based on the Minimum Spanning Tree (MST) of the input geometries. The return value is the cluster number that the geometry argument participates in, or zero if it is not part of the minimum tree.</para>
+        <para>The <link xlink:href="https://en.wikipedia.org/wiki/Minimum_spanning_tree">Minimum Spanning Tree</link> connects all geometries in the window partition such that the total length of the connecting lines is minimized. If the graph is not fully connected (e.g. infinite distance between some geometries), it produces a Minimum Spanning Forest, and each connected component is assigned a unique tree ID.</para>
 
         <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
         <para role="geos_requirement" conformance="3.15.0">Requires GEOS &gt;= 3.15.0</para>
@@ -392,24 +392,25 @@ FROM clusterrelate;
       <refsection>
         <title>Examples</title>
         <programlisting>
-WITH testdata AS (
-  SELECT id, geom::geometry FROM (
-  VALUES  (1, 'POINT(0 0)'),
-          (2, 'POINT(0 1)'),
-          (3, 'POINT(10 10)'),
-          (4, 'POINT(10 11)')) AS t(id, geom)
-)
-SELECT id,
-  ST_AsText(geom),
-  ST_MinimumSpanningTree(geom) OVER () AS cluster
-FROM testdata;
+SELECT id, ST_AsText(geom), ST_MinimumSpanningTree(geom) OVER () AS msp
+  FROM (VALUES
+    (1, 'LINESTRING(0 0,1 0)'::geometry),
+    (2, 'LINESTRING(0 0,0 1)'::geometry),
+    (3, 'LINESTRING(1 1,0 1)'::geometry),
+    (4, 'LINESTRING(1 1,1 0)'::geometry),
+    (5, 'LINESTRING(0 0,1 1)'::geometry),
+    (6, 'LINESTRING(1 0,0 1)'::geometry)
+) AS t(id, geom);
 
- id |   st_astext    | cluster
-----+----------------+---------
-  1 | POINT(0 0)     |       0
-  2 | POINT(0 1)     |       0
-  3 | POINT(10 10)   |       1
-  4 | POINT(10 11)   |       1
+
+ id |      st_astext      | msp
+----+---------------------+-----
+  1 | LINESTRING(0 0,1 0) |   1
+  2 | LINESTRING(0 0,0 1) |   1
+  3 | LINESTRING(1 1,0 1) |   1
+  4 | LINESTRING(1 1,1 0) |   0
+  5 | LINESTRING(0 0,1 1) |   0
+  6 | LINESTRING(1 0,0 1) |   0
         </programlisting>
       </refsection>
       <refsection>
