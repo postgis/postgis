@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2026-03-17 01:16+0000\n"
+"PO-Revision-Date: 2026-03-24 05:27+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -46091,14 +46091,14 @@ msgstr ""
 "</emphasis>です。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>MULTIPOINT</varname>s are <emphasis>simple</emphasis> if no two "
 "coordinates (<varname>POINT</varname>s) are equal (have identical coordinate "
 "values)."
 msgstr ""
-"<varname>MULTIPOINT</varname>は、任意の二つの座標値 (<varname>POINT</"
-"varname>)が同じでないなら<emphasis>単純</emphasis>です。"
+"<varname>MULTIPOINT</varname>が<emphasis>単純</emphasis>になる条件は、任意の"
+"二つの座標 (<varname>POINT</varname>)が同じでないことです。"
 
 #. Tag: para
 #, no-c-format
