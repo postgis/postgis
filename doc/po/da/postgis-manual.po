@@ -372,9 +372,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Supplementary instructions for windows users are available at <link xlink:"
-"href=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
-"upgrade</link>."
+"Supplementary instructions for windows users are available at <link "
+"xlink:href=\"http://trac.osgeo.org/postgis/wiki/"
+"UsersWikiWinUpgrade\">Windows Hard upgrade</link>."
 msgstr ""
 
 #. Tag: para
@@ -472,10 +472,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"If you are upgrading an old database containing french <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national\"> "
-"IGN </link> cartography, you will have probably SRIDs out of range and you "
-"will see, when importing your database, issues like this :"
+"If you are upgrading an old database containing french <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/"
+"Institut_g%C3%A9ographique_national\"> IGN </link> cartography, you will "
+"have probably SRIDs out of range and you will see, when importing your "
+"database, issues like this :"
 msgstr ""
 
 #. Tag: para
@@ -495,8 +496,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Create then your newdb, activate the required Postgis extensions, and insert "
-"properly the french system IGN with : <link xlink:href=\"https://raw."
-"githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/"
+"properly the french system IGN with : <link xlink:href=\"https://"
+"raw.githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/"
 "Put_IGN_SRS_into_Postgis.sql\"> this script </link> After these operations, "
 "import your data :"
 msgstr ""
@@ -518,8 +519,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For general details about optimizing PostgreSQL, refer to <link xlink:"
-"href=\"https://wiki.postgresql.org/wiki/"
+"For general details about optimizing PostgreSQL, refer to <link "
+"xlink:href=\"https://wiki.postgresql.org/wiki/"
 "Tuning_Your_PostgreSQL_Server\">Tuning your PostgreSQL Server</link>."
 msgstr ""
 
@@ -713,950 +714,6 @@ msgid ""
 "scripts that can be run as is."
 msgstr ""
 
-#. Tag: chapter
-#, no-c-format
-msgid "&extras_address_standardizer; &extras_tigergeocoder;"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Address Standardizer"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This is a fork of the <link xlink:href=\"http://www.pagcgeo.org/docs/html/"
-"pagc-11.html\">PAGC standardizer</link> (original code for this portion was "
-"<link xlink:href=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-"
-"refactor/postgresql\">PAGC PostgreSQL Address Standardizer</link>)."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The address standardizer is a single line address parser that takes an input "
-"address and normalizes it based on a set of rules stored in a table and "
-"helper lex and gaz tables."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The code is built into a single PostgreSQL extension library called "
-"<code>address_standardizer</code> which can be installed with <code>CREATE "
-"EXTENSION address_standardizer;</code>. In addition to the "
-"address_standardizer extension, a sample data extension called "
-"<code>address_standardizer_data_us</code> extensions is built, which "
-"contains gaz, lex, and rules tables for US data. This extensions can be "
-"installed via: <code>CREATE EXTENSION address_standardizer_data_us;</code>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The code for this extension can be found in the PostGIS <filename>extensions/"
-"address_standardizer</filename> and is currently self-contained."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"For installation instructions refer to: <xref "
-"linkend=\"installing_pagc_address_standardizer\"/>."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "How the Parser Works"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The parser works from right to left looking first at the macro elements for "
-"postcode, state/province, city, and then looks micro elements to determine "
-"if we are dealing with a house number street or intersection or landmark. It "
-"currently does not look for a country code or name, but that could be "
-"introduced in the future."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Country code"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Assumed to be US or CA based on: postcode as US or Canada state/province as "
-"US or Canada else US"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Postcode/zipcode"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"These are recognized using Perl compatible regular expressions. These regexs "
-"are currently in the parseaddress-api.c and are relatively simple to make "
-"changes to if needed."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "State/province"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"These are recognized using Perl compatible regular expressions. These regexs "
-"are currently in the parseaddress-api.c but could get moved into includes in "
-"the future for easier maintenance."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Address Standardizer Types"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This section lists the PostgreSQL data types installed by Address "
-"Standardizer extension. Note we describe the casting behavior of these which "
-"is very important especially when designing your own functions."
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"A composite type that consists of the elements of an address. This is the "
-"return type for <varname>standardize_address</varname> function."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Description"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A composite type that consists of elements of an address. This is the return "
-"type for <xref linkend=\"standardize_address\"/> function. Some descriptions "
-"for elements are borrowed from <link xlink:href=\"http://www.pagcgeo.org/"
-"docs/html/pagc-12.html#ss12.1\">PAGC Postal Attributes</link>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The token numbers denote the output reference number in the <xref "
-"linkend=\"rulestab\"/>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "&address_standardizer_required;"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"is text (token number <code>0</code>): Refers to building number or name. "
-"Unparsed building identifiers and types. Generally blank for most addresses."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"is a text (token number <code>1</code>): This is the street number on a "
-"street. Example <emphasis>75</emphasis> in <code>75 State Street</code>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as "
-"North, South, East, West etc."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example "
-"<emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "is text (token number <code>4</code>): STREET PREFIX TYPE"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "is text (token number <code>5</code>): STREET NAME"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"is text (token number <code>6</code>): STREET POST TYPE e.g. St, Ave, Cir. A "
-"street type following the root street name. Example <emphasis>STREET</"
-"emphasis> in <code>75 State Street</code>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional "
-"modifier that follows the street name.. Example <emphasis>WEST</emphasis> in "
-"<code>3715 TENTH AVENUE WEST</code>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>7</"
-"emphasis> in <code>RR 7</code>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "is text: Extra information like Floor number."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "is text (token number <code>10</code>): Example Boston."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"is text (token number <code>11</code>): Example <code>MASSACHUSETTS</code>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "is text (token number <code>12</code>): Example <code>USA</code>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"is text POSTAL CODE (ZIP CODE) (token number <code>13</code>): Example "
-"<code>02109</code>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"is text POSTAL BOX NUMBER (token number <code>14 and 15</code>): Example "
-"<code>02109</code>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"is text Apartment number or Suite Number (token number <code>17</code>): "
-"Example <emphasis>3B</emphasis> in <code>APT 3B</code>."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Address Standardizer Tables"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This section lists the PostgreSQL table formats used by the "
-"address_standardizer for normalizing addresses. Note that these tables do "
-"not need to be named the same as what is referenced here. You can have "
-"different lex, gaz, rules tables for each country for example or for your "
-"custom geocoder. The names of these tables get passed into the address "
-"standardizer functions."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The packaged extension <varname>address_standardizer_data_us</varname> "
-"contains data for standardizing US addresses."
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"The rules table contains a set of rules that maps address input sequence "
-"tokens to standardized output sequence. A rule is defined as a set of input "
-"tokens followed by -1 (terminator) followed by set of output tokens followed "
-"by -1 followed by number denoting kind of rule followed by ranking of rule."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A rules table must have at least the following columns, though you are "
-"allowed to add more for your own uses."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Primary key of table"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"text field denoting the rule. Details at <link xlink:href=\"http://www."
-"pagcgeo.org/docs/html/pagc-12.html#--r-rec--\">PAGC Address Standardizer "
-"Rule records</link>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A rule consists of a set of non-negative integers representing input tokens, "
-"terminated by a -1, followed by an equal number of non-negative integers "
-"representing postal attributes, terminated by a -1, followed by an integer "
-"representing a rule type, followed by an integer representing the rank of "
-"the rule. The rules are ranked from 0 (lowest) to 17 (highest)."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"So for example the rule <code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6</code> maps to "
-"sequence of output tokens <emphasis>TYPE NUMBER TYPE DIRECT QUALIF</"
-"emphasis> to the output sequence <emphasis>STREET STREET SUFTYP SUFDIR "
-"QUALIF</emphasis>. The rule is an ARC_C rule of rank 6."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Numbers for corresponding output tokens are listed in <xref "
-"linkend=\"stdaddr\"/>."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Input Tokens"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Each rule starts with a set of input tokens followed by a terminator "
-"<code>-1</code>. Valid input tokens excerpted from <link xlink:href=\"http://"
-"www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC Input Tokens</link> are "
-"as follows:"
-msgstr ""
-
-#. Tag: emphasis
-#, no-c-format
-msgid "Form-Based Input Tokens"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(13). The ampersand (&amp;) is frequently used to abbreviate the word "
-"\"and\"."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "(9). A punctuation character."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "(21). A sequence of two letters. Often used as identifiers."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "(25). Fractions are sometimes used in civic numbers or unit numbers."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(23). An alphanumeric string that contains both letters and digits. Used for "
-"identifiers."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "(0). A string of digits."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "(15). Representations such as First or 1st. Often used in street names."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "(18). A single letter."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(1). A word is a string of letters of arbitrary length. A single letter can "
-"be both a SINGLE and a WORD."
-msgstr ""
-
-#. Tag: emphasis
-#, no-c-format
-msgid "Function-based Input Tokens"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(14). Words used to denote post office boxes. For example <emphasis>Box</"
-"emphasis> or <emphasis>PO Box</emphasis>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(19). Words used to denote buildings or building complexes, usually as a "
-"prefix. For example: <emphasis>Tower</emphasis> in <emphasis>Tower 7A</"
-"emphasis>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(24). Words and abbreviations used to denote buildings or building "
-"complexes, usually as a suffix. For example: <emphasis>Shopping Centre</"
-"emphasis>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(22). Words used to denote directions, for example <emphasis>North</"
-"emphasis>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "(20). Words used to denote milepost addresses."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(6). Words and abbreviations used to denote highways and roads. For example: "
-"the <emphasis>Interstate</emphasis> in <emphasis>Interstate 5</emphasis>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(8). Words and abbreviations used to denote rural routes. <emphasis>RR</"
-"emphasis>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(2). Words and abbreviations used to denote street types. For example: "
-"<emphasis>ST</emphasis> or <emphasis>AVE</emphasis>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(16). Words and abbreviations used to denote internal subaddresses. For "
-"example, <emphasis>APT</emphasis> or <emphasis>UNIT</emphasis>."
-msgstr ""
-
-#. Tag: emphasis
-#, no-c-format
-msgid "Postal Type Input Tokens"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "(28). A 5 digit number. Identifies a ZIP code"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "(29). A 4 digit number. Identifies ZIP4."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(27). A 3 character sequence of letter number letter. Identifies an FSA, the "
-"first 3 characters of a Canadian postal code."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(26). A 3 character sequence of number letter number. Identifies an LDU, the "
-"last 3 characters of a Canadian postal code."
-msgstr ""
-
-#. Tag: emphasis
-#, no-c-format
-msgid "Stopwords"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"STOPWORDS combine with WORDS. In rules a string of multiple WORDs and "
-"STOPWORDs will be represented by a single WORD token."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(7). A word with low lexical significance, that can be omitted in parsing. "
-"For example: <emphasis>THE</emphasis>."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Output Tokens"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"After the first -1 (terminator), follows the output tokens and their order, "
-"followed by a terminator <code>-1</code>. Numbers for corresponding output "
-"tokens are listed in <xref linkend=\"stdaddr\"/>. What are allowed is "
-"dependent on kind of rule. Output tokens valid for each rule type are listed "
-"in <xref linkend=\"rule_types_rank\"/>."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Rule Types and Rank"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The final part of the rule is the rule type which is denoted by one of the "
-"following, followed by a rule rank. The rules are ranked from 0 (lowest) to "
-"17 (highest)."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(token number = \"<emphasis role=\"bold\">0</emphasis>\"). The class of "
-"rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<emphasis role=\"bold\"><varname>MACRO_C</varname> output tokens</emphasis> "
-"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
-"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
-"link>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "(token number \"10\"). Example \"Albany\""
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "(token number \"11\"). Example \"NY\""
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(token number \"12\"). This attribute is not used in most reference files. "
-"Example \"USA\""
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). This "
-"attribute is used for both the US ZIP and the Canadian postal codes."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(token number = \"<emphasis role=\"bold\">1</emphasis>\"). The class of "
-"rules for parsing full MICRO clauses (such as House, street, sufdir, predir, "
-"pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used "
-"in the build phase."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<emphasis role=\"bold\"><varname>MICRO_C</varname> output tokens</emphasis> "
-"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
-"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
-"link>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(token number = \"<emphasis role=\"bold\">2</emphasis>\"). The class of "
-"rules for parsing MICRO clauses, excluding the HOUSE attribute. As such uses "
-"same set of output tokens as MICRO_C minus the HOUSE token."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(token number = \"<emphasis role=\"bold\">3</emphasis>\"). The class of "
-"rules for parsing the HOUSE attribute."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(token number = \"<emphasis role=\"bold\">4</emphasis>\"). The class of "
-"rules for parsing EXTRA attributes - attributes excluded from geocoding. "
-"These rules are not used in the build phase."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<emphasis role=\"bold\"><varname>EXTRA_C</varname> output tokens</emphasis> "
-"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
-"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
-"link>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "(token number <code>0</code>): Unparsed building identifiers and types."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(token number <code>14</code>): The <emphasis role=\"bold\">BOX</emphasis> "
-"in <code>BOX 3B</code>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(token number <code>15</code>): The <emphasis role=\"bold\">3B</emphasis> in "
-"<code>BOX 3B</code>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(token number <code>8</code>): The <emphasis role=\"bold\">RR</emphasis> in "
-"<code>RR 7</code>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(token number <code>16</code>): The <emphasis role=\"bold\">APT</emphasis> "
-"in <code>APT 3B</code>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(token number <code>17</code>): The <emphasis role=\"bold\">3B</emphasis> in "
-"<code>APT 3B</code>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "(token number <code>9</code>): An otherwise unclassified output."
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"A lex table is used to classify alphanumeric input and associate that input "
-"with (a) input tokens ( See <xref linkend=\"rule_input_tokens\"/>) and (b) "
-"standardized representations."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A lex (short for lexicon) table is used to classify alphanumeric input and "
-"associate that input with <xref linkend=\"rule_input_tokens\"/> and (b) "
-"standardized representations. Things you will find in these tables are "
-"<code>ONE</code> mapped to stdword: <code>1</code>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "A lex has at least the following columns in the table. You may add"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "integer: definition number?"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "text: the input word"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "text: the standardized replacement word"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"integer: the kind of word it is. Only if it is used in this context will it "
-"be replaced. Refer to <link xlink:href=\"http://www.pagcgeo.org/docs/html/"
-"pagc-12.html#--i-tok--\">PAGC Tokens</link>."
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"A gaz table is used to standardize place names and associate that input with "
-"(a) input tokens ( See <xref linkend=\"rule_input_tokens\"/>) and (b) "
-"standardized representations."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A gaz (short for gazeteer) table is used to standardize place names and "
-"associate that input with <xref linkend=\"rule_input_tokens\"/> and (b) "
-"standardized representations. For example if you are in US, you may load "
-"these with State Names and associated abbreviations."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A gaz table has at least the following columns in the table. You may add "
-"more columns if you wish for your own purposes."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"integer: definition number? - identifier used for that instance of the word"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Address Standardizer Functions"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Returns a json formatted text listing the parse tokens and standardizations"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This is a function for debugging address standardizer rules and lex/gaz "
-"mappings. It returns a json formatted text that includes the matching rules, "
-"mapping of tokens, and best standardized address <xref linkend=\"stdaddr\"/> "
-"form of an input address utilizing <xref linkend=\"lextab\"/> table name, "
-"<xref linkend=\"gaztab\"/>, and <xref linkend=\"rulestab\"/> table names and "
-"an address."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "For single line addresses use just <varname>micro</varname>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"For two line address A <varname>micro</varname> consisting of standard first "
-"line of postal address e.g. <code>house_num street</code>, and a macro "
-"consisting of standard postal second line of an address e.g <code>city, "
-"state postal_code country</code>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Elements returned in the json document are"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"For each word in the input address, returns the position of the word, token "
-"categorization of the word, and the standard word it is mapped to. Note that "
-"for some input words, you might get back multiple records because some "
-"inputs can be categorized as more than one thing."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The set of rules matching the input and the corresponding score for each. "
-"The first rule (highest scoring) is what is used for standardization"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The standardized address elements <xref linkend=\"stdaddr\"/> that would be "
-"returned when running <xref linkend=\"standardize_address\"/>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 3.4.0"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Examples"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Using address_standardizer_data_us extension"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Variant 1: Single line address and returning the input tokens"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Variant 2: Multi line address and returning first rule input mappings and "
-"score"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "See Also"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref "
-"linkend=\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Takes a 1 line address and breaks into parts"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Returns takes an address as input, and returns a record output consisting of "
-"fields <emphasis>num</emphasis>, <emphasis>street</emphasis>, "
-"<emphasis>street2</emphasis>, <emphasis>address1</emphasis>, <emphasis>city</"
-"emphasis>, <emphasis>state</emphasis>, <emphasis>zip</emphasis>, "
-"<emphasis>zipplus</emphasis>, <emphasis>country</emphasis>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 2.2.0"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Single Address"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Table of addresses"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Returns an stdaddr form of an input address utilizing lex, gaz, and rule "
-"tables."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Returns an <xref linkend=\"stdaddr\"/> form of an input address utilizing "
-"<xref linkend=\"lextab\"/> table name, <xref linkend=\"gaztab\"/>, and <xref "
-"linkend=\"rulestab\"/> table names and an address."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Variant 1: Takes an address as a single line."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Variant 2: Takes an address as 2 parts. A <varname>micro</varname> "
-"consisting of standard first line of postal address e.g. <code>house_num "
-"street</code>, and a macro consisting of standard postal second line of an "
-"address e.g <code>city, state postal_code country</code>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Variant 1: Single line address. This doesn't work well with non-US addresses"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Using tables packaged with tiger geocoder. This example only works if you "
-"installed <varname>postgis_tiger_geocoder</varname>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Make easier to read we'll dump output using hstore extension CREATE "
-"EXTENSION hstore; you need to install"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Variant 2: As a two part Address"
-msgstr ""
-
 #. Tag: title
 #, no-c-format
 msgid "History Tracking"
@@ -1740,6 +797,11 @@ msgid ""
 "tables."
 msgstr ""
 
+#. Tag: title
+#, no-c-format
+msgid "Description"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -1750,6 +812,16 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.5.0"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Examples"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "See Also"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1780,1227 +852,6 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "Tiger Geocoder"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A plpgsql based geocoder written to work with the <link xlink:href=\"https://"
-"www2.census.gov/geo/tiger/\">TIGER (Topologically Integrated Geographic "
-"Encoding and Referencing system ) / Line and Master Address database export</"
-"link> released by the US Census Bureau."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"There are four components to the geocoder: the data loader functions, the "
-"address normalizer, the address geocoder, and the reverse geocoder."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Although it is designed specifically for the US, a lot of the concepts and "
-"functions are applicable and can be adapted to work with other country "
-"address and road networks."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The script builds a schema called <varname>tiger</varname> to house all the "
-"TIGER-related functions, reusable lookup data such as road type prefixes, "
-"suffixes, states, various control tables for managing data load, and "
-"skeleton base tables from which all the TIGER-loaded tables inherit."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Another schema called <varname>tiger_data</varname> is also created which "
-"houses all the census data for each state that the loader downloads from the "
-"Census site and loads into the database. In the current model, each set of "
-"state tables is prefixed with the state code e.g <varname>ma_addr</varname>, "
-"<varname>ma_edges</varname> etc with constraints to enforce only that state "
-"data. Each of these tables inherits from the tables <varname>addr</varname>, "
-"<varname>faces</varname>, <varname>edges</varname>, etc located in the "
-"<varname>tiger</varname> schema."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"All the geocode functions only reference the base tables, so there is no "
-"requirement that the data schema be called <varname>tiger_data</varname> or "
-"that data can't be further partitioned into other schemas -- e.g. a "
-"different schema for each state, as long as all the tables inherit from the "
-"tables in the <varname>tiger</varname> schema."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"For instructions on how to enable the extension in your database and also to "
-"load data using it, refer to <xref "
-"linkend=\"install_tiger_geocoder_extension\"/>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you are using the TIGER Geocoder (tiger_2010), you can upgrade the "
-"scripts using the accompanying upgrade_geocoder.bat / .sh scripts in extras/"
-"tiger. One major change between <varname>tiger_2010</varname> and "
-"<varname>tiger_2011+</varname> is that the <varname>county</varname> and "
-"<varname>state</varname> tables are no longer broken out by state. If you "
-"have data from tiger_2010 and want to replace with tiger_2015, refer to "
-"<xref linkend=\"upgrade_tiger_geocoder\"/>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"You can install the TIGER Geocoder with the PostgreSQL extension model. "
-"Refer to <xref linkend=\"install_tiger_geocoder_extension\"/> for details."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The <xref linkend=\"Pagc_Normalize_Address\"/> function as a drop in "
-"replacement for in-built <xref linkend=\"Normalize_Address\"/>. Refer to "
-"<xref linkend=\"installing_pagc_address_standardizer\"/> for compile and "
-"installation instructions."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Design:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The goal of this project is to build a fully functional geocoder that can "
-"process an arbitrary United States address string and using normalized TIGER "
-"census data, produce a point geometry and rating reflecting the location of "
-"the given address and likeliness of the location. The higher the rating "
-"number the worse the result."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The <varname>reverse_geocode</varname> function is useful for deriving the "
-"street address and cross streets of a GPS location."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The geocoder should be simple for anyone familiar with PostGIS to install "
-"and use, and should be easily installable and usable on all platforms "
-"supported by PostGIS."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"It should be robust enough to function properly despite formatting and "
-"spelling errors."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"It should be extensible enough to be used with future data updates, or "
-"alternate data sources with a minimum of coding changes."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The <varname>tiger</varname> schema must be added to the database search "
-"path for the functions to work properly."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"There are a couple other open source geocoders for PostGIS, that unlike the "
-"TIGER Geocoder have the advantage of multi-country geocoding support"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"http://wiki.openstreetmap.org/wiki/Nominatim\">Nominatim</"
-"link> uses OpenStreetMap gazeteer formatted data. It requires osm2pgsql for "
-"loading the data together with PostgreSQL and PostGIS. It is packaged as a "
-"webservice interface and seems designed to be called as a webservice. Just "
-"like the TIGER Geocoder, it has both a geocoder and a reverse geocoder "
-"component. From the documentation, it is unclear if it has a pure SQL "
-"interface like the TIGER Geocoder, or if a good deal of the logic is "
-"implemented in the web interface."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://www.gisgraphy.com/\">GIS Graphy</link> can "
-"utilize PostGIS and like Nominatim uses OpenStreetMap (OSM) data along with "
-"some other sources. It comes with a loader to load OSM data and similar to "
-"Nominatim is capable of geocoding not just US. Much like Nominatim, it runs "
-"as a webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is "
-"cross-platform and also has a reverse geocoder among some other neat "
-"features."
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"<refpurpose>Generates a script that drops all non-primary key and non-unique "
-"indexes on tiger schema and user specified schema. Defaults schema to "
-"<varname>tiger_data</varname> if no schema is specified.</refpurpose>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<para>Generates a script that drops all non-primary key and non-unique "
-"indexes on tiger schema and user specified schema. Defaults schema to "
-"<varname>tiger_data</varname> if no schema is specified.</para>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This is useful for minimizing index bloat that may confuse the query planner "
-"or take up unnecessary space. Use in combination with <xref "
-"linkend=\"Install_Missing_Indexes\"/> to add just the indexes used by the "
-"geocoder."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 2.0.0"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Generates a script that drops all tables in the specified schema that start "
-"with <varname>county_all</varname>, <varname>state_all</varname> or state "
-"code followed by <varname>county</varname> or <varname>state</varname>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Generates a script that drops all tables in the specified schema that start "
-"with <varname>county_all</varname>, <varname>state_all</varname> or state "
-"code followed by <varname>county</varname> or <varname>state</varname>. This "
-"is needed if you are upgrading from <varname>tiger_2010</varname> to "
-"<varname>tiger_2011</varname> data."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 2.1.0"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Generates a script that drops all tables in the specified schema that are "
-"prefixed with the state abbreviation. Defaults schema to "
-"<varname>tiger_data</varname> if no schema is specified."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Generates a script that drops all tables in the specified schema that are "
-"prefixed with the state abbreviation. Defaults schema to "
-"<varname>tiger_data</varname> if no schema is specified. This function is "
-"useful for dropping tables of a state just before you reload a state in case "
-"something went wrong during your previous load."
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Takes in an address as a string (or other normalized address) and outputs a "
-"set of possible locations which include a point geometry in NAD 83 long lat, "
-"a normalized address for each, and the rating. The lower the rating the more "
-"likely the match. Results are sorted by lowest rating first. Can optionally "
-"pass in maximum results, defaults to 10, and restrict_region (defaults to "
-"NULL)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Takes in an address as a string (or already normalized address) and outputs "
-"a set of possible locations which include a point geometry in NAD 83 long "
-"lat, a <varname>normalized_address</varname> (addy) for each, and the "
-"rating. The lower the rating the more likely the match. Results are sorted "
-"by lowest rating first. Uses Tiger data (edges,faces,addr), PostgreSQL fuzzy "
-"string matching (soundex,levenshtein) and PostGIS line interpolation "
-"functions to interpolate address along the Tiger edges. The higher the "
-"rating the less likely the geocode is right. The geocoded point is defaulted "
-"to offset 10 meters from center-line off to side (L/R) of street address is "
-"located on."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Enhanced: 2.0.0 to support Tiger 2010 structured data and revised some logic "
-"to improve speed, accuracy of geocoding, and to offset point from centerline "
-"to side of street address is located on. The new parameter "
-"<varname>max_results</varname> useful for specifying number of best results "
-"or just returning the best result."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Examples: Basic"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Exact matches are faster to compute (61ms)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Even if zip is not passed in the geocoder can guess (took about 122-150 ms)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Can handle misspellings and provides more than one possible solution with "
-"ratings and takes longer (500ms)."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Using to do a batch geocode of addresses. Easiest is to set "
-"<varname>max_results=1</varname>. Only process those not yet geocoded (have "
-"no rating)."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Examples: Using Geometry filter"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
-"linkend=\"ST_SnapToGrid\"/>, <xref linkend=\"ST_X\"/>, <xref "
-"linkend=\"ST_Y\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Takes in 2 streets that intersect and a state, city, zip, and outputs a set "
-"of possible locations on the first cross street that is at the intersection, "
-"also includes a geomout as the point location in NAD 83 long lat, a "
-"<varname>normalized_address</varname> (addy) for each location, and the "
-"rating. The lower the rating the more likely the match. Results are sorted "
-"by lowest rating first. Can optionally pass in maximum results, defaults to "
-"10. Uses Tiger data (edges, faces, addr), PostgreSQL fuzzy string matching "
-"(soundex, levenshtein)."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Takes in 2 streets that intersect and a state, city, zip, and outputs a set "
-"of possible locations on the first cross street that is at the intersection, "
-"also includes a point geometry in NAD 83 long lat, a normalized address for "
-"each location, and the rating. The lower the rating the more likely the "
-"match. Results are sorted by lowest rating first. Can optionally pass in "
-"maximum results, defaults to 10. Returns <varname>normalized_address</"
-"varname> (addy) for each, geomout as the point location in nad 83 long lat, "
-"and the rating. The lower the rating the more likely the match. Results are "
-"sorted by lowest rating first. Uses Tiger data (edges,faces,addr), "
-"PostgreSQL fuzzy string matching (soundex,levenshtein)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Even if zip is not passed in the geocoder can guess (took about 3500 ms on "
-"the windows 7 box), on the windows 2003 64-bit 741 ms"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Returns value of specific setting stored in tiger.geocode_settings table."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Returns value of specific setting stored in tiger.geocode_settings table. "
-"Settings allow you to toggle debugging of functions. Later plans will be to "
-"control rating with settings. Current list of settings are as follows:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Changed: 2.2.0 : default settings are now kept in a table called "
-"geocode_settings_default. Use customized settingsa are in geocode_settings "
-"and only contain those that have been set by user."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Example return debugging setting"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Returns census tract or field from tract table of where the geometry is "
-"located. Default to returning short name of tract."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Given a geometry will return the census tract location of that geometry. NAD "
-"83 long lat is assumed if no spatial ref sys is specified."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This function uses the census <varname>tract</varname> which is not loaded "
-"by default. If you have already loaded your state table, you can load tract "
-"as well as bg, and tabblock using the <xref "
-"linkend=\"Loader_Generate_Census_Script\"/> script."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you have not loaded your state data yet and want these additional tables "
-"loaded, do the following"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"then they will be included by the <xref linkend=\"Loader_Generate_Script\"/>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "&gt;"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Finds all tables with key columns used in geocoder joins and filter "
-"conditions that are missing used indexes on those columns and will add them."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Finds all tables in <varname>tiger</varname> and <varname>tiger_data</"
-"varname> schemas with key columns used in geocoder joins and filters that "
-"are missing indexes on those columns and will output the SQL DDL to define "
-"the index for those tables and then execute the generated script. This is a "
-"helper function that adds new indexes needed to make queries faster that may "
-"have been missing during the load process. This function is a companion to "
-"<xref linkend=\"Missing_Indexes_Generate_Script\"/> that in addition to "
-"generating the create index script, also executes it. It is called as part "
-"of the <filename>update_geocode.sql</filename> upgrade script."
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Generates a shell script for the specified platform for the specified states "
-"that will download Tiger census state tract, bg, and tabblocks data tables, "
-"stage and load into <varname>tiger_data</varname> schema. Each state script "
-"is returned as a separate record."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Generates a shell script for the specified platform for the specified states "
-"that will download Tiger data census state <varname>tract</varname>, block "
-"groups <varname>bg</varname>, and <varname>tabblocks</varname> data tables, "
-"stage and load into <varname>tiger_data</varname> schema. Each state script "
-"is returned as a separate record."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"It uses unzip on Linux (7-zip on Windows by default) and wget to do the "
-"downloading. It uses <xref linkend=\"shp2pgsql_usage\"/> to load in the "
-"data. Note the smallest unit it does is a whole state. It will only process "
-"the files in the staging and temp folders."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"It uses the following control tables to control the process and different OS "
-"shell syntax variations."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>loader_variables</varname> keeps track of various variables such as "
-"census site, year, data and staging schemas"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>loader_platform</varname> profiles of various platforms and where "
-"the various executables are located. Comes with windows and linux. More can "
-"be added."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>loader_lookuptables</varname> each record defines a kind of table "
-"(state, county), whether to process records in it and how to load them in. "
-"Defines the steps to import data, stage data, add, removes columns, indexes, "
-"and constraints for each. Each table is prefixed with the state and inherits "
-"from a table in the tiger schema. e.g. creates <varname>tiger_data.ma_faces</"
-"varname> which inherits from <varname>tiger.faces</varname>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"includes this logic, but if you installed the TIGER Geocoder with older "
-"scripts, rerun it on the states you have already processed to get these "
-"additional tables."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Generate script to load up data for select states in Windows shell script "
-"format."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Generate sh script"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Generates a shell script for the specified platform for the specified states "
-"that will download Tiger data, stage and load into <varname>tiger_data</"
-"varname> schema. Each state script is returned as a separate record. Latest "
-"version supports Tiger 2010 structural changes and also loads census tract, "
-"block groups, and blocks tables."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Generates a shell script for the specified platform for the specified states "
-"that will download Tiger data, stage and load into <varname>tiger_data</"
-"varname> schema. Each state script is returned as a separate record."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"It uses unzip on Linux (7-zip on Windows by default) and wget to do the "
-"downloading. It uses <xref linkend=\"shp2pgsql_usage\"/> to load in the "
-"data. Note the smallest unit it does is a whole state, but you can overwrite "
-"this by downloading the files yourself. It will only process the files in "
-"the staging and temp folders."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Availability: 2.0.0 to support Tiger 2010 structured data and load census "
-"tract (tract), block groups (bg), and blocks (tabblocks) tables ."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you are using pgAdmin 3, be warned that by default pgAdmin 3 truncates "
-"long text. To fix, change <emphasis>File -&gt; Options -&gt; Query Tool -"
-"&gt; Query Editor - &gt; Max. characters per column</emphasis> to larger "
-"than 50000 characters."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Using psql where gistest is your database and <filename>/gisdata/data_load."
-"sh</filename> is the file to create with the shell commands to run."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Generate script to load up data for 2 states in Windows shell script format."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref "
-"linkend=\"Drop_State_Tables_Generate_Script\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Generates a shell script for the specified platform that loads in the county "
-"and state lookup tables."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Generates a shell script for the specified platform that loads in the "
-"<varname>county_all</varname>, <varname>county_all_lookup</varname>, "
-"<varname>state_all</varname> tables into <varname>tiger_data</varname> "
-"schema. These inherit respectively from the <varname>county</varname>, "
-"<varname>county_lookup</varname>, <varname>state</varname> tables in "
-"<varname>tiger</varname> schema."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"It uses unzip on Linux (7-zip on Windows by default) and wget to do the "
-"downloading. It uses <xref linkend=\"shp2pgsql_usage\"/> to load in the data."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"It uses the following control tables <varname>tiger.loader_platform</"
-"varname>, <varname>tiger.loader_variables</varname>, and <varname>tiger."
-"loader_lookuptables</varname> to control the process and different OS shell "
-"syntax variations."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>loader_platform</varname> profiles of various platforms and where "
-"the various executables are located. Comes with windows and linux/unix. More "
-"can be added."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Enhanced: 2.4.1 ZIP Code 5 tabulation area (zcta5) load step was fixed and "
-"when enabled, zcta5 data is loaded as a single table called zcta5_all as "
-"part of the nation script load."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you want ZIP Code 5 tabulation area (zcta5) to be included in your nation "
-"script load, do the following:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you were running <varname>tiger_2010</varname> version and you want to "
-"reload as state with newer tiger data, you'll need to for the very first "
-"load generate and run drop statements <xref "
-"linkend=\"Drop_Nation_Tables_Generate_Script\"/> before you run this script."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Generate script script to load nation data Windows."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Generate script to load up data for Linux/Unix systems."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Finds all tables with key columns used in geocoder joins that are missing "
-"indexes on those columns and will output the SQL DDL to define the index for "
-"those tables."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Finds all tables in <varname>tiger</varname> and <varname>tiger_data</"
-"varname> schemas with key columns used in geocoder joins that are missing "
-"indexes on those columns and will output the SQL DDL to define the index for "
-"those tables. This is a helper function that adds new indexes needed to make "
-"queries faster that may have been missing during the load process. As the "
-"geocoder is improved, this function will be updated to accommodate new "
-"indexes being used. If this function outputs nothing, it means all your "
-"tables have what we think are the key indexes already in place."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"Install_Missing_Indexes\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Given a textual street address, returns a composite <varname>norm_addy</"
-"varname> type that has road suffix, prefix and type standardized, street, "
-"streetname etc. broken into separate fields. This function will work with "
-"just the lookup data packaged with the tiger_geocoder (no need for tiger "
-"census data)."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Given a textual street address, returns a composite <varname>norm_addy</"
-"varname> type that has road suffix, prefix and type standardized, street, "
-"streetname etc. broken into separate fields. This is the first step in the "
-"geocoding process to get all addresses into normalized postal form. No other "
-"data is required aside from what is packaged with the geocoder."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This function just uses the various direction/state/suffix lookup tables "
-"preloaded with the tiger_geocoder and located in the <varname>tiger</"
-"varname> schema, so it doesn't need you to download tiger census data or any "
-"other additional data to make use of it. You may find the need to add more "
-"abbreviations or alternative namings to the various lookup tables in the "
-"<varname>tiger</varname> schema."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"It uses various control lookup tables located in <varname>tiger</varname> "
-"schema to normalize the input address."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Fields in the <varname>norm_addy</varname> type object returned by this "
-"function in this order where () indicates a field required by the geocoder, "
-"[] indicates an optional field:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] "
-"[internal] [location] [stateAbbrev] [zip] [parsed] [zip4] "
-"[address_alphanumeric]"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Enhanced: 2.4.0 norm_addy object includes additional fields zip4 and "
-"address_alphanumeric."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "<varname>address</varname> is an integer: The street number"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>predirAbbrev</varname> is varchar: Directional prefix of road such "
-"as N, S, E, W etc. These are controlled using the <varname>direction_lookup</"
-"varname> table."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "<varname>streetName</varname> varchar"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>streetTypeAbbrev</varname> varchar abbreviated version of street "
-"type: e.g. St, Ave, Cir. These are controlled using the "
-"<varname>street_type_lookup</varname> table."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>postdirAbbrev</varname> varchar abbreviated directional suffice of "
-"road N, S, E, W etc. These are controlled using the "
-"<varname>direction_lookup</varname> table."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>internal</varname> varchar internal address such as an apartment or "
-"suite number."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>location</varname> varchar usually a city or governing province."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>stateAbbrev</varname> varchar two character US State. e.g MA, NY, "
-"MI. These are controlled by the <varname>state_lookup</varname> table."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "<varname>zip</varname> varchar 5-digit zipcode. e.g. 02109."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>parsed</varname> boolean - denotes if address was formed from "
-"normalize process. The normalize_address function sets this to true before "
-"returning the address."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>zip4</varname> last 4 digits of a 9 digit ZIP Code. Availability: "
-"PostGIS 2.4.0."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>address_alphanumeric</varname> Full street number even if it has "
-"alpha characters like 17R. Parsing of this is better using <xref "
-"linkend=\"Pagc_Normalize_Address\"/> function. Availability: PostGIS 2.4.0."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Output select fields. Use <xref linkend=\"Pprint_Addy\"/> if you want a "
-"pretty textual output."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"Pprint_Addy\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Given a textual street address, returns a composite <varname>norm_addy</"
-"varname> type that has road suffix, prefix and type standardized, street, "
-"streetname etc. broken into separate fields. This function will work with "
-"just the lookup data packaged with the tiger_geocoder (no need for tiger "
-"census data). Requires address_standardizer extension."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This function just uses the various pagc_* lookup tables preloaded with the "
-"tiger_geocoder and located in the <varname>tiger</varname> schema, so it "
-"doesn't need you to download tiger census data or any other additional data "
-"to make use of it. You may find the need to add more abbreviations or "
-"alternative namings to the various lookup tables in the <varname>tiger</"
-"varname> schema."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"There are slight variations in casing and formatting over the <xref "
-"linkend=\"Normalize_Address\"/>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] "
-"[internal] [location] [stateAbbrev] [zip]"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The native standardaddr of address_standardizer extension is at this time a "
-"bit richer than norm_addy since its designed to support international "
-"addresses (including country). standardaddr equivalent fields are:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "house_num,predir, name, suftype, sufdir, unit, city, state, postcode"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Single call example"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Batch call. There are currently speed issues with the way "
-"postgis_tiger_geocoder wraps the address_standardizer. These will hopefully "
-"be resolved in later editions. To work around them, if you need speed for "
-"batch geocoding to call generate a normaddy in batch mode, you are "
-"encouraged to directly call the address_standardizer standardize_address "
-"function as shown below which is similar exercise to what we did in <xref "
-"linkend=\"Normalize_Address\"/> that uses data created in <xref "
-"linkend=\"Geocode\"/>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"Geocode\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Given a <varname>norm_addy</varname> composite type object, returns a pretty "
-"print representation of it. Usually used in conjunction with "
-"normalize_address."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Given a <varname>norm_addy</varname> composite type object, returns a pretty "
-"print representation of it. No other data is required aside from what is "
-"packaged with the geocoder."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Usually used in conjunction with <xref linkend=\"Normalize_Address\"/>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Pretty print a single address"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Pretty print address a table of addresses"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Takes a geometry point in a known spatial ref sys and returns a record "
-"containing an array of theoretically possible addresses and an array of "
-"cross streets. If include_strnum_range = true, includes the street range in "
-"the cross streets."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Takes a geometry point in a known spatial ref and returns a record "
-"containing an array of theoretically possible addresses and an array of "
-"cross streets. If include_strnum_range = true, includes the street range in "
-"the cross streets. include_strnum_range defaults to false if not passed in. "
-"Addresses are sorted according to which road a point is closest to so first "
-"address is most likely the right one."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Why do we say theoretical instead of actual addresses. The Tiger data "
-"doesn't have real addresses, but just street ranges. As such the theoretical "
-"address is an interpolated address based on the street ranges. Like for "
-"example interpolating one of my addresses returns a 26 Court St. and 26 "
-"Court Sq., though there is no such place as 26 Court Sq. This is because a "
-"point may be at a corner of 2 streets and thus the logic interpolates along "
-"both streets. The logic also assumes addresses are equally spaced along a "
-"street, which of course is wrong since you can have a municipal building "
-"taking up a good chunk of the street range and the rest of the buildings are "
-"clustered at the end."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Note: Hmm this function relies on Tiger data. If you have not loaded data "
-"covering the region of this point, then hmm you will get a record filled "
-"with NULLS."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Returned elements of the record are as follows:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>intpt</varname> is an array of points: These are the center line "
-"points on the street closest to the input point. There are as many points as "
-"there are addresses."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>addy</varname> is an array of norm_addy (normalized addresses): "
-"These are an array of possible addresses that fit the input point. The first "
-"one in the array is most likely. Generally there should be only one, except "
-"in the case when a point is at the corner of 2 or 3 streets, or the point is "
-"somewhere on the road and not off to the side."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>street</varname> an array of varchar: These are cross streets (or "
-"the street) (streets that intersect or are the street the point is projected "
-"to be on)."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Enhanced: 2.4.1 if optional zcta5 dataset is loaded, the reverse_geocode "
-"function can resolve to state and zip even if the specific state data is not "
-"loaded. Refer to <xref linkend=\"Loader_Generate_Nation_Script\"/> for "
-"details on loading zcta5 data."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Example of a point at the corner of two streets, but closest to one. This is "
-"approximate location of MIT: 77 Massachusetts Ave, Cambridge, MA 02139 Note "
-"that although we don't have 3 streets, PostgreSQL will just return null for "
-"entries above our upper bound so safe to use. This includes street ranges"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Here we choose not to include the address ranges for the cross streets and "
-"picked a location really really close to a corner of 2 streets thus could be "
-"known by two different addresses."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"For this one we reuse our geocoded example from <xref linkend=\"Geocode\"/> "
-"and we only want the primary address and at most 2 cross streets."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"Geocode\"/>, <xref "
-"linkend=\"Loader_Generate_Nation_Script\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Loads a defined region of tiger data into a PostGIS Topology and "
-"transforming the tiger data to spatial reference of the topology and "
-"snapping to the precision tolerance of the topology."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Loads a defined region of tiger data into a PostGIS Topology. The faces, "
-"nodes and edges are transformed to the spatial reference system of the "
-"target topology and points are snapped to the tolerance of the target "
-"topology. The created faces, nodes, edges maintain the same ids as the "
-"original Tiger data faces, nodes, edges so that datasets can be in the "
-"future be more easily reconciled with tiger data. Returns summary details "
-"about the process."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This would be useful for example for redistricting data where you require "
-"the newly formed polygons to follow the center lines of streets and for the "
-"resulting polygons not to overlap."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This function relies on Tiger data as well as the installation of the "
-"PostGIS topology module. For more information, refer to <xref "
-"linkend=\"Topology\"/> and <xref linkend=\"installation_configuration\"/>. "
-"If you have not loaded data covering the region of interest, then no "
-"topology records will be created. This function will also fail if you have "
-"not created a topology using the topology functions."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Most topology validation errors are a result of tolerance issues where after "
-"transformation the edges points don't quite line up or overlap. To remedy "
-"the situation you may want to increase or lower the precision if you get "
-"topology validation failures."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Required arguments:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>topo_name</varname> The name of an existing PostGIS topology to "
-"load data into."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>region_type</varname> The type of bounding region. Currently only "
-"<varname>place</varname> and <varname>county</varname> are supported. Plan "
-"is to have several more. This is the table to look into to define the region "
-"bounds. e.g <varname>tiger.place</varname>, <varname>tiger.county</varname>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<varname>region_id</varname> This is what TIGER calls the geoid. It is the "
-"unique identifier of the region in the table. For place it is the "
-"<varname>plcidfp</varname> column in <varname>tiger.place</varname>. For "
-"county it is the <varname>cntyidfp</varname> column in <varname>tiger."
-"county</varname>"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Example: Boston, Massachusetts Topology"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Create a topology for Boston, Massachusetts in Mass State Plane Feet (2249) "
-"with tolerance 0.25 feet and then load in Boston city tiger faces, edges, "
-"nodes."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Example: Suffolk, Massachusetts Topology"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Create a topology for Suffolk, Massachusetts in Mass State Plane Meters "
-"(26986) with tolerance 0.25 meters and then load in Suffolk county tiger "
-"faces, edges, nodes."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"CreateTopoGeom\"/>, <xref linkend=\"TopologySummary\"/>, "
-"<xref linkend=\"ValidateTopology\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Sets a setting that affects behavior of geocoder functions."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Sets value of specific setting stored in <varname>tiger.geocode_settings</"
-"varname> table. Settings allow you to toggle debugging of functions. Later "
-"plans will be to control rating with settings. Current list of settings are "
-"listed in <xref linkend=\"Get_Geocode_Setting\"/>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you run <xref linkend=\"Geocode\"/> when this function is true, the "
-"NOTICE log will output timing and queries."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
 msgid "Topology"
 msgstr ""
 
@@ -3015,29 +866,31 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Sandro Santilli's presentation at PostGIS Day Paris 2011 conference gives a "
-"good synopsis of PostGIS Topology and where it is headed <link xlink:"
-"href=\"http://strk.kbt.io/projects/postgis/Paris2011_TopologyWithPostGIS_2_0."
-"pdf\">Topology with PostGIS 2.0 slide deck</link>."
+"good synopsis of PostGIS Topology and where it is headed <link "
+"xlink:href=\"http://strk.kbt.io/projects/postgis/"
+"Paris2011_TopologyWithPostGIS_2_0.pdf\">Topology with PostGIS 2.0 slide "
+"deck</link>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Vincent Picavet provides a good synopsis and overview of what is Topology, "
-"how is it used, and various FOSS4G tools that support it in <link xlink:"
-"href=\"https://gitlab.com/Oslandia/documentation/presentations/-/blob/"
-"master/2012/pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology."
-"pdf\">PostGIS Topology PGConf EU 2012</link>."
+"how is it used, and various FOSS4G tools that support it in <link "
+"xlink:href=\"https://gitlab.com/Oslandia/documentation/presentations/-/blob/"
+"master/2012/pgconf_eu_2012/"
+"pgconfeu2012_vincent_picavet_postgis_topology.pdf\">PostGIS Topology PGConf "
+"EU 2012</link>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"An example of a topologically based GIS database is the <link xlink:"
-"href=\"https://www.census.gov/geo/maps-data/data/tiger.html\">US Census "
-"Topologically Integrated Geographic Encoding and Referencing System (TIGER)</"
-"link> database. If you want to experiment with PostGIS topology and need "
-"some data, check out <xref linkend=\"Topology_Load_Tiger\"/>."
+"An example of a topologically based GIS database is the <link "
+"xlink:href=\"https://www.census.gov/geo/maps-data/data/tiger.html\">US "
+"Census Topologically Integrated Geographic Encoding and Referencing System "
+"(TIGER)</link> database. If you want to experiment with PostGIS topology and "
+"need some data."
 msgstr ""
 
 #. Tag: para
@@ -3052,8 +905,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Details of this project can be found at <link xlink:href=\"http://trac.osgeo."
-"org/postgis/wiki/UsersWikiPostgisTopology\">PostGIS Topology Wiki</link>"
+"Details of this project can be found at <link xlink:href=\"http://"
+"trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology\">PostGIS Topology "
+"Wiki</link>"
 msgstr ""
 
 #. Tag: para
@@ -3473,6 +1327,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Availability: 3.4.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"RenameTopology\"/>"
 msgstr ""
 
@@ -3610,6 +1469,11 @@ msgstr ""
 msgid ""
 "<para>Takes a topology name and provides summary totals of types of objects "
 "in topology.</para>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 2.0.0"
 msgstr ""
 
 #. Tag: refpurpose
@@ -3991,11 +1855,6 @@ msgid ""
 "linking checks."
 msgstr ""
 
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"Topology_Load_Tiger\"/>"
-msgstr ""
-
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns info about invalid topology relation records"
@@ -4043,6 +1902,15 @@ msgid ""
 "grid whose size is specified with the <varname>gridSize</varname> parameter, "
 "optionally limiting the operation to the objects intersecting the area "
 "specified by the <varname>bbox</varname> parameter."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Using a <varname>gridSize</varname> larger than the smallest edge extent "
+"raises an exception rather than collapsing the edge into an empty geometry. "
+"This safeguards adjacent topological relationships by preventing precision "
+"snapping from removing primitives altogether."
 msgstr ""
 
 #. Tag: para
@@ -4254,8 +2122,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_InitTopoGeo\"/>, <xref linkend=\"Topology_Load_Tiger\"/>"
+msgid ", <xref linkend=\"ST_InitTopoGeo\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -5524,6 +3391,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Availability: 2.1.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 "Geometry <xref linkend=\"ST_Simplify\"/>, <xref linkend=\"ST_IsSimple\"/>, "
 "<xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_ModEdgeSplit\"/>"
@@ -6358,8 +4230,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Refer to the PostgreSQL installation guides if you haven't already installed "
-"PostgreSQL. <link xlink:href=\"https://www.postgresql.org\"> https://www."
-"postgresql.org </link> ."
+"PostgreSQL. <link xlink:href=\"https://www.postgresql.org\"> https://"
+"www.postgresql.org </link> ."
 msgstr ""
 
 #. Tag: para
@@ -6393,8 +4265,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Retrieve the PostGIS source archive from the downloads website <link xlink:"
-"href=\"&postgis_download_url;\"> &postgis_download_url; </link>"
+"Retrieve the PostGIS source archive from the downloads website <link "
+"xlink:href=\"&postgis_download_url;\"> &postgis_download_url; </link>"
 msgstr ""
 
 #. Tag: para
@@ -6440,8 +4312,8 @@ msgstr ""
 msgid ""
 "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
 "installation of PostgreSQL (including server headers) is required. "
-"PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
-"org\"> https://www.postgresql.org </link>18 ."
+"PostgreSQL is available from <link xlink:href=\"https://"
+"www.postgresql.org\"> https://www.postgresql.org </link>18 ."
 msgstr ""
 
 #. Tag: para
@@ -6511,16 +4383,16 @@ msgstr ""
 #, no-c-format
 msgid ""
 "GDAL, version 3+ is preferred. This is required for raster support. <link "
-"xlink:href=\"https://gdal.org/download.html\">https://gdal.org/download."
-"html</link>."
+"xlink:href=\"https://gdal.org/download.html\">https://gdal.org/"
+"download.html</link>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If compiling with PostgreSQL+JIT, LLVM version &gt;=6 is required <link "
-"xlink:href=\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo."
-"org/postgis/ticket/4125</link>."
+"xlink:href=\"https://trac.osgeo.org/postgis/ticket/4125\">https://"
+"trac.osgeo.org/postgis/ticket/4125</link>."
 msgstr ""
 
 #. Tag: emphasis
@@ -6562,22 +4434,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"In order to build the <xref linkend=\"Address_Standardizer\"/> you will also "
-"need PCRE 1 or 2 <link xlink:href=\"http://www.pcre.org\">http://www.pcre."
-"org</link> (which generally is already installed on nix systems). <xref "
-"linkend=\"Address_Standardizer\"/> will automatically be built if it detects "
-"a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/"
-"pcre</varname> during configure."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
 "To enable ST_AsMVT protobuf-c library 1.1.0 or higher (for usage) and the "
 "protoc-c compiler (for building) are required. Also, pkg-config is required "
-"to verify the correct minimum version of protobuf-c. See <link xlink:"
-"href=\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</link>. By "
-"default, Postgis will use Wagyu to validate MVT polygons faster which "
+"to verify the correct minimum version of protobuf-c. See <link "
+"xlink:href=\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</link>. "
+"By default, Postgis will use Wagyu to validate MVT polygons faster which "
 "requires a c++11 compiler. It will use CXXFLAGS and the same compiler as the "
 "PostgreSQL installation. To disable this and use GEOS instead use the "
 "<varname>--without-wagyu</varname> during the configure step."
@@ -6587,34 +4448,37 @@ msgstr ""
 #, no-c-format
 msgid ""
 "CUnit (<filename>CUnit</filename>). This is needed for regression testing. "
-"<link xlink:href=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge."
-"net/</link>"
+"<link xlink:href=\"http://cunit.sourceforge.net/\">http://"
+"cunit.sourceforge.net/</link>"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "DocBook (<filename>xsltproc</filename>) is required for building the "
-"documentation. Docbook is available from <link xlink:href=\"http://www."
-"docbook.org/\"> http://www.docbook.org/ </link> ."
+"documentation. Docbook is available from <link xlink:href=\"http://"
+"www.docbook.org/\"> http://www.docbook.org/ </link> ."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "DBLatex (<filename>dblatex</filename>) is required for building the "
-"documentation in PDF format. DBLatex is available from <link xlink:"
-"href=\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </"
-"link> ."
+"documentation in PDF format. DBLatex is available from <link "
+"xlink:href=\"http://dblatex.sourceforge.net/\"> http://"
+"dblatex.sourceforge.net/ </link> ."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "GraphicsMagick (<filename>gm convert</filename>) is required to generate the "
-"images used in the documentation. GraphicsMagick is available from <link "
-"xlink:href=\"http://www.graphicsmagick.org/\"> http://www.graphicsmagick."
-"org/ </link> ."
+"images used in the documentation. If GraphicsMagick is unavailable, "
+"ImageMagick (<filename>convert</filename> or <filename>magick convert</"
+"filename>) provides the same command-line syntax. GraphicsMagick is "
+"available from <link xlink:href=\"http://www.graphicsmagick.org/\"> http://"
+"www.graphicsmagick.org/ </link> and ImageMagick from <link "
+"xlink:href=\"https://imagemagick.org/\"> https://imagemagick.org/ </link> ."
 msgstr ""
 
 #. Tag: title
@@ -6672,9 +4536,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This parameter is currently broken, as the package will only install into "
-"the PostgreSQL installation directory. Visit <link xlink:href=\"http://trac."
-"osgeo.org/postgis/ticket/635\"> http://trac.osgeo.org/postgis/ticket/635 </"
-"link> to track this bug."
+"the PostgreSQL installation directory. Visit <link xlink:href=\"http://"
+"trac.osgeo.org/postgis/ticket/635\"> http://trac.osgeo.org/postgis/ticket/"
+"635 </link> to track this bug."
 msgstr ""
 
 #. Tag: para
@@ -6745,16 +4609,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"http://www.pcre.org/\">PCRE</link> is an BSD-licensed "
-"Perl Compatible Regular Expression library required by address_standardizer "
-"extension. Use this parameter (<command>--with-pcredir=/path/to/pcredir</"
-"command>) to manually specify a particular PCRE installation directory that "
-"PostGIS will build against."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
 "Compile the data import GUI (requires GTK+2.0). This will create shp2pgsql-"
 "gui graphical interface to shp2pgsql."
 msgstr ""
@@ -6762,11 +4616,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Compile without raster support."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Disables tiger geocoder support."
 msgstr ""
 
 #. Tag: para
@@ -6780,11 +4629,11 @@ msgid ""
 "By default PostGIS will try to detect gettext support and compile with it, "
 "however if you run into incompatibility issues that cause breakage of "
 "loader, you can disable it entirely with this command. Refer to ticket <link "
-"xlink:href=\"http://trac.osgeo.org/postgis/ticket/748\">http://trac.osgeo."
-"org/postgis/ticket/748</link> for an example issue solved by configuring "
-"with this. NOTE: that you aren't missing much by turning this off. This is "
-"used for international help/label support for the GUI loader which is not "
-"yet documented and still experimental."
+"xlink:href=\"http://trac.osgeo.org/postgis/ticket/748\">http://"
+"trac.osgeo.org/postgis/ticket/748</link> for an example issue solved by "
+"configuring with this. NOTE: that you aren't missing much by turning this "
+"off. This is used for international help/label support for the GUI loader "
+"which is not yet documented and still experimental."
 msgstr ""
 
 #. Tag: para
@@ -6862,9 +4711,8 @@ msgid ""
 "suitable for quick reference or for student handouts. This requires xsltproc "
 "to build and will generate 4 files in doc folder "
 "<filename>topology_cheatsheet.html</filename>, "
-"<filename>tiger_geocoder_cheatsheet.html</filename>, "
-"<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet."
-"html</filename>"
+"<filename>raster_cheatsheet.html</filename>, "
+"<filename>postgis_cheatsheet.html</filename>"
 msgstr ""
 
 #. Tag: para
@@ -6916,8 +4764,8 @@ msgid ""
 "<code>make check</code> uses psql to run tests and as such can use psql "
 "environment variables. Common ones useful to override are <varname>PGUSER</"
 "varname>,<varname>PGPORT</varname>, and <varname>PGHOST</varname>. Refer to "
-"<link xlink:href=\"https://www.postgresql.org/docs/current/libpq-envars."
-"html\">psql environment variables</link>"
+"<link xlink:href=\"https://www.postgresql.org/docs/current/libpq-"
+"envars.html\">psql environment variables</link>"
 msgstr ""
 
 #. Tag: para
@@ -7090,34 +4938,6 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"The <varname>postgis_tiger_geocoder</varname> and "
-"<varname>address_standardizer</varname> extensions, currently only support "
-"the standard PostgreSQL installcheck. To test these use the below. Note: the "
-"make install is not necessary if you already did make install at root of "
-"PostGIS code folder."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "For address_standardizer:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Output should look like:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"For tiger geocoder, make sure you have postgis and fuzzystrmatch extensions "
-"available in your PostgreSQL instance. The address_standardizer tests will "
-"also kick in if you built postgis with address_standardizer support:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
 msgid "output should look like:"
 msgstr ""
 
@@ -7179,465 +4999,6 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "Installing and Using the address standardizer"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The <code>address_standardizer</code> extension is bundled with PostGIS. For "
-"more information about the address_standardizer, what it does, and how to "
-"configure it for your needs, refer to <xref linkend=\"Address_Standardizer\"/"
-">."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"This standardizer can be used in conjunction with the PostGIS packaged tiger "
-"geocoder extension as a replacement for the <xref "
-"linkend=\"Normalize_Address\"/> discussed. To use as replacement refer to "
-"<xref linkend=\"tiger_pagc_address_standardizing\"/>. You can also use it as "
-"a building block for your own geocoder or use it to standardize your "
-"addresses for easier compare of addresses."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The address standardizer relies on PCRE which is usually already installed "
-"on many Nix systems, but you can download the latest at: <link xlink:"
-"href=\"http://www.pcre.org\">http://www.pcre.org</link>. If during <xref "
-"linkend=\"installation_configuration\"/>, PCRE is found, then the address "
-"standardizer extension will automatically be built. If you have a custom "
-"pcre install you want to use instead, pass to configure <code>--with-"
-"pcredir=/path/to/pcre</code> where <filename>/path/to/pcre</filename> is the "
-"root folder for your pcre include and lib directories."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Windows installation packages include the address_standardizer so you can "
-"move straight to the <code>CREATE EXTENSION</code> step."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Once you have installed, you can connect to your database and run the SQL:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "The following test requires no rules, gaz, or lex tables"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Output should be"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Installing, Upgrading Tiger Geocoder, and loading data"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Extras like Tiger geocoder may not be packaged in your PostGIS distribution. "
-"If you are missing the tiger geocoder extension or want a newer version than "
-"what your install comes with, then use the <filename>share/extension/"
-"postgis_tiger_geocoder.*</filename> files from the packages in <link xlink:"
-"href=\"http://postgis.net/windows_downloads/\">Windows Unreleased Versions</"
-"link> section for your version of PostgreSQL. Although these packages are "
-"for windows, the postgis_tiger_geocoder extension files will work on any OS "
-"since the extension is an SQL/plpgsql only extension."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Tiger Geocoder Enabling your PostGIS database"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"These directions assume your PostgreSQL installation already has the "
-"postgis_tiger_geocoder extension installed."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Connect to your database via psql or pgAdmin or some other tool and run the "
-"following SQL commands. Note that if you are installing in a database that "
-"already has postgis, you don't need to do the first step. If you have "
-"<varname>fuzzystrmatch</varname> extension already installed, you don't need "
-"to do the second step either."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you already have postgis_tiger_geocoder extension installed, and just "
-"want to update to the latest run:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you made custom entries or changes to <varname>tiger.loader_platform</"
-"varname> and <varname>tiger.loader_variables</varname> you may need to "
-"update these."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"To confirm your install is working correctly, run this sql in your database:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Which should output"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Create a new record in <varname>tiger.loader_platform</varname> table with "
-"the paths of your executables and server."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"So for example to create a profile called debbie that follows <code>sh</"
-"code> convention. You would do:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"And then edit the paths in the <emphasis>declare_sect</emphasis> column to "
-"those that fit Debbie's pg, unzip,shp2pgsql, psql, etc path locations."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you don't edit this <varname>loader_platform</varname> table, it will "
-"just contain common case locations of items and you'll have to edit the "
-"generated script after the script is generated."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The Zip code-5 digit tabulation area <varname>zcta5</varname> load step uses "
-"current ZCTA data and is part of the <xref "
-"linkend=\"Loader_Generate_Nation_Script\"/> when enabled. It is turned off "
-"by default because it takes quite a bit of time to load (20 to 60 minutes), "
-"takes up quite a bit of disk space, and is not used that often."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "To enable it, do the following:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If present the <xref linkend=\"Geocode\"/> function can use it if a boundary "
-"filter is added to limit to just zips in that boundary. The <xref "
-"linkend=\"Reverse_Geocode\"/> function uses it if the returned address is "
-"missing a zip, which often happens with highway reverse geocoding."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Create a folder called <filename>gisdata</filename> on root of server or "
-"your local pc if you have a fast network connection to the server. This "
-"folder is where the tiger files will be downloaded to and processed. If you "
-"are not happy with having the folder on the root of the server, or simply "
-"want to change to a different folder for staging, then edit the field "
-"<varname>staging_fold</varname> in the <varname>tiger.loader_variables</"
-"varname> table."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Create a folder called temp in the <filename>gisdata</filename> folder or "
-"wherever you designated the <varname>staging_fold</varname> to be. This will "
-"be the folder where the loader extracts the downloaded tiger data."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Then run the <xref linkend=\"Loader_Generate_Nation_Script\"/> SQL function "
-"make sure to use the name of your custom profile and copy the script to a ."
-"sh or .bat file. So for example to build the nation load:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Run the generated nation load commandline scripts."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"After you are done running the nation script, you should have three tables "
-"in your <code>tiger_data</code> schema and they should be filled with data. "
-"Confirm you do by doing the following queries from psql or pgAdmin"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "This will only have data if you marked zcta5 to be loaded"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"By default the tables corresponding to <varname>bg</varname>, "
-"<varname>tract</varname>, <varname>tabblock20</varname> are not loaded. "
-"These tables are not used by the geocoder but are used by folks for "
-"population statistics. If you wish to load them as part of your state loads, "
-"run the following statement to enable them."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Alternatively you can load just these tables after loading state data using "
-"the <xref linkend=\"Loader_Generate_Census_Script\"/>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"DO NOT Generate the state script until you have already loaded the nation "
-"data, because the state script utilizes county list loaded by nation script."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"For each state you want to load data for, generate a state script <xref "
-"linkend=\"Loader_Generate_Script\"/>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Run the generated commandline scripts."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"After you are done loading all data or at a stopping point, it's a good idea "
-"to analyze all the tiger tables to update the stats (include inherited stats)"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Using Address Standardizer Extension with Tiger geocoder"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"One of the many complaints of folks is the address normalizer function <xref "
-"linkend=\"Normalize_Address\"/> function that normalizes an address for "
-"prepping before geocoding. The normalizer is far from perfect and trying to "
-"patch its imperfectness takes a vast amount of resources. As such we have "
-"integrated with another project that has a much better address standardizer "
-"engine. To use this new address_standardizer, you compile the extension as "
-"described in <xref linkend=\"installing_pagc_address_standardizer\"/> and "
-"install as an extension in your database."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Once you install this extension in the same database as you have installed "
-"<code>postgis_tiger_geocoder</code>, then the <xref "
-"linkend=\"Pagc_Normalize_Address\"/> can be used instead of <xref "
-"linkend=\"Normalize_Address\"/>. This extension is tiger agnostic, so can be "
-"used with other data sources such as international addresses. The tiger "
-"geocoder extension does come packaged with its own custom versions of <xref "
-"linkend=\"rulestab\"/> ( <code>tiger.pagc_rules</code>) , <xref "
-"linkend=\"gaztab\"/> (<code>tiger.pagc_gaz</code>), and <xref "
-"linkend=\"lextab\"/> (<code>tiger.pagc_lex</code>). These you can add and "
-"update to improve your standardizing experience for your own needs."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Required tools for tiger data loading"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The load process downloads data from the census website for the respective "
-"nation files, states requested, extracts the files, and then loads each "
-"state into its own separate set of state tables. Each state table inherits "
-"from the tables defined in <varname>tiger</varname> schema so that its "
-"sufficient to just query those tables to access all the data and drop a set "
-"of state tables at any time using the <xref "
-"linkend=\"Drop_State_Tables_Generate_Script\"/> if you need to reload a "
-"state or just don't need a state anymore."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "In order to be able to load data you'll need the following tools:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "A tool to unzip the zip files from census website."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"For Unix like systems: <varname>unzip</varname> executable which is usually "
-"already installed on most Unix like platforms."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"For Windows, 7-zip which is a free compress/uncompress tool you can download "
-"from <link xlink:href=\"http://www.7-zip.org/\">http://www.7-zip.org/</link>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<filename>shp2pgsql</filename> commandline which is installed by default "
-"when you install PostGIS."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<filename>wget</filename> which is a web grabber tool usually installed on "
-"most Unix/Linux systems."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you are on windows, you can get pre-compiled binaries from <link xlink:"
-"href=\"http://gnuwin32.sourceforge.net/packages/wget.htm\">http://gnuwin32."
-"sourceforge.net/packages/wget.htm</link>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you are upgrading from tiger_2010, you'll need to first generate and run "
-"<xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>. Before you load any "
-"state data, you need to load the nation wide data which you do with <xref "
-"linkend=\"Loader_Generate_Nation_Script\"/>. Which will generate a loader "
-"script for you. <xref linkend=\"Loader_Generate_Nation_Script\"/> is a one-"
-"time step that should be done for upgrading (from a prior year tiger census "
-"data) and for new installs."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"To load state data refer to <xref linkend=\"Loader_Generate_Script\"/> to "
-"generate a data load script for your platform for the states you desire. "
-"Note that you can install these piecemeal. You don't have to load all the "
-"states you want all at once. You can load them as you need them."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"After the states you desire have been loaded, make sure to run the: "
-"<programlisting>SELECT install_missing_indexes();</programlisting> as "
-"described in <xref linkend=\"Install_Missing_Indexes\"/>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"To test that things are working as they should, try to run a geocode on an "
-"address in your state using <xref linkend=\"Geocode\"/>"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Upgrading your Tiger Geocoder Install and Data"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "First upgrade your postgis_tiger_geocoder extension as follows:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Next drop all nation tables and load up the new ones. Generate a drop script "
-"with this SQL statement as detailed in <xref "
-"linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Run the generated drop SQL statements."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Generate a nation load script with this SELECT statement as detailed in "
-"<xref linkend=\"Loader_Generate_Nation_Script\"/>"
-msgstr ""
-
-#. Tag: emphasis
-#, no-c-format
-msgid "For windows"
-msgstr ""
-
-#. Tag: emphasis
-#, no-c-format
-msgid "For unix/linux"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Refer to <xref linkend=\"install_tiger_geocoder_extension\"/> for "
-"instructions on how to run the generate script. This only needs to be done "
-"once."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"You can have a mix of different year state tables and can upgrade each state "
-"separately. Before you upgrade a state you first need to drop the prior year "
-"state tables for that state using <xref "
-"linkend=\"Drop_State_Tables_Generate_Script\"/>."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
 msgid "Common Problems during installation"
 msgstr ""
 
@@ -7687,10 +5048,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The output from configure is used to generate the <filename>postgis_config."
-"h</filename> file. Check that the <varname>POSTGIS_PGSQL_VERSION</varname>, "
-"<varname>POSTGIS_PROJ_VERSION</varname> and <varname>POSTGIS_GEOS_VERSION</"
-"varname> variables have been set correctly."
+"The output from configure is used to generate the "
+"<filename>postgis_config.h</filename> file. Check that the "
+"<varname>POSTGIS_PGSQL_VERSION</varname>, <varname>POSTGIS_PROJ_VERSION</"
+"varname> and <varname>POSTGIS_GEOS_VERSION</varname> variables have been set "
+"correctly."
 msgstr ""
 
 #. Tag: title
@@ -7764,7 +5126,7 @@ msgstr ""
 msgid ""
 "CI and website maintenance, Windows production and experimental builds, "
 "documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
-"TIGER geocoder support, management functions."
+"management functions."
 msgstr ""
 
 #. Tag: term
@@ -9003,11 +6365,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Last but not least, <link xlink:href=\"http://www.postgresql."
-"org\">PostgreSQL</link>, the giant that PostGIS stands on. Much of the speed "
-"and flexibility of PostGIS would not be possible without the extensibility, "
-"great query planner, GIST index, and plethora of SQL features provided by "
-"PostgreSQL."
+"Last but not least, <link xlink:href=\"http://"
+"www.postgresql.org\">PostgreSQL</link>, the giant that PostGIS stands on. "
+"Much of the speed and flexibility of PostGIS would not be possible without "
+"the extensibility, great query planner, GIST index, and plethora of SQL "
+"features provided by PostgreSQL."
 msgstr ""
 
 #. Tag: title
@@ -9066,10 +6428,10 @@ msgstr ""
 msgid ""
 "To see whether your suffer from this issue, use the \"EXPLAIN ANALYZE\" "
 "postgresql command. For more information and the technical details, you can "
-"read the thread on the PostgreSQL performance mailing list: <link xlink:"
-"href=\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030."
-"php\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
-"link>"
+"read the thread on the PostgreSQL performance mailing list: <link "
+"xlink:href=\"http://archives.postgresql.org/pgsql-performance/2005-02/"
+"msg00030.php\">http://archives.postgresql.org/pgsql-performance/2005-02/"
+"msg00030.php</link>"
 msgstr ""
 
 #. Tag: para
@@ -9782,6 +7144,11 @@ msgid ""
 "In degenerate cases (i.e. a single vertex in input) the returned linestring "
 "will be formally invalid (no interior). The result is still topologically "
 "valid."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 2.2.0"
 msgstr ""
 
 #. Tag: para
@@ -10652,8 +8019,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"This complements the PostgreSQL built-in <link xlink:href=\"https://www."
-"postgresql.org/docs/current/functions-admin.html#FUNCTIONS-ADMIN-"
+"This complements the PostgreSQL built-in <link xlink:href=\"https://"
+"www.postgresql.org/docs/current/functions-admin.html#FUNCTIONS-ADMIN-"
 "DBOBJECT\">database object functions</link> pg_column_size, pg_size_pretty, "
 "pg_relation_size, pg_total_relation_size."
 msgstr ""
@@ -10693,9 +8060,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns the coordinate dimension of the geometry. PostGIS supports 2 - (x,"
-"y) , 3 - (x,y,z) or 2D with measure - x,y,m, and 4 - 3D with measure space x,"
-"y,z,m"
+"Returns the coordinate dimension of the geometry. PostGIS supports 2 - "
+"(x,y) , 3 - (x,y,z) or 2D with measure - x,y,m, and 4 - 3D with measure "
+"space x,y,z,m"
 msgstr ""
 
 #. Tag: para
@@ -11855,6 +9222,50 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
+"Window function that returns a cluster id for each input geometry, "
+"clustering input geometries into connected sets using the relate pattern to "
+"determine whether the geometries are connected."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A window function that builds connected clusters of geometries that "
+"intersect. Geometries are added to a cluster if they share a pairwise DE9IM "
+"relationship with another member of the cluster. With this function it is "
+"possible to build a cluster of all objects that touch at boundaries, but "
+"exclude those that merely overlap."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.7.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This collection of line strings would form a single cluster using <xref "
+"linkend=\"ST_ClusterIntersectingWin\"/>, but using <xref "
+"linkend=\"ST_ClusterRelateWin\"/> can be clustered into three groups that "
+"connect only via their end points."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Connected and overlapping linestrings"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ClusterIntersectingWin\"/>, <xref "
+"linkend=\"ST_ClusterWithinWin\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
 "Window function that returns a cluster id for each input geometry using the "
 "K-means algorithm."
 msgstr ""
@@ -12702,25 +10113,25 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Creates a rectangular Polygon giving the extent of a tile in the <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ tile system</link>. "
-"The tile is specified by the zoom level Z and the XY index of the tile in "
-"the grid at that level. Can be used to define the tile bounds required by "
-"<xref linkend=\"ST_AsMVTGeom\"/> to convert geometry into the MVT tile "
-"coordinate space."
+"Creates a rectangular Polygon giving the extent of a tile in the <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ tile system</"
+"link>. The tile is specified by the zoom level Z and the XY index of the "
+"tile in the grid at that level. Can be used to define the tile bounds "
+"required by <xref linkend=\"ST_AsMVTGeom\"/> to convert geometry into the "
+"MVT tile coordinate space."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"By default, the tile envelope is in the <link xlink:href=\"https://en."
-"wikipedia.org/wiki/Web_Mercator_projection\">Web Mercator</link> coordinate "
-"system (SRID:3857) using the standard range of the Web Mercator system "
-"(-20037508.342789, 20037508.342789). This is the most common coordinate "
-"system used for MVT tiles. The optional <varname>bounds</varname> parameter "
-"can be used to generate tiles in any coordinate system. It is a geometry "
-"that has the SRID and extent of the \"Zoom Level zero\" square within which "
-"the XYZ tile system is inscribed."
+"By default, the tile envelope is in the <link xlink:href=\"https://"
+"en.wikipedia.org/wiki/Web_Mercator_projection\">Web Mercator</link> "
+"coordinate system (SRID:3857) using the standard range of the Web Mercator "
+"system (-20037508.342789, 20037508.342789). This is the most common "
+"coordinate system used for MVT tiles. The optional <varname>bounds</varname> "
+"parameter can be used to generate tiles in any coordinate system. It is a "
+"geometry that has the SRID and extent of the \"Zoom Level zero\" square "
+"within which the XYZ tile system is inscribed."
 msgstr ""
 
 #. Tag: para
@@ -13267,11 +10678,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The simplification uses a variant of the <link xlink:href=\"https://en."
-"wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt "
-"algorithm</link>. The <parameter>tolerance</parameter> parameter has units "
-"of distance, and is roughly equal to the square root of triangular areas to "
-"be simplified."
+"The simplification uses a variant of the <link xlink:href=\"https://"
+"en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–"
+"Whyatt algorithm</link>. The <parameter>tolerance</parameter> parameter has "
+"units of distance, and is roughly equal to the square root of triangular "
+"areas to be simplified."
 msgstr ""
 
 #. Tag: para
@@ -14074,9 +11485,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Distance\"/>, <link xlink:href=\"http://www.postgresql."
-"org/docs/current/interactive/functions-math.html\">PostgreSQL function "
-"radians()</link>"
+", <xref linkend=\"ST_Distance\"/>, <link xlink:href=\"http://"
+"www.postgresql.org/docs/current/interactive/functions-math.html\">PostgreSQL "
+"function radians()</link>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -14098,8 +11509,8 @@ msgid ""
 "link>. The function allows specification of a different number of digits "
 "after the decimal point in each dimension; unspecified dimensions are "
 "assumed to have the precision of the <code>x</code> dimension. Negative "
-"digits are interpreted to refer digits to the left of the decimal point, (i."
-"e., <code>prec_x=-2</code> will preserve coordinate values to the nearest "
+"digits are interpreted to refer digits to the left of the decimal point, "
+"(i.e., <code>prec_x=-2</code> will preserve coordinate values to the nearest "
 "100."
 msgstr ""
 
@@ -14908,10 +12319,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For more examples of usage refer to <link xlink:href=\"https://www."
-"postgresql.org/docs/current/sql-set.html\">SQL SET</link> and <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
-"ALTER SYSTEM</link>"
+"For more examples of usage refer to <link xlink:href=\"https://"
+"www.postgresql.org/docs/current/sql-set.html\">SQL SET</link> and <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/sql-"
+"altersystem.html\">SQL ALTER SYSTEM</link>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -14947,9 +12358,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Additional information about GDAL_DATA is available at GDAL's <link xlink:"
-"href=\"https://gdal.org/user/configoptions.html\">Configuration Options</"
-"link>."
+"Additional information about GDAL_DATA is available at GDAL's <link "
+"xlink:href=\"https://gdal.org/user/configoptions.html\">Configuration "
+"Options</link>."
 msgstr ""
 
 #. Tag: para
@@ -14996,16 +12407,18 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Enabled GDAL specified drivers can be specified by the driver's short-name "
-"or code. Driver short-names or codes can be found at <link xlink:"
-"href=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</link>. "
-"Multiple drivers can be specified by putting a space between each driver."
+"or code. Driver short-names or codes can be found at <link "
+"xlink:href=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</"
+"link>. Multiple drivers can be specified by putting a space between each "
+"driver."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"There are three special codes available for <varname>postgis."
-"gdal_enabled_drivers</varname>. The codes are case-sensitive."
+"There are three special codes available for "
+"<varname>postgis.gdal_enabled_drivers</varname>. The codes are case-"
+"sensitive."
 msgstr ""
 
 #. Tag: para
@@ -15046,9 +12459,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Additional information about GDAL_SKIP is available at GDAL's <link xlink:"
-"href=\"https://gdal.org/user/configoptions.html\">Configuration Options</"
-"link>."
+"Additional information about GDAL_SKIP is available at GDAL's <link "
+"xlink:href=\"https://gdal.org/user/configoptions.html\">Configuration "
+"Options</link>."
 msgstr ""
 
 #. Tag: para
@@ -15146,10 +12559,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A string configuration to set options used when working with an out-db "
-"raster. <link xlink:href=\"https://gdal.org/user/configoptions."
-"html\">Configuration options</link> control things like how much space GDAL "
-"allocates to local data cache, whether to read overviews, and what access "
-"keys to use for remote out-db data sources."
+"raster. <link xlink:href=\"https://gdal.org/user/"
+"configoptions.html\">Configuration options</link> control things like how "
+"much space GDAL allocates to local data cache, whether to read overviews, "
+"and what access keys to use for remote out-db data sources."
 msgstr ""
 
 #. Tag: para
@@ -16169,8 +13582,8 @@ msgstr ""
 msgid ""
 "OGC KML versions supported: <itemizedlist> <listitem> <para>KML 2.2.0 "
 "Namespace</para> </listitem> </itemizedlist> OGC KML standards, cf: <link "
-"xlink:href=\"http://www.opengeospatial.org/standards/kml\">http://www."
-"opengeospatial.org/standards/kml</link>:"
+"xlink:href=\"http://www.opengeospatial.org/standards/kml\">http://"
+"www.opengeospatial.org/standards/kml</link>:"
 msgstr ""
 
 #. Tag: para
@@ -16191,8 +13604,8 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Creates a geometry instance from a TWKB (\"<link xlink:href=\"https://github."
-"com/TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</"
+"Creates a geometry instance from a TWKB (\"<link xlink:href=\"https://"
+"github.com/TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</"
 "link>\") geometry representation."
 msgstr ""
 
@@ -16200,8 +13613,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The <varname>ST_GeomFromTWKB</varname> function, takes a a TWKB (\"<link "
-"xlink:href=\"https://github.com/TWKB/Specification/blob/master/twkb."
-"md\">Tiny Well-Known Binary</link>\") geometry representation (WKB) and "
+"xlink:href=\"https://github.com/TWKB/Specification/blob/master/"
+"twkb.md\">Tiny Well-Known Binary</link>\") geometry representation (WKB) and "
 "creates an instance of the appropriate geometry type."
 msgstr ""
 
@@ -16288,8 +13701,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Creates a table based on the structure of FlatGeobuf data. (<link xlink:"
-"href=\"http://flatgeobuf.org\">http://flatgeobuf.org</link>)."
+"Creates a table based on the structure of FlatGeobuf data. (<link "
+"xlink:href=\"http://flatgeobuf.org\">http://flatgeobuf.org</link>)."
 msgstr ""
 
 #. Tag: para
@@ -17180,9 +14593,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For the geography type, the azimuth solution is known as the <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid\">inverse "
-"geodesic problem</link>."
+"For the geography type, the azimuth solution is known as the <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/"
+"Geodesics_on_an_ellipsoid\">inverse geodesic problem</link>."
 msgstr ""
 
 #. Tag: para
@@ -17199,8 +14612,8 @@ msgstr ""
 msgid ""
 "Azimuth can be used in conjunction with <xref linkend=\"ST_Translate\"/> to "
 "shift an object along its perpendicular axis. See the "
-"<varname>upgis_lineshift()</varname> function in the <link xlink:"
-"href=\"http://trac.osgeo.org/postgis/wiki/"
+"<varname>upgis_lineshift()</varname> function in the <link "
+"xlink:href=\"http://trac.osgeo.org/postgis/wiki/"
 "UsersWikiplpgsqlfunctions\">PostGIS wiki</link> for an implementation of "
 "this."
 msgstr ""
@@ -17615,8 +15028,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Implements algorithm for computing the Fréchet distance restricted to "
-"discrete points for both geometries, based on <link xlink:href=\"http://www."
-"kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf\">Computing Discrete "
+"discrete points for both geometries, based on <link xlink:href=\"http://"
+"www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf\">Computing Discrete "
 "Fréchet Distance</link>. The Fréchet distance is a measure of similarity "
 "between curves that takes into account the location and ordering of the "
 "points along the curves. Therefore it is often better than the Hausdorff "
@@ -19043,16 +16456,16 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Index only kicks in if one of the geometries is a constant (not in a "
-"subquery/cte). e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a."
-"geom"
+"subquery/cte). e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of "
+"a.geom"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Refer to <link xlink:href=\"https://postgis.net/workshops/postgis-intro/knn."
-"html\">PostGIS workshop: Nearest-Neighbor Searching</link> for a detailed "
-"example."
+"Refer to <link xlink:href=\"https://postgis.net/workshops/postgis-intro/"
+"knn.html\">PostGIS workshop: Nearest-Neighbor Searching</link> for a "
+"detailed example."
 msgstr ""
 
 #. Tag: para
@@ -19552,9 +16965,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Return a FlatGeobuf representation (<link xlink:href=\"http://flatgeobuf."
-"org\">http://flatgeobuf.org</link>) of a set of rows corresponding to a "
-"FeatureCollection. NOTE: PostgreSQL bytea cannot exceed 1GB."
+"Return a FlatGeobuf representation (<link xlink:href=\"http://"
+"flatgeobuf.org\">http://flatgeobuf.org</link>) of a set of rows "
+"corresponding to a FeatureCollection. NOTE: PostgreSQL bytea cannot exceed "
+"1GB."
 msgstr ""
 
 #. Tag: para
@@ -19609,12 +17023,12 @@ msgid ""
 "The resulting GeoJSON geometry and feature representations conform with the "
 "<link xlink:href=\"https://tools.ietf.org/html/rfc7946\">GeoJSON "
 "specifications RFC 7946</link>, except when the parsed geometries are "
-"referenced with a CRS other than WGS84 longitude and latitude (<link xlink:"
-"href=\"https://epsg.io/4326\">EPSG:4326</link>, <link xlink:href=\"http://"
-"epsg.io/4326.gml\">urn:ogc:def:crs:OGC::CRS84</link>); the GeoJSON geometry "
-"object will then have a short CRS SRID identifier attached by default. 2D "
-"and 3D Geometries are both supported. GeoJSON only supports SFS 1.1 geometry "
-"types (no curve support for example)."
+"referenced with a CRS other than WGS84 longitude and latitude (<link "
+"xlink:href=\"https://epsg.io/4326\">EPSG:4326</link>, <link "
+"xlink:href=\"http://epsg.io/4326.gml\">urn:ogc:def:crs:OGC::CRS84</link>); "
+"the GeoJSON geometry object will then have a short CRS SRID identifier "
+"attached by default. 2D and 3D Geometries are both supported. GeoJSON only "
+"supports SFS 1.1 geometry types (no curve support for example)."
 msgstr ""
 
 #. Tag: para
@@ -19701,8 +17115,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"GeoJSON can be tested and viewed online at <link xlink:href=\"http://geojson."
-"io/\">geojson.io</link> and <link xlink:href=\"http://geojson.io/"
+"GeoJSON can be tested and viewed online at <link xlink:href=\"http://"
+"geojson.io/\">geojson.io</link> and <link xlink:href=\"http://geojson.io/"
 "\">geojsonlint.com</link>. It is widely supported by web mapping frameworks:"
 msgstr ""
 
@@ -20136,13 +17550,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Transforms a geometry into the coordinate space of a MVT (<link xlink:"
-"href=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</link>) "
-"tile, clipping it to the tile bounds if required. The geometry must be in "
-"the coordinate system of the target map (using <xref "
-"linkend=\"ST_Transform\"/> if needed). Commonly this is <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Web_Mercator_projection\">Web Mercator</"
-"link> (SRID:3857)."
+"Transforms a geometry into the coordinate space of a MVT (<link "
+"xlink:href=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</"
+"link>) tile, clipping it to the tile bounds if required. The geometry must "
+"be in the coordinate system of the target map (using <xref "
+"linkend=\"ST_Transform\"/> if needed). Commonly this is <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/Web_Mercator_projection\">Web "
+"Mercator</link> (SRID:3857)."
 msgstr ""
 
 #. Tag: para
@@ -20233,12 +17647,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"An aggregate function which returns a binary <link xlink:href=\"https://www."
-"mapbox.com/vector-tiles/\">Mapbox Vector Tile</link> representation of a set "
-"of rows corresponding to a tile layer. The rows must contain a geometry "
+"An aggregate function which returns a binary <link xlink:href=\"https://"
+"www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</link> representation of a "
+"set of rows corresponding to a tile layer. The rows must contain a geometry "
 "column which will be encoded as a feature geometry. The geometry must be in "
-"tile coordinate space and valid as per the <link xlink:href=\"https://www."
-"mapbox.com/vector-tiles/specification/\">MVT specification</link>. <xref "
+"tile coordinate space and valid as per the <link xlink:href=\"https://"
+"www.mapbox.com/vector-tiles/specification/\">MVT specification</link>. <xref "
 "linkend=\"ST_AsMVTGeom\"/> can be used to transform geometry into tile "
 "coordinate space. Other row columns are encoded as feature attributes."
 msgstr ""
@@ -20289,8 +17703,8 @@ msgid ""
 "data. Default is the first geometry column. Note that PostgreSQL by default "
 "automatically <link xlink:href=\"https://www.postgresql.org/docs/current/sql-"
 "syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS\">folds unquoted identifiers to "
-"lower case</link>, which means that unless the geometry column is quoted, e."
-"g. <varname>\"MyMVTGeom\"</varname>, this parameter must be provided as "
+"lower case</link>, which means that unless the geometry column is quoted, "
+"e.g. <varname>\"MyMVTGeom\"</varname>, this parameter must be provided as "
 "lowercase."
 msgstr ""
 
@@ -20358,9 +17772,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Availability: 1.2.2. Availability: 1.4.0 Changed in PostGIS 1.4.0 to include "
-"L command in absolute path to conform to <link xlink:href=\"http://www.w3."
-"org/TR/SVG/paths.html#PathDataBNF\">http://www.w3.org/TR/SVG/paths."
-"html#PathDataBNF</link>"
+"L command in absolute path to conform to <link xlink:href=\"http://"
+"www.w3.org/TR/SVG/paths.html#PathDataBNF\">http://www.w3.org/TR/SVG/"
+"paths.html#PathDataBNF</link>"
 msgstr ""
 
 #. Tag: para
@@ -20387,9 +17801,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns the geometry in TWKB (Tiny Well-Known Binary) format. TWKB is a "
-"<link xlink:href=\"https://github.com/TWKB/Specification/blob/master/twkb."
-"md\">compressed binary format</link> with a focus on minimizing the size of "
-"the output."
+"<link xlink:href=\"https://github.com/TWKB/Specification/blob/master/"
+"twkb.md\">compressed binary format</link> with a focus on minimizing the "
+"size of the output."
 msgstr ""
 
 #. Tag: para
@@ -20429,9 +17843,9 @@ msgstr ""
 msgid ""
 "The format specification is available online at <link xlink:href=\"https://"
 "github.com/TWKB/Specification\">https://github.com/TWKB/Specification</"
-"link>, and code for building a JavaScript client can be found at <link xlink:"
-"href=\"https://github.com/TWKB/twkb.js\">https://github.com/TWKB/twkb.js</"
-"link>."
+"link>, and code for building a JavaScript client can be found at <link "
+"xlink:href=\"https://github.com/TWKB/twkb.js\">https://github.com/TWKB/"
+"twkb.js</link>."
 msgstr ""
 
 #. Tag: para
@@ -20464,10 +17878,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a geometry as an X3D xml formatted node element <link xlink:"
-"href=\"http://www.web3d.org/standards/number/19776-1\">http://www.web3d.org/"
-"standards/number/19776-1</link>. If <varname>maxdecimaldigits</varname> "
-"(precision) is not specified then defaults to 15."
+"Returns a geometry as an X3D xml formatted node element <link "
+"xlink:href=\"http://www.web3d.org/standards/number/19776-1\">http://"
+"www.web3d.org/standards/number/19776-1</link>. If <varname>maxdecimaldigits</"
+"varname> (precision) is not specified then defaults to 15."
 msgstr ""
 
 #. Tag: para
@@ -20629,9 +18043,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Lots of advancements happening in 3D space particularly with <link xlink:"
-"href=\"https://www.web3d.org/wiki/index.php/X3D_and_HTML5\">X3D Integration "
-"with HTML5</link>"
+"Lots of advancements happening in 3D space particularly with <link "
+"xlink:href=\"https://www.web3d.org/wiki/index.php/X3D_and_HTML5\">X3D "
+"Integration with HTML5</link>"
 msgstr ""
 
 #. Tag: para
@@ -20679,9 +18093,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Copy and paste the output of this query to <link xlink:href=\"http://postgis."
-"net/docs/support/viewers/x3d_viewer.htm\">x3d scene viewer</link> and click "
-"Show"
+"Copy and paste the output of this query to <link xlink:href=\"http://"
+"postgis.net/docs/support/viewers/x3d_viewer.htm\">x3d scene viewer</link> "
+"and click Show"
 msgstr ""
 
 #. Tag: para
@@ -21280,8 +18694,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns a geometry representing the portions of geonetries A and B that do "
-"not intersect. This is equivalent to <code>ST_Union(A,B) - ST_Intersection(A,"
-"B)</code>. It is called a symmetric difference because "
+"not intersect. This is equivalent to <code>ST_Union(A,B) - "
+"ST_Intersection(A,B)</code>. It is called a symmetric difference because "
 "<code>ST_SymDifference(A,B) = ST_SymDifference(B,A)</code>."
 msgstr ""
 
@@ -21849,13 +19263,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Smoothes a linear or polygonal geometry using <link xlink:href=\"http://www."
-"idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm."
-"html\">Chaikin's algorithm</link>. The degree of smoothing is controlled by "
-"the <varname>nIterations</varname> parameter. On each iteration, each "
-"interior vertex is replaced by two vertices located at 1/4 of the length of "
-"the line segments before and after the vertex. A reasonable degree of "
-"smoothing is provided by 3 iterations; the maximum is limited to 5."
+"Smoothes a linear or polygonal geometry using <link xlink:href=\"http://"
+"www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-"
+"Algorithm.html\">Chaikin's algorithm</link>. The degree of smoothing is "
+"controlled by the <varname>nIterations</varname> parameter. On each "
+"iteration, each interior vertex is replaced by two vertices located at 1/4 "
+"of the length of the line segments before and after the vertex. A reasonable "
+"degree of smoothing is provided by 3 iterations; the maximum is limited to 5."
 msgstr ""
 
 #. Tag: para
@@ -22969,8 +20383,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Computes a simplified representation of a geometry using the <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/"
+"Computes a simplified representation of a geometry using the <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/"
 "Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm\">Douglas-Peucker algorithm</"
 "link>. The simplification <varname>tolerance</varname> is a distance value, "
 "in the units of the input SRS. Simplification removes vertices which are "
@@ -23184,8 +20598,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a simplified representation of a geometry using the <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/"
+"Returns a simplified representation of a geometry using the <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/"
 "Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam-Whyatt algorithm</link>. "
 "The simplification <varname>tolerance</varname> is an area value, in the "
 "units of the input SRS. Simplification removes vertices which form "
@@ -24127,8 +21541,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', "
-"'CubicSpline', and 'Lanczos'. Refer to: <link xlink:href=\"http://www.gdal."
-"org/gdalwarp.html\">GDAL Warp resampling methods</link> for more details."
+"'CubicSpline', and 'Lanczos'. Refer to: <link xlink:href=\"http://"
+"www.gdal.org/gdalwarp.html\">GDAL Warp resampling methods</link> for more "
+"details."
 msgstr ""
 
 #. Tag: para
@@ -25998,9 +23413,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Uniformly rotate the raster. Rotation is in radian. Refer to <link xlink:"
-"href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for more "
-"details."
+"Uniformly rotate the raster. Rotation is in radian. Refer to <link "
+"xlink:href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for "
+"more details."
 msgstr ""
 
 #. Tag: refpurpose
@@ -26053,9 +23468,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Sets the georeference X and Y skew (or rotation parameter). If only one is "
-"passed in, sets X and Y to the same value. Refer to <link xlink:"
-"href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for more "
-"details."
+"passed in, sets X and Y to the same value. Refer to <link "
+"xlink:href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for "
+"more details."
 msgstr ""
 
 #. Tag: para
@@ -27143,11 +24558,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"One way to export raster into another format is using <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/static/lo-funcs."
-"html\">PostgreSQL large object export functions</link>. We'lll repeat the "
-"prior example but also exporting. Note for this you'll need to have super "
-"user access to db since it uses server side lo functions. It will also "
+"One way to export raster into another format is using <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/static/lo-"
+"funcs.html\">PostgreSQL large object export functions</link>. We'lll repeat "
+"the prior example but also exporting. Note for this you'll need to have "
+"super user access to db since it uses server side lo functions. It will also "
 "export to path on server network. If you need export locally, use the psql "
 "equivalent lo_ functions which export to the local file system instead of "
 "the server file system."
@@ -27270,9 +24685,9 @@ msgid ""
 "(look at create_options for PNG of <xref linkend=\"RT_ST_GDALDrivers\"/>). "
 "For PNG valid one is only ZLEVEL (amount of time to spend on compression -- "
 "default 6) e.g. ARRAY['ZLEVEL=9']. WORLDFILE is not allowed since the "
-"function would have to output two outputs. Refer to <link xlink:"
-"href=\"http://www.gdal.org/frmt_various.html\">GDAL Raster format options</"
-"link> for more details."
+"function would have to output two outputs. Refer to <link "
+"xlink:href=\"http://www.gdal.org/frmt_various.html\">GDAL Raster format "
+"options</link> for more details."
 msgstr ""
 
 #. Tag: para
@@ -27322,8 +24737,8 @@ msgstr ""
 msgid ""
 "<varname>options</varname> text Array of GDAL create options as defined for "
 "GTiff (look at create_options for GTiff of <xref "
-"linkend=\"RT_ST_GDALDrivers\"/>). or refer to <link xlink:href=\"http://www."
-"gdal.org/frmt_various.html\">GDAL Raster format options</link> for more "
+"linkend=\"RT_ST_GDALDrivers\"/>). or refer to <link xlink:href=\"http://"
+"www.gdal.org/frmt_various.html\">GDAL Raster format options</link> for more "
 "details."
 msgstr ""
 
@@ -27539,8 +24954,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The syntax of <varname>colormap</varname> is similar to that of the color-"
-"relief mode of GDAL <link xlink:href=\"http://www.gdal.org/gdaldem."
-"html#gdaldem_color_relief\">gdaldem</link>."
+"relief mode of GDAL <link xlink:href=\"http://www.gdal.org/"
+"gdaldem.html#gdaldem_color_relief\">gdaldem</link>."
 msgstr ""
 
 #. Tag: para
@@ -27573,8 +24988,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"A great reference for colormaps is <link xlink:href=\"http://www."
-"colorbrewer2.org\">ColorBrewer</link>."
+"A great reference for colormaps is <link xlink:href=\"http://"
+"www.colorbrewer2.org\">ColorBrewer</link>."
 msgstr ""
 
 #. Tag: para
@@ -28400,9 +25815,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Use the term <varname>[rast1.val]</varname> <varname>[rast2.val]</varname> "
-"to refer to the pixel value of the original raster bands and <varname>[rast1."
-"x]</varname>, <varname>[rast1.y]</varname> etc. to refer to the column / row "
-"positions of the pixels."
+"to refer to the pixel value of the original raster bands and "
+"<varname>[rast1.x]</varname>, <varname>[rast1.y]</varname> etc. to refer to "
+"the column / row positions of the pixels."
 msgstr ""
 
 #. Tag: title
@@ -28738,9 +26153,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Examples utilize the katrina raster loaded as a single tile described in "
-"<link xlink:href=\"https://gdal.org/user/drivers/raster/postgisraster."
-"html\">https://gdal.org/user/drivers/raster/postgisraster.html</link> and "
-"then prepared in the <xref linkend=\"RT_ST_Rescale\"/> examples"
+"<link xlink:href=\"https://gdal.org/user/drivers/raster/"
+"postgisraster.html\">https://gdal.org/user/drivers/raster/"
+"postgisraster.html</link> and then prepared in the <xref "
+"linkend=\"RT_ST_Rescale\"/> examples"
 msgstr ""
 
 #. Tag: para
@@ -29341,8 +26757,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For more information about Hillshade, please refer to <link xlink:"
-"href=\"http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?"
+"For more information about Hillshade, please refer to <link "
+"xlink:href=\"http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?"
 "TopicName=How%20Hillshade%20works\">How hillshade works</link>."
 msgstr ""
 
@@ -29498,8 +26914,8 @@ msgid ""
 "the X- and Y-values to position the points on the grid and the Z-value of "
 "the points as the surface elevation. There are five interpolation algorithms "
 "available: inverse distance, inverse distance nearest-neighbor, moving "
-"average, nearest neighbor, and linear interpolation. See the <link xlink:"
-"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"average, nearest neighbor, and linear interpolation. See the <link "
+"xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
 "algorithms\">gdal_grid documentation</link> for more details on the "
 "algorithms and their parameters. For more information on how interpolations "
 "are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
@@ -30506,8 +27922,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The easiest change to make is the following PostgreSQL setting: <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/static/runtime-config-"
+"The easiest change to make is the following PostgreSQL setting: <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-config-"
 "resource.html#GUC-MAX-FILES-PER-PROCESS\">max_files_per_process</link>. The "
 "default is set to 1000, which is far too low for Out-DB Rasters. A safe "
 "starting value could be 65536 but this really depends on your datasets and "
@@ -30731,8 +28147,8 @@ msgstr ""
 msgid ""
 "Because the interiors must have a common point, a subtlety of the definition "
 "is that polygons and lines do <emphasis>not</emphasis> contain lines and "
-"points lying fully in their boundary. For further details see <link xlink:"
-"href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
+"points lying fully in their boundary. For further details see <link "
+"xlink:href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
 "covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</link>. The "
 "<xref linkend=\"ST_Covers\"/> predicate provides a more inclusive "
 "relationship."
@@ -31181,8 +28597,8 @@ msgstr ""
 msgid ""
 "This function call does not use indexes. A negated <xref "
 "linkend=\"ST_Intersects\"/> predicate can be used as a more performant "
-"alternative that uses indexes: <code>ST_Disjoint(A,B) = NOT ST_Intersects(A,"
-"B)</code>"
+"alternative that uses indexes: <code>ST_Disjoint(A,B) = NOT "
+"ST_Intersects(A,B)</code>"
 msgstr ""
 
 #. Tag: para
@@ -31443,8 +28859,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This function is implemented as per the ArcSDE SQL specification rather than "
-"SQL-MM. http://edndoc.esri.com/arcsde/9.1/sql_api/sqlapi3."
-"htm#ST_OrderingEquals"
+"SQL-MM. http://edndoc.esri.com/arcsde/9.1/sql_api/"
+"sqlapi3.htm#ST_OrderingEquals"
 msgstr ""
 
 #. Tag: para
@@ -31549,8 +28965,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "These functions allow testing and evaluating the spatial (topological) "
-"relationship between two geometries, as defined by the <link xlink:"
-"href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
+"relationship between two geometries, as defined by the <link "
+"xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
 "Intersection Model</link> (DE-9IM)."
 msgstr ""
 
@@ -32670,9 +30086,9 @@ msgstr ""
 msgid ""
 "Following the CGAL implementation, the alpha value is the <emphasis>square</"
 "emphasis> of the radius of the disc used in the Alpha-Shape algorithm to "
-"\"erode\" the Delaunay Triangulation of the input points. See <link xlink:"
-"href=\"https://doc.cgal.org/latest/Alpha_shapes_2/index."
-"html#Chapter_2D_Alpha_Shapes\">CGAL Alpha-Shapes</link> for more "
+"\"erode\" the Delaunay Triangulation of the input points. See <link "
+"xlink:href=\"https://doc.cgal.org/latest/Alpha_shapes_2/"
+"index.html#Chapter_2D_Alpha_Shapes\">CGAL Alpha-Shapes</link> for more "
 "information. This is different from the original definition of alpha-shapes, "
 "which defines alpha as the radius of the eroding disc."
 msgstr ""
@@ -32958,8 +30374,8 @@ msgstr ""
 msgid ""
 "A minkowski sum of two geometries A and B is the set of all points that are "
 "the sum of any point in A and B. Minkowski sums are often used in motion "
-"planning and computer-aided design. More details on <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Minkowski_addition\">Wikipedia "
+"planning and computer-aided design. More details on <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/Minkowski_addition\">Wikipedia "
 "Minkowski addition</link>."
 msgstr ""
 
@@ -33310,8 +30726,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The following images were rendered pasting the output of the ST_AsX3D query "
-"into <link xlink:href=\"https://postgis.net/docs/support/viewers/x3d_viewer."
-"htm\">X3D Viewer</link>."
+"into <link xlink:href=\"https://postgis.net/docs/support/viewers/"
+"x3d_viewer.htm\">X3D Viewer</link>."
 msgstr ""
 
 #. Tag: para
@@ -33549,9 +30965,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The algorithm is based on constrained triangulation and uses the <link xlink:"
-"href=\"https://doc.cgal.org/latest/Polyline_simplification_2/index."
-"html\">CGAL Polyline Simplification 2</link> library with additional "
+"The algorithm is based on constrained triangulation and uses the <link "
+"xlink:href=\"https://doc.cgal.org/latest/Polyline_simplification_2/"
+"index.html\">CGAL Polyline Simplification 2</link> library with additional "
 "handling to preserve Z and M coordinates. When topology is preserved and "
 "geometries intersect, Z and M values are interpolated at intersection points."
 msgstr ""
@@ -34000,9 +31416,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Concatenated operations of the form: <varname>urn:ogc:def:"
-"coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:"
-"EPSG::1618</varname>."
+"Concatenated operations of the form: "
+"<varname>urn:ogc:def:coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:EPSG::1618</"
+"varname>."
 msgstr ""
 
 #. Tag: para
@@ -34405,8 +31821,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<code>ST_RotateY(geomA, rotRadians)</code> is short-hand for "
-"<code>ST_Affine(geomA, cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -"
-"sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>."
+"<code>ST_Affine(geomA, cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, "
+"-sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>."
 msgstr ""
 
 #. Tag: para
@@ -34515,8 +31931,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a new geometry whose coordinates are translated delta x,delta y,"
-"delta z units. Units are based on the units defined in spatial reference "
+"Returns a new geometry whose coordinates are translated delta x,delta "
+"y,delta z units. Units are based on the units defined in spatial reference "
 "(SRID) for this geometry."
 msgstr ""
 
@@ -34593,14 +32009,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Each data type describes its type casting behavior. A <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/sql-expressions.html#SQL-"
-"SYNTAX-TYPE-CASTS\">type cast</link> converts values of one data type into "
-"another type. PostgreSQL allows defining casting behavior for custom types, "
-"along with the functions used to convert type values. Casts can have "
-"<emphasis role=\"bold\">automatic</emphasis> behavior, which allows "
-"automatic conversion of a function argument to a type supported by the "
-"function."
+"Each data type describes its type casting behavior. A <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/sql-"
+"expressions.html#SQL-SYNTAX-TYPE-CASTS\">type cast</link> converts values of "
+"one data type into another type. PostgreSQL allows defining casting behavior "
+"for custom types, along with the functions used to convert type values. "
+"Casts can have <emphasis role=\"bold\">automatic</emphasis> behavior, which "
+"allows automatic conversion of a function argument to a type supported by "
+"the function."
 msgstr ""
 
 #. Tag: para
@@ -34754,8 +32170,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<varname>geometry_dump</varname> is a <link xlink:href=\"https://www."
-"postgresql.org/docs/current/rowtypes.html\">composite data type</link> "
+"<varname>geometry_dump</varname> is a <link xlink:href=\"https://"
+"www.postgresql.org/docs/current/rowtypes.html\">composite data type</link> "
 "containing the fields:"
 msgstr ""
 
@@ -35145,8 +32561,8 @@ msgid ""
 "if needed. Reports full PostGIS version and build configuration infos after. "
 "This is short-hand for doing multiple CREATE EXTENSION .. FROM unpackaged "
 "and ALTER EXTENSION .. UPDATE for each PostGIS extension. Currently only "
-"tries to upgrade extensions postgis, postgis_raster, postgis_sfcgal, "
-"postgis_topology, and postgis_tiger_geocoder."
+"tries to upgrade extensions postgis, postgis_raster, postgis_sfcgal, and "
+"postgis_topology."
 msgstr ""
 
 #. Tag: para
@@ -35554,16 +32970,16 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/255\">GT-255</link>, [topology] Support for upgrading domains (Ayo "
-"Adesugba, U.S. Census Bureau)"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"255\">GT-255</link>, [topology] Support for upgrading domains (Ayo Adesugba, "
+"U.S. Census Bureau)"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/252\">GT-252</link>, ST_NumGeometries/ST_GeometryN treat TIN and "
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"252\">GT-252</link>, ST_NumGeometries/ST_GeometryN treat TIN and "
 "PolyhedralSurface as unitary geometries, use ST_NumPatches/ST_PatchN for "
 "patch access (Loïc Bartoletti)"
 msgstr ""
@@ -35572,8 +32988,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/242\">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, U.S. "
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"242\">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, U.S. "
 "Census Bureau)"
 msgstr ""
 
@@ -35581,11 +32997,11 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
-"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
-"ticket/5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/"
-"postgis/postgis/pulls/260\">GT-260</link> [tiger_geocoder] Use @extschema:"
-"extension@ for PG &gt;= 16 to schema qualify dependent extensions, switch to "
-"use typmod for tiger tables (Regina Obe)"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+"5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/"
+"postgis/pulls/260\">GT-260</link> [tiger_geocoder] Use @extschema:extension@ "
+"for PG &gt;= 16 to schema qualify dependent extensions, switch to use typmod "
+"for tiger tables (Regina Obe)"
 msgstr ""
 
 #. Tag: title
@@ -35661,18 +33077,17 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/223\">GT-223</link> Export circ_tree_distance_tree_internal for "
-"mobilitydb use (Maxime Schoemans)"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"223\">GT-223</link> Export circ_tree_distance_tree_internal for mobilitydb "
+"use (Maxime Schoemans)"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/228\">GT-228</link> [sfcgal] Add new functions (Scale, Translate, "
-"Rotate, Buffer 3D and Straight Skeleton Partition) from SFCGAL 2 (Loïc "
-"Bartoletti)"
+"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"228\">GT-228</link> [sfcgal] Add new functions (Scale, Translate, Rotate, "
+"Buffer 3D and Straight Skeleton Partition) from SFCGAL 2 (Loïc Bartoletti)"
 msgstr ""
 
 #. Tag: para
@@ -35701,9 +33116,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
-"pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. "
-"Census Bureau)"
+"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+"242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. Census "
+"Bureau)"
 msgstr ""
 
 #. Tag: para
@@ -35791,8 +33206,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If your changes are more extensive, a patch is definitely preferred. This is "
-"a four step process on Unix (assuming you already have <link xlink:"
-"href=\"https://git-scm.com/\">git</link> installed):"
+"a four step process on Unix (assuming you already have <link "
+"xlink:href=\"https://git-scm.com/\">git</link> installed):"
 msgstr ""
 
 #. Tag: para
@@ -35850,13 +33265,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The Open Geospatial Consortium (OGC) developed the <link xlink:"
-"href=\"https://www.ogc.org/standards/sfa\"><emphasis>Simple Features Access</"
-"emphasis></link> standard (SFA) to provide a model for geospatial data. It "
-"defines the fundamental spatial type of <emphasis role=\"bold\">Geometry</"
-"emphasis>, along with operations which manipulate and transform geometry "
-"values to perform spatial analysis tasks. PostGIS implements the OGC "
-"Geometry model as the PostgreSQL data types <link "
+"The Open Geospatial Consortium (OGC) developed the <link "
+"xlink:href=\"https://www.ogc.org/standards/sfa\"><emphasis>Simple Features "
+"Access</emphasis></link> standard (SFA) to provide a model for geospatial "
+"data. It defines the fundamental spatial type of <emphasis "
+"role=\"bold\">Geometry</emphasis>, along with operations which manipulate "
+"and transform geometry values to perform spatial analysis tasks. PostGIS "
+"implements the OGC Geometry model as the PostgreSQL data types <link "
 "linkend=\"PostGIS_Geometry\">geometry</link> and <link "
 "linkend=\"PostGIS_Geography\">geography</link>."
 msgstr ""
@@ -35875,10 +33290,10 @@ msgid ""
 "linkend=\"MultiPoint\">MultiPoint</link>, <link "
 "linkend=\"MultiLineString\">MultiLineString</link>, <link "
 "linkend=\"MultiPolygon\">MultiPolygon</link> and <link "
-"linkend=\"GeometryCollection\">GeometryCollection</link>. The <link xlink:"
-"href=\"https://portal.ogc.org/files/?artifact_id=25355\"><emphasis>Simple "
-"Features Access - Part 1: Common architecture v1.2.1</emphasis></link> adds "
-"subtypes for the structures <link "
+"linkend=\"GeometryCollection\">GeometryCollection</link>. The <link "
+"xlink:href=\"https://portal.ogc.org/files/?"
+"artifact_id=25355\"><emphasis>Simple Features Access - Part 1: Common "
+"architecture v1.2.1</emphasis></link> adds subtypes for the structures <link "
 "linkend=\"PolyhedralSurface\">PolyhedralSurface</link>, <link "
 "linkend=\"Triangle\">Triangle</link> and <link linkend=\"TIN\">TIN</link>."
 msgstr ""
@@ -36108,8 +33523,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A TIN is a collection of non-overlapping <link "
-"linkend=\"Triangle\">Triangle</link>s representing a <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/"
+"linkend=\"Triangle\">Triangle</link>s representing a <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/"
 "Triangulated_irregular_network\">Triangulated Irregular Network</link>."
 msgstr ""
 
@@ -36121,11 +33536,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The <link xlink:href=\"https://www.iso.org/obp/ui/#iso:std:iso-iec:13249:-3:"
-"ed-5:v1:en\"><emphasis>ISO/IEC 13249-3 SQL Multimedia - Spatial</emphasis></"
-"link> standard (SQL/MM) extends the OGC SFA to define Geometry subtypes "
-"containing curves with circular arcs. The SQL/MM types support 3DM, 3DZ and "
-"4D coordinates."
+"The <link xlink:href=\"https://www.iso.org/obp/ui/#iso:std:iso-"
+"iec:13249:-3:ed-5:v1:en\"><emphasis>ISO/IEC 13249-3 SQL Multimedia - "
+"Spatial</emphasis></link> standard (SQL/MM) extends the OGC SFA to define "
+"Geometry subtypes containing curves with circular arcs. The SQL/MM types "
+"support 3DM, 3DZ and 4D coordinates."
 msgstr ""
 
 #. Tag: para
@@ -36708,11 +34123,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"You can create a table to store geography data using the <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/sql-createtable.html\">CREATE "
-"TABLE</link> SQL statement with a column of type <varname>geography</"
-"varname>. The following example creates a table with a geography column "
-"storing 2D LineStrings in the WGS84 geodetic coordinate system (SRID 4326):"
+"You can create a table to store geography data using the <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/sql-"
+"createtable.html\">CREATE TABLE</link> SQL statement with a column of type "
+"<varname>geography</varname>. The following example creates a table with a "
+"geography column storing 2D LineStrings in the WGS84 geodetic coordinate "
+"system (SRID 4326):"
 msgstr ""
 
 #. Tag: para
@@ -36827,8 +34243,9 @@ msgstr ""
 msgid ""
 "You can see the power of geography in action by calculating how close a "
 "plane flying a great circle route from Seattle to London (LINESTRING(-122.33 "
-"47.606, 0.0 51.5)) comes to Reykjavik (POINT(-21.96 64.15)) (<link xlink:"
-"href=\"http://gc.kls2.com/cgi-bin/gc?PATH=SEA-LHR\">map the route</link>)."
+"47.606, 0.0 51.5)) comes to Reykjavik (POINT(-21.96 64.15)) (<link "
+"xlink:href=\"http://gc.kls2.com/cgi-bin/gc?PATH=SEA-LHR\">map the route</"
+"link>)."
 msgstr ""
 
 #. Tag: para
@@ -37409,10 +34826,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "There are many different spatial reference systems in use. Common SRSes are "
-"standardized in the European Petroleum Survey Group <link xlink:"
-"href=\"http://www.epsg.org/\">EPSG database</link>. For convenience PostGIS "
-"(and many other spatial systems) refers to SRS definitions using an integer "
-"identifier called a SRID."
+"standardized in the European Petroleum Survey Group <link "
+"xlink:href=\"http://www.epsg.org/\">EPSG database</link>. For convenience "
+"PostGIS (and many other spatial systems) refers to SRS definitions using an "
+"integer identifier called a SRID."
 msgstr ""
 
 #. Tag: para
@@ -37467,9 +34884,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"An integer code that uniquely identifies the <link xlink:href=\"http://en."
-"wikipedia.org/wiki/SRID\">Spatial Reference System</link> (SRS) within the "
-"database."
+"An integer code that uniquely identifies the <link xlink:href=\"http://"
+"en.wikipedia.org/wiki/SRID\">Spatial Reference System</link> (SRS) within "
+"the database."
 msgstr ""
 
 #. Tag: para
@@ -37569,8 +34986,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A resource for finding spatial reference systems not defined in the core set "
-"is <link xlink:href=\"http://spatialreference.org/\">http://spatialreference."
-"org/</link>"
+"is <link xlink:href=\"http://spatialreference.org/\">http://"
+"spatialreference.org/</link>"
 msgstr ""
 
 #. Tag: para
@@ -37579,14 +34996,14 @@ msgid ""
 "Some commonly used spatial reference systems are: <link xlink:href=\"http://"
 "spatialreference.org/ref/epsg/4326/\">4326 - WGS 84 Long Lat</link>, <link "
 "xlink:href=\"http://spatialreference.org/ref/epsg/4269/\">4269 - NAD 83 Long "
-"Lat</link>, <link xlink:href=\"http://spatialreference.org/ref/epsg/3395/"
-"\">3395 - WGS 84 World Mercator</link>, <link xlink:href=\"http://"
+"Lat</link>, <link xlink:href=\"http://spatialreference.org/ref/epsg/"
+"3395/\">3395 - WGS 84 World Mercator</link>, <link xlink:href=\"http://"
 "spatialreference.org/ref/epsg/2163/\">2163 - US National Atlas Equal Area</"
 "link>, and the 60 WGS84 UTM zones. UTM zones are one of the most ideal for "
 "measurement, but only cover 6-degree regions. (To determine which UTM zone "
-"to use for your area of interest, see the <link xlink:href=\"http://trac."
-"osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctionsDistance\">utmzone PostGIS "
-"plpgsql helper function</link>.)"
+"to use for your area of interest, see the <link xlink:href=\"http://"
+"trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctionsDistance\">utmzone "
+"PostGIS plpgsql helper function</link>.)"
 msgstr ""
 
 #. Tag: para
@@ -37595,18 +35012,18 @@ msgid ""
 "US states use State Plane spatial reference systems (meter or feet based) - "
 "usually one or 2 exists per state. Most of the meter-based ones are in the "
 "core set, but many of the feet-based ones or ESRI-created ones will need to "
-"be copied from <link xlink:href=\"http://spatialreference."
-"org\">spatialreference.org</link>."
+"be copied from <link xlink:href=\"http://"
+"spatialreference.org\">spatialreference.org</link>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"You can even define non-Earth-based coordinate systems, such as <link xlink:"
-"href=\"http://spatialreference.org/ref/iau2000/mars-2000/\">Mars 2000</link> "
-"This Mars coordinate system is non-planar (it's in degrees spheroidal), but "
-"you can use it with the <varname>geography</varname> type to obtain length "
-"and proximity measurements in meters instead of degrees."
+"You can even define non-Earth-based coordinate systems, such as <link "
+"xlink:href=\"http://spatialreference.org/ref/iau2000/mars-2000/\">Mars 2000</"
+"link> This Mars coordinate system is non-planar (it's in degrees "
+"spheroidal), but you can use it with the <varname>geography</varname> type "
+"to obtain length and proximity measurements in meters instead of degrees."
 msgstr ""
 
 #. Tag: para
@@ -37629,11 +35046,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"You can create a table to store geometry data using the <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/sql-createtable.html\">CREATE "
-"TABLE</link> SQL statement with a column of type <varname>geometry</"
-"varname>. The following example creates a table with a geometry column "
-"storing 2D (XY) LineStrings in the BC-Albers coordinate system (SRID 3005):"
+"You can create a table to store geometry data using the <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/sql-"
+"createtable.html\">CREATE TABLE</link> SQL statement with a column of type "
+"<varname>geometry</varname>. The following example creates a table with a "
+"geometry column storing 2D (XY) LineStrings in the BC-Albers coordinate "
+"system (SRID 3005):"
 msgstr ""
 
 #. Tag: para
@@ -37703,9 +35121,9 @@ msgstr ""
 msgid ""
 "It is possible to have more than one geometry column in a table. This can be "
 "specified when the table is created, or a column can be added using the "
-"<link xlink:href=\"https://www.postgresql.org/docs/current/sql-altertable."
-"html\">ALTER TABLE</link> SQL statement. This example adds a column that can "
-"hold 3D LineStrings:"
+"<link xlink:href=\"https://www.postgresql.org/docs/current/sql-"
+"altertable.html\">ALTER TABLE</link> SQL statement. This example adds a "
+"column that can hold 3D LineStrings:"
 msgstr ""
 
 #. Tag: title
@@ -38119,8 +35537,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This tests whether two geometries are geometrically identical. For example, "
-"if 'POLYGON((0 0,1 1,1 0,0 0))' is the same as 'POLYGON((0 0,1 1,1 0,0 "
-"0))' (it is)."
+"if 'POLYGON((0 0,1 1,1 0,0 0))' is the same as 'POLYGON((0 0,1 1,1 0,0 0))' "
+"(it is)."
 msgstr ""
 
 #. Tag: para
@@ -38316,8 +35734,8 @@ msgstr ""
 msgid ""
 "See also the <link xlink:href=\"https://postgis.net/workshops/postgis-intro/"
 "indexing.html\">PostGIS Workshop section on spatial indexes</link>, and the "
-"<link xlink:href=\"https://www.postgresql.org/docs/current/indexes."
-"html\">PostgreSQL manual</link>."
+"<link xlink:href=\"https://www.postgresql.org/docs/current/"
+"indexes.html\">PostgreSQL manual</link>."
 msgstr ""
 
 #. Tag: title
@@ -38335,8 +35753,8 @@ msgid ""
 "performance. Other implementations of GiST are used to speed up searches on "
 "all kinds of irregular data structures (integer arrays, spectral data, etc) "
 "which are not amenable to normal B-Tree indexing. For more information see "
-"the <link xlink:href=\"https://www.postgresql.org/docs/current/gist."
-"html\">PostgreSQL manual</link>."
+"the <link xlink:href=\"https://www.postgresql.org/docs/current/"
+"gist.html\">PostgreSQL manual</link>."
 msgstr ""
 
 #. Tag: para
@@ -38393,8 +35811,8 @@ msgid ""
 "indexing very large tables on columns which have a correlation with their "
 "physical location within the table. In addition to spatial indexing, BRIN "
 "can speed up searches on various kinds of attribute data structures "
-"(integer, arrays etc). For more information see the <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/brin.html\">PostgreSQL "
+"(integer, arrays etc). For more information see the <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/brin.html\">PostgreSQL "
 "manual</link>."
 msgstr ""
 
@@ -38527,8 +35945,9 @@ msgid ""
 "performing a <code>VACUUM</code>, or by using a special function "
 "<code>brin_summarize_new_values(regclass)</code>. For this reason BRIN may "
 "be most appropriate for use with data that is read-only, or only rarely "
-"changing. For more information refer to the <link xlink:href=\"https://www."
-"postgresql.org/docs/current/brin-intro.html#BRIN-OPERATION\">manual</link>."
+"changing. For more information refer to the <link xlink:href=\"https://"
+"www.postgresql.org/docs/current/brin-intro.html#BRIN-OPERATION\">manual</"
+"link>."
 msgstr ""
 
 #. Tag: para
@@ -38730,9 +36149,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For more information see the Postgres manual section on <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/runtime-config-query."
-"html\">Query Planning</link>."
+"For more information see the Postgres manual section on <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/runtime-config-"
+"query.html\">Query Planning</link>."
 msgstr ""
 
 #. Tag: title
@@ -38846,8 +36265,8 @@ msgid ""
 "<emphasis>Boundary</emphasis>, and <emphasis>Exterior</emphasis> are denoted "
 "using the notation <emphasis>I(g)</emphasis>, <emphasis>B(g)</emphasis>, and "
 "<emphasis>E(g)</emphasis>. Also, <emphasis>dim(s)</emphasis> denotes the "
-"dimension of a set <emphasis>s</emphasis> with the domain of <literal>{0,1,2,"
-"F}</literal>:"
+"dimension of a set <emphasis>s</emphasis> with the domain of "
+"<literal>{0,1,2,F}</literal>:"
 msgstr ""
 
 #. Tag: para
@@ -39282,8 +36701,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For more information and examples see the <link xlink:href=\"https://postgis."
-"net/workshops/postgis-intro/indexing.html\">PostGIS Workshop</link>."
+"For more information and examples see the <link xlink:href=\"https://"
+"postgis.net/workshops/postgis-intro/indexing.html\">PostGIS Workshop</link>."
 msgstr ""
 
 #. Tag: title
@@ -39443,9 +36862,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "When creating overviews of a specific factor from a set of rasters that are "
-"aligned, it is possible for the overviews to not align. Visit <link xlink:"
-"href=\"http://trac.osgeo.org/postgis/ticket/1764\">http://trac.osgeo.org/"
-"postgis/ticket/1764</link> for an example where the overviews do not align."
+"aligned, it is possible for the overviews to not align. Visit <link "
+"xlink:href=\"http://trac.osgeo.org/postgis/ticket/1764\">http://"
+"trac.osgeo.org/postgis/ticket/1764</link> for an example where the overviews "
+"do not align."
 msgstr ""
 
 #. Tag: title
@@ -39803,11 +37223,11 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Efficient use of cloud stored rasters requires the use of a \"cloud "
-"optimized\" format. The most well-known and widely used is the \"<link xlink:"
-"href=\"https://gdal.org/drivers/raster/cog.html\">cloud optimized GeoTIFF</"
-"link>\" format. Using a non-cloud format, like a JPEG, or an un-tiled TIFF "
-"will result in very poor performance, as the system will have to download "
-"the entire raster each time it needs to access a subset."
+"optimized\" format. The most well-known and widely used is the \"<link "
+"xlink:href=\"https://gdal.org/drivers/raster/cog.html\">cloud optimized "
+"GeoTIFF</link>\" format. Using a non-cloud format, like a JPEG, or an un-"
+"tiled TIFF will result in very poor performance, as the system will have to "
+"download the entire raster each time it needs to access a subset."
 msgstr ""
 
 #. Tag: para
@@ -40199,10 +37619,10 @@ msgid ""
 "rasters in known image formats gives you a lot of options for rendering "
 "them. For example you can use OpenOffice / LibreOffice for rendering as "
 "demonstrated in <link xlink:href=\"http://www.postgresonline.com/journal/"
-"archives/244-Rendering-PostGIS-Raster-graphics-with-LibreOffice-Base-Reports."
-"html\">Rendering PostGIS Raster graphics with LibreOffice Base Reports</"
-"link>. In addition you can use a wide variety of languages as demonstrated "
-"in this section."
+"archives/244-Rendering-PostGIS-Raster-graphics-with-LibreOffice-Base-"
+"Reports.html\">Rendering PostGIS Raster graphics with LibreOffice Base "
+"Reports</link>. In addition you can use a wide variety of languages as "
+"demonstrated in this section."
 msgstr ""
 
 #. Tag: title
@@ -40259,10 +37679,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "You will need the npgsql .NET PostgreSQL driver for this exercise which you "
-"can get the latest of from <link xlink:href=\"http://npgsql.projects."
-"postgresql.org/\">http://npgsql.projects.postgresql.org/</link>. Just "
-"download the latest and drop into your ASP.NET bin folder and you'll be good "
-"to go."
+"can get the latest of from <link xlink:href=\"http://"
+"npgsql.projects.postgresql.org/\">http://npgsql.projects.postgresql.org/</"
+"link>. Just download the latest and drop into your ASP.NET bin folder and "
+"you'll be good to go."
 msgstr ""
 
 #. Tag: para
@@ -40275,9 +37695,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"You would call the below using <programlisting>http://mywebserver/TestRaster."
-"ashx?srid=2249</programlisting> to get the raster image in Massachusetts "
-"state plane feet."
+"You would call the below using <programlisting>http://mywebserver/"
+"TestRaster.ashx?srid=2249</programlisting> to get the raster image in "
+"Massachusetts state plane feet."
 msgstr ""
 
 #. Tag: title
@@ -40295,9 +37715,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"You can download the latest PostgreSQL JDBC drivers from <link xlink:"
-"href=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/"
-"download.html</link>"
+"You can download the latest PostgreSQL JDBC drivers from <link "
+"xlink:href=\"http://jdbc.postgresql.org/download.html\">http://"
+"jdbc.postgresql.org/download.html</link>"
 msgstr ""
 
 #. Tag: para
@@ -40368,11 +37788,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Functions changed in PostGIS %"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "This method needs address_standardizer extension."
 msgstr ""
 
 #. Tag: para
