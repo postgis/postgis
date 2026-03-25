@@ -1,6 +1,6 @@
 
 -- Connected graph (all one cluster)
-SELECT 'connected', id, ST_MinimumSpanningTree(geom) OVER () FROM (VALUES
+SELECT 'connected', id, ST_MinimumSpanningTree(geom) OVER (ORDER BY id) FROM (VALUES
     (1, 'LINESTRING(0 0,1 0)'::geometry),
     (2, 'LINESTRING(0 0,0 1)'::geometry),
     (3, 'LINESTRING(1 1,0 1)'::geometry),
@@ -10,7 +10,7 @@ SELECT 'connected', id, ST_MinimumSpanningTree(geom) OVER () FROM (VALUES
 ) AS t(id, geom);
 
 -- Disconnected graph (two clusters)
-SELECT 'disconnected', id, ST_MinimumSpanningTree(geom) OVER () FROM (VALUES
+SELECT 'disconnected', id, ST_MinimumSpanningTree(geom) OVER (ORDER BY id) FROM (VALUES
     (1, 'LINESTRING(0 0,1 0)'::geometry),
     (2, 'LINESTRING(0 0,0 1)'::geometry),
     (3, 'LINESTRING(1 1,0 1)'::geometry),
@@ -21,7 +21,7 @@ SELECT 'disconnected', id, ST_MinimumSpanningTree(geom) OVER () FROM (VALUES
 
 
 -- NULL handling
-SELECT 'nulls', id, ST_MinimumSpanningTree(geom) OVER (), ST_AsText(geom) FROM (VALUES
+SELECT 'nulls', id, ST_MinimumSpanningTree(geom) OVER (ORDER BY id), ST_AsText(geom) FROM (VALUES
     (1, 'LINESTRING(0 0,1 0)'::geometry),
     (2, 'LINESTRING(0 0,0 1)'::geometry),
     (3, NULL::geometry),
@@ -31,7 +31,7 @@ SELECT 'nulls', id, ST_MinimumSpanningTree(geom) OVER (), ST_AsText(geom) FROM (
 ) AS t(id, geom);
 
 -- Empty geometry handling
-SELECT 'empty', id, ST_MinimumSpanningTree(geom) OVER (), ST_AsText(geom) FROM (VALUES
+SELECT 'empty', id, ST_MinimumSpanningTree(geom) OVER (ORDER BY id), ST_AsText(geom) FROM (VALUES
     (1, 'LINESTRING(0 0,1 0)'::geometry),
     (2, 'LINESTRING EMPTY'::geometry),
     (3, 'LINESTRING EMPTY'::geometry),

@@ -1069,6 +1069,13 @@ Datum ST_MinimumSpanningTree(PG_FUNCTION_ARGS)
 		{
 			bool geom_is_null;
 			geoms[i] = read_geos_from_partition(win_obj, i, &geom_is_null);
+
+			if (!geoms[i])
+			{
+				lwpgerror("Error reading geometry.");
+				PG_RETURN_NULL();
+			}
+
 			context->clusters[i].is_null = geom_is_null;
 			/* If read_geos_from_partition returned a value (even empty) for a
 			   non-null input, we keep it. If it was null, is_null is true. */
