@@ -326,16 +326,12 @@ SELECT 't3412.L1', TopoGeo_AddLinestring('bug3412',
 599671.37 4889781.87
 )'
 ::geometry);
-
--- TODO: answers different on 3.8 from older geos so revised test
-/**SELECT 't3412.L2', TopoGeo_AddLinestring('bug3412',
-'0102000000020000003AB42BBFEE4C22410010C5A997A6524167BB5DBDEE4C224117FE3DA85FA75241'
-::geometry);**/
-SELECT 't3412.L2', COUNT(*)
+SELECT 't3412.L2', COUNT(*) > 0
 FROM TopoGeo_AddLinestring('bug3412',
 '0102000000020000003AB42BBFEE4C22410010C5A997A6524167BB5DBDEE4C224117FE3DA85FA75241'
 ::geometry);
-SELECT 't3412.end', DropTopology('bug3412');
+SELECT 't3412.end.error', * FROM topology.ValidateTopology('bug3412');
+SELECT NULL FROM DropTopology('bug3412');
 
 -- See http://trac.osgeo.org/postgis/ticket/3711
 SELECT 't3371.start', topology.CreateTopology('bug3711', 0, 0, true) > 1;
@@ -358,16 +354,12 @@ SELECT 't3838.L1', topology.TopoGeo_addLinestring('bug3838',
 622598.73 6554996.23,
 622591.53 6554995.96)'
 ::geometry , 1);
--- TODO: answers in geos 3.8 different from older geos
--- So just doing count instead of full test
-/** SELECT 't3838.L2', topology.TopoGeo_addLinestring('bug3838',
-'LINESTRING(622608 6554988, 622596 6554984)'
-::geometry , 10);**/
-SELECT 't3838.L2', COUNT(*)
+SELECT 't3838.L2', COUNT(*) > 0
   FROM topology.TopoGeo_addLinestring('bug3838',
 'LINESTRING(622608 6554988, 622596 6554984)'
 ::geometry , 10);
-SELECT 't3838.end', topology.DropTopology('bug3838');
+SELECT 't3838.end.error', * FROM topology.ValidateTopology('bug3838');
+SELECT NULL FROM topology.DropTopology('bug3838');
 
 -- See https://trac.osgeo.org/postgis/ticket/1855
 -- Simplified case 1

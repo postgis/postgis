@@ -187,16 +187,14 @@ t3402.L2|3
 t3402.end|Topology 'bug3402' dropped
 t3412.start|t
 t3412.L1|1
-t3412.L2|4
-t3412.end|Topology 'bug3412' dropped
+t3412.L2|t
 t3371.start|t
 t3371.L1|1
 t3371.L2|2
 t3371.end|Topology 'bug3711' dropped
 t3838.start|t
 t3838.L1|1
-t3838.L2|6
-t3838.end|Topology 'bug3838' dropped
+t3838.L2|t
 t1855_1.start|t
 t1855_1.0|1
 t1855_1.end|Topology 'bug1855' dropped
