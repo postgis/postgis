@@ -3156,7 +3156,7 @@ BEGIN
 	END;
 
 	BEGIN
-		SELECT postgis_raster_scripts_installed() INTO rast_scr_ver;
+		SELECT @extschema@.postgis_raster_scripts_installed() INTO rast_scr_ver;
 	EXCEPTION
 		WHEN undefined_function THEN
 			RAISE DEBUG 'Function postgis_raster_scripts_installed() not found. Is raster support enabled and rtpostgis.sql installed?';
