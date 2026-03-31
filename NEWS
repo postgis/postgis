@@ -38,6 +38,7 @@ This version requires GEOS 3.10 or higher
 
 * Enhancements *
 
+ - #6062, [topology] Stop using recursive snapping, for improved robustness (Sandro Santilli)
  - #6065, Improved winding order computation robustness for rings having collapsed elements
           (Sandro Santilli)
 
