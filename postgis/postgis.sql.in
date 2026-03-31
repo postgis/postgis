@@ -3274,7 +3274,7 @@ BEGIN
 	END;
 
 	BEGIN
-		SELECT postgis_raster_scripts_installed() INTO rast_scr_ver;
+		SELECT @extschema@.postgis_raster_scripts_installed() INTO rast_scr_ver;
 	EXCEPTION
 		WHEN undefined_function THEN
 			RAISE DEBUG 'Function postgis_raster_scripts_installed() not found. Is raster support enabled and rtpostgis.sql installed?';
@@ -3320,9 +3320,9 @@ BEGIN
 
 	IF  geosver IS NOT NULL THEN
 		fullver = fullver || ' GEOS="' || geosver || '"';
-		IF (string_to_array(geosver, '.'))[1:2] != (string_to_array(geosver_compiled, '.'))[1:2]
+		IF (pg_catalog.string_to_array(geosver, '.'))[1:2] != (pg_catalog.string_to_array(geosver_compiled, '.'))[1:2]
 		THEN
-			fullver = format('%s (compiled against GEOS %s)', fullver, geosver_compiled);
+			fullver = pg_catalog.format('%s (compiled against GEOS %s)', fullver, geosver_compiled);
 		END IF;
 	END IF;
 
@@ -3332,9 +3332,9 @@ BEGIN
 
 	IF  projver IS NOT NULL THEN
 		fullver = fullver || ' PROJ="' || projver || '"';
-		IF (string_to_array(projver, '.'))[1:3] != (string_to_array(projver_compiled, '.'))[1:3]
+		IF (pg_catalog.string_to_array(projver, '.'))[1:3] != (pg_catalog.string_to_array(projver_compiled, '.'))[1:3]
 		THEN
-			fullver = format('%s (compiled against PROJ %s)', fullver, projver_compiled);
+			fullver = pg_catalog.format('%s (compiled against PROJ %s)', fullver, projver_compiled);
 		END IF;
 	END IF;
 
