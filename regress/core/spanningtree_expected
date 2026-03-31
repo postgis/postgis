@@ -1,0 +1,24 @@
+connected|1|1
+connected|2|1
+connected|3|1
+connected|4|0
+connected|5|0
+connected|6|0
+disconnected|1|1
+disconnected|2|1
+disconnected|3|1
+disconnected|4|2
+disconnected|5|2
+disconnected|6|2
+nulls|1|1|LINESTRING(0 0,1 0)
+nulls|2|1|LINESTRING(0 0,0 1)
+nulls|3||
+nulls|4|1|LINESTRING(1 1,1 0)
+nulls|5|0|LINESTRING(0 0,1 1)
+nulls|6|0|LINESTRING(1 0,0 1)
+empty|1|1|LINESTRING(0 0,1 0)
+empty|2|0|LINESTRING EMPTY
+empty|3|0|LINESTRING EMPTY
+empty|4|1|LINESTRING(1 1,1 0)
+empty|5|0|LINESTRING(0 0,1 1)
+empty|6|1|LINESTRING(1 0,0 1)
