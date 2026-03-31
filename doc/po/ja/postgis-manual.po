@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2026-03-31 05:39+0000\n"
+"PO-Revision-Date: 2026-03-31 10:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -6581,6 +6581,8 @@ msgid ""
 "documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
 "management functions."
 msgstr ""
+"CIとウェブサイトメンテナンス、Windows製品版と実験版のビルド、文書作成、"
+"PostGISとPostgreSQLとのリリース整合、X3D対応、管理関数。"
 
 #. Tag: term
 #, no-c-format
@@ -11381,6 +11383,9 @@ msgid ""
 "clustering input geometries into connected sets using the relate pattern to "
 "determine whether the geometries are connected."
 msgstr ""
+"ジオメトリーが接続するかどうかを判定する空間関係パターンを使って、入力"
+"ジオメトリーを接続されたジオメトリ集合にクラスタリングして、クラスター識別子"
+"を返すウィンドウ関数です。"
 
 #. Tag: para
 #, no-c-format
@@ -11391,6 +11396,11 @@ msgid ""
 "possible to build a cluster of all objects that touch at boundaries, but "
 "exclude those that merely overlap."
 msgstr ""
+"交差するジオメトリの接続されたクラスターを構築するウィンドウ関数です。"
+"ジオメトリーは、クラスターの他のメンバーとのDE9IM空間関係行列が対で合致する場"
+"合には、クラスターに追加されます。この関数によって、境界同士が接触するすべて"
+"のオブジェクトのクラスターを構築できますが、単にオーバーラップするものは除外"
+"されます。"
 
 #. Tag: para
 #, no-c-format
@@ -40362,6 +40372,14 @@ msgid ""
 "tries to upgrade extensions postgis, postgis_raster, postgis_sfcgal, and "
 "postgis_topology."
 msgstr ""
+"指定されたバージョンまたは最新バージョンへのPostGISエクステンションの"
+"パッケージ化とアップグレードを行います。そのデータベースにインストールした"
+"エクステンションだけが必要に応じてパッケージ化とアップグレードとを実行されま"
+"す。完全なPostGISバージョンを報告し、その後、ビルドコンフィギュレーション情報"
+"を報告します。PostGISエクステンションごとに行う複数のCREATE EXTENSION .. "
+"FROM unpackagedおよびALTER EXTENSION .. UPDATEの短縮形です。現在は、postgis, "
+"postgis_raster, postgis_sfcgal, postgis_topologyの四つのエクステンションの"
+"アップグレードのみを試みます。"
 
 #. Tag: para
 #, no-c-format
