@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2026-03-24 05:27+0000\n"
+"PO-Revision-Date: 2026-03-31 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -1145,6 +1145,11 @@ msgid ""
 "(TIGER)</link> database. If you want to experiment with PostGIS topology and "
 "need some data."
 msgstr ""
+"トポロジーベースのGISデータベースの例に<link xlink:href=\"https://"
+"www.census.gov/geo/maps-data/data/tiger.html\">US Census Topologically "
+"Integrated Geographic Encoding and Referencing System (TIGER)</link>"
+"データベースがあります。PostGISトポロジーの実験でデータが必要となる場合に使っ"
+"て下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -2666,7 +2671,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_InitTopoGeo\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_InitTopoGeo\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5688,6 +5693,13 @@ msgid ""
 "www.graphicsmagick.org/ </link> and ImageMagick from <link "
 "xlink:href=\"https://imagemagick.org/\"> https://imagemagick.org/ </link> ."
 msgstr ""
+"GraphicsMagick (<filename>gm convert</filename>)は文書で使われる画像の生成に"
+"必要です。GraphicsMagickがない場合には、ImageMagick (<filename>convert</"
+"filename>または<filename>magick convert</filename>)で同じようなコマンドライン"
+"構文が使えます。GraphicsMagickは<link xlink:href=\"http://"
+"www.graphicsmagick.org/\"> http://www.graphicsmagick.org/ </link>にあり、"
+"ImageMagickは<link xlink:href=\"https://imagemagick.org/\"> https://"
+"imagemagick.org/ </link>にあります。"
 
 #. Tag: title
 #, no-c-format
@@ -6004,6 +6016,11 @@ msgid ""
 "<filename>raster_cheatsheet.html</filename>, "
 "<filename>postgis_cheatsheet.html</filename>"
 msgstr ""
+"<command>make cheatsheets</command>ターゲットで、HTMLのチートシートが生成され"
+"ます。クイックリファレンスまたは学習用資料に適しています。これを作るには"
+"xsltprocが必要です。docフォルダーに <filename>topology_cheatsheet.html</"
+"filename>、<filename>raster_cheatsheet.html</filename>、 <filename>"
+"postgis_cheatsheet.html</filename>の4ファイルが生成されます。"
 
 #. Tag: para
 #, no-c-format
