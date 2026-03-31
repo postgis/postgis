@@ -484,33 +484,6 @@ lwt_be_computeFaceMBR(const LWT_TOPOLOGY *topo, LWT_ELEMID face)
  *
  ************************************************************************/
 
-static LWGEOM *
-_lwt_toposnap(LWGEOM *src, LWGEOM *tgt, double tol)
-{
-  LWGEOM *tmp = src;
-  LWGEOM *tmp2;
-  int changed;
-  int iterations = 0;
-
-  int maxiterations = lwgeom_count_vertices(tgt);
-
-  /* GEOS snapping can be unstable */
-  /* See https://trac.osgeo.org/geos/ticket/760 */
-  do {
-    tmp2 = lwgeom_snap(tmp, tgt, tol);
-    ++iterations;
-    changed = ( lwgeom_count_vertices(tmp2) != lwgeom_count_vertices(tmp) );
-    LWDEBUGF(2, "After iteration %d, geometry changed ? %d (%d vs %d vertices)", iterations, changed, lwgeom_count_vertices(tmp2), lwgeom_count_vertices(tmp));
-    if ( tmp != src ) lwgeom_free(tmp);
-    tmp = tmp2;
-  } while ( changed && iterations <= maxiterations );
-
-  LWDEBUGF(1, "It took %d/%d iterations to properly snap",
-              iterations, maxiterations);
-
-  return tmp;
-}
-
 void
 _lwt_release_faces(LWT_ISO_FACE *faces, int num_faces)
 {
@@ -6795,7 +6768,7 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY* topo, LWT_ISO_EDGE *edges, uint64_t nu
       }
 #endif
 
-      snapedge = _lwt_toposnap(g, prj, tol);
+      snapedge = lwgeom_snap(g, prj, tol);
       snapline = lwgeom_as_lwline(snapedge);
 
       LWDEBUGF(1, "Edge snapped with tolerance %g", tol);
@@ -7453,7 +7426,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
 
     LWDEBUGG(1, elems, "Collected nearby elements");
 
-    tmp = _lwt_toposnap(noded, elems, tol);
+    tmp = lwgeom_snap(noded, elems, tol);
     lwgeom_free(noded);
     noded = tmp;
     LWDEBUGG(1, noded, "Elements-snapped");
