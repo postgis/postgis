@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-13 16:23+0000\n"
-"PO-Revision-Date: 2026-03-31 03:39+0000\n"
+"PO-Revision-Date: 2026-03-31 05:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -2404,6 +2404,10 @@ msgid ""
 "This safeguards adjacent topological relationships by preventing precision "
 "snapping from removing primitives altogether."
 msgstr ""
+"最小エッジ範囲より大きい<varname>gridSize</varname>を使うと、エッジが空"
+"ジオメトリに縮退するのでなく例外が発生します。これにより、精密なスナップ処理"
+"の際にプリミティブを完全に削除しないようにすることで、隣接するトポロジー関係"
+"を保護します。"
 
 #. Tag: para
 #, no-c-format
@@ -11391,7 +11395,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.7.0"
-msgstr ""
+msgstr "Availability: 3.7.0"
 
 #. Tag: para
 #, no-c-format
@@ -11401,11 +11405,15 @@ msgid ""
 "linkend=\"ST_ClusterRelateWin\"/> can be clustered into three groups that "
 "connect only via their end points."
 msgstr ""
+"このラインストリングのコレクションは <xref "
+"linkend=\"ST_ClusterIntersectingWin\"/>を使って単一のクラスターを形成しますが"
+"、 <xref linkend=\"ST_ClusterRelateWin\"/>を使うと、端点でのみ接続する三つの"
+"グループにクラスタリングできます。"
 
 #. Tag: para
 #, no-c-format
 msgid "Connected and overlapping linestrings"
-msgstr ""
+msgstr "接続されオーバーラップしているラインストリング"
 
 #. Tag: para
 #, no-c-format
@@ -11413,6 +11421,8 @@ msgid ""
 ", <xref linkend=\"ST_ClusterIntersectingWin\"/>, <xref "
 "linkend=\"ST_ClusterWithinWin\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterIntersectingWin\"/>, <xref "
+"linkend=\"ST_ClusterWithinWin\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
