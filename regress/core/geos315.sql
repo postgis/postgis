@@ -1,4 +1,6 @@
 
+-- ST_MinimumSpanningTree
+
 -- Connected graph (all one cluster)
 SELECT 'connected', id, ST_MinimumSpanningTree(geom) OVER (ORDER BY id) FROM (VALUES
     (1, 'LINESTRING(0 0,1 0)'::geometry),
@@ -40,3 +42,28 @@ SELECT 'empty', id, ST_MinimumSpanningTree(geom) OVER (ORDER BY id), ST_AsText(g
     (6, 'LINESTRING(1 0,0 1)'::geometry)
 ) AS t(id, geom);
 
+-- ST_CoverageEdges
+
+CREATE TABLE coverage_edges (id integer, seq integer, geom geometry);
+
+INSERT INTO coverage_edges VALUES
+(6, 1, 'POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))'),
+(6, 2, 'POLYGON ((10 0, 10 10, 20 10, 20 0, 10 0))');
+
+SELECT 'coverage edges all' AS test,
+  ST_AsText(ST_CoverageEdges(ST_Collect(geom)))
+FROM coverage_edges WHERE id = 6;
+
+SELECT 'coverage edges exterior' AS test,
+  ST_AsText(ST_CoverageEdges(ST_Collect(geom), 1))
+FROM coverage_edges WHERE id = 6;
+
+SELECT 'coverage edges interior' AS test,
+  ST_AsText(ST_CoverageEdges(ST_Collect(geom), 2))
+FROM coverage_edges WHERE id = 6;
+
+SELECT 'coverage edges array' AS test,
+  ST_AsText(ST_CoverageEdges(array_agg(geom)))
+FROM coverage_edges WHERE id = 6;
+
+DROP TABLE coverage_edges;

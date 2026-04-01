@@ -168,7 +168,7 @@ endif
 
 ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31500),1)
 	TESTS += \
-		$(top_srcdir)/regress/core/spanningtree
+		$(top_srcdir)/regress/core/geos315
 endif
 
 ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31200),1)
