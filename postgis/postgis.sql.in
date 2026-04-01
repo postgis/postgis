@@ -4498,6 +4498,20 @@ CREATE OR REPLACE FUNCTION ST_CoverageClean (geom geometry, gapMaximumWidth floa
 	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
 	_COST_HIGH;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_CoverageEdges (geoms geometry[], edgetype integer default 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CoverageEdges_array'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_CoverageEdges (geom geometry, edgetype integer default 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CoverageEdges'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
 --------------------------------------------------------------------------------
 
 -- Availability: 2.3.0
