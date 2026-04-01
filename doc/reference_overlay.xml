@@ -1133,13 +1133,14 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
       <refsection>
         <title>See Also</title>
         <para>
-            <xref linkend="ST_Collect"/>,
+            <xref linkend="ST_CoverageUnion"/>,
             <xref linkend="ST_UnaryUnion"/>,
             <xref linkend="ST_MemUnion"/>,
+            <xref linkend="ST_Collect"/>,
             <xref linkend="ST_Intersection"/>,
             <xref linkend="ST_Difference"/>,
             <xref linkend="ST_SymDifference"/>,
-            <xref linkend="ST_ReducePrecision"/>
+            <xref linkend="ST_LineMerge"/>
         </para>
       </refsection>
     </refentry>
