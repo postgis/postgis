@@ -36,3 +36,7 @@ grid squares|1|2|50000
 grid squares|2|0|50000
 grid squares|2|1|50000
 grid squares|2|2|10000
+coverage edges all|MULTILINESTRING((10 10,10 0),(10 0,0 0,0 10,10 10),(10 10,20 10,20 0,10 0))
+coverage edges exterior|MULTILINESTRING((10 0,0 0,0 10,10 10),(10 10,20 10,20 0,10 0))
+coverage edges interior|MULTILINESTRING((10 10,10 0))
+coverage edges array|MULTILINESTRING((10 10,10 0),(10 0,0 0,0 10,10 10),(10 10,20 10,20 0,10 0))

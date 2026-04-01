@@ -982,6 +982,7 @@ Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
 	GEOSGeometry *geos = NULL;
 	GEOSGeometry *geos_result = NULL;
 	uint32 ngeoms = 0;
+	int srid = SRID_UNKNOWN;
 
 	ArrayType *array = PG_GETARG_ARRAYTYPE_P(0);
 	uint32 nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
@@ -1006,6 +1007,10 @@ Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
 		gser = (GSERIALIZED *)DatumGetPointer(value);
 		if (gserialized_is_empty(gser)) continue;
 
+		/* Get SRID from first non-null element */
+		if (srid == SRID_UNKNOWN)
+			srid = gserialized_get_srid(gser);
+
 		/* Omit unconvertible */
 		geos = POSTGIS2GEOS(gser);
 		if (!geos) continue;
@@ -1015,7 +1020,10 @@ Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
 	array_free_iterator(iterator);
 
 	if (ngeoms == 0)
+	{
+		pfree(geoms);
 		PG_RETURN_NULL();
+	}
 
 	geos = GEOSGeom_createCollection(
 		GEOS_GEOMETRYCOLLECTION,
@@ -1024,11 +1032,15 @@ Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
 	if (!geos)
 	{
 		coverage_destroy_geoms(geoms, ngeoms);
+		pfree(geoms);
 		HANDLE_GEOS_ERROR("Geometry could not be converted");
 	}
 
+	GEOSSetSRID(geos, srid);
+
 	geos_result = GEOSCoverageUnion(geos);
 	GEOSGeom_destroy(geos);
+	pfree(geoms);
 	if (!geos_result)
 		HANDLE_GEOS_ERROR("Error computing coverage union");
 
@@ -1037,6 +1049,142 @@ Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
+
+
+/**********************************************************************
+ * ST_CoverageEdges(geometry, edgetype)
+ * ST_CoverageEdges(geometry[], edgetype)
+ *
+ */
+
+Datum ST_CoverageEdges(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_CoverageEdges);
+Datum ST_CoverageEdges(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 31500
+	lwpgerror("The GEOS version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'ST_CoverageEdges' function (3.15.0+ required)",
+	          POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else
+	GSERIALIZED *result = NULL;
+	GSERIALIZED *gser = PG_GETARG_GSERIALIZED_P(0);
+	int edgetype = PG_GETARG_INT32(1);
+	GEOSGeometry *geos = NULL;
+	GEOSGeometry *geos_result = NULL;
+
+	if (gserialized_is_empty(gser))
+		PG_RETURN_NULL();
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	geos = POSTGIS2GEOS(gser);
+	if (!geos)
+		HANDLE_GEOS_ERROR("Geometry could not be converted");
+
+	geos_result = GEOSCoverageEdges(geos, edgetype);
+	GEOSGeom_destroy(geos);
+	if (!geos_result)
+		HANDLE_GEOS_ERROR("Error computing coverage edges");
+
+	result = GEOS2POSTGIS(geos_result, LW_FALSE);
+	GEOSGeom_destroy(geos_result);
+
+	PG_RETURN_POINTER(result);
+#endif
+}
+
+Datum ST_CoverageEdges_array(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_CoverageEdges_array);
+Datum ST_CoverageEdges_array(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 31500
+	lwpgerror("The GEOS version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'ST_CoverageEdges' function (3.15.0+ required)",
+	          POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else
+	GSERIALIZED *result = NULL;
+	int edgetype = PG_GETARG_INT32(1);
+
+	Datum value;
+	bool isnull;
+
+	GEOSGeometry **geoms = NULL;
+	GEOSGeometry *geos = NULL;
+	GEOSGeometry *geos_result = NULL;
+	uint32 ngeoms = 0;
+	int srid = SRID_UNKNOWN;
+
+	ArrayType *array = PG_GETARG_ARRAYTYPE_P(0);
+	uint32 nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+	ArrayIterator iterator = array_create_iterator(array, 0, NULL);
+
+	/* Return null on 0-elements input array */
+	if (nelems == 0)
+		PG_RETURN_NULL();
+
+	/* Convert all geometries into GEOSGeometry array */
+	geoms = palloc(sizeof(GEOSGeometry *) * nelems);
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	while (array_iterate(iterator, &value, &isnull))
+	{
+		GSERIALIZED *gser;
+		/* Omit nulls */
+		if (isnull) continue;
+
+		/* Omit empty */
+		gser = (GSERIALIZED *)DatumGetPointer(value);
+		if (gserialized_is_empty(gser)) continue;
+
+		/* Get SRID from first non-null element */
+		if (srid == SRID_UNKNOWN)
+			srid = gserialized_get_srid(gser);
+
+		/* Omit unconvertible */
+		geos = POSTGIS2GEOS(gser);
+		if (!geos) continue;
+
+		geoms[ngeoms++] = geos;
+	}
+	array_free_iterator(iterator);
+
+	if (ngeoms == 0)
+	{
+		pfree(geoms);
+		PG_RETURN_NULL();
+	}
+
+	geos = GEOSGeom_createCollection(
+		GEOS_GEOMETRYCOLLECTION,
+		geoms, ngeoms);
+
+	if (!geos)
+	{
+		coverage_destroy_geoms(geoms, ngeoms);
+		pfree(geoms);
+		HANDLE_GEOS_ERROR("Geometry could not be converted");
+	}
+
+	GEOSSetSRID(geos, srid);
+
+	geos_result = GEOSCoverageEdges(geos, edgetype);
+	GEOSGeom_destroy(geos);
+	pfree(geoms);
+	if (!geos_result)
+		HANDLE_GEOS_ERROR("Error computing coverage edges");
+
+	result = GEOS2POSTGIS(geos_result, LW_FALSE);
+	GEOSGeom_destroy(geos_result);
+
+	PG_RETURN_POINTER(result);
+#endif
+}
+
 
 extern Datum ST_MinimumSpanningTree(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_MinimumSpanningTree);
