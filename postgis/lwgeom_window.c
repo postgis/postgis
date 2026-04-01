@@ -1021,7 +1021,6 @@ Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
 
 	if (ngeoms == 0)
 	{
-		pfree(geoms);
 		PG_RETURN_NULL();
 	}
 
@@ -1032,7 +1031,6 @@ Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
 	if (!geos)
 	{
 		coverage_destroy_geoms(geoms, ngeoms);
-		pfree(geoms);
 		HANDLE_GEOS_ERROR("Geometry could not be converted");
 	}
 
@@ -1040,7 +1038,6 @@ Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
 
 	geos_result = GEOSCoverageUnion(geos);
 	GEOSGeom_destroy(geos);
-	pfree(geoms);
 	if (!geos_result)
 		HANDLE_GEOS_ERROR("Error computing coverage union");
 
@@ -1155,7 +1152,6 @@ Datum ST_CoverageEdges_array(PG_FUNCTION_ARGS)
 
 	if (ngeoms == 0)
 	{
-		pfree(geoms);
 		PG_RETURN_NULL();
 	}
 
@@ -1166,7 +1162,6 @@ Datum ST_CoverageEdges_array(PG_FUNCTION_ARGS)
 	if (!geos)
 	{
 		coverage_destroy_geoms(geoms, ngeoms);
-		pfree(geoms);
 		HANDLE_GEOS_ERROR("Geometry could not be converted");
 	}
 
@@ -1174,7 +1169,6 @@ Datum ST_CoverageEdges_array(PG_FUNCTION_ARGS)
 
 	geos_result = GEOSCoverageEdges(geos, edgetype);
 	GEOSGeom_destroy(geos);
-	pfree(geoms);
 	if (!geos_result)
 		HANDLE_GEOS_ERROR("Error computing coverage edges");
 
