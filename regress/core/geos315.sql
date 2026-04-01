@@ -51,19 +51,19 @@ INSERT INTO coverage_edges VALUES
 (6, 2, 'POLYGON ((10 0, 10 10, 20 10, 20 0, 10 0))');
 
 SELECT 'coverage edges all' AS test,
-  ST_AsText(ST_CoverageEdges(ST_Collect(geom)))
+  ST_AsText(ST_CoverageEdges(ST_Collect(geom ORDER BY seq)))
 FROM coverage_edges WHERE id = 6;
 
 SELECT 'coverage edges exterior' AS test,
-  ST_AsText(ST_CoverageEdges(ST_Collect(geom), 1))
+  ST_AsText(ST_CoverageEdges(ST_Collect(geom ORDER BY seq), 1))
 FROM coverage_edges WHERE id = 6;
 
 SELECT 'coverage edges interior' AS test,
-  ST_AsText(ST_CoverageEdges(ST_Collect(geom), 2))
+  ST_AsText(ST_CoverageEdges(ST_Collect(geom ORDER BY seq), 2))
 FROM coverage_edges WHERE id = 6;
 
 SELECT 'coverage edges array' AS test,
-  ST_AsText(ST_CoverageEdges(array_agg(geom)))
+  ST_AsText(ST_CoverageEdges(array_agg(geom ORDER BY seq)))
 FROM coverage_edges WHERE id = 6;
 
 DROP TABLE coverage_edges;
