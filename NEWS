@@ -17,6 +17,8 @@ This version requires GEOS 3.10 or higher
 
 * New Features *
 
+ - ST_CoverageEdges, returns MultiLinestring of distinct shared edges in
+          polygonal coverage (Paul Ramsey)
  - ST_MinimumSpanningTree, window function to calculate MST (Paul Ramsey)
  - #5993, [topology] Add max_edges parameter to TopoGeo_AddLinestring
           (Sandro Santilli)
