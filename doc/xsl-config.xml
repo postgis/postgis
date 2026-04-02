@@ -161,9 +161,9 @@
         <para role="tag_overlay_gridsize_arg">
             <para>
                 If the optional <code>gridSize</code> parameter is given (GEOS-3.9.0 or higher required),
-                all result vertices are guaranteed to fall on a grid of the specified
-                size.  For the operation to give predictable results all the input vertices
-                must fall already on the specified grid, see <xref linkend="ST_ReducePrecision"/>.
+                all result vertices are guaranteed to fall on a snap-rounded grid of the specified
+                size.  Note that operations performed on a grid may contain small artifacts
+                produced during grid alignment, see <xref linkend="ST_ReducePrecision"/>.
             </para>
         </para>
     </tags>
