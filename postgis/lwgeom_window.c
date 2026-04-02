@@ -1227,7 +1227,7 @@ Datum ST_MinimumSpanningTree(PG_FUNCTION_ARGS)
 		/* Note: GEOSMinimumSpanningTree signature assumed:
 		   size_t* GEOSMinimumSpanningTree(GEOSGeometry* const* geoms, size_t ngeoms);
 		*/
-		cluster_ids = GEOSMinimumSpanningTree(geoms, ngeoms);
+		cluster_ids = GEOSMinimumSpanningTree((const GEOSGeometry * const *)geoms, ngeoms);
 
 		if (cluster_ids)
 		{
