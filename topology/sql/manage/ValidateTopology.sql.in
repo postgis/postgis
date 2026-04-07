@@ -35,7 +35,7 @@ CREATE TYPE topology.ValidateTopology_ReturnType AS (
 -- Availability: 3.6.0
 -- Changed: 3.6.0 uses bigint for IDs
 -- Replaces _validatetopologygetfaceshellmaximaledgering(varchar, integer) deprecated in 3.6.0
-CREATE OR REPLACE FUNCTION topology._validatetopologygetfaceshellmaximaledgering(atopology varchar, aface bigint)
+CREATE OR REPLACE FUNCTION topology._ValidateTopologyGetFaceShellMaximalEdgeRing(atopology varchar, aface bigint)
 RETURNS GEOMETRY AS
 $BODY$
 DECLARE
