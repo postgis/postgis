@@ -36,6 +36,11 @@ This version requires GEOS 3.10 or higher
  - #2614, Use GEOSPreparedDistance and caching to accelerate ST_DWithin (Paul Ramsey)
  - GH-839, ST_Multi support for TIN and surfaces (Loïc Bartoletti)
 
+* Enhancements *
+
+ - #6065, Improved winding order computation robustness for rings having collapsed elements
+          (Sandro Santilli)
+
 * Bug Fixes *
 
  - Build PostgreSQL extension modules with `-fno-semantic-interposition` when
