@@ -2259,8 +2259,8 @@ lw_dist2d_pt_seg(const POINT2D *C, const POINT2D *A, const POINT2D *B, DISTPTS *
 
 	/*
 	 * This is for finding the maxdistance.
-	 * The maxdistance have to be between two vertexes,
-	 * compared to mindistance which can be between two vertexes.
+	 * The maxdistance have to be between two vertices,
+	 * compared to mindistance which can be between two vertices.
 	 */
 	if (dl->mode == DIST_MAX)
 	{
