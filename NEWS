@@ -10,6 +10,7 @@ PostGIS 3.3.10
           and Daniel Bakker
  - GH-850 Use quote_identifier to build tables in pgis_tablefromflatgeobuf (Ariel Mashraki)
  - #6060, fully quality calls to helper functions (Paul Ramsey)
+ - #6026, KNN failure in rare IEEE double rounding case (Paul Ramsey)
 
 
 PostGIS 3.3.9
