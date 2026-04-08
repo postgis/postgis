@@ -2206,105 +2206,160 @@ End of New faster distance calculations
 Functions in common for Brute force and new calculation
 --------------------------------------------------------------------------------------------------------------*/
 
-/**
-lw_dist2d_comp from p to line A->B
-This one is now sending every occasion to lw_dist2d_pt_pt
-Before it was handling occasions where r was between 0 and 1 internally
-and just returning the distance without identifying the points.
-To get this points it was necessary to change and it also showed to be about 10%faster.
-*/
 int
-lw_dist2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B, DISTPTS *dl)
+lw_dist2d_pt_seg(const POINT2D *C, const POINT2D *A, const POINT2D *B, DISTPTS *dl)
 {
-	double r;
-
-	LWDEBUG(2, "lw_dist2d_pt_seg called");
-
-	/*if start==end, then use pt distance */
-	if ((A->x == B->x) && (A->y == B->y))
-	{
-		LWDEBUG(2, "lw_dist2d_pt_seg found first and last segment points being the same");
-		return lw_dist2d_pt_pt(p, A, dl);
-	}
-
+	POINT2D P;
+	int is_vertical   = (A->x == B->x);
+	int is_horizontal = (A->y == B->y);
 
 	/*
-	 * otherwise, we use comp.graphics.algorithms
-	 * Frequently Asked Questions method
+	 * If A == B, then use pt-pt distance
+	 */
+	if (is_vertical && is_horizontal)
+		return lw_dist2d_pt_pt(C, A, dl);
+
+	/*
+	 * We use comp.graphics.algorithms Frequently Asked Questions method
 	 *
-	 *  (1)        AC dot AB
-	 *         r = ---------
-	 *              ||AB||^2
-	 *	r has the following meaning:
-	 *	r=0 P = A
-	 *	r=1 P = B
-	 *	r<0 P is on the backward extension of AB
-	 *	r>1 P is on the forward extension of AB
-	 *	0<r<1 P is interior to AB
+	 *  Let the point be C (Cx,Cy) and the line be AB (Ax,Ay) to (Bx,By).
+	 *  Let P be the point of perpendicular projection of C on AB.  The parameter
+	 *  r, which indicates P's position along AB, is computed by the dot product
+	 *  of AC and AB divided by the square of the length of AB:
+	 *
+	 *  (1)     AC dot AB
+	 *      r = ---------
+	 *          ||AB||^2
+	 *
+	 *  The length of a line segment
+	 *
+	 *      L = sqrt( (Bx-Ax)^2 + (By-Ay)^2 )
+	 *
+	 *  So (1) expands to:
+	 *
+	 *          (Cx-Ax)(Bx-Ax) + (Cy-Ay)(By-Ay)
+	 *      r = -------------------------------
+	 *                        L^2
+	 *
+	 *  r has the following meaning:
+	 *
+	 *      r=0      P = A
+	 *      r=1      P = B
+	 *      r<0      P is on the backward extension of AB
+	 *      r>1      P is on the forward extension of AB
+	 *      0<r<1    P is interior to AB
+	 *
 	 */
 
-	r = ((p->x - A->x) * (B->x - A->x) + (p->y - A->y) * (B->y - A->y)) /
-	    ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
+	double dx = B->x - A->x;
+	double dy = B->y - A->y;
+	double L2 = (dx*dx) + (dy*dy);
 
-	LWDEBUGF(2, "lw_dist2d_pt_seg found r = %.15g", r);
+	double r = ((C->x - A->x) * dx + (C->y - A->y) * dy) / L2;
 
-	/*This is for finding the maxdistance.
-	the maxdistance have to be between two vertices, compared to mindistance which can be between two vertices.*/
+	/*
+	 * This is for finding the maxdistance.
+	 * The maxdistance have to be between two vertices,
+	 * compared to mindistance which can be between two vertices.
+	 */
 	if (dl->mode == DIST_MAX)
 	{
 		if (r >= 0.5)
-			return lw_dist2d_pt_pt(p, A, dl);
+			return lw_dist2d_pt_pt(C, A, dl);
 		else /* (r < 0.5) */
-			return lw_dist2d_pt_pt(p, B, dl);
+			return lw_dist2d_pt_pt(C, B, dl);
 	}
-
-	if (r < 0) /*If p projected on the line is outside point A*/
-		return lw_dist2d_pt_pt(p, A, dl);
-	if (r >= 1) /*If p projected on the line is outside point B or on point B*/
-		return lw_dist2d_pt_pt(p, B, dl);
-
-	/*If the point p is on the segment this is a more robust way to find out that*/
-	if ((((A->y - p->y) * (B->x - A->x) == (A->x - p->x) * (B->y - A->y))) && (dl->mode == DIST_MIN))
-	{
-		lw_dist2d_distpts_set(dl, 0, p, p);
-	}
-
 
 	/*
-		(2)
-				  (Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay)
-			s = -----------------------------
-                    L^2
+	 * If projected point P is outside point A
+	 */
+	if (r < 0)
+		return lw_dist2d_pt_pt(C, A, dl);
 
-			Then the distance from C to P = |s|*L.
-	*/
+	/*
+	 * If projected point P is is outside
+	 * point B or on point B
+	 */
+	if (r >= 1)
+		return lw_dist2d_pt_pt(C, B, dl);
 
-	double s = ((A->y - p->y) * (B->x - A->x) - (A->x - p->x) * (B->y - A->y)) /
-	           ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
+	/*
+	 * If point C is on the segment AB then
+	 * distance is zero and nearest point is C
+	 */
+	if ((A->y - C->y) * dx == (A->x - C->x) * dy)
+	{
+		lw_dist2d_distpts_set(dl, 0.0, C, C);
+	}
 
-	double dist = fabs(s) * sqrt(((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y)));
-	if ( dist < dl->distance )
+	/*
+	 *  The point P can then be found:
+	 *
+	 *      Px = Ax + r(Bx-Ax)
+	 *      Py = Ay + r(By-Ay)
+	 *
+	 *  And the distance from A to P = r*L.
+	 */
+
+	/*
+	 * If the projection of point C on the segment is
+	 * between A and B then we find that "point on segment"
+	 * and send it to lw_dist2d_pt_pt
+	 */
+	if (is_horizontal || is_vertical)
+	{
+		P.x = A->x + r * dx;
+		P.y = A->y + r * dy;
+		return lw_dist2d_pt_pt(C, &P, dl);
+	}
+
+	/*
+	 *
+	 *  Use another parameter s to indicate the location along PC, with the
+	 *  following meaning:
+	 *         s<0      C is left of AB
+	 *         s>0      C is right of AB
+	 *         s=0      C is on AB
+	 *
+	 *  Compute s as follows:
+	 *
+	 *          (Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay)
+	 *      s = -----------------------------
+	 *                      L^2
+	 *
+	 *
+	 *  Then the distance from C to P = s*L.
+	 */
+
+	/*
+	 * Calculate distance without reference to the
+	 * projected point P.
+	 */
+	double s = ((A->y - C->y) * dx - (A->x - C->x) * dy) / L2;
+
+	double dist = fabs(s) * sqrt(L2);
+	// double dist = fabs(s) * hypot(dx, dy);
+	if (dist < dl->distance)
 	{
 		dl->distance = dist;
 		{
-			POINT2D c;
-			c.x = A->x + r * (B->x - A->x);
-			c.y = A->y + r * (B->y - A->y);
+			P.x = A->x + r * dx;
+			P.y = A->y + r * dy;
 			if (dl->twisted > 0)
 			{
-				dl->p1 = *p;
-				dl->p2 = c;
+				dl->p1 = *C;
+				dl->p2 = P;
 			}
 			else
 			{
-				dl->p1 = c;
-				dl->p2 = *p;
+				dl->p1 = P;
+				dl->p2 = *C;
 			}
 		}
 	}
-
 	return LW_TRUE;
 }
+
 
 /** Compares incoming points and stores the points closest to each other or most far away from each other depending on
  * dl->mode (max or min) */
