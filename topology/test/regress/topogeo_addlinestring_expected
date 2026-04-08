@@ -234,3 +234,5 @@ ERROR:  Adding line to topology requires creating more edges than the requested 
 t6023.1|errors|
 t6023.2|errors|
 t6062.edges|t
+t6064.1|t
+t6064.2|t
