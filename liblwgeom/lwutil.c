@@ -276,6 +276,10 @@ char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int
 	char *output;
 	char *outstart;
 
+	int strsz = strlen(str);
+	if (endpos > strsz)
+		endpos = strsz;
+
 	/* Allocate space for new string */
 	output = lwalloc(maxlength + 4);
 	output[0] = '\0';
