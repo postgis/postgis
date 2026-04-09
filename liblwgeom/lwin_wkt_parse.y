@@ -45,7 +45,7 @@ void wkt_yyerror(__attribute__((__unused__)) const char *str)
 * (eg, from within other functions in lwin_wkt.c) or from a threaded program.
 * Note that parser_result.wkinput picks up a reference to wktstr.
 */
-int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parser_check_flags)
+int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, const char *wktstr, int parser_check_flags)
 {
 	int parse_rv = 0;
 
@@ -107,7 +107,6 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 %}
 
 %locations
-%define parse.error verbose
 
 %union {
 	int integervalue;

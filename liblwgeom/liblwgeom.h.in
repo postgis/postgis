@@ -2296,7 +2296,7 @@ extern char*   hexbytes_from_bytes(const uint8_t *bytes, size_t size);
 /*
 * WKT detailed parsing support
 */
-extern int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse_flags);
+extern int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, const char *wktstr, int parse_flags);
 void lwgeom_parser_result_init(LWGEOM_PARSER_RESULT *parser_result);
 void lwgeom_parser_result_free(LWGEOM_PARSER_RESULT *parser_result);
 
@@ -2307,7 +2307,7 @@ extern void *lwrealloc(void *mem, size_t size);
 extern void lwfree(void *mem);
 
 /* Utilities */
-extern char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int truncdirection);
+extern char *lwmessage_truncate(const char *str, int errpos, int maxlength);
 
 /*
 * TWKB functions

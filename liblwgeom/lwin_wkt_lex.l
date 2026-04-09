@@ -59,17 +59,15 @@ static void wkt_lexer_unknown()
 
 %%
 
--?(([0-9]+\.?)|([0-9]*\.?[0-9]+)([eE][-+]?[0-9]+)?)[ \,\)\t\n\r] {
+-?(([0-9]+\.?)|([0-9]*\.?[0-9]+)([eE][-+]?[0-9]+)?)/[ \,\)\t\n\r] {
 	LWDEBUG(5,"DOUBLE");
 	wkt_yylval.doublevalue = atof(wkt_yytext);
-	yyless(wkt_yyleng-1);
 	return DOUBLE_TOK;
 	}
 
-([Nn][Aa][Nn])[ \,\)\t\n\r] {
+([Nn][Aa][Nn])/[ \,\)\t\n\r] {
 	LWDEBUG(5,"DOUBLE NAN");
 	wkt_yylval.doublevalue = NAN;
-	yyless(wkt_yyleng-1);
 	return DOUBLE_TOK;
 }
 
@@ -135,7 +133,7 @@ void wkt_yyfree (void * ptr )
 /*
 * Set up the lexer!
 */
-void wkt_lexer_init(char *src)
+void wkt_lexer_init(const char *src)
 {
 	yy_init_globals();
 	wkt_yy_buf_state = wkt_yy_scan_string(src);

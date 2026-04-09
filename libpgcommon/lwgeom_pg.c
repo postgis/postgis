@@ -285,11 +285,11 @@ pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result)
 	   within the input stream cannot be matched */
 	if (lwg_parser_result->errlocation > 0)
 	{
-		/* Return a copy of the input string start truncated
-		 * at the error location */
+		/* Return a short copy of the input string truncated at the error location */
 		hintbuffer = lwmessage_truncate(
-			(char *)lwg_parser_result->wkinput, 0,
-			lwg_parser_result->errlocation - 1, 40, 0);
+			lwg_parser_result->wkinput,     /* wkt */
+			lwg_parser_result->errlocation, /* errpos */
+			40);                            /* maxlen */
 
 		ereport(ERROR,
 		        (errmsg("%s", lwg_parser_result->message),
