@@ -69,7 +69,7 @@ static void wkt_lexer_unknown()
 	LWDEBUG(5,"DOUBLE NAN");
 	wkt_yylval.doublevalue = NAN;
 	return DOUBLE_TOK;
-}
+	}
 
 SRID=-?[0-9]+ {
 	LWDEBUG(5,"SRID");
