@@ -1,6 +1,7 @@
 [codespell]
 ignore-words = .codespell.ignore
 skip =
+    ./build/**,
     ./deps/**,
     ./extensions/*/sql/**,
     ./extensions/*/sql_bits/*.sql,
