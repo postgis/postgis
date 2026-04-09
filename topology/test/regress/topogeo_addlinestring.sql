@@ -643,13 +643,11 @@ SELECT 't6064.1', count(*) > 0 FROM topology.TopoGeo_addLinestring('t6064',
 )');
 
 SELECT 't6064.check.intermediate', * FROM topology.ValidateTopology('t6064');
-set client_min_messages to DEBUG;
 SELECT 't6064.2', count(*) > 0 FROM topology.TopoGeo_addLinestring('t6064',
 'LINESTRING(
   17.42207545158653 69.11091383590062,
   17.42207570266477 69.11091383235974,
   17.622976580401076 69.12848944101118
 )');
-set client_min_messages to WARNING;
 SELECT 't6064.check.final', * FROM topology.ValidateTopology('t6064');
 SELECT NULL FROM topology.DropTopology ('t6064');
