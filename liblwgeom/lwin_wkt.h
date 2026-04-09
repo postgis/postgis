@@ -48,7 +48,7 @@ extern const char *parser_error_messages[];
 /*
 * Prototypes for the lexer
 */
-extern void wkt_lexer_init(char *str);
+extern void wkt_lexer_init(const char *str);
 extern void wkt_lexer_close(void);
 extern int wkt_yylex_destroy(void);
 

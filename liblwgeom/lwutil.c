@@ -35,6 +35,7 @@
 /* Global variables */
 #include "../postgis_config.h"
 #include "liblwgeom_internal.h"
+#include "stringbuffer.h"
 #include "lwgeom_log.h"
 
 /* Default allocators */
@@ -260,80 +261,47 @@ lwstrdup(const char* a)
 }
 
 /*
- * Returns a new string which contains a maximum of maxlength characters starting
- * from startpos and finishing at endpos (0-based indexing). If the string is
- * truncated then the first or last characters are replaced by "..." as
- * appropriate.
- *
- * The caller should specify start or end truncation by setting the truncdirection
- * parameter as follows:
- *    0 - start truncation (i.e. characters are removed from the beginning)
- *    1 - end truncation (i.e. characters are removed from the end)
+ * Returns the characters to the left of the error position
+ * to a maximum of maxlength.
  */
-
-char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int truncdirection)
+char *
+lwmessage_truncate(const char *str, int errpos, int maxlength)
 {
-	char *output;
-	char *outstart;
+	int str_sz;
+	int startpos;
 
-	/* Allocate space for new string */
-	output = lwalloc(maxlength + 4);
-	output[0] = '\0';
+	assert(str != NULL);
+	assert(errpos >= 0);
+	assert(maxlength > 0);
 
-	/* Start truncation */
-	if (truncdirection == 0)
+	str_sz = strlen(str);
+
+	stringbuffer_t sb;
+	stringbuffer_init(&sb);
+
+	/* Error cannot be past end of WKT */
+	if (errpos > str_sz)
+		errpos = str_sz;
+
+	/* Go back maxlength from errpos but not past zero */
+	startpos = errpos - maxlength;
+	if (startpos < 0)
+		startpos = 0;
+
+	if (str_sz < maxlength)
 	{
-		/* Calculate the start position */
-		if (endpos - startpos < maxlength)
-		{
-			outstart = str + startpos;
-			strncat(output, outstart, endpos - startpos + 1);
-		}
-		else
-		{
-			if (maxlength >= 3)
-			{
-				/* Add "..." prefix */
-				outstart = str + endpos + 1 - maxlength + 3;
-				strncat(output, "...", 4);
-				strncat(output, outstart, maxlength - 3);
-			}
-			else
-			{
-				/* maxlength is too small; just output "..." */
-				strncat(output, "...", 4);
-			}
-		}
+		stringbuffer_append(&sb, str);
+	}
+	else
+	{
+		/* Add "..." prefix */
+		stringbuffer_append(&sb, "...");
+		stringbuffer_append_len(&sb, str + startpos, errpos-startpos);
 	}
 
-	/* End truncation */
-	if (truncdirection == 1)
-	{
-		/* Calculate the end position */
-		if (endpos - startpos < maxlength)
-		{
-			outstart = str + startpos;
-			strncat(output, outstart, endpos - startpos + 1);
-		}
-		else
-		{
-			if (maxlength >= 3)
-			{
-				/* Add "..." suffix */
-				outstart = str + startpos;
-				strncat(output, outstart, maxlength - 3);
-				strncat(output, "...", 4);
-			}
-			else
-			{
-				/* maxlength is too small; just output "..." */
-				strncat(output, "...", 4);
-			}
-		}
-	}
-
-	return output;
+	return stringbuffer_getstringcopy(&sb);
 }
+
 
 int32_t
 clamp_srid(int32_t srid)
