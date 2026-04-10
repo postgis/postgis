@@ -155,6 +155,9 @@ int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom)
 		/* Last point of the previous component */
 		LWLINE *prevline = (LWLINE*)(col->geoms[col->ngeoms-1]);
 
+		if (lwline_is_empty(prevline))
+			return LW_FAILURE;
+
 		getPoint4d_p(newline->points, 0, &first);
 		getPoint4d_p(prevline->points, prevline->points->npoints-1, &last);
 
