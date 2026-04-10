@@ -47,31 +47,40 @@ lwcollection_getsubcurve(const LWCOMPOUND *compound, uint32_t curvenum)
 int
 lwcompound_is_closed(const LWCOMPOUND *compound)
 {
+	const LWLINE *line_start, *line_end;
+	const POINTARRAY *pa_start, *pa_end;
+
 	int hasz = lwgeom_has_z(lwcompound_as_lwgeom(compound));
 	if (lwgeom_is_empty(lwcompound_as_lwgeom(compound)))
 		return LW_FALSE;
 
-	for (uint32_t i = 0; i < compound->ngeoms; i++)
+	/* Single entry, closes on itself */
+	if (compound->ngeoms == 1 && lwline_is_closed((LWLINE *)(compound->geoms[0])))
+			return LW_TRUE;
+
+	/* If internal connectivity is lacking, so is closure */
+	if (!lwcompound_is_valid(compound))
+		return LW_FALSE;
+
+	/* Internal connection is good, what about start/end points? */
+	line_start = (LWLINE *)(compound->geoms[0]);
+	line_end = (LWLINE *)(compound->geoms[compound->ngeoms-1]);
+	pa_start = line_start->points;
+	pa_end = line_end->points;
+
+	if (hasz)
 	{
-		uint32_t i_end = i == 0 ? compound->ngeoms - 1 : i - 1;
-		const LWLINE *geom_start = (LWLINE *)(compound->geoms[i]);
-		const LWLINE *geom_end = (LWLINE *)(compound->geoms[i_end]);
-		const POINTARRAY *pa_start = geom_start->points;
-		const POINTARRAY *pa_end = geom_end->points;
-		if (hasz)
-		{
-			const POINT3D *pt_start = getPoint3d_cp(pa_start, 0);
-			const POINT3D *pt_end = getPoint3d_cp(pa_end, pa_end->npoints-1);
-			if (!p3d_same(pt_start, pt_end))
-				return LW_FALSE;
-		}
-		else
-		{
-			const POINT2D *pt_start = getPoint2d_cp(pa_start, 0);
-			const POINT2D *pt_end = getPoint2d_cp(pa_end, pa_end->npoints-1);
-			if (!p2d_same(pt_start, pt_end))
-				return LW_FALSE;
-		}
+		const POINT3D *pt_start = getPoint3d_cp(pa_start, 0);
+		const POINT3D *pt_end = getPoint3d_cp(pa_end, pa_end->npoints-1);
+		if (!p3d_same(pt_start, pt_end))
+			return LW_FALSE;
+	}
+	else
+	{
+		const POINT2D *pt_start = getPoint2d_cp(pa_start, 0);
+		const POINT2D *pt_end = getPoint2d_cp(pa_end, pa_end->npoints-1);
+		if (!p2d_same(pt_start, pt_end))
+			return LW_FALSE;
 	}
 
 	return LW_TRUE;
@@ -84,12 +93,24 @@ lwcompound_is_valid(const LWCOMPOUND *compound)
 	if (lwgeom_is_empty(lwcompound_as_lwgeom(compound)))
 		return LW_TRUE;
 
+	/* Only one component, do not need to test connectivity */
+	if (compound->ngeoms == 1)
+		return LW_TRUE;
+
+	/* Check internal connectivity between components */
 	for (uint32_t i = 1; i < compound->ngeoms; i++)
 	{
-		const LWLINE *geom_start = (LWLINE *)(compound->geoms[i]);
-		const LWLINE *geom_end = (LWLINE *)(compound->geoms[i-1]);
-		const POINTARRAY *pa_start = geom_start->points;
-		const POINTARRAY *pa_end = geom_end->points;
+		const POINTARRAY *pa_start, *pa_end;
+		const LWLINE *line_start = (LWLINE *)(compound->geoms[i]);
+		const LWLINE *line_end = (LWLINE *)(compound->geoms[i-1]);
+
+		/* Empty cannot be a compound component, because it joins nothing */
+		if (lwline_is_empty(line_start) || (lwline_is_empty(line_end)))
+			return LW_FALSE;
+
+		pa_start = line_start->points;
+		pa_end = line_end->points;
+
 		if (hasz)
 		{
 			const POINT3D *pt_start = getPoint3d_cp(pa_start, 0);
