@@ -565,8 +565,11 @@ lwcircstring_linearize(const LWCIRCSTRING *icurve, double tol,
 			return NULL;
 		}
 	}
-	getPoint4d_p(icurve->points, icurve->points->npoints-1, &p1);
-	ptarray_append_point(ptarray, &p1, LW_FALSE);
+	if (icurve->points->npoints > 0)
+	{
+		getPoint4d_p(icurve->points, icurve->points->npoints-1, &p1);
+		ptarray_append_point(ptarray, &p1, LW_FALSE);
+	}
 
 	oline = lwline_construct(icurve->srid, NULL, ptarray);
 	return oline;
