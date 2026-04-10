@@ -1042,11 +1042,14 @@ ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 	const POINT2D *seg1, *seg2;
 	int wn = 0;
 
+	if ( !pa || !pa->npoints )
+		lwerror("%s called on empty pointarray", __func__);
+
 	seg1 = getPoint2d_cp(pa, 0);
 	seg2 = getPoint2d_cp(pa, pa->npoints-1);
 
 	if (!p2d_same(seg1, seg2))
-		lwerror("ptarray_contains_point called on unclosed ring");
+		lwerror("%s called on unclosed ring", __func__);
 
 	for (uint32_t i = 1; i < pa->npoints; i++)
 	{
