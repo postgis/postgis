@@ -358,6 +358,9 @@ void ptarray_calc_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
 	const double *P2;
 	const double *P3;
 
+	if (npoints < 2)
+		lwerror("%s: not enough points provided", __func__);
+
 	P1 = (double*)getPoint_internal(ea->inpts, 0);
 	P2 = (double*)getPoint_internal(ea->inpts, 1);
 
