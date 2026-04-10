@@ -293,62 +293,6 @@ lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *
 	return cr;
 }
 
-int
-pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring)
-{
-	int cn = 0;    /* the crossing number counter */
-	uint32_t i;
-	const POINT2D *v1, *v2;
-	const POINT2D *first, *last;
-
-	first = getPoint2d_cp(ring, 0);
-	last = getPoint2d_cp(ring, ring->npoints-1);
-	if ( memcmp(first, last, sizeof(POINT2D)) )
-	{
-		lwerror("pt_in_ring_2d: V[n] != V[0] (%g %g != %g %g)",
-		        first->x, first->y, last->x, last->y);
-		return LW_FALSE;
-
-	}
-
-	LWDEBUGF(2, "pt_in_ring_2d called with point: %g %g", p->x, p->y);
-	/* printPA(ring); */
-
-	/* loop through all edges of the polygon */
-	v1 = getPoint2d_cp(ring, 0);
-	for (i=0; i<ring->npoints-1; i++)
-	{
-		double vt;
-		v2 = getPoint2d_cp(ring, i+1);
-
-		/* edge from vertex i to vertex i+1 */
-		if
-		(
-		    /* an upward crossing */
-		    ((v1->y <= p->y) && (v2->y > p->y))
-		    /* a downward crossing */
-		    || ((v1->y > p->y) && (v2->y <= p->y))
-		)
-		{
-
-			vt = (double)(p->y - v1->y) / (v2->y - v1->y);
-
-			/* P->x <intersect */
-			if (p->x < v1->x + vt * (v2->x - v1->x))
-			{
-				/* a valid crossing of y=p->y right of p->x */
-				++cn;
-			}
-		}
-		v1 = v2;
-	}
-
-	LWDEBUGF(3, "pt_in_ring_2d returning %d", cn&1);
-
-	return (cn&1);    /* 0 if even (out), and 1 if odd (in) */
-}
-
-
 static int
 lw_seg_interact(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)
 {
