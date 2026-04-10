@@ -429,7 +429,6 @@ int lw_pt_in_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const P
 int lw_arc_is_pt(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
 double lw_seg_length(const POINT2D *A1, const POINT2D *A2);
 double lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
-int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
 int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt);
 int ptarrayarc_contains_point(const POINTARRAY *pa, const POINT2D *pt);
 int ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int check_closed, int *winding_number);
