@@ -1342,7 +1342,6 @@ extern LWPOINT* lwcompound_get_endpoint(const LWCOMPOUND *lwcmp);
 extern LWPOINT* lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, uint32_t where);
 
 extern double ptarray_length_2d(const POINTARRAY *pts);
-extern int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
 extern int azimuth_pt_pt(const POINT2D *p1, const POINT2D *p2, double *ret);
 extern LWPOINT* lwpoint_project_lwpoint(const LWPOINT* lwpoint1, const LWPOINT* lwpoint2, double distance);
 extern LWPOINT* lwpoint_project(const LWPOINT* lwpoint1, double distance, double azimuth);
