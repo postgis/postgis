@@ -23,6 +23,7 @@ topogeometry corruption:
 - #6060, fully quality calls to helper functions (Paul Ramsey)
 - #6026, KNN failure in rare IEEE double rounding case (Paul Ramsey)
 - #6061, WKT parser produces incorrect error locations (Paul Ramsey)
+- #6069, Build warnings / CI failures on K&R style, fallthroughs (Paul Ramsey)
 
 
 PostGIS 3.6.2

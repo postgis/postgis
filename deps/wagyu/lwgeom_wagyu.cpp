@@ -250,7 +250,7 @@ lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox)
 }
 
 const char *
-libwagyu_version()
+libwagyu_version(void)
 {
 	static char str[50] = {0};
 	snprintf(
@@ -260,13 +260,13 @@ libwagyu_version()
 }
 
 void
-lwgeom_wagyu_interruptRequest()
+lwgeom_wagyu_interruptRequest(void)
 {
 	mapbox::geometry::wagyu::interrupt_request();
 }
 
 void
-lwgeom_wagyu_interruptReset()
+lwgeom_wagyu_interruptReset(void)
 {
     mapbox::geometry::wagyu::interrupt_reset();
 }

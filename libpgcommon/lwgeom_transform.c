@@ -96,7 +96,7 @@ PROJSRSDestroyPortalCache(void *portalCache)
 * If it doesn't exist, make a new blank one and return it.
 */
 PROJSRSCache *
-GetPROJSRSCache()
+GetPROJSRSCache(void)
 {
 	PROJSRSCache* cache = PROJ_CACHE;
 	if (!cache)

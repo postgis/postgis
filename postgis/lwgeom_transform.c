@@ -409,7 +409,7 @@ srs_tuple_from_entry(const struct srs_entry* entry, TupleDesc tuple_desc)
 }
 
 static struct srs_data *
-srs_state_init()
+srs_state_init(void)
 {
 	struct srs_data *state = palloc0(sizeof(*state));
 	state->capacity = 8192;

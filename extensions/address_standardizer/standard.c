@@ -314,7 +314,7 @@ typedef struct STDADDR_s {  // define as required
 
 */
 
-STANDARDIZER *std_init()
+STANDARDIZER *std_init(void)
 {
     STANDARDIZER *std;
 

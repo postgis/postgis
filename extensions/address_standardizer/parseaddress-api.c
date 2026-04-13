@@ -43,7 +43,7 @@
 #endif
 
 const char *get_state_regex(char *st);
-const char *parseaddress_cvsid();
+const char *parseaddress_cvsid(void);
 char *clean_leading_punct(char *s);
 
 const char *get_state_regex(char *st)

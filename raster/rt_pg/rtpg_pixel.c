@@ -349,7 +349,7 @@ struct rtpg_dumpvalues_arg_t {
 	bool **nodata;
 };
 
-static rtpg_dumpvalues_arg rtpg_dumpvalues_arg_init() {
+static rtpg_dumpvalues_arg rtpg_dumpvalues_arg_init(void) {
 	rtpg_dumpvalues_arg arg = NULL;
 
 	arg = palloc(sizeof(struct rtpg_dumpvalues_arg_t));
@@ -1292,7 +1292,7 @@ struct rtpg_setvaluesgv_geomval_t {
 	rt_raster mask;
 };
 
-static rtpg_setvaluesgv_arg rtpg_setvaluesgv_arg_init() {
+static rtpg_setvaluesgv_arg rtpg_setvaluesgv_arg_init(void) {
 	rtpg_setvaluesgv_arg arg = palloc(sizeof(struct rtpg_setvaluesgv_arg_t));
 	if (arg == NULL) {
 		elog(ERROR, "rtpg_setvaluesgv_arg_init: Could not allocate memory for function arguments");

@@ -46,7 +46,7 @@
 PG_MODULE_MAGIC;
 
 
-static void interrupt_geos_callback()
+static void interrupt_geos_callback(void)
 {
 #ifdef WIN32
 	if (UNBLOCKED_SIGNAL_QUEUE())
@@ -65,7 +65,7 @@ static void interrupt_geos_callback()
 	}
 }
 
-static void interrupt_liblwgeom_callback()
+static void interrupt_liblwgeom_callback(void)
 {
 #ifdef WIN32
 	if (UNBLOCKED_SIGNAL_QUEUE())
