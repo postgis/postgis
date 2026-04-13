@@ -82,3 +82,4 @@ ERROR:  geometry requires more points
 ERROR:  geometry requires more points
 ERROR:  geometry requires more points
 curve accessors 01|1|ST_CompoundCurve|ST_LineString||3|ST_LineString|ST_CircularString|ST_LineString|||
+ST_IsClosed|f
