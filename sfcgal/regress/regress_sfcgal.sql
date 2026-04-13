@@ -26,8 +26,6 @@ ELSE
 END;
 
 SELECT 'CG_ForceLHR', ST_AsText(CG_ForceLHR('POLYGON((0 0,0 1,1 1,1 0,0 0))'));
-SELECT 'CG_Orientation_1', CG_Orientation(CG_ForceLHR('POLYGON((0 0,0 1,1 1,1 0,0 0))'));
-SELECT 'CG_Orientation_2', CG_Orientation(ST_ForceRHR('POLYGON((0 0,0 1,1 1,1 0,0 0))'));
 SELECT 'CG_MinkowskiSum', ST_AsText(CG_MinkowskiSum('LINESTRING(0 0,4 0)','POLYGON((0 0,1 0,1 1,0 1,0 0))'));
 SELECT 'CG_ConstrainedDelaunayTriangles', ST_AsText(CG_ConstrainedDelaunayTriangles('GEOMETRYCOLLECTION(POINT(0 0), POLYGON((2 2, 2 -2, 4 0, 2 2)))'));
 SELECT 'CG_3DConvexHull', CG_3DArea(CG_3DConvexHull('MULTIPOINTZ(0 0 5, 1 5 3, 5 7 6, 9 5 3 , 5 7 5, 6 3 5)'))::numeric(10,4);
@@ -62,8 +60,6 @@ ELSE
 END;
 
 SELECT 'CG_ForceLHR', ST_AsText(CG_ForceLHR('POLYGON((0 0,0 1,1 1,1 0,0 0))'));
-SELECT 'CG_Orientation_1', CG_Orientation(CG_ForceLHR('POLYGON((0 0,0 1,1 1,1 0,0 0))'));
-SELECT 'CG_Orientation_2', CG_Orientation(ST_ForceRHR('POLYGON((0 0,0 1,1 1,1 0,0 0))'));
 SELECT 'CG_MinkowskiSum', ST_AsText(CG_MinkowskiSum('LINESTRING(0 0,4 0)','POLYGON((0 0,1 0,1 1,0 1,0 0))'));
 SELECT 'CG_ConstrainedDelaunayTriangles', ST_AsText(CG_ConstrainedDelaunayTriangles('GEOMETRYCOLLECTION(POINT(0 0), POLYGON((2 2, 2 -2, 4 0, 2 2)))'));
 SELECT 'CG_3DConvexHull', CG_3DArea(CG_3DConvexHull('MULTIPOINTZ(0 0 5, 1 5 3, 5 7 6, 9 5 3 , 5 7 5, 6 3 5)'))::numeric(10,4);
