@@ -1966,12 +1966,6 @@ else
     AC_MSG_RESULT([  SFCGAL support:                     disabled])
 fi
 
-if test "x$ADDRESS_STANDARDIZER" = "xaddress_standardizer"; then
-    AC_MSG_RESULT([  Address Standardizer support:       enabled])
-else
-    AC_MSG_RESULT([  Address Standardizer support:       disabled])
-fi
-
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------- Documentation Generation -------- ])
 AC_MSG_RESULT([  xsltproc:             ${XSLTPROC}])
