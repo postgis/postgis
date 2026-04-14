@@ -41,7 +41,7 @@ task:
   build_script:
     - |
       ./autogen.sh
-      ./configure PKG_CONFIG=/usr/local/bin/pkgconf CFLAGS="-isystem /usr/local/include -Wall -fno-omit-frame-pointer -Werror" LDFLAGS="-L/usr/local/lib" --with-libiconv-prefix=/usr/local --without-gui --with-topology --without-raster --with-sfcgal=/usr/local/bin/sfcgal-config --with-address-standardizer --with-protobuf
+      ./configure PKG_CONFIG=/usr/local/bin/pkgconf CFLAGS="-isystem /usr/local/include -Wall -fno-omit-frame-pointer -Werror" LDFLAGS="-L/usr/local/lib" --with-libiconv-prefix=/usr/local --without-gui --with-topology --without-raster --with-sfcgal=/usr/local/bin/sfcgal-config --with-protobuf
       service postgresql oneinitdb
       service postgresql onestart
       su postgres -c "createuser -s `whoami`"
@@ -140,7 +140,6 @@ task:
                   --with-topology \
                   --without-raster \
                   --with-sfcgal \
-                  --with-address-standardizer \
                   --with-protobuf \
                   --with-pgconfig=${PGCONFIG}
 
