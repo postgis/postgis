@@ -1,5 +1,5 @@
-PostGIS 3.2.10dev
-2026/xx/xx
+PostGIS 3.2.10
+2026/04/14
 
 PostgreSQL 9.6-15 required. GEOS 3.6+ required but GEOS 3.9+ to take advantage of all features.
 Proj 4.9+ required.

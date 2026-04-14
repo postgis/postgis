@@ -2,6 +2,20 @@
 <appendix id="release_notes">
   <title>Appendix</title>
    <subtitle>Release Notes</subtitle>
+
+    <sect1>
+        <title>PostGIS 3.2.10</title>
+        <para>2026/04/14</para>
+        <simplesect>
+            <title>Bug Fixes</title>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5998">5998</ulink>, [tiger_geododer] Do not create tiger_data as part of postgis_tiger_geocoder extension, create/update (Regina Obe)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/6054">6054</ulink>, Remove priv escalation scenario. Reported by Daniel Bakker</para>
+            <para><ulink url="https://github.com/postgis/postgis/pull/850">GH-850</ulink>, Use quote_identifier to build tables in pgis_tablefromflatgeobuf (Ariel Mashraki)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/6060">6060</ulink>, fully quality calls to helper functions (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/6061">6061</ulink>, WKT parser produces incorrect error locations (Paul Ramsey)</para>
+        </simplesect>
+    </sect1>
+
     <sect1>
         <title>PostGIS 3.2.9</title>
         <para>2026/02/08</para>
