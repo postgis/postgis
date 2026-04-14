@@ -468,7 +468,8 @@ BEGIN
       SELECT
         r.ring_id,
         e.seq,
-        e.edge signed_edge_id
+        e.edge signed_edge_id,
+        count(e.edge) over (PARTITION BY ring_id, abs(e.edge)) > 1 as dangling
       FROM all_rings r
       LEFT JOIN LATERAL unnest(r.edges) WITH ORDINALITY AS e(edge, seq)
       ON TRUE
@@ -482,9 +483,16 @@ BEGIN
           ELSE
             ST_Reverse(e.geom)
           END
-           -- TODO: how to make sure rows are ordered ?
           ORDER BY seq
         ) geom,
+        ST_LineMerge( ST_Collect(
+          CASE WHEN signed_edge_id > 0 THEN
+            e.geom
+          ELSE
+            ST_Reverse(e.geom)
+          END
+        ) FILTER ( WHERE NOT r.dangling ) )
+        non_dangling_edges_merge,
         array_agg(
           DISTINCT
           CASE WHEN signed_edge_id > 0 THEN
@@ -501,7 +509,7 @@ BEGIN
       WHERE e.edge_id = abs(r.signed_edge_id)
       GROUP BY ring_id
     ) --}{
-    SELECT ring_id, geom as ring_geom, side_faces, distinct_edges, num_edges
+    SELECT ring_id, geom as ring_geom, non_dangling_edges_merge, side_faces, distinct_edges, num_edges
     FROM all_rings_with_ring_geom
   LOOP --}{
 
@@ -548,10 +556,28 @@ BEGIN
     IF ST_NPoints(rec.ring_geom) > 3 AND
        rec.num_edges != rec.distinct_edges * 2
     THEN
+      -- TODO: directly build candidate shell polygon from non-dangling portions ?
       ring_poly := ST_MakePolygon(rec.ring_geom);
-      IF ST_IsPolygonCCW(ring_poly) THEN
-        is_shell := true;
-      END IF;
+      /*
+        1. Make polygon from non-dangling edge merge
+        2. Pick the one with largest area
+        3. Check if CCW
+      */
+      WITH irings AS (
+        SELECT ST_MakePolygon(geom) geom
+        FROM ST_Dump(rec.non_dangling_edges_merge)
+        -- TODO: report non-closed rings from non-dangling edges as another invalidity
+        WHERE ST_StartPoint(geom) = ST_EndPoint(geom)
+      ),
+      largest_iring AS (
+        SELECT geom FROM irings
+        ORDER BY ST_Area(geom) DESC LIMIT 1
+      )
+      SELECT ST_IsPolygonCCW(geom) FROM largest_iring
+      INTO is_shell;
+#if POSTGIS_TOPOLOGY_DEBUG > 1
+      RAISE NOTICE 'Ring % is CCW ? %', rec.ring_id, is_shell;
+#endif
     END IF;
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
