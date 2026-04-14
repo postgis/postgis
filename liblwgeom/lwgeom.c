@@ -1807,6 +1807,13 @@ int
 lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 {
 	int modified = LW_FALSE;
+
+	if (!geom)
+	{
+		lwerror("NULL geometry encountered");
+		return LW_FALSE;
+	}
+
 	switch (geom->type)
 	{
 		/* No-op! Cannot simplify points or triangles */
