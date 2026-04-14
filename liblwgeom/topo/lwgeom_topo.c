@@ -556,7 +556,6 @@ _lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
       PGTOPO_BE_ERROR();
       return -1;
     }
-    if ( foundInFace == -1 ) foundInFace = 0;
   }
 
   if ( face == -1 ) {
