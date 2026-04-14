@@ -561,7 +561,6 @@ _lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
       lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
       return -1;
     }
-    if ( foundInFace == -1 ) foundInFace = 0;
   }
 
   if ( face == -1 ) {
