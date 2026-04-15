@@ -1887,15 +1887,12 @@ static LWPOLY *
 _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num_signed_edge_ids, int *isccw, GBOX *ringbox)
 {
   LWT_ELEMID *edge_ids;
-  LWT_ELEMID *dangling_edge_ids;
-  uint64_t numedges, num_dangling, j, i;
+  uint64_t numedges, j, i;
   LWT_ISO_EDGE *ring_edges;
 
   /* Construct a polygon using edges of the ring */
   numedges = 0;
-  num_dangling = 0;
   edge_ids = lwalloc(sizeof(LWT_ELEMID)*num_signed_edge_ids);
-  dangling_edge_ids = lwalloc(sizeof(LWT_ELEMID)*num_signed_edge_ids);
   for (i=0; i<num_signed_edge_ids; ++i) {
     LWT_ELEMID absid = llabs(signed_edge_ids[i]);
     int found = 0;
@@ -1903,7 +1900,6 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num
     for (j=0; j<numedges; ++j) {
       if ( edge_ids[j] == absid ) {
         found = 1;
-        dangling_edge_ids[num_dangling++] = absid;
         break;
       }
     }
@@ -1917,13 +1913,11 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num
   lwfree( edge_ids );
   if (i == UINT64_MAX)
   {
-    lwfree( dangling_edge_ids );
     PGTOPO_BE_ERROR();
     return NULL;
   }
   else if ( i != numedges )
   {
-    lwfree( dangling_edge_ids );
     lwfree( signed_edge_ids );
     _lwt_release_edges(ring_edges, i);
     lwerror("Unexpected error: %" LWTFMT_ELEMID
@@ -1939,7 +1933,6 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num
       GBOX edgebox;
       if ( LW_SUCCESS != ptarray_calculate_gbox_cartesian(ring_edges[i].geom->points, &edgebox) )
       {
-        lwfree( dangling_edge_ids );
         lwerror("Could not calculate bounding box of edge %" LWTFMT_ELEMID, ring_edges[i].edge_id);
         return NULL;
       }
@@ -1951,7 +1944,6 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num
   /* Should now build a polygon with those edges, in the order
    * given by GetRingEdges.
    */
-  LWCOLLECTION *non_dangling_collection = NULL;
   POINTARRAY *full_ring_pa = NULL;
   for ( i=0; i<num_signed_edge_ids; ++i )
   {
@@ -1970,7 +1962,6 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num
     }
     if ( edge == NULL )
     {
-      lwfree( dangling_edge_ids );
       _lwt_release_edges(ring_edges, numedges);
       lwerror("missing edge that was found in ring edges loop");
       return NULL;
@@ -1996,42 +1987,7 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num
         ptarray_append_ptarray(full_ring_pa, edge->geom->points, 0);
       }
     }
-
-    int found = 0;
-    for ( j=0; j<num_dangling; ++j )
-    {
-      if ( dangling_edge_ids[j] == edge->edge_id )
-      {
-        found = 1;
-        break;
-      }
-    }
-    if ( found )
-    {
-      LWDEBUGF(2, "Edge %" LWTFMT_ELEMID " is dangling (index %" PRIu64 ")", edge->edge_id, j);
-      continue;
-    }
-
-    if ( non_dangling_collection == NULL )
-    {
-      non_dangling_collection = lwcollection_construct_empty(
-          COLLECTIONTYPE,
-          topo->srid,
-          topo->hasZ,
-          0
-      );
-    }
-    POINTARRAY *pa_toadd = ptarray_clone_deep(edge->geom->points);
-    if ( eid < 0 )
-    {
-      ptarray_reverse_in_place(pa_toadd);
-    }
-    lwcollection_add_lwgeom(
-        non_dangling_collection,
-        lwline_as_lwgeom(lwline_construct(topo->srid, NULL, pa_toadd))
-    );
   }
-  lwfree( dangling_edge_ids );
   _lwt_release_edges(ring_edges, numedges);
 
   if ( ! ptarray_is_closed_2d(full_ring_pa) )
@@ -2041,58 +1997,6 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num
     return NULL;
   }
 
-  if ( non_dangling_collection == NULL ) /* all edges are dangling ! */
-  {
-    lwnotice("All edges in ring are dangling, will not report as ccw");
-    *isccw = 0;
-  }
-
-  LWGEOM *merged = lwgeom_linemerge(lwcollection_as_lwgeom(non_dangling_collection));
-  lwcollection_free(non_dangling_collection);
-
-  LWDEBUGG(2, merged, "Linemerged non-dangling edges");
-
-  switch (merged->type)
-  {
-    case LINETYPE:
-    {
-			LWLINE *line = (LWLINE *)(merged);
-      POINTARRAY *pa = line->points;
-      *isccw = ptarray_isccw(pa);
-      break;
-    }
-    case MULTILINETYPE:
-    {
-      double maxarea = 0;
-			LWMLINE *mline = (LWMLINE *)(merged);
-      /* find the one with the largest area */
-      for ( i=0; i<mline->ngeoms; ++i )
-      {
-        const LWLINE *l = mline->geoms[i];
-        const POINTARRAY *pa = l->points;
-        double sarea;
-
-        /* skip non-closed rings */
-        //if ( ! ptarray_is_closed_2d(pa) ) continue;
-
-        sarea = ptarray_signed_area(pa);
-        LWDEBUGF(3, "Signed area of ring %" PRIu64 ": %g", i, sarea);
-        if ( fabs(sarea) > fabs(maxarea) ) {
-          maxarea = sarea;
-        }
-      }
-      LWDEBUGF(2, "Maxarea: %g", maxarea);
-      *isccw = maxarea < 0 ? 1 : 0;
-      break;
-    }
-    default:
-    {
-      lwerror("%s: Unexpected geometry type from lwgeom_linemerge: %s", __func__, lwtype_name(merged->type));
-      return NULL;
-    }
-  }
-
-
   POINTARRAY **points = lwalloc(sizeof(POINTARRAY*));
   points[0] = full_ring_pa;
 
@@ -2100,12 +2004,10 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num
    *       which would make it topologically invalid
    */
   LWPOLY* shell = lwpoly_construct(0, 0, 1, points);
-#if POSTGIS_DEBUG_LEVEL > 0
-  if ( ptarray_isccw(shell->rings[0]) != *isccw )
-  {
-    LWDEBUGF(1, "CCW disagreement on signed edge id %" LWTFMT_ELEMID, signed_edge_ids[0]);
-  }
-#endif
+
+  /* TODO: skip if all edges were dangling ? */
+  *isccw = ptarray_isccw(shell->rings[0]);
+
   return shell;
 }
 
