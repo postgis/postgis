@@ -1083,7 +1083,7 @@ ptarray_signed_area(const POINTARRAY *pa)
 	const POINT2D *P1;
 	const POINT2D *P2;
 	const POINT2D *P3;
-	double sum = 0.0;
+	long double sum = 0.0;
 	double x0, x, y1, y2;
 	uint32_t i;
 
