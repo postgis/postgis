@@ -95,10 +95,12 @@ my $OPT_UPGRADE_PATH = '';
 our $OPT_UPGRADE_FROM = '';
 my $OPT_UPGRADE_TO = '';
 our $VERBOSE = 0;
+my $ASKED_FOR_HELP = 0;
 our $OPT_SCHEMA = 'public';
 
 GetOptions (
 	'verbose+' => \$VERBOSE,
+	'help' => \$ASKED_FOR_HELP,
 	'clean' => \$OPT_CLEAN,
 	'nodrop' => \$OPT_NODROP,
 	'upgrade+' => \$OPT_UPGRADE,
@@ -124,9 +126,16 @@ GetOptions (
 	'after-restore-script=s' => \@OPT_HOOK_AFTER_RESTORE
 	);
 
+if ( $ASKED_FOR_HELP > 0 )
+{
+    usage(*STDOUT{IO});
+    exit 0;
+}
+
 if ( @ARGV < 1 )
 {
-	usage();
+    usage(*STDERR{IO});
+    exit 1;
 }
 
 sub findOrDie
@@ -709,9 +718,9 @@ exit($FAIL);
 
 sub usage
 {
-	die qq{
-Usage: $0 [<options>] <testname> [<testname>]
+	print { shift } qq{Usage: $0 [<options>] <testname> [<testname>]
 Options:
+  --help          print these instructionss
   -v, --verbose   be verbose about failures
   --nocreate      do not create the regression database on start
   --upgrade       upgrade db before running tests, can be passed
