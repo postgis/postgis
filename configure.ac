@@ -922,6 +922,18 @@ AC_SUBST([POSTGIS_GEOS_VERSION])
 AC_SUBST([GEOS_LDFLAGS])
 AC_SUBST([GEOS_CPPFLAGS])
 
+dnl ===========================================================================
+dnl GNU Multiple Precision Library support
+dnl ===========================================================================
+
+PKG_CHECK_MODULES([GMP], [gmp],
+    [have_libgmp=yes], [have_libgmp=no])
+
+AS_IF([test "x$have_libgmp" = "xyes"],
+    [AC_DEFINE([HAVE_LIBGMP], [1], [Define if libgmp is available])
+     AC_SUBST([GMP_CFLAGS])
+     AC_SUBST([GMP_LIBS])],
+		[AC_MSG_ERROR([Could not find required libgmp])])
 
 dnl ===========================================================================
 dnl SFCGAL library support
@@ -1422,10 +1434,10 @@ AC_SUBST([POSTGIS_BUILD_DATE])
 AC_SUBST([POSTGIS_SCRIPTS_VERSION])
 
 
-CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $PROTOBUF_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $CPPFLAGS"
+CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $PROTOBUF_CPPFLAGS $XML2_CPPFLAGS $GMP_CFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
 
-SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS $JSON_LDFLAGS $PROTOBUF_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS $EXCLUDELIBS_LDFLAGS $LDFLAGS"
+SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS $JSON_LDFLAGS $PROTOBUF_LDFLAGS $XML2_LDFLAGS $GMP_LIBS $SFCGAL_LDFLAGS $EXCLUDELIBS_LDFLAGS $LDFLAGS"
 AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
@@ -1438,7 +1450,6 @@ AC_ARG_WITH([topology],
     [], [])
 
 if test "x$with_topology" != "xno"; then
-
     TOPOLOGY="topology"
     AC_MSG_RESULT([TOPOLOGY: Topology support requested])
 else

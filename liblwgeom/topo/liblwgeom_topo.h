@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2015-2021 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2015-2026 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -1429,5 +1429,7 @@ int lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face, LWT_ELEMID **edges);
  *         (liblwgeom error handler will be invoked with error message)
  */
 LWGEOM* lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID face);
+
+int lwt_IsTopoRingCCW(const LWGEOM *geom);
 
 #endif /* LIBLWGEOM_TOPO_H */

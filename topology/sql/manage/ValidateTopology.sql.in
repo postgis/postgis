@@ -366,6 +366,11 @@ END;
 $BODY$ --}
 LANGUAGE 'plpgsql' VOLATILE;
 
+CREATE OR REPLACE FUNCTION topology.TopoRingIsCCW(areal geometry)
+RETURNS BOOLEAN AS
+	'MODULE_PATHNAME', 'TopoRingIsCCW'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
 --
 -- Check that the edges forming all rings
 -- (as advertised by their next_right_edge/next_left_edge)
@@ -549,9 +554,7 @@ BEGIN
        rec.num_edges != rec.distinct_edges * 2
     THEN
       ring_poly := ST_MakePolygon(rec.ring_geom);
-      IF ST_IsPolygonCCW(ring_poly) THEN
-        is_shell := true;
-      END IF;
+      is_shell := topology.TopoRingIsCCW(ring_poly);
     END IF;
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
