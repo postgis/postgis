@@ -138,6 +138,11 @@ if ( @ARGV < 1 )
     exit 1;
 }
 
+if ( $OPT_WITH_TOPO )
+{
+    $OPT_WITH_SFCGAL = 1;
+}
+
 sub findOrDie
 {
     my $exec = shift;
@@ -740,7 +745,7 @@ Options:
                   (defaults to "public")
   --raster        load also raster extension
   --topology      load also topology extension
-  --sfcgal        use also sfcgal backend
+  --sfcgal        load also sfcgal extension
   --clean         cleanup test logs on exit
   --expect        save obtained output as expected
   --extension     load using extensions
@@ -1667,6 +1672,33 @@ sub prepare_spatial_extensions
         return 0;
 	}
 
+	if ( $OPT_WITH_SFCGAL )
+	{
+		{
+			my $sql = "CREATE EXTENSION postgis_sfcgal";
+			if ( $OPT_UPGRADE_FROM ) {
+				if ( semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
+				{
+					print "NOTICE: skipping SFCGAL extension create "
+							. "as not available in version '$OPT_UPGRADE_FROM'\n";
+					last;
+				}
+				$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
+			}
+
+			$sql .= " SCHEMA " . $OPT_SCHEMA;
+
+			print "Preparing db '${DB}' using: ${sql}\n";
+
+			$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+			$rv = system($cmd);
+			if ( $rv ) {
+				fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
+				return 0;
+			}
+		}
+	}
+
 	if ( $OPT_WITH_TOPO )
 	{
 		my $sql = "CREATE EXTENSION postgis_topology";
@@ -1703,33 +1735,6 @@ sub prepare_spatial_extensions
 			return 0;
 		}
  	}
-
-	if ( $OPT_WITH_SFCGAL )
-	{
-		{
-			my $sql = "CREATE EXTENSION postgis_sfcgal";
-			if ( $OPT_UPGRADE_FROM ) {
-				if ( semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
-				{
-					print "NOTICE: skipping SFCGAL extension create "
-							. "as not available in version '$OPT_UPGRADE_FROM'\n";
-					last;
-				}
-				$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
-			}
-
-			$sql .= " SCHEMA " . $OPT_SCHEMA;
-
-			print "Preparing db '${DB}' using: ${sql}\n";
-
-			$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
-			$rv = system($cmd);
-			if ( $rv ) {
-				fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
-				return 0;
-			}
-		}
-	}
 
  	return 1;
 }
@@ -1958,27 +1963,6 @@ sub upgrade_spatial_extensions
         }
     }
 
-    if ( $OPT_WITH_TOPO )
-    {
-        my $sql;
-
-        if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
-            $sql = package_extension_sql('postgis_topology', ${nextver});
-        }
-        else {
-            $sql = upgrade_extension_sql('postgis_topology', ${libver}, ${nextver});
-        }
-
-        print "Upgrading PostGIS Topology in '${DB}' using: ${sql}\n";
-
-        my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
-        my $rv = system($cmd);
-        if ( $rv ) {
-            fail "Error encountered updating EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
-            return 0;
-        }
-    }
-
     if ( $OPT_WITH_SFCGAL )
     {
         my $sql;
@@ -2003,6 +1987,27 @@ sub upgrade_spatial_extensions
         $rv = system($cmd);
         if ( $rv ) {
             fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
+            return 0;
+        }
+    }
+
+    if ( $OPT_WITH_TOPO )
+    {
+        my $sql;
+
+        if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
+            $sql = package_extension_sql('postgis_topology', ${nextver});
+        }
+        else {
+            $sql = upgrade_extension_sql('postgis_topology', ${libver}, ${nextver});
+        }
+
+        print "Upgrading PostGIS Topology in '${DB}' using: ${sql}\n";
+
+        my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+        my $rv = system($cmd);
+        if ( $rv ) {
+            fail "Error encountered updating EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
             return 0;
         }
     }

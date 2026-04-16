@@ -549,7 +549,7 @@ BEGIN
        rec.num_edges != rec.distinct_edges * 2
     THEN
       ring_poly := ST_MakePolygon(rec.ring_geom);
-      IF ST_IsPolygonCCW(ring_poly) THEN
+      IF CG_Orientation(ring_poly) < 0 THEN
         is_shell := true;
       END IF;
     END IF;
