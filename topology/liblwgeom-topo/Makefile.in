@@ -1,0 +1,117 @@
+#/**********************************************************************
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.net
+# *
+# * PostGIS is free software: you can redistribute it and/or modify
+# * it under the terms of the GNU General Public License as published by
+# * the Free Software Foundation, either version 2 of the License, or
+# * (at your option) any later version.
+# *
+# * PostGIS is distributed in the hope that it will be useful,
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# * GNU General Public License for more details.
+# *
+# * You should have received a copy of the GNU General Public License
+# * along with PostGIS.  If not, see <http://www.gnu.org/licenses/>.
+# *
+# **********************************************************************
+# *
+# * Copyright 2022 Sandro Santilli <strk@kbt.io>
+# * Copyright 2008 Mark Cave-Ayland
+# *
+# **********************************************************************/
+
+srcdir = @srcdir@
+builddir = @builddir@
+top_builddir = @top_builddir@
+prefix = @prefix@
+libdir = @libdir@
+includedir = @includedir@
+exec_prefix = @exec_prefix@
+
+CC = @CC@
+CPPFLAGS =  @CPPFLAGS@ -I$(builddir) -I$(srcdir) -I$(top_builddir)/liblwgeom -I$(top_srcdir)/liblwgeom
+CFLAGS = @CFLAGS@ @PICFLAGS@
+LDFLAGS = @LDFLAGS@ @GEOS_LDFLAGS@ @PROJ_LDFLAGS@ @JSON_LDFLAGS@
+SHELL = @SHELL@
+INSTALL = @INSTALL@
+LIBTOOL = @LIBTOOL@
+
+VPATH = $(srcdir):$(builddir)
+
+SOVER = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+
+IFACE_CURRENT = @LIBLWGEOM_CURRENT@
+IFACE_AGE = @LIBLWGEOM_AGE@
+IFACE_REV = @LIBLWGEOM_REV@
+
+VERSION_INFO = $(IFACE_CURRENT):$(IFACE_REV):$(IFACE_AGE)
+
+# Standalone LWGEOM objects
+SA_OBJS = \
+	lwgeom_topo.o \
+	lwgeom_topo_polygonizer.o \
+	lwt_edgeend.o \
+	lwt_edgeend_star.o \
+	lwt_node_edges.o
+
+ifeq (@SFCGAL@,sfcgal)
+CFLAGS += @SFCGAL_CPPFLAGS@
+LDFLAGS += @SFCGAL_LDFLAGS@
+SA_OBJS += lwgeom_sfcgal.o
+endif
+
+LDFLAGS += -no-undefined
+
+LT_SA_OBJS = $(SA_OBJS:.o=.lo)
+LT_OBJS = $(LT_SA_OBJS)
+
+SA_HEADERS = \
+	liblwgeom_topo.h \
+	liblwgeom_topo_internal.h \
+	lwt_edgeend.h \
+	lwt_edgeend_star.h \
+	lwt_node_edges.h
+
+all: liblwgeom_topo.la
+
+install:
+
+uninstall:
+
+# Make all objects depend upon postgis_config.h and postgis_revision.h
+$(LT_OBJS): ../../postgis_config.h ../../postgis_revision.h $(SA_HEADERS)
+
+../../postgis_revision.h:
+	$(MAKE) -C .. postgis_revision.h
+
+
+liblwgeom_topo.la: $(LT_OBJS)
+	$(LIBTOOL) --tag=CC --mode=link $(CC) -rpath $(libdir) $(LT_OBJS) \
+             -release $(SOVER) -version-info $(VERSION_INFO) $(LDFLAGS) -static -o $@
+
+maintainer-clean: clean
+
+clean:
+	rm -f $(LT_OBJS) $(SA_OBJS)
+	rm -f liblwgeom_topo.la
+	rm -rf .libs
+
+.PHONY: distclean
+distclean: clean
+	rm Makefile
+
+.PHONY: check-unit
+check:
+
+.PHONY: check-unit
+check-regress:
+
+.PHONY: check-unit
+check-unit:
+
+# Command to build each of the .lo files
+$(LT_SA_OBJS): %.lo: %.c
+	$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<

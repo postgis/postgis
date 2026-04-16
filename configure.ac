@@ -1860,6 +1860,7 @@ AC_CONFIG_FILES([GNUmakefile
    loader/Makefile
    loader/cunit/Makefile
    topology/Makefile
+   topology/liblwgeom-topo/Makefile
    topology/test/Makefile
    regress/Makefile
    regress/core/Makefile
