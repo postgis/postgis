@@ -23,7 +23,7 @@ variables:
     - cd "$${BUILDDIR}"
     - $${SRCDIR}/configure
       --with-library-minor-version
-      --without-code-spell
+      --disable-spellcheck-tests
       --enable-lto
       --without-interrupt-tests
       --disable-spellcheck-tests
