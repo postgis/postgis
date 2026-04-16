@@ -2696,7 +2696,7 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(buffer1);
 	GEOSGeom_destroy(geos2);
 
-	if (contained == 2) HANDLE_GEOS_ERROR("GEOSContains");
+	if (contained == 2) HANDLE_GEOS_ERROR("GEOSCovers");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
