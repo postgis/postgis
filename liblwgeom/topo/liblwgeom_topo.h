@@ -1430,6 +1430,6 @@ int lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face, LWT_ELEMID **edges);
  */
 LWGEOM* lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID face);
 
-int lwt_IsTopoRingCCW(const LWGEOM *geom);
+int lwt_IsTopoRingCCW(const POINTARRAY *pa);
 
 #endif /* LIBLWGEOM_TOPO_H */

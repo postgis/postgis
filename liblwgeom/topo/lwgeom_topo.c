@@ -1881,10 +1881,8 @@ _lwt_GetInteriorEdgePoint(const LWLINE* edge, POINT2D* ip)
 }
 
 int
-lwt_IsTopoRingCCW(const LWGEOM *lwg)
+lwt_IsTopoRingCCW(const POINTARRAY *pa)
 {
-  LWPOLY *poly = lwgeom_as_lwpoly(lwg);
-  POINTARRAY *pa;
   const POINT2D *P1;
   const POINT2D *P2;
   const POINT2D *P3;
@@ -1893,11 +1891,6 @@ lwt_IsTopoRingCCW(const LWGEOM *lwg)
   double x0, x, y1, y2;
   uint32_t i;
   int ret;
-
-  if ( ! poly ) return 0;
-  if ( ! poly->nrings ) return 0;
-
-  pa = poly->rings[0];
 
   if (! pa || pa->npoints < 3 )
     return 0;
@@ -2048,6 +2041,8 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num
     return NULL;
   }
 
+  *isccw = lwt_IsTopoRingCCW(full_ring_pa);
+
   POINTARRAY **points = lwalloc(sizeof(POINTARRAY*));
   points[0] = full_ring_pa;
 
@@ -2055,8 +2050,6 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num
    *       which would make it topologically invalid
    */
   LWPOLY* shell = lwpoly_construct(0, 0, 1, points);
-
-  *isccw = lwt_IsTopoRingCCW(lwpoly_as_lwgeom(shell));
 
   return shell;
 }

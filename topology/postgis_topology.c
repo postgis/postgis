@@ -5828,10 +5828,31 @@ Datum TopoRingIsCCW(PG_FUNCTION_ARGS)
   GSERIALIZED *geom;
   LWGEOM *lwgeom;
   int isCCW;
+  const POINTARRAY *pa;
 
   geom = PG_GETARG_GSERIALIZED_P(0);
   lwgeom = lwgeom_from_gserialized(geom);
-  isCCW = lwt_IsTopoRingCCW(lwgeom);
+
+  if ( lwgeom_is_empty(lwgeom) )
+  {
+    PG_RETURN_BOOL(false);
+  }
+
+  if (lwgeom->type == POLYGONTYPE)
+  {
+    pa = ((const LWPOLY *)lwgeom)->rings[0];
+  }
+  else if (lwgeom->type == LINETYPE)
+  {
+    pa = ((const LWLINE *)lwgeom)->points;
+  }
+  else
+  {
+    lwpgerror("Unsupported geometry type passed to TopoRingIsCCW");
+    PG_RETURN_NULL();
+  }
+
+  isCCW = lwt_IsTopoRingCCW(pa);
   lwgeom_free(lwgeom);
 
   PG_FREE_IF_COPY(geom, 0);

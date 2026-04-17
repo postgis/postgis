@@ -394,7 +394,6 @@ $BODY$
 DECLARE
   retrec topology.ValidateTopology_ReturnType;
   rec RECORD;
-  ring_poly GEOMETRY;
   is_shell BOOLEAN;
   found_rings INT := 0;
   found_shells INT := 0;
@@ -553,8 +552,7 @@ BEGIN
     IF ST_NPoints(rec.ring_geom) > 3 AND
        rec.num_edges != rec.distinct_edges * 2
     THEN
-      ring_poly := ST_MakePolygon(rec.ring_geom);
-      is_shell := topology.TopoRingIsCCW(ring_poly);
+      is_shell := topology.TopoRingIsCCW(rec.ring_geom);
     END IF;
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
@@ -571,7 +569,7 @@ BEGIN
       BEGIN
         INSERT INTO shell_check VALUES (
           rec.side_faces[1],
-          ring_poly
+          ST_MakePolygon(rec.ring_geom)
         );
         found_shells := found_shells + 1;
       EXCEPTION WHEN unique_violation THEN
