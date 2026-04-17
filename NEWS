@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Return zero azimuth for a due-north geometry segment (Sandro Santilli)
   - GT-778, [raster] Reject malformed and oversized raster bands before allocation or
     serialization can wrap (Paul Wouters)
   - GH-1173, GH-1174, guard raster OOM cleanup paths against NULL dereferences
