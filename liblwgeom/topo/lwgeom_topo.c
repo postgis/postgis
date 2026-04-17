@@ -1902,7 +1902,7 @@ lwt_IsTopoRingCCW(const LWGEOM *lwg)
   if (! pa || pa->npoints < 3 )
     return 0;
 
-  mpf_init2(sum, 128);
+  mpf_init2(sum, 64);
   mpf_init2(tmp, 64);
   mpf_set_d(sum, 0.0);
 
