@@ -3,6 +3,7 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- Return zero azimuth for a due-north geometry segment (Sandro Santilli)
 - GH-1173, GH-1174, guard raster OOM cleanup paths against NULL dereferences
   (Maksim Korotkov, Postgres Pro)
 - GT-778, [raster] Reject malformed and oversized raster bands before allocation
