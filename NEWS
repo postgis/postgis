@@ -3,6 +3,7 @@ PostGIS 3.7.1dev
 
 * Bug Fixes *
 
+ - Preserve azimuth for nonfinite coordinates (Sandro Santilli)
  - Remove process addresses from public errors and notices (Andrew Kroh)
  - Drop the obsolete ST_TileEnvelope signature on upgrade (Darafei Praliaskouski)
  - GH-1181, Avoid undefined signed left shifts in MVT coordinate encoding
