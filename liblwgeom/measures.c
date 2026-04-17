@@ -2478,19 +2478,25 @@ distance2d_sqr_pt_seg(const POINT2D *C, const POINT2D *A, const POINT2D *B)
 int
 azimuth_pt_pt(const POINT2D *A, const POINT2D *B, double *d)
 {
-	if (A->x == B->x)
+	if (A->x == B->x && A->y == B->y)
+		return LW_FALSE;
+	/* Avoid rounding a due-north azimuth up to a full revolution. */
+	if (A->x == B->x && isfinite(A->x))
 	{
-		if (A->y == B->y)
+		if (A->y < B->y)
 		{
-			return LW_FALSE;
+			*d = 0.0;
+			return LW_TRUE;
 		}
-		*d = A->y < B->y ? 0.0 : M_PI;
-		return LW_TRUE;
+		if (A->y > B->y)
+		{
+			*d = M_PI;
+			return LW_TRUE;
+		}
 	}
-	/* TODO: use M_PI_2 instead of M_PI/2 ? */
+
 	*d = fmod(2 * M_PI + M_PI / 2 - atan2(B->y - A->y, B->x - A->x), 2 * M_PI);
 
-	/* TODO: convert 2*M_PI to 0 ? */
 	return LW_TRUE;
 }
 
