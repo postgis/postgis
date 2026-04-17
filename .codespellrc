@@ -14,6 +14,7 @@ skip =
     ./raster/rt_pg/*.sql,
     aclocal.m4,
     configure,
+    config.stastus,
     libtool,
     ./macros/libtool.m4,
     spatial_ref_sys.sql,
