@@ -10,6 +10,11 @@ FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('LINESTRING(1 0 ,2
 SELECT 'ST_Azimuth_null_geom' , ST_Azimuth(geom1,geom2)
 FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('EMPTY') AS geom2;
 
+SELECT 'north', ST_Azimuth('POINT(0 0)'::geometry, 'POINT(0 10)'::geometry); -- intentionally not rounded
+SELECT 'south', round(ST_Azimuth('POINT(0 0)'::geometry, 'POINT(0 -10)'::geometry)::numeric, 2);
+SELECT 'east', round(ST_Azimuth('POINT(0 0)'::geometry, 'POINT(10 0)'::geometry)::numeric, 2);
+SELECT 'west', round(ST_Azimuth('POINT(0 0)'::geometry, 'POINT(-10 0)'::geometry)::numeric, 2);;
+
 
 -- #1305
 SELECT '#1305.1',ST_AsText(ST_Project('POINT(10 10)'::geography, 0, 0));
