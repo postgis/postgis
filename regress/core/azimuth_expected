@@ -1,0 +1,11 @@
+ST_Azimuth_regular|2.3562
+ST_Azimuth_same_point|
+ERROR:  Operation on mixed SRID geometries
+ERROR:  Argument must be POINT geometries
+ERROR:  parse error - invalid geometry
+#1305.1|POINT(10 10)
+#1305.2|t
+#1305.3|t
+#1791|4.7
+#4718|270.000|90.000
+#4840|0|29|90|149|180|211|270|331

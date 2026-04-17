@@ -29,6 +29,7 @@ RUNTESTFLAGS_INTERNAL += \
 
 TESTS += \
 	$(top_srcdir)/regress/core/affine \
+	$(top_srcdir)/regress/core/azimuth \
 	$(top_srcdir)/regress/core/bestsrid \
 	$(top_srcdir)/regress/core/binary \
 	$(top_srcdir)/regress/core/boundary \

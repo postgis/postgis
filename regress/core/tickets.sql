@@ -489,12 +489,6 @@ SELECT '#657.1',Round(ST_X(ST_Project('POINT(175 10)'::geography, 2000000, 3.141
 SELECT '#657.2',Round(ST_Distance(ST_Project('POINT(10 10)'::geography, 10, 0), 'POINT(10 10)'::geography)::numeric,2);
 SELECT '#657.3',ST_DWithin(ST_Project('POINT(10 10)'::geography, 2000, pi()/2), 'POINT(10 10)'::geography, 2000);
 
--- #1305
-SELECT '#1305.1',ST_AsText(ST_Project('POINT(10 10)'::geography, 0, 0));
-WITH pts AS ( SELECT 'POINT(0 45)'::geography AS s, 'POINT(45 45)'::geography AS e )
-SELECT '#1305.2',abs(ST_Distance(e, ST_Project(s, ST_Distance(s, e), ST_Azimuth(s, e)))) < 0.001 FROM pts;
-SELECT '#1305.3',ST_Azimuth('POINT(0 45)'::geography, 'POINT(0 45)'::geography) IS NULL;
-
 -- #1445
 SELECT '01060000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F'::geometry;
 SELECT '01050000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F'::geometry;
@@ -678,12 +672,6 @@ FROM inp;
 
 -- #1780 --
 SELECT '#1780',ST_GeoHash('POINT(4 4)'::geometry) = ST_GeoHash('POINT(4 4)'::geography);
-
--- #1791 --
-with inp as ( SELECT
- '010100000000000000004065C0041AD965BE5554C0'::geometry as a,
- '010100000001000000004065C0041AD965BE5554C0'::geometry as b
-) SELECT '#1791', round(ST_Azimuth(a,b)*10)/10 from inp;
 
 -- #1799 --
 SELECT '#1799', ST_Segmentize('LINESTRING(0 0, 10 0)'::geometry, 0);
@@ -1343,43 +1331,12 @@ SELECT '#4689', _ST_DistanceTree('POLYGON ((30 10, 40 40, 20 40, 30 10))'::geogr
 SELECT '#4748', ST_AsEWKT(ST_Transform(ST_SetSRID(ST_Point(-36.75, -54.25), 4326), 3031),1);
 SELECT '#4842', ST_AsEWKT(ST_Transform(ST_SetSRID(ST_Point(12.572, 66.081), 4326), 3413),1);
 
-SELECT '#4718',
-	round(degrees(
-	ST_Azimuth('POINT(77.46412 37.96999)'::geography,
-           'POINT(77.46409 37.96999)'::geography
-           ))::numeric,3),
-	round(degrees(
-	ST_Azimuth('POINT(77.46412 37.96999)'::geography,
-           'POINT(77.46429 37.96999)'::geography
-           ))::numeric,3);
-
 SELECT '#4727', _ST_DistanceTree('SRID=4326;POLYGON((-179.9 -85.05112877980659, -179.9 74.99999999999997, -152 80, -130 84.99999999999997, -115 85.05112877980659, -60 85.05112877980659, -60 79, -70 70, -130 50, -80 6, -65 -53, -100 -85.05112877980659, -179.9 -85.05112877980659))'::geography,
 				ST_MakePoint(-150,-40), 0.0, true);
 
 SELECT '#4796', st_astext(st_snaptogrid(st_normalize(st_simplifypreservetopology('MULTISURFACE(((178632.044 397744.007,178631.118 397743.786,178646.399 397679.574,178693.864 397690.889,178698.958 397669.487,178700.206 397669.784,178758.532 397683.689,178748.351 397726.468,178752.199 397727.384,178748.782 397741.904,178744.897 397740.98,178738.157 397769.303,178632.044 397744.007)))'::geometry,1)),1));
 
 SELECT '#4812', st_srid('SRID=999999;POINT(1 1)'::geometry);
-
-SELECT
-'#4840',
-round(degrees(ST_azimuth(C,N)))  AS az_n,
-round(degrees(ST_azimuth(C,NE))) AS az_ne,
-round(degrees(ST_azimuth(C,E)))  AS az_e,
-round(degrees(ST_azimuth(C,SE))) AS az_se,
-round(degrees(ST_azimuth(C,S)))  AS az_s,
-round(degrees(ST_azimuth(C,SW))) AS az_sw,
-round(degrees(ST_azimuth(C,W)))  AS az_w,
-round(degrees(ST_azimuth(C,NW))) AS az_nw
-FROM (SELECT
-'POINT(5 55)'::geography AS C,
-'POINT(5 56)'::geography AS N,
-'POINT(6 56)'::geography AS NE,
-'POINT(6 55)'::geography AS E,
-'POINT(6 54)'::geography AS SE,
-'POINT(5 54)'::geography AS S,
-'POINT(4 54)'::geography AS SW,
-'POINT(4 55)'::geography AS W,
-'POINT(4 56)'::geography AS NW ) points;
 
 SELECT '#4853', ST_ClusterDBSCAN(geom,  eps := 0.000906495804256269, minpoints := 4) OVER() AS cid FROM (VALUES ('0101000020E6100000E4141DC9E5934B40D235936FB6193940'::geometry), ('0101000020E6100000C746205ED7934B40191C25AFCE193940'::geometry), ('0101000020E6100000C780ECF5EE934B40B6BE4868CB193940'::geometry), ('0101000020E6100000ABB2EF8AE0934B404451A04FE4193940'::geometry)) AS t(geom);
 
