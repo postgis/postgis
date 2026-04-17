@@ -3,10 +3,10 @@ ST_Azimuth_same_point|
 ERROR:  Operation on mixed SRID geometries
 ERROR:  Argument must be POINT geometries
 ERROR:  parse error - invalid geometry
-north|0
-south|3.14
-east|1.57
-west|4.71
+ordering|north|0
+ordering|east|1.57
+ordering|south|3.14
+ordering|west|4.71
 #1305.1|POINT(10 10)
 #1305.2|t
 #1305.3|t

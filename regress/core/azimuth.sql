@@ -10,10 +10,16 @@ FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('LINESTRING(1 0 ,2
 SELECT 'ST_Azimuth_null_geom' , ST_Azimuth(geom1,geom2)
 FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('EMPTY') AS geom2;
 
-SELECT 'north', ST_Azimuth('POINT(0 0)'::geometry, 'POINT(0 10)'::geometry); -- intentionally not rounded
-SELECT 'south', round(ST_Azimuth('POINT(0 0)'::geometry, 'POINT(0 -10)'::geometry)::numeric, 2);
-SELECT 'east', round(ST_Azimuth('POINT(0 0)'::geometry, 'POINT(10 0)'::geometry)::numeric, 2);
-SELECT 'west', round(ST_Azimuth('POINT(0 0)'::geometry, 'POINT(-10 0)'::geometry)::numeric, 2);;
+with inp(l,g) as ( VALUES
+	('north', 'LINESTRING(0 0, 0 10)'::geometry ),
+	('east', 'LINESTRING(0 0, 10 0)'::geometry ),
+	('south', 'LINESTRING(0 0, 0 -10)'::geometry ),
+	('west', 'LINESTRING(0 0, -10 0)'::geometry )
+), azim as (
+	SELECT l, g, ST_Azimuth(ST_PointN(g,1), ST_PointN(g,2)) az FROM inp
+)
+SELECT 'ordering', l, CASE WHEN az = 0 THEN az ELSE round(az::numeric, 2) END
+FROM azim ORDER BY az;
 
 
 -- #1305
