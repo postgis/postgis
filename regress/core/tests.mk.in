@@ -33,6 +33,7 @@ TESTS += \
 	$(top_srcdir)/regress/core/bestsrid \
 	$(top_srcdir)/regress/core/binary \
 	$(top_srcdir)/regress/core/boundary \
+	$(top_srcdir)/regress/core/catmullrom \
 	$(top_srcdir)/regress/core/chaikin \
 	$(top_srcdir)/regress/core/clean \
 	$(top_srcdir)/regress/core/clipbybox2d \

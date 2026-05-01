@@ -794,6 +794,140 @@ SELECT ST_ChaikinSmoothing(
     </refentry>
 
 
+    <refentry xml:id="ST_CatmullRomSmoothing">
+      <refnamediv>
+        <refname>ST_CatmullRomSmoothing</refname>
+        <refpurpose>Returns a smoothed version of a geometry, using the Catmull-Rom spline algorithm</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_CatmullRomSmoothing</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+            <paramdef choice="opt"><type>integer</type> <parameter>nSegments = 5</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Smoothes a linear or polygonal geometry using the
+        <link xlink:href="https://en.wikipedia.org/wiki/Centripetal_Catmull%E2%80%93Rom_spline">Catmull-Rom spline</link>
+        algorithm. Unlike <xref linkend="ST_ChaikinSmoothing"/>, this is an <emphasis>interpolating</emphasis>
+        spline: the output curve passes through every original vertex. Between each pair of
+        consecutive original vertices, <varname>nSegments</varname> - 1 new intermediate
+        points are inserted.
+        </para>
+
+        <para>The <varname>nSegments</varname> parameter controls the density of the output.
+        With <varname>nSegments</varname> = 5 (the default), each original span is
+        divided into 5 sub-segments (inserting 4 new points per span). The minimum value is 2.
+        </para>
+
+        <para>At least 4 input vertices are required to apply smoothing;
+        geometries with fewer vertices are returned unchanged.
+        Points and multipoints are always returned unchanged.
+        </para>
+
+        <note><para>The output vertex count grows as
+        <literal>1 + (N-1) * nSegments</literal> for open lines,
+        and <literal>1 + N * nSegments</literal> for closed rings,
+        where N is the number of input vertices.
+        For large geometries, use a simplification function on the result
+        to reduce the number of points
+        (see <xref linkend="ST_Simplify"/>, <xref linkend="ST_SimplifyPreserveTopology"/>
+        and <xref linkend="ST_SimplifyVW"/>).
+        </para></note>
+
+        <para>The result has interpolated values for the Z and M dimensions when present.</para>
+
+        <para>&Z_support;</para>
+        <para role="availability" conformance="3.6.0">Availability: 3.6.0</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+        <para>Smoothing a 4-point collinear line with default nSegments=5:</para>
+        <programlisting>
+SELECT ST_AsText(ST_CatmullRomSmoothing('LINESTRING(0 0, 5 0, 10 0, 15 0)'));
+
+ LINESTRING(0 0,1 0,2 0,3 0,4 0,5 0,6 0,7 0,8 0,9 0,10 0,11 0,12 0,13 0,14 0,15 0)
+</programlisting>
+
+    <para>Smoothing a Polygon using nSegments = 5 and 10:</para>
+    <informaltable>
+      <tgroup cols="2">
+      <tbody>
+        <row>
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_catmullromsmoothing01.png"/>
+            </imageobject>
+            <caption><para>nSegments = 5</para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_catmullromsmoothing02.png"/>
+            </imageobject>
+            <caption><para>nSegments = 10</para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </informaltable>
+                <programlisting>
+SELECT ST_CatmullRomSmoothing(
+            'POLYGON ((20 20, 60 90, 10 150, 100 190, 190 160, 130 120, 190 50, 140 70, 120 10, 90 60, 20 20))',
+            generate_series(5, 10, 5) );
+</programlisting>
+
+    <para>Smoothing a LineString using nSegments = 5 and 10:</para>
+    <informaltable>
+      <tgroup cols="2">
+      <tbody>
+        <row>
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_catmullromsmoothing03.png"/>
+            </imageobject>
+            <caption><para>nSegments = 5</para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_catmullromsmoothing04.png"/>
+            </imageobject>
+            <caption><para>nSegments = 10</para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </informaltable>
+                <programlisting>
+SELECT ST_CatmullRomSmoothing(
+            'LINESTRING (10 140, 80 130, 100 190, 190 150, 140 20, 120 120, 50 30, 30 100)',
+            generate_series(5, 10, 5) );
+</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_ChaikinSmoothing"/>, <xref linkend="ST_Simplify"/>,
+        <xref linkend="ST_SimplifyPreserveTopology"/>, <xref linkend="ST_SimplifyVW"/></para>
+      </refsection>
+    </refentry>
+
+
     <refentry xml:id="ST_ConcaveHull">
       <refnamediv>
         <refname>ST_ConcaveHull</refname>

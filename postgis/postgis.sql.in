@@ -3600,6 +3600,13 @@ CREATE OR REPLACE FUNCTION ST_ChaikinSmoothing(geometry, integer default 1, bool
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
+-- Availability: 3.6.0
+CREATE OR REPLACE FUNCTION ST_CatmullRomSmoothing(geometry, integer default 5)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_CatmullRomSmoothing'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
 -- ST_SnapToGrid(input, xoff, yoff, xsize, ysize)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8, float8, float8, float8)

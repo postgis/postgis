@@ -85,6 +85,10 @@ GENERATED_IMAGES= \
 	st_centroid02.png \
 	st_centroid03.png \
 	st_centroid04.png \
+	st_catmullromsmoothing01.png \
+	st_catmullromsmoothing02.png \
+	st_catmullromsmoothing03.png \
+	st_catmullromsmoothing04.png \
 	st_chaikinsmoothing01.png \
 	st_chaikinsmoothing02.png \
 	st_chaikinsmoothing03.png \

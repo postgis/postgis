@@ -36,6 +36,7 @@ This version requires GEOS 3.10 or higher
  - #5889, [topology] Include representative locations in topology build errors (Darafei Praliaskouski)
  - #2614, Use GEOSPreparedDistance and caching to accelerate ST_DWithin (Paul Ramsey)
  - GH-839, ST_Multi support for TIN and surfaces (Loïc Bartoletti)
+ - #4398, Add ST_CatmullSmoothing smoothes but retains original vertices (Paul Ramsey)
 
 * Enhancements *
 
