@@ -1218,7 +1218,7 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		<title>Description</title>
 
 		<para>Return the 1-based Nth element geometry of an input geometry which is a
-			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTI)POLYGON, or POLYHEDRALSURFACE.
+			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTIPOLYGON, or POLYHEDRALSURFACE.
 			Otherwise, returns NULL.</para>
 
 		<note>
