@@ -935,7 +935,7 @@ FROM polyTable
 	FROM ST_DumpRings(
 		    'POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 2, 2 3, 3 3, 3 2, 2 2), (4 2, 4 4, 6 4, 6 2, 4 2))');
 
- path |              geom              
+ path |              geom
 ------+--------------------------------
  {0}  | POLYGON((1 9,9 9,9 1,1 1,1 9))
  {1}  | POLYGON((2 2,2 3,3 3,3 2,2 2))
@@ -1222,7 +1222,7 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		<title>Description</title>
 
 		<para>Return the 1-based Nth element geometry of an input geometry which is a
-			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTI)POLYGON, or POLYHEDRALSURFACE.
+			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTIPOLYGON, or POLYHEDRALSURFACE.
 			Otherwise, returns NULL.</para>
 
 		<note>
