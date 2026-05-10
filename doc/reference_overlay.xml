@@ -284,8 +284,8 @@ where not ST_IsEmpty(ST_Buffer(ST_Intersection(country.geom, poly.geom), 0.0));<
         </refsection>
 
         <refsection>
-        <title>Examples: 2.5Dish</title>
-        <para>Note this is not a true intersection, compare to the same example using <xref linkend="ST_3DIntersection"/>.</para>
+        <title>Examples: 2.5D geometries</title>
+        <para>Note this is not a true 3D intersection. It uses 2.5D geometries (geometries with Z ordinates, but where calculations are performed in 2D). Compare to the same example using <xref linkend="ST_3DIntersection"/>.</para>
         <programlisting>
 select ST_AsText(ST_Intersection(linestring, polygon)) As wkt
 from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring

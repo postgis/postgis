@@ -2013,9 +2013,7 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 		<title>Examples</title>
 		<programlisting>
 SELECT ST_AsText(geom) as line, ST_AsText(ST_Reverse(geom)) As reverseline
-FROM
-(SELECT ST_MakeLine(ST_Point(1,2),
-		ST_Point(1,10)) As geom) as foo;
+FROM ST_MakeLine(ST_Point(1,2), ST_Point(1,10)) As geom;
 --result
 		line         |     reverseline
 ---------------------+----------------------

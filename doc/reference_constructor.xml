@@ -1287,7 +1287,7 @@ has an unknown SRID (as is the case by default).</para>
 
         <refsection>
             <title>Example: Generating the word 'Yo'</title>
-            <programlisting>SELECT ST_AsText(ST_Letters('Yo'), 1);</programlisting>
+            <programlisting>SELECT ST_AsText(ST_Letters('Yo'));</programlisting>
             <informalfigure>
             <mediaobject>
               <imageobject>
