@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #6076, Measure only matching components of geography collections (Paul Ramsey)
  - GH-831, Document why ST_Subdivide can change geography boundaries
      (Nikolai Berkoff)
  - #2951, Check geography input before deserializing ST_Centroid
