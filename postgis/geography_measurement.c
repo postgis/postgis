@@ -556,6 +556,32 @@ Datum geography_area(PG_FUNCTION_ARGS)
 }
 
 /*
+ * Filter collection members by dimension before using the legacy spheroidal
+ * measure, which includes both line lengths and polygon boundaries.
+ */
+static double
+geography_measure_spheroid(const LWGEOM *geom, const SPHEROID *spheroid, bool perimeter)
+{
+	if (geom->type == COLLECTIONTYPE)
+	{
+		const LWCOLLECTION *collection = (const LWCOLLECTION *)geom;
+		double measure = 0.0;
+
+		uint32_t i;
+
+		for (i = 0; i < collection->ngeoms; i++)
+			measure += geography_measure_spheroid(collection->geoms[i], spheroid, perimeter);
+		return measure;
+	}
+
+	if (perimeter ? (geom->type == POLYGONTYPE || geom->type == MULTIPOLYGONTYPE)
+		      : (geom->type == LINETYPE || geom->type == MULTILINETYPE))
+		return lwgeom_length_spheroid(geom, spheroid);
+
+	return 0.0;
+}
+
+/*
 ** geography_perimeter(GSERIALIZED *g)
 ** returns double perimeter in meters for area features
 */
@@ -599,12 +625,12 @@ Datum geography_perimeter(PG_FUNCTION_ARGS)
 		s.a = s.b = s.radius;
 
 	/* Calculate the length */
-	length = lwgeom_length_spheroid(lwgeom, &s);
+	length = geography_measure_spheroid(lwgeom, &s, true);
 
 	/* Something went wrong... */
 	if ( length < 0.0 )
 	{
-		elog(ERROR, "lwgeom_length_spheroid returned length < 0.0");
+		elog(ERROR, "geography_measure_spheroid returned length < 0.0");
 		PG_RETURN_NULL();
 	}
 
@@ -650,12 +676,12 @@ Datum geography_length(PG_FUNCTION_ARGS)
 		s.a = s.b = s.radius;
 
 	/* Calculate the length */
-	length = lwgeom_length_spheroid(lwgeom, &s);
+	length = geography_measure_spheroid(lwgeom, &s, false);
 
 	/* Something went wrong... */
 	if ( length < 0.0 )
 	{
-		elog(ERROR, "lwgeom_length_spheroid returned length < 0.0");
+		elog(ERROR, "geography_measure_spheroid returned length < 0.0");
 		PG_RETURN_NULL();
 	}
 
