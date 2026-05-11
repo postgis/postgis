@@ -3150,30 +3150,21 @@ double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s)
 
 	assert(geom);
 
-	/* No area in nothing */
+	/* No length in nothing */
 	if ( lwgeom_is_empty(geom) )
 		return 0.0;
 
 	type = geom->type;
 
-	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
+	if ( type == POINTTYPE || type == MULTIPOINTTYPE ||
+	     type == POLYGONTYPE || type == MULTIPOLYGONTYPE ||
+	     type == TRIANGLETYPE || type == TINTYPE ||
+	     type == POLYHEDRALSURFACETYPE || type == CURVEPOLYTYPE ||
+	     type == MULTISURFACETYPE )
 		return 0.0;
 
 	if ( type == LINETYPE )
 		return ptarray_length_spheroid(((LWLINE*)geom)->points, s);
-
-	if ( type == POLYGONTYPE )
-	{
-		LWPOLY *poly = (LWPOLY*)geom;
-		for ( i = 0; i < poly->nrings; i++ )
-		{
-			length += ptarray_length_spheroid(poly->rings[i], s);
-		}
-		return length;
-	}
-
-	if ( type == TRIANGLETYPE )
-		return ptarray_length_spheroid(((LWTRIANGLE*)geom)->points, s);
 
 	if ( lwtype_is_collection( type ) )
 	{
@@ -3186,7 +3177,48 @@ double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s)
 		return length;
 	}
 
-	lwerror("unsupported type passed to lwgeom_length_sphere");
+	lwerror("unsupported type passed to lwgeom_length_spheroid");
+	return 0.0;
+}
+
+double lwgeom_perimeter_spheroid(const LWGEOM *geom, const SPHEROID *s)
+{
+	int type;
+	uint32_t i = 0;
+	double perimeter = 0.0;
+
+	assert(geom);
+
+	/* No perimeter in nothing */
+	if ( lwgeom_is_empty(geom) )
+		return 0.0;
+
+	type = geom->type;
+
+	if ( type == POLYGONTYPE )
+	{
+		LWPOLY *poly = (LWPOLY*)geom;
+		for ( i = 0; i < poly->nrings; i++ )
+		{
+			perimeter += ptarray_length_spheroid(poly->rings[i], s);
+		}
+		return perimeter;
+	}
+
+	if ( type == TRIANGLETYPE )
+		return ptarray_length_spheroid(((LWTRIANGLE*)geom)->points, s);
+
+	if ( lwtype_is_collection( type ) )
+	{
+		LWCOLLECTION *col = (LWCOLLECTION*)geom;
+
+		for ( i = 0; i < col->ngeoms; i++ )
+		{
+			perimeter += lwgeom_perimeter_spheroid(col->geoms[i], s);
+		}
+		return perimeter;
+	}
+
 	return 0.0;
 }
 

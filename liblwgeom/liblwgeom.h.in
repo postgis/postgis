@@ -1815,6 +1815,10 @@ extern double lwgeom_area_spheroid(const LWGEOM *lwgeom, const SPHEROID *spheroi
 extern double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s);
 
 /**
+* Calculate the geodetic perimeter of a lwgeom on the unit sphere.
+*/
+extern double lwgeom_perimeter_spheroid(const LWGEOM *geom, const SPHEROID *s);
+/**
 * Calculate covers predicate for two lwgeoms on the sphere. Currently
 * only handles point-in-polygon.
 */

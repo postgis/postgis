@@ -165,7 +165,7 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 		PG_RETURN_FLOAT8(0.0);
 	}
 
-	length = lwgeom_length_spheroid(lwgeom, sphere);
+	length = lwgeom_length_spheroid(lwgeom, sphere) + lwgeom_perimeter_spheroid(lwgeom, sphere);
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
