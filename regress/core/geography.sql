@@ -154,3 +154,6 @@ SELECT 'lrs_substr_1', ST_AsText(ST_LineSubstring(geography 'linestring(0 20, 10
 
 SELECT 'lrs_sl_1', ST_AsText(ST_ShortestLine(geography 'linestring(0 40, 50 40)', 'Point(25 40)', true), 2);
 
+-- Ticket #6076
+SELECT 'ticket_6076_length', round(ST_Length(ST_GeogFromText('GEOMETRYCOLLECTION (POINT (5 5), LINESTRING (0 0, 0 1), POLYGON ((0 0, 0 1, 1 0, 0 0)))'))::numeric, 3);
+SELECT 'ticket_6076_perimeter', round(ST_Perimeter(ST_GeogFromText('GEOMETRYCOLLECTION (POINT (5 5), LINESTRING (0 0, 0 1), POLYGON ((0 0, 0 1, 1 0, 0 0)))'))::numeric, 3);
