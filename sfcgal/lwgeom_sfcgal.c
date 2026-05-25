@@ -327,7 +327,11 @@ sfcgal_tesselate(PG_FUNCTION_ARGS)
 	geom = POSTGIS2SFCGALGeometry(input);
 	PG_FREE_IF_COPY(input, 0);
 
+#if POSTGIS_SFCGAL_VERSION < 20300
 	result = sfcgal_geometry_tesselate(geom);
+#else
+        result = sfcgal_geometry_tessellate(geom);
+#endif
 	sfcgal_geometry_delete(geom);
 
 	output = SFCGALGeometry2POSTGIS(result, 0, srid);
