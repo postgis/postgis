@@ -5,6 +5,7 @@ PostGIS 3.6.4
 
 - #6076, ST_Length(geography) for GeometryCollection not consistent
          with geometry implementation
+- GH-862, use SFCGAL undeprecated function sfcgal_geometry_tessellate() (Jean Felder)
 
 
 PostGIS 3.6.3
