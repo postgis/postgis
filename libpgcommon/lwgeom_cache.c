@@ -262,7 +262,7 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
  * Could return SRS as short one (i.e EPSG:4326)
  * or as long one: (i.e urn:ogc:def:crs:EPSG::4326)
  */
-char *
+PGDLLEXPORT const char *
 getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
 {
 	static const uint16_t max_query_size = 512;
@@ -356,7 +356,8 @@ GetSRSCacheBySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
 		arg->short_mode = short_crs;
 		if (arg->srs)
 			pfree(arg->srs);
-		arg->srs = getSRSbySRID(fcinfo, srid, short_crs);
+		/* getSRSbySRID exposes an immutable API, but the cache owns this copy. */
+		arg->srs = (char *)getSRSbySRID(fcinfo, srid, short_crs);
 	}
 	return arg->srs;
 }

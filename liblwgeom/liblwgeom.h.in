@@ -29,10 +29,12 @@
 #ifndef _LIBLWGEOM_H
 #define _LIBLWGEOM_H 1
 
-#ifdef _WIN32
-#  define PGDLLEXPORT __declspec(dllexport)
-#else
-#  define PGDLLEXPORT
+#ifndef PGDLLEXPORT
+#  ifdef _WIN32
+#    define PGDLLEXPORT __declspec(dllexport)
+#  else
+#    define PGDLLEXPORT
+#  endif
 #endif
 
 #include <stdarg.h>
@@ -1765,7 +1767,7 @@ extern LWGEOM* lwgeom_from_geojson(const char *geojson, char **srs);
 #if defined(HAVE_LIBJSON)
 /* Forward-declare to avoid exposing json-c headers in a public API */
 struct json_object;
-extern LWGEOM *parse_geojson(struct json_object *geojson, int *hasz);
+extern PGDLLEXPORT LWGEOM *parse_geojson(struct json_object *geojson, int *hasz);
 #endif /* HAVE_LIBJSON */
 
 /**
@@ -2271,6 +2273,8 @@ extern lwvarlena_t* lwgeom_to_wkt_varlena(const LWGEOM *geom, uint8_t variant, i
 *                (WKB_ISO, WKB_SFSQL, WKB_EXTENDED, WKB_NDR, WKB_XDR)
 */
 extern uint8_t* lwgeom_to_wkb_buffer(const LWGEOM *geom, uint8_t variant);
+extern PGDLLEXPORT size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant);
+extern PGDLLEXPORT uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
 extern lwvarlena_t* lwgeom_to_wkb_varlena(const LWGEOM *geom, uint8_t variant);
 
 /**
@@ -2677,4 +2681,3 @@ int * lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k, double
 #include "lwinline.h"
 
 #endif /* !defined _LIBLWGEOM_H  */
-

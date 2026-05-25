@@ -137,4 +137,4 @@ typedef struct {
 int32_t GetSRIDCacheBySRS(FunctionCallInfo fcinfo, const char *srs);
 
 PGDLLEXPORT
-char *getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs);
+const char *getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs);

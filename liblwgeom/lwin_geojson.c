@@ -359,7 +359,7 @@ parse_geojson_geometrycollection(json_object *geojson, int *hasz)
 	return geom;
 }
 
-LWGEOM *
+PGDLLEXPORT LWGEOM *
 parse_geojson(json_object *geojson, int *hasz)
 {
 	json_object *type = NULL;
