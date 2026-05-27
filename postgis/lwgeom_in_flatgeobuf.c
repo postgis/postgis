@@ -67,6 +67,60 @@ static char *get_pgtype(uint8_t column_type) {
 	elog(ERROR, "unknown column_type %d", column_type);
 }
 
+static const char *
+flatgeobuf_type_name(uint8_t fgb_type)
+{
+	/* Names match FlatGeobuf::EnumNamesColumnType() in header_generated.h */
+	static const char * const names[] = {
+		"Byte", "UByte", "Bool", "Short", "UShort",
+		"Int", "UInt", "Long", "ULong",
+		"Float", "Double", "String", "Json", "DateTime", "Binary"
+	};
+	if (fgb_type >= sizeof(names) / sizeof(names[0]))
+		return "unknown";
+	return names[fgb_type];
+}
+
+static bool
+flatgeobuf_type_compatible(uint8_t fgb_type, Oid pgtype)
+{
+	switch (fgb_type)
+	{
+	case flatgeobuf_column_type_bool:
+		return pgtype == BOOLOID;
+	/* small integer types: allow widening into larger signed ints */
+	case flatgeobuf_column_type_byte:
+	case flatgeobuf_column_type_ubyte:
+	case flatgeobuf_column_type_short:
+	case flatgeobuf_column_type_ushort:
+		return pgtype == INT2OID || pgtype == INT4OID || pgtype == INT8OID;
+	/* int32: allow widening to bigint */
+	case flatgeobuf_column_type_int:
+		return pgtype == INT4OID || pgtype == INT8OID;
+	/* uint32 max exceeds INT4, must land in bigint */
+	case flatgeobuf_column_type_uint:
+		return pgtype == INT8OID;
+	case flatgeobuf_column_type_long:
+	case flatgeobuf_column_type_ulong:
+		return pgtype == INT8OID;
+	/* float: allow widening to double (explicit conversion handled in decode) */
+	case flatgeobuf_column_type_float:
+		return pgtype == FLOAT4OID || pgtype == FLOAT8OID;
+	case flatgeobuf_column_type_double:
+		return pgtype == FLOAT8OID;
+	case flatgeobuf_column_type_string:
+		return pgtype == TEXTOID || pgtype == VARCHAROID;
+	case flatgeobuf_column_type_datetime:
+		return pgtype == DATEOID || pgtype == TIMEOID ||
+		       pgtype == TIMESTAMPOID || pgtype == TIMESTAMPTZOID;
+	case flatgeobuf_column_type_json:
+		return pgtype == JSONBOID;
+	case flatgeobuf_column_type_binary:
+		return pgtype == BYTEAOID;
+	}
+	return false;
+}
+
 PG_FUNCTION_INFO_V1(pgis_tablefromflatgeobuf);
 Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 {
@@ -191,7 +245,29 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 			SRF_RETURN_DONE(funcctx);
 		}
 
-		// TODO: get table and verify structure against header
+		/* Validate that the file schema matches the caller-supplied composite type.
+		 * tupdesc positions 0 (fid) and 1 (geom) are fixed; file columns start at 2. */
+		if (ctx->ctx->columns_size != (uint32_t)(tupdesc->natts - 2))
+			ereport(ERROR,
+				(errcode(ERRCODE_DATATYPE_MISMATCH),
+				 errmsg("flatgeobuf: column count mismatch: "
+				        "file has %u columns, target type has %d",
+				        ctx->ctx->columns_size, tupdesc->natts - 2)));
+
+		for (uint16_t col_i = 0; col_i < ctx->ctx->columns_size; col_i++)
+		{
+			flatgeobuf_column *col = ctx->ctx->columns[col_i];
+			Oid pgtype = getBaseType(TupleDescAttr(tupdesc, col_i + 2)->atttypid);
+			if (!flatgeobuf_type_compatible(col->type, pgtype))
+				ereport(ERROR,
+					(errcode(ERRCODE_DATATYPE_MISMATCH),
+					 errmsg("flatgeobuf: column \"%s\" type mismatch: "
+					        "file type \"%s\" is not compatible with PostgreSQL type %s",
+					        col->name,
+					        flatgeobuf_type_name(col->type),
+					        format_type_be(pgtype))));
+		}
+
 		MemoryContextSwitchTo(oldcontext);
 	}
 
