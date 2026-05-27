@@ -24,6 +24,12 @@ ERROR:  mixed geometry type is not supported
 A1|0||t|1|2|3|4|1.2|1.3|2016-06-23 03:44:52.134125+00|hello
 --- Exotic roundtrips ---
 E1|0|t|POINT(1.1 2.1)|f
+--- Type mismatch detection ---
+ERROR:  flatgeobuf: column "val" type mismatch: file type "Long" is not compatible with PostgreSQL type text
+ERROR:  flatgeobuf: column count mismatch: file has 2 columns, target type has 1
+--- Numeric widening ---
+W1|0|42
+W2|0|1.5
 --- Quoted identifiers ---
 QI1
 QI2
