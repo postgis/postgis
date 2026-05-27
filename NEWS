@@ -3,7 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
- -
+ - Flatgeobuf schema mismatch vulnerability (NeuroWinter)
 
 
 PostGIS 3.3.10
