@@ -288,8 +288,6 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 
 	POSTGIS_DEBUGF(3, "flatgeobuf: decode_properties from byte array with length %d at offset %d", size, offset);
 
-	// TODO: init isnull
-
 	if (size > 0 && size < (sizeof(uint16_t) + sizeof(uint8_t)))
 		elog(ERROR, "flatgeobuf: decode_properties: Unexpected properties data size %d", size);
 	while (offset + 1 < size) {
@@ -390,7 +388,10 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			if (offset + sizeof(float) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for float value");
 			memcpy(&value, data + offset, sizeof(float));
-			values[ci] = Float4GetDatum(value);
+			if (getBaseType(TupleDescAttr(ctx->tupdesc, ci)->atttypid) == FLOAT8OID)
+				values[ci] = Float8GetDatum((double) value);
+			else
+				values[ci] = Float4GetDatum(value);
 			offset += sizeof(float);
 			break;
 		}
@@ -459,9 +460,10 @@ void flatgeobuf_decode_row(struct flatgeobuf_decode_ctx *ctx)
 	HeapTuple heapTuple;
 	uint32_t natts = ctx->tupdesc->natts;
 
-	Datum *values = palloc0(natts * sizeof(Datum *));
-	bool *isnull = palloc0(natts * sizeof(bool *));
-
+	Datum *values = palloc0(natts * sizeof(Datum));
+	bool *isnull = palloc0(natts * sizeof(bool));
+	for (uint32_t j = 0; j < natts; j++) isnull[j] = true;
+	isnull[0] = false;
 	values[0] = Int32GetDatum(ctx->fid);
 
 	if (flatgeobuf_decode_feature(ctx->ctx))
@@ -469,6 +471,7 @@ void flatgeobuf_decode_row(struct flatgeobuf_decode_ctx *ctx)
 
 	if (ctx->ctx->lwgeom != NULL) {
 		values[1] = PointerGetDatum(geometry_serialize(ctx->ctx->lwgeom));
+		isnull[1] = false;
 	} else {
 		POSTGIS_DEBUG(3, "geometry is null");
 		isnull[1] = true;
