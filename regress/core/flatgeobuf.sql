@@ -158,6 +158,38 @@ select 'E1', id, bool_1, ST_AsText(geom), bool_2 from ST_FromFlatGeobuf(null::fl
     ) q)
 );
 
+select '--- Type mismatch detection ---';
+
+-- Setup: a long (bigint) column and a text column in separate tables
+select ST_FromFlatGeobufToTable('public', 'flatgeobuf_mm_long', (select ST_AsFlatGeobuf(q) fgb from (select
+    null::geometry, null::bigint as val) q));
+select ST_FromFlatGeobufToTable('public', 'flatgeobuf_mm_text', (select ST_AsFlatGeobuf(q) fgb from (select
+    null::geometry, null::text as val) q));
+select ST_FromFlatGeobufToTable('public', 'flatgeobuf_mm_twocols', (select ST_AsFlatGeobuf(q) fgb from (select
+    null::geometry, null::bigint as val1, null::bigint as val2) q));
+
+-- Type mismatch: file has bigint (long), target expects text
+select 'MM1' from ST_FromFlatGeobuf(null::flatgeobuf_mm_text, (
+    select ST_AsFlatGeobuf(q) fgb from (select null::geometry, 42::bigint as val) q));
+
+-- Count mismatch: file has 2 property columns, target type has 1
+select 'MM2' from ST_FromFlatGeobuf(null::flatgeobuf_mm_long, (
+    select ST_AsFlatGeobuf(q) fgb from (select null::geometry, 42::bigint as val1, 43::bigint as val2) q));
+
+select '--- Numeric widening ---';
+
+-- integer (int32 in file) widened to bigint in target
+select ST_FromFlatGeobufToTable('public', 'flatgeobuf_widen_i', (select ST_AsFlatGeobuf(q) fgb from (select
+    null::geometry, null::bigint as val) q));
+select 'W1', id, val from ST_FromFlatGeobuf(null::flatgeobuf_widen_i, (
+    select ST_AsFlatGeobuf(q) fgb from (select null::geometry, 42::integer as val) q));
+
+-- real (float4 in file) widened to double precision in target
+select ST_FromFlatGeobufToTable('public', 'flatgeobuf_widen_f', (select ST_AsFlatGeobuf(q) fgb from (select
+    null::geometry, null::double precision as val) q));
+select 'W2', id, val from ST_FromFlatGeobuf(null::flatgeobuf_widen_f, (
+    select ST_AsFlatGeobuf(q) fgb from (select null::geometry, 1.5::real as val) q));
+
 select '--- Quoted identifiers ---';
 
 -- Verify that special characters in column names are properly quoted
@@ -181,3 +213,8 @@ drop table if exists public.flatgeobuf_t1;
 drop table if exists public.flatgeobuf_a1;
 drop table if exists public.flatgeobuf_e1;
 drop table if exists public.flatgeobuf_qi;
+drop table if exists public.flatgeobuf_mm_long;
+drop table if exists public.flatgeobuf_mm_text;
+drop table if exists public.flatgeobuf_mm_twocols;
+drop table if exists public.flatgeobuf_widen_i;
+drop table if exists public.flatgeobuf_widen_f;
