@@ -72,6 +72,7 @@ This version requires GEOS 3.10 or higher
           (Darafei Praliaskouski)
  - GH-848, CG_AlphaShape now returns a MultiPolygon (Jean Felder)
  - Flatgeobuf schema mismatch vulnerability (NeuroWinter)
+ - #5899, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)
 
 
 PostGIS 3.6.0
