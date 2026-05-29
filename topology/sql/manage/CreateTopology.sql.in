@@ -38,10 +38,10 @@ DECLARE
   dataColumnType TEXT := 'INT4';
 BEGIN
 
---  FOR rec IN SELECT * FROM pg_namespace WHERE text(nspname) = atopology
---  LOOP
---    RAISE EXCEPTION 'SQL/MM Spatial exception - schema already exists';
---  END LOOP;
+  FOR rec IN SELECT * FROM pg_namespace WHERE text(nspname) = atopology
+  LOOP
+    RAISE EXCEPTION 'schema "%" already exists', atopology;
+  END LOOP;
 
   -- Prevent negative
   IF topoid < 0 THEN
