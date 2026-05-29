@@ -4,7 +4,7 @@ PostGIS 3.5.7
 * Bug Fixes *
 
   - Flatgeobuf schema mismatch vulnerability (NeuroWinter)
-
+  - #5899, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)
 
 
 PostGIS 3.5.6
