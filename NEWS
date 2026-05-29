@@ -3,7 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
- - 
+ - #5899, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)
 
 
 PostGIS 3.2.10
