@@ -1,0 +1,194 @@
+-- hex9.sql.in — SQL declarations for the postgis_hex9 extension.
+--
+-- Part of the Hex9 (H9) Project
+-- Copyright ©2025, Ben Griffin
+-- Licensed under the Apache License, Version 2.0
+--
+-- Processed by the build system: MODULE_PATHNAME is replaced with the
+-- actual shared-library path before installation.
+
+-- NOTE: no `LOAD '$libdir/postgis-3'` is needed. The module resolves liblwgeom
+-- entry points at runtime via h9_lwgeom_resolve() in _PG_init (see
+-- h9_lwgeom_shim.h), which load_file()s PostGIS itself — so the extension works
+-- in any backend regardless of whether a PostGIS function was called first.
+
+-- ── Version ──────────────────────────────────────────────────────────────────
+
+-- h9_version() → text
+--   Returns the extension version and build timestamp.
+--   Use this to confirm which binary is loaded after an install.
+--
+-- Availability: Hex9 1.0.0
+CREATE OR REPLACE FUNCTION h9_version()
+    RETURNS text
+    AS 'MODULE_PATHNAME', 'h9_version'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 1;
+
+-- ── Encode ───────────────────────────────────────────────────────────────────
+
+-- h9_encode(geometry) → uuid
+--   Encodes a POINT to a self-contained UUID at layer 29 resolution.
+--   The UUID carries all decode context internally; no companion byte needed.
+--   Suitable for exact round-trip via h9_decode(), indexing, and h9_bin().
+--
+-- Availability: Hex9 1.0.0
+CREATE OR REPLACE FUNCTION h9_encode(geometry)
+    RETURNS uuid
+    AS 'MODULE_PATHNAME', 'h9_encode'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 50;
+
+-- h9_diag(geometry) → text
+--   Diagnostic: returns BRAW (pre-warp) and BARY (post-warp) (cx, cy) the
+--   C++ encoder feeds into descent. Temporary aid for verifying frame
+--   parity with Python's b_oct.encode pipeline. Drop once parity is
+--   confirmed.
+CREATE OR REPLACE FUNCTION h9_diag(geometry)
+    RETURNS text
+    AS 'MODULE_PATHNAME', 'h9_diag'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 50;
+
+-- ── Decode ───────────────────────────────────────────────────────────────────
+
+-- h9_decode(uuid) → geometry
+--   Decode a UUID to a POINT geometry (SRID 4326).
+--   Exact round-trip: h9_decode(h9_encode(pt)) recovers the input point
+--   to within the resolution of layer 29 (~95 nm cell diameter).
+--
+-- Availability: Hex9 1.0.0
+CREATE OR REPLACE FUNCTION h9_decode(uuid)
+    RETURNS geometry
+    AS 'MODULE_PATHNAME', 'h9_decode'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 10;
+
+-- ── Hierarchy ────────────────────────────────────────────────────────────────
+
+-- h9_bin(uuid, integer) → uuid
+--   Returns the bin-key UUID at the given layer (0..29).
+--   All points in the same H9 cell at layer L produce the same output UUID,
+--   making this safe for GROUP BY aggregation and spatial binning.
+--   Body nibbles above layer are replaced with the 0xF sentinel; nibble[31]
+--   stores the backward-pass context needed by h9_cell().
+--   IMMUTABLE and STRICT: usable in GENERATED STORED columns and functional
+--   indexes without any performance penalty.
+--
+-- Availability: Hex9 1.0.0
+CREATE OR REPLACE FUNCTION h9_bin(uuid, integer)
+    RETURNS uuid
+    AS 'MODULE_PATHNAME', 'h9_bin'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 5;
+
+-- ── Labels ───────────────────────────────────────────────────────────────────
+
+-- h9_label(uuid, integer) → text
+--   Returns the body nibbles 0..layer as a compact text label.
+--   Digits 0..9 map to '0'..'9'; 10 → 'a', 11 → 'b'.
+--   Example: h9_label(h9_bin(h9_encode(pt), 8), 8) → '478232778'
+--
+-- Availability: Hex9 1.0.0
+CREATE OR REPLACE FUNCTION h9_label(uuid, integer)
+    RETURNS text
+    AS 'MODULE_PATHNAME', 'h9_label'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 5;
+
+-- h9_label_key(uuid, integer) → text
+--   Like h9_label but appends '.' and the key_tail nibble (nibble[31]).
+--   The key_tail encodes (p_mo, p_c2, r_mo) — enough to uniquely identify
+--   a point within its layer-L cell for exact decode.
+--   Example: h9_label_key(h9_encode(pt), 8) → '478232778.9'
+--
+-- Availability: Hex9 1.0.0
+CREATE OR REPLACE FUNCTION h9_label_key(uuid, integer)
+    RETURNS text
+    AS 'MODULE_PATHNAME', 'h9_label_key'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 5;
+
+-- ── Cell geometry ────────────────────────────────────────────────────────────
+
+-- h9_cell(uuid, integer, integer DEFAULT 0) → geometry
+--   Returns the hexagonal cell polygon (SRID 4326) for the H9 UUID at the
+--   given layer (1..29). Accepts either:
+--     * full UUIDs from h9_encode() — fully reversible to (fx, fy);
+--     * bin UUIDs from h9_bin()    — LOSSY: different bin UUIDs in the same
+--       equivalence class decode to the same cell. For per-cell rendering
+--       use h9_grid (which keeps non-lossy state internally) — h9_cell on
+--       bin UUIDs may collapse distinct grid rows to the same polygon.
+--
+--   Third arg `densify` (default 0) subdivides each of the 6 hex edges into
+--   3^densify segments using the recursive 1/3-step rule from
+--   HexMesh._get_verts. Intermediate vertices land on the H9 lattice at
+--   (layer + densify); output ring has 6·3^densify + 1 points.
+--
+--     densify = 0 → 7 points (corners only — fast path, matches the 1.0.0 form).
+--     densify = 1 → 19; densify = 2 → 55; densify = 3 → 163; ...
+--
+--   densify > 0 is intended for rendering large hexes (layer ≤ 3) where
+--   straight-line edges in (lon, lat) visibly diverge from the lattice
+--   geometry. For layer ≥ 5 the corner-only output is usually sufficient.
+--
+--   Errors: layer outside 1..29; densify < 0; layer + densify > 29; densify > 9
+--   (last is a soft cap on ring size, 6·3^9+1 = 118 099 points).
+--
+--   Example:
+--     SELECT h9_cell(h9_bin(h9_encode(geom), 8), 8) FROM points;      -- corners only
+--     SELECT h9_cell(h9_bin(h9_encode(geom), 2), 2, 3) FROM points;   -- 163-pt L2 hex
+--
+-- Availability: Hex9 1.1.0 (densify arg added; supersedes the 1.0.0 two-arg form)
+CREATE OR REPLACE FUNCTION h9_cell(uuid, integer, integer DEFAULT 0)
+    RETURNS geometry
+    AS 'MODULE_PATHNAME', 'h9_cell'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+    COST 200;
+
+-- h9_grid(geometry, integer, integer DEFAULT 0) → TABLE(hex9 uuid, geom geometry, centroid geometry)
+--   Set-returning function: yields (bin_uuid, polygon) for every H9 cell at
+--   the given layer (1..29) whose geographic centre falls within `bounds`.
+--   The UUID column matches h9_bin(h9_encode(pt), layer) for any point in
+--   that cell.
+--
+--   Argument order changed in 1.1.0: (bounds, layer, [densify]) — was
+--   (layer, bounds) in 1.0.0. Aligns with PostGIS convention (geometry
+--   first). The 1.0.0 two-arg form is dropped in this version.
+--
+--   Third arg `densify` (default 0) applies the same structural densification
+--   as h9_cell: each cell's 6 edges are subdivided into 3^densify segments.
+--   Polygon ring size: 6·3^densify + 1.
+--
+--     densify = 0 → 7-point polygons (fast path; pre-computed BFS corners).
+--     densify > 0 → re-decodes each cell's UUID through h9_bary_to_lonlat for
+--                   every intermediate vertex. Per-row cost rises with 3^densify.
+--
+--   Implementation: integer-UV supercell BFS with strict octant-region
+--   pruning + v4/v5 seam reflection — same algorithm Python
+--   HexMesh.create_clipped uses. UUIDs are derived via the containment-based
+--   xy_regions encoder. Centroid-in-polygon test clips to the actual bounds
+--   geometry (not just its bbox).
+--
+--   Safety cap: hex9.grid_max_cells GUC (default 708 588 = 12 × 9⁵). Raises
+--   an error if the estimated cell count exceeds this; use a coarser layer
+--   or smaller bounds for large areas.
+--
+--   The third output column `centroid` is the cell's geographic centre as a
+--   POINT (SRID 4326), computed by the BFS in the cell's own frame — useful
+--   for labelling, clustering, or as a join key without re-decoding the UUID.
+--
+--   Example:
+--     SELECT hex9, ST_AsText(geom), ST_AsText(centroid)
+--     FROM h9_grid(ST_MakeEnvelope(-0.2, 51.4, 0.0, 51.6, 4326), 8);
+--
+--     -- Render an L2 grid over Europe with densified polygons:
+--     SELECT hex9, ST_AsText(geom)
+--     FROM h9_grid(ST_MakeEnvelope(-10, 35, 30, 60, 4326), 2, 3);
+--
+-- Availability: Hex9 1.1.0 (arg order changed; centroid column added; densify added)
+CREATE OR REPLACE FUNCTION h9_grid(geometry, integer, integer DEFAULT 0)
+    RETURNS TABLE(hex9 uuid, geom geometry, centroid geometry)
+    AS 'MODULE_PATHNAME', 'h9_grid'
+    LANGUAGE 'c' STABLE STRICT PARALLEL SAFE
+    ROWS 1000 COST 5000;

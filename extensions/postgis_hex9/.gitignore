@@ -1,0 +1,8 @@
+# Build artifacts — never committed
+build/
+*.o
+*.d
+*.dylib
+*.so
+*.bc
+.DS_Store

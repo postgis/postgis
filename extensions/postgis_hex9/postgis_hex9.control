@@ -1,0 +1,5 @@
+# postgis_hex9.control — development copy (authoritative: extensions/postgis_hex9/postgis_hex9.control.in)
+comment = 'Hex9 (H9) Discrete Global Grid System for PostGIS'
+default_version = '1.1.0'
+requires = 'postgis'
+relocatable = false

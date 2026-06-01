@@ -1,0 +1,91 @@
+-- hex9.sql — regression tests for postgis_hex9
+SET client_min_messages TO warning;
+
+-- ── h9_version ───────────────────────────────────────────────────────────────
+SELECT left(h9_version(), 14) AS version_prefix;
+
+-- ── h9_encode / h9_decode round-trip ─────────────────────────────────────────
+-- Decoded point should be SRID 4326 and within 1 m of the original.
+SELECT ST_SRID(h9_decode(h9_encode(
+    ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)))) AS srid;
+
+SELECT ST_Distance(
+    ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)::geography,
+    h9_decode(h9_encode(
+        ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)))::geography
+) < 1.0 AS roundtrip_sub_1m;
+
+-- ── h9_label / h9_label_key ──────────────────────────────────────────────────
+-- London (Trafalgar Sq) at layer 8: known-stable label values.
+SELECT h9_label(
+    h9_bin(h9_encode(ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)), 8),
+    8) AS label_l8;
+
+SELECT h9_label_key(
+    h9_encode(ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)),
+    8) AS label_key_l8;
+
+-- ── h9_bin idempotency ────────────────────────────────────────────────────────
+-- Binning an already-binned UUID at the same layer is a no-op.
+SELECT h9_bin(
+    h9_bin(h9_encode(ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)), 8), 8)
+  = h9_bin(
+        h9_encode(ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)), 8)
+  AS bin_idempotent;
+
+-- ── h9_bin hierarchy consistency ──────────────────────────────────────────────
+-- Coarsening to L7 directly == coarsening to L8 then to L7.
+SELECT h9_bin(h9_encode(ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)), 7)
+     = h9_bin(
+           h9_bin(h9_encode(
+               ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)), 8),
+           7)
+  AS hierarchy_consistent;
+
+-- Two points in the same L8 cell must share the same L8 and L7 bins.
+-- h9_decode recovers the cell centre; re-encoding it must give the same bin.
+SELECT h9_bin(h9_encode(
+    h9_decode(h9_bin(
+        h9_encode(ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)), 8))), 8)
+  = h9_bin(h9_encode(ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)), 8)
+  AS centre_round_trip_bin;
+
+-- ── h9_cell geometry ──────────────────────────────────────────────────────────
+-- Cell polygon must be SRID 4326 and contain the decoded centre point.
+SELECT ST_SRID(h9_cell(
+    h9_bin(h9_encode(ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)), 8),
+    8)) AS cell_srid;
+
+SELECT ST_Within(
+    h9_decode(h9_bin(
+        h9_encode(ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)), 8)),
+    h9_cell(
+        h9_bin(h9_encode(ST_SetSRID(ST_MakePoint(-0.1276, 51.5074), 4326)), 8),
+        8))
+  AS centre_within_cell;
+
+-- ── h9_grid: no duplicates, grid–cell polygon agreement ───────────────────────
+-- Small test area (~10–20 cells) around Trafalgar Square.
+WITH grid AS (
+    SELECT hex9, geom
+    FROM h9_grid(8, ST_MakeEnvelope(-0.135, 51.500, -0.120, 51.512, 4326))
+),
+checks AS (
+    SELECT
+        count(*)                                                       AS total,
+        count(DISTINCT hex9)                                           AS distinct_uuids,
+        count(DISTINCT ST_AsEWKT(geom))                                AS distinct_polys,
+        count(*) FILTER (
+            WHERE NOT ST_Equals(geom, h9_cell(hex9, 8)))               AS cell_mismatch
+    FROM grid
+)
+SELECT
+    total > 0                    AS has_cells,
+    total = distinct_uuids       AS no_dup_uuids,
+    total = distinct_polys       AS no_dup_polys,
+    cell_mismatch = 0            AS grid_cell_agree
+FROM checks;
+
+-- ── h9_grid cap error ─────────────────────────────────────────────────────────
+-- Very large area at fine layer must raise an error.
+SELECT h9_grid(14, ST_MakeEnvelope(-10, 49, 2, 61, 4326));
