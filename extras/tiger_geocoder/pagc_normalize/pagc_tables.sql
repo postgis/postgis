@@ -8,35 +8,35 @@ $$
 DECLARE var_temp text;
 BEGIN
 	var_temp := tiger.SetSearchPathForInstall('tiger'); /** set set search path to have tiger in front **/
-	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_gaz')  THEN
+	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema OPERATOR(pg_catalog.=) 'tiger' AND table_name OPERATOR(pg_catalog.=) 'pagc_gaz')  THEN
 		CREATE TABLE pagc_gaz (id serial NOT NULL primary key ,seq integer ,word text, stdword text, token integer,is_custom boolean NOT NULL default true);
 		GRANT SELECT ON pagc_gaz TO public;
 	ELSE
 		-- Insist on invoking Postgres logic of owning table by extension. This prevent attacks like CVE-2022-2625.
 		CREATE TABLE IF NOT EXISTS pagc_gaz (id serial NOT NULL primary key ,seq integer ,word text, stdword text, token integer,is_custom boolean NOT NULL default true);
 	END IF;
-	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_lex')  THEN
+	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema OPERATOR(pg_catalog.=) 'tiger' AND table_name OPERATOR(pg_catalog.=) 'pagc_lex')  THEN
 		CREATE TABLE pagc_lex (id serial NOT NULL primary key,seq integer,word text,stdword text,token integer,is_custom boolean NOT NULL default true);
 		GRANT SELECT ON pagc_lex TO public;
 	ELSE
 		-- Same as above.
 		CREATE TABLE IF NOT EXISTS pagc_lex (id serial NOT NULL primary key,seq integer,word text,stdword text,token integer,is_custom boolean NOT NULL default true);
 	END IF;
-	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_rules')  THEN
+	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema OPERATOR(pg_catalog.=) 'tiger' AND table_name OPERATOR(pg_catalog.=) 'pagc_rules')  THEN
 		CREATE TABLE pagc_rules (id serial NOT NULL primary key,rule text, is_custom boolean DEFAULT true);
 		GRANT SELECT ON pagc_rules TO public;
 	ELSE
 		-- Same as above.
 		CREATE TABLE IF NOT EXISTS pagc_rules (id serial NOT NULL primary key,rule text, is_custom boolean DEFAULT true);
 	END IF;
-	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_gaz' AND data_type='text')  THEN
+	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema OPERATOR(pg_catalog.=) 'tiger' AND table_name OPERATOR(pg_catalog.=) 'pagc_gaz' AND data_type OPERATOR(pg_catalog.=) 'text')  THEN
 	-- its probably old table structure change type of lex and gaz columns
 		ALTER TABLE tiger.pagc_lex ALTER COLUMN word TYPE text;
 		ALTER TABLE tiger.pagc_lex ALTER COLUMN stdword TYPE text;
 		ALTER TABLE tiger.pagc_gaz ALTER COLUMN word TYPE text;
 		ALTER TABLE tiger.pagc_gaz ALTER COLUMN stdword TYPE text;
 	END IF;
-	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_rules' AND column_name = 'is_custom' )  THEN
+	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema OPERATOR(pg_catalog.=) 'tiger' AND table_name OPERATOR(pg_catalog.=) 'pagc_rules' AND column_name OPERATOR(pg_catalog.=) 'is_custom' )  THEN
 	-- its probably old table structure add column
 		ALTER TABLE tiger.pagc_rules ADD COLUMN is_custom boolean NOT NULL DEFAULT false;
 	END IF;
