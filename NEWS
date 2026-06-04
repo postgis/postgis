@@ -8,6 +8,7 @@ PostGIS 3.6.4
 - GH-862, use SFCGAL undeprecated function sfcgal_geometry_tessellate() (Jean Felder)
 - Flatgeobuf schema mismatch vulnerability (NeuroWinter)
 - #5899, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)
+- #5916, ST_Split hang with very large ordinates (Paul Ramsey)
 
 
 PostGIS 3.6.3
