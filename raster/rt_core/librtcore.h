@@ -1544,21 +1544,17 @@ rt_errorstate rt_raster_get_perimeter(
 /*
  * Compute skewed extent that covers unskewed extent.
  *
- * @param envelope : unskewed extent of type rt_envelope
- * @param skew : pointer to 2-element array (x, y) of skew
- * @param scale : pointer to 2-element array (x, y) of scale
- * @param tolerance : value between 0 and 1 where the smaller the tolerance
- * results in an extent approaching the "minimum" skewed extent.
- * If value <= 0, tolerance = 0.1.  If value > 1, tolerance = 1.
+ * @param extent : unskewed extent of type rt_envelope
+ * @param skew   : pointer to 2-element array {skew_x, skew_y}
+ * @param scale  : pointer to 2-element array {fabs(scale_x), fabs(scale_y)}
  *
- * @return skewed raster who's extent covers unskewed extent, NULL on error
+ * @return skewed raster whose extent covers unskewed extent, NULL on error
  */
 rt_raster
 rt_raster_compute_skewed_raster(
 	rt_envelope extent,
 	double *skew,
-	double *scale,
-	double tolerance
+	double *scale
 );
 
 /**

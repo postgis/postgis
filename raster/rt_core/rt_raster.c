@@ -854,380 +854,95 @@ rt_raster_get_envelope(
 ******************************************************************************/
 
 /*
- * Compute skewed extent that covers unskewed extent.
+ * Compute skewed raster extent that covers the given unskewed extent.
+ * Uses a direct linear-algebra solution rather than an iterative approach.
  *
- * @param envelope : unskewed extent of type rt_envelope
- * @param skew : pointer to 2-element array (x, y) of skew
- * @param scale : pointer to 2-element array (x, y) of scale
- * @param tolerance : value between 0 and 1 where the smaller the tolerance
- * results in an extent approaching the "minimum" skewed extent.
- * If value <= 0, tolerance = 0.1. If value > 1, tolerance = 1.
+ * @param extent : unskewed extent of type rt_envelope
+ * @param skew   : pointer to 2-element array {skew_x, skew_y}
+ * @param scale  : pointer to 2-element array {fabs(scale_x), fabs(scale_y)}
  *
- * @return skewed raster who's extent covers unskewed extent, NULL on error
+ * @return skewed raster whose extent covers unskewed extent, NULL on error
  */
 rt_raster
 rt_raster_compute_skewed_raster(
 	rt_envelope extent,
 	double *skew,
-	double *scale,
-	double tolerance
+	double *scale
 ) {
-	uint32_t run = 0;
-	uint32_t max_run = 1;
-	double dbl_run = 0;
-
-	int rtn;
-	int covers = 0;
+	double sx, syg, kx, ky, det;
+	double col_nums[4], row_nums[4];
+	double col_min, col_max, row_min, row_max;
+	double K1, K2, eps;
+	double ulx, uly;
+	int width, height;
 	rt_raster raster;
-	double _gt[6] = {0};
-	double _igt[6] = {0};
-	int _d[2] = {1, -1};
-	int _dlast = 0;
-	int _dlastpos = 0;
-	double _w[2] = {0};
-	double _r[2] = {0};
-	double _xy[2] = {0};
 	int i;
-	int j;
-	int x;
-	int y;
 
-	LWGEOM *geom = NULL;
-	GEOSGeometry *sgeom = NULL;
-	GEOSGeometry *ngeom = NULL;
-
-	if (
-		(tolerance < 0.) ||
-		FLT_EQ(tolerance, 0.)
-	) {
-		tolerance = 0.1;
-	}
-	else if (tolerance > 1.)
-		tolerance = 1;
-
-	dbl_run = tolerance;
-	while (dbl_run < 10) {
-		dbl_run *= 10.;
-		max_run *= 10;
-	}
-
-	/* scale must be provided */
-	if (scale == NULL)
+	if (scale == NULL || skew == NULL)
 		return NULL;
-	for (i = 0; i < 2; i++) {
-		if (FLT_EQ(scale[i], 0.0))
-		{
-			rterror("rt_raster_compute_skewed_raster: Scale cannot be zero");
-			return 0;
-		}
 
-		if (i < 1)
-			_gt[1] = fabs(scale[i] * tolerance);
-		else
-			_gt[5] = fabs(scale[i] * tolerance);
-	}
-	/* conform scale-y to be negative */
-	_gt[5] *= -1;
-
-	/* skew not provided or skew is zero, return raster of correct dim and spatial attributes */
-	if ((skew == NULL) || (FLT_EQ(skew[0], 0.0) && FLT_EQ(skew[1], 0.0)))
-	{
-		int _dim[2] = {
-			(int) fmax((fabs(extent.MaxX - extent.MinX) + (fabs(scale[0]) / 2.)) / fabs(scale[0]), 1),
-			(int) fmax((fabs(extent.MaxY - extent.MinY) + (fabs(scale[1]) / 2.)) / fabs(scale[1]), 1)
-		};
-
-		raster = rt_raster_new(_dim[0], _dim[1]);
-		if (raster == NULL) {
-			rterror("rt_raster_compute_skewed_raster: Could not create output raster");
-			return NULL;
-		}
-
-		rt_raster_set_offsets(raster, extent.MinX, extent.MaxY);
-		rt_raster_set_scale(raster, fabs(scale[0]), -1 * fabs(scale[1]));
-		rt_raster_set_skews(raster, skew[0], skew[1]);
-
-		return raster;
-	}
-
-	/* direction to shift upper-left corner */
-	if (skew[0] > 0.)
-		_d[0] = -1;
-	if (skew[1] < 0.)
-		_d[1] = 1;
-
-	/* geotransform */
-	_gt[0] = extent.UpperLeftX;
-	_gt[2] = skew[0] * tolerance;
-	_gt[3] = extent.UpperLeftY;
-	_gt[4] = skew[1] * tolerance;
-
-	RASTER_DEBUGF(4, "Initial geotransform: %f, %f, %f, %f, %f, %f",
-		_gt[0], _gt[1], _gt[2], _gt[3], _gt[4], _gt[5]
-	);
-	RASTER_DEBUGF(4, "Delta: %d, %d", _d[0], _d[1]);
-
-	/* simple raster */
-	if ((raster = rt_raster_new(1, 1)) == NULL) {
-		rterror("rt_raster_compute_skewed_raster: Out of memory allocating extent raster");
-		return NULL;
-	}
-	rt_raster_set_geotransform_matrix(raster, _gt);
-
-	/* get inverse geotransform matrix */
-	if (!GDALInvGeoTransform(_gt, _igt)) {
-		rterror("rt_raster_compute_skewed_raster: Could not compute inverse geotransform matrix");
-		rt_raster_destroy(raster);
-		return NULL;
-	}
-	RASTER_DEBUGF(4, "Inverse geotransform: %f, %f, %f, %f, %f, %f",
-		_igt[0], _igt[1], _igt[2], _igt[3], _igt[4], _igt[5]
-	);
-
-	/* shift along axis */
-	for (i = 0; i < 2; i++) {
-		covers = 0;
-		run = 0;
-
-		RASTER_DEBUGF(3, "Shifting along %s axis", i < 1 ? "X" : "Y");
-
-		do {
-
-			/* prevent possible infinite loop */
-			if (run > max_run) {
-				rterror("rt_raster_compute_skewed_raster: Could not compute skewed extent due to check preventing infinite loop");
-				rt_raster_destroy(raster);
-				return NULL;
-			}
-
-			/*
-				check the four corners that they are covered along the specific axis
-				pixel column should be >= 0
-			*/
-			for (j = 0; j < 4; j++) {
-				switch (j) {
-					/* upper-left */
-					case 0:
-						_xy[0] = extent.MinX;
-						_xy[1] = extent.MaxY;
-						break;
-					/* lower-left */
-					case 1:
-						_xy[0] = extent.MinX;
-						_xy[1] = extent.MinY;
-						break;
-					/* lower-right */
-					case 2:
-						_xy[0] = extent.MaxX;
-						_xy[1] = extent.MinY;
-						break;
-					/* upper-right */
-					case 3:
-						_xy[0] = extent.MaxX;
-						_xy[1] = extent.MaxY;
-						break;
-				}
-
-				rtn = rt_raster_geopoint_to_cell(
-					raster,
-					_xy[0], _xy[1],
-					&(_r[0]), &(_r[1]),
-					_igt
-				);
-				if (rtn != ES_NONE) {
-					rterror("rt_raster_compute_skewed_raster: Could not compute raster pixel for spatial coordinates");
-					rt_raster_destroy(raster);
-					return NULL;
-				}
-
-				RASTER_DEBUGF(4, "Point %d at cell %d x %d", j, (int) _r[0], (int) _r[1]);
-
-				/* raster doesn't cover point */
-				if ((int) _r[i] < 0) {
-					RASTER_DEBUGF(4, "Point outside of skewed extent: %d", j);
-					covers = 0;
-
-					if (_dlastpos != j) {
-						_dlast = (int) _r[i];
-						_dlastpos = j;
-					}
-					else if ((int) _r[i] < _dlast) {
-						RASTER_DEBUG(4, "Point going in wrong direction.  Reversing direction");
-						_d[i] *= -1;
-						_dlastpos = -1;
-						run = 0;
-					}
-
-					break;
-				}
-
-				covers++;
-			}
-
-			if (!covers) {
-				x = 0;
-				y = 0;
-				if (i < 1)
-					x = _d[i] * fabs(_r[i]);
-				else
-					y = _d[i] * fabs(_r[i]);
-
-				rtn = rt_raster_cell_to_geopoint(
-					raster,
-					x, y,
-					&(_w[0]), &(_w[1]),
-					_gt
-				);
-				if (rtn != ES_NONE) {
-					rterror("rt_raster_compute_skewed_raster: Could not compute spatial coordinates for raster pixel");
-					rt_raster_destroy(raster);
-					return NULL;
-				}
-
-				/* adjust ul */
-				if (i < 1)
-					_gt[0] = _w[i];
-				else
-					_gt[3] = _w[i];
-				rt_raster_set_geotransform_matrix(raster, _gt);
-				RASTER_DEBUGF(4, "Shifted geotransform: %f, %f, %f, %f, %f, %f",
-					_gt[0], _gt[1], _gt[2], _gt[3], _gt[4], _gt[5]
-				);
-
-				/* get inverse geotransform matrix */
-				if (!GDALInvGeoTransform(_gt, _igt)) {
-					rterror("rt_raster_compute_skewed_raster: Could not compute inverse geotransform matrix");
-					rt_raster_destroy(raster);
-					return NULL;
-				}
-				RASTER_DEBUGF(4, "Inverse geotransform: %f, %f, %f, %f, %f, %f",
-					_igt[0], _igt[1], _igt[2], _igt[3], _igt[4], _igt[5]
-				);
-			}
-
-			run++;
-		}
-		while (!covers);
-	}
-
-	/* covers test */
-	rtn = rt_raster_geopoint_to_cell(
-		raster,
-		extent.MaxX, extent.MinY,
-		&(_r[0]), &(_r[1]),
-		_igt
-	);
-	if (rtn != ES_NONE) {
-		rterror("rt_raster_compute_skewed_raster: Could not compute raster pixel for spatial coordinates");
-		rt_raster_destroy(raster);
+	if (FLT_EQ(scale[0], 0.0) || FLT_EQ(scale[1], 0.0)) {
+		rterror("rt_raster_compute_skewed_raster: Scale cannot be zero");
 		return NULL;
 	}
 
-	RASTER_DEBUGF(4, "geopoint %f x %f at cell %d x %d", extent.MaxX, extent.MinY, (int) _r[0], (int) _r[1]);
+	sx  = fabs(scale[0]);
+	syg = -fabs(scale[1]);   /* gt[5]: negative for north-up */
+	kx  = skew[0];
+	ky  = skew[1];
+	det = sx * syg - kx * ky;
 
-	raster->width = _r[0];
-	raster->height = _r[1];
-
-	/* initialize GEOS */
-	initGEOS(rtinfo, lwgeom_geos_error);
-
-	/* create reference LWPOLY */
-	{
-		LWPOLY *npoly = rt_util_envelope_to_lwpoly(extent);
-		if (npoly == NULL) {
-			rterror("rt_raster_compute_skewed_raster: Could not build extent's geometry for covers test");
-			rt_raster_destroy(raster);
-			return NULL;
-		}
-
-		ngeom = (GEOSGeometry *) LWGEOM2GEOS(lwpoly_as_lwgeom(npoly), 0);
-		lwpoly_free(npoly);
+	if (FLT_EQ(det, 0.0)) {
+		rterror("rt_raster_compute_skewed_raster: Degenerate geotransform (determinant is zero)");
+		return NULL;
 	}
 
-	do {
-		covers = 0;
+	/* col_num(x,y) = syg*x - kx*y,  row_num(x,y) = -ky*x + sx*y */
+	col_nums[0] = syg * extent.MinX - kx * extent.MaxY;
+	col_nums[1] = syg * extent.MaxX - kx * extent.MaxY;
+	col_nums[2] = syg * extent.MaxX - kx * extent.MinY;
+	col_nums[3] = syg * extent.MinX - kx * extent.MinY;
+	row_nums[0] = -ky * extent.MinX + sx * extent.MaxY;
+	row_nums[1] = -ky * extent.MaxX + sx * extent.MaxY;
+	row_nums[2] = -ky * extent.MaxX + sx * extent.MinY;
+	row_nums[3] = -ky * extent.MinX + sx * extent.MinY;
 
-		/* construct sgeom from raster */
-		if ((rt_raster_get_convex_hull(raster, &geom) != ES_NONE) || geom == NULL) {
-			rterror("rt_raster_compute_skewed_raster: Could not build skewed extent's geometry for covers test");
-			GEOSGeom_destroy(ngeom);
-			rt_raster_destroy(raster);
-			return NULL;
-		}
-
-		sgeom = (GEOSGeometry *) LWGEOM2GEOS(geom, 0);
-		lwgeom_free(geom);
-
-		covers = GEOSRelatePattern(sgeom, ngeom, "******FF*");
-		GEOSGeom_destroy(sgeom);
-
-		if (covers == 2) {
-			rterror("rt_raster_compute_skewed_raster: Could not run covers test");
-			GEOSGeom_destroy(ngeom);
-			rt_raster_destroy(raster);
-			return NULL;
-		}
-
-		if (!covers)
-		{
-			raster->width++;
-			raster->height++;
-		}
-	}
-	while (!covers);
-
-	RASTER_DEBUGF(4, "Skewed extent does cover normal extent with dimensions %d x %d", raster->width, raster->height);
-
-	raster->width = (int) ((((double) raster->width) * fabs(_gt[1]) + fabs(scale[0] / 2.)) / fabs(scale[0]));
-	raster->height = (int) ((((double) raster->height) * fabs(_gt[5]) + fabs(scale[1] / 2.)) / fabs(scale[1]));
-	_gt[1] = fabs(scale[0]);
-	_gt[5] = -1 * fabs(scale[1]);
-	_gt[2] = skew[0];
-	_gt[4] = skew[1];
-	rt_raster_set_geotransform_matrix(raster, _gt);
-
-	/* minimize width/height */
-	for (i = 0; i < 2; i++) {
-		covers = 1;
-		do {
-			if (i < 1)
-				raster->width--;
-			else
-				raster->height--;
-
-			/* construct sgeom from raster */
-			if ((rt_raster_get_convex_hull(raster, &geom) != ES_NONE) || geom == NULL) {
-				rterror("rt_raster_compute_skewed_raster: Could not build skewed extent's geometry for minimizing dimensions");
-				GEOSGeom_destroy(ngeom);
-				rt_raster_destroy(raster);
-				return NULL;
-			}
-
-			sgeom = (GEOSGeometry *) LWGEOM2GEOS(geom, 0);
-			lwgeom_free(geom);
-
-			covers = GEOSRelatePattern(sgeom, ngeom, "******FF*");
-			GEOSGeom_destroy(sgeom);
-
-			if (covers == 2) {
-				rterror("rt_raster_compute_skewed_raster: Could not run covers test for minimizing dimensions");
-				GEOSGeom_destroy(ngeom);
-				rt_raster_destroy(raster);
-				return NULL;
-			}
-		} while (covers);
-
-		if (i < 1)
-			raster->width++;
-		else
-			raster->height++;
-
+	col_min = col_max = col_nums[0];
+	row_min = row_max = row_nums[0];
+	for (i = 1; i < 4; i++) {
+		if (col_nums[i] < col_min) col_min = col_nums[i];
+		if (col_nums[i] > col_max) col_max = col_nums[i];
+		if (row_nums[i] < row_min) row_min = row_nums[i];
+		if (row_nums[i] > row_max) row_max = row_nums[i];
 	}
 
-	GEOSGeom_destroy(ngeom);
+	K1 = (det < 0.0) ? col_max : col_min;
+	K2 = (det < 0.0) ? row_max : row_min;
+
+	/* Tiny safety margin so FP rounding can't place boundary corners just outside */
+	eps = (fabs(K1) + fabs(K2) + fabs(det)) * DBL_EPSILON * 16.0;
+	if (det < 0.0) { K1 += eps; K2 += eps; }
+	else           { K1 -= eps; K2 -= eps; }
+
+	/* Solve: syg*ulx - kx*uly = K1,  -ky*ulx + sx*uly = K2 */
+	ulx = (sx  * K1 + kx  * K2) / det;
+	uly = (ky  * K1 + syg * K2) / det;
+
+	width  = (int)floor((col_max - col_min) / fabs(det)) + 1;
+	height = (int)floor((row_max - row_min) / fabs(det)) + 1;
+
+	raster = rt_raster_new(width, height);
+	if (raster == NULL) {
+		rterror("rt_raster_compute_skewed_raster: Could not create output raster");
+		return NULL;
+	}
+	rt_raster_set_offsets(raster, ulx, uly);
+	rt_raster_set_scale(raster, fabs(scale[0]), -fabs(scale[1]));
+	rt_raster_set_skews(raster, skew[0], skew[1]);
 
 	return raster;
 }
+
 
 /**
  * Return TRUE if the raster is empty. i.e. is NULL, width = 0 or height = 0
@@ -2749,8 +2464,7 @@ rt_raster_gdal_rasterize(
 		skewedrast = rt_raster_compute_skewed_raster(
 			extent,
 			_skew,
-			_scale,
-			0.01
+			_scale
 		);
 		if (skewedrast == NULL) {
 			rterror("rt_raster_gdal_rasterize: Could not compute skewed raster");
