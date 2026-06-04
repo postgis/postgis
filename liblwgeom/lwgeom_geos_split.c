@@ -282,9 +282,12 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 
 	LWDEBUGF(3, "Projected point:(%.15g %.15g), seg:%d, p1:(%.15g %.15g), p2:(%.15g %.15g)", pt_projected.x, pt_projected.y, seg, p1.x, p1.y, p2.x, p2.y);
 
-	/* When closest point == an endpoint, this is a boundary intersection */
-	if ( ( (seg == nsegs-1) && P4D_SAME_STRICT(&pt_projected, &p2) ) ||
-	     ( (seg == 0)       && P4D_SAME_STRICT(&pt_projected, &p1) ) )
+	/* When closest point == an endpoint, this is a boundary intersection.
+	 * Compare only X and Y since pt_projected.x/y were forced to pt.x/y above,
+	 * and Z/M may be NaN when line coordinates are very large (causing Inf/Inf
+	 * in closest_point_on_segment). See #5916. */
+	if ( ( (seg == nsegs-1) && (pt_projected.x == p2.x) && (pt_projected.y == p2.y) ) ||
+	     ( (seg == 0)       && (pt_projected.x == p1.x) && (pt_projected.y == p1.y) ) )
 	{
 		return 1;
 	}
