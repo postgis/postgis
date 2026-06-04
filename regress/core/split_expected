@@ -31,3 +31,4 @@ ERROR:  Splitter line has linear intersection with input
 87|SRID=4326;GEOMETRYCOLLECTION(LINESTRING EMPTY)
 ERROR:  Input Geometry contains invalid coordinates
 ERROR:  Blade Geometry contains invalid coordinates
+#5916|1
