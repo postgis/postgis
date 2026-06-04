@@ -190,7 +190,8 @@ static void test_gdal_polygonize(void) {
 
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
-	CU_ASSERT_DOUBLE_EQUAL(nPols, 4, FLT_EPSILON);
+	/* nodata=1.8 pixels are excluded: only 0.0 (x2 regions) and 2.8 remain */
+	CU_ASSERT_DOUBLE_EQUAL(nPols, 3, FLT_EPSILON);
 	total_area = 0; total_val = 0;
 	for (i = 0; i < nPols; i++) {
 		total_val += gv[i].val;
@@ -199,8 +200,8 @@ static void test_gdal_polygonize(void) {
 		lwgeom_free((LWGEOM *) gv[i].geom);
 	}
 	printf("total area, total_val, polys = %f, %f, %i\n", total_area, total_val, nPols);
-	CU_ASSERT_DOUBLE_EQUAL(total_val, 4.6, FLT_EPSILON);
-	CU_ASSERT_DOUBLE_EQUAL(total_area, 81, FLT_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(total_val, 2.8, FLT_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(total_area, 65, FLT_EPSILON);
 
 
 	rtdealloc(gv);
@@ -214,7 +215,8 @@ static void test_gdal_polygonize(void) {
 
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
-	CU_ASSERT_DOUBLE_EQUAL(nPols, 4, FLT_EPSILON);
+	/* nodata=2.8 pixels are excluded: only 0.0 (x2 regions) and 1.8 remain */
+	CU_ASSERT_DOUBLE_EQUAL(nPols, 3, FLT_EPSILON);
 	total_area = 0; total_val = 0;
 	for (i = 0; i < nPols; i++) {
 		total_val += gv[i].val;
@@ -224,8 +226,8 @@ static void test_gdal_polygonize(void) {
 	}
 
 	printf("total area, total_val, polys = %f, %f, %i\n", total_area, total_val, nPols);
-	CU_ASSERT_DOUBLE_EQUAL(total_val, 4.6, FLT_EPSILON);
-	CU_ASSERT_DOUBLE_EQUAL(total_area, 81, FLT_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(total_val, 1.8, FLT_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(total_area, 69, FLT_EPSILON);
 
 	rtdealloc(gv);
 	cu_free_raster(rt);
