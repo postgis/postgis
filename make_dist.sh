@@ -63,7 +63,6 @@ rm -fv "$outdir"/make_dist.sh "$outdir"/HOWTO_RELEASE
 echo "Removing ci files"
 rm -rfv \
   "$outdir"/ci \
-  "$outdir"/.cirrus.yml \
   "$outdir"/.clang-format \
   "$outdir"/.dron*.yml \
   "$outdir"/.github \

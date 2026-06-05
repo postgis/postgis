@@ -1,0 +1,119 @@
+# GitHub Actions – FreeBSD CI
+# Replaces .cirrus.yml
+
+name: "CI (FreeBSD)"
+
+on:
+  push:
+    branches-ignore:
+      - 'master'
+  pull_request: ~
+
+jobs:
+
+  freebsd:
+    name: "FreeBSD ${{ matrix.version }}"
+    runs-on: ubuntu-latest
+    env:
+      CCACHE_DIR: "${{ github.workspace }}/.ccache"
+      CCACHE_MAXSIZE: "1G"
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - "14.3"
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Cache ccache
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: freebsd-${{ matrix.version }}-ccache-${{ github.sha }}
+          restore-keys: |
+            freebsd-${{ matrix.version }}-ccache-
+
+      - name: Build and test on FreeBSD
+        uses: vmactions/freebsd-vm@a6de9343ef5747433d9c25784c90e84998b9d69a # v1.4.6
+        with:
+          release: ${{ matrix.version }}
+          usesh: true
+          sync: rsync
+          copyback: true
+          prepare: |
+            sed -i.bak \
+              -e 's,pkg+http://pkg.FreeBSD.org/\${ABI}/quarterly,pkg+http://pkg.FreeBSD.org/\${ABI}/latest,' \
+              /etc/pkg/FreeBSD.conf
+            ASSUME_ALWAYS_YES=yes pkg bootstrap -f
+            env IGNORE_OSVERSION=yes pkg update -f
+            env IGNORE_OSVERSION=yes pkg install -y \
+              autoconf automake bison ccache-static cunit docbook \
+              gdal geos gmake iconv json-c libtool libxml2 libxslt \
+              pkgconf postgresql17-contrib postgresql17-server \
+              proj protobuf-c sfcgal
+            projsync --system-directory --source-id us_noaa
+            projsync --system-directory --source-id ch_swisstopo
+          run: |
+            set -e
+
+            export CC="ccache clang"
+            export CXX="ccache clang++"
+            export CCACHE_DIR="${{ github.workspace }}/.ccache"
+            export CCACHE_MAXSIZE="1G"
+            export CCACHE_COMPRESS=1
+            export CCACHE_STATIC_PREFIX="/usr/local"
+            export CCACHE_NOSTATS=1
+            export CCACHE_TEMPDIR="/tmp"
+            export MAKEJOBS="-j2"
+
+            ccache --max-size="${CCACHE_MAXSIZE}"
+
+            find . -name "*.pl" | xargs sed -i '' 's|/usr/bin/perl|/usr/bin/env perl|'
+
+            ./autogen.sh
+            ./configure \
+              PKG_CONFIG=/usr/local/bin/pkgconf \
+              CFLAGS="-isystem /usr/local/include -Wall -fno-omit-frame-pointer -Werror" \
+              LDFLAGS="-L/usr/local/lib" \
+              --with-libiconv-prefix=/usr/local \
+              --without-gui \
+              --with-topology \
+              --without-raster \
+              --with-sfcgal=/usr/local/bin/sfcgal-config \
+              --with-protobuf
+
+            service postgresql oneinitdb
+            service postgresql onestart
+            su postgres -c "createuser -s $(whoami)"
+
+            gmake ${MAKEJOBS} || { service postgresql onestop; exit 1; }
+            gmake ${MAKEJOBS} install || { service postgresql onestop; exit 1; }
+            ccache -s
+
+            show_regression_diffs() {
+              local tmpdir="${PGIS_REG_TMPDIR:-/tmp/pgis_reg}"
+              local found=0
+              for f in "${tmpdir}"/*_diff; do
+                [ -f "${f}" ] || continue
+                if [ "${found}" -eq 0 ]; then
+                  echo "---- BEGIN REGRESSION DIFFS (${tmpdir}) ----"
+                fi
+                found=1
+                echo "---- ${f} ----"
+                cat "${f}"
+              done
+              if [ "${found}" -eq 0 ]; then
+                echo "No regression diff files found in ${tmpdir}"
+              else
+                echo "---- END REGRESSION DIFFS ----"
+              fi
+            }
+
+            gmake ${MAKEJOBS} check RUNTESTFLAGS="-v --extension --dumprestore" || {
+              show_regression_diffs
+              service postgresql onestop
+              exit 1
+            }
+            service postgresql onestop
