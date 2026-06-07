@@ -16,6 +16,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.2+ is needed
        https://github.com/postgis/address_standardizer (Paul Ramsey)
  - #6052, [tiger_geocoder] Extension removed and moved to
             https://git.osgeo.org/postgis/postgis_tiger_geocoder (Regina Obe)
+ - #6079, Remove support for GEOS < 3.10 (Sandro Santilli)
 
 * New Features *
 
