@@ -589,6 +589,11 @@ static void test_lwgeom_swap_ordinates(void)
 	);
 
 	do_lwgeom_swap_ordinates(
+	    "NURBSCURVE(2, (0 10, 1 11, 2 10))",
+	    "NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(10 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(11 1),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(10 2),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3)))"
+	);
+
+	do_lwgeom_swap_ordinates(
 	    "COMPOUNDCURVE(CIRCULARSTRING(0 1,1 1,1 0),(1 0,0 1))",
 	    "COMPOUNDCURVE(CIRCULARSTRING(1 0,1 1,0 1),(0 1,1 0))"
 	);
@@ -910,6 +915,12 @@ static void test_lwgeom_same(void)
 	lwgeom_add_bbox(geom);
 	CU_ASSERT( lwgeom_same(geom, geom) );
 	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("NURBSCURVE(2, (0 0, 1 1, 2 0))", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("NURBSCURVE(2, (0 0, 1 1, 2 0))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom2) );
+	lwgeom_free(geom);
+	lwgeom_free(geom2);
 
 	geom = lwgeom_from_wkt("POLYGON EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT( lwgeom_same(geom, geom) );
