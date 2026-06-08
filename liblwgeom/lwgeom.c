@@ -392,12 +392,13 @@ uint8_t MULTITYPE[NUMTYPES] =
 	POLYHEDRALSURFACETYPE, /* 11 */
 	0, 0,
 	TINTYPE,               /* 14 */
-	0
+	0,
+	MULTICURVETYPE         /* 16 */
 };
 
 uint8_t lwtype_multitype(uint8_t type)
 {
-	if (type > 15) return 0;
+	if (type >= NUMTYPES) return 0;
 	return MULTITYPE[type];
 }
 
@@ -566,6 +567,8 @@ lwgeom_clone(const LWGEOM *lwgeom)
 		return (LWGEOM *)lwline_clone((LWLINE *)lwgeom);
 	case CIRCSTRINGTYPE:
 		return (LWGEOM *)lwcircstring_clone((LWCIRCSTRING *)lwgeom);
+	case NURBSCURVETYPE:
+		return (LWGEOM *)lwnurbscurve_clone_deep((LWNURBSCURVE *)lwgeom);
 	case POLYGONTYPE:
 		return (LWGEOM *)lwpoly_clone((LWPOLY *)lwgeom);
 	case TRIANGLETYPE:
@@ -1283,6 +1286,8 @@ lwtype_get_collectiontype(uint8_t type)
 		case CIRCSTRINGTYPE:
 			return MULTICURVETYPE;
 		case COMPOUNDTYPE:
+			return MULTICURVETYPE;
+		case NURBSCURVETYPE:
 			return MULTICURVETYPE;
 		case CURVEPOLYTYPE:
 			return MULTISURFACETYPE;
@@ -2261,6 +2266,13 @@ lwgeom_affine(LWGEOM *geom, const AFFINE *affine)
 			ptarray_affine(l->points, affine);
 			break;
 		}
+		case NURBSCURVETYPE:
+		{
+			LWNURBSCURVE *n = (LWNURBSCURVE*)geom;
+			if (n->points != NULL)
+				ptarray_affine(n->points, affine);
+			break;
+		}
 		case POLYGONTYPE:
 		{
 			LWPOLY *p = (LWPOLY*)geom;
@@ -2438,7 +2450,14 @@ lwgeom_startpoint(const LWGEOM *lwgeom, POINT4D *pt)
 		case LINETYPE:
 			return ptarray_startpoint(((LWLINE*)lwgeom)->points, pt);
 		case NURBSCURVETYPE:
-			return ptarray_startpoint(((LWNURBSCURVE*)lwgeom)->points, pt);
+		{
+			LWPOINT *start = lwnurbscurve_evaluate((const LWNURBSCURVE*)lwgeom, 0.0);
+			int rv = LW_FAILURE;
+			if ( start && start->point && start->point->npoints > 0 )
+				rv = getPoint4d_p(start->point, 0, pt) ? LW_SUCCESS : LW_FAILURE;
+			lwpoint_free(start);
+			return rv;
+		}
 		case POLYGONTYPE:
 			return lwpoly_startpoint((LWPOLY*)lwgeom, pt);
 		case TINTYPE:

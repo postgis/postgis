@@ -134,3 +134,17 @@ SELECT 'NURBS_CONV_8', ST_NumPoints(ST_NurbsToLineString(
     ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 1 1, 2 0)'::geometry),
     2
 )) as min_segments;
+
+-- Test 15: Constructor validation error paths
+SELECT 'NURBS_ERR_3', ST_MakeNurbsCurve(
+    2,
+    'LINESTRING(0 0, 1 1, 2 0)'::geometry,
+    ARRAY[1.0, 0.0, 1.0]
+);
+
+SELECT 'NURBS_ERR_4', ST_MakeNurbsCurve(
+    2,
+    'LINESTRING(0 0, 1 1, 2 0)'::geometry,
+    ARRAY[1.0, 1.0, 1.0],
+    ARRAY[0.0, 0.0, 1.0, 0.5, 1.0, 1.0]
+);

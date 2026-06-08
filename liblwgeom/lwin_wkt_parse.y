@@ -532,6 +532,8 @@ curve_list :
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	curve_list COMMA_TOK compoundcurve
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
+	curve_list COMMA_TOK nurbscurve
+		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	curve_list COMMA_TOK linestring
 		{ $$ = wkt_parser_collection_add_geom($1,$3); WKT_ERROR(); } |
 	curve_list COMMA_TOK linestring_untagged
@@ -539,6 +541,8 @@ curve_list :
 	circularstring
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |
 	compoundcurve
+		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |
+	nurbscurve
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |
 	linestring
 		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |

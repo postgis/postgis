@@ -30,6 +30,7 @@
 #include <math.h>
 
 static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precision, uint8_t variant);
+static void lwnurbscurve_to_wkt_sb(const LWNURBSCURVE *curve, stringbuffer_t *sb, int precision, uint8_t variant);
 
 #define buffer_size 128
 
@@ -448,6 +449,9 @@ static void lwmcurve_to_wkt_sb(const LWMCURVE *mcurv, stringbuffer_t *sb, int pr
 		case COMPOUNDTYPE:
 			/* And compoundcurve subgeoms *do* get type identifiers */
 			lwcompound_to_wkt_sb((LWCOMPOUND*)mcurv->geoms[i], sb, precision, variant );
+			break;
+		case NURBSCURVETYPE:
+			lwnurbscurve_to_wkt_sb((LWNURBSCURVE*)mcurv->geoms[i], sb, precision, variant );
 			break;
 		default:
 			lwerror("lwmcurve_to_wkt_sb: Unknown type received %d - %s", type, lwtype_name(type));

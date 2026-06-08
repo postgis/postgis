@@ -530,7 +530,8 @@ int lwcollection_allows_subtype(int collectiontype, int subtype)
 	        (subtype == CIRCSTRINGTYPE || subtype == LINETYPE || subtype == COMPOUNDTYPE) )
 		return LW_TRUE;
 	if ( collectiontype == MULTICURVETYPE &&
-	        (subtype == CIRCSTRINGTYPE || subtype == LINETYPE || subtype == COMPOUNDTYPE) )
+	        (subtype == CIRCSTRINGTYPE || subtype == LINETYPE || subtype == COMPOUNDTYPE ||
+	         subtype == NURBSCURVETYPE) )
 		return LW_TRUE;
 	if ( collectiontype == MULTISURFACETYPE &&
 	        (subtype == POLYGONTYPE || subtype == CURVEPOLYTYPE) )
@@ -554,5 +555,4 @@ lwcollection_startpoint(const LWCOLLECTION* col, POINT4D* pt)
 
 	return lwgeom_startpoint(col->geoms[0], pt);
 }
-
 
