@@ -309,6 +309,14 @@ CREATE OR REPLACE FUNCTION CG_ApproximateMedialAxis(geometry)
        IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
+-- Availability: 3.7.0 - requires SFCGAL >= 2.3.0 when projected is true
+CREATE OR REPLACE FUNCTION CG_ApproximateMedialAxis(geom geometry, projected boolean)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','sfcgal_approximate_medial_axis'
+	LANGUAGE 'c'
+	IMMUTABLE STRICT PARALLEL SAFE
+	COST 100;
+
 -- Availability: 2.2.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_ApproximateMedialAxis(geometry)
