@@ -135,6 +135,15 @@ SELECT 'NURBS_CONV_8', ST_NumPoints(ST_NurbsToLineString(
     2
 )) as min_segments;
 
+-- Test 15: WKT round-trip should not turn implicit unit weights into rational weights
+WITH nurbs_curve AS (
+    SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 1 1, 2 0)'::geometry) AS geom
+)
+SELECT 'NURBS_WKT_DEFAULT_WEIGHTS',
+    ST_NurbsCurveIsRational(ST_GeomFromText(ST_AsText(geom))),
+    ST_Weights(ST_GeomFromText(ST_AsText(geom))) IS NULL
+FROM nurbs_curve;
+
 -- Test 15: Constructor validation error paths
 SELECT 'NURBS_ERR_3', ST_MakeNurbsCurve(
     2,

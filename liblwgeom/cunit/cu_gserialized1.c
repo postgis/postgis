@@ -922,6 +922,14 @@ static void test_lwgeom_same(void)
 	lwgeom_free(geom);
 	lwgeom_free(geom2);
 
+	geom = lwgeom_from_wkt("NURBSCURVE(2, (0 0, 1 1, 2 0))", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt(
+	    "NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(1 1),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(2 0),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3)))",
+	    LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom2) );
+	lwgeom_free(geom);
+	lwgeom_free(geom2);
+
 	geom = lwgeom_from_wkt("POLYGON EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT( lwgeom_same(geom, geom) );
 	lwgeom_free(geom);
