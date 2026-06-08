@@ -444,16 +444,33 @@ sfcgal_approximate_medial_axis(PG_FUNCTION_ARGS)
 	GSERIALIZED *input, *output;
 	sfcgal_geometry_t *geom;
 	sfcgal_geometry_t *result;
+	bool projected = false;
 	srid_t srid;
 
 	sfcgal_postgis_init();
 
 	input = PG_GETARG_GSERIALIZED_P(0);
 	srid = gserialized_get_srid(input);
+
+	if (PG_NARGS() > 1 && !PG_ARGISNULL(1))
+		projected = PG_GETARG_BOOL(1);
+
 	geom = POSTGIS2SFCGALGeometry(input);
 	PG_FREE_IF_COPY(input, 0);
 
+#if POSTGIS_SFCGAL_VERSION >= 20300
+	if (projected)
+		result = sfcgal_geometry_projected_medial_axis(geom);
+	else
+		result = sfcgal_geometry_approximate_medial_axis(geom);
+#else
+	if (projected)
+		lwpgnotice(
+		    "CG_ApproximateMedialAxis with projected=true requires SFCGAL 2.3.0+, "
+		    "falling back to non-projected result.");
 	result = sfcgal_geometry_approximate_medial_axis(geom);
+#endif
+
 	sfcgal_geometry_delete(geom);
 
 	output = SFCGALGeometry2POSTGIS(result, 0, srid);
