@@ -644,4 +644,11 @@ AS 'MODULE_PATHNAME', 'sfcgal_generate_roof'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 _COST_DEFAULT;
 
+-- Availability: 3.7.0 - requires SFCGAL >= 2.3.0 and CGAL >= 6.0
+CREATE OR REPLACE FUNCTION CG_PolygonRepair(geom geometry, rule text DEFAULT 'EVEN_ODD')
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_polygon_repair'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_DEFAULT;
+
 COMMIT;
