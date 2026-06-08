@@ -47,6 +47,8 @@ LWGEOM* lwcollection_unstroke(const LWCOLLECTION *c);
 LWGEOM* lwgeom_unstroke(const LWGEOM *geom);
 static LWLINE* lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol, LW_LINEARIZE_TOLERANCE_TYPE tolerance_type, int flags);
 
+#define NURBS_MIN_LINEARIZE_SEGMENTS 8
+
 
 /*
  * Determines (recursively in the case of collections) whether the geometry
@@ -903,16 +905,50 @@ lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol,
 			return NULL;
 		}
 		num_segments = (uint32_t)tol * 4;
-		if (num_segments < 8) num_segments = 8;
 		break;
 	case LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION:
+	{
+		GBOX box;
+		double width = 0.0;
+		double height = 0.0;
+		double depth = 0.0;
+		double diagonal = 0.0;
+
+		if (!curve->points || curve->points->npoints == 0)
+			return lwnurbscurve_to_linestring(curve, NURBS_MIN_LINEARIZE_SEGMENTS);
+
+		if (ptarray_calculate_gbox_cartesian(curve->points, &box) == LW_SUCCESS)
+		{
+			width = box.xmax - box.xmin;
+			height = box.ymax - box.ymin;
+			if (FLAGS_GET_Z(curve->flags))
+				depth = box.zmax - box.zmin;
+			diagonal = sqrt(width * width + height * height + depth * depth);
+		}
+
+		if (diagonal > tol * UINT32_MAX)
+		{
+			lwerror("%s: max deviation is too small, got %.15g", __func__, tol);
+			return NULL;
+		}
+		num_segments = diagonal > 0.0 ? (uint32_t)ceil(diagonal / tol) : NURBS_MIN_LINEARIZE_SEGMENTS;
+		break;
+	}
 	case LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE:
-		lwerror("%s: tolerance type %d not implemented for NURBSCURVE", __func__, tolerance_type);
-		return NULL;
+		if (tol < (2.0 * M_PI) / UINT32_MAX)
+		{
+			lwerror("%s: max angle is too small, got %.15g", __func__, tol);
+			return NULL;
+		}
+		num_segments = (uint32_t)ceil((2.0 * M_PI) / tol);
+		break;
 	default:
 		lwerror("%s: unsupported tolerance type %d", __func__, tolerance_type);
 		return NULL;
 	}
+
+	if (num_segments < NURBS_MIN_LINEARIZE_SEGMENTS)
+		num_segments = NURBS_MIN_LINEARIZE_SEGMENTS;
 
 	(void)flags; /* Currently unused for NURBS linearization */
 
