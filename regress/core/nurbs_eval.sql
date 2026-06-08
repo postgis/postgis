@@ -173,6 +173,11 @@ SELECT 'NURBS_CURVEPOLY_4', ST_Contains(
     'POINT(5 1)'::geometry
 );
 
+SELECT 'NURBS_DISTANCE_1', ST_Distance(
+    'CURVEPOLYGON(NURBSCURVE(2, (0 0, 5 10, 10 0, 5 -10, 0 0)))'::geometry,
+    'POINT(5 1)'::geometry
+);
+
 SELECT 'NURBS_TRANSFORM_1',
     ST_GeometryType(ST_Transform('SRID=4326;NURBSCURVE(2, (0 0, 0.5 1, 1 0))'::geometry, 3857)),
     ST_SRID(ST_Transform('SRID=4326;NURBSCURVE(2, (0 0, 0.5 1, 1 0))'::geometry, 3857));
