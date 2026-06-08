@@ -300,6 +300,20 @@ lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, uint32_t where)
 		uint32_t npoints_part = lwgeom_count_vertices(part);
 		if ( where >= count && where < count + npoints_part )
 		{
+			if (part->type == NURBSCURVETYPE)
+			{
+				const LWNURBSCURVE *curve = (const LWNURBSCURVE*)part;
+				POINTARRAY *pa;
+				POINT4D pt;
+
+				if (!curve->points || where - count >= curve->points->npoints)
+					return NULL;
+
+				pa = ptarray_construct_empty(FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags), 1);
+				pt = getPoint4d(curve->points, where - count);
+				ptarray_append_point(pa, &pt, LW_TRUE);
+				return lwpoint_construct(curve->srid, NULL, pa);
+			}
 			return lwline_get_lwpoint((LWLINE*)part, where - count);
 		}
 		else

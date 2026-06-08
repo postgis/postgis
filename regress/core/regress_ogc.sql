@@ -220,6 +220,9 @@ select 'ST_PointN6', ST_AsText(ST_PointN('POLYGON((0 0, 1 1, 0 1, 0 0))'::geomet
 select 'ST_PointN7', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2,3 3, 4 4)'::geometry,-2)); --testing negative index
 select 'ST_PointN8', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2,3 3, 4 4)'::geometry,-6));
 select 'ST_PointN9', ST_AsText(ST_PointN('LINESTRING(0 0 0, 1 1 1,2 2 2,3 3 3,4 4 4)'::geometry,2)); --testing 3D
+select 'ST_PointN10', ST_AsText(ST_PointN('COMPOUNDCURVE(NURBSCURVE(2, (0 0, 1 1, 2 0)))'::geometry,2));
+select 'ST_PointN11', ST_AsText(ST_PointN('COMPOUNDCURVE((0 0, 1 1), NURBSCURVE(2, (1 1, 2 2, 3 1)))'::geometry,4));
+select 'ST_PointN12', ST_AsText(ST_PointN('COMPOUNDCURVE((0 0, 1 1), NURBSCURVE(2, (1 1, 2 2, 3 1)))'::geometry,-1));
 
 -- issues with EMPTY --
 select 'ST_Buffer(empty)', ST_AsText(ST_Buffer('POLYGON EMPTY'::geometry, 0.5));
