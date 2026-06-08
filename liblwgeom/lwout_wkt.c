@@ -629,12 +629,10 @@ static void lwpsurface_to_wkt_sb(const LWPSURFACE *psurf, stringbuffer_t *sb, in
  * "NURBSCURVE" (with appropriate dimension qualifiers) is written. If the
  * curve has no control points the token "EMPTY" is emitted.
  *
- * The WKT payload includes, in order: the curve degree, a parenthesized list
- * of control points (coordinates only), an optional parenthesized list of
- * weights, and an optional parenthesized knot vector. Knots are emitted only if
- * present. Weights are emitted if they vary among themselves or if knots are
- * emitted; when knots exist but weights are missing, a default uniform weight
- * of 1 is emitted for each control point to preserve round-trip consistency.
+ * The WKT payload follows the ISO form: DEGREE, CONTROLPOINTS containing
+ * NURBSPOINT/WEIGHTEDPOINT entries, and KNOTS containing collapsed knot
+ * multiplicities. Default uniform weights and knots are emitted to preserve
+ * round-trip consistency.
  *
  * Numeric values (coordinates, weights, knots) are formatted using the given
  * precision (passed to printf-style formatting).
@@ -646,70 +644,68 @@ static void lwpsurface_to_wkt_sb(const LWPSURFACE *psurf, stringbuffer_t *sb, in
  */
 static void lwnurbscurve_to_wkt_sb(const LWNURBSCURVE *curve, stringbuffer_t *sb, int precision, uint8_t variant)
 {
-    if (!(variant & WKT_NO_TYPE)) {
-        stringbuffer_append_len(sb, "NURBSCURVE", 10);
-        dimension_qualifiers_to_wkt_sb((LWGEOM*)curve, sb, variant);
-    }
+	uint32_t dimensions;
+	uint8_t output_variant = variant | WKT_ISO;
+	uint32_t nknots = 0;
+	double *knots = NULL;
 
-    if (!curve->points || curve->points->npoints == 0) {
-        empty_to_wkt_sb(sb);
-        return;
-    }
-
-    stringbuffer_append_len(sb, "(", 1);
-
-    /* Output degree first */
-    stringbuffer_aprintf(sb, "%d,(", curve->degree);
-
-    /* Control points (without weights) */
-    ptarray_to_wkt_sb(curve->points, sb, precision, variant | WKT_NO_PARENS);
-
-    stringbuffer_append_len(sb, ")", 1);
-
-    /* Always output weights if knots will be output (for round-trip consistency) */
-    bool output_knots = (curve->knots && curve->nknots > 0);
-    bool output_weights = false;
-
-    /* Check if we need to output weights */
-    if (curve->weights && curve->nweights > 0) {
-        bool has_varying_weights = false;
-        for (uint32_t i = 1; i < curve->nweights && !has_varying_weights; i++) {
-            if (fabs(curve->weights[i] - curve->weights[0]) > FP_TOLERANCE) {
-                has_varying_weights = true;
-            }
-        }
-        output_weights = has_varying_weights || output_knots;
-    } else if (output_knots) {
-        /* Generate default uniform weights if knots are present but weights are missing */
-        output_weights = true;
-    }
-
-    /* Output weights */
-	if (output_weights) {
-		stringbuffer_append_len(sb, ",(", 2);
-		if (curve->weights && curve->nweights > 0) {
-			for (uint32_t i = 0; i < curve->nweights; i++) {
-				if (i > 0) stringbuffer_append_len(sb, ",", 1);
-				stringbuffer_append_double(sb, curve->weights[i], precision);
-			}
-		} else {
-			/* Generate default uniform weights (1.0 for each control point) */
-			for (uint32_t i = 0; i < curve->points->npoints; i++) {
-				if (i > 0) stringbuffer_append_len(sb, ",", 1);
-				stringbuffer_append_double(sb, 1.0, precision);
-			}
-		}
-		stringbuffer_append_len(sb, ")", 1);
+	if (!(variant & WKT_NO_TYPE))
+	{
+		stringbuffer_append_len(sb, "NURBSCURVE", 10);
+		dimension_qualifiers_to_wkt_sb((LWGEOM*)curve, sb, output_variant);
 	}
 
-	/* Knot vector if present */
-	if (output_knots) {
-		stringbuffer_append_len(sb, ",(", 2);
-		for (uint32_t i = 0; i < curve->nknots; i++) {
-			if (i > 0) stringbuffer_append_len(sb, ",", 1);
-			stringbuffer_append_double(sb, curve->knots[i], precision);
+	if (!curve->points || curve->points->npoints == 0)
+	{
+		empty_to_wkt_sb(sb);
+		return;
+	}
+
+	stringbuffer_append_len(sb, "(", 1);
+	stringbuffer_aprintf(sb, "DEGREE %d,CONTROLPOINTS", curve->degree);
+	dimension_qualifiers_to_wkt_sb((LWGEOM*)curve, sb, output_variant);
+	stringbuffer_append_len(sb, "(", 1);
+
+	dimensions = (output_variant & (WKT_ISO | WKT_EXTENDED)) ? FLAGS_NDIMS(curve->points->flags) : 2;
+	for (uint32_t i = 0; i < curve->points->npoints; i++)
+	{
+		double *coords = (double *)getPoint_internal(curve->points, i);
+		double weight = (curve->weights && i < curve->nweights) ? curve->weights[i] : 1.0;
+
+		if (i > 0)
+			stringbuffer_append_len(sb, ",", 1);
+
+		stringbuffer_append_len(sb, "NURBSPOINT(WEIGHTEDPOINT", 24);
+		dimension_qualifiers_to_wkt_sb((LWGEOM*)curve, sb, output_variant);
+		stringbuffer_append_len(sb, "(", 1);
+		coordinate_to_wkt_sb(coords, sb, dimensions, precision);
+		stringbuffer_append_len(sb, "),WEIGHT ", 9);
+		stringbuffer_append_double(sb, weight, precision);
+		stringbuffer_append_len(sb, ")", 1);
+	}
+	stringbuffer_append_len(sb, ")", 1);
+
+	knots = lwnurbscurve_get_knots_for_wkb(curve, &nknots);
+	if (knots && nknots > 0)
+	{
+		uint32_t knot_count = 0;
+		stringbuffer_append_len(sb, ",KNOTS (", 8);
+		for (uint32_t i = 0; i < nknots; i += knot_count)
+		{
+			knot_count = 1;
+			while (i + knot_count < nknots && fabs(knots[i + knot_count] - knots[i]) <= FP_TOLERANCE)
+				knot_count++;
+
+			if (i > 0)
+				stringbuffer_append_len(sb, ",", 1);
+			stringbuffer_append_len(sb, "KNOT(", 5);
+			stringbuffer_append_double(sb, knots[i], precision);
+			stringbuffer_append_len(sb, ",", 1);
+			stringbuffer_aprintf(sb, "%d", knot_count);
+			stringbuffer_append_len(sb, ")", 1);
 		}
 		stringbuffer_append_len(sb, ")", 1);
+		lwfree(knots);
 	}
 
 	stringbuffer_append_len(sb, ")", 1);

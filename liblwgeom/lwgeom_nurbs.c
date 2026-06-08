@@ -196,6 +196,24 @@ lwnurbscurve_clone_deep(const LWNURBSCURVE *curve)
 	                             curve->nweights, curve->nknots);
 }
 
+LWNURBSCURVE *
+lwnurbscurve_force_dims(const LWNURBSCURVE *curve, int hasz, int hasm, double zval, double mval)
+{
+	POINTARRAY *points;
+
+	if (!curve)
+		return NULL;
+
+	if (!curve->points || curve->points->npoints == 0)
+		return lwnurbscurve_construct_empty(curve->srid, hasz, hasm);
+
+	points = ptarray_force_dims(curve->points, hasz, hasm, zval, mval);
+
+	return lwnurbscurve_construct(curve->srid, NULL, curve->degree, points,
+	                              curve->weights, curve->knots,
+	                              curve->nweights, curve->nknots);
+}
+
 /**
  * Generate uniform knot vector for NURBS curve
  *

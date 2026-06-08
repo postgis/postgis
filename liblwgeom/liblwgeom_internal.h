@@ -196,6 +196,7 @@ LWPOINT* lwpoint_force_dims(const LWPOINT *lwpoint, int hasz, int hasm, double z
 LWLINE* lwline_force_dims(const LWLINE *lwline, int hasz, int hasm, double zval, double mval);
 LWPOLY* lwpoly_force_dims(const LWPOLY *lwpoly, int hasz, int hasm, double zval, double mval);
 LWCOLLECTION* lwcollection_force_dims(const LWCOLLECTION *lwcol, int hasz, int hasm, double zval, double mval);
+LWNURBSCURVE* lwnurbscurve_force_dims(const LWNURBSCURVE *curve, int hasz, int hasm, double zval, double mval);
 POINTARRAY* ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm, double zval, double mval);
 
 /**

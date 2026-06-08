@@ -239,9 +239,11 @@ select 'ST_SetStartM2', ST_AsText(ST_SetStartM('LINESTRING(0 0, 1 1, 2 0)'::geom
 select 'ST_SetStartM3', ST_AsText(ST_SetStartM('CIRCULARSTRING M (0 0 5, 1 1 10, 2 0 15)'::geometry, 99));
 select 'ST_SetStartM4', ST_AsText(ST_SetStartM('NURBSCURVE M(2, (0 0 100, 1 1 200, 2 0 300))'::geometry, 500));
 select 'ST_SetStartM5', ST_AsText(ST_SetStartM('LINESTRING M EMPTY'::geometry, 100));
+select 'ST_SetStartM6', ST_AsText(ST_SetStartM('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 500));
 
 select 'ST_SetEndM1', ST_AsText(ST_SetEndM('LINESTRING M (0 0 10, 1 1 20, 2 0 30)'::geometry, 999));
 select 'ST_SetEndM2', ST_AsText(ST_SetEndM('LINESTRING(0 0, 1 1, 2 0)'::geometry, 75));
 select 'ST_SetEndM3', ST_AsText(ST_SetEndM('CIRCULARSTRING M (0 0 5, 1 1 10, 2 0 15)'::geometry, 88));
 select 'ST_SetEndM4', ST_AsText(ST_SetEndM('NURBSCURVE M(2, (0 0 100, 1 1 200, 2 0 300))'::geometry, 999));
 select 'ST_SetEndM5', ST_AsText(ST_SetEndM('LINESTRING M EMPTY'::geometry, 999));
+select 'ST_SetEndM6', ST_AsText(ST_SetEndM('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 999));

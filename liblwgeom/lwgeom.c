@@ -916,6 +916,8 @@ lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm, double zval, double mv
 		case TINTYPE:
 		case COLLECTIONTYPE:
 			return lwcollection_as_lwgeom(lwcollection_force_dims((LWCOLLECTION*)geom, hasz, hasm, zval, mval));
+		case NURBSCURVETYPE:
+			return lwnurbscurve_as_lwgeom(lwnurbscurve_force_dims((LWNURBSCURVE*)geom, hasz, hasm, zval, mval));
 		default:
 			lwerror("lwgeom_force_2d: unsupported geom type: %s", lwtype_name(geom->type));
 			return NULL;
