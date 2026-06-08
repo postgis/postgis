@@ -17,8 +17,6 @@
 #include "miscadmin.h"
 #include "utils/memutils.h"
 #include "executor/spi.h"
-#include "access/hash.h"
-#include "utils/hsearch.h"
 
 /* PostGIS headers */
 #include "../postgis_config.h"
