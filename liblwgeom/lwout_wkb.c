@@ -162,6 +162,8 @@ static uint32_t lwgeom_wkb_type(const LWGEOM *geom, uint8_t variant)
 			wkb_type += 2000;  /* M: 2000 offset */
 		else if ( FLAGS_GET_Z(geom->flags) && FLAGS_GET_M(geom->flags) )
 			wkb_type += 3000;  /* ZM: 3000 offset */
+		if ( (variant & WKB_EXTENDED) && lwgeom_wkb_needs_srid(geom, variant) )
+			wkb_type |= WKBSRIDFLAG;
 	}
 	else if ( variant & WKB_EXTENDED )
 	{

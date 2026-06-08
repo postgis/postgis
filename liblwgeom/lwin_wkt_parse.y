@@ -101,17 +101,110 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, const char *wktstr, in
 	return LW_SUCCESS;
 }
 
-#define SET_PARSER_ERROR(errcode) \
+#define SET_PARSER_ERROR(parser_errcode) \
     do { \
-        global_parser_result.errcode = (errcode); \
-        global_parser_result.message = parser_error_messages[(errcode)]; \
+        global_parser_result.errcode = (parser_errcode); \
+        global_parser_result.message = parser_error_messages[(parser_errcode)]; \
         global_parser_result.errlocation = wkt_yylloc.last_column; \
     } while(0)
 
 #define WKT_ERROR() { if ( global_parser_result.errcode != 0 ) { YYERROR; } }
 
+struct WKT_NURBS_CONTROLPOINTS
+{
+	POINTARRAY *points;
+	POINTARRAY *weights;
+};
+
+static WKT_NURBS_CONTROLPOINTS *
+wkt_parser_nurbs_controlpoints_new(POINT point, double weight)
+{
+	WKT_NURBS_CONTROLPOINTS *controlpoints;
+
+	if (!isfinite(weight) || weight <= 0.0)
+	{
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+
+	controlpoints = lwalloc(sizeof(WKT_NURBS_CONTROLPOINTS));
+	controlpoints->points = wkt_parser_ptarray_new(point);
+	controlpoints->weights = wkt_parser_ptarray_new(wkt_parser_coord_2(weight, 0));
+	return controlpoints;
+}
+
+static void
+wkt_parser_nurbs_controlpoints_free(WKT_NURBS_CONTROLPOINTS *controlpoints)
+{
+	if (!controlpoints)
+		return;
+	if (controlpoints->points)
+		ptarray_free(controlpoints->points);
+	if (controlpoints->weights)
+		ptarray_free(controlpoints->weights);
+	lwfree(controlpoints);
+}
+
+static WKT_NURBS_CONTROLPOINTS *
+wkt_parser_nurbs_controlpoints_add(WKT_NURBS_CONTROLPOINTS *controlpoints, WKT_NURBS_CONTROLPOINTS *next)
+{
+	POINT4D point;
+	POINT4D weight;
+
+	if (!controlpoints || !next)
+	{
+		wkt_parser_nurbs_controlpoints_free(controlpoints);
+		wkt_parser_nurbs_controlpoints_free(next);
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+
+	if (FLAGS_GET_ZM(controlpoints->points->flags) != FLAGS_GET_ZM(next->points->flags))
+	{
+		wkt_parser_nurbs_controlpoints_free(controlpoints);
+		wkt_parser_nurbs_controlpoints_free(next);
+		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
+		return NULL;
+	}
+
+	getPoint4d_p(next->points, 0, &point);
+	getPoint4d_p(next->weights, 0, &weight);
+	ptarray_append_point(controlpoints->points, &point, LW_TRUE);
+	ptarray_append_point(controlpoints->weights, &weight, LW_TRUE);
+	wkt_parser_nurbs_controlpoints_free(next);
+	return controlpoints;
+}
+
+static POINTARRAY *
+wkt_parser_knot_list_add_repeated(POINTARRAY *knots, double value, double multiplicity)
+{
+	uint32_t repeat_count;
+
+	if (!isfinite(value) || !isfinite(multiplicity) || multiplicity < 1.0 ||
+	    fabs(multiplicity - round(multiplicity)) >= 1e-10)
+	{
+		if (knots)
+			ptarray_free(knots);
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+
+	repeat_count = (uint32_t)round(multiplicity);
+	for (uint32_t i = 0; i < repeat_count; i++)
+	{
+		POINT knot = wkt_parser_coord_2(value, 0);
+		knots = knots ? wkt_parser_ptarray_add_coord(knots, knot) : wkt_parser_ptarray_new(knot);
+		if (!knots)
+			return NULL;
+	}
+	return knots;
+}
 
 %}
+
+%code requires {
+typedef struct WKT_NURBS_CONTROLPOINTS WKT_NURBS_CONTROLPOINTS;
+}
 
 %locations
 
@@ -122,6 +215,7 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, const char *wktstr, in
 	LWGEOM *geometryvalue;
 	POINT coordinatevalue;
 	POINTARRAY *ptarrayvalue;
+	WKT_NURBS_CONTROLPOINTS *nurbscontrolpointsvalue;
 }
 
 %token POINT_TOK LINESTRING_TOK POLYGON_TOK
@@ -133,6 +227,8 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, const char *wktstr, in
 %token TRIANGLE_TOK TIN_TOK
 %token POLYHEDRALSURFACE_TOK
 %token NURBSCURVE_TOK
+%token DEGREE_TOK CONTROLPOINTS_TOK KNOTS_TOK NURBSPOINT_TOK
+%token WEIGHTEDPOINT_TOK WEIGHT_TOK KNOT_TOK
 
 %token <doublevalue> DOUBLE_TOK
 %token <stringvalue> DIMENSIONALITY_TOK
@@ -180,6 +276,10 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, const char *wktstr, in
 %type <geometryvalue> triangle_list
 %type <geometryvalue> triangle_untagged
 %type <geometryvalue> nurbscurve
+%type <stringvalue> opt_dimensionality
+%type <nurbscontrolpointsvalue> iso_controlpoint
+%type <nurbscontrolpointsvalue> iso_controlpoint_list
+%type <ptarrayvalue> iso_knot_list
 
 /* These clean up memory on errors and parser aborts. */
 %destructor { ptarray_free($$); } ptarray
@@ -187,6 +287,9 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, const char *wktstr, in
 %destructor { ptarray_free($$); } patchring
 %destructor { ptarray_free($$); } weight_list
 %destructor { ptarray_free($$); } knot_list
+%destructor { ptarray_free($$); } iso_knot_list
+%destructor { wkt_parser_nurbs_controlpoints_free($$); } iso_controlpoint
+%destructor { wkt_parser_nurbs_controlpoints_free($$); } iso_controlpoint_list
 %destructor { lwgeom_free($$); } curvering_list
 %destructor { lwgeom_free($$); } triangle_list
 %destructor { lwgeom_free($$); } surface_list
@@ -552,7 +655,29 @@ coordinate :
 	DOUBLE_TOK DOUBLE_TOK DOUBLE_TOK DOUBLE_TOK
 		{ $$ = wkt_parser_coord_4($1, $2, $3, $4); WKT_ERROR(); } ;
 
+opt_dimensionality :
+	DIMENSIONALITY_TOK
+		{ $$ = $1; } |
+		{ $$ = NULL; } ;
+
 nurbscurve :
+	/* ISO/IEC SQL/MM syntax */
+	NURBSCURVE_TOK LBRACKET_TOK DEGREE_TOK DOUBLE_TOK COMMA_TOK CONTROLPOINTS_TOK opt_dimensionality LBRACKET_TOK iso_controlpoint_list RBRACKET_TOK COMMA_TOK KNOTS_TOK LBRACKET_TOK iso_knot_list RBRACKET_TOK RBRACKET_TOK
+		{
+			$$ = wkt_parser_nurbscurve_new($4, $9->points, $9->weights, $14, NULL);
+			$9->points = NULL;
+			$9->weights = NULL;
+			wkt_parser_nurbs_controlpoints_free($9);
+			WKT_ERROR();
+		} |
+	NURBSCURVE_TOK DIMENSIONALITY_TOK LBRACKET_TOK DEGREE_TOK DOUBLE_TOK COMMA_TOK CONTROLPOINTS_TOK opt_dimensionality LBRACKET_TOK iso_controlpoint_list RBRACKET_TOK COMMA_TOK KNOTS_TOK LBRACKET_TOK iso_knot_list RBRACKET_TOK RBRACKET_TOK
+		{
+			$$ = wkt_parser_nurbscurve_new($5, $10->points, $10->weights, $15, $2);
+			$10->points = NULL;
+			$10->weights = NULL;
+			wkt_parser_nurbs_controlpoints_free($10);
+			WKT_ERROR();
+		} |
 	/* Full syntax: NURBSCURVE(degree, (points), (weights), (knots)) */
 	NURBSCURVE_TOK LBRACKET_TOK DOUBLE_TOK COMMA_TOK LBRACKET_TOK ptarray RBRACKET_TOK COMMA_TOK LBRACKET_TOK weight_list RBRACKET_TOK COMMA_TOK LBRACKET_TOK knot_list RBRACKET_TOK RBRACKET_TOK
 		{ $$ = wkt_parser_nurbscurve_new($3, $6, $10, $14, NULL); WKT_ERROR(); } |
@@ -574,6 +699,25 @@ nurbscurve :
 		{ $$ = wkt_parser_nurbscurve_empty($2); WKT_ERROR(); } |
 	NURBSCURVE_TOK EMPTY_TOK
 		{ $$ = wkt_parser_nurbscurve_empty(NULL); WKT_ERROR(); }
+	;
+
+iso_controlpoint :
+	NURBSPOINT_TOK LBRACKET_TOK WEIGHTEDPOINT_TOK opt_dimensionality LBRACKET_TOK coordinate RBRACKET_TOK COMMA_TOK WEIGHT_TOK DOUBLE_TOK RBRACKET_TOK
+		{ $$ = wkt_parser_nurbs_controlpoints_new($6, $10); WKT_ERROR(); }
+	;
+
+iso_controlpoint_list :
+	iso_controlpoint_list COMMA_TOK iso_controlpoint
+		{ $$ = wkt_parser_nurbs_controlpoints_add($1, $3); WKT_ERROR(); } |
+	iso_controlpoint
+		{ $$ = $1; }
+	;
+
+iso_knot_list :
+	iso_knot_list COMMA_TOK KNOT_TOK LBRACKET_TOK DOUBLE_TOK COMMA_TOK DOUBLE_TOK RBRACKET_TOK
+		{ $$ = wkt_parser_knot_list_add_repeated($1, $5, $7); WKT_ERROR(); } |
+	KNOT_TOK LBRACKET_TOK DOUBLE_TOK COMMA_TOK DOUBLE_TOK RBRACKET_TOK
+		{ $$ = wkt_parser_knot_list_add_repeated(NULL, $3, $5); WKT_ERROR(); }
 	;
 
 weight_list :
@@ -601,4 +745,3 @@ knot_list :
 			WKT_ERROR();
 		}
 	;
-

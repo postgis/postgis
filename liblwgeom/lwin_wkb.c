@@ -930,67 +930,68 @@ static LWNURBSCURVE* lwnurbscurve_from_wkb_state(wkb_parse_state *s)
             /* Restore original swap state */
             s->swap_bytes = original_swap;
         }
-    } else {
-        points = ptarray_construct_empty(s->has_z, s->has_m, 1);
-    }
+	}
 
-    /* Read knots (required by WKB standard) */
-    nknots = integer_from_wkb_state(s);
-    if (s->error) {
-        lwfree(weights);
-        ptarray_free(points);
-        return NULL;
-    }
+	/* Read knots (required by WKB standard) */
+	nknots = integer_from_wkb_state(s);
+	if (s->error) {
+		lwfree(weights);
+		ptarray_free(points);
+		return NULL;
+	}
 
-    if (nknots == 0) {
-        lwerror("WKB NURBSCURVE: knots required by standard (got 0)");
-        lwfree(weights);
-        ptarray_free(points);
-        return NULL;
-    }
+	if (npoints == 0)
+		return lwnurbscurve_construct_empty(s->srid, s->has_z, s->has_m);
 
-    /* Validate knot count against B-spline formula */
-    uint32_t expected_knots = npoints + degree + 1;
-    if (nknots != expected_knots) {
-        lwerror("WKB NURBSCURVE: expected %d knots for degree %d and %d points, got %d",
-                expected_knots, degree, npoints, nknots);
-        lwfree(weights);
-        ptarray_free(points);
-        return NULL;
-    }
+	if (nknots == 0) {
+		lwerror("WKB NURBSCURVE: knots required by standard (got 0)");
+		lwfree(weights);
+		ptarray_free(points);
+		return NULL;
+	}
 
-    knots = lwalloc(sizeof(double) * nknots);
-    for (uint32_t i = 0; i < nknots; i++) {
-        knots[i] = double_from_wkb_state(s);
-        if (s->error) {
-            lwfree(weights);
-            lwfree(knots);
-            ptarray_free(points);
-            return NULL;
-        }
-    }
-    for (uint32_t i = 1; i < nknots; i++) {
-        if (knots[i] < knots[i-1]) {
-            lwerror("WKB NURBSCURVE: knot vector must be non-decreasing");
-            lwfree(weights);
-            lwfree(knots);
-            ptarray_free(points);
-            return NULL;
-        }
-    }
+	/* Validate knot count against B-spline formula */
+	uint32_t expected_knots = npoints + degree + 1;
+	if (nknots != expected_knots) {
+		lwerror("WKB NURBSCURVE: expected %d knots for degree %d and %d points, got %d",
+		        expected_knots, degree, npoints, nknots);
+		lwfree(weights);
+		ptarray_free(points);
+		return NULL;
+	}
 
-    uint32_t nweights = all_weights_one ? 0U : npoints;
-    if (all_weights_one) { lwfree(weights); weights = NULL; }
-    LWNURBSCURVE *curve = lwnurbscurve_construct(s->srid, NULL, degree, points, weights, knots, nweights, nknots);
-    if (!curve) {
-        if (weights) lwfree(weights);
-        if (knots) lwfree(knots);
-        if (points) ptarray_free(points); /* constructor did not take ownership on failure */
-        return NULL;
-    }
-    if (weights) lwfree(weights);
-    if (knots) lwfree(knots);
-    return curve;
+	knots = lwalloc(sizeof(double) * nknots);
+	for (uint32_t i = 0; i < nknots; i++) {
+		knots[i] = double_from_wkb_state(s);
+		if (s->error) {
+			lwfree(weights);
+			lwfree(knots);
+			ptarray_free(points);
+			return NULL;
+		}
+	}
+	for (uint32_t i = 1; i < nknots; i++) {
+		if (knots[i] < knots[i-1]) {
+			lwerror("WKB NURBSCURVE: knot vector must be non-decreasing");
+			lwfree(weights);
+			lwfree(knots);
+			ptarray_free(points);
+			return NULL;
+		}
+	}
+
+	uint32_t nweights = all_weights_one ? 0U : npoints;
+	if (all_weights_one) { lwfree(weights); weights = NULL; }
+	LWNURBSCURVE *curve = lwnurbscurve_construct(s->srid, NULL, degree, points, weights, knots, nweights, nknots);
+	if (!curve) {
+		if (weights) lwfree(weights);
+		if (knots) lwfree(knots);
+		if (points) ptarray_free(points); /* constructor did not take ownership on failure */
+		return NULL;
+	}
+	if (weights) lwfree(weights);
+	if (knots) lwfree(knots);
+	return curve;
 }
 
 /**
