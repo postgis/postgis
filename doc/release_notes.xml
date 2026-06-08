@@ -3,6 +3,19 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
 
+        <section>
+            <title>PostGIS 3.6.4</title>
+            <para>2026/06/08</para>
+
+            <simplesect>
+                <title>Fixes</title>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6076">6076</link>, ST_Length(geography) for GeometryCollection not consistent with geometry implementation</para>
+                <para><link xlink:href="https://github.com/postgis/postgis/pull/862">GH-862</link>, Use SFCGAL undeprecated function sfcgal_geometry_tessellate() (Jean Felder)</para>
+                <para>Flatgeobuf schema mismatch vulnerability (NeuroWinter)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5899">5899</link>, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5916">5916</link>, ST_Split hang with very large ordinates (Paul Ramsey)</para>
+            </simplesect>
+        </section>
 
         <section>
             <title>PostGIS 3.6.3</title>
