@@ -964,6 +964,17 @@ if test "x$with_sfcgal" != "xno"; then
 		POSTGIS_SFCGAL_VERSION="$SFCGAL_MAJOR_VERSION$SFCGAL_NUMERIC_MINOR_VERSION$SFCGAL_NUMERIC_PATCH_VERSION"
 		AC_DEFINE_UNQUOTED([POSTGIS_SFCGAL_VERSION], [$POSTGIS_SFCGAL_VERSION], [SFCGAL library version at build time])
 
+		POSTGIS_CGAL_VERSION="0"
+		_sfcgal_inc=`echo "$SFCGAL_CPPFLAGS" | tr ' ' '\n' | grep '^-I' | head -1 | sed 's/^-I//'`
+		if test -n "$_sfcgal_inc" && test -f "${_sfcgal_inc}/SFCGAL/version.h"; then
+			_cgal_major=`grep '#define SFCGAL_CGAL_VERSION_MAJOR' "${_sfcgal_inc}/SFCGAL/version.h" | awk '{print $3}'`
+			_cgal_minor=`grep '#define SFCGAL_CGAL_VERSION_MINOR' "${_sfcgal_inc}/SFCGAL/version.h" | awk '{print $3}'`
+			if test -n "$_cgal_major" && test -n "$_cgal_minor"; then
+				_cgal_minor_pad=`printf "%02d" $_cgal_minor`
+				POSTGIS_CGAL_VERSION="${_cgal_major}${_cgal_minor_pad}"
+			fi
+		fi
+
 		SFCGAL_STATIC=`$SFCGAL_CONFIG --static`
 		if test "x$SFCGAL_STATIC" = "xON"; then
 			AC_MSG_WARN([The SFCGAL version found is not installed as a dynamic library.])
@@ -984,6 +995,7 @@ if test "x$with_sfcgal" != "xno"; then
 fi
 
 AC_SUBST([POSTGIS_SFCGAL_VERSION])
+AC_SUBST([POSTGIS_CGAL_VERSION])
 AC_SUBST([SFCGAL_VERSION])
 AC_SUBST([SFCGAL_CPPFLAGS])
 AC_SUBST([SFCGAL_LDFLAGS])
@@ -1929,6 +1941,7 @@ fi
 if test "x$SFCGAL" = "xsfcgal"; then
     AC_MSG_RESULT([  SFCGAL config:        ${SFCGAL_CONFIG}])
     AC_MSG_RESULT([  SFCGAL version:       ${SFCGAL_VERSION}])
+    AC_MSG_RESULT([  CGAL version:         ${POSTGIS_CGAL_VERSION}])
 fi
 if test "x$SUPPORT_POSTGRESQL" = "xyes"; then
   AC_MSG_RESULT([  PostgreSQL config:    ${PG_CONFIG}])

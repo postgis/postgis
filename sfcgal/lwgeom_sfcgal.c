@@ -86,6 +86,7 @@ Datum sfcgal_convexhull3D(PG_FUNCTION_ARGS);
 Datum sfcgal_alphashape(PG_FUNCTION_ARGS);
 Datum sfcgal_optimalalphashape(PG_FUNCTION_ARGS);
 Datum sfcgal_simplify(PG_FUNCTION_ARGS);
+Datum sfcgal_polygon_repair(PG_FUNCTION_ARGS);
 
 GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 char *text_to_cstring(const text *textptr);
@@ -1853,6 +1854,76 @@ sfcgal_alphawrapping_3d(PG_FUNCTION_ARGS)
 
 	output = SFCGALGeometry2POSTGIS(result, 1, srid); // force 3d output
 	sfcgal_geometry_delete(result);
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_polygon_repair);
+Datum
+sfcgal_polygon_repair(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 20300 || \
+    !defined(SFCGAL_CGAL_VERSION_MAJOR) || \
+    SFCGAL_CGAL_VERSION_MAJOR < 6
+	lwpgerror(
+	    "The SFCGAL version this PostGIS binary was compiled against (%d) doesn't support "
+	    "'sfcgal_geometry_polygon_repair' function (requires SFCGAL 2.3.0+ and CGAL 6.0+)",
+	    POSTGIS_SFCGAL_VERSION);
+	PG_RETURN_NULL();
+#else
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom, *result;
+	sfcgal_polygon_repair_rule_t rule = SFCGAL_POLYGON_REPAIR_EVEN_ODD;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input);
+
+	if (!PG_ARGISNULL(1))
+	{
+		char *rule_str = text_to_cstring(PG_GETARG_TEXT_P(1));
+
+		if (strcmp(rule_str, "EVEN_ODD") == 0)
+			rule = SFCGAL_POLYGON_REPAIR_EVEN_ODD;
+		else if (strcmp(rule_str, "NON_ZERO") == 0 ||
+		         strcmp(rule_str, "UNION") == 0 ||
+		         strcmp(rule_str, "INTERSECTION") == 0)
+		{
+			if (SFCGAL_CGAL_VERSION_MAJOR < 6 ||
+			    (SFCGAL_CGAL_VERSION_MAJOR == 6 && SFCGAL_CGAL_VERSION_MINOR < 1))
+			{
+				lwpgerror("CG_PolygonRepair: '%s' rule requires CGAL 6.1 or later", rule_str);
+				pfree(rule_str);
+				PG_RETURN_NULL();
+			}
+			if (strcmp(rule_str, "NON_ZERO") == 0)
+				rule = SFCGAL_POLYGON_REPAIR_NON_ZERO;
+			else if (strcmp(rule_str, "UNION") == 0)
+				rule = SFCGAL_POLYGON_REPAIR_UNION;
+			else
+				rule = SFCGAL_POLYGON_REPAIR_INTERSECTION;
+		}
+		else
+		{
+			lwpgerror("CG_PolygonRepair: unknown rule '%s', expected EVEN_ODD, NON_ZERO, UNION or INTERSECTION",
+			          rule_str);
+			pfree(rule_str);
+			PG_RETURN_NULL();
+		}
+		pfree(rule_str); /* alloc'ed in text_to_cstring */
+	}
+
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_geometry_polygon_repair(geom, rule);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
 	PG_RETURN_POINTER(output);
 #endif
 }
