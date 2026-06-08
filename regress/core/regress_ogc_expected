@@ -137,6 +137,9 @@ ST_PointN6|
 ST_PointN7|POINT(3 3)
 ST_PointN8|
 ST_PointN9|POINT Z (1 1 1)
+ST_PointN10|POINT(1 1)
+ST_PointN11|POINT(2 2)
+ST_PointN12|POINT(3 1)
 ST_Buffer(empty)|POLYGON EMPTY
 ST_StartPoint1|POINT(0 0)
 ST_StartPoint2|POINT(2 2)
