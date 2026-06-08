@@ -49,10 +49,14 @@ ifeq ($(shell expr "$(POSTGIS_SFCGAL_VERSION)" ">=" 20300),1)
 	TESTS += \
 		$(top_srcdir)/sfcgal/regress/alphashape_components.sql \
 		$(top_srcdir)/sfcgal/regress/roofgeneration.sql \
-		$(top_srcdir)/sfcgal/regress/polygonrepair.sql
+		$(top_srcdir)/sfcgal/regress/polygonrepair.sql \
+		$(top_srcdir)/sfcgal/regress/approximatemedialaxis_projected.sql
 	ifeq ($(shell expr "$(POSTGIS_CGAL_VERSION)" ">=" 601),1)
 		TESTS += $(top_srcdir)/sfcgal/regress/polygonrepair_union.sql
 	else
 		TESTS += $(top_srcdir)/sfcgal/regress/polygonrepair_union_pre61.sql
 	endif
+else
+	TESTS += \
+		$(top_srcdir)/sfcgal/regress/approximatemedialaxis_projected_pre230.sql
 endif
