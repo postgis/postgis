@@ -35,6 +35,67 @@
 #define out_stack_size 32
 
 static char
+lwnurbscurve_weight_same(const LWNURBSCURVE *curve1, const LWNURBSCURVE *curve2)
+{
+	uint32_t npoints = curve1->points->npoints;
+
+	if ((curve1->nweights && curve1->nweights != npoints) ||
+	    (curve2->nweights && curve2->nweights != npoints))
+		return LW_FALSE;
+
+	for (uint32_t i = 0; i < npoints; i++)
+	{
+		double weight1 = curve1->weights ? curve1->weights[i] : 1.0;
+		double weight2 = curve2->weights ? curve2->weights[i] : 1.0;
+		if (!FP_EQUALS(weight1, weight2))
+			return LW_FALSE;
+	}
+
+	return LW_TRUE;
+}
+
+static double
+lwnurbscurve_uniform_knot_value(uint32_t degree, uint32_t npoints, uint32_t idx)
+{
+	uint32_t nknots = npoints + degree + 1;
+	uint32_t internal_knots = nknots - 2 * (degree + 1);
+
+	if (idx <= degree)
+		return 0.0;
+	if (idx >= nknots - degree - 1)
+		return 1.0;
+
+	return (double)(idx - degree) / (internal_knots + 1);
+}
+
+static char
+lwnurbscurve_knot_same(const LWNURBSCURVE *curve1, const LWNURBSCURVE *curve2)
+{
+	uint32_t npoints = curve1->points->npoints;
+	uint32_t nknots;
+
+	if (npoints < curve1->degree + 1)
+		return LW_FALSE;
+
+	nknots = npoints + curve1->degree + 1;
+	if ((curve1->nknots && curve1->nknots != nknots) ||
+	    (curve2->nknots && curve2->nknots != nknots))
+		return LW_FALSE;
+
+	for (uint32_t i = 0; i < nknots; i++)
+	{
+		double knot1 = curve1->knots ? curve1->knots[i] :
+			lwnurbscurve_uniform_knot_value(curve1->degree, npoints, i);
+		double knot2 = curve2->knots ? curve2->knots[i] :
+			lwnurbscurve_uniform_knot_value(curve2->degree, npoints, i);
+		if (!FP_EQUALS(knot1, knot2))
+			return LW_FALSE;
+	}
+
+	return LW_TRUE;
+}
+
+static char
 lwnurbscurve_same(const LWNURBSCURVE *curve1, const LWNURBSCURVE *curve2)
 {
 	if (lwnurbscurve_is_empty(curve1) && lwnurbscurve_is_empty(curve2))
@@ -44,11 +105,9 @@ lwnurbscurve_same(const LWNURBSCURVE *curve1, const LWNURBSCURVE *curve2)
 		return LW_FALSE;
 	if (!curve1->points || !curve2->points || !ptarray_same(curve1->points, curve2->points))
 		return LW_FALSE;
-	if (curve1->nweights != curve2->nweights || curve1->nknots != curve2->nknots)
+	if (!lwnurbscurve_weight_same(curve1, curve2))
 		return LW_FALSE;
-	if (curve1->nweights && memcmp(curve1->weights, curve2->weights, sizeof(double) * curve1->nweights))
-		return LW_FALSE;
-	if (curve1->nknots && memcmp(curve1->knots, curve2->knots, sizeof(double) * curve1->nknots))
+	if (!lwnurbscurve_knot_same(curve1, curve2))
 		return LW_FALSE;
 
 	return LW_TRUE;
