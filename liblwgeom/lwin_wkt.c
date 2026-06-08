@@ -1080,6 +1080,8 @@ LWGEOM* wkt_parser_nurbscurve_new(double degree, POINTARRAY *points, POINTARRAY 
 
 	/* Extract weights if provided */
 	if (weights && weights->npoints > 0) {
+		int all_weights_one = LW_TRUE;
+
 		nweights = weights->npoints;
 		if (nweights != points->npoints) {
 			ptarray_free(points);
@@ -1110,8 +1112,16 @@ LWGEOM* wkt_parser_nurbscurve_new(double degree, POINTARRAY *points, POINTARRAY 
 				SET_PARSER_ERROR(PARSER_ERROR_OTHER);
 				return NULL;
 			}
+			if (!FP_EQUALS(weight_array[i], 1.0))
+				all_weights_one = LW_FALSE;
 		}
 		ptarray_free(weights);
+
+		if (all_weights_one) {
+			lwfree(weight_array);
+			weight_array = NULL;
+			nweights = 0;
+		}
 	}
 
 	/* Extract knots if provided */
