@@ -206,6 +206,14 @@ int lwgeom_contains_point(const LWGEOM *geom, const POINT2D *pt)
 			return ptarrayarc_contains_point(((LWCIRCSTRING*)geom)->points, pt);
 		case COMPOUNDTYPE:
 			return lwcompound_contains_point((LWCOMPOUND*)geom, pt);
+		case NURBSCURVETYPE:
+		{
+			int result;
+			LWLINE *lwline = lwnurbscurve_to_linestring((LWNURBSCURVE*)geom, 32);
+			result = ptarray_contains_point(lwline->points, pt);
+			lwline_free(lwline);
+			return result;
+		}
 	}
 	lwerror("lwgeom_contains_point failed");
 	return LW_FAILURE;
@@ -239,6 +247,12 @@ lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt)
 		{
 			LWCIRCSTRING *lwcirc = lwgeom_as_lwcircstring(sub);
 			intersections += ptarrayarc_raycast_intersections(lwcirc->points, pt, &on_boundary);
+		}
+		else if (sub->type == NURBSCURVETYPE)
+		{
+			LWLINE *lwline = lwnurbscurve_to_linestring((LWNURBSCURVE*)sub, 32);
+			intersections += ptarray_raycast_intersections(lwline->points, pt, &on_boundary);
+			lwline_free(lwline);
 		}
 		else
 		{

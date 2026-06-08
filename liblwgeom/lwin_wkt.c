@@ -650,6 +650,10 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 			case COMPOUNDTYPE:
 			is_closed = lwcompound_is_closed(lwgeom_as_lwcompound(ring));
 			break;
+
+			case NURBSCURVETYPE:
+			is_closed = lwgeom_is_closed(ring);
+			break;
 		}
 		if ( ! is_closed )
 		{

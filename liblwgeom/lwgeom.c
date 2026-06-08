@@ -2324,6 +2324,14 @@ double lwgeom_length(const LWGEOM *geom)
 		return lwline_length((LWLINE*)geom);
 	else if ( type == CIRCSTRINGTYPE )
 		return lwcircstring_length((LWCIRCSTRING*)geom);
+	else if ( type == NURBSCURVETYPE )
+	{
+		double length;
+		LWLINE *line = lwnurbscurve_to_linestring((LWNURBSCURVE*)geom, 32);
+		length = lwline_length(line);
+		lwline_free(line);
+		return length;
+	}
 	else if ( type == COMPOUNDTYPE )
 		return lwcompound_length((LWCOMPOUND*)geom);
 	else if ( lwgeom_is_collection(geom) )
@@ -2346,6 +2354,14 @@ double lwgeom_length_2d(const LWGEOM *geom)
 		return lwline_length_2d((LWLINE*)geom);
 	else if ( type == CIRCSTRINGTYPE )
 		return lwcircstring_length_2d((LWCIRCSTRING*)geom);
+	else if ( type == NURBSCURVETYPE )
+	{
+		double length;
+		LWLINE *line = lwnurbscurve_to_linestring((LWNURBSCURVE*)geom, 32);
+		length = lwline_length_2d(line);
+		lwline_free(line);
+		return length;
+	}
 	else if ( type == COMPOUNDTYPE )
 		return lwcompound_length_2d((LWCOMPOUND*)geom);
 	else if ( type != CURVEPOLYTYPE && lwgeom_is_collection(geom) )
