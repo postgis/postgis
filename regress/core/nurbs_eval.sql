@@ -148,6 +148,14 @@ SELECT 'NURBS_CURVETOLINE_2', ST_GeometryType(ST_CurveToLine(
     'MULTICURVE(NURBSCURVE(2, (0 0, 1 1, 2 0)))'::geometry
 ));
 
+SELECT 'NURBS_CURVETOLINE_TOLERANCE_1',
+    ST_GeometryType(ST_CurveToLine('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0.01, 1)),
+    ST_NPoints(ST_CurveToLine('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0.01, 1));
+
+SELECT 'NURBS_CURVETOLINE_TOLERANCE_2',
+    ST_GeometryType(ST_CurveToLine('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0.01, 2)),
+    ST_NPoints(ST_CurveToLine('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0.01, 2));
+
 SELECT 'NURBS_CURVETOLINE_3',
     ST_AsEWKT(ST_CurveToLine('SRID=4326;NURBSCURVE Z EMPTY'::geometry)),
     ST_Zmflag(ST_CurveToLine('SRID=4326;NURBSCURVE Z EMPTY'::geometry)),
