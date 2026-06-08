@@ -921,9 +921,10 @@ static uint8_t* lwnurbscurve_to_wkb_buf(const LWNURBSCURVE *curve, uint8_t *buf,
                 buf = double_to_wkb_buf(knots[i], buf, variant);
             }
             lwfree(knots);
-        } else {
-            /* Fallback - should not happen */
+        } else if (npoints == 0) {
             buf = integer_to_wkb_buf(0, buf, variant);
+        } else {
+            lwerror("Failed to get knots for NURBS curve");
         }
     }
 

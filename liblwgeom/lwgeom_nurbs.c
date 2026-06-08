@@ -549,16 +549,16 @@ lwnurbscurve_to_linestring(const LWNURBSCURVE *curve, uint32_t num_segments)
 	uint32_t i;
 	char hasz, hasm;
 
+	/* Get dimensional flags */
+	hasz = curve ? FLAGS_GET_Z(curve->flags) : 0;
+	hasm = curve ? FLAGS_GET_M(curve->flags) : 0;
+
 	/* Validate input */
 	if (!curve || !curve->points || curve->points->npoints == 0)
-		return lwline_construct_empty(SRID_UNKNOWN, 0, 0);
+		return lwline_construct_empty(curve ? curve->srid : SRID_UNKNOWN, hasz, hasm);
 
 	/* Ensure minimum number of segments */
 	if (num_segments < 2) num_segments = 2;
-
-	/* Get dimensional flags */
-	hasz = FLAGS_GET_Z(curve->flags);
-	hasm = FLAGS_GET_M(curve->flags);
 
 	/* Create point array for result */
 	pts = ptarray_construct_empty(hasz, hasm, num_segments + 1);

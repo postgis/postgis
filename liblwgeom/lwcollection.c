@@ -527,7 +527,8 @@ int lwcollection_allows_subtype(int collectiontype, int subtype)
 	        (subtype == LINETYPE || subtype == CIRCSTRINGTYPE || subtype == NURBSCURVETYPE) )
 		return LW_TRUE;
 	if ( collectiontype == CURVEPOLYTYPE &&
-	        (subtype == CIRCSTRINGTYPE || subtype == LINETYPE || subtype == COMPOUNDTYPE) )
+	        (subtype == CIRCSTRINGTYPE || subtype == LINETYPE || subtype == COMPOUNDTYPE ||
+	         subtype == NURBSCURVETYPE) )
 		return LW_TRUE;
 	if ( collectiontype == MULTICURVETYPE &&
 	        (subtype == CIRCSTRINGTYPE || subtype == LINETYPE || subtype == COMPOUNDTYPE ||

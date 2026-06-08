@@ -623,6 +623,16 @@ lwcompound_linearize(const LWCOMPOUND *icompound, double tol,
 				ptarray_append_point(ptarray, &p, LW_TRUE);
 			}
 		}
+		else if (geom->type == NURBSCURVETYPE)
+		{
+			tmp = lwnurbscurve_linearize((LWNURBSCURVE *)geom, tol, tolerance_type, flags);
+			for (j = 0; j < tmp->points->npoints; j++)
+			{
+				getPoint4d_p(tmp->points, j, &p);
+				ptarray_append_point(ptarray, &p, LW_TRUE);
+			}
+			lwline_free(tmp);
+		}
 		else
 		{
 			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(geom->type));
@@ -675,6 +685,12 @@ lwcurvepoly_linearize(const LWCURVEPOLY *curvepoly, double tol,
 		else if (tmp->type == COMPOUNDTYPE)
 		{
 			line = lwcompound_linearize((LWCOMPOUND *)tmp, tol, tolerance_type, flags);
+			ptarray[i] = ptarray_clone_deep(line->points);
+			lwline_free(line);
+		}
+		else if (tmp->type == NURBSCURVETYPE)
+		{
+			line = lwnurbscurve_linearize((LWNURBSCURVE *)tmp, tol, tolerance_type, flags);
 			ptarray[i] = ptarray_clone_deep(line->points);
 			lwline_free(line);
 		}
@@ -732,6 +748,10 @@ lwmcurve_linearize(const LWMCURVE *mcurve, double tol,
 		else if (tmp->type == COMPOUNDTYPE)
 		{
 			lines[i] = (LWGEOM *)lwcompound_linearize((LWCOMPOUND *)tmp, tol, type, flags);
+		}
+		else if (tmp->type == NURBSCURVETYPE)
+		{
+			lines[i] = (LWGEOM *)lwnurbscurve_linearize((LWNURBSCURVE *)tmp, tol, type, flags);
 		}
 		else
 		{

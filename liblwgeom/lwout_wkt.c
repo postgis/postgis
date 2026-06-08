@@ -406,6 +406,9 @@ static void lwcurvepoly_to_wkt_sb(const LWCURVEPOLY *cpoly, stringbuffer_t *sb, 
 			/* And compoundcurve subgeoms *do* get type identifiers */
 			lwcompound_to_wkt_sb((LWCOMPOUND*)cpoly->rings[i], sb, precision, variant );
 			break;
+		case NURBSCURVETYPE:
+			lwnurbscurve_to_wkt_sb((LWNURBSCURVE*)cpoly->rings[i], sb, precision, variant );
+			break;
 		default:
 			lwerror("lwcurvepoly_to_wkt_sb: Unknown type received %d - %s", type, lwtype_name(type));
 		}

@@ -3,6 +3,7 @@
 /* WKT Parser */
 #include <stdio.h>
 #include <string.h>
+#include <strings.h>
 #include <stdlib.h>
 #include "lwin_wkt.h"
 #include "lwin_wkt_parse.h"
@@ -116,10 +117,14 @@ struct WKT_NURBS_CONTROLPOINTS
 	POINTARRAY *weights;
 };
 
+static void
+wkt_parser_nurbs_controlpoints_free(WKT_NURBS_CONTROLPOINTS *controlpoints);
+
 static WKT_NURBS_CONTROLPOINTS *
-wkt_parser_nurbs_controlpoints_new(POINT point, double weight)
+wkt_parser_nurbs_controlpoints_new(POINT point, double weight, char *dimensionality)
 {
 	WKT_NURBS_CONTROLPOINTS *controlpoints;
+	lwflags_t flags = 0;
 
 	if (!isfinite(weight) || weight <= 0.0)
 	{
@@ -128,8 +133,36 @@ wkt_parser_nurbs_controlpoints_new(POINT point, double weight)
 	}
 
 	controlpoints = lwalloc(sizeof(WKT_NURBS_CONTROLPOINTS));
+	controlpoints->points = NULL;
+	controlpoints->weights = NULL;
 	controlpoints->points = wkt_parser_ptarray_new(point);
 	controlpoints->weights = wkt_parser_ptarray_new(wkt_parser_coord_2(weight, 0));
+	if (dimensionality)
+	{
+		int hasz;
+		int hasm;
+		int ndims;
+
+		for (size_t i = 0; i < strlen(dimensionality); i++)
+		{
+			if (dimensionality[i] == 'Z' || dimensionality[i] == 'z')
+				FLAGS_SET_Z(flags, LW_TRUE);
+			else if (dimensionality[i] == 'M' || dimensionality[i] == 'm')
+				FLAGS_SET_M(flags, LW_TRUE);
+		}
+
+		hasz = FLAGS_GET_Z(flags);
+		hasm = FLAGS_GET_M(flags);
+		ndims = 2 + hasz + hasm;
+		if (FLAGS_NDIMS(controlpoints->points->flags) != ndims)
+		{
+			wkt_parser_nurbs_controlpoints_free(controlpoints);
+			SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
+			return NULL;
+		}
+		FLAGS_SET_Z(controlpoints->points->flags, hasz);
+		FLAGS_SET_M(controlpoints->points->flags, hasm);
+	}
 	return controlpoints;
 }
 
@@ -173,6 +206,18 @@ wkt_parser_nurbs_controlpoints_add(WKT_NURBS_CONTROLPOINTS *controlpoints, WKT_N
 	ptarray_append_point(controlpoints->weights, &weight, LW_TRUE);
 	wkt_parser_nurbs_controlpoints_free(next);
 	return controlpoints;
+}
+
+static char *
+wkt_parser_nurbscurve_iso_dimensionality(char *outer, char *controlpoints)
+{
+	if (outer && controlpoints && strcasecmp(outer, controlpoints) != 0)
+	{
+		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
+		return NULL;
+	}
+
+	return outer ? outer : controlpoints;
 }
 
 static POINTARRAY *
@@ -473,6 +518,7 @@ curvering :
 	linestring_untagged { $$ = $1; } |
 	linestring { $$ = $1; } |
 	compoundcurve { $$ = $1; } |
+	nurbscurve { $$ = $1; } |
 	circularstring { $$ = $1; } ;
 
 patchring_list :
@@ -671,19 +717,21 @@ opt_dimensionality :
 nurbscurve :
 	/* ISO/IEC SQL/MM syntax */
 	NURBSCURVE_TOK LBRACKET_TOK DEGREE_TOK DOUBLE_TOK COMMA_TOK CONTROLPOINTS_TOK opt_dimensionality LBRACKET_TOK iso_controlpoint_list RBRACKET_TOK COMMA_TOK KNOTS_TOK LBRACKET_TOK iso_knot_list RBRACKET_TOK RBRACKET_TOK
-		{
-			$$ = wkt_parser_nurbscurve_new($4, $9->points, $9->weights, $14, NULL);
-			$9->points = NULL;
-			$9->weights = NULL;
-			wkt_parser_nurbs_controlpoints_free($9);
+			{
+				$$ = wkt_parser_nurbscurve_new($4, $9->points, $9->weights, $14,
+					wkt_parser_nurbscurve_iso_dimensionality(NULL, $7));
+				$9->points = NULL;
+				$9->weights = NULL;
+				wkt_parser_nurbs_controlpoints_free($9);
 			WKT_ERROR();
 		} |
 	NURBSCURVE_TOK DIMENSIONALITY_TOK LBRACKET_TOK DEGREE_TOK DOUBLE_TOK COMMA_TOK CONTROLPOINTS_TOK opt_dimensionality LBRACKET_TOK iso_controlpoint_list RBRACKET_TOK COMMA_TOK KNOTS_TOK LBRACKET_TOK iso_knot_list RBRACKET_TOK RBRACKET_TOK
-		{
-			$$ = wkt_parser_nurbscurve_new($5, $10->points, $10->weights, $15, $2);
-			$10->points = NULL;
-			$10->weights = NULL;
-			wkt_parser_nurbs_controlpoints_free($10);
+			{
+				$$ = wkt_parser_nurbscurve_new($5, $10->points, $10->weights, $15,
+					wkt_parser_nurbscurve_iso_dimensionality($2, $8));
+				$10->points = NULL;
+				$10->weights = NULL;
+				wkt_parser_nurbs_controlpoints_free($10);
 			WKT_ERROR();
 		} |
 	/* Full syntax: NURBSCURVE(degree, (points), (weights), (knots)) */
@@ -711,7 +759,7 @@ nurbscurve :
 
 iso_controlpoint :
 	NURBSPOINT_TOK LBRACKET_TOK WEIGHTEDPOINT_TOK opt_dimensionality LBRACKET_TOK coordinate RBRACKET_TOK COMMA_TOK WEIGHT_TOK DOUBLE_TOK RBRACKET_TOK
-		{ $$ = wkt_parser_nurbs_controlpoints_new($6, $10); WKT_ERROR(); }
+		{ $$ = wkt_parser_nurbs_controlpoints_new($6, $10, $4); WKT_ERROR(); }
 	;
 
 iso_controlpoint_list :
