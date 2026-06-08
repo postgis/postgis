@@ -1806,6 +1806,64 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
 
     </refentry>
 
+    <refentry xml:id="CG_PolygonRepair">
+        <refnamediv>
+            <refname>CG_PolygonRepair</refname>
+            <refpurpose>Repair an invalid polygon or multipolygon.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_PolygonRepair</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    <paramdef choice="opt"><type>text</type> <parameter>rule</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+            <para>
+                Repair an invalid polygon or multipolygon using CGAL's 2D Polygon
+                Repair algorithm. Returns a <varname>MultiPolygon</varname>.
+            </para>
+            <para>
+                The <varname>rule</varname> parameter controls the repair strategy:
+            </para>
+            <itemizedlist>
+                <listitem><para><varname>EVEN_ODD</varname> (default) — areas covered an odd
+                    number of times are kept. Available with CGAL 6.0+.</para></listitem>
+                <listitem><para><varname>NON_ZERO</varname> — areas with non-zero winding
+                    number are kept. Requires CGAL 6.1+.</para></listitem>
+                <listitem><para><varname>UNION</varname> — union of all input polygons.
+                    Requires CGAL 6.1+.</para></listitem>
+                <listitem><para><varname>INTERSECTION</varname> — intersection of all input
+                    polygons. Requires CGAL 6.1+.</para></listitem>
+            </itemizedlist>
+            <para role="availability" conformance="3.7.0">Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0 and CGAL &gt;= 6.0.</para>
+            <para>&sfcgal_required;</para>
+            <para>&P_support;</para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+            <programlisting>-- Repair a bowtie (self-intersecting) polygon
+SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))'));
+-- MULTIPOLYGON(((0 0,1 1,0 2,0 0)),((1 1,2 0,2 2,1 1)))
+
+-- Keep all winding area with UNION rule (requires CGAL 6.1 or later)
+SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
+-- MULTIPOLYGON(((0 0,1 1,0 2,0 0)))</programlisting>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_IsValid"/>, <xref linkend="ST_MakeValid"/></para>
+        </refsection>
+
+    </refentry>
+
     <refentry xml:id="ST_ConstrainedDelaunayTriangles">
         <refnamediv>
             <refname>ST_ConstrainedDelaunayTriangles</refname>
