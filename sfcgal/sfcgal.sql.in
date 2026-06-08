@@ -609,4 +609,39 @@ AS 'MODULE_PATHNAME', 'sfcgal_alphawrapping_3d'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 _COST_LOW;
 
+-- Availability: 3.7.0 - requires SFCGAL >= 2.3.0
+CREATE OR REPLACE FUNCTION CG_GenerateFlatRoof(geom geometry, height float8 DEFAULT 3.0)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_generate_flat_roof'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_DEFAULT;
+
+-- Availability: 3.7.0 - requires SFCGAL >= 2.3.0
+CREATE OR REPLACE FUNCTION CG_GenerateHippedRoof(geom geometry, height float8 DEFAULT 3.0)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_generate_hipped_roof'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_DEFAULT;
+
+-- Availability: 3.7.0 - requires SFCGAL >= 2.3.0
+CREATE OR REPLACE FUNCTION CG_GenerateGableRoof(geom geometry, height float8 DEFAULT 3.0, slope_angle float8 DEFAULT 30.0)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_generate_gable_roof'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_DEFAULT;
+
+-- Availability: 3.7.0 - requires SFCGAL >= 2.3.0
+CREATE OR REPLACE FUNCTION CG_GenerateSkillionRoof(geom geometry, height float8 DEFAULT 3.0, slope_angle float8 DEFAULT 30.0, primary_edge_index integer DEFAULT 0)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_generate_skillion_roof'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_DEFAULT;
+
+-- Availability: 3.7.0 - requires SFCGAL >= 2.3.0
+CREATE OR REPLACE FUNCTION CG_GenerateRoof(geom geometry, roof_type text DEFAULT 'HIPPED', height float8 DEFAULT 3.0, slope_angle float8 DEFAULT 30.0, primary_edge_index integer DEFAULT 0)
+RETURNS geometry
+AS 'MODULE_PATHNAME', 'sfcgal_generate_roof'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+_COST_DEFAULT;
+
 COMMIT;
