@@ -135,6 +135,16 @@ static int wkt_parser_set_dims(LWGEOM *geom, lwflags_t flags)
 			}
 			break;
 		}
+		case NURBSCURVETYPE:
+		{
+			LWNURBSCURVE *curve = (LWNURBSCURVE*)geom;
+			if ( curve->points )
+			{
+				FLAGS_SET_Z(curve->points->flags, hasz);
+				FLAGS_SET_M(curve->points->flags, hasm);
+			}
+			break;
+		}
 		case POLYGONTYPE:
 		{
 			LWPOLY *poly = (LWPOLY*)geom;
@@ -1271,5 +1281,3 @@ LWGEOM *lwgeom_from_wkt(const char *wkt, const char check)
 
 	return r.geom;
 }
-
-

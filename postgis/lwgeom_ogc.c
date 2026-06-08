@@ -104,6 +104,39 @@ Datum LWGEOM_isclosed(PG_FUNCTION_ARGS);
 
 /*------------------------------------------------------------------*/
 
+static int
+lwnurbscurve_endpoint_is_clamped(const LWNURBSCURVE *curve, int at_start)
+{
+	uint32_t i;
+	double knot;
+
+	if (!curve || !curve->points || curve->points->npoints == 0)
+		return LW_TRUE;
+
+	if (!curve->knots || curve->nknots == 0)
+		return LW_TRUE;
+
+	if (curve->nknots < curve->degree + 1)
+		return LW_FALSE;
+
+	if (at_start)
+	{
+		knot = curve->knots[0];
+		for (i = 1; i <= curve->degree; i++)
+			if (curve->knots[i] != knot)
+				return LW_FALSE;
+	}
+	else
+	{
+		knot = curve->knots[curve->nknots - 1];
+		for (i = 1; i <= curve->degree; i++)
+			if (curve->knots[curve->nknots - 1 - i] != knot)
+				return LW_FALSE;
+	}
+
+	return LW_TRUE;
+}
+
 /* getSRID(lwgeom) :: int4 */
 PG_FUNCTION_INFO_V1(LWGEOM_get_srid);
 Datum LWGEOM_get_srid(PG_FUNCTION_ARGS)
@@ -847,6 +880,9 @@ Datum LWGEOM_startm_curve(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	POINT4D pt;
+	int type = lwgeom->type;
+	POINTARRAY *pa = NULL;
+	LWNURBSCURVE *curve = NULL;
 
 	/* Check if geometry has M dimension */
 	if (!lwgeom_has_m(lwgeom))
@@ -856,17 +892,58 @@ Datum LWGEOM_startm_curve(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	/* Get the start point */
-	if (lwgeom_startpoint(lwgeom, &pt) == LW_FAILURE)
+	if (type == LINETYPE || type == CIRCSTRINGTYPE)
 	{
+		LWLINE *line = (LWLINE*)lwgeom;
+		pa = line->points;
+	}
+	else if (type == NURBSCURVETYPE)
+	{
+		curve = (LWNURBSCURVE*)lwgeom;
+	}
+	else if (type == COMPOUNDTYPE)
+	{
+		LWCOMPOUND *comp = (LWCOMPOUND*)lwgeom;
+		if (comp->ngeoms > 0)
+		{
+			LWGEOM *first = comp->geoms[0];
+			if (first->type == LINETYPE || first->type == CIRCSTRINGTYPE)
+			{
+				pa = ((LWLINE*)first)->points;
+			}
+			else if (first->type == NURBSCURVETYPE)
+			{
+				curve = (LWNURBSCURVE*)first;
+			}
+		}
+	}
+
+	if (curve)
+	{
+		LWPOINT *point = lwnurbscurve_evaluate(curve, 0.0);
+		if (point && point->point && point->point->npoints > 0)
+		{
+			getPoint4d_p(point->point, 0, &pt);
+			lwpoint_free(point);
+			lwgeom_free(lwgeom);
+			PG_FREE_IF_COPY(geom, 0);
+			PG_RETURN_FLOAT8(pt.m);
+		}
+		lwpoint_free(point);
+	}
+
+	/* Extract M coordinate from first point */
+	if (pa && pa->npoints > 0)
+	{
+		getPoint4d_p(pa, 0, &pt);
 		lwgeom_free(lwgeom);
 		PG_FREE_IF_COPY(geom, 0);
-		PG_RETURN_NULL();
+		PG_RETURN_FLOAT8(pt.m);
 	}
 
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_FLOAT8(pt.m);
+	PG_RETURN_NULL();
 }
 
 /**
@@ -883,6 +960,7 @@ Datum LWGEOM_endm_curve(PG_FUNCTION_ARGS)
 	POINT4D pt;
 	int type = lwgeom->type;
 	POINTARRAY *pa = NULL;
+	LWNURBSCURVE *curve = NULL;
 
 	/* Check if geometry has M dimension */
 	if (!lwgeom_has_m(lwgeom))
@@ -900,8 +978,7 @@ Datum LWGEOM_endm_curve(PG_FUNCTION_ARGS)
 	}
 	else if (type == NURBSCURVETYPE)
 	{
-		LWNURBSCURVE *curve = (LWNURBSCURVE*)lwgeom;
-		pa = curve->points;
+		curve = (LWNURBSCURVE*)lwgeom;
 	}
 	else if (type == COMPOUNDTYPE)
 	{
@@ -915,9 +992,23 @@ Datum LWGEOM_endm_curve(PG_FUNCTION_ARGS)
 			}
 			else if (last->type == NURBSCURVETYPE)
 			{
-				pa = ((LWNURBSCURVE*)last)->points;
+				curve = (LWNURBSCURVE*)last;
 			}
 		}
+	}
+
+	if (curve)
+	{
+		LWPOINT *point = lwnurbscurve_evaluate(curve, 1.0);
+		if (point && point->point && point->point->npoints > 0)
+		{
+			getPoint4d_p(point->point, 0, &pt);
+			lwpoint_free(point);
+			lwgeom_free(lwgeom);
+			PG_FREE_IF_COPY(geom, 0);
+			PG_RETURN_FLOAT8(pt.m);
+		}
+		lwpoint_free(point);
 	}
 
 	/* Extract M coordinate from last point */
@@ -951,6 +1042,7 @@ Datum LWGEOM_setstartm_curve(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	POINT4D pt;
 	POINTARRAY *pa = NULL;
+	LWNURBSCURVE *curve = NULL;
 	int type = lwgeom->type;
 
 	/* Ensure geometry has M dimension */
@@ -977,7 +1069,8 @@ Datum LWGEOM_setstartm_curve(PG_FUNCTION_ARGS)
 	}
 	else if (type == NURBSCURVETYPE)
 	{
-		pa = ((LWNURBSCURVE*)lwgeom)->points;
+		curve = (LWNURBSCURVE*)lwgeom;
+		pa = curve->points;
 	}
 	else if (type == COMPOUNDTYPE)
 	{
@@ -991,14 +1084,29 @@ Datum LWGEOM_setstartm_curve(PG_FUNCTION_ARGS)
 			}
 			else if (first->type == NURBSCURVETYPE)
 			{
-				pa = ((LWNURBSCURVE*)first)->points;
+				curve = (LWNURBSCURVE*)first;
+				pa = curve->points;
 			}
 		}
 	}
 
-	/* Set M value on first point */
-	if (pa && pa->npoints > 0)
+	if (!pa)
 	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* Set M value on first point */
+	if (pa->npoints > 0)
+	{
+		if (curve && !lwnurbscurve_endpoint_is_clamped(curve, LW_TRUE))
+		{
+			lwgeom_free(lwgeom);
+			PG_FREE_IF_COPY(geom, 0);
+			ereport(ERROR, (errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+					errmsg("ST_SetStartM only supports clamped NURBSCURVE endpoints")));
+		}
 		getPoint4d_p(pa, 0, &pt);
 		pt.m = mval;
 		ptarray_set_point4d(pa, 0, &pt);
@@ -1027,6 +1135,7 @@ Datum LWGEOM_setendm_curve(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	POINT4D pt;
 	POINTARRAY *pa = NULL;
+	LWNURBSCURVE *curve = NULL;
 	int type = lwgeom->type;
 
 	/* Ensure geometry has M dimension */
@@ -1053,7 +1162,8 @@ Datum LWGEOM_setendm_curve(PG_FUNCTION_ARGS)
 	}
 	else if (type == NURBSCURVETYPE)
 	{
-		pa = ((LWNURBSCURVE*)lwgeom)->points;
+		curve = (LWNURBSCURVE*)lwgeom;
+		pa = curve->points;
 	}
 	else if (type == COMPOUNDTYPE)
 	{
@@ -1067,14 +1177,29 @@ Datum LWGEOM_setendm_curve(PG_FUNCTION_ARGS)
 			}
 			else if (last->type == NURBSCURVETYPE)
 			{
-				pa = ((LWNURBSCURVE*)last)->points;
+				curve = (LWNURBSCURVE*)last;
+				pa = curve->points;
 			}
 		}
 	}
 
-	/* Set M value on last point */
-	if (pa && pa->npoints > 0)
+	if (!pa)
 	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* Set M value on last point */
+	if (pa->npoints > 0)
+	{
+		if (curve && !lwnurbscurve_endpoint_is_clamped(curve, LW_FALSE))
+		{
+			lwgeom_free(lwgeom);
+			PG_FREE_IF_COPY(geom, 0);
+			ereport(ERROR, (errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+					errmsg("ST_SetEndM only supports clamped NURBSCURVE endpoints")));
+		}
 		getPoint4d_p(pa, pa->npoints - 1, &pt);
 		pt.m = mval;
 		ptarray_set_point4d(pa, pa->npoints - 1, &pt);
@@ -1129,17 +1254,14 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 	if ( type == LINETYPE || type == CIRCSTRINGTYPE )
 	{
 		LWLINE *line = (LWLINE*)lwgeom;
-		if ( line->points )
+		if ( line->points && line->points->npoints > 0 )
 			lwpoint = lwline_get_lwpoint((LWLINE*)lwgeom, line->points->npoints - 1);
 	}
 	else if ( type == NURBSCURVETYPE )
 	{
 		LWNURBSCURVE *curve = (LWNURBSCURVE*)lwgeom;
-		if ( curve->points )
-			lwpoint = lwpoint_make(curve->srid,
-			                       FLAGS_GET_Z(curve->flags),
-			                       FLAGS_GET_M(curve->flags),
-			                       getPoint4d_cp(curve->points, curve->points->npoints - 1));
+		if ( curve->points && curve->points->npoints > 0 )
+			lwpoint = lwnurbscurve_evaluate(curve, 1.0);
 	}
 	else if ( type == COMPOUNDTYPE )
 	{

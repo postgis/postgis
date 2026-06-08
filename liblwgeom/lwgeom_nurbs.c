@@ -448,15 +448,13 @@ lwnurbscurve_evaluate(const LWNURBSCURVE *curve, double t)
 	hasm = FLAGS_GET_M(curve->flags);
 	degree = curve->degree;
 
-	/* Clamp parameter t to valid range [0,1] */
-	if (t <= 0.0) {
-		getPoint4d_p(curve->points, 0, &result);
-		goto create_result;
-	}
-	if (t >= 1.0) {
-		getPoint4d_p(curve->points, curve->points->npoints - 1, &result);
-		goto create_result;
-	}
+	/* Clamp normalized parameter t to [0,1]. Endpoints are still evaluated
+	 * against the knot vector, since unclamped NURBS do not generally pass
+	 * through their first or last control point. */
+	if (t < 0.0)
+		t = 0.0;
+	else if (t > 1.0)
+		t = 1.0;
 
 	/* Get knot vector for evaluation */
 	knots = lwnurbscurve_get_knots_for_wkb(curve, &nknots);

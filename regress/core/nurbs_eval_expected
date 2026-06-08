@@ -18,3 +18,5 @@ NURBS_EVAL_9|POINT(1 1.57)
 NURBS_CONSISTENCY|t
 NURBS_CONV_7|21
 NURBS_CONV_8|3
+ERROR:  All weights must be positive, got 0 at position 1
+ERROR:  Knot vector must be non-decreasing, but knot[2]=1 > knot[3]=0.5

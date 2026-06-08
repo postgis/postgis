@@ -2535,9 +2535,10 @@ sfcgal_postgis_nurbs_curve_approximate(PG_FUNCTION_ARGS)
 
 	/* Convert to lwgeom */
 	lwgeom = lwgeom_from_gserialized(input);
-	if (lwgeom->type != LINETYPE)
+	if (!lwgeom || lwgeom->type != LINETYPE)
 	{
-		lwgeom_free(lwgeom);
+		if (lwgeom)
+			lwgeom_free(lwgeom);
 		PG_FREE_IF_COPY(input, 0);
 		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 				errmsg("Data points must be a LINESTRING")));
@@ -2589,6 +2590,14 @@ sfcgal_postgis_nurbs_curve_approximate(PG_FUNCTION_ARGS)
 	/* Convert result back to PostGIS */
 	result_nurbs = (LWNURBSCURVE*)SFCGAL2LWGEOM(sfcgal_nurbs, 0, srid);
 	sfcgal_geometry_delete(sfcgal_nurbs);
+
+	if (!result_nurbs)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),
+				errmsg("Failed to convert SFCGAL NURBS to PostGIS")));
+	}
 
 	output = geometry_serialize((LWGEOM*)result_nurbs);
 	lwnurbscurve_free(result_nurbs);

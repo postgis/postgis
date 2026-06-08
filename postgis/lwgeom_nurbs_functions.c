@@ -233,11 +233,12 @@ Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS)
 		/* Validate all weights are positive */
 		for (i = 0; i < weight_count; i++) {
 			if (weights[i] <= 0.0) {
+				double bad_weight = weights[i];
 				pfree(weights);
 				lwgeom_free(control_geom);
 				ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 					errmsg("All weights must be positive, got %g at position %d",
-						weights[i], i)));
+						bad_weight, i)));
 			}
 		}
 	}
@@ -267,12 +268,14 @@ Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS)
 		/* Validate knot vector is non-decreasing */
 		for (i = 1; i < knot_count; i++) {
 			if (knots[i] < knots[i-1]) {
+				double prev_knot = knots[i-1];
+				double bad_knot = knots[i];
 				pfree(knots);
 				if (weights) pfree(weights);
 				lwgeom_free(control_geom);
 				ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 					errmsg("Knot vector must be non-decreasing, but knot[%d]=%g > knot[%d]=%g",
-						i-1, knots[i-1], i, knots[i])));
+						i-1, prev_knot, i, bad_knot)));
 			}
 		}
 	}
@@ -583,11 +586,11 @@ PG_FUNCTION_INFO_V1(ST_NurbsCurveIsValid);
  * Returns whether the given GSERIALIZED NURBS curve satisfies basic validity rules:
  * - control points exist and their count >= degree + 1,
  * - all weights are strictly positive (if a weight vector is present),
- * - knot vector values are non-decreasing (checked up to the expected knot count).
+ * - knot vector values are non-decreasing with the expected knot count.
  *
  * Note: If the input is NULL this function returns NULL. If the input is not a NURBS
  * geometry, the function returns false. This routine performs basic checks only and
- * does not fully verify knot-vector length or other advanced mathematical consistency.
+ * does not fully verify advanced mathematical consistency.
  *
  * @param nurbscurve GSERIALIZED NURBSCURVE geometry to validate.
  * @return boolean true if the basic validity checks pass, false otherwise; NULL if input is NULL.
@@ -599,7 +602,6 @@ Datum ST_NurbsCurveIsValid(PG_FUNCTION_ARGS)
 	LWNURBSCURVE *nurbs;
 	bool is_valid = true;
 	uint32_t i, expected_knots;
-	uint32_t actual_check_count = 0;
 
 	if (PG_ARGISNULL(0)) {
 		PG_RETURN_NULL();
@@ -623,12 +625,11 @@ Datum ST_NurbsCurveIsValid(PG_FUNCTION_ARGS)
 
 	/* Check weights if present */
 	if (nurbs->weights && nurbs->nweights > 0) {
-		/* Verify nweights matches npoints before looping */
-		if (nurbs->nweights < nurbs->points->npoints) {
+		if (nurbs->nweights != nurbs->points->npoints) {
 			is_valid = false;
 			goto cleanup;
 		}
-		for (i = 0; i < nurbs->nweights && i < nurbs->points->npoints; i++) {
+		for (i = 0; i < nurbs->nweights; i++) {
 			if (nurbs->weights[i] <= 0.0) {
 				is_valid = false;
 				goto cleanup;
@@ -641,14 +642,12 @@ Datum ST_NurbsCurveIsValid(PG_FUNCTION_ARGS)
 		expected_knots = nurbs->points->npoints + nurbs->degree + 1;
 
 		/* Verify nknots is consistent before checking values */
-		if (nurbs->nknots < expected_knots) {
+		if (nurbs->nknots != expected_knots) {
 			is_valid = false;
 			goto cleanup;
 		}
 
-		/* Check knot vector is non-decreasing using actual count */
-		actual_check_count = (nurbs->nknots < expected_knots) ? nurbs->nknots : expected_knots;
-		for (i = 1; i < actual_check_count; i++) {
+		for (i = 1; i < expected_knots; i++) {
 			if (nurbs->knots[i] < nurbs->knots[i-1]) {
 				is_valid = false;
 				goto cleanup;
