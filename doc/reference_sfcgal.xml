@@ -1806,6 +1806,369 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
 
     </refentry>
 
+    <refentry xml:id="CG_GenerateFlatRoof">
+        <refnamediv>
+            <refname>CG_GenerateFlatRoof</refname>
+            <refpurpose>Generate a flat (box) roof from a footprint polygon.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_GenerateFlatRoof</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    <paramdef choice="opt"><type>float8</type> <parameter>height</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+            <para>
+                Generate a flat (box-shaped) roof as a 3D
+                <varname>PolyhedralSurface Z</varname> from a 2D footprint polygon.
+                The roof height above the ground plane is given by
+                <varname>height</varname> (default 3.0).
+            </para>
+            <para role="availability" conformance="3.7.0">Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0.</para>
+            <para>&sfcgal_required;</para>
+            <para>&P_support;</para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                        <row>
+                            <entry>
+                                <programlisting>SELECT ST_AsText(
+  CG_GenerateFlatRoof(
+    'POLYGON((0 0,5 0,5 4,0 4,0 0))',
+    2.0));
+-- POLYHEDRALSURFACE Z (...)</programlisting>
+                            </entry>
+                            <entry>
+                                <mediaobject>
+                                    <imageobject>
+                                        <imagedata fileref="images/cg_generateflatroof01.png"/>
+                                    </imageobject>
+                                </mediaobject>
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para>
+                <xref linkend="CG_GenerateHippedRoof"/>,
+                <xref linkend="CG_GenerateGableRoof"/>,
+                <xref linkend="CG_GenerateSkillionRoof"/>,
+                <xref linkend="CG_GenerateRoof"/>
+            </para>
+        </refsection>
+
+    </refentry>
+
+    <refentry xml:id="CG_GenerateHippedRoof">
+        <refnamediv>
+            <refname>CG_GenerateHippedRoof</refname>
+            <refpurpose>Generate a hipped roof from a footprint polygon.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_GenerateHippedRoof</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    <paramdef choice="opt"><type>float8</type> <parameter>height</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+            <para>
+                Generate a hipped roof as a 3D <varname>PolyhedralSurface Z</varname>
+                from a 2D footprint polygon. All sides slope upward to meet at a ridge
+                or apex. The roof height is given by <varname>height</varname>
+                (default 3.0).
+            </para>
+            <para role="availability" conformance="3.7.0">Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0.</para>
+            <para>&sfcgal_required;</para>
+            <para>&P_support;</para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                        <row>
+                            <entry>
+                                <programlisting>SELECT ST_AsText(
+  CG_GenerateHippedRoof(
+    'POLYGON((0 0,5 0,5 4,0 4,0 0))',
+    2.0));
+-- POLYHEDRALSURFACE Z (...)</programlisting>
+                            </entry>
+                            <entry>
+                                <mediaobject>
+                                    <imageobject>
+                                        <imagedata fileref="images/cg_generatehippedroof01.png"/>
+                                    </imageobject>
+                                </mediaobject>
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para>
+                <xref linkend="CG_GenerateFlatRoof"/>,
+                <xref linkend="CG_GenerateGableRoof"/>,
+                <xref linkend="CG_GenerateSkillionRoof"/>,
+                <xref linkend="CG_GenerateRoof"/>
+            </para>
+        </refsection>
+
+    </refentry>
+
+    <refentry xml:id="CG_GenerateGableRoof">
+        <refnamediv>
+            <refname>CG_GenerateGableRoof</refname>
+            <refpurpose>Generate a gable roof from a footprint polygon.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_GenerateGableRoof</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    <paramdef choice="opt"><type>float8</type> <parameter>height</parameter></paramdef>
+                    <paramdef choice="opt"><type>float8</type> <parameter>slope_angle</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+            <para>
+                Generate a gable roof as a 3D <varname>PolyhedralSurface Z</varname>
+                from a 2D footprint polygon. Two opposite sides are vertical gable
+                ends; the other two sides slope to a horizontal ridge.
+                <varname>height</varname> sets the ridge height above the ground
+                (default 3.0) and <varname>slope_angle</varname> controls the pitch
+                in degrees (default 30.0). The SRID of the input geometry is
+                preserved.
+            </para>
+            <para role="availability" conformance="3.7.0">Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0.</para>
+            <para>&sfcgal_required;</para>
+            <para>&P_support;</para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                        <row>
+                            <entry>
+                                <programlisting>SELECT ST_CoordDim(
+  CG_GenerateGableRoof(
+    'POLYGON((0 0,5 0,5 4,0 4,0 0))',
+    2.0, 30.0));
+-- 3</programlisting>
+                            </entry>
+                            <entry>
+                                <mediaobject>
+                                    <imageobject>
+                                        <imagedata fileref="images/cg_generategableroof01.png"/>
+                                    </imageobject>
+                                </mediaobject>
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para>
+                <xref linkend="CG_GenerateFlatRoof"/>,
+                <xref linkend="CG_GenerateHippedRoof"/>,
+                <xref linkend="CG_GenerateSkillionRoof"/>,
+                <xref linkend="CG_GenerateRoof"/>
+            </para>
+        </refsection>
+
+    </refentry>
+
+    <refentry xml:id="CG_GenerateSkillionRoof">
+        <refnamediv>
+            <refname>CG_GenerateSkillionRoof</refname>
+            <refpurpose>Generate a skillion (single-slope) roof from a footprint polygon.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_GenerateSkillionRoof</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    <paramdef choice="opt"><type>float8</type> <parameter>height</parameter></paramdef>
+                    <paramdef choice="opt"><type>float8</type> <parameter>slope_angle</parameter></paramdef>
+                    <paramdef choice="opt"><type>integer</type> <parameter>primary_edge_index</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+            <para>
+                Generate a skillion (single-slope, shed-style) roof as a 3D
+                <varname>PolyhedralSurface Z</varname> from a 2D footprint polygon.
+                The entire roof surface slopes in one direction.
+                <varname>height</varname> sets the maximum ridge height (default 3.0),
+                <varname>slope_angle</varname> sets the pitch in degrees (default
+                30.0), and <varname>primary_edge_index</varname> selects which
+                polygon edge defines the high side (0-based, default 0).
+            </para>
+            <para>
+                When the combination of <varname>height</varname> and
+                <varname>slope_angle</varname> would cause a side wall to vanish
+                (the slope reaches the far edge before the full height is achieved),
+                that face is omitted from the result. This means the number of
+                output patches can vary depending on the parameters — a lower
+                height relative to the footprint depth produces more faces than
+                a taller, steeper configuration.
+            </para>
+            <para role="availability" conformance="3.7.0">Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0.</para>
+            <para>&sfcgal_required;</para>
+            <para>&P_support;</para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+            <para>
+                Height 2.0 produces 6 faces (all walls present); height 4.0
+                produces 5 faces (one side wall is filtered out because the
+                slope reaches the far edge before the full height).
+            </para>
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                        <row>
+                            <entry>
+                                <programlisting>-- height 2.0 → 6 patches
+SELECT ST_NumPatches(
+  CG_GenerateSkillionRoof(
+    'POLYGON((0 0,5 0,5 4,0 4,0 0))',
+    2.0));
+-- 6
+
+-- height 4.0 → 5 patches (one face filtered)
+SELECT ST_NumPatches(
+  CG_GenerateSkillionRoof(
+    'POLYGON((0 0,5 0,5 4,0 4,0 0))',
+    4.0));
+-- 5</programlisting>
+                            </entry>
+                            <entry>
+                                <mediaobject>
+                                    <imageobject>
+                                        <imagedata fileref="images/cg_generateskillionroof01.png"/>
+                                    </imageobject>
+                                </mediaobject>
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para>
+                <xref linkend="CG_GenerateFlatRoof"/>,
+                <xref linkend="CG_GenerateHippedRoof"/>,
+                <xref linkend="CG_GenerateGableRoof"/>,
+                <xref linkend="CG_GenerateRoof"/>
+            </para>
+        </refsection>
+
+    </refentry>
+
+    <refentry xml:id="CG_GenerateRoof">
+        <refnamediv>
+            <refname>CG_GenerateRoof</refname>
+            <refpurpose>Generate a roof of the requested type from a footprint polygon.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_GenerateRoof</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    <paramdef choice="opt"><type>text</type> <parameter>roof_type</parameter></paramdef>
+                    <paramdef choice="opt"><type>float8</type> <parameter>height</parameter></paramdef>
+                    <paramdef choice="opt"><type>float8</type> <parameter>slope_angle</parameter></paramdef>
+                    <paramdef choice="opt"><type>integer</type> <parameter>primary_edge_index</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+            <para>
+                Generate a roof as a 3D <varname>PolyhedralSurface Z</varname> from
+                a 2D footprint polygon. The <varname>roof_type</varname> parameter
+                selects the roof style (default <literal>'HIPPED'</literal>):
+            </para>
+            <itemizedlist>
+                <listitem><para><varname>FLAT</varname> — flat box roof.</para></listitem>
+                <listitem><para><varname>HIPPED</varname> — hipped roof (all sides slope to apex).</para></listitem>
+                <listitem><para><varname>GABLE</varname> — gable roof (two sloping sides, two vertical ends).</para></listitem>
+                <listitem><para><varname>SKILLION</varname> — single-slope (shed) roof.</para></listitem>
+            </itemizedlist>
+            <para>
+                <varname>height</varname> sets the roof height (default 3.0),
+                <varname>slope_angle</varname> sets the pitch in degrees (default
+                30.0), and <varname>primary_edge_index</varname> selects the
+                reference edge for skillion roofs (default 0).
+            </para>
+            <para role="availability" conformance="3.7.0">Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0.</para>
+            <para>&sfcgal_required;</para>
+            <para>&P_support;</para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+            <programlisting>SELECT ST_AsText(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'HIPPED', 2.0, 30.0, 0));
+-- POLYHEDRALSURFACE Z (((0 4 0,4 4 0,4 0 0,0 0 0,0 4 0)), ...)
+
+SELECT ST_AsText(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'FLAT', 2.0));
+-- POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 0 0,0 0 0)), ...)</programlisting>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para>
+                <xref linkend="CG_GenerateFlatRoof"/>,
+                <xref linkend="CG_GenerateHippedRoof"/>,
+                <xref linkend="CG_GenerateGableRoof"/>,
+                <xref linkend="CG_GenerateSkillionRoof"/>
+            </para>
+        </refsection>
+
+    </refentry>
+
     <refentry xml:id="ST_ConstrainedDelaunayTriangles">
         <refnamediv>
             <refname>ST_ConstrainedDelaunayTriangles</refname>
