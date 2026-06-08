@@ -35,3 +35,5 @@ WITH geom AS
     SELECT ST_RemoveRepeatedPoints('POLYGON((0 0, 10 0, 10 10, 10.5 10.5, 10 10, 0 10, 0 0))', 1) as g
 )
 Select 19, ST_AsText(g) as geometry, postgis_getbbox(g) AS box from geom;
+
+SELECT 20, ST_AsText(ST_RemoveRepeatedPoints('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry));

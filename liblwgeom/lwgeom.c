@@ -2045,9 +2045,10 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 		break;
 	}
 
-	case CIRCSTRINGTYPE:
-		/* Dunno how to handle these, will return untouched */
-		return geometry_modified;
+		case CIRCSTRINGTYPE:
+		case NURBSCURVETYPE:
+			/* Dunno how to handle these, will return untouched */
+			return geometry_modified;
 
 	/* Can process most multi* types as generic collection */
 	case MULTILINETYPE:
