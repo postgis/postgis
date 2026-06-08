@@ -956,7 +956,7 @@ lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 	}
 
 	/* Short circuit out empty geometries */
-	if ( (!(variant & WKB_EXTENDED)) && lwgeom_is_empty(geom) )
+	if ( geom->type != NURBSCURVETYPE && (!(variant & WKB_EXTENDED)) && lwgeom_is_empty(geom) )
 	{
 		return empty_to_wkb_size(geom, variant);
 	}
@@ -1030,7 +1030,7 @@ static uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t vari
 {
 
 	/* Do not simplify empties when outputting to canonical form */
-	if (lwgeom_is_empty(geom) && !(variant & WKB_EXTENDED))
+	if (geom->type != NURBSCURVETYPE && lwgeom_is_empty(geom) && !(variant & WKB_EXTENDED))
 		return empty_to_wkb_buf(geom, buf, variant);
 
 	switch ( geom->type )

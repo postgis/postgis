@@ -299,19 +299,30 @@ lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, uint32_t where)
 LWPOINT *
 lwcompound_get_startpoint(const LWCOMPOUND *lwcmp)
 {
+	if ( lwcmp->ngeoms < 1 )
+		return NULL;
+
+	if ( lwcmp->geoms[0]->type == NURBSCURVETYPE )
+		return lwnurbscurve_evaluate((const LWNURBSCURVE*)lwcmp->geoms[0], 0.0);
+
 	return lwcompound_get_lwpoint(lwcmp, 0);
 }
 
 LWPOINT *
 lwcompound_get_endpoint(const LWCOMPOUND *lwcmp)
 {
+	LWGEOM *last;
 	LWLINE *lwline;
 	if ( lwcmp->ngeoms < 1 )
 	{
 		return NULL;
 	}
 
-	lwline = (LWLINE*)(lwcmp->geoms[lwcmp->ngeoms-1]);
+	last = lwcmp->geoms[lwcmp->ngeoms-1];
+	if ( last->type == NURBSCURVETYPE )
+		return lwnurbscurve_evaluate((const LWNURBSCURVE*)last, 1.0);
+
+	lwline = (LWLINE*)last;
 
 	if ( (!lwline) || (!lwline->points) || (lwline->points->npoints < 1) )
 	{
@@ -320,4 +331,3 @@ lwcompound_get_endpoint(const LWCOMPOUND *lwcmp)
 
 	return lwline_get_lwpoint(lwline, lwline->points->npoints-1);
 }
-

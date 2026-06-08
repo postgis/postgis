@@ -251,6 +251,13 @@ static size_t gserialized2_is_empty_recurse(const uint8_t *p, int *isempty)
 		/* Any non-collection with zero elements is empty */
 		if ( num == 0 )
 		{
+			if ( type == NURBSCURVETYPE )
+			{
+				uint32_t nweights = 0, nknots = 0;
+				memcpy(&nweights, p+12, 4);
+				memcpy(&nknots, p+16, 4);
+				lz = 24 + (sizeof(double) * ((size_t)nweights + nknots));
+			}
 			*isempty = LW_TRUE;
 		}
 		/*
@@ -799,8 +806,10 @@ static size_t gserialized2_from_lwcollection_size(const LWCOLLECTION *col)
 static size_t gserialized2_from_lwnurbscurve_size(const LWNURBSCURVE *curve)
 {
 	size_t size = 4; /* Type number. */
+	uint32_t npoints;
 
 	assert(curve);
+	npoints = curve->points ? curve->points->npoints : 0;
 
 	/* Validate nweights and nknots consistency with their pointers */
 	if (curve->nweights > 0 && curve->weights == NULL)
@@ -821,6 +830,18 @@ static size_t gserialized2_from_lwnurbscurve_size(const LWNURBSCURVE *curve)
 	if (curve->knots != NULL && curve->nknots <= 0)
 	{
 		lwerror("NURBS curve has non-NULL knots but nknots <= 0");
+		return 0;
+	}
+	if (curve->nweights > 0 && curve->nweights != npoints)
+	{
+		lwerror("NURBS curve weights count (%d) does not match control points count (%d)",
+		        curve->nweights, npoints);
+		return 0;
+	}
+	if (curve->nknots > 0 && curve->nknots != npoints + curve->degree + 1)
+	{
+		lwerror("NURBS curve knots count (%d) does not match expected count (%d)",
+		        curve->nknots, npoints + curve->degree + 1);
 		return 0;
 	}
 

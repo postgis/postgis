@@ -863,26 +863,35 @@ lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol,
 	if (!curve)
 		return NULL;
 
-	/*
-	 * For NURBS, we interpret the tolerance parameter based on tolerance_type:
-	 * - LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD: tol * 4 segments (quad = 1/4 curve)
-	 * - LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION: use default 32 segments
-	 *   (proper deviation-based calculation would require more complex analysis)
-	 * - LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE: use default 32 segments
-	 *   (proper angle-based calculation would require more complex analysis)
-	 */
+	if (!isfinite(tol) || tol <= 0.0)
+	{
+		lwerror("%s: tolerance must be finite and > 0, got %.15g", __func__, tol);
+		return NULL;
+	}
+
 	switch (tolerance_type)
 	{
 	case LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD:
-		num_segments = (uint32_t)(tol * 4);
+		if (tol != rint(tol))
+		{
+			lwerror("%s: segs-per-quad must be an integer, got %.15g", __func__, tol);
+			return NULL;
+		}
+		if (tol > ((double)UINT32_MAX / 4.0))
+		{
+			lwerror("%s: segs-per-quad is too large, got %.15g", __func__, tol);
+			return NULL;
+		}
+		num_segments = (uint32_t)tol * 4;
 		if (num_segments < 8) num_segments = 8;
 		break;
 	case LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION:
 	case LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE:
+		lwerror("%s: tolerance type %d not implemented for NURBSCURVE", __func__, tolerance_type);
+		return NULL;
 	default:
-		/* Default to 32 segments for a reasonable approximation */
-		num_segments = 32;
-		break;
+		lwerror("%s: unsupported tolerance type %d", __func__, tolerance_type);
+		return NULL;
 	}
 
 	(void)flags; /* Currently unused for NURBS linearization */
@@ -1347,4 +1356,3 @@ lwgeom_unstroke(const LWGEOM *geom)
 		return lwgeom_clone_deep(geom);
 	}
 }
-
