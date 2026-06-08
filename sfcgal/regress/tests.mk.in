@@ -12,6 +12,7 @@
 POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
 POSTGIS_SFCGAL_VERSION=@POSTGIS_SFCGAL_VERSION@
+POSTGIS_CGAL_VERSION=@POSTGIS_CGAL_VERSION@
 
 TESTS += \
 		$(top_srcdir)/sfcgal/regress/regress_sfcgal \
@@ -47,5 +48,11 @@ endif
 ifeq ($(shell expr "$(POSTGIS_SFCGAL_VERSION)" ">=" 20300),1)
 	TESTS += \
 		$(top_srcdir)/sfcgal/regress/alphashape_components.sql \
-		$(top_srcdir)/sfcgal/regress/roofgeneration.sql
+		$(top_srcdir)/sfcgal/regress/roofgeneration.sql \
+		$(top_srcdir)/sfcgal/regress/polygonrepair.sql
+	ifeq ($(shell expr "$(POSTGIS_CGAL_VERSION)" ">=" 601),1)
+		TESTS += $(top_srcdir)/sfcgal/regress/polygonrepair_union.sql
+	else
+		TESTS += $(top_srcdir)/sfcgal/regress/polygonrepair_union_pre61.sql
+	endif
 endif

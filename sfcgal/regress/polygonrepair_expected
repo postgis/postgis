@@ -1,0 +1,4 @@
+empty|MULTIPOLYGON EMPTY
+bowtie_even_odd|MULTIPOLYGON(((0 0,1 1,0 2,0 0)),((1 1,2 0,2 2,1 1)))
+bowtie_even_odd_explicit|MULTIPOLYGON(((0 0,1 1,0 2,0 0)),((1 1,2 0,2 2,1 1)))
+valid|MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0)))
