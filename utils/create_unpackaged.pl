@@ -186,10 +186,10 @@ AS \$\$
 DECLARE
 	sql text;
 	proc regproc;
-	obj text := format('%s %s', type, sig);
+	obj text := pg_catalog.format('%s %s', type, sig);
 BEGIN
 
-	sql := format('ALTER EXTENSION ${extname} ADD %s', obj);
+	sql := pg_catalog.format('ALTER EXTENSION ${extname} ADD %s', obj);
 	EXECUTE sql;
 	RAISE NOTICE 'newly registered %', obj;
 
@@ -359,7 +359,7 @@ BEGIN
 					'Changing ownership of function % from % to % to match ext',
 					rec.oid::regprocedure, rec.proowner::regrole,
 					rec.extowner::regrole;
-			sql := format(
+			sql := pg_catalog.format(
 				'ALTER FUNCTION %s OWNER TO %I',
 				rec.oid::regprocedure,
 				rec.extowner::regrole

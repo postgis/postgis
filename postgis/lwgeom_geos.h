@@ -34,7 +34,7 @@
 ** Public prototypes for GEOS utility functions.
 */
 
-GSERIALIZED *GEOS2POSTGIS(GEOSGeom geom, char want3d);
+GSERIALIZED *GEOS2POSTGIS(GEOSGeom geom, uint8_t want3d);
 GEOSGeometry *POSTGIS2GEOS(const GSERIALIZED *g);
 GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* srid);
 LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems, int* is3d, int* srid);

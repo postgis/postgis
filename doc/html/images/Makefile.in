@@ -80,10 +80,15 @@ GENERATED_IMAGES= \
 	st_closestpoint01.png \
 	st_closestpoint02.png \
 	st_clusterkmeans02.png \
+	st_clusterrelatewin01.png \
 	st_centroid01.png \
 	st_centroid02.png \
 	st_centroid03.png \
 	st_centroid04.png \
+	st_catmullromsmoothing01.png \
+	st_catmullromsmoothing02.png \
+	st_catmullromsmoothing03.png \
+	st_catmullromsmoothing04.png \
 	st_chaikinsmoothing01.png \
 	st_chaikinsmoothing02.png \
 	st_chaikinsmoothing03.png \

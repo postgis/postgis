@@ -1215,6 +1215,7 @@ validate_remote_loader_columns(SHPLOADERCONFIG *config, PGresult *result)
 					{
 						pgui_logf(_("Warning: Could not load shapefile %s"), config->shp_file);
 						ShpLoaderDestroy(state);
+						return SHPLOADERERR;
 					}
 
 					/* Find each column based upon its name and then validate type separately... */
@@ -1755,8 +1756,8 @@ import_cleanup:
 		ShpLoaderDestroy(state);
 
 		/* Tidy up */
-		if (progress_shapefile)
-			free(progress_shapefile);
+		free(progress_shapefile);
+		progress_shapefile = NULL;
 
 		/* Get next entry */
 		is_valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(import_file_list_store), &iter);

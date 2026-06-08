@@ -2,7 +2,7 @@
 
 set -e
 
-export PG_VER=13
+export PG_VER=14
 # export PGPORT=8442
 export OS_BUILD=64
 #this is passed in via postgis_make_dist.sh via jenkins

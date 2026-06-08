@@ -53,6 +53,7 @@
     If Z or M values are present in a geometry value, they must be defined for each point in the geometry.
     If a geometry has Z or M ordinates the <emphasis role="bold">coordinate dimension</emphasis> is 3D;
     if it has both Z and M the coordinate dimension is 4D.
+    The coordinate dimension is at least 2, because every geometry has at least X and Y coordinates.
     </para>
 
     <para>Geometry values are associated with a
@@ -70,7 +71,7 @@
 
     <para>The geometry <emphasis role="bold">dimension</emphasis> is a property of geometry types.
     Point types have dimension 0, linear types have dimension 1,
-    and polygonal types have dimension 2.
+    polygonal types have dimension 2, and solid types have dimension 3.
     Collections have the dimension of the maximum element dimension.
     </para>
 
@@ -96,12 +97,13 @@
     are defined for each geometry type.
     Geometries are topologically closed, so they always contain their boundary.
     The boundary is a geometry of dimension one less than that of the geometry itself.
+    For example, the boundary of a Polygon is its rings (LineStrings), the boundary of a LineString is its endpoints (Points), and the boundary of a Point is empty.
     </para>
 
     <para>The OGC geometry model defines validity rules for each geometry type.
     These rules ensure that geometry values represents realistic
     situations (e.g. it is possible to specify a polygon
-    with a hole lying outside the shell, but this makes no sense geometrically
+    with a hole lying outside its shell, but this makes no sense geometrically
     and is thus invalid).
     PostGIS also allows storing and manipulating invalid geometry values.
     This allows detecting and fixing them if needed.
@@ -166,6 +168,9 @@ POINT ZM (1 2 3 4)
         <title>MultiPolygon</title>
         <para>A MultiPolygon is a collection of non-overlapping, non-adjacent Polygons.
         Polygons in the collection may touch only at a finite number of points.
+        (Two polygons are adjacent if they share an edge.
+        They touch if they share only points or edges on their boundaries).
+        For more details on MultiPolygon validity, see <xref linkend="OGC_Validity"/>.
         </para>
         <programlisting>MULTIPOLYGON (((1 5, 5 5, 5 1, 1 1, 1 5)), ((6 5, 9 1, 6 1, 6 5)))</programlisting>
     </section>
@@ -376,7 +381,7 @@ geometry = ST_GeomFromText(text WKT, SRID);</programlisting>
 	  <para>For example, a statement to create and insert a spatial object from WKT and a SRID is:</para>
 
 	  <programlisting>INSERT INTO geotable ( geom, name )
-  VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');</programlisting>
+  VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place'); -- 312 is the SRID</programlisting>
 
     <para>Well-Known Binary (WKB) provides a portable, full-precision representation
       of spatial data as binary data (arrays of bytes).
@@ -426,7 +431,7 @@ geometry = ST_GeomFromWKB(bytea WKB, SRID);
     which means that all access is done via invoking functions on geometry values.
     Functions allow creating geometry objects,
     accessing or updating all internal fields,
-    and compute new geometry values.
+    and computing new geometry values.
     PostGIS supports all the functions specified in the OGC
 	<link xlink:href="https://portal.ogc.org/files/?artifact_id=25354"><emphasis>Simple feature access - Part 2: SQL option</emphasis></link>
     (SFS) specification, as well many others.
@@ -825,8 +830,9 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 				  </question>
 
 				  <answer>
-					<para> By default, all distance and area calculations are done on the spheroid. You should find that the results of calculations in local areas match up will with local planar results in good local projections.
+					<para> By default, all distance and area calculations are done on the spheroid. You should find that the results of calculations in local areas match up well with local planar results in good local projections.
 					Over larger areas, the spheroidal calculations will be more accurate than any calculation done on a projected plane.
+					The difference is that the spheroid takes into account the curvature and non-spherical shape of the Earth, whereas planar calculations assume a flat surface.
 					</para>
 					<para>All the geography functions have the option of using a sphere calculation, by setting a final boolean parameter to 'FALSE'. This will somewhat speed up calculations, particularly for cases where the geometries are very simple.</para>
 				  </answer>
@@ -1672,7 +1678,9 @@ VALUES ( 990000,
 		  <term><varname>coord_dimension</varname></term>
 
 		  <listitem>
-			<para>The coordinate dimension (2, 3 or 4) of the column.</para>
+			<para>The coordinate dimension (2, 3 or 4) of the column.
+			The coordinate dimension is at least 2, representing X and Y coordinates.
+			</para>
 		  </listitem>
 		</varlistentry>
 

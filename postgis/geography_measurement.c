@@ -599,12 +599,12 @@ Datum geography_perimeter(PG_FUNCTION_ARGS)
 		s.a = s.b = s.radius;
 
 	/* Calculate the length */
-	length = lwgeom_length_spheroid(lwgeom, &s);
+	length = lwgeom_perimeter_spheroid(lwgeom, &s);
 
 	/* Something went wrong... */
 	if ( length < 0.0 )
 	{
-		elog(ERROR, "lwgeom_length_spheroid returned length < 0.0");
+		elog(ERROR, "lwgeom_perimeter_spheroid returned length < 0.0");
 		PG_RETURN_NULL();
 	}
 

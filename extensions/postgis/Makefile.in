@@ -129,8 +129,10 @@ sql/postgis_for_extension.sql: ../../postgis/postgis.sql.in ../../postgis_revisi
 	rm -f $@.tmp
 
 sql/postgis_upgrade.sql: sql/postgis_upgrade_for_extension.sql | sql
-	$(PERL) -pe "s/BEGIN\;//g ; s/COMMIT\;//g; s/^(DROP .*)\;/SELECT postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" $< > $@
-
+	cat $< | \
+	$(PERL) -lpe "s/BEGIN\;//g" | \
+	$(PERL) -lpe "s/COMMIT\;//g" | \
+	$(PERL) -lpe "s/^(DROP .*)\;/SELECT \@extschema\@.postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" > $@
 
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@

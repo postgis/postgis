@@ -25,11 +25,11 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_gdal_configured() {
+static void test_gdal_configured(void) {
 	CU_ASSERT(rt_util_gdal_configured());
 }
 
-static void test_gdal_drivers() {
+static void test_gdal_drivers(void) {
 	uint32_t i;
 	uint32_t size;
 	rt_gdaldriver drv = NULL;
@@ -47,7 +47,7 @@ static void test_gdal_drivers() {
 	rtdealloc(drv);
 }
 
-static void test_gdal_rasterize() {
+static void test_gdal_rasterize(void) {
 	rt_raster raster;
 	char srs[] = "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",6370997,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",45],PARAMETER[\"longitude_of_center\",-100],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1],AUTHORITY[\"EPSG\",\"2163\"]]";
 	const char wkb_hex[] = "010300000001000000050000000000000080841ec100000000600122410000000080841ec100000000804f22410000000040e81dc100000000804f22410000000040e81dc100000000600122410000000080841ec10000000060012241";
@@ -152,7 +152,7 @@ static rt_raster fillRasterToPolygonize(int hasnodata, double nodataval) {
 	return raster;
 }
 
-static void test_gdal_polygonize() {
+static void test_gdal_polygonize(void) {
 	int i;
 	rt_raster rt;
 	int nPols = 0;
@@ -190,7 +190,8 @@ static void test_gdal_polygonize() {
 
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
-	CU_ASSERT_DOUBLE_EQUAL(nPols, 4, FLT_EPSILON);
+	/* nodata=1.8 pixels are excluded: only 0.0 (x2 regions) and 2.8 remain */
+	CU_ASSERT_DOUBLE_EQUAL(nPols, 3, FLT_EPSILON);
 	total_area = 0; total_val = 0;
 	for (i = 0; i < nPols; i++) {
 		total_val += gv[i].val;
@@ -199,8 +200,8 @@ static void test_gdal_polygonize() {
 		lwgeom_free((LWGEOM *) gv[i].geom);
 	}
 	printf("total area, total_val, polys = %f, %f, %i\n", total_area, total_val, nPols);
-	CU_ASSERT_DOUBLE_EQUAL(total_val, 4.6, FLT_EPSILON);
-	CU_ASSERT_DOUBLE_EQUAL(total_area, 81, FLT_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(total_val, 2.8, FLT_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(total_area, 65, FLT_EPSILON);
 
 
 	rtdealloc(gv);
@@ -214,7 +215,8 @@ static void test_gdal_polygonize() {
 
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
-	CU_ASSERT_DOUBLE_EQUAL(nPols, 4, FLT_EPSILON);
+	/* nodata=2.8 pixels are excluded: only 0.0 (x2 regions) and 1.8 remain */
+	CU_ASSERT_DOUBLE_EQUAL(nPols, 3, FLT_EPSILON);
 	total_area = 0; total_val = 0;
 	for (i = 0; i < nPols; i++) {
 		total_val += gv[i].val;
@@ -224,8 +226,8 @@ static void test_gdal_polygonize() {
 	}
 
 	printf("total area, total_val, polys = %f, %f, %i\n", total_area, total_val, nPols);
-	CU_ASSERT_DOUBLE_EQUAL(total_val, 4.6, FLT_EPSILON);
-	CU_ASSERT_DOUBLE_EQUAL(total_area, 81, FLT_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(total_val, 1.8, FLT_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(total_area, 69, FLT_EPSILON);
 
 	rtdealloc(gv);
 	cu_free_raster(rt);
@@ -301,7 +303,7 @@ test_gdal_polygonize_interrupt(void)
 	cu_free_raster(rt);
 }
 
-static void test_raster_to_gdal() {
+static void test_raster_to_gdal(void) {
 	rt_pixtype pixtype = PT_64BF;
 	rt_raster raster = NULL;
 	rt_band band = NULL;
@@ -374,7 +376,7 @@ static void test_raster_to_gdal() {
 	cu_free_raster(raster);
 }
 
-static void test_gdal_to_raster() {
+static void test_gdal_to_raster(void) {
 	rt_pixtype pixtype = PT_64BF;
 	rt_band band = NULL;
 
@@ -497,7 +499,7 @@ static void test_gdal_to_raster() {
 	cu_free_raster(raster);
 }
 
-static void test_gdal_warp() {
+static void test_gdal_warp(void) {
 	rt_pixtype pixtype = PT_64BF;
 	rt_band band = NULL;
 

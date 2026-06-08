@@ -25,7 +25,7 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_band_metadata() {
+static void test_band_metadata(void) {
 	rt_raster rast = NULL;
 	uint8_t *data = NULL;
 	rt_band band = NULL;
@@ -147,7 +147,7 @@ static void test_band_metadata() {
 	cu_free_raster(rast);
 }
 
-static void test_band_pixtype_1BB() {
+static void test_band_pixtype_1BB(void) {
 	rt_pixtype pixtype = PT_1BB;
 	uint8_t *data = NULL;
 	rt_band band = NULL;
@@ -221,7 +221,7 @@ static void test_band_pixtype_1BB() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_2BUI() {
+static void test_band_pixtype_2BUI(void) {
 	rt_pixtype pixtype = PT_2BUI;
 	uint8_t *data = NULL;
 	rt_band band = NULL;
@@ -313,7 +313,7 @@ static void test_band_pixtype_2BUI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_4BUI() {
+static void test_band_pixtype_4BUI(void) {
 	rt_pixtype pixtype = PT_4BUI;
 	uint8_t *data = NULL;
 	rt_band band = NULL;
@@ -419,7 +419,7 @@ static void test_band_pixtype_4BUI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_8BUI() {
+static void test_band_pixtype_8BUI(void) {
 	rt_pixtype pixtype = PT_8BUI;
 	uint8_t *data = NULL;
 	rt_band band = NULL;
@@ -527,7 +527,7 @@ static void test_band_pixtype_8BUI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_8BSI() {
+static void test_band_pixtype_8BSI(void) {
 	rt_pixtype pixtype = PT_8BSI;
 	uint8_t *data = NULL;
 	rt_band band = NULL;
@@ -659,7 +659,7 @@ static void test_band_pixtype_8BSI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_16BUI() {
+static void test_band_pixtype_16BUI(void) {
 	rt_pixtype pixtype = PT_16BUI;
 	uint8_t *data = NULL;
 	rt_band band = NULL;
@@ -748,7 +748,7 @@ static void test_band_pixtype_16BUI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_16BSI() {
+static void test_band_pixtype_16BSI(void) {
 	rt_pixtype pixtype = PT_16BSI;
 	uint8_t *data = NULL;
 	rt_band band = NULL;
@@ -860,7 +860,7 @@ static void test_band_pixtype_16BSI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_32BUI() {
+static void test_band_pixtype_32BUI(void) {
 	rt_pixtype pixtype = PT_32BUI;
 	uint8_t *data = NULL;
 	rt_band band = NULL;
@@ -956,7 +956,7 @@ static void test_band_pixtype_32BUI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_32BSI() {
+static void test_band_pixtype_32BSI(void) {
 	rt_pixtype pixtype = PT_32BSI;
 	uint8_t *data = NULL;
 	rt_band band = NULL;
@@ -1053,7 +1053,7 @@ static void test_band_pixtype_32BSI() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_32BF() {
+static void test_band_pixtype_32BF(void) {
 	rt_pixtype pixtype = PT_32BF;
 	uint8_t *data = NULL;
 	rt_band band = NULL;
@@ -1135,7 +1135,7 @@ static void test_band_pixtype_32BF() {
 	rt_band_destroy(band);
 }
 
-static void test_band_pixtype_64BF() {
+static void test_band_pixtype_64BF(void) {
 	rt_pixtype pixtype = PT_64BF;
 	uint8_t *data = NULL;
 	rt_band band = NULL;
@@ -1217,7 +1217,7 @@ static void test_band_pixtype_64BF() {
 	rt_band_destroy(band);
 }
 
-static void test_band_get_pixel_line() {
+static void test_band_get_pixel_line(void) {
 	rt_raster rast;
 	rt_band band;
 	int maxX = 5;
@@ -1259,7 +1259,7 @@ static void test_band_get_pixel_line() {
 	cu_free_raster(rast);
 }
 
-static void test_band_new_offline_from_path() {
+static void test_band_new_offline_from_path(void) {
 	rt_band band = NULL;
 	int width = 10;
 	int height = 10;

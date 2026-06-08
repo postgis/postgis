@@ -405,6 +405,12 @@ gml_is_srs_axis_order_gis_friendly(int32_t srid)
 	{
 		char* ptr;
 		char* srtext_horizontal = (char*) malloc(strlen(srtext) + 1);
+
+		if (!srtext_horizontal)
+		{
+			SPI_finish();
+			lwpgerror("gml_is_srs_axis_order_gis_friendly: could not allocate memory");
+		}
 		strcpy(srtext_horizontal, srtext);
 
 		/* Remove the VERT_CS part if we are in a COMPD_CS */

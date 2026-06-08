@@ -99,5 +99,6 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/validatetopology.sql \
 	$(top_srcdir)/topology/test/regress/validatetopology_large.sql \
 	$(top_srcdir)/topology/test/regress/verifylargeids.sql \
-	$(top_srcdir)/topology/test/regress/fix_topogeometry_columns.sql
+	$(top_srcdir)/topology/test/regress/fix_topogeometry_columns.sql \
+	$(top_srcdir)/topology/test/regress/findvertexsegmentpairsbelowdistance.sql
 

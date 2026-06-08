@@ -35,7 +35,7 @@ CREATE TYPE topology.ValidateTopology_ReturnType AS (
 -- Availability: 3.6.0
 -- Changed: 3.6.0 uses bigint for IDs
 -- Replaces _validatetopologygetfaceshellmaximaledgering(varchar, integer) deprecated in 3.6.0
-CREATE OR REPLACE FUNCTION topology._validatetopologygetfaceshellmaximaledgering(atopology varchar, aface bigint)
+CREATE OR REPLACE FUNCTION topology._ValidateTopologyGetFaceShellMaximalEdgeRing(atopology varchar, aface bigint)
 RETURNS GEOMETRY AS
 $BODY$
 DECLARE
@@ -366,6 +366,11 @@ END;
 $BODY$ --}
 LANGUAGE 'plpgsql' VOLATILE;
 
+CREATE OR REPLACE FUNCTION topology.TopoRingIsCCW(areal geometry)
+RETURNS BOOLEAN AS
+	'MODULE_PATHNAME', 'TopoRingIsCCW'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
 --
 -- Check that the edges forming all rings
 -- (as advertised by their next_right_edge/next_left_edge)
@@ -389,7 +394,6 @@ $BODY$
 DECLARE
   retrec topology.ValidateTopology_ReturnType;
   rec RECORD;
-  ring_poly GEOMETRY;
   is_shell BOOLEAN;
   found_rings INT := 0;
   found_shells INT := 0;
@@ -548,10 +552,7 @@ BEGIN
     IF ST_NPoints(rec.ring_geom) > 3 AND
        rec.num_edges != rec.distinct_edges * 2
     THEN
-      ring_poly := ST_MakePolygon(rec.ring_geom);
-      IF ST_IsPolygonCCW(ring_poly) THEN
-        is_shell := true;
-      END IF;
+      is_shell := topology.TopoRingIsCCW(rec.ring_geom);
     END IF;
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
@@ -568,7 +569,7 @@ BEGIN
       BEGIN
         INSERT INTO shell_check VALUES (
           rec.side_faces[1],
-          ring_poly
+          ST_MakePolygon(rec.ring_geom)
         );
         found_shells := found_shells + 1;
       EXCEPTION WHEN unique_violation THEN

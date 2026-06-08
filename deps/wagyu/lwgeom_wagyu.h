@@ -52,17 +52,17 @@ LWGEOM *lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox);
  * Returns a pointer to the static string representing the Wagyu release
  * being used (Should not be freed)
  */
-const char *libwagyu_version();
+const char *libwagyu_version(void);
 
 /**
  * Requests wagyu to stop processing. In this case it will return NULL
  */
-void lwgeom_wagyu_interruptRequest();
+void lwgeom_wagyu_interruptRequest(void);
 
 /**
  * Cancels request to stop processing.
  */
-void lwgeom_wagyu_interruptReset();
+void lwgeom_wagyu_interruptReset(void);
 
 #ifdef __cplusplus
 }

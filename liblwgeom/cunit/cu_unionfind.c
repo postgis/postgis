@@ -66,7 +66,7 @@ static void test_unionfind_ordered_by_cluster(void)
 
 	uint32_t* ids_by_cluster = UF_ordered_by_cluster(&uf);
 
-	char encountered_cluster[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t encountered_cluster[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 	uint32_t i;
 	for (i = 0; i < uf.N; i++)
@@ -147,7 +147,7 @@ static void test_unionfind_collapse_cluster_ids(void)
 
 	lwfree(collapsed_ids);
 
-	char is_in_cluster[] = { 0, 1, 1, 1, 0, 1, 0, 0, 0, 0 };
+	uint8_t is_in_cluster[] = {0, 1, 1, 1, 0, 1, 0, 0, 0, 0};
 	uint32_t expected_collapsed_ids2[] = { 8, 0, 0, 0, 7, 0, 8, 7, 8, 7 };
 
 	collapsed_ids = UF_get_collapsed_cluster_ids(uf, is_in_cluster);

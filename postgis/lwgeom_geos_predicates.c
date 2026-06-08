@@ -65,8 +65,8 @@ Datum ST_Equals(PG_FUNCTION_ARGS);
 /*
  * Utility to quickly check for polygonal geometries
  */
-static inline char
-is_poly(const GSERIALIZED* g)
+static inline uint8_t
+is_poly(const GSERIALIZED *g)
 {
     int type = gserialized_get_type(g);
     return type == POLYGONTYPE || type == MULTIPOLYGONTYPE;
@@ -75,8 +75,8 @@ is_poly(const GSERIALIZED* g)
 /*
  * Utility to quickly check for point geometries
  */
-static inline char
-is_point(const GSERIALIZED* g)
+static inline uint8_t
+is_point(const GSERIALIZED *g)
 {
 	int type = gserialized_get_type(g);
 	return type == POINTTYPE || type == MULTIPOINTTYPE;
@@ -95,7 +95,7 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
-	int result;
+	int8_t result;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
@@ -174,7 +174,7 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
-	char result;
+	int8_t result;
 	GBOX box1, box2;
 	GEOSGeometry *g1, *g2;
 
@@ -233,7 +233,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
-	char result;
+	int8_t result;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
@@ -297,7 +297,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
-	char result;
+	int8_t result;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
@@ -365,7 +365,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
-	char result;
+	int8_t result;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
@@ -432,7 +432,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
-	int result;
+	int8_t result;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
@@ -500,7 +500,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
-	int result;
+	int8_t result;
 	GEOSGeometry *g1, *g2;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
@@ -581,7 +581,7 @@ Datum within(PG_FUNCTION_ARGS)
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
-	int result;
+	int8_t result;
 	GEOSGeometry *g1, *g2;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
@@ -661,7 +661,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
-	char result;
+	int8_t result;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
@@ -726,7 +726,7 @@ Datum covers(PG_FUNCTION_ARGS)
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
-	int result;
+	int8_t result;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
@@ -810,7 +810,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
-	int result;
+	int8_t result;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
@@ -909,7 +909,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	text *imPtr = DatumGetTextP(DirectFunctionCall2(text_left,
 		PG_GETARG_DATUM(2), Int32GetDatum(9)));
 	char *im = text_to_cstring(imPtr);
-	char result;
+	int8_t result;
 	uint32_t i;
 #if POSTGIS_GEOS_VERSION >= 31300
 	PrepGeomCache *prep_cache;
@@ -1039,22 +1039,13 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 	double tolerance = PG_GETARG_FLOAT8(2);
 	double mindist;
 
-#if POSTGIS_GEOS_VERSION < 31000
-	const GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
-	const GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
-	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
-	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-	mindist = lwgeom_mindistance2d_tolerance(lwgeom1, lwgeom2, tolerance);
-	PG_RETURN_BOOL(tolerance >= mindist);
-
-#else
 	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
 	PrepGeomCache *prep_cache = NULL;
 	const size_t small_threshold = 1024;
-	char is_dwithin = -1;
+	int8_t is_dwithin = -1;
 
 	/*
 	 * Only enter the GEOS/PreparedGeometry code line if one of the
@@ -1111,8 +1102,4 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 	}
 
 	PG_RETURN_BOOL(is_dwithin);
-
-#endif
 }
-
-

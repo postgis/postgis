@@ -24,7 +24,7 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_band_stats() {
+static void test_band_stats(void) {
 	rt_bandstats stats = NULL;
 	rt_histogram histogram = NULL;
 	double bin_width[] = {100};
@@ -209,7 +209,7 @@ static void test_band_stats() {
 	cu_free_raster(raster);
 }
 
-static void test_band_value_count() {
+static void test_band_value_count(void) {
 	rt_valuecount vcnts = NULL;
 
 	rt_raster raster;

@@ -25,7 +25,7 @@
 #include "cu_tester.h"
 #include <math.h>
 
-static void test_band_get_nearest_pixel() {
+static void test_band_get_nearest_pixel(void) {
 	rt_raster rast;
 	rt_band band;
 	int x, y;
@@ -287,7 +287,7 @@ static void test_band_get_nearest_pixel() {
 	cu_free_raster(rast);
 }
 
-static void test_band_get_pixel_of_value() {
+static void test_band_get_pixel_of_value(void) {
 	rt_raster rast;
 	rt_band band;
 	uint32_t x, y;
@@ -367,7 +367,7 @@ static void test_band_get_pixel_of_value() {
 	cu_free_raster(rast);
 }
 
-static void test_pixel_set_to_array(){
+static void test_pixel_set_to_array(void){
 	rt_raster rast;
 	rt_band band;
 	rt_mask mask = NULL;

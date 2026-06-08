@@ -42,8 +42,8 @@ DECLARE
 	postgis_namespace OID;
 	matching_function pg_catalog.pg_proc;
 	detail TEXT;
-	deprecated_suffix TEXT := '_deprecated_by_postgis_' || deprecated_in_version;
-  deprecated_suffix_len INT := length(deprecated_suffix);
+	deprecated_suffix TEXT := pg_catalog.concat('_deprecated_by_postgis_', deprecated_in_version);
+  deprecated_suffix_len INT := pg_catalog.length(deprecated_suffix);
 BEGIN
 
 	-- Fetch install namespace for PostGIS
@@ -57,15 +57,16 @@ BEGIN
 	SELECT *
 	FROM pg_catalog.pg_proc p
 	WHERE pronamespace = postgis_namespace
-	AND pg_catalog.LOWER(p.proname) = pg_catalog.LOWER(function_name)
+	AND p.proname ILIKE function_name
 	AND pg_catalog.pg_function_is_visible(p.oid)
-	AND pg_catalog.LOWER(pg_catalog.pg_get_function_identity_arguments(p.oid)) = pg_catalog.LOWER(function_arguments)
+	AND pg_catalog.pg_get_function_identity_arguments(p.oid) ILIKE function_arguments
 	INTO matching_function;
 
 	IF matching_function.oid IS NOT NULL THEN
-		sql := format('ALTER FUNCTION %s RENAME TO %I',
+		sql := pg_catalog.format('ALTER FUNCTION %s RENAME TO %I',
 			matching_function.oid::regprocedure,
-			SUBSTRING(matching_function.proname,1,63-deprecated_suffix_len) || deprecated_suffix --limit to 63 characters
+			--limit to 63 characters
+			pg_catalog.concat(pg_catalog.left(matching_function.proname,63-deprecated_suffix_len), deprecated_suffix)
 		);
 		RAISE DEBUG 'SQL query: %', sql;
 		BEGIN
@@ -99,8 +100,8 @@ BEGIN
 		SELECT castsource::pg_catalog.regtype::text, casttarget::pg_catalog.regtype::text
 		INTO STRICT cast_source, cast_target
 		FROM pg_catalog.pg_cast
-    WHERE castsource::pg_catalog.regtype::text = lower(sourcetype)
-		AND casttarget::pg_catalog.regtype::text = lower(targettype);
+    WHERE castsource::pg_catalog.regtype::text ILIKE sourcetype
+		AND casttarget::pg_catalog.regtype::text ILIKE targettype;
 	EXCEPTION
 	WHEN NO_DATA_FOUND THEN
 		RAISE DEBUG 'Deprecated cast (topology.% as %) does not exist', sourcetype, targettype;
@@ -113,7 +114,7 @@ BEGIN
 		RETURN;
 	END;
 
-	new_name := cast_source || '_' || cast_target;
+	new_name := pg_catalog.concat(cast_source, '_', cast_target);
 	sql := pg_catalog.format(
 		'DROP CAST IF EXISTS (topology.%s AS %s)',
 		cast_source,
@@ -135,7 +136,7 @@ DECLARE
 	newname TEXT;
 	proc RECORD;
 	deprecated_suffix TEXT := '_deprecated_by_postgis_' || deprecated_in_version;
-	deprecated_suffix_len INT := length(deprecated_suffix);
+	deprecated_suffix_len INT := pg_catalog.length(deprecated_suffix);
 BEGIN
 
 	-- Check if the deprecated function exists
@@ -161,7 +162,8 @@ BEGIN
 	sql := pg_catalog.format(
 		'ALTER FUNCTION %s RENAME TO %I',
 		proc.oid::regprocedure,
-		SUBSTRING(proc.proname,1,63-deprecated_suffix_len) || deprecated_suffix -- limit to 63 characters
+		-- limit to 63 characters
+		pg_catalog.concat(pg_catalog.left(proc.proname,63-deprecated_suffix_len), deprecated_suffix)
 	);
 	EXECUTE sql;
 
@@ -177,14 +179,14 @@ CREATE OR REPLACE FUNCTION _postgis_topology_upgrade_domain_type(
 DECLARE
 	detail TEXT;
 	-- We need the base types of the old and new types - if multidimensional (int[][]), we need just one dimension at most
-	old_base_type TEXT := regexp_replace(old_domain_type, E'(\\[\\])+$', '[]');
-	new_base_type TEXT := regexp_replace(new_domain_type, E'(\\[\\])+$', '[]');
-	array_dims INT := (SELECT count(*) FROM regexp_matches (old_domain_type, E'\\[\\]', 'g'));
+	old_base_type TEXT := pg_catalog.regexp_replace(old_domain_type, E'(\\[\\])+$', '[]');
+	new_base_type TEXT := pg_catalog.regexp_replace(new_domain_type, E'(\\[\\])+$', '[]');
+	array_dims INT := (SELECT count(*) FROM pg_catalog.regexp_matches (old_domain_type, E'\\[\\]', 'g'));
 BEGIN
 	IF EXISTS (SELECT 1 FROM pg_catalog.pg_type AS t
 		WHERE  typnamespace::regnamespace::text = 'topology'
-		AND typname::text = lower(domain_name)
-		AND typbasetype::regtype::text = lower(old_base_type)
+		AND typname::text ILIKE domain_name
+		AND typbasetype::regtype::text ILIKE old_base_type
     AND typndims = array_dims)
   	THEN
 		BEGIN
@@ -192,8 +194,8 @@ BEGIN
 			UPDATE pg_catalog.pg_type
 			SET typbasetype = new_base_type::regtype::oid, typndims = array_dims
 			WHERE typnamespace::regnamespace::text = 'topology'
-			AND typname::text = lower(domain_name)
-			AND typbasetype::regtype::text = lower(old_base_type)
+			AND typname::text ILIKE domain_name
+			AND typbasetype::regtype::text ILIKE old_base_type
 			AND typndims = array_dims;
 
 			RAISE INFO 'Upgraded % from % to %', domain_name, old_domain_type, new_domain_type;
@@ -221,6 +223,7 @@ CREATE OR REPLACE FUNCTION _postgis_topology_upgrade_user_type_attribute(
 DECLARE
 	sql text;
 	detail TEXT;
+	tmp text;
 	num_updated integer;
 	proc RECORD;
 	temp_attr_name TEXT := attr_name || '_tmp';
@@ -232,13 +235,13 @@ BEGIN
 		-- Get the attribute id and number of attributes (so we can reset relnatts after adding/deleting temp attribute)
 		SELECT pg_type.typrelid attrelid, pg_class.relnatts
 		FROM pg_catalog.pg_type
-			join pg_class on pg_class.oid = pg_type.typrelid
-			join pg_attribute on pg_attribute.attrelid = pg_class.oid
-			join pg_type as pg_attr_type on pg_attr_type.oid = pg_attribute.atttypid
-		where pg_type.typname::regtype::text = lower(type_name)
+			join pg_catalog.pg_class on pg_class.oid = pg_type.typrelid
+			join pg_catalog.pg_attribute on pg_attribute.attrelid = pg_class.oid
+			join pg_catalog.pg_type as pg_attr_type on pg_attr_type.oid = pg_attribute.atttypid
+		where pg_type.typname::regtype::text ILIKE type_name
 		and pg_type.typnamespace::regnamespace::text = 'topology'
-		and attname::text = lower(attr_name)
-		and pg_attr_type.typname::regtype::text = lower(old_attr_type)
+		and attname::text ILIKE attr_name
+		and pg_attr_type.typname::regtype::text ILIKE old_attr_type
 		INTO STRICT proc;
 
 	EXCEPTION
@@ -256,57 +259,57 @@ BEGIN
 	BEGIN
 		-- Add a temporary attribute with the required type
 		-- This is the cleanest way to ensure the type is valid and all constraints are met
-		sql := format(
+		sql := pg_catalog.format(
 			'ALTER TYPE topology.%s ADD ATTRIBUTE %s %s',
 			type_name,
 			temp_attr_name,
 			new_attr_type
 		);
-		--RAISE INFO 'SQL: %', sql;
+		RAISE DEBUG 'SQL: %', sql;
 		EXECUTE sql;
 
 		-- Copy the attributes from the temp attribute to the existing attribute
 		sql := 'UPDATE pg_attribute AS tgt SET ';
 
 		BEGIN
-  		FOR colname IN
-    	SELECT column_name
-    	FROM information_schema.columns
-    	WHERE table_name = 'pg_attribute'
-      AND column_name <> ALL (excluded_columns)
-			AND column_name NOT LIKE 'oid%' -- Exclude system columns
-  		LOOP
-    		sql := sql || format('%I = src.%I, ', colname, colname);
-  		END LOOP;
+			-- add in tgt = src assignments for the update
+			SELECT pg_catalog.string_agg(pg_catalog.format('%I = src.%I', column_name, column_name), ', ')
+			FROM information_schema.columns
+			INTO tmp
+			WHERE table_name = 'pg_attribute'
+			AND column_name <> ALL (excluded_columns)
+			AND column_name NOT LIKE 'oid%';
+			sql := sql || tmp;
 
-  		-- remove trailing comma and add FROM/WHERE clause
-  		sql := left(sql, -2) || ' FROM pg_attribute AS src WHERE ' || format('tgt.attrelid = %s AND tgt.attname = %L AND src.attrelid = %s AND src.attname = %L',
+			-- add FROM/WHERE clause
+			tmp := pg_catalog.format('tgt.attrelid = %s AND tgt.attname = %L AND src.attrelid = %s AND src.attname = %L',
 				proc.attrelid,
 				attr_name,
 				proc.attrelid,
 				temp_attr_name
 			);
+			sql := pg_catalog.concat(sql, ' FROM pg_attribute AS src WHERE ', tmp);
 
-  		--RAISE INFO 'SQL: %', sql;
-  		EXECUTE sql;
+			RAISE DEBUG 'SQL: %', sql;
+			EXECUTE sql;
 		END;
 
 		-- Delete temp attribute since we cannot alter the type
-		sql := format(
+		sql := pg_catalog.format(
 			'DELETE FROM pg_attribute WHERE attname = %L AND attrelid = %s',
 			temp_attr_name,
 			proc.attrelid
 		);
-		--RAISE INFO 'SQL: %', sql;
+		RAISE DEBUG 'SQL: %', sql;
 		EXECUTE sql;
 
 		-- Reset the number of attributes in pg_class else postgres will complain
-		sql := format(
+		sql := pg_catalog.format(
 				'UPDATE pg_class SET relnatts = %s WHERE oid = %s',
 				proc.relnatts,
 				proc.attrelid
 		);
-		--RAISE INFO 'SQL: %', sql;
+		RAISE DEBUG 'SQL: %', sql;
 		EXECUTE sql;
 
 		RAISE INFO 'Upgraded %.% from % to %', type_name, attr_name, old_attr_type, new_attr_type;
@@ -319,7 +322,7 @@ BEGIN
 		RETURN;
 	END;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE 'plpgsql';
 
 -- Add useslargeids to topology
 CREATE OR REPLACE FUNCTION _postgis_add_column_to_table(
@@ -351,7 +354,7 @@ BEGIN
 			null_clause := 'NOT NULL';
 		END IF;
 
-		IF LENGTH(default_value) > 0 THEN
+		IF pg_catalog.LENGTH(default_value) > 0 THEN
 			default_clause := 'DEFAULT ' || default_value;
 		END IF;
 
@@ -367,7 +370,7 @@ BEGIN
 			default_clause
 		);
 
-		--RAISE INFO 'SQL: %', sql;
+		-- RAISE INFO 'SQL: %', sql;
 		EXECUTE sql;
 
 

@@ -336,7 +336,7 @@ PrepGeomCacheCleaner(GeomCache *cache)
 }
 
 static GeomCache*
-PrepGeomCacheAllocator()
+PrepGeomCacheAllocator(void)
 {
 	PrepGeomCache* prepcache = palloc(sizeof(PrepGeomCache));
 	memset(prepcache, 0, sizeof(PrepGeomCache));

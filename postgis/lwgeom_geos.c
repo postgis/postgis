@@ -265,15 +265,6 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_MaximumInscribedCircle);
 Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 30900
-
-	lwpgerror("The GEOS version this PostGIS binary "
-	          "was compiled against (%d) doesn't support "
-	          "'GEOSMaximumInscribedCircle' function (3.9.0+ required)",
-	          POSTGIS_GEOS_VERSION);
-	          PG_RETURN_NULL();
-
-#else /* POSTGIS_GEOS_VERSION >= 30900 */
 	GSERIALIZED* geom;
 	GSERIALIZED* center;
 	GSERIALIZED* nearest;
@@ -381,8 +372,6 @@ Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 	result = HeapTupleGetDatum(resultTuple);
 
 	PG_RETURN_DATUM(result);
-
-#endif /* POSTGIS_GEOS_VERSION >= 30900 */
 }
 
 
@@ -390,15 +379,6 @@ Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_LargestEmptyCircle);
 Datum ST_LargestEmptyCircle(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 30900
-
-	lwpgerror("The GEOS version this PostGIS binary "
-	          "was compiled against (%d) doesn't support "
-	          "'GEOSMaximumInscribedCircle' function (3.9.0+ required)",
-	          POSTGIS_GEOS_VERSION);
-	          PG_RETURN_NULL();
-
-#else /* POSTGIS_GEOS_VERSION >= 30900 */
 	GSERIALIZED* geom;
 	GSERIALIZED* boundary;
 	GSERIALIZED* center;
@@ -510,8 +490,6 @@ Datum ST_LargestEmptyCircle(PG_FUNCTION_ARGS)
 	result = HeapTupleGetDatum(resultTuple);
 
 	PG_RETURN_DATUM(result);
-
-#endif /* POSTGIS_GEOS_VERSION >= 30900 */
 }
 
 
@@ -761,17 +739,6 @@ Datum ST_Union(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_POINTER(result);
-}
-
-/* This is retained for backward ABI compatibility
- * with PostGIS < 3.1.0 */
-PG_FUNCTION_INFO_V1(symdifference);
-Datum symdifference(PG_FUNCTION_ARGS)
-{
-  PG_RETURN_DATUM(DirectFunctionCall2(
-     ST_SymDifference,
-     PG_GETARG_DATUM(0), PG_GETARG_DATUM(1)
-  ));
 }
 
 /**
@@ -1587,7 +1554,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	LWGEOM *lwgeom;
-	char result;
+	int8_t result;
 	GEOSGeom g1;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -1673,7 +1640,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	char *reason = NULL;
 	GEOSGeometry *geos_location = NULL;
 	LWGEOM *location = NULL;
-	char valid = 0;
+	int8_t valid = 0;
 	HeapTupleHeader result;
 	TupleDesc tupdesc;
 	HeapTuple tuple;
@@ -1751,7 +1718,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom_in;
-	int result;
+	int8_t result;
 
 	POSTGIS_DEBUG(2, "issimple called");
 
@@ -1777,7 +1744,7 @@ Datum isring(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	GEOSGeometry *g1;
-	int result;
+	int8_t result;
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
@@ -1807,7 +1774,7 @@ Datum isring(PG_FUNCTION_ARGS)
 }
 
 GSERIALIZED *
-GEOS2POSTGIS(GEOSGeom geom, char want3d)
+GEOS2POSTGIS(GEOSGeom geom, uint8_t want3d)
 {
 	LWGEOM *lwgeom;
 	GSERIALIZED *result;
@@ -2043,7 +2010,8 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 	ArrayType *array, *result;
 	int is3d = 0;
 	uint32 nelems, nclusters, i;
-	GEOSGeometry **geos_inputs, **geos_results;
+	GEOSGeometry **geos_inputs;
+	GEOSGeometry **geos_results;
 	int32_t srid = SRID_UNKNOWN;
 
 	/* Parameters used to construct a result array */
@@ -2706,7 +2674,7 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 	double radius = PG_GETARG_FLOAT8(2);
 	GEOSGeometry *buffer1 = NULL;
 	GEOSGeometry *geos1 = NULL, *geos2 = NULL;
-	char contained;
+	int8_t contained;
 
 	if (radius < 0.0)
 	{
@@ -2740,7 +2708,7 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(buffer1);
 	GEOSGeom_destroy(geos2);
 
-	if (contained == 2) HANDLE_GEOS_ERROR("GEOSContains");
+	if (contained == 2) HANDLE_GEOS_ERROR("GEOSCovers");
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);

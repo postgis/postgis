@@ -5,7 +5,7 @@ task:
   env:
     CIRRUS_CLONE_DEPTH: 1
     CCACHE_DIR: "/tmp/ccache_dir"
-    NCPU: 8
+    NCPU: 2
     MAKEJOBS: "-j${NCPU}"
     CC: "ccache clang"
     CXX: "ccache clang++"
@@ -24,11 +24,11 @@ task:
   pkg_cache:
     folder: /var/cache/pkg
     populate_script:
-      pkg fetch -udy autoconf automake bison cunit docbook gdal geos gmake iconv json-c libtool libxml2 libxslt pcre2 pkgconf postgresql17-contrib postgresql17-server proj protobuf-c sfcgal
+      pkg fetch -udy autoconf automake bison cunit docbook gdal geos gmake iconv json-c libtool libxml2 libxslt pkgconf postgresql17-contrib postgresql17-server proj protobuf-c sfcgal
   install_pkgs_script:
     - |
       env IGNORE_OSVERSION=yes pkg update -f
-      env IGNORE_OSVERSION=yes pkg install -y autoconf automake bison cunit docbook gdal geos gmake iconv json-c libtool libxml2 libxslt pcre2 pkgconf postgresql17-contrib postgresql17-server proj protobuf-c sfcgal
+      env IGNORE_OSVERSION=yes pkg install -y autoconf automake bison cunit docbook gdal geos gmake iconv json-c libtool libxml2 libxslt pkgconf postgresql17-contrib postgresql17-server proj protobuf-c sfcgal
       projsync --system-directory --source-id us_noaa
       projsync --system-directory --source-id ch_swisstopo
   ccache_setup_script:
@@ -41,7 +41,7 @@ task:
   build_script:
     - |
       ./autogen.sh
-      ./configure PKG_CONFIG=/usr/local/bin/pkgconf CFLAGS="-isystem /usr/local/include -Wall -fno-omit-frame-pointer -Werror" LDFLAGS="-L/usr/local/lib" --with-libiconv-prefix=/usr/local --without-gui --with-topology --without-raster --with-sfcgal=/usr/local/bin/sfcgal-config --with-address-standardizer --with-protobuf
+      ./configure PKG_CONFIG=/usr/local/bin/pkgconf CFLAGS="-isystem /usr/local/include -Wall -fno-omit-frame-pointer -Werror" LDFLAGS="-L/usr/local/lib" --with-libiconv-prefix=/usr/local --without-gui --with-topology --without-raster --with-sfcgal=/usr/local/bin/sfcgal-config --with-protobuf
       service postgresql oneinitdb
       service postgresql onestart
       su postgres -c "createuser -s `whoami`"
@@ -50,11 +50,33 @@ task:
       ccache -s
   test_script:
     - |
-      gmake ${MAKEJOBS} check RUNTESTFLAGS="-v --extension --dumprestore" || { service postgresql onestop; exit 1; }
+      show_regression_diffs() {
+        local tmpdir="${PGIS_REG_TMPDIR:-/tmp/pgis_reg}"
+        local found=0
+        for f in "${tmpdir}"/*_diff; do
+          [ -f "${f}" ] || continue
+          if [ "${found}" -eq 0 ]; then
+            echo "---- BEGIN REGRESSION DIFFS (${tmpdir}) ----"
+          fi
+          found=1
+          echo "---- ${f} ----"
+          cat "${f}"
+        done
+        if [ "${found}" -eq 0 ]; then
+          echo "No regression diff files found in ${tmpdir}"
+        else
+          echo "---- END REGRESSION DIFFS ----"
+        fi
+      }
+      gmake ${MAKEJOBS} check RUNTESTFLAGS="-v --extension --dumprestore" || {
+        show_regression_diffs
+        service postgresql onestop
+        exit 1
+      }
       service postgresql onestop
   freebsd_instance:
     cpu: ${NCPU}
-    memory: 24G
+    memory: 8G
   matrix:
     - name: 14.3-RELEASE
       freebsd_instance:
@@ -78,13 +100,32 @@ task:
   setup_script:
     - |
       brew update
-      brew install ccache autoconf automake libtool pkg-config gdal geos icu4c json-c libpq libxml2 pcre2 proj protobuf-c sfcgal cunit docbook docbook-xsl postgresql@${PG} gettext
+      brew install ccache autoconf automake libtool pkg-config gdal geos icu4c json-c libpq libxml2 proj protobuf-c sfcgal cunit docbook docbook-xsl postgresql@${PG} gettext
       brew link --force gettext
       ccache --max-size=$CCACHE_MAXSIZE
       sudo ln -sfn ${HOMEBREW_PREFIX}/opt/postgresql@${PG}/bin/postgres /usr/local/bin/postgres
 
   test_script:
     - |
+      show_regression_diffs() {
+        local tmpdir="${PGIS_REG_TMPDIR:-/tmp/pgis_reg}"
+        local found=0
+        for f in "${tmpdir}"/*_diff; do
+          [ -f "${f}" ] || continue
+          if [ "${found}" -eq 0 ]; then
+            echo "---- BEGIN REGRESSION DIFFS (${tmpdir}) ----"
+          fi
+          found=1
+          echo "---- ${f} ----"
+          cat "${f}"
+        done
+        if [ "${found}" -eq 0 ]; then
+          echo "No regression diff files found in ${tmpdir}"
+        else
+          echo "---- END REGRESSION DIFFS ----"
+        fi
+      }
+
       export PGCONFIG="${HOMEBREW_PREFIX}/opt/postgresql@${PG}/bin/pg_config"
       export CFLAGS="-I${HOMEBREW_PREFIX}/opt/gettext/include \
                      -I${HOMEBREW_PREFIX}/opt/postgresql@${PG}/include \
@@ -99,13 +140,16 @@ task:
                   --with-topology \
                   --without-raster \
                   --with-sfcgal \
-                  --with-address-standardizer \
                   --with-protobuf \
                   --with-pgconfig=${PGCONFIG}
 
       brew services start postgresql@${PG}
       make -j$(sysctl -n hw.logicalcpu) || { brew services stop postgresql@${PG}; exit 1; }
-      make -j$(sysctl -n hw.logicalcpu) check || { brew services stop postgresql@${PG}; exit 1; }
+      make -j$(sysctl -n hw.logicalcpu) check || {
+        show_regression_diffs
+        brew services stop postgresql@${PG}
+        exit 1
+      }
       brew services stop postgresql@${PG}
 
   macos_cache:

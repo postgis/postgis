@@ -22,7 +22,7 @@ static void assert_all_results_found(LWGEOM** results, size_t num_outputs, LWGEO
 {
 	size_t i, j;
 
-	char found_equal = 0;
+	uint8_t found_equal = 0;
 	for (i = 0; i < num_outputs; i++)
 	{
 		for (j = 0; j < num_expected_outputs; j++)
@@ -271,7 +271,7 @@ static void do_dbscan_test(struct dbscan_test_info test)
 	LWGEOM** geoms = WKTARRAY2LWGEOM(test.wkt_inputs, test.num_geoms);
 	UNIONFIND* uf = UF_create(test.num_geoms);
 	uint32_t* ids;
-	char* in_a_cluster;
+	uint8_t *in_a_cluster;
 	uint32_t i;
 
 	union_dbscan(geoms, test.num_geoms, uf, test.eps, test.min_points, &in_a_cluster);

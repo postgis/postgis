@@ -18,8 +18,8 @@ SELECT '#2532.2', NULL::geometry @ null::raster;
 -- added OFFSET 0 to force PostgreSQL 12+ to materialize the cte
 WITH data AS ( SELECT '#2911' l, ST_Metadata(ST_Rescale(
  ST_AddBand(
-  ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
-  1, '8BUI', 0, 0
+	ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
+	1, '8BUI', 0, 0
  ),
  2.0,
  -2.0
@@ -37,38 +37,38 @@ DROP TABLE IF EXISTS test_raster_scale_big;
 DROP TABLE IF EXISTS test_raster_scale_small;
 
 CREATE TABLE test_raster_scale_regular (
-  rid integer,
- 	rast raster
+	rid integer,
+	rast raster
 );
 
 CREATE TABLE test_raster_scale_big (
-  rid integer,
- 	rast raster
+	rid integer,
+	rast raster
 );
 
 CREATE TABLE test_raster_scale_small (
- 	rid integer,
- 	rast raster
+	rid integer,
+	rast raster
 );
 
 CREATE OR REPLACE FUNCTION make_test_raster(
-  table_suffix text,
+	table_suffix text,
 	rid integer,
-  scale_x double precision,
-  scale_y double precision DEFAULT 1.0
+	scale_x double precision,
+	scale_y double precision DEFAULT 1.0
 )
 RETURNS void
 AS $$
 DECLARE
 	rast raster;
- 	width integer := 2;
- 	height integer := 2;
- 	ul_x double precision := 0;
- 	ul_y double precision := 0;
- 	skew_x double precision := 0;
- 	skew_y double precision := 0;
- 	initvalue double precision := 1;
- 	nodataval double precision := 0;
+	width integer := 2;
+	height integer := 2;
+	ul_x double precision := 0;
+	ul_y double precision := 0;
+	skew_x double precision := 0;
+	skew_y double precision := 0;
+	initvalue double precision := 1;
+	nodataval double precision := 0;
 BEGIN
 	rast := ST_MakeEmptyRaster(width, height, ul_x, ul_y, scale_x, scale_y, skew_x, skew_y, 0);
 	rast := ST_AddBand(rast, 1, '8BUI', initvalue, nodataval);
@@ -83,7 +83,7 @@ SELECT make_test_raster('regular', 1, 1.0000001);
 SELECT make_test_raster('regular', 2, 0.9999999);
 SELECT AddRasterConstraints('test_raster_scale_regular'::name, 'rast'::name, 'scale_x', 'scale_y');
 SELECT r_table_name, r_raster_column, scale_x, scale_y FROM raster_columns
-  WHERE  r_raster_column = 'rast' AND r_table_name = 'test_raster_scale_regular';
+	WHERE  r_raster_column = 'rast' AND r_table_name = 'test_raster_scale_regular';
 
 -- Issues enforce_scaley_rast constraint violation
 SELECT make_test_raster('regular', 3, 1.001, 0.9999999);
@@ -91,7 +91,7 @@ SELECT make_test_raster('regular', 3, 1.001, 0.9999999);
 SELECT make_test_raster('big', 0, -1234567890123456789.0);
 SELECT AddRasterConstraints('test_raster_scale_big'::name, 'rast'::name, 'scale_x', 'scale_y');
 SELECT r_table_name, r_raster_column, scale_x, scale_y FROM raster_columns
-  WHERE  r_raster_column = 'rast' AND r_table_name = 'test_raster_scale_big';
+	WHERE  r_raster_column = 'rast' AND r_table_name = 'test_raster_scale_big';
 
 -- Issues enforce_scalex_rast constraint violation
 SELECT make_test_raster('big', 1, -12345678901234567890.0);
@@ -101,7 +101,7 @@ SELECT make_test_raster('small', 1, 0.000011);
 SELECT make_test_raster('small', 2, 0.00000999);
 SELECT AddRasterConstraints('test_raster_scale_small'::name, 'rast'::name, 'scale_x', 'scale_y');
 SELECT r_table_name, r_raster_column, scale_x, scale_y FROM raster_columns
-  WHERE  r_raster_column = 'rast' AND r_table_name = 'test_raster_scale_small';
+	WHERE  r_raster_column = 'rast' AND r_table_name = 'test_raster_scale_small';
 
 -- Issues enforce_scaley_rast constraint violation
 SELECT make_test_raster('small', 3, 0.00001, 1.00001);
@@ -153,10 +153,12 @@ FROM (VALUES ('A0006', 300), ('A0006', 302)) t(a,b);
 SELECT '#4770.b',
  ST_Union(NULL::raster) OVER (PARTITION BY a ORDER BY b)
 FROM (VALUES ('A0006', 300),
-	         ('A0006', 302)) t(a, b);
+					 ('A0006', 302)) t(a, b);
 
 SELECT '#4724.a', ST_SummaryStatsAgg(NULL::raster, NULL::int4, NULL::bool)
  OVER (ORDER BY q) FROM generate_series(1,2) AS e(q);
 
 SELECT '#4724.b', ST_SummaryStatsAgg(NULL::raster, NULL::int4, NULL::bool)
  FROM generate_series(1,2) AS e(q);
+
+SELECT '#5854',Round(ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 430, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015))::numeric,3);

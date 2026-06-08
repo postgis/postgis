@@ -17,7 +17,6 @@ sh autogen.sh
   --with-topology \
   --with-raster \
   --with-sfcgal=/usr/local/bin/sfcgal-config \
-  --with-address-standardizer \
   --with-protobuf \
   --with-wagyu
 

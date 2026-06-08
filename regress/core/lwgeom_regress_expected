@@ -42,11 +42,6 @@ BoundingDiagonal7  |SRID=3857;LINESTRINGM(4 4 0,5 4 1)
 BoundingDiagonal7.1|SRID=3857;LINESTRINGM(4 4 0,5 4 1)
 BoundingDiagonal7.2|SRID=3857;LINESTRING(4 4 0,5 4 1)
 BoundingDiagonal7.3|SRID=3857;LINESTRING(4 4 0,5 4 1)
-ST_Azimuth_regular|2.3562
-ST_Azimuth_same_point|
-ERROR:  Operation on mixed SRID geometries
-ERROR:  Argument must be POINT geometries
-ERROR:  parse error - invalid geometry
 ST_Angle_4_pts|4.712389
 ST_Angle_4_pts|0.785398
 ST_Angle_3_pts|1.570796

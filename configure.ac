@@ -81,6 +81,15 @@ dnl
 PICFLAGS="$lt_prog_compiler_pic"
 AC_SUBST([PICFLAGS])
 
+dnl
+dnl PostgreSQL extension modules can call exported PostGIS entry points across
+dnl translation units. Disable semantic interposition when supported so the
+dnl compiler can optimize those same-DSO calls directly.
+dnl
+MODULE_CFLAGS=""
+_LT_COMPILER_OPTION([if $compiler supports -fno-semantic-interposition], [_cv_nosemanticinterposition], [-fno-semantic-interposition], [], [MODULE_CFLAGS="$MODULE_CFLAGS -fno-semantic-interposition"], [])
+AC_SUBST([MODULE_CFLAGS])
+
 _LT_COMPILER_OPTION([if $compiler supports -fno-math-errno], [_cv_nomatherrno], [-fno-math-errno], [], [CFLAGS="$CFLAGS -fno-math-errno"], [])
 _LT_COMPILER_OPTION([if $compiler supports -fno-signed-zeros], [_cv_nosignedzeros], [-fno-signed-zeros], [], [CFLAGS="$CFLAGS -fno-signed-zeros"], [])
 _LT_COMPILER_OPTION([if $compiler supports -std=gnu11], [_cv_std], -std=gnu11, [], [CFLAGS="-std=gnu11 $CFLAGS"], [])
@@ -622,6 +631,15 @@ if test "x$SUPPORT_POSTGRESQL" = "xyes"; then dnl {
 
   AC_SUBST([PGSQL_BINDIR])
 
+  dnl Keep explicit --bindir, --exec-prefix, and --prefix overrides, but
+  dnl default utilities to the PostgreSQL bindir when the autoconf install
+  dnl directories were left entirely untouched.
+  if test "x$bindir" = 'x${exec_prefix}/bin' \
+     && test "x$exec_prefix" = xNONE \
+     && test "x$prefix" = xNONE; then
+    bindir="$PGSQL_BINDIR"
+  fi
+
   dnl Extract the share directory
   PGSQL_SHAREDIR=`"$PG_CONFIG" --sharedir`
 
@@ -670,6 +688,7 @@ if test "$prefix" != "NONE" -a "x$PG_CONFIG" != "xno"; then
   AC_MSG_RESULT([  ignore the --prefix. For your info, using the values determined from ])
   AC_MSG_RESULT([  $PG_CONFIG we will be installing:   ])
   AC_MSG_RESULT([    * postgis shared library in $PGSQL_LIBDIR ])
+  AC_MSG_RESULT([    * postgis utilities in $bindir ])
   AC_MSG_RESULT([    * postgis SQL files in $PGSQL_SHAREDIR/contrib/postgis-$POSTGIS_MAJOR_VERSION.$POSTGIS_MINOR_VERSION ])
   AC_MSG_RESULT([------------------------------------------------------------------------])
 fi
@@ -777,7 +796,7 @@ dnl ===========================================================================
 dnl
 dnl Set the min version number here
 dnl
-GEOS_MIN_VERSION=3.8.0
+GEOS_MIN_VERSION=3.10.0
 GEOS_MIN_VERSION_NUMERIC=`echo $GEOS_MIN_VERSION | $PERL -nle 'printf "%d%02d%02d\n",$1,$2,$3 if /(\d+)\.(\d+)\.(\d+)/'`
 
 AC_ARG_WITH([geosconfig],
@@ -903,6 +922,18 @@ AC_SUBST([POSTGIS_GEOS_VERSION])
 AC_SUBST([GEOS_LDFLAGS])
 AC_SUBST([GEOS_CPPFLAGS])
 
+dnl ===========================================================================
+dnl GNU Multiple Precision Library support
+dnl ===========================================================================
+
+PKG_CHECK_MODULES([GMP], [gmp],
+    [have_libgmp=yes], [have_libgmp=no])
+
+AS_IF([test "x$have_libgmp" = "xyes"],
+    [AC_DEFINE([HAVE_LIBGMP], [1], [Define if libgmp is available])
+     AC_SUBST([GMP_CFLAGS])
+     AC_SUBST([GMP_LIBS])],
+		[AC_MSG_ERROR([Could not find required libgmp])])
 
 dnl ===========================================================================
 dnl SFCGAL library support
@@ -1403,130 +1434,10 @@ AC_SUBST([POSTGIS_BUILD_DATE])
 AC_SUBST([POSTGIS_SCRIPTS_VERSION])
 
 
-dnl ====================================
-dnl address standardizer stuff
-dnl ====================================
-AC_ARG_WITH([address-standardizer],
-    [AS_HELP_STRING([--without-address-standardizer],
-                    [Disable the address_standardizer extension])],
-    [], [])
-
-HAVE_PCRE1=no
-HAVE_PCRE2=no
-PCRE_SUPPORT="not found"
-ADDRESS_STANDARDIZER=""
-
-if test "x$with_address_standardizer" != "xno"; then
-    dnl ===========================================================================
-    dnl Detect the version of PCRE installed
-    dnl ===========================================================================
-
-
-    AC_ARG_WITH([pcredir],
-        [AS_HELP_STRING([--with-pcredir=PATH], [specify the PCRE installation directory])],
-        [PCREDIR="$withval"], [PCREDIR=""])
-
-    if test ! "x$PCREDIR" = "x"; then
-        dnl Make sure that the directory exists
-        if test "x$PCREDIR" = "xyes"; then
-            AC_MSG_ERROR([you must specify a parameter to --with-pcredir, e.g. --with-pcredir=/path/to])
-        else
-            if test -d "$PCREDIR"; then
-                AC_MSG_CHECKING([for PCRE in $PCREDIR...])
-
-                AC_CHECK_FILE("$PCREDIR/include/pcre2.h",
-                    [
-                        PCRE_CPPFLAGS="-I$PCREDIR/include"
-                        PCRE_LDFLAGS="-L$PCREDIR/lib -lpcre2-8"
-                        HAVE_PCRE2=yes
-                        ADDRESS_STANDARDIZER="address_standardizer"
-                        AC_MSG_RESULT([found pcre2.h])
-                    ],
-                    [
-                        AC_CHECK_FILE("$PCREDIR/include/pcre.h",
-                        [
-	                          PCRE_CPPFLAGS="-I$PCREDIR/include"
-	                          PCRE_LDFLAGS="-L$PCREDIR/lib -lpcre"
-	                          HAVE_PCRE1=yes
-	                          ADDRESS_STANDARDIZER="address_standardizer"
-                            AC_MSG_RESULT([found pcre.h])
-                        ],
-                        [
-                            AC_MSG_RESULT([no])
-                            AC_MSG_ERROR(["Could not find PCRE header in $PCREDIR/include"])
-                        ])
-                    ])
-            else
-                AC_MSG_ERROR([the --with-pcredir directory "$PCREDIR" cannot be found])
-            fi
-        fi
-    elif test ! -z "$PKG_CONFIG"; then
-        PKG_CHECK_MODULES([PCRE2], [libpcre2-8], [
-            PCRE_CPPFLAGS="$PCRE2_CFLAGS"
-            PCRE_LDFLAGS="$PCRE2_LIBS"
-            ADDRESS_STANDARDIZER="address_standardizer"
-            HAVE_PCRE2=yes
-        ],[
-            PKG_CHECK_MODULES([PCRE], [libpcre], [
-                PCRE_CPPFLAGS="$PCRE_CFLAGS"
-                PCRE_LDFLAGS="$PCRE_LIBS"
-                ADDRESS_STANDARDIZER="address_standardizer"
-                HAVE_PCRE1=yes
-            ],[
-                ADDRESS_STANDARDIZER=""
-            ])
-        ])
-    fi
-
-    if test "x$HAVE_PCRE2" = "xyes"; then
-        PCRE_SUPPORT="Version 2"
-        PCRE_VERSION=2
-    elif test "x$HAVE_PCRE1" = "xyes"; then
-        PCRE_SUPPORT="Version 1"
-        PCRE_VERSION=1
-    else
-        ADDRESS_STANDARDIZER=""
-        PCRE_SUPPORT="not found"
-        PCRE_VERSION=0
-        AC_MSG_RESULT([ADDRESS_STANDARDIZER support: disabled])
-    fi
-
-    AC_SUBST([PCRE_CPPFLAGS])
-    AC_SUBST([PCRE_LDFLAGS])
-    AC_SUBST([PCRE_LDFLAGS])
-    AC_SUBST([PCRE_VERSION])
-    ADDRESS_STANDARDIZER_MAKEFILE_LIST=extensions/address_standardizer/Makefile
-
-
-else
-    ADDRESS_STANDARDIZER=""
-    AC_MSG_RESULT([ADDRESS_STANDARDIZER support: disabled])
-    ADDRESS_STANDARDIZER_MAKEFILE_LIST=""
-fi
-
-AC_SUBST([ADDRESS_STANDARDIZER])
-
-dnl ====================================
-dnl tiger_geocoder stuff
-dnl ====================================
-AC_ARG_WITH([tiger],
-    [AS_HELP_STRING([--without-tiger],
-                    [Disable the tiger geocoder extension])],
-    [], [])
-
-if test "x$with_tiger" != "xno"; then
-    TIGER="tiger"
-    AC_MSG_RESULT([TIGER: Tiger geocoder support requested])
-else
-    AC_MSG_RESULT([TIGER: Tiger geocoder support disabled])
-fi
-
-AC_SUBST([TIGER])
-
-CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $PROTOBUF_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $PCRE_CPPFLAGS $CPPFLAGS"
+CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $PROTOBUF_CPPFLAGS $XML2_CPPFLAGS $GMP_CFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
 
-SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS $JSON_LDFLAGS $PROTOBUF_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS $EXCLUDELIBS_LDFLAGS $LDFLAGS"
+SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS $JSON_LDFLAGS $PROTOBUF_LDFLAGS $XML2_LDFLAGS $GMP_LIBS $SFCGAL_LDFLAGS $EXCLUDELIBS_LDFLAGS $LDFLAGS"
 AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
@@ -1539,7 +1450,6 @@ AC_ARG_WITH([topology],
     [], [])
 
 if test "x$with_topology" != "xno"; then
-
     TOPOLOGY="topology"
     AC_MSG_RESULT([TOPOLOGY: Topology support requested])
 else
@@ -1774,7 +1684,7 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
     AC_SUBST([WAGYU_LIB])
 
     dnl ============================================================
-    dnl We force  to use the same compiler as Postgresql
+    dnl Prefer user/toolchain CXX, falling back to PostgreSQL compiler when needed.
     dnl ============================================================
     CXX_SAVE="$CXX"
     CC_SAVE="$CC"
@@ -1784,7 +1694,13 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
     LDFLAGS_SAVE="$LDFLAGS"
     LIBS_SAVE="$LIBS"
 
-    WAGYU_CXX=`"$PG_CONFIG" --cc`
+    dnl Prefer the requested C++ toolchain when provided (for example by OSS-Fuzz),
+    dnl and only fall back to PostgreSQL's compiler when CXX is unset.
+    if test "x$CXX_SAVE" != "x"; then
+        WAGYU_CXX="$CXX_SAVE"
+    else
+        WAGYU_CXX=`"$PG_CONFIG" --cc`
+    fi
     CPPFLAGS="-x c++"
     CFLAGS=""
     LDFLAGS=""
@@ -1847,7 +1763,7 @@ FLATGEOBUF_LIB=libflatgeobuf.la
 AC_SUBST([FLATGEOBUF_LIB])
 
 dnl ============================================================
-dnl We force  to use the same compiler as Postgresql
+dnl Prefer user/toolchain CXX, falling back to PostgreSQL compiler when needed.
 dnl ============================================================
 CXX_SAVE="$CXX"
 CC_SAVE="$CC"
@@ -1857,7 +1773,11 @@ CPPFLAGS_SAVE="$CPPFLAGS"
 LDFLAGS_SAVE="$LDFLAGS"
 LIBS_SAVE="$LIBS"
 
-FLATGEOBUF_CXX=`"$PG_CONFIG" --cc`
+if test "x$CXX_SAVE" != "x"; then
+	FLATGEOBUF_CXX="$CXX_SAVE"
+else
+	FLATGEOBUF_CXX=`"$PG_CONFIG" --cc`
+fi
 CPPFLAGS="-x c++"
 CFLAGS=""
 LDFLAGS=""
@@ -1937,7 +1857,6 @@ AC_CONFIG_FILES([GNUmakefile
    extensions/Makefile
    extensions/postgis/Makefile
    extensions/postgis_topology/Makefile
-   extensions/postgis_tiger_geocoder/Makefile
    $ADDRESS_STANDARDIZER_MAKEFILE_LIST
    liblwgeom/Makefile
    liblwgeom/cunit/Makefile
@@ -2013,6 +1932,8 @@ fi
 if test "x$SUPPORT_POSTGRESQL" = "xyes"; then
   AC_MSG_RESULT([  PostgreSQL config:    ${PG_CONFIG}])
   AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_FULL_VERSION}])
+  AC_MSG_RESULT([  PostgreSQL bindir:    ${PGSQL_BINDIR}])
+  AC_MSG_RESULT([  PostGIS utilities:    ${bindir}])
 else
   AC_MSG_RESULT([  PostgreSQL support:   DISABLED])
 fi
@@ -2026,7 +1947,6 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
   AC_MSG_RESULT([  protobuf-c version:   ${PROTOC_VERSION}])
 fi
 
-AC_MSG_RESULT([  PCRE support:         ${PCRE_SUPPORT}])
 AC_MSG_RESULT([  Perl:                 ${PERL}])
 
 AC_MSG_RESULT()
@@ -2055,18 +1975,6 @@ if test "x$SFCGAL" = "xsfcgal"; then
     AC_MSG_RESULT([  SFCGAL support:                     enabled])
 else
     AC_MSG_RESULT([  SFCGAL support:                     disabled])
-fi
-
-if test "x$ADDRESS_STANDARDIZER" = "xaddress_standardizer"; then
-    AC_MSG_RESULT([  Address Standardizer support:       enabled])
-else
-    AC_MSG_RESULT([  Address Standardizer support:       disabled])
-fi
-
-if test "x$TIGER" = "xtiger"; then
-    AC_MSG_RESULT([  PostGIS Tiger Geocoder:                   enabled])
-else
-    AC_MSG_RESULT([  PostGIS Tiger Geocoder:                   disabled])
 fi
 
 AC_MSG_RESULT()
@@ -2110,13 +2018,4 @@ if test ! -z "$PKG_CONFIG"; then
         AC_MSG_WARN([ | JSONC_LIBS to avoid the need to call pkg-config.                         |])
     fi
 
-    if test ! "x$PCREDIR" = "x"; then
-        AC_MSG_WARN()
-        AC_MSG_WARN([ | You are building using --with-pcredir. This option isn't standard and    |])
-        AC_MSG_WARN([ | might be incompatible with future releases of libpcre.                   |])
-        AC_MSG_WARN([ | You can instead adjust the PKG_CONFIG_PATH environment variable if you   |])
-        AC_MSG_WARN([ | installed software in a non-standard prefix.                             |])
-        AC_MSG_WARN([ | Alternatively, you may set the environment variables PCRE_CFLAGS and     |])
-        AC_MSG_WARN([ | PCRE_LIBS to avoid the need to call pkg-config.                          |])
-    fi
 fi

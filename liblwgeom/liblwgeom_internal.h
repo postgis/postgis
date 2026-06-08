@@ -72,6 +72,21 @@
 #define STR_IEQUALS(A, B) (strcasecmp((A), (B)) == 0)
 #define STR_ISTARTS(A, B) (strncasecmp((A), (B), strlen((B))) == 0)
 
+#ifndef FALLTHROUGH
+    #if defined(__cplusplus) && __cplusplus >= 201703L
+        #define FALLTHROUGH [[fallthrough]]
+    #elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
+        #define FALLTHROUGH [[fallthrough]]
+    #elif defined(__clang__)
+        #define FALLTHROUGH __attribute__((fallthrough))
+    #elif defined(__GNUC__) && __GNUC__ >= 7
+        #define FALLTHROUGH __attribute__((fallthrough))
+    #elif defined(_MSC_VER) && _MSC_VER >= 1910
+        #define FALLTHROUGH [[fallthrough]]
+    #else
+        #define FALLTHROUGH ((void)0)
+    #endif
+#endif
 
 /*
 * this will change to NaN when I figure out how to
@@ -460,7 +475,6 @@ int lw_arc_is_pt(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
 int lw_pt_on_segment(const POINT2D* p1, const POINT2D* p2, const POINT2D* p);
 double lw_seg_length(const POINT2D *A1, const POINT2D *A2);
 double lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
-int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
 int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt);
 int ptarrayarc_contains_point(const POINTARRAY *pa, const POINT2D *pt);
 int ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int check_closed, int *winding_number);

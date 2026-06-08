@@ -163,6 +163,38 @@ Datum LWGEOM_ChaikinSmoothing(PG_FUNCTION_ARGS)
 }
 
 
+PG_FUNCTION_INFO_V1(LWGEOM_CatmullRomSmoothing);
+Datum LWGEOM_CatmullRomSmoothing(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *result;
+	int type = gserialized_get_type(geom);
+	LWGEOM *in, *out;
+	int n_segments = 5;
+
+	if (type == POINTTYPE || type == MULTIPOINTTYPE)
+		PG_RETURN_POINTER(geom);
+
+	if ((PG_NARGS() > 1) && (!PG_ARGISNULL(1)))
+		n_segments = PG_GETARG_INT32(1);
+
+	if (n_segments < 2)
+		elog(ERROR, "nSegments must be >= 2: %s", __func__);
+
+	in = lwgeom_from_gserialized(geom);
+	out = lwgeom_catmull_rom(in, n_segments);
+	if (!out) PG_RETURN_NULL();
+
+	/* COMPUTE_BBOX TAINTING */
+	if (in->bbox) lwgeom_add_bbox(out);
+
+	result = geometry_serialize(out);
+	lwgeom_free(out);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(result);
+}
+
+
 /***********************************************************************
  * --strk@kbt.io;
  ***********************************************************************/

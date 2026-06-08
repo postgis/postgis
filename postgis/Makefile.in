@@ -146,7 +146,7 @@ OBJS=$(PG_OBJS)
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
 # older version of PostGIS, rather than with the static liblwgeom.a
 # supplied with newer versions of PostGIS
-PG_CPPFLAGS += -I@top_srcdir@/liblwgeom -I@top_builddir@/liblwgeom @CFLAGS@ -I@top_srcdir@/libpgcommon $(FLATGEOBUF_INCLUDE) $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) @CPPFLAGS@ @PICFLAGS@
+PG_CPPFLAGS += -I@top_srcdir@/liblwgeom -I@top_builddir@/liblwgeom @CFLAGS@ @MODULE_CFLAGS@ -I@top_srcdir@/libpgcommon $(FLATGEOBUF_INCLUDE) $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) @CPPFLAGS@ @PICFLAGS@
 SHLIB_LINK_F = $(WAYGU_LIB) $(FLATGEOBUF_LIB) ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
 
 # Extra files to remove during 'make clean'
@@ -242,13 +242,14 @@ endif
 #
 %.sql: %.sql.in
 	$(SQLPP) -I@top_srcdir@/libpgcommon -I@builddir@ $< > $@.tmp
-	grep -v '^#' $@.tmp | $(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
+	grep -v '^#' $@.tmp | \
+		$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" | \
+		$(PERL) -lpe "s'@extschema@\.''g" > $@
 	rm -f $@.tmp
 
 #this is redundant but trying to fold in with extension just hangs
 postgis_upgrade.sql.in: postgis.sql ../utils/create_upgrade.pl
 	$(PERL) @top_srcdir@/utils/create_upgrade.pl $< > $@
-
 
 postgis_upgrade.sql: common_before_upgrade.sql postgis_before_upgrade.sql postgis_upgrade.sql.in postgis_after_upgrade.sql common_after_upgrade.sql
 	echo "BEGIN;" > $@

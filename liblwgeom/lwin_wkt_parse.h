@@ -86,7 +86,7 @@ extern int wkt_yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 119 "lwin_wkt_parse.y"
+#line 118 "lwin_wkt_parse.y"
 
 	int integervalue;
 	double doublevalue;

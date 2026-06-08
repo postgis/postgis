@@ -24,7 +24,7 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_raster_geos_overlaps() {
+static void test_raster_geos_overlaps(void) {
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -499,7 +499,7 @@ static void test_raster_geos_overlaps() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_geos_touches() {
+static void test_raster_geos_touches(void) {
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -1026,7 +1026,7 @@ static void test_raster_geos_touches() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_geos_contains() {
+static void test_raster_geos_contains(void) {
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -1553,7 +1553,7 @@ static void test_raster_geos_contains() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_geos_contains_properly() {
+static void test_raster_geos_contains_properly(void) {
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -2080,7 +2080,7 @@ static void test_raster_geos_contains_properly() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_geos_covers() {
+static void test_raster_geos_covers(void) {
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -2607,7 +2607,7 @@ static void test_raster_geos_covers() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_geos_covered_by() {
+static void test_raster_geos_covered_by(void) {
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -3134,7 +3134,7 @@ static void test_raster_geos_covered_by() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_within_distance() {
+static void test_raster_within_distance(void) {
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -3696,7 +3696,7 @@ static void test_raster_within_distance() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_fully_within_distance() {
+static void test_raster_fully_within_distance(void) {
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -4258,7 +4258,7 @@ static void test_raster_fully_within_distance() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_intersects() {
+static void test_raster_intersects(void) {
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band1;
@@ -4725,7 +4725,7 @@ static void test_raster_intersects() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_same_alignment() {
+static void test_raster_same_alignment(void) {
 	rt_raster rast1;
 	rt_raster rast2;
 	int rtn;

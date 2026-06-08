@@ -8344,11 +8344,9 @@ CREATE OR REPLACE VIEW raster_columns AS
 	FROM
 		pg_class c,
 		pg_attribute a,
-		pg_type t,
 		pg_namespace n
-	WHERE t.typname = 'raster'::name
-		AND a.attisdropped = false
-		AND a.atttypid = t.oid
+	WHERE a.attisdropped = false
+		AND a.atttypid = 'raster'::regtype
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
 		AND c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"] )

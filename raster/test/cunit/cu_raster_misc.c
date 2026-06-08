@@ -24,7 +24,7 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_raster_cell_to_geopoint() {
+static void test_raster_cell_to_geopoint(void) {
 	rt_raster raster;
 	int rtn;
 	double xw, yw;
@@ -43,7 +43,7 @@ static void test_raster_cell_to_geopoint() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_geopoint_to_cell() {
+static void test_raster_geopoint_to_cell(void) {
 	rt_raster raster;
 	int rtn;
 	double xr, yr;
@@ -62,7 +62,7 @@ static void test_raster_geopoint_to_cell() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_from_two_rasters() {
+static void test_raster_from_two_rasters(void) {
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_raster rast = NULL;
@@ -175,7 +175,7 @@ static void test_raster_from_two_rasters() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_compute_skewed_raster() {
+static void test_raster_compute_skewed_raster(void) {
 	rt_envelope extent;
 	rt_raster rast;
 	double skew[2] = {0.25, 0.25};
@@ -191,17 +191,14 @@ static void test_raster_compute_skewed_raster() {
 	rast = rt_raster_compute_skewed_raster(
 		extent,
 		skew,
-		scale,
-		0
+		scale
 	);
 
 	CU_ASSERT(rast != NULL);
-	/* Check disabled: See https://trac.osgeo.org/postgis/ticket/4379
-	 * CU_ASSERT_EQUAL(rt_raster_get_width(rast), 2);
-	 */
+	CU_ASSERT_EQUAL(rt_raster_get_width(rast), 3);
 	CU_ASSERT_EQUAL(rt_raster_get_height(rast), 3);
-	CU_ASSERT_DOUBLE_EQUAL(rt_raster_get_x_offset(rast), -0.5, DBL_EPSILON);
-	CU_ASSERT_DOUBLE_EQUAL(rt_raster_get_y_offset(rast), 0, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rt_raster_get_x_offset(rast), -8.0/17.0, 1e-8);
+	CU_ASSERT_DOUBLE_EQUAL(rt_raster_get_y_offset(rast), -2.0/17.0, 1e-8);
 
 	cu_free_raster(rast);
 }

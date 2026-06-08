@@ -357,6 +357,76 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
 
   </refentry>
 
+  <refentry xml:id="ST_CoverageEdges">
+    <refnamediv>
+      <refname>ST_CoverageEdges</refname>
+
+      <refpurpose>Computes the unique edges of a polygonal coverage.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+          <funcdef>geometry <function>ST_CoverageEdges</function></funcdef>
+          <paramdef><type>geometry </type>
+            <parameter>geom</parameter></paramdef>
+          <paramdef choice="opt"><type>integer </type>
+            <parameter>edgetype = 0</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+          <funcdef>geometry <function>ST_CoverageEdges</function></funcdef>
+          <paramdef><type>geometry[] </type>
+            <parameter>geoms</parameter></paramdef>
+          <paramdef choice="opt"><type>integer </type>
+            <parameter>edgetype = 0</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+      <para>Returns a MultiLineString representing the unique edges of a polygonal coverage.
+      A polygonal coverage is a set of non-overlapping polygons where adjacent polygons have matching vertices along shared edges.
+      </para>
+      <para>The <parameter>edgetype</parameter> parameter can be used to select which edges are returned:
+        <itemizedlist>
+          <listitem><para><emphasis role="bold">0 (ALL)</emphasis> - all unique edges (default)</para></listitem>
+          <listitem><para><emphasis role="bold">1 (EXTERIOR)</emphasis> - only exterior edges (non-shared)</para></listitem>
+          <listitem><para><emphasis role="bold">2 (INTERIOR)</emphasis> - only interior edges (shared)</para></listitem>
+        </itemizedlist>
+      </para>
+
+      <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+      <para role="geos_requirement" conformance="3.15.0">Requires GEOS &gt;= 3.15.0</para>
+    </refsection>
+
+    <refsection>
+      <title>Examples</title>
+      <programlisting>
+-- Get all unique edges of a coverage
+SELECT ST_AsText(ST_CoverageEdges(ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))')));
+--------------------------------------
+MULTILINESTRING((0 0, 10 0), (10 0, 20 0), (20 0, 20 10), (20 10, 10 10), (10 10, 0 10), (0 10, 0 0), (10 0, 10 10))
+
+-- Get only interior (shared) edges
+SELECT ST_AsText(ST_CoverageEdges(ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))'), 2));
+--------------------------------------
+MULTILINESTRING((10 0, 10 10))
+      </programlisting>
+    </refsection>
+
+    <refsection>
+      <title>See Also</title>
+      <para>
+        <xref linkend="ST_CoverageInvalidEdges"/>,
+        <xref linkend="ST_CoverageSimplify"/>,
+        <xref linkend="ST_CoverageUnion"/>
+      </para>
+    </refsection>
+
+  </refentry>
+
   <refentry xml:id="ST_CoverageUnion">
     <refnamediv>
       <refname>ST_CoverageUnion</refname>

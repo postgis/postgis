@@ -25,7 +25,7 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_raster_wkb() {
+static void test_raster_wkb(void) {
 	/* will use default allocators and message handlers */
 	rt_raster raster = NULL;
 	const char *hexwkb = NULL;

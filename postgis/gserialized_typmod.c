@@ -32,6 +32,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
+#include <limits.h>
 
 #include "utils/elog.h"
 #include "utils/array.h"
@@ -138,10 +139,11 @@ GSERIALIZED* postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 	if ( typmod_type == POINTTYPE && geom_type == MULTIPOINTTYPE &&
 	     gserialized_is_empty(gser) )
 	{
+		bool is_geodetic = gserialized_is_geodetic(gser);
 		LWPOINT *empty_point = lwpoint_construct_empty(geom_srid, geom_z, geom_m);
 		geom_type = POINTTYPE;
 		pfree(gser);
-		if ( gserialized_is_geodetic(gser) )
+		if ( is_geodetic )
 			gser = geography_serialize(lwpoint_as_lwgeom(empty_point));
 		else
 			gser = geometry_serialize(lwpoint_as_lwgeom(empty_point));

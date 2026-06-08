@@ -68,7 +68,7 @@ from (
 </programlisting>
 <para>Return area square feet and transform to Massachusetts state plane meters (EPSG:26986) to get square meters.
 				Note this is in square feet because 2249 is
-				Massachusetts State Plane Feet and transformed area is in square meters since EPSG:26986 is state plane Massachusetts meters </para>
+				Massachusetts State Plane Feet and transformed area is in square meters since EPSG:26986 is state plane Massachusetts meters. </para>
 <programlisting>select ST_Area(geom) sqft,
     ST_Area(ST_Transform(geom, 26986)) As sqm
 from (
@@ -1175,7 +1175,7 @@ ST_3DLength
 	  <refsection>
 		<title>Description</title>
 
-      <para>Calculates the length or perimeter of a geometry on an ellipsoid. This
+      <para>Calculates the length or perimeter of a geometry on a spheroid. This
 			is useful if the coordinates of the geometry are in
 			longitude/latitude and a length is desired without reprojection.
 			The spheroid is specified by a text value	as follows:</para>

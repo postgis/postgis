@@ -532,7 +532,6 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 		case COLLECTIONTYPE:
 		case MULTICURVETYPE:
 		case MULTISURFACETYPE:
-		case TINTYPE:
 			PG_RETURN_POINTER(geom);
 		default:
 			break;
@@ -2744,8 +2743,11 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 		{
 		default: /*always executed*/
 			for (j = 0; j <= i; j++)
+			{
 				PG_FREE_IF_COPY(seri_geoms[j], j);
-		/*FALLTHROUGH*/
+			}
+			FALLTHROUGH;
+
 		case 1:
 			lwpgerror("Empty geometry");
 			PG_RETURN_NULL();

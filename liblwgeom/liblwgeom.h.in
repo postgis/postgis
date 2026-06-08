@@ -1168,6 +1168,7 @@ extern LWGEOM* lwgeom_force_4d(const LWGEOM *geom, double zval, double mval);
 
 extern LWGEOM* lwgeom_set_effective_area(const LWGEOM *igeom, int set_area, double area);
 extern LWGEOM* lwgeom_chaikin(const LWGEOM *igeom, int n_iterations, int preserve_endpoint);
+extern LWGEOM* lwgeom_catmull_rom(const LWGEOM *igeom, int n_segments);
 extern LWGEOM* lwgeom_filter_m(LWGEOM *geom, double min, double max, int returnm);
 
 /*
@@ -1402,7 +1403,6 @@ extern uint32_t lwcompound_num_curves(const LWCOMPOUND *compound);
 extern const LWGEOM *lwcollection_getsubcurve(const LWCOMPOUND *compound, uint32_t gnum);
 
 extern double ptarray_length_2d(const POINTARRAY *pts);
-extern int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
 extern int azimuth_pt_pt(const POINT2D *p1, const POINT2D *p2, double *ret);
 extern LWPOINT* lwpoint_project_lwpoint(const LWPOINT* lwpoint1, const LWPOINT* lwpoint2, double distance);
 extern LWPOINT* lwpoint_project(const LWPOINT* lwpoint1, double distance, double azimuth);
@@ -1589,7 +1589,6 @@ extern LWPOINT *lwpoint_make(int32_t srid, int hasz, int hasm, const POINT4D *p)
 extern LWLINE *lwline_from_lwgeom_array(int32_t srid, uint32_t ngeoms, LWGEOM **geoms);
 extern LWLINE *lwline_from_ptarray(int32_t srid, uint32_t npoints, LWPOINT **points); /* TODO: deprecate */
 extern LWLINE *lwline_from_lwmpoint(int32_t srid, const LWMPOINT *mpoint);
-extern LWLINE *lwline_addpoint(LWLINE *line, LWPOINT *point, uint32_t where);
 extern LWLINE *lwline_removepoint(LWLINE *line, uint32_t which);
 extern void lwline_setPoint4d(LWLINE *line, uint32_t which, POINT4D *newpoint);
 extern LWPOLY *lwpoly_from_lwlines(const LWLINE *shell, uint32_t nholes, const LWLINE **holes);
@@ -1854,6 +1853,10 @@ extern double lwgeom_area_spheroid(const LWGEOM *lwgeom, const SPHEROID *spheroi
 */
 extern double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s);
 
+/**
+* Calculate the geodetic perimeter of a lwgeom on the unit sphere.
+*/
+extern double lwgeom_perimeter_spheroid(const LWGEOM *geom, const SPHEROID *s);
 /**
 * Calculate covers predicate for two lwgeoms on the sphere. Currently
 * only handles point-in-polygon.
@@ -2336,7 +2339,7 @@ extern char*   hexbytes_from_bytes(const uint8_t *bytes, size_t size);
 /*
 * WKT detailed parsing support
 */
-extern int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse_flags);
+extern int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, const char *wktstr, int parse_flags);
 void lwgeom_parser_result_init(LWGEOM_PARSER_RESULT *parser_result);
 void lwgeom_parser_result_free(LWGEOM_PARSER_RESULT *parser_result);
 
@@ -2347,7 +2350,7 @@ extern void *lwrealloc(void *mem, size_t size);
 extern void lwfree(void *mem);
 
 /* Utilities */
-extern char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int truncdirection);
+extern char *lwmessage_truncate(const char *str, int errpos, int maxlength);
 
 /*
 * TWKB functions

@@ -326,16 +326,12 @@ SELECT 't3412.L1', TopoGeo_AddLinestring('bug3412',
 599671.37 4889781.87
 )'
 ::geometry);
-
--- TODO: answers different on 3.8 from older geos so revised test
-/**SELECT 't3412.L2', TopoGeo_AddLinestring('bug3412',
-'0102000000020000003AB42BBFEE4C22410010C5A997A6524167BB5DBDEE4C224117FE3DA85FA75241'
-::geometry);**/
-SELECT 't3412.L2', COUNT(*)
+SELECT 't3412.L2', COUNT(*) > 0
 FROM TopoGeo_AddLinestring('bug3412',
 '0102000000020000003AB42BBFEE4C22410010C5A997A6524167BB5DBDEE4C224117FE3DA85FA75241'
 ::geometry);
-SELECT 't3412.end', DropTopology('bug3412');
+SELECT 't3412.end.error', * FROM topology.ValidateTopology('bug3412');
+SELECT NULL FROM DropTopology('bug3412');
 
 -- See http://trac.osgeo.org/postgis/ticket/3711
 SELECT 't3371.start', topology.CreateTopology('bug3711', 0, 0, true) > 1;
@@ -358,16 +354,12 @@ SELECT 't3838.L1', topology.TopoGeo_addLinestring('bug3838',
 622598.73 6554996.23,
 622591.53 6554995.96)'
 ::geometry , 1);
--- TODO: answers in geos 3.8 different from older geos
--- So just doing count instead of full test
-/** SELECT 't3838.L2', topology.TopoGeo_addLinestring('bug3838',
-'LINESTRING(622608 6554988, 622596 6554984)'
-::geometry , 10);**/
-SELECT 't3838.L2', COUNT(*)
+SELECT 't3838.L2', COUNT(*) > 0
   FROM topology.TopoGeo_addLinestring('bug3838',
 'LINESTRING(622608 6554988, 622596 6554984)'
 ::geometry , 10);
-SELECT 't3838.end', topology.DropTopology('bug3838');
+SELECT 't3838.end.error', * FROM topology.ValidateTopology('bug3838');
+SELECT NULL FROM topology.DropTopology('bug3838');
 
 -- See https://trac.osgeo.org/postgis/ticket/1855
 -- Simplified case 1
@@ -390,7 +382,7 @@ SELECT 't4757.1', topology.TopoGeo_addLinestring('bug4757',
   'LINESTRING(0 -0.1,1 0,1 1,0 1,0 -0.1)', 1);
 SELECT 't4757.end', topology.DropTopology('bug4757');
 
--- See https://trac.osgeo.org/postgis/ticket/t4758
+-- See https://trac.osgeo.org/postgis/ticket/4758
 select 't4758.start', topology.CreateTopology ('t4758', 0, 1e-06) > 0;
 select 't4758.0', topology.TopoGeo_addLinestring('t4758',
   'LINESTRING(11.38327215  60.4081942, 11.3826176   60.4089484)');
@@ -613,3 +605,49 @@ SELECT NULL FROM topology.TopoGeo_addLinestring('t6023',
 SELECT 't6023.2', 'errors', (array_agg(v.error))[1] FROM topology.ValidateTopology('t6023') v;
 SELECT NULL FROM topology.DropTopology ('t6023');
 
+
+-- See https://trac.osgeo.org/postgis/ticket/6062
+SELECT NULL FROM topology.CreateTopology ('t6062');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t6062',
+  'LINESTRING(
+    5.973578257284919 58.622743904549445,
+    5.973578005845366 58.62274394695048,
+    5.973576069859005 58.62274529095248,
+    5.973578257284919 58.622743904549445
+  )');
+SELECT NULL FROM topology.TopoGeo_addLinestring('t6062',
+  'LINESTRING(
+    5.973580960523165 58.62274253029128,
+    5.973580707924141 58.622742572683244,
+    5.973578257284919 58.622743904549445
+  )');
+SELECT 't6062.1', 'error', * FROM topology.ValidateTopology('t6062') v;
+SELECT 't6062.edges', count(*) > 0 FROM topology.TopoGeo_addLinestring('t6062',
+  'LINESTRING(
+    5.973601239818134 58.62273178092448,
+    5.973509954104754 58.62277915982141
+  )', 1e-7)
+ORDER BY 2;
+SELECT 't6062.2', 'error', * FROM topology.ValidateTopology('t6062') v;
+SELECT NULL FROM topology.DropTopology ('t6062');
+
+-- See https://trac.osgeo.org/postgis/ticket/6064
+set client_min_messages to WARNING;
+SELECT NULL FROM topology.CreateTopology ('t6064');
+SELECT 't6064.1', count(*) > 0 FROM topology.TopoGeo_addLinestring('t6064',
+'LINESTRING(
+  17.42207545158684 69.11091383590066,
+  17.422075702665087 69.11091383235977,
+  17.579930758184094 69.12294910230447
+  , 17.622976580401446 69.12848944101118
+)');
+
+SELECT 't6064.check.intermediate', * FROM topology.ValidateTopology('t6064');
+SELECT 't6064.2', count(*) > 0 FROM topology.TopoGeo_addLinestring('t6064',
+'LINESTRING(
+  17.42207545158653 69.11091383590062,
+  17.42207570266477 69.11091383235974,
+  17.622976580401076 69.12848944101118
+)');
+SELECT 't6064.check.final', * FROM topology.ValidateTopology('t6064');
+SELECT NULL FROM topology.DropTopology ('t6064');

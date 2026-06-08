@@ -11,7 +11,7 @@
 Vincent Picavet provides a good synopsis and overview of what is Topology,
 how is it used, and various FOSS4G tools that support it in <link xlink:href="https://gitlab.com/Oslandia/documentation/presentations/-/blob/master/2012/pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology.pdf">PostGIS Topology PGConf EU 2012</link>.
     </para>
-    <para>An example of a topologically based GIS database is the <link xlink:href="https://www.census.gov/geo/maps-data/data/tiger.html">US Census Topologically Integrated Geographic Encoding and Referencing System (TIGER)</link> database. If you want to experiment with PostGIS topology and need some data, check out <xref linkend="Topology_Load_Tiger"/>.</para>
+    <para>An example of a topologically based GIS database is the <link xlink:href="https://www.census.gov/geo/maps-data/data/tiger.html">US Census Topologically Integrated Geographic Encoding and Referencing System (TIGER)</link> database. If you want to experiment with PostGIS topology and need some data.</para>
 	<para>The PostGIS topology module has existed for a long time but was not always part of the official documentation.
 	    Extensive cleanup removed deprecated functions, fixed known usability issues, documented the features and functions, added new functionality, and improved SQL-MM compliance.</para>
 	<para>Details of this project can be found at <link xlink:href="http://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology">PostGIS Topology Wiki</link></para>
@@ -718,10 +718,6 @@ FROM topology.layer;
   Deploy: features.big_signs.feature</programlisting>
 			</refsection>
 			<!-- Optionally add a "See Also" section -->
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="Topology_Load_Tiger"/></para>
-			</refsection>
 		</refentry>
 
 		<refentry xml:id="ValidateTopology">
@@ -997,7 +993,7 @@ face without edges |   1 |
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="validatetopology_returntype"/>, <xref linkend="Topology_Load_Tiger"/></para>
+				<para><xref linkend="validatetopology_returntype"/></para>
 			</refsection>
 		</refentry>
 
@@ -1338,11 +1334,6 @@ disk space used by all its tables, including indexes and TOAST data.
   Hierarchy level 1, child layer 2
   Deploy: features.big_signs.feature</programlisting>
 			</refsection>
-			<!-- Optionally add a "See Also" section -->
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="Topology_Load_Tiger"/></para>
-			</refsection>
 		</refentry>
 
         <refentry xml:id="UpgradeTopology">
@@ -1501,7 +1492,7 @@ topoid
 			<refsection>
 				<title>See Also</title>
 
-				<para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_InitTopoGeo"/>, <xref linkend="Topology_Load_Tiger"/></para>
+				<para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_InitTopoGeo"/></para>
 			</refsection>
 		</refentry>
 
@@ -3318,6 +3309,47 @@ and is thus usable to build edge ring linking.
 <xref linkend="getfaceedges_returntype"/>,
 <xref linkend="GetRingEdges"/>,
 <xref linkend="ST_Azimuth"/>
+				</para>
+			</refsection>
+		</refentry>
+
+		<refentry xml:id="FindVertexSegmentPairsBelowDistance">
+			<refnamediv>
+				<refname>FindVertexSegmentPairsBelowDistance</refname>
+
+				<refpurpose>
+                    Find pairs of topology vertex/segment that are closer than tolerated distance
+				</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>setof record <function>FindVertexSegmentPairsBelowDistance</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>float8 </type> <parameter>tolerance</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Returns a relation in which each tuple is a pair of vertex/segment where
+the vertex is NOT an endpoint of the segment but the distance between
+them is below the given tolerance.
+                </para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="3.7">Availability: 3.7</para>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para>
+<xref linkend="ValidateTopologyPrecision"/>
 				</para>
 			</refsection>
 		</refentry>

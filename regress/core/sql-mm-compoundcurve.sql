@@ -263,3 +263,7 @@ SELECT 'curve accessors 01',
   ST_GeometryType(ST_CurveN(geom,0)) as curven_0,
   ST_CurveN(ST_CurveN(geom,3), 1) as curven_3_curven_1
 FROM f;
+
+SELECT 'ST_IsClosed',
+       ST_IsClosed('01090000000200000001020000000200000000000000000000000000000000000000000000000000f03f000000000000f03f010200000000000000'::geometry);
+

@@ -33,7 +33,7 @@ typedef struct {
 } SUPPORTING_POINTS;
 
 static SUPPORTING_POINTS*
-supporting_points_create()
+supporting_points_create(void)
 {
 	SUPPORTING_POINTS* s = lwalloc(sizeof(SUPPORTING_POINTS));
 	s->p1 = NULL;
@@ -214,7 +214,7 @@ calculate_mbc(const POINT2D** points, uint32_t max_n, SUPPORTING_POINTS* support
 }
 
 static LWBOUNDINGCIRCLE*
-lwboundingcircle_create()
+lwboundingcircle_create(void)
 {
 	LWBOUNDINGCIRCLE* c = lwalloc(sizeof(LWBOUNDINGCIRCLE));
 	c->center = lwalloc(sizeof(POINT2D));

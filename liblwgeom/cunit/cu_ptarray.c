@@ -314,7 +314,7 @@ static void test_ptarray_isccw(void)
 	lwpoly_free(poly);
 }
 
-static void test_ptarray_signed_area()
+static void test_ptarray_signed_area(void)
 {
 	LWLINE *line;
 	double area;
@@ -340,7 +340,7 @@ static void test_ptarray_signed_area()
 
 }
 
-static void test_ptarray_contains_point()
+static void test_ptarray_contains_point(void)
 {
 /* int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt, int *winding_number) */
 
@@ -440,7 +440,7 @@ static void test_ptarray_contains_point()
 	lwline_free(lwline);
 }
 
-static void test_ptarrayarc_contains_point()
+static void test_ptarrayarc_contains_point(void)
 {
 	/* int ptarrayarc_contains_point(const POINTARRAY *pa, const POINT2D *pt) */
 
@@ -578,7 +578,7 @@ static void test_ptarrayarc_contains_point()
 	lwcircstring_free(lwcirc);
 }
 
-static void test_ptarray_scale()
+static void test_ptarray_scale(void)
 {
   LWLINE *line;
   POINTARRAY *pa;
@@ -627,7 +627,7 @@ static void test_ptarray_scale()
   lwline_free(line);
 }
 
-static void test_ptarray_scroll()
+static void test_ptarray_scroll(void)
 {
   LWLINE *line;
   POINTARRAY *pa;
@@ -664,7 +664,7 @@ static void test_ptarray_scroll()
   lwline_free(line);
 }
 
-static void test_ptarray_closest_vertex_2d()
+static void test_ptarray_closest_vertex_2d(void)
 {
 	LWLINE *line;
 	POINTARRAY *pa;
@@ -696,7 +696,7 @@ static void test_ptarray_closest_vertex_2d()
   lwline_free(line);
 }
 
-static void test_ptarray_closest_segment_2d()
+static void test_ptarray_closest_segment_2d(void)
 {
 	LWLINE *line;
 	POINTARRAY *pa;

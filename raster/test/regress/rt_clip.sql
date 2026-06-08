@@ -173,3 +173,60 @@ FROM ST_Clip(
 	),
 	ST_GeomFromText('POLYGON((0 0.0009999, 0.0001 0.0009999, 0.0001 0.0009, 0 0.0009, 0 0.0009999))')
 ) AS rast;
+
+-- #6048 clipping a sparse band selection should populate dense output bands
+WITH test_rast AS (
+	SELECT ST_AddBand(
+		ST_AddBand(
+			ST_AddBand(
+				ST_SetSRID(
+					ST_MakeEmptyRaster(4, 4, 0, 4, 1, -1, 0, 0),
+					4326
+				),
+				'8BUI'::text, 11, 1
+			),
+			'8BUI'::text, 22, 2
+		),
+		'8BUI'::text, 33, 3
+	) AS rast
+), test_geom AS (
+	SELECT ST_SetSRID(ST_MakeEnvelope(1, 1, 3, 3), 4326) AS geom
+)
+SELECT '#6048.1',
+	ST_Width(rast),
+	ST_Height(rast),
+	ST_NumBands(rast),
+	ST_BandNoDataValue(rast, 1)::int,
+	ST_Value(rast, 1, 2, 2)::int
+FROM (
+	SELECT _ST_Clip(rast, ARRAY[3], geom, ARRAY[255, 255, 255], FALSE) AS rast
+	FROM test_rast, test_geom
+) AS clipped;
+
+WITH test_rast AS (
+	SELECT ST_AddBand(
+		ST_AddBand(
+			ST_AddBand(
+				ST_SetSRID(
+					ST_MakeEmptyRaster(4, 4, 0, 4, 1, -1, 0, 0),
+					4326
+				),
+				'8BUI'::text, 11, 1
+			),
+			'8BUI'::text, 22, 2
+		),
+		'8BUI'::text, 33, 3
+	) AS rast
+), test_geom AS (
+	SELECT ST_SetSRID(ST_MakeEnvelope(1, 1, 3, 3), 4326) AS geom
+)
+SELECT '#6048.2',
+	ST_NumBands(rast),
+	ST_BandNoDataValue(rast, 1)::int,
+	ST_BandNoDataValue(rast, 2)::int,
+	ST_Value(rast, 1, 2, 2)::int,
+	ST_Value(rast, 2, 2, 2)::int
+FROM (
+	SELECT _ST_Clip(rast, ARRAY[3, 1], geom, ARRAY[253, 251], FALSE) AS rast
+	FROM test_rast, test_geom
+) AS clipped;

@@ -151,3 +151,17 @@ FROM (
 
 DROP FUNCTION temp_geos_version();
 DROP TABLE IF EXISTS raster_polygon;
+
+-- #6010: nodata=FLT_MAX (32BF): only the 8 valid pixels should polygonize, not the nodata center pixel
+SELECT count(*) = 1 FROM ST_DumpAsPolygons(
+	ST_SetValue(
+		ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+		           1, '32BF'::text, -9.0, 3.4028234663852886e+38),
+		1, 2, 2, 3.4028234663852886e+38));
+
+-- #6010: nodata=DBL_MAX (64BF): only the 8 valid pixels should polygonize, not the nodata center pixel
+SELECT count(*) = 1 FROM ST_DumpAsPolygons(
+	ST_SetValue(
+		ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+		           1, '64BF'::text, -9.0, 1.7976931348623157e+308),
+		1, 2, 2, 1.7976931348623157e+308));

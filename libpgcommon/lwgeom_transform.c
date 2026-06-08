@@ -96,7 +96,7 @@ PROJSRSDestroyPortalCache(void *portalCache)
 * If it doesn't exist, make a new blank one and return it.
 */
 PROJSRSCache *
-GetPROJSRSCache()
+GetPROJSRSCache(void)
 {
 	PROJSRSCache* cache = PROJ_CACHE;
 	if (!cache)
@@ -174,6 +174,40 @@ GetProjStringsSPI(int32_t srid)
 	if (spi_result != SPI_OK_CONNECT)
 	{
 		elog(ERROR, "Could not connect to database using SPI");
+	}
+
+	/*
+	 * During pg_upgrade, geography typmod is parsed before spatial_ref_sys
+	 * exists or is populated. Check both conditions via catalog before
+	 * querying the table, to avoid a transaction-aborting error.
+	 * If either check fails, return "EPSG:<srid>" directly so PROJ can
+	 * resolve standard codes from its own database.
+	 */
+	Oid nsp_oid = POSTGIS_CONSTANTS ? POSTGIS_CONSTANTS->install_nsp_oid : InvalidOid;
+	snprintf(proj_spi_buffer, spibufferlen,
+	         "SELECT 1 FROM pg_class "
+	         "WHERE relname = 'spatial_ref_sys' AND relnamespace = %u",
+	         nsp_oid);
+	spi_result = SPI_execute(proj_spi_buffer, true, 1);
+	bool srs_exists = (spi_result == SPI_OK_SELECT && SPI_processed > 0);
+
+	bool srs_populated = false;
+	if (srs_exists)
+	{
+		snprintf(proj_spi_buffer, spibufferlen,
+		         "SELECT 1 FROM %s LIMIT 1",
+		         postgis_spatial_ref_sys());
+		spi_result = SPI_execute(proj_spi_buffer, true, 1);
+		srs_populated = (spi_result == SPI_OK_SELECT && SPI_processed > 0);
+	}
+
+	if (!srs_exists || !srs_populated)
+	{
+		char tmp[maxprojlen];
+		snprintf(tmp, maxprojlen, "EPSG:%d", srid);
+		strs.authtext = SPI_pstrdup(tmp);
+		SPI_finish();
+		return strs;
 	}
 
 	static char *proj_str_tmpl =
@@ -390,7 +424,6 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 
 	oldContext = MemoryContextSwitchTo(PROJCache->PROJSRSCacheContext);
 
-
 	LWPROJ *projection = NULL;
 	/* Try combinations of AUTH_NAME:AUTH_SRID/SRTEXT/PROJ4TEXT until we find */
 	/* one that gives us a usable transform. Note that we prefer */
@@ -410,7 +443,13 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 	}
 	if (!projection)
 	{
-		elog(ERROR, "could not form projection (LWPROJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);
+		elog(ERROR,
+		    "could not form projection (LWPROJ) from srid %d ('%s') to srid %d ('%s')",
+		    srid_from,
+				( pj_from_str ? pj_from_str : "(null)" ),
+				srid_to,
+				( pj_to_str ? pj_to_str : "(null)" )
+		);
 		return NULL;
 	}
 

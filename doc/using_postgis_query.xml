@@ -316,7 +316,8 @@ FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
                   </informalfigure></para><para>For example, consider a linear
                 dataset representing a road network. It may be required
                 to identify all road segments that cross
-                each other, not at a point, but in a line (perhaps to validate some business rule).
+                each other, not at a point, but in a line (perhaps to validate a business rule
+                such as ensuring that no two different roads share a common segment).
                 In this case <xref linkend="ST_Crosses"/> does not
                 provide the necessary spatial filter, since for
                 linear features it returns <varname>true</varname> only where they cross at a point.
@@ -642,12 +643,12 @@ GROUP BY m.name
 ORDER BY roads_km;
 
 name                        | roads_km
-----------------------------+------------------
-SURREY                      | 1539.47553551242
-VANCOUVER                   | 1450.33093486576
-LANGLEY DISTRICT            | 833.793392535662
-BURNABY                     | 773.769091404338
-PRINCE GEORGE               | 694.37554369147
+----------------------------+----------
+SURREY                      | 1539.476
+VANCOUVER                   | 1450.331
+LANGLEY DISTRICT            |  833.793
+BURNABY                     |  773.769
+PRINCE GEORGE               |  694.376
 ...</programlisting>
 
 			<para>This query takes a while, because every road in the table is

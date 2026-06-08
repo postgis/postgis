@@ -100,7 +100,6 @@ run ALTER EXTENSION or SELECT postgis_extensions_upgrade() in a micro, so taking
   * For postgis_raster, raster/rt_pg/rtpg_legacy.c
   * postgis_topology extension has never had any deprecated functions so there is currently no legacy file for it.
     If there comes a need to deprecate C functions, then a file topology/postgis_topology_legacy.c will be created to store these.
-  * postgis_tiger_geocoder is all sql and plpgsql so it has no C backing functions.
 
 Why do we even bother replacing a good function with a function that throws an error?  Because of pg_upgrade tool used
 to upgrade PostgreSQL clusters. When pg_upgrade runs, it does not use the regular CREATE EXTENSION routine that loads function definitions from
@@ -289,8 +288,8 @@ We have guards in place in the code to handle these for dependency libraries
 * GEOS
   - c:
     ```c
-      #if POSTGIS_GEOS_VERSION < 31000
-      /* GEOS < 3.1 code goes here */
+      #if POSTGIS_GEOS_VERSION < 31300
+      /* GEOS < 3.13 code goes here */
       #endif
     ```
   - test files:
@@ -298,9 +297,9 @@ We have guards in place in the code to handle these for dependency libraries
       * raster/rt_pg/tests/tests.mi.in
 
     ```makefile
-       ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31000),1)
+       ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31300),1)
         TESTS += \
-          # add tests that require GEOS 3.1 or higher to run
+          # add tests that require GEOS 3.13 or higher to run
        endif
     ```
 
@@ -374,7 +373,9 @@ while keeping the CI account unprivileged.
 
 * Edit doc/postgis.xml and change entity  `min_postgres_version` to new minimum version
 
-* Add to NEWS Breaking Changes section, your removal of said versions
+* Update any CI scripts that hard-code a PostgreSQL major for packaging or docs jobs,
+  notably `ci/debbie/postgis_make_dist.sh` and `ci/debbie/postgis_release_docs.sh`
 
+* Add to NEWS Breaking Changes section, your removal of said versions
 
 

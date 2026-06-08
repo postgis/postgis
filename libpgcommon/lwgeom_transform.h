@@ -57,7 +57,7 @@ typedef struct srs_precision
 } srs_precision;
 
 /* Prototypes */
-PROJSRSCache* GetPROJSRSCache();
+PROJSRSCache* GetPROJSRSCache(void);
 int lwproj_lookup(int32_t srid_from, int32_t srid_to, LWPROJ **pj);
 int lwproj_is_latlong(const LWPROJ *pj);
 int spheroid_init_from_srid(int32_t srid, SPHEROID *s);

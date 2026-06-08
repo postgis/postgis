@@ -8,7 +8,7 @@ ERROR:  SQL/MM Spatial exception - curve not simple
 ERROR:  Invalid edge (no two distinct vertices exist)
 ERROR:  Invalid edge (no two distinct vertices exist)
 ERROR:  SQL/MM Spatial exception - coincident edge 8 at POINT(35 22)
-ERROR:  SQL/MM Spatial exception - geometry crosses edge 5 at POINT(48.0714285714286 41.9285714285714)
+ERROR:  SQL/MM Spatial exception - geometry crosses edge 5 at POINT(57 33)
 ERROR:  SQL/MM Spatial exception - geometry crosses edge 4 at POINT(45 32)
 ERROR:  Spatial exception - geometry intersects edge 4 at POINT(36 38)
 L1

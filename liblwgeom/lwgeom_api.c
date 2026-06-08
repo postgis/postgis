@@ -35,7 +35,7 @@
 #define str(s) #s
 
 const char *
-lwgeom_version()
+lwgeom_version(void)
 {
   static char *ptr = NULL;
   static char buf[256];
@@ -655,11 +655,11 @@ interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, double F)
 
 int _lwgeom_interrupt_requested = 0;
 void
-lwgeom_request_interrupt() {
+lwgeom_request_interrupt(void) {
   _lwgeom_interrupt_requested = 1;
 }
 void
-lwgeom_cancel_interrupt() {
+lwgeom_cancel_interrupt(void) {
   _lwgeom_interrupt_requested = 0;
 }
 

@@ -300,6 +300,7 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 	if ( !mem )
 	{
 		snprintf(state->message, SHPLOADERMSGLEN, "unable to write geometry");
+		lwgeom_free(lwgeom);
 		return SHPLOADERERR;
 	}
 
@@ -1478,8 +1479,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 	}
 
 	/* Copy the string buffer into a new string, destroying the string buffer */
-	ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);
-	strcpy(ret, (char *)stringbuffer_getstring(sb));
+	ret = strdup(stringbuffer_getstring(sb));
 	stringbuffer_destroy(sb);
 
 	*strheader = ret;
@@ -1518,8 +1518,7 @@ ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader)
 		}
 
 		/* Copy the string buffer into a new string, destroying the string buffer */
-		ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);
-		strcpy(ret, (char *)stringbuffer_getstring(sb));
+		ret = strdup(stringbuffer_getstring(sb));
 		stringbuffer_destroy(sb);
 
 		*strheader = ret;
@@ -1850,14 +1849,13 @@ done_cell:
 
 
 	/* Copy the string buffer into a new string, destroying the string buffer */
-	ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);
-	strcpy(ret, (char *)stringbuffer_getstring(sb));
+	ret = strdup(stringbuffer_getstring(sb));
 	stringbuffer_destroy(sb);
 
 	*strrecord = ret;
 
 	/* If any warnings occurred, set the returned message string and warning status */
-	if (strlen((char *)stringbuffer_getstring(sbwarn)) > 0)
+	if (stringbuffer_getlength(sbwarn) > 0)
 	{
 		snprintf(state->message, SHPLOADERMSGLEN, "%s", stringbuffer_getstring(sbwarn));
 		stringbuffer_destroy(sbwarn);
@@ -1942,8 +1940,7 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	}
 
 	/* Copy the string buffer into a new string, destroying the string buffer */
-	ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);
-	strcpy(ret, (char *)stringbuffer_getstring(sb));
+	ret = strdup(stringbuffer_getstring(sb));
 	stringbuffer_destroy(sb);
 
 	*strfooter = ret;

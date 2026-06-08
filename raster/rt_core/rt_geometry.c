@@ -979,7 +979,6 @@ rt_raster_gdal_polygonize(
 	int *pnElements
 ) {
 	CPLErr cplerr = CE_None;
-	char *pszQuery;
 	long j;
 	OGRSFDriverH ogr_drv = NULL;
 	GDALDriverH gdal_drv = NULL;
@@ -1140,9 +1139,14 @@ rt_raster_gdal_polygonize(
 	/*
 	 * Why: We pass the shared interrupt-aware progress callback so GDAL can
 	 * unwind promptly when PostgreSQL requests cancellation (#4222).
+	 * Use the band's nodata mask so large/infinite nodata values are excluded
+	 * before polygonizing, bypassing the broken %f string-format filter (#6010).
 	 */
+	GDALRasterBandH mask_band = iBandHasNodataValue
+	    ? GDALGetMaskBand(gdal_band)
+	    : NULL;
 	cplerr = GDALFPolygonize(
-	    gdal_band, NULL, hLayer, iPixVal, NULL, rt_util_gdal_progress_func, (void *)"GDALFPolygonize");
+	    gdal_band, mask_band, hLayer, iPixVal, NULL, rt_util_gdal_progress_func, (void *)"GDALFPolygonize");
 
 	if (cplerr != CE_None) {
 		rterror("rt_raster_gdal_polygonize: Could not polygonize GDAL band");
@@ -1154,25 +1158,6 @@ rt_raster_gdal_polygonize(
 		OGRReleaseDataSource(memdatasource);
 
 		return NULL;
-	}
-
-	/**
-	 * Optimization: Apply a OGR SQL filter to the layer to select the
-	 * features different from NODATA value.
-	 *
-	 * Thanks to David Zwarg.
-	 **/
-	if (iBandHasNodataValue) {
-		size_t sz = 50 * sizeof (char);
-		pszQuery = (char *) rtalloc(sz);
-		snprintf(pszQuery, sz, "PixelValue != %f", dBandNoData );
-		OGRErr e = OGR_L_SetAttributeFilter(hLayer, pszQuery);
-		if (e != OGRERR_NONE) {
-			rtwarn("Error filtering NODATA values for band. All values will be treated as data values");
-		}
-	}
-	else {
-		pszQuery = NULL;
 	}
 
 	/*********************************************************************
@@ -1193,8 +1178,6 @@ rt_raster_gdal_polygonize(
 		if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
 		OGR_Fld_Destroy(hFldDfn);
 		OGR_DS_DeleteLayer(memdatasource, 0);
-		if (NULL != pszQuery)
-			rtdealloc(pszQuery);
 		OGRReleaseDataSource(memdatasource);
 
 		return NULL;
@@ -1225,8 +1208,6 @@ rt_raster_gdal_polygonize(
 			if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
 			OGR_Fld_Destroy(hFldDfn);
 			OGR_DS_DeleteLayer(memdatasource, 0);
-			if (NULL != pszQuery)
-				rtdealloc(pszQuery);
 			OGRReleaseDataSource(memdatasource);
 
 			return NULL;
@@ -1291,7 +1272,6 @@ rt_raster_gdal_polygonize(
 	RASTER_DEBUG(3, "destroying OGR MEM vector");
 	OGR_Fld_Destroy(hFldDfn);
 	OGR_DS_DeleteLayer(memdatasource, 0);
-	if (NULL != pszQuery) rtdealloc(pszQuery);
 	OGRReleaseDataSource(memdatasource);
 
 	return pols;

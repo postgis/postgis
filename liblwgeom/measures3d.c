@@ -1579,6 +1579,9 @@ pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring, PLANE3D *plane)
 
 	POINT3DZ first, last;
 
+	if ( !ring || ring->npoints == 0 )
+		lwerror("%s called on empty pointarray", __func__);
+
 	getPoint3dz_p(ring, 0, &first);
 	getPoint3dz_p(ring, ring->npoints - 1, &last);
 	if (memcmp(&first, &last, sizeof(POINT3DZ)))

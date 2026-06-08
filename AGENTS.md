@@ -36,7 +36,6 @@ sudo apt-get install -y --no-install-recommends \
   libgsl-dev \
   libjson-c-dev \
   libopenjp2-7-dev libpng-dev libtiff-dev libwebp-dev \
-  libpcre3-dev \
   libpq-dev \
   libproj-dev proj-bin \
   libprotobuf-c-dev protobuf-c-compiler \
@@ -163,7 +162,7 @@ Execute the same test targets used in CI:
 
 ```bash
 # Standard compile + regression suite
-make check RUNTESTFLAGS="--verbose --extension --raster --topology --sfcgal --tiger"
+make check RUNTESTFLAGS="--verbose --extension --raster --topology --sfcgal"
 
 # Undefined behaviour sanitiser runs
 CC=clang ./configure CFLAGS="-g3 -O0 -fno-omit-frame-pointer -fsanitize=undefined" LDFLAGS="-fsanitize=undefined"

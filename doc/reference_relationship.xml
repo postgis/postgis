@@ -2261,7 +2261,7 @@ SELECT s.gid, s.school_name
     LEFT JOIN hospitals h ON ST_DWithin(s.geom, h.geom, 3000)
   WHERE h.gid IS NULL;
 
--- Find broadcasting towers that receiver with limited range can receive.
+-- Find broadcasting towers that a receiver with limited range can receive.
 -- Data is geometry in Spherical Mercator (SRID=3857), ranges are approximate.
 
 -- Create geometry index that will check proximity limit of user to tower

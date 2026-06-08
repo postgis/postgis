@@ -1,5 +1,9 @@
-PostGIS 3.7.0dev
-xxxx/xx/xx
+PostGIS 3.7.0beta1
+2026/06/xx
+
+This version requires GEOS 3.10 or higher. PostgreSQL 14-19beta1 required. Proj 6.1+ required.
+To take advantage of all features postgis extension features, GEOS 3.15+ is needed.
+To take advantage of all postgis_sfcgal extension features SFCGAL 2.2+ is needed.
 
 * Breaking Changes *
 
@@ -7,10 +11,19 @@ xxxx/xx/xx
           (old default) to really mean 0 and want -1 (new default) to mean
           "use topology precision" (Sandro Santilli)
  - #6024, Remove support for PostgreSQL 12 and 13 (Regina Obe)
-
+ - #6040, ST_GeoHash round trip through ST_GeomFromGeoHash (Paul Ramsey)
+ - #6053, [address_standardizer] Extension removed and moved to
+       https://github.com/postgis/address_standardizer (Paul Ramsey)
+ - #6052, [tiger_geocoder] Extension removed and moved to
+            https://git.osgeo.org/postgis/postgis_tiger_geocoder (Regina Obe)
+ - #6079, Remove support for GEOS < 3.10 (Sandro Santilli)
 
 * New Features *
 
+ - [topology] FindVertexSegmentPairsBelowDistance function (Sandro Santilli)
+ - ST_CoverageEdges, returns MultiLinestring of distinct shared edges in
+          polygonal coverage (Paul Ramsey)
+ - ST_MinimumSpanningTree, window function to calculate MST (Paul Ramsey)
  - #5993, [topology] Add max_edges parameter to TopoGeo_AddLinestring
           (Sandro Santilli)
  - #6001, support MultiLineString in ST_MakeLine (Paul Ramsey)
@@ -25,18 +38,45 @@ xxxx/xx/xx
  - #5109, Document the meaning of topology.next_left_edge and topology.next_right_edge links (Darafei Praliaskouski)
  - #5889, [topology] Include representative locations in topology build errors (Darafei Praliaskouski)
  - #2614, Use GEOSPreparedDistance and caching to accelerate ST_DWithin (Paul Ramsey)
+ - GH-839, ST_Multi support for TIN and surfaces (Loïc Bartoletti)
+ - #4398, Add ST_CatmullSmoothing smoothes but retains original vertices (Paul Ramsey)
+
+* Enhancements *
+
+ - #6062, [topology] Stop using recursive snapping, for improved robustness (Sandro Santilli)
+ - #6065, Improved winding order computation robustness for rings having collapsed elements
+          (Sandro Santilli)
 
 * Bug Fixes *
 
+ - Build PostgreSQL extension modules with `-fno-semantic-interposition` when
+          available so LTO can optimize same-DSO calls to exported PostGIS
+          entry points directly instead of routing through the module PLT; in
+          a local PostgreSQL 18 `pgbench` microbenchmark over 100k four-point
+          groups this reduced `ST_Collect` aggregate latency by about 4%
+          (Darafei Praliaskouski)
+ - #5973, Install PostGIS utilities under `pg_config --bindir` by default
+          and document `pg_config`-derived install paths more accurately
+          (Darafei Praliaskouski)
  - #5948, [topology] Prevent MakeTopologyPrecise from erasing edges when
           grid size exceeds their extent (Darafei Praliaskouski)
  - #5959, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
  - #4828, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)
+ - #6048, [raster] ST_Clip no longer crashes when clipping sparse band
+          selections (Darafei Praliaskouski)
  - #5645, Docs: keep code operators ("=>") intact in translated manuals
           by enforcing verbatim CSS (Darafei Praliaskouski)
  - #5593, Docs: render manual images with GraphicsMagick without temporary files,
           enabling parallel builds, keeping ImageMagick fallbacks working, and
           documenting the generator workflow for contributors (Darafei Praliaskouski)
+ - [fuzzers] Centralize OSS-Fuzz build/dependency logic in PostGIS scripts,
+          prefer requested CXX over pg_config --cc for internal C++ checks, and
+          make fuzzer linking/runtime dependency packaging portable
+          (Darafei Praliaskouski)
+ - GH-848, CG_AlphaShape now returns a MultiPolygon (Jean Felder)
+ - Flatgeobuf schema mismatch vulnerability (NeuroWinter)
+ - #5899, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)
+
 
 PostGIS 3.6.0
 2025/09/01
@@ -3056,5 +3096,3 @@ PostGIS 0.1
 - truely_inside()
 - rtree index support functions
 - gist index support functions
-
-

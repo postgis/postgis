@@ -358,6 +358,9 @@ void ptarray_calc_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
 	const double *P2;
 	const double *P3;
 
+	if (npoints < 2)
+		lwerror("%s: not enough points provided", __func__);
+
 	P1 = (double*)getPoint_internal(ea->inpts, 0);
 	P2 = (double*)getPoint_internal(ea->inpts, 1);
 
@@ -464,7 +467,8 @@ static LWLINE* lwline_set_effective_area(const LWLINE *iline,int set_area, doubl
 
 	LWLINE *oline = lwline_construct_empty(iline->srid, FLAGS_GET_Z(iline->flags), set_m);
 
-
+	if (iline->points->npoints < 2)
+		return oline;
 
 	oline = lwline_construct(iline->srid, NULL, ptarray_set_effective_area(iline->points,2,set_area,trshld));
 
@@ -491,7 +495,12 @@ static LWPOLY* lwpoly_set_effective_area(const LWPOLY *ipoly,int set_area, doubl
 
 	for (i = 0; i < ipoly->nrings; i++)
 	{
-		POINTARRAY *pa = ptarray_set_effective_area(ipoly->rings[i],avoid_collapse,set_area,trshld);
+		POINTARRAY *pa;
+
+		if (ipoly->rings[i]->npoints < 4)
+			continue;
+
+		pa = ptarray_set_effective_area(ipoly->rings[i],avoid_collapse,set_area,trshld);
 		/* Add ring to simplified polygon */
 		if(pa->npoints>=4)
 		{

@@ -63,13 +63,13 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
 
 	/* Get our geometry object loaded into memory. */
 	g = PG_GETARG_GSERIALIZED_P(0);
-	lwgeom = lwgeom_from_gserialized(g);
 
 	if (g == NULL)
 	{
 		PG_RETURN_NULL();
 	}
 
+    lwgeom = lwgeom_from_gserialized(g);
 	srid = lwgeom_get_srid(lwgeom);
 
 	/* on empty input, return empty output */

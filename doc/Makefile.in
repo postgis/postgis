@@ -162,9 +162,7 @@ all: $(BUILD_TARGET)
 XML_SOURCES = \
 	administration.xml \
 	database_tuning.xml \
-	extras_address_standardizer.xml \
 	extras_historytable.xml \
-	extras_tigergeocoder.xml \
 	extras_topology.xml \
 	extras.xml \
 	installation.xml \
@@ -221,7 +219,6 @@ XSL_GENERATED_SOURCES = \
 	list_polyhedral_functions.xsl.xml
 
 TAG_GENERATED_SOURCES = \
-	address_standardizer_required.tag \
 	curve_support.tag \
 	geography_transform.tag \
 	index_aware.tag \
@@ -540,8 +537,7 @@ comments-install:
 	if test -e postgis_comments.sql  -a \
 	        -e raster_comments.sql   -a \
 	        -e topology_comments.sql -a \
-	        -e sfcgal_comments.sql -a \
-	        -e tiger_geocoder_comments.sql; then \
+	        -e sfcgal_comments.sql ; then \
 	  $(MAKE) -f Makefile.comments install; \
 	fi
 else

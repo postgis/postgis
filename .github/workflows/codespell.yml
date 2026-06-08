@@ -21,9 +21,19 @@ jobs:
 
     - name: 'Install codespell'
       run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+          autoconf automake libtool pkg-config \
+          libgeos-dev libproj-dev libxml2-dev \
+          libxml2-utils docbook-xml docbook-xsl docbook-xsl-ns xsltproc
+        # Ubuntu's packaged codespell is too old for the skip globs in .codespellrc,
+        # which makes the job scan generated/vendor trees and fail noisily.
         sudo pip install codespell
 
     - name: 'Build & Test'
       run: |
         codespell --version
-        codespell -I ".codespell.ignore"
+        ./autogen.sh
+        ./configure --without-raster --without-topology --without-sfcgal --without-json --without-protobuf
+        make -C doc comments
+        codespell --config .codespellrc .

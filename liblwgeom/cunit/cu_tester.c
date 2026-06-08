@@ -30,12 +30,12 @@ cu_debuglogger(int level, const char *fmt, va_list ap);
 
 
 /* ADD YOUR SUITE SETUP FUNCTION HERE (1 of 2) */
-extern void print_suite_setup();
-extern void algorithms_suite_setup();
-extern void boundary_suite_setup();
-extern void buildarea_suite_setup();
-extern void clean_suite_setup();
-extern void clip_by_rect_suite_setup();
+extern void print_suite_setup(void);
+extern void algorithms_suite_setup(void);
+extern void boundary_suite_setup(void);
+extern void buildarea_suite_setup(void);
+extern void clean_suite_setup(void);
+extern void clip_by_rect_suite_setup(void);
 extern void force_dims_suite_setup(void);
 extern void force_sfs_suite_setup(void);
 extern void geodetic_suite_setup(void);
@@ -53,6 +53,7 @@ extern void lwstroke_suite_setup(void);
 extern void measures_suite_setup(void);
 extern void effectivearea_suite_setup(void);
 extern void chaikin_suite_setup(void);
+extern void catmullrom_suite_setup(void);
 extern void filterm_suite_setup(void);
 extern void minimum_bounding_circle_suite_setup(void);
 extern void misc_suite_setup(void);
@@ -107,6 +108,7 @@ PG_SuiteSetup setupfuncs[] = {algorithms_suite_setup,
 			      measures_suite_setup,
 			      effectivearea_suite_setup,
 			      chaikin_suite_setup,
+			      catmullrom_suite_setup,
 			      filterm_suite_setup,
 			      minimum_bounding_circle_suite_setup,
 			      misc_suite_setup,

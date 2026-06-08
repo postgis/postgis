@@ -75,7 +75,6 @@ my $OPT_NODROP = 0;
 my $OPT_NOCREATE = 0;
 my $OPT_UPGRADE = 0;
 my $OPT_DUMPRESTORE = 0;
-my $OPT_WITH_TIGER = 0;
 my $OPT_WITH_TOPO = 0;
 my $OPT_WITH_RASTER = 0;
 my $OPT_WITH_SFCGAL = 0;
@@ -96,17 +95,18 @@ my $OPT_UPGRADE_PATH = '';
 our $OPT_UPGRADE_FROM = '';
 my $OPT_UPGRADE_TO = '';
 our $VERBOSE = 0;
+my $ASKED_FOR_HELP = 0;
 our $OPT_SCHEMA = 'public';
 
 GetOptions (
 	'verbose+' => \$VERBOSE,
+	'help' => \$ASKED_FOR_HELP,
 	'clean' => \$OPT_CLEAN,
 	'nodrop' => \$OPT_NODROP,
 	'upgrade+' => \$OPT_UPGRADE,
 	'upgrade-path=s' => \$OPT_UPGRADE_PATH,
 	'dumprestore' => \$OPT_DUMPRESTORE,
 	'nocreate' => \$OPT_NOCREATE,
-	'tiger' => \$OPT_WITH_TIGER,
 	'topology' => \$OPT_WITH_TOPO,
 	'raster' => \$OPT_WITH_RASTER,
 	'sfcgal' => \$OPT_WITH_SFCGAL,
@@ -126,9 +126,16 @@ GetOptions (
 	'after-restore-script=s' => \@OPT_HOOK_AFTER_RESTORE
 	);
 
+if ( $ASKED_FOR_HELP > 0 )
+{
+    usage(*STDOUT{IO});
+    exit 0;
+}
+
 if ( @ARGV < 1 )
 {
-	usage();
+    usage(*STDERR{IO});
+    exit 1;
 }
 
 sub findOrDie
@@ -166,6 +173,8 @@ if ( "${TOP_BUILDDIR}" eq "" )
         }
     }
 }
+# Make sure TOP_BUILDDIR is absolute
+$TOP_BUILDDIR=abs_path("${TOP_BUILDDIR}");
 
 # Prepend scripts' build dirs to path
 # TODO: make this conditional ?
@@ -522,7 +531,6 @@ print "  GDAL: $gdalver\n" if $gdalver;
 # allow hook scripts to perform arbitrary reports via output of INFO strings
 system("grep INFO $REGRESS_LOG | sed 's/INFO://'");
 
-
 ##################################################################
 # Run the tests
 ##################################################################
@@ -710,9 +718,9 @@ exit($FAIL);
 
 sub usage
 {
-	die qq{
-Usage: $0 [<options>] <testname> [<testname>]
+	print { shift } qq{Usage: $0 [<options>] <testname> [<testname>]
 Options:
+  --help          print these instructionss
   -v, --verbose   be verbose about failures
   --nocreate      do not create the regression database on start
   --upgrade       upgrade db before running tests, can be passed
@@ -731,7 +739,6 @@ Options:
   --schema        where to install/find PostGIS (relocatable) PostGIS
                   (defaults to "public")
   --raster        load also raster extension
-  --tiger         load also tiger_geocoder extension
   --topology      load also topology extension
   --sfcgal        use also sfcgal backend
   --clean         cleanup test logs on exit
@@ -1677,23 +1684,6 @@ sub prepare_spatial_extensions
 		}
  	}
 
-	if ( $OPT_WITH_TIGER )
-	{
-		my $sql = "CREATE EXTENSION postgis_tiger_geocoder CASCADE";
-		if ( $OPT_UPGRADE_FROM ) {
-			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
-		}
-
-		print "Preparing db '${DB}' using: ${sql}\n";
-
- 		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
-		$rv = system($cmd);
-        if ( $rv ) {
-            fail "Error encountered creating EXTENSION POSTGIS_TIGER_GEOCODER", $REGRESS_LOG;
-            return 0;
-		}
- 	}
-
 	my $extver = $OPT_UPGRADE_FROM ? $OPT_UPGRADE_FROM : $OPT_UPGRADE_TO ? $OPT_UPGRADE_TO : $defextver;
 	if ( $OPT_WITH_RASTER && has_split_raster_ext($extver) )
 	{
@@ -2080,20 +2070,6 @@ sub drop_spatial_extensions
         $rv = system($cmd);
         if ( $rv ) {
             fail "Error encountered dropping EXTENSION postgis_raster", $REGRESS_LOG;
-            return 0;
-        }
-    }
-    if ( $OPT_WITH_TIGER )
-    {
-        $cmd = "psql $psql_opts -c \"DROP EXTENSION IF EXISTS postgis_tiger_geocoder;
-                DROP EXTENSION IF EXISTS fuzzystrmatch;
-                DROP SCHEMA IF EXISTS tiger;
-                DROP SCHEMA IF EXISTS tiger_data;
-                \" $DB >> $REGRESS_LOG 2>&1";
-        $rv = system($cmd);
-      	return 0 if $rv;
-        if ( $rv ) {
-            fail "Error encountered dropping EXTENSION postgis_tiger_geocoder", $REGRESS_LOG;
             return 0;
         }
     }

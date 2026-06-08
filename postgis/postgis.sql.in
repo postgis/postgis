@@ -1973,6 +1973,20 @@ CREATE OR REPLACE FUNCTION ST_ClusterIntersectingWin(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
 	_COST_HIGH;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_ClusterRelateWin(geom geometry, relate_matrix text)
+	RETURNS int
+	AS 'MODULE_PATHNAME', 'ST_ClusterRelateWin'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_MinimumSpanningTree(geometry)
+	RETURNS int
+	AS 'MODULE_PATHNAME', 'ST_MinimumSpanningTree'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	_COST_HIGH;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 	RETURNS geometry
@@ -2319,18 +2333,18 @@ BEGIN
 			IF use_typmod THEN
 				BEGIN
 					EXECUTE 'ALTER TABLE ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' ALTER COLUMN ' || quote_ident(gcs.attname) ||
-						' TYPE geometry(' || postgis_type_name(gtype, gndims, true) || ', ' || gsrid::text  || ') ';
+						' TYPE geometry(' || @extschema@.postgis_type_name(gtype, gndims, true) || ', ' || gsrid::text  || ') ';
 					inserted := inserted + 1;
 				EXCEPTION
 						WHEN invalid_parameter_value OR feature_not_supported THEN
-						RAISE WARNING 'Could not convert ''%'' in ''%.%'' to use typmod with srid %, type %: %', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), gsrid, postgis_type_name(gtype, gndims, true), SQLERRM;
+						RAISE WARNING 'Could not convert ''%'' in ''%.%'' to use typmod with srid %, type %: %', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), gsrid, @extschema@.postgis_type_name(gtype, gndims, true), SQLERRM;
 							gc_is_valid := false;
 				END;
 
 			ELSE
 				-- Try to apply srid check to column
 				constraint_successful = false;
-				IF (gsrid > 0 AND postgis_constraint_srid(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
+				IF (gsrid > 0 AND @extschema@.postgis_constraint_srid(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
 					BEGIN
 						EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) ||
 								 ' ADD CONSTRAINT ' || quote_ident('enforce_srid_' || gcs.attname) ||
@@ -2344,7 +2358,7 @@ BEGIN
 				END IF;
 
 				-- Try to apply ndims check to column
-				IF (gndims IS NOT NULL AND postgis_constraint_dims(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
+				IF (gndims IS NOT NULL AND @extschema@.postgis_constraint_dims(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
 					BEGIN
 						EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 								 ADD CONSTRAINT ' || quote_ident('enforce_dims_' || gcs.attname) || '
@@ -2358,7 +2372,7 @@ BEGIN
 				END IF;
 
 				-- Try to apply geometrytype check to column
-				IF (gtype IS NOT NULL AND postgis_constraint_type(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
+				IF (gtype IS NOT NULL AND @extschema@.postgis_constraint_type(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
 					BEGIN
 						EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
 						ADD CONSTRAINT ' || quote_ident('enforce_geotype_' || gcs.attname) || '
@@ -2415,7 +2429,7 @@ DECLARE
 BEGIN
 
 	-- Verify geometry type
-	IF (postgis_type_name(new_type,new_dim) IS NULL )
+	IF (@extschema@.postgis_type_name(new_type,new_dim) IS NULL )
 	THEN
 		RAISE EXCEPTION 'Invalid type name "%(%)" - valid ones are:
 	POINT, MULTIPOINT,
@@ -2821,7 +2835,7 @@ BEGIN
 		END IF;
 	END IF;
 
-	IF postgis_constraint_srid(real_schema, table_name, column_name) IS NOT NULL THEN
+	IF @extschema@.postgis_constraint_srid(real_schema, table_name, column_name) IS NOT NULL THEN
 	-- srid was enforced with constraints before, keep it that way.
 		-- Make up constraint name
 		cname = 'enforce_srid_'  || column_name;
@@ -3181,8 +3195,7 @@ BEGIN
 			'postgis',
 			'postgis_raster',
 			'postgis_sfcgal',
-			'postgis_topology',
-			'postgis_tiger_geocoder'
+			'postgis_topology'
 		)
 		ORDER BY length(name) -- this is to make sure 'postgis' is first !
 	LOOP --{
@@ -3217,10 +3230,6 @@ BEGIN
 							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
 							WHERE n.nspname = 'topology' AND c.relname = 'topology') )
 
-				 OR ( rec.name = 'postgis_tiger_geocoder' AND EXISTS (
-							SELECT 1 FROM pg_catalog.pg_class c
-							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
-							WHERE n.nspname = 'tiger' AND c.relname = 'geocode_settings') )
 			THEN --}{ -- the code is unpackaged
 				-- Force install in same schema as postgis
 				SELECT INTO var_schema n.nspname
@@ -3343,7 +3352,7 @@ BEGIN
 	END;
 
 	BEGIN
-		SELECT postgis_raster_scripts_installed() INTO rast_scr_ver;
+		SELECT @extschema@.postgis_raster_scripts_installed() INTO rast_scr_ver;
 	EXCEPTION
 		WHEN undefined_function THEN
 			RAISE DEBUG 'Function postgis_raster_scripts_installed() not found. Is raster support enabled and rtpostgis.sql installed?';
@@ -3389,9 +3398,9 @@ BEGIN
 
 	IF  geosver IS NOT NULL THEN
 		fullver = fullver || ' GEOS="' || geosver || '"';
-		IF (string_to_array(geosver, '.'))[1:2] != (string_to_array(geosver_compiled, '.'))[1:2]
+		IF (pg_catalog.string_to_array(geosver, '.'))[1:2] != (pg_catalog.string_to_array(geosver_compiled, '.'))[1:2]
 		THEN
-			fullver = format('%s (compiled against GEOS %s)', fullver, geosver_compiled);
+			fullver = pg_catalog.format('%s (compiled against GEOS %s)', fullver, geosver_compiled);
 		END IF;
 	END IF;
 
@@ -3401,9 +3410,9 @@ BEGIN
 
 	IF  projver IS NOT NULL THEN
 		fullver = fullver || ' PROJ="' || projver || '"';
-		IF (string_to_array(projver, '.'))[1:3] != (string_to_array(projver_compiled, '.'))[1:3]
+		IF (pg_catalog.string_to_array(projver, '.'))[1:3] != (pg_catalog.string_to_array(projver_compiled, '.'))[1:3]
 		THEN
-			fullver = format('%s (compiled against PROJ %s)', fullver, projver_compiled);
+			fullver = pg_catalog.format('%s (compiled against PROJ %s)', fullver, projver_compiled);
 		END IF;
 	END IF;
 
@@ -3621,6 +3630,13 @@ CREATE OR REPLACE FUNCTION ST_FilterByM(geometry, double precision, double preci
 CREATE OR REPLACE FUNCTION ST_ChaikinSmoothing(geometry, integer default 1, boolean default false)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_ChaikinSmoothing'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.6.0
+CREATE OR REPLACE FUNCTION ST_CatmullRomSmoothing(geometry, integer default 5)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_CatmullRomSmoothing'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
@@ -4520,6 +4536,20 @@ CREATE OR REPLACE FUNCTION ST_CoverageClean (geom geometry, gapMaximumWidth floa
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_CoverageClean'
 	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_CoverageEdges (geoms geometry[], edgetype integer default 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CoverageEdges_array'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_CoverageEdges (geom geometry, edgetype integer default 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CoverageEdges'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
 --------------------------------------------------------------------------------

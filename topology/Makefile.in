@@ -52,7 +52,7 @@ OBJS = postgis_topology.o
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
 # older version of PostGIS, rather than with the static liblwgeom.a
 # supplied with newer versions of PostGIS
-PG_CPPFLAGS += -I@top_builddir@/liblwgeom -I@top_srcdir@/liblwgeom -I@top_srcdir@/libpgcommon @CFLAGS@ @CPPFLAGS@ @PICFLAGS@
+PG_CPPFLAGS += -I@top_builddir@/liblwgeom -I@top_srcdir@/liblwgeom -I@top_srcdir@/libpgcommon @CFLAGS@ @MODULE_CFLAGS@ @CPPFLAGS@ @PICFLAGS@
 SHLIB_LINK_F = @top_builddir@/libpgcommon/libpgcommon.a @top_builddir@/liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
 
 # Add SFCGAL Flags if defined
@@ -130,12 +130,13 @@ topology.sql: \
 	sql/polygonize.sql.in \
 	sql/export/gml.sql.in \
 	sql/export/TopoJSON.sql.in \
-	sql/query/getnodebypoint.sql.in \
+	sql/query/FindVertexSegmentPairsBelowDistance.sql.in \
 	sql/query/getedgebypoint.sql.in \
 	sql/query/getfacebypoint.sql.in \
-	sql/query/GetRingEdges.sql.in \
-	sql/query/GetNodeEdges.sql.in \
 	sql/query/GetFaceContainingPoint.sql.in \
+	sql/query/getnodebypoint.sql.in \
+	sql/query/GetNodeEdges.sql.in \
+	sql/query/GetRingEdges.sql.in \
 	sql/manage/AddTopoGeometryColumn.sql.in \
 	sql/manage/CopyTopology.sql.in \
 	sql/manage/CreateTopology.sql.in \
@@ -159,7 +160,6 @@ topology.sql: \
 	sql/topogeometry/topogeom_edit.sql.in \
 	sql/topogeometry/simplify.sql.in \
 	sql/predicates.sql.in \
-	../libpgcommon/sql/AddToSearchPath.sql.inc \
 	../postgis/sqldefines.h \
 	../postgis_revision.h
 

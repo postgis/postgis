@@ -1,0 +1,46 @@
+-- Finds pairs of vertice/segment from a topology that are below a given distance.
+-- The vertex must NOT be part of the segment.
+--
+-- Presence of such proximities represent a missed snap opportunity during topology building
+-- and can sometime be fixed by adding a new node where the vertex is, like:
+--
+-- SELECT topology.TopoGeo_AddPoint('topo', ST_PointN(geom,v.vert))
+-- FROM topo.edge, LATERAL topology.findVertexSegmentPairsBelowDistance('topo', 1e-6) v
+-- WHERE edge_id = v.vert_edge;
+--
+CREATE OR REPLACE FUNCTION topology.findVertexSegmentPairsBelowDistance(toponame varchar, tolerance float8)
+RETURNS TABLE (seg_edge int, segno int, vert_edge int, vertno int, vert_geom geometry)
+AS $BODY$
+DECLARE
+  sql text;
+BEGIN
+  sql := format($$
+    SELECT
+      e1.edge_id seg_edge,
+      s.path[1] segno,
+      e2.edge_id vert_edge,
+      p.path[1] vertno,
+      p.geom vert_geom
+    FROM
+      %1$I.edge e1,
+      %1$I.edge e2,
+      LATERAL ST_DumpSegments(e1.geom) s,
+      LATERAL ST_DumpPoints(e2.geom) p
+    WHERE
+      e1.edge_id != e2.edge_id
+      AND ST_Expand(e1.geom, %2$L) && e2.geom
+      AND ST_Distance(s.geom, p.geom) < %2$L
+      AND NOT (
+        ST_Equals(p.geom, ST_PointN(s.geom, 1))
+          OR
+        ST_Equals(p.geom, ST_PointN(s.geom, 2))
+      )
+    $$,
+    toponame,
+    tolerance
+  );
+
+  RETURN QUERY EXECUTE sql;
+END;
+$BODY$
+LANGUAGE 'plpgsql';
