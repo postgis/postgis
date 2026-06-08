@@ -354,6 +354,10 @@ static void lwcompound_to_wkt_sb(const LWCOMPOUND *comp, stringbuffer_t *sb, int
 		{
 			lwcircstring_to_wkt_sb((LWCIRCSTRING*)comp->geoms[i], sb, precision, variant );
 		}
+		else if ( type == NURBSCURVETYPE )
+		{
+			lwnurbscurve_to_wkt_sb((LWNURBSCURVE*)comp->geoms[i], sb, precision, variant );
+		}
 		else
 		{
 			lwerror("lwcompound_to_wkt_sb: Unknown type received %d - %s", type, lwtype_name(type));
@@ -683,7 +687,7 @@ static void lwnurbscurve_to_wkt_sb(const LWNURBSCURVE *curve, stringbuffer_t *sb
 		dimension_qualifiers_to_wkt_sb((LWGEOM*)curve, sb, output_variant);
 		stringbuffer_append_len(sb, "(", 1);
 		coordinate_to_wkt_sb(coords, sb, dimensions, precision);
-		stringbuffer_append_len(sb, "),WEIGHT ", 9);
+		stringbuffer_append_len(sb, "),WEIGHT ", strlen("),WEIGHT "));
 		stringbuffer_append_double(sb, weight, precision);
 		stringbuffer_append_len(sb, ")", 1);
 	}

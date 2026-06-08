@@ -44,46 +44,67 @@ lwcollection_getsubcurve(const LWCOMPOUND *compound, uint32_t curvenum)
 	return (const LWGEOM *)compound->geoms[curvenum];
 }
 
+static int
+lwcompound_curve_endpoint(const LWGEOM *geom, POINT4D *pt)
+{
+	if (!geom || lwgeom_is_empty(geom))
+		return LW_FAILURE;
+
+	if (geom->type == NURBSCURVETYPE)
+	{
+		LWPOINT *endpoint = lwnurbscurve_evaluate((const LWNURBSCURVE*)geom, 1.0);
+		int rv = LW_FAILURE;
+		if (endpoint && endpoint->point && endpoint->point->npoints > 0)
+			rv = getPoint4d_p(endpoint->point, 0, pt) ? LW_SUCCESS : LW_FAILURE;
+		lwpoint_free(endpoint);
+		return rv;
+	}
+
+	if (geom->type == LINETYPE || geom->type == CIRCSTRINGTYPE)
+	{
+		const LWLINE *line = (const LWLINE *)geom;
+		if (!line->points || line->points->npoints < 1)
+			return LW_FAILURE;
+		return getPoint4d_p(line->points, line->points->npoints - 1, pt) ? LW_SUCCESS : LW_FAILURE;
+	}
+
+	return LW_FAILURE;
+}
+
+static int
+lwcompound_points_equal(const POINT4D *a, const POINT4D *b, int hasz)
+{
+	if (!FP_EQUALS(a->x, b->x) || !FP_EQUALS(a->y, b->y))
+		return LW_FALSE;
+
+	if (hasz && !FP_EQUALS(a->z, b->z))
+		return LW_FALSE;
+
+	return LW_TRUE;
+}
+
 int
 lwcompound_is_closed(const LWCOMPOUND *compound)
 {
-	const LWLINE *line_start, *line_end;
-	const POINTARRAY *pa_start, *pa_end;
+	POINT4D pt_start, pt_end;
 
 	int hasz = lwgeom_has_z(lwcompound_as_lwgeom(compound));
 	if (lwgeom_is_empty(lwcompound_as_lwgeom(compound)))
 		return LW_FALSE;
 
 	/* Single entry, closes on itself */
-	if (compound->ngeoms == 1 && lwline_is_closed((LWLINE *)(compound->geoms[0])))
+	if (compound->ngeoms == 1 && lwgeom_is_closed(compound->geoms[0]))
 			return LW_TRUE;
 
 	/* If internal connectivity is lacking, so is closure */
 	if (!lwcompound_is_valid(compound))
 		return LW_FALSE;
 
-	/* Internal connection is good, what about start/end points? */
-	line_start = (LWLINE *)(compound->geoms[0]);
-	line_end = (LWLINE *)(compound->geoms[compound->ngeoms-1]);
-	pa_start = line_start->points;
-	pa_end = line_end->points;
+	if (lwgeom_startpoint(compound->geoms[0], &pt_start) == LW_FAILURE ||
+	    lwcompound_curve_endpoint(compound->geoms[compound->ngeoms-1], &pt_end) == LW_FAILURE)
+		return LW_FALSE;
 
-	if (hasz)
-	{
-		const POINT3D *pt_start = getPoint3d_cp(pa_start, 0);
-		const POINT3D *pt_end = getPoint3d_cp(pa_end, pa_end->npoints-1);
-		if (!p3d_same(pt_start, pt_end))
-			return LW_FALSE;
-	}
-	else
-	{
-		const POINT2D *pt_start = getPoint2d_cp(pa_start, 0);
-		const POINT2D *pt_end = getPoint2d_cp(pa_end, pa_end->npoints-1);
-		if (!p2d_same(pt_start, pt_end))
-			return LW_FALSE;
-	}
-
-	return LW_TRUE;
+	return lwcompound_points_equal(&pt_start, &pt_end, hasz);
 }
 
 int
@@ -100,31 +121,20 @@ lwcompound_is_valid(const LWCOMPOUND *compound)
 	/* Check internal connectivity between components */
 	for (uint32_t i = 1; i < compound->ngeoms; i++)
 	{
-		const POINTARRAY *pa_start, *pa_end;
-		const LWLINE *line_start = (LWLINE *)(compound->geoms[i]);
-		const LWLINE *line_end = (LWLINE *)(compound->geoms[i-1]);
+		POINT4D pt_start, pt_end;
+		const LWGEOM *geom_start = compound->geoms[i];
+		const LWGEOM *geom_end = compound->geoms[i-1];
 
 		/* Empty cannot be a compound component, because it joins nothing */
-		if (lwline_is_empty(line_start) || (lwline_is_empty(line_end)))
+		if (lwgeom_is_empty(geom_start) || lwgeom_is_empty(geom_end))
 			return LW_FALSE;
 
-		pa_start = line_start->points;
-		pa_end = line_end->points;
+		if (lwgeom_startpoint(geom_start, &pt_start) == LW_FAILURE ||
+		    lwcompound_curve_endpoint(geom_end, &pt_end) == LW_FAILURE)
+			return LW_FALSE;
 
-		if (hasz)
-		{
-			const POINT3D *pt_start = getPoint3d_cp(pa_start, 0);
-			const POINT3D *pt_end = getPoint3d_cp(pa_end, pa_end->npoints-1);
-			if (!p3d_same(pt_start, pt_end))
-				return LW_FALSE;
-		}
-		else
-		{
-			const POINT2D *pt_start = getPoint2d_cp(pa_start, 0);
-			const POINT2D *pt_end = getPoint2d_cp(pa_end, pa_end->npoints-1);
-			if (!p2d_same(pt_start, pt_end))
-				return LW_FALSE;
-		}
+		if (!lwcompound_points_equal(&pt_start, &pt_end, hasz))
+			return LW_FALSE;
 	}
 
 	return LW_TRUE;
@@ -163,16 +173,9 @@ int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom)
 	if( col->ngeoms > 0 )
 	{
 		POINT4D last, first;
-		/* First point of the component we are adding */
-		LWLINE *newline = (LWLINE*)geom;
-		/* Last point of the previous component */
-		LWLINE *prevline = (LWLINE*)(col->geoms[col->ngeoms-1]);
-
-		if (lwline_is_empty(prevline))
+		if (lwgeom_startpoint(geom, &first) == LW_FAILURE ||
+		    lwcompound_curve_endpoint(col->geoms[col->ngeoms - 1], &last) == LW_FAILURE)
 			return LW_FAILURE;
-
-		getPoint4d_p(newline->points, 0, &first);
-		getPoint4d_p(prevline->points, prevline->points->npoints-1, &last);
 
 		if ( !(FP_EQUALS(first.x,last.x) && FP_EQUALS(first.y,last.y)) )
 		{
