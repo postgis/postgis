@@ -506,11 +506,15 @@ compoundcurve :
 compound_list :
 	compound_list COMMA_TOK circularstring
 		{ $$ = wkt_parser_compound_add_geom($1,$3); WKT_ERROR(); } |
+	compound_list COMMA_TOK nurbscurve
+		{ $$ = wkt_parser_compound_add_geom($1,$3); WKT_ERROR(); } |
 	compound_list COMMA_TOK linestring
 		{ $$ = wkt_parser_compound_add_geom($1,$3); WKT_ERROR(); } |
 	compound_list COMMA_TOK linestring_untagged
 		{ $$ = wkt_parser_compound_add_geom($1,$3); WKT_ERROR(); } |
 	circularstring
+		{ $$ = wkt_parser_compound_new($1); WKT_ERROR(); } |
+	nurbscurve
 		{ $$ = wkt_parser_compound_new($1); WKT_ERROR(); } |
 	linestring
 		{ $$ = wkt_parser_compound_new($1); WKT_ERROR(); } |
