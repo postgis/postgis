@@ -1,0 +1,1 @@
+ERROR:  CG_PolygonRepair: 'UNION' rule requires CGAL 6.1 or later
