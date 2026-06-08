@@ -173,6 +173,10 @@ SELECT 'NURBS_CURVEPOLY_4', ST_Contains(
     'POINT(5 1)'::geometry
 );
 
+SELECT 'NURBS_TRANSFORM_1',
+    ST_GeometryType(ST_Transform('SRID=4326;NURBSCURVE(2, (0 0, 0.5 1, 1 0))'::geometry, 3857)),
+    ST_SRID(ST_Transform('SRID=4326;NURBSCURVE(2, (0 0, 0.5 1, 1 0))'::geometry, 3857));
+
 -- Test 15: WKT round-trip should not turn implicit unit weights into rational weights
 WITH nurbs_curve AS (
     SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 1 1, 2 0)'::geometry) AS geom

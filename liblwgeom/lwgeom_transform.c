@@ -356,6 +356,12 @@ lwgeom_transform(LWGEOM *geom, LWPROJ *pj)
 			}
 			break;
 		}
+		case NURBSCURVETYPE:
+		{
+			LWNURBSCURVE *g = (LWNURBSCURVE*)geom;
+			if ( ! ptarray_transform(g->points, pj) ) return LW_FAILURE;
+			break;
+		}
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
