@@ -2022,6 +2022,7 @@ sfcgal_postgis_nurbs_curve_interpolate(PG_FUNCTION_ARGS)
 	sfcgal_geometry_t *sfcgal_nurbs;
 	LWNURBSCURVE *result_nurbs;
 	int32_t degree;
+	uint32_t min_points;
 	uint32_t i;
 	POINT4D pt;
 	srid_t srid;
@@ -2042,6 +2043,7 @@ sfcgal_postgis_nurbs_curve_interpolate(PG_FUNCTION_ARGS)
 		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 				errmsg("NURBS degree must be between 1 and 10")));
 	}
+	min_points = (uint32_t)degree + 1;
 
 	/* Extract data points */
 	lwgeom = lwgeom_from_gserialized(input);
@@ -2054,7 +2056,7 @@ sfcgal_postgis_nurbs_curve_interpolate(PG_FUNCTION_ARGS)
 	}
 
 	line = (LWLINE*)lwgeom;
-	if (!line->points || line->points->npoints < degree + 1)
+	if (!line->points || line->points->npoints < min_points)
 	{
 		lwgeom_free(lwgeom);
 		PG_FREE_IF_COPY(input, 0);
@@ -2164,6 +2166,7 @@ sfcgal_postgis_nurbs_curve_approximate(PG_FUNCTION_ARGS)
 	int32_t degree;
 	float8 tolerance;
 	int32_t max_control_points = 100; /* default */
+	uint32_t min_points;
 	sfcgal_geometry_t **points;
 	sfcgal_geometry_t *sfcgal_nurbs;
 	LWNURBSCURVE *result_nurbs;
@@ -2190,6 +2193,7 @@ sfcgal_postgis_nurbs_curve_approximate(PG_FUNCTION_ARGS)
 		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 				errmsg("NURBS degree is %d, must be between 1 and 10", degree)));
 	}
+	min_points = (uint32_t)degree + 1;
 
 	/* Convert to lwgeom */
 	lwgeom = lwgeom_from_gserialized(input);
@@ -2202,7 +2206,7 @@ sfcgal_postgis_nurbs_curve_approximate(PG_FUNCTION_ARGS)
 	}
 
 	line = (LWLINE*)lwgeom;
-	if (!line->points || line->points->npoints < degree + 1)
+	if (!line->points || line->points->npoints < min_points)
 	{
 		lwgeom_free(lwgeom);
 		PG_FREE_IF_COPY(input, 0);
