@@ -135,6 +135,44 @@ SELECT 'NURBS_CONV_8', ST_NumPoints(ST_NurbsToLineString(
     2
 )) as min_segments;
 
+SELECT 'NURBS_CONV_9',
+    ST_AsEWKT(ST_NurbsToLineString('SRID=4326;NURBSCURVE Z EMPTY'::geometry)),
+    ST_Zmflag(ST_NurbsToLineString('SRID=4326;NURBSCURVE Z EMPTY'::geometry)),
+    ST_SRID(ST_NurbsToLineString('SRID=4326;NURBSCURVE Z EMPTY'::geometry));
+
+SELECT 'NURBS_CURVETOLINE_1', ST_GeometryType(ST_CurveToLine(
+    'COMPOUNDCURVE(NURBSCURVE(2, (0 0, 1 1, 2 0)), (2 0, 3 1))'::geometry
+));
+
+SELECT 'NURBS_CURVETOLINE_2', ST_GeometryType(ST_CurveToLine(
+    'MULTICURVE(NURBSCURVE(2, (0 0, 1 1, 2 0)))'::geometry
+));
+
+SELECT 'NURBS_CURVETOLINE_3',
+    ST_AsEWKT(ST_CurveToLine('SRID=4326;NURBSCURVE Z EMPTY'::geometry)),
+    ST_Zmflag(ST_CurveToLine('SRID=4326;NURBSCURVE Z EMPTY'::geometry)),
+    ST_SRID(ST_CurveToLine('SRID=4326;NURBSCURVE Z EMPTY'::geometry));
+
+SELECT 'NURBS_LENGTH_1', ST_Length('MULTICURVE(NURBSCURVE(2, (0 0, 1 1, 2 0)))'::geometry) > 0;
+
+SELECT 'NURBS_CURVEPOLY_1', ST_Contains(
+    'CURVEPOLYGON(COMPOUNDCURVE(NURBSCURVE(2, (0 0, 5 10, 10 0)), (10 0, 0 0)))'::geometry,
+    'POINT(5 1)'::geometry
+);
+
+SELECT 'NURBS_CURVEPOLY_2', ST_GeometryType(ST_CurveToLine(
+    'CURVEPOLYGON(NURBSCURVE(2, (0 0, 5 10, 10 0, 5 -10, 0 0)))'::geometry
+));
+
+SELECT 'NURBS_CURVEPOLY_3', ST_GeometryType(ST_GeomFromText(ST_AsText(
+    'CURVEPOLYGON(NURBSCURVE(2, (0 0, 5 10, 10 0, 5 -10, 0 0)))'::geometry
+)));
+
+SELECT 'NURBS_CURVEPOLY_4', ST_Contains(
+    'CURVEPOLYGON(NURBSCURVE(2, (0 0, 5 10, 10 0, 5 -10, 0 0)))'::geometry,
+    'POINT(5 1)'::geometry
+);
+
 -- Test 15: WKT round-trip should not turn implicit unit weights into rational weights
 WITH nurbs_curve AS (
     SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 1 1, 2 0)'::geometry) AS geom

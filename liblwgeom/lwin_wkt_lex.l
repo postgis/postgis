@@ -104,7 +104,12 @@ EMPTY { return EMPTY_TOK; }
 
 Z|M|ZM {
 	LWDEBUG(5,"DIMENSIONALITY");
-	wkt_yylval.stringvalue = wkt_yytext;
+	if (wkt_yytext[0] == 'Z' && wkt_yytext[1] == 'M')
+		wkt_yylval.stringvalue = "ZM";
+	else if (wkt_yytext[0] == 'Z')
+		wkt_yylval.stringvalue = "Z";
+	else
+		wkt_yylval.stringvalue = "M";
 	return DIMENSIONALITY_TOK;
 	}
 

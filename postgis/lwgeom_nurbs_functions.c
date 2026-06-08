@@ -327,6 +327,7 @@ Datum ST_ControlPoints(PG_FUNCTION_ARGS)
 	LWGEOM *geom;
 	LWNURBSCURVE *nurbs;
 	LWMPOINT *mpoint;
+	POINTARRAY *control_points;
 	GSERIALIZED *result;
 
 	if (PG_ARGISNULL(0)) {
@@ -350,7 +351,9 @@ Datum ST_ControlPoints(PG_FUNCTION_ARGS)
 	}
 
 	/* Create MULTIPOINT from control points */
-	mpoint = lwmpoint_construct(nurbs->srid, ptarray_clone_deep(nurbs->points));
+	control_points = ptarray_clone_deep(nurbs->points);
+	mpoint = lwmpoint_construct(nurbs->srid, control_points);
+	ptarray_free(control_points);
 	if (!mpoint) {
 		lwgeom_free(geom);
 		ereport(ERROR, (errcode(ERRCODE_INTERNAL_ERROR),

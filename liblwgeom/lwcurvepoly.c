@@ -88,7 +88,8 @@ int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 	}
 
 	/* Check that we're adding an allowed ring type */
-	if ( ! ( ring->type == LINETYPE || ring->type == CIRCSTRINGTYPE || ring->type == COMPOUNDTYPE ) )
+	if ( ! ( ring->type == LINETYPE || ring->type == CIRCSTRINGTYPE ||
+	          ring->type == COMPOUNDTYPE || ring->type == NURBSCURVETYPE ) )
 	{
 		LWDEBUGF(4,"got incorrect ring type: %s",lwtype_name(ring->type));
 		return LW_FAILURE;

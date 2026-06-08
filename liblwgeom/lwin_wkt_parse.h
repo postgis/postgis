@@ -45,7 +45,7 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 205 "liblwgeom/lwin_wkt_parse.y"
+#line 250 "liblwgeom/lwin_wkt_parse.y"
 
 typedef struct WKT_NURBS_CONTROLPOINTS WKT_NURBS_CONTROLPOINTS;
 
@@ -99,7 +99,7 @@ typedef struct WKT_NURBS_CONTROLPOINTS WKT_NURBS_CONTROLPOINTS;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 211 "liblwgeom/lwin_wkt_parse.y"
+#line 256 "liblwgeom/lwin_wkt_parse.y"
 
 	int integervalue;
 	double doublevalue;
