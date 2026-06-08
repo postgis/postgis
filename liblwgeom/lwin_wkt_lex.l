@@ -93,6 +93,13 @@ TRIANGLE { return TRIANGLE_TOK; }
 TIN { return TIN_TOK; }
 POINT { return POINT_TOK; }
 NURBSCURVE { return NURBSCURVE_TOK; }
+DEGREE { return DEGREE_TOK; }
+CONTROLPOINTS { return CONTROLPOINTS_TOK; }
+KNOTS { return KNOTS_TOK; }
+NURBSPOINT { return NURBSPOINT_TOK; }
+WEIGHTEDPOINT { return WEIGHTEDPOINT_TOK; }
+WEIGHT { return WEIGHT_TOK; }
+KNOT { return KNOT_TOK; }
 EMPTY { return EMPTY_TOK; }
 
 Z|M|ZM {
@@ -147,4 +154,3 @@ void wkt_lexer_close()
 {
 	wkt_yy_delete_buffer(wkt_yy_buf_state);
 }
-
