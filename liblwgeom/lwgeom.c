@@ -1148,6 +1148,27 @@ lwgeom_is_closed(const LWGEOM *geom)
 		return lwpoly_is_closed((LWPOLY*)geom);
 	case CIRCSTRINGTYPE:
 		return lwcircstring_is_closed((LWCIRCSTRING*)geom);
+	case NURBSCURVETYPE:
+	{
+		POINT4D start, end;
+		LWPOINT *startpt = lwnurbscurve_evaluate((const LWNURBSCURVE*)geom, 0.0);
+		LWPOINT *endpt = lwnurbscurve_evaluate((const LWNURBSCURVE*)geom, 1.0);
+		int closed = LW_FALSE;
+
+		if (startpt && endpt &&
+		    lwpoint_getPoint4d_p(startpt, &start) &&
+		    lwpoint_getPoint4d_p(endpt, &end))
+		{
+			if (FLAGS_GET_Z(geom->flags))
+				closed = FP_EQUALS(start.x, end.x) && FP_EQUALS(start.y, end.y) && FP_EQUALS(start.z, end.z);
+			else
+				closed = FP_EQUALS(start.x, end.x) && FP_EQUALS(start.y, end.y);
+		}
+
+		lwpoint_free(startpt);
+		lwpoint_free(endpt);
+		return closed;
+	}
 	case COMPOUNDTYPE:
 		return lwcompound_is_closed((LWCOMPOUND*)geom);
 	case TINTYPE:
@@ -1193,6 +1214,7 @@ lwtype_is_unitary(uint32_t lwtype)
 	case CURVEPOLYTYPE:
 	case COMPOUNDTYPE:
 	case CIRCSTRINGTYPE:
+	case NURBSCURVETYPE:
 	case TRIANGLETYPE:
 	case POLYHEDRALSURFACETYPE:
 	case TINTYPE:

@@ -192,6 +192,7 @@ select 'intersects', ST_intersects(
 
 select 'ST_GeometryN', ST_asewkt(ST_GeometryN('LINESTRING(0 0, 1 1)'::geometry, 1));
 select 'ST_NumGeometries', ST_NumGeometries('LINESTRING(0 0, 1 1)'::geometry);
+select 'ST_NumGeometriesNurbs1', ST_NumGeometries('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry);
 select 'ST_Union1', ST_AsText(ST_Normalize(ST_Union(ARRAY['POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 'POLYGON((0.5 0.5, 1.5 0.5, 1.5 1.5, 0.5 1.5, 0.5 0.5))'::geometry])));
 select 'ST_EndPoint1', ST_AsText(ST_Endpoint('LINESTRING(0 0, 1 1, 2 2)'::geometry));
 select 'ST_EndPoint2', ST_AsText(ST_EndPoint(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 1 1, 2 0)'::geometry)));
@@ -200,6 +201,10 @@ select 'ST_EndPoint4', ST_AsText(ST_EndPoint('NURBSCURVE EMPTY'::geometry));
 select 'ST_TranslateNurbs1', ST_AsText(ST_Translate(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 1 1, 2 0)'::geometry), 10, 20));
 select 'ST_MultiNurbs1', ST_AsText(ST_Multi(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 1 1, 2 0)'::geometry)));
 select 'MultiCurveNurbs1', ST_AsText('MULTICURVE(NURBSCURVE(2, (0 0, 1 1, 2 0)))'::geometry);
+select 'CompoundCurveNurbs1', ST_AsText('COMPOUNDCURVE(NURBSCURVE(2, (0 0, 1 1, 2 0)), (2 0, 3 1))'::geometry);
+select 'ST_IsClosedNurbs1', ST_IsClosed('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry);
+select 'ST_IsClosedNurbs2', ST_IsClosed('NURBSCURVE(2, (0 0, 1 1, 0 0))'::geometry);
+select 'ST_IsClosedCompoundNurbs1', ST_IsClosed('COMPOUNDCURVE(NURBSCURVE(2, (0 0, 1 1, 2 0)), (2 0, 0 0))'::geometry);
 select 'ST_CollectNurbs1', ST_GeometryType(ST_Collect(
 	ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 1 1, 2 0)'::geometry),
 	ST_MakeNurbsCurve(2, 'LINESTRING(2 0, 3 1, 4 0)'::geometry)));
