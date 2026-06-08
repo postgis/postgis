@@ -52,3 +52,4 @@
 52|4326
 53|NURBSCURVE EMPTY
 ERROR:  WKB NURBSCURVE: degree 3 requires at least 4 control points, got 2
+ERROR:  WKB NURBSCURVE EMPTY: expected 0 knots, got 1

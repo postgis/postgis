@@ -946,7 +946,14 @@ static LWNURBSCURVE* lwnurbscurve_from_wkb_state(wkb_parse_state *s)
 	}
 
 	if (npoints == 0)
+	{
+		if (nknots != 0)
+		{
+			lwerror("WKB NURBSCURVE EMPTY: expected 0 knots, got %u", nknots);
+			return NULL;
+		}
 		return lwnurbscurve_construct_empty(s->srid, s->has_z, s->has_m);
+	}
 
 	if (nknots == 0) {
 		lwerror("WKB NURBSCURVE: knots required by standard (got 0)");
