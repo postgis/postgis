@@ -906,14 +906,17 @@ Datum LWGEOM_endm_curve(PG_FUNCTION_ARGS)
 	else if (type == COMPOUNDTYPE)
 	{
 		LWCOMPOUND *comp = (LWCOMPOUND*)lwgeom;
-		LWGEOM *last = comp->geoms[comp->ngeoms - 1];
-		if (last->type == LINETYPE || last->type == CIRCSTRINGTYPE)
+		if (comp->ngeoms > 0)
 		{
-			pa = ((LWLINE*)last)->points;
-		}
-		else if (last->type == NURBSCURVETYPE)
-		{
-			pa = ((LWNURBSCURVE*)last)->points;
+			LWGEOM *last = comp->geoms[comp->ngeoms - 1];
+			if (last->type == LINETYPE || last->type == CIRCSTRINGTYPE)
+			{
+				pa = ((LWLINE*)last)->points;
+			}
+			else if (last->type == NURBSCURVETYPE)
+			{
+				pa = ((LWNURBSCURVE*)last)->points;
+			}
 		}
 	}
 
@@ -979,14 +982,17 @@ Datum LWGEOM_setstartm_curve(PG_FUNCTION_ARGS)
 	else if (type == COMPOUNDTYPE)
 	{
 		LWCOMPOUND *comp = (LWCOMPOUND*)lwgeom;
-		LWGEOM *first = comp->geoms[0];
-		if (first->type == LINETYPE || first->type == CIRCSTRINGTYPE)
+		if (comp->ngeoms > 0)
 		{
-			pa = ((LWLINE*)first)->points;
-		}
-		else if (first->type == NURBSCURVETYPE)
-		{
-			pa = ((LWNURBSCURVE*)first)->points;
+			LWGEOM *first = comp->geoms[0];
+			if (first->type == LINETYPE || first->type == CIRCSTRINGTYPE)
+			{
+				pa = ((LWLINE*)first)->points;
+			}
+			else if (first->type == NURBSCURVETYPE)
+			{
+				pa = ((LWNURBSCURVE*)first)->points;
+			}
 		}
 	}
 
@@ -1052,14 +1058,17 @@ Datum LWGEOM_setendm_curve(PG_FUNCTION_ARGS)
 	else if (type == COMPOUNDTYPE)
 	{
 		LWCOMPOUND *comp = (LWCOMPOUND*)lwgeom;
-		LWGEOM *last = comp->geoms[comp->ngeoms - 1];
-		if (last->type == LINETYPE || last->type == CIRCSTRINGTYPE)
+		if (comp->ngeoms > 0)
 		{
-			pa = ((LWLINE*)last)->points;
-		}
-		else if (last->type == NURBSCURVETYPE)
-		{
-			pa = ((LWNURBSCURVE*)last)->points;
+			LWGEOM *last = comp->geoms[comp->ngeoms - 1];
+			if (last->type == LINETYPE || last->type == CIRCSTRINGTYPE)
+			{
+				pa = ((LWLINE*)last)->points;
+			}
+			else if (last->type == NURBSCURVETYPE)
+			{
+				pa = ((LWNURBSCURVE*)last)->points;
+			}
 		}
 	}
 

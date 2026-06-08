@@ -807,23 +807,28 @@ static LWNURBSCURVE* lwnurbscurve_from_wkb_state(wkb_parse_state *s)
     POINTARRAY *points = NULL;
     int all_weights_one = 1;
 
-    /* ISO/IEC 13249-3:2016 compliant parsing */
-    degree = integer_from_wkb_state(s);
-    if (s->error) return NULL;
+	/* ISO/IEC 13249-3:2016 compliant parsing */
+	degree = integer_from_wkb_state(s);
+	if (s->error) return NULL;
 
-    /* Defensive upper bound (worst-case 4 doubles/point) */
-    static const uint32_t MAXPOINTS = (uint32_t)(UINT_MAX / (WKB_DOUBLE_SIZE * 4));
-    if (npoints > MAXPOINTS) {
-        lwerror("WKB NURBSCURVE: control point count (%u) too large", npoints);
-        return NULL;
-    }
+	/* Read control points count */
+	npoints = integer_from_wkb_state(s);
+	if (s->error) return NULL;
 
-    /* Read control points count */
-    npoints = integer_from_wkb_state(s);
-    if (s->error) return NULL;
+	/* Defensive upper bound (worst-case 4 doubles/point) */
+	static const uint32_t MAXPOINTS = (uint32_t)(UINT_MAX / (WKB_DOUBLE_SIZE * 4));
+	if (npoints > MAXPOINTS) {
+		lwerror("WKB NURBSCURVE: control point count (%u) too large", npoints);
+		return NULL;
+	}
+	if (npoints > 0 && npoints <= degree) {
+		lwerror("WKB NURBSCURVE: degree %u requires at least %llu control points, got %u",
+		        degree, (unsigned long long)degree + 1, npoints);
+		return NULL;
+	}
 
-    /* Initialize points array */
-    if (npoints > 0) {
+	/* Initialize points array */
+	if (npoints > 0) {
         points = ptarray_construct(s->has_z, s->has_m, npoints);
         weights = lwalloc(sizeof(double) * npoints);
 
