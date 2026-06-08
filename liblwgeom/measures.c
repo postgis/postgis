@@ -926,11 +926,11 @@ lw_dist2d_tri_curvepoly(LWTRIANGLE *tri, LWCURVEPOLY *poly, DISTPTS *dl)
 		if (lw_dist2d_recursive((LWGEOM *)tri, poly->rings[0], dl))
 			return LW_TRUE;
 		/* Maybe poly is inside triangle? */
-			if (lwgeom_contains_point((LWGEOM *)tri, lw_curvering_getfirstpoint2d_cp(poly->rings[0], &ringpt)) != LW_OUTSIDE)
-			{
-				lw_dist2d_distpts_set(dl, 0.0, pt, pt);
-				return LW_TRUE;
-			}
+		if (lwgeom_contains_point((LWGEOM *)tri, lw_curvering_getfirstpoint2d_cp(poly->rings[0], &ringpt)) != LW_OUTSIDE)
+		{
+			lw_dist2d_distpts_set(dl, 0.0, pt, pt);
+			return LW_TRUE;
+		}
 	}
 
 	for (uint32_t i = 1; i < poly->nrings; i++)
