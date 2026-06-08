@@ -27,11 +27,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 
 #define out_stack_size 32
+
+static char
+lwnurbscurve_same(const LWNURBSCURVE *curve1, const LWNURBSCURVE *curve2)
+{
+	if (lwnurbscurve_is_empty(curve1) && lwnurbscurve_is_empty(curve2))
+		return LW_TRUE;
+
+	if (curve1->degree != curve2->degree)
+		return LW_FALSE;
+	if (!curve1->points || !curve2->points || !ptarray_same(curve1->points, curve2->points))
+		return LW_FALSE;
+	if (curve1->nweights != curve2->nweights || curve1->nknots != curve2->nknots)
+		return LW_FALSE;
+	if (curve1->nweights && memcmp(curve1->weights, curve2->weights, sizeof(double) * curve1->nweights))
+		return LW_FALSE;
+	if (curve1->nknots && memcmp(curve1->knots, curve2->knots, sizeof(double) * curve1->nknots))
+		return LW_FALSE;
+
+	return LW_TRUE;
+}
 
 
 /**
@@ -718,6 +739,9 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 	case CIRCSTRINGTYPE:
 		return lwcircstring_same((LWCIRCSTRING *)lwgeom1,
 					 (LWCIRCSTRING *)lwgeom2);
+	case NURBSCURVETYPE:
+		return lwnurbscurve_same((LWNURBSCURVE *)lwgeom1,
+		                         (LWNURBSCURVE *)lwgeom2);
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
@@ -1749,6 +1773,14 @@ void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2)
 		ptarray_swap_ordinates(lwgeom_as_lwcircstring(in)->points, o1, o2);
 		break;
 
+	case NURBSCURVETYPE:
+	{
+		LWNURBSCURVE *n = (LWNURBSCURVE *)in;
+		if (n->points)
+			ptarray_swap_ordinates(n->points, o1, o2);
+		break;
+	}
+
 	case POLYGONTYPE:
 		poly = (LWPOLY *) in;
 		for (i=0; i<poly->nrings; i++)
@@ -2559,6 +2591,31 @@ lwgeom_grid_in_place(LWGEOM *geom, gridspec *grid)
 			/* For invalid line, return an EMPTY */
 			if (ln->points->npoints < 2)
 				ln->points->npoints = 0;
+			return;
+		}
+		case NURBSCURVETYPE:
+		{
+			LWNURBSCURVE *n = (LWNURBSCURVE *)(geom);
+			uint32_t old_npoints;
+			if (!n->points)
+				return;
+
+			old_npoints = n->points->npoints;
+			ptarray_grid_in_place(n->points, grid);
+			if (n->points->npoints < n->degree + 1)
+				n->points->npoints = 0;
+
+			if (n->points->npoints != old_npoints)
+			{
+				if (n->weights)
+					lwfree(n->weights);
+				if (n->knots)
+					lwfree(n->knots);
+				n->weights = NULL;
+				n->knots = NULL;
+				n->nweights = 0;
+				n->nknots = 0;
+			}
 			return;
 		}
 		case POLYGONTYPE:
