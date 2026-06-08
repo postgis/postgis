@@ -1755,6 +1755,11 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                     <funcdef>geometry <function>CG_ApproximateMedialAxis</function></funcdef>
                     <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
                 </funcprototype>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_ApproximateMedialAxis</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    <paramdef><type>boolean</type> <parameter>projected</parameter></paramdef>
+                </funcprototype>
             </funcsynopsis>
         </refsynopsisdiv>
 
@@ -1767,8 +1772,16 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                 a capable version (1.2.0+). Otherwise the function is just a wrapper
                 around CG_StraightSkeleton (slower case).
             </para>
+            <para>
+                When <varname>projected</varname> is <varname>true</varname>, free
+                endpoints of the medial axis are extended to reach the polygon boundary
+                (projected medial axis). Requires SFCGAL 2.3.0+. When built against
+                an older SFCGAL version, a notice is emitted and the non-projected
+                result is returned instead.
+            </para>
 
             <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+            <para role="availability" conformance="3.7.0">Availability: 3.7.0 - <varname>projected</varname> parameter. Requires SFCGAL &gt;= 2.3.0 for projected result; falls back to non-projected with a notice on older versions.</para>
             <note><para>This function ignores the Z dimension.
 It always gives a 2D result even when used on a 3D geometry.</para></note>
             <para>&sfcgal_required;</para>
@@ -1796,6 +1809,10 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
                     </tbody>
                 </tgroup>
             </informaltable>
+
+            <programlisting>-- Projected medial axis: free endpoints extended to polygon boundary
+SELECT CG_ApproximateMedialAxis('POLYGON((0 0,2 0,2 1,0 1,0 0))', true);
+-- Result: MULTILINESTRING((0 0.5,2 0.5))</programlisting>
         </refsection>
 
         <refsection>
