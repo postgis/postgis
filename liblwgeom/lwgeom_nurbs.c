@@ -527,7 +527,6 @@ lwnurbscurve_evaluate(const LWNURBSCURVE *curve, double t)
 	lwfree(temp);
 	lwfree(knots);
 
-create_result:
 	lwpoint = lwpoint_construct(curve->srid, NULL, ptarray_construct_empty(hasz, hasm, 1));
 	ptarray_append_point(lwpoint->point, &result, LW_TRUE);
 	return lwpoint;
