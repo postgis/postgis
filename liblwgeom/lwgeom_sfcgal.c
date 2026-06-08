@@ -358,12 +358,11 @@ ptarray_to_SFCGAL(const POINTARRAY *pa, int type)
  * curve is created as rational. Temporary SFCGAL point objects are allocated
  * during construction and freed before returning.
  *
- * @param nurbs PostGIS NURBS curve to convert. Must be non-NULL and contain at
- *              least one control point.
+ * @param nurbs PostGIS NURBS curve to convert. Must be non-NULL.
  * @returns A newly created `sfcgal_geometry_t *` representing the NURBS curve,
- *          or NULL if `nurbs` is NULL, has no control points, or conversion
- *          fails. The caller is responsible for deleting the returned geometry
- *          with `sfcgal_geometry_delete`.
+ *          or NULL if `nurbs` is NULL or conversion fails. Empty NURBS curves
+ *          return an empty SFCGAL NURBS curve. The caller is responsible for
+ *          deleting the returned geometry with `sfcgal_geometry_delete`.
  */
 static sfcgal_geometry_t*
 lwgeom_nurbs_to_sfcgal_nurbs(const LWNURBSCURVE *nurbs)
@@ -375,8 +374,11 @@ lwgeom_nurbs_to_sfcgal_nurbs(const LWNURBSCURVE *nurbs)
 	uint32_t i;
 	POINT4D pt;
 
-	if (!nurbs || !nurbs->points || nurbs->points->npoints == 0)
+	if (!nurbs)
 		return NULL;
+
+	if (!nurbs->points || nurbs->points->npoints == 0)
+		return sfcgal_nurbs_curve_create();
 
 	/* Create array of SFCGAL points from control points */
 	points = (sfcgal_geometry_t**)lwalloc(sizeof(sfcgal_geometry_t*) * nurbs->points->npoints);
@@ -466,6 +468,9 @@ sfcgal_nurbs_to_lwgeom_nurbs(const sfcgal_geometry_t* sfcgal_nurbs, int srid)
 
 	if (!sfcgal_nurbs)
 		return NULL;
+
+	if (sfcgal_geometry_is_empty(sfcgal_nurbs))
+		return lwnurbscurve_construct_empty(srid, sfcgal_geometry_is_3d(sfcgal_nurbs), 0);
 
 	num_points = sfcgal_nurbs_curve_num_control_points(sfcgal_nurbs);
 	degree = sfcgal_nurbs_curve_degree(sfcgal_nurbs);
