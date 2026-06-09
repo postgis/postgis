@@ -1392,17 +1392,33 @@ lw_dist2d_seg_arc(const POINT2D *A1,
 	{
 		double length_A;  /* length of the segment A */
 		POINT2D E, F;     /* points of intersection of edge A and circle(B) */
-		double dist_D_EF; /* distance from D to E or F (same distance both ways) */
+		double dist_D_EF; /* distance from D_line to E or F (same distance both ways) */
+		POINT2D D_line;   /* foot of perpendicular from C to the infinite line through A1-A2 */
+		double dist_C_D_line; /* distance from C to the infinite line */
+		double t;
 
-		dist_D_EF = sqrt(radius_C * radius_C - dist_C_D * dist_C_D);
 		length_A = sqrt((A2->x - A1->x) * (A2->x - A1->x) + (A2->y - A1->y) * (A2->y - A1->y));
 
+		/*
+		 * D (from lw_dist2d_pt_seg) is clamped to the segment, but we need the
+		 * foot of the perpendicular on the *infinite* line to correctly compute
+		 * circle-line intersections E and F. Using the clamped endpoint gives wrong
+		 * intersection points when the perpendicular falls outside the segment.
+		 */
+		t = ((C.x - A1->x) * (A2->x - A1->x) + (C.y - A1->y) * (A2->y - A1->y))
+		    / (length_A * length_A);
+		D_line.x = A1->x + t * (A2->x - A1->x);
+		D_line.y = A1->y + t * (A2->y - A1->y);
+		dist_C_D_line = sqrt((C.x - D_line.x) * (C.x - D_line.x) + (C.y - D_line.y) * (C.y - D_line.y));
+
+		dist_D_EF = sqrt(radius_C * radius_C - dist_C_D_line * dist_C_D_line);
+
 		/* Point of intersection E */
-		E.x = D.x - (A2->x - A1->x) * dist_D_EF / length_A;
-		E.y = D.y - (A2->y - A1->y) * dist_D_EF / length_A;
+		E.x = D_line.x - (A2->x - A1->x) * dist_D_EF / length_A;
+		E.y = D_line.y - (A2->y - A1->y) * dist_D_EF / length_A;
 		/* Point of intersection F */
-		F.x = D.x + (A2->x - A1->x) * dist_D_EF / length_A;
-		F.y = D.y + (A2->y - A1->y) * dist_D_EF / length_A;
+		F.x = D_line.x + (A2->x - A1->x) * dist_D_EF / length_A;
+		F.y = D_line.y + (A2->y - A1->y) * dist_D_EF / length_A;
 
 		/* If E is within A and within B then it's an intersection point */
 		pt_in_arc = lw_pt_in_arc(&E, B1, B2, B3);
