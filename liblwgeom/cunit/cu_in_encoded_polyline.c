@@ -53,6 +53,15 @@ static void in_encoded_polyline_test_precision(void)
 	    "SRID=4326;LINESTRING(-0.250691 49.283048,-0.250633 49.283376,-0.250502 49.283972,-0.251245 49.284028,-0.251938 49.284232,-0.251938 49.2842)");
 }
 
+static void in_encoded_polyline_test_close_points(void)
+{
+	/* #5357: two close points must not collapse to one */
+	do_encoded_polyline_test(
+		"__nphBgcoeiA?@",
+		6,
+		"SRID=4326;LINESTRING(38.903876 55.336448,38.903875 55.336448)");
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -62,4 +71,5 @@ void in_encoded_polyline_suite_setup(void)
 	CU_pSuite suite = CU_add_suite("encoded_polyline_input", NULL, NULL);
 	PG_ADD_TEST(suite, in_encoded_polyline_test_geoms);
 	PG_ADD_TEST(suite, in_encoded_polyline_test_precision);
+	PG_ADD_TEST(suite, in_encoded_polyline_test_close_points);
 }
