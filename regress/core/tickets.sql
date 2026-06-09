@@ -1641,3 +1641,6 @@ INSERT INTO fault6028 (fid, geom)
 SELECT * FROM fault6028;
 DROP TABLE IF EXISTS fault6028;
 
+-- #5357
+SELECT '#5357', ST_AsText(ST_LineFromEncodedPolyline('__nphBgcoeiA?@', 6), 6);
+

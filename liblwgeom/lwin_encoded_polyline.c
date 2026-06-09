@@ -26,6 +26,7 @@
 #include <assert.h>
 #include <string.h>
 #include <math.h>
+#include <stdint.h>
 
 #include "liblwgeom.h"
 #include "../postgis_config.h"
@@ -39,8 +40,8 @@ lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
   int idx = 0;
 	double scale = pow(10,precision);
 
-  float latitude = 0.0f;
-  float longitude = 0.0f;
+  int32_t latitude = 0;
+  int32_t longitude = 0;
 
   pa = ptarray_construct_empty(LW_FALSE, LW_FALSE, 1);
 
@@ -55,7 +56,7 @@ lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
       res |= (byte & 0x1F) << shift;
       shift += 5;
     } while (byte >= 0x20);
-    float deltaLat = ((res & 1) ? ~(res >> 1) : (res >> 1));
+    int32_t deltaLat = ((res & 1) ? ~(res >> 1) : (res >> 1));
     latitude += deltaLat;
 
     shift = 0;
@@ -65,7 +66,7 @@ lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
       res |= (byte & 0x1F) << shift;
       shift += 5;
     } while (byte >= 0x20);
-    float deltaLon = ((res & 1) ? ~(res >> 1) : (res >> 1));
+    int32_t deltaLon = ((res & 1) ? ~(res >> 1) : (res >> 1));
     longitude += deltaLon;
 
     pt.x = longitude/scale;
