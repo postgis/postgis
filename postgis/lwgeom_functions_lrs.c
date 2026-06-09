@@ -214,6 +214,47 @@ Datum ST_InterpolatePoint(PG_FUNCTION_ARGS)
 }
 
 
+Datum ST_3DInterpolatePoint(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_3DInterpolatePoint);
+Datum ST_3DInterpolatePoint(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *gser_line = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *gser_point = PG_GETARG_GSERIALIZED_P(1);
+	LWGEOM *lwline;
+	LWPOINT *lwpoint;
+
+	if ( gserialized_get_type(gser_line) != LINETYPE )
+	{
+		elog(ERROR,"ST_3DInterpolatePoint: 1st argument isn't a line");
+		PG_RETURN_NULL();
+	}
+	if ( gserialized_get_type(gser_point) != POINTTYPE )
+	{
+		elog(ERROR,"ST_3DInterpolatePoint: 2nd argument isn't a point");
+		PG_RETURN_NULL();
+	}
+
+	gserialized_error_if_srid_mismatch(gser_line, gser_point, __func__);
+
+	if ( ! gserialized_has_m(gser_line) )
+	{
+		elog(ERROR,"ST_3DInterpolatePoint only accepts geometries that have an M dimension");
+		PG_RETURN_NULL();
+	}
+
+	if ( ! gserialized_has_z(gser_line) )
+	{
+		elog(ERROR,"ST_3DInterpolatePoint only accepts geometries that have a Z dimension");
+		PG_RETURN_NULL();
+	}
+
+	lwpoint = lwgeom_as_lwpoint(lwgeom_from_gserialized(gser_point));
+	lwline = lwgeom_from_gserialized(gser_line);
+
+	PG_RETURN_FLOAT8(lwgeom_interpolate_point_3d(lwline, lwpoint));
+}
+
+
 Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(LWGEOM_line_locate_point);
 Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)

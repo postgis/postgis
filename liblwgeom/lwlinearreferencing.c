@@ -947,6 +947,86 @@ lwgeom_interpolate_point(const LWGEOM *lwin, const LWPOINT *lwpt)
 	return ret;
 }
 
+double
+lwgeom_interpolate_point_3d(const LWGEOM *lwin, const LWPOINT *lwpt)
+{
+	POINT4D p, A, B, closest;
+	double mindist2 = DBL_MAX;
+	double best_m = 0.0;
+	uint32_t i;
+
+	if (!lwin)
+		lwerror("lwgeom_interpolate_point_3d: null input geometry!");
+
+	if (!lwgeom_has_m(lwin))
+		lwerror("Input geometry does not have a measure dimension");
+
+	if (!lwgeom_has_z(lwin))
+		lwerror("Input geometry does not have a Z dimension");
+
+	if (lwgeom_is_empty(lwin) || lwpoint_is_empty(lwpt))
+		lwerror("Input geometry is empty");
+
+	switch (lwin->type)
+	{
+	case LINETYPE:
+	{
+		LWLINE *lwline = lwgeom_as_lwline(lwin);
+		POINTARRAY *pa = lwline->points;
+
+		lwpoint_getPoint4d_p(lwpt, &p);
+
+		if (pa->npoints == 1)
+		{
+			getPoint4d_p(pa, 0, &closest);
+			return closest.m;
+		}
+
+		for (i = 0; i < pa->npoints - 1; i++)
+		{
+			double dx, dy, dz, len2, r;
+			double cx, cy, cz, d2;
+
+			getPoint4d_p(pa, i, &A);
+			getPoint4d_p(pa, i + 1, &B);
+
+			dx = B.x - A.x;
+			dy = B.y - A.y;
+			dz = B.z - A.z;
+			len2 = dx * dx + dy * dy + dz * dz;
+
+			if (len2 == 0.0)
+			{
+				/* Degenerate segment: distance to point A */
+				r = 0.0;
+			}
+			else
+			{
+				r = ((p.x - A.x) * dx + (p.y - A.y) * dy + (p.z - A.z) * dz) / len2;
+				if (r < 0.0) r = 0.0;
+				if (r > 1.0) r = 1.0;
+			}
+
+			cx = A.x + r * dx;
+			cy = A.y + r * dy;
+			cz = A.z + r * dz;
+
+			d2 = (p.x - cx) * (p.x - cx) + (p.y - cy) * (p.y - cy) + (p.z - cz) * (p.z - cz);
+
+			if (d2 < mindist2)
+			{
+				mindist2 = d2;
+				best_m = A.m + r * (B.m - A.m);
+			}
+		}
+		break;
+	}
+	default:
+		lwerror("This function does not accept %s geometries.", lwtype_name(lwin->type));
+	}
+	return best_m;
+}
+
 /*
  * Time of closest point of approach
  *

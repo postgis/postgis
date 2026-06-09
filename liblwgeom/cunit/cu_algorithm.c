@@ -596,6 +596,52 @@ test_lwline_interpolate_point_3d(void)
 	lwline_free(line);
 }
 
+static void
+test_lwgeom_interpolate_point_3d(void)
+{
+	LWGEOM *line;
+	LWPOINT *pt;
+	double result;
+
+	/* Simple diagonal line in XYZ, point at 3D midpoint */
+	line = lwgeom_from_wkt("LINESTRING ZM (0 0 0 0, 10 0 10 20)", LW_PARSER_CHECK_NONE);
+	pt = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT Z (5 0 5)", LW_PARSER_CHECK_NONE));
+	result = lwgeom_interpolate_point_3d(line, pt);
+	CU_ASSERT_DOUBLE_EQUAL(result, 10.0, 1e-10);
+	lwpoint_free(pt);
+
+	/* Point offset in Y but same XZ projection: same result */
+	pt = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT Z (5 99 5)", LW_PARSER_CHECK_NONE));
+	result = lwgeom_interpolate_point_3d(line, pt);
+	CU_ASSERT_DOUBLE_EQUAL(result, 10.0, 1e-10);
+	lwpoint_free(pt);
+	lwgeom_free(line);
+
+	/* Vertical line (zero XY extent): 3D projection works where 2D would not */
+	line = lwgeom_from_wkt("LINESTRING ZM (0 0 0 0, 0 0 10 100)", LW_PARSER_CHECK_NONE);
+	pt = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT Z (5 5 5)", LW_PARSER_CHECK_NONE));
+	result = lwgeom_interpolate_point_3d(line, pt);
+	CU_ASSERT_DOUBLE_EQUAL(result, 50.0, 1e-10);
+	lwpoint_free(pt);
+	lwgeom_free(line);
+
+	/* Point beyond end of line: clamped to end M */
+	line = lwgeom_from_wkt("LINESTRING ZM (0 0 0 0, 10 0 0 100)", LW_PARSER_CHECK_NONE);
+	pt = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT Z (20 0 0)", LW_PARSER_CHECK_NONE));
+	result = lwgeom_interpolate_point_3d(line, pt);
+	CU_ASSERT_DOUBLE_EQUAL(result, 100.0, 1e-10);
+	lwpoint_free(pt);
+	lwgeom_free(line);
+
+	/* Point before start of line: clamped to start M */
+	line = lwgeom_from_wkt("LINESTRING ZM (0 0 0 0, 10 0 0 100)", LW_PARSER_CHECK_NONE);
+	pt = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT Z (-5 0 0)", LW_PARSER_CHECK_NONE));
+	result = lwgeom_interpolate_point_3d(line, pt);
+	CU_ASSERT_DOUBLE_EQUAL(result, 0.0, 1e-10);
+	lwpoint_free(pt);
+	lwgeom_free(line);
+}
+
 static void test_lwline_clip(void)
 {
 	LWCOLLECTION *c;
@@ -1844,6 +1890,7 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_point_interpolate);
 	PG_ADD_TEST(suite,test_lwline_interpolate_points);
 	PG_ADD_TEST(suite, test_lwline_interpolate_point_3d);
+	PG_ADD_TEST(suite, test_lwgeom_interpolate_point_3d);
 	PG_ADD_TEST(suite,test_lwline_clip);
 	PG_ADD_TEST(suite, test_lwpoly_clip);
 	PG_ADD_TEST(suite, test_lwtriangle_clip);
