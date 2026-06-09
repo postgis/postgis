@@ -1588,3 +1588,7 @@ SELECT f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, t
  FROM geometry_columns WHERE f_table_name IN ('test5829', 'test5978')
  ORDER BY f_table_name, f_geometry_column;
 DROP TABLE IF EXISTS test5829, test5978;
+
+
+-- #5357
+SELECT '#5357', ST_AsText(ST_LineFromEncodedPolyline('__nphBgcoeiA?@', 6), 6);
