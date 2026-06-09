@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - #5357, Preserve close points in ST_LineFromEncodedPolyline (Paul Ramsey)
  - Resolve the ST_GeomFromGeoHash cast in the PostGIS schema (Paul Ramsey)
  - Release temporary GeoJSON input after parsing (Paul Ramsey)
  - #6076, Measure only matching components of geography collections (Paul Ramsey)
