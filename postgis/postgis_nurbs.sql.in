@@ -11,6 +11,7 @@
 --   SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry);
 --   SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]);
 --   SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0], ARRAY[0,0,0,1,1,1]);
+-- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_MakeNurbsCurve(degree integer, control_points geometry,
                                            weights double precision[] DEFAULT NULL,
                                            knots double precision[] DEFAULT NULL)
@@ -25,6 +26,7 @@ CREATE OR REPLACE FUNCTION ST_MakeNurbsCurve(degree integer, control_points geom
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 -- Returns: MULTIPOINT geometry containing the control points
+-- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_ControlPoints(nurbscurve geometry)
     RETURNS geometry
     AS 'MODULE_PATHNAME', 'ST_ControlPoints'
@@ -36,6 +38,7 @@ CREATE OR REPLACE FUNCTION ST_ControlPoints(nurbscurve geometry)
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 -- Returns: Integer degree (1-10)
+-- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_Degree(nurbscurve geometry)
     RETURNS integer
     AS 'MODULE_PATHNAME', 'ST_Degree'
@@ -47,6 +50,7 @@ CREATE OR REPLACE FUNCTION ST_Degree(nurbscurve geometry)
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 -- Returns: Array of weight values, NULL for non-rational curves
+-- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_Weights(nurbscurve geometry)
     RETURNS double precision[]
     AS 'MODULE_PATHNAME', 'ST_Weights'
@@ -58,6 +62,7 @@ CREATE OR REPLACE FUNCTION ST_Weights(nurbscurve geometry)
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 -- Returns: Array of knot values, NULL for uniform parameterization
+-- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_Knots(nurbscurve geometry)
     RETURNS double precision[]
     AS 'MODULE_PATHNAME', 'ST_Knots'
@@ -69,6 +74,7 @@ CREATE OR REPLACE FUNCTION ST_Knots(nurbscurve geometry)
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 -- Returns: Number of control points (integer)
+-- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_NumControlPoints(nurbscurve geometry)
     RETURNS integer
     AS 'MODULE_PATHNAME', 'ST_NumControlPoints'
@@ -80,6 +86,7 @@ CREATE OR REPLACE FUNCTION ST_NumControlPoints(nurbscurve geometry)
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 -- Returns: TRUE if curve has weights, FALSE for polynomial B-spline
+-- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_NurbsCurveIsRational(nurbscurve geometry)
     RETURNS boolean
     AS 'MODULE_PATHNAME', 'ST_NurbsCurveIsRational'
@@ -91,6 +98,7 @@ CREATE OR REPLACE FUNCTION ST_NurbsCurveIsRational(nurbscurve geometry)
 -- Parameters:
 --   geometry: Input geometry to test
 -- Returns: TRUE if geometry is NURBS curve, FALSE otherwise
+-- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_IsNurbsCurve(geometry)
     RETURNS boolean
     AS $$
@@ -110,6 +118,7 @@ CREATE OR REPLACE FUNCTION ST_IsNurbsCurve(geometry)
 --   parameter: Parameter value for evaluation (typically 0.0 to 1.0)
 -- Returns: POINT geometry representing the position on the curve
 -- Example: SELECT ST_Evaluate(nurbs_curve, 0.5); -- Get midpoint
+-- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_Evaluate(nurbscurve geometry, parameter double precision)
     RETURNS geometry
     AS 'MODULE_PATHNAME', 'ST_Evaluate'
@@ -125,6 +134,7 @@ CREATE OR REPLACE FUNCTION ST_Evaluate(nurbscurve geometry, parameter double pre
 -- Returns: LINESTRING geometry approximating the NURBS curve
 -- Example: SELECT ST_NurbsToLineString(nurbs_curve, 64); -- High quality
 -- Example: SELECT ST_NurbsToLineString(nurbs_curve); -- Default quality
+-- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_NurbsToLineString(nurbscurve geometry, num_segments integer DEFAULT 32)
     RETURNS geometry
     AS 'MODULE_PATHNAME', 'ST_NurbsToLineString'
