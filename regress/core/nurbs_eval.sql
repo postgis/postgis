@@ -91,6 +91,12 @@ SELECT 'NURBS_CONV_6', ST_AsText(ST_NurbsToLineString(
     4
 ), 2) as linestring_3d;
 
+-- Test: 2D LineString conversion with coordinate verification
+SELECT 'NURBS_CONV_10', ST_AsText(ST_NurbsToLineString(
+    ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry),
+    4
+), 2) as linestring_2d_coords;
+
 -- Test 9: Error handling for invalid inputs
 SELECT 'NURBS_ERR_1', ST_Evaluate(NULL, 0.5) IS NULL as null_curve;
 
