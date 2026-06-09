@@ -4,6 +4,7 @@ PostGIS 3.6.5
 * Fixes *
 
 - #5989, CurvePolygon distance corner case (Paul Ramsey)
+- #5357, ST_LineFromEncodedPolyline dropping close points (Paul Ramsey)
 
 
 PostGIS 3.6.4
