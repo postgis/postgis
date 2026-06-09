@@ -40,50 +40,55 @@ lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
   int idx = 0;
 	double scale = pow(10,precision);
 
-  float latitude = 0.0f;
-  float longitude = 0.0f;
+	int64_t latitude = 0;
+	int64_t longitude = 0;
 
-  pa = ptarray_construct_empty(LW_FALSE, LW_FALSE, 1);
+	pa = ptarray_construct_empty(LW_FALSE, LW_FALSE, 1);
 
-  while (idx < length) {
-    POINT4D pt;
-    char byte = 0;
+	while (idx < length)
+	{
+		POINT4D pt;
+		char byte = 0;
 
-    int res = 0;
-    char shift = 0;
-    do {
-      if (idx >= length) {
-        lwerror("lwgeom_from_encoded_polyline: input is truncated");
-        ptarray_free(pa);
-        return NULL;
-      }
-      byte = encodedpolyline[idx++] - 63;
-      res |= (byte & 0x1F) << shift;
-      shift += 5;
-    } while (byte >= 0x20);
-    float deltaLat = ((res & 1) ? ~(res >> 1) : (res >> 1));
-    latitude += deltaLat;
+		int res = 0;
+		char shift = 0;
+		do
+		{
+			if (idx >= length)
+			{
+				lwerror("lwgeom_from_encoded_polyline: input is truncated");
+				ptarray_free(pa);
+				return NULL;
+			}
+			byte = encodedpolyline[idx++] - 63;
+			res |= (byte & 0x1F) << shift;
+			shift += 5;
+		} while (byte >= 0x20);
+		int32_t deltaLat = ((res & 1) ? ~(res >> 1) : (res >> 1));
+		latitude += deltaLat;
 
-    shift = 0;
-    res = 0;
-    do {
-      if (idx >= length) {
-        lwerror("lwgeom_from_encoded_polyline: input is truncated");
-        ptarray_free(pa);
-        return NULL;
-      }
-      byte = encodedpolyline[idx++] - 63;
-      res |= (byte & 0x1F) << shift;
-      shift += 5;
-    } while (byte >= 0x20);
-    float deltaLon = ((res & 1) ? ~(res >> 1) : (res >> 1));
-    longitude += deltaLon;
+		shift = 0;
+		res = 0;
+		do
+		{
+			if (idx >= length)
+			{
+				lwerror("lwgeom_from_encoded_polyline: input is truncated");
+				ptarray_free(pa);
+				return NULL;
+			}
+			byte = encodedpolyline[idx++] - 63;
+			res |= (byte & 0x1F) << shift;
+			shift += 5;
+		} while (byte >= 0x20);
+		int32_t deltaLon = ((res & 1) ? ~(res >> 1) : (res >> 1));
+		longitude += deltaLon;
 
-    pt.x = longitude/scale;
-    pt.y = latitude/scale;
-	pt.m = pt.z = 0.0;
-    ptarray_append_point(pa, &pt, LW_FALSE);
-  }
+		pt.x = longitude / scale;
+		pt.y = latitude / scale;
+		pt.m = pt.z = 0.0;
+		ptarray_append_point(pa, &pt, LW_FALSE);
+	}
 
   geom = (LWGEOM *)lwline_construct(4326, NULL, pa);
   lwgeom_add_bbox(geom);
