@@ -1,0 +1,57 @@
+<refentry xml:id="RT_ST_PixelAsPolygon" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_PixelAsPolygon</refname>
+                <refpurpose>Returns the polygon geometry that bounds the pixel for a particular row and column.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                    <funcdef>geometry <function>ST_PixelAsPolygon</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns the polygon geometry that bounds the pixel for a particular row and column.</para>
+
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+
+            </refsection>
+
+            <refsection>
+                    <title>Examples</title>
+                    <programlisting>
+-- get raster pixel polygon
+SELECT i,j, ST_AsText(ST_PixelAsPolygon(foo.rast, i,j)) As b1pgeom
+FROM dummy_rast As foo
+    CROSS JOIN generate_series(1,2) As i
+    CROSS JOIN generate_series(1,1) As j
+WHERE rid=2;
+
+ i | j |                                                    b1pgeom
+---+---+-----------------------------------------------------------------------------
+ 1 | 1 | POLYGON((3427927.75 5793244,3427927.8 5793244,3427927.8 5793243.95,...
+ 2 | 1 | POLYGON((3427927.8 5793244,3427927.85 5793244,3427927.85 5793243.95, ..
+  </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_DumpAsPolygons"/>,
+                    <xref linkend="RT_ST_PixelAsPolygons"/>,
+                    <xref linkend="RT_ST_PixelAsPoint"/>,
+                    <xref linkend="RT_ST_PixelAsPoints"/>,
+                    <xref linkend="RT_ST_PixelAsCentroid"/>,
+                    <xref linkend="RT_ST_PixelAsCentroids"/>,
+                    <xref linkend="RT_ST_Intersection"/>,
+                    <xref linkend="ST_AsText"/>
+                </para>
+            </refsection>
+        </refentry>

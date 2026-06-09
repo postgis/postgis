@@ -1,0 +1,100 @@
+<refentry xml:id="RT_ST_Union" xmlns="http://docbook.org/ns/docbook">
+                <refnamediv>
+                    <refname>ST_Union</refname>
+                    <refpurpose>Returns the union of a set of raster tiles into a single raster composed of 1 or more bands.</refpurpose>
+                </refnamediv>
+
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Union</function></funcdef>
+                            <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
+                        </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Union</function></funcdef>
+                            <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>unionarg[] </type> <parameter>unionargset</parameter></paramdef>
+                        </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Union</function></funcdef>
+                            <paramdef><type>setof raster</type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer</type> <parameter>nband</parameter></paramdef>
+                        </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Union</function></funcdef>
+                            <paramdef><type>setof raster</type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>text</type> <parameter>uniontype</parameter></paramdef>
+                        </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Union</function></funcdef>
+                            <paramdef><type>setof raster</type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer</type> <parameter>nband</parameter></paramdef>
+                            <paramdef><type>text</type> <parameter>uniontype</parameter></paramdef>
+                        </funcprototype>
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+
+                    <para>Returns the union of a set of raster tiles into a single raster composed of at least one band.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE.</para>
+
+                    <note>
+                      <para>In order for rasters to be unioned, they must all have the same alignment.  Use <xref linkend="RT_ST_SameAlignment"/> and <xref linkend="RT_ST_NotSameAlignmentReason"/> for more details and help. One way to fix alignment issues is to use <xref linkend="RT_ST_Resample"/> and use the same reference raster for alignment.</para>
+                    </note>
+
+                    <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
+                    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Improved Speed (fully C-Based).</para>
+                    <para role="availability" conformance="2.1.0">Availability: 2.1.0 ST_Union(rast, unionarg) variant was introduced.</para>
+                    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 ST_Union(rast) (variant 1) unions all bands of all input rasters.  Prior versions of PostGIS assumed the first band.</para>
+                    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 ST_Union(rast, uniontype) (variant 4) unions all bands of all input rasters.</para>
+                </refsection>
+                <refsection>
+                    <title>Examples: Reconstitute a single band chunked raster tile</title>
+                    <programlisting>
+-- this creates a single band from first band of raster tiles
+-- that form the original file system tile
+SELECT filename, ST_Union(rast,1) As file_rast
+FROM sometable WHERE filename IN('dem01', 'dem02') GROUP BY filename;
+                    </programlisting>
+                </refsection>
+
+                <refsection>
+                    <title>Examples: Return a multi-band raster that is the union of tiles intersecting geometry</title>
+                    <programlisting>
+-- this creates a multi band raster collecting all the tiles that intersect a line
+-- Note: In 2.0, this would have just returned a single band raster
+-- , new union works on all bands by default
+-- this is equivalent to unionarg: ARRAY[ROW(1, 'LAST'), ROW(2, 'LAST'), ROW(3, 'LAST')]::unionarg[]
+SELECT ST_Union(rast)
+FROM aerials.boston
+WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 88772)',26986) );
+                    </programlisting>
+                </refsection>
+                <refsection>
+                    <title>Examples: Return a multi-band raster that is the union of tiles intersecting geometry</title>
+                    <para>Here we use the longer syntax if we only wanted a subset of bands or we want to change order of bands</para>
+                    <programlisting>
+-- this creates a multi band raster collecting all the tiles that intersect a line
+SELECT ST_Union(rast,ARRAY[ROW(2, 'LAST'), ROW(1, 'LAST'), ROW(3, 'LAST')]::unionarg[])
+FROM aerials.boston
+WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 88772)',26986) );
+                    </programlisting>
+                </refsection>
+
+                <!-- Optionally add a "See Also" section -->
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="unionarg"/>,
+                        <xref linkend="RT_ST_Envelope"/>,
+                        <xref linkend="RT_ST_ConvexHull"/>,
+                        <xref linkend="RT_ST_Clip"/>,
+                        <xref linkend="ST_Union"/>
+                    </para>
+                </refsection>
+            </refentry>

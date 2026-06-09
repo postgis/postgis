@@ -1,0 +1,44 @@
+<refentry xml:id="ST_InitTopoGeo" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>ST_InitTopoGeo</refname>
+				<refpurpose>Creates a new topology schema and registers it in the topology.topology table.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>text <function>ST_InitTopoGeo</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>This is the SQL-MM equivalent of <xref linkend="CreateTopology"/>.
+                It lacks options for spatial reference system and tolerance.
+                it returns a text description of the topology creation, instead of the topology id.</para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="1.1">Availability: 1.1</para>
+                <para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.17</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT topology.ST_InitTopoGeo('topo_schema_to_create') AS topocreation;
+                      astopocreation
+------------------------------------------------------------
+ Topology-Geometry 'topo_schema_to_create' (id:7) created.
+				</programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+
+				<para><xref linkend="CreateTopology"/></para>
+			</refsection>
+		</refentry>

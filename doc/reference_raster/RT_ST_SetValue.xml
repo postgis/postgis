@@ -1,0 +1,84 @@
+<refentry xml:id="RT_ST_SetValue" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_SetValue</refname>
+                <refpurpose>Returns modified raster resulting from setting the value of a given band in a given columnx, rowy pixel or the pixels that intersect a particular geometry. Band numbers start at 1 and assumed to be 1 if not specified.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>raster <function>ST_SetValue</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+                        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
+                    </funcprototype>
+                    <funcprototype>
+                        <funcdef>raster <function>ST_SetValue</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
+                    </funcprototype>
+                  <funcprototype>
+                        <funcdef>raster <function>ST_SetValue</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
+                  </funcprototype>
+                    <funcprototype>
+                        <funcdef>raster <function>ST_SetValue</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+                <para>Returns modified raster resulting from setting the specified pixels' values to new value for the designated band given the raster's row and column or a geometry. If no band is specified, then band 1 is assumed.
+                </para>
+
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Geometry variant of ST_SetValue() now supports any geometry type, not just point. The geometry variant is a wrapper around the geomval[] variant of ST_SetValues()</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                <programlisting><![CDATA[
+
+                -- Geometry example
+SELECT (foo.geomval).val, ST_AsText(ST_Union((foo.geomval).geom))
+FROM (SELECT ST_DumpAsPolygons(
+        ST_SetValue(rast,1,
+                ST_Point(3427927.75, 5793243.95),
+                50)
+            ) As geomval
+FROM dummy_rast
+where rid = 2) As foo
+WHERE (foo.geomval).val < 250
+GROUP BY (foo.geomval).val;
+
+ val |                                                     st_astext
+-----+-------------------------------------------------------------------
+  50 | POLYGON((3427927.75 5793244,3427927.75 5793243.95,3427927.8 579324 ...
+ 249 | POLYGON((3427927.95 5793243.95,3427927.95 5793243.85,3427928 57932 ...
+
+
+]]></programlisting>
+
+                <programlisting>
+-- Store the changed raster --
+    UPDATE dummy_rast SET rast = ST_SetValue(rast,1, ST_Point(3427927.75, 5793243.95),100)
+        WHERE rid = 2   ;
+
+                </programlisting>
+            </refsection>
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_Value"/>, <xref linkend="RT_ST_DumpAsPolygons"/></para>
+            </refsection>
+        </refentry>

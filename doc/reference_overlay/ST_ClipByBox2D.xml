@@ -1,0 +1,48 @@
+<refentry xml:id="ST_ClipByBox2D" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_ClipByBox2D</refname>
+        <refpurpose>Computes the portion of a geometry falling within a rectangle.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>ST_ClipByBox2D</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                <paramdef><type>box2d</type> <parameter>box</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>
+        Clips a geometry by a 2D box in a fast and tolerant but possibly invalid way.
+        Topologically invalid input geometries do not result in exceptions being thrown.
+        The output geometry is not guaranteed to be valid
+        (in particular, self-intersections for a polygon may be introduced).
+        </para>
+
+        <para>Performed by the GEOS module.</para>
+
+        <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+            <programlisting>
+-- Rely on implicit cast from geometry to box2d for the second parameter
+SELECT ST_ClipByBox2D(geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
+      </programlisting>
+      </refsection>
+      <refsection>
+        <title>See Also</title>
+        <para>
+<xref linkend="ST_Intersection"/>,
+<xref linkend="ST_MakeBox2D"/>,
+<xref linkend="ST_MakeEnvelope"/>
+    </para>
+      </refsection>
+    </refentry>

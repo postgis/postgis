@@ -1,0 +1,218 @@
+<refentry xml:id="RT_ST_Value" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <refnamediv>
+                <refname>ST_Value</refname>
+                <refpurpose>Returns the value of a given band in a given columnx, rowy pixel or at a particular geometric point. Band numbers start at 1 and assumed to be 1 if not specified. If <varname>exclude_nodata_value</varname> is set to false, then all pixels include <varname>nodata</varname> pixels are considered to intersect and return value. If <varname>exclude_nodata_value</varname> is not passed in then reads it from metadata of raster.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                   <funcprototype>
+                    <funcdef>double precision <function>ST_Value</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+                    <paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+                  </funcprototype>
+                 <funcprototype>
+                    <funcdef>double precision <function>ST_Value</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+                    <paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+                    <paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+                    <paramdef choice="opt"><type>text </type> <parameter>resample='nearest'</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>double precision <function>ST_Value</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>x</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>y</parameter></paramdef>
+                    <paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>double precision <function>ST_Value</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>x</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>y</parameter></paramdef>
+                    <paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns the value of a given band in a given columnx, rowy pixel or at a given geometry point. Band numbers start at 1 and band is assumed to be 1 if not specified.</para>
+                <para>If <varname>exclude_nodata_value</varname> is set to true, then only non <varname>nodata</varname> pixels are considered.  If <varname>exclude_nodata_value</varname> is set to false, then all pixels are considered.</para>
+                <para>The allowed values of the <varname>resample</varname> parameter are "nearest" which performs the default nearest-neighbor resampling, and "bilinear" which performs a <link xlink:href="https://en.wikipedia.org/wiki/Bilinear_interpolation">bilinear interpolation</link> to estimate the value between pixel centers.</para>
+
+                <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 resample optional argument was added.</para>
+                <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 exclude_nodata_value optional argument was added.</para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+                    <programlisting>
+-- get raster values at particular postgis geometry points
+-- the srid of your geometry should be same as for your raster
+SELECT rid, ST_Value(rast, foo.pt_geom) As b1pval, ST_Value(rast, 2, foo.pt_geom) As b2pval
+FROM dummy_rast CROSS JOIN (SELECT ST_SetSRID(ST_Point(3427927.77, 5793243.76), 0) As pt_geom) As foo
+WHERE rid=2;
+
+ rid | b1pval | b2pval
+-----+--------+--------
+   2 |    252 |     79
+
+
+-- general fictitious example using a real table
+SELECT rid, ST_Value(rast, 3, sometable.geom) As b3pval
+FROM sometable
+WHERE ST_Intersects(rast,sometable.geom);
+                </programlisting>
+                    <programlisting>
+SELECT rid, ST_Value(rast, 1, 1, 1) As b1pval,
+    ST_Value(rast, 2, 1, 1) As b2pval, ST_Value(rast, 3, 1, 1) As b3pval
+FROM dummy_rast
+WHERE rid=2;
+
+ rid | b1pval | b2pval | b3pval
+-----+--------+--------+--------
+   2 |    253 |     78 |     70
+                </programlisting>
+
+                <programlisting><![CDATA[
+
+--- Get all values in bands 1,2,3 of each pixel --
+SELECT x, y, ST_Value(rast, 1, x, y) As b1val,
+    ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
+FROM dummy_rast CROSS JOIN
+generate_series(1, 1000) As x CROSS JOIN generate_series(1, 1000) As y
+WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);
+
+ x | y | b1val | b2val | b3val
+---+---+-------+-------+-------
+ 1 | 1 |   253 |    78 |    70
+ 1 | 2 |   253 |    96 |    80
+ 1 | 3 |   250 |    99 |    90
+ 1 | 4 |   251 |    89 |    77
+ 1 | 5 |   252 |    79 |    62
+ 2 | 1 |   254 |    98 |    86
+ 2 | 2 |   254 |   118 |   108
+ :
+ :
+
+]]></programlisting>
+
+                <programlisting><![CDATA[
+
+--- Get all values in bands 1,2,3 of each pixel same as above but returning the upper left point point of each pixel --
+SELECT ST_AsText(ST_SetSRID(
+    ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x,
+        ST_UpperLeftY(rast) + ST_ScaleY(rast)*y),
+        ST_SRID(rast))) As uplpt
+    , ST_Value(rast, 1, x, y) As b1val,
+    ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
+FROM dummy_rast CROSS JOIN
+generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
+WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);
+
+            uplpt            | b1val | b2val | b3val
+-----------------------------+-------+-------+-------
+ POINT(3427929.25 5793245.5) |   253 |    78 |    70
+ POINT(3427929.25 5793247)   |   253 |    96 |    80
+ POINT(3427929.25 5793248.5) |   250 |    99 |    90
+:
+
+]]></programlisting>
+                <programlisting><![CDATA[
+
+--- Get a polygon formed by union of all pixels
+    that fall in a particular value range and intersect particular polygon --
+SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
+FROM (SELECT ST_Translate(ST_MakeEnvelope(
+        ST_UpperLeftX(rast), ST_UpperLeftY(rast),
+            ST_UpperLeftX(rast) + ST_ScaleX(rast),
+            ST_UpperLeftY(rast) + ST_ScaleY(rast), 0
+            ), ST_ScaleX(rast)*x, ST_ScaleY(rast)*y
+        ) As pixpolyg, ST_Value(rast, 2, x, y) As b2val
+    FROM dummy_rast CROSS JOIN
+generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
+WHERE rid =  2
+    AND x <= ST_Width(rast) AND y <= ST_Height(rast)) As foo
+WHERE
+    ST_Intersects(
+        pixpolyg,
+        ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 5793243.75,3427928 5793243.75,3427928 5793244))',0)
+        ) AND b2val != 254;
+
+
+        shadow
+------------------------------------------------------------------------------------
+ MULTIPOLYGON(((3427928 5793243.9,3427928 5793243.85,3427927.95 5793243.85,3427927.95 5793243.9,
+ 3427927.95 5793243.95,3427928 5793243.95,3427928.05 5793243.95,3427928.05 5793243.9,3427928 5793243.9)),((3427927.95 5793243.9,3427927.95 579324
+3.85,3427927.9 5793243.85,3427927.85 5793243.85,3427927.85 5793243.9,3427927.9 5793243.9,3427927.9 5793243.95,
+3427927.95 5793243.95,3427927.95 5793243.9)),((3427927.85 5793243.75,3427927.85 5793243.7,3427927.8 5793243.7,3427927.8 5793243.75
+,3427927.8 5793243.8,3427927.8 5793243.85,3427927.85 5793243.85,3427927.85 5793243.8,3427927.85 5793243.75)),
+((3427928.05 5793243.75,3427928.05 5793243.7,3427928 5793243.7,3427927.95 5793243.7,3427927.95 5793243.75,3427927.95 5793243.8,3427
+927.95 5793243.85,3427928 5793243.85,3427928 5793243.8,3427928.05 5793243.8,
+3427928.05 5793243.75)),((3427927.95 5793243.75,3427927.95 5793243.7,3427927.9 5793243.7,3427927.85 5793243.7,
+3427927.85 5793243.75,3427927.85 5793243.8,3427927.85 5793243.85,3427927.9 5793243.85,
+3427927.95 5793243.85,3427927.95 5793243.8,3427927.95 5793243.75)))
+
+]]></programlisting>
+
+                <programlisting><![CDATA[
+
+--- Checking all the pixels of a large raster tile can take a long time.
+--- You can dramatically improve speed at some lose of precision by orders of magnitude
+--  by sampling pixels using the step optional parameter of generate_series.
+--  This next example does the same as previous but by checking 1 for every 4 (2x2) pixels and putting in the last checked
+--  putting in the checked pixel as the value for subsequent 4
+
+SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
+FROM (SELECT ST_Translate(ST_MakeEnvelope(
+        ST_UpperLeftX(rast), ST_UpperLeftY(rast),
+            ST_UpperLeftX(rast) + ST_ScaleX(rast)*2,
+            ST_UpperLeftY(rast) + ST_ScaleY(rast)*2, 0
+            ), ST_ScaleX(rast)*x, ST_ScaleY(rast)*y
+        ) As pixpolyg, ST_Value(rast, 2, x, y) As b2val
+    FROM dummy_rast CROSS JOIN
+generate_series(1,1000,2) As x CROSS JOIN generate_series(1,1000,2) As y
+WHERE rid =  2
+    AND x <= ST_Width(rast)  AND y <= ST_Height(rast)  ) As foo
+WHERE
+    ST_Intersects(
+        pixpolyg,
+        ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 5793243.75,3427928 5793243.75,3427928 5793244))',0)
+        ) AND b2val != 254;
+
+        shadow
+------------------------------------------------------------------------------------
+ MULTIPOLYGON(((3427927.9 5793243.85,3427927.8 5793243.85,3427927.8 5793243.95,
+ 3427927.9 5793243.95,3427928 5793243.95,3427928.1 5793243.95,3427928.1 5793243.85,3427928 5793243.85,3427927.9 5793243.85)),
+ ((3427927.9 5793243.65,3427927.8 5793243.65,3427927.8 5793243.75,3427927.8 5793243.85,3427927.9 5793243.85,
+ 3427928 5793243.85,3427928 5793243.75,3427928.1 5793243.75,3427928.1 5793243.65,3427928 5793243.65,3427927.9 5793243.65)))
+
+]]></programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_DumpValues"/>,
+                    <xref linkend="RT_ST_SetValue"/>,
+                    <xref linkend="RT_ST_DumpAsPolygons"/>,
+                    <xref linkend="RT_ST_NumBands"/>,
+                    <xref linkend="RT_ST_PixelAsPolygon"/>,
+                    <xref linkend="RT_ST_ScaleX"/>,
+                    <xref linkend="RT_ST_ScaleY"/>,
+                    <xref linkend="RT_ST_UpperLeftX"/>,
+                    <xref linkend="RT_ST_UpperLeftY"/>,
+                    <xref linkend="RT_ST_SRID"/>,
+                    <xref linkend="ST_AsText"/>,
+                    <xref linkend="ST_Point"/>,
+                    <xref linkend="ST_MakeEnvelope"/>,
+                    <xref linkend="ST_Intersects"/>,
+                    <xref linkend="ST_Intersection"/>
+                </para>
+            </refsection>
+        </refentry>

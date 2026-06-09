@@ -1,0 +1,106 @@
+<refentry xml:id="ST_Area" xmlns="http://docbook.org/ns/docbook">
+		<refnamediv>
+		  <refname>ST_Area</refname>
+
+		  <refpurpose>Returns the area of a polygonal geometry.
+			</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+		  <funcsynopsis>
+			<funcprototype>
+			  <funcdef>float <function>ST_Area</function></funcdef>
+				<paramdef><type>geometry </type><parameter>g1</parameter></paramdef>
+			</funcprototype>
+
+			<funcprototype>
+			  <funcdef>float <function>ST_Area</function></funcdef>
+				<paramdef><type>geography </type><parameter>geog</parameter></paramdef>
+				<paramdef choice="opt"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef>
+			</funcprototype>
+		  </funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+
+			<para>Returns the area of a polygonal geometry.
+			For geometry types a 2D Cartesian (planar) area is computed, with units specified by the SRID.
+			For geography types by default area is determined on a spheroid with units in square meters.
+		  To compute the area using the faster but less accurate spherical model use <varname>ST_Area(geog,false)</varname>.
+		  </para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 - support for 2D polyhedral surfaces was introduced.</para>
+			<para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness.  Requires PROJ &gt;= 4.9.0 to take advantage of the new feature.</para>
+			<para role="changed" conformance="3.0.0">Changed: 3.0.0 - does not depend on SFCGAL anymore.</para>
+			<para>&sfs_compliant;</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3</para>
+			<para>&P_support;</para>
+			<note><para>For polyhedral surfaces, only supports 2D polyhedral surfaces (not 2.5D).  For 2.5D, may give a non-zero answer, but only for the faces that
+			sit completely in XY plane.</para></note>
+		</refsection>
+
+		  <refsection>
+			<title>Examples</title>
+			<para>Return area in square feet for a plot of Massachusetts land and multiply by conversion to get square meters.
+				Note this is in square feet because EPSG:2249 is
+				Massachusetts State Plane Feet </para>
+			<programlisting>
+select ST_Area(geom) sqft,
+    ST_Area(geom) * 0.3048 ^ 2 sqm
+from (
+         select 'SRID=2249;POLYGON((743238 2967416,743238 2967450,
+				 743265 2967450,743265.625 2967416,743238 2967416))' :: geometry geom
+     ) subquery;
+┌─────────┬─────────────┐
+│  sqft   │     sqm     │
+├─────────┼─────────────┤
+│ 928.625 │ 86.27208552 │
+└─────────┴─────────────┘
+</programlisting>
+<para>Return area square feet and transform to Massachusetts state plane meters (EPSG:26986) to get square meters.
+				Note this is in square feet because 2249 is
+				Massachusetts State Plane Feet and transformed area is in square meters since EPSG:26986 is state plane Massachusetts meters. </para>
+<programlisting>select ST_Area(geom) sqft,
+    ST_Area(ST_Transform(geom, 26986)) As sqm
+from (
+         select
+             'SRID=2249;POLYGON((743238 2967416,743238 2967450,
+             743265 2967450,743265.625 2967416,743238 2967416))' :: geometry geom
+     ) subquery;
+┌─────────┬─────────────────┐
+│  sqft   │       sqm       │
+├─────────┼─────────────────┤
+│ 928.625 │ 86.272430607008 │
+└─────────┴─────────────────┘
+</programlisting>
+
+<para>Return area square feet and square meters using geography data type.  Note that we transform to our geometry to geography
+	(before you can do that make sure your geometry is in WGS 84 long lat 4326).  Geography always measures in meters.
+	This is just for demonstration to compare.  Normally your table will be stored in geography data type already.</para>
+<programlisting>
+
+select ST_Area(geog) / 0.3048 ^ 2 sqft_spheroid,
+    ST_Area(geog, false) / 0.3048 ^ 2 sqft_sphere,
+    ST_Area(geog) sqm_spheroid
+from (
+         select ST_Transform(
+                    'SRID=2249;POLYGON((743238 2967416,743238 2967450,743265 2967450,743265.625 2967416,743238 2967416))'::geometry,
+                    4326
+             ) :: geography geog
+     ) as subquery;
+┌──────────────────┬──────────────────┬──────────────────┐
+│  sqft_spheroid   │   sqft_sphere    │   sqm_spheroid   │
+├──────────────────┼──────────────────┼──────────────────┤
+│ 928.684405784452 │ 927.049336105925 │ 86.2776044979692 │
+└──────────────────┴──────────────────┴──────────────────┘
+</programlisting>
+
+ <para>If your data is in geography already:</para>
+ <programlisting>
+select ST_Area(geog) / 0.3048 ^ 2 sqft,
+    ST_Area(the_geog) sqm
+from somegeogtable;</programlisting>
+		  </refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_3DArea"/>, <xref linkend="ST_GeomFromText"/>, <xref linkend="ST_GeographyFromText"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/></para>
+		</refsection>
+	</refentry>

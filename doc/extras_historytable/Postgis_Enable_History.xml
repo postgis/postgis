@@ -1,0 +1,61 @@
+<refentry xml:id="Postgis_Enable_History" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>Postgis_Enable_History</refname>
+				<refpurpose>Registers a table in the history_information table for tracking and also adds in side line history table and insert, update, delete rules on the table.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>boolean <function>Postgis_Enable_History</function></funcdef>
+						<paramdef><type>text </type> <parameter>p_schema</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>p_table</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Registers a table in the history_information table for tracking and also adds in side line history table with same name as table but prefixed with <varname>history</varname> in the same schema as the original table. Puts in insert, update, delete rules on the table.
+                Any inserts,updates,deletes of the geometry are recorded in the history table.</para>
+
+               <note><para>This function currently relies on a geometry column being registered in <varname>geometry_columns</varname> and fails if the geometry column is not present in <varname>geometry_columns</varname> table.</para></note>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+
+				<programlisting>CREATE TABLE roads(gid SERIAL PRIMARY KEY, road_name varchar(150));
+SELECT AddGeometryColumn('roads', 'geom', 26986, 'LINESTRING', 2);
+
+SELECT postgis_enable_history('public', 'roads', 'geom') As register_table;
+register_table
+--------------
+t
+
+INSERT INTO roads(road_name, geom)
+  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 832202,231627.5 832250.5)',26986));
+
+-- check transaction detail --
+SELECT date_added, last_operation, current_version
+FROM roads_history
+WHERE road_name = 'Test Street' ORDER BY date_added DESC;
+
+       date_added       | last_operation | current_version
+------------------------+----------------+-----------------
+ 2011-02-07 12:44:36.92 | INSERT         | 2
+
+</programlisting>
+
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+			</refsection>
+		</refentry>

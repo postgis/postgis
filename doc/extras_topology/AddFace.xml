@@ -1,0 +1,109 @@
+<refentry xml:id="AddFace" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>AddFace</refname>
+
+				<refpurpose>Registers a face primitive to a topology and gets its identifier.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>bigint <function>AddFace</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>apolygon</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>force_new=false</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Registers a face primitive to a topology and gets its identifier.
+                </para>
+
+                <para>
+For a newly added face, the edges forming its boundaries and the ones
+contained in the face will be updated to have correct values in the
+left_face and right_face fields.
+Isolated nodes contained in the face will also be updated to have a correct
+containing_face field value.
+                </para>
+
+		<note><para>
+This function does not use nor set the next_left_edge and next_right_edge fields of the edge table.
+                </para></note>
+
+                <para>The target topology is assumed to be valid (containing no self-intersecting edges). An exception is raised if: The polygon boundary is not fully defined by existing edges or the polygon overlaps an existing face.</para>
+
+                <para>
+If the <varname>apolygon</varname> geometry already exists as a face, then:
+if <varname>force_new</varname> is false (the default) the
+face id of the existing face is returned;
+if <varname>force_new</varname> is true a new id will be assigned to
+the newly registered face.
+                </para>
+
+		<note><para>
+When a new registration of an existing face is performed (force_new=true),
+no action will be taken to resolve dangling references to the existing
+face in the edge, node an relation tables, nor will the MBR field of the
+existing face record be updated. It is up to the caller to deal with that.
+                </para></note>
+
+                <note><para>The <varname>apolygon</varname> geometry must have the same <varname>srid</varname> as defined for the topology otherwise an invalid spatial reference sys error will be thrown.</para></note>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting><![CDATA[
+
+-- first add the edges we use generate_series as an iterator (the below
+-- will only work for polygons with < 10000 points because of our max in gs)
+SELECT topology.AddEdge('ma_topo', ST_MakeLine(ST_PointN(geom,i), ST_PointN(geom, i + 1) )) As edgeid
+    FROM (SELECT  ST_NPoints(geom) AS npt, geom
+            FROM
+                (SELECT ST_Boundary(ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,
+                234891 899285.4,234992.5 899145, 234890.6 899069,234755.2 899255.4,
+                234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) )  As geom
+            )  As geoms) As facen CROSS JOIN generate_series(1,10000) As i
+         WHERE i < npt;
+-- result --
+ edgeid
+--------
+      3
+      4
+      5
+      6
+      7
+      8
+      9
+     10
+     11
+     12
+(10 rows)
+-- then add the face -
+
+SELECT topology.AddFace('ma_topo',
+    ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,
+    234891 899285.4,234992.5 899145, 234890.6 899069,234755.2 899255.4,
+    234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) ) As faceid;
+-- result --
+faceid
+--------
+ 1
+
+]]></programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddEdge"/>, <xref linkend="CreateTopology"/>, <xref linkend="spatial_ref_sys"/></para>
+			</refsection>
+		</refentry>

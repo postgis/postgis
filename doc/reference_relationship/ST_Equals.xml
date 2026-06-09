@@ -1,0 +1,70 @@
+<refentry xml:id="ST_Equals" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+    <refname>ST_Equals</refname>
+
+    <refpurpose>Tests if two geometries include the same set of points</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+      <funcdef>boolean <function>ST_Equals</function></funcdef>
+      <paramdef><type>geometry </type> <parameter>A</parameter></paramdef>
+      <paramdef><type>geometry </type> <parameter>B</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+    <para>Returns <varname>true</varname> if the given geometries are "topologically equal".
+    Use this for a 'better' answer than '='.
+      Topological equality means that the geometries have the same dimension,
+      and their point-sets occupy the same space.
+      This means that the order of vertices may be different in topologically equal geometries.
+      To verify the order of points is consistent use
+      <xref linkend="ST_OrderingEquals"/> (it must be noted ST_OrderingEquals is a little more stringent than simply verifying order of
+      points are the same).</para>
+
+    <para>In mathematical terms:
+    <emphasis>ST_Equals(A, B) ⇔ A = B </emphasis></para>
+
+    <para>The following relation holds:
+    <emphasis>ST_Equals(A, B) ⇔ ST_Within(A,B) ∧ ST_Within(B,A) </emphasis></para>
+
+    <important>
+      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
+    </important>
+
+    <para>&sfs_compliant; s2.1.1.2</para>
+    <para>&sqlmm_compliant; SQL-MM 3: 5.1.24</para>
+        <para role="changed" conformance="2.2.0">Changed: 2.2.0 Returns true even for invalid geometries if they are binary equal</para>
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+
+    <programlisting>SELECT ST_Equals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),
+    ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));
+ st_equals
+-----------
+ t
+(1 row)
+
+SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
+    ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));
+ st_equals
+-----------
+ t
+(1 row)
+</programlisting>
+    </refsection>
+
+    <refsection>
+    <title>See Also</title>
+
+    <para><xref linkend="ST_IsValid"/>, <xref linkend="ST_OrderingEquals"/>, <xref linkend="ST_Reverse"/>, <xref linkend="ST_Within"/></para>
+    </refsection>
+
+  </refentry>

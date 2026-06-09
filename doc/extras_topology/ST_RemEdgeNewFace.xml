@@ -1,0 +1,71 @@
+<refentry xml:id="ST_RemEdgeNewFace" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>ST_RemEdgeNewFace</refname>
+
+				<refpurpose>
+Removes an edge and, if the removed edge separated two faces,
+delete the original faces and replace them with a new face.
+        </refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>bigint <function>ST_RemEdgeNewFace</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anedge</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Removes an edge and, if the removed edge separated two faces,
+delete the original faces and replace them with a new face.
+		            </para>
+
+                <para>
+Returns the id of a newly created face or NULL, if no new face is created.
+No new face is created when the removed edge is dangling or isolated or
+confined with the universe face (possibly making the universe flood into
+the face on the other side).
+		            </para>
+
+                <para>
+Updates all existing joined edges and relationships accordingly.
+		            </para>
+
+                <para>
+Refuses to remove an edge participating in the definition of an
+existing TopoGeometry.
+Refuses to heal two faces if any TopoGeometry is defined by only
+one of them (and not the other).
+		            </para>
+
+                <para>
+If any arguments are null, the given edge is unknown (must already exist in
+the <varname>edge</varname> table of the topology schema), the topology
+name is invalid then an error is thrown.
+                </para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="2.0">Availability: 2.0 </para>
+                <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.14</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<para/>
+				<!--TODO: Need examples -->
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_RemEdgeModFace"/></para>
+				<para><xref linkend="ST_AddEdgeNewFaces"/></para>
+			</refsection>
+		</refentry>

@@ -1,0 +1,50 @@
+<refentry xml:id="RenameTopoGeometryColumn" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>RenameTopoGeometryColumn</refname>
+				<refpurpose>Renames a topogeometry column</refpurpose>
+			</refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                     <funcprototype>
+                        <funcdef>topology.layer <function>RenameTopoGeometryColumn</function></funcdef>
+                        <paramdef><type>regclass </type>
+                        <parameter>layer_table</parameter></paramdef>
+                        <paramdef><type>name </type>
+                        <parameter>feature_column</parameter></paramdef>
+                        <paramdef><type>name </type>
+                        <parameter>new_name</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+This function changes the name of an existing TopoGeometry column
+ensuring metadata information about it is updated accordingly.
+                </para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+SELECT topology.RenameTopoGeometryColumn('public.parcels', 'topogeom', 'tgeom');
+                </programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+
+				<para>
+				  <xref linkend="AddTopoGeometryColumn"/>,
+				  <xref linkend="RenameTopology"/>
+				</para>
+			</refsection>
+		</refentry>

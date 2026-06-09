@@ -1,0 +1,53 @@
+<refentry xml:id="postgis_srs_all" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+    <refname>postgis_srs_all</refname>
+
+    <refpurpose>Return metadata records for every spatial reference system in the underlying Proj database.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>setof record <function>postgis_srs_all</function></funcdef>
+                <void/>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+      <para>Returns a set of all metadata records in the underlying Proj database. The records will have the <varname>auth_name</varname>, <varname>auth_srid</varname>, <varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</varname>, and the corners of the area of usage, <varname>point_sw</varname> and <varname>point_ne</varname>.</para>
+
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
+      <para>Proj version 6+</para>
+
+    </refsection>
+
+    <refsection>
+      <title>Examples</title>
+      <para>Get the first 10 metadata records from the Proj database.</para>
+      <programlisting>
+SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;
+
+ auth_name | auth_srid |                  srname
+-----------+-----------+------------------------------------------
+ EPSG      | 2000      | Anguilla 1957 / British West Indies Grid
+ EPSG      | 20004     | Pulkovo 1995 / Gauss-Kruger zone 4
+ EPSG      | 20005     | Pulkovo 1995 / Gauss-Kruger zone 5
+ EPSG      | 20006     | Pulkovo 1995 / Gauss-Kruger zone 6
+ EPSG      | 20007     | Pulkovo 1995 / Gauss-Kruger zone 7
+ EPSG      | 20008     | Pulkovo 1995 / Gauss-Kruger zone 8
+ EPSG      | 20009     | Pulkovo 1995 / Gauss-Kruger zone 9
+ EPSG      | 2001      | Antigua 1943 / British West Indies Grid
+ EPSG      | 20010     | Pulkovo 1995 / Gauss-Kruger zone 10
+ EPSG      | 20011     | Pulkovo 1995 / Gauss-Kruger zone 11    </programlisting>
+    </refsection>
+
+    <!-- Optionally add a "See Also" section -->
+    <refsection>
+    <title>See Also</title>
+    <para><xref linkend="postgis_srs_codes"/>, <xref linkend="postgis_srs"/>, <xref linkend="postgis_srs_search"/></para>
+    </refsection>
+
+  </refentry>

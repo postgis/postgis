@@ -1,0 +1,42 @@
+<refentry xml:id="ST_RemovePoint" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_RemovePoint</refname>
+		<refpurpose>Remove a point from a linestring.</refpurpose>
+	  </refnamediv>
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RemovePoint</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>offset</parameter></paramdef>
+		  </funcprototype>
+		 </funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Removes a point from a LineString, given its index (0-based).
+        Useful for turning a closed line (ring) into an open linestring.
+        </para>
+        <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0</para>
+		<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
+		<para>&Z_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+<para>Guarantees no lines are closed by removing the end point of closed lines (rings).
+Assumes geom is of type LINESTRING</para>
+<programlisting>
+UPDATE sometable
+	SET geom = ST_RemovePoint(geom, ST_NPoints(geom) - 1)
+	FROM sometable
+	WHERE ST_IsClosed(geom);
+</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AddPoint"/>, <xref linkend="ST_NPoints"/>, <xref linkend="ST_NumPoints"/></para>
+	  </refsection>
+	</refentry>

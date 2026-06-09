@@ -1,0 +1,89 @@
+<refentry xml:id="geometry_overlaps_nd" xmlns="http://docbook.org/ns/docbook">
+		  <refnamediv>
+			<refname>&amp;&amp;&amp;</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if A's n-D bounding box intersects B's n-D bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+		      <funcsynopsis>
+		      <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the n-D bounding box of geometry A intersects the n-D bounding box of geometry B.</para>
+
+			<note><para>This operand will make use of any indexes that may be available on the
+				geometries.</para></note>
+
+			<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+			<para>&T_support;</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples: 3D LineStrings</title>
+
+			<programlisting><![CDATA[
+SELECT tbl1.column1, tbl2.column1, tbl1.column2 &&& tbl2.column2 AS overlaps_3d,
+			            tbl1.column2 && tbl2.column2 AS overlaps_2d
+FROM ( VALUES
+	(1, 'LINESTRING Z(0 0 1, 3 3 2)'::geometry),
+	(2, 'LINESTRING Z(1 2 0, 0 5 -1)'::geometry)) AS tbl1,
+( VALUES
+	(3, 'LINESTRING Z(1 2 1, 4 6 1)'::geometry)) AS tbl2;
+
+ column1 | column1 | overlaps_3d | overlaps_2d
+---------+---------+-------------+-------------
+       1 |       3 | t           | t
+       2 |       3 | f           | t
+
+]]></programlisting>
+
+		  </refsection>
+		  <refsection>
+			<title>Examples: 3M LineStrings</title>
+
+			<programlisting><![CDATA[
+SELECT tbl1.column1, tbl2.column1, tbl1.column2 &&& tbl2.column2 AS overlaps_3zm,
+			            tbl1.column2 && tbl2.column2 AS overlaps_2d
+FROM ( VALUES
+	(1, 'LINESTRING M(0 0 1, 3 3 2)'::geometry),
+	(2, 'LINESTRING M(1 2 0, 0 5 -1)'::geometry)) AS tbl1,
+( VALUES
+	(3, 'LINESTRING M(1 2 1, 4 6 1)'::geometry)) AS tbl2;
+
+ column1 | column1 | overlaps_3zm | overlaps_2d
+---------+---------+-------------+-------------
+       1 |       3 | t           | t
+       2 |       3 | f           | t
+
+]]></programlisting>
+
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="geometry_overlaps"/></para>
+		  </refsection>
+		</refentry>

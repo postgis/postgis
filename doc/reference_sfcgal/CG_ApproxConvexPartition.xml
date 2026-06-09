@@ -1,0 +1,54 @@
+<refentry xml:id="CG_ApproxConvexPartition" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>CG_ApproxConvexPartition</refname>
+
+                <refpurpose>Computes approximal convex partition of the polygon geometry</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>CG_ApproxConvexPartition</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Computes approximal convex partition of the polygon geometry (using a triangulation).
+            </para>
+
+            <note><para>
+                    A partition of a polygon P is a set of polygons such that the interiors of the polygons do not intersect and the union of the polygons is equal to the interior of the original polygon P.
+                    CG_ApproxConvexPartition and CG_GreeneApproxConvexPartition functions produce approximately optimal convex partitions. Both these functions produce convex decompositions by first decomposing the polygon into simpler polygons; CG_ApproxConvexPartition uses a triangulation and CG_GreeneApproxConvexPartition a monotone partition. These two functions both guarantee that they will produce no more than four times the optimal number of convex pieces but they differ in their runtime complexities. Though the triangulation-based approximation algorithm often results in fewer convex pieces, this is not always the case.
+            </para></note>
+
+
+            <para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+            <para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
+            <para>&sfcgal_required;</para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+            <para>
+                <informalfigure>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="images/cg_approxconvexpartition01.png" />
+                        </imageobject>
+                        <caption><para>Approximal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_GreeneApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
+                    </mediaobject>
+                </informalfigure>
+                <programlisting>SELECT ST_AsText(CG_ApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
+                <screen>GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,107 61)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,148 120)),POLYGON((156 150,148 120,170 60,180 110,156 150)))</screen>
+            </para>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_GreeneApproxConvexPartition" />, <xref linkend="CG_OptimalConvexPartition" /></para>
+        </refsection>
+
+    </refentry>

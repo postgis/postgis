@@ -1,0 +1,366 @@
+<refentry xml:id="ST_Buffer" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_Buffer</refname>
+
+                <refpurpose>
+Computes a geometry covering all points within a given distance from a geometry.
+            </refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+
+                  <funcprototype>
+                    <funcdef>geometry <function>ST_Buffer</function></funcdef>
+                    <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+                    <paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef>
+                    <paramdef choice="opt"><type>text </type> <parameter>buffer_style_parameters = ''</parameter></paramdef>
+                  </funcprototype>
+
+                  <funcprototype>
+                    <funcdef>geometry <function>ST_Buffer</function></funcdef>
+                    <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+                    <paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>num_seg_quarter_circle</parameter></paramdef>
+                  </funcprototype>
+
+                  <funcprototype>
+                    <funcdef>geography <function>ST_Buffer</function></funcdef>
+                    <paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+                    <paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef>
+                    <paramdef choice="opt"><type>text </type> <parameter>buffer_style_parameters</parameter></paramdef>
+                  </funcprototype>
+
+                  <funcprototype>
+                    <funcdef>geography <function>ST_Buffer</function></funcdef>
+                    <paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+                    <paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>num_seg_quarter_circle</parameter></paramdef>
+                  </funcprototype>
+
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+              <refsection>
+                <title>Description</title>
+
+                <para>Computes a POLYGON or MULTIPOLYGON that represents all points whose distance
+            from a geometry/geography is less than or equal to a given distance.
+            A negative distance shrinks the geometry rather than expanding it.
+            A negative distance may shrink a polygon completely, in which case POLYGON EMPTY is returned.
+            For points and lines negative distances always return empty results.
+            </para>
+            <para>For geometry, the distance is specified in the units of the
+            Spatial Reference System of the geometry.
+            For geography, the distance is specified in meters.</para>
+
+            <para>The optional third parameter controls the buffer accuracy and style.
+The accuracy of circular arcs in the buffer is specified as the number of line segments
+used to approximate a quarter circle (default is 8).
+The buffer style can be specified by
+providing a list of blank-separated key=value pairs as follows:
+<itemizedlist>
+<listitem>
+<para>'quad_segs=#' : number of line segments used to approximate a quarter circle (default is 8).</para>
+</listitem>
+<listitem>
+<para>'endcap=round|flat|square' : endcap style (defaults to "round"). 'butt' is accepted as a synonym for 'flat'.</para>
+</listitem>
+<listitem>
+<para>'join=round|mitre|bevel' : join style (defaults to "round"). 'miter' is accepted as a synonym for 'mitre'.</para>
+</listitem>
+<listitem>
+<para>'mitre_limit=#.#' : mitre ratio limit (only affects mitered join style). 'miter_limit' is accepted as a synonym for 'mitre_limit'.</para>
+</listitem>
+<listitem>
+<para>'side=both|left|right' : defaults to 'both'. 'left' or 'right' performs a single-sided buffer on the geometry, with the buffered side relative to the direction of the line.
+This is only applicable to LINESTRING geometry and does not affect POINT or POLYGON geometries. By default end caps are square when 'left' or 'right' are specified.</para>
+</listitem>
+</itemizedlist>
+                </para>
+
+            <note><para>&geography_transform;
+            It determines a planar spatial reference system that best fits the bounding box of the geography object
+            (trying UTM, Lambert Azimuthal Equal Area (LAEA) North/South pole, and finally Mercator ).
+            The buffer is computed in the planar space, and then transformed back to WGS84.
+            This may not produce the desired behavior if the input object is much larger than a UTM zone or crosses the dateline
+            </para></note>
+
+            <note><para>Buffer can handle invalid inputs and the output is always a valid polygonal geometry.
+            Buffering by distance 0 is sometimes used as a way of repairing invalid polygons.
+            <xref linkend="ST_MakeValid"/> is more suitable for this process as it can handle multi-polygons.
+            </para></note>
+
+            <note><para>Buffering is sometimes used to perform a within-distance search.
+            For this use case it is more efficient to use <xref linkend="ST_DWithin"/>.</para></note>
+
+            <note><para>This function ignores the Z dimension.
+It always gives a 2D result even when used on a 3D geometry.</para></note>
+
+                <para role="enhanced" conformance="2.5.0">Enhanced: 2.5.0 - ST_Buffer geometry support was enhanced to allow for side buffering specification <code>side=both|left|right</code>.</para>
+                <para role="availability" conformance="1.5">Availability: 1.5 - ST_Buffer was enhanced to support different endcaps and join types. These are useful for example to convert road linestrings
+                    into polygon roads with flat or square edges instead of rounded edges. Thin wrapper for geography was added.
+                </para>
+
+                <para>Performed by the GEOS module.</para>
+                <para>&sfs_compliant; s2.1.1.3</para>
+                <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.30</para>
+            </refsection>
+
+              <refsection>
+                <title>Examples</title>
+
+                <informaltable>
+                  <tgroup cols="2">
+                    <tbody>
+                      <row>
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_buffer01.png"/>
+                              </imageobject>
+                              <caption><para>quad_segs=8 (default)</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=8');
+                </programlisting>
+                          </para></entry>
+
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_buffer02.png"/>
+                              </imageobject>
+                              <caption><para>quad_segs=2 (lame)</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=2');
+                </programlisting>
+                        </para></entry>
+                      </row>
+                      <row>
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_buffer03.png"/>
+                              </imageobject>
+                              <caption><para>endcap=round join=round (default)</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'endcap=round join=round');
+                </programlisting>
+                         </para></entry>
+
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_buffer04.png"/>
+                              </imageobject>
+                              <caption><para>endcap=square</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'endcap=square join=round');
+                </programlisting>
+                          </para></entry>
+
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_buffer05.png"/>
+                              </imageobject>
+                              <caption><para>endcap=flat</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'endcap=flat join=round');
+                </programlisting>
+                          </para></entry>
+                      </row>
+                      <row>
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_buffer07.png"/>
+                              </imageobject>
+                              <caption><para>join=bevel</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'join=bevel');
+                </programlisting>
+                          </para></entry>
+
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_buffer06.png"/>
+                              </imageobject>
+                              <caption><para>join=mitre mitre_limit=5.0 (default mitre limit)</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'join=mitre mitre_limit=5.0');
+                </programlisting>
+                          </para></entry>
+
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_buffer08.png"/>
+                              </imageobject>
+                              <caption><para>join=mitre mitre_limit=1</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'join=mitre mitre_limit=1.0');
+                </programlisting>
+                          </para></entry>
+                      </row>
+                        <row>
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_buffer09.png"/>
+                              </imageobject>
+                              <caption><para>side=left</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'side=left');
+                </programlisting>
+                          </para></entry>
+
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_buffer10.png"/>
+                              </imageobject>
+                              <caption><para>side=right</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'side=right');
+                </programlisting>
+                          </para></entry>
+
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_buffer11.png"/>
+                              </imageobject>
+                              <caption><para>side=left join=mitre</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>
+SELECT ST_Buffer(
+ ST_GeomFromText(
+  'LINESTRING(50 50,150 150,150 50)'
+ ), 10, 'side=left join=mitre');
+                </programlisting>
+                          </para></entry>
+                      </row>
+                        <row>
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_buffer12.png"/>
+                              </imageobject>
+                              <caption><para>right-hand-winding, polygon boundary side=left</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>
+SELECT ST_Buffer(
+ST_ForceRHR(
+ST_Boundary(
+ ST_GeomFromText(
+'POLYGON ((50 50, 50 150, 150 150, 150 50, 50 50))'))),
+ ), 20, 'side=left');
+                </programlisting>
+                          </para></entry>
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_buffer13.png"/>
+                              </imageobject>
+                              <caption><para>right-hand-winding, polygon boundary side=right</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>
+SELECT ST_Buffer(
+ST_ForceRHR(
+ST_Boundary(
+ ST_GeomFromText(
+'POLYGON ((50 50, 50 150, 150 150, 150 50, 50 50))'))
+), 20,'side=right')
+                </programlisting>
+                </para></entry>
+                </row>
+                    </tbody>
+                  </tgroup>
+            </informaltable>
+
+<programlisting>--A buffered point approximates a circle
+-- A buffered point forcing approximation of (see diagram)
+-- 2 points per quarter circle is poly with 8 sides (see diagram)
+SELECT ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As promisingcircle_pcount,
+ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 2)) As lamecircle_pcount;
+
+promisingcircle_pcount | lamecircle_pcount
+------------------------+-------------------
+             33 |                9
+
+--A lighter but lamer circle
+-- only 2 points per quarter circle is an octagon
+--Below is a 100 meter octagon
+-- Note coordinates are in NAD 83 long lat which we transform
+to Mass state plane meter and then buffer to get measurements in meters;
+SELECT ST_AsText(ST_Buffer(
+ST_Transform(
+ST_SetSRID(ST_Point(-71.063526, 42.35785),4269), 26986)
+,100,2)) As octagon;
+----------------------
+POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
+957.59057465 900808.759918696,235886.879896532 900838.049240578,235857.59057465
+900908.759918696,235886.879896532 900979.470596815,235957.59057465 901008.759918
+696,236028.301252769 900979.470596815,236057.59057465 900908.759918696))
+        </programlisting>
+              </refsection>
+
+              <refsection>
+                <title>See Also</title>
+
+                <para><xref linkend="ST_Collect"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_MakeValid"/></para>
+              </refsection>
+        </refentry>

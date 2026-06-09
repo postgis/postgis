@@ -1,0 +1,109 @@
+<refentry xml:id="CG_3DBuffer" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+   <refnamediv>
+       <refname>CG_3DBuffer</refname>
+       <refpurpose>Computes a 3D buffer around a geometry.</refpurpose>
+   </refnamediv>
+   <refsynopsisdiv>
+       <funcsynopsis>
+           <funcprototype>
+               <funcdef>geometry <function>CG_3DBuffer</function></funcdef>
+               <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>radius</parameter></paramdef>
+               <paramdef><type>integer</type> <parameter>segments</parameter></paramdef>
+               <paramdef><type>integer</type> <parameter>buffer_type</parameter></paramdef>
+           </funcprototype>
+       </funcsynopsis>
+   </refsynopsisdiv>
+   <refsection>
+       <title>Description</title>
+       <para>Generates a 3D buffer around the input geometry <parameter>geom</parameter> with a specified <parameter>radius</parameter>.
+       The buffer is constructed in 3D space, creating a volumetric representation of the geometry's surroundings.
+       The <parameter>segments</parameter> parameter defines the number of segments used to approximate the curved sections of the buffer, with a minimum value of 4 segments required.
+       The <parameter>buffer_type</parameter> specifies the type of buffer to create:
+       0: Rounded buffer (default)
+       1: Flat buffer
+       2: Square buffer</para>
+       <para>Input geometry must be a Point or LineString.</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
+       <para>&sfcgal_required;</para>
+   </refsection>
+   <refsection>
+       <title>Examples</title>
+       <programlisting>SELECT ST_AsText(CG_3DBuffer('POINT(0 0 0)', 1, 8, 0));
+-- Result: POLYHEDRALSURFACE Z (((0 0 1, 0.5 -0.5 0.71, 0 -0.71 0.71, 0 0 1)), ... )</programlisting>
+
+       <para>The following images were rendered pasting the output of the ST_AsX3D query into <link xlink:href="https://postgis.net/docs/support/viewers/x3d_viewer.htm">X3D Viewer</link>.</para>
+       <programlisting><![CDATA[SELECT string_agg('<Shape>' || ST_AsX3D(cgbuffer3d_output)  || '<Appearance>
+          <Material diffuseColor="0 0.8 0.2" specularColor="0 1 0"/>
+        </Appearance>
+    </Shape>', '');]]></programlisting>
+    <informaltable>
+                <tgroup cols="2">
+                <tbody>
+                    <row>
+                    <entry><para><informalfigure>
+                        <mediaobject>
+                            <imageobject>
+                            <imagedata fileref="images/cg_3dbuffer01.png"/>
+                            </imageobject>
+                            <caption><para>segments=32 (rounded buffer)</para></caption>
+                        </mediaobject>
+                        </informalfigure>
+            <programlisting>SELECT CG_3DBuffer(ST_GeomFromText('POINT(100 90)'), 50,32,0);</programlisting>
+                        </para></entry>
+
+                    <entry><para><informalfigure>
+                        <mediaobject>
+                            <imageobject>
+                            <imagedata fileref="images/cg_3dbuffer02.png"/>
+                            </imageobject>
+                            <caption><para>5 segments rounded</para></caption>
+                        </mediaobject>
+                        </informalfigure>
+            <programlisting>SELECT CG_3DBuffer(
+ ST_GeomFromText('POINT(100 90)'),
+ 50,5,0);
+            </programlisting>
+                    </para></entry>
+                    </row>
+                    <row>
+                    <entry><para><informalfigure>
+                        <mediaobject>
+                            <imageobject>
+                            <imagedata fileref="images/cg_3dbuffer03.png"/>
+                            </imageobject>
+                            <caption><para>32 segments, round</para></caption>
+                        </mediaobject>
+                        </informalfigure>
+            <programlisting>SELECT CG_3DBuffer(
+  ST_GeomFromText(
+    'LINESTRING(50 50,150 150,150 50)'
+    ),
+ 10,32,0);
+            </programlisting>
+                        </para></entry>
+                        <entry><para><informalfigure>
+                        <mediaobject>
+                            <imageobject>
+                            <imagedata fileref="images/cg_3dbuffer04.png"/>
+                            </imageobject>
+                            <caption><para>32 segments, square</para></caption>
+                        </mediaobject>
+                        </informalfigure>
+            <programlisting>SELECT CG_3DBuffer(
+  ST_GeomFromText(
+    'LINESTRING(50 50,150 150,150 50)'
+    ),
+ 10,32,2);
+            </programlisting>
+                        </para></entry>
+    </row>
+    </tbody>
+    </tgroup>
+    </informaltable>
+   </refsection>
+   <refsection>
+       <title>See Also</title>
+       <para><xref linkend="ST_Buffer"/>, <xref linkend="ST_3DConvexHull"/>, <xref linkend="ST_AsX3D" /></para>
+   </refsection>
+</refentry>

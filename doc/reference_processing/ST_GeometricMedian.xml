@@ -1,0 +1,94 @@
+<refentry xml:id="ST_GeometricMedian" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+          <refname>
+              ST_GeometricMedian
+          </refname>
+
+        <refpurpose>
+            Returns the geometric median of a MultiPoint.
+        </refpurpose>
+      </refnamediv>
+
+    <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+            <funcdef>geometry <function>ST_GeometricMedian</function> </funcdef>
+
+            <paramdef> <type>geometry</type> <parameter>geom</parameter></paramdef>
+            <paramdef choice="opt"><type>float8</type> <parameter>tolerance = NULL</parameter></paramdef>
+            <paramdef choice="opt"><type>int</type> <parameter>max_iter = 10000</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean</type> <parameter>fail_if_not_converged = false</parameter></paramdef>
+
+        </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+    <para>
+          Computes the approximate geometric median of a MultiPoint geometry
+          using the Weiszfeld algorithm.
+          The geometric median is the point minimizing the sum of distances to the input points.
+          It provides a centrality measure
+          that is less sensitive to outlier points than the centroid (center of mass).
+    </para>
+    <para>
+          The algorithm iterates until the distance change between
+          successive iterations is less than the supplied <varname>tolerance</varname>
+          parameter.  If this condition has not been met after <varname>max_iterations</varname>
+          iterations, the function produces an error and exits,
+          unless <varname>fail_if_not_converged</varname> is set to <code>false</code> (the default).
+    </para>
+    <para>
+          If a <varname>tolerance</varname> argument is not provided, the tolerance value
+          is calculated based on the extent of the input geometry.
+    </para>
+    <para>
+          If present, the input point M values are interpreted as their relative weights.
+    </para>
+    <para role="availability" conformance="2.3.0">Availability: 2.3.0</para>
+    <para role="enhanced" conformance="2.5.0">Enhanced: 2.5.0 Added support for M as weight of points.</para>
+    <para>&Z_support;</para>
+    <para>&M_support;</para>
+    </refsection>
+    <refsection>
+      <title>Examples</title>
+      <para>
+          <informalfigure>
+              <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="images/st_geometricmedian01.png"/>
+                    </imageobject>
+
+                    <caption>
+                        <para>
+                        Comparison of the geometric median (red)
+                        and centroid (turquoise) of a MultiPoint.
+                        </para>
+                    </caption>
+              </mediaobject>
+        </informalfigure>
+      </para>
+      <programlisting>
+WITH test AS (
+SELECT 'MULTIPOINT((10 10), (10 40), (40 10), (190 190))'::geometry geom)
+SELECT
+  ST_AsText(ST_Centroid(geom)) centroid,
+  ST_AsText(ST_GeometricMedian(geom)) median
+FROM test;
+
+      centroid      |                 median
+--------------------+----------------------------------------
+   POINT(62.5 62.5) | POINT(25.01778421249728 25.01778421249728)
+(1 row)
+      </programlisting>
+    </refsection>
+
+    <refsection>
+      <title>See Also</title>
+
+      <para><xref linkend="ST_Centroid"/></para>
+    </refsection>
+
+    </refentry>

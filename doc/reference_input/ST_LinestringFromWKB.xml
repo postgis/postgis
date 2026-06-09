@@ -1,0 +1,72 @@
+<refentry xml:id="ST_LinestringFromWKB" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_LinestringFromWKB</refname>
+
+		<refpurpose>Makes a geometry from WKB with the given SRID.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LinestringFromWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LinestringFromWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+	  <para>The <varname>ST_LinestringFromWKB</varname> function, takes a well-known binary
+		representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>)
+		and creates an instance of the appropriate geometry type - in this case, a
+		<varname>LINESTRING</varname> geometry. This function plays the role of the Geometry
+		Factory in SQL.</para>
+
+	  <para>If an SRID is not specified, it defaults to 0.  <varname>NULL</varname> is
+		returned if the input <varname>bytea</varname> does not represent a
+		<varname>LINESTRING</varname> geometry. This an alias for <xref linkend="ST_LineFromWKB"/>.</para>
+
+		<note>
+		  <para>OGC SPEC 3.2.6.2 - optional SRID is from the conformance suite.</para>
+		</note>
+
+		<note>
+		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, it's more
+		  efficient to just use <xref linkend="ST_GeomFromWKB"/>.  This function just calls
+		  <xref linkend="ST_GeomFromWKB"/> and adds additional validation that it returns a
+		  <varname>LINESTRING</varname>.</para>
+		</note>
+
+		<para>&sfs_compliant; s3.2.6.2</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 7.2.9</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT
+  ST_LineStringFromWKB(
+	ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))
+  ) AS aline,
+  ST_LinestringFromWKB(
+	ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
+  ) IS NULL AS null_return;
+   aline                            | null_return
+------------------------------------------------
+010200000002000000000000000000F ... | t</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromWKB"/>, <xref linkend="ST_LineFromWKB"/></para>
+	  </refsection>
+	</refentry>

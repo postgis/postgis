@@ -1,0 +1,211 @@
+<refentry xml:id="RT_AddRasterConstraints" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>AddRasterConstraints</refname>
+
+        <refpurpose>Adds raster constraints to a loaded raster table for a specific column that constrains spatial ref, scaling, blocksize, alignment, bands, band type and a flag to denote if raster column is regularly blocked. The table must be loaded with data for the constraints to be inferred. Returns true if the constraint setting was accomplished and issues a notice otherwise.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>AddRasterConstraints</function></funcdef>
+
+            <paramdef><type>name </type>
+            <parameter>rasttable</parameter></paramdef>
+
+            <paramdef><type>name </type>
+            <parameter>rastcolumn</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>srid=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>scale_x=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>scale_y=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>blocksize_x=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>blocksize_y=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>same_alignment=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>regular_blocking=false</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+                <parameter>num_bands=true</parameter>
+            </paramdef>
+            <paramdef choice="opt"><type>boolean </type>
+                <parameter>pixel_types=true</parameter>
+            </paramdef>
+            <paramdef choice="opt"><type>boolean </type>
+                <parameter>nodata_values=true</parameter>
+            </paramdef>
+            <paramdef choice="opt"><type>boolean </type>
+                <parameter>out_db=true</parameter>
+            </paramdef>
+            <paramdef choice="opt"><type>boolean </type>
+                <parameter>extent=true</parameter>
+            </paramdef>
+          </funcprototype>
+          <funcprototype>
+            <funcdef>boolean <function>AddRasterConstraints</function></funcdef>
+            <paramdef><type>name </type>
+            <parameter>rasttable</parameter></paramdef>
+
+            <paramdef><type>name </type>
+            <parameter>rastcolumn</parameter></paramdef>
+
+            <paramdef><type>text[] </type>
+            <parameter>VARIADIC constraints</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>boolean <function>AddRasterConstraints</function></funcdef>
+
+            <paramdef><type>name </type>
+            <parameter>rastschema</parameter></paramdef>
+
+            <paramdef><type>name </type>
+            <parameter>rasttable</parameter></paramdef>
+
+            <paramdef><type>name </type>
+            <parameter>rastcolumn</parameter></paramdef>
+
+            <paramdef><type>text[] </type>
+            <parameter>VARIADIC constraints</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>boolean <function>AddRasterConstraints</function></funcdef>
+
+            <paramdef><type>name </type>
+            <parameter>rastschema</parameter></paramdef>
+
+            <paramdef><type>name </type>
+            <parameter>rasttable</parameter></paramdef>
+
+            <paramdef><type>name </type>
+            <parameter>rastcolumn</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>srid=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>scale_x=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>scale_y=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>blocksize_x=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>blocksize_y=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>same_alignment=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>regular_blocking=false</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>num_bands=true</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>pixel_types=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+                <parameter>nodata_values=true</parameter>
+            </paramdef>
+            <paramdef choice="opt"><type>boolean </type>
+                <parameter>out_db=true</parameter>
+            </paramdef>
+            <paramdef choice="opt"><type>boolean </type>
+                <parameter>extent=true</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Generates constraints on a raster column that are used to display information in the <varname>raster_columns</varname> raster catalog.
+        The <varname>rastschema</varname> is the name of the table schema the table resides in. The <varname>srid</varname>
+        must be an integer value reference to an entry in the SPATIAL_REF_SYS
+        table.</para>
+
+        <para><varname>raster2pgsql</varname> loader uses this function to register raster tables</para>
+        <para>Valid constraint names to pass in: refer to <xref linkend="RT_Raster_Columns"/> for more details.</para>
+        <itemizedlist>
+            <listitem><para><varname>blocksize</varname> sets both X and Y blocksize</para></listitem>
+            <listitem><para><varname>blocksize_x</varname> sets X tile (width in pixels of each tile)</para></listitem>
+            <listitem><para><varname>blocksize_y</varname> sets Y tile (height in pixels of each tile)</para></listitem>
+            <listitem><para><varname>extent</varname> computes extent of whole table and applies constraint all rasters must be within that extent</para></listitem>
+
+            <listitem><para><varname>num_bands</varname> number of bands</para></listitem>
+            <listitem><para><varname>pixel_types</varname> reads array of pixel types for each band ensure all band n have same pixel type</para></listitem>
+            <listitem><para><varname>regular_blocking</varname> sets spatially unique (no two rasters can be spatially the same) and coverage tile (raster is aligned to a coverage) constraints</para></listitem>
+            <listitem><para><varname>same_alignment</varname> ensures they all have same alignment meaning any two tiles you compare will return true for. Refer to <xref linkend="RT_ST_SameAlignment"/>.</para></listitem>
+            <listitem><para><varname>srid</varname> ensures all have same srid</para></listitem>
+            <listitem><para>More -- any listed as inputs into the above functions</para></listitem>
+        </itemizedlist>
+        <note>
+            <para>This function infers the constraints from the data already present in the table.  As such for it to work, you must create the raster column first
+            and then load it with data.
+            </para>
+        </note>
+        <note>
+            <para>If you need to load more data in your tables after you have already applied constraints, you may want to run the DropRasterConstraints
+                if the extent of your data has changed.
+            </para>
+        </note>
+        <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples: Apply all possible constraints on column based on data</title>
+
+        <programlisting>CREATE TABLE myrasters(rid SERIAL primary key, rast raster);
+INSERT INTO myrasters(rast)
+SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);
+
+SELECT AddRasterConstraints('myrasters'::name, 'rast'::name);
+
+
+-- verify if registered correctly in the raster_columns view --
+SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types, nodata_values
+    FROM raster_columns
+    WHERE r_table_name = 'myrasters';
+
+ srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | pixel_types| nodata_values
+------+---------+---------+-------------+-------------+-----------+-------------+---------------
+ 4326 |       2 |       2 |        1000 |        1000 |         1 | {8BSI}      | {0}
+        </programlisting>
+      </refsection>
+
+       <refsection>
+        <title>Examples: Apply single constraint</title>
+
+        <programlisting>CREATE TABLE public.myrasters2(rid SERIAL primary key, rast raster);
+INSERT INTO myrasters2(rast)
+SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);
+
+SELECT AddRasterConstraints('public'::name, 'myrasters2'::name, 'rast'::name,'regular_blocking', 'blocksize');
+-- get notice--
+NOTICE:  Adding regular blocking constraint
+NOTICE:  Adding blocksize-X constraint
+NOTICE:  Adding blocksize-Y constraint</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="RT_Raster_Columns"/>, <xref linkend="RT_ST_AddBand"/>, <xref linkend="RT_ST_MakeEmptyRaster"/>, <xref linkend="RT_DropRasterConstraints"/>, <xref linkend="RT_ST_BandPixelType"/>, <xref linkend="RT_ST_SRID"/></para>
+      </refsection>
+    </refentry>

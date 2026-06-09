@@ -1,0 +1,46 @@
+<refentry xml:id="ST_MakeBox2D" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_MakeBox2D</refname>
+
+        <refpurpose>Creates a BOX2D defined by two 2D point geometries.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>box2d <function>ST_MakeBox2D</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>pointLowLeft</parameter></paramdef>
+            <paramdef><type>geometry </type> <parameter>pointUpRight</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Creates a <xref linkend="box2d_type"/> defined by two Point
+            geometries.  This is useful for doing range queries.</para>
+      </refsection>
+
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting><![CDATA[
+
+--Return all features that fall reside or partly reside in a US national atlas coordinate bounding box
+--It is assumed here that the geometries are stored with SRID = 2163 (US National atlas equal area)
+SELECT feature_id, feature_name, geom
+FROM features
+WHERE geom && ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625),
+    ST_Point(-987121.375 ,529933.1875)),2163)
+]]></programlisting>
+      </refsection>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_Point"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_SRID"/></para>
+      </refsection>
+    </refentry>

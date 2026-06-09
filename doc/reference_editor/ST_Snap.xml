@@ -1,0 +1,199 @@
+<refentry xml:id="ST_Snap" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_Snap</refname>
+
+		<refpurpose>
+	Snap segments and vertices of input geometry
+	to vertices of a reference geometry.
+		</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Snap</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>input</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>reference</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+ Snaps the vertices and segments of a geometry to
+ another Geometry's vertices.
+ A snap distance tolerance is used to control where snapping is performed.
+  The result geometry is the input geometry with the vertices snapped.
+	If no snapping occurs then the input geometry is returned unchanged.
+		</para>
+		<para>
+ Snapping one geometry to another can improve
+ robustness for overlay operations by eliminating
+ nearly-coincident edges
+ (which cause problems during noding and intersection calculation).
+		</para>
+
+		<para>
+ Too much snapping can result in invalid topology
+ being created, so the number and location of snapped vertices
+ is decided using heuristics to determine when it
+ is safe to snap.
+ This can result in some potential snaps being omitted, however.
+		</para>
+
+		<note>
+		  <para>
+		  The returned geometry might lose its simplicity (see
+		  <xref linkend="ST_IsSimple"/>) and validity (see
+		  <xref linkend="ST_IsValid"/>).
+		  </para>
+		</note>
+		<para>Performed by the GEOS module.</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+			<informaltable>
+				  <tgroup cols="2">
+					<colspec colname="column1"/>
+					<colspec colname="column2"/>
+					<spanspec namest="column1" nameend="column2" spanname="span-horiz" align="center"/>
+					<tbody>
+					  <row>
+						<entry spanname="span-horiz"><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_snap01.png"/>
+							  </imageobject>
+							  <caption><para>A multipolygon shown with a linestring (before any snapping)</para></caption>
+							</mediaobject>
+						  </informalfigure></para>
+					   </entry>
+					  </row>
+					  <row>
+					   <entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_snap02.png"/>
+							  </imageobject>
+							  <caption><para>A multipolygon snapped to linestring to tolerance: 1.01 of distance.
+							  The new multipolygon is shown with reference linestring</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_Snap(poly,line, ST_Distance(poly,line)*1.01)) AS polysnapped
+FROM (SELECT
+   ST_GeomFromText('MULTIPOLYGON(
+     ((26 125, 26 200, 126 200, 126 125, 26 125 ),
+      ( 51 150, 101 150, 76 175, 51 150 )),
+      (( 151 100, 151 200, 176 175, 151 100 )))') As poly,
+       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line
+	) As foo;
+
+                             polysnapped
+---------------------------------------------------------------------
+ MULTIPOLYGON(((26 125,26 200,126 200,126 125,101 100,26 125),
+ (51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))
+				</programlisting></para>
+					</entry>
+					<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_snap04.png"/>
+							  </imageobject>
+							  <caption><para>A multipolygon snapped to linestring to tolerance: 1.25 of distance.
+							  The new multipolygon is shown with reference linestring</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(
+    ST_Snap(poly,line, ST_Distance(poly,line)*1.25)
+  ) AS polysnapped
+FROM (SELECT
+  ST_GeomFromText('MULTIPOLYGON(
+    (( 26 125, 26 200, 126 200, 126 125, 26 125 ),
+      ( 51 150, 101 150, 76 175, 51 150 )),
+      (( 151 100, 151 200, 176 175, 151 100 )))') As poly,
+       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line
+	) As foo;
+
+                             polysnapped
+---------------------------------------------------------------------
+MULTIPOLYGON(((5 107,26 200,126 200,126 125,101 100,54 84,5 107),
+(51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))
+				</programlisting></para>
+						</entry>
+					</row>
+					<row>
+					   <entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_snap03.png"/>
+							  </imageobject>
+							  <caption><para>The linestring snapped to the original multipolygon  at tolerance 1.01 of distance.
+							  The new linestring is shown with reference multipolygon</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(
+   ST_Snap(line, poly, ST_Distance(poly,line)*1.01)
+  ) AS linesnapped
+FROM (SELECT
+  ST_GeomFromText('MULTIPOLYGON(
+     ((26 125, 26 200, 126 200, 126 125, 26 125),
+      (51 150, 101 150, 76 175, 51 150 )),
+      ((151 100, 151 200, 176 175, 151 100)))') As poly,
+       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line
+	) As foo;
+
+              linesnapped
+----------------------------------------
+ LINESTRING(5 107,26 125,54 84,101 100)
+				</programlisting>
+						  </para>
+					</entry>
+					<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_snap05.png"/>
+							  </imageobject>
+							  <caption><para>The linestring snapped to the original multipolygon  at tolerance 1.25 of distance.
+							  The new linestring is shown with reference multipolygon</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(
+ ST_Snap(line, poly, ST_Distance(poly,line)*1.25)
+  ) AS linesnapped
+FROM (SELECT
+  ST_GeomFromText('MULTIPOLYGON(
+     (( 26 125, 26 200, 126 200, 126 125, 26 125 ),
+      (51 150, 101 150, 76 175, 51 150 )),
+      ((151 100, 151 200, 176 175, 151 100 )))') As poly,
+       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line
+	) As foo;
+              linesnapped
+---------------------------------------
+LINESTRING(26 125,54 84,101 100)
+				</programlisting></para>
+					</entry>
+				</row>
+		</tbody>
+	</tgroup>
+</informaltable>
+
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+		<xref linkend="ST_SnapToGrid"/>
+		</para>
+	  </refsection>
+	</refentry>

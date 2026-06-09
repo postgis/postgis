@@ -1,0 +1,107 @@
+<refentry xml:id="AsTopoJSON" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+		    <refnamediv>
+				<refname>AsTopoJSON</refname>
+
+				<refpurpose>Returns the TopoJSON representation of a topogeometry.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+                        <funcdef>text <function>AsTopoJSON</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>regclass </type> <parameter>edgeMapTable</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Returns the TopoJSON representation of a topogeometry. If <varname>edgeMapTable</varname> is not null, it will be used as a lookup/storage mapping of edge identifiers to arc indices. This is to be able to allow for a compact "arcs" array in the final document.
+</para>
+
+<para>
+The table, if given, is expected to have an "arc_id" field of type "serial" and an "edge_id" of type integer; the code will query the table for "edge_id" so it is recommended to add an index on that field.
+</para>
+
+		<note>
+<para>
+Arc indices in the TopoJSON output are 0-based but they are 1-based
+in the "edgeMapTable" table.
+</para>
+    </note>
+
+		<para>
+A full TopoJSON document will be need to contain, in
+addition to the snippets returned by this function,
+the actual arcs plus some headers. See the <link xlink:href="http://github.com/mbostock/topojson-specification/blob/master/README.md">TopoJSON specification</link>.
+		</para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0 </para>
+                <para role="enhanced" conformance="2.2.1">Enhanced: 2.2.1 added support for puntal inputs</para>
+			</refsection>
+
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_AsGeoJSON"/></para>
+			</refsection>
+
+            <refsection>
+                <title>Examples</title>
+<programlisting>
+CREATE TEMP TABLE edgemap(arc_id serial, edge_id int unique);
+
+-- header
+SELECT '{ "type": "Topology", "transform": { "scale": [1,1], "translate": [0,0] }, "objects": {'
+
+-- objects
+UNION ALL SELECT '"' || feature_name || '": ' || AsTopoJSON(feature, 'edgemap')
+FROM features.big_parcels WHERE feature_name = 'P3P4';
+
+-- arcs
+WITH edges AS (
+  SELECT m.arc_id, e.geom FROM edgemap m, city_data.edge e
+  WHERE e.edge_id = m.edge_id
+), points AS (
+  SELECT arc_id, (st_dumppoints(geom)).* FROM edges
+), compare AS (
+  SELECT p2.arc_id,
+         CASE WHEN p1.path IS NULL THEN p2.geom
+              ELSE ST_Translate(p2.geom, -ST_X(p1.geom), -ST_Y(p1.geom))
+         END AS geom
+  FROM points p2 LEFT OUTER JOIN points p1
+  ON ( p1.arc_id = p2.arc_id AND p2.path[1] = p1.path[1]+1 )
+  ORDER BY arc_id, p2.path
+), arcsdump AS (
+  SELECT arc_id, (regexp_matches( ST_AsGeoJSON(geom), '\[.*\]'))[1] as t
+  FROM compare
+), arcs AS (
+  SELECT arc_id, '[' || array_to_string(array_agg(t), ',') || ']' as a FROM arcsdump
+  GROUP BY arc_id
+  ORDER BY arc_id
+)
+SELECT '}, "arcs": [' UNION ALL
+SELECT array_to_string(array_agg(a), E',\n') from arcs
+
+-- footer
+UNION ALL SELECT ']}'::text as t;
+
+-- Result:
+{ "type": "Topology", "transform": { "scale": [1,1], "translate": [0,0] }, "objects": {
+"P3P4": { "type": "MultiPolygon", "arcs": [[[-1]],[[6,5,-5,-4,-3,1]]]}
+}, "arcs": [
+ [[25,30],[6,0],[0,10],[-14,0],[0,-10],[8,0]],
+ [[35,6],[0,8]],
+ [[35,6],[12,0]],
+ [[47,6],[0,8]],
+ [[47,14],[0,8]],
+ [[35,22],[12,0]],
+ [[35,14],[0,8]]
+ ]}
+</programlisting>
+            </refsection>
+	  </refentry>

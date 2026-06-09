@@ -1,0 +1,166 @@
+<refentry xml:id="RT_ST_Intersection" xmlns="http://docbook.org/ns/docbook">
+                <refnamediv>
+                    <refname>ST_Intersection</refname>
+                    <refpurpose>Returns a raster or a set of geometry-pixelvalue pairs representing the shared portion of two rasters or the geometrical intersection of a vectorization of the raster and a geometry.</refpurpose>
+                </refnamediv>
+
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                      <funcprototype>
+                            <funcdef>setof geomval <function>ST_Intersection</function></funcdef>
+                            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef choice="opt"><type>integer </type> <parameter>band_num=1</parameter></paramdef>
+                      </funcprototype>
+
+                      <funcprototype>
+                            <funcdef>setof geomval <function>ST_Intersection</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+                      </funcprototype>
+
+                      <funcprototype>
+                            <funcdef>setof geomval <function>ST_Intersection</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+                            <paramdef><type>geometry </type> <parameter>geomin</parameter></paramdef>
+                      </funcprototype>
+
+                      <funcprototype>
+                            <funcdef>raster <function>ST_Intersection</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+                            <paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+                            <paramdef><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
+                      </funcprototype>
+
+                      <funcprototype>
+                            <funcdef>raster <function>ST_Intersection</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+                            <paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>returnband</parameter></paramdef>
+                            <paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
+                      </funcprototype>
+
+                      <funcprototype>
+                            <funcdef>raster <function>ST_Intersection</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>band1</parameter></paramdef>
+                            <paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>band2</parameter></paramdef>
+                            <paramdef><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
+                      </funcprototype>
+
+                      <funcprototype>
+                            <funcdef>raster <function>ST_Intersection</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>band1</parameter></paramdef>
+                            <paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>band2</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>returnband</parameter></paramdef>
+                            <paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
+                      </funcprototype>
+
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+                    <para>
+                        Returns a raster or a set of geometry-pixelvalue pairs representing the shared portion of two rasters or the geometrical intersection of a vectorization of the raster and a geometry.
+                    </para>
+
+                    <para>
+                        The first three variants, returning a setof geomval, works in vector space. The raster is first vectorized (using <xref linkend="RT_ST_DumpAsPolygons"/>) into a set of geomval rows and those rows are then intersected with the geometry using the <xref linkend="ST_Intersection"/> (geometry, geometry) PostGIS function. Geometries intersecting only with a nodata value area of a raster returns an empty geometry. They are normally excluded from the results by the proper usage of <xref linkend="RT_ST_Intersects"/> in the WHERE clause.
+                    </para>
+
+                    <para>
+                        You can access the geometry and the value parts of the resulting set of geomval by surrounding them with parenthesis and adding '.geom' or '.val' at the end of the expression. e.g. (ST_Intersection(rast, geom)).geom
+                    </para>
+
+                    <para>
+                        The other variants, returning a raster, works in raster space. They are using the two rasters version of ST_MapAlgebraExpr to perform the intersection.
+                    </para>
+
+                    <para>
+                        The extent of the resulting raster corresponds to the geometrical intersection of the two raster extents. The resulting raster includes 'BAND1', 'BAND2' or 'BOTH' bands, following what is passed as the <varname>returnband</varname> parameter. Nodata value areas present in any band results in nodata value areas in every bands of the result. In other words, any pixel intersecting with a nodata value pixel becomes a nodata value pixel in the result.
+                    </para>
+
+                    <para>
+                        Rasters resulting from ST_Intersection must have a nodata value assigned for areas not intersecting. You can define or replace the nodata value for any resulting band by providing a <varname>nodataval[]</varname> array of one or two nodata values depending if you request 'BAND1', 'BAND2' or 'BOTH' bands. The first value in the array replace the nodata value in the first band and the second value replace the nodata value in the second band. If one input band do not have a nodata value defined and none are provided as an array, one is chosen using the ST_MinPossibleValue function. All variant accepting an array of nodata value can also accept a single value which will be assigned to each requested band.
+                    </para>
+
+                    <para>
+                        In all variants, if no band number is specified band 1 is assumed.  If you need an intersection between a raster and geometry that returns a raster, refer to <xref linkend="RT_ST_Clip"/>.
+                    </para>
+
+                    <note>
+                        <para>
+                            To get more control on the resulting extent or on what to return when encountering a nodata value, use the two rasters version of <xref linkend="RT_ST_MapAlgebraExpr2"/>.
+                        </para>
+                    </note>
+
+                    <note>
+                        <para>
+                            To compute the intersection of a raster band with a geometry in raster space, use <xref linkend="RT_ST_Clip"/>. ST_Clip works on multiple bands rasters and does not return a band corresponding to the rasterized geometry.
+                        </para>
+                    </note>
+
+                    <note>
+                        <para>
+                            ST_Intersection should be used in conjunction with <xref linkend="RT_ST_Intersects"/> and an index on the raster column and/or the geometry column.
+                        </para>
+                    </note>
+
+                    <para>
+                        Enhanced: 2.0.0 - Intersection in the raster space was introduced. In earlier pre-2.0.0 versions, only intersection performed in vector space were supported.
+                    </para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples: Geometry, Raster -- resulting in geometry vals</title>
+
+                    <programlisting>
+SELECT
+    foo.rid,
+    foo.gid,
+    ST_AsText((foo.geomval).geom) As geomwkt,
+    (foo.geomval).val
+FROM (
+    SELECT
+        A.rid,
+        g.gid,
+        ST_Intersection(A.rast, g.geom) As geomval
+    FROM dummy_rast AS A
+    CROSS JOIN (
+        VALUES
+            (1, ST_Point(3427928, 5793243.85) ),
+            (2, ST_GeomFromText('LINESTRING(3427927.85 5793243.75,3427927.8 5793243.75,3427927.8 5793243.8)')),
+            (3, ST_GeomFromText('LINESTRING(1 2, 3 4)'))
+    ) As g(gid,geom)
+    WHERE A.rid = 2
+) As foo;
+
+ rid | gid |      geomwkt                                               | val
+-----+-----+---------------------------------------------------------------------------------------------
+   2 |   1 | POINT(3427928 5793243.85)                                  | 249
+   2 |   1 | POINT(3427928 5793243.85)                                  | 253
+   2 |   2 | POINT(3427927.85 5793243.75)                               | 254
+   2 |   2 | POINT(3427927.8 5793243.8)                                 | 251
+   2 |   2 | POINT(3427927.8 5793243.8)                                 | 253
+   2 |   2 | LINESTRING(3427927.8 5793243.75,3427927.8 5793243.8)   | 252
+   2 |   2 | MULTILINESTRING((3427927.8 5793243.8,3427927.8 5793243.75),...) | 250
+   2 |   3 | GEOMETRYCOLLECTION EMPTY
+                    </programlisting>
+                </refsection>
+
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="geomval"/>,
+                        <xref linkend="RT_ST_Intersects"/>,
+                        <xref linkend="RT_ST_MapAlgebraExpr2"/>,
+                        <xref linkend="RT_ST_Clip"/>,
+                        <xref linkend="ST_AsText"/>
+                    </para>
+                </refsection>
+            </refentry>

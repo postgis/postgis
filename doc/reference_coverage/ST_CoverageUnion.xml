@@ -1,0 +1,90 @@
+<refentry xml:id="ST_CoverageUnion" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+      <refname>ST_CoverageUnion</refname>
+
+      <refpurpose>Computes the union of a set of polygons forming a coverage by removing shared edges.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+          <funcdef>geometry <function>ST_CoverageUnion</function></funcdef>
+          <paramdef><type>geometry set</type>
+            <parameter>geom</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+      <para>An aggregate function which unions a set of polygons forming a polygonal coverage.
+      The result is a polygonal geometry covering the same area as the coverage.
+      This function produces the same result as <xref linkend="ST_Union"/>,
+      but uses the coverage structure to compute the union much faster.
+      </para>
+
+      <note><para>If the input is not a valid coverage there may be unexpected artifacts in the output (such as unmerged or overlapping polygons).
+            Use <xref linkend="ST_CoverageInvalidEdges"/> to determine if a coverage is valid.
+      </para></note>
+
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0 - requires GEOS &gt;= 3.8.0</para>
+    </refsection>
+
+    <refsection>
+      <title>Examples</title>
+    <informaltable>
+      <tgroup cols="2">
+      <tbody>
+        <row>
+        <entry><para>
+        <informalfigure>
+          <mediaobject>
+              <imageobject>
+              <imagedata fileref="images/st_coverageunion01.png"/>
+              </imageobject>
+              <caption><para>Input coverage</para></caption>
+          </mediaobject>
+        </informalfigure>
+        </para></entry>
+        <entry><para>
+        <informalfigure>
+          <mediaobject>
+              <imageobject>
+              <imagedata fileref="images/st_coverageunion02.png"/>
+              </imageobject>
+              <caption><para>Union result</para></caption>
+          </mediaobject>
+        </informalfigure>
+        </para></entry>
+       </row>
+      </tbody>
+      </tgroup>
+    </informaltable>
+
+      <programlisting>WITH coverage(id, geom) AS (VALUES
+  (1, 'POLYGON ((10 10, 10 150, 80 190, 110 150, 90 110, 40 110, 50 60, 10 10))'::geometry),
+  (2, 'POLYGON ((120 10, 10 10, 50 60, 100 70, 120 10))'::geometry),
+  (3, 'POLYGON ((140 80, 120 10, 100 70, 40 110, 90 110, 110 150, 140 80))'::geometry),
+  (4, 'POLYGON ((140 190, 120 170, 140 130, 160 150, 140 190))'::geometry),
+  (5, 'POLYGON ((180 160, 170 140, 140 130, 160 150, 140 190, 180 160))'::geometry)
+)
+SELECT ST_AsText(ST_CoverageUnion(geom))
+  FROM coverage;
+
+--------------------------------------
+MULTIPOLYGON (((10 150, 80 190, 110 150, 140 80, 120 10, 10 10, 10 150), (50 60, 100 70, 40 110, 50 60)), ((120 170, 140 190, 180 160, 170 140, 140 130, 120 170)))
+      </programlisting>
+    </refsection>
+
+    <refsection>
+      <title>See Also</title>
+      <para>
+        <xref linkend="ST_CoverageInvalidEdges"/>,
+        <xref linkend="ST_CoverageSimplify"/>,
+        <xref linkend="ST_CoverageClean"/>,
+        <xref linkend="ST_Union"/>
+      </para>
+    </refsection>
+
+  </refentry>

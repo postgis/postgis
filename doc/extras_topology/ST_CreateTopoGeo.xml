@@ -1,0 +1,75 @@
+<refentry xml:id="ST_CreateTopoGeo" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>ST_CreateTopoGeo</refname>
+
+				<refpurpose>
+Adds a collection of geometries to a given empty topology and returns a message detailing success.
+				</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>text <function>ST_CreateTopoGeo</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>acollection</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Adds a collection of geometries to a given empty topology and returns a message detailing success.
+                </para>
+
+				<para>Useful for populating an empty topology.</para>
+
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="2.0">Availability: 2.0 </para>
+	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details -- X.3.18</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- Populate topology --
+SELECT topology.ST_CreateTopoGeo('ri_topo',
+ ST_GeomFromText('MULTILINESTRING((384744 236928,384750 236923,384769 236911,384799 236895,384811 236890,384833 236884,
+  384844 236882,384866 236881,384879 236883,384954 236898,385087 236932,385117 236938,
+  385167 236938,385203 236941,385224 236946,385233 236950,385241 236956,385254 236971,
+  385260 236979,385268 236999,385273 237018,385273 237037,385271 237047,385267 237057,
+  385225 237125,385210 237144,385192 237161,385167 237192,385162 237202,385159 237214,
+  385159 237227,385162 237241,385166 237256,385196 237324,385209 237345,385234 237375,
+  385237 237383,385238 237399,385236 237407,385227 237419,385213 237430,385193 237439,
+  385174 237451,385170 237455,385169 237460,385171 237475,385181 237503,385190 237521,
+  385200 237533,385206 237538,385213 237541,385221 237542,385235 237540,385242 237541,
+  385249 237544,385260 237555,385270 237570,385289 237584,385292 237589,385291 237596,385284 237630))',3438)
+  );
+
+      st_createtopogeo
+----------------------------
+ Topology ri_topo populated
+
+
+-- create tables and topo geometries --
+CREATE TABLE ri.roads(gid serial PRIMARY KEY, road_name text);
+
+SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
+				</programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para>
+<xref linkend="TopoGeo_LoadGeometry"/>,
+<xref linkend="AddTopoGeometryColumn"/>,
+<xref linkend="CreateTopology"/>,
+<xref linkend="DropTopology"/>
+                </para>
+			</refsection>
+		</refentry>

@@ -1,0 +1,35 @@
+<refentry xml:id="ST_3DIntersection" xmlns="http://docbook.org/ns/docbook">
+        <refnamediv>
+            <refname>ST_3DIntersection</refname>
+
+            <refpurpose>Perform 3D intersection</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>ST_3DIntersection</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+                    <paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <warning>
+                <para>
+                    <xref linkend="ST_3DIntersection"/> is deprecated as of 3.5.0. Use <xref linkend="CG_3DIntersection"/> instead.
+                </para>
+            </warning>
+
+            <para>Return a geometry that is the shared portion between geom1 and geom2.</para>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+            <para>&sfcgal_required;</para>
+            <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+        </refsection>
+    </refentry>

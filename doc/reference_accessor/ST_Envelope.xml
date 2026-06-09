@@ -1,0 +1,97 @@
+<refentry xml:id="ST_Envelope" xmlns="http://docbook.org/ns/docbook">
+		  <refnamediv>
+			<refname>ST_Envelope</refname>
+
+			<refpurpose>Returns a geometry representing the bounding box of a geometry.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_Envelope</function></funcdef>
+
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Returns the double-precision (float8) minimum bounding box for the supplied geometry, as a geometry.
+			The polygon is defined by the corner points of the bounding box
+			((<varname>MINX</varname>, <varname>MINY</varname>),
+			(<varname>MINX</varname>, <varname>MAXY</varname>),
+			(<varname>MAXX</varname>, <varname>MAXY</varname>),
+			(<varname>MAXX</varname>, <varname>MINY</varname>),
+			(<varname>MINX</varname>, <varname>MINY</varname>)). (PostGIS will add a
+			<varname>ZMIN</varname>/<varname>ZMAX</varname> coordinate as
+			well).</para>
+
+			<para>Degenerate cases (vertical lines, points) will return a geometry of
+			lower dimension than <varname>POLYGON</varname>, ie.
+			<varname>POINT</varname> or <varname>LINESTRING</varname>.</para>
+
+			<para role="availability" conformance="1.5.0">Availability: 1.5.0 behavior changed to output double precision instead of float4</para>
+			<para>&sfs_compliant; s2.1.1.1</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.19</para>
+		</refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+SELECT ST_AsText(ST_Envelope('POINT(1 3)'::geometry));
+ st_astext
+------------
+ POINT(1 3)
+(1 row)
+
+
+SELECT ST_AsText(ST_Envelope('LINESTRING(0 0, 1 3)'::geometry));
+		   st_astext
+--------------------------------
+ POLYGON((0 0,0 3,1 3,1 0,0 0))
+(1 row)
+
+
+SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000001 1, 1.0000001 0, 0 0))'::geometry));
+						  st_astext
+--------------------------------------------------------------
+ POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))
+(1 row)
+SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000000001 1, 1.0000000001 0, 0 0))'::geometry));
+						  st_astext
+--------------------------------------------------------------
+ POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))
+(1 row)
+
+SELECT Box3D(geom), Box2D(geom), ST_AsText(ST_Envelope(geom)) As envelopewkt
+	FROM (SELECT 'POLYGON((0 0, 0 1000012333334.34545678, 1.0000001 1, 1.0000001 0, 0 0))'::geometry As geom) As foo;
+
+<!-- TODO: Fix examples to reflect new behavior -->
+	</programlisting>
+		<informalfigure>
+	  <mediaobject>
+		<imageobject>
+		  <imagedata fileref="images/st_envelope01.png"/>
+		</imageobject>
+		<caption><para>Envelope of a point and linestring.</para></caption>
+	  </mediaobject>
+	</informalfigure>
+<programlisting>
+SELECT ST_AsText(ST_Envelope(
+		ST_Collect(
+			ST_GeomFromText('LINESTRING(55 75,125 150)'),
+				ST_Point(20, 80))
+				)) As wktenv;
+wktenv
+-----------
+POLYGON((20 75,20 150,125 150,125 75,20 75))</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="Box2D"/>, <xref linkend="Box3D"/>, <xref linkend="ST_OrientedEnvelope"/></para>
+	  </refsection>
+	</refentry>

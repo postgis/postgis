@@ -1,0 +1,50 @@
+<refentry xml:id="ST_Dimension" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_Dimension</refname>
+
+		<refpurpose>Returns the topological dimension of a geometry. </refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_Dimension</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the topological dimension of this Geometry object, which must
+			be less than or equal to the coordinate dimension. OGC SPEC
+			s2.1.1.1 - returns 0 for <varname>POINT</varname>, 1 for <varname>LINESTRING</varname>, 2 for <varname>POLYGON</varname>, and
+			the largest dimension of the components of a
+			<varname>GEOMETRYCOLLECTION</varname>.
+			If the dimension is unknown (e.g. for an empty <varname>GEOMETRYCOLLECTION</varname>) 0 is returned.
+		</para>
+
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.2</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TINs was introduced. No longer throws an exception if given empty geometry.</para>
+		<note> <para>Prior to 2.0.0, this function throws an exception if used with empty geometry. </para></note>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		 <programlisting>SELECT ST_Dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))');
+ST_Dimension
+-----------
+1
+</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_NDims"/></para>
+		</refsection>
+	</refentry>

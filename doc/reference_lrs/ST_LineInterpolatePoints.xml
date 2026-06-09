@@ -1,0 +1,77 @@
+<refentry xml:id="ST_LineInterpolatePoints" xmlns="http://docbook.org/ns/docbook">
+		  <refnamediv>
+			<refname>ST_LineInterpolatePoints</refname>
+
+			<refpurpose>
+				Returns points interpolated along a line at a fractional interval.
+			</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_LineInterpolatePoints</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+				<paramdef><type>float8 </type> <parameter>a_fraction</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>repeat</parameter></paramdef>
+			  </funcprototype>
+
+              <funcprototype>
+                <funcdef>geography <function>ST_LineInterpolatePoints</function></funcdef>
+                <paramdef><type>geography </type> <parameter>a_linestring</parameter></paramdef>
+                <paramdef><type>float8 </type> <parameter>a_fraction</parameter></paramdef>
+                <paramdef choice="opt"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef>
+                <paramdef choice="opt"><type>boolean </type> <parameter>repeat = true</parameter></paramdef>
+              </funcprototype>
+
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Returns one or more points interpolated along a line at a fractional interval.
+            The first argument
+			must be a LINESTRING. The second argument is a float8 between 0 and 1
+			representing the spacing between the points as a fraction of
+			line length. If the third argument is false, at most one point
+			will be constructed (which is equivalent to <xref linkend="ST_LineInterpolatePoint"/>.)
+		</para>
+
+		<para>
+			If the result has zero or one points, it is returned as a POINT.
+			If it has two or more points, it is returned as a MULTIPOINT.
+		</para>
+
+
+			<para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
+			<para>&Z_support;</para>
+			<para>&M_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+			<informalfigure>
+			  <mediaobject>
+				<imageobject>
+				  <imagedata fileref="images/st_line_interpolate_points01.png"/>
+				</imageobject>
+				<caption><para>A LineString with points interpolated every 20% </para></caption>
+			  </mediaobject>
+			</informalfigure>
+			<programlisting>--Return points each 20% along a 2D line
+SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)', 0.20))
+----------------
+ MULTIPOINT((51.5974135047432 76.5974135047432),(78.1948270094864 103.194827009486),(104.132163186446 130.37181214238),(127.066081593223 160.18590607119),(150 190))
+</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="ST_LineInterpolatePoint"/>,
+				<xref linkend="ST_LineLocatePoint"/>
+			</para>
+		  </refsection>
+		</refentry>

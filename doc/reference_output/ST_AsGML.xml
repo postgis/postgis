@@ -1,0 +1,220 @@
+<refentry xml:id="ST_AsGML" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+    <refname>ST_AsGML</refname>
+    <refpurpose>Return the geometry as a GML version 2 or 3 element.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>text <function>ST_AsGML</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>text <function>ST_AsGML</function></funcdef>
+        <paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>nprefix=null</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>id=null</parameter></paramdef>
+      </funcprototype>
+
+
+      <funcprototype>
+        <funcdef>text <function>ST_AsGML</function></funcdef>
+        <paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>nprefix=null</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>id=null</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+        <funcdef>text <function>ST_AsGML</function></funcdef>
+        <paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+        <paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>nprefix=null</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>id=null</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+    <para>Return the geometry as a Geography Markup Language (GML) element. The version parameter,
+      if specified, may be either 2 or 3. If no version parameter is
+      specified then the default is assumed to be 2. The <varname>maxdecimaldigits</varname> argument
+      may be used to reduce the maximum number of decimal places
+      used in output (defaults to 15).</para>
+
+      <warning>
+      <para>Using the <parameter>maxdecimaldigits</parameter> parameter
+            can cause output geometry to become invalid.
+            To avoid this use <xref linkend="ST_ReducePrecision"/>
+            with a suitable gridsize first.
+            </para>
+      </warning>
+
+    <para>GML 2 refer to 2.1.2 version, GML 3 to 3.1.1 version</para>
+    <para>The 'options' argument is a bitfield. It could be used to define CRS output type
+          in GML output, and to declare data as lat/lon:
+              <itemizedlist>
+                <listitem>
+                  <para>0: GML Short CRS (e.g EPSG:4326), default value</para>
+                </listitem>
+
+                <listitem>
+                  <para>1: GML Long CRS (e.g urn:ogc:def:crs:EPSG::4326)</para>
+                </listitem>
+
+                <listitem>
+                  <para>2: For GML 3 only, remove srsDimension attribute from output.</para>
+                </listitem>
+
+                <listitem>
+                  <para>4: For GML 3 only, use &lt;LineString&gt; rather than &lt;Curve&gt; tag for lines.</para>
+                </listitem>
+
+                <listitem>
+                  <para>16: Declare that data are lat/lon (e.g srid=4326). Default is to assume that data are planars.
+                  This option is useful for GML 3.1.1 output only, related to axis order. So if you set it, it will swap the coordinates
+                  so order is lat lon instead of database lon lat.</para>
+                </listitem>
+
+                <listitem>
+                  <para>32: Output the box of the geometry (envelope).</para>
+                </listitem>
+              </itemizedlist>
+            </para>
+
+    <para>The 'namespace prefix' argument may be used to specify a custom
+namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is used</para>
+
+
+      <para role="availability" conformance="1.3.2">Availability: 1.3.2</para>
+      <para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced.</para>
+      <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 prefix support was introduced. Option 4 for GML3 was introduced to allow using LineString instead of Curve tag for lines. GML3 Support for Polyhedral surfaces and TINS was introduced. Option 32 was introduced to output the box.</para>
+      <para role="changed" conformance="2.0.0">Changed: 2.0.0 use default named args</para>
+      <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 id support was introduced, for GML 3.</para>
+
+    <note><para>Only version 3+ of ST_AsGML supports Polyhedral Surfaces and TINS.</para></note>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 17.2</para>
+    <para>&Z_support;</para>
+    <para>&P_support;</para>
+    <para>&T_support;</para>
+    </refsection>
+
+    <refsection>
+    <title>Examples: Version 2</title>
+    <programlisting><![CDATA[
+SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+    st_asgml
+    --------
+    <gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>
+
+]]></programlisting>
+    </refsection>
+    <refsection>
+    <title>Examples: Version 3</title>
+    <programlisting><![CDATA[
+-- Flip coordinates and output extended EPSG (16 | 1)--
+SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);
+      st_asgml
+      --------
+    <gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>
+
+]]></programlisting>
+    <programlisting><![CDATA[
+-- Output the envelope (32) --
+SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);
+    st_asgml
+    --------
+  <gml:Envelope srsName="EPSG:4326">
+    <gml:lowerCorner>1 2</gml:lowerCorner>
+    <gml:upperCorner>10 20</gml:upperCorner>
+  </gml:Envelope>
+
+]]></programlisting>
+
+    <programlisting><![CDATA[
+-- Output the envelope (32) , reverse (lat lon instead of lon lat) (16), long srs (1)= 32 | 16 | 1 = 49 --
+SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);
+  st_asgml
+  --------
+<gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326">
+  <gml:lowerCorner>2 1</gml:lowerCorner>
+  <gml:upperCorner>20 10</gml:upperCorner>
+</gml:Envelope>
+
+]]></programlisting>
+
+    <programlisting><![CDATA[
+-- Polyhedral Example --
+SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
+  st_asgml
+  --------
+ <gml:PolyhedralSurface>
+<gml:polygonPatches>
+   <gml:PolygonPatch>
+    <gml:exterior>
+        <gml:LinearRing>
+           <gml:posList srsDimension="3">0 0 0 0 0 1 0 1 1 0 1 0 0 0 0</gml:posList>
+        </gml:LinearRing>
+    </gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+    <gml:exterior>
+        <gml:LinearRing>
+           <gml:posList srsDimension="3">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList>
+        </gml:LinearRing>
+    </gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+    <gml:exterior>
+        <gml:LinearRing>
+           <gml:posList srsDimension="3">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList>
+        </gml:LinearRing>
+    </gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+    <gml:exterior>
+        <gml:LinearRing>
+           <gml:posList srsDimension="3">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList>
+        </gml:LinearRing>
+    </gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+    <gml:exterior>
+        <gml:LinearRing>
+           <gml:posList srsDimension="3">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList>
+        </gml:LinearRing>
+    </gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+    <gml:exterior>
+        <gml:LinearRing>
+           <gml:posList srsDimension="3">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList>
+        </gml:LinearRing>
+    </gml:exterior>
+   </gml:PolygonPatch>
+</gml:polygonPatches>
+</gml:PolyhedralSurface>
+
+]]></programlisting>
+
+    </refsection>
+  <refsection>
+    <title>See Also</title>
+
+    <para><xref linkend="ST_GeomFromGML"/></para>
+  </refsection>
+  </refentry>

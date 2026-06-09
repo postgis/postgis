@@ -1,0 +1,49 @@
+<refentry xml:id="ST_3DUnion" xmlns="http://docbook.org/ns/docbook">
+        <refnamediv>
+            <refname>ST_3DUnion</refname>
+
+            <refpurpose>Perform 3D union.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>ST_3DUnion</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+                    <paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+                </funcprototype>
+                <funcprototype>
+                    <funcdef>geometry <function>ST_3DUnion</function></funcdef>
+                    <paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <warning>
+                <para>
+                    <xref linkend="ST_3DUnion"/> is deprecated as of 3.5.0. Use <xref linkend="CG_3DUnion"/> instead.
+                </para>
+            </warning>
+
+
+            <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+            <para role="availability" conformance="3.3.0">Availability: 3.3.0 aggregate variant was added</para>
+            <para>&sfcgal_required;</para>
+            <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+
+            <para>
+                <emphasis role="bold">Aggregate variant:</emphasis>
+                returns a geometry that is the 3D union of a rowset of geometries.
+                The ST_3DUnion() function is an "aggregate"
+                function in the terminology of PostgreSQL. That means that it
+                operates on rows of data, in the same way the SUM() and AVG()
+                functions do and like most aggregates, it also ignores NULL geometries.
+            </para>
+        </refsection>
+    </refentry>

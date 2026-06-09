@@ -1,0 +1,67 @@
+<refentry xml:id="RT_Raster_Contained" xmlns="http://docbook.org/ns/docbook">
+          <refnamediv>
+            <refname>@</refname>
+
+            <refpurpose>Returns <varname>TRUE</varname> if A's bounding box is contained by B's. Uses double precision bounding box.</refpurpose>
+          </refnamediv>
+
+          <refsynopsisdiv>
+            <funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>@</function></funcdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>A</parameter>
+            </paramdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>boolean <function>@</function></funcdef>
+            <paramdef>
+              <type>geometry </type>
+              <parameter>A</parameter>
+            </paramdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>boolean <function>@</function></funcdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+            <paramdef>
+              <type>geometry </type>
+              <parameter>A</parameter>
+            </paramdef>
+
+          </funcprototype>
+            </funcsynopsis>
+          </refsynopsisdiv>
+
+          <refsection>
+            <title>Description</title>
+
+            <para>The <varname>@</varname> operator returns <varname>TRUE</varname> if the bounding box of raster/geometry A
+            is contained by bounding box of raster/geometr B.  </para>
+
+            <note><para>This operand will use spatial indexes on the rasters. </para></note>
+
+            <para role="availability" conformance="2.0.0">Availability:  2.0.0 raster @ raster, raster @ geometry introduced</para>
+            <para role="availability" conformance="2.0.5">Availability:  2.0.5 geometry @ raster introduced </para>
+
+          </refsection>
+
+          <refsection>
+            <title>See Also</title>
+
+            <para><xref linkend="RT_Raster_Contains"/></para>
+          </refsection>
+        </refentry>

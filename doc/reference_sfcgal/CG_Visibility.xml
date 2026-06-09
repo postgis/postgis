@@ -1,0 +1,76 @@
+<refentry xml:id="CG_Visibility" xmlns="http://docbook.org/ns/docbook">
+        <refnamediv>
+            <refname>CG_Visibility</refname>
+
+            <refpurpose>Compute a visibility polygon from a point or a segment in a polygon geometry</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_Visibility</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>polygon</parameter></paramdef>
+                    <paramdef><type>geometry</type> <parameter>point</parameter></paramdef>
+                </funcprototype>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_Visibility</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>polygon</parameter></paramdef>
+                    <paramdef><type>geometry</type> <parameter>pointA</parameter></paramdef>
+                    <paramdef><type>geometry</type> <parameter>pointB</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+            <para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
+            <para>&sfcgal_required;</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+        </refsection>
+
+        <refsection><title>Examples</title>
+            <programlisting>SELECT CG_Visibility('POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150))'::geometry, 'POINT(91 87)'::geometry);</programlisting>
+
+            <programlisting>SELECT CG_Visibility('POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150))'::geometry,'POINT(78.5 68)'::geometry, 'POINT(98.5 68)'::geometry);</programlisting>
+            <informaltable>
+                <tgroup cols="3">
+                    <tbody>
+                        <row>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/cg_visibility01.png"/>
+                                            </imageobject>
+                                            <caption><para>Original polygon</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/cg_visibility02.png"/>
+                                            </imageobject>
+                                            <caption><para>Visibility from the point</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/cg_visibility03.png"/>
+                                            </imageobject>
+                                            <caption><para>Visibility from the segment</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+        </refsection>
+
+    </refentry>

@@ -1,0 +1,44 @@
+<refentry xml:id="ST_NRings" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_NRings</refname>
+		<refpurpose>Returns the number of rings in a polygonal geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_NRings</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>If the geometry is a polygon or multi-polygon returns the number of rings.  Unlike NumInteriorRings, it counts
+		the outer rings as well.</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_NRings(geom) As Nrings, ST_NumInteriorRings(geom) As ninterrings
+					FROM (SELECT ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))') As geom) As foo;
+	 nrings | ninterrings
+--------+-------------
+	  1 |           0
+(1 row)
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_NumInteriorRings"/></para>
+	  </refsection>
+	</refentry>

@@ -1,0 +1,31 @@
+<refentry xml:id="ST_Length2D" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_Length2D</refname>
+
+		<refpurpose>Returns the 2D length of a linear geometry. Alias for <varname>ST_Length</varname></refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Length2D</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_2dlinestring</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 2D length of the geometry if it is a
+				linestring or multi-linestring. This is an alias for <varname>ST_Length</varname></para>
+
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Length"/>, <xref linkend="ST_3DLength"/></para>
+	  </refsection>
+	</refentry>

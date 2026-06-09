@@ -1,0 +1,49 @@
+<refentry xml:id="RT_ST_PixelAsCentroid" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_PixelAsCentroid</refname>
+                <refpurpose>
+                    Returns the centroid (point geometry) of the area represented by a pixel.
+                </refpurpose>
+            </refnamediv>
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>ST_PixelAsCentroid</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>x</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>y</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+                <para>Returns the centroid (point geometry) of the area represented by a pixel.</para>
+                <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 Faster now implemented in C.</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+                <programlisting>
+SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
+
+  st_astext
+--------------
+ POINT(1.5 2)
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_DumpAsPolygons"/>,
+                    <xref linkend="RT_ST_PixelAsPolygon"/>,
+                    <xref linkend="RT_ST_PixelAsPolygons"/>,
+                    <xref linkend="RT_ST_PixelAsPoint"/>,
+                    <xref linkend="RT_ST_PixelAsPoints"/>,
+                    <xref linkend="RT_ST_PixelAsCentroids"/>
+                </para>
+            </refsection>
+
+        </refentry>

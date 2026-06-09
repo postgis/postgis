@@ -1,0 +1,82 @@
+<refentry xml:id="RT_ST_BandPixelType" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_BandPixelType</refname>
+                <refpurpose>Returns the type of pixel for given band. If no bandnum specified, 1 is assumed.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                    <funcdef>text <function>ST_BandPixelType</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef choice="opt"><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns name describing data type and size of values stored in each cell of given band.</para>
+                <para>There are 11 pixel types.  Pixel Types supported are as follows:
+                    <itemizedlist>
+                        <listitem>
+                          <para>1BB -  1-bit boolean</para>
+                        </listitem>
+
+                        <listitem>
+                          <para>2BUI - 2-bit unsigned integer</para>
+                        </listitem>
+
+                        <listitem>
+                          <para>4BUI - 4-bit unsigned integer </para>
+                        </listitem>
+
+                        <listitem>
+                          <para>8BSI - 8-bit signed integer </para>
+                        </listitem>
+                        <listitem>
+                          <para>8BUI - 8-bit unsigned integer</para>
+                        </listitem>
+                        <listitem>
+                          <para>16BSI - 16-bit signed integer</para>
+                        </listitem>
+                        <listitem>
+                          <para>16BUI - 16-bit unsigned integer</para>
+                        </listitem>
+                        <listitem>
+                          <para>32BSI - 32-bit signed integer</para>
+                        </listitem>
+                        <listitem>
+                          <para>32BUI - 32-bit unsigned integer</para>
+                        </listitem>
+                        <listitem>
+                          <para>32BF - 32-bit float</para>
+                        </listitem>
+                        <listitem>
+                          <para>64BF - 64-bit float</para>
+                        </listitem>
+                    </itemizedlist>
+                </para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                    <programlisting>SELECT ST_BandPixelType(rast,1) As btype1,
+    ST_BandPixelType(rast,2) As btype2, ST_BandPixelType(rast,3) As btype3
+FROM dummy_rast
+WHERE rid = 2;
+
+ btype1 | btype2 | btype3
+--------+--------+--------
+ 8BUI   | 8BUI   | 8BUI
+                </programlisting>
+
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_NumBands"/></para>
+            </refsection>
+        </refentry>

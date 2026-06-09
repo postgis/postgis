@@ -1,0 +1,32 @@
+<refentry xml:id="CG_Rotate" xmlns="http://docbook.org/ns/docbook">
+   <refnamediv>
+       <refname>CG_Rotate</refname>
+       <refpurpose>Rotates a geometry by a given angle around the origin (0,0).</refpurpose>
+   </refnamediv>
+   <refsynopsisdiv>
+       <funcsynopsis>
+           <funcprototype>
+               <funcdef>geometry <function>CG_Rotate</function></funcdef>
+               <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>angle</parameter></paramdef>
+           </funcprototype>
+       </funcsynopsis>
+   </refsynopsisdiv>
+   <refsection>
+       <title>Description</title>
+       <para>Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</parameter> radians around the origin point (0,0).
+       The rotation is performed in 2D space; Z coordinates are not modified.
+       Positive angles rotate the geometry counter-clockwise.</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
+       <para>&sfcgal_required;</para>
+   </refsection>
+   <refsection>
+       <title>Examples</title>
+       <programlisting>SELECT ST_AsText(CG_Rotate('LINESTRING(1 0, 0 1)', pi()/2));
+-- Result: LINESTRING(0 1, -1 0)</programlisting>
+   </refsection>
+   <refsection>
+       <title>See Also</title>
+       <para><xref linkend="CG_2DRotate"/>, <xref linkend="ST_Rotate"/></para>
+   </refsection>
+</refentry>

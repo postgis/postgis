@@ -1,0 +1,61 @@
+<refentry xml:id="ST_Distance_Spheroid" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_DistanceSpheroid</refname>
+
+		<refpurpose>Returns the minimum distance between two lon/lat geometries
+		using a spheroidal earth model.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_DistanceSpheroid</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomlonlatB</parameter></paramdef>
+			<paramdef choice="opt"><type>spheroid </type><parameter>measurement_spheroid=WGS84</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns minimum distance in meters between two lon/lat
+				geometries given a particular spheroid. See the explanation of spheroids given for
+			<xref linkend="ST_Length_Spheroid"/>.</para>
+		<note>
+			<para>This function does not look at the SRID of the geometry.
+			It assumes the geometry coordinates are based on the provided spheroid.
+			</para>
+		</note>
+
+		<para role="availability" conformance="1.5">Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
+		<para role="changed" conformance="2.2.0">Changed: 2.2.0 In prior versions this was called ST_Distance_Spheroid</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT round(CAST(
+		ST_DistanceSpheroid(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)',4326), 'SPHEROID["WGS 84",6378137,298.257223563]')
+			As numeric),2) As dist_meters_spheroid,
+		round(CAST(ST_DistanceSphere(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters_sphere,
+round(CAST(ST_Distance(ST_Transform(ST_Centroid(geom),32611),
+		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As dist_utm11_meters
+FROM
+	(SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As geom) as foo;
+ dist_meters_spheroid | dist_meters_sphere | dist_utm11_meters
+----------------------+--------------------+-------------------
+			 70454.92 |           70424.47 |          70438.00
+
+	</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_DistanceSphere"/></para>
+	  </refsection>
+	</refentry>

@@ -1,0 +1,105 @@
+<refentry xml:id="ST_AsMVT" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <refnamediv>
+    <refname>ST_AsMVT</refname>
+
+    <refpurpose>Aggregate function returning a MVT representation of a set of rows.</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+    <funcsynopsis>
+    <funcprototype>
+        <funcdef>bytea <function>ST_AsMVT</function></funcdef>
+        <paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>bytea <function>ST_AsMVT</function></funcdef>
+        <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>name</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>bytea <function>ST_AsMVT</function></funcdef>
+        <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>name</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>bytea <function>ST_AsMVT</function></funcdef>
+        <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>name</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>bytea <function>ST_AsMVT</function></funcdef>
+        <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>name</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>feature_id_name</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+    <para>An aggregate function which returns a binary <link xlink:href="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</link>
+    representation of a set of rows corresponding to a tile layer.
+    The rows must contain a geometry column which will be encoded as a feature geometry.
+    The geometry must be in tile coordinate space
+    and valid as per the <link xlink:href="https://www.mapbox.com/vector-tiles/specification/">MVT specification</link>.
+    <xref linkend="ST_AsMVTGeom"/> can be used to transform geometry into tile coordinate space.
+    Other row columns are encoded as feature attributes.
+    </para>
+
+    <para>The <link xlink:href="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</link> format
+    can store features with varying sets of attributes.
+    To use this capability supply a JSONB column in the row data containing Json objects one level deep.
+    The keys and values in the JSONB values will be encoded as feature attributes.
+    </para>
+
+    <para>
+    Tiles with multiple layers can be created by concatenating multiple calls to this function
+    using <varname>||</varname> or <varname>STRING_AGG</varname>.
+    </para>
+
+    <important>
+      <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an element in the row.
+      However you can use <xref linkend="ST_AsMVTGeom"/> to prepare a geometry collection for inclusion.</para>
+    </important>
+
+    <para><varname>row</varname> row data with at least a geometry column.</para>
+    <para><varname>name</varname> is the name of the layer. Default is the string "default".</para>
+    <para><varname>extent</varname> is the tile extent in screen space as defined by the specification. Default is 4096.</para>
+    <para><varname>geom_name</varname> is the name of the geometry column in the row data. Default is the first geometry column. Note that PostgreSQL by default automatically <link xlink:href="https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS">folds unquoted identifiers to lower case</link>, which means that unless the geometry column is quoted, e.g. <varname>"MyMVTGeom"</varname>, this parameter must be provided as lowercase.</para>
+    <para><varname>feature_id_name</varname> is the name of the Feature ID column in the row data. If NULL or negative the Feature ID is not set. The first column matching name and valid type (smallint, integer, bigint) will be used as Feature ID, and any subsequent column will be added as a property. JSON properties are not supported.</para>
+
+
+      <para role="enhanced" conformance="3.0">Enhanced: 3.0 - added support for Feature ID.</para>
+      <para role="enhanced" conformance="2.5.0">Enhanced: 2.5.0 - added support parallel query.</para>
+    <para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+    <programlisting><![CDATA[
+WITH mvtgeom AS
+(
+  SELECT ST_AsMVTGeom(geom, ST_TileEnvelope(12, 513, 412), extent => 4096, buffer => 64) AS geom, name, description
+  FROM points_of_interest
+  WHERE geom && ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096))
+)
+SELECT ST_AsMVT(mvtgeom.*)
+FROM mvtgeom;
+
+]]>
+        </programlisting>
+
+    </refsection>
+
+    <refsection>
+      <title>See Also</title>
+        <para>
+          <xref linkend="ST_AsMVTGeom"/>, <xref linkend="ST_TileEnvelope"/>
+        </para>
+      </refsection>
+  </refentry>

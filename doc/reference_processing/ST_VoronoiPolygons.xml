@@ -1,0 +1,108 @@
+<refentry xml:id="ST_VoronoiPolygons" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <refnamediv>
+        <refname>ST_VoronoiPolygons</refname>
+
+        <refpurpose>Returns the cells of the Voronoi diagram of the vertices of a geometry.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_VoronoiPolygons</function></funcdef>
+            <paramdef>
+                <type>geometry</type> <parameter>geom</parameter>
+            </paramdef>
+            <paramdef choice="opt">
+                <type>float8</type> <parameter>tolerance = 0.0</parameter>
+            </paramdef>
+            <paramdef choice="opt">
+                <type>geometry</type> <parameter>extend_to = NULL</parameter>
+            </paramdef>
+          </funcprototype>
+
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>
+            Computes a two-dimensional <link xlink:href="https://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</link> from the vertices of
+            the supplied geometry.
+            The result is a GEOMETRYCOLLECTION of POLYGONs that covers an envelope larger than the extent of the input vertices.
+            Returns null if input geometry is null. Returns an empty geometry collection if the input geometry contains only one vertex.
+            Returns an empty geometry collection if the <varname>extend_to</varname> envelope has zero area.
+        </para>
+
+        <para>
+            Optional parameters:
+            <itemizedlist>
+                <listitem>
+                    <para> <varname>tolerance</varname>: The distance within which vertices will be considered equivalent.  Robustness of the algorithm can be improved by supplying a nonzero tolerance distance.  (default = 0.0) </para>
+                </listitem>
+                <listitem>
+                    <para> <varname>extend_to</varname>: If present, the diagram is extended to cover the envelope of the supplied geometry,
+                    unless smaller than the default envelope (default = NULL, default envelope is the bounding box of the input expanded by about 50%).
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </para>
+        <para>Performed by the GEOS module.</para>
+        <para role="availability" conformance="2.3.0">Availability: 2.3.0</para>
+      </refsection>
+
+      <!-- Examples -->
+      <refsection>
+        <title>Examples</title>
+
+        <informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_voronoi01.png"/>
+                </imageobject>
+                <caption><para>Points overlaid on top of Voronoi diagram</para></caption>
+            </mediaobject>
+        </informalfigure>
+<programlisting>
+SELECT ST_VoronoiPolygons(
+                'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry
+            ) AS geom;
+</programlisting>
+<screen><lineannotation>ST_AsText output</lineannotation>
+GEOMETRYCOLLECTION(POLYGON((-110 43.3333333333333,-110 270,100.5 270,59.3478260869565 132.826086956522,36.8181818181818 92.2727272727273,-110 43.3333333333333)),
+POLYGON((55 -90,-110 -90,-110 43.3333333333333,36.8181818181818 92.2727272727273,55 79.2857142857143,55 -90)),
+POLYGON((230 47.5,230 -20.7142857142857,55 79.2857142857143,36.8181818181818 92.2727272727273,59.3478260869565 132.826086956522,230 47.5)),POLYGON((230 -20.7142857142857,230 -90,55 -90,55 79.2857142857143,230 -20.7142857142857)),
+POLYGON((100.5 270,230 270,230 47.5,59.3478260869565 132.826086956522,100.5 270)))
+</screen>
+
+        <informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_voronoi02.png"/>
+                </imageobject>
+                <caption><para>Voronoi diagram, with tolerance of 30 units</para></caption>
+            </mediaobject>
+            </informalfigure>
+<programlisting>
+SELECT ST_VoronoiPolygons(
+            'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry,
+            30) AS geom;
+</programlisting>
+<screen><lineannotation>ST_AsText output</lineannotation>
+GEOMETRYCOLLECTION(POLYGON((-110 43.3333333333333,-110 270,100.5 270,59.3478260869565 132.826086956522,36.8181818181818 92.2727272727273,-110 43.3333333333333)),
+POLYGON((230 47.5,230 -45.7142857142858,36.8181818181818 92.2727272727273,59.3478260869565 132.826086956522,230 47.5)),POLYGON((230 -45.7142857142858,230 -90,-110 -90,-110 43.3333333333333,36.8181818181818 92.2727272727273,230 -45.7142857142858)),
+POLYGON((100.5 270,230 270,230 47.5,59.3478260869565 132.826086956522,100.5 270)))
+</screen>
+
+      </refsection>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+
+        <para>
+            <xref linkend="ST_DelaunayTriangles"/>,
+            <xref linkend="ST_VoronoiLines"/>
+        </para>
+      </refsection>
+    </refentry>

@@ -1,0 +1,65 @@
+<refentry xml:id="is_contained_geometry_box2df" xmlns="http://docbook.org/ns/docbook">
+		  <refnamediv>
+			<refname>@(geometry,box2df)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a geometry's 2D bounding box is contained into a 2D float precision bounding box (BOX2DF).</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>@</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>@</varname> operator returns <varname>TRUE</varname> if the A geometry's 2D bounding box is contained the 2D bounding box B, using float precision. This means that if B is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;
+
+ is_contained
+--------------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df"/>,
+				<xref linkend="overlaps_box2df_geometry"/>,
+				<xref linkend="overlaps_box2df_box2df"/>,
+				<xref linkend="contains_geometry_box2df"/>,
+				<xref linkend="contains_box2df_geometry"/>,
+				<xref linkend="contains_box2df_box2df"/>,
+				<xref linkend="is_contained_box2df_geometry"/>,
+				<xref linkend="is_contained_box2df_box2df"/></para>
+		  </refsection>
+		</refentry>

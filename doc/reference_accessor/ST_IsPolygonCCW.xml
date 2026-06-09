@@ -1,0 +1,69 @@
+<refentry xml:id="ST_IsPolygonCCW" xmlns="http://docbook.org/ns/docbook">
+		<refnamediv>
+			<refname>
+				ST_IsPolygonCCW
+			</refname>
+			<refpurpose>Tests if Polygons have exterior rings oriented counter-clockwise and interior rings oriented clockwise.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>
+						boolean
+						<function>ST_IsPolygonCCW</function>
+					</funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geom</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Returns true if all polygonal components of the input geometry use a counter-clockwise
+				orientation for their exterior ring, and a clockwise direction
+				for all interior rings.
+			</para>
+
+			<para>
+				Returns true if the geometry has no polygonal components.
+			</para>
+
+			<note>
+				<para>
+					Closed linestrings are not considered polygonal components,
+					so you would still get a true return by passing
+          a single closed linestring no matter its orientation.
+				</para>
+			</note>
+
+			<note>
+				<para>
+					If a polygonal geometry does not use reversed orientation
+					for interior rings (i.e., if one or more interior rings
+					are oriented in the same direction as an exterior ring)
+					then both ST_IsPolygonCW and ST_IsPolygonCCW will return false.
+				</para>
+			</note>
+
+			<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
+			<para>&Z_support;</para>
+			<para>&M_support;</para>
+
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="ST_ForcePolygonCW"/>,
+				<xref linkend="ST_ForcePolygonCCW"/>,
+				<xref linkend="ST_IsPolygonCW"/>
+			</para>
+		</refsection>
+	</refentry>

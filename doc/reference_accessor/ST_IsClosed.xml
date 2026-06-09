@@ -1,0 +1,109 @@
+<refentry xml:id="ST_IsClosed" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_IsClosed</refname>
+
+		<refpurpose>Tests if a LineStrings's start and end points are coincident. For a PolyhedralSurface tests if it is closed (volumetric).
+		</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_IsClosed</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns <varname>TRUE</varname> if the <varname>LINESTRING</varname>'s
+		start and end points are coincident.
+		For Polyhedral Surfaces, reports if the surface is areal (open) or volumetric (closed).</para>
+
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3</para>
+		<note>
+		  <para>SQL-MM defines the result of
+		  <code>ST_IsClosed(NULL)</code> to be 0, while
+		  PostGIS returns <varname>NULL</varname>.</para>
+		</note>
+
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+
+		<para>&P_support;</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Line String and Point Examples</title>
+
+		<programlisting>postgis=# SELECT ST_IsClosed('LINESTRING(0 0, 1 1)'::geometry);
+ st_isclosed
+-------------
+ f
+(1 row)
+
+postgis=# SELECT ST_IsClosed('LINESTRING(0 0, 0 1, 1 1, 0 0)'::geometry);
+ st_isclosed
+-------------
+ t
+(1 row)
+
+postgis=# SELECT ST_IsClosed('MULTILINESTRING((0 0, 0 1, 1 1, 0 0),(0 0, 1 1))'::geometry);
+ st_isclosed
+-------------
+ f
+(1 row)
+
+postgis=# SELECT ST_IsClosed('POINT(0 0)'::geometry);
+ st_isclosed
+-------------
+ t
+(1 row)
+
+postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
+ st_isclosed
+-------------
+ t
+(1 row)</programlisting>
+	  </refsection>
+
+		  <refsection>
+		<title>Polyhedral Surface Examples</title>
+
+		<programlisting>
+		-- A cube --
+		SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
+
+ st_isclosed
+-------------
+ t
+
+
+ -- Same as cube but missing a side --
+ SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)) )'));
+
+ st_isclosed
+-------------
+ f
+
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_IsRing"/></para>
+	  </refsection>
+        </refentry>

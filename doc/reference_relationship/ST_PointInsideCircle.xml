@@ -1,0 +1,50 @@
+<refentry xml:id="ST_PointInsideCircle" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+    <refname>ST_PointInsideCircle</refname>
+
+    <refpurpose>Tests if a point geometry is inside a circle defined by a center and radius</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+      <funcdef>boolean <function>ST_PointInsideCircle</function></funcdef>
+      <paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
+      <paramdef><type>float </type> <parameter>center_x</parameter></paramdef>
+      <paramdef><type>float </type> <parameter>center_y</parameter></paramdef>
+      <paramdef><type>float </type> <parameter>radius</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+    <para>Returns true if the geometry is a point and is inside the
+      circle with center <varname>center_x</varname>,<varname>center_y</varname>
+            and radius <varname>radius</varname>.
+        </para>
+    <warning><para>Does not use spatial indexes. Use <xref linkend="ST_DWithin"/> instead.</para></warning>
+
+    <para role="availability" conformance="1.2">Availability: 1.2</para>
+    <para role="changed" conformance="2.2.0">Changed: 2.2.0 In prior versions this was called ST_Point_Inside_Circle</para>
+    </refsection>
+
+
+    <refsection>
+    <title>Examples</title>
+
+    <programlisting>SELECT ST_PointInsideCircle(ST_Point(1,2), 0.5, 2, 3);
+ st_pointinsidecircle
+------------------------
+ t
+</programlisting>
+    </refsection>
+
+    <!-- Optionally add a "See Also" section -->
+    <refsection>
+    <title>See Also</title>
+
+    <para><xref linkend="ST_DWithin"/></para>
+    </refsection>
+  </refentry>

@@ -1,0 +1,34 @@
+<refentry xml:id="CG_2DRotate" xmlns="http://docbook.org/ns/docbook">
+   <refnamediv>
+       <refname>CG_2DRotate</refname>
+       <refpurpose>Rotates a geometry by a given angle around a specified point in 2D.</refpurpose>
+   </refnamediv>
+   <refsynopsisdiv>
+       <funcsynopsis>
+           <funcprototype>
+               <funcdef>geometry <function>CG_2DRotate</function></funcdef>
+               <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>angle</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>cx</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>cy</parameter></paramdef>
+           </funcprototype>
+       </funcsynopsis>
+   </refsynopsisdiv>
+   <refsection>
+       <title>Description</title>
+       <para>Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</parameter> radians around the point (<parameter>cx</parameter>, <parameter>cy</parameter>).
+       The rotation is performed in 2D space; Z coordinates are dropped.
+       Positive angles rotate the geometry counter-clockwise.</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
+       <para>&sfcgal_required;</para>
+   </refsection>
+   <refsection>
+       <title>Examples</title>
+       <programlisting>SELECT ST_AsText(CG_2DRotate('POINT(1 0)', pi()/2, 1, 1));
+-- Result: POINT(2 1)</programlisting>
+   </refsection>
+   <refsection>
+       <title>See Also</title>
+       <para><xref linkend="CG_Rotate"/>, <xref linkend="CG_3DRotate"/></para>
+   </refsection>
+</refentry>

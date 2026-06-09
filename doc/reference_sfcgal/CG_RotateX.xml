@@ -1,0 +1,32 @@
+<refentry xml:id="CG_RotateX" xmlns="http://docbook.org/ns/docbook">
+   <refnamediv>
+       <refname>CG_RotateX</refname>
+       <refpurpose>Rotates a geometry around the X-axis by a given angle.</refpurpose>
+   </refnamediv>
+   <refsynopsisdiv>
+       <funcsynopsis>
+           <funcprototype>
+               <funcdef>geometry <function>CG_RotateX</function></funcdef>
+               <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>angle</parameter></paramdef>
+           </funcprototype>
+       </funcsynopsis>
+   </refsynopsisdiv>
+   <refsection>
+       <title>Description</title>
+       <para>Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</parameter> radians around the X-axis.
+       </para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
+       <para>&sfcgal_required;</para>
+       <para>&Z_support;</para>
+   </refsection>
+   <refsection>
+       <title>Examples</title>
+       <programlisting>SELECT ST_AsText(CG_RotateX('POINT(0 1 0)', pi()/2));
+-- Result: POINT(0 0 1)</programlisting>
+   </refsection>
+   <refsection>
+       <title>See Also</title>
+       <para><xref linkend="CG_RotateY"/>, <xref linkend="CG_RotateZ"/>, <xref linkend="CG_3DRotate"/></para>
+   </refsection>
+</refentry>

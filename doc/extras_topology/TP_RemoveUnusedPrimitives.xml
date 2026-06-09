@@ -1,0 +1,42 @@
+<refentry xml:id="TP_RemoveUnusedPrimitives" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>RemoveUnusedPrimitives</refname>
+		<refpurpose>Removes topology primitives which not needed to define existing TopoGeometry objects.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>bigint <function>RemoveUnusedPrimitives</function></funcdef>
+			<paramdef><type>text</type> <parameter>topology_name</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>bbox</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>
+Finds all primitives (nodes, edges, faces) that are not
+strictly needed to represent existing TopoGeometry objects and removes
+them, maintaining topology validity (edge linking, face labeling)
+and TopoGeometry space occupation.
+        </para>
+
+        <para>
+No new primitive identifiers are created, but rather existing primitives
+are expanded to include merged faces (upon removing edges) or healed edges
+(upon removing nodes).
+        </para>
+
+		<para role="availability" conformance="3.3.0">Availability: 3.3.0</para>
+	  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+			<para>
+<xref linkend="ST_ModEdgeHeal"/>,
+<xref linkend="ST_RemEdgeModFace"/>
+            </para>
+		  </refsection>
+	</refentry>

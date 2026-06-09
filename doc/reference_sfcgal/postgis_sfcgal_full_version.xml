@@ -1,0 +1,31 @@
+<refentry xml:id="postgis_sfcgal_full_version" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>postgis_sfcgal_full_version</refname>
+
+                <refpurpose>Returns the full version of SFCGAL in use including CGAL and Boost versions</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>text <function>postgis_sfcgal_full_version</function></funcdef>
+                        <void/>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns the full version of SFCGAL in use including CGAL and Boost versions</para>
+
+                <para role="availability" conformance="3.3.0">Availability: 3.3.0</para>
+                <para>&sfcgal_required;</para>
+            </refsection>
+            <refsection>
+                <title>See Also</title>
+
+                <para><xref linkend="postgis_sfcgal_version"/></para>
+            </refsection>
+
+        </refentry>

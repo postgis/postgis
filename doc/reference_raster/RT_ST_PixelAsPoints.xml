@@ -1,0 +1,84 @@
+<refentry xml:id="RT_ST_PixelAsPoints" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_PixelAsPoints</refname>
+                <refpurpose>
+                    Returns a point geometry for each pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.  The coordinates of the point geometry are of the pixel's upper-left corner.
+                </refpurpose>
+            </refnamediv>
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>setof record <function>ST_PixelAsPoints</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
+                        <paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+                <para>
+                    Returns a point geometry for each pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.  The coordinates of the point geometry are of the pixel's upper-left corner.
+                </para>
+
+                <para>
+                    Return record format: <parameter>geom</parameter> <xref linkend="geometry"/>, <parameter>val</parameter> double precision, <parameter>x</parameter> integer, <parameter>y</parameter> integers.
+                </para>
+                <note>
+                    <para>
+                        When <parameter>exclude_nodata_value</parameter> = TRUE, only those pixels whose values are not NODATA are returned as points.
+                    </para>
+                </note>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+                <para role="changed" conformance="2.1.1">Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+                <programlisting>
+SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* FROM dummy_rast WHERE rid = 2) foo;
+
+ x | y | val |          st_astext
+---+---+-----+------------------------------
+ 1 | 1 | 253 | POINT(3427927.75 5793244)
+ 2 | 1 | 254 | POINT(3427927.8 5793244)
+ 3 | 1 | 253 | POINT(3427927.85 5793244)
+ 4 | 1 | 254 | POINT(3427927.9 5793244)
+ 5 | 1 | 254 | POINT(3427927.95 5793244)
+ 1 | 2 | 253 | POINT(3427927.75 5793243.95)
+ 2 | 2 | 254 | POINT(3427927.8 5793243.95)
+ 3 | 2 | 254 | POINT(3427927.85 5793243.95)
+ 4 | 2 | 253 | POINT(3427927.9 5793243.95)
+ 5 | 2 | 249 | POINT(3427927.95 5793243.95)
+ 1 | 3 | 250 | POINT(3427927.75 5793243.9)
+ 2 | 3 | 254 | POINT(3427927.8 5793243.9)
+ 3 | 3 | 254 | POINT(3427927.85 5793243.9)
+ 4 | 3 | 252 | POINT(3427927.9 5793243.9)
+ 5 | 3 | 249 | POINT(3427927.95 5793243.9)
+ 1 | 4 | 251 | POINT(3427927.75 5793243.85)
+ 2 | 4 | 253 | POINT(3427927.8 5793243.85)
+ 3 | 4 | 254 | POINT(3427927.85 5793243.85)
+ 4 | 4 | 254 | POINT(3427927.9 5793243.85)
+ 5 | 4 | 253 | POINT(3427927.95 5793243.85)
+ 1 | 5 | 252 | POINT(3427927.75 5793243.8)
+ 2 | 5 | 250 | POINT(3427927.8 5793243.8)
+ 3 | 5 | 254 | POINT(3427927.85 5793243.8)
+ 4 | 5 | 254 | POINT(3427927.9 5793243.8)
+ 5 | 5 | 254 | POINT(3427927.95 5793243.8)
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_DumpAsPolygons"/>,
+                    <xref linkend="RT_ST_PixelAsPolygon"/>,
+                    <xref linkend="RT_ST_PixelAsPolygons"/>,
+                    <xref linkend="RT_ST_PixelAsPoint"/>,
+                    <xref linkend="RT_ST_PixelAsCentroid"/>,
+                    <xref linkend="RT_ST_PixelAsCentroids"/>
+                </para>
+            </refsection>
+
+        </refentry>

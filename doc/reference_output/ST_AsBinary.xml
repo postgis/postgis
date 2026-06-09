@@ -1,0 +1,98 @@
+<refentry xml:id="ST_AsBinary" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+      <refname>ST_AsBinary</refname>
+      <refpurpose>Return the OGC/ISO Well-Known Binary (WKB) representation of the geometry/geography without SRID meta data.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>bytea <function>ST_AsBinary</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>bytea <function>ST_AsBinary</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        <paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>bytea <function>ST_AsBinary</function></funcdef>
+        <paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>bytea <function>ST_AsBinary</function></funcdef>
+        <paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+        <paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+      <title>Description</title>
+
+      <para>Returns the OGC/ISO <link linkend="OpenGISWKBWKT">Well-Known Binary</link> (WKB) representation of the geometry.
+            The first function variant defaults to encoding using server machine endian. The second function variant takes a text argument
+      specifying the endian encoding: either 'NDR' for little-endian; or 'XDR' for big-endian. Supplying unknown arguments will result in little-endian output.
+      </para>
+
+      <para>WKB format is useful to read geometry data from the
+      database and maintaining full numeric precision.
+            This avoids the precision rounding that can happen with text formats such as WKT.</para>
+
+      <para>To perform the inverse conversion of WKB to PostGIS geometry use <xref linkend="ST_GeomFromWKB"/>.</para>
+
+      <note>
+        <para>The OGC/ISO WKB format does not include the SRID.  To get the EWKB format which does include the SRID use <xref linkend="ST_AsEWKB"/></para>
+      </note>
+
+      <note>
+        <para>PostgreSQL outputs <varname>bytea</varname> values in hex encoding by default.
+                If your GUI tools require the old behavior, then SET <code>bytea_output='escape'</code> in your database.</para>
+      </note>
+
+      <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+      <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for higher coordinate dimensions was introduced.</para>
+      <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for specifying endian with geography was introduced.</para>
+      <para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced.</para>
+      <para role="changed" conformance="2.0.0">Changed: 2.0.0 Inputs to this function can not be unknown -- must be geometry.  Constructs such as <code>ST_AsBinary('POINT(1 2)')</code> are no longer valid and you will get an <code>n st_asbinary(unknown)  is not unique error</code>.  Code like that
+      needs to be changed to <code>ST_AsBinary('POINT(1 2)'::geometry);</code>.  If that is not possible, then install <filename>legacy.sql</filename>.</para>
+      <para>&sfs_compliant; s2.1.1.1</para>
+      <para>&sqlmm_compliant; SQL-MM 3: 5.1.37</para>
+      <para>&curve_support;</para>
+      <para>&P_support;</para>
+      <para>&T_support;</para>
+      <para>&Z_support;</para>
+      </refsection>
+
+
+      <refsection>
+      <title>Examples</title>
+
+      <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+
+       st_asbinary
+--------------------------------
+\x01030000000100000005000000000000000000000000000000000000000000000000000000000000
+000000f03f000000000000f03f000000000000f03f000000000000f03f0000000000000000000000
+00000000000000000000000000
+</programlisting>
+      <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');
+       st_asbinary
+--------------------------------
+\x000000000300000001000000050000000000000000000000000000000000000000000000003ff000
+00000000003ff00000000000003ff00000000000003ff00000000000000000000000000000000000
+00000000000000000000000000
+</programlisting>
+      </refsection>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+      <title>See Also</title>
+      <para>
+<xref linkend="ST_GeomFromWKB"/>,
+<xref linkend="ST_AsEWKB"/>,
+<xref linkend="ST_AsTWKB"/>,
+<xref linkend="ST_AsText"/>,
+      </para>
+      </refsection>
+  </refentry>

@@ -1,0 +1,49 @@
+<refentry xml:id="rastbandarg" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>rastbandarg</refname>
+                <refpurpose>A composite type for use when needing to express a raster and a band index of that raster.</refpurpose>
+            </refnamediv>
+
+            <refsection>
+                <title>Description</title>
+                <para>
+                    A composite type for use when needing to express a raster and a band index of that raster.
+
+                    <variablelist>
+
+                        <varlistentry>
+                            <term><varname>
+                                rast
+                                raster
+                            </varname></term>
+                            <listitem>
+                                <para>
+                    The raster in question/
+                                </para>
+                            </listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                            <term><varname>
+                                nband
+                                integer
+                            </varname></term>
+                            <listitem>
+                                <para>
+                                    1-based value indicating the band of raster
+                                </para>
+                            </listitem>
+                        </varlistentry>
+
+                    </variablelist>
+
+                </para>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_MapAlgebra"/>
+                </para>
+            </refsection>
+        </refentry>

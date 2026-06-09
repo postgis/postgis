@@ -1,0 +1,70 @@
+<refentry xml:id="ST_MaximumInscribedCircle" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_MaximumInscribedCircle</refname>
+        <refpurpose>Computes the largest circle contained within a geometry.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>(geometry, geometry, double precision) <function>ST_MaximumInscribedCircle</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Finds the largest circle that is contained within a (multi)polygon,
+        or which does not overlap any lines and points.
+        Returns a record with fields:
+        </para>
+        <itemizedlist>
+            <listitem><para> <varname>center</varname> - center point of the circle </para></listitem>
+            <listitem><para> <varname>nearest</varname> - a point on the geometry nearest to the center </para></listitem>
+            <listitem><para> <varname>radius</varname> - radius of the circle </para></listitem>
+        </itemizedlist>
+
+        <para>For polygonal inputs, the circle is inscribed within the boundary rings, using the internal rings as boundaries.
+        For linear and point inputs, the circle is inscribed within the convex hull of the input,
+        using the input lines and points as further boundaries.</para>
+
+        <para role="availability" conformance="3.1.0">Availability: 3.1.0.</para>
+        <para role="geos_requirement" conformance="3.9.0">Requires GEOS &gt;= 3.9.0.</para>
+
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_maximuminscribedcircle01.png"/>
+        </imageobject>
+        <caption><para>Maximum inscribed circle of a polygon. Center, nearest point, and radius are returned.</para></caption>
+      </mediaobject>
+    </informalfigure>
+<programlisting>SELECT radius, ST_AsText(center) AS center, ST_AsText(nearest) AS nearest
+    FROM ST_MaximumInscribedCircle(
+        'POLYGON ((40 180, 110 160, 180 180, 180 120, 140 90, 160 40, 80 10, 70 40, 20 50, 40 180),
+        (60 140, 50 90, 90 140, 60 140))');
+
+     radius      |           center           |    nearest
+-----------------+----------------------------+---------------
+ 45.165845650018 | POINT(96.953125 76.328125) | POINT(140 90)
+</programlisting>
+
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_maximuminscribedcircle02.png"/>
+        </imageobject>
+        <caption><para>Maximum inscribed circle of a multi-linestring. Center, nearest point, and radius are returned.</para></caption>
+      </mediaobject>
+    </informalfigure>
+      </refsection>
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_MinimumBoundingRadius"/>, <xref linkend="ST_LargestEmptyCircle"/></para>
+      </refsection>
+    </refentry>

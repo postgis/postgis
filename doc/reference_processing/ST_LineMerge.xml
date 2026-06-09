@@ -1,0 +1,145 @@
+<refentry xml:id="ST_LineMerge" xmlns="http://docbook.org/ns/docbook">
+		<refnamediv>
+			<refname>ST_LineMerge</refname>
+
+			<refpurpose>Return the lines formed by sewing together
+			a MultiLineString.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_LineMerge</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_LineMerge</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>directed</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Returns a LineString or MultiLineString formed by joining together
+			the line elements of a MultiLineString.
+            Lines are joined at their endpoints at 2-way intersections.
+            Lines are not joined across intersections of 3-way or greater degree.
+            </para>
+
+			<para>If <emphasis role="bold">directed</emphasis> is TRUE, then ST_LineMerge
+			will not change point order within LineStrings, so lines with opposite directions
+			will not be merged</para>
+
+			<note><para>Only use with MultiLineString/LineStrings. Other geometry types
+			return an empty GeometryCollection</para></note>
+			<para>Performed by the GEOS module.</para>
+			<para role="enhanced" conformance="3.3.0">Enhanced: 3.3.0 accept a directed parameter.</para>
+            <para role="geos_requirement" conformance="3.11.0">Requires GEOS &gt;= 3.11.0 to use the directed parameter.</para>
+			<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
+			<warning><para>This function strips the M dimension.</para></warning>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+      <refsection>
+        <title>Cardinality 2</title>
+      <para>
+          <informalfigure>
+              <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="images/st_linemerge01.png"/>
+                    </imageobject>
+
+                    <caption>
+                        <para>Nodes with cardinality 2 are merged away.
+                        </para>
+                    </caption>
+              </mediaobject>
+        </informalfigure>
+      </para>
+			<programlisting>SELECT ST_AsText(ST_LineMerge(
+'MULTILINESTRING((10 160, 60 120), (120 140, 60 120), (120 140, 180 120))'
+		));
+--------------------------------------------
+ LINESTRING(10 160,60 120,120 140,180 120)
+</programlisting>
+</refsection>
+<refsection>
+<title>Cardinality 3 or More</title>
+      <para>
+          <informalfigure>
+              <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="images/st_linemerge02.png"/>
+                    </imageobject>
+
+                    <caption>
+                        <para>Lines are not merged across intersections with degree &gt; 2.
+                        </para>
+                    </caption>
+              </mediaobject>
+        </informalfigure>
+      </para>
+			<programlisting>SELECT ST_AsText(ST_LineMerge(
+'MULTILINESTRING((10 160, 60 120), (120 140, 60 120), (120 140, 180 120), (100 180, 120 140))'
+		));
+--------------------------------------------
+ MULTILINESTRING((10 160,60 120,120 140),(100 180,120 140),(120 140,180 120))
+</programlisting>
+</refsection>
+
+<refsection>
+  <title>Non-Touching Lines</title>
+<para>If merging is not possible due to non-touching lines,
+the original MultiLineString is returned.</para>
+<programlisting>
+SELECT ST_AsText(ST_LineMerge(
+'MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45.2 -33.2,-46 -32))'
+));
+----------------
+MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
+</programlisting>
+</refsection>
+
+<refsection>
+  <title>Directed Parameter</title>
+<para>
+	<informalfigure>
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="images/st_linemerge03.png"/>
+			</imageobject>
+			<caption>
+				<para>Lines with opposite directions are not merged if directed = TRUE.</para>
+			</caption>
+		</mediaobject>
+	</informalfigure>
+</para>
+<programlisting>
+SELECT ST_AsText(ST_LineMerge(
+'MULTILINESTRING((60 30, 10 70), (120 50, 60 30), (120 50, 180 30))',
+TRUE));
+-------------------------------------------------------
+ MULTILINESTRING((120 50,60 30,10 70),(120 50,180 30))
+</programlisting>
+</refsection>
+
+<refsection>
+<title>Z-dimension Handling</title>
+<programlisting>
+SELECT ST_AsText(ST_LineMerge(
+      'MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 6), (-29 -27 12,-30 -29.7 5), (-45 -33 1,-46 -32 11))'
+        ));
+---------------------------------------------------------------------------------
+LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11)
+</programlisting>
+</refsection>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Segmentize"/>, <xref linkend="ST_LineSubstring"/></para>
+		</refsection>
+	</refentry>

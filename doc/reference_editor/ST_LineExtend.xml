@@ -1,0 +1,49 @@
+<refentry xml:id="ST_LineExtend" xmlns="http://docbook.org/ns/docbook">
+          <refnamediv>
+            <refname>ST_LineExtend</refname>
+
+            <refpurpose>Returns a line extended forwards and backwards by specified distances.</refpurpose>
+          </refnamediv>
+
+          <refsynopsisdiv>
+            <funcsynopsis>
+              <funcprototype>
+                <funcdef>geometry <function>ST_LineExtend</function></funcdef>
+                <paramdef><type>geometry </type>
+                <parameter>line</parameter></paramdef>
+                <paramdef><type>float </type>
+                <parameter>distance_forward</parameter></paramdef>
+                <paramdef choice="opt"><type>float</type> <parameter>distance_backward=0.0</parameter></paramdef>
+              </funcprototype>
+            </funcsynopsis>
+          </refsynopsisdiv>
+
+          <refsection>
+            <title>Description</title>
+
+            <para>Returns a line extended forwards and backwards by adding new start (and end) points at the given distance(s). 
+			A distance of zero does not add a point. 
+			Only non-negative distances are allowed. 
+			The direction(s) of the added point(s) is determined by the first (and last) two distinct points of the line.
+			Duplicate points are ignored.
+			</para>
+
+            <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
+
+          </refsection>
+
+          <refsection>
+            <title>Example: Extends a line 5 units forward and 6 units backward</title>
+
+<programlisting>
+SELECT ST_AsText(ST_LineExtend('LINESTRING(0 0, 0 10)'::geometry, 5, 6));
+--------------------------------------------
+LINESTRING(0 -6,0 0,0 10,0 15)
+</programlisting>
+          </refsection>
+
+          <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_LineSubstring"/>, <xref linkend="ST_LocateAlong"/>, <xref linkend="ST_Project"/></para>
+          </refsection>
+    </refentry>

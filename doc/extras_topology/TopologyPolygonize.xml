@@ -1,0 +1,35 @@
+<refentry xml:id="TopologyPolygonize" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>Polygonize</refname>
+				<refpurpose>Finds and registers all faces defined by topology edges.</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>text <function>Polygonize</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Registers all faces that can be built out a topology edge primitives.</para>
+                <para>The target topology is assumed to contain no self-intersecting edges.</para>
+                <note><para>Already known faces are recognized, so it is safe to call Polygonize multiple times on the same topology.</para></note>
+		<note><para>
+This function does not use nor set the next_left_edge and next_right_edge fields of the edge table.
+                </para></note>
+
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddFace"/>, <xref linkend="ST_Polygonize"/></para>
+			</refsection>
+		</refentry>

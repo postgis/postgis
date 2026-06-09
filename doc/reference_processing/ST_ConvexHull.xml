@@ -1,0 +1,83 @@
+<refentry xml:id="ST_ConvexHull" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_ConvexHull</refname>
+        <refpurpose>Computes the convex hull of a geometry.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_ConvexHull</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+            <para>Computes the convex hull of a geometry.
+        The convex hull is the smallest convex
+        geometry that encloses all geometries in the input.</para>
+
+        <para>One can think of the convex hull as the geometry obtained by wrapping an rubber
+            band around a set of geometries.  This is different from a
+            <link linkend="ST_ConcaveHull">concave hull</link>
+            which is analogous to "shrink-wrapping" the geometries.
+            A convex hull is often used to
+            determine an affected area based on a set of point observations.</para>
+
+        <para>In the general case the convex hull is a Polygon.
+        The convex hull of two or more collinear points is a two-point LineString.
+        The convex hull of one or more identical points is a Point.</para>
+
+        <para>This is not an aggregate function.
+        To compute the convex hull of a set of geometries, use <xref linkend="ST_Collect"/>
+        to aggregate them into a geometry collection
+        (e.g. <code>ST_ConvexHull(ST_Collect(geom))</code>.</para>
+
+        <para>Performed by the GEOS module</para>
+
+        <para>&sfs_compliant; s2.1.1.3</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.16</para>
+        <para>&Z_support;</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+<para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_convexhull01.png"/>
+        </imageobject>
+        <caption><para>Convex Hull of a MultiLinestring and a MultiPoint</para></caption>
+      </mediaobject>
+    </informalfigure>
+    <programlisting>
+SELECT ST_AsText(ST_ConvexHull(
+    ST_Collect(
+        ST_GeomFromText('MULTILINESTRING((100 190,10 8),(150 10, 20 30))'),
+            ST_GeomFromText('MULTIPOINT(50 5, 150 30, 50 10, 10 10)')
+            )) );
+---st_astext--
+POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
+    </programlisting>
+</para>
+
+<para>Using with ST_Collect to compute the convex hulls of geometry sets.</para>
+
+<programlisting>
+--Get estimate of infected area based on point observations
+SELECT d.disease_type,
+    ST_ConvexHull(ST_Collect(d.geom)) As geom
+    FROM disease_obs As d
+    GROUP BY d.disease_type;
+</programlisting>
+
+      </refsection>
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_Collect"/>, <xref linkend="ST_ConcaveHull"/>, <xref linkend="ST_MinimumBoundingCircle"/></para>
+      </refsection>
+    </refentry>

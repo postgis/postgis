@@ -1,0 +1,52 @@
+<refentry xml:id="reclassarg" xmlns="http://docbook.org/ns/docbook">
+          <refnamediv>
+            <refname>reclassarg</refname>
+            <refpurpose>A composite type used as input into the ST_Reclass function defining the behavior of reclassification.</refpurpose>
+          </refnamediv>
+          <refsection>
+            <title>Description</title>
+            <para>A composite type used as input into the <xref linkend="RT_ST_Reclass"/> function defining the behavior of reclassification.</para>
+            <variablelist>
+                <varlistentry>
+                    <term><varname>nband integer</varname></term>
+                    <listitem><para>The band number of band to reclassify.</para></listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><varname>reclassexpr text</varname></term>
+                    <listitem><para>range expression consisting of comma delimited range:map_range mappings. : to define mapping that defines how to map old band values to new band values. ( means &gt;, ) means less than, ] &lt; or equal, [ means &gt; or equal</para>
+                        <para><programlisting><![CDATA[
+1. [a-b] = a <= x <= b
+
+2. (a-b] = a < x <= b
+
+3. [a-b) = a <= x < b
+
+4. (a-b) = a < x < b
+]]></programlisting></para>
+<para>( notation is optional so a-b means the same as (a-b)</para>
+                    </listitem>
+
+                </varlistentry>
+                <varlistentry>
+                    <term><varname>pixeltype text</varname></term>
+                    <listitem><para>One of defined pixel types as described in <xref linkend="RT_ST_BandPixelType"/></para></listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><varname>nodataval double precision</varname></term>
+                    <listitem><para>Value to treat as no data.  For image outputs that support transparency, these will be blank.</para></listitem>
+                </varlistentry>
+            </variablelist>
+          </refsection>
+          <refsection>
+              <title>Example: Reclassify band 2 as an 8BUI where 255 is nodata value</title>
+              <programlisting>SELECT ROW(2, '0-100:1-10, 101-500:11-150,501 - 10000: 151-254', '8BUI', 255)::reclassarg;</programlisting>
+          </refsection>
+          <refsection>
+              <title>Example: Reclassify band 1 as an 1BB and no nodata value defined</title>
+              <programlisting>SELECT ROW(1, '0-100]:0, (100-255:1', '1BB', NULL)::reclassarg;</programlisting>
+          </refsection>
+           <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_Reclass"/></para>
+           </refsection>
+        </refentry>

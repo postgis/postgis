@@ -1,0 +1,148 @@
+<refentry xml:id="ST_Touches" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+    <refname>ST_Touches</refname>
+
+    <refpurpose>Tests if two geometries have at least one point in common,
+    but their interiors do not intersect</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+      <funcdef>boolean <function>ST_Touches</function></funcdef>
+
+      <paramdef><type>geometry </type>
+      <parameter>A</parameter></paramdef>
+
+      <paramdef><type>geometry </type>
+      <parameter>B</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+    <para>Returns <varname>TRUE</varname> if A and B intersect,
+    but their interiors do not intersect.  Equivalently, A and B have at least one point in common,
+    and the common points lie in at least one boundary.
+    For Point/Point inputs the relationship is always <varname>FALSE</varname>,
+    since points do not have a boundary.</para>
+
+    <para>In mathematical terms:
+    <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) = ∅) ∧ (A ⋂ B ≠ ∅) </emphasis></para>
+
+    <para>This relationship holds if the DE-9IM Intersection Matrix for the two geometries matches one of:</para>
+
+    <itemizedlist>
+      <listitem>
+      <para><markup>FT*******</markup></para>
+      </listitem>
+
+      <listitem>
+      <para><markup>F**T*****</markup></para>
+      </listitem>
+
+      <listitem>
+      <para><markup>F***T****</markup></para>
+      </listitem>
+    </itemizedlist>
+
+    <note><para>&index_aware;
+        To avoid using an index, use <function>_ST_Touches</function> instead.</para>
+    </note>
+
+    <important>
+      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
+    </important>
+
+    <para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
+    <para>&sqlmm_compliant; SQL-MM 3: 5.1.28</para>
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+
+    <para>The <function>ST_Touches</function> predicate returns <varname>TRUE</varname> in the following examples.</para>
+    <informaltable>
+      <tgroup cols="3">
+      <tbody>
+        <row>
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_touches01.png"/>
+            </imageobject>
+
+            <caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_touches02.png"/>
+            </imageobject>
+
+            <caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_touches03.png"/>
+            </imageobject>
+
+            <caption><para><varname>POLYGON</varname> / <varname>LINESTRING</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+        </row>
+        <row>
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_touches04.png"/>
+            </imageobject>
+
+            <caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_touches05.png"/>
+            </imageobject>
+
+            <caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_touches06.png"/>
+            </imageobject>
+
+            <caption><para><varname>POLYGON</varname> / <varname>POINT</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </informaltable>
+
+    <programlisting>SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(1 1)'::geometry);
+ st_touches
+------------
+ f
+(1 row)
+
+SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry);
+ st_touches
+------------
+ t
+(1 row)</programlisting>
+    </refsection>
+  </refentry>

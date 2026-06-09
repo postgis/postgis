@@ -1,0 +1,89 @@
+<refentry xml:id="ST_ShortestLine" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_ShortestLine</refname>
+
+		<refpurpose>Returns the 2D shortest line between two geometries</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ShortestLine</function></funcdef>
+			<paramdef><type>geometry </type>
+			<parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry </type>
+			<parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+
+          <funcprototype>
+            <funcdef>geography <function>ST_ShortestLine</function></funcdef>
+            <paramdef><type>geography </type>
+            <parameter>geom1</parameter></paramdef>
+            <paramdef><type>geography </type>
+            <parameter>geom2</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef>
+          </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 2-dimensional shortest line between two geometries.
+		The line returned starts in <varname>geom1</varname> and ends in <varname>geom2</varname>.
+		If <varname>geom1</varname> and <varname>geom2</varname> intersect
+        the result is a line with start and end at an intersection point.
+		The length of the line is the same as <xref linkend="ST_Distance"/> returns for g1 and g2.
+		</para>
+
+        <para role="enhanced" conformance="3.4.0">Enhanced: 3.4.0 - support for geography.</para>
+		<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+        <para><informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_shortestline01.png"/>
+                </imageobject>
+                <caption><para>Shortest line between Point and LineString</para></caption>
+            </mediaobject>
+            </informalfigure>
+<programlisting>
+SELECT ST_AsText(  ST_ShortestLine(
+        'POINT (160 40)',
+        'LINESTRING (10 30, 50 50, 30 110, 70 90, 180 140, 130 190)')
+	) As sline;
+---------------------------------------------------------
+ LINESTRING(160 40,125.75342465753425 115.34246575342466)
+</programlisting>
+		</para>
+
+        <para><informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_shortestline02.png"/>
+                </imageobject>
+                <caption><para>Shortest line between Polygons</para></caption>
+            </mediaobject>
+            </informalfigure>
+<programlisting>
+SELECT ST_AsText( ST_ShortestLine(
+         'POLYGON ((190 150, 20 10, 160 70, 190 150))',
+         ST_Buffer('POINT(80 160)', 30)
+              ) ) AS llinewkt;
+-----------------
+LINESTRING(131.59149149528952 101.89887534906197,101.21320343559644 138.78679656440357)
+</programlisting>
+		</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_ClosestPoint"/>, <xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_MaxDistance"/></para>
+	  </refsection>
+	</refentry>

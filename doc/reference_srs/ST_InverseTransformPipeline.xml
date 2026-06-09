@@ -1,0 +1,77 @@
+<refentry xml:id="ST_InverseTransformPipeline" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+    <refname>ST_InverseTransformPipeline</refname>
+
+    <refpurpose>Return a new geometry with coordinates transformed to
+      a different spatial reference system using the inverse of a defined coordinate
+      transformation pipeline.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+          <funcdef>geometry <function>ST_InverseTransformPipeline</function></funcdef>
+          <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+          <paramdef><type>text </type> <parameter>pipeline</parameter></paramdef>
+          <paramdef choice="opt"><type>integer </type> <parameter>to_srid</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+      <para>
+      Return a new geometry with coordinates transformed to a different spatial reference system
+      using a defined coordinate transformation pipeline to go in the inverse direction.
+      </para>
+
+      <para> Refer to <xref linkend="ST_TransformPipeline"/> for details on writing a transformation pipeline.</para>
+
+    <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
+
+    <para>
+    The SRID of the input geometry is ignored, and the SRID of the output geometry will be set to
+    zero unless a value is provided via the optional <varname>to_srid</varname> parameter. When
+    using <xref linkend="ST_TransformPipeline"/> the pipeline is executed in a forward direction. Using
+    `ST_InverseTransformPipeline()` the pipeline is executed in the inverse direction.</para>
+
+    <para>Transforms using pipelines are a specialised version of <xref linkend="ST_Transform"/>.
+    In most cases `ST_Transform` will choose the correct operations to convert between coordinate
+    systems, and should be preferred.</para>
+
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+    <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
+    <programlisting>
+-- Inverse direction
+SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.523342293)'::geometry,
+  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;
+
+          wgs_geom
+----------------------------
+ POINT(2 48.99999999999999)
+(1 row)
+    </programlisting>
+
+    <para>GDA2020 example.</para>
+    <programlisting>
+-- using ST_Transform with automatic selection of a conversion pipeline.
+SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;
+
+                 gda2020_auto
+-----------------------------------------------
+ POINT(143.00000635638918 -36.999986706128176)
+(1 row)
+    </programlisting>
+    </refsection>
+
+    <!-- Optionally add a "See Also" section -->
+    <refsection>
+    <title>See Also</title>
+
+    <para><xref linkend="ST_Transform"/>, <xref linkend="ST_TransformPipeline"/></para>
+    </refsection>
+  </refentry>

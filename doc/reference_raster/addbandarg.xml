@@ -1,0 +1,71 @@
+<refentry xml:id="addbandarg" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>addbandarg</refname>
+                <refpurpose>A composite type used as input into the ST_AddBand function defining the attributes and initial value of the new band.</refpurpose>
+            </refnamediv>
+
+            <refsection>
+                <title>Description</title>
+                <para>
+                    A composite type used as input into the ST_AddBand function defining the attributes and initial value of the new band.
+
+                    <variablelist>
+                        <varlistentry>
+                            <term><varname>
+                                index
+                                integer
+                            </varname></term>
+                            <listitem>
+                                <para>
+                                    1-based value indicating the position where the new band will be added amongst the raster's bands. If NULL, the new band will be added at the end of the raster's bands.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                            <term><varname>
+                                pixeltype
+                                text
+                            </varname></term>
+                            <listitem>
+                                <para>
+                    Pixel type of the new band. One of defined pixel types as described in <xref linkend="RT_ST_BandPixelType"/>.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                            <term><varname>
+                                initialvalue
+                                double precision
+                            </varname></term>
+                            <listitem>
+                                <para>
+                    Initial value that all pixels of new band will be set to.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                            <term><varname>
+                                nodataval
+                                double precision
+                            </varname></term>
+                            <listitem>
+                                <para>
+                    NODATA value of the new band. If NULL, the new band will not have a NODATA value assigned.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                    </variablelist>
+
+                </para>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_AddBand"/>
+                </para>
+            </refsection>
+        </refentry>

@@ -1,0 +1,88 @@
+<refentry xml:id="ST_LineLocatePoint" xmlns="http://docbook.org/ns/docbook">
+		  <refnamediv>
+			<refname>ST_LineLocatePoint</refname>
+
+			<refpurpose>Returns the fractional location of
+			the closest point on a line to a point.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+
+			  <funcprototype>
+				<funcdef>float8 <function>ST_LineLocatePoint</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
+			  </funcprototype>
+
+              <funcprototype>
+                <funcdef>float8 <function>ST_LineLocatePoint</function></funcdef>
+                <paramdef><type>geography </type> <parameter>a_linestring</parameter></paramdef>
+                <paramdef><type>geography </type> <parameter>a_point</parameter></paramdef>
+                <paramdef choice="opt"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef>
+              </funcprototype>
+
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			 <para>Returns a float between 0 and 1 representing the location of
+			the closest point on a LineString to the given Point, as a fraction
+			of <link linkend="ST_Length2D">2d line</link> length.</para>
+
+			<para>You can use the returned location to extract a Point (<xref linkend="ST_LineInterpolatePoint"/>) or
+			a substring (<xref linkend="ST_LineSubstring"/>).</para>
+
+			<para>This is useful for approximating numbers of addresses</para>
+
+			<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
+      <para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Locate_Point.</para>
+		  </refsection>
+
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>
+--Rough approximation of finding the street number of a point along the street
+--Note the whole foo thing is just to generate dummy data that looks
+--like house centroids and street
+--We use ST_DWithin to exclude
+--houses too far away from the street to be considered on the street
+SELECT ST_AsText(house_loc) As as_text_house_loc,
+	startstreet_num +
+		CAST( (endstreet_num - startstreet_num)
+			* ST_LineLocatePoint(street_line, house_loc) As integer) As street_num
+FROM
+(SELECT ST_GeomFromText('LINESTRING(1 2, 3 4)') As street_line,
+	ST_Point(x*1.01,y*1.03) As house_loc, 10 As startstreet_num,
+		20 As endstreet_num
+FROM generate_series(1,3) x CROSS JOIN generate_series(2,4) As y)
+As foo
+WHERE ST_DWithin(street_line, house_loc, 0.2);
+
+ as_text_house_loc | street_num
+-------------------+------------
+ POINT(1.01 2.06)  |         10
+ POINT(2.02 3.09)  |         15
+ POINT(3.03 4.12)  |         20
+
+ --find closest point on a line to a point or other geometry
+ SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))
+FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
+   st_astext
+----------------
+ POINT(3 4)
+
+</programlisting>
+		  </refsection>
+
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Length2D"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineSubstring"/></para>
+		  </refsection>
+		</refentry>

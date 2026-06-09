@@ -1,0 +1,34 @@
+<refentry xml:id="ST_Tesselate" xmlns="http://docbook.org/ns/docbook">
+        <refnamediv>
+            <refname>ST_Tesselate</refname>
+
+            <refpurpose>Perform surface Tessellation of a polygon or polyhedralsurface and returns as a TIN or collection of TINS</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>ST_Tesselate</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <warning>
+                <para>
+                    <xref linkend="ST_Tesselate"/> is deprecated as of 3.5.0. Use <xref linkend="CG_Tesselate"/> instead.
+                </para>
+            </warning>
+
+            <para>Takes as input a surface such a  MULTI(POLYGON) or POLYHEDRALSURFACE and returns a TIN representation via the process of tessellation using triangles.</para>
+            <note><para><xref linkend="ST_TriangulatePolygon" /> does similar to this function except that it returns a geometry collection of polygons instead of a TIN and also only works with 2D geometries.</para></note>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+            <para>&sfcgal_required;</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+        </refsection>
+    </refentry>

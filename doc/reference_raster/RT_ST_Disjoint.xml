@@ -1,0 +1,99 @@
+<refentry xml:id="RT_ST_Disjoint" xmlns="http://docbook.org/ns/docbook">
+        <refnamediv>
+            <refname>ST_Disjoint</refname>
+            <refpurpose>
+                Return true if raster rastA does not spatially intersect rastB.
+            </refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>boolean <function>ST_Disjoint</function></funcdef>
+                    <paramdef>
+                        <type>raster </type>
+                        <parameter>rastA</parameter>
+                    </paramdef>
+                    <paramdef>
+                        <type>integer </type>
+                        <parameter>nbandA</parameter>
+                    </paramdef>
+                    <paramdef>
+                        <type>raster </type>
+                        <parameter>rastB</parameter>
+                    </paramdef>
+                    <paramdef>
+                        <type>integer </type>
+                        <parameter>nbandB</parameter>
+                    </paramdef>
+                </funcprototype>
+
+                <funcprototype>
+                    <funcdef>boolean <function>ST_Disjoint</function></funcdef>
+                    <paramdef>
+                        <type>raster </type>
+                        <parameter>rastA</parameter>
+                    </paramdef>
+                    <paramdef>
+                        <type>raster </type>
+                        <parameter>rastB</parameter>
+                    </paramdef>
+                </funcprototype>
+
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para>
+                Raster rastA and rastB are disjointed if they do not share any space together. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+            </para>
+
+            <note>
+                <para>
+                    This function does NOT use any indexes.
+                </para>
+            </note>
+
+            <note>
+                <para>
+                    To test the spatial relationship of a raster and a geometry, use ST_Polygon on the raster, e.g. ST_Disjoint(ST_Polygon(raster), geometry).
+                </para>
+            </note>
+
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+
+            <programlisting>
+-- rid = 1 has no bands, hence the NOTICE and the NULL value for st_disjoint
+SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
+
+NOTICE:  The second raster provided has no bands
+ rid | rid | st_disjoint
+-----+-----+-------------
+   2 |   1 |
+   2 |   2 | f
+            </programlisting>
+
+            <programlisting>
+-- this time, without specifying band numbers
+SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
+
+ rid | rid | st_disjoint
+-----+-----+-------------
+   2 |   1 | t
+   2 |   2 | f
+            </programlisting>
+
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para>
+                <xref linkend="RT_ST_Intersects"/>
+            </para>
+        </refsection>
+    </refentry>

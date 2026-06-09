@@ -1,0 +1,49 @@
+<refentry xml:id="ST_MinimumBoundingRadius" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+        <refname>ST_MinimumBoundingRadius</refname>
+        <refpurpose>Returns the center point and radius of the smallest circle that contains a geometry.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>(geometry, double precision) <function>ST_MinimumBoundingRadius</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+        <title>Description</title>
+        <para>Computes the center point and radius of the smallest circle that contains a geometry.
+        Returns a record with fields:
+        </para>
+        <itemizedlist>
+            <listitem><para> <varname>center</varname> - center point of the circle </para></listitem>
+            <listitem><para> <varname>radius</varname> - radius of the circle </para></listitem>
+        </itemizedlist>
+
+        <para>Use with <xref linkend="ST_Collect"/> to get the minimum bounding circle of a set of geometries.</para>
+
+        <para>To compute two points lying on the minimum circle (the "maximum diameter") use <xref linkend="ST_LongestLine"/>.
+        </para>
+
+        <para role="availability" conformance="2.3.0">Availability - 2.3.0</para>
+    </refsection>
+
+      <refsection>
+        <title>Examples</title>
+<programlisting>SELECT ST_AsText(center), radius FROM ST_MinimumBoundingRadius('POLYGON((26426 65078,26531 65242,26075 65136,26096 65427,26426 65078))');
+
+                st_astext                 |      radius
+------------------------------------------+------------------
+ POINT(26284.8418027133 65267.1145090825) | 247.436045591407
+</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_Collect"/>, <xref linkend="ST_MinimumBoundingCircle"/>, <xref linkend="ST_LongestLine"/></para>
+      </refsection>
+
+    </refentry>

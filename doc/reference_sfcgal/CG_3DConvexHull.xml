@@ -1,0 +1,52 @@
+<refentry xml:id="CG_3DConvexHull" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+        <refname>CG_3DConvexHull</refname>
+
+        <refpurpose>Computes the 3D convex hull of a geometry.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>CG_3DConvexHull</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+        <title>Description</title>
+
+        <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+        <para>&sfcgal_required;</para>
+        <para>&Z_support;</para>
+        <para>&P_support;</para>
+        <para>&T_support;</para>
+    </refsection>
+
+    <refsection>
+        <title>Examples</title>
+        <programlisting>SELECT ST_AsText(CG_3DConvexHull('LINESTRING Z(0 0 5, 1 5 3, 5 7 6, 9 5 3 , 5 7 5, 6 3 5)'::geometry));</programlisting>
+        <screen>POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 3)),((5 7 6,5 7 5,1 5 3,5 7 6)),((0 0 5,6 3 5,5 7 6,0 0 5)),((6 3 5,9 5 3,5 7 6,6 3 5)),((0 0 5,9 5 3,6 3 5,0 0 5)),((9 5 3,5 7 5,5 7 6,9 5 3)),((1 5 3,5 7 5,9 5 3,1 5 3)))</screen>
+
+        <programlisting>WITH f AS (SELECT i, CG_Extrude(geom, 0,0, i ) AS geom
+        FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
+        )
+        SELECT CG_3DConvexHull(ST_Collect(f.geom) )
+        FROM f;</programlisting>
+    <para>
+        <informalfigure>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/st_3dconvexhull.png"/>
+                </imageobject>
+                <caption><para>Original geometry overlaid with 3D convex hull</para></caption>
+            </mediaobject>
+        </informalfigure>
+    </para>
+</refsection>
+<refsection>
+    <title>See Also</title>
+    <para><xref linkend="ST_Letters"/>, <xref linkend="ST_AsX3D"/></para>
+</refsection>
+    </refentry>

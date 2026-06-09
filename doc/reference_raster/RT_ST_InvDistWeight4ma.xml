@@ -1,0 +1,65 @@
+<refentry xml:id="RT_ST_InvDistWeight4ma" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_InvDistWeight4ma</refname>
+                <refpurpose>Raster processing function that interpolates a pixel's value from the pixel's neighborhood.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>double precision <function>ST_InvDistWeight4ma</function></funcdef>
+                        <paramdef><type>double precision[][][]</type> <parameter>value</parameter></paramdef>
+                        <paramdef><type>integer[][]</type> <parameter>pos</parameter></paramdef>
+                        <paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Calculate an interpolated value for a pixel using the Inverse Distance Weighted method.</para>
+
+                <para>
+                    There are two optional parameters that can be passed through <varname>userargs</varname>. The first parameter is the power factor (variable k in the equation below) between 0 and 1 used in the Inverse Distance Weighted equation. If not specified, default value is 1. The second parameter is the weight percentage applied only when the value of the pixel of interest is included with the interpolated value from the neighborhood. If not specified and the pixel of interest has a value, that value is returned.
+                </para>
+
+                <para>
+                    The basic inverse distance weight equation is:
+
+                    <informalfigure>
+                        <mediaobject>
+                            <imageobject>
+                                <imagedata fileref="images/st_invdistweight4ma_equation.png"/>
+                            </imageobject>
+                            <caption>
+                                <para>
+                                    k = power factor, a real number between 0 and 1
+                                </para>
+                            </caption>
+                        </mediaobject>
+                    </informalfigure>
+                </para>
+
+                <note>
+                    <para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebra"/>.</para>
+                </note>
+
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+                <programlisting>
+-- NEEDS EXAMPLE
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_MapAlgebra"/>,
+                    <xref linkend="RT_ST_MinDist4ma"/>
+                </para>
+            </refsection>
+        </refentry>

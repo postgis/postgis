@@ -1,0 +1,67 @@
+<refentry xml:id="ST_RemEdgeModFace" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>ST_RemEdgeModFace</refname>
+
+				<refpurpose>
+Removes an edge, and if the edge separates two faces
+deletes one face and modifies the other face to cover the space of both.
+        </refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>bigint <function>ST_RemEdgeModFace</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anedge</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Removes an edge, and if the removed edge separates two faces
+deletes one face and modifies the other face to cover the space of both.
+Preferentially keeps the face on the right, to be consistent with
+<xref linkend="ST_AddEdgeModFace"/>.
+Returns the id of the face which is preserved.
+		            </para>
+
+                <para>
+Updates all existing joined edges and relationships accordingly.
+		            </para>
+
+                <para>
+Refuses to remove an edge participating in the definition of an
+existing TopoGeometry.
+Refuses to heal two faces if any TopoGeometry is defined by only
+one of them (and not the other).
+		            </para>
+
+                <para>
+If any arguments are null, the given edge is unknown (must already exist in
+the <varname>edge</varname> table of the topology schema), the topology
+name is invalid then an error is thrown.
+                </para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="2.0">Availability: 2.0 </para>
+                <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.15</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<para/>
+				<!--TODO: Need examples -->
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_AddEdgeModFace"/></para>
+				<para><xref linkend="ST_RemEdgeNewFace"/></para>
+			</refsection>
+		</refentry>

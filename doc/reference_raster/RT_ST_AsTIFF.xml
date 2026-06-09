@@ -1,0 +1,81 @@
+<refentry xml:id="RT_ST_AsTIFF" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <refnamediv>
+                <refname>ST_AsTIFF</refname>
+                <refpurpose>Return the raster selected bands as a single TIFF image (byte array).  If no band is specified or any of specified bands does not exist in the raster, then will try to use all bands.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                    <funcdef>bytea <function>ST_AsTIFF</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef choice="opt"><type>text[] </type> <parameter>options=''</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>srid=sameassource</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>bytea <function>ST_AsTIFF</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef choice="opt"><type>text </type> <parameter>compression=''</parameter></paramdef>
+                    <paramdef choice="opt"><type>integer </type> <parameter>srid=sameassource</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>bytea <function>ST_AsTIFF</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
+                    <paramdef choice="opt"><type>text </type> <parameter>compression=''</parameter></paramdef>
+                    <paramdef choice="opt"><type>integer </type> <parameter>srid=sameassource</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>bytea <function>ST_AsTIFF</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
+                    <paramdef><type>text[] </type> <parameter>options</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>srid=sameassource</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns the selected bands of the raster as a single Tagged Image File Format (TIFF). If no band is specified, will try to use all bands. This is a wrapper around <xref linkend="RT_ST_AsGDALRaster"/>. Use <xref linkend="RT_ST_AsGDALRaster"/> if you need to export as less common raster types. There are many variants of the function with many options.  If no spatial reference SRS text is present, the spatial reference of the raster is used. These are itemized below:</para>
+                <itemizedlist>
+                    <listitem>
+                      <para>
+                        <varname>nbands</varname> is an array of bands to export (note that max is 3 for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to green and band 1 to blue
+                      </para>
+                    </listitem>
+                   <listitem>
+                      <para>
+<varname>compression</varname> Compression expression -- JPEG90 (or some other percent), LZW, JPEG, DEFLATE9.
+                      </para>
+                   </listitem>
+                   <listitem>
+                      <para>
+<varname>options</varname> text Array of GDAL create options as defined for GTiff (look at create_options for GTiff of <xref linkend="RT_ST_GDALDrivers"/>). or refer to <link xlink:href="http://www.gdal.org/frmt_various.html">GDAL Raster format options</link> for more details.
+                      </para>
+                   </listitem>
+                   <listitem>
+                      <para>
+<varname>srid</varname> srid of spatial_ref_sys of the raster. This is used to populate the georeference information
+                      </para>
+                   </listitem>
+                </itemizedlist>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+            </refsection>
+
+                <refsection>
+                    <title>Examples: Use jpeg compression 90%</title>
+
+                    <programlisting>SELECT ST_AsTIFF(rast, 'JPEG90') As rasttiff
+FROM dummy_rast WHERE rid=2;
+                </programlisting>
+
+            </refsection>
+
+            <!-- Optionally add a "See Also" section -->
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_GDALDrivers"/>, <xref linkend="RT_ST_AsGDALRaster"/>, <xref linkend="RT_ST_SRID"/></para>
+            </refsection>
+        </refentry>

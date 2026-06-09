@@ -1,0 +1,83 @@
+<refentry xml:id="CG_3DDifference" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <refnamediv>
+        <refname>CG_3DDifference</refname>
+
+        <refpurpose>Perform 3D difference</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>CG_3DDifference</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+                <paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+        <title>Description</title>
+
+        <para>Returns that part of geom1 that is not part of geom2.</para>
+        <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+        <para>&sfcgal_required;</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
+        <para>&Z_support;</para>
+        <para>&P_support;</para>
+        <para>&T_support;</para>
+    </refsection>
+
+    <refsection>
+        <title>Examples</title>
+        <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D"/> and rendering in HTML using <link xlink:href="http://www.x3dom.org">X3Dom HTML Javascript rendering library</link>.</para>
+        <informaltable>
+            <tgroup cols="2">
+                <tbody>
+                    <row>
+                        <entry><para>
+                                <programlisting>SELECT CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+                                50, 'quad_segs=2'),0,0,30) AS geom1,
+                                CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+                                50, 'quad_segs=1'),0,0,30) AS geom2;
+                            </programlisting>
+                            <informalfigure>
+                                <mediaobject>
+                                    <imageobject>
+                                        <imagedata fileref="images/st_3ddifference01.png"/>
+                                    </imageobject>
+                                    <caption><para>Original 3D geometries overlaid. geom2 is the part that will be removed.</para></caption>
+                                </mediaobject>
+                        </informalfigure></para>
+                    </entry>
+                    <entry><para>
+                            <programlisting>SELECT CG_3DDifference(geom1,geom2)
+                            FROM ( SELECT CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+                            50, 'quad_segs=2'),0,0,30) AS geom1,
+                            CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+                            50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
+                        <informalfigure>
+                            <mediaobject>
+                                <imageobject>
+                                    <imagedata fileref="images/st_3ddifference02.png"/>
+                                </imageobject>
+                                <caption><para>What's left after removing geom2</para></caption>
+                            </mediaobject>
+                    </informalfigure></para>
+                </entry>
+            </row>
+        </tbody>
+    </tgroup>
+</informaltable>
+
+    </refsection>
+
+    <refsection>
+        <title>See Also</title>
+
+        <para>
+            <xref linkend="CG_Extrude"/>,
+            <xref linkend="ST_AsX3D"/>,  <xref linkend="CG_3DIntersection"/>
+            <xref linkend="CG_3DUnion"/>
+        </para>
+    </refsection>
+</refentry>

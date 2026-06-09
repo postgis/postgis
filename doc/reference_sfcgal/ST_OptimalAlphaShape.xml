@@ -1,0 +1,47 @@
+<refentry xml:id="ST_OptimalAlphaShape" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_OptimalAlphaShape</refname>
+
+                <refpurpose>Computes an Alpha-shape enclosing a geometry using an "optimal" alpha value.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>ST_OptimalAlphaShape</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                        <paramdef choice="opt"><type>boolean </type> <parameter>allow_holes = false</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer </type> <parameter>nb_components = 1</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <warning>
+                    <para>
+                        <xref linkend="ST_OptimalAlphaShape"/> is deprecated as of 3.5.0. Use <xref linkend="CG_OptimalAlphaShape"/> instead.
+                    </para>
+                </warning>
+
+                <para>Computes the "optimal" alpha-shape of the points in a geometry.
+                The alpha-shape is computed using a value of α chosen so that:
+            </para>
+            <orderedlist>
+                <listitem>
+                    <para>the number of polygon elements is equal to or smaller than <varname>nb_components</varname>
+                        (which defaults to 1)</para>
+                </listitem>
+                <listitem>
+                    <para>all input points are contained in the shape</para>
+                </listitem>
+            </orderedlist>
+            <para>
+                The result will not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
+            </para>
+
+            <para role="availability" conformance="3.3.0">Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
+            <para>&sfcgal_required;</para>
+        </refsection>
+    </refentry>

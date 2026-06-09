@@ -1,0 +1,27 @@
+<refentry xml:id="CG_Orientation" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>CG_Orientation</refname>
+
+                <refpurpose>Determine surface orientation</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>integer <function>CG_Orientation</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>The function only applies to polygons. It returns -1 if the polygon is counterclockwise oriented and 1 if the polygon is clockwise oriented.</para>
+
+                <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+                <para>&sfcgal_required;</para>
+                <para>&Z_support;</para>
+            </refsection>
+
+        </refentry>

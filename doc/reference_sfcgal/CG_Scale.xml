@@ -1,0 +1,31 @@
+<refentry xml:id="CG_Scale" xmlns="http://docbook.org/ns/docbook">
+   <refnamediv>
+       <refname>CG_Scale</refname>
+       <refpurpose>Scales a geometry uniformly in all dimensions by a given factor.</refpurpose>
+   </refnamediv>
+   <refsynopsisdiv>
+       <funcsynopsis>
+           <funcprototype>
+               <funcdef>geometry <function>CG_Scale</function></funcdef>
+               <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>factor</parameter></paramdef>
+           </funcprototype>
+       </funcsynopsis>
+   </refsynopsisdiv>
+   <refsection>
+       <title>Description</title>
+       <para>Scales the input geometry <parameter>geom</parameter> by a uniform scale <parameter>factor</parameter> in all dimensions (X, Y, and Z).
+       The scaling is performed relative to the origin point (0,0,0).</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
+       <para>&sfcgal_required;</para>
+   </refsection>
+   <refsection>
+       <title>Examples</title>
+       <programlisting>SELECT ST_AsText(CG_Scale('LINESTRING(1 1, 2 2)', 2));
+-- Result: LINESTRING(2 2, 4 4)</programlisting>
+   </refsection>
+   <refsection>
+       <title>See Also</title>
+       <para><xref linkend="CG_3DScale"/>, <xref linkend="CG_3DScaleAroundCenter"/>, <xref linkend="ST_Scale"/></para>
+   </refsection>
+</refentry>

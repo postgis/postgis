@@ -1,0 +1,33 @@
+<refentry xml:id="PostGIS_Lib_Build_Date" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>PostGIS_Lib_Build_Date</refname>
+
+		<refpurpose>Returns build date of the PostGIS library.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_Lib_Build_Date</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns build date of the PostGIS library.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_Lib_Build_Date();
+ postgis_lib_build_date
+------------------------
+ 2023-06-22 03:56:11
+(1 row)</programlisting>
+	  </refsection>
+	</refentry>

@@ -1,0 +1,67 @@
+<refentry xml:id="ST_DumpRings" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_DumpRings</refname>
+
+		<refpurpose>Returns a set of <varname>geometry_dump</varname> rows for
+			the exterior and interior rings of a Polygon.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+        <para>A set-returning function (SRF) that extracts the rings of a polygon.
+            It returns a set of <xref linkend="geometry_dump"/> rows,
+            each containing a geometry (<parameter>geom</parameter> field)
+            and an array of integers (<parameter>path</parameter> field).
+        </para>
+        <para>
+		The <parameter>geom</parameter> field contains each ring as a POLYGON.
+	    The <parameter>path</parameter> field is an integer array of length 1 containing the polygon ring index.
+        The exterior ring (shell) has index 0.  The interior rings (holes) have indices of 1 and higher.
+        </para>
+
+		<note><para>This only works for POLYGON geometries, not MULTIPOLYGONs.
+		Use <xref linkend="ST_Dump"/> to extract polygon elements from polygonal geometries:
+		<code>ST_DumpRings( (ST_Dump(geom)).geom )</code>
+		</para></note>
+
+		<para role="availability" conformance="1.1.3.">Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher.</para>
+		<para>&Z_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+        <para>Extracting all rings as polygons.</para>
+		<programlisting>SELECT polyTable.field1, polyTable.field1,
+	  (ST_DumpRings(polyTable.geom)).geom As geom
+FROM polyTable
+</programlisting>
+        <para>Extracting shell and holes from a polygon.</para>
+<programlisting>SELECT path, ST_AsText(geom) As geom
+	FROM ST_DumpRings(
+		    'POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 2, 2 3, 3 3, 3 2, 2 2), (4 2, 4 4, 6 4, 6 2, 4 2))');
+
+ path |              geom
+------+--------------------------------
+ {0}  | POLYGON((1 9,9 9,9 1,1 1,1 9))
+ {1}  | POLYGON((2 2,2 3,3 3,3 2,2 2))
+ {2}  | POLYGON((4 2,4 4,6 4,6 2,4 2))</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="geometry_dump"/>, <xref linkend="PostGIS_Geometry_DumpFunctions"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_ExteriorRing"/>, <xref linkend="ST_InteriorRingN"/></para>
+	  </refsection>
+	</refentry>

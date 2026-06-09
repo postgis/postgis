@@ -1,0 +1,52 @@
+<refentry xml:id="RT_ST_RastFromHexWKB" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_RastFromHexWKB</refname>
+                <refpurpose>Return a raster value from a Hex representation of Well-Known Binary (WKB) raster.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                        <funcdef>raster <function>ST_RastFromHexWKB</function></funcdef>
+                        <paramdef><type>text </type> <parameter>wkb</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>
+                    Given a Well-Known Binary (WKB) raster in Hex representation, return a raster.
+                </para>
+
+                <para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                <programlisting>
+SELECT (ST_Metadata(
+    ST_RastFromHexWKB(
+        '010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400'
+    )
+)).* AS metadata;
+
+ upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
+------------+------------+-------+--------+--------+--------+-------+-------+------+----------
+        0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |   10 |        0
+                </programlisting>
+
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_MetaData"/>,
+                    <xref linkend="RT_ST_RastFromWKB"/>,
+                    <xref linkend="RT_ST_AsBinary"/>,
+                    <xref linkend="RT_ST_AsHexWKB"/>
+                </para>
+            </refsection>
+        </refentry>

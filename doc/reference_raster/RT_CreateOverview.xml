@@ -1,0 +1,61 @@
+<refentry xml:id="RT_CreateOverview" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <refnamediv>
+                <refname>ST_CreateOverview</refname>
+                <refpurpose>
+Create an reduced resolution version of a given raster coverage.
+                </refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+
+                    <funcprototype>
+                        <funcdef>regclass <function>ST_CreateOverview</function></funcdef>
+                        <paramdef><type>regclass </type> <parameter>tab</parameter></paramdef>
+                        <paramdef><type>name </type> <parameter>col</parameter></paramdef>
+                        <paramdef><type>int </type> <parameter>factor</parameter></paramdef>
+                      <paramdef choice="opt"><type>text </type> <parameter>algo='NearestNeighbor'</parameter></paramdef>
+                    </funcprototype>
+
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>
+Create an overview table with resampled tiles from the source table.
+Output tiles will have the same size of input tiles and cover the same
+spatial extent with a lower resolution (pixel size will be
+1/<varname>factor</varname> of the original in both directions).
+                </para>
+
+        <para>
+The overview table will be made available in the
+<varname>raster_overviews</varname> catalog and will have raster
+constraints enforced.
+                </para>
+
+                <para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <link xlink:href="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</link> for more details.</para>
+
+                <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+            </refsection>
+
+            <refsection><title>Example</title>
+                <para>Output to generally better quality but slower to product format</para>
+                <programlisting>SELECT ST_CreateOverview('mydata.mytable'::regclass, 'rast', 2, 'Lanczos');</programlisting>
+
+                <para>Output to faster to process default nearest neighbor</para>
+                <programlisting>SELECT ST_CreateOverview('mydata.mytable'::regclass, 'rast', 2);</programlisting>
+            </refsection>
+
+            <refsection>
+            <title>See Also</title>
+            <para>
+        <xref linkend="RT_Retile"/>,
+        <xref linkend="RT_AddOverviewConstraints"/>,
+        <xref linkend="RT_AddRasterConstraints"/>,
+        <xref linkend="RT_Raster_Overviews"/>
+            </para>
+            </refsection>
+        </refentry>

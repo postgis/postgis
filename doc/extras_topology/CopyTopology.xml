@@ -1,0 +1,55 @@
+<refentry xml:id="CopyTopology" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>CopyTopology</refname>
+				<refpurpose>Makes a copy of a topology (nodes, edges, faces, layers and TopoGeometries) into a new schema</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>integer <function>CopyTopology</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>existing_topology_name</parameter></paramdef>
+						<paramdef><type>varchar </type> <parameter>new_name</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Creates a new topology with name <varname>new_name</varname>, with SRID and precision copied from <varname>existing_topology_name</varname>
+The nodes, edges and faces in <varname>existing_topology_name</varname> are copied into the new topology,
+as well as Layers and their associated TopoGeometries.
+		</para>
+
+                <note><para>
+The new rows in the <varname>topology.layer</varname> table contain synthetic values for schema_name, table_name and feature_column.
+This is because the TopoGeometry objects exist only as a definition and are not yet available in a user-defined table.
+		</para></note>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<para>
+Make a backup of a topology called <varname>ma_topo</varname>.
+				</para>
+				<programlisting>SELECT topology.CopyTopology('ma_topo', 'ma_topo_backup');</programlisting>
+
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+
+				<para>
+                    <xref linkend="spatial_ref_sys"/>,
+                    <xref linkend="CreateTopology"/>,
+                    <xref linkend="RenameTopology"/>
+                </para>
+			</refsection>
+		</refentry>

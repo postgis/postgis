@@ -1,0 +1,75 @@
+<refentry xml:id="ST_Length_Spheroid" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_LengthSpheroid</refname>
+
+        <refpurpose>Returns the 2D or 3D length/perimeter of a lon/lat geometry on a spheroid.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_LengthSpheroid</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_geometry</parameter></paramdef>
+			<paramdef><type>spheroid </type> <parameter>a_spheroid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+      <para>Calculates the length or perimeter of a geometry on a spheroid. This
+			is useful if the coordinates of the geometry are in
+			longitude/latitude and a length is desired without reprojection.
+			The spheroid is specified by a text value	as follows:</para>
+
+		<literallayout><![CDATA[
+SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]
+]]> </literallayout>
+		<para>For example:</para>
+		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
+
+		<para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
+		<para role="changed" conformance="2.2.0">Changed: 2.2.0 In prior versions this was called ST_Length_Spheroid and had the alias ST_3DLength_Spheroid</para>
+		<para>&Z_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_LengthSpheroid( geometry_column,
+			  'SPHEROID["GRS_1980",6378137,298.257222101]' )
+			  FROM geometry_table;
+
+SELECT ST_LengthSpheroid( geom, sph_m ) As tot_len,
+ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,
+ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2
+			  FROM (SELECT ST_GeomFromText('MULTILINESTRING((-118.584 38.374,-118.583 38.5),
+	(-71.05957 42.3589 , -71.061 43))') As geom,
+CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
+	tot_len      |    len_line1     |    len_line2
+------------------+------------------+------------------
+ 85204.5207562955 | 13986.8725229309 | 71217.6482333646
+
+ --3D
+SELECT ST_LengthSpheroid( geom, sph_m ) As tot_len,
+ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,
+ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2
+			  FROM (SELECT ST_GeomFromEWKT('MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
+	(-71.05957 42.3589 75, -71.061 43 90))') As geom,
+CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
+
+	 tot_len      |    len_line1    |    len_line2
+------------------+-----------------+------------------
+ 85204.5259107402 | 13986.876097711 | 71217.6498130292
+
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeometryN"/>, <xref linkend="ST_Length"/></para>
+	  </refsection>
+	</refentry>

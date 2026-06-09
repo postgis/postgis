@@ -1,0 +1,52 @@
+<refentry xml:id="Box2D" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>Box2D</refname>
+
+        <refpurpose>Returns a BOX2D representing the 2D extent of a geometry.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>box2d <function>Box2D</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns a <xref linkend="box2d_type"/> representing the 2D extent of the geometry.</para>
+
+        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+        <para>&curve_support;</para>
+        <para>&P_support;</para>
+        <para>&T_support;</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+<programlisting>SELECT Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)'));
+
+box2d
+---------
+BOX(1 2,5 6)
+</programlisting>
+<programlisting>
+SELECT Box2D(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));
+
+box2d
+--------
+BOX(220186.984375 150406,220288.25 150506.140625)
+</programlisting>
+      </refsection>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="Box3D"/>, <xref linkend="ST_GeomFromText"/></para>
+      </refsection>
+    </refentry>

@@ -1,0 +1,47 @@
+<refentry xml:id="ST_InterpolatePoint" xmlns="http://docbook.org/ns/docbook">
+        <refnamediv>
+        <refname>ST_InterpolatePoint</refname>
+
+        <refpurpose>Returns the interpolated measure of a geometry closest to a point.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+            <funcdef>float8 <function>ST_InterpolatePoint</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>linear_geom_with_measure</parameter></paramdef>
+            <paramdef><type>geometry </type> <parameter>point</parameter></paramdef>
+            </funcprototype>
+
+        </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+        <title>Description</title>
+
+            <para>Returns an interpolated measure value of a linear measured geometry
+            at the location closest to the given point.</para>
+
+            <note><para>Use this function only for linear geometries with an M component</para></note>
+
+            <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+
+        <para>&Z_support;</para>
+        </refsection>
+
+        <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');
+ ---------------------
+         10
+	</programlisting>
+        </refsection>
+
+        <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_AddMeasure"/>, <xref linkend="ST_LocateAlong"/>, <xref linkend="ST_LocateBetween"/></para>
+        </refsection>
+
+    </refentry>

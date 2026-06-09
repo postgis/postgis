@@ -1,0 +1,85 @@
+<refentry xml:id="RT_ST_Range4ma" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_Range4ma</refname>
+                <refpurpose>Raster processing function that calculates the range of pixel values in a neighborhood.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                    <funcdef>float8 <function>ST_Range4ma</function></funcdef>
+                    <paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
+                    <paramdef><type>text</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+                  </funcprototype>
+
+                    <funcprototype>
+                        <funcdef>double precision <function>ST_Range4ma</function></funcdef>
+                        <paramdef><type>double precision[][][]</type> <parameter>value</parameter></paramdef>
+                        <paramdef><type>integer[][] </type> <parameter>pos</parameter></paramdef>
+                        <paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Calculate the range of pixel values in a neighborhood of pixels.</para>
+
+                <para>
+                    For Variant 2, a substitution value for NODATA pixels can be specified by passing that value to userargs.
+                </para>
+
+                <note>
+                    <para>Variant 1 is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb"/>.</para>
+                </note>
+
+                <note>
+                    <para>
+                        Variant 2 is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebra"/>.
+                    </para>
+                </note>
+
+                <warning>
+                    <para>
+                        Use of Variant 1 is discouraged since <xref linkend="RT_ST_MapAlgebraFctNgb"/> has been deprecated as of 2.1.0.
+                    </para>
+                </warning>
+
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Addition of Variant 2</para>
+            </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+
+                    <programlisting>SELECT
+    rid,
+    st_value(
+        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_range4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    )
+FROM dummy_rast
+WHERE rid = 2;
+ rid | st_value
+-----+----------
+   2 |        4
+(1 row)
+                </programlisting>
+
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_MapAlgebraFctNgb"/>,
+                    <xref linkend="RT_ST_MapAlgebra"/>,
+                    <xref linkend="RT_ST_Min4ma"/>,
+                    <xref linkend="RT_ST_Max4ma"/>,
+                    <xref linkend="RT_ST_Sum4ma"/>,
+                    <xref linkend="RT_ST_Mean4ma"/>,
+                    <xref linkend="RT_ST_Distinct4ma"/>,
+                    <xref linkend="RT_ST_StdDev4ma"/>
+                </para>
+            </refsection>
+        </refentry>

@@ -1,0 +1,101 @@
+<refentry xml:id="ST_AsText" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+      <refname>ST_AsText</refname>
+      <refpurpose>Return the Well-Known Text (WKT) representation of the geometry/geography without SRID metadata.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>text <function>ST_AsText</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>text <function>ST_AsText</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits = 15</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>text <function>ST_AsText</function></funcdef>
+        <paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>text <function>ST_AsText</function></funcdef>
+        <paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits = 15</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+      <title>Description</title>
+
+      <para>Returns the OGC <link linkend="OpenGISWKBWKT">Well-Known Text</link> (WKT) representation of the geometry/geography.
+            The optional <parameter>maxdecimaldigits</parameter> argument may be used to limit the number
+      of digits after the decimal point in output ordinates (defaults to 15).</para>
+
+      <para>To perform the inverse conversion of WKT representation to PostGIS geometry
+            use <xref linkend="ST_GeomFromText"/>.</para>
+
+      <note>
+        <para>The standard OGC WKT representation does not include the SRID.
+              To include the SRID as part of the output representation, use the non-standard
+        PostGIS function <xref linkend="ST_AsEWKT"/></para>
+      </note>
+      <warning>
+      <para>The textual representation of numbers in WKT may not maintain full floating-point precision.
+            To ensure full accuracy for data storage or transport it is best to use
+            <link linkend="OpenGISWKBWKT">Well-Known Binary</link> (WKB) format
+            (see  <xref linkend="ST_AsBinary"/> and <parameter>maxdecimaldigits</parameter>).</para>
+      </warning>
+
+      <warning>
+      <para>Using the <parameter>maxdecimaldigits</parameter> parameter
+            can cause output geometry to become invalid.
+            To avoid this use <xref linkend="ST_ReducePrecision"/>
+            with a suitable gridsize first.
+            </para>
+      </warning>
+
+      <para role="availability" conformance="1.5">Availability: 1.5 - support for geography was introduced.</para>
+      <para role="enhanced" conformance="2.5">Enhanced: 2.5 - optional parameter precision introduced.</para>
+      <para>&sfs_compliant; s2.1.1.1</para>
+      <para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
+      <para>&curve_support;</para>
+      </refsection>
+
+      <refsection>
+      <title>Examples</title>
+
+      <programlisting>SELECT ST_AsText('01030000000100000005000000000000000000
+000000000000000000000000000000000000000000000000
+F03F000000000000F03F000000000000F03F000000000000F03
+F000000000000000000000000000000000000000000000000');
+
+    st_astext
+--------------------------------
+ POLYGON((0 0,0 1,1 1,1 0,0 0))
+</programlisting>
+
+<para>Full precision output is the default.</para>
+      <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'));
+    st_astext
+------------------------------
+ POINT(111.1111111 1.1111111)
+</programlisting>
+
+<para>The <parameter>maxdecimaldigits</parameter> argument can be used to limit output precision.</para>
+      <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'), 2);
+    st_astext
+--------------------
+ POINT(111.11 1.11)
+</programlisting>
+      </refsection>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+      <title>See Also</title>
+
+      <para><xref linkend="ST_AsBinary"/>, <xref linkend="ST_AsEWKB"/>, <xref linkend="ST_AsEWKT"/>, <xref linkend="ST_GeomFromText"/></para>
+      </refsection>
+  </refentry>

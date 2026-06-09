@@ -1,0 +1,163 @@
+<refentry xml:id="RT_ST_MapAlgebraFctNgb" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <refnamediv>
+                    <refname>ST_MapAlgebraFctNgb</refname>
+                    <refpurpose>1-band version: Map Algebra Nearest Neighbor using user-defined PostgreSQL function. Return a raster which values are the result of a PLPGSQL user function involving a neighborhood of values from the input raster band.</refpurpose>
+                </refnamediv>
+
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                        <funcprototype>
+                            <funcdef>raster <function>ST_MapAlgebraFctNgb</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+                            <paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>ngbwidth</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>ngbheight</parameter></paramdef>
+                            <paramdef><type>regprocedure </type> <parameter>onerastngbuserfunc</parameter></paramdef>
+                            <paramdef><type>text </type> <parameter>nodatamode</parameter></paramdef>
+                            <paramdef><type>text[] </type> <parameter>VARIADIC args</parameter></paramdef>
+                      </funcprototype>
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+
+                    <warning>
+                        <para>
+                            <xref linkend="RT_ST_MapAlgebraFctNgb"/> is deprecated as of 2.1.0. Use <xref linkend="RT_ST_MapAlgebra"/> instead.
+                        </para>
+                    </warning>
+
+                    <para>(one raster version) Return a raster which values are the result of a PLPGSQL user function involving a neighborhood of values from the input raster band. The user function takes the neighborhood of pixel values as an array of numbers, for each pixel, returns the result from the user function, replacing pixel value of currently inspected pixel with the function result. </para>
+
+                    <variablelist>
+                        <varlistentry>
+                            <term><varname>rast</varname></term>
+                            <listitem><para>Raster on which the user function is evaluated.</para></listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term><varname>band</varname></term>
+                            <listitem><para>Band number of the raster to be evaluated. Default to 1.</para></listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term><varname>pixeltype</varname></term>
+                            <listitem><para>The resulting pixel type of the output raster.  Must be one listed in <xref linkend="RT_ST_BandPixelType"/> or left out or set to NULL.  If not passed in or set to NULL, will default to the pixeltype of the <varname>rast</varname>. Results are truncated if they are larger than what is allowed for the pixeltype.</para></listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term><varname>ngbwidth</varname></term>
+                            <listitem><para>The width of the neighborhood, in cells.</para></listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term><varname>ngbheight</varname></term>
+                            <listitem><para>The height of the neighborhood, in cells.</para></listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term><varname>onerastngbuserfunc</varname></term>
+                            <listitem><para>PLPGSQL/psql user function to apply to neighborhood pixels of a single band of a raster. The first element is a 2-dimensional array of numbers representing the rectangular pixel neighborhood</para></listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term><varname>nodatamode</varname></term>
+                            <listitem>
+                                <para>Defines what value to pass to the function for a neighborhood pixel that is nodata or NULL</para>
+                                <para>'ignore': any NODATA values encountered in the neighborhood are ignored by the computation -- this flag must be sent to the user callback function, and the user function decides how to ignore it.</para>
+                                <para>'NULL': any NODATA values encountered in the neighborhood will cause the resulting pixel to be NULL -- the user callback function is skipped in this case.</para>
+                                <para>'value': any NODATA values encountered in the neighborhood are replaced by the reference pixel (the one in the center of the neighborhood). Note that if this value is NODATA, the behavior is the same as 'NULL' (for the affected neighborhood)</para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term><varname>args</varname></term>
+                            <listitem><para>Arguments to pass into the user function.</para></listitem>
+                        </varlistentry>
+                    </variablelist>
+
+                    <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+
+                    <para>Examples utilize the katrina raster loaded as a single tile described in <link xlink:href="https://gdal.org/user/drivers/raster/postgisraster.html">https://gdal.org/user/drivers/raster/postgisraster.html</link> and then prepared in the <xref linkend="RT_ST_Rescale"/> examples </para>
+
+                    <programlisting>
+--
+-- A simple 'callback' user function that averages up all the values in a neighborhood.
+--
+CREATE OR REPLACE FUNCTION rast_avg(matrix float[][], nodatamode text, variadic args text[])
+    RETURNS float AS
+    $$
+    DECLARE
+        _matrix float[][];
+        x1 integer;
+        x2 integer;
+        y1 integer;
+        y2 integer;
+        sum float;
+    BEGIN
+        _matrix := matrix;
+        sum := 0;
+        FOR x in array_lower(matrix, 1)..array_upper(matrix, 1) LOOP
+            FOR y in array_lower(matrix, 2)..array_upper(matrix, 2) LOOP
+                sum := sum + _matrix[x][y];
+            END LOOP;
+        END LOOP;
+        RETURN (sum*1.0/(array_upper(matrix,1)*array_upper(matrix,2) ))::integer ;
+    END;
+    $$
+LANGUAGE 'plpgsql' IMMUTABLE COST 1000;
+
+-- now we apply to our raster averaging pixels within 2 pixels of each other in X and Y direction --
+SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
+        'rast_avg(float[][], text, text[])'::regprocedure, 'NULL', NULL) As nn_with_border
+    FROM katrinas_rescaled
+    limit 1;
+                    </programlisting>
+
+                    <informaltable>
+                        <tgroup cols="2">
+                            <tbody>
+                                <row>
+                                    <entry>
+                                        <para>
+                                            <informalfigure>
+                                                <mediaobject>
+                                                    <imageobject>
+                                                        <imagedata fileref="images/st_mapalgebrafctngb01.png"/>
+                                                    </imageobject>
+                                                    <caption>
+                                                        <para>First band of our raster</para>
+                                                    </caption>
+                                                </mediaobject>
+                                            </informalfigure>
+                                        </para>
+                                    </entry>
+                                    <entry>
+                                        <para>
+                                            <informalfigure>
+                                                <mediaobject>
+                                                    <imageobject>
+                                                        <imagedata fileref="images/st_mapalgebrafctngb02.png"/>
+                                                    </imageobject>
+                                                    <caption>
+                                                        <para>new raster after averaging pixels within 4x4 pixels of each other</para>
+                                                    </caption>
+                                                </mediaobject>
+                                            </informalfigure>
+                                        </para>
+                                    </entry>
+                                </row>
+                            </tbody>
+                        </tgroup>
+                    </informaltable>
+                </refsection>
+
+                <!-- Optionally add a "See Also" section -->
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="RT_ST_MapAlgebraFct"/>,
+                        <xref linkend="RT_ST_MapAlgebraExpr"/>,
+                        <xref linkend="RT_ST_Rescale"/>
+                    </para>
+                </refsection>
+            </refentry>

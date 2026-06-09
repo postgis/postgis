@@ -1,0 +1,87 @@
+<refentry xml:id="ST_AsMVTGeom" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <refnamediv>
+    <refname>ST_AsMVTGeom</refname>
+
+    <refpurpose>Transforms a geometry into the coordinate space of a MVT tile.</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>geometry <function>ST_AsMVTGeom</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+        <paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>extent=4096</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>buffer=256</parameter></paramdef>
+        <paramdef choice="opt"><type>boolean </type> <parameter>clip_geom=true</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+    <para>Transforms a geometry into the coordinate space of a MVT (<link xlink:href="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</link>) tile,
+        clipping it to the tile bounds if required.
+        The geometry must be in the coordinate system of the target map (using <xref linkend="ST_Transform"/> if needed).
+        Commonly this is <link xlink:href="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</link> (SRID:3857).
+        </para>
+    <para>The function attempts to preserve geometry validity, and corrects it if needed.
+        This may cause the result geometry to collapse to a lower dimension.
+    </para>
+        <para>The rectangular bounds of the tile in the target map coordinate space must be provided,
+        so the geometry can be transformed, and clipped if required.
+        The bounds can be generated using <xref linkend="ST_TileEnvelope"/>.
+        </para>
+        <para>
+        This function is used to convert geometry into the tile coordinate space required by <xref linkend="ST_AsMVT"/>.
+        </para>
+
+    <para><varname>geom</varname> is the geometry to transform, in the coordinate system of the target map.</para>
+    <para><varname>bounds</varname> is the rectangular bounds of the tile in map coordinate space, with no buffer.</para>
+    <para><varname>extent</varname> is the tile extent size in tile coordinate space as defined by the <link xlink:href="https://www.mapbox.com/vector-tiles/specification/">MVT specification</link>. Defaults to 4096.</para>
+    <para><varname>buffer</varname> is the buffer size in tile coordinate space for geometry clippig. Defaults to 256.</para>
+    <para><varname>clip_geom</varname> is a boolean to control if geometries are clipped or encoded as-is. Defaults to true.</para>
+
+    <para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
+
+        <note>
+            <para>From 3.0, Wagyu can be chosen at configure time to clip and validate MVT polygons. This library is faster and produces more correct results than the GEOS default, but it might drop small polygons.</para>
+        </note>
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+    <programlisting>
+SELECT ST_AsText(ST_AsMVTGeom(
+  ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
+  ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
+  4096, 0, false));
+                              st_astext
+--------------------------------------------------------------------
+ MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))
+    </programlisting>
+
+    <para>Canonical example for a Web Mercator tile using a computed tile bounds to query and clip geometry. This assumes the data.geom column has srid of 4326.
+    </para>
+    <programlisting><![CDATA[
+
+SELECT ST_AsMVTGeom(
+            ST_Transform( geom, 3857 ),
+            ST_TileEnvelope(12, 513, 412), extent => 4096, buffer => 64) AS geom
+  FROM data
+  WHERE geom && ST_Transform(ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096)),4326)
+
+
+]]></programlisting>
+
+    </refsection>
+
+    <refsection>
+        <title>See Also</title>
+            <para>
+                <xref linkend="ST_AsMVT"/>,
+                <xref linkend="ST_TileEnvelope"/>,
+                <xref linkend="PostGIS_Wagyu_Version"/>
+            </para>
+        </refsection>
+  </refentry>

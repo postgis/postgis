@@ -1,0 +1,21 @@
+<refentry xml:id="ST_NumInteriorRing" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_NumInteriorRing</refname>
+		<refpurpose>Returns the number of interior rings (holes) of a Polygon. Aias for ST_NumInteriorRings</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_NumInteriorRing</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_NumInteriorRings"/>, <xref linkend="ST_InteriorRingN"/></para>
+	  </refsection>
+	</refentry>

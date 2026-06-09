@@ -1,0 +1,52 @@
+<refentry xml:id="ST_ForceCurve" xmlns="http://docbook.org/ns/docbook">
+		<refnamediv>
+			<refname>ST_ForceCurve</refname>
+
+			<refpurpose>Upcast a geometry into its curved type, if applicable.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>geometry
+						<function>ST_ForceCurve</function></funcdef>
+						<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+                        Turns a geometry into its curved representation, if applicable:
+                        lines become compoundcurves, multilines become multicurves
+                        polygons become curvepolygons multipolygons become multisurfaces. If the geometry input is already a curved representation returns back same as input.
+                        </para>
+
+		        <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+			<para>&Z_support;</para>
+				<!-- Optionally mention Circular String Support -->
+				<para>&curve_support;</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_AsText(
+  ST_ForceCurve(
+	'POLYGON((0 0 2, 5 0 2, 0 5 2, 0 0 2),(1 1 2, 1 3 2, 3 1 2, 1 1 2))'::geometry
+  )
+);
+                              st_astext
+----------------------------------------------------------------------
+ CURVEPOLYGON Z ((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))
+(1 row)</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_LineToCurve"/></para>
+		</refsection>
+	</refentry>

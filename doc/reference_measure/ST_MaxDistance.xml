@@ -1,0 +1,60 @@
+<refentry xml:id="ST_MaxDistance" xmlns="http://docbook.org/ns/docbook">
+  <refnamediv>
+    <refname>ST_MaxDistance</refname>
+
+    <refpurpose>Returns the 2D largest distance between two geometries in
+		projected units.</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>float <function>ST_MaxDistance</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsection>
+    <title>Description</title>
+
+    <!-- optionally mention that this function uses indexes if appropriate -->
+    <para>Returns the 2-dimensional maximum distance between two geometries, in  projected units.
+    The maximum distance always occurs between two vertices.
+    This is the length of the line returned by <xref linkend="ST_LongestLine"/>.
+    </para>
+    <para>If g1 and g2 are the same geometry, returns the distance between
+    the two vertices farthest apart in that geometry.
+    </para>
+
+	<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
+  </refsection>
+  <refsection>
+    <title>Examples</title>
+
+     <para>Maximum distance between a point and lines.</para>
+		<programlisting>SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
+-----------------
+ 2
+
+SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )'::geometry);
+------------------
+ 2.82842712474619
+</programlisting>
+
+     <para>Maximum distance between vertices of a single geometry.</para>
+<programlisting>
+SELECT ST_MaxDistance('POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry,
+                      'POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry);
+------------------
+ 14.142135623730951
+</programlisting>
+  </refsection>
+
+  <!-- Optionally add a "See Also" section -->
+  <refsection>
+    <title>See Also</title>
+<para><xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_DFullyWithin"/></para>
+  </refsection>
+</refentry>

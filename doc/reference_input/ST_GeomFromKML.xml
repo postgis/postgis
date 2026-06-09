@@ -1,0 +1,55 @@
+<refentry xml:id="ST_GeomFromKML" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+	  <refnamediv>
+		<refname>ST_GeomFromKML</refname>
+		<refpurpose>Takes as input KML representation of geometry and outputs a PostGIS geometry object</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromKML</function></funcdef>
+			<paramdef><type>text </type> <parameter>geomkml</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Constructs a PostGIS ST_Geometry object from the OGC KML representation.</para>
+		<para>ST_GeomFromKML works only for KML Geometry fragments. It throws an error if you try to use it on a whole KML document.</para>
+		<para>
+			OGC KML versions supported:
+			<itemizedlist>
+				<listitem>
+				  <para>KML 2.2.0 Namespace</para>
+				</listitem>
+			</itemizedlist>
+			OGC KML standards, cf: <link xlink:href="http://www.opengeospatial.org/standards/kml">http://www.opengeospatial.org/standards/kml</link>:
+		</para>
+
+		<para role="availability" conformance="1.5">Availability: 1.5, requires libxml2 2.6+</para>
+		<para>&Z_support;</para>
+		<note>
+			<para>ST_GeomFromKML function not support SQL/MM curves geometries.</para>
+		</note>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples - A single geometry with srsName</title>
+		<programlisting><![CDATA[
+SELECT ST_GeomFromKML($$
+    <LineString>
+        <coordinates>-71.1663,42.2614
+            -71.1667,42.2616</coordinates>
+    </LineString>
+$$);
+]]>
+        </programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="installation_configuration"/>, <xref linkend="ST_AsKML"/></para>
+	  </refsection>
+	</refentry>

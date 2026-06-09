@@ -1,0 +1,48 @@
+<refentry xml:id="PostGIS_PROJ_Version" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>PostGIS_PROJ_Version</refname>
+
+		<refpurpose>Returns the version number of the PROJ4
+		library.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_PROJ_Version</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the version number of the PROJ library and some configuration options of proj.</para>
+
+        <para role="enhanced" conformance="3.4.0">Enhanced: 3.4.0 now includes NETWORK_ENABLED, URL_ENDPOINT and DATABASE_PATH of proj.db location </para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_PROJ_Version();
+  postgis_proj_version
+-------------------------
+7.2.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+<xref linkend="PostGIS_PROJ_Compiled_Version"/>,
+<xref linkend="PostGIS_Full_Version"/>,
+<xref linkend="PostGIS_GEOS_Version"/>,
+<xref linkend="PostGIS_Lib_Version"/>,
+<xref linkend="PostGIS_LibXML_Version"/>,
+<xref linkend="PostGIS_Version"/></para>
+	  </refsection>
+	</refentry>

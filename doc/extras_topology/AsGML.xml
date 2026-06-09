@@ -1,0 +1,174 @@
+<refentry xml:id="AsGML" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+		    <refnamediv>
+				<refname>AsGML</refname>
+
+				<refpurpose>Returns the GML representation of a topogeometry.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>nsprefix_in</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>regclass </type> <parameter>visitedTable</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>regclass </type> <parameter>visitedTable</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>nsprefix</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>nsprefix_in</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>nsprefix_in</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+                        <paramdef><type>regclass </type> <parameter>visitedTable</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>nsprefix_in</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+                        <paramdef><type>regclass </type> <parameter>visitedTable</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>idprefix</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsGML</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>nsprefix_in</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+                        <paramdef><type>regclass </type> <parameter>visitedTable</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>idprefix</parameter></paramdef>
+                        <paramdef><type>int </type> <parameter>gmlversion</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Returns the GML representation of a topogeometry in version GML3 format. If no <varname>nsprefix_in</varname> is specified then <varname>gml</varname> is used. Pass in an empty string for nsprefix to get a non-qualified name space. The precision (default: 15) and options (default 1) parameters, if given, are passed untouched to the underlying call to ST_AsGML.</para>
+
+		<para>
+The <varname>visitedTable</varname> parameter, if given, is used for keeping track of the visited Node and Edge elements so to use cross-references (xlink:xref) rather than duplicating definitions. The table is expected to have (at least) two integer fields: 'element_type' and 'element_id'. The calling user must have both read and write privileges on the given table.
+For best performance, an index should be defined on
+<varname>element_type</varname> and <varname>element_id</varname>,
+in that order. Such index would be created automatically by adding a unique
+constraint to the fields. Example:
+<programlisting>
+CREATE TABLE visited (
+  element_type integer, element_id integer,
+  unique(element_type, element_id)
+);
+</programlisting>
+		</para>
+
+		<para>The <varname>idprefix</varname> parameter, if given, will be prepended to Edge and Node tag identifiers.</para>
+
+		<para>The <varname>gmlver</varname> parameter, if given, will be passed to the underlying ST_AsGML. Defaults to 3.</para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<para>This uses the topo geometry we created in <xref linkend="CreateTopoGeom"/></para>
+				<programlisting><![CDATA[
+SELECT topology.AsGML(topo) As rdgml
+  FROM ri.roads
+  WHERE road_name = 'Unknown';
+
+-- rdgml--
+<gml:TopoCurve>
+    <gml:directedEdge>
+        <gml:Edge gml:id="E1">
+            <gml:directedNode orientation="-">
+                <gml:Node gml:id="N1"/>
+            </gml:directedNode>
+            <gml:directedNode></gml:directedNode>
+            <gml:curveProperty>
+                <gml:Curve srsName="urn:ogc:def:crs:EPSG::3438">
+                    <gml:segments>
+                        <gml:LineStringSegment>
+                            <gml:posList srsDimension="2">384744 236928 384750 236923 384769 236911 384799 236895 384811 236890
+                            384833 236884 384844 236882 384866 236881 384879 236883 384954 236898 385087 236932 385117 236938
+                            385167 236938 385203 236941 385224 236946 385233 236950 385241 236956 385254 236971
+                            385260 236979 385268 236999 385273 237018 385273 237037 385271 237047 385267 237057 385225 237125
+                            385210 237144 385192 237161 385167 237192 385162 237202 385159 237214 385159 237227 385162 237241
+                            385166 237256 385196 237324 385209 237345 385234 237375 385237 237383 385238 237399 385236 237407
+                            385227 237419 385213 237430 385193 237439 385174 237451 385170 237455 385169 237460 385171 237475
+                            385181 237503 385190 237521 385200 237533 385206 237538 385213 237541 385221 237542 385235 237540 385242 237541
+                            385249 237544 385260 237555 385270 237570 385289 237584 385292 237589 385291 237596 385284 237630</gml:posList>
+                        </gml:LineStringSegment>
+                    </gml:segments>
+                </gml:Curve>
+            </gml:curveProperty>
+        </gml:Edge>
+    </gml:directedEdge>
+</gml:TopoCurve>
+]]></programlisting>
+<para>Same exercise as previous without namespace</para>
+<programlisting><![CDATA[
+SELECT topology.AsGML(topo,'') As rdgml
+  FROM ri.roads
+  WHERE road_name = 'Unknown';
+
+-- rdgml--
+<TopoCurve>
+    <directedEdge>
+        <Edge id="E1">
+            <directedNode orientation="-">
+                <Node id="N1"/>
+            </directedNode>
+            <directedNode></directedNode>
+            <curveProperty>
+                <Curve srsName="urn:ogc:def:crs:EPSG::3438">
+                    <segments>
+                        <LineStringSegment>
+                            <posList srsDimension="2">384744 236928 384750 236923 384769 236911 384799 236895 384811 236890
+                            384833 236884 384844 236882 384866 236881 384879 236883 384954 236898 385087 236932 385117 236938
+                            385167 236938 385203 236941 385224 236946 385233 236950 385241 236956 385254 236971
+                            385260 236979 385268 236999 385273 237018 385273 237037 385271 237047 385267 237057 385225 237125
+                            385210 237144 385192 237161 385167 237192 385162 237202 385159 237214 385159 237227 385162 237241
+                            385166 237256 385196 237324 385209 237345 385234 237375 385237 237383 385238 237399 385236 237407
+                            385227 237419 385213 237430 385193 237439 385174 237451 385170 237455 385169 237460 385171 237475
+                            385181 237503 385190 237521 385200 237533 385206 237538 385213 237541 385221 237542 385235 237540 385242 237541
+                            385249 237544 385260 237555 385270 237570 385289 237584 385292 237589 385291 237596 385284 237630</posList>
+                         </LineStringSegment>
+                    </segments>
+                </Curve>
+            </curveProperty>
+        </Edge>
+    </directedEdge>
+</TopoCurve>
+]]></programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="CreateTopoGeom"/>, <xref linkend="ST_CreateTopoGeo"/></para>
+			</refsection>
+	  </refentry>

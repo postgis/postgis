@@ -1,0 +1,44 @@
+<refentry xml:id="clearTopoGeom" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>clearTopoGeom</refname>
+
+				<refpurpose>Clears the content of a topo geometry.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>topogeometry <function>clearTopoGeom</function></funcdef>
+					<paramdef><type>topogeometry </type> <parameter>topogeom</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Clears the content a <xref linkend="topogeometry"/>
+turning it into an empty one. Mostly useful in conjunction with <xref linkend="toTopoGeom"/> to replace the shape of existing
+objects and any dependent object in higher hierarchical levels.
+                </para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="2.1">Availability: 2.1</para>
+			</refsection>
+			<refsection>
+				<title>Examples</title>
+        <programlisting>
+-- Shrink all TopoGeometry polygons by 10 meters
+UPDATE nei_topo SET topo = toTopoGeom(ST_Buffer(topo, -10), clearTopoGeom(topo), 0);
+				</programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+        <para>
+<xref linkend="toTopoGeom"/>
+        </para>
+			</refsection>
+		</refentry>

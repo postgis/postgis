@@ -1,0 +1,47 @@
+<refentry xml:id="ST_AsGeobuf" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <refnamediv>
+    <refname>ST_AsGeobuf</refname>
+
+    <refpurpose>Return a Geobuf representation of a set of rows.</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+    <funcsynopsis>
+    <funcprototype>
+        <funcdef>bytea <function>ST_AsGeobuf</function></funcdef>
+        <paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>bytea <function>ST_AsGeobuf</function></funcdef>
+        <paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+    <para>
+      Return a Geobuf representation (<link xlink:href="https://github.com/mapbox/geobuf">https://github.com/mapbox/geobuf</link>) of a set of rows corresponding to a FeatureCollection.
+      Every input geometry is analyzed to determine maximum precision for optimal storage.
+      Note that Geobuf in its current form cannot be streamed so the full output will be assembled in memory.
+    </para>
+
+    <para><varname>row</varname> row data with at least a geometry column.</para>
+    <para><varname>geom_name</varname> is the name of the geometry column in the row data. If NULL it will default to the first found geometry column.</para>
+
+    <para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+    <programlisting>SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')
+    FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') AS geom) AS q;
+ st_asgeobuf
+----------------------------------
+ GAAiEAoOCgwIBBoIAAAAAgIAAAE=
+
+
+    </programlisting>
+    </refsection>
+  </refentry>

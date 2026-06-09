@@ -1,0 +1,40 @@
+<refentry xml:id="DropTopoGeometryColumn" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>DropTopoGeometryColumn</refname>
+
+				<refpurpose>Drops the topogeometry column from the table named <varname>table_name</varname> in schema <varname>schema_name</varname> and unregisters the columns from topology.layer table.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>text <function>DropTopoGeometryColumn</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>schema_name</parameter></paramdef>
+					<paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef>
+					<paramdef><type>varchar </type> <parameter>column_name</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Drops the topogeometry column from the table named <varname>table_name</varname> in schema <varname>schema_name</varname> and unregisters the columns from topology.layer table. Returns summary
+                of drop status.  NOTE: it first sets all values to NULL before dropping to bypass referential integrity checks.</para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="1.1">Availability: 1.1</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT topology.DropTopoGeometryColumn('ma_topo', 'parcel_topo', 'topo');</programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddTopoGeometryColumn"/></para>
+			</refsection>
+		</refentry>

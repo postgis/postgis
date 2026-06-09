@@ -1,0 +1,37 @@
+<refentry xml:id="ST_AlphaShape" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <refnamediv>
+                <refname>ST_AlphaShape</refname>
+
+                <refpurpose>Computes an Alpha-shape enclosing a geometry</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>ST_AlphaShape</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                        <paramdef choice="opt"><type>float </type> <parameter>alpha</parameter></paramdef>
+                        <paramdef choice="opt"><type>boolean </type> <parameter>allow_holes = false</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <warning>
+                    <para>
+                        <xref linkend="ST_AlphaShape"/> is deprecated as of 3.5.0. Use <xref linkend="CG_AlphaShape"/> instead.
+                    </para>
+                </warning>
+
+                <para>Computes the
+                <link xlink:href="https://en.wikipedia.org/wiki/Alpha_shape">Alpha-Shape</link>
+                of the points in a geometry.
+                An alpha-shape is a (usually) concave polygonal geometry which contains all the vertices of the input,
+                and whose vertices are a subset of the input vertices.
+                An alpha-shape provides a closer fit to the shape of the input
+                than the shape produced by the <link linkend="ST_ConvexHull">convex hull</link>.
+            </para>
+        </refsection>
+    </refentry>

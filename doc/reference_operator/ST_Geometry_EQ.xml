@@ -1,0 +1,124 @@
+<refentry xml:id="ST_Geometry_EQ" xmlns="http://docbook.org/ns/docbook">
+		  <refnamediv>
+			<refname>&#61;</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if the coordinates and coordinate order geometry/geography A
+			are the same as the coordinates and coordinate order of geometry/geography B.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<!-- TODO: Ideally, it would be nice if this could be reordered to
+				"boolean (geometry A = geometry B)" instead of
+				"boolean =( geometry A, geometry B)" -->
+				<funcdef>boolean <function>&#61;</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+
+			  <funcprototype>
+				<funcdef>boolean <function>&#61;</function></funcdef>
+
+					<paramdef>
+					  <type>geography </type>
+
+					  <parameter>A</parameter>
+					</paramdef>
+
+					<paramdef>
+					  <type>geography </type>
+
+					  <parameter>B</parameter>
+					</paramdef>
+				 </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&#61;</varname> operator returns <varname>TRUE</varname> if the coordinates and coordinate order geometry/geography A
+			are the same as the coordinates and coordinate order of geometry/geography B.  PostgreSQL uses the =, &lt;, and &gt; operators defined for geometries to
+			perform internal orderings and comparison of geometries (ie. in a GROUP BY or ORDER BY clause).</para>
+
+			<note>
+			  <para>Only geometry/geography that are exactly equal in all respects,
+          with the same coordinates, in the same order, are considered
+          equal by this operator. For "spatial equality", that ignores
+          things like coordinate order, and can detect features that
+          cover the same spatial area with different representations,
+          use <xref linkend="ST_OrderingEquals"/>
+          or <xref linkend="ST_Equals"/></para>
+			</note>
+
+			<caution><para>This operand will NOT make use of any indexes that may be available on the
+				geometries. For an index assisted exact equality test, combine &#61; with &amp;&amp;.</para></caution>
+
+
+			<para role="changed" conformance="2.4.0">Changed: 2.4.0, in prior versions this was bounding box equality not a geometric equality. If you need bounding box equality, use <xref linkend="ST_Geometry_Same"/> instead.</para>
+
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting><![CDATA[
+SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::geometry;
+ ?column?
+----------
+ f
+(1 row)
+
+SELECT ST_AsText(column1)
+FROM ( VALUES
+	('LINESTRING(0 0, 1 1)'::geometry),
+	('LINESTRING(1 1, 0 0)'::geometry)) AS foo;
+	  st_astext
+---------------------
+ LINESTRING(0 0,1 1)
+ LINESTRING(1 1,0 0)
+(2 rows)
+
+-- Note: the GROUP BY uses the "=" to compare for geometry equivalency.
+SELECT ST_AsText(column1)
+FROM ( VALUES
+	('LINESTRING(0 0, 1 1)'::geometry),
+	('LINESTRING(1 1, 0 0)'::geometry)) AS foo
+GROUP BY column1;
+      st_astext
+---------------------
+ LINESTRING(0 0,1 1)
+ LINESTRING(1 1,0 0)
+(2 rows)
+
+-- In versions prior to 2.0, this used to return true --
+ SELECT ST_GeomFromText('POINT(1707296.37 4820536.77)') =
+	ST_GeomFromText('POINT(1707296.27 4820536.87)') As pt_intersect;
+
+--pt_intersect --
+f
+
+]]></programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_Equals"/>, <xref linkend="ST_OrderingEquals"/>, <xref linkend="ST_Geometry_Same"/>
+			<!--, <xref linkend="ST_Geometry_LT" />, <xref linkend="ST_Geometry_GT" /> --></para>
+		  </refsection>
+		</refentry>

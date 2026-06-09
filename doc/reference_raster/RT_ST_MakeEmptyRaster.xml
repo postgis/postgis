@@ -1,0 +1,80 @@
+<refentry xml:id="RT_ST_MakeEmptyRaster" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_MakeEmptyRaster</refname>
+                <refpurpose>Returns an empty raster (having no bands) of given dimensions (width &amp; height), upperleft X and Y, pixel size and rotation (scalex, scaley, skewx &amp; skewy) and reference system (srid).
+                If a raster is passed in, returns a new raster with the same size, alignment and SRID.  If srid is left out, the spatial ref is set to unknown (0).</refpurpose>
+            </refnamediv>
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                    <funcdef>raster <function>ST_MakeEmptyRaster</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>raster <function>ST_MakeEmptyRaster</function></funcdef>
+                    <paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+                    <paramdef><type>float8 </type> <parameter>upperleftx</parameter></paramdef>
+                    <paramdef><type>float8 </type> <parameter>upperlefty</parameter></paramdef>
+                    <paramdef><type>float8 </type> <parameter>scalex</parameter></paramdef>
+                    <paramdef><type>float8 </type> <parameter>scaley</parameter></paramdef>
+                    <paramdef><type>float8 </type> <parameter>skewx</parameter></paramdef>
+                    <paramdef><type>float8 </type> <parameter>skewy</parameter></paramdef>
+                    <paramdef choice="opt"><type>integer </type> <parameter>srid=unknown</parameter></paramdef>
+                  </funcprototype>
+
+                  <funcprototype>
+                    <funcdef>raster <function>ST_MakeEmptyRaster</function></funcdef>
+                    <paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+                    <paramdef><type>float8  </type> <parameter>upperleftx</parameter></paramdef>
+                    <paramdef><type>float8  </type> <parameter>upperlefty</parameter></paramdef>
+                    <paramdef><type>float8  </type> <parameter>pixelsize</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+            <refsection>
+                <title>Description</title>
+                <para>Returns an empty raster (having no band) of given dimensions (width &amp; height) and georeferenced in spatial (or world) coordinates with upper left X (upperleftx), upper left Y (upperlefty),
+                pixel size and rotation (scalex, scaley, skewx &amp; skewy) and reference system (srid).</para>
+
+                <para>The last version use a single parameter to specify the pixel size (pixelsize). scalex is set to this argument and scaley is set to the negative value of this argument. skewx and skewy are set to 0. </para>
+
+                <para>If an existing raster is passed in, it returns a new raster with the same meta data settings (without the bands). </para>
+
+                <para>If no srid is specified it defaults to 0. After you create an empty raster you probably want to add bands to it and maybe edit it. Refer to <xref linkend="RT_ST_AddBand"/> to define bands and <xref linkend="RT_ST_SetValue"/> to set initial pixel values.</para>
+
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+
+                    <programlisting>
+INSERT INTO dummy_rast(rid,rast)
+VALUES(3, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) );
+
+--use an existing raster as template for new raster
+INSERT INTO dummy_rast(rid,rast)
+SELECT 4, ST_MakeEmptyRaster(rast)
+FROM dummy_rast WHERE rid = 3;
+
+-- output meta data of rasters we just added
+SELECT rid, (md).*
+FROM (SELECT rid, ST_MetaData(rast) As md
+    FROM dummy_rast
+    WHERE rid IN(3,4)) As foo;
+
+-- output --
+ rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
+-----+------------+------------+-------+--------+------------+------------+-------+-------+------+----------
+   3 |     0.0005 |     0.0005 |   100 |    100 |          1 |          1 |    0  |     0 | 4326 |        0
+   4 |     0.0005 |     0.0005 |   100 |    100 |          1 |          1 |    0  |     0 | 4326 |        0
+                </programlisting>
+
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_AddBand"/>, <xref linkend="RT_ST_MetaData"/>, <xref linkend="RT_ST_ScaleX"/>, <xref linkend="RT_ST_ScaleY"/>, <xref linkend="RT_ST_SetValue"/>, <xref linkend="RT_ST_SkewX"/>, , <xref linkend="RT_ST_SkewY"/></para>
+            </refsection>
+        </refentry>

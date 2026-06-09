@@ -1,0 +1,67 @@
+<refentry xml:id="ST_SetEffectiveArea" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_SetEffectiveArea</refname>
+        <refpurpose>
+            Sets the effective area for each vertex, using the Visvalingam-Whyatt algorithm.
+        </refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_SetEffectiveArea</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+            <paramdef><type>float</type> <parameter>threshold = 0</parameter></paramdef>
+            <paramdef><type>integer</type> <parameter>set_area = 1</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>
+            Sets the effective area for each vertex, using the Visvalingam-Whyatt algorithm.
+            The effective area is stored as the M-value of the vertex.
+            If the optional "threshold" parameter is used, a simplified geometry will be returned, containing only vertices with an effective area
+            greater than or equal to the threshold value.
+            </para><para>
+            This function can be used for server-side simplification when a threshold is specified.  Another option is to use a threshold value of zero.
+            In this case, the full geometry will be returned with effective areas as M-values, which can be used by the client to simplify very quickly.
+            </para><para>
+            Will actually do something only with
+            (multi)lines and (multi)polygons but you can safely call it with
+            any kind of geometry. Since simplification occurs on a
+            object-by-object basis you can also feed a GeometryCollection to
+            this function.
+            </para>
+
+
+        <note><para>Note that returned geometry might lose its
+                simplicity (see <xref linkend="ST_IsSimple"/>)</para></note>
+        <note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology"/>) to preserve topology.</para></note>
+        <note><para>The output geometry will lose all previous information in the M-values</para></note>
+        <note><para>This function handles 3D and the third dimension will affect the effective area</para></note>
+        <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+      </refsection>
+
+          <refsection>
+            <title>Examples</title>
+            <para>
+                Calculating the effective area of a LineString.  Because we use a threshold value of zero, all vertices in the input geometry are returned.
+            </para>
+                <programlisting>
+
+select ST_AsText(ST_SetEffectiveArea(geom)) all_pts, ST_AsText(ST_SetEffectiveArea(geom,30) ) thrshld_30
+FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As foo;
+-result
+ all_pts | thrshld_30
+-----------+-------------------+
+LINESTRING M (5 2 3.40282346638529e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.40282346638529e+38) | LINESTRING M (5 2 3.40282346638529e+38,7 25 49.5,10 10 3.40282346638529e+38)
+
+                </programlisting>
+          </refsection>
+          <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_SimplifyVW"/></para>
+          </refsection>
+    </refentry>

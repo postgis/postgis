@@ -1,0 +1,38 @@
+<refentry xml:id="Postgis_Install_History" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>Postgis_Install_History</refname>
+				<refpurpose>Creates a table that will hold some interesting values for managing history tables.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>void <function>Postgis_Install_History</function></funcdef>
+						<paramdef></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Creates a table that will hold some interesting values for managing history tables. Creates a table called <varname>historic_information</varname></para>
+
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+
+				<programlisting>SELECT postgis_install_history();</programlisting>
+
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+			</refsection>
+		</refentry>

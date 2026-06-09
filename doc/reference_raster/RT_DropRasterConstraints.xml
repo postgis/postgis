@@ -1,0 +1,153 @@
+<refentry xml:id="RT_DropRasterConstraints" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>DropRasterConstraints</refname>
+
+        <refpurpose>Drops PostGIS raster constraints that refer to a raster table column. Useful if you need to reload data or update your raster column data.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>DropRasterConstraints</function></funcdef>
+            <paramdef><type>name </type>
+            <parameter>rasttable</parameter></paramdef>
+
+            <paramdef><type>name </type>
+            <parameter>rastcolumn</parameter></paramdef>
+
+            <paramdef><type>boolean </type>
+            <parameter>srid</parameter></paramdef>
+
+            <paramdef><type>boolean </type>
+            <parameter>scale_x</parameter></paramdef>
+
+            <paramdef><type>boolean </type>
+            <parameter>scale_y</parameter></paramdef>
+
+            <paramdef><type>boolean </type>
+            <parameter>blocksize_x</parameter></paramdef>
+
+            <paramdef><type>boolean </type>
+            <parameter>blocksize_y</parameter></paramdef>
+
+            <paramdef><type>boolean </type>
+            <parameter>same_alignment</parameter></paramdef>
+
+            <paramdef><type>boolean </type>
+            <parameter>regular_blocking</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>num_bands=true</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>pixel_types=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>nodata_values=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+                <parameter>out_db=true</parameter>
+            </paramdef>
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>extent=true</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>boolean <function>DropRasterConstraints</function></funcdef>
+            <paramdef><type>name </type>
+            <parameter>rastschema</parameter></paramdef>
+
+            <paramdef><type>name </type>
+            <parameter>rasttable</parameter></paramdef>
+
+            <paramdef><type>name </type>
+            <parameter>rastcolumn</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>srid=true</parameter></paramdef>
+
+            <paramdef><type>boolean </type>
+            <parameter>scale_x=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>scale_y=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>blocksize_x=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>blocksize_y=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>same_alignment=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>regular_blocking=false</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>num_bands=true</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>pixel_types=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>nodata_values=true</parameter></paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+                <parameter>out_db=true</parameter>
+            </paramdef>
+
+            <paramdef choice="opt"><type>boolean </type>
+            <parameter>extent=true</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>boolean <function>DropRasterConstraints</function></funcdef>
+            <paramdef><type>name </type>
+            <parameter>rastschema</parameter></paramdef>
+
+            <paramdef><type>name </type>
+            <parameter>rasttable</parameter></paramdef>
+
+            <paramdef><type>name </type>
+            <parameter>rastcolumn</parameter></paramdef>
+            <paramdef><type>text[] </type>
+            <parameter>constraints</parameter></paramdef>
+
+          </funcprototype>
+
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Drops PostGIS raster constraints that refer to a raster table column that were added by <xref linkend="RT_AddRasterConstraints"/>. Useful if you need to load more data or update your raster column data.
+        You do not need to do this if you want to get rid of a raster table or a raster column. </para>
+        <para>To drop a raster table use the standard <programlisting>DROP TABLE mytable</programlisting></para>
+        <para>To drop just a  raster column and leave the rest of the table, use standard SQL <programlisting>ALTER TABLE mytable DROP COLUMN rast</programlisting></para>
+        <para>the table will disappear from the <varname>raster_columns</varname> catalog if the column or table is dropped.  However if only the constraints are dropped, the
+        raster column will still be listed in the <varname>raster_columns</varname> catalog, but there will be no other information about it aside from the column name and table.</para>
+        <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+      </refsection>
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>
+SELECT DropRasterConstraints ('myrasters','rast');
+----RESULT output ---
+t
+
+-- verify change in raster_columns --
+SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types, nodata_values
+    FROM raster_columns
+    WHERE r_table_name = 'myrasters';
+
+ srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | pixel_types| nodata_values
+------+---------+---------+-------------+-------------+-----------+-------------+---------------
+    0 |         |         |             |             |           |             |
+        </programlisting>
+      </refsection>
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="RT_AddRasterConstraints"/></para>
+      </refsection>
+    </refentry>

@@ -1,0 +1,44 @@
+<refentry xml:id="RT_ST_Roughness" xmlns="http://docbook.org/ns/docbook">
+                <refnamediv>
+                    <refname>ST_Roughness</refname>
+                    <refpurpose>Returns a raster with the calculated "roughness" of a DEM.</refpurpose>
+                </refnamediv>
+
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Roughness</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                            <paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>pixeltype="32BF"</parameter> </paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter> interpolate_nodata=FALSE </parameter> </paramdef>
+                        </funcprototype>
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+                <para>Calculates the "roughness" of a DEM, by subtracting the maximum from the minimum for a given area.</para>
+                    <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+                    <programlisting>
+-- needs examples
+                    </programlisting>
+              </refsection>
+
+              <refsection>
+                <title>See Also</title>
+                    <para>
+                        <xref linkend="RT_ST_MapAlgebra"/>,
+                        <xref linkend="RT_ST_TRI"/>,
+                        <xref linkend="RT_ST_TPI"/>,
+                        <xref linkend="RT_ST_Slope"/>,
+                        <xref linkend="RT_ST_HillShade"/>,
+                        <xref linkend="RT_ST_Aspect"/>
+                    </para>
+                </refsection>
+            </refentry>

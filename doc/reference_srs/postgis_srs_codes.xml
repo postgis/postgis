@@ -1,0 +1,54 @@
+<refentry xml:id="postgis_srs_codes" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+    <refname>postgis_srs_codes</refname>
+
+    <refpurpose>Return the list of SRS codes associated with the given authority.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>setof text <function>postgis_srs_codes</function></funcdef>
+                <paramdef><type>text </type> <parameter>auth_name</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+      <para>Returns a set of all <varname>auth_srid</varname> for the given <varname>auth_name</varname>.</para>
+
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
+      <para>Proj version 6+</para>
+
+    </refsection>
+
+    <refsection>
+      <title>Examples</title>
+      <para>List the first ten codes associated with the EPSG authority.</para>
+      <programlisting>
+SELECT * FROM postgis_srs_codes('EPSG') LIMIT 10;
+
+ postgis_srs_codes
+-------------------
+ 2000
+ 20004
+ 20005
+ 20006
+ 20007
+ 20008
+ 20009
+ 2001
+ 20010
+ 20011
+    </programlisting>
+    </refsection>
+
+    <!-- Optionally add a "See Also" section -->
+    <refsection>
+    <title>See Also</title>
+    <para><xref linkend="postgis_srs"/>, <xref linkend="postgis_srs_all"/>, <xref linkend="postgis_srs_search"/></para>
+    </refsection>
+
+  </refentry>

@@ -1,0 +1,47 @@
+<refentry xml:id="ST_MakeEnvelope" xmlns="http://docbook.org/ns/docbook">
+        <refnamediv>
+        <refname>ST_MakeEnvelope</refname>
+
+        <refpurpose>Creates a rectangular Polygon from minimum and maximum coordinates.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_MakeEnvelope</function></funcdef>
+            <paramdef><type>float</type> <parameter>xmin</parameter></paramdef>
+            <paramdef><type>float</type> <parameter>ymin</parameter></paramdef>
+            <paramdef><type>float</type> <parameter>xmax</parameter></paramdef>
+            <paramdef><type>float</type> <parameter>ymax</parameter></paramdef>
+            <paramdef choice="opt"><type>integer</type> <parameter>srid=unknown</parameter></paramdef>
+          </funcprototype>
+         </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para>Creates a rectangular Polygon from the minimum and maximum values for X and Y.
+            Input values must be in the spatial reference system specified by the SRID.
+            If no SRID is specified the unknown spatial reference system (SRID 0) is used.</para>
+
+            <para role="availability" conformance="1.5">Availability: 1.5</para>
+            <para role="enhanced" conformance="2.0">Enhanced: 2.0: Ability to specify an envelope without specifying an SRID was introduced.</para>
+
+        </refsection>
+
+        <refsection>
+        <title>Example: Building a bounding box polygon</title>
+         <programlisting>
+SELECT ST_AsText( ST_MakeEnvelope(10, 10, 11, 11, 4326) );
+
+st_asewkt
+-----------
+POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))
+</programlisting>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_MakePoint"/>, <xref linkend="ST_MakeLine"/>, <xref linkend="ST_MakePolygon"/>, <xref linkend="ST_TileEnvelope"/></para>
+        </refsection>
+    </refentry>

@@ -1,0 +1,94 @@
+<refentry xml:id="ST_EstimatedExtent" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_EstimatedExtent</refname>
+
+        <refpurpose>Returns the estimated extent of a spatial table.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>box2d <function>ST_EstimatedExtent</function></funcdef>
+            <paramdef><type>text </type> <parameter>schema_name</parameter></paramdef>
+            <paramdef><type>text </type> <parameter>table_name</parameter></paramdef>
+            <paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef>
+            <paramdef><type>boolean </type> <parameter>parent_only</parameter></paramdef>
+          </funcprototype>
+
+
+          <funcprototype>
+            <funcdef>box2d <function>ST_EstimatedExtent</function></funcdef>
+            <paramdef><type>text </type> <parameter>schema_name</parameter></paramdef>
+            <paramdef><type>text </type> <parameter>table_name</parameter></paramdef>
+            <paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>box2d <function>ST_EstimatedExtent</function></funcdef>
+            <paramdef><type>text </type> <parameter>table_name</parameter></paramdef>
+            <paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns the estimated extent of a spatial table as a <xref linkend="box2d_type"/>.
+            The current schema is used if not specified.
+            The estimated extent is taken from the geometry column's statistics.
+            This is usually much faster than computing the exact extent of the table
+            using <xref linkend="ST_Extent"/> or <xref linkend="ST_3DExtent"/>.
+            </para>
+        <para>
+            The default behavior is to also use statistics collected from child tables (tables
+            with INHERITS) if available. If <varname>parent_only</varname> is set to TRUE, only
+            statistics for the given table are used and child tables are ignored.
+        </para>
+
+        <para>For PostgreSQL &gt;= 8.0.0 statistics are gathered by VACUUM
+        ANALYZE and the result extent will be about 95% of the actual one.
+        For PostgreSQL &lt; 8.0.0 statistics are gathered by running
+        <code>update_geometry_stats()</code> and the result extent is exact.
+        </para>
+
+        <note>
+            <para>
+            In the absence of statistics (empty table or no ANALYZE called) this function
+            returns NULL.  Prior to version 1.5.4 an exception was thrown instead.
+            </para>
+        </note>
+
+        <note>
+            <para>
+            Escaping names for tables and/or namespaces that include special characters and quotes may require special handling. A user notes: "For schemas and tables, use identifier escaping rules to produce a double-quoted string, and afterwards remove the first and last double-quote character. For geometry column pass as is."
+            </para>
+        </note>
+
+    <para role="availability" conformance="1.0.0">Availability: 1.0.0</para>
+    <para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Estimated_Extent.</para>
+
+        <para>&curve_support;</para>
+      </refsection>
+
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT ST_EstimatedExtent('ny', 'edges', 'geom');
+--result--
+BOX(-8877653 4912316,-8010225.5 5589284)
+
+SELECT ST_EstimatedExtent('feature_poly', 'geom');
+--result--
+BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
+        </programlisting>
+      </refsection>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_Extent"/>, <xref linkend="ST_3DExtent"/></para>
+      </refsection>
+    </refentry>

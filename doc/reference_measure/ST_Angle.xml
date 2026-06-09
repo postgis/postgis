@@ -1,0 +1,78 @@
+<refentry xml:id="ST_Angle" xmlns="http://docbook.org/ns/docbook">
+		<refnamediv>
+		  <refname>ST_Angle</refname>
+
+		  <refpurpose>Returns the angle between two vectors defined by 3 or 4 points, or 2 lines.</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+		  <funcsynopsis>
+			<funcprototype>
+			  <funcdef>float <function>ST_Angle</function></funcdef>
+			  <paramdef><type>geometry </type><parameter>point1</parameter></paramdef>
+			  <paramdef><type>geometry </type><parameter>point2</parameter></paramdef>
+			  <paramdef><type>geometry </type><parameter>point3</parameter></paramdef>
+			  <paramdef choice="opt"><type>geometry </type><parameter>point4</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+			  <funcdef>float <function>ST_Angle</function></funcdef>
+			  <paramdef><type>geometry </type><parameter>line1</parameter></paramdef>
+			  <paramdef><type>geometry </type><parameter>line2</parameter></paramdef>
+			</funcprototype>
+		  </funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+
+			<para> Computes the clockwise angle between two vectors.
+			</para>
+
+        <para><emphasis role="bold">Variant 1:</emphasis> computes the angle enclosed by the points P1-P2-P3. If a 4th point provided computes the angle points P1-P2 and P3-P4</para>
+		<para><emphasis role="bold">Variant 2:</emphasis> computes the angle between two vectors S1-E1 and S2-E2,
+        defined by the start and end points of the input lines
+        </para>
+
+			<para>The result is a positive angle between 0 and 2&#x03C0; radians.
+            The radian result can be converted to degrees using the PostgreSQL function <varname>degrees()</varname>.
+            </para>
+			<para>Note that <varname>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</varname>.</para>
+			<para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
+		</refsection>
+
+		<refsection>
+		<title>Examples</title>
+
+        <para>Angle between three points</para>
+<programlisting>
+SELECT degrees( ST_Angle('POINT(0 0)', 'POINT(10 10)', 'POINT(20 0)') );
+
+ degrees
+---------
+     270
+</programlisting>
+
+        <para>Angle between vectors defined by four points</para>
+<programlisting>
+SELECT degrees( ST_Angle('POINT (10 10)', 'POINT (0 0)', 'POINT(90 90)', 'POINT (100 80)') );
+
+      degrees
+-------------------
+ 269.9999999999999
+</programlisting>
+
+        <para>Angle between vectors defined by the start and end points of lines</para>
+<programlisting>
+SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0.5, 1 0)') );
+
+      degrees
+--------------
+           45
+</programlisting>
+
+		</refsection>
+
+	    <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Azimuth"/></para>
+        </refsection>
+  </refentry>

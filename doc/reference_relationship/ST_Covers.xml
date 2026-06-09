@@ -1,0 +1,108 @@
+<refentry xml:id="ST_Covers" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+    <refname>ST_Covers</refname>
+
+    <refpurpose>Tests if every point of B lies in A</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+      <funcdef>boolean <function>ST_Covers</function></funcdef>
+
+      <paramdef><type>geometry </type>
+      <parameter>geomA</parameter></paramdef>
+
+      <paramdef><type>geometry </type>
+      <parameter>geomB</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+      <funcdef>boolean <function>ST_Covers</function></funcdef>
+
+      <paramdef><type>geography </type>
+      <parameter>geogpolyA</parameter></paramdef>
+
+      <paramdef><type>geography </type>
+      <parameter>geogpointB</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+      <para>Returns <varname>true</varname> if every point in Geometry/Geography B lies inside
+            (i.e. intersects the interior or boundary of)
+            Geometry/Geography A.
+            Equivalently, tests that no point of B lies outside (in the exterior of) A.
+            </para>
+
+    <para>In mathematical terms:
+    <emphasis>ST_Covers(A, B) ⇔ A ⋂ B = B </emphasis></para>
+
+    <para>ST_Covers is the converse of <xref linkend="ST_CoveredBy"/>.
+    So, <code>ST_Covers(A,B) = ST_CoveredBy(B,A)</code>.</para>
+
+    <para>Generally this function should be used instead of <xref linkend="ST_Contains"/>,
+    since it has a simpler definition
+    which does not have the quirk that "geometries do not contain their boundary".</para>
+
+
+    <note><para>&index_aware;
+         To avoid index use, use the function <function>_ST_Covers</function>.</para></note>
+
+    <important>
+      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
+    </important>
+
+    <important>
+      <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
+    </important>
+
+    <para>Performed by the GEOS module</para>
+    <para role="enhanced" conformance="2.4.0">Enhanced: 2.4.0 Support for polygon in polygon and line in polygon added for geography type</para>
+    <para role="enhanced" conformance="2.3.0">Enhanced: 2.3.0 Enhancement to PIP short-circuit for geometry extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
+    <para role="availability" conformance="1.5">Availability: 1.5 - support for geography was introduced. </para>
+    <para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
+
+    <para>NOTE: this is the "allowable" version that returns a
+      boolean, not an integer.</para>
+
+    <para>Not an OGC standard, but Oracle has it too.</para>
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+      <para> Geometry example </para>
+      <programlisting>
+  --a circle covering a circle
+SELECT ST_Covers(smallc,smallc) As smallinsmall,
+  ST_Covers(smallc, bigc) As smallcoversbig,
+  ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
+  ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
+FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
+  ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
+  --Result
+ smallinsmall | smallcoversbig | bigcoversexterior | bigcontainsexterior
+--------------+----------------+-------------------+---------------------
+ t            | f              | t                 | f
+(1 row) </programlisting>
+    <para>Geeography Example</para>
+    <programlisting>
+-- a point with a 300 meter buffer compared to a point, a point and its 10 meter buffer
+SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
+  ST_Covers(ST_Buffer(geog_pt,10), geog_pt) As buff_10m_covers_cent
+  FROM (SELECT ST_Buffer(ST_GeogFromText('SRID=4326;POINT(-99.327 31.4821)'), 300) As geog_poly,
+        ST_GeogFromText('SRID=4326;POINT(-99.33 31.483)') As geog_pt ) As foo;
+
+ poly_covers_pt | buff_10m_covers_cent
+----------------+------------------
+ f              | t
+    </programlisting>
+    </refsection>
+
+    <refsection>
+    <title>See Also</title>
+    <para><xref linkend="ST_Contains"/>, <xref linkend="ST_CoveredBy"/>, <xref linkend="ST_Within"/></para>
+    </refsection>
+ </refentry>

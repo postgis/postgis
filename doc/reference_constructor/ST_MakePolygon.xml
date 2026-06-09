@@ -1,0 +1,140 @@
+<refentry xml:id="ST_MakePolygon" xmlns="http://docbook.org/ns/docbook">
+        <refnamediv>
+        <refname>ST_MakePolygon</refname>
+
+        <refpurpose>Creates a Polygon from a shell and optional list of holes.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_MakePolygon</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_MakePolygon</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>outerlinestring</parameter></paramdef>
+            <paramdef><type>geometry[]</type> <parameter>interiorlinestrings</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para>Creates a Polygon formed by the given shell and optional array of holes.
+            Input   geometries must be closed LineStrings (rings).</para>
+
+            <para><emphasis role="bold">Variant 1:</emphasis>  Accepts one shell LineString.</para>
+            <para><emphasis role="bold">Variant 2:</emphasis>  Accepts a shell LineString and an array of
+            inner (hole) LineStrings. A geometry array can be constructed using the PostgreSQL array_agg(), ARRAY[] or
+            ARRAY() constructs.</para>
+
+            <note><para>This function does not accept MultiLineStrings.
+            Use <xref linkend="ST_LineMerge"/> to generate a LineString, or <xref linkend="ST_Dump"/> to extract LineStrings.</para>
+            </note>
+
+            <para>&Z_support;</para>
+        </refsection>
+
+        <refsection>
+        <title>Examples: Single input variant</title>
+        <para>Create a Polygon from a 2D LineString.</para>
+         <programlisting>
+SELECT ST_MakePolygon( ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)'));
+</programlisting>
+
+<para>Create a Polygon from an open LineString,
+using <xref linkend="ST_StartPoint"/> and <xref linkend="ST_AddPoint"/> to close it.</para>
+<programlisting>
+SELECT ST_MakePolygon( ST_AddPoint(foo.open_line, ST_StartPoint(foo.open_line)) )
+FROM (
+  SELECT ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)') As open_line) As foo;
+</programlisting>
+
+<para>Create a Polygon from a 3D LineString</para>
+<programlisting>
+SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRING(75.15 29.53 1,77 29 1,77.6 29.5 1, 75.15 29.53 1)'));
+
+st_asewkt
+-----------
+POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))
+</programlisting>
+<para>Create a Polygon from a LineString with measures</para>
+<programlisting>
+SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRINGM(75.15 29.53 1,77 29 1,77.6 29.5 2, 75.15 29.53 2)' ));
+
+st_asewkt
+----------
+POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))
+</programlisting>
+        </refsection>
+        <refsection>
+            <title>Examples: Outer shell with inner holes variant</title>
+
+            <para>Create a donut Polygon with an extra hole</para>
+           <programlisting>
+SELECT ST_MakePolygon( ST_ExteriorRing( ST_Buffer(ring.line,10)),
+    ARRAY[  ST_Translate(ring.line, 1, 1),
+        ST_ExteriorRing(ST_Buffer(ST_Point(20,20),1)) ]
+    )
+FROM (SELECT ST_ExteriorRing(
+    ST_Buffer(ST_Point(10,10),10,10)) AS line ) AS ring;
+</programlisting>
+    <para>Create a set of province boundaries with holes
+    representing lakes.  The input is a table of
+    province Polygons/MultiPolygons and a table of water linestrings.
+    Lines forming lakes are determined by using <xref linkend="ST_IsClosed"/>.
+    The province linework is extracted by using
+    <xref linkend="ST_Boundary"/>.
+    As required by <code>ST_MakePolygon</code>,
+    the boundary is forced to be a single LineString by using <xref linkend="ST_LineMerge"/>.
+    (However, note that if a province has more than one region or has islands
+    this will produce an invalid polygon.)
+    Using a LEFT JOIN ensures all provinces are included even if they have no lakes.
+    </para>
+
+    <note><para>The CASE construct is used because passing a null array into
+    ST_MakePolygon results in a NULL return value.</para></note>
+
+        <programlisting>
+SELECT p.gid, p.province_name,
+    CASE WHEN array_agg(w.geom) IS NULL
+    THEN p.geom
+    ELSE  ST_MakePolygon( ST_LineMerge(ST_Boundary(p.geom)),
+                        array_agg(w.geom)) END
+FROM
+    provinces p LEFT JOIN waterlines w
+        ON (ST_Within(w.geom, p.geom) AND ST_IsClosed(w.geom))
+GROUP BY p.gid, p.province_name, p.geom;
+</programlisting>
+
+    <para>Another technique is to utilize a correlated subquery
+    and the ARRAY() constructor that converts a row set to an array.</para>
+<programlisting>
+SELECT p.gid,  p.province_name,
+    CASE WHEN EXISTS( SELECT w.geom
+        FROM waterlines w
+        WHERE ST_Within(w.geom, p.geom)
+        AND ST_IsClosed(w.geom))
+    THEN ST_MakePolygon(
+        ST_LineMerge(ST_Boundary(p.geom)),
+        ARRAY( SELECT w.geom
+            FROM waterlines w
+            WHERE ST_Within(w.geom, p.geom)
+            AND ST_IsClosed(w.geom)))
+    ELSE p.geom
+    END AS geom
+FROM provinces p;
+</programlisting>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para>
+                <xref linkend="ST_BuildArea"/>
+                <xref linkend="ST_Polygon"/>
+            </para>
+        </refsection>
+    </refentry>

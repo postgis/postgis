@@ -1,0 +1,35 @@
+<refentry xml:id="CG_3DRotate" xmlns="http://docbook.org/ns/docbook">
+   <refnamediv>
+       <refname>CG_3DRotate</refname>
+       <refpurpose>Rotates a geometry in 3D space around an axis vector.</refpurpose>
+   </refnamediv>
+   <refsynopsisdiv>
+       <funcsynopsis>
+           <funcprototype>
+               <funcdef>geometry <function>CG_3DRotate</function></funcdef>
+               <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>angle</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>ax</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>ay</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>az</parameter></paramdef>
+           </funcprototype>
+       </funcsynopsis>
+   </refsynopsisdiv>
+   <refsection>
+       <title>Description</title>
+       <para>Rotates the input geometry <parameter>geom</parameter> by <parameter>angle</parameter> radians around an axis defined by the vector (<parameter>ax</parameter>, <parameter>ay</parameter>, <parameter>az</parameter>) passing through the origin (0,0,0).
+       </para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
+       <para>&sfcgal_required;</para>
+       <para>&Z_support;</para>
+   </refsection>
+   <refsection>
+       <title>Examples</title>
+       <programlisting>SELECT ST_AsText(CG_3DRotate('POINT(1 0 0)', pi()/2, 0, 0, 1));
+-- Result: POINT(0 1 0)</programlisting>
+   </refsection>
+   <refsection>
+       <title>See Also</title>
+       <para><xref linkend="CG_RotateX"/>, <xref linkend="CG_RotateY"/>, <xref linkend="CG_RotateZ"/></para>
+   </refsection>
+</refentry>

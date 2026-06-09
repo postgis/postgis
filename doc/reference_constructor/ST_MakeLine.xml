@@ -1,0 +1,137 @@
+<refentry xml:id="ST_MakeLine" xmlns="http://docbook.org/ns/docbook">
+        <refnamediv>
+        <refname>ST_MakeLine</refname>
+
+        <refpurpose>Creates a LineString from Point, MultiPoint, or LineString geometries.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>ST_MakeLine</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+                <paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+            </funcprototype>
+
+            <funcprototype>
+                <funcdef>geometry <function>ST_MakeLine</function></funcdef>
+                <paramdef><type>geometry[]</type> <parameter>geoms_array</parameter></paramdef>
+            </funcprototype>
+
+            <funcprototype>
+                <funcdef>geometry <function>ST_MakeLine</function></funcdef>
+                <paramdef><type>geometry set</type> <parameter>geoms</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+        <title>Description</title>
+
+        <para>Creates a LineString containing the points of Point, MultiPoint, or LineString geometries.
+        Other geometry types cause an error.
+        </para>
+        <para><emphasis role="bold">Variant 1:</emphasis> accepts two input geometries</para>
+        <para><emphasis role="bold">Variant 2:</emphasis> accepts an array of geometries</para>
+        <para><emphasis role="bold">Variant 3:</emphasis> aggregate function accepting a rowset of geometries.
+        To ensure the order of the input geometries use <varname>ORDER BY</varname> in the function call,
+        or a subquery with an <varname>ORDER BY</varname> clause.</para>
+
+        <para>
+        Repeated nodes at the beginning of input LineStrings are collapsed to a single point.
+        Repeated points in Point and MultiPoint inputs are not collapsed.
+        Components of MultiLineString are handled in the order they appear in the collection.
+        <xref linkend="ST_RemoveRepeatedPoints"/> can be used to collapse repeated points from the output LineString.
+        </para>
+
+        <para>&Z_support;</para>
+
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0 -  Support for MultiLineString input elements was introduced</para>
+        <para role="availability" conformance="2.3.0">Availability: 2.3.0 -  Support for MultiPoint input elements was introduced</para>
+        <para role="availability" conformance="2.0.0">Availability: 2.0.0 -  Support for LineString input elements was introduced</para>
+        <para role="availability" conformance="1.4.0">Availability: 1.4.0 -  ST_MakeLine(geomarray) was introduced. ST_MakeLine aggregate functions was enhanced to handle more points faster.</para>
+
+        </refsection>
+
+        <refsection>
+            <title>Examples: Two-input variant</title>
+
+<para>Create a line composed of two points.</para>
+<programlisting>
+SELECT ST_AsText( ST_MakeLine(ST_Point(1,2), ST_Point(3,4)) );
+
+      st_astext
+---------------------
+ LINESTRING(1 2,3 4)
+</programlisting>
+
+<para>Create a 3D line from two 3D points.</para>
+<programlisting>
+SELECT ST_AsEWKT( ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5) ));
+
+        st_asewkt
+-------------------------
+ LINESTRING(1 2 3,3 4 5)
+</programlisting>
+
+<para>Create a line from two disjoint LineStrings.</para>
+<programlisting>
+ select ST_AsText( ST_MakeLine( 'LINESTRING(0 0, 1 1)', 'LINESTRING(2 2, 3 3)' ) );
+
+          st_astext
+-----------------------------
+ LINESTRING(0 0,1 1,2 2,3 3)
+</programlisting>
+        </refsection>
+
+        <refsection>
+            <title>Examples: Array variant</title>
+
+        <para>Create a line from an array formed by a subquery with ordering.</para>
+<programlisting>
+SELECT ST_MakeLine( ARRAY( SELECT ST_Centroid(geom) FROM visit_locations ORDER BY visit_time) );
+</programlisting>
+
+        <para>Create a 3D line from an array of 3D points</para>
+<programlisting>
+SELECT ST_AsEWKT( ST_MakeLine(
+          ARRAY[ ST_MakePoint(1,2,3), ST_MakePoint(3,4,5), ST_MakePoint(6,6,6) ]  ));
+
+        st_asewkt
+-------------------------
+LINESTRING(1 2 3,3 4 5,6 6 6)
+</programlisting>
+        </refsection>
+
+        <refsection>
+        <title>Examples: Aggregate variant</title>
+        <para>This example queries time-based sequences of GPS points from a set of tracks
+        and creates one record for each track.
+        The result geometries are LineStrings composed of the GPS track points in the order of travel.</para>
+
+<para>Using aggregate <varname>ORDER BY</varname> provides a correctly-ordered LineString.</para>
+        <programlisting>
+SELECT gps.track_id, ST_MakeLine(gps.geom ORDER BY gps_time) As geom
+    FROM gps_points As gps
+    GROUP BY track_id;</programlisting>
+
+<para>When ordering within the aggregate is not possible, ordering in a subquery can be used.
+However, sometimes the query plan may not respect the order of the subquery.</para>
+        <programlisting>
+SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
+    FROM ( SELECT track_id, gps_time, geom
+            FROM gps_points ORDER BY track_id, gps_time ) As gps
+    GROUP BY track_id;</programlisting>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_RemoveRepeatedPoints"/>,
+            <xref linkend="ST_AsEWKT"/>,
+            <xref linkend="ST_AsText"/>,
+            <xref linkend="ST_GeomFromText"/>,
+            <xref linkend="ST_MakePoint"/>,
+            <xref linkend="ST_Point"/>
+            </para>
+        </refsection>
+    </refentry>

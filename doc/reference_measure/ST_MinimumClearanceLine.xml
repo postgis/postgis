@@ -1,0 +1,42 @@
+<refentry xml:id="ST_MinimumClearanceLine" xmlns="http://docbook.org/ns/docbook">
+		<refnamediv>
+			<refname>ST_MinimumClearanceLine</refname>
+			<refpurpose>Returns the two-point LineString spanning a geometry's minimum clearance.</refpurpose>
+		</refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>Geometry <function>ST_MinimumClearanceLine</function></funcdef>
+			    <paramdef><type>geometry </type>
+			    <parameter>g</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+		Returns the two-point LineString spanning a geometry's minimum clearance.
+        If the geometry does not have a minimum
+		clearance, <varname>LINESTRING EMPTY</varname> is returned.
+		</para>
+		<para>Performed by the GEOS module.</para>
+		<para role="availability" conformance="2.3.0">Availability: 2.3.0 - requires GEOS &gt;= 3.6.0</para>
+	  </refsection>
+
+	  <refsection>
+		  <title>Examples</title>
+		  <programlisting>
+SELECT ST_AsText(ST_MinimumClearanceLine('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))'));
+-------------------------------
+LINESTRING(0.5 0.00032,0.5 0)
+		  </programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_MinimumClearance"/></para>
+	  </refsection>
+	</refentry>

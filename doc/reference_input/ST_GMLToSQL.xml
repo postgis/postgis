@@ -1,0 +1,30 @@
+<refentry xml:id="ST_GMLToSQL" xmlns="http://docbook.org/ns/docbook">
+		  <refnamediv>
+			<refname>ST_GMLToSQL</refname>
+			<refpurpose>Return a specified ST_Geometry value from GML representation.  This is an alias name for ST_GeomFromGML</refpurpose>
+		  </refnamediv>
+		<refsynopsisdiv>
+			<funcsynopsis>
+			<funcprototype>
+				<funcdef>geometry <function>ST_GMLToSQL</function></funcdef>
+				<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>geometry <function>ST_GMLToSQL</function></funcdef>
+				<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+			</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support).</para>
+			<para role="availability" conformance="1.5">Availability: 1.5, requires libxml2 1.6+</para>
+		        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+		        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 default srid optional parameter added.</para>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="installation_configuration"/>, <xref linkend="ST_GeomFromGML"/>, <xref linkend="ST_AsGML"/></para>
+		  </refsection>
+	</refentry>

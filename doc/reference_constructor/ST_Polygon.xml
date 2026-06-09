@@ -1,0 +1,64 @@
+<refentry xml:id="ST_Polygon" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_Polygon</refname>
+        <refpurpose>Creates a Polygon from a LineString with a specified SRID.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_Polygon</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>lineString</parameter></paramdef>
+            <paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns a polygon built from the given LineString
+        and sets the spatial reference system from the <varname>srid</varname>.</para>
+
+        <para>ST_Polygon is similar to <xref linkend="ST_MakePolygon"/> Variant 1
+        with the addition of setting the SRID.</para>
+        <para>To create polygons with holes
+        use <xref linkend="ST_MakePolygon"/> Variant 2 and then <xref linkend="ST_SetSRID"/>.
+        </para>
+
+        <note><para>This function does not accept MultiLineStrings.
+        Use <xref linkend="ST_LineMerge"/> to generate a LineString, or <xref linkend="ST_Dump"/> to extract LineStrings.</para>
+        </note>
+
+        <para>&sfs_compliant;</para>
+        <para>&sqlmm_compliant; SQL-MM 3: 8.3.2</para>
+        <para>&Z_support;</para>
+
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+<para>Create a 2D polygon.</para>
+        <programlisting>
+SELECT ST_AsText( ST_Polygon('LINESTRING(75 29, 77 29, 77 29, 75 29)'::geometry, 4326) );
+
+-- result --
+POLYGON((75 29, 77 29, 77 29, 75 29))
+</programlisting>
+<para>Create a 3D polygon.</para>
+<programlisting>
+SELECT ST_AsEWKT( ST_Polygon( ST_GeomFromEWKT('LINESTRING(75 29 1, 77 29 2, 77 29 3, 75 29 1)'), 4326) );
+
+-- result --
+SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
+</programlisting>
+      </refsection>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+
+        <para> <xref linkend="ST_AsEWKT"/>, <xref linkend="ST_AsText"/>, <xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_GeomFromText"/>, <xref linkend="ST_LineMerge"/>, <xref linkend="ST_MakePolygon"/></para>
+      </refsection>
+    </refentry>

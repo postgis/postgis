@@ -1,0 +1,69 @@
+<refentry xml:id="postgis_enable_outdb_rasters" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>postgis.enable_outdb_rasters</refname>
+                <refpurpose>
+                    A boolean configuration option to enable access to out-db raster bands.
+                </refpurpose>
+            </refnamediv>
+
+            <refsection>
+                <title>Description</title>
+                <para>
+                    A boolean configuration option to enable access to out-db raster bands. This option can be set in PostgreSQL's configuration file: postgresql.conf. It can also be set by connection or transaction.
+                </para>
+
+                <para>
+                    The initial value of <varname>postgis.enable_outdb_rasters</varname> may also be set by passing the environment variable <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> with a non-zero value to the process starting PostgreSQL.
+                </para>
+
+                <note>
+                    <para>
+                        Even if <varname>postgis.enable_outdb_rasters</varname> is True, the GUC <varname>postgis.gdal_enabled_drivers</varname> determines the accessible raster formats.
+                    </para>
+                </note>
+
+                <note>
+                    <para>
+                        In the standard PostGIS installation, <varname>postgis.enable_outdb_rasters</varname> is set to False.
+                    </para>
+                </note>
+
+                <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+                <para>Set and reset <varname>postgis.enable_outdb_rasters</varname> for current session</para>
+
+                <programlisting>
+SET postgis.enable_outdb_rasters TO True;
+SET postgis.enable_outdb_rasters = default;
+SET postgis.enable_outdb_rasters = True;
+SET postgis.enable_outdb_rasters = False;
+                </programlisting>
+
+                <para>Set for all new connections to a specific database</para>
+
+                <programlisting>
+ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;
+                </programlisting>
+
+                <para>Setting for whole database cluster. Requires super user access.
+                    Also note that database, session, and user settings override this.</para>
+                <programlisting>
+ --writes to postgres.auto.conf
+ALTER SYSTEM SET postgis.enable_outdb_rasters = true;
+ --Reloads postgres conf
+SELECT pg_reload_conf();
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="postgis_gdal_enabled_drivers"/>
+                    <xref linkend="postgis_gdal_vsi_options"/>
+                </para>
+            </refsection>
+    </refentry>

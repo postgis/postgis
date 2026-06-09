@@ -1,0 +1,67 @@
+<refentry xml:id="ST_TileEnvelope" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <refnamediv>
+        <refname>ST_TileEnvelope</refname>
+        <refpurpose>Creates a rectangular Polygon in <link xlink:href="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</link> (SRID:3857) using the <link xlink:href="https://en.wikipedia.org/wiki/Tiled_web_map">XYZ tile system</link>.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_TileEnvelope</function></funcdef>
+            <paramdef><type>integer</type> <parameter>tileZoom</parameter></paramdef>
+            <paramdef><type>integer</type> <parameter>tileX</parameter></paramdef>
+            <paramdef><type>integer</type> <parameter>tileY</parameter></paramdef>
+            <paramdef choice="opt"><type>geometry</type> <parameter>bounds=SRID=3857;LINESTRING(-20037508.342789 -20037508.342789,20037508.342789 20037508.342789)</parameter></paramdef>
+            <paramdef choice="opt"><type>float</type> <parameter>margin=0.0</parameter></paramdef>
+          </funcprototype>
+         </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para>Creates a rectangular Polygon
+            giving the extent of a tile in the <link xlink:href="https://en.wikipedia.org/wiki/Tiled_web_map">XYZ tile system</link>.
+            The tile is specified by the zoom level Z and the XY index of the tile in the grid at that level.
+            Can be used to define the tile bounds required by <xref linkend="ST_AsMVTGeom"/> to convert geometry
+            into the MVT tile coordinate space.
+            </para>
+            <para>By default, the tile envelope is in the <link xlink:href="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</link> coordinate system (SRID:3857)
+            using the standard range of the Web Mercator system (-20037508.342789, 20037508.342789).
+            This is the most common coordinate system used for MVT tiles.
+            The optional <varname>bounds</varname> parameter can be used to generate tiles in any coordinate system.
+            It is a geometry that has the SRID and extent of the "Zoom Level zero" square within which the XYZ tile system is inscribed.</para>
+
+            <para>The optional <varname>margin</varname> parameter can be used to expand a tile by the given percentage.
+            E.g. <varname>margin=0.125</varname> expands the tile by 12.5%, which is equivalent to buffer=512 when the tile extent size is 4096, as used in <xref linkend="ST_AsMVTGeom"/>.
+            This is useful to create a tile buffer to include data lying outside of the tile's visible area, but whose existence affects the tile rendering.
+            For example, a city name (a point) could be near an edge of a tile, so its label should be rendered on two tiles, even though the point is located in the visible area of just one tile.
+            Using expanded tiles in a query will include the city point in both tiles.
+            Use a negative value to shrink the tile instead. Values less than -0.5 are prohibited because that would eliminate the tile completely.
+            Do not specify a margin when using with <varname>ST_AsMVTGeom</varname>.
+            See the example for <xref linkend="ST_AsMVT"/>.</para>
+
+            <para role="enhanced" conformance="3.1.0">Enhanced: 3.1.0 Added margin parameter.</para>
+            <para role="availability" conformance="3.0.0">Availability: 3.0.0</para>
+        </refsection>
+
+        <refsection>
+        <title>Example: Building a tile envelope</title>
+         <programlisting>SELECT ST_AsText( ST_TileEnvelope(2, 1, 1) );
+
+ st_astext
+------------------------------
+ POLYGON((-10018754.1713945 0,-10018754.1713945 10018754.1713945,0 10018754.1713945,0 0,-10018754.1713945 0))
+
+SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4326) ) );
+
+                      st_astext
+------------------------------------------------------
+ POLYGON((-135 45,-135 67.5,-90 67.5,-90 45,-135 45))
+</programlisting>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_MakeEnvelope"/></para>
+        </refsection>
+    </refentry>

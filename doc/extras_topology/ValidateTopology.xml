@@ -1,0 +1,276 @@
+<refentry xml:id="ValidateTopology" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>ValidateTopology</refname>
+
+				<refpurpose>Returns a set of validatetopology_returntype objects detailing issues with topology.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>setof validatetopology_returntype <function>ValidateTopology</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef choice="opt"><type>geometry</type> <parameter>bbox</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Returns a set of <xref linkend="validatetopology_returntype"/> objects
+detailing issues with topology, optionally limiting the check to the
+area specified by the <varname>bbox</varname> parameter.
+                </para>
+
+                <para>List of possible errors, what they mean and what the returned ids represent are displayed below:</para>
+
+                  <informaltable rowsep="1" frame="all">
+                    <tgroup cols="4">
+                        <thead>
+                            <row>
+                                <entry>Error</entry>
+                                <entry>id1</entry>
+                                <entry>id2</entry>
+                                <entry>Meaning</entry>
+                            </row>
+                        </thead>
+                        <tbody>
+                            <row>
+                                    <entry>coincident nodes</entry>
+                                    <entry>Identifier of first node.</entry>
+                                    <entry>Identifier of second node.</entry>
+                                    <entry>
+Two nodes have the same geometry.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>edge crosses node</entry>
+                                    <entry>Identifier of the edge.</entry>
+                                    <entry>Identifier of the node.</entry>
+                                    <entry>
+An edge has a node in its interior.
+See <xref linkend="ST_Relate"/>.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>invalid edge</entry>
+                                    <entry>Identifier of the edge.</entry>
+                                    <entry/>
+                                    <entry>
+An edge geometry is invalid.
+See <xref linkend="ST_IsValid"/>.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>edge not simple</entry>
+                                    <entry>Identifier of the edge.</entry>
+                                    <entry/>
+                                    <entry>
+An edge geometry has self-intersections.
+See <xref linkend="ST_IsSimple"/>.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>edge crosses edge</entry>
+                                    <entry>Identifier of first edge.</entry>
+                                    <entry>Identifier of second edge.</entry>
+                                    <entry>
+Two edges have an interior intersection.
+See <xref linkend="ST_Relate"/>.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>edge start node geometry mismatch</entry>
+                                    <entry>Identifier of the edge.</entry>
+                                    <entry>
+Identifier of the indicated start node.
+                                    </entry>
+                                    <entry>
+The geometry of the node indicated as the starting node for an edge does
+not match the first point of the edge geometry.
+See <xref linkend="ST_StartPoint"/>.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>edge end node geometry mismatch</entry>
+                                    <entry>Identifier of the edge.</entry>
+                                    <entry>
+Identifier of the indicated end node.
+                                    </entry>
+                                    <entry>
+The geometry of the node indicated as the ending node for an edge does
+not match the last point of the edge geometry.
+See <xref linkend="ST_EndPoint"/>.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>face without edges</entry>
+                                    <entry>
+Identifier of the orphaned face.
+                                    </entry>
+                                    <entry/>
+                                    <entry>
+No edge reports an existing face on either of its sides
+(left_face, right_face).
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>face has no rings</entry>
+                                    <entry>
+Identifier of the partially-defined face.
+                                    </entry>
+                                    <entry/>
+                                    <entry>
+Edges reporting a face on their sides do not form a ring.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>face has wrong mbr</entry>
+                                    <entry>
+Identifier of the face with wrong mbr cache.
+                                    </entry>
+                                    <entry/>
+                                    <entry>
+Minimum bounding rectangle of a face does not match minimum bounding
+box of the collection of edges reporting the face on their sides.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>hole not in advertised face</entry>
+                                    <entry>
+Signed identifier of an edge, identifying the ring.
+See <xref linkend="GetRingEdges"/>.
+                                    </entry>
+                                    <entry/>
+                                    <entry>
+A ring of edges reporting a face on its exterior
+is contained in different face.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>not-isolated node has not- containing_face</entry>
+                                    <entry>
+Identifier of the ill-defined node.
+                                    </entry>
+                                    <entry/>
+                                    <entry>
+A node which is reported as being on the boundary of one or more edges
+is indicating a containing face.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>isolated node has  containing_face</entry>
+                                    <entry>
+Identifier of the ill-defined node.
+                                    </entry>
+                                    <entry/>
+                                    <entry>
+A node which is not reported as being on the boundary of any edges
+is lacking the indication of a containing face.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>isolated node has wrong containing_face</entry>
+                                    <entry>
+Identifier of the misrepresented node.
+                                    </entry>
+                                    <entry/>
+                                    <entry>
+A node which is not reported as being on the boundary of any edges
+indicates a containing face which is not the actual face containing it.
+See <xref linkend="GetFaceContainingPoint"/>.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>invalid next_right_edge</entry>
+                                    <entry>
+Identifier of the misrepresented edge.
+                                    </entry>
+                                    <entry>
+Signed id of the edge which should be indicated as the next right edge.
+                                    </entry>
+                                    <entry>
+The edge indicated as the next edge encountered walking on the right
+side of an edge is wrong.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>invalid next_left_edge</entry>
+                                    <entry>
+Identifier of the misrepresented edge.
+                                    </entry>
+                                    <entry>
+Signed id of the edge which should be indicated as the next left edge.
+                                    </entry>
+                                    <entry>
+The edge indicated as the next edge encountered walking on the
+left side of an edge is wrong.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>mixed face labeling in ring</entry>
+                                    <entry>
+Signed identifier of an edge, identifying the ring.
+See <xref linkend="GetRingEdges"/>.
+                                    </entry>
+                                    <entry/>
+                                    <entry>
+Edges in a ring indicate conflicting faces on the walking side.
+This is also known as a "Side Location Conflict".
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>non-closed ring</entry>
+                                    <entry>
+Signed identifier of an edge, identifying the ring.
+See <xref linkend="GetRingEdges"/>.
+                                    </entry>
+                                    <entry/>
+                                    <entry>
+A ring of edges formed by following next_left_edge/next_right_edge
+attributes starts and ends on different nodes.
+                                    </entry>
+                            </row>
+                            <row>
+                                    <entry>face has multiple shells</entry>
+                                    <entry>
+Identifier of the contended face.
+                                    </entry>
+                                    <entry>
+Signed identifier of an edge, identifying the ring.
+See <xref linkend="GetRingEdges"/>.
+                                    </entry>
+                                    <entry>
+More than a one ring of edges indicate the same face on its interior.
+                                    </entry>
+                            </row>
+                         </tbody>
+                        </tgroup>
+                    </informaltable>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="1.0.0">Availability: 1.0.0</para>
+	<!-- use this format if not a new function but functionality enhanced -->
+                <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false positives that were existent in prior versions.</para>
+                <para role="changed" conformance="2.2.0">Changed: 2.2.0 values for id1 and id2 were swapped for 'edge crosses node' to be consistent with error description.</para>
+                <para role="changed" conformance="3.2.0">Changed: 3.2.0 added optional bbox parameter, perform face labeling and edge linking checks.</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT * FROM  topology.ValidateTopology('ma_topo');
+      error        | id1 | id2
+-------------------+-----+-----
+face without edges |   1 |
+				</programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="validatetopology_returntype"/></para>
+			</refsection>
+		</refentry>

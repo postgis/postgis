@@ -1,0 +1,88 @@
+<refentry xml:id="ST_Azimuth" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<refnamediv>
+		  <refname>ST_Azimuth</refname>
+
+		  <refpurpose>Returns the north-based azimuth of a line between two points.</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+		  <funcsynopsis>
+			<funcprototype>
+			  <funcdef>float <function>ST_Azimuth</function></funcdef>
+			  <paramdef><type>geometry </type><parameter>origin</parameter></paramdef>
+			  <paramdef><type>geometry </type><parameter>target</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+			  <funcdef>float <function>ST_Azimuth</function></funcdef>
+			  <paramdef><type>geography </type><parameter>origin</parameter></paramdef>
+			  <paramdef><type>geography </type><parameter>target</parameter></paramdef>
+			</funcprototype>
+		  </funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+
+			<para>Returns the azimuth in radians of the target point from the origin point,
+            or NULL if the two points are coincident.
+            The azimuth angle is a positive clockwise angle
+            referenced from the positive Y axis (geometry) or the North meridian (geography):
+            North = 0; Northeast = &#x03C0;/4; East = &#x03C0;/2; Southeast = 3&#x03C0;/4;
+            South = &#x03C0;; Southwest 5&#x03C0;/4; West = 3&#x03C0;/2; Northwest = 7&#x03C0;/4.</para>
+			<para>For the geography type, the azimuth solution is known as the
+                  <link xlink:href="https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid">inverse geodesic problem</link>.</para>
+			<para>The azimuth is a mathematical concept defined as the angle between a reference vector and a point, with angular units in radians.
+			The result value in radians can be converted to degrees using the PostgreSQL function <varname>degrees()</varname>.</para>
+
+			<para>Azimuth can be used in conjunction with <xref linkend="ST_Translate"/> to shift an object along its perpendicular axis. See
+				 the <varname>upgis_lineshift()</varname> function in the <link xlink:href="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions">PostGIS wiki</link> for an implementation of this.</para>
+
+			<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for geography was introduced.</para>
+			<para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0 measurement on spheroid performed with GeographicLib for improved accuracy and robustness.  Requires PROJ &gt;= 4.9.0 to take advantage of the new feature.</para>
+		</refsection>
+
+		<refsection>
+		<title>Examples</title>
+		<para>Geometry Azimuth in degrees </para>
+<programlisting>
+SELECT degrees(ST_Azimuth( ST_Point(25, 45),  ST_Point(75, 100))) AS degA_B,
+       degrees(ST_Azimuth( ST_Point(75, 100), ST_Point(25, 45) )) AS degB_A;
+
+      dega_b       |     degb_a
+------------------+------------------
+ 42.2736890060937 | 222.273689006094
+</programlisting>
+		<informaltable>
+		  <tgroup cols="2">
+			<tbody>
+				<row>
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_azimuth01.png"/>
+					  </imageobject>
+					  <caption><para>Blue: origin Point(25,45); Green: target Point(75, 100); Yellow: Y axis or North;
+                      Red: azimuth angle.</para></caption>
+					</mediaobject>
+				  </informalfigure>
+				</para></entry>
+				<entry><para><informalfigure>
+					<mediaobject>
+					  <imageobject>
+						<imagedata fileref="images/st_azimuth02.png"/>
+					  </imageobject>
+					  <caption><para>Blue: origin Point(75, 100); Green: target Point(25, 45); Yellow: Y axis or North;
+                      Red: azimuth angle.</para></caption>
+					</mediaobject>
+				  </informalfigure>
+				</para></entry>
+				</row>
+			</tbody>
+			</tgroup>
+		</informaltable>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Angle"/>, <xref linkend="ST_Point"/>, <xref linkend="ST_Translate"/>, <xref linkend="ST_Project"/>, <link xlink:href="http://www.postgresql.org/docs/current/interactive/functions-math.html">PostgreSQL Math Functions</link></para>
+		</refsection>
+
+  </refentry>

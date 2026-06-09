@@ -1,0 +1,135 @@
+<refentry xml:id="Populate_Geometry_Columns" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>Populate_Geometry_Columns</refname>
+
+		<refpurpose>Ensures geometry columns are defined with type modifiers or have appropriate spatial constraints.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>Populate_Geometry_Columns</function></funcdef>
+
+			<paramdef><type>boolean </type> <parameter>use_typmod=true</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>int <function>Populate_Geometry_Columns</function></funcdef>
+
+			<paramdef><type>oid</type> <parameter>relation_oid</parameter></paramdef>
+			<paramdef><type>boolean </type> <parameter>use_typmod=true</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Ensures geometry columns have appropriate type modifiers or spatial constraints to ensure they are registered correctly in the <varname>geometry_columns</varname> view.
+			By default will convert all geometry
+			columns with no type modifier to ones with type modifiers.
+			</para>
+
+		<para>For backwards compatibility and for spatial needs such as table inheritance where each child table may have different geometry type, the old check constraint behavior is still supported.
+		If you need the old behavior, you need to pass in the new optional argument as false <varname>use_typmod=false</varname>. When this is done geometry columns will be created with no type modifiers
+		but will have 3 constraints defined.  In particular,
+		this means that every geometry column belonging to a table has at least
+		three constraints:</para>
+
+		<itemizedlist>
+		  <listitem>
+			<para><varname>enforce_dims_geom</varname> - ensures every
+			geometry has the same dimension (see <xref linkend="ST_NDims"/>)</para>
+		  </listitem>
+
+		  <listitem>
+			<para><varname>enforce_geotype_geom</varname> - ensures every
+			geometry is of the same type (see <xref linkend="GeometryType"/>)</para>
+		  </listitem>
+
+		  <listitem>
+			<para><varname>enforce_srid_geom</varname> - ensures every
+			geometry is in the same projection (see <xref linkend="ST_SRID"/>)</para>
+		  </listitem>
+		</itemizedlist>
+
+		<para>If a table <varname>oid</varname> is provided, this function
+		tries to determine the srid, dimension, and geometry type of all
+		geometry columns in the table, adding constraints as necessary. If
+		successful, an appropriate row is inserted into the geometry_columns
+		table, otherwise, the exception is caught and an error notice is raised
+		describing the problem.</para>
+
+		<para>If the <varname>oid</varname> of a view is provided, as with a
+		table oid, this function tries to determine the srid, dimension, and
+		type of all the geometries in the view, inserting appropriate entries
+		into the <varname>geometry_columns</varname> table, but nothing is done
+		to enforce constraints.</para>
+
+		<para>The parameterless variant is a simple wrapper for the parameterized
+		variant that first truncates and repopulates the geometry_columns table
+		for every spatial table and view in the database, adding spatial
+		constraints to tables where appropriate.  It returns a summary of the
+		number of geometry columns detected in the database and the number that
+		were inserted into the <varname>geometry_columns</varname> table.  The
+		parameterized version simply returns the number of rows inserted into
+		the <varname>geometry_columns</varname> table.</para>
+		<para role="availability" conformance="1.4.0">Availability: 1.4.0</para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 By default, now uses type modifiers instead of check constraints to constrain geometry types.  You can still use check
+		    constraint behavior instead by using the new  <varname>use_typmod</varname> and setting it to false.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 <varname>use_typmod</varname> optional argument was introduced that allows controlling if columns are created with typmodifiers or with check constraints.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+CREATE TABLE public.myspatial_table(gid serial, geom geometry);
+INSERT INTO myspatial_table(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );
+-- This will now use typ modifiers.  For this to work, there must exist data
+SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);
+
+populate_geometry_columns
+--------------------------
+                        1
+
+
+\d myspatial_table
+
+                                   Table "public.myspatial_table"
+ Column |           Type            |                           Modifiers
+--------+---------------------------+---------------------------------------------------------------
+ gid    | integer                   | not null default nextval('myspatial_table_gid_seq'::regclass)
+ geom   | geometry(LineString,4326) |
+</programlisting>
+
+		<programlisting>-- This will change the geometry columns to use constraints if they are not typmod or have constraints already.
+--For this to work, there must exist data
+CREATE TABLE public.myspatial_table_cs(gid serial, geom geometry);
+INSERT INTO myspatial_table_cs(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );
+SELECT Populate_Geometry_Columns('public.myspatial_table_cs'::regclass, false);
+populate_geometry_columns
+--------------------------
+                        1
+\d myspatial_table_cs
+
+                          Table "public.myspatial_table_cs"
+ Column |   Type   |                            Modifiers
+--------+----------+------------------------------------------------------------------
+ gid    | integer  | not null default nextval('myspatial_table_cs_gid_seq'::regclass)
+ geom   | geometry |
+Check constraints:
+    "enforce_dims_geom" CHECK (st_ndims(geom) = 2)
+    "enforce_geotype_geom" CHECK (geometrytype(geom) = 'LINESTRING'::text OR geom IS NULL)
+    "enforce_srid_geom" CHECK (st_srid(geom) = 4326)</programlisting>
+	  </refsection>
+
+<!--
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="Probe_Geometry_Columns" /></para>
+	  </refsection>
+-->
+
+	</refentry>

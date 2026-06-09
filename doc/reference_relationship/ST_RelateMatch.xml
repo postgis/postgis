@@ -1,0 +1,82 @@
+<refentry xml:id="ST_RelateMatch" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <refnamediv>
+    <refname>ST_RelateMatch</refname>
+
+    <refpurpose>Tests if a DE-9IM Intersection Matrix matches an Intersection Matrix pattern
+        </refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+      <funcdef>boolean <function>ST_RelateMatch</function></funcdef>
+      <paramdef><type>text </type> <parameter>intersectionMatrix</parameter></paramdef>
+      <paramdef><type>text </type> <parameter>intersectionMatrixPattern</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsection>
+    <title>Description</title>
+
+    <para>
+        Tests if a <link xlink:href="http://en.wikipedia.org/wiki/DE-9IM">Dimensionally Extended 9-Intersection Model</link> (DE-9IM)
+        <varname>intersectionMatrix</varname> value satisfies
+    an <varname>intersectionMatrixPattern</varname>.
+        Intersection matrix values can be computed by <xref linkend="ST_Relate"/>.
+        </para>
+        <para>
+        For more information refer to <xref linkend="eval_spatial_rel"/>.
+        </para>
+    <para>Performed by the GEOS module</para>
+
+    <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+  </refsection>
+
+
+  <refsection>
+    <title>Examples</title>
+    <programlisting>
+SELECT ST_RelateMatch('101202FFF', 'TTTTTTFFF') ;
+-- result --
+t
+</programlisting>
+    <para>Patterns for common spatial relationships
+matched against intersection matrix values,
+for a line in various positions relative to a polygon</para>
+    <programlisting>
+SELECT pat.name AS relationship, pat.val AS pattern,
+       mat.name AS position, mat.val AS matrix,
+       ST_RelateMatch(mat.val, pat.val) AS match
+    FROM (VALUES ( 'Equality', 'T1FF1FFF1' ),
+                 ( 'Overlaps', 'T*T***T**' ),
+                 ( 'Within',   'T*F**F***' ),
+                 ( 'Disjoint', 'FF*FF****' )) AS pat(name,val)
+    CROSS JOIN
+        (VALUES  ('non-intersecting', 'FF1FF0212'),
+                 ('overlapping',      '1010F0212'),
+                 ('inside',           '1FF0FF212')) AS mat(name,val);
+
+ relationship |  pattern  |     position     |  matrix   | match
+--------------+-----------+------------------+-----------+-------
+ Equality     | T1FF1FFF1 | non-intersecting | FF1FF0212 | f
+ Equality     | T1FF1FFF1 | overlapping      | 1010F0212 | f
+ Equality     | T1FF1FFF1 | inside           | 1FF0FF212 | f
+ Overlaps     | T*T***T** | non-intersecting | FF1FF0212 | f
+ Overlaps     | T*T***T** | overlapping      | 1010F0212 | t
+ Overlaps     | T*T***T** | inside           | 1FF0FF212 | f
+ Within       | T*F**F*** | non-intersecting | FF1FF0212 | f
+ Within       | T*F**F*** | overlapping      | 1010F0212 | f
+ Within       | T*F**F*** | inside           | 1FF0FF212 | t
+ Disjoint     | FF*FF**** | non-intersecting | FF1FF0212 | t
+ Disjoint     | FF*FF**** | overlapping      | 1010F0212 | f
+ Disjoint     | FF*FF**** | inside           | 1FF0FF212 | f
+</programlisting>
+  </refsection>
+
+  <!-- Optionally add a "See Also" section -->
+  <refsection>
+    <title>See Also</title>
+    <para><xref linkend="eval_spatial_rel"/>, <xref linkend="ST_Relate"/></para>
+  </refsection>
+</refentry>

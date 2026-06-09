@@ -1,0 +1,72 @@
+<refentry xml:id="CreateTopology" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>CreateTopology</refname>
+				<refpurpose>Creates a new topology schema and registers it in the topology.topology table.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>integer <function>CreateTopology</function></funcdef>
+						<paramdef><type>name </type> <parameter>topology_schema_name</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>srid</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>prec=0</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>hasz=false</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>topoid=0</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>useslargeids=false</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Creates a new topology schema with name <varname>topology_name</varname>
+                and registers it in the <varname>topology.topology</varname> table.
+				Topologies must be uniquely named.
+				The topology tables (<varname>edge_data</varname>, <varname>face</varname>, <varname>node</varname>,and <varname>relation</varname> are created in the schema.
+				It returns the id of the topology.
+				</para>
+
+ 				<para>The <varname>srid</varname> is the <link linkend="spatial_ref_sys">spatial reference system</link> SRID for the topology. The SRID defaults to -1 (unknown) if not specified.
+				</para>
+
+				<para>The tolerance <varname>prec</varname> is measured in the units of the spatial reference system.
+				The tolerance defaults to 0.
+				</para>
+
+				<para><varname>hasz</varname> defaults to false if not specified. </para>
+
+                <para><varname>topoid</varname> optional explicit identifier (allows deterministic topology id assignment, needs to be unique)</para>
+
+                <para><varname>useslargeids</varname> optional, defaults to false. If true, the topology will be created to support large ids (int8) for topology and primitive ids.</para>
+
+                <para>This is similar to the SQL/MM <xref linkend="ST_InitTopoGeo"/> but has more functionality.</para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="1.1">Availability: 1.1</para>
+                <para role="enhanced" conformance="2.0">Enhanced: 2.0 added support for <varname>hasZ</varname>.</para>
+                <para role="enhanced" conformance="3.6.0">Enhanced: 3.6.0 added <varname>topoid</varname> and <varname>usesLargeIDs</varname> parameters.</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<para>Create a topology schema called <varname>ma_topo</varname> that stores edges and nodes in Massachusetts State Plane-meters (SRID = 26986).
+					The tolerance represents 0.5 meters since the spatial reference system is meter-based.</para>
+				<programlisting>SELECT topology.CreateTopology('ma_topo', 26986, 0.5);</programlisting>
+
+				<para>Create a topology for Rhode Island called <varname>ri_topo</varname> in spatial reference system State Plane-feet (SRID = 3438)</para>
+<programlisting>SELECT topology.CreateTopology('ri_topo', 3438) AS topoid;
+topoid
+------
+2</programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+
+				<para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_InitTopoGeo"/></para>
+			</refsection>
+		</refentry>

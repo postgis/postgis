@@ -1,0 +1,40 @@
+<refentry xml:id="RT_ST_Rotation" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <refnamediv>
+                <refname>ST_Rotation</refname>
+                <refpurpose>Returns the rotation of the raster in radian.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>float8 <function>ST_Rotation</function></funcdef>
+                        <paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns the uniform rotation of the raster in radian. If a raster does not have uniform rotation, NaN is returned.
+                Refer to <link xlink:href="http://en.wikipedia.org/wiki/World_file">World File</link> for more details.</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                <programlisting>SELECT rid, ST_Rotation(ST_SetScale(ST_SetSkew(rast, sqrt(2)), sqrt(2))) as rot FROM dummy_rast;
+
+ rid |        rot
+-----+-------------------
+   1 | 0.785398163397448
+   2 | 0.785398163397448
+                </programlisting>
+            </refsection>
+
+            <!-- Optionally add a "See Also" section -->
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_SetRotation"/>, <xref linkend="RT_ST_SetScale"/>, <xref linkend="RT_ST_SetSkew"/></para>
+            </refsection>
+        </refentry>

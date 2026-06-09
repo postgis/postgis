@@ -1,0 +1,31 @@
+<refentry xml:id="geometry_dump" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<refnamediv>
+			<refname>geometry_dump</refname>
+			<refpurpose>A composite type used to describe the parts of complex geometry.</refpurpose>
+		</refnamediv>
+
+		<refsection>
+		<title>Description</title>
+		<para><varname>geometry_dump</varname> is a
+		<link xlink:href="https://www.postgresql.org/docs/current/rowtypes.html">composite data type</link>
+		containing the fields:</para>
+		<itemizedlist>
+		<listitem>
+			<para><varname>geom</varname> - a geometry representing a component of the dumped geometry.
+                The geometry type depends on the originating function.</para>
+			</listitem>
+		<listitem>
+			<para><varname>path[]</varname> - an integer array
+			that defines the navigation path within the dumped geometry to the <varname>geom</varname> component.
+			The path array is 1-based (i.e. <varname>path[1]</varname> is the first element.)</para>
+			</listitem>
+		</itemizedlist>
+		<para>
+		It is used by the <varname>ST_Dump*</varname> family of functions as an output type to explode a complex geometry into its
+		constituent parts.</para>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="PostGIS_Geometry_DumpFunctions"/> </para>
+		</refsection>
+	</refentry>

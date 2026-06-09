@@ -1,0 +1,115 @@
+<refentry xml:id="ST_SymDifference" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_SymDifference</refname>
+
+        <refpurpose>Computes a geometry representing the portions of geometries A and B
+            that do not intersect.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_SymDifference</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+            <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+            <paramdef choice="opt"><type>float8 </type> <parameter>gridSize = -1</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns a geometry representing the portions of geonetries A and B
+            that do not intersect.
+            This is equivalent to <code>ST_Union(A,B) - ST_Intersection(A,B)</code>.
+            It is called a symmetric difference because <code>ST_SymDifference(A,B) = ST_SymDifference(B,A)</code>.
+            </para>
+
+        &overlay_gridsize_arg;
+
+        <para>Performed by the GEOS module</para>
+
+        <para role="enhanced" conformance="3.1.0">Enhanced: 3.1.0 accept a gridSize parameter.</para>
+        <para role="geos_requirement" conformance="3.9.0">Requires GEOS &gt;= 3.9.0 to use the gridSize parameter</para>
+
+        <para>&sfs_compliant; s2.1.1.3</para>
+        <para>&sqlmm_compliant; SQL-MM 3: 5.1.21</para>
+        <para>&Z_support; However, the result is computed using XY only.
+            The result Z values are copied, averaged or interpolated.</para>
+      </refsection>
+
+
+      <refsection>
+        <title>Examples</title>
+
+        <informaltable>
+              <tgroup cols="2">
+                <tbody>
+                  <row>
+                    <entry>
+                        <para>
+                            <informalfigure>
+                                <mediaobject>
+                                  <imageobject>
+                                    <imagedata fileref="images/st_symdifference01.png"/>
+                                  </imageobject>
+                                  <caption><para>The original linestrings shown together</para></caption>
+                                </mediaobject>
+                            </informalfigure>
+                        </para>
+                    </entry>
+
+                    <entry>
+                        <para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_symdifference02.png"/>
+                              </imageobject>
+                              <caption><para>The symmetric difference of the two linestrings</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                    </para>
+                </entry>
+                  </row>
+        </tbody>
+    </tgroup>
+</informaltable>
+<programlisting>
+--Safe for 2d - symmetric difference of 2 linestrings
+SELECT ST_AsText(
+    ST_SymDifference(
+        ST_GeomFromText('LINESTRING(50 100, 50 200)'),
+        ST_GeomFromText('LINESTRING(50 50, 50 150)')
+    )
+);
+
+st_astext
+---------
+MULTILINESTRING((50 150,50 200),(50 50,50 100))
+</programlisting>
+
+<programlisting>
+
+--When used in 3d doesn't quite do the right thing
+SELECT ST_AsEWKT(ST_SymDifference(ST_GeomFromEWKT('LINESTRING(1 2 1, 1 4 2)'),
+    ST_GeomFromEWKT('LINESTRING(1 1 3, 1 3 4)')))
+
+st_astext
+------------
+MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
+        </programlisting>
+      </refsection>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+
+        <para>
+<xref linkend="ST_Difference"/>,
+<xref linkend="ST_Intersection"/>,
+<xref linkend="ST_Union"/>,
+<xref linkend="ST_ReducePrecision"/>
+        </para>
+      </refsection>
+</refentry>

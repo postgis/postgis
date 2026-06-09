@@ -1,0 +1,175 @@
+<refentry xml:id="ST_AsGeoJSON" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <refnamediv>
+    <refname>ST_AsGeoJSON</refname>
+
+    <refpurpose>Return a geometry or feature in GeoJSON format.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+        <paramdef><type>record </type> <parameter>feature</parameter></paramdef>
+        <paramdef choice="opt"><type>text </type> <parameter>geom_column=""</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=9</parameter></paramdef>
+        <paramdef choice="opt"><type>boolean </type> <parameter>pretty_bool=false</parameter></paramdef>
+                <paramdef choice="opt"><type>text </type> <parameter>id_column=''</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=9</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>options=8</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+        <paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=9</parameter></paramdef>
+        <paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+        <para>
+Returns a geometry as a GeoJSON "geometry" object,
+or a row as a GeoJSON "feature" object.
+        </para>
+
+        <para>
+The resulting GeoJSON geometry and feature representations conform
+with the <link xlink:href="https://tools.ietf.org/html/rfc7946">GeoJSON
+specifications RFC 7946</link>, except when the parsed geometries
+are referenced with a CRS other than WGS84 longitude and latitude
+(<link xlink:href="https://epsg.io/4326">EPSG:4326</link>, <link
+xlink:href="http://epsg.io/4326.gml">urn:ogc:def:crs:OGC::CRS84</link>);
+the GeoJSON geometry object will then have a short CRS SRID identifier
+attached by default.
+
+2D and 3D Geometries are both supported.
+GeoJSON only supports SFS 1.1 geometry types
+(no curve support for example).
+        </para>
+
+        <para>
+The <varname>geom_column</varname> parameter is used to distinguish
+between multiple geometry columns.
+If omitted, the first geometry column in the record will be determined.
+Conversely, passing the parameter will save column type lookups.
+</para>
+
+      <para>The <varname>maxdecimaldigits</varname> argument may be used to reduce the maximum number of decimal places used in output (defaults to 9). If you are using EPSG:4326 and are outputting the geometry only for display, <varname>maxdecimaldigits</varname>=6 can be a good choice for many maps.</para>
+
+      <warning>
+      <para>Using the <parameter>maxdecimaldigits</parameter> parameter
+            can cause output geometry to become invalid.
+            To avoid this use <xref linkend="ST_ReducePrecision"/>
+            with a suitable gridsize first.
+            </para>
+      </warning>
+
+      <para>The <varname>options</varname> argument can be used to add BBOX or CRS in GeoJSON output:
+        <itemizedlist>
+        <listitem>
+          <para>0: means no option</para>
+        </listitem>
+
+        <listitem>
+          <para>1: GeoJSON BBOX</para>
+        </listitem>
+
+        <listitem>
+          <para>2: GeoJSON Short CRS (e.g EPSG:4326)</para>
+        </listitem>
+
+        <listitem>
+          <para>4: GeoJSON Long CRS (e.g urn:ogc:def:crs:EPSG::4326)</para>
+        </listitem>
+
+        <listitem>
+          <para>8: GeoJSON Short CRS if not EPSG:4326 (default)</para>
+        </listitem>
+        </itemizedlist>
+      </para>
+
+            <para>The <varname>id_column</varname> parameter is used to set the "id" member of the returned GeoJSON features. As per GeoJSON RFC, this SHOULD be used whenever a feature has a commonly used identifier, such as a primary key. When not specified, the produced features will not get an "id" member and any columns other than the geometry, including any potential keys, will just end up inside the feature’s "properties" member.</para>
+
+            <para>When the input record includes duplicate column names, the resulting "properties" object will contain repeated keys. <function>ST_AsGeoJSON</function> raises a warning in that case because PostgreSQL <type>jsonb</type> keeps only the last value for duplicate keys.</para>
+
+            <para>The GeoJSON specification states that polygons are oriented using the Right-Hand Rule,
+            and some clients require this orientation.
+            This can be ensured by using <xref linkend="ST_ForcePolygonCCW"/>.
+            The specification also requires that geometry be in the WGS84 coordinate system
+            (SRID = 4326).
+            If necessary geometry can be projected into WGS84 using <xref linkend="ST_Transform"/>:
+            <code>ST_Transform( geom, 4326 )</code>.
+            </para>
+
+            <para>GeoJSON can be tested and viewed online at <link xlink:href="http://geojson.io/">geojson.io</link>
+            and <link xlink:href="http://geojson.io/">geojsonlint.com</link>.
+            It is widely supported by web mapping frameworks:
+                <itemizedlist>
+                <listitem><para><link xlink:href="https://openlayers.org/en/latest/examples/geojson.html">OpenLayers GeoJSON Example</link></para></listitem>
+                <listitem><para><link xlink:href="https://leafletjs.com/examples/geojson/">Leaflet GeoJSON Example</link></para></listitem>
+                <listitem><para><link xlink:href="https://www.mapbox.com/mapbox-gl-js/example/multiple-geometries/">Mapbox GL GeoJSON Example</link></para></listitem>
+                </itemizedlist>
+            </para>
+
+      <para role="availability" conformance="1.3.4">Availability: 1.3.4</para>
+      <para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced.</para>
+      <para role="changed" conformance="2.0.0">Changed: 2.0.0 support default args and named args.</para>
+      <para role="changed" conformance="3.0.0">Changed: 3.0.0 support records as input</para>
+      <para role="changed" conformance="3.0.0">Changed: 3.0.0 output SRID if not EPSG:4326.</para>
+      <para role="changed" conformance="3.5.0">Changed: 3.5.0 allow specifying the column containing the feature id</para>
+      <para role="changed" conformance="3.7.0">Changed: 3.7.0 added warning about duplicate keys</para>
+      <para>&Z_support;</para>
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+
+<para>Generate a FeatureCollection:</para>
+<programlisting>SELECT json_build_object(
+    'type', 'FeatureCollection',
+    'features', json_agg(ST_AsGeoJSON(t.*, id_column => 'id')::json)
+    )
+FROM ( VALUES (1, 'one', 'POINT(1 1)'::geometry),
+              (2, 'two', 'POINT(2 2)'),
+              (3, 'three', 'POINT(3 3)')
+     ) as t(id, name, geom);</programlisting>
+<screen>{"type" : "FeatureCollection", "features" : [{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "id": 2, "properties": {"name": "two"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "id": 3, "properties": {"name": "three"}}]}</screen>
+
+<para>Generate a Feature:</para>
+    <programlisting>SELECT ST_AsGeoJSON(t.*, id_column => 'id')
+FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programlisting>
+<screen>                                                  st_asgeojson
+-----------------------------------------------------------------------------------------------------------------
+ {"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}
+</screen>
+
+<para>Don't forget to transform your data to WGS84 longitude, latitude to conform with the GeoJSON specification:</para>
+    <programlisting>SELECT ST_AsGeoJSON(ST_Transform(geom,4326)) from fe_edges limit 1;</programlisting>
+<screen>             st_asgeojson
+-----------------------------------------------------------------------------------------------------------
+
+{"type":"MultiLineString","coordinates":[[[-89.734634999999997,31.492072000000000],
+[-89.734955999999997,31.492237999999997]]]}
+</screen>
+<para>3D geometries are supported:</para>
+<programlisting>SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');</programlisting>
+<screen>{"type":"LineString","coordinates":[[1,2,3],[4,5,6]]}</screen>
+<para>Options argument can be used to add BBOX and CRS in GeoJSON output:</para>
+<programlisting> SELECT ST_AsGeoJSON(ST_SetSRID('POINT(1 1)'::geometry, 4326), 9, 4|1);</programlisting>
+<screen>
+  {"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[1.000000000,1.000000000,1.000000000,1.000000000],"coordinates":[1,1]}
+</screen>
+    </refsection>
+  <refsection>
+    <title>See Also</title>
+
+    <para><xref linkend="ST_GeomFromGeoJSON"/>, <xref linkend="ST_ForcePolygonCCW"/>, <xref linkend="ST_Transform"/> </para>
+  </refsection>
+
+  </refentry>

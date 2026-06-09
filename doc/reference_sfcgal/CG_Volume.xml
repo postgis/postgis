@@ -1,0 +1,53 @@
+<refentry xml:id="CG_Volume" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+        <refname>CG_Volume</refname>
+
+        <refpurpose>Computes the volume of a 3D solid. If applied to surface (even closed) geometries will return 0.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>float <function>CG_Volume</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+        <title>Description</title>
+
+        <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+        <para>&sfcgal_required;</para>
+        <para>&Z_support;</para>
+        <para>&P_support;</para>
+        <para>&T_support;</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as CG_3DVolume)</para>
+    </refsection>
+
+    <refsection>
+        <title>Example</title>
+        <para>When closed surfaces are created with WKT, they are treated as areal rather than solid.  To make them solid, you need to use <xref linkend="CG_MakeSolid"/>.
+        Areal geometries have no volume.  Here is an example to demonstrate.</para>
+    <programlisting>SELECT CG_Volume(geom) As cube_surface_vol,
+    CG_Volume(CG_MakeSolid(geom)) As solid_surface_vol
+    FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);
+
+    cube_surface_vol | solid_surface_vol
+    ------------------+-------------------
+    0 |                 1
+</programlisting>
+    </refsection>
+
+    <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="CG_3DArea"/>, <xref linkend="CG_MakeSolid"/>, <xref linkend="CG_IsSolid"/></para>
+    </refsection>
+
+</refentry>

@@ -1,0 +1,63 @@
+<refentry xml:id="ST_AddPoint" xmlns="http://docbook.org/ns/docbook">
+		  <refnamediv>
+			<refname>ST_AddPoint</refname>
+			<refpurpose>Add a point to a LineString.</refpurpose>
+		  </refnamediv>
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_AddPoint</function></funcdef>
+				<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
+				<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>
+			  </funcprototype>
+			 </funcsynopsis>
+			 <funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_AddPoint</function></funcdef>
+				<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
+				<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>
+				<paramdef><type>integer</type> <parameter>position = -1</parameter></paramdef>
+			  </funcprototype>
+			 </funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Adds a point to a LineString before the index <parameter>position</parameter>
+				(using a 0-based index).
+                If the <parameter>position</parameter> parameter is omitted or is -1
+				the point is appended to the end of the LineString.</para>
+			<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+            <para>Add a point to the end of a 3D line</para>
+<programlisting>
+SELECT ST_AsEWKT(ST_AddPoint('LINESTRING(0 0 1, 1 1 1)', ST_MakePoint(1, 2, 3)));
+
+    st_asewkt
+    ----------
+    LINESTRING(0 0 1,1 1 1,1 2 3)
+</programlisting>
+
+<para>Guarantee all lines in a table are closed
+by adding the start point of each line to the end of the line
+only for those that are not closed.
+</para>
+<programlisting>
+UPDATE sometable
+SET geom = ST_AddPoint(geom, ST_StartPoint(geom))
+FROM sometable
+WHERE ST_IsClosed(geom) = false;
+</programlisting>
+
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_RemovePoint"/>, <xref linkend="ST_SetPoint"/></para>
+		  </refsection>
+	</refentry>

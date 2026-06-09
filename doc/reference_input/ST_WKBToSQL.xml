@@ -1,0 +1,22 @@
+<refentry xml:id="ST_WKBToSQL" xmlns="http://docbook.org/ns/docbook">
+		  <refnamediv>
+			<refname>ST_WKBToSQL</refname>
+			<refpurpose>Return a specified ST_Geometry value from Well-Known Binary representation (WKB).  This is an alias name for ST_GeomFromWKB that takes no srid</refpurpose>
+		  </refnamediv>
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_WKBToSQL</function></funcdef>
+				<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.36</para>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromWKB"/></para>
+		  </refsection>
+	</refentry>

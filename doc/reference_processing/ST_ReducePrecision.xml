@@ -1,0 +1,92 @@
+<refentry xml:id="ST_ReducePrecision" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_ReducePrecision</refname>
+
+        <refpurpose>Returns a valid geometry with points rounded to a grid tolerance.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_ReducePrecision</function></funcdef>
+
+            <paramdef><type>geometry </type>
+            <parameter>g</parameter></paramdef>
+            <paramdef><type>float8 </type>
+            <parameter>gridsize</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns a valid geometry with all points rounded to the provided grid tolerance, and features below the tolerance removed.</para>
+
+        <para>Unlike <xref linkend="ST_SnapToGrid"/> the returned geometry will be valid, with no ring self-intersections or collapsed components.</para>
+
+		<para>
+        Precision reduction can be used to:
+        <itemizedlist>
+            <listitem><para>
+            match coordinate precision to the data accuracy
+            </para></listitem>
+            <listitem><para>
+            reduce the number of coordinates needed to represent a geometry
+            </para></listitem>
+            <listitem><para>
+            ensure valid geometry output to formats which use lower precision
+            (e.g. text formats such as WKT, GeoJSON or KML
+            when the number of output decimal places is limited).
+            </para></listitem>
+            <listitem><para>
+            export valid geometry to systems which use lower or limited precision
+            (e.g. SDE, Oracle tolerance value)
+            </para></listitem>
+        </itemizedlist>
+		</para>
+
+        <para role="availability" conformance="3.1.0">Availability: 3.1.0.</para>
+        <para role="geos_requirement" conformance="3.9.0">Requires GEOS &gt;= 3.9.0.</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 0.1));
+    st_astext
+-----------------
+ POINT(1.4 19.3)
+
+SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 1.0));
+  st_astext
+-------------
+ POINT(1 19)
+
+SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 10));
+  st_astext
+-------------
+ POINT(0 20)
+</programlisting>
+
+<para>Precision reduction can reduce number of vertices</para>
+<programlisting>SELECT ST_AsText(ST_ReducePrecision('LINESTRING (10 10, 19.6 30.1, 20 30, 20.3 30, 40 40)', 1));
+  st_astext
+-------------
+ LINESTRING (10 10, 20 30, 40 40)
+</programlisting>
+
+<para>Precision reduction splits polygons if needed to ensure validity</para>
+<programlisting>SELECT ST_AsText(ST_ReducePrecision('POLYGON ((10 10, 60 60.1, 70 30, 40 40, 50 10, 10 10))', 10));
+  st_astext
+-------------
+ MULTIPOLYGON (((60 60, 70 30, 40 40, 60 60)), ((40 40, 50 10, 10 10, 40 40)))
+</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_SnapToGrid"/>, <xref linkend="ST_Simplify"/>, <xref linkend="ST_SimplifyVW"/></para>
+      </refsection>
+    </refentry>

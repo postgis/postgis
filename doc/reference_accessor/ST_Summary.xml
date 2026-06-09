@@ -1,0 +1,98 @@
+<refentry xml:id="ST_Summary" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_Summary</refname>
+
+		<refpurpose>Returns a text summary of the contents of a geometry.
+		</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>ST_Summary</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>text <function>ST_Summary</function></funcdef>
+			<paramdef><type>geography </type> <parameter>g</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a text summary of the contents of the geometry.</para>
+
+		<para>
+                  Flags shown square brackets after the geometry type
+                  have the following meaning:
+                  <itemizedlist>
+                    <listitem><para>M: has M coordinate</para></listitem>
+                    <listitem><para>Z: has Z coordinate</para></listitem>
+                    <listitem><para>B: has a cached bounding box</para></listitem>
+                    <listitem><para>G: is geodetic (geography)</para></listitem>
+                    <listitem><para>S: has spatial reference system</para></listitem>
+                  </itemizedlist>
+                </para>
+	<!-- Optionally mention Circular String Support -->
+	<para>&curve_support;</para>
+
+	<!-- Optionally mention supports Polyhedral Surface  -->
+	<para>&P_support;</para>
+
+	<!-- Optionally mention support for Triangles and TINS  -->
+	<para>&T_support;</para>
+		<para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 added support for geography</para>
+		<para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 S flag to denote if has a known spatial reference system</para>
+		<para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0 Added support for TIN and Curves</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+=# SELECT ST_Summary(ST_GeomFromText('LINESTRING(0 0, 1 1)')) as geom,
+        ST_Summary(ST_GeogFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) geog;
+            geom             |          geog
+-----------------------------+--------------------------
+ LineString[B] with 2 points | Polygon[BGS] with 1 rings
+                             | ring 0 has 5 points
+                             :
+(1 row)
+
+
+=# SELECT ST_Summary(ST_GeogFromText('LINESTRING(0 0 1, 1 1 1)')) As geog_line,
+        ST_Summary(ST_GeomFromText('SRID=4326;POLYGON((0 0 1, 1 1 2, 1 2 3, 1 1 1, 0 0 1))')) As geom_poly;
+;
+           geog_line             |        geom_poly
+-------------------------------- +--------------------------
+ LineString[ZBGS] with 2 points | Polygon[ZBS] with 1 rings
+                                :    ring 0 has 5 points
+                                :
+(1 row)
+
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+<xref linkend="PostGIS_DropBBox"/>,
+<xref linkend="PostGIS_AddBBox"/>,
+<xref linkend="ST_Force_3DM"/>,
+<xref linkend="ST_Force_3DZ"/>,
+<xref linkend="ST_Force2D"/>,
+<xref linkend="geography"/>
+		</para>
+
+		<para>
+<xref linkend="ST_IsValid"/>,
+<xref linkend="ST_IsValid"/>,
+<xref linkend="ST_IsValidReason"/>,
+<xref linkend="ST_IsValidDetail"/>
+		</para>
+	  </refsection>
+	</refentry>

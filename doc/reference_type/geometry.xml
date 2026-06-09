@@ -1,0 +1,56 @@
+<refentry xml:id="geometry" xmlns="http://docbook.org/ns/docbook">
+		<refnamediv>
+			<refname>geometry</refname>
+			<refpurpose>The type representing spatial features with planar coordinate systems.</refpurpose>
+		</refnamediv>
+
+		<refsection>
+			<title>Description</title>
+			<para><varname>geometry</varname> is a fundamental PostGIS spatial data type used to represent a feature in planar (Euclidean) coordinate systems.</para>
+			<para>All spatial operations on geometry use the units of the Spatial Reference System the geometry is in.</para>
+		</refsection>
+
+		<refsection>
+		<title>Casting Behavior</title>
+		<para>This table lists the automatic and explicit casts allowed for this data type:</para>
+		<informaltable rowsep="1" frame="all">
+		<tgroup cols="2">
+			<tbody>
+			  <row>
+				<entry>Cast To</entry>
+				<entry>Behavior</entry>
+			  </row>
+			  <row>
+				<entry>box</entry>
+				<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>box2d</entry>
+				<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>box3d</entry>
+				<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>bytea</entry>
+				<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>geography</entry>
+				<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>text</entry>
+				<entry>automatic</entry>
+			  </row>
+			</tbody>
+		</tgroup>
+		</informaltable>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="RefObject"/>, <xref linkend="PostGIS_SQLMM_Functions"/></para>
+		</refsection>
+	</refentry>

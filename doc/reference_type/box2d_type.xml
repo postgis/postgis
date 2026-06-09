@@ -1,0 +1,45 @@
+<refentry xml:id="box2d_type" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>box2d</refname>
+        <refpurpose>The type representing a 2-dimensional bounding box. </refpurpose>
+      </refnamediv>
+
+      <refsection>
+        <title>Description</title>
+        <para><varname>box2d</varname> is a spatial data type used to represent
+            the two-dimensional bounding box enclosing a geometry or collection of geometries.
+            For example, the <xref linkend="ST_Extent"/> aggregate function returns a <varname>box2d</varname> object.</para>
+
+            <para>The representation contains the values <varname>xmin, ymin, xmax, ymax</varname>.
+            These are the minimum and maximum values of the X and Y extents.
+            </para>
+
+            <para><varname>box2d</varname> objects have a text representation which looks like <code>BOX(1 2,5 6)</code>.
+            </para>
+      </refsection>
+
+      <refsection>
+		<title>Casting Behavior</title>
+		<para>This table lists the automatic and explicit casts allowed for this data type:</para>
+		<informaltable rowsep="1" frame="all">
+		<tgroup cols="2">
+			<tbody>
+			  <row>
+				<entry>Cast To</entry>  <entry>Behavior</entry>
+			  </row>
+			  <row>
+				<entry>box3d</entry>	<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>geometry</entry>	<entry>automatic</entry>
+			  </row>
+			</tbody>
+		</tgroup>
+		</informaltable>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="PostGIS_BoxFunctions"/></para>
+		</refsection>
+    </refentry>

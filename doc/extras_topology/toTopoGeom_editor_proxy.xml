@@ -1,0 +1,12 @@
+<refentry xml:id="toTopoGeom_editor_proxy" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+        <refname>toTopoGeom</refname>
+				<refpurpose>Adds a geometry shape to an existing topo geometry.</refpurpose>
+			</refnamediv>
+			<refsection>
+                <title>Description</title>
+<para>
+Refer to <xref linkend="toTopoGeom"/>.
+</para>
+      </refsection>
+    </refentry>

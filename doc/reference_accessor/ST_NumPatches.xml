@@ -1,0 +1,45 @@
+<refentry xml:id="ST_NumPatches" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_NumPatches</refname>
+		<refpurpose>Return the number of faces on a Polyhedral Surface.  Will return null for non-polyhedral geometries.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_NumPatches</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the number of faces on a Polyhedral Surface.  Will return null for non-polyhedral geometries. This is
+		an alias for ST_NumGeometries to support MM naming. Faster to use ST_NumGeometries if you don't care about MM convention.</para>
+
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+		<para>&Z_support;</para>
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5</para>
+		<para>&P_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_NumPatches(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
+		--result
+		6
+		</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_NumGeometries"/></para>
+	  </refsection>
+	</refentry>

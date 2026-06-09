@@ -1,0 +1,67 @@
+<refentry xml:id="ST_LineToCurve" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_LineToCurve</refname>
+
+        <refpurpose>Converts a linear geometry to a curved geometry.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_LineToCurve</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Converts plain LINESTRING/POLYGON to CIRCULAR STRINGs and Curved Polygons.  Note much fewer points are needed to describe the curved equivalent.</para>
+        <note><para>If the input LINESTRING/POLYGON is not curved enough to clearly represent a curve, the function will return the same input geometry.</para></note>
+        <para role="availability" conformance="1.3.0">Availability: 1.3.0</para>
+        <para>&Z_support;</para>
+        <para>&curve_support;</para>
+      </refsection>
+
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting> -- 2D Example
+SELECT ST_AsText(ST_LineToCurve(foo.geom)) As curvedastext,ST_AsText(foo.geom) As non_curvedastext
+    FROM (SELECT ST_Buffer('POINT(1 3)'::geometry, 3) As geom) As foo;
+
+curvedatext                                                            non_curvedastext
+--------------------------------------------------------------------|-----------------------------------------------------------------
+CURVEPOLYGON(CIRCULARSTRING(4 3,3.12132034355964 0.878679656440359, | POLYGON((4 3,3.94235584120969 2.41472903395162,3.77163859753386 1.85194970290473,
+1 0,-1.12132034355965 5.12132034355963,4 3))                        |  3.49440883690764 1.33328930094119,3.12132034355964 0.878679656440359,
+                                                                    |  2.66671069905881 0.505591163092366,2.14805029709527 0.228361402466141,
+                                                                    |  1.58527096604839 0.0576441587903094,1 0,
+                                                                    |  0.414729033951621 0.0576441587903077,-0.148050297095264 0.228361402466137,
+                                                                    |  -0.666710699058802 0.505591163092361,-1.12132034355964 0.878679656440353,
+                                                                    |  -1.49440883690763 1.33328930094119,-1.77163859753386 1.85194970290472
+                                                                    |  --ETC-- ,3.94235584120969 3.58527096604839,4 3))
+
+--3D example
+SELECT ST_AsText(ST_LineToCurve(geom)) As curved, ST_AsText(geom) AS not_curved
+FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2))),0,0,3) AS geom) AS foo;
+
+                        curved                        |               not_curved
+------------------------------------------------------+---------------------------------------------------------------------
+ CIRCULARSTRING Z (3 3 3,-1 2.99999999999999 3,3 3 3) | LINESTRING Z (3 3 3,2.4142135623731 1.58578643762691 3,1 1 3,
+                                                      | -0.414213562373092 1.5857864376269 3,-1 2.99999999999999 3,
+                                                      | -0.414213562373101 4.41421356237309 3,
+                                                      | 0.999999999999991 5 3,2.41421356237309 4.4142135623731 3,3 3 3)
+(1 row)
+</programlisting>
+    </refsection>
+
+
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_CurveToLine"/></para>
+      </refsection>
+    </refentry>

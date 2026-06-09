@@ -1,0 +1,93 @@
+<refentry xml:id="ST_ClosestPoint" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_ClosestPoint</refname>
+
+		<refpurpose>Returns the 2D point on g1 that is closest to g2.  This is the first point of
+			the shortest line from one geometry to the other.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ClosestPoint</function></funcdef>
+			<paramdef><type>geometry </type>
+			<parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry </type>
+			<parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+
+          <funcprototype>
+            <funcdef>geography <function>ST_ClosestPoint</function></funcdef>
+            <paramdef><type>geography </type>
+              <parameter>geom1</parameter></paramdef>
+            <paramdef><type>geography </type>
+              <parameter>geom2</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean </type>
+              <parameter>use_spheroid = true</parameter></paramdef>
+          </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 2-dimensional point on <varname>geom1</varname> that is closest to <varname>geom2</varname>.
+        This is the first point of the shortest line between the geometries
+        (as computed by <xref linkend="ST_ShortestLine"/>).
+		</para>
+		<note><para>If you have a 3D Geometry, you may prefer to use <xref linkend="ST_3DClosestPoint"/>.</para></note>
+        <para role="enhanced" conformance="3.4.0">Enhanced: 3.4.0 -  Support for geography.</para>
+		<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+    <para><informalfigure>
+        <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_closestpoint01.png"/>
+            </imageobject>
+            <caption><para>The closest point for a Point and a LineString is the point itself.
+            The closest point for a LineString and a Point is a point on the line.</para></caption>
+        </mediaobject>
+        </informalfigure>
+<programlisting>
+SELECT ST_AsText( ST_ClosestPoint(pt,line)) AS cp_pt_line,
+       ST_AsText( ST_ClosestPoint(line,pt)) AS cp_line_pt
+    FROM (SELECT 'POINT (160 40)'::geometry AS pt,
+                 'LINESTRING (10 30, 50 50, 30 110, 70 90, 180 140, 130 190)'::geometry AS line ) AS t;
+
+   cp_pt_line   |                cp_line_pt
+----------------+------------------------------------------
+ POINT(160 40)  | POINT(125.75342465753425 115.34246575342466)
+</programlisting>
+	</para>
+
+    <para><informalfigure>
+        <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_closestpoint02.png"/>
+            </imageobject>
+            <caption><para>The closest point on polygon A to polygon B</para></caption>
+        </mediaobject>
+        </informalfigure>
+<programlisting>
+SELECT ST_AsText( ST_ClosestPoint(
+		'POLYGON ((190 150, 20 10, 160 70, 190 150))',
+		ST_Buffer('POINT(80 160)', 30)	)) As ptwkt;
+------------------------------------------
+ POINT(131.59149149528952 101.89887534906197)
+</programlisting>
+	</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_3DClosestPoint"/>, <xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_MaxDistance"/></para>
+	  </refsection>
+</refentry>

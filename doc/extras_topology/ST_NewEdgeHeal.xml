@@ -1,0 +1,50 @@
+<refentry xml:id="ST_NewEdgeHeal" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>ST_NewEdgeHeal</refname>
+
+				<refpurpose>
+Heals two edges by deleting the node connecting them, deleting both edges,
+and replacing them with an edge whose direction is the same as the first
+edge provided.
+				</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>bigint <function>ST_NewEdgeHeal</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anedge</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>anotheredge</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Heals two edges by deleting the node connecting them, deleting both edges,
+and replacing them with an edge whose direction is the same as the first
+edge provided.
+Returns the id of the new edge replacing the healed ones.
+Updates all existing joined edges and relationships accordingly.
+		</para>
+
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="2.0">Availability: 2.0</para>
+                <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.9</para>
+			</refsection>
+
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para>
+				<xref linkend="ST_ModEdgeHeal"/>
+				<xref linkend="ST_ModEdgeSplit"/>
+				<xref linkend="ST_NewEdgesSplit"/>
+				</para>
+			</refsection>
+		</refentry>

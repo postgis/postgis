@@ -1,0 +1,61 @@
+<refentry xml:id="ST_GeomFromGeoJSON" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_GeomFromGeoJSON</refname>
+		<refpurpose>Takes as input a geojson representation of a geometry and outputs a PostGIS geometry object</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromGeoJSON</function></funcdef>
+			<paramdef><type>text </type> <parameter>geomjson</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromGeoJSON</function></funcdef>
+			<paramdef><type>json </type> <parameter>geomjson</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromGeoJSON</function></funcdef>
+			<paramdef><type>jsonb </type> <parameter>geomjson</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Constructs a PostGIS geometry object from the GeoJSON representation.</para>
+		<para>ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an error if you try to use it on a whole JSON document.</para>
+
+		<para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 parsed geometry defaults to SRID=4326 if not specified otherwise.</para>
+		<para role="enhanced" conformance="2.5.0">Enhanced: 2.5.0 can now accept json and jsonb as inputs.</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0 requires - JSON-C &gt;= 0.9</para>
+		<note><para>If you do not have JSON-C enabled, support you will get an error notice instead of seeing an output.
+			To enable JSON-C, run configure --with-jsondir=/path/to/json-c.  See <xref linkend="installation_configuration"/> for details.</para></note>
+		<para>&Z_support;</para>
+	  </refsection>
+
+	 <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-48.23456,20.12345]}')) As wkt;
+wkt
+------
+POINT(-48.23456 20.12345)
+</programlisting>
+<programlisting>-- a 3D linestring
+SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,3],[4,5,6],[7,8,9]]}')) As wkt;
+
+wkt
+-------------------
+LINESTRING(1 2,4 5,7 8)
+</programlisting>
+	  </refsection>
+
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsText"/>, <xref linkend="ST_AsGeoJSON"/>, <xref linkend="installation_configuration"/></para>
+	  </refsection>
+	</refentry>

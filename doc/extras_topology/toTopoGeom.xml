@@ -1,0 +1,127 @@
+<refentry xml:id="toTopoGeom" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>toTopoGeom</refname>
+
+				<refpurpose>Converts a simple Geometry into a topo geometry.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>topogeometry <function>toTopoGeom</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>integer</type> <parameter>layer_id</parameter></paramdef>
+					<paramdef choice="opt"><type>float8</type> <parameter>tolerance=-1</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+					<funcdef>topogeometry <function>toTopoGeom</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>topogeometry </type> <parameter>topogeom</parameter></paramdef>
+					<paramdef choice="opt"><type>float8</type> <parameter>tolerance=-1</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Converts a simple Geometry into a <xref linkend="topogeometry"/>.
+                </para>
+
+                <para>
+Topological primitives required to represent the input geometry will be
+added to the underlying topology, possibly splitting existing ones,
+and they will be associated with the output TopoGeometry in the
+<varname>relation</varname> table.
+                </para>
+
+                <para>
+Existing TopoGeometry objects (with the possible exception of
+<varname>topogeom</varname>, if given) will retain their shapes.
+                </para>
+
+                <para>
+When <varname>tolerance</varname> is given it will be used to snap the
+input geometry to existing primitives.
+The special value -1 (default) means use the topology precision as tolerance.
+                </para>
+
+                <para>
+In the first form a new TopoGeometry will be created for the given
+layer (<varname>layer_id</varname>) of the given topology (<varname>toponame</varname>).
+                </para>
+
+                <para>
+In the second form the primitives resulting from the conversion will be
+added to the pre-existing TopoGeometry (<varname>topogeom</varname>),
+possibly adding space to its final shape. To have the new shape completely
+replace the old one see <xref linkend="clearTopoGeom"/>.
+                </para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="2.0">Availability: 2.0</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 adds the version taking an existing TopoGeometry.</para>
+                <para role="changed" conformance="3.7.0">Changed: 3.7.0 changes meaning of tolerance 0 to really mean 0 and -1 (new default) to request using the topology precision.</para>
+			</refsection>
+			<refsection>
+				<title>Examples</title>
+				<para>This is a full self-contained workflow</para>
+				<programlisting> -- do this if you don't have a topology setup already
+-- creates topology not allowing any tolerance
+SELECT topology.CreateTopology('topo_boston_test', 2249);
+-- create a new table
+CREATE TABLE nei_topo(gid serial primary key, nei varchar(30));
+--add a topogeometry column to it
+SELECT topology.AddTopoGeometryColumn('topo_boston_test', 'public', 'nei_topo', 'topo', 'MULTIPOLYGON') As new_layer_id;
+new_layer_id
+-----------
+1
+
+-- use new layer id in populating the new topogeometry column
+INSERT INTO nei_topo(nei, topo)
+SELECT nei,  topology.toTopoGeom(geom, 'topo_boston_test', 1)
+FROM neighborhoods
+WHERE gid BETWEEN 1 and 15;
+
+--use to verify what has happened --
+SELECT * FROM
+    topology.TopologySummary('topo_boston_test');
+
+-- summary--
+Topology topo_boston_test (5), SRID 2249, precision 0
+61 nodes, 87 edges, 35 faces, 15 topogeoms in 1 layers
+Layer 1, type Polygonal (3), 15 topogeoms
+ Deploy: public.nei_topo.topo</programlisting>
+
+        <programlisting><![CDATA[
+
+-- Shrink all TopoGeometry polygons by 10 meters
+UPDATE nei_topo SET topo = toTopoGeom(ST_Buffer(topo, -10), clearTopoGeom(topo), 0);
+
+-- Get the no-one-lands left by the above operation
+-- I think GRASS calls this "polygon0 layer"
+SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
+  FROM topo_boston_test.face f
+  WHERE f.face_id > 0 -- don't consider the universe face
+  AND NOT EXISTS ( -- check that no TopoGeometry references the face
+    SELECT * FROM topo_boston_test.relation
+    WHERE layer_id = 1 AND element_id = f.face_id
+  );
+        ]]></programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+        <para>
+<xref linkend="CreateTopology"/>,
+<xref linkend="AddTopoGeometryColumn"/>,
+<xref linkend="CreateTopoGeom"/>,
+<xref linkend="TopologySummary"/>,
+<xref linkend="clearTopoGeom"/>
+        </para>
+			</refsection>
+		</refentry>

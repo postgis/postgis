@@ -1,0 +1,107 @@
+<refentry xml:id="UpdateGeometrySRID" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>UpdateGeometrySRID</refname>
+
+		<refpurpose>Updates the SRID of all features in a geometry
+		column, and the table metadata.
+		</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>UpdateGeometrySRID</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>srid</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>UpdateGeometrySRID</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>srid</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>UpdateGeometrySRID</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>catalog_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Updates the SRID of all features in a geometry column, updating
+		constraints and reference in geometry_columns.
+		If the column was enforced by a type definition, the type definition will be changed.
+		Note: uses
+		current_schema() on schema-aware pgsql installations if schema is not
+		provided.</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+	  <refsection>
+		<title>Examples</title>
+
+		<para>Insert geometries into roads table with a SRID set already using <link linkend="ST_GeomFromEWKT">EWKT format</link>:</para>
+		<programlisting>COPY roads (geom) FROM STDIN;
+SRID=4326;LINESTRING(0 0, 10 10)
+SRID=4326;LINESTRING(10 10, 15 0)
+\.
+		</programlisting>
+
+		<para>This will change the srid of the roads table to 4326 from whatever it was before:</para>
+		<programlisting>SELECT UpdateGeometrySRID('roads','geom',4326);</programlisting>
+
+		<para>The prior example is equivalent to this DDL statement:</para>
+		<programlisting>ALTER TABLE roads
+  ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 4326)
+    USING ST_SetSRID(geom,4326);</programlisting>
+
+	<para>If you got the projection wrong (or brought it in as unknown) in load and you wanted to transform to web mercator all in one shot you can do this with
+	DDL but there is no equivalent PostGIS management function to do so in one go.</para>
+	<programlisting>ALTER TABLE roads
+ ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 3857) USING ST_Transform(ST_SetSRID(geom,4326),3857) ;</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+  <xref linkend="RT_UpdateRasterSRID"/>,
+  <xref linkend="ST_SetSRID"/>,
+  <xref linkend="ST_Transform"/>,
+  <xref linkend="ST_GeomFromEWKT"/>
+		</para>
+	  </refsection>
+	</refentry>

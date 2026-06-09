@@ -1,0 +1,95 @@
+<refentry xml:id="postgis_gdal_enabled_drivers" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <refnamediv>
+                <refname>postgis.gdal_enabled_drivers</refname>
+                <refpurpose>
+                    A configuration option to set the enabled GDAL drivers in the PostGIS environment. Affects the GDAL configuration variable GDAL_SKIP.
+                </refpurpose>
+            </refnamediv>
+
+            <refsection>
+                <title>Description</title>
+                <para>
+                    A configuration option to set the enabled GDAL drivers in the PostGIS environment. Affects the GDAL configuration variable GDAL_SKIP. This option can be set in PostgreSQL's configuration file: postgresql.conf. It can also be set by connection or transaction.
+                </para>
+
+                <para>
+                    The initial value of <varname>postgis.gdal_enabled_drivers</varname> may also be set by passing the environment variable <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> with the list of enabled drivers to the process starting PostgreSQL.
+                </para>
+
+                <para>
+                    Enabled GDAL specified drivers can be specified by the driver's short-name or code. Driver short-names or codes can be found at <link xlink:href="http://www.gdal.org/formats_list.html">GDAL Raster Formats</link>. Multiple drivers can be specified by putting a space between each driver.
+                </para>
+
+                <note>
+                    <para>
+                        There are three special codes available for <varname>postgis.gdal_enabled_drivers</varname>. The codes are case-sensitive.
+
+                        <itemizedlist>
+                            <listitem>
+                                <para><varname>DISABLE_ALL</varname> disables all GDAL drivers. If present, <varname>DISABLE_ALL</varname> overrides all other values in <varname>postgis.gdal_enabled_drivers</varname>.</para>
+                        </listitem>
+                            <listitem>
+                                <para><varname>ENABLE_ALL</varname> enables all GDAL drivers.</para>
+                        </listitem>
+                            <listitem>
+                                <para><varname>VSICURL</varname> enables GDAL's <varname>/vsicurl/</varname> virtual file system.</para>
+                        </listitem>
+                        </itemizedlist>
+                    </para>
+                    <para>
+                        When <varname>postgis.gdal_enabled_drivers</varname> is set to DISABLE_ALL, attempts to use out-db rasters, ST_FromGDALRaster(), ST_AsGDALRaster(), ST_AsTIFF(), ST_AsJPEG() and ST_AsPNG() will result in error messages.
+                    </para>
+                </note>
+
+                <note>
+                    <para>
+                        In the standard PostGIS installation, <varname>postgis.gdal_enabled_drivers</varname> is set to DISABLE_ALL.
+                    </para>
+                </note>
+
+                <note>
+                    <para>
+                        Additional information about GDAL_SKIP is available at GDAL's <link xlink:href="https://gdal.org/user/configoptions.html">Configuration Options</link>.
+                    </para>
+                </note>
+
+                <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+                <para>To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current session</para>
+
+                <programlisting>
+SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
+SET postgis.gdal_enabled_drivers = default;
+                </programlisting>
+
+                <para>Set for all new connections to a specific database to specific drivers</para>
+
+                <programlisting>ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';</programlisting>
+
+                <para>Setting for whole database cluster to enable all drivers. Requires super user access.
+                    Also note that database, session, and user settings override this.</para>
+
+                <programlisting>
+ --writes to postgres.auto.conf
+ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';
+ --Reloads postgres conf
+SELECT pg_reload_conf();
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_FromGDALRaster"/>,
+                    <xref linkend="RT_ST_AsGDALRaster"/>,
+                    <xref linkend="RT_ST_AsTIFF"/>,
+                    <xref linkend="RT_ST_AsPNG"/>,
+                    <xref linkend="RT_ST_AsJPEG"/>,
+                    <xref linkend="postgis_enable_outdb_rasters"/>
+                </para>
+            </refsection>
+    </refentry>

@@ -1,0 +1,48 @@
+<refentry xml:id="RT_ST_PixelAsPoint" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_PixelAsPoint</refname>
+                <refpurpose>
+                    Returns a point geometry of the pixel's upper-left corner.
+                </refpurpose>
+            </refnamediv>
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>ST_PixelAsPoint</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+                <para>Returns a point geometry of the pixel's upper-left corner.</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+                <programlisting>
+SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
+
+   st_astext
+----------------
+ POINT(0.5 0.5)
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_DumpAsPolygons"/>,
+                    <xref linkend="RT_ST_PixelAsPolygon"/>,
+                    <xref linkend="RT_ST_PixelAsPolygons"/>,
+                    <xref linkend="RT_ST_PixelAsPoints"/>,
+                    <xref linkend="RT_ST_PixelAsCentroid"/>,
+                    <xref linkend="RT_ST_PixelAsCentroids"/>
+                </para>
+            </refsection>
+
+        </refentry>

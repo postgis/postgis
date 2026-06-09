@@ -1,0 +1,54 @@
+<refentry xml:id="ST_RotateY" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_RotateY</refname>
+
+		<refpurpose>Rotates a geometry about the Y axis.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RotateY</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Rotates a geometry geomA - rotRadians about the y axis.</para>
+
+		<note><para><code>ST_RotateY(geomA,  rotRadians)</code>
+			is short-hand for <code>ST_Affine(geomA,  cos(rotRadians), 0, sin(rotRadians),  0, 1, 0,  -sin(rotRadians), 0, cos(rotRadians), 0,  0, 0)</code>.</para></note>
+
+		<para role="availability" conformance="1.1.2.">Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+
+		<para>&P_support;</para>
+		<para>&Z_support;</para>
+		<para>&T_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--Rotate a line 90 degrees along y-axis
+ SELECT ST_AsEWKT(ST_RotateY(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
+		 st_asewkt
+---------------------------
+ LINESTRING(3 2 -1,1 1 -1)
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_RotateX"/>, <xref linkend="ST_RotateZ"/></para>
+	  </refsection>
+	</refentry>

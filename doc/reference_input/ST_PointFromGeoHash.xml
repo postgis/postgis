@@ -1,0 +1,54 @@
+<refentry xml:id="ST_PointFromGeoHash" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_PointFromGeoHash</refname>
+
+		<refpurpose>Return a point from a GeoHash string.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>point <function>ST_PointFromGeoHash</function></funcdef>
+				<paramdef><type>text </type> <parameter>geohash</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>precision=full_precision_of_geohash</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return a point from a GeoHash string. The point represents the center point of the GeoHash.</para>
+
+		<para>If no <varname>precision</varname> is specified ST_PointFromGeoHash returns a point based on full precision of the input GeoHash string.</para>
+
+		<para>If <varname>precision</varname> is specified ST_PointFromGeoHash will use that many characters from the GeoHash to create the point.</para>
+
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
+          st_astext
+------------------------------
+ POINT(-115.172816 36.114646)
+
+SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 4));
+             st_astext
+-----------------------------------
+ POINT(-115.13671875 36.123046875)
+
+SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
+                 st_astext
+-------------------------------------------
+ POINT(-115.172815918922 36.1146435141563)
+
+		</programlisting>
+	  </refsection>
+	 <refsection>
+		<title>See Also</title>
+
+		<para> <xref linkend="ST_GeoHash"/>, <xref linkend="ST_Box2dFromGeoHash"/>, <xref linkend="ST_GeomFromGeoHash"/></para>
+	  </refsection>
+	</refentry>

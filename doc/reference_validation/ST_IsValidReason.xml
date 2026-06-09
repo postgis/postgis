@@ -1,0 +1,93 @@
+<refentry xml:id="ST_IsValidReason" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_IsValidReason</refname>
+
+		<refpurpose>Returns text stating if a geometry is valid, or a reason for invalidity.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>ST_IsValidReason</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>ST_IsValidReason</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>flags</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns text stating if a geometry is valid, or if invalid a reason why.</para>
+
+		<para>Useful in combination with <xref linkend="ST_IsValid"/> to generate a detailed report of invalid geometries and reasons.</para>
+
+		<para>
+Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail"/>.
+		</para>
+		<para>Performed by the GEOS module.</para>
+		<para role="availability" conformance="1.4">Availability: 1.4</para>
+		<para role="availability" conformance="2.0">Availability: 2.0 version taking flags.</para>
+	  </refsection>
+	  <refsection>
+		<title>Examples</title>
+
+        <programlisting>-- invalid bow-tie polygon
+SELECT ST_IsValidReason(
+    'POLYGON ((100 200, 100 100, 200 200,
+     200 100, 100 200))'::geometry) as validity_info;
+validity_info
+--------------------------
+Self-intersection[150 150]
+        </programlisting>
+		<programlisting><![CDATA[
+
+--First 3 Rejects from a successful quintuplet experiment
+SELECT gid, ST_IsValidReason(geom) as validity_info
+FROM
+(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, gid
+FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
+	FROM generate_series(-4,6) x1
+	CROSS JOIN generate_series(2,5) y1
+	CROSS JOIN generate_series(1,8) z1
+	WHERE x1 > y1*0.5 AND z1 < x1*y1) As e
+	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) As line
+	FROM generate_series(-3,6) x1
+	CROSS JOIN generate_series(2,5) y1
+	CROSS JOIN generate_series(1,10) z1
+	WHERE x1 > y1*0.75 AND z1 < x1*y1) As f
+ON (ST_Area(e.buff) > 78 AND ST_Contains(e.buff, f.line))
+GROUP BY gid, e.buff) As quintuplet_experiment
+WHERE ST_IsValid(geom) = false
+ORDER BY gid
+LIMIT 3;
+
+ gid  |      validity_info
+------+--------------------------
+ 5330 | Self-intersection [32 5]
+ 5340 | Self-intersection [42 5]
+ 5350 | Self-intersection [52 5]
+
+ --simple example
+SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)');
+
+ st_isvalidreason
+------------------
+ Valid Geometry
+
+
+]]></programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_IsValid"/>, <xref linkend="ST_Summary"/></para>
+	  </refsection>
+	</refentry>

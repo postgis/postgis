@@ -1,0 +1,86 @@
+<refentry xml:id="CG_OptimalAlphaShape" xmlns="http://docbook.org/ns/docbook">
+        <refnamediv>
+            <refname>CG_OptimalAlphaShape</refname>
+
+            <refpurpose>Computes an Alpha-shape enclosing a geometry using an "optimal" alpha value.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_OptimalAlphaShape</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    <paramdef choice="opt"><type>boolean </type> <parameter>allow_holes = false</parameter></paramdef>
+                    <paramdef choice="opt"><type>integer </type> <parameter>nb_components = 1</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para>Computes the "optimal" alpha-shape of the points in a geometry.
+            The alpha-shape is computed using a value of α chosen so that:
+        </para>
+        <orderedlist>
+            <listitem>
+                <para>the number of polygon elements is equal to or smaller than <varname>nb_components</varname>
+                    (which defaults to 1)</para>
+            </listitem>
+            <listitem>
+                <para>all input points are contained in the shape</para>
+            </listitem>
+        </orderedlist>
+        <para>
+            The result will not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
+        </para>
+
+        <para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.4.1.</para>
+        <para>&sfcgal_required;</para>
+    </refsection>
+
+    <refsection>
+        <title>Examples</title>
+        <para>
+            <informalfigure>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="images/st_optimalalphashape01.png"/>
+                    </imageobject>
+                    <caption><para>Optimal alpha-shape of a MultiPoint (same example as <xref linkend="CG_AlphaShape"/>)</para></caption>
+                </mediaobject>
+            </informalfigure>
+            <programlisting>SELECT ST_AsText(CG_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
+            (88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
+            (81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+            (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
+            (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
+            (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
+            (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry));</programlisting>
+        <screen>MULTIPOLYGON(((89 53,88 58,83 64,85 71,83 72,75 77,75 84,76 88,72 95,64 97,57 97,52 98,49 95,45 90,39 88,34 86,26 85,24 82,27 77,24 67,23 60,27 54,26 44,23 36,28 33,30 22,37 23,43 19,53 18,65 16,73 16,78 16,84 19,88 29,90 30,87 42,91 50,89 53)))</screen>
+</para>
+
+<para>
+    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/st_optimalalphashape02.png"/>
+            </imageobject>
+            <caption><para>Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="CG_AlphaShape"/>)</para></caption>
+        </mediaobject>
+    </informalfigure>
+    <programlisting>SELECT ST_AsText(CG_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+    (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
+    (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
+    (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
+    (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry, allow_holes =&gt; true));</programlisting>
+<screen>MULTIPOLYGON(((89 53,88 58,83 64,85 71,83 72,75 77,75 84,76 88,72 95,64 97,57 97,52 98,49 95,45 90,39 88,34 86,26 85,24 82,27 77,24 67,23 60,27 54,26 44,23 36,28 33,30 22,37 23,43 19,53 18,65 16,73 16,78 16,84 19,88 29,90 30,87 42,91 50,89 53),(36 68,40 75,43 80,50 86,60 81,68 73,77 67,81 60,82 54,81 47,78 43,81 29,76 27,70 20,62 22,55 26,54 32,48 34,44 42,38 46,36 61,36 68)))</screen>
+</para>
+
+            </refsection>
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="ST_ConcaveHull"/>, <xref linkend="CG_AlphaShape"/></para>
+            </refsection>
+
+        </refentry>

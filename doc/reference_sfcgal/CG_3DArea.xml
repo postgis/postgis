@@ -1,0 +1,48 @@
+<refentry xml:id="CG_3DArea" xmlns="http://docbook.org/ns/docbook">
+        <refnamediv>
+            <refname>CG_3DArea</refname>
+
+            <refpurpose>Computes area of 3D surface geometries.  Will return 0 for solids.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>float<function>CG_3DArea</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+            <para>&sfcgal_required;</para>
+            <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+        </refsection>
+
+        <refsection><title>Examples</title>
+            <para>Note: By default a PolyhedralSurface built from WKT is a surface geometry, not solid.  It therefore has surface area.  Once converted to a solid, no area.</para>
+            <programlisting>SELECT CG_3DArea(geom) As cube_surface_area,
+            CG_3DArea(CG_MakeSolid(geom)) As solid_surface_area
+            FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+            ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+            ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+            ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+            ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+            ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);
+
+            cube_surface_area | solid_surface_area
+            -------------------+--------------------
+            6 |                  0    </programlisting>
+
+    </refsection>
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="CG_Area"/>, <xref linkend="CG_MakeSolid"/>, <xref linkend="CG_IsSolid"/>, <xref linkend="CG_Area"/></para>
+    </refsection>
+</refentry>

@@ -1,0 +1,100 @@
+<refentry xml:id="RT_ST_AsGDALRaster" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <refnamediv>
+                <refname>ST_AsGDALRaster</refname>
+                <refpurpose>Return the raster tile in the designated GDAL Raster format.  Raster formats are one of those supported by your compiled library. Use ST_GDALDrivers() to get a list of formats supported by your library.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                    <funcdef>bytea <function>ST_AsGDALRaster</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>text </type> <parameter>format</parameter></paramdef>
+                    <paramdef choice="opt"><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+                    <paramdef choice="opt"><type>integer </type> <parameter>srid=sameassource</parameter></paramdef>
+                  </funcprototype>
+
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns the raster tile in the designated format. Arguments are itemized below:</para>
+                <itemizedlist>
+                    <listitem>
+            <para>
+                       <varname>format</varname> format to output.  This is dependent on the drivers compiled in your libgdal library.  Generally available are 'JPEG', 'GTIff', 'PNG'. Use <xref linkend="RT_ST_GDALDrivers"/> to get a list of formats supported by your library.
+            </para>
+                    </listitem>
+                   <listitem>
+            <para>
+            <varname>options</varname> text array of GDAL options. Valid options are dependent on the format. Refer to <link xlink:href="http://www.gdal.org/frmt_various.html">GDAL Raster format options</link> for more details.
+            </para>
+                   </listitem>
+                   <listitem>
+            <para>
+            <varname>srs</varname> The proj4text or srtext (from spatial_ref_sys) to embed in the image
+            </para>
+                   </listitem>
+                </itemizedlist>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+            </refsection>
+
+
+            <refsection>
+                <title>JPEG Output Example, multiple tiles as single raster</title>
+
+                <programlisting><![CDATA[
+SELECT ST_AsGDALRaster(ST_Union(rast), 'JPEG', ARRAY['QUALITY=50']) As rastjpg
+FROM dummy_rast
+WHERE rast && ST_MakeEnvelope(10, 10, 11, 11);
+]]></programlisting>
+
+            </refsection>
+
+
+            <refsection><title>Using PostgreSQL Large Object Support to export raster</title>
+                <para>One way to export raster into another format is using <link xlink:href="https://www.postgresql.org/docs/current/static/lo-funcs.html">PostgreSQL large object export functions</link>.
+                We'lll repeat the prior example but also exporting.  Note for this you'll need to have super user access to db since it uses server side lo functions.
+                It will also export to path on server network.  If you need export locally,
+                use the psql equivalent lo_ functions which export to the local file system instead of the server file system.</para>
+                <programlisting><![CDATA[
+DROP TABLE IF EXISTS tmp_out ;
+
+CREATE TABLE tmp_out AS
+SELECT lo_from_bytea(0,
+       ST_AsGDALRaster(ST_Union(rast), 'JPEG', ARRAY['QUALITY=50'])
+        ) AS loid
+  FROM dummy_rast
+WHERE rast && ST_MakeEnvelope(10, 10, 11, 11);
+
+SELECT lo_export(loid, '/tmp/dummy.jpg')
+   FROM tmp_out;
+
+SELECT lo_unlink(loid)
+  FROM tmp_out;
+]]></programlisting>
+            </refsection>
+
+            <refsection>
+                    <title>GTIFF Output Examples</title>
+
+                    <programlisting>SELECT ST_AsGDALRaster(rast, 'GTiff') As rastjpg
+FROM dummy_rast WHERE rid=2;
+
+-- Out GeoTiff with jpeg compression, 90% quality
+SELECT ST_AsGDALRaster(rast, 'GTiff',
+  ARRAY['COMPRESS=JPEG', 'JPEG_QUALITY=90'],
+  4269) As rasttiff
+FROM dummy_rast WHERE rid=2;
+                </programlisting>
+
+            </refsection>
+
+            <!-- Optionally add a "See Also" section -->
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_Raster_Applications"/>, <xref linkend="RT_ST_GDALDrivers"/>, <xref linkend="RT_ST_SRID"/></para>
+            </refsection>
+        </refentry>

@@ -1,0 +1,22 @@
+<refentry xml:id="ST_WKTToSQL" xmlns="http://docbook.org/ns/docbook">
+		  <refnamediv>
+			<refname>ST_WKTToSQL</refname>
+			<refpurpose>Return a specified ST_Geometry value from Well-Known Text representation (WKT).  This is an alias name for ST_GeomFromText</refpurpose>
+		  </refnamediv>
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_WKTToSQL</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.34</para>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromText"/></para>
+		  </refsection>
+	</refentry>

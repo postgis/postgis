@@ -1,0 +1,97 @@
+<refentry xml:id="summarystats" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>summarystats</refname>
+                <refpurpose>A composite type returned by the ST_SummaryStats and ST_SummaryStatsAgg functions.</refpurpose>
+            </refnamediv>
+
+            <refsection>
+                <title>Description</title>
+                <para>
+                    A composite type returned by the <xref linkend="RT_ST_SummaryStats"/> and <xref linkend="RT_ST_SummaryStatsAgg"/> functions.
+
+                    <variablelist>
+                        <varlistentry>
+                            <term>
+                                count
+                                integer
+                            </term>
+                            <listitem>
+                                <para>
+                                    Number of pixels counted for the summary statistics.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                            <term>
+                                sum
+                                double precision
+                            </term>
+                            <listitem>
+                                <para>
+                                    Sum of all counted pixel values.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                            <term>
+                                mean
+                                double precision
+                            </term>
+                            <listitem>
+                                <para>
+                                    Arithmetic mean of all counted pixel values.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                            <term>
+                                stddev
+                                double precision
+                            </term>
+                            <listitem>
+                                <para>
+                                    Standard deviation of all counted pixel values.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                            <term>
+                                min
+                                double precision
+                            </term>
+                            <listitem>
+                                <para>
+                                    Minimum value of counted pixel values.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+
+                        <varlistentry>
+                            <term>
+                                max
+                                double precision
+                            </term>
+                            <listitem>
+                                <para>
+                                    Maximum value of counted pixel values.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+
+                    </variablelist>
+
+                </para>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_SummaryStats"/>,
+                    <xref linkend="RT_ST_SummaryStatsAgg"/>
+                </para>
+            </refsection>
+        </refentry>

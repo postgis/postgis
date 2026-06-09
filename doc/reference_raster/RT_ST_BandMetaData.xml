@@ -1,0 +1,98 @@
+<refentry xml:id="RT_ST_BandMetaData" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_BandMetaData</refname>
+                <refpurpose>Returns basic meta data for a specific raster band. band num 1 is assumed if none-specified.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                        <funcdef>(1) record <function>ST_BandMetaData</function></funcdef>
+                        <paramdef><type>raster </type><parameter>rast</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer </type><parameter>band=1</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                        <funcdef>(2) record <function>ST_BandMetaData</function></funcdef>
+                        <paramdef><type>raster </type><parameter>rast</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer[] </type><parameter>band</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns basic meta data about a raster band. Columns returned: pixeltype, nodatavalue, isoutdb, path, outdbbandnum, filesize, filetimestamp.
+                </para>
+                <note>
+                    <para>
+                        If raster contains no bands then an error is thrown.
+                    </para>
+                </note>
+
+                <note>
+                    <para>
+                        If band has no NODATA value, nodatavalue are NULL.
+                    </para>
+                </note>
+                <note>
+                    <para>
+                        If isoutdb is False, path, outdbbandnum, filesize and filetimestamp are NULL. If outdb access is disabled, filesize and filetimestamp will also be NULL.
+                    </para>
+                </note>
+
+                <para role="enhanced" conformance="2.5.0">Enhanced: 2.5.0 to include <emphasis>outdbbandnum</emphasis>, <emphasis>filesize</emphasis> and <emphasis>filetimestamp</emphasis> for outdb rasters.</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples: Variant 1</title>
+
+                <programlisting>
+SELECT
+    rid,
+    (foo.md).*
+FROM (
+    SELECT
+        rid,
+        ST_BandMetaData(rast, 1) AS md
+    FROM dummy_rast
+    WHERE rid=2
+) As foo;
+
+ rid | pixeltype | nodatavalue | isoutdb | path | outdbbandnum
+-----+-----------+---- --------+---------+------+--------------
+   2 | 8BUI      |           0 | f       |      |
+                </programlisting>
+
+            </refsection>
+
+            <refsection>
+                <title>Examples: Variant 2</title>
+
+                <programlisting>
+WITH foo AS (
+    SELECT
+        ST_AddBand(NULL::raster, '/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif', NULL::int[]) AS rast
+)
+SELECT
+    *
+FROM ST_BandMetadata(
+    (SELECT rast FROM foo),
+    ARRAY[1,3,2]::int[]
+);
+
+ bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                      | outdbbandnum  | filesize | filetimestamp |
+---------+-----------+-------------+---------+--------------------------------------------------------------------------------+---------------+----------+---------------+-
+       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            1  |    12345 |    1521807257 |
+       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            3  |    12345 |    1521807257 |
+       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            2  |    12345 |    1521807257 |
+                </programlisting>
+
+            </refsection>
+
+            <!-- Optionally add a "See Also" section -->
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_MetaData"/>, <xref linkend="RT_ST_BandPixelType"/></para>
+            </refsection>
+        </refentry>

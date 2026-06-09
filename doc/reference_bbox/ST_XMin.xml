@@ -1,0 +1,67 @@
+<refentry xml:id="ST_XMin" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_XMin</refname>
+
+        <refpurpose>Returns the X minima of a 2D or 3D bounding box or a geometry.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>float <function>ST_XMin</function></funcdef>
+            <paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns the X minima of a 2D or 3D bounding box or a geometry.</para>
+
+        <note>
+          <para>Although this function is only defined for box3d, it also works for box2d and geometry values due to automatic casting.
+            However it will not accept a geometry or box2d text representation, since those do not auto-cast.</para>
+        </note>
+
+        <para>&Z_support;</para>
+        <para>&curve_support;</para>
+      </refsection>
+
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT ST_XMin('BOX3D(1 2 3, 4 5 6)');
+st_xmin
+-------
+1
+
+SELECT ST_XMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));
+st_xmin
+-------
+1
+
+SELECT ST_XMin(CAST('BOX(-3 2, 3 4)' As box2d));
+st_xmin
+-------
+-3
+--Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D
+SELECT ST_XMin('LINESTRING(1 3, 5 6)');
+
+--ERROR:  BOX3D parser - doesn't start with BOX3D(
+
+SELECT ST_XMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));
+st_xmin
+--------
+220186.995121892
+        </programlisting>
+      </refsection>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_XMax"/>, <xref linkend="ST_YMin"/>, <xref linkend="ST_YMax"/>, <xref linkend="ST_ZMin"/>, <xref linkend="ST_ZMax"/>, <xref linkend="ST_MMin"/>, <xref linkend="ST_MMax"/></para>
+      </refsection>
+    </refentry>

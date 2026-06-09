@@ -1,0 +1,44 @@
+<refentry xml:id="topoelementarray" xmlns="http://docbook.org/ns/docbook">
+		  <refnamediv>
+			<refname>TopoElementArray</refname>
+			<refpurpose>An array of TopoElement objects.</refpurpose>
+		  </refnamediv>
+		  <refsection>
+			<title>Description</title>
+			<para>An array of 1 or more TopoElement objects, generally used to pass around components of TopoGeometry objects.</para>
+		  </refsection>
+            <refsection>
+                <title>Examples</title>
+                 <programlisting>SELECT '{{1,2},{4,3}}'::topology.topoelementarray As tea;
+  tea
+-------
+{{1,2},{4,3}}
+
+-- more verbose equivalent --
+SELECT ARRAY[ARRAY[1,2], ARRAY[4,3]]::topology.topoelementarray As tea;
+
+  tea
+-------
+{{1,2},{4,3}}
+
+--using the array agg function packaged with topology --
+SELECT topology.TopoElementArray_Agg(ARRAY[e,t]) As tea
+  FROM generate_series(1,4) As e CROSS JOIN generate_series(1,3) As t;
+  tea
+--------------------------------------------------------------------------
+{{1,1},{1,2},{1,3},{2,1},{2,2},{2,3},{3,1},{3,2},{3,3},{4,1},{4,2},{4,3}}
+                 </programlisting>
+                 <programlisting>SELECT '{{1,2,4},{3,4,5}}'::topology.topoelementarray As tea;
+ERROR:  value for domain topology.topoelementarray violates check constraint "dimensions"
+                 </programlisting>
+            </refsection>
+            <!-- Optionally add a "See Also" section -->
+            <refsection>
+                <title>See Also</title>
+                <para>
+<xref linkend="topoelement"/>,
+<xref linkend="GetTopoGeomElementArray"/>,
+<xref linkend="TopoElementArray_Agg"/>
+                </para>
+            </refsection>
+		</refentry>

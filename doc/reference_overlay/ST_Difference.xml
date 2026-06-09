@@ -1,0 +1,112 @@
+<refentry xml:id="ST_Difference" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_Difference</refname>
+
+        <refpurpose>Computes a geometry representing the part of geometry A
+            that does not intersect geometry B.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_Difference</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+            <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+            <paramdef choice="opt"><type>float8 </type> <parameter>gridSize = -1</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns a geometry representing the part of geometry A
+            that does not intersect geometry B.
+            This is equivalent to <code>A - ST_Intersection(A,B)</code>.
+            If A is completely contained in B
+            then an empty atomic geometry of appropriate type is returned.</para>
+        <note><para>This is the only overlay function where input order matters.
+            ST_Difference(A, B) always returns a portion of A.</para></note>
+
+        &overlay_gridsize_arg;
+
+        <para>Performed by the GEOS module</para>
+        <para role="enhanced" conformance="3.1.0">Enhanced: 3.1.0 accept a gridSize parameter.</para>
+        <para role="geos_requirement" conformance="3.9.0">Requires GEOS &gt;= 3.9.0 to use the gridSize parameter.</para>
+
+        <para>&sfs_compliant; s2.1.1.3</para>
+        <para>&sqlmm_compliant; SQL-MM 3: 5.1.20</para>
+        <para>&Z_support; However, the result is computed using XY only.
+            The result Z values are copied, averaged or interpolated.</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+            <informaltable>
+              <tgroup cols="2">
+                <tbody>
+                  <row>
+                    <entry>
+                        <para>
+                            <informalfigure>
+                                <mediaobject>
+                                  <imageobject>
+                                    <imagedata fileref="images/st_symdifference01.png"/>
+                                  </imageobject>
+                                  <caption><para>The input linestrings </para></caption>
+                                </mediaobject>
+                            </informalfigure>
+                        </para>
+                    </entry>
+
+                    <entry>
+                        <para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_difference01.png"/>
+                              </imageobject>
+                              <caption><para>The difference of the two linestrings</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                    </para>
+                </entry>
+                  </row>
+        </tbody>
+    </tgroup>
+</informaltable>
+<para>The difference of 2D linestrings.</para>
+<programlisting>SELECT ST_AsText(
+    ST_Difference(
+            'LINESTRING(50 100, 50 200)'::geometry,
+            'LINESTRING(50 50, 50 150)'::geometry
+        )
+    );
+
+st_astext
+---------
+LINESTRING(50 150,50 200)
+</programlisting>
+
+<para>The difference of 3D points.</para>
+<programlisting>SELECT ST_AsEWKT( ST_Difference(
+                   'MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)' :: geometry,
+                   'POINT(-118.614 38.281 5)' :: geometry
+                  ) );
+
+st_asewkt
+---------
+MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
+</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para>
+<xref linkend="ST_SymDifference"/>,
+<xref linkend="ST_Intersection"/>,
+<xref linkend="ST_Union"/>,
+<xref linkend="ST_ReducePrecision"/>
+        </para>
+      </refsection>
+    </refentry>

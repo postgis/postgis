@@ -1,0 +1,87 @@
+<refentry xml:id="DropGeometryColumn" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>DropGeometryColumn</refname>
+
+		<refpurpose>Removes a geometry column from a spatial
+		table.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>DropGeometryColumn</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>DropGeometryColumn</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>DropGeometryColumn</function></funcdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>catalog_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>schema_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>table_name</parameter></paramdef>
+
+			<paramdef><type>varchar </type>
+			<parameter>column_name</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Removes a geometry column from a spatial table. Note that
+		schema_name will need to match the f_table_schema field of the table's
+		row in the geometry_columns table.</para>
+
+		<para>&sfs_compliant;</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+		<note>
+			<para role="changed" conformance="2.0.0">Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
+			    you can drop a geometry column like any other table column using <code>ALTER TABLE</code></para>
+		</note>
+	  </refsection>
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+			SELECT DropGeometryColumn ('my_schema','my_spatial_table','geom');
+			----RESULT output ---
+			                  dropgeometrycolumn
+------------------------------------------------------
+ my_schema.my_spatial_table.geom effectively removed.
+
+-- The above is also equivalent to the standard
+-- ALTER TABLE command.  Both will deregister from geometry_columns
+ALTER TABLE my_schema.my_spatial_table DROP column geom;
+		</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="DropGeometryTable"/>, <xref linkend="geometry_columns"/></para>
+	  </refsection>
+	</refentry>

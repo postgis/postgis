@@ -1,0 +1,52 @@
+<refentry xml:id="GetTopoGeomElements" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>GetTopoGeomElements</refname>
+
+				<refpurpose>Returns a set of <varname>topoelement</varname> objects containing the topological element_id,element_type of the given TopoGeometry (primitive elements).</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>setof topoelement <function>GetTopoGeomElements</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>layer_id</parameter></paramdef>
+					<paramdef><type>bigint</type> <parameter>tg_id</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>setof topoelement <function>GetTopoGeomElements</function></funcdef>
+					<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Returns a set of element_id,element_type (topoelements) corresponding to primitive topology elements <xref linkend="topoelement"/> (1: nodes, 2: edges, 3: faces) that a given topogeometry object in <varname>toponame</varname> schema is composed of.</para>
+                <para>tg_id is the topogeometry id of the topogeometry object in the topology in the layer denoted by <varname>layer_id</varname> in the topology.layer table.</para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<para/>
+				<!-- TODO: -->
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para>
+          <xref linkend="GetTopoGeomElementArray"/>,
+          <xref linkend="topoelement"/>,
+          <xref linkend="TopoGeom_addElement"/>,
+          <xref linkend="TopoGeom_remElement"/>
+        </para>
+			</refsection>
+		</refentry>

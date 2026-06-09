@@ -1,0 +1,63 @@
+<refentry xml:id="PostGIS_Extensions_Upgrade" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>PostGIS_Extensions_Upgrade</refname>
+
+		<refpurpose>
+Packages and upgrades PostGIS extensions (e.g. postgis_raster,
+postgis_topology, postgis_sfcgal) to given or latest version.
+    </refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_Extensions_Upgrade</function></funcdef>
+			<paramdef choice="opt"><type>text</type> <parameter>target_version=null</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Packages and upgrades PostGIS extensions
+		to given or latest version. Only extensions you have installed in the
+    database will be packaged and upgraded if needed.
+		Reports full PostGIS version and build configuration infos after.
+    This is short-hand for doing multiple CREATE EXTENSION .. FROM
+    unpackaged and ALTER EXTENSION .. UPDATE for each PostGIS extension.
+		Currently only tries to upgrade extensions postgis,
+    postgis_raster, postgis_sfcgal, and postgis_topology.</para>
+
+		<para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
+		<note>
+			<para role="changed" conformance="3.4.0">Changed: 3.4.0 to add target_version argument.</para>
+            <para role="changed" conformance="3.3.0">Changed: 3.3.0 support for upgrades from any PostGIS version. Does not work on all systems.</para>
+			<para role="changed" conformance="3.0.0">Changed: 3.0.0 to repackage loose extensions and support postgis_raster.</para>
+		</note>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_Extensions_Upgrade();</programlisting>
+<screen>
+NOTICE:  Packaging extension postgis
+NOTICE:  Packaging extension postgis_raster
+NOTICE:  Packaging extension postgis_sfcgal
+NOTICE:  Extension postgis_topology is not available or not packagable for some reason</screen>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+		<xref linkend="upgrading"/>,
+		<xref linkend="PostGIS_GEOS_Version"/>,
+		<xref linkend="PostGIS_Lib_Version"/>,
+		<xref linkend="PostGIS_LibXML_Version"/>,
+		<xref linkend="PostGIS_PROJ_Version"/>,
+		<xref linkend="PostGIS_Version"/>
+		</para>
+	  </refsection>
+	</refentry>

@@ -1,0 +1,51 @@
+<refentry xml:id="ST_GeomFromTWKB" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+	  <refnamediv>
+		<refname>ST_GeomFromTWKB</refname>
+		<refpurpose>Creates a geometry instance from a TWKB ("<link xlink:href="https://github.com/TWKB/Specification/blob/master/twkb.md">Tiny Well-Known Binary</link>") geometry
+		representation.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromTWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>twkb</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>The <varname>ST_GeomFromTWKB</varname> function, takes a a TWKB ("<link xlink:href="https://github.com/TWKB/Specification/blob/master/twkb.md">Tiny Well-Known Binary</link>") geometry representation (WKB) and creates an instance of the appropriate
+		geometry type.</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+SELECT ST_AsText(ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34, 127 35)'::geometry)));
+
+         st_astext
+-----------------------------
+ LINESTRING(126 34, 127 35)
+(1 row)
+
+
+SELECT ST_AsEWKT(
+  ST_GeomFromTWKB(E'\\x620002f7f40dbce4040105')
+);
+					  st_asewkt
+------------------------------------------------------
+LINESTRING(-113.98 39.198,-113.981 39.195)
+(1 row)
+</programlisting>
+	  </refsection>
+	   <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsTWKB"/></para>
+	  </refsection>
+    </refentry>

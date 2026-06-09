@@ -1,0 +1,58 @@
+<refentry xml:id="ST_SetSRID" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+    <refname>ST_SetSRID</refname>
+
+    <refpurpose>Set the SRID on a geometry.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+      <funcdef>geometry <function>ST_SetSRID</function></funcdef>
+
+      <paramdef><type>geometry </type>
+      <parameter>geom</parameter></paramdef>
+
+      <paramdef><type>integer </type>
+      <parameter>srid</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+    <para>Sets the SRID on a geometry to a particular integer value.
+    Useful in constructing bounding boxes for queries.</para>
+
+    <note>
+      <para>This function does not transform the geometry coordinates in any way -
+      it simply sets the meta data defining the spatial reference system the geometry is assumed to be in.
+      Use <xref linkend="ST_Transform"/> if you want to transform the
+      geometry into a new projection.</para>
+    </note>
+    <para>&sfs_compliant;</para>
+    <para>&curve_support;</para>
+    </refsection>
+
+    <refsection>
+      <title>Examples</title>
+      <para>-- Mark a point as WGS 84 long lat --</para>
+      <programlisting>SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;
+-- the ewkt representation (wrap with ST_AsEWKT) -
+SRID=4326;POINT(-123.365556 48.428611)
+      </programlisting>
+      <para>-- Mark a point as WGS 84 long lat and then transform to web mercator (Spherical Mercator) --</para>
+      <programlisting>SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) As spere_merc;
+-- the ewkt representation (wrap with ST_AsEWKT) -
+SRID=3785;POINT(-13732990.8753491 6178458.96425423)
+      </programlisting>
+    </refsection>
+
+    <refsection>
+    <title>See Also</title>
+
+    <para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_SRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
+    </refsection>
+
+  </refentry>

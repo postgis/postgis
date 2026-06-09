@@ -1,0 +1,41 @@
+<refentry xml:id="geography" xmlns="http://docbook.org/ns/docbook">
+		<refnamediv>
+			<refname>geography</refname>
+			<refpurpose>The type representing spatial features with geodetic (ellipsoidal) coordinate systems.</refpurpose>
+		</refnamediv>
+
+		<refsection>
+		<title>Description</title>
+		<para><varname>geography</varname> is a spatial data type used to represent a feature in geodetic coordinate systems.
+		Geodetic coordinate systems model the earth using an ellipsoid.
+		</para>
+		<para>
+		Spatial operations on the geography type provide more accurate results
+		by taking the ellipsoidal model into account.
+		</para>
+		</refsection>
+
+		<refsection>
+		<title>Casting Behavior</title>
+		<para>This table lists the automatic and explicit casts allowed for this data type:</para>
+		<informaltable rowsep="1" frame="all">
+		<tgroup cols="2">
+			<tbody>
+			  <row>
+				<entry>Cast To</entry>
+				<entry>Behavior</entry>
+			  </row>
+			  <row>
+				<entry>geometry</entry>
+				<entry>explicit</entry>
+			  </row>
+			</tbody>
+		</tgroup>
+		</informaltable>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="PostGIS_Geography"/>, <xref linkend="PostGIS_GeographyFunctions"/></para>
+		</refsection>
+	</refentry>

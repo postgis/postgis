@@ -1,0 +1,100 @@
+<refentry xml:id="ST_Perimeter" xmlns="http://docbook.org/ns/docbook">
+		<refnamediv>
+		  <refname>ST_Perimeter</refname>
+
+		  <refpurpose>Returns the length of the boundary of a polygonal geometry or geography.</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+		  <funcsynopsis>
+			<funcprototype>
+			  <funcdef>float <function>ST_Perimeter</function></funcdef>
+				<paramdef><type>geometry </type><parameter>g1</parameter></paramdef>
+			</funcprototype>
+
+			<funcprototype>
+			  <funcdef>float <function>ST_Perimeter</function></funcdef>
+				<paramdef><type>geography </type><parameter>geog</parameter></paramdef>
+				<paramdef choice="opt"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef>
+			</funcprototype>
+		  </funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+
+			<para>Returns the 2D perimeter of the geometry/geography if it is a ST_Surface, ST_MultiSurface (Polygon, MultiPolygon).  0 is returned for
+				non-areal geometries.  For linear geometries use <xref linkend="ST_Length"/>.  For geometry types, units for perimeter measures are specified by the
+				spatial reference system of the geometry.</para>
+			<para>For geography types, the calculations are performed using the inverse geodesic problem, where perimeter units are in meters.
+                                The spheroid is specified by the SRID; when no SRID is provided, WGS84 is used.
+				If <varname>use_spheroid = false</varname>, then calculations will approximate a sphere instead of a spheroid.</para>
+
+			<para>Currently this is an alias for ST_Perimeter2D, but this may change to support higher dimensions.</para>
+
+			<para>&sfs_compliant; s2.1.5.1</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 8.1.3, 9.5.4</para>
+			<para role="availability" conformance="2.0.0">Availability 2.0.0: Support for geography was introduced</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples: Geometry</title>
+			<para>Return perimeter in feet for Polygon and MultiPolygon. Note this is in feet because EPSG:2249 is
+				Massachusetts State Plane Feet</para>
+			<programlisting>
+SELECT ST_Perimeter(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,743265 2967450,
+743265.625 2967416,743238 2967416))', 2249));
+st_perimeter
+---------
+ 122.630744000095
+(1 row)
+
+SELECT ST_Perimeter(ST_GeomFromText('MULTIPOLYGON(((763104.471273676 2949418.44119003,
+763104.477769673 2949418.42538203,
+763104.189609677 2949418.22343004,763104.471273676 2949418.44119003)),
+((763104.471273676 2949418.44119003,763095.804579742 2949436.33850239,
+763086.132105649 2949451.46730207,763078.452329651 2949462.11549407,
+763075.354136904 2949466.17407812,763064.362142565 2949477.64291974,
+763059.953961626 2949481.28983009,762994.637609571 2949532.04103014,
+762990.568508415 2949535.06640477,762986.710889563 2949539.61421415,
+763117.237897679 2949709.50493431,763235.236617789 2949617.95619822,
+763287.718121842 2949562.20592617,763111.553321674 2949423.91664605,
+763104.471273676 2949418.44119003)))', 2249));
+st_perimeter
+---------
+ 845.227713366825
+(1 row)
+			</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>Examples: Geography</title>
+			<para>Return perimeter in meters and feet for Polygon and MultiPolygon. Note this is geography (WGS 84 long lat)</para>
+			<programlisting>
+SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog)/0.3048 As per_ft
+FROM ST_GeogFromText('POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42.3903829478009,
+-71.1775844305465 42.3903826677917,-71.1775825927231 42.3902893647987,-71.1776848522251 42.3902896512902))') As geog;
+
+   per_meters    |      per_ft
+-----------------+------------------
+37.3790462565251 | 122.634666195949
+
+
+-- MultiPolygon example --
+SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog,false) As per_sphere_meters,  ST_Perimeter(geog)/0.3048 As per_ft
+FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.1044542869917 42.3406744369506,
+-71.1044553562977 42.340673886454,-71.1044543107478 42.340674480411)),
+((-71.1044543107478 42.340674480411,-71.1044860600303 42.3407237015564,-71.1045215770124 42.3407653385914,
+-71.1045498002983 42.3407946553165,-71.1045611902745 42.3408058316308,-71.1046016507427 42.340837442371,
+-71.104617893173 42.3408475056957,-71.1048586153981 42.3409875993595,-71.1048736143677 42.3409959528211,
+-71.1048878050242 42.3410084812078,-71.1044020965803 42.3414730072048,
+-71.1039672113619 42.3412202916693,-71.1037740497748 42.3410666421308,
+-71.1044280218456 42.3406894151355,-71.1044543107478 42.340674480411)))') As geog;
+
+    per_meters    | per_sphere_meters |      per_ft
+------------------+-------------------+------------------
+ 257.634283683311 |  257.412311446337 | 845.256836231335
+			</programlisting>
+		  </refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeogFromText"/>, <xref linkend="ST_GeomFromText"/>, <xref linkend="ST_Length"/></para>
+		</refsection>
+	</refentry>

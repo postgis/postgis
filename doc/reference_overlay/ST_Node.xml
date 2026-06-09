@@ -1,0 +1,79 @@
+<refentry xml:id="ST_Node" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_Node</refname>
+
+        <refpurpose>
+Nodes a collection of lines.
+        </refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_Node</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+          </funcprototype>
+
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>
+Returns a (Multi)LineString representing the fully noded version of a collection of linestrings.
+The noding preserves all of the input nodes,
+and introduces the least possible number of new nodes.
+The resulting linework is dissolved (duplicate lines are removed).
+        </para>
+
+        <para>This is a good way to create fully-noded linework suitable for use as input to <xref linkend="ST_Polygonize"/>.</para>
+
+        <para><xref linkend="ST_UnaryUnion"/> can also be used to node and dissolve linework.
+        It provides an option to specify a gridSize, which can provide simpler and more robust output.
+        See also <xref linkend="ST_Union"/> for an aggregate variant.
+        </para>
+
+        <para>&Z_support;</para>
+        <para>Performed by the GEOS module.</para>
+        <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+
+        <para role="changed" conformance="2.4.0">
+Changed: 2.4.0 this function uses GEOSNode internally instead of GEOSUnaryUnion.
+This may cause the resulting linestrings to have a different order and direction compared to PostGIS &lt; 2.4.
+        </para>
+      </refsection>
+      <refsection>
+        <title>Examples</title>
+        <para>Noding a 3D LineString which self-intersects</para>
+        <programlisting>
+SELECT ST_AsText(
+        ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)
+    ) As  output;
+output
+-----------
+MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))
+        </programlisting>
+
+        <para>Noding two LineStrings which share common linework.
+        Note that the result linework is dissolved.</para>
+        <programlisting>
+SELECT ST_AsText(
+        ST_Node('MULTILINESTRING ((2 5, 2 1, 7 1), (6 1, 4 1, 2 3, 2 5))'::geometry)
+    ) As  output;
+output
+-----------
+MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))
+        </programlisting>
+
+      </refsection>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+
+        <para>
+            <xref linkend="ST_UnaryUnion"/>, <xref linkend="ST_Union"/>
+        </para>
+      </refsection>
+    </refentry>

@@ -1,0 +1,65 @@
+<refentry xml:id="RT_ST_WorldToRasterCoord" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_WorldToRasterCoord</refname>
+                <refpurpose>    Returns the upper left corner as column and row given geometric X and Y (longitude and latitude) or a point geometry expressed in the spatial reference coordinate system of the raster.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                    <funcdef>record <function>ST_WorldToRasterCoord</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+                  </funcprototype>
+
+                   <funcprototype>
+                    <funcdef>record <function>ST_WorldToRasterCoord</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>double precision </type> <parameter>longitude</parameter></paramdef>
+                    <paramdef><type>double precision </type> <parameter>latitude</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>
+                    Returns the upper left corner as column and row given geometric X and Y (longitude and latitude) or a point geometry.
+                    This function works regardless of whether or not the geometric X and Y or point geometry is outside the extent of the raster.
+                    Geometric X and Y must be expressed in the spatial reference coordinate system of the raster.
+                </para>
+
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                <programlisting>
+SELECT
+    rid,
+    (ST_WorldToRasterCoord(rast,3427927.8,20.5)).*,
+    (ST_WorldToRasterCoord(rast,ST_GeomFromText('POINT(3427927.8 20.5)',ST_SRID(rast)))).*
+FROM dummy_rast;
+
+ rid | columnx |   rowy    | columnx |   rowy
+-----+---------+-----------+---------+-----------
+   1 | 1713964 |         7 | 1713964 |         7
+   2 |       2 | 115864471 |       2 | 115864471
+                </programlisting>
+            </refsection>
+
+            <!-- Optionally add a "See Also" section -->
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_WorldToRasterCoordX"/>,
+                    <xref linkend="RT_ST_WorldToRasterCoordY"/>,
+                    <xref linkend="RT_ST_RasterToWorldCoordX"/>,
+                    <xref linkend="RT_ST_RasterToWorldCoordY"/>,
+                    <xref linkend="RT_ST_SRID"/>
+                </para>
+            </refsection>
+        </refentry>

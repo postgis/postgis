@@ -1,0 +1,41 @@
+<refentry xml:id="RT_ST_UpperLeftX" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_UpperLeftX</refname>
+                <refpurpose>Returns the upper left X coordinate of raster in projected spatial ref.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                    <funcdef>float8 <function>ST_UpperLeftX</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns the upper left X coordinate of raster in projected spatial ref.</para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+
+                    <programlisting>
+SELECt rid, ST_UpperLeftX(rast) As ulx
+FROM dummy_rast;
+
+ rid |    ulx
+-----+------------
+   1 |        0.5
+   2 | 3427927.75
+                </programlisting>
+
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_UpperLeftY"/>, <xref linkend="RT_ST_GeoReference"/>, <xref linkend="RT_Box3D"/></para>
+            </refsection>
+        </refentry>

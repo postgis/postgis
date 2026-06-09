@@ -1,0 +1,66 @@
+<refentry xml:id="ST_RotateZ" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_RotateZ</refname>
+
+		<refpurpose>Rotates a geometry about the Z axis.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RotateZ</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Rotates a geometry geomA - rotRadians about the Z axis.</para>
+
+		<note><para>This is a synonym for ST_Rotate</para></note>
+		<note><para><code>ST_RotateZ(geomA,  rotRadians)</code>
+			is short-hand for <code>SELECT ST_Affine(geomA,  cos(rotRadians), -sin(rotRadians), 0,  sin(rotRadians), cos(rotRadians), 0,  0, 0, 1,  0, 0, 0)</code>.</para></note>
+
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+
+		<para role="availability" conformance="1.1.2.">Availability: 1.1.2. Name changed from RotateZ to ST_RotateZ in 1.2.2</para>
+		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
+
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--Rotate a line 90 degrees along z-axis
+SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
+		 st_asewkt
+---------------------------
+ LINESTRING(-2 1 3,-1 1 1)
+
+ --Rotate a curved circle around z-axis
+SELECT ST_AsEWKT(ST_RotateZ(geom, pi()/2))
+FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) As geom) As foo;
+
+													   st_asewkt
+----------------------------------------------------------------------------------------------------------------------------
+ CURVEPOLYGON(CIRCULARSTRING(-567 237,-564.87867965644 236.12132034356,-564 234,-569.12132034356 231.87867965644,-567 237))
+
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_RotateX"/>, <xref linkend="ST_RotateY"/></para>
+	  </refsection>
+	</refentry>

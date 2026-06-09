@@ -1,0 +1,82 @@
+<refentry xml:id="ST_ClosestPointOfApproach" xmlns="http://docbook.org/ns/docbook">
+
+      <refnamediv>
+      <refname>ST_ClosestPointOfApproach</refname>
+      <refpurpose>
+Returns a measure at the closest point of approach of two trajectories.
+      </refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>float8 <function>ST_ClosestPointOfApproach</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>track1</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+      <title>Description</title>
+
+      <para>
+Returns the smallest measure at which points interpolated along the given
+trajectories are the least distance apart.
+      </para>
+      <para>
+Inputs must be valid trajectories as
+checked by <xref linkend="ST_IsValidTrajectory"/>. Null is returned if
+the trajectories do not overlap in their M ranges.
+      </para>
+
+      <para>
+To obtain the actual points at the computed measure use <xref linkend="ST_LocateAlong"/> .
+      </para>
+
+      <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+      <para>&Z_support;</para>
+      </refsection>
+
+      <refsection>
+      <title>Examples</title>
+<programlisting>
+-- Return the time in which two objects moving between 10:00 and 11:00
+-- are closest to each other and their distance at that point
+WITH inp AS ( SELECT
+  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,
+    extract(epoch from '2015-05-26 10:00'::timestamptz),
+    extract(epoch from '2015-05-26 11:00'::timestamptz)
+  ) a,
+  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,
+    extract(epoch from '2015-05-26 10:00'::timestamptz),
+    extract(epoch from '2015-05-26 11:00'::timestamptz)
+  ) b
+), cpa AS (
+  SELECT ST_ClosestPointOfApproach(a,b) m FROM inp
+), points AS (
+  SELECT ST_GeometryN(ST_LocateAlong(a,m),1) pa,
+         ST_GeometryN(ST_LocateAlong(b,m),1) pb
+  FROM inp, cpa
+)
+SELECT to_timestamp(m) t,
+       ST_3DDistance(pa,pb) distance,
+       ST_AsText(pa, 2) AS pa, ST_AsText(pb, 2) AS pb
+FROM points, cpa;
+
+               t               |      distance      |                  pa                  |                   pb                   
+-------------------------------+--------------------+--------------------------------------+----------------------------------------
+ 2015-05-26 10:45:31.034483-07 | 1.9652147377620688 | POINT ZM (7.59 0 3.79 1432662331.03) | POINT ZM (9.1 1.24 3.93 1432662331.03)
+ </programlisting>
+      </refsection>
+
+      <refsection>
+      <title>See Also</title>
+      <para>
+<xref linkend="ST_IsValidTrajectory"/>,
+<xref linkend="ST_DistanceCPA"/>,
+<xref linkend="ST_LocateAlong"/>,
+<xref linkend="ST_AddMeasure"/>
+      </para>
+      </refsection>
+    </refentry>

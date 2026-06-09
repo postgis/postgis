@@ -1,0 +1,64 @@
+<refentry xml:id="ST_TransScale" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_TransScale</refname>
+
+		<refpurpose>Translates and scales a geometry by given offsets and factors.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_TransScale</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>deltaX</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>deltaY</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Translates the geometry using the deltaX and deltaY args,
+			then scales it using the XFactor, YFactor args, working in 2D only.</para>
+
+		<note><para><code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code>
+			is short-hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0,
+			0, 0, 1, deltaX*XFactor, deltaY*YFactor, 0)</code>.</para></note>
+
+		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
+
+
+		<para role="availability" conformance="1.1.0.">Availability: 1.1.0.</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 1, 1, 2));
+		  st_asewkt
+-----------------------------
+ LINESTRING(1.5 6 3,1.5 4 1)
+
+
+--Buffer a point to get an approximation of a circle, convert to curve and then translate 1,2 and scale it 3,4
+  SELECT ST_AsText(ST_Transscale(ST_LineToCurve(ST_Buffer('POINT(234 567)', 3)),1,2,3,4));
+														  st_astext
+------------------------------------------------------------------------------------------------------------------------------
+ CURVEPOLYGON(CIRCULARSTRING(714 2276,711.363961030679 2267.51471862576,705 2264,698.636038969321 2284.48528137424,714 2276))
+
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_Translate"/></para>
+	  </refsection>
+	</refentry>

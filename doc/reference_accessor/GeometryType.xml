@@ -1,0 +1,83 @@
+<refentry xml:id="GeometryType" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>GeometryType</refname>
+
+		<refpurpose>Returns the type of a geometry as text.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>GeometryType</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the type of the geometry as a string. Eg:
+		'LINESTRING', 'POLYGON', 'MULTIPOINT', etc.</para>
+
+		<para>OGC SPEC s2.1.1.1 - Returns the name of the instantiable
+		subtype of Geometry of which this Geometry instance is a member.
+		The name of the instantiable subtype of Geometry is returned as a
+		string.</para>
+
+		<note>
+		  <para>This function also indicates if the geometry is measured,
+		  by returning a string of the form 'POINTM'.</para>
+		</note>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>&sfs_compliant;</para>
+		<para>&curve_support;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
+ geometrytype
+--------------
+ LINESTRING
+</programlisting>
+		<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
+			--result
+			POLYHEDRALSURFACE
+			</programlisting>
+<programlisting>SELECT GeometryType(geom) as result
+  FROM
+    (SELECT
+       ST_GeomFromEWKT('TIN (((
+                0 0 0,
+                0 0 1,
+                0 1 0,
+                0 0 0
+            )), ((
+                0 0 0,
+                0 1 0,
+                1 1 0,
+                0 0 0
+            ))
+            )')  AS geom
+    ) AS g;
+ result
+--------
+ TIN    </programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_GeometryType"/></para>
+	  </refsection>
+	</refentry>

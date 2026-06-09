@@ -1,0 +1,167 @@
+<refentry xml:id="ST_Crosses" xmlns="http://docbook.org/ns/docbook">
+  <refnamediv>
+    <refname>ST_Crosses</refname>
+
+    <refpurpose>Tests if two geometries have some, but not all, interior points in common</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <funcsynopsis>
+    <funcprototype>
+      <funcdef>boolean <function>ST_Crosses</function></funcdef>
+
+      <paramdef><type>geometry </type><parameter>g1</parameter></paramdef>
+
+      <paramdef><type>geometry </type><parameter>g2</parameter></paramdef>
+    </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsection>
+    <title>Description</title>
+
+    <para>Compares two geometry objects and
+    returns <varname>true</varname> if their intersection "spatially crosses";
+    that is, the geometries have some, but not all interior points in common.
+    The intersection of the interiors of the geometries must be non-empty
+    and must have dimension less than the maximum dimension
+    of the two input geometries, and the intersection of the two
+    geometries must not equal either geometry. Otherwise, it
+    returns <varname>false</varname>.
+    The crosses relation is symmetric and irreflexive.</para>
+
+    <para>In mathematical terms:
+    <emphasis>ST_Crosses(A, B) ⇔ (dim( Int(A) ⋂ Int(B) ) &lt; max( dim( Int(A) ), dim( Int(B) ) )) ∧ (A ⋂ B ≠ A) ∧ (A ⋂ B ≠ B) </emphasis></para>
+
+    <para>Geometries cross if their DE-9IM Intersection Matrix matches:</para>
+
+    <itemizedlist>
+    <listitem>
+      <para><code>T*T******</code> for Point/Line, Point/Area, and Line/Area situations</para>
+    </listitem>
+
+    <listitem>
+      <para><code>T*****T**</code> for Line/Point, Area/Point, and Area/Line situations</para>
+    </listitem>
+
+    <listitem>
+      <para><code>0********</code> for Line/Line situations</para>
+    </listitem>
+
+    <listitem>
+      <para>the result is <varname>false</varname> for Point/Point and Area/Area situations </para>
+    </listitem>
+    </itemizedlist>
+
+  <note><para>The OpenGIS Simple Features Specification defines this predicate
+    only for Point/Line, Point/Area, Line/Line, and Line/Area situations.
+    JTS / GEOS extends the definition to apply to Line/Point, Area/Point and
+    Area/Line situations as well. This makes the relation symmetric.</para></note>
+
+  <note><para>&index_aware;</para></note>
+
+    <important>
+      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
+    </important>
+
+  <para>&sfs_compliant; s2.1.13.3</para>
+  <para>&sqlmm_compliant; SQL-MM 3: 5.1.29</para>
+  </refsection>
+
+  <refsection>
+    <title>Examples</title>
+
+    <para>The following situations all return <varname>true</varname>.</para>
+
+    <informaltable>
+    <tgroup cols="2">
+      <tbody>
+      <row>
+        <entry><para><informalfigure>
+          <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/st_crosses01.png"/>
+          </imageobject>
+
+          <caption><para><varname>MULTIPOINT</varname> / <varname>LINESTRING</varname></para></caption>
+          </mediaobject>
+        </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/st_crosses02.png"/>
+          </imageobject>
+
+          <caption><para><varname>MULTIPOINT</varname> / <varname>POLYGON</varname></para></caption>
+          </mediaobject>
+        </informalfigure></para></entry>
+      </row>
+
+      <row>
+        <entry><para><informalfigure>
+          <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/st_crosses03.png"/>
+          </imageobject>
+
+          <caption><para><varname>LINESTRING</varname> / <varname>POLYGON</varname></para></caption>
+          </mediaobject>
+        </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/st_crosses04.png"/>
+          </imageobject>
+
+          <caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
+          </mediaobject>
+        </informalfigure></para></entry>
+      </row>
+      </tbody>
+    </tgroup>
+    </informaltable>
+
+    <para>Consider a situation where a user has two tables: a table of roads
+    and a table of highways.</para>
+
+    <informaltable>
+    <tgroup cols="2">
+      <tbody>
+      <row>
+        <entry><para> <informalexample>
+          <programlisting>CREATE TABLE roads (
+  id serial NOT NULL,
+  geom geometry,
+  CONSTRAINT roads_pkey PRIMARY KEY (road_id)
+);</programlisting>
+        </informalexample> </para></entry>
+
+        <entry><para> <informalexample>
+          <programlisting>CREATE TABLE highways (
+  id serial NOT NULL,
+  the_gem geometry,
+  CONSTRAINT roads_pkey PRIMARY KEY (road_id)
+);</programlisting>
+        </informalexample> </para></entry>
+      </row>
+      </tbody>
+    </tgroup>
+    </informaltable>
+
+    <para>To determine a list of roads that cross a highway, use a query
+    similar to:</para>
+
+    <para><informalexample>
+      <programlisting>SELECT roads.id
+FROM roads, highways
+WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
+    </informalexample></para>
+  </refsection>
+    <refsection>
+    <title>See Also</title>
+
+    <para><xref linkend="ST_Contains"/>, <xref linkend="ST_Overlaps"/></para>
+    </refsection>
+  </refentry>

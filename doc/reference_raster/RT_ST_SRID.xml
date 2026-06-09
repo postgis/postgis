@@ -1,0 +1,40 @@
+<refentry xml:id="RT_ST_SRID" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_SRID</refname>
+                <refpurpose>Returns the spatial reference identifier of the raster as defined in spatial_ref_sys table.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                    <funcdef>integer <function>ST_SRID</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns the spatial reference identifier of the raster object as defined in the spatial_ref_sys table.</para>
+                <note><para>Non-georeferenced rasters and geometries use SRID 0.</para></note>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                <programlisting>SELECT ST_SRID(rast) As srid
+FROM dummy_rast WHERE rid=1;
+
+srid
+----------------
+0
+                </programlisting>
+            </refsection>
+
+            <!-- Optionally add a "See Also" section -->
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_SRID"/></para>
+            </refsection>
+        </refentry>

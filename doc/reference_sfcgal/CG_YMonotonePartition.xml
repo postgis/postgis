@@ -1,0 +1,72 @@
+<refentry xml:id="CG_YMonotonePartition" xmlns="http://docbook.org/ns/docbook">
+        <refnamediv>
+            <refname>CG_YMonotonePartition</refname>
+
+            <refpurpose>Computes y-monotone partition of the polygon geometry</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_YMonotonePartition</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para>Computes y-monotone partition of the polygon geometry.
+        </para>
+
+        <note><para>
+                A partition of a polygon P is a set of polygons such that the interiors of the polygons do not intersect and the union of the polygons is equal to the interior of the original polygon P.
+                A y-monotone polygon is a polygon whose vertices v1,…,vn can be divided into two chains v1,…,vk and vk,…,vn,v1, such that any horizontal line intersects either chain at most once. This algorithm does not guarantee a bound on the number of polygons produced with respect to the optimal number.
+        </para></note>
+
+
+        <para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+        <para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
+        <para>&sfcgal_required;</para>
+    </refsection>
+
+    <refsection>
+        <title>Examples</title>
+        <para>
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                        <row>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/cg_ymonotonepartition01.png"/>
+                                            </imageobject>
+                                            <caption><para>Original polygon</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/cg_ymonotonepartition02.png"/>
+                                            </imageobject>
+                                            <caption><para>Y-Monotone Partition (same example As <xref linkend="CG_ApproxConvexPartition" />,  <xref linkend="CG_GreeneApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+            <programlisting>SELECT ST_AsText(CG_YMonotonePartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
+            <screen>GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,45 1,177 2,67 24,109 31,170 60,107 61)),POLYGON((156 150,83 181,89 131,148 120,107 61,170 60,180 110,156 150)))</screen>
+        </para>
+    </refsection>
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="CG_ApproxConvexPartition" />, <xref linkend="CG_GreeneApproxConvexPartition" />, <xref linkend="CG_OptimalConvexPartition" /></para>
+    </refsection>
+
+</refentry>

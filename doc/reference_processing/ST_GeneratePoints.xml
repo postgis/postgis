@@ -1,0 +1,61 @@
+<refentry xml:id="ST_GeneratePoints" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_GeneratePoints</refname>
+
+        <refpurpose>Generates a multipoint of random points contained in a Polygon or MultiPolygon.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_GeneratePoints</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>g</parameter></paramdef>
+            <paramdef><type>integer</type> <parameter>npoints</parameter></paramdef>
+            <paramdef choice="opt"><type>integer</type> <parameter>seed = 0</parameter></paramdef>
+          </funcprototype>
+
+        </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+        <title>Description</title>
+
+        <para>
+            ST_GeneratePoints generates a multipoint consisting of a given number of pseudo-random points
+            which lie within the input area.
+            The optional <varname>seed</varname> is used to regenerate a deterministic sequence of points,
+            and must be greater than zero.
+        </para>
+
+        <para role="availability" conformance="2.3.0">Availability: 2.3.0</para>
+        <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0, added seed parameter</para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+
+<para><informalfigure>
+                        <mediaobject>
+                          <imageobject>
+                            <imagedata fileref="images/st_generatepoints01.png"/>
+                          </imageobject>
+                          <caption><para>Generated a multipoint consisting of 12 Points overlaid on top of original polygon using a random seed value 1996</para></caption>
+                        </mediaobject>
+                      </informalfigure>
+                        <programlisting>SELECT ST_GeneratePoints(geom, 12, 1996)
+FROM (
+    SELECT ST_Buffer(
+        ST_GeomFromText(
+        'LINESTRING(50 50,150 150,150 50)'),
+        10, 'endcap=round join=round') AS geom
+) AS s;</programlisting>
+            </para>
+<para>Given a table of polygons s, return 12 individual points per polygon. Results will be different each time you run.</para>
+<programlisting>SELECT s.id, dp.path[1] AS pt_id, dp.geom
+FROM s, ST_DumpPoints(ST_GeneratePoints(s.geom,12)) AS dp;</programlisting>
+        </refsection>
+        <refsection>
+          <title>See Also</title>
+          <para><xref linkend="ST_DumpPoints"/></para>
+        </refsection>
+    </refentry>

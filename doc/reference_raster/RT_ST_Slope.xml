@@ -1,0 +1,137 @@
+<refentry xml:id="RT_ST_Slope" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <refnamediv>
+                    <refname>ST_Slope</refname>
+                    <refpurpose>Returns the slope (in degrees by default) of an elevation raster band.  Useful for analyzing terrain.</refpurpose>
+                </refnamediv>
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                      <funcprototype>
+                            <funcdef>raster <function>ST_Slope</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>units=DEGREES</parameter></paramdef>
+                            <paramdef choice="opt"><type>double precision </type> <parameter>scale=1.0</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+                      </funcprototype>
+
+                      <funcprototype>
+                            <funcdef>raster <function>ST_Slope</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                            <paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>units=DEGREES</parameter></paramdef>
+                            <paramdef choice="opt"><type>double precision </type> <parameter>scale=1.0</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+                      </funcprototype>
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+
+                    <para>Returns the slope (in degrees by default) of an elevation raster band. Utilizes map algebra and applies the slope equation to neighboring pixels.</para>
+
+                    <para>
+                        <varname>units</varname> indicates the units of the slope. Possible values are: RADIANS, DEGREES (default), PERCENT.
+                    </para>
+
+                    <para>
+                        <varname>scale</varname> is the ratio of vertical units to horizontal. For Feet:LatLon use scale=370400, for Meters:LatLon use scale=111120.
+                    </para>
+
+                    <para>
+                        If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels from the input raster will be interpolated using <xref linkend="RT_ST_InvDistWeight4ma"/> before computing the surface slope.
+                    </para>
+
+                    <note>
+                        <para>
+                            For more information about Slope, Aspect and Hillshade, please refer to <link xlink:href="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</link> and <link xlink:href="http://e2b.erdas.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Slope_Images.html">ERDAS Field Guide - Slope Images</link>.
+                        </para>
+                    </note>
+
+                    <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
+                    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>units</varname>, <varname>scale</varname>, <varname>interpolate_nodata</varname> function parameters</para>
+                    <para role="changed" conformance="2.1.0">Changed: 2.1.0 In prior versions, return values were in radians. Now, return values default to degrees</para>
+
+                </refsection>
+
+                <refsection>
+                    <title>Examples: Variant 1</title>
+                    <programlisting>
+WITH foo AS (
+    SELECT ST_SetValues(
+        ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+        1, 1, 1, ARRAY[
+            [1, 1, 1, 1, 1],
+            [1, 2, 2, 2, 1],
+            [1, 2, 3, 2, 1],
+            [1, 2, 2, 2, 1],
+            [1, 1, 1, 1, 1]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT
+    ST_DumpValues(ST_Slope(rast, 1, '32BF'))
+FROM foo
+
+                            st_dumpvalues
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------
+ (1,"{{10.0249881744385,21.5681285858154,26.5650520324707,21.5681285858154,10.0249881744385},{21.5681285858154,35.2643890380859,36.8698959350586,35.2643890380859,21.5681285858154},
+{26.5650520324707,36.8698959350586,0,36.8698959350586,26.5650520324707},{21.5681285858154,35.2643890380859,36.8698959350586,35.2643890380859,21.5681285858154},{10.0249881744385,21.
+5681285858154,26.5650520324707,21.5681285858154,10.0249881744385}}")
+(1 row)
+                    </programlisting>
+                </refsection>
+
+                <refsection>
+                    <title>Examples: Variant 2</title>
+
+                    <para>Complete example of tiles of a coverage.</para>
+
+                    <programlisting>
+WITH foo AS (
+    SELECT ST_Tile(
+        ST_SetValues(
+            ST_AddBand(
+                ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
+                1, '32BF', 0, -9999
+            ),
+            1, 1, 1, ARRAY[
+                [1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 2, 1],
+                [1, 2, 2, 3, 3, 1],
+                [1, 1, 3, 2, 1, 1],
+                [1, 2, 2, 1, 2, 1],
+                [1, 1, 1, 1, 1, 1]
+            ]::double precision[]
+        ),
+        2, 2
+    ) AS rast
+)
+SELECT
+    t1.rast,
+    ST_Slope(ST_Union(t2.rast), 1, t1.rast)
+FROM foo t1
+CROSS JOIN foo t2
+WHERE ST_Intersects(t1.rast, t2.rast)
+GROUP BY t1.rast;
+                    </programlisting>
+                </refsection>
+
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="RT_ST_MapAlgebra"/>,
+                        <xref linkend="RT_ST_TRI"/>,
+                        <xref linkend="RT_ST_TPI"/>,
+                        <xref linkend="RT_ST_Roughness"/>,
+                        <xref linkend="RT_ST_HillShade"/>,
+                        <xref linkend="RT_ST_Aspect"/>
+                    </para>
+                </refsection>
+            </refentry>

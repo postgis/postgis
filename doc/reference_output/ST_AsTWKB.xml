@@ -1,0 +1,69 @@
+<refentry xml:id="ST_AsTWKB" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <refnamediv>
+      <refname>ST_AsTWKB</refname>
+      <refpurpose>Returns the geometry as TWKB, aka "Tiny Well-Known Binary"</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>bytea <function>ST_AsTWKB</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>prec=0</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>prec_z=0</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>prec_m=0</parameter></paramdef>
+        <paramdef><type>boolean </type> <parameter>with_sizes=false</parameter></paramdef>
+        <paramdef><type>boolean </type> <parameter>with_boxes=false</parameter></paramdef>
+        </funcprototype>
+        <funcprototype>
+        <funcdef>bytea <function>ST_AsTWKB</function></funcdef>
+        <paramdef><type>geometry[] </type> <parameter>geom</parameter></paramdef>
+        <paramdef><type>bigint[] </type> <parameter>ids</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>prec=0</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>prec_z=0</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>prec_m=0</parameter></paramdef>
+        <paramdef><type>boolean </type> <parameter>with_sizes=false</parameter></paramdef>
+        <paramdef><type>boolean </type> <parameter>with_boxes=false</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+      </refsynopsisdiv>
+      <refsection>
+      <title>Description</title>
+      <para>Returns the geometry in TWKB (Tiny Well-Known Binary) format. TWKB is a <link xlink:href="https://github.com/TWKB/Specification/blob/master/twkb.md">compressed binary format</link> with a focus on minimizing the size of the output. </para>
+      <para>The decimal digits parameters control how much precision is stored in the output. By default, values are rounded to the nearest unit before encoding. If you want to transfer more precision, increase the number. For example, a value of 1 implies that the first digit to the right of the decimal point will be preserved.</para>
+      <para>The sizes and bounding boxes parameters control whether optional information about the encoded length of the object and the bounds of the object are included in the output. By default they are not. Do not turn them on unless your client software has a use for them, as they just use up space (and saving space is the point of TWKB).</para>
+      <para>The array-input form of the function is used to convert a collection of geometries and unique identifiers into a TWKB collection that preserves the identifiers. This is useful for clients that expect to unpack a collection and then access further information about the objects inside. You can create the arrays using the <link xlink:href="https://www.postgresql.org/docs/current/functions-aggregate.html">array_agg</link> function. The other parameters operate the same as for the simple form of the function.</para>
+      <note>
+        <para>The format specification is available online at <link xlink:href="https://github.com/TWKB/Specification">https://github.com/TWKB/Specification</link>, and code for building a JavaScript client can be found at <link xlink:href="https://github.com/TWKB/twkb.js">https://github.com/TWKB/twkb.js</link>.</para>
+      </note>
+
+      <para role="enhanced" conformance="2.4.0">Enhanced: 2.4.0 memory and speed improvements.</para>
+      <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+      </refsection>
+
+
+      <refsection>
+      <title>Examples</title>
+<programlisting>
+SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);
+                 st_astwkb
+--------------------------------------------
+\x02000202020808
+
+</programlisting>
+<para>To create an aggregate TWKB object including identifiers aggregate the desired geometries and objects first, using "array_agg()", then call the appropriate TWKB function.
+</para>
+<programlisting>
+SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
+                 st_astwkb
+--------------------------------------------
+\x040402020400000202
+</programlisting>
+
+      </refsection>
+
+      <refsection>
+      <title>See Also</title>
+      <para><xref linkend="ST_GeomFromTWKB"/>, <xref linkend="ST_AsBinary"/>, <xref linkend="ST_AsEWKB"/>, <xref linkend="ST_AsEWKT"/>, <xref linkend="ST_GeomFromText"/></para>
+      </refsection>
+  </refentry>

@@ -1,0 +1,23 @@
+<refentry xml:id="ST_GeographyFromText" xmlns="http://docbook.org/ns/docbook">
+		  <refnamediv>
+			<refname>ST_GeographyFromText</refname>
+			<refpurpose>Return a specified geography value from Well-Known Text representation or extended (WKT). </refpurpose>
+		  </refnamediv>
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geography <function>ST_GeographyFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<para>Returns a geography object from the  well-known text representation. SRID 4326 is assumed if unspecified.</para>
+			<!-- TODO: put in example -->
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeogFromText"/>, <xref linkend="ST_AsText"/></para>
+		  </refsection>
+	</refentry>

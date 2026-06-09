@@ -1,0 +1,101 @@
+<refentry xml:id="ST_SimplifyPolygonHull" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_SimplifyPolygonHull</refname>
+        <refpurpose>Computes a simplified topology-preserving outer or inner hull of a polygonal geometry.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+         <funcprototype>
+            <funcdef>geometry <function>ST_SimplifyPolygonHull</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>param_geom</parameter></paramdef>
+            <paramdef><type>float </type> <parameter>vertex_fraction</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean </type> <parameter>is_outer = true</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Computes a simplified topology-preserving outer or inner hull of a polygonal geometry.
+        An outer hull completely covers the input geometry.
+        An inner hull is completely covered by the input geometry.
+        The result is a polygonal geometry formed by a subset of the input vertices.
+        MultiPolygons and holes are handled and produce a result with the same structure as the input.
+        </para>
+
+        <para>The reduction in vertex count is controlled by the <varname>vertex_fraction</varname> parameter,
+        which is a number in the range 0 to 1.
+        Lower values produce simpler results, with smaller vertex count and less concaveness.
+        For both outer and inner hulls a vertex fraction of 1.0 produces the original geometry.
+        For outer hulls a value of 0.0 produces the convex hull (for a single polygon);
+        for inner hulls it produces a triangle.</para>
+
+        <para>
+        The simplification process operates by progressively removing concave corners that contain the least amount of area, until the vertex count target is reached.
+        It prevents edges from crossing, so the result is always a valid polygonal geometry.
+        </para>
+
+        <para>To get better results with geometries that contain relatively long line segments, it might be necessary to "segmentize" the input, as shown below.</para>
+
+        <para>Performed by the GEOS module.</para>
+    	<para role="availability" conformance="3.3.0">Availability: 3.3.0.</para>
+        <para role="geos_requirement" conformance="3.11.0">Requires GEOS &gt;= 3.11.0.</para>
+
+      </refsection>
+      <refsection>
+        <title>Examples</title>
+
+    <para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_simplifypolygonhull02.png"/>
+        </imageobject>
+        <caption><para>Outer hull of a Polygon</para></caption>
+      </mediaobject>
+    </informalfigure>
+    <programlisting>SELECT ST_SimplifyPolygonHull(
+  'POLYGON ((131 158, 136 163, 161 165, 173 156, 179 148, 169 140, 186 144, 190 137, 185 131, 174 128, 174 124, 166 119, 158 121, 158 115, 165 107, 161 97, 166 88, 166 79, 158 57, 145 57, 112 53, 111 47, 93 43, 90 48, 88 40, 80 39, 68 32, 51 33, 40 31, 39 34, 49 38, 34 38, 25 34, 28 39, 36 40, 44 46, 24 41, 17 41, 14 46, 19 50, 33 54, 21 55, 13 52, 11 57, 22 60, 34 59, 41 68, 75 72, 62 77, 56 70, 46 72, 31 69, 46 76, 52 82, 47 84, 56 90, 66 90, 64 94, 56 91, 33 97, 36 100, 23 100, 22 107, 29 106, 31 112, 46 116, 36 118, 28 131, 53 132, 59 127, 62 131, 76 130, 80 135, 89 137, 87 143, 73 145, 80 150, 88 150, 85 157, 99 162, 116 158, 115 165, 123 165, 122 170, 134 164, 131 158))',
+    0.3);
+</programlisting>
+    </para>
+
+    <para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_simplifypolygonhull03.png"/>
+        </imageobject>
+        <caption><para>Inner hull of a Polygon</para></caption>
+      </mediaobject>
+    </informalfigure>
+    <programlisting>SELECT ST_SimplifyPolygonHull(
+  'POLYGON ((131 158, 136 163, 161 165, 173 156, 179 148, 169 140, 186 144, 190 137, 185 131, 174 128, 174 124, 166 119, 158 121, 158 115, 165 107, 161 97, 166 88, 166 79, 158 57, 145 57, 112 53, 111 47, 93 43, 90 48, 88 40, 80 39, 68 32, 51 33, 40 31, 39 34, 49 38, 34 38, 25 34, 28 39, 36 40, 44 46, 24 41, 17 41, 14 46, 19 50, 33 54, 21 55, 13 52, 11 57, 22 60, 34 59, 41 68, 75 72, 62 77, 56 70, 46 72, 31 69, 46 76, 52 82, 47 84, 56 90, 66 90, 64 94, 56 91, 33 97, 36 100, 23 100, 22 107, 29 106, 31 112, 46 116, 36 118, 28 131, 53 132, 59 127, 62 131, 76 130, 80 135, 89 137, 87 143, 73 145, 80 150, 88 150, 85 157, 99 162, 116 158, 115 165, 123 165, 122 170, 134 164, 131 158))',
+    0.3, false);
+</programlisting>
+    </para>
+
+    <para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_simplifypolygonhull01.png"/>
+        </imageobject>
+        <caption><para>Outer hull simplification of a MultiPolygon, with segmentization</para></caption>
+      </mediaobject>
+    </informalfigure>
+    <programlisting>SELECT ST_SimplifyPolygonHull(
+  ST_Segmentize(ST_Letters('xt'), 2.0),
+    0.1);
+</programlisting>
+    </para>
+
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_ConvexHull"/>, <xref linkend="ST_SimplifyVW"/>, <xref linkend="ST_ConcaveHull"/>, <xref linkend="ST_Segmentize"/></para>
+      </refsection>
+    </refentry>

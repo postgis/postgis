@@ -1,0 +1,44 @@
+<refentry xml:id="Find_SRID" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>Find_SRID</refname>
+
+		<refpurpose>Returns the SRID defined for a geometry column.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>Find_SRID</function></funcdef>
+			<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></paramdef>
+			<paramdef><type>varchar </type> <parameter>a_table_name</parameter></paramdef>
+			 <paramdef><type>varchar </type> <parameter>a_geomfield_name</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the integer SRID of the
+			specified geometry column by searching through the GEOMETRY_COLUMNS table.
+			If the geometry column has not been properly added (e.g. with the
+			<xref linkend="AddGeometryColumn"/> function), this function will not work.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting> SELECT Find_SRID('public', 'tiger_us_state_2007', 'geom_4269');
+find_srid
+----------
+4269
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_SRID"/></para>
+	  </refsection>
+	</refentry>

@@ -1,0 +1,59 @@
+<refentry xml:id="RT_Raster_OverLeft" xmlns="http://docbook.org/ns/docbook">
+          <refnamediv>
+            <refname>&amp;&lt;</refname>
+
+            <refpurpose>Returns <varname>TRUE</varname> if A's bounding box is to the left of B's.</refpurpose>
+          </refnamediv>
+
+          <refsynopsisdiv>
+            <funcsynopsis>
+              <funcprototype>
+                <funcdef>boolean <function>&amp;&lt;</function></funcdef>
+
+                <paramdef>
+                  <type>raster </type>
+
+                  <parameter>A</parameter>
+                </paramdef>
+
+                <paramdef>
+                  <type>raster </type>
+
+                  <parameter>B</parameter>
+                </paramdef>
+              </funcprototype>
+            </funcsynopsis>
+          </refsynopsisdiv>
+
+          <refsection>
+            <title>Description</title>
+
+            <para>The <varname>&amp;&lt;</varname> operator returns <varname>TRUE</varname> if the bounding box of raster A
+            overlaps or is to the left of the bounding box of raster B, or more accurately, overlaps or is NOT to the right
+            of the bounding box of raster B.</para>
+
+            <note><para>This operand will make use of any indexes that may be available on the rasters.</para></note>
+          </refsection>
+
+          <refsection>
+            <title>Examples</title>
+
+            <programlisting><![CDATA[
+SELECT A.rid As a_rid, B.rid As b_rid, A.rast &< B.rast As overleft
+ FROM dummy_rast AS A CROSS JOIN dummy_rast AS B;
+
+a_rid | b_rid | overleft
+------+-------+----------
+    2 |     2 | t
+    2 |     3 | f
+    2 |     1 | f
+    3 |     2 | t
+    3 |     3 | t
+    3 |     1 | f
+    1 |     2 | t
+    1 |     3 | t
+    1 |     1 | t
+
+]]></programlisting>
+          </refsection>
+         </refentry>

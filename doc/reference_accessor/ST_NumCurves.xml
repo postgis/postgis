@@ -1,0 +1,49 @@
+<refentry xml:id="ST_NumCurves" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_NumCurves</refname>
+        <refpurpose>Return the number of component curves in a CompoundCurve.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>integer <function>ST_NumCurves</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>a_compoundcurve</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Return the number of component curves in a CompoundCurve, zero for an empty CompoundCurve, or NULL for a non-CompoundCurve input. </para>
+        <para>&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5</para>
+        <para>&Z_support;</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>
+-- Returns 3
+SELECT ST_NumCurves('COMPOUNDCURVE(
+    (2 2, 2.5 2.5),
+    CIRCULARSTRING(2.5 2.5, 4.5 2.5, 3.5 3.5),
+    (3.5 3.5, 2.5 4.5, 3 5, 2 2)
+  )');
+
+-- Returns 0
+SELECT ST_NumCurves('COMPOUNDCURVE EMPTY');
+        </programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para>
+            <xref linkend="ST_CurveN"/>,
+            <xref linkend="ST_Dump"/>,
+            <xref linkend="ST_ExteriorRing"/>,
+            <xref linkend="ST_NumInteriorRings"/>,
+            <xref linkend="ST_NumGeometries"/>
+        </para>
+      </refsection>
+    </refentry>

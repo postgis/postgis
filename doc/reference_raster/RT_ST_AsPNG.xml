@@ -1,0 +1,95 @@
+<refentry xml:id="RT_ST_AsPNG" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <refnamediv>
+                <refname>ST_AsPNG</refname>
+                <refpurpose>Return the raster tile selected bands as a single portable network graphics (PNG) image (byte array).  If 1, 3, or 4 bands in raster and no bands are specified, then all bands are used.  If more 2 or more than 4 bands and no bands specified, then only band 1 is used.  Bands are mapped to RGB or RGBA space.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                    <funcdef>bytea <function>ST_AsPNG</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef choice="opt"><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>bytea <function>ST_AsPNG</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>compression</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>bytea <function>ST_AsPNG</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                    <paramdef choice="opt"><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>bytea <function>ST_AsPNG</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>compression</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>bytea <function>ST_AsPNG</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
+                    <paramdef choice="opt"><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns the selected bands of the raster as a single Portable Network Graphics Image (PNG).  Use <xref linkend="RT_ST_AsGDALRaster"/> if you need to export as less common raster types. If no band is specified, then the first 3 bands are exported.  There are many variants of the function with many options. If no <varname>srid</varname> is specified then then srid of the raster is used.  These are itemized below:</para>
+                <itemizedlist>
+                    <listitem>
+                      <para>
+                       <varname>nband</varname> is for single band exports.
+                      </para>
+                    </listitem>
+                    <listitem>
+                      <para>
+                        <varname>nbands</varname> is an array of bands to export (note that max is 4 for PNG) and the order of the bands is RGBA. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to green and band 1 to blue
+                      </para>
+                    </listitem>
+                   <listitem>
+                      <para>
+                        <varname>compression</varname> number from 1 to 9.  The higher the number the greater the compression.
+                      </para>
+                   </listitem>
+                   <listitem>
+                      <para>
+                        <varname>options</varname> text Array of GDAL
+                        options as defined for PNG (look at create_options
+                        for PNG of <xref linkend="RT_ST_GDALDrivers"/>). For PNG valid one is only ZLEVEL (amount
+                        of time to spend on compression -- default 6)
+                        e.g. ARRAY['ZLEVEL=9'].
+                        WORLDFILE is not allowed since the function
+                        would have to output two outputs. Refer to <link xlink:href="http://www.gdal.org/frmt_various.html">GDAL
+                        Raster format options</link> for more details.
+                      </para>
+                   </listitem>
+                </itemizedlist>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+            </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+
+                    <programlisting>SELECT ST_AsPNG(rast) As rastpng
+FROM dummy_rast WHERE rid=2;
+
+-- export the first 3 bands and map band 3 to Red, band 1 to Green, band 2 to blue
+SELECT ST_AsPNG(rast, ARRAY[3,1,2]) As rastpng
+FROM dummy_rast WHERE rid=2;
+                </programlisting>
+
+            </refsection>
+
+            <!-- Optionally add a "See Also" section -->
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_AsGDALRaster"/>, <xref linkend="RT_ST_ColorMap"/>, <xref linkend="RT_ST_GDALDrivers"/>,  <xref linkend="RT_Raster_Applications"/></para>
+            </refsection>
+        </refentry>

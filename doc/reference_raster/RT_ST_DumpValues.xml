@@ -1,0 +1,105 @@
+<refentry xml:id="RT_ST_DumpValues" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_DumpValues</refname>
+                <refpurpose>
+                    Get the values of the specified band as a 2-dimension array.
+                </refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>setof record <function>ST_DumpValues</function></funcdef>
+                        <paramdef>
+                            <type>raster </type> <parameter>rast</parameter>
+                        </paramdef>
+                        <paramdef>
+                            <type>integer[] </type> <parameter>nband=NULL</parameter>
+                        </paramdef>
+                        <paramdef>
+                            <type>boolean </type> <parameter>exclude_nodata_value=true</parameter>
+                        </paramdef>
+                    </funcprototype>
+                    <funcprototype>
+                        <funcdef>double precision[][] <function>ST_DumpValues</function></funcdef>
+                        <paramdef>
+                            <type>raster </type> <parameter>rast</parameter>
+                        </paramdef>
+                        <paramdef>
+                            <type>integer </type> <parameter>nband</parameter>
+                        </paramdef>
+                        <paramdef>
+                            <type>boolean </type> <parameter>exclude_nodata_value=true</parameter>
+                        </paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>
+                    Get the values of the specified band as a 2-dimension array (first index is row, second is column). If <varname>nband</varname> is NULL or not provided, all raster bands are processed.
+                </para>
+
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                <programlisting>
+WITH foo AS (
+    SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI'::text, 1, 0), 2, '32BF'::text, 3, -9999), 3, '16BSI', 0, 0) AS rast
+)
+SELECT
+    (ST_DumpValues(rast)).*
+FROM foo;
+
+ nband |                       valarray
+-------+------------------------------------------------------
+     1 | {{1,1,1},{1,1,1},{1,1,1}}
+     2 | {{3,3,3},{3,3,3},{3,3,3}}
+     3 | {{NULL,NULL,NULL},{NULL,NULL,NULL},{NULL,NULL,NULL}}
+(3 rows)
+                </programlisting>
+
+                <programlisting>
+WITH foo AS (
+    SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI'::text, 1, 0), 2, '32BF'::text, 3, -9999), 3, '16BSI', 0, 0) AS rast
+)
+SELECT
+    (ST_DumpValues(rast, ARRAY[3, 1])).*
+FROM foo;
+
+ nband |                       valarray
+-------+------------------------------------------------------
+     3 | {{NULL,NULL,NULL},{NULL,NULL,NULL},{NULL,NULL,NULL}}
+     1 | {{1,1,1},{1,1,1},{1,1,1}}
+(2 rows)
+                </programlisting>
+                <programlisting>
+WITH foo AS (
+    SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 1, 2, 5) AS rast
+)
+SELECT
+    (ST_DumpValues(rast, 1))[2][1]
+FROM foo;
+
+ st_dumpvalues
+---------------
+             5
+(1 row)
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_Value"/>,
+                    <xref linkend="RT_ST_SetValue"/>,
+                    <xref linkend="RT_ST_SetValues"/>
+                </para>
+            </refsection>
+
+        </refentry>

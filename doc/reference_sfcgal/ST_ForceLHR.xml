@@ -1,0 +1,33 @@
+<refentry xml:id="ST_ForceLHR" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+        <refname>ST_ForceLHR</refname>
+
+        <refpurpose>Force LHR orientation</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>ST_ForceLHR</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+        <title>Description</title>
+
+        <warning>
+            <para>
+                <xref linkend="ST_ForceLHR"/> is deprecated as of 3.5.0. Use <xref linkend="CG_ForceLHR"/> instead.
+            </para>
+        </warning>
+
+        <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+        <para>&sfcgal_required;</para>
+        <para>&Z_support;</para>
+        <para>&P_support;</para>
+        <para>&T_support;</para>
+    </refsection>
+
+</refentry>

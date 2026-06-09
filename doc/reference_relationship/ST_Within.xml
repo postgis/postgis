@@ -1,0 +1,107 @@
+<refentry xml:id="ST_Within" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <refnamediv>
+    <refname>ST_Within</refname>
+
+    <refpurpose>Tests if every point of A lies in B, and their interiors have a point in common</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+      <funcdef>boolean <function>ST_Within</function></funcdef>
+
+      <paramdef><type>geometry </type>
+      <parameter>A</parameter></paramdef>
+
+      <paramdef><type>geometry </type>
+      <parameter>B</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+    <para>Returns TRUE if geometry A is within geometry B.
+    A is within B if and only if all points of A lie inside (i.e. in the interior or boundary of) B
+    (or equivalently, no points of A lie in the exterior of B),
+    and the interiors of A and B have at least one point in common.
+    </para>
+    <para>For this function to make
+    sense, the source geometries must both be of the same coordinate projection,
+    having the same SRID.
+    </para>
+
+    <para>In mathematical terms:
+    <emphasis>ST_Within(A, B) ⇔ (A ⋂ B = A) ∧ (Int(A) ⋂ Int(B) ≠ ∅) </emphasis></para>
+
+    <para>The within relation is reflexive: every geometry is within itself.
+    The relation is antisymmetric: if <code>ST_Within(A,B) = true</code> and <code>ST_Within(B,A) = true</code>, then
+    the two geometries must be topologically equal (<code>ST_Equals(A,B) = true</code>).</para>
+
+    <para>ST_Within is the converse of <xref linkend="ST_Contains"/>.
+    So, <code>ST_Within(A,B) = ST_Contains(B,A)</code>.</para>
+
+    <note><para>Because the interiors must have a common point, a subtlety of the definition is that
+    lines and points lying fully in the boundary of polygons or lines are <emphasis>not</emphasis> within the geometry.
+    For further details see <link xlink:href="http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html">Subtleties of OGC Covers, Contains, Within</link>.
+    The <xref linkend="ST_CoveredBy"/> predicate provides a more inclusive relationship.
+    </para></note>
+
+    <note><para>&index_aware;
+        To avoid index use, use the function <function>_ST_Within</function>.</para></note>
+
+    <para>Performed by the GEOS module</para>
+
+    <para role="enhanced" conformance="2.3.0">Enhanced: 2.3.0 Enhancement to PIP short-circuit for geometry extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
+
+    <important>
+      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
+    </important>
+
+    <important>
+      <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
+    </important>
+
+    <para>NOTE: this is the "allowable" version that returns a
+      boolean, not an integer.</para>
+
+    <para>&sfs_compliant; s2.1.1.2 // s2.1.13.3
+      - a.Relate(b, 'T*F**F***')
+    </para>
+    <para>&sqlmm_compliant; SQL-MM 3: 5.1.30</para>
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+      <programlisting>
+--a circle within a circle
+SELECT ST_Within(smallc,smallc) As smallinsmall,
+  ST_Within(smallc, bigc) As smallinbig,
+  ST_Within(bigc,smallc) As biginsmall,
+  ST_Within(ST_Union(smallc, bigc), bigc) as unioninbig,
+  ST_Within(bigc, ST_Union(smallc, bigc)) as biginunion,
+  ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion
+FROM
+(
+SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
+  ST_Buffer(ST_GeomFromText('POINT(50 50)'), 40) As bigc) As foo;
+--Result
+ smallinsmall | smallinbig | biginsmall | unioninbig | biginunion | bigisunion
+--------------+------------+------------+------------+------------+------------
+ t            | t          | f          | t          | t          | t
+(1 row)
+    </programlisting>
+
+    <para><inlinemediaobject>
+    <imageobject>
+      <imagedata fileref="images/st_within01.png"/>
+    </imageobject>
+    </inlinemediaobject> </para>
+    </refsection>
+
+    <refsection>
+    <title>See Also</title>
+    <para><xref linkend="ST_Contains"/>, <xref linkend="ST_CoveredBy"/>, <xref linkend="ST_Equals"/>, <xref linkend="ST_IsValid"/></para>
+    </refsection>
+  </refentry>

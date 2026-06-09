@@ -1,0 +1,61 @@
+<refentry xml:id="ST_InteriorRingN" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_InteriorRingN</refname>
+
+		<refpurpose>Returns the Nth interior ring (hole) of a Polygon.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_InteriorRingN</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>n</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the Nth interior ring (hole) of a POLYGON geometry as a LINESTRING. The index starts at 1. Returns NULL if the geometry is not a polygon or the index is out of range.</para>
+
+		<!-- optionally mention that this function uses indexes if appropriate -->
+		<note>
+		  <para>This function does not support MULTIPOLYGONs.
+          For MULTIPOLYGONs use in conjunction with <xref linkend="ST_GeometryN"/> or <xref linkend="ST_Dump"/> </para>
+		</note>
+
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5</para>
+		<para>&Z_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+SELECT ST_AsText(ST_InteriorRingN(geom, 1)) As geom
+FROM (SELECT ST_BuildArea(
+		ST_Collect(ST_Buffer(ST_Point(1,2), 20,3),
+			ST_Buffer(ST_Point(1, 2), 10,3))) As geom
+		)  as foo;
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+            <xref linkend="ST_ExteriorRing"/>,
+            <xref linkend="ST_BuildArea"/>,
+            <xref linkend="ST_Collect"/>,
+            <xref linkend="ST_Dump"/>,
+            <xref linkend="ST_NumInteriorRing"/>,
+            <xref linkend="ST_NumInteriorRings"/>
+		</para>
+	  </refsection>
+	</refentry>

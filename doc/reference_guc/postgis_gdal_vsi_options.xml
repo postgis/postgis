@@ -1,0 +1,40 @@
+<refentry xml:id="postgis_gdal_vsi_options" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <refnamediv>
+                <refname>postgis.gdal_vsi_options</refname>
+                <refpurpose>
+                    A string configuration to set options used when working with an out-db raster.
+                </refpurpose>
+            </refnamediv>
+
+            <refsection>
+                <title>Description</title>
+                <para>
+                    A string configuration to set options used when working with an out-db raster. <link xlink:href="https://gdal.org/user/configoptions.html">Configuration options</link> control things like how much space GDAL allocates to local data cache, whether to read overviews, and what access keys to use for remote out-db data sources.
+                </para>
+
+                <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
+
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+                <para>Set <varname>postgis.gdal_vsi_options</varname> for current session:</para>
+
+                <programlisting>
+SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';
+                </programlisting>
+
+                <para>Set <varname>postgis.gdal_vsi_options</varname> just for the <emphasis>current transaction</emphasis> using the <varname>LOCAL</varname> keyword:</para>
+                <programlisting>
+SET LOCAL postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="postgis_enable_outdb_rasters"/>
+                    <xref linkend="postgis_gdal_enabled_drivers"/>
+                </para>
+            </refsection>
+    </refentry>

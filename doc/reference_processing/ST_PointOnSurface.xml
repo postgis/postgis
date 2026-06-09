@@ -1,0 +1,139 @@
+<refentry xml:id="ST_PointOnSurface" xmlns="http://docbook.org/ns/docbook">
+      <refnamediv>
+        <refname>ST_PointOnSurface</refname>
+        <refpurpose>Computes a point guaranteed to lie in a polygon, or on a geometry.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_PointOnSurface</function></funcdef>
+
+            <paramdef><type>geometry </type>
+            <parameter>g1</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns a <varname>POINT</varname> which is guaranteed to lie in the interior of a surface
+        (<varname>POLYGON</varname>, <varname>MULTIPOLYGON</varname>, and <varname>CURVEPOLYGON</varname>).
+        In PostGIS this function also works on line and point geometries.
+        </para>
+
+        <para>&sfs_compliant; s3.2.14.2 // s3.2.18.2</para>
+        <para>&sqlmm_compliant; SQL-MM 3: 8.1.5, 9.5.6.
+         The specifications define ST_PointOnSurface for surface geometries only.
+         PostGIS extends the function to support all common geometry types.
+         Other databases (Oracle, DB2, ArcSDE) seem to support this function only for surfaces.
+         SQL Server 2008 supports all common geometry types.</para>
+        <para>&Z_support;</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+      <informaltable>
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_pointonsurface01.png"/>
+                    </imageobject>
+
+                    <caption><para>Point on surface of a
+                    <varname>MULTIPOINT</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_pointonsurface02.png"/>
+                    </imageobject>
+
+                    <caption><para>Point on surface of a
+                    <varname>LINESTRING</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_pointonsurface03.png"/>
+                    </imageobject>
+
+                    <caption><para>Point on surface of a
+                    <varname>POLYGON</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_pointonsurface04.png"/>
+                    </imageobject>
+
+                    <caption><para>Point on surface of a
+                    <varname>GEOMETRYCOLLECTION</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+        <programlisting>SELECT ST_AsText(ST_PointOnSurface('POINT(0 5)'::geometry));
+------------
+ POINT(0 5)
+
+SELECT ST_AsText(ST_PointOnSurface('LINESTRING(0 5, 0 10)'::geometry));
+------------
+ POINT(0 5)
+
+SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometry));
+----------------
+ POINT(2.5 2.5)
+
+SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 10 2)')));
+----------------
+ POINT(0 0 1)
+</programlisting>
+
+        <para><emphasis role="bold">Example:</emphasis>
+        The result of ST_PointOnSurface is guaranteed to lie within polygons,
+        whereas the point computed by <xref linkend="ST_Centroid"/> may be outside.
+        </para>
+
+        <informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_pointonsurface.png"/>
+                </imageobject>
+                <caption><para>Red: point on surface; Green: centroid</para></caption>
+            </mediaobject>
+            </informalfigure>
+
+<programlisting>
+SELECT ST_AsText(ST_PointOnSurface(geom)) AS pt_on_surf,
+       ST_AsText(ST_Centroid(geom)) AS centroid
+    FROM (SELECT 'POLYGON ((130 120, 120 190, 30 140, 50 20, 190 20,
+                      170 100, 90 60, 90 130, 130 120))'::geometry AS geom) AS t;
+
+   pt_on_surf    |                  centroid
+-----------------+---------------------------------------------
+ POINT(62.5 110) | POINT(100.18264840182648 85.11415525114155)
+</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_Centroid"/>, <xref linkend="ST_MaximumInscribedCircle"/></para>
+      </refsection>
+    </refentry>

@@ -1,0 +1,36 @@
+<refentry xml:id="CG_3DScaleAroundCenter" xmlns="http://docbook.org/ns/docbook">
+   <refnamediv>
+       <refname>CG_3DScaleAroundCenter</refname>
+       <refpurpose>Scales a geometry in 3D space around a specified center point.</refpurpose>
+   </refnamediv>
+   <refsynopsisdiv>
+       <funcsynopsis>
+           <funcprototype>
+               <funcdef>geometry <function>CG_3DScaleAroundCenter</function></funcdef>
+               <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>factorX</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>factorY</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>factorZ</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>centerX</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>centerY</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>centerZ</parameter></paramdef>
+           </funcprototype>
+       </funcsynopsis>
+   </refsynopsisdiv>
+   <refsection>
+       <title>Description</title>
+       <para>Scales the input geometry <parameter>geom</parameter> by different factors along the X, Y, and Z axes, relative to a specified center point (<parameter>centerX</parameter>, <parameter>centerY</parameter>, <parameter>centerZ</parameter>).</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
+       <para>&sfcgal_required;</para>
+       <para>&Z_support;</para>
+   </refsection>
+   <refsection>
+       <title>Examples</title>
+       <programlisting>SELECT ST_AsText(CG_3DScaleAroundCenter('POINT(2 2 2)', 0.5, 0.5, 0.5, 1, 1, 1));
+-- Result: POINT(1.5 1.5 1.5)</programlisting>
+   </refsection>
+   <refsection>
+       <title>See Also</title>
+       <para><xref linkend="CG_Scale"/>, <xref linkend="CG_3DScale"/></para>
+   </refsection>
+</refentry>

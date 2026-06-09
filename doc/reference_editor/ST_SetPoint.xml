@@ -1,0 +1,58 @@
+<refentry xml:id="ST_SetPoint" xmlns="http://docbook.org/ns/docbook">
+		  <refnamediv>
+			<refname>ST_SetPoint</refname>
+			<refpurpose>Replace point of a linestring with a given point.</refpurpose>
+		  </refnamediv>
+		  <refsynopsisdiv>
+			 <funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_SetPoint</function></funcdef>
+				<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
+				<paramdef><type>integer</type> <parameter>zerobasedposition</parameter></paramdef>
+				<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>
+			  </funcprototype>
+			 </funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Replace point N of linestring with given point. Index is
+			0-based.Negative index are counted backwards, so that -1 is last point.
+				This is especially useful in triggers when trying to maintain relationship of joints when one vertex moves.</para>
+			<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
+			<para>Updated 2.3.0 : negative indexing</para>
+
+			<para>&Z_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+			<programlisting>
+--Change first point in line string from -1 3 to -1 1
+SELECT ST_AsText(ST_SetPoint('LINESTRING(-1 2,-1 3)', 0, 'POINT(-1 1)'));
+	   st_astext
+-----------------------
+ LINESTRING(-1 1,-1 3)
+
+---Change last point in a line string (lets play with 3d linestring this time)
+SELECT ST_AsEWKT(ST_SetPoint(foo.geom, ST_NumPoints(foo.geom) - 1, ST_GeomFromEWKT('POINT(-1 1 3)')))
+FROM (SELECT ST_GeomFromEWKT('LINESTRING(-1 2 3,-1 3 4, 5 6 7)') As geom) As foo;
+	   st_asewkt
+-----------------------
+LINESTRING(-1 2 3,-1 3 4,-1 1 3)
+
+SELECT ST_AsText(ST_SetPoint(g, -3, p))
+FROM ST_GEomFromText('LINESTRING(0 0, 1 1, 2 2, 3 3, 4 4)') AS g
+	, ST_PointN(g,1) as p;
+	   st_astext
+-----------------------
+LINESTRING(0 0,1 1,0 0,3 3,4 4)
+
+			</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_AddPoint"/>, <xref linkend="ST_NPoints"/>, <xref linkend="ST_NumPoints"/>, <xref linkend="ST_PointN"/>, <xref linkend="ST_RemovePoint"/></para>
+		  </refsection>
+	</refentry>

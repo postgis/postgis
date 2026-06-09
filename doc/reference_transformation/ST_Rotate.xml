@@ -1,0 +1,85 @@
+<refentry xml:id="ST_Rotate" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_Rotate</refname>
+
+		<refpurpose>Rotates a geometry about an origin point.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Rotate</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+                        <funcdef>geometry <function>ST_Rotate</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+                        <paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+                        <paramdef><type>float</type> <parameter>x0</parameter></paramdef>
+                        <paramdef><type>float</type> <parameter>y0</parameter></paramdef>
+                  </funcprototype>
+
+		  <funcprototype>
+                        <funcdef>geometry <function>ST_Rotate</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+                        <paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+                        <paramdef><type>geometry</type> <parameter>pointOrigin</parameter></paramdef>
+                  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Rotates geometry rotRadians counter-clockwise about the origin point. The rotation origin can be
+			specified either as a POINT geometry, or as x and y coordinates. If the origin is not
+			specified, the geometry is rotated about POINT(0 0).</para>
+
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 additional parameters for specifying the origin of rotation were added.</para>
+		<para role="availability" conformance="1.1.2.">Availability: 1.1.2. Name changed from Rotate to ST_Rotate in 1.2.2</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+--Rotate 180 degrees
+SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()));
+               st_asewkt
+---------------------------------------
+ LINESTRING(-50 -160,-50 -50,-100 -50)
+(1 row)
+
+--Rotate 30 degrees counter-clockwise at x=50, y=160
+SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()/6, 50, 160));
+                                 st_asewkt
+---------------------------------------------------------------------------
+ LINESTRING(50 160,105 64.7372055837117,148.301270189222 89.7372055837117)
+(1 row)
+
+--Rotate 60 degrees clockwise from centroid
+SELECT ST_AsEWKT(ST_Rotate(geom, -pi()/3, ST_Centroid(geom)))
+FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;
+                           st_asewkt
+--------------------------------------------------------------
+ LINESTRING(116.4225 130.6721,21.1597 75.6721,46.1597 32.3708)
+(1 row)
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_RotateX"/>, <xref linkend="ST_RotateY"/>, <xref linkend="ST_RotateZ"/></para>
+	  </refsection>
+	</refentry>

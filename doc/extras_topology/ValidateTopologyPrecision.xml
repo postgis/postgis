@@ -1,0 +1,55 @@
+<refentry xml:id="ValidateTopologyPrecision" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>ValidateTopologyPrecision</refname>
+
+				<refpurpose>Returns non-precise vertices in the topology.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>geometry <function>ValidateTopologyPrecision</function></funcdef>
+					<paramdef><type>name </type> <parameter>toponame</parameter></paramdef>
+					<paramdef choice="opt"><type>geometry</type> <parameter>bbox</parameter></paramdef>
+					<paramdef choice="opt"><type>float8</type> <parameter>gridSize</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Returns all vertices that are not rounded to the topology or given
+<varname>gridSize</varname> as a puntal geometry, optionally limiting
+the check to the area specified by the <varname>bbox</varname> parameter.
+                </para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="3.6.0">Availability: 3.6.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+SELECT ST_AsEWKT(g) FROM
+ topology.ValidateTopologyPrecision(
+    'city_data',
+    gridSize => 2,
+    bbox => ST_MakeEnvelope(0,0,20,20)
+) g;
+      st_asewkt
+----------------------
+ MULTIPOINT(9 6,9 14)
+(1 row)
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+<xref linkend="MakeTopologyPrecise"/>
+                </para>
+			</refsection>
+		</refentry>

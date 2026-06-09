@@ -1,0 +1,60 @@
+<refentry xml:id="RT_ST_GeoReference" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <refnamediv>
+                <refname>ST_GeoReference</refname>
+                <refpurpose>Returns the georeference meta data in GDAL or ESRI format as commonly seen in a world file. Default is GDAL.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                    <funcdef>text <function>ST_GeoReference</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef choice="opt"><type>text </type> <parameter>format=GDAL</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns the georeference meta data including carriage return in GDAL or ESRI format as commonly seen in a <link xlink:href="http://en.wikipedia.org/wiki/World_file">world file</link>. Default is GDAL if no type specified.  type is string 'GDAL' or 'ESRI'.
+                     </para>
+                <para>Difference between format representations is as follows:</para>
+                <para><varname>GDAL</varname>:
+<programlisting>scalex
+skewy
+skewx
+scaley
+upperleftx
+upperlefty</programlisting></para>
+                <para><varname>ESRI</varname>:
+<programlisting>scalex
+skewy
+skewx
+scaley
+upperleftx + scalex*0.5
+upperlefty + scaley*0.5</programlisting></para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                <programlisting>SELECT ST_GeoReference(rast, 'ESRI') As esri_ref, ST_GeoReference(rast, 'GDAL') As gdal_ref
+ FROM dummy_rast WHERE rid=1;
+
+   esri_ref   |   gdal_ref
+--------------+--------------
+ 2.0000000000 | 2.0000000000
+ 0.0000000000 : 0.0000000000
+ 0.0000000000 : 0.0000000000
+ 3.0000000000 : 3.0000000000
+ 1.5000000000 : 0.5000000000
+ 2.0000000000 : 0.5000000000
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_SetGeoReference"/>, <xref linkend="RT_ST_ScaleX"/>, <xref linkend="RT_ST_ScaleY"/></para>
+            </refsection>
+        </refentry>

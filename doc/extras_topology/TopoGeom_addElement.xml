@@ -1,0 +1,44 @@
+<refentry xml:id="TopoGeom_addElement" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>TopoGeom_addElement</refname>
+				<refpurpose>Adds an element to the definition of a TopoGeometry.</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>topogeometry <function>TopoGeom_addElement</function></funcdef>
+					<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+          <paramdef><type>topoelement </type> <parameter>el</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Adds a <xref linkend="topoelement"/> to the definition of a
+TopoGeometry object. Does not error out if the element is already
+part of the definition.
+                </para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="2.3">Availability: 2.3</para>
+			</refsection>
+			<refsection>
+				<title>Examples</title>
+        <programlisting>
+-- Add edge 5 to TopoGeometry tg
+UPDATE mylayer SET tg = TopoGeom_addElement(tg, '{5,2}');
+				</programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+        <para>
+<xref linkend="TopoGeom_remElement"/>,
+<xref linkend="CreateTopoGeom"/>
+        </para>
+			</refsection>
+		</refentry>

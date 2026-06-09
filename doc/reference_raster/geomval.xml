@@ -1,0 +1,19 @@
+<refentry xml:id="geomval" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>geomval</refname>
+                <refpurpose>A spatial datatype with two fields - geom (holding a geometry object)
+                    and val (holding a double precision pixel value from a raster band).</refpurpose>
+            </refnamediv>
+
+            <refsection>
+            <title>Description</title>
+            <para>geomval is a compound data type consisting of a geometry object referenced by the .geom field
+                and val, a double precision value that represents the pixel value at a particular geometric location in a raster band.
+                It is used by the ST_DumpAsPolygon and Raster intersection family of functions as an output type to explode a raster band into
+                geometry polygons.</para>
+            </refsection>
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="PostGIS_Geometry_DumpFunctions"/> </para>
+            </refsection>
+        </refentry>

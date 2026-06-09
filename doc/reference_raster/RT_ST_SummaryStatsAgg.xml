@@ -1,0 +1,100 @@
+<refentry xml:id="RT_ST_SummaryStatsAgg" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_SummaryStatsAgg</refname>
+                <refpurpose>Aggregate. Returns summarystats consisting of count, sum, mean, stddev, min, max for a given raster band of a set of raster. Band 1 is assumed if no band is specified.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                        <paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
+                    </funcprototype>
+
+                    <funcprototype>
+                        <funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
+                    </funcprototype>
+
+                    <funcprototype>
+                        <funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                        <paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns <xref linkend="summarystats"/> consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1.</para>
+
+                <note><para>By default only considers pixel values not equal to the <varname>NODATA</varname> value. Set <varname>exclude_nodata_value</varname> to False to get count of all pixels.</para></note>
+
+                <note><para>By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to value between 0 and 1</para></note>
+
+                <para role="availability" conformance="2.2.0">Availability: 2.2.0 </para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+                <programlisting>
+WITH foo AS (
+    SELECT
+        rast.rast
+    FROM (
+        SELECT ST_SetValue(
+            ST_SetValue(
+                ST_SetValue(
+                    ST_AddBand(
+                        ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
+                        , 1, '64BF', 0, 0
+                    )
+                    , 1, 1, 1, -10
+                )
+                , 1, 5, 4, 0
+            )
+            , 1, 5, 5, 3.14159
+        ) AS rast
+    ) AS rast
+    FULL JOIN (
+        SELECT generate_series(1, 10) AS id
+    ) AS id
+        ON 1 = 1
+)
+SELECT
+    (stats).count,
+    round((stats).sum::numeric, 3),
+    round((stats).mean::numeric, 3),
+    round((stats).stddev::numeric, 3),
+    round((stats).min::numeric, 3),
+    round((stats).max::numeric, 3)
+FROM (
+    SELECT
+        ST_SummaryStatsAgg(rast, 1, TRUE, 1) AS stats
+    FROM foo
+) bar;
+
+ count |  round  | round  | round |  round  | round
+-------+---------+--------+-------+---------+-------
+    20 | -68.584 | -3.429 | 6.571 | -10.000 | 3.142
+(1 row)
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="summarystats"/>,
+                    <xref linkend="RT_ST_SummaryStats"/>,
+                    <xref linkend="RT_ST_Count"/>,
+                    <xref linkend="RT_ST_Clip"/>
+                </para>
+            </refsection>
+        </refentry>

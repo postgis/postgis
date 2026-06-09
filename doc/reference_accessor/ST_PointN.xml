@@ -1,0 +1,94 @@
+<refentry xml:id="ST_PointN" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_PointN</refname>
+
+		<refpurpose>Returns the Nth point in the first LineString or circular LineString in a
+			geometry. </refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_PointN</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>n</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the Nth point in a single linestring or circular linestring in the
+			geometry. Negative values are counted backwards from the end of the LineString, so that -1 is the last point. Returns NULL if there is no linestring in the
+			geometry.</para>
+
+		<note>
+			  <para>Index is 1-based as for OGC specs since version 0.8.0.
+              Backward indexing (negative index) is not in OGC.
+			  Previous versions implemented this as 0-based instead.</para>
+		</note>
+
+		<note>
+			  <para>If you want to get the Nth point of each LineString in a MultiLineString, use in conjunction
+			  with ST_Dump</para>
+		</note>
+
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5</para>
+		<para>&Z_support;</para>
+		<para>&curve_support;</para>
+		<note><para role="changed" conformance="2.0.0">Changed: 2.0.0 no longer works with single geometry multilinestrings.  In older
+	  versions of PostGIS -- a single line multilinestring would work happily with this
+	  function and return the start point.  In 2.0.0 it just returns NULL like any other multilinestring.</para>
+      <para role="changed" conformance="2.3.0"> Changed: 2.3.0 : negative indexing available (-1 is last point)
+    </para>
+      </note>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>-- Extract all POINTs from a LINESTRING
+SELECT ST_AsText(
+   ST_PointN(
+	  column1,
+	  generate_series(1, ST_NPoints(column1))
+   ))
+FROM ( VALUES ('LINESTRING(0 0, 1 1, 2 2)'::geometry) ) AS foo;
+
+ st_astext
+------------
+ POINT(0 0)
+ POINT(1 1)
+ POINT(2 2)
+(3 rows)
+
+--Example circular string
+SELECT ST_AsText(ST_PointN(ST_GeomFromText('CIRCULARSTRING(1 2, 3 2, 1 2)'), 2));
+
+ st_astext
+------------
+ POINT(3 2)
+(1 row)
+
+SELECT ST_AsText(f)
+FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g
+  ,ST_PointN(g, -2) AS f; -- 1 based index
+
+    st_astext
+-----------------
+ POINT Z (1 1 1)
+(1 row)
+
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_NPoints"/></para>
+	  </refsection>
+	</refentry>

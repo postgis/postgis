@@ -1,0 +1,75 @@
+<refentry xml:id="ST_3DDistance" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_3DDistance</refname>
+
+		<refpurpose>Returns the 3D cartesian minimum distance (based on spatial ref) between two geometries in
+		projected units. </refpurpose>
+	  </refnamediv>
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_3DDistance</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the 3-dimensional minimum cartesian distance between two geometries in
+		projected units (spatial ref units).</para>
+
+		<para>&Z_support;</para>
+		<!-- Optionally mention supports Polyhedral Surface  -->
+		<para>&P_support;</para>
+		<para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3</para>
+
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+		<para role="changed" conformance="2.2.0">Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
+		<para role="changed" conformance="3.0.0">Changed: 3.0.0 - SFCGAL version removed</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+-- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line)
+-- Note: currently no vertical datum support so Z is not transformed and assumed to be same units as final.
+SELECT ST_3DDistance(
+			ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry,2163),
+			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'::geometry,2163)
+		) As dist_3d,
+		ST_Distance(
+			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry,2163),
+			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry,2163)
+		) As dist_2d;
+
+     dist_3d      |     dist_2d
+------------------+-----------------
+ 127.295059324629 | 126.66425605671
+</programlisting>
+<programlisting>
+-- Multilinestring and polygon both 3d and 2d distance
+-- Same example as 3D closest point example
+SELECT ST_3DDistance(poly, mline) As dist3d,
+    ST_Distance(poly, mline) As dist2d
+        FROM (SELECT  'POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))'::geometry as poly,
+               'MULTILINESTRING((175 155 2, 20 40 20, 50 60 -2, 125 100 1, 175 155 1), (1 10 2, 5 20 1))'::geometry as mline) as foo;
+      dist3d       | dist2d
+-------------------+--------
+ 0.716635696066337 |      0
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_3DClosestPoint"/>, <xref linkend="ST_3DDWithin"/>, <xref linkend="ST_3DMaxDistance"/>, <xref linkend="ST_3DShortestLine"/>, <xref linkend="ST_Transform"/></para>
+	  </refsection>
+	</refentry>

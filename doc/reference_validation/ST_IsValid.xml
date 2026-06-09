@@ -1,0 +1,85 @@
+<refentry xml:id="ST_IsValid" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_IsValid</refname>
+
+		<refpurpose>Tests if a geometry is well-formed in 2D.
+		</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_IsValid</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_IsValid</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>flags</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+        Tests if an ST_Geometry value is well-formed and valid in 2D according to the OGC rules.
+        For geometries with 3 and 4 dimensions, the validity is still only tested in 2 dimensions.
+		For geometries that are invalid, a PostgreSQL NOTICE is emitted providing details of why it is not valid.
+                </para>
+		<para>
+For the version with the <varname>flags</varname> parameter,
+supported values are documented in <xref linkend="ST_IsValidDetail"/>
+This version does not print a NOTICE explaining invalidity.
+		</para>
+		<para>For more information on the definition of geometry validity, refer
+			to <xref linkend="OGC_Validity"/>
+		</para>
+		<note>
+			<para>SQL-MM defines the result of ST_IsValid(NULL) to be 0, while
+			PostGIS returns NULL.</para>
+		</note>
+	  <para>Performed by the GEOS module.</para>
+
+		<para>The version accepting flags is available starting with 2.0.0.		</para>
+
+
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 5.1.9</para>
+
+		<note>
+			<para>
+Neither OGC-SFS nor SQL-MM specifications include a flag argument
+for ST_IsValid. The flag is a PostGIS extension.
+			</para>
+		</note>
+
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_IsValid(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,
+	ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As bad_poly
+--results
+NOTICE:  Self-intersection at or near point 0 0
+ good_line | bad_poly
+-----------+----------
+ t         | f
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+<xref linkend="ST_IsSimple"/>,
+<xref linkend="ST_IsValidReason"/>,
+<xref linkend="ST_IsValidDetail"/>,
+</para>
+	  </refsection>
+	</refentry>

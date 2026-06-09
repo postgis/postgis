@@ -1,0 +1,71 @@
+<refentry xml:id="ST_ExteriorRing" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_ExteriorRing</refname>
+
+		<refpurpose>Returns a LineString representing the exterior ring of a Polygon. </refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ExteriorRing</function></funcdef>
+
+			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a LINESTRING representing the exterior ring (shell) of a POLYGON.
+        Returns	NULL if the geometry is not a polygon.</para>
+
+		<note>
+		  <para>This function does not support MULTIPOLYGONs.
+          For MULTIPOLYGONs use in conjunction with <xref linkend="ST_GeometryN"/> or <xref linkend="ST_Dump"/> </para>
+        </note>
+
+		<para>&sfs_compliant; 2.1.5.1</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 8.2.3, 8.3.3</para>
+                <para>&Z_support;</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+<programlisting>
+--If you have a table of polygons
+SELECT gid, ST_ExteriorRing(geom) AS ering
+FROM sometable;
+
+--If you have a table of MULTIPOLYGONs
+--and want to return a MULTILINESTRING composed of the exterior rings of each polygon
+SELECT gid, ST_Collect(ST_ExteriorRing(geom)) AS erings
+	FROM (SELECT gid, (ST_Dump(geom)).geom As geom
+			FROM sometable) As foo
+GROUP BY gid;
+
+--3d Example
+SELECT ST_AsEWKT(
+	ST_ExteriorRing(
+	ST_GeomFromEWKT('POLYGON((0 0 1, 1 1 1, 1 2 1, 1 1 1, 0 0 1))')
+	)
+);
+
+st_asewkt
+---------
+LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
+</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+<xref linkend="ST_InteriorRingN"/>,
+<xref linkend="ST_Boundary"/>,
+<xref linkend="ST_NumInteriorRings"/>
+		</para>
+	  </refsection>
+	</refentry>

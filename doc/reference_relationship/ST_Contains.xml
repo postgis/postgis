@@ -1,0 +1,225 @@
+<refentry xml:id="ST_Contains" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <refnamediv>
+    <refname>ST_Contains</refname>
+
+    <refpurpose>Tests if every point of B lies in A, and their interiors have a point in common</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+      <funcdef>boolean <function>ST_Contains</function></funcdef>
+
+      <paramdef><type>geometry </type>
+      <parameter>geomA</parameter></paramdef>
+
+      <paramdef><type>geometry </type>
+      <parameter>geomB</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+    <para>Returns TRUE if geometry A contains geometry B.
+    A contains B if and only if all points of B lie inside (i.e. in the interior or boundary of) A
+    (or equivalently, no points of B lie in the exterior of A),
+    and the interiors of A and B have at least one point in common.
+    </para>
+
+    <para>In mathematical terms:
+    <emphasis>ST_Contains(A, B) ⇔ (A ⋂ B = B) ∧ (Int(A) ⋂ Int(B) ≠ ∅) </emphasis></para>
+
+    <para>The contains relationship is reflexive: every geometry contains itself.
+    (In contrast, in the <xref linkend="ST_ContainsProperly"/>
+    predicate a geometry does <emphasis>not</emphasis> properly contain itself.)
+    The relationship is antisymmetric: if <code>ST_Contains(A,B) = true</code> and <code>ST_Contains(B,A) = true</code>, then
+    the two geometries must be topologically equal (<code>ST_Equals(A,B) = true</code>).
+    </para>
+
+    <para>ST_Contains is the converse of <xref linkend="ST_Within"/>.
+    So, <code>ST_Contains(A,B) = ST_Within(B,A)</code>.</para>
+
+    <note><para>Because the interiors must have a common point, a subtlety of the definition is that
+    polygons and lines do <emphasis>not</emphasis> contain lines and points lying fully in their boundary.
+    For further details see <link xlink:href="http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html">Subtleties of OGC Covers, Contains, Within</link>.
+    The <xref linkend="ST_Covers"/> predicate provides a more inclusive relationship.
+    </para></note>
+
+    <note><para>&index_aware;
+    To avoid index use, use the function <function>_ST_Contains</function>.</para></note>
+
+    <para>Performed by the GEOS module</para>
+    <para role="enhanced" conformance="2.3.0">Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
+
+    <important>
+      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
+    </important>
+
+    <important>
+      <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
+    </important>
+
+    <para>NOTE: this is the "allowable" version that returns a
+      boolean, not an integer.</para>
+
+    <para>&sfs_compliant; s2.1.1.2 // s2.1.13.3
+    - same as within(geometry B, geometry A)</para>
+    <para>&sqlmm_compliant; SQL-MM 3: 5.1.31</para>
+
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+
+    <para><function>ST_Contains</function> returns <varname>TRUE</varname> in the following situations:</para>
+
+    <informaltable>
+      <tgroup cols="2">
+      <tbody>
+        <row>
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_contains01.png"/>
+            </imageobject>
+
+            <caption><para><varname>LINESTRING</varname> / <varname>MULTIPOINT</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_contains02.png"/>
+            </imageobject>
+
+            <caption><para><varname>POLYGON</varname> / <varname>POINT</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+        </row>
+        <row>
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_contains03.png"/>
+            </imageobject>
+
+            <caption><para><varname>POLYGON</varname> / <varname>LINESTRING</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_contains04.png"/>
+            </imageobject>
+
+            <caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para><function>ST_Contains</function> returns <varname>FALSE</varname> in the following situations:</para>
+
+    <informaltable>
+      <tgroup cols="2">
+      <tbody>
+        <row>
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_contains05.png"/>
+            </imageobject>
+
+            <caption><para><varname>POLYGON</varname> / <varname>MULTIPOINT</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_contains06.png"/>
+            </imageobject>
+
+            <caption><para><varname>POLYGON</varname> / <varname>LINESTRING</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>Due to the interior intersection condition <function>ST_Contains</function> returns <varname>FALSE</varname> in the following situations
+     (whereas <function>ST_Covers</function> returns <varname>TRUE</varname>):</para>
+
+    <informaltable>
+      <tgroup cols="2">
+      <tbody>
+        <row>
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_contains07.png"/>
+            </imageobject>
+
+            <caption><para><varname>LINESTRING</varname> / <varname>POINT</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_contains08.png"/>
+            </imageobject>
+
+            <caption><para><varname>POLYGON</varname> / <varname>LINESTRING</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </informaltable>
+
+      <programlisting>
+-- A circle within a circle
+SELECT ST_Contains(smallc, bigc) As smallcontainsbig,
+     ST_Contains(bigc,smallc) As bigcontainssmall,
+     ST_Contains(bigc, ST_Union(smallc, bigc)) as bigcontainsunion,
+     ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,
+     ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
+     ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
+FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
+       ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
+
+-- Result
+  smallcontainsbig | bigcontainssmall | bigcontainsunion | bigisunion | bigcoversexterior | bigcontainsexterior
+------------------+------------------+------------------+------------+-------------------+---------------------
+ f                | t                | t                | t          | t        | f
+
+-- Example demonstrating difference between contains and contains properly
+SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
+   ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba
+FROM (VALUES ( ST_Buffer(ST_Point(1,1), 5,1) ),
+       ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),
+       ( ST_Point(1,1) )
+    ) As foo(geomA);
+
+  geomtype    | acontainsa | acontainspropa | acontainsba | acontainspropba
+--------------+------------+----------------+-------------+-----------------
+ST_Polygon    | t          | f              | f           | f
+ST_LineString | t          | f              | f           | f
+ST_Point      | t          | t              | f           | f
+
+ </programlisting>
+    </refsection>
+
+    <refsection>
+    <title>See Also</title>
+    <para><xref linkend="ST_Boundary"/>, <xref linkend="ST_ContainsProperly"/>, <xref linkend="ST_Covers"/>, <xref linkend="ST_CoveredBy"/>, <xref linkend="ST_Equals"/>, <xref linkend="ST_Within"/></para>
+    </refsection>
+ </refentry>

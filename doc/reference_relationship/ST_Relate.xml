@@ -1,0 +1,207 @@
+<refentry xml:id="ST_Relate" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <refnamediv>
+      <refname>ST_Relate</refname>
+
+      <refpurpose>Tests if two geometries have a topological relationship
+            matching an Intersection Matrix pattern,
+            or computes their Intersection Matrix
+            </refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+        <funcdef>boolean <function>ST_Relate</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+        <paramdef><type>text </type> <parameter>intersectionMatrixPattern</parameter></paramdef>
+        </funcprototype>
+
+        <funcprototype>
+        <funcdef>text <function>ST_Relate</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+        </funcprototype>
+
+        <funcprototype>
+        <funcdef>text <function>ST_Relate</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+        <paramdef><type>integer </type> <parameter>boundaryNodeRule</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+            <para>
+            These functions allow testing and evaluating the spatial (topological) relationship between two geometries,
+            as defined by the <link xlink:href="http://en.wikipedia.org/wiki/DE-9IM">Dimensionally Extended 9-Intersection Model</link> (DE-9IM).
+            </para>
+            <para>
+            The DE-9IM is specified as a 9-element matrix indicating the dimension of the intersections between the
+            Interior, Boundary and Exterior of two geometries.
+            It is represented by a 9-character text string using the symbols 'F', '0', '1', '2'
+            (e.g. <code>'FF1FF0102'</code>).
+            </para>
+            <para>
+            A specific kind of spatial relationship can be tested by matching the intersection
+            matrix to an <emphasis>intersection matrix pattern</emphasis>.
+            Patterns can include the additional symbols 'T' (meaning "intersection is non-empty")
+            and '*' (meaning "any value").
+            Common spatial relationships are provided by the named functions
+            <xref linkend="ST_Contains"/>, <xref linkend="ST_ContainsProperly"/>,
+            <xref linkend="ST_Covers"/>, <xref linkend="ST_CoveredBy"/>,
+            <xref linkend="ST_Crosses"/>, <xref linkend="ST_Disjoint"/>, <xref linkend="ST_Equals"/>,
+            <xref linkend="ST_Intersects"/>, <xref linkend="ST_Overlaps"/>, <xref linkend="ST_Touches"/>,
+            and <xref linkend="ST_Within"/>.
+            Using an explicit pattern allows testing multiple conditions of intersects, crosses, etc in one step.
+            It also allows testing spatial relationships which do not have a named spatial relationship function.
+            For example, the relationship "Interior-Intersects" has the DE-9IM pattern <code>T********</code>,
+            which is not evaluated by any named predicate.
+            </para>
+            <para>
+             For more information refer to <xref linkend="eval_spatial_rel"/>.
+            </para>
+
+      <para><emphasis role="bold">Variant 1:</emphasis> Tests if two geometries are spatially related
+            according to the given <varname>intersectionMatrixPattern</varname>.
+            </para>
+
+      <note><para>Unlike most of the named spatial relationship predicates,
+                this does NOT automatically include an index call.
+                The reason is that some relationships are true for geometries
+                which do NOT intersect (e.g. Disjoint).  If you are
+        using a relationship pattern that requires intersection, then include the &amp;&amp;
+        index call.
+                </para></note>
+
+      <note><para>It is better to use a named relationship function if available,
+            since they automatically use a spatial index where one exists.
+            Also, they may implement performance optimizations which are not available
+            with full relate evaluation.
+                </para></note>
+
+      <para><emphasis role="bold">Variant 2:</emphasis> Returns the DE-9IM matrix string for the
+            spatial relationship between the two input geometries.
+            The matrix string can be tested for matching a DE-9IM pattern using <xref linkend="ST_RelateMatch"/>.
+            </para>
+
+      <para><emphasis role="bold">Variant 3:</emphasis> Like variant 2,
+            but allows specifying a <emphasis role="bold">Boundary Node Rule</emphasis>.
+            A boundary node rule allows finer control over whether the endpoints of MultiLineStrings
+            are considered to lie in the DE-9IM Interior or Boundary.
+            The <varname>boundaryNodeRule</varname> values are:
+            </para>
+        <itemizedlist>
+            <listitem><para><code>1</code>: <emphasis role="bold">OGC-Mod2</emphasis> - line endpoints are in the Boundary if they occur an odd number of times.
+                This is the rule defined by the OGC SFS standard, and is the default for <function>ST_Relate</function>.
+                </para></listitem>
+            <listitem><para><code>2</code>: <emphasis role="bold">Endpoint</emphasis> - all endpoints are in the Boundary.
+                </para></listitem>
+            <listitem><para><code>3</code>: <emphasis role="bold">MultivalentEndpoint</emphasis> - endpoints are in the Boundary if they occur more than once.
+                In other words, the boundary is all the "attached" or "inner" endpoints (but not the "unattached/outer" ones).
+                </para></listitem>
+            <listitem><para><code>4</code>: <emphasis role="bold">MonovalentEndpoint</emphasis> - endpoints are in the Boundary if they occur only once.
+                In other words, the boundary is all the "unattached" or "outer" endpoints.
+                </para></listitem>
+        </itemizedlist>
+
+      <para>This function is not in the OGC spec, but is implied. see s2.1.13.2</para>
+      <para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
+      <para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
+      <para>Performed by the GEOS module</para>
+      <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 - added support for specifying boundary node rule.</para>
+      <important>
+        <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
+      </important>
+
+    </refsection>
+
+
+    <refsection>
+    <title>Examples</title>
+
+        <para>Using the boolean-valued function to test spatial relationships.</para>
+    <programlisting>
+SELECT ST_Relate('POINT(1 2)', ST_Buffer( 'POINT(1 2)', 2), '0FFFFF212');
+st_relate
+-----------
+t
+
+SELECT ST_Relate(POINT(1 2)', ST_Buffer( 'POINT(1 2)', 2), '*FF*FF212');
+st_relate
+-----------
+t
+</programlisting>
+
+        <para>Testing a custom spatial relationship pattern as a query condition,
+        with <code>&amp;&amp;</code> to enable using a spatial index.</para>
+    <programlisting>
+-- Find compounds that properly intersect (not just touch) a poly (Interior Intersects)
+
+SELECT c.* , p.name As poly_name
+    FROM polys AS p
+    INNER JOIN compounds As c
+          ON c.geom &amp;&amp; p.geom
+             AND ST_Relate(p.geom, c.geom,'T********');
+</programlisting>
+
+         <para>Computing the intersection matrix for spatial relationships.</para>
+    <programlisting>
+SELECT ST_Relate( 'POINT(1 2)',
+                  ST_Buffer( 'POINT(1 2)', 2));
+-----------
+0FFFFF212
+
+SELECT ST_Relate( 'LINESTRING(1 2, 3 4)',
+                  'LINESTRING(5 6, 7 8)' );
+-----------
+FF1FF0102
+</programlisting>
+
+<para>Using different Boundary Node Rules to compute the spatial relationship
+between a LineString and a MultiLineString with a duplicate endpoint <code>(3 3)</code>:
+</para>
+<itemizedlist>
+    <listitem><para>Using the <emphasis role="bold">OGC-Mod2</emphasis> rule (1)
+        the duplicate endpoint is in the <emphasis role="bold">interior</emphasis> of the MultiLineString,
+        so the DE-9IM matrix entry [aB:bI] is <code>0</code> and [aB:bB] is <code>F</code>.
+    </para></listitem>
+    <listitem><para>Using the <emphasis role="bold">Endpoint</emphasis> rule (2)
+        the duplicate endpoint is in the <emphasis role="bold">boundary</emphasis> of the MultiLineString,
+        so the DE-9IM matrix entry [aB:bI] is <code>F</code> and [aB:bB] is <code>0</code>.
+    </para></listitem>
+</itemizedlist>
+    <programlisting>
+WITH data AS (SELECT
+  'LINESTRING(1 1, 3 3)'::geometry AS a_line,
+  'MULTILINESTRING((3 3, 3 5), (3 3, 5 3))':: geometry AS b_multiline
+)
+SELECT ST_Relate( a_line, b_multiline, 1) AS bnr_mod2,
+       ST_Relate( a_line, b_multiline, 2) AS bnr_endpoint
+    FROM data;
+
+ bnr_mod2  | bnr_endpoint
+-----------+--------------
+ FF10F0102 | FF1F00102
+</programlisting>
+
+
+  </refsection>
+
+  <!-- Optionally add a "See Also" section -->
+  <refsection>
+    <title>See Also</title>
+
+    <para>
+            <xref linkend="eval_spatial_rel"/>, <xref linkend="ST_RelateMatch"/>,
+            <xref linkend="ST_Contains"/>, <xref linkend="ST_ContainsProperly"/>,
+            <xref linkend="ST_Covers"/>, <xref linkend="ST_CoveredBy"/>,
+            <xref linkend="ST_Crosses"/>, <xref linkend="ST_Disjoint"/>, <xref linkend="ST_Equals"/>,
+            <xref linkend="ST_Intersects"/>, <xref linkend="ST_Overlaps"/>,
+            <xref linkend="ST_Touches"/>, <xref linkend="ST_Within"/>
+        </para>
+  </refsection>
+</refentry>

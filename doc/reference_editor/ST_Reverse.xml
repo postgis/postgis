@@ -1,0 +1,37 @@
+<refentry xml:id="ST_Reverse" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_Reverse</refname>
+		<refpurpose>Return the geometry with vertex order reversed.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Reverse</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		 </funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Can be used on any geometry and reverses the order of the vertices.</para>
+
+		<para role="enhanced" conformance="2.4.0">Enhanced: 2.4.0 support for curves was introduced.</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>
+SELECT ST_AsText(geom) as line, ST_AsText(ST_Reverse(geom)) As reverseline
+FROM ST_MakeLine(ST_Point(1,2), ST_Point(1,10)) As geom;
+--result
+		line         |     reverseline
+---------------------+----------------------
+LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
+</programlisting>
+	  </refsection>
+	</refentry>

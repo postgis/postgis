@@ -1,0 +1,52 @@
+<refentry xml:id="ST_AsHEXEWKB" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+    <refname>ST_AsHEXEWKB</refname>
+
+    <refpurpose>Returns a Geometry in HEXEWKB format (as text) using either
+      little-endian (NDR) or big-endian (XDR) encoding.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+      <funcdef>text <function>ST_AsHEXEWKB</function></funcdef>
+      <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+      <paramdef><type>text </type> <parameter>NDRorXDR</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+      <funcdef>text <function>ST_AsHEXEWKB</function></funcdef>
+      <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+    <para>Returns a Geometry in HEXEWKB format (as text) using either
+      little-endian (NDR) or big-endian (XDR) encoding.  If no encoding is specified, then NDR is used.</para>
+
+    <note>
+      <para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
+    </note>
+    <para>&Z_support;</para>
+    <para>&curve_support;</para>
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+    <programlisting>SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+    which gives same answer as
+
+    SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326)::text;
+
+    st_ashexewkb
+    --------
+    0103000020E6100000010000000500
+    00000000000000000000000000000000
+    00000000000000000000000000000000F03F
+    000000000000F03F000000000000F03F000000000000F03
+    F000000000000000000000000000000000000000000000000</programlisting>
+    </refsection>
+  </refentry>

@@ -1,0 +1,51 @@
+<refentry xml:id="ST_M" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_M</refname>
+
+		<refpurpose>Returns the M coordinate of a Point.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_M</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return the M coordinate of a Point, or NULL if not
+			available. Input must be a Point.</para>
+
+		<note>
+			  <para>This is not (yet) part of the OGC spec, but is listed here
+			  to complete the point coordinate extractor function list.</para>
+		</note>
+		<para>&sfs_compliant;</para>
+		<para>&sqlmm_compliant;</para>
+		<para>&Z_support;</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT ST_M(ST_GeomFromEWKT('POINT(1 2 3 4)'));
+ st_m
+------
+	4
+(1 row)
+
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_X"/>, <xref linkend="ST_Y"/>, <xref linkend="ST_Z"/></para>
+	  </refsection>
+	</refentry>

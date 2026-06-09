@@ -1,0 +1,48 @@
+<refentry xml:id="ST_ForcePolygonCW" xmlns="http://docbook.org/ns/docbook">
+		<refnamediv>
+			<refname>
+				ST_ForcePolygonCW
+			</refname>
+			<refpurpose>
+				Orients all exterior rings clockwise and all interior rings counter-clockwise.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>
+						geometry
+						<function>ST_ForcePolygonCW</function>
+					</funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geom</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Forces (Multi)Polygons to use a clockwise orientation for
+				their exterior ring, and a counter-clockwise orientation for their interior
+				rings.  Non-polygonal geometries are returned unchanged.
+			</para>
+
+			<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
+			<para>&Z_support;</para>
+			<para>&M_support;</para>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="ST_ForcePolygonCCW"/>,
+				<xref linkend="ST_IsPolygonCCW"/>,
+				<xref linkend="ST_IsPolygonCW"/>
+			</para>
+		</refsection>
+	</refentry>

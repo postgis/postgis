@@ -1,0 +1,73 @@
+<refentry xml:id="ST_GeometryType" xmlns="http://docbook.org/ns/docbook">
+		<refnamediv>
+			<refname>ST_GeometryType</refname>
+			<refpurpose>Returns the SQL-MM type of a geometry as text.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>ST_GeometryType</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+
+			<para>Returns the type of the geometry as a string. EG: 'ST_LineString', 'ST_Polygon','ST_MultiPolygon' etc. This function differs from GeometryType(geometry) in the case of the string and ST in front that is returned, as well as the fact that it will not indicate whether the geometry is measured.</para>
+
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+			<para>&sqlmm_compliant;	SQL-MM 3: 5.1.4</para>
+			<para>&Z_support;</para>
+			<para>&P_support;</para>
+
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
+			--result
+			ST_LineString</programlisting>
+
+			<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
+			--result
+			ST_PolyhedralSurface</programlisting>
+
+		<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
+			--result
+			ST_PolyhedralSurface</programlisting>
+
+		<programlisting>SELECT ST_GeometryType(geom) as result
+  FROM
+    (SELECT
+       ST_GeomFromEWKT('TIN (((
+                0 0 0,
+                0 0 1,
+                0 1 0,
+                0 0 0
+            )), ((
+                0 0 0,
+                0 1 0,
+                1 1 0,
+                0 0 0
+            ))
+            )')  AS geom
+    ) AS g;
+ result
+--------
+ ST_Tin    </programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="GeometryType"/></para>
+		</refsection>
+	</refentry>

@@ -1,0 +1,40 @@
+<refentry xml:id="UpgradeTopology" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>UpgradeTopology</refname>
+
+				<refpurpose>Upgrades the specified topology to support large ids (int8) for topology and primitive ids.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>void <function>UpgradeTopology</function></funcdef>
+					<paramdef><type>name </type> <parameter>toponame</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Takes a topology name and upgrades it to support large ids (int8) for topology and primitive ids.
+The function upgrades the following:
+- face (face_id column from int4 to int8, face_id_seq from int4 to int8)
+- node (node_id column from int4 to int8, containing_face column from int4 to int8, node_id_seq from int4 to int8)
+- edge_data (edge_id column from int4 to int8, edge_data_edge_id_seq from int4 to int8, left_face and right_face columns from int4 to int8, start_node and end_node columns from int4 to int8, next_left_edge and next_right_edge columns from int4 to int8)
+- relation (topogeo_id column from int4 to int8, element_id from int4 to int8)
+- topology (useslargeids column set to true)
+                </para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="3.6.0">Availability: 3.6.0</para>
+			</refsection>
+
+            <refsection>
+				<title>Examples</title>
+<programlisting>
+SELECT topology.upgradetopology('city_data');
+</programlisting>
+            </refsection>
+        </refentry>

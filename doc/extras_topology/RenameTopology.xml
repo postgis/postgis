@@ -1,0 +1,47 @@
+<refentry xml:id="RenameTopology" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>RenameTopology</refname>
+				<refpurpose>Renames a topology</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>varchar <function>RenameTopology</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>old_name</parameter></paramdef>
+						<paramdef><type>varchar </type> <parameter>new_name</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Renames a topology schema, updating its metadata record in the <varname>topology.topology</varname> table.
+		</para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<para>
+Rename a topology from <varname>topo_stage</varname> to <varname>topo_prod</varname>.
+				</para>
+				<programlisting>SELECT topology.RenameTopology('topo_stage', 'topo_prod');</programlisting>
+
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+
+				<para>
+                    <xref linkend="CopyTopology"/>,
+                    <xref linkend="RenameTopoGeometryColumn"/>
+                </para>
+			</refsection>
+		</refentry>

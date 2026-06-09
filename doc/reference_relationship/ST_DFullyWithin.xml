@@ -1,0 +1,63 @@
+<refentry xml:id="ST_DFullyWithin" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+    <refname>ST_DFullyWithin</refname>
+
+    <refpurpose>Tests if a geometry is entirely inside a distance of another</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+      <funcdef>boolean <function>ST_DFullyWithin</function></funcdef>
+
+      <paramdef><type>geometry </type>
+      <parameter>g1</parameter></paramdef>
+
+      <paramdef><type>geometry </type>
+      <parameter>g2</parameter></paramdef>
+
+      <paramdef><type>double precision </type>
+      <parameter>distance</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+    <para>Returns true if <code>g2</code> is entirely within
+    <code>distance</code> of <code>g1</code>. Visually, the
+    condition is true if <code>g2</code> is contained within
+    a <code>distance</code> buffer of <code>g1</code>.
+    The distance is specified in units defined by the
+    spatial reference system of the geometries.</para>
+
+    <note><para>&index_aware;</para></note>
+
+    <para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
+    <para role="changed" conformance="3.5.0">Changed: 3.5.0 : the logic behind the function now uses a test of containment within a buffer, rather than the ST_MaxDistance algorithm. Results will differ from prior versions, but should be closer to user expectations.</para>
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+    <programlisting>SELECT
+    ST_DFullyWithin(geom_a, geom_b, 10) AS DFullyWithin10,
+    ST_DWithin(geom_a, geom_b, 10) AS DWithin10,
+    ST_DFullyWithin(geom_a, geom_b, 20) AS DFullyWithin20
+FROM (VALUES
+    ('POINT(1 1)', 'LINESTRING(1 5, 2 7, 1 9, 14 12)')
+    ) AS v(geom_a, geom_b)
+
+ dfullywithin10 | dwithin10 | dfullywithin20
+----------------+-----------+----------------
+ f              | t         | t
+</programlisting>
+    </refsection>
+
+    <refsection>
+    <title>See Also</title>
+
+    <para><xref linkend="ST_MaxDistance"/>,
+        <xref linkend="ST_DWithin"/>, <xref linkend="ST_3DDWithin"/>, <xref linkend="ST_3DDFullyWithin"/></para>
+    </refsection>
+  </refentry>

@@ -1,0 +1,223 @@
+<refentry xml:id="RT_ST_ValueCount" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_ValueCount</refname>
+                <refpurpose>Returns a set of records containing a pixel band value  and count of the number of pixels in a given band of a raster (or a raster coverage) that have a given set of values.  If no band is specified defaults to band 1.  By default nodata value pixels are not counted.
+                    and all other values in the pixel are output and pixel band values are rounded to the nearest integer.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                    <funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+                    <paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+                    <paramdef choice="opt"><type>double precision[] </type> <parameter>searchvalues=NULL</parameter></paramdef>
+                    <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+                    <paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                    <paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
+                    <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+                    <paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
+                    <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+                    <paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
+                  </funcprototype>
+
+                  <funcprototype>
+                    <funcdef>bigint <function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
+                    <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+                  </funcprototype>
+
+                  <funcprototype>
+                    <funcdef>bigint <function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                    <paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+                    <paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
+                    <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+                  </funcprototype>
+
+                  <funcprototype>
+                    <funcdef>bigint <function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                    <paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
+                    <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+                  </funcprototype>
+
+                  <funcprototype>
+                    <funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+                    <paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+                    <paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+                    <paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+                    <paramdef choice="opt"><type>double precision[] </type> <parameter>searchvalues=NULL</parameter></paramdef>
+                    <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+                    <paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+                    <paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+                    <paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
+                    <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+                    <paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+                    <paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                    <paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
+                    <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+                    <paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>bigint<function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+                    <paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                    <paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+                    <paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
+                    <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>bigint <function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+                    <paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+                    <paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
+                    <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>bigint <function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+                    <paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                    <paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
+                    <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns a set of records with columns <varname>value</varname>  <varname>count</varname> which contain the pixel band value and count of pixels in the raster tile or raster coverage of selected band. </para>
+                <para>If no band is specified <varname>nband</varname> defaults to 1. If no <varname>searchvalues</varname> are specified, will return all pixel values found in the raster or raster coverage.  If one searchvalue is given, will return an integer instead of records denoting the count of pixels having that pixel band value</para>
+                <note><para>If <varname>exclude_nodata_value</varname> is set to false, will also count pixels with no data.</para></note>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                <programlisting>
+UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast,249) WHERE rid=2;
+--Example will count only pixels of band 1 that are not 249. --
+
+SELECT (pvc).*
+FROM (SELECT ST_ValueCount(rast) As pvc
+    FROM dummy_rast WHERE rid=2) As foo
+    ORDER BY (pvc).value;
+
+ value | count
+-------+-------
+   250 |     2
+   251 |     1
+   252 |     2
+   253 |     6
+   254 |    12
+
+-- Example will coount all pixels of band 1 including 249 --
+SELECT (pvc).*
+FROM (SELECT ST_ValueCount(rast,1,false) As pvc
+    FROM dummy_rast WHERE rid=2) As foo
+    ORDER BY (pvc).value;
+
+ value | count
+-------+-------
+   249 |     2
+   250 |     2
+   251 |     1
+   252 |     2
+   253 |     6
+   254 |    12
+
+-- Example will count only non-nodata value pixels of band 2
+SELECT (pvc).*
+FROM (SELECT ST_ValueCount(rast,2) As pvc
+    FROM dummy_rast WHERE rid=2) As foo
+    ORDER BY (pvc).value;
+ value | count
+-------+-------
+    78 |     1
+    79 |     1
+    88 |     1
+    89 |     1
+    96 |     1
+    97 |     1
+    98 |     1
+    99 |     2
+   112 |     2
+:
+
+                </programlisting>
+<programlisting>
+--real live example.  Count all the pixels in an aerial raster tile band 2 intersecting a geometry
+-- and return only the pixel band values that have a count &gt; 500
+SELECT (pvc).value, SUM((pvc).count) As total
+FROM (SELECT ST_ValueCount(rast,2) As pvc
+    FROM o_4_boston
+        WHERE ST_Intersects(rast,
+            ST_GeomFromText('POLYGON((224486 892151,224486 892200,224706 892200,224706 892151,224486 892151))',26986)
+             )
+        ) As foo
+    GROUP BY (pvc).value
+    HAVING SUM((pvc).count) &gt; 500
+    ORDER BY (pvc).value;
+
+ value | total
+-------+-----
+    51 | 502
+    54 | 521
+</programlisting>
+
+<programlisting>
+-- Just return count of pixels in each raster tile that have value of 100 of tiles that intersect  a specific geometry --
+SELECT rid, ST_ValueCount(rast,2,100) As count
+    FROM o_4_boston
+        WHERE ST_Intersects(rast,
+            ST_GeomFromText('POLYGON((224486 892151,224486 892200,224706 892200,224706 892151,224486 892151))',26986)
+             ) ;
+
+ rid | count
+-----+-------
+   1 |    56
+   2 |    95
+  14 |    37
+  15 |    64
+</programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_Count"/>, <xref linkend="RT_ST_SetBandNoDataValue"/></para>
+            </refsection>
+        </refentry>

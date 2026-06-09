@@ -1,0 +1,32 @@
+<refentry xml:id="CG_Translate" xmlns="http://docbook.org/ns/docbook">
+   <refnamediv>
+       <refname>CG_Translate</refname>
+       <refpurpose>Translates (moves) a geometry by given offsets in 2D space.</refpurpose>
+   </refnamediv>
+   <refsynopsisdiv>
+       <funcsynopsis>
+           <funcprototype>
+               <funcdef>geometry <function>CG_Translate</function></funcdef>
+               <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>deltaX</parameter></paramdef>
+               <paramdef><type>float8</type> <parameter>deltaY</parameter></paramdef>
+           </funcprototype>
+       </funcsynopsis>
+   </refsynopsisdiv>
+   <refsection>
+       <title>Description</title>
+       <para>Translates the input geometry <parameter>geom</parameter> by adding <parameter>deltaX</parameter> to the X coordinates and <parameter>deltaY</parameter> to the Y coordinates.
+       Z coordinates are dropped.</para>
+       <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.0.0</para>
+       <para>&sfcgal_required;</para>
+   </refsection>
+   <refsection>
+       <title>Examples</title>
+       <programlisting>SELECT ST_AsText(CG_Translate('LINESTRING(1 1, 2 2)', 1, -1));
+-- Result: LINESTRING(2 0, 3 1)</programlisting>
+   </refsection>
+   <refsection>
+       <title>See Also</title>
+       <para><xref linkend="CG_3DTranslate"/>, <xref linkend="ST_Translate"/></para>
+   </refsection>
+</refentry>

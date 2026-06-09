@@ -1,0 +1,96 @@
+<refentry xml:id="RT_ST_Contour" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <refnamediv>
+        <refname>ST_Contour</refname>
+
+        <refpurpose>Generates a set of vector contours from the provided raster
+            band, using the <link xlink:href="https://gdal.org/api/gdal_alg.html?highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv">GDAL contouring algorithm</link>.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>setof record <function>ST_Contour</function></funcdef>
+            <paramdef><type>raster </type><parameter>rast</parameter></paramdef>
+            <paramdef choice="opt"><type>integer </type><parameter>bandnumber=1</parameter></paramdef>
+            <paramdef choice="opt"><type>double precision </type><parameter>level_interval=100.0</parameter></paramdef>
+            <paramdef choice="opt"><type>double precision </type><parameter>level_base=0.0</parameter></paramdef>
+            <paramdef choice="opt"><type>double precision[] </type><parameter>fixed_levels=ARRAY[]</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean </type><parameter>polygonize=false</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>
+            Generates a set of vector contours from the provided raster
+            band, using the <link xlink:href="https://gdal.org/api/gdal_alg.html?highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv">GDAL contouring algorithm</link>.</para>
+        <para>
+            When the <varname>fixed_levels</varname> parameter is a non-empty
+            array, the <varname>level_interval</varname> and <varname>level_base</varname> parameters are ignored.
+        </para>
+
+        <para>
+            Input parameters are:
+        </para>
+        <variablelist>
+            <varlistentry><term><varname>rast</varname></term>
+                <listitem><para>The raster to generate the contour of</para></listitem>
+            </varlistentry>
+            <varlistentry><term><varname>bandnumber</varname></term>
+                <listitem><para>The band to generate the contour of</para></listitem>
+            </varlistentry>
+            <varlistentry><term><varname>level_interval</varname></term>
+                <listitem><para>The elevation interval between contours generated</para></listitem>
+            </varlistentry>
+            <varlistentry><term><varname>level_base</varname></term>
+                <listitem><para>The "base" relative to which contour intervals are applied,
+                this is normally zero, but could be different.
+                To generate 10m contours at 5, 15, 25, ... the LEVEL_BASE would be 5.</para></listitem>
+            </varlistentry>
+            <varlistentry><term><varname>fixed_levels</varname></term>
+                <listitem><para>The elevation interval between contours generated</para></listitem>
+            </varlistentry>
+            <varlistentry><term><varname>polygonize</varname></term>
+                <listitem><para>If <literal>true</literal>, contour polygons will be created, rather than polygon lines.</para></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <para>
+            Return values are a set of records with the following attributes:
+        </para>
+        <variablelist>
+            <varlistentry><term><varname>geom</varname></term>
+                <listitem><para>The geometry of the contour line.</para></listitem>
+            </varlistentry>
+            <varlistentry><term><varname>id</varname></term>
+                <listitem><para>A unique identifier given to the contour line by GDAL.</para></listitem>
+            </varlistentry>
+            <varlistentry><term><varname>value</varname></term>
+                <listitem><para>The raster value the line represents. For an elevation DEM input, this would be the elevation of the output contour.</para></listitem>
+            </varlistentry>
+        </variablelist>
+        <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
+
+      </refsection>
+
+      <refsection>
+        <title>Example</title>
+
+        <programlisting>WITH c AS (
+SELECT (ST_Contour(rast, 1, fixed_levels =&gt; ARRAY[100.0, 200.0, 300.0])).*
+FROM dem_grid WHERE rid = 1
+)
+SELECT st_astext(geom), id, value
+FROM c;</programlisting>
+
+    </refsection>
+    <refsection>
+        <title>See Also</title>
+        <para>
+        <xref linkend="RT_ST_InterpolateRaster"/>
+        </para>
+    </refsection>
+
+</refentry>

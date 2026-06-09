@@ -1,0 +1,64 @@
+<refentry xml:id="AddNode" xmlns="http://docbook.org/ns/docbook">
+			<refnamediv>
+				<refname>AddNode</refname>
+
+				<refpurpose>Adds a point node to the node table in the specified topology schema and returns the nodeid of new node. If point already exists as node, the existing nodeid is returned.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>bigint <function>AddNode</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>allowEdgeSplitting=false</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>computeContainingFace=false</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Adds a point node to the node table in the specified topology schema.
+The <xref linkend="AddEdge"/> function automatically adds start and end
+points of an edge when called so not necessary to explicitly add nodes
+of an edge.
+                </para>
+
+	<para>
+If any edge crossing the node is found either an exception is raised or
+the edge is split, depending on the <varname>allowEdgeSplitting</varname>
+parameter value.
+	</para>
+
+	<para>
+If <varname>computeContainingFace</varname> is true a newly added node would
+get the correct containing face computed.
+	</para>
+
+                <note><para>If the <varname>apoint</varname> geometry already exists as a node, the node is not added but the existing nodeid is returned.</para></note>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT topology.AddNode('ma_topo', ST_GeomFromText('POINT(227641.6 893816.5)', 26986) ) As nodeid;
+-- result --
+nodeid
+--------
+ 4
+
+</programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddEdge"/>, <xref linkend="CreateTopology"/></para>
+			</refsection>
+		</refentry>

@@ -1,0 +1,34 @@
+<refentry xml:id="TP_ST_Simplify" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_Simplify</refname>
+		<refpurpose>Returns a "simplified" geometry version of the given TopoGeometry using
+				the Douglas-Peucker algorithm.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Simplify</function></funcdef>
+			<paramdef><type>topogeometry</type> <parameter>tg</parameter></paramdef>
+			<paramdef><type>float8</type> <parameter>tolerance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Returns a "simplified" geometry version of the given TopoGeometry using
+				the Douglas-Peucker algorithm on each component edge.</para>
+
+		<note><para>The returned geometry may be non-simple or non-valid.</para>
+    <para>Splitting component edges may help retaining simplicity/validity.</para></note>
+
+		<para>Performed by the GEOS module.</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+	  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+			<para>Geometry <xref linkend="ST_Simplify"/>, <xref linkend="ST_IsSimple"/>, <xref linkend="ST_IsValid"/>, <xref linkend="ST_ModEdgeSplit"/></para>
+		  </refsection>
+	</refentry>

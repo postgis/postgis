@@ -1,0 +1,43 @@
+<refentry xml:id="RT_ST_ScaleX" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <refnamediv>
+                <refname>ST_ScaleX</refname>
+                <refpurpose>Returns the X component of the pixel width in units of coordinate reference system.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                    <funcdef>float8 <function>ST_ScaleX</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns the X component of the pixel width in units of coordinate reference system. Refer to <link xlink:href="http://en.wikipedia.org/wiki/World_file">World File</link>
+                for more details.</para>
+                <para role="changed" conformance="2.0.0.">Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeX.</para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+
+                    <programlisting>SELECT rid, ST_ScaleX(rast) As rastpixwidth
+FROM dummy_rast;
+
+ rid | rastpixwidth
+-----+--------------
+   1 |            2
+   2 |         0.05
+                </programlisting>
+
+            </refsection>
+
+            <!-- Optionally add a "See Also" section -->
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_Width"/></para>
+            </refsection>
+        </refentry>

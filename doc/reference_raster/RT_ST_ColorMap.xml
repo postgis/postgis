@@ -1,0 +1,308 @@
+<refentry xml:id="RT_ST_ColorMap" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <refnamediv>
+                    <refname>ST_ColorMap</refname>
+                    <refpurpose>Creates a new raster of up to four 8BUI bands (grayscale, RGB, RGBA) from the source raster and a specified band. Band 1 is assumed if not specified.</refpurpose>
+                </refnamediv>
+
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                      <funcprototype>
+                            <funcdef>raster <function>ST_ColorMap</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>colormap=grayscale</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>method=INTERPOLATE</parameter></paramdef>
+                      </funcprototype>
+                    </funcsynopsis>
+
+                    <funcsynopsis>
+                      <funcprototype>
+                            <funcdef>raster <function>ST_ColorMap</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>text </type> <parameter>colormap</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>method=INTERPOLATE</parameter></paramdef>
+                      </funcprototype>
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+
+                    <para>
+                        Apply a <varname>colormap</varname> to the band at <varname>nband</varname> of <varname>rast</varname> resulting a new raster comprised of up to four 8BUI bands. The number of 8BUI bands in the new raster is determined by the number of color components defined in <varname>colormap</varname>.
+                    </para>
+
+                    <para>If <varname>nband</varname> is not specified, then band 1 is assumed.</para>
+
+                    <para>
+                        <varname>colormap</varname> can be a keyword of a pre-defined colormap or a set of lines defining the value and the color components.
+                    </para>
+
+                    <para>
+                        Valid pre-defined <varname>colormap</varname> keyword:
+                    </para>
+
+                    <itemizedlist>
+                        <listitem>
+                            <para>
+                                <varname>grayscale</varname> or <varname>greyscale</varname> for a one 8BUI band raster of shades of gray.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                <varname>pseudocolor</varname> for a four 8BUI (RGBA) band raster with colors going from blue to green to red.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                <varname>fire</varname> for a four 8BUI (RGBA) band raster with colors going from black to red to pale yellow.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                <varname>bluered</varname> for a four 8BUI (RGBA) band raster with colors going from blue to pale white to red.
+                            </para>
+                        </listitem>
+                    </itemizedlist>
+
+                    <para>
+                        Users can pass a set of entries (one per line) to <varname>colormap</varname> to specify custom colormaps. Each entry generally consists of five values: the pixel value and corresponding Red, Green, Blue, Alpha components (color components between 0 and 255). Percent values can be used instead of pixel values where 0% and 100% are the minimum and maximum values found in the raster band. Values can be separated with commas (','), tabs, colons (':') and/or spaces. The pixel value can be set to <emphasis>nv</emphasis>, <emphasis>null</emphasis> or <emphasis>nodata</emphasis> for the NODATA value. An example is provided below.
+                    </para>
+
+                    <programlisting>
+5 0 0 0 255
+4 100:50 55 255
+1 150,100 150 255
+0% 255 255 255 255
+nv 0 0 0 0
+                    </programlisting>
+
+                    <para>
+                        The syntax of <varname>colormap</varname> is similar to that of the color-relief mode of GDAL <link xlink:href="http://www.gdal.org/gdaldem.html#gdaldem_color_relief">gdaldem</link>.
+                    </para>
+
+                    <para>
+                        Valid keywords for <varname>method</varname>:
+                    </para>
+
+                    <itemizedlist>
+                        <listitem>
+                            <para>
+                                <varname>INTERPOLATE</varname> to use linear interpolation to smoothly blend the colors between the given pixel values
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                <varname>EXACT</varname> to strictly match only those pixels values found in the colormap. Pixels whose value does not match a colormap entry will be set to 0 0 0 0 (RGBA)
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                <varname>NEAREST</varname> to use the colormap entry whose value is closest to the pixel value
+                            </para>
+                        </listitem>
+                    </itemizedlist>
+
+                    <note>
+                        <para>
+                            A great reference for colormaps is <link xlink:href="http://www.colorbrewer2.org">ColorBrewer</link>.
+                        </para>
+                    </note>
+                    <warning>
+                        <para>
+                            The resulting bands of new raster will have no NODATA value set.  Use <xref linkend="RT_ST_SetBandNoDataValue"/> to set a NODATA value if one is needed.
+                        </para>
+                    </warning>
+
+                    <para role="availability" conformance="2.1.0">Availability: 2.1.0 </para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+                    <para>This is a junk table to play with</para>
+
+                    <programlisting>
+-- setup test raster table --
+DROP TABLE IF EXISTS funky_shapes;
+CREATE TABLE funky_shapes(rast raster);
+
+INSERT INTO funky_shapes(rast)
+WITH ref AS (
+    SELECT ST_MakeEmptyRaster( 200, 200, 0, 200, 1, -1, 0, 0) AS rast
+)
+SELECT
+    ST_Union(rast)
+FROM (
+    SELECT
+        ST_AsRaster(
+            ST_Rotate(
+                ST_Buffer(
+                    ST_GeomFromText('LINESTRING(0 2,50 50,150 150,125 50)'),
+                    i*2
+                ),
+                pi() * i * 0.125, ST_Point(50,50)
+            ),
+            ref.rast, '8BUI'::text, i * 5
+        ) AS rast
+    FROM ref
+    CROSS JOIN generate_series(1, 10, 3) AS i
+) AS shapes;
+                    </programlisting>
+
+                    <programlisting>
+SELECT
+    ST_NumBands(rast) As n_orig,
+    ST_NumBands(ST_ColorMap(rast,1, 'greyscale')) As ngrey,
+    ST_NumBands(ST_ColorMap(rast,1, 'pseudocolor')) As npseudo,
+    ST_NumBands(ST_ColorMap(rast,1, 'fire')) As nfire,
+    ST_NumBands(ST_ColorMap(rast,1, 'bluered')) As nbluered,
+    ST_NumBands(ST_ColorMap(rast,1, '
+100% 255   0   0
+ 80% 160   0   0
+ 50% 130   0   0
+ 30%  30   0   0
+ 20%  60   0   0
+  0%   0   0   0
+  nv 255 255 255
+    ')) As nred
+FROM funky_shapes;
+                    </programlisting>
+
+                    <screen>
+ n_orig | ngrey | npseudo | nfire | nbluered | nred
+--------+-------+---------+-------+----------+------
+      1 |     1 |       4 |     4 |        4 |    3
+                    </screen>
+                </refsection>
+
+                <refsection>
+                    <title>Examples: Compare different color map looks using ST_AsPNG</title>
+                    <programlisting>
+SELECT
+    ST_AsPNG(rast) As orig_png,
+    ST_AsPNG(ST_ColorMap(rast,1,'greyscale')) As grey_png,
+    ST_AsPNG(ST_ColorMap(rast,1, 'pseudocolor')) As pseudo_png,
+    ST_AsPNG(ST_ColorMap(rast,1, 'nfire')) As fire_png,
+    ST_AsPNG(ST_ColorMap(rast,1, 'bluered')) As bluered_png,
+    ST_AsPNG(ST_ColorMap(rast,1, '
+100% 255   0   0
+ 80% 160   0   0
+ 50% 130   0   0
+ 30%  30   0   0
+ 20%  60   0   0
+  0%   0   0   0
+  nv 255 255 255
+    ')) As red_png
+FROM funky_shapes;
+                    </programlisting>
+
+                    <informaltable>
+                        <tgroup cols="3">
+                            <tbody>
+                                <row>
+                                    <entry>
+                                        <para>
+                                            <informalfigure>
+                                                <mediaobject>
+                                                    <imageobject>
+                                                        <imagedata fileref="images/st_colormap_orig.png"/>
+                                                    </imageobject>
+                                                    <caption>
+                                                        <para>orig_png</para>
+                                                    </caption>
+                                                </mediaobject>
+                                            </informalfigure>
+                                        </para>
+                                    </entry>
+                                    <entry>
+                                        <para>
+                                            <informalfigure>
+                                                <mediaobject>
+                                                    <imageobject>
+                                                        <imagedata fileref="images/st_colormap_grey.png"/>
+                                                    </imageobject>
+                                                    <caption>
+                                                        <para>grey_png</para>
+                                                    </caption>
+                                                </mediaobject>
+                                            </informalfigure>
+                                        </para>
+                                    </entry>
+                                    <entry>
+                                        <para>
+                                            <informalfigure>
+                                                <mediaobject>
+                                                    <imageobject>
+                                                        <imagedata fileref="images/st_colormap_pseudo.png"/>
+                                                    </imageobject>
+                                                    <caption>
+                                                        <para>pseudo_png</para>
+                                                    </caption>
+                                                </mediaobject>
+                                            </informalfigure>
+                                        </para>
+                                    </entry>
+                                </row>
+                                <row>
+                                    <entry>
+                                        <para>
+                                            <informalfigure>
+                                                <mediaobject>
+                                                    <imageobject>
+                                                        <imagedata fileref="images/st_colormap_fire.png"/>
+                                                    </imageobject>
+                                                    <caption>
+                                                        <para>fire_png</para>
+                                                    </caption>
+                                                </mediaobject>
+                                            </informalfigure>
+                                        </para>
+                                    </entry>
+                                    <entry>
+                                        <para>
+                                            <informalfigure>
+                                                <mediaobject>
+                                                    <imageobject>
+                                                        <imagedata fileref="images/st_colormap_bluered.png"/>
+                                                    </imageobject>
+                                                    <caption>
+                                                        <para>bluered_png</para>
+                                                    </caption>
+                                                </mediaobject>
+                                            </informalfigure>
+                                        </para>
+                                    </entry>
+                                    <entry>
+                                        <para>
+                                            <informalfigure>
+                                                <mediaobject>
+                                                    <imageobject>
+                                                        <imagedata fileref="images/st_colormap_red.png"/>
+                                                    </imageobject>
+                                                    <caption>
+                                                        <para>red_png</para>
+                                                    </caption>
+                                                </mediaobject>
+                                            </informalfigure>
+                                        </para>
+                                    </entry>
+                                </row>
+                            </tbody>
+                        </tgroup>
+                    </informaltable>
+                </refsection>
+
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="RT_ST_AsPNG"/>,
+                        <xref linkend="RT_ST_AsRaster"/>
+                        <xref linkend="RT_ST_MapAlgebra"/>,
+                        <xref linkend="RT_ST_Grayscale"/>
+                        <xref linkend="RT_ST_NumBands"/>,
+                        <xref linkend="RT_ST_Reclass"/>,
+                        <xref linkend="RT_ST_SetBandNoDataValue"/>,
+                        <xref linkend="RT_ST_Union"/>
+                    </para>
+                </refsection>
+            </refentry>

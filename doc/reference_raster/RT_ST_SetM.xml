@@ -1,0 +1,73 @@
+<refentry xml:id="RT_ST_SetM" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <refnamediv>
+                <refname>ST_SetM</refname>
+                <refpurpose>Returns a geometry with the same X/Y coordinates as the input geometry, and values from the raster copied into the M dimension using the requested resample algorithm.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                   <funcprototype>
+                    <funcdef>geometry <function>ST_SetM</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+                    <paramdef choice="opt"><type>text </type> <parameter>resample=nearest</parameter></paramdef>
+                    <paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns a geometry with the same X/Y coordinates as the input geometry, and values from the raster copied into the M dimensions using the requested resample algorithm.</para>
+                <para>The <varname>resample</varname> parameter can be set to "nearest" to copy the values from the cell each vertex falls within, or "bilinear" to use <link xlink:href="https://en.wikipedia.org/wiki/Bilinear_interpolation">bilinear interpolation</link> to calculate a value that takes neighboring cells into account also.</para>
+
+                <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
+            </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+                    <programlisting>--
+-- 2x2 test raster with values
+--
+-- 10 50
+-- 40 20
+--
+WITH test_raster AS (
+SELECT
+ST_SetValues(
+  ST_AddBand(
+    ST_MakeEmptyRaster(width =&gt; 2, height =&gt; 2,
+      upperleftx =&gt; 0, upperlefty =&gt; 2,
+      scalex =&gt; 1.0, scaley =&gt; -1.0,
+      skewx =&gt; 0, skewy =&gt; 0, srid =&gt; 4326),
+    index =&gt; 1, pixeltype =&gt; '16BSI',
+    initialvalue =&gt; 0,
+    nodataval =&gt; -999),
+  1,1,1,
+  newvalueset =&gt;ARRAY[ARRAY[10.0::float8, 50.0::float8], ARRAY[40.0::float8, 20.0::float8]]) AS rast
+)
+SELECT
+ST_AsText(
+  ST_SetM(
+    rast,
+    band =&gt; 1,
+    geom =&gt; 'SRID=4326;LINESTRING(1.0 1.9, 1.0 0.2)'::geometry,
+    resample =&gt; 'bilinear'
+))
+FROM test_raster
+
+            st_astext
+----------------------------------
+ LINESTRING M (1 1.9 38,1 0.2 27)</programlisting>
+
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_Value"/>,
+                    <xref linkend="RT_ST_SetZ"/>
+                </para>
+            </refsection>
+        </refentry>

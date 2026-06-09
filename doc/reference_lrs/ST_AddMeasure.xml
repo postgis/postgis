@@ -1,0 +1,59 @@
+<refentry xml:id="ST_AddMeasure" xmlns="http://docbook.org/ns/docbook">
+	  <refnamediv>
+		<refname>ST_AddMeasure</refname>
+
+		<refpurpose>Interpolates measures along a linear geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_AddMeasure</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom_mline</parameter></paramdef>
+			<paramdef><type>float8 </type> <parameter>measure_start</parameter></paramdef>
+			<paramdef><type>float8 </type> <parameter>measure_end</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		   <para>Return a derived geometry with measure values linearly interpolated between the start and end points. If the geometry has no measure dimension, one is added. If the geometry has a measure dimension, it is over-written with new values. Only LINESTRINGS and MULTILINESTRINGS are supported.</para>
+
+			<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
+
+		<para>&Z_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_AsText(ST_AddMeasure(
+ST_GeomFromEWKT('LINESTRING(1 0, 2 0, 4 0)'),1,4)) As ewelev;
+           ewelev
+--------------------------------
+ LINESTRINGM(1 0 1,2 0 2,4 0 4)
+
+SELECT ST_AsText(ST_AddMeasure(
+ST_GeomFromEWKT('LINESTRING(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;
+                 ewelev
+----------------------------------------
+ LINESTRING(1 0 4 10,2 0 4 20,4 0 4 40)
+
+SELECT ST_AsText(ST_AddMeasure(
+ST_GeomFromEWKT('LINESTRINGM(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;
+                 ewelev
+----------------------------------------
+ LINESTRINGM(1 0 10,2 0 20,4 0 40)
+
+SELECT ST_AsText(ST_AddMeasure(
+ST_GeomFromEWKT('MULTILINESTRINGM((1 0 4, 2 0 4, 4 0 4),(1 0 4, 2 0 4, 4 0 4))'),10,70)) As ewelev;
+                             ewelev
+-----------------------------------------------------------------
+ MULTILINESTRINGM((1 0 10,2 0 20,4 0 40),(1 0 40,2 0 50,4 0 70))
+</programlisting>
+	  </refsection>
+
+	</refentry>

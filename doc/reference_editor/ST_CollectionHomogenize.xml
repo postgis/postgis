@@ -1,0 +1,95 @@
+<refentry xml:id="ST_CollectionHomogenize" xmlns="http://docbook.org/ns/docbook">
+        <refnamediv>
+            <refname>ST_CollectionHomogenize</refname>
+
+            <refpurpose>
+Returns the simplest representation of a geometry collection.
+            </refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                <funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef>
+                <paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para>
+            Given a geometry collection, returns the "simplest" representation of the contents.
+            </para>
+            <itemizedlist>
+            <listitem><para>Homogeneous (uniform) collections are returned as the appropriate multi-geometry.</para></listitem>
+            <listitem><para>Heterogeneous (mixed) collections are flattened into a single GeometryCollection.</para></listitem>
+            <listitem><para>Collections containing a single atomic element are returned as that element.</para></listitem>
+            <listitem><para>Atomic geometries are returned unchanged.
+                If required, these can be converted to a multi-geometry using <xref linkend="ST_Multi"/>.</para></listitem>
+            </itemizedlist>
+
+            <warning><para>This function does not ensure that the result is valid.
+            In particular, a collection containing adjacent or overlapping Polygons
+            will create an invalid MultiPolygon.
+            This situation can be checked with <xref linkend="ST_IsValid"/> and repaired with <xref linkend="ST_MakeValid"/>.
+            </para></warning>
+
+            <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+<para>Single-element collection converted to an atomic geometry</para>
+<programlisting>
+  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0))'));
+
+	st_astext
+	------------
+	POINT(0 0)
+</programlisting>
+
+<para>Nested single-element collection converted to an atomic geometry:</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(MULTIPOINT((0 0)))'));
+
+	st_astext
+	------------
+	POINT(0 0)
+</programlisting>
+
+<para>Collection converted to a multi-geometry:</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1))'));
+
+	st_astext
+	---------------------
+	MULTIPOINT((0 0),(1 1))
+</programlisting>
+
+<para>Nested heterogeneous collection flattened to a GeometryCollection:</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0), GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2)))'));
+
+	st_astext
+	---------------------
+	GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(1 1,2 2))
+</programlisting>
+
+<para>Collection of Polygons converted to an (invalid) MultiPolygon:</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION (POLYGON ((10 50, 50 50, 50 10, 10 10, 10 50)), POLYGON ((90 50, 90 10, 50 10, 50 50, 90 50)))'));
+
+	st_astext
+	---------------------
+	MULTIPOLYGON(((10 50,50 50,50 10,10 10,10 50)),((90 50,90 10,50 10,50 50,90 50)))
+</programlisting>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_CollectionExtract"/>, <xref linkend="ST_Multi"/>,
+            <xref linkend="ST_IsValid"/>, <xref linkend="ST_MakeValid"/></para>
+        </refsection>
+    </refentry>

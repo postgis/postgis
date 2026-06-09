@@ -1,0 +1,136 @@
+<refentry xml:id="ST_CoverageClean" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+      <refname>ST_CoverageClean</refname>
+
+      <refpurpose>Computes a clean (edge matched, non-overlapping, gap-cleared) polygonal coverage, given a non-clean input.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+          <funcdef>geometry <function>ST_CoverageClean</function></funcdef>
+          <paramdef><type>geometry winset</type>
+            <parameter>geom</parameter></paramdef>
+          <paramdef choice="opt"><type>float8 </type>
+            <parameter>gapMaximumWidth = 0</parameter></paramdef>
+          <paramdef choice="opt"><type>float8 </type>
+            <parameter>snappingDistance = -1</parameter></paramdef>
+          <paramdef choice="opt"><type>text </type>
+            <parameter>overlapMergeStrategy = 'MERGE_LONGEST_BORDER'</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+      <para>A window function which adjusts the edges of a set of valid polygonal geometries to produce a clean coverage.
+      Cleaning involves:
+      </para>
+      <itemizedlist>
+        <listitem><para>
+            snapping vertices and edges to remove small discrepancies and ensure common edges are identically noded
+            </para></listitem>
+        <listitem><para>
+            merging overlaps into a parent polygon
+            </para></listitem>
+        <listitem><para>
+            merging narrow gaps into adjacent polygons
+            </para></listitem>
+      </itemizedlist>      
+      <para><parameter>gapMaximumWidth</parameter> controls which gaps between polygons are merged. Gaps with width &lt;= this distance are merged into an adjacent polygon.</para>
+      <para><parameter>snappingDistance</parameter> controls snapping of vertices and edges. The default (-1) automatically determines a snapping distance based on the input extent. Set to 0.0 to turn off snapping.</para>
+      <para><parameter>overlapMergeStrategy</parameter> specifies how overlaps are merged into a parent polygon:</para>
+      <itemizedlist>
+        <listitem><para>
+            <code>MERGE_LONGEST_BORDER</code> - merges into polygon with longest common border
+            </para></listitem>
+        <listitem><para>
+            <code>MERGE_MAX_AREA</code> - merges into polygon with maximum area
+            </para></listitem>
+        <listitem><para>
+            <code>MERGE_MIN_AREA</code> - merges into polygon with minimum area
+            </para></listitem>
+        <listitem><para>
+            <code>MERGE_MIN_INDEX</code> - merges into polygon with smallest input index (defined by order of input polygons)
+            </para></listitem>
+      </itemizedlist>      
+      <para>The result is a clean polygonal coverage that will pass validation by <xref linkend="ST_CoverageInvalidEdges"/>
+      and can be input to coverage processing functions.
+      </para>
+
+      <note><para>To aid in determining a maximum gap width,
+      gaps can be computed by cleaning with <code>gapMaximumWidth => 0</code> 
+      and using <xref linkend="ST_CoverageUnion"/> to union the result coverage. 
+      Holes in the union correspond to gaps in the original dataset.
+      Gap widths can be measured by extracting the holes as polygons 
+      and running <xref linkend="ST_MaximumInscribedCircle"/>
+      on them; the gap width is twice the computed radius.
+      </para></note>
+
+      <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires GEOS &gt;= 3.14.0</para>
+    </refsection>
+
+    <refsection>
+      <title>Examples</title>
+
+      <programlisting>-- Populate input table
+CREATE TABLE example AS SELECT * FROM (VALUES
+  (1, 'POLYGON ((10 190, 30 160, 27 134.5, 40 110, 122 47, 120 10, 10 10, 10 190))'::geometry),
+  (2, 'POLYGON ((150 190, 10 190, 30 160, 50 140, 40 110, 50 80, 130 70, 135 111, 140 130, 140 160, 150 190))'::geometry),
+  (3, 'POLYGON ((140 190, 190 190, 190 80, 140 80, 140 190))'::geometry),
+  (4, 'POLYGON ((190 10, 120 10, 97 77, 160 90, 170 70, 190 80, 190 10))'::geometry)
+) AS v(id, geom);
+</programlisting>
+
+      <informalfigure>
+        <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_coverageclean01.png"/>
+            </imageobject>
+            <caption><para>Polygons with overlaps and gaps</para></caption>
+        </mediaobject>
+      </informalfigure>
+
+<programlisting>-- Show it is an invalid coverage
+SELECT ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
+  FROM example;
+</programlisting>
+
+      <informalfigure>
+        <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_coverageclean02.png"/>
+            </imageobject>
+            <caption><para>Invalid coverage edges</para></caption>
+        </mediaobject>
+      </informalfigure>
+
+<programlisting>-- Clean the coverage, merging gaps with width &lt;= 1
+CREATE TABLE example_clean AS
+  SELECT id, ST_CoverageClean(geom, 1) OVER () AS GEOM
+  FROM example;
+</programlisting>
+
+      <informalfigure>
+        <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_coverageclean03.png"/>
+            </imageobject>
+            <caption><para>Clean polygonal coverage, with overlaps and narrow gaps removed</para></caption>
+        </mediaobject>
+      </informalfigure>
+
+    </refsection>
+
+    <refsection>
+      <title>See Also</title>
+      <para>
+        <xref linkend="ST_CoverageInvalidEdges"/>,
+        <xref linkend="ST_CoverageUnion"/>,
+        <xref linkend="ST_CoverageSimplify"/>,
+        <xref linkend="ST_MaximumInscribedCircle"/>
+      </para>
+    </refsection>
+
+  </refentry>

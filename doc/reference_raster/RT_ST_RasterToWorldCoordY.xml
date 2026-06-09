@@ -1,0 +1,75 @@
+<refentry xml:id="RT_ST_RasterToWorldCoordY" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_RasterToWorldCoordY</refname>
+                <refpurpose>Returns the geometric Y coordinate upper left corner of a raster, column and row. Numbering of columns
+                    and rows starts at 1. </refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                  <funcprototype>
+                    <funcdef>float8 <function>ST_RasterToWorldCoordY</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>yrow</parameter></paramdef>
+                  </funcprototype>
+                  <funcprototype>
+                    <funcdef>float8 <function>ST_RasterToWorldCoordY</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>xcolumn</parameter></paramdef>
+                    <paramdef><type>integer </type> <parameter>yrow</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns the upper left Y coordinate of a raster column row in geometric units of the georeferenced raster.
+                    Numbering of columns and rows starts at 1 but if you pass in a negative number or number higher than number of
+                        columns/rows in raster, it will give you
+                    coordinates outside of the raster file to left or right with the assumption that the
+                    skew and pixel sizes are same as selected raster tile. </para>
+                <note><para>For non-skewed rasters, providing the Y column is sufficient. For skewed rasters,
+                        the georeferenced coordinate is a function of the ST_ScaleY and ST_SkewY and row and column.
+                        An error will be raised if you give just the Y row for a skewed raster.</para></note>
+
+                <para role="changed" conformance="2.1.0">Changed: 2.1.0 In prior versions, this was called ST_Raster2WorldCoordY</para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+
+                    <programlisting>
+-- non-skewed raster providing row is sufficient
+SELECT rid, ST_RasterToWorldCoordY(rast,1) As y1coord,
+    ST_RasterToWorldCoordY(rast,3) As y2coord,
+    ST_ScaleY(rast) As pixely
+FROM dummy_rast;
+
+ rid | y1coord |  y2coord  | pixely
+-----+---------+-----------+--------
+   1 |     0.5 |       6.5 |      3
+   2 | 5793244 | 5793243.9 |  -0.05
+                </programlisting>
+
+                    <programlisting>
+-- for fun lets skew it
+SELECT rid, ST_RasterToWorldCoordY(rast,1,1) As y1coord,
+    ST_RasterToWorldCoordY(rast,2,3) As y2coord,
+    ST_ScaleY(rast) As pixely
+FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;
+
+ rid | y1coord |  y2coord  | pixely
+-----+---------+-----------+--------
+   1 |     0.5 |       107 |      3
+   2 | 5793244 | 5793344.4 |  -0.05
+                </programlisting>
+
+            </refsection>
+
+            <!-- Optionally add a "See Also" section -->
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_ScaleY"/>, <xref linkend="RT_ST_RasterToWorldCoordX"/>, <xref linkend="RT_ST_SetSkew"/>, <xref linkend="RT_ST_SkewY"/></para>
+            </refsection>
+        </refentry>

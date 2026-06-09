@@ -1,0 +1,212 @@
+<refentry xml:id="RT_ST_AddBand" xmlns="http://docbook.org/ns/docbook">
+            <refnamediv>
+                <refname>ST_AddBand</refname>
+                <refpurpose>
+                    Returns a raster with the new band(s) of given type added with given initial value in the given index location. If no index is specified, the band is added to the end.
+                </refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+
+                    <funcprototype>
+                        <funcdef>(1) raster <function>ST_AddBand</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>addbandarg[] </type> <parameter>addbandargset</parameter></paramdef>
+                    </funcprototype>
+
+                    <funcprototype>
+                        <funcdef>(2) raster <function>ST_AddBand</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>index</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+                        <paramdef choice="opt"><type>double precision </type> <parameter>initialvalue=0</parameter></paramdef>
+                        <paramdef choice="opt"><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
+                    </funcprototype>
+
+                    <funcprototype>
+                        <funcdef>(3) raster <function>ST_AddBand</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+                        <paramdef choice="opt"><type>double precision </type> <parameter>initialvalue=0</parameter></paramdef>
+                        <paramdef choice="opt"><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
+                    </funcprototype>
+
+                    <funcprototype>
+                        <funcdef>(4) raster <function>ST_AddBand</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>torast</parameter></paramdef>
+                        <paramdef><type>raster </type> <parameter>fromrast</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer </type> <parameter>fromband=1</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer </type> <parameter>torastindex=at_end</parameter></paramdef>
+                    </funcprototype>
+
+                    <funcprototype>
+                        <funcdef>(5) raster <function>ST_AddBand</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>torast</parameter></paramdef>
+                        <paramdef><type>raster[] </type> <parameter>fromrasts</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer </type> <parameter>fromband=1</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer </type> <parameter>torastindex=at_end</parameter></paramdef>
+                    </funcprototype>
+
+                    <funcprototype>
+                        <funcdef>(6) raster <function>ST_AddBand</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>index</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>outdbfile</parameter></paramdef>
+                        <paramdef><type>integer[] </type> <parameter>outdbindex</parameter></paramdef>
+                        <paramdef choice="opt"><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
+                    </funcprototype>
+
+                    <funcprototype>
+                        <funcdef>(7) raster <function>ST_AddBand</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>outdbfile</parameter></paramdef>
+                        <paramdef><type>integer[] </type> <parameter>outdbindex</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer </type> <parameter>index=at_end</parameter></paramdef>
+                        <paramdef choice="opt"><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
+                    </funcprototype>
+
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>
+                    Returns a raster with a new band added in given position (index), of given type, of given initial value, and of given nodata value.  If no index is specified, the band is added to the end. If no <varname>fromband</varname> is specified, band 1 is assumed. Pixel type is a string representation of one of the pixel types specified in <xref linkend="RT_ST_BandPixelType"/>.  If an existing index is specified all subsequent bands &gt;= that index are incremented by 1. If an initial value greater than the max of the pixel type is specified, then the initial value is set to the highest value allowed by the pixel type.
+                </para>
+
+                <para>
+                    For the variant that takes an array of <xref linkend="addbandarg"/> (Variant 1), a specific addbandarg's index value is relative to the raster at the time when the band described by that addbandarg is being added to the raster.  See the Multiple New Bands example below.
+                </para>
+
+                <para>
+                    For the variant that takes an array of rasters (Variant 5),  if <varname>torast</varname> is NULL then the <varname>fromband</varname> band of each raster in the array is accumulated into a new raster.
+                </para>
+
+                <para>
+                    For the variants that take <varname>outdbfile</varname> (Variants 6 and 7), the value must include the full path to the raster file. The file must also be accessible to the postgres server process.
+                </para>
+
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 support for addbandarg added.</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 support for new out-db bands added.</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples: Single New Band</title>
+
+                <programlisting>
+-- Add another band of type 8 bit unsigned integer with pixels initialized to 200
+UPDATE dummy_rast
+    SET rast = ST_AddBand(rast,'8BUI'::text,200)
+WHERE rid = 1;
+                </programlisting>
+
+                <programlisting>
+-- Create an empty raster 100x100 units, with upper left  right at 0, add 2 bands (band 1 is 0/1 boolean bit switch, band2 allows values 0-15)
+-- uses addbandargs
+INSERT INTO dummy_rast(rid,rast)
+    VALUES(10, ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 1, -1, 0, 0, 0),
+    ARRAY[
+        ROW(1, '1BB'::text, 0, NULL),
+        ROW(2, '4BUI'::text, 0, NULL)
+            ]::addbandarg[]
+     )
+    );
+
+-- output meta data of raster bands to verify all is right --
+SELECT  (bmd).*
+FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd
+    FROM dummy_rast WHERE rid = 10) AS foo;
+ --result --
+ pixeltype | nodatavalue | isoutdb | path
+-----------+----------------+-------------+---------+------
+ 1BB       |             | f       |
+ 4BUI      |             | f       |
+
+
+-- output meta data of raster -
+SELECT  (rmd).width, (rmd).height, (rmd).numbands
+FROM (SELECT ST_MetaData(rast) As rmd
+    FROM dummy_rast WHERE rid = 10) AS foo;
+-- result --
+ upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
+------------+------------+-------+--------+------------+------------+-------+-------+------+----------
+          0 |          0 |   100 |    100 |      1 |     -1 |     0 |     0 |   0 |        2
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>Examples: Multiple New Bands</title>
+
+                <programlisting>
+SELECT
+    *
+FROM ST_BandMetadata(
+    ST_AddBand(
+        ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
+        ARRAY[
+            ROW(NULL, '8BUI', 255, 0),
+            ROW(NULL, '16BUI', 1, 2),
+            ROW(2, '32BUI', 100, 12),
+            ROW(2, '32BF', 3.14, -1)
+        ]::addbandarg[]
+    ),
+    ARRAY[]::integer[]
+);
+
+ bandnum | pixeltype | nodatavalue | isoutdb | path
+---------+-----------+-------------+---------+------
+       1 | 8BUI      |           0 | f       |
+       2 | 32BF      |          -1 | f       |
+       3 | 32BUI     |          12 | f       |
+       4 | 16BUI     |           2 | f       |
+                </programlisting>
+
+                <programlisting>
+-- Aggregate the 1st band of a table of like rasters into a single raster
+-- with as many bands as there are test_types and as many rows (new rasters) as there are mice
+-- NOTE: The ORDER BY test_type clause relies on aggregate ORDER BY support.
+-- The resulting raster will have a band for each test_type alphabetical by test_type
+-- For mouse lovers: No mice were harmed in this exercise
+SELECT
+    mouse,
+    ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1) As rast
+FROM mice_studies
+GROUP BY mouse;
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>Examples: New Out-db band</title>
+                <programlisting>
+SELECT
+    *
+FROM ST_BandMetadata(
+    ST_AddBand(
+        ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
+        '/home/raster/mytestraster.tif'::text, NULL::int[]
+    ),
+    ARRAY[]::integer[]
+);
+
+ bandnum | pixeltype | nodatavalue | isoutdb | path
+---------+-----------+-------------+---------+------
+       1 | 8BUI      |             | t       | /home/raster/mytestraster.tif
+       2 | 8BUI      |             | t       | /home/raster/mytestraster.tif
+       3 | 8BUI      |             | t       | /home/raster/mytestraster.tif
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_BandMetaData"/>,
+                    <xref linkend="RT_ST_BandPixelType"/>,
+                    <xref linkend="RT_ST_MakeEmptyRaster"/>,
+                    <xref linkend="RT_ST_MetaData"/>,
+                    <xref linkend="RT_ST_NumBands"/>,
+                    <xref linkend="RT_ST_Reclass"/>
+                </para>
+            </refsection>
+        </refentry>

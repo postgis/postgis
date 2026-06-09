@@ -1,0 +1,147 @@
+<refentry xml:id="ST_Centroid" xmlns="http://docbook.org/ns/docbook">
+    <refnamediv>
+      <refname>ST_Centroid</refname>
+
+      <refpurpose>Returns the geometric center of a geometry.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <funcsynopsis>
+          <funcprototype>
+          <funcdef>geometry <function>ST_Centroid</function></funcdef>
+
+          <paramdef><type>geometry </type>
+          <parameter>g1</parameter></paramdef>
+        </funcprototype>
+            <funcprototype>
+                <funcdef>geography <function>ST_Centroid</function></funcdef>
+
+                <paramdef><type>geography </type>
+                <parameter>g1</parameter></paramdef>
+                <paramdef choice="opt"><type>boolean </type>
+                <parameter>use_spheroid = true</parameter></paramdef>
+    </funcprototype>
+
+      </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+      <para>Computes a point which is the geometric center of mass of a geometry.
+      For [<varname>MULTI</varname>]<varname>POINT</varname>s,
+      the centroid is the arithmetic mean of the input coordinates.
+      For [<varname>MULTI</varname>]<varname>LINESTRING</varname>s,
+      the centroid is computed using the weighted length of each line segment.
+      For [<varname>MULTI</varname>]<varname>POLYGON</varname>s,
+      the centroid is computed in terms of area.
+      If an empty geometry is supplied, an empty <varname>GEOMETRYCOLLECTION</varname> is returned.
+      If <varname>NULL</varname> is supplied, <varname>NULL</varname> is returned.
+      If <varname>CIRCULARSTRING</varname> or <varname>COMPOUNDCURVE</varname>
+      are supplied, they are converted to linestring with CurveToLine first,
+      then same than for  <varname>LINESTRING</varname>
+      </para>
+      <para>For mixed-dimension input, the result is equal to the centroid of the component
+      Geometries of highest dimension (since the lower-dimension geometries
+      contribute zero "weight" to the centroid).</para>
+      <para>Note that for polygonal geometries the centroid does not necessarily
+      lie in the interior of the polygon.  For example, see the diagram below
+      of the centroid of a C-shaped polygon.
+      To construct a point guaranteed to lie in the interior
+      of a polygon use <xref linkend="ST_PointOnSurface"/>.
+      </para>
+
+      <para>New in 2.3.0 : supports <varname>CIRCULARSTRING</varname> and <varname>COMPOUNDCURVE</varname> (using CurveToLine)</para>
+
+      <para role="availability" conformance="2.4.0">Availability: 2.4.0 support for geography was introduced.</para>
+
+      <para>&sfs_compliant;</para>
+      <para>&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5</para>
+    </refsection>
+
+    <refsection>
+      <title>Examples</title>
+
+      <para>In the following illustrations the red dot is
+      the centroid of the source geometry.</para>
+
+      <informaltable>
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_centroid01.png"/>
+                    </imageobject>
+
+                    <caption><para>Centroid of a
+                    <varname>MULTIPOINT</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_centroid02.png"/>
+                    </imageobject>
+
+                    <caption><para>Centroid of a
+                    <varname>LINESTRING</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_centroid03.png"/>
+                    </imageobject>
+
+                    <caption><para>Centroid of a
+                    <varname>POLYGON</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_centroid04.png"/>
+                    </imageobject>
+
+                    <caption><para>Centroid of a
+                    <varname>GEOMETRYCOLLECTION</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <programlisting>SELECT ST_AsText(ST_Centroid('MULTIPOINT ( -1 0, -1 2, -1 3, -1 4, -1 7, 0 1, 0 3, 1 1, 2 0, 6 0, 7 8, 9 8, 10 6 )'));
+                st_astext
+------------------------------------------
+ POINT(2.30769230769231 3.30769230769231)
+(1 row)
+
+SELECT ST_AsText(ST_centroid(g))
+FROM  ST_GeomFromText('CIRCULARSTRING(0 2, -1 1,0 0, 0.5 0, 1 0, 2 1, 1 2, 0.5 2, 0 2)')  AS g ;
+------------------------------------------
+POINT(0.5 1)
+
+
+SELECT ST_AsText(ST_centroid(g))
+FROM  ST_GeomFromText('COMPOUNDCURVE(CIRCULARSTRING(0 2, -1 1,0 0),(0 0, 0.5 0, 1 0),CIRCULARSTRING( 1 0, 2 1, 1 2),(1 2, 0.5 2, 0 2))' ) AS g;
+------------------------------------------
+POINT(0.5 1)
+
+</programlisting>
+    </refsection>
+
+    <refsection>
+      <title>See Also</title>
+
+      <para><xref linkend="ST_PointOnSurface"/>, <xref linkend="ST_GeometricMedian"/></para>
+    </refsection>
+  </refentry>
