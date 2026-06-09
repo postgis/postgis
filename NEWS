@@ -40,6 +40,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.2+ is needed
  - #2614, Use GEOSPreparedDistance and caching to accelerate ST_DWithin (Paul Ramsey)
  - GH-839, ST_Multi support for TIN and surfaces (Loïc Bartoletti)
  - #4398, Add ST_CatmullSmoothing smoothes but retains original vertices (Paul Ramsey)
+ - #4560, ST_3DInterpolatePoint for M interpolation from XYZ inputs (Paul Ramsey)
 
 * Enhancements *
 
