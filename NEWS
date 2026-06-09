@@ -7,6 +7,7 @@ PostGIS 3.5.7
   - #5899, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)
   - #5916, ST_Split hang with very large ordinates (Paul Ramsey)
   - #5989, CurvePolygon distance corner case (Paul Ramsey)
+  - #5357, ST_LineFromEncodedPolyline dropping close points (Paul Ramsey)
 
 
 PostGIS 3.5.6
