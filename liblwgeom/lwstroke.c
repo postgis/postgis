@@ -628,6 +628,11 @@ lwcompound_linearize(const LWCOMPOUND *icompound, double tol,
 		else if (geom->type == NURBSCURVETYPE)
 		{
 			tmp = lwnurbscurve_linearize((LWNURBSCURVE *)geom, tol, tolerance_type, flags);
+			if (!tmp)
+			{
+				lwerror("%s: failed to linearize NURBS curve component", __func__);
+				return NULL;
+			}
 			for (j = 0; j < tmp->points->npoints; j++)
 			{
 				getPoint4d_p(tmp->points, j, &p);
@@ -904,7 +909,7 @@ lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol,
 			lwerror("%s: segs-per-quad is too large, got %.15g", __func__, tol);
 			return NULL;
 		}
-		num_segments = (uint32_t)tol * 4;
+		num_segments = (uint32_t)(tol * 4);
 		break;
 	case LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION:
 	{

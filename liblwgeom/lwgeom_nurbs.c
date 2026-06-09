@@ -440,8 +440,10 @@ lwnurbscurve_evaluate(const LWNURBSCURVE *curve, double t)
 	double *weights;  /* Temporary weights array for De Boor algorithm */
 
 	/* Validate input */
-	if (!curve || !curve->points || curve->points->npoints == 0)
+	if (!curve)
 		return lwpoint_construct_empty(SRID_UNKNOWN, 0, 0);
+	if (!curve->points || curve->points->npoints == 0)
+		return lwpoint_construct_empty(curve->srid, FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags));
 
 	/* Get dimensional flags */
 	hasz = FLAGS_GET_Z(curve->flags);
