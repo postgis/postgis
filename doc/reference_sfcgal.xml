@@ -4253,11 +4253,11 @@ SELECT (ST_Dump(CG_Simplify(geom, 0.5, false))).geom FROM depts_pds;
 
         <para>Parameters:</para>
         <itemizedlist>
-            <listitem><para><varname>data_points</varname> - A LINESTRING or MULTIPOINT geometry containing the points to interpolate through.</para></listitem>
+            <listitem><para><varname>data_points</varname> - A LINESTRING geometry containing the points to interpolate through.</para></listitem>
             <listitem><para><varname>degree</varname> - Polynomial degree of the NURBS curve (typically 2 or 3).</para></listitem>
         </itemizedlist>
 
-        <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0.</para>
         <para>&sfcgal_required;</para>
         <para>&Z_support;</para>
     </refsection>
@@ -4309,13 +4309,13 @@ SELECT CG_NurbsCurveInterpolate(
 
         <para>Parameters:</para>
         <itemizedlist>
-            <listitem><para><varname>data_points</varname> - A LINESTRING or MULTIPOINT geometry containing the points to approximate.</para></listitem>
+            <listitem><para><varname>data_points</varname> - A LINESTRING geometry containing the points to approximate.</para></listitem>
             <listitem><para><varname>degree</varname> - Polynomial degree of the NURBS curve.</para></listitem>
             <listitem><para><varname>tolerance</varname> - Maximum allowed distance between the curve and data points.</para></listitem>
             <listitem><para><varname>max_control_points</varname> - Optional maximum number of control points (default: 100). Limits curve complexity.</para></listitem>
         </itemizedlist>
 
-        <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0.</para>
         <para>&sfcgal_required;</para>
         <para>&Z_support;</para>
     </refsection>
@@ -4369,19 +4369,19 @@ SELECT CG_NurbsCurveApproximate(
         <itemizedlist>
             <listitem><para>Order 1: Tangent vector (direction and speed)</para></listitem>
             <listitem><para>Order 2: Curvature vector (how the tangent changes)</para></listitem>
-            <listitem><para>Higher orders: Additional geometric properties</para></listitem>
+            <listitem><para>Order 3: Third-order derivative (supported maximum)</para></listitem>
         </itemizedlist>
 
         <para>Parameters:</para>
         <itemizedlist>
             <listitem><para><varname>nurbscurve</varname> - A NURBS curve geometry.</para></listitem>
             <listitem><para><varname>parameter</varname> - Parameter value for evaluation (typically 0.0 to 1.0).</para></listitem>
-            <listitem><para><varname>derivative_order</varname> - Order of derivative to compute (1 for tangent, 2 for curvature, etc.).</para></listitem>
+            <listitem><para><varname>derivative_order</varname> - Order of derivative to compute (1, 2, or 3).</para></listitem>
         </itemizedlist>
 
         <para>Returns a POINT geometry representing the derivative vector at the specified parameter.</para>
 
-        <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0.</para>
         <para>&sfcgal_required;</para>
         <para>&Z_support;</para>
     </refsection>
