@@ -994,10 +994,10 @@ ifeq ($(XML2POT),)
 $(XML_SOURCE_POTS): requirements_not_met_xml2pot
 endif
 
-CHECK_UNIT_TARGET =
+CHECK_UNIT_TARGET = check-doc-layout
 
 ifeq ($(CAN_CHECK_XML),yes)
-CHECK_UNIT_TARGET = check-xml
+CHECK_UNIT_TARGET += check-xml
 endif
 
 
@@ -1291,6 +1291,11 @@ check: check-unit
 check-regress:
 
 check-unit: $(CHECK_UNIT_TARGET)
+
+check-doc-layout:
+	$(PERL) $(abs_top_srcdir)/utils/check_doc_layout.pl \
+		--docdir $(abs_srcdir) \
+		--makefile $(abs_srcdir)/Makefile.in
 
 check-xml: postgis-out.xml
 	# TODO: --schematron http://docbook.org/xml/5.0/sch/docbook.sch

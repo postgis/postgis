@@ -65,16 +65,16 @@ Make targets
 
 ``make update-po``
   update translation files to be in sync with the source
-  XML files. See ``make check-localized``
+  XML files
 
 ``make check``
-  check structural correctness of XML documentation
+  check structural correctness of XML documentation, including
+  split refentry layout
 
-``make check-localized``
-  check structural correctness of localized (translated)
-  XML documentation. Remember to run this before committing
-  updates to translation files (see ``make update-po``)
-
+``make -C po/<language> local-html``
+  build a localized (translated) manual. Remember to run this
+  before committing updates to translation files (see
+  ``make update-po``)
 
 Requirements
 ------------
