@@ -746,6 +746,68 @@ SELECT ST_AsText(
 
     </refentry>
 
+    <refentry xml:id="ST_3DInterpolatePoint">
+        <refnamediv>
+        <refname>ST_3DInterpolatePoint</refname>
+
+        <refpurpose>Returns the interpolated measure of a geometry closest to a point in 3D.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+            <funcdef>float8 <function>ST_3DInterpolatePoint</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>linear_geom_with_measure</parameter></paramdef>
+            <paramdef><type>geometry </type> <parameter>point</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+        <title>Description</title>
+
+            <para>Returns the interpolated measure value of a linear ZM geometry
+            at the location closest to the given point, using 3D (XYZ) distance
+            for the projection.  Use this function when the geometry has
+            significant Z variation, such as flight trajectories, where
+            <xref linkend="ST_InterpolatePoint"/> would give incorrect results
+            by ignoring the Z dimension.</para>
+
+            <note><para>The line must have both Z and M dimensions.
+            The point should have a Z dimension.</para></note>
+
+            <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+
+        <para>&Z_support;</para>
+        </refsection>
+
+        <refsection>
+        <title>Examples</title>
+
+        <programlisting>-- Line rising diagonally in Z; point at the 3D midpoint
+SELECT ST_3DInterpolatePoint(
+    'LINESTRING ZM (0 0 0 0, 10 0 10 20)',
+    'POINT Z (5 0 5)');
+ ---------------------
+         10
+
+-- Vertical line (zero XY extent); 3D projection works where 2D would not
+SELECT ST_3DInterpolatePoint(
+    'LINESTRING ZM (0 0 0 0, 0 0 10 100)',
+    'POINT Z (5 5 5)');
+ ---------------------
+         50
+        </programlisting>
+        </refsection>
+
+        <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_InterpolatePoint"/>, <xref linkend="ST_AddMeasure"/>,
+              <xref linkend="ST_LocateAlong"/>, <xref linkend="ST_LocateBetween"/></para>
+        </refsection>
+
+    </refentry>
+
 
 	<refentry xml:id="ST_AddMeasure">
 	  <refnamediv>

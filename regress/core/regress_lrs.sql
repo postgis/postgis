@@ -99,3 +99,11 @@ select 'addMeasure2', ST_AsText(ST_AddMeasure('LINESTRING(0 0, 9 0, 10 0)', 10, 
 
 select 'interpolatePoint1', ST_InterpolatePoint('LINESTRINGM(0 0 0, 10 0 4)', 'POINT(5 0)');
 select 'interpolatePoint2', ST_InterpolatePoint('LINESTRINGM(0 0 0, 10 0 4)', 'POINT(7.5 0)');
+
+--
+-- ST_3DInterpolatePoint
+--
+
+select '3DinterpolatePoint1', ST_3DInterpolatePoint('LINESTRING ZM (0 0 0 0, 10 0 10 20)', 'POINT Z (5 0 5)');
+select '3DinterpolatePoint2', ST_3DInterpolatePoint('LINESTRING ZM (0 0 0 0, 10 0 10 20)', 'POINT Z (5 5 5)');
+select '3DinterpolatePoint3', ST_3DInterpolatePoint('LINESTRING ZM (0 0 0 0, 0 0 10 100)', 'POINT Z (5 5 5)');

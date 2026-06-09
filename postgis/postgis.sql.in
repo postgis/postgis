@@ -6682,6 +6682,13 @@ CREATE OR REPLACE FUNCTION ST_InterpolatePoint(Line geometry, Point geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_3DInterpolatePoint(Line geometry, Point geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'ST_3DInterpolatePoint'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
 ---------------------------------------------------------------
 -- Grid / Hexagon coverage functions
 ---
