@@ -620,6 +620,19 @@ Datum ST_NurbsCurveIsValid(PG_FUNCTION_ARGS)
 
 	nurbs = (LWNURBSCURVE*)geom;
 
+	/* Validate degree range */
+	if (nurbs->degree < 1 || nurbs->degree > 10) {
+		is_valid = false;
+		goto cleanup;
+	}
+
+	/* Detect inconsistent weights state */
+	if ((!nurbs->weights && nurbs->nweights > 0) ||
+	    (nurbs->weights && nurbs->nweights == 0)) {
+		is_valid = false;
+		goto cleanup;
+	}
+
 	/* Check basic requirements */
 	if (!nurbs->points || nurbs->points->npoints < nurbs->degree + 1) {
 		is_valid = false;
