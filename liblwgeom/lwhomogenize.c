@@ -89,6 +89,7 @@ lwcollection_build_buffer(const LWCOLLECTION *col, HomogenizeBuffer *buffer)
 		case LINETYPE:
 		case CIRCSTRINGTYPE:
 		case COMPOUNDTYPE:
+		case NURBSCURVETYPE:
 		case TRIANGLETYPE:
 		case CURVEPOLYTYPE:
 		case POLYGONTYPE:
@@ -228,6 +229,7 @@ lwgeom_homogenize(const LWGEOM *geom)
 		case LINETYPE:
 		case CIRCSTRINGTYPE:
 		case COMPOUNDTYPE:
+		case NURBSCURVETYPE:
 		case TRIANGLETYPE:
 		case CURVEPOLYTYPE:
 		case POLYGONTYPE:
