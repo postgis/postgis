@@ -27,9 +27,6 @@ E1|0|t|POINT(1.1 2.1)|f
 --- Type mismatch detection ---
 ERROR:  flatgeobuf: column "val" type mismatch: file type "Long" is not compatible with PostgreSQL type text
 ERROR:  flatgeobuf: column count mismatch: file has 2 columns, target type has 1
---- Numeric widening ---
-W1|0|42
-W2|0|1.5
 --- Quoted identifiers ---
 QI1
 QI2

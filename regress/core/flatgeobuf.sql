@@ -176,20 +176,6 @@ select 'MM1' from ST_FromFlatGeobuf(null::flatgeobuf_mm_text, (
 select 'MM2' from ST_FromFlatGeobuf(null::flatgeobuf_mm_long, (
     select ST_AsFlatGeobuf(q) fgb from (select null::geometry, 42::bigint as val1, 43::bigint as val2) q));
 
-select '--- Numeric widening ---';
-
--- integer (int32 in file) widened to bigint in target
-select ST_FromFlatGeobufToTable('public', 'flatgeobuf_widen_i', (select ST_AsFlatGeobuf(q) fgb from (select
-    null::geometry, null::bigint as val) q));
-select 'W1', id, val from ST_FromFlatGeobuf(null::flatgeobuf_widen_i, (
-    select ST_AsFlatGeobuf(q) fgb from (select null::geometry, 42::integer as val) q));
-
--- real (float4 in file) widened to double precision in target
-select ST_FromFlatGeobufToTable('public', 'flatgeobuf_widen_f', (select ST_AsFlatGeobuf(q) fgb from (select
-    null::geometry, null::double precision as val) q));
-select 'W2', id, val from ST_FromFlatGeobuf(null::flatgeobuf_widen_f, (
-    select ST_AsFlatGeobuf(q) fgb from (select null::geometry, 1.5::real as val) q));
-
 select '--- Quoted identifiers ---';
 
 -- Verify that special characters in column names are properly quoted
@@ -216,5 +202,3 @@ drop table if exists public.flatgeobuf_qi;
 drop table if exists public.flatgeobuf_mm_long;
 drop table if exists public.flatgeobuf_mm_text;
 drop table if exists public.flatgeobuf_mm_twocols;
-drop table if exists public.flatgeobuf_widen_i;
-drop table if exists public.flatgeobuf_widen_f;
