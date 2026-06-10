@@ -1043,7 +1043,7 @@ Datum LWGEOM_setstartm_curve(PG_FUNCTION_ARGS)
 	POINT4D pt;
 	POINTARRAY *pa = NULL;
 	LWNURBSCURVE *curve = NULL;
-	int type = lwgeom->type;
+	int type;
 
 	/* Ensure geometry has M dimension */
 	if (!lwgeom_has_m(lwgeom))
@@ -1061,6 +1061,8 @@ Datum LWGEOM_setstartm_curve(PG_FUNCTION_ARGS)
 		lwgeom_free(lwgeom);
 		lwgeom = lwgeom_result;
 	}
+
+	type = lwgeom->type;
 
 	/* Get pointarray based on geometry type */
 	if (type == LINETYPE || type == CIRCSTRINGTYPE)
@@ -1136,7 +1138,7 @@ Datum LWGEOM_setendm_curve(PG_FUNCTION_ARGS)
 	POINT4D pt;
 	POINTARRAY *pa = NULL;
 	LWNURBSCURVE *curve = NULL;
-	int type = lwgeom->type;
+	int type;
 
 	/* Ensure geometry has M dimension */
 	if (!lwgeom_has_m(lwgeom))
@@ -1154,6 +1156,8 @@ Datum LWGEOM_setendm_curve(PG_FUNCTION_ARGS)
 		lwgeom_free(lwgeom);
 		lwgeom = lwgeom_result;
 	}
+
+	type = lwgeom->type;
 
 	/* Get pointarray based on geometry type */
 	if (type == LINETYPE || type == CIRCSTRINGTYPE)
