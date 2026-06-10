@@ -3,6 +3,10 @@
 
 name: "CI (FreeBSD)"
 
+on:
+  push: ~
+  pull_request: ~
+
 jobs:
 
   freebsd:

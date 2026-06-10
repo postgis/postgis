@@ -3,6 +3,10 @@
 
 name: "CI (macOS)"
 
+on:
+  push: ~
+  pull_request: ~
+
 jobs:
 
   macos:
