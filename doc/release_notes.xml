@@ -3,6 +3,19 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
 
+        <section>
+            <title>PostGIS 3.5.7</title>
+            <para>2026/06/10</para>
+            <simplesect>
+                <title>Bug Fixes</title>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5899">5899</link>, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)</para>
+                <para>Flatgeobuf schema mismatch vulnerability (NeuroWinter)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5916">5916</link>, ST_Split hang with very large ordinates (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5989">5989</link>, CurvePolygon distance corner case (Paul Ramsey)</para>
+                <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5357">5357</link>, ST_LineFromEncodedPolyline dropping close points (Paul Ramsey)</para>
+            </simplesect>
+        </section>
+
        <section>
             <title>PostGIS 3.5.6</title>
             <para>2026/04/14</para>
