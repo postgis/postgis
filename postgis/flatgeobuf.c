@@ -360,7 +360,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			if (offset + sizeof(uint32_t) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for uint value");
 			memcpy(&value, data + offset, sizeof(uint32_t));
-			values[ci] = UInt32GetDatum(value);
+			values[ci] = Int64GetDatum((int64_t)(uint64_t) value);
 			offset += sizeof(uint32_t);
 			break;
 		}
@@ -387,10 +387,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			if (offset + sizeof(float) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for float value");
 			memcpy(&value, data + offset, sizeof(float));
-			if (getBaseType(TupleDescAttr(ctx->tupdesc, ci)->atttypid) == FLOAT8OID)
-				values[ci] = Float8GetDatum((double) value);
-			else
-				values[ci] = Float4GetDatum(value);
+			values[ci] = Float4GetDatum(value);
 			offset += sizeof(float);
 			break;
 		}
