@@ -65,13 +65,59 @@ lwnurbscurve_construct(int32_t srid, GBOX *bbox, uint32_t degree, POINTARRAY *po
 
 	/* Validate degree: must be between 1 and 10 */
 	if (degree < 1 || degree > 10)
+	{
+		lwerror("NURBS: degree %u outside valid range [1,10]", degree);
 		return NULL;
+	}
 
 	/* Basic invariants */
+	if (points && points->npoints > 0 && points->npoints < degree + 1)
+	{
+		lwerror("NURBS: npoints (%u) must be at least degree + 1 (%u)", points->npoints, degree + 1);
+		return NULL;
+	}
 	if (points && weights && nweights != points->npoints)
+	{
 		lwerror("NURBS: nweights (%u) must equal number of control points (%u)", nweights, points->npoints);
+		return NULL;
+	}
 	if (points && knots && nknots != points->npoints + degree + 1)
+	{
 		lwerror("NURBS: nknots (%u) must equal npoints + degree + 1 (%u)", nknots, points->npoints + degree + 1);
+		return NULL;
+	}
+
+	/* Validate weight values */
+	if (nweights > 0 && !weights)
+	{
+		lwerror("NURBS: weights is NULL but nweights = %u", nweights);
+		return NULL;
+	}
+	for (uint32_t i = 0; i < nweights; i++)
+	{
+		if (!isfinite(weights[i]) || weights[i] <= 0.0)
+		{
+			lwerror("NURBS: weight[%u] = %g must be finite and > 0", i, weights[i]);
+			return NULL;
+		}
+	}
+
+	/* Validate knot vector monotonicity */
+	if (nknots > 0 && !knots)
+	{
+		lwerror("NURBS: knots is NULL but nknots = %u", nknots);
+		return NULL;
+	}
+	for (uint32_t i = 1; i < nknots; i++)
+	{
+		if (!isfinite(knots[i]) || knots[i] < knots[i - 1])
+		{
+			lwerror("NURBS: knot[%u] = %g must be finite and >= knot[%u] = %g",
+			        i, knots[i], i - 1, knots[i - 1]);
+			return NULL;
+		}
+	}
+
 	result = lwalloc(sizeof(LWNURBSCURVE));
 	result->type = NURBSCURVETYPE;
 	result->srid = srid;
