@@ -698,6 +698,11 @@ lwcurvepoly_linearize(const LWCURVEPOLY *curvepoly, double tol,
 		else if (tmp->type == NURBSCURVETYPE)
 		{
 			line = lwnurbscurve_linearize((LWNURBSCURVE *)tmp, tol, tolerance_type, flags);
+			if (!line)
+			{
+				lwerror("%s: failed to linearize NURBS curve ring", __func__);
+				return NULL;
+			}
 			ptarray[i] = ptarray_clone_deep(line->points);
 			lwline_free(line);
 		}
@@ -759,6 +764,11 @@ lwmcurve_linearize(const LWMCURVE *mcurve, double tol,
 		else if (tmp->type == NURBSCURVETYPE)
 		{
 			lines[i] = (LWGEOM *)lwnurbscurve_linearize((LWNURBSCURVE *)tmp, tol, type, flags);
+			if (!lines[i])
+			{
+				lwerror("%s: failed to linearize NURBS curve component", __func__);
+				return NULL;
+			}
 		}
 		else
 		{
@@ -849,6 +859,11 @@ lwcollection_linearize(const LWCOLLECTION *collection, double tol,
 			break;
 		case NURBSCURVETYPE:
 			geoms[i] = (LWGEOM *)lwnurbscurve_linearize((LWNURBSCURVE *)tmp, tol, type, flags);
+			if (!geoms[i])
+			{
+				lwerror("%s: failed to linearize NURBS curve element", __func__);
+				return NULL;
+			}
 			break;
 		case COMPOUNDTYPE:
 			geoms[i] = (LWGEOM *)lwcompound_linearize((LWCOMPOUND *)tmp, tol, type, flags);
