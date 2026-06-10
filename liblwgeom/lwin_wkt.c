@@ -1043,6 +1043,10 @@ LWGEOM* wkt_parser_nurbscurve_new(double degree, POINTARRAY *points, POINTARRAY 
 	/* Cast to int after validation */
 	int_degree = (int)round(degree);
 
+	/* Degree 0 defaults to quadratic (degree 2) */
+	if (int_degree == 0)
+		int_degree = 2;
+
 	/* Validate degree range */
 	if (int_degree < 1 || int_degree > 10) {
 		if (points) ptarray_free(points);
@@ -1169,6 +1173,7 @@ LWGEOM* wkt_parser_nurbscurve_new(double degree, POINTARRAY *points, POINTARRAY 
 	curve = lwnurbscurve_construct(SRID_UNKNOWN, NULL, int_degree, points, weight_array, knot_array, nweights, nknots);
 
 	if (!curve) {
+		ptarray_free(points);
 		if (weight_array) lwfree(weight_array);
 		if (knot_array) lwfree(knot_array);
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
