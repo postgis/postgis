@@ -1043,11 +1043,6 @@ LWGEOM* wkt_parser_nurbscurve_new(double degree, POINTARRAY *points, POINTARRAY 
 	/* Cast to int after validation */
 	int_degree = (int)round(degree);
 
-	/* Handle simple format compatibility - if degree is 0, use default degree 2 */
-	if (int_degree == 0) {
-		int_degree = 2;
-	}
-
 	/* Validate degree range */
 	if (int_degree < 1 || int_degree > 10) {
 		if (points) ptarray_free(points);
@@ -1156,18 +1151,6 @@ LWGEOM* wkt_parser_nurbscurve_new(double degree, POINTARRAY *points, POINTARRAY 
 		}
 
 		/* Validate knot vector is non-decreasing */
-		for (uint32_t i = 1; i < nknots; i++) {
-			if (knot_array[i] < knot_array[i-1]) {
-				ptarray_free(points);
-				if (weight_array) lwfree(weight_array);
-				ptarray_free(knots);
-				lwfree(knot_array);
-				SET_PARSER_ERROR(PARSER_ERROR_OTHER);
-				return NULL;
-			}
-		}
-
-		/* Basic knot vector validation - ensure knots are in non-decreasing order */
 		for (uint32_t i = 1; i < nknots; i++) {
 			if (knot_array[i] < knot_array[i-1]) {
 				ptarray_free(points);

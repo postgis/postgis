@@ -35,21 +35,21 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_YY_LIBLWGEOM_LWIN_WKT_PARSE_H_INCLUDED
-# define YY_YY_LIBLWGEOM_LWIN_WKT_PARSE_H_INCLUDED
+#ifndef YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED
+# define YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
 #endif
 #if YYDEBUG
-extern int yydebug;
+extern int wkt_yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 250 "liblwgeom/lwin_wkt_parse.y"
+#line 250 "lwin_wkt_parse.y"
 
 typedef struct WKT_NURBS_CONTROLPOINTS WKT_NURBS_CONTROLPOINTS;
 
-#line 53 "liblwgeom/lwin_wkt_parse.h"
+#line 53 "lwin_wkt_parse.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -99,7 +99,7 @@ typedef struct WKT_NURBS_CONTROLPOINTS WKT_NURBS_CONTROLPOINTS;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 256 "liblwgeom/lwin_wkt_parse.y"
+#line 256 "lwin_wkt_parse.y"
 
 	int integervalue;
 	double doublevalue;
@@ -109,7 +109,7 @@ union YYSTYPE
 	POINTARRAY *ptarrayvalue;
 	WKT_NURBS_CONTROLPOINTS *nurbscontrolpointsvalue;
 
-#line 113 "liblwgeom/lwin_wkt_parse.h"
+#line 113 "lwin_wkt_parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -132,10 +132,10 @@ struct YYLTYPE
 #endif
 
 
-extern YYSTYPE yylval;
-extern YYLTYPE yylloc;
+extern YYSTYPE wkt_yylval;
+extern YYLTYPE wkt_yylloc;
 
-int yyparse (void);
+int wkt_yyparse (void);
 
 
-#endif /* !YY_YY_LIBLWGEOM_LWIN_WKT_PARSE_H_INCLUDED  */
+#endif /* !YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED  */

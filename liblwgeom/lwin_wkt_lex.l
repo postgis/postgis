@@ -2,6 +2,7 @@
 
 /* The lexer */
 
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include "lwin_wkt.h"
@@ -102,11 +103,11 @@ WEIGHT { return WEIGHT_TOK; }
 KNOT { return KNOT_TOK; }
 EMPTY { return EMPTY_TOK; }
 
-Z|M|ZM {
+[zZ]|[mM]|[zZ][mM] {
 	LWDEBUG(5,"DIMENSIONALITY");
-	if (wkt_yytext[0] == 'Z' && wkt_yytext[1] == 'M')
+	if (toupper(wkt_yytext[0]) == 'Z' && toupper(wkt_yytext[1]) == 'M')
 		wkt_yylval.stringvalue = "ZM";
-	else if (wkt_yytext[0] == 'Z')
+	else if (toupper(wkt_yytext[0]) == 'Z')
 		wkt_yylval.stringvalue = "Z";
 	else
 		wkt_yylval.stringvalue = "M";

@@ -802,14 +802,19 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
  */
 static LWNURBSCURVE* lwnurbscurve_from_wkb_state(wkb_parse_state *s)
 {
-    uint32_t degree = 0, nknots = 0, npoints = 0;
-    double *weights = NULL, *knots = NULL;
-    POINTARRAY *points = NULL;
-    int all_weights_one = 1;
+	uint32_t degree = 0, nknots = 0, npoints = 0;
+	double *weights = NULL, *knots = NULL;
+	POINTARRAY *points = NULL;
+	int all_weights_one = 1;
 
 	/* ISO/IEC 13249-3:2016 compliant parsing */
 	degree = integer_from_wkb_state(s);
 	if (s->error) return NULL;
+	if (degree < 1 || degree > 10)
+	{
+		lwerror("WKB NURBSCURVE: degree %u outside valid range [1,10]", degree);
+		return NULL;
+	}
 
 	/* Read control points count */
 	npoints = integer_from_wkb_state(s);
@@ -829,112 +834,112 @@ static LWNURBSCURVE* lwnurbscurve_from_wkb_state(wkb_parse_state *s)
 
 	/* Initialize points array */
 	if (npoints > 0) {
-        points = ptarray_construct(s->has_z, s->has_m, npoints);
-        weights = lwalloc(sizeof(double) * npoints);
+		points = ptarray_construct(s->has_z, s->has_m, npoints);
+		weights = lwalloc(sizeof(double) * npoints);
 
-        /* ISO format: each control point has structure:
-         * <byte order> <wkbweightedpoint> <bit> [<wkbweight>]
-         */
-        for (uint32_t i = 0; i < npoints; i++) {
-            /* Read byte order for this point (ISO requirement) */
-	    uint8_t point_endian = byte_from_wkb_state(s);
-            if (s->error) {
-                lwfree(weights);
-                ptarray_free(points);
-                return NULL;
-            }
-	    if (point_endian != 0 && point_endian != 1) {
-                lwerror("WKB NURBSCURVE: invalid endian flag %u at control point %u", point_endian, i);
-                lwfree(weights);
-                ptarray_free(points);
-                return NULL;
-            }
+		/* ISO format: each control point has structure:
+		 * <byte order> <wkbweightedpoint> <bit> [<wkbweight>]
+		 */
+		for (uint32_t i = 0; i < npoints; i++) {
+			/* Read byte order for this point (ISO requirement) */
+			uint8_t point_endian = byte_from_wkb_state(s);
+			if (s->error) {
+				lwfree(weights);
+				ptarray_free(points);
+				return NULL;
+			}
+			if (point_endian != 0 && point_endian != 1) {
+				lwerror("WKB NURBSCURVE: invalid endian flag %u at control point %u", point_endian, i);
+				lwfree(weights);
+				ptarray_free(points);
+				return NULL;
+			}
 
-            /* Compute whether this point needs byte swapping */
-            int8_t point_swap = LW_FALSE;
-            /* Machine arch is big endian, point is little endian */
-            if (IS_BIG_ENDIAN && point_endian)
-                point_swap = LW_TRUE;
-            /* Machine arch is little endian, point is big endian */
-            else if ((!IS_BIG_ENDIAN) && (!point_endian))
-                point_swap = LW_TRUE;
+			/* Compute whether this point needs byte swapping */
+			int8_t point_swap = LW_FALSE;
+			/* Machine arch is big endian, point is little endian */
+			if (IS_BIG_ENDIAN && point_endian)
+				point_swap = LW_TRUE;
+			/* Machine arch is little endian, point is big endian */
+			else if ((!IS_BIG_ENDIAN) && (!point_endian))
+				point_swap = LW_TRUE;
 
-            /* Save original swap state and apply point-specific swapping */
-            int8_t original_swap = s->swap_bytes;
-            s->swap_bytes = point_swap;
+			/* Save original swap state and apply point-specific swapping */
+			int8_t original_swap = s->swap_bytes;
+			s->swap_bytes = point_swap;
 
-            /* Read point coordinates */
-            POINT4D pt = {0, 0, 0, 0};
-            pt.x = double_from_wkb_state(s);
-            if (s->error) {
-                lwfree(weights);
-                ptarray_free(points);
-                return NULL;
-            }
+			/* Read point coordinates */
+			POINT4D pt = {0, 0, 0, 0};
+			pt.x = double_from_wkb_state(s);
+			if (s->error) {
+				lwfree(weights);
+				ptarray_free(points);
+				return NULL;
+			}
 
-            pt.y = double_from_wkb_state(s);
-            if (s->error) {
-                lwfree(weights);
-                ptarray_free(points);
-                return NULL;
-            }
+			pt.y = double_from_wkb_state(s);
+			if (s->error) {
+				lwfree(weights);
+				ptarray_free(points);
+				return NULL;
+			}
 
-            if (s->has_z) {
-                pt.z = double_from_wkb_state(s);
-                if (s->error) {
-                    lwfree(weights);
-                    ptarray_free(points);
-                    return NULL;
-                }
-            }
+			if (s->has_z) {
+				pt.z = double_from_wkb_state(s);
+				if (s->error) {
+					lwfree(weights);
+					ptarray_free(points);
+					return NULL;
+				}
+			}
 
-            if (s->has_m) {
-                pt.m = double_from_wkb_state(s);
-                if (s->error) {
-                    lwfree(weights);
-                    ptarray_free(points);
-                    return NULL;
-                }
-            }
+			if (s->has_m) {
+				pt.m = double_from_wkb_state(s);
+				if (s->error) {
+					lwfree(weights);
+					ptarray_free(points);
+					return NULL;
+				}
+			}
 
-            ptarray_set_point4d(points, i, &pt);
+			ptarray_set_point4d(points, i, &pt);
 
-            /* Read weight bit flag */
-            uint8_t has_weight = byte_from_wkb_state(s);
-            if (s->error) {
-                lwfree(weights);
-                ptarray_free(points);
-                return NULL;
-            }
+			/* Read weight bit flag */
+			uint8_t has_weight = byte_from_wkb_state(s);
+			if (s->error) {
+				lwfree(weights);
+				ptarray_free(points);
+				return NULL;
+			}
 
-            if (has_weight == 0) {
-                /* Default weight = 1.0 */
-                weights[i] = 1.0;
-            } else if (has_weight == 1) {
-                /* Custom weight follows */
-                weights[i] = double_from_wkb_state(s);
-                if (weights[i] <= 0.0) {
-                    lwerror("WKB NURBSCURVE: non-positive weight for point %d", i);
-                    lwfree(weights);
-                    ptarray_free(points);
-                    return NULL;
-                }
-                if (s->error) {
-                    lwfree(weights);
-                    ptarray_free(points);
-                    return NULL;
-                }
-		if (weights[i] != 1.0) all_weights_one = 0;
-            } else {
-                lwerror("WKB NURBSCURVE: invalid weight bit %d for point %d (must be 0 or 1)", has_weight, i);
-                lwfree(weights);
-                ptarray_free(points);
-                return NULL;
-            }
+			if (has_weight == 0) {
+				/* Default weight = 1.0 */
+				weights[i] = 1.0;
+			} else if (has_weight == 1) {
+				/* Custom weight follows */
+				weights[i] = double_from_wkb_state(s);
+				if (weights[i] <= 0.0) {
+					lwerror("WKB NURBSCURVE: non-positive weight for point %d", i);
+					lwfree(weights);
+					ptarray_free(points);
+					return NULL;
+				}
+				if (s->error) {
+					lwfree(weights);
+					ptarray_free(points);
+					return NULL;
+				}
+				if (weights[i] != 1.0) all_weights_one = 0;
+			} else {
+				lwerror("WKB NURBSCURVE: invalid weight bit %d for point %d (must be 0 or 1)", has_weight, i);
+				lwfree(weights);
+				ptarray_free(points);
+				return NULL;
+			}
 
-            /* Restore original swap state */
-            s->swap_bytes = original_swap;
-        }
+			/* Restore original swap state */
+			s->swap_bytes = original_swap;
+		}
 	}
 
 	/* Read knots (required by WKB standard) */
