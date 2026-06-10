@@ -88,24 +88,19 @@ flatgeobuf_type_compatible(uint8_t fgb_type, Oid pgtype)
 	{
 	case flatgeobuf_column_type_bool:
 		return pgtype == BOOLOID;
-	/* small integer types: allow widening into larger signed ints */
 	case flatgeobuf_column_type_byte:
 	case flatgeobuf_column_type_ubyte:
 	case flatgeobuf_column_type_short:
 	case flatgeobuf_column_type_ushort:
-		return pgtype == INT2OID || pgtype == INT4OID || pgtype == INT8OID;
-	/* int32: allow widening to bigint */
+		return pgtype == INT2OID;
 	case flatgeobuf_column_type_int:
-		return pgtype == INT4OID || pgtype == INT8OID;
-	/* uint32 max exceeds INT4, must land in bigint */
+		return pgtype == INT4OID;
 	case flatgeobuf_column_type_uint:
-		return pgtype == INT8OID;
 	case flatgeobuf_column_type_long:
 	case flatgeobuf_column_type_ulong:
 		return pgtype == INT8OID;
-	/* float: allow widening to double (explicit conversion handled in decode) */
 	case flatgeobuf_column_type_float:
-		return pgtype == FLOAT4OID || pgtype == FLOAT8OID;
+		return pgtype == FLOAT4OID;
 	case flatgeobuf_column_type_double:
 		return pgtype == FLOAT8OID;
 	case flatgeobuf_column_type_string:
