@@ -338,7 +338,7 @@ lwnurbscurve_generate_uniform_knots(uint32_t degree, uint32_t npoints, uint32_t 
  * @return Newly allocated array of knots, or NULL for invalid/empty curves.
  */
 double *
-lwnurbscurve_get_knots_for_wkb(const LWNURBSCURVE *curve, uint32_t *nknots_out)
+lwnurbscurve_get_or_generate_knots(const LWNURBSCURVE *curve, uint32_t *nknots_out)
 {
 	/* Validate input parameters */
 	if (!curve || !curve->points) {
@@ -505,7 +505,7 @@ lwnurbscurve_evaluate(const LWNURBSCURVE *curve, double t)
 		t = 1.0;
 
 	/* Get knot vector for evaluation */
-	knots = lwnurbscurve_get_knots_for_wkb(curve, &nknots);
+	knots = lwnurbscurve_get_or_generate_knots(curve, &nknots);
 	if (!knots || nknots == 0) {
 		lwfree(knots);
 		return lwpoint_construct_empty(curve->srid, hasz, hasm);

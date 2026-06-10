@@ -824,7 +824,7 @@ static size_t lwnurbscurve_to_wkb_size(const LWNURBSCURVE *curve, uint8_t varian
     /* Knots are always required in WKB output (generate uniform if not present) */
     size += WKB_INT_SIZE; /* nknots count */
     uint32_t nknots_for_size = 0;
-    double *knots_for_size = lwnurbscurve_get_knots_for_wkb(curve, &nknots_for_size);
+    double *knots_for_size = lwnurbscurve_get_or_generate_knots(curve, &nknots_for_size);
     if (knots_for_size) {
 			size += WKB_DOUBLE_SIZE * nknots_for_size;
 			lwfree(knots_for_size); /* Just needed the count */
@@ -845,11 +845,11 @@ static size_t lwnurbscurve_to_wkb_size(const LWNURBSCURVE *curve, uint8_t varian
  * - writes curve degree and control-point count;
  * - for each control point writes a per-point byte-order marker, coordinates (per point dimensionality),
  *   a single-byte weight-presence flag, and the weight value when present (default weight = 1.0 is omitted);
- * - writes the knot vector length followed by knot values (requests knots via lwnurbscurve_get_knots_for_wkb;
+ * - writes the knot vector length followed by knot values (requests knots via lwnurbscurve_get_or_generate_knots;
  *   if none are returned a zero knot-count is written as a fallback).
  *
  * The function advances the provided buffer pointer as it writes. It may allocate a temporary knot array
- * from lwnurbscurve_get_knots_for_wkb and frees it before returning.
+ * from lwnurbscurve_get_or_generate_knots and frees it before returning.
  *
  * @param curve NURBS curve to encode.
  * @param buf   Pointer to the output buffer where WKB bytes (or hex characters, depending on variant) are written.
@@ -914,7 +914,7 @@ static uint8_t* lwnurbscurve_to_wkb_buf(const LWNURBSCURVE *curve, uint8_t *buf,
     /* Write knots (always required - generate uniform if not present) */
     {
         uint32_t nknots = 0;
-        double *knots = lwnurbscurve_get_knots_for_wkb(curve, &nknots);
+        double *knots = lwnurbscurve_get_or_generate_knots(curve, &nknots);
         if (knots && nknots > 0) {
             buf = integer_to_wkb_buf(nknots, buf, variant);
             for (uint32_t i = 0; i < nknots; i++) {

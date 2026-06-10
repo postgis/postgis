@@ -696,7 +696,7 @@ static void lwnurbscurve_to_wkt_sb(const LWNURBSCURVE *curve, stringbuffer_t *sb
 	}
 	stringbuffer_append_len(sb, ")", 1);
 
-	knots = lwnurbscurve_get_knots_for_wkb(curve, &nknots);
+	knots = lwnurbscurve_get_or_generate_knots(curve, &nknots);
 	if (knots && nknots > 0)
 	{
 		uint32_t knot_count = 0;
