@@ -3094,6 +3094,30 @@ lwgeom_boundary(LWGEOM *lwgeom)
 			return (LWGEOM *)lwmpoint;
 		}
 	}
+	case NURBSCURVETYPE: {
+		if (lwgeom_is_closed(lwgeom) || lwgeom_is_empty(lwgeom))
+			return (LWGEOM *)lwmpoint_construct_empty(srid, hasz, hasm);
+		else
+		{
+			LWMPOINT *lwmpoint = lwmpoint_construct_empty(srid, hasz, hasm);
+			POINT4D pt;
+			LWPOINT *startpt = lwnurbscurve_evaluate((const LWNURBSCURVE *)lwgeom, 0.0);
+			LWPOINT *endpt   = lwnurbscurve_evaluate((const LWNURBSCURVE *)lwgeom, 1.0);
+			if (startpt)
+			{
+				lwpoint_getPoint4d_p(startpt, &pt);
+				lwmpoint_add_lwpoint(lwmpoint, lwpoint_make(srid, hasz, hasm, &pt));
+				lwpoint_free(startpt);
+			}
+			if (endpt)
+			{
+				lwpoint_getPoint4d_p(endpt, &pt);
+				lwmpoint_add_lwpoint(lwmpoint, lwpoint_make(srid, hasz, hasm, &pt));
+				lwpoint_free(endpt);
+			}
+			return (LWGEOM *)lwmpoint;
+		}
+	}
 	case MULTILINETYPE:
 	case MULTICURVETYPE: {
 		LWMLINE *lwmline = (LWMLINE *)lwgeom;

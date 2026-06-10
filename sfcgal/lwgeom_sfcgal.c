@@ -2267,7 +2267,7 @@ sfcgal_postgis_nurbs_curve_derivative(PG_FUNCTION_ARGS)
 	{
 		PG_FREE_IF_COPY(input, 0);
 		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-				errmsg("Derivative order must be between 1 and 3")));
+				errmsg("Derivative order must be between 1 and 3, got %d", order)));
 	}
 
 	/* Extract NURBS curve */
@@ -2314,6 +2314,22 @@ sfcgal_postgis_nurbs_curve_derivative(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(output);
 #endif
 }
+
+#if POSTGIS_SFCGAL_VERSION >= 20300
+/* Convert a POINT4D to the appropriate SFCGAL point type based on geometry flags */
+static sfcgal_geometry_t *
+point4d_to_sfcgal_point(const POINT4D *pt, uint8_t flags)
+{
+	if (FLAGS_GET_Z(flags) && FLAGS_GET_M(flags))
+		return sfcgal_point_create_from_xyzm(pt->x, pt->y, pt->z, pt->m);
+	else if (FLAGS_GET_Z(flags))
+		return sfcgal_point_create_from_xyz(pt->x, pt->y, pt->z);
+	else if (FLAGS_GET_M(flags))
+		return sfcgal_point_create_from_xym(pt->x, pt->y, pt->m);
+	else
+		return sfcgal_point_create_from_xy(pt->x, pt->y);
+}
+#endif /* POSTGIS_SFCGAL_VERSION >= 20300 */
 
 /* CG_NurbsCurveInterpolate - Create interpolating NURBS curve using SFCGAL */
 PG_FUNCTION_INFO_V1(sfcgal_postgis_nurbs_curve_interpolate);
@@ -2409,14 +2425,7 @@ sfcgal_postgis_nurbs_curve_interpolate(PG_FUNCTION_ARGS)
 	for (i = 0; i < line->points->npoints; i++)
 	{
 		getPoint4d_p(line->points, i, &pt);
-		if (FLAGS_GET_Z(line->flags) && FLAGS_GET_M(line->flags))
-			points[i] = sfcgal_point_create_from_xyzm(pt.x, pt.y, pt.z, pt.m);
-		else if (FLAGS_GET_Z(line->flags))
-			points[i] = sfcgal_point_create_from_xyz(pt.x, pt.y, pt.z);
-		else if (FLAGS_GET_M(line->flags))
-			points[i] = sfcgal_point_create_from_xym(pt.x, pt.y, pt.m);
-		else
-			points[i] = sfcgal_point_create_from_xy(pt.x, pt.y);
+		points[i] = point4d_to_sfcgal_point(&pt, line->flags);
 	}
 
 	/* Create interpolating NURBS curve using SFCGAL */
@@ -2560,14 +2569,7 @@ sfcgal_postgis_nurbs_curve_approximate(PG_FUNCTION_ARGS)
 	for (i = 0; i < line->points->npoints; i++)
 	{
 		getPoint4d_p(line->points, i, &pt);
-		if (FLAGS_GET_Z(line->flags) && FLAGS_GET_M(line->flags))
-			points[i] = sfcgal_point_create_from_xyzm(pt.x, pt.y, pt.z, pt.m);
-		else if (FLAGS_GET_Z(line->flags))
-			points[i] = sfcgal_point_create_from_xyz(pt.x, pt.y, pt.z);
-		else if (FLAGS_GET_M(line->flags))
-			points[i] = sfcgal_point_create_from_xym(pt.x, pt.y, pt.m);
-		else
-			points[i] = sfcgal_point_create_from_xy(pt.x, pt.y);
+		points[i] = point4d_to_sfcgal_point(&pt, line->flags);
 	}
 
 	/* Create approximating NURBS curve */

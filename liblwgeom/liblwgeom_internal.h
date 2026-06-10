@@ -383,8 +383,6 @@ LWPOLY *lwpoly_clone_deep(const LWPOLY *lwgeom);
 LWCOLLECTION *lwcollection_clone_deep(const LWCOLLECTION *lwgeom);
 LWNURBSCURVE *lwnurbscurve_clone_deep(const LWNURBSCURVE *curve);
 double *lwnurbscurve_get_knots_for_wkb(const LWNURBSCURVE *curve, uint32_t *nknots_out);
-LWPOINT *lwnurbscurve_evaluate(const LWNURBSCURVE *curve, double t);
-LWLINE *lwnurbscurve_to_linestring(const LWNURBSCURVE *curve, uint32_t num_segments);
 GBOX *gbox_clone(const GBOX *gbox);
 
 /*
