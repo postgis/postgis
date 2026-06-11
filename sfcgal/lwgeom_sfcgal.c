@@ -2533,6 +2533,14 @@ sfcgal_postgis_nurbs_curve_approximate(PG_FUNCTION_ARGS)
 		max_control_points = PG_GETARG_INT32(3);
 	srid = gserialized_get_srid(input);
 
+	/* Validate max_control_points */
+	if (max_control_points < 1)
+	{
+		PG_FREE_IF_COPY(input, 0);
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				errmsg("max_control_points is %d, must be positive", max_control_points)));
+	}
+
 	/* Validate degree */
 	if (degree < 1 || degree > 10)
 	{
