@@ -375,8 +375,17 @@ Datum ST_ClusterRelateWin(PG_FUNCTION_ARGS)
 		GEOSGeometry** geoms = palloc0(ngeoms * sizeof(GEOSGeometry*));
 		UNIONFIND* uf = UF_create(ngeoms);
 		char *matrix;
-		text *txtIm = DatumGetTextP(WinGetFuncArgCurrent(win_obj, 1, &matrix_is_null));
-		if (matrix_is_null || VARSIZE_ANY_EXHDR(txtIm) != 9)
+		Datum matrix_datum = WinGetFuncArgCurrent(win_obj, 1, &matrix_is_null);
+		text *txtIm;
+
+		if (matrix_is_null)
+		{
+			elog(ERROR, "Invalid relate matrix provided");
+			PG_RETURN_NULL();
+		}
+
+		txtIm = DatumGetTextP(matrix_datum);
+		if (VARSIZE_ANY_EXHDR(txtIm) != 9)
 		{
 			elog(ERROR,"Invalid relate matrix provided");
 			PG_RETURN_NULL();
