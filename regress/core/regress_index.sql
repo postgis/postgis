@@ -25,6 +25,22 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION qplan_has(q text, pattern text) RETURNS boolean
+LANGUAGE 'plpgsql' AS
+$$
+DECLARE
+  exp TEXT;
+BEGIN
+  FOR exp IN EXECUTE 'EXPLAIN ' || q
+  LOOP
+    IF exp ~ pattern THEN
+      RETURN true;
+    END IF;
+  END LOOP;
+  RETURN false;
+END;
+$$;
+
 -- GiST index
 
 CREATE INDEX quick_gist on test using gist (the_geom);
@@ -113,12 +129,82 @@ SELECT 'expr &&', id, estimate_error(
   'select num from test where st_centroid(the_geom) && ' || box, tol )
   FROM sample_queries ORDER BY id;
 
+SELECT 'st_orderingequals_idx',
+  qnodes('select * from test where ST_OrderingEquals(the_geom, ST_MakePoint(0,0))');
+
+CREATE TABLE st_orderingequals_volatile_calls (num integer);
+INSERT INTO st_orderingequals_volatile_calls VALUES (0);
+
+CREATE OR REPLACE FUNCTION st_orderingequals_volatile_geom(g geometry)
+RETURNS geometry
+LANGUAGE 'plpgsql' VOLATILE AS $$
+BEGIN
+  UPDATE st_orderingequals_volatile_calls SET num = num + 1;
+  RETURN g;
+END;
+$$;
+
+SELECT 'st_orderingequals_volatile_count', count(*)
+FROM (VALUES (ST_MakePoint(0,0))) AS q(g)
+JOIN test t ON ST_OrderingEquals(st_orderingequals_volatile_geom(t.the_geom), q.g);
+
+SELECT 'st_orderingequals_volatile', num FROM st_orderingequals_volatile_calls;
+
+DROP FUNCTION st_orderingequals_volatile_geom(geometry);
+DROP TABLE st_orderingequals_volatile_calls;
+
+CREATE SCHEMA st_orderingequals_search_path;
+CREATE FUNCTION st_orderingequals_search_path.geometry_bbox_false(geometry, geometry)
+RETURNS boolean
+LANGUAGE 'sql' IMMUTABLE AS 'SELECT false';
+CREATE OPERATOR st_orderingequals_search_path.~= (
+  LEFTARG = geometry,
+  RIGHTARG = geometry,
+  PROCEDURE = st_orderingequals_search_path.geometry_bbox_false,
+  COMMUTATOR = '~='
+);
+
+SET search_path = st_orderingequals_search_path, public;
+SELECT 'st_orderingequals_qualified_bbox', count(*)
+FROM (VALUES (ST_MakePoint(0,0))) AS g1(g)
+JOIN (VALUES (ST_MakePoint(0,0))) AS g2(g)
+  ON ST_OrderingEquals(g1.g, g2.g);
+RESET search_path;
+
+DROP OPERATOR st_orderingequals_search_path.~= (geometry, geometry);
+DROP FUNCTION st_orderingequals_search_path.geometry_bbox_false(geometry, geometry);
+DROP SCHEMA st_orderingequals_search_path;
+
+WITH geoms AS (SELECT ST_MakePoint(0, 'NaN'::float8) AS g)
+SELECT 'st_orderingequals_nan_bbox', ST_OrderingEquals(g, g), g = g, g ~= g
+FROM geoms;
+
+SELECT 'st_orderingequals_nan_join', count(*)
+FROM (VALUES (ST_MakePoint(0, 'NaN'::float8))) AS g1(g)
+JOIN (VALUES (ST_MakePoint(0, 'NaN'::float8))) AS g2(g)
+  ON ST_OrderingEquals(g1.g, g2.g);
+
+-- ST_OrderingEquals is exact geometry equality, so the planner should see
+-- the hash/merge-joinable geometry operator instead of only a function filter.
+set enable_nestloop = off;
+SELECT 'st_orderingequals_join',
+  qplan_has(
+    'SELECT t1.num FROM test t1, test t2 WHERE t1.num > t2.num AND ST_OrderingEquals(t1.the_geom, t2.the_geom)',
+    '(Hash|Merge) Join'
+  ),
+  qplan_has(
+    'SELECT t1.num FROM test t1, test t2 WHERE t1.num > t2.num AND ST_OrderingEquals(t1.the_geom, t2.the_geom)',
+    'Nested Loop'
+  );
+set enable_nestloop = on;
+
 DROP TABLE test;
 DROP TABLE test_gist_idx_2d;
 DROP TABLE sample_queries;
 
 DROP FUNCTION estimate_error(text, int);
 
+DROP FUNCTION qplan_has(text, text);
 DROP FUNCTION qnodes(text);
 
 set enable_indexscan = on;
