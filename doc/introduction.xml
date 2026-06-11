@@ -16,6 +16,30 @@
   surfaces, networks), data source for desktop user interface tools for viewing and editing
   GIS data, and web-based access tools.</para>
 
+  <section xml:id="standards_support">
+	<title>Standards Support</title>
+
+	<para>PostGIS implements parts of the
+	<link xlink:href="https://www.ogc.org/standard/sfa/">OGC Simple Features Access</link>
+	and <link xlink:href="https://www.iso.org/standard/60343.html">SQL/MM Spatial</link>
+	standards.  The geometry type, the Well-Known Text (WKT) and Well-Known
+	Binary (WKB) input/output functions, and many spatial accessors,
+	constructors, predicates, and processing functions follow those standards
+	where the manual marks them as OGC or SQL/MM compliant.</para>
+
+	<para>PostGIS also includes widely used extensions beyond those standards.
+	Examples include Extended WKT (EWKT) and Extended WKB (EWKB), SRID metadata
+	in those extended formats, geography, raster, topology, curved geometry,
+	polyhedral surface, TIN, and many analysis functions.  These extensions are
+	documented individually, but should not be read as OGC or SQL/MM
+	requirements unless the specific function or format says so.</para>
+
+	<para>When the implementation intentionally differs from a standard, or when
+	a standard leaves behavior ambiguous, the relevant function page describes
+	the PostGIS behavior.  The <xref linkend="PostGIS_Special_Functions_Index"/>
+	chapter summarizes SQL/MM compliance and geometry-type support across
+	functions.</para>
+  </section>
 
   <section xml:id="psc">
 	<title>Project Steering Committee</title>
