@@ -25,6 +25,22 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION qplan_has(q text, pattern text) RETURNS boolean
+LANGUAGE 'plpgsql' AS
+$$
+DECLARE
+  exp TEXT;
+BEGIN
+  FOR exp IN EXECUTE 'EXPLAIN ' || q
+  LOOP
+    IF exp ~ pattern THEN
+      RETURN true;
+    END IF;
+  END LOOP;
+  RETURN false;
+END;
+$$;
+
 -- GiST index
 
 CREATE INDEX quick_gist on test using gist (the_geom);
@@ -103,11 +119,27 @@ SELECT 'expr &&', id, estimate_error(
   'select num from test where st_centroid(the_geom) && ' || box, tol )
   FROM sample_queries ORDER BY id;
 
+SELECT 'st_orderingequals_idx',
+  qnodes('select * from test where ST_OrderingEquals(the_geom, ST_MakePoint(0,0))');
+
+-- ST_OrderingEquals is exact geometry equality, so the planner should see
+-- the hash/merge-joinable geometry operator instead of only a function filter.
+SELECT 'st_orderingequals_join',
+  qplan_has(
+    'SELECT t1.num FROM test t1, test t2 WHERE t1.num > t2.num AND ST_OrderingEquals(t1.the_geom, t2.the_geom)',
+    '(Hash|Merge) Join'
+  ),
+  qplan_has(
+    'SELECT t1.num FROM test t1, test t2 WHERE t1.num > t2.num AND ST_OrderingEquals(t1.the_geom, t2.the_geom)',
+    'Nested Loop'
+  );
+
 DROP TABLE test;
 DROP TABLE sample_queries;
 
 DROP FUNCTION estimate_error(text, int);
 
+DROP FUNCTION qplan_has(text, text);
 DROP FUNCTION qnodes(text);
 
 set enable_indexscan = on;
