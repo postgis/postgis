@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-13 16:23+0000\n"
+"POT-Creation-Date: 2026-06-12 20:29+0000\n"
 "PO-Revision-Date: 2025-08-25 19:47+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -3927,6 +3927,25 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
 msgstr ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Find pairs of topology vertex/segment that are closer than tolerated distance"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a relation in which each tuple is a pair of vertex/segment where the "
+"vertex is NOT an endpoint of the segment but the distance between them is "
+"below the given tolerance."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.7"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -9373,12 +9392,9 @@ msgstr "Returnerar ett element i en geometrisamling."
 #, no-c-format
 msgid ""
 "Return the 1-based Nth element geometry of an input geometry which is a "
-"GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTI)POLYGON, "
+"GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTIPOLYGON, "
 "or POLYHEDRALSURFACE. Otherwise, returns NULL."
 msgstr ""
-"Returnerar den 1-baserade N:te elementgeometrin i en indatageometri som är "
-"en GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, "
-"MULTI)POLYGON eller POLYHEDRALSURFACE. I annat fall returneras NULL."
 
 #. Tag: para
 #, no-c-format
@@ -10162,12 +10178,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Backward indexing "
-"(negative index) is not in OGC Previous versions implemented this as 0-based "
-"instead."
+"(negative index) is not in OGC. Previous versions implemented this as 0-"
+"based instead."
 msgstr ""
-"Index är 1-baserat som för OGC-specifikationer sedan version 0.8.0. "
-"Bakåtindexering (negativt index) finns inte i OGC Tidigare versioner "
-"implementerade detta som 0-baserat istället."
 
 #. Tag: para
 #, no-c-format
@@ -11408,6 +11421,46 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_ClusterIntersectingWin\"/>, <xref "
 "linkend=\"ST_ClusterWithinWin\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Window function that returns a tree id for each input geometry, clustering "
+"input geometries into connected trees using the Minimum Spanning Tree "
+"algorithm."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A window function that builds connected graphs of line strings based on the "
+"Minimum Spanning Tree (MST) of the input geometries. The return value is the "
+"cluster number that the geometry argument participates in, or zero if it is "
+"not part of the minimum tree."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Minimum_spanning_tree\">Minimum Spanning Tree</link> connects all geometries "
+"in the window partition such that the total length of the connecting lines "
+"is minimized. If the graph is not fully connected (e.g. infinite distance "
+"between some geometries), it produces a Minimum Spanning Forest, and each "
+"connected component is assigned a unique tree ID."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Requires GEOS &gt;= 3.15.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
+"linkend=\"ST_ClusterIntersectingWin\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -13215,6 +13268,52 @@ msgid ""
 ", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/>"
 msgstr ""
 ", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Computes the unique edges of a polygonal coverage."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a MultiLineString representing the unique edges of a polygonal "
+"coverage. A polygonal coverage is a set of non-overlapping polygons where "
+"adjacent polygons have matching vertices along shared edges."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <parameter>edgetype</parameter> parameter can be used to select which "
+"edges are returned:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<emphasis role=\"bold\">0 (ALL)</emphasis> - all unique edges (default)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<emphasis role=\"bold\">1 (EXTERIOR)</emphasis> - only exterior edges (non-"
+"shared)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<emphasis role=\"bold\">2 (INTERIOR)</emphasis> - only interior edges "
+"(shared)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_CoverageSimplify\"/>, <xref "
+"linkend=\"ST_CoverageUnion\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17546,6 +17645,36 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
+msgid ""
+"Returns the interpolated measure of a geometry closest to a point in 3D."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the interpolated measure value of a linear ZM geometry at the "
+"location closest to the given point, using 3D (XYZ) distance for the "
+"projection. Use this function when the geometry has significant Z variation, "
+"such as flight trajectories, where <xref linkend=\"ST_InterpolatePoint\"/> "
+"would give incorrect results by ignoring the Z dimension."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The line must have both Z and M dimensions. The point should have a Z "
+"dimension."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AddMeasure\"/>, <xref linkend=\"ST_LocateAlong\"/>, "
+"<xref linkend=\"ST_LocateBetween\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
 msgid "Interpolates measures along a linear geometry."
 msgstr "Interpolerar mått längs en linjär geometri."
 
@@ -18055,13 +18184,8 @@ msgid ""
 "Return area square feet and transform to Massachusetts state plane meters "
 "(EPSG:26986) to get square meters. Note this is in square feet because 2249 "
 "is Massachusetts State Plane Feet and transformed area is in square meters "
-"since EPSG:26986 is state plane Massachusetts meters"
+"since EPSG:26986 is state plane Massachusetts meters."
 msgstr ""
-"Returnera area kvadratfot och transformera till Massachusetts state plane "
-"meters (EPSG:26986) för att få kvadratmeter. Observera att detta är i "
-"kvadratfot eftersom 2249 är Massachusetts State Plane Feet och den "
-"transformerade arean är i kvadratmeter eftersom EPSG:26986 är state plane "
-"Massachusetts meters"
 
 #. Tag: para
 #, no-c-format
@@ -18981,15 +19105,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Calculates the length or perimeter of a geometry on an ellipsoid. This is "
+"Calculates the length or perimeter of a geometry on a spheroid. This is "
 "useful if the coordinates of the geometry are in longitude/latitude and a "
 "length is desired without reprojection. The spheroid is specified by a text "
 "value as follows:"
 msgstr ""
-"Beräknar längden eller omkretsen av en geometri på en ellipsoid. Detta är "
-"användbart om geometrins koordinater är i longitud/latitud och en längd "
-"önskas utan reprojektion. Sfäroiden specificeras med ett textvärde enligt "
-"följande:"
 
 #. Tag: para
 #, no-c-format
@@ -22968,17 +23088,16 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "Examples: 2.5Dish"
-msgstr "Exempel: 2.5Dish"
+msgid "Examples: 2.5D geometries"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Note this is not a true intersection, compare to the same example using "
-"<xref linkend=\"ST_3DIntersection\"/>."
+"Note this is not a true 3D intersection. It uses 2.5D geometries (geometries "
+"with Z ordinates, but where calculations are performed in 2D). Compare to "
+"the same example using <xref linkend=\"ST_3DIntersection\"/>."
 msgstr ""
-"Observera att detta inte är en sann korsning, jämför med samma exempel med "
-"<xref linkend=\"ST_3DIntersection\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -23603,12 +23722,10 @@ msgstr "3d-exempel som inte blandar dimensioner"
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
-"linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
-"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Intersection\"/>, <xref "
+"linkend=\"ST_Difference\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
+"linkend=\"ST_LineMerge\"/>"
 msgstr ""
-", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
-"linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
-"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -24163,6 +24280,86 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref "
 "linkend=\"ST_SimplifyVW\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Returns a smoothed version of a geometry, using the Catmull-Rom spline "
+"algorithm"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Smoothes a linear or polygonal geometry using the <link xlink:href=\"https://"
+"en.wikipedia.org/wiki/Centripetal_Catmull%E2%80%93Rom_spline\">Catmull-Rom "
+"spline</link> algorithm. Unlike <xref linkend=\"ST_ChaikinSmoothing\"/>, "
+"this is an <emphasis>interpolating</emphasis> spline: the output curve "
+"passes through every original vertex. Between each pair of consecutive "
+"original vertices, <varname>nSegments</varname> - 1 new intermediate points "
+"are inserted."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <varname>nSegments</varname> parameter controls the density of the "
+"output. With <varname>nSegments</varname> = 5 (the default), each original "
+"span is divided into 5 sub-segments (inserting 4 new points per span). The "
+"minimum value is 2."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"At least 4 input vertices are required to apply smoothing; geometries with "
+"fewer vertices are returned unchanged. Points and multipoints are always "
+"returned unchanged."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The output vertex count grows as <literal>1 + (N-1) * nSegments</literal> "
+"for open lines, and <literal>1 + N * nSegments</literal> for closed rings, "
+"where N is the number of input vertices. For large geometries, use a "
+"simplification function on the result to reduce the number of points (see "
+"<xref linkend=\"ST_Simplify\"/>, <xref "
+"linkend=\"ST_SimplifyPreserveTopology\"/> and <xref "
+"linkend=\"ST_SimplifyVW\"/>)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Smoothing a 4-point collinear line with default nSegments=5:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Smoothing a Polygon using nSegments = 5 and 10:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "nSegments = 5"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "nSegments = 10"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Smoothing a LineString using nSegments = 5 and 10:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Simplify\"/>, <xref "
+"linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_SimplifyVW\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38198,6 +38395,24 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"When <varname>projected</varname> is <varname>true</varname>, free endpoints "
+"of the medial axis are extended to reach the polygon boundary (projected "
+"medial axis). Requires SFCGAL 2.3.0+. When built against an older SFCGAL "
+"version, a notice is emitted and the non-projected result is returned "
+"instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Availability: 3.7.0 - <varname>projected</varname> parameter. Requires "
+"SFCGAL &gt;= 2.3.0 for projected result; falls back to non-projected with a "
+"notice on older versions."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "A polygon and its approximate medial axis"
 msgstr "En polygon och dess ungefärliga mittaxel"
 
@@ -38205,6 +38420,215 @@ msgstr "En polygon och dess ungefärliga mittaxel"
 #, no-c-format
 msgid ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
 msgstr ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a flat (box) roof from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a flat (box-shaped) roof as a 3D <varname>PolyhedralSurface Z</"
+"varname> from a 2D footprint polygon. The roof height above the ground plane "
+"is given by <varname>height</varname> (default 3.0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GenerateGableRoof\"/>, <xref "
+"linkend=\"CG_GenerateSkillionRoof\"/>, <xref linkend=\"CG_GenerateRoof\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a hipped roof from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a hipped roof as a 3D <varname>PolyhedralSurface Z</varname> from a "
+"2D footprint polygon. All sides slope upward to meet at a ridge or apex. The "
+"roof height is given by <varname>height</varname> (default 3.0)."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a gable roof from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a gable roof as a 3D <varname>PolyhedralSurface Z</varname> from a "
+"2D footprint polygon. Two opposite sides are vertical gable ends; the other "
+"two sides slope to a horizontal ridge. <varname>height</varname> sets the "
+"ridge height above the ground (default 3.0) and <varname>slope_angle</"
+"varname> controls the pitch in degrees (default 30.0). The SRID of the input "
+"geometry is preserved."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GenerateHippedRoof\"/>, <xref "
+"linkend=\"CG_GenerateSkillionRoof\"/>, <xref linkend=\"CG_GenerateRoof\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a skillion (single-slope) roof from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a skillion (single-slope, shed-style) roof as a 3D "
+"<varname>PolyhedralSurface Z</varname> from a 2D footprint polygon. The "
+"entire roof surface slopes in one direction. <varname>height</varname> sets "
+"the maximum ridge height (default 3.0), <varname>slope_angle</varname> sets "
+"the pitch in degrees (default 30.0), and <varname>primary_edge_index</"
+"varname> selects which polygon edge defines the high side (0-based, default "
+"0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When the combination of <varname>height</varname> and <varname>slope_angle</"
+"varname> would cause a side wall to vanish (the slope reaches the far edge "
+"before the full height is achieved), that face is omitted from the result. "
+"This means the number of output patches can vary depending on the parameters "
+"— a lower height relative to the footprint depth produces more faces than a "
+"taller, steeper configuration."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Height 2.0 produces 6 faces (all walls present); height 4.0 produces 5 faces "
+"(one side wall is filtered out because the slope reaches the far edge before "
+"the full height)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GenerateHippedRoof\"/>, <xref "
+"linkend=\"CG_GenerateGableRoof\"/>, <xref linkend=\"CG_GenerateRoof\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a roof of the requested type from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a roof as a 3D <varname>PolyhedralSurface Z</varname> from a 2D "
+"footprint polygon. The <varname>roof_type</varname> parameter selects the "
+"roof style (default <literal>'HIPPED'</literal>):"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<varname>FLAT</varname> — flat box roof."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<varname>HIPPED</varname> — hipped roof (all sides slope to apex)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>GABLE</varname> — gable roof (two sloping sides, two vertical ends)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<varname>SKILLION</varname> — single-slope (shed) roof."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>height</varname> sets the roof height (default 3.0), "
+"<varname>slope_angle</varname> sets the pitch in degrees (default 30.0), and "
+"<varname>primary_edge_index</varname> selects the reference edge for "
+"skillion roofs (default 0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GenerateHippedRoof\"/>, <xref "
+"linkend=\"CG_GenerateGableRoof\"/>, <xref "
+"linkend=\"CG_GenerateSkillionRoof\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Repair an invalid polygon or multipolygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Repair an invalid polygon or multipolygon using CGAL's 2D Polygon Repair "
+"algorithm. Returns a <varname>MultiPolygon</varname>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The <varname>rule</varname> parameter controls the repair strategy:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>EVEN_ODD</varname> (default) — areas covered an odd number of times "
+"are kept. Available with CGAL 6.0+."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>NON_ZERO</varname> — areas with non-zero winding number are kept. "
+"Requires CGAL 6.1+."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>UNION</varname> — union of all input polygons. Requires CGAL 6.1+."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>INTERSECTION</varname> — intersection of all input polygons. "
+"Requires CGAL 6.1+."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0 and CGAL &gt;= 6.0."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_MakeValid\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41531,49 +41955,22 @@ msgstr "Anteckningar för release"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0rc2"
-msgstr "PostGIS 3.6.0rc2"
+msgid "PostGIS 3.7.0beta1"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/08/25"
-msgstr "2025-08-25"
+msgid "2026/06/xx"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj "
-"6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
-"advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
+"This version requires GEOS 3.10 or higher. PostgreSQL 14-19beta1 required. "
+"Proj 6.1+ required. To take advantage of all features postgis extension "
+"features, GEOS 3.15+ is needed. To take advantage of all postgis_sfcgal "
+"extension features SFCGAL 2.2+ is needed."
 msgstr ""
-"Denna version kräver PostgreSQL 12-18beta3, GEOS 3.8 eller högre och Proj "
-"6.1+. För att kunna utnyttja alla funktioner krävs GEOS 3.14+. För att kunna "
-"utnyttja alla SFCGAL-funktioner krävs SFCGAL 2.2+."
-
-#. Tag: para
-#, no-c-format
-msgid "Many thanks to our translation teams, in particular:"
-msgstr "Ett stort tack till våra översättningsteam, i synnerhet:"
-
-#. Tag: para
-#, no-c-format
-msgid "Teramoto Ikuhiro (Japanese Team)"
-msgstr "Teramoto Ikuhiro (japanska teamet)"
-
-#. Tag: para
-#, no-c-format
-msgid "Daniel Nylander (Swedish Team)"
-msgstr "Daniel Nylander (svenska teamet)"
-
-#. Tag: para
-#, no-c-format
-msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
-msgstr "Dapeng Wang, Zuo Chenwei från HighGo (kinesiska teamet)"
-
-#. Tag: para
-#, no-c-format
-msgid "Denys Kovshun (Ukrainian Team)"
-msgstr "Denys Kovshun (Ukrainska teamet)"
 
 #. Tag: title
 #, no-c-format
@@ -41582,243 +41979,13 @@ msgstr "Förändringar"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5799\">#5799</"
-"link>, make ST_TileEnvelope clips envelopes to tile plane extent (Paul "
-"Ramsey)"
+msgid "Place holder"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5799\">#5799</"
-"link>, gör ST_TileEnvelope klipper kuvert till plattplanets utsträckning "
-"(Paul Ramsey)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">#5829</"
-"link>, remove constraint checking from geometry_columns view (Paul Ramsey)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">#5829</"
-"link>, ta bort begränsningskontroll från geometry_columns-vyn (Paul Ramsey)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"255\">GT-255</link>, [topology] Support for upgrading domains (Ayo Adesugba, "
-"U.S. Census Bureau)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"255\">GT-255</link>, [topologi] Stöd för uppgradering av domäner (Ayo "
-"Adesugba, U.S. Census Bureau)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"252\">GT-252</link>, ST_NumGeometries/ST_GeometryN treat TIN and "
-"PolyhedralSurface as unitary geometries, use ST_NumPatches/ST_PatchN for "
-"patch access (Loïc Bartoletti)"
-msgstr ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"252\">GT-252</link>, ST_NumGeometries/ST_GeometryN behandlar TIN och "
-"PolyhedralSurface som enhetsgeometrier, använd ST_NumPatches/ST_PatchN för "
-"patchåtkomst (Loïc Bartoletti)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"242\">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, U.S. "
-"Census Bureau)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"242\">GT-242</link>, [topologi] Stöd för bigint (Ayo Adesugba, U.S. Census "
-"Bureau)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
-"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
-"5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/"
-"postgis/pulls/260\">GT-260</link> [tiger_geocoder] Use @extschema:extension@ "
-"for PG &gt;= 16 to schema qualify dependent extensions, switch to use typmod "
-"for tiger tables (Regina Obe)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
-"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
-"5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/"
-"postgis/pulls/260\">GT-260</link> [tiger_geocoder] Använd "
-"@extschema:extension@ för PG &gt;= 16 för att schema-kvalificera beroende "
-"tillägg, byt till typmod för tiger-tabeller (Regina Obe)"
-
-#. Tag: title
-#, no-c-format
-msgid "Removed / Deprecate signatures"
-msgstr "Borttagna/föråldrade signaturer"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</link> "
-"Drop st_approxquantile(raster, double precision), wasn't usable as it "
-"triggered is not unique error when used (Regina Obe)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</link> "
-"Ta bort st_approxquantile(raster, double precision), kunde inte användas "
-"eftersom det utlöste ett felmeddelande om att det inte var unikt när det "
-"användes (Regina Obe)"
 
 #. Tag: title
 #, no-c-format
 msgid "New Features"
 msgstr "Nya funktioner"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/803\">GH-803</"
-"link>, [sfcgal] ADD CG_Simplify function (Loïc Bartoletti)"
-msgstr ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/803\">GH-803</"
-"link>, [sfcgal] ADD CG_Simplify-funktion (Loïc Bartoletti)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/805\">GH-805</"
-"link>, [sfcgal] Add M support for SFCGAL &gt;= 1.5.0 (Loïc Bartoletti)"
-msgstr ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/805\">GH-805</"
-"link>, [sfcgal] Lägg till M-stöd för SFCGAL &gt;= 1.5.0 (Loïc Bartoletti)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/801\">GH-801</"
-"link>, [sfcgal] ADD CG_3DAlphaWrapping function (Jean Felder)"
-msgstr ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/801\">GH-801</"
-"link>, [sfcgal] ADD CG_3DAlphaWrapping-funktion (Jean Felder)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5894\">#5894</"
-"link>, [topology] TotalTopologySize (Sandro Santilli)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5894\">#5894</"
-"link>, [topologi] TotalTopologySize (Sandro Santilli)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5890\">#5890</"
-"link>, [topology] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro "
-"Santilli)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5890\">#5890</"
-"link>, [topologi] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro "
-"Santilli)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5861\">#5861</"
-"link>, [topology] Add --drop-topology switch to pgtopo_import (Sandro "
-"Santilli)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5861\">#5861</"
-"link>, [topologi] Lägg till --drop-topology switch till pgtopo_import "
-"(Sandro Santilli)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1247\">#1247</"
-"link>, [raster] ST_AsRasterAgg (Sandro Santilli)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1247\">#1247</"
-"link>, [raster] ST_AsRasterAgg (Sandro Santilli)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"223\">GT-223</link> Export circ_tree_distance_tree_internal for mobilitydb "
-"use (Maxime Schoemans)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"223\">GT-223</link> Exportera circ_tree_distance_tree_internal för "
-"användning i mobilitydb (Maxime Schoemans)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"228\">GT-228</link> [sfcgal] Add new functions (Scale, Translate, Rotate, "
-"Buffer 3D and Straight Skeleton Partition) from SFCGAL 2 (Loïc Bartoletti)"
-msgstr ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"228\">GT-228</link> [sfcgal] Lägg till nya funktioner (Skala, Översätt, "
-"Rotera, Buffert 3D och Rak skelettpartition) från SFCGAL 2 (Loïc Bartoletti)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"[raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages and "
-"routes them into the PostgreSQL logging system. (Paul Ramsey)"
-msgstr ""
-"[raster] Ny GUC postgis.gdal_cpl_debug, aktiverar GDAL-"
-"felsökningsmeddelanden och dirigerar dem till PostgreSQL-loggningssystemet. "
-"(Paul Ramsey)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\">#5841</"
-"link>, Change interrupt handling to remove use of pqsignal to support PG 18 "
-"(Paul Ramsey)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\">#5841</"
-"link>, Ändra avbrottshantering för att ta bort användningen av pqsignal för "
-"att stödja PG 18 (Paul Ramsey)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Add ST_CoverageClean to edge match and gap remove polygonal coverages (Paul "
-"Ramsey) from GEOS 3.14 (Martin Davis)"
-msgstr ""
-"Lägg till ST_CoverageClean för kantmatchning och borttagning av polygonala "
-"täckningar (Paul Ramsey) från GEOS 3.14 (Martin Davis)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. Census "
-"Bureau)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"242\">GT-242</link> [topologi] Stöd för bigint (Ayo Adesugba, U.S. Census "
-"Bureau)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"[raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
-msgstr ""
-"[raster] Lägg till ST_ReclassExact för att snabbt ommappa värden i raster "
-"(Paul Ramsey)"
 
 #. Tag: title
 #, no-c-format
@@ -42081,15 +42248,9 @@ msgid ""
 "geometry value, they must be defined for each point in the geometry. If a "
 "geometry has Z or M ordinates the <emphasis role=\"bold\">coordinate "
 "dimension</emphasis> is 3D; if it has both Z and M the coordinate dimension "
-"is 4D."
+"is 4D. The coordinate dimension is at least 2, because every geometry has at "
+"least X and Y coordinates."
 msgstr ""
-"Koordinaterna kan innehålla valfria Z- och M-ordinatvärden. Z-ordinaten "
-"används ofta för att representera höjd. M-ordinaten innehåller ett mätvärde, "
-"som kan representera tid eller avstånd. Om Z- eller M-värden finns i ett "
-"geometrivärde måste de definieras för varje punkt i geometrin. Om en "
-"geometri har Z- eller M-ordinater är <emphasis "
-"role=\"bold\">koordinatdimensionen</emphasis> 3D; om den har både Z- och M-"
-"ordinater är koordinatdimensionen 4D."
 
 #. Tag: para
 #, no-c-format
@@ -42120,13 +42281,9 @@ msgstr ""
 msgid ""
 "The geometry <emphasis role=\"bold\">dimension</emphasis> is a property of "
 "geometry types. Point types have dimension 0, linear types have dimension 1, "
-"and polygonal types have dimension 2. Collections have the dimension of the "
-"maximum element dimension."
+"polygonal types have dimension 2, and solid types have dimension 3. "
+"Collections have the dimension of the maximum element dimension."
 msgstr ""
-"<emphasis role=\"bold\">Geometridimensionen</emphasis> är en egenskap hos "
-"geometrityper. Punkttyper har dimension 0, linjära typer har dimension 1 och "
-"polygonala typer har dimension 2. Samlingar har dimensionen för den maximala "
-"elementdimensionen."
 
 #. Tag: para
 #, no-c-format
@@ -42166,34 +42323,21 @@ msgid ""
 "role=\"bold\">boundary</emphasis> and <emphasis role=\"bold\">exterior</"
 "emphasis> are defined for each geometry type. Geometries are topologically "
 "closed, so they always contain their boundary. The boundary is a geometry of "
-"dimension one less than that of the geometry itself."
+"dimension one less than that of the geometry itself. For example, the "
+"boundary of a Polygon is its rings (LineStrings), the boundary of a "
+"LineString is its endpoints (Points), and the boundary of a Point is empty."
 msgstr ""
-"Geometrimodellen gör det möjligt att utvärdera topologiska spatiala "
-"relationer enligt beskrivningen i <xref linkend=\"DE-9IM\"/>. För att stödja "
-"detta definieras begreppen <emphasis role=\"bold\">interior</emphasis>, "
-"<emphasis role=\"bold\">boundary</emphasis> och <emphasis "
-"role=\"bold\">exterior</emphasis> för varje geometrityp. Geometrier är "
-"topologiskt slutna, vilket innebär att de alltid innehåller sin gräns. "
-"Gränsen är en geometri med en dimension som är en mindre än geometrins egen "
-"dimension."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The OGC geometry model defines validity rules for each geometry type. These "
 "rules ensure that geometry values represents realistic situations (e.g. it "
-"is possible to specify a polygon with a hole lying outside the shell, but "
+"is possible to specify a polygon with a hole lying outside its shell, but "
 "this makes no sense geometrically and is thus invalid). PostGIS also allows "
 "storing and manipulating invalid geometry values. This allows detecting and "
 "fixing them if needed. See <xref linkend=\"OGC_Validity\"/>"
 msgstr ""
-"OGC:s geometrimodell definierar giltighetsregler för varje geometrityp. "
-"Dessa regler säkerställer att geometrivärdena representerar realistiska "
-"situationer (det är t.ex. möjligt att ange en polygon med ett hål som ligger "
-"utanför skalet, men detta är geometriskt ologiskt och därmed ogiltigt). "
-"PostGIS tillåter också lagring och manipulering av ogiltiga geometrivärden. "
-"Detta gör det möjligt att upptäcka och åtgärda dem vid behov. Se även <xref "
-"linkend=\"OGC_Validity\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -42299,11 +42443,11 @@ msgstr "MultiPolygon"
 #, no-c-format
 msgid ""
 "A MultiPolygon is a collection of non-overlapping, non-adjacent Polygons. "
-"Polygons in the collection may touch only at a finite number of points."
+"Polygons in the collection may touch only at a finite number of points. (Two "
+"polygons are adjacent if they share an edge. They touch if they share only "
+"points or edges on their boundaries). For more details on MultiPolygon "
+"validity, see <xref linkend=\"OGC_Validity\"/>."
 msgstr ""
-"En MultiPolygon är en samling polygoner som inte överlappar varandra och "
-"inte ligger intill varandra. Polygonerna i samlingen får endast beröra "
-"varandra i ett begränsat antal punkter."
 
 #. Tag: title
 #, no-c-format
@@ -42699,20 +42843,12 @@ msgid ""
 "The <varname>geometry</varname> data type is <emphasis>opaque</emphasis>, "
 "which means that all access is done via invoking functions on geometry "
 "values. Functions allow creating geometry objects, accessing or updating all "
-"internal fields, and compute new geometry values. PostGIS supports all the "
+"internal fields, and computing new geometry values. PostGIS supports all the "
 "functions specified in the OGC <link xlink:href=\"https://portal.ogc.org/"
 "files/?artifact_id=25354\"><emphasis>Simple feature access - Part 2: SQL "
 "option</emphasis></link> (SFS) specification, as well many others. See <xref "
 "linkend=\"reference\"/> for the full list of functions."
 msgstr ""
-"Datatypen <varname>geometry</varname> är <emphasis>opak</emphasis>, vilket "
-"innebär att all åtkomst sker genom att funktioner anropas på geometrivärden. "
-"Funktionerna gör det möjligt att skapa geometriobjekt, komma åt eller "
-"uppdatera alla interna fält och beräkna nya geometrivärden. PostGIS stöder "
-"alla funktioner som anges i OGC:s <link xlink:href=\"https://portal.ogc.org/"
-"files/?artifact_id=25354\"><emphasis>Enkel åtkomst till funktioner - Del 2: "
-"SQL-alternativ</emphasis></link> (SFS)-specifikationen, samt många andra. Se "
-"<xref linkend=\"reference\"/> för en fullständig lista över funktioner."
 
 #. Tag: para
 #, no-c-format
@@ -43387,16 +43523,13 @@ msgstr "Räknar du på sfären eller sfäroiden?"
 #, no-c-format
 msgid ""
 "By default, all distance and area calculations are done on the spheroid. You "
-"should find that the results of calculations in local areas match up will "
+"should find that the results of calculations in local areas match up well "
 "with local planar results in good local projections. Over larger areas, the "
 "spheroidal calculations will be more accurate than any calculation done on a "
-"projected plane."
+"projected plane. The difference is that the spheroid takes into account the "
+"curvature and non-spherical shape of the Earth, whereas planar calculations "
+"assume a flat surface."
 msgstr ""
-"Som standard görs alla avstånds- och områdesberäkningar på sfäroiden. Du bör "
-"upptäcka att resultaten av beräkningar i lokala områden stämmer väl överens "
-"med lokala plana resultat i bra lokala projektioner. Över större områden "
-"kommer sfäroidberäkningarna att vara mer exakta än alla beräkningar som görs "
-"på ett projicerat plan."
 
 #. Tag: para
 #, no-c-format
@@ -44492,8 +44625,10 @@ msgstr "Namnet på geometrikolumnen i feature-tabellen."
 
 #. Tag: para
 #, no-c-format
-msgid "The coordinate dimension (2, 3 or 4) of the column."
-msgstr "Koordinatdimensionen (2, 3 eller 4) för kolumnen."
+msgid ""
+"The coordinate dimension (2, 3 or 4) of the column. The coordinate dimension "
+"is at least 2, representing X and Y coordinates."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -46272,17 +46407,12 @@ msgstr ""
 msgid ""
 "For example, consider a linear dataset representing a road network. It may "
 "be required to identify all road segments that cross each other, not at a "
-"point, but in a line (perhaps to validate some business rule). In this case "
-"<xref linkend=\"ST_Crosses\"/> does not provide the necessary spatial "
-"filter, since for linear features it returns <varname>true</varname> only "
-"where they cross at a point."
+"point, but in a line (perhaps to validate a business rule such as ensuring "
+"that no two different roads share a common segment). In this case <xref "
+"linkend=\"ST_Crosses\"/> does not provide the necessary spatial filter, "
+"since for linear features it returns <varname>true</varname> only where they "
+"cross at a point."
 msgstr ""
-"Tänk till exempel på en linjär dataset som representerar ett vägnät. Det kan "
-"vara nödvändigt att identifiera alla vägsegment som korsar varandra, inte "
-"vid en punkt utan i en linje (kanske för att validera någon affärsregel). I "
-"det här fallet tillhandahåller <xref linkend=\"ST_Crosses\"/> inte det "
-"nödvändiga spatiala filtret, eftersom det för linjära funktioner endast "
-"returnerar <varname>sant</varname> där de korsas vid en punkt."
 
 #. Tag: para
 #, no-c-format
@@ -48059,16 +48189,11 @@ msgstr "Denna funktion stöder 3d och kommer inte att tappa z-index."
 #, no-c-format
 msgid ""
 "If the optional <code>gridSize</code> parameter is given (GEOS-3.9.0 or "
-"higher required), all result vertices are guaranteed to fall on a grid of "
-"the specified size. For the operation to give predictable results all the "
-"input vertices must fall already on the specified grid, see <xref "
+"higher required), all result vertices are guaranteed to fall on a snap-"
+"rounded grid of the specified size. Note that operations performed on a grid "
+"may contain small artifacts produced during grid alignment, see <xref "
 "linkend=\"ST_ReducePrecision\"/>."
 msgstr ""
-"Om den valfria parametern <code>gridSize</code> anges (GEOS-3.9.0 eller "
-"senare krävs) garanteras att alla resultatpunkter hamnar i ett rutnät med "
-"den angivna storleken. För att operationen ska ge förutsägbara resultat "
-"måste alla inmatade hörn redan falla på det angivna rutnätet, se <xref "
-"linkend=\"ST_ReducePrecision\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -48109,6 +48234,475 @@ msgstr "2.5/3D-stöd"
 #, no-c-format
 msgid "Supports geography"
 msgstr "Stödjer geografi"
+
+#, no-c-format
+#~ msgid ""
+#~ "Return the 1-based Nth element geometry of an input geometry which is a "
+#~ "GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, "
+#~ "MULTI)POLYGON, or POLYHEDRALSURFACE. Otherwise, returns NULL."
+#~ msgstr ""
+#~ "Returnerar den 1-baserade N:te elementgeometrin i en indatageometri som "
+#~ "är en GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, "
+#~ "MULTI)POLYGON eller POLYHEDRALSURFACE. I annat fall returneras NULL."
+
+#, no-c-format
+#~ msgid ""
+#~ "Index is 1-based as for OGC specs since version 0.8.0. Backward indexing "
+#~ "(negative index) is not in OGC Previous versions implemented this as 0-"
+#~ "based instead."
+#~ msgstr ""
+#~ "Index är 1-baserat som för OGC-specifikationer sedan version 0.8.0. "
+#~ "Bakåtindexering (negativt index) finns inte i OGC Tidigare versioner "
+#~ "implementerade detta som 0-baserat istället."
+
+#, no-c-format
+#~ msgid ""
+#~ "Return area square feet and transform to Massachusetts state plane meters "
+#~ "(EPSG:26986) to get square meters. Note this is in square feet because "
+#~ "2249 is Massachusetts State Plane Feet and transformed area is in square "
+#~ "meters since EPSG:26986 is state plane Massachusetts meters"
+#~ msgstr ""
+#~ "Returnera area kvadratfot och transformera till Massachusetts state plane "
+#~ "meters (EPSG:26986) för att få kvadratmeter. Observera att detta är i "
+#~ "kvadratfot eftersom 2249 är Massachusetts State Plane Feet och den "
+#~ "transformerade arean är i kvadratmeter eftersom EPSG:26986 är state plane "
+#~ "Massachusetts meters"
+
+#, no-c-format
+#~ msgid ""
+#~ "Calculates the length or perimeter of a geometry on an ellipsoid. This is "
+#~ "useful if the coordinates of the geometry are in longitude/latitude and a "
+#~ "length is desired without reprojection. The spheroid is specified by a "
+#~ "text value as follows:"
+#~ msgstr ""
+#~ "Beräknar längden eller omkretsen av en geometri på en ellipsoid. Detta är "
+#~ "användbart om geometrins koordinater är i longitud/latitud och en längd "
+#~ "önskas utan reprojektion. Sfäroiden specificeras med ett textvärde enligt "
+#~ "följande:"
+
+#, no-c-format
+#~ msgid "Examples: 2.5Dish"
+#~ msgstr "Exempel: 2.5Dish"
+
+#, no-c-format
+#~ msgid ""
+#~ "Note this is not a true intersection, compare to the same example using "
+#~ "<xref linkend=\"ST_3DIntersection\"/>."
+#~ msgstr ""
+#~ "Observera att detta inte är en sann korsning, jämför med samma exempel "
+#~ "med <xref linkend=\"ST_3DIntersection\"/>."
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, "
+#~ "<xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, "
+#~ "<xref linkend=\"ST_SymDifference\"/>, <xref "
+#~ "linkend=\"ST_ReducePrecision\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, "
+#~ "<xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, "
+#~ "<xref linkend=\"ST_SymDifference\"/>, <xref "
+#~ "linkend=\"ST_ReducePrecision\"/>"
+
+#, no-c-format
+#~ msgid "PostGIS 3.6.0rc2"
+#~ msgstr "PostGIS 3.6.0rc2"
+
+#, no-c-format
+#~ msgid "2025/08/25"
+#~ msgstr "2025-08-25"
+
+#, no-c-format
+#~ msgid ""
+#~ "This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj "
+#~ "6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
+#~ "advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
+#~ msgstr ""
+#~ "Denna version kräver PostgreSQL 12-18beta3, GEOS 3.8 eller högre och Proj "
+#~ "6.1+. För att kunna utnyttja alla funktioner krävs GEOS 3.14+. För att "
+#~ "kunna utnyttja alla SFCGAL-funktioner krävs SFCGAL 2.2+."
+
+#, no-c-format
+#~ msgid "Many thanks to our translation teams, in particular:"
+#~ msgstr "Ett stort tack till våra översättningsteam, i synnerhet:"
+
+#, no-c-format
+#~ msgid "Teramoto Ikuhiro (Japanese Team)"
+#~ msgstr "Teramoto Ikuhiro (japanska teamet)"
+
+#, no-c-format
+#~ msgid "Daniel Nylander (Swedish Team)"
+#~ msgstr "Daniel Nylander (svenska teamet)"
+
+#, no-c-format
+#~ msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
+#~ msgstr "Dapeng Wang, Zuo Chenwei från HighGo (kinesiska teamet)"
+
+#, no-c-format
+#~ msgid "Denys Kovshun (Ukrainian Team)"
+#~ msgstr "Denys Kovshun (Ukrainska teamet)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5799\">#5799</"
+#~ "link>, make ST_TileEnvelope clips envelopes to tile plane extent (Paul "
+#~ "Ramsey)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5799\">#5799</"
+#~ "link>, gör ST_TileEnvelope klipper kuvert till plattplanets utsträckning "
+#~ "(Paul Ramsey)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">#5829</"
+#~ "link>, remove constraint checking from geometry_columns view (Paul Ramsey)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">#5829</"
+#~ "link>, ta bort begränsningskontroll från geometry_columns-vyn (Paul "
+#~ "Ramsey)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/255\">GT-255</link>, [topology] Support for upgrading domains (Ayo "
+#~ "Adesugba, U.S. Census Bureau)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/255\">GT-255</link>, [topologi] Stöd för uppgradering av domäner "
+#~ "(Ayo Adesugba, U.S. Census Bureau)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+#~ "252\">GT-252</link>, ST_NumGeometries/ST_GeometryN treat TIN and "
+#~ "PolyhedralSurface as unitary geometries, use ST_NumPatches/ST_PatchN for "
+#~ "patch access (Loïc Bartoletti)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+#~ "252\">GT-252</link>, ST_NumGeometries/ST_GeometryN behandlar TIN och "
+#~ "PolyhedralSurface som enhetsgeometrier, använd ST_NumPatches/ST_PatchN "
+#~ "för patchåtkomst (Loïc Bartoletti)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/242\">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, "
+#~ "U.S. Census Bureau)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/242\">GT-242</link>, [topologi] Stöd för bigint (Ayo Adesugba, U.S. "
+#~ "Census Bureau)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
+#~ "link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+#~ "5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/"
+#~ "postgis/postgis/pulls/260\">GT-260</link> [tiger_geocoder] Use "
+#~ "@extschema:extension@ for PG &gt;= 16 to schema qualify dependent "
+#~ "extensions, switch to use typmod for tiger tables (Regina Obe)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
+#~ "link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+#~ "5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/"
+#~ "postgis/postgis/pulls/260\">GT-260</link> [tiger_geocoder] Använd "
+#~ "@extschema:extension@ för PG &gt;= 16 för att schema-kvalificera beroende "
+#~ "tillägg, byt till typmod för tiger-tabeller (Regina Obe)"
+
+#, no-c-format
+#~ msgid "Removed / Deprecate signatures"
+#~ msgstr "Borttagna/föråldrade signaturer"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</"
+#~ "link> Drop st_approxquantile(raster, double precision), wasn't usable as "
+#~ "it triggered is not unique error when used (Regina Obe)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</"
+#~ "link> Ta bort st_approxquantile(raster, double precision), kunde inte "
+#~ "användas eftersom det utlöste ett felmeddelande om att det inte var unikt "
+#~ "när det användes (Regina Obe)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/803\">GH-803</"
+#~ "link>, [sfcgal] ADD CG_Simplify function (Loïc Bartoletti)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/803\">GH-803</"
+#~ "link>, [sfcgal] ADD CG_Simplify-funktion (Loïc Bartoletti)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/805\">GH-805</"
+#~ "link>, [sfcgal] Add M support for SFCGAL &gt;= 1.5.0 (Loïc Bartoletti)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/805\">GH-805</"
+#~ "link>, [sfcgal] Lägg till M-stöd för SFCGAL &gt;= 1.5.0 (Loïc Bartoletti)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/801\">GH-801</"
+#~ "link>, [sfcgal] ADD CG_3DAlphaWrapping function (Jean Felder)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/801\">GH-801</"
+#~ "link>, [sfcgal] ADD CG_3DAlphaWrapping-funktion (Jean Felder)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5894\">#5894</"
+#~ "link>, [topology] TotalTopologySize (Sandro Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5894\">#5894</"
+#~ "link>, [topologi] TotalTopologySize (Sandro Santilli)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5890\">#5890</"
+#~ "link>, [topology] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro "
+#~ "Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5890\">#5890</"
+#~ "link>, [topologi] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro "
+#~ "Santilli)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5861\">#5861</"
+#~ "link>, [topology] Add --drop-topology switch to pgtopo_import (Sandro "
+#~ "Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5861\">#5861</"
+#~ "link>, [topologi] Lägg till --drop-topology switch till pgtopo_import "
+#~ "(Sandro Santilli)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1247\">#1247</"
+#~ "link>, [raster] ST_AsRasterAgg (Sandro Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1247\">#1247</"
+#~ "link>, [raster] ST_AsRasterAgg (Sandro Santilli)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/223\">GT-223</link> Export circ_tree_distance_tree_internal for "
+#~ "mobilitydb use (Maxime Schoemans)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/223\">GT-223</link> Exportera circ_tree_distance_tree_internal för "
+#~ "användning i mobilitydb (Maxime Schoemans)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+#~ "228\">GT-228</link> [sfcgal] Add new functions (Scale, Translate, Rotate, "
+#~ "Buffer 3D and Straight Skeleton Partition) from SFCGAL 2 (Loïc Bartoletti)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+#~ "228\">GT-228</link> [sfcgal] Lägg till nya funktioner (Skala, Översätt, "
+#~ "Rotera, Buffert 3D och Rak skelettpartition) från SFCGAL 2 (Loïc "
+#~ "Bartoletti)"
+
+#, no-c-format
+#~ msgid ""
+#~ "[raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages "
+#~ "and routes them into the PostgreSQL logging system. (Paul Ramsey)"
+#~ msgstr ""
+#~ "[raster] Ny GUC postgis.gdal_cpl_debug, aktiverar GDAL-"
+#~ "felsökningsmeddelanden och dirigerar dem till PostgreSQL-"
+#~ "loggningssystemet. (Paul Ramsey)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\">#5841</"
+#~ "link>, Change interrupt handling to remove use of pqsignal to support PG "
+#~ "18 (Paul Ramsey)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\">#5841</"
+#~ "link>, Ändra avbrottshantering för att ta bort användningen av pqsignal "
+#~ "för att stödja PG 18 (Paul Ramsey)"
+
+#, no-c-format
+#~ msgid ""
+#~ "Add ST_CoverageClean to edge match and gap remove polygonal coverages "
+#~ "(Paul Ramsey) from GEOS 3.14 (Martin Davis)"
+#~ msgstr ""
+#~ "Lägg till ST_CoverageClean för kantmatchning och borttagning av "
+#~ "polygonala täckningar (Paul Ramsey) från GEOS 3.14 (Martin Davis)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, "
+#~ "U.S. Census Bureau)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/242\">GT-242</link> [topologi] Stöd för bigint (Ayo Adesugba, U.S. "
+#~ "Census Bureau)"
+
+#, no-c-format
+#~ msgid ""
+#~ "[raster] Add ST_ReclassExact to quickly remap values in raster (Paul "
+#~ "Ramsey)"
+#~ msgstr ""
+#~ "[raster] Lägg till ST_ReclassExact för att snabbt ommappa värden i raster "
+#~ "(Paul Ramsey)"
+
+#, no-c-format
+#~ msgid ""
+#~ "Coordinates may contain optional Z and M ordinate values. The Z ordinate "
+#~ "is often used to represent elevation. The M ordinate contains a measure "
+#~ "value, which may represent time or distance. If Z or M values are present "
+#~ "in a geometry value, they must be defined for each point in the geometry. "
+#~ "If a geometry has Z or M ordinates the <emphasis role=\"bold\">coordinate "
+#~ "dimension</emphasis> is 3D; if it has both Z and M the coordinate "
+#~ "dimension is 4D."
+#~ msgstr ""
+#~ "Koordinaterna kan innehålla valfria Z- och M-ordinatvärden. Z-ordinaten "
+#~ "används ofta för att representera höjd. M-ordinaten innehåller ett "
+#~ "mätvärde, som kan representera tid eller avstånd. Om Z- eller M-värden "
+#~ "finns i ett geometrivärde måste de definieras för varje punkt i "
+#~ "geometrin. Om en geometri har Z- eller M-ordinater är <emphasis "
+#~ "role=\"bold\">koordinatdimensionen</emphasis> 3D; om den har både Z- och "
+#~ "M-ordinater är koordinatdimensionen 4D."
+
+#, no-c-format
+#~ msgid ""
+#~ "The geometry <emphasis role=\"bold\">dimension</emphasis> is a property "
+#~ "of geometry types. Point types have dimension 0, linear types have "
+#~ "dimension 1, and polygonal types have dimension 2. Collections have the "
+#~ "dimension of the maximum element dimension."
+#~ msgstr ""
+#~ "<emphasis role=\"bold\">Geometridimensionen</emphasis> är en egenskap hos "
+#~ "geometrityper. Punkttyper har dimension 0, linjära typer har dimension 1 "
+#~ "och polygonala typer har dimension 2. Samlingar har dimensionen för den "
+#~ "maximala elementdimensionen."
+
+#, no-c-format
+#~ msgid ""
+#~ "The geometry model allows evaluating topological spatial relationships as "
+#~ "described in <xref linkend=\"DE-9IM\"/>. To support this the concepts of "
+#~ "<emphasis role=\"bold\">interior</emphasis>, <emphasis "
+#~ "role=\"bold\">boundary</emphasis> and <emphasis role=\"bold\">exterior</"
+#~ "emphasis> are defined for each geometry type. Geometries are "
+#~ "topologically closed, so they always contain their boundary. The boundary "
+#~ "is a geometry of dimension one less than that of the geometry itself."
+#~ msgstr ""
+#~ "Geometrimodellen gör det möjligt att utvärdera topologiska spatiala "
+#~ "relationer enligt beskrivningen i <xref linkend=\"DE-9IM\"/>. För att "
+#~ "stödja detta definieras begreppen <emphasis role=\"bold\">interior</"
+#~ "emphasis>, <emphasis role=\"bold\">boundary</emphasis> och <emphasis "
+#~ "role=\"bold\">exterior</emphasis> för varje geometrityp. Geometrier är "
+#~ "topologiskt slutna, vilket innebär att de alltid innehåller sin gräns. "
+#~ "Gränsen är en geometri med en dimension som är en mindre än geometrins "
+#~ "egen dimension."
+
+#, no-c-format
+#~ msgid ""
+#~ "The OGC geometry model defines validity rules for each geometry type. "
+#~ "These rules ensure that geometry values represents realistic situations "
+#~ "(e.g. it is possible to specify a polygon with a hole lying outside the "
+#~ "shell, but this makes no sense geometrically and is thus invalid). "
+#~ "PostGIS also allows storing and manipulating invalid geometry values. "
+#~ "This allows detecting and fixing them if needed. See <xref "
+#~ "linkend=\"OGC_Validity\"/>"
+#~ msgstr ""
+#~ "OGC:s geometrimodell definierar giltighetsregler för varje geometrityp. "
+#~ "Dessa regler säkerställer att geometrivärdena representerar realistiska "
+#~ "situationer (det är t.ex. möjligt att ange en polygon med ett hål som "
+#~ "ligger utanför skalet, men detta är geometriskt ologiskt och därmed "
+#~ "ogiltigt). PostGIS tillåter också lagring och manipulering av ogiltiga "
+#~ "geometrivärden. Detta gör det möjligt att upptäcka och åtgärda dem vid "
+#~ "behov. Se även <xref linkend=\"OGC_Validity\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "A MultiPolygon is a collection of non-overlapping, non-adjacent Polygons. "
+#~ "Polygons in the collection may touch only at a finite number of points."
+#~ msgstr ""
+#~ "En MultiPolygon är en samling polygoner som inte överlappar varandra och "
+#~ "inte ligger intill varandra. Polygonerna i samlingen får endast beröra "
+#~ "varandra i ett begränsat antal punkter."
+
+#, no-c-format
+#~ msgid ""
+#~ "The <varname>geometry</varname> data type is <emphasis>opaque</emphasis>, "
+#~ "which means that all access is done via invoking functions on geometry "
+#~ "values. Functions allow creating geometry objects, accessing or updating "
+#~ "all internal fields, and compute new geometry values. PostGIS supports "
+#~ "all the functions specified in the OGC <link xlink:href=\"https://"
+#~ "portal.ogc.org/files/?artifact_id=25354\"><emphasis>Simple feature access "
+#~ "- Part 2: SQL option</emphasis></link> (SFS) specification, as well many "
+#~ "others. See <xref linkend=\"reference\"/> for the full list of functions."
+#~ msgstr ""
+#~ "Datatypen <varname>geometry</varname> är <emphasis>opak</emphasis>, "
+#~ "vilket innebär att all åtkomst sker genom att funktioner anropas på "
+#~ "geometrivärden. Funktionerna gör det möjligt att skapa geometriobjekt, "
+#~ "komma åt eller uppdatera alla interna fält och beräkna nya "
+#~ "geometrivärden. PostGIS stöder alla funktioner som anges i OGC:s <link "
+#~ "xlink:href=\"https://portal.ogc.org/files/?"
+#~ "artifact_id=25354\"><emphasis>Enkel åtkomst till funktioner - Del 2: SQL-"
+#~ "alternativ</emphasis></link> (SFS)-specifikationen, samt många andra. Se "
+#~ "<xref linkend=\"reference\"/> för en fullständig lista över funktioner."
+
+#, no-c-format
+#~ msgid ""
+#~ "By default, all distance and area calculations are done on the spheroid. "
+#~ "You should find that the results of calculations in local areas match up "
+#~ "will with local planar results in good local projections. Over larger "
+#~ "areas, the spheroidal calculations will be more accurate than any "
+#~ "calculation done on a projected plane."
+#~ msgstr ""
+#~ "Som standard görs alla avstånds- och områdesberäkningar på sfäroiden. Du "
+#~ "bör upptäcka att resultaten av beräkningar i lokala områden stämmer väl "
+#~ "överens med lokala plana resultat i bra lokala projektioner. Över större "
+#~ "områden kommer sfäroidberäkningarna att vara mer exakta än alla "
+#~ "beräkningar som görs på ett projicerat plan."
+
+#, no-c-format
+#~ msgid "The coordinate dimension (2, 3 or 4) of the column."
+#~ msgstr "Koordinatdimensionen (2, 3 eller 4) för kolumnen."
+
+#, no-c-format
+#~ msgid ""
+#~ "For example, consider a linear dataset representing a road network. It "
+#~ "may be required to identify all road segments that cross each other, not "
+#~ "at a point, but in a line (perhaps to validate some business rule). In "
+#~ "this case <xref linkend=\"ST_Crosses\"/> does not provide the necessary "
+#~ "spatial filter, since for linear features it returns <varname>true</"
+#~ "varname> only where they cross at a point."
+#~ msgstr ""
+#~ "Tänk till exempel på en linjär dataset som representerar ett vägnät. Det "
+#~ "kan vara nödvändigt att identifiera alla vägsegment som korsar varandra, "
+#~ "inte vid en punkt utan i en linje (kanske för att validera någon "
+#~ "affärsregel). I det här fallet tillhandahåller <xref "
+#~ "linkend=\"ST_Crosses\"/> inte det nödvändiga spatiala filtret, eftersom "
+#~ "det för linjära funktioner endast returnerar <varname>sant</varname> där "
+#~ "de korsas vid en punkt."
+
+#, no-c-format
+#~ msgid ""
+#~ "If the optional <code>gridSize</code> parameter is given (GEOS-3.9.0 or "
+#~ "higher required), all result vertices are guaranteed to fall on a grid of "
+#~ "the specified size. For the operation to give predictable results all the "
+#~ "input vertices must fall already on the specified grid, see <xref "
+#~ "linkend=\"ST_ReducePrecision\"/>."
+#~ msgstr ""
+#~ "Om den valfria parametern <code>gridSize</code> anges (GEOS-3.9.0 eller "
+#~ "senare krävs) garanteras att alla resultatpunkter hamnar i ett rutnät med "
+#~ "den angivna storleken. För att operationen ska ge förutsägbara resultat "
+#~ "måste alla inmatade hörn redan falla på det angivna rutnätet, se <xref "
+#~ "linkend=\"ST_ReducePrecision\"/>."
 
 #, no-c-format
 #~ msgid "&extras_address_standardizer; &extras_tigergeocoder;"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-13 16:23+0000\n"
+"POT-Creation-Date: 2026-06-12 20:29+0000\n"
 "PO-Revision-Date: 2026-02-20 12:51+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -4013,6 +4013,25 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
 msgstr ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Find pairs of topology vertex/segment that are closer than tolerated distance"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a relation in which each tuple is a pair of vertex/segment where the "
+"vertex is NOT an endpoint of the segment but the distance between them is "
+"below the given tolerance."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.7"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -9544,16 +9563,12 @@ msgid "Return an element of a geometry collection."
 msgstr "Gibt den Geometrietyp des ST_Geometry Wertes zurück."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the 1-based Nth element geometry of an input geometry which is a "
-"GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTI)POLYGON, "
+"GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTIPOLYGON, "
 "or POLYHEDRALSURFACE. Otherwise, returns NULL."
 msgstr ""
-"Gibt die auf 1-basierende n-te Geometrie zurück, wenn es sich bei der "
-"Geometrie um eine GEOMETRYCOLLECTION, (MULTI)POINT, (MULTI)LINESTRING, "
-"MULTICURVE oder (MULTI)POLYGON, POLYHEDRALSURFACE handelt. Anderenfalls wird "
-"NULL zurückgegeben."
 
 #. Tag: para
 #, no-c-format
@@ -10362,12 +10377,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Backward indexing "
-"(negative index) is not in OGC Previous versions implemented this as 0-based "
-"instead."
+"(negative index) is not in OGC. Previous versions implemented this as 0-"
+"based instead."
 msgstr ""
-"Seit Version 0.8.0 ist der Index 1-basiert, so wie in der OGC Spezifikation. "
-"Rückwärtiges Indizieren (negativer Index) findet sich nicht in der OGC "
-"Spezifikation. Vorhergegangene Versionen waren 0-basiert."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -11634,6 +11646,46 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_ClusterIntersectingWin\"/>, <xref "
 "linkend=\"ST_ClusterWithinWin\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Window function that returns a tree id for each input geometry, clustering "
+"input geometries into connected trees using the Minimum Spanning Tree "
+"algorithm."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A window function that builds connected graphs of line strings based on the "
+"Minimum Spanning Tree (MST) of the input geometries. The return value is the "
+"cluster number that the geometry argument participates in, or zero if it is "
+"not part of the minimum tree."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Minimum_spanning_tree\">Minimum Spanning Tree</link> connects all geometries "
+"in the window partition such that the total length of the connecting lines "
+"is minimized. If the graph is not fully connected (e.g. infinite distance "
+"between some geometries), it produces a Minimum Spanning Forest, and each "
+"connected component is assigned a unique tree ID."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Requires GEOS &gt;= 3.15.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
+"linkend=\"ST_ClusterIntersectingWin\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -13484,6 +13536,52 @@ msgstr "Vereinfachte Erfassung"
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Computes the unique edges of a polygonal coverage."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a MultiLineString representing the unique edges of a polygonal "
+"coverage. A polygonal coverage is a set of non-overlapping polygons where "
+"adjacent polygons have matching vertices along shared edges."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <parameter>edgetype</parameter> parameter can be used to select which "
+"edges are returned:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<emphasis role=\"bold\">0 (ALL)</emphasis> - all unique edges (default)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<emphasis role=\"bold\">1 (EXTERIOR)</emphasis> - only exterior edges (non-"
+"shared)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<emphasis role=\"bold\">2 (INTERIOR)</emphasis> - only interior edges "
+"(shared)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_CoverageSimplify\"/>, <xref "
+"linkend=\"ST_CoverageUnion\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -17964,6 +18062,36 @@ msgstr ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Returns the interpolated measure of a geometry closest to a point in 3D."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the interpolated measure value of a linear ZM geometry at the "
+"location closest to the given point, using 3D (XYZ) distance for the "
+"projection. Use this function when the geometry has significant Z variation, "
+"such as flight trajectories, where <xref linkend=\"ST_InterpolatePoint\"/> "
+"would give incorrect results by ignoring the Z dimension."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The line must have both Z and M dimensions. The point should have a Z "
+"dimension."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AddMeasure\"/>, <xref linkend=\"ST_LocateAlong\"/>, "
+"<xref linkend=\"ST_LocateBetween\"/>"
+msgstr ""
+
+#. Tag: refpurpose
 #, fuzzy, no-c-format
 msgid "Interpolates measures along a linear geometry."
 msgstr "Interpoliert Maße entlang einer linearen Geometrie."
@@ -18491,14 +18619,8 @@ msgid ""
 "Return area square feet and transform to Massachusetts state plane meters "
 "(EPSG:26986) to get square meters. Note this is in square feet because 2249 "
 "is Massachusetts State Plane Feet and transformed area is in square meters "
-"since EPSG:26986 is state plane Massachusetts meters"
+"since EPSG:26986 is state plane Massachusetts meters."
 msgstr ""
-"Gibt den Flächeninhalt in Quadratfuß aus und transformiert nach "
-"\"Massachusetts state plane meters\" (EPSG:26986) um Quadratmeter zu "
-"erhalten. Da die Fläche in \"Massachusetts State Plane Feet\" (EPSG:2249) "
-"vorliegt, wird der Flächeninhalt in Quadratfuß ausgegeben. Die "
-"transformierte Fläche ist in Quadratmeter, da sie in EPSG:26986 "
-"\"Massachusetts state plane meters\" (EPSG:26986) vorliegt."
 
 #. Tag: para
 #, no-c-format
@@ -19464,18 +19586,13 @@ msgid ""
 msgstr "Gibt den geometrischen Schwerpunkt einer Geometrie zurück."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"Calculates the length or perimeter of a geometry on an ellipsoid. This is "
+"Calculates the length or perimeter of a geometry on a spheroid. This is "
 "useful if the coordinates of the geometry are in longitude/latitude and a "
 "length is desired without reprojection. The spheroid is specified by a text "
 "value as follows:"
 msgstr ""
-"Berechnet die/den Länge/Umfang einer Geometrie auf einem Ellipsoid. Dies ist "
-"nützlich wenn die Koordinaten der Geometrie in Länge und Breite vorliegen, "
-"und die Länge der Geometrie ohne benötigt wird, ohne dass umprojiziert "
-"werden muss. Das Ellipsoid ist ein eigener Datentyp und kann wie folgt "
-"erstellt werden:"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -23553,19 +23670,17 @@ msgstr ""
 "die Polygone übrig lassen und die Sammlungshülle auflösen)."
 
 #. Tag: title
-#, fuzzy, no-c-format
-msgid "Examples: 2.5Dish"
-msgstr "Beispiele: 2.5Gericht"
+#, no-c-format
+msgid "Examples: 2.5D geometries"
+msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"Note this is not a true intersection, compare to the same example using "
-"<xref linkend=\"ST_3DIntersection\"/>."
+"Note this is not a true 3D intersection. It uses 2.5D geometries (geometries "
+"with Z ordinates, but where calculations are performed in 2D). Compare to "
+"the same example using <xref linkend=\"ST_3DIntersection\"/>."
 msgstr ""
-"Beachten Sie, dass es sich hierbei nicht um eine echte Schnittmenge handelt, "
-"vergleichen Sie das gleiche Beispiel mit <xref linkend=\"ST_3DIntersection\"/"
-">."
 
 #. Tag: para
 #, no-c-format
@@ -24193,8 +24308,9 @@ msgstr "3d-Beispiel ohne Vermischung der Dimensionen"
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
-"linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
-"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Intersection\"/>, <xref "
+"linkend=\"ST_Difference\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
+"linkend=\"ST_LineMerge\"/>"
 msgstr ""
 
 #. Tag: title
@@ -24766,6 +24882,86 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref "
 "linkend=\"ST_SimplifyVW\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Returns a smoothed version of a geometry, using the Catmull-Rom spline "
+"algorithm"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Smoothes a linear or polygonal geometry using the <link xlink:href=\"https://"
+"en.wikipedia.org/wiki/Centripetal_Catmull%E2%80%93Rom_spline\">Catmull-Rom "
+"spline</link> algorithm. Unlike <xref linkend=\"ST_ChaikinSmoothing\"/>, "
+"this is an <emphasis>interpolating</emphasis> spline: the output curve "
+"passes through every original vertex. Between each pair of consecutive "
+"original vertices, <varname>nSegments</varname> - 1 new intermediate points "
+"are inserted."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <varname>nSegments</varname> parameter controls the density of the "
+"output. With <varname>nSegments</varname> = 5 (the default), each original "
+"span is divided into 5 sub-segments (inserting 4 new points per span). The "
+"minimum value is 2."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"At least 4 input vertices are required to apply smoothing; geometries with "
+"fewer vertices are returned unchanged. Points and multipoints are always "
+"returned unchanged."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The output vertex count grows as <literal>1 + (N-1) * nSegments</literal> "
+"for open lines, and <literal>1 + N * nSegments</literal> for closed rings, "
+"where N is the number of input vertices. For large geometries, use a "
+"simplification function on the result to reduce the number of points (see "
+"<xref linkend=\"ST_Simplify\"/>, <xref "
+"linkend=\"ST_SimplifyPreserveTopology\"/> and <xref "
+"linkend=\"ST_SimplifyVW\"/>)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Smoothing a 4-point collinear line with default nSegments=5:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Smoothing a Polygon using nSegments = 5 and 10:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "nSegments = 5"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "nSegments = 10"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Smoothing a LineString using nSegments = 5 and 10:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Simplify\"/>, <xref "
+"linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_SimplifyVW\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -39071,6 +39267,24 @@ msgid ""
 msgstr ""
 
 #. Tag: para
+#, no-c-format
+msgid ""
+"When <varname>projected</varname> is <varname>true</varname>, free endpoints "
+"of the medial axis are extended to reach the polygon boundary (projected "
+"medial axis). Requires SFCGAL 2.3.0+. When built against an older SFCGAL "
+"version, a notice is emitted and the non-projected result is returned "
+"instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Availability: 3.7.0 - <varname>projected</varname> parameter. Requires "
+"SFCGAL &gt;= 2.3.0 for projected result; falls back to non-projected with a "
+"notice on older versions."
+msgstr ""
+
+#. Tag: para
 #, fuzzy, no-c-format
 msgid "A polygon and its approximate medial axis"
 msgstr "Ein Polygon und seine ungefähre Mittelachse"
@@ -39078,6 +39292,215 @@ msgstr "Ein Polygon und seine ungefähre Mittelachse"
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a flat (box) roof from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a flat (box-shaped) roof as a 3D <varname>PolyhedralSurface Z</"
+"varname> from a 2D footprint polygon. The roof height above the ground plane "
+"is given by <varname>height</varname> (default 3.0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GenerateGableRoof\"/>, <xref "
+"linkend=\"CG_GenerateSkillionRoof\"/>, <xref linkend=\"CG_GenerateRoof\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a hipped roof from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a hipped roof as a 3D <varname>PolyhedralSurface Z</varname> from a "
+"2D footprint polygon. All sides slope upward to meet at a ridge or apex. The "
+"roof height is given by <varname>height</varname> (default 3.0)."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a gable roof from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a gable roof as a 3D <varname>PolyhedralSurface Z</varname> from a "
+"2D footprint polygon. Two opposite sides are vertical gable ends; the other "
+"two sides slope to a horizontal ridge. <varname>height</varname> sets the "
+"ridge height above the ground (default 3.0) and <varname>slope_angle</"
+"varname> controls the pitch in degrees (default 30.0). The SRID of the input "
+"geometry is preserved."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GenerateHippedRoof\"/>, <xref "
+"linkend=\"CG_GenerateSkillionRoof\"/>, <xref linkend=\"CG_GenerateRoof\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a skillion (single-slope) roof from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a skillion (single-slope, shed-style) roof as a 3D "
+"<varname>PolyhedralSurface Z</varname> from a 2D footprint polygon. The "
+"entire roof surface slopes in one direction. <varname>height</varname> sets "
+"the maximum ridge height (default 3.0), <varname>slope_angle</varname> sets "
+"the pitch in degrees (default 30.0), and <varname>primary_edge_index</"
+"varname> selects which polygon edge defines the high side (0-based, default "
+"0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When the combination of <varname>height</varname> and <varname>slope_angle</"
+"varname> would cause a side wall to vanish (the slope reaches the far edge "
+"before the full height is achieved), that face is omitted from the result. "
+"This means the number of output patches can vary depending on the parameters "
+"— a lower height relative to the footprint depth produces more faces than a "
+"taller, steeper configuration."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Height 2.0 produces 6 faces (all walls present); height 4.0 produces 5 faces "
+"(one side wall is filtered out because the slope reaches the far edge before "
+"the full height)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GenerateHippedRoof\"/>, <xref "
+"linkend=\"CG_GenerateGableRoof\"/>, <xref linkend=\"CG_GenerateRoof\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a roof of the requested type from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a roof as a 3D <varname>PolyhedralSurface Z</varname> from a 2D "
+"footprint polygon. The <varname>roof_type</varname> parameter selects the "
+"roof style (default <literal>'HIPPED'</literal>):"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<varname>FLAT</varname> — flat box roof."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<varname>HIPPED</varname> — hipped roof (all sides slope to apex)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>GABLE</varname> — gable roof (two sloping sides, two vertical ends)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<varname>SKILLION</varname> — single-slope (shed) roof."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>height</varname> sets the roof height (default 3.0), "
+"<varname>slope_angle</varname> sets the pitch in degrees (default 30.0), and "
+"<varname>primary_edge_index</varname> selects the reference edge for "
+"skillion roofs (default 0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GenerateHippedRoof\"/>, <xref "
+"linkend=\"CG_GenerateGableRoof\"/>, <xref "
+"linkend=\"CG_GenerateSkillionRoof\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Repair an invalid polygon or multipolygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Repair an invalid polygon or multipolygon using CGAL's 2D Polygon Repair "
+"algorithm. Returns a <varname>MultiPolygon</varname>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The <varname>rule</varname> parameter controls the repair strategy:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>EVEN_ODD</varname> (default) — areas covered an odd number of times "
+"are kept. Available with CGAL 6.0+."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>NON_ZERO</varname> — areas with non-zero winding number are kept. "
+"Requires CGAL 6.1+."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>UNION</varname> — union of all input polygons. Requires CGAL 6.1+."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>INTERSECTION</varname> — intersection of all input polygons. "
+"Requires CGAL 6.1+."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0 and CGAL &gt;= 6.0."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_MakeValid\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -42328,45 +42751,21 @@ msgstr "Anmerkungen zur Release"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0rc2"
+msgid "PostGIS 3.7.0beta1"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/08/25"
+msgid "2026/06/xx"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj "
-"6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
-"advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
-msgstr ""
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "Many thanks to our translation teams, in particular:"
-msgstr "Vielen Dank insbesondere an unsere Übersetzungsteams:"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "Teramoto Ikuhiro (Japanese Team)"
-msgstr "Teramoto Ikuhiro (Japanische Mannschaft)"
-
-#. Tag: para
-#, no-c-format
-msgid "Daniel Nylander (Swedish Team)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Denys Kovshun (Ukrainian Team)"
+"This version requires GEOS 3.10 or higher. PostgreSQL 14-19beta1 required. "
+"Proj 6.1+ required. To take advantage of all features postgis extension "
+"features, GEOS 3.15+ is needed. To take advantage of all postgis_sfcgal "
+"extension features SFCGAL 2.2+ is needed."
 msgstr ""
 
 #. Tag: title
@@ -42376,178 +42775,12 @@ msgstr "Wechselnde Änderungen"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5799\">#5799</"
-"link>, make ST_TileEnvelope clips envelopes to tile plane extent (Paul "
-"Ramsey)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">#5829</"
-"link>, remove constraint checking from geometry_columns view (Paul Ramsey)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"255\">GT-255</link>, [topology] Support for upgrading domains (Ayo Adesugba, "
-"U.S. Census Bureau)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"252\">GT-252</link>, ST_NumGeometries/ST_GeometryN treat TIN and "
-"PolyhedralSurface as unitary geometries, use ST_NumPatches/ST_PatchN for "
-"patch access (Loïc Bartoletti)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"242\">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, U.S. "
-"Census Bureau)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
-"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
-"5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/"
-"postgis/pulls/260\">GT-260</link> [tiger_geocoder] Use @extschema:extension@ "
-"for PG &gt;= 16 to schema qualify dependent extensions, switch to use typmod "
-"for tiger tables (Regina Obe)"
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Removed / Deprecate signatures"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</link> "
-"Drop st_approxquantile(raster, double precision), wasn't usable as it "
-"triggered is not unique error when used (Regina Obe)"
+msgid "Place holder"
 msgstr ""
 
 #. Tag: title
 #, no-c-format
 msgid "New Features"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/803\">GH-803</"
-"link>, [sfcgal] ADD CG_Simplify function (Loïc Bartoletti)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/805\">GH-805</"
-"link>, [sfcgal] Add M support for SFCGAL &gt;= 1.5.0 (Loïc Bartoletti)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/801\">GH-801</"
-"link>, [sfcgal] ADD CG_3DAlphaWrapping function (Jean Felder)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5894\">#5894</"
-"link>, [topology] TotalTopologySize (Sandro Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5890\">#5890</"
-"link>, [topology] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro "
-"Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5861\">#5861</"
-"link>, [topology] Add --drop-topology switch to pgtopo_import (Sandro "
-"Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1247\">#1247</"
-"link>, [raster] ST_AsRasterAgg (Sandro Santilli)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"223\">GT-223</link> Export circ_tree_distance_tree_internal for mobilitydb "
-"use (Maxime Schoemans)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"228\">GT-228</link> [sfcgal] Add new functions (Scale, Translate, Rotate, "
-"Buffer 3D and Straight Skeleton Partition) from SFCGAL 2 (Loïc Bartoletti)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"[raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages and "
-"routes them into the PostgreSQL logging system. (Paul Ramsey)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\">#5841</"
-"link>, Change interrupt handling to remove use of pqsignal to support PG 18 "
-"(Paul Ramsey)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Add ST_CoverageClean to edge match and gap remove polygonal coverages (Paul "
-"Ramsey) from GEOS 3.14 (Martin Davis)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. Census "
-"Bureau)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"[raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
 msgstr ""
 
 #. Tag: title
@@ -42811,7 +43044,7 @@ msgstr ""
 "Liniensegmente durch zwei Koordinaten angegeben werden."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Coordinates may contain optional Z and M ordinate values. The Z ordinate is "
 "often used to represent elevation. The M ordinate contains a measure value, "
@@ -42819,16 +43052,9 @@ msgid ""
 "geometry value, they must be defined for each point in the geometry. If a "
 "geometry has Z or M ordinates the <emphasis role=\"bold\">coordinate "
 "dimension</emphasis> is 3D; if it has both Z and M the coordinate dimension "
-"is 4D."
+"is 4D. The coordinate dimension is at least 2, because every geometry has at "
+"least X and Y coordinates."
 msgstr ""
-"Koordinaten können optionale Z- und M-Ordinatenwerte enthalten. Die Z-"
-"Ordinate wird häufig zur Darstellung der Höhe verwendet. Die M-Ordinate "
-"enthält einen Messwert, der Zeit oder Entfernung darstellen kann. Wenn Z- "
-"oder M-Werte in einem Geometriewert vorhanden sind, müssen sie für jeden "
-"Punkt in der Geometrie definiert werden. Wenn eine Geometrie Z- oder M-"
-"Ordinaten hat, ist die <emphasis role=\"bold\">Koordinaten-Dimension</"
-"emphasis> 3D; wenn sie sowohl Z- als auch M-Werte hat, ist die Koordinaten-"
-"Dimension 4D."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -42855,17 +43081,13 @@ msgstr ""
 "keine Einheiten zugewiesen sind. Siehe <xref linkend=\"spatial_ref_sys\"/>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The geometry <emphasis role=\"bold\">dimension</emphasis> is a property of "
 "geometry types. Point types have dimension 0, linear types have dimension 1, "
-"and polygonal types have dimension 2. Collections have the dimension of the "
-"maximum element dimension."
+"polygonal types have dimension 2, and solid types have dimension 3. "
+"Collections have the dimension of the maximum element dimension."
 msgstr ""
-"Die Geometrie <emphasis role=\"bold\">Dimension</emphasis> ist eine "
-"Eigenschaft von Geometrietypen. Punkttypen haben die Dimension 0, lineare "
-"Typen haben die Dimension 1, und polygonale Typen haben die Dimension 2. "
-"Sammlungen haben die Dimension der maximalen Elementdimension."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -42897,7 +43119,7 @@ msgstr ""
 "prüfen, ob zwei Geometrien interagieren."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The geometry model allows evaluating topological spatial relationships as "
 "described in <xref linkend=\"DE-9IM\"/>. To support this the concepts of "
@@ -42905,35 +43127,21 @@ msgid ""
 "role=\"bold\">boundary</emphasis> and <emphasis role=\"bold\">exterior</"
 "emphasis> are defined for each geometry type. Geometries are topologically "
 "closed, so they always contain their boundary. The boundary is a geometry of "
-"dimension one less than that of the geometry itself."
+"dimension one less than that of the geometry itself. For example, the "
+"boundary of a Polygon is its rings (LineStrings), the boundary of a "
+"LineString is its endpoints (Points), and the boundary of a Point is empty."
 msgstr ""
-"Das Geometriemodell ermöglicht die Auswertung topologischer räumlicher "
-"Beziehungen, wie in <xref linkend=\"DE-9IM\"/> beschrieben. Um dies zu "
-"unterstützen, werden für jeden Geometrietyp die Konzepte <emphasis "
-"role=\"bold\">interior</emphasis>, <emphasis role=\"bold\">boundary</"
-"emphasis> und <emphasis role=\"bold\">exterior</emphasis> definiert. "
-"Geometrien sind topologisch geschlossen, sie enthalten also immer ihren "
-"Rand. Der Rand ist eine Geometrie der Dimension eins weniger als die der "
-"Geometrie selbst."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The OGC geometry model defines validity rules for each geometry type. These "
 "rules ensure that geometry values represents realistic situations (e.g. it "
-"is possible to specify a polygon with a hole lying outside the shell, but "
+"is possible to specify a polygon with a hole lying outside its shell, but "
 "this makes no sense geometrically and is thus invalid). PostGIS also allows "
 "storing and manipulating invalid geometry values. This allows detecting and "
 "fixing them if needed. See <xref linkend=\"OGC_Validity\"/>"
 msgstr ""
-"Das OGC-Geometriemodell definiert Gültigkeitsregeln für jeden Geometrietyp. "
-"Diese Regeln stellen sicher, dass die Geometriewerte realistische "
-"Situationen darstellen (z.B. ist es möglich, ein Polygon mit einem Loch "
-"außerhalb der Schale zu spezifizieren, was aber geometrisch keinen Sinn "
-"ergibt und daher ungültig ist). PostGIS erlaubt auch die Speicherung und "
-"Bearbeitung von ungültigen Geometriewerten. Dies ermöglicht es, sie zu "
-"erkennen und bei Bedarf zu korrigieren. Siehe <xref linkend=\"OGC_Validity\"/"
-">"
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -43038,14 +43246,14 @@ msgid "MultiPolygon"
 msgstr "MultiPolygon"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A MultiPolygon is a collection of non-overlapping, non-adjacent Polygons. "
-"Polygons in the collection may touch only at a finite number of points."
+"Polygons in the collection may touch only at a finite number of points. (Two "
+"polygons are adjacent if they share an edge. They touch if they share only "
+"points or edges on their boundaries). For more details on MultiPolygon "
+"validity, see <xref linkend=\"OGC_Validity\"/>."
 msgstr ""
-"Ein MultiPolygon ist eine Sammlung von nicht überlappenden, nicht "
-"benachbarten Polygonen. Die Polygone der Sammlung dürfen sich nur an einer "
-"endlichen Anzahl von Punkten berühren."
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -43444,27 +43652,17 @@ msgstr ""
 "<varname>geometry</varname> definiert sind."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>geometry</varname> data type is <emphasis>opaque</emphasis>, "
 "which means that all access is done via invoking functions on geometry "
 "values. Functions allow creating geometry objects, accessing or updating all "
-"internal fields, and compute new geometry values. PostGIS supports all the "
+"internal fields, and computing new geometry values. PostGIS supports all the "
 "functions specified in the OGC <link xlink:href=\"https://portal.ogc.org/"
 "files/?artifact_id=25354\"><emphasis>Simple feature access - Part 2: SQL "
 "option</emphasis></link> (SFS) specification, as well many others. See <xref "
 "linkend=\"reference\"/> for the full list of functions."
 msgstr ""
-"Der <varname>Geometrie</varname> Datentyp ist <emphasis>opaque</emphasis>, "
-"was bedeutet, dass der gesamte Zugriff über den Aufruf von Funktionen auf "
-"Geometriewerte erfolgt. Funktionen ermöglichen die Erstellung von "
-"Geometrieobjekten, den Zugriff auf alle internen Felder oder deren "
-"Aktualisierung sowie die Berechnung neuer Geometriewerte. PostGIS "
-"unterstützt alle Funktionen, die in der OGC <link xlink:href=\"https://"
-"portal.ogc.org/files/?artifact_id=25354\"><emphasis>Simple feature access - "
-"Part 2: SQL option</emphasis></link> (SFS) Spezifikation spezifiziert sind, "
-"sowie viele andere. Siehe <xref linkend=\"reference\"/> für die vollständige "
-"Liste der Funktionen."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -44157,17 +44355,13 @@ msgstr ""
 #, no-c-format
 msgid ""
 "By default, all distance and area calculations are done on the spheroid. You "
-"should find that the results of calculations in local areas match up will "
+"should find that the results of calculations in local areas match up well "
 "with local planar results in good local projections. Over larger areas, the "
 "spheroidal calculations will be more accurate than any calculation done on a "
-"projected plane."
+"projected plane. The difference is that the spheroid takes into account the "
+"curvature and non-spherical shape of the Earth, whereas planar calculations "
+"assume a flat surface."
 msgstr ""
-"Standardmäßig werden alle Entfernungs- und Flächenberechnungen auf dem "
-"Referenzellipsoid ausgeführt. Das Ergebnis der Berechnung sollte in lokalen "
-"Gebieten gut mit dem planaren Ergebnis zusammenpassen - eine gut gewählte "
-"lokale Projektion vorausgesetzt. Bei größeren Gebieten ist die Berechnung "
-"über das Referenzellipsoid genauer als eine Berechnung die auf der "
-"projizierten Ebene ausgeführt wird."
 
 #. Tag: para
 #, no-c-format
@@ -45294,9 +45488,11 @@ msgid "The name of the geometry column in the feature table."
 msgstr "Der Name der Geometriespalte in der Feature-Tabelle."
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "The coordinate dimension (2, 3 or 4) of the column."
-msgstr "Die Koordinatenabmessung (2, 3 oder 4) der Spalte."
+#, no-c-format
+msgid ""
+"The coordinate dimension (2, 3 or 4) of the column. The coordinate dimension "
+"is at least 2, representing X and Y coordinates."
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -47140,22 +47336,16 @@ msgstr ""
 "die gewünschten räumlichen Filterbedingungen zu schaffen."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "For example, consider a linear dataset representing a road network. It may "
 "be required to identify all road segments that cross each other, not at a "
-"point, but in a line (perhaps to validate some business rule). In this case "
-"<xref linkend=\"ST_Crosses\"/> does not provide the necessary spatial "
-"filter, since for linear features it returns <varname>true</varname> only "
-"where they cross at a point."
+"point, but in a line (perhaps to validate a business rule such as ensuring "
+"that no two different roads share a common segment). In this case <xref "
+"linkend=\"ST_Crosses\"/> does not provide the necessary spatial filter, "
+"since for linear features it returns <varname>true</varname> only where they "
+"cross at a point."
 msgstr ""
-"Nehmen wir zum Beispiel einen linearen Datensatz, der ein Straßennetz "
-"darstellt. Es kann erforderlich sein, alle Straßenabschnitte zu "
-"identifizieren, die sich nicht in einem Punkt, sondern in einer Linie "
-"kreuzen (vielleicht um eine Geschäftsregel zu validieren). In diesem Fall "
-"bietet <xref linkend=\"ST_Crosses\"/> nicht den erforderlichen räumlichen "
-"Filter, da es für lineare Merkmale <varname>true</varname> nur dann "
-"zurückgibt, wenn sie sich in einem Punkt kreuzen."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -48995,9 +49185,9 @@ msgstr "Diese Funktion unterstützt 3d und lässt den Z-Index nicht fallen."
 #, no-c-format
 msgid ""
 "If the optional <code>gridSize</code> parameter is given (GEOS-3.9.0 or "
-"higher required), all result vertices are guaranteed to fall on a grid of "
-"the specified size. For the operation to give predictable results all the "
-"input vertices must fall already on the specified grid, see <xref "
+"higher required), all result vertices are guaranteed to fall on a snap-"
+"rounded grid of the specified size. Note that operations performed on a grid "
+"may contain small artifacts produced during grid alignment, see <xref "
 "linkend=\"ST_ReducePrecision\"/>."
 msgstr ""
 
@@ -49040,6 +49230,212 @@ msgstr "2.5/3D-Unterstützung"
 #, fuzzy, no-c-format
 msgid "Supports geography"
 msgstr "Unterstützt Geographie"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Return the 1-based Nth element geometry of an input geometry which is a "
+#~ "GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, "
+#~ "MULTI)POLYGON, or POLYHEDRALSURFACE. Otherwise, returns NULL."
+#~ msgstr ""
+#~ "Gibt die auf 1-basierende n-te Geometrie zurück, wenn es sich bei der "
+#~ "Geometrie um eine GEOMETRYCOLLECTION, (MULTI)POINT, (MULTI)LINESTRING, "
+#~ "MULTICURVE oder (MULTI)POLYGON, POLYHEDRALSURFACE handelt. Anderenfalls "
+#~ "wird NULL zurückgegeben."
+
+#, no-c-format
+#~ msgid ""
+#~ "Index is 1-based as for OGC specs since version 0.8.0. Backward indexing "
+#~ "(negative index) is not in OGC Previous versions implemented this as 0-"
+#~ "based instead."
+#~ msgstr ""
+#~ "Seit Version 0.8.0 ist der Index 1-basiert, so wie in der OGC "
+#~ "Spezifikation. Rückwärtiges Indizieren (negativer Index) findet sich "
+#~ "nicht in der OGC Spezifikation. Vorhergegangene Versionen waren 0-basiert."
+
+#, no-c-format
+#~ msgid ""
+#~ "Return area square feet and transform to Massachusetts state plane meters "
+#~ "(EPSG:26986) to get square meters. Note this is in square feet because "
+#~ "2249 is Massachusetts State Plane Feet and transformed area is in square "
+#~ "meters since EPSG:26986 is state plane Massachusetts meters"
+#~ msgstr ""
+#~ "Gibt den Flächeninhalt in Quadratfuß aus und transformiert nach "
+#~ "\"Massachusetts state plane meters\" (EPSG:26986) um Quadratmeter zu "
+#~ "erhalten. Da die Fläche in \"Massachusetts State Plane Feet\" (EPSG:2249) "
+#~ "vorliegt, wird der Flächeninhalt in Quadratfuß ausgegeben. Die "
+#~ "transformierte Fläche ist in Quadratmeter, da sie in EPSG:26986 "
+#~ "\"Massachusetts state plane meters\" (EPSG:26986) vorliegt."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Calculates the length or perimeter of a geometry on an ellipsoid. This is "
+#~ "useful if the coordinates of the geometry are in longitude/latitude and a "
+#~ "length is desired without reprojection. The spheroid is specified by a "
+#~ "text value as follows:"
+#~ msgstr ""
+#~ "Berechnet die/den Länge/Umfang einer Geometrie auf einem Ellipsoid. Dies "
+#~ "ist nützlich wenn die Koordinaten der Geometrie in Länge und Breite "
+#~ "vorliegen, und die Länge der Geometrie ohne benötigt wird, ohne dass "
+#~ "umprojiziert werden muss. Das Ellipsoid ist ein eigener Datentyp und kann "
+#~ "wie folgt erstellt werden:"
+
+#, fuzzy, no-c-format
+#~ msgid "Examples: 2.5Dish"
+#~ msgstr "Beispiele: 2.5Gericht"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Note this is not a true intersection, compare to the same example using "
+#~ "<xref linkend=\"ST_3DIntersection\"/>."
+#~ msgstr ""
+#~ "Beachten Sie, dass es sich hierbei nicht um eine echte Schnittmenge "
+#~ "handelt, vergleichen Sie das gleiche Beispiel mit <xref "
+#~ "linkend=\"ST_3DIntersection\"/>."
+
+#, fuzzy, no-c-format
+#~ msgid "Many thanks to our translation teams, in particular:"
+#~ msgstr "Vielen Dank insbesondere an unsere Übersetzungsteams:"
+
+#, fuzzy, no-c-format
+#~ msgid "Teramoto Ikuhiro (Japanese Team)"
+#~ msgstr "Teramoto Ikuhiro (Japanische Mannschaft)"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Coordinates may contain optional Z and M ordinate values. The Z ordinate "
+#~ "is often used to represent elevation. The M ordinate contains a measure "
+#~ "value, which may represent time or distance. If Z or M values are present "
+#~ "in a geometry value, they must be defined for each point in the geometry. "
+#~ "If a geometry has Z or M ordinates the <emphasis role=\"bold\">coordinate "
+#~ "dimension</emphasis> is 3D; if it has both Z and M the coordinate "
+#~ "dimension is 4D."
+#~ msgstr ""
+#~ "Koordinaten können optionale Z- und M-Ordinatenwerte enthalten. Die Z-"
+#~ "Ordinate wird häufig zur Darstellung der Höhe verwendet. Die M-Ordinate "
+#~ "enthält einen Messwert, der Zeit oder Entfernung darstellen kann. Wenn Z- "
+#~ "oder M-Werte in einem Geometriewert vorhanden sind, müssen sie für jeden "
+#~ "Punkt in der Geometrie definiert werden. Wenn eine Geometrie Z- oder M-"
+#~ "Ordinaten hat, ist die <emphasis role=\"bold\">Koordinaten-Dimension</"
+#~ "emphasis> 3D; wenn sie sowohl Z- als auch M-Werte hat, ist die "
+#~ "Koordinaten-Dimension 4D."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "The geometry <emphasis role=\"bold\">dimension</emphasis> is a property "
+#~ "of geometry types. Point types have dimension 0, linear types have "
+#~ "dimension 1, and polygonal types have dimension 2. Collections have the "
+#~ "dimension of the maximum element dimension."
+#~ msgstr ""
+#~ "Die Geometrie <emphasis role=\"bold\">Dimension</emphasis> ist eine "
+#~ "Eigenschaft von Geometrietypen. Punkttypen haben die Dimension 0, lineare "
+#~ "Typen haben die Dimension 1, und polygonale Typen haben die Dimension 2. "
+#~ "Sammlungen haben die Dimension der maximalen Elementdimension."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "The geometry model allows evaluating topological spatial relationships as "
+#~ "described in <xref linkend=\"DE-9IM\"/>. To support this the concepts of "
+#~ "<emphasis role=\"bold\">interior</emphasis>, <emphasis "
+#~ "role=\"bold\">boundary</emphasis> and <emphasis role=\"bold\">exterior</"
+#~ "emphasis> are defined for each geometry type. Geometries are "
+#~ "topologically closed, so they always contain their boundary. The boundary "
+#~ "is a geometry of dimension one less than that of the geometry itself."
+#~ msgstr ""
+#~ "Das Geometriemodell ermöglicht die Auswertung topologischer räumlicher "
+#~ "Beziehungen, wie in <xref linkend=\"DE-9IM\"/> beschrieben. Um dies zu "
+#~ "unterstützen, werden für jeden Geometrietyp die Konzepte <emphasis "
+#~ "role=\"bold\">interior</emphasis>, <emphasis role=\"bold\">boundary</"
+#~ "emphasis> und <emphasis role=\"bold\">exterior</emphasis> definiert. "
+#~ "Geometrien sind topologisch geschlossen, sie enthalten also immer ihren "
+#~ "Rand. Der Rand ist eine Geometrie der Dimension eins weniger als die der "
+#~ "Geometrie selbst."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "The OGC geometry model defines validity rules for each geometry type. "
+#~ "These rules ensure that geometry values represents realistic situations "
+#~ "(e.g. it is possible to specify a polygon with a hole lying outside the "
+#~ "shell, but this makes no sense geometrically and is thus invalid). "
+#~ "PostGIS also allows storing and manipulating invalid geometry values. "
+#~ "This allows detecting and fixing them if needed. See <xref "
+#~ "linkend=\"OGC_Validity\"/>"
+#~ msgstr ""
+#~ "Das OGC-Geometriemodell definiert Gültigkeitsregeln für jeden "
+#~ "Geometrietyp. Diese Regeln stellen sicher, dass die Geometriewerte "
+#~ "realistische Situationen darstellen (z.B. ist es möglich, ein Polygon mit "
+#~ "einem Loch außerhalb der Schale zu spezifizieren, was aber geometrisch "
+#~ "keinen Sinn ergibt und daher ungültig ist). PostGIS erlaubt auch die "
+#~ "Speicherung und Bearbeitung von ungültigen Geometriewerten. Dies "
+#~ "ermöglicht es, sie zu erkennen und bei Bedarf zu korrigieren. Siehe <xref "
+#~ "linkend=\"OGC_Validity\"/>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "A MultiPolygon is a collection of non-overlapping, non-adjacent Polygons. "
+#~ "Polygons in the collection may touch only at a finite number of points."
+#~ msgstr ""
+#~ "Ein MultiPolygon ist eine Sammlung von nicht überlappenden, nicht "
+#~ "benachbarten Polygonen. Die Polygone der Sammlung dürfen sich nur an "
+#~ "einer endlichen Anzahl von Punkten berühren."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "The <varname>geometry</varname> data type is <emphasis>opaque</emphasis>, "
+#~ "which means that all access is done via invoking functions on geometry "
+#~ "values. Functions allow creating geometry objects, accessing or updating "
+#~ "all internal fields, and compute new geometry values. PostGIS supports "
+#~ "all the functions specified in the OGC <link xlink:href=\"https://"
+#~ "portal.ogc.org/files/?artifact_id=25354\"><emphasis>Simple feature access "
+#~ "- Part 2: SQL option</emphasis></link> (SFS) specification, as well many "
+#~ "others. See <xref linkend=\"reference\"/> for the full list of functions."
+#~ msgstr ""
+#~ "Der <varname>Geometrie</varname> Datentyp ist <emphasis>opaque</"
+#~ "emphasis>, was bedeutet, dass der gesamte Zugriff über den Aufruf von "
+#~ "Funktionen auf Geometriewerte erfolgt. Funktionen ermöglichen die "
+#~ "Erstellung von Geometrieobjekten, den Zugriff auf alle internen Felder "
+#~ "oder deren Aktualisierung sowie die Berechnung neuer Geometriewerte. "
+#~ "PostGIS unterstützt alle Funktionen, die in der OGC <link "
+#~ "xlink:href=\"https://portal.ogc.org/files/?"
+#~ "artifact_id=25354\"><emphasis>Simple feature access - Part 2: SQL option</"
+#~ "emphasis></link> (SFS) Spezifikation spezifiziert sind, sowie viele "
+#~ "andere. Siehe <xref linkend=\"reference\"/> für die vollständige Liste "
+#~ "der Funktionen."
+
+#, no-c-format
+#~ msgid ""
+#~ "By default, all distance and area calculations are done on the spheroid. "
+#~ "You should find that the results of calculations in local areas match up "
+#~ "will with local planar results in good local projections. Over larger "
+#~ "areas, the spheroidal calculations will be more accurate than any "
+#~ "calculation done on a projected plane."
+#~ msgstr ""
+#~ "Standardmäßig werden alle Entfernungs- und Flächenberechnungen auf dem "
+#~ "Referenzellipsoid ausgeführt. Das Ergebnis der Berechnung sollte in "
+#~ "lokalen Gebieten gut mit dem planaren Ergebnis zusammenpassen - eine gut "
+#~ "gewählte lokale Projektion vorausgesetzt. Bei größeren Gebieten ist die "
+#~ "Berechnung über das Referenzellipsoid genauer als eine Berechnung die auf "
+#~ "der projizierten Ebene ausgeführt wird."
+
+#, fuzzy, no-c-format
+#~ msgid "The coordinate dimension (2, 3 or 4) of the column."
+#~ msgstr "Die Koordinatenabmessung (2, 3 oder 4) der Spalte."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "For example, consider a linear dataset representing a road network. It "
+#~ "may be required to identify all road segments that cross each other, not "
+#~ "at a point, but in a line (perhaps to validate some business rule). In "
+#~ "this case <xref linkend=\"ST_Crosses\"/> does not provide the necessary "
+#~ "spatial filter, since for linear features it returns <varname>true</"
+#~ "varname> only where they cross at a point."
+#~ msgstr ""
+#~ "Nehmen wir zum Beispiel einen linearen Datensatz, der ein Straßennetz "
+#~ "darstellt. Es kann erforderlich sein, alle Straßenabschnitte zu "
+#~ "identifizieren, die sich nicht in einem Punkt, sondern in einer Linie "
+#~ "kreuzen (vielleicht um eine Geschäftsregel zu validieren). In diesem Fall "
+#~ "bietet <xref linkend=\"ST_Crosses\"/> nicht den erforderlichen räumlichen "
+#~ "Filter, da es für lineare Merkmale <varname>true</varname> nur dann "
+#~ "zurückgibt, wenn sie sich in einem Punkt kreuzen."
 
 #, no-c-format
 #~ msgid "&extras_address_standardizer; &extras_tigergeocoder;"

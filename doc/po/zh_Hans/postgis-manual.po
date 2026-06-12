@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-13 16:23+0000\n"
+"POT-Creation-Date: 2026-06-12 20:29+0000\n"
 "PO-Revision-Date: 2025-12-26 07:47+0000\n"
 "Last-Translator: Wangdapeng <wangdapeng20191008@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -3690,6 +3690,25 @@ msgstr "该函数计算排序而不是从元数据导出，因此可用于构建
 #, no-c-format
 msgid ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
 msgstr ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Find pairs of topology vertex/segment that are closer than tolerated distance"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a relation in which each tuple is a pair of vertex/segment where the "
+"vertex is NOT an endpoint of the segment but the distance between them is "
+"below the given tolerance."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.7"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -8815,12 +8834,9 @@ msgstr "返回几何集合的一个元素。"
 #, no-c-format
 msgid ""
 "Return the 1-based Nth element geometry of an input geometry which is a "
-"GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTI)POLYGON, "
+"GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTIPOLYGON, "
 "or POLYHEDRALSURFACE. Otherwise, returns NULL."
 msgstr ""
-"返回输入几何图形的从 1 开始的第 N 个元素几何图形，该几何图形是 "
-"GEOMETRYCOLLECTION、MULTIPOINT、MULTILINESTRING、MULTICURVE、MULTI)POLYGON 或"
-"POLYHEDRALSURFACE。 否则，返回 NULL。"
 
 #. Tag: para
 #, no-c-format
@@ -9548,11 +9564,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Backward indexing "
-"(negative index) is not in OGC Previous versions implemented this as 0-based "
-"instead."
+"(negative index) is not in OGC. Previous versions implemented this as 0-"
+"based instead."
 msgstr ""
-"自版本 0.8.0 以来，OGC 规范的索引从 1 开始。 OGC 中没有向后索引（负索引），以"
-"前的版本将其实现为基于 0。"
 
 #. Tag: para
 #, no-c-format
@@ -10700,6 +10714,46 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_ClusterIntersectingWin\"/>, <xref "
 "linkend=\"ST_ClusterWithinWin\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Window function that returns a tree id for each input geometry, clustering "
+"input geometries into connected trees using the Minimum Spanning Tree "
+"algorithm."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A window function that builds connected graphs of line strings based on the "
+"Minimum Spanning Tree (MST) of the input geometries. The return value is the "
+"cluster number that the geometry argument participates in, or zero if it is "
+"not part of the minimum tree."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Minimum_spanning_tree\">Minimum Spanning Tree</link> connects all geometries "
+"in the window partition such that the total length of the connecting lines "
+"is minimized. If the graph is not fully connected (e.g. infinite distance "
+"between some geometries), it produces a Minimum Spanning Forest, and each "
+"connected component is assigned a unique tree ID."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Requires GEOS &gt;= 3.15.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
+"linkend=\"ST_ClusterIntersectingWin\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -12408,6 +12462,52 @@ msgid ""
 ", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/>"
 msgstr ""
 ", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageClean\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Computes the unique edges of a polygonal coverage."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a MultiLineString representing the unique edges of a polygonal "
+"coverage. A polygonal coverage is a set of non-overlapping polygons where "
+"adjacent polygons have matching vertices along shared edges."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <parameter>edgetype</parameter> parameter can be used to select which "
+"edges are returned:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<emphasis role=\"bold\">0 (ALL)</emphasis> - all unique edges (default)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<emphasis role=\"bold\">1 (EXTERIOR)</emphasis> - only exterior edges (non-"
+"shared)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<emphasis role=\"bold\">2 (INTERIOR)</emphasis> - only interior edges "
+"(shared)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_CoverageSimplify\"/>, <xref "
+"linkend=\"ST_CoverageUnion\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -16389,6 +16489,36 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
+msgid ""
+"Returns the interpolated measure of a geometry closest to a point in 3D."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the interpolated measure value of a linear ZM geometry at the "
+"location closest to the given point, using 3D (XYZ) distance for the "
+"projection. Use this function when the geometry has significant Z variation, "
+"such as flight trajectories, where <xref linkend=\"ST_InterpolatePoint\"/> "
+"would give incorrect results by ignoring the Z dimension."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The line must have both Z and M dimensions. The point should have a Z "
+"dimension."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AddMeasure\"/>, <xref linkend=\"ST_LocateAlong\"/>, "
+"<xref linkend=\"ST_LocateBetween\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
 msgid "Interpolates measures along a linear geometry."
 msgstr "沿线性几何形状插值测量值。"
 
@@ -16855,11 +16985,8 @@ msgid ""
 "Return area square feet and transform to Massachusetts state plane meters "
 "(EPSG:26986) to get square meters. Note this is in square feet because 2249 "
 "is Massachusetts State Plane Feet and transformed area is in square meters "
-"since EPSG:26986 is state plane Massachusetts meters"
+"since EPSG:26986 is state plane Massachusetts meters."
 msgstr ""
-"返回面积平方英尺并转换为马萨诸塞州平面米 (EPSG:26986) 以获得平方米。 请注意，"
-"单位为平方英尺，因为 2249 是马萨诸塞州平面英尺，变换面积的单位是平方米，因为 "
-"EPSG:26986 是马萨诸塞州平面米"
 
 #. Tag: para
 #, no-c-format
@@ -17712,13 +17839,11 @@ msgstr "返回椭球体上经度/纬度几何体的 2D 或 3D 长度/周长。"
 #. Tag: para
 #, no-c-format
 msgid ""
-"Calculates the length or perimeter of a geometry on an ellipsoid. This is "
+"Calculates the length or perimeter of a geometry on a spheroid. This is "
 "useful if the coordinates of the geometry are in longitude/latitude and a "
 "length is desired without reprojection. The spheroid is specified by a text "
 "value as follows:"
 msgstr ""
-"返回椭球体面上几何图形的周长。 当几何图形的坐标为经度/纬度并且您希望查找没有"
-"投影的长度时，请使用此函数。椭球体由文本值指定，如下所示："
 
 #. Tag: para
 #, no-c-format
@@ -21450,17 +21575,16 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "Examples: 2.5Dish"
-msgstr "示例：2.5D"
+msgid "Examples: 2.5D geometries"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Note this is not a true intersection, compare to the same example using "
-"<xref linkend=\"ST_3DIntersection\"/>."
+"Note this is not a true 3D intersection. It uses 2.5D geometries (geometries "
+"with Z ordinates, but where calculations are performed in 2D). Compare to "
+"the same example using <xref linkend=\"ST_3DIntersection\"/>."
 msgstr ""
-"请注意，这不是真正的交集，与使用 <xref linkend=\"ST_3DIntersection\"/> 的同一"
-"示例进行比较。"
 
 #. Tag: para
 #, no-c-format
@@ -22039,12 +22163,10 @@ msgstr "不混合维度的 3D 示例"
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
-"linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
-"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Intersection\"/>, <xref "
+"linkend=\"ST_Difference\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
+"linkend=\"ST_LineMerge\"/>"
 msgstr ""
-", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
-"linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
-"linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -22569,6 +22691,86 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref "
 "linkend=\"ST_SimplifyVW\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Returns a smoothed version of a geometry, using the Catmull-Rom spline "
+"algorithm"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Smoothes a linear or polygonal geometry using the <link xlink:href=\"https://"
+"en.wikipedia.org/wiki/Centripetal_Catmull%E2%80%93Rom_spline\">Catmull-Rom "
+"spline</link> algorithm. Unlike <xref linkend=\"ST_ChaikinSmoothing\"/>, "
+"this is an <emphasis>interpolating</emphasis> spline: the output curve "
+"passes through every original vertex. Between each pair of consecutive "
+"original vertices, <varname>nSegments</varname> - 1 new intermediate points "
+"are inserted."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <varname>nSegments</varname> parameter controls the density of the "
+"output. With <varname>nSegments</varname> = 5 (the default), each original "
+"span is divided into 5 sub-segments (inserting 4 new points per span). The "
+"minimum value is 2."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"At least 4 input vertices are required to apply smoothing; geometries with "
+"fewer vertices are returned unchanged. Points and multipoints are always "
+"returned unchanged."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The output vertex count grows as <literal>1 + (N-1) * nSegments</literal> "
+"for open lines, and <literal>1 + N * nSegments</literal> for closed rings, "
+"where N is the number of input vertices. For large geometries, use a "
+"simplification function on the result to reduce the number of points (see "
+"<xref linkend=\"ST_Simplify\"/>, <xref "
+"linkend=\"ST_SimplifyPreserveTopology\"/> and <xref "
+"linkend=\"ST_SimplifyVW\"/>)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Smoothing a 4-point collinear line with default nSegments=5:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Smoothing a Polygon using nSegments = 5 and 10:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "nSegments = 5"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "nSegments = 10"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Smoothing a LineString using nSegments = 5 and 10:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Simplify\"/>, <xref "
+"linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_SimplifyVW\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35487,6 +35689,24 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"When <varname>projected</varname> is <varname>true</varname>, free endpoints "
+"of the medial axis are extended to reach the polygon boundary (projected "
+"medial axis). Requires SFCGAL 2.3.0+. When built against an older SFCGAL "
+"version, a notice is emitted and the non-projected result is returned "
+"instead."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Availability: 3.7.0 - <varname>projected</varname> parameter. Requires "
+"SFCGAL &gt;= 2.3.0 for projected result; falls back to non-projected with a "
+"notice on older versions."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "A polygon and its approximate medial axis"
 msgstr "多边形及其近似中轴"
 
@@ -35494,6 +35714,215 @@ msgstr "多边形及其近似中轴"
 #, no-c-format
 msgid ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
 msgstr ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a flat (box) roof from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a flat (box-shaped) roof as a 3D <varname>PolyhedralSurface Z</"
+"varname> from a 2D footprint polygon. The roof height above the ground plane "
+"is given by <varname>height</varname> (default 3.0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GenerateGableRoof\"/>, <xref "
+"linkend=\"CG_GenerateSkillionRoof\"/>, <xref linkend=\"CG_GenerateRoof\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a hipped roof from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a hipped roof as a 3D <varname>PolyhedralSurface Z</varname> from a "
+"2D footprint polygon. All sides slope upward to meet at a ridge or apex. The "
+"roof height is given by <varname>height</varname> (default 3.0)."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a gable roof from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a gable roof as a 3D <varname>PolyhedralSurface Z</varname> from a "
+"2D footprint polygon. Two opposite sides are vertical gable ends; the other "
+"two sides slope to a horizontal ridge. <varname>height</varname> sets the "
+"ridge height above the ground (default 3.0) and <varname>slope_angle</"
+"varname> controls the pitch in degrees (default 30.0). The SRID of the input "
+"geometry is preserved."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GenerateHippedRoof\"/>, <xref "
+"linkend=\"CG_GenerateSkillionRoof\"/>, <xref linkend=\"CG_GenerateRoof\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a skillion (single-slope) roof from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a skillion (single-slope, shed-style) roof as a 3D "
+"<varname>PolyhedralSurface Z</varname> from a 2D footprint polygon. The "
+"entire roof surface slopes in one direction. <varname>height</varname> sets "
+"the maximum ridge height (default 3.0), <varname>slope_angle</varname> sets "
+"the pitch in degrees (default 30.0), and <varname>primary_edge_index</"
+"varname> selects which polygon edge defines the high side (0-based, default "
+"0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When the combination of <varname>height</varname> and <varname>slope_angle</"
+"varname> would cause a side wall to vanish (the slope reaches the far edge "
+"before the full height is achieved), that face is omitted from the result. "
+"This means the number of output patches can vary depending on the parameters "
+"— a lower height relative to the footprint depth produces more faces than a "
+"taller, steeper configuration."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Height 2.0 produces 6 faces (all walls present); height 4.0 produces 5 faces "
+"(one side wall is filtered out because the slope reaches the far edge before "
+"the full height)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GenerateHippedRoof\"/>, <xref "
+"linkend=\"CG_GenerateGableRoof\"/>, <xref linkend=\"CG_GenerateRoof\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Generate a roof of the requested type from a footprint polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate a roof as a 3D <varname>PolyhedralSurface Z</varname> from a 2D "
+"footprint polygon. The <varname>roof_type</varname> parameter selects the "
+"roof style (default <literal>'HIPPED'</literal>):"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<varname>FLAT</varname> — flat box roof."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<varname>HIPPED</varname> — hipped roof (all sides slope to apex)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>GABLE</varname> — gable roof (two sloping sides, two vertical ends)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<varname>SKILLION</varname> — single-slope (shed) roof."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>height</varname> sets the roof height (default 3.0), "
+"<varname>slope_angle</varname> sets the pitch in degrees (default 30.0), and "
+"<varname>primary_edge_index</varname> selects the reference edge for "
+"skillion roofs (default 0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GenerateHippedRoof\"/>, <xref "
+"linkend=\"CG_GenerateGableRoof\"/>, <xref "
+"linkend=\"CG_GenerateSkillionRoof\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Repair an invalid polygon or multipolygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Repair an invalid polygon or multipolygon using CGAL's 2D Polygon Repair "
+"algorithm. Returns a <varname>MultiPolygon</varname>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The <varname>rule</varname> parameter controls the repair strategy:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>EVEN_ODD</varname> (default) — areas covered an odd number of times "
+"are kept. Available with CGAL 6.0+."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>NON_ZERO</varname> — areas with non-zero winding number are kept. "
+"Requires CGAL 6.1+."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>UNION</varname> — union of all input polygons. Requires CGAL 6.1+."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>INTERSECTION</varname> — intersection of all input polygons. "
+"Requires CGAL 6.1+."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0 and CGAL &gt;= 6.0."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_MakeValid\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38592,48 +39021,22 @@ msgstr "发行说明"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.6.0rc2"
-msgstr "PostGIS 3.6.0rc2"
+msgid "PostGIS 3.7.0beta1"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "2025/08/25"
-msgstr "2025/08/25"
+msgid "2026/06/xx"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj "
-"6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
-"advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
+"This version requires GEOS 3.10 or higher. PostgreSQL 14-19beta1 required. "
+"Proj 6.1+ required. To take advantage of all features postgis extension "
+"features, GEOS 3.15+ is needed. To take advantage of all postgis_sfcgal "
+"extension features SFCGAL 2.2+ is needed."
 msgstr ""
-"该版本要求 PostgreSQL 12–18beta3、GEOS 3.8 或更高版本，以及 Proj 6.1+。若要使"
-"用全部功能，需要 GEOS 3.14+；若要使用 SFCGAL 的全部功能，则需要 SFCGAL 2.2+。"
-
-#. Tag: para
-#, no-c-format
-msgid "Many thanks to our translation teams, in particular:"
-msgstr "非常感谢我们的翻译团队，特别是："
-
-#. Tag: para
-#, no-c-format
-msgid "Teramoto Ikuhiro (Japanese Team)"
-msgstr "Teramoto Ikuhiro (Japanese Team)"
-
-#. Tag: para
-#, no-c-format
-msgid "Daniel Nylander (Swedish Team)"
-msgstr "Daniel Nylander (Swedish Team)"
-
-#. Tag: para
-#, no-c-format
-msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
-msgstr "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
-
-#. Tag: para
-#, no-c-format
-msgid "Denys Kovshun (Ukrainian Team)"
-msgstr "Denys Kovshun (Ukrainian Team)"
 
 #. Tag: title
 #, no-c-format
@@ -38642,238 +39045,13 @@ msgstr "重大变化"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5799\">#5799</"
-"link>, make ST_TileEnvelope clips envelopes to tile plane extent (Paul "
-"Ramsey)"
+msgid "Place holder"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5799\">#5799</"
-"link> ，使 ST_TileEnvelope 将信封裁剪到 tile 平面范围（Paul Ramsey）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">#5829</"
-"link>, remove constraint checking from geometry_columns view (Paul Ramsey)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">#5829</"
-"link> ，从 geometry_columns 视图中移除约束检查（Paul Ramsey）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"255\">GT-255</link>, [topology] Support for upgrading domains (Ayo Adesugba, "
-"U.S. Census Bureau)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
-"link>、<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"255\">GT-255</link>、[topology] 支持升级域（Ayo Adesugba，U.S. Census "
-"Bureau）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"252\">GT-252</link>, ST_NumGeometries/ST_GeometryN treat TIN and "
-"PolyhedralSurface as unitary geometries, use ST_NumPatches/ST_PatchN for "
-"patch access (Loïc Bartoletti)"
-msgstr ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"252\">GT-252</link>， ST_NumGeometries/ST_GeometryN 将 TIN 和 "
-"PolyhedralSurface 视为单一几何体，如需访问补片请使用 ST_NumPatches/ST_PatchN"
-"（Loïc Bartoletti）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"242\">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, U.S. "
-"Census Bureau)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-"link>、<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"242\">GT-242</link>、[topology] 支持 bigint（Ayo Adesugba，U.S. Census "
-"Bureau）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
-"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
-"5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/"
-"postgis/pulls/260\">GT-260</link> [tiger_geocoder] Use @extschema:extension@ "
-"for PG &gt;= 16 to schema qualify dependent extensions, switch to use typmod "
-"for tiger tables (Regina Obe)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
-"link>、<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
-"5897\">#5897</link>、<link xlink:href=\"https://git.osgeo.org/gitea/postgis/"
-"postgis/pulls/260\">GT-260</link> [tiger_geocoder] 对 PG &gt;= 16 使用 "
-"@extschema:extension@ 来为依赖扩展指定 schema，并改用 typmod 处理 tiger 表"
-"（Regina Obe）"
-
-#. Tag: title
-#, no-c-format
-msgid "Removed / Deprecate signatures"
-msgstr "移除 / 弃用的函数签名"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</link> "
-"Drop st_approxquantile(raster, double precision), wasn't usable as it "
-"triggered is not unique error when used (Regina Obe)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</link> "
-"删除 `st_approxquantile(raster, double precision)`，因使用时会触发 is not "
-"unique 错误而不可用（Regina Obe）"
 
 #. Tag: title
 #, no-c-format
 msgid "New Features"
 msgstr "新特性"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/803\">GH-803</"
-"link>, [sfcgal] ADD CG_Simplify function (Loïc Bartoletti)"
-msgstr ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/803\">GH-803</"
-"link>，[sfcgal] 新增 CG_Simplify 函数（Loïc Bartoletti）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/805\">GH-805</"
-"link>, [sfcgal] Add M support for SFCGAL &gt;= 1.5.0 (Loïc Bartoletti)"
-msgstr ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/805\">GH-805</"
-"link>，[sfcgal] 为 SFCGAL &gt;= 1.5.0 添加 M 维支持（Loïc Bartoletti）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/801\">GH-801</"
-"link>, [sfcgal] ADD CG_3DAlphaWrapping function (Jean Felder)"
-msgstr ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/801\">GH-801</"
-"link>，[sfcgal] 新增 CG_3DAlphaWrapping 函数（Jean Felder）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5894\">#5894</"
-"link>, [topology] TotalTopologySize (Sandro Santilli)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5894\">#5894</"
-"link>, [topology] TotalTopologySize (Sandro Santilli)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5890\">#5890</"
-"link>, [topology] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro "
-"Santilli)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5890\">#5890</"
-"link>, [topology] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro "
-"Santilli)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5861\">#5861</"
-"link>, [topology] Add --drop-topology switch to pgtopo_import (Sandro "
-"Santilli)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5861\">#5861</"
-"link>，[topology] 为 pgtopo_import 添加 --drop-topology 选项（Sandro "
-"Santilli）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1247\">#1247</"
-"link>, [raster] ST_AsRasterAgg (Sandro Santilli)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1247\">#1247</"
-"link>, [raster] ST_AsRasterAgg (Sandro Santilli)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"223\">GT-223</link> Export circ_tree_distance_tree_internal for mobilitydb "
-"use (Maxime Schoemans)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
-"link>、<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"223\">GT-223</link> 为 MobilityDB 导出 circ_tree_distance_tree_internal"
-"（Maxime Schoemans）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"228\">GT-228</link> [sfcgal] Add new functions (Scale, Translate, Rotate, "
-"Buffer 3D and Straight Skeleton Partition) from SFCGAL 2 (Loïc Bartoletti)"
-msgstr ""
-"<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"228\">GT-228</link>、[sfcgal] 从 SFCGAL 2 添加新函数（Scale、Translate、"
-"Rotate、Buffer 3D 和 Straight Skeleton Partition）（Loïc Bartoletti）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"[raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages and "
-"routes them into the PostgreSQL logging system. (Paul Ramsey)"
-msgstr ""
-"[raster] 新增 GUC postgis.gdal_cpl_debug，用于开启 GDAL 调试信息，并将其输出"
-"到 PostgreSQL 日志系统。（Paul Ramsey）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\">#5841</"
-"link>, Change interrupt handling to remove use of pqsignal to support PG 18 "
-"(Paul Ramsey)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\">#5841</"
-"link>，更改中断处理机制，移除对 pqsignal 的使用，以支持 PostgreSQL 18（Paul "
-"Ramsey 提供）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Add ST_CoverageClean to edge match and gap remove polygonal coverages (Paul "
-"Ramsey) from GEOS 3.14 (Martin Davis)"
-msgstr ""
-"新增 ST_CoverageClean，用于边界匹配与缝隙消除多边形覆盖图（由 Paul Ramsey 提"
-"供，基于 GEOS 3.14 的功能，Martin Davis 开发）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, U.S. Census "
-"Bureau)"
-msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
-"link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
-"242\">GT-242</link> [topology] 对bigint支持(Ayo Adesugba, U.S. Census Bureau)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"[raster] Add ST_ReclassExact to quickly remap values in raster (Paul Ramsey)"
-msgstr ""
-"[raster] 新增 ST_ReclassExact，用于快速重映射 raster 中的值（Paul Ramsey）"
 
 #. Tag: title
 #, no-c-format
@@ -39116,12 +39294,9 @@ msgid ""
 "geometry value, they must be defined for each point in the geometry. If a "
 "geometry has Z or M ordinates the <emphasis role=\"bold\">coordinate "
 "dimension</emphasis> is 3D; if it has both Z and M the coordinate dimension "
-"is 4D."
+"is 4D. The coordinate dimension is at least 2, because every geometry has at "
+"least X and Y coordinates."
 msgstr ""
-"坐标可能包含可选的Z和M纵坐标值。Z纵坐标通常用于表示高程。M纵坐标包含一个测量"
-"值，该值可能表示时间或距离。如果几何值中存在Z或M值，则必须为几何中的每个点定"
-"义这些值。如果几何具有 Z 或 M 纵坐标，则<emphasis role=\"bold\">坐标尺寸</"
-"emphasis>为 3D;如果它同时具有 Z 和 M，则坐标尺寸为 4D。"
 
 #. Tag: para
 #, no-c-format
@@ -39148,11 +39323,9 @@ msgstr ""
 msgid ""
 "The geometry <emphasis role=\"bold\">dimension</emphasis> is a property of "
 "geometry types. Point types have dimension 0, linear types have dimension 1, "
-"and polygonal types have dimension 2. Collections have the dimension of the "
-"maximum element dimension."
+"polygonal types have dimension 2, and solid types have dimension 3. "
+"Collections have the dimension of the maximum element dimension."
 msgstr ""
-"几何<emphasis role=\"bold\">维度</emphasis>是几何类型的属性。点类型的维度为 "
-"0，线性类型的维度为 1， 多边形类型的维度为 2。集合具有最大元素维度的维度。"
 
 #. Tag: para
 #, no-c-format
@@ -39188,28 +39361,21 @@ msgid ""
 "role=\"bold\">boundary</emphasis> and <emphasis role=\"bold\">exterior</"
 "emphasis> are defined for each geometry type. Geometries are topologically "
 "closed, so they always contain their boundary. The boundary is a geometry of "
-"dimension one less than that of the geometry itself."
+"dimension one less than that of the geometry itself. For example, the "
+"boundary of a Polygon is its rings (LineStrings), the boundary of a "
+"LineString is its endpoints (Points), and the boundary of a Point is empty."
 msgstr ""
-"几何模型允许评估拓扑空间关系，如<xref linkend=\"DE-9IM\"/>中所述。为了支持这"
-"一点，为每种几何类型定义了<emphasis role=\"bold\">内部</emphasis>, <emphasis "
-"role=\"bold\">外部</emphasis>和<emphasis role=\"bold\">边界</emphasis>的概"
-"念。几何图形在拓扑上是封闭的，因此它们总是包含它们的边界。边界是比几何体本身"
-"小一维的几何体。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The OGC geometry model defines validity rules for each geometry type. These "
 "rules ensure that geometry values represents realistic situations (e.g. it "
-"is possible to specify a polygon with a hole lying outside the shell, but "
+"is possible to specify a polygon with a hole lying outside its shell, but "
 "this makes no sense geometrically and is thus invalid). PostGIS also allows "
 "storing and manipulating invalid geometry values. This allows detecting and "
 "fixing them if needed. See <xref linkend=\"OGC_Validity\"/>"
 msgstr ""
-"OGC几何模型为每种几何类型定义了有效性规则。这些规则确保几何值表示现实情况（例"
-"如，可以指定一个具有孔的多边形位于外壳之外，但从几何角度来看这是没有意义的，"
-"因此是无效的）。PostGIS 也允许存储和操作无效的几何值。这允许在需要时检测和修"
-"复它们。请参阅<xref linkend=\"OGC_Validity\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -39306,9 +39472,11 @@ msgstr "多面（MultiPolygon）"
 #, no-c-format
 msgid ""
 "A MultiPolygon is a collection of non-overlapping, non-adjacent Polygons. "
-"Polygons in the collection may touch only at a finite number of points."
+"Polygons in the collection may touch only at a finite number of points. (Two "
+"polygons are adjacent if they share an edge. They touch if they share only "
+"points or edges on their boundaries). For more details on MultiPolygon "
+"validity, see <xref linkend=\"OGC_Validity\"/>."
 msgstr ""
-"多面是非重叠、不相邻多边形的集合。集合中的多边形只能在有限数量的点处接触。"
 
 #. Tag: title
 #, no-c-format
@@ -39675,18 +39843,12 @@ msgid ""
 "The <varname>geometry</varname> data type is <emphasis>opaque</emphasis>, "
 "which means that all access is done via invoking functions on geometry "
 "values. Functions allow creating geometry objects, accessing or updating all "
-"internal fields, and compute new geometry values. PostGIS supports all the "
+"internal fields, and computing new geometry values. PostGIS supports all the "
 "functions specified in the OGC <link xlink:href=\"https://portal.ogc.org/"
 "files/?artifact_id=25354\"><emphasis>Simple feature access - Part 2: SQL "
 "option</emphasis></link> (SFS) specification, as well many others. See <xref "
 "linkend=\"reference\"/> for the full list of functions."
 msgstr ""
-"<varname>geometry</varname>数据类型是 <emphasis>不透明的</emphasis>，这意味着"
-"所有访问都是通过调用几何值的函数来完成的。 函数允许创建几何对象、访问或更新所"
-"有内部字段以及计算新的几何值。PostGIS 支持 OGC <link xlink:href=\"https://"
-"portal.ogc.org/files/?artifact_id=25354\"><emphasis>简单功能访问 - 第二部分: "
-"SQL 选项</emphasis></link>(SFS) 规范中指定的所有功能以及许多其他功能。 请参阅"
-"<xref linkend=\"reference\"/>以获取完整的函数列表。"
 
 #. Tag: para
 #, no-c-format
@@ -40308,14 +40470,13 @@ msgstr "你是用球体还是椭球体计算?"
 #, no-c-format
 msgid ""
 "By default, all distance and area calculations are done on the spheroid. You "
-"should find that the results of calculations in local areas match up will "
+"should find that the results of calculations in local areas match up well "
 "with local planar results in good local projections. Over larger areas, the "
 "spheroidal calculations will be more accurate than any calculation done on a "
-"projected plane."
+"projected plane. The difference is that the spheroid takes into account the "
+"curvature and non-spherical shape of the Earth, whereas planar calculations "
+"assume a flat surface."
 msgstr ""
-"默认情况下，所有距离和面积计算都在椭球体中执行。将局部区域的计算结果与投影良"
-"好的平面上的结果进行比较。对于大面积，椭球体计算比投影平面上的任何其他计算都"
-"更准确。"
 
 #. Tag: para
 #, no-c-format
@@ -41312,8 +41473,10 @@ msgstr "要素表中几何列的名称。"
 
 #. Tag: para
 #, no-c-format
-msgid "The coordinate dimension (2, 3 or 4) of the column."
-msgstr "列的坐标维度（2、3 或 4）。"
+msgid ""
+"The coordinate dimension (2, 3 or 4) of the column. The coordinate dimension "
+"is at least 2, representing X and Y coordinates."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -42939,15 +43102,12 @@ msgstr "在某些情况下，指定的空间关系不足以提供所需的空间
 msgid ""
 "For example, consider a linear dataset representing a road network. It may "
 "be required to identify all road segments that cross each other, not at a "
-"point, but in a line (perhaps to validate some business rule). In this case "
-"<xref linkend=\"ST_Crosses\"/> does not provide the necessary spatial "
-"filter, since for linear features it returns <varname>true</varname> only "
-"where they cross at a point."
+"point, but in a line (perhaps to validate a business rule such as ensuring "
+"that no two different roads share a common segment). In this case <xref "
+"linkend=\"ST_Crosses\"/> does not provide the necessary spatial filter, "
+"since for linear features it returns <varname>true</varname> only where they "
+"cross at a point."
 msgstr ""
-"例如，考虑表示道路网络的线性数据集。 可能需要识别所有相互交叉的路段，不是在一"
-"个点，而是在一条线上（也许是为了验证某些业务规则）。 在这种情况下，<xref "
-"linkend=\"ST_Crosses\"/>不提供必要的空间过滤器，因为对于线性要素，它仅在它们"
-"在某个点交叉的地方返回<varname>true</varname>。"
 
 #. Tag: para
 #, no-c-format
@@ -44558,14 +44718,11 @@ msgstr "该函数支持 3d 并且不会丢失 z-index。"
 #, no-c-format
 msgid ""
 "If the optional <code>gridSize</code> parameter is given (GEOS-3.9.0 or "
-"higher required), all result vertices are guaranteed to fall on a grid of "
-"the specified size. For the operation to give predictable results all the "
-"input vertices must fall already on the specified grid, see <xref "
+"higher required), all result vertices are guaranteed to fall on a snap-"
+"rounded grid of the specified size. Note that operations performed on a grid "
+"may contain small artifacts produced during grid alignment, see <xref "
 "linkend=\"ST_ReducePrecision\"/>."
 msgstr ""
-"如果提供了可选参数 <code>gridSize</code>（需要 GEOS 3.9.0 或更高版本），则所"
-"有结果顶点都会落在指定网格上。为了保证操作结果可预测，所有输入顶点必须已经位"
-"于该网格上，详见 <xref linkend=\"ST_ReducePrecision\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -44606,6 +44763,443 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
+
+#, no-c-format
+#~ msgid ""
+#~ "Return the 1-based Nth element geometry of an input geometry which is a "
+#~ "GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, "
+#~ "MULTI)POLYGON, or POLYHEDRALSURFACE. Otherwise, returns NULL."
+#~ msgstr ""
+#~ "返回输入几何图形的从 1 开始的第 N 个元素几何图形，该几何图形是 "
+#~ "GEOMETRYCOLLECTION、MULTIPOINT、MULTILINESTRING、MULTICURVE、"
+#~ "MULTI)POLYGON 或POLYHEDRALSURFACE。 否则，返回 NULL。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Index is 1-based as for OGC specs since version 0.8.0. Backward indexing "
+#~ "(negative index) is not in OGC Previous versions implemented this as 0-"
+#~ "based instead."
+#~ msgstr ""
+#~ "自版本 0.8.0 以来，OGC 规范的索引从 1 开始。 OGC 中没有向后索引（负索"
+#~ "引），以前的版本将其实现为基于 0。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Return area square feet and transform to Massachusetts state plane meters "
+#~ "(EPSG:26986) to get square meters. Note this is in square feet because "
+#~ "2249 is Massachusetts State Plane Feet and transformed area is in square "
+#~ "meters since EPSG:26986 is state plane Massachusetts meters"
+#~ msgstr ""
+#~ "返回面积平方英尺并转换为马萨诸塞州平面米 (EPSG:26986) 以获得平方米。 请注"
+#~ "意，单位为平方英尺，因为 2249 是马萨诸塞州平面英尺，变换面积的单位是平方"
+#~ "米，因为 EPSG:26986 是马萨诸塞州平面米"
+
+#, no-c-format
+#~ msgid ""
+#~ "Calculates the length or perimeter of a geometry on an ellipsoid. This is "
+#~ "useful if the coordinates of the geometry are in longitude/latitude and a "
+#~ "length is desired without reprojection. The spheroid is specified by a "
+#~ "text value as follows:"
+#~ msgstr ""
+#~ "返回椭球体面上几何图形的周长。 当几何图形的坐标为经度/纬度并且您希望查找没"
+#~ "有投影的长度时，请使用此函数。椭球体由文本值指定，如下所示："
+
+#, no-c-format
+#~ msgid "Examples: 2.5Dish"
+#~ msgstr "示例：2.5D"
+
+#, no-c-format
+#~ msgid ""
+#~ "Note this is not a true intersection, compare to the same example using "
+#~ "<xref linkend=\"ST_3DIntersection\"/>."
+#~ msgstr ""
+#~ "请注意，这不是真正的交集，与使用 <xref linkend=\"ST_3DIntersection\"/> 的"
+#~ "同一示例进行比较。"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, "
+#~ "<xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, "
+#~ "<xref linkend=\"ST_SymDifference\"/>, <xref "
+#~ "linkend=\"ST_ReducePrecision\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, "
+#~ "<xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, "
+#~ "<xref linkend=\"ST_SymDifference\"/>, <xref "
+#~ "linkend=\"ST_ReducePrecision\"/>"
+
+#, no-c-format
+#~ msgid "PostGIS 3.6.0rc2"
+#~ msgstr "PostGIS 3.6.0rc2"
+
+#, no-c-format
+#~ msgid "2025/08/25"
+#~ msgstr "2025/08/25"
+
+#, no-c-format
+#~ msgid ""
+#~ "This version requires PostgreSQL 12-18beta3, GEOS 3.8 or higher, and Proj "
+#~ "6.1+. To take advantage of all features, GEOS 3.14+ is needed. To take "
+#~ "advantage of all SFCGAL features, SFCGAL 2.2+ is needed."
+#~ msgstr ""
+#~ "该版本要求 PostgreSQL 12–18beta3、GEOS 3.8 或更高版本，以及 Proj 6.1+。若"
+#~ "要使用全部功能，需要 GEOS 3.14+；若要使用 SFCGAL 的全部功能，则需要 "
+#~ "SFCGAL 2.2+。"
+
+#, no-c-format
+#~ msgid "Many thanks to our translation teams, in particular:"
+#~ msgstr "非常感谢我们的翻译团队，特别是："
+
+#, no-c-format
+#~ msgid "Teramoto Ikuhiro (Japanese Team)"
+#~ msgstr "Teramoto Ikuhiro (Japanese Team)"
+
+#, no-c-format
+#~ msgid "Daniel Nylander (Swedish Team)"
+#~ msgstr "Daniel Nylander (Swedish Team)"
+
+#, no-c-format
+#~ msgid "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
+#~ msgstr "Dapeng Wang, Zuo Chenwei from HighGo (Chinese Team)"
+
+#, no-c-format
+#~ msgid "Denys Kovshun (Ukrainian Team)"
+#~ msgstr "Denys Kovshun (Ukrainian Team)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5799\">#5799</"
+#~ "link>, make ST_TileEnvelope clips envelopes to tile plane extent (Paul "
+#~ "Ramsey)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5799\">#5799</"
+#~ "link> ，使 ST_TileEnvelope 将信封裁剪到 tile 平面范围（Paul Ramsey）"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">#5829</"
+#~ "link>, remove constraint checking from geometry_columns view (Paul Ramsey)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5829\">#5829</"
+#~ "link> ，从 geometry_columns 视图中移除约束检查（Paul Ramsey）"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/255\">GT-255</link>, [topology] Support for upgrading domains (Ayo "
+#~ "Adesugba, U.S. Census Bureau)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3373\">#3373</"
+#~ "link>、<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/255\">GT-255</link>、[topology] 支持升级域（Ayo Adesugba，U.S. "
+#~ "Census Bureau）"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+#~ "252\">GT-252</link>, ST_NumGeometries/ST_GeometryN treat TIN and "
+#~ "PolyhedralSurface as unitary geometries, use ST_NumPatches/ST_PatchN for "
+#~ "patch access (Loïc Bartoletti)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+#~ "252\">GT-252</link>， ST_NumGeometries/ST_GeometryN 将 TIN 和 "
+#~ "PolyhedralSurface 视为单一几何体，如需访问补片请使用 ST_NumPatches/"
+#~ "ST_PatchN（Loïc Bartoletti）"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/242\">GT-242</link>, [topology] Support for bigint (Ayo Adesugba, "
+#~ "U.S. Census Bureau)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+#~ "link>、<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/242\">GT-242</link>、[topology] 支持 bigint（Ayo Adesugba，U.S. "
+#~ "Census Bureau）"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
+#~ "link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+#~ "5897\">#5897</link>, <link xlink:href=\"https://git.osgeo.org/gitea/"
+#~ "postgis/postgis/pulls/260\">GT-260</link> [tiger_geocoder] Use "
+#~ "@extschema:extension@ for PG &gt;= 16 to schema qualify dependent "
+#~ "extensions, switch to use typmod for tiger tables (Regina Obe)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5359\">#5359</"
+#~ "link>、<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+#~ "5897\">#5897</link>、<link xlink:href=\"https://git.osgeo.org/gitea/"
+#~ "postgis/postgis/pulls/260\">GT-260</link> [tiger_geocoder] 对 PG &gt;= 16 "
+#~ "使用 @extschema:extension@ 来为依赖扩展指定 schema，并改用 typmod 处理 "
+#~ "tiger 表（Regina Obe）"
+
+#, no-c-format
+#~ msgid "Removed / Deprecate signatures"
+#~ msgstr "移除 / 弃用的函数签名"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</"
+#~ "link> Drop st_approxquantile(raster, double precision), wasn't usable as "
+#~ "it triggered is not unique error when used (Regina Obe)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5498\">#5498</"
+#~ "link> 删除 `st_approxquantile(raster, double precision)`，因使用时会触发 "
+#~ "is not unique 错误而不可用（Regina Obe）"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/803\">GH-803</"
+#~ "link>, [sfcgal] ADD CG_Simplify function (Loïc Bartoletti)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/803\">GH-803</"
+#~ "link>，[sfcgal] 新增 CG_Simplify 函数（Loïc Bartoletti）"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/805\">GH-805</"
+#~ "link>, [sfcgal] Add M support for SFCGAL &gt;= 1.5.0 (Loïc Bartoletti)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/805\">GH-805</"
+#~ "link>，[sfcgal] 为 SFCGAL &gt;= 1.5.0 添加 M 维支持（Loïc Bartoletti）"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/801\">GH-801</"
+#~ "link>, [sfcgal] ADD CG_3DAlphaWrapping function (Jean Felder)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://github.com/postgis/postgis/pull/801\">GH-801</"
+#~ "link>，[sfcgal] 新增 CG_3DAlphaWrapping 函数（Jean Felder）"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5894\">#5894</"
+#~ "link>, [topology] TotalTopologySize (Sandro Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5894\">#5894</"
+#~ "link>, [topology] TotalTopologySize (Sandro Santilli)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5890\">#5890</"
+#~ "link>, [topology] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro "
+#~ "Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5890\">#5890</"
+#~ "link>, [topology] ValidateTopologyPrecision, MakeTopologyPrecise (Sandro "
+#~ "Santilli)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5861\">#5861</"
+#~ "link>, [topology] Add --drop-topology switch to pgtopo_import (Sandro "
+#~ "Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5861\">#5861</"
+#~ "link>，[topology] 为 pgtopo_import 添加 --drop-topology 选项（Sandro "
+#~ "Santilli）"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1247\">#1247</"
+#~ "link>, [raster] ST_AsRasterAgg (Sandro Santilli)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1247\">#1247</"
+#~ "link>, [raster] ST_AsRasterAgg (Sandro Santilli)"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/223\">GT-223</link> Export circ_tree_distance_tree_internal for "
+#~ "mobilitydb use (Maxime Schoemans)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5784\">#5784</"
+#~ "link>、<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/223\">GT-223</link> 为 MobilityDB 导出 "
+#~ "circ_tree_distance_tree_internal（Maxime Schoemans）"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+#~ "228\">GT-228</link> [sfcgal] Add new functions (Scale, Translate, Rotate, "
+#~ "Buffer 3D and Straight Skeleton Partition) from SFCGAL 2 (Loïc Bartoletti)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/pulls/"
+#~ "228\">GT-228</link>、[sfcgal] 从 SFCGAL 2 添加新函数（Scale、Translate、"
+#~ "Rotate、Buffer 3D 和 Straight Skeleton Partition）（Loïc Bartoletti）"
+
+#, no-c-format
+#~ msgid ""
+#~ "[raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages "
+#~ "and routes them into the PostgreSQL logging system. (Paul Ramsey)"
+#~ msgstr ""
+#~ "[raster] 新增 GUC postgis.gdal_cpl_debug，用于开启 GDAL 调试信息，并将其输"
+#~ "出到 PostgreSQL 日志系统。（Paul Ramsey）"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\">#5841</"
+#~ "link>, Change interrupt handling to remove use of pqsignal to support PG "
+#~ "18 (Paul Ramsey)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5841\">#5841</"
+#~ "link>，更改中断处理机制，移除对 pqsignal 的使用，以支持 PostgreSQL 18"
+#~ "（Paul Ramsey 提供）"
+
+#, no-c-format
+#~ msgid ""
+#~ "Add ST_CoverageClean to edge match and gap remove polygonal coverages "
+#~ "(Paul Ramsey) from GEOS 3.14 (Martin Davis)"
+#~ msgstr ""
+#~ "新增 ST_CoverageClean，用于边界匹配与缝隙消除多边形覆盖图（由 Paul Ramsey "
+#~ "提供，基于 GEOS 3.14 的功能，Martin Davis 开发）"
+
+#, no-c-format
+#~ msgid ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/242\">GT-242</link> [topology] Support for bigint (Ayo Adesugba, "
+#~ "U.S. Census Bureau)"
+#~ msgstr ""
+#~ "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3110\">#3110</"
+#~ "link>, <link xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/"
+#~ "pulls/242\">GT-242</link> [topology] 对bigint支持(Ayo Adesugba, U.S. "
+#~ "Census Bureau)"
+
+#, no-c-format
+#~ msgid ""
+#~ "[raster] Add ST_ReclassExact to quickly remap values in raster (Paul "
+#~ "Ramsey)"
+#~ msgstr ""
+#~ "[raster] 新增 ST_ReclassExact，用于快速重映射 raster 中的值（Paul Ramsey）"
+
+#, no-c-format
+#~ msgid ""
+#~ "Coordinates may contain optional Z and M ordinate values. The Z ordinate "
+#~ "is often used to represent elevation. The M ordinate contains a measure "
+#~ "value, which may represent time or distance. If Z or M values are present "
+#~ "in a geometry value, they must be defined for each point in the geometry. "
+#~ "If a geometry has Z or M ordinates the <emphasis role=\"bold\">coordinate "
+#~ "dimension</emphasis> is 3D; if it has both Z and M the coordinate "
+#~ "dimension is 4D."
+#~ msgstr ""
+#~ "坐标可能包含可选的Z和M纵坐标值。Z纵坐标通常用于表示高程。M纵坐标包含一个测"
+#~ "量值，该值可能表示时间或距离。如果几何值中存在Z或M值，则必须为几何中的每个"
+#~ "点定义这些值。如果几何具有 Z 或 M 纵坐标，则<emphasis role=\"bold\">坐标尺"
+#~ "寸</emphasis>为 3D;如果它同时具有 Z 和 M，则坐标尺寸为 4D。"
+
+#, no-c-format
+#~ msgid ""
+#~ "The geometry <emphasis role=\"bold\">dimension</emphasis> is a property "
+#~ "of geometry types. Point types have dimension 0, linear types have "
+#~ "dimension 1, and polygonal types have dimension 2. Collections have the "
+#~ "dimension of the maximum element dimension."
+#~ msgstr ""
+#~ "几何<emphasis role=\"bold\">维度</emphasis>是几何类型的属性。点类型的维度"
+#~ "为 0，线性类型的维度为 1， 多边形类型的维度为 2。集合具有最大元素维度的维"
+#~ "度。"
+
+#, no-c-format
+#~ msgid ""
+#~ "The geometry model allows evaluating topological spatial relationships as "
+#~ "described in <xref linkend=\"DE-9IM\"/>. To support this the concepts of "
+#~ "<emphasis role=\"bold\">interior</emphasis>, <emphasis "
+#~ "role=\"bold\">boundary</emphasis> and <emphasis role=\"bold\">exterior</"
+#~ "emphasis> are defined for each geometry type. Geometries are "
+#~ "topologically closed, so they always contain their boundary. The boundary "
+#~ "is a geometry of dimension one less than that of the geometry itself."
+#~ msgstr ""
+#~ "几何模型允许评估拓扑空间关系，如<xref linkend=\"DE-9IM\"/>中所述。为了支持"
+#~ "这一点，为每种几何类型定义了<emphasis role=\"bold\">内部</emphasis>, "
+#~ "<emphasis role=\"bold\">外部</emphasis>和<emphasis role=\"bold\">边界</"
+#~ "emphasis>的概念。几何图形在拓扑上是封闭的，因此它们总是包含它们的边界。边"
+#~ "界是比几何体本身小一维的几何体。"
+
+#, no-c-format
+#~ msgid ""
+#~ "The OGC geometry model defines validity rules for each geometry type. "
+#~ "These rules ensure that geometry values represents realistic situations "
+#~ "(e.g. it is possible to specify a polygon with a hole lying outside the "
+#~ "shell, but this makes no sense geometrically and is thus invalid). "
+#~ "PostGIS also allows storing and manipulating invalid geometry values. "
+#~ "This allows detecting and fixing them if needed. See <xref "
+#~ "linkend=\"OGC_Validity\"/>"
+#~ msgstr ""
+#~ "OGC几何模型为每种几何类型定义了有效性规则。这些规则确保几何值表示现实情况"
+#~ "（例如，可以指定一个具有孔的多边形位于外壳之外，但从几何角度来看这是没有意"
+#~ "义的，因此是无效的）。PostGIS 也允许存储和操作无效的几何值。这允许在需要时"
+#~ "检测和修复它们。请参阅<xref linkend=\"OGC_Validity\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "A MultiPolygon is a collection of non-overlapping, non-adjacent Polygons. "
+#~ "Polygons in the collection may touch only at a finite number of points."
+#~ msgstr ""
+#~ "多面是非重叠、不相邻多边形的集合。集合中的多边形只能在有限数量的点处接触。"
+
+#, no-c-format
+#~ msgid ""
+#~ "The <varname>geometry</varname> data type is <emphasis>opaque</emphasis>, "
+#~ "which means that all access is done via invoking functions on geometry "
+#~ "values. Functions allow creating geometry objects, accessing or updating "
+#~ "all internal fields, and compute new geometry values. PostGIS supports "
+#~ "all the functions specified in the OGC <link xlink:href=\"https://"
+#~ "portal.ogc.org/files/?artifact_id=25354\"><emphasis>Simple feature access "
+#~ "- Part 2: SQL option</emphasis></link> (SFS) specification, as well many "
+#~ "others. See <xref linkend=\"reference\"/> for the full list of functions."
+#~ msgstr ""
+#~ "<varname>geometry</varname>数据类型是 <emphasis>不透明的</emphasis>，这意"
+#~ "味着所有访问都是通过调用几何值的函数来完成的。 函数允许创建几何对象、访问"
+#~ "或更新所有内部字段以及计算新的几何值。PostGIS 支持 OGC <link "
+#~ "xlink:href=\"https://portal.ogc.org/files/?artifact_id=25354\"><emphasis>"
+#~ "简单功能访问 - 第二部分: SQL 选项</emphasis></link>(SFS) 规范中指定的所有"
+#~ "功能以及许多其他功能。 请参阅<xref linkend=\"reference\"/>以获取完整的函数"
+#~ "列表。"
+
+#, no-c-format
+#~ msgid ""
+#~ "By default, all distance and area calculations are done on the spheroid. "
+#~ "You should find that the results of calculations in local areas match up "
+#~ "will with local planar results in good local projections. Over larger "
+#~ "areas, the spheroidal calculations will be more accurate than any "
+#~ "calculation done on a projected plane."
+#~ msgstr ""
+#~ "默认情况下，所有距离和面积计算都在椭球体中执行。将局部区域的计算结果与投影"
+#~ "良好的平面上的结果进行比较。对于大面积，椭球体计算比投影平面上的任何其他计"
+#~ "算都更准确。"
+
+#, no-c-format
+#~ msgid "The coordinate dimension (2, 3 or 4) of the column."
+#~ msgstr "列的坐标维度（2、3 或 4）。"
+
+#, no-c-format
+#~ msgid ""
+#~ "For example, consider a linear dataset representing a road network. It "
+#~ "may be required to identify all road segments that cross each other, not "
+#~ "at a point, but in a line (perhaps to validate some business rule). In "
+#~ "this case <xref linkend=\"ST_Crosses\"/> does not provide the necessary "
+#~ "spatial filter, since for linear features it returns <varname>true</"
+#~ "varname> only where they cross at a point."
+#~ msgstr ""
+#~ "例如，考虑表示道路网络的线性数据集。 可能需要识别所有相互交叉的路段，不是"
+#~ "在一个点，而是在一条线上（也许是为了验证某些业务规则）。 在这种情况下，"
+#~ "<xref linkend=\"ST_Crosses\"/>不提供必要的空间过滤器，因为对于线性要素，它"
+#~ "仅在它们在某个点交叉的地方返回<varname>true</varname>。"
+
+#, no-c-format
+#~ msgid ""
+#~ "If the optional <code>gridSize</code> parameter is given (GEOS-3.9.0 or "
+#~ "higher required), all result vertices are guaranteed to fall on a grid of "
+#~ "the specified size. For the operation to give predictable results all the "
+#~ "input vertices must fall already on the specified grid, see <xref "
+#~ "linkend=\"ST_ReducePrecision\"/>."
+#~ msgstr ""
+#~ "如果提供了可选参数 <code>gridSize</code>（需要 GEOS 3.9.0 或更高版本），则"
+#~ "所有结果顶点都会落在指定网格上。为了保证操作结果可预测，所有输入顶点必须已"
+#~ "经位于该网格上，详见 <xref linkend=\"ST_ReducePrecision\"/>。"
 
 #, no-c-format
 #~ msgid "&extras_address_standardizer; &extras_tigergeocoder;"
