@@ -259,7 +259,7 @@ sh autogen.sh
         SFCGAL can be used to provide additional 2D and 3D advanced
         analysis functions to PostGIS cf <xref linkend="reference_sfcgal"/>.
 
-        <link xlink:href="https://gitlab.com/sfcgal/SFCGAL/">https://gitlab.com/sfcgal/SFCGAL/</link>.
+        <link xlink:href="https://sfcgal.gitlab.io/sfcgal/">https://sfcgal.gitlab.io/sfcgal/</link>.
     </para>
     </listitem>
 

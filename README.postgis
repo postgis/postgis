@@ -103,7 +103,7 @@ For apt-based systems you can run this command to install the below dependencies
 * CGAL 5+ and SFCGAL 1.4+ (Optional) needed for advanced 3D support
 * SFCGAL 2.1.0 is required for additional functionality.
 
-  https://gitlab.com/sfcgal/SFCGAL
+  https://sfcgal.gitlab.io/sfcgal
 
 * protobuf-c (Optional, Version 1.1.0 or higher)
 
