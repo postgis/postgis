@@ -207,6 +207,14 @@ sh autogen.sh
 
     <listitem>
     <para>
+      The GNU Multiple Precision Arithmetic Library (libgmp). Used to control precision of math operations in PostGIS Topology.
+      GMP is available for download from
+      <link xlink:href="https://gmplib.org/">https://gmplib.org/</link>.
+    </para>
+    </listitem>
+
+    <listitem>
+    <para>
       GDAL, version 3+ is preferred.  This is required for raster
       support.
       <link xlink:href="https://gdal.org/download.html">https://gdal.org/download.html</link>.
