@@ -18,4 +18,6 @@ expr &&|1|5+-5:true
 expr &&|2|912+-60:true
 expr &&|3|12505+-500:true
 expr &&|4|50000+-600:true
+st_orderingequals_idx|Index Scan
+st_orderingequals_join|t|f
 _st_sortablehash|0|768602608280535040|768602608280535040
