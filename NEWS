@@ -7,15 +7,17 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.2+ is needed
 
 * Breaking Changes *
 
+ - The GNU multiprecision arithmetic library ( https://gmplib.org/ )
+   is now required at build-time and for using PostGIS Topology.
  - #5688, [topology] topology building functions now interpret tolerance 0
           (old default) to really mean 0 and want -1 (new default) to mean
           "use topology precision" (Sandro Santilli)
  - #6024, Remove support for PostgreSQL 12 and 13 (Regina Obe)
  - #6040, ST_GeoHash round trip through ST_GeomFromGeoHash (Paul Ramsey)
  - #6053, [address_standardizer] Extension removed and moved to
-       https://github.com/postgis/address_standardizer (Paul Ramsey)
+          https://github.com/postgis/address_standardizer (Paul Ramsey)
  - #6052, [tiger_geocoder] Extension removed and moved to
-            https://git.osgeo.org/postgis/postgis_tiger_geocoder (Regina Obe)
+          https://git.osgeo.org/postgis/postgis_tiger_geocoder (Regina Obe)
  - #6079, Remove support for GEOS < 3.10 (Sandro Santilli)
 
 * New Features *
