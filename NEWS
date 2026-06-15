@@ -3,6 +3,7 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- [raster] Allocate the right size for GDAL option strings (Maksim Korotkov)
 - [topology] Initialize the edge linkage when snapping an edge to a node (Darafei Praliaskouski)
 - Drop the obsolete ST_TileEnvelope signature on upgrade (Darafei Praliaskouski)
 - #6048, [raster] Preserve requested band order in ST_Clip
