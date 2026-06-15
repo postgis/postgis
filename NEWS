@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - [raster] Allocate the right size for GDAL option strings (Maksim Korotkov)
   - [topology] Initialize the edge linkage when snapping an edge to a node (Darafei Praliaskouski)
   - GH-831, Document why ST_Subdivide can change geography boundaries (Nikolai Berkoff)
   - Resolve the ST_GeomFromGeoHash cast in the PostGIS schema (Paul Ramsey)
