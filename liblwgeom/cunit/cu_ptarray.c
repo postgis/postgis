@@ -338,6 +338,11 @@ static void test_ptarray_signed_area()
 	CU_ASSERT_DOUBLE_EQUAL(area, -4.0, 0.0000001);
 	lwline_free(line);
 
+	/* Preserve small residuals through cancellation in the area sum. */
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,10000000000000000 0,1 -1,10000000000000000 -1,0 0)"));
+	area = ptarray_signed_area(line->points);
+	ASSERT_DOUBLE_EQUAL_TOLERANCE(area, 0.5, 0.0000001);
+	lwline_free(line);
 }
 
 static void test_ptarray_contains_point()

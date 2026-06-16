@@ -1289,8 +1289,9 @@ ptarray_signed_area(const POINTARRAY *pa)
 	const POINT2D *P1;
 	const POINT2D *P2;
 	const POINT2D *P3;
-	double sum = 0.0;
-	double x0, x, y1, y2;
+	long double sum = 0.0;
+	double x0;
+	long double x, y1, y2;
 	uint32_t i;
 
 	if (! pa || pa->npoints < 3 )
@@ -1302,7 +1303,7 @@ ptarray_signed_area(const POINTARRAY *pa)
 	for ( i = 2; i < pa->npoints; i++ )
 	{
 		P3 = getPoint2d_cp(pa, i);
-		x = P2->x - x0;
+		x = (long double)P2->x - x0;
 		y1 = P3->y;
 		y2 = P1->y;
 		sum += x * (y2-y1);
@@ -1311,7 +1312,7 @@ ptarray_signed_area(const POINTARRAY *pa)
 		P1 = P2;
 		P2 = P3;
 	}
-	return sum / 2.0;
+	return (double)(sum / 2.0);
 }
 
 int

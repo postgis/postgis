@@ -1478,3 +1478,34 @@ SELECT '#5604',
 FROM
 ST_GeomFromText('MULTIPOINT((-2 0), EMPTY)') AS a1,
 ST_GeomFromText('MULTIPOINT((1 0),(0 0))') AS a2;
+
+-- #5855
+CREATE TEMP TABLE TEST (street text, extent geometry(Polygon,32633));
+INSERT INTO test VALUES ('Knosesmauet','0103000020797F0000010000000500000010B2468761BDDFC06390523AA1B0594110B2468761BDDFC030554D9BC3B0594107992AF50799DFC030554D9BC3B0594107992AF50799DFC06390523AA1B0594110B2468761BDDFC06390523AA1B05941');
+CREATE INDEX test_idx ON test USING GIST ( extent );
+
+-- These checks protect index-support rewrites, so keep sequential scans
+-- disabled only around the #5855 queries that must exercise GiST paths.
+SET enable_seqscan = off;
+SELECT '#5855', street
+FROM test
+WHERE ST_DFullyWithin(
+    ST_SetSRID(ST_GeomFromText('POINT(-32356 6734606)'), 32633),
+    extent,
+    1700
+);
+
+CREATE TEMP TABLE dfullywithin_indexed_first_arg (id integer, geom geometry);
+INSERT INTO dfullywithin_indexed_first_arg
+VALUES (1, 'POLYGON((-10 -10,-10 10,10 10,10 -10,-10 -10))');
+CREATE INDEX dfullywithin_indexed_first_arg_gist
+ON dfullywithin_indexed_first_arg USING GIST (geom);
+
+SELECT '#5855.1', id
+FROM dfullywithin_indexed_first_arg
+WHERE ST_DFullyWithin(
+    geom,
+    ST_GeomFromText('POINT(0 0)'),
+    0
+);
+RESET enable_seqscan;
