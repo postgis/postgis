@@ -22,7 +22,7 @@ LIBTOOL = @LIBTOOL@
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
 CUNIT_CPPFLAGS = -I$(srcdir)/.. -I$(builddir)/.. @CUNIT_CPPFLAGS@ @CPPFLAGS@
 CFLAGS=$(CUNIT_CPPFLAGS) @CFLAGS@
-LDFLAGS = @GEOS_LDFLAGS@ @PROJ_LDFLAGS@ $(CUNIT_LDFLAGS)
+LDFLAGS = @GEOS_LDFLAGS@ @PROJ_LDFLAGS@ @GMP_LIBS@ $(CUNIT_LDFLAGS)
 
 VPATH = $(srcdir)
 
@@ -108,7 +108,7 @@ endif
 
 # Build the main unit test executable
 cu_tester: ../liblwgeom.la $(OBJS) cu_tester.h
-	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS) -static ../liblwgeom.la @GMP_LIBS@
+	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS) -static ../liblwgeom.la
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
