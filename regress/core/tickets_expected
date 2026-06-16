@@ -481,6 +481,8 @@ ERROR:  Geometry contains invalid coordinates
 #5677|POLYGON((0 0,0 10,20 22,20 30,30 30,30 20,22 20,10 0,0 0))
 #5686|0
 #5747|0
+#5855|Knosesmauet
+#5855.1|1
 #5876|LINESTRING(1 1,2 2)
 #5082|t
 public.test5978.shape SRID:4326 TYPE:POINT DIMS:2 
