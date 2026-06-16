@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Avoid overlapping memory copies in ST_Simplify (Maksim Korotkov)
   - #6141, [raster] Initialize the out-of-db flag when loading the raster library
       (Regina Obe)
   - GH-1168, Handle an empty MVT aggregate context during serialization
