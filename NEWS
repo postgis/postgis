@@ -23,6 +23,8 @@ PostGIS 3.6.5
 - GH-894, [raster] Fix Float16 import, mixed nodata warping,
   band replacement cleanup, GDAL credential redaction, and Python
   GDAL compatibility (Darafei Praliaskouski)
+- GH-895, Qualify pg_class lookup during SRID/PROJ validation
+  (Darafei Praliaskouski)
 
 
 PostGIS 3.6.4
