@@ -27,6 +27,8 @@
 
 #include "liblwgeom_internal.h"
 
+#define CATMULL_ROM_MAX_OUTPUT_POINTS 1000000U
+
 
 /* ========================================================================
  * Chaikin smoothing
@@ -258,7 +260,10 @@ ptarray_catmull_rom(const POINTARRAY *inpts, int n_segments, int isclosed)
 	uint32_t nspans = N - (isclosed ? 0 : 1);
 
 	/* Output size: nspans * n_segments + 1 (we always close with the last orig point) */
-	uint32_t out_cap = nspans * (uint32_t)n_segments + 1;
+	uint64_t out_cap64 = (uint64_t)nspans * (uint32_t)n_segments + 1;
+	if (out_cap64 > CATMULL_ROM_MAX_OUTPUT_POINTS)
+		lwerror("%s: requested smoothing would generate too many points", __func__);
+	uint32_t out_cap = (uint32_t)out_cap64;
 	POINTARRAY *opts = ptarray_construct_empty(
 		FLAGS_GET_Z(inpts->flags), FLAGS_GET_M(inpts->flags), out_cap);
 

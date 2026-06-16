@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  * Copyright 2008 Paul Ramsey
- * Copyright 2018 Darafei Praliaskouski, me@komzpa.net
+ * Copyright 2018, 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -1026,7 +1026,12 @@ static void test_geohash(void)
 	LWPOINT *lwpoint = NULL;
 	LWLINE *lwline = NULL;
 	LWMLINE *lwmline = NULL;
+	LWGEOM *lwgeom = NULL;
 	lwvarlena_t *geohash = NULL;
+	size_t geohash_size = 0;
+	char geohash_buf[21];
+	double lat[2];
+	double lon[2];
 
 	lwpoint = (LWPOINT*)lwgeom_from_wkt("POINT(23.0 25.2)", LW_PARSER_CHECK_NONE);
 	geohash = lwgeom_geohash((LWGEOM*)lwpoint,0);
@@ -1061,6 +1066,22 @@ static void test_geohash(void)
 	//printf("geohash %s\n",geohash);
 	ASSERT_VARLENA_EQUAL(geohash, "ss0");
 	lwmline_free(lwmline);
+	lwfree(geohash);
+
+	lwgeom =
+	    lwgeom_from_wkt("LINESTRING(-72.70493954792298 -89.90561212126683,-72.70493954792298 -89.90561212126681)",
+			    LW_PARSER_CHECK_NONE);
+	geohash = lwgeom_geohash(lwgeom, 0);
+	geohash_size = LWSIZE_GET(geohash->size) - LWVARHDRSZ;
+	CU_ASSERT_FATAL(geohash_size <= 20);
+	memcpy(geohash_buf, geohash->data, geohash_size);
+	geohash_buf[geohash_size] = '\0';
+	decode_geohash_bbox(geohash_buf, lat, lon, (int)geohash_size);
+	CU_ASSERT(lon[0] <= -72.70493954792298);
+	CU_ASSERT(lon[1] >= -72.70493954792298);
+	CU_ASSERT(lat[0] <= -89.90561212126683);
+	CU_ASSERT(lat[1] >= -89.90561212126681);
+	lwgeom_free(lwgeom);
 	lwfree(geohash);
 }
 
