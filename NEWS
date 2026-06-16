@@ -3,6 +3,7 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- Avoid overlapping memory copies in ST_Simplify (Maksim Korotkov)
 - GH-1168, Handle an empty MVT aggregate context during serialization
     (Svyatoslav Bogdanov)
 - GH-1181, Avoid undefined signed left shifts in MVT coordinate encoding
