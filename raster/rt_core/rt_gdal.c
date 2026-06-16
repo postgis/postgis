@@ -68,6 +68,9 @@ rt_util_gdal_progress_func(double dfComplete, const char *pszMessage, void *pPro
 	(void)dfComplete;
 	(void)pszMessage;
 
+	if (_lwgeom_interrupt_callback)
+		(*_lwgeom_interrupt_callback)();
+
 	if (_lwgeom_interrupt_requested)
 	{
 		// rtwarn("%s interrupted at %g", (const char*)pProgressArg, dfComplete);
@@ -307,4 +310,3 @@ int rt_raster_gdal_contour(
 	/* Done */
 	return TRUE;
 }
-
