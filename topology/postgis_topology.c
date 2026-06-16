@@ -3116,7 +3116,7 @@ cb_getClosestEdge( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt, uint64_t *num
   addEdgeFields(sql, fields, 0);
   appendStringInfo(sql,
 		   " FROM \"%s\".edge_data"
-		   " ORDER BY geom <-> $1 ASC, edge_id ASC"
+		   " ORDER BY geom <-> $1 ASC"
 		   " LIMIT 1",
 		   topo->name);
 
