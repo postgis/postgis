@@ -160,6 +160,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           for extension upgrade (Darafei Praliaskouski)
  - #6080, Avoid out-of-bounds hex WKB lookup for high-bit input bytes
           (Darafei Praliaskouski)
+ - GH-895, Qualify pg_class lookup during SRID/PROJ validation
+          (Darafei Praliaskouski)
  - #4828, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)
  - #6048, [raster] ST_Clip no longer crashes when clipping sparse band
           selections (Darafei Praliaskouski)
