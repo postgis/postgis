@@ -1852,7 +1852,7 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	{
 		/* If there are 2 points remaining, it has to be first and last as
 		 * we added those at the start */
-		memcpy(pa->serialized_pointlist + pt_size * kept_it,
+		memmove(pa->serialized_pointlist + pt_size * kept_it,
 		       pa->serialized_pointlist + pt_size * (pa->npoints - 1),
 		       pt_size);
 	}
