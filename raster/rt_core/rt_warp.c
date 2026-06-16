@@ -33,6 +33,10 @@
 #include "librtcore.h"
 #include "librtcore_internal.h"
 
+#ifndef NAN
+#define NAN (0.0/0.0)
+#endif
+
 /******************************************************************************
 * rt_raster_gdal_warp()
 ******************************************************************************/
@@ -703,10 +707,12 @@ rt_raster rt_raster_gdal_warp(
 	arg->wopts->hDstDS = arg->dst.ds;
 	arg->wopts->pfnTransformer = arg->transform.func;
 	arg->wopts->pTransformerArg = arg->transform.arg.transform;
-	arg->wopts->papszWarpOptions = (char **) CPLMalloc(sizeof(char *) * 2);
+	arg->wopts->papszWarpOptions = (char **) CPLMalloc(sizeof(char *) * 3);
 	arg->wopts->papszWarpOptions[0] = (char *) CPLMalloc(sizeof(char) * (strlen("INIT_DEST=NO_DATA") + 1));
 	strcpy(arg->wopts->papszWarpOptions[0], "INIT_DEST=NO_DATA");
-	arg->wopts->papszWarpOptions[1] = NULL;
+	arg->wopts->papszWarpOptions[1] = (char *) CPLMalloc(sizeof(char) * (strlen("UNIFIED_SRC_NODATA=PARTIAL") + 1));
+	strcpy(arg->wopts->papszWarpOptions[1], "UNIFIED_SRC_NODATA=PARTIAL");
+	arg->wopts->papszWarpOptions[2] = NULL;
 
 	/* band mapping */
 	arg->wopts->nBandCount = numBands;
@@ -716,7 +722,7 @@ rt_raster rt_raster_gdal_warp(
 		arg->wopts->panDstBands[i] = arg->wopts->panSrcBands[i] = i + 1;
 
 	/* nodata mapping */
-	if (nodata_count == numBands) {
+	if (nodata_count > 0) {
 		arg->wopts->padfSrcNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
 		arg->wopts->padfDstNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
 		arg->wopts->padfSrcNoDataImag = (double *) CPLMalloc(numBands * sizeof(double));
@@ -737,6 +743,13 @@ rt_raster rt_raster_gdal_warp(
 				rterror("rt_raster_gdal_warp: Could not process bands for nodata values");
 				_rti_warp_arg_destroy(arg);
 				return NULL;
+			}
+			if (!rt_band_get_hasnodata_flag(band))
+			{
+				arg->wopts->padfSrcNoDataReal[i] = NAN;
+				arg->wopts->padfDstNoDataReal[i] = NAN;
+				arg->wopts->padfDstNoDataImag[i] = arg->wopts->padfSrcNoDataImag[i] = 0.0;
+				continue;
 			}
 			rt_band_get_nodata(band, &(arg->wopts->padfSrcNoDataReal[i]));
 			arg->wopts->padfDstNoDataReal[i] = arg->wopts->padfSrcNoDataReal[i];

@@ -1169,6 +1169,8 @@ rtpg_gdal_redact_message(char *msg)
 		size_t n = strlen(sensitive[i]);
 		while ((p = rtpg_ascii_strcasestr(p, sensitive[i])) != NULL) {
 			char *v = p + n;
+			while (*v && isspace((unsigned char) *v))
+				v++;
 			while (*v && !isspace((unsigned char) *v) && *v != '&' && *v != ';' && *v != ',') {
 				*v = 'x';
 				v++;
