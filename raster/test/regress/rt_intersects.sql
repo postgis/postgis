@@ -431,5 +431,44 @@ FROM raster_intersects_rast r1
 CROSS JOIN raster_intersects_geom g1
 WHERE r1.rid = 2;
 
+CREATE INDEX raster_intersects_geom_idx ON raster_intersects_geom USING gist (geom);
+ANALYZE raster_intersects_rast (rid);
+ANALYZE raster_intersects_geom (geom);
+SET enable_seqscan = off;
+
+CREATE OR REPLACE FUNCTION raster_intersects_plan_has(query text, pattern text)
+	RETURNS boolean AS $$
+	DECLARE
+		exp text;
+	BEGIN
+		IF current_setting('server_version_num')::integer >= 140000 THEN
+			PERFORM set_config('enable_memoize', 'off', true);
+		END IF;
+
+		FOR exp IN EXECUTE 'EXPLAIN (COSTS OFF) ' || query LOOP
+			IF exp ~ pattern THEN
+				RETURN TRUE;
+			END IF;
+		END LOOP;
+		RETURN FALSE;
+	END;
+	$$ LANGUAGE 'plpgsql';
+
+SELECT
+	'#4463.1',
+	raster_intersects_plan_has(
+		'SELECT g1.gid FROM raster_intersects_geom g1 JOIN raster_intersects_rast r1 ON ST_Intersects(g1.geom, r1.rast) WHERE r1.rid = 0',
+		'Index Cond: .*geom && .*r1[.]rast.*geometry'
+	);
+
+SELECT
+	'#4463.2',
+	raster_intersects_plan_has(
+		'SELECT g1.gid FROM raster_intersects_geom g1 JOIN raster_intersects_rast r1 ON ST_Intersects(r1.rast, g1.geom) WHERE r1.rid = 0',
+		'Index Cond: .*geom && .*r1[.]rast.*geometry'
+	);
+
+RESET enable_seqscan;
+DROP FUNCTION raster_intersects_plan_has(text, text);
 DROP TABLE IF EXISTS raster_intersects_rast;
 DROP TABLE IF EXISTS raster_intersects_geom;
