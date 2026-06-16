@@ -9,7 +9,7 @@
 -- WHERE edge_id = v.vert_edge;
 --
 CREATE OR REPLACE FUNCTION topology.findVertexSegmentPairsBelowDistance(toponame varchar, tolerance float8)
-RETURNS TABLE (seg_edge int, segno int, vert_edge int, vertno int, vert_geom geometry)
+RETURNS TABLE (seg_edge bigint, segno int, vert_edge bigint, vertno int, vert_geom geometry)
 AS $BODY$
 DECLARE
   sql text;

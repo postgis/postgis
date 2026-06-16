@@ -156,8 +156,15 @@ BEGIN
   alayer := layer_id(tg);
   atopology := topology_info.name;
 
-  -- Get tolerance, if 0 was given
-  tolerance := COALESCE( NULLIF(atolerance, 0), topology._st_mintolerance(topology_info.name, ageom) );
+  IF atolerance < 0 AND atolerance != -1 THEN
+    RAISE EXCEPTION 'Tolerance must be -1 or >=0';
+  END IF;
+
+  IF atolerance = -1 THEN
+    tolerance := topology._st_mintolerance(topology_info.name, ageom);
+  ELSE
+    tolerance := atolerance;
+  END IF;
 
   -- Get layer information
   BEGIN

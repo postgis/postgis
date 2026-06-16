@@ -7686,7 +7686,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     id = _lwt_AddLineEdge( topo, lwgeom_as_lwline(g), tol, handleFaceSplit, &forward, &edgeNewEdges );
     num_new_edges += edgeNewEdges;
     /* if forward is still == -1 this was NOT an existing edge ? */
-    if ( forward == -1 )
+    if ( forward == -1 && id != 0 )
     {
       ++num_new_edges;
     }

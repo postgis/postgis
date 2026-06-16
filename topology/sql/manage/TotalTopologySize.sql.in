@@ -17,23 +17,12 @@
 CREATE OR REPLACE FUNCTION topology.TotalTopologySize(toponame name)
 RETURNS int8
 AS $BODY$
-DECLARE
-  sql TEXT;
-  total_size int8;
 BEGIN
-  sql := format(
-    $$
-SELECT
-pg_catalog.pg_total_relation_size('%1$I.edge_data') +
-pg_catalog.pg_total_relation_size('%1$I.node') +
-pg_catalog.pg_total_relation_size('%1$I.face') +
-pg_catalog.pg_total_relation_size('%1$I.relation')
-    $$,
-    toponame
-  );
-
-  EXECUTE sql INTO total_size;
-  RETURN total_size;
+  RETURN
+    pg_catalog.pg_total_relation_size(format('%I.%I', toponame, 'edge_data')::regclass) +
+    pg_catalog.pg_total_relation_size(format('%I.%I', toponame, 'node')::regclass) +
+    pg_catalog.pg_total_relation_size(format('%I.%I', toponame, 'face')::regclass) +
+    pg_catalog.pg_total_relation_size(format('%I.%I', toponame, 'relation')::regclass);
 
 END;
 $BODY$ LANGUAGE 'plpgsql' STABLE;
