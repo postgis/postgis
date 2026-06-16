@@ -16,9 +16,9 @@ DECLARE
 BEGIN
   sql := format($$
     SELECT
-      e1.edge_id seg_edge,
+      e1.edge_id::bigint seg_edge,
       s.path[1] segno,
-      e2.edge_id vert_edge,
+      e2.edge_id::bigint vert_edge,
       p.path[1] vertno,
       p.geom vert_geom
     FROM

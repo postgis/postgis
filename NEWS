@@ -85,6 +85,9 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           dropping the tail (Darafei Praliaskouski)
  - #6003, Avoid size_t formats in liblwgeom logging/error wrappers for
           MinGW builds (Darafei Praliaskouski)
+ - GH-897, [topology] Harden topology helper functions and maintenance SQL
+          against identifier, tolerance, bigint, and cleanup regressions
+          (Darafei Praliaskouski)
  - Build PostgreSQL extension modules with `-fno-semantic-interposition` when
           available so LTO can optimize same-DSO calls to exported PostGIS
           entry points directly instead of routing through the module PLT; in

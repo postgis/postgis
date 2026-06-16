@@ -4,6 +4,7 @@
  * http://postgis.net
  *
  * Copyright (C) 2015-2026 Sandro Santilli <strk@kbt.io>
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -4883,12 +4884,12 @@ Datum GetNodeByPoint(PG_FUNCTION_ARGS)
   }
 
   tol = PG_GETARG_FLOAT8(2);
-  if ( tol < 0 && tol != -1 )
+  if (tol < 0 && tol != -1)
   {
-    lwgeom_free(lwgeom);
-    PG_FREE_IF_COPY(geom, 1);
-    lwpgerror("Tolerance must be -1 or >=0 ");
-    PG_RETURN_NULL();
+	  lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 1);
+	  lwpgerror("Tolerance must be -1 or >=0 ");
+	  PG_RETURN_NULL();
   }
 
   if ( SPI_OK_CONNECT != SPI_connect() )
@@ -4954,12 +4955,12 @@ Datum GetEdgeByPoint(PG_FUNCTION_ARGS)
   }
 
   tol = PG_GETARG_FLOAT8(2);
-  if ( tol < 0 && tol != -1 )
+  if (tol < 0 && tol != -1)
   {
-    lwgeom_free(lwgeom);
-    PG_FREE_IF_COPY(geom, 1);
-    lwpgerror("Tolerance must be -1 or >=0 ");
-    PG_RETURN_NULL();
+	  lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 1);
+	  lwpgerror("Tolerance must be -1 or >=0 ");
+	  PG_RETURN_NULL();
   }
 
   if ( SPI_OK_CONNECT != SPI_connect() )
@@ -5027,12 +5028,12 @@ Datum GetFaceByPoint(PG_FUNCTION_ARGS)
   }
 
   tol = PG_GETARG_FLOAT8(2);
-  if ( tol < 0 && tol != -1 )
+  if (tol < 0 && tol != -1)
   {
-    lwgeom_free(lwgeom);
-    PG_FREE_IF_COPY(geom, 1);
-    lwpgerror("Tolerance must be -1 or >=0 ");
-    PG_RETURN_NULL();
+	  lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 1);
+	  lwpgerror("Tolerance must be -1 or >=0 ");
+	  PG_RETURN_NULL();
   }
 
   if ( SPI_OK_CONNECT != SPI_connect() )
@@ -5109,12 +5110,12 @@ Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
   }
 
   tol = PG_GETARG_FLOAT8(2);
-  if ( tol < 0 && tol != -1 )
+  if (tol < 0 && tol != -1)
   {
-    lwgeom_free(lwgeom);
-    PG_FREE_IF_COPY(geom, 1);
-    lwpgerror("Tolerance must be -1 or >=0 ");
-    PG_RETURN_NULL();
+	  lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 1);
+	  lwpgerror("Tolerance must be -1 or >=0 ");
+	  PG_RETURN_NULL();
   }
 
   if ( SPI_OK_CONNECT != SPI_connect() )
@@ -5221,7 +5222,7 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
     }
 
     tol = PG_GETARG_FLOAT8(2);
-    if ( tol < 0 && tol != -1 )
+    if (tol < 0 && tol != -1)
     {
       lwgeom_free(lwgeom);
       PG_FREE_IF_COPY(geom, 1);
@@ -5341,12 +5342,12 @@ Datum TopoGeo_AddLinestringNoFace(PG_FUNCTION_ARGS)
   }
 
   tol = PG_GETARG_FLOAT8(2);
-  if ( tol < 0 && tol != -1 )
+  if (tol < 0 && tol != -1)
   {
-    lwgeom_free(lwgeom);
-    PG_FREE_IF_COPY(geom, 1);
-    lwpgerror("Tolerance must be -1 or >=0 ");
-    PG_RETURN_NULL();
+	  lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 1);
+	  lwpgerror("Tolerance must be -1 or >=0 ");
+	  PG_RETURN_NULL();
   }
 
   if ( SPI_OK_CONNECT != SPI_connect() )
@@ -5433,12 +5434,12 @@ Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
     }
 
     tol = PG_GETARG_FLOAT8(2);
-    if ( tol < 0 && tol != -1 )
+    if (tol < 0 && tol != -1)
     {
-      lwgeom_free(lwgeom);
-      PG_FREE_IF_COPY(geom, 1);
-      lwpgerror("Tolerance must be -1 or >=0 ");
-      PG_RETURN_NULL();
+	    lwgeom_free(lwgeom);
+	    PG_FREE_IF_COPY(geom, 1);
+	    lwpgerror("Tolerance must be -1 or >=0 ");
+	    PG_RETURN_NULL();
     }
 
     if ( SPI_OK_CONNECT != SPI_connect() )
@@ -5784,7 +5785,7 @@ Datum TopoGeo_LoadGeometry(PG_FUNCTION_ARGS)
   geom = PG_GETARG_GSERIALIZED_P(1);
 
   tol = PG_GETARG_FLOAT8(2);
-  if ( tol < 0 && tol != -1 )
+  if (tol < 0 && tol != -1)
   {
     PG_FREE_IF_COPY(geom, 1);
     lwpgerror("Tolerance must be -1 or >=0 ");
@@ -5841,9 +5842,9 @@ Datum TopoRingIsCCW(PG_FUNCTION_ARGS)
 
   if ( lwgeom_is_empty(lwgeom) )
   {
-    lwgeom_free(lwgeom);
-    PG_FREE_IF_COPY(geom, 0);
-    PG_RETURN_BOOL(false);
+	  lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 0);
+	  PG_RETURN_BOOL(false);
   }
 
   if (lwgeom->type == POLYGONTYPE)
@@ -5856,10 +5857,10 @@ Datum TopoRingIsCCW(PG_FUNCTION_ARGS)
   }
   else
   {
-    lwgeom_free(lwgeom);
-    PG_FREE_IF_COPY(geom, 0);
-    lwpgerror("Unsupported geometry type passed to TopoRingIsCCW");
-    PG_RETURN_NULL();
+	  lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 0);
+	  lwpgerror("Unsupported geometry type passed to TopoRingIsCCW");
+	  PG_RETURN_NULL();
   }
 
   isCCW = lwt_IsTopoRingCCW(pa);

@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2015-2026 Sandro Santilli <strk@kbt.io>
- * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright (C) 2025-2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -7685,8 +7685,10 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     forward = -1; /* will be set to either 0 or 1 if the edge already existed */
     id = _lwt_AddLineEdge( topo, lwgeom_as_lwline(g), tol, handleFaceSplit, &forward, &edgeNewEdges );
     num_new_edges += edgeNewEdges;
+    /* id 0 means the component collapsed before insertion, so it must not
+     * consume the max_new_edges budget. */
     /* if forward is still == -1 this was NOT an existing edge ? */
-    if ( forward == -1 && id != 0 )
+    if (forward == -1 && id != 0)
     {
       ++num_new_edges;
     }
