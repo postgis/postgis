@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2015-2026 Sandro Santilli <strk@kbt.io>
- * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright (C) 2025-2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 

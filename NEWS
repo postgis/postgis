@@ -23,6 +23,9 @@ These are only changes since 3.7.0beta1.
  - GT-619, Make interrupt regression tests compare timeout latency to
           same-machine uninterrupted runtime, avoiding false failures under
           slow CI load (Darafei Praliaskouski)
+ - GH-897, [topology] Harden topology helper functions and maintenance SQL
+          against identifier, tolerance, bigint, and cleanup regressions
+          (Darafei Praliaskouski)
  - Make the computed-columns regression test assert the query plan instead of racing two
           stopwatches, so it no longer fails at random under CI load
           (Darafei Praliaskouski)
