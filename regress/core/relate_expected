@@ -553,3 +553,4 @@
 553|0F0FFFFF2
 554|0F0FFF0F2
 555|0F0FFF0F2
+ERROR:  GEOSRelatePattern: IllegalArgumentException: IllegalArgumentException: Should be length 9, is [T] instead
