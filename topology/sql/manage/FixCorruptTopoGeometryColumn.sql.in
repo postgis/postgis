@@ -18,7 +18,7 @@
 CREATE OR REPLACE FUNCTION topology.FixCorruptTopoGeometryColumn(layerSchema name, layerTable name, layerColumn name)
 RETURNS text AS
 $$
-DECLARE var_sql text; var_row_count bigint; result text; var_create_index_sql text; var_drop_index_sql text;
+DECLARE var_sql text; var_row_count bigint; result text;
 BEGIN
     result = '';
     EXECUTE format('LOCK TABLE %1$I.%2$I IN SHARE ROW EXCLUSIVE MODE', layerSchema, layerTable);
@@ -58,33 +58,6 @@ WHERE pg_type.typname = 'topogeometry' AND pga.attname = 'id'
 			AND
 		pg_type.typnamespace::regnamespace::text = 'topology' AND  pga.atttypid::regtype::text = 'bigint' ) THEN
 
-    -- generate scripts for plain indexes that directly include the column
-    IF EXISTS (
-        SELECT 1
-        FROM pg_catalog.pg_index i
-        JOIN pg_catalog.pg_class tbl ON tbl.oid = i.indrelid
-        JOIN pg_catalog.pg_namespace nsp ON nsp.oid = tbl.relnamespace
-        JOIN pg_catalog.pg_attribute att ON att.attrelid = tbl.oid AND att.attnum = ANY(string_to_array(i.indkey::text, ' ')::int2[])
-        WHERE nsp.nspname = layerSchema
-          AND tbl.relname = layerTable
-          AND att.attname = layerColumn
-    ) THEN
-        SELECT string_agg(pg_catalog.pg_get_indexdef(i.indexrelid), ';'),
-               string_agg('DROP INDEX ' || i.indexrelid::regclass::text, ';')
-        INTO var_create_index_sql, var_drop_index_sql
-        FROM pg_catalog.pg_index i
-        JOIN pg_catalog.pg_class tbl ON tbl.oid = i.indrelid
-        JOIN pg_catalog.pg_namespace nsp ON nsp.oid = tbl.relnamespace
-        JOIN pg_catalog.pg_attribute att ON att.attrelid = tbl.oid AND att.attnum = ANY(string_to_array(i.indkey::text, ' ')::int2[])
-        WHERE nsp.nspname = layerSchema
-          AND tbl.relname = layerTable
-          AND att.attname = layerColumn;
-    END IF;
-
-    IF var_drop_index_sql > '' THEN
-        EXECUTE var_drop_index_sql;
-    END IF;
-
     -- correct any corrupt topogeometries and fix
 	 var_sql =  format('UPDATE ONLY %1$I.%2$I
 	 	SET
@@ -99,10 +72,6 @@ WHERE pg_type.typname = 'topogeometry' AND pga.attname = 'id'
 	 EXECUTE var_sql;
 	 GET DIAGNOSTICS var_row_count = ROW_COUNT;
 
-    IF var_create_index_sql > '' THEN
-        EXECUTE var_create_index_sql;
-        result = result || E'\n' || 'Recreating indexes';
-    END IF;
 	result = result || E'\n' || format('%s rows updated for %s.%s.%s column to bigint id type', var_row_count, layerSchema, layerTable, layerColumn);
   ELSE --we are coming from bigint and going back to integer
 	var_sql =  format('UPDATE ONLY %1$I.%2$I
@@ -112,7 +81,7 @@ WHERE pg_type.typname = 'topogeometry' AND pga.attname = 'id'
 	    (%3$I).layer_id,
 	     (%3$I).id,
 	     l.feature_type
-	   )::topogeometry
+	   )::topology.topogeometry
 	   FROM topology.layer AS l
 	 WHERE  l.topology_id = (%3$I).topology_id AND l.layer_id =  (%3$I).layer_id AND (%3$I).type <> l.feature_type  ', layerSchema, layerTable, layerColumn);
 	 EXECUTE var_sql;
