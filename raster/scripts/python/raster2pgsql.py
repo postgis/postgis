@@ -221,6 +221,11 @@ def gdt2pt(gdt):
         gdalc.GDT_Float32 : { 'name': 'PT_32BF',  'id': 10 },
         gdalc.GDT_Float64 : { 'name': 'PT_64BF',  'id': 11 }
         }
+
+    if hasattr(gdalc, 'GDT_Int8'):
+        pixtypes[gdalc.GDT_Int8] = { 'name': 'PT_8BSI',  'id':  3 }
+    if hasattr(gdalc, 'GDT_Float16'):
+        pixtypes[gdalc.GDT_Float16] = { 'name': 'PT_16BF', 'id': 9 }
     
     # XXX: Uncomment these logs to debug types translation
     #logit('MSG: Input GDAL pixel type: %s (%d)\n' % (gdal.GetDataTypeName(gdt), gdt))
@@ -239,11 +244,16 @@ def pt2numpy(pt):
         gdalc.GDT_Float32: numpy.float32,
         gdalc.GDT_Float64: numpy.float64
         }
+    if hasattr(gdalc, 'GDT_Int8'):
+        ptnumpy[gdalc.GDT_Int8] = numpy.int8
+    if hasattr(gdalc, 'GDT_Float16'):
+        ptnumpy[gdalc.GDT_Float16] = numpy.float16
     return ptnumpy.get(pt, numpy.uint8)
 
 def pt2fmt(pt):
     """Returns binary data type specifier for given pixel type."""
     fmttypes = {
+        3: 'b', # PT_8BSI
         4: 'B', # PT_8BUI
         5: 'h', # PT_16BSI
         6: 'H', # PT_16BUI
@@ -258,6 +268,7 @@ def pt2fmt(pt):
 def fmt2printfmt(fmt):
     """Returns printf-like formatter for given binary data type sepecifier."""
     fmttypes = {
+        'b': '%d', # PT_8BSI
         'B': '%d', # PT_8BUI
         'h': '%d', # PT_16BSI
         'H': '%d', # PT_16BUI
