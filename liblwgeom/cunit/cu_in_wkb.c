@@ -212,6 +212,10 @@ static void test_wkb_in_multisurface(void) {}
 
 static void test_wkb_in_malformed(void)
 {
+	char highbit_hex[3] = {(char)0xff, '0', '\0'};
+
+	cu_wkb_malformed_in(highbit_hex);
+
 	/* OSSFUXX */
 	cu_wkb_malformed_in("0000000008200000002020202020202020");
 
