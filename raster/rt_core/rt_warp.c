@@ -33,6 +33,10 @@
 #include "librtcore.h"
 #include "librtcore_internal.h"
 
+#ifndef NAN
+#define NAN (0.0/0.0)
+#endif
+
 /******************************************************************************
 * rt_raster_gdal_warp()
 ******************************************************************************/
@@ -864,11 +868,12 @@ rt_raster rt_raster_gdal_warp(
 	arg->wopts->hDstDS = arg->dst.ds;
 	arg->wopts->pfnTransformer = arg->transform.func;
 	arg->wopts->pTransformerArg = arg->transform.arg.transform;
-	arg->wopts->papszWarpOptions = (char **) CPLMalloc(sizeof(char *) * 2);
-
+	arg->wopts->papszWarpOptions = (char **) CPLMalloc(sizeof(char *) * 3);
 	arg->wopts->papszWarpOptions[0] = (char *) CPLMalloc(sizeof(char) * (strlen("INIT_DEST=NO_DATA") + 1));
 	strcpy(arg->wopts->papszWarpOptions[0], "INIT_DEST=NO_DATA");
-	arg->wopts->papszWarpOptions[1] = NULL;
+	arg->wopts->papszWarpOptions[1] = (char *) CPLMalloc(sizeof(char) * (strlen("UNIFIED_SRC_NODATA=PARTIAL") + 1));
+	strcpy(arg->wopts->papszWarpOptions[1], "UNIFIED_SRC_NODATA=PARTIAL");
+	arg->wopts->papszWarpOptions[2] = NULL;
 
 	/* set band mapping */
 	arg->wopts->nBandCount = numBands;
@@ -912,11 +917,10 @@ rt_raster rt_raster_gdal_warp(
 			}
 
 			if (!rt_band_get_hasnodata_flag(band)) {
-				/*
-					based on line 1004 of gdalwarp.cpp
-					the problem is that there is a chance that this number is a legitimate value
-				*/
-				arg->wopts->padfSrcNoDataReal[i] = -123456.789;
+				arg->wopts->padfSrcNoDataReal[i] = NAN;
+				arg->wopts->padfDstNoDataReal[i] = NAN;
+				arg->wopts->padfDstNoDataImag[i] = arg->wopts->padfSrcNoDataImag[i] = 0.0;
+				continue;
 			}
 			else {
 				rt_band_get_nodata(band, &(arg->wopts->padfSrcNoDataReal[i]));
