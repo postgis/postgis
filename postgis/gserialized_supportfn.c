@@ -433,10 +433,16 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				rightdatatype = exprType(rightarg);
 
 				/*
-				* Given the index operator family and the arguments and the
-				* desired strategy number we can now lookup the operator
-				* we want (usually && or &&&).
-				*/
+				 * Given the index operator family and the arguments and the
+				 * desired strategy number we can now lookup the operator
+				 * we want (usually && or &&&). ST_DFullyWithin is directional:
+				 * for an index on the first argument, overlap with the expanded
+				 * second argument is the safe lossy condition. The stronger
+				 * contained-by condition is only safe for an index on the second
+				 * argument, which must be covered by the expanded first argument.
+				 */
+				if (idxfn.index == ST_DFULLYWITHIN_IDX && req->indexarg == 0)
+					idxfn.index = ST_DWITHIN_IDX;
 				oproid = get_opfamily_member(opfamilyoid,
 							     leftdatatype,
 							     rightdatatype,
