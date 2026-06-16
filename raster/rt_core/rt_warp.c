@@ -33,10 +33,6 @@
 #include "librtcore.h"
 #include "librtcore_internal.h"
 
-#ifndef NAN
-#define NAN (0.0/0.0)
-#endif
-
 /******************************************************************************
 * rt_raster_gdal_warp()
 ******************************************************************************/
@@ -191,6 +187,8 @@ rt_raster rt_raster_gdal_warp(
 	CPLErr cplerr;
 	char *dst_options[] = {"SUBCLASS=VRTWarpedDataset", NULL};
 	_rti_warp_arg arg = NULL;
+
+	int nodata_count = 0;
 
 	GDALRasterBandH band;
 	rt_band rtband = NULL;
@@ -820,6 +818,7 @@ rt_raster rt_raster_gdal_warp(
 
 		/* set nodata */
 		if (rt_band_get_hasnodata_flag(rtband) != FALSE) {
+			nodata_count++;
 			rt_band_get_nodata(rtband, &nodata);
 			if (GDALSetRasterNoDataValue(band, nodata) != CE_None)
 				rtwarn("rt_raster_gdal_warp: Could not set nodata value for band %d", i);
@@ -871,8 +870,13 @@ rt_raster rt_raster_gdal_warp(
 	arg->wopts->papszWarpOptions = (char **) CPLMalloc(sizeof(char *) * 3);
 	arg->wopts->papszWarpOptions[0] = (char *) CPLMalloc(sizeof(char) * (strlen("INIT_DEST=NO_DATA") + 1));
 	strcpy(arg->wopts->papszWarpOptions[0], "INIT_DEST=NO_DATA");
+#if POSTGIS_GDAL_VERSION >= 30302
 	arg->wopts->papszWarpOptions[1] = (char *) CPLMalloc(sizeof(char) * (strlen("UNIFIED_SRC_NODATA=PARTIAL") + 1));
 	strcpy(arg->wopts->papszWarpOptions[1], "UNIFIED_SRC_NODATA=PARTIAL");
+#else
+	arg->wopts->papszWarpOptions[1] = (char *) CPLMalloc(sizeof(char) * (strlen("UNIFIED_SRC_NODATA=NO") + 1));
+	strcpy(arg->wopts->papszWarpOptions[1], "UNIFIED_SRC_NODATA=NO");
+#endif
 	arg->wopts->papszWarpOptions[2] = NULL;
 
 	/* set band mapping */
@@ -883,17 +887,11 @@ rt_raster rt_raster_gdal_warp(
 		arg->wopts->panDstBands[i] = arg->wopts->panSrcBands[i] = i + 1;
 
 	/*
-	* https://trac.osgeo.org/postgis/ticket/5881
-	* In order to call GDALWarp with BAND_INIT=NO_DATA we need to ensure
-	* that the src and dst rasters have nodata values and they are
-	* matched up nicely. This block used by tested with the hasnodata
-	* check on all src raster bands, but now we just do it every time
-	* because that makes sense (any warped raster is likely to have
-	* empty corners on output, and those corners need to be filled with
-	* some kind of NODATA value).
-	*/
-	{
-		RASTER_DEBUG(3, "Setting nodata mapping");
+	 * When every band declares nodata, pass the explicit vector to GDAL.
+	 * Mixed-band rasters keep their intrinsic per-band nodata metadata; a
+	 * synthetic value for bands without nodata can collide with valid pixels.
+	 */
+	if (numBands > 0 && nodata_count == numBands) {
 		arg->wopts->padfSrcNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
 		arg->wopts->padfDstNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
 		arg->wopts->padfSrcNoDataImag = (double *) CPLMalloc(numBands * sizeof(double));
@@ -916,16 +914,7 @@ rt_raster rt_raster_gdal_warp(
 				return NULL;
 			}
 
-			if (!rt_band_get_hasnodata_flag(band)) {
-				arg->wopts->padfSrcNoDataReal[i] = NAN;
-				arg->wopts->padfDstNoDataReal[i] = NAN;
-				arg->wopts->padfDstNoDataImag[i] = arg->wopts->padfSrcNoDataImag[i] = 0.0;
-				continue;
-			}
-			else {
-				rt_band_get_nodata(band, &(arg->wopts->padfSrcNoDataReal[i]));
-			}
-
+			rt_band_get_nodata(band, &(arg->wopts->padfSrcNoDataReal[i]));
 			arg->wopts->padfDstNoDataReal[i] = arg->wopts->padfSrcNoDataReal[i];
 			arg->wopts->padfDstNoDataImag[i] = arg->wopts->padfSrcNoDataImag[i] = 0.0;
 			RASTER_DEBUGF(4, "Mapped nodata value for band %d: %f (%f) => %f (%f)",
