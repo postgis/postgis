@@ -24,6 +24,8 @@ PostGIS 3.2.11
  - GH-897, [topology] Harden topology helper functions and
    maintenance SQL against identifier, tolerance, bigint, and cleanup
    regressions (Darafei Praliaskouski)
+ - GH-898, Fix ST_DFullyWithin indexed plans and large-coordinate
+   ring-orientation precision regressions (Darafei Praliaskouski)
 
 
 PostGIS 3.2.10
