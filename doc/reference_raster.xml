@@ -9886,7 +9886,7 @@ FROM (
                                     The <varname>callbackfunc</varname> parameter must be the name and signature of an SQL or PL/pgSQL function, cast to a regprocedure. An example PL/pgSQL function example is:
                                 </para>
                                     <programlisting>
-CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], position integer[][], VARIADIC userargs text[])
+CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos integer[][], VARIADIC userargs text[])
     RETURNS double precision
     AS $$
     BEGIN
@@ -9900,13 +9900,17 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
                                 </para>
 
                                 <para>
+                                    The callback return value is used as the value of the output pixel. If the callback returns <varname>NULL</varname>, the output pixel is set to NODATA when the output band has a NODATA value. If the output band has no NODATA value, a <varname>NULL</varname> callback result raises an error.
+                                </para>
+
+                                <para>
                                     Passing a <type>regprocedure</type> argument to a SQL function requires the full function signature to be passed, then cast to a <type>regprocedure</type> type. To pass the above example PL/pgSQL function as an argument, the SQL for the argument is:
                                 </para>
 
                                     <programlisting>'sample_callbackfunc(double precision[], integer[], text[])'::regprocedure</programlisting>
 
                                 <para>
-                                    Note that the argument contains the name of the function, the types of the function arguments, quotes around the name and argument types, and a cast to a <type>regprocedure</type>.
+                                    Note that PostgreSQL array types do not encode dimensions in function signatures, so multidimensional callback arguments are written as <type>double precision[]</type> and <type>integer[]</type> in the <type>regprocedure</type> signature.
                                 </para>
 
                             </listitem>
@@ -10099,8 +10103,7 @@ WITH src AS (
     SELECT 6, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, -4, 1, -1, 0, 0, 0), 1, '16BUI', 100, 0) AS rast UNION ALL
     SELECT 7, ST_AddBand(ST_MakeEmptyRaster(2, 2, 2, -4, 1, -1, 0, 0, 0), 1, '16BUI', 200, 0) AS rast UNION ALL
     SELECT 8, ST_AddBand(ST_MakeEmptyRaster(2, 2, 4, -4, 1, -1, 0, 0, 0), 1, '16BUI', 300, 0) AS rast
-)
-WITH foo AS (
+), foo AS (
     SELECT
         t1.rid,
         ST_Union(t2.rast) AS rast
@@ -10113,8 +10116,9 @@ WITH foo AS (
 ), bar AS (
     SELECT
         t1.rid,
-        ST_MapAlgebra(ARRAY[ROW(t2.rast, 1)]::rastbandarg[],
-            'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,
+        ST_MapAlgebra(
+            ARRAY[ROW(t2.rast, 1)]::rastbandarg[],
+            'sample_callbackfunc(double precision[], int[], text[])'::regprocedure,
             '32BUI',
             'CUSTOM', t1.rast,
             1, 1
