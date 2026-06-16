@@ -887,3 +887,27 @@ SELECT
 	ST_Metadata(ST_Rescale(rast, 2, 2)) AS rescale,
 	ST_Metadata(ST_Resize(rast, 0.5, 0.5)) AS resize
 FROM foo;
+
+-- Mixed nodata/no-nodata bands keep declared nodata without treating no-nodata NaN as invalid
+WITH src AS (
+	SELECT ST_SetValue(
+		ST_AddBand(
+			ST_SetValue(
+				ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 2, 1, -1, 0, 0, 0), 1, '8BUI', 0, 0),
+				1, 1, 1, NULL
+			),
+			2, '64BF', 'NaN'::float8, NULL
+		),
+		2, 1, 1, 'NaN'::float8
+	) AS rast
+), warped AS (
+	SELECT ST_Resample(rast, 4, 4, NULL, NULL, 0, 0, 'NearestNeighbour', 0) AS rast
+	FROM src
+)
+SELECT
+	ST_Value(rast, 1, 1, 1) IS NULL AS nodata_band_preserved,
+	ST_Value(rast, 1, 1, 1, FALSE) = ST_BandNoDataValue(rast, 1) AS nodata_raw_matches,
+	ST_Value(rast, 2, 1, 1) IS NULL AS nan_band_visible_value,
+	ST_Value(rast, 2, 1, 1, FALSE)::text AS nan_band_raw_value,
+	ST_BandNoDataValue(rast, 2) IS NULL AS nan_band_has_no_nodata
+FROM warped;

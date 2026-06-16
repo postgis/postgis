@@ -19,6 +19,13 @@ PostGIS 3.5.7
   - GH-888, [sfcgal] Avoid stale detoasted geometry access in
     CG_Visibility empty-input handling for SFCGAL < 2.2
     (Darafei Praliaskouski)
+  - GH-889, ST_Relate pattern inversion avoids out-of-bounds access
+    on short DE-9IM patterns (Darafei Praliaskouski)
+  - GH-890, Avoid GIDX BRIN summary merges across mismatched
+    dimensions (Darafei Praliaskouski)
+  - GH-894, [raster] Fix Float16 import, mixed nodata warping,
+    band replacement cleanup, GDAL credential redaction, and Python
+    GDAL compatibility (Darafei Praliaskouski)
 
 
 PostGIS 3.5.6
