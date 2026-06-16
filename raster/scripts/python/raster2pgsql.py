@@ -214,7 +214,6 @@ def gdt2pt(gdt):
     """Translate GDAL data type to WKT Raster pixel type."""
     pixtypes = {
         gdalc.GDT_Byte    : { 'name': 'PT_8BUI',  'id':  4 },
-        gdalc.GDT_Int8    : { 'name': 'PT_8BSI',  'id':  3 },
         gdalc.GDT_Int16   : { 'name': 'PT_16BSI', 'id':  5 },
         gdalc.GDT_UInt16  : { 'name': 'PT_16BUI', 'id':  6 },
         gdalc.GDT_Int32   : { 'name': 'PT_32BSI', 'id':  7 },
@@ -223,6 +222,8 @@ def gdt2pt(gdt):
         gdalc.GDT_Float64 : { 'name': 'PT_64BF',  'id': 11 }
         }
 
+    if hasattr(gdalc, 'GDT_Int8'):
+        pixtypes[gdalc.GDT_Int8] = { 'name': 'PT_8BSI',  'id':  3 }
     if hasattr(gdalc, 'GDT_Float16'):
         pixtypes[gdalc.GDT_Float16] = { 'name': 'PT_16BF', 'id': 9 }
     
@@ -243,6 +244,8 @@ def pt2numpy(pt):
         gdalc.GDT_Float32: numpy.float32,
         gdalc.GDT_Float64: numpy.float64
         }
+    if hasattr(gdalc, 'GDT_Int8'):
+        ptnumpy[gdalc.GDT_Int8] = numpy.int8
     if hasattr(gdalc, 'GDT_Float16'):
         ptnumpy[gdalc.GDT_Float16] = numpy.float16
     return ptnumpy.get(pt, numpy.uint8)
@@ -250,6 +253,7 @@ def pt2numpy(pt):
 def pt2fmt(pt):
     """Returns binary data type specifier for given pixel type."""
     fmttypes = {
+        3: 'b', # PT_8BSI
         4: 'B', # PT_8BUI
         5: 'h', # PT_16BSI
         6: 'H', # PT_16BUI
@@ -265,6 +269,7 @@ def pt2fmt(pt):
 def fmt2printfmt(fmt):
     """Returns printf-like formatter for given binary data type specifier."""
     fmttypes = {
+        'b': '%d', # PT_8BSI
         'B': '%d', # PT_8BUI
         'h': '%d', # PT_16BSI
         'H': '%d', # PT_16BUI

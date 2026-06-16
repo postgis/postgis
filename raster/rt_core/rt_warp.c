@@ -163,6 +163,8 @@ rt_raster rt_raster_gdal_warp(
 	char *dst_options[] = {"SUBCLASS=VRTWarpedDataset", NULL};
 	_rti_warp_arg arg = NULL;
 
+	int nodata_count = 0;
+
 	GDALRasterBandH band;
 	rt_band rtband = NULL;
 	rt_pixtype pt = PT_END;
@@ -656,6 +658,7 @@ rt_raster rt_raster_gdal_warp(
 		}
 
 		if (rt_band_get_hasnodata_flag(rtband) != FALSE) {
+			nodata_count++;
 			rt_band_get_nodata(rtband, &nodata);
 			if (GDALSetRasterNoDataValue(band, nodata) != CE_None)
 				rtwarn("rt_raster_gdal_warp: Could not set nodata value for band %d", i);
@@ -713,7 +716,7 @@ rt_raster rt_raster_gdal_warp(
 		arg->wopts->panDstBands[i] = arg->wopts->panSrcBands[i] = i + 1;
 
 	/* nodata mapping */
-	{
+	if (nodata_count == numBands) {
 		arg->wopts->padfSrcNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
 		arg->wopts->padfDstNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
 		arg->wopts->padfSrcNoDataImag = (double *) CPLMalloc(numBands * sizeof(double));
@@ -735,10 +738,7 @@ rt_raster rt_raster_gdal_warp(
 				_rti_warp_arg_destroy(arg);
 				return NULL;
 			}
-			if (!rt_band_get_hasnodata_flag(band))
-				arg->wopts->padfSrcNoDataReal[i] = -123456.789;
-			else
-				rt_band_get_nodata(band, &(arg->wopts->padfSrcNoDataReal[i]));
+			rt_band_get_nodata(band, &(arg->wopts->padfSrcNoDataReal[i]));
 			arg->wopts->padfDstNoDataReal[i] = arg->wopts->padfSrcNoDataReal[i];
 			arg->wopts->padfDstNoDataImag[i] = arg->wopts->padfSrcNoDataImag[i] = 0.0;
 		}
@@ -775,4 +775,3 @@ rt_raster rt_raster_gdal_warp(
 
 	return rast;
 }
-

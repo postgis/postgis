@@ -31,7 +31,6 @@ import sys
 def pt2fmt(pt):
     fmttypes = {
         gdalc.GDT_Byte: 'B',
-        gdalc.GDT_Int8: 'B',
         gdalc.GDT_Int16: 'h',
         gdalc.GDT_UInt16: 'H',
         gdalc.GDT_Int32: 'i',
@@ -39,6 +38,8 @@ def pt2fmt(pt):
         gdalc.GDT_Float32: 'f',
         gdalc.GDT_Float64: 'f'
         }
+    if hasattr(gdalc, 'GDT_Int8'):
+        fmttypes[gdalc.GDT_Int8] = 'b'
     if hasattr(gdalc, 'GDT_Float16'):
         fmttypes[gdalc.GDT_Float16] = 'e'
     return fmttypes.get(pt, 'x')

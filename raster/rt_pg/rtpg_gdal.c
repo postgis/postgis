@@ -38,6 +38,7 @@
 #include <utils/guc.h> /* for ArrayType */
 #include <catalog/pg_type.h> /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
 #include <utils/memutils.h> /* For TopMemoryContext */
+#include <ctype.h>
 
 #include "../../postgis_config.h"
 
@@ -1093,6 +1094,7 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 /* Support for hooking up GDAL logging to PgSQL error/debug reporting */
 
 #define gdalErrorTypesSize 17
+#define GDAL_MSG_MAXLEN 256
 
 static const char* const gdalErrorTypes[gdalErrorTypesSize] =
 {
@@ -1115,10 +1117,76 @@ static const char* const gdalErrorTypes[gdalErrorTypesSize] =
     "AWSSignatureDoesNotMatch"
 };
 
+static int
+rtpg_ascii_strncasecmp(const char *a, const char *b, size_t n)
+{
+	size_t i;
+	for (i = 0; i < n; i++) {
+		int ca = (unsigned char) a[i];
+		int cb = (unsigned char) b[i];
+		if (ca == '\0' || cb == '\0')
+			return ca - cb;
+		ca = tolower(ca);
+		cb = tolower(cb);
+		if (ca != cb)
+			return ca - cb;
+	}
+	return 0;
+}
+
+static char *
+rtpg_ascii_strcasestr(char *s, const char *needle)
+{
+	size_t n = strlen(needle);
+	if (n == 0)
+		return s;
+	for (; *s; s++) {
+		if (rtpg_ascii_strncasecmp(s, needle, n) == 0)
+			return s;
+	}
+	return NULL;
+}
+
+static void
+rtpg_gdal_redact_message(char *msg)
+{
+	static const char *const sensitive[] = {
+		"access_key=",
+		"access_token=",
+		"authorization:",
+		"key=",
+		"password=",
+		"secret=",
+		"signature=",
+		"token=",
+		"x-amz-credential=",
+		"x-amz-security-token="
+	};
+	size_t i;
+
+	for (i = 0; i < sizeof(sensitive) / sizeof(sensitive[0]); i++) {
+		char *p = msg;
+		size_t n = strlen(sensitive[i]);
+		while ((p = rtpg_ascii_strcasestr(p, sensitive[i])) != NULL) {
+			char *v = p + n;
+			while (*v && !isspace((unsigned char) *v) && *v != '&' && *v != ';' && *v != ',') {
+				*v = 'x';
+				v++;
+			}
+			p = v;
+		}
+	}
+}
+
 static void
 ogrErrorHandler(CPLErr eErrClass, int err_no, const char* msg)
 {
     const char* gdalErrType = "unknown type";
+    char redacted[GDAL_MSG_MAXLEN + 1];
+
+    snprintf(redacted, sizeof(redacted), "%s", msg ? msg : "");
+    rtpg_gdal_redact_message(redacted);
+
     if (err_no >= 0 && err_no < gdalErrorTypesSize)
     {
         gdalErrType = gdalErrorTypes[err_no];
@@ -1126,18 +1194,18 @@ ogrErrorHandler(CPLErr eErrClass, int err_no, const char* msg)
     switch (eErrClass)
     {
     case CE_None:
-        elog(NOTICE, "GDAL %s [%d] %s", gdalErrType, err_no, msg);
+        elog(NOTICE, "GDAL %s [%d] %s", gdalErrType, err_no, redacted);
         break;
     case CE_Debug:
-        elog(DEBUG2, "GDAL %s [%d] %s", gdalErrType, err_no, msg);
+        elog(DEBUG2, "GDAL %s [%d] %s", gdalErrType, err_no, redacted);
         break;
     case CE_Warning:
-        elog(WARNING, "GDAL %s [%d] %s", gdalErrType, err_no, msg);
+        elog(WARNING, "GDAL %s [%d] %s", gdalErrType, err_no, redacted);
         break;
     case CE_Failure:
     case CE_Fatal:
     default:
-        elog(ERROR, "GDAL %s [%d] %s", gdalErrType, err_no, msg);
+        elog(ERROR, "GDAL %s [%d] %s", gdalErrType, err_no, redacted);
         break;
     }
     return;
@@ -1152,4 +1220,3 @@ rtpg_gdal_set_cpl_debug(bool value, void *extra)
     CPLSetErrorHandler(value ? ogrErrorHandler : NULL);
     CPLSetCurrentErrorHandlerCatchDebug(value);
 }
-

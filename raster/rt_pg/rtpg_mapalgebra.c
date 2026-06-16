@@ -4139,12 +4139,14 @@ Datum RASTER_reclass_exact(PG_FUNCTION_ARGS) {
 		elog(ERROR, "Band reclassification failed");
 
 	/* replace old band with new band */
-	if (rt_raster_replace_band(raster, newband, bandnum-1) == NULL) {
+	band = rt_raster_replace_band(raster, newband, bandnum-1);
+	if (band == NULL) {
 		rt_band_destroy(newband);
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "Could not replace raster band of index %d with reclassified band", bandnum);
 	}
+	rt_band_destroy(band);
 
 	pgrtn = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
