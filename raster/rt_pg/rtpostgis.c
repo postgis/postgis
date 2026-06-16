@@ -161,6 +161,8 @@ rtpg_interrupt_liblwgeom_callback(void)
 		lwgeom_request_interrupt();
 }
 
+static lwinterrupt_callback *prev_liblwgeom_interrupt_callback = NULL;
+
 
 #ifndef __GNUC__
 # define __attribute__ (x)
@@ -727,7 +729,8 @@ _PG_init(void) {
 
 	/* Install liblwgeom handlers */
 	pg_install_lwgeom_handlers();
-	lwgeom_register_interrupt_callback(rtpg_interrupt_liblwgeom_callback);
+	prev_liblwgeom_interrupt_callback =
+		lwgeom_register_interrupt_callback(rtpg_interrupt_liblwgeom_callback);
 
 	/* Install rtcore handlers */
 	rt_set_handlers_options(rt_pg_alloc, rt_pg_realloc, rt_pg_free,
@@ -860,6 +863,9 @@ _PG_fini(void) {
 
 	elog(NOTICE, "Goodbye from PostGIS Raster %s", POSTGIS_VERSION);
 
+	lwgeom_register_interrupt_callback(prev_liblwgeom_interrupt_callback);
+	prev_liblwgeom_interrupt_callback = NULL;
+
 	/* Clean up */
 	pfree(env_postgis_gdal_enabled_drivers);
 	pfree(boot_postgis_gdal_enabled_drivers);
@@ -872,5 +878,3 @@ _PG_fini(void) {
 	/* Revert back to old context */
 	MemoryContextSwitchTo(old_context);
 }
-
-
