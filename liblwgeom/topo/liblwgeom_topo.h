@@ -1064,13 +1064,16 @@ LWT_ELEMID lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol);
  *                  line to be split into. 0 for no limits.
  *                  An error will be returned if number of edges would
  *                  exceed this number.
+ * @param snap_existing_edges
+ *                  Allow snapping existing edges to incoming line vertices.
  *
  * @return an array of <nedges> edge identifiers that sewed together
  *         will build up the input linestring (after snapping). Caller
  *         will need to free the array using lwfree(), if not null.
  */
 LWT_ELEMID* lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol,
-                        int* nedges, int max_edges);
+                        int* nedges, int max_edges,
+                        int snap_existing_edges);
 
 /**
  * Adds a linestring to the topology without determining generated faces

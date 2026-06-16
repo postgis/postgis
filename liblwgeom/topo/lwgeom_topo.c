@@ -39,6 +39,7 @@
 
 #include <inttypes.h>
 #include <math.h>
+#include <string.h>
 
 static bool
 _lwt_describe_point(const LWPOINT *pt, char *buf, size_t bufsize)
@@ -898,6 +899,204 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
               /* would be NULL if num_edges was 0 */
 
   GEOSGeom_destroy(edgegg);
+
+  return 0;
+}
+
+static int
+_lwt_EdgeMoveWillHitNode( LWT_TOPOLOGY* topo,
+                          LWT_ELEMID start_node, LWT_ELEMID end_node,
+                          LWLINE *oldedge, LWLINE *newedge )
+{
+  GBOX mbox;
+  LWT_ISO_NODE *nodes;
+  const GBOX *edgebox;
+  uint64_t i, numnodes;
+  int isclosed = start_node == end_node;
+
+  lwgeom_add_bbox(lwline_as_lwgeom(newedge));
+  edgebox = lwgeom_get_bbox(lwline_as_lwgeom(newedge));
+
+  nodes = lwt_be_getNodeWithinBox2D(topo, edgebox, &numnodes,
+                                    LWT_COL_NODE_ALL, 0);
+  LWDEBUGF(1, "lwt_be_getNodeWithinBox2D returned %" PRIu64 " nodes", numnodes);
+  if (numnodes == UINT64_MAX)
+  {
+    PGTOPO_BE_ERROR();
+    return -1;
+  }
+  for (i=0; i<numnodes; ++i)
+  {
+    LWT_ISO_NODE *node = &(nodes[i]);
+    LWT_ELEMID node_id = node->node_id;
+    const POINT2D *pt;
+
+    if (node_id == start_node) continue;
+    if (node_id == end_node) continue;
+
+    if (!node->geom || !node->geom->point || !node->geom->point->npoints)
+    {
+      _lwt_release_nodes(nodes, numnodes);
+      lwerror("Internal error: lwt_be_getNodeWithinBox2D returned node %"
+              LWTFMT_ELEMID " with no vertices", node_id);
+      return -1;
+    }
+
+    pt = getPoint2d_cp(node->geom->point, 0);
+    if (ptarray_contains_point_partial(newedge->points, pt, LW_FALSE, NULL) == LW_BOUNDARY)
+    {
+      _lwt_release_nodes(nodes, numnodes);
+      return 1;
+    }
+  }
+  if (nodes) _lwt_release_nodes(nodes, numnodes);
+
+  lwgeom_add_bbox(lwline_as_lwgeom(oldedge));
+  lwgeom_add_bbox(lwline_as_lwgeom(newedge));
+  gbox_union(oldedge->bbox, newedge->bbox, &mbox);
+
+  nodes = lwt_be_getNodeWithinBox2D(topo, &mbox, &numnodes,
+                                    LWT_COL_NODE_ALL, 0);
+  LWDEBUGF(1, "lwt_be_getNodeWithinBox2D returned %" PRIu64 " nodes", numnodes);
+  if (numnodes == UINT64_MAX)
+  {
+    PGTOPO_BE_ERROR();
+    return -1;
+  }
+  for (i=0; i<numnodes; ++i)
+  {
+    LWT_ISO_NODE *node = &(nodes[i]);
+    LWT_ELEMID node_id = node->node_id;
+    const POINT2D *pt;
+    int old_contains;
+    int new_contains;
+
+    if (node_id == start_node) continue;
+    if (node_id == end_node) continue;
+
+    if (!node->geom || !node->geom->point || !node->geom->point->npoints)
+    {
+      _lwt_release_nodes(nodes, numnodes);
+      lwerror("Internal error: lwt_be_getNodeWithinBox2D returned node %"
+              LWTFMT_ELEMID " with no vertices", node_id);
+      return -1;
+    }
+
+    pt = getPoint2d_cp(node->geom->point, 0);
+    old_contains = ptarray_contains_point_partial(oldedge->points, pt, isclosed, NULL) == LW_INSIDE;
+    new_contains = ptarray_contains_point_partial(newedge->points, pt, isclosed, NULL) == LW_INSIDE;
+    if (old_contains != new_contains)
+    {
+      _lwt_release_nodes(nodes, numnodes);
+      return 1;
+    }
+  }
+  if (nodes) _lwt_release_nodes(nodes, numnodes);
+
+  return 0;
+}
+
+static int
+_lwt_EdgeGeomsCollide( LWLINE *edge1, LWLINE *edge2 )
+{
+  GEOSGeometry *edge1gg;
+  GEOSGeometry *edge2gg;
+  char *relate;
+  int match;
+  int collision = 0;
+
+  initGEOS(lwnotice, lwgeom_geos_error);
+
+  edge1gg = LWGEOM2GEOS(lwline_as_lwgeom(edge1), 0);
+  if (!edge1gg)
+  {
+    lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
+    return -1;
+  }
+
+  edge2gg = LWGEOM2GEOS(lwline_as_lwgeom(edge2), 0);
+  if (!edge2gg)
+  {
+    GEOSGeom_destroy(edge1gg);
+    lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
+    return -1;
+  }
+
+  relate = GEOSRelateBoundaryNodeRule(edge1gg, edge2gg, 2);
+  if (!relate)
+  {
+    GEOSGeom_destroy(edge2gg);
+    GEOSGeom_destroy(edge1gg);
+    lwerror("GEOSRelateBoundaryNodeRule error: %s", lwgeom_geos_errmsg);
+    return -1;
+  }
+
+  match = GEOSRelatePatternMatch(relate, "FF*F*****");
+  if (match == 2)
+  {
+    GEOSFree(relate);
+    GEOSGeom_destroy(edge2gg);
+    GEOSGeom_destroy(edge1gg);
+    lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
+    return -1;
+  }
+  if (!match)
+    collision = 1;
+
+  GEOSFree(relate);
+  GEOSGeom_destroy(edge2gg);
+  GEOSGeom_destroy(edge1gg);
+
+  return collision;
+}
+
+static int
+_lwt_EdgeMoveWillCrossEdge( LWT_TOPOLOGY* topo,
+                            LWT_ELEMID edge_id, LWLINE *newedge )
+{
+  uint64_t i, num_edges;
+  LWT_ISO_EDGE *edges;
+  const GBOX *edgebox;
+
+  lwgeom_add_bbox(lwline_as_lwgeom(newedge));
+  edgebox = lwgeom_get_bbox(lwline_as_lwgeom(newedge));
+
+  edges = lwt_be_getEdgeWithinBox2D( topo, edgebox, &num_edges, LWT_COL_EDGE_ALL, 0 );
+  LWDEBUGF(1, "lwt_be_getEdgeWithinBox2D returned %" PRIu64 " edges", num_edges);
+  if (num_edges == UINT64_MAX)
+  {
+    PGTOPO_BE_ERROR();
+    return -1;
+  }
+
+  for (i=0; i<num_edges; ++i)
+  {
+    LWT_ISO_EDGE* edge = &(edges[i]);
+    int collision;
+
+    if ( edge->edge_id == edge_id ) continue;
+
+    if ( ! edge->geom )
+    {
+      _lwt_release_edges(edges, num_edges);
+      lwerror("Edge %" LWTFMT_ELEMID " has NULL geometry!", edge->edge_id);
+      return -1;
+    }
+
+    collision = _lwt_EdgeGeomsCollide(edge->geom, newedge);
+    if ( collision < 0 )
+    {
+      _lwt_release_edges(edges, num_edges);
+      return -1;
+    }
+
+    if ( collision )
+    {
+      _lwt_release_edges(edges, num_edges);
+      return 1;
+    }
+  }
+  if ( edges ) _lwt_release_edges(edges, num_edges);
 
   return 0;
 }
@@ -1840,6 +2039,46 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
 
   /* Return number of incident edges found */
   return numedges;
+}
+
+static int
+_lwt_EdgeMoveWillChangeAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id,
+                                      LWT_ELEMID start_node, LWT_ELEMID end_node,
+                                      LWLINE *oldedge, LWLINE *newedge )
+{
+  POINT2D p1, p2;
+  int isclosed = start_node == end_node;
+  edgeend span_pre, epan_pre;
+  edgeend span_post, epan_post;
+
+  getPoint2d_p(oldedge->points, 0, &p1);
+  getPoint2d_p(oldedge->points, oldedge->points->npoints-1, &p2);
+
+  if ( _lwt_InitEdgeEndByLine(&span_pre, &epan_pre, oldedge, &p1, &p2) )
+    return -1;
+  if ( _lwt_FindAdjacentEdges(topo, start_node, &span_pre,
+                              isclosed ? &epan_pre : NULL, edge_id) < 0 )
+    return -1;
+  if ( _lwt_FindAdjacentEdges(topo, end_node, &epan_pre,
+                              isclosed ? &span_pre : NULL, edge_id) < 0 )
+    return -1;
+
+  if ( _lwt_InitEdgeEndByLine(&span_post, &epan_post, newedge, &p1, &p2) )
+    return -1;
+  if ( _lwt_FindAdjacentEdges(topo, start_node, &span_post,
+                              isclosed ? &epan_post : NULL, edge_id) < 0 )
+    return -1;
+  if ( _lwt_FindAdjacentEdges(topo, end_node, &epan_post,
+                              isclosed ? &span_post : NULL, edge_id) < 0 )
+    return -1;
+
+  if ( span_pre.nextCW != span_post.nextCW ||
+       span_pre.nextCCW != span_post.nextCCW ||
+       epan_pre.nextCW != epan_post.nextCW ||
+       epan_pre.nextCCW != epan_post.nextCCW )
+    return 1;
+
+  return 0;
 }
 
 /*
@@ -7327,7 +7566,7 @@ _lwt_split_by_nodes(const LWGEOM *g, const LWGEOM *nodes)
 
 static LWT_ELEMID*
 _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
-            int handleFaceSplit, int maxNewEdges)
+            int handleFaceSplit, int maxNewEdges, int snapExistingEdges)
 {
   LWGEOM *geomsbuf[1];
   LWGEOM **geoms;
@@ -7387,6 +7626,10 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
               tol, qbox.xmin, qbox.ymin, qbox.xmax, qbox.ymax);
 
   LWGEOM **nearby = 0;
+  LWT_ELEMID *nearbyid = 0;
+  LWT_ELEMID *nearby_start_node = 0;
+  LWT_ELEMID *nearby_end_node = 0;
+  LWLINE **snapped_edges = 0;
   int nearbyindex = 0;
   int nearbycount = 0;
 
@@ -7407,6 +7650,9 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     /* collect those whose distance from us is < tol */
     nearbycount += numedges;
     nearby = lwalloc(numedges * sizeof(LWGEOM *));
+    nearbyid = lwalloc(numedges * sizeof(LWT_ELEMID));
+    nearby_start_node = lwalloc(numedges * sizeof(LWT_ELEMID));
+    nearby_end_node = lwalloc(numedges * sizeof(LWT_ELEMID));
     for (i=0; i<numedges; ++i)
     {{
       LW_ON_INTERRUPT(return NULL);
@@ -7424,7 +7670,10 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
       }
       GEOSGeom_destroy(edge_g);
       if ( dist && dist >= tol ) continue;
-      nearby[nearbyindex++] = g;
+      nearby[nearbyindex] = g;
+      nearbyid[nearbyindex] = e->edge_id;
+      nearby_start_node[nearbyindex] = e->start_node;
+      nearby_end_node[nearbyindex++] = e->end_node;
     }}
     LWDEBUGF(1, "Found %d edges closer than tolerance (%g)", nearbyindex, tol);
     GEOSGeom_destroy(noded_g);
@@ -7524,6 +7773,129 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     LWGEOM *diff, *xset;
 
     LWDEBUGF(1, "Line intersects %d edges", nearbyedgecount);
+
+    if ( snapExistingEdges )
+    {
+      LWDEBUG(1, "Snapping intersecting edges to incoming line vertices");
+      snapped_edges = lwalloc(nearbyedgecount * sizeof(LWLINE *));
+      memset(snapped_edges, 0, nearbyedgecount * sizeof(LWLINE *));
+      for (int i=0; i<nearbyedgecount; i++)
+      {
+        LWGEOM *edge = nearby[i];
+        LWLINE *edgeline = lwgeom_as_lwline(edge);
+        LWGEOM *snapped;
+        LWLINE *snappedline;
+        LWT_ELEMID edge_id = nearbyid[i];
+        POINT2D before, after;
+        int move_collision;
+        int edge_collision;
+        int adjacency_collision;
+
+        snapped = lwgeom_snap(edge, noded, tol);
+        snappedline = lwgeom_as_lwline(snapped);
+        if ( ! snappedline )
+        {
+          lwgeom_free(snapped);
+          lwgeom_free(noded);
+          lwerror("Snapping edge %" LWTFMT_ELEMID " produced a non-linestring", edge_id);
+          return NULL;
+        }
+
+        if ( lwgeom_same(snapped, edge) )
+        {
+          lwgeom_free(snapped);
+          continue;
+        }
+
+        getPoint2d_p(edgeline->points, 0, &before);
+        getPoint2d_p(snappedline->points, 0, &after);
+        if ( ! P2D_SAME_STRICT(&before, &after) )
+        {
+          lwgeom_free(snapped);
+          continue;
+        }
+
+        getPoint2d_p(edgeline->points, edgeline->points->npoints - 1, &before);
+        getPoint2d_p(snappedline->points, snappedline->points->npoints - 1, &after);
+        if ( ! P2D_SAME_STRICT(&before, &after) )
+        {
+          lwgeom_free(snapped);
+          continue;
+        }
+
+        if ( ! lwgeom_is_simple(lwline_as_lwgeom(snappedline)) )
+        {
+          lwgeom_free(snapped);
+          continue;
+        }
+
+        /* Avoid staging snaps that lwt_ChangeEdgeGeom would reject. */
+        move_collision = _lwt_EdgeMoveWillHitNode(topo,
+                                                 nearby_start_node[i],
+                                                 nearby_end_node[i],
+                                                 edgeline,
+                                                 snappedline);
+        if ( move_collision )
+        {
+          lwgeom_free(snapped);
+          if ( move_collision < 0 )
+          {
+            lwgeom_free(noded);
+            return NULL;
+          }
+          continue;
+        }
+
+        edge_collision = _lwt_EdgeMoveWillCrossEdge(topo, edge_id, snappedline);
+        if ( edge_collision )
+        {
+          lwgeom_free(snapped);
+          if ( edge_collision < 0 )
+          {
+            lwgeom_free(noded);
+            return NULL;
+          }
+          continue;
+        }
+
+        for (int j=0; j<i; j++)
+        {
+          if ( ! snapped_edges[j] ) continue;
+          edge_collision = _lwt_EdgeGeomsCollide(snapped_edges[j], snappedline);
+          if ( edge_collision ) break;
+        }
+        if ( edge_collision )
+        {
+          lwgeom_free(snapped);
+          if ( edge_collision < 0 )
+          {
+            lwgeom_free(noded);
+            return NULL;
+          }
+          continue;
+        }
+
+        adjacency_collision = _lwt_EdgeMoveWillChangeAdjacentEdges(topo,
+                                                                  edge_id,
+                                                                  nearby_start_node[i],
+                                                                  nearby_end_node[i],
+                                                                  edgeline,
+                                                                  snappedline);
+        if ( adjacency_collision )
+        {
+          lwgeom_free(snapped);
+          if ( adjacency_collision < 0 )
+          {
+            lwgeom_free(noded);
+            return NULL;
+          }
+          continue;
+        }
+
+        snapped_edges[i] = snappedline;
+        nearby[i] = lwline_as_lwgeom(snappedline);
+      }
+    }
 
     col = lwcollection_construct(COLLECTIONTYPE, topo->srid,
                                  NULL, nearbyedgecount, nearby);
@@ -7632,11 +8004,36 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     lwcollection_release(col);
   }
 
+  if ( snapped_edges )
+  {
+    LW_ON_INTERRUPT(return NULL);
+    for (int i=0; i<nearbyedgecount; i++)
+    {
+      if ( ! snapped_edges[i] ) continue;
+      if ( -1 == lwt_ChangeEdgeGeom( topo, nearbyid[i], snapped_edges[i] ) )
+      {
+        lwgeom_free(noded);
+        lwerror("lwt_ChangeEdgeGeom failed");
+        return NULL;
+      }
+    }
+  }
 
   LWDEBUG(1, "Freeing up nearby elements");
 
   /* TODO: free up endpoints of nearbyedges */
+  if ( snapped_edges )
+  {
+    for (int i=0; i<nearbyedgecount; i++)
+    {
+      if ( snapped_edges[i] ) lwline_free(snapped_edges[i]);
+    }
+    lwfree(snapped_edges);
+  }
   if ( nearby ) lwfree(nearby);
+  if ( nearbyid ) lwfree(nearbyid);
+  if ( nearby_start_node ) lwfree(nearby_start_node);
+  if ( nearby_end_node ) lwfree(nearby_end_node);
   if ( nodes ) _lwt_release_nodes(nodes, numnodes);
   if ( edges ) _lwt_release_edges(edges, numedges);
 
@@ -7730,15 +8127,15 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
 }
 
 LWT_ELEMID*
-lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges, int max_new_edges)
+lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges, int max_new_edges, int snap_existing_edges)
 {
-  return _lwt_AddLine(topo, line, tol, nedges, 1, max_new_edges);
+  return _lwt_AddLine(topo, line, tol, nedges, 1, max_new_edges, snap_existing_edges);
 }
 
 LWT_ELEMID*
 lwt_AddLineNoFace(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
 {
-  return _lwt_AddLine(topo, line, tol, nedges, 0, -1);
+  return _lwt_AddLine(topo, line, tol, nedges, 0, -1, 0);
 }
 
 static void
@@ -7754,7 +8151,7 @@ lwt_LoadLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int max_new_edges)
   int nedges;
 
   /* TODO: avoid allocating edge ids */
-  ids = lwt_AddLine(topo, line, tol, &nedges, max_new_edges);
+  ids = lwt_AddLine(topo, line, tol, &nedges, max_new_edges, 0);
   if ( nedges > 0 ) lwfree(ids);
 }
 

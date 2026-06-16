@@ -651,3 +651,103 @@ SELECT 't6064.2', count(*) > 0 FROM topology.TopoGeo_addLinestring('t6064',
 )');
 SELECT 't6064.check.final', * FROM topology.ValidateTopology('t6064');
 SELECT NULL FROM topology.DropTopology ('t6064');
+
+-- See https://trac.osgeo.org/postgis/ticket/6034
+SELECT NULL FROM topology.CreateTopology('t6034_default', 4258, 1e-6);
+WITH data AS (
+  SELECT
+    ST_GeomFromEWKB(decode('0102000020A21000001200000068327ABAA20F2E40065043A442D65040921E91F9370F2E40D919AF2C41D6504060224497020F2E4070FDC4B43FD65040D23D9393020F2E40CBFA843C3ED650402E8D07F1FA0E2E4062BC63223DD650407810A1AFEB0E2E40344261663CD650400A826F30CD0E2E4084E48E663CD65040D491F494880E2E40B8821B813DD65040149ACC0E6A0E2E40542DD1903AD650402F99B9F3C90D2E40B0A9B2913AD650400E6FB093940D2E400481E0D539D65040BC705590940D2E40C3DCA55D38D65040D87C88CCA30D2E40F4BE55E536D6504062934948C20D2E409527F06C35D65040EA83FD022D0E2E405BD339B034D65040B2B377793F0F2E40B939AFAE34D65040AE91F5FF5D0F2E4055D2EE9E37D650404C570E7933102E402FF6A19D37D65040', 'hex')) AS long_line,
+    ST_GeomFromEWKB(decode('0102000020A2100000030000004C570E7933102E402FF6A19D37D6504068327ABAA20F2E40E8A7839E37D6504068327ABAA20F2E40065043A442D65040', 'hex')) AS short_line
+)
+SELECT NULL FROM data, topology.TopoGeo_AddLinestring('t6034_default', long_line, 1e-6);
+WITH data AS (
+  SELECT ST_GeomFromEWKB(decode('0102000020A2100000030000004C570E7933102E402FF6A19D37D6504068327ABAA20F2E40E8A7839E37D6504068327ABAA20F2E40065043A442D65040', 'hex')) AS short_line
+)
+SELECT NULL FROM data, topology.TopoGeo_AddLinestring('t6034_default', short_line, 1e-6);
+SELECT 't6034.default.nearby', count(*) > 0 FROM topology.FindVertexSegmentPairsBelowDistance('t6034_default', 1e-6);
+SELECT NULL FROM topology.DropTopology('t6034_default');
+
+SELECT NULL FROM topology.CreateTopology('t6034_snap', 4258, 1e-6);
+WITH data AS (
+  SELECT
+    ST_GeomFromEWKB(decode('0102000020A21000001200000068327ABAA20F2E40065043A442D65040921E91F9370F2E40D919AF2C41D6504060224497020F2E4070FDC4B43FD65040D23D9393020F2E40CBFA843C3ED650402E8D07F1FA0E2E4062BC63223DD650407810A1AFEB0E2E40344261663CD650400A826F30CD0E2E4084E48E663CD65040D491F494880E2E40B8821B813DD65040149ACC0E6A0E2E40542DD1903AD650402F99B9F3C90D2E40B0A9B2913AD650400E6FB093940D2E400481E0D539D65040BC705590940D2E40C3DCA55D38D65040D87C88CCA30D2E40F4BE55E536D6504062934948C20D2E409527F06C35D65040EA83FD022D0E2E405BD339B034D65040B2B377793F0F2E40B939AFAE34D65040AE91F5FF5D0F2E4055D2EE9E37D650404C570E7933102E402FF6A19D37D65040', 'hex')) AS long_line,
+    ST_GeomFromEWKB(decode('0102000020A2100000030000004C570E7933102E402FF6A19D37D6504068327ABAA20F2E40E8A7839E37D6504068327ABAA20F2E40065043A442D65040', 'hex')) AS short_line
+)
+SELECT NULL FROM data, topology.TopoGeo_AddLinestring('t6034_snap', long_line, 1e-6);
+WITH data AS (
+  SELECT ST_GeomFromEWKB(decode('0102000020A2100000030000004C570E7933102E402FF6A19D37D6504068327ABAA20F2E40E8A7839E37D6504068327ABAA20F2E40065043A442D65040', 'hex')) AS short_line
+)
+SELECT 't6034.snap.edges', count(*) > 0
+FROM data, topology.TopoGeo_AddLinestring('t6034_snap', short_line, 1e-6, snap_edges => true);
+SELECT 't6034.snap.invalid', * FROM topology.ValidateTopology('t6034_snap');
+SELECT 't6034.snap.nearby', count(*) FROM topology.FindVertexSegmentPairsBelowDistance('t6034_snap', 1e-6);
+SELECT NULL FROM topology.DropTopology('t6034_snap');
+
+SELECT NULL FROM topology.CreateTopology('t6034_node_collision', 0, 0);
+SELECT NULL FROM topology.TopoGeo_AddLinestring('t6034_node_collision', 'LINESTRING(0 0,10 0)'::geometry);
+SELECT NULL FROM topology.TopoGeo_AddPoint('t6034_node_collision', 'POINT(5 0.5)'::geometry);
+SELECT 't6034.snap.node_collision', count(*) > 0
+FROM topology.TopoGeo_AddLinestring(
+  't6034_node_collision',
+  'LINESTRING(5 0.5,5 1)'::geometry,
+  1,
+  snap_edges => true
+);
+SELECT 't6034.snap.node_collision.invalid', * FROM topology.ValidateTopology('t6034_node_collision');
+SELECT NULL FROM topology.DropTopology('t6034_node_collision');
+
+SELECT NULL FROM topology.CreateTopology('t6034_motion_collision', 0, 0);
+SELECT NULL FROM topology.TopoGeo_AddLinestring('t6034_motion_collision', 'LINESTRING(0 0,1 0,100 0)'::geometry);
+SELECT NULL FROM topology.TopoGeo_AddPoint('t6034_motion_collision', 'POINT(50 0.505050505050505)'::geometry);
+SELECT 't6034.snap.motion_collision', count(*) > 0
+FROM topology.TopoGeo_AddLinestring(
+  't6034_motion_collision',
+  'LINESTRING(1 1,1 2)'::geometry,
+  2,
+  snap_edges => true
+);
+SELECT 't6034.snap.motion_collision.invalid', * FROM topology.ValidateTopology('t6034_motion_collision');
+SELECT NULL FROM topology.DropTopology('t6034_motion_collision');
+
+SELECT NULL FROM topology.CreateTopology('t6034_edge_collision', 0, 0);
+SELECT NULL FROM topology.TopoGeo_AddLinestring('t6034_edge_collision', 'LINESTRING(0 0,5 0.4,10 0)'::geometry);
+SELECT NULL FROM topology.TopoGeo_AddLinestring('t6034_edge_collision', 'LINESTRING(5 0.6,5 2)'::geometry);
+SELECT 't6034.snap.edge_collision', count(*) > 0
+FROM topology.TopoGeo_AddLinestring(
+  't6034_edge_collision',
+  'LINESTRING(5 1,5 3)'::geometry,
+  1,
+  snap_edges => true
+);
+SELECT 't6034.snap.edge_collision.invalid', * FROM topology.ValidateTopology('t6034_edge_collision');
+SELECT NULL FROM topology.DropTopology('t6034_edge_collision');
+
+SELECT NULL FROM topology.CreateTopology('t6034_staged_collision', 0, 0);
+SELECT NULL FROM topology.TopoGeo_AddLinestring('t6034_staged_collision', 'LINESTRING(0 0,5 0.4,10 0)'::geometry);
+SELECT NULL FROM topology.TopoGeo_AddLinestring('t6034_staged_collision', 'LINESTRING(0 2,5 1.6,10 2)'::geometry);
+SELECT 't6034.snap.staged_collision', count(*) > 0
+FROM topology.TopoGeo_AddLinestring(
+  't6034_staged_collision',
+  'LINESTRING(5 1,6 3)'::geometry,
+  1,
+  snap_edges => true
+);
+SELECT 't6034.snap.staged_collision.invalid', * FROM topology.ValidateTopology('t6034_staged_collision');
+SELECT NULL FROM topology.DropTopology('t6034_staged_collision');
+
+\i :top_builddir/topology/test/load_topology.sql
+SELECT NULL FROM topology.ST_AddEdgeModFace(
+  'city_data',
+  17,
+  18,
+  'LINESTRING(21 22,28 27,35 22)'
+);
+SELECT 't6034.snap.adjacency_collision', count(*) > 0
+FROM topology.TopoGeo_AddLinestring(
+  'city_data',
+  'LINESTRING(28 18,28 17)'::geometry,
+  10,
+  snap_edges => true
+);
+SELECT 't6034.snap.adjacency_collision.invalid', * FROM topology.ValidateTopology('city_data');
+SELECT NULL FROM topology.DropTopology('city_data');

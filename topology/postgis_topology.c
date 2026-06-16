@@ -5171,6 +5171,7 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
   FACEEDGESSTATE *state;
   Datum result;
   LWT_ELEMID id;
+  bool snap_existing_edges = false;
 
   if (SRF_IS_FIRSTCALL())
   {
@@ -5187,6 +5188,11 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
     if (PG_NARGS() > 3 && !PG_ARGISNULL(3))
     {
       max_new_edges = PG_GETARG_INT32(3);
+    }
+
+    if (PG_NARGS() > 4 && !PG_ARGISNULL(4))
+    {
+      snap_existing_edges = PG_GETARG_BOOL(4);
     }
 
     toponame_text = PG_GETARG_TEXT_P(0);
@@ -5249,7 +5255,7 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
     }
 
     POSTGIS_DEBUG(1, "Calling lwt_AddLine");
-    elems = lwt_AddLine(topo, ln, tol, &nelems, max_new_edges);
+    elems = lwt_AddLine(topo, ln, tol, &nelems, max_new_edges, snap_existing_edges);
     POSTGIS_DEBUG(1, "lwt_AddLine returned");
     lwgeom_free(lwgeom);
     PG_FREE_IF_COPY(geom, 1);
