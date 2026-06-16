@@ -20,6 +20,7 @@
  *
  * Copyright (C) 2012-2021 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2001-2006 Refractions Research Inc.
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -27,11 +28,65 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <float.h>
+#include <limits.h>
+#include <math.h>
 
 #include "../postgis_config.h"
 /*#define POSTGIS_DEBUG_LEVEL 4*/
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
+
+static inline void
+ptarray_signed_area_add(double *sum, double *compensation, double value)
+{
+	double y, t;
+
+	/*
+	 * Kahan compensation is only valid in finite arithmetic. When a finite
+	 * ring is so large that the determinant overflows, preserve the IEEE
+	 * infinity instead of manufacturing NaN in the compensation term.
+	 */
+	if (!isfinite(value) || !isfinite(*sum))
+	{
+		*sum += value;
+		*compensation = 0.0;
+		return;
+	}
+
+	y = value - *compensation;
+	t = *sum + y;
+	*compensation = (t - *sum) - y;
+	*sum = t;
+}
+
+static inline void
+ptarray_signed_area_two_diff(double a, double b, double *diff, double *err)
+{
+	double bvirt, avirt, bround, around;
+
+	*diff = a - b;
+	bvirt = a - *diff;
+	avirt = *diff + bvirt;
+	bround = bvirt - b;
+	around = a - avirt;
+	*err = around + bround;
+}
+
+static inline int
+ptarray_signed_area_product_exponent(double a, double b)
+{
+	int ea, eb;
+
+	if (!isfinite(a) || !isfinite(b))
+		return DBL_MAX_EXP;
+	if (a == 0.0 || b == 0.0)
+		return INT_MIN;
+
+	frexp(fabs(a), &ea);
+	frexp(fabs(b), &eb);
+	return ea + eb;
+}
 
 int
 ptarray_has_z(const POINTARRAY *pa)
@@ -1291,7 +1346,14 @@ ptarray_signed_area(const POINTARRAY *pa)
 	const POINT2D *P3;
 	double sum = 0.0;
 	double compensation = 0.0;
+	double tail_sum = 0.0;
+	double tail_compensation = 0.0;
+	double scaled_sum = 0.0;
+	double scaled_compensation = 0.0;
+	double scaled_tail_sum = 0.0;
+	double scaled_tail_compensation = 0.0;
 	double x0, y0;
+	int area_scale = 0;
 	uint32_t i;
 
 	if (! pa || pa->npoints < 3 )
@@ -1301,36 +1363,116 @@ ptarray_signed_area(const POINTARRAY *pa)
 	P2 = getPoint2d_cp(pa, 1);
 	x0 = P1->x;
 	y0 = P1->y;
+	/*
+	 * Use one binary area scale for overflowing fan triangles. Some skinny
+	 * rings have finite total area even though individual fan triangles
+	 * overflow; scaling each overflowing term independently would preserve
+	 * those infinities and still lose the final cancellation. Finite raw
+	 * triangles are kept in the unscaled sum so unrelated tiny determinants do
+	 * not underflow just because another triangle needed scaling.
+	 */
+	for (i = 1; i < pa->npoints; i++)
+	{
+		double ax, ay, bx, by, axerr, ayerr, bxerr, byerr;
+		int product_exponent;
+		P3 = getPoint2d_cp(pa, i);
+		ptarray_signed_area_two_diff(P2->x, x0, &ax, &axerr);
+		ptarray_signed_area_two_diff(P2->y, y0, &ay, &ayerr);
+		ptarray_signed_area_two_diff(P3->x, x0, &bx, &bxerr);
+		ptarray_signed_area_two_diff(P3->y, y0, &by, &byerr);
+		product_exponent =
+		    FP_MAX(ptarray_signed_area_product_exponent(ax, by), ptarray_signed_area_product_exponent(ay, bx));
+		if (product_exponent > DBL_MAX_EXP - 24)
+		{
+			int coordinate_scale = (product_exponent - (DBL_MAX_EXP - 24) + 1) / 2;
+			area_scale = FP_MAX(area_scale, coordinate_scale);
+		}
+		P2 = P3;
+	}
+
+	P2 = getPoint2d_cp(pa, 1);
 	for ( i = 2; i < pa->npoints; i++ )
 	{
-		double ax, ay, bx, by;
-		double detleft, detright, det, err, b, y, t;
+		double ax, ay, bx, by, axerr, ayerr, bxerr, byerr;
+		double detleft, detright, det, err = 0.0, b;
+		double *active_sum = &sum;
+		double *active_compensation = &compensation;
+		double *active_tail_sum = &tail_sum;
+		double *active_tail_compensation = &tail_compensation;
 		P3 = getPoint2d_cp(pa, i);
 
-		ax = P2->x - x0;
-		ay = P2->y - y0;
-		bx = P3->x - x0;
-		by = P3->y - y0;
+		ptarray_signed_area_two_diff(P2->x, x0, &ax, &axerr);
+		ptarray_signed_area_two_diff(P2->y, y0, &ay, &ayerr);
+		ptarray_signed_area_two_diff(P3->x, x0, &bx, &bxerr);
+		ptarray_signed_area_two_diff(P3->y, y0, &by, &byerr);
 
 		detleft = ax * by;
 		detright = ay * bx;
 		det = detleft - detright;
-		b = det - detleft;
-		err = (detleft - (det - b)) - (detright + b);
+		if (area_scale > 0 && (!isfinite(detleft) || !isfinite(detright) || !isfinite(det)))
+		{
+			ax = ldexp(ax, -area_scale);
+			ay = ldexp(ay, -area_scale);
+			bx = ldexp(bx, -area_scale);
+			by = ldexp(by, -area_scale);
+			axerr = ldexp(axerr, -area_scale);
+			ayerr = ldexp(ayerr, -area_scale);
+			bxerr = ldexp(bxerr, -area_scale);
+			byerr = ldexp(byerr, -area_scale);
+			active_sum = &scaled_sum;
+			active_compensation = &scaled_compensation;
+			active_tail_sum = &scaled_tail_sum;
+			active_tail_compensation = &scaled_tail_compensation;
+			detleft = ax * by;
+			detright = ay * bx;
+			det = detleft - detright;
+		}
+		/*
+		 * Keep the determinant rounding error, including the product
+		 * tails, and sum it with Kahan compensation. Near-collinear
+		 * large-coordinate rings can otherwise lose the sign in the
+		 * rounded products before the subtraction tail is recovered.
+		 * The error tail is meaningful only for finite products; with
+		 * overflow it can turn an infinite determinant into NaN through
+		 * Inf-Inf cancellation.
+		 */
+		if (isfinite(detleft) && isfinite(detright) && isfinite(det))
+		{
+			b = det - detleft;
+			err = (detleft - (det - b)) - (detright + b);
+			err += fma(ax, by, -detleft) - fma(ay, bx, -detright);
+			/*
+			 * The origin shift itself can round away unit-scale
+			 * offsets beside 1e16-scale coordinates. Include the
+			 * low-order subtraction terms in the determinant so the
+			 * compensated sum still sees their signed area.
+			 */
+			err += (ax * byerr + axerr * by) + axerr * byerr;
+			err -= (ay * bxerr + ayerr * bx) + ayerr * bxerr;
+		}
 
-		y = det - compensation;
-		t = sum + y;
-		compensation = (t - sum) - y;
-		sum = t;
-
-		y = err - compensation;
-		t = sum + y;
-		compensation = (t - sum) - y;
-		sum = t;
+		ptarray_signed_area_add(active_sum, active_compensation, det);
+		/*
+		 * Keep determinant tails in a separate compensated stream. If
+		 * they are folded into the main determinant stream immediately,
+		 * a later cancellation between large determinants can erase the
+		 * small residual that fixes the exact double-coordinate sign.
+		 */
+		ptarray_signed_area_add(active_tail_sum, active_tail_compensation, err);
 
 		/* Move forwards! */
 		P2 = P3;
 	}
+	if (scaled_sum != 0.0)
+		ptarray_signed_area_add(&sum, &compensation, ldexp(scaled_sum, 2 * area_scale));
+	if (scaled_tail_sum != 0.0)
+	{
+		double scaled_tail = ldexp(scaled_tail_sum, 2 * area_scale);
+		if (isfinite(scaled_tail))
+			ptarray_signed_area_add(&tail_sum, &tail_compensation, scaled_tail);
+	}
+	if (tail_sum != 0.0 && isfinite(tail_sum))
+		ptarray_signed_area_add(&sum, &compensation, tail_sum);
 	return -sum / 2.0;
 }
 
