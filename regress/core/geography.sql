@@ -141,6 +141,14 @@ SELECT 'lrs_lip_2', ST_AsText(ST_LineInterpolatePoints(geography 'Linestring(4.3
 SELECT 'lrs_lip_3', ST_AsText(ST_LineInterpolatePoints(geography 'Linestring(4.35 50.85, 37.617222 55.755833)', 1.0, false), 2);
 SELECT 'lrs_lip_4', ST_AsText(ST_LineInterpolatePoints(geography 'Linestring(4.35 50.85, 37.617222 55.755833)', 0.1, true), 2);
 SELECT 'lrs_lip_5', ST_AsText(ST_LineInterpolatePoints(geography 'Linestring(4.35 50.85, 37.617222 55.755833)', 0.1, false), 2);
+SELECT 'lrs_lip_6073_short_segment', ST_Distance(
+  ST_LineInterpolatePoint(geography 'LINESTRING(0 0, 0 0.000000000001, 1 0)', 0.000000000001),
+  geography 'POINT(0 0.000000000001)'
+) < 1e-8;
+SELECT 'lrs_lip_6073_duplicate_start', ST_Distance(
+  ST_LineInterpolatePoint(geography 'LINESTRING(0 0, 0 0, 1 0)', 0.00000000000001),
+  geography 'POINT(0.00000000000001 0)'
+) < 1e-8;
 
 SELECT 'lrs_llp_1', round(ST_LineLocatePoint(geography 'linestring(0 1, 50 1)', geography 'Point(25 0)')::numeric, 2);
 SELECT 'lrs_llp_2', round(ST_LineLocatePoint(geography 'linestring(0 1, 50 1)', geography 'Point(-5 0)')::numeric, 2);
@@ -157,4 +165,3 @@ SELECT 'ticket_6076_perimeter', round(ST_Perimeter(ST_GeogFromText('GEOMETRYCOLL
 --SELECT 'lrs_cp_2', ST_AsText(ST_ClosestPoint(geography 'Point(25 20)', geography 'Linestring(0 20, 50 20)'), 3);
 
 SELECT 'lrs_sl_1', ST_AsText(ST_ShortestLine(geography 'linestring(0 40, 50 40)', 'Point(25 40)', true), 2);
-
