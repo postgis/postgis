@@ -105,8 +105,8 @@ uint8_t* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 
 	for( i = 0; i < hexsize/2; i++ )
 	{
-		h1 = hex2char[(int)hexbuf[2*i]];
-		h2 = hex2char[(int)hexbuf[2*i+1]];
+		h1 = hex2char[(uint8_t)hexbuf[2*i]];
+		h2 = hex2char[(uint8_t)hexbuf[2*i+1]];
 		if( h1 > 15 )
 			lwerror("Invalid hex character (%c) encountered", hexbuf[2*i]);
 		if( h2 > 15 )
