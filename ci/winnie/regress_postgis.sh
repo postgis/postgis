@@ -60,15 +60,15 @@ sh autogen.sh
 # excluding topology cause it's erroring out on some tests
 #EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --without-topology"
 
-if [ $INCLUDE_MINOR_LIB == "1" ]; then
+if [ "${INCLUDE_MINOR_LIB:-0}" == "1" ]; then
   EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --with-library-minor-version"
 fi
 
-if [ $REGRESS_WITHOUT_TOPOLOGY == "1" ]; then
+if [ "${REGRESS_WITHOUT_TOPOLOGY:-0}" == "1" ]; then
    EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --without-topology"
 fi
 
-if [ $REGRESS_WITHOUT_RASTER == "1" ]; then
+if [ "${REGRESS_WITHOUT_RASTER:-0}" == "1" ]; then
    EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --without-raster"
 fi
 
@@ -99,12 +99,12 @@ make -j 2
 make install
 
 # don't run tests twice. Only run regular if extension test is not asked for
-if [ "$MAKE_EXTENSION" == "0" ]; then
+if [ "${MAKE_EXTENSION:-0}" == "0" ]; then
   make check RUNTESTFLAGS=-v
 fi
 
 
-if [ "$MAKE_EXTENSION" == "1" ]; then
+if [ "${MAKE_EXTENSION:-0}" == "1" ]; then
  export PGUSER=postgres
  #need to copy install files to EDB install (since not done by make install
  cd ${POSTGIS_SRC}
@@ -113,13 +113,13 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  #strip raster/rt_pg/postgis_raster-*.dll
  #strip sfcgal/*.dll
 
- if [ $REGRESS_WITHOUT_TOPOLOGY == "0" ]; then
+ if [ "${REGRESS_WITHOUT_TOPOLOGY:-0}" == "0" ]; then
     cp -r topology/*.dll ${PGPATHEDB}/lib
  fi
  cp postgis/postgis*.dll ${PGPATHEDB}/lib
  cp sfcgal/*.dll ${PGPATHEDB}/lib
 
- if [ $REGRESS_WITHOUT_RASTER == "0" ]; then
+ if [ "${REGRESS_WITHOUT_RASTER:-0}" == "0" ]; then
     cp raster/rt_pg/postgis_raster-*.dll ${PGPATHEDB}/lib
  fi
 
@@ -137,11 +137,11 @@ export UPGRADEABLE_VERSIONS=$value
 export WIN_RELEASED_VERSIONS="2.0.0 2.0.1 2.0.3 2.0.4 2.0.6 2.1.4 2.1.7 2.1.8 2.2.0 2.2.3 2.3.0 2.3.7 2.4.0 2.4.4"
 export extensions_to_install="postgis postgis_sfcgal"
 
-if [ $REGRESS_WITHOUT_TOPOLOGY == "0" ]; then
+if [ "${REGRESS_WITHOUT_TOPOLOGY:-0}" == "0" ]; then
   extensions_to_install="${extensions_to_install} postgis_topology"
 fi
 
-if [ $REGRESS_WITHOUT_RASTER == "0" ]; then
+if [ "${REGRESS_WITHOUT_RASTER:-0}" == "0" ]; then
   extensions_to_install="${extensions_to_install} postgis_raster"
 fi
 
@@ -165,14 +165,14 @@ cp -r extensions/*/*.control ${PGPATHEDB}/share/extension
 
 make check RUNTESTFLAGS="--extension -v"
 
-if [ "$UPGRADE_TEST" == "1" ]; then
+if [ "${UPGRADE_TEST:-0}" == "1" ]; then
   export CURRENTVERSION=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}
   RUNTESTFLAGS='--extension' ${POSTGIS_SRC}/utils/check_all_upgrades.sh -s "${CURRENTVERSION}" --skip "unpackaged"
 fi
 
 fi
 
-if [ "$DUMP_RESTORE" == "1" ]; then
+if [ "${DUMP_RESTORE:-0}" == "1" ]; then
  echo "Dump restore test"
  make install
  make check RUNTESTFLAGS="-v --dumprestore"
@@ -181,7 +181,7 @@ if [ "$DUMP_RESTORE" == "1" ]; then
  fi
 fi
 
-if [ "$MAKE_GARDEN" == "1" ]; then
+if [ "${MAKE_GARDEN:-0}" == "1" ]; then
  export PGUSER=postgres
  make garden
 fi
