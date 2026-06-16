@@ -4,4 +4,8 @@
 0 rows updated for features.city_streets.feature column to bigint id type
 0 rows updated for features.land_parcels.feature column to bigint id type
 0 rows updated for features.traffic_signs.feature column to bigint id type
+mixed-layer|7
+mixed-before|2
+mixed-fallback-updates|0
+mixed-after|2
 Topology 'city_data' dropped
