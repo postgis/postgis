@@ -20,9 +20,9 @@
  *
  * Copyright (C) 2012-2021 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2001-2006 Refractions Research Inc.
+ * Copyright 2026 Darafei Praliaskouski
  *
  **********************************************************************/
-
 
 #include <stdio.h>
 #include <string.h>
@@ -533,13 +533,11 @@ ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdims, uint32_t where)
 	POINT4D pbuf;
 	size_t ptsize = ptarray_point_size(pa);
 
-	LWDEBUGF(3, "pa %p p %p size %zu where %u",
-	         pa, p, pdims, where);
+	LWDEBUGF(3, "pa %p p %p size %lu where %u", pa, p, (unsigned long)pdims, where);
 
 	if ( pdims < 2 || pdims > 4 )
 	{
-		lwerror("ptarray_addPoint: point dimension out of range (%zu)",
-		        pdims);
+		lwerror("ptarray_addPoint: point dimension out of range (%lu)", (unsigned long)pdims);
 		return NULL;
 	}
 

@@ -19,11 +19,9 @@
  **********************************************************************
  *
  * Copyright 2001-2006 Refractions Research Inc.
- * Copyright 2017 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2017-2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
-
-
 
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
@@ -452,8 +450,8 @@ void printPA(POINTARRAY *pa)
 	else mflag = "";
 
 	lwnotice("      POINTARRAY%s{", mflag);
-	lwnotice("                 ndims=%i,   ptsize=%zu",
-	         FLAGS_NDIMS(pa->flags), ptarray_point_size(pa));
+	lwnotice(
+	    "                 ndims=%i,   ptsize=%lu", FLAGS_NDIMS(pa->flags), (unsigned long)ptarray_point_size(pa));
 	lwnotice("                 npoints = %u", pa->npoints);
 
 	for (t = 0; t < pa->npoints; t++)
