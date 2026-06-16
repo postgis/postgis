@@ -232,8 +232,7 @@ BEGIN
       'postgis',
       'postgis_raster',
       'postgis_sfcgal',
-      'postgis_topology',
-      'postgis_tiger_geocoder'
+      'postgis_topology'
     );
     PERFORM postgis_extensions_upgrade();
   END IF;
