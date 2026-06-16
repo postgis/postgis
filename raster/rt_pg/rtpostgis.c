@@ -137,6 +137,7 @@
 #include "utils/builtins.h"
 #include "utils/memutils.h"
 #include "utils/elog.h"
+#include "miscadmin.h"
 
 /* PostGIS */
 #include "postgis_config.h"
@@ -148,6 +149,17 @@
 /* PostGIS Raster */
 #include "rtpostgis.h"
 #include "rtpg_internal.h"
+
+static void
+rtpg_interrupt_liblwgeom_callback(void)
+{
+#ifdef WIN32
+	if (UNBLOCKED_SIGNAL_QUEUE())
+		pgwin32_dispatch_queued_signals();
+#endif
+	if (QueryCancelPending || ProcDiePending)
+		lwgeom_request_interrupt();
+}
 
 
 #ifndef __GNUC__
@@ -715,6 +727,7 @@ _PG_init(void) {
 
 	/* Install liblwgeom handlers */
 	pg_install_lwgeom_handlers();
+	lwgeom_register_interrupt_callback(rtpg_interrupt_liblwgeom_callback);
 
 	/* Install rtcore handlers */
 	rt_set_handlers_options(rt_pg_alloc, rt_pg_realloc, rt_pg_free,
@@ -859,6 +872,5 @@ _PG_fini(void) {
 	/* Revert back to old context */
 	MemoryContextSwitchTo(old_context);
 }
-
 
 
