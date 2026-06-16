@@ -76,6 +76,52 @@ FROM (
 ) foo
 ORDER BY uniontype, y, x;
 
+WITH v(rast) AS (
+	VALUES (
+		ST_AddBand(
+			ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 10, 0),
+			2, '16BUI', 300, 0
+		)
+	), (
+		ST_AddBand(
+			ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 20, 0),
+			2, '16BUI', 400, 0
+		)
+	)
+), u AS (
+	SELECT ST_Union(rast, ARRAY[ROW(1, 'SUM'), ROW(2, 'MAX')]::unionarg[]) AS rast
+	FROM v
+)
+SELECT
+	'ticket-5317-array',
+	ST_BandPixelType(rast, 1),
+	ST_Value(rast, 1, 1, 1),
+	ST_BandPixelType(rast, 2),
+	ST_Value(rast, 2, 1, 1)
+FROM u;
+
+WITH v(rast) AS (
+	VALUES (
+		ST_AddBand(
+			ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 10, 0),
+			2, '16BUI', 300, 0
+		)
+	), (
+		ST_AddBand(
+			ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 20, 0),
+			2, '16BUI', 400, 0
+		)
+	)
+), u AS (
+	SELECT ST_Union(rast, 2, 'MAX') AS rast
+	FROM v
+)
+SELECT
+	'ticket-5317-band',
+	ST_BandPixelType(rast, 1),
+	ST_Value(rast, 1, 1, 1)
+FROM u;
+
 TRUNCATE raster_union_out;
 TRUNCATE raster_union_in;
 
