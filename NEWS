@@ -15,6 +15,9 @@ PostGIS 3.3.11
  - [tiger_geocoder] Harden schema qualification and dynamic table names
    (Paul Ramsey)
  - #6044, Skip doc XML validation without DocBook XSL stylesheets (Regina Obe)
+ - GH-894, [raster] Fix Float16 import, mixed nodata warping,
+   band replacement cleanup, GDAL credential redaction, and Python
+   GDAL compatibility (Darafei Praliaskouski)
 
 
 PostGIS 3.3.10
