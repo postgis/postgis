@@ -394,6 +394,118 @@ static void test_lwline_crossing_bugs(void)
 	lwline_free(l1);
 	lwline_free(l2);
 
+	l1 = (LWLINE *)lwgeom_from_wkt("LINESTRING(-1 -1, 1 -1, 1 1, -1 1)", LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 2, 0 -2)", LW_PARSER_CHECK_NONE);
+
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_LEFT);
+	CU_ASSERT(lwline_crossing_direction(l2, l1) == LINE_MULTICROSS_END_SAME_FIRST_LEFT);
+	lwline_free(l1);
+	lwline_free(l2);
+
+	l1 = (LWLINE *)lwgeom_from_wkt("LINESTRING(-1 1, 1 1, 1 -1, -1 -1)", LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 -2, 0 2)", LW_PARSER_CHECK_NONE);
+
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_RIGHT);
+	CU_ASSERT(lwline_crossing_direction(l2, l1) == LINE_MULTICROSS_END_SAME_FIRST_RIGHT);
+	lwline_free(l1);
+	lwline_free(l2);
+
+	l1 =
+	    (LWLINE *)lwgeom_from_wkt("LINESTRING(0.7 -1e-13, 0.9 1e-13, 0.3 1e-13, 0.1 -1e-13)", LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 0, 1 0)", LW_PARSER_CHECK_NONE);
+
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_LEFT);
+	CU_ASSERT(lwline_crossing_direction(l2, l1) == LINE_MULTICROSS_END_SAME_FIRST_LEFT);
+	lwline_free(l1);
+	lwline_free(l2);
+
+	l1 = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 0, 10 0)", LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt("LINESTRING(5 1, 5 -1, 6 -1, 6 1)", LW_PARSER_CHECK_NONE);
+
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_RIGHT);
+	CU_ASSERT(lwline_crossing_direction(l2, l1) == LINE_MULTICROSS_END_SAME_FIRST_LEFT);
+	lwline_free(l1);
+	lwline_free(l2);
+
+	l1 = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 0, 10 0)", LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt("LINESTRING(6 1, 6 -1, 5 -1, 5 1)", LW_PARSER_CHECK_NONE);
+
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_RIGHT);
+	CU_ASSERT(lwline_crossing_direction(l2, l1) == LINE_MULTICROSS_END_SAME_FIRST_RIGHT);
+	lwline_free(l1);
+	lwline_free(l2);
+
+	l1 = (LWLINE *)lwgeom_from_wkt("LINESTRING(-1e200 -1e200, 1e200 -1e200, 1e200 1e200, -1e200 1e200)",
+				       LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 2e200, 0 -2e200)", LW_PARSER_CHECK_NONE);
+
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_LEFT);
+	lwline_free(l1);
+	lwline_free(l2);
+
+	l1 = (LWLINE *)lwgeom_from_wkt("LINESTRING(-1e308 8e-21, 1 8e-21, 1 2e-21, -1 2e-21)", LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 0, 0 1e-20)", LW_PARSER_CHECK_NONE);
+
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_RIGHT);
+	lwline_free(l1);
+	lwline_free(l2);
+
+	l1 = (LWLINE *)lwgeom_from_wkt(
+	    "LINESTRING(-9.490276334636329e307 -1.0398609634832246e-87, "
+	    "9.490276334636329e307 -1.0398609634832246e-87, "
+	    "9.490276334636329e307 -7.820019109879485e-88, "
+	    "-9.490276334636329e307 -7.820019109879485e-88)",
+	    LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 0, 0 -1.809874562489349e-87)", LW_PARSER_CHECK_NONE);
+
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_LEFT);
+	lwline_free(l1);
+	lwline_free(l2);
+
+	l1 = (LWLINE *)lwgeom_from_wkt("LINESTRING(-1e-20 -2e307, 1e-20 -2e307, 1e-20 -8e307, -1e-20 -8e307)",
+				       LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 -1e308, 0 1e308)", LW_PARSER_CHECK_NONE);
+
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_RIGHT);
+	lwline_free(l1);
+	lwline_free(l2);
+
+	l1 = (LWLINE *)lwgeom_from_wkt(
+	    "LINESTRING(-3.867735677825654e-228 -2.9103510386030046e-88, "
+	    "3.867735677825654e-228 -2.9103510386030046e-88, "
+	    "3.867735677825654e-228 -2.910351034406687e-88, "
+	    "-3.867735677825654e-228 -2.910351034406687e-88)",
+	    LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 -2.9103510300040655e-88, 0 -2.910351042014122e-88)",
+				       LW_PARSER_CHECK_NONE);
+
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_LEFT);
+	lwline_free(l1);
+	lwline_free(l2);
+
+	l1 = (LWLINE *)lwgeom_from_wkt(
+	    "LINESTRING(91911698341.7423 9.061403607735386e171, -129758289998.81676 -1.2792628776775185e172, "
+	    "-1e11 5.634114033509661e155, 1e11 5.634114033509661e155)",
+	    LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt(
+	    "LINESTRING(8.982920108504714e-71 68062294664.936295, 1.3324983574109928e-35 1.1268228067019321e156)",
+	    LW_PARSER_CHECK_NONE);
+
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_RIGHT);
+	lwline_free(l1);
+	lwline_free(l2);
+
+	l1 = (LWLINE *)lwgeom_from_wkt(
+	    "LINESTRING(-5.176960838108165e73 -3.0058516310273976e-290, "
+	    "9.671078660198053e73 -3.0058516310273976e-290, "
+	    "8.04553740243431e77 3.258442677637667e-276, "
+	    "-6.820281823668116e77 -2.762214163721793e-276)",
+	    LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 0, -1e-40 -1.23456789e-289)", LW_PARSER_CHECK_NONE);
+
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_RIGHT);
+	lwline_free(l1);
+	lwline_free(l2);
 }
 
 static void test_lwpoint_set_ordinate(void)
