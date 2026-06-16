@@ -1160,6 +1160,7 @@ rtpg_gdal_redact_message(char *msg)
 		"signature=",
 		"token=",
 		"x-amz-credential=",
+		"x-amz-security-token:",
 		"x-amz-security-token="
 	};
 	size_t i;
@@ -1169,9 +1170,23 @@ rtpg_gdal_redact_message(char *msg)
 		size_t n = strlen(sensitive[i]);
 		while ((p = rtpg_ascii_strcasestr(p, sensitive[i])) != NULL) {
 			char *v = p + n;
+			int header_value = sensitive[i][n - 1] == ':';
 			while (*v && isspace((unsigned char) *v))
 				v++;
-			while (*v && !isspace((unsigned char) *v) && *v != '&' && *v != ';' && *v != ',') {
+			while (
+				*v &&
+				*v != '\r' &&
+				*v != '\n' &&
+				(
+					header_value ||
+					(
+						!isspace((unsigned char) *v) &&
+						*v != '&' &&
+						*v != ';' &&
+						*v != ','
+					)
+				)
+			) {
 				*v = 'x';
 				v++;
 			}

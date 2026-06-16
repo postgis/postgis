@@ -65,6 +65,9 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #4828, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)
  - #6048, [raster] ST_Clip no longer crashes when clipping sparse band
           selections (Darafei Praliaskouski)
+ - GH-894, [raster] Fix Float16 import, mixed nodata warping,
+          band replacement cleanup, GDAL credential redaction, and Python
+          GDAL compatibility (Darafei Praliaskouski)
  - #5645, Docs: keep code operators ("=>") intact in translated manuals
           by enforcing verbatim CSS (Darafei Praliaskouski)
  - #5593, Docs: render manual images with GraphicsMagick without temporary files,
