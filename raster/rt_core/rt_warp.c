@@ -978,4 +978,3 @@ rt_raster rt_raster_gdal_warp(
 
 	return rast;
 }
-
