@@ -1232,10 +1232,6 @@ sfcgal_visibility_point(PG_FUNCTION_ARGS)
 	input0 = PG_GETARG_GSERIALIZED_P(0);
 	srid = gserialized_get_srid(input0);
 	input1 = PG_GETARG_GSERIALIZED_P(1);
-	polygon = POSTGIS2SFCGALGeometry(input0);
-	PG_FREE_IF_COPY(input0, 0);
-	point = POSTGIS2SFCGALGeometry(input1);
-	PG_FREE_IF_COPY(input1, 1);
 
 #if POSTGIS_SFCGAL_VERSION < 20200
 	if (gserialized_is_empty(input0) || gserialized_is_empty(input1))
@@ -1244,9 +1240,16 @@ sfcgal_visibility_point(PG_FUNCTION_ARGS)
 		output = SFCGALGeometry2POSTGIS(result, 0, srid);
 		sfcgal_geometry_delete(result);
 
+		PG_FREE_IF_COPY(input0, 0);
+		PG_FREE_IF_COPY(input1, 1);
 		PG_RETURN_POINTER(output);
 	}
 #endif
+
+	polygon = POSTGIS2SFCGALGeometry(input0);
+	PG_FREE_IF_COPY(input0, 0);
+	point = POSTGIS2SFCGALGeometry(input1);
+	PG_FREE_IF_COPY(input1, 1);
 
 	result = sfcgal_geometry_visibility_point(polygon, point);
 	sfcgal_geometry_delete(polygon);
@@ -1282,12 +1285,6 @@ sfcgal_visibility_segment(PG_FUNCTION_ARGS)
 	srid = gserialized_get_srid(input0);
 	input1 = PG_GETARG_GSERIALIZED_P(1);
 	input2 = PG_GETARG_GSERIALIZED_P(2);
-	polygon = POSTGIS2SFCGALGeometry(input0);
-	PG_FREE_IF_COPY(input0, 0);
-	pointA = POSTGIS2SFCGALGeometry(input1);
-	PG_FREE_IF_COPY(input1, 1);
-	pointB = POSTGIS2SFCGALGeometry(input2);
-	PG_FREE_IF_COPY(input2, 2);
 
 #if POSTGIS_SFCGAL_VERSION < 20200
 	if (gserialized_is_empty(input0) || gserialized_is_empty(input1) || gserialized_is_empty(input2))
@@ -1296,9 +1293,19 @@ sfcgal_visibility_segment(PG_FUNCTION_ARGS)
 		output = SFCGALGeometry2POSTGIS(result, 0, srid);
 		sfcgal_geometry_delete(result);
 
+		PG_FREE_IF_COPY(input0, 0);
+		PG_FREE_IF_COPY(input1, 1);
+		PG_FREE_IF_COPY(input2, 2);
 		PG_RETURN_POINTER(output);
 	}
 #endif
+
+	polygon = POSTGIS2SFCGALGeometry(input0);
+	PG_FREE_IF_COPY(input0, 0);
+	pointA = POSTGIS2SFCGALGeometry(input1);
+	PG_FREE_IF_COPY(input1, 1);
+	pointB = POSTGIS2SFCGALGeometry(input2);
+	PG_FREE_IF_COPY(input2, 2);
 
 	result = sfcgal_geometry_visibility_segment(polygon, pointA, pointB);
 	sfcgal_geometry_delete(polygon);
