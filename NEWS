@@ -9,6 +9,9 @@ PostGIS 3.6.5
 - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
 - Avoid Inf loop in Geohash calculation (Paul Ramsey)
 - #6081, Fix SFCGAL 2.3 regression tests (Darafei Praliaskouski)
+- GH-888, [sfcgal] Avoid stale detoasted geometry access in
+  CG_Visibility empty-input handling for SFCGAL < 2.2
+  (Darafei Praliaskouski)
 
 
 PostGIS 3.6.4
