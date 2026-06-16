@@ -888,12 +888,27 @@ Datum coveredby(PG_FUNCTION_ARGS)
  *  to the GEOSPreparedRelatePattern function.
  */
 static void
-imInvert(char *im)
+imInvert(char *im, size_t len)
 {
 	char t;
-	t = im[1]; im[1] = im[3]; im[3] = t;
-	t = im[2]; im[2] = im[6]; im[6] = t;
-	t = im[5]; im[5] = im[7]; im[7] = t;
+	if (len > 3)
+	{
+		t = im[1];
+		im[1] = im[3];
+		im[3] = t;
+	}
+	if (len > 6)
+	{
+		t = im[2];
+		im[2] = im[6];
+		im[6] = t;
+	}
+	if (len > 7)
+	{
+		t = im[5];
+		im[5] = im[7];
+		im[7] = t;
+	}
 }
 #endif
 
@@ -910,7 +925,8 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 		PG_GETARG_DATUM(2), Int32GetDatum(9)));
 	char *im = text_to_cstring(imPtr);
 	int8_t result;
-	uint32_t i;
+	size_t im_len = strlen(im);
+	size_t i;
 #if POSTGIS_GEOS_VERSION >= 31300
 	PrepGeomCache *prep_cache;
 #endif
@@ -920,8 +936,8 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	/*
 	** Need to make sure 't' and 'f' are upper-case before handing to GEOS
 	*/
-	for (i = 0; i < strlen(im); i++)
-		im[i] = toupper(im[i]);
+	for (i = 0; i < im_len; i++)
+		im[i] = toupper((unsigned char)im[i]);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
@@ -937,7 +953,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 		else
 		{
 			g = POSTGIS2GEOS(geom1);
-			imInvert(im);
+			imInvert(im, im_len);
 		}
 
 		if (!g) HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
