@@ -8345,10 +8345,10 @@ CREATE OR REPLACE VIEW raster_columns AS
 		pg_attribute a,
 		pg_namespace n
 	WHERE a.attisdropped = false
-		AND a.atttypid = 'raster'::regtype
+		AND a.atttypid = '@extschema@.raster'::regtype
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
-		AND c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"] )
+		AND c.relkind = ANY (ARRAY['r'::pg_catalog."char", 'v'::pg_catalog."char", 'm'::pg_catalog."char", 'f'::pg_catalog."char", 'p'::pg_catalog."char"] )
 		AND NOT pg_is_other_temp_schema(c.relnamespace)  AND has_table_privilege(c.oid, 'SELECT'::text);
 
 ------------------------------------------------------------------------------
@@ -8357,7 +8357,21 @@ CREATE OR REPLACE VIEW raster_columns AS
 
 CREATE OR REPLACE FUNCTION _overview_constraint(ov raster, factor integer, refschema name, reftable name, refcolumn name)
 	RETURNS boolean AS
-	$$ SELECT COALESCE((SELECT TRUE FROM @extschema@.raster_columns WHERE r_table_catalog = current_database() AND r_table_schema = $3 AND r_table_name = $4 AND r_raster_column = $5), FALSE) $$
+	$$
+	SELECT EXISTS (
+		SELECT 1
+		FROM pg_catalog.pg_class c
+		JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+		JOIN pg_catalog.pg_attribute a ON a.attrelid = c.oid
+		WHERE n.nspname = $3
+			AND c.relname = $4
+			AND a.attname = $5
+			AND a.attisdropped = FALSE
+			AND a.atttypid = '@extschema@.raster'::regtype
+			AND c.relkind = ANY (ARRAY['r'::pg_catalog."char", 'v'::pg_catalog."char", 'm'::pg_catalog."char", 'f'::pg_catalog."char", 'p'::pg_catalog."char"])
+			AND NOT pg_catalog.pg_is_other_temp_schema(c.relnamespace)
+		)
+	$$
 	LANGUAGE 'sql' STABLE
 	COST 100;
 
