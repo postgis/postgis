@@ -39,6 +39,36 @@ FROM raster_overviews
 WHERE r_table_name = 'res1'
 ORDER BY overview_factor;
 
+SET search_path TO '';
+SELECT :schema _overview_constraint(
+  (SELECT r:: :schema raster FROM public.o_2_res1 LIMIT 1),
+  2, 'public', 'res1', 'r'
+);
+RESET search_path;
+
+CREATE TEMP TABLE pg_class (dummy integer);
+CREATE TEMP TABLE pg_namespace (dummy integer);
+CREATE TEMP TABLE pg_attribute (dummy integer);
+SET search_path TO pg_temp, public;
+SELECT :schema _overview_constraint(
+  (SELECT r:: :schema raster FROM public.o_2_res1 LIMIT 1),
+  2, 'public', 'res1', 'r'
+);
+RESET search_path;
+DROP TABLE pg_class;
+DROP TABLE pg_namespace;
+DROP TABLE pg_attribute;
+
+CREATE SCHEMA rt_shadow;
+CREATE DOMAIN rt_shadow."char" AS text;
+SET search_path TO rt_shadow, public;
+SELECT :schema _overview_constraint(
+  (SELECT r:: :schema raster FROM public.o_2_res1 LIMIT 1),
+  2, 'public', 'res1', 'r'
+);
+RESET search_path;
+DROP SCHEMA rt_shadow CASCADE;
+
 SELECT 'count',
 (SELECT count(*) r1 from res1),
 (SELECT count(*) r2 from o_2_res1),
@@ -132,6 +162,86 @@ DROP SCHEMA oschm;
 DROP TABLE o_8_res1;
 DROP TABLE o_4_res1;
 DROP TABLE res1;
+
+-- Overview creation should not require SELECT on the raster_columns view.
+DO $$
+DECLARE
+  can_manage_view boolean;
+  can_manage_role boolean;
+  had_public_select boolean;
+BEGIN
+  SELECT pg_has_role(c.relowner, 'USAGE')
+  INTO can_manage_view
+  FROM pg_class c
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  WHERE n.nspname = 'public'
+    AND c.relname = 'raster_columns'
+    AND c.relkind = 'v';
+
+  SELECT rolsuper
+  INTO can_manage_role
+  FROM pg_roles
+  WHERE rolname = current_user;
+
+  IF NOT COALESCE(can_manage_view, false) OR NOT COALESCE(can_manage_role, false) THEN
+    RETURN;
+  END IF;
+
+  SELECT EXISTS (
+    SELECT 1
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    CROSS JOIN LATERAL aclexplode(COALESCE(c.relacl, acldefault('r', c.relowner))) a
+    WHERE n.nspname = 'public'
+      AND c.relname = 'raster_columns'
+      AND c.relkind = 'v'
+      AND a.grantee = 0
+      AND a.privilege_type = 'SELECT'
+  )
+  INTO had_public_select;
+
+  DROP SCHEMA IF EXISTS rt_overview_acl CASCADE;
+  DROP ROLE IF EXISTS rt_overview_acl_user;
+  CREATE ROLE rt_overview_acl_user;
+  CREATE SCHEMA rt_overview_acl AUTHORIZATION rt_overview_acl_user;
+  REVOKE SELECT ON raster_columns FROM PUBLIC;
+  SET ROLE rt_overview_acl_user;
+  PERFORM set_config('search_path', 'rt_overview_acl, public', true);
+
+  CREATE TABLE res_acl AS SELECT
+    ST_AddBand(
+      ST_MakeEmptyRaster(10, 10, x, y, 1, -1, 0, 0, 0)
+      , 1, '8BUI', 0, 0
+    ) r
+  FROM generate_series(0, 10, 10) x,
+       generate_series(10, 0, -10) y;
+  PERFORM addrasterconstraints('res_acl', 'r');
+
+  CREATE TABLE o_2_res_acl AS SELECT r FROM res_acl LIMIT 1;
+  PERFORM AddOverviewConstraints('o_2_res_acl', 'r', 'res_acl', 'r', 2);
+
+  RESET ROLE;
+  IF had_public_select THEN
+    GRANT SELECT ON raster_columns TO PUBLIC;
+  ELSE
+    REVOKE SELECT ON raster_columns FROM PUBLIC;
+  END IF;
+  DROP SCHEMA rt_overview_acl CASCADE;
+  DROP ROLE rt_overview_acl_user;
+EXCEPTION WHEN OTHERS THEN
+  RESET ROLE;
+  IF had_public_select IS NOT NULL THEN
+    IF had_public_select THEN
+      GRANT SELECT ON raster_columns TO PUBLIC;
+    ELSE
+      REVOKE SELECT ON raster_columns FROM PUBLIC;
+    END IF;
+  END IF;
+  DROP SCHEMA IF EXISTS rt_overview_acl CASCADE;
+  DROP ROLE IF EXISTS rt_overview_acl_user;
+  RAISE;
+END;
+$$;
 
 -- Reset the session environment
 -- possibly a bit harsh, but we had to set the search_path
