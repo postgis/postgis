@@ -184,10 +184,11 @@ GetProjStringsSPI(int32_t srid)
 	 * resolve standard codes from its own database.
 	 */
 	Oid nsp_oid = POSTGIS_CONSTANTS ? POSTGIS_CONSTANTS->install_nsp_oid : InvalidOid;
-	snprintf(proj_spi_buffer, spibufferlen,
-	         "SELECT 1 FROM pg_class "
-	         "WHERE relname = 'spatial_ref_sys' AND relnamespace = %u",
-	         nsp_oid);
+	snprintf(proj_spi_buffer,
+		 spibufferlen,
+		 "SELECT 1 FROM pg_catalog.pg_class "
+		 "WHERE relname = 'spatial_ref_sys' AND relnamespace = %u",
+		 nsp_oid);
 	spi_result = SPI_execute(proj_spi_buffer, true, 1);
 	bool srs_exists = (spi_result == SPI_OK_SELECT && SPI_processed > 0);
 
