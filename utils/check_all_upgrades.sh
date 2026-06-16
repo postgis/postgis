@@ -3,7 +3,7 @@
 EXIT_ON_FIRST_FAILURE=0
 EXTDIR=`pg_config --sharedir`/extension/
 CTBDIR=`pg_config --sharedir`/contrib/
-TMPDIR=/tmp/check_all_upgrades-$$-tmp
+TMPDIR=$(mktemp -d "${TMPDIR:-/tmp}/check_all_upgrades.XXXXXX") || exit 1
 PGVER=`pg_config --version | awk '{print $2}'`
 PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//' | sed 's/\(alpha\|beta\|rc\).*//' )
 SKIP_LABEL_REGEXP=
@@ -51,11 +51,10 @@ if test -z "$to_version_param"; then
   exit 1
 fi
 
-mkdir -p ${TMPDIR}
 cleanup()
 {
   echo "Cleaning up"
-  rm -rf ${TMPDIR}
+  rm -rf "${TMPDIR}"
 }
 
 trap 'cleanup' EXIT
@@ -182,23 +181,32 @@ compatible_upgrade()
   fi
 }
 
+run_check()
+{
+  if command -v unbuffer >/dev/null 2>&1; then
+    unbuffer ${MAKE} -C "${REGDIR}" check "TESTS=${SRCDIR}/regress/core/regress.sql" ${MAKE_ARGS}
+  else
+    ${MAKE} -C "${REGDIR}" check "TESTS=${SRCDIR}/regress/core/regress.sql" ${MAKE_ARGS}
+  fi
+}
+
 check_downgrade()
 {
   RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-  unbuffer ${MAKE} -C ${REGDIR} check "TESTS=${SRCDIR}/regress/core/regress.sql" ${MAKE_ARGS} > ${TMPDIR}/log 2>&1
+  run_check > "${TMPDIR}/log" 2>&1
   if test $? = 0; then
     echo "FAIL: ${test_label} did not error out:"
-    tail ${TMPDIR}/log
+    tail "${TMPDIR}/log"
     failed
   else
-    ERR=$( grep 'ERROR:.*Downgrade .* forbidden' ${TMPDIR}/log )
-    test -n "$ERR" && {
+    ERR=$( grep 'ERROR:.*Downgrade .* forbidden' "${TMPDIR}/log" )
+    if test -n "$ERR"; then
       echo "PASS: ${test_label} gave $ERR"
-    } || {
+    else
       echo "FAIL: ${test_label} gave some other error:"
-      tail ${TMPDIR}/log
+      tail "${TMPDIR}/log"
       failed
-    }
+    fi
   fi
 }
 
