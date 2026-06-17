@@ -3818,6 +3818,13 @@ CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_3DAddMeasure(geometry, float8, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_3DAddMeasure'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
 ---------------------------------------------------------------
 -- TEMPORAL
 ---------------------------------------------------------------
