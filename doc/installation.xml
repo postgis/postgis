@@ -568,8 +568,10 @@ PostGIS was built successfully. Ready to install.</screen>
                 to skip building and installing generated SQL comments. The
                 postgis_comments.sql and other package comment files are also
                 packaged in the tar.gz distribution in the doc folder so no need to
-                make comments if installing from the tar ball. Comments are also
-                included as part of the CREATE EXTENSION install.
+                make comments if installing from the tar ball. Source checkout
+                installs that need database comments should run
+                <command>make comments-install</command> after the comments are
+                available.
           </para>
 
     <programlisting language="bash">make comments</programlisting>
