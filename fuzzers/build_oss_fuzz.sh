@@ -28,7 +28,7 @@ fi
 export CXXFLAGS="$CXXFLAGS -std=c++11"
 POSTGIS_OSS_FUZZ_CONFIGURE_FLAGS=(
     --enable-static
-    --without-raster
+    --with-raster
     --without-protobuf
     --enable-debug
 )
@@ -36,10 +36,8 @@ POSTGIS_OSS_FUZZ_CONFIGURE_FLAGS=(
 cd "$SRC_DIR"
 ./autogen.sh
 ./configure CC="$CC" CXX="$CXX" "${POSTGIS_OSS_FUZZ_CONFIGURE_FLAGS[@]}"
-cd liblwgeom
-make clean -s
-make -j"$(nproc)" -s
-cd ..
+make -C liblwgeom -j"$(nproc)" -s
+make -C raster corelib -j"$(nproc)" -s
 
 bash ./fuzzers/build_google_oss_fuzzers.sh
 bash ./fuzzers/build_seed_corpus.sh

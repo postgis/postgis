@@ -17,7 +17,7 @@ export DEBIAN_FRONTEND="${DEBIAN_FRONTEND:-noninteractive}"
 apt-get update
 apt-get install -y --no-install-recommends \
     make autoconf automake libtool bison flex g++ postgresql-server-dev-all \
-    libgeos-dev libproj-dev libxml2-dev pkg-config libjson-c-dev \
-    libc++-dev libc++abi-dev patchelf
+    libgeos-dev libproj-dev libxml2-dev pkg-config libjson-c-dev libgmp-dev \
+    libgdal-dev libc++-dev libc++abi-dev patchelf
 
 rm -rf /var/lib/apt/lists/*

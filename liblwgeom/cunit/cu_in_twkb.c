@@ -3,6 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  * Copyright 2010 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -222,7 +223,88 @@ static void test_twkb_in_precision(void)
 	precision = 0;
 }
 
+static void
+test_twkb_in_truncated_extended_dims(void)
+{
+	const uint8_t twkb[] = {
+	    0x01, /* POINT with default precision. */
+	    0x18  /* Empty geometry plus extended-dimension byte follows. */
+	};
+	LWGEOM *geom;
 
+	cu_error_msg_reset();
+
+	geom = lwgeom_from_twkb(twkb, sizeof(twkb), LW_PARSER_CHECK_NONE);
+
+	/* Truncated extended-dimension metadata used to be read before the bounds
+	 * check. The expected contract is an ordinary TWKB size error, not an
+	 * out-of-buffer read while constructing the header.
+	 */
+	ASSERT_STRING_EQUAL(cu_error_msg, "twkb_parse_state_advance: TWKB structure does not match expected size!");
+	CU_ASSERT_PTR_NOT_NULL(geom);
+	if (geom != NULL)
+		lwgeom_free(geom);
+	cu_error_msg_reset();
+}
+
+static void
+test_twkb_in_overlong_varint(void)
+{
+	const uint8_t twkb[] = {0x02,
+				0x00, /* LINESTRING with default precision. */
+				0x80,
+				0x80,
+				0x80,
+				0x80,
+				0x80,
+				0x80, /* Overlong point-count varint. */
+				0x80,
+				0x80,
+				0x80,
+				0x80,
+				0x00};
+	LWGEOM *geom;
+
+	cu_error_msg_reset();
+
+	geom = lwgeom_from_twkb(twkb, sizeof(twkb), LW_PARSER_CHECK_NONE);
+
+	/* Varints longer than the uint64_t encoding space used to shift by more
+	 * than the C type width before the parser could report malformed input.
+	 */
+	ASSERT_STRING_EQUAL(cu_error_msg, "varint_u64_decode: varint exceeds 64 bits");
+	if (geom != NULL)
+		lwgeom_free(geom);
+	cu_error_msg_reset();
+}
+
+static void
+test_twkb_in_count_exceeds_payload(void)
+{
+	const uint8_t twkb[] = {0x02,
+				0x00, /* LINESTRING with default precision. */
+				0xff,
+				0xff,
+				0xff,
+				0xff,
+				0x0f, /* UINT32_MAX points. */
+				0x00,
+				0x00};
+	LWGEOM *geom;
+
+	cu_error_msg_reset();
+
+	geom = lwgeom_from_twkb(twkb, sizeof(twkb), LW_PARSER_CHECK_NONE);
+
+	/* Count fields are allocation sizes. Reject impossible counts before
+	 * constructing point arrays from a buffer that cannot contain them.
+	 */
+	ASSERT_STRING_EQUAL(cu_error_msg,
+			    "twkb_parse_state_has_min_bytes: TWKB element count exceeds remaining payload");
+	if (geom != NULL)
+		lwgeom_free(geom);
+	cu_error_msg_reset();
+}
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -239,4 +321,7 @@ void twkb_in_suite_setup(void)
 	PG_ADD_TEST(suite, test_twkb_in_multipolygon);
 	PG_ADD_TEST(suite, test_twkb_in_collection);
 	PG_ADD_TEST(suite, test_twkb_in_precision);
+	PG_ADD_TEST(suite, test_twkb_in_truncated_extended_dims);
+	PG_ADD_TEST(suite, test_twkb_in_overlong_varint);
+	PG_ADD_TEST(suite, test_twkb_in_count_exceeds_payload);
 }

@@ -83,6 +83,9 @@ check: check-unit docs-check check-lint check-spell
 ifeq (@SUPPORT_POSTGRESQL@,yes)
 check: check-regress
 endif
+ifeq (@RASTER@,raster)
+check: check-fuzzers
+endif
 
 # The "lint" tests do not depend on specific code configurations
 # but solely on the source code state
@@ -95,6 +98,16 @@ check-news:
 	$(top_srcdir)/utils/check_news.sh $(top_srcdir)
 
 check-unit check-regress: all
+ifeq (@RASTER@,raster)
+check-fuzzers: all
+	mkdir -p fuzzers
+	fuzzer_out=`mktemp -d "$${TMPDIR:-/tmp}/postgis-fuzzer-check.XXXXXX"`; \
+	trap 'rm -rf "$${fuzzer_out}"' EXIT HUP INT TERM; \
+	$(MAKE) -C fuzzers -f $(abspath $(top_srcdir))/fuzzers/Makefile \
+		POSTGIS_BUILD_DIR="$(CURDIR)" \
+		FUZZER_OUT="$${fuzzer_out}" \
+		check
+endif
 
 check-regress: export POSTGIS_REGRESS_DB ?= postgis_reg-$(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION)
 
