@@ -41,7 +41,7 @@ ORDER BY overview_factor;
 
 SET search_path TO '';
 SELECT :schema _overview_constraint(
-  (SELECT r:: :schema raster FROM public.o_2_res1 LIMIT 1),
+  (SELECT r::public.raster FROM public.o_2_res1 LIMIT 1),
   2, 'public', 'res1', 'r'
 );
 RESET search_path;
@@ -51,7 +51,7 @@ CREATE TEMP TABLE pg_namespace (dummy integer);
 CREATE TEMP TABLE pg_attribute (dummy integer);
 SET search_path TO pg_temp, public;
 SELECT :schema _overview_constraint(
-  (SELECT r:: :schema raster FROM public.o_2_res1 LIMIT 1),
+  (SELECT r::public.raster FROM public.o_2_res1 LIMIT 1),
   2, 'public', 'res1', 'r'
 );
 RESET search_path;
@@ -63,7 +63,7 @@ CREATE SCHEMA rt_shadow;
 CREATE DOMAIN rt_shadow."char" AS text;
 SET search_path TO rt_shadow, public;
 SELECT :schema _overview_constraint(
-  (SELECT r:: :schema raster FROM public.o_2_res1 LIMIT 1),
+  (SELECT r::public.raster FROM public.o_2_res1 LIMIT 1),
   2, 'public', 'res1', 'r'
 );
 RESET search_path;
