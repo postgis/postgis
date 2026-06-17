@@ -3,6 +3,8 @@
 -- ST_Translate
 select 'ST_Translate', ST_asewkt(ST_Translate('POINT(0 0)'::geometry, 5, 12));
 select 'ST_Translate', ST_asewkt(ST_Translate('POINT(0 0 0)'::geometry, -3, -7, 3));
+select 'ST_TranslateM', ST_asewkt(ST_Translate(ST_GeomFromEWKT('POINTM(0 0 11)'), 5, 12));
+select 'ST_TranslateZM', ST_asewkt(ST_Translate(ST_GeomFromEWKT('POINT(0 0 7 11)'), 5, 12, 3));
 
 -- ST_Scale
 select 'ST_Scale', ST_asewkt(ST_Scale('POINT(1 1)'::geometry, 5, 5));
