@@ -288,6 +288,7 @@ cd ${staging_fold}
 ', E'rm -f ${TMPDIR}/*.*
 ${PSQL} -c "DROP SCHEMA IF EXISTS ${staging_schema} CASCADE;"
 ${PSQL} -c "CREATE SCHEMA ${staging_schema};"
+${PSQL} -c "CREATE SCHEMA IF NOT EXISTS ${data_schema};"
 for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
 cd $TMPDIR;\n', '${PSQL}', '/', '${SHP2PGSQL}', 'export ',
 'for z in *${table_name}*.dbf; do

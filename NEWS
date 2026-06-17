@@ -3,6 +3,8 @@ PostGIS 3.6.5
 
 * Fixes *
 
+- #6072, Create tiger_data schema from shell tiger loader scripts
+         (Darafei Praliaskouski)
 - #5989, CurvePolygon distance corner case (Paul Ramsey)
 - #5357, ST_LineFromEncodedPolyline dropping close points (Paul Ramsey)
 
@@ -3131,5 +3133,4 @@ PostGIS 0.1
 - truely_inside()
 - rtree index support functions
 - gist index support functions
-
 
