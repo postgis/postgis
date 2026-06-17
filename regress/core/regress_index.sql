@@ -29,12 +29,20 @@ $$;
 
 CREATE INDEX quick_gist on test using gist (the_geom);
 
+CREATE TABLE test_gist_idx_2d AS
+SELECT i, ST_MakeEnvelope(i, i, i + 10, i + 10) AS geom
+FROM generate_series(1, 1000) i;
+
+CREATE INDEX test_gist_idx_2d_gist on test_gist_idx_2d using gist (geom);
+
 set enable_indexscan = off;
 set enable_bitmapscan = off;
 set enable_seqscan = on;
 
 SELECT 'scan_idx', qnodes('select * from test where the_geom && ST_MakePoint(0,0)');
  select num,ST_astext(the_geom) from test where the_geom && 'BOX3D(125 125,135 135)'::box3d order by num;
+SELECT 'gist 2d @ seq', qnodes('select * from test_gist_idx_2d where geom @ ST_MakeEnvelope(120,120,140,140)'), count(*) FROM test_gist_idx_2d WHERE geom @ ST_MakeEnvelope(120,120,140,140);
+SELECT 'gist 2d ~ seq', qnodes('select * from test_gist_idx_2d where geom ~ ST_MakePoint(125,125)'), count(*) FROM test_gist_idx_2d WHERE geom ~ ST_MakePoint(125,125);
 
 set enable_indexscan = on;
 set enable_bitmapscan = off;
@@ -42,6 +50,8 @@ set enable_seqscan = off;
 
 SELECT 'scan_seq', qnodes('select * from test where the_geom && ST_MakePoint(0,0)');
  select num,ST_astext(the_geom) from test where the_geom && 'BOX3D(125 125,135 135)'::box3d order by num;
+SELECT 'gist 2d @ idx', qnodes('select * from test_gist_idx_2d where geom @ ST_MakeEnvelope(120,120,140,140)'), count(*) FROM test_gist_idx_2d WHERE geom @ ST_MakeEnvelope(120,120,140,140);
+SELECT 'gist 2d ~ idx', qnodes('select * from test_gist_idx_2d where geom ~ ST_MakePoint(125,125)'), count(*) FROM test_gist_idx_2d WHERE geom ~ ST_MakePoint(125,125);
 
 CREATE FUNCTION estimate_error(qry text, tol int)
 RETURNS text
@@ -104,6 +114,7 @@ SELECT 'expr &&', id, estimate_error(
   FROM sample_queries ORDER BY id;
 
 DROP TABLE test;
+DROP TABLE test_gist_idx_2d;
 DROP TABLE sample_queries;
 
 DROP FUNCTION estimate_error(text, int);
