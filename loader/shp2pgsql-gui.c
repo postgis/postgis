@@ -113,6 +113,7 @@ static GtkWidget *checkbutton_loader_options_forceint = NULL;
 static GtkWidget *checkbutton_loader_options_autoindex = NULL;
 static GtkWidget *checkbutton_loader_options_dbfonly = NULL;
 static GtkWidget *checkbutton_loader_options_dumpformat = NULL;
+static GtkWidget *checkbutton_loader_options_unlogged = NULL;
 static GtkWidget *checkbutton_loader_options_geography = NULL;
 static GtkWidget *checkbutton_loader_options_simplegeoms = NULL;
 
@@ -540,6 +541,7 @@ update_loader_config_globals_from_options_ui(SHPLOADERCONFIG *config)
 	gboolean createindex = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_autoindex));
 	gboolean dbfonly = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_dbfonly));
 	gboolean dumpformat = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_dumpformat));
+	gboolean unlogged = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_unlogged));
 	gboolean geography = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_geography));
 	gboolean simplegeoms = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_simplegeoms));
 
@@ -606,6 +608,12 @@ update_loader_config_globals_from_options_ui(SHPLOADERCONFIG *config)
 	else
 		config->dump_format = 0;
 
+	/* Create an unlogged table */
+	if (unlogged)
+		config->unlogged = 1;
+	else
+		config->unlogged = 0;
+
 	/* Simple geometries only */
 	if (simplegeoms)
 		config->simple_geometries = 1;
@@ -625,6 +633,7 @@ update_options_ui_from_loader_config_globals(void)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_autoindex), global_loader_config->createindex ? TRUE : FALSE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_dbfonly), global_loader_config->readshape ? FALSE : TRUE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_dumpformat), global_loader_config->dump_format ? TRUE : FALSE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_unlogged), global_loader_config->unlogged ? TRUE : FALSE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_geography), global_loader_config->geography ? TRUE : FALSE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_simplegeoms), global_loader_config->simple_geometries ? TRUE : FALSE);
 
@@ -2712,7 +2721,7 @@ pgui_create_loader_options_dialog()
 	gtk_window_set_keep_above (GTK_WINDOW(dialog_loader_options), TRUE);
 	gtk_window_set_default_size (GTK_WINDOW(dialog_loader_options), 180, -1);
 
-	table_options = gtk_table_new(7, 3, TRUE);
+	table_options = gtk_table_new(9, 3, TRUE);
 	gtk_container_set_border_width (GTK_CONTAINER (table_options), 12);
 	gtk_table_set_row_spacings(GTK_TABLE(table_options), 5);
 	gtk_table_set_col_spacings(GTK_TABLE(table_options), 10);
@@ -2752,16 +2761,22 @@ pgui_create_loader_options_dialog()
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 5, 6 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_dumpformat);
 
-	pgui_create_options_dialog_add_label(table_options, _("Load into GEOGRAPHY column"), 0.0, 6);
-	checkbutton_loader_options_geography = gtk_check_button_new();
+	pgui_create_options_dialog_add_label(table_options, _("Create as UNLOGGED table"), 0.0, 6);
+	checkbutton_loader_options_unlogged = gtk_check_button_new();
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 6, 7 );
-	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_geography);
+	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_unlogged);
 
-	pgui_create_options_dialog_add_label(table_options, _("Generate simple geometries instead of MULTI geometries"), 0.0, 7);
-	checkbutton_loader_options_simplegeoms = gtk_check_button_new();
+	pgui_create_options_dialog_add_label(table_options, _("Load into GEOGRAPHY column"), 0.0, 7);
+	checkbutton_loader_options_geography = gtk_check_button_new();
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 7, 8 );
+	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_geography);
+
+	pgui_create_options_dialog_add_label(table_options, _("Generate simple geometries instead of MULTI geometries"), 0.0, 8);
+	checkbutton_loader_options_simplegeoms = gtk_check_button_new();
+	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 8, 9 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_simplegeoms);
 
 	/* Catch the response from the dialog */

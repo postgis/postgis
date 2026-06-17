@@ -1996,6 +1996,17 @@ COMMIT;</programlisting>
     </varlistentry>
 
     <varlistentry>
+      <term><option>-u</option></term>
+      <listitem>
+        <para>
+          Create the target table as <literal>UNLOGGED</literal>. This can speed up loading
+          transient staging data, but PostgreSQL does not preserve unlogged table contents
+          after a crash or unclean shutdown.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
       <term><option>-m</option></term>
       <listitem>
         <para>
