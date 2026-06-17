@@ -68,6 +68,7 @@ DOCBOOK5_DTD=@DOCBOOK5_DTD@
 CAN_UPDATE_TRANSLATIONS=@CAN_UPDATE_TRANSLATIONS@
 XMLLINT=@XMLLINT@
 CAN_BUILD_COMMENTS=@CAN_BUILD_COMMENTS@
+INSTALL_COMMENTS=@INSTALL_COMMENTS@
 PERL=@PERL@
 #CAN_BUILD_PDF=@CAN_BUILD_PDF@
 #CAN_BUILD_EPUB=@CAN_BUILD_EPUB@
@@ -542,7 +543,9 @@ endif
 
 cheatsheets: $(GENERATED_CHEATSHEET_FILES)
 
-ifneq ($(CAN_BUILD_COMMENTS),yes)
+ifneq ($(INSTALL_COMMENTS),yes)
+comments-install:
+else ifneq ($(CAN_BUILD_COMMENTS),yes)
 comments-install:
 	if test -e postgis_comments.sql  -a \
 	        -e raster_comments.sql   -a \
