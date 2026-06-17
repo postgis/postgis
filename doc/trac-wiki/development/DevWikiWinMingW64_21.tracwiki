@@ -1,0 +1,125 @@
+== Compiling using Mingw64-w64, Mingw64-w32  for 64-bit/32-bit (work in Progress) ==
+[wiki:UsersWikiWinCompile Back to Compiling in Windows]
+
+If you want to get to the last step fast to immediately start compiling PostGIS without having to compile the dependencies,
+you can download our prepared mingw64+msys build environment which you can download from  [http://www.bostongis.com/postgisstuff/ming64.zip] and for 32-bit (for PostgreSQL 9.2 (32-bit 9.1 and below have to use old msys chain) [http://www.bostongis.com/postgisstuff/ming32.zip]
+Then you just extract the zip so you have ming32 and or ming64 on your C:\ming32, C:\ming64 and launch the corresponding msys\msys.bat
+
+For PostgreSQL 9.3+ we build with GCC 4.8 chain -- [http://www.bostongis.com/postgisstuff/ming64gcc48.zip], [http://www.bostongis.com/postgisstuff/ming32gcc48.zip]
+
+Please note that the ming32.zip can be used in windows xp 32-bit - windows 7 32-bit/64-bit
+Windows 7 64-bit can definitely build for both the 32-bit and 64-bit by downloading both the ming32 and ming64 and launching the corresponding msys.bat.
+We haven't ever tried trying to build 64-bit on 32-bit windows so not sure if that is possible.
+Our build setup is for building on windows, though in theory you can build for windows on Linux by using the mingw64- linux compiled,
+we have never tried that.
+
+If you want to start with your own mingw64 install and then add additional items refer to [wiki:DevWikiMingW64_Setup]
+== variables used ==
+For building we always have these variables defined in our sh scripts
+You can switch the 64 to 32 if you are building with our ming32 environment.
+Full script for dependencies you can download from [https://gist.github.com/robe2/5942642 https://gist.github.com/robe2/5942642]
+{{{
+export OS_BUILD=64
+export PROJECTS=/projects
+export GCC_TYPE=gcc48
+if [ "$OS_BUILD" == "64" ] ; then
+  export MINGHOST=x86_64-w64-mingw32
+else
+  export MINGHOST=i686-w64-mingw32
+fi;
+}}}
+
+==  create project folders ==
+The download files we have above already have these folders and we like to keep
+each set separate. The below we set to 64 for our ming64 folder
+{{{
+cd ${PROJECTS}
+mkdir pgx${OS_BUILD}
+mkdir postgresql
+mkdir geos
+mkdir proj
+mkdir docbook
+mkdir gdal
+
+}}}
+
+== GDAL ==
+{{{
+  cd ${PROJECTS}
+mkdir gdal
+cd ${PROJECTS}/gdal
+export GDAL_VER=1.10.0
+rm gdal-${GDAL_VER}.tar.gz
+wget http://download.osgeo.org/gdal/${GDAL_VER}/gdal-${GDAL_VER}.tar.gz
+rm -rf gdal-${GDAL_VER}
+tar xvfz gdal-${GDAL_VER}.tar.gz
+cd gdal-${GDAL_VER}
+CPPFLAGS="-I${PROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/include" LDFLAGS="-L${PROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/lib"
+./configure --build=${MING_HOST} --with-curl=no --with-threads=no --prefix=${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}
+make && make install
+cd ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/bin
+strip *.dll
+#cd ${PROJECTS}/gdal/gdal-${GDAL_VER}
+#make clean
+}}}
+
+== DOWNLOAD DOCBOOK ==
+
+{{{
+cd ${PROJECTS}/docbook
+}}}
+
+Download the latest Docbook from http://sourceforge.net/projects/docbook/files/docbook-xsl/
+into that folder and untar.
+
+Extract somewhere. In this case I chose my projects folder.  You'll need to set this folder for the --with-xsldir
+setting
+
+You should have a folder now docbook/docbook-xsl-1.76.1  or something similar
+
+
+== 4. Compiling GEOS ==
+
+Download latest GEOS source from http://trac.osgeo.org/geos/
+You can also use the trunk svn version https://svn.osgeo.org/geos/trunk which is what we use.
+NOTE: To take advantage of new functions like [http://www.postgis.net/docs/manual-dev/ST_DelaunayTriangles.html ST_DelaunayTriangles], you need GEOS 3.4dev which is trunk.
+
+We've never used the tar balls for GEOS we always build from svn
+and extract into the geos/branches/whateverversion
+
+For building with GEOS we prefer CMake moving forward.  CMake is included as part of our ming..gcc48 build environments., but you can also download executables for windows from [http://www.cmake.org/cmake/resources/software.html]. We are using the 2.8.11 binaries from that site, but most any recent should work.
+
+
+{{{
+
+export PATH="/mingw/bin:/mingw/include:/mingw/lib:/bin"
+mkdir ${PROJECTS}/geos
+mkdir ${PROJECTS}/geos/branches
+cd ${PROJECTS}/geos/branches
+svn checkout https://svn.osgeo.org/geos/trunk 3.4
+cd ${PROJECTS}/geos/branches/3.4
+svn update
+export PATH="${PATH}:${CMAKE_PATH}/bin"
+export GEOS_VER=3.4.0dev
+#make distclean
+sh autogen.sh
+#if building from svn
+tools/svn_repo_revision.sh
+cd ../
+rm -rf buildw${OS_BUILD}
+mkdir -p buildw${OS_BUILD}
+cd buildw${OS_BUILD}
+if [[ "${OS_BUILD}" == "64" ]] ; then
+  cmake -G "MSYS Makefiles" DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE} -DHAVE_STD_ISNAN=1 -DHAVE_LONG_LONG_INT_64=1 -DGEOS_ENABLE_INLINE=NO -DGEOS_ENABLE_TESTS=ON - ../3.4
+else
+  cmake -G "MSYS Makefiles" DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE} -DHAVE_STD_ISNAN=1 -DGEOS_ENABLE_INLINE=NO -DGEOS_ENABLE_TESTS=ON - ../3.4
+fi
+
+make
+make install
+make test
+strip ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll
+
+}}}
+
+--- TO BE CONTINUED --

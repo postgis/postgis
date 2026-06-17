@@ -1,0 +1,113 @@
+= Sprint 2009 Notes =
+
+
+
+= General Actions =
+
+
+==  Attending ==
+
+ * RO: Regina Obe
+ * PR: Paul Ramsey
+ * MCA: Mark Cave Ayland
+ * OC: Olivier Courtin
+
+==  PSC ==
+
+ * RO - formalize PSC membership rules and desires, talk w/ RRI about PSC
+
+
+= PostGIS 2.0 Goals =
+
+
+==  Geodetic Support ==
+
+ * PG_LWGEOG
+ * Backed into LWGEOM
+ * Alter LWGEOM to add "geographic bit"
+ * write menu of functions of things we need to do
+ * spherical indexing (q3c)
+ * PR - research and give recommendation on indexes
+ * PR - recommendation on serialization changes
+ * PR - RFC on implementation
+
+==  !TypeMods to turn GEOMETRY_COLUMNS into a view ==
+
+ * MCA - build prototype and see?
+ * MCA - RFC on typmod for 2.0
+
+==  Routing in the Database ==
+
+ * embed graphserver in pgsql
+ * load edges from pgsql tables
+ * float graphserver structures into higher memory context
+ * PR - investigate effort and do RFC
+
+==  Handling of EMPTY geometries ==
+
+ * Document what LWGEOM conditions constitute "empty"
+  * POINT => pa == NULL
+  * LINE => npoints == 0
+  * POLYGON => nrings == 0
+  * COLLECTION => ngeoms == 0 (already handled)
+  MCA - fix unparser to respectfully write those out (all types)
+
+==  LWGEOM Header ==
+
+What are our goals for re-writing our serialization? And handling thereof.
+
+ * Room for more types.
+ * Account for future changes ? (versioning) (PR - No!)
+ * Aligned double?
+ * Prototype vardata type w/ double* and compare speed of direct access w/ copied access for some ops
+ * PR - do performance prototype
+ * PR - finalize RFC for new serialized form
+
+==  ISO Official Formats ==
+
+ * BREAKING CHANGE: SRID=0 is no-value
+ * "Be liberal in what you accept, conservative in what you emit."
+ * Only emit proper ISO formats
+ * WKB, use the ISO/SFSQL2 type codes
+ * WKT, use the official Z/M modifiers (eg POINT Z (1 2 3), POINT ZM (1 2 3 4))
+ * What does SFSQL2 say ST_Asbinary should emit? highera dimensionality? (probably)
+ * OC - Handle GeomFromGML() / GeomFromKML()
+  * need estimate / RFC
+  * Will need to link libxml
+
+==  "Package" infrastructure for PostGIS ==
+
+ * MCA - Bug PgSQL-hackers and establish requirements
+
+==  Deprecating ST_ handing in Dependent Apps ==
+
+ * PR - Mapserver (change for 5.4?)
+  * Ask if people mind losing support for PostGIS < 1.2
+ * PR -- Geoserver (change for ??)
+ * PR - FME
+ * PR - !CadCorp
+
+==  SRTEXT handling ==
+
+ * PR - Formalize our generation of SPATIAL_REF_SYS from EPSG database
+ * PR - Handle SRTEXT erratta from the mailing list so we don't lose projection fixes anymore
+ * PR - embed EPSG database version number in #define at the time we build SPATIAL_REF_SYS.sql
+
+==  WKT Raster ==
+
+ * By summer, raster/vector intersections() and out-db raster support
+ * Integrate with PostGIS 2.0, if PSC determines there is enough functionality to warrant.
+ * Allow binary-only dependency (more generally a PostGIS plan)
+
+==  Topology support ==
+
+ * OC: based on Sandro previous work and SQL MM 2.0
+  *  concrete needs: simplify working with lat/lon geom and topology compliant
+  * requires: build topology from set of polygons (snap and clean and build)
+
+==  3D ==
+
+ * OC - SQL/MM !PolyhedralSurface type
+  * CGAL librairie form intersection stuff ???
+  * CityGML and Collada export
+  * 3D GIST index support

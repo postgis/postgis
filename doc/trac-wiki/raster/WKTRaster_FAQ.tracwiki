@@ -1,0 +1,42 @@
+= '''PostGIS Raster - FAQ''' =
+
+'''1 - What was the meaning of "WKT" in WKT Raster?'''
+
+WKT stands for "[http://en.wikipedia.org/wiki/Well-known_text Well Known Text]". Is is an OGC standard to represent geographical information in a human readable textual representation. However, the OCG WKT standard does not define a way to represent raster yet. PostGIS WKT Raster is a bit ahead on this :-)
+
+'''2 - How is PostGIS Raster different than the Oracle SDO_GEORASTER and SDO_RASTER types?'''
+
+The major difference lies in the fact that each PostGIS Raster piece of raster (block or tile) is georeferenced (one-georeference-per-raster). In Oracle only the SDO_GEORASTER type supports georeference so that the location of every piece of raster stored as SDO_RASTER is aligned on a grid derived from the unique georeference (one-georeference-by-layer).
+
+The major advantage of one-georeference-by-raster over one-georeference-by-layer is to allow:
+
+ * coverages to be not necessarily rectangular (which is often the case of raster coverage covering large extents. See the possible raster arrangements in the documentation)
+ * rasters to overlaps (which is necessary to implement lossless vector to raster conversion)
+
+These arrangements are possible in Oracle as well, but they imply the storage of multiple SDO_GEORASTER objects linked to as many SDO_RASTER tables. A complex coverage can lead to hundreds of tables in the database. With PostGIS Raster you can store a similar raster arrangement into a unique table.
+
+It's a bit like if PostGIS would force you to store only full rectangular vector coverage without gaps or overlaps (a perfect rectangular topological layer). This is very practical in some applications but practice has shown that it is not realistic or desirable for most geographical coverages. Vector structures needs the flexibility to store discontinuous and non-rectangular coverages. We think it is a big advantage that raster structure should benefit as well.
+
+'''3 - Why do you say "PostGIS Raster goal is to implement the RASTER type as much as possible like the GEOMETRY type is implemented in PostGIS"? Vector and raster are very different and have always been threated differently in GIS packages.'''
+
+PostGIS Raster sees geospatial data in term of coverage. Even if the structure of vector and raster dataset are very different, GIS analyst fundamentally always want to perform the same kind of operations on both type of structure (overlay, map algebra, selection, etc...). Because those two structures are so different, traditional GIS packages have always proposed different sets of tools to operate on them, forcing users to learn and use two different sets of tools, even if they are basically doing the same thing. PostGIS Raster is a first attempt to build a single set of tool working transparently on both vector and raster formats. We expect that this simplification will allows application software developers to simplify the sets of tools and GUI they provide. This should, at the end, help users to spend more time on solving the problems they have instead of spending time on learning how to do the operation they have to do on a different data structure.
+
+'''4 - Why does every tile is georeferenced?'''
+
+In a traditional raster system only the global image is georeferenced, not every tile. The system assumes that the area covered by the tiles forms a perfect rectangle well aligned on a grid. This is the raster view of geospatial data. However the reality is often different. People use raster data covering area for which the sum of the tiles does not necessarily result in a rectangle. This is the coverage view of raster geospatial data. Having one georeference per tile allow PostGIS Raster to store raster coverage which are not necessarily rectangular.
+
+People also often need to convert vector data to raster data in order to perform certain operations. If you convert a vector coverage containing gaps or overlaps to raster, you may result in way too much information in the first case (gaps are filled with data) or in a lost of information in the second case (overlaps are blended or only one polygon is converted). In PostGIS Raster each vector object converts to a single raster so that there is a one to one correspondence between the two. Having one georeference per tile (or raster) is very usefull to properly support this feature.
+
+'''5 - How come it is possible to store overlapping rasters in the same table? In a raster, tiles should not overlaps.'''
+
+To properly convert a vector coverage containing overlaps to a raster coverage, you need raster to be able to overlap too. This is also convenient if you want to model surface objects having their own identities (one raster per object like polygons in a vector layer) but are better represented by varying raster or fuzzy objects (like variable intensity fires, variable depth lake or overlapping animal territories).
+
+'''6 - How do I load my raster in the database using PostGIS Raster?'''
+
+Use the Python loader [http://trac.osgeo.org/postgis/browser/trunk/raster/scripts/python/raster2pgsql.py raster2pgsql.py] (used to be called gdal2wktraster.py). It works similar to the shp2pgsql.exe loader except for the fact that it is written in Python. Examples on how to load raster in the database are provided [http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html in the GDAL driver example], [http://trac.osgeo.org/postgis/wiki/WKTRasterTutorial01 in one of PostGIS Raster tutorial] and in [http://mateusz.loskot.net/2009/03/27/run-wkt-raster-run/ Mateusz Loskot blog]. A reference of all the option is [http://trac.osgeo.org/postgis/wiki/WKTRaster/SpecificationFinal01 in the PostGIS Raster final specifications page].
+
+'''7 - How do I dump my raster from the database into the filesystem using PostGIS Raster?'''
+
+PostGIS Raster does not provide a dumper yet. However you can compile GDAL with PostGIS Raster enabled and then use the gdal_translate.exe utility to convert a PostGIS Raster layer to a filesystem raster in one of the many other format supported by GDAL.
+
+[wiki:WKTRaster Back to the PostGIS Raster Home Page]

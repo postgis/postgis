@@ -1,0 +1,6 @@
+These are the currently managed mirrors of the official [CodeRepository repository]:
+
+ - [[Codeberg|codeberg.org]] - Needs a codeberg.org or gitlab.com or github.com account
+ - [[GiteaCom|gitea.com]] - Can use OpenID for login
+ - [[GitLab|gitlab.com]] - Needs a gitlab.com or github.com account
+ - [[GitHub|github.com]] - Needs a github.com account

@@ -1,0 +1,57 @@
+These instuctions are extracted from http://postgis.refractions.net/pipermail/postgis-users/2007-February/014782.html
+
+'''(Note for newer installer -- our tests seem to suggest you only need to turn off UAC and can skip the rest of these instructions) '''
+
+The standard win32 installer of PostgreSQL fails on its own. There are
+a some tricks needed to get through the new security measures in
+Vista, but it can be done, and in the end it works fine.  Here's how:
+
+1. Turn off the Windows Vista User Account Contral (UAC). This is done
+from Users in the Control Panel.
+
+2. Enable the Vista 'Administrator' user account. By default it is disabled.
+- In the Start Menu, right click on Computer, select Manage
+- In System Tools / Local Users and Groups / Users, open the
+properties of the Administrator account and enable it. You will have
+to assign a new password to the account.  Installation will not work
+from a regular account with administrator rights, it must be this
+master Administrator account.
+
+3. Create a new standard limited user account called postgres. Give it
+a password. The PostgreSQL installer can not create this account in
+Vista so do it ahead of time yourself.
+
+4. Login to the new Administrator account.
+
+5. Install PostgreSQL from the windows msi installer file. Remember to
+not install PostGIS at this point, you'll want the more upto date
+version than wha tthe installer has.
+- It will ask for the postgres username and password you created in step 3.
+- Install as a Service
+- DO NOT select to have the installer initialize a new database. It
+will not work. postgres.exe protects you by not running when it has
+administrator rights, if you try to have the installer initialize a
+new database you will get an 'initdb failed' error message and the
+installation will rollback. If you dig deeper it will tell you that
+initdb can not find the postgres application even though it is present
+in the bin directory.  It is there, it just won't run.
+
+6. When the installer has finished successfully, logout of windows.
+Log back in as the postgres user.
+
+7. Open a command prompt, this is found in Accessories in the start
+menue / All Programs.
+
+8. Initialize a postgresql database.
+- change to the C:\Program Files\PostgreSQL\8.2\bin directory
+- run a command something like:
+initdb -D "C:\Program FIles\PostgreSQL\8.2\data" -U postgres -E UTF8
+
+9.  You should now have a working installation of PostgreSQL.  Install
+PostGIS using the appropriate installer from www.refractions.net.
+Remember to get the installer that is made for your version of
+PostgreSQL.
+
+10. Disable the Administrator account and turn UAC back on.
+
+11. Profit!!

@@ -1,0 +1,44 @@
+= PL/PGSQL Pseudo Cascade Union Aggregate Function =
+
+
+The Pseudo Cascade Union aggregate function is intended as a drop in replacement
+for the current PostGIS ST_Union aggregate function.  It should work in PostGIS versions
+1.2.2 -- 1.3.4.  Although I have only tested on 1.3.3 and 1.3.4SVN.  Seems to work in general 5-10 times faster than built in ST_Union, but I haven't really hammered it to ensure
+it achieves the desired result in all cases. '''NOTE: For PostGIS 1.4 with GEOS 3.1.0 this is not necessary since cascaded Union is built into GEOS 3.1+ and PostGIS 1.4+ can take advantage of it '''
+
+In general I have found it to be 5-10 times faster than the built-in ST_Union aggregate function and also it finishes to completion in many cases where the built-in one runs out of memory.
+
+The code can be downloaded from [http://www.bostongis.com/downloads/upgis_cascadeunion_functions_plpgsql.zip]
+
+It is loosely based on the concepts used in JTS 1.9 Union Operator (aka Cascaded Union) which is described at
+
+[http://lin-ear-th-inking.blogspot.com/2007/11/fast-polygon-merging-in-jts-using.html]
+
+Example use:
+
+This completes in 47,578 ms = 0.75 minutes
+
+
+{{{
+  SELECT state, upgis_cascadeunion(the_geom) as new_geom,
+   SUM(ST_NPoints(the_geom)) As  numpointsbefore,
+     ST_NPoints(upgis_cascadeunion(the_geom)) As numpointsafter
+   FROM usstatebounds
+   GROUP BY state
+   ORDER BY state;
+
+}}}
+
+
+vs. Original ST_Union version - 830,625 (13.8 minutes)
+
+{{{
+
+  SELECT state, ST_Union(the_geom) as the_geom,
+   SUM(ST_NPoints(the_geom)) As  numpointsbefore,
+     ST_NPoints(ST_Union(the_geom)) As numpointsafter
+   FROM usstatebounds
+   GROUP BY state
+   ORDER BY state;
+
+}}}

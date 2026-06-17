@@ -1,0 +1,12 @@
+
+= Gallery =
+
+
+Gallery Collection of applications using PostGIS in the backend here.
+
+ * A german webGIS-application using PostgreSQL/PostGIS as database serving Points-of-interest and some of its geospatial functions in the backend. The mapserver is UMN Mapserver ([http://mapserver.gis.umn.edu UMN Mapserver]) the client is Mapbender ([http://www.mapbender.org Mapbender] ): [http://www.regiofreizeit.de Start application]
+
+ * This is an application where PostGIS is used to get depth-information from geological data along a two-point line the user marks in the map (use the blue flag). The function is a buffer of 1m, because the background data arep oints with 1m distance: [http://maps.terrestris.de/mapbender22/frames/login.php?&gui_id=lithos&name=lithos&password=phere Start application]
+
+ * [http://www.cartoweb.org/demo.html CartoWeb - WebGIS Project application] .  It doesn't require PostGIS for simple use,
+but for more advanced use cases such as editing geometries and routing - it utilizes PostGIS.  Useful for integrating maps into web applications.

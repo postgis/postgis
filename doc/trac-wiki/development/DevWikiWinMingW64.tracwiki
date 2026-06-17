@@ -1,0 +1,482 @@
+== Compiling PostGIS 2.0 using MingGW-w64 for 64-bit ==
+[wiki:UsersWikiWinCompile Back to Compiling in Windows]
+If you want to get to the last step fast of just compiling PostGIS without having to compile the dependencies,
+you can download our prepared mingw64 bit chains  from  [http://www.bostongis.com/postgisstuff/ming64.zip] and for 32-bit (for PostgreSQL 9.2+) [http://www.bostongis.com/postgisstuff/ming32.zip]
+, extract to C:\ming64 and C:\ming32, and launch the corresponding c:\ming64\msys\msys.bat and you should be on your way
+
+and edit the file in C:\ming64\projects\postgis\builds\makepostgis20w64.sh
+
+for testing you'll want to initdb the postgres servers in C:\ming64\projects\pgx64 and then run the start stop scripts. Clicking the batch will start
+the postgres server and clicking enter will shut it down.  With that you can jump straight to the section on compiling PostGIS
+
+For PostgreSQL 9.2 and above, you can also use more or less the same steps and that is what we use to package the 32-bit PostgreSQL 9.2+.  We'll be publishing our ming32 tar ball soon.
+Also there are issues with GEOS compile about 4.5.4 or so, in 4.6.1+, the make check crashes and so does
+PostGIS tests when compiled with GCC 4.6+.  That said you should pick a build lower than GCC 4.6.
+Issues are documented in http://trac.osgeo.org/geos/ticket/518 (also similar issue compiling Geso under windows 64-bit SDK http://trac.osgeo.org/geos/ticket/528 )
+
+== 1. Installing Minimalist GNU for Windows-w64 (MinGW-w64) ==
+The objective will be to try to use the MingGW-w64 toolchain instead of the standard MingW since it has support for both 32-bit and 64-bit compiling.
+
+Details of the prefixes of files can be found at [http://sourceforge.net/apps/trac/mingw-w64/wiki/download%20filename%20structure What to download]
+
+MingW-w64 site is [http://mingw-w64.sourceforge.net]
+
+ * If you are building for 64-bit Windows download one of the binary packages from [http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Automated%20Builds/] with name
+starting with '''mingw-w64-1.0-bin_i686-mingw_'''
+
+ * If you are building for 32-bit Windows download one of the binary packages from [http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Automated%20Builds/] with name starting with
+'''mingw-w32-1.0-bin_i686-mingw_''' (for my purposes I used mingw-w32-1.0-bin_i686-mingw_20110408.zip) and for native 64-bit (currently using mingw-w64-1.0-bin_i686-mingw_20110516)
+
+ * Note if you are on 64-bit windows you can compile for both 32-bit and 64-bit by downloading both.
+
+ * Extract your respective zip into a folder called C:\ming64\mingw64 or c:\ming32\mingw32
+
+
+
+GEOS fails to link if it picks up 32-bit dlls so to overcome this, I copied over the dlls from windows/sytem32 and renamed them as
+described in
+#linking errors seems to be caused by as described here [http://www.gaia-gis.it/spatialite-3.0.0-BETA/mingw64_how_to.html#env]
+mingw64 is picking up the 32-bit dlls from syswow64 instead of the 64-bit dlss from windows/system32
+I only needed to copy ws2_32.dll for GEOS to compile without errors
+Others may be needed not sure.
+with windows explorer copy the files from windows/system32
+
+{{{
+ws2_32.dll
+}}}
+
+GEOS also gives missing vtable message during link.  I think this was caused by msys missing find.exe, so I copied the find.exe from regular msys packaged as instructed in the above link.
+To your folder: C:\ming64\x86_64-w64-mingw32\lib
+and then rename them adding a lib extensions so you have
+{{{
+libws2_32.dll
+# these ones didn't seem necessary for PostGIS: libmsimg32.dll,libgdi32.dll, libcrypt32.dll and libwldap32.dll
+}}}
+
+== prefixed files ==
+These sometimes exist only with the prefixes and cause issues during compilation so you'll need prefixless versions
+
+{{{
+cp /mingw/bin/x86_64-w64-mingw32-cpp.exe /mingw/bin/cpp.exe
+cp /mingw/bin/x86_64-w64-mingw32-strip.exe /mingw/bin/strip.exe
+}}}
+
+== 2. Installing Msys ==
+
+MSys is 32-bit but you can use it with your 32-bit or 64-bit mingw-w64.  Instructions are here [http://sourceforge.net/apps/trac/mingw-w64/wiki/MSYS mingw-w64 with MSYS] and repeated
+here for completeness
+
+ *  download [http://sourceforge.net/projects/mingw-w64/files/External%20binary%20packages%20%28Win64%20hosted%29/MSYS%20%2832-bit%29/ Msys] MSYS-20110309.zip (update there is now a newer MSYS -- MSYS-20110526.zip)
+ * Extract into a folder called C:\Msys
+ * launch msys.bat
+ * type
+
+{{{
+sh /postinstall/pi.sh
+}}}
+
+When prompted type in
+{{{C:/ming64/mingw64}}} or {{{C:/ming32/mingw32}}}  depending on which tool chain you chose
+Once done, type logout and the console should exit.
+
+== 3a. Installing Autoconf, Automake and Libtool ==
+Relaunch C:\mysy\msys.bat
+
+{{{
+export PROJECTS=/c/ming64/projects
+}}}
+
+
+Verify which versions of these you have with
+
+autoconf --version
+
+etc.
+
+If they are not newer (or you get not found) than below then download and install.
+Download the source code from the GNU site and save to c:\projects
+
+ * http://ftp.gnu.org/gnu/autoconf/autoconf-2.65.tar.gz
+ * http://ftp.gnu.org/gnu/automake/automake-1.11.1.tar.gz
+ * http://ftp.gnu.org/gnu/libtool/libtool-2.4.tar.gz
+
+
+{{{
+
+cd ${PROJECTS}
+tar -xvf autoconf-2.65.tar.gz
+cd autoconf-2.65
+./configure --host=x86_64-w64-mingw32 --prefix=/mingw  (if you are building for 32-bit then use --host=i686-w64-mingw32)
+make && make install
+autoconf --version
+}}}
+
+repeat same exercise for automake
+
+For libtool
+{{{
+cd ${PROJECTS}
+tar -xvf libtool-2.4.10.tar.gz
+
+cd libtool-2.4.10
+./configure --host=x86_64-w64-mingw32 --disable-shared --prefix=/mingw
+#if you are building on 32-bit then use --host=i686-w64-mingw32 for the host
+#if you get a message that gcc is not usable, then you probably set your
+# mingw setting wrong or did not install automake/autotools in /mingw
+#try to fix by rerunning the sh /postinstall/pi.sh again
+make clean && make && make install
+libtool --version
+
+}}}
+
+== 3.b create project folders ==
+
+{{{
+ export PROJECTS=/c/ming64/projects
+ cd ${PROJECTS}
+ mkdir pg
+ mkdir postgresql
+ mkdir geos
+ mkdir proj
+ mkdir docbook
+ ls
+
+}}}
+
+== GDAL ==
+{{{
+export GDAL_VER=1.9.1
+cd ${PROJECTS}/gdal
+wget http://download.osgeo.org/gdal/gdal-${GDAL_VER}.tar.gz
+tar xvfz gdal-1.9.1.tar.gz
+cd gdal-${GDAL_VER}
+./configure --host=x86_64-w64-mingw32 --build=x86_64-w64-mingw32 --with-threads=no --prefix=${PROJECTS}/gdal/rel-${GDAL_VER}w64
+make && make install
+cd ${PROJECTS}/gdal/rel-${GDAL_VER}w64/bin
+strip *.dll
+}}}
+
+== DOWNLOAD DOCBOOK ==
+cd ${PROJECTS}/docbook
+Download the latest Docbook from http://sourceforge.net/projects/docbook/files/docbook-xsl/
+into that folder and untar.
+
+Extract somewhere. In this case I chose my projects folder.  You'll need to set this folder for the --with-xsldir
+setting
+
+You should have a folder now docbook/docbook-xsl-1.76.1  or something similar
+
+
+== 4. Compiling GEOS ==
+
+Download latest GEOS source from http://trac.osgeo.org/geos/ either the http://download.osgeo.org/geos/geos-3.3.3.tar.bz2
+You can also use the trunk svn version https://svn.osgeo.org/geos/trunk. If you are using svn version, make sure to run:
+
+{{{
+sh autogen.sh
+}}}
+
+
+this fails at linker phase with a whole bunch of errors if you compile without doing
+#linking errors seems to be caused by as described here [http://www.gaia-gis.it/spatialite-3.0.0-BETA/mingw64_how_to.html#env]
+mingw64 is picking up the 32-bit dlls from syswow64 instead of the 64-bit dlss from windows/system32
+I may have over-copied, but to remedy before evening starting configure
+with windows explorer copy the files from windows/system32
+
+{{{
+ws2_32.dll, kernel32.dll, advapi32.dll, mscvrt.dll, user32.dll
+}}}
+
+To your folder: C:\mingw\mingw64\x86_64-w64-mingw32\lib
+and then rename them adding a lib extensions so you have
+{{{
+libws2_32.dll, libkernel32.dll, libadvapi32.dll, libmscvrt.dll, libuser32.dll
+}}}
+
+# hack described in [http://www.gaia-gis.it/spatialite-3.0.0-BETA/mingw64_how_to.html#libgeos]
+
+{{{
+simplify/.libs/libsimplify.a(TopologyPreservingSimplifier.o):TopologyPreservingS
+implifier.cpp:(.rdata+0x1f0): undefined reference to `geos::geom::util::GeometryTransformer::transformGeometryCollection(geos::geom::GeometryCollection const*,
+geos::geom::Geometry const*)'
+
+and bunch of other classes in util::GeometryTransformer..
+the .la file gets created so seems to be at linker phase.
+}}}
+
+-- follow instructions in [http://www.gaia-gis.it/spatialite-3.0.0-BETA/mingw64_how_to.html#libgeos]
+{{{
+export GEOS_VER=3.3.5
+cd ${PROJECTS}/geos
+tar xjf geos-${GEOS_VER}.tar.bz2
+cd geos-${GEOS_VER}
+./configure --host=x86_64-w64-mingw32 --prefix=${PROJECTS}/geos/rel-${GEOS_VER}w64 | tee /c/geos_configure_3.3.log
+make
+make install
+}}}
+To strip all the debug info weight from the libgeos DLL files, run
+{{{
+strip ${PROJECTS}/bin/geos/rel-${GEOS_VER}w64/*.dll
+}}}
+
+==  Installing !LibIconv ==
+
+For iconv we are going to compile our own copy instead of installing from GNUWin.
+
+ * http://ftp.gnu.org/gnu/libiconv/libiconv-1.13.1.tar.gz
+
+Save the source in your C:\ming64\projects directory. Open up the MSYS terminal. Ignore the errors in the configure process.
+{{{
+cd ${PROJECTS}
+tar xvfz libiconv-1.13.1.tar.gz
+cd libiconv-1.13.1
+./configure --host=x86_64-w64-mingw32 --build=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 --prefix=${PROJECTS}/rel-libiconv-1.13.1w64
+make
+make install
+}}}
+Copy rel-.. contents int c:\mingw\mingw64 folder.  For some reason using libiconv-prefix did not work for configuring postgis.
+Verify if the version of iconv you are running is the same as the one you just compiled (1.13):
+{{{
+# iconv --version
+}}}
+
+== Compiling Proj ==
+Download  Proj4 from the web site, and the datum shifts grid file.
+
+    *  http://download.osgeo.org/proj/proj-4.8.0.tar.gz
+    *  http://download.osgeo.org/proj/proj-datumgrid-1.5.zip
+
+and copy to c:\ming64\projects\proj
+The datum grid file must be unzipped into the "nad" subdirectory of the Proj4 source tree.
+{{{
+ #set this to whereever you plan to keep your source
+ #I have one for 32-bit and one for 64-bit
+ export PROJECTS=/c/ming64/projects
+ cd ${PROJECTS}/proj
+ wget http://download.osgeo.org/proj/proj-4.8.0.tar.gz
+ wget http://download.osgeo.org/proj/proj-datumgrid-1.5.zip
+ tar xvfz proj-4.8.0.tar.gz
+ cd proj-4.8.0
+ cd nad
+ unzip ../../proj-datumgrid-1.5.zip
+ cd ..
+ ./configure --prefix=${PROJECTS}/proj/rel-4.8.0w64 --host=x86_64-w64-mingw32 --enable-shared
+ make clean
+ make && make install
+}}}
+
+== Compiling and Installing C-Unit ==
+Download from http://sourceforge.net/projects/cunit/ into c:\projects
+
+{{{
+cd ${PROJECTS}
+wget http://iweb.dl.sourceforge.net/project/cunit/CUnit/2.1-2/CUnit-2.1-2-src.tar.bz2
+tar -xvf CUnit-2.1-2-src.tar.bz2
+cd CUnit-2.1-2
+#if you are building for 64-bit then use x86_64-w64-mingw32 for the build,host,target
+#32 bit uses i686-w64-mingw32 for build, host, target
+./configure --host=x86_64-w64-mingw32 --prefix=/mingw
+make && make install
+}}}
+
+For some reason, PostGIS couldn't find my cunit install.  So I had to copy the files:
+from C:\ming64\mingw64\include\CUnit to C:\ming64\mingw64\x86_64-w64-mingw32\include\CUnit
+== 7. Compiling LibXML2 ==
+
+{{{
+mkdir ${PROJECTS}/libxml
+cd ${PROJECTS}/libxml
+wget ftp://xmlsoft.org/libxml2/libxml2-2.7.8.tar.gz
+}}}
+
+
+{{{
+ tar xvfz libxml2-2.7.8.tar.gz
+cd libxml2-2.7.8
+#if you are building for 64-bit then use x86_64-w64-mingw32 for the build,host,target
+#32 bit uses i686-w64-mingw32 for build, host, target
+ ./configure --prefix=/c/projects/libxml/rel-libxml2-2.7.8w64 --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 --enable-shared --with-threads=no  CFLAGS=-O2
+#Note to self: used to have CCFLAGS=LDFLAGS="-Wl,-static"  in here will see how it goes without
+#If you have pthreads installed, libxml picks it up and royally screws up thus the need for --with-threads=no
+ make
+ make install
+}}}
+
+You might get an error during the configure process
+{{{
+/bin/rm: cannot lstat `libtoolT': No such file or directory
+}}}
+
+That error seems safe to ignore.
+
+== 8. Compiling PostgreSQL 9.1 ==
+Download source from:
+[http://ftp.postgresql.org/pub/source/v9.1.3/postgresql-9.1.3.tar.bz2]
+
+{{{
+mkdir ${PROJECTS}/pgx64
+cd postgresql
+tar -xvjf postgresql-9.1.3.tar.bz2
+cd postgresql-9.1.3
+#if you are building for 64-bit then use x86_64-w64-mingw32 for the build,host,target
+#32 bit uses i686-w64-mingw32 for build, host, target
+#EnterpriseDb VC++ 64-bit builds are compiled with disable float8 by val.
+#If we don't include this line, the modules compiled against mingw64 will be incompatible with edb builds
+./configure --prefix=${PROJECTS}/pgx64/pg91 \
+ --build=x86_64-w64-mingw32 \
+ --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 \
+ --with-pgport=5441 --enable-cassert --enable-debug \
+ --enable-integer-datetimes --disable-float8-byval --without-zlib
+
+ make
+ make install
+#initialize the database cluster
+/c/projects/pgx64/pg91/bin/initdb -U postgres -D ${PROJECTS}/pgx64/pg91/data -A trust
+}}}
+
+== Compiling JSON-C ==
+This is needed if you want ST_GeomFromGeoJSON to be functional.
+Download [http://oss.metaparadigm.com/json-c/json-c-0.9.tar.gz] and save to c:\ming64\projects\json-c
+{{{
+cd ${PROJECTS}/json-c
+wget http://oss.metaparadigm.com/json-c/json-c-0.9.tar.gz
+tar xvfz json-c-0.9.tar.gz
+cd json-c-0.9
+## had to compile with -w (disable warnings otherwise it gave errors)
+## if using 32-bit (ming32), use i686-w64-mingw32 for host/build
+./configure --build=x86_64-w64-mingw32 \
+ --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 \
+ --prefix=/c/projects/json-c/rel-0.9w64 CFLAGS=-w
+make clean
+make
+make install
+}}}
+== Copy over needed dlls to PostgreSQL folders ==
+
+{{{
+export PATHOLD=$PATH
+export PATH=$PATH:/c/projects/pgx64/pg91edb/bin:/mingw
+export PGHOST=localhost
+export PGPORT=5441
+export PGUSER=postgres
+cp /c/projects/geos/rel-3.3.3w64/bin/*.dll /c/projects/pgx64/pg91edb/bin
+cp /c/projects/gdal/rel-1.9.0w64/bin/*.dll /c/projects/pgx64/pg91edb/bin
+cp /c/projects/proj/rel-4.7.0w64/bin/*.dll  /c/projects/pgx64/pg91edb/bin
+cp /c/mingw/mingw64/bin/libgcc_s_sjlj-1.dll /c/projects/pgx64/pg91edb/bin
+cp /c/projects/geos/rel-3.3.3w64/bin/*.dll /c/projects/pgx64/pg91/bin
+cp /c/projects/gdal/rel-1.9.0w64/bin/*.dll /c/projects/pgx64/pg91/bin
+cp /c/projects/proj/rel-4.7.0w64/bin/*.dll  /c/projects/pgx64/pg91/bin
+cp /c/mingw/mingw64/bin/libgcc_s_sjlj-1.dll /c/projects/pgx64/pg91/bin
+}}}
+
+== Getting GTK ==
+If you want to build the shp2pgsql-gui loader in 64-bit, you can use the pre-compiled gtk bundle
+which already has the needed headers
+
+{{{
+export PORJECTS=/c/ming64/projects/gtk
+cd ${PROJECTS}
+mkdir gtk
+cd gtk
+wget
+http://ftp.gnome.org/pub/gnome/binaries/win64/gtk+/2.22/gtk+-bundle_2.22.1-20101229_win64.zip
+unzip gtk+-bundle_2.22.1-20101229_win64.zip
+}}}
+
+
+
+== Compiling PostGIS 2.0 ==
+
+== HACK only needed for PostGIS 2.0.3 and below (also not an issue if compiling 1.5 branche) (fixed in branch/2.0 and trunk already) ==
+ * There is a problem at least for my Mingw64 that prevents functions like ST_AsText and ST_AsKML that makes it leave out digits randomly
+ * This also causes issues for shp2pgsql.  The issue is the fact that the MingW64 chain uses
+ * Microsoft's vsprintf version instead of the C99 one. This version when space is not enough returns an error code instead of length of output the write
+ * To work around this issue, I put in this pretty ugly hack in the liblwgeom/string_buffer.c around line 210
+change:
+{{{
+  if ( len < 0 )
+    return len;
+}}}
+
+to:
+{{{
+  if ( len < 0 )
+    len = _vscprintf(fmt, ap2);
+}}}
+
+Details of this issue are outlined in #1668
+
+{{{
+export PROJECTS=/c/ming64/projects
+export PG_VER=91
+export PGWINVER=${PG_VER}edb
+export GEOS_VER=3.3.5
+# had to override the paths since cunit was picking up 32-bit junk and crashing
+export PATHOLD=".:/bin:/include:/mingw/bin:/mingw/include:/c/Windows/system32:/c/Windows:/c/ming64/mingw64/include"
+export PATH="${PATHOLD}:${PROJECTS}/pgx64/pg${PG_VER}/bin:${PROJECTS}/pgx64/pg${PG_VER}/lib"
+#needed to build comments and shp2pgsql-gui
+export PATH="${PATH}:${PROJECTS}/xsltproc:${PROJECTS}/gtk/bin"
+export POSTGIS_SRC=${PROJECTS}/postgis/postgis-${POSTGIS_MICRO_VER}
+cd /c/ming64/projects
+mkdir postgis
+cd postgis
+wget http://www.postgis.org/download/postgis-${POSTGIS_MICRO_VER}.tar.gz
+tar xvf postgis-${POSTGIS_MICRO_VER}.tar.gz
+cd ${POSTGIS_SRC}
+
+CPPFLAGS="-I${PROJECTS}/pgx64/pg${PG_VER}/include -I${PROJECTS}/gettextrel-gettext-0.18.1/include -I${PROJECTS}/rel-libiconv-1.13.1w64/include" \
+LDFLAGS="-L${PROJECTS}/pgx64/pg${PG_VER}/lib -L${PROJECTS}/gdal/rel-${GDAL_VER}/lib -L${PROJECTS}/gettext/rel-gettext-0.18.1/lib -L${PROJECTS}/rel-libiconv-1.13.1w64/lib" ./configure \
+ --host=x86_64-w64-mingw32  \
+  --with-xml2config=${PROJECTS}/libxml/rel-libxml2-2.7.8w64/bin/xml2-config \
+  --with-pgconfig=${PROJECTS}/pgx64/pg${PG_VER}/bin/pg_config \
+  --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}/bin/geos-config \
+  --with-projdir=${PROJECTS}/proj/rel-4.7.0w64 \
+  --with-gdalconfig=${PROJECTS}/gdal/rel-${GDAL_VER}/bin/gdal-config \
+  --with-jsondir=${PROJECTS}/json-c/rel-0.9w64 \
+  --with-libiconv=${PROJECTS}/rel-libiconv-1.13.1w64 \
+   --with-xsldir=${PROJECTS}/docbook/docbook-xsl-1.76.1 \
+  --with-gui --with-gettext=no
+}}}
+
+Before you'll be able to make check, you'll need your postgresql instance launched and the following files copied into the bin folder:
+After you are done, make sure to copy the following files to your PostgreSQL bin folder:
+
+{{{
+From your geos../bin  *.dll
+From your gdal../bin *.dll
+FROM mingw64 (or mingw32) bin - libiconv-2.dll, libgcc_s_sjlj-1.dll, libstdc++-6.dll
+From libxml/bin compile  *.dll
+From gdal/bin  libgdal-1.dll (you'll also need zlib1.dll which you can copy from EDB install or download binary for)
+From proj/bin  -- libproj-0.dll
+}}}
+
+
+#this part is a hack, but again didn't work without it
+#you can try without doing this, but if you get errors about
+# conflicting type def boolean during PostGIS compile, you need this.
+#In my case I got this:
+{{{
+In file included from c:/ming64/projects/json-c/rel-0.9w64/include/json/json_util.h:1
+
+                 from c:/projects/json-c/rel-0.9w64/include/json/json.h:23,
+                 from lwgeom_in_geojson.c:31:
+c:/ming64/projects/json-c/rel-0.9w64/include/json/json_object.h:32: error: conflictin
+types for 'boolean'
+c:\mingw\mingw64\bin\../lib/gcc/x86_64-w64-mingw32/4.4.7/../../../../x86_64-w6
+mingw32/include/rpcndr.h:52: note: previous declaration of 'boolean' was here
+make[1]: *** [lwgeom_in_geojson.o] Error 1
+}}}
+
+ * Open up /c/projects/json-c/rel-0.9/include/json/json_object.h
+ * remark out line 32 that reads
+    {{{ typedef int boolean }}}
+ * so it should now read
+    {{{ /** typedef int boolean; **/ }}}
+ * During the PostGIS configure process, you have to put this back the way it was otherwise configure complains json.h or something is not usable and refuses to configure with JSON-C support. Then you remark the line out again during compile.  Crazy I know, but json-c won't compile without that line so can't take it out before json-c compile.
+
+If you run into problems with your build, pipe the output into a file for further analysis. The GUI requires that pkg-config be on your PATH, check that it is there by running 'which pkg-config'.
+{{{
+make 2>&1 | tee /c/build.log
+make check
+make install
+}}}

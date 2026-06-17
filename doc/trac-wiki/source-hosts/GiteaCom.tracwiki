@@ -1,0 +1,9 @@
+The PostGIS source tree on gitea.com (https://gitea.com/postgis/postgis) is a [CodeMirrors mirror] of the [CodeRepository official repository].
+
+To get the source from gitea.com, and start a configure:
+{{{
+git clone https://gitea.com/postgis/postgis.git
+cd postgis
+./autogen.sh
+/configure
+}}}

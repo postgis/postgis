@@ -1,0 +1,22 @@
+= How to install PostGIS 2.1 on Ubuntu 14.04 LTS (''trusty'') from packages =
+
+== Install PostGIS and dependencies ==
+This command should install PostgreSQL 9.3 with PostGIS 2.1 and related dependencies:
+{{{
+sudo apt-get install postgresql-9.3-postgis-2.1
+}}}
+
+== Spatially enabling a database ==
+
+Connect to your database using pgAdminIII or psql, and use the commands to add the PostgreSQL extensions. To add PostGIS with raster support:
+{{{
+CREATE EXTENSION postgis;
+}}}
+
+To add topology support, a second extension can be created on the database:
+{{{
+CREATE EXTENSION postgis_topology;
+}}}
+
+== See also ==
+ * https://help.ubuntu.com/community/PostgreSQL

@@ -1,0 +1,25 @@
+= Request for Comment (RFC) =
+
+A list of PostGIS RFC documents, with status.
+
+== PostGIS ==
+
+
+RFCs pertaining to the overall PostGIS project and the geometry component  - All the continuously maintained of these have been moved to the website
+
+ * [wiki:RFC/RFC-1 "RFC 1 - Project Steering Committee Guidelines (OBSOLETE)"] latest moved to https://postgis.net/development/rfcs/rfc01/
+ * [http://trac.osgeo.org/postgis/browser/trunk/doc/rfc/postgis_rfc_02.txt postgis_rfc_02.txt]
+ * [http://trac.osgeo.org/postgis/browser/trunk/doc/rfc/postgis_rfc_03.txt postgis_rfc_03.txt] / [http://trac.osgeo.org/postgis/browser/trunk/doc/rfc/postgis_rfc_03_sheet.txt postgis_rfc_03_sheet.txt]
+ * [http://trac.osgeo.org/postgis/browser/trunk/doc/rfc/postgis_rfc_02.txt postgis_rfc_04.txt]
+ * [wiki:DevWikiComitGuidelines RFC 5 - Core Contributor Guidelines (OBSOLETE)]  latest moved to https://postgis.net/development/rfcs/rfc05/
+ * [wiki:MoveToGit "RFC 6 - Move to Git"]
+ * [wiki:PostGISExtensionPaths "RFC 7 - Managing PostGIS Exension Paths"]
+
+
+== Raster ==
+
+RFCs pertaining to the raster component of the PostGIS project. RFCs 1 and 2 were adopted before raster became part of PostGIS.
+
+ * [wiki:WKTRaster/RFC/RFC1_V0SerialFormat RFC1 - Version 0 Serialization format] (adopted, pre-merge with PostGIS)
+ * [wiki:WKTRaster/RFC/RFC2_V0WKBFormat RFC2 - Version 0 WKB format] (adopted, pre-merge with PostGIS)
+ * [wiki:WKTRaster/RFC/RFC3_V1SerialFormat RFC3 - Version 1 Serialization format] (draft)

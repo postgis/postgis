@@ -1,0 +1,160 @@
+== Google Summer of Code 2014 ==
+If you are interested in working on any of these or have thoughts of your own, please subscribe to [http://lists.osgeo.org/mailman/listinfo/postgis-devel PostGIS developer list]
+
+
+== PostGIS Raster ==
+'''1) Implement write support for the PostGIS Raster GDAL driver.'''
+
+ Mentor: Jorge Arevalo (jorgearevalo at libregis.org) or David Zwarg.
+
+ A [http://www.gdal.org/ GDAL] driver allows reading/writing of raster (or images) data from/to formats like TIFF, PNG or JPEG.
+
+ The current GDAL PostGIS Raster driver supports reading of PostGIS Raster objects from a PostgreSQL/PostGIS database but does not support writing. The project includes proposing a driver writer design and implementing it. You will familiarize yourself with GDAL-OGR development (one of the most used open source geospatial package), geospatial imagery concepts, open source development tools and code in C.
+
+Might be able to reuse some logic already present in the packaged PostGIS raster2pgsql loader.
+
+More information about GDAL PostGIS Raster driver [http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html here]
+
+'''2) Implement a set of geometry to raster functions'''
+
+    Mentor: Not decided yet[[BR]]
+    Skills required: C, plPGSQL, knowledge of PostGIS raster
+
+    With the ability to store geometries and rasters in postgis, there is now a gap to fill by implementing geometry to raster algorithms to allow transition from one type to the other.
+
+    1) '''ST_Interpolate''' should be an aggregate taking a set of points (e.g. filtered lidar points) or line geometries (e.g. digitized topo lines) and their associated values and returning a raster representing a surface interpolated from those values. There are numerous methods of [http://en.wikipedia.org/wiki/Interpolation interpolation] and it would nice to have a generic method so we can use all of them, but we’re first targeting [http://en.wikipedia.org/wiki/Bilinear_interpolation bilinear interpolation], which will fill most needs and lay the ground for other methods. For reference, you might want to check an implementation in [http://apps.nrbook.com/empanel/index.html Numerical Recipes (chap. 3)] or in [http://www.cgal.org/Manual/latest/doc_html/cgal_manual/Interpolation/Chapter_main.html#Section_68.3 CGAL]. Converting a point table to a TIN and then to a raster is also a way to go. A Delaunay triangulation can be produced with the [http://www.cs.cmu.edu/~quake/triangle.html Triangle library] (copyright issues should be checked first). See also [http://postgis.17.n6.nabble.com/Voronoi-Dalaunay-function-again-td3522575.html here] and [http://postgis.17.n6.nabble.com/Voronoi-tessellation-td4549913.html here].
+
+
+    2) '''ST_AsDensity''' takes a point or line geometry coverage and first assign a count of those features to every pixels of a raster coverage and then apply a smoothing filter (using the existing one raster version of neighbour ST_MapAlgebra). [http://www.spatialanalysisonline.com/output/html/Pointdensity.html Density functions]  allow summarizing or simplifying a point or line dataset.
+
+    3) '''ST_Distance''' takes a point or a geometry coverage and compute a raster representing the distance to the nearest geometry. Another function ST_CostDistance() compute the smallest distance to the geometry following a cost raster. This project was [http://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools proposed by Qing Liu and accepted by the GSoC program].
+
+== PostGIS geometry ==
+
+'''1) Implementation of ST_Voronoi function in PostGIS'''
+
+Mentor: not decided yet[[BR]]
+
+Skills required: C/C++, PL/pgSQL, knowledge of GEOS and PostGIS libraries, knowledge of Voronoi algorithm
+
+As Voronoi porting from JTS to GEOS was done in GEOS GSoC 2013, this functionality should be tested in order to have an implementation of ST_Voronoi function in PostGIS 2.2. Check #2259 for more information
+
+
+'''2) Add tolerance option to ST_Split function'''
+
+Mentor: not decided yet[[BR]]
+
+Skills required: C/C++, PL/pgSQL, knowledge of PostGIS library
+
+ST_Split does not work well when splitting a line by a point. Consider the following example where the line is not split even though the blade is supposed to be a point on the line:
+
+
+{{{
+SELECT ST_AsText((ST_Dump(ST_Split(lin.geom, ST_Line_Interpolate_Point(lin.geom, 0.5)))).geom) AS geom
+FROM (SELECT ST_GeomFromText('LINESTRING(604630.408 5792499.778,604623.849 5792500.886)') AS geom) AS lin
+}}}
+
+For the case of a line split by a point some kind of tolerance parameter would help. Until now I it is necessary first to ST_Snap your line to that interpolated point before splitting it by the point, which is not straightforward. Check #2192 fore more information.
+
+
+== PostGIS Topology ==
+
+'''1) Implement ST_EstimatedExtent function for topology'''
+
+Mentor: not decided yet[[BR]]
+
+Skills required: PL/pgSQL, knowledge of PostGIS , and PostGIS topology
+
+When the schema.table.col passed to st_estimated_extent refers to a layer registered in topology.layers the function could do something smart to return an estimate of what's the layer extent. It currently throws an exception due to "null statistics" for the table/column.
+
+Check #2074 for more information.
+
+'''2) Implement ability to load topogeoms using shp2pgsql'''
+
+Mentor: Regina Obe[[BR]]
+
+Skills required: C, PL/pgSQL, knowledge of PostGIS and PostGIS topology
+
+In writing chapters of the book, one exercise is to load the data with shp2pgsql and then a second step to load into a specific topology. Aside from speed issues, we could just go straight to a topogeom column much like we do with geography is -G is chosen. This would require another switch for topology name and name of topology. The only tricky part is that for the toTopogeom calls we need the generated layer id, which would require a connection to the database to get unless we have a lookup function of some sort that can lookup the layerid based on topo column table/name.
+
+Check #2103 for more information
+
+
+'''3) Add an extra arg to toTopoGeom function to prevent addition of primitives to topology'''
+
+Mentor: Regina Obe[[BR]]
+
+Skills required: PL/pgSQL, knowledge of PostGIS and PostGIS topology
+
+The scenario: You are the master maintainer of a topology for say a city or something and have meticulously laid out the topology that should account for all department topogeometry needs.
+
+Some reckless person in department A, comes by and creates a topogeometry with toTopoGeom because his/her topogeometry which should have snapped to existing edges, did not. Now you have extra annoying nodes in your topology. That reckless person may very well be you. You want the totopoGeom not to do you favors by creating new primitives if you know all the topos you are adding should be able to use the edges,nodes, and faces already existing in your topology.
+
+So after discussion, proposed solution is to add an extra proto to toTopoGeom that prevents creation of new primitives and if a topogeometry can't be created without adding a primitive, it should throw an error. So basically: change this existing proto:
+
+
+{{{
+toTopoGeom(geometry geom, varchar toponame, integer layer_id, float8 tolerance);
+
+}}}
+
+to this other one
+
+
+{{{
+toTopoGeom(geometry geom, varchar toponame, integer layer_id, float8 tolerance, allow_primitive_creation = true);
+
+}}}
+
+Check #2144 for more information.
+
+
+== PostGIS pgsql2shp dumper ==
+Each change to the loader and dumper should be done as a single GSoc by same developer
+
+'''1) pgsql2shp should not require temp table creation privs when dumping a query'''
+
+Mentor: Regina Obe [[BR]]
+
+Skills required: C, knowledge of PostGIS library, knowledge of PostgreSQL SQL
+
+If you can't create a temporary table, then you can't get a shapefile out of a query using pgsql2shp. You can by using ogr2ogr.
+
+Check #2045 for more information
+
+== PostGIS shp2pgsql /shp2pgsql-gui loader ==
+
+'''1) Modify shp2pgsql to emit DROP TABLE IF EXISTS insted of just DROP TABLE'''
+
+Mentor: Regina Obe[[BR]]
+
+Skills required: C, knowledge of PostGIS library
+
+Just when -d flag is passed
+
+Check #2236 for more information
+
+'''2) Specify command line options for shp2pgsql-gui in the About box'''
+
+Mentor: Regina Obe[[BR]]
+
+Skills required: C, GTK, knowledge of PostGIS library
+
+Right now a user has no way of knowing what options are available in shp2pgsql-gui.
+
+Check #528 for more information.
+
+'''3) Modify shp2pgsql-gui to avoid attempt of spatial index creation when only dbf available'''
+
+Mentor: Regina Obe [[BR]]
+
+Skills required: C, GTK, knowledge of PostGIS library
+
+If you try to load shapefiles with only dbf available and select spatial index option, you will see an error
+
+Check #2473 for more information
+
+
+----
+
+Want more details? Check the [http://wiki.osgeo.org/wiki/Google_Summer_of_Code_2014 OSGeo GSoC 2014 page] or write to the [http://lists.osgeo.org/mailman/listinfo/postgis-devel PostGIS developer list].

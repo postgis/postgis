@@ -1,0 +1,56 @@
+This code creates another st_line_interpolate_point with a 3rd argument for offset of the point to the left or right side of the line segment. Useful for Geocoding.
+
+Example Usage:
+{{{
+--Example: Geocode on a forward range from TIGER line file (Assuming integer range fields)
+select
+st_line_interpolate_point(te.the_geom,
+  ((12345 - fromhn::float) / (tohn::float - fromhn::float)),
+  case when side = 'R' then .0001 else -.0001 end
+),
+'A house'
+from tl_edges te
+join tl_addr ta on te.tlid = ta.tlid
+where fullname = 'Main St' and 12345 between fromhn::int and tohn::int and zip = '92333'
+and (12345 % 2) = (fromhn::int % 2)
+and fromhn::int < tohn::int;
+}}}
+
+Function Definition:
+{{{
+create or replace function st_line_interpolate_point(m_geom geometry, m_percent double precision, m_offset double precision)
+returns geometry as
+$BODY$
+
+/*
+  Interpolate a point across a line and then offset to the left ( negative ) or right by m_offset distance
+  m_percent 0 to 1
+
+*/
+
+declare m_seg geometry;
+declare p1 geometry;
+declare p2 geometry;
+
+BEGIN
+
+m_seg :=  st_linesubstring(m_geom,0, m_percent);
+
+/* Grab the 2 points of the matching line segment */
+p1:=st_pointn(m_seg,st_npoints(m_seg)-1);
+p2:=st_endpoint(m_seg);
+
+/* get the delta of the line segment and offset the interpolated point */
+/* Rotate deltas by 90 degrees (invert dx/dy ) */
+/* spheroid projections will need the offset to vary based on lat/lon */
+return st_translate(
+  p2,
+  ((st_y(p2) - st_y(p1)) / st_distance(p1,p2)) * m_offset,
+  ((st_x(p2) - st_x(p1)) / st_distance(p1,p2)) * (-m_offset)
+);
+
+END;
+
+$BODY$
+language plpgsql;
+}}}

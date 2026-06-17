@@ -1,0 +1,79 @@
+= SpatiaLite =
+[http://www.gaia-gis.it/spatialite/ SpatiaLite] is a GIS file format based on [http://www.sqlite.org/ SQLite], which stores multiple layers and data tables into a single file. It is an alternative format to ESRI Shapefiles, which have several legacy issues (such as storage types and lengths of column names, etc.) Furthermore it is simple to distribute and run, as there is only one file.
+
+== Exporting from PostGIS to SpatiaLite ==
+
+Use [http://www.gdal.org/ogr2ogr.html ogr2ogr] built with [https://gdal.org/en/latest/drivers/vector/sqlite.html SQLite support].
+
+To create the SpatiaLite file and export a first layer:
+
+{{{
+$ ogr2ogr -f SQLite -dsco SPATIALITE=yes myfile.sqlite PG:"dbname=mydb user=myuser password=mypass" myschema.mytable
+}}}
+And for additional layer/tables:
+{{{
+$ ogr2ogr -f SQLite -update myfile.sqlite b PG:"dbname=mydb user=myuser password=mypass" myschema.my2ndtable
+}}}
+
+To load all the tables of a schema from Postgres to SpatiaLite (with or without geometry) and without the views:
+
+{{{
+$ ogr2ogr --config PG_LIST_ALL_TABLES YES --config PG_SKIP_VIEWS YES -f "SQLite" mydb.sqlite -progress PG:"dbname='mydb' \
+  active_schema=myschema schemas=myschema host='localhost' port='5432' user='myuser' password='mypass'" -lco LAUNDER=yes \
+  -dsco SPATIALITE=yes -lco SPATIAL_INDEX=yes -gt 65536
+}}}
+
+To load a table (mytable) (with a geometry columns named "geometry") from a SQLite/SpatiaLite (mysqlite.sqlite) into a schema (myschema) of a Postgres/PostGIS:
+
+{{{
+ogr2ogr --config SQLITE_LIST_ALL_TABLES YES -f "PostgreSQL" PG:"dbname='mydb' active_schema=myschema schemas=myschema host='localhost' port='5432' user='myuser' password='mypass'" -overwrite -lco SCHEMA=myschema -lco GEOMETRY_NAME=geometry -lco SPATIAL_INDEX=YES mysqlite.sqlite mytable
+}}}
+
+== Accessing SpatiaLite data from PostGIS ==
+
+The [https://github.com/pgspider/sqlite_fdw SQLite Foreign Data Wrapper for PostgreSQL] provides transparent and bidirectional access to SpatiaLite databases from PostgreSQL queries, including PostGIS.
+
+To set it up, you should make sure that the SQLite database is accessible to the OS user under which Postgres is running, usually {{{postgres}}}.
+After installing the extension, you can connect to Postgres as a superuser and run {{{CREATE SERVER}}} to add the foreign server.
+The following commands make the {{{/home/osgeo/Example of SpatiaLite database file.sqlite}}} database accessible from Postgres and grant access to it to the {{{osgeo}}} user:
+
+{{{
+CREATE EXTENSION sqlite_fdw;
+CREATE SERVER sqlite_server FOREIGN DATA WRAPPER sqlite_fdw OPTIONS (database '/home/osgeo/Example of SpatiaLite database file.sqlite');
+GRANT USAGE ON FOREIGN SERVER sqlite_server TO osgeo;
+}}}
+
+You can force read-only access by setting the {{{force_readonly}}} option on the {{{SERVER}}}, either when creating it, or afterwards.
+
+After FOREIGN SERVER creation and GRANT you can use only user without any administrative rigths and create a FOREIGN TABLE for you SpatiaLite data. For example for spatial table Osaka_2025-01-20 in the SpatiaLite file will be effective the following commands for "OSM 大阪市" PostgreSQL  table name:
+SQLite tables can be created from the Postgres side, for example the following will create a table called in the SQLite database.
+The table will be named {{{Osaka_2025-01-20}}} in SQLite and {{{OSM 大阪市}}} in Postgres:
+
+{{{
+CREATE FOREIGN TABLE "OSM 大阪市" (
+    g geometry,
+    tags json
+)
+SERVER sqlite_server
+OPTIONS (
+    table 'Osaka_2025-01-20'
+);
+}}}
+
+After that, you can query the foreign table as you normally would:
+
+{{{
+SELECT * FROM "OSM 大阪市";
+SELECT * FROM "OSM 大阪市" WHERE tags->>'building' = 'yes';
+SELECT * FROM "OSM 大阪市" WHERE g = (SELECT geom FROM "UNESCO Japan" WHERE city='大阪市' AND name='大坂城');
+SELECT * FROM "OSM 大阪市" WHERE g = (SELECT geom FROM "UNESCO Japan" WHERE city_lat='Osaka' AND name='大坂城');
+
+CREATE TABLE osaka_buildings AS
+SELECT * FROM "OSM 大阪市" WHERE tags->>'building' = 'yes';
+
+INSERT INTO "OSM 大阪市"
+SELECT geom, tags
+FROM dumps.osaka_2025-01-21;
+}}}
+
+For more information, see the [https://github.com/pgspider/sqlite_fdw/blob/master/README.md SQLite FDW README] and the [https://github.com/pgspider/sqlite_fdw/blob/master/GIS.md GIS support docs].

@@ -1,0 +1,91 @@
+= Discussion of Methods and API for Splitting an Oversize Polygon =
+
+Discussion outline:
+ * It is often desirable to "split" a POLYGON with a high number of vertices into some number of smaller POLYGONs.
+
+ * From a user's perspective, some GIS processes result in very large POLYGON, for example 10,000 or 100,000 or more, vertices.  There is a case to be made that PostGIS users would benefit from standard calls to take a single POLYGON as an input,  and output some GEOMETRYCOLLECTION of POLYGON that are "equivalent", while respecting the problems inherent with the numeric precision model used.
+
+ * GEOS performs poorly as a POLYGON increases to a very large number of vertices, even in simple cases.
+
+ * For the sake of discussion. let us assume we are operating on a POLYGON with a single outer ring, that is formally valid.
+
+---
+
+Rough transcript of IRC on 07Mar13:
+
+strk: splitting / gridding ... which one you mentioned was about keeping existing vertices ?
+I don't think it's defined, but I just hit another case in which I'd want it to be possibly defined.
+rationale is that "split on vertex" introduces NO spatial drift/change.
+while "split segment" almost _always_ introduces a spatial difference
+(to pramsey) don't you think we need a general class of "on-vertex" splitting function ?
+closestpoint, substring, split, ... what else ?
+all functions that "break" any line into smaller components
+need a way to be invoked to specify: "no segment splitting please"
+
+pramsey: that seems like a very narrow-bore approach to a particular prob. when the general prob is, we don't have a precision model. so I don't feel super comfortable with a complex semantic of "split, but only in this very particular way"  particularly when the semantic can fall apart and look dumb so easily (hand it a very long segment)
+
+dbb:  ''tries to grok context here''
+
+strk:  well, I've heard people saying: "every vertex has a cost"  they wouldn't be happy with splitting on segments. cost of some operations is per-vertex, not per-length ..  _most_ operations
+
+dbb:  isnt there a case to be made to take a very high number of vertices POLY, and simply provide a call to break it into some number of polys with max N vertices ?  Arc* definitely does this with a simple dialog box, and its a common user problem I think
+
+strk:  that too. can still be done using segment-splitting as the number of added points would likely not affect the overall reduction (I've been using that) BUT, segment-splitting would introduce spatial drift so that putting the "tiles" back together they wouldn't necessarily match. of course you can't avoid that when you really want a gridded output
+
+dbb: hmm but thats at the level of the precision model. There are lots of problems at that level
+
+pramsey: a set-returning function that turns a big polygon into a set of tiles covering the same area
+
+dbb: isnt splitting using existing vertices straightforward?  "give me back POLY that has at most N vertices"
+
+pramsey: not if you're trying to generate a set of things that cover the same area. that strikes me as being quite hard. it's easy to break a line into smaller lines that way
+
+dbb: because of problems at the precision model level ?  Arc* has it somehow
+
+pramsey:  and what kind of shapes do the resulting outputs have? rectangular? pieces of pie? what?
+
+dbb:  they are N vertice polys.. you say "Take this monster 100,000 vertice poly, with one outer ring I suppose.. and break it into M polys with max N vertices each"  if you specify N then M is calculated
+
+strk:  they are probably clusters of triangles.. unioned
+
+pramsey:  could be strk, triangulate and then rebuild
+
+dbb:  yes, triangulate and then rebuild, that sounds right
+
+strk:  recipe goes through topology, of course  :-)
+
+dbb: I think this is a practical addition
+
+== Methods ==
+
+strk:  with postgis topology you could convert to a TopoGeometry, then take its envelope and add a bisecting edge if the number of vertices in it are above your threshold, then re-do the same on each part of the now-splitted thing until every composing face is below N vertices
+
+nhv: that should work
+
+strk:  will take forever, but it'd be a robot working... I've been actually doing "vector tiles" like that in the past.(but without support of the PostGIS Topology)
+
+dbb:  there is nothing like this in JTS now ? as a function ?
+
+strk:  there's both triangulation and topology in postgis, not a single function, you'd have to write that one, on your needs. I think plpgsql could do, it really depends on your need for speed     ST_SplitByGrid()   ST_SplitToMaxN()   SplitToMaxN has multiple solutions, so harder to generalize.  SplitToMaxN could be implemented with a sweep line, for example. a vertical line that moves from leftmost vertex toward right direction, as soon as it seen enough points it cuts. we have ST_Split already, to split a polygon by a line. sweep would be performed by taking all vertices, ordering by X and positioning the line to the Nth point...
+
+nhv: understood but if one was to use a quadtree splitting cells where needed to satisfy maxN constraint ... is best of both worlds no ? but you are very likely to end up with long skinny objects which would be avoided in a quadtree solution
+
+dbb: I dont think people care about blazing performance for this one.. I think it is the utility that is first
+
+strk: the characteristic would be that of max "size", not max "extent"
+
+nhv: irregular tiles are ok I just like to avoid long skinny things when possible, they often have numerical issues
+
+strk: maybe the sweepline could be "snapped" to the existing vertices. not sure how to identify the correct ones though
+
+(discussion of topology line splitting, precision problems, steiner points)
+
+dbb:  so I have heard SplitToMaxN() and ST_SplitByGrid().  in the behavior of SplitToMaxN() all returned POLY use the existing vertices of the input, which are well defined of course. with SplitByGrid() the grid geometry provides the "anchor" vertices
+
+strk: does this line have any vertex whose value is not perfectly on this grid ? what ST_SnapToGrid ensures.
+
+nhv: exactly
+
+strk: yes, ST_SplitByGrid() would take a grid configuration (same as ST_SnapToGrid) which would give you anchor points.
+
+(discussion of infinite precision)

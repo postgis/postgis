@@ -1,0 +1,42 @@
+= Creating Topo Geometry Objects =
+
+
+Currently, [wiki:UsersWikiTopoGeometry TopoGeometry] objects can only be defined by specifying their
+component topology elements. We do support both basic !TopoGeometry
+and hierarchical !TopoGeometry. Basic !TopoGeometry objects are those
+composed by base topolocal elements (faces, edges, nodes). Hierarchical
+!TopoGeometry objects are composed by other !TopoGeometry objects.
+
+Each !TopoGeometry object belongs to a specific Layer of a specific
+Topology. Before creating a !TopoGeometry object you need to create
+its !TopologyLayer. A Topology Layer is an association of
+a feature-table with the topology. It also contain type and hierarchy
+information. We create a layer using the !AddTopoGeometryColumn() function:
+
+{{{
+topology.AddTopoGeometryColumn(topology_name,
+                schema_name, table_name, column_name, feature_type,
+                [child_layer])
+}}}
+
+The function will both add the requested column to the table and add
+a record to the topology.layer table with all the given info.
+
+If you don't specify [child_layer] (or set it to NULL) this layer
+would contain Basic !TopoGeometries (composed by primitive topology
+elements). Otherwise this layer will contain hierarchical !TopoGeometries
+(composed by !TopoGeometries from the child_layer).
+
+Once the layer is created (it's id is returned by the !AddTopoGeometryColumn
+function) you're ready to construct !TopoGeometry objects in it:
+
+
+{{{
+topology.CreateTopoGeom(
+                topology_name,
+                feature_type,   -- 1:(multi)point, 2:(multi)line,
+                                -- 3:(multi)poly, 4:collection
+                layer_id,       -- as returned by AddTopoGeometryColumn
+                TopoElementArray
+        );
+}}}

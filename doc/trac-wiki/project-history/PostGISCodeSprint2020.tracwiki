@@ -1,0 +1,58 @@
+= Code Sprint - Virtual - 2020 =
+
+== Dates ==
+
+ * Start at [https://www.timeanddate.com/worldclock/converted.html?iso=20201026T16&p1=0&p2=31&p8=137&p3=179&p4=136&p5=16&p6=240&p7=215&p9=285| 4 PM UTC Monday October 26]
+ * End at [https://www.timeanddate.com/worldclock/converted.html?iso=20201026T21&p1=0&p2=31&p8=137&p3=179&p4=136&p5=16&p6=240&p7=215&p9=285| 9 PM UTC Monday October 26]
+
+== Sponsors ==
+
+Sponsorship dollars will be used to support development of features and bug fixes and travel (travel is a pipe  dream)? Please contact <lr at pcorp dot us> or <treasurer at osgeo.org>.
+
+We are able to accept payments in the form of Credit Card, Bank Transfer, Pay Pal, and for US companies (all the already stated plus checks)
+
+|| '''Sponsor List''' || '''Contribution'' =||
+||= [[Image(https://www.osgeo.org/wp-content/themes/roots/assets/img/logo-osgeo.svg, width=140, link=https://www.osgeo.org/)]] || $2000 =||
+
+
+== Goals ==
+
+The main aim is to begin thinking about current planned release of PostGIS 3.1.0 and next releases, and major features to be attempted.
+
+ * wiki:PostGIS31 topics
+ * PostGIS 3.1 ticket triage (if not released yet) otherwise work/planning for  PostGIS 3.2
+ * PostgreSQL integration
+  * Desired core improvements
+  * Core features we should make use of
+ * Discuss feasibility / strategies for GEOS overlay features and TOAST
+ * Performance testing suite
+ * What goes in NEWS file and announcements
+ * Packaging concerns - LTS / static / dependency
+ * Suggestion: Obfuscate security e-mail to reduce spam.
+ * Suggestion: Reduce the number of supported stable releases to 2 (3.0 + 3.1 + master once 3.1 is released)
+ * Add your own ... ?
+
+== Attendance ==
+
+PostGIS (and GEOS, Proj, PgSQL, GDAL, CGAL, etc?) people who will be there:
+
+ * Paul Ramsey (all)
+ * Regina Obe (all)
+ * Leo Hsu (if people talk about strategy instead of boring stuff like code)
+ * Darafei Praliaskouski (assuming no country chaos can attend all)
+ * Raúl Marín (all)
+ * Greg Troxel (at least part)
+ * Martin Davis (all)
+ * Sandro Santilli (might jump in during the last 2 hours)
+
+== Venue ==
+
+ * [http://meet.jit.si/PostGIS PostGIS jitsi channel]
+ * [https://etherpad.mit.edu/p/15Bb4p8b1z Etherpad]
+
+
+-----------
+
+= Meeting Notes =
+
+ * TBD during the event

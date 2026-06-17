@@ -1,0 +1,126 @@
+= Background =
+
+Sometimes you may experience a bug in PostGIS and/or any of its dependent libraries which causes a crash when you try and execute a query. If this happens, chances are you will be asked to submit a backtrace to the mailing list. A backtrace gives an indication of the state of a program when it crashes, and is hence very useful for developers.
+
+= Prerequisites =
+
+This tutorial assumes that you are running a POSIX-based operating system such as Linux, BSD, Solaris, MacOS, MSYS2, Cygwin etc. If you are running Windows then you can obtain a similar result once you have installed the required MingW/Msys2 components which are generally part of [https://www.msys2.org/ Msys2] or can be installed via Pacman package manager shipped with msys2. You will need to make sure that gdb (GNU debugger) has been installed on your system; to verify this, simply type ```gdb -v``` and check the output. If gdb is installed, you'll see something like this:
+
+{{{
+GNU gdb (GDB) 8.1
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later
+}}}
+
+= TIP =
+The most meaningful backtrace can be achieved by working against a postgresql compiled with debug files.  To build postgresql
+in debug mode, use the below for configuring your postgresql source.
+
+
+{{{
+CFLAGS=-O0 ./configure --enable-debug
+}}}
+
+
+
+= Getting the backtrace =
+
+In order to obtain the backtrace, you'll need two terminal windows open. One to launch psql and connect to your PostGIS-enabled database as normal, and one to control the debugger. From here, the process to obtain a backtrace looks like this:
+
+ * call a PostGIS C library function to ensure that PostGIS is loaded in the PostgreSQL backend
+ * find out the process number (pid) of the PostgreSQL backend you are connected to
+ * connect the debugger to the PostgreSQL backend
+ * execute your crashing query
+ * obtain the backtrace
+
+
+=== Window 1 - Launching PostgreSQL ===
+
+{{{
+psql -d postgis
+
+postgis=# select postgis_full_version(), pg_backend_pid();
+postgis_full_version                                                                                                        | pg_backend_pid
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+ POSTGIS="3.4.0dev 3.3.0rc2-680-g9f38f0b08" [EXTENSION] PGSQL="160" GEOS="3.12.0dev-CAPI-1.18.0" PROJ="7.2.1" ...           |          22652
+(1 row)
+}}}
+
+Once you are connected to your database, you need to connect the debugger to the process listed above as pg_backend_pid by passing a "-p" parameter into gdb like this:
+
+=== Window 2 - Connecting the debugger to PostgreSQL/PostGIS ===
+
+{{{
+gdb -p 22652
+}}}
+=== Window 1 - Execute your crashing query ===
+
+{{{
+postgis=# select postgis_crash();
+}}}
+
+When the crash occurs, this window will pause. You can then use gdb to obtain the backtrace using the "bt" command like this:
+
+
+=== Window 2 - Obtain the backtrace ===
+
+{{{
+Program received signal SIGSEGV, Segmentation fault.
+0x00007f5859747ec1 in memcpy () from /lib/libc.so.6
+(gdb) bt
+#0  0x00007f5859747ec1 in memcpy () from /lib/libc.so.6
+#1  0x00007f5857321621 in postgis_crash (fcinfo=0x7fff622f5f70) at lwgeom_functions_basic.c:114
+#2  0x000000000058a7a9 in ExecMakeFunctionResult (fcache=0xc51310, econtext=0xc511e0, isNull=0xc518c0 "\177~\177\177\177\177\177\177\220��", isDone=0xc51978)
+    at execQual.c:1351
+#3  0x000000000058b0a4 in ExecEvalFunc (fcache=0xc51310, econtext=0xc511e0, isNull=0xc518c0 "\177~\177\177\177\177\177\177\220��", isDone=0xc51978) at execQual.c:1753
+#4  0x0000000000591a72 in ExecTargetList (targetlist=0xc51750, econtext=0xc511e0, values=0xc518a0, isnull=0xc518c0 "\177~\177\177\177\177\177\177\220��",
+    itemIsDone=0xc51978, isDone=0x7fff622f6494) at execQual.c:4610
+#5  0x0000000000591f3a in ExecProject (projInfo=0xc518e0, isDone=0x7fff622f6494) at execQual.c:4811
+#6  0x00000000005a200a in ExecResult (node=0xc510c8) at nodeResult.c:155
+#7  0x0000000000587bc1 in ExecProcNode (node=0xc510c8) at execProcnode.c:319
+#8  0x00000000005853af in ExecutePlan (estate=0xc50e98, planstate=0xc510c8, operation=CMD_SELECT, numberTuples=0, direction=ForwardScanDirection, dest=0xc07008)
+    at execMain.c:1335
+#9  0x0000000000583796 in ExecutorRun (queryDesc=0xbe9150, direction=ForwardScanDirection, count=0) at execMain.c:270
+#10 0x000000000066022d in PortalRunSelect (portal=0xc08ba8, forward=1 '\001', count=0, dest=0xc07008) at pquery.c:943
+#11 0x000000000065fe7d in PortalRun (portal=0xc08ba8, count=9223372036854775807, isTopLevel=1 '\001', dest=0xc07008, altdest=0xc07008, completionTag=0x7fff622f6890 "")
+    at pquery.c:769
+#12 0x000000000065a32e in exec_simple_query (query_string=0xbcb078 "select postgis_crash();") at postgres.c:1004
+#13 0x000000000065e232 in PostgresMain (argc=4, argv=0xb360c0, username=0xb36080 "pg83") at postgres.c:3631
+#14 0x000000000061f9f2 in BackendRun (port=0xb4bce0) at postmaster.c:3207
+#15 0x000000000061efc2 in BackendStartup (port=0xb4bce0) at postmaster.c:2830
+#16 0x000000000061cb35 in ServerLoop () at postmaster.c:1274
+#17 0x000000000061c570 in PostmasterMain (argc=3, argv=0xb33310) at postmaster.c:1029
+#18 0x00000000005b61ba in main (argc=3, argv=0xb33310) at main.c:188
+(gdb)
+}}}
+
+= Using with regression tests =
+
+Sometimes there is a crash during regression tests, and it's useful to get a backtrace
+
+== Safer Instructions ==
+
+These instructions are likely better and safer.
+
+  * make staged-install # from top-level
+  * regress/run_test.pl --nodrop regress/core/geography.sql
+  * psql postgis_reg
+  * select pg_backend_pid();
+  * attach gdb to backend
+  * psql> \i regress/core/geography.sql
+
+== Simpler, perhaps less reliable approach ==
+
+When running "make test", a number of things happen, including creating some test files and creating the "postgis_reg" database and loading the working tree postgis into it.  Then, tests are run.  It would be difficult to replicate all of this in a script to run gdb.
+
+Instead, one can first run "make test", to cause all the setup to happen.   While the database is normally dropped, it is (usually?) left on failure. Then, identify the first failing test, as debugging anything after the first failure is far less likely to be useful.   Connect as "psql -d postgis_reg", and get the pid and attach gdb as above.
+
+Then, e.g.
+
+{{{
+\i regress/core/geography.sql
+}}}
+
+= Conclusion =
+
+The output from the "bt" command contains the information required by the PostGIS developers to determine the cause of the crash, so cut and paste this text unaltered into an email and send it to either the developer who requested the backtrace or the -users mailinglist if it isn't too large.

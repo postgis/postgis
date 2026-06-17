@@ -1,0 +1,76 @@
+= Submitting documentation for a new PostGIS patch =
+[DevWikiMain Back to PostGIS Dev Main]
+
+If you are submitting a patch for a new feature, keep in mind we only allow new feature patches for semi-major (minor) and major releases, not for micro releases.  So for example if the latest stable version of PostGIS is 3.4.2 then your new feature must
+go into 3.5 (or 3.6 if we've already frozen 3.5 - which happens about 1 month before release).  If you are supplying a bug fix then that can go into the next stable release.  So for example a bug fix for 3.4.2 will go into both 3.4.3 .  A bug fix that fixes further back can be provided for  any release not yet End of Lifed - e.g 3.4, 3.3, 3.2, 3.1, 3.0
+For new features, we expect documentation as part of the submission.  To document a new function, please do the following:
+  1. Make a copy of  template.xml located in trunk/doc of the PostGIS subversion repository ([https://git.osgeo.org/gitea/postgis/postgis/src/branch/master/doc/template.xml])
+  2. Fill in respective information for your new function and make sure to remove anything that is not relevant.
+     a. If its not MM compliant please remove that section, but if it is please note the MM section.
+     b. If it doesn't support curves, 3D etc., please remove that too.
+
+  3.  Make very sure in the Availability part to note the PostGIS version this is slated for and if it relies on GEOS, the minimum GEOS version required.  This is important so that it gets properly highlighted as new in the documentation and people know which version of GEOS they need to be running to have access to this function.
+  4. The refpurpose description is kind of important.  You want it to be short but very meaningful. This is the description that shows on the index pages and also
+gets added to (depending on component it is part of) : postgis_comments.sql,topology_comments.sql, raster_comments.sql -- which is what people looking at PgAdmin or help in psql see.
+
+  5.  Name your xml file accordingly e.g. mysuperfunc.xml.
+  6.  Submit this file as part of your new function patch.  We accepted patches as standard patch format or as pull requests via [CodeRepository primary] or [CodeMirrors mirrors].
+
+
+= Using the WKT imagemagick image generator to build images =
+
+As of PostGIS 1.4 documentation we have an image autogenerator -- thanks to Kevin Neufeld.  To use
+it to generate images for your examples, do the following:
+
+1. Define queries using your new function or if you want to provide images for existing then do that and be careful to make sure the generated geometries fit in a 200x200 grid otherwise they will be cropped.  Try to take up as much of the 200x200 realestate you can.
+
+2. For your query do an ST_AsText to generate the WKT output of it and save this in the image_src folder on
+doc/html/image_src with a .wkt extension prefixed with a style for each geometry. There are lots of examples to look at in that folder.
+
+
+You can have several wkts in your .wkt if you want them to be overlaid on top of each other.
+
+Below is an example:
+
+{{{
+Style1;MULTIPOINT ( 8 24, 10 92, 12 154, 17 68, 28 10, 29 52, 29 84, 55 50, 56 24, 131 14, 160 180, 189 180 )
+Style2;POINT(60.3333333333333 77.6666666666667)
+}}}
+
+
+We currently have 4 styles to pick from which are defined in the doc/html/image_src/styles.conf file.
+
+These are Default,Style1,Style1-thinline, Style2
+
+==NOTE: wkt to image generator doesn't currently handle multipolygons ==
+
+ so use
+
+{{{
+SELECT ST_AsText((ST_Dump(yourgeometryhere)).geom)
+}}}
+
+
+
+To dump out your MULTIPOLYGON into separate polygons and put on separate lines with same style
+
+3.  In the doc, where you want the image placed, give it the same name as your file except instead of
+.wkt extension use a .png.  The files when generated will end in a .png extension and be placed in the images folder.  Example of image below
+
+
+{{{
+<para>
+  <informalfigure>
+  <mediaobject>
+    <imageobject>
+    <imagedata fileref="images/st_touches02.png" />
+    </imageobject>
+
+    <caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
+  </mediaobject>
+  </informalfigure>
+</para>
+}}}
+
+
+4. Add your new images to the doc/html/image_src/Makefile.in build script

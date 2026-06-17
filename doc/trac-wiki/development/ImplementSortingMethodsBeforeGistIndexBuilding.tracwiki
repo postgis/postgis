@@ -1,0 +1,167 @@
+== Introduction ==
+=== Idea ===
+In this project, I plan to Implement pre-sorting method in z-order pattern or Hilbert order pattern to improve the performance of GiST index building period.
+
+=== Project proposal ===
+My proposal for GSoC 2021 can be found at [https://docs.google.com/document/d/1_mY_F2hPDk3vmXH5PPp2z9BuQWt-ZMORk6KxtdVQ3HY/edit?usp=sharing].
+
+'''Link to Github repository:''' [https://github.com/HanwGeek/postgis]
+
+== Timeline ==
+
+=== 17th May - 7th June===
+'''Community bonding period''':
+* I have Introduced myself over the channel and shared my proposal over the mailing list for suggestions.
+* Communicating with mentors and learned about community, working, etc. It is a great experience talking with experts in the domain.
+* Forked the repository of PostGIS [https://github.com/HanwGeek/postgis]
+* Updated wiki User page and added my personal information [https://wiki.osgeo.org/wiki/User:HanwGeek]
+* Currently understanding the codebase.
+
+=== Coding Week 1 (7th June - 13th June) ===
+'''Coding Phase ''':
+* Create sort support function bindings for `geometry` data type
+* Implement a `abbrev_convert` with the current Hilbert hash function
+* Test random point data set with sort support function
+* Communicate with mentors and the Postgres/PostGIS community for more information and help
+
+'''Plans for next week''':
+* Push current version of codes to my branch
+* Prepare more complex test data
+
+=== Coding Week 2 (14th June - 20th June) ===
+'''Coding Phase ''':
+* Fix the signature bug of sort support function
+* Test random data of 10,000 point with pre-sort support function
+* Communicate with mentors and the Postgres/PostGIS community for more information and help
+
+'''Plans for next week''':
+* Ask for the suggestion about the Hilbert function signature from PostGIS community
+* Refactor the code structure
+* Create the signature of z-order hash function
+
+=== Coding Week 3 (21th June - 27th June) ===
+'''Coding Phase ''':
+* Refactor the code structure, moving hash function to `inline` module
+* Create a pull request and receive suggestions from community and mentors
+* Finish morton hash function
+
+'''Plans for next week''':
+* Create larger random data or use real-world data for testing
+* Evaluate the stability and efficiency of hash functions
+* Searching for a more efficient hash function
+
+=== Coding Week 4 (28th June - 4th July) ===
+'''Coding Phase ''':
+* Finish hash function
+* Create `FlameGraph` for cpu time analysis
+* Prepare io access test
+
+'''Plans for next week''':
+* Check the performance of hash function in detail
+* Prepare for evaluation of performance and logic
+
+=== Coding Week 5 (5th July - 11th July) ===
+'''Coding Phase ''':
+* Check the original paper of `GiST` in details
+* Check the implement of `GiST` in Postgresql
+* Prepare for evaluation of IO access
+
+'''Plans for next week''':
+* Do the IO(buffer) access test
+* Prepare for GSoC evaluation
+* Confirm the proper hash function
+
+=== Coding Week 6 (12th July - 18th July) ===
+'''Coding Phase ''':
+* Prepare for GSoC evaluation
+* Test the IO access with `EXPLAIN`
+
+'''Plans for next week''':
+* Confirm the proper hash function
+* Do more research on hash function
+* Go deep into `GiST` in postgres
+
+=== Coding Week 7 (19th July - 25th July) ===
+'''Coding Phase ''':
+* Check the implementation of `GiST` in Postgres
+* Test the `Buffer hit` and `Execution Time` of index query performance with random data
+
+
+'''Plans for next week''':
+* Do more detailed tests to figure out the reason of performance test results
+* Modify the hash functions
+
+=== Coding Week 8 (26th July - 1st August) ===
+'''Coding Phase ''':
+* Complete the tests of `Buffer hit` and `Execution Time` of index query performance with random data
+* Write a [document](https://docs.google.com/document/d/1m4oxBAsKCyjAnYmkCmQ0X_ltiid5tliFwF3rtdzlKsc/edit?usp=sharing) with the test result
+
+
+'''Plans for next week''':
+* Connect with mentors and community for the decision of pre-sort methods
+* Check the page status of different pre-sort methods.
+
+=== Coding Week 9 (2nd August - 8th August) ===
+'''Coding Phase ''':
+* Apply `pageinspect` to debug the pre-sorting methods
+* Do more traversal tests
+* Propose a issue about `gist_page_items` function
+
+'''Plans for next week''':
+* Fix the bugs in the pages of pre-sorting methods
+* Do more detailed tests
+* Organize existing code and test cases
+
+=== Coding Week 10 (9th August - 15th August) ===
+'''Coding Phase ''':
+* Do more traversal tests
+* Fix the issue of `gist_page_items`
+
+'''Plans for next week''':
+* Submit the final evaluation
+* Finish the documents
+
+=== Final Report ===
+**Abstract**
+
+GiST(Generalized Search Tree) is a generalization data structure of a variety of disk-based height-balanced search trees. Under the high-level API of GiST, structures like b-tree, r-tree can be implemented for data management. PostgreSQL defines a set of process function APIs for elements of the GiST index. Only with these function implementations can a data type be indexed and managed by a GiST structure. In large data scenarios, pre-sorting a batch of data fetched in memory may be a local approximation to the global sorting method. Recent PostgreSQL patch shows that it should speed up the build of a GiST index after some pre-sorting of the data which needs to be indexed. In one fork, the author replaces the GIST_OPTIONS_PROC with GIST_ORDER_PROC to try to define an order for data fetched in memory to sort in order to speed up the subsequent index building process. And I implemented pre-sorting methods in z-order pattern and Hilbert order pattern, Alos tested and compared pre-sorting methods on various data.
+
+**The state of the art BEFORE your GSoC**
+
+The index building process does not change the tuple order in the page and run in a slow speed
+
+**The addition value**
+
+With the pre-sorting index, the time of building index reduce to the to one-third to one-fifth of the original
+
+**Links**
+
+* Code Base: https://github.com/postgis/postgis/pull/619
+* Wiki: https://trac.osgeo.org/postgis/wiki/ImplementSortingMethodsBeforeGistIndexBuilding
+* Test Results and Performance Comparison: https://docs.google.com/document/d/1_mY_F2hPDk3vmXH5PPp2z9BuQWt-ZMORk6KxtdVQ3HY/edit?usp=sharing
+
+**Conclusion**
+
+* The Morton/Hilbert hash function for pre-sorting can accelerate the process of index building process and reduce the time-consuming to one-third to one-fifth of the original
+* The query operation for different data in the same area demonstrates more stable performance
+* The query performance of pre-sorting is about 30% slower than the original
+
+**Future Work**
+
+* Try to figure out the reason for the slowness of the pre-sorting index
+* Implement a fast Morton/Hilbert hash function for n-dimension geometry objects
+
+[[Image(https://user-images.githubusercontent.com/25524928/130458502-313360a1-01dd-46f0-8ca7-e9cf0147ee6c.png)]]
+
+== Student's Biography ==
+My name is Han WANG. I am a first year graduate student majoring in GIS at Peking University, and will get my Master's degree in 2023. And this is my github(https://github.com/HanwGeek) and my linkedin(https://www.linkedin.com/in/hanwgeek/). I am interested in all cool things. And it is very exciting to join the open source community! My research interest includes massive spatial temporal data management and analysis. Currently, I am working on a machine learning project based on big trajectory data, which is stored in PostgreSQL database and managed by PostGIS.
+
+
+== Mentors ==
+*Regina Obe [https://wiki.osgeo.org/wiki/User:Robe]
+*Giuseppe Broccolo
+
+
+
+
+[[Category: Google Summer of Code]]

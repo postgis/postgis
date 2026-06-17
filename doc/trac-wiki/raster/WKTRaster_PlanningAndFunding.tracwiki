@@ -1,0 +1,72 @@
+= PostGIS Raster Planning and Funding =
+{{{
+#!div style='background-color: #F4F4F4; padding: 5px; border: 1px solid gray; float: right; margin-left: 5px; width: 260px; font-size: small;' >
+
+'''Quick Links'''
+
+ * [wiki:WKTRaster PostGIS Raster Home Page]
+
+ * [wiki:WKTRaster/SpecificationWorking03 Working Specifications for Future Versions]
+
+ * [wiki:WKTRaster/Documentation01 Documentation]
+
+}}}
+[[TOC]]
+
+This is the development page of [wiki:WKTRaster PostGIS Raster] - a project extending PostGIS engine with raster support.
+
+'''Need more PostGIS Raster features? -''' If you need support for raster in [http://www.postgresql.org/ PostgreSQL] or you have to do raster/vector operations, help us develop PostGIS Raster! PostGIS Raster development is a work in progress. Each slice of 2000$ will bring new functions in!
+
+'''Time or Money -''' You can contribute with money or developer time (!DevTime). Contributing give you the opportunity to have a word to say on the development priorities and on the schedule.
+
+Coders have to be experienced C developer with a minimal object oriented database development experience. There are some developers out there willing to offer their services to implement your needs.
+
+'''Expectations -''' We expect that contributors will:
+
+ * Try to follow the roadmap or at least arrange it to fit their particular needs as much as possible in accordance with the existing roadmap. The planning is divided into coherent groups of tasks. We are very flexible on modifying the content of those groups.
+ * Contribute to the specifications in order to come to an agreement on how things should be done and to keep track of what's done. Specifications of the intented development should be described in the Specifications page and submited to the postgis-devel mailing list for comments before starting development. Ask [http://www.cef-cfr.ca/index.php?n=Membres.PierreRacine Pierre Racine] to get write access to the specification page.
+ * Contribute to the Documentation as much as they can to make sure we produce a coherent and a professional open source product. Specifications should details the new functionality and be written so they can be used as a reference to document the new feature.
+
+'''Advices to developers -''' We can assure degree of quality with obeying basic rules and development cycle process, most of them are easily executable:
+
+ 1. If you add new C API function, always add test case for it in test/core.
+ 1. If you add new SQL function, always add test case for it in test/regress.
+ 1. Always do full build of PostGIS Raster before commit (with new tests included).
+ 1. Always run all PostGIS Raster unit tests before commit (with new tests included).
+ 1. Do not commit anything if any of the two occurs: a) PostGIS Raster build failed b) PostGIS Raster tests failed.
+ 1. Try to do full rebuild and full tests run of all related components: GEOS + PostGIS + PostGIS Raster.
+ 1. Frequently check if PostGIS Raster build is "green" in the very our :-) Hudson bay http://office.refractions.net:1500/view/WKTRaster/
+ 1. Don't worry if something got broken after a commit. A broken code is a daily bread and errors are valuable. Just don't let buggy commits to accumulate, but fix as soon as first error is spotted.
+ 1. Adding new test cases are the only time consuming element, but even a very simple test is worth (i.e. test/regress/rt_box2d.sql)
+
+
+'''Objectives & Tasks -''' are arranged into coherent groups: Similar functions together and dependencies first.
+
+== Developers having worked or available for future work on the project ==
+
+PostGIS Raster development team members with officially allocated tasks:
+
+ * [http://mateusz.loskot.net/ Mateusz Loskot] (ML) at [http://cadcorp.com/ Cadcorp]
+ * [http://www.cef-cfr.ca/index.php?n=Membres.PierreRacine Pierre Racine] (PR) at [http://www.ulaval.com/ University Laval]
+ * [http://foo.keybit.net/~strk/ Sandro Santilli] (SS)
+ * [http://gis4free.wordpress.com Jorge Arévalo] (JA) at [http://www.deimos-space.com/UK/index.asp?lang=UK Deimos Space]
+ * [http://cvec.ucdavis.edu/eait Bborie Park] (BP) at [http://cvec.ucdavis.edu/ the Center for Vectorborne Diseases]
+ * [http://wiki.osgeo.org/wiki/User:Dzwarg David Zwarg] (DZ) at ([http://www.azavea.com/ Azavea, Inc.])
+
+Unofficial PostGIS Raster development members with unofficially allocated tasks:
+
+ * [http://wiki.osgeo.org/wiki/User:Robe Regina Obe] (RO) at ([http://www.paragoncorporation.com/team.aspx Paragon Corporation])
+
+== Funding Contributors ==
+
+Prime financial contributors who established development of the PostGIS Raster project:
+
+ * [http://www.cef-cfr.ca/index.php?n=Membres.StevenGCumming Steve Cumming] (SC), ([http://www.sbf.ulaval.ca/index.php?id=930 University Laval]): All of Pierre Racine's time (from June 2008 up to July 2012).
+ * [http://blog.lostinspatial.com/ Martin Daly] (MD), ([http://cadcorp.com/ Cadcorp]):  All of Mateusz Loskot's time (about six months up to june 2009).
+ * [http://wiki.mtri.org/display/mtripub/tyler+erickson/ Tyler Erickson] (TE), ([http://mtri.org/ Michigan Tech Research Institute]): $1200 USD
+ * [http://www.deimos-space.com/UK/index.asp?lang=UK DEIMOS Space] (DS): All of Jorge Arevalo time (about two year up to June 2011).
+ * [http://cvec.ucdavis.edu/ Center for Vectorborne Diseases] at UC Davis (UC): All of Bborie Park time (from March 2010 up to July 2012).
+
+== !RoadMap ==
+
+ The !RoadMap is now [wiki:WKTRaster/SpecificationWorking03 in the specification page].

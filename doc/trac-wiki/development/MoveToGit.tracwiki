@@ -1,0 +1,27 @@
+= RFC-6: Move to GIT =
+||Date:|| 2019/10/27||
+||Author:|| Regina Obe||
+||Last Edited:|| 2019/10/27||
+||Last Updated By: || Regina Obe <lr at pcorp dot us> ||
+||Status:|| Approved||
+
+As noted on https://lists.osgeo.org/pipermail/postgis-devel/2019-October/028199.html and https://lists.osgeo.org/pipermail/postgis-devel/2019-October/028184.html we all voted to move to Git and have Gitea as our master Git repo.
+We will still have a git mirror on github and gitlab and allow pull requests on github, gitlab, and gitea.
+Trac will still be our issue tracker for now and repointed to GIT.
+
+Regina Obe and Sandro Santilli will be responsible for the move.
+
+This document is to outline the steps we'll be doing to move from SVN to git.
+
+* Upgrade gitea to latest 1.9.4 (done)
+* Upgrade trac to latest 1.4 (in progess - have upgraded on https://dev.trac.osgeo.org/postgis to test to see if any issues)
+   * Markus Neteler noticed the SectionEditor Plugin is missing in 1.4 which is something most of our trac instances use. He said would be nice to have it but we could try to patch or live without it.
+   * Verify Email notifications are working in new trac version
+* Change all the svn references in trac tickets to corresponding git references
+* Change trac repo pointing to git repo instead of svn repo [done]
+* Restrict access to SVN [done]
+* Change mirroring from svn-git to git-git (with github and gitlab mirroring from gitea)  [done]
+* Move git mirroring logic to an osgeo server (from strk's personal computer or possibly set up as gitlab pulls from gitea and feeds to github)
+* Make sure debbie and winnie have their master switched to master (from svn-trunk) [done]
+* Upgrade dronie (new version has cancel obsolete trees)
+* Update [[DevWikiComitGuidelines|Committer Guidelines]]

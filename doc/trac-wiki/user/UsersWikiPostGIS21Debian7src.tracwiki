@@ -1,0 +1,58 @@
+= How to install PostGIS 2.1 on Debian 7.x (''wheezy'') from source =
+
+== Prerequisites ==
+Several components are needed, which can either be built from source or installed from pre-built packages, as shown below.
+
+Install prerequisite packages using:
+{{{
+sudo apt-get install build-essential postgresql-9.1 postgresql-server-dev-9.1 libxml2-dev libgdal-dev libproj-dev libjson0-dev xsltproc docbook-xsl docbook-mathml
+}}}
+
+=== Build GEOS 3.4.x ===
+PostGIS 2.1 is best used with GEOS >= 3.4 for several new features, however Debian wheezy only has GEOS 3.3.3 available in packages, so it needs to be built from source. If you don't need the new features, instead install the {{{libgeos-dev}}} package.
+
+There are multiple ways to build GEOS, but this is the simplest:
+{{{
+wget http://download.osgeo.org/geos/geos-3.4.2.tar.bz2
+tar xfj geos-3.4.2.tar.bz2
+cd geos-3.4.2
+./configure
+make
+sudo make install
+cd ..
+}}}
+
+== Build PostGIS ==
+{{{
+wget http://download.osgeo.org/postgis/source/postgis-2.1.8.tar.gz
+tar xfz postgis-2.1.8.tar.gz
+cd postgis-2.1.8
+}}}
+
+A basic configuration for PostGIS 2.1, with raster and topology support:
+{{{
+./configure
+make
+sudo make install
+sudo ldconfig
+sudo make comments-install
+}}}
+
+Lastly, enable the command-line tools to work from your shell:
+{{{
+sudo ln -sf /usr/share/postgresql-common/pg_wrapper /usr/local/bin/shp2pgsql
+sudo ln -sf /usr/share/postgresql-common/pg_wrapper /usr/local/bin/pgsql2shp
+sudo ln -sf /usr/share/postgresql-common/pg_wrapper /usr/local/bin/raster2pgsql
+}}}
+
+== Spatially enabling a database ==
+
+Connect to your database using pgAdminIII or psql, and use the commands to add the PostgreSQL extensions. To add PostGIS with raster support:
+{{{
+CREATE EXTENSION postgis;
+}}}
+
+To add topology support, a second extension can be created on the database:
+{{{
+CREATE EXTENSION postgis_topology;
+}}}

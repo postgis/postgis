@@ -1,0 +1,74 @@
+= PostGIS FAQ =
+
+Frequently Asked Questions about PostGIS extension.
+
+[[TOC(depth=2, noheading, inline)]]
+
+== What EPSG code should I use for my data? ==
+If you have a .prj file, go to http://epsg2prj.org/ and plug it into the form. If you don't have a .prj file, go to http://epsg2prj.org/ or http://spatialreference.org/ and plug the name of your region into the search form and see what options are suggested.
+
+== How do I do a hard-upgrade from PostGIS 1.+ to PostGIS 2.0 on Windows? ==
+Refer to these instructions [UsersWikiWinUpgrade Upgrade to Latest version of PostGIS]
+
+== PostgreSQL Can't install under Windows Vista ==
+Refer to these instructions [UsersWikiWinVista Issues with installing under Windows Vista]
+
+== How to create geometry from hex-encoded Well-Known-Binary string using SQL? ==
+
+This is two-steps operation which can be executed in single [http://www.postgresql.org/docs/8.3/static/sql-commands.html SQL] statement. The steps include:
+ * Convert [http://postgis.refractions.net/documentation/manual-svn/ch04.html Well-Known-Binary] data in hexadecimal string form to raw binary using PostgreSQL function [http://www.postgresql.org/docs/8.3/static/functions-binarystring.html decode].
+ * Construct geometry object from WKB in raw binary form.
+
+Example:
+
+{{{
+#!sql
+=# SELECT ST_AsText(ST_GeomFromWKB(decode('0101000000e5d022dbf93e2e40dbf97e6abc743540', 'hex'), -1));
+      st_astext
+----------------------
+ POINT(15.123 21.456)
+}}}
+
+== How to write geometry Well-Known-Binary to hex-encoded string? ==
+
+First, query for geometry object in [http://postgis.refractions.net/documentation/manual-svn/ch04.html Well-Known-Binary] format using [http://postgis.refractions.net/documentation/manual-svn/ST_AsBinary.html ST_AsBinary] function. Then, [http://www.postgresql.org/docs/8.3/static/functions-binarystring.html encode] raw WKB to hex string.
+
+Examples:
+
+ * selecting geometry from table:
+
+{{{
+#!sql
+# SELECT encode(ST_AsBinary(the_geom), 'hex');
+                   encode
+--------------------------------------------
+ 0101000000e5d022dbf93e2e40dbf97e6abc743540
+}}}
+
+ * constructing geometry in-place from given Well-Known-Text:
+
+{{{
+#!sql
+# SELECT encode(ST_AsBinary(ST_GeomFromText('POINT(15.123 21.456)', -1)), 'hex');
+                   encode
+--------------------------------------------
+ 0101000000e5d022dbf93e2e40dbf97e6abc743540
+}}}
+
+== When were the ST_* functions first added to match the SQL-MM-centric convention? ==
+
+As of PostGIS 1.3 the renaming has been in effect, as the '''1.3 tag''' is the first appearance of ST_ prefixed functions in source:tags/1.3.0/lwgeom/lwpostgis.sql.in
+
+Therefore, non-prefixed functions (with ST_* equivalents) are '''deprecated''', and since the 1.3 release may not be maintained in the same way as the official ST_* functions, so '''don't expect them to work the same'''.
+
+For example only `ST_AsBinary` has been upgraded to work with the new `geography` type because `AsBinary` should not be being used anymore.
+
+Application developers should consider upgrading their code to use ST_* functions as soon as possible, therefore requiring at least PostGIS >=1.3.
+
+As Background: The official PostGIS documentation [http://postgis.refractions.net/docs/reference.html states that] most functions have been renamed and "The non ST_ functions not listed in this documentation are deprecated and will be removed in a future release so STOP USING THEM."
+
+== Why don't ST_Interects and ST_Intersection return consistent results? ==
+
+Commonly, if you intersect two lines to get a point using ST_Intersection you will find that the point does not ST_Intersect either of the originating lines. This seems very inconsistent! However, you must bear in mind that numbers in a computer are not the "real numbers" of mathematics, but double-precision numbers with 64-bit storage. So the derived point may not fall exactly on the line connecting the vertices of the original line, but slightly to one side or the other, to fix into the grid of real numbers that are representable in double precision.
+
+Less commonly, you may find two features that return true for ST_Intersects, but return an EMPTY geometry for ST_Intersection. This is because ST_Intersects is slightly more precise than ST_Intersection, so ST_Intersects is detecting an interaction, but ST_Intersection is unable to compute the intersection point.

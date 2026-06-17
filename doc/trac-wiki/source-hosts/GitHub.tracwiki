@@ -1,0 +1,10 @@
+The PostGIS source tree on !GitHub (https://github.com/postgis/postgis) is a [CodeMirrors mirror] of the [CodeRepository official repository].
+
+To get the source from !GitHub, and start a configure:
+{{{
+git clone https://github.com/postgis/postgis.git
+cd postgis
+./autogen.sh
+./configure
+}}}
+To fork PostGIS to !GitHub to modify and test new features, follow the guideline [https://help.github.com/articles/fork-a-repo Fork A Repo].

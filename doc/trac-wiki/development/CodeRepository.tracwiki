@@ -1,0 +1,15 @@
+The official PostGIS code repository is a git repository hosted on
+OSGeo ​Gitea instance (​https://gitea.osgeo.org/postgis/postgis).
+
+To get the source from main repo, and start a configure:
+{{{
+git clone https://gitea.osgeo.org/postgis/postgis.git
+cd postgis
+./autogen.sh
+./configure
+}}}
+
+If you would like to submit pull requests via the main repo, you will first need an
+[[https://id.osgeo.org/ldap/create|OSGeo LDAP ID]]
+
+A number of CodeMirrors do exist for users and contributor's convenience.

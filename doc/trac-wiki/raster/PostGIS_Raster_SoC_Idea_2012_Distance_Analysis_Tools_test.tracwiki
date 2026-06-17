@@ -1,0 +1,499 @@
+[[BR]]
+= ST_EuclideanDistance() TEST =
+[[BR]]
+{{{
+#!html
+<div style='background-color: #F4F4F4; border: 1px solid gray; width:800px;' >
+<br>
+<UL>
+<LI><A href=http://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/test#TestingEnvironment:>Testing Environment</A></LI>
+<LI><A href=http://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/test#Test0>Test 0: NULL raster; Empty raster Test</A></LI>
+<LI><A href=http://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/test#Test1>Test 1: Small number of sources vs low resolution raster: (Source: 10 points, Raster: 10x10)</A></LI>
+<LI><A href=http://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/test#Test2>Test 2: Small number of sources vs high resolution raster:(Source: 10 points, Raster: 300x300)</A></LI>
+<LI><A href=http://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/test#Test3>Test 3: Large number of sources vs high resolution raster:(Source: 1000 points, Raster: 300x300)</A></LI>
+<LI><A href=http://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/test#Test4>Test 4: Performance test</A></LI>
+<LI><A href=http://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/test#Test5>Test 5: Very large size source points vs very high resolution raster</A></LI>
+</UL>
+<br>
+</div>
+}}}
+[[BR]]
+----
+[[BR]]
+== Testing Environment: ==
+ CPU: Intel Pentium 4, 3.00GHz[[BR]]
+ RAM: 2.00G[[BR]]
+ OS: MS Windows XP Professional 2002 SP 3[[BR]]
+ PostgreSQL 9.1[[BR]]
+ PostGIS 2.1.0SVN[[BR]]
+[[BR]]
+----
+[[BR]]
+== Test 0 ==
+{{{
+#!sql
+CREATE TABLE test_source_raster_0 AS SELECT 1 AS rid,rast FROM (SELECT ST_MakeEmptyRaster(10,10,0,0,1,1,0,0,4326) AS rast)foo;
+CREATE TABLE test_source_geometry_0 AS SELECT generate_series(1,10) AS id,ST_RandomPoints(the_geom,10) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_source_raster_0)foo;
+CREATE TABLE test_ref_raster_0 AS SELECT 1 AS rid,rast FROM (SELECT ST_MakeEmptyRaster(10,10,0,0,1,1,0,0,4326) AS rast)foo;
+}}}
+
+ * 0-a: Test NULL Raster. Should be true.
+{{{
+#!sql
+SELECT ST_EuclideanDistance(NULL,NULL,'public','test_source_geometry_0','the_geom',False) IS NULL FROM test_ref_raster_0;
+}}}
+
+ * 0-b: Test Empty Raster. Should be true.
+{{{
+#!sql
+SELECT ST_IsEmpty(ST_EuclideanDistance(0,10,0,0,1,1,0,0,4326,-999,'32BF','public','test_source_geometry_0','the_geom',False));
+}}}
+----
+== Test 1 ==
+=== Small number of sources vs low resolution raster: (Source: 10 points, Raster: 10x10) ===
+ * 1-a: Source geometry within the extent of the desired raster:[[BR]]
+{{{
+#!sql
+CREATE TABLE test_source_raster_1 AS SELECT 1 AS rid,rast FROM (SELECT ST_MakeEmptyRaster(10,10,0,0,1,1,0,0,4326) AS rast)foo;
+CREATE TABLE test_source_geometry_1 AS SELECT generate_series(1,10) AS id,ST_RandomPoints(the_geom,10) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_source_raster_1)foo;
+CREATE TABLE test_ref_raster_1 AS SELECT 1 AS rid,rast FROM (SELECT ST_MakeEmptyRaster(10,10,0,0,1,1,0,0,4326) AS rast)foo;
+}}}
+  * 1-a-i: Generate Euclidean Distance from a one-band reference raster
+   * 1-a-i-1: Snap is True; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_a_i_1 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_1','the_geom',True) AS rast FROM test_ref_raster_1);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_1_a_i_1.gif)]][[BR]]
+   * 1-a-i-2: Snap is True; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_a_i_2 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_1','the_geom',True,4) AS rast FROM test_ref_raster_1);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_1_a_i_2.gif)]][[BR]]
+   * 1-a-i-3: Snap is False; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_a_i_3 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_1','the_geom',False) AS rast FROM test_ref_raster_1);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_1_a_i_3.gif)]][[BR]]
+   * 1-a-i-4: Snap is False; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_a_i_4 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_1','the_geom',False,4) AS rast FROM test_ref_raster_1);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_1_a_i_4.gif)]][[BR]]
+  * 1-a-ii: Generate Euclidean Distance from a set of raster specifications:
+   * 1-a-ii-1: Snap is True; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_a_ii_1 AS (SELECT 1 AS rid,ST_EuclideanDistance(10,10,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_1','the_geom',True) AS rast);
+}}}
+    result: same as test_eudist_1_a_i_1.gif[[BR]][[BR]]
+   * 1-a-ii-2: Snap is True; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_a_ii_2 AS (SELECT 1 AS rid,ST_EuclideanDistance(10,10,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_1','the_geom',True,4) AS rast);
+}}}
+    result: same as test_eudist_1_a_i_2.gif[[BR]][[BR]]
+   * 1-a-ii-3: Snap is False; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_a_ii_3 AS (SELECT 1 AS rid,ST_EuclideanDistance(10,10,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_1','the_geom',False) AS rast);
+}}}
+    result: same as test_eudist_1_a_i_3.gif[[BR]][[BR]]
+   * 1-a-ii-4: Snap is False; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_a_ii_4 AS (SELECT 1 AS rid,ST_EuclideanDistance(10,10,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_1','the_geom',False,4) AS rast);
+}}}
+    result: same as test_eudist_1_a_i_4.gif[[BR]][[BR]]
+[[BR]]
+ * 1-b: Source geometry completely outside of the extent of the desired raster:
+{{{
+#!sql
+CREATE TABLE test_source_raster_1_b AS SELECT 1 AS rid,rast FROM (SELECT ST_MakeEmptyRaster(10,10,-10,-12,1,1,0,0,4326) AS rast)foo;
+CREATE TABLE test_source_geometry_1_b AS SELECT generate_series(1,10) AS id,ST_RandomPoints(the_geom,10) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_source_raster_1_b)foo;
+}}}
+  * 1-b-i: Generate Euclidean Distance from a one-band reference raster:
+   * 1-b-i-1: Snap is True; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_b_i_1 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_1_b','the_geom',True) AS rast FROM test_ref_raster_1);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_1_b_i_1.gif)]][[BR]]
+   * 1-b-i-2: Snap is True; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_b_i_2 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_1_b','the_geom',True,15) AS rast FROM test_ref_raster_1);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_1_b_i_2.gif)]][[BR]]
+   * 1-b-i-3: Snap is False; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_b_i_3 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_1_b','the_geom',False) AS rast FROM test_ref_raster_1);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_1_b_i_3.gif)]][[BR]]
+   * 1-b-i-4: Snap is False; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_b_i_4 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_1_b','the_geom',False,15) AS rast FROM test_ref_raster_1);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_1_b_i_4.gif)]][[BR]]
+  * 1-b-ii: Generate Euclidean Distance from a set of raster specifications:
+   * 1-b-ii-1: Snap is True; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_b_ii_1 AS (SELECT 1 AS rid,ST_EuclideanDistance(10,10,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_1_b','the_geom',True) AS rast);
+}}}
+    result: same as test_eudist_1_b_i_1.gif[BR]][[BR]]
+   * 1-b-ii-2: Snap is True; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_b_ii_2 AS (SELECT 1 AS rid,ST_EuclideanDistance(10,10,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_1_b','the_geom',True,15) AS rast);
+}}}
+    result: same as test_eudist_1_b_i_2.gif[BR]][[BR]]
+   * 1-b-ii-3: Snap is False; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_b_ii_3 AS (SELECT 1 AS rid,ST_EuclideanDistance(10,10,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_1_b','the_geom',False) AS rast);
+}}}
+    result: same as test_eudist_1_b_i_3.gif[BR]][[BR]]
+   * 1-b-ii-4: Snap is False; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_b_ii_4 AS (SELECT 1 AS rid,ST_EuclideanDistance(10,10,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_1_b','the_geom',False,15) AS rast);
+}}}
+    result: same as test_eudist_1_b_i_4.gif[BR]][[BR]]
+[[BR]]
+  * 1-c: Source geometry partially outside of the extent of the desired raster:
+{{{
+#!sql
+CREATE TABLE test_source_raster_1_c AS SELECT 1 AS rid,rast FROM (SELECT ST_MakeEmptyRaster(10,10,-5,-2,1,1,0,0,4326) AS rast)foo;
+CREATE TABLE test_source_geometry_1_c AS SELECT generate_series(1,10) AS id,ST_RandomPoints(the_geom,10) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_source_raster_1_c)foo;
+}}}
+   * 1-c-i: Generate Euclidean Distance from a one-band reference raster:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_c_i_1 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_1_c','the_geom',True) AS rast FROM test_ref_raster_1);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_1_c_i_1.gif)]][[BR]]
+   * 1-c-i-2: Snap is True; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_c_i_2 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_1_c','the_geom',True,6) AS rast FROM test_ref_raster_1);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_1_c_i_2.gif)]][[BR]]
+   * 1-c-i-3: Snap is False; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_c_i_3 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_1_c','the_geom',False) AS rast FROM test_ref_raster_1);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_1_c_i_3.gif)]][[BR]]
+   * 1-c-i-4: Snap is False; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_c_i_4 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_1_c','the_geom',False,6) AS rast FROM test_ref_raster_1);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_1_c_i_4.gif)]][[BR]]
+
+  * 1-c-ii: Generate Euclidean Distance from a set of raster specifications:
+   * 1-c-ii-1: Snap is True; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_c_ii_1 AS (SELECT 1 AS rid,ST_EuclideanDistance(10,10,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_1_c','the_geom',True) AS rast);
+}}}
+    result: same as test_eudist_1_c_i_1.gif[BR]][[BR]]
+   * 1-c-ii-2: Snap is True; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_c_ii_2 AS (SELECT 1 AS rid,ST_EuclideanDistance(10,10,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_1_c','the_geom',True,6) AS rast);
+}}}
+    result: same as test_eudist_1_c_i_2.gif[BR]][[BR]]
+   * 1-c-ii-3: Snap is False; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_c_ii_3 AS (SELECT 1 AS rid,ST_EuclideanDistance(10,10,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_1_c','the_geom',False) AS rast);
+}}}
+    result: same as test_eudist_1_c_i_3.gif[BR]][[BR]]
+   * 1-c-ii-4: Snap is False; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_1_c_ii_4 AS (SELECT 1 AS rid,ST_EuclideanDistance(10,10,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_1_c','the_geom',False,6) AS rast);
+}}}
+    result: same as test_eudist_1_c_i_4.gif[BR]][[BR]]
+[[BR]][[BR]]
+
+----
+'''NOTICE:'''
+'''Cases of source point geometries OUTSIDE of the extent of the desired raster will NOT be tested for the following tests'''
+----
+== Test 2 ==
+=== Small number of sources vs high resolution raster:(Source: 10 points, Raster: 300x300) ===
+{{{
+#!sql
+CREATE TABLE test_ref_raster_2 AS SELECT 1 AS rid,rast FROM (SELECT ST_MakeEmptyRaster(300,300,0,0,1,1,0,0,4326) AS rast)foo;
+CREATE TABLE test_source_geometry_2 AS SELECT generate_series(1,10) AS id,ST_RandomPoints(the_geom,10) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_ref_raster_2)foo;
+CREATE INDEX test_source_geometry_2_gist_idx ON test_source_geometry_2 USING GIST (the_geom);
+}}}
+ * 2-a: Generate Euclidean Distance from a one-band reference raster
+  * 2-a-1: Snap is True; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_2_a_1 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_2','the_geom',True) AS rast FROM test_ref_raster_2);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_2_a.gif)]][[BR]]
+  * 2-a-2: Snap is True; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_2_a_2 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_2','the_geom',True,125) AS rast FROM test_ref_raster_2);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_2_a_2.gif)]][[BR]]
+  * 2-a-3: Snap is False; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_2_a_3 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_2','the_geom',False) AS rast FROM test_ref_raster_2);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_2_a_3.gif)]][[BR]]
+  * 2-a-4: Snap is False; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_2_a_4 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_2','the_geom',False,) AS rast FROM test_ref_raster_2);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_2_a_4.gif)]][[BR]]
+ * 2-b: Generate Euclidean Distance from a set of raster specifications:
+  * 2-b-1: Snap is True; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_2_b_1 AS (SELECT 1 AS rid,ST_EuclideanDistance(300,300,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_2','the_geom',True) AS rast);
+}}}
+    result: same as test_eudist_2_a.gif[[BR]]
+  * 2-b-2: Snap is True; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_2_b_2 AS (SELECT 1 AS rid,ST_EuclideanDistance(300,300,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_2','the_geom',True,125) AS rast);
+}}}
+    result: same as test_eudist_2_a_2.gif[[BR]]
+  * 2-b-3: Snap is False; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_2_b_3 AS (SELECT 1 AS rid,ST_EuclideanDistance(300,300,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_2','the_geom',False) AS rast);
+}}}
+    result: same as test_eudist_2_a_3.gif[[BR]]
+  * 2-b-4: Snap is False; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_2_b_4 AS (SELECT 1 AS rid,ST_EuclideanDistance(300,300,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_2','the_geom',False,125) AS rast);
+}}}
+    result: same as test_eudist_2_a_4.gif[[BR]]
+[[BR]]
+----
+== Test 3 ==
+=== Large number of sources vs high resolution raster:(Source: 1000 points, Raster: 300x300) ===
+{{{
+#!sql
+CREATE TABLE test_ref_raster_3 AS SELECT 1 AS rid,rast FROM (SELECT ST_MakeEmptyRaster(300,300,0,0,1,1,0,0,4326) AS rast)foo;
+CREATE TABLE test_source_geometry_3 AS SELECT generate_series(1,1000) AS id,ST_RandomPoints(the_geom,1000) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_ref_raster_3)foo;
+CREATE INDEX test_source_geometry_3_gist_idx ON test_source_geometry_3 USING GIST (the_geom);
+}}}
+ * 3-a: Generate Euclidean Distance from a one-band reference raster:
+  * 3-a-1: Snap is True; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_3_a_1 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_3','the_geom',True) AS rast FROM test_ref_raster_3);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_3_a_1.gif)]][[BR]][[BR]]
+    result zoom in:[[BR]][[BR]]
+    [[Image(test_eudist_3_a_1_zoomin.gif)]][[BR]]
+  * 3-a-2: Snap is True; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_3_a_2 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_3','the_geom',True,12) AS rast FROM test_ref_raster_3);
+}}}
+  * 3-a-3: Snap is False; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_3_a_3 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_3','the_geom',False) AS rast FROM test_ref_raster_3);
+}}}
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_3_a_3.gif)]][[BR]][[BR]]
+    result zoom in:[[BR]][[BR]]
+    [[Image(test_eudist_3_a_3_zoomin.gif)]][[BR]]
+  * 3-a-4: Snap is False; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_3_a_4 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_3','the_geom',False,12) AS rast FROM test_ref_raster_3);
+}}}
+ * 3-b: Generate Euclidean Distance from a set of raster specifications:
+  * 3-b-1: Snap is True; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_3_b_1 AS (SELECT 1 AS rid,ST_EuclideanDistance(300,300,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_3','the_geom',True) AS rast FROM test_ref_raster_3);
+}}}
+  * 3-b-2: Snap is True; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_3_b_2 AS (
+..........SELECT 1 AS rid,ST_EuclideanDistance(300,300,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_3','the_geom',True,12) AS rast FROM test_ref_raster_3);
+}}}
+  * 3-b-3: Snap is False; Max distance NOT specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_3_b_3 AS (SELECT 1 AS rid,ST_EuclideanDistance(300,300,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_3','the_geom',False) AS rast FROM test_ref_raster_3);
+}}}
+  * 3-b-4: Snap is False; Max distance is specified:
+{{{
+#!sql
+CREATE TABLE test_eudist_3_b_4 AS (SELECT 1 AS rid,ST_EuclideanDistance(300,300,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_3','the_geom',False,12) AS rast FROM test_ref_raster_3);
+}}}
+[[BR]]
+----
+== Test 4 ==
+=== Performance Test ===
+[[BR]]
+||Raster:||300x300||
+||Source Points||Execution Time (ms)||
+||100||122325||
+||1,000||132139||
+||5,000||126652||
+||10,000||143764||
+||20,000||120016||
+||40,000||169386||
+||80,000||164385||
+||160,000||160800||
+||320,000||204460||
+||640,000||168992||
+[[BR]]
+{{{
+#!sql
+CREATE TABLE test_ref_raster_4 AS SELECT 1 AS rid,rast FROM (SELECT ST_MakeEmptyRaster(300,300,0,0,1,1,0,0,4326) AS rast)foo;
+}}}
+ * 4-a: Source: 100 points; Raster: 300x300
+{{{
+#!sql
+CREATE TABLE test_source_geometry_4_a AS SELECT generate_series(1,100) AS id,ST_RandomPoints(the_geom,100) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_ref_raster_4)foo;
+CREATE INDEX test_source_geometry_4_a_gist_idx ON test_source_geometry_4_a USING GIST (the_geom);
+CREATE TABLE test_eudist_4_a AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_4_a','the_geom',True) AS rast FROM test_ref_raster_4);
+}}}
+   122325 ms execution time.
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_4_a.gif)]][[BR]]
+ * 4-b: Source: 1,000 points; Raster: 300x300
+{{{
+#!sql
+CREATE TABLE test_source_geometry_4_b AS SELECT generate_series(1,1000) AS id,ST_RandomPoints(the_geom,1000) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_ref_raster_4)foo;
+CREATE INDEX test_source_geometry_4_b_gist_idx ON test_source_geometry_4_b USING GIST (the_geom);
+CREATE TABLE test_eudist_4_b AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_4_b','the_geom',True) AS rast FROM test_ref_raster_4);
+}}}
+   132139 ms execution time.
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_4_b.gif)]][[BR]][[BR]]
+ * 4-c: Source: 5,000 points; Raster: 300x300
+{{{
+#!sql
+CREATE TABLE test_source_geometry_4_c AS SELECT generate_series(1,5000) AS id,ST_RandomPoints(the_geom,5000) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_ref_raster_4)foo;
+CREATE INDEX test_source_geometry_4_c_gist_idx ON test_source_geometry_4_c USING GIST (the_geom);
+CREATE TABLE test_eudist_4_c AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_4_c','the_geom',True) AS rast FROM test_ref_raster_4);
+}}}
+   126652 ms execution time.
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_4_c.gif)]][[BR]][[BR]]
+ * 4-d: Source: 10,000 points; Raster: 300x300
+{{{
+#!sql
+CREATE TABLE test_source_geometry_4_d AS SELECT generate_series(1,10000) AS id,ST_RandomPoints(the_geom,10000) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_ref_raster_4)foo;
+CREATE INDEX test_source_geometry_4_d_gist_idx ON test_source_geometry_4_d USING GIST (the_geom);
+CREATE TABLE test_eudist_4_d AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_4_d','the_geom',True) AS rast FROM test_ref_raster_4);
+}}}
+   143764 ms execution time.
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_4_d.gif)]][[BR]][[BR]]
+ * 4-e: Source: 20,000 points; Raster: 300x300
+{{{
+#!sql
+CREATE TABLE test_source_geometry_4_e AS SELECT generate_series(1,20000) AS id,ST_RandomPoints(the_geom,20000) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_ref_raster_4)foo;
+CREATE INDEX test_source_geometry_4_e_gist_idx ON test_source_geometry_4_e USING GIST (the_geom);
+CREATE TABLE test_eudist_4_e AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_4_e','the_geom',True) AS rast FROM test_ref_raster_4);
+}}}
+   120016 ms execution time.
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_4_e.gif)]][[BR]][[BR]]
+ * 4-f: Source: 40,000 points; Raster: 300x300
+{{{
+#!sql
+CREATE TABLE test_source_geometry_4_f AS SELECT generate_series(1,40000) AS id,ST_RandomPoints(the_geom,40000) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_ref_raster_4)foo;
+CREATE INDEX test_source_geometry_4_f_gist_idx ON test_source_geometry_4_f USING GIST (the_geom);
+CREATE TABLE test_eudist_4_f AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_4_f','the_geom',True) AS rast FROM test_ref_raster_4);
+}}}
+   169386 ms execution time.
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_4_f.gif)]][[BR]][[BR]]
+ * 4-g: Source: 80,000 points; Raster: 300x300
+{{{
+#!sql
+CREATE TABLE test_source_geometry_4_g AS SELECT generate_series(1,80000) AS id,ST_RandomPoints(the_geom,80000) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_ref_raster_4)foo;
+CREATE INDEX test_source_geometry_4_g_gist_idx ON test_source_geometry_4_g USING GIST (the_geom);
+CREATE TABLE test_eudist_4_g AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_4_g','the_geom',True) AS rast FROM test_ref_raster_4);
+}}}
+   164385 ms execution time.
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_4_g.gif)]][[BR]][[BR]]
+ * 4-h: Source: 160,000 points; Raster: 300x300
+{{{
+#!sql
+CREATE TABLE test_source_geometry_4_h AS SELECT generate_series(1,160000) AS id,ST_RandomPoints(the_geom,160000) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_ref_raster_4)foo;
+CREATE INDEX test_source_geometry_4_h_gist_idx ON test_source_geometry_4_h USING GIST (the_geom);
+CREATE TABLE test_eudist_4_h AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_4_h','the_geom',True) AS rast FROM test_ref_raster_4);
+}}}
+   160800 ms execution time.
+    result:[[BR]][[BR]]
+    [[Image(test_eudist_4_h.gif)]][[BR]][[BR]]
+ * 4-i: Source: 320,000 points; Raster: 300x300
+{{{
+#!sql
+CREATE TABLE test_source_geometry_4_i AS SELECT generate_series(1,320000) AS id,ST_RandomPoints(the_geom,320000) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_ref_raster_4)foo;
+CREATE INDEX test_source_geometry_4_i_gist_idx ON test_source_geometry_4_i USING GIST (the_geom);
+CREATE TABLE test_eudist_4_i AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_4_i','the_geom',True) AS rast FROM test_ref_raster_4);
+}}}
+   204460 ms execution time.
+    result: too many source point, picture doesn't make too much sense.[[BR]][[BR]]
+ * 4-j: Source: 640,000 points; Raster: 300x300
+{{{
+#!sql
+CREATE TABLE test_source_geometry_4_j AS SELECT generate_series(1,640000) AS id,ST_RandomPoints(the_geom,640000) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_ref_raster_4)foo;
+CREATE INDEX test_source_geometry_4_j_gist_idx ON test_source_geometry_4_j USING GIST (the_geom);
+CREATE TABLE test_eudist_4_j AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_4_j','the_geom',True) AS rast FROM test_ref_raster_4);
+}}}
+   168992 ms execution time.
+    result: too many source point, picture doesn't make too much sense.[[BR]][[BR]]
+[[BR]]
+----
+== Test 5 ==
+=== Very large size source points vs very high resolution raster ===
+ * 5-a: Source: 10,000 points; Raster: 1000x1000
+{{{
+#!sql
+CREATE TABLE test_ref_raster_5 AS SELECT 1 AS rid,rast FROM (SELECT ST_MakeEmptyRaster(1000,1000,0,0,1,1,0,0,4326) AS rast)foo;
+CREATE TABLE test_source_geometry_5_a AS SELECT generate_series(1,10000) AS id,ST_RandomPoints(the_geom,10000) AS the_geom FROM (SELECT ST_SetSRID(ST_Extent(rast::geometry),4326) AS the_geom FROM test_ref_raster_5)foo;
+CREATE INDEX test_source_geometry_5_a_gist_idx ON test_source_geometry_5_a USING GIST (the_geom);
+CREATE TABLE test_eudist_5_a AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_5_a','the_geom',True) AS rast FROM test_ref_raster_5);
+}}}
+   1576434 ms execution time.
+[[BR]]

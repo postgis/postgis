@@ -1,0 +1,2 @@
+The collection of edge ends around a PostGIS Topology node.
+See https://trac.osgeo.org/postgis/browser/git/liblwgeom/topo/lwt_edgeend_star.h

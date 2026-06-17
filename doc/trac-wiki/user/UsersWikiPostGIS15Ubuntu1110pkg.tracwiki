@@ -1,0 +1,24 @@
+= How to install PostGIS 1.5 on Ubuntu 11.10 (''oneiric'') from packages =
+
+||'''Component'''||'''Version'''||
+||[http://packages.ubuntu.com/oneiric/postgis PostGIS]||1.5.3||
+||[http://packages.ubuntu.com/oneiric/postgresql-9.1 PostgreSQL]||9.1||
+||[http://packages.ubuntu.com/oneiric/libproj0 PROJ]||4.7.0||
+||[http://packages.ubuntu.com/oneiric/libgeos-c1 GEOS]||3.2.2||
+
+Install everything using:
+{{{
+sudo apt-get install postgresql-9.1-postgis
+}}}
+Accept and install the approx 47 packages.
+
+Complete a post-install by creating a template, which can be re-used for creating multiple spatially-enabled databases. Or if you just want to make one spatially enabled database, you can modify the commands for your needs.
+{{{
+sudo -u postgres createdb template_postgis
+sudo -u postgres psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql
+sudo -u postgres psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql
+sudo -u postgres psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis_comments.sql
+}}}
+
+== See also ==
+ * https://help.ubuntu.com/community/PostgreSQL

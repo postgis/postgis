@@ -1,0 +1,52 @@
+= Final Report: Implement Geospatial Data Viewer in pgAdmin4 for PostGIS =
+
+* **Title:** Implement Geospatial Data Viewer in pgAdmin4 for PostGIS
+* **Organization:** [https://www.osgeo.org/ OSGeo]
+* **Mentors:** [http://www.up.ac.za/en/centre-for-geoinformation-science/article/2060495/victoria-rautenbach Victoria Rautenbach] and Frikan Erwee
+* **Student:** [https://gooong.cn Xuri Gong], Peking University
+* **GSoC Proposal:** [https://trac.osgeo.org/postgis/raw-attachment/wiki/GeospatialDataViewerInPgAdmin4ForPostGIS/Proposal%20for%20GSoC%20%202018.pdf Proposal for GSoC 2018.pdf]
+* **Repository:** [https://github.com/Gooong/pgadmin4/tree/geoviewer ]
+* **Code Patch:** [https://trac.osgeo.org/postgis/raw-attachment/wiki/GeospatialDataViewerInPgAdmin4ForPostGIS_FinalReport/geometry_viewer.patch geometry_viewer.patch]
+* **Pull Request:** [https://www.postgresql.org/message-id/CAA7HE_fnAKtAqfzz2jNZGfYnB5BAcuSt_ZCsJ%2Be-nwFPDHCdxg%40mail.gmail.com Code patch has been sent]
+
+== Abstract
+I propose to implement a geospatial data viewer in pgAdmin4 that will allow users to view the tables in a spatial database and the results of queries executed. With the viewer I intend to develop, users can directly view geospatial data on a map within the pgAdmin4 GUI.
+
+== Status Before GSoC
+
+[https://www.pgadmin.org/ pgAdmin] is the GUI management tool for PostgreSQL. The latest version pgAdmin4 is web-based and written in Python and jQuery with Bootstrap, using the Flask framework. But currently there is no geospatial data viewer in pgAdmin4-3.1, and external applications, such as QGIS are required if we want to view the data on a map. The pgAdmin4 Data Output panel only allows the user to view the table with the encoded geometries in text format.
+
+== My Proposal and Work
+
+With the geometry viewer I have created, users can now view individual geometry as well as all the geometries in the map. They can also view the properties of the geometries directly in the geometry viewer by clicking the specific geometry. Here are some screenshots:
+
+[[Image(https://trac.osgeo.org/postgis/raw-attachment/wiki/GeospatialDataViewerInPgAdmin4ForPostGIS_FinalReport/Selection_013.png, 600px)]]
+[[Image(https://trac.osgeo.org/postgis/raw-attachment/wiki/GeospatialDataViewerInPgAdmin4ForPostGIS_FinalReport/Selection_014.png, 600px)]]
+[[Image(https://trac.osgeo.org/postgis/raw-attachment/wiki/GeospatialDataViewerInPgAdmin4ForPostGIS_FinalReport/Selection_016.png, 600px)]]
+[[Image(https://trac.osgeo.org/postgis/raw-attachment/wiki/GeospatialDataViewerInPgAdmin4ForPostGIS_FinalReport/Peek%202018-08-16%2000-13.gif​, 600px)]]
+
+Below are the default strategies for parsing data:
+
+- **Supported data type:** Geometry Viewer support 2d and 3dm geometries in EWKB format including `Point, LineString, Polygon MultiPoint, MultiLineString, MultiPolygon, GeometryCollection`.
+- **About SRID:** If there are geometries with different SRIDs in the same column, the viewer will render geometries with the same SRID in the map. If SRID=4326 the OSM tile layer will be added into the map.
+- **About data size:** For performance considerations, the viewer will render geometries no more than 100000, totaling up to 20MB.
+
+== Test
+Please test my code following the instructions below:
+1. Download the [https://github.com/Gooong/pgadmin4/tree/geoviewer geoviewer branch].
+2. Build and run pgAdmin4 following README.md in the repository.
+3. For unit test, run {{{cd $PGADMIN4_SRC}}} and {{{make check-js}}}.
+3. If you want to have a try or test manually, install [https://postgis.net/ PostGIS] and import some geometry data (for example import [https://drive.google.com/open?id=1NHWW4WPli7kxpuGaDFGVFLDXdc2D20wp this database] using [https://www.postgresql.org/docs/9.2/static/app-psql.html psql]). Then execute query in the pgAdmin4 and view the results.
+
+== Future Work
+The geometry viewer is functional and below are some suggestions for future work:
+
+**Optimize performance:**
+ - Cluster markers using [https://github.com/Leaflet/Leaflet.markercluster Leaflet.markercluster] and deflate lines and polygons to a marker when their screen size becomes too small using [https://github.com/oliverroick/Leaflet.Deflate Leaflet.Deflate].
+ - Enable vectortile layer using [https://github.com/mapbox/geojson-vt geojson-vt]. Here is an example: [https://www.getbounds.com/blog/leaflet-and-geojson-tiles/ leaflet-and-geojson-tiles].
+ - PgAdmin4 only load 1000 records by default. When users click 'view' button in the column header, show the map firstly and load the other records in the background and then add the records dynamically.
+
+**New features:**
+ - Custom geometry style, e.g {{{SELECT *, '#333333' as __fillcolor, '#232323' as __strokecolor, 0.5 as __strokewidth FROM xxx}}}.
+ - Custom background tile layer. Enable users to specify their own tilelayer url.
+ - Highlight selected feature. Add 'zoom home extent' button.

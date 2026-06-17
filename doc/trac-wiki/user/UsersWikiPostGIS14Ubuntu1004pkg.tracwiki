@@ -1,0 +1,25 @@
+= How to install PostGIS 1.4 on Ubuntu 10.04 LTS (''lucid'') from packages =
+
+||'''Component'''||'''Version'''||
+||[http://packages.ubuntu.com/lucid/postgresql-8.4-postgis PostGIS]||1.4.0||
+||[http://packages.ubuntu.com/lucid/postgresql-8.4 PostgreSQL]||8.4.11||
+||[http://packages.ubuntu.com/lucid/libproj0 PROJ]||4.7.0||
+||[http://packages.ubuntu.com/lucid/libgeos-c1 GEOS]||3.1.0||
+
+Install everything using:
+{{{
+sudo apt-get install postgresql-8.4-postgis
+}}}
+Accept and install the approx 12 packages.
+
+Complete a post-install by creating a template, which can be re-used for creating multiple spatially-enabled databases. Or if you just want to make one spatially enabled database, you can modify the commands for your needs.
+{{{
+sudo -u postgres createdb template_postgis
+sudo -u postgres createlang plpgsql template_postgis
+sudo -u postgres psql -d template_postgis -f /usr/share/postgresql/8.4/contrib/postgis.sql
+sudo -u postgres psql -d template_postgis -f /usr/share/postgresql/8.4/contrib/spatial_ref_sys.sql
+sudo -u postgres psql -d template_postgis -f /usr/share/postgresql/8.4/contrib/postgis_comments.sql
+}}}
+
+== See also ==
+ * https://help.ubuntu.com/community/PostgreSQL

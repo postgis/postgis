@@ -1,0 +1,15 @@
+= Geometry Type =
+
+
+The Geometry type is the core object of the PostGIS extention.
+It implements the Simple Feature defined by OpenGIS specifications.
+
+A Geometry can be of any of these types:
+
+ * [wiki:UsersWikiPointGeometry Point]
+ * [wiki:UsersWikiLineStringGeometry LineString]
+ * [wiki:UsersWikiPolygonGeometry Polygon]
+ * [wiki:UsersWikiMultiPointGeometry MultiPoint]
+ * [wiki:UsersWikiMultiLineStringGeometry MultiLineString]
+ * [wiki:UsersWikiMultiPolygonGeometry MultiPolygon]
+ * [wiki:UsersWikiGeometryCollection GeometryCollection]

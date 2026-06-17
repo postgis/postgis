@@ -1,0 +1,110 @@
+= OGR Examples =
+
+
+The OGR portion of GDAL/OGR supports PostGIS for read/write access.  OGR
+tools like ogr2ogr can be used to load and extract from PostGIS.  The [http://www.gdal.org/ogr/drv_pg.html OGR PostgreSQL Driver] page describes details of the OGR PostGIS driver.  The [http://fwtools.maptools.org/ FWTools] builds include PostGIS enabled ogr2ogr binaries.
+
+'''Loading Data with ogr2ogr'''
+
+Smple translation of a shapefile into PostgreSQL. The table 'abc' will be created with the features from abc.shp and attributes from abc.dbf. The database instance (warmerda) must already exist, and the table abc must not already exist.
+
+{{{
+ % ogr2ogr -f PostgreSQL PG:dbname=warmerda abc.shp
+
+}}}
+
+This second example loads a political boundaries layer from VPF (via the OGDI driver), and renames the layer from the cryptic OGDI layer name to something more sensible. If an existing table of the desired name exists it is overwritten.
+
+
+{{{
+ % ogr2ogr -f PostgreSQL PG:dbname=warmerda \
+        gltp:/vrf/usr4/mpp1/v0eur/vmaplv0/eurnasia \
+        -lco OVERWRITE=yes -nln polbndl_bnd 'polbndl@bnd(*)_line'
+
+}}}
+
+
+In this example we merge tiger line data from two different directories of tiger files into one table. Note that the second invocation uses -append and no OVERWRITE=yes.
+
+
+{{{
+ % ogr2ogr -f PostgreSQL PG:dbname=warmerda tiger_michigan \
+     -lco OVERWRITE=yes CompleteChain
+ % ogr2ogr -update -append -f PostgreSQL PG:dbname=warmerda tiger_ohio \
+     CompleteChain
+
+}}}
+
+
+'''Queries with ogrinfo'''
+
+This example shows using ogrinfo to evaluate an SQL query statement within PostgreSQL. More sophisticated PostGIS specific queries may also be used via the -sql commandline switch to ogrinfo.
+
+
+{{{
+ ogrinfo -ro PG:dbname=warmerda -sql "SELECT pop_1994 from canada where province_name = 'Alberta'"
+
+}}}
+
+
+This example shows using ogrinfo to list PostgreSQL/PostGIS layers on a different host.
+
+{{{
+ ogrinfo -ro PG:'host=myserver.velocet.ca user=postgres dbname=warmerda'
+
+}}}
+
+'''Extracts with ogr2ogr'''
+
+Convert a spatial table into a GML 2.x file.
+
+{{{
+  ogr2ogr -f GML abc.gml PG:dbname=warmerda abc
+
+}}}
+
+
+Extract only the province of Alberta to a shapefile, the default output format of
+ogr2ogr.
+
+{{{
+  ogr2ogr alberta.shp PG:dbname=warmerda canada -where "province_name = 'Alberta'"
+
+}}}
+
+
+This example shows a small piece of python code that reads all data inside a postgis database (by Mauricio Carvalho):
+
+
+{{{
+import ogr
+
+def shptopg(filename):
+    conn=ogr.Open("PG: host=localhost dbname="+filename+" user=postgres")
+    #print myfile.GetDriver().GetName()
+    for layer in conn:
+        j=0
+        geom=layer.GetFeature(j)
+        while (geom):
+            geom=layer.GetFeature(j)
+            geom.DumpReadable()
+            j+=1
+    conn.Destroy()
+
+}}}
+
+This second example shows how two tables can be joined.  PLease note the naming convention for the returned geometry column allows the Python OGR module to detect what column to use for geometry. If OGR cannot detect a geometry column the Feature will still be populated but the GetGeometryRef() will return "None".  (by Aaran Stent)
+
+
+{{{
+def getfeatures():
+    sql = "select AsBinary(the_geom) as wkb_geometry from river AS r, state AS s
+        WHERE intersects(r.the_geom, s.the_geom)"
+    conn = ogr.Open("PG: host=localhost dbname='rivers' user='postgres'")
+    layer = conn.ExecuteSQL(sql)
+    print layer.GetFeatureCount()
+    feature = layer.GetNextFeature()
+    geography = feature.GetGeometryRef()
+    print geography
+
+}}}

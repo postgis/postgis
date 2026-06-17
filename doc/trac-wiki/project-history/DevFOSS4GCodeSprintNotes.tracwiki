@@ -1,0 +1,90 @@
+= AGENDA =
+
+ * Release date / schedule
+ * Features not yet implemented, but to be done?
+ * GeoCoder future?
+ * PostGIS 2.0 ticket triage?
+ * Links between PostGIS and other (non-GEOS topology libraries)
+ * Documentation / tutorials and starting points? (for raster? for topology?)
+ * 3D visibility calculations?
+ * Core vs Raster vs Topology
+
+
+= Features To Be Implemented Before Feature Freeze =
+
+ * ~~[raster] Two raster ST_Intersects (dustymugs - October 7) DONE ~~
+ * ~~[raster] Two raster version of MapAlgebra (dustymugs - Nov. 30) DONE ~~
+ * ~~ [raster] Neighbor version of MapAlgebra (David - November 30) DONE ~~
+ * ~~ [raster] C version of raster2pgsql (dustymugs - now!) DONE ~~
+ * ~~ KNN GiST (PR mid-October) DONE ~~
+ * GSERIALIZED clean-up (PR mid-October)
+ * GML 3.2 ouput (OC end October)
+ * 3D storage review (OC end November)
+ * ~~ ST_GeomFromJSON (end September) DONE ~~
+ * ~~ Extensions for deployment for 9.1 (eta 2011-10-15 - work out kinks) robe -- more or less DONE ~~
+ * Extensions for deployment for 9.1/9.2 have install as part of core install
+ * ~~ [topology] Finish ISO functions set (strk - end October) DONE ~~
+ * [topology] Geometry->TopoGeometry (strk - end December)
+ * BOX (ENVELOPE?) as a GEOMETRY sub-class? (PR end November)-- We are punting this
+ * ~~ raster2pgsql as C utility instead of python (BP end November) (think this is a dupe ~~
+
+= Release Date =
+
+ * Feature Freeze (November 30) (this is a real freeze -- hmm didn't happen yet!!) - perhaps end December
+   * Q Branch (no!)
+   * A No, branch at beta at the earliest.
+ * Alpha-1 Release (December 29)
+ * Developer Ticket Triage Event (January 5)
+ * Beta-1 Release (January 31)
+   * Branch?
+ * Profit!
+
+= Boxes: Points of Discussion =
+
+ * People want to sometime store boxes, how should they do ?
+ * Polygon as boxes are kind of bigger than it could be
+ * BOX2D lacks SRID (and is only 2d)
+ * We have some more BOX%%% which make people confused (me, at least)
+ * Having ops defined for boxes would allow extension (raster?) to only define casts to boxes in order to have proper indexing.
+ * As per the indexing argument, the box I have in mind is the equivalent of the box which is cached in normal Geometries
+
+= GIT =
+
+ * Discussion
+ * Some are enthuastic
+ * Others are +/-0
+ * General opinion, defer until 2.1 cycle (so that 2.1 comes out from git ? in that case we should start pretty soon after feature freeze, for any further development to happen)
+ * Pierre raises BIG issue: trac/git integration
+   * See http://trac.osgeo.org/osgeo/ticket/720
+
+= Geocoder Discussion =
+
+ * DBB, should it be part of core?
+ * Dbitner, so many tickets are geocoder, distracting to project
+    * extras/geocoder ticket category ?
+ * Resolution: suck it up! Good functionality.
+
+= Core vs Raster vs Topology =
+
+ * Should Raster be a mandatory part of the build and part of the postgis_core extention?
+ * Answer: yes, if we can get a binary raster2pgsql loader completed.
+   * strk is always against mandatory stuff... could default to ON and allow --without-raster
+ * Implication: GDAL as mandatory dependency
+* Research: can we figure out SRID automatically on load using OGR
+
+= Raster Discussion =
+
+ * Subtiling
+   * Future development, support internal tiling scheme in the serialized form for raster (see: GDAL internal tiling / GeoTIFF internal tiling. 1 bit for tiled/not tiled and tile size will have to be fixed e.g. 100x100 or 256x256 otherwise we have to wait for 3.0)
+ *raster2pgsql cleanup - Bug fixes and remove overviews
+    * To be done using rt_api.c? (overviews as post-process SQL call)
+      * yes
+ * Aggregate versions of stats function (polygons versions?)
+ * documentation section about Best practices and PostGIS Raster rationale
+ * ~~ raster_column views? YES - DONE ~~
+ * weighted summary functions for
+
+= 3D external libraries discussion =
+
+ * Can we start linking to other libraries for 3D support?
+ * Yes, OK.

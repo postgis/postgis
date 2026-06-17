@@ -1,0 +1,62 @@
+= Determine Cardinal Direction =
+
+See [http://en.wikipedia.org/wiki/Cardinal_direction Wikipedia] for a description for cardinal direction.
+
+{{{
+CREATE OR REPLACE FUNCTION ST_CardinalDirection(azimuth float8) RETURNS character varying AS
+$BODY$SELECT CASE
+  WHEN $1 < 0.0 THEN 'less than 0'
+  WHEN degrees($1) < 22.5 THEN 'N'
+  WHEN degrees($1) < 67.5 THEN 'NE'
+  WHEN degrees($1) < 112.5 THEN 'E'
+  WHEN degrees($1) < 157.5 THEN 'SE'
+  WHEN degrees($1) < 202.5 THEN 'S'
+  WHEN degrees($1) < 247.5 THEN 'SW'
+  WHEN degrees($1) < 292.5 THEN 'W'
+  WHEN degrees($1) < 337.5 THEN 'NW'
+  WHEN degrees($1) <= 360.0 THEN 'N'
+END;$BODY$ LANGUAGE sql IMMUTABLE COST 100;
+COMMENT ON FUNCTION ST_CardinalDirection(float8) IS 'input azimuth in radians; returns N, NW, W, SW, S, SE, E, or NE';
+}}}
+
+Example:
+{{{
+SELECT
+  degrees(ST_Azimuth(origin, pt)) AS azimuth_in_degrees,
+  ST_CardinalDirection(ST_Azimuth(origin, pt))
+FROM (
+  SELECT
+    'POINT(0 0)'::geometry AS origin,
+    ST_MakePoint(cos(radians(x)), sin(radians(x))) AS pt
+  FROM generate_series(0, 365, 15) AS x
+) AS f;
+
+  azimuth_in_degrees   | st_cardinaldirection
+-----------------------+----------------------
+                    90 | E
+                    75 | E
+                    60 | NE
+                    45 | NE
+                    30 | NE
+                    15 | N
+ 3.50835464926744e-015 | N
+                   345 | N
+                   330 | NW
+                   315 | NW
+                   300 | NW
+                   285 | W
+                   270 | W
+                   255 | W
+                   240 | SW
+                   225 | SW
+                   210 | SW
+                   195 | S
+                   180 | S
+                   165 | S
+                   150 | SE
+                   135 | SE
+                   120 | SE
+                   105 | E
+                    90 | E
+(25 rows)
+}}}

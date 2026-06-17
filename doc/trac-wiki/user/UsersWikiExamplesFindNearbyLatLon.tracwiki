@@ -1,0 +1,35 @@
+Here's a simple 80/20 solution for people with lon/lat tables of
+points wanting to do distance searches.  It only works for places less
+than 60degrees north or south, and only for points. If you know your
+data is all more southerly than 60d, adjust the constant factor to
+make the index portion of the search more selective (and hence,
+efficient (faster)).
+{{{
+#!sql
+--
+-- ST_DWithin_Sphere(lonlat-point, lonlat-point, radius-in-meters) returns boolean
+--
+-- Meters/Degree @ 60N: select 1/distance_sphere('POINT(0 60)','POINT(1 60)') = 1.79866403673916e-05
+--
+CREATE OR REPLACE FUNCTION ST_DWithin_Sphere(geometry, geometry, float8)
+        RETURNS boolean
+        AS '
+            SELECT $1 && ST_Expand($2,$3 * 1.79866403673916e-05)
+               AND $2 && ST_Expand($1,$3 * 1.79866403673916e-05)
+               AND ST_Distance_Sphere($1, $2) < $3
+        ' LANGUAGE 'SQL' IMMUTABLE;
+}}}
+If you are willing to accept some slop in the final distance calculation, you can replace it with an approximation based on the latitude of one of the arguments. This will allow the function to accept arguments that are lines and polygons as well as points.
+{{{
+#!sql
+CREATE OR REPLACE FUNCTION ST_DWithin_Sphere(geometry, geometry, float8)
+        RETURNS boolean
+        AS '
+            SELECT $1 && ST_Expand($2,$3 * 1.79866403673916e-05)
+               AND $2 && ST_Expand($1,$3 * 1.79866403673916e-05)
+               AND ST_Distance($1, $2) <
+                        $3 / ST_Distance_Sphere(
+                                   ST_MakePoint(0, ST_Y(ST_Centroid($1))),
+                                   ST_MakePoint(1, ST_Y(ST_Centroid($1))))
+        ' LANGUAGE 'SQL' IMMUTABLE;
+}}}

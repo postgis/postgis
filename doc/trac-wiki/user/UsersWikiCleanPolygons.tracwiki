@@ -1,0 +1,87 @@
+= Clean Polygons =
+
+
+It often happens that geometry data has invalid topology according
+to the OGC model used by PostGIS.  This situation causes
+many operations to fail or give incorrect results.
+
+To correct this, it is necessary to correct the invalid polygonal topology by cleaning the polygon.
+One the basic approach to do this is:
+
+ * extract the linework from the polygon to a lineal geometry
+ * union the lineal geometry together along with a single point from the geometry (this effectively forces the the linework to be noded & dissolved)
+ * polygonize the resulting linework
+
+Caution: this may not create the expected topology if the polygon contains holes.
+
+Alternatively you can download a plpgsql function from [http://www.kappasys.ch/pgtools/cleangeometry/cleanGeometry.sql http://www.kappasys.ch/pgtools/cleangeometry/cleanGeometry.sql]
+This function works with polygons containig holes as well as with linestrings.
+
+==  Example: ==
+
+{{{
+SELECT cleanGeometry(the_geom) FROM foo;
+
+}}}
+
+
+
+==  Example: ==
+
+
+{{{
+ -- Polygonize the noded linework
+ SELECT ST_BuildArea(geom) AS geom
+ FROM
+ (
+  -- Node & dissolve the linear ring
+  SELECT ST_Union(geom, ST_Startpoint(geom)) AS geom
+  FROM
+  (
+     -- Extract the exterior ring of the polygon
+     SELECT ST_ExteriorRing(
+       'POLYGON((
+           9.50351715087891 47.3943328857422,
+           9.50386047363281 47.3943328857422,
+           9.50351715087891 47.3943328857422,
+           9.50248718261719 47.3943328857422,
+           9.50214385986328 47.3939895629883,
+           9.50180053710938 47.3943328857422,
+           9.50145721435547 47.3939895629883,
+           9.50111389160156 47.3936462402344,
+           9.50145721435547 47.3936462402344,
+           9.50145721435547 47.3939895629883,
+           9.50214385986328 47.3939895629883,
+           9.50248718261719 47.3939895629883,
+           9.50386047363281 47.3943328857422,
+           9.50351715087891 47.3943328857422))'::geometry) AS geom
+  ) AS ring
+ ) AS fixed_ring
+
+}}}
+
+
+which produces:
+
+
+{{{
+ MULTIPOLYGON (((
+            9.50351715087891 47.3943328857422,
+            9.50386047363281 47.3943328857422,
+            9.50248718261719 47.3939895629883,
+            9.50214385986328 47.3939895629883,
+            9.50248718261719 47.3943328857422,
+            9.50351715087891 47.3943328857422
+        )), ((
+            9.50145721435547 47.3939895629883,
+            9.50180053710938 47.3943328857422,
+            9.50214385986328 47.3939895629883,
+            9.50145721435547 47.3939895629883
+        )), ((
+            9.50145721435547 47.3939895629883,
+            9.50145721435547 47.3936462402344,
+            9.50111389160156 47.3936462402344,
+            9.50145721435547 47.3939895629883
+        )))
+
+}}}

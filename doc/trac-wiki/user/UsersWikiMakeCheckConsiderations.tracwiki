@@ -1,0 +1,53 @@
+Related Notes: [UsersWikiWinCompile Windows Compile]
+
+   [UsersWikiWinCompileInitdb Initialize the postgresql database cluster]
+
+Note these instructions we tested under Windows but apply more or less to Linux/Unix installs as well
+
+--'''Some stumbling blocks when doing PostGIS make check ''' --
+
+1. '''You have multiple PostgreSQL installs'''
+
+a. If you have multiple PostgreSQL installs as is the case if you are a package developer or just testing diligently, the
+first thing you want to make sure is that you are testing the right PostgreSQL install.
+
+To do so do the following (where 5434 is the port your test PostgreSQL service is running under, and the path is the path to the postgresql install you are testing:
+
+export PATH="/c/thesrc/pg84/bin:$PATH"
+
+export PGPORT=5434
+
+export PGUSER=postgres
+
+
+b. Depending on how you did your make install of geos and proj, they might not be located in a place accessible by the PostgreSQL install.  For windows users, you want the libgeos-3-1-1.dll, libgeos_c-1.dll,libiconv-2.dll and libproj.dlls to be located in the bin folder of your PostgreSQL install.
+
+c. If make check fails mid-way -- it often leaves a dangling postgis_reg.  Just drop it if it complains:
+
+dropdb postgis_reg
+
+
+2. '''Security Obstacles '''
+
+a. Verify that your pg_hba.conf in the data folder of your test PostgreSQL install and that it allows trust local.  So should look something like below (and should be the top most rule).  This will save you many hassles and is perfectly secure if you trust everyone logging into the box.  If not then you might want to make trust ident (and then do a su postgres for testing)
+
+host    all         all         127.0.0.1/32          trust
+
+b. su postgres is allowed for Linux/Unix users, but if you prefer that more secure route, then your above should look like below which is the default for Ubuntu.
+
+host    all         all         127.0.0.1/32          ident
+
+c. To test using postgres account -- make sure you are logged in as a super user e.g. root and do a   (note this part is only relevant for Linux/Unix users --- mingw has no concept of su)
+su postgres
+
+but before this will work, you need to make sure the regress test folder you have allows postgres access.  so
+chmod 777 regress  (you may need to specify the full path if you are not in the postgis source root)
+
+su postgres
+
+3. '''Make check fails because of windows linebreaks ''' (seems ot be only an issue for Windows users)
+Use dos2unix to convert all the regress files to unix line breaks.  This occurs if you are using SVN repository files.
+
+dos2unix regress/*expected
+
+dos2unix regress/loader/*expected

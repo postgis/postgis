@@ -1,0 +1,49 @@
+=  Features Of PostGIS =
+
+PostGIS is not your standard spatial extension to a relational database... or is it?
+
+==  PostGIS supports many standards: ==
+
+ * The '''Open GIS Consortium (OGC)''' standards for "Simple Features" (2D Geometries)
+  * [http://www.opengeospatial.org/standards/sfa Simple Features at OGC]
+   * [http://portal.opengeospatial.org/files/index.php?artifact_id=6211&version=2&format=htm What does OGC mean by Openness and Open Standards?]
+  * [http://www.jump-project.org/project.php?PID=JTS&SID=OVER#spatialdatatypes Graphic of OGC Spatial Data Types implemented in JTS/GEOS code at JUMP site]
+  * [http://en.wikipedia.org/wiki/Simple_Features Simple Features on Wikipedia]
+
+ * The '''Open GIS Consortium (OGC)''' markup language for "Simple Features" known as Well Known Text (WKT) and Well Known Binary (WKB) representations of data.
+  * [http://postgis.refractions.net/docs/ch04.html#id3008383 WKT and WKB in PostGIS manual]
+  * [http://en.wikipedia.org/wiki/Well-known_text WKT on Wikipedia]
+  * [http://www.opengeospatial.org/standards/sfa Download the PDF's on Simple Features at OGC]
+
+ * '''OGC SQL functions:''' standards for managing spatial tables using SQL language
+  * [http://www.opengeospatial.org/standards/sfs SQL for Simple Features at OGC]
+  * [http://postgis.refractions.net/documentation/manual-svn/ch04.html#id2597710 Discussion of Compliance in PostGIS manual]
+  * [http://postgis.refractions.net/documentation/manual-svn/ch08.html#PostGIS_SQLMM_Functions Direct Link to Functions in PostGIS manual]
+
+==  PostGIS extends support for geometry types: ==
+ * '''EWKB, EWKT and Canonical Forms'''
+  * PostGIS adds support for embedding the SRID (projection information) and for 3 and 4D geometries with Z and M values, respectively.
+   * [http://postgis.refractions.net/documentation/manual-svn/ch04.html#id2597816 EWKT and EWKT in PostGIS manual]
+   * [http://en.wikipedia.org/wiki/Extended_Well-known_text EWKT on Wikipedia]
+ * '''Other Types'''
+  * [wiki:UsersWikiRasterNotes Progress on Raster Support]
+  * [http://www.foss4g2007.org/presentations/view.php?abstract_id=224 Proposed X3D types: TIN and COLLADA for Web Output]
+
+==  PostGIS enables powerful spatial analysis and editing of geometries ==
+ * [http://postgis.refractions.net/documentation/manual-svn/ch07.html Spatial functions and operators in PostGIS manual]
+ * [http://www.jump-project.org/project.php?PID=JTS&SID=OVER#spatialanalysismethods Graphic of Spatial Analysis methods implemented in JTS/GEOS code at JUMP site]
+ * [http://www.bostongis.com/postgis_quickguide.bqg Boston GIS PostGIS Functions Cheatsheet]
+ * [wiki:UsersWikiplpgsqlfunctions Additional User-contributed Functions]
+
+==  PostGIS can be extended by scripting with an array of languages ==
+ * Client-side extensions exist to access spatial data in PostgreSQL for the following programming languages:
+  * Python | [wiki:UsersWikiPostgisAndPython Scripting Examples]
+   * [http://www.initd.org/tracker/psycopg Psycopg:] a PostgreSQL database adapter for Python
+   * [http://www.initd.org/tracker/psycopg/wiki/GeoTypes GeoTypes:] an extension to Psycopg
+  * Java  | [wiki:UsersWikiPostGISAndJava Scripting Examples]
+   * Included in PostGIS, supports own class model as well as JTS, and read-only support for Java2D
+  * PHP  | [wiki:UsersWikiPostGISAndPhp Scripting Examples]
+   * [http://code.google.com/support/bin/answer.py?answer=69906&topic=11364 PHP example of writing to KML (in MySQL)]
+  * Ruby
+   * [http://georuby.rubyforge.org/ GeoRuby's Spatial Adapter for Active Record]
+  * ''(I heard rumors of a perl interface, please edit)''

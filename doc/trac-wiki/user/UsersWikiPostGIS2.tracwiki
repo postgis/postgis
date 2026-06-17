@@ -1,0 +1,92 @@
+[[TOC]]
+== PostGIS 2.4 ==
+ * Ubuntu, Debian [wiki:UsersWikiPostGIS24UbuntuPGSQL10Apt from PostgreSQL Apt Repository]
+ * Debian 9 ("stretch") -  uses PostgreSQL 10/9.6
+   * [wiki:UsersWikiPostGIS24Debian9src from source]
+
+
+
+== PostGIS 2.3 ==
+* BigSQL  (Linux 64-bit, Mac 64-bit, Windows 64-bit)
+  [https://www.openscg.com/2017/02/postgis-how-to-create-a-spatial-database-with-pgc-command-line PostGIS 2.3 and ogrfdw]
+
+* Ubuntu - PostgreSQL 9.6 and PostGIS 2.3
+   * [wiki:UsersWikiPostGIS23UbuntuPGSQL96Apt from PostgreSQL Apt Repository]
+
+
+
+== PostGIS 2.2 ==
+
+* Ubuntu - uses PostgreSQL 9.5
+    * [wiki:UsersWikiPostGIS22UbuntuPGSQL95Apt from PostgreSQL Apt Repository]
+
+== PostGIS 2.1 ==
+ * CentOS 6
+   * [wiki:UsersWikiPostGIS21CentOS6pgdg from PGDG YUM/RPM packages]
+
+ * Debian 7 (''wheezy'') - uses PostgreSQL 9.1
+   * [wiki:UsersWikiPostGIS21Debian7src from source]
+
+ * Fedora 19 (''Schrödinger's Cat'')
+   * [wiki:UsersWikiPostGIS21Fedora19pgdg using PGDG YUM/RPM packages]
+
+ * Ubuntu 12.04, 12.10,13.04, 13.10 - uses PostgreSQL 9.3
+    * [wiki:UsersWikiPostGIS21UbuntuPGSQL93Apt from PostgreSQL Apt Repository]
+
+ * Ubuntu 12.04 (''precise'') - uses PostgreSQL 9.1
+    * [wiki:UsersWikiPostGIS21Ubuntu1204src from source]
+
+ * Ubuntu 13.04 (''raring'') - uses PostgreSQL 9.1
+    * [wiki:UsersWikiPostGIS21Ubuntu1304src from source]
+
+ * Ubuntu 13.10 (''saucy'') - uses PostgreSQL 9.1
+    * [wiki:UsersWikiPostGIS21Ubuntu1310src from source]
+
+ * Ubuntu 14.04 LTS (''trusty'') - uses PostgreSQL 9.3
+    * [wiki:UsersWikiPostGIS21Ubuntu1404pkg from packages]
+    * [wiki:UsersWikiPostGIS21Ubuntu1404src from source]
+
+
+For other systems, just follow the 2.0 guides (from source versions). Keep in mind a few dependencies for PostGIS 2.1:
+ * PostgreSQL 9.0, but 9.1 or later recommended
+ * GEOS 3.3, but 3.4.0 or later recommended
+ * GDAL 1.8, but 1.9 or later recommended
+
+== PostGIS 2.0 ==
+ * CentOS 6
+   * [wiki:UsersWikiPostGIS20CentOS6pgdg from PGDG YUM/RPM packages]
+
+ * Debian 6.0 (''squeeze'') - uses PostgreSQL 8.4
+   * [wiki:UsersWikiPostGIS20Debian60src from source]
+
+ * Debian 7.0 (''wheezy'') - uses PostgreSQL 9.1
+   * [wiki:UsersWikiPostGIS20Debian70src from source]
+
+ * Fedora 16 (''Verne'')
+   * [wiki:UsersWikiPostGIS20Fedora16pgdg using PGDG YUM/RPM packages]
+
+ * FreeBSD 9.1/PCBSD 9.1 - with PostgreSQL 9.2
+  * [wiki:UsersWikiPostGIS2_FreeBSD_install from source]
+
+ * Ubuntu 10.04 LTS (''lucid'') - uses PostgreSQL 8.4
+   * [wiki:UsersWikiPostGIS20Ubuntu1004src from source]
+
+ * Ubuntu 11.10 (''oneiric'') - uses PostgreSQL 9.1
+   * [wiki:UsersWikiPostGIS20Ubuntu1110src from source]
+   * [wiki:UsersWikiPostGIS20Ubuntu1110pkgSharpie from packages, using ppa:sharpie]
+
+ * Ubuntu 12.04 (''precise'') - uses PostgreSQL 9.1
+    * [wiki:UsersWikiPostGIS20Ubuntu1204src from source]
+    * [wiki:UsersWikiPostGIS20Ubuntu1204 hacky hybrid approach]
+
+ * Ubuntu 12.10 (''quantal'') - uses PostgreSQL 9.1
+    * [wiki:UsersWikiPostGIS20Ubuntu1210src from source]
+    * [wiki:UsersWikiPostGIS20Ubuntu1210 from packages, using ppa:ubuntugis]
+
+ * Ubuntu 13.04 (''raring'') - uses PostgreSQL 9.1
+    * [wiki:UsersWikiPostGIS20Ubuntu1304src from source]
+    * [wiki:UsersWikiPostGIS20Ubuntu1304 from packages, using ppa:ubuntugis]
+
+ * Windows both 32-bit and 64-bit (same step for all versions of PostgreSQL)
+   * [wiki:DevWikiWinMingWSys_20 Compiling in Windows all PostgreSQL (x32bit MinGW32) ]
+   * [wiki:DevWikiWinMingW64 Compiling PostGIS 2.0 under Windows using MinGW-w64/Msys (PostgreSQLx64bit and 9.2+ x32bit)]
