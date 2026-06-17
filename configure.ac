@@ -228,6 +228,7 @@ AC_ARG_WITH([comments],
 
 CAN_BUILD_DOCS=yes
 CAN_BUILD_COMMENTS=yes
+INSTALL_COMMENTS=yes
 AC_PATH_PROG([XSLTPROC], [xsltproc], [])
 if test "x$XSLTPROC" = "x"; then
 	AC_MSG_WARN([xsltproc is not installed so documentation cannot be built])
@@ -239,7 +240,9 @@ AC_SUBST([XSLTPROC])
 if test "x$with_comments" = "xno"; then
 	AC_MSG_NOTICE([SQL comments generation disabled by --without-comments])
 	CAN_BUILD_COMMENTS=no
+	INSTALL_COMMENTS=no
 fi
+AC_SUBST([INSTALL_COMMENTS])
 
 AC_PATH_PROG([XMLCATALOG], [xmlcatalog], [])
 if test "x$XMLCATALOG" = "x"; then
