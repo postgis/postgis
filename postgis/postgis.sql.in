@@ -2808,7 +2808,7 @@ LANGUAGE 'sql' VOLATILE STRICT;
 --
 -----------------------------------------------------------------------
 -- Changed: 2.1.4 check against real_schema
-CREATE OR REPLACE FUNCTION UpdateGeometrySRID(catalogn_name varchar,schema_name varchar,table_name varchar,column_name varchar,new_srid_in integer)
+CREATE OR REPLACE FUNCTION UpdateGeometrySRID(catalog_name varchar,schema_name varchar,table_name varchar,column_name varchar,new_srid_in integer)
 	RETURNS text
 	AS
 $$
