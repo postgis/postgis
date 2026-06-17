@@ -51,6 +51,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 * Enhancements *
 
  - #2898, Document SQL function cost tiers for contributors
+ - #4253, Add GiST 2D index regression coverage for containment operators
           (Darafei Praliaskouski)
  - #6062, [topology] Stop using recursive snapping, for improved robustness (Sandro Santilli)
  - #6065, Improved winding order computation robustness for rings having collapsed elements
