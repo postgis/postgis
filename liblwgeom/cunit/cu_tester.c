@@ -72,6 +72,7 @@ extern void sfcgal_suite_setup(void);
 extern void split_suite_setup(void);
 extern void stringbuffer_suite_setup(void);
 extern void tree_suite_setup(void);
+extern void topo_suite_setup(void);
 extern void triangulate_suite_setup(void);
 extern void varint_suite_setup(void);
 extern void wkt_out_suite_setup(void);
@@ -128,6 +129,7 @@ PG_SuiteSetup setupfuncs[] = {algorithms_suite_setup,
 			      stringbuffer_suite_setup,
 			      surface_suite_setup,
 			      tree_suite_setup,
+			      topo_suite_setup,
 			      triangulate_suite_setup,
 			      twkb_out_suite_setup,
 			      varint_suite_setup,

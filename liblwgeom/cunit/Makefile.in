@@ -23,6 +23,7 @@ CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
 CUNIT_CPPFLAGS = -I$(srcdir)/.. -I$(builddir)/.. @CUNIT_CPPFLAGS@ @CPPFLAGS@
 CFLAGS=$(CUNIT_CPPFLAGS) @CFLAGS@
 LDFLAGS = @GEOS_LDFLAGS@ @PROJ_LDFLAGS@ $(CUNIT_LDFLAGS)
+LIBLWGEOM_LDFLAGS = @GMP_LIBS@
 
 VPATH = $(srcdir)
 
@@ -58,6 +59,7 @@ OBJS=	\
 	cu_split.o \
 	cu_stringbuffer.o \
 	cu_triangulate.o \
+	cu_topo.o \
 	cu_homogenize.o \
 	cu_force_dims.o \
 	cu_force_sfs.o \
@@ -107,7 +109,7 @@ endif
 
 # Build the main unit test executable
 cu_tester: ../liblwgeom.la $(OBJS) cu_tester.h
-	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS) -static ../liblwgeom.la
+	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS) -static ../liblwgeom.la $(LIBLWGEOM_LDFLAGS)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c

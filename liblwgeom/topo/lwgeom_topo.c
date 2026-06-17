@@ -38,6 +38,7 @@
 #include <gmp.h>
 
 #include <inttypes.h>
+#include <math.h>
 
 static bool
 _lwt_describe_point(const LWPOINT *pt, char *buf, size_t bufsize)
@@ -1888,27 +1889,49 @@ lwt_IsTopoRingCCW(const POINTARRAY *pa)
   const POINT2D *P3;
   mpf_t sum;
   mpf_t tmp;
-  double x0, x, y1, y2;
+  mpf_t x0;
+  mpf_t x;
+  mpf_t dy;
   uint32_t i;
   int ret;
 
   if (! pa || pa->npoints < 3 )
     return 0;
 
-  mpf_init2(sum, 64);
-  mpf_init2(tmp, 64);
-  mpf_set_d(sum, 0.0);
-
   P1 = getPoint2d_cp(pa, 0);
   P2 = getPoint2d_cp(pa, 1);
-  x0 = P1->x;
+
+  if (!isfinite(P1->x) || !isfinite(P1->y) || !isfinite(P2->x) || !isfinite(P2->y))
+	  return ptarray_isccw(pa);
+
+  mpf_init2(sum, 64);
+  mpf_init2(tmp, 64);
+  mpf_init2(x0, 64);
+  mpf_init2(x, 64);
+  mpf_init2(dy, 64);
+  mpf_set_d(sum, 0.0);
+  mpf_set_d(x0, P1->x);
+
   for ( i = 2; i < pa->npoints; i++ )
   {
     P3 = getPoint2d_cp(pa, i);
-    x = P2->x - x0;
-    y1 = P3->y;
-    y2 = P1->y;
-    mpf_set_d(tmp, x * (y2-y1));
+
+    if (!isfinite(P3->x) || !isfinite(P3->y))
+    {
+	    mpf_clear(dy);
+	    mpf_clear(x);
+	    mpf_clear(x0);
+	    mpf_clear(tmp);
+	    mpf_clear(sum);
+	    return ptarray_isccw(pa);
+    }
+
+    mpf_set_d(x, P2->x);
+    mpf_sub(x, x, x0);
+    mpf_set_d(dy, P1->y);
+    mpf_set_d(tmp, P3->y);
+    mpf_sub(dy, dy, tmp);
+    mpf_mul(tmp, x, dy);
     mpf_add(sum, sum, tmp);
     P1 = P2;
     P2 = P3;
@@ -1916,6 +1939,9 @@ lwt_IsTopoRingCCW(const POINTARRAY *pa)
 
   ret = mpf_cmp_ui(sum, 0) < 0;
 
+  mpf_clear(dy);
+  mpf_clear(x);
+  mpf_clear(x0);
   mpf_clear(tmp);
   mpf_clear(sum);
 
