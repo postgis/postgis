@@ -634,9 +634,10 @@ DROP TABLE road_pg;
 -- #2630 --
 SELECT '#2630', p.proargnames::text
 FROM pg_catalog.pg_proc p
-JOIN pg_catalog.pg_extension e ON e.extname = 'postgis'
-  AND e.extnamespace = p.pronamespace
 WHERE p.proname = 'updategeometrysrid'
+  AND p.pronamespace = COALESCE(
+    (SELECT extnamespace FROM pg_catalog.pg_extension WHERE extname = 'postgis'),
+    pg_catalog.current_schema()::pg_catalog.regnamespace)
   AND p.proargtypes = '1043 1043 1043 1043 23'::oidvector;
 
 -- #1596
