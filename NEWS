@@ -58,6 +58,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - GH-888, [sfcgal] Avoid stale detoasted geometry access in
           CG_Visibility empty-input handling for SFCGAL < 2.2
           (Darafei Praliaskouski)
+ - #3179, Mark truncated libpgcommon PostgreSQL messages instead of silently
+          dropping the tail (Darafei Praliaskouski)
  - Build PostgreSQL extension modules with `-fno-semantic-interposition` when
           available so LTO can optimize same-DSO calls to exported PostGIS
           entry points directly instead of routing through the module PLT; in
