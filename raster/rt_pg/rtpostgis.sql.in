@@ -8379,16 +8379,20 @@ CREATE OR REPLACE VIEW raster_columns AS
 CREATE OR REPLACE FUNCTION _raster_type_name()
 	RETURNS text AS
 	$$
-	SELECT pg_catalog.quote_ident(n.nspname) || '.' || pg_catalog.quote_ident(t.typname)
-	FROM pg_catalog.pg_type t
-	JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
-	JOIN pg_catalog.pg_proc p ON p.pronamespace = n.oid
-	WHERE p.proname = 'postgis_raster_lib_version'
-		AND p.pronargs = 0
-		AND t.typname = 'raster'
-	LIMIT 1
+	DECLARE
+		rast @extschema@.raster;
+		rasttype text;
+	BEGIN
+		SELECT pg_catalog.quote_ident(n.nspname) || '.' || pg_catalog.quote_ident(t.typname)
+		INTO rasttype
+		FROM pg_catalog.pg_type t
+		JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+		WHERE t.oid = pg_catalog.pg_typeof(rast)::oid;
+
+		RETURN rasttype;
+	END;
 	$$
-	LANGUAGE 'sql' STABLE
+	LANGUAGE 'plpgsql' STABLE
 	COST 100;
 
 ------------------------------------------------------------------------------
@@ -8407,16 +8411,7 @@ CREATE OR REPLACE FUNCTION _overview_constraint(ov raster, factor integer, refsc
 			AND c.relname = $4
 			AND a.attname = $5
 			AND a.attisdropped = FALSE
-			AND a.atttypid = (
-				SELECT t.oid
-				FROM pg_catalog.pg_type t
-				JOIN pg_catalog.pg_namespace tn ON tn.oid = t.typnamespace
-				JOIN pg_catalog.pg_proc p ON p.pronamespace = tn.oid
-				WHERE p.proname = 'postgis_raster_lib_version'
-					AND p.pronargs = 0
-					AND t.typname = 'raster'
-				LIMIT 1
-			)
+			AND a.atttypid = pg_catalog.pg_typeof($1)::oid
 			AND c.relkind = ANY (ARRAY['r'::pg_catalog."char", 'v'::pg_catalog."char", 'm'::pg_catalog."char", 'f'::pg_catalog."char", 'p'::pg_catalog."char"])
 			AND NOT pg_catalog.pg_is_other_temp_schema(c.relnamespace)
 		)
