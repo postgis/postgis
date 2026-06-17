@@ -47,6 +47,7 @@ usage()
 	printf(_( "  -k  Keep postgresql identifiers case.\n" ));
 	printf(_( "  -i  Use int4 type for all integer dbf fields.\n" ));
 	printf(_( "  -I  Create a spatial index on the geocolumn.\n" ));
+	printf(_( "  -u  Create the table as UNLOGGED.\n" ));
 	printf(_("  -m <filename>  Specify a file containing a set of mappings of (long) column\n"
 	         "     names to 10 character DBF column names. The content of the file is one or\n"
 	         "     more lines of two names separated by white space and no trailing or\n"
@@ -105,7 +106,7 @@ main (int argc, char **argv)
 	set_loader_config_defaults(config);
 
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
-	while ((c = pgis_getopt(argc, argv, "-?acdeg:ikm:nps:t:wDGIN:ST:W:X:Z")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "-?acdeg:ikm:nps:t:uwDGIN:ST:W:X:Z")) != EOF)
 	{
 		// can not do this inside the switch case
 		if ('-' == c)
@@ -176,6 +177,10 @@ main (int argc, char **argv)
 
 		case 'I':
 			config->createindex = 1;
+			break;
+
+		case 'u':
+			config->unlogged = 1;
 			break;
 
 		case 'w':

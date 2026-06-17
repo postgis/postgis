@@ -108,6 +108,11 @@ If this option is used the output will be encoded in UTF-8.
 \fB\-I\fR
 Create a GiST index on the geometry column. 
 .TP 
+\fB\-u\fR
+Create the target table as UNLOGGED. This can speed up loading transient
+staging data, but PostgreSQL does not preserve unlogged table contents after
+a crash or unclean shutdown.
+.TP
 \fB\-N\fR <\fIpolicy\fR>
 Specify NULL geometries handling policy (insert,skip,abort).
 .TP 

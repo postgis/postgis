@@ -770,6 +770,7 @@ set_loader_config_defaults(SHPLOADERCONFIG *config)
 	config->quoteidentifiers = 0;
 	config->forceint4 = 0;
 	config->createindex = 0;
+	config->unlogged = 0;
 	config->analyze = 1;
 	config->readshape = 1;
 	config->force_output = FORCE_OUTPUT_DISABLE;
@@ -1350,12 +1351,14 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		*/
 		if (state->config->schema)
 		{
-			stringbuffer_aprintf(sb, "CREATE TABLE \"%s\".\"%s\" (gid serial",
+			stringbuffer_aprintf(sb, "CREATE %sTABLE \"%s\".\"%s\" (gid serial",
+			                     state->config->unlogged ? "UNLOGGED " : "",
 			                     state->config->schema, state->config->table);
 		}
 		else
 		{
-			stringbuffer_aprintf(sb, "CREATE TABLE \"%s\" (gid serial", state->config->table);
+			stringbuffer_aprintf(sb, "CREATE %sTABLE \"%s\" (gid serial",
+			                     state->config->unlogged ? "UNLOGGED " : "", state->config->table);
 		}
 
 		/* Generate the field types based upon the shapefile information */
