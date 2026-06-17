@@ -1404,12 +1404,30 @@ change in a topology would be overkill, so it is the caller's duty
 to take care of that.
 </para>
 
+<para>
+When loading or heavily editing a large topology, prefer working in
+shorter transactions or batches rather than one long transaction. After
+each batch commits, run <command>VACUUM ANALYZE</command> on the edited
+topology tables, or at least on the <varname>node</varname>,
+<varname>edge_data</varname>, <varname>face</varname>, and
+<varname>relation</varname> tables of the topology schema. This lets
+PostgreSQL remove dead tuples, clean up indexes, refresh planner
+statistics, and make those statistics visible to the next batch of
+topology operations.
+</para>
+
 <note>
 <para>
-That the statistics updated by autovacuum
-will NOT be visible to transactions which started before autovacuum
-process completed, so long-running transactions will need to run
-ANALYZE themselves, to use updated statistics.
+If a loader must keep a transaction open, do not run
+<command>VACUUM</command> inside that transaction block; PostgreSQL
+will reject it. You can still run <command>ANALYZE</command> on the
+edited topology tables to refresh planner statistics for later
+statements in the same transaction. Statistics refreshed by another
+session become visible to later statements under PostgreSQL's default
+<literal>READ COMMITTED</literal> isolation level after that maintenance
+transaction commits; transactions using a longer-lived snapshot, such as
+<literal>REPEATABLE READ</literal> or <literal>SERIALIZABLE</literal>,
+will not see those concurrent changes until they restart.
 </para>
 </note>
 
