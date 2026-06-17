@@ -385,8 +385,8 @@ lwline_setPoint4d(LWLINE *line, uint32_t index, POINT4D *newpoint)
 * Re-write the measure coordinate (or add one, if it isn't already there) interpolating
 * the measure between the supplied start and end values.
 */
-LWLINE*
-lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
+static LWLINE *
+lwline_measured_from_lwline_internal(const LWLINE *lwline, double m_start, double m_end, int use_3d)
 {
 	int i = 0;
 	int hasm = 0, hasz = 0;
@@ -396,7 +396,7 @@ lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
 	double m_range = m_end - m_start;
 	double m;
 	POINTARRAY *pa = NULL;
-	POINT3DZ p1, p2;
+	POINT4D p1, p2;
 
 	if ( lwline->type != LINETYPE )
 	{
@@ -411,8 +411,9 @@ lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
 	if ( lwline->points )
 	{
 		npoints = lwline->points->npoints;
-		length = ptarray_length_2d(lwline->points);
-		getPoint3dz_p(lwline->points, 0, &p1);
+		length = use_3d ? ptarray_length(lwline->points) : ptarray_length_2d(lwline->points);
+		if (npoints > 0)
+			getPoint4d_p(lwline->points, 0, &p1);
 	}
 
 	pa = ptarray_construct(hasz, hasm, npoints);
@@ -420,13 +421,19 @@ lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
 	for ( i = 0; i < npoints; i++ )
 	{
 		POINT4D q;
-		POINT2D a, b;
-		getPoint3dz_p(lwline->points, i, &p2);
-		a.x = p1.x;
-		a.y = p1.y;
-		b.x = p2.x;
-		b.y = p2.y;
-		length_so_far += distance2d_pt_pt(&a, &b);
+		getPoint4d_p(lwline->points, i, &p2);
+		if (use_3d && hasz)
+		{
+			POINT3D a = {p1.x, p1.y, p1.z};
+			POINT3D b = {p2.x, p2.y, p2.z};
+			length_so_far += distance3d_pt_pt(&a, &b);
+		}
+		else
+		{
+			POINT2D a = {p1.x, p1.y};
+			POINT2D b = {p2.x, p2.y};
+			length_so_far += distance2d_pt_pt(&a, &b);
+		}
 		if ( length > 0.0 )
 			m = m_start + m_range * length_so_far / length;
 		/* #3172, support (valid) zero-length inputs */
@@ -443,6 +450,18 @@ lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
 	}
 
 	return lwline_construct(lwline->srid, NULL, pa);
+}
+
+LWLINE *
+lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
+{
+	return lwline_measured_from_lwline_internal(lwline, m_start, m_end, LW_FALSE);
+}
+
+LWLINE *
+lwline_measured_from_lwline_3d(const LWLINE *lwline, double m_start, double m_end)
+{
+	return lwline_measured_from_lwline_internal(lwline, m_start, m_end, LW_TRUE);
 }
 
 LWGEOM*
