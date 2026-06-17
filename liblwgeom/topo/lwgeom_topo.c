@@ -277,7 +277,9 @@ lwt_be_deleteFacesById(const LWT_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t
     return 0;
 
   if (filtered_count == numelems)
+  {
     CBT2(topo, deleteFacesById, ids, numelems);
+  }
 
   CHECKCB(topo->be_iface, deleteFacesById);
   filtered_ids = lwalloc(sizeof(LWT_ELEMID) * filtered_count);
