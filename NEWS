@@ -212,6 +212,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #4798, ST_AsGeoJSON warns about duplicate property keys (Darafei Praliaskouski)
  - #4222, [raster] ST_DumpAsPolygons honours PostgreSQL interrupts (Darafei Praliaskouski)
  - #5889, [topology] Include representative locations in topology build errors (Darafei Praliaskouski)
+ - #3173, ST_3DAddMeasure measures linear referencing by 3D length
+          (Darafei Praliaskouski)
  - #2614, Use GEOSPreparedDistance and caching to accelerate ST_DWithin (Paul Ramsey)
  - GH-839, ST_Multi support for TIN and surfaces (Loïc Bartoletti)
  - #4398, Add ST_CatmullSmoothing smoothes but retains original vertices (Paul Ramsey)
