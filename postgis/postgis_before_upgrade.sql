@@ -53,7 +53,8 @@ SELECT _postgis_drop_function_by_identity
 SELECT _postgis_drop_function_by_identity
 	(
 	'UpdateGeometrySRID',
-	'catalogn_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid_in integer'
+	'catalogn_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid_in integer',
+	'370'
 	);
 
 
