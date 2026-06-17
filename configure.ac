@@ -220,25 +220,42 @@ dnl
 dnl Search for xsltproc which is required for building documentation
 dnl
 
-CAN_BUILD_COMMENTS=yes
+AC_ARG_WITH([comments],
+	[AS_HELP_STRING([--without-comments],
+		[disable building and installing generated SQL comments])],
+	[],
+	[with_comments=yes])
 
-AC_PATH_PROG([XSLTPROC], [xsltproc], [])
-if test "x$XSLTPROC" = "x"; then
-	AC_MSG_WARN([xsltproc is not installed so documentation cannot be built])
-  CAN_BUILD_COMMENTS=no
+CAN_BUILD_COMMENTS=yes
+if test "x$with_comments" = "xno"; then
+	AC_MSG_NOTICE([SQL comments generation disabled by --without-comments])
+	XSLTPROC=
+	CAN_BUILD_COMMENTS=no
+else
+	AC_PATH_PROG([XSLTPROC], [xsltproc], [])
+	if test "x$XSLTPROC" = "x"; then
+		AC_MSG_WARN([xsltproc is not installed so documentation cannot be built])
+	  CAN_BUILD_COMMENTS=no
+	fi
 fi
+AC_SUBST([XSLTPROC])
 
 AC_PATH_PROG([XMLCATALOG], [xmlcatalog], [])
 if test "x$XMLCATALOG" = "x"; then
 	AC_MSG_WARN([xmlcatalog is not installed so documentation cannot be checked])
 fi
 
-AC_PATH_PROG([XMLLINT], [xmllint], [])
-if test "x$XMLLINT" = "x"; then
-	dnl AC_MSG_WARN([xmllint is not installed so documentation cannot be checked])
-	AC_MSG_WARN([xmlcatalog is not installed so documentation cannot be built])
-	CAN_BUILD_COMMENTS=no
+if test "x$with_comments" = "xno"; then
+	XMLLINT=
+else
+	AC_PATH_PROG([XMLLINT], [xmllint], [])
+	if test "x$XMLLINT" = "x"; then
+		dnl AC_MSG_WARN([xmllint is not installed so documentation cannot be checked])
+		AC_MSG_WARN([xmllint is not installed so documentation cannot be built])
+		CAN_BUILD_COMMENTS=no
+	fi
 fi
+AC_SUBST([XMLLINT])
 
 
 
