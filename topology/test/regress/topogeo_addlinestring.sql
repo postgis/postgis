@@ -761,6 +761,19 @@ FROM topology.TopoGeo_AddLinestring(
 SELECT 't6034.snap.staged_swept_collision.invalid', * FROM topology.ValidateTopology('t6034_staged_swept_collision');
 SELECT NULL FROM topology.DropTopology('t6034_staged_swept_collision');
 
+SELECT NULL FROM topology.CreateTopology('t6034_staged_closed_swept_collision', 0, 0);
+SELECT NULL FROM topology.TopoGeo_AddLinestring('t6034_staged_closed_swept_collision', 'LINESTRING(2 3,2 7)'::geometry);
+SELECT NULL FROM topology.TopoGeo_AddLinestring('t6034_staged_closed_swept_collision', 'LINESTRING(0 0,10 0,10 10,0 10,0 0)'::geometry);
+SELECT 't6034.snap.staged_closed_swept_collision', count(*) > 0
+FROM topology.TopoGeo_AddLinestring(
+  't6034_staged_closed_swept_collision',
+  'LINESTRING(1 0,0.5 3,0.5 7,1 10)'::geometry,
+  1.6,
+  snap_edges => true
+);
+SELECT 't6034.snap.staged_closed_swept_collision.invalid', * FROM topology.ValidateTopology('t6034_staged_closed_swept_collision');
+SELECT NULL FROM topology.DropTopology('t6034_staged_closed_swept_collision');
+
 \i :top_builddir/topology/test/load_topology.sql
 SELECT NULL FROM topology.ST_AddEdgeModFace(
   'city_data',

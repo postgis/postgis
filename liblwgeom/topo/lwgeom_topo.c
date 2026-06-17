@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2015-2026 Sandro Santilli <strk@kbt.io>
- * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright (C) 2025-2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -1036,6 +1036,7 @@ _lwt_EdgeMoveWillHitNode( LWT_TOPOLOGY* topo,
     motion_bounds = lwline_construct(topo->srid, NULL, motion_range);
     motion_range = NULL;
     motion_poly_bare = (LWGEOM *)lwpoly_from_lwlines(motion_bounds, 0, NULL);
+    lwline_free(motion_bounds);
     motion_poly = lwgeom_make_valid(motion_poly_bare);
     lwgeom_free(motion_poly_bare);
 
@@ -1176,35 +1177,66 @@ _lwt_EdgeMoveWillHitStagedEdges( LWLINE *oldedge, LWLINE *newedge,
                                  LWLINE **staged_edges,
                                  int staged_edge_count )
 {
-  POINTARRAY *motion_range;
-  POINTARRAY *reverse_newedge;
-  LWLINE *motion_bounds;
-  LWGEOM *motion_poly_bare;
+  POINTARRAY *motion_range = NULL;
   LWGEOM *motion_poly;
   GEOSGeometry *motion_poly_g;
   int i;
 
   if ( ptarray_is_closed_2d(oldedge->points) )
-    return 0;
-
-  motion_range = ptarray_clone_deep(oldedge->points);
-  reverse_newedge = ptarray_clone_deep(newedge->points);
-  ptarray_reverse_in_place(reverse_newedge);
-  ptarray_append_ptarray(motion_range, reverse_newedge, 0);
-  ptarray_free(reverse_newedge);
-
-  if ( ! ptarray_is_closed_2d(motion_range) || motion_range->npoints <= 3 )
   {
-    ptarray_free(motion_range);
-    return 0;
+    LWGEOM *oldpoly_bare;
+    LWGEOM *oldpoly;
+    LWGEOM *newpoly_bare;
+    LWGEOM *newpoly;
+
+    if ( oldedge->points->npoints < 4 || newedge->points->npoints < 4 ||
+         ! ptarray_is_closed_2d(newedge->points) )
+      return 0;
+
+    oldpoly_bare = (LWGEOM *)lwpoly_from_lwlines(oldedge, 0, NULL);
+    oldpoly = lwgeom_make_valid(oldpoly_bare);
+    lwgeom_free(oldpoly_bare);
+
+    newpoly_bare = (LWGEOM *)lwpoly_from_lwlines(newedge, 0, NULL);
+    newpoly = lwgeom_make_valid(newpoly_bare);
+    lwgeom_free(newpoly_bare);
+
+    motion_poly = lwgeom_symdifference(oldpoly, newpoly);
+    lwgeom_free(oldpoly);
+    lwgeom_free(newpoly);
+    if ( ! motion_poly )
+    {
+      lwerror("Could not build closed edge motion range");
+      return -1;
+    }
+  }
+  else
+  {
+    POINTARRAY *reverse_newedge;
+    LWLINE *motion_bounds;
+    LWGEOM *motion_poly_bare;
+
+    motion_range = ptarray_clone_deep(oldedge->points);
+    reverse_newedge = ptarray_clone_deep(newedge->points);
+    ptarray_reverse_in_place(reverse_newedge);
+    ptarray_append_ptarray(motion_range, reverse_newedge, 0);
+    ptarray_free(reverse_newedge);
+
+    if ( ! ptarray_is_closed_2d(motion_range) || motion_range->npoints <= 3 )
+    {
+      ptarray_free(motion_range);
+      return 0;
+    }
+
+    motion_bounds = lwline_construct(oldedge->srid, NULL, motion_range);
+    motion_range = NULL;
+    motion_poly_bare = (LWGEOM *)lwpoly_from_lwlines(motion_bounds, 0, NULL);
+    lwline_free(motion_bounds);
+    motion_poly = lwgeom_make_valid(motion_poly_bare);
+    lwgeom_free(motion_poly_bare);
   }
 
   initGEOS(lwnotice, lwgeom_geos_error);
-
-  motion_bounds = lwline_construct(oldedge->srid, NULL, motion_range);
-  motion_poly_bare = (LWGEOM *)lwpoly_from_lwlines(motion_bounds, 0, NULL);
-  motion_poly = lwgeom_make_valid(motion_poly_bare);
-  lwgeom_free(motion_poly_bare);
 
   motion_poly_g = LWGEOM2GEOS(motion_poly, 0);
   lwgeom_free(motion_poly);
