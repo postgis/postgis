@@ -1,7 +1,12 @@
-Coding Style Guidelines for PostGIS
------------------------------------
+# Coding Style Guidelines
 
-:Preamble:
+This page covers source formatting, comments, Doxygen comments, and naming
+conventions. For broader developer workflow notes, including release policy,
+SQL API upgrade rules, and the `Availability:`, `Changed:`, and `Replaces`
+comments parsed by the upgrade script generator, see
+[PostGIS Developer Documentation](../).
+
+## Preamble
 
 PostGIS was created over many years, by many different people, some in a
 hurry. As a result, the existing coding style is all over the map. We
@@ -12,8 +17,7 @@ we can dream.
 If new functions follow this guideline, if we do a little renovation work
 from time to time, we will eventually get there.
 
-
-:Formatting:
+## Formatting
 
 Most C code should use an ANSI standard formatting with tabs for block
 indenting. When not block indenting, use spaces. To convert a file
@@ -38,6 +42,18 @@ are working on:
 The idea is to avoid combining style-only commits and commits that change
 logic, so the logic commits are easier to read.
 
+Before submitting patches that modify C or C++ files, run clang-format only on
+the relevant hunks to avoid unrelated churn:
+
+```bash
+git clang-format
+```
+
+The command formats staged changes by default. Use `git clang-format <commit>`
+to reflow a specific range, or pass `--extensions c,cpp,h` when touching files
+with non-standard suffixes. Validate that the resulting diff stays focused on
+the code you touched.
+
 Macros should be ALL_UPPERCASE.
 Enumerations should be ALL_UPPERCASE.
 
@@ -45,14 +61,18 @@ Comments should be written in C style (/* .... */) and not C++ style (//)
 When describing a function,  the description should be right above the function and should start with /**
 This is so the function description can be picked up by the doxygen autodocumentor.  For example
 
+```c
 /**
  * Does something funny
  */
 double funny_function(POINT2D *p1, POINT2D *p2, POINT2D *q){
 	funny stuff here;
 }
+```
 
 More advanced commenting
+
+```c
 /**
  * Does something funny
  *
@@ -65,9 +85,9 @@ More advanced commenting
 double funny_function(POINT2D *p1, POINT2D *p2, POINT2D *q){
 	funny stuff here;
 }
+```
 
-
-:Naming:
+## Naming
 
 For ./liblwgeom:
 
@@ -84,4 +104,3 @@ For ./postgis:
   the SQL ST_Distance(geometry) maps to the C function
   ST_Distance(PG_FUNCTION_ARG)
 - C utility functions should be prefixed with pgis_ (lower case)
-

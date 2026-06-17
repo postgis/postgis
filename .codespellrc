@@ -7,6 +7,7 @@ skip =
     ./extensions/*/sql_bits/*.sql,
     ./doc/html/**,
     ./doc/po/**,
+    ./doc/trac-wiki/**,
     ./doc/postgis-out.xml,
     ./doc/*.sql,
     ./doc/postgis-nospecial.xml,

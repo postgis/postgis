@@ -59,7 +59,7 @@ ever writing intermediate files, so building all figures in parallel is safe.
 To regenerate the helper binary and PNG artwork:
 
 1. ``make -C doc/html/images generator``
-2. ``make -C doc/html/images`` (use ``-j`` for parallel builds)
+2. ``make -C doc/html/images images`` (use ``-j`` for parallel builds)
 
 Invoke ``doc/html/images/generator`` directly to spot-check new artwork. The
 ``-v`` flag prints the exact GraphicsMagick or ImageMagick command, ``-s``
@@ -124,3 +124,9 @@ Example SQL formatting rules:
 Use ``make exampletest-report`` to inspect the current manual. Use
 ``make -C regress exampletest-unit`` to run fast unit tests for the manual
 example parser and comparison logic.
+
+For contributor workflow, local testing, and garden checks, see
+``doc/development/``.
+
+The audited Trac wiki migration record and recovered attachments live in
+``doc/trac-wiki/``.
