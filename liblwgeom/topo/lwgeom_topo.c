@@ -263,7 +263,34 @@ lwt_be_insertFaces(LWT_TOPOLOGY *topo, LWT_ISO_FACE *face, uint64_t numelems)
 static int
 lwt_be_deleteFacesById(const LWT_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t numelems)
 {
-  CBT2(topo, deleteFacesById, ids, numelems);
+  LWT_ELEMID *filtered_ids = NULL;
+  uint64_t filtered_count = 0;
+  int ret;
+
+  for (uint64_t i = 0; i < numelems; ++i)
+  {
+    if (ids[i] != 0)
+      ++filtered_count;
+  }
+
+  if (!filtered_count)
+    return 0;
+
+  if (filtered_count == numelems)
+    CBT2(topo, deleteFacesById, ids, numelems);
+
+  CHECKCB(topo->be_iface, deleteFacesById);
+  filtered_ids = lwalloc(sizeof(LWT_ELEMID) * filtered_count);
+  filtered_count = 0;
+  for (uint64_t i = 0; i < numelems; ++i)
+  {
+    if (ids[i] != 0)
+      filtered_ids[filtered_count++] = ids[i];
+  }
+
+  ret = topo->be_iface->cb->deleteFacesById(topo->be_topo, filtered_ids, filtered_count);
+  lwfree(filtered_ids);
+  return ret;
 }
 
 static int
