@@ -1,0 +1,31 @@
+= Functions for the geography type =
+
+== Great Circle Mapper ==
+[http://www.gcmap.com Great Circle Mapper] is a website that shows lines on the globe that follow great circles, which is analogous to the shortest travel direction a plane would take between locations. The logic used for great circles is the same used for PostGIS' geography type.
+
+This helper function returns a URL for the Great Circle Mapper website that shows the path of a geography linestring on the Earth.
+
+{{{
+CREATE FUNCTION ST_AsGreatCircleMapperURL(geography) RETURNS text AS
+$BODY$SELECT 'http://www.gcmap.com/mapui?P=' ||
+  string_agg(
+    abs(ST_Y(geom))::text ||
+      CASE WHEN ST_Y(geom) < 0 THEN 'S' ELSE 'N' END
+    || '+' ||
+    abs(ST_X(geom))::text ||
+      CASE WHEN ST_X(geom) < 0 THEN 'W' ELSE 'E' END,
+  '-') || '&MS=wls&DU=km' AS url
+FROM ST_DumpPoints($1::geometry)$BODY$
+LANGUAGE sql IMMUTABLE;
+}}}
+
+Examples:
+{{{
+SELECT ST_AsGreatCircleMapperURL('POLYGON ((35 10, 45 45, -15 40, -10 20, 35 10))'::geography);
+}}}
+http://www.gcmap.com/mapui?P=10N+35E-45N+45E-40N+15W-20N+10W-10N+35E&MS=wls&DU=km
+
+{{{
+SELECT ST_AsGreatCircleMapperURL(ST_MakeEnvelope(-75, -80, 110, 3)::geography);
+}}}
+http://www.gcmap.com/mapui?P=80S+75W-3N+75W-3N+110E-80S+110E-80S+75W&MS=wls&DU=km

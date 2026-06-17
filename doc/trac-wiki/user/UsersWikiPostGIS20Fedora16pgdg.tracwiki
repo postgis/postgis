@@ -1,0 +1,44 @@
+= How to install PostGIS 2.0 on Fedora 16 (''Verne'') from packages =
+
+This installation method uses YUM packages maintained by Devrim GUNDUZ of the PostgreSQL Global Develompent Group (PGDG). For an overview of installing PostgreSQL using this method, see other details at http://wiki.postgresql.org/wiki/YUM_Installation.
+
+== Configure YUM ==
+
+These instructions will assume your user account has administrative privledges using `sudo`, and/or that you are using a graphical editor `gedit`, however use whatever text utility you are comfortable with. Open a terminal, e.g., click on Applications > System Tools > Terminal.
+
+Open the first file for editing:
+{{{
+sudo gedit /etc/yum.repos.d/fedora.repo
+}}}
+
+On line 10, at the end of the `[fedora]` section, insert:
+{{{
+exclude=postgresql*
+}}}
+
+Save and close the file. Open the second file:
+{{{
+sudo gedit /etc/yum.repos.d/fedora-updates.repo
+}}}
+
+On line 9, at the end of the `[updates]` section, insert:
+{{{
+exclude=postgresql*
+}}}
+Save and close the file.
+
+== Download and install PGDG RPM file ==
+
+A PGDG RPM file needs to be downloaded for your platform and your PostgreSQL version requirements (you can choose the later). Find the correct RPM file for your system from here: http://yum.postgresql.org/repopackages.php
+
+For example, if you have a 64-bit OS and want to install PostgreSQL 9.2:
+{{{
+curl -O http://yum.postgresql.org/9.2/fedora/fedora-16-i386/pgdg-fedora92-9.2-5.noarch.rpm
+sudo rpm -ivh pgdg-fedora92-9.2-5.noarch.rpm
+}}}
+
+== Install PostGIS ==
+
+{{{
+sudo yum install postgis2_92
+}}}

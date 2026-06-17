@@ -1,0 +1,103 @@
+
+= PostGIS Support Matrix of Obsolete versions =
+
+'''Versions of PostgreSQL supported by which versions of PostGIS'''
+||'''PostgreSQL version'''||'''PostGIS 1.3 EOL'''||'''PostGIS 1.4 EOL'''||'''PostGIS 1.5 EOL'''||'''PostGIS 2.0 EOL'''||'''PostGIS 2.1 EOL''' ||'''PostGIS 2.2 EOL ''' ||'''PostGIS 2.3 EOL '''||'''PostGIS 2.4 EOL'''||'''PostGIS 2.5'''
+||PostGIS release date|| 2007/08/09|| 2009/07/24|| 2010/02/04|| 2012/04/03|| 2013/08/17|| 2015/10/07|| 2016/09/26|| 2017/09/30|| 2018/09/23
+||'''11'''||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||Yes*||Yes
+||'''10'''||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, Yes (not recommended))]]||Yes||Yes
+||'''[[span(style=color: grey, 9.6 EOL)]]'''||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, Yes (not recommended))]]||[[span(style=color: grey, Yes)]]||Yes||Yes
+||'''[[span(style=color: grey, 9.5 EOL)]]'''||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||Yes||Yes
+||'''[[span(style=color: grey, 9.4 EOL)]]'''||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]
+||'''[[span(style=color: grey, 9.3 EOL)]]'''||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, No)]]
+||'''[[span(style=color: grey, 9.2 EOL)]]'''||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, Yes (not recommended))]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]
+||'''[[span(style=color: grey, 9.1 EOL)]]'''||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]
+||'''[[span(style=color: grey, 9.0 EOL)]]'''||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes (not recommended))]]||[[span(style=color: grey, Yes (not recommended))]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]
+||'''[[span(style=color: grey, 8.4 EOL)]]'''||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes (not recommended))]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]
+||'''[[span(style=color: grey, 8.3 EOL)]]'''||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]
+||'''[[span(style=color: grey, 8.2 EOL)]]'''||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]
+||'''[[span(style=color: grey, 8.1 EOL)]]'''||[[span(style=color: grey, Yes)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]
+||'''[[span(style=color: grey, 8.0 EOL)]]'''||[[span(style=color: grey, Yes (not windows))]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]
+||'''[[span(style=color: grey, 7.2-7.4 EOL)]]'''||[[span(style=color: grey, Yes (not windows))]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]
+
+Versions of PostGIS labeled 'EOL' will no longer receive any micro updates or security patches. If you are running these you should upgrade to the latest version you can.
+
+The ''not recommended'' note means you can compile and install with that, but you'll be missing some functionality.
+
+^*^ Means it currently does or doesn't but may change at release time.
+
+If you are compiling PostGIS 2.0+ with anything less than 9.1,
+you will not get CREATE EXTENSION support and will also not get KNN gist distance for geometry.
+
+As a general rule, the PostGIS Project Steering committee  tries to maintain support of PostGIS for at least two versions of PostgreSQL.
+We most often support more than 2 PostgreSQL versions, if requirements do not necessitate bumping up requirement without too much effort.
+We will rarely support more than 5 PostgreSQL versions on any release.
+
+64-bit Windows version support started in PostGIS 2.0.0 (both 9.0 and 9.1)
+
+
+'''Versions of GEOS support for PostGIS'''
+
+The below chart shows which versions of GEOS work with which versions of PostGIS.
+The none means that you can get that version to work without GEOS, though its not recommended since a lot of functions will not be installed.
+
+For the not recommended, this means that while you can get PostGIS to work with those versions, you'll be missing out on some PostGIS functions.
+Yes ^(1)^ means we assume it works, but don't test it and haven't patched tests to regress cleanly.  Some regression tests may fail as newer version give slightly different answers from previous versions.
+
+Yes * - currently works but may not work at release time.
+Blank slots means it doesn't work.
+
+
+||'''Geos Version'''||'''PostGIS 1.3 EOL'''||'''PostGIS 1.4 EOL'''||'''PostGIS 1.5 EOL'''||'''PostGIS 2.0 EOL'''||'''PostGIS 2.1 EOL'''||'''PostGIS 2.2 EOL'''||'''PostGIS 2.3'''||'''PostGIS 2.4'''||'''PostGIS 2.5'''
+||'''3.7'''||Yes||Yes||Yes||Yes||Yes||Yes||Yes||Yes||Yes
+||'''3.6 EOL'''||Yes||Yes||Yes||Yes||Yes||Yes||Yes||Yes||Yes
+||'''3.5 EOL'''||Yes||Yes||Yes||Yes||Yes||Yes (recommended)||Yes||Yes||Yes
+||'''3.4 EOL'''||Yes||Yes||Yes (preferred 3.4.2+)||Yes (3.4.2+)||Yes||Yes*||Yes*||Yes*|| No
+||'''3.3 EOL'''||Yes||Yes||Yes (preferred 3.3.3+)||Yes (3.3.9+)||Yes (not recommended)||Yes*||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||No
+||'''3.2 EOL'''||Yes||Yes||Yes||Yes (not recommended)||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||No
+||'''3.1 EOL'''||Yes||Yes||Yes (not recommended) (requires 3.1.1+)||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||No
+||'''3.0 EOL'''||Yes||Yes (not recommended)||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||No
+||'''2.2 EOL'''||Yes (not recommended)||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||No
+||'''None'''||Yes (not recommended)||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||[[span(style=color: grey, No)]]||No
+
+'''Versions of Proj support for PostGIS'''
+
+Yes (1):  It works but may have regression failures or not recommended
+
+Yes (2): it works but some features disabled
+
+If a cell is not filled in after, means support stopped for it.
+
+||'''PROJ Version'''||'''PostGIS 2.4'''||'''PostGIS 2.5'''
+||'''7.0-7.2'''||No||Yes (1)
+||'''6.0'''||No||Yes
+||'''6.1-6.3'''||No||Yes
+||'''5.0-5.2'''||Yes||Yes
+||'''4.9'''||Yes||Yes
+||'''4.8'''||Yes||Yes
+
+
+'''Versions of GDAL support for PostGIS'''
+
+PostGIS raster functionality (introduced in 2.0) depends on GDAL so to get raster functionality, you'll need to compile with GDAL support and preferably 1.9 or above.
+Although you can compile PostGIS 2.0 without raster support, you really should rethink that decision, especially if you are a package maintainer (you'll have a lot of pissed off users if you do :)).
+For PostgreSQL 9.1 extension support, compiling with raster support is ABSOLUTELY required since the postgis extension includes the raster functionality.
+
+^*^ Means it currently does or doesn't but may change at release time.
+
+Yes ^(1)^ Assumed to work but we did not test it
+
+Blank - support stopped at this point
+
+||'''GDAL Version'''||'''PostGIS 1.5 - 2.1 (EOL)'''||'''PostGIS 2.2 (EOL)'''||'''PostGIS 2.3 (EOL)'''||'''PostGIS 2.4 - 2.5'''
+||'''3.2-3.4'''||No||No||Yes ^(1)^||Yes||Yes
+||'''3.0-3.1'''||No||No||Yes ^(1)^||Yes||Yes
+||'''2.0-2.4 EOL'''||Yes*||Yes||Yes||Yes||No*
+||'''1.10 - 1.11 EOL'''||Yes||Yes||Yes ^(1)^
+||'''1.7-1.9 EOL'''||Yes||Yes||Yes ^(1)^
+
+
+
+= Packaging status =
+
+See UsersWikiPackages

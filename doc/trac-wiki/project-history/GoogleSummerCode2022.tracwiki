@@ -1,0 +1,125 @@
+= Google Summer of Code 2022 =
+[[TOC]]
+
+== Introduction ==
+
+So you are interested in becoming a Google Summer of Code student. What should you do to improve your chances of being selected? We recommend reading
+
+* [https://wiki.osgeo.org/wiki/Google_Summer_of_Code_Recommendations_for_Students OSGeo's GSoC Recommendations for Students]
+* We currently have some projects in mind listed below, with a mentor ready to help - refer to below. We are open to other ideas. We also have some other ideas in our [https://trac.osgeo.org/postgis/query?status=!closed&keywords=~gsoc ticket trac gsoc ideas]
+* Join the [https://lists.osgeo.org/mailman/listinfo/postgis-devel PostGIS Developers list] and describe your proposed project (or willingness to work on Idea 1 listed below). We will let you know if we think the project is worthwhile and doable within the allotted time you have.
+* If you are looking for additional ideas, refer to our past GSOCS:
+   * [wiki:GoogleSummerCode2021 Google Summer Of Code 2021]
+   * [wiki:GoogleSummerCode2019 Google Summer Of Code 2019]
+   * [wiki:GoogleSummerCode2018 Google Summer Of Code 2018]
+   * [wiki:GoogleSummerCode Google Summer Of Code 2013]
+
+=== Improving your chances ===
+
+For most projects involving PostGIS you will eventually need the following:
+
+* Know how to install PostgreSQL
+* Know how to install PostGIS in PostgreSQL
+* Know how to compile PostgreSQL code
+* Know how to compile PostGIS code and run tests
+* Some basic knowledge of git -- at least how to do a git clone, git push, git pull and pull requests
+
+While you can learn to do these things and ask questions, we would prefer students to know these before starting on a PostGIS project.
+
+
+== Idea 1: Enhancing shp2pgsql / pgsql2shp to load/export topology elements and topogeoms ==
+
+shp2pgsql is a commandline tool that is part of the PostGIS code base designed for loading ESRI shapefiles into a PostGIS database.
+pgsql2ship is a commandline tool that is used to export data into ESRI shapefile format.
+
+Both tools currently only support geometry and geography formats. The plan is to augment them to support topology elements and topogeoms as well if the postgis_topology extension is installed.
+
+Check #2103 for more information
+
+''Expected outcomes'':
+
+shp2pgsql will have new switches for loading into a topology. For topology elements, whether it loads into faces, edges, nodes will be dictated by the type of the data in the ESRI shapefile and will ignore the attribute data if any.
+
+For topogeoms, the user would need to specify the table to create, topology, and column, with default column name being ''topo'' if the user does not specify. This will behave more or less the same as geography/geometry loading.  For the first pass, we will assume this will just use basic topo element types (areal, lineal, punctal) and will not use subelements.
+
+pgsql2shp will be used to export topogeoms and will use the topo::geometry casting to do so. Since topology tables edges and nodes are already geometry tables, there is no need to support exporting topology.  However for faces, we might consider allowing exporting that using the topology.GetFace(face_id) function.
+
+
+''Skills required'':
+
+Some familiarity with PostGIS, PostgreSQL, and postgis_topology extension
+Ability to compile PostGIS loader / dumper. The load / dumper can be compiled without compiling all of PostGIS so it would be sufficient to have a working PostGIS/PostgreSQL install and just compile these. Some familiarity with C.
+
+''Mentors'': Sandro Santilli, Regina Obe
+
+''Difficulty'': Medium
+
+``Student Test'':
+
+1. git clone code from [https://git.postgresql.org/gitweb/?p=postgresql.git PostgreSQL] and compile
+2. git clone PostGIS code from [https://git.osgeo.org/gitea/postgis/postgis.git PostGIS primary repo] or one of [wiki:CodeMirrors Git repos] and compile.
+3. Create a working PostgreSQL database with postgis extension installed and shp2pgsql/pgsql2shp you compiled.
+4. Setup a public fork of PostGIS repo for your work (can be [https://git.osgeo.org/gitea osgeo], [https://gitlab.com gitlab], [https://github.com github], or any other repo you can make available for public review)
+
+Since the above is all work in PostGIS, a working PostgreSQL installed from repos is an acceptable alternative to #1.
+
+
+
+== Idea 2: Augment pgAdmin to support importing and exporting shapefiles ==
+
+pgAdmin group comments [https://www.postgresql.org/message-id/CA%2BOCxow6Rj_HUqvLuVEpdU5dhnb%2BQi_FKp8AYny%2BUq_Yj5-Z4A%40mail.gmail.com here]
+
+''Expected outcome'':
+
+Import / Export Feature for Dbase and ESRI shapefiles:
+
+1) There should be a menu option in the pgAdmin browser tree whenever you right-click a database, table, or schema that allows you to import or export Dbase/shapefiles.
+
+2) The tool would use the shp2pgsql and pgsql2shp commandlines that are part of the PostGIS source code in much the same way the backup and restore data browse menu options
+built into pgAdmin utilizes pg_dump / pg_restore.
+It will look for the executable files in default runtime folder or user specified PostGIS binary path.
+
+3)  If a particular table is selected, it will give option to export as a Dbase/Shapefile or import (append to) (no need to ask for table aside from export/import path) or append to
+
+4) If no table is selected - it will pop up a list of tables (as show in export screenshot) and allow user to import a file as a table in currently selected schema.
+
+If no schema is selected it would load in the default schema.
+
+This is to replace in newer pgAdmin 4 6.5+ the shp2pgsql-gui plugin (which still exists but is standalone) that was hosted as a plugin in pgAdmin3.  Here is a screen shot of what the old guis looks like.  We want to achieve the same or similar functionality
+Summarized in #4358
+
+
+''Import''
+
+[[Image(postgis-qui-import-1.png)]]
+[[Image(postgis-qui-import-2.png)]]
+[[Image(postgis-qui-import-3.png)]]
+
+
+
+''Export''
+
+[[Image(postgis-qui-export-1.png)]]
+[[Image(postgis-qui-export-2.png)]]
+
+
+
+''Skills required'':
+
+python, html, css, and React, ability to compile [https://git.postgresql.org/git/pgadmin4.git pgAdmin]
+ some familiarity with PostGIS, PostgreSQL, and pgAdmin is preferable
+Ability to compile PostGIS and PostgreSQL code is a plus but not absolutely required.
+
+''Mentors'': Regina Obe, Sandro Santilli
+
+''Difficulty'': Medium / Hard
+
+``Student Test'':
+
+1. git clone code from [https://git.postgresql.org/gitweb/?p=postgresql.git PostgreSQL] and compile
+2. git clone PostGIS code from [https://git.osgeo.org/gitea/postgis/postgis.git PostGIS primary repo] or one of [wiki:CodeMirrors Git repos] and compile
+3. git clone code from [https://git.postgresql.org/gitweb/?p=pgadmin4.git pgAdmin4] and compile
+4. Create a working PostgreSQL database with postgis extension installed and shp2pgsql/pgsql2shp installed on system you are running pgAdmin4 on.
+5. Setup a public fork of pgAdmin repo for your work (can be [https://git.osgeo.org/gitea osgeo], [https://gitlab.com gitlab], [https://github.com github], or any other repo you can make available for public review)
+
+Since the above is all work in pgAdmin, installing PostGIS / postgis commandline tools from a repository is equally acceptable to doing (1,2)

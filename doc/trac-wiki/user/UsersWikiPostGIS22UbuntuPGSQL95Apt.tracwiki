@@ -1,0 +1,243 @@
+The [http://wiki.postgresql.org/wiki/Apt PostgreSQL Apt Repository]  now hosts installs of PostGIS, pgRouting, in addition to Postgresql and PGAdmin3.
+
+The following describes how to install Postgresql 9.5, PostGIS 2.2, pgRouting, PGAdmin on Ubuntu version 16.04. It is assumed to also work on Linux Mint, Lubuntu, and Xubuntu.
+
+Run these in terminal:
+== Verify what version of Ubuntu you are running ==
+{{{
+sudo lsb_release -a
+}}}
+
+
+== Add Respository to sources.list ==
+
+You'll need to replace the nickname below with what you are running.
+Note to replace the word trusty with whatever version lsb states
+
+Helper on [http://www.postgresql.org/download/linux/ubuntu/]
+
+For trusty (16.04)
+
+{{{
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt xenial-pgdg main" >> /etc/apt/sources.list'
+}}}
+
+
+== Add Keys ==
+{{{
+wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -
+}}}
+
+{{{
+sudo apt-get update
+}}}
+
+== Install ==
+The following will install postgresql 9.5, PostGIS 2.2, PGAdmin3, pgRouting 2.1 and additional supplied modules including the '''adminpack''' extension:
+
+
+{{{
+sudo apt-get install postgresql-9.5-postgis-2.2 pgadmin3 postgresql-contrib-9.5
+}}}
+
+== To get pgRouting ==
+{{{
+# Install pgRouting 2.1 package
+sudo apt-get install postgresql-9.5-pgrouting
+
+}}}
+== Enable Adminpack ==
+
+While in terminal, log in to the psql console as postgres user:
+
+{{{
+sudo -u postgres psql
+}}}
+
+{{{
+CREATE EXTENSION adminpack;
+}}}
+
+Never install PostGIS in the postgres database, create a user database
+You can also enable the PostGIS extension here (or with the GUI as described below):
+
+{{{
+CREATE DATABASE gisdb;
+\connect gisdb;
+
+CREATE EXTENSION postgis;
+SELECT postgis_full_version();
+}}}
+
+should give you output something like this:
+
+
+{{{
+                                                                         postgis_full_version
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ POSTGIS="2.2.1 r14555" GEOS="3.4.2-CAPI-1.8.2 r3921" PROJ="Rel. 4.8.0, 6 March 2012" GDAL="GDAL 1.10.1, released 2013/08/26" LIBXML="2.9.1" LIBJSON="0.11.99" RASTER
+(1 row)
+}}}
+
+
+Install pgRouting
+
+{{{
+CREATE  EXTENSION pgrouting;
+SELECT * FROM pgr_version();
+}}}
+
+
+
+Exit the psql console:
+
+{{{
+\q
+}}}
+
+
+== Open Access to Clients ==
+
+You may need to edit to pg_hba.conf and/or pg_ident.conf, postgresql.conf to allow external access
+
+{{{
+sudo nano /etc/postgresql/9.5/main/pg_hba.conf
+}}}
+
+If you need external access, scroll to the bottom of the pg_hba.conf file and add a line like this (which willa llow all clients with md5 password encrypt authentication (right after the local rules):
+
+{{{
+hostssl    all             all             0.0.0.0/0               md5
+}}}
+
+Click CTRL-X to save your changes, Y to write them to the file, and enter to exit.
+
+You'll also want to edit the postgresql.conf file and change listen_addresses line to a specific ip of the server or '*' to listen on all ips.
+
+If you change ip or port, you need to do a service restart.
+
+{{{
+sudo service postgresql restart
+}}}
+
+Note: you can also do from postgres psql console with below - only for changes that don't require retart)
+
+{{{
+SELECT pg_reload_conf();
+}}}
+
+
+== Optional: check location of configuration files: ==
+
+From the psql console(see above):
+
+{{{
+SELECT name, setting FROM pg_settings where category='File Locations';
+}}}
+
+Which will output something like:
+
+{{{
+
+       name        |                 setting
+-------------------+------------------------------------------
+ config_file       | /etc/postgresql/9.5/main/postgresql.conf
+ data_directory    | /var/lib/postgresql/9.5/main
+ external_pid_file | /var/run/postgresql/9.5-main.pid
+ hba_file          | /etc/postgresql/9.5/main/pg_hba.conf
+ ident_file        | /etc/postgresql/9.5/main/pg_ident.conf
+
+}}}
+
+
+
+== Create new PGSQL user ==
+
+You can create a new database super user to use instead of the default {{{postgres}}} user.
+
+While in terminal, run:
+
+{{{
+sudo su - postgres
+}}}
+
+{{{
+createuser -d -E -i -l -P -r -s yourUserName
+}}}
+
+(be sure to change the username to your desired username)
+
+Enter your new password when prompted
+
+Log out as {{{postgres}}} user:
+
+{{{
+exit
+}}}
+
+Exit terminal:
+
+{{{
+exit
+}}}
+
+== Use PGAdmin to log into database server ==
+
+From the Ubuntu launcher, type in PGAdmin to reveal the application
+
+Click the {{{Add a connection to server}}} button on the menu in the top-left corner
+
+Fill in the necessary credentials to log in:
+
+{{{
+- Name: nickname you want to give your connection
+- host: localhost (until you change the connection settings)
+- port: 5432 by default
+- maintenance DB: postgres by default
+- username: whatever you chose in the step above
+- password: whatever you chose in the step above
+}}}
+
+== Enable postgis extensions on new database ==
+
+Since you installed PostgreSQL and PostGIS from the PostgreSQL apt repository, you now have all the extensions for PostgreSQL, including PostGIS
+
+Expand the database tree in PGAdmin, and reveal the extensions node
+
+Right-click the extensions node, and click {{{new extension}}}
+
+Enable the '''postgis''' extension, as well as '''postgis_topology''', and '''postgis_tiger_geocoder'''
+
+Alternatively from psql console you can do
+
+{{{
+CREATE EXTENSION postgis;
+CREATE EXTENSION postgis_topology;
+CREATE EXTENSION fuzzystrmatch;
+CREATE EXTENSION postgis_tiger_geocoder;
+#if you installed pgRouting extension, you can do
+CREATE EXTENSION pgrouting;
+}}}
+
+
+== Import SHP files using shp2pgsql-gui ==
+
+Another handy piece of software {{{shp2pgsql-gui}}} tool. This will allow you to quickly connect to your new PostGIS database and import a Shapefile.
+
+Open terminal, and type:
+
+{{{
+sudo apt-get install postgis
+}}}
+
+(Note: this is coming from the main Ubuntu software repository, as it seems the PostgreSQL APT repository doesn't package SHP2PGSQL-GUI anymore...)
+
+Now open the SHP2PGSQL application:
+
+{{{
+shp2pgsql-gui
+}}}
+
+Follow the on-screen prompts to load your data.
+
+For more information, visit the [http://www.bostongis.com/PrinterFriendly.aspx?content_name=postgis_tut01 Boston GIS] tutorial in the section "Load Towns Data"

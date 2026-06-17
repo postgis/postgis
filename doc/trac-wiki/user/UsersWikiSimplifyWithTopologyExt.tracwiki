@@ -1,0 +1,106 @@
+[[TOC]]
+
+= Another example showing how to simplify (generalize) a multipolygon layer using PostGIS Topology =
+
+This article is a sort of "follow-up" for this one: UsersWikiSimplifyPreserveTopology, showing another method to build generalized polygons keeping their spatial relationship, based on spatial operators and SQL queries.
+
+Another take is on [http://strk.keybit.net/blog/2012/04/13/simplifying-a-map-layer-using-postgis-topology/]
+
+This example uses the PostGIS Topology module ([http://postgis.org/documentation/manual-2.0/Topology.html]) and aims at producing a simplified polygonal layer, with initial polygons' attributes correctly associated to simplified polygons
+
+(''A big thank to Brent Wood for its Topology Example and to Sandro Santilli for the topology module'')
+
+== What we want ==
+
+|| Simplifying this layer: || into this: || avoiding that:
+|| [[Image(wiki:UsersWikiSimplifyPreserveTopology:SPT_dept_ori.png)]] ||  [[Image(wiki:UsersWikiSimplifyPreserveTopology:SPT_dept_sim.png)]] || [[Image(wiki:UsersWikiSimplifyPreserveTopology:SPT_no_topo.png)]] ||
+
+== The data ==
+
+French administrative subdivisions, called "départements", will be used. Data can be downloaded here: [http://professionnels.ign.fr/DISPLAY/000/528/175/5281750/GEOFLADept_FR_Corse_AV_L93.zip]
+
+Data projection is Lambert-93, EPSG:2154
+
+== Loading the data ==
+
+{{{
+#!sh
+shp2pgsql -IiD -g geom -s 2154 DEPARTEMENT.SHP departement | psql
+
+}}}
+
+== Principle of simplification ==
+
+
+ * The [http://postgis.org/documentation/manual-2.0/Topology.html Postgis Topology] module is used to build a topology from input data
+ * A new topology is then created, using a simplified (generalized) version of the first one.
+ * Node connections seem to be preserved doing so,
+ * Then, simplified polygons are matched against initial ones using spatial operations
+
+== Steps ==
+
+ 1. Creates the target table that will contain simplified geometry. Initial departement polygons are dumped to handle simple objects.
+
+{{{
+#!sql
+create table new_dept as (
+       select gid, code_dept, (st_dump(geom)).*
+       from departement
+);
+create index new_dept_geom_gist on new_dept using gist(geom);
+
+-- adds the new geom column that will contain simplified geoms
+alter table new_dept add column simple_geom geometry(POLYGON, 2154);
+
+}}}
+
+ 2. Creates a topology from the departements
+
+{{{
+#!sql
+-- create new empty topology structure
+select CreateTopology('topo1',2154,0);
+
+-- add all departements polygons to topology in one operation as a collection
+select ST_CreateTopoGeo('topo1',ST_Collect(geom))
+from departement;
+}}}
+
+ 3. Create a new topology based on the simplification of existing one. (''should not be the right way to do it, but calling ST_ChangeEdgeGeom'')
+
+{{{
+#!sql
+select CreateTopology('topo2',2154,0);
+
+select ST_CreateTopoGeo('topo2', geom)
+from (
+       select ST_Collect(st_simplifyPreserveTopology(geom, 10000)) as geom
+       from topo1.edge_data
+) as foo;
+
+}}}
+
+ 4. Retrieves polygons by comparing surfaces (pip is not enough for odd-shaped polygons)
+
+{{{
+#!sql
+with simple_face as (
+       select st_getFaceGeometry('topo2', face_id) as geom
+       from topo2.face
+       where face_id > 0
+) update new_dept d set simple_geom = sf.geom
+from simple_face sf
+where st_intersects(d.geom, sf.geom)
+and st_area(st_intersection(sf.geom, d.geom))/st_area(sf.geom) > 0.5;
+
+}}}
+
+== Results ==
+
+This method produces a clean result, departement's codes are correcty re-associated:
+
+ [[Image(SPT_simple_good_topo.png)]]
+
+== Notes ==
+
+Find a way to associate faces to initial polygon using topology, not using spatial operations. see strk mail

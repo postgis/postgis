@@ -1,0 +1,22 @@
+--August 18, 2009 -- this is a work in progress
+= Create a windows setup exe using NSIS  =
+
+This is what is used by PostgreSQL Application Stack Builder to deploy PostGIS and may be something
+you want to do if you are deploying your own applications.
+
+1. Download and install ''Null Soft scriptable installation system (NSIS)''.  [http://nsis.sourceforge.net/Download]
+
+As of this writing 2.45 is the latest version
+
+2. Download Execdos plugin from [http://nsis.sourceforge.net/ExecDos_plug-in] and copy the .dll into your Program Files/NSIS/Plugins directory
+
+3. Download the appropriate NSIS installer scripts for PostGIS from [http://postgis.refractions.net/download/windows/]
+
+4. Create a distfiles folder on same level as wininst and copy your compiled libraries etc. into that folder
+(to get a sense of how the folders are structured in versions extract an existing nsis setup (you and just use 7zip on any unzipper)
+
+5. Modify the inputfiles.nsh accordingly to copy the files from distfiles to install directory
+
+6. Make modifications to postgis.nsi accordingly (mostly just the PostgreSQL version needs to be unremarked.
+
+7. Right-mouse click on the postgis.nsi and choose "Compile NSIS Script"

@@ -1,0 +1,62 @@
+= Code Sprint - Boston  - 2018 =
+
+== Dates ==
+
+ * Start at 09:00 Wednesday September 26
+ * End at 17:00 Friday September 28
+
+== Sponsors ==
+
+Sponsorship dollars will be used to support travel and accommodation for "non-corporate" developers whose travel is not otherwise covered. Interested in sponsoring? Please contact <lr at pcorp dot us>.
+
+We are able to accept payments in the form of Credit Card, Bank Transfer, Pay Pal, and for US companies (all the already stated plus checks)
+
+|| '''Sponsor List''' || '''Contribution'' =||
+||= [[Image(https://www.osgeo.org/wp-content/themes/roots/assets/img/logo-osgeo.svg, width=140, link=https://www.osgeo.org/)]] || $2000 =||
+||= [[Image(https://uk.osgeo.org/images/OSGeoUK2.png, width=140, link=https://uk.osgeo.org/)]] || $1500 =||
+
+
+== Goals ==
+
+The main aim is to begin thinking about next releases, and major features to be attempted.
+
+ * wiki:PostGIS3 topics
+ * PostGIS 2.5 ticket triage (if not released yet) otherwise work/planning for  PostGIS 3.0
+ * PostgreSQL integration
+  * Desired core improvements
+  * Core features we should make use of
+ * Discuss feasibility / strategies for geography clustering implementations
+ * Performance testing suite
+ * web site refresh, infra wars
+ * What goes in NEWS file and announcments
+ * Add your own ... ?
+
+== Attendance ==
+
+PostGIS (and GEOS, Proj, PgSQL, GDAL, CGAL, etc?) devs who will be there:
+
+ * Paul Ramsey
+ * Regina Obe
+ * Leo Hsu
+ * Darafei Praliaskouski
+ * Dan Baston
+ * ~~Bborie Park (probably)~~
+ * Raúl Marín
+ * Sandro Santilli (IRC?)
+
+(SIGN UP CLOSED)
+
+== Venue ==
+
+ * [http://www.devonshireboston.com Devonshire] in Paragon office (PH301) HC floor
+   * [http://goo.gl/maps/0VsfG SRID=4326;POINT(-71.057593 42.358187)]
+ * From Boston Logan Airport
+   * Take Blue Line to State Street (The Devonshire is on Washington St, just off of State St.)
+   * "Leo express" will also be available
+
+
+-----------
+
+= Meeting Notes =
+
+ * TBD during the event

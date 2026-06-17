@@ -1,0 +1,33 @@
+= How to install PostGIS 2.0 on Ubuntu 13.04 (''raring'') from packages =
+
+== Install ==
+
+Add PPA using:
+{{{
+sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+}}}
+Now open 'Software & Updates' and go to the tab 'Other Software' and change the distribution for http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu from 'raring' to 'quantal'. Otherwise you will get the following error message:
+{{{
+ERROR:  could not open extension control file "/usr/local/PostgreSQL/9.2/share/postgresql/extension/postgis.control": No such file or directory
+}}}
+Install packages using the following commands:
+{{{
+sudo apt-get update
+sudo apt-get install postgis postgresql-9.1-postgis
+}}}
+
+
+== Spatially enabling a database ==
+
+Connect to your database using pgAdmin or psql, and run the following commands. To add postgis with raster support:
+{{{
+CREATE EXTENSION postgis;
+}}}
+
+To add topology support, a second extension can be created on the database:
+{{{
+CREATE EXTENSION postgis_topology;
+}}}
+
+== See also ==
+ * https://help.ubuntu.com/community/PostgreSQL

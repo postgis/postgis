@@ -1,0 +1,3 @@
+== Topology Layer Table ==
+
+A table describing existing topology layers in the database cluster. This table is required to properly interpret hierarchical layers. It also contain information about where `TopoGeometry` objects are deployed (in which schema, table, column). Deploy may be missing, for example right after a `CopyTopology` call.

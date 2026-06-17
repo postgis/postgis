@@ -1,0 +1,9 @@
+The PostGIS source tree on Codeberg (https://codeberg.org/postgis/postgis) is a [CodeMirrors mirror] of the [CodeRepository official repository].
+
+To get the source from Codeberg, and start a configure:
+{{{
+git clone https://codeberg.org/postgis/postgis.git
+cd postgis
+./autogen.sh
+./configure
+}}}

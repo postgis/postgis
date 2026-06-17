@@ -1,0 +1,226 @@
+= PostGIS Raster Home Page =
+
+
+{{{
+#!html
+<div style='float: right; margin-left: 5px; width: 260px; font-size: small;' >
+<div style='padding:5px; background-color: #F4F4F4; border: 1px solid gray;' >
+<B>Quick Links</B><BR>
+
+<UL>
+<LI><A href=http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding>Planning & Funding</A></LI>
+
+<LI><A href=http://trac.osgeo.org/postgis/wiki/WKTRaster/Documentation01>Beta Documentation</A></LI>
+<LI><A href=http://postgis.net/docs/manual-dev/RT_reference.html>Function Reference</A></LI>
+<LI><A href=http://trac.osgeo.org/postgis/wiki/WKTRaster/FAQ>FAQ</A></LI>
+<LI><A href=http://trac.osgeo.org/postgis/wiki/WKTRaster/SpecificationWorking03>Working Specs for Future Versions</A></LI>
+
+<LI><A href=http://trac.osgeo.org/postgis/report/17> Open Tickets</A></LI>
+</UL>
+
+</div>
+<div style='padding:5px; background-color: #FFDE38; border: 1px solid gray;' >
+
+<B>What's new about PostGIS Raster?</B><BR><BR>
+
+<I>August 27, 2012</I><BR><B>FME 2013 will soon read and write rasters stored in PostGIS!</B><BR><A href=http://www.safe.com/>Safe Software</A> will write a reader, a writer and some others functionalities to interact with rasters stored in PostGIS! These tools should be released with FME 2013 and already available in <A href=http://www.safe.com/support/support-resources/fme-downloads/beta/>future beta versions of FME</A> this fall. A great news for the PostGIS community!<BR><BR>
+
+On the GDAL side, lots of improvement have been recently done on the <A href=http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html>PostGIS Raster driver</A>. You can now read irregular arrangements of raster and translate them into any format supported by GDAL. We are still looking for sponsors to implement the writer part of the driver.<BR><BR>
+
+<I>July 24, 2012</I><BR><B>PostGIS Raster Released with PostGIS 2.0 and another GSoC!</B><BR>Lot's of things happened since the last news was published in this page. First of all PostGIS Raster is now part of PostGIS 2.0! Congratulation to everybody who worked (and still work) on the raster stuff: Bborie, Jorge, Regina, David, Mateusz, Sandro & Pierre! Second: A second Google summer of Code project has been accepted for PostGIS (the first was for the GDAL driver and hence for the GDAL project actually). Qing Liu will work on a <A href=http://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools> distance raster to feature function</A> and a cost distance function if she gets time. Welcome Qing!<BR><BR>
+
+On Thursday, at 4 PM, Jorge Sanz and Ignacio Brodin will show how to <A href=http://2011.foss4g.org/sessions/accessing-postgis-raster-gvsig-desktop>access PostGIS Raster from gvSIG Desktop</A>. On Friday, at 11 AM, Pierre Racine will speak about how to <A href=http://2011.foss4g.org/sessions/store-manipulate-and-analyze-raster-data-within-postgresqlpostgis-spatial-database> store, manipulate and analyze raster data within the PostgreSQL/PostGIS spatial database</A> (<A href="http://blip.tv/fosslc/foss4g-window-pierre-storem-5656323">video</A>). He will also present what has been done since last year and what can be done with PostGIS Raster. See you in Denver: September 12-16!<BR><BR>
+
+<I>August 1, 2011</I><BR><B>Two presentations about PostGIS Raster this year at FOSS4G in Denver!</B><BR>On Thursday, at 4 PM, Jorge Sanz and Ignacio Brodin will show how to <A href=http://2011.foss4g.org/sessions/accessing-postgis-raster-gvsig-desktop>access PostGIS Raster from gvSIG Desktop</A>. On Friday, at 11 AM, Pierre Racine will speak about how to <A href=http://2011.foss4g.org/sessions/store-manipulate-and-analyze-raster-data-within-postgresqlpostgis-spatial-database> store, manipulate and analyze raster data within the PostgreSQL/PostGIS spatial database</A> (<A href="http://blip.tv/fosslc/foss4g-window-pierre-storem-5656323">video</A>). He will also present what has been done since last year and what can be done with PostGIS Raster. See you in Denver: September 12-16!<BR><BR>
+
+<I>March 24, 2011</I><BR><B>A great Code Sprint and... ...a new contributor!</B><BR>David Zwarg from <A href=http://www.azavea.com>Azavea</A> and Pierre Racine from the <A href=http://www.cef-cfr.ca/index.php?n=Actualit%e9.Accueil?userlang=en>CFR</A> met for the first time at the <A href=http://wiki.osgeo.org/wiki/Montreal_Code_Sprint_2011>Montréal Code Sprint</A> last week. They came out with a very innovative MapAlgebra function based on a user defined PL/pgSQL function. This code should be committed soon with another version involving neighbour pixels. On another side, students are already showing interest for our <A href=http://trac.osgeo.org/postgis/wiki/WKTRasterGSoC/>Google Summer of Code Ideas</A> and Bborie Park, an experienced programmer from the <A href=http://cvec.ucdavis.edu/>Center for Vectorborne Diseases</A> at the University of California will join the team. He will work on a series of SQL function converting PostGIS rasters to the different formats supported by GDAL and on resampling. Welcome Bborie!<BR><BR>
+
+
+<I>February 14, 2011</I><BR><B>Two plugins to display PostGIS rasters!</B><BR>Thanks to Maurício de Paulo, there is now a plugin to display PostGIS rasters in QGIS. Look for "wktraster" in the <A href=http://pyqgis.org/repo/contributed>QGIS plugin page</A> and <A href=http://mapeandoobrasil.blogspot.com/2010/12/postgis-raster-plugin-para-qgis.html>Mauricio's article</A> (if you can decrypt portuguese!). Samething on the side of <A href=http://www.gvsig.org/web/>gvSIG</A>, the popular spanish open source GIS! Nacho Brodin has developed a plugin to display raster stored in PostGIS. See <A href=http://www.osor.eu/projects/gvsig-postgisra>the page of the project</A>. On our side, we are working fixing bugs and implementing ST_MapAlgebra. See you at the <A href=http://wiki.osgeo.org/wiki/Montreal_Code_Sprint_2011>Code Sprint 2011</A> in Montréal (march 15-18)!<BR><BR>
+
+
+<I>September 15, 2010</I><BR><B>WKT Raster becomes THE new PostGIS raster type!</B><BR>It's official! The WKT Raster extension will become the new PostGIS RASTER type in PostGIS 2.0 planned for next april. The PostGIS and the WKT Raster team met at the FOSS4G friday's code sprint and decided that WKT Raster was mature enough to bring interesting new functionalities to PostGIS. A new MapAlgebra function should be added for this release. Congratulation to the whole team for all the work accomplished!<BR><BR>
+
+<I>August 11, 2010</I><BR><B>PostGIS WKT Raster at FOSS4G</B><BR>There should be a lot of discussion about PostGIS WKT Raster at FOSS4G, the most important conference for free and open source software for geomatics, as both Pierre Racine and Jorge Arévalo presentations have been selected by the attendees. Pierre will first introduce the project in a presentation entitled “<A href=http://trac.osgeo.org/postgis/attachment/wiki/WKTRaster/FOSS4G2010_Pierre.pdf>Introducing PostGIS WKT Raster: Seamless raster/vector operations in a spatial database</A>” and Jorge will present the result of its meticulous study of the difference between PostGIS WKT Raster and Oracle GeoRaster in a presention entitled “<A href=http://trac.osgeo.org/postgis/attachment/wiki/WKTRaster/FOSS4G2010_Jorge.pdf>PostGIS WKT Raster. An Open Source alternative to Oracle GeoRaster</A>”. You can already read Jorge’s first impression in <A href=http://gis4free.wordpress.com/2010/07/19/oracle-georaster-part-i/>his first article in a series</A>. CU September 6th 2010 in Barcelona!<BR><BR>
+
+<I>June 11, 2010</I><BR><B>A tutorial and a book!</B><BR>The <A href=http://www.manning.com/obe/>PostGIS in Action</A> chapter on PostGIS WKT Raster is out! Thanks to Regina Obe and Leo Hsu, there is already a good amount of literature on WKT Raster and this makes WKT Raster to be a little bit more in the PostGIS family. Pierre Racine has also written <A href=http://trac.osgeo.org/postgis/wiki/WKTRasterTutorial01> a tutorial on how to import and intersect a huge raster coverage with a vector coverage</A>. Your raster coverage is huge and you can't work with it in your favorite GIS platform? Read the tutorial! You will be amazed by the simplicity and the speed of the intersection functions. Good reading!<BR><BR>
+
+<I>February 22, 2010</I><BR><B>A third company join the WKT Raster team!</B><BR>The award-winning GIS software development firm, <A href=http://www.azavea.com>Azavea</A>, specializing in web-based geographic analysis, visualization and modeling applications, decided to invest in WKT Raster development. The company sent David Zwarg and Jeff Adams to <A href=http://blog.cleverelephant.ca/2010/02/nyc-sprint-day-1.html>the Code Sprint 2010 in NY</A>. Jeff worked on PostGIS and David helped with many WKT Raster base functions. David committed himself to work on many other WKT Raster functions in the near future. His main task will be to design and implement the ST_MapAlgebra() and the ST_Resample() functions. Welcome David!<BR><BR>
+
+
+<I>December 10, 2009</I><BR><B>Tyler Erickson speaks about his need for PostGIS WKT Raster at FOSS4G 2009</B><BR><A href=http://wiki.mtri.org/display/mtripub/tyler+erickson>Tyler Erickson</A>, Research Scientist at the Michigan Tech Research Institute <A href=http://download.osgeo.org/osgeo/foss4g/2009/SPREP/2Thu/Parkside%20GO4/1030/Thu%20G04%201130%20Erickson/Erickson_foss4g.ppt>presented his research project</A> at <A href=http://2009.foss4g.org/researchpapers/#researchpaper_5>FOSS4G 2009</A> in Sydney, Australia. Tyler uses <A href=http://geodjango.org/>GeoDjango</A> and PostGIS to visualise the results of CO2 simulation models directly in Google Earth. WKT Raster would enable him to easily do raster/vecter spatial analysis from his web application. Tyler's project was selected as one of the professional winners in Google’s 2009 KML in Research Competition.<BR><BR>
+
+<I>December 4, 2009</I><BR><B>Jorge Arevalo full time on WKT Raster!</B><BR>Jorge Arevalo who developped the first version of the GDAL WKT Raster driver during the summer of 2009 will be working for at least one year on WKT Raster. Jorge is working for <A href=http://www.deimos-space.com/UK/index.asp?lang=UK>DEIMOS Space</A>, a Spanish aerospace company leading the <A href=http://www.espanavirtual.org/?q=en>Espana virtual</A> project. Jorge's superior, Miguel Lizondo, confirmed that Jorge would be devoting most of his time to WKT Raster in the coming year. This commitment should normally be extended for a second year afterward.<BR><BR>Jorge will follow the planned roadmap and will be the main developper for the coming year. <A href=http://mateusz.loskot.net/>Mateuzs Loskot</A> will continue contribute his spare time to the project and <A href=http://www.cef-cfr.ca/index.php?n=Membres.PierreRacine>Pierre Racine</A> will help Jorge with the specifications and the general management of the project.<BR><BR>Welcome (back) Jorge!<BR><BR>
+
+
+<I>October 16, 2009</I><BR><B><A href=http://www.geomatique2009.com/fr/conferences/programme>PostGIS WKT Raster at Geomatique 2009 in Montréal</A>!</B><BR>Pierre Racine will present WKT Raster at Geomatique 2009 in Montréal on October 20. We hope we can get more people interested by the project! <A href=http://trac.osgeo.org/postgis/attachment/wiki/WKTRaster/WKTRasterIntro-Geomatique2009.pdf>See the presentation (PDF)!</A><BR><BR>
+
+<I>June 04, 2009</I><BR><B><A href=http://gis4free.wordpress.com/>A prototype GDAL driver to WKT Raster implemented this summer</A>! </B><BR>Thanks to Mateusz Loskot, who proposed the Google Summer of Code project and Jorge Arevalo the student who was selected to implement it.
+
+</div>
+</div>
+}}}
+
+Welcome to the '''PostGIS Raster''' project home page!
+
+'''PostGIS Raster''' is an ongoing project aiming at developing '''raster support in PostGIS'''. It is a new project very different from the previous PGRaster project and also very different from [http://en.wikipedia.org/wiki/GeoRaster Oracle Spatial GeoRaster].
+
+The goal of '''PostGIS Raster''' is to implement the RASTER type '''as much as possible like the GEOMETRY type''' is implemented in PostGIS and to offer '''a single set of overlay SQL functions''' (like ST_Intersects) operating '''seamlessly''' on vector and raster coverages.
+
+PostGIS Raster is now part of PostGIS starting with version 2.0 (spring 2012)!
+
+== PostGIS Raster Google Summer of Code 2012 Ideas ==
+
+This year again every projects submitted by OSGeo to the Google Summer of Code will be financed by Google. This means 5000 USD$ for a programming student summer job! See [http://trac.osgeo.org/postgis/wiki/WKTRasterGSoC our project list] or propose your own one! Every details [http://wiki.osgeo.org/wiki/Google_Summer_of_Code_2011_Ideas here] and [http://www.google-melange.com/document/show/gsoc_program/google/gsoc2011/faqs here]. Deadline to apply: April 8.
+
+== Installation ==
+
+ * '''Linux -''' [wiki:UsersWikiInstall Different repositories exist for binary versions of PostGIS]. If no repository is available for your Linux flavor, you will have to [wiki:DevWikiMain compile PostGIS yourself].
+
+ * '''Windows Binaries - ''' If you are running PostGIS on Windows, you can find fairly recent binaries of PostGIS 2.0 (including raster support) in the [http://postgis.net/windows_downloads Windows Experimental Builds section]. These are for PostgreSQL 8.4, 9.0, and upcoming 9.1. Note that development on the standalone wktraster project deployable on PostGIS 1.3-1.5 has stopped and all future versions and bug fixes of raster support will be packaged in the PostGIS 2.0 builds.  The last set of binaries for the wktraster stand-alone are also available on Windows experimental page for PostgreSQL 8.3,8.4,9.0 running for PostGIS 1.4-1.5.
+
+ * '''Mac OSX Binaries - ''' If you are running PostGIS on Mac OSX leopard or Snow Leopard, you can find fairly recent binaries of PostGIS at [http://www.kyngchaos.com/software/postgres KyngChaos PostgreSQL GIS].
+
+ * '''GDAL PostGIS Raster Driver - ''' A [http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html GDAL PostGIS raster driver] was developed following a [http://socghop.appspot.com/ Google Summer of Code 2009] grant obtained by [http://libregis.org/ Jorge Arevalo].
+
+== Documentation ==
+
+ * '''Documentation'''[[BR]][[BR]]
+   * [http://postgis.net/docs/manual-svn/RT_reference.htm Function Reference] document in detail every raster function. Find also some more useful functions [http://trac.osgeo.org/postgis/browser/trunk/raster/scripts/plpgsql in this page].
+   * [wiki:WKTRaster/Documentation01 PostGIS Raster Documentation] was a first draft of the documentation. It tells more about the rationale behind PostGIS Raster.
+
+ * '''Tutorials'''[[BR]][[BR]]
+   * [http://libregis.org/2011/03/10/how-to-install-and-configure-postgis-raster-on-windows/ How to install and configure PostGIS Raster on Windows]
+   * [wiki:WKTRasterTutorial01 Intersecting vector polygons with large raster coverage using PostGIS WKT Raster]
+   * Jorge has a whole series on PostGIS Raster and comparing activities you do in Oracle !GeoRaster vs. how you would do them with PostGIS Raster. Check out [http://libregis.org/category/postgis-raster/ Jorge's PostGIS Raster Tutorial Series].
+
+ * '''Books'''[[BR]][[BR]]
+   * [http://www.postgis.us/chapter_13 PostGIS in Action] has a full chapter dedicated to PostGIS Raster.
+   * [http://www.amazon.es/PostGIS-2-An%C3%A1lisis-Espacial-Avanzado/dp/8461588339/ref=sr_1_4?ie=UTF8&qid=1338825272&sr=8-4 PostGIS 2 Análisis Espacial Avanzado], for the spanish community, also has [http://cartosig.upv.es/wp-content/uploads/indice_libro_postgis_2.pdf a chapter] on PostGIS Raster.
+
+ * '''Presentations'''[[BR]][[BR]]
+   * [attachment:PierreRacine_FOSS4G-2011.pdf Store, manipulate and analyze raster data within the PostgreSQL/PostGIS spatial database] - FOSS4G 2011, Denver, USA, September 2011. (PDF)
+   * [http://www.postgis.us/downloads/ncgis2011/NCGISSDBPostGIS20_2011.pdf PostGIS 2.0 Raster and 3D Support Enhancements] North Carolina GIS Conference 2011 (NCGIS 2011) (PDF)
+   * [attachment:FOSS4G2010_Pierre.pdf Introducing PostGIS WKT Raster: Seamless Raster/Vector Operations in a Spatial Database] - FOSS4G 2010, Barcelona, Spain, September 2010. (PDF)
+   * [attachment:FOSS4G2010_Jorge.pdf PostGIS WKT Raster. An Open Source alternative to Oracle GeoRaster] - FOSS4G 2010, Barcelona, Spain, September 2010. (PDF
+   * [attachment:WKTRasterIntro-Geomatique2009.pdf Introduction to WKT Raster] - Geomatique 2009, Montréal, October 2009. (PDF)
+   * [http://www.cef-cfr.ca/uploads/Membres/WKTRasterSpecifications1.0.pdf Original Project Presentation - rationale, examples and preliminary specifications] (PDF)
+
+ * '''Others'''[[BR]][[BR]]
+   * [http://planet.postgis.net/ Planet PostGIS] is an excellent source of information about PostGIS Raster and PostGIS in general.
+   * [wiki:WKTRaster/SeamlessArchitecture Seamless Spatial Operations Architecture] provides a foundation to guide expectations of both implementors and users.
+
+== Development Info ==
+
+ * '''[wiki:WKTRaster/PlanningAndFunding Planning] -''' For a detailed schedule of PostGIS works and to know how to contribute.
+
+ * '''[wiki:WKTRaster/SpecificationWorking03 Working Specifications] -''' To know more about or contribute your ideas about the design of PostGIS Raster.
+
+ * '''Source Code, API and Bug report'''[[BR]][[BR]]
+   * PostGIS Raster source code is packed with PostGIS source code, available from the OSGeo Subversion repository
+{{{
+svn checkout https://svn.osgeo.org/postgis/trunk postgis-svn
+}}}
+   * You can also download the latest development snapshot from: http://postgis.net/download/ [[BR]][[BR]]
+   * Compilation instructions are availables in the [wiki:WKTRaster/Documentation01 Documentation].[[BR]][[BR]]
+   * Doxygen API reference is available on [http://postgis.net/documentation/postgis-doxygen/dirs.html PostGIS Current Reference], [http://postgis.net/documentation/raster-doxygen/ Old WKTRaster standalone] pages.[[BR]][[BR]]
+   * See report with [report:17 All tickets reported to PostGIS Raster]
+
+== Displaying PostGIS rasters ==
+
+There are some options to display rasters stored in PostGIS.
+
+ * '''!OpenJump - '''!OpenJump will not display raster directly but a vectorization of the raster. Use a query like the following in the "Layer->Execute Query" dialog:
+
+{{{
+SELECT ST_AsBinary((ST_DumpAsPolygons(rast)).geom), (ST_DumpAsPolygons(rast)).val
+FROM rastertable
+}}}
+
+ * '''ArcGIS 10 - ''' Same idea as with !OpenJump: You can not display rasters directly but a vectorization of them. See [http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/What_is_a_query_layer/00s50000000n000000/ What is a query layer?] in the ArcGIS 10 documentation. With ArcGIS you don't have to convert the geometries to WKB with ST_AsBinary().
+
+ * '''QGIS - '''There is now a plugin for QGIS to display PostGIS rasters. See [http://www.mail-archive.com/qgis-user@lists.osgeo.org/msg07761.html the original thread], [http://mapeandoobrasil.blogspot.com/2010/12/postgis-raster-plugin-para-qgis.html Mapeando o Brasil], [http://pyqgis.org/repo/contributed the QGIS plugin page] and [http://mtc-m18.sid.inpe.br/col/sid.inpe.br/mtc-m18/2011/12.14.11.29/doc/mauricio2.pdf the related paper]. For more info on the status of the plugin, contact Maurício de Paulo (mauricio.dev@gmail.com).
+
+ * '''gvSIG -''' There is also a plugin for gvSIG, the popular spanish open source GIS. See [http://www.slideshare.net/nbrodin/postgisrastergvsig the presentation], [http://forge.osor.eu/docman/view.php/313/560/PostGISRaster-0.1-man-en.pdf the documentation] and [http://www.osor.eu/projects/gvsig-postgisra the project page]. The plugin should be integrated into [http://www.gvsig.org/web/projects/gvsig-desktop/devel/gvsig gvSIG 2.0]. For more info on the status of the plugin, contact Nacho Brodin (ibrodin@prodevelop.es) at [http://www.prodevelop.es/en Prodevelop]. See the plugin in action: [attachment:postgisraster_on_gvsig.zip OGM]
+
+ * '''!MapServer -''' Some test were done to display PostGIS rasters with !MapServer... and it works! See [http://trac.osgeo.org/postgis/ticket/497 this post]. More details in chapter 13 of [http://www.manning.com/obe/ PostGIS in Action].
+
+== More Info ==
+
+For more details and examples of application using PostGIS Raster:
+
+   * Search for "raster" or "WKT Raster" in the [http://lists.osgeo.org/pipermail/postgis-users/ PostGIS mailing list archive] or in [http://www.nabble.com/forum/Search.jtp?forum=1221&local=y&query=%22wkt+raster%22 Nabble]
+
+   * PostGIS Raster has been designed following a thorough analysis of the numerous discussions about raster integration in PostGIS over the recent years. You can find most of the post to the PostGIS-users group related to raster integration [http://trac.osgeo.org/postgis/wiki/UsersWikiRasterNotes in this page].
+
+   * Write to [http://www.cef-cfr.ca/index.php?n=Membres.PierreRacine Pierre Racine]
+
+== Overview of Planned PostGIS Raster Features ==
+
+'''PostGIS Raster...'''
+
+'''...is as simple as PostGIS...'''
+ * one table = one raster coverage (like a vector coverage)
+ * one row = one tile or one raster object (like a vector coverage where one row = one geometry)
+ * only one new type: RASTER (like the PostGIS GEOMETRY type)
+ * each raster tile has a pixel size, a width and a height, a variable number of band, a pixel type per band and a nodata value per band. Everything essential to do base raster GIS operations.
+
+'''...is fully integrated into PostGIS...'''
+ * since PostGIS version 2.0...
+
+'''...has an import/export mechanism similar to shp2pgsql'''
+ * raster2pgsql allows import of a single raster or a batch of raster into a table representing a tiled coverage.
+ * a future pgsql2raster should allow export of raster to filesystem rasters.
+ * a read GDAL driver allow export of rasters from the DB to the filesystem.
+
+'''...allows easy conversion from/to geometry/raster...'''
+ * ST_DumpAsPolygons(raster) -> geometry-value set
+ * ST_AsRaster(geometry, pixelsize) -> raster
+
+'''...implements base GIS raster operations available in most GIS...'''
+ * ST_Resample(raster, pixelsize, method) -> raster
+ * ST_Clip(raster, geometry) -> raster
+ * ST_Reclass(raster, string) -> raster
+ * ST_MapAlgebra(raster, raster, mathematical expression) -> raster
+ * etc...)
+
+'''...introduces raster/geometry seamless spatial operation...'''
+ * so you don't have to bother whether the layers are in raster or vector form when using analysis functions.
+ * ST_Intersection(raster|geometry, raster|geometry) -> raster/geometry-value set
+ * ST_Union(raster, raster) -> raster
+ * ST_Transform(raster, SRID) -> raster
+ * etc...
+
+'''...and seamless geometry operators...'''
+ * ST_Intersects(raster|geometry, raster|geometry) -> boolean
+ * ST_Contains(raster|geometry A, raster|geometry B) -> boolean
+ * etc...
+
+'''...allows raster storage INSIDE the database (as WKB)...'''
+ * for efficient overlay analysis operations between vector and raster layers...
+
+'''...or OUTSIDE the database (as JPEG or TIFF)...'''
+ * so desktop and web applications can quickly access and load raster tiles and nevertheless benefits from the powerful PostGIS GiST spatial index. Every PostGIS Raster SQL functions working with in-db raster tiles work seamlessly with out-db raster tiles.
+
+'''...introduces the concept of raster objects...'''
+  * geographic features are stored as variable size raster tiles instead of polygons.
+  * allows vector to raster conversion without lost of information.
+
+'''...is much more simple than PGRaster and Oracle !GeoRaster! PostGIS Raster supports...'''
+  * only one type (instead of two in Oracle Spatial: SDO_GEORASTER & SDO_RASTER). In PostGIS Raster there are no differences between rasters and tiles: a tile is a raster and a raster is a tile. i.e. one row = one tile = one raster; one table = one raster coverage.
+  * no metadata (like PostGIS)
+  * no masks (you can create a mask as a band)
+  * no multiple dimensions (only two: x, y). Not to be confused with bands; PostGIS Raster DO supports multiband raster...
+  * no pyramids (reduced resolution coverages can be stored as a separate layer)
+
+== What do people think about PostGIS Raster? ==
+
+[http://www.cleverelephant.ca/cv.html Paul Ramsey] (founder of PostGIS):
+ ''This proposal is better than any I have seen, addresses solving problems that if solved will provide actual new functionality and benefit to users, and clearly you've thought this through over some time''
+
+[http://www.paragoncorporation.com/Team.aspx Regina Obe] (coauthor of [http://www.manning.com/obe/ PostGIS in Action]):
+ ''The functions PostGIS raster proposes look pretty cool actually and my vision of the benefits of storing raster in the database are covered in it''
+
+= Open Tickets =
+
+[[TicketQuery(status=new|assigned|reopened&component~=raster&order=priority)]]

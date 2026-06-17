@@ -1,0 +1,47 @@
+{{{
+The PostGIS development team is super excited,
+can hardly believe that they are actually doing this,
+aren't maybe even sure that they are ready to make
+this kind of commitment, not so young, and not when
+we have so much more living to do, but:
+
+PostGIS 2.0.0 is complete and available for download.
+
+  http://postgis.org/download/postgis-2.0.0.tar.gz
+
+The development process for 2.0 has been very long,
+but has resulted in a release with a number of exciting
+new features.
+
+ * Raster data and raster/vector analysis in the database
+ * Topological models to handle objects with shared boundaries
+ * PostgreSQL typmod integration, for an automagical
+   geometry_columns table
+ * 3D and 4D indexing
+ * Index-based high performance nearest-neighbour searching
+ * Many more vector functions including
+   * ST_Split
+   * ST_Node
+   * ST_MakeValid
+   * ST_OffsetCurve
+   * ST_ConcaveHull
+   * ST_AsX3D
+   * ST_GeomFromGeoJSON
+   * ST_3DDistance
+ * Integration with the PostgreSQL 9.1 extension system
+ * Improved commandline shapefile loader/dumper
+ * Multi-file import support in the shapefile GUI
+ * Multi-table export support in the shapefile GUI
+ * A geo-coder optimized for free US Census
+   TIGER (2010) data
+
+We are greatly indebted to our large community of beta testers
+who valiantly tested PostGIS 2.0.0 and reported bugs so we could
+squash them before release time.
+
+And also we want to thank our parents for making PostGIS possible.
+
+Yours,
+
+The PostGIS development team
+}}}

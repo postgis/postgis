@@ -1,0 +1,296 @@
+The [http://wiki.postgresql.org/wiki/Apt PostgreSQL Apt Repository]  now hosts installs of PostGIS, pgRouting, in addition to Postgresql and PGAdmin.
+
+The following describes how to install Postgresql 9.6, PostGIS 2.3, pgRouting 2.3, PGAdmin on Ubuntu version 16.04. It is assumed to also work on Linux Mint, Lubuntu, and Xubuntu.
+
+Run these in terminal:
+== Verify what version of Ubuntu you are running ==
+{{{
+sudo lsb_release -a
+}}}
+
+
+== Add Respository to sources.list ==
+
+You'll need to replace the nickname below with what you are running.
+Note to replace the word trusty with whatever version lsb states
+
+Helper on [http://www.postgresql.org/download/linux/ubuntu/]
+
+For xenial (16.04.2 LTS)
+
+{{{
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt xenial-pgdg main" >> /etc/apt/sources.list'
+}}}
+
+
+== Add Keys ==
+{{{
+wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -
+}}}
+
+{{{
+sudo apt-get update
+}}}
+
+== Install ==
+The following will install postgresql 9.6, PostGIS 2.3, PGAdmin4, pgRouting 2.3 and additional supplied modules including the '''adminpack''' extension:
+
+
+{{{
+sudo apt-get install postgresql-9.6
+sudo apt-get install postgresql-9.6-postgis-2.3 postgresql-contrib-9.6 postgresql-9.6-postgis-scripts
+
+#to get the commandline tools shp2pgsql, raster2pgsql you need to do this
+sudo apt-get install postgis
+}}}
+
+== To get pgRouting ==
+{{{
+# Install pgRouting 2.3 package
+sudo apt-get install postgresql-9.6-pgrouting
+
+}}}
+== Enable Adminpack ==
+
+While in terminal, log in to the psql console as postgres user:
+
+{{{
+sudo -u postgres psql
+}}}
+
+
+
+{{{
+CREATE EXTENSION adminpack;
+}}}
+
+
+
+Never install PostGIS in the postgres database, create a user database
+You can also enable the PostGIS extension here (or with the GUI as described below):
+
+{{{
+sudo -u postgres psql
+}}}
+
+{{{
+CREATE DATABASE gisdb;
+\connect gisdb;
+
+CREATE SCHEMA postgis;
+ALTER DATABASE gisdb SET search_path=public, postgis, contrib;
+\connect gisdb;  -- this is to force new search path to take effect
+CREATE EXTENSION postgis SCHEMA postgis;
+SELECT postgis_full_version();
+}}}
+
+should give you output something like this:
+
+
+{{{
+                                                                           postgis_full_version
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ POSTGIS="2.3.2 r15302" GEOS="3.5.0-CAPI-1.9.0 r4084" PROJ="Rel. 4.9.2, 08 September 2015" GDAL="GDAL 1.11.3, released 2015/09/16" LIBXML="2.9.3" LIBJSON="0.11.99" RASTER
+(1 row)
+}}}
+
+Installing postgis_sfcgal, if you need advanced 3D support
+
+
+{{{
+CREATE EXTENSION postgis_sfcgal SCHEMA postgis;
+SELECT postgis_full_version();
+}}}
+
+should give you:
+
+
+{{{
+                                                                                   postgis_full_version
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ POSTGIS="2.3.2 r15302" GEOS="3.5.0-CAPI-1.9.0 r4084" SFCGAL="1.2.2" PROJ="Rel. 4.9.2, 08 September 2015" GDAL="GDAL 1.11.3, released 2015/09/16" LIBXML="2.9.3" LIBJSON="0.11.99" RASTER
+(1 row)
+}}}
+
+
+
+
+Install pgRouting
+
+{{{
+CREATE  EXTENSION pgrouting;
+SELECT * FROM pgr_version();
+}}}
+
+should give you:
+
+
+{{{
+ version |  tag   |   hash    | branch | boost
+---------+--------+-----------+--------+--------
+ 2.3.2   | v2.3.2 | 1f2af3c52 | master | 1.58.0
+(1 row)
+}}}
+
+
+
+
+Exit the psql console:
+
+{{{
+\q
+}}}
+
+
+== Open Access to Clients ==
+
+If you need to allow access from external, you can do this as well
+{{{
+sudo -u postgres psql
+}}}
+
+{{{
+ALTER SYSTEM SET listen_addresses='*';
+\q
+}}}
+
+You may need to edit to pg_hba.conf and/or pg_ident.conf to allow external access
+
+{{{
+sudo nano /etc/postgresql/9.6/main/pg_hba.conf
+}}}
+
+If you need external access, scroll to the bottom of the pg_hba.conf file and add a line like this (which willa llow all clients with md5 password encrypt authentication (right after the local rules):
+
+{{{
+hostssl    all             all             0.0.0.0/0               md5
+}}}
+
+Click CTRL-X to save your changes, Y to write them to the file, and enter to exit.
+
+If you change ip or port, you need to do a service restart.
+
+{{{
+sudo service postgresql restart
+}}}
+
+Note: you can also do from postgres psql console with below - only for changes that don't require restart)
+
+{{{
+SELECT pg_reload_conf();
+}}}
+
+
+== Optional: check location of configuration files: ==
+
+From the psql console(see above):
+
+{{{
+SELECT name, setting FROM pg_settings where category='File Locations';
+}}}
+
+Which will output something like:
+
+{{{
+
+       name        |                 setting
+-------------------+------------------------------------------
+ config_file       | /etc/postgresql/9.6/main/postgresql.conf
+ data_directory    | /var/lib/postgresql/9.6/main
+ external_pid_file | /var/run/postgresql/9.6-main.pid
+ hba_file          | /etc/postgresql/9.6/main/pg_hba.conf
+ ident_file        | /etc/postgresql/9.6/main/pg_ident.conf
+(5 rows)
+
+}}}
+
+
+
+== Create new PGSQL user ==
+
+You can create a new database super user to use instead of the default {{{postgres}}} user.
+
+While in terminal, run:
+
+{{{
+sudo -u postgres psql
+CREATE ROLE mysuperuser LOGIN PASSWORD 'whatever' SUPERUSER;
+}}}
+
+
+
+== Import SHP files using shp2pgsql-gui ==
+
+Another handy piece of software {{{shp2pgsql-gui}}} tool. This will allow you to quickly connect to your new PostGIS database and import a Shapefile.
+Note this will only work if you have Ubuntu with a desktop (not a headless Ubuntu)
+
+Open terminal, and type:
+
+{{{
+sudo apt-get install postgis-gui
+}}}
+
+(Note: this is coming from the main Ubuntu software repository, as it seems the PostgreSQL APT repository doesn't package SHP2PGSQL-GUI anymore...)
+
+Now open the SHP2PGSQL application:
+
+{{{
+shp2pgsql-gui
+}}}
+
+Follow the on-screen prompts to load your data.
+
+For more information, visit the [http://www.bostongis.com/PrinterFriendly.aspx?content_name=postgis_tut01 Boston GIS] tutorial in the section "Load Towns Data"
+
+== ogr_fdw foreign data wrapper for spatial data ==
+
+Unfortunately seems PostgreSQL Apt does not include ogr_fdw spatial data wrapper.
+The wrapper utilizes GDAL, so much of plumbing needed is already installed for you as part of PostGIS.
+Compiling isn't too difficult.  On a vanilla Ubuntu, I was able to compile and install with following:
+
+
+{{{
+#for compiling ogr_fdw
+cd ~/
+mkdir sources
+cd sources
+sudo apt-get install git
+sudo apt-get install postgresql-server-dev-9.6
+sudo apt-get install make
+sudo apt-get install gcc
+sudo apt-get install libgdal1-dev
+
+sudo git clone -b master https://github.com/pramsey/pgsql-ogr-fdw.git pgsql_ogr_fdw
+cd pgsql_ogr_fdw
+export PATH=/usr/lib/postgresql/9.6/bin:$PATH
+make && make install
+}}}
+
+After you're done compiling and installing the binary, you can install the ogr_fdw extension in your database
+
+
+{{{
+sudo -u postgres psql
+}}}
+
+{{{
+
+\connect gisdb;
+CREATE EXTENSION ogr_fdw SCHEMA postgis;
+CREATE SCHEMA IF NOT EXISTS staging ;
+
+-- here I assume you have a file in root of /gis_data folder that postgres process has read rights to
+-- any file that gdal can read will do e.g shape file, CSV, etc
+CREATE SERVER svr_shp
+  FOREIGN DATA WRAPPER ogr_fdw
+  OPTIONS (
+    datasource '/gis_data',
+    format 'ESRI Shapefile' );
+
+
+-- this will link in all your shapefile tables in folder gis_data as foreign tables
+IMPORT FOREIGN SCHEMA ogr_all
+FROM SERVER svr_shp INTO staging;
+
+
+}}}

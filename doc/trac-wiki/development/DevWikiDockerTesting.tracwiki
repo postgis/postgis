@@ -1,0 +1,203 @@
+[[TOC]]
+
+The PostGIS project uses docker for a number of regression tests and production use.  We have two different docker setups.
+
+On OSGeo infrastructure we have docker.osgeo.org which docker images are pushed to via postgis-docker.osgeo.org.  These are currently only used by dronie.osgeo.org and woodie.osgeo.org drone agents.  They ware useful for general development as well, because they include multiple versions of PostgreSQL and also include pre-installed postgis versions for doing upgrade tests.
+
+== Docker OSGeo (Development) ==
+
+The docker osgeo infrastructure you can log in via your osgeo user id. Only PostGIS development team members have push rights to this repo.  More details of the images, dockerfiles in use by it can be found at [https://git.osgeo.org/gitea/postgis/postgis-docker  PostGIS-docker repo].
+
+
+Any one can pull. Here is an example of how to use the docker.osgeo.org for your development.
+The docker.osgeo.org/postgis/build-test containers are mostly designed for testing lower versions of postgis dependencies and testing upgrades.  It contains versions of PostgreSQL 10-15 preinstalled (our older image trisquel3) and newer trisquel11 has PostgreSQL 12-17 installed from apt.postgresql.org as well as many prior versions of PostGIS compiled for testing upgrading.  It is a hefty image weighing in around 3GB.
+
+**FOR DEVELOPMENT**
+{{{
+docker pull repo.osgeo.org/postgis/build-test:universal
+#To develop and test using this image, do the following
+cd ~/
+mkdir projects
+
+#this container has no built in entry point to keep it running,
+# create a fake one as discussed here - https://levelup.gitconnected.com/keep-docker-container-running-for-debugging-fc2dfa39472c
+
+#this might take a minute or so after download to start up
+# the below exposes the 5436 port of container as 6445 of the host, you can add additional for each cluster
+
+docker run -d \
+  --name postgis-dev \
+  --mount type=bind,source="$(pwd)/projects",target=/projects \
+  -p 6432:5432/tcp \
+  -p 6433:5433/tcp \
+  -p 6434:5434/tcp \
+  -p 6435:5435/tcp \
+  -p 6436:5436/tcp \
+  -p 6437:5437/tcp \
+  repo.osgeo.org/postgis/build-test:universal  tail -f /dev/null
+
+
+cd projects
+git clone https://git.osgeo.org/gitea/postgis/postgis.git
+
+
+
+#once started you can attach to the container using
+docker exec -it postgis-dev /bin/bash
+
+# in the postgis-dev container, you should be able to do
+# below copied from https://git.osgeo.org/gitea/postgis/postgis/src/branch/master/ci/dronie/postgis_regress.sh
+cd /projects/postgis
+export PGVER=15
+service postgresql start ${PGVER}
+export PGPORT=`grep ^port /etc/postgresql/$PGVER/main/postgresql.conf | awk '{print $3}'`
+export PATH=/usr/lib/postgresql/$PGVER/bin:$PATH
+#do this to be able to access from host
+psql -d postgres -c "ALTER SYSTEM SET listen_addresses='*';"
+# change whatever to something more secure, if you care
+psql -d postgres -p 5436 -c "ALTER ROLE postgres PASSWORD 'whatever';"
+echo "host  all all 0.0.0.0/0 scram-sha-256" >> /etc/postgresql/${PGVER}/main/pg_hba.conf
+#shows you list of associate ports for each postgres version (connecting from your host machine would be 6 instead of 5)
+pg_lsclusters
+
+
+service postgresql restart ${PGVER}
+echo
+
+sh autogen.sh
+./configure
+make
+make check
+
+make install
+#any changes you make to your local folder projects/postgis, will show in the container /projects/postgis
+
+#in the container
+
+# To stop it do
+docker stop postgis-dev
+
+# if you need to remove the container to get a new version do
+
+docker rm postgis-dev
+
+}}}
+
+=== Connecting to PostgreSQL from your host machine ===
+{{{
+psql -U postgres -h localhost -p 6436  #this is the one running PG15 at time of writing
+
+}}}
+
+==  Docker Hub PostGIS ==
+
+Docker Hub is used for Github-actions testing and there is also a postgis for production use. The main link to all is [https://hub.docker.com/u/postgis]
+
+=== Production ===
+* **FOR PRODUCTION** [https://hub.docker.com/r/postgis/postgis] - has production images managed by a community of PostGIS users. To become a contributor go to [https://github.com/postgis/docker-postgis]
+
+The production images, lack tools such as autoconf and c/c++ compiler to build with, so not suitable for development work, but you can use for experimenting with postgis.
+
+{{{
+cd ~/
+mkdir projects
+docker pull postgis/postgis:latest
+docker run --name postgis-test -e POSTGRES_PASSWORD=mysecretpassword -d postgis/postgis
+# the -v command is to persist the data in the ~/postgres-data
+# (folder in your home folder, on start the folder will be created and owned by the postgres user in docker container).
+# If you don't care about the data you can leave that out and all data will be lost when container shuts down.
+
+# -p is to expose the postgresql port as 5432, if you want a different port for external say 7432, you can change that to
+# -p 5432:7432
+# if you don't need access outside of the container, you can leave it out
+docker run -d \
+  --name postgis-test \
+  -e POSTGRES_PASSWORD=whatever \
+  -p 5432:5432 \
+  -v ~/postgres-data:/var/lib/postgresql/data \
+  -d postgis/postgis
+
+#If you have psql client or pgAdmin, you can connect to via local port
+psql -h localhost -p 5432 -U postgres
+
+# once in psql, you can do following
+
+create database gisdb;
+\c gisdb
+CREATE EXTENSION postgis;
+SELECT postgis_full_version();
+
+# alternatively use the psql inside it
+docker exec -it postgis-test psql -p 5432 -U postgres
+
+}}}
+=== Development ===
+* **FOR DEVELOPMENT** [https://hub.docker.com/r/postgis/postgis-build-env] - has development images managed by a PostGIS Development team set aside for regression testing.  Do not use these for production use as they don't even have postgis installed on them. You can find the docker files here [https://github.com/postgis/postgis-build-env].
+
+The postgis-build-env images don't have PostGIS installed on them at all, but have all the key dependencies needed to compile PostGIS.  The version **latest** includes pre-compiled in development versions proj, gdal, geos, postgresql, and sfcgal.  It is used to catch possible issues with other upstream projects.  There are other ones as well tagged with the specific PostgreSQL/Proj/GEOS being tested.  Each has only one version of PostgreSQL installed.
+
+This is lighter weight than the docker.osgeo.org dev container.  Each weighs in around 700MB.
+
+You can set it up much the same as the docker.osgeo.org development suite detailed earlier.
+
+
+**FOR DEVELOPMENT**
+{{{
+#To develop and test using this image, do the following
+cd ~/
+mkdir projects
+
+#this container has no built in entry point to keep it running,
+# create a fake one as discussed here - https://levelup.gitconnected.com/keep-docker-container-running-for-debugging-fc2dfa39472c
+
+docker pull postgis/postgis-build-env:latest
+#this might take a minute or so after download to start up
+# this will expose the postgresql 5432 port, to host as 6444 (to prevent conflict with any other postgresql you are running on your host machine
+docker run -d \
+  --name postgis-build-env \
+  -v ~/projects/:/projects \
+  postgis/postgis-build-env:latest  tail -f /dev/null
+
+cd projects
+git clone https://git.osgeo.org/gitea/postgis/postgis.git
+
+
+
+#once started you can attach to it
+docker exec -it postgis-build-env /bin/bash
+
+# in container
+BUILDDIR=/src/postgis/
+SRCDIR=/projects/postgis
+cd ${SRCDIR}
+sh autogen.sh
+#TODO: figure out how to allow postgres account to read and write, without 777
+sudo chmod -R 777 $SRCDIR
+mkdir -p "${BUILDDIR}"
+cd "${BUILDDIR}"
+
+${SRCDIR}/configure --without-interrupt-tests --enable-lto
+make -j 4
+
+# in the postgis-buildenv container, you should be able to do
+# below copied from https://git.osgeo.org/gitea/postgis/postgis/src/branch/master/ci/github/run_coverage.sh
+cd /projects/postgis
+
+#TODO: fix this, container starts up using postgres, and so these fail if mounting an external source folder
+# using sudo makes paths not work
+/usr/local/pgsql/bin/pg_ctl -c -l /tmp/logfile -o '-F' start
+make check
+
+
+#any changes you make to your local folder projects/postgis, will show in the container /projects/postgis
+#TODO: run make && make staged-install to allow make check to pickup further changes
+
+
+# To stop it do
+docker stop postgis-build-env
+
+# if you need to remove the container to get a new version do
+
+docker rm postgis-build-env
+
+}}}

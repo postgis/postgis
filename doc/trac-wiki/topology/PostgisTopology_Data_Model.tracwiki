@@ -1,0 +1,24 @@
+Here are some schemas about Postgis Topology data model.
+
+Images and schema about organisation :
+
+http://trac.osgeo.org/postgis/attachment/ticket/2578/postgis_topology_data_model_explained.png
+http://trac.osgeo.org/postgis/attachment/ticket/2578/postgis_topology_data_model_explained%20%281%29.png
+http://trac.osgeo.org/postgis/attachment/ticket/2578/postgis_topology_data_model_explained%20%282%29.png
+http://trac.osgeo.org/postgis/attachment/ticket/2578/postgis_topology_data_model_explained%20%283%29.png
+http://trac.osgeo.org/postgis/attachment/ticket/2578/postgis_topology_data_model_explained%20%284%29.png
+http://trac.osgeo.org/postgis/attachment/ticket/2578/postgis_topology_data_model_explained%20%285%29.png
+http://trac.osgeo.org/postgis/attachment/ticket/2578/postgis_topology_data_model_explained%20%286%29.png
+
+A detailled explanation table by table, field by field of postgis_topology data model (DB wise)
+
+http://trac.osgeo.org/postgis/raw-attachment/ticket/2578/Postgis_topology_schema_detailled_explanation.pdf
+
+
+[[Image(http://trac.osgeo.org/postgis/attachment/ticket/2578/postgis_topology_data_model_explained.png)]]
+[[Image(http://trac.osgeo.org/postgis/attachment/ticket/2578/postgis_topology_data_model_explained%20%281%29.png)]]
+[[Image(http://trac.osgeo.org/postgis/attachment/ticket/2578/postgis_topology_data_model_explained%20%282%29.png)]]
+[[Image(http://trac.osgeo.org/postgis/attachment/ticket/2578/postgis_topology_data_model_explained%20%283%29.png)]]
+[[Image(http://trac.osgeo.org/postgis/attachment/ticket/2578/postgis_topology_data_model_explained%20%284%29.png)]]
+[[Image(http://trac.osgeo.org/postgis/attachment/ticket/2578/postgis_topology_data_model_explained%20%285%29.png)]]
+[[Image(http://trac.osgeo.org/postgis/attachment/ticket/2578/postgis_topology_data_model_explained%20%286%29.png)]]

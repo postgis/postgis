@@ -1,0 +1,19 @@
+
+== Google Summer of Code PostGIS Raster Ideas ==
+
+
+'''1) Implement write support for the PostGIS raster GDAL driver.'''
+
+ Mentor: Jorge Arevalo (jorgearevalo at libregis.org) or David Zwarg.
+
+ A [http://www.gdal.org/ GDAL] driver allows reading/writing of raster (or images) data from/to formats like TIFF, PNG or JPEG.
+
+ The current GDAL PostGIS raster driver supports reading of PostGIS rasters objects from a PostgreSQL/PostGIS database but does not support writing. The project includes proposing a driver writer design and implementing it. You will familiarize yourself with GDAL-OGR development (one of the most used open source geospatial package), geospatial imagery concepts, open source development tools and code in C.
+
+Might be able to reuse some logic already present in the packaged PostGIS raster2pgsql loader.
+
+More information about GDAL PostGIS Raster driver [http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html here]
+
+Want more details? Check the [http://wiki.osgeo.org/wiki/Google_Summer_of_Code_2014 OSGeo GSoC 2014 page] or write to the [http://lists.osgeo.org/mailman/listinfo/postgis-devel PostGIS developer list].
+
+[http://trac.osgeo.org/postgis/wiki/WKTRaster Back to the PostGIS raster project Home Page].

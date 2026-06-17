@@ -1,0 +1,58 @@
+= Development Meeting - Virtual - 2023 Meeting #1 =
+
+== Dates ==
+
+Jun 19th 2023 [https://www.timeanddate.com/worldclock/meetingdetails.html?year=2023&month=6&day=19&hour=15&min=0&sec=0&p1=256&p2=155&p3=43&p4=285&p5=215&p6=237&p7=37 (3 PM - 4 PM UTC)]
+
+
+== Goals ==
+
+The main aim is to plan release of PostGIS 3.4.0.
+
+ * GEOS Release of 3.12
+ * PostGIS 3.4.0 Plans
+ * PROJ 9.2 and PROJ_NETWORK=ON
+ * Add your own ... ?
+
+== Attendance ==
+
+ 1. Regina Obe
+ 1. Paul Ramsey
+ 1. Sandro Santilli
+
+== Venue ==
+
+ * IRC (libera.chat) / osgeo matrix #postgis
+ * [https://meet.jit.si/PostGIS PostGIS Jitsi channel]
+
+
+-----------
+
+[[TOC]]
+== Meeting Notes ==
+
+PostGIS - June 19, 2023
+
+=== Goals ===
+
+   * Beat PostgreSQL 16 to release!
+   * Release GEOS 3.12.0 by mid-June
+   * Release PostGIS 3.4.0beta by end of July (or freeze release beta?)
+   * Release PostGIS 3.4.0 by end of August
+
+=== Major Tasks Outstanding ===
+
+==== GEOS ====
+
+   * Should be released already or close to release
+
+
+==== PostGIS ====
+
+
+
+
+
+== PostGIS 3.4 Tickets ==
+
+* [https://trac.osgeo.org/postgis/query?status=assigned&status=new&status=reopened&milestone=PostGIS+3.4.0&col=id&col=summary&col=status&col=owner&col=type&col=priority&col=milestone&order=priority 3.4.0 tickets]

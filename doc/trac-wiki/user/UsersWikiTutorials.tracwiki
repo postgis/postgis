@@ -1,0 +1,56 @@
+== PostGIS Tutorials some complete with data ==
+[https://learn.crunchydata.com/postgis Crunchy Data PostGIS Learning Portal]
+
+[https://cdn2.hubspot.net/hubfs/2283855/PostGIS%20Day%202019%20-%20Overview.pdf Everything about PostGIS (2019)] [https://youtu.be/g4DgAVCmiDE video]
+
+[https://postgis.net/workshops/postgis-intro/ Introduction to PostGIS]
+
+[https://www.youtube.com/watch?v=GSuZP89UdGs PostGIS Gotchas (2015)]
+
+[http://s3.opengeo.org/postgis-power.pdf PostGIS for Power Users slides][http://www.fosslc.org/drupal/content/tips-postgis-power-user video] Paul Ramsey -- FOSS4G2011
+
+[http://www.bostongis.com/PrinterFriendly.aspx?content_name=postgis_tut01 Almost Idiot's Guide to PostGIS (last update for PostGIS 2.2)] (2015)
+
+[https://jacksonvoelkel.com/presentations/postgis/postgis.html#/ Oh, the Places You'll Index!] - Spatial Analytics and PostGIS by Jackson Voelkel
+
+[https://training.datapolitan.com/qgis-training/Intermediate_GIS/#1 Intermediate GIS with QGIS and PostGIS] by Datapolitan
+
+== PostGIS Talks ==
+
+'''[https://info.crunchydata.com/stl-postgis-day-2019-presentations PostGIS Day 2019 STL]'''
+
+
+
+'''PGDay Europe 2010 PostGIS Talks'''
+
+[http://wiki.postgresql.org/images/3/31/Postgis_das_wo_in_der_datenbank_pgday_eu_2010.pdf  PostGIS - das Wo? in der Datenbank] Talk by Stefan Kellar showing use of OpenStreetMap in a Box and some samplings of PostGIS queries, new PostGIS Raster support, and using PostGIS with GeoServer and OpenLayers
+[http://wiki.postgresql.org/images/2/2e/Postgis_vincent_picavet_pgdayEU2010.pdf PostGIS, a PostgreSQL module for spatial data] Talk by Vincent Picavet provides some examples of outputting geometries in KML, WKT of different geometry types supported in PostGIS 2.0 including Polyhedral Surfaces, history of PostGIS
+
+
+Integrating PostGIS in Web Applications (PG Con East 2010 - Leo hsu and Regina Obe)
+
+This covered using [http://www.openlayers.org OpenLayers], [http://www.openstreetmap.org OpenStreetMap] Layers, brief intro to [http://geoext.org GeoExt], setting up [http://mapserver.org Mapserver] and [http://geoserver.org GeoServer] as OGC WFS/WMS services.  Reverse proxy for ASP.NET that can be used for any kind of WMS/WFS server (VB.NET, C#). Roll your own solution using PostGIS ST_AsKML, ST_AsGeoJSON functions.
+ * [http://www.postgis.us/downloads/pgconeast2010/pgconeast2010_postgiswebapps.pdf Integrating PostGIS in Web Applications slides] (2010)
+
+'''PGCon 2009 Spatial Analysis PostGIS (2009)'''
+  * [http://media.postgresql.org/pgcon2009/sessions/0521/pgcon2009-sessions-spatial.mov The movie (this is a big file QuickTime movie ~350MB)]
+  * [http://www.pgcon.org/2009/schedule/events/174.en.html Related documents and data]
+
+[http://revenant.ca/www/postgis/workshop/ Introduction to PostGIS (2009)] (2009)
+
+[http://2007.foss4g.org/workshops/W-04/ Foss4G 2007 Introduction to PostGIS] (2007)
+
+== RASTER TUTORIALS (using new PostGIS raster datatype and functions) ==
+ * [wiki:WKTRasterTutorial01 Tutorial 1 - Intersecting vector polygons with large raster coverage using PostGIS Raster]
+ * [http://gis4free.wordpress.com/category/postgis-raster/ Jorge's PostGIS Raster tutorials and compare with Oracle GeoRaster]
+
+== Videos History of PostGIS and its feature set ==
+ * [http://s3.cleverelephant.ca/state-of-postgis-2011-foss4g.pdf (slides) FOSS4G 2011 State of PostGIS] [http://fosslc.org/drupal/content/state-postgis video] Paul Ramsey
+ * [http://www.postgis.us/downloads/FOSS4G2011PostGIS20NewStuff.pdf FOSS4G 2011 PostGIS 2.0 the new stuff (slides)][http://blip.tv/fosslc/foss4g-window-regina-postgi-5656333 video] Regina Obe and Leo Hsu
+ * [http://www.ustream.tv/recorded/10667125 Foss4G JP 2010 State of PostGIS video] by Paul Ramsey
+ * [http://blip.tv/file/2788616/ Foss4G 2009 State of PostGIS video] by Paul Ramsey
+
+
+== Web Mapping, Road Routing and other use case examples ==
+ * [http://www.fosslc.org/drupal/content/shortest-path-search-real-road-networks-pgrouting (FOSS4G 2011 video) Shortest Path Search with real road networks PgRouting] Daniel Kastl
+ * [http://fosslc.org/drupal/content/twenty-webmapping-tips-tricks-and-tools 20 Web Mapping Tips, Tricks and Tools video] Julien-Samuel Lacroix  Covers PostGIS, MapServer, OpenLayers, MapCache tips

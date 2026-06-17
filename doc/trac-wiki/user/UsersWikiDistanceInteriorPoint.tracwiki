@@ -1,0 +1,8 @@
+
+an IRC discussion began regarding "How to find the distance from an interior point to the nearest edge of a POLYGON or MULTIPOLYGON"
+
+pramsey replies:
+
+SELECT name, ST_Distance( ST_ExteriorRing( (ST_DumpRings( ST_GeometryN( the_geom, 1) ) ).geom),
+  ST_Transform(( ST_SetSRID( makepoint(-85.64777, 42.9323 ), 4326), 2898 ) )
+FROM table WHERE sta = 'XYTown';

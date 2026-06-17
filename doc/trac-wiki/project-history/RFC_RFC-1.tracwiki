@@ -1,0 +1,142 @@
+= RFC-1: Project Steering Committee Guidelines =
+
+||Date:|| 2019/10/31||
+||Author:|| Chris Hodgson <chodgson at refractions dot net>||
+||Last Edited:|| 2022/03/01||
+||Last Updated By: || Regina Obe <lr at pcorp dot us> ||
+||Status:|| Draft||
+
+This document describes the functions of the PostGIS Project Steering Committee determines membership, and process used to carry out those functions.
+
+== Functions of the Project Steering Committee ==
+
+The two primary functions of the PSC are:
+
+ 1. To enforce control over the PostGIS codebase. This can be summarized as:
+    a. Enforce mechanisms to ensure quality control
+    b. Ensure compliance with all required legal measures
+ 2. Project Management and responsibility for the "public face" of PostGIS
+
+The PSC is expected to be able to speak and act on behalf of the PostGIS project.
+
+=== Codebase Control ===
+
+==== Quality Control Mechanisms ====
+
+The quality control mechanisms, which are the responsibility of the PSC, currently include:
+
+ * Maintaining submitter guidelines and making all developers aware of them.
+ * Granting write access to the source code repository for new developers.
+ * Enforcing the submitter guidelines, with the ultimate sanction against non-compliance being removal of write access to the source code repository.
+
+In general, once write access has been granted, developers are allowed to make changes to the codebase as they see fit. For controversial or complicated changes consensus must be obtained on the developers' mailing list, or an RFC and vote may be required.
+
+Removal of write access to the source code repository is handled as a proposal to the committee as described below in the 'Decision Process' section.
+
+==== Compliance with Legal Measures ====
+
+Control over the codebase also extends to ensuring that it complies with all relevant legal requirements. This includes copyright and licensing amongst other issues. The Submitter guidelines document will include a section on copyright and licensing compliance.
+
+=== Project Management ===
+
+The PSC will share responsibility and make decisions over issues related to the management of the overall direction of the PostGIS project and its external visibility. These include, but are not limited to:
+
+ * Release Cycles
+ * Project Infrastructure
+ * Website Maintenance
+ * Promotion and Public Relations
+ * Interaction with other Organizations such as OSGeo
+
+It is the responsibility of the PSC to ensure that issues critical to the future of the PostGIS project are adequately attended to. This may the formation and oversight of sub-committees for particular purposes.
+
+
+== Decision Process ==
+
+Written proposals are submitted to the the postgis-dev mailing list for discussion and voting. Proposals with significant technical detail should be written on the PostGIS wiki as an RFC, and an e-mail announcing the proposal, with a link to the RFC, should be sent to the postgis-dev mailing list. Proposals can be made by any interested party, not just PSC members.
+
+=== Voting ===
+
+ * Proposals must be available for review for at least two business days before a decision can be made.
+ * Respondents may vote “+1” to indicate support for the proposal and a willingness to support implementation.
+ * Respondents may vote “-1” to veto a proposal, but must provide clear reasoning and alternate approaches to resolving the problem within the two days.
+ * A vote of -0 indicates mild disagreement, but has no effect. A 0 indicates no opinion. A +0 indicate mild support, but has no effect.
+ * Anyone may comment on proposals on the list, but only members of the Project Steering Committee’s votes will be counted.
+ * A proposal will be accepted if it receives +2 (including the author) and no vetoes (-1).
+ * If a proposal is vetoed, and it cannot be revised to satisfy all parties, then it can be resubmitted for an override vote in which a majority of all eligible voters indicating +1 is sufficient to pass it. Note that this is a majority of all committee members, not just those who actively vote. While this vote provides a way to override an obstructionist veto, ideally all members can come to a consensus.
+ * Upon completion of discussion and voting the author should announce whether they are proceeding (proposal accepted) or are withdrawing their proposal (vetoed).
+ * The Chair gets a vote.
+ * The Chair is responsible for keeping track of who is a member of the Project Steering Committee, on a page provided for this purpose on the wiki.
+ * Addition and removal of members from the committee, as well as selection of a Chair should be handled as a proposal to the committee.
+ * The Chair is the ultimate adjudicator in cases of disputes about voting or breakdown of the voting system
+
+=== When is a Vote Required? ===
+
+ * Any change to committee membership (new members, removing inactive members)
+ * Changes to project infrastructure (e.g. tool, location or substantive configuration)
+ * Anything that could cause backward compatibility issues
+ * Adding substantial amounts of new code
+ * Changing inter-subsystem APIs, or objects
+ * Issues of procedure
+ * When releases should take place
+ * Anything dealing with relationships with external entities such as OSGeo
+ * Anything that might be controversial
+
+== Committee Membership ==
+
+The PSC is made up of individuals consisting of technical contributors (e.g. developers) and prominent members of the PostGIS user community. There is no set number of members for the PSC.
+
+=== Adding Members ===
+
+Any member of the postgis-dev mailing list may nominate someone for committee membership at any time. Only existing PSC committee members may vote on new members. Nominees must receive a majority vote from existing members to be added to the PSC.
+
+Once people are voted into the PSC, the following tasks must be done
+
+* Add them to footer of http://postgis.net site
+* Add them to the git owner list of git.osgeo.org/gitea/postgis, github.com/postgis, gitlab.com/postgis
+* Add them to this document as a current member
+* Add them to the documentation, if they are already in member list, they should be moved up to psc list (current dev and latest stable - https://postgis.net/docs/postgis_introduction.html#psc, https://postgis.net/docs/manual-dev/postgis_introduction.html#psc
+* Add them to linkedin PostGIS project group
+* Add them to psc@postgis.net email distribution (this is in the PairDomains mail forwarding registration - so requires OSGeo sac member to do it)
+* Add them to LDAP postgis group
+* Add them to LDAP shell group and install their sshkey in their account on download.osgeo.org (needed so they can upload source tarballs and docs to download.osgeo.org/postgis) - again requires SAC member at moment to do
+
+=== Stepping Down ===
+
+If for any reason a PSC member is not able to fully participate then they are free to step down. If a member is not active (e.g. no voting, no IRC or email participation) for a period of two months then the committee reserves the right to seek nominations to fill that position. Should that person become active again, they would require a nomination.
+
+
+== Membership Responsibilities ==
+
+=== Guiding Development ===
+
+Members should take an active role guiding the development of new features they feel passionate about. Once a change request has been accepted and given a green light to proceed does not mean the members are free of their obligation. PSC members voting “+1” for a change request are expected to stay engaged and ensure the change is implemented and documented in a way that is most beneficial to users. Note that this applies not only to change requests that affect code, but also those that affect the web site, technical infrastructure, policies and standards.
+
+=== IRC Meeting Attendance ===
+
+PSC members are expected to participate in pre-scheduled IRC development meetings. If known in advance that a member cannot attend a meeting, the member should let the meeting organizer know via e-mail.
+
+=== Mailing List Participation ===
+
+PSC members are expected to be active on both the postgis-users and postgis-dev mailing lists, subject to open source mailing list etiquette. Non-developer members of the PSC are not expected to respond to coding level questions on the developer mailing list, however they are expected to provide their thoughts and opinions on user level requirements and compatibility issues when RFC discussions take place.
+
+
+== Composition of the PSC ==
+
+The PostGIS development team has been effectively working under a PSC for several years but the process was not documented. This RFC will be distributed to the postgis-users and postgis-dev mailing lists for comment, and all substantive comments will be addressed appropriately before this RFC is accepted using the voting process defined herein.
+
+The current Project Steering Committee members are:
+
+ * Raúl Marín Rodríguez
+ * Regina Obe
+ * Darafei Praliaskouski
+ * Paul Ramsey (Chair)
+ * Sandro Santilli
+
+The initial Project Steering Committee members were:
+
+ * Mark Cave-Ayland
+ * Chris Hodgson
+ * Kevin Neufeld
+ * Regina Obe
+ * Paul Ramsey (Chair)
+ * Sandro Santilli

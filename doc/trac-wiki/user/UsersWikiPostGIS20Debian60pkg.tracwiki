@@ -1,0 +1,179 @@
+=== Steps for creating a "proper" Postgis 2.0 pacakge for Postgreql 9.1 on Debian Squeeze ===
+
+I prefer to build in a chroot. Install debootstrap if you don't already have it. Change amd64 to i386 or whatever is necessary to suit your environment.
+{{{
+mkdir chroot
+sudo debootstrap --arch=amd64 squeeze chroot http://ftp.debian.org/debian/
+}}}
+
+Prevent start-stop-daemon from starting daemons inside the chroot.
+{{{
+sudo bash -c "echo exit 0 > chroot/sbin/start-stop-daemon"
+}}}
+Bind mount the necessary directories from the host and chroot.
+{{{
+sudo mount --bind /proc chroot/proc
+sudo mount --bind /sys chroot/sys
+sudo mount --bind /dev chroot/dev
+sudo mount --bind /dev/pts chroot/dev/pts
+sudo cp /etc/mtab chroot/etc/
+sudo chroot chroot /bin/bash
+}}}
+Since you are already root inside the chroot there's no need to use sudo going forward.
+
+Configure locales in the chroot as things will break if this isn't done.
+{{{
+apt-get update
+echo -e "en_US ISO-8859-1\nen_US.UTF-8 UTF-8" >> /etc/locale.gen
+apt-get install locales
+}}}
+Add the official Debian backports repo and pin the postgresql 9.1 dependency packages. Also add debhelper, as version 9 is required for building GEOS, which is also available from backports.
+{{{
+cat >> /etc/apt/sources.list.d/backports.list <<EOF
+deb http://backports.debian.org/debian-backports squeeze-backports main
+EOF
+
+cat >> /etc/apt/preferences.d/postgresql.pref <<EOF
+Package: libpq5
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+
+Package: libpq-dev
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+
+Package: postgresql-client-common
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+
+Package: postgresql-common
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+
+Package: postgresql-server-dev-9.1
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+
+Package: debhelper
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+EOF
+
+apt-get update
+}}}
+
+Install the dependencies required for building everything. The dependency tree here is rather large. Total download was 754 megs.
+{{{
+apt-get install build-essential debhelper postgresql-server-dev-9.1 doxygen swig ruby ruby1.8 ruby1.8-dev autotools-dev flex bison libproj-dev xsltproc docbook docbook-xsl default-jdk libpg-java fastjar libjts-java imagemagick libcunit1-dev dblatex libxml2-dev libgtk2.0-dev libgdal1-dev ant
+}}}
+Create a scratch directory to perform all the tasks and cd into it
+{{{
+mkdir scratch
+cd scratch
+}}}
+Build a GEOS 3.3.3 package. I used the control files from wheezy.
+{{{
+wget http://ftp.us.debian.org/debian/pool/main/g/geos/geos_3.3.3.orig.tar.gz
+tar xvf geos_3.3.3.orig.tar.gz
+cd geos-3.3.3
+wget http://ftp.us.debian.org/debian/pool/main/g/geos/geos_3.3.3-1.1.debian.tar.gz
+tar xvf geos_3.3.3-1.1.debian.tar.gz
+rm -f geos_3.3.3-1.1.debian.tar.gz
+dpkg-buildpackage
+cd ..
+}}}
+Install the newly created packages that are required for building Postgis 2.0.
+{{{
+dpkg -i libgeos-dev_3.3.3-1.1_amd64.deb libgeos-c1_3.3.3-1.1_amd64.deb libgeos-3.3.3_3.3.3-1.1_amd64.deb
+}}}
+Download the two patch files from this page into the scratch directory.
+
+Build Postgis 2.0. This uses the postgis 1.5.3 control files from squeeze. The two patches are applied here to fix an issue with Postgis itself (a bad URL in java/jdbc/build.xml to the maven jar that ant requires for building), and to make the control files build the package.
+{{{
+wget http://postgis.org/download/postgis-2.0.1.tar.gz
+wget http://trac.osgeo.org/postgis/raw-attachment/wiki/UsersWikiPostGIS20Debian60pkg/postgis_debian-2.0.1.patch
+wget http://trac.osgeo.org/postgis/raw-attachment/wiki/UsersWikiPostGIS20Debian60pkg/postgis_maven.patch
+tar xvf postgis-2.0.1.tar.gz
+cd postgis-2.0.1
+patch -p0 < ../postgis_maven.patch
+wget http://ftp.us.debian.org/debian/pool/main/p/postgis/postgis_1.5.3-2.debian.tar.gz
+tar xvfz postgis_1.5.3-2.debian.tar.gz
+rm -f postgis_1.5.3-2.debian.tar.gz
+patch -p0 < ../postgis_debian-2.0.1.patch
+rm -rf debian/source
+dpkg-buildpackage
+cd ..
+}}}
+
+Exit the chroot, umount the bind mounted directories from inside the chroot, copy the deb files that were created out, then delete the chroot.
+{{{
+exit
+sudo umount chroot/proc
+sudo umount chroot/sys
+sudo umount chroot/dev/pts
+sudo umount chroot/dev
+cp chroot/scratch/*.deb .
+sudo rm -rf chroot
+}}}
+
+You'll have to add the backports repo  and pin the Postgres 9.1 packages to the "host" distro before installing the packages:
+{{{
+sudo bash -c "cat >> /etc/apt/sources.list.d/backports.list <<EOF
+deb http://backports.debian.org/debian-backports squeeze-backports main
+EOF
+"
+
+sudo bash -c "cat >> /etc/apt/preferences.d/postgresql.pref <<EOF
+Package: libpq5
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+
+Package: libpq-dev
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+
+Package: postgresql-9.1
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+
+Package: postgresql-client-9.1
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+
+Package: postgresql-client-common
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+
+Package: postgresql-common
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+
+Package: postgresql-contrib
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+
+Package: postgresql-contrib-9.1
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+
+Package: postgresql-plperl-9.1
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+
+Package: postgresql-server-dev-9.1
+Pin: release o=Debian Backports
+Pin-Priority: 1000
+EOF
+"
+
+sudo apt-get update
+}}}
+Install the pacakges. This command line would install all packages created by this process. Obviously don't pick anything you don't really need. For example, I have no use for the GEOS ruby bindings or the Postgis java package.
+{{{
+sudo dpkg -i libgeos-3.3.3_3.3.3-1.1_amd64.deb libgeos-dbg_3.3.3-1.1_amd64.deb libgeos++-dev_3.3.3-1.1_amd64.deb libgeos-ruby1.8_3.3.3-1.1_amd64.deb libgeos-c1_3.3.3-1.1_amd64.deb libgeos-dev_3.3.3-1.1_amd64.deb libgeos-doc_3.3.3-1.1_all.deb libpostgis-java_2.0.1_all.deb postgis_2.0.1_amd64.deb postgresql-9.1-postgis_2.0.1_amd64.deb
+}}}
+
+Pull in the new deps.
+{{{
+sudo apt-get -f install
+}}}

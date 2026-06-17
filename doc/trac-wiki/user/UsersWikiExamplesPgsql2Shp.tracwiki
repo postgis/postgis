@@ -1,0 +1,27 @@
+
+= pgsql2shp Examples =
+
+
+== Database on different machine, authentication required ==
+
+{{{
+pgsql2shp -f myshp -h myserver -u apguser -P mypassword -g mygeomfield mydatabase mytable
+
+}}}
+
+== Database on same machine, trusted user, no need for host ==
+
+{{{
+pgsql2shp -f myshp mydatabase mytable
+
+}}}
+
+== Using an sql statement instead of table ==
+
+{{{
+pgsql2shp -f myshp -h myserver -u apguser -P mypassword -g mygeomfield mydatabase "select parcel_id, the_geom from parcels where neighborhood='DORCHESTER'"
+
+}}}
+
+
+Where myshp is the shapefile name without the .shp extension

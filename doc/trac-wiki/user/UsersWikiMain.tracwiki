@@ -1,0 +1,176 @@
+[[Image(wiki:WikiStart:OSGeo_project.png)]]
+= Welcome to the Users PostGIS Wiki! =
+
+Everybody is welcome to contribute to this wiki.
+
+ * You must login to create new pages and modify existing ones. You can create your own [https://www.osgeo.org/cgi-bin/ldap_create_user.py OSGEO Userid] or use your existing one or you can use the generic one (login:wiki;password:wiki).
+ * Please prefix every new page names in this section with "!UsersWiki" in order to easily distinguish them from other Wiki Trac pages.
+ * For a quick overview of how to format page's content [wiki:WikiFormatting see this page].
+
+== What is PostGIS? ==
+
+PostGIS is an extension  to the  [http://www.postgresql.org PostgreSQL] object-relational database system that allows [http://en.wikipedia.org/wiki/Geographic_information_system GIS] (Geographic Information System) objects to be stored in the database.
+PostGIS does for PostgreSQL what Oracle Spatial does for Oracle, ArcSDE does for Microsoft SQL !Server/Oracle.
+
+PostGIS uses [http://geos.osgeo.org GEOS] to implement many spatial functions.
+GEOS is a C++ port of the [http://en.wikipedia.org/wiki/JTS_Topology_Suite JTS Topology Suite].
+
+ * [http://s3.cleverelephant.ca/foss4gna2012-postgis2.pdf (slides) FOSS4G NA 2012 What's New in PostGIS 2.0] Paul Ramsey
+ * [http://s3.cleverelephant.ca/state-of-postgis-2011-foss4g.pdf (slides) FOSS4G 2011 State of PostGIS] [http://fosslc.org/drupal/content/state-postgis video] Paul Ramsey
+ * [http://www.postgis.us/downloads/FOSS4G2011PostGIS20NewStuff.pdf FOSS4G 2011 PostGIS 2.0 the new stuff (slides)][http://blip.tv/fosslc/foss4g-window-regina-postgi-5656333 video] Regina Obe and Leo Hsu
+ * [http://blip.tv/fosslc/foss4g-window-pierre-storem-5656323 FOSS4G 2011 Store, manipulate and analyze raster data within the PostgreSQL/PostGIS spatial database video] Pierre Racine
+ * [http://www.postgis.us/downloads/ncgis2011/NCGISSDBPostGIS20_2011.pdf NCGIS 2011 PostGIS 2.0 3D and Raster support enhancements] Regina Obe and Leo Hsu
+ * [http://www.ustream.tv/recorded/10667125 Foss4G JP 2010 State of PostGIS video] by Paul Ramsey
+ * [http://2010.foss4g.org/presentations/3556.pdf PostGIS meets the 3rd Dimension] by Olivier Courtin
+ * [http://blip.tv/file/2788616/ Foss4G 2009 State of PostGIS video] by Paul Ramsey
+ * [http://wiki.postgresql.org/images/5/5e/Postgis_beyond_courtin_caveayland_pgdayEU2010.pdf PostGIS 1.5 and Beyond] PGDay EU 2010 talk by Mark Cave-Ayland and Olivier Coutin outlines the techical details of upcoming PostGIS 2.0 -- the new disc format, new geometry types etc.
+ * [http://wiki.postgresql.org/images/5/5e/Postgis_beyond_courtin_caveayland_pgdayEU2010.pdf PostGIS 1.5 and Beyond] PGDay EU 2010 talk (more of a user perspective) by Vincent Picavet and Olivier Courtin
+
+
+== Overview ==
+ * [wiki:UsersWikiPostgreSQLPostGIS PostgreSQL/PostGIS version support matrix]
+ * [wiki:UsersWikiTutorials PostGIS Tutorials]
+ * [http://postgis.net/documentation PostGIS Manuals]
+ * [wiki:UsersWikiFeaturesOfPostgis Features of PostGIS]
+ * [wiki:UsersWikiCoveragesAndPostgis Coverage Concepts and PostGIS]
+ * [wiki:UsersWikiPostgreSQLPostGIS PostgreSQL/PostGIS GEOS GDAL /PostGIS version support matrix]
+ * [http://www.postgresonline.com/journal/index.php?/archives/7-PostGIS-for-geospatial-analysis-and-mapping.html PostGIS as a part of PostgreSQL] (Article)]
+ * [wiki:UsersWikiToolsSupportPostgis Tools that support PostGIS]
+ * [wiki:UsersWikiGallery Gallery] Collection of applications using PostGIS in the backend.
+ * [wiki:UsersWikiPostgreSQLCaseStudies PostgreSQL Case Studies]
+ * [wiki:UsersWikiPostGISHosters PostGIS Hosters]
+ * [wiki:UsersWikiPostGISConsulting PostGIS Support and Consulting Services]
+ * [http://en.wikipedia.org/wiki/PostGIS PostGIS Wikipedia entry]
+ * [wiki:UsersWikiPostgisarcgis PostGIS and ESRI ArcSDE/ArcGIS Articles]
+ * [http://wiki.postgresql.org/wiki/Snippets PostgreSQL general use user contributed functions and snippets]
+
+== Contrast / Compare / Port Guides ==
+Don't know if PostGIS is right for you or if another spatial db is more suited or you
+are porting from another/going to another and not sure the gotchas
+ * [http://www.postgis.us/downloads/ncgis2011/NCGISSDBCrossCompare_2011.pdf NCGIS 2011: Cross Comparison of Spatially Enabled Databases: PostGIS, SQL Server and JASPA]
+ * [http://www.bostongis.com/PrinterFriendly.aspx?content_name=sqlserver2008r2_oracle11gr2_postgis15_compare Compare SQL Server 2008 R2, Oracle 11G R2, PostgreSQL/PostGIS 1.5 Spatial Features]
+ * [http://www.bostongis.com/PrinterFriendly.aspx?content_name=sqlserver2008_postgis_mysql_compare SQL Server 2008, PostGIS, MySQL function/feature Spatial compare]
+ * [http://www.spatialdbadvisor.com/blog/147/foss4g-2009-sydney-presentation/ Simon Greener's FOSS4G 2009 talk on Oracle Spatial/Locator and gotchas for porting between PostGIS/Oracle] - [http://blip.tv/file/2795843 complete with slides and sound]
+
+
+== Compilation and Installation Guides ==
+ * [wiki:UsersWikiInstall PostGIS Install Guide] for different systems
+ * Directions for [wiki:UsersWikiWinCompile Compiling in Windows]
+ * Issues with Installing on Windows Vista [wiki:UsersWikiWinVista  Windows Vista Gotchas].
+
+
+== PostGIS Books ==
+ * [http://postgis.net/documentation/ PostGIS official manuals]  for all versions and for PostGIS JDBC driver.
+ * [http://www.postgis.us/chapters_edition_2 PostGIS in Action (2nd Edition)] by Regina Obe and Leo Hsu - Covers PostGIS 2.1. Feature complete and available from Manning in draft form.  With early purchase you get draft updates and final (e-Book/Hardcover) when complete. E-book is generally 1/2 price of full.   All code and data downloads available for free on the book site even if you don't buy the book.  [http://www.postgis.us/chapter_01_edition_2 Chapter 1 (a primer on PostGIS )] are free downloads.
+ * [http://www.packtpub.com/postgis-to-store-organize-manipulate-analyze-spatial-data-cookbook/book PostGIS cookbook] Covers PostGIS 2.0 and 2.1. Common real-world recipes for getting things done in PostGIS.
+ * [http://cartosig.upv.es/postgis-2-analisis-espacial-avanzado PostGIS 2] by Jose Carlos Martinez spanish book covering new features of PostGIS 2. [http://cartosig.upv.es/wp-content/uploads/indice_libro_postgis_2.pdf Table of Contents]
+ * [http://www.postgis.us/chapters_edition_1 PostGIS in Action (1st Edition)] by Regina Obe and Leo Hsu - It's out and available via various distributors including Manning Publications and Amazon. If you want just the E-Book, purchase directly from Manning.  The E-book is about 50% off the hard-copy price. With the purchase of Hard-copy, there is a free-coupon to get the E-Book version. Book includes PostGIS 1.3-1.5, PostgreSQL 8.3-9.0 (with upcoming highlights of PostgreSQL 9.1 and PostGIS 2.0).   All code and data downloads available for free on the book site even if you don't buy the book.  [http://www.postgis.us/chapter_01_edition_1 Chapter 1 (a primer on PostGIS )] and [http://www.postgis.us/chapter_appendix_c_edition_1 Appendix C (a primer on SQL)] are free downloads.
+
+== Frequently Asked Questions ==
+
+ * [wiki:UsersWikiNewbieAddgeometrycolumn function addgeometrycolumn("unknown", "unknown", integer, "unknown", integer) does not exist]
+ * [wiki:UsersWikiNewbieDistanceMeasurement What is the measurement returned by ST_Distance?]
+ * [wiki:UsersWikiNewbiePostGISFunctionMeasurement What unit of measurement do PostGIS functions use?]
+ * [wiki:UsersWikiNewbieMeasurementInMeters How to get distance measurement in meters?]
+
+== Examples of Spatial SQL ==
+
+=== Finding Features ===
+ * [wiki:UsersWikiExamplesFindNearby Find Nearby Features]
+ * [wiki:UsersWikiExamplesFindNearbyLatLon Find Nearby Features in Lat/Lon (EPSG:4326)]
+ * [wiki:UsersWikiExamplesAntiNear Find Features far from nearest neighbor - Anti-Near Neighbor]
+ * [wiki:UsersWikiExamplesInsidePolygon Find Features Inside a Particular Polygon]
+ * [wiki:UsersWikiExamplesInsidePolygon2 Find points on interior rings within a certain distance to exterior ring]
+
+=== Overlay ===
+
+ * [wiki:UsersWikiExamplesJoinTables Join Spatial and Non-Spatial Tables]
+ * [wiki:UsersWikiExamplesOverlayTables Overlay Geometries in one table with Geometries in another]
+
+=== Cleaning Geometry ===
+
+ * [wiki:UsersWikiCleanPolygons Clean Invalid Polygon Topology]
+ * [wiki:UsersWikiExamplesSpikeAnalyzer Determine spikes in polygons]
+ * [wiki:UsersWikiExamplesSpikeRemover Search for spikes and removes them]
+ * [wiki:UsersWikiExamplesPolygonOverlaps Function Find overlapping polygons in a table and remove slivers/overlaps]
+ * [wiki:UsersWikiCheckInvalidGeometriesFromGeometryColumns Test all tables from GeometryColumns for invalid geometries]
+
+=== Splitting Geometry ===
+
+ * [wiki:UsersWikiSplitPolygonWithLineString Split a Polygon with a Linestring]
+ * [wiki:UsersWikiSplitPolygonWithPoints Split a table of Linestrings by a table of Points onto or close to the lines]
+
+=== Simplifying ===
+
+ * [wiki:UsersWikiSimplifyPreserveTopology Simplify a multipolygon layer, keeping existing connections between polygons (Not using topology extension)]
+ * [wiki:UsersWikiSimplifyWithTopologyExt Simplify a multipolygon layer, using PostGIS Topology]
+ * [wiki:UsersWikiBufferCoast Dilation/erosion technique for simplifying coastlines]
+
+=== Creating Polygons
+
+ * [wiki:UsersWikiBuildPolygonsWithLines Polygonize / building areas from non-noded linework]
+
+=== Generating Shapes ===
+
+ * [wiki:UsersWikiCreateFishnet Create a fishnet grid (rectangular cells)]
+ * [wiki:UsersWikiGenerateHexagonalGrid Generate a hexagonal grid]
+ * [wiki:UsersWikiComputeMultiCentroid Create MultiPoint centroids from Multi geometries]
+ * [wiki:UserWikiRandomPoint Create random points inside a polygon]
+ * [wiki:UserWikiDotDensity Create dot density maps]
+
+=== Buffering ===
+
+ * [wiki:UserWikiVariableBuffer Create a variable distance buffer]
+ * [wiki:UserWikiBufferMeters Buffer geodetic geometry using distance in meters, via a transform to UTM]
+
+=== Direction ===
+
+ * [wiki:UsersWikiCardinalDirection Determine cardinal direction from azimuth direction]
+
+=== Linear Referencing ===
+
+ * [wiki:UsersWikiExamplesInterpolateWithOffset Interpolate a Point along a Line with an offset]
+
+=== Topology ===
+
+ * [wiki:UsersWikiTopologyExample Shell script showing basic construction of polygons from linestrings using topology]
+ * [wiki:PostgisTopology_Data_Model Schema explaining postgis topology data model]
+ * [wiki:UsersWikiExamplesNetworkTopology Create a network topology from a set of noded linestrings]
+
+=== Tools ===
+
+ * [wiki:UsersWikiOGR OGR Examples]
+ * [wiki:UsersWikiBatchLoadShapefilesForWindowsUsingShp2pgsql Batch Load Shapefiles with shp2pgsql.exe on windows]
+ * [wiki:UsersWikiNbSqlFunctionsEditor Netbeans SQL Editor with (PostGIS) functions autocompletion and documentation]
+ * [wiki:UsersWikiQGIS Using QGis to display PostGis Layers]
+ * [wiki:SpatiaLite] export from PostGIS
+
+== Spatial PL/PGSQL Functions ==
+ * [wiki:UsersWikiplpgsqlfunctions Various Functions]
+ * [wiki:UsersWikiplpgsqlfunctionsDistance Functions for Distance]
+   * [wiki:UsersWikiplpgsqlfunctionsDistance#FindUTMZoneSRIDforapointinanySRID Find UTM Zone for a point in any SRID]
+ * [wiki:UsersWikiGeographyFunctions Functions for the geography type]
+   * [wiki:UsersWikiGeographyFunctions#GreatCircleMapper Great Circle Mapper URL]
+ * [wiki:UsersWikiwktrasterfunctions WKT Raster Helper Functions]
+ * [wiki:UsersWikiExamplesOverlayTables2 Functions for spatial overlay of 2 polygon tables]
+ * [wiki:UsersWikiLinearRefFunctions Functions for Linear Referencing]
+   * [https://trac.osgeo.org/postgis/wiki/UsersWikiLinearRefFunctions#ST_LineLocateSegment ST_LineLocateSegment]
+
+== Superseded Functions ==
+ * [wiki:UsersWikiNearest Nearest Neighbor Search]
+ * [wiki:UsersWikiCascadeUnion PL/PGSQL Pseudo Cascade Union Aggregate Function (use for pre-PostGIS 1.4)]
+
+== Extending PostGIS ==
+
+ * [wiki:UsersWikiSpatialEJB3 PostGIS EJB3 Integration]
+ * [wiki:UsersWikiPostgisTopology Postgis Topology] - to be moved somewhere else ;)
+ * [wiki:UsersWikiRasterNotes Raster support]
+  * [wiki:WKTRaster WKT Raster] - The new raster implementation in PostGIS
+  * [http://simon.benjamin.free.fr/pgchip/ PGCHIP] - The GDAL Postgis driver for raster data - a corrected version can be found in current GDAL CVS
+ * [wiki:pgRouting] routing with PostGIS
+
+== Notes ==
+
+ * [wiki:UsersWikiWishList WishList] of features for the future.
+ * [wiki:UsersWikiSprint2009Notes Code Sprint 2009 Notes]
+ * [wiki:UsersWikiSpatialAlgorithmWebSites Spatial Algorithm Web Sites]

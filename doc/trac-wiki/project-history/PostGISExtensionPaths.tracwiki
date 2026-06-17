@@ -1,0 +1,106 @@
+= RFC-7: Managing PostGIS Extension Paths with Fewer and or smaller Files =
+||Date:|| 2022/02/11||
+||Author:|| Regina Obe||
+||Last Edited:|| 2022/02/11||
+||Last Updated By: || Regina Obe <lr at pcorp dot us> ||
+||Status:|| In Discussion||
+[[TOC]]
+== PROBLEM STATEMENT ==
+With each new version of PostGIS, we need to ship more and more extension upgrade scripts.
+In reality all the upgrade scripts are just a symlink to the main one or exact copies of the main one.
+This results in a users extensions folder cluttered with 100s or more of PostGIS related scripts.
+
+Not only that, but for each new version we ship, we always need to remember to add the recently shipped micros of other versions
+to the extensions/updateable.mk script.
+
+In addition, the large and changing set of files imposes work (and thus the possibility of errors) on some packaging systems, which have a manifest of installed files.  While maintaining this for files that should exist is fine -- and allows detecting new/removed files at update time that can be checked against NEWS -- dealing with upgrade scripts has been a significant amount of the ugprade work in pkgsrc.
+
+The largeness of the script files (when not symlinked, which is often the case), is the biggest issue of all, and will become even more of an issue
+with shipping spatial_ref_sys updates.
+
+The solution of the above issues is to have: Solution 1, Solution 2, and Solution 3 implemented, as some solutions are not backward compatible but do provide extra benefits.
+
+
+== SOLUTION 1 (FAILS) ==
+
+This has already been committed in master branch for PostGIS 3.3.0.
+Embedded in:
+
+
+----
+SELECT postgis_extensions_upgrade();
+----
+
+What it does:
+Update the current version to ANY and then run the updates.
+This has the affect of always forcing the  postgis--ANY--
+
+BLOCKER: this solution does not work in some cloud environments, see https://trac.osgeo.org/postgis/ticket/5194
+== SOLUTION 2 ==
+
+[https://www.postgresql.org/message-id/YgakFklJyM5pNdt%2B%40c19 Beg and plea upstream] to recognize a % or ANY as a first class citizen to mean any prior version.
+
+This approach allows for defining a new line item in the control file, that denotes something like
+
+
+----
+upgrade_script_pattern = %--<version>
+----
+
+Where the % will be treated as a wildcard to match to provider the best match.
+
+**Benefits of this approach:**
+
+1. We have made what we are doing, built into the PostgreSQL machinery, so no special care needs to be done by packagers or users.
+It makes us not a special snowflake.
+
+2.  It will help other extensions which have similar issues and just want a single upgrade script. We expect many extensions to benefit, though we will benefit the most.
+
+**Drawbacks:**
+
+1. Old PostgreSQL versions, won't understand this new world order, so we still need to maintain a backward compatible way for 5 years or more.
+
+
+== SOLUTION 3 ==
+
+The 0-byte file model.  This approach creates 0 or very small byte files, with their existence solely to maintain PostgreSQL extension chain model.
+
+
+In this model, our generated extension upgrade scripts will look like the below, with only the postgis--3.3.X--3.3.0.sql having any upgrade statements in it and the others being 0-byte or miniscule with a comment or no-op command.
+
+----
+{{{
+:
+postgis--3.0.0--3.3.X.sql
+postgis--3.0.1--3.3.X.sql
+postgis--3.0.2--3.3.X.sql
+postgis--3.0.3--3.3.X.sql
+postgis--3.0.4--3.3.X.sql
+postgis--3.0.5--3.3.X.sql
+postgis--3.1.1--3.3.X.sql
+postgis--3.1.2--3.3.X.sql
+postgis--3.1.3--3.3.X.sql
+postgis--3.1.4--3.3.X.sql
+postgis--3.1.5--3.3.X.sql
+postgis--3.2.0--3.3.X.sql
+postgis--3.2.1--3.3.X.sql
+postgis--3.3.X--3.3.0.sql
+}}}
+----
+**Benefits of this approach:**
+
+1. We are staying between the lines. Respecting known practices, but still having much lighter weight scripts.
+2. No change in upgrade extension workflow for packagers (or users who think of PostGIS as any other extension).
+3. It will work for all PostgreSQL versions supported
+
+** Downsides:**
+
+1. We still have the same useless clutter of files.
+
+2. It is not possible to upgrade from version (prior PostgreSQL version) 3.3.0 to (newer PostgreSQL version) 3.3.0 which is needed often in pg_upgrade to gain the benefits of new features in latest PostgreSQL version that are not exposed in older PostgreSQL versions.  Such operation would just state "You are already at latest version" and not do anything, unless one does it via
+
+----
+SELECT postgis_extensions_upgrade();
+----
+
+which would have SOLUTION 1.

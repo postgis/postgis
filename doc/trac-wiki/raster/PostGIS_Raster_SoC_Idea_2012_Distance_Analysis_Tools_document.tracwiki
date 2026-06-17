@@ -1,0 +1,331 @@
+= Distance Analysis Tools for PostGIS Raster (PostGIS Raster GSoC 2012 project) =
+----
+[http://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools Project Page]
+----
+[http://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/code Code Page]
+----
+
+= Document =
+{{{
+#!html
+<div style='background-color: #F4F4F4; border: 1px solid gray; width:400px;' >
+<br>
+<UL>
+<LI><A href=http://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/document#CreatinganEuclideanDistanceRasterinPostGISRaster>Euclidean Distance</A></LI>
+<LI><A href=http://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/document#CreatingaCost-weightedDistanceRasterinPostGISRaster>Cost Distance</A></LI>
+</UL>
+<br>
+</div>
+}}}
+
+== Creating an Euclidean Distance Raster in PostGIS Raster ==
+[[BR]][[BR]]
+
+=== ST_EuclideanDistance ===
+
+'''Name'''
+ ST_EuclideanDistance - One raster, One band version:
+  Creates a new one band raster generated from a point coverage and aligned with the provided reference raster or with raster specifications. The pixel values in the new raster represent the Euclidean distance from each pixel to the source points.
+
+'''Synopsis'''
+[[BR]]
+ ST_EuclideanDistance(refrast raster,pixeltype text,sourceschema text,sourcetable text,sourcegeomcolumn text,double precision = -1);
+
+ ST_EuclideanDistance(width integer,height integer,rastulx float8,rastuly float8,rastscalex float8,rastscaley float8,rastskewx float8,rastskewy float8,rastsrid integer,rastndv float8,pixeltype text,sourceschema text,sourcetable text,sourcegeomcolumn text,double precision = -1);
+[[BR]]
+
+'''Description'''
+[[BR]]
+
+ Create a new one band raster generated from a point coverage as source points. Pixel values in the output raster represent the Euclidean distance from each pixel to the source points. A reference raster will be provided, otherwise the raster specifications are provided. The new raster will have the same georeference, width and height as the reference raster or the raster specifications.
+
+ Source points are passed in by the database schema, table name and the geometry column name of the point coverage.
+
+ It is assumed that both the input reference raster and the output new raster has only 1 band.
+
+ If pixeltype is passed in, then the new raster will have a band of that pixel type. If pixeltype is passed NULL, then the new raster band will have the same pixel type as the reference raster band.
+
+ In the reference raster variant, it will use the same nodatavalue as the reference raster. In the raster specifications variant where no reference raster is provided, both nodatavalue and pixeltype have to be passed in with a NOT NULL value.
+
+----
+=== Objectives ===
+
+We want to develop a raster/vector integrated approach to generate a distance raster coverage (optionally a tiled coverage) from a point coverage (could also be lines or polygons coverage) with some raster specifications, representing the Euclidean distance to those points (lines or polygons).
+
+This approach should be reusable and opening the way to further implementation of interpolation raster, since the distance raster is a specific and simpler case of an interpolation raster, in terms of storing the value associated with the nearest point(s) instead of distance to it.
+
+
+=== Constraints ===
+
+ 1.  The source table of geometries (points, line or polygons) can contain one geometry or many (eventually millions). We want the method to scale well whatever the number of source geometry.
+ 2.  The desired raster is specified with parameters or by referencing an existing raster.
+ 3.  Sometimes the resolution of the desired raster is so high that the whole raster coverage cannot be stored in one PostgreSQL row. The approach must be able to produce a tiled raster coverage stored into many rows.
+ 4.  Source geometries might be outside the extent of the desired raster.
+ 5.  The approach should work well in a number of situations:
+  a.  small number of sources vs low resolution raster
+  b.  small number of sources vs high resolution raster
+  c.  large number of sources vs low resolution
+  d.  large number of sources vs high resolution Large raster coverage
+ 6.  The user can specify a maximum distance to the source. When the source is too far from the geometry it gets assigned a nodata value.
+ 7.  We want the implementation to be generic enough to be reused to implement more general interpolation methods like nearest neighbor, IDW, spline or kriging. Otherwise we want it to be generic enough to be reused to implement more general cost distance methods.
+
+=== Different Envisioned Approaches ===
+
+==== 1.  The raster source approach ====
+
+  The first approach is similar to what is found in most GIS package. The source points (or geometries) are converted to a raster of sources and this raster is passed to the function. The function iterates over the pixels (__or over the source points???__) (__I think most GIS packages do the iterration over the pixels?__) assigning the distance to the nearest point (__or assigning minimum values to pixels within a circle progressively growing around each point???__)(__some of them used growing method like GRASS__).
+
+  Converting one or a set of source geometries to one raster can be performed like this in PostGIS:
+
+  {{{
+#!sql
+raster ST_Union(raster ST_AsRaster(source_geom, list of parameters of raster specifications))
+}}}
+
+  The Euclidean distance from each pixel to its nearest source pixel can then be computed using ST_MapAlgebra.
+
+  {{{
+#!sql
+CREATE FUNCTION euclidean_fct(pos1 integer[], pos2 integer[])
+RETURNS float
+AS $$
+BEGIN
+SELECT ST_Distance(ST_Point(pos1), ST_Point(pos2)) as euclidean_dist;
+  RETURN euclidean_dist;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE TABLE distcoverage AS
+SELECT rid, ST_MapAlgebraFct(rast, 'euclidean_fct(position of computed pixel, position of source point pixel)'::regprocedure) rast
+FROM myexistingcoveragetable
+}}}
+
+'''Remarks:'''
+ * In case source table containing only one point (constraint 1), converting source point to raster could utilize ST_AsRaster() to create a raster with the point geometry and raster specifications.
+ * In case source table containing more than one point but the number of source points is small (constraint 5), computing distance could rescan all the source points and assign the shortest distance to the pixel being computed.
+
+'''Pros:'''
+ * Simplest approach already implemented in other GIS like GRASS.
+
+'''Cons:'''
+ * Producing an intermediate raster is costly if the requested raster resolution is very high (constraint 3, 5b & 5d).
+ * ST_Union could be very inefficient at producing the required raster from a large set of geometries and there is no efficient method to produce such a raster right now in PostGIS (constraints 1, 5c & 5d).
+ * It could be very inefficient to rescan all the source points to find the one nearest to the current pixel (constraint 6, 7, 8 & 12). __We still have to see how GRASS does this efficiently.__ (I was wrong about this. What I found in GDAL and GRASS is that they only scan the pixels not for all the source points to each pixel)
+ * Only rasters which extent contains all the source points could be produced.
+ * This approach does not answer well to the requirement of developing a generic reusable solution for more interpolation needs (constraint 7).
+[[BR]][[BR]]
+==== 2.  The TIN approach ====
+
+  The second approach involve creating a TIN (triangulated irregular network) from the table of source geometries first and then to use this TIN to determine the nearest neighbors for each pixel.
+
+  The TIN is stored temporarily. A function iterating over each pixel determines in which part of the TIN the current pixel falls and determine the triangle corner nearest to the centroid of the pixel.
+
+'''Remarks:'''
+ * Nearest point to pixel could be determined by interesting the pixel centroid with the TIN in order to determine the triangle including the centroid. The nearest point is then determined from the three corner of the triangle.
+ * It could also be determined by producing the TIN with the set of point including all the pixel centroid. Would this fasten the search for the nearest neighbor? This is still to determine.
+ * Would this work with a table of line or geometries? How do we produce a TIN from a line or polygon coverage?
+ * PostGIS might not be ready to produce a TIN from a point coverage.
+
+'''Pros:'''
+ * This would work well with a large number of source points (constraints 1, 5c & 5d) since we would not have to  rescan all the source points for each pixel calculation.
+ * __This approach fulfills constraint 7 in that it would allow easy implementation of other interpolation methods.__
+{{{
+Comments from Mentor:
+Not really. If the raster HAS to be in the extent of the point coverage, as stated in the cons, it means
+it could not correspond to the arbitrary alignment/extent of an existing coverage. This is probably
+the main reason the third approach is preferable to the TIN one.
+}}}
+
+'''Cons:'''
+ * __We have no idea for now about the algorithm and performance of building TIN from source geometries in PostGIS if the number of source point is very large (Constraint 7 & 8)__
+{{{
+Comments from Mentor:
+Right, ST_Within(raster, geometry) does not exist. But you would work with the centroid of the pixel,
+which is a point and the triangle of the TIN which are polygons and there is no problem doing that
+with ST_Within. If you would include the pixel centroid in the TIN as stated above, you would not
+even have to do that as the centroid and the points would all be in the same TIN structure allowing
+fast find of neighbors.
+}}}
+ * Might be very inefficient and a waste of computing TIN in case there is only one point in the source table (Constraint 1) or there are very small number of source points and the requested raster is relatively small too (Constraint 5).
+[[BR]][[BR]]
+==== 3.  The KNN index approach ====
+
+  The third approach is similar to the second but use the new KNN indexing facilities of PostGIS to determine the nearest neighbor points of each pixel.
+
+{{{
+#!sql
+CREATE FUNCTION euclidean_fct(raster rast, text dbschema, text sourcetable, text sourcegeomcolumn)
+RETURNS float
+AS $$
+BEGIN
+      SELECT ST_Distance (ST_GeomFromText('POINT(columnx rowy)',ST_SRID(rast)),
+ST_Transform(sourcegeom, Find_SRID(dbschema,sourcetable,sourcegeomcolumn), ST_SRID(rast)) as eucliean_dist
+      FROM sourcetable
+      ORDER BY $1 <-> $2
+      LIMIT 1;
+      RETURN euclidean_dist
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE TABLE distcoverage AS
+SELECT rid, ST_MapalgebraFct(rast, 'euclidean_fct(rast, dbschema, sourcetable, sourcegeomcolumn)'::regprocedure) rast
+FROM myexistingcoveragetable
+}}}
+
+'''Pros:'''
+ * Source points do not have to be in the raster extent (constraint 4)
+ * Should work well  with large number of source points (constraint 1, 5c & 5d) since we will be using KNN index to find the nearest point.
+ * Make it possible to to createa tiled raster coverage aligned to an existing one (constraint 3)
+ * Opening to be able to reused for further computing interpolation since the method to find neighbors is quite generic.
+
+'''Cons:'''
+ * __Might not be as light as Approach 1 in case there is only one point in the source table (Constraint 1) or there are very small number of source points and the requested raster is relatively small too (Constraint 5)__
+{{{
+Comments from Mentor:
+In that case, should be fast anyway. We could optimize if there is only one source point.
+}}}
+
+[[BR]][[BR]]
+==== Preferred Approach ====
+
+Approach 3 is the preferred approach for the following reasons:
+ * It exploits and benefits from a very unique and performant new feature of PostGIS: KNN indexing,
+ * It is compliant with PostGIS Raster powerful raster/vector interactions
+ * In terms of scalability, it provides the possibility to generate a distance raster from any coverage of point (however numerous they are) since the time to find the nearest neighbor for each pixel is relatively constant (thanks to the KNN index),
+ * It makes it possible to work with huge tiled coverage (constraint 3) since the extent of the raster is independent of the source extent,
+ * It provides a reusable approach for other types of distances (Constraint 13) and interpolation.
+
+[[BR]][[BR]]
+==== Tentative functions signatures: ====
+
+  Generate a raster having the same alignment as a reference raster:
+
+{{{
+#!sql
+ST_EuclideanDistance(raster ref, text sourceschema, text sourcetable, text sourcegeomcolumn, text pixeltype, double precision nodataval=0)
+}}}
+
+  Generate a raster based on raster specifications:
+
+ * Set the dimensions of the raster by providing the parameters of a pixel size (scalex & scaley and skewx & skewy). The width & height of the resulting raster will be adjusted to fit the extent of the geometry
+{{{
+#!sql
+ST_EuclideanDistance(text dbschema, text sourcetable, text sourcegeomcolumn,
+                                 double precision scalex, double precision scaley,
+                                 double precision gridx, double precision gridy, text pixeltype,
+                                 double precision nodataval=0, double precision skewx=0, double precision skewy=0)
+}}}
+
+ * Fix the dimensions of the raster by providing the dimensions of the raster (width & height). The parameters of the pixel size (scalex & scaley and skewx & skewy) of the resulting raster will be adjusted to fit the extent of the source geometry
+{{{
+#!sql
+ST_EuclideanDistance(text dbschema, text sourcetable, text sourcegeomcolumn,
+                                 geometry geom, integer width, integer height,
+                                 double precision gridx, double precision gridy, text pixeltype,
+                                 double precision nodataval=0, double precision skewx=0, double precision skewy=0)
+}}}
+
+ * For Constraint 6: (just write down the function that takes a reference raster for example)
+{{{
+#!sql
+ST_EuclideanDistance(text dbschema, text sourcetable, text sourcegeomcolumn,
+                                  raster ref, text pixeltype, double precision nodataval=0, double precision maxdistance)
+}}}
+{{{
+Comments from Mentor:
+You should integrate this parameter in the more generic signature instead. The idea is to
+create a generic function with the most complete signature and then to create variants
+assuming default value for some of the parameters. Only the most complete has to be implemented in C.
+}}}
+
+[[BR]][[BR]]
+----
+[[BR]][[BR]]
+== Creating a Cost-weighted Distance Raster in PostGIS Raster ==
+[[BR]][[BR]]
+
+=== ST_CostDistance ===
+
+'''Name'''
+[[BR]]
+ ST_CostDistance - One raster, One band version:
+  Creates a new one band raster generated from a point coverage and a one band cost raster, and aligned with the provided reference raster or with raster specifications. The pixel values in the new raster represent the least accumulative cost of traversing the cost surface from source points to each cell.
+
+'''Synopsis'''
+[[BR]]
+ ST_CostDistance(refrast raster,pixeltype text,costrast raster,sourceschema text,sourcetable text,sourcegeomcolumn text,double precision = -1);
+
+ ST_CostDistance(width integer,height integer,rastulx float8,rastuly float8,rastscalex float8,rastscaley float8,rastskewx float8,rastskewy float8,rastsrid integer,rastndv float8,pixeltype text,costrast raster,sourceschema text,sourcetable text,sourcegeomcolumn text,double precision = -1);
+[[BR]]
+
+'''Description'''
+[[BR]]
+ Create a new one band raster generated from a point coverage as source points and a one band raster as the cost surface. Pixel values in the output raster represent the least accumulative cost of traversing the cost surface from source points to each cell. A reference raster will be provided, otherwise the raster specifications are provided. The new raster will have the same georeference, width and height as the reference raster or the raster specifications.
+
+ Source points are passed in by the database schema, table name and the geometry column name of the point coverage.
+
+ It is assumed that the input reference raster, cost raster and the output new raster has only 1 band.
+
+ If pixeltype is passed in, then the new raster will have a band of that pixel type. If pixeltype is passed NULL, then the new raster band will have the same pixel type as the reference raster band.
+
+ In the reference raster variant, it will use the same nodatavalue as the reference raster. In the raster specifications variant where no reference raster is provided, both nodatavalue and pixeltype have to be passed in with a NOT NULL value.
+
+ If the source point coverage is out of the cost raster extent, a one band new raster will be returned with nodatavalue as pixel values. For this version, it is assumed that cost raster is not a tiled raster coverage but a only one band one raster. Thus, any source points that are out side of the cost raster extent will have not cost surface to travel through and consequently have nodatavalue as pixel value for the new output cost distance raster.
+
+----
+=== Objectives ===
+
+We want to develop a raster/vector integrated approach to generate a cost-weighted distance raster coverage (optionally a tiled coverage) from a point coverage (could also be lines or polygons coverage) and one (could also be multiple) cost raster with some raster specifications, representing the least accumulative cost of traversing the cost surface between each cell and the source points.
+[[BR]][[BR]]
+=== Constraints ===
+
+ 1.  The source table of geometries (points, line or polygons) can contain one geometry or many (eventually millions). We want the method to scale well whatever the number of source geometry.
+ 2.  The desired raster is specified with parameters or by referencing an existing raster.
+ 3.  Sometimes the resolution of the desired raster is so high that the whole raster coverage cannot be stored in one PostgreSQL row. The approach must be able to produce a tiled raster coverage stored into many rows.
+ 4.  Source geometries might be outside the extent of the desired raster, or the cost raster, or both.
+ 5.  The approach should work well in a number of situations:
+  a.  small number of sources vs low resolution raster
+  b.  small number of sources vs high resolution raster
+  c.  large number of sources vs low resolution
+  d.  large number of sources vs high resolution Large raster coverage
+ 6.  The user can specify a maximum cost distance to the source. When the cost exceeds the maximum it gets assigned a nodata value.
+ 7.  There are multiple cost rasters, and could be in different geographic extents.
+
+[[BR]][[BR]]
+=== Approach ===
+
+'''The node-link approach:'''
+
+The algorithm utilizes the node/link representation for raster cells, in which each center of a cell is considered a node and each node is connected to its adjacent cells(neighbors) by multiple links. Every link has an impedance derived from the cost raster associated with the cells at each end of the link. The cost-weighted distance assigned to each cell represents the cost per unit distance for moving through the cell computed from the cell value in cost raster.
+
+ For perpendicular direction link, the cost moving from cell1 to cell2 = (cost1 + cost2) / 2
+ For diagonal direction link, the cost moving from cell1 to cell2 = sqrt(2) * (cost1+cost2) / 2
+
+The calculation begins with source points (polylines or polygons). The computing process grows in 8 directions from source points to the neighboring cells. Cells are put into a list. The cell with the lowest cumulative cost is selected from the list for computing costs to its neighboring cells. The neighbors are then put into the list while the originating cells are removed from the list. The scanning process continues until the list is empty.
+
+'''Pros:'''
+
+ * The raster/vector integrated approach of Euclidean distance can be reused here so that:
+   * the  source points do not have to be in the output raster extent nor the cost raster extent (constraint 4)
+   * it is possible to to create a tiled raster coverage aligned to an existing reference raster (constraint 3)
+ * The scanning process can move randomly around the entire coverage. Pieces of rasters can be swapped in and out of memory in case of high resolution raster (constraint 1, constraints 5b, 5c, 5d). C implementation would be used for this situation. Use of a binary tree with an linked list at each node in the tree to efficiently hold cells with identical cumulative costs.
+
+
+'''Cons:'''
+ * PL/pgSQL is not quite useful in initializations of vary large size arrays, any array update can be very slow (Constraint 1). Using array options in PL/pgsql can get very inefficient if the array size gets very large (constraint 5b,5c,5d).
+
+ * There could be situation where source points are not within output raster nor current cost raster due to that cost raster or output raster might be tiled raster coverage (constraint 4). In that case, accumulatvie cost will be calcualted based upon the edge pixels to adjacent raster.
+
+
+'''Future work:'''
+
+ Future work will be done to make it work with multiple cost rasters (constraint 7).
+
+[[BR]][[BR]]
+==== Tentative functions signatures: ====
+
+ ST_CostDistance(refrast raster,pixeltype text,costrast raster,sourceschema text,sourcetable text,sourcegeomcolumn text, double precision = -1);
+
+ ST_CostDistance(width integer,height integer,rastulx float8,rastuly float8,rastscalex float8,rastscaley float8,rastskewx float8,rastskewy float8,rastsrid integer,rastndv float8,pixeltype text,costrast raster,sourceschema text,sourcetable text,sourcegeomcolumn text,double precision = -1);

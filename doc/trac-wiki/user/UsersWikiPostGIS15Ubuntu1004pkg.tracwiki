@@ -1,0 +1,5 @@
+Ubuntu 10.04 LTS (''lucid'') does not have PostGIS 1.5, only 1.4
+
+See:
+ * [wiki:UsersWikiPostGIS14Ubuntu1004pkg]
+ * [wiki:UsersWikiPostGIS15Ubuntu1004src]

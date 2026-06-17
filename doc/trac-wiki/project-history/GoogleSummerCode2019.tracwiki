@@ -1,0 +1,54 @@
+== Google Summer of Code 2019 ==
+
+**Query overlay and styling for the pgAdmin4 geometry viewer**
+
+''Expected outcome'': new features for overlaying queries and basic styling in the pgAdmin4 geometry viewer
+
+''Skills required'': Python, JavaScript and JavaScript APIs such as, require.js, bootstrap and Leaflet
+
+''Mentors'': Frikan Erwee and [https://www.up.ac.za/geography-geoinformatics-and-meteorology/article/2735602/victoria-rautenbach Victoria Rautenbach]
+
+''Difficulty'': Medium
+
+''Test for student'':
+
+Review all the strings in the pgAdmin4 geometry viewer JS code in the repo, and ensure they are properly wrapped in gettext calls. Some info strings are not localized at all, and a couple are built using constructs like str = gettext("There were ") + num + gettext(" geometries rendered") which won't work with some languages.
+
+Submit a pull request for the following bug in the pgAdmin geometry viewer, https://redmine.postgresql.org/issues/3601
+
+
+''Additional detail'':
+
+During the 2018 GSoC, Xuri Gong developed a geometry viewer for pgAdmin4. The new geometry viewer was released as part of pgAdmin from pgAdmin4 v3.3 ([http://www.bostongis.com/blog/index.php?/archives/272-pgAdmin4-now-offers-PostGIS-geometry-viewer.html read more here]). The viewer allows the user to view geometires directly in pgAdmin, which was not possible previously . The report from 2018 GSoC is available [https://trac.osgeo.org/postgis/wiki/GeospatialDataViewerInPgAdmin4ForPostGIS here]. We have asked the community for ideas and suggestion to improve the geometry viewer. The mailing thread is available [https://lists.osgeo.org/pipermail/postgis-devel/2019-January/027677.html here]. The main ideas for improvements or new functionalities are as follows:
+ * Overlay queries
+ * [https://redmine.postgresql.org/issues/3601 Highlight geometries]
+ * [https://redmine.postgresql.org/issues/3951 Basic styling of the features on the map]
+ * Events, such as mouse over, to show attributes
+ * Optimising for large data sets, for example, drawing only a subset
+ * Other requests in the email thread
+
+For this project, we are focusing on the query overlay and styling aspects (e.g.. selecting specific colours, and highlight features when clicked on them) specifically, but the students are welcome to add some of the additional features mentioned.
+
+
+
+**Ability to load and export tables as ESRI Shapefiles for pgAdmin4**
+
+''Expected outcome'': Screen where users can browse for a zip file (or individuals files that make up an ESRI shape file set, and specify a table and load in.  This replaces the old shp2pgsql-gui that could be used as a plugin in pgAdmin3
+
+[[Image(shp2pgsql-gui-import.png)]] [[Image(shp2pgsql-gui-export.png)]]
+
+''Skills required'': Python, JavaScript and JavaScript APIs such as, require.js, bootstrap.  There is discussion of if you can use the shp2pgsql/pgsql2shp commandlines already packaged with most PostGIS distros (similar to how pgAdmin4 uses pg_dump/pg_restore commandlines), or if you should use the Python library shapely.  [https://trac.osgeo.org/postgis/ticket/4358 Ticket #4358]
+
+''Mentors'': [https://www.osgeo.org/member/regina-obe/ Regina Obe], Frikan Erwee and [https://www.up.ac.za/geography-geoinformatics-and-meteorology/article/2735602/victoria-rautenbach Victoria Rautenbach]
+
+''Difficulty'': Medium
+
+''Test for student'':
+Review two approaches for doing this or come up with your own
+
+Approach 1: Look into how pgAdmin4 implements backup and restore (they use pg_restore/pg_dump).
+Look at the PostGIS shp2pgsql/pgsql2shp commandlines and assess if they can be used in a similar fashion as what is done with backup and restore.
+
+Approach 2: Look at the [https://pypi.org/project/Shapely/ Shapely] library and how easily it can be integrated in pgAdmin4
+
+Approach 3: There seem to be several JS client side scripts that may server the purpose as well - for example this - https://github.com/calvinmetcalf/shapefile-js

@@ -1,0 +1,52 @@
+= CUnit and PostGIS =
+
+The CUnit test framework can only be applied to functionality that is built into the "liblwgeom" library. In general, functionality that does not actually require access to PostgreSQL internal functions should be built in liblwgeom, as then it can be much more easily tested and debugged, using the CUnit framework.
+
+For more information about CUnit itself, see the CUnit web page: http://cunit.sourceforge.net/
+
+The PostGIS CUnit framework consists of a test harness (cu_tester) and test modules (each of which has a .h header file). Each module contains multiple tests and each test can contain multiple CUnit "assertions".
+
+Latest details about testing, adding, raising errors can be found in the [http://trac.osgeo.org/postgis/browser/trunk/liblwgeom/cunit/README PostGIS cunit Readme file]
+
+== Adding a CUnit Test ==
+
+The simplest approach to adding a test is to add it to an existing module. Pick an appropriate module based on the name and contents of tests.
+
+Choose a name for your test function. Test functions should start with "test_" and it is good practice to name the function you are testing, so for example "test_newfunction".
+
+Add your function to the module header.
+
+{{{
+void test_newfunction(void);
+}}}
+
+Add your function to the module itself. At the top of the module, you'll have to alter the "register_module_suite(void)" function to include your test function in the set of functions to be run.
+
+{{{
+  (NULL == CU_add_test(pSuite, "test_newfunction()", test_newfunction))
+}}}
+
+Then you'll want to add your function at the bottom of the file. If your test is associated with a trac ticket, include the ticket number in the comments at the start of the function.
+
+{{{
+/*
+** Test to confirm fix on ticket #9999. Is the number of points being set correctly?
+*/
+void test_newfunction(void)
+{
+  LWLINE *lwg;
+  lwg = (LWLINE*)lwgeom_from_ewkt("LINESTRING(0 0, 1 1)", PARSER_CHECK_NONE);
+  CU_ASSERT_EQUAL(lwg->points->npoints, 2);
+  lwgeom_free(lwg);
+}
+}}}
+
+== Adding a CUnit Module ==
+
+When you're adding a large amount of new functionality, it makes sense to add a whole new test module, so your tests can all be separate and easy to tell apart from the existing modules.
+
+The easiest way is to copy an existing module and work from there. Some things to note:
+
+ * You will have to alter cu_tester.c to include your module header.
+ * You will have to alter cu_tester.c to run your register_*_suite() function.
+ * It is tempting to create some globals and manage them with the init_*_suite() and clean_*_suite() functions, but beware, your tests can become fairly order dependent and it gets harder to temporarily shut some of them off (which is handy when generating a lot of debugging output).

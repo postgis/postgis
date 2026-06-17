@@ -1,0 +1,105 @@
+= Examples Inside Polygon 2 =
+
+
+'''Temiz [http://postgis.refractions.net/pipermail/postgis-users/2007-October/017242.html asks]:'''
+
+How can I find the points that are in a polygon that have certain distance ( say 4.5m) to polygon's exterior ring ?
+[[BR]]
+
+
+'''Kevin [http://postgis.refractions.net/pipermail/postgis-users/2007-October/017248.html answers]:'''
+
+ 1. Extract the exterior ring of your token polygon
+ 1. Extract all the interior rings of your polygon
+ 1. Find all interior rings that are within a certain distance from the exterior ring
+ 1. Buffered the exterior ring
+ 1. Compute the intersection of the buffered exterior ring and the interior ring that is "close"
+
+
+{{{
+-- Create a sample polygon with two interior rings.
+ CREATE TABLE sample_poly AS
+     SELECT 'POLYGON ((
+         990030.8379 1002264.8323,
+         990029.6966 1002282.0018,
+         990036.8891 1002286.596,
+         990043.8774 1002287.3757,
+         990055.7296 1002285.7607,
+         990067.8854 1002291.298,
+         990073.974 1002293.0334,
+         990078.2256 1002297.9519,
+         990084.8219 1002310.654,
+         990092.914 1002314.2926,
+         990112.8638 1002313.4552,
+         990117.7626 1002311.2194,
+         990121.5065 1002305.1711,
+         990121.2326 1002301.0389,
+         990121.9657 1002294.9971,
+         990118.7723 1002289.1226,
+         990111.6309 1002285.4819,
+         990093.4161 1002281.2291,
+         990074.46 1002277.9317,
+         990067.3481 1002277.3112,
+         990063.0965 1002272.3927,
+         990063.9371 1002265.397,
+         990058.5601 1002259.6862,
+         990034.5683 1002256.5587,
+         990030.8379 1002264.8323
+     ), (
+         990087.7546 1002286.4867,
+         990110.8467 1002290.5701,
+         990115.2003 1002297.3959,
+         990111.4054 1002302.4905,
+         990094.3804 1002302.209,
+         990081.0698 1002292.8592,
+         990081.768 1002286.6585,
+         990087.7546 1002286.4867
+     ), (
+         990045.9613 1002265.1177,
+         990051.0778 1002268.9216,
+         990051.2954 1002274.9614,
+         990045.6124 1002282.2855,
+         990039.5748 1002281.5037,
+         990034.4074 1002276.7462,
+         990034.1898 1002270.7064,
+         990038.9005 1002265.4508,
+         990045.9613 1002265.1177
+     ))'::geometry AS geom;
+
+}}}
+
+[[Image(close_points1.png)]]
+
+
+{{{
+-- Extract exterior ring
+ CREATE TABLE exterior_ring AS
+     SELECT ST_ExteriorRing(geom) AS geom
+     FROM sample_poly;
+
+ -- Extract interior rings
+ CREATE TABLE interior_rings AS
+     SELECT ST_InteriorRingN(
+         geom,
+         generate_series(1, ST_NumInteriorRings(geom))) AS geom
+     FROM sample_poly;
+
+}}}
+
+[[Image(close_points2.png)]]
+
+
+{{{
+-- Identify intersection points of buffered ext ring and interior rings.
+ SELECT ST_Intersection(e.buff_geom, i.geom)
+ FROM
+    (SELECT geom,
+            ST_Buffer(geom, 4.5) AS buff_geom
+     FROM exterior_ring
+     ) AS e,
+    interior_rings i
+ WHERE ST_DWithin(e.geom, i.geom, 4.5);
+
+}}}
+
+[[Image(close_points3.png)]]

@@ -1,0 +1,61 @@
+[[TOC]]
+
+= !NetBeans SQL Editor with functions autocompletion and PostGIS documentation =
+
+[http://netbeans.org/ Netbeans IDE] provides a powerful database explorer and SQL editor.
+The SQL editor offers features such as:
+
+ * Syntax coloring
+ * Contextual code completion for databases, schemas, tables, columns
+ * Execution of SQL code at cursor
+ * Execution of SQL scripts
+ * etc.||
+
+[[Image(sqleditor.png)]]
+
+Unfortunately, the editor does not autocomplete functions/procedures, a feature that would be cool for PostGIS functions.
+
+The '''!SqlFunctionsCompletion''' adds this functionality to the SQL editor.
+
+!SqlFunctionsCompletion plugin is a !NetBeans 7.3 and 7.4 plugin (NBM file) extending the default SQL Editor to add '''User-Defined functions and procedures autocompletion''' based on the current query context.
+
+When configuring a Netbeans database connection, a default schema can be set. This default schema is used by the module to search functions from.
+
+[[Image(pgissqleditor.png)]]
+
+[[Image(sqlfunctionsprefpane.png)]]
+
+=== Features ===
+
+ * Contextual autocompletion of user defined functions
+ * PostGIS schema aware: PostGIS schema is searched through all schemas to enable autocompletion of postgis functions in all cases. (Option in Preferences Pane)
+ * Inline, browsable documentation for PostGIS functions from Postgis.net website.
+ * Documentation version is chosen according to the running PostGIS version.
+
+=== How to Install ===
+
+ * Download the !SqlFunctionsCompletion !NetBeans module from the [http://plugins.netbeans.org/plugin/50664/ NetBeans Plugins Portal]
+ * Open !NetBeans Plugins Manager (menu Tools | Plugins)
+ * Click on ''Downloaded'' tab and add the downloaded .nbm file
+ * Install the plugin
+ * Restart Netbeans IDE
+
+=== How to Update ===
+
+'''New: Update Center URL have changed''':
+
+Edit the !SqlFunctionsCompletion Update Center (Tools | Plugins) and set the new URL:
+ * For !NetBeans 7.4: !http://sd-38177.dedibox.fr/7.4/updates.xml
+ * For !NetBeans 7.3: !http://sd-38177.dedibox.fr/7.3/updates.xml
+
+The plugin automatically installs an Update Center. If !NetBeans Auto Update feature is on, the plugin will be updated automatically when a new version is published.
+
+To do a manual update:
+
+ * Open !NetBeans Plugins Manager (menu Tools | Plugins)
+ * Click on ''Updates'' tab
+ * Click on ''check for Updates''
+
+'''Todo'''
+
+ * Test other databases/env

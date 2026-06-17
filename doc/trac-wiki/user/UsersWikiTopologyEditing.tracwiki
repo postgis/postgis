@@ -1,0 +1,47 @@
+= Topology Editing =
+
+
+[wiki:UsersWikiPostgisTopology Topology] editing is currently supported by a partial implementation
+of ISO SQL/MM specification functions.
+
+You can still use SQL UPDATE,SELECT and DELETE commands, but using SQL/MM functions will provide you with a more stable abstraction, will perform some checks and in some cases automatically update !TopoGeometry composition records.
+
+All SQL/MM functions have the ST_ prefix in addition to being installed under the ''topology'' schema as every other Topology object. Fully implemented editing functions are:
+
+ ST_!InitTopoGeo
+
+  Creates a topology, just a wrapper around !CreateTopology
+
+ ST_!AddIsoNode
+
+  Adds an !IsolatedNode
+
+ ST_!RemoveIsoNode
+
+  Removes an !IsolatedNode
+
+ ST_!MoveIsoNode
+
+  Move an !IsolatedNode in space
+
+ ST_!AddIsoEdge
+
+  Adds an !IsolatedEdge
+
+ ST_!RemoveIsoEdge
+
+  Removes an !IsolatedEdge
+
+ ST_!ChangeEdgeGeom
+
+  Updates the [wiki:UsersWikiLineStringGeometry curve geometry] of an `Edge`.
+
+ ST_!NewEdgesSplit
+
+  Splits an !IsolatedEdge with a new `Node`.
+  The old !Edge will be removed and substituted with the two new `Edges` resulting from the split.
+  Any !TopoGeometry object referring to the old !Edge will be updated to refer to the new Edges.
+
+ ST_!GetFaceGeometry
+
+  Returns a face [wiki:UsersWikiGeometryType Geometry]

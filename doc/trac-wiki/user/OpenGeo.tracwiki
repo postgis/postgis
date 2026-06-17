@@ -1,0 +1,11 @@
+'''OpenGeo Suite Stack'''
+
+[http://opengeo.org/products/suite/ OpenGeo Suite] is an Open Source GIS stack maintained by [http://www.opengeo.org OpenGeo] and composed of the following elements:
+
+ * GeoServer
+ * PostGIS - with Shapefile GUI loader
+ * GeoExplorer
+ * GeoWebCache
+
+It comes in Community, Enterprise, and Cloud Editions. Enterprise Edition includes technical support and training.
+From conferences we've been to, it's gaining in popularity with at least US City, State and Federal Governments.

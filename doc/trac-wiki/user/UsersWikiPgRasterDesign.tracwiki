@@ -1,0 +1,4 @@
+This document is a first cut at the design for an implementationa of raster-in-DB for PostGIS called PGRaster.   Sections of this document are meant to capture the following:
+
+ * [wiki:UsersWikiPgRasterSqlInterface PGRaster SQL interface]
+ * [wiki:UsersWikiPgRasterStorageModels Possible storage models for PGRaster]

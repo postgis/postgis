@@ -1,0 +1,42 @@
+= PostGIS Support and Consulting Services =
+
+This section lists the support options both free and paid support available for PostGIS users.
+
+'''Free Support'''
+
+ * [http://www.postgis.org/mailman/listinfo/postgis-users PostGIS Users Newsgroup] If you have quick questions on how to do things in PostGIS -- the PostGIS news group is very inviting. Often you will get a response in a matter of minutes from experienced PostGIS users, PostGIS Project Steering Committee, and Developer members. PostGIS users are a bright community that are into challenges. If you have a hard spatial SQL question, bring it on.
+ * [irc://chat.freenode.net/postgis PostGIS IRC channel] If you are looking for a slightly more interactive medium than email, try the PostGIS IRC.  The PostGIS IRC is a common hang-out for experienced PostGIS users and PostGIS Core Developer members.
+ * [http://postgis.refractions.net/mailman/listinfo/postgis-devel PostGIS Developer Newsgroup] Interested in developing new features for PostGIS or the internals of PostGIS, then the PostGIS developer News Group is a good place to ask techie questions. Also checkout our [wiki:DevWikiMain PostGIS Developer Wiki] for details on how to get started exploring and enhancing PostGIS code.
+
+'''Paid Support'''
+
+If you fit one of the below:
+
+ * You would like to contribute monetarily to a new feature in PostGIS particularly features on [http://opengeo.org/services/coredevelopment/postgis/ Wish List].
+ * You need more hand-holding than what is provided via newsgroup and IRC.
+ * You need someone to install PostgreSQL/PostGIS, configure your server, load data , and give you hands-on training or remote or phone support.
+ * You need custom programming support.
+
+ Then paid support is probably the best option for you.
+
+''Project Steering Committee and Core Developers Member Support Companies''
+
+The PostGIS Project Steering committee and PostGIS core development members are a globally distributed crew often employed/self-employed and
+thru their companies provide paid PostGIS support, mentoring, and continued development of the PostGIS spatial database engine. These companies are listed below:
+
+ * [http://www.refractions.net/products/postgis/support/ Refractions Research] Canada
+ * [http://opengeo.org/products/suite/ OpenGeo] Global but mostly North America
+ * [http://www.siriusit.co.uk/consulting Sirius] Located in UK
+ * [http://www.paragoncorporation.com/rates.aspx Paragon Corporation] Located in USA
+ * [http://strk.keybit.net/ Sandro Santilli] Located in Italy, mostly GEOS and PostGIS feature enhancements
+ * [http://www.oslandia.com/ Oslandia] Located in France
+ * [http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding Raster Funding] core team primarily in USA,Canada,Spain (various non-profit and for-profit contributors) Looking to fund more Raster work - check out the Raster funding page
+ * [http://lisasoft.com/ LISAsoft] Located in Australia
+
+
+
+''Other PostGIS Consultants / GIS Guides''
+
+ * [http://www.osgeo.org/search_profile OSGEO Consultants Directory]  Find registered OSGEO consultants based on location, language and need such as PostGIS, GeoServer etc.
+
+ * [http://www.postgisonline.org/profflist.php PostGIS Professionals] PostGIS Online tutorial site list of PostGIS professionals.

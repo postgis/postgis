@@ -1,0 +1,92 @@
+= How to install PostGIS 2.4 on Debian 9.x (''stretch'') from source =
+
+== Prerequisites ==
+Several components are needed, which can either be built from source or installed from pre-built packages, as shown below. For a quick start, there are official Docker images for Postgres here [https://hub.docker.com/_/postgres/]
+For some features to be enabled (like parallel query support for spatial joins), Postgres 10 is required, but most features work with 9.6.
+
+With a Docker v10 image, Postgres is already installed, but the server-dev package is required:
+{{{
+sudo apt-get install postgresql-server-dev-10
+}}}
+
+Without the Docker image, start by first installing the Postgres package:
+{{{
+sudo apt-get install postgresql-9.6 postgresql-server-dev-9.6
+}}}
+
+Then for either approach, install the prerequisite packages for PostGIS using:
+{{{
+sudo apt-get install build-essential libxml2-dev libgdal-dev libproj-dev libjson-c-dev xsltproc docbook-xsl docbook-mathml
+}}}
+
+=== Build GEOS 3.7.x ===
+PostGIS 2.4 is best used with GEOS >= 3.7 for several new features, however Debian stretch only has GEOS 3.5.1 available in system packages, so if you want to enable all features, GEOS needs to be built from source. If you don't need the new features(e.g ST_FrechetDistance), you can instead install the available version of GEOS {{{sudo apt-get libgeos-dev}}}.
+
+There are multiple ways to build GEOS from source, but this is the simplest (Note: currently version 3.7 is only available in the nightly build (and so the snapshot url may be out of date, replace with latest file available). When 3.7 is released, switch to that):
+{{{
+wget -P ./ http://geos.osgeo.org/snapshots/geos-20171107.tar.bz2
+tar xfj geos-20171107.tar.bz2
+cd geos-20171107
+./configure
+make
+sudo make install
+cd ..
+}}}
+
+=== Optional - Add protobuf support for vector tiles ===
+To optionally add support for vector tiles, build protobuf dependencies as well:
+{{{
+sudo apt-get install autoconf automake libtool curl make g++ unzip
+cd ~/git
+git clone https://github.com/google/protobuf.git
+cd protobuf
+./autogen.sh
+./configure
+make
+make check
+sudo make install
+sudo ldconfig
+
+# compile protobuf-c https://github.com/protobuf-c/protobuf-c
+cd ~/
+curl -OL https://github.com/protobuf-c/protobuf-c/releases/download/v1.3.0/protobuf-c-1.3.0.tar.gz
+tar xzf protobuf-c-1.3.0.tar.gz
+cd protobuf-c-1.3.0
+./configure && make && make install
+}}}
+
+== Build PostGIS ==
+{{{
+wget http://download.osgeo.org/postgis/source/postgis-2.4.1.tar.gz
+tar xfz postgis-2.4.1.tar.gz
+cd postgis-2.4.1
+}}}
+
+A basic configuration for PostGIS 2.4, with raster and topology support:
+{{{
+./configure
+make
+sudo make install
+sudo ldconfig
+sudo make comments-install
+}}}
+
+
+== Spatially enabling a database ==
+
+Connect to your database using pgAdmin or psql, and use the commands to add the PostgreSQL extensions. To add PostGIS with raster support:
+{{{
+CREATE EXTENSION postgis;
+}}}
+
+To add topology support, a second extension can be created on the database:
+{{{
+CREATE EXTENSION postgis_topology;
+}}}
+
+== Troubleshooting ==
+
+If you already had Postgres running before the build, make sure to restart:
+{{{
+sudo /etc/init.d/postgresql restart
+}}}

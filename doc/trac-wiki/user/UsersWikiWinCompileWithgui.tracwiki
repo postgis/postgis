@@ -1,0 +1,30 @@
+Before you can compile PostGIS 1.4 with the slick graphical interface for shp2pgsql, you need to install GTK++ 2.8 or above.  This is still a work in progress -- since I got as far as getting it to compile to .o but failed at the linker when linking all the .os to make the exe.
+
+(If you got to this page before reading full install -- refer to [UsersWikiWinCompile Compiling PostGIS under Windows (basic)]
+
+'''1. Install GTK++ Bundle'''
+
+      1. Download GTK++ bundle described on this page http://www.gtk.org/download-windows.html.
+
+       The direct link is
+        (http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.16/gtk+-bundle_2.16.2-20090601_win32.zip)
+      2. Follow the instructions in the readme.txt -- repeated below
+
+         a) create folder c:\opt\gtk [[BR]]
+         b) extract contents of zip to the new folder [[BR]]
+         c) add c:\opt\gtk\bin to your windows environment search path [[BR]]
+         d) launch msys  and run following: [[BR]]
+            pkg-config --cflags gtk+-2.0 [[BR]]
+         e) gtk-demo (and verify it opens a gui)
+
+
+'''2. Compiling PostGIS SVN 1.4 (with shp2pgql-gui)'''
+       1. Download postgis.refractions.net/download/postgis-1.4.0SVN.tar.gz and put in C:/thesrc
+       2. ''cd /c/thesrc''
+       3. ''gzip -d -c postgis-1.4.0SVN.tar.gz | tar xvf -''
+       4. ''cd postgis-svn''
+       5. export PKG_CONFIG_PATH=/c/opt/gtk/lib/pkgconfig
+       6. ''configure --prefix=/c/postgresql --with-pgconfig=/c/postgresql/bin/pg_config --with-geosconfig=/c/postgresql/bin/geos-config --with-projdir=/c/postgresql'' --with-gui
+       7. ''make clean && make''
+       8. ''make install''
+       9. ''make check''
