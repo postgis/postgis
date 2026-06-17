@@ -4949,6 +4949,13 @@ CREATE OR REPLACE FUNCTION ST_Equals(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_EqualsExact(geom1 geometry, geom2 geometry, tolerance float8 DEFAULT 0.0)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','ST_EqualsExact'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
 -----------------------------------------------------------------------------
 
 -- PostGIS equivalent function: IsValid(geometry)

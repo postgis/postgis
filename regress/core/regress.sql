@@ -115,6 +115,28 @@ select '75','LINESTRING(1 1, 2 2)'::GEOMETRY ~= 'LINESTRING(2 2, 1 1)'::GEOMETRY
 select '75a',ST_OrderingEquals('LINESTRING(1 1, 2 2)'::GEOMETRY,'LINESTRING(2 2, 1 1)'::GEOMETRY) as bool;
 select '76','LINESTRING(1 1, 2 2)'::GEOMETRY ~= 'LINESTRING(1 1, 2 2, 3 3)'::GEOMETRY as bool;
 select '76a',ST_OrderingEquals('LINESTRING(1 1, 2 2)'::GEOMETRY,'LINESTRING(1 1, 2 2, 3 3)'::GEOMETRY) as bool;
+select '76b',ST_EqualsExact('LINESTRING(1 1, 2 2)'::GEOMETRY,'LINESTRING(1 1, 2 2)'::GEOMETRY) as bool;
+select '76c',ST_EqualsExact('LINESTRING(1 1, 2 2)'::GEOMETRY,'LINESTRING(1 1, 2 2.00001)'::GEOMETRY) as bool;
+select '76d',ST_EqualsExact('LINESTRING(1 1, 2 2)'::GEOMETRY,'LINESTRING(1 1, 2 2.00001)'::GEOMETRY, 0.0001::float8) as bool;
+select '76e',ST_EqualsExact('LINESTRING(1 1, 2 2)'::GEOMETRY,'LINESTRING(2 2, 1 1)'::GEOMETRY) as bool;
+select '76f',ST_Equals('LINESTRING(1 1, 2 2)'::GEOMETRY,'MULTILINESTRING((1 1, 2 2))'::GEOMETRY) as topological_equals,
+	ST_EqualsExact('LINESTRING(1 1, 2 2)'::GEOMETRY,'MULTILINESTRING((1 1, 2 2))'::GEOMETRY) as exact_equals;
+select '76g',ST_EqualsExact('POINT Z (0 0 1)'::GEOMETRY,'POINT Z (0 0 2)'::GEOMETRY) as bool;
+select '76h',ST_EqualsExact('POINT M (0 0 1)'::GEOMETRY,'POINT M (0 0 2)'::GEOMETRY) as bool;
+select '76i',ST_EqualsExact('POINT ZM (0 0 1 2)'::GEOMETRY,'POINT ZM (0 0 1.00001 2.00001)'::GEOMETRY, 0.0001::float8) as bool;
+select '76j',ST_EqualsExact('POINT (0 0)'::GEOMETRY,'POINT Z (0 0 0)'::GEOMETRY) as bool;
+select '76k',ST_EqualsExact('CIRCULARSTRING(1 0,0 1,-1 0)'::GEOMETRY,'CIRCULARSTRING(1 0,0.70710678 0.70710678,-1 0)'::GEOMETRY) as bool;
+select '76l',ST_EqualsExact('NURBSCURVE(2, (0 0, 1 1, 2 0))'::GEOMETRY,'NURBSCURVE(2, (0 0, 1 1, 2 0))'::GEOMETRY) as bool;
+select '76m',ST_EqualsExact('GEOMETRYCOLLECTION(NURBSCURVE(2, (0 0, 1 1, 2 0)))'::GEOMETRY,'GEOMETRYCOLLECTION(NURBSCURVE(2, (0 0, 1 1, 2 0)))'::GEOMETRY) as bool;
+select '76n',ST_EqualsExact('NURBSCURVE(2, (0 0, 1 1, 2 0))'::GEOMETRY,'NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(1 1),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(2 0),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3)))'::GEOMETRY) as bool;
+select '76o',ST_EqualsExact('NURBSCURVE(2, (0 0, 1 1, 2 0))'::GEOMETRY,'NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(1 1),WEIGHT 1.00001),NURBSPOINT(WEIGHTEDPOINT(2 0),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3)))'::GEOMETRY, 0.0001::float8) as bool;
+select '76p',ST_EqualsExact('POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0,0 0 0)))'::GEOMETRY,'POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0,0 0 0)))'::GEOMETRY) as bool;
+select '76q',ST_EqualsExact('GEOMETRYCOLLECTION(POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0,0 0 0))))'::GEOMETRY,'GEOMETRYCOLLECTION(POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0,0 0 0))))'::GEOMETRY) as bool;
+select '76r',ST_EqualsExact('POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0,0 0 0)))'::GEOMETRY,'POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0.001,0 0 0)))'::GEOMETRY) as bool;
+select '76s',ST_EqualsExact('POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0,0 0 0)))'::GEOMETRY,'POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0.001,0 0 0)))'::GEOMETRY, 0.01::float8) as bool;
+select '76t',ST_EqualsExact(ST_MakePoint(1, 2, 'NaN'), ST_MakePoint(1, 2, 'NaN')) as bool;
+select '76u',ST_EqualsExact(ST_MakePointM(1, 2, 'NaN'), ST_MakePointM(1, 2, 'NaN')) as bool;
+select '76v',ST_EqualsExact(ST_MakePoint(1, 2, 'NaN'), ST_MakePoint(1, 2, 3)) as bool;
 
 --- function testing
 --- conversion function

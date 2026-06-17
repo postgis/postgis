@@ -28,6 +28,8 @@
 
 #include "../postgis_config.h"
 
+#include <math.h>
+
 /* PostgreSQL */
 #include "postgres.h"
 #include "funcapi.h"
@@ -61,7 +63,7 @@ Datum covers(PG_FUNCTION_ARGS);
 Datum overlaps(PG_FUNCTION_ARGS);
 Datum coveredby(PG_FUNCTION_ARGS);
 Datum ST_Equals(PG_FUNCTION_ARGS);
-
+Datum ST_EqualsExact(PG_FUNCTION_ARGS);
 
 /*
  * Utility to quickly check for polygonal geometries
@@ -107,6 +109,228 @@ lwgeom_is_pointlike(const LWGEOM *lwgeom)
 	}
 
 	return LW_TRUE;
+}
+
+static inline int
+ordinate_nearly_equal(double a, double b, double tolerance)
+{
+	/* Exact equality compares the stored ordinate payload, so paired NaNs match. */
+	if (isnan(a) || isnan(b))
+		return isnan(a) && isnan(b);
+	return a == b || fabs(a - b) <= tolerance;
+}
+
+/*
+ * GEOS exact equality is structural, but it sees curve geometries only after
+ * stroking and ignores Z/M. Keep the original PostGIS coordinate sequences in
+ * the acceptance path so curve control vertices and extra ordinates remain part
+ * of exact equality.
+ */
+static int
+ptarray_same_coordinates(const POINTARRAY *pa1, const POINTARRAY *pa2, double tolerance)
+{
+	const int hasz = FLAGS_GET_Z(pa1->flags);
+	const int hasm = FLAGS_GET_M(pa1->flags);
+
+	if (FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags))
+		return LW_FALSE;
+
+	if (pa1->npoints != pa2->npoints)
+		return LW_FALSE;
+
+	for (uint32_t i = 0; i < pa1->npoints; i++)
+	{
+		POINT4D p1, p2;
+		getPoint4d_p(pa1, i, &p1);
+		getPoint4d_p(pa2, i, &p2);
+
+		if (!ordinate_nearly_equal(p1.x, p2.x, tolerance))
+			return LW_FALSE;
+		if (!ordinate_nearly_equal(p1.y, p2.y, tolerance))
+			return LW_FALSE;
+		if (hasz && !ordinate_nearly_equal(p1.z, p2.z, tolerance))
+			return LW_FALSE;
+		if (hasm && !ordinate_nearly_equal(p1.m, p2.m, tolerance))
+			return LW_FALSE;
+	}
+
+	return LW_TRUE;
+}
+
+static int lwgeom_same_coordinates(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, double tolerance);
+
+static int
+lwgeom_contains_polyhedral_surface(const LWGEOM *lwgeom)
+{
+	if (lwgeom->type == POLYHEDRALSURFACETYPE)
+		return LW_TRUE;
+
+	if (lwtype_is_collection(lwgeom->type))
+	{
+		const LWCOLLECTION *collection = (const LWCOLLECTION *)lwgeom;
+		for (uint32_t i = 0; i < collection->ngeoms; i++)
+		{
+			if (lwgeom_contains_polyhedral_surface(collection->geoms[i]))
+				return LW_TRUE;
+		}
+	}
+
+	return LW_FALSE;
+}
+
+static double
+lwnurbscurve_uniform_knot_value(uint32_t degree, uint32_t npoints, uint32_t idx)
+{
+	uint32_t nknots = npoints + degree + 1;
+	uint32_t internal_knots = nknots - 2 * (degree + 1);
+
+	if (idx <= degree)
+		return 0.0;
+	if (idx >= nknots - degree - 1)
+		return 1.0;
+
+	return (double)(idx - degree) / (internal_knots + 1);
+}
+
+static int
+lwnurbscurve_weight_same_coordinates(const LWNURBSCURVE *c1, const LWNURBSCURVE *c2, double tolerance)
+{
+	uint32_t npoints = c1->points->npoints;
+
+	if ((c1->nweights && c1->nweights != npoints) || (c2->nweights && c2->nweights != npoints))
+		return LW_FALSE;
+
+	for (uint32_t i = 0; i < npoints; i++)
+	{
+		double w1 = c1->weights ? c1->weights[i] : 1.0;
+		double w2 = c2->weights ? c2->weights[i] : 1.0;
+		if (!ordinate_nearly_equal(w1, w2, tolerance))
+			return LW_FALSE;
+	}
+
+	return LW_TRUE;
+}
+
+static int
+lwnurbscurve_knot_same_coordinates(const LWNURBSCURVE *c1, const LWNURBSCURVE *c2, double tolerance)
+{
+	uint32_t npoints = c1->points->npoints;
+	uint32_t nknots;
+
+	if (npoints < c1->degree + 1)
+		return LW_FALSE;
+
+	nknots = npoints + c1->degree + 1;
+	if ((c1->nknots && c1->nknots != nknots) || (c2->nknots && c2->nknots != nknots))
+		return LW_FALSE;
+
+	for (uint32_t i = 0; i < nknots; i++)
+	{
+		double k1 = c1->knots ? c1->knots[i] : lwnurbscurve_uniform_knot_value(c1->degree, npoints, i);
+		double k2 = c2->knots ? c2->knots[i] : lwnurbscurve_uniform_knot_value(c2->degree, npoints, i);
+		if (!ordinate_nearly_equal(k1, k2, tolerance))
+			return LW_FALSE;
+	}
+
+	return LW_TRUE;
+}
+
+static int
+lwpoly_same_coordinates(const LWPOLY *p1, const LWPOLY *p2, double tolerance)
+{
+	if (p1->nrings != p2->nrings)
+		return LW_FALSE;
+
+	for (uint32_t i = 0; i < p1->nrings; i++)
+	{
+		if (!ptarray_same_coordinates(p1->rings[i], p2->rings[i], tolerance))
+			return LW_FALSE;
+	}
+
+	return LW_TRUE;
+}
+
+static int
+lwnurbscurve_same_coordinates(const LWNURBSCURVE *c1, const LWNURBSCURVE *c2, double tolerance)
+{
+	if (lwnurbscurve_is_empty(c1) && lwnurbscurve_is_empty(c2))
+		return LW_TRUE;
+
+	if (c1->degree != c2->degree)
+		return LW_FALSE;
+	if (!c1->points || !c2->points)
+		return LW_FALSE;
+	if (!ptarray_same_coordinates(c1->points, c2->points, tolerance))
+		return LW_FALSE;
+	if (!lwnurbscurve_weight_same_coordinates(c1, c2, tolerance))
+		return LW_FALSE;
+	if (!lwnurbscurve_knot_same_coordinates(c1, c2, tolerance))
+		return LW_FALSE;
+
+	return LW_TRUE;
+}
+
+static int
+lwcollection_same_coordinates(const LWCOLLECTION *c1, const LWCOLLECTION *c2, double tolerance)
+{
+	if (c1->type != c2->type)
+		return LW_FALSE;
+	if (c1->ngeoms != c2->ngeoms)
+		return LW_FALSE;
+
+	for (uint32_t i = 0; i < c1->ngeoms; i++)
+	{
+		if (!lwgeom_same_coordinates(c1->geoms[i], c2->geoms[i], tolerance))
+			return LW_FALSE;
+	}
+
+	return LW_TRUE;
+}
+
+static int
+lwgeom_same_coordinates(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, double tolerance)
+{
+	if (lwgeom1->type != lwgeom2->type)
+		return LW_FALSE;
+
+	if (FLAGS_GET_ZM(lwgeom1->flags) != FLAGS_GET_ZM(lwgeom2->flags))
+		return LW_FALSE;
+
+	switch (lwgeom1->type)
+	{
+	case POINTTYPE:
+		return ptarray_same_coordinates(
+		    ((const LWPOINT *)lwgeom1)->point, ((const LWPOINT *)lwgeom2)->point, tolerance);
+	case LINETYPE:
+		return ptarray_same_coordinates(
+		    ((const LWLINE *)lwgeom1)->points, ((const LWLINE *)lwgeom2)->points, tolerance);
+	case POLYGONTYPE:
+		return lwpoly_same_coordinates((const LWPOLY *)lwgeom1, (const LWPOLY *)lwgeom2, tolerance);
+	case TRIANGLETYPE:
+		return ptarray_same_coordinates(
+		    ((const LWTRIANGLE *)lwgeom1)->points, ((const LWTRIANGLE *)lwgeom2)->points, tolerance);
+	case CIRCSTRINGTYPE:
+		return ptarray_same_coordinates(
+		    ((const LWCIRCSTRING *)lwgeom1)->points, ((const LWCIRCSTRING *)lwgeom2)->points, tolerance);
+	case NURBSCURVETYPE:
+		return lwnurbscurve_same_coordinates(
+		    (const LWNURBSCURVE *)lwgeom1, (const LWNURBSCURVE *)lwgeom2, tolerance);
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
+	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
+	case COLLECTIONTYPE:
+		return lwcollection_same_coordinates(
+		    (const LWCOLLECTION *)lwgeom1, (const LWCOLLECTION *)lwgeom2, tolerance);
+	default:
+		lwerror("%s: unsupported geometry type: %s", __func__, lwtype_name(lwgeom1->type));
+		return LW_FALSE;
+	}
 }
 
 /*
@@ -302,7 +526,75 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
+PG_FUNCTION_INFO_V1(ST_EqualsExact);
+Datum
+ST_EqualsExact(PG_FUNCTION_ARGS)
+{
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
+	double tolerance = PG_GETARG_FLOAT8(2);
+	GEOSGeometry *g1, *g2;
+	int8_t result;
+	LWGEOM *lwgeom1, *lwgeom2;
 
+	if (tolerance < 0)
+		elog(ERROR, "%s: tolerance must be non-negative", __func__);
+
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
+
+	if ((gserialized_has_z(geom1) != gserialized_has_z(geom2)) ||
+	    (gserialized_has_m(geom1) != gserialized_has_m(geom2)))
+		PG_RETURN_BOOL(false);
+
+	lwgeom1 = lwgeom_from_gserialized(geom1);
+	lwgeom2 = lwgeom_from_gserialized(geom2);
+	if (lwgeom_contains_polyhedral_surface(lwgeom1) || lwgeom_contains_polyhedral_surface(lwgeom2))
+	{
+		/*
+		 * GEOS cannot represent POLYHEDRALSURFACE, including when it
+		 * appears inside a collection. Fall back to the PostGIS
+		 * structural comparator instead of turning an exact comparison
+		 * between otherwise supported PostGIS geometries into a GEOS
+		 * conversion error.
+		 */
+		result = lwgeom_same_coordinates(lwgeom1, lwgeom2, tolerance);
+		lwgeom_free(lwgeom1);
+		lwgeom_free(lwgeom2);
+		PG_RETURN_BOOL(result);
+	}
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	g1 = POSTGIS2GEOS(geom1);
+	if (!g1)
+		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+	g2 = POSTGIS2GEOS(geom2);
+	if (!g2)
+	{
+		GEOSGeom_destroy(g1);
+		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
+	}
+	result = GEOSEqualsExact(g1, g2, tolerance);
+	GEOSGeom_destroy(g1);
+	GEOSGeom_destroy(g2);
+
+	if (result == 2)
+		HANDLE_GEOS_ERROR("GEOSEqualsExact");
+	if (!result)
+		PG_RETURN_BOOL(false);
+
+	lwgeom1 = lwgeom_from_gserialized(geom1);
+	lwgeom2 = lwgeom_from_gserialized(geom2);
+	result = lwgeom_same_coordinates(lwgeom1, lwgeom2, tolerance);
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+
+	PG_RETURN_BOOL(result);
+}
 
 PG_FUNCTION_INFO_V1(touches);
 Datum touches(PG_FUNCTION_ARGS)
