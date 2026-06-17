@@ -911,6 +911,7 @@ _lwt_EdgeMoveWillHitNode( LWT_TOPOLOGY* topo,
   GBOX mbox;
   LWT_ISO_NODE *nodes;
   const GBOX *edgebox;
+  POINTARRAY *motion_range = NULL;
   uint64_t i, numnodes;
   int isclosed = start_node == end_node;
 
@@ -963,6 +964,24 @@ _lwt_EdgeMoveWillHitNode( LWT_TOPOLOGY* topo,
     PGTOPO_BE_ERROR();
     return -1;
   }
+
+  if (!isclosed)
+  {
+    POINTARRAY *reverse_newedge;
+
+    motion_range = ptarray_clone_deep(oldedge->points);
+    reverse_newedge = ptarray_clone_deep(newedge->points);
+    ptarray_reverse_in_place(reverse_newedge);
+    ptarray_append_ptarray(motion_range, reverse_newedge, 0);
+    ptarray_free(reverse_newedge);
+
+    if (!ptarray_is_closed_2d(motion_range) || motion_range->npoints <= 3)
+    {
+      ptarray_free(motion_range);
+      motion_range = NULL;
+    }
+  }
+
   for (i=0; i<numnodes; ++i)
   {
     LWT_ISO_NODE *node = &(nodes[i]);
@@ -976,6 +995,7 @@ _lwt_EdgeMoveWillHitNode( LWT_TOPOLOGY* topo,
 
     if (!node->geom || !node->geom->point || !node->geom->point->npoints)
     {
+      if (motion_range) ptarray_free(motion_range);
       _lwt_release_nodes(nodes, numnodes);
       lwerror("Internal error: lwt_be_getNodeWithinBox2D returned node %"
               LWTFMT_ELEMID " with no vertices", node_id);
@@ -987,10 +1007,20 @@ _lwt_EdgeMoveWillHitNode( LWT_TOPOLOGY* topo,
     new_contains = ptarray_contains_point_partial(newedge->points, pt, isclosed, NULL) == LW_INSIDE;
     if (old_contains != new_contains)
     {
+      if (motion_range) ptarray_free(motion_range);
+      _lwt_release_nodes(nodes, numnodes);
+      return 1;
+    }
+
+    if (motion_range && node->containing_face != -1 &&
+        ptarray_contains_point(motion_range, pt) != LW_OUTSIDE)
+    {
+      ptarray_free(motion_range);
       _lwt_release_nodes(nodes, numnodes);
       return 1;
     }
   }
+  if (motion_range) ptarray_free(motion_range);
   if (nodes) _lwt_release_nodes(nodes, numnodes);
 
   return 0;
@@ -2044,6 +2074,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
 static int
 _lwt_EdgeMoveWillChangeAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id,
                                       LWT_ELEMID start_node, LWT_ELEMID end_node,
+                                      LWT_ELEMID face_left, LWT_ELEMID face_right,
                                       LWLINE *oldedge, LWLINE *newedge )
 {
   POINT2D p1, p2;
@@ -2062,6 +2093,15 @@ _lwt_EdgeMoveWillChangeAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id,
   if ( _lwt_FindAdjacentEdges(topo, end_node, &epan_pre,
                               isclosed ? &span_pre : NULL, edge_id) < 0 )
     return -1;
+
+  if (isclosed && ptarray_isccw(oldedge->points) != ptarray_isccw(newedge->points))
+    return 1;
+
+  if (!isclosed &&
+      face_left != face_right &&
+      span_pre.nextCW == span_pre.nextCCW &&
+      epan_pre.nextCW == epan_pre.nextCCW)
+    return 1;
 
   if ( _lwt_InitEdgeEndByLine(&span_post, &epan_post, newedge, &p1, &p2) )
     return -1;
@@ -7629,6 +7669,8 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   LWT_ELEMID *nearbyid = 0;
   LWT_ELEMID *nearby_start_node = 0;
   LWT_ELEMID *nearby_end_node = 0;
+  LWT_ELEMID *nearby_face_left = 0;
+  LWT_ELEMID *nearby_face_right = 0;
   LWLINE **snapped_edges = 0;
   int nearbyindex = 0;
   int nearbycount = 0;
@@ -7653,6 +7695,8 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     nearbyid = lwalloc(numedges * sizeof(LWT_ELEMID));
     nearby_start_node = lwalloc(numedges * sizeof(LWT_ELEMID));
     nearby_end_node = lwalloc(numedges * sizeof(LWT_ELEMID));
+    nearby_face_left = lwalloc(numedges * sizeof(LWT_ELEMID));
+    nearby_face_right = lwalloc(numedges * sizeof(LWT_ELEMID));
     for (i=0; i<numedges; ++i)
     {{
       LW_ON_INTERRUPT(return NULL);
@@ -7673,7 +7717,9 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
       nearby[nearbyindex] = g;
       nearbyid[nearbyindex] = e->edge_id;
       nearby_start_node[nearbyindex] = e->start_node;
-      nearby_end_node[nearbyindex++] = e->end_node;
+      nearby_end_node[nearbyindex] = e->end_node;
+      nearby_face_left[nearbyindex] = e->face_left;
+      nearby_face_right[nearbyindex++] = e->face_right;
     }}
     LWDEBUGF(1, "Found %d edges closer than tolerance (%g)", nearbyindex, tol);
     GEOSGeom_destroy(noded_g);
@@ -7879,6 +7925,8 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
                                                                   edge_id,
                                                                   nearby_start_node[i],
                                                                   nearby_end_node[i],
+                                                                  nearby_face_left[i],
+                                                                  nearby_face_right[i],
                                                                   edgeline,
                                                                   snappedline);
         if ( adjacency_collision )
@@ -8034,6 +8082,8 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   if ( nearbyid ) lwfree(nearbyid);
   if ( nearby_start_node ) lwfree(nearby_start_node);
   if ( nearby_end_node ) lwfree(nearby_end_node);
+  if ( nearby_face_left ) lwfree(nearby_face_left);
+  if ( nearby_face_right ) lwfree(nearby_face_right);
   if ( nodes ) _lwt_release_nodes(nodes, numnodes);
   if ( edges ) _lwt_release_edges(edges, numedges);
 
