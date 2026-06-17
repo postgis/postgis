@@ -3,6 +3,7 @@ PostGIS 3.6.5
 
 * Fixes *
 
+- #6081, Fix SFCGAL 2.3.0 regression expectations (Darafei Praliaskouski)
 - #5989, CurvePolygon distance corner case (Paul Ramsey)
 - #5357, ST_LineFromEncodedPolyline dropping close points (Paul Ramsey)
 
