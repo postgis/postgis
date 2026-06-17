@@ -151,6 +151,16 @@ CREATE OR REPLACE FUNCTION topology.ST_GetFaceGeometry(toponame varchar, aface b
   RETURNS GEOMETRY AS
 	'MODULE_PATHNAME', 'ST_GetFaceGeometry'
   LANGUAGE 'c' STABLE;
+
+CREATE OR REPLACE FUNCTION topology.ST_GetFaceGeometry(toponame varchar, aface bigint, srid integer)
+  RETURNS GEOMETRY AS
+$$
+	SELECT CASE
+		WHEN $3 IS NULL THEN topology.ST_GetFaceGeometry($1, $2)
+		ELSE ST_SetSRID(topology.ST_GetFaceGeometry($1, $2), $3)
+	END;
+$$
+  LANGUAGE 'sql' STABLE;
 --} ST_GetFaceGeometry
 
 --{
@@ -603,4 +613,3 @@ LANGUAGE 'plpgsql' VOLATILE;
 --} ST_CreateTopoGeo
 
 --=}  SQL/MM block
-

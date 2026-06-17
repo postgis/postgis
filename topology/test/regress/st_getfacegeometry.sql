@@ -28,6 +28,7 @@ COPY tt.edge_data(
 -- See http://trac.osgeo.org/postgis/ticket/726
 SELECT 'f1 (with hole)', ST_asText(topology.st_getfacegeometry('tt', 1));
 SELECT 'f2 (fill hole)', ST_asText(topology.st_getfacegeometry('tt', 2));
+SELECT '#6075', ST_SRID(topology.st_getfacegeometry('tt', 1, 4326)), ST_asText(topology.st_getfacegeometry('tt', 1, 4326));
 
 -- Universal face has no geometry
 -- See http://trac.osgeo.org/postgis/ticket/973

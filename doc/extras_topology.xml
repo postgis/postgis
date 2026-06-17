@@ -3159,17 +3159,24 @@ FROM topology.ST_GetFaceEdges('tt',1) As t(seq,edge)
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 					<paramdef><type>bigint </type> <parameter>aface</parameter></paramdef>
 					</funcprototype>
+					<funcprototype>
+					<funcdef>geometry <function>ST_GetFaceGeometry</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>aface</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 
 			<refsection>
                 <title>Description</title>
 
-                <para>Returns the polygon in the given topology with the specified face id. Builds the polygon from the edges making up the face.</para>
+                <para>Returns the polygon in the given topology with the specified face id. Builds the polygon from the edges making up the face. If <varname>srid</varname> is given, the returned geometry is assigned that SRID.</para>
 
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="1.1">Availability: 1.1 </para>
+                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 accept an SRID for the returned geometry.</para>
 	<para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.16</para>
 			</refsection>
 
