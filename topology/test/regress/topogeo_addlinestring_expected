@@ -242,5 +242,7 @@ t6034.snap.nearby|0
 t6034.snap.node_collision|t
 t6034.snap.motion_collision|t
 t6034.snap.edge_collision|t
+t6034.snap.swept_edge_collision|t
 t6034.snap.staged_collision|t
+t6034.snap.staged_swept_collision|t
 t6034.snap.adjacency_collision|t

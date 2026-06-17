@@ -905,14 +905,16 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
 
 static int
 _lwt_EdgeMoveWillHitNode( LWT_TOPOLOGY* topo,
+                          LWT_ELEMID edge_id,
                           LWT_ELEMID start_node, LWT_ELEMID end_node,
                           LWLINE *oldedge, LWLINE *newedge )
 {
   GBOX mbox;
+  LWT_ISO_EDGE *edges;
   LWT_ISO_NODE *nodes;
   const GBOX *edgebox;
   POINTARRAY *motion_range = NULL;
-  uint64_t i, numnodes;
+  uint64_t i, numnodes, numedges;
   int isclosed = start_node == end_node;
 
   lwgeom_add_bbox(lwline_as_lwgeom(newedge));
@@ -1020,8 +1022,97 @@ _lwt_EdgeMoveWillHitNode( LWT_TOPOLOGY* topo,
       return 1;
     }
   }
-  if (motion_range) ptarray_free(motion_range);
   if (nodes) _lwt_release_nodes(nodes, numnodes);
+
+  if (motion_range)
+  {
+    LWLINE *motion_bounds;
+    LWGEOM *motion_poly_bare;
+    LWGEOM *motion_poly;
+    GEOSGeometry *motion_poly_g;
+
+    initGEOS(lwnotice, lwgeom_geos_error);
+
+    motion_bounds = lwline_construct(topo->srid, NULL, motion_range);
+    motion_range = NULL;
+    motion_poly_bare = (LWGEOM *)lwpoly_from_lwlines(motion_bounds, 0, NULL);
+    motion_poly = lwgeom_make_valid(motion_poly_bare);
+    lwgeom_free(motion_poly_bare);
+
+    motion_poly_g = LWGEOM2GEOS(motion_poly, 0);
+    lwgeom_free(motion_poly);
+    if (!motion_poly_g)
+    {
+      lwerror("Could not convert edge motion range to GEOS: %s", lwgeom_geos_errmsg);
+      return -1;
+    }
+
+    edges = lwt_be_getEdgeWithinBox2D(topo, &mbox, &numedges,
+                                      LWT_COL_EDGE_ALL, 0);
+    LWDEBUGF(1, "lwt_be_getEdgeWithinBox2D returned %" PRIu64 " edges", numedges);
+    if (numedges == UINT64_MAX)
+    {
+      GEOSGeom_destroy(motion_poly_g);
+      PGTOPO_BE_ERROR();
+      return -1;
+    }
+
+    for (i=0; i<numedges; ++i)
+    {
+      LWT_ISO_EDGE *edge = &(edges[i]);
+      GEOSGeometry *edge_g;
+      char *relate;
+      int match;
+
+      if (edge->edge_id == edge_id) continue;
+
+      if (!edge->geom)
+      {
+        GEOSGeom_destroy(motion_poly_g);
+        _lwt_release_edges(edges, numedges);
+        lwerror("Edge %" LWTFMT_ELEMID " has NULL geometry!", edge->edge_id);
+        return -1;
+      }
+
+      edge_g = LWGEOM2GEOS(lwline_as_lwgeom(edge->geom), 0);
+      if (!edge_g)
+      {
+        GEOSGeom_destroy(motion_poly_g);
+        _lwt_release_edges(edges, numedges);
+        lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
+        return -1;
+      }
+
+      relate = GEOSRelate(motion_poly_g, edge_g);
+      GEOSGeom_destroy(edge_g);
+      if (!relate)
+      {
+        GEOSGeom_destroy(motion_poly_g);
+        _lwt_release_edges(edges, numedges);
+        lwerror("GEOSRelate error: %s", lwgeom_geos_errmsg);
+        return -1;
+      }
+
+      match = GEOSRelatePatternMatch(relate, "FF*F*****");
+      GEOSFree(relate);
+      if (match == 2)
+      {
+        GEOSGeom_destroy(motion_poly_g);
+        _lwt_release_edges(edges, numedges);
+        lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
+        return -1;
+      }
+      if (!match)
+      {
+        GEOSGeom_destroy(motion_poly_g);
+        _lwt_release_edges(edges, numedges);
+        return 1;
+      }
+    }
+    if (edges) _lwt_release_edges(edges, numedges);
+    GEOSGeom_destroy(motion_poly_g);
+  }
+  if (motion_range) ptarray_free(motion_range);
 
   return 0;
 }
@@ -1078,6 +1169,94 @@ _lwt_EdgeGeomsCollide( LWLINE *edge1, LWLINE *edge2 )
   GEOSGeom_destroy(edge1gg);
 
   return collision;
+}
+
+static int
+_lwt_EdgeMoveWillHitStagedEdges( LWLINE *oldedge, LWLINE *newedge,
+                                 LWLINE **staged_edges,
+                                 int staged_edge_count )
+{
+  POINTARRAY *motion_range;
+  POINTARRAY *reverse_newedge;
+  LWLINE *motion_bounds;
+  LWGEOM *motion_poly_bare;
+  LWGEOM *motion_poly;
+  GEOSGeometry *motion_poly_g;
+  int i;
+
+  if ( ptarray_is_closed_2d(oldedge->points) )
+    return 0;
+
+  motion_range = ptarray_clone_deep(oldedge->points);
+  reverse_newedge = ptarray_clone_deep(newedge->points);
+  ptarray_reverse_in_place(reverse_newedge);
+  ptarray_append_ptarray(motion_range, reverse_newedge, 0);
+  ptarray_free(reverse_newedge);
+
+  if ( ! ptarray_is_closed_2d(motion_range) || motion_range->npoints <= 3 )
+  {
+    ptarray_free(motion_range);
+    return 0;
+  }
+
+  initGEOS(lwnotice, lwgeom_geos_error);
+
+  motion_bounds = lwline_construct(oldedge->srid, NULL, motion_range);
+  motion_poly_bare = (LWGEOM *)lwpoly_from_lwlines(motion_bounds, 0, NULL);
+  motion_poly = lwgeom_make_valid(motion_poly_bare);
+  lwgeom_free(motion_poly_bare);
+
+  motion_poly_g = LWGEOM2GEOS(motion_poly, 0);
+  lwgeom_free(motion_poly);
+  if ( ! motion_poly_g )
+  {
+    lwerror("Could not convert edge motion range to GEOS: %s", lwgeom_geos_errmsg);
+    return -1;
+  }
+
+  for (i = 0; i < staged_edge_count; i++)
+  {
+    GEOSGeometry *edge_g;
+    char *relate;
+    int match;
+
+    if ( ! staged_edges[i] )
+      continue;
+
+    edge_g = LWGEOM2GEOS(lwline_as_lwgeom(staged_edges[i]), 0);
+    if ( ! edge_g )
+    {
+      GEOSGeom_destroy(motion_poly_g);
+      lwerror("Could not convert staged edge geometry to GEOS: %s", lwgeom_geos_errmsg);
+      return -1;
+    }
+
+    relate = GEOSRelate(motion_poly_g, edge_g);
+    GEOSGeom_destroy(edge_g);
+    if ( ! relate )
+    {
+      GEOSGeom_destroy(motion_poly_g);
+      lwerror("GEOSRelate error: %s", lwgeom_geos_errmsg);
+      return -1;
+    }
+
+    match = GEOSRelatePatternMatch(relate, "FF*F*****");
+    GEOSFree(relate);
+    if (match == 2)
+    {
+      GEOSGeom_destroy(motion_poly_g);
+      lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
+      return -1;
+    }
+    if ( ! match )
+    {
+      GEOSGeom_destroy(motion_poly_g);
+      return 1;
+    }
+  }
+
+  GEOSGeom_destroy(motion_poly_g);
+  return 0;
 }
 
 static int
@@ -2072,6 +2251,14 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
 }
 
 static int
+_lwt_RingWindingWithReplacement(LWT_TOPOLOGY *topo,
+                                LWT_ELEMID replace_edge_id,
+                                LWLINE *replace_edge,
+                                LWT_ELEMID *signed_edge_ids,
+                                uint64_t num_signed_edge_ids,
+                                int *isccw);
+
+static int
 _lwt_EdgeMoveWillChangeAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id,
                                       LWT_ELEMID start_node, LWT_ELEMID end_node,
                                       LWT_ELEMID face_left, LWT_ELEMID face_right,
@@ -2101,7 +2288,38 @@ _lwt_EdgeMoveWillChangeAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id,
       face_left != face_right &&
       span_pre.nextCW == span_pre.nextCCW &&
       epan_pre.nextCW == epan_pre.nextCCW)
-    return 1;
+  {
+    uint64_t num_signed_edge_ids;
+    LWT_ELEMID *signed_edge_ids;
+    int old_isccw;
+    int new_isccw;
+
+    signed_edge_ids = lwt_be_getRingEdges(topo, edge_id, &num_signed_edge_ids, 0);
+    if (!signed_edge_ids)
+    {
+      PGTOPO_BE_ERROR();
+      return -1;
+    }
+
+    if (_lwt_RingWindingWithReplacement(topo, edge_id, oldedge,
+                                        signed_edge_ids, num_signed_edge_ids,
+                                        &old_isccw) < 0)
+    {
+      lwfree(signed_edge_ids);
+      return -1;
+    }
+    if (_lwt_RingWindingWithReplacement(topo, edge_id, newedge,
+                                        signed_edge_ids, num_signed_edge_ids,
+                                        &new_isccw) < 0)
+    {
+      lwfree(signed_edge_ids);
+      return -1;
+    }
+    lwfree(signed_edge_ids);
+
+    if (old_isccw != new_isccw)
+      return 1;
+  }
 
   if ( _lwt_InitEdgeEndByLine(&span_post, &epan_post, newedge, &p1, &p2) )
     return -1;
@@ -2357,6 +2575,112 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num
   LWPOLY* shell = lwpoly_construct(0, 0, 1, points);
 
   return shell;
+}
+
+static int
+_lwt_RingWindingWithReplacement(LWT_TOPOLOGY *topo,
+                                LWT_ELEMID replace_edge_id,
+                                LWLINE *replace_edge,
+                                LWT_ELEMID *signed_edge_ids,
+                                uint64_t num_signed_edge_ids,
+                                int *isccw)
+{
+  LWT_ELEMID *edge_ids;
+  uint64_t numedges, j, i;
+  LWT_ISO_EDGE *ring_edges;
+  POINTARRAY *full_ring_pa = NULL;
+
+  numedges = 0;
+  edge_ids = lwalloc(sizeof(LWT_ELEMID)*num_signed_edge_ids);
+  for (i=0; i<num_signed_edge_ids; ++i)
+  {
+    LWT_ELEMID absid = llabs(signed_edge_ids[i]);
+    int found = 0;
+    for (j=0; j<numedges; ++j)
+    {
+      if (edge_ids[j] == absid)
+      {
+        found = 1;
+        break;
+      }
+    }
+    if (!found)
+      edge_ids[numedges++] = absid;
+  }
+
+  i = numedges;
+  ring_edges = lwt_be_getEdgeById(topo, edge_ids, &i,
+                                  LWT_COL_EDGE_EDGE_ID|LWT_COL_EDGE_GEOM);
+  lwfree(edge_ids);
+  if (i == UINT64_MAX)
+  {
+    PGTOPO_BE_ERROR();
+    return -1;
+  }
+  else if (i != numedges)
+  {
+    _lwt_release_edges(ring_edges, i);
+    lwerror("Unexpected error: %" LWTFMT_ELEMID
+      " edges found when expecting %" PRIu64, i, numedges);
+    return -1;
+  }
+
+  for (i=0; i<num_signed_edge_ids; ++i)
+  {
+    LWT_ELEMID eid = signed_edge_ids[i];
+    LWT_ELEMID abseid = llabs(eid);
+    LWLINE *edge = NULL;
+    POINTARRAY *epa;
+
+    if (abseid == replace_edge_id)
+      edge = replace_edge;
+    else
+    {
+      for (j=0; j<numedges; ++j)
+      {
+        if (ring_edges[j].edge_id == abseid)
+        {
+          edge = ring_edges[j].geom;
+          break;
+        }
+      }
+    }
+    if (edge == NULL)
+    {
+      if (full_ring_pa) ptarray_free(full_ring_pa);
+      _lwt_release_edges(ring_edges, numedges);
+      lwerror("missing edge that was found in ring edges loop");
+      return -1;
+    }
+
+    if (full_ring_pa == NULL)
+    {
+      full_ring_pa = ptarray_clone_deep(edge->points);
+      if (eid < 0) ptarray_reverse_in_place(full_ring_pa);
+    }
+    else if (eid < 0)
+    {
+      epa = ptarray_clone_deep(edge->points);
+      ptarray_reverse_in_place(epa);
+      ptarray_append_ptarray(full_ring_pa, epa, 0);
+      ptarray_free(epa);
+    }
+    else
+      ptarray_append_ptarray(full_ring_pa, edge->points, 0);
+  }
+  _lwt_release_edges(ring_edges, numedges);
+
+  if (!ptarray_is_closed_2d(full_ring_pa))
+  {
+    ptarray_free(full_ring_pa);
+    lwerror("Corrupted topology: ring of edge %" LWTFMT_ELEMID
+            " is geometrically not-closed", signed_edge_ids[0]);
+    return -1;
+  }
+
+  *isccw = lwt_IsTopoRingCCW(full_ring_pa);
+  ptarray_free(full_ring_pa);
+  return 0;
 }
 
 /*
@@ -7877,6 +8201,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
 
         /* Avoid staging snaps that lwt_ChangeEdgeGeom would reject. */
         move_collision = _lwt_EdgeMoveWillHitNode(topo,
+                                                 edge_id,
                                                  nearby_start_node[i],
                                                  nearby_end_node[i],
                                                  edgeline,
@@ -7909,6 +8234,13 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
           if ( ! snapped_edges[j] ) continue;
           edge_collision = _lwt_EdgeGeomsCollide(snapped_edges[j], snappedline);
           if ( edge_collision ) break;
+        }
+        if ( ! edge_collision )
+        {
+          edge_collision = _lwt_EdgeMoveWillHitStagedEdges(edgeline,
+                                                           snappedline,
+                                                           snapped_edges,
+                                                           i);
         }
         if ( edge_collision )
         {
