@@ -637,7 +637,7 @@ FROM pg_catalog.pg_proc p
 WHERE p.proname = 'updategeometrysrid'
   AND p.pronamespace = COALESCE(
     (SELECT extnamespace FROM pg_catalog.pg_extension WHERE extname = 'postgis'),
-    pg_catalog.current_schema()::pg_catalog.regnamespace)
+    pg_catalog.rtrim(:'schema', '.')::pg_catalog.regnamespace)
   AND p.proargtypes = '1043 1043 1043 1043 23'::oidvector;
 
 -- #1596
