@@ -1,5 +1,7 @@
 ST_Translate|POINT(5 12)
 ST_Translate|POINT(-3 -7 3)
+ST_TranslateM|POINTM(5 12 11)
+ST_TranslateZM|POINT(5 12 10 11)
 ST_Scale|POINT(5 5)
 ST_Scale|POINT(3 2)
 ST_Scale|POINT(40 40 40)

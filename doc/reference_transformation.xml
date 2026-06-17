@@ -520,13 +520,15 @@ SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::ge
 		<title>Description</title>
 
 		<para>Returns a new geometry whose coordinates are translated delta x,delta y,delta z units. Units are
-		based on the units defined in spatial reference (SRID) for this geometry.</para>
+		based on the units defined in spatial reference (SRID) for this geometry.
+		M coordinates are preserved.</para>
 
 		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
 		<para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
+		<para>&M_support;</para>
 	  </refsection>
 
 	  <refsection>
@@ -550,6 +552,17 @@ SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::ge
 	st_asewkt
 	---------
 	POINT(5 12 3)
+		</programlisting>
+		<para>Move points with a measure coordinate</para>
+		<programlisting>SELECT ST_AsEWKT(ST_Translate(ST_GeomFromEWKT('POINTM(0 0 11)'), 5, 12));
+	st_asewkt
+	---------
+	POINTM(5 12 11)
+
+SELECT ST_AsEWKT(ST_Translate(ST_GeomFromEWKT('POINT(0 0 7 11)'), 5, 12, 3));
+	st_asewkt
+	---------
+	POINT(5 12 10 11)
 		</programlisting>
 		<para>Move a curve and a point</para>
 <programlisting>SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 3,3.12 0.878,1 0,-1.121 5.1213,6 7, 8 9,4 3))','POINT(1 3)'),1,2));
