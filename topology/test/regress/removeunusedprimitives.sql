@@ -239,6 +239,43 @@ SELECT '#5303', 'clean', topology.RemoveUnusedPrimitives('city_data');
 SELECT '#5303', 'changed', * FROM features.check_changed_features();
 SELECT '#5303', 'invalidity', * FROM topology.ValidateTopology('city_data');
 
+--
+-- See https://trac.osgeo.org/postgis/ticket/5937
+--
+
+SELECT NULL FROM topology.CreateTopology('t5937');
+CREATE TABLE features.t5937_f(id serial primary key);
+SELECT NULL FROM topology.AddTopoGeometryColumn('t5937', 'features', 't5937_f', 'g', 'line');
+SELECT NULL FROM topology.toTopoGeom(ST_ExteriorRing(ST_MakeEnvelope(0,0,10,10)), 't5937', 1);
+SELECT NULL FROM topology.TopoGeo_AddPoint('t5937', ST_Point(10,0));
+SELECT NULL FROM topology.TopoGeo_AddPoint('t5937', ST_Point(0,10));
+SELECT NULL FROM topology.TopoGeo_AddPoint('t5937', ST_Point(10,10));
+SELECT '#5937', 'clean', topology.RemoveUnusedPrimitives('t5937');
+SELECT '#5937', 'invalidity', * FROM topology.ValidateTopology('t5937');
+SELECT NULL FROM topology.DropTopology('t5937');
+DROP TABLE features.t5937_f;
+
+--
+-- Bbox-limited cleanup should not accept a stale heal that removes
+-- a node outside the bbox-filtered candidate set.
+--
+
+SELECT NULL FROM topology.CreateTopology('t5937_bbox');
+CREATE TABLE features.t5937_bbox_f(id serial primary key);
+SELECT NULL FROM topology.AddTopoGeometryColumn('t5937_bbox', 'features', 't5937_bbox_f', 'g', 'line');
+SELECT NULL FROM topology.toTopoGeom(ST_ExteriorRing(ST_MakeEnvelope(0,0,10,10)), 't5937_bbox', 1);
+SELECT NULL FROM topology.TopoGeo_AddPoint('t5937_bbox', ST_Point(10,0));
+SELECT NULL FROM topology.TopoGeo_AddPoint('t5937_bbox', ST_Point(0,10));
+SELECT NULL FROM topology.TopoGeo_AddPoint('t5937_bbox', ST_Point(10,10));
+SELECT '#5937-bbox', 'clean', topology.RemoveUnusedPrimitives(
+  't5937_bbox',
+  ST_GeomFromText('POLYGON((-1 -1, 11 -1, -1 11, -1 -1))')
+);
+SELECT '#5937-bbox', 'nodes', array_agg(node_id ORDER BY node_id) FROM t5937_bbox.node;
+SELECT '#5937-bbox', 'invalidity', * FROM topology.ValidateTopology('t5937_bbox');
+SELECT NULL FROM topology.DropTopology('t5937_bbox');
+DROP TABLE features.t5937_bbox_f;
+
 
 --
 -- Cleanup

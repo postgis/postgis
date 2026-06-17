@@ -9,3 +9,6 @@ t5|clean|2
 t6|clean|3
 #5289|clean|1
 #5303|clean|0
+#5937|clean|3
+#5937-bbox|clean|2
+#5937-bbox|nodes|{2,4}
