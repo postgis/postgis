@@ -145,6 +145,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           short DE-9IM patterns (Darafei Praliaskouski)
  - GH-890, Avoid GIDX BRIN summary merges across mismatched dimensions
           (Darafei Praliaskouski)
+ - #3318, [raster] Infer ST_MapAlgebra mask distance from odd mask matrix
+          dimensions larger than 3x3 (Darafei Praliaskouski)
  - Build PostgreSQL extension modules with `-fno-semantic-interposition` when
           available so LTO can optimize same-DSO calls to exported PostGIS
           entry points directly instead of routing through the module PLT; in
