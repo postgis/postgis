@@ -631,6 +631,14 @@ SELECT '#1596.7', srid FROM geometry_columns
   WHERE f_table_name = 'road_pg' AND f_geometry_column = 'roads_geom';
 DROP TABLE road_pg;
 
+-- #2630 --
+SELECT '#2630', p.proargnames::text
+FROM pg_catalog.pg_proc p
+JOIN pg_catalog.pg_extension e ON e.extname = 'postgis'
+  AND e.extnamespace = p.pronamespace
+WHERE p.proname = 'updategeometrysrid'
+  AND p.proargtypes = '1043 1043 1043 1043 23'::oidvector;
+
 -- #1596
 WITH inp AS ( SELECT
  'POLYGON((-176 -22,-176 -21,-175 -21,-175 -22,-176 -22))'::geography as a,
