@@ -27,11 +27,15 @@ The `oss-fuzz` project `Dockerfile` should call this script during image build.
 
 ## Local Workflow
 
-### Simulate Dummy Fuzzer Build
+### Simulate Dummy Fuzzer Build And Check
 
 ```bash
-make dummyfuzzers
+make check
 ```
+
+When `python3` or `unzip` is available, this also replays the checked-in seed
+corpus archives. Hosts without an archive extractor still run a no-input smoke
+check for each fuzzer.
 
 Artifacts are created in `/tmp`:
 
@@ -43,6 +47,12 @@ Run one fuzzer locally:
 
 ```bash
 /tmp/wkt_import_fuzzer a_file_name
+```
+
+Require checked-in seed corpus replay:
+
+```bash
+make check-corpus
 ```
 
 ### Run OSS-Fuzz Locally

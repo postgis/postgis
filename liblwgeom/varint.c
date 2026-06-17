@@ -20,9 +20,9 @@
  *
  * Copyright (C) 2014 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2013 Nicklas Avén
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
-
 
 #include "varint.h"
 #include "lwgeom_log.h"
@@ -120,6 +120,12 @@ varint_u64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size
 		/* Hibit is set, so this isn't the last byte */
 		if (nByte & 0x80)
 		{
+			if (nShift >= 63)
+			{
+				*size = 0;
+				lwerror("%s: varint exceeds 64 bits", __func__);
+				return 0;
+			}
 			/* We get here when there is more to read in the input varInt */
 			/* Here we take the least significant 7 bits of the read */
 			/* byte and put it in the most significant place in the result variable. */
@@ -131,6 +137,12 @@ varint_u64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size
 		}
 		else
 		{
+			if (nShift >= 64 || (nShift == 63 && nByte > 1))
+			{
+				*size = 0;
+				lwerror("%s: varint exceeds 64 bits", __func__);
+				return 0;
+			}
 			/* move the "cursor" one step */
 			ptr++;
 			/* Move the last read byte to the most significant */
@@ -207,5 +219,3 @@ int8_t unzigzag8(uint8_t val)
 		((int8_t)(val >> 1)) :
 		(-1 * (int8_t)((val+1) >> 1));
 }
-
-

@@ -26,85 +26,22 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <setjmp.h>
 
-#include <set>
-
-extern "C"
-{
-#include "liblwgeom.h"
+extern "C" {
 #include "geos_stub.h"
 #include "proj_stub.h"
 }
 
-extern "C" int LLVMFuzzerInitialize(int* argc, char*** argv);
+#include "liblwgeom_fuzzer.hpp"
 
-// Keep active heap allocated memory corresponding to returns of allocator()
-// and reallocator()
-std::set<void*> oSetPointers;
-jmp_buf jmpBuf;
-
-extern "C"
+extern "C" int
+LLVMFuzzerInitialize(int * /*argc*/, char *** /*argv*/)
 {
-    static void *
-    allocator(size_t size)
-    {
-            void *mem = malloc(size);
-            oSetPointers.insert(mem);
-            return mem;
-    }
-
-    static void
-    freeor(void *mem)
-    {
-            oSetPointers.erase(mem);
-            free(mem);
-    }
-
-    static void *
-    reallocator(void *mem, size_t size)
-    {
-            oSetPointers.erase(mem);
-            void *ret = realloc(mem, size);
-            oSetPointers.insert(ret);
-            return ret;
-    }
-
-    static void
-    noticereporter(const char *, va_list )
-    {
-    }
-
-    static void
-    errorreporter(const char *, va_list )
-    {
-        // Cleanup any heap-allocated memory still active
-        for(std::set<void*>::iterator oIter = oSetPointers.begin();
-            oIter != oSetPointers.end(); ++oIter )
-        {
-            free(*oIter);
-        }
-        oSetPointers.clear();
-        // Abort everything to jump to setjmp() call
-        longjmp(jmpBuf, 1);
-    }
-
-    static void
-    debuglogger(int, const char *, va_list)
-    {
-    }
-
-}
-
-int LLVMFuzzerInitialize(int* /*argc*/, char*** /*argv*/)
-{
-	lwgeom_set_handlers(malloc, realloc, free, noticereporter, noticereporter);
-	lwgeom_set_debuglogger(debuglogger);
+	postgis_lwgeom_fuzzer_initialize();
 	return 0;
 }
 
@@ -112,15 +49,18 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *buf, size_t len);
 
 int LLVMFuzzerTestOneInput(const uint8_t *buf, size_t len)
 {
-    char* pszWKT = static_cast<char*>(malloc( len + 1 ));
-    memcpy(pszWKT, buf, len);
-    pszWKT[len] = '\0';
-    if( !setjmp(jmpBuf) )
-    {
-        LWGEOM* lwgeom = lwgeom_from_wkt(pszWKT, LW_PARSER_CHECK_NONE);
-        lwgeom_free(lwgeom);
-        //assert( oSetPointers.empty() );
-    }
-    free(pszWKT);
-    return 0;
+	char *pszWKT = static_cast<char *>(malloc(len + 1));
+	if (pszWKT == NULL)
+		return 0;
+
+	memcpy(pszWKT, buf, len);
+	pszWKT[len] = '\0';
+	if (!POSTGIS_LWGEOM_FUZZER_SETJMP())
+	{
+		LWGEOM *lwgeom = lwgeom_from_wkt(pszWKT, LW_PARSER_CHECK_NONE);
+		lwgeom_free(lwgeom);
+	}
+	postgis_lwgeom_fuzzer_cleanup_allocations();
+	free(pszWKT);
+	return 0;
 }
