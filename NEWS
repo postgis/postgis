@@ -54,6 +54,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           finite coordinates (Darafei Praliaskouski)
  - GH-892, Add OSS-Fuzz coverage for TWKB and serialized raster inputs,
           including guards for malformed TWKB reads and counts (Darafei Praliaskouski)
+ - #3179, Mark truncated libpgcommon PostgreSQL messages instead of silently
+          dropping the tail (Darafei Praliaskouski)
  - Build PostgreSQL extension modules with `-fno-semantic-interposition` when
           available so LTO can optimize same-DSO calls to exported PostGIS
           entry points directly instead of routing through the module PLT; in
