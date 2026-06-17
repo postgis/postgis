@@ -58,4 +58,10 @@ T12.2|1012
 1011|public|feature2|tg11|3|0|
 1012|public|feature2|tg12|4|0|
 1013
+#2023|1014
+#2023-null-layerid|1015
+#2023-search-path|1016
+#2023-layerid|2023
+#2023-layer|1016|test2023_topo|FeatureCase|ticket2023_schema|1
+#2023-layer|2023|test2023_topo|FeatureCase|ticket2023_layer|2
 Topology 'tt' dropped

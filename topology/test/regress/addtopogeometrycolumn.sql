@@ -80,7 +80,24 @@ order by l.layer_id;
 -- TODO: not happy with the 2 signatures (too close)
 select addtopogeometrycolumn('tt','public.feature2','test',null::integer,'GEOMETRY',null); -- should be 1013;
 
+-- #2023, regclass can replace the schema/table pair when no layer id is required.
+select '#2023', topology.addtopogeometrycolumn('tt','public.feature2'::regclass,'ticket2023','POINT');
+select '#2023-null-layerid', topology.addtopogeometrycolumn('tt','public.feature2'::regclass,'ticket2023_null',null,'POINT');
+create schema test2023_topo;
+create table test2023_topo."FeatureCase"(id integer);
+set search_path = public;
+select '#2023-search-path', topology.addtopogeometrycolumn('tt','test2023_topo."FeatureCase"'::regclass,'ticket2023_schema','POINT');
+select '#2023-layerid', topology.addtopogeometrycolumn('tt','test2023_topo."FeatureCase"'::regclass,'ticket2023_layer',2023,'LINE',null);
+reset search_path;
+select '#2023-layer', l.layer_id, l.schema_name, l.table_name, l.feature_column, l.feature_type
+from topology.layer l, topology.topology t
+where l.topology_id = t.id
+  and t.name = 'tt'
+  and l.schema_name = 'test2023_topo'
+order by l.layer_id;
+
 drop table feature;
 drop table feature2;
+drop table test2023_topo."FeatureCase";
+drop schema test2023_topo;
 select droptopology('tt');
-

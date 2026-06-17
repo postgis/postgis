@@ -319,6 +319,21 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
                         <paramdef><type>name </type>
                         <parameter>column_name</parameter></paramdef>
 
+                        <paramdef><type>varchar </type>
+                        <parameter>feature_type</parameter></paramdef>
+                    </funcprototype>
+                    <funcprototype>
+                        <funcdef>integer <function>AddTopoGeometryColumn</function></funcdef>
+
+                        <paramdef><type>name </type>
+                        <parameter>topology_name</parameter></paramdef>
+
+                        <paramdef><type>regclass </type>
+                        <parameter>tab</parameter></paramdef>
+
+                        <paramdef><type>name </type>
+                        <parameter>column_name</parameter></paramdef>
+
                         <paramdef><type>integer </type>
                         <parameter>layer_id</parameter></paramdef>
 
@@ -345,6 +360,7 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="1.1">Availability: 1.1</para>
+                <para role="changed" conformance="3.7.0">Changed: 3.7.0 This function accepts a <type>regclass</type> table argument without requiring schema and table names separately.</para>
 
 			</refsection>
 
@@ -360,6 +376,12 @@ SELECT topology.AddTopoGeometryColumn('ma_topo', 'ma', 'parcels', 'topo', 'POLYG
 CREATE SCHEMA ri;
 CREATE TABLE ri.roads(gid serial PRIMARY KEY, road_name text);
 SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
+</programlisting>
+<programlisting>-- The table can also be passed as a regclass value.
+SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri.roads'::regclass, 'topo2', 'LINE');
+-- Hierarchical regclass calls use the explicit layer-id signature;
+-- pass NULL when the next layer id should be assigned automatically.
+SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri.roads'::regclass, 'topo3', NULL, 'COLLECTION', 1);
 </programlisting>
 			</refsection>
 
