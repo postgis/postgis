@@ -3976,12 +3976,12 @@ WHERE rid = 2;
                     <funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
                     <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef><type>integer </type> <parameter>band</parameter></paramdef>
-                    <paramdef choice="opt"><type>boolean </type> <parameter>forceChecking=true</parameter></paramdef>
+                    <paramdef choice="opt"><type>boolean </type> <parameter>forceChecking=false</parameter></paramdef>
                   </funcprototype>
                  <funcprototype>
                     <funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
                     <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-                    <paramdef choice="opt"><type>boolean </type> <parameter>forceChecking=true</parameter></paramdef>
+                    <paramdef choice="opt"><type>boolean </type> <parameter>forceChecking=false</parameter></paramdef>
                   </funcprototype>
                 </funcsynopsis>
             </refsynopsisdiv>
