@@ -56,6 +56,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - GT-270, Add NURBSCurve (Loïc Bartoletti)
  - #2863, Add ST_XSize, ST_YSize, ST_ZSize, and ST_MSize dimension helpers
           (Darafei Praliaskouski)
+ - #3472, Add ST_AsX3D option 4 to omit GeometryCollection Shape wrappers (Darafei Praliaskouski)
 
 * Enhancements *
 
