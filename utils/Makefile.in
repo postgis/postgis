@@ -123,7 +123,10 @@ check-regress:
 
 check: check-unit
 
-check-unit: postgis_restore-check
+create_upgrade-check:
+	srcdir=$(srcdir) PERL=$(PERL) $(SHELL) $(srcdir)/check_create_upgrade.sh
+
+check-unit: postgis_restore-check create_upgrade-check
 
 installdir:
 	@mkdir -p $(DESTDIR)$(bindir)

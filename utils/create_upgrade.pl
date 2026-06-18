@@ -505,6 +505,12 @@ EOF
     EXCEPTION
     WHEN undefined_function THEN
         RAISE DEBUG 'Replaced function $name($args) does not exist';
+    WHEN duplicate_function THEN
+        -- The target name is left behind when an earlier upgrade could not drop
+        -- a deprecated function still referenced by user objects.
+        RAISE EXCEPTION 'PostGIS upgrade cannot rename replaced function $name($args): leftover deprecated function ${replacement} already exists'
+            USING DETAIL = 'A previous upgrade likely left ${replacement} because a user object still depends on it.',
+                  HINT = 'Run SELECT postgis_full_version(); and inspect objects depending on functions named *_deprecated_by_postgis_*. Drop or update those objects, then retry SELECT postgis_extensions_upgrade().';
     WHEN OTHERS THEN
         GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
         RAISE EXCEPTION 'Attempting to rename replaced function $name($args) got % (%)', SQLERRM, SQLSTATE
@@ -1061,5 +1067,4 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql';
-
 
