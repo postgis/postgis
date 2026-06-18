@@ -64,6 +64,17 @@ select 'line_substring_10', ST_AsText(ST_LineSubstring('LINESTRING(0 0 4, 4 4 0)
 
 select 'line_substring_11', ST_AsText(ST_LineSubstring('LINESTRING(0 0, 1 1)', 0, 0));
 select 'line_substring_12', ST_AsText(ST_LineSubstring('LINESTRING(0 0 10, 1 1 5)', 0.5, .5));
+select 'line_substring_13', ST_AsText(ST_LineSubstring('MULTILINESTRING((0 0,0 0))', 0, 0));
+select 'line_substring_3d_1', ST_AsText(ST_3DLineSubstring('LINESTRING Z (0 0 0, 0 2 5, 0 10 10)', 0, 0.5), 8);
+select 'line_substring_3d_2', ST_3DLength(ST_3DLineSubstring(geom, 0, 0.5))::numeric(12,9), (ST_3DLength(geom) * 0.5)::numeric(12,9)
+from (select 'LINESTRING Z (0 0 0, 0 2 5, 0 10 10)'::geometry as geom) as data;
+select 'line_substring_3d_3', ST_AsText(ST_3DLineSubstring('LINESTRING(0 0 0 0, 0 0 4 8)', 0.25, 0.75), 8);
+select 'line_substring_3d_4', ST_AsText(ST_3DLineSubstring('MULTILINESTRING Z (EMPTY, (0 0 0, 0 0 2), (0 0 2, 0 2 2))', 0, 0.75), 8);
+select 'line_substring_3d_5', ST_AsText(ST_3DLineSubstring('MULTILINESTRING Z ((0 0 0, 0 0 0), (0 0 0, 0 0 10))', 0, 0.5), 8);
+select 'line_substring_3d_6', ST_AsText(ST_3DLineSubstring('MULTILINESTRING Z ((0 0 0, 0 0 1), (0 0 1, 0 0 2))', 0, 0.5), 8);
+select 'line_substring_3d_7', ST_AsText(ST_3DLineSubstring('MULTILINESTRING Z ((0 0 0, 0 0 1), (0 0 1, 0 0 2))', 0.5, 0.5), 8);
+select 'line_substring_3d_8', ST_AsText(ST_3DLineSubstring('LINESTRING Z (0 0 0, 0 0 1, 0 0 2)', 0.5, 0.5), 8);
+select 'line_substring_3d_9', ST_AsText(ST_3DLineSubstring('MULTILINESTRING Z ((0 0 0, 0 0 0))', 0, 0), 8);
 
 --
 --- ST_LineInterpolatePoint
