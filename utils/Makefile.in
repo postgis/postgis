@@ -123,7 +123,10 @@ check-regress:
 
 check: check-unit
 
-check-unit: postgis_restore-check
+create_upgrade_replaced_function_errors_check:
+	srcdir=$(srcdir) PERL=$(PERL) $(SHELL) $(srcdir)/check_create_upgrade_replaced_function_errors.sh
+
+check-unit: postgis_restore-check create_upgrade_replaced_function_errors_check
 
 installdir:
 	@mkdir -p $(DESTDIR)$(bindir)
