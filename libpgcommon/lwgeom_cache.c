@@ -263,7 +263,7 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
  * or as long one: (i.e urn:ogc:def:crs:EPSG::4326)
  */
 static char *
-getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
+getSRSbySRID_uncached(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
 {
 	static const uint16_t max_query_size = 512;
 	char query[512];
@@ -356,9 +356,20 @@ GetSRSCacheBySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
 		arg->short_mode = short_crs;
 		if (arg->srs)
 			pfree(arg->srs);
-		arg->srs = getSRSbySRID(fcinfo, srid, short_crs);
+		arg->srs = getSRSbySRID_uncached(fcinfo, srid, short_crs);
 	}
 	return arg->srs;
+}
+
+PGDLLEXPORT const char *
+getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
+{
+	/*
+	 * Public callers need stable ownership semantics. Route through the
+	 * existing function-call cache so repeated row-level calls do not leak
+	 * one PostgisCacheContext allocation per lookup.
+	 */
+	return GetSRSCacheBySRID(fcinfo, srid, short_crs);
 }
 
 /*

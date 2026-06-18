@@ -120,6 +120,9 @@ typedef struct {
 } SRSDescCache;
 
 const char *GetSRSCacheBySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs);
+/* Returns cache-owned text; callers must not free or modify it, and a later
+ * SRS lookup in the same function call may evict the returned pointer. */
+PGDLLEXPORT const char *getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs);
 
 /******************************************************************************/
 
@@ -135,4 +138,3 @@ typedef struct {
 } SRIDCache;
 
 int32_t GetSRIDCacheBySRS(FunctionCallInfo fcinfo, const char *srs);
-

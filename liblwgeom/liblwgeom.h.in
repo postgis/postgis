@@ -38,6 +38,14 @@
 
 #include "proj.h"
 
+#ifndef PGDLLEXPORT
+#if defined(_WIN32)
+#define PGDLLEXPORT __declspec(dllexport)
+#else
+#define PGDLLEXPORT
+#endif
+#endif
+
 /* For PROJ6 we cache several extra values to avoid calls to proj_get_source_crs
  * or proj_get_target_crs since those are very costly
  */
@@ -1796,6 +1804,18 @@ extern lwvarlena_t* lwgeom_to_encoded_polyline(const LWGEOM *geom, int precision
  */
 extern LWGEOM* lwgeom_from_geojson(const char *geojson, char **srs);
 
+#if defined(HAVE_LIBJSON)
+struct json_object;
+/**
+ * Parse a GeoJSON geometry object from an existing json-c object.
+ *
+ * @param geojson GeoJSON geometry object.
+ * @param hasz Optional output parameter set to LW_TRUE when any coordinate
+ *             contains a Z value. 2D inputs are returned as 2D geometries.
+ */
+extern PGDLLEXPORT LWGEOM* parse_geojson(struct json_object *geojson, int *hasz);
+#endif /* HAVE_LIBJSON */
+
 /**
  * Create an LWGEOM object from an Encoded Polyline representation
  *
@@ -2296,8 +2316,13 @@ extern lwvarlena_t* lwgeom_to_wkt_varlena(const LWGEOM *geom, uint8_t variant, i
 /**
 * @param geom geometry to convert to WKB
 * @param variant output format to use
-*                (WKB_ISO, WKB_SFSQL, WKB_EXTENDED, WKB_NDR, WKB_XDR)
+*                (WKB_ISO, WKB_SFSQL, WKB_EXTENDED, WKB_NDR, WKB_XDR,
+*                 WKB_HEX)
+* @return bytes written by lwgeom_to_wkb_buf for this variant. For WKB_HEX,
+*         this is the hex character count and does not include a null terminator.
 */
+extern PGDLLEXPORT size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant);
+extern PGDLLEXPORT uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
 extern uint8_t* lwgeom_to_wkb_buffer(const LWGEOM *geom, uint8_t variant);
 extern lwvarlena_t* lwgeom_to_wkb_varlena(const LWGEOM *geom, uint8_t variant);
 

@@ -207,6 +207,35 @@ static void test_wkb_out_polyhedralsurface(void)
 //	printf("\nnew: %s\nold: %s\n",s,t);
 }
 
+static void
+test_wkb_out_public_buffer_api(void)
+{
+	static const uint8_t expected[] = {
+	    0x00, 0x00, 0x00, 0x00, 0x01,                   /* XDR POINT */
+	    0x3f, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* X = 1 */
+	    0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  /* Y = 2 */
+	};
+	LWGEOM *geom = lwgeom_from_wkt("POINT(1 2)", LW_PARSER_CHECK_NONE);
+	size_t wkb_size = lwgeom_to_wkb_size(geom, WKB_XDR);
+	size_t hex_size = lwgeom_to_wkb_size(geom, WKB_XDR | WKB_HEX);
+	uint8_t *buffer = lwalloc(wkb_size);
+	uint8_t *hex_buffer = lwalloc(hex_size + 1);
+	uint8_t *end = lwgeom_to_wkb_buf(geom, buffer, WKB_XDR);
+	uint8_t *hex_end = lwgeom_to_wkb_buf(geom, hex_buffer, WKB_XDR | WKB_HEX);
+
+	CU_ASSERT_EQUAL(wkb_size, sizeof(expected));
+	CU_ASSERT_PTR_EQUAL(end, buffer + wkb_size);
+	CU_ASSERT_EQUAL(memcmp(buffer, expected, sizeof(expected)), 0);
+	CU_ASSERT_EQUAL(hex_size, 2 * sizeof(expected));
+	CU_ASSERT_PTR_EQUAL(hex_end, hex_buffer + hex_size);
+	hex_buffer[hex_size] = '\0';
+	ASSERT_STRING_EQUAL((char *)hex_buffer, "00000000013FF00000000000004000000000000000");
+
+	lwfree(hex_buffer);
+	lwfree(buffer);
+	lwgeom_free(geom);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -227,4 +256,5 @@ void wkb_out_suite_setup(void)
 	PG_ADD_TEST(suite, test_wkb_out_multicurve);
 	PG_ADD_TEST(suite, test_wkb_out_multisurface);
 	PG_ADD_TEST(suite, test_wkb_out_polyhedralsurface);
+	PG_ADD_TEST(suite, test_wkb_out_public_buffer_api);
 }
