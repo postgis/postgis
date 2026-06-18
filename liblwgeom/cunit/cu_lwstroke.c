@@ -397,9 +397,28 @@ static void test_unstroke()
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
 	ASSERT_STRING_EQUAL(str, "CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1)");
-	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);
+
+	out = lwgeom_unstroke_per_quad(in, 9);
+	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
+	ASSERT_STRING_EQUAL(
+	    str,
+	    "LINESTRING(-1 0,-0.98078528 0.19509032,-0.92387953 0.38268343,-0.83146961 0.55557023,-0.70710678 0.70710678,-0.55557023 0.83146961,-0.38268343 0.92387953,-0.19509032 0.98078528,6.123234e-17 1,0.19509032 0.98078528,0.38268343 0.92387953,0.55557023 0.83146961,0.70710678 0.70710678,0.83146961 0.55557023,0.92387953 0.38268343,0.98078528 0.19509032,1 0,0.98078528 -0.19509032,0.92387953 -0.38268343,0.83146961 -0.55557023,0.70710678 -0.70710678,0.55557023 -0.83146961,0.38268343 -0.92387953,0.19509032 -0.98078528,0 -1)");
+	lwgeom_free(out);
+	lwfree(str);
+
+	cu_error_msg_reset();
+	out = lwgeom_unstroke_per_quad(in, 0);
+	CU_ASSERT(out == NULL);
+	ASSERT_STRING_EQUAL(cu_error_msg, "perQuadrant must be at least 2");
+	cu_error_msg_reset();
+
+	out = lwgeom_unstroke_per_quad(in, 1);
+	CU_ASSERT(out == NULL);
+	ASSERT_STRING_EQUAL(cu_error_msg, "perQuadrant must be at least 2");
+	cu_error_msg_reset();
+	lwgeom_free(in);
 
 	in = lwgeom_from_text("COMPOUNDCURVE(CIRCULARSTRING(-1 0,0 1,0 -1),(0 -1,-1 -1))");
 	out = lwgeom_stroke(in,8);
