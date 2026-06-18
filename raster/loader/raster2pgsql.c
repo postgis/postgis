@@ -8,6 +8,7 @@
  * Copyright 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
  * Copyright (C) 2011 Regents of the University of California
  *   <bkpark@ucdavis.edu>
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -338,25 +339,17 @@ chartrim(const char *input, char *remove) {
 static void
 usage() {
 	printf(_("RELEASE: %s GDAL_VERSION=%d (%s)\n"), POSTGIS_LIB_VERSION, POSTGIS_GDAL_VERSION, xstr(POSTGIS_REVISION));
-	printf(_(
-		"USAGE: raster2pgsql [<options>] <raster>[ <raster>[ ...]] [[<schema>.]<table>]\n"
-		"  Multiple rasters can also be specified using wildcards (*,?).\n"
-		"\n"
-		"OPTIONS:\n"
-	));
-	/*
-	printf(_(
-		"  -s [<from>:]<srid> Set the SRID field. Defaults to %d.\n"
-		"     Optionally reprojects from given SRID (cannot be used with -Y).\n"
-		"     Raster's metadata will be checked to determine an appropriate SRID.\n"
-		"     If a srid of %d is provided (either as from or as target).\n"
-	), SRID_UNKNOWN, SRID_UNKNOWN);
-	*/
-	printf(_(
-		"  -s <srid> Set the SRID field. Defaults to %d. If SRID not\n"
-		"     provided or is %d, raster's metadata will be checked to\n"
-		"     determine an appropriate SRID.\n"
-	), SRID_UNKNOWN, SRID_UNKNOWN);
+	printf(
+	    _("USAGE: raster2pgsql [<options>] <raster>[ <raster>[ ...]] [[<schema>.]<table>]\n"
+	      "  Multiple rasters can also be specified using wildcards (*,?).\n"
+	      "\n"
+	      "OPTIONS:\n"));
+	printf(_("  -s [<from>:]<srid> Set the SRID field. Defaults to %d.\n"
+		 "     Optionally reprojects from given SRID (cannot be used with -Y).\n"
+		 "     Raster's metadata will be checked to determine an appropriate SRID.\n"
+		 "     Metadata lookup is also used when %d is provided as from or target.\n"),
+	       SRID_UNKNOWN,
+	       SRID_UNKNOWN);
 	printf(_(
 		"  -b <band> Index (1-based) of band to extract from raster. For more\n"
 		"      than one band index, separate with comma (,). Ranges can be\n"
