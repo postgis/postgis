@@ -1,4 +1,5 @@
-FUZZER_SRC_DIR ?= $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+FUZZER_MAKEFILE := $(abspath $(lastword $(MAKEFILE_LIST)))
+FUZZER_SRC_DIR ?= $(abspath $(dir $(FUZZER_MAKEFILE)))
 POSTGIS_BUILD_DIR ?= $(abspath ..)
 FUZZER_OUT ?= /tmp
 FUZZER_WORK ?= $(FUZZER_OUT)/postgis-fuzzer-check
@@ -35,10 +36,10 @@ check:
 		set -e; \
 		if { command -v python3 >/dev/null 2>&1 && python3 -m zipfile --help >/dev/null 2>&1; } || \
 		   { command -v unzip >/dev/null 2>&1 && unzip -v >/dev/null 2>&1; }; then \
-			$(MAKE) check-corpus; \
+			$(MAKE) -f "$(FUZZER_MAKEFILE)" check-corpus; \
 		else \
 			echo "No seed corpus zip extractor found; running fuzzer smoke check without corpus replay."; \
-			$(MAKE) dummyfuzzers; \
+			$(MAKE) -f "$(FUZZER_MAKEFILE)" dummyfuzzers; \
 			for fuzzer in $(FUZZER_NAMES); do \
 				"$(FUZZER_OUT)/$${fuzzer}"; \
 			done; \
