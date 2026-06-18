@@ -1,2 +1,10 @@
 #5699|-checking-
 #5711|-checking-
+#5886|-checking-
+#5886-prec|-checking-
+#5886-totopogeom-zero|-checking-
+#5886-near-end|-checking-
+#5886-projection-not-endpoint|1|0
+Topology 'topo' dropped
+#5886-isolated-node|1|0
+Topology 'topo' dropped

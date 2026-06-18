@@ -156,8 +156,9 @@ BEGIN
   alayer := layer_id(tg);
   atopology := topology_info.name;
 
-  -- Get tolerance, if 0 was given
-  tolerance := COALESCE( NULLIF(atolerance, 0), topology._st_mintolerance(topology_info.name, ageom) );
+  -- Keep the automatic-tolerance sentinel for the C loaders.  They need to know
+  -- that callers asked for automatic tolerance, not an explicit numeric one.
+  tolerance := CASE WHEN atolerance = 0 THEN -1 ELSE atolerance END;
 
   -- Get layer information
   BEGIN

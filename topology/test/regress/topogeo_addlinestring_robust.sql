@@ -1,19 +1,31 @@
 
 --{
-CREATE FUNCTION runTest( lbl text, lines geometry[], newline geometry, prec float8, debug bool default false )
+CREATE FUNCTION runTest(
+  lbl text,
+  lines geometry[],
+  newline geometry,
+  tol float8,
+  debug bool default false,
+  topo_prec float8 default 0,
+  use_totopogeom bool default false
+)
 RETURNS SETOF text AS
 $BODY$
 DECLARE
   g geometry;
   n int := 0;
   rec record;
+  drift_tol float8 := CASE
+    WHEN tol = -1 THEN COALESCE(NULLIF(topo_prec, 0), topology._st_mintolerance(newline))
+    ELSE COALESCE(NULLIF(tol, 0), topology._st_mintolerance(newline))
+  END;
 BEGIN
   IF EXISTS ( SELECT * FROM topology.topology WHERE name = 'topo' )
   THEN
     PERFORM topology.DropTopology ('topo');
   END IF;
 
-  PERFORM topology.CreateTopology ('topo');
+  PERFORM topology.CreateTopology ('topo', 0, topo_prec);
   CREATE TABLE topo.fl(lbl text, g geometry);
   PERFORM topology.AddTopoGeometryColumn('topo','topo','fl','tg','LINESTRING');
   CREATE TABLE topo.fa(lbl text, g geometry);
@@ -65,7 +77,11 @@ BEGIN
   END IF;
 
   BEGIN
-    PERFORM topology.TopoGeo_addLinestring('topo', newline, prec);
+    IF use_totopogeom THEN
+      PERFORM topology.toTopoGeom(newline, 'topo', 1, tol);
+    ELSE
+      PERFORM topology.TopoGeo_addLinestring('topo', newline, tol);
+    END IF;
   EXCEPTION WHEN OTHERS THEN
     RETURN QUERY SELECT format('%s|addline exception|%s (%s)', lbl, SQLERRM, SQLSTATE);
   END;
@@ -116,10 +132,7 @@ BEGIN
   FROM (
     SELECT t.lbl l, ST_HausdorffDistance(t.g, tg::geometry) dist
     FROM topo.fl t
-  ) foo WHERE dist >= COALESCE(
-      NULLIF(prec,0),
-      topology._st_mintolerance(newline)
-  )
+  ) foo WHERE dist >= drift_tol
   ORDER BY foo.l;
 
   SELECT sum(ST_Area(t.g)) as before, sum(ST_Area(tg::geometry)) as after
@@ -181,4 +194,101 @@ SELECT * FROM runTest('#5711',
   0
 ) WHERE true ;
 
-DROP FUNCTION runTest(text, geometry[], geometry, float8, bool);
+-- See https://trac.osgeo.org/postgis/ticket/5886
+-- The explicit tol=0 case keeps the historical comparison surface, while the
+-- precision case below uses automatic tolerance and exercises edge-interior snap.
+SELECT * FROM runTest('#5886',
+  ARRAY[
+    'LINESTRING(22.780107846871616 70.70515928614921, 22.779899976871615 70.7046262461492)',
+    'LINESTRING(22.79217056687162 70.70247684614921, 22.779969266871618 70.70480392614921, 22.780038556871617 70.7049816061492, 22.796764346871615 70.7044482361492)'
+  ],
+  'LINESTRING(22.780038556871617 70.7049816061492, 22.789676156871618 70.7072799361492)',
+  0
+) WHERE true ;
+
+SELECT * FROM runTest('#5886-prec',
+  ARRAY[
+    'LINESTRING(22.780107846871616 70.70515928614921, 22.779899976871615 70.7046262461492)',
+    'LINESTRING(22.79217056687162 70.70247684614921, 22.779969266871618 70.70480392614921, 22.780038556871617 70.7049816061492, 22.796764346871615 70.7044482361492)'
+  ],
+  'LINESTRING(22.780038556871617 70.7049816061492, 22.789676156871618 70.7072799361492)',
+  -1,
+  false,
+  0.0000001
+) WHERE true ;
+
+SELECT * FROM runTest('#5886-totopogeom-zero',
+  ARRAY[
+    'LINESTRING(22.780107846871616 70.70515928614921, 22.779899976871615 70.7046262461492)',
+    'LINESTRING(22.79217056687162 70.70247684614921, 22.779969266871618 70.70480392614921, 22.780038556871617 70.7049816061492, 22.796764346871615 70.7044482361492)'
+  ],
+  'LINESTRING(22.780038556871617 70.7049816061492, 22.789676156871618 70.7072799361492)',
+  0,
+  false,
+  0.0000001,
+  true
+) WHERE true ;
+
+SELECT * FROM runTest('#5886-near-end',
+  ARRAY[
+    'LINESTRING(0 0, 10 0)'
+  ],
+  'LINESTRING(0.5 0.9, 0.5 -2)',
+  -1,
+  false,
+  1
+) WHERE true ;
+
+DO $$
+BEGIN
+  IF EXISTS ( SELECT * FROM topology.topology WHERE name = 'topo' )
+  THEN
+    PERFORM topology.DropTopology('topo');
+  END IF;
+
+  PERFORM topology.CreateTopology('topo', 0, 1);
+  PERFORM topology.TopoGeo_addLinestring('topo', 'LINESTRING(0 0, 10 0)', -1);
+  PERFORM topology.TopoGeo_addLinestring('topo', 'LINESTRING(0.9 0.9, 0.9 2)', -1);
+END;
+$$;
+
+SELECT '#5886-projection-not-endpoint',
+  count(distinct n.node_id) FILTER (WHERE ST_DWithin(n.geom, 'POINT(0.9 0)'::geometry, 1e-9)),
+  count(distinct e.edge_id) FILTER (
+    WHERE (ST_DWithin(a.geom, 'POINT(0 0)'::geometry, 1e-9)
+        AND ST_DWithin(b.geom, 'POINT(0.9 2)'::geometry, 1e-9))
+       OR (ST_DWithin(a.geom, 'POINT(0.9 2)'::geometry, 1e-9)
+        AND ST_DWithin(b.geom, 'POINT(0 0)'::geometry, 1e-9))
+  )
+FROM topo.node n
+LEFT JOIN topo.edge_data e
+  ON n.node_id = e.start_node OR n.node_id = e.end_node
+LEFT JOIN topo.node a
+  ON a.node_id = e.start_node
+LEFT JOIN topo.node b
+  ON b.node_id = e.end_node;
+
+SELECT topology.DropTopology('topo');
+
+DO $$
+BEGIN
+  IF EXISTS ( SELECT * FROM topology.topology WHERE name = 'topo' )
+  THEN
+    PERFORM topology.DropTopology('topo');
+  END IF;
+
+  PERFORM topology.CreateTopology('topo', 0, 1);
+  PERFORM topology.TopoGeo_addLinestring('topo', 'LINESTRING(0 0, 10 0)', -1);
+  PERFORM topology.TopoGeo_addPoint('topo', 'POINT(5 1.2)', -1);
+  PERFORM topology.TopoGeo_addLinestring('topo', 'LINESTRING(5.4 0.6, 5.4 2)', -1);
+END;
+$$;
+
+SELECT '#5886-isolated-node',
+  count(*) FILTER (WHERE ST_Equals(geom, 'POINT(5 1.2)'::geometry) AND containing_face IS NULL),
+  count(*) FILTER (WHERE ST_DWithin(geom, 'POINT(5.4 0)'::geometry, 1e-9))
+FROM topo.node;
+
+SELECT topology.DropTopology('topo');
+
+DROP FUNCTION runTest(text, geometry[], geometry, float8, bool, float8, bool);

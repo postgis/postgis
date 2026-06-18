@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2015-2026 Sandro Santilli <strk@kbt.io>
- * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright (C) 2025-2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -7325,6 +7325,114 @@ _lwt_split_by_nodes(const LWGEOM *g, const LWGEOM *nodes)
   return bg;
 }
 
+static int
+_lwt_point_is_near_target_vertex(const POINT2D *point,
+				 LWT_ISO_EDGE *edges,
+				 uint64_t numedges,
+				 LWT_ISO_NODE *nodes,
+				 uint64_t numnodes,
+				 double tol)
+{
+	uint64_t i;
+
+	for (i = 0; i < numedges; ++i)
+	{
+		uint32_t j;
+		for (j = 0; j < edges[i].geom->points->npoints; ++j)
+		{
+			const POINT2D *vertex = getPoint2d_cp(edges[i].geom->points, j);
+			if (distance2d_pt_pt(point, vertex) < tol)
+				return 1;
+		}
+	}
+
+	for (i = 0; i < numnodes; ++i)
+	{
+		POINT2D node_point;
+		if (nodes[i].containing_face == -1)
+			continue; /* non-isolated nodes are already edge vertices */
+		getPoint2d_p(nodes[i].geom->point, 0, &node_point);
+		if (distance2d_pt_pt(point, &node_point) < tol)
+			return 1;
+	}
+
+	return 0;
+}
+
+static int
+_lwt_snap_line_vertices_to_edges(LWGEOM *geom,
+				 LWT_ISO_EDGE *edges,
+				 uint64_t numedges,
+				 LWT_ISO_NODE *nodes,
+				 uint64_t numnodes,
+				 double tol)
+{
+	LWPOINTITERATOR *it;
+	POINT4D point;
+
+	if (!tol || !numedges)
+		return 0;
+
+	it = lwpointiterator_create_rw(geom);
+	if (!it)
+		return -1;
+
+	while (lwpointiterator_has_next(it))
+	{
+		uint64_t i;
+		int found = 0;
+		double bestdist = tol;
+		POINT2D point2d;
+		POINT4D bestpoint;
+
+		if (lwpointiterator_peek(it, &point) == LW_FAILURE)
+		{
+			lwpointiterator_destroy(it);
+			return -1;
+		}
+
+		point2d.x = point.x;
+		point2d.y = point.y;
+		if (_lwt_point_is_near_target_vertex(&point2d, edges, numedges, nodes, numnodes, tol))
+		{
+			lwpointiterator_next(it, NULL);
+			continue;
+		}
+
+		for (i = 0; i < numedges; ++i)
+		{
+			double dist;
+			double loc;
+			POINT4D projected;
+
+			loc = ptarray_locate_point(edges[i].geom->points, &point, &dist, &projected);
+			if (loc > 0 && loc < 1 && dist && dist < bestdist)
+			{
+				found = 1;
+				bestdist = dist;
+				bestpoint = projected;
+			}
+		}
+
+		/*
+		 * GEOS Snap uses target vertices, so a line vertex close to an edge
+		 * interior can remain unsnapped and create a later impossible edge-node
+		 * crossing.  Snap those vertices to their segment projection while the
+		 * incoming line is still the only geometry being changed (#5886).  If
+		 * the original vertex can snap to any target vertex, including an
+		 * isolated node or a vertex on another edge, keep the result chosen by
+		 * the target-vertex snap.
+		 */
+		if (found)
+			lwpointiterator_modify_next(it, &bestpoint);
+		else
+			lwpointiterator_next(it, NULL);
+	}
+
+	lwpointiterator_destroy(it);
+	return 0;
+}
+
 static LWT_ELEMID*
 _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
             int handleFaceSplit, int maxNewEdges)
@@ -7343,6 +7451,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   GBOX qbox;
   int forward;
   int input_was_closed = 0;
+  int using_min_tolerance = tol == -1;
   POINT4D originalStartPoint;
 
   if ( lwline_is_empty(line) )
@@ -7491,6 +7600,26 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     lwgeom_free(noded);
     noded = tmp;
     LWDEBUGG(1, noded, "Elements-snapped");
+
+    /*
+     * GEOS Snap handles target vertices first.  Only then project the remaining
+     * vertices to edge interiors; otherwise the later target-vertex snap could
+     * drag a freshly projected interior point to an endpoint that was outside
+     * tolerance from the original input vertex (#5886).
+     */
+    if (using_min_tolerance && _lwt_snap_line_vertices_to_edges(noded, edges, numedges, nodes, numnodes, tol) == -1)
+    {
+	    lwgeom_free(noded);
+	    lwcollection_release(col);
+	    if (nearby)
+		    lwfree(nearby);
+	    if (nodes)
+		    _lwt_release_nodes(nodes, numnodes);
+	    if (edges)
+		    _lwt_release_edges(edges, numedges);
+	    lwerror("Could not snap line vertices to nearby edges");
+	    return NULL;
+    }
     if ( input_was_closed )
     {{
       /* Recompute start point in case it moved */
