@@ -65,6 +65,17 @@ spheroidLength1_deprecated|85204.52077
 spheroidLength1|85204.52077
 length2d_spheroid|100
 length_spheroid|100
+#5895|12370146.652
+#5895.empty|
+ERROR:  Only lon/lat coordinate systems are supported in geography.
+#5895.collection|157249.598
+#5895.collection_later_member|0.000
+#5895.collection_later_member_reversed|0.000
+#5895.collection_polygonal|0.000
+#5895.srid_default|157249.598
+#5895.coerce|0.000
+#5895.parallel|s
+ERROR:  Only lon/lat coordinate systems are supported in geography.
 #4278.1|t
 #4278.2|0
 #4278.3|f
