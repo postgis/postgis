@@ -1,0 +1,27 @@
+--- ST_3DSlope
+SELECT 'ST_3DSlope_horizontal', round(ST_3DSlope('TRIANGLE Z((0 0 0,1 0 0,0 1 0,0 0 0))'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_vertical', round(ST_3DSlope('TRIANGLE Z((0 0 0,0 0 1,0 1 0,0 0 0))'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_45deg', round(ST_3DSlope('TRIANGLE Z((0 0 0,1 0 1,0 1 0,0 0 0))'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_reverse', round(ST_3DSlope('TRIANGLE Z((0 0 0,0 1 0,1 0 1,0 0 0))'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_2d', round(ST_3DSlope('TRIANGLE((0 0,1 0,0 1,0 0))'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_line_45deg', round(ST_3DSlope('LINESTRING Z(0 0 0,1 0 1)'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_line_vertical', round(ST_3DSlope('LINESTRING Z(0 0 0,0 0 1)'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_line_2d', round(ST_3DSlope('LINESTRING(0 0,1 0)'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_closed_line', round(ST_3DSlope('LINESTRING Z(0 0 0,1 0 1,1 1 1,0 1 0,0 0 0)'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_multiline', round(ST_3DSlope('MULTILINESTRING Z((0 0 0,1 0 1),(2 0 2,3 0 3))'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_multiline_plane', round(ST_3DSlope('MULTILINESTRING Z((0 0 0,0 1 0),(0 0 0,1 0 1))'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_polygon_45deg', round(ST_3DSlope('POLYGON Z((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0))'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_polygon_hole', round(ST_3DSlope('POLYGON Z((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0),(0.25 0.25 0.25,0.75 0.25 0.75,0.75 0.75 0.75,0.25 0.75 0.25,0.25 0.25 0.25))'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_multipolygon', round(ST_3DSlope('MULTIPOLYGON Z(((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0)),((2 0 2,3 0 3,3 1 3,2 1 2,2 0 2)))'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_tin', round(ST_3DSlope('TIN Z(((0 0 0,1 0 1,0 1 0,0 0 0)),((1 0 1,1 1 1,0 1 0,1 0 1)))'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_polyhedralsurface', round(ST_3DSlope('POLYHEDRALSURFACE Z(((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0)))'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_multisurface', round(ST_3DSlope('MULTISURFACE Z(((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0)))'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_collection_surface', round(ST_3DSlope('GEOMETRYCOLLECTION Z(POLYGON((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0)))'::geometry)::numeric, 6);
+SELECT 'ST_3DSlope_degenerate', ST_3DSlope('TRIANGLE Z((0 0 0,1 1 1,2 2 2,0 0 0))'::geometry);
+SELECT 'ST_3DSlope_degenerate_line', ST_3DSlope('LINESTRING Z(0 0 0,0 0 0)'::geometry);
+SELECT 'ST_3DSlope_not_coplanar_multiline', ST_3DSlope('MULTILINESTRING Z((0 0 0,1 0 1,0 1 0),(2 0 0,3 0 0))'::geometry);
+SELECT 'ST_3DSlope_not_coplanar', ST_3DSlope('POLYGON Z((0 0 0,1 0 0,1 1 1,0 1 0,0 0 0))'::geometry);
+SELECT 'ST_3DSlope_not_coplanar_collection', ST_3DSlope('GEOMETRYCOLLECTION Z(POLYGON((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0)),POLYGON((2 0 0,3 0 0,3 1 1,2 1 1,2 0 0)))'::geometry);
+SELECT 'ST_3DSlope_empty', ST_3DSlope('TRIANGLE EMPTY'::geometry);
+SELECT 'ST_3DSlope_empty_collection', ST_3DSlope('GEOMETRYCOLLECTION EMPTY'::geometry);
+SELECT 'ST_3DSlope_not_linear_or_surface', ST_3DSlope('POINT(0 0)'::geometry);
