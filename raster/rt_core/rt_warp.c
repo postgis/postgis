@@ -11,6 +11,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -206,6 +207,14 @@ rt_raster rt_raster_gdal_warp(
 	int use_init_dest_nodata = 0;
 
 	int subspatial = 0;
+	/*
+	 * GDAL Warp rejects default-geotransform rasters as ungeoreferenced, so
+	 * temporarily place them in a small synthetic projected frame.  Requested
+	 * scale and skew values are converted into that frame before warping and
+	 * converted back to PostGIS raster metadata after GDAL computes the output
+	 * extent.
+	 */
+	double subspatial_gt[6] = {166021.4431, 0.1, 0, 10000000.0000, 0, -0.1};
 
 	RASTER_DEBUG(3, "rt_raster_gdal_warp: starting");
 
@@ -405,10 +414,9 @@ rt_raster rt_raster_gdal_warp(
 		if (FLT_EQ(gt[0], 0.0) && FLT_EQ(gt[3], 0.0) && FLT_EQ(gt[1], 1.0) && FLT_EQ(gt[5], -1.0) &&
 		    FLT_EQ(gt[2], 0.0) && FLT_EQ(gt[4], 0.0))
 		{
-			double ngt[6] = {166021.4431, 0.1, 0, 10000000.0000, 0, -0.1};
 			rtwarn("Raster has default geotransform. Adjusting metadata for use of GDAL Warp API");
 			subspatial = 1;
-			GDALSetGeoTransform(arg->src.ds, ngt);
+			GDALSetGeoTransform(arg->src.ds, subspatial_gt);
 			GDALFlushCache(arg->src.ds);
 			arg->src.srs = rt_util_gdal_convert_sr("EPSG:32731", 0);
 			arg->dst.srs = rt_util_gdal_convert_sr("EPSG:32731", 0);
@@ -525,11 +533,15 @@ rt_raster rt_raster_gdal_warp(
 		_skew[0] = *skew_x;
 		if (NULL != scale_x && *scale_x < 0.)
 			_skew[0] *= -1;
+		if (subspatial)
+			_skew[0] /= 10;
 	}
 	if (NULL != skew_y) {
 		_skew[1] = *skew_y;
 		if (NULL != scale_y && *scale_y > 0)
 			_skew[1] *= -1;
+		if (subspatial)
+			_skew[1] /= 10;
 	}
 
 	RASTER_DEBUGF(4, "rt_raster_gdal_warp: Using skew: %f x %f", _skew[0], _skew[1]);
@@ -537,10 +549,33 @@ rt_raster rt_raster_gdal_warp(
 	/* Compute the output grid parameters when skew is requested. */
 	if (FLT_NEQ(_skew[0], 0.0) || FLT_NEQ(_skew[1], 0.0)) {
 		rt_raster skewedrast;
+		rt_envelope skew_extent = extent;
+		double compute_scale[2] = {_scale[0], _scale[1]};
+		double compute_skew[2] = {_skew[0], _skew[1]};
 
 		RASTER_DEBUG(3, "rt_raster_gdal_warp: Computing skewed extent");
 
-		skewedrast = rt_raster_compute_skewed_raster(extent, _skew, _scale);
+		if (subspatial)
+		{
+			/*
+			 * The synthetic frame keeps GDAL happy, but its large origin can
+			 * round edge pixels out of the determinant math below.  Solve
+			 * dimensions in the raster's default coordinate frame, then convert
+			 * the computed upper-left back to GDAL's synthetic frame.
+			 */
+			skew_extent.MinX = (skew_extent.MinX - subspatial_gt[0]) * 10;
+			skew_extent.MaxX = (skew_extent.MaxX - subspatial_gt[0]) * 10;
+			skew_extent.MinY = (skew_extent.MinY - subspatial_gt[3]) * 10;
+			skew_extent.MaxY = (skew_extent.MaxY - subspatial_gt[3]) * 10;
+			skew_extent.UpperLeftX = (skew_extent.UpperLeftX - subspatial_gt[0]) * 10;
+			skew_extent.UpperLeftY = (skew_extent.UpperLeftY - subspatial_gt[3]) * 10;
+			compute_scale[0] *= 10;
+			compute_scale[1] *= 10;
+			compute_skew[0] *= 10;
+			compute_skew[1] *= 10;
+		}
+
+		skewedrast = rt_raster_compute_skewed_raster(skew_extent, compute_skew, compute_scale);
 		if (skewedrast == NULL) {
 			rterror("rt_raster_gdal_warp: Could not compute skewed extent");
 			_rti_warp_arg_destroy(arg);
@@ -552,6 +587,11 @@ rt_raster rt_raster_gdal_warp(
 
 		extent.UpperLeftX = rt_raster_get_x_offset(skewedrast);
 		extent.UpperLeftY = rt_raster_get_y_offset(skewedrast);
+		if (subspatial)
+		{
+			extent.UpperLeftX = subspatial_gt[0] + (extent.UpperLeftX / 10);
+			extent.UpperLeftY = subspatial_gt[3] + (extent.UpperLeftY / 10);
+		}
 
 		RASTER_DEBUGF(3, "rt_raster_gdal_warp: Skewed extent: UL=(%f,%f) dim=%dx%d",
 			extent.UpperLeftX, extent.UpperLeftY, _dim[0], _dim[1]);
@@ -585,7 +625,15 @@ rt_raster rt_raster_gdal_warp(
 	/* user-defined upper-left corner */
 	if (NULL != ul_xw && NULL != ul_yw) {
 		ul_user = 1;
-		rt_raster_set_offsets(rast, *ul_xw, *ul_yw);
+		/*
+		 * Default-geotransform rasters are warped in a synthetic projected
+		 * frame. Keep the caller-visible extent in raster coordinates, but
+		 * move GDAL's temporary raster to the matching synthetic frame.
+		 */
+		if (subspatial)
+			rt_raster_set_offsets(rast, subspatial_gt[0] + (*ul_xw / 10), subspatial_gt[3] + (*ul_yw / 10));
+		else
+			rt_raster_set_offsets(rast, *ul_xw, *ul_yw);
 		extent.UpperLeftX = *ul_xw;
 		extent.UpperLeftY = *ul_yw;
 	}
@@ -600,37 +648,45 @@ rt_raster rt_raster_gdal_warp(
 	}
 
 	/* alignment only considered if upper-left corner not provided */
-	if (
-		!ul_user && (
-			(NULL != grid_xw) || (NULL != grid_yw)
-		)
-	) {
+	if (!ul_user && ((NULL != grid_xw) || (NULL != grid_yw)))
+	{
+		double grid_x = 0;
+		double grid_y = 0;
 
-		if (
-			((NULL != grid_xw) && (NULL == grid_yw)) ||
-			((NULL == grid_xw) && (NULL != grid_yw))
-		) {
+		if (((NULL != grid_xw) && (NULL == grid_yw)) || ((NULL == grid_xw) && (NULL != grid_yw)))
+		{
 			rterror("rt_raster_gdal_warp: Both X and Y alignment values must be provided");
 			rt_raster_destroy(rast);
 			_rti_warp_arg_destroy(arg);
 			return NULL;
 		}
 
-		RASTER_DEBUGF(4, "Aligning extent to user-specified grid: %f, %f", *grid_xw, *grid_yw);
+		/*
+		 * Alignment is computed in the temporary raster's coordinate
+		 * frame.  Default-geotransform rasters are warped in a synthetic
+		 * projected frame, so convert the caller's raster-coordinate grid
+		 * origin before snapping.
+		 */
+		grid_x = subspatial ? (subspatial_gt[0] + (*grid_xw / 10)) : *grid_xw;
+		grid_y = subspatial ? (subspatial_gt[3] + (*grid_yw / 10)) : *grid_yw;
 
-		do {
+		RASTER_DEBUGF(4, "Aligning extent to user-specified grid: %f, %f", grid_x, grid_y);
+
+		do
+		{
 			double _r[2] = {0};
 			double _w[2] = {0};
 
 			/* raster is already aligned */
-			if (FLT_EQ(*grid_xw, extent.UpperLeftX) && FLT_EQ(*grid_yw, extent.UpperLeftY)) {
+			if (FLT_EQ(grid_x, extent.UpperLeftX) && FLT_EQ(grid_y, extent.UpperLeftY))
+			{
 				RASTER_DEBUG(3, "Skipping raster alignment as it is already aligned to grid");
 				break;
 			}
 
 			extent.UpperLeftX = rast->ipX;
 			extent.UpperLeftY = rast->ipY;
-			rt_raster_set_offsets(rast, *grid_xw, *grid_yw);
+			rt_raster_set_offsets(rast, grid_x, grid_y);
 
 			/* process upper-left corner */
 			if (rt_raster_geopoint_to_cell(
@@ -709,8 +765,7 @@ rt_raster rt_raster_gdal_warp(
 
 			rt_raster_set_offsets(rast, _w[0], _w[1]);
 			RASTER_DEBUGF(4, "aligned offsets: %f x %f", _w[0], _w[1]);
-		}
-		while (0);
+		} while (0);
 	}
 
 	/* get key attributes */
@@ -729,9 +784,9 @@ rt_raster rt_raster_gdal_warp(
 				return NULL;
 			}
 			_gt[0] = _w[0];
-			_gt[1] = *scale_x;
+			_gt[1] = subspatial ? (*scale_x / 10) : *scale_x;
 			if (NULL != skew_x && FLT_NEQ(*skew_x, 0.0))
-				_gt[2] = *skew_x;
+				_gt[2] = subspatial ? (*skew_x / 10) : *skew_x;
 		}
 		if (NULL != scale_y && *scale_y > 0) {
 			if (rt_raster_cell_to_geopoint(rast, 0, rast->height, &(_w[0]), &(_w[1]), NULL) != ES_NONE) {
@@ -741,9 +796,9 @@ rt_raster rt_raster_gdal_warp(
 				return NULL;
 			}
 			_gt[3] = _w[1];
-			_gt[5] = *scale_y;
+			_gt[5] = subspatial ? (*scale_y / 10) : *scale_y;
 			if (NULL != skew_y && FLT_NEQ(*skew_y, 0.0))
-				_gt[4] = *skew_y;
+				_gt[4] = subspatial ? (*skew_y / 10) : *skew_y;
 		}
 	}
 
@@ -949,8 +1004,17 @@ rt_raster rt_raster_gdal_warp(
 	/* reset spatial info for default-geotransform rasters */
 	if (subspatial) {
 		double gt[6] = {0, 1, 0, 0, 0, -1};
-		gt[1] = _scale[0] * 10;
-		gt[5] = -1 * _scale[1] * 10;
+		/*
+		 * Convert the finalized GDAL grid, not the pre-alignment extent:
+		 * grid alignment may have moved _gt after the synthetic-frame extent
+		 * was computed.
+		 */
+		gt[0] = (_gt[0] - subspatial_gt[0]) * 10;
+		gt[1] = _gt[1] * 10;
+		gt[2] = _gt[2] * 10;
+		gt[3] = (_gt[3] - subspatial_gt[3]) * 10;
+		gt[4] = _gt[4] * 10;
+		gt[5] = _gt[5] * 10;
 		rt_raster_set_geotransform_matrix(rast, gt);
 		rt_raster_set_srid(rast, SRID_UNKNOWN);
 	}
