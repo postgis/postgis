@@ -381,8 +381,8 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			starting and ending at the given fractional locations.
             The first argument must be a LINESTRING.
 			The second and third arguments are values in the range [0, 1]
-            representing the start and end locations
-            as fractions of line length.
+            representing the start and end locations.
+            For geometry inputs, the fractions are measured in 2D line length.
             The Z and M values are interpolated for added endpoints if present.
             </para>
 
@@ -479,6 +479,23 @@ SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(-118.2436 34.0522, -71.0570 42.36
 geog_sub | LINESTRING(-104.167064 38.854691,-87.674646 41.849854)
 geom_sub | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)
 </programlisting>
+
+	<para>For geometry inputs, the fractional locations are based on the 2D
+	length of the line, even when the input has Z values. The resulting Z values
+	are interpolated along the selected 2D location.</para>
+	<programlisting>
+	WITH data AS (
+	  SELECT 'LINESTRING Z (0 0 0, 0 2 5, 0 10 10)'::geometry AS geom
+	)
+	SELECT ST_Length(geom) AS length_2d,
+	       ST_3DLength(geom) AS length_3d,
+	       ST_AsText(ST_LineSubstring(geom, 0, 0.5)) AS substring
+	FROM data;
+
+	 length_2d |    length_3d     |              substring
+	-----------+------------------+-------------------------------------
+	        10 | 14.8191459391911 | LINESTRING Z (0 0 0,0 2 5,0 5 6.875)
+	</programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
