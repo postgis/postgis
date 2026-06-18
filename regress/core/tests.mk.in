@@ -47,6 +47,7 @@ TESTS += \
 	$(top_srcdir)/regress/core/dumpsegments \
 	$(top_srcdir)/regress/core/empty \
 	$(top_srcdir)/regress/core/estimatedextent \
+	$(top_srcdir)/regress/core/filter_holes_by_area \
 	$(top_srcdir)/regress/core/filterm \
 	$(top_srcdir)/regress/core/fixedoverlay \
 	$(top_srcdir)/regress/core/flatgeobuf \
