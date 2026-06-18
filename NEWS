@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - [raster] Correct the documented ST_BandIsNoData forceChecking default (Darafei Praliaskouski)
   - Resolve the ST_GeomFromGeoHash cast in the PostGIS schema (Paul Ramsey)
   - Release temporary GeoJSON input after parsing (Paul Ramsey)
   - #6076, Measure only matching components of geography collections (Paul Ramsey)
