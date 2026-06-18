@@ -793,6 +793,51 @@ FROM (
 DROP TABLE raster_gdalwarp_src;
 DROP TABLE raster_gdalwarp_dst;
 
+WITH foo AS MATERIALIZED (
+	SELECT _st_gdalwarp(
+		ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, NULL),
+		'NearestNeighbor', 0.125,
+		NULL, NULL,
+		NULL, NULL,
+		NULL,
+		1, 1
+	) AS rast
+)
+SELECT '#2924',
+	(metadata).width,
+	(metadata).height,
+	round((metadata).skewx::numeric, 3),
+	round((metadata).skewy::numeric, 3),
+	round((metadata).upperleftx::numeric, 3),
+	round((metadata).upperlefty::numeric, 3)
+FROM (
+	SELECT ST_MetaData(rast) AS metadata
+	FROM foo
+) bar;
+
+WITH foo AS MATERIALIZED (
+	SELECT _st_gdalwarp(
+		ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, NULL),
+		'NearestNeighbor', 0.125,
+		NULL,
+		NULL, NULL,
+		2, 2,
+		1, 1
+	) AS rast
+)
+SELECT '#2924-grid',
+	(metadata).width,
+	(metadata).height,
+	round((metadata).skewx::numeric, 3),
+	round((metadata).skewy::numeric, 3),
+	round((metadata).upperleftx::numeric, 3),
+	round((metadata).upperlefty::numeric, 3),
+	ST_SameAlignment(rast, ST_MakeEmptyRaster(1, 1, 2, 2, 1, -1, 1, 1, 0))
+FROM (
+	SELECT rast, ST_MetaData(rast) AS metadata
+	FROM foo
+) bar;
+
 WITH foo AS (
 	SELECT 0 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, -500000, 600000, 100, -100, 0, 0, 992163), 1, '16BUI', 1, 0) AS rast UNION ALL
 	SELECT 1, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499800, 600000, 100, -100, 0, 0, 992163), 1, '16BUI', 2, 0) AS rast UNION ALL
