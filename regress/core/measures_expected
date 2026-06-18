@@ -16,10 +16,12 @@ st_shortestline_dist|LINESTRING(10 0,11 0)|LINESTRING(11 0,10 0)
 st_maxdistance_134|0
 st_maxdistance_135|13
 st_maxdistance_136|13
+st_maxdistance_1arg|6
 st_maxdistance_dist|22.360680|22.360680
 st_longestline_134|LINESTRING(1 2,1 2)
 st_longestline_135|LINESTRING(5 0,10 12)
 st_longestline_136|LINESTRING(0 0,5 12)
+st_longestline_1arg|LINESTRING(0 0,6 0)
 st_longestline_dist|LINESTRING(0 0,20 10)|LINESTRING(20 10,0 0)
 distancetest1|1|50|LINESTRING(17 18,17 19)|LINESTRING(17 19,17 18)|LINESTRING(29 39,-1 -1)|LINESTRING(-1 -1,29 39)
 distancetest2|0|50|0.0000000000|0.0000000000|0.0000000000|0.0000000000|LINESTRING(-40 -20,-10 20)|LINESTRING(-10 20,-40 -20)

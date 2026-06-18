@@ -1246,6 +1246,12 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 			<funcdef>geometry <function>ST_LongestLine</function></funcdef>
 
 			<paramdef><type>geometry </type>
+			<parameter>g</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LongestLine</function></funcdef>
+
+			<paramdef><type>geometry </type>
 			<parameter>g1</parameter></paramdef>
 
 			<paramdef><type>geometry </type>
@@ -1265,10 +1271,11 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 		The length of the line is equal to the distance returned by <xref linkend="ST_MaxDistance"/>.
 		</para>
         <para>
-        If g1 and g2 are the same geometry, returns the line between the two vertices farthest apart in the geometry.
+        If only one geometry is provided, or g1 and g2 are the same geometry, returns the line between the two vertices farthest apart in the geometry.
         The endpoints of the line lie on the circle computed by <xref linkend="ST_MinimumBoundingCircle"/>.
         </para>
 		<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
+		<para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 - support for a single geometry input.</para>
 
 	  </refsection>
 
@@ -1322,9 +1329,9 @@ LINESTRING(20 10,105.3073372946034 186.95518130045156)
         </mediaobject>
         </informalfigure>
 <programlisting>
-SELECT ST_AsText( ST_LongestLine( geom, geom)) AS llinewkt,
-                  ST_MaxDistance( geom, geom) AS max_dist,
-                  ST_Length( ST_LongestLine(geom, geom)) AS lenll
+SELECT ST_AsText( ST_LongestLine( geom)) AS llinewkt,
+                  ST_MaxDistance( geom) AS max_dist,
+                  ST_Length( ST_LongestLine(geom)) AS lenll
 FROM (SELECT 'POLYGON ((40 180, 110 160, 180 180, 180 120, 140 90, 160 40, 80 10, 70 40, 20 50, 40 180),
               (60 140, 99 77.5, 90 140, 60 140))'::geometry AS geom) AS t;
 
@@ -1454,6 +1461,10 @@ SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,
     <funcsynopsis>
       <funcprototype>
         <funcdef>float <function>ST_MaxDistance</function></funcdef>
+        <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>float <function>ST_MaxDistance</function></funcdef>
         <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
         <paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>
       </funcprototype>
@@ -1468,11 +1479,12 @@ SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,
     The maximum distance always occurs between two vertices.
     This is the length of the line returned by <xref linkend="ST_LongestLine"/>.
     </para>
-    <para>If g1 and g2 are the same geometry, returns the distance between
+    <para>If only one geometry is provided, or g1 and g2 are the same geometry, returns the distance between
     the two vertices farthest apart in that geometry.
     </para>
 
 	<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
+	<para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 - support for a single geometry input.</para>
   </refsection>
   <refsection>
     <title>Examples</title>
@@ -1489,8 +1501,7 @@ SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )'::geometr
 
      <para>Maximum distance between vertices of a single geometry.</para>
 <programlisting>
-SELECT ST_MaxDistance('POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry,
-                      'POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry);
+SELECT ST_MaxDistance('POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry);
 ------------------
  14.142135623730951
 </programlisting>

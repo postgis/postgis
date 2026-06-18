@@ -22,6 +22,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
  - #1124, shp2pgsql can create UNLOGGED tables for transient staging loads
           (Darafei Praliaskouski)
+ - #4208, Add single-geometry variants of ST_MaxDistance and ST_LongestLine
+          (Darafei Praliaskouski)
  - [topology] FindVertexSegmentPairsBelowDistance function (Sandro Santilli)
  - ST_CoverageEdges, returns MultiLinestring of distinct shared edges in
           polygonal coverage (Paul Ramsey)

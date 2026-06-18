@@ -6168,6 +6168,12 @@ CREATE OR REPLACE FUNCTION ST_MaxDistance(geom1 geometry, geom2 geometry)
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+CREATE OR REPLACE FUNCTION ST_MaxDistance(geom geometry)
+	RETURNS float8
+	AS 'SELECT @extschema@.ST_MaxDistance($1, $1)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
 CREATE OR REPLACE FUNCTION ST_ClosestPoint(geom1 geometry, geom2 geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_closestpoint'
@@ -6189,6 +6195,12 @@ CREATE OR REPLACE FUNCTION _ST_LongestLine(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_LongestLine(geom1 geometry, geom2 geometry)
 	RETURNS geometry
 	AS 'SELECT @extschema@._ST_LongestLine(@extschema@.ST_ConvexHull($1), @extschema@.ST_ConvexHull($2))'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+CREATE OR REPLACE FUNCTION ST_LongestLine(geom geometry)
+	RETURNS geometry
+	AS 'SELECT @extschema@.ST_LongestLine($1, $1)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
