@@ -56,6 +56,7 @@ Usage:	$me [-v] [-L TOC] [-s schema] <dumpfile>
 my $DEBUG = 0;
 my $POSTGIS_SCHEMA;
 my $POSTGIS_TOC;
+my $TOC_IDENTIFIER = qr/"(?:""|[^"])*"|\S+/;
 
 # NOTE: the SRID limits here are being discussed:
 # http://lists.osgeo.org/pipermail/postgis-devel/2012-February/018440.html
@@ -127,8 +128,18 @@ if(!defined($POSTGIS_TOC)) {
 } else {
   open( DUMP, '<' . $POSTGIS_TOC) || die "$me:\tCannot open TOC file '$POSTGIS_TOC'\n";
 }
+my @dump_lines = <DUMP>;
+close(DUMP) || die "$me: pg_restore returned an error\n";
+
+if ( not defined($POSTGIS_SCHEMA) )
+{
+  $POSTGIS_SCHEMA = discover_postgis_schema(@dump_lines);
+  print STDERR "  Setting postgis schema to $POSTGIS_SCHEMA, as found in the dump\n"
+    if $DEBUG && defined($POSTGIS_SCHEMA);
+}
+
 open( MANIFEST, ">$manifest" ) || die "$me:\tCannot open manifest file '$manifest'\n";
-while( my $l = <DUMP> ) {
+foreach my $l ( @dump_lines ) {
 
   next if $l =~ /^\;/;
   my $sigHR = linesignature($l);
@@ -143,17 +154,12 @@ while( my $l = <DUMP> ) {
   $sig =~ s/\s//g;
   $hasTopology = 1 if $sig eq 'SCHEMAtopology';
 
-	if ( not defined ($POSTGIS_SCHEMA) )
-	{
-		if ( $l =~ / TABLE DATA ([^ ]*) spatial_ref_sys / )
-		{
-			$POSTGIS_SCHEMA = $1;
-			print STDERR "  Setting postgis schema to $POSTGIS_SCHEMA, as found in the dump\n"
-			  if $DEBUG;
-		}
-	}
-
   if ( $skip{$sig} ) {
+    if ( ! line_is_from_postgis_schema($l, $sig) ) {
+      print STDERR "KEEP: $sigHR (schema is not PostGIS-owned)\n" if $DEBUG;
+      print MANIFEST $l;
+      next
+    }
     print STDERR "SKIP: $sigHR\n" if $DEBUG;
     next
   }
@@ -162,7 +168,6 @@ while( my $l = <DUMP> ) {
 
 }
 close(MANIFEST);
-close(DUMP) || die "$me: pg_restore returned an error\n";
 
 ######################################################################
 # Convert the dump file into an ASCII file, stripping out the
@@ -198,6 +203,7 @@ print STDOUT "CREATE TEMP TABLE _pgis_restore_spatial_ref_sys AS "
 print STDOUT "DELETE FROM spatial_ref_sys;\n";
 
 my $inCopy;
+my $current_search_path_schema = $POSTGIS_SCHEMA;
 while( my $l = <INPUT> ) {
   if ( $l =~ /^COPY .+ FROM stdin;$/ ) {
     $inCopy = 1;
@@ -208,7 +214,8 @@ while( my $l = <INPUT> ) {
 
   next if !$inCopy && $l =~ /^ *--/;
 
-  if ( $l =~ /^SET search_path/ ) {
+  if ( $l =~ /^SET search_path = (.*);/ ) {
+    $current_search_path_schema = first_search_path_schema($1);
     $l =~ s/; *$/, public;/;
   }
 
@@ -329,7 +336,7 @@ while( my $l = <INPUT> ) {
   }
 
   # Clamp SRIDS in spatial_ref_sys
-  elsif ( $l =~ /COPY spatial_ref_sys /)
+  elsif ( copy_is_postgis_spatial_ref_sys($l, $current_search_path_schema) )
   {
     print STDOUT $l;
     while( my $subline = <INPUT>)
@@ -409,7 +416,7 @@ sub linesignature {
   $line =~ s/PROCEDURAL LANGUAGE/PROCEDURALLANGUAGE/;
   $line =~ s/SEQUENCE SET/SEQUENCE_SET/;
 
-  if( $line =~ /^(\d+)\; (\d+) (\d+) FK (\w+) (\w+) (.*) (\w*)/ ) {
+  if( $line =~ /^(\d+)\; (\d+) (\d+) FK (\w+) ($TOC_IDENTIFIER) (.*) (\w*)/ ) {
     $sig = "FK " . $4 . " " . $6;
   }
   # We strip argument names from function comments
@@ -427,20 +434,20 @@ sub linesignature {
 
     $sig = "COMMENT FUNCTION $name(" . join(', ', @unnamed_args) . ")";
   }
-  elsif( $line =~ /^(\d+)\; (\d+) (\d+) (\w+) - (\w+) (.*) (\w*)/ ) {
+  elsif( $line =~ /^(\d+)\; (\d+) (\d+) (\w+) - ($TOC_IDENTIFIER) (.*) (\w*)/ ) {
     $sig = $4 . " " . $5 . " " . $6;
   }
-  elsif( $line =~ /^(\d+)\; (\d+) (\d+) (\w+) (\w+) (.*) (\w*)/ ) {
+  elsif( $line =~ /^(\d+)\; (\d+) (\d+) (\w+) ($TOC_IDENTIFIER) (.*) (\w*)/ ) {
     $sig = $4 . " " . $6;
   }
   elsif( $line =~ /PROCEDURALLANGUAGE.*plpgsql/ ) {
     $sig = "PROCEDURAL LANGUAGE plpgsql";
   }
-  elsif ( $line =~ /SCHEMA - (\w+)/ ) {
-    $sig = "SCHEMA $1";
+  elsif ( $line =~ /SCHEMA - ($TOC_IDENTIFIER)/ ) {
+    $sig = "SCHEMA " . toc_unquote_identifier($1);
   }
-  elsif ( $line =~ /SEQUENCE - (\w+)/ ) {
-    $sig = "SEQUENCE $1";
+  elsif ( $line =~ /SEQUENCE - ($TOC_IDENTIFIER)/ ) {
+    $sig = "SEQUENCE " . toc_unquote_identifier($1);
   }
   else {
     # TODO: something smarter here...
@@ -453,6 +460,193 @@ sub linesignature {
 
   return $sig;
 
+}
+
+# Returns true when a TOC line belongs to the PostGIS install schema or to
+# topology. Unqualified skip signatures must not hide user objects with the same
+# name in application schemas, for example a user table named "layer" (#6063).
+sub line_is_from_postgis_schema {
+  my $line = shift;
+  my $sig = shift;
+  my $schema = toc_line_schema($line);
+
+  return 0 if ! defined $schema && is_schema_sensitive_relation_signature($sig);
+  return 1 if ! defined $schema;
+  return 1 if $schema eq 'topology';
+
+  if ( ! defined($POSTGIS_SCHEMA) )
+  {
+    return 0 if is_schema_sensitive_relation_signature($sig);
+    return 1;
+  }
+
+  my $postgis_schema = $POSTGIS_SCHEMA;
+  return 0 if $schema ne $postgis_schema;
+  return is_postgis_catalog_relation_signature($sig)
+    if is_schema_sensitive_relation_signature($sig);
+  return 1;
+}
+
+sub is_schema_sensitive_relation_signature {
+  my $sig = shift;
+
+  return $sig =~ /^(?:TABLE|TABLEDATA|ACLTABLE|ACLTABLEDATA|CONSTRAINT|FKCONSTRAINT|INDEX|TRIGGER|RULE|SEQUENCE|DEFAULT)/;
+}
+
+sub is_postgis_catalog_relation_signature {
+  my $sig = shift;
+
+  return $sig =~ /^(?:TABLE|TABLEDATA|ACLTABLE|ACLTABLEDATA)spatial_ref_sys$/ ||
+         $sig =~ /^CONSTRAINTspatial_ref_sys/ ||
+         $sig =~ /^(?:VIEW|ACLTABLE|RULE)geometry_columns/ ||
+         $sig =~ /^(?:VIEW|ACLTABLE)geography_columns/ ||
+         $sig =~ /^(?:VIEW|ACLTABLE)raster_columns/ ||
+         $sig =~ /^(?:VIEW|ACLTABLE)raster_overviews/;
+}
+
+sub toc_line_schema {
+  my $line = shift;
+
+  $line =~ s/\n$//;
+  $line =~ s/\r$//;
+  $line =~ s/OPERATOR CLASS/OPERATORCLASS/;
+  $line =~ s/TABLE DATA/TABLEDATA/;
+  $line =~ s/SHELL TYPE/SHELLTYPE/;
+  $line =~ s/PROCEDURAL LANGUAGE/PROCEDURALLANGUAGE/;
+  $line =~ s/SEQUENCE SET/SEQUENCE_SET/;
+
+  return toc_unquote_identifier($2)
+    if $line =~ /^\d+\; \d+ \d+ ACL ($TOC_IDENTIFIER) SCHEMA ($TOC_IDENTIFIER) /;
+  return toc_unquote_identifier($1) if $line =~ /^\d+\; \d+ \d+ ACL ($TOC_IDENTIFIER) /;
+  return toc_unquote_identifier($1) if $line =~ /^\d+\; \d+ \d+ FK CONSTRAINT ($TOC_IDENTIFIER) /;
+  return toc_unquote_identifier($1) if $line =~ /^\d+\; \d+ \d+ COMMENT ($TOC_IDENTIFIER) /;
+  return toc_unquote_identifier($1) if $line =~ /^\d+\; \d+ \d+ DEFAULT ($TOC_IDENTIFIER) /;
+
+  return toc_unquote_identifier($1) if $line =~ /^\d+\; \d+ \d+ (?:TABLEDATA|TABLE|VIEW|MATERIALIZED VIEW|SEQUENCE|INDEX|CONSTRAINT|TRIGGER|RULE|FUNCTION|SHELLTYPE|TYPE|DOMAIN|OPERATOR|OPERATORCLASS|OPERATOR FAMILY|AGGREGATE) ($TOC_IDENTIFIER) /;
+
+  return undef;
+}
+
+sub toc_unquote_identifier {
+  my $identifier = shift;
+
+  if ( $identifier =~ /^"((?:""|[^"])*)"$/ ) {
+    $identifier = $1;
+    $identifier =~ s/""/"/g;
+  }
+
+  return $identifier;
+}
+
+sub discover_postgis_schema {
+  my @toc_lines = @_;
+  my %spatial_ref_sys_schema = ();
+  my %spatial_ref_sys_table_schema = ();
+  my %spatial_ref_sys_tabledata_schema = ();
+  my %postgis_object_schema = ();
+
+  foreach my $line ( @toc_lines ) {
+    next if $line =~ /^\;/;
+    my $sigHR = linesignature($line);
+    next unless length($sigHR);
+    my $sig = $sigHR;
+    $sig =~ s/^COMMENT//g;
+    $sig =~ s/^SHELLTYPE/TYPE/g;
+    $sig =~ s/\s//g;
+    my $schema = toc_line_schema($line);
+    next unless defined($schema);
+    next if $schema eq 'topology';
+
+    my $quoted_schema = toc_quote_identifier($schema);
+    $spatial_ref_sys_schema{$schema} = 1
+      if $line =~ / TABLE(?: DATA)? (?:\Q$schema\E|\Q$quoted_schema\E) spatial_ref_sys / ||
+         $line =~ / ACL (?:\Q$schema\E|\Q$quoted_schema\E) TABLE spatial_ref_sys /;
+    $spatial_ref_sys_table_schema{$schema} = 1
+      if $sig eq 'TABLEspatial_ref_sys';
+    $spatial_ref_sys_tabledata_schema{$schema} = 1
+      if $sig eq 'TABLEDATAspatial_ref_sys';
+
+    if ( $skip{$sig} && ! is_schema_sensitive_relation_signature($sig) ) {
+      $postgis_object_schema{$schema}++;
+    }
+  }
+
+  my @extension_config_schemas = grep {
+    $spatial_ref_sys_tabledata_schema{$_} && !$spatial_ref_sys_table_schema{$_}
+  } keys %spatial_ref_sys_schema;
+  return $extension_config_schemas[0] if @extension_config_schemas == 1;
+
+  my @candidates = grep { $postgis_object_schema{$_} } keys %spatial_ref_sys_schema;
+  @candidates = sort { $postgis_object_schema{$b} <=> $postgis_object_schema{$a} } @candidates;
+  return $candidates[0] if @candidates;
+
+  my @spatial_ref_sys_schemas = keys %spatial_ref_sys_schema;
+  return $spatial_ref_sys_schemas[0] if @spatial_ref_sys_schemas == 1;
+
+  return undef;
+}
+
+sub toc_quote_identifier {
+  my $identifier = shift;
+
+  $identifier =~ s/"/""/g;
+  return '"' . $identifier . '"';
+}
+
+sub copy_is_postgis_spatial_ref_sys {
+  my $line = shift;
+  my $current_schema = shift;
+  my $schema;
+
+  if ( $line =~ /^COPY (?:"((?:""|[^"])*)"|([^\s."]+))\."spatial_ref_sys"\s/ ||
+       $line =~ /^COPY (?:"((?:""|[^"])*)"|([^\s."]+))\.spatial_ref_sys\s/ )
+  {
+    $schema = defined($1) ? $1 : $2;
+    $schema =~ s/""/"/g if defined($schema);
+  }
+  elsif ( $line =~ /^COPY "?spatial_ref_sys"?\s/ )
+  {
+    $schema = $current_schema;
+  }
+  else
+  {
+    return 0;
+  }
+
+  return schema_is_postgis_schema($schema);
+}
+
+sub schema_is_postgis_schema {
+  my $schema = shift;
+
+  return 0 unless defined $schema;
+  return $schema eq $POSTGIS_SCHEMA if defined $POSTGIS_SCHEMA;
+  return $schema eq 'public';
+}
+
+sub first_search_path_schema {
+  my $search_path = shift;
+
+  foreach my $schema (split(/,/, $search_path)) {
+    $schema =~ s/^\s+//;
+    $schema =~ s/\s+$//;
+    $schema = unquote_identifier($schema);
+    next if $schema eq '$user';
+    return $schema;
+  }
+
+  return undef;
+}
+
+sub unquote_identifier {
+  my $identifier = shift;
+
+  if ( $identifier =~ /^"(.*)"$/ ) {
+    $identifier = $1;
+    $identifier =~ s/""/"/g;
+  }
+
+  return $identifier;
 }
 
 #
