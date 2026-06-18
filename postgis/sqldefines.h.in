@@ -20,7 +20,19 @@
  * where the support functions have been used in
  * place of index SQL inlining.
  * See https://trac.osgeo.org/postgis/ticket/3675
- * for sideffects of costing inlined SQL.
+ * for side effects of costing inlined SQL.
+ *
+ * Cost tiers:
+ * - DEFAULT: metadata, casts, accessors, operators, and index helpers.
+ * - LOW: simple serialization, measurement, or calculation over one value.
+ * - MEDIUM: constructors, parsers, exporters, transforms, or algorithms that
+ *   usually walk most or all coordinates, pixels, or input elements.
+ * - HIGH: expensive GEOS, geography, raster, or multi-input operations where
+ *   planner support functions preserve index-assisted plans.
+ *
+ * These tiers describe planner-visible function work. Do not add a separate
+ * detoasting multiplier here: detoast cost depends on toasted input size and
+ * on whether the datum has already been detoasted before the function call.
  */
 #define _COST_DEFAULT COST 1
 #define _COST_LOW COST 50
@@ -51,5 +63,4 @@
 #define SRID_USR_MAX @SRID_USR_MAX@
 
 #endif /* _LWPGIS_DEFINES */
-
 
