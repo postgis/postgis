@@ -37,6 +37,9 @@ ERROR:  Invalid hex string, length (267) has to be a multiple of two!
 #175|SRID=26915;POINT(482020 4984378)
 #178a|0
 #178b|5
+#2863a|5
+#2863b|4
+#2863c|5
 NOTICE:  No points or linestrings in input array
 #179a|
 NOTICE:  No points or linestrings in input array
