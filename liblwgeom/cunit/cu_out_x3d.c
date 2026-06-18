@@ -151,6 +151,20 @@ static void out_x3d3_test_geoms(void)
 	    0,
 	    0);
 
+	/* 2D PolyhedralSurface still needs 3D Coordinate tuples */
+	do_x3d3_test(
+	    "POLYHEDRALSURFACE(((0 0,0 1,1 1,0 0)))",
+	    "<IndexedFaceSet convex='false'  coordIndex='0 1 2'><Coordinate point='0 0 0 0 1 0 1 1 0' /></IndexedFaceSet>",
+	    0,
+	    0);
+
+	/* GeometryCollection */
+	do_x3d3_test(
+	    "GEOMETRYCOLLECTION(POINT(0 1 3),LINESTRING(2 3 3,4 5 3))",
+	    "<Shape>0 1 3</Shape><Shape><LineSet  vertexCount='2'><Coordinate point='2 3 3 4 5 3' /></LineSet></Shape>",
+	    0,
+	    0);
+
 	/* TODO:  Implement Empty GeometryCollection correctly or throw a not-implemented */
 	/** do_x3d3_test(
 	    "GEOMETRYCOLLECTION EMPTY",
@@ -188,6 +202,42 @@ static void out_x3d3_test_option(void)
 	    "SRID=4326;POLYGON((15 10 3,13.536 6.464 3,10 5 3,6.464 6.464 3,5 10 3,6.464 13.536 3,10 15 3,13.536 13.536 3,15 10 3))",
 	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"' point='10 15 3 6.464 13.536 3 5 10 3 6.464 6.464 3 10 5 3 13.536 6.464 3 15 10 3 13.536 13.536 3 ' /></IndexedFaceSet>",
 	    3, 3);
+
+	do_x3d3_test(
+	    "GEOMETRYCOLLECTION(POINT(0 1 3),LINESTRING(2 3 3,4 5 3))",
+	    "<PointSet ><Coordinate point='0 1 3 ' /></PointSet> <LineSet  vertexCount='2'><Coordinate point='2 3 3 4 5 3' /></LineSet>",
+	    0,
+	    LW_X3D_SKIP_COLLECTION_SHAPES);
+
+	do_x3d3_test(
+	    "GEOMETRYCOLLECTION(POINT(0 1 3),POINT(2 3 4))",
+	    "<PointSet ><Coordinate point='0 1 3 ' /></PointSet> <PointSet ><Coordinate point='2 3 4 ' /></PointSet>",
+	    0,
+	    LW_X3D_SKIP_COLLECTION_SHAPES);
+
+	do_x3d3_test(
+	    "GEOMETRYCOLLECTION(POINT(0 1 3),POLYGON((2 3 3,4 5 3,6 7 3,2 3 3)))",
+	    "<PointSet ><Coordinate point='0 1 3 ' /></PointSet> <IndexedFaceSet  convex='false' coordIndex='0 1 2'><Coordinate point='2 3 3 4 5 3 6 7 3 ' /></IndexedFaceSet>",
+	    0,
+	    LW_X3D_SKIP_COLLECTION_SHAPES);
+
+	do_x3d3_test(
+	    "GEOMETRYCOLLECTION(POINT(0 1),POLYGON((2 3,4 5,6 7,2 3)))",
+	    "<Polypoint2D  point='0 1 ' /> <IndexedFaceSet  convex='false' coordIndex='0 1 2'><Coordinate point='2 3 0 4 5 0 6 7 0 ' /></IndexedFaceSet>",
+	    0,
+	    LW_X3D_SKIP_COLLECTION_SHAPES);
+
+	do_x3d3_test(
+	    "GEOMETRYCOLLECTION(POINT(0 1),LINESTRING(2 3,4 5))",
+	    "<Polypoint2D  point='0 1 ' /> <LineSet  vertexCount='2'><Coordinate point='2 3 0 4 5 0' /></LineSet>",
+	    0,
+	    LW_X3D_SKIP_COLLECTION_SHAPES);
+
+	do_x3d3_test(
+	    "GEOMETRYCOLLECTION(POINT(0 1 3),GEOMETRYCOLLECTION(LINESTRING(2 3 3,4 5 3)))",
+	    "<PointSet ><Coordinate point='0 1 3 ' /></PointSet> <LineSet  vertexCount='2'><Coordinate point='2 3 3 4 5 3' /></LineSet>",
+	    0,
+	    LW_X3D_SKIP_COLLECTION_SHAPES);
 }
 
 
