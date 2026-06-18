@@ -8,6 +8,10 @@ These are only changes since 3.7.0beta2.
 
 * Bug Fixes *
 
+ - #2924, [raster] Preserve requested GDAL warp skew for rasters with
+          default geotransforms (Darafei Praliaskouski)
+ - #3103, Add regression coverage for exact-schema find_srid and
+          geometry_columns lookups (Darafei Praliaskouski)
  - OSSFuzz 6152109301760000, reject overlong encoded polyline coordinate
           varints (Darafei Praliaskouski)
 
