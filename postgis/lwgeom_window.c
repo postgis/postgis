@@ -20,6 +20,7 @@
  *
  * Copyright 2016 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright 2016 Daniel Baston <dbaston@gmail.com>
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -375,11 +376,22 @@ Datum ST_ClusterRelateWin(PG_FUNCTION_ARGS)
 		GEOSGeometry** geoms = palloc0(ngeoms * sizeof(GEOSGeometry*));
 		UNIONFIND* uf = UF_create(ngeoms);
 		char *matrix;
-		text *txtIm = DatumGetTextP(WinGetFuncArgCurrent(win_obj, 1, &matrix_is_null));
-		if (matrix_is_null || VARSIZE_ANY_EXHDR(txtIm) != 9)
+		/*
+		 * Window arguments must be checked for NULL before detoasting.
+		 * DatumGetTextP() is not allowed to inspect a NULL Datum.
+		 */
+		Datum matrix_datum = WinGetFuncArgCurrent(win_obj, 1, &matrix_is_null);
+		text *txtIm;
+
+		if (matrix_is_null)
 		{
-			elog(ERROR,"Invalid relate matrix provided");
-			PG_RETURN_NULL();
+			elog(ERROR, "Invalid relate matrix provided");
+		}
+
+		txtIm = DatumGetTextP(matrix_datum);
+		if (VARSIZE_ANY_EXHDR(txtIm) != 9)
+		{
+			elog(ERROR, "Invalid relate matrix provided");
 		}
 		matrix = text_to_cstring(txtIm);
 
