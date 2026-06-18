@@ -177,10 +177,10 @@ Available GDAL raster formats:
             <para>
             <variablelist>
                 <varlistentry>
-                    <term><option>-s &lt;SRID&gt;</option></term>
+                    <term><option>-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;</option></term>
                     <listitem>
                         <para>
-                            Assign output raster with specified SRID.  If not provided or is zero, raster's metadata will be checked to determine an appropriate SRID.
+                            Assign the output raster to the specified SRID.  When FROM_SRID is also provided, raster2pgsql marks the input raster with FROM_SRID and emits SQL that reprojects the raster to the target SRID.  If the source SRID is omitted or is zero, the raster metadata will be checked to determine an appropriate source SRID.  Reprojection cannot be used with copy mode.
                         </para>
                     </listitem>
                 </varlistentry>
