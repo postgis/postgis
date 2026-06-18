@@ -19,9 +19,9 @@
  **********************************************************************
  *
  * Copyright (C) 2009 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
-
 
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
@@ -39,6 +39,15 @@ static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precisi
 */
 static void dimension_qualifiers_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, uint8_t variant)
 {
+
+	if ((variant & WKT_EXTENDED) && geom->type == TINTYPE && FLAGS_GET_Z(geom->flags))
+	{
+		stringbuffer_append_len(sb, " Z", 2);
+		if (FLAGS_GET_M(geom->flags))
+			stringbuffer_append_len(sb, "M", 1);
+		stringbuffer_append_len(sb, " ", 1);
+		return;
+	}
 
 	/* Extended WKT: POINTM(0 0 0) */
 #if 0

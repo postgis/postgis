@@ -81,6 +81,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - GH-848, CG_AlphaShape now returns a MultiPolygon (Jean Felder)
  - Flatgeobuf schema mismatch vulnerability (NeuroWinter)
  - #5899, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)
+ - #2583, Preserve Z/ZM dimensional qualifiers in ST_AsEWKT output for TIN
+          (Darafei Praliaskouski)
 
 
 PostGIS 3.6.0
