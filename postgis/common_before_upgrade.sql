@@ -178,25 +178,165 @@ CREATE OR REPLACE FUNCTION _postgis_topology_upgrade_domain_type(
 ) RETURNS void AS $$
 DECLARE
 	detail TEXT;
+	domain_oid OID;
+	domain_schema TEXT := 'topology';
+	domain_constraint RECORD;
+	domain_column RECORD;
+	domain_default RECORD;
+	sql TEXT;
 	-- We need the base types of the old and new types - if multidimensional (int[][]), we need just one dimension at most
 	old_base_type TEXT := pg_catalog.regexp_replace(old_domain_type, E'(\\[\\])+$', '[]');
 	new_base_type TEXT := pg_catalog.regexp_replace(new_domain_type, E'(\\[\\])+$', '[]');
 	array_dims INT := (SELECT count(*) FROM pg_catalog.regexp_matches (old_domain_type, E'\\[\\]', 'g'));
 BEGIN
-	IF EXISTS (SELECT 1 FROM pg_catalog.pg_type AS t
-		WHERE  typnamespace::regnamespace::text = 'topology'
-		AND typname::text ILIKE domain_name
-		AND typbasetype::regtype::text ILIKE old_base_type
-    AND typndims = array_dims)
+	SELECT t.oid
+	FROM pg_catalog.pg_type AS t
+	WHERE typnamespace::regnamespace::text = domain_schema
+	AND typname::text ILIKE domain_name
+	-- Databases upgraded by the broken 3.6 path can already have
+	-- the new catalog base type while old-width row values remain.
+	AND typbasetype IN (old_base_type::regtype::oid, new_base_type::regtype::oid)
+	AND typndims = array_dims
+	INTO domain_oid;
+
+	IF domain_oid IS NOT NULL
   	THEN
 		BEGIN
-			-- HACK: We need to swap out the base type and number of dimensions
+			FOR domain_constraint IN
+				SELECT conname
+				FROM pg_catalog.pg_constraint
+				WHERE contypid = domain_oid
+			LOOP
+				sql := pg_catalog.format(
+					'ALTER DOMAIN %I.%I DROP CONSTRAINT IF EXISTS %I',
+					domain_schema,
+					domain_name,
+					domain_constraint.conname
+				);
+				EXECUTE sql;
+			END LOOP;
+
 			UPDATE pg_catalog.pg_type
 			SET typbasetype = new_base_type::regtype::oid, typndims = array_dims
-			WHERE typnamespace::regnamespace::text = 'topology'
-			AND typname::text ILIKE domain_name
-			AND typbasetype::regtype::text ILIKE old_base_type
-			AND typndims = array_dims;
+			WHERE oid = domain_oid;
+
+			-- Child tables are skipped by the row rewrite below because
+			-- ALTER TABLE on the root recurses to them, but child defaults
+			-- are independent pg_attrdef entries and must be rebuilt too.
+			FOR domain_default IN
+				SELECT
+					a.attrelid,
+					a.attname,
+					pg_catalog.pg_get_expr(d.adbin, d.adrelid) AS default_expr
+				FROM pg_catalog.pg_attribute AS a
+				JOIN pg_catalog.pg_class AS c
+					ON c.oid = a.attrelid
+				JOIN pg_catalog.pg_attrdef AS d
+					ON d.adrelid = a.attrelid
+					AND d.adnum = a.attnum
+				WHERE a.atttypid = domain_oid
+				AND a.attnum > 0
+				AND NOT a.attisdropped
+				AND a.attgenerated = ''
+				AND c.relkind IN ('r', 'p')
+				AND EXISTS (
+					SELECT 1
+					FROM pg_catalog.pg_inherits AS i
+					JOIN pg_catalog.pg_attribute AS pa
+						ON pa.attrelid = i.inhparent
+						AND pa.attname = a.attname
+						AND pa.atttypid = a.atttypid
+						AND pa.attnum > 0
+						AND NOT pa.attisdropped
+					WHERE i.inhrelid = a.attrelid
+				)
+			LOOP
+				sql := pg_catalog.format(
+					'ALTER TABLE %s ALTER COLUMN %I DROP DEFAULT',
+					domain_default.attrelid::regclass,
+					domain_default.attname
+				);
+				EXECUTE sql;
+
+				sql := pg_catalog.format(
+					'ALTER TABLE %s ALTER COLUMN %I SET DEFAULT ((%s)::text::%s::%I.%I)',
+					domain_default.attrelid::regclass,
+					domain_default.attname,
+					domain_default.default_expr,
+					new_domain_type,
+					domain_schema,
+					domain_name
+				);
+				EXECUTE sql;
+			END LOOP;
+
+			-- Existing table rows are still physically stored with the old
+			-- array element width. Whole-array output can mask that fact, so
+			-- force every dependent table column through text into the new
+			-- array representation before the domain constraints are restored.
+			FOR domain_column IN
+				SELECT
+					a.attrelid,
+					a.attname,
+					pg_catalog.pg_get_expr(d.adbin, d.adrelid) AS default_expr
+				FROM pg_catalog.pg_attribute AS a
+				JOIN pg_catalog.pg_class AS c
+					ON c.oid = a.attrelid
+				LEFT JOIN pg_catalog.pg_attrdef AS d
+					ON d.adrelid = a.attrelid
+					AND d.adnum = a.attnum
+				WHERE a.atttypid = domain_oid
+				AND a.attnum > 0
+				AND NOT a.attisdropped
+				AND a.attgenerated = ''
+				AND c.relkind IN ('r', 'p')
+				AND NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.pg_inherits AS i
+					JOIN pg_catalog.pg_attribute AS pa
+						ON pa.attrelid = i.inhparent
+						AND pa.attname = a.attname
+						AND pa.atttypid = a.atttypid
+						AND pa.attnum > 0
+						AND NOT pa.attisdropped
+					WHERE i.inhrelid = a.attrelid
+				)
+			LOOP
+				IF domain_column.default_expr IS NOT NULL THEN
+					sql := pg_catalog.format(
+						'ALTER TABLE %s ALTER COLUMN %I DROP DEFAULT',
+						domain_column.attrelid::regclass,
+						domain_column.attname
+					);
+					EXECUTE sql;
+				END IF;
+
+				sql := pg_catalog.format(
+					'ALTER TABLE %s ALTER COLUMN %I TYPE %I.%I USING (%I::text::%s::%I.%I)',
+					domain_column.attrelid::regclass,
+					domain_column.attname,
+					domain_schema,
+					domain_name,
+					domain_column.attname,
+					new_domain_type,
+					domain_schema,
+					domain_name
+				);
+				EXECUTE sql;
+
+				IF domain_column.default_expr IS NOT NULL THEN
+					sql := pg_catalog.format(
+						'ALTER TABLE %s ALTER COLUMN %I SET DEFAULT ((%s)::text::%s::%I.%I)',
+						domain_column.attrelid::regclass,
+						domain_column.attname,
+						domain_column.default_expr,
+						new_domain_type,
+						domain_schema,
+						domain_name
+					);
+					EXECUTE sql;
+				END IF;
+			END LOOP;
 
 			RAISE INFO 'Upgraded % from % to %', domain_name, old_domain_type, new_domain_type;
 		EXCEPTION
