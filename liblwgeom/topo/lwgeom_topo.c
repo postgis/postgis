@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2015-2026 Sandro Santilli <strk@kbt.io>
- * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright (C) 2025-2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -6878,6 +6878,38 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY* topo, LWT_ISO_EDGE *edges, uint64_t nu
 #if POSTGIS_DEBUG_LEVEL > 0
       else {
         LWDEBUG(1, "Snapping did not move first point");
+      }
+#endif
+
+      /*
+      -- lwt_ChangeEdgeGeom requires replacement edges to keep both original
+      -- endpoints. lwgeom_snap may move either endpoint when it falls within
+      -- tolerance of the projected split point.
+      */
+      getPoint4d_p(e->geom->points, e->geom->points->npoints - 1, &p1);
+      getPoint4d_p(snapline->points, snapline->points->npoints - 1, &p2);
+      LWDEBUGF(1,
+	       "Edge last point is %g %g, "
+	       "snapline last point is %g %g",
+	       p1.x,
+	       p1.y,
+	       p2.x,
+	       p2.y);
+      if (p1.x != p2.x || p1.y != p2.y)
+      {
+	      LWDEBUG(1, "Snapping moved last point, re-adding it");
+	      if (LW_SUCCESS != ptarray_append_point(snapline->points, &p1, LW_TRUE))
+	      {
+		      lwgeom_free(prj);
+		      lwgeom_free(snapedge);
+		      lwerror("Could not preserve snapped edge endpoint");
+		      return -1;
+	      }
+      }
+#if POSTGIS_DEBUG_LEVEL > 0
+      else
+      {
+	      LWDEBUG(1, "Snapping did not move last point");
       }
 #endif
 
