@@ -80,6 +80,7 @@ Datum LWGEOM_dfullywithin3d(PG_FUNCTION_ARGS);
 Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS);
 Datum LWGEOM_collect(PG_FUNCTION_ARGS);
 Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS);
+Datum LWGEOM_addgeometry(PG_FUNCTION_ARGS);
 Datum LWGEOM_expand(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_BOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_envelope(PG_FUNCTION_ARGS);
@@ -135,13 +136,19 @@ lwgeom_is_makepoly_ring_type(uint8_t type)
 	return type == LINETYPE || type == CIRCSTRINGTYPE || type == COMPOUNDTYPE || type == NURBSCURVETYPE;
 }
 
-static void
-lwgeom_makepoly_validate_curve_ring(const LWGEOM *ring, const char *label)
+static int
+lwgeom_makepoly_curve_ring_has_min_points(const LWGEOM *ring)
 {
 	uint32_t vertices_needed = ring->type == LINETYPE ? 4 : 3;
 
-	if (lwgeom_count_vertices(ring) < vertices_needed)
-		lwerror("%s must have at least %d points", label, vertices_needed);
+	return lwgeom_count_vertices(ring) >= vertices_needed;
+}
+
+static void
+lwgeom_makepoly_validate_curve_ring(const LWGEOM *ring, const char *label)
+{
+	if (!lwgeom_makepoly_curve_ring_has_min_points(ring))
+		lwerror("%s must have at least %d points", label, ring->type == LINETYPE ? 4 : 3);
 	if (!lwgeom_is_closed(ring))
 		lwerror("%s must be closed", label);
 }
@@ -1384,6 +1391,93 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 
 		PG_RETURN_POINTER(result);
 	}
+}
+
+/**
+ * ST_AddGeometry( GEOMETRY, GEOMETRY ) appends a geometry to an existing
+ * collection.  The result keeps the input collection type when the appended
+ * geometry is a legal member, otherwise it falls back to GeometryCollection.
+ */
+static uint8_t
+lwgeom_addgeometry_outtype(const LWCOLLECTION *collection, const LWGEOM *geom)
+{
+	uint8_t outtype = collection->type;
+
+	if (!lwcollection_allows_subtype(outtype, geom->type))
+		return COLLECTIONTYPE;
+
+	if (outtype == CURVEPOLYTYPE && (!lwgeom_makepoly_curve_ring_has_min_points(geom) || !lwgeom_is_closed(geom)))
+		return COLLECTIONTYPE;
+
+	if (outtype == COMPOUNDTYPE)
+	{
+		LWCOLLECTION *test;
+		LWGEOM *test_geom;
+
+		if (lwgeom_is_empty(geom))
+			return COLLECTIONTYPE;
+
+		test = lwcollection_clone_deep(collection);
+		test_geom = lwgeom_clone_deep(geom);
+		lwcollection_add_lwgeom(test, test_geom);
+		if (!lwcompound_is_valid((LWCOMPOUND *)test))
+			outtype = COLLECTIONTYPE;
+		lwcollection_free(test);
+	}
+
+	return outtype;
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_addgeometry);
+Datum
+LWGEOM_addgeometry(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *gser1, *gser2, *result;
+	LWGEOM *lwg1, *lwg2;
+	LWCOLLECTION *outcol;
+	uint8_t outtype;
+
+	POSTGIS_DEBUG(2, "LWGEOM_addgeometry called.");
+
+	gser1 = PG_GETARG_GSERIALIZED_P(0);
+	gser2 = PG_GETARG_GSERIALIZED_P(1);
+
+	if (!lwtype_is_collection(gserialized_get_type(gser1)))
+	{
+		elog(ERROR, "First argument must be a collection");
+		PG_RETURN_NULL();
+	}
+
+	gserialized_error_if_srid_mismatch(gser1, gser2, __func__);
+
+	if ((gserialized_has_z(gser1) != gserialized_has_z(gser2)) ||
+	    (gserialized_has_m(gser1) != gserialized_has_m(gser2)))
+	{
+		elog(ERROR, "Cannot ST_AddGeometry geometries with differing dimensionality.");
+		PG_RETURN_NULL();
+	}
+
+	lwg1 = lwgeom_from_gserialized(gser1);
+	lwg2 = lwgeom_from_gserialized(gser2);
+
+	outtype = lwgeom_addgeometry_outtype((LWCOLLECTION *)lwg1, lwg2);
+
+	outcol = lwcollection_clone_deep((LWCOLLECTION *)lwg1);
+	outcol->type = outtype;
+	lwgeom_drop_bbox((LWGEOM *)outcol);
+	lwgeom_drop_bbox(lwg2);
+	lwgeom_drop_srid(lwg2);
+	lwcollection_add_lwgeom(outcol, lwg2);
+
+	result = geometry_serialize((LWGEOM *)outcol);
+
+	lwgeom_free(lwg1);
+	lwcollection_free(outcol);
+
+	PG_FREE_IF_COPY(gser1, 0);
+	PG_FREE_IF_COPY(gser2, 1);
+
+	PG_RETURN_POINTER(result);
 }
 
 /**
