@@ -45,4 +45,5 @@ SELECT _postgis_drop_cast_by_types('topogeometry', 'integer[]', '3.6.0');
 SELECT _postgis_topology_upgrade_domain_type('topoelement','integer[]','bigint[]','3.6.0');
 SELECT _postgis_topology_upgrade_domain_type('topoelementarray','integer[][]','bigint[][]','3.6.0');
 SELECT _postgis_add_column_to_table('topology.topology', 'useslargeids', 'BOOLEAN', true, 'false','3.6.0');
-
+-- Return edge identifiers as bigint
+SELECT _postgis_drop_function_by_signature('topology.findVertexSegmentPairsBelowDistance(varchar, float8)', '3.6.0');
