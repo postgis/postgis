@@ -4378,6 +4378,13 @@ CREATE OR REPLACE FUNCTION ST_Collect(geometry[])
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_AddGeometry(collection geometry, geom geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_addgeometry'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- Availability: 1.2.2
 -- Changed: 2.3.0 to support PostgreSQL 9.6
 -- Changed: 2.3.1 to support PostgreSQL 9.6 parallel safe
