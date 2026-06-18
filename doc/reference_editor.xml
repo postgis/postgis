@@ -1110,6 +1110,11 @@ FROM inputs;</programlisting>
             <funcdef>geometry <function>ST_LineToCurve</function></funcdef>
             <paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></paramdef>
           </funcprototype>
+          <funcprototype>
+            <funcdef>geometry <function>ST_LineToCurve</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></paramdef>
+            <paramdef><type>integer </type> <parameter>perQuadrant</parameter></paramdef>
+          </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
 
@@ -1117,6 +1122,7 @@ FROM inputs;</programlisting>
         <title>Description</title>
 
         <para>Converts plain LINESTRING/POLYGON to CIRCULAR STRINGs and Curved Polygons.  Note much fewer points are needed to describe the curved equivalent.</para>
+        <para>The <varname>perQuadrant</varname> parameter sets the minimum number of linear segments per quadrant required to reconstruct an arc. Values must be at least 2. The default value is 2.</para>
         <note><para>If the input LINESTRING/POLYGON is not curved enough to clearly represent a curve, the function will return the same input geometry.</para></note>
         <para role="availability" conformance="1.3.0">Availability: 1.3.0</para>
         <para>&Z_support;</para>
