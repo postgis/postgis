@@ -58,6 +58,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 * Bug Fixes *
 
+ - #5655, [doc] Skip XML validation during `make check` when xsltproc is
+          unavailable (Darafei Praliaskouski)
  - #5487, Improve error detail for repeated upgrades after an incomplete
           deprecated-function cleanup (Darafei Praliaskouski)
  - GH-899, [raster] Honor PostgreSQL interrupts in long-running GDAL

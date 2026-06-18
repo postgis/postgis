@@ -264,6 +264,11 @@ VPATH = $(srcdir)
 
 CAN_CHECK_XML = yes
 
+ifeq ($(XSLTPROC),)
+check-xml: requirements_not_met_xsltproc
+CAN_CHECK_XML = no
+endif
+
 ifeq ($(XMLLINT),)
 postgis-nospecial.xml: requirements_not_met_xmllint
 postgis-out.xml: requirements_not_met_xmllint
