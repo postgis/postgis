@@ -420,6 +420,8 @@ install: comments-install
 
 uninstall: comments-uninstall
 
+CAN_CHECK_XML = yes
+
 ifeq ($(XSLTPROC),)
 garden: requirements_not_met_xsltproc
 else
@@ -430,15 +432,29 @@ endif
 
 
 
+ifeq ($(XMLLINT),)
+check-xml: requirements_not_met_xmllint
+CAN_CHECK_XML = no
+endif
+
+ifeq ($(XSLBASE),)
+check-xml: requirements_not_met_xslbase
+CAN_CHECK_XML = no
+endif
+
+CHECK_UNIT_TARGET =
+
+ifeq ($(CAN_CHECK_XML),yes)
+CHECK_UNIT_TARGET = check-xml
+
+check-xml: $(XML_INPUTS)
+	$(XMLLINT) --loaddtd --path $(srcdir) --xinclude --valid postgis-out.xml --noout
+endif
+
 check: check-unit
 check-regress:
 
-ifeq ($(XMLLINT),)
-check-unit: requirements_not_met_xmllint
-else
-check-unit: $(XML_INPUTS)
-	$(XMLLINT) --loaddtd --path $(srcdir) --xinclude --valid postgis-out.xml --noout
-endif
+check-unit: $(CHECK_UNIT_TARGET)
 
 check-localized:
 	@for lang in $(translations); do \
@@ -464,8 +480,9 @@ requirements_not_met_xmllint:
 	@echo "Install xmllint and then re-run configure. Alternatively "
 	@echo "refer to online manual:"
 	@echo
-	@echo "  http://postgis.net/documentation"
+	@echo "  https://postgis.net/documentation"
 	@echo
+	@false
 
 requirements_not_met_xslbase:
 	@echo
@@ -475,8 +492,9 @@ requirements_not_met_xslbase:
 	@echo "with the --with-xsldir option."
 	@echo "Alternatively refer to online manual:"
 	@echo
-	@echo "  http://postgis.net/documentation"
+	@echo "  https://postgis.net/documentation"
 	@echo
+	@false
 
 requirements_not_met_gettext:
 	@echo
