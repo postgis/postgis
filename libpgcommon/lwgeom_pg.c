@@ -43,8 +43,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 
 #define PGC_ERRMSG_MAXLEN 2048 //256
+#define PGC_ERRMSG_TRUNCATED " [truncated]"
 
 /****************************************************************************************/
 /* Global to hold all the run-time constants */
@@ -350,6 +352,28 @@ pg_free(void *ptr)
 	pfree(ptr);
 }
 
+static void
+pg_format_message(char *errmsg, size_t errmsg_size, const char *fmt, va_list ap)
+{
+	int written = vsnprintf(errmsg, errmsg_size, fmt, ap);
+
+	if (written < 0)
+	{
+		strlcpy(errmsg, "[error formatting PostGIS message]", errmsg_size);
+		return;
+	}
+
+	if ((size_t)written >= errmsg_size)
+	{
+		const size_t suffix_size = strlen(PGC_ERRMSG_TRUNCATED);
+
+		if (errmsg_size > suffix_size)
+			memcpy(errmsg + errmsg_size - suffix_size - 1,
+			       PGC_ERRMSG_TRUNCATED,
+			       suffix_size + 1);
+	}
+}
+
 static void pg_error(const char *fmt, va_list ap) __attribute__ (( format(printf, 1, 0) ));
 
 static void
@@ -357,9 +381,7 @@ pg_error(const char *fmt, va_list ap)
 {
 	char errmsg[PGC_ERRMSG_MAXLEN+1];
 
-	vsnprintf (errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
-
-	errmsg[PGC_ERRMSG_MAXLEN]='\0';
+	pg_format_message(errmsg, sizeof(errmsg), fmt, ap);
 	ereport(ERROR, (errmsg_internal("%s", errmsg)));
 }
 
@@ -370,9 +392,7 @@ pg_warning(const char *fmt, va_list ap)
 {
 	char errmsg[PGC_ERRMSG_MAXLEN+1];
 
-	vsnprintf (errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
-
-	errmsg[PGC_ERRMSG_MAXLEN]='\0';
+	pg_format_message(errmsg, sizeof(errmsg), fmt, ap);
 	ereport(WARNING, (errmsg_internal("%s", errmsg)));
 }
 
@@ -383,9 +403,7 @@ pg_notice(const char *fmt, va_list ap)
 {
 	char errmsg[PGC_ERRMSG_MAXLEN+1];
 
-	vsnprintf (errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
-
-	errmsg[PGC_ERRMSG_MAXLEN]='\0';
+	pg_format_message(errmsg, sizeof(errmsg), fmt, ap);
 	ereport(NOTICE, (errmsg_internal("%s", errmsg)));
 }
 
@@ -395,8 +413,7 @@ static void
 pg_debug(int level, const char *fmt, va_list ap)
 {
 	char errmsg[PGC_ERRMSG_MAXLEN+1];
-	vsnprintf (errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
-	errmsg[PGC_ERRMSG_MAXLEN]='\0';
+	pg_format_message(errmsg, sizeof(errmsg), fmt, ap);
 	int pglevel[6] = {NOTICE, DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5};
 
 	if ( level >= 0 && level <= 5 )
