@@ -96,7 +96,7 @@ SELECT 'approximate_high_tol', ST_AsText(CG_NurbsCurveApproximate(
     'LINESTRING(0 0, 1 2.1, 2 1.9, 3 3.2, 4 2.8, 5 1)'::geometry,
     2,
     0.5
-));
+), 2);
 
 -- Test approximation with 3D points
 SELECT 'approximate_3d', ST_AsText(CG_NurbsCurveApproximate(
