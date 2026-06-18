@@ -13,7 +13,7 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "c.h" /* for UINT64_FORMAT and uint64 */
-#include "utils/builtins.h" /* for cstring_to_text */
+#include "utils/builtins.h" /* for cstring_to_text, pg_lltoa, pg_ulltoa_n */
 #include "utils/elog.h"
 #include "utils/memutils.h" /* for transaction contexts */
 #include "utils/array.h" /* for ArrayType */
@@ -97,6 +97,23 @@ struct LWT_BE_TOPOLOGY_T
 };
 
 /* utility funx */
+
+#define LWT_BE_INT64_BUFSIZE 32
+
+static const char *
+lwt_be_int64_to_str(int64 value, char *buf)
+{
+	pg_lltoa(value, buf);
+	return buf;
+}
+
+static const char *
+lwt_be_uint64_to_str(uint64 value, char *buf)
+{
+	int len = pg_ulltoa_n(value, buf);
+	buf[len] = '\0';
+	return buf;
+}
 
 static void cberror(const LWT_BE_DATA* be, const char *fmt, ...)
 __attribute__ (( format(printf, 2, 3) ));
@@ -1291,13 +1308,12 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
   *numelems = SPI_processed;
   if ( ! SPI_processed )
   {
-    cberror(
-      topo->be_data,
-      "No edge with id %" LWTFMT_ELEMID" in Topology \"%s\"",
-      ABS(edge),
-      topo->name
-    );
-    return NULL;
+	  char edge_id[LWT_BE_INT64_BUFSIZE];
+	  cberror(topo->be_data,
+		  "No edge with id %s in Topology \"%s\"",
+		  lwt_be_int64_to_str(ABS(edge), edge_id),
+		  topo->name);
+	  return NULL;
   }
   if (limit && *numelems == (uint64_t)limit)
   {
@@ -1337,12 +1353,11 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
       dat = SPI_getbinval(row, rowdesc, sidecol, &isnull);
       if ( isnull )
       {
-        lwfree(edges);
-        cberror(topo->be_data, "Edge %" LWTFMT_ELEMID
-                               " has NULL next_%s_edge",
-                               val, sidetext);
-        *numelems = UINT64_MAX;
-        return NULL;
+	      char edge_id[LWT_BE_INT64_BUFSIZE];
+	      lwfree(edges);
+	      cberror(topo->be_data, "Edge %s has NULL next_%s_edge", lwt_be_int64_to_str(val, edge_id), sidetext);
+	      *numelems = UINT64_MAX;
+	      return NULL;
       }
       nextedge = tuple_get_int64(rowdesc, sidecol, dat);
       POSTGIS_DEBUGF(1, "Last component in ring of edge %"
@@ -1350,12 +1365,13 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
                         edge, val, sidetext, nextedge);
       if ( nextedge != edge )
       {
-        lwfree(edges);
-        cberror(topo->be_data, "Corrupted topology: ring of edge %"
-                               LWTFMT_ELEMID " is topologically non-closed",
-                               edge);
-        *numelems = UINT64_MAX;
-        return NULL;
+	      char edge_id[LWT_BE_INT64_BUFSIZE];
+	      lwfree(edges);
+	      cberror(topo->be_data,
+		      "Corrupted topology: ring of edge %s is topologically non-closed",
+		      lwt_be_int64_to_str(edge, edge_id));
+	      *numelems = UINT64_MAX;
+	      return NULL;
       }
     }
 
@@ -1606,10 +1622,12 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
     if ( fields ) addNodeFields(sql, fields);
     else
     {
-      lwpgwarning("liblwgeom-topo invoked 'getNodeWithinDistance2D' "
-                  "backend callback with limit=" UINT64_FORMAT " and no fields",
-                  elems_requested);
-      appendStringInfo(sql, "*");
+	    char limit_str[LWT_BE_INT64_BUFSIZE];
+	    lwpgwarning(
+		"liblwgeom-topo invoked 'getNodeWithinDistance2D' "
+		"backend callback with limit=%s and no fields",
+		lwt_be_int64_to_str(elems_requested, limit_str));
+	    appendStringInfo(sql, "*");
     }
   }
   appendStringInfo(sql, " FROM \"%s\".node", topo->name);
@@ -1725,10 +1743,12 @@ cb_insertNodes(const LWT_BE_TOPOLOGY *topo, LWT_ISO_NODE *nodes, uint64_t numele
 
   if (SPI_processed != numelems)
   {
+	  char processed_str[LWT_BE_INT64_BUFSIZE];
+	  char expected_str[LWT_BE_INT64_BUFSIZE];
 	  cberror(topo->be_data,
-		  "processed " UINT64_FORMAT " rows, expected " UINT64_FORMAT,
-		  (uint64)SPI_processed,
-		  (uint64)numelems);
+		  "processed %s rows, expected %s",
+		  lwt_be_uint64_to_str((uint64)SPI_processed, processed_str),
+		  lwt_be_uint64_to_str((uint64)numelems, expected_str));
 	  return 0;
   }
 
@@ -1785,10 +1805,12 @@ cb_insertEdges(const LWT_BE_TOPOLOGY *topo, LWT_ISO_EDGE *edges, uint64_t numele
   POSTGIS_DEBUGF(1, "cb_insertEdges query processed " UINT64_FORMAT " rows", SPI_processed);
   if ( SPI_processed != (uint64) numelems )
   {
+	  char processed_str[LWT_BE_INT64_BUFSIZE];
+	  char expected_str[LWT_BE_INT64_BUFSIZE];
 	  cberror(topo->be_data,
-		  "processed " UINT64_FORMAT " rows, expected " UINT64_FORMAT,
-		  (uint64)SPI_processed,
-		  (uint64)numelems);
+		  "processed %s rows, expected %s",
+		  lwt_be_uint64_to_str((uint64)SPI_processed, processed_str),
+		  lwt_be_uint64_to_str((uint64)numelems, expected_str));
 	  return -1;
   }
 
@@ -1846,10 +1868,12 @@ cb_insertFaces(const LWT_BE_TOPOLOGY *topo, LWT_ISO_FACE *faces, uint64_t numele
   POSTGIS_DEBUGF(1, "cb_insertFaces query processed " UINT64_FORMAT " rows", SPI_processed);
   if (SPI_processed != numelems)
   {
+	  char processed_str[LWT_BE_INT64_BUFSIZE];
+	  char expected_str[LWT_BE_INT64_BUFSIZE];
 	  cberror(topo->be_data,
-		  "processed " UINT64_FORMAT " rows, expected " UINT64_FORMAT,
-		  (uint64)SPI_processed,
-		  (uint64)numelems);
+		  "processed %s rows, expected %s",
+		  lwt_be_uint64_to_str((uint64)SPI_processed, processed_str),
+		  lwt_be_uint64_to_str((uint64)numelems, expected_str));
 	  return -1;
   }
 
@@ -2242,7 +2266,10 @@ cb_getNextEdgeId( const LWT_BE_TOPOLOGY* topo )
 
   if ( SPI_processed != 1 )
   {
-	  cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected 1", (uint64)SPI_processed);
+	  char processed_str[LWT_BE_INT64_BUFSIZE];
+	  cberror(topo->be_data,
+		  "processed %s rows, expected 1",
+		  lwt_be_uint64_to_str((uint64)SPI_processed, processed_str));
 	  return -1;
   }
 
@@ -2575,11 +2602,20 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
 
     SPI_freetuptable(SPI_tuptable);
 
-    cberror(topo->be_data, "TopoGeom %s in layer %s "
-            "(%s.%s.%s) cannot be represented "
-            "dropping edge %" LWTFMT_ELEMID,
-            tg_id, layer_id, schema_name, table_name,
-            col_name, rem_edge);
+    {
+	    char edge_id[LWT_BE_INT64_BUFSIZE];
+
+	    cberror(topo->be_data,
+		    "TopoGeom %s in layer %s "
+		    "(%s.%s.%s) cannot be represented "
+		    "dropping edge %s",
+		    tg_id,
+		    layer_id,
+		    schema_name,
+		    table_name,
+		    col_name,
+		    lwt_be_int64_to_str(rem_edge, edge_id));
+    }
     return 0;
   }
 
@@ -2634,12 +2670,22 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
 
       SPI_freetuptable(SPI_tuptable);
 
-      cberror(topo->be_data, "TopoGeom %s in layer %s "
-              "(%s.%s.%s) cannot be represented "
-              "healing faces %" LWTFMT_ELEMID
-              " and %" LWTFMT_ELEMID,
-              tg_id, layer_id, schema_name, table_name,
-              col_name, face_right, face_left);
+      {
+	      char face_left_id[LWT_BE_INT64_BUFSIZE];
+	      char face_right_id[LWT_BE_INT64_BUFSIZE];
+
+	      cberror(topo->be_data,
+		      "TopoGeom %s in layer %s "
+		      "(%s.%s.%s) cannot be represented "
+		      "healing faces %s and %s",
+		      tg_id,
+		      layer_id,
+		      schema_name,
+		      table_name,
+		      col_name,
+		      lwt_be_int64_to_str(face_right, face_right_id),
+		      lwt_be_int64_to_str(face_left, face_left_id));
+      }
       return 0;
     }
   }
@@ -2697,11 +2743,20 @@ cb_checkTopoGeomRemIsoEdge ( const LWT_BE_TOPOLOGY* topo,
 
     SPI_freetuptable(SPI_tuptable);
 
-    cberror(topo->be_data, "TopoGeom %s in layer %s "
-            "(%s.%s.%s) cannot be represented "
-            "dropping edge %" LWTFMT_ELEMID,
-            tg_id, layer_id, schema_name, table_name,
-            col_name, rem_edge);
+    {
+	    char edge_id[LWT_BE_INT64_BUFSIZE];
+
+	    cberror(topo->be_data,
+		    "TopoGeom %s in layer %s "
+		    "(%s.%s.%s) cannot be represented "
+		    "dropping edge %s",
+		    tg_id,
+		    layer_id,
+		    schema_name,
+		    table_name,
+		    col_name,
+		    lwt_be_int64_to_str(rem_edge, edge_id));
+    }
     return 0;
   }
 
@@ -2769,12 +2824,22 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
 
     SPI_freetuptable(SPI_tuptable);
 
-    cberror(topo->be_data, "TopoGeom %s in layer %s "
-            "(%s.%s.%s) cannot be represented "
-            "healing edges %" LWTFMT_ELEMID
-            " and %" LWTFMT_ELEMID,
-            tg_id, layer_id, schema_name, table_name,
-            col_name, edge1, edge2);
+    {
+	    char edge1_id[LWT_BE_INT64_BUFSIZE];
+	    char edge2_id[LWT_BE_INT64_BUFSIZE];
+
+	    cberror(topo->be_data,
+		    "TopoGeom %s in layer %s "
+		    "(%s.%s.%s) cannot be represented "
+		    "healing edges %s and %s",
+		    tg_id,
+		    layer_id,
+		    schema_name,
+		    table_name,
+		    col_name,
+		    lwt_be_int64_to_str(edge1, edge1_id),
+		    lwt_be_int64_to_str(edge2, edge2_id));
+    }
     return 0;
   }
 
@@ -2818,13 +2883,24 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
 
     SPI_freetuptable(SPI_tuptable);
 
-    cberror(topo->be_data, "TopoGeom %s in layer %s "
-            "(%s.%s.%s) cannot be represented "
-            "removing node %" LWTFMT_ELEMID
-            " connecting edges %" LWTFMT_ELEMID
-            " and %" LWTFMT_ELEMID,
-            tg_id, layer_id, schema_name, table_name,
-            col_name, rem_node, edge1, edge2);
+    {
+	    char node_id[LWT_BE_INT64_BUFSIZE];
+	    char edge1_id[LWT_BE_INT64_BUFSIZE];
+	    char edge2_id[LWT_BE_INT64_BUFSIZE];
+
+	    cberror(topo->be_data,
+		    "TopoGeom %s in layer %s "
+		    "(%s.%s.%s) cannot be represented "
+		    "removing node %s connecting edges %s and %s",
+		    tg_id,
+		    layer_id,
+		    schema_name,
+		    table_name,
+		    col_name,
+		    lwt_be_int64_to_str(rem_node, node_id),
+		    lwt_be_int64_to_str(edge1, edge1_id),
+		    lwt_be_int64_to_str(edge2, edge2_id));
+    }
     return 0;
   }
 
@@ -2885,11 +2961,20 @@ cb_checkTopoGeomRemIsoNode ( const LWT_BE_TOPOLOGY* topo, LWT_ELEMID rem_node )
 
     SPI_freetuptable(SPI_tuptable);
 
-    cberror(topo->be_data, "TopoGeom %s in layer %s "
-            "(%s.%s.%s) cannot be represented "
-            "removing node %" LWTFMT_ELEMID,
-            tg_id, layer_id, schema_name, table_name,
-            col_name, rem_node);
+    {
+	    char node_id[LWT_BE_INT64_BUFSIZE];
+
+	    cberror(topo->be_data,
+		    "TopoGeom %s in layer %s "
+		    "(%s.%s.%s) cannot be represented "
+		    "removing node %s",
+		    tg_id,
+		    layer_id,
+		    schema_name,
+		    table_name,
+		    col_name,
+		    lwt_be_int64_to_str(rem_node, node_id));
+    }
     return 0;
   }
 
@@ -3202,13 +3287,12 @@ cb_computeFaceMBR(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face)
 
   if ( ! SPI_processed )
   {
-    cberror(
-      topo->be_data,
-      "Face with id %" LWTFMT_ELEMID" in topology \"%s\" has no edges",
-      face,
-      topo->name
-    );
-    return NULL;
+	  char face_id[LWT_BE_INT64_BUFSIZE];
+	  cberror(topo->be_data,
+		  "Face with id %s in topology \"%s\" has no edges",
+		  lwt_be_int64_to_str(face, face_id),
+		  topo->name);
+	  return NULL;
   }
 
   row = SPI_tuptable->vals[0];
@@ -3216,13 +3300,12 @@ cb_computeFaceMBR(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face)
 
   if ( isnull )
   {
-    cberror(
-      topo->be_data,
-      "Face with id %" LWTFMT_ELEMID" in topology \"%s\" has null edges ?",
-      face,
-      topo->name
-    );
-    return NULL;
+	  char face_id[LWT_BE_INT64_BUFSIZE];
+	  cberror(topo->be_data,
+		  "Face with id %s in topology \"%s\" has null edges ?",
+		  lwt_be_int64_to_str(face, face_id),
+		  topo->name);
+	  return NULL;
   }
 
   geom = (GSERIALIZED *)PG_DETOAST_DATUM(dat);
@@ -3237,13 +3320,12 @@ cb_computeFaceMBR(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face)
   }
   else
   {
-    cberror(
-      topo->be_data,
-      "Face with id %" LWTFMT_ELEMID" in topology \"%s\" has empty MBR ?",
-      face,
-      topo->name
-    );
-    return NULL;
+	  char face_id[LWT_BE_INT64_BUFSIZE];
+	  cberror(topo->be_data,
+		  "Face with id %s in topology \"%s\" has empty MBR ?",
+		  lwt_be_int64_to_str(face, face_id),
+		  topo->name);
+	  return NULL;
   }
   lwgeom_free(lwg);
   if ( DatumGetPointer(dat) != (Pointer)geom ) pfree(geom);
