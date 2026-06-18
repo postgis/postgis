@@ -18,6 +18,74 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+-- Array-of-domain columns are temporarily moved to text arrays before
+-- generated domain constraints are restored, then converted back here.
+DO LANGUAGE 'plpgsql'
+$POSTGIS_DOMAIN_ARRAY_COLUMN_RESTORE$
+DECLARE
+	rec RECORD;
+	sql TEXT;
+BEGIN
+	FOR rec IN
+		SELECT *
+		FROM pg_temp._postgis_topology_domain_array_columns
+	LOOP
+		sql := pg_catalog.format(
+			'ALTER TABLE %s ALTER COLUMN %I TYPE %s USING (%I::%s)',
+			rec.attrelid::regclass,
+			rec.attname,
+			rec.target_domain_type,
+			rec.attname,
+			rec.target_domain_type
+		);
+		EXECUTE sql;
+
+		IF rec.default_expr IS NOT NULL THEN
+			sql := pg_catalog.format(
+				'ALTER TABLE %s ALTER COLUMN %I SET DEFAULT ((%s)::pg_catalog.text[]::%s)',
+				rec.attrelid::regclass,
+				rec.attname,
+				rec.default_expr,
+				rec.target_domain_type
+			);
+			EXECUTE sql;
+		END IF;
+	END LOOP;
+
+	DROP TABLE IF EXISTS pg_temp._postgis_topology_domain_array_columns;
+EXCEPTION
+WHEN undefined_table THEN
+	NULL;
+END
+$POSTGIS_DOMAIN_ARRAY_COLUMN_RESTORE$;
+
+DO LANGUAGE 'plpgsql'
+$POSTGIS_DOMAIN_DEFAULT_RESTORE$
+DECLARE
+	rec RECORD;
+	sql TEXT;
+BEGIN
+	FOR rec IN
+		SELECT *
+		FROM pg_temp._postgis_topology_domain_defaults
+	LOOP
+		sql := pg_catalog.format(
+			'ALTER DOMAIN %I.%I SET DEFAULT ((%s)::text::%s)',
+			rec.domain_schema,
+			rec.domain_name,
+			rec.default_expr,
+			rec.new_domain_type
+		);
+		EXECUTE sql;
+	END LOOP;
+
+		DROP TABLE IF EXISTS pg_temp._postgis_topology_domain_defaults;
+EXCEPTION
+WHEN undefined_table THEN
+	NULL;
+END
+$POSTGIS_DOMAIN_DEFAULT_RESTORE$;
+
 -- DROP auxiliary function (created by common_before_upgrade.sql)
 DROP FUNCTION _postgis_drop_function_by_identity(text, text, text);
 DROP FUNCTION _postgis_drop_function_by_signature(text, text);
