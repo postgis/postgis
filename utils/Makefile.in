@@ -114,7 +114,10 @@ check-regress:
 
 check: check-unit
 
-check-unit: postgis_restore-check
+check_all_upgrades-check:
+	$(SHELL) $(srcdir)/check_all_upgrades.sh --self-test
+
+check-unit: postgis_restore-check check_all_upgrades-check
 
 installdir:
 	@mkdir -p $(DESTDIR)$(bindir)
