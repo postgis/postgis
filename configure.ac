@@ -252,7 +252,8 @@ fi
 AC_PATH_PROG([XMLLINT], [xmllint], [])
 if test "x$XMLLINT" = "x"; then
 	dnl AC_MSG_WARN([xmllint is not installed so documentation cannot be checked])
-	AC_MSG_WARN([xmllint is not installed so generated SQL comments cannot be built])
+	AC_MSG_WARN([xmllint is not installed so documentation cannot be built])
+	CAN_BUILD_DOCS=no
 	CAN_BUILD_COMMENTS=no
 fi
 AC_SUBST([XMLLINT])
