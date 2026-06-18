@@ -3238,6 +3238,258 @@ AS $$
 	FROM pg_catalog.substring(version(), E'PostgreSQL ([0-9\\.]+)') AS s;
 $$ LANGUAGE 'sql' STABLE;
 
+-- Availability: 3.7.0
+-- Build structured output from the same probes as postgis_full_version()
+-- instead of parsing its human-readable status string.
+CREATE OR REPLACE FUNCTION postgis_full_version_json() RETURNS jsonb
+AS $$
+DECLARE
+	libver text;
+	librev text;
+	projver text;
+	projver_compiled text;
+	projver_compare text;
+	projver_compiled_compare text;
+	geosver text;
+	geosver_compiled text;
+	sfcgalver text := NULL;
+	gdalver text := NULL;
+	libxmlver text;
+	liblwgeomver text;
+	dbproc text;
+	relproc text;
+	rast_lib_ver text := NULL;
+	rast_scr_ver text := NULL;
+	topo_scr_ver text := NULL;
+	json_lib_ver text;
+	protobuf_lib_ver text;
+	wagyu_lib_ver text;
+	sfcgal_scr_ver text := NULL;
+	pgsql_scr_ver text;
+	pgsql_ver text;
+	core_is_extension bool;
+	deprecated_functions_exist bool;
+	warnings jsonb := '[]'::jsonb;
+BEGIN
+	SELECT @extschema@.postgis_lib_version() INTO libver;
+	SELECT @extschema@.postgis_lib_revision() INTO librev;
+	SELECT @extschema@.postgis_liblwgeom_version() INTO liblwgeomver;
+	SELECT @extschema@.postgis_scripts_installed() INTO dbproc;
+	SELECT @extschema@.postgis_scripts_released() INTO relproc;
+	SELECT @extschema@._postgis_scripts_pgsql_version() INTO pgsql_scr_ver;
+	SELECT @extschema@._postgis_pgsql_version() INTO pgsql_ver;
+	SELECT @extschema@.postgis_geos_version() INTO geosver;
+	SELECT @extschema@.postgis_geos_compiled_version() INTO geosver_compiled;
+	SELECT @extschema@.postgis_proj_version() INTO projver;
+	SELECT @extschema@.postgis_proj_compiled_version() INTO projver_compiled;
+	-- Keep projver raw for reporting, but compare only the numeric prefix:
+	-- PROJ runtime status may append configuration details after the version.
+	projver_compare := pg_catalog.split_part(projver, ' ', 1);
+	projver_compiled_compare := pg_catalog.split_part(projver_compiled, ' ', 1);
+	SELECT @extschema@.postgis_libxml_version() INTO libxmlver;
+	SELECT @extschema@.postgis_libjson_version() INTO json_lib_ver;
+	SELECT @extschema@.postgis_libprotobuf_version() INTO protobuf_lib_ver;
+	SELECT @extschema@.postgis_wagyu_version() INTO wagyu_lib_ver;
+
+	core_is_extension := EXISTS (
+		SELECT * FROM pg_catalog.pg_extension
+		WHERE extname = 'postgis');
+
+	BEGIN
+		SELECT @extschema@.postgis_gdal_version() INTO gdalver;
+	EXCEPTION
+		WHEN undefined_function THEN
+			RAISE DEBUG 'Function postgis_gdal_version() not found. Is raster support enabled and rtpostgis.sql installed?';
+	END;
+
+	BEGIN
+		SELECT @extschema@.postgis_sfcgal_full_version() INTO sfcgalver;
+		BEGIN
+			SELECT @extschema@.postgis_sfcgal_scripts_installed() INTO sfcgal_scr_ver;
+		EXCEPTION
+			WHEN undefined_function THEN
+				sfcgal_scr_ver := 'missing';
+		END;
+	EXCEPTION
+		WHEN undefined_function THEN
+			RAISE DEBUG 'Function postgis_sfcgal_full_version() not found. Is sfcgal support enabled and sfcgal.sql installed?';
+	END;
+
+	BEGIN
+		SELECT topology.postgis_topology_scripts_installed() INTO topo_scr_ver;
+	EXCEPTION
+		WHEN undefined_function OR invalid_schema_name THEN
+			RAISE DEBUG 'Function postgis_topology_scripts_installed() not found. Is topology support enabled and topology.sql installed?';
+		WHEN insufficient_privilege THEN
+			RAISE NOTICE 'Topology support cannot be inspected. Is current user granted USAGE on schema "topology" ?';
+		WHEN OTHERS THEN
+			RAISE NOTICE 'Function postgis_topology_scripts_installed() could not be called: % (%)', SQLERRM, SQLSTATE;
+	END;
+
+	BEGIN
+		SELECT @extschema@.postgis_raster_scripts_installed() INTO rast_scr_ver;
+	EXCEPTION
+		WHEN undefined_function THEN
+			RAISE DEBUG 'Function postgis_raster_scripts_installed() not found. Is raster support enabled and rtpostgis.sql installed?';
+		WHEN OTHERS THEN
+			RAISE NOTICE 'Function postgis_raster_scripts_installed() could not be called: % (%)', SQLERRM, SQLSTATE;
+	END;
+
+	BEGIN
+		SELECT @extschema@.postgis_raster_lib_version() INTO rast_lib_ver;
+	EXCEPTION
+		WHEN undefined_function THEN
+			RAISE DEBUG 'Function postgis_raster_lib_version() not found. Is raster support enabled and rtpostgis.sql installed?';
+		WHEN OTHERS THEN
+			RAISE NOTICE 'Function postgis_raster_lib_version() could not be called: % (%)', SQLERRM, SQLSTATE;
+	END;
+
+	deprecated_functions_exist := EXISTS (
+		SELECT oid FROM pg_catalog.pg_proc
+		WHERE proname LIKE '%_deprecated_by_postgis_%');
+
+	IF liblwgeomver != relproc THEN
+		warnings := warnings || pg_catalog.jsonb_build_array(pg_catalog.jsonb_build_object(
+			'code', 'liblwgeom_version_mismatch',
+			'message', pg_catalog.format('liblwgeom version mismatch: "%s"', liblwgeomver)
+		));
+	END IF;
+
+	IF pgsql_scr_ver != pgsql_ver THEN
+		warnings := warnings || pg_catalog.jsonb_build_array(pg_catalog.jsonb_build_object(
+			'code', 'postgresql_procs_need_upgrade',
+			'message', pg_catalog.format('procs need upgrade for use with PostgreSQL "%s"', pgsql_ver)
+		));
+	END IF;
+
+	IF geosver IS NOT NULL
+		AND (pg_catalog.string_to_array(geosver, '.'))[1:2] != (pg_catalog.string_to_array(geosver_compiled, '.'))[1:2]
+	THEN
+		warnings := warnings || pg_catalog.jsonb_build_array(pg_catalog.jsonb_build_object(
+			'code', 'geos_compiled_version_mismatch',
+			'message', pg_catalog.format('compiled against GEOS %s', geosver_compiled)
+		));
+	END IF;
+
+	IF projver IS NOT NULL
+		AND (pg_catalog.string_to_array(projver_compare, '.'))[1:3] != (pg_catalog.string_to_array(projver_compiled_compare, '.'))[1:3]
+	THEN
+		warnings := warnings || pg_catalog.jsonb_build_array(pg_catalog.jsonb_build_object(
+			'code', 'proj_compiled_version_mismatch',
+			'message', pg_catalog.format('compiled against PROJ %s', projver_compiled)
+		));
+	END IF;
+
+	IF dbproc != relproc THEN
+		warnings := warnings || pg_catalog.jsonb_build_array(pg_catalog.jsonb_build_object(
+			'code', 'core_procs_need_upgrade',
+			'message', pg_catalog.format('core procs from "%s" need upgrade', dbproc)
+		));
+	END IF;
+
+	IF topo_scr_ver IS NOT NULL AND topo_scr_ver != relproc THEN
+		warnings := warnings || pg_catalog.jsonb_build_array(pg_catalog.jsonb_build_object(
+			'code', 'topology_procs_need_upgrade',
+			'message', pg_catalog.format('topology procs from "%s" need upgrade', topo_scr_ver)
+		));
+	END IF;
+
+	IF topo_scr_ver IS NOT NULL AND core_is_extension AND NOT EXISTS (
+		SELECT * FROM pg_catalog.pg_extension
+		WHERE extname = 'postgis_topology')
+	THEN
+		warnings := warnings || pg_catalog.jsonb_build_array(pg_catalog.jsonb_build_object(
+			'code', 'topology_unpacked',
+			'message', 'topology support is not packaged as an extension'
+		));
+	END IF;
+
+	IF rast_lib_ver IS NOT NULL AND rast_lib_ver != relproc THEN
+		warnings := warnings || pg_catalog.jsonb_build_array(pg_catalog.jsonb_build_object(
+			'code', 'raster_lib_need_upgrade',
+			'message', pg_catalog.format('raster lib from "%s" need upgrade', rast_lib_ver)
+		));
+	END IF;
+
+	IF rast_lib_ver IS NOT NULL AND core_is_extension AND NOT EXISTS (
+		SELECT * FROM pg_catalog.pg_extension
+		WHERE extname = 'postgis_raster')
+	THEN
+		warnings := warnings || pg_catalog.jsonb_build_array(pg_catalog.jsonb_build_object(
+			'code', 'raster_unpacked',
+			'message', 'raster support is not packaged as an extension'
+		));
+	END IF;
+
+	IF rast_scr_ver IS NOT NULL AND rast_scr_ver != relproc THEN
+		warnings := warnings || pg_catalog.jsonb_build_array(pg_catalog.jsonb_build_object(
+			'code', 'raster_procs_need_upgrade',
+			'message', pg_catalog.format('raster procs from "%s" need upgrade', rast_scr_ver)
+		));
+	END IF;
+
+	IF sfcgal_scr_ver IS NOT NULL AND sfcgal_scr_ver != relproc THEN
+		warnings := warnings || pg_catalog.jsonb_build_array(pg_catalog.jsonb_build_object(
+			'code', 'sfcgal_procs_need_upgrade',
+			'message', pg_catalog.format('sfcgal procs from "%s" need upgrade', sfcgal_scr_ver)
+		));
+	END IF;
+
+	IF deprecated_functions_exist THEN
+		warnings := warnings || pg_catalog.jsonb_build_array(pg_catalog.jsonb_build_object(
+			'code', 'deprecated_functions_exist',
+			'message', 'deprecated functions exist, upgrade is not complete'
+		));
+	END IF;
+
+	RETURN pg_catalog.jsonb_strip_nulls(pg_catalog.jsonb_build_object(
+		'postgis', pg_catalog.jsonb_build_object(
+			'version', libver,
+			'revision', librev,
+			'extension', core_is_extension,
+			'scripts_installed', dbproc,
+			'scripts_released', relproc,
+			'liblwgeom', liblwgeomver,
+			'needs_upgrade', dbproc != relproc OR liblwgeomver != relproc
+		),
+		'postgresql', pg_catalog.jsonb_build_object(
+			'scripts', pgsql_scr_ver,
+			'runtime', pgsql_ver,
+			'procs_need_upgrade', pgsql_scr_ver != pgsql_ver
+		),
+		'geos', pg_catalog.jsonb_build_object('runtime', geosver, 'compiled', geosver_compiled),
+		'proj', pg_catalog.jsonb_build_object('runtime', projver, 'compiled', projver_compiled),
+		'sfcgal', CASE WHEN sfcgalver IS NULL AND sfcgal_scr_ver IS NULL THEN NULL ELSE pg_catalog.jsonb_build_object(
+			'runtime', sfcgalver,
+			'scripts_installed', sfcgal_scr_ver,
+			'needs_upgrade', sfcgal_scr_ver != relproc
+		) END,
+		'gdal', gdalver,
+		'libxml', libxmlver,
+		'libjson', json_lib_ver,
+		'libprotobuf', protobuf_lib_ver,
+		'wagyu', wagyu_lib_ver,
+		'topology', CASE WHEN topo_scr_ver IS NULL THEN NULL ELSE pg_catalog.jsonb_build_object(
+			'scripts_installed', topo_scr_ver,
+			'needs_upgrade', topo_scr_ver != relproc,
+			'unpackaged', core_is_extension AND NOT EXISTS (
+				SELECT * FROM pg_catalog.pg_extension
+				WHERE extname = 'postgis_topology')
+		) END,
+		'raster', CASE WHEN rast_lib_ver IS NULL AND rast_scr_ver IS NULL THEN NULL ELSE pg_catalog.jsonb_build_object(
+			'lib_version', rast_lib_ver,
+			'scripts_installed', rast_scr_ver,
+			'needs_upgrade', rast_lib_ver != relproc OR rast_scr_ver != relproc,
+			'unpackaged', core_is_extension AND NOT EXISTS (
+				SELECT * FROM pg_catalog.pg_extension
+				WHERE extname = 'postgis_raster')
+		) END,
+		'warnings', warnings
+	));
+END
+$$
+LANGUAGE 'plpgsql' STABLE;
+
 -- Availability: 2.5.0
 -- Changed: 3.3.0 support for upgrades from any PostGIS version
 -- Changed: 3.0.1 install from unpackaged should include postgis schema #4581
