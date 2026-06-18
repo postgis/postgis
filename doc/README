@@ -68,7 +68,8 @@ Make targets
   XML files. See ``make check-localized``
 
 ``make check``
-  check structural correctness of XML documentation
+  check structural correctness of XML documentation with DocBook DTD,
+  RelaxNG, and XMLSchema validation
 
 ``make check-localized``
   check structural correctness of localized (translated)
