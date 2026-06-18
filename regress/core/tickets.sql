@@ -1585,6 +1585,26 @@ SELECT f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, t
 DROP TABLE IF EXISTS test5829, test5978;
 
 -- -------------------------------------------------------------------------------------
+-- #3103, geometry_columns/find_srid exact-match behavior
+CREATE SCHEMA test3103a;
+CREATE SCHEMA test3103b;
+CREATE TABLE test3103a.geomtab (geom geometry(Point, 4326));
+CREATE TABLE test3103b.geomtab (geom geometry(Point, 3857));
+
+SELECT '#3103.1', find_srid('test3103a', 'geomtab', 'geom');
+SELECT '#3103.2', find_srid('', 'test3103b.geomtab', 'geom');
+SELECT '#3103.3', f_table_schema, srid
+  FROM geometry_columns
+ WHERE f_table_name = 'geomtab'
+   AND f_geometry_column = 'geom'
+ ORDER BY srid;
+
+DROP TABLE test3103a.geomtab;
+DROP TABLE test3103b.geomtab;
+DROP SCHEMA test3103a;
+DROP SCHEMA test3103b;
+
+-- -------------------------------------------------------------------------------------
 -- #4828, geometry_columns should ignore pending NOT VALID SRID checks
 CREATE TABLE test4828 (
   geom geometry
@@ -1643,4 +1663,3 @@ DROP TABLE IF EXISTS fault6028;
 
 -- #5357
 SELECT '#5357', ST_AsText(ST_LineFromEncodedPolyline('__nphBgcoeiA?@', 6), 6);
-
