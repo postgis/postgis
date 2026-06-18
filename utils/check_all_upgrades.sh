@@ -7,6 +7,7 @@ TMPDIR=/tmp/check_all_upgrades-$$-tmp
 PGVER=`pg_config --version | awk '{print $2}'`
 PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//' | sed 's/\(alpha\|beta\|rc\).*//' )
 SKIP_LABEL_REGEXP=
+SELFTEST=0
 echo "INFO: PostgreSQL version: ${PGVER} [${PGVER_MAJOR}]"
 MAKE=$(which gmake make | head -1)
 BUILDDIR=$PWD # TODO: allow override ?
@@ -23,11 +24,14 @@ usage() {
   echo "Options:"
   echo "\t-s  Stop on first failure"
   echo "\t--skip <regexp>  Do not run tests with label matching given extended regexp"
+  echo "\t--self-test  Run check_all_upgrades.sh unit tests"
 }
 
 while test -n "$1"; do
   if test "$1" = "-s"; then
     EXIT_ON_FIRST_FAILURE=1
+  elif test "$1" = "--self-test"; then
+    SELFTEST=1
   elif test "$1" = "--skip"; then
     shift
     SKIP_LABEL_REGEXP=$1
@@ -40,20 +44,11 @@ while test -n "$1"; do
   shift
 done
 
-if test -z "$to_version_param"; then
-  usage >&2
-  exit 1
-fi
-
-mkdir -p ${TMPDIR}
 cleanup()
 {
   echo "Cleaning up"
   rm -rf ${TMPDIR}
 }
-
-trap 'cleanup' EXIT
-
 
 # Return -1, 1 or 0 if the first version
 # is respectively smaller, greater or equal
@@ -175,6 +170,32 @@ compatible_upgrade()
   fi
 }
 
+check_downgrade_error()
+{
+  log_file=$1
+
+  ERR=$( grep 'ERROR:.*Downgrade .* forbidden' ${log_file} )
+  test -n "$ERR" && {
+    echo "PASS: ${test_label} gave $ERR"
+    return 0
+  }
+
+  CREATE_EXT_ERR=$( grep 'Error encountered creating EXTENSION POSTGIS' ${log_file} )
+  LOAD_ERR=$( grep 'ERROR:.*could not load library' ${log_file} )
+  test -n "$CREATE_EXT_ERR" && test -n "$LOAD_ERR" && {
+    # A downgrade cannot be checked until the source extension version
+    # can be created. Later loader failures are part of the downgrade
+    # attempt and must remain visible as failures.
+    echo "SKIP: ${test_label} could not load source extension library:"
+    echo "$LOAD_ERR"
+    return 0
+  }
+
+  echo "FAIL: ${test_label} gave some other error:"
+  tail ${log_file}
+  return 1
+}
+
 check_downgrade()
 {
   RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
@@ -184,14 +205,7 @@ check_downgrade()
     tail ${TMPDIR}/log
     failed
   else
-    ERR=$( grep 'ERROR:.*Downgrade .* forbidden' ${TMPDIR}/log )
-    test -n "$ERR" && {
-      echo "PASS: ${test_label} gave $ERR"
-    } || {
-      echo "FAIL: ${test_label} gave some other error:"
-      tail ${TMPDIR}/log
-      failed
-    }
+    check_downgrade_error ${TMPDIR}/log || failed
   fi
 }
 
@@ -203,6 +217,80 @@ report_missing_versions()
   fi
   cleanup
 }
+
+check_all_upgrades_selftest()
+{
+  test_label="self-test downgrade"
+  test_tmp=${TMPDIR}-selftest
+  mkdir -p ${test_tmp} || exit 1
+  trap "rm -rf ${test_tmp}" EXIT
+
+  # Keep self-test assertions explicit: POSIX sh does not make an ignored
+  # pipeline status fail the surrounding function.
+  check_selftest_output()
+  {
+    log_file=$1
+    expected_pattern=$2
+    output_file=$3
+
+    if ! check_downgrade_error ${log_file} > ${output_file} 2>&1; then
+      echo "FAIL: expected self-test classification to pass for ${log_file}" >&2
+      cat ${output_file} >&2
+      exit 1
+    fi
+
+    if ! grep -q "${expected_pattern}" ${output_file}; then
+      echo "FAIL: expected self-test output matching ${expected_pattern}" >&2
+      cat ${output_file} >&2
+      exit 1
+    fi
+  }
+
+  echo 'ERROR:  Downgrade 3.5.1dev to 3.4.7 forbidden' > ${test_tmp}/downgrade.log
+  check_selftest_output \
+    ${test_tmp}/downgrade.log \
+    '^PASS: self-test downgrade gave ERROR:  Downgrade' \
+    ${test_tmp}/downgrade.out
+
+  {
+    echo "Error encountered creating EXTENSION POSTGIS"
+    echo 'ERROR:  could not load library "/tmp/postgis-3.5.so": undefined symbol: GEOSPreparedRelatePattern'
+  } > ${test_tmp}/loader.log
+  check_selftest_output \
+    ${test_tmp}/loader.log \
+    '^SKIP: self-test downgrade could not load source extension library:' \
+    ${test_tmp}/loader.out
+
+  {
+    echo "Error encountered updating EXTENSION POSTGIS"
+    echo 'ERROR:  could not load library "/tmp/postgis-3.5.so": undefined symbol: GEOSPreparedRelatePattern'
+  } > ${test_tmp}/update-loader.log
+  if check_downgrade_error ${test_tmp}/update-loader.log > ${test_tmp}/update-loader.out 2>&1; then
+    echo "FAIL: loader errors after source creation should fail self-test" >&2
+    exit 1
+  fi
+  grep -q '^FAIL: self-test downgrade gave some other error:' ${test_tmp}/update-loader.out
+
+  echo 'ERROR:  unrelated failure' > ${test_tmp}/other.log
+  if check_downgrade_error ${test_tmp}/other.log > ${test_tmp}/other.out 2>&1; then
+    echo "FAIL: unrelated downgrade errors should fail self-test" >&2
+    exit 1
+  fi
+  grep -q '^FAIL: self-test downgrade gave some other error:' ${test_tmp}/other.out
+}
+
+if test "${SELFTEST}" = 1; then
+  check_all_upgrades_selftest
+  exit
+fi
+
+if test -z "$to_version_param"; then
+  usage >&2
+  exit 1
+fi
+
+mkdir -p ${TMPDIR}
+trap 'cleanup' EXIT
 
 
 to_version=$to_version_param
