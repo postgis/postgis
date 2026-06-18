@@ -141,6 +141,24 @@ void tin_parse(void)
 	lwfree(tmp);
 	lwgeom_free(geom);
 
+	/* 3DZ */
+	geom = lwgeom_from_wkt("TIN Z(((0 1 2,3 4 5,6 7 8,0 1 2)))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(geom->type, TINTYPE);
+	tmp = lwgeom_to_ewkt(geom);
+	ASSERT_STRING_EQUAL("TIN Z (((0 1 2,3 4 5,6 7 8,0 1 2)))", tmp);
+	lwfree(tmp);
+	lwgeom_free(geom);
+
+	/* 4D */
+	geom = lwgeom_from_wkt("TIN ZM(((0 1 2 3,3 4 5 6,6 7 8 9,0 1 2 3)))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(geom->type, TINTYPE);
+	tmp = lwgeom_to_ewkt(geom);
+	ASSERT_STRING_EQUAL("TIN ZM (((0 1 2 3,3 4 5 6,6 7 8 9,0 1 2 3)))", tmp);
+	lwfree(tmp);
+	lwgeom_free(geom);
+
 	/* ERROR: a missing Z values */
 	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,6 7,0 1 2)))", LW_PARSER_CHECK_NONE);
 	ASSERT_STRING_EQUAL("can not mix dimensionality in a geometry", cu_error_msg);
@@ -198,7 +216,9 @@ void tin_parse(void)
 	CU_ASSERT_EQUAL(geom->type, TINTYPE);
 	CU_ASSERT_EQUAL(geom->srid, SRID_UNKNOWN);
 	tmp = lwgeom_to_ewkt(geom);
-	ASSERT_STRING_EQUAL("TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", tmp);
+	ASSERT_STRING_EQUAL(
+	    "TIN Z (((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))",
+	    tmp);
 	lwfree(tmp);
 	lwgeom_free(geom);
 
@@ -209,7 +229,9 @@ void tin_parse(void)
 	CU_ASSERT_EQUAL(FLAGS_GET_M(geom->flags), 1);
 	CU_ASSERT_EQUAL(geom->srid, SRID_UNKNOWN);
 	tmp = lwgeom_to_ewkt(geom);
-	ASSERT_STRING_EQUAL("TIN(((0 0 0 0,0 0 1 0,0 1 0 2,0 0 0 0)),((0 0 0 0,0 1 0 0,1 0 0 4,0 0 0 0)),((0 0 0 0,1 0 0 0,0 0 1 6,0 0 0 0)),((1 0 0 0,0 1 0 0,0 0 1 0,1 0 0 0)))", tmp);
+	ASSERT_STRING_EQUAL(
+	    "TIN ZM (((0 0 0 0,0 0 1 0,0 1 0 2,0 0 0 0)),((0 0 0 0,0 1 0 0,1 0 0 4,0 0 0 0)),((0 0 0 0,1 0 0 0,0 0 1 6,0 0 0 0)),((1 0 0 0,0 1 0 0,0 0 1 0,1 0 0 0)))",
+	    tmp);
 	lwfree(tmp);
 	lwgeom_free(geom);
 
@@ -219,7 +241,9 @@ void tin_parse(void)
 	CU_ASSERT_EQUAL(geom->type, TINTYPE);
 	CU_ASSERT_EQUAL(geom->srid, 4326);
 	tmp = lwgeom_to_ewkt(geom);
-	ASSERT_STRING_EQUAL("SRID=4326;TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", tmp);
+	ASSERT_STRING_EQUAL(
+	    "SRID=4326;TIN Z (((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))",
+	    tmp);
 	lwfree(tmp);
 	lwgeom_free(geom);
 
