@@ -17,6 +17,7 @@ static Datum gidx_brin_inclusion_add_value(
 
 static GIDX * gidx_brin_inclusion_merge(
 	GIDX *gidx_key, GIDX *gidx_geom);
+static bool gidx_brin_inclusion_mergeable(GIDX *gidx_key, GIDX *gidx_geom);
 
 /*
  * As for the GiST case, geographies are converted into GIDX before
@@ -195,6 +196,9 @@ gidx_brin_inclusion_add_value(__attribute__((__unused__)) BrinDesc *bdesc,
 static GIDX *
 gidx_brin_inclusion_merge(GIDX *gidx_key, GIDX *gidx_geom)
 {
+	if (!gidx_brin_inclusion_mergeable(gidx_key, gidx_geom))
+		return gidx_key;
+
 	if (!gidx_contains(gidx_key, gidx_geom))
 	{
 		for (uint32_t i = 0; i < GIDX_NDIMS(gidx_key); i++)
@@ -211,6 +215,12 @@ gidx_brin_inclusion_merge(GIDX *gidx_key, GIDX *gidx_geom)
 	return gidx_key;
 }
 
+static bool
+gidx_brin_inclusion_mergeable(GIDX *gidx_key, GIDX *gidx_geom)
+{
+	return GIDX_NDIMS(gidx_key) == GIDX_NDIMS(gidx_geom);
+}
+
 PG_FUNCTION_INFO_V1(geog_brin_inclusion_merge);
 Datum geog_brin_inclusion_merge(PG_FUNCTION_ARGS)
 {
@@ -218,6 +228,16 @@ Datum geog_brin_inclusion_merge(PG_FUNCTION_ARGS)
 	GIDX *geom = (GIDX *) PG_GETARG_POINTER(1);
 
 	PG_RETURN_POINTER(gidx_brin_inclusion_merge(key, geom));
+}
+
+PG_FUNCTION_INFO_V1(geog_brin_inclusion_mergeable);
+Datum
+geog_brin_inclusion_mergeable(PG_FUNCTION_ARGS)
+{
+	GIDX *key = (GIDX *)PG_GETARG_POINTER(0);
+	GIDX *geom = (GIDX *)PG_GETARG_POINTER(1);
+
+	PG_RETURN_BOOL(gidx_brin_inclusion_mergeable(key, geom));
 }
 
 PG_FUNCTION_INFO_V1(geom3d_brin_inclusion_merge);
@@ -229,6 +249,16 @@ Datum geom3d_brin_inclusion_merge(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(gidx_brin_inclusion_merge(key, geom));
 }
 
+PG_FUNCTION_INFO_V1(geom3d_brin_inclusion_mergeable);
+Datum
+geom3d_brin_inclusion_mergeable(PG_FUNCTION_ARGS)
+{
+	GIDX *key = (GIDX *)PG_GETARG_POINTER(0);
+	GIDX *geom = (GIDX *)PG_GETARG_POINTER(1);
+
+	PG_RETURN_BOOL(gidx_brin_inclusion_mergeable(key, geom));
+}
+
 PG_FUNCTION_INFO_V1(geom4d_brin_inclusion_merge);
 Datum geom4d_brin_inclusion_merge(PG_FUNCTION_ARGS)
 {
@@ -238,4 +268,12 @@ Datum geom4d_brin_inclusion_merge(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(gidx_brin_inclusion_merge(key, geom));
 }
 
+PG_FUNCTION_INFO_V1(geom4d_brin_inclusion_mergeable);
+Datum
+geom4d_brin_inclusion_mergeable(PG_FUNCTION_ARGS)
+{
+	GIDX *key = (GIDX *)PG_GETARG_POINTER(0);
+	GIDX *geom = (GIDX *)PG_GETARG_POINTER(1);
 
+	PG_RETURN_BOOL(gidx_brin_inclusion_mergeable(key, geom));
+}
