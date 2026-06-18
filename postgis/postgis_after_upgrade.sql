@@ -28,6 +28,7 @@ DROP AGGREGATE IF EXISTS st_geomunion(geometry);
 DROP AGGREGATE IF EXISTS accum_old(geometry);
 DROP AGGREGATE IF EXISTS st_accum_old(geometry);
 DROP AGGREGATE IF EXISTS st_accum(geometry); -- Dropped in 3.0.0
+DROP AGGREGATE IF EXISTS ST_MemCollect(geometry); -- Dropped in 3.7.0
 SELECT _postgis_drop_function_by_signature('pgis_geometry_accum_finalfn(internal)');
 
 DROP AGGREGATE IF EXISTS st_astwkb_agg(geometry, integer); -- temporarily introduced before 2.2.0 final
