@@ -262,6 +262,9 @@ ALL_IMAGES = \
 	$(GENERATED_IMAGES_RESIZED) \
 	$(STATIC_IMAGES)
 
+PDF_IMAGES_BUILD_DIR ?= pdf-images
+PDF_IMAGES = $(ALL_IMAGES:%=$(PDF_IMAGES_BUILD_DIR)/%)
+
 OBJS=styles.o generator.o
 
 # Build the generator
@@ -269,6 +272,8 @@ all: generator
 
 # generate the images
 images: $(ALL_IMAGES)
+
+pdf-images: $(PDF_IMAGES)
 
 images-install: $(ALL_IMAGES)
 	mkdir -p $(DESTDIR)$(htmldir)/images
@@ -284,6 +289,23 @@ $(OBJS): %.o: %.c
 # Command to symlink each of the static images
 $(STATIC_IMAGES):
 	ln -fs $(srcdir)/static/$@ $@
+
+$(PDF_IMAGES_BUILD_DIR)/%: %
+	@mkdir -p $(dir $@)
+	@converter=$${POSTGIS_DOC_CONVERTER:-}; \
+	if test -z "$$converter"; then \
+		if command -v gm >/dev/null 2>&1; then \
+			converter="gm convert"; \
+		elif command -v magick >/dev/null 2>&1; then \
+			converter="magick convert"; \
+		elif command -v convert >/dev/null 2>&1; then \
+			converter="convert"; \
+		else \
+			echo "Could not find GraphicsMagick or ImageMagick executables (gm, magick, convert)." >&2; \
+			exit 1; \
+		fi; \
+	fi; \
+	$$converter "$<" -background white -flatten "$@"
 
 # Command to build each of the .wkt files
 $(GENERATED_IMAGES): %.png: wkt/%.wkt generator wkt/styles.conf
@@ -312,3 +334,4 @@ distclean: clean
 
 images-clean:
 	rm -f $(ALL_IMAGES)
+	rm -rf $(PDF_IMAGES_BUILD_DIR)

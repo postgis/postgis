@@ -49,6 +49,7 @@ DOCSUFFIX=-en
 # TODO: change this ?
 html_builddir=$(abs_builddir)/html
 images_builddir=$(html_builddir)/images
+pdf_images_builddir=$(abs_builddir)/pdf/images
 
 ifneq (,$(findstring dev,$(POSTGIS_MICRO_VERSION)))
   POSTGIS_DOWNLOAD_URL=https://postgis.net/stuff
@@ -422,7 +423,7 @@ $(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile
 		$<
 
 
-postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(abs_srcdir)/texstyle-common.sty $(abs_srcdir)/texstyle.sty | images
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(abs_srcdir)/texstyle-common.sty $(abs_srcdir)/texstyle.sty | images pdf-images
 ifeq ($(DBLATEX),)
 	@echo
 	@echo "configure was unable to find the 'dblatex' utility program."
@@ -432,7 +433,7 @@ ifeq ($(DBLATEX),)
 else
 	$(DBLATEX) -T native -t pdf \
 		 -x "--path $(XSLT_PATH)" \
-		 -I "$(abs_builddir)/html" \
+		 -I "$(abs_builddir)/pdf" \
 		 -P doc.collab.show=0 \
 		 -P figure.note="images/note" \
 		 -P figure.tip="images/tip" \
@@ -487,12 +488,16 @@ doxygen: doxygen.cfg
 images images-install images-uninstall images-clean:
 	$(MAKE) -C $(images_builddir) $@
 
+pdf-images: images
+	$(MAKE) -C $(images_builddir) $@ PDF_IMAGES_BUILD_DIR="$(pdf_images_builddir)"
+
 html-clean:
 	rm -f $(html_builddir)/postgis$(DOCSUFFIX).html
 	rm -rf $(html_builddir)/postgis$(DOCSUFFIX)/
 
 pdf-clean:
 	rm -f postgis*$(DOCSUFFIX).pdf
+	rm -rf $(abs_builddir)/pdf
 
 epub-clean:
 	rm -f postgis*$(DOCSUFFIX).epub
