@@ -38,6 +38,8 @@
 #include <utils/guc.h> /* for ArrayType */
 #include <catalog/pg_type.h> /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
 #include <utils/memutils.h> /* For TopMemoryContext */
+#include <ctype.h>
+#include <strings.h>
 
 #include "../../postgis_config.h"
 
@@ -1116,9 +1118,61 @@ static const char* const gdalErrorTypes[gdalErrorTypesSize] =
 };
 
 static void
+rtpg_gdal_redact_message(char *msg)
+{
+	static const struct {
+		const char *text;
+		bool header_value;
+	} sensitive[] = {{"access_key=", false},
+			 {"access_token=", false},
+			 {"authorization:", true},
+			 {"cookie:", true},
+			 {"key=", false},
+			 {"password=", false},
+			 {"secret=", false},
+			 {"sig=", false},
+			 {"signature=", false},
+			 {"token=", false},
+			 {"x-amz-credential=", false},
+			 {"x-amz-security-token:", true},
+			 {"x-amz-security-token=", false}};
+	char *p;
+	size_t i;
+
+	for (p = msg; *p; p++)
+	{
+		for (i = 0; i < sizeof(sensitive) / sizeof(sensitive[0]); i++)
+		{
+			size_t n = strlen(sensitive[i].text);
+			char *v;
+
+			if (strncasecmp(p, sensitive[i].text, n) != 0)
+				continue;
+
+			v = p + n;
+			while (*v && isspace((unsigned char) *v))
+				v++;
+			while (*v && *v != '\r' && *v != '\n' &&
+			       (sensitive[i].header_value ||
+				(!isspace((unsigned char)*v) && *v != '&' && *v != ';' && *v != ',')))
+			{
+				*v = 'x';
+				v++;
+			}
+			p = v > p ? v - 1 : p;
+			break;
+		}
+	}
+}
+
+static void
 ogrErrorHandler(CPLErr eErrClass, int err_no, const char* msg)
 {
     const char* gdalErrType = "unknown type";
+    char *redacted = pstrdup(msg ? msg : "");
+
+    rtpg_gdal_redact_message(redacted);
+
     if (err_no >= 0 && err_no < gdalErrorTypesSize)
     {
         gdalErrType = gdalErrorTypes[err_no];
@@ -1126,20 +1180,21 @@ ogrErrorHandler(CPLErr eErrClass, int err_no, const char* msg)
     switch (eErrClass)
     {
     case CE_None:
-        elog(NOTICE, "GDAL %s [%d] %s", gdalErrType, err_no, msg);
+        elog(NOTICE, "GDAL %s [%d] %s", gdalErrType, err_no, redacted);
         break;
     case CE_Debug:
-        elog(DEBUG2, "GDAL %s [%d] %s", gdalErrType, err_no, msg);
+        elog(DEBUG2, "GDAL %s [%d] %s", gdalErrType, err_no, redacted);
         break;
     case CE_Warning:
-        elog(WARNING, "GDAL %s [%d] %s", gdalErrType, err_no, msg);
+        elog(WARNING, "GDAL %s [%d] %s", gdalErrType, err_no, redacted);
         break;
     case CE_Failure:
     case CE_Fatal:
     default:
-        elog(ERROR, "GDAL %s [%d] %s", gdalErrType, err_no, msg);
+        elog(ERROR, "GDAL %s [%d] %s", gdalErrType, err_no, redacted);
         break;
     }
+    pfree(redacted);
     return;
 }
 
@@ -1152,4 +1207,3 @@ rtpg_gdal_set_cpl_debug(bool value, void *extra)
     CPLSetErrorHandler(value ? ogrErrorHandler : NULL);
     CPLSetCurrentErrorHandlerCatchDebug(value);
 }
-

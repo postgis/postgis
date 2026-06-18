@@ -214,7 +214,6 @@ def gdt2pt(gdt):
     """Translate GDAL data type to WKT Raster pixel type."""
     pixtypes = {
         gdalc.GDT_Byte    : { 'name': 'PT_8BUI',  'id':  4 },
-        gdalc.GDT_Int8    : { 'name': 'PT_8BSI',  'id':  3 },
         gdalc.GDT_Int16   : { 'name': 'PT_16BSI', 'id':  5 },
         gdalc.GDT_UInt16  : { 'name': 'PT_16BUI', 'id':  6 },
         gdalc.GDT_Int32   : { 'name': 'PT_32BSI', 'id':  7 },
@@ -223,6 +222,8 @@ def gdt2pt(gdt):
         gdalc.GDT_Float64 : { 'name': 'PT_64BF',  'id': 11 }
         }
 
+    if hasattr(gdalc, 'GDT_Int8'):
+        pixtypes[gdalc.GDT_Int8] = { 'name': 'PT_8BSI',  'id':  3 }
     if hasattr(gdalc, 'GDT_Float16'):
         pixtypes[gdalc.GDT_Float16] = { 'name': 'PT_16BF', 'id': 9 }
     
@@ -231,6 +232,26 @@ def gdt2pt(gdt):
     #logit('MSG: Output WKTRaster pixel type: %(name)s (%(id)d)\n' % (pixtypes.get(gdt, 13)))
 
     return pixtypes.get(gdt, 13)
+
+def band_is_signed_byte(band):
+    """Return True for legacy GDAL signed-byte bands exposed as GDT_Byte."""
+
+    pixel_type = band.GetMetadataItem('PIXELTYPE', 'IMAGE_STRUCTURE')
+    return band.DataType == gdalc.GDT_Byte and pixel_type is not None and pixel_type.upper() == 'SIGNEDBYTE'
+
+def band2pt(band):
+    """Translate a GDAL raster band to WKT Raster pixel type."""
+
+    if band_is_signed_byte(band):
+        return { 'name': 'PT_8BSI', 'id': 3 }
+    return gdt2pt(band.DataType)
+
+def band2numpy(band):
+    """Translate a GDAL raster band to NumPy data type."""
+
+    if band_is_signed_byte(band):
+        return numpy.int8
+    return pt2numpy(band.DataType)
 
 def pt2numpy(pt):
     """Translate GDAL data type to NumPy data type"""
@@ -243,6 +264,8 @@ def pt2numpy(pt):
         gdalc.GDT_Float32: numpy.float32,
         gdalc.GDT_Float64: numpy.float64
         }
+    if hasattr(gdalc, 'GDT_Int8'):
+        ptnumpy[gdalc.GDT_Int8] = numpy.int8
     if hasattr(gdalc, 'GDT_Float16'):
         ptnumpy[gdalc.GDT_Float16] = numpy.float16
     return ptnumpy.get(pt, numpy.uint8)
@@ -250,6 +273,7 @@ def pt2numpy(pt):
 def pt2fmt(pt):
     """Returns binary data type specifier for given pixel type."""
     fmttypes = {
+        3: 'b', # PT_8BSI
         4: 'B', # PT_8BUI
         5: 'h', # PT_16BSI
         6: 'H', # PT_16BUI
@@ -265,6 +289,7 @@ def pt2fmt(pt):
 def fmt2printfmt(fmt):
     """Returns printf-like formatter for given binary data type specifier."""
     fmttypes = {
+        'b': '%d', # PT_8BSI
         'B': '%d', # PT_8BUI
         'h': '%d', # PT_16BSI
         'H': '%d', # PT_16BUI
@@ -530,7 +555,7 @@ def collect_pixel_types(ds, band_from, band_to):
     pt =[]
     for i in range(band_from, band_to):
         band = ds.GetRasterBand(i)
-        pixel_type = gdt2pt(band.DataType)['name'][3:]
+        pixel_type = band2pt(band)['name'][3:]
         pt.append(pixel_type)
     
     return pt
@@ -746,7 +771,7 @@ def wkblify_band_header(options, band):
         nodata = 0
     
     # Encode pixel type
-    pixtype = gdt2pt(band.DataType)['id']
+    pixtype = band2pt(band)['id']
     hexwkb += wkblify('B', pixtype + first4bits)
     
     # Encode nodata value (or Zero, if nodata unavailable) 
@@ -805,7 +830,7 @@ def wkblify_band(options, band, level, xoff, yoff, read_block_size, block_size, 
         # XXX: Use for debugging only
         #dump_block_numpy(pixels)
 
-        out_pixels = numpy.zeros((block_size[1], block_size[0]), pt2numpy(band.DataType))
+        out_pixels = numpy.zeros((block_size[1], block_size[0]), band2numpy(band))
 
         logit('MSG: Read valid source:\t%d x %d\n' % (len(pixels[0]), len(pixels)))
         logit('MSG: Write into block:\t%d x %d\n' % (len(out_pixels[0]), len(out_pixels)))

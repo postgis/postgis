@@ -30,6 +30,8 @@
 
 #include "../../postgis_config.h"
 
+#include <math.h>
+
 #include "librtcore.h"
 #include "librtcore_internal.h"
 
@@ -163,6 +165,9 @@ rt_raster rt_raster_gdal_warp(
 	char *dst_options[] = {"SUBCLASS=VRTWarpedDataset", NULL};
 	_rti_warp_arg arg = NULL;
 
+	int nodata_count = 0;
+	int has_nodata_count = 0;
+
 	GDALRasterBandH band;
 	rt_band rtband = NULL;
 	rt_pixtype pt = PT_END;
@@ -179,14 +184,174 @@ rt_raster rt_raster_gdal_warp(
 	int ul_user = 0;
 
 	rt_raster rast = NULL;
+	rt_raster nodata_src = NULL;
+	rt_raster data_src = NULL;
+	rt_raster nodata_warp = NULL;
+	rt_raster data_warp = NULL;
+	rt_raster src = NULL;
+	uint32_t *nodata_bands = NULL;
+	uint32_t *data_bands = NULL;
+	int *group_index = NULL;
+	int *group_has_nodata = NULL;
 	int i = 0;
 	int numBands = 0;
+	int nodata_pos = 0;
+	int data_pos = 0;
 
 	int subspatial = 0;
 
 	RASTER_DEBUG(3, "rt_raster_gdal_warp: starting");
 
 	assert(NULL != raster);
+
+	numBands = rt_raster_get_num_bands(raster);
+	for (i = 0; i < numBands; i++)
+	{
+		rtband = rt_raster_get_band(raster, i);
+		if (NULL == rtband)
+		{
+			rterror("rt_raster_gdal_warp: Could not get band %d for checking nodata state", i);
+			return NULL;
+		}
+		if (rt_band_get_hasnodata_flag(rtband) != FALSE)
+			has_nodata_count++;
+	}
+
+	if (has_nodata_count > 0 && has_nodata_count < numBands)
+	{
+		nodata_bands = rtalloc(sizeof(uint32_t) * has_nodata_count);
+		data_bands = rtalloc(sizeof(uint32_t) * (numBands - has_nodata_count));
+		group_index = rtalloc(sizeof(int) * numBands);
+		group_has_nodata = rtalloc(sizeof(int) * numBands);
+		if (nodata_bands == NULL || data_bands == NULL || group_index == NULL || group_has_nodata == NULL)
+		{
+			rterror("rt_raster_gdal_warp: Could not allocate mixed nodata band mapping");
+			rtdealloc(nodata_bands);
+			rtdealloc(data_bands);
+			rtdealloc(group_index);
+			rtdealloc(group_has_nodata);
+			return NULL;
+		}
+
+		for (i = 0; i < numBands; i++)
+		{
+			rtband = rt_raster_get_band(raster, i);
+			if (rt_band_get_hasnodata_flag(rtband) != FALSE)
+			{
+				nodata_bands[nodata_pos] = i;
+				group_index[i] = nodata_pos++;
+				group_has_nodata[i] = 1;
+			}
+			else
+			{
+				data_bands[data_pos] = i;
+				group_index[i] = data_pos++;
+				group_has_nodata[i] = 0;
+			}
+		}
+
+		nodata_src = rt_raster_from_band(raster, nodata_bands, has_nodata_count);
+		data_src = rt_raster_from_band(raster, data_bands, numBands - has_nodata_count);
+		if (nodata_src == NULL || data_src == NULL)
+		{
+			rterror("rt_raster_gdal_warp: Could not split mixed nodata raster");
+			if (nodata_src != NULL)
+				rt_raster_destroy(nodata_src);
+			if (data_src != NULL)
+				rt_raster_destroy(data_src);
+			rtdealloc(nodata_bands);
+			rtdealloc(data_bands);
+			rtdealloc(group_index);
+			rtdealloc(group_has_nodata);
+			return NULL;
+		}
+
+		nodata_warp = rt_raster_gdal_warp(nodata_src,
+						  src_srs,
+						  dst_srs,
+						  scale_x,
+						  scale_y,
+						  width,
+						  height,
+						  ul_xw,
+						  ul_yw,
+						  grid_xw,
+						  grid_yw,
+						  skew_x,
+						  skew_y,
+						  resample_alg,
+						  max_err);
+		data_warp = rt_raster_gdal_warp(data_src,
+						src_srs,
+						dst_srs,
+						scale_x,
+						scale_y,
+						width,
+						height,
+						ul_xw,
+						ul_yw,
+						grid_xw,
+						grid_yw,
+						skew_x,
+						skew_y,
+						resample_alg,
+						max_err);
+		rt_raster_destroy(nodata_src);
+		rt_raster_destroy(data_src);
+		if (nodata_warp == NULL || data_warp == NULL)
+		{
+			rterror("rt_raster_gdal_warp: Could not warp mixed nodata raster groups");
+			if (nodata_warp != NULL)
+				rt_raster_destroy(nodata_warp);
+			if (data_warp != NULL)
+				rt_raster_destroy(data_warp);
+			rtdealloc(nodata_bands);
+			rtdealloc(data_bands);
+			rtdealloc(group_index);
+			rtdealloc(group_has_nodata);
+			return NULL;
+		}
+
+		rast = rt_raster_clone(nodata_warp, 0);
+		if (rast == NULL)
+		{
+			rterror("rt_raster_gdal_warp: Could not create mixed nodata output raster");
+			rt_raster_destroy(nodata_warp);
+			rt_raster_destroy(data_warp);
+			rtdealloc(nodata_bands);
+			rtdealloc(data_bands);
+			rtdealloc(group_index);
+			rtdealloc(group_has_nodata);
+			return NULL;
+		}
+
+		for (i = 0; i < numBands; i++)
+		{
+			src = group_has_nodata[i] ? nodata_warp : data_warp;
+			if (rt_raster_copy_band(rast, src, group_index[i], i) < 0)
+			{
+				rterror("rt_raster_gdal_warp: Could not merge warped mixed nodata band");
+				rt_raster_destroy(rast);
+				rt_raster_destroy(nodata_warp);
+				rt_raster_destroy(data_warp);
+				rtdealloc(nodata_bands);
+				rtdealloc(data_bands);
+				rtdealloc(group_index);
+				rtdealloc(group_has_nodata);
+				return NULL;
+			}
+		}
+
+		rt_raster_destroy(nodata_warp);
+		rt_raster_destroy(data_warp);
+		rtdealloc(nodata_bands);
+		rtdealloc(data_bands);
+		rtdealloc(group_index);
+		rtdealloc(group_has_nodata);
+
+		RASTER_DEBUG(3, "rt_raster_gdal_warp: done");
+		return rast;
+	}
 
 	arg = _rti_warp_arg_init();
 	if (arg == NULL) {
@@ -627,7 +792,6 @@ rt_raster rt_raster_gdal_warp(
 	}
 
 	/* add bands */
-	numBands = rt_raster_get_num_bands(raster);
 	for (i = 0; i < numBands; i++) {
 		rtband = rt_raster_get_band(raster, i);
 		if (NULL == rtband) {
@@ -656,6 +820,7 @@ rt_raster rt_raster_gdal_warp(
 		}
 
 		if (rt_band_get_hasnodata_flag(rtband) != FALSE) {
+			nodata_count++;
 			rt_band_get_nodata(rtband, &nodata);
 			if (GDALSetRasterNoDataValue(band, nodata) != CE_None)
 				rtwarn("rt_raster_gdal_warp: Could not set nodata value for band %d", i);
@@ -700,10 +865,17 @@ rt_raster rt_raster_gdal_warp(
 	arg->wopts->hDstDS = arg->dst.ds;
 	arg->wopts->pfnTransformer = arg->transform.func;
 	arg->wopts->pTransformerArg = arg->transform.arg.transform;
-	arg->wopts->papszWarpOptions = (char **) CPLMalloc(sizeof(char *) * 2);
+	arg->wopts->papszWarpOptions = (char **) CPLMalloc(sizeof(char *) * 3);
 	arg->wopts->papszWarpOptions[0] = (char *) CPLMalloc(sizeof(char) * (strlen("INIT_DEST=NO_DATA") + 1));
 	strcpy(arg->wopts->papszWarpOptions[0], "INIT_DEST=NO_DATA");
-	arg->wopts->papszWarpOptions[1] = NULL;
+#if POSTGIS_GDAL_VERSION >= 30302
+	arg->wopts->papszWarpOptions[1] = (char *) CPLMalloc(sizeof(char) * (strlen("UNIFIED_SRC_NODATA=PARTIAL") + 1));
+	strcpy(arg->wopts->papszWarpOptions[1], "UNIFIED_SRC_NODATA=PARTIAL");
+#else
+	arg->wopts->papszWarpOptions[1] = (char *) CPLMalloc(sizeof(char) * (strlen("UNIFIED_SRC_NODATA=NO") + 1));
+	strcpy(arg->wopts->papszWarpOptions[1], "UNIFIED_SRC_NODATA=NO");
+#endif
+	arg->wopts->papszWarpOptions[2] = NULL;
 
 	/* band mapping */
 	arg->wopts->nBandCount = numBands;
@@ -712,8 +884,12 @@ rt_raster rt_raster_gdal_warp(
 	for (i = 0; i < arg->wopts->nBandCount; i++)
 		arg->wopts->panDstBands[i] = arg->wopts->panSrcBands[i] = i + 1;
 
-	/* nodata mapping */
-	{
+	/*
+	 * When every band declares nodata, pass the explicit vector to GDAL.
+	 * Mixed-band rasters keep their intrinsic per-band nodata metadata; a
+	 * synthetic value for bands without nodata can collide with valid pixels.
+	 */
+	if (numBands > 0 && nodata_count == numBands) {
 		arg->wopts->padfSrcNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
 		arg->wopts->padfDstNoDataReal = (double *) CPLMalloc(numBands * sizeof(double));
 		arg->wopts->padfSrcNoDataImag = (double *) CPLMalloc(numBands * sizeof(double));
@@ -735,10 +911,7 @@ rt_raster rt_raster_gdal_warp(
 				_rti_warp_arg_destroy(arg);
 				return NULL;
 			}
-			if (!rt_band_get_hasnodata_flag(band))
-				arg->wopts->padfSrcNoDataReal[i] = -123456.789;
-			else
-				rt_band_get_nodata(band, &(arg->wopts->padfSrcNoDataReal[i]));
+			rt_band_get_nodata(band, &(arg->wopts->padfSrcNoDataReal[i]));
 			arg->wopts->padfDstNoDataReal[i] = arg->wopts->padfSrcNoDataReal[i];
 			arg->wopts->padfDstNoDataImag[i] = arg->wopts->padfSrcNoDataImag[i] = 0.0;
 		}
@@ -775,4 +948,3 @@ rt_raster rt_raster_gdal_warp(
 
 	return rast;
 }
-
