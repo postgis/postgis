@@ -55,5 +55,29 @@ SELECT 't1', lbl, ST_AsText(g::geometry)
 FROM tt.f_hier_point
 ORDER BY lbl;
 
+SELECT 't5933.explicit', id(topology.CreateTopoGeom(
+  'tt',
+  1,
+  layer_id(findLayer('tt','f_hier_point', 'g')),
+  (SELECT g::topology.TopoElement FROM tt.f_point WHERE lbl = '5090'),
+  5933
+));
+
+SELECT 't5933.implicit', ST_AsText(
+  topology.CreateTopoGeom(
+    'tt',
+    1,
+    layer_id(findLayer('tt','f_hier_point', 'g')),
+    (SELECT g::topology.TopoElement FROM tt.f_point WHERE lbl = '5070')
+  )::geometry
+);
+
+SELECT 't5933.malformed', topology.CreateTopoGeom(
+  'tt',
+  1,
+  layer_id(findLayer('tt','f_hier_point', 'g')),
+  ARRAY[1,2,3]::topology.TopoElementArray
+);
+
 -- Cleanup
 SELECT NULL FROM DropTopology('tt');
