@@ -88,6 +88,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #6083, Pass configured dependency include paths to fuzzer smoke builds
           (Darafei Praliaskouski)
+ - #5762, ST_LocateBetween preserves Z and M dimensions when offsetting
+          measured lines (Darafei Praliaskouski)
  - #3103, Add regression coverage for exact-schema find_srid and
           geometry_columns lookups (Darafei Praliaskouski)
  - #6038, Avoid stale relation lookups in geometry_columns after topology

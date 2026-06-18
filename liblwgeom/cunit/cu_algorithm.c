@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  * Copyright 2008 Paul Ramsey
- * Copyright 2018 Darafei Praliaskouski, me@komzpa.net
+ * Copyright 2018-2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -744,6 +744,61 @@ static void test_lwline_clip(void)
 	//printf("c = %s\n", ewkt);
 	ASSERT_STRING_EQUAL(ewkt, "GEOMETRYCOLLECTION(POINT(1 1 1))");
 	lwfree(ewkt);
+	lwcollection_free(c);
+	lwgeom_free(line);
+
+	line = lwgeom_from_wkt("LINESTRING ZM (10 10 10 10, 100 100 20 20)", LW_PARSER_CHECK_NONE);
+	c = lwgeom_clip_to_ordinate_range(line, 'M', 12.0, 18.0, 5.0);
+	ewkt = lwgeom_to_ewkt((LWGEOM *)c);
+	CU_ASSERT(lwgeom_has_z((LWGEOM *)c));
+	CU_ASSERT(lwgeom_has_m((LWGEOM *)c));
+	ASSERT_STRING_EQUAL(
+	    ewkt, "MULTILINESTRING((24.464466094067 31.535533905933 12 12,78.464466094067 85.535533905933 18 18))");
+	lwfree(ewkt);
+	lwcollection_free(c);
+	lwgeom_free(line);
+
+	line = lwgeom_from_wkt("LINESTRING ZM (0 0 0 0,0 20 20 20,10 20 30 30,10 10 40 40,0 10 50 50)",
+			       LW_PARSER_CHECK_NONE);
+	c = lwgeom_clip_to_ordinate_range(line, 'M', 0.0, 50.0, 2.0);
+	CU_ASSERT_EQUAL(c->ngeoms, 1);
+	CU_ASSERT_EQUAL(c->geoms[0]->type, LINETYPE);
+	{
+		LWLINE *clipped = lwgeom_as_lwline(c->geoms[0]);
+		POINT4D start;
+		POINT4D end;
+		getPoint4d_p(clipped->points, 0, &start);
+		getPoint4d_p(clipped->points, clipped->points->npoints - 1, &end);
+		CU_ASSERT_DOUBLE_EQUAL(start.z, 0.0, 1e-10);
+		CU_ASSERT_DOUBLE_EQUAL(start.m, 0.0, 1e-10);
+		CU_ASSERT(start.m < end.m);
+		CU_ASSERT_DOUBLE_EQUAL(end.z, 48.0, 1e-10);
+		CU_ASSERT_DOUBLE_EQUAL(end.m, 48.0, 1e-10);
+	}
+	lwcollection_free(c);
+	lwgeom_free(line);
+
+	line = lwgeom_from_wkt("LINESTRING ZM (0 0 0 0,10 0 10 10,10 10 20 20,0 10 30 30,0 0 40 40)",
+			       LW_PARSER_CHECK_NONE);
+	c = lwgeom_clip_to_ordinate_range(line, 'M', 0.0, 40.0, 1.0);
+	CU_ASSERT_EQUAL(c->ngeoms, 1);
+	CU_ASSERT_EQUAL(c->geoms[0]->type, LINETYPE);
+	{
+		LWLINE *clipped = lwgeom_as_lwline(c->geoms[0]);
+		double min_m = DBL_MAX;
+		double max_m = -DBL_MAX;
+
+		for (uint32_t i = 0; i < clipped->points->npoints; i++)
+		{
+			POINT4D point;
+			getPoint4d_p(clipped->points, i, &point);
+			min_m = FP_MIN(min_m, point.m);
+			max_m = FP_MAX(max_m, point.m);
+		}
+
+		CU_ASSERT(min_m < 10.0);
+		CU_ASSERT(max_m > 30.0);
+	}
 	lwcollection_free(c);
 	lwgeom_free(line);
 

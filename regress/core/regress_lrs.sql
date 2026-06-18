@@ -23,6 +23,14 @@ select 'LINEZM_3', ST_AsText(ST_LocateBetween('LINESTRING(0 10 100 0, 0 0 0 10, 
 select 'LINEZM_4', ST_AsText(ST_LocateBetween('LINESTRING(0 10 100 0, 0 0 0 20, 10 0 0 0)', 2, 18));
 select 'LINEZM_5', ST_AsText(ST_LocateBetween('LINESTRING(0 10 100 0, 0 0 0 20, 0 10 10 40, 10 0 0 0)', 2, 18));
 select 'LINEZM_6', ST_AsText(ST_LocateBetween('LINESTRING(0 10 10 40, 10 0 0 0)', 2, 2));
+select '#5762', ST_AsText(ST_LocateBetween('LINESTRING ZM (10 10 10 10, 100 100 20 20)', 12, 18, 5), 12);
+select '#5762-folded', ST_Z(ST_EndPoint(ST_GeometryN(g, 1))), ST_M(ST_EndPoint(ST_GeometryN(g, 1)))
+from ST_LocateBetween('LINESTRING ZM (0 0 0 0,0 20 20 20,10 20 30 30,10 10 40 40,0 10 50 50)', 0, 50, 2) as g;
+select '#5762-folded-orient', ST_M(ST_StartPoint(ST_GeometryN(g, 1))), ST_M(ST_EndPoint(ST_GeometryN(g, 1)))
+from ST_LocateBetween('LINESTRING ZM (0 0 0 0,0 20 20 20,10 20 30 30,10 10 40 40,0 10 50 50)', 0, 50, 2) as g;
+select '#5762-negative', LEAST(ST_M(ST_StartPoint(ST_GeometryN(g, 1))), ST_M(ST_EndPoint(ST_GeometryN(g, 1)))),
+  GREATEST(ST_M(ST_StartPoint(ST_GeometryN(g, 1))), ST_M(ST_EndPoint(ST_GeometryN(g, 1))))
+from ST_LocateBetween('LINESTRING ZM (0 0 0 0,10 0 10 10,10 10 20 20)', 0, 20, -2) as g;
 -- #3119 --
 select '#3119a', ST_AsText(ST_LocateBetweenElevations('LINESTRING Z(0 0 0, 10 10 10)'::geometry, 11, 11));
 

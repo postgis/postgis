@@ -20,6 +20,7 @@
  *
  * Copyright (C) 2015 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2011 Paul Ramsey
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -104,6 +105,152 @@ ptarray_locate_along(const POINTARRAY *pa, double m, double offset)
 	}
 
 	return dpa;
+}
+
+static void
+lwline_offset_point_project(const LWLINE *line,
+			    const POINT4D *offset_point,
+			    uint32_t *source_seg,
+			    int reverse,
+			    POINT4D *projected_point)
+{
+	double mindist = DBL_MAX;
+	uint32_t best_seg = *source_seg;
+	const uint32_t last_seg = line->points->npoints - 2;
+	const int closed = ptarray_is_closed_2d(line->points);
+
+	if (reverse)
+	{
+		for (uint32_t seg = *source_seg + 1; seg > 0; seg--)
+		{
+			uint32_t candidate_seg = seg - 1;
+			double dist_sqr;
+			const POINT2D query = {offset_point->x, offset_point->y};
+			const POINT2D *start = getPoint2d_cp(line->points, candidate_seg);
+			const POINT2D *end = getPoint2d_cp(line->points, candidate_seg + 1);
+
+			/*
+			 * Closed lines make the first offset vertex ambiguous at the join.
+			 * Keep the initial cursor on the logical start/end side; otherwise
+			 * an equally near closing segment can make all later Z/M values come
+			 * from the wrong end of the measured ring.
+			 */
+			if (closed && *source_seg == last_seg && candidate_seg == 0)
+				continue;
+
+			dist_sqr = distance2d_sqr_pt_seg(&query, start, end);
+			if (dist_sqr <= mindist)
+			{
+				mindist = dist_sqr;
+				best_seg = candidate_seg;
+			}
+		}
+	}
+	else
+	{
+		uint32_t stop_seg = line->points->npoints - 1;
+		/*
+		 * Closed lines make the first offset vertex ambiguous at the join.
+		 * Keep the initial cursor on the logical start side; otherwise an
+		 * equally near closing segment can make all later Z/M values come from
+		 * the wrong end of the measured ring.
+		 */
+		if (closed && *source_seg == 0)
+			stop_seg = last_seg;
+
+		for (uint32_t seg = *source_seg; seg < stop_seg; seg++)
+		{
+			double dist_sqr;
+			const POINT2D query = {offset_point->x, offset_point->y};
+			const POINT2D *start = getPoint2d_cp(line->points, seg);
+			const POINT2D *end = getPoint2d_cp(line->points, seg + 1);
+
+			dist_sqr = distance2d_sqr_pt_seg(&query, start, end);
+			if (dist_sqr <= mindist)
+			{
+				mindist = dist_sqr;
+				best_seg = seg;
+			}
+		}
+	}
+
+	*source_seg = best_seg;
+	{
+		POINT4D start;
+		POINT4D end;
+		getPoint4d_p(line->points, best_seg, &start);
+		getPoint4d_p(line->points, best_seg + 1, &end);
+		closest_point_on_segment(offset_point, &start, &end, projected_point);
+	}
+}
+
+static LWGEOM *
+lwline_reapply_clipped_line_dims_internal(const LWLINE *line, LWGEOM *lwgeom, uint32_t *source_seg, int reverse)
+{
+	LWLINE *oline;
+	POINTARRAY *opa;
+	char hasz = lwgeom_has_z(lwline_as_lwgeom(line));
+	char hasm = lwgeom_has_m(lwline_as_lwgeom(line));
+
+	if (lwgeom->type == MULTILINETYPE)
+	{
+		LWCOLLECTION *col = lwgeom_as_lwcollection(lwgeom);
+		for (uint32_t i = 0; i < col->ngeoms; i++)
+			col->geoms[i] =
+			    lwline_reapply_clipped_line_dims_internal(line, col->geoms[i], source_seg, reverse);
+		FLAGS_SET_Z(col->flags, hasz);
+		FLAGS_SET_M(col->flags, hasm);
+		return lwgeom;
+	}
+
+	if (lwgeom->type != LINETYPE)
+		return lwgeom;
+
+	oline = lwgeom_as_lwline(lwgeom);
+	opa = ptarray_construct_empty(hasz, hasm, oline->points->npoints);
+
+	for (uint32_t i = 0; i < oline->points->npoints; i++)
+	{
+		POINT4D offset_point;
+		POINT4D projected_point;
+
+		getPoint4d_p(oline->points, i, &offset_point);
+
+		/*
+		 * Offset vertices are emitted along the offset curve, so their source
+		 * segment must move monotonically.  This avoids assigning Z/M from an
+		 * equally-near segment on another fold of the line.
+		 */
+		lwline_offset_point_project(line, &offset_point, source_seg, reverse, &projected_point);
+
+		/* GEOS provides the offset XY; the clipped source line provides Z/M. */
+		if (hasz)
+			offset_point.z = projected_point.z;
+		if (hasm)
+			offset_point.m = projected_point.m;
+
+		ptarray_append_point(opa, &offset_point, LW_FALSE);
+	}
+
+	lwgeom_free(lwgeom);
+	return lwline_as_lwgeom(lwline_construct(line->srid, NULL, opa));
+}
+
+static LWGEOM *
+lwline_reapply_clipped_line_dims(const LWLINE *line, LWGEOM *lwgeom, int reverse)
+{
+	char hasz = lwgeom_has_z(lwline_as_lwgeom(line));
+	char hasm = lwgeom_has_m(lwline_as_lwgeom(line));
+	uint32_t source_seg = 0;
+
+	if ((!hasz && !hasm) || line->points->npoints < 2 ||
+	    (lwgeom->type != LINETYPE && lwgeom->type != MULTILINETYPE))
+		return lwgeom;
+
+	if (reverse)
+		source_seg = line->points->npoints - 2;
+
+	return lwline_reapply_clipped_line_dims_internal(line, lwgeom, &source_seg, reverse);
 }
 
 static LWMPOINT *
@@ -825,6 +972,7 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 	LWCOLLECTION *out_col;
 	LWCOLLECTION *out_offset;
 	uint32_t i;
+	int reverse = LW_FALSE;
 
 	/* Ensure 'from' is less than 'to'. */
 	if (to < from)
@@ -874,9 +1022,17 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 	if (FP_IS_ZERO(offset) || lwgeom_is_empty(lwcollection_as_lwgeom(out_col)))
 		return out_col;
 
+#if POSTGIS_GEOS_VERSION < 31100
+	/* GEOS before 3.11 returned right-side offset curves in reverse order. */
+	if (offset < 0.0)
+		reverse = LW_TRUE;
+#endif
+
 	/* Construct a collection to hold our outputs. */
-	/* Things get ugly: GEOS offset drops Z's and M's so we have to drop ours */
-	out_offset = lwcollection_construct_empty(MULTILINETYPE, lwin->srid, 0, 0);
+	out_offset = lwcollection_construct_empty(MULTILINETYPE,
+						  lwin->srid,
+						  lwgeom_has_z(lwcollection_as_lwgeom(out_col)),
+						  lwgeom_has_m(lwcollection_as_lwgeom(out_col)));
 
 	/* Try and offset the linear portions of the return value */
 	for (i = 0; i < out_col->ngeoms; i++)
@@ -895,7 +1051,16 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 			{
 				lwerror("lwgeom_offsetcurve returned null");
 			}
-			lwcollection_add_lwgeom(out_offset, lwoff);
+			lwoff = lwline_reapply_clipped_line_dims(lwgeom_as_lwline(out_col->geoms[i]), lwoff, reverse);
+			if (lwoff->type == MULTILINETYPE)
+			{
+				LWCOLLECTION *col = lwgeom_as_lwcollection(lwoff);
+				out_offset = lwcollection_concat_in_place(out_offset, col);
+				lwfree(col->geoms);
+				lwcollection_release(col);
+			}
+			else
+				lwcollection_add_lwgeom(out_offset, lwoff);
 		}
 		else
 		{
@@ -904,6 +1069,7 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 		}
 	}
 
+	lwcollection_free(out_col);
 	return out_offset;
 }
 
