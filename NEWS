@@ -10,6 +10,8 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - #3610, GT-921, GH-958, Store generated garden test logs as JSONB
+   (reported by Regina Obe; fixed by Darafei Praliaskouski)
  - GT-887, Check contributor credits for duplicates and ordering
    (Darafei Praliaskouski)
  - #6162, GT-957, GH-1199, Cache repeated envelopes and box2d casts
