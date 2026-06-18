@@ -64,6 +64,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
  - #6083, Pass configured dependency include paths to fuzzer smoke builds
           (Darafei Praliaskouski)
+ - #2924, [raster] Preserve requested GDAL warp skew for rasters with
+          default geotransforms (Darafei Praliaskouski)
  - #3103, Add regression coverage for exact-schema find_srid and
           geometry_columns lookups (Darafei Praliaskouski)
  - #5655, [doc] Skip XML validation during `make check` when xsltproc is
