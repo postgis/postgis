@@ -45,6 +45,7 @@ select 'st_maxdistance_134', st_maxdistance('POINT(1 2)', 'POINT(1 2)');
 select 'st_maxdistance_135', st_maxdistance('POINT(5 0)', 'POINT(10 12)');
 
 select 'st_maxdistance_136', st_maxdistance('POINT(0 0)', ST_translate('POINT(0 0)', 5, 12, 0));
+select 'st_maxdistance_1arg', st_maxdistance('LINESTRING(0 0,3 4,6 0)'::geometry);
 
 -- postgis-users/2006-May/012174.html
 select 'st_maxdistance_dist', st_maxdistance(a,b)::numeric(12,6), st_maxdistance(b,a)::numeric(12,6) from (
@@ -59,6 +60,7 @@ select 'st_longestline_134', st_astext(st_longestline('POINT(1 2)', 'POINT(1 2)'
 select 'st_longestline_135', st_astext(st_longestline('POINT(5 0)', 'POINT(10 12)'));
 
 select 'st_longestline_136', st_astext(st_longestline('POINT(0 0)', ST_translate('POINT(0 0)', 5, 12, 0)));
+select 'st_longestline_1arg', st_astext(st_longestline('LINESTRING(0 0,3 4,6 0)'::geometry));
 
 -- postgis-users/2006-May/012174.html
 select 'st_longestline_dist', st_astext(st_longestline(a,b)), st_astext(st_longestline(b,a)) from (

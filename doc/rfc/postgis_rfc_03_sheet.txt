@@ -188,6 +188,8 @@ FUNCTION	"distance(geometry,geometry)"	PUBLIC	DEPRECATE
 FUNCTION	"ST_Distance(geometry,geometry)"	PUBLIC	KEEP		
 FUNCTION	"max_distance(geometry,geometry)"	PUBLIC	DEPRECATE		
 FUNCTION	"ST_max_distance(geometry,geometry)"	PUBLIC	KEEP		
+FUNCTION	"ST_MaxDistance(geometry)"	PUBLIC	KEEP
+FUNCTION	"ST_LongestLine(geometry)"	PUBLIC	KEEP
 FUNCTION	"point_inside_circle(geometry,float8,float8,float8)"	PUBLIC	DEPRECATE
 FUNCTION	"ST_point_inside_circle(geometry,float8,float8,float8)"	PUBLIC	KEEP
 FUNCTION	"azimuth(geometry,geometry)"	PUBLIC	DEPRECATE
