@@ -1,5 +1,5 @@
-geog_centroid_mpt_pole_north|POINT(0 90)
-geog_centroid_mpt_pole_south|POINT(0 -90)
+geog_centroid_mpt_pole_north|90.000000
+geog_centroid_mpt_pole_south|-90.000000
 geog_centroid_mpt_idl_1|180.000000|0.000000
 geog_centroid_mpt_idl_2|179.500000|0.000000
 geog_centroid_mpt_idl_3|-179.500000|0.000000

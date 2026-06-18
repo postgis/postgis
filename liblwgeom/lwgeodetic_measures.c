@@ -317,15 +317,34 @@ geography_interpolate_points(
 		else
 			segment_length_frac = spheroid_distance(&g1, &g2, s) / length;
 
+		/* Duplicate vertices produce zero-length geodetic segments. Skip them
+		 * before endpoint tolerance matching because spheroid interpolation with
+		 * identical endpoints has no stable direction. */
+		if (segment_length_frac <= 0.0)
+		{
+			p1 = p2;
+			g1 = g2;
+			continue;
+		}
+
 		/* If our target distance is before the total length we've seen
 		* so far. create a new point some distance down the current
 		* segment.
 		*/
-		while ( length_fraction < length_fraction_consumed + segment_length_frac && points_found < points_to_interpolate )
+		while (length_fraction <= length_fraction_consumed + segment_length_frac + FP_TOLERANCE &&
+		       points_found < points_to_interpolate)
 		{
+			double segment_end_fraction = length_fraction_consumed + segment_length_frac;
+			double segment_fraction;
 			geog2cart(&g1, &q1);
 			geog2cart(&g2, &q2);
-			double segment_fraction = (length_fraction - length_fraction_consumed) / segment_length_frac;
+			/* The endpoint tolerance compensates for 32-bit accumulated fraction
+			 * drift, but it must clamp before segment normalization so short
+			 * segments are not extrapolated. */
+			if (length_fraction > segment_end_fraction)
+				segment_fraction = 1.0;
+			else
+				segment_fraction = (length_fraction - length_fraction_consumed) / segment_length_frac;
 			interpolate_point4d_spheroid(&p1, &p2, &pt, s, segment_fraction);
 			ptarray_set_point4d(opa, points_found++, &pt);
 			length_fraction += length_fraction_increment;
@@ -342,7 +361,7 @@ geography_interpolate_points(
 	if (points_found < points_to_interpolate)
 	{
 		getPoint4d_p(ipa, ipa->npoints - 1, &pt);
-		ptarray_set_point4d(opa, points_found, &pt);
+		ptarray_set_point4d(opa, points_found++, &pt);
 	}
 
 	if (opa->npoints <= 1)
