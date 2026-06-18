@@ -529,7 +529,7 @@ result
         <refnamediv>
         <refname>ST_MakePolygon</refname>
 
-        <refpurpose>Creates a Polygon from a shell and optional list of holes.</refpurpose>
+        <refpurpose>Creates a Polygon or CurvePolygon from a shell and optional list of holes.</refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
@@ -551,12 +551,14 @@ result
         <refsection>
             <title>Description</title>
 
-            <para>Creates a Polygon formed by the given shell and optional array of holes.
-            Input   geometries must be closed LineStrings (rings).</para>
+            <para>Creates a Polygon or CurvePolygon formed by the given shell and optional array of holes.
+            Input geometries must be closed LineStrings, CircularStrings, CompoundCurves, or NURBSCurves (rings).
+            If any input ring is curved, the result is a CurvePolygon.
+            </para>
 
-            <para><emphasis role="bold">Variant 1:</emphasis>  Accepts one shell LineString.</para>
-            <para><emphasis role="bold">Variant 2:</emphasis>  Accepts a shell LineString and an array of
-            inner (hole) LineStrings. A geometry array can be constructed using the PostgreSQL array_agg(), ARRAY[] or
+            <para><emphasis role="bold">Variant 1:</emphasis>  Accepts one shell ring.</para>
+            <para><emphasis role="bold">Variant 2:</emphasis>  Accepts a shell ring and an array of
+            inner (hole) rings. A geometry array can be constructed using the PostgreSQL array_agg(), ARRAY[] or
             ARRAY() constructs.</para>
 
             <note><para>This function does not accept MultiLineStrings.
@@ -564,6 +566,7 @@ result
             </note>
 
             <para>&Z_support;</para>
+            <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 - Support for curved input rings was introduced.</para>
         </refsection>
 
         <refsection>
@@ -596,6 +599,15 @@ SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRINGM(75.15 29.53 1,77 29 1,77.6 29.5 2
 st_asewkt
 ----------
 POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))
+</programlisting>
+
+<para>Create a CurvePolygon from a CircularString shell.</para>
+<programlisting>
+SELECT ST_AsText( ST_MakePolygon( 'CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0)' ));
+
+                     st_astext
+----------------------------------------------------
+ CURVEPOLYGON(CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0))
 </programlisting>
         </refsection>
         <refsection>

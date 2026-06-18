@@ -44,3 +44,30 @@ FROM (
   ('MULTILINESTRING((1 1, 2 2), (2 2, 3 3))'),
   ('MULTILINESTRING(EMPTY, (4 4, 5 5))')
   ) AS geoms(geom);
+
+SELECT 'ST_MakePolygonLine', ST_AsText(ST_MakePolygon(
+  'LINESTRING(0 0, 4 0, 4 4, 0 4, 0 0)'::geometry));
+
+SELECT 'ST_MakePolygonCurveShell', ST_AsText(ST_MakePolygon(
+  'CIRCULARSTRING(0 0, 1 1, 2 0, 1 -1, 0 0)'::geometry));
+
+SELECT 'ST_MakePolygonCurveHole', ST_AsText(ST_MakePolygon(
+  'LINESTRING(0 0, 4 0, 4 4, 0 4, 0 0)'::geometry,
+  ARRAY['CIRCULARSTRING(1 1, 2 2, 3 1, 2 0, 1 1)'::geometry]));
+
+SELECT 'ST_MakePolygonNurbsShell', ST_AsText(ST_MakePolygon(
+  'NURBSCURVE(2, (0 0, 5 10, 10 0, 5 -10, 0 0))'::geometry));
+
+SELECT 'ST_MakePolygonNurbsHole', ST_AsText(ST_MakePolygon(
+  'LINESTRING(0 0, 4 0, 4 4, 0 4, 0 0)'::geometry,
+  ARRAY['NURBSCURVE(2, (1 1, 2 2, 3 1, 2 0, 1 1))'::geometry]));
+
+SELECT ST_MakePolygon('CIRCULARSTRING(0 0, 1 1, 2 0)'::geometry);
+
+SELECT ST_MakePolygon(
+  'CIRCULARSTRING Z (0 0 0, 1 1 0, 2 0 0, 1 -1 0, 0 0 0)'::geometry,
+  ARRAY['CIRCULARSTRING M (1 1 7, 2 2 7, 3 1 7, 2 0 7, 1 1 7)'::geometry]);
+
+SELECT ST_MakePolygon(
+  'CIRCULARSTRING M (0 0 0, 1 1 0, 2 0 0, 1 -1 0, 0 0 0)'::geometry,
+  ARRAY['CIRCULARSTRING Z (1 1 7, 2 2 7, 3 1 7, 2 0 7, 1 1 7)'::geometry]);
