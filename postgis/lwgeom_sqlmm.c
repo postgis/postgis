@@ -129,11 +129,19 @@ Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *ret;
 	LWGEOM *igeom = NULL, *ogeom = NULL;
+	int32_t perQuad = 2;
 
 	POSTGIS_DEBUG(2, "LWGEOM_line_desegmentize.");
 
+	if (PG_NARGS() > 1)
+	{
+		perQuad = PG_GETARG_INT32(1);
+		if (perQuad < 2)
+			lwpgerror("perQuadrant must be at least 2");
+	}
+
 	igeom = lwgeom_from_gserialized(geom);
-	ogeom = lwgeom_unstroke(igeom);
+	ogeom = lwgeom_unstroke_per_quad(igeom, perQuad);
 	lwgeom_free(igeom);
 
 	if (ogeom == NULL)
