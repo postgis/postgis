@@ -117,6 +117,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #2386, Add missing raster2pgsql man page (Darafei Praliaskouski)
  - #5975, Initialize skipped union-find cluster ids deterministically
           (Darafei Praliaskouski)
+ - #5904, [topology] Avoid MinGW format warnings when logging topology ids
+          (Darafei Praliaskouski)
  - GH-885, [topology] Avoid GMP overflow in ring orientation for very large
           finite coordinates (Darafei Praliaskouski)
  - GH-892, Add OSS-Fuzz coverage for TWKB and serialized raster inputs,
