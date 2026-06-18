@@ -8,4 +8,6 @@ generic_hipped|POLYHEDRALSURFACE Z (((0 4 0,4 4 0,4 0 0,0 0 0,0 4 0)),((0 4 0,0 
 generic_flat|POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 0 0,0 0 0)),((0 0 2,4 0 2,4 4 2,0 4 2,0 0 2)),((0 0 0,0 0 2,0 4 2,0 4 0,0 0 0)),((0 4 0,0 4 2,4 4 2,4 4 0,0 4 0)),((4 4 0,4 4 2,4 0 2,4 0 0,4 4 0)),((4 0 0,4 0 2,0 0 2,0 0 0,4 0 0)))
 generic_gable_3d|3
 generic_skillion_3d|3
+generic_gable_matches_specialized|t
+generic_skillion_matches_specialized|t
 ERROR:  CG_GenerateRoof: unknown roof type 'DOME', expected FLAT, HIPPED, GABLE or SKILLION

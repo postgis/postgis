@@ -13,4 +13,10 @@ SELECT 'generic_hipped', ST_AsText(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0
 SELECT 'generic_flat', ST_AsText(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'FLAT', 2.0, 30.0, 0));
 SELECT 'generic_gable_3d', ST_CoordDim(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'GABLE', 2.0, 30.0, 0));
 SELECT 'generic_skillion_3d', ST_CoordDim(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'SKILLION', 2.0, 30.0, 0));
+SELECT 'generic_gable_matches_specialized',
+  ST_AsText(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'GABLE', 5.0, 15.0, 0)) =
+  ST_AsText(CG_GenerateGableRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 5.0, 15.0));
+SELECT 'generic_skillion_matches_specialized',
+  ST_AsText(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'SKILLION', 5.0, 15.0, 0)) =
+  ST_AsText(CG_GenerateSkillionRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 5.0, 15.0, 0));
 SELECT 'invalid_type', CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'DOME', 2.0, 30.0, 0);
