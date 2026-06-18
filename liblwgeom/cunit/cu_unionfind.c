@@ -4,6 +4,7 @@
  * http://postgis.net
  *
  * Copyright 2015 Daniel Baston
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -148,15 +149,13 @@ static void test_unionfind_collapse_cluster_ids(void)
 	lwfree(collapsed_ids);
 
 	uint8_t is_in_cluster[] = {0, 1, 1, 1, 0, 1, 0, 0, 0, 0};
-	uint32_t expected_collapsed_ids2[] = { 8, 0, 0, 0, 7, 0, 8, 7, 8, 7 };
+	uint32_t expected_collapsed_ids2[] = {
+	    UINT32_MAX, 0, 0, 0, UINT32_MAX, 0, UINT32_MAX, UINT32_MAX, UINT32_MAX, UINT32_MAX};
 
 	collapsed_ids = UF_get_collapsed_cluster_ids(uf, is_in_cluster);
 	uint32_t i;
 	for (i = 0; i < uf->N; i++)
-	{
-		if (is_in_cluster[i])
-			ASSERT_INT_EQUAL(expected_collapsed_ids2[i], collapsed_ids[i]);
-	}
+		ASSERT_INT_EQUAL(expected_collapsed_ids2[i], collapsed_ids[i]);
 
 	lwfree(collapsed_ids);
 	UF_destroy(uf);

@@ -19,9 +19,9 @@
  **********************************************************************
  *
  * Copyright 2015 Daniel Baston <dbaston@gmail.com>
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
-
 
 #include "liblwgeom.h"
 #include "lwunionfind.h"
@@ -149,6 +149,8 @@ UF_get_collapsed_cluster_ids(UNIONFIND *uf, const uint8_t *is_in_cluster)
 	uint32_t* new_ids = lwalloc(uf->N * sizeof(uint32_t));
 	uint32_t last_old_id, current_new_id, i;
 	uint8_t encountered_cluster = LW_FALSE;
+
+	memset(new_ids, 0xFF, uf->N * sizeof(uint32_t));
 
 	current_new_id = 0; last_old_id = 0;
 	for (i = 0; i < uf->N; i++)
