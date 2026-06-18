@@ -59,6 +59,7 @@ Datum postgis_libxml_version(PG_FUNCTION_ARGS);
 Datum postgis_lib_build_date(PG_FUNCTION_ARGS);
 Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS);
+Datum ST_3DSlope(PG_FUNCTION_ARGS);
 Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS);
 
@@ -340,6 +341,33 @@ Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_FLOAT8(dist);
+}
+
+PG_FUNCTION_INFO_V1(ST_3DSlope);
+Datum
+ST_3DSlope(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	double slope;
+
+	if (!lwgeom_slope_is_supported(lwgeom))
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 0);
+		elog(ERROR, "Argument must be a linear or polygonal surface geometry");
+	}
+
+	if (lwgeom_slope(lwgeom, &slope) == LW_FAILURE)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
+
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_FLOAT8(slope);
 }
 
 /**

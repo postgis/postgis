@@ -1,0 +1,26 @@
+ST_3DSlope_horizontal|0.000000
+ST_3DSlope_vertical|1.570796
+ST_3DSlope_45deg|0.785398
+ST_3DSlope_reverse|0.785398
+ST_3DSlope_2d|0.000000
+ST_3DSlope_line_45deg|0.785398
+ST_3DSlope_line_vertical|1.570796
+ST_3DSlope_line_2d|0.000000
+ST_3DSlope_closed_line|0.785398
+ST_3DSlope_multiline|0.785398
+ST_3DSlope_multiline_plane|0.785398
+ST_3DSlope_polygon_45deg|0.785398
+ST_3DSlope_polygon_hole|0.785398
+ST_3DSlope_multipolygon|0.785398
+ST_3DSlope_tin|0.785398
+ST_3DSlope_polyhedralsurface|0.785398
+ST_3DSlope_multisurface|0.785398
+ST_3DSlope_collection_surface|0.785398
+ST_3DSlope_degenerate|
+ST_3DSlope_degenerate_line|
+ST_3DSlope_not_coplanar_multiline|
+ST_3DSlope_not_coplanar|
+ST_3DSlope_not_coplanar_collection|
+ST_3DSlope_empty|
+ST_3DSlope_empty_collection|
+ERROR:  Argument must be a linear or polygonal surface geometry
