@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-06-12 20:29+0000\n"
-"PO-Revision-Date: 2026-05-27 03:39+0000\n"
+"PO-Revision-Date: 2026-06-18 08:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -2370,7 +2370,7 @@ msgid ""
 "check to the area specified by the <varname>bbox</varname> parameter."
 msgstr ""
 "トポロジまたは与えられた<varname>gridSize</varname>に丸められた頂点のすべてを"
-"点じおめとりで返します。任意で、確認範囲を<varname>bbox</varname>パラメータで"
+"点ジオメトリで返します。任意で、確認範囲を<varname>bbox</varname>パラメータで"
 "指定される範囲に制限できます。"
 
 #. Tag: para
@@ -4037,7 +4037,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.7"
-msgstr ""
+msgstr "Availability: 3.7"
 
 #. Tag: title
 #, no-c-format
@@ -9437,6 +9437,9 @@ msgid ""
 "GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTIPOLYGON, "
 "or POLYHEDRALSURFACE. Otherwise, returns NULL."
 msgstr ""
+"入力ジオメトリーがGEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, "
+"MULTICURVE, MULTIPOLYGON, POLYHEDRALSURFACEの場合には、1始まりでN番目の要素で"
+"あるジオメトリーを返します。これ以外の場合にはNULLを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -10199,12 +10202,14 @@ msgstr ""
 "ストリングが無い場合には、NULLを返します。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Backward indexing "
 "(negative index) is not in OGC. Previous versions implemented this as 0-"
 "based instead."
 msgstr ""
+"OGC仕様では0.8.0版から要素番号は1始まりです。逆方向要素番号 (負の要素番号)は"
+"OGC仕様にはありません。前の版では0始まりで実装していました。"
 
 #. Tag: para
 #, no-c-format
@@ -11454,6 +11459,8 @@ msgid ""
 "input geometries into connected trees using the Minimum Spanning Tree "
 "algorithm."
 msgstr ""
+"最小全域木アルゴリズムを使って入力ジオメトリーを接続された木にクラスタリング"
+"を行い、入力ジオメトリーごとに木IDを返すウィンドウ関数です。"
 
 #. Tag: para
 #, no-c-format
@@ -11463,6 +11470,10 @@ msgid ""
 "cluster number that the geometry argument participates in, or zero if it is "
 "not part of the minimum tree."
 msgstr ""
+"入力ジオメトリの最小接続木 (Minimum Spanning Tree, MST)に基づいて"
+"ラインストリングの接続グラフを構築するウィンドウ関数です。返り値は、引数の"
+"ジオメトリーが参加しているクラスターの番号で、最小木を構成していない場合には0"
+"となります。"
 
 #. Tag: para
 #, no-c-format
