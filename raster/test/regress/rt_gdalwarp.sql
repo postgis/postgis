@@ -883,3 +883,26 @@ SELECT
 	ST_Value(rast, 2, 1, 1, FALSE)::text AS nan_band_raw_value,
 	ST_BandNoDataValue(rast, 2) IS NULL AS nan_band_has_no_nodata
 FROM warped;
+
+WITH base AS (
+	SELECT ST_SetValue(
+		ST_SetValue(
+			ST_SetValue(
+				ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 2, 1, -1, 0, 0, 0), 1, '32BF', 0, 0),
+				1, 1, 1, NULL),
+			1, 2, 1, 100),
+		1, 1, 2, 100),
+	1, 2, 2, 100) AS rast
+), mixed AS (
+	SELECT ST_AddBand(rast, 2, '64BF', 'NaN'::float8, NULL) AS rast
+	FROM base
+), warped AS (
+	SELECT
+		ST_Resample((SELECT rast FROM base), 4, 4, NULL, NULL, 0, 0, 'Bilinear', 0) AS single_rast,
+		ST_Resample(rast, 4, 4, NULL, NULL, 0, 0, 'Bilinear', 0) AS mixed_rast
+	FROM mixed
+)
+SELECT
+	ST_Value(mixed_rast, 1, 2, 1) IS NULL = (ST_Value(single_rast, 1, 2, 1) IS NULL) AS mixed_bilinear_matches,
+	ST_BandNoDataValue(mixed_rast, 2) IS NULL AS mixed_bilinear_keeps_no_nodata
+FROM warped;
