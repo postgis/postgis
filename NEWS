@@ -115,6 +115,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - GH-899, [raster] Honor PostgreSQL interrupts in long-running GDAL
           progress callbacks (Darafei Praliaskouski)
  - #2386, Add missing raster2pgsql man page (Darafei Praliaskouski)
+ - #2823, [raster] Preserve raster_columns privileges across upgrades
+          (Darafei Praliaskouski)
  - #5975, Initialize skipped union-find cluster ids deterministically
           (Darafei Praliaskouski)
  - #5904, [topology] Avoid MinGW format warnings when logging topology ids
