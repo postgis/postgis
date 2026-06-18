@@ -21,9 +21,9 @@
  * Copyright (C) 2001-2006 Refractions Research Inc.
  * Copyright (C) 2017      Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2018      Daniel Baston <dbaston@gmail.com>
+ * Copyright (C) 2026      Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,14 +38,16 @@
 
 #include "liblwgeom_internal.h"
 
-LWGEOM *pta_unstroke(const POINTARRAY *points, int32_t srid);
-LWGEOM* lwline_unstroke(const LWLINE *line);
-LWGEOM* lwpolygon_unstroke(const LWPOLY *poly);
-LWGEOM* lwmline_unstroke(const LWMLINE *mline);
-LWGEOM* lwmpolygon_unstroke(const LWMPOLY *mpoly);
-LWGEOM* lwcollection_unstroke(const LWCOLLECTION *c);
-LWGEOM* lwgeom_unstroke(const LWGEOM *geom);
-static LWLINE* lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol, LW_LINEARIZE_TOLERANCE_TYPE tolerance_type, int flags);
+LWGEOM *pta_unstroke(const POINTARRAY *points, int32_t srid, uint32_t perQuad);
+LWGEOM *lwline_unstroke(const LWLINE *line, uint32_t perQuad);
+LWGEOM *lwpolygon_unstroke(const LWPOLY *poly, uint32_t perQuad);
+LWGEOM *lwmline_unstroke(const LWMLINE *mline, uint32_t perQuad);
+LWGEOM *lwmpolygon_unstroke(const LWMPOLY *mpoly, uint32_t perQuad);
+LWGEOM *lwcollection_unstroke(const LWCOLLECTION *c, uint32_t perQuad);
+LWGEOM *lwgeom_unstroke_per_quad(const LWGEOM *geom, uint32_t perQuad);
+LWGEOM *lwgeom_unstroke(const LWGEOM *geom);
+static LWLINE *
+lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol, LW_LINEARIZE_TOLERANCE_TYPE tolerance_type, int flags);
 
 #define NURBS_MIN_LINEARIZE_SEGMENTS 8
 #define NURBS_MAX_LINEARIZE_SEGMENTS 10000
@@ -1135,7 +1137,7 @@ geom_from_pa(const POINTARRAY *pa, int32_t srid, int is_arc, int start, int end)
 }
 
 LWGEOM *
-pta_unstroke(const POINTARRAY *points, int32_t srid)
+pta_unstroke(const POINTARRAY *points, int32_t srid, uint32_t perQuad)
 {
 	int i = 0, j, k;
 	POINT4D a1, a2, a3, b;
@@ -1147,8 +1149,6 @@ pta_unstroke(const POINTARRAY *points, int32_t srid)
 	int edge_type; /* non-zero if edge is part of an arc */
 	int start, end;
 	LWCOLLECTION *outcol;
-	/* Minimum number of edges, per quadrant, required to define an arc */
-	const unsigned int min_quad_edges = 2;
 
 	/* Die on null input */
 	if ( ! points )
@@ -1219,23 +1219,38 @@ pta_unstroke(const POINTARRAY *points, int32_t srid)
 			 */
 			arc_edges = j - 1 - i;
 			LWDEBUGF(4, "arc defined by %d edges found", arc_edges);
-			if ( first.x == b.x && first.y == b.y ) {
+			if (first.x == a3.x && first.y == a3.y)
+			{
 				LWDEBUG(4, "arc is a circle");
 				num_quadrants = 4;
 			}
 			else {
-				lw_arc_center((POINT2D*)&first, (POINT2D*)&b, (POINT2D*)&a1, (POINT2D*)&center);
-				angle = lw_arc_angle((POINT2D*)&first, (POINT2D*)&center, (POINT2D*)&b);
-				int p2_side = lw_segment_side((POINT2D*)&first, (POINT2D*)&a1, (POINT2D*)&b);
+				lw_arc_center((POINT2D *)&first, (POINT2D *)&a3, (POINT2D *)&a1, (POINT2D *)&center);
+				angle = lw_arc_angle((POINT2D *)&first, (POINT2D *)&center, (POINT2D *)&a3);
+				int p2_side = lw_segment_side((POINT2D *)&first, (POINT2D *)&a1, (POINT2D *)&a3);
 				if ( p2_side >= 0 ) angle = -angle;
 
 				if ( angle < 0 ) angle = 2 * M_PI + angle;
 				num_quadrants = ( 4 * angle ) / ( 2 * M_PI );
-				LWDEBUGF(4, "arc angle (%g %g, %g %g, %g %g) is %g (side is %d), quadrants:%g", first.x, first.y, center.x, center.y, b.x, b.y, angle, p2_side, num_quadrants);
+				LWDEBUGF(4,
+					 "arc angle (%g %g, %g %g, %g %g) is %g (side is %d), quadrants:%g",
+					 first.x,
+					 first.y,
+					 center.x,
+					 center.y,
+					 a3.x,
+					 a3.y,
+					 angle,
+					 p2_side,
+					 num_quadrants);
 			}
-			/* a1 is first point, b is last point */
-			if ( arc_edges < min_quad_edges * num_quadrants ) {
-				LWDEBUGF(4, "Not enough edges for a %g quadrants arc, %g needed", num_quadrants, min_quad_edges * num_quadrants);
+			/* first is the arc start point, a3 is the arc end point */
+			if (arc_edges < perQuad * num_quadrants)
+			{
+				LWDEBUGF(4,
+					 "Not enough edges for a %g quadrants arc, %g needed",
+					 num_quadrants,
+					 perQuad * num_quadrants);
 				for ( k = j-1; k >= i; k-- )
 					edges_in_arcs[k] = 0;
 			}
@@ -1295,18 +1310,18 @@ pta_unstroke(const POINTARRAY *points, int32_t srid)
 	return lwcollection_as_lwgeom(outcol);
 }
 
-
 LWGEOM *
-lwline_unstroke(const LWLINE *line)
+lwline_unstroke(const LWLINE *line, uint32_t perQuad)
 {
 	LWDEBUG(2, "lwline_unstroke called.");
 
 	if ( line->points->npoints < 4 ) return lwline_as_lwgeom(lwline_clone_deep(line));
-	else return pta_unstroke(line->points, line->srid);
+	else
+		return pta_unstroke(line->points, line->srid, perQuad);
 }
 
 LWGEOM *
-lwpolygon_unstroke(const LWPOLY *poly)
+lwpolygon_unstroke(const LWPOLY *poly, uint32_t perQuad)
 {
 	LWGEOM **geoms;
 	uint32_t i, hascurve = 0;
@@ -1316,7 +1331,7 @@ lwpolygon_unstroke(const LWPOLY *poly)
 	geoms = lwalloc(sizeof(LWGEOM *)*poly->nrings);
 	for (i=0; i<poly->nrings; i++)
 	{
-		geoms[i] = pta_unstroke(poly->rings[i], poly->srid);
+		geoms[i] = pta_unstroke(poly->rings[i], poly->srid, perQuad);
 		if (geoms[i]->type == CIRCSTRINGTYPE || geoms[i]->type == COMPOUNDTYPE)
 		{
 			hascurve = 1;
@@ -1335,7 +1350,7 @@ lwpolygon_unstroke(const LWPOLY *poly)
 }
 
 LWGEOM *
-lwmline_unstroke(const LWMLINE *mline)
+lwmline_unstroke(const LWMLINE *mline, uint32_t perQuad)
 {
 	LWGEOM **geoms;
 	uint32_t i, hascurve = 0;
@@ -1345,7 +1360,7 @@ lwmline_unstroke(const LWMLINE *mline)
 	geoms = lwalloc(sizeof(LWGEOM *)*mline->ngeoms);
 	for (i=0; i<mline->ngeoms; i++)
 	{
-		geoms[i] = lwline_unstroke((LWLINE *)mline->geoms[i]);
+		geoms[i] = lwline_unstroke((LWLINE *)mline->geoms[i], perQuad);
 		if (geoms[i]->type == CIRCSTRINGTYPE || geoms[i]->type == COMPOUNDTYPE)
 		{
 			hascurve = 1;
@@ -1363,7 +1378,7 @@ lwmline_unstroke(const LWMLINE *mline)
 }
 
 LWGEOM *
-lwmpolygon_unstroke(const LWMPOLY *mpoly)
+lwmpolygon_unstroke(const LWMPOLY *mpoly, uint32_t perQuad)
 {
 	LWGEOM **geoms;
 	uint32_t i, hascurve = 0;
@@ -1373,7 +1388,7 @@ lwmpolygon_unstroke(const LWMPOLY *mpoly)
 	geoms = lwalloc(sizeof(LWGEOM *)*mpoly->ngeoms);
 	for (i=0; i<mpoly->ngeoms; i++)
 	{
-		geoms[i] = lwpolygon_unstroke((LWPOLY *)mpoly->geoms[i]);
+		geoms[i] = lwpolygon_unstroke((LWPOLY *)mpoly->geoms[i], perQuad);
 		if (geoms[i]->type == CURVEPOLYTYPE)
 		{
 			hascurve = 1;
@@ -1391,7 +1406,7 @@ lwmpolygon_unstroke(const LWMPOLY *mpoly)
 }
 
 LWGEOM *
-lwcollection_unstroke(const LWCOLLECTION *c)
+lwcollection_unstroke(const LWCOLLECTION *c, uint32_t perQuad)
 {
 	LWCOLLECTION *ret = lwalloc(sizeof(LWCOLLECTION));
 	memcpy(ret, c, sizeof(LWCOLLECTION));
@@ -1402,7 +1417,7 @@ lwcollection_unstroke(const LWCOLLECTION *c)
 		ret->geoms = lwalloc(sizeof(LWGEOM *)*c->ngeoms);
 		for (i=0; i < c->ngeoms; i++)
 		{
-			ret->geoms[i] = lwgeom_unstroke(c->geoms[i]);
+			ret->geoms[i] = lwgeom_unstroke_per_quad(c->geoms[i], perQuad);
 		}
 		if (c->bbox)
 		{
@@ -1417,25 +1432,36 @@ lwcollection_unstroke(const LWCOLLECTION *c)
 	return (LWGEOM *)ret;
 }
 
-
 LWGEOM *
-lwgeom_unstroke(const LWGEOM *geom)
+lwgeom_unstroke_per_quad(const LWGEOM *geom, uint32_t perQuad)
 {
-	LWDEBUG(2, "lwgeom_unstroke called.");
+	LWDEBUG(2, "lwgeom_unstroke_per_quad called.");
+
+	if (perQuad < 2)
+	{
+		lwerror("perQuadrant must be at least 2");
+		return NULL;
+	}
 
 	switch (geom->type)
 	{
 	case LINETYPE:
-		return lwline_unstroke((LWLINE *)geom);
+		return lwline_unstroke((LWLINE *)geom, perQuad);
 	case POLYGONTYPE:
-		return lwpolygon_unstroke((LWPOLY *)geom);
+		return lwpolygon_unstroke((LWPOLY *)geom, perQuad);
 	case MULTILINETYPE:
-		return lwmline_unstroke((LWMLINE *)geom);
+		return lwmline_unstroke((LWMLINE *)geom, perQuad);
 	case MULTIPOLYGONTYPE:
-		return lwmpolygon_unstroke((LWMPOLY *)geom);
+		return lwmpolygon_unstroke((LWMPOLY *)geom, perQuad);
 	case COLLECTIONTYPE:
-		return lwcollection_unstroke((LWCOLLECTION *)geom);
+		return lwcollection_unstroke((LWCOLLECTION *)geom, perQuad);
 	default:
 		return lwgeom_clone_deep(geom);
 	}
+}
+
+LWGEOM *
+lwgeom_unstroke(const LWGEOM *geom)
+{
+	return lwgeom_unstroke_per_quad(geom, 2);
 }
