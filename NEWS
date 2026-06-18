@@ -3,6 +3,9 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - #6042, Skip downgrade checks when source extension libraries cannot
+           be loaded in the current dependency environment
+           (Darafei Praliaskouski)
   - Flatgeobuf schema mismatch vulnerability (NeuroWinter)
   - #5899, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)
   - #5916, ST_Split hang with very large ordinates (Paul Ramsey)
@@ -3429,4 +3432,3 @@ PostGIS 0.1
 - truely_inside()
 - rtree index support functions
 - gist index support functions
-
