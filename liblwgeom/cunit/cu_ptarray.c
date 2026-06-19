@@ -479,6 +479,29 @@ static void test_ptarray_signed_area()
 	CU_ASSERT(area < 6e99);
 	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 0);
 	lwline_free(line);
+
+	/* Detect residual tails after scaled determinant cancellation. */
+	line =
+	    lwgeom_as_lwline(lwgeom_from_text("LINESTRING(3e120 1.0000000000000002e220,"
+					      "3e155 -1e-50,3e155 -1.0000000000000003e140,"
+					      "3e120 1.0000000000000002e220)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(isfinite(area));
+	CU_ASSERT(area > 1e295);
+	CU_ASSERT(area < 2e295);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 0);
+	lwline_free(line);
+
+	line =
+	    lwgeom_as_lwline(lwgeom_from_text("LINESTRING(3e120 1.0000000000000002e220,"
+					      "3e155 -1.0000000000000003e140,3e155 -1e-50,"
+					      "3e120 1.0000000000000002e220)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(isfinite(area));
+	CU_ASSERT(area < -1e295);
+	CU_ASSERT(area > -2e295);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 1);
+	lwline_free(line);
 }
 
 static void test_ptarray_contains_point()
