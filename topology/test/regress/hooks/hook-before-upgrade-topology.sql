@@ -420,6 +420,15 @@ BEGIN
     );
     INSERT INTO upgrade_test.domain_generated_cross_dependency_test(id, a)
       VALUES (1, '{43,44}'::topology.topoelement);
+
+    CREATE TABLE upgrade_test.domain_generated_nested_source_dependency_test (
+      id integer,
+      a upgrade_test.nested_topoelement,
+      g topology.topoelement
+        GENERATED ALWAYS AS (upgrade_test.domain_generated_source_value(a::topology.topoelement)) STORED
+    );
+    INSERT INTO upgrade_test.domain_generated_nested_source_dependency_test(id, a)
+      VALUES (1, '{97,98}'::topology.topoelement::upgrade_test.nested_topoelement);
     UPDATE upgrade_test.domain_generated_source_guard SET fail = true;
   END IF;
 END

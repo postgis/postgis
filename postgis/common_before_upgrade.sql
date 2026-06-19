@@ -182,7 +182,7 @@ DECLARE
 	domain_oid OID;
 	domain_array_oid OID;
 	domain_att_type_oids OID[];
-	topology_domain_oids OID[];
+	nested_topology_type_oids OID[];
 	domain_schema TEXT := 'topology';
 	domain_constraint RECORD;
 	domain_constraint_defs JSONB := '[]'::JSONB;
@@ -235,20 +235,36 @@ BEGIN
 		BEGIN
 			domain_att_type_oids := pg_catalog.array_remove(ARRAY[domain_oid, domain_array_oid], 0::oid);
 
+			-- Generated expressions and user-visible container types can hide
+			-- topology domains behind a different atttypid. Use one recursive
+			-- closure so every dependency check reasons about the same set of
+			-- exact and nested domain-storage carriers.
+			WITH RECURSIVE nested_type(type_oid) AS (
+				SELECT pg_catalog.unnest(domain_att_type_oids)
+				UNION
+				SELECT nested_candidate.type_oid
+				FROM nested_type
+				JOIN LATERAL (
+					SELECT t.oid AS type_oid
+					FROM pg_catalog.pg_type AS t
+					WHERE t.typbasetype = nested_type.type_oid
+					OR t.typelem = nested_type.type_oid
+					UNION
+					SELECT ct.oid AS type_oid
+					FROM pg_catalog.pg_attribute AS ta
+					JOIN pg_catalog.pg_class AS tc
+						ON tc.oid = ta.attrelid
+						AND tc.relkind = 'c'
+					JOIN pg_catalog.pg_type AS ct
+						ON ct.typrelid = tc.oid
+					WHERE ta.atttypid = nested_type.type_oid
+					AND ta.attnum > 0
+					AND NOT ta.attisdropped
+				) AS nested_candidate ON true
+			)
 			SELECT pg_catalog.array_agg(type_oid)
-			FROM (
-				SELECT t.oid AS type_oid
-				FROM pg_catalog.pg_type AS t
-				WHERE t.typnamespace = domain_schema::regnamespace
-				AND t.typname IN ('topoelement', 'topoelementarray')
-				UNION ALL
-				SELECT t.typarray
-				FROM pg_catalog.pg_type AS t
-				WHERE t.typnamespace = domain_schema::regnamespace
-				AND t.typname IN ('topoelement', 'topoelementarray')
-				AND t.typarray <> 0
-			) AS topology_types
-				INTO topology_domain_oids;
+			FROM nested_type
+				INTO nested_topology_type_oids;
 
 				FOR domain_constraint IN
 					SELECT
@@ -615,30 +631,6 @@ BEGIN
 			-- another column type OID, so the exact-OID rewrite below cannot
 			-- prove that all old-width storage was repaired.
 			FOR domain_skipped_column IN
-				WITH RECURSIVE nested_type(type_oid) AS (
-					SELECT pg_catalog.unnest(domain_att_type_oids)
-					UNION
-					SELECT nested_candidate.type_oid
-					FROM nested_type
-					JOIN LATERAL (
-						SELECT t.oid AS type_oid
-						FROM pg_catalog.pg_type AS t
-						WHERE t.typbasetype = nested_type.type_oid
-						OR t.typelem = nested_type.type_oid
-						UNION
-						SELECT ct.oid AS type_oid
-						FROM pg_catalog.pg_attribute AS ta
-						JOIN pg_catalog.pg_class AS tc
-							ON tc.oid = ta.attrelid
-							AND tc.relkind = 'c'
-						JOIN pg_catalog.pg_type AS ct
-							ON ct.typrelid = tc.oid
-						WHERE ta.atttypid = nested_type.type_oid
-						AND ta.attnum > 0
-						AND NOT ta.attisdropped
-					) AS nested_candidate ON true
-					WHERE nested_candidate.type_oid <> ALL(domain_att_type_oids)
-				)
 				SELECT DISTINCT
 					a.attrelid,
 					a.attname,
@@ -646,7 +638,7 @@ BEGIN
 				FROM pg_catalog.pg_attribute AS a
 				JOIN pg_catalog.pg_class AS c
 					ON c.oid = a.attrelid
-				JOIN nested_type AS nt
+				JOIN pg_catalog.unnest(nested_topology_type_oids) AS nt(type_oid)
 					ON nt.type_oid = a.atttypid
 				WHERE a.atttypid <> ALL(domain_att_type_oids)
 				AND a.attnum > 0
@@ -687,7 +679,7 @@ BEGIN
 							AND sa.attnum = dep.refobjsubid
 						WHERE gd.adrelid = a.attrelid
 						AND gd.adnum = a.attnum
-						AND sa.atttypid = ANY(topology_domain_oids)
+						AND sa.atttypid = ANY(nested_topology_type_oids)
 						AND sa.attnum > 0
 						AND NOT sa.attisdropped
 						AND sa.attnum <> a.attnum
@@ -702,7 +694,7 @@ BEGIN
 						WHERE dep.classid = 'pg_catalog.pg_class'::regclass
 						AND dep.objid = a.attrelid
 						AND dep.objsubid = a.attnum
-						AND sa.atttypid = ANY(topology_domain_oids)
+						AND sa.atttypid = ANY(nested_topology_type_oids)
 						AND sa.attnum > 0
 						AND NOT sa.attisdropped
 						AND sa.attnum <> a.attnum
@@ -1435,7 +1427,7 @@ BEGIN
 							AND sa.attnum = dep.refobjsubid
 						WHERE gd.adrelid = a.attrelid
 						AND gd.adnum = a.attnum
-						AND sa.atttypid = ANY(topology_domain_oids)
+						AND sa.atttypid = ANY(nested_topology_type_oids)
 						AND sa.attnum > 0
 						AND NOT sa.attisdropped
 						AND sa.attnum <> a.attnum
@@ -1448,7 +1440,7 @@ BEGIN
 						WHERE dep.classid = 'pg_catalog.pg_class'::regclass
 						AND dep.objid = a.attrelid
 						AND dep.objsubid = a.attnum
-						AND sa.atttypid = ANY(topology_domain_oids)
+						AND sa.atttypid = ANY(nested_topology_type_oids)
 						AND sa.attnum > 0
 						AND NOT sa.attisdropped
 						AND sa.attnum <> a.attnum

@@ -323,6 +323,7 @@ DECLARE
   expected RECORD;
   dependent_generated_value topology.topoelement;
   cross_dependent_generated_value topology.topoelementarray;
+  nested_dependent_generated_value topology.topoelement;
 BEGIN
   IF current_setting('server_version_num')::integer >= 170000 THEN
     CREATE TEMP TABLE domain_generated_storage_probe (
@@ -373,6 +374,16 @@ BEGIN
     THEN
       RAISE EXCEPTION 'generated topology domain cross dependency was not preserved during upgrade: %',
         cross_dependent_generated_value;
+    END IF;
+
+    SELECT g INTO STRICT nested_dependent_generated_value
+      FROM upgrade_test.domain_generated_nested_source_dependency_test;
+
+    IF nested_dependent_generated_value[1] != 97
+      OR nested_dependent_generated_value[2] != 98
+    THEN
+      RAISE EXCEPTION 'generated nested topology domain source dependency was not preserved during upgrade: %',
+        nested_dependent_generated_value;
     END IF;
   END IF;
 END
