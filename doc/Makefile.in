@@ -64,6 +64,7 @@ XMLCATALOG=@XMLCATALOG@
 XSLTPROC=@XSLTPROC@
 XSLBASE=@XSLBASE@
 DOCBOOK5_RNG=@DOCBOOK5_RNG@
+DOCBOOK5_XSD=@DOCBOOK5_XSD@
 DOCBOOK5_DTD=@DOCBOOK5_DTD@
 CAN_UPDATE_TRANSLATIONS=@CAN_UPDATE_TRANSLATIONS@
 XMLLINT=@XMLLINT@
@@ -284,6 +285,11 @@ CAN_CHECK_XML = no
 endif
 
 ifeq ($(DOCBOOK5_RNG),)
+CAN_CHECK_XML = no
+endif
+
+ifeq ($(DOCBOOK5_XSD),)
+check-xml: requirements_not_met_docbook5_xsd
 CAN_CHECK_XML = no
 endif
 
@@ -624,6 +630,9 @@ check-xml: postgis-out.xml
 		--valid --loaddtd \
 		--relaxng $(DOCBOOK5_RNG) \
 		$<
+	$(XMLLINT) --noout --nonet \
+		--schema $(DOCBOOK5_XSD) \
+		$<
 
 check-cheatsheets: cheatsheets
 	for f in $(html_builddir)/*_cheatsheet-en.html; do \
@@ -654,6 +663,13 @@ requirements_not_met_xmlcatalog:
 	@echo "configure was unable to find 'xmlcatalog' which is required"
 	@echo "to check the postgis documentation."
 	@echo "Install xmlcatalog and then re-run configure."
+	@echo
+	@false
+
+requirements_not_met_docbook5_xsd:
+	@echo
+	@echo "configure was unable to locate DocBook XMLSchema (docbook.xsd)."
+	@echo "Install DocBook 5 schemas/catalog entries and then re-run configure."
 	@echo
 	@false
 

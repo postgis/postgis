@@ -398,6 +398,19 @@ fi
 AC_SUBST([DOCBOOK5_RNG])
 
 dnl
+dnl Ensure DocBook XMLSchema can be found
+dnl
+DOCBOOK5_XSD=http://docbook.org/xml/5.0/xsd/docbook.xsd
+if test "x$XMLCATALOG" = "x"; then
+  DOCBOOK5_XSD=
+else
+  if $XMLCATALOG '' "${DOCBOOK5_XSD}" > /dev/null; then :
+  else DOCBOOK5_XSD=
+  fi
+fi
+AC_SUBST([DOCBOOK5_XSD])
+
+dnl
 dnl Ensure DocBook DTD can be found
 dnl
 DOCBOOK5_DTD=http://docbook.org/xml/5.0/rng/docbook.dtd
