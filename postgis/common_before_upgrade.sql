@@ -582,7 +582,7 @@ BEGIN
 					WHERE dep.classid = 'pg_catalog.pg_class'::regclass
 					AND dep.refobjid = a.attrelid
 					AND dep.refobjsubid IN (0, a.attnum)
-					AND ic.relkind = 'i'
+					AND ic.relkind IN ('i', 'I')
 					AND a.atttypid = domain_array_oid
 					LIMIT 1
 				) AS dependent_index ON true
@@ -875,13 +875,25 @@ BEGIN
 								FROM pg_catalog.pg_depend AS dep
 								JOIN pg_catalog.pg_class AS ic
 									ON ic.oid = dep.objid
-									AND ic.relkind = 'i'
+									AND ic.relkind IN ('i', 'I')
 								JOIN pg_catalog.pg_index AS ix
 									ON ix.indexrelid = ic.oid
 								WHERE dep.classid = 'pg_catalog.pg_class'::regclass
 								AND dep.refobjid = a.attrelid
 								AND dep.refobjsubid IN (0, a.attnum)
 							)
+						)
+						OR EXISTS (
+							SELECT 1
+							FROM pg_catalog.pg_type AS rt
+							JOIN pg_catalog.pg_attribute AS ra
+								ON ra.atttypid = rt.oid
+								AND ra.attnum > 0
+								AND NOT ra.attisdropped
+							JOIN pg_catalog.pg_class AS rc
+								ON rc.oid = ra.attrelid
+								AND rc.relkind IN ('r', 'p', 'm')
+							WHERE rt.typrelid = a.attrelid
 						)
 						OR EXISTS (
 							SELECT 1
@@ -1111,7 +1123,7 @@ BEGIN
 									AND dep.refobjsubid IN (0, ca.attnum)
 								JOIN pg_catalog.pg_class AS ic
 									ON ic.oid = dep.objid
-									AND ic.relkind = 'i'
+									AND ic.relkind IN ('i', 'I')
 								JOIN pg_catalog.pg_index AS ix
 									ON ix.indexrelid = ic.oid
 							)
@@ -1224,7 +1236,7 @@ BEGIN
 							FROM pg_catalog.pg_depend AS dep
 							JOIN pg_catalog.pg_class AS ic
 								ON ic.oid = dep.objid
-								AND ic.relkind = 'i'
+								AND ic.relkind IN ('i', 'I')
 							JOIN pg_catalog.pg_index AS ix
 								ON ix.indexrelid = ic.oid
 							WHERE dep.classid = 'pg_catalog.pg_class'::regclass
@@ -1413,7 +1425,7 @@ BEGIN
 								AND dep.refobjsubid IN (0, ca.attnum)
 							JOIN pg_catalog.pg_class AS ic
 								ON ic.oid = dep.objid
-								AND ic.relkind = 'i'
+								AND ic.relkind IN ('i', 'I')
 							JOIN pg_catalog.pg_index AS ix
 								ON ix.indexrelid = ic.oid
 						)
@@ -1476,6 +1488,35 @@ BEGIN
 						ON rc.oid = ra.attrelid
 						AND rc.relkind IN ('r', 'p', 'm')
 					WHERE rt.typrelid = a.attrelid
+				)
+				AND NOT EXISTS (
+					WITH RECURSIVE inherited_relid(attrelid) AS (
+						SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						WHERE i.inhparent = a.attrelid
+						UNION ALL
+						SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						JOIN inherited_relid AS ir
+							ON ir.attrelid = i.inhparent
+					)
+					SELECT 1
+					FROM inherited_relid AS i
+					JOIN pg_catalog.pg_attribute AS ca
+						ON ca.attrelid = i.attrelid
+						AND ca.attname = a.attname
+						AND ca.atttypid = a.atttypid
+						AND ca.attnum > 0
+						AND NOT ca.attisdropped
+					JOIN pg_catalog.pg_type AS rt
+						ON rt.typrelid = ca.attrelid
+					JOIN pg_catalog.pg_attribute AS ra
+						ON ra.atttypid = rt.oid
+						AND ra.attnum > 0
+						AND NOT ra.attisdropped
+					JOIN pg_catalog.pg_class AS rc
+						ON rc.oid = ra.attrelid
+						AND rc.relkind IN ('r', 'p', 'm')
 				)
 				AND NOT EXISTS (
 					SELECT 1

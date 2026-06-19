@@ -239,7 +239,7 @@ INSERT INTO upgrade_test.domain_nested_type_test (a, b) VALUES (
 );
 
 CREATE TABLE upgrade_test.domain_row_carrier_source (
-  a topology.topoelement
+  a topology.topoelement DEFAULT '{107,108}'::topology.topoelement
 );
 CREATE TABLE upgrade_test.domain_row_carrier_test (
   id integer GENERATED ALWAYS AS IDENTITY,
@@ -262,6 +262,33 @@ CREATE INDEX domain_array_inherit_constraint_expr_idx
 INSERT INTO upgrade_test.domain_array_inherit_constraint_child VALUES (
   1,
   ARRAY['{103,104}'::topology.topoelement]::topology.topoelement[]
+);
+
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_catalog.pg_event_trigger WHERE evtname = 'trg_autovac_disable') THEN
+    ALTER EVENT TRIGGER trg_autovac_disable DISABLE;
+  END IF;
+END
+$$;
+CREATE TABLE upgrade_test.domain_array_partition_index_parent (
+  id integer,
+  a topology.topoelement[] DEFAULT ARRAY['{111,112}'::topology.topoelement]::topology.topoelement[]
+) PARTITION BY RANGE (id);
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_catalog.pg_event_trigger WHERE evtname = 'trg_autovac_disable') THEN
+    ALTER EVENT TRIGGER trg_autovac_disable ENABLE;
+  END IF;
+END
+$$;
+CREATE INDEX domain_array_partition_index_expr_idx
+  ON upgrade_test.domain_array_partition_index_parent (((a[1])[2]));
+CREATE TABLE upgrade_test.domain_array_partition_index_child
+  PARTITION OF upgrade_test.domain_array_partition_index_parent FOR VALUES FROM (0) TO (10);
+INSERT INTO upgrade_test.domain_array_partition_index_parent VALUES (
+  1,
+  ARRAY['{113,114}'::topology.topoelement]::topology.topoelement[]
 );
 
 CREATE TABLE upgrade_test.domain_rule_source (
@@ -422,6 +449,23 @@ INSERT INTO upgrade_test.domain_blocked_inherit_grandchild VALUES (
 );
 CREATE VIEW upgrade_test.domain_blocked_inherit_grandchild_view AS
   SELECT g FROM upgrade_test.domain_blocked_inherit_grandchild AS g;
+
+CREATE TABLE upgrade_test.domain_row_type_blocked_parent (
+  id integer,
+  a topology.topoelement
+);
+CREATE TABLE upgrade_test.domain_row_type_blocked_child ()
+  INHERITS (upgrade_test.domain_row_type_blocked_parent);
+CREATE TABLE upgrade_test.domain_row_type_blocked_carrier (
+  r upgrade_test.domain_row_type_blocked_child
+);
+INSERT INTO upgrade_test.domain_row_type_blocked_child VALUES (
+  1,
+  '{115,116}'::topology.topoelement
+);
+INSERT INTO upgrade_test.domain_row_type_blocked_carrier VALUES (
+  ROW(2, '{117,118}'::topology.topoelement)::upgrade_test.domain_row_type_blocked_child
+);
 
 DO $$
 BEGIN

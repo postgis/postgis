@@ -317,6 +317,14 @@ BEGIN
   IF (SELECT count(*) FROM upgrade_test.domain_blocked_inherit_grandchild_view) != 1 THEN
     RAISE EXCEPTION 'dependent topology domain inherited grandchild view was not preserved during upgrade';
   END IF;
+
+  IF (SELECT count(*) FROM upgrade_test.domain_row_type_blocked_child) != 1 THEN
+    RAISE EXCEPTION 'dependent topology domain inherited child row type was not preserved during upgrade';
+  END IF;
+
+  IF (SELECT count(*) FROM upgrade_test.domain_row_type_blocked_carrier) != 1 THEN
+    RAISE EXCEPTION 'dependent topology domain inherited child row-type carrier was not preserved during upgrade';
+  END IF;
 END
 $$;
 
@@ -386,6 +394,29 @@ BEGIN
     RAISE EXCEPTION 'rewritten table row-type topology carrier default did not preserve value: %',
       row_carrier_value;
   END IF;
+
+  SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid)
+    INTO STRICT default_expr
+    FROM pg_catalog.pg_attribute AS a
+    JOIN pg_catalog.pg_attrdef AS d
+      ON d.adrelid = a.attrelid
+      AND d.adnum = a.attnum
+    WHERE a.attrelid = 'upgrade_test.domain_row_carrier_source'::regclass
+    AND a.attname = 'a';
+
+  IF default_expr NOT LIKE '%::text)::bigint[]%' THEN
+    RAISE EXCEPTION 'row-type-blocked topology domain column default was not rewritten during upgrade: %',
+      default_expr;
+  END IF;
+
+  INSERT INTO upgrade_test.domain_row_carrier_source DEFAULT VALUES;
+  SELECT a INTO STRICT row_carrier_value
+    FROM upgrade_test.domain_row_carrier_source;
+
+  IF row_carrier_value[1] != 107 OR row_carrier_value[2] != 108 THEN
+    RAISE EXCEPTION 'rewritten row-type-blocked topology domain default did not preserve value: %',
+      row_carrier_value;
+  END IF;
 END
 $$;
 
@@ -442,6 +473,26 @@ BEGIN
 
   IF default_element[1] != 101 OR default_element[2] != 102 THEN
     RAISE EXCEPTION 'rewritten inherited topology domain array default did not preserve value: %',
+      default_value;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_class
+    WHERE oid = 'upgrade_test.domain_array_partition_index_expr_idx'::regclass
+  ) THEN
+    RAISE EXCEPTION 'partitioned topology domain array expression index was not preserved during upgrade';
+  END IF;
+
+  INSERT INTO upgrade_test.domain_array_partition_index_parent(id) VALUES (2);
+
+  SELECT a INTO STRICT default_value
+    FROM upgrade_test.domain_array_partition_index_parent
+    WHERE id = 2;
+  default_element := default_value[1]::topology.topoelement;
+
+  IF default_element[1] != 111 OR default_element[2] != 112 THEN
+    RAISE EXCEPTION 'rewritten partitioned topology domain array default did not preserve value: %',
       default_value;
   END IF;
 END
