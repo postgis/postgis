@@ -270,6 +270,19 @@ BEGIN
     RAISE EXCEPTION 'dependent topology domain array expression index was not preserved during upgrade';
   END IF;
 
+  IF EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
+    WHERE contypid IN (
+      'topology.topoelement'::regtype,
+      'topology.topoelementarray'::regtype
+    )
+    AND conname IN ('dimensions', 'type_range', 'lower_dimension')
+    AND convalidated
+  ) THEN
+    RAISE EXCEPTION 'topology domain constraints with array-column dependencies were restored as validated';
+  END IF;
+
   IF NOT EXISTS (
     SELECT 1
     FROM pg_catalog.pg_trigger

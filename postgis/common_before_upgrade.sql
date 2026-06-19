@@ -194,6 +194,7 @@ DECLARE
 	domain_skipped_column RECORD;
 	sql TEXT;
 	skipped_repair BOOLEAN := false;
+	restored_domain_array_columns BOOLEAN := false;
 	-- We need the base types of the old and new types - if multidimensional (int[][]), we need just one dimension at most
 	old_base_type TEXT := pg_catalog.regexp_replace(old_domain_type, E'(\\[\\])+$', '[]');
 	new_base_type TEXT := pg_catalog.regexp_replace(new_domain_type, E'(\\[\\])+$', '[]');
@@ -293,8 +294,9 @@ BEGIN
 			-- Older upgrade sources may not have constraints introduced after
 			-- the original domain was created.  Treat those canonical topology
 			-- constraints like captured constraints so incomplete repairs keep
-			-- them NOT VALID, while complete repairs install the fresh-domain
-			-- constraint set as validated.
+				-- them NOT VALID. Complete repairs install the fresh-domain
+				-- constraint set as validated unless rewritten domain-array
+				-- columns still depend on the domain and force NOT VALID restore.
 			IF pg_catalog.lower(domain_name) = 'topoelement' THEN
 				IF NOT EXISTS (
 					SELECT 1
@@ -1760,6 +1762,7 @@ BEGIN
 					FROM pg_temp._postgis_topology_domain_array_columns
 					WHERE target_domain_type = pg_catalog.format('%I.%I[]', domain_schema, domain_name)
 				LOOP
+					restored_domain_array_columns := true;
 					sql := pg_catalog.format(
 						'ALTER TABLE %s ALTER COLUMN %I TYPE %s USING (%I::%s)',
 						domain_column.attrelid::regclass,
@@ -1785,9 +1788,9 @@ BEGIN
 				DELETE FROM pg_temp._postgis_topology_domain_array_columns
 				WHERE target_domain_type = pg_catalog.format('%I.%I[]', domain_schema, domain_name);
 
-					FOR domain_constraint IN
-						SELECT
-							value->>'name' AS conname,
+				FOR domain_constraint IN
+					SELECT
+						value->>'name' AS conname,
 						CASE
 						WHEN skipped_repair THEN value->>'definition'
 						WHEN COALESCE((value->>'not_valid_by_repair')::boolean, false) THEN pg_catalog.regexp_replace(
@@ -1808,9 +1811,12 @@ BEGIN
 				LOOP
 					-- If some old-width rows were intentionally skipped, restoring
 					-- constraints as validated would scan those rows and can abort
-					-- the whole repair. Mark only constraints demoted by this repair,
-					-- so a later complete retry can revalidate them without changing
-					-- user-created NOT VALID constraints.
+					-- the whole repair. PostgreSQL also rejects validated domain
+					-- constraints while array/container columns still depend on the
+					-- domain, even after those columns have been rewritten. Mark only
+					-- constraints demoted by skipped storage as retry candidates; the
+					-- array-dependency case is structural, not evidence of old-width
+					-- storage left behind.
 					sql := pg_catalog.format(
 						'ALTER DOMAIN %I.%I ADD CONSTRAINT %I %s%s',
 						domain_schema,
@@ -1818,7 +1824,7 @@ BEGIN
 						domain_constraint.conname,
 						domain_constraint.constraint_def,
 						CASE
-						WHEN skipped_repair
+						WHEN (skipped_repair OR restored_domain_array_columns)
 							AND domain_constraint.constraint_def !~* '[[:space:]]NOT[[:space:]]+VALID[[:space:]]*$'
 						THEN ' NOT VALID'
 						ELSE ''

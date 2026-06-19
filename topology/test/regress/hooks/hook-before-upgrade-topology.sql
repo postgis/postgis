@@ -306,10 +306,24 @@ INSERT INTO upgrade_test.domain_blocked_partition_parent VALUES (
 CREATE VIEW upgrade_test.domain_blocked_partition_child_view AS
   SELECT c FROM upgrade_test.domain_blocked_partition_child AS c;
 
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_catalog.pg_event_trigger WHERE evtname = 'trg_autovac_disable') THEN
+    ALTER EVENT TRIGGER trg_autovac_disable DISABLE;
+  END IF;
+END
+$$;
 CREATE TABLE upgrade_test.domain_trigger_child_parent (
   id integer,
   a topology.topoelement
 ) PARTITION BY RANGE (id);
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_catalog.pg_event_trigger WHERE evtname = 'trg_autovac_disable') THEN
+    ALTER EVENT TRIGGER trg_autovac_disable ENABLE;
+  END IF;
+END
+$$;
 CREATE TABLE upgrade_test.domain_trigger_child_child
   PARTITION OF upgrade_test.domain_trigger_child_parent FOR VALUES FROM (0) TO (10);
 INSERT INTO upgrade_test.domain_trigger_child_parent VALUES (
