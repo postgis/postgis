@@ -6956,9 +6956,15 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
   int flds;
   LWT_ELEMID id = 0;
 
-  /* Get tolerance, if 0 was given */
-  if ( tol == -1 )
-    tol = _LWT_MINTOLERANCE(topo, pt);
+  /*
+   * SQL toTopoGeom uses values below -1 as private precomputed automatic
+   * tolerances for dumped multi-geometries.  Decode them before using the
+   * tolerance for point snapping.
+   */
+  if (tol < -1)
+	  tol = -tol - 1;
+  else if (tol == -1)
+	  tol = _LWT_MINTOLERANCE(topo, pt);
 
   LWDEBUGG(1, pt, "Adding point");
 
@@ -7411,6 +7417,9 @@ _lwt_snap_line_vertices_to_edges(LWGEOM *geom,
 				found = 1;
 				bestdist = dist;
 				bestpoint = projected;
+				/* The snap is XY-only; keep the incoming line's ordinates. */
+				bestpoint.z = point.z;
+				bestpoint.m = point.m;
 			}
 		}
 
@@ -7433,9 +7442,14 @@ _lwt_snap_line_vertices_to_edges(LWGEOM *geom,
 	return 0;
 }
 
-static LWT_ELEMID*
-_lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
-            int handleFaceSplit, int maxNewEdges)
+static LWT_ELEMID *
+_lwt_AddLine(LWT_TOPOLOGY *topo,
+	     LWLINE *line,
+	     double tol,
+	     int *nedges,
+	     int handleFaceSplit,
+	     int maxNewEdges,
+	     int requested_min_tolerance)
 {
   LWGEOM *geomsbuf[1];
   LWGEOM **geoms;
@@ -7451,7 +7465,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   GBOX qbox;
   int forward;
   int input_was_closed = 0;
-  int using_min_tolerance = tol == -1;
+  int using_min_tolerance = requested_min_tolerance || tol <= -1;
   POINT4D originalStartPoint;
 
   if ( lwline_is_empty(line) )
@@ -7469,8 +7483,15 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
 
   *nedges = -1; /* error condition, by default */
 
-  /* Get tolerance, if 0 was given */
-  if ( tol == -1 ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)line );
+  /*
+   * Values below -1 carry a whole-input automatic tolerance from SQL
+   * toTopoGeom while preserving the automatic-tolerance snap behavior for
+   * dumped multi-geometries.
+   */
+  if (tol < -1)
+	  tol = -tol - 1;
+  else if (tol == -1)
+	  tol = _LWT_MINTOLERANCE(topo, (LWGEOM *)line);
   LWDEBUGF(1, "Working tolerance:%.15g", tol);
   LWDEBUGF(1, "Input line has srid=%d", line->srid);
 
@@ -7861,13 +7882,13 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
 LWT_ELEMID*
 lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges, int max_new_edges)
 {
-  return _lwt_AddLine(topo, line, tol, nedges, 1, max_new_edges);
+	return _lwt_AddLine(topo, line, tol, nedges, 1, max_new_edges, tol == -1);
 }
 
 LWT_ELEMID*
 lwt_AddLineNoFace(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
 {
-  return _lwt_AddLine(topo, line, tol, nedges, 0, -1);
+	return _lwt_AddLine(topo, line, tol, nedges, 0, -1, tol == -1);
 }
 
 static void
@@ -7877,18 +7898,18 @@ lwt_LoadPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
 }
 
 static void
-lwt_LoadLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int max_new_edges)
+lwt_LoadLine(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int max_new_edges, int requested_min_tolerance)
 {
   LWT_ELEMID* ids;
   int nedges;
 
   /* TODO: avoid allocating edge ids */
-  ids = lwt_AddLine(topo, line, tol, &nedges, max_new_edges);
+  ids = _lwt_AddLine(topo, line, tol, &nedges, 1, max_new_edges, requested_min_tolerance);
   if ( nedges > 0 ) lwfree(ids);
 }
 
 static void
-lwt_LoadPolygon(LWT_TOPOLOGY* topo, const LWPOLY* poly, double tol)
+lwt_LoadPolygon(LWT_TOPOLOGY *topo, const LWPOLY *poly, double tol, int requested_min_tolerance)
 {
   uint32_t i;
 
@@ -7901,7 +7922,7 @@ lwt_LoadPolygon(LWT_TOPOLOGY* topo, const LWPOLY* poly, double tol)
     /* TODO: avoid the clone here */
     pa = ptarray_clone(poly->rings[i]);
     line = lwline_construct(topo->srid, NULL, pa);
-    lwt_LoadLine(topo, line, tol, -1);
+    lwt_LoadLine(topo, line, tol, -1, requested_min_tolerance);
     lwline_free(line);
   }
 }
@@ -7918,6 +7939,7 @@ lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
   GBOX qbox;
   const GEOSPreparedGeometry *ppoly;
   GEOSGeometry *polyg;
+  int using_min_tolerance = tol <= -1;
 
   /* Nothing to add, in an empty polygon */
   if ( lwpoly_is_empty(poly) )
@@ -7926,11 +7948,18 @@ lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
     return NULL;
   }
 
-  /* Get tolerance, if 0 was given */
-  if ( tol == -1 ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)poly );
+  /*
+   * Values below -1 carry a whole-input automatic tolerance from SQL
+   * toTopoGeom while preserving the automatic-tolerance snap behavior for
+   * dumped multi-geometries.
+   */
+  if (tol < -1)
+	  tol = -tol - 1;
+  else if (tol == -1)
+	  tol = _LWT_MINTOLERANCE(topo, (LWGEOM *)poly);
   LWDEBUGF(1, "Working tolerance:%.15g", tol);
 
-  lwt_LoadPolygon(topo, poly, tol);
+  lwt_LoadPolygon(topo, poly, tol, using_min_tolerance);
 
   /*
   -- Find faces covered by input polygon
@@ -8399,12 +8428,12 @@ _lwt_LoadGeometryRecursive(LWT_TOPOLOGY* topo, LWGEOM* geom, double tol)
       return;
 
     case LINETYPE:
-      lwt_LoadLine(topo, lwgeom_as_lwline(geom), tol, -1);
-      return;
+	    lwt_LoadLine(topo, lwgeom_as_lwline(geom), tol, -1, tol == -1);
+	    return;
 
     case POLYGONTYPE:
-      lwt_LoadPolygon(topo, lwgeom_as_lwpoly(geom), tol);
-      return;
+	    lwt_LoadPolygon(topo, lwgeom_as_lwpoly(geom), tol, tol == -1);
+	    return;
 
     case MULTILINETYPE:
     case MULTIPOLYGONTYPE:
