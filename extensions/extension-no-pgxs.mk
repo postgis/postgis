@@ -23,7 +23,7 @@ INSTALL ?= install -c
 INSTALL_DATA ?= $(INSTALL) -m 644
 MKDIR_P ?= mkdir -p
 
-.PHONY: all install installdirs uninstall clean
+.PHONY: all install installdirs uninstall clean installcheck
 
 all: $(DATA_built)
 
@@ -73,3 +73,6 @@ endif
 ifdef EXTRA_CLEAN
 	rm -rf $(EXTRA_CLEAN)
 endif
+
+installcheck:
+	@echo "Nothing to installcheck"
