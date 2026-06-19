@@ -388,10 +388,16 @@ END;
 DO $$
 BEGIN
   IF current_setting('server_version_num')::integer >= 150000 THEN
+    IF EXISTS (SELECT 1 FROM pg_catalog.pg_event_trigger WHERE evtname = 'trg_autovac_disable') THEN
+      ALTER EVENT TRIGGER trg_autovac_disable DISABLE;
+    END IF;
     EXECUTE 'CREATE TABLE upgrade_test.domain_publication_child_parent (
       id integer,
       a topology.topoelement
     ) PARTITION BY RANGE (id)';
+    IF EXISTS (SELECT 1 FROM pg_catalog.pg_event_trigger WHERE evtname = 'trg_autovac_disable') THEN
+      ALTER EVENT TRIGGER trg_autovac_disable ENABLE;
+    END IF;
     EXECUTE 'CREATE TABLE upgrade_test.domain_publication_child_child
       PARTITION OF upgrade_test.domain_publication_child_parent FOR VALUES FROM (0) TO (10)';
     INSERT INTO upgrade_test.domain_publication_child_parent VALUES (
