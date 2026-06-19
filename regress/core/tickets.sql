@@ -123,6 +123,10 @@ SELECT '#175', ST_AsEWKT(ST_GeomFromEWKT('SRID=26915;POINT(482020 4984378.)'));
 -- #178 --
 SELECT '#178a', ST_XMin(ST_MakeBox2D(ST_Point(5, 5), ST_Point(0, 0)));
 SELECT '#178b', ST_XMax(ST_MakeBox2D(ST_Point(5, 5), ST_Point(0, 0)));
+SELECT '#2863a', ST_XSize(ST_MakeBox2D(ST_Point(5, 5), ST_Point(0, 0)));
+SELECT '#2863b', ST_YSize('LINESTRING(1 2 3, 4 6 8)'::geometry);
+SELECT '#2863c', ST_ZSize('LINESTRING(1 2 3, 4 6 8)'::geometry);
+SELECT '#2863d', ST_MSize('LINESTRING M (1 2 3, 4 6 8)'::geometry);
 
 -- #179 --
 SELECT '#179a', ST_MakeLine(ARRAY[NULL,NULL,NULL,NULL]);

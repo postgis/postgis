@@ -995,6 +995,165 @@ st_zmin
       </refsection>
     </refentry>
 
+    <refentry xml:id="ST_XSize">
+      <refnamediv>
+        <refname>ST_XSize</refname>
+
+        <refpurpose>Returns the X size of a 2D or 3D bounding box or a geometry.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>float <function>ST_XSize</function></funcdef>
+            <paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns the X size of a 2D or 3D bounding box or a geometry, computed as <code>ST_XMax(aGeomorBox2DorBox3D) - ST_XMin(aGeomorBox2DorBox3D)</code>.</para>
+
+        <note>
+          <para>Although this function is only defined for box3d, it also works for box2d and geometry values due to automatic casting.
+            However it will not accept a geometry or box2d text representation, since those do not auto-cast.</para>
+        </note>
+
+        <para>&Z_support;</para>
+        <para>&curve_support;</para>
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT ST_XSize('BOX3D(1 2 3, 4 5 6)');
+st_xsize
+--------
+3
+
+SELECT ST_XSize(ST_GeomFromText('LINESTRING(1 3, 5 6)'));
+st_xsize
+--------
+4
+        </programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_XMin"/>, <xref linkend="ST_XMax"/>, <xref linkend="ST_YSize"/>, <xref linkend="ST_ZSize"/>, <xref linkend="ST_MSize"/></para>
+      </refsection>
+    </refentry>
+
+    <refentry xml:id="ST_YSize">
+      <refnamediv>
+        <refname>ST_YSize</refname>
+
+        <refpurpose>Returns the Y size of a 2D or 3D bounding box or a geometry.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>float <function>ST_YSize</function></funcdef>
+            <paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns the Y size of a 2D or 3D bounding box or a geometry, computed as <code>ST_YMax(aGeomorBox2DorBox3D) - ST_YMin(aGeomorBox2DorBox3D)</code>.</para>
+
+        <note>
+          <para>Although this function is only defined for box3d, it also works for box2d and geometry values due to automatic casting.
+            However it will not accept a geometry or box2d text representation, since those do not auto-cast.</para>
+        </note>
+
+        <para>&Z_support;</para>
+        <para>&curve_support;</para>
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT ST_YSize('BOX3D(1 2 3, 4 5 6)');
+st_ysize
+--------
+3
+
+SELECT ST_YSize(ST_GeomFromText('LINESTRING(1 3, 5 6)'));
+st_ysize
+--------
+3
+        </programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_YMin"/>, <xref linkend="ST_YMax"/>, <xref linkend="ST_XSize"/>, <xref linkend="ST_ZSize"/>, <xref linkend="ST_MSize"/></para>
+      </refsection>
+    </refentry>
+
+    <refentry xml:id="ST_ZSize">
+      <refnamediv>
+        <refname>ST_ZSize</refname>
+
+        <refpurpose>Returns the Z size of a 2D or 3D bounding box or a geometry.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>float <function>ST_ZSize</function></funcdef>
+            <paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns the Z size of a 2D or 3D bounding box or a geometry, computed as <code>ST_ZMax(aGeomorBox2DorBox3D) - ST_ZMin(aGeomorBox2DorBox3D)</code>.</para>
+
+        <note>
+          <para>Although this function is only defined for box3d, it also works for box2d and geometry values due to automatic casting.
+            However it will not accept a geometry or box2d text representation, since those do not auto-cast.</para>
+        </note>
+
+        <para>&Z_support;</para>
+        <para>&curve_support;</para>
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT ST_ZSize('BOX3D(1 2 3, 4 5 6)');
+st_zsize
+--------
+3
+
+SELECT ST_ZSize(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));
+st_zsize
+--------
+3
+        </programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_ZMin"/>, <xref linkend="ST_ZMax"/>, <xref linkend="ST_XSize"/>, <xref linkend="ST_YSize"/>, <xref linkend="ST_MSize"/></para>
+      </refsection>
+    </refentry>
+
     <refentry xml:id="ST_MMin">
       <refnamediv>
         <refname>ST_MMin</refname>
@@ -1013,7 +1172,7 @@ st_zmin
       <refsection>
         <title>Description</title>
 
-        <para>Returns the M minima of a geometry, or null of the geometry lacks M values.</para>
+        <para>Returns the M minima of a geometry, or null if the geometry lacks M values.</para>
 
         <para>&Z_support;</para>
         <para>&curve_support;</para>
@@ -1032,7 +1191,7 @@ st_mmin
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_XMin"/>, <xref linkend="ST_XMax"/>, <xref linkend="ST_YMin"/>, <xref linkend="ST_YMax"/>, <xref linkend="ST_ZMin"/>, <xref linkend="ST_ZMax"/>, <xref linkend="ST_MMax"/></para>
+        <para><xref linkend="ST_XMin"/>, <xref linkend="ST_XMax"/>, <xref linkend="ST_YMin"/>, <xref linkend="ST_YMax"/>, <xref linkend="ST_ZMin"/>, <xref linkend="ST_ZMax"/>, <xref linkend="ST_MMax"/>, <xref linkend="ST_MSize"/></para>
       </refsection>
     </refentry>
 
@@ -1041,7 +1200,7 @@ st_mmin
       <refnamediv>
         <refname>ST_MMax</refname>
 
-        <refpurpose>Returns the M minima of a geometry.</refpurpose>
+        <refpurpose>Returns the M maxima of a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1054,7 +1213,7 @@ st_mmin
 
       <refsection>
         <title>Description</title>
-        <para>Returns the M minima of a geometry, or null of the geometry lacks M values.</para>
+        <para>Returns the M maxima of a geometry, or null if the geometry lacks M values.</para>
 
         <para>&Z_support;</para>
         <para>&curve_support;</para>
@@ -1070,7 +1229,45 @@ st_mmax
 
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_XMin"/>, <xref linkend="ST_XMax"/>, <xref linkend="ST_YMin"/>, <xref linkend="ST_YMax"/>, <xref linkend="ST_ZMin"/>, <xref linkend="ST_ZMax"/>, <xref linkend="ST_MMin"/></para>
+        <para><xref linkend="ST_XMin"/>, <xref linkend="ST_XMax"/>, <xref linkend="ST_YMin"/>, <xref linkend="ST_YMax"/>, <xref linkend="ST_ZMin"/>, <xref linkend="ST_ZMax"/>, <xref linkend="ST_MMin"/>, <xref linkend="ST_MSize"/></para>
+      </refsection>
+    </refentry>
+
+    <refentry xml:id="ST_MSize">
+      <refnamediv>
+        <refname>ST_MSize</refname>
+
+        <refpurpose>Returns the M size of a geometry.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>float <function>ST_MSize</function></funcdef><paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Returns the M size of a geometry, computed as <code>ST_MMax(geom) - ST_MMin(geom)</code>, or null if the geometry lacks M values.</para>
+
+        <para>&Z_support;</para>
+        <para>&curve_support;</para>
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+        <programlisting>SELECT ST_MSize('LINESTRING M (1 2 3, 4 6 8)');
+st_msize
+--------
+5       </programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_MMin"/>, <xref linkend="ST_MMax"/>, <xref linkend="ST_XSize"/>, <xref linkend="ST_YSize"/>, <xref linkend="ST_ZSize"/></para>
       </refsection>
     </refentry>
 

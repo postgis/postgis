@@ -1131,6 +1131,27 @@ CREATE OR REPLACE FUNCTION ST_ZMax(box3d)
 	_COST_DEFAULT;
 
 -- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_XSize(box3d)
+	RETURNS FLOAT8
+	AS 'SELECT @extschema@.ST_XMax($1) - @extschema@.ST_XMin($1)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_DEFAULT;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_YSize(box3d)
+	RETURNS FLOAT8
+	AS 'SELECT @extschema@.ST_YMax($1) - @extschema@.ST_YMin($1)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_DEFAULT;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_ZSize(box3d)
+	RETURNS FLOAT8
+	AS 'SELECT @extschema@.ST_ZMax($1) - @extschema@.ST_ZMin($1)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_DEFAULT;
+
+-- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_MMin(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','ST_MMin'
@@ -1142,6 +1163,13 @@ CREATE OR REPLACE FUNCTION ST_MMax(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','ST_MMax'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_DEFAULT;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_MSize(geometry)
+	RETURNS FLOAT8
+	AS 'SELECT @extschema@.ST_MMax($1) - @extschema@.ST_MMin($1)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_DEFAULT;
 
 -----------------------------------------------------------------------------
