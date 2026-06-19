@@ -68,6 +68,15 @@ ptarray_signed_area_add(double *sum, double *compensation, double value)
 }
 
 static inline void
+ptarray_signed_area_add_abs_or_infinite(double *sum, double value)
+{
+	if (isfinite(value))
+		*sum += fabs(value);
+	else
+		*sum = INFINITY;
+}
+
+static inline void
 ptarray_signed_area_two_sum(double a, double b, double *sum, double *err)
 {
 	double bvirt, avirt, bround, around;
@@ -1370,21 +1379,57 @@ ptarray_signed_area(const POINTARRAY *pa)
 		 */
 		if (isfinite(detleft) && isfinite(detright) && isfinite(det))
 		{
+			ptarray_signed_area_expansion residual = {0};
+			double tail_abs = 0.0;
+			double subtract_roundoff;
+			double left_roundoff;
+			double right_roundoff;
+			double ax_byerr, axerr_by, axerr_byerr;
+			double ay_bxerr, ayerr_bx, ayerr_bxerr;
+
 			b = det - detleft;
-			err = (detleft - (det - b)) - (detright + b);
-			err += fma(ax, by, -detleft) - fma(ay, bx, -detright);
+			subtract_roundoff = (detleft - (det - b)) - (detright + b);
+			left_roundoff = fma(ax, by, -detleft);
+			right_roundoff = fma(ay, bx, -detright);
+			ptarray_signed_area_expansion_add(&residual, subtract_roundoff);
+			ptarray_signed_area_expansion_add(&residual, left_roundoff);
+			ptarray_signed_area_expansion_add(&residual, -right_roundoff);
+			ptarray_signed_area_add_abs_or_infinite(&tail_abs, subtract_roundoff);
+			ptarray_signed_area_add_abs_or_infinite(&tail_abs, left_roundoff);
+			ptarray_signed_area_add_abs_or_infinite(&tail_abs, right_roundoff);
 			/*
 			 * The origin shift itself can round away unit-scale
 			 * offsets beside 1e16-scale coordinates. Include the
 			 * low-order subtraction terms in the determinant so the
-			 * compensated sum still sees their signed area.
+			 * compensated sum still sees their signed area. Use an
+			 * expansion so opposite large low-order products do not
+			 * erase a smaller residual before cancellation is tested.
 			 */
-			err += (ax * byerr + axerr * by) + axerr * byerr;
-			err -= (ay * bxerr + ayerr * bx) + ayerr * bxerr;
+			ax_byerr = ax * byerr;
+			axerr_by = axerr * by;
+			axerr_byerr = axerr * byerr;
+			ay_bxerr = ay * bxerr;
+			ayerr_bx = ayerr * bx;
+			ayerr_bxerr = ayerr * bxerr;
+			ptarray_signed_area_expansion_add_product(&residual, ax, byerr, 1.0);
+			ptarray_signed_area_expansion_add_product(&residual, axerr, by, 1.0);
+			ptarray_signed_area_expansion_add_product(&residual, axerr, byerr, 1.0);
+			ptarray_signed_area_expansion_add_product(&residual, ay, bxerr, -1.0);
+			ptarray_signed_area_expansion_add_product(&residual, ayerr, bx, -1.0);
+			ptarray_signed_area_expansion_add_product(&residual, ayerr, bxerr, -1.0);
+			ptarray_signed_area_add_abs_or_infinite(&tail_abs, ax_byerr);
+			ptarray_signed_area_add_abs_or_infinite(&tail_abs, axerr_by);
+			ptarray_signed_area_add_abs_or_infinite(&tail_abs, axerr_byerr);
+			ptarray_signed_area_add_abs_or_infinite(&tail_abs, ay_bxerr);
+			ptarray_signed_area_add_abs_or_infinite(&tail_abs, ayerr_bx);
+			ptarray_signed_area_add_abs_or_infinite(&tail_abs, ayerr_bxerr);
+			err = ptarray_signed_area_expansion_sum(&residual);
+			if (!isfinite(err))
+				err = 0.0;
 			if (scaled_term)
-				scaled_tail_abs_sum += fabs(err);
+				scaled_tail_abs_sum += tail_abs;
 			else
-				tail_abs_sum += fabs(err);
+				tail_abs_sum += tail_abs;
 		}
 
 		ptarray_signed_area_add(active_sum, active_compensation, det);
