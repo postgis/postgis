@@ -3,6 +3,8 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - #6038, Avoid stale geometry_columns relation lookups after relations are
+   dropped or SELECT privilege is revoked (Darafei Praliaskouski)
  - GT-669, Reject truncated size-prefixed header and feature buffers
    before decoding (Darafei Praliaskouski)
  - Stop the extension upgrade script running ANALYZE inside its transaction,
