@@ -33,11 +33,20 @@ GDAL_LIBS=$(gdal-config --libs)
 POSTGIS_FUZZER_LIBS="$JSON_C_LIBS $GEOS_LIBS $PROJ_XML2_LIBS"
 POSTGIS_PACKAGE_RUNTIME_LIBS="${POSTGIS_PACKAGE_RUNTIME_LIBS:-1}"
 
+target_local_cflags()
+{
+    case "$1" in
+        raster_deserialize_fuzzer)
+            echo "-I$POSTGIS_SOURCE_DIR/raster/rt_core -I$POSTGIS_BUILD_DIR/raster/rt_core -I$POSTGIS_SOURCE_DIR/raster -I$POSTGIS_BUILD_DIR/raster -I$POSTGIS_SOURCE_DIR -I$POSTGIS_BUILD_DIR"
+            ;;
+    esac
+}
+
 target_cflags()
 {
     case "$1" in
         raster_deserialize_fuzzer)
-            echo "-I$POSTGIS_SOURCE_DIR/raster/rt_core -I$POSTGIS_BUILD_DIR/raster/rt_core -I$POSTGIS_SOURCE_DIR/raster -I$POSTGIS_BUILD_DIR/raster -I$POSTGIS_SOURCE_DIR -I$POSTGIS_BUILD_DIR $GDAL_CFLAGS"
+            echo "$GDAL_CFLAGS"
             ;;
     esac
 }
@@ -62,12 +71,12 @@ build_fuzzer()
 
     if [ "$extension" = "c" ]; then
         objectFile=$(mktemp)
-        "$CC" $CFLAGS -I"$POSTGIS_SOURCE_DIR/liblwgeom" -I"$POSTGIS_BUILD_DIR/liblwgeom" $(target_cflags "$fuzzerName") \
+        "$CC" $CFLAGS -I"$POSTGIS_SOURCE_DIR/liblwgeom" -I"$POSTGIS_BUILD_DIR/liblwgeom" $(target_local_cflags "$fuzzerName") $CPPFLAGS $(target_cflags "$fuzzerName") \
             -c "$sourceFilename" -o "$objectFile"
         sourceFilename=$objectFile
     fi
 
-    "$CXX" $CXXFLAGS -std=c++11 -I"$POSTGIS_SOURCE_DIR/liblwgeom" -I"$POSTGIS_BUILD_DIR/liblwgeom" \
+    "$CXX" $CXXFLAGS -std=c++11 -I"$POSTGIS_SOURCE_DIR/liblwgeom" -I"$POSTGIS_BUILD_DIR/liblwgeom" $CPPFLAGS \
         "$sourceFilename" -o "$OUT/$fuzzerName" \
         $LDFLAGS \
         -lFuzzingEngine -lstdc++ $(target_libs "$fuzzerName") \

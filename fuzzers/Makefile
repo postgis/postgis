@@ -6,7 +6,11 @@ FUZZER_WORK ?= $(FUZZER_OUT)/postgis-fuzzer-check
 FUZZER_SOURCES := $(notdir $(wildcard $(FUZZER_SRC_DIR)/*_fuzzer.cpp $(FUZZER_SRC_DIR)/*_fuzzer.c))
 FUZZER_NAMES := $(basename $(FUZZER_SOURCES))
 SEED_CORPORA := $(wildcard $(FUZZER_SRC_DIR)/*_seed_corpus.zip)
+# The standalone fuzzer smoke build includes liblwgeom.h outside liblwgeom's
+# Makefile, so it must inherit the configured dependency include paths.
+POSTGIS_CONFIGURED_CPPFLAGS := $(shell sed -n 's/^CPPFLAGS = //p' $(POSTGIS_BUILD_DIR)/liblwgeom/Makefile 2>/dev/null | sed 's/$$(RYU_INCLUDE)//g; s/-I$$(builddir)//g; s/-I$$(srcdir)//g' | sed 1q)
 POSTGIS_CONFIGURED_LDFLAGS := $(shell sed -n 's/^LDFLAGS = //p' $(POSTGIS_BUILD_DIR)/liblwgeom/Makefile 2>/dev/null | sed 1q)
+POSTGIS_FUZZER_CPPFLAGS = $(POSTGIS_CONFIGURED_CPPFLAGS) $(CPPFLAGS)
 POSTGIS_FUZZER_LDFLAGS = $(POSTGIS_CONFIGURED_LDFLAGS) $(LDFLAGS)
 
 .PHONY: clean dummyfuzzers check check-corpus
@@ -20,7 +24,7 @@ fuzzingengine.o: $(FUZZER_SRC_DIR)/fuzzingengine.c
 dummyfuzzers: fuzzingengine.o
 	mkdir -p "$(FUZZER_OUT)"
 	$(AR) r libFuzzingEngine.a fuzzingengine.o
-	CC="${CC}" CXX="${CXX}" CXXFLAGS="-L$(CURDIR) ${CXXFLAGS}" LDFLAGS="$(POSTGIS_FUZZER_LDFLAGS)" POSTGIS_BUILD_DIR="$(POSTGIS_BUILD_DIR)" SRC="$(FUZZER_SRC_DIR)" OUT="$(FUZZER_OUT)" $(FUZZER_SRC_DIR)/build_google_oss_fuzzers.sh
+	CC="${CC}" CXX="${CXX}" CPPFLAGS="$(POSTGIS_FUZZER_CPPFLAGS)" CXXFLAGS="-L$(CURDIR) ${CXXFLAGS}" LDFLAGS="$(POSTGIS_FUZZER_LDFLAGS)" POSTGIS_BUILD_DIR="$(POSTGIS_BUILD_DIR)" SRC="$(FUZZER_SRC_DIR)" OUT="$(FUZZER_OUT)" $(FUZZER_SRC_DIR)/build_google_oss_fuzzers.sh
 	OUT="$(FUZZER_OUT)" $(FUZZER_SRC_DIR)/build_seed_corpus.sh
 
 check:
