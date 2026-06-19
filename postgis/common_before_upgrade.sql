@@ -194,6 +194,7 @@ DECLARE
 	domain_skipped_column RECORD;
 	sql TEXT;
 	skipped_repair BOOLEAN := false;
+	skipped_domain_type_oids OID[] := ARRAY[]::OID[];
 	restored_domain_array_columns BOOLEAN := false;
 	-- We need the base types of the old and new types - if multidimensional (int[][]), we need just one dimension at most
 	old_base_type TEXT := pg_catalog.regexp_replace(old_domain_type, E'(\\[\\])+$', '[]');
@@ -310,44 +311,63 @@ BEGIN
 
 			FOR domain_constraint IN
 				SELECT
-					conname,
-					pg_catalog.pg_get_constraintdef(oid) AS constraint_def,
-					pg_catalog.obj_description(oid, 'pg_constraint') LIKE '%' || constraint_not_valid_marker || '%' AS not_valid_by_repair
-					FROM pg_catalog.pg_constraint
-					WHERE contypid = domain_oid
-				LOOP
-					domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
-						pg_catalog.jsonb_build_object(
-							'name', domain_constraint.conname,
-							'definition', domain_constraint.constraint_def,
-							'not_valid_by_repair', domain_constraint.not_valid_by_repair
-						)
-					);
-					sql := pg_catalog.format(
-						'ALTER DOMAIN %I.%I DROP CONSTRAINT IF EXISTS %I',
-					domain_schema,
-					domain_name,
+					t.oid AS domain_oid,
+					n.nspname AS domain_schema,
+					t.typname AS domain_name,
+					con.conname,
+					pg_catalog.pg_get_constraintdef(con.oid) AS constraint_def,
+					con.convalidated,
+					pg_catalog.obj_description(con.oid, 'pg_constraint') LIKE '%' || constraint_not_valid_marker || '%' AS not_valid_by_repair
+				FROM pg_catalog.pg_constraint AS con
+				JOIN pg_catalog.pg_type AS t
+					ON t.oid = con.contypid
+					AND t.typtype = 'd'
+				JOIN pg_catalog.pg_namespace AS n
+					ON n.oid = t.typnamespace
+				WHERE con.contypid = ANY(nested_topology_type_oids)
+			LOOP
+				domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
+					pg_catalog.jsonb_build_object(
+						'domain_oid', domain_constraint.domain_oid,
+						'domain_schema', domain_constraint.domain_schema,
+						'domain_name', domain_constraint.domain_name,
+						'name', domain_constraint.conname,
+						'definition', domain_constraint.constraint_def,
+						'convalidated', domain_constraint.convalidated,
+						'not_valid_by_repair', domain_constraint.not_valid_by_repair
+					)
+				);
+				sql := pg_catalog.format(
+					'ALTER DOMAIN %I.%I DROP CONSTRAINT IF EXISTS %I',
+					domain_constraint.domain_schema,
+					domain_constraint.domain_name,
 					domain_constraint.conname
 				);
-					EXECUTE sql;
-				END LOOP;
+				EXECUTE sql;
+			END LOOP;
 
 			-- Older upgrade sources may not have constraints introduced after
 			-- the original domain was created.  Treat those canonical topology
 			-- constraints like captured constraints so incomplete repairs keep
-				-- them NOT VALID. Complete repairs install the fresh-domain
-				-- constraint set as validated unless rewritten domain-array
-				-- columns still depend on the domain and force NOT VALID restore.
+			-- them NOT VALID. Complete repairs install the fresh-domain
+			-- constraint set as validated unless rewritten domain-array
+			-- columns still depend on the domain and force NOT VALID restore.
 			IF pg_catalog.lower(domain_name) = 'topoelement' THEN
 				IF NOT EXISTS (
 					SELECT 1
 					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
-					WHERE value->>'name' = 'dimensions'
+					WHERE value->>'domain_schema' = domain_schema
+					AND value->>'domain_name' = domain_name
+					AND value->>'name' = 'dimensions'
 				) THEN
 					domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
 						pg_catalog.jsonb_build_object(
+							'domain_schema', domain_schema,
+							'domain_name', domain_name,
+							'domain_oid', domain_oid,
 							'name', 'dimensions',
 							'definition', 'CHECK (array_upper(VALUE, 2) IS NULL AND array_upper(VALUE, 1) = 2)',
+							'convalidated', true,
 							'not_valid_by_repair', true
 						)
 					);
@@ -356,12 +376,18 @@ BEGIN
 				IF NOT EXISTS (
 					SELECT 1
 					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
-					WHERE value->>'name' = 'type_range'
+					WHERE value->>'domain_schema' = domain_schema
+					AND value->>'domain_name' = domain_name
+					AND value->>'name' = 'type_range'
 				) THEN
 					domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
 						pg_catalog.jsonb_build_object(
+							'domain_schema', domain_schema,
+							'domain_name', domain_name,
+							'domain_oid', domain_oid,
 							'name', 'type_range',
 							'definition', 'CHECK (VALUE[2] > 0)',
+							'convalidated', true,
 							'not_valid_by_repair', true
 						)
 					);
@@ -370,12 +396,18 @@ BEGIN
 				IF NOT EXISTS (
 					SELECT 1
 					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
-					WHERE value->>'name' = 'lower_dimension'
+					WHERE value->>'domain_schema' = domain_schema
+					AND value->>'domain_name' = domain_name
+					AND value->>'name' = 'lower_dimension'
 				) THEN
 					domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
 						pg_catalog.jsonb_build_object(
+							'domain_schema', domain_schema,
+							'domain_name', domain_name,
+							'domain_oid', domain_oid,
 							'name', 'lower_dimension',
 							'definition', 'CHECK (array_lower(VALUE, 1) = 1)',
+							'convalidated', true,
 							'not_valid_by_repair', true
 						)
 					);
@@ -384,12 +416,18 @@ BEGIN
 				IF NOT EXISTS (
 					SELECT 1
 					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
-					WHERE value->>'name' = 'type_range'
+					WHERE value->>'domain_schema' = domain_schema
+					AND value->>'domain_name' = domain_name
+					AND value->>'name' = 'type_range'
 				) THEN
 					domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
 						pg_catalog.jsonb_build_object(
+							'domain_schema', domain_schema,
+							'domain_name', domain_name,
+							'domain_oid', domain_oid,
 							'name', 'type_range',
 							'definition', 'CHECK (array_upper(VALUE, 2) = 2 AND array_upper(VALUE, 3) IS NULL)',
+							'convalidated', true,
 							'not_valid_by_repair', true
 						)
 					);
@@ -618,6 +656,7 @@ BEGIN
 				)
 			LOOP
 				skipped_repair := true;
+				skipped_domain_type_oids := pg_catalog.array_append(skipped_domain_type_oids, domain_oid);
 				IF domain_skipped_column.relkind = 'm' THEN
 					RAISE WARNING 'Could not rewrite materialized view column %.% for topology.%; refresh or recreate the materialized view after upgrade',
 						domain_skipped_column.attrelid::regclass,
@@ -700,6 +739,7 @@ BEGIN
 			-- prove that all old-width storage was repaired.
 			FOR domain_skipped_column IN
 				SELECT DISTINCT
+					a.atttypid AS nested_type_oid,
 					a.attrelid,
 					a.attname,
 					a.atttypid::regtype AS nested_type_name
@@ -714,6 +754,10 @@ BEGIN
 				AND c.relkind IN ('r', 'p', 'm')
 			LOOP
 				skipped_repair := true;
+				skipped_domain_type_oids := pg_catalog.array_append(
+					skipped_domain_type_oids,
+					domain_skipped_column.nested_type_oid
+				);
 				RAISE WARNING 'Could not rewrite %.% for topology.% because its type % contains that domain; move the value through text into a freshly created type after upgrade',
 					domain_skipped_column.attrelid::regclass,
 					domain_skipped_column.attname,
@@ -776,6 +820,7 @@ BEGIN
 				AND c.relkind IN ('r', 'p')
 			LOOP
 				skipped_repair := true;
+				skipped_domain_type_oids := pg_catalog.array_append(skipped_domain_type_oids, domain_oid);
 				RAISE WARNING 'Could not rewrite generated column %.% for topology.% because it reads unrepaired column %.%; drop and recreate the generated column after repairing its source column',
 					domain_generated_source_column.attrelid::regclass,
 					domain_generated_source_column.attname,
@@ -1861,6 +1906,7 @@ BEGIN
 					EXECUTE sql;
 				ELSE
 					skipped_repair := true;
+					skipped_domain_type_oids := pg_catalog.array_append(skipped_domain_type_oids, domain_oid);
 					RAISE WARNING 'Could not rewrite stored generated column %.% for topology.% on PostgreSQL %, generated expression reset requires PostgreSQL 17 or later',
 						domain_generated_column.attrelid::regclass,
 						domain_generated_column.attname,
@@ -1913,21 +1959,28 @@ BEGIN
 
 				FOR domain_constraint IN
 					SELECT
+						(value->>'domain_oid')::oid AS domain_oid,
+						value->>'domain_schema' AS domain_schema,
+						value->>'domain_name' AS domain_name,
 						value->>'name' AS conname,
 						CASE
-						WHEN skipped_repair THEN value->>'definition'
-						WHEN COALESCE((value->>'not_valid_by_repair')::boolean, false) THEN pg_catalog.regexp_replace(
-							value->>'definition',
-							'[[:space:]]+NOT[[:space:]]+VALID[[:space:]]*$',
-							'',
-							'i'
-						)
-						ELSE pg_catalog.regexp_replace(
-							value->>'definition',
-							'[[:space:]]*$',
-							'',
-							'i'
-						)
+							WHEN COALESCE((value->>'convalidated')::boolean, false)
+								OR (
+									COALESCE((value->>'not_valid_by_repair')::boolean, false)
+									AND (value->>'domain_oid')::oid <> ALL(skipped_domain_type_oids)
+								)
+							THEN pg_catalog.regexp_replace(
+								value->>'definition',
+								'[[:space:]]+NOT[[:space:]]+VALID[[:space:]]*$',
+								'',
+								'i'
+							)
+							ELSE pg_catalog.regexp_replace(
+								value->>'definition',
+								'[[:space:]]*$',
+								'',
+								'i'
+							)
 						END AS constraint_def,
 						COALESCE((value->>'not_valid_by_repair')::boolean, false) AS not_valid_by_repair
 					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
@@ -1942,19 +1995,35 @@ BEGIN
 					-- storage left behind.
 					sql := pg_catalog.format(
 						'ALTER DOMAIN %I.%I ADD CONSTRAINT %I %s%s',
-						domain_schema,
-						domain_name,
+						domain_constraint.domain_schema,
+						domain_constraint.domain_name,
 						domain_constraint.conname,
 						domain_constraint.constraint_def,
 						CASE
-						WHEN (skipped_repair OR restored_domain_array_columns)
-							AND domain_constraint.constraint_def !~* '[[:space:]]NOT[[:space:]]+VALID[[:space:]]*$'
-						THEN ' NOT VALID'
-						ELSE ''
+							-- Array-of-domain columns force NOT VALID only for
+							-- the domain they directly depend on. Nested user
+							-- domains are restored from the same saved set, but
+							-- keeping their validated constraints validated avoids
+							-- silently weakening unrelated user checks.
+							WHEN (
+								(
+									skipped_repair
+									AND domain_constraint.domain_oid = ANY(skipped_domain_type_oids)
+								)
+								OR (
+									restored_domain_array_columns
+									AND domain_constraint.domain_schema = domain_schema
+									AND domain_constraint.domain_name = domain_name
+								)
+							)
+								AND domain_constraint.constraint_def !~* '[[:space:]]NOT[[:space:]]+VALID[[:space:]]*$'
+							THEN ' NOT VALID'
+							ELSE ''
 						END
 					);
 					EXECUTE sql;
 					IF skipped_repair
+						AND domain_constraint.domain_oid = ANY(skipped_domain_type_oids)
 						AND (
 							domain_constraint.not_valid_by_repair
 							OR domain_constraint.constraint_def !~* '[[:space:]]NOT[[:space:]]+VALID[[:space:]]*$'
@@ -1963,8 +2032,8 @@ BEGIN
 						sql := pg_catalog.format(
 							'COMMENT ON CONSTRAINT %I ON DOMAIN %I.%I IS %L',
 							domain_constraint.conname,
-							domain_schema,
-							domain_name,
+							domain_constraint.domain_schema,
+							domain_constraint.domain_name,
 							constraint_not_valid_marker
 						);
 						EXECUTE sql;

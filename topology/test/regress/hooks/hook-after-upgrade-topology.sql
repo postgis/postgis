@@ -236,17 +236,18 @@ BEGIN
     RAISE EXCEPTION 'dependent topology domain SQL function was not preserved during upgrade';
   END IF;
 
-  IF current_setting('server_version_num')::integer >= 150000
-    AND NOT EXISTS (
-      SELECT 1
-      FROM pg_catalog.pg_publication AS p
-      JOIN pg_catalog.pg_publication_rel AS pr
-        ON pr.prpubid = p.oid
-      WHERE p.pubname = 'upgrade_test_domain_publication'
-      AND pr.prrelid = 'upgrade_test.domain_publication_source'::regclass
-    )
-  THEN
-    RAISE EXCEPTION 'dependent topology domain publication relation was not preserved during upgrade';
+  IF current_setting('server_version_num')::integer >= 150000 THEN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_catalog.pg_publication AS p
+        JOIN pg_catalog.pg_publication_rel AS pr
+          ON pr.prpubid = p.oid
+        WHERE p.pubname = 'upgrade_test_domain_publication'
+        AND pr.prrelid = 'upgrade_test.domain_publication_source'::regclass
+      )
+    THEN
+      RAISE EXCEPTION 'dependent topology domain publication relation was not preserved during upgrade';
+    END IF;
   END IF;
 
   IF (SELECT count(*) FROM upgrade_test.domain_blocked_partition_child_view) != 1 THEN
@@ -301,17 +302,18 @@ BEGIN
     RAISE EXCEPTION 'dependent topology domain partition-child SQL function was not preserved during upgrade';
   END IF;
 
-  IF current_setting('server_version_num')::integer >= 150000
-    AND NOT EXISTS (
-      SELECT 1
-      FROM pg_catalog.pg_publication AS p
-      JOIN pg_catalog.pg_publication_rel AS pr
-        ON pr.prpubid = p.oid
-      WHERE p.pubname = 'upgrade_test_domain_child_publication'
-      AND pr.prrelid = 'upgrade_test.domain_publication_child_child'::regclass
-    )
-  THEN
-    RAISE EXCEPTION 'dependent topology domain partition-child publication relation was not preserved during upgrade';
+  IF current_setting('server_version_num')::integer >= 150000 THEN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_catalog.pg_publication AS p
+        JOIN pg_catalog.pg_publication_rel AS pr
+          ON pr.prpubid = p.oid
+        WHERE p.pubname = 'upgrade_test_domain_child_publication'
+        AND pr.prrelid = 'upgrade_test.domain_publication_child_child'::regclass
+      )
+    THEN
+      RAISE EXCEPTION 'dependent topology domain partition-child publication relation was not preserved during upgrade';
+    END IF;
   END IF;
 
   IF (SELECT count(*) FROM upgrade_test.domain_blocked_inherit_grandchild_view) != 1 THEN
@@ -331,6 +333,7 @@ $$;
 DO $$
 DECLARE
   nested_value topology.topoelement;
+  nested_array_value topology.topoelementarray;
   default_expr text;
   row_carrier_value topology.topoelement;
 BEGIN
@@ -370,6 +373,90 @@ BEGIN
     RAISE EXCEPTION 'rewritten nested topology domain-level default did not preserve value: %',
       nested_value;
   END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
+    WHERE contypid = 'upgrade_test.unused_nested_topoelement'::regtype
+    AND conname = 'unused_nested_topoelement_validated'
+    AND convalidated
+  ) THEN
+    RAISE EXCEPTION 'unrelated validated nested topology domain constraint was restored unvalidated';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
+    WHERE contypid = 'upgrade_test.nested_topoelement'::regtype
+    AND conname = 'nested_topoelement_positive'
+  ) THEN
+    RAISE EXCEPTION 'nested topology domain constraint was not restored during upgrade';
+  END IF;
+
+  BEGIN
+    CREATE TEMP TABLE domain_nested_constraint_probe (
+      a upgrade_test.nested_topoelement
+    ) ON COMMIT DROP;
+    INSERT INTO domain_nested_constraint_probe VALUES (
+      '{0,1}'::topology.topoelement::upgrade_test.nested_topoelement
+    );
+    RAISE EXCEPTION 'nested topology domain constraint did not reject invalid value';
+  EXCEPTION WHEN check_violation THEN
+    NULL;
+  END;
+
+  SELECT pg_catalog.pg_get_expr(t.typdefaultbin, 0)
+    INTO STRICT default_expr
+    FROM pg_catalog.pg_type AS t
+    WHERE t.oid = 'upgrade_test.nested_topoelementarray'::regtype;
+
+  IF default_expr IS NULL OR default_expr NOT LIKE '%::text)::upgrade_test.nested_topoelementarray%' THEN
+    RAISE EXCEPTION 'nested topology domain array default was not rewritten during upgrade: %',
+      default_expr;
+  END IF;
+
+  CREATE TEMP TABLE domain_nested_array_default_probe (
+    a upgrade_test.nested_topoelementarray
+  ) ON COMMIT DROP;
+  INSERT INTO domain_nested_array_default_probe DEFAULT VALUES;
+  SELECT a::topology.topoelementarray INTO STRICT nested_array_value
+    FROM domain_nested_array_default_probe;
+
+  IF nested_array_value[1][1] != 93 OR nested_array_value[1][2] != 94 THEN
+    RAISE EXCEPTION 'rewritten nested topology domain array default did not preserve value: %',
+      nested_array_value;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
+    WHERE contypid = 'upgrade_test.unused_nested_topoelementarray'::regtype
+    AND conname = 'unused_nested_topoelementarray_validated'
+    AND convalidated
+  ) THEN
+    RAISE EXCEPTION 'unrelated validated nested topology domain array constraint was restored unvalidated';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
+    WHERE contypid = 'upgrade_test.nested_topoelementarray'::regtype
+    AND conname = 'nested_topoelementarray_positive'
+  ) THEN
+    RAISE EXCEPTION 'nested topology domain array constraint was not restored during upgrade';
+  END IF;
+
+  BEGIN
+    CREATE TEMP TABLE domain_nested_array_constraint_probe (
+      a upgrade_test.nested_topoelementarray
+    ) ON COMMIT DROP;
+    INSERT INTO domain_nested_array_constraint_probe VALUES (
+      '{{0,1}}'::topology.topoelementarray::upgrade_test.nested_topoelementarray
+    );
+    RAISE EXCEPTION 'nested topology domain array constraint did not reject invalid value';
+  EXCEPTION WHEN check_violation THEN
+    NULL;
+  END;
 
   SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid)
     INTO STRICT default_expr

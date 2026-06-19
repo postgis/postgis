@@ -224,6 +224,31 @@ INSERT INTO upgrade_test.domain_array_constraint_test (a) VALUES (
 CREATE DOMAIN upgrade_test.nested_topoelement AS topology.topoelement;
 ALTER DOMAIN upgrade_test.nested_topoelement
   SET DEFAULT '{91,92}'::topology.topoelement::upgrade_test.nested_topoelement;
+ALTER DOMAIN upgrade_test.nested_topoelement
+  ADD CONSTRAINT nested_topoelement_positive CHECK (VALUE::text !~ '^\{0,') NOT VALID;
+CREATE DOMAIN upgrade_test.nested_topoelementarray AS topology.topoelementarray;
+ALTER DOMAIN upgrade_test.nested_topoelementarray
+  SET DEFAULT '{{93,94}}'::topology.topoelementarray::upgrade_test.nested_topoelementarray;
+ALTER DOMAIN upgrade_test.nested_topoelementarray
+  ADD CONSTRAINT nested_topoelementarray_positive CHECK (VALUE::text !~ '^\{\{0,') NOT VALID;
+CREATE DOMAIN upgrade_test.unused_nested_topoelement AS topology.topoelement;
+CREATE DOMAIN upgrade_test.unused_nested_topoelementarray AS topology.topoelementarray;
+-- PostgreSQL can recurse too deeply while validating nested-domain checks in
+-- this fixture. Mark these tautological constraints validated in the catalog so
+-- the upgrade can prove unrelated nested domains are not demoted by a base
+-- topology domain array-column repair.
+ALTER DOMAIN upgrade_test.unused_nested_topoelement
+  ADD CONSTRAINT unused_nested_topoelement_validated CHECK (VALUE IS NULL OR VALUE IS NOT NULL) NOT VALID;
+UPDATE pg_catalog.pg_constraint
+  SET convalidated = true
+  WHERE contypid = 'upgrade_test.unused_nested_topoelement'::regtype
+  AND conname = 'unused_nested_topoelement_validated';
+ALTER DOMAIN upgrade_test.unused_nested_topoelementarray
+  ADD CONSTRAINT unused_nested_topoelementarray_validated CHECK (VALUE IS NULL OR VALUE IS NOT NULL) NOT VALID;
+UPDATE pg_catalog.pg_constraint
+  SET convalidated = true
+  WHERE contypid = 'upgrade_test.unused_nested_topoelementarray'::regtype
+  AND conname = 'unused_nested_topoelementarray_validated';
 CREATE TYPE upgrade_test.composite_topoelement AS (
   a topology.topoelement
 );
