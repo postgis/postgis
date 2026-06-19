@@ -20,6 +20,7 @@
  *
  * Copyright 2001-2006 Refractions Research Inc.
  * Copyright 2017-2018 Daniel Baston <dbaston@gmail.com>
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -127,6 +128,23 @@ Datum ST_PointM(PG_FUNCTION_ARGS);
 Datum ST_PointZM(PG_FUNCTION_ARGS);
 
 /*------------------------------------------------------------------*/
+
+static int
+lwgeom_is_makepoly_ring_type(uint8_t type)
+{
+	return type == LINETYPE || type == CIRCSTRINGTYPE || type == COMPOUNDTYPE || type == NURBSCURVETYPE;
+}
+
+static void
+lwgeom_makepoly_validate_curve_ring(const LWGEOM *ring, const char *label)
+{
+	uint32_t vertices_needed = ring->type == LINETYPE ? 4 : 3;
+
+	if (lwgeom_count_vertices(ring) < vertices_needed)
+		lwerror("%s must have at least %d points", label, vertices_needed);
+	if (!lwgeom_is_closed(ring))
+		lwerror("%s must be closed", label);
+}
 
 /** find the size of geometry */
 PG_FUNCTION_INFO_V1(LWGEOM_mem_size);
@@ -1559,28 +1577,39 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 	GSERIALIZED *pglwg1;
 	ArrayType *array = NULL;
 	GSERIALIZED *result = NULL;
-	const LWLINE *shell = NULL;
+	LWGEOM *shell = NULL;
+	LWGEOM **rings = NULL;
 	const LWLINE **holes = NULL;
 	LWPOLY *outpoly;
+	LWCURVEPOLY *outcurvepoly;
 	uint32 nholes = 0;
 	uint32 i;
 	size_t offset = 0;
+	int has_curve_ring = LW_FALSE;
+	int32_t srid;
+	int has_z;
+	int has_m;
 
 	POSTGIS_DEBUG(2, "LWGEOM_makepoly called.");
 
 	/* Get input shell */
 	pglwg1 = PG_GETARG_GSERIALIZED_P(0);
-	if (gserialized_get_type(pglwg1) != LINETYPE)
+	if (!lwgeom_is_makepoly_ring_type(gserialized_get_type(pglwg1)))
 	{
 		lwpgerror("Shell is not a line");
 	}
-	shell = lwgeom_as_lwline(lwgeom_from_gserialized(pglwg1));
+	shell = lwgeom_from_gserialized(pglwg1);
+	has_curve_ring = shell->type != LINETYPE;
+	srid = shell->srid;
+	has_z = FLAGS_GET_Z(shell->flags);
+	has_m = FLAGS_GET_M(shell->flags);
 
 	/* Get input holes if any */
 	if (PG_NARGS() > 1)
 	{
 		array = PG_GETARG_ARRAYTYPE_P(1);
 		nholes = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+		rings = lwalloc(sizeof(LWGEOM *) * (nholes + 1));
 		holes = lwalloc(sizeof(LWLINE *) * nholes);
 		for (i = 0; i < nholes; i++)
 		{
@@ -1592,28 +1621,65 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 #pragma GCC diagnostic pop
 #endif
-			LWLINE *hole;
+			LWGEOM *hole;
 			offset += INTALIGN(VARSIZE(g));
-			if (gserialized_get_type(g) != LINETYPE)
+			if (!lwgeom_is_makepoly_ring_type(gserialized_get_type(g)))
 			{
 				lwpgerror("Hole %d is not a line", i);
 			}
-			hole = lwgeom_as_lwline(lwgeom_from_gserialized(g));
-			holes[i] = hole;
+			hole = lwgeom_from_gserialized(g);
+			has_curve_ring |= hole->type != LINETYPE;
+			rings[i + 1] = hole;
+			holes[i] = lwgeom_as_lwline(hole);
 		}
 	}
 
-	outpoly = lwpoly_from_lwlines(shell, nholes, holes);
-	POSTGIS_DEBUGF(3, "%s", lwgeom_summary((LWGEOM *)outpoly, 0));
-	result = geometry_serialize((LWGEOM *)outpoly);
+	if (has_curve_ring)
+	{
+		if (!rings)
+			rings = lwalloc(sizeof(LWGEOM *));
+		rings[0] = shell;
+		outcurvepoly = lwcurvepoly_construct_empty(srid, FLAGS_GET_Z(shell->flags), FLAGS_GET_M(shell->flags));
 
-	lwline_free((LWLINE *)shell);
+		for (i = 0; i <= nholes; i++)
+		{
+			if (rings[i]->srid != srid)
+				lwerror("lwgeom_makepoly: mixed SRIDs in input rings");
+			if (FLAGS_GET_Z(rings[i]->flags) != has_z || FLAGS_GET_M(rings[i]->flags) != has_m)
+				lwerror("lwgeom_makepoly: mixed dimensioned rings");
+			lwgeom_makepoly_validate_curve_ring(rings[i], i == 0 ? "Shell" : "Hole");
+			if (LW_FAILURE == lwcurvepoly_add_ring(outcurvepoly, rings[i]))
+				lwerror("lwgeom_makepoly: could not add ring %d to curve polygon", i);
+			if (i == 0)
+				shell = NULL;
+			rings[i] = NULL;
+		}
+
+		POSTGIS_DEBUGF(3, "%s", lwgeom_summary((LWGEOM *)outcurvepoly, 0));
+		result = geometry_serialize((LWGEOM *)outcurvepoly);
+		lwgeom_free((LWGEOM *)outcurvepoly);
+	}
+	else
+	{
+		outpoly = lwpoly_from_lwlines(lwgeom_as_lwline(shell), nholes, holes);
+		POSTGIS_DEBUGF(3, "%s", lwgeom_summary((LWGEOM *)outpoly, 0));
+		result = geometry_serialize((LWGEOM *)outpoly);
+		lwpoly_free(outpoly);
+	}
+
+	if (shell)
+		lwgeom_free(shell);
 	PG_FREE_IF_COPY(pglwg1, 0);
 
 	for (i = 0; i < nholes; i++)
 	{
-		lwline_free((LWLINE *)holes[i]);
+		if (rings && rings[i + 1])
+			lwgeom_free(rings[i + 1]);
 	}
+	if (rings)
+		lwfree(rings);
+	if (holes)
+		lwfree(holes);
 
 	PG_RETURN_POINTER(result);
 }
