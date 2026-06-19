@@ -240,9 +240,9 @@ FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;
 		geometry is rotated around a 3D point origin, the geometry Z is treated
 		as 0, so the origin Z can affect the output Y coordinate.</para>
 
+		<para role="availability" conformance="1.1.2.">Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2</para>
 		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 support for rotating around a point origin was introduced.</para>
-		<para role="availability" conformance="1.1.2.">Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2</para>
 		<para>&P_support;</para>
 		<para>&Z_support;</para>
 		<para>&T_support;</para>
