@@ -1,5 +1,10 @@
 SELECT topology.createTopology('upgrade_test');
 
+-- The topology upgrade fixture creates many objects before the extension
+-- update. Keep autovacuum from racing the upgrade script's explicit
+-- ANALYZE spatial_ref_sys, which can otherwise deadlock on slow CI workers.
+ALTER TABLE public.spatial_ref_sys SET (autovacuum_enabled = false);
+
 -- Create some TopoGeometry data
 CREATE TABLE upgrade_test.feature(id serial primary key);
 SELECT topology.AddTopoGeometryColumn('upgrade_test', 'upgrade_test', 'feature', 'tg', 'linear');
@@ -217,6 +222,8 @@ INSERT INTO upgrade_test.domain_array_constraint_test (a) VALUES (
 );
 
 CREATE DOMAIN upgrade_test.nested_topoelement AS topology.topoelement;
+ALTER DOMAIN upgrade_test.nested_topoelement
+  SET DEFAULT '{91,92}'::topology.topoelement::upgrade_test.nested_topoelement;
 CREATE TYPE upgrade_test.composite_topoelement AS (
   a topology.topoelement
 );
@@ -229,6 +236,17 @@ CREATE TABLE upgrade_test.domain_nested_type_test (
 INSERT INTO upgrade_test.domain_nested_type_test (a, b) VALUES (
   '{85,86}'::topology.topoelement::upgrade_test.nested_topoelement,
   ROW('{87,88}'::topology.topoelement)::upgrade_test.composite_topoelement
+);
+
+CREATE TABLE upgrade_test.domain_row_carrier_source (
+  a topology.topoelement
+);
+CREATE TABLE upgrade_test.domain_row_carrier_test (
+  id integer GENERATED ALWAYS AS IDENTITY,
+  r upgrade_test.domain_row_carrier_source DEFAULT ROW('{105,106}'::topology.topoelement)::upgrade_test.domain_row_carrier_source
+);
+INSERT INTO upgrade_test.domain_row_carrier_test (r) VALUES (
+  ROW('{103,104}'::topology.topoelement)::upgrade_test.domain_row_carrier_source
 );
 
 CREATE TABLE upgrade_test.domain_array_inherit_constraint_parent (
@@ -334,10 +352,24 @@ CREATE TRIGGER domain_trigger_child_a_trigger
   BEFORE UPDATE OF a ON upgrade_test.domain_trigger_child_child
   FOR EACH ROW EXECUTE FUNCTION upgrade_test.domain_trigger_source_guard();
 
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_catalog.pg_event_trigger WHERE evtname = 'trg_autovac_disable') THEN
+    ALTER EVENT TRIGGER trg_autovac_disable DISABLE;
+  END IF;
+END
+$$;
 CREATE TABLE upgrade_test.domain_function_child_parent (
   id integer,
   a topology.topoelement
 ) PARTITION BY RANGE (id);
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_catalog.pg_event_trigger WHERE evtname = 'trg_autovac_disable') THEN
+    ALTER EVENT TRIGGER trg_autovac_disable ENABLE;
+  END IF;
+END
+$$;
 CREATE TABLE upgrade_test.domain_function_child_child
   PARTITION OF upgrade_test.domain_function_child_parent FOR VALUES FROM (0) TO (10);
 INSERT INTO upgrade_test.domain_function_child_parent VALUES (

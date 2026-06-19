@@ -323,6 +323,8 @@ $$;
 DO $$
 DECLARE
   nested_value topology.topoelement;
+  default_expr text;
+  row_carrier_value topology.topoelement;
 BEGIN
   IF (SELECT count(*) FROM upgrade_test.domain_nested_type_test) != 1 THEN
     RAISE EXCEPTION 'nested topology domain storage fixture was not preserved during upgrade';
@@ -337,6 +339,52 @@ BEGIN
   IF nested_value[1] != 89 OR nested_value[2] != 90 THEN
     RAISE EXCEPTION 'rewritten nested topology domain default did not preserve value: %',
       nested_value;
+  END IF;
+
+  SELECT pg_catalog.pg_get_expr(t.typdefaultbin, 0)
+    INTO STRICT default_expr
+    FROM pg_catalog.pg_type AS t
+    WHERE t.oid = 'upgrade_test.nested_topoelement'::regtype;
+
+  IF default_expr IS NULL OR default_expr NOT LIKE '%::text)::upgrade_test.nested_topoelement%' THEN
+    RAISE EXCEPTION 'nested topology domain default was not rewritten during upgrade: %',
+      default_expr;
+  END IF;
+
+  CREATE TEMP TABLE domain_nested_default_probe (
+    a upgrade_test.nested_topoelement
+  ) ON COMMIT DROP;
+  INSERT INTO domain_nested_default_probe DEFAULT VALUES;
+  SELECT a::topology.topoelement INTO STRICT nested_value
+    FROM domain_nested_default_probe;
+
+  IF nested_value[1] != 91 OR nested_value[2] != 92 THEN
+    RAISE EXCEPTION 'rewritten nested topology domain-level default did not preserve value: %',
+      nested_value;
+  END IF;
+
+  SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid)
+    INTO STRICT default_expr
+    FROM pg_catalog.pg_attribute AS a
+    JOIN pg_catalog.pg_attrdef AS d
+      ON d.adrelid = a.attrelid
+      AND d.adnum = a.attnum
+    WHERE a.attrelid = 'upgrade_test.domain_row_carrier_test'::regclass
+    AND a.attname = 'r';
+
+  IF default_expr IS NULL OR default_expr LIKE '%::text)::upgrade_test.domain_row_carrier_source%' THEN
+    RAISE EXCEPTION 'table row-type topology carrier default used unsafe whole-row text rewrite: %',
+      default_expr;
+  END IF;
+
+  INSERT INTO upgrade_test.domain_row_carrier_test DEFAULT VALUES;
+  SELECT (r).a INTO STRICT row_carrier_value
+    FROM upgrade_test.domain_row_carrier_test
+    WHERE id = 2;
+
+  IF row_carrier_value[1] != 105 OR row_carrier_value[2] != 106 THEN
+    RAISE EXCEPTION 'rewritten table row-type topology carrier default did not preserve value: %',
+      row_carrier_value;
   END IF;
 END
 $$;

@@ -255,7 +255,7 @@ BEGIN
 					FROM pg_catalog.pg_attribute AS ta
 					JOIN pg_catalog.pg_class AS tc
 						ON tc.oid = ta.attrelid
-						AND tc.relkind = 'c'
+						AND tc.relkind IN ('c', 'r', 'p')
 					JOIN pg_catalog.pg_type AS ct
 						ON ct.typrelid = tc.oid
 					WHERE ta.atttypid = nested_type.type_oid
@@ -267,11 +267,52 @@ BEGIN
 			FROM nested_type
 				INTO nested_topology_type_oids;
 
-				FOR domain_constraint IN
-					SELECT
-						conname,
-						pg_catalog.pg_get_constraintdef(oid) AS constraint_def,
-						pg_catalog.obj_description(oid, 'pg_constraint') LIKE '%' || constraint_not_valid_marker || '%' AS not_valid_by_repair
+			FOR domain_default IN
+				SELECT
+					n.nspname AS domain_schema,
+					t.typname AS domain_name,
+					pg_catalog.pg_get_expr(t.typdefaultbin, 0) AS default_expr,
+					t.oid::regtype::text AS new_domain_type
+				FROM pg_catalog.pg_type AS t
+				JOIN pg_catalog.pg_namespace AS n
+					ON n.oid = t.typnamespace
+				WHERE t.typtype = 'd'
+				AND t.oid <> domain_oid
+				AND t.oid = ANY(nested_topology_type_oids)
+				AND t.typdefaultbin IS NOT NULL
+			LOOP
+				-- A user domain over the topology domain can have its own
+				-- default expression compiled against the old array storage.
+				-- Save it before the base domain catalog rewrite and restore it
+				-- through text after the new topology storage is in force.
+				CREATE TEMP TABLE IF NOT EXISTS pg_temp._postgis_topology_domain_defaults (
+					domain_schema TEXT,
+					domain_name TEXT,
+					default_expr TEXT,
+					new_domain_type TEXT
+				) ON COMMIT DROP;
+
+				sql := pg_catalog.format(
+					'ALTER DOMAIN %I.%I DROP DEFAULT',
+					domain_default.domain_schema,
+					domain_default.domain_name
+				);
+				EXECUTE sql;
+
+				INSERT INTO pg_temp._postgis_topology_domain_defaults
+					VALUES (
+						domain_default.domain_schema,
+						domain_default.domain_name,
+						domain_default.default_expr,
+						domain_default.new_domain_type
+					);
+			END LOOP;
+
+			FOR domain_constraint IN
+				SELECT
+					conname,
+					pg_catalog.pg_get_constraintdef(oid) AS constraint_def,
+					pg_catalog.obj_description(oid, 'pg_constraint') LIKE '%' || constraint_not_valid_marker || '%' AS not_valid_by_repair
 					FROM pg_catalog.pg_constraint
 					WHERE contypid = domain_oid
 				LOOP
@@ -413,7 +454,9 @@ BEGIN
 					dependent_constraint.constraint_oid,
 					dependent_constraint.constraint_name,
 					dependent_index.index_oid,
-					dependent_index.index_name
+					dependent_index.index_name,
+					dependent_row_type_column.attrelid AS row_type_attrelid,
+					dependent_row_type_column.attname AS row_type_attname
 				FROM pg_catalog.pg_attribute AS a
 				JOIN pg_catalog.pg_class AS c
 					ON c.oid = a.attrelid
@@ -543,6 +586,21 @@ BEGIN
 					AND a.atttypid = domain_array_oid
 					LIMIT 1
 				) AS dependent_index ON true
+				LEFT JOIN LATERAL (
+					SELECT
+						ra.attrelid,
+						ra.attname
+					FROM pg_catalog.pg_type AS rt
+					JOIN pg_catalog.pg_attribute AS ra
+						ON ra.atttypid = rt.oid
+						AND ra.attnum > 0
+						AND NOT ra.attisdropped
+					JOIN pg_catalog.pg_class AS rc
+						ON rc.oid = ra.attrelid
+						AND rc.relkind IN ('r', 'p', 'm')
+					WHERE rt.typrelid = a.attrelid
+					LIMIT 1
+				) AS dependent_row_type_column ON true
 				WHERE a.atttypid = ANY(domain_att_type_oids)
 				AND a.attnum > 0
 				AND NOT a.attisdropped
@@ -556,6 +614,7 @@ BEGIN
 					OR dependent_generated_column.attrelid IS NOT NULL
 					OR dependent_constraint.constraint_oid IS NOT NULL
 					OR dependent_index.index_oid IS NOT NULL
+					OR dependent_row_type_column.attrelid IS NOT NULL
 				)
 			LOOP
 				skipped_repair := true;
@@ -620,6 +679,13 @@ BEGIN
 						domain_skipped_column.attname,
 						domain_name,
 						domain_skipped_column.index_name;
+				ELSIF domain_skipped_column.row_type_attrelid IS NOT NULL THEN
+					RAISE WARNING 'Could not rewrite %.% for topology.% because column %.% uses its table row type; move the dependent value through text into a freshly created type after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name,
+						domain_skipped_column.row_type_attrelid::regclass,
+						domain_skipped_column.row_type_attname;
 				ELSE
 					RAISE WARNING 'Could not rewrite %.% for topology.% because materialized view % depends on it; refresh or recreate the materialized view and repair the column after upgrade',
 						domain_skipped_column.attrelid::regclass,
@@ -747,6 +813,8 @@ BEGIN
 				FROM pg_catalog.pg_attribute AS a
 				JOIN pg_catalog.pg_class AS c
 					ON c.oid = a.attrelid
+				JOIN pg_catalog.pg_type AS at
+					ON at.oid = a.atttypid
 				JOIN pg_catalog.pg_attrdef AS d
 					ON d.adrelid = a.attrelid
 					AND d.adnum = a.attnum
@@ -755,6 +823,7 @@ BEGIN
 					OR (
 						a.atttypid = ANY(nested_topology_type_oids)
 						AND a.atttypid <> ALL(domain_att_type_oids)
+						AND at.typtype = 'd'
 					)
 				)
 				AND a.attnum > 0
@@ -765,6 +834,7 @@ BEGIN
 					(
 						a.atttypid = ANY(nested_topology_type_oids)
 						AND a.atttypid <> ALL(domain_att_type_oids)
+						AND at.typtype = 'd'
 					)
 					OR EXISTS (
 						SELECT 1
@@ -1394,6 +1464,18 @@ BEGIN
 						AND ga.attnum = dep.objsubid
 					WHERE dep.classid = 'pg_catalog.pg_class'::regclass
 					AND ga.attgenerated <> ''
+					)
+				AND NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.pg_type AS rt
+					JOIN pg_catalog.pg_attribute AS ra
+						ON ra.atttypid = rt.oid
+						AND ra.attnum > 0
+						AND NOT ra.attisdropped
+					JOIN pg_catalog.pg_class AS rc
+						ON rc.oid = ra.attrelid
+						AND rc.relkind IN ('r', 'p', 'm')
+					WHERE rt.typrelid = a.attrelid
 				)
 				AND NOT EXISTS (
 					SELECT 1
