@@ -207,6 +207,7 @@ DECLARE
 		ELSE deprecated_in_version
 	END;
 	repair_marker TEXT := 'postgis-topology-domain-storage-repaired-' || marker_version;
+	constraint_not_valid_marker TEXT := 'postgis-topology-domain-constraint-not-valid-by-repair-' || marker_version;
 BEGIN
 	SELECT
 		t.oid,
@@ -247,29 +248,94 @@ BEGIN
 				AND t.typname IN ('topoelement', 'topoelementarray')
 				AND t.typarray <> 0
 			) AS topology_types
-			INTO topology_domain_oids;
+				INTO topology_domain_oids;
 
-			FOR domain_constraint IN
-				SELECT
-					conname,
-					pg_catalog.pg_get_constraintdef(oid) AS constraint_def
-				FROM pg_catalog.pg_constraint
-				WHERE contypid = domain_oid
-			LOOP
-				domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
-					pg_catalog.jsonb_build_object(
-						'name', domain_constraint.conname,
-						'definition', domain_constraint.constraint_def
-					)
-				);
-				sql := pg_catalog.format(
-					'ALTER DOMAIN %I.%I DROP CONSTRAINT IF EXISTS %I',
+				FOR domain_constraint IN
+					SELECT
+						conname,
+						pg_catalog.pg_get_constraintdef(oid) AS constraint_def,
+						pg_catalog.obj_description(oid, 'pg_constraint') LIKE '%' || constraint_not_valid_marker || '%' AS not_valid_by_repair
+					FROM pg_catalog.pg_constraint
+					WHERE contypid = domain_oid
+				LOOP
+					domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
+						pg_catalog.jsonb_build_object(
+							'name', domain_constraint.conname,
+							'definition', domain_constraint.constraint_def,
+							'not_valid_by_repair', domain_constraint.not_valid_by_repair
+						)
+					);
+					sql := pg_catalog.format(
+						'ALTER DOMAIN %I.%I DROP CONSTRAINT IF EXISTS %I',
 					domain_schema,
 					domain_name,
 					domain_constraint.conname
 				);
-				EXECUTE sql;
-			END LOOP;
+					EXECUTE sql;
+				END LOOP;
+
+			-- Older upgrade sources may not have constraints introduced after
+			-- the original domain was created.  Treat those canonical topology
+			-- constraints like captured constraints so incomplete repairs keep
+			-- them NOT VALID, while complete repairs install the fresh-domain
+			-- constraint set as validated.
+			IF pg_catalog.lower(domain_name) = 'topoelement' THEN
+				IF NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
+					WHERE value->>'name' = 'dimensions'
+				) THEN
+					domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
+						pg_catalog.jsonb_build_object(
+							'name', 'dimensions',
+							'definition', 'CHECK (array_upper(VALUE, 2) IS NULL AND array_upper(VALUE, 1) = 2)',
+							'not_valid_by_repair', true
+						)
+					);
+				END IF;
+
+				IF NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
+					WHERE value->>'name' = 'type_range'
+				) THEN
+					domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
+						pg_catalog.jsonb_build_object(
+							'name', 'type_range',
+							'definition', 'CHECK (VALUE[2] > 0)',
+							'not_valid_by_repair', true
+						)
+					);
+				END IF;
+
+				IF NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
+					WHERE value->>'name' = 'lower_dimension'
+				) THEN
+					domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
+						pg_catalog.jsonb_build_object(
+							'name', 'lower_dimension',
+							'definition', 'CHECK (array_lower(VALUE, 1) = 1)',
+							'not_valid_by_repair', true
+						)
+					);
+				END IF;
+			ELSIF pg_catalog.lower(domain_name) = 'topoelementarray' THEN
+				IF NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
+					WHERE value->>'name' = 'type_range'
+				) THEN
+					domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
+						pg_catalog.jsonb_build_object(
+							'name', 'type_range',
+							'definition', 'CHECK (array_upper(VALUE, 2) = 2 AND array_upper(VALUE, 3) IS NULL)',
+							'not_valid_by_repair', true
+						)
+					);
+				END IF;
+			END IF;
 
 			UPDATE pg_catalog.pg_type
 			SET typbasetype = new_base_type::regtype::oid, typndims = array_dims
@@ -352,7 +418,7 @@ BEGIN
 						ON p.oid = dep.objid
 					WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
 					AND dep.refobjid = a.attrelid
-					AND dep.refobjsubid = a.attnum
+					AND dep.refobjsubid IN (0, a.attnum)
 					LIMIT 1
 				) AS dependent_policy ON true
 				LEFT JOIN LATERAL (
@@ -606,7 +672,7 @@ BEGIN
 							FROM pg_catalog.pg_depend AS dep
 							WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
 							AND dep.refobjid = a.attrelid
-							AND dep.refobjsubid = a.attnum
+							AND dep.refobjsubid IN (0, a.attnum)
 						)
 						OR EXISTS (
 							SELECT 1
@@ -668,15 +734,15 @@ BEGIN
 						)
 						SELECT 1
 						FROM inherited_relid AS i
-						JOIN pg_catalog.pg_attribute AS ca
-							ON ca.attrelid = i.attrelid
-							AND ca.attname = a.attname
-							AND ca.atttypid = a.atttypid
-							AND ca.attnum > 0
-							AND NOT ca.attisdropped
-						JOIN pg_catalog.pg_depend AS dep
-							ON dep.refobjid = ca.attrelid
-							AND dep.refobjsubid = ca.attnum
+							JOIN pg_catalog.pg_attribute AS ca
+								ON ca.attrelid = i.attrelid
+								AND ca.attname = a.attname
+								AND ca.atttypid = a.atttypid
+								AND ca.attnum > 0
+								AND NOT ca.attisdropped
+							JOIN pg_catalog.pg_depend AS dep
+								ON dep.refobjid = ca.attrelid
+								AND dep.refobjsubid IN (0, ca.attnum)
 							WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
 						)
 						OR EXISTS (
@@ -868,7 +934,7 @@ BEGIN
 						FROM pg_catalog.pg_depend AS dep
 						WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
 						AND dep.refobjid = a.attrelid
-						AND dep.refobjsubid = a.attnum
+						AND dep.refobjsubid IN (0, a.attnum)
 					)
 					AND NOT EXISTS (
 						SELECT 1
@@ -930,15 +996,15 @@ BEGIN
 					)
 					SELECT 1
 					FROM inherited_relid AS i
-					JOIN pg_catalog.pg_attribute AS ca
-						ON ca.attrelid = i.attrelid
-						AND ca.attname = a.attname
-						AND ca.atttypid = a.atttypid
-						AND ca.attnum > 0
-						AND NOT ca.attisdropped
-					JOIN pg_catalog.pg_depend AS dep
-						ON dep.refobjid = ca.attrelid
-						AND dep.refobjsubid = ca.attnum
+						JOIN pg_catalog.pg_attribute AS ca
+							ON ca.attrelid = i.attrelid
+							AND ca.attname = a.attname
+							AND ca.atttypid = a.atttypid
+							AND ca.attnum > 0
+							AND NOT ca.attisdropped
+						JOIN pg_catalog.pg_depend AS dep
+							ON dep.refobjid = ca.attrelid
+							AND dep.refobjsubid IN (0, ca.attnum)
 						WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
 					)
 					AND NOT EXISTS (
@@ -1154,7 +1220,7 @@ BEGIN
 						FROM pg_catalog.pg_depend AS dep
 						WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
 						AND dep.refobjid = a.attrelid
-						AND dep.refobjsubid = a.attnum
+						AND dep.refobjsubid IN (0, a.attnum)
 					)
 					AND NOT EXISTS (
 						SELECT 1
@@ -1256,9 +1322,9 @@ BEGIN
 						AND NOT ca.attisdropped
 					JOIN pg_catalog.pg_depend AS dep
 						ON dep.refobjid = ca.attrelid
-						AND dep.refobjsubid = ca.attnum
-						WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
-					)
+						AND dep.refobjsubid IN (0, ca.attnum)
+					WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
+				)
 					AND NOT EXISTS (
 						WITH RECURSIVE inherited_relid(attrelid) AS (
 							SELECT i.inhrelid
@@ -1396,39 +1462,62 @@ BEGIN
 				END IF;
 			END LOOP;
 
-			FOR domain_constraint IN
-				SELECT
-					value->>'name' AS conname,
-					CASE
-					WHEN skipped_repair THEN value->>'definition'
-					ELSE pg_catalog.regexp_replace(
-						value->>'definition',
-						'[[:space:]]+NOT[[:space:]]+VALID[[:space:]]*$',
-						'',
-						'i'
-					)
-					END AS constraint_def
-				FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
-			LOOP
-				-- If some old-width rows were intentionally skipped, restoring
-				-- constraints as validated would scan those rows and can abort
-				-- the whole repair.  A later complete retry must strip any
-				-- previous NOT VALID state so the repaired domain is canonical.
-				sql := pg_catalog.format(
-					'ALTER DOMAIN %I.%I ADD CONSTRAINT %I %s%s',
-					domain_schema,
-					domain_name,
-					domain_constraint.conname,
-					domain_constraint.constraint_def,
-					CASE
-					WHEN skipped_repair
-						AND domain_constraint.constraint_def !~* '[[:space:]]NOT[[:space:]]+VALID[[:space:]]*$'
-					THEN ' NOT VALID'
-					ELSE ''
-					END
-				);
-				EXECUTE sql;
-			END LOOP;
+				FOR domain_constraint IN
+					SELECT
+						value->>'name' AS conname,
+						CASE
+						WHEN skipped_repair THEN value->>'definition'
+						WHEN COALESCE((value->>'not_valid_by_repair')::boolean, false) THEN pg_catalog.regexp_replace(
+							value->>'definition',
+							'[[:space:]]+NOT[[:space:]]+VALID[[:space:]]*$',
+							'',
+							'i'
+						)
+						ELSE pg_catalog.regexp_replace(
+							value->>'definition',
+							'[[:space:]]*$',
+							'',
+							'i'
+						)
+						END AS constraint_def,
+						COALESCE((value->>'not_valid_by_repair')::boolean, false) AS not_valid_by_repair
+					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
+				LOOP
+					-- If some old-width rows were intentionally skipped, restoring
+					-- constraints as validated would scan those rows and can abort
+					-- the whole repair. Mark only constraints demoted by this repair,
+					-- so a later complete retry can revalidate them without changing
+					-- user-created NOT VALID constraints.
+					sql := pg_catalog.format(
+						'ALTER DOMAIN %I.%I ADD CONSTRAINT %I %s%s',
+						domain_schema,
+						domain_name,
+						domain_constraint.conname,
+						domain_constraint.constraint_def,
+						CASE
+						WHEN skipped_repair
+							AND domain_constraint.constraint_def !~* '[[:space:]]NOT[[:space:]]+VALID[[:space:]]*$'
+						THEN ' NOT VALID'
+						ELSE ''
+						END
+					);
+					EXECUTE sql;
+					IF skipped_repair
+						AND (
+							domain_constraint.not_valid_by_repair
+							OR domain_constraint.constraint_def !~* '[[:space:]]NOT[[:space:]]+VALID[[:space:]]*$'
+						)
+					THEN
+						sql := pg_catalog.format(
+							'COMMENT ON CONSTRAINT %I ON DOMAIN %I.%I IS %L',
+							domain_constraint.conname,
+							domain_schema,
+							domain_name,
+							constraint_not_valid_marker
+						);
+						EXECUTE sql;
+					END IF;
+				END LOOP;
 
 			IF skipped_repair THEN
 				RAISE WARNING 'Topology.% domain storage repair was incomplete; repair marker was not written',

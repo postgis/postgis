@@ -34,10 +34,32 @@ BEGIN
     SELECT 1
     FROM pg_catalog.pg_constraint
     WHERE contypid = 'topology.topoelement'::regtype
+    AND conname = 'upgrade_test_topoelement_restored'
+    AND pg_catalog.obj_description(oid, 'pg_constraint')
+      LIKE '%postgis-topology-domain-constraint-not-valid-by-repair-306%'
+  ) THEN
+    RAISE EXCEPTION 'repair-demoted topoelement domain constraint was not marked for complete retry revalidation';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
+    WHERE contypid = 'topology.topoelement'::regtype
     AND conname = 'upgrade_test_topoelement_already_not_valid'
     AND NOT convalidated
   ) THEN
     RAISE EXCEPTION 'pre-existing unvalidated topoelement domain constraint was not restored during incomplete upgrade repair';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
+    WHERE contypid = 'topology.topoelement'::regtype
+    AND conname = 'upgrade_test_topoelement_already_not_valid'
+    AND pg_catalog.obj_description(oid, 'pg_constraint')
+      LIKE '%postgis-topology-domain-constraint-not-valid-by-repair-306%'
+  ) THEN
+    RAISE EXCEPTION 'user-created NOT VALID topoelement domain constraint was incorrectly marked for revalidation';
   END IF;
 
   IF NOT EXISTS (
@@ -151,6 +173,15 @@ BEGIN
     AND polname = 'domain_policy_source_a_policy'
   ) THEN
     RAISE EXCEPTION 'dependent topology domain row-level security policy was not preserved during upgrade';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_policy
+    WHERE polrelid = 'upgrade_test.domain_whole_row_policy_source'::regclass
+    AND polname = 'domain_whole_row_policy_source_policy'
+  ) THEN
+    RAISE EXCEPTION 'dependent topology domain whole-row row-level security policy was not preserved during upgrade';
   END IF;
 
   IF NOT EXISTS (
@@ -360,6 +391,29 @@ BEGIN
     WHERE id = 2
   ) != 45 THEN
     RAISE EXCEPTION 'rewritten RLS-skipped topology domain default did not preserve value';
+  END IF;
+
+  SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid)
+    INTO STRICT default_expr
+    FROM pg_catalog.pg_attribute AS a
+    JOIN pg_catalog.pg_attrdef AS d
+      ON d.adrelid = a.attrelid
+      AND d.adnum = a.attnum
+    WHERE a.attrelid = 'upgrade_test.domain_whole_row_policy_source'::regclass
+    AND a.attname = 'a';
+
+  IF default_expr NOT LIKE '%::text)::bigint[]%' THEN
+    RAISE EXCEPTION 'whole-row RLS-skipped topology domain column default was not rewritten during upgrade: %',
+      default_expr;
+  END IF;
+
+  INSERT INTO upgrade_test.domain_whole_row_policy_source(id) VALUES (2);
+  IF (
+    SELECT a[1]
+    FROM upgrade_test.domain_whole_row_policy_source
+    WHERE id = 2
+  ) != 81 THEN
+    RAISE EXCEPTION 'rewritten whole-row RLS-skipped topology domain default did not preserve value';
   END IF;
 
   SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid)

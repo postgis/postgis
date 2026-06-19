@@ -15,6 +15,10 @@ ALTER DOMAIN topology.topoelement
 ALTER DOMAIN topology.topoelementarray
   ADD CONSTRAINT upgrade_test_topoelementarray_restored CHECK (VALUE IS NULL OR VALUE IS NOT NULL);
 ALTER DOMAIN topology.topoelement SET DEFAULT '{25,26}'::topology.topoelement;
+-- Simulate upgrade sources older than the canonical topoelementarray
+-- type_range constraint. The repair helper must backfill it with the same
+-- NOT VALID policy used for restored constraints when storage is skipped.
+ALTER DOMAIN topology.topoelementarray DROP CONSTRAINT type_range;
 INSERT INTO upgrade_test.domain_test values (
   '{1,2}'::topology.topoelement,
   '{{2,3}}'::topology.topoelementarray
@@ -99,6 +103,20 @@ CREATE POLICY domain_policy_source_a_policy
   ON upgrade_test.domain_policy_source
   USING (a[1] > 0)
   WITH CHECK (a[1] > 0);
+
+CREATE TABLE upgrade_test.domain_whole_row_policy_source (
+  id integer,
+  a topology.topoelement DEFAULT '{81,82}'::topology.topoelement
+);
+INSERT INTO upgrade_test.domain_whole_row_policy_source VALUES (
+  1,
+  '{83,84}'::topology.topoelement
+);
+ALTER TABLE upgrade_test.domain_whole_row_policy_source ENABLE ROW LEVEL SECURITY;
+CREATE POLICY domain_whole_row_policy_source_policy
+  ON upgrade_test.domain_whole_row_policy_source
+  USING (domain_whole_row_policy_source IS NOT NULL)
+  WITH CHECK (domain_whole_row_policy_source IS NOT NULL);
 
 CREATE TABLE upgrade_test.domain_trigger_source (
   id integer,
