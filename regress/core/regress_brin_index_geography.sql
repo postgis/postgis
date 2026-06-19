@@ -27,6 +27,15 @@ $$;
 
 -- BRIN indexes
 
+SELECT 'brin_proc_12', opc.opcname, amp.amprocnum, pro.proname
+FROM pg_catalog.pg_opclass AS opc
+JOIN pg_catalog.pg_amproc AS amp
+  ON amp.amprocfamily = opc.opcfamily
+JOIN pg_catalog.pg_proc AS pro
+  ON pro.oid = amp.amproc
+WHERE opc.opcname = 'brin_geography_inclusion_ops'
+  AND amp.amprocnum = 12;
+
 -- 2D
 CREATE INDEX brin_geog on test using brin (the_geog) WITH (pages_per_range = 10);
 
