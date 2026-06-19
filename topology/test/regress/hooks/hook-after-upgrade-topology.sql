@@ -128,6 +128,11 @@ SELECT id, a[1] IS NULL, a[2][1], a[2][2], b[1] IS NULL, b[2][1][1], b[2][1][2]
   FROM upgrade_test.domain_array_test
   ORDER BY id;
 
+INSERT INTO upgrade_test.domain_array_constraint_test DEFAULT VALUES;
+SELECT id, a[1][1], a[1][2]
+  FROM upgrade_test.domain_array_constraint_test
+  WHERE id = 2;
+
 DO $$
 BEGIN
   IF COALESCE(
@@ -195,6 +200,15 @@ BEGIN
 
   IF NOT EXISTS (
     SELECT 1
+    FROM pg_catalog.pg_trigger
+    WHERE tgrelid = 'upgrade_test.domain_whole_row_trigger_source'::regclass
+    AND tgname = 'domain_whole_row_trigger_source_trigger'
+  ) THEN
+    RAISE EXCEPTION 'dependent topology domain whole-row trigger was not preserved during upgrade';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
     FROM pg_catalog.pg_proc
     WHERE pronamespace = 'upgrade_test'::regnamespace
     AND proname = 'domain_function_source_read'
@@ -217,6 +231,23 @@ BEGIN
 
   IF (SELECT count(*) FROM upgrade_test.domain_blocked_partition_child_view) != 1 THEN
     RAISE EXCEPTION 'dependent topology domain partition-child view was not preserved during upgrade';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
+    WHERE conrelid = 'upgrade_test.domain_array_constraint_test'::regclass
+    AND conname = 'domain_array_constraint_check'
+  ) THEN
+    RAISE EXCEPTION 'dependent topology domain array constraint was not preserved during upgrade';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_class
+    WHERE oid = 'upgrade_test.domain_array_constraint_expr_idx'::regclass
+  ) THEN
+    RAISE EXCEPTION 'dependent topology domain array expression index was not preserved during upgrade';
   END IF;
 
   IF NOT EXISTS (

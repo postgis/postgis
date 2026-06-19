@@ -391,7 +391,11 @@ BEGIN
 					dependent_publication.publication_relid,
 					dependent_publication.publication_name,
 					dependent_generated_column.attrelid AS generated_attrelid,
-					dependent_generated_column.attname AS generated_attname
+					dependent_generated_column.attname AS generated_attname,
+					dependent_constraint.constraint_oid,
+					dependent_constraint.constraint_name,
+					dependent_index.index_oid,
+					dependent_index.index_name
 				FROM pg_catalog.pg_attribute AS a
 				JOIN pg_catalog.pg_class AS c
 					ON c.oid = a.attrelid
@@ -430,7 +434,7 @@ BEGIN
 						ON t.oid = dep.objid
 					WHERE dep.classid = 'pg_catalog.pg_trigger'::regclass
 					AND dep.refobjid = a.attrelid
-					AND dep.refobjsubid = a.attnum
+					AND dep.refobjsubid IN (0, a.attnum)
 					LIMIT 1
 				) AS dependent_trigger ON true
 				LEFT JOIN LATERAL (
@@ -492,6 +496,35 @@ BEGIN
 					) AS generated_dependency
 					LIMIT 1
 				) AS dependent_generated_column ON true
+				LEFT JOIN LATERAL (
+					SELECT
+						con.oid AS constraint_oid,
+						con.conname AS constraint_name
+					FROM pg_catalog.pg_depend AS dep
+					JOIN pg_catalog.pg_constraint AS con
+						ON con.oid = dep.objid
+					WHERE dep.classid = 'pg_catalog.pg_constraint'::regclass
+					AND dep.refobjid = a.attrelid
+					AND dep.refobjsubid IN (0, a.attnum)
+					AND a.atttypid = domain_array_oid
+					LIMIT 1
+				) AS dependent_constraint ON true
+				LEFT JOIN LATERAL (
+					SELECT
+						ic.oid AS index_oid,
+						ic.relname AS index_name
+					FROM pg_catalog.pg_depend AS dep
+					JOIN pg_catalog.pg_class AS ic
+						ON ic.oid = dep.objid
+					JOIN pg_catalog.pg_index AS ix
+						ON ix.indexrelid = ic.oid
+					WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+					AND dep.refobjid = a.attrelid
+					AND dep.refobjsubid IN (0, a.attnum)
+					AND ic.relkind = 'i'
+					AND a.atttypid = domain_array_oid
+					LIMIT 1
+				) AS dependent_index ON true
 				WHERE a.atttypid = ANY(domain_att_type_oids)
 				AND a.attnum > 0
 				AND NOT a.attisdropped
@@ -503,6 +536,8 @@ BEGIN
 					OR dependent_function.function_oid IS NOT NULL
 					OR dependent_publication.publication_relid IS NOT NULL
 					OR dependent_generated_column.attrelid IS NOT NULL
+					OR dependent_constraint.constraint_oid IS NOT NULL
+					OR dependent_index.index_oid IS NOT NULL
 				)
 			LOOP
 				skipped_repair := true;
@@ -555,6 +590,18 @@ BEGIN
 						domain_name,
 						domain_skipped_column.generated_attrelid::regclass,
 						domain_skipped_column.generated_attname;
+				ELSIF domain_skipped_column.constraint_oid IS NOT NULL THEN
+					RAISE WARNING 'Could not rewrite %.% for topology.% because constraint % depends on its domain array type; drop and recreate the constraint, then repair the column after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name,
+						domain_skipped_column.constraint_name;
+				ELSIF domain_skipped_column.index_oid IS NOT NULL THEN
+					RAISE WARNING 'Could not rewrite %.% for topology.% because index % depends on its domain array type; drop and recreate the index, then repair the column after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name,
+						domain_skipped_column.index_name;
 				ELSE
 					RAISE WARNING 'Could not rewrite %.% for topology.% because materialized view % depends on it; refresh or recreate the materialized view and repair the column after upgrade',
 						domain_skipped_column.attrelid::regclass,
@@ -729,7 +776,32 @@ BEGIN
 							FROM pg_catalog.pg_depend AS dep
 							WHERE dep.classid = 'pg_catalog.pg_trigger'::regclass
 							AND dep.refobjid = a.attrelid
-							AND dep.refobjsubid = a.attnum
+							AND dep.refobjsubid IN (0, a.attnum)
+						)
+						OR (
+							a.atttypid = domain_array_oid
+							AND EXISTS (
+								SELECT 1
+								FROM pg_catalog.pg_depend AS dep
+								WHERE dep.classid = 'pg_catalog.pg_constraint'::regclass
+								AND dep.refobjid = a.attrelid
+								AND dep.refobjsubid IN (0, a.attnum)
+							)
+						)
+						OR (
+							a.atttypid = domain_array_oid
+							AND EXISTS (
+								SELECT 1
+								FROM pg_catalog.pg_depend AS dep
+								JOIN pg_catalog.pg_class AS ic
+									ON ic.oid = dep.objid
+									AND ic.relkind = 'i'
+								JOIN pg_catalog.pg_index AS ix
+									ON ix.indexrelid = ic.oid
+								WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+								AND dep.refobjid = a.attrelid
+								AND dep.refobjsubid IN (0, a.attnum)
+							)
 						)
 						OR EXISTS (
 							SELECT 1
@@ -819,10 +891,13 @@ BEGIN
 							AND (
 								(
 									dep.classid IN (
-										'pg_catalog.pg_trigger'::regclass,
 										'pg_catalog.pg_publication_rel'::regclass
 									)
 									AND dep.refobjsubid = ca.attnum
+								)
+								OR (
+									dep.classid = 'pg_catalog.pg_trigger'::regclass
+									AND dep.refobjsubid IN (0, ca.attnum)
 								)
 								OR (
 									dep.classid = 'pg_catalog.pg_proc'::regclass
@@ -991,7 +1066,32 @@ BEGIN
 						FROM pg_catalog.pg_depend AS dep
 						WHERE dep.classid = 'pg_catalog.pg_trigger'::regclass
 						AND dep.refobjid = a.attrelid
-						AND dep.refobjsubid = a.attnum
+						AND dep.refobjsubid IN (0, a.attnum)
+					)
+					AND NOT (
+						a.atttypid = domain_array_oid
+						AND EXISTS (
+							SELECT 1
+							FROM pg_catalog.pg_depend AS dep
+							WHERE dep.classid = 'pg_catalog.pg_constraint'::regclass
+							AND dep.refobjid = a.attrelid
+							AND dep.refobjsubid IN (0, a.attnum)
+						)
+					)
+					AND NOT (
+						a.atttypid = domain_array_oid
+						AND EXISTS (
+							SELECT 1
+							FROM pg_catalog.pg_depend AS dep
+							JOIN pg_catalog.pg_class AS ic
+								ON ic.oid = dep.objid
+								AND ic.relkind = 'i'
+							JOIN pg_catalog.pg_index AS ix
+								ON ix.indexrelid = ic.oid
+							WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+							AND dep.refobjid = a.attrelid
+							AND dep.refobjsubid IN (0, a.attnum)
+						)
 					)
 					AND NOT EXISTS (
 						SELECT 1
@@ -1081,10 +1181,13 @@ BEGIN
 							AND (
 								(
 									dep.classid IN (
-										'pg_catalog.pg_trigger'::regclass,
 										'pg_catalog.pg_publication_rel'::regclass
 									)
 									AND dep.refobjsubid = ca.attnum
+								)
+								OR (
+									dep.classid = 'pg_catalog.pg_trigger'::regclass
+									AND dep.refobjsubid IN (0, ca.attnum)
 								)
 								OR (
 									dep.classid = 'pg_catalog.pg_proc'::regclass
@@ -1277,7 +1380,7 @@ BEGIN
 						FROM pg_catalog.pg_depend AS dep
 						WHERE dep.classid = 'pg_catalog.pg_trigger'::regclass
 						AND dep.refobjid = a.attrelid
-						AND dep.refobjsubid = a.attnum
+						AND dep.refobjsubid IN (0, a.attnum)
 					)
 					AND NOT EXISTS (
 						SELECT 1
@@ -1399,10 +1502,13 @@ BEGIN
 							AND (
 								(
 									dep.classid IN (
-										'pg_catalog.pg_trigger'::regclass,
 										'pg_catalog.pg_publication_rel'::regclass
 									)
 									AND dep.refobjsubid = ca.attnum
+								)
+								OR (
+									dep.classid = 'pg_catalog.pg_trigger'::regclass
+									AND dep.refobjsubid IN (0, ca.attnum)
 								)
 								OR (
 									dep.classid = 'pg_catalog.pg_proc'::regclass

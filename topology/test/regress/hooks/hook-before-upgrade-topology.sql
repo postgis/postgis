@@ -138,6 +138,20 @@ CREATE TRIGGER domain_trigger_source_a_trigger
   BEFORE UPDATE OF a ON upgrade_test.domain_trigger_source
   FOR EACH ROW EXECUTE FUNCTION upgrade_test.domain_trigger_source_guard();
 
+CREATE TABLE upgrade_test.domain_whole_row_trigger_source (
+  id integer,
+  a topology.topoelement DEFAULT '{89,90}'::topology.topoelement
+);
+INSERT INTO upgrade_test.domain_whole_row_trigger_source VALUES (
+  1,
+  '{91,92}'::topology.topoelement
+);
+CREATE TRIGGER domain_whole_row_trigger_source_trigger
+  BEFORE UPDATE ON upgrade_test.domain_whole_row_trigger_source
+  FOR EACH ROW
+  WHEN (OLD IS NOT NULL)
+  EXECUTE FUNCTION upgrade_test.domain_trigger_source_guard();
+
 CREATE TABLE upgrade_test.domain_function_source (
   id integer,
   a topology.topoelement DEFAULT '{61,62}'::topology.topoelement
@@ -185,6 +199,17 @@ CREATE TABLE upgrade_test.domain_array_test (
 INSERT INTO upgrade_test.domain_array_test (a, b) VALUES (
   ARRAY[NULL::topology.topoelement, '{67,68}'::topology.topoelement]::topology.topoelement[],
   ARRAY[NULL::topology.topoelementarray, '{{69,70}}'::topology.topoelementarray]::topology.topoelementarray[]
+);
+
+CREATE TABLE upgrade_test.domain_array_constraint_test (
+  id integer GENERATED ALWAYS AS IDENTITY,
+  a topology.topoelement[] DEFAULT ARRAY['{93,94}'::topology.topoelement]::topology.topoelement[],
+  CONSTRAINT domain_array_constraint_check CHECK ((a[1])[1] > 0)
+);
+CREATE INDEX domain_array_constraint_expr_idx
+  ON upgrade_test.domain_array_constraint_test (((a[1])[2]));
+INSERT INTO upgrade_test.domain_array_constraint_test (a) VALUES (
+  ARRAY['{95,96}'::topology.topoelement]::topology.topoelement[]
 );
 
 CREATE DOMAIN upgrade_test.nested_topoelement AS topology.topoelement;
