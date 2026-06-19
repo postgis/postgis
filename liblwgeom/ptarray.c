@@ -37,6 +37,14 @@
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 
+#define PTARRAY_SIGNED_AREA_EXPANSION_MAX 4096
+
+typedef struct {
+	uint32_t nterms;
+	int overflowed;
+	double terms[PTARRAY_SIGNED_AREA_EXPANSION_MAX];
+} ptarray_signed_area_expansion;
+
 static inline void
 ptarray_signed_area_add(double *sum, double *compensation, double value)
 {
@@ -58,6 +66,84 @@ ptarray_signed_area_add(double *sum, double *compensation, double value)
 	t = *sum + y;
 	*compensation = (t - *sum) - y;
 	*sum = t;
+}
+
+static inline void
+ptarray_signed_area_two_sum(double a, double b, double *sum, double *err)
+{
+	double bvirt, avirt, bround, around;
+
+	*sum = a + b;
+	bvirt = *sum - a;
+	avirt = *sum - bvirt;
+	bround = b - bvirt;
+	around = a - avirt;
+	*err = around + bround;
+}
+
+static inline void
+ptarray_signed_area_expansion_add(ptarray_signed_area_expansion *expansion, double value)
+{
+	uint32_t i, n = 0;
+	double sum, err;
+
+	if (value == 0.0)
+		return;
+	if (!isfinite(value) || expansion->overflowed)
+	{
+		expansion->overflowed = LW_TRUE;
+		return;
+	}
+
+	for (i = 0; i < expansion->nterms; i++)
+	{
+		ptarray_signed_area_two_sum(value, expansion->terms[i], &sum, &err);
+		if (err != 0.0)
+		{
+			if (n == PTARRAY_SIGNED_AREA_EXPANSION_MAX)
+			{
+				expansion->overflowed = LW_TRUE;
+				return;
+			}
+			expansion->terms[n++] = err;
+		}
+		value = sum;
+	}
+
+	if (value != 0.0)
+	{
+		if (n == PTARRAY_SIGNED_AREA_EXPANSION_MAX)
+		{
+			expansion->overflowed = LW_TRUE;
+			return;
+		}
+		expansion->terms[n++] = value;
+	}
+	expansion->nterms = n;
+}
+
+static inline void
+ptarray_signed_area_expansion_add_product(ptarray_signed_area_expansion *expansion, double a, double b, double sign)
+{
+	double product = a * b;
+
+	ptarray_signed_area_expansion_add(expansion, sign * product);
+	ptarray_signed_area_expansion_add(expansion, sign * fma(a, b, -product));
+}
+
+static inline double
+ptarray_signed_area_expansion_sum(ptarray_signed_area_expansion *expansion)
+{
+	double sum = 0.0;
+	double compensation = 0.0;
+	uint32_t i;
+
+	if (expansion->overflowed)
+		return NAN;
+
+	for (i = 0; i < expansion->nterms; i++)
+		ptarray_signed_area_add(&sum, &compensation, expansion->terms[i]);
+	return sum;
 }
 
 static inline void
@@ -86,6 +172,42 @@ ptarray_signed_area_product_exponent(double a, double b)
 	frexp(fabs(a), &ea);
 	frexp(fabs(b), &eb);
 	return ea + eb;
+}
+
+static double
+ptarray_signed_area_exact(const POINTARRAY *pa)
+{
+	const POINT2D *P1 = getPoint2d_cp(pa, 0);
+	const POINT2D *P2 = getPoint2d_cp(pa, 1);
+	const POINT2D *P3;
+	ptarray_signed_area_expansion expansion = {0};
+	double x0 = P1->x;
+	double y0 = P1->y;
+	uint32_t i;
+
+	for (i = 2; i < pa->npoints; i++)
+	{
+		double ax, ay, bx, by, axerr, ayerr, bxerr, byerr;
+		P3 = getPoint2d_cp(pa, i);
+
+		ptarray_signed_area_two_diff(P2->x, x0, &ax, &axerr);
+		ptarray_signed_area_two_diff(P2->y, y0, &ay, &ayerr);
+		ptarray_signed_area_two_diff(P3->x, x0, &bx, &bxerr);
+		ptarray_signed_area_two_diff(P3->y, y0, &by, &byerr);
+
+		ptarray_signed_area_expansion_add_product(&expansion, ax, by, 1.0);
+		ptarray_signed_area_expansion_add_product(&expansion, ax, byerr, 1.0);
+		ptarray_signed_area_expansion_add_product(&expansion, axerr, by, 1.0);
+		ptarray_signed_area_expansion_add_product(&expansion, axerr, byerr, 1.0);
+		ptarray_signed_area_expansion_add_product(&expansion, ay, bx, -1.0);
+		ptarray_signed_area_expansion_add_product(&expansion, ay, bxerr, -1.0);
+		ptarray_signed_area_expansion_add_product(&expansion, ayerr, bx, -1.0);
+		ptarray_signed_area_expansion_add_product(&expansion, ayerr, bxerr, -1.0);
+
+		P2 = P3;
+	}
+
+	return -ptarray_signed_area_expansion_sum(&expansion) / 2.0;
 }
 
 int
@@ -1352,6 +1474,8 @@ ptarray_signed_area(const POINTARRAY *pa)
 	double scaled_compensation = 0.0;
 	double scaled_tail_sum = 0.0;
 	double scaled_tail_compensation = 0.0;
+	double det_abs_sum = 0.0;
+	double tail_abs_sum = 0.0;
 	double x0, y0;
 	int area_scale = 0;
 	uint32_t i;
@@ -1449,9 +1573,12 @@ ptarray_signed_area(const POINTARRAY *pa)
 			 */
 			err += (ax * byerr + axerr * by) + axerr * byerr;
 			err -= (ay * bxerr + ayerr * bx) + ayerr * bxerr;
+			tail_abs_sum += fabs(err);
 		}
 
 		ptarray_signed_area_add(active_sum, active_compensation, det);
+		if (isfinite(det))
+			det_abs_sum += fabs(det);
 		/*
 		 * Keep determinant tails in a separate compensated stream. If
 		 * they are folded into the main determinant stream immediately,
@@ -1473,6 +1600,12 @@ ptarray_signed_area(const POINTARRAY *pa)
 	}
 	if (tail_sum != 0.0 && isfinite(tail_sum))
 		ptarray_signed_area_add(&sum, &compensation, tail_sum);
+	if (area_scale == 0 && tail_abs_sum > 0.0 && fabs(sum) < FP_MAX(det_abs_sum, tail_abs_sum) * 1e-12)
+	{
+		double exact_area = ptarray_signed_area_exact(pa);
+		if (isfinite(exact_area))
+			return exact_area;
+	}
 	return -sum / 2.0;
 }
 
