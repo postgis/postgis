@@ -196,6 +196,8 @@ DECLARE
   can_manage_role boolean;
   had_public_select boolean;
   ext_schema text := COALESCE(NULLIF(pg_catalog.rtrim(current_setting('postgis_reg.schema'), '.'), ''), 'public');
+  test_role name := format('rt_overview_acl_user_%s_%s', pg_backend_pid(), txid_current());
+  created_role boolean := false;
 BEGIN
   SELECT pg_has_role(c.relowner, 'USAGE')
   INTO can_manage_view
@@ -228,12 +230,14 @@ BEGIN
   INTO had_public_select;
 
   DROP SCHEMA IF EXISTS rt_overview_acl CASCADE;
-  DROP ROLE IF EXISTS rt_overview_acl_user;
-  CREATE ROLE rt_overview_acl_user;
-  CREATE SCHEMA rt_overview_acl AUTHORIZATION rt_overview_acl_user;
-  EXECUTE format('GRANT USAGE ON SCHEMA %I TO rt_overview_acl_user', ext_schema);
+  -- Roles are cluster-global, so this test must not drop a pre-existing role
+  -- from a non-disposable PostgreSQL instance.
+  EXECUTE format('CREATE ROLE %I', test_role);
+  created_role := true;
+  EXECUTE format('CREATE SCHEMA rt_overview_acl AUTHORIZATION %I', test_role);
+  EXECUTE format('GRANT USAGE ON SCHEMA %I TO %I', ext_schema, test_role);
   EXECUTE format('REVOKE SELECT ON %I.raster_columns FROM PUBLIC', ext_schema);
-  SET ROLE rt_overview_acl_user;
+  EXECUTE format('SET ROLE %I', test_role);
   PERFORM set_config('search_path', format('rt_overview_acl, %I, public', ext_schema), true);
 
   CREATE TABLE res_acl AS SELECT
@@ -255,8 +259,9 @@ BEGIN
     EXECUTE format('REVOKE SELECT ON %I.raster_columns FROM PUBLIC', ext_schema);
   END IF;
   DROP SCHEMA rt_overview_acl CASCADE;
-  EXECUTE format('REVOKE USAGE ON SCHEMA %I FROM rt_overview_acl_user', ext_schema);
-  DROP ROLE rt_overview_acl_user;
+  EXECUTE format('REVOKE USAGE ON SCHEMA %I FROM %I', ext_schema, test_role);
+  EXECUTE format('DROP ROLE %I', test_role);
+  created_role := false;
 EXCEPTION WHEN OTHERS THEN
   RESET ROLE;
   IF had_public_select IS NOT NULL THEN
@@ -267,8 +272,10 @@ EXCEPTION WHEN OTHERS THEN
     END IF;
   END IF;
   DROP SCHEMA IF EXISTS rt_overview_acl CASCADE;
-  EXECUTE format('REVOKE USAGE ON SCHEMA %I FROM rt_overview_acl_user', ext_schema);
-  DROP ROLE IF EXISTS rt_overview_acl_user;
+  IF created_role THEN
+    EXECUTE format('REVOKE USAGE ON SCHEMA %I FROM %I', ext_schema, test_role);
+    EXECUTE format('DROP ROLE IF EXISTS %I', test_role);
+  END IF;
   RAISE;
 END;
 $$;
