@@ -1154,6 +1154,7 @@ ptarray_substring_in_metric(POINTARRAY *ipa, double from, double to, double tole
 	int nsegs, i;
 	int hasz = FLAGS_GET_Z(ipa->flags);
 	double length, slength, tlength;
+	double from_fraction = from;
 	int state = 0; /* 0=before, 1=inside */
 
 	/*
@@ -1181,9 +1182,25 @@ ptarray_substring_in_metric(POINTARRAY *ipa, double from, double to, double tole
 		tlength = 0;
 		getPoint4d_p(ipa, 0, &p1);
 
+		if (length <= tolerance)
+		{
+			if (fabs(from_fraction - 1.0) <= tolerance)
+				getPoint4d_p(ipa, ipa->npoints - 1, &p1);
+			ptarray_append_point(dpa, &p1, LW_FALSE);
+			return dpa;
+		}
+
 		if (fabs(from) <= tolerance)
 		{
 			ptarray_append_point(dpa, &p1, LW_FALSE);
+			return dpa;
+		}
+
+		/* Preserve endpoint ordinates from trailing zero-length segments. */
+		if (fabs(from - length) <= tolerance)
+		{
+			getPoint4d_p(ipa, ipa->npoints - 1, &p2);
+			ptarray_append_point(dpa, &p2, LW_FALSE);
 			return dpa;
 		}
 
@@ -1241,12 +1258,19 @@ ptarray_substring_in_metric(POINTARRAY *ipa, double from, double to, double tole
 		/*
 		 * We are before requested start.
 		 */
-		if ( state == 0 ) /* before */
+		if (state == 0) /* before */
 		{
 
 			LWDEBUG(3, " Before start");
 
-			if ( fabs ( from - ( tlength + slength ) ) <= tolerance )
+			if (slength <= tolerance && fabs(from - tlength) <= tolerance)
+			{
+				LWDEBUG(3, "  Zero-length segment starts at our start");
+
+				ptarray_append_point(dpa, &p1, LW_FALSE);
+				state = 1;
+			}
+			else if (fabs(from - (tlength + slength)) <= tolerance)
 			{
 
 				LWDEBUG(3, "  Second point is our start");

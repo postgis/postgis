@@ -260,6 +260,45 @@ test_ptarray_substring_3d(void)
 	CU_ASSERT_DOUBLE_EQUAL(pt.z, 1.0, 0.0);
 	ptarray_free(subpa);
 	lwline_free(line);
+
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING ZM (0 0 0 0,1 0 0 1,1 0 0 5)"));
+	subpa = ptarray_substring_3d(line->points, 1.0, 1.0, 0.0);
+	CU_ASSERT_EQUAL(subpa->npoints, 1);
+	getPoint4d_p(subpa, 0, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 1.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(pt.z, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(pt.m, 5.0, 0.0);
+	ptarray_free(subpa);
+	lwline_free(line);
+
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING ZM (0 0 0 0,0 0 0 5,0 0 1 6)"));
+	subpa = ptarray_substring_3d(line->points, 0.0, 1.0, 0.0);
+	subline = lwline_construct(line->srid, NULL, subpa);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(subline));
+	ASSERT_STRING_EQUAL(wkt, "LINESTRING ZM (0 0 0 0,0 0 0 5,0 0 1 6)");
+	lwfree(wkt);
+	lwline_free(subline);
+	lwline_free(line);
+
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING ZM (0 0 0 0,0 0 1 5,1 0 2 6)"));
+	subpa = ptarray_substring(line->points, 0.0, 1.0, 0.0);
+	subline = lwline_construct(line->srid, NULL, subpa);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(subline));
+	ASSERT_STRING_EQUAL(wkt, "LINESTRING ZM (0 0 0 0,0 0 1 5,1 0 2 6)");
+	lwfree(wkt);
+	lwline_free(subline);
+	lwline_free(line);
+
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING Z (0 0 0,0 0 1)"));
+	subpa = ptarray_substring(line->points, 1.0, 1.0, 0.0);
+	CU_ASSERT_EQUAL(subpa->npoints, 1);
+	getPoint4d_p(subpa, 0, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(pt.z, 1.0, 0.0);
+	ptarray_free(subpa);
+	lwline_free(line);
 }
 
 static void test_ptarray_locate_point(void)
