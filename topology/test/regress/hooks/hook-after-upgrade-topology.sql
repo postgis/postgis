@@ -65,11 +65,31 @@ BEGIN
   IF NOT EXISTS (
     SELECT 1
     FROM pg_catalog.pg_constraint
+    WHERE contypid = 'topology.topoelement'::regtype
+    AND conname = 'upgrade_test_topoelement_array_grandfather'
+    AND NOT convalidated
+  ) THEN
+    RAISE EXCEPTION 'grandfathered topoelement domain array constraint was not preserved unvalidated';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
     WHERE contypid = 'topology.topoelementarray'::regtype
     AND conname = 'upgrade_test_topoelementarray_restored'
     AND NOT convalidated
   ) THEN
     RAISE EXCEPTION 'topoelementarray domain constraint was not restored unvalidated during incomplete upgrade repair';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
+    WHERE contypid = 'topology.topoelementarray'::regtype
+    AND conname = 'upgrade_test_topoelementarray_array_grandfather'
+    AND NOT convalidated
+  ) THEN
+    RAISE EXCEPTION 'grandfathered topoelementarray domain array constraint was not preserved unvalidated';
   END IF;
 
   IF (

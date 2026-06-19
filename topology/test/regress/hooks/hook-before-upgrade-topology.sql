@@ -200,6 +200,10 @@ INSERT INTO upgrade_test.domain_array_test (a, b) VALUES (
   ARRAY[NULL::topology.topoelement, '{67,68}'::topology.topoelement]::topology.topoelement[],
   ARRAY[NULL::topology.topoelementarray, '{{69,70}}'::topology.topoelementarray]::topology.topoelementarray[]
 );
+ALTER DOMAIN topology.topoelement
+  ADD CONSTRAINT upgrade_test_topoelement_array_grandfather CHECK (VALUE IS NULL OR VALUE[1] != 67) NOT VALID;
+ALTER DOMAIN topology.topoelementarray
+  ADD CONSTRAINT upgrade_test_topoelementarray_array_grandfather CHECK (VALUE IS NULL OR VALUE[1][1] != 69) NOT VALID;
 
 CREATE TABLE upgrade_test.domain_array_constraint_test (
   id integer GENERATED ALWAYS AS IDENTITY,

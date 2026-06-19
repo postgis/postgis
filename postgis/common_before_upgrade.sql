@@ -1608,11 +1608,52 @@ BEGIN
 						domain_name,
 						pg_catalog.current_setting('server_version');
 				END IF;
-			END LOOP;
+				END LOOP;
 
-				FOR domain_constraint IN
-					SELECT
-						value->>'name' AS conname,
+				-- Restore array-of-domain columns before re-adding domain
+				-- constraints. Recasting text[] after NOT VALID constraints are
+				-- back would validate each element as a new domain value, which
+				-- defeats the incomplete-repair path for grandfathered rows.
+				CREATE TEMP TABLE IF NOT EXISTS pg_temp._postgis_topology_domain_array_columns (
+					attrelid OID,
+					attname NAME,
+					target_domain_type TEXT,
+					default_expr TEXT
+				) ON COMMIT DROP;
+
+				FOR domain_column IN
+					SELECT *
+					FROM pg_temp._postgis_topology_domain_array_columns
+					WHERE target_domain_type = pg_catalog.format('%I.%I[]', domain_schema, domain_name)
+				LOOP
+					sql := pg_catalog.format(
+						'ALTER TABLE %s ALTER COLUMN %I TYPE %s USING (%I::%s)',
+						domain_column.attrelid::regclass,
+						domain_column.attname,
+						domain_column.target_domain_type,
+						domain_column.attname,
+						domain_column.target_domain_type
+					);
+					EXECUTE sql;
+
+					IF domain_column.default_expr IS NOT NULL THEN
+						sql := pg_catalog.format(
+							'ALTER TABLE %s ALTER COLUMN %I SET DEFAULT ((%s)::pg_catalog.text[]::%s)',
+							domain_column.attrelid::regclass,
+							domain_column.attname,
+							domain_column.default_expr,
+							domain_column.target_domain_type
+						);
+						EXECUTE sql;
+					END IF;
+				END LOOP;
+
+				DELETE FROM pg_temp._postgis_topology_domain_array_columns
+				WHERE target_domain_type = pg_catalog.format('%I.%I[]', domain_schema, domain_name);
+
+					FOR domain_constraint IN
+						SELECT
+							value->>'name' AS conname,
 						CASE
 						WHEN skipped_repair THEN value->>'definition'
 						WHEN COALESCE((value->>'not_valid_by_repair')::boolean, false) THEN pg_catalog.regexp_replace(

@@ -18,8 +18,9 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
--- Array-of-domain columns are temporarily moved to text arrays before
--- generated domain constraints are restored, then converted back here.
+-- Array-of-domain columns are normally restored before generated domain
+-- constraints are re-added. Keep this final cleanup as a defensive fallback for
+-- interrupted helper runs that left saved text[] columns behind.
 DO LANGUAGE 'plpgsql'
 $POSTGIS_DOMAIN_ARRAY_COLUMN_RESTORE$
 DECLARE
