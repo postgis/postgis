@@ -2187,7 +2187,7 @@ CREATE OR REPLACE FUNCTION ST_RotateXYZ(geometry,float8,float8,float8)
 			a, b, c,
 			d, e, f,
 			g, h, i,
-			0.0, 0.0, 0.0
+			0.0::float8, 0.0::float8, 0.0::float8
 		)
 		FROM r
 	$$
