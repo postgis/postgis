@@ -1364,6 +1364,14 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
     <para>The function attempts to preserve geometry validity, and corrects it if needed.
         This may cause the result geometry to collapse to a lower dimension.
     </para>
+    <para>The function performs geometry simplification appropriate to the
+        integer tile coordinate space. After transforming to tile coordinates
+        it snaps coordinates to the integer grid, removes repeated points, and
+        removes points that lie on straight lines. It does not perform
+        general-purpose, scale-dependent simplification such as
+        <xref linkend="ST_Simplify"/>. To reduce detail before tile conversion,
+        simplify the geometry in map coordinates before calling
+        <function>ST_AsMVTGeom</function>.</para>
         <para>The rectangular bounds of the tile in the target map coordinate space must be provided,
         so the geometry can be transformed, and clipped if required.
         The bounds can be generated using <xref linkend="ST_TileEnvelope"/>.
