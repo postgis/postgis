@@ -1,3 +1,4 @@
+brin_proc_12|brin_geography_inclusion_ops|12|geog_brin_inclusion_mergeable
 scan_seq|Seq Scan
 42.01|POINT Z (42.01 42.01 42.01)
 42.03|POINT Z (42.03 42.03 42.03)
