@@ -2163,6 +2163,7 @@ CREATE OR REPLACE FUNCTION ST_RotateX(geometry,float8,geometry)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, @extschema@.ST_Y($3) - cos($2) * @extschema@.ST_Y($3) + sin($2) * COALESCE(@extschema@.ST_Z($3), 0), COALESCE(@extschema@.ST_Z($3), 0) - sin($2) * @extschema@.ST_Y($3) - cos($2) * COALESCE(@extschema@.ST_Z($3), 0))'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	SET search_path FROM CURRENT
 	_COST_LOW;
 
 -- Availability: 1.2.2
@@ -2177,6 +2178,7 @@ CREATE OR REPLACE FUNCTION ST_RotateY(geometry,float8,geometry)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Affine($1, cos($2), 0, sin($2), 0, 1, 0, -sin($2), 0, cos($2), @extschema@.ST_X($3) - cos($2) * @extschema@.ST_X($3) - sin($2) * COALESCE(@extschema@.ST_Z($3), 0), 0, COALESCE(@extschema@.ST_Z($3), 0) + sin($2) * @extschema@.ST_X($3) - cos($2) * COALESCE(@extschema@.ST_Z($3), 0))'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	SET search_path FROM CURRENT
 	_COST_LOW;
 
 -- Availability: 1.2.2
@@ -2231,6 +2233,7 @@ CREATE OR REPLACE FUNCTION ST_RotateXYZ(geometry,float8,float8,float8,geometry)
 		FROM r
 	$$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	SET search_path FROM CURRENT
 	_COST_LOW;
 
 -- Availability: 3.7.0
@@ -2267,6 +2270,7 @@ CREATE OR REPLACE FUNCTION ST_RotateXYZ(geometry,float8,float8,float8)
 		FROM r
 	$$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	SET search_path FROM CURRENT
 	_COST_LOW;
 
 -- Availability: 2.2.0
