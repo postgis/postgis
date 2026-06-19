@@ -187,6 +187,42 @@ BEGIN
     );
     EXECUTE 'CREATE PUBLICATION upgrade_test_domain_publication
       FOR TABLE upgrade_test.domain_publication_source (a)';
+    EXECUTE 'CREATE TABLE upgrade_test.domain_whole_row_publication_source (
+      id integer,
+      a topology.topoelement DEFAULT ''{115,116}''::topology.topoelement
+    )';
+    INSERT INTO upgrade_test.domain_whole_row_publication_source VALUES (
+      1,
+      '{117,118}'::topology.topoelement
+    );
+    EXECUTE 'CREATE PUBLICATION upgrade_test_domain_whole_row_publication
+      FOR TABLE upgrade_test.domain_whole_row_publication_source';
+    -- A real whole-row publication filter cannot reference this row type because
+    -- it contains a user-defined domain, but PostgreSQL records such blockers as
+    -- pg_publication_rel dependencies with refobjsubid = 0. Insert that catalog
+    -- dependency so the upgrade helper exercises the same blocker shape.
+    INSERT INTO pg_catalog.pg_depend (
+      classid,
+      objid,
+      objsubid,
+      refclassid,
+      refobjid,
+      refobjsubid,
+      deptype
+    )
+    SELECT
+      'pg_catalog.pg_publication_rel'::regclass,
+      pr.oid,
+      0,
+      'pg_catalog.pg_class'::regclass,
+      'upgrade_test.domain_whole_row_publication_source'::regclass,
+      0,
+      'n'
+    FROM pg_catalog.pg_publication_rel AS pr
+    JOIN pg_catalog.pg_publication AS p
+      ON p.oid = pr.prpubid
+    WHERE p.pubname = 'upgrade_test_domain_whole_row_publication'
+    AND pr.prrelid = 'upgrade_test.domain_whole_row_publication_source'::regclass;
   END IF;
 END
 $$;
@@ -226,6 +262,12 @@ ALTER DOMAIN upgrade_test.nested_topoelement
   SET DEFAULT '{91,92}'::topology.topoelement::upgrade_test.nested_topoelement;
 ALTER DOMAIN upgrade_test.nested_topoelement
   ADD CONSTRAINT nested_topoelement_positive CHECK (VALUE::text !~ '^\{0,') NOT VALID;
+ALTER DOMAIN upgrade_test.nested_topoelement
+  ADD CONSTRAINT nested_topoelement_array_carrier_validated CHECK (VALUE IS NULL OR VALUE IS NOT NULL) NOT VALID;
+UPDATE pg_catalog.pg_constraint
+  SET convalidated = true
+  WHERE contypid = 'upgrade_test.nested_topoelement'::regtype
+  AND conname = 'nested_topoelement_array_carrier_validated';
 CREATE DOMAIN upgrade_test.nested_topoelementarray AS topology.topoelementarray;
 ALTER DOMAIN upgrade_test.nested_topoelementarray
   SET DEFAULT '{{93,94}}'::topology.topoelementarray::upgrade_test.nested_topoelementarray;
@@ -233,6 +275,13 @@ ALTER DOMAIN upgrade_test.nested_topoelementarray
   ADD CONSTRAINT nested_topoelementarray_positive CHECK (VALUE::text !~ '^\{\{0,') NOT VALID;
 CREATE DOMAIN upgrade_test.unused_nested_topoelement AS topology.topoelement;
 CREATE DOMAIN upgrade_test.unused_nested_topoelementarray AS topology.topoelementarray;
+CREATE DOMAIN upgrade_test.nested_row_topoelement AS topology.topoelement;
+ALTER DOMAIN upgrade_test.nested_row_topoelement
+  ADD CONSTRAINT nested_row_topoelement_validated CHECK (VALUE IS NULL OR VALUE IS NOT NULL) NOT VALID;
+UPDATE pg_catalog.pg_constraint
+  SET convalidated = true
+  WHERE contypid = 'upgrade_test.nested_row_topoelement'::regtype
+  AND conname = 'nested_row_topoelement_validated';
 -- PostgreSQL can recurse too deeply while validating nested-domain checks in
 -- this fixture. Mark these tautological constraints validated in the catalog so
 -- the upgrade can prove unrelated nested domains are not demoted by a base
@@ -252,6 +301,9 @@ UPDATE pg_catalog.pg_constraint
 CREATE TYPE upgrade_test.composite_topoelement AS (
   a topology.topoelement
 );
+CREATE TYPE upgrade_test.composite_nested_row_topoelement AS (
+  a upgrade_test.nested_row_topoelement
+);
 CREATE TABLE upgrade_test.domain_nested_type_test (
   id integer GENERATED ALWAYS AS IDENTITY,
   a upgrade_test.nested_topoelement
@@ -261,6 +313,24 @@ CREATE TABLE upgrade_test.domain_nested_type_test (
 INSERT INTO upgrade_test.domain_nested_type_test (a, b) VALUES (
   '{85,86}'::topology.topoelement::upgrade_test.nested_topoelement,
   ROW('{87,88}'::topology.topoelement)::upgrade_test.composite_topoelement
+);
+CREATE TABLE upgrade_test.domain_nested_array_constraint_test (
+  id integer GENERATED ALWAYS AS IDENTITY,
+  a upgrade_test.nested_topoelement[]
+    DEFAULT ARRAY['{119,120}'::topology.topoelement::upgrade_test.nested_topoelement]::upgrade_test.nested_topoelement[],
+  CONSTRAINT domain_nested_array_constraint_check CHECK ((a[1])::text IS NOT NULL)
+);
+INSERT INTO upgrade_test.domain_nested_array_constraint_test (a) VALUES (
+  ARRAY['{121,122}'::topology.topoelement::upgrade_test.nested_topoelement]::upgrade_test.nested_topoelement[]
+);
+CREATE TABLE upgrade_test.domain_nested_array_default_test (
+  id integer GENERATED ALWAYS AS IDENTITY,
+  a upgrade_test.nested_topoelement[]
+    DEFAULT ARRAY['{123,124}'::topology.topoelement::upgrade_test.nested_topoelement]::upgrade_test.nested_topoelement[],
+  CONSTRAINT domain_nested_array_default_check CHECK ((a[1])::text IS NOT NULL)
+);
+INSERT INTO upgrade_test.domain_nested_array_default_test (a) VALUES (
+  ARRAY['{125,126}'::topology.topoelement::upgrade_test.nested_topoelement]::upgrade_test.nested_topoelement[]
 );
 
 CREATE TABLE upgrade_test.domain_row_carrier_source (
@@ -272,6 +342,13 @@ CREATE TABLE upgrade_test.domain_row_carrier_test (
 );
 INSERT INTO upgrade_test.domain_row_carrier_test (r) VALUES (
   ROW('{103,104}'::topology.topoelement)::upgrade_test.domain_row_carrier_source
+);
+CREATE TABLE upgrade_test.domain_nested_row_carrier_test (
+  id integer GENERATED ALWAYS AS IDENTITY,
+  r upgrade_test.composite_nested_row_topoelement
+);
+INSERT INTO upgrade_test.domain_nested_row_carrier_test (r) VALUES (
+  ROW('{127,128}'::topology.topoelement::upgrade_test.nested_row_topoelement)::upgrade_test.composite_nested_row_topoelement
 );
 
 CREATE TABLE upgrade_test.domain_array_inherit_constraint_parent (

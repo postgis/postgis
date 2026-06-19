@@ -195,6 +195,7 @@ DECLARE
 	sql TEXT;
 	skipped_repair BOOLEAN := false;
 	skipped_domain_type_oids OID[] := ARRAY[]::OID[];
+	skipped_domain_constraint_oids OID[] := ARRAY[]::OID[];
 	restored_domain_array_columns BOOLEAN := false;
 	-- We need the base types of the old and new types - if multidimensional (int[][]), we need just one dimension at most
 	old_base_type TEXT := pg_catalog.regexp_replace(old_domain_type, E'(\\[\\])+$', '[]');
@@ -559,7 +560,7 @@ BEGIN
 						ON pub.oid = pr.prpubid
 					WHERE dep.classid = 'pg_catalog.pg_publication_rel'::regclass
 					AND dep.refobjid = a.attrelid
-					AND dep.refobjsubid = a.attnum
+					AND dep.refobjsubid IN (0, a.attnum)
 					LIMIT 1
 				) AS dependent_publication ON true
 				LEFT JOIN LATERAL (
@@ -850,6 +851,10 @@ BEGIN
 					CASE
 						WHEN a.atttypid = domain_array_oid THEN
 							'pg_catalog.text[]'
+						WHEN ate.typtype = 'd'
+							AND at.typelem = ANY(nested_topology_type_oids)
+						THEN
+							'pg_catalog.text[]'
 						WHEN a.atttypid <> ALL(domain_att_type_oids) THEN
 							a.atttypid::regtype::text
 						ELSE
@@ -860,6 +865,8 @@ BEGIN
 					ON c.oid = a.attrelid
 				JOIN pg_catalog.pg_type AS at
 					ON at.oid = a.atttypid
+				LEFT JOIN pg_catalog.pg_type AS ate
+					ON ate.oid = at.typelem
 				JOIN pg_catalog.pg_attrdef AS d
 					ON d.adrelid = a.attrelid
 					AND d.adnum = a.attnum
@@ -869,6 +876,11 @@ BEGIN
 						a.atttypid = ANY(nested_topology_type_oids)
 						AND a.atttypid <> ALL(domain_att_type_oids)
 						AND at.typtype = 'd'
+					)
+					OR (
+						ate.typtype = 'd'
+						AND at.typelem = ANY(nested_topology_type_oids)
+						AND at.typelem <> ALL(domain_att_type_oids)
 					)
 				)
 				AND a.attnum > 0
@@ -880,6 +892,11 @@ BEGIN
 						a.atttypid = ANY(nested_topology_type_oids)
 						AND a.atttypid <> ALL(domain_att_type_oids)
 						AND at.typtype = 'd'
+					)
+					OR (
+						ate.typtype = 'd'
+						AND at.typelem = ANY(nested_topology_type_oids)
+						AND at.typelem <> ALL(domain_att_type_oids)
 					)
 					OR EXISTS (
 						SELECT 1
@@ -952,7 +969,7 @@ BEGIN
 							FROM pg_catalog.pg_depend AS dep
 							WHERE dep.classid = 'pg_catalog.pg_publication_rel'::regclass
 							AND dep.refobjid = a.attrelid
-							AND dep.refobjsubid = a.attnum
+							AND dep.refobjsubid IN (0, a.attnum)
 						)
 						OR EXISTS (
 							SELECT 1
@@ -1030,7 +1047,7 @@ BEGIN
 									dep.classid IN (
 										'pg_catalog.pg_publication_rel'::regclass
 									)
-									AND dep.refobjsubid = ca.attnum
+									AND dep.refobjsubid IN (0, ca.attnum)
 								)
 								OR (
 									dep.classid = 'pg_catalog.pg_trigger'::regclass
@@ -1301,7 +1318,7 @@ BEGIN
 						FROM pg_catalog.pg_depend AS dep
 						WHERE dep.classid = 'pg_catalog.pg_publication_rel'::regclass
 						AND dep.refobjid = a.attrelid
-						AND dep.refobjsubid = a.attnum
+						AND dep.refobjsubid IN (0, a.attnum)
 					)
 					AND NOT EXISTS (
 						SELECT 1
@@ -1379,7 +1396,7 @@ BEGIN
 									dep.classid IN (
 										'pg_catalog.pg_publication_rel'::regclass
 									)
-									AND dep.refobjsubid = ca.attnum
+									AND dep.refobjsubid IN (0, ca.attnum)
 								)
 								OR (
 									dep.classid = 'pg_catalog.pg_trigger'::regclass
@@ -1690,7 +1707,7 @@ BEGIN
 						FROM pg_catalog.pg_depend AS dep
 						WHERE dep.classid = 'pg_catalog.pg_publication_rel'::regclass
 						AND dep.refobjid = a.attrelid
-						AND dep.refobjsubid = a.attnum
+						AND dep.refobjsubid IN (0, a.attnum)
 					)
 					AND NOT EXISTS (
 						SELECT 1
@@ -1800,7 +1817,7 @@ BEGIN
 									dep.classid IN (
 										'pg_catalog.pg_publication_rel'::regclass
 									)
-									AND dep.refobjsubid = ca.attnum
+									AND dep.refobjsubid IN (0, ca.attnum)
 								)
 								OR (
 									dep.classid = 'pg_catalog.pg_trigger'::regclass
@@ -1957,6 +1974,40 @@ BEGIN
 				DELETE FROM pg_temp._postgis_topology_domain_array_columns
 				WHERE target_domain_type = pg_catalog.format('%I.%I[]', domain_schema, domain_name);
 
+				-- Skipped carrier types may wrap topology domains through arrays,
+				-- user domains, composites, or table row types. Expose every
+				-- contained type OID before choosing validated restoration for the
+				-- saved domain constraints.
+				WITH RECURSIVE skipped_constraint_type(type_oid) AS (
+					SELECT skipped_type_oid
+					FROM pg_catalog.unnest(skipped_domain_type_oids) AS skipped_type(skipped_type_oid)
+					UNION
+					SELECT contained_type.type_oid
+					FROM skipped_constraint_type AS skipped_type
+					JOIN pg_catalog.pg_type AS t
+						ON t.oid = skipped_type.type_oid
+					JOIN LATERAL (
+						SELECT t.typelem AS type_oid
+						WHERE t.typelem <> 0::oid
+						UNION
+						SELECT t.typbasetype AS type_oid
+						WHERE t.typbasetype <> 0::oid
+						UNION
+						SELECT a.atttypid AS type_oid
+						FROM pg_catalog.pg_attribute AS a
+						WHERE a.attrelid = t.typrelid
+						AND a.attnum > 0
+						AND NOT a.attisdropped
+					) AS contained_type ON true
+				)
+				SELECT pg_catalog.array_agg(DISTINCT type_oid)
+				FROM skipped_constraint_type
+				INTO skipped_domain_constraint_oids;
+				skipped_domain_constraint_oids := COALESCE(
+					skipped_domain_constraint_oids,
+					ARRAY[]::OID[]
+				);
+
 				FOR domain_constraint IN
 					SELECT
 						(value->>'domain_oid')::oid AS domain_oid,
@@ -1967,7 +2018,7 @@ BEGIN
 							WHEN COALESCE((value->>'convalidated')::boolean, false)
 								OR (
 									COALESCE((value->>'not_valid_by_repair')::boolean, false)
-									AND (value->>'domain_oid')::oid <> ALL(skipped_domain_type_oids)
+									AND (value->>'domain_oid')::oid <> ALL(skipped_domain_constraint_oids)
 								)
 							THEN pg_catalog.regexp_replace(
 								value->>'definition',
@@ -2008,7 +2059,7 @@ BEGIN
 							WHEN (
 								(
 									skipped_repair
-									AND domain_constraint.domain_oid = ANY(skipped_domain_type_oids)
+									AND domain_constraint.domain_oid = ANY(skipped_domain_constraint_oids)
 								)
 								OR (
 									restored_domain_array_columns
@@ -2023,7 +2074,7 @@ BEGIN
 					);
 					EXECUTE sql;
 					IF skipped_repair
-						AND domain_constraint.domain_oid = ANY(skipped_domain_type_oids)
+						AND domain_constraint.domain_oid = ANY(skipped_domain_constraint_oids)
 						AND (
 							domain_constraint.not_valid_by_repair
 							OR domain_constraint.constraint_def !~* '[[:space:]]NOT[[:space:]]+VALID[[:space:]]*$'

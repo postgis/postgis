@@ -336,6 +336,8 @@ DECLARE
   nested_array_value topology.topoelementarray;
   default_expr text;
   row_carrier_value topology.topoelement;
+  nested_array_default_element topology.topoelement;
+  nested_array_default_value upgrade_test.nested_topoelement[];
 BEGIN
   IF (SELECT count(*) FROM upgrade_test.domain_nested_type_test) != 1 THEN
     RAISE EXCEPTION 'nested topology domain storage fixture was not preserved during upgrade';
@@ -393,6 +395,30 @@ BEGIN
     RAISE EXCEPTION 'nested topology domain constraint was not restored during upgrade';
   END IF;
 
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
+    WHERE contypid = 'upgrade_test.nested_topoelement'::regtype
+    AND conname = 'nested_topoelement_array_carrier_validated'
+    AND NOT convalidated
+    AND pg_catalog.obj_description(oid, 'pg_constraint')
+      LIKE '%postgis-topology-domain-constraint-not-valid-by-repair-306%'
+  ) THEN
+    RAISE EXCEPTION 'nested topology domain array-carrier constraint was not restored unvalidated during incomplete upgrade repair';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
+    WHERE contypid = 'upgrade_test.nested_row_topoelement'::regtype
+    AND conname = 'nested_row_topoelement_validated'
+    AND NOT convalidated
+    AND pg_catalog.obj_description(oid, 'pg_constraint')
+      LIKE '%postgis-topology-domain-constraint-not-valid-by-repair-306%'
+  ) THEN
+    RAISE EXCEPTION 'nested topology domain composite-carrier constraint was not restored unvalidated during incomplete upgrade repair';
+  END IF;
+
   BEGIN
     CREATE TEMP TABLE domain_nested_constraint_probe (
       a upgrade_test.nested_topoelement
@@ -425,6 +451,49 @@ BEGIN
   IF nested_array_value[1][1] != 93 OR nested_array_value[1][2] != 94 THEN
     RAISE EXCEPTION 'rewritten nested topology domain array default did not preserve value: %',
       nested_array_value;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
+    WHERE conrelid = 'upgrade_test.domain_nested_array_constraint_test'::regclass
+    AND conname = 'domain_nested_array_constraint_check'
+  ) THEN
+    RAISE EXCEPTION 'dependent nested topology domain array constraint was not preserved during upgrade';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
+    WHERE conrelid = 'upgrade_test.domain_nested_array_default_test'::regclass
+    AND conname = 'domain_nested_array_default_check'
+  ) THEN
+    RAISE EXCEPTION 'dependent nested topology domain array default constraint was not preserved during upgrade';
+  END IF;
+
+  SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid)
+    INTO STRICT default_expr
+    FROM pg_catalog.pg_attribute AS a
+    JOIN pg_catalog.pg_attrdef AS d
+      ON d.adrelid = a.attrelid
+      AND d.adnum = a.attnum
+    WHERE a.attrelid = 'upgrade_test.domain_nested_array_default_test'::regclass
+    AND a.attname = 'a';
+
+  IF default_expr NOT LIKE '%::text[])::upgrade_test.nested_topoelement[]%' THEN
+    RAISE EXCEPTION 'skipped nested topology domain array default was not rewritten during upgrade: %',
+      default_expr;
+  END IF;
+
+  INSERT INTO upgrade_test.domain_nested_array_default_test DEFAULT VALUES;
+  SELECT a INTO STRICT nested_array_default_value
+    FROM upgrade_test.domain_nested_array_default_test
+    WHERE id = 2;
+  nested_array_default_element := nested_array_default_value[1]::topology.topoelement;
+
+  IF nested_array_default_element[1] != 123 OR nested_array_default_element[2] != 124 THEN
+    RAISE EXCEPTION 'rewritten skipped nested topology domain array default did not preserve value: %',
+      nested_array_default_value;
   END IF;
 
   IF NOT EXISTS (
@@ -802,6 +871,57 @@ BEGIN
       WHERE id = 2
     ) != 53 THEN
       RAISE EXCEPTION 'rewritten publication-skipped topology domain default did not preserve value';
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_catalog.pg_publication AS p
+        JOIN pg_catalog.pg_publication_rel AS pr
+          ON pr.prpubid = p.oid
+        WHERE p.pubname = 'upgrade_test_domain_whole_row_publication'
+        AND pr.prrelid = 'upgrade_test.domain_whole_row_publication_source'::regclass
+      )
+    THEN
+      RAISE EXCEPTION 'dependent topology domain whole-row publication relation was not preserved during upgrade';
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_catalog.pg_depend AS dep
+        JOIN pg_catalog.pg_publication_rel AS pr
+          ON pr.oid = dep.objid
+        JOIN pg_catalog.pg_publication AS p
+          ON p.oid = pr.prpubid
+        WHERE dep.classid = 'pg_catalog.pg_publication_rel'::regclass
+        AND dep.refobjid = 'upgrade_test.domain_whole_row_publication_source'::regclass
+        AND dep.refobjsubid = 0
+        AND p.pubname = 'upgrade_test_domain_whole_row_publication'
+      )
+    THEN
+      RAISE EXCEPTION 'dependent topology domain whole-row publication dependency was not preserved during upgrade';
+    END IF;
+
+    SELECT pg_catalog.pg_get_expr(d.adbin, d.adrelid)
+      INTO STRICT default_expr
+      FROM pg_catalog.pg_attribute AS a
+      JOIN pg_catalog.pg_attrdef AS d
+        ON d.adrelid = a.attrelid
+        AND d.adnum = a.attnum
+      WHERE a.attrelid = 'upgrade_test.domain_whole_row_publication_source'::regclass
+      AND a.attname = 'a';
+
+    IF default_expr NOT LIKE '%::text)::bigint[]%' THEN
+      RAISE EXCEPTION 'whole-row publication-skipped topology domain column default was not rewritten during upgrade: %',
+        default_expr;
+    END IF;
+
+    INSERT INTO upgrade_test.domain_whole_row_publication_source(id) VALUES (2);
+    IF (
+      SELECT a[1]
+      FROM upgrade_test.domain_whole_row_publication_source
+      WHERE id = 2
+    ) != 115 THEN
+      RAISE EXCEPTION 'rewritten whole-row publication-skipped topology domain default did not preserve value';
     END IF;
   END IF;
 END
