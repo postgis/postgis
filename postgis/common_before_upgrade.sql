@@ -564,6 +564,56 @@ BEGIN
 				END IF;
 			END LOOP;
 
+			-- User domains and composite types can hide topology domains behind
+			-- another column type OID, so the exact-OID rewrite below cannot
+			-- prove that all old-width storage was repaired.
+			FOR domain_skipped_column IN
+				WITH RECURSIVE nested_type(type_oid) AS (
+					SELECT pg_catalog.unnest(domain_att_type_oids)
+					UNION
+					SELECT nested_candidate.type_oid
+					FROM nested_type
+					JOIN LATERAL (
+						SELECT t.oid AS type_oid
+						FROM pg_catalog.pg_type AS t
+						WHERE t.typbasetype = nested_type.type_oid
+						OR t.typelem = nested_type.type_oid
+						UNION
+						SELECT ct.oid AS type_oid
+						FROM pg_catalog.pg_attribute AS ta
+						JOIN pg_catalog.pg_class AS tc
+							ON tc.oid = ta.attrelid
+							AND tc.relkind = 'c'
+						JOIN pg_catalog.pg_type AS ct
+							ON ct.typrelid = tc.oid
+						WHERE ta.atttypid = nested_type.type_oid
+						AND ta.attnum > 0
+						AND NOT ta.attisdropped
+					) AS nested_candidate ON true
+					WHERE nested_candidate.type_oid <> ALL(domain_att_type_oids)
+				)
+				SELECT DISTINCT
+					a.attrelid,
+					a.attname,
+					a.atttypid::regtype AS nested_type_name
+				FROM pg_catalog.pg_attribute AS a
+				JOIN pg_catalog.pg_class AS c
+					ON c.oid = a.attrelid
+				JOIN nested_type AS nt
+					ON nt.type_oid = a.atttypid
+				WHERE a.atttypid <> ALL(domain_att_type_oids)
+				AND a.attnum > 0
+				AND NOT a.attisdropped
+				AND c.relkind IN ('r', 'p', 'm')
+			LOOP
+				skipped_repair := true;
+				RAISE WARNING 'Could not rewrite %.% for topology.% because its type % contains that domain; move the value through text into a freshly created type after upgrade',
+					domain_skipped_column.attrelid::regclass,
+					domain_skipped_column.attname,
+					domain_name,
+					domain_skipped_column.nested_type_name;
+			END LOOP;
+
 			FOR domain_generated_source_column IN
 				SELECT
 					a.attrelid,

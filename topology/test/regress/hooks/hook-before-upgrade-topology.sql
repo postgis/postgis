@@ -187,6 +187,20 @@ INSERT INTO upgrade_test.domain_array_test (a, b) VALUES (
   ARRAY[NULL::topology.topoelementarray, '{{69,70}}'::topology.topoelementarray]::topology.topoelementarray[]
 );
 
+CREATE DOMAIN upgrade_test.nested_topoelement AS topology.topoelement;
+CREATE TYPE upgrade_test.composite_topoelement AS (
+  a topology.topoelement
+);
+CREATE TABLE upgrade_test.domain_nested_type_test (
+  id integer GENERATED ALWAYS AS IDENTITY,
+  a upgrade_test.nested_topoelement,
+  b upgrade_test.composite_topoelement
+);
+INSERT INTO upgrade_test.domain_nested_type_test (a, b) VALUES (
+  '{85,86}'::topology.topoelement::upgrade_test.nested_topoelement,
+  ROW('{87,88}'::topology.topoelement)::upgrade_test.composite_topoelement
+);
+
 CREATE TABLE upgrade_test.domain_rule_source (
   id integer,
   a topology.topoelement
