@@ -82,6 +82,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           deprecated-function cleanup (Darafei Praliaskouski)
  - GH-899, [raster] Honor PostgreSQL interrupts in long-running GDAL
           progress callbacks (Darafei Praliaskouski)
+ - #2386, Add missing raster2pgsql man page (Darafei Praliaskouski)
  - #5975, Initialize skipped union-find cluster ids deterministically
           (Darafei Praliaskouski)
  - GH-885, [topology] Avoid GMP overflow in ring orientation for very large
