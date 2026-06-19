@@ -62,6 +62,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 * Bug Fixes *
 
+ - Fix WKB and TWKB parser resource exhaustion on malformed input
+          (Darafei Praliaskouski)
  - #6083, Pass configured dependency include paths to fuzzer smoke builds
           (Darafei Praliaskouski)
  - #3103, Add regression coverage for exact-schema find_srid and

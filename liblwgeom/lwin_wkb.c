@@ -831,6 +831,10 @@ static LWNURBSCURVE* lwnurbscurve_from_wkb_state(wkb_parse_state *s)
 		        degree, (unsigned long long)degree + 1, npoints);
 		return NULL;
 	}
+	const size_t min_point_size = 2 + (2 + (s->has_z ? 1 : 0) + (s->has_m ? 1 : 0)) * WKB_DOUBLE_SIZE;
+	wkb_parse_state_check(s, (size_t)npoints * min_point_size);
+	if (s->error)
+		return NULL;
 
 	/* Initialize points array */
 	if (npoints > 0) {
