@@ -4,6 +4,7 @@
  *
  * Copyright (C) 2012 Regents of the University of California
  *   <bkpark@ucdavis.edu>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -203,6 +204,28 @@ static void test_raster_compute_skewed_raster(void) {
 	cu_free_raster(rast);
 }
 
+static void
+test_raster_compute_skewed_raster_interrupt(void)
+{
+	rt_envelope extent;
+	rt_raster rast;
+	double skew[2] = {0.25, 0.25};
+	double scale[2] = {1, -1};
+
+	extent.MinX = 0;
+	extent.MaxY = 0;
+	extent.MaxX = 2;
+	extent.MinY = -2;
+	extent.UpperLeftX = extent.MinX;
+	extent.UpperLeftY = extent.MaxY;
+
+	lwgeom_request_interrupt();
+	rast = rt_raster_compute_skewed_raster(extent, skew, scale);
+	lwgeom_cancel_interrupt();
+
+	CU_ASSERT_PTR_NULL(rast);
+}
+
 /* register tests */
 void raster_misc_suite_setup(void);
 void raster_misc_suite_setup(void)
@@ -212,5 +235,5 @@ void raster_misc_suite_setup(void)
 	PG_ADD_TEST(suite, test_raster_geopoint_to_cell);
 	PG_ADD_TEST(suite, test_raster_from_two_rasters);
 	PG_ADD_TEST(suite, test_raster_compute_skewed_raster);
+	PG_ADD_TEST(suite, test_raster_compute_skewed_raster_interrupt);
 }
-
