@@ -174,7 +174,7 @@ ptarray_signed_area_product_exponent(double a, double b)
 }
 
 static double
-ptarray_signed_area_exact(const POINTARRAY *pa)
+ptarray_signed_area_exact(const POINTARRAY *pa, int coordinate_scale)
 {
 	const POINT2D *P1 = getPoint2d_cp(pa, 0);
 	const POINT2D *P2 = getPoint2d_cp(pa, 1);
@@ -193,6 +193,17 @@ ptarray_signed_area_exact(const POINTARRAY *pa)
 		ptarray_signed_area_two_diff(P2->y, y0, &ay, &ayerr);
 		ptarray_signed_area_two_diff(P3->x, x0, &bx, &bxerr);
 		ptarray_signed_area_two_diff(P3->y, y0, &by, &byerr);
+		if (coordinate_scale > 0)
+		{
+			ax = ldexp(ax, -coordinate_scale);
+			ay = ldexp(ay, -coordinate_scale);
+			bx = ldexp(bx, -coordinate_scale);
+			by = ldexp(by, -coordinate_scale);
+			axerr = ldexp(axerr, -coordinate_scale);
+			ayerr = ldexp(ayerr, -coordinate_scale);
+			bxerr = ldexp(bxerr, -coordinate_scale);
+			byerr = ldexp(byerr, -coordinate_scale);
+		}
 
 		ptarray_signed_area_expansion_add_product(&expansion, ax, by, 1.0);
 		ptarray_signed_area_expansion_add_product(&expansion, ax, byerr, 1.0);
@@ -206,7 +217,7 @@ ptarray_signed_area_exact(const POINTARRAY *pa)
 		P2 = P3;
 	}
 
-	return -ptarray_signed_area_expansion_sum(&expansion) / 2.0;
+	return -ldexp(ptarray_signed_area_expansion_sum(&expansion), 2 * coordinate_scale) / 2.0;
 }
 
 int
@@ -1267,8 +1278,12 @@ ptarray_signed_area(const POINTARRAY *pa)
 	double scaled_tail_compensation = 0.0;
 	double det_abs_sum = 0.0;
 	double tail_abs_sum = 0.0;
+	double scaled_det_abs_sum = 0.0;
+	double scaled_tail_abs_sum = 0.0;
 	double x0, y0;
 	int area_scale = 0;
+	int unscaled_cancelled;
+	int scaled_cancelled;
 	uint32_t i;
 
 	if (! pa || pa->npoints < 3 )
@@ -1314,6 +1329,7 @@ ptarray_signed_area(const POINTARRAY *pa)
 		double *active_compensation = &compensation;
 		double *active_tail_sum = &tail_sum;
 		double *active_tail_compensation = &tail_compensation;
+		int scaled_term = LW_FALSE;
 		P3 = getPoint2d_cp(pa, i);
 
 		ptarray_signed_area_two_diff(P2->x, x0, &ax, &axerr);
@@ -1338,6 +1354,7 @@ ptarray_signed_area(const POINTARRAY *pa)
 			active_compensation = &scaled_compensation;
 			active_tail_sum = &scaled_tail_sum;
 			active_tail_compensation = &scaled_tail_compensation;
+			scaled_term = LW_TRUE;
 			detleft = ax * by;
 			detright = ay * bx;
 			det = detleft - detright;
@@ -1364,12 +1381,20 @@ ptarray_signed_area(const POINTARRAY *pa)
 			 */
 			err += (ax * byerr + axerr * by) + axerr * byerr;
 			err -= (ay * bxerr + ayerr * bx) + ayerr * bxerr;
-			tail_abs_sum += fabs(err);
+			if (scaled_term)
+				scaled_tail_abs_sum += fabs(err);
+			else
+				tail_abs_sum += fabs(err);
 		}
 
 		ptarray_signed_area_add(active_sum, active_compensation, det);
 		if (isfinite(det))
-			det_abs_sum += fabs(det);
+		{
+			if (scaled_term)
+				scaled_det_abs_sum += fabs(det);
+			else
+				det_abs_sum += fabs(det);
+		}
 		/*
 		 * Keep determinant tails in a separate compensated stream. If
 		 * they are folded into the main determinant stream immediately,
@@ -1391,9 +1416,12 @@ ptarray_signed_area(const POINTARRAY *pa)
 	}
 	if (tail_sum != 0.0 && isfinite(tail_sum))
 		ptarray_signed_area_add(&sum, &compensation, tail_sum);
-	if (area_scale == 0 && tail_abs_sum > 0.0 && fabs(sum) < FP_MAX(det_abs_sum, tail_abs_sum) * 1e-12)
+	unscaled_cancelled = tail_abs_sum > 0.0 && fabs(sum) < FP_MAX(det_abs_sum, tail_abs_sum) * 1e-12;
+	scaled_cancelled = scaled_tail_abs_sum > 0.0 &&
+			   fabs(scaled_sum + scaled_tail_sum) < FP_MAX(scaled_det_abs_sum, scaled_tail_abs_sum) * 1e-12;
+	if (unscaled_cancelled || scaled_cancelled)
 	{
-		double exact_area = ptarray_signed_area_exact(pa);
+		double exact_area = ptarray_signed_area_exact(pa, scaled_cancelled ? area_scale : 0);
 		if (isfinite(exact_area))
 			return exact_area;
 	}
