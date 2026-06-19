@@ -308,9 +308,22 @@ END
 $$;
 
 DO $$
+DECLARE
+  nested_value topology.topoelement;
 BEGIN
   IF (SELECT count(*) FROM upgrade_test.domain_nested_type_test) != 1 THEN
     RAISE EXCEPTION 'nested topology domain storage fixture was not preserved during upgrade';
+  END IF;
+
+  INSERT INTO upgrade_test.domain_nested_type_test DEFAULT VALUES;
+
+  SELECT a::topology.topoelement INTO STRICT nested_value
+    FROM upgrade_test.domain_nested_type_test
+    WHERE id = 2;
+
+  IF nested_value[1] != 89 OR nested_value[2] != 90 THEN
+    RAISE EXCEPTION 'rewritten nested topology domain default did not preserve value: %',
+      nested_value;
   END IF;
 END
 $$;
@@ -333,6 +346,42 @@ BEGIN
     AND rulename = 'domain_external_rule_target_insert'
   ) THEN
     RAISE EXCEPTION 'external dependent topology domain rule was not preserved during upgrade';
+  END IF;
+END
+$$;
+
+DO $$
+DECLARE
+  default_value topology.topoelement[];
+  default_element topology.topoelement;
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_constraint
+    WHERE conrelid = 'upgrade_test.domain_array_inherit_constraint_child'::regclass
+    AND conname = 'domain_array_inherit_constraint_check'
+  ) THEN
+    RAISE EXCEPTION 'inherited child topology domain array constraint was not preserved during upgrade';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_class
+    WHERE oid = 'upgrade_test.domain_array_inherit_constraint_expr_idx'::regclass
+  ) THEN
+    RAISE EXCEPTION 'inherited child topology domain array expression index was not preserved during upgrade';
+  END IF;
+
+  INSERT INTO upgrade_test.domain_array_inherit_constraint_parent(id) VALUES (2);
+
+  SELECT a INTO STRICT default_value
+    FROM ONLY upgrade_test.domain_array_inherit_constraint_parent
+    WHERE id = 2;
+  default_element := default_value[1]::topology.topoelement;
+
+  IF default_element[1] != 101 OR default_element[2] != 102 THEN
+    RAISE EXCEPTION 'rewritten inherited topology domain array default did not preserve value: %',
+      default_value;
   END IF;
 END
 $$;

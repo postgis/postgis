@@ -222,12 +222,28 @@ CREATE TYPE upgrade_test.composite_topoelement AS (
 );
 CREATE TABLE upgrade_test.domain_nested_type_test (
   id integer GENERATED ALWAYS AS IDENTITY,
-  a upgrade_test.nested_topoelement,
+  a upgrade_test.nested_topoelement
+    DEFAULT '{89,90}'::topology.topoelement::upgrade_test.nested_topoelement,
   b upgrade_test.composite_topoelement
 );
 INSERT INTO upgrade_test.domain_nested_type_test (a, b) VALUES (
   '{85,86}'::topology.topoelement::upgrade_test.nested_topoelement,
   ROW('{87,88}'::topology.topoelement)::upgrade_test.composite_topoelement
+);
+
+CREATE TABLE upgrade_test.domain_array_inherit_constraint_parent (
+  id integer,
+  a topology.topoelement[] DEFAULT ARRAY['{101,102}'::topology.topoelement]::topology.topoelement[]
+);
+CREATE TABLE upgrade_test.domain_array_inherit_constraint_child ()
+  INHERITS (upgrade_test.domain_array_inherit_constraint_parent);
+ALTER TABLE upgrade_test.domain_array_inherit_constraint_child
+  ADD CONSTRAINT domain_array_inherit_constraint_check CHECK ((a[1])[1] > 0);
+CREATE INDEX domain_array_inherit_constraint_expr_idx
+  ON upgrade_test.domain_array_inherit_constraint_child (((a[1])[2]));
+INSERT INTO upgrade_test.domain_array_inherit_constraint_child VALUES (
+  1,
+  ARRAY['{103,104}'::topology.topoelement]::topology.topoelement[]
 );
 
 CREATE TABLE upgrade_test.domain_rule_source (

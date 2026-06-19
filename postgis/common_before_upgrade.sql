@@ -718,7 +718,9 @@ BEGIN
 
 			-- Some table columns cannot enter the row rewrite below, but their
 			-- defaults are independent pg_attrdef entries and can still be
-			-- rebuilt through the new array storage.
+			-- rebuilt through the new array storage. Nested carrier defaults
+			-- need the same treatment so they do not keep creating old-width
+			-- topology domain values after their storage rewrite is skipped.
 			FOR domain_default IN
 				SELECT
 					a.attrelid,
@@ -727,12 +729,16 @@ BEGIN
 					CASE
 						WHEN a.atttypid = domain_array_oid THEN
 							pg_catalog.format('%I.%I[]', domain_schema, domain_name)
+						WHEN a.atttypid <> ALL(domain_att_type_oids) THEN
+							a.atttypid::regtype::text
 						ELSE
 							pg_catalog.format('%I.%I', domain_schema, domain_name)
 					END AS target_domain_type,
 					CASE
 						WHEN a.atttypid = domain_array_oid THEN
 							'pg_catalog.text[]'
+						WHEN a.atttypid <> ALL(domain_att_type_oids) THEN
+							a.atttypid::regtype::text
 						ELSE
 							new_domain_type
 					END AS storage_cast_type
@@ -742,13 +748,23 @@ BEGIN
 				JOIN pg_catalog.pg_attrdef AS d
 					ON d.adrelid = a.attrelid
 					AND d.adnum = a.attnum
-				WHERE a.atttypid = ANY(domain_att_type_oids)
+				WHERE (
+					a.atttypid = ANY(domain_att_type_oids)
+					OR (
+						a.atttypid = ANY(nested_topology_type_oids)
+						AND a.atttypid <> ALL(domain_att_type_oids)
+					)
+				)
 				AND a.attnum > 0
 				AND NOT a.attisdropped
 				AND a.attgenerated = ''
 				AND c.relkind IN ('r', 'p')
 				AND (
-					EXISTS (
+					(
+						a.atttypid = ANY(nested_topology_type_oids)
+						AND a.atttypid <> ALL(domain_att_type_oids)
+					)
+					OR EXISTS (
 						SELECT 1
 						FROM pg_catalog.pg_depend AS dep
 						JOIN pg_catalog.pg_rewrite AS rw
@@ -959,27 +975,86 @@ BEGIN
 							AND ca.attname = a.attname
 							AND ca.atttypid = a.atttypid
 							AND ca.attnum > 0
-							AND NOT ca.attisdropped
-						JOIN pg_catalog.pg_depend AS dep
-							ON dep.refobjid = ca.attrelid
-							AND dep.refobjsubid IN (0, ca.attnum)
-						JOIN pg_catalog.pg_attribute AS ga
-							ON ga.attrelid = dep.objid
-							AND ga.attnum = dep.objsubid
-						WHERE dep.classid = 'pg_catalog.pg_class'::regclass
-						AND ga.attgenerated <> ''
-					)
-					OR EXISTS (
-						SELECT 1
-						FROM pg_catalog.pg_inherits AS i
-						JOIN pg_catalog.pg_attribute AS pa
-							ON pa.attrelid = i.inhparent
-							AND pa.attname = a.attname
-							AND pa.atttypid = a.atttypid
-							AND pa.attnum > 0
-							AND NOT pa.attisdropped
-						WHERE i.inhrelid = a.attrelid
-					)
+								AND NOT ca.attisdropped
+							JOIN pg_catalog.pg_depend AS dep
+								ON dep.refobjid = ca.attrelid
+								AND dep.refobjsubid IN (0, ca.attnum)
+							JOIN pg_catalog.pg_attribute AS ga
+								ON ga.attrelid = dep.objid
+								AND ga.attnum = dep.objsubid
+							WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+							AND ga.attgenerated <> ''
+						)
+						OR (
+							a.atttypid = domain_array_oid
+							AND EXISTS (
+								WITH RECURSIVE inherited_relid(attrelid) AS (
+									SELECT i.inhrelid
+									FROM pg_catalog.pg_inherits AS i
+									WHERE i.inhparent = a.attrelid
+									UNION ALL
+									SELECT i.inhrelid
+									FROM pg_catalog.pg_inherits AS i
+									JOIN inherited_relid AS ir
+										ON ir.attrelid = i.inhparent
+								)
+								SELECT 1
+								FROM inherited_relid AS i
+								JOIN pg_catalog.pg_attribute AS ca
+									ON ca.attrelid = i.attrelid
+									AND ca.attname = a.attname
+									AND ca.atttypid = a.atttypid
+									AND ca.attnum > 0
+									AND NOT ca.attisdropped
+								JOIN pg_catalog.pg_depend AS dep
+									ON dep.classid = 'pg_catalog.pg_constraint'::regclass
+									AND dep.refobjid = ca.attrelid
+									AND dep.refobjsubid IN (0, ca.attnum)
+							)
+						)
+						OR (
+							a.atttypid = domain_array_oid
+							AND EXISTS (
+								WITH RECURSIVE inherited_relid(attrelid) AS (
+									SELECT i.inhrelid
+									FROM pg_catalog.pg_inherits AS i
+									WHERE i.inhparent = a.attrelid
+									UNION ALL
+									SELECT i.inhrelid
+									FROM pg_catalog.pg_inherits AS i
+									JOIN inherited_relid AS ir
+										ON ir.attrelid = i.inhparent
+								)
+								SELECT 1
+								FROM inherited_relid AS i
+								JOIN pg_catalog.pg_attribute AS ca
+									ON ca.attrelid = i.attrelid
+									AND ca.attname = a.attname
+									AND ca.atttypid = a.atttypid
+									AND ca.attnum > 0
+									AND NOT ca.attisdropped
+								JOIN pg_catalog.pg_depend AS dep
+									ON dep.classid = 'pg_catalog.pg_class'::regclass
+									AND dep.refobjid = ca.attrelid
+									AND dep.refobjsubid IN (0, ca.attnum)
+								JOIN pg_catalog.pg_class AS ic
+									ON ic.oid = dep.objid
+									AND ic.relkind = 'i'
+								JOIN pg_catalog.pg_index AS ix
+									ON ix.indexrelid = ic.oid
+							)
+						)
+						OR EXISTS (
+							SELECT 1
+							FROM pg_catalog.pg_inherits AS i
+							JOIN pg_catalog.pg_attribute AS pa
+								ON pa.attrelid = i.inhparent
+								AND pa.attname = a.attname
+								AND pa.atttypid = a.atttypid
+								AND pa.attnum > 0
+								AND NOT pa.attisdropped
+							WHERE i.inhrelid = a.attrelid
+						)
 				)
 			LOOP
 				sql := pg_catalog.format(
@@ -1212,6 +1287,65 @@ BEGIN
 					JOIN pg_catalog.pg_rewrite AS rw
 						ON rw.oid = dep.objid
 				)
+					AND NOT (
+						a.atttypid = domain_array_oid
+						AND EXISTS (
+							WITH RECURSIVE inherited_relid(attrelid) AS (
+								SELECT i.inhrelid
+								FROM pg_catalog.pg_inherits AS i
+								WHERE i.inhparent = a.attrelid
+								UNION ALL
+								SELECT i.inhrelid
+								FROM pg_catalog.pg_inherits AS i
+								JOIN inherited_relid AS ir
+									ON ir.attrelid = i.inhparent
+							)
+							SELECT 1
+							FROM inherited_relid AS i
+							JOIN pg_catalog.pg_attribute AS ca
+								ON ca.attrelid = i.attrelid
+								AND ca.attname = a.attname
+								AND ca.atttypid = a.atttypid
+								AND ca.attnum > 0
+								AND NOT ca.attisdropped
+							JOIN pg_catalog.pg_depend AS dep
+								ON dep.classid = 'pg_catalog.pg_constraint'::regclass
+								AND dep.refobjid = ca.attrelid
+								AND dep.refobjsubid IN (0, ca.attnum)
+						)
+					)
+					AND NOT (
+						a.atttypid = domain_array_oid
+						AND EXISTS (
+							WITH RECURSIVE inherited_relid(attrelid) AS (
+								SELECT i.inhrelid
+								FROM pg_catalog.pg_inherits AS i
+								WHERE i.inhparent = a.attrelid
+								UNION ALL
+								SELECT i.inhrelid
+								FROM pg_catalog.pg_inherits AS i
+								JOIN inherited_relid AS ir
+									ON ir.attrelid = i.inhparent
+							)
+							SELECT 1
+							FROM inherited_relid AS i
+							JOIN pg_catalog.pg_attribute AS ca
+								ON ca.attrelid = i.attrelid
+								AND ca.attname = a.attname
+								AND ca.atttypid = a.atttypid
+								AND ca.attnum > 0
+								AND NOT ca.attisdropped
+							JOIN pg_catalog.pg_depend AS dep
+								ON dep.classid = 'pg_catalog.pg_class'::regclass
+								AND dep.refobjid = ca.attrelid
+								AND dep.refobjsubid IN (0, ca.attnum)
+							JOIN pg_catalog.pg_class AS ic
+								ON ic.oid = dep.objid
+								AND ic.relkind = 'i'
+							JOIN pg_catalog.pg_index AS ix
+								ON ix.indexrelid = ic.oid
+						)
+					)
 					AND NOT EXISTS (
 						WITH RECURSIVE inherited_relid(attrelid) AS (
 							SELECT i.inhrelid
