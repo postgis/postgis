@@ -112,6 +112,7 @@ lwline_offset_point_project(const LWLINE *line,
 			    const POINT4D *offset_point,
 			    uint32_t *source_seg,
 			    int reverse,
+			    int initial_point,
 			    POINT4D *projected_point)
 {
 	double mindist = DBL_MAX;
@@ -121,7 +122,13 @@ lwline_offset_point_project(const LWLINE *line,
 
 	if (reverse)
 	{
-		for (uint32_t seg = *source_seg + 1; seg > 0; seg--)
+		/*
+		 * The first offset vertex is generated from the logical source endpoint.
+		 * On folded lines that endpoint can lie on a later/earlier source segment
+		 * in XY, so the monotone scan is anchored for the first vertex only.
+		 */
+		uint32_t first_candidate = initial_point ? *source_seg : 0;
+		for (uint32_t seg = *source_seg + 1; seg > first_candidate; seg--)
 		{
 			uint32_t candidate_seg = seg - 1;
 			double dist_sqr;
@@ -135,7 +142,7 @@ lwline_offset_point_project(const LWLINE *line,
 			 * an equally near closing segment can make all later Z/M values come
 			 * from the wrong end of the measured ring.
 			 */
-			if (closed && *source_seg == last_seg && candidate_seg == 0)
+			if (!initial_point && closed && *source_seg == last_seg && candidate_seg == 0)
 				continue;
 
 			dist_sqr = distance2d_sqr_pt_seg(&query, start, end);
@@ -148,14 +155,19 @@ lwline_offset_point_project(const LWLINE *line,
 	}
 	else
 	{
-		uint32_t stop_seg = line->points->npoints - 1;
+		/*
+		 * The first offset vertex is generated from the logical source endpoint.
+		 * On folded lines that endpoint can lie on a later/earlier source segment
+		 * in XY, so the monotone scan is anchored for the first vertex only.
+		 */
+		uint32_t stop_seg = initial_point ? *source_seg + 1 : line->points->npoints - 1;
 		/*
 		 * Closed lines make the first offset vertex ambiguous at the join.
 		 * Keep the initial cursor on the logical start side; otherwise an
 		 * equally near closing segment can make all later Z/M values come from
 		 * the wrong end of the measured ring.
 		 */
-		if (closed && *source_seg == 0)
+		if (!initial_point && closed && *source_seg == 0)
 			stop_seg = last_seg;
 
 		for (uint32_t seg = *source_seg; seg < stop_seg; seg++)
@@ -221,7 +233,7 @@ lwline_reapply_clipped_line_dims_internal(const LWLINE *line, LWGEOM *lwgeom, ui
 		 * segment must move monotonically.  This avoids assigning Z/M from an
 		 * equally-near segment on another fold of the line.
 		 */
-		lwline_offset_point_project(line, &offset_point, source_seg, reverse, &projected_point);
+		lwline_offset_point_project(line, &offset_point, source_seg, reverse, i == 0, &projected_point);
 
 		/* GEOS provides the offset XY; the clipped source line provides Z/M. */
 		if (hasz)

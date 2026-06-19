@@ -778,6 +778,23 @@ static void test_lwline_clip(void)
 	lwcollection_free(c);
 	lwgeom_free(line);
 
+	line = lwgeom_from_wkt("LINESTRING ZM (0 0 0 0,10 0 10 10,0 1 20 20)", LW_PARSER_CHECK_NONE);
+	c = lwgeom_clip_to_ordinate_range(line, 'M', 0.0, 20.0, 1.0);
+	CU_ASSERT_EQUAL(c->ngeoms, 1);
+	CU_ASSERT_EQUAL(c->geoms[0]->type, LINETYPE);
+	{
+		LWLINE *clipped = lwgeom_as_lwline(c->geoms[0]);
+		POINT4D start;
+		POINT4D end;
+		getPoint4d_p(clipped->points, 0, &start);
+		getPoint4d_p(clipped->points, clipped->points->npoints - 1, &end);
+		CU_ASSERT_DOUBLE_EQUAL(start.z, 0.0, 1e-10);
+		CU_ASSERT_DOUBLE_EQUAL(start.m, 0.0, 1e-10);
+		CU_ASSERT(start.m < end.m);
+	}
+	lwcollection_free(c);
+	lwgeom_free(line);
+
 	line = lwgeom_from_wkt("LINESTRING ZM (0 0 0 0,10 0 10 10,10 10 20 20,0 10 30 30,0 0 40 40)",
 			       LW_PARSER_CHECK_NONE);
 	c = lwgeom_clip_to_ordinate_range(line, 'M', 0.0, 40.0, 1.0);
