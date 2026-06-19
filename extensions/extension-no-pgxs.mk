@@ -5,9 +5,18 @@
 # that dependency from generated extension SQL bundles while preserving the
 # installed file layout expected by PostgreSQL.
 
-datadir ?= $(shell $(PG_CONFIG) --sharedir)
+pg_configure_prefix = $(shell $(PG_CONFIG) --configure | sed -n "s/.*'--prefix=\([^']*\)'.*/\1/p")
+pg_configure_sharedir = $(shell $(PG_CONFIG) --sharedir)
+pg_configure_docdir = $(shell $(PG_CONFIG) --docdir)
+pg_configure_default_prefix = $(shell sharedir='$(pg_configure_sharedir)'; default_prefix=$${sharedir%/share}; test "$$default_prefix" != "$$sharedir" && printf '%s' "$$default_prefix")
+pg_configure_effective_prefix = $(if $(pg_configure_prefix),$(pg_configure_prefix),$(pg_configure_default_prefix))
+relocate_pg_config_path = $(if $(pg_configure_effective_prefix),$(patsubst $(pg_configure_effective_prefix)%,$(prefix)%,$(1)),$(1))
+
+# PGXS lets explicit prefix= relocate install directories.  Preserve the
+# suffix reported by pg_config so distro-specific layouts remain intact.
+datadir ?= $(if $(prefix),$(call relocate_pg_config_path,$(pg_configure_sharedir)),$(pg_configure_sharedir))
 datamoduledir ?= extension
-docdir ?= $(shell $(PG_CONFIG) --docdir)
+docdir ?= $(if $(prefix),$(call relocate_pg_config_path,$(pg_configure_docdir)),$(pg_configure_docdir))
 docmoduledir ?= extension
 srcdir ?= .
 INSTALL ?= install -c
@@ -53,7 +62,7 @@ ifneq (,$(DATA)$(DATA_built))
 endif
 ifdef DOCS
 ifdef docdir
-	rm -f $(addprefix '$(DESTDIR)$(docdir)/$(docmoduledir)'/, $(DOCS))
+	rm -f $(addprefix '$(DESTDIR)$(docdir)/$(docmoduledir)'/, $(notdir $(DOCS)))
 endif
 endif
 
