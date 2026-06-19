@@ -137,6 +137,10 @@ select '76s',ST_EqualsExact('POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0,0 0 0)))':
 select '76t',ST_EqualsExact(ST_MakePoint(1, 2, 'NaN'), ST_MakePoint(1, 2, 'NaN')) as bool;
 select '76u',ST_EqualsExact(ST_MakePointM(1, 2, 'NaN'), ST_MakePointM(1, 2, 'NaN')) as bool;
 select '76v',ST_EqualsExact(ST_MakePoint(1, 2, 'NaN'), ST_MakePoint(1, 2, 3)) as bool;
+select '76w',ST_EqualsExact('POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0,0 0 0)))'::GEOMETRY,'POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1.09 0.09 0,0 0 0)))'::GEOMETRY, 0.1::float8) as bool;
+select '76x',ST_EqualsExact(ST_MakePoint('NaN'::float8, 2), ST_MakePoint('NaN'::float8, 2)) as bool;
+select '76y',ST_EqualsExact('NURBSCURVE(2, (0 0, 1000 1000, 2000 0))'::GEOMETRY,'NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(1000 1000),WEIGHT 1.09),NURBSPOINT(WEIGHTEDPOINT(2000 0),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3)))'::GEOMETRY, 0.1::float8) as bool;
+select '76z',ST_EqualsExact('NURBSCURVE(2, (0 0, 1000 1000, 2000 0))'::GEOMETRY,'NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(1000 1000),WEIGHT 1.11),NURBSPOINT(WEIGHTEDPOINT(2000 0),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3)))'::GEOMETRY, 0.1::float8) as bool;
 
 --- function testing
 --- conversion function

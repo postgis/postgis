@@ -119,6 +119,17 @@ ordinate_nearly_equal(double a, double b, double tolerance)
 	return a == b || fabs(a - b) <= tolerance;
 }
 
+static inline int
+xy_nearly_equal(const POINT4D *p1, const POINT4D *p2, double tolerance)
+{
+	if (!isfinite(p1->x) || !isfinite(p2->x) || !isfinite(p1->y) || !isfinite(p2->y))
+	{
+		return ordinate_nearly_equal(p1->x, p2->x, tolerance) && ordinate_nearly_equal(p1->y, p2->y, tolerance);
+	}
+
+	return hypot(p1->x - p2->x, p1->y - p2->y) <= tolerance;
+}
+
 /*
  * GEOS exact equality is structural, but it sees curve geometries only after
  * stroking and ignores Z/M. Keep the original PostGIS coordinate sequences in
@@ -143,9 +154,7 @@ ptarray_same_coordinates(const POINTARRAY *pa1, const POINTARRAY *pa2, double to
 		getPoint4d_p(pa1, i, &p1);
 		getPoint4d_p(pa2, i, &p2);
 
-		if (!ordinate_nearly_equal(p1.x, p2.x, tolerance))
-			return LW_FALSE;
-		if (!ordinate_nearly_equal(p1.y, p2.y, tolerance))
+		if (!xy_nearly_equal(&p1, &p2, tolerance))
 			return LW_FALSE;
 		if (hasz && !ordinate_nearly_equal(p1.z, p2.z, tolerance))
 			return LW_FALSE;
@@ -157,6 +166,107 @@ ptarray_same_coordinates(const POINTARRAY *pa1, const POINTARRAY *pa2, double to
 }
 
 static int lwgeom_same_coordinates(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, double tolerance);
+
+static int
+ptarray_has_nonfinite_xy(const POINTARRAY *pa)
+{
+	for (uint32_t i = 0; i < pa->npoints; i++)
+	{
+		POINT4D p;
+		getPoint4d_p(pa, i, &p);
+
+		if (!isfinite(p.x) || !isfinite(p.y))
+			return LW_TRUE;
+	}
+
+	return LW_FALSE;
+}
+
+static int lwgeom_has_nonfinite_xy(const LWGEOM *lwgeom);
+static int lwgeom_contains_geos_stroked_curve(const LWGEOM *lwgeom);
+
+static int
+lwpoly_has_nonfinite_xy(const LWPOLY *poly)
+{
+	for (uint32_t i = 0; i < poly->nrings; i++)
+	{
+		if (ptarray_has_nonfinite_xy(poly->rings[i]))
+			return LW_TRUE;
+	}
+
+	return LW_FALSE;
+}
+
+static int
+lwcollection_has_nonfinite_xy(const LWCOLLECTION *collection)
+{
+	for (uint32_t i = 0; i < collection->ngeoms; i++)
+	{
+		if (lwgeom_has_nonfinite_xy(collection->geoms[i]))
+			return LW_TRUE;
+	}
+
+	return LW_FALSE;
+}
+
+static int
+lwgeom_has_nonfinite_xy(const LWGEOM *lwgeom)
+{
+	switch (lwgeom->type)
+	{
+	case POINTTYPE:
+		return ptarray_has_nonfinite_xy(((const LWPOINT *)lwgeom)->point);
+	case LINETYPE:
+		return ptarray_has_nonfinite_xy(((const LWLINE *)lwgeom)->points);
+	case POLYGONTYPE:
+		return lwpoly_has_nonfinite_xy((const LWPOLY *)lwgeom);
+	case TRIANGLETYPE:
+		return ptarray_has_nonfinite_xy(((const LWTRIANGLE *)lwgeom)->points);
+	case CIRCSTRINGTYPE:
+		return ptarray_has_nonfinite_xy(((const LWCIRCSTRING *)lwgeom)->points);
+	case NURBSCURVETYPE:
+		return ptarray_has_nonfinite_xy(((const LWNURBSCURVE *)lwgeom)->points);
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
+	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
+	case COLLECTIONTYPE:
+		return lwcollection_has_nonfinite_xy((const LWCOLLECTION *)lwgeom);
+	default:
+		return LW_FALSE;
+	}
+}
+
+static int
+lwgeom_contains_geos_stroked_curve(const LWGEOM *lwgeom)
+{
+	switch (lwgeom->type)
+	{
+	case CIRCSTRINGTYPE:
+	case NURBSCURVETYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
+	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
+		return LW_TRUE;
+	case COLLECTIONTYPE: {
+		const LWCOLLECTION *collection = (const LWCOLLECTION *)lwgeom;
+		for (uint32_t i = 0; i < collection->ngeoms; i++)
+		{
+			if (lwgeom_contains_geos_stroked_curve(collection->geoms[i]))
+				return LW_TRUE;
+		}
+		return LW_FALSE;
+	}
+	default:
+		return LW_FALSE;
+	}
+}
 
 static int
 lwgeom_contains_polyhedral_surface(const LWGEOM *lwgeom)
@@ -537,6 +647,7 @@ ST_EqualsExact(PG_FUNCTION_ARGS)
 	GEOSGeometry *g1, *g2;
 	int8_t result;
 	LWGEOM *lwgeom1, *lwgeom2;
+	int structural_fallback;
 
 	if (tolerance < 0)
 		elog(ERROR, "%s: tolerance must be non-negative", __func__);
@@ -563,18 +674,25 @@ ST_EqualsExact(PG_FUNCTION_ARGS)
 		lwgeom_free(lwgeom2);
 		PG_RETURN_BOOL(result);
 	}
-	lwgeom_free(lwgeom1);
-	lwgeom_free(lwgeom2);
+	structural_fallback = lwgeom_has_nonfinite_xy(lwgeom1) || lwgeom_has_nonfinite_xy(lwgeom2) ||
+			      lwgeom_contains_geos_stroked_curve(lwgeom1) ||
+			      lwgeom_contains_geos_stroked_curve(lwgeom2);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	g1 = POSTGIS2GEOS(geom1);
 	if (!g1)
+	{
+		lwgeom_free(lwgeom1);
+		lwgeom_free(lwgeom2);
 		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+	}
 	g2 = POSTGIS2GEOS(geom2);
 	if (!g2)
 	{
 		GEOSGeom_destroy(g1);
+		lwgeom_free(lwgeom1);
+		lwgeom_free(lwgeom2);
 		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 	}
 	result = GEOSEqualsExact(g1, g2, tolerance);
@@ -582,12 +700,32 @@ ST_EqualsExact(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g2);
 
 	if (result == 2)
+	{
+		lwgeom_free(lwgeom1);
+		lwgeom_free(lwgeom2);
 		HANDLE_GEOS_ERROR("GEOSEqualsExact");
+	}
 	if (!result)
+	{
+		if (structural_fallback)
+		{
+			/*
+			 * GEOS can reject stored non-finite XY ordinates that PostGIS
+			 * preserves, and it compares finite curve inputs after
+			 * stroking. Let the structural comparator decide these cases
+			 * so the documented coordinate and curve-parameter tolerance
+			 * remains visible after a GEOS linework mismatch.
+			 */
+			result = lwgeom_same_coordinates(lwgeom1, lwgeom2, tolerance);
+			lwgeom_free(lwgeom1);
+			lwgeom_free(lwgeom2);
+			PG_RETURN_BOOL(result);
+		}
+		lwgeom_free(lwgeom1);
+		lwgeom_free(lwgeom2);
 		PG_RETURN_BOOL(false);
+	}
 
-	lwgeom1 = lwgeom_from_gserialized(geom1);
-	lwgeom2 = lwgeom_from_gserialized(geom2);
 	result = lwgeom_same_coordinates(lwgeom1, lwgeom2, tolerance);
 	lwgeom_free(lwgeom1);
 	lwgeom_free(lwgeom2);

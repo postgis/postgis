@@ -107,6 +107,10 @@ ERROR:  parse error - invalid geometry at character 23
 76t|t
 76u|t
 76v|f
+76w|f
+76x|t
+76y|t
+76z|f
 106|BOX3D(0 0 0,7 7 0)
 107a|POINT(1 2 3)
 107b|LINESTRING(2 3 3,7 3 3)
