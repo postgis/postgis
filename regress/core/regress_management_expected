@@ -1,3 +1,5 @@
 1
+#6038.before|4326
 The result: public.test_pt dropped.
+#6038.after|0
 Unexistant: public.unexistent dropped.
