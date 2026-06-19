@@ -25,6 +25,7 @@
 
 #include <math.h>
 #include <limits.h>
+#include <string.h>
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include "varint.h"
@@ -46,7 +47,6 @@ typedef struct
 	uint32_t check; /* Simple validity checks on geometries */
 	uint32_t lwtype; /* Current type we are handling */
 	uint8_t depth;   /* Current recursion level, to prevent stack overflows */
-	uint8_t error;   /* A hard parse error was found */
 
 	uint8_t has_bbox;
 	uint8_t has_size;
@@ -162,21 +162,23 @@ twkb_parse_state_has_min_bytes(twkb_parse_state *s, uint32_t count, size_t min_b
 	return LW_TRUE;
 }
 
-static inline int
+/** Implements *pa += b using explicit wraparound semantics. */
+#if defined(__clang__) && __clang_major__ >= 4
+__attribute__((no_sanitize("unsigned-integer-overflow")))
+#endif
+static inline void
+safe_add_int64(int64_t *pa, int64_t b)
+{
+	uint64_t u_a = (uint64_t)*pa;
+	uint64_t u_b = (uint64_t)b;
+	u_a += u_b;
+	memcpy(pa, &u_a, sizeof(int64_t));
+}
+
+static inline void
 twkb_parse_state_accum_coord(twkb_parse_state *s, int coord_index)
 {
-	const int64_t delta = twkb_parse_state_varint(s);
-
-	if ((delta > 0 && s->coords[coord_index] > INT64_MAX - delta) ||
-	    (delta < 0 && s->coords[coord_index] < INT64_MIN - delta))
-	{
-		s->error = LW_TRUE;
-		lwerror("%s: TWKB coordinate delta overflows int64_t", __func__);
-		return LW_FALSE;
-	}
-
-	s->coords[coord_index] += delta;
-	return LW_TRUE;
+	safe_add_int64(&s->coords[coord_index], twkb_parse_state_varint(s));
 }
 
 static uint32_t lwtype_from_twkb_type(uint8_t twkb_type)
@@ -261,11 +263,7 @@ static POINTARRAY* ptarray_from_twkb_state(twkb_parse_state *s, uint32_t npoints
 	{
 		for (j = 0; j < ndims; j++)
 		{
-			if (!twkb_parse_state_accum_coord(s, j))
-			{
-				ptarray_free(pa);
-				return NULL;
-			}
+			twkb_parse_state_accum_coord(s, j);
 			dlist[ndims * i + j] = s->coords[j] / factors[j];
 		}
 	}
@@ -312,12 +310,8 @@ static LWLINE* lwline_from_twkb_state(twkb_parse_state *s)
 	/* Read coordinates */
 	pa = ptarray_from_twkb_state(s, npoints);
 
-	if( pa == NULL )
-	{
-		if (s->error)
-			return NULL;
+	if (pa == NULL)
 		return lwline_construct_empty(SRID_UNKNOWN, s->has_z, s->has_m);
-	}
 
 	if( s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 2 )
 	{
@@ -364,15 +358,8 @@ static LWPOLY* lwpoly_from_twkb_state(twkb_parse_state *s)
 		POINTARRAY *pa = ptarray_from_twkb_state(s, npoints);
 
 		/* Skip empty rings */
-		if( pa == NULL )
-		{
-			if (s->error)
-			{
-				lwpoly_free(poly);
-				return NULL;
-			}
+		if (pa == NULL)
 			continue;
-		}
 
 		/* Force first and last points to be the same. */
 		if( ! ptarray_is_closed_2d(pa) )
