@@ -3,6 +3,8 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - #6038, Avoid stale geometry_columns relation lookups after relations are
+    dropped or SELECT privilege is revoked (Darafei Praliaskouski)
   - GT-669, Reject truncated size-prefixed header and feature buffers
     before decoding (Darafei Praliaskouski)
   - OSSFuzz 5877056525893632, reject truncated encoded polyline input
