@@ -122,8 +122,6 @@ uint8_t* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 
 
 
-
-
 /**
 * Check that we are not about to read off the end of the WKB
 * array.
@@ -290,6 +288,7 @@ static char byte_from_wkb_state(wkb_parse_state *s)
 	return char_value;
 }
 
+
 /**
 * Int32
 * Read 4-byte integer and advance the parse state forward.
@@ -348,12 +347,43 @@ static double double_from_wkb_state(wkb_parse_state *s)
 			((uint8_t*)(&d))[i] = ((uint8_t*)(&d))[WKB_DOUBLE_SIZE - i - 1];
 			((uint8_t*)(&d))[WKB_DOUBLE_SIZE - i - 1] = tmp;
 		}
-
 	}
 
 	s->pos += WKB_DOUBLE_SIZE;
 	return d;
 }
+
+
+
+/**
+* Set the swap bytes flag depending on the endianness
+* of the machine and the endianness of the input data.
+* If they differ, we must swap, otherwise we can copy.
+*/
+static void wkb_swap_bytes(wkb_parse_state *s)
+{
+	char wkb_little_endian;
+
+	/* Fail when handed incorrect starting byte */
+	wkb_little_endian = byte_from_wkb_state(s);
+	if (s->error)
+		lwerror("Invalid endian flag value encountered.");
+
+	if( wkb_little_endian != 1 && wkb_little_endian != 0 )
+		lwerror("Invalid endian flag value encountered.");
+
+	/* Check the endianness of our input  */
+	s->swap_bytes = LW_FALSE;
+
+	/* Machine arch is big endian, request is for little */
+	if (IS_BIG_ENDIAN && wkb_little_endian)
+		s->swap_bytes = LW_TRUE;
+	/* Machine arch is little endian, request is for big */
+	else if ((!IS_BIG_ENDIAN) && (!wkb_little_endian))
+		s->swap_bytes = LW_TRUE;
+}
+
+
 
 /**
 * POINTARRAY
@@ -364,9 +394,9 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 {
 	POINTARRAY *pa = NULL;
 	size_t pa_size;
-	uint32_t ndims = 2;
 	uint32_t npoints = 0;
 	static uint32_t maxpoints = UINT_MAX / WKB_DOUBLE_SIZE / 4;
+	uint32_t ndims = 2 + s->has_z + s->has_m;
 
 	/* Calculate the size of this point array. */
 	npoints = integer_from_wkb_state(s);
@@ -382,15 +412,12 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 
 	LWDEBUGF(4,"Pointarray has %d points", npoints);
 
-	if( s->has_z ) ndims++;
-	if( s->has_m ) ndims++;
-	pa_size = (size_t)npoints * ndims * WKB_DOUBLE_SIZE;
-
 	/* Empty! */
 	if( npoints == 0 )
 		return ptarray_construct(s->has_z, s->has_m, npoints);
 
 	/* Does the data we want to read exist? */
+	pa_size = (size_t)npoints * ndims * WKB_DOUBLE_SIZE;
 	wkb_parse_state_check(s, pa_size);
 	if (s->error)
 		return NULL;
@@ -802,10 +829,12 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
  */
 static LWNURBSCURVE* lwnurbscurve_from_wkb_state(wkb_parse_state *s)
 {
-	uint32_t degree = 0, nknots = 0, npoints = 0;
+	uint32_t degree = 0, nknots = 0, npoints = 0, ndims;
 	double *weights = NULL, *knots = NULL;
 	POINTARRAY *points = NULL;
 	int all_weights_one = 1;
+	size_t pa_size;
+	static const uint32_t MAXPOINTS = (uint32_t)(UINT_MAX / (WKB_DOUBLE_SIZE * 4));
 
 	/* ISO/IEC 13249-3:2016 compliant parsing */
 	degree = integer_from_wkb_state(s);
@@ -821,11 +850,11 @@ static LWNURBSCURVE* lwnurbscurve_from_wkb_state(wkb_parse_state *s)
 	if (s->error) return NULL;
 
 	/* Defensive upper bound (worst-case 4 doubles/point) */
-	static const uint32_t MAXPOINTS = (uint32_t)(UINT_MAX / (WKB_DOUBLE_SIZE * 4));
 	if (npoints > MAXPOINTS) {
 		lwerror("WKB NURBSCURVE: control point count (%u) too large", npoints);
 		return NULL;
 	}
+
 	if (npoints > 0 && npoints <= degree) {
 		lwerror("WKB NURBSCURVE: degree %u requires at least %llu control points, got %u",
 		        degree, (unsigned long long)degree + 1, npoints);
@@ -836,44 +865,33 @@ static LWNURBSCURVE* lwnurbscurve_from_wkb_state(wkb_parse_state *s)
 	if (s->error)
 		return NULL;
 
+	/* Does the data we want to read exist? */
+	ndims = 2 + s->has_z + s->has_m;
+	pa_size = (size_t)npoints * ndims * WKB_DOUBLE_SIZE; /* coord */
+	pa_size += npoints * sizeof(double); /* weight */
+	pa_size += npoints * sizeof(char) * 2; /* endian_byte + weight_byte */
+	wkb_parse_state_check(s, pa_size);
+	if (s->error)
+		return NULL;
+
 	/* Initialize points array */
 	if (npoints > 0) {
+		int8_t save_swap_butes = s->swap_bytes;
+
 		points = ptarray_construct(s->has_z, s->has_m, npoints);
 		weights = lwalloc(sizeof(double) * npoints);
 
 		/* ISO format: each control point has structure:
 		 * <byte order> <wkbweightedpoint> <bit> [<wkbweight>]
 		 */
+
 		for (uint32_t i = 0; i < npoints; i++) {
+			POINT4D pt = {0, 0, 0, 0};
+
 			/* Read byte order for this point (ISO requirement) */
-			uint8_t point_endian = byte_from_wkb_state(s);
-			if (s->error) {
-				lwfree(weights);
-				ptarray_free(points);
-				return NULL;
-			}
-			if (point_endian != 0 && point_endian != 1) {
-				lwerror("WKB NURBSCURVE: invalid endian flag %u at control point %u", point_endian, i);
-				lwfree(weights);
-				ptarray_free(points);
-				return NULL;
-			}
-
-			/* Compute whether this point needs byte swapping */
-			int8_t point_swap = LW_FALSE;
-			/* Machine arch is big endian, point is little endian */
-			if (IS_BIG_ENDIAN && point_endian)
-				point_swap = LW_TRUE;
-			/* Machine arch is little endian, point is big endian */
-			else if ((!IS_BIG_ENDIAN) && (!point_endian))
-				point_swap = LW_TRUE;
-
-			/* Save original swap state and apply point-specific swapping */
-			int8_t original_swap = s->swap_bytes;
-			s->swap_bytes = point_swap;
+			wkb_swap_bytes(s);
 
 			/* Read point coordinates */
-			POINT4D pt = {0, 0, 0, 0};
 			pt.x = double_from_wkb_state(s);
 			if (s->error) {
 				lwfree(weights);
@@ -941,9 +959,9 @@ static LWNURBSCURVE* lwnurbscurve_from_wkb_state(wkb_parse_state *s)
 				return NULL;
 			}
 
-			/* Restore original swap state */
-			s->swap_bytes = original_swap;
 		}
+		/* Restore original swap state */
+		s->swap_bytes = save_swap_butes;
 	}
 
 	/* Read knots (required by WKB standard) */
@@ -1032,31 +1050,11 @@ static LWNURBSCURVE* lwnurbscurve_from_wkb_state(wkb_parse_state *s)
  */
 LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 {
-	char wkb_little_endian;
 	uint32_t wkb_type;
 
 	LWDEBUG(4,"Entered function");
 
-	/* Fail when handed incorrect starting byte */
-	wkb_little_endian = byte_from_wkb_state(s);
-	if (s->error)
-		return NULL;
-	if( wkb_little_endian != 1 && wkb_little_endian != 0 )
-	{
-		LWDEBUG(4,"Leaving due to bad first byte!");
-		lwerror("Invalid endian flag value encountered.");
-		return NULL;
-	}
-
-	/* Check the endianness of our input  */
-	s->swap_bytes = LW_FALSE;
-
-	/* Machine arch is big endian, request is for little */
-	if (IS_BIG_ENDIAN && wkb_little_endian)
-		s->swap_bytes = LW_TRUE;
-	/* Machine arch is little endian, request is for big */
-	else if ((!IS_BIG_ENDIAN) && (!wkb_little_endian))
-		s->swap_bytes = LW_TRUE;
+	wkb_swap_bytes(s);
 
 	/* Read the type number */
 	wkb_type = integer_from_wkb_state(s);

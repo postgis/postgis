@@ -240,7 +240,7 @@ test_wkb_fuzz(void)
 	uint8_t wkb[36] = {000, 000, 000, 000, 015, 000, 000, 000, 003, 000, 200, 000, 000, 010, 000, 000, 000, 000,
 			   000, 000, 000, 000, 010, 000, 000, 000, 000, 000, 000, 000, 000, 010, 000, 000, 000, 000};
 	LWGEOM *g = lwgeom_from_wkb(wkb, 36, LW_PARSER_CHECK_NONE);
-	lwgeom_free(g);
+	CU_ASSERT(g == NULL);
 
 	/* OSS-FUZZ https://trac.osgeo.org/postgis/ticket/4536 */
 	uint8_t wkb2[319] = {
@@ -261,26 +261,31 @@ test_wkb_fuzz(void)
 	    001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001,
 	    001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001, 001};
 	g = lwgeom_from_wkb(wkb2, 319, LW_PARSER_CHECK_NONE);
-	lwgeom_free(g);
+	CU_ASSERT(g == NULL);
 
 	/* OSS-FUZZ: https://trac.osgeo.org/postgis/ticket/4535 */
 	uint8_t wkb3[9] = {0x01, 0x03, 0x00, 0x00, 0x10, 0x8d, 0x55, 0xf3, 0xff};
 	g = lwgeom_from_wkb(wkb3, 9, LW_PARSER_CHECK_NONE);
-	lwgeom_free(g);
+	CU_ASSERT(g == NULL);
 
 	/* OSS-FUZZ: https://trac.osgeo.org/postgis/ticket/4544 */
 	uint8_t wkb4[22] = {0x01, 0x0f, 0x00, 0x00, 0x00, 0x20, 0x20, 0x20, 0x20, 0x00, 0x00,
 			    0x00, 0x00, 0x11, 0x20, 0x20, 0x20, 0x20, 0x00, 0x00, 0x00, 0x00};
 	g = lwgeom_from_wkb(wkb4, 22, LW_PARSER_CHECK_NONE);
-	lwgeom_free(g);
+	CU_ASSERT(g == NULL);
 
 	/* OSS-FUZZ: https://trac.osgeo.org/postgis/ticket/4621 */
 	uint32_t big_size = 20000000;
 	uint8_t *wkb5 = lwalloc(big_size);
 	memset(wkb5, 0x01, big_size);
 	g = lwgeom_from_wkb(wkb5, big_size, LW_PARSER_CHECK_NONE);
-	lwgeom_free(g);
+	CU_ASSERT(g == NULL);
 	lwfree(wkb5);
+
+	/* OSS-Fuzz issue 525520951: NURBSCURVE WKB claiming 119M points in 13 bytes → OOM */
+	uint8_t nurbs_oom[13] = {0x01, 0x15, 0x00, 0x00, 0x40, 0x01, 0x00, 0x00, 0x00, 0x20, 0x20, 0x20, 0x07};
+	g = lwgeom_from_wkb(nurbs_oom, 13, LW_PARSER_CHECK_NONE);
+	CU_ASSERT(g == NULL);
 }
 
 static void
