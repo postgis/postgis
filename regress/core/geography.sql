@@ -168,8 +168,10 @@ SELECT 'lrs_cp_pip_1', ST_AsText(ST_ClosestPoint(geography 'POLYGON((-1 -1,-1 1,
 SELECT 'lrs_cp_pip_2', ST_AsText(ST_ClosestPoint(geography 'POLYGON((-1 -1,-1 1,1 1,1 -1,-1 -1))', geography 'MULTIPOINT(10 0,0 0)'), 2);
 SELECT 'lrs_cp_pip_3', ST_AsText(ST_ClosestPoint(geography 'MULTIPOINT(10 0,0 0)', geography 'POLYGON((-1 -1,-1 1,1 1,1 -1,-1 -1))'), 2);
 SELECT 'lrs_cp_pip_4', ST_AsText(ST_ClosestPoint(geography 'GEOMETRYCOLLECTION(POLYGON((-1 -1,-1 1,1 1,1 -1,-1 -1)))', geography 'POINT(0 0)'), 2);
+SELECT 'lrs_cp_pip_5', ST_AsText(ST_ClosestPoint(geography 'POLYGON((-1 -1,-1 1,1 1,1 -1,-1 -1))', geography 'LINESTRING(0 0,0.5 0)'), 2);
 SELECT 'lrs_sl_1', ST_AsText(ST_ShortestLine(geography 'linestring(0 40, 50 40)', 'Point(25 40)', true), 2);
 SELECT 'lrs_sl_pip_1', ST_AsText(ST_ShortestLine(geography 'POLYGON((-1 -1,-1 1,1 1,1 -1,-1 -1))', geography 'POINT(0 0)', true), 2);
 SELECT 'lrs_sl_pip_2', ST_AsText(ST_ShortestLine(geography 'POLYGON((-1 -1,-1 1,1 1,1 -1,-1 -1))', geography 'MULTIPOINT(10 0,0 0)', true), 2);
 SELECT 'lrs_sl_pip_3', ST_AsText(ST_ShortestLine(geography 'MULTIPOINT(10 0,0 0)', geography 'POLYGON((-1 -1,-1 1,1 1,1 -1,-1 -1))', true), 2);
 SELECT 'lrs_sl_pip_4', ST_AsText(ST_ShortestLine(geography 'GEOMETRYCOLLECTION(POLYGON((-1 -1,-1 1,1 1,1 -1,-1 -1)))', geography 'POINT(0 0)', true), 2);
+SELECT 'lrs_sl_pip_5', ST_AsText(ST_ShortestLine(geography 'POLYGON((-1 -1,-1 1,1 1,1 -1,-1 -1))', geography 'LINESTRING(0 0,0.5 0)', true), 2);
