@@ -623,16 +623,24 @@ line_substring(PG_FUNCTION_ARGS, int use_3d)
 		 */
 		if (length <= 0.0 && FP_EQUALS(from, to))
 		{
-			for (i = 0; i < iline->ngeoms; i++)
+			int step = FP_EQUALS(from, 1.0) ? -1 : 1;
+			int first = FP_EQUALS(from, 1.0) ? (int)iline->ngeoms - 1 : 0;
+			int past = FP_EQUALS(from, 1.0) ? -1 : (int)iline->ngeoms;
+			int j;
+
+			for (j = first; j != past; j += step)
 			{
 				POINT4D pt;
-				LWLINE *subline = (LWLINE *)iline->geoms[i];
+				LWLINE *subline = (LWLINE *)iline->geoms[j];
 				if (!subline->points || subline->points->npoints == 0)
 					continue;
 
 				opa = ptarray_construct_empty(
 				    ptarray_has_z(subline->points), ptarray_has_m(subline->points), 1);
-				getPoint4d_p(subline->points, 0, &pt);
+				if (FP_EQUALS(from, 1.0))
+					getPoint4d_p(subline->points, subline->points->npoints - 1, &pt);
+				else
+					getPoint4d_p(subline->points, 0, &pt);
 				ptarray_append_point(opa, &pt, LW_TRUE);
 				olwgeom = (LWGEOM *)lwpoint_construct(iline->srid, NULL, opa);
 				ret = geometry_serialize(olwgeom);
