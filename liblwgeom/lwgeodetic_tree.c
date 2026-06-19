@@ -1052,9 +1052,15 @@ circ_tree_pair_set_inside_point(const CIRC_NODE *n1,
 	if (n1->geom_type != POLYGONTYPE)
 		return LW_FALSE;
 
-	if (n2->geom_type != POINTTYPE)
+	if (lwtype_is_collection(n2->geom_type))
 		return LW_FALSE;
 
+	/*
+	 * Tree-only callers historically treated any non-collection primitive as
+	 * contained when its representative point was inside the polygon. That
+	 * preserves zero distance for contained lines and polygons; the cap check
+	 * below is what keeps the #5895 far-away false positive out.
+	 */
 	circ_tree_get_point(n2, &pt);
 
 	/*
