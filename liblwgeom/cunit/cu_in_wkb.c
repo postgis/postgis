@@ -283,6 +283,22 @@ test_wkb_fuzz(void)
 	lwfree(wkb5);
 }
 
+static void
+test_wkb_in_nurbscurve_count_exceeds_payload(void)
+{
+	const uint8_t wkb[] = {
+	    0x01, 0x15, 0x00, 0x00, 0x40, 0x01, 0x00, 0x00, 0x00, 0xc4, 0x0c, 0xb7, 0x07, 0x21, 0xc7};
+	LWGEOM *geom;
+
+	cu_error_msg_reset();
+
+	geom = lwgeom_from_wkb(wkb, sizeof(wkb), LW_PARSER_CHECK_NONE);
+
+	ASSERT_STRING_EQUAL(cu_error_msg, "WKB structure does not match expected size!");
+	CU_ASSERT_PTR_NULL(geom);
+	cu_error_msg_reset();
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -304,4 +320,5 @@ void wkb_in_suite_setup(void)
 	PG_ADD_TEST(suite, test_wkb_in_multisurface);
 	PG_ADD_TEST(suite, test_wkb_in_malformed);
 	PG_ADD_TEST(suite, test_wkb_fuzz);
+	PG_ADD_TEST(suite, test_wkb_in_nurbscurve_count_exceeds_payload);
 }
