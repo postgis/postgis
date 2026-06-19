@@ -1,3 +1,5 @@
+brin_proc_12|brin_geometry_inclusion_ops_3d|12|geom3d_brin_inclusion_mergeable
+brin_proc_12|brin_geometry_inclusion_ops_4d|12|geom4d_brin_inclusion_mergeable
 scan_seq|Seq Scan
 1250|POINT Z (125 125 125)
 1251|POINT Z (125.1 125.1 125.1)
