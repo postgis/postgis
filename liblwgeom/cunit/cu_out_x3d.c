@@ -3,6 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  * Copyright 2011-2016 Regina Obe
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -75,11 +76,24 @@ static void out_x3d3_test_geoms(void)
 	    "<LineSet  vertexCount='3'><Coordinate point='0 1 5 2 3 6 4 5 7' /></LineSet>",
 	    0, 0);
 
+	/* 2D Linestring */
+	do_x3d3_test("LINESTRING(0 1,2 3,4 5)",
+		     "<LineSet  vertexCount='3'><Coordinate point='0 1 0 2 3 0 4 5 0' /></LineSet>",
+		     0,
+		     0);
+
 	/* Polygon **/
 	do_x3d3_test(
 	    "POLYGON((15 10 3,13.536 6.464 3,10 5 3,6.464 6.464 3,5 10 3,6.464 13.536 3,10 15 3,13.536 13.536 3,15 10 3))",
 	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><Coordinate point='15 10 3 13.536 6.464 3 10 5 3 6.464 6.464 3 5 10 3 6.464 13.536 3 10 15 3 13.536 13.536 3 ' /></IndexedFaceSet>",
 	    3, 0);
+
+	/* 2D Polygon */
+	do_x3d3_test(
+	    "POLYGON((0 0,1 0,1 1,0 0))",
+	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2'><Coordinate point='0 0 0 1 0 0 1 1 0 ' /></IndexedFaceSet>",
+	    0,
+	    0);
 
 	/* TODO: Polygon - with internal ring - the answer is clearly wrong */
 	/** do_x3d3_test(
@@ -104,11 +118,25 @@ static void out_x3d3_test_geoms(void)
 	    "<IndexedLineSet  coordIndex='0 1 2 -1 3 4 5'><Coordinate point='0 1 1 2 3 4 4 5 5 6 7 5 8 9 8 10 11 5 ' /></IndexedLineSet>",
 	    0, 0);
 
+	/* 2D Multiline */
+	do_x3d3_test(
+	    "MULTILINESTRING((0 1,2 3,4 5),(6 7,8 9,10 11))",
+	    "<IndexedLineSet  coordIndex='0 1 2 -1 3 4 5'><Coordinate point='0 1 0 2 3 0 4 5 0 6 7 0 8 9 0 10 11 0 ' /></IndexedLineSet>",
+	    0,
+	    0);
+
 	/* MultiPolygon */
 	do_x3d3_test(
 	    "MULTIPOLYGON(((0 1 1,2 3 1,4 5 1,0 1 1)),((6 7 1,8 9 1,10 11 1,6 7 1)))",
 	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 -1 3 4 5'><Coordinate point='0 1 1 2 3 1 4 5 1 6 7 1 8 9 1 10 11 1 ' /></IndexedFaceSet>",
 	    0, 0);
+
+	/* 2D MultiPolygon */
+	do_x3d3_test(
+	    "MULTIPOLYGON(((0 1,2 3,4 5,0 1)),((6 7,8 9,10 11,6 7)))",
+	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 -1 3 4 5'><Coordinate point='0 1 0 2 3 0 4 5 0 6 7 0 8 9 0 10 11 0 ' /></IndexedFaceSet>",
+	    0,
+	    0);
 
 	/* PolyhedralSurface */
 	do_x3d3_test(
@@ -116,11 +144,12 @@ static void out_x3d3_test_geoms(void)
 	    "<IndexedFaceSet convex='false'  coordIndex='0 1 2 3 -1 4 5 6 7 -1 8 9 10 11 -1 12 13 14 15 -1 16 17 18 19 -1 20 21 22 23'><Coordinate point='0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 0 1 0 1 0 0 1 1 1 0 1 1 1 1 0 1 1 0 0 0 1 0 0 1 1 1 1 1 1 1 0 0 0 1 1 0 1 1 1 1 0 1 1' /></IndexedFaceSet>",
 	    0, 0);
 
-	/* TODO: returns garbage at moment correctly implement GeometryCollection -- */
-	/** do_x3d3_test(
-	    "GEOMETRYCOLLECTION(POINT(0 1 3),LINESTRING(2 3 3,4 5 3))",
-	    "",
-	    NULL, 0); **/
+	/* GeometryCollection with 2D Polygon */
+	do_x3d3_test(
+	    "GEOMETRYCOLLECTION(POLYGON((0 0,1 0,1 1,0 0)))",
+	    "<Shape><IndexedFaceSet  convex='false' coordIndex='0 1 2'><Coordinate point='0 0 0 1 0 0 1 1 0 ' /></IndexedFaceSet></Shape>",
+	    0,
+	    0);
 
 	/* TODO:  Implement Empty GeometryCollection correctly or throw a not-implemented */
 	/** do_x3d3_test(

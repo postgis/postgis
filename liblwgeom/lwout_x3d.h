@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2011-2017 Arrival 3D, Regina Obe
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -45,4 +46,4 @@ static int asx3d3_tin_sb(const LWTIN *tin, int precision, int opts, const char *
 
 static int
 asx3d3_collection_sb(const LWCOLLECTION *col, int precision, int opts, const char *defid, stringbuffer_t *sb);
-static int ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, stringbuffer_t *sb );
+static int ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, int force_3d, stringbuffer_t *sb);

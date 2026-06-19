@@ -423,8 +423,8 @@ ERROR:  BOX2D_construct: args can not be empty points
 #4399|ST_AsTWKB|\x030001040000020201000001
 #4399|ST_AsTWKB|\x070001030001040000020201000001
 #4399|ST_AsTWKB|\x0310
-#4399|ST_AsX3D|0 0 1 1 0 1
-#4399|ST_AsX3D|<IndexedTriangleSet  index='0 1 2'><Coordinate point='0 0 1 1 0 1'/></IndexedTriangleSet>
+#4399|ST_AsX3D|0 0 0 1 1 0 0 1 0
+#4399|ST_AsX3D|<IndexedTriangleSet  index='0 1 2'><Coordinate point='0 0 0 1 1 0 0 1 0'/></IndexedTriangleSet>
 #4399|ST_AsX3D|
 #4399|ST_GeoHash|s00
 #4399|ST_GeoHash|s00
