@@ -2161,7 +2161,36 @@ CREATE OR REPLACE FUNCTION ST_RotateXYZ(geometry,float8,float8,float8,geometry)
 -- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_RotateXYZ(geometry,float8,float8,float8)
 	RETURNS geometry
-	AS 'SELECT @extschema@.ST_RotateXYZ($1, $2, $3, $4, ''POINT(0 0 0)''::geometry)'
+	-- Keep this overload self-contained so non-extension installs do not depend
+	-- on search_path to resolve a default-origin helper call.
+	AS $$
+		WITH p AS (
+			SELECT
+				cos($2) cx, sin($2) sx,
+				cos($3) cy, sin($3) sy,
+				cos($4) cz, sin($4) sz
+		), r AS (
+			SELECT
+				cz * cy a,
+				cz * sy * sx - sz * cx b,
+				cz * sy * cx + sz * sx c,
+				sz * cy d,
+				sz * sy * sx + cz * cx e,
+				sz * sy * cx - cz * sx f,
+				-sy g,
+				cy * sx h,
+				cy * cx i
+			FROM p
+		)
+		SELECT @extschema@.ST_Affine(
+			$1,
+			a, b, c,
+			d, e, f,
+			g, h, i,
+			0.0, 0.0, 0.0
+		)
+		FROM r
+	$$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
