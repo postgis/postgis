@@ -3,7 +3,9 @@ PostGIS 3.6.5
 
 * Fixes *
 
-- Stop the extension upgrade script running ANALYZE inside its transaction,
+ - #6038, Avoid stale geometry_columns relation lookups after relations are
+   dropped or SELECT privilege is revoked (Darafei Praliaskouski)
+ - Stop the extension upgrade script running ANALYZE inside its transaction,
   where it can deadlock with autovacuum (Darafei Praliaskouski)
 - OSSFuzz 5877056525893632, reject truncated encoded polyline input
   (Darafei Praliaskouski)
