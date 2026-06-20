@@ -3540,6 +3540,184 @@ CREATE OR REPLACE FUNCTION st_slope(
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -----------------------------------------------------------------------
+-- ST_Sharpen
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _st_sharpen4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		x integer;
+		y integer;
+		z integer;
+
+		method text;
+		amount double precision;
+		mean double precision DEFAULT 0.0;
+
+		_value double precision[][][];
+		ndims int;
+	BEGIN
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := @extschema@._ST_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		-- only use the first raster passed to this function
+		IF array_length(_value, 1) > 1 THEN
+			RAISE NOTICE 'Only using the values from the first raster';
+		END IF;
+		z := array_lower(_value, 1);
+
+		IF (
+			array_lower(_value, 2) != 1 OR array_upper(_value, 2) != 3 OR
+			array_lower(_value, 3) != 1 OR array_upper(_value, 3) != 3
+		) THEN
+			RAISE EXCEPTION 'First parameter of function must be a 1x3x3 array with each of the lower bounds starting from 1';
+		END IF;
+
+		method := lower(COALESCE(userargs[1], 'UMM'));
+		IF method != 'umm' THEN
+			RAISE EXCEPTION 'Unsupported sharpen method "%". Only UMM is supported', userargs[1];
+		END IF;
+
+		amount := COALESCE(userargs[2]::double precision, 1.0);
+		IF amount < 0 OR amount = 'NaN'::double precision OR amount = 'Infinity'::double precision THEN
+			RAISE EXCEPTION 'ST_Sharpen amount must be a non-negative finite value';
+		END IF;
+
+		-- check that center pixel isn't NODATA
+		IF _value[z][2][2] IS NULL THEN
+			RETURN NULL;
+		-- substitute center pixel for any neighbor pixels that are NODATA
+		ELSE
+			FOR y IN 1..3 LOOP
+				FOR x IN 1..3 LOOP
+					IF _value[z][y][x] IS NULL THEN
+						_value[z][y][x] = _value[z][2][2];
+					END IF;
+					mean := mean + _value[z][y][x];
+				END LOOP;
+			END LOOP;
+		END IF;
+
+		mean := mean / 9.0;
+
+		-- Unsharp mask: original + amount * (original - local mean).
+		RETURN _value[z][2][2] + amount * (_value[z][2][2] - mean);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION st_sharpen(
+	rast raster,
+	nband integer,
+	customextent raster,
+	pixeltype text DEFAULT '32BF',
+	method text DEFAULT 'UMM',
+	options text[] DEFAULT NULL,
+	interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		_rast @extschema@.raster;
+		_nband integer;
+		_pixtype text;
+		_customextent @extschema@.raster;
+		_extenttype text;
+		_method text;
+		_amount double precision DEFAULT 1.0;
+		_option text;
+		_parts text[];
+	BEGIN
+		_method := COALESCE(method, 'UMM');
+		IF lower(_method) != 'umm' THEN
+			RAISE EXCEPTION 'Unsupported sharpen method "%". Only UMM is supported', _method;
+		END IF;
+
+		IF options IS NOT NULL THEN
+			FOREACH _option IN ARRAY options LOOP
+				IF _option IS NULL THEN
+					CONTINUE;
+				END IF;
+
+				_parts := regexp_split_to_array(_option, E'\\s*=\\s*', 'n');
+				IF array_length(_parts, 1) != 2 OR lower(btrim(_parts[1])) != 'amount' THEN
+					RAISE EXCEPTION 'Unsupported ST_Sharpen option "%". Only amount=<value> is supported', _option;
+				END IF;
+
+				_amount := btrim(_parts[2])::double precision;
+			END LOOP;
+		END IF;
+
+		IF _amount < 0 OR _amount = 'NaN'::double precision OR _amount = 'Infinity'::double precision THEN
+			RAISE EXCEPTION 'ST_Sharpen amount must be a non-negative finite value';
+		END IF;
+
+		_customextent := customextent;
+		IF _customextent IS NULL THEN
+			_extenttype := 'FIRST';
+		ELSE
+			_extenttype := 'CUSTOM';
+		END IF;
+
+		IF interpolate_nodata IS TRUE THEN
+			_rast := @extschema@.ST_MapAlgebra(
+				ARRAY[ROW(rast, nband)]::rastbandarg[],
+				'@extschema@.st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
+				pixeltype,
+				'FIRST', NULL,
+				1, 1
+			);
+			_nband := 1;
+			_pixtype := NULL;
+		ELSE
+			_rast := rast;
+			_nband := nband;
+			_pixtype := pixeltype;
+		END IF;
+
+		RETURN @extschema@.ST_MapAlgebra(
+			ARRAY[ROW(_rast, _nband)]::rastbandarg[],
+			' @extschema@._ST_sharpen4ma(double precision[][][], integer[][], text[])'::regprocedure,
+			_pixtype,
+			_extenttype, _customextent,
+			1, 1,
+			_method::text, _amount::text
+		);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION st_sharpen(
+	rast raster,
+	nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF',
+	method text DEFAULT 'UMM',
+	options text[] DEFAULT NULL,
+	interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS raster
+	AS $$ SELECT @extschema@.ST_sharpen($1, $2, NULL::@extschema@.raster, $3, $4, $5, $6) $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION st_sharpen(
+	rast raster,
+	method text,
+	options text[] DEFAULT NULL
+)
+	RETURNS raster
+	AS $$ SELECT @extschema@.ST_sharpen($1, 1, '32BF', $2, $3, FALSE) $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+-----------------------------------------------------------------------
 -- ST_Aspect
 -- http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works
 -----------------------------------------------------------------------
