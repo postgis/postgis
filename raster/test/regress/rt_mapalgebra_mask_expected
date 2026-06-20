@@ -593,3 +593,10 @@ NOTICE:  userargs = <NULL>
 2|(1,"{{255,255},{255,255}}")
 3|(1,"{{255,255},{255,255}}")
 4|(1,"{{255,255},{255,255}}")
+st_convolution_equiv|t
+st_convolution_center|25
+st_convolution_default_pixeltype|32BF
+st_convolution_explicit_pixeltype|64BF
+st_convolution_null_pixeltype|8BUI
+st_convolution_rejects_5x5
+ERROR:  Convolution matrix must be 1x1 or 3x3
