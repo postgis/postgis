@@ -167,6 +167,8 @@ uninstall_topology.sql: topology.sql ../utils/create_uninstall.pl
 	$(PERL) @top_srcdir@/utils/create_uninstall.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 check-unit:
+	$(SHELL) @top_srcdir@/topology/test/test_pgtopo_export.sh @top_srcdir@/topology/loader/pgtopo_export
+	$(SHELL) @top_srcdir@/topology/test/test_pgtopo_import.sh @top_srcdir@/topology/loader/pgtopo_import
 
 check-regress: topology.sql
 	$(MAKE) -C test $@
