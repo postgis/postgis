@@ -1475,8 +1475,13 @@ rt_errorstate rt_band_get_pixel_bilinear(
 	double *r_value, int *r_nodata
 );
 
-typedef enum {
+typedef enum
+{
 	RT_NEAREST,
+	RT_NEAREST_UL,
+	RT_NEAREST_UR,
+	RT_NEAREST_LL,
+	RT_NEAREST_LR,
 	RT_BILINEAR
 } rt_resample_type;
 
@@ -1487,7 +1492,7 @@ typedef enum {
  * @param band : the band to read for values
  * @param xr : x unrounded raster coordinate
  * @param yr : y unrounded raster coordinate
- * @param resample : algorithm for reading raster (nearest or bilinear)
+ * @param resample : algorithm for reading raster
  * @param r_value : return pointer for point value
  * @param r_nodata : return pointer for if this is a nodata
  *

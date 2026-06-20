@@ -54,6 +54,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 * Enhancements *
 
+ - #2116, [raster] Add ST_Value nearest-neighbor boundary options
+          (Darafei Praliaskouski)
  - #2898, Document SQL function cost tiers for contributors
           (Darafei Praliaskouski)
  - #6062, [topology] Stop using recursive snapping, for improved robustness (Sandro Santilli)

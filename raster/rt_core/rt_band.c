@@ -1411,11 +1411,22 @@ rt_band_get_pixel_resample(
 			band, xr, yr, r_value, r_nodata
 			);
 	}
-	else if (resample == RT_NEAREST) {
-		return rt_band_get_pixel(
-			band, floor(xr), floor(yr),
-			r_value, r_nodata
-			);
+	else if (resample == RT_NEAREST || resample == RT_NEAREST_UL || resample == RT_NEAREST_UR ||
+		 resample == RT_NEAREST_LL || resample == RT_NEAREST_LR)
+	{
+		int x, y;
+
+		if (resample == RT_NEAREST_UL || resample == RT_NEAREST_LL)
+			x = ceil(xr) - 1;
+		else
+			x = floor(xr);
+
+		if (resample == RT_NEAREST_UL || resample == RT_NEAREST_UR)
+			y = ceil(yr) - 1;
+		else
+			y = floor(yr);
+
+		return rt_band_get_pixel(band, x, y, r_value, r_nodata);
 	}
 	else {
 		rtwarn("Invalid resample type requested %d", resample);
