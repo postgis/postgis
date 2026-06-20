@@ -34,6 +34,15 @@ CREATE OR REPLACE FUNCTION raster_nmapalgebra_test(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION raster_nmapalgebra_test_no_userargs(
+	value double precision[][][],
+	pos int[][]
+)
+	RETURNS double precision
+	AS $$
+		SELECT $1[1][1][1] + $2[0][1] + $2[0][2];
+	$$ LANGUAGE 'sql' IMMUTABLE STRICT;
+
 SET client_min_messages TO notice;
 
 SELECT
@@ -59,6 +68,18 @@ SELECT
 	) = 255
 FROM raster_nmapalgebra_in
 WHERE rid IN (2,3,4);
+
+SELECT
+	rid,
+	ST_Value(
+		ST_MapAlgebra(
+			ARRAY[ROW(rast, 1)]::rastbandarg[],
+			'raster_nmapalgebra_test_no_userargs(double precision[], int[])'::regprocedure
+		),
+		1, 1, 1
+	) = 3
+FROM raster_nmapalgebra_in
+WHERE rid = 2;
 
 SELECT
 	rid,
@@ -594,5 +615,6 @@ FROM raster_nmapalgebra_in
 WHERE rid IN (2);
 
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[], int[], text[]);
+DROP FUNCTION IF EXISTS raster_nmapalgebra_test_no_userargs(double precision[], int[]);
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test_bad_return(double precision[], int[], text[]);
 DROP TABLE IF EXISTS raster_nmapalgebra_in;
