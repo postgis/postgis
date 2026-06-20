@@ -1,2 +1,2 @@
-# Test with ANALYZE
--g the_geom {regdir}/loader/TestSkipANALYZE loadedshp
+# Test with ANALYZE and index creation
+-I -g the_geom {regdir}/loader/TestSkipANALYZE loadedshp
