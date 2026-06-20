@@ -2816,6 +2816,117 @@ CREATE OR REPLACE FUNCTION _st_convertarray4ma(value double precision[][])
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
 
+CREATE OR REPLACE FUNCTION _st_blur4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		_value double precision[][][];
+		ndims int;
+		sigma double precision;
+		sigma2 double precision;
+		sum double precision;
+		weight_sum double precision;
+		weight double precision;
+		cx int;
+		cy int;
+		x int;
+		y int;
+		z int;
+		dx int;
+		dy int;
+	BEGIN
+		IF userargs IS NULL OR COALESCE(array_length(userargs, 1), 0) < 1 THEN
+			RAISE EXCEPTION 'Sigma must be provided';
+		END IF;
+
+		sigma := userargs[array_lower(userargs, 1)]::double precision;
+		IF sigma IS NULL OR sigma <= 0 OR sigma::text = 'NaN' OR abs(sigma) = 'Infinity'::double precision THEN
+			RAISE EXCEPTION 'Sigma must be finite and greater than zero';
+		END IF;
+
+		ndims := array_ndims(value);
+		IF ndims = 2 THEN
+			_value := @extschema@._ST_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		IF array_length(_value, 1) > 1 THEN
+			RAISE NOTICE 'Only using the values from the first raster';
+		END IF;
+		z := array_lower(_value, 1);
+
+		cy := array_lower(_value, 2) + (array_length(_value, 2) - 1) / 2;
+		cx := array_lower(_value, 3) + (array_length(_value, 3) - 1) / 2;
+		sigma2 := 2.0 * sigma * sigma;
+		sum := 0;
+		weight_sum := 0;
+
+		FOR y IN array_lower(_value, 2)..array_upper(_value, 2) LOOP
+			FOR x IN array_lower(_value, 3)..array_upper(_value, 3) LOOP
+				IF _value[z][y][x] IS NULL THEN
+					CONTINUE;
+				END IF;
+
+				dx := x - cx;
+				dy := y - cy;
+				weight := exp(-((dx * dx + dy * dy)::double precision) / sigma2);
+				sum := sum + _value[z][y][x] * weight;
+				weight_sum := weight_sum + weight;
+			END LOOP;
+		END LOOP;
+
+		IF weight_sum = 0 THEN
+			RETURN NULL;
+		END IF;
+
+		RETURN sum / weight_sum;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION st_blur(
+	rast raster,
+	nband integer,
+	radius integer,
+	sigma double precision,
+	pixeltype text DEFAULT '64BF'
+)
+	RETURNS raster
+	AS $$
+	BEGIN
+		IF radius IS NULL OR radius < 1 THEN
+			RAISE EXCEPTION 'Radius must be greater than zero';
+		END IF;
+		IF sigma IS NULL OR sigma <= 0 OR sigma::text = 'NaN' OR abs(sigma) = 'Infinity'::double precision THEN
+			RAISE EXCEPTION 'Sigma must be finite and greater than zero';
+		END IF;
+
+		RETURN @extschema@.ST_MapAlgebra(
+			rast,
+			nband,
+			'@extschema@._ST_Blur4ma(double precision[][][], integer[][], text[])'::regprocedure,
+			pixeltype,
+			'FIRST',
+			NULL::@extschema@.raster,
+			radius,
+			radius,
+			sigma::text
+		);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION st_blur(
+	rast raster,
+	radius integer,
+	sigma double precision,
+	pixeltype text DEFAULT '64BF'
+)
+	RETURNS raster
+	AS $$ SELECT @extschema@.ST_Blur($1, 1, $2, $3, $4) $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
 CREATE OR REPLACE FUNCTION st_max4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
 	RETURNS double precision
 	AS $$
