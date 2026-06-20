@@ -40,6 +40,8 @@ PostgreSQL instance.
           both loaders accept long aliases for existing options, and
           --if-not-exists makes creation actions idempotent
           (Darafei Praliaskouski)
+ - #4009, [raster] Add ST_Clip overloads for geometry arrays
+          (Darafei Praliaskouski)
  - #4208, Add single-geometry variants of ST_MaxDistance and ST_LongestLine
           (Darafei Praliaskouski)
  - [topology] FindVertexSegmentPairsBelowDistance function (Sandro Santilli)
@@ -383,6 +385,7 @@ These are only changes since 3.7.0alpha1.
           signatures and return semantics (Darafei Praliaskouski)
  - #1168, [raster] Support curved geometry inputs in ST_AsRaster
           (Darafei Praliaskouski)
+
 
 
 PostGIS 3.6.0
