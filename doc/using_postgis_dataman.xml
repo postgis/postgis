@@ -2172,7 +2172,9 @@ pgsql2shp [<options>] <database> <query>
 		  <term><option>-P &lt;password&gt;</option></term>
 
 		  <listitem>
-			<para>The password to use when connecting to the database.</para>
+			<para>The password to use when connecting to the database. If
+			omitted, pgsql2shp prompts when a password is required and stdin is
+			a terminal.</para>
 		  </listitem>
 		</varlistentry>
 
