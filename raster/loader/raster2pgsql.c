@@ -409,8 +409,9 @@ usage() {
 		"  -q  Wrap PostgreSQL identifiers in quotes.\n"
 	));
 	printf(_(
-		"  -I  Create a GIST spatial index on the raster column. The ANALYZE\n"
-		"      command will automatically be issued for the created index.\n"
+		"  -I  Create a GIST spatial index on the raster column at the end of\n"
+		"      this raster2pgsql run. With repeated -a append runs, use -I only\n"
+		"      on the final run or create the index manually after loading.\n"
 	));
 	printf(
 	    _("  --add-constraints  Set the standard set of constraints on the\n"

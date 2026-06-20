@@ -88,7 +88,9 @@ overviews are stored in the database and are not affected by \-R.
 Wrap PostgreSQL identifiers in quotes.
 .TP
 \fB\-I\fR
-Create a GiST spatial index on the raster column.
+Create a GiST spatial index on the raster column at the end of this
+raster2pgsql run. With repeated \-a append runs, use \-I only on the final run
+or create the index manually after loading.
 .TP
 \fB\-\-create\-index\fR
 Create a GiST spatial index on the raster column.

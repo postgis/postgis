@@ -319,7 +319,10 @@ Available GDAL raster formats:
                   <term><option>-I</option></term>
                   <listitem>
                     <para>
-                      Create a GiST index on the raster column.
+                      Create a GiST index on the raster column at the end of this
+                      raster2pgsql run.  With repeated <option>-a</option> append
+                      runs, use <option>-I</option> only on the final run or create
+                      the index manually after loading.
                     </para>
                   </listitem>
                 </varlistentry>
