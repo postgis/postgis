@@ -20,17 +20,22 @@
 --
 -- API FUNCTION
 --
--- text AsTopoJSON(TopoGeometry, edgeMapTable)
+-- text AsTopoJSON(TopoGeometry, edgeMapTable, useSmallestType)
 --
 -- Format specification here:
 -- http://github.com/mbostock/topojson-specification/blob/master/README.md
 --
 -- Changed: 3.6.0 uses bigint for IDs
-CREATE OR REPLACE FUNCTION topology.AsTopoJSON(tg topology.TopoGeometry, edgeMapTable regclass)
+-- Changed: 3.7.0 added useSmallestType parameter
+CREATE OR REPLACE FUNCTION topology.AsTopoJSON(
+    tg topology.TopoGeometry,
+    edgeMapTable regclass,
+    useSmallestType boolean)
   RETURNS text AS
 $$
 DECLARE
   toponame text;
+  geom geometry;
   json text;
   sql text;
   rec RECORD;
@@ -61,7 +66,11 @@ BEGIN
 
   -- Puntal TopoGeometry, simply delegate to AsGeoJSON
   IF tg.type = 1 THEN
-    json := ST_AsGeoJSON(topology.Geometry(tg));
+    geom := topology.Geometry(tg);
+    IF useSmallestType AND ST_NumGeometries(geom) = 1 THEN
+      geom := ST_GeometryN(geom, 1);
+    END IF;
+    json := ST_AsGeoJSON(geom);
     return json;
   ELSIF tg.type = 2 THEN -- lineal
 
@@ -105,13 +114,21 @@ BEGIN
 
     END LOOP; -- }
 
-    json := '{ "type": "MultiLineString", "arcs": [' || array_to_string(comptxt,',') || ']}';
+    IF useSmallestType AND array_length(comptxt, 1) = 1 THEN
+      json := '{ "type": "LineString", "arcs": ' || comptxt[1] || '}';
+    ELSE
+      json := '{ "type": "MultiLineString", "arcs": [' || array_to_string(comptxt,',') || ']}';
+    END IF;
 
     return json;
 
   ELSIF tg.type = 3 THEN -- areal
 
-    json := '{ "type": "MultiPolygon", "arcs": [';
+    IF useSmallestType THEN
+      json := '{ "type": "Polygon", "arcs": ';
+    ELSE
+      json := '{ "type": "MultiPolygon", "arcs": [';
+    END IF;
 
     EXECUTE 'SHOW search_path' INTO old_search_path;
     EXECUTE 'SET search_path TO ' || quote_ident(toponame) || ',' || old_search_path;
@@ -315,7 +332,11 @@ FROM _edgepath
 
     DROP TABLE _postgis_topology_astopojson_tmp_edges;
 
-    json := json || array_to_string(comptxt, ',') || ']}';
+    IF useSmallestType AND array_length(comptxt, 1) = 1 THEN
+      json := json || comptxt[1] || '}';
+    ELSE
+      json := '{ "type": "MultiPolygon", "arcs": [' || array_to_string(comptxt, ',') || ']}';
+    END IF;
 
     EXECUTE 'SET search_path TO ' || old_search_path;
 
@@ -328,5 +349,9 @@ FROM _edgepath
 
 END
 $$ LANGUAGE 'plpgsql' VOLATILE; -- writes into visited table
--- } AsTopoJSON(TopoGeometry, visited_table)
 
+CREATE OR REPLACE FUNCTION topology.AsTopoJSON(tg topology.TopoGeometry, edgeMapTable regclass)
+  RETURNS text AS
+$$ SELECT topology.AsTopoJSON($1, $2, false); $$
+LANGUAGE 'sql' VOLATILE; -- writes into visited table
+-- } AsTopoJSON(TopoGeometry, visited_table)
