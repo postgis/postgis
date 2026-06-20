@@ -9,3 +9,8 @@ tg2tg.lin2lin|MULTILINESTRING((0 0,2 0),(0 1,1 1,2 1))
 tg2tg.lin2mix|GEOMETRYCOLLECTION(LINESTRING(0 0,2 0),POINT(0 0))
 tg2tg.pol2pol|MULTIPOLYGON(((0 0,0 10,10 10,10 0,0 0)))
 tg2tg.pol2pol|GEOMETRYCOLLECTION(POLYGON((0 0,0 10,10 10,10 0,0 0)),POINT(0 0))
+st_union.poi2poi|MULTIPOINT((0 0),(1 1))|t|{{1,1}}|{{2,1}}
+st_union.empty_poi|MULTIPOINT((1 1))|t|{}|{{1,1}}
+st_union.hier_poi2poi|MULTIPOINT((0 0),(1 1))|t|{{1,1},{2,1}}|{{1,1}}|{{2,1}}
+st_union.hier_simple|Cannot add components of non-hierarchical TopoGeometry to a hierarchical TopoGeometry
+st_union.simple_hier|Cannot add components of hierarchical TopoGeometry to a non-hierarchical TopoGeometry

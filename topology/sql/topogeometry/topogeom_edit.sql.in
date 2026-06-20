@@ -145,12 +145,12 @@ BEGIN
 
   -- Check simple/hierarchical compatibility
   IF srcLayer.child_id IS NULL THEN
-    IF srcLayer.child_id IS NOT NULL THEN
-      RAISE EXCEPTION 'Cannot add components of hierarchical TopoGeometry to a non-hierarchical TopoGeometry';
+    IF tgtLayer.child_id IS NOT NULL THEN
+      RAISE EXCEPTION 'Cannot add components of non-hierarchical TopoGeometry to a hierarchical TopoGeometry';
     END IF;
   ELSIF tgtLayer.child_id IS NULL THEN
-      RAISE EXCEPTION 'Cannot add components of non-hierarchical TopoGeometry to a hierarchical TopoGeometry';
-  ELSIF tgtLayer.child_id != srcLayer.childId THEN
+      RAISE EXCEPTION 'Cannot add components of hierarchical TopoGeometry to a non-hierarchical TopoGeometry';
+  ELSIF tgtLayer.child_id != srcLayer.child_id THEN
       RAISE EXCEPTION 'Cannot add components of hierarchical TopoGeometry to a hierarchical TopoGeometry based on different layer';
   END IF;
 
@@ -215,6 +215,50 @@ SELECT array_agg(DISTINCT element_type) FROM inserted
 
 
   RETURN tgt;
+END
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE STRICT;
+-- }
+
+-- {
+-- Return the union of two TopoGeometry objects without changing either input.
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology.ST_Union(tg1 topology.TopoGeometry, tg2 topology.TopoGeometry)
+  RETURNS topology.TopoGeometry
+AS
+$BODY$
+DECLARE
+  topo topology.topology;
+  ret topology.TopoGeometry;
+  ret_elements topology.TopoElementArray;
+BEGIN
+  topo := topology.FindTopology(tg1);
+
+  IF topology_id(tg1) != topology_id(tg2) THEN
+    RAISE EXCEPTION 'TopoGeometry objects need be defined on the same topology';
+  END IF;
+
+  EXECUTE format($$
+    SELECT topology.TopoElementArray_agg(ARRAY[element_id, element_type]
+      ORDER BY element_type, element_id)
+    FROM %I.relation
+    WHERE topogeo_id = $1
+      AND layer_id = $2
+    $$,
+    topo.name
+  )
+  USING id(tg1), layer_id(tg1)
+  INTO ret_elements;
+
+  IF ret_elements IS NULL THEN
+    ret := topology.CreateTopoGeom(topo.name, type(tg1), layer_id(tg1));
+  ELSE
+    ret := topology.CreateTopoGeom(topo.name, type(tg1), layer_id(tg1),
+      ret_elements);
+  END IF;
+
+  RETURN topology.TopoGeom_addTopoGeom(ret, tg2);
 END
 $BODY$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
