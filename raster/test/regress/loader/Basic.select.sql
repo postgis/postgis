@@ -2,3 +2,8 @@ SELECT srid, scale_x::numeric(16, 10), scale_y::numeric(16, 10), blocksize_x, bl
 SELECT ST_AsEWKT(geom), val FROM (SELECT (ST_PixelAsPolygons(rast, 1)).* FROM loadedrast WHERE rid = 1) foo WHERE x = 1 AND y = 1;
 SELECT ST_AsEWKT(geom), val FROM (SELECT (ST_PixelAsPolygons(rast, 2)).* FROM loadedrast WHERE rid = 1) foo WHERE x = 90 AND y = 50;
 SELECT ST_AsEWKT(geom), val FROM (SELECT (ST_PixelAsPolygons(rast, 3)).* FROM loadedrast WHERE rid = 1) foo WHERE x = 45 AND y = 25;
+SELECT COUNT(*)
+FROM pg_indexes
+WHERE schemaname = 'public'
+  AND tablename = 'loadedrast'
+  AND indexdef LIKE 'CREATE INDEX % ON public.loadedrast USING gist (st_convexhull(rast))';
