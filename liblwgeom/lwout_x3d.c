@@ -56,9 +56,9 @@ lwgeom_x3d_bbox_as_lwgeom(const LWGEOM *geom)
 		box.zmax = 0.0;
 	}
 
-	xeq = FP_EQUALS(box.xmin, box.xmax);
-	yeq = FP_EQUALS(box.ymin, box.ymax);
-	zeq = FP_EQUALS(box.zmin, box.zmax);
+	xeq = (box.xmin == box.xmax);
+	yeq = (box.ymin == box.ymax);
+	zeq = (box.zmin == box.zmax);
 	varying = (!xeq) + (!yeq) + (!zeq);
 
 	if (varying == 0)
