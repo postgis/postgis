@@ -61,6 +61,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
  - #2045, pgsql2shp query dumps no longer require temporary table
           privileges (Darafei Praliaskouski)
+ - #2192, Add a tolerance parameter to ST_Split (Darafei Praliaskouski)
  - #1577, [loader] Report unsupported .zip archive input before trying
           to open shapefile sidecar files (Darafei Praliaskouski)
  - #3158, Move geometry and geography typmod bit helpers out of the
