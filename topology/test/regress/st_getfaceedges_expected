@@ -1,3 +1,4 @@
+TABLE(sequence integer, edge bigint)
 t
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument

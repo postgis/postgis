@@ -717,7 +717,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					</xsl:when>
 				</xsl:choose>
 				<!-- put a comma before an arg if it is not the first argument in a function and it is not an OUT parameter nor does it precede an OUT parameter -->
-				<xsl:if test="position()&lt;last() and not(contains(db:parameter,'OUT')) and not(contains(following-sibling::paramdef[1],'OUT'))"><xsl:text>, </xsl:text></xsl:if>
+				<xsl:if test="position()&lt;last() and not(contains(db:parameter,'OUT')) and not(contains(following-sibling::db:paramdef[1],'OUT'))"><xsl:text>, </xsl:text></xsl:if>
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:template>

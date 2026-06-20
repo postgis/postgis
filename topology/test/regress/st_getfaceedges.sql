@@ -1,5 +1,7 @@
 set client_min_messages to ERROR;
 
+SELECT pg_get_function_result('topology.ST_GetFaceEdges(varchar, bigint)'::regprocedure);
+
 SELECT topology.CreateTopology('tt') > 0;
 
 SELECT topology.ST_GetFaceEdges(null, null);

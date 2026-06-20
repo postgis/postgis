@@ -85,6 +85,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           GeometryCollections (Darafei Praliaskouski)
  - #5532, Validate the manual against DocBook XMLSchema in check-xml
           (Darafei Praliaskouski)
+ - #4862, [topology] Stop using custom return types for topology edge
+          listing functions (Darafei Praliaskouski)
 
 * Bug Fixes *
 

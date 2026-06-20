@@ -2,6 +2,8 @@ set client_min_messages to ERROR;
 
 \i :top_builddir/topology/test/load_topology.sql
 
+SELECT pg_get_function_result('topology.GetRingEdges(varchar, bigint, int)'::regprocedure);
+
 -- Test bogus calls
 SELECT 'non-existent-topo', topology.GetRingEdges('non-existent', 1);
 SELECT 'non-existent-edge', topology.GetRingEdges('city_data', 10000000);

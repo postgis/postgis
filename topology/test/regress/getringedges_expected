@@ -1,3 +1,4 @@
+TABLE(sequence integer, edge bigint)
 ERROR:  No topology with name "non-existent" in topology.topology
 ERROR:  No edge with id 10000000 in Topology "city_data"
 ERROR:  No edge with id 10000000 in Topology "city_data"
