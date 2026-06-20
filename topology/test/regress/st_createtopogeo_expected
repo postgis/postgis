@@ -7,6 +7,9 @@ T1|POINT(0 0)
 T1|1 nodes|0 edges|0 faces
 T2|SRID=4326;LINESTRING(0 0,8 -40)
 T2|2 nodes|1 edges|0 faces
+T2|edge_data|t
+T2|face|t
+T2|node|t
 T3|SRID=4326;POLYGON((0 0,8 -40,70 34,0 0))
 T3|1 nodes|1 edges|1 faces
 T4|SRID=4326;POLYGON((0 0,10 0,10 10,0 10,0 0),(5 5,8 9,4 2,5 5))

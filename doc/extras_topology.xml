@@ -1398,10 +1398,11 @@ are up-to-date.
 </para>
 
 <para>
-PostGIS Topology population and editing functions do not automatically
-update the statistics because a updating stats after each and every
-change in a topology would be overkill, so it is the caller's duty
-to take care of that.
+PostGIS Topology editing functions do not automatically update the
+statistics because updating stats after each and every change in a
+topology would be overkill, so it is the caller's duty to take care of
+that.  The bulk <xref linkend="ST_CreateTopoGeo"/> constructor does run
+ANALYZE after populating a topology.
 </para>
 
 <note>

@@ -595,6 +595,10 @@ BEGIN
     PERFORM topology.TopoGeo_addPoint(atopology, rec.geom);
   END LOOP;
 
+  EXECUTE format('ANALYZE %I.edge_data', atopology);
+  EXECUTE format('ANALYZE %I.node', atopology);
+  EXECUTE format('ANALYZE %I.face', atopology);
+
   RETURN 'Topology ' || atopology || ' populated';
 
 END
@@ -603,4 +607,3 @@ LANGUAGE 'plpgsql' VOLATILE;
 --} ST_CreateTopoGeo
 
 --=}  SQL/MM block
-
