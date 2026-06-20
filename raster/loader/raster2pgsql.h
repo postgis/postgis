@@ -107,6 +107,9 @@ typedef struct raster_loader_config {
 	int *nband; /* 1-based */
 	uint32_t nband_count;
 
+	/* output pixel type */
+	rt_pixtype pixtype;
+
 	/* tile size */
 	int tile_size[2];
 
