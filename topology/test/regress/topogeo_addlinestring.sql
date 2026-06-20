@@ -248,6 +248,69 @@ SELECT check_changes('#1706.2');
 -- Consistency check
 SELECT * FROM ValidateTopology('city_data');
 
+-- Test re-noding after snapped endpoint splits an edge
+-- See http://trac.osgeo.org/postgis/ticket/2038
+
+DELETE FROM city_data.edge_data; DELETE FROM city_data.node;
+DELETE FROM city_data.face where face_id > 0;
+
+SELECT '#2038.1', TopoGeo_AddLineString('city_data',
+  ST_GeometryFromText('LINESTRING( 72.91981 20.95009,72.91082 20.95759)',4326));
+
+SELECT '#2038.2', count(*) FROM TopoGeo_AddLineString('city_data',
+  ST_GeometryFromText('LINESTRING(72.9123215921439 20.9563372813038,72.9122229474764 20.9564195766326, 72.9130010661966 20.9562352183313,72.9123215921439 20.9563372813038)',4326));
+
+-- Consistency check
+SELECT '#2038.invalidity', * FROM ValidateTopology('city_data');
+
+DELETE FROM city_data.edge_data; DELETE FROM city_data.node;
+DELETE FROM city_data.face where face_id > 0;
+
+SELECT '#2038.vertex.1', count(*) FROM TopoGeo_AddLineString('city_data',
+  ST_GeometryFromText('LINESTRING(0 0,5 0,10 0)',4326));
+
+SELECT '#2038.vertex.2', count(*) FROM TopoGeo_AddLineString('city_data',
+  ST_GeometryFromText('LINESTRING(5 0,5 5)',4326));
+
+SELECT '#2038.vertex.edges', count(*) FROM city_data.edge_data;
+
+-- Consistency check
+SELECT '#2038.vertex.invalidity', * FROM ValidateTopology('city_data');
+
+SELECT '#2038.precision.start', CreateTopology('t2038_precision', 4326, 1) > 0;
+
+SELECT '#2038.precision.edge.1', count(*) FROM TopoGeo_AddLineString(
+  't2038_precision',
+  'SRID=4326;LINESTRING(0 0,10 0)'::geometry, -1.0::float8, -1);
+
+SELECT '#2038.precision.edge.2', count(*) FROM TopoGeo_AddLineString(
+  't2038_precision',
+  'SRID=4326;LINESTRING(0.5 0,0.5 1)'::geometry, -1.0::float8, -1);
+
+SELECT '#2038.precision.nodes', count(*), string_agg(ST_AsText(geom), ',' ORDER BY node_id)
+  FROM t2038_precision.node;
+
+SELECT '#2038.precision.invalidity', count(*) FROM ValidateTopology('t2038_precision');
+
+SELECT DropTopology('t2038_precision');
+
+SELECT '#2038.endpoint_tol.start', CreateTopology('t2038_endpoint_tol', 4326) > 0;
+
+SELECT '#2038.endpoint_tol.edge.1', count(*) FROM TopoGeo_AddLineString('t2038_endpoint_tol',
+  'SRID=4326;LINESTRING(0 0,10 0)'::geometry);
+
+SELECT '#2038.endpoint_tol.edge.2', count(*) FROM TopoGeo_AddLineString('t2038_endpoint_tol',
+  'SRID=4326;LINESTRING(0.000001 0,1000000000 1)'::geometry);
+
+SELECT '#2038.endpoint_tol.nodes', count(*), string_agg(ST_AsText(geom), ',' ORDER BY node_id)
+  FROM t2038_endpoint_tol.node;
+
+SELECT '#2038.endpoint_tol.edges', count(*) FROM t2038_endpoint_tol.edge_data;
+
+SELECT '#2038.endpoint_tol.invalidity', count(*) FROM ValidateTopology('t2038_endpoint_tol');
+
+SELECT DropTopology('t2038_endpoint_tol');
+
 -- Test noding after snap
 -- See http://trac.osgeo.org/postgis/ticket/1714
 

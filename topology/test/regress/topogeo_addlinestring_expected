@@ -163,9 +163,27 @@ iso_ex_2segs|28
 #1706.2|E|LINESTRING(10 10,9 12)
 #1706.2|E|LINESTRING(20 10,15 10)
 #1706.2|E|LINESTRING(9 12,10 20)
-#1714.1|N|77
+#2038.1|75
+#2038.2|2
+#2038.vertex.1|1
+#2038.vertex.2|1
+#2038.vertex.edges|3
+#2038.precision.start|t
+#2038.precision.edge.1|1
+#2038.precision.edge.2|1
+#2038.precision.nodes|3|POINT(0 0),POINT(10 0),POINT(0.5 1)
+#2038.precision.invalidity|0
+Topology 't2038_precision' dropped
+#2038.endpoint_tol.start|t
+#2038.endpoint_tol.edge.1|1
+#2038.endpoint_tol.edge.2|2
+#2038.endpoint_tol.nodes|3|POINT(0 0),POINT(10 0),POINT(1000000000 1)
+#2038.endpoint_tol.edges|2
+#2038.endpoint_tol.invalidity|0
+Topology 't2038_endpoint_tol' dropped
+#1714.1|N|85
 #1714.1|N|0|POINT(10 0)
-#1714.2|E*|75
+#1714.2|E*|82
 #1714.2|N||POINT(0 20)
 #1714.2|E|LINESTRING(10 0,0 20)
 Topology 'city_data' dropped
