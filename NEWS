@@ -90,6 +90,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
  - #2807, [raster] Preserve missing NODATA values in ST_MapAlgebra outputs
           (Darafei Praliaskouski)
+ - #1764, [raster] Keep raster2pgsql overviews aligned when loading
+          aligned input rasters (Darafei Praliaskouski)
  - #2832, [raster] Avoid padding single-tile raster2pgsql overviews
           when padding is not requested (Darafei Praliaskouski)
  - #2623, Generate a pgsql2shp GID field when exporting geometry-only
