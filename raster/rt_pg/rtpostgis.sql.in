@@ -6583,6 +6583,15 @@ CREATE AGGREGATE st_union(raster, text) (
 	FINALFUNC = _st_union_finalfn
 );
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION st_union(rast1 raster, rast2 raster, uniontype text DEFAULT 'LAST')
+	RETURNS raster
+	AS $$
+		SELECT @extschema@.ST_Union(rast, uniontype ORDER BY ord)
+		FROM (VALUES (1, $1), (2, $2)) AS foo(ord, rast)
+	$$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
 -----------------------------------------------------------------------
 -- ST_AsRasterAgg aggregate
 ----------------------------------------------------------------------{
