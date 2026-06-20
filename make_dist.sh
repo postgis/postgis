@@ -83,6 +83,8 @@ if test -f utils/repo_revision.pl; then
 	echo "Generating postgis_revision.h"
 	perl utils/repo_revision.pl || exit 1
 fi
+echo "Generating WKT parser sources"
+${MAKE} -C liblwgeom lwin_wkt_parse.c lwin_wkt_parse.h lwin_wkt_lex.c || exit 1
 # generate ChangeLog
 make ChangeLog || exit 1
 cd "$owd"
