@@ -4117,6 +4117,9 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY *topo, LWT_ELEMID edge_id, LWLINE *geom)
 		PGTOPO_BE_ERROR();
 		return -1;
 	}
+	/* Sweeping isolated nodes in face 0 does not change their face. */
+	const int isolated_in_universal_face = oldedge->face_left == 0 && oldedge->face_right == 0 &&
+					       oldedge->next_left == -edge_id && oldedge->next_right == edge_id;
 	// 3. if any node beside endnodes are found:
 	if (numnodes > (1 + isclosed ? 0 : 1))
 	{
@@ -4128,6 +4131,8 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY *topo, LWT_ELEMID edge_id, LWLINE *geom)
 				if (n->node_id == oldedge->start_node)
 					continue;
 				if (n->node_id == oldedge->end_node)
+					continue;
+				if (isolated_in_universal_face && n->containing_face == 0)
 					continue;
 				const POINT2D *pt = getPoint2d_cp(n->geom->point, 0);
 				int ocont = ptarray_contains_point_partial(oldedge->geom->points, pt, isclosed, NULL) ==
