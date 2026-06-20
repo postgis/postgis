@@ -69,6 +69,20 @@
 
 #define RCSID "$Id$"
 
+typedef enum raster_loader_create_table_action
+{
+	CREATE_TABLE_NONE = 0,
+	CREATE_TABLE_ALWAYS,
+	CREATE_TABLE_IF_NOT_EXISTS
+} CREATE_TABLE_ACTION;
+
+typedef enum raster_loader_create_index_action
+{
+	CREATE_INDEX_NONE = 0,
+	CREATE_INDEX_ALWAYS,
+	CREATE_INDEX_IF_NOT_EXISTS
+} CREATE_INDEX_ACTION;
+
 typedef struct raster_loader_config {
 	/* raster filename */
 	uint32_t rt_file_count;
@@ -118,8 +132,14 @@ typedef struct raster_loader_config {
 	/* type of operation, (d|a|c|p) */
 	char opt;
 
-	/* create index, 1 = yes, 0 = no (default) */
-	int idx;
+	/* make creation actions idempotent */
+	int if_not_exists;
+
+	/* actions derived from operation presets */
+	int drop_table;
+	CREATE_TABLE_ACTION create_table;
+	int load_data;
+	CREATE_INDEX_ACTION create_index;
 
 	/* maintenance statements, 1 = yes, 0 = no (default) */
 	int maintenance;

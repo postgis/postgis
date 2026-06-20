@@ -54,6 +54,11 @@ Create a new table and populate it. This is the default mode.
 \fB\-p\fR
 Prepare mode. Only emit SQL to create the table.
 .TP
+\fB\-\-if\-not\-exists\fR
+Use IF NOT EXISTS for table creation in \-c and \-p modes. When \-I is also
+specified, use IF NOT EXISTS for index creation too. This option cannot be used
+with \-a or \-d.
+.TP
 \fB\-f\fR <\fIcolumn\fR>
 Specify the name of the raster column.
 .TP

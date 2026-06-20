@@ -137,6 +137,20 @@ Available GDAL raster formats:
           </listitem>
         </varlistentry>
 
+        <varlistentry>
+          <term><option>--if-not-exists</option></term>
+          <listitem>
+            <para>
+              Use <literal>IF NOT EXISTS</literal> for table creation in
+              <option>-c</option> and <option>-p</option> modes. When
+              <option>-I</option> is also specified, use
+              <literal>IF NOT EXISTS</literal> for index creation too. This
+              option cannot be used with <option>-a</option> or
+              <option>-d</option>.
+            </para>
+          </listitem>
+        </varlistentry>
+
 		<varlistentry>
 			<term>Raster processing: Applying constraints for proper registering in raster catalogs</term>
 			<listitem>
