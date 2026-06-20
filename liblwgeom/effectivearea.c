@@ -416,7 +416,7 @@ ptarray_calc_cyclic_area(const POINTARRAY *inpts, const int *prev, const int *ne
 static POINTARRAY *
 ptarray_set_effective_area_closed_ring(POINTARRAY *inpts, int avoid_collaps, int set_area, double trshld)
 {
-	uint32_t p;
+	int p;
 	const int npoints = inpts->npoints;
 	const int unique_points = npoints - 1;
 	int remaining_points = unique_points;
@@ -627,7 +627,7 @@ lwpoly_set_effective_area(const LWPOLY *ipoly, int set_area, double trshld, int 
 		if (ipoly->rings[i]->npoints < 4)
 			continue;
 
-		if (preserve_ring_endpoint || !ptarray_is_closed(ipoly->rings[i]))
+		if (preserve_ring_endpoint || !ptarray_is_closed_2d(ipoly->rings[i]))
 			pa = ptarray_set_effective_area(ipoly->rings[i], avoid_collapse, set_area, trshld);
 		else
 			pa = ptarray_set_effective_area_closed_ring(ipoly->rings[i], avoid_collapse, set_area, trshld);
