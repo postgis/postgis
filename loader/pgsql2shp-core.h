@@ -145,6 +145,9 @@ typedef struct shp_dumper_state
 	/* Generate a DBF id field when the source has no non-spatial fields */
 	int generate_dbf_id;
 
+	/* User query was materialized into a temporary table */
+	int usrquery_materialized;
+
 	/* Number of rows in the database table */
 	int num_records;
 
