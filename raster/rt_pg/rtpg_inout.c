@@ -29,13 +29,16 @@
 
 #include <postgres.h>
 #include <fmgr.h>
+#include "lib/stringinfo.h"
 
 #include "rtpostgis.h"
 
 Datum RASTER_in(PG_FUNCTION_ARGS);
 Datum RASTER_out(PG_FUNCTION_ARGS);
+Datum RASTER_recv(PG_FUNCTION_ARGS);
+Datum RASTER_send(PG_FUNCTION_ARGS);
 
-Datum RASTER_to_bytea(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum RASTER_to_bytea(PG_FUNCTION_ARGS);
 
 Datum RASTER_noop(PG_FUNCTION_ARGS);
 
@@ -61,7 +64,7 @@ Datum RASTER_in(PG_FUNCTION_ARGS)
 	if (result == NULL)
 		PG_RETURN_NULL();
 
-	SET_VARSIZE(result, ((rt_pgraster*)result)->size);
+	SET_VARSIZE(result, ((rt_pgraster *) result)->size);
 	PG_RETURN_POINTER(result);
 }
 
@@ -102,6 +105,55 @@ Datum RASTER_out(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(pgraster, 0);
 
 	PG_RETURN_CSTRING(hexwkb);
+}
+
+/*
+ * Binary input is WKB.
+ * Used as the receive function of the raster type.
+ */
+PG_FUNCTION_INFO_V1(RASTER_recv);
+Datum RASTER_recv(PG_FUNCTION_ARGS)
+{
+	StringInfo buf = (StringInfo) PG_GETARG_POINTER(0);
+	rt_raster raster = NULL;
+	void *result = NULL;
+
+	POSTGIS_RT_DEBUG(3, "Starting");
+
+	raster = rt_raster_from_wkb((uint8_t *) buf->data, buf->len);
+	if (raster == NULL) {
+		ereport(ERROR, (errmsg("recv error - invalid raster")));
+		PG_RETURN_NULL();
+	}
+
+	buf->cursor = buf->len;
+
+	result = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+	if (result == NULL) {
+		ereport(ERROR, (errmsg("RASTER_recv: Cannot serialize raster")));
+		PG_RETURN_NULL();
+	}
+
+	SET_VARSIZE(result, ((rt_pgraster*)result)->size);
+	PG_RETURN_POINTER(result);
+}
+
+/*
+ * Binary output is WKB.
+ * Used as the send function of the raster type.
+ */
+PG_FUNCTION_INFO_V1(RASTER_send);
+Datum RASTER_send(PG_FUNCTION_ARGS)
+{
+	POSTGIS_RT_DEBUG(3, "Starting");
+
+	PG_RETURN_POINTER(
+		DatumGetPointer(
+			DirectFunctionCall1(
+				RASTER_to_bytea,
+				PG_GETARG_DATUM(0)
+			)));
 }
 
 /**
@@ -175,4 +227,3 @@ Datum RASTER_noop(PG_FUNCTION_ARGS)
 	SET_VARSIZE(result, raster->size);
 	PG_RETURN_POINTER(result);
 }
-

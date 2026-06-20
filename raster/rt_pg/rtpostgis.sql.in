@@ -93,14 +93,39 @@ CREATE OR REPLACE FUNCTION raster_out(raster)
     AS 'MODULE_PATHNAME','RASTER_out'
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- part of Raster type
+-- expects input to be WKB
+CREATE OR REPLACE FUNCTION raster_recv(internal)
+    RETURNS raster
+    AS 'MODULE_PATHNAME','RASTER_recv'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- part of Raster type
+-- expects output to be WKB
+CREATE OR REPLACE FUNCTION raster_send(raster)
+    RETURNS bytea
+    AS 'MODULE_PATHNAME','RASTER_send'
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
 -- Availability: 2.0.0
 CREATE TYPE raster (
     alignment = double,
     internallength = variable,
     input = raster_in,
     output = raster_out,
+    receive = raster_recv,
+    send = raster_send,
     storage = extended
 );
+
+DO LANGUAGE 'plpgsql' $$
+BEGIN
+    ALTER TYPE raster SET (
+        receive = raster_recv,
+        send = raster_send
+    );
+END
+$$;
 
 ------------------------------------------------------------------------------
 -- FUNCTIONS
