@@ -59,6 +59,116 @@ test_lwpoint_to_latlon_assert_error(char *point_wkt, const char *format)
 	lwpoint_free(test_point);
 }
 
+static void
+test_lwpoint_from_latlon_assert(const char *input, double expected_x, double expected_y)
+{
+	LWPOINT *actual;
+	POINT2D pt;
+
+	cu_error_msg_reset();
+	actual = lwpoint_from_latlon(input);
+	if (0 != strlen(cu_error_msg))
+	{
+		printf("\nAssert failed:\n\tInput [%s] generated an error: %s\n", input, cu_error_msg);
+		CU_FAIL();
+		return;
+	}
+
+	lwpoint_getPoint2d_p(actual, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, expected_x, 1e-9);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, expected_y, 1e-9);
+	lwpoint_free(actual);
+}
+
+static void
+test_lwpoint_from_latlon_parts_assert(const char *lat, const char *lon, double expected_x, double expected_y)
+{
+	LWPOINT *actual;
+	POINT2D pt;
+
+	cu_error_msg_reset();
+	actual = lwpoint_from_latlon_parts(lat, lon);
+	if (0 != strlen(cu_error_msg))
+	{
+		printf("\nAssert failed:\n\tInput [%s] [%s] generated an error: %s\n", lat, lon, cu_error_msg);
+		CU_FAIL();
+		return;
+	}
+
+	lwpoint_getPoint2d_p(actual, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, expected_x, 1e-9);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, expected_y, 1e-9);
+	lwpoint_free(actual);
+}
+
+static void
+test_lwpoint_from_latlon_assert_error(const char *input)
+{
+	LWPOINT *actual;
+
+	cu_error_msg_reset();
+	actual = lwpoint_from_latlon(input);
+	lwpoint_free(actual);
+	if (0 == strlen(cu_error_msg))
+	{
+		printf("\nAssert failed:\n\tInput [%s] did not generate an error.\n", input);
+		CU_FAIL();
+	}
+	else
+		cu_error_msg_reset();
+}
+
+static void
+test_lwpoint_from_latlon(void)
+{
+	test_lwpoint_from_latlon_assert(
+	    "31\xC2\xB0"
+	    "55'12.000\"N 98\xC2\xB0"
+	    "58'48.000\"W",
+	    -98.98,
+	    31.92);
+	test_lwpoint_from_latlon_parts_assert(
+	    "31\xC2\xB0"
+	    "55'12.000\"N",
+	    "98\xC2\xB0"
+	    "58'48.000\"W",
+	    -98.98,
+	    31.92);
+	test_lwpoint_from_latlon_assert(
+	    "the coordinates were 122\xC2\xB0"
+	    "36'52.5\" W and 32\xC2\xB0"
+	    "18'23.1\" N",
+	    -122.614583333333,
+	    32.306416666667);
+	test_lwpoint_from_latlon_assert("+32.30642, -122.61458", -122.61458, 32.30642);
+	test_lwpoint_from_latlon_assert("N40:26:46.302 W079:58:55.903", -79.982195277778, 40.446195);
+	test_lwpoint_from_latlon_assert("0 0 -0 30", -0.5, 0.0);
+	test_lwpoint_from_latlon_parts_assert(
+	    "-0\xC2\xB0"
+	    "30'",
+	    "-0\xC2\xB0"
+	    "30'",
+	    -0.5,
+	    -0.5);
+	test_lwpoint_from_latlon_assert("N40 79W", -79.0, 40.0);
+	test_lwpoint_from_latlon_assert("N40 26 46.302 079 58 55.903W", -79.982195277778, 40.446195);
+	test_lwpoint_from_latlon_assert_error("0030N 0045W");
+	test_lwpoint_from_latlon_assert_error(
+	    "32.5\xC2\xB0"
+	    "30' N 122.5\xC2\xB0"
+	    "30' W");
+	test_lwpoint_from_latlon_assert_error("1e2 2e2");
+	test_lwpoint_from_latlon_assert_error("1.2 3.4 5.6 7.8");
+	test_lwpoint_from_latlon_assert_error(
+	    "32\xC2\xB0"
+	    "23.45' N 122.61458\xC2\xB0"
+	    " W");
+	test_lwpoint_from_latlon_assert_error(
+	    "32.30642\xC2\xB0"
+	    " NE 122.61458\xC2\xB0"
+	    " W");
+}
+
 /*
 ** Test points around the globe using the default format.  Null and empty string both mean use the default.
 */
@@ -578,7 +688,7 @@ void print_suite_setup(void)
 	PG_ADD_TEST(suite, test_lwpoint_to_latlon_optional_format);
 	PG_ADD_TEST(suite, test_lwpoint_to_latlon_oddball_formats);
 	PG_ADD_TEST(suite, test_lwpoint_to_latlon_bad_formats);
+	PG_ADD_TEST(suite, test_lwpoint_from_latlon);
 	PG_ADD_TEST(suite, test_lwprint);
 	PG_ADD_TEST(suite, test_lwprint_roundtrip);
 }
-
