@@ -1,0 +1,3 @@
+# Reuse the CharNoWidth DBF layout to verify that a custom feature id
+# column avoids escaping a source DBF column mapped to gid.
+-f fid -m {regdir}/loader/FIDColumn_mapping.txt

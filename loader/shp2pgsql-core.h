@@ -70,6 +70,7 @@
  */
 #define GEOMETRY_DEFAULT "geom"
 #define GEOGRAPHY_DEFAULT "geog"
+#define FID_DEFAULT "gid"
 
 /*
  * Default character encoding
@@ -92,6 +93,9 @@ typedef struct shp_loader_config
 
 	/* geometry/geography column name specified by the user, may be null. */
 	char *geo_col;
+
+	/* feature id column name specified by the user, may be null. */
+	char *fid_col;
 
 	/* the shape file (without the .shp extension) */
 	char *shp_file;

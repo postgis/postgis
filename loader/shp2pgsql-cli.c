@@ -40,6 +40,9 @@ usage()
 	          "     -p  Prepare mode, only creates the table.\n" ));
 	printf(_( "  -g <geocolumn> Specify the name of the geometry/geography column\n"
 	          "      (mostly useful in append mode).\n" ));
+	printf(
+	    _("  -f <fidcolumn> Specify the name of the feature id column\n"
+	      "      (default: \"" FID_DEFAULT "\").\n"));
 	printf(_( "  -D  Use postgresql dump format (defaults to SQL insert statements).\n" ));
 	printf(_( "  -e  Execute each statement individually, do not use a transaction.\n"
 	          "      Not compatible with -D.\n" ));
@@ -106,7 +109,7 @@ main (int argc, char **argv)
 	set_loader_config_defaults(config);
 
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
-	while ((c = pgis_getopt(argc, argv, "-?acdeg:ikm:nps:t:uwDGIN:ST:W:X:Z")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "-?acdef:g:ikm:nps:t:uwDGIN:ST:W:X:Z")) != EOF)
 	{
 		// can not do this inside the switch case
 		if ('-' == c)
@@ -162,6 +165,9 @@ main (int argc, char **argv)
 			break;
 		case 'g':
 			config->geo_col = pgis_optarg;
+			break;
+		case 'f':
+			config->fid_col = pgis_optarg;
 			break;
 		case 'm':
 			config->column_map_filename = pgis_optarg;

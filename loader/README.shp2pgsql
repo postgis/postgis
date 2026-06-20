@@ -64,6 +64,9 @@ OPTIONS
               Specify the name of the geometry column (mostly useful in append
               mode).
 
+       -f <fid_column>
+              Specify the name of the feature id column. The default is gid.
+
        -k     Keep identifiers case (column, schema and attributes). Note that
               attributes in Shapefile are usually all UPPERCASE.
 

@@ -1955,6 +1955,15 @@ COMMIT;</programlisting>
     </varlistentry>
 
     <varlistentry>
+      <term><option>-f &lt;fid_column&gt;</option></term>
+      <listitem>
+        <para>
+          Specify the name of the feature id column. The default is <literal>gid</literal>.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
       <term><option>-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;</option></term>
       <listitem>
         <para>

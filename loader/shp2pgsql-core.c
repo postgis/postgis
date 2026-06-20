@@ -754,6 +754,19 @@ strtolower(char *s)
 		s[j] = tolower(s[j]);
 }
 
+static const char *
+ShpLoaderFIDColumn(SHPLOADERSTATE *state)
+{
+	return state->config->fid_col ? state->config->fid_col : FID_DEFAULT;
+}
+
+static int
+ShpLoaderFieldNameNeedsEscape(SHPLOADERSTATE *state, const char *name)
+{
+	return name[0] == '_' || !strcmp(name, ShpLoaderFIDColumn(state)) || !strcmp(name, "tableoid") ||
+	       !strcmp(name, "cmin") || !strcmp(name, "cmax") || !strcmp(name, "xmin") || !strcmp(name, "xmax") ||
+	       !strcmp(name, "primary") || !strcmp(name, "oid") || !strcmp(name, "ctid");
+}
 
 /* Default configuration settings */
 void
@@ -763,6 +776,7 @@ set_loader_config_defaults(SHPLOADERCONFIG *config)
 	config->table = NULL;
 	config->schema = NULL;
 	config->geo_col = NULL;
+	config->fid_col = NULL;
 	config->shp_file = NULL;
 	config->dump_format = 0;
 	config->simple_geometries = 0;
@@ -1165,19 +1179,10 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 		/*
 		 * Escape names starting with the
-		 * escape char (_), those named 'gid'
+		 * escape char (_), those named as the feature id column
 		 * or after pgsql reserved attribute names
 		 */
-		if (name[0] == '_' ||
-		    ! strcmp(name, "gid") ||
-		    ! strcmp(name, "tableoid") ||
-		    ! strcmp(name, "cmin") ||
-		    ! strcmp(name, "cmax") ||
-		    ! strcmp(name, "xmin") ||
-		    ! strcmp(name, "xmax") ||
-		    ! strcmp(name, "primary") ||
-		    ! strcmp(name, "oid") ||
-		    ! strcmp(name, "ctid"))
+		if (ShpLoaderFieldNameNeedsEscape(state, name))
 		{
 			char tmp[MAXFIELDNAMELEN] = "__";
 			memcpy(tmp+2, name, MAXFIELDNAMELEN-2);
@@ -1351,14 +1356,20 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		*/
 		if (state->config->schema)
 		{
-			stringbuffer_aprintf(sb, "CREATE %sTABLE \"%s\".\"%s\" (gid serial",
-			                     state->config->unlogged ? "UNLOGGED " : "",
-			                     state->config->schema, state->config->table);
+			stringbuffer_aprintf(sb,
+					     "CREATE %sTABLE \"%s\".\"%s\" (\"%s\" serial",
+					     state->config->unlogged ? "UNLOGGED " : "",
+					     state->config->schema,
+					     state->config->table,
+					     ShpLoaderFIDColumn(state));
 		}
 		else
 		{
-			stringbuffer_aprintf(sb, "CREATE %sTABLE \"%s\" (gid serial",
-			                     state->config->unlogged ? "UNLOGGED " : "", state->config->table);
+			stringbuffer_aprintf(sb,
+					     "CREATE %sTABLE \"%s\" (\"%s\" serial",
+					     state->config->unlogged ? "UNLOGGED " : "",
+					     state->config->table,
+					     ShpLoaderFIDColumn(state));
 		}
 
 		/* Generate the field types based upon the shapefile information */
@@ -1412,11 +1423,11 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
                  * to be in the correct tablespace. */
 
 		/* TODO: Currently PostgreSQL does not allow specifying an index to use for a PK (so you get
-                 *       a default one called table_pkey) and it does not provide a way to create a PK index
-                 *       in a specific tablespace.  So as a hacky solution we create the PK, then move the
-                 *       index to the correct tablespace.  Eventually this should be:
-		 *           CREATE INDEX table_pkey on table(gid) TABLESPACE tblspc;
-                 *           ALTER TABLE table ADD PRIMARY KEY (gid) USING INDEX table_pkey;
+		 *       a default one called table_pkey) and it does not provide a way to create a PK index
+		 *       in a specific tablespace.  So as a hacky solution we create the PK, then move the
+		 *       index to the correct tablespace.  Eventually this should be:
+		 *           CREATE INDEX table_pkey on table(fid_col) TABLESPACE tblspc;
+		 *           ALTER TABLE table ADD PRIMARY KEY (fid_col) USING INDEX table_pkey;
 		 *       A patch has apparently been submitted to PostgreSQL to enable this syntax, see this thread:
 		 *           http://archives.postgresql.org/pgsql-hackers/2011-01/msg01405.php */
 		stringbuffer_aprintf(sb, "ALTER TABLE ");
@@ -1426,7 +1437,8 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		{
 			stringbuffer_aprintf(sb, "\"%s\".",state->config->schema);
 		}
-		stringbuffer_aprintf(sb, "\"%s\" ADD PRIMARY KEY (gid);\n", state->config->table);
+		stringbuffer_aprintf(
+		    sb, "\"%s\" ADD PRIMARY KEY (\"%s\");\n", state->config->table, ShpLoaderFIDColumn(state));
 
 		/* Tablespace is optional for the index. */
 		if (state->config->idxtablespace != NULL)
