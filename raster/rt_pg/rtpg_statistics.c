@@ -995,7 +995,10 @@ RASTER_summaryStats_combinefn(PG_FUNCTION_ARGS)
 		state2 = (rtpg_summarystats_arg)PG_GETARG_POINTER(1);
 
 	if (state1 == NULL && state2 != NULL)
+	{
 		state1 = rtpg_summarystats_arg_copy(state2);
+		rtpg_summarystats_arg_destroy(state2);
+	}
 	else if (state1 != NULL && state2 != NULL)
 	{
 		rtpg_summarystats_arg_merge(state1, state2);
