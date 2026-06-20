@@ -414,7 +414,7 @@ ptarray_calc_cyclic_area(const POINTARRAY *inpts, const int *prev, const int *ne
 }
 
 static POINTARRAY *
-ptarray_set_effective_area_closed_ring(POINTARRAY *inpts, int set_area, double trshld)
+ptarray_set_effective_area_closed_ring(POINTARRAY *inpts, int avoid_collaps, int set_area, double trshld)
 {
 	uint32_t p;
 	const int npoints = inpts->npoints;
@@ -480,6 +480,27 @@ ptarray_set_effective_area_closed_ring(POINTARRAY *inpts, int set_area, double t
 		prev[next[current]] = prev[current];
 		area[prev[current]] = FP_MAX(ptarray_calc_cyclic_area(inpts, prev, next, prev[current]), min_area);
 		area[next[current]] = FP_MAX(ptarray_calc_cyclic_area(inpts, prev, next, next[current]), min_area);
+	}
+
+	if (avoid_collaps == 0 && remaining_points == 3)
+	{
+		double min_area = FLT_MAX;
+
+		for (p = 0; p < unique_points; p++)
+		{
+			if (active[p] && area[p] < min_area)
+				min_area = area[p];
+		}
+		min_area = FP_MAX(min_area, check_order_min_area);
+
+		if (set_area || min_area < trshld)
+		{
+			for (p = 0; p < unique_points; p++)
+			{
+				if (active[p])
+					res_area[p] = min_area;
+			}
+		}
 	}
 
 	for (p = 0; p < unique_points; p++)
@@ -609,7 +630,7 @@ lwpoly_set_effective_area(const LWPOLY *ipoly, int set_area, double trshld, int 
 		if (preserve_ring_endpoint || !ptarray_is_closed(ipoly->rings[i]))
 			pa = ptarray_set_effective_area(ipoly->rings[i], avoid_collapse, set_area, trshld);
 		else
-			pa = ptarray_set_effective_area_closed_ring(ipoly->rings[i], set_area, trshld);
+			pa = ptarray_set_effective_area_closed_ring(ipoly->rings[i], avoid_collapse, set_area, trshld);
 		/* Add ring to simplified polygon */
 		if(pa->npoints>=4)
 		{
