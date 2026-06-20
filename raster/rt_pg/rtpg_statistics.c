@@ -576,6 +576,25 @@ rtpg_summarystats_arg_init(void) {
 	return arg;
 }
 
+static rtpg_summarystats_arg
+rtpg_summarystats_arg_copy(rtpg_summarystats_arg src)
+{
+	rtpg_summarystats_arg dst = rtpg_summarystats_arg_init();
+
+	memcpy(dst->stats, src->stats, sizeof(struct rt_bandstats_t));
+	dst->stats->values = NULL;
+
+	dst->cK = src->cK;
+	dst->cM = src->cM;
+	dst->cQ = src->cQ;
+
+	dst->band_index = src->band_index;
+	dst->exclude_nodata_value = src->exclude_nodata_value;
+	dst->sample = src->sample;
+
+	return dst;
+}
+
 static void
 rtpg_summarystats_arg_merge(rtpg_summarystats_arg dst, rtpg_summarystats_arg src)
 {
@@ -976,7 +995,7 @@ RASTER_summaryStats_combinefn(PG_FUNCTION_ARGS)
 		state2 = (rtpg_summarystats_arg)PG_GETARG_POINTER(1);
 
 	if (state1 == NULL && state2 != NULL)
-		state1 = state2;
+		state1 = rtpg_summarystats_arg_copy(state2);
 	else if (state1 != NULL && state2 != NULL)
 	{
 		rtpg_summarystats_arg_merge(state1, state2);
