@@ -14,6 +14,72 @@
 
 BEGIN;
 
+SELECT 'TOPOGEOMETRY BBOX OVERLAPS' as operation;
+
+SELECT 'point/point',
+  bool_and(
+    (a.@COLUMN@ && b.@COLUMN@) =
+    (topology.Geometry(a.@COLUMN@) && topology.Geometry(b.@COLUMN@))
+  )
+FROM features.traffic_signs a, features.traffic_signs b
+WHERE a.fid < b.fid;
+
+SELECT 'point/line',
+  bool_and(
+    (a.@COLUMN@ && b.@COLUMN@) =
+    (topology.Geometry(a.@COLUMN@) && topology.Geometry(b.@COLUMN@))
+  )
+FROM features.traffic_signs a, features.city_streets b;
+
+SELECT 'line/polygon',
+  bool_and(
+    (a.@COLUMN@ && b.@COLUMN@) =
+    (topology.Geometry(a.@COLUMN@) && topology.Geometry(b.@COLUMN@))
+  )
+FROM features.city_streets a, features.land_parcels b;
+
+SELECT 'polygon/hierarchical polygon',
+  bool_and(
+    (a.@COLUMN@ && b.@COLUMN@) =
+    (topology.Geometry(a.@COLUMN@) && topology.Geometry(b.@COLUMN@))
+  )
+FROM features.land_parcels a, features.big_parcels b;
+
+SELECT 'empty/point', empty_feature && feature
+FROM features.traffic_signs,
+  topology.CreateTopoGeom(
+    'city_data',
+    1,
+    (
+      SELECT layer_id FROM topology.layer
+      WHERE topology_id = (
+        SELECT id FROM topology.topology WHERE name = 'city_data'
+      )
+      AND schema_name = 'features'
+      AND table_name = 'traffic_signs'
+      AND feature_column = '@COLUMN@'
+    )
+  ) AS empty_feature
+WHERE feature_name = 'S1';
+
+SELECT 'new point/existing point', new_feature && @COLUMN@
+FROM features.traffic_signs,
+  topology.CreateTopoGeom(
+    'city_data',
+    1,
+    (
+      SELECT layer_id FROM topology.layer
+      WHERE topology_id = (
+        SELECT id FROM topology.topology WHERE name = 'city_data'
+      )
+      AND schema_name = 'features'
+      AND table_name = 'traffic_signs'
+      AND feature_column = '@COLUMN@'
+    ),
+    '{{14,1}}'
+  ) AS new_feature
+WHERE feature_name = 'S1';
+
 #if DO_POINT_POINT_INTERSECTS
 
 -- Detect intersections between traffic_signs
@@ -127,4 +193,3 @@ SELECT a.feature_name, b.feature_name
 	ORDER BY a.feature_name;
 
 END;
-
