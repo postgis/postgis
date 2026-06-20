@@ -22,6 +22,7 @@ cat <<EOF > ${TMPDIR}/leftover_files_after_distclean.expected
 ./liblwgeom/lwin_wkt_lex.c
 ./liblwgeom/lwin_wkt_parse.c
 ./liblwgeom/lwin_wkt_parse.h
+./liblwgeom/lwin_wkt_parse.stamp
 ./postgis_revision.h
 EOF
 
