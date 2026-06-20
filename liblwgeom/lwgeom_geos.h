@@ -54,6 +54,7 @@ int union_dbscan(LWGEOM **geoms,
 		 uint8_t **is_in_cluster_ret);
 
 POINTARRAY* ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d);
+LWGEOM *lwgeom_buildarea_polygonize_largest(const LWGEOM *geom);
 
 extern char lwgeom_geos_errmsg[];
 extern void lwgeom_geos_error(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));

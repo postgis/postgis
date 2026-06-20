@@ -2998,6 +2998,7 @@ _lwt_FaceByEdges(LWT_TOPOLOGY *topo, LWT_ISO_EDGE *edges, int numfaceedges)
   LWCOLLECTION *bounds;
   LWGEOM **geoms = lwalloc( sizeof(LWGEOM*) * numfaceedges );
   int i, validedges = 0;
+  int has_same_face_edge = 0;
 
   for ( i=0; i<numfaceedges; ++i )
   {
@@ -3007,6 +3008,10 @@ _lwt_FaceByEdges(LWT_TOPOLOGY *topo, LWT_ISO_EDGE *edges, int numfaceedges)
      * TODO: update legacy tests expectances/unleash this skipping ?
      */
     /* if ( edges[i].face_left == edges[i].face_right ) continue; */
+    if (edges[i].face_left == edges[i].face_right)
+    {
+	    has_same_face_edge = 1;
+    }
     geoms[validedges++] = lwline_as_lwgeom(edges[i].geom);
   }
   if ( ! validedges )
@@ -3024,7 +3029,16 @@ _lwt_FaceByEdges(LWT_TOPOLOGY *topo, LWT_ISO_EDGE *edges, int numfaceedges)
                                   NULL, /* gbox */
                                   validedges,
                                   geoms);
-  outg = lwgeom_buildarea( lwcollection_as_lwgeom(bounds) );
+  /*
+  ** Valid topology faces can be reconstructed directly from polygonized
+  ** boundary linework, avoiding the extra overlay work in GEOSBuildArea.
+  ** Same-face edges are internal linework and can split polygonize output.
+  */
+  outg = has_same_face_edge ? NULL : lwgeom_buildarea_polygonize_largest(lwcollection_as_lwgeom(bounds));
+  if (!outg)
+  {
+	  outg = lwgeom_buildarea(lwcollection_as_lwgeom(bounds));
+  }
   lwcollection_release(bounds);
   lwfree(geoms);
 #if 0
