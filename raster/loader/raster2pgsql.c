@@ -382,7 +382,14 @@ usage() {
 	      "     -p  Prepare mode, only creates the table.\n"));
 	printf(
 	    _("  --if-not-exists  Use IF NOT EXISTS for table creation in -c and -p\n"
-	      "     modes. With -I, also use IF NOT EXISTS for index creation.\n"));
+	      "     modes. With -I, also use IF NOT EXISTS for index creation.\n"
+	      "     Append mode requires an explicit creation action.\n"));
+	printf(
+	    _("  --drop-table  Drop the target table before other actions.\n"
+	      "      With no mode specified, the default create/load actions still apply.\n"
+	      "  --create-table  Create the target table.\n"
+	      "  --load-data  Load raster data into the target table.\n"
+	      "  --create-index  Create a GIST spatial index on the raster column.\n"));
 	printf(_(
 		"  -f <column> Specify the name of the raster column\n"
 	));
@@ -405,6 +412,12 @@ usage() {
 		"  -I  Create a GIST spatial index on the raster column. The ANALYZE\n"
 		"      command will automatically be issued for the created index.\n"
 	));
+	printf(
+	    _("  --add-constraints  Set the standard set of constraints on the\n"
+	      "      raster column after the rasters are loaded.\n"
+	      "  --vacuum  Run VACUUM on the table of the raster column.\n"
+	      "  --analyze  Run ANALYZE on the table of the raster column.\n"
+	      "  --no-transaction  Execute statements without a transaction.\n"));
 	printf(_(
 		"  -M  Run VACUUM ANALYZE on the table of the raster column. Most\n"
 		"      useful when appending raster to existing table with -a.\n"
@@ -692,13 +705,11 @@ init_config(RTLOADERCFG *config) {
 	config->pad_tile = 0;
 	config->outdb = 0;
 	config->opt = 'c';
-	config->if_not_exists = 0;
-	config->drop_table = 0;
-	config->create_table = CREATE_TABLE_ALWAYS;
-	config->load_data = 1;
-	config->create_index = CREATE_INDEX_NONE;
-	config->maintenance = 0;
-	config->constraints = 0;
+	memset(&config->actions, 0, sizeof(config->actions));
+	config->actions.mode = 'c';
+	config->actions.create_table = LOADER_CREATE_ALWAYS;
+	config->actions.load_data = 1;
+	memset(&config->plan, 0, sizeof(config->plan));
 	config->max_extent = 1;
 	config->regular_blocking = 0;
 	config->tablespace = NULL;
@@ -713,47 +724,75 @@ init_config(RTLOADERCFG *config) {
 	config->max_tiles_per_copy = 50;
 }
 
+static void rtdealloc_config(RTLOADERCFG *config);
+
+static void
+exit_config_error(RTLOADERCFG *config)
+{
+	rtdealloc_config(config);
+	exit(1);
+}
+
 static int
 apply_action_presets(RTLOADERCFG *config)
 {
-	config->drop_table = 0;
-	config->create_table = CREATE_TABLE_NONE;
-	config->load_data = 0;
+	LoaderActionOptions *actions = &config->actions;
 
-	switch (config->opt)
+	memset(&config->plan, 0, sizeof(config->plan));
+
+	switch (actions->mode)
 	{
 	case 'd':
-		config->drop_table = 1;
-		config->create_table = CREATE_TABLE_ALWAYS;
-		config->load_data = 1;
+		config->plan.drop_table = 1;
+		config->plan.create_table = LOADER_CREATE_ALWAYS;
+		config->plan.load_data = 1;
 		break;
 	case 'a':
-		config->load_data = 1;
+		config->plan.load_data = 1;
 		break;
 	case 'c':
-		config->create_table = CREATE_TABLE_ALWAYS;
-		config->load_data = 1;
+		config->plan.create_table = LOADER_CREATE_ALWAYS;
+		config->plan.load_data = 1;
 		break;
 	case 'p':
-		config->create_table = CREATE_TABLE_ALWAYS;
+		config->plan.create_table = LOADER_CREATE_ALWAYS;
 		break;
 	default:
-		rterror(_("Unknown loader operation: -%c"), config->opt);
+		rterror(_("Unknown loader operation: -%c"), actions->mode);
 		return 0;
 	}
 
-	if (config->if_not_exists)
+	if (actions->drop_table)
+		config->plan.drop_table = 1;
+	if (actions->create_table_set)
+		config->plan.create_table = actions->create_table;
+	if (actions->load_data_set)
+		config->plan.load_data = actions->load_data;
+	if (actions->create_index_set)
+		config->plan.create_index = actions->create_index;
+	if (actions->add_constraints)
+		config->plan.add_constraints = 1;
+	config->plan.vacuum = actions->vacuum;
+	config->plan.analyze = actions->analyze;
+
+	if (config->plan.drop_table && config->plan.load_data && config->plan.create_table == LOADER_CREATE_NONE)
 	{
-		if (config->opt == 'd' || config->opt == 'a')
+		rterror(_("--drop-table with load data requires a table creation action"));
+		return 0;
+	}
+
+	if (actions->if_not_exists)
+	{
+		if (config->plan.create_table == LOADER_CREATE_NONE && config->plan.create_index == LOADER_CREATE_NONE)
 		{
-			rterror(_("--if-not-exists can only modify create and prepare modes"));
+			rterror(_("--if-not-exists requires a table or index creation action"));
 			return 0;
 		}
 
-		if (config->create_table == CREATE_TABLE_ALWAYS)
-			config->create_table = CREATE_TABLE_IF_NOT_EXISTS;
-		if (config->create_index == CREATE_INDEX_ALWAYS)
-			config->create_index = CREATE_INDEX_IF_NOT_EXISTS;
+		if (config->plan.create_table == LOADER_CREATE_ALWAYS)
+			config->plan.create_table = LOADER_CREATE_IF_NOT_EXISTS;
+		if (config->plan.create_index == LOADER_CREATE_ALWAYS)
+			config->plan.create_index = LOADER_CREATE_IF_NOT_EXISTS;
 	}
 
 	return 1;
@@ -1202,10 +1241,8 @@ analyze_table(
 }
 
 static int
-vacuum_table(
-	const char *schema, const char *table,
-	STRINGBUFFER *buffer
-) {
+vacuum_table(const char *schema, const char *table, int analyze, STRINGBUFFER *buffer)
+{
 	char *sql = NULL;
 	uint32_t len = 0;
 
@@ -1221,10 +1258,7 @@ vacuum_table(
 		rterror(_("vacuum_table: Could not allocate memory for VACUUM statement"));
 		return 0;
 	}
-	sprintf(sql, "VACUUM ANALYZE %s%s;",
-		(schema != NULL ? schema : ""),
-		table
-	);
+	sprintf(sql, "VACUUM%s %s%s;", (analyze ? " ANALYZE" : ""), (schema != NULL ? schema : ""), table);
 
 	append_sql_to_buffer(buffer, sql);
 
@@ -2080,7 +2114,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	}
 
 	/* drop table */
-	if (config->drop_table)
+	if (config->plan.drop_table)
 	{
 		if (!drop_table(config->schema, config->table, buffer)) {
 			rterror(_("process_rasters: Could not add DROP TABLE statement to string buffer"));
@@ -2098,7 +2132,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	}
 
 	/* create table */
-	if (config->create_table != CREATE_TABLE_NONE)
+	if (config->plan.create_table != LOADER_CREATE_NONE)
 	{
 		if (!create_table(config->schema,
 				  config->table,
@@ -2107,7 +2141,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				  config->file_column_name,
 				  config->tablespace,
 				  config->idx_tablespace,
-				  config->create_table == CREATE_TABLE_IF_NOT_EXISTS,
+				  config->plan.create_table == LOADER_CREATE_IF_NOT_EXISTS,
 				  buffer))
 		{
 			rterror(_("process_rasters: Could not add CREATE TABLE statement to string buffer"));
@@ -2123,7 +2157,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 						  config->file_column_name,
 						  config->tablespace,
 						  config->idx_tablespace,
-						  config->create_table == CREATE_TABLE_IF_NOT_EXISTS,
+						  config->plan.create_table == LOADER_CREATE_IF_NOT_EXISTS,
 						  buffer))
 				{
 					rterror(_("process_rasters: Could not add an overview's CREATE TABLE statement to string buffer"));
@@ -2134,7 +2168,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	}
 
 	/* no need to load data in prepare mode */
-	if (config->load_data)
+	if (config->plan.load_data)
 	{
 		RASTERINFO refinfo;
 		init_rastinfo(&refinfo);
@@ -2223,14 +2257,14 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	}
 
 	/* index */
-	if (config->create_index != CREATE_INDEX_NONE)
+	if (config->plan.create_index != LOADER_CREATE_NONE)
 	{
 		/* create index */
 		if (!create_index(config->schema,
 				  config->table,
 				  config->raster_column,
 				  config->idx_tablespace,
-				  config->create_index == CREATE_INDEX_IF_NOT_EXISTS,
+				  config->plan.create_index == LOADER_CREATE_IF_NOT_EXISTS,
 				  buffer))
 		{
 			rterror(_("process_rasters: Could not add CREATE INDEX statement to string buffer"));
@@ -2238,7 +2272,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 		}
 
 		/* analyze */
-		if (config->load_data)
+		if (config->plan.load_data)
 		{
 			if (!analyze_table(
 				config->schema, config->table,
@@ -2256,7 +2290,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 						  config->overview_table[i],
 						  config->raster_column,
 						  config->idx_tablespace,
-						  config->create_index == CREATE_INDEX_IF_NOT_EXISTS,
+						  config->plan.create_index == LOADER_CREATE_IF_NOT_EXISTS,
 						  buffer))
 				{
 					rterror(_("process_rasters: Could not add an overview's CREATE INDEX statement to string buffer"));
@@ -2264,7 +2298,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				}
 
 				/* analyze */
-				if (config->load_data)
+				if (config->plan.load_data)
 				{
 					if (!analyze_table(
 						config->schema, config->overview_table[i],
@@ -2279,7 +2313,8 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	}
 
 	/* add constraints */
-	if (config->constraints) {
+	if (config->plan.add_constraints)
+	{
 		if (!add_raster_constraints(
 			config->schema, config->table, config->raster_column,
 			config->regular_blocking, config->max_extent,
@@ -2326,12 +2361,10 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	}
 
 	/* maintenance */
-	if (config->load_data && config->maintenance)
+	if (config->plan.vacuum)
 	{
-		if (!vacuum_table(
-			config->schema, config->table,
-			buffer
-		)) {
+		if (!vacuum_table(config->schema, config->table, config->plan.analyze, buffer))
+		{
 			rterror(_("process_rasters: Could not add VACUUM statement to string buffer"));
 			return 0;
 		}
@@ -2339,10 +2372,30 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 		if (config->overview_count) {
 			for (i = 0; i < config->overview_count; i++) {
 				if (!vacuum_table(
-					config->schema, config->overview_table[i],
-					buffer
-				)) {
+					config->schema, config->overview_table[i], config->plan.analyze, buffer))
+				{
 					rterror(_("process_rasters: Could not add an overview's VACUUM statement to string buffer"));
+					return 0;
+				}
+			}
+		}
+	}
+	else if (config->plan.analyze)
+	{
+		if (!analyze_table(config->schema, config->table, buffer))
+		{
+			rterror(_("process_rasters: Could not add ANALYZE statement to string buffer"));
+			return 0;
+		}
+
+		if (config->overview_count)
+		{
+			for (i = 0; i < config->overview_count; i++)
+			{
+				if (!analyze_table(config->schema, config->overview_table[i], buffer))
+				{
+					rterror(_(
+					    "process_rasters: Could not add an overview's ANALYZE statement to string buffer"));
 					return 0;
 				}
 			}
@@ -2542,24 +2595,46 @@ main(int argc, char **argv) {
 		}
 		/* drop table and recreate */
 		else if (CSEQUAL(argv[argit], "-d")) {
-			config->opt = 'd';
+			config->actions.mode = 'd';
+			config->actions.mode_set = 1;
 		}
 		/* append to table */
 		else if (CSEQUAL(argv[argit], "-a")) {
-			config->opt = 'a';
+			config->actions.mode = 'a';
+			config->actions.mode_set = 1;
 		}
 		/* create new table */
 		else if (CSEQUAL(argv[argit], "-c")) {
-			config->opt = 'c';
+			config->actions.mode = 'c';
+			config->actions.mode_set = 1;
 		}
 		/* prepare only */
 		else if (CSEQUAL(argv[argit], "-p")) {
-			config->opt = 'p';
+			config->actions.mode = 'p';
+			config->actions.mode_set = 1;
 		}
 		/* make creation statements idempotent */
 		else if (CSEQUAL(argv[argit], "--if-not-exists"))
 		{
-			config->if_not_exists = 1;
+			config->actions.if_not_exists = 1;
+		}
+		else if (CSEQUAL(argv[argit], "--drop-table"))
+		{
+			config->actions.drop_table = 1;
+		}
+		else if (CSEQUAL(argv[argit], "--create-table"))
+		{
+			if (!loader_action_set_create_mode(
+				&config->actions.create_table, &config->actions.create_table_set, LOADER_CREATE_ALWAYS))
+			{
+				rterror(_("--create-table was specified with conflicting creation semantics"));
+				exit_config_error(config);
+			}
+		}
+		else if (CSEQUAL(argv[argit], "--load-data"))
+		{
+			config->actions.load_data = 1;
+			config->actions.load_data_set = 1;
 		}
 		/* raster column name */
 		else if (CSEQUAL(argv[argit], "-f") && argit < argc - 1) {
@@ -2628,15 +2703,42 @@ main(int argc, char **argv) {
 		}
 		/* create index */
 		else if (CSEQUAL(argv[argit], "-I")) {
-			config->create_index = CREATE_INDEX_ALWAYS;
+			if (!loader_action_set_create_mode(
+				&config->actions.create_index, &config->actions.create_index_set, LOADER_CREATE_ALWAYS))
+			{
+				rterror(_("--create-index was specified with conflicting creation semantics"));
+				exit_config_error(config);
+			}
+		}
+		else if (CSEQUAL(argv[argit], "--create-index"))
+		{
+			if (!loader_action_set_create_mode(
+				&config->actions.create_index, &config->actions.create_index_set, LOADER_CREATE_ALWAYS))
+			{
+				rterror(_("--create-index was specified with conflicting creation semantics"));
+				exit_config_error(config);
+			}
 		}
 		/* maintenance */
 		else if (CSEQUAL(argv[argit], "-M")) {
-			config->maintenance = 1;
+			config->actions.vacuum = 1;
+			config->actions.analyze = 1;
+		}
+		else if (CSEQUAL(argv[argit], "--vacuum"))
+		{
+			config->actions.vacuum = 1;
+		}
+		else if (CSEQUAL(argv[argit], "--analyze"))
+		{
+			config->actions.analyze = 1;
 		}
 		/* set constraints */
 		else if (CSEQUAL(argv[argit], "-C")) {
-			config->constraints = 1;
+			config->actions.add_constraints = 1;
+		}
+		else if (CSEQUAL(argv[argit], "--add-constraints"))
+		{
+			config->actions.add_constraints = 1;
 		}
 		/* disable extent constraint */
 		else if (CSEQUAL(argv[argit], "-x")) {
@@ -2690,6 +2792,16 @@ main(int argc, char **argv) {
 		/* transaction */
 		else if (CSEQUAL(argv[argit], "-e")) {
 			config->transaction = 0;
+		}
+		else if (CSEQUAL(argv[argit], "--no-transaction"))
+		{
+			config->transaction = 0;
+		}
+		else if (CSEQUAL(argv[argit], "--transaction"))
+		{
+			rterror(_("--transaction is the default; omit -e/--no-transaction instead"));
+			rtdealloc_config(config);
+			exit(1);
 		}
 		/* COPY statements */
 		else if (CSEQUAL(argv[argit], "-Y")) {

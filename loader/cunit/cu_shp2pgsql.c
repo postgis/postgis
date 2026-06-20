@@ -18,6 +18,8 @@
 void test_ShpLoaderCreate(void);
 void test_ShpLoaderDestroy(void);
 void test_ShpLoaderGetSQLHeader_drop_prepare(void);
+void test_ShpLoaderGetSQLHeader_if_not_exists_table_modifier(void);
+void test_ShpLoaderGetSQLFooter_if_not_exists_index_modifier(void);
 
 SHPLOADERCONFIG *loader_config;
 SHPLOADERSTATE *loader_state;
@@ -37,8 +39,15 @@ CU_pSuite register_shp2pgsql_suite(void)
 
 	if ((NULL == CU_add_test(pSuite, "test_ShpLoaderCreate()", test_ShpLoaderCreate)) ||
 	    (NULL == CU_add_test(pSuite, "test_ShpLoaderDestroy()", test_ShpLoaderDestroy)) ||
-	    (NULL ==
-	     CU_add_test(pSuite, "test_ShpLoaderGetSQLHeader_drop_prepare()", test_ShpLoaderGetSQLHeader_drop_prepare)))
+	    (NULL == CU_add_test(pSuite,
+				 "test_ShpLoaderGetSQLHeader_drop_prepare()",
+				 test_ShpLoaderGetSQLHeader_drop_prepare)) ||
+	    (NULL == CU_add_test(pSuite,
+				 "test_ShpLoaderGetSQLHeader_if_not_exists_table_modifier()",
+				 test_ShpLoaderGetSQLHeader_if_not_exists_table_modifier)) ||
+	    (NULL == CU_add_test(pSuite,
+				 "test_ShpLoaderGetSQLFooter_if_not_exists_index_modifier()",
+				 test_ShpLoaderGetSQLFooter_if_not_exists_index_modifier)))
 	{
 		CU_cleanup_registry();
 		return NULL;
@@ -87,14 +96,19 @@ test_ShpLoaderGetSQLHeader_drop_prepare(void)
 
 	loader_config = (SHPLOADERCONFIG *)calloc(1, sizeof(SHPLOADERCONFIG));
 	set_loader_config_defaults(loader_config);
-	loader_config->opt = 'p';
-	loader_config->drop_table = 1;
+	loader_config->actions.mode = 'p';
+	loader_config->actions.drop_table = 1;
 	/* This header-only test does not open a shapefile, so avoid geometry metadata. */
 	loader_config->readshape = 0;
 	loader_config->table = "loadedshp";
 	loader_config->geo_col = "the_geom";
 
 	loader_state = ShpLoaderCreate(loader_config);
+	loader_state->pgtype = "POINT";
+	loader_state->pgdims = 2;
+	loader_state->to_srid = 0;
+	loader_state->num_fields = 0;
+
 	CU_ASSERT_EQUAL(ShpLoaderGetSQLHeader(loader_state, &header), SHPLOADEROK);
 	CU_ASSERT_PTR_NOT_NULL(header);
 
@@ -106,5 +120,58 @@ test_ShpLoaderGetSQLHeader_drop_prepare(void)
 	CU_ASSERT(drop < create);
 
 	free(header);
+	ShpLoaderDestroy(loader_state);
+}
+
+void
+test_ShpLoaderGetSQLHeader_if_not_exists_table_modifier(void)
+{
+	char *header = NULL;
+
+	loader_config = (SHPLOADERCONFIG *)calloc(1, sizeof(SHPLOADERCONFIG));
+	set_loader_config_defaults(loader_config);
+	loader_config->actions.mode = 'p';
+	loader_config->actions.create_table = LOADER_CREATE_IF_NOT_EXISTS;
+	loader_config->actions.create_table_set = 1;
+	loader_config->table = "loadedshp";
+	loader_config->geo_col = "the_geom";
+
+	loader_state = ShpLoaderCreate(loader_config);
+	loader_state->pgtype = "POINT";
+	loader_state->pgdims = 2;
+	loader_state->to_srid = 0;
+	loader_state->num_fields = 0;
+
+	CU_ASSERT_EQUAL(ShpLoaderGetSQLHeader(loader_state, &header), SHPLOADEROK);
+	CU_ASSERT_PTR_NOT_NULL(header);
+	CU_ASSERT_PTR_NOT_NULL(strstr(header,
+				      "CREATE TABLE IF NOT EXISTS \"loadedshp\" "
+				      "(gid serial PRIMARY KEY,\n"
+				      "\"the_geom\" geometry(POINT,0));"));
+	CU_ASSERT_PTR_NULL(strstr(header, "AddGeometryColumn"));
+	CU_ASSERT_PTR_NULL(strstr(header, "ALTER TABLE"));
+
+	free(header);
+	ShpLoaderDestroy(loader_state);
+}
+
+void
+test_ShpLoaderGetSQLFooter_if_not_exists_index_modifier(void)
+{
+	char *footer = NULL;
+
+	loader_config = (SHPLOADERCONFIG *)calloc(1, sizeof(SHPLOADERCONFIG));
+	set_loader_config_defaults(loader_config);
+	loader_config->table = "loadedshp";
+	loader_config->geo_col = "the_geom";
+	loader_config->actions.create_index = LOADER_CREATE_IF_NOT_EXISTS;
+	loader_config->actions.create_index_set = 1;
+
+	loader_state = ShpLoaderCreate(loader_config);
+	CU_ASSERT_EQUAL(ShpLoaderGetSQLFooter(loader_state, &footer), SHPLOADEROK);
+	CU_ASSERT_PTR_NOT_NULL(footer);
+	CU_ASSERT_PTR_NOT_NULL(strstr(footer, "CREATE INDEX IF NOT EXISTS \"loadedshp_the_geom_gist\""));
+
+	free(footer);
 	ShpLoaderDestroy(loader_state);
 }

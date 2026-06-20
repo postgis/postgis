@@ -49,8 +49,15 @@ This can be used if you need to completely separate the table creation and
 data loading steps.
 .TP 
 \fB\-\-drop\-table\fR
-Emits a DROP TABLE IF EXISTS statement before table creation. This can be
-combined with \-c or \-p, but not with \-a.
+Drop the target table before the selected actions. With no mode specified, the
+default create/load actions still apply.
+.TP
+\fB\-\-create\-table\fR
+Create the target table. This can be combined with \-a to build a custom
+create-and-load action set.
+.TP
+\fB\-\-load\-data\fR
+Load Shape file rows into the target table.
 .TP
 \fB\-D\fR
 Use the PostgreSQL "dump" format for the output data. This can be combined 
@@ -66,7 +73,10 @@ Execute each statement on its own, without using a transaction.
 This allows loading of the majority of good data when there are some bad
 geometries that generate errors.  Note that this cannot be used with the
 \-D flag as the "dump" format always uses a transaction.
-.TP 
+.TP
+\fB\-\-no\-transaction\fR
+Execute each statement individually, without using a transaction.
+.TP
 \fB\-s\fR [<\fIFROM_SRID\fR>:]<\fISRID\fR>
 Creates and populates the geometry tables with the specified SRID.
 If FROM_SRID is given, the geometries will be reprojected.
@@ -79,6 +89,9 @@ lat/lon data.  At the moment the only spatial reference supported is 4326.
 \fB\-g\fR <\fIgeometry_column\fR>
 Specify the name of the geometry column (mostly useful in append mode).
 .TP 
+\fB\-\-create\-index\fR
+Create a spatial index on the geometry column.
+.TP
 \fB\-k\fR
 Keep identifiers case (column, schema and attributes). Note that attributes 
 in Shapefile are usually all UPPERCASE.
@@ -112,6 +125,15 @@ If this option is used the output will be encoded in UTF-8.
 \fB\-I\fR
 Create a GiST index on the geometry column. 
 .TP 
+\fB\-\-if\-not\-exists\fR
+Make active table and index creation actions use IF NOT EXISTS.
+.TP
+\fB\-\-analyze\fR
+Analyze the table after loading.
+.TP
+\fB\-\-no\-analyze\fR
+Prevent tables from being analyzed.
+.TP
 \fB\-u\fR
 Create the target table as UNLOGGED. This can speed up loading transient
 staging data, but PostgreSQL does not preserve unlogged table contents after

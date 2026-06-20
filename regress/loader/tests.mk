@@ -38,7 +38,7 @@ TESTS += \
 	$(top_srcdir)/regress/loader/Latin1 \
 	$(top_srcdir)/regress/loader/Latin1-implicit \
 	$(top_srcdir)/regress/loader/mfile \
+	$(top_srcdir)/regress/loader/LongOptions \
 	$(top_srcdir)/regress/loader/TestSkipANALYZE \
 	$(top_srcdir)/regress/loader/TestANALYZE \
 	$(top_srcdir)/regress/loader/CharNoWidth \
-

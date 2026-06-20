@@ -132,6 +132,8 @@ RASTER_TEST_LOADER = \
 	$(top_srcdir)/raster/test/regress/loader/Projected \
 	$(top_srcdir)/raster/test/regress/loader/OverviewNoPadding \
 	$(top_srcdir)/raster/test/regress/loader/IfNotExists \
+	$(top_srcdir)/raster/test/regress/loader/LongOptions \
+	$(top_srcdir)/raster/test/regress/loader/LongMaintenance \
 	$(top_srcdir)/raster/test/regress/loader/BasicCopy \
 	$(top_srcdir)/raster/test/regress/loader/BasicFilename \
 	$(top_srcdir)/raster/test/regress/loader/BasicOutDB \

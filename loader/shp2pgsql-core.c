@@ -754,6 +754,56 @@ strtolower(char *s)
 		s[j] = tolower(s[j]);
 }
 
+static void
+pgtype_typmod_name(const SHPLOADERSTATE *state, char *buf, size_t len)
+{
+	const char *suffix = "";
+	size_t base_len = strlen(state->pgtype);
+
+	if (state->pgdims == 4 && state->has_z && state->has_m)
+		suffix = "ZM";
+	else if (state->pgdims == 3 && state->has_z)
+		suffix = "Z";
+	else if (state->pgdims == 3 && state->has_m)
+		suffix = "M";
+
+	if (base_len > 0 && state->pgtype[base_len - 1] == 'M')
+		base_len--;
+
+	snprintf(buf, len, "%.*s%s", (int)base_len, state->pgtype, suffix);
+}
+
+static void
+append_qualified_table(stringbuffer_t *sb, const char *schema, const char *table)
+{
+	if (schema)
+		stringbuffer_aprintf(sb, "\"%s\".", schema);
+	stringbuffer_aprintf(sb, "\"%s\"", table);
+}
+
+static void
+append_primary_key_ddl(const SHPLOADERSTATE *state, stringbuffer_t *sb)
+{
+	stringbuffer_aprintf(sb, "ALTER TABLE ");
+	append_qualified_table(sb, state->config->schema, state->config->table);
+	stringbuffer_aprintf(sb, " ADD PRIMARY KEY (gid);\n");
+
+	if (state->config->idxtablespace != NULL)
+	{
+		stringbuffer_aprintf(sb, "ALTER INDEX ");
+		if (state->config->schema)
+			stringbuffer_aprintf(sb, "\"%s\".", state->config->schema);
+		stringbuffer_aprintf(
+		    sb, "\"%s_pkey\" SET TABLESPACE \"%s\";\n", state->config->table, state->config->idxtablespace);
+	}
+}
+
+static int
+plan_has_transactional_work(const LoaderPlan *plan)
+{
+	return plan->create_table != LOADER_CREATE_NONE || plan->load_data ||
+	       plan->create_index != LOADER_CREATE_NONE;
+}
 
 /* Default configuration settings */
 void
@@ -769,12 +819,13 @@ set_loader_config_defaults(SHPLOADERCONFIG *config)
 	config->geography = 0;
 	config->quoteidentifiers = 0;
 	config->forceint4 = 0;
-	config->createindex = 0;
+	config->createindex = LOADER_CREATE_NONE;
 	config->unlogged = 0;
-	config->drop_table = 0;
-	config->drop_geometry_column = 0;
-	config->create_table = 1;
-	config->load_data = 1;
+	memset(&config->actions, 0, sizeof(config->actions));
+	config->actions.mode = 'c';
+	config->actions.create_table = LOADER_CREATE_ALWAYS;
+	config->actions.load_data = 1;
+	memset(&config->plan, 0, sizeof(config->plan));
 	config->analyze = 1;
 	config->readshape = 1;
 	config->force_output = FORCE_OUTPUT_DISABLE;
@@ -792,12 +843,57 @@ set_loader_config_defaults(SHPLOADERCONFIG *config)
 static void
 set_loader_config_actions(SHPLOADERCONFIG *config)
 {
-	const int explicit_drop_table = config->drop_table;
+	LoaderActionOptions *actions = &config->actions;
 
-	config->drop_table = explicit_drop_table || config->opt == 'd';
-	config->drop_geometry_column = config->opt == 'd';
-	config->create_table = config->opt != 'a';
-	config->load_data = config->opt != 'p';
+	memset(&config->plan, 0, sizeof(config->plan));
+	config->plan.transaction = config->usetransaction ? LOADER_TRANSACTION_ON : LOADER_TRANSACTION_OFF;
+
+	switch (actions->mode)
+	{
+	case 'd':
+		config->plan.drop_table = 1;
+		config->plan.create_table = LOADER_CREATE_ALWAYS;
+		config->plan.load_data = 1;
+		break;
+	case 'a':
+		config->plan.load_data = 1;
+		break;
+	case 'p':
+		config->plan.create_table = LOADER_CREATE_ALWAYS;
+		break;
+	case 'c':
+	default:
+		config->plan.create_table = LOADER_CREATE_ALWAYS;
+		config->plan.load_data = 1;
+		break;
+	}
+
+	if (actions->drop_table)
+		config->plan.drop_table = 1;
+	if (actions->create_table_set)
+		config->plan.create_table = actions->create_table;
+	if (actions->load_data_set)
+		config->plan.load_data = actions->load_data;
+
+	config->plan.create_index = config->createindex;
+	if (actions->create_index_set)
+		config->plan.create_index = actions->create_index;
+
+	if (actions->if_not_exists)
+	{
+		if (config->plan.create_table == LOADER_CREATE_ALWAYS)
+			config->plan.create_table = LOADER_CREATE_IF_NOT_EXISTS;
+		if (config->plan.create_index == LOADER_CREATE_ALWAYS)
+			config->plan.create_index = LOADER_CREATE_IF_NOT_EXISTS;
+	}
+
+	if (actions->analyze)
+		config->plan.analyze = 1;
+	else if (config->analyze && (config->plan.create_table != LOADER_CREATE_NONE || config->plan.load_data ||
+				     config->plan.create_index != LOADER_CREATE_NONE))
+	{
+		config->plan.analyze = 1;
+	}
 }
 
 /* Create a new shapefile state object */
@@ -1301,6 +1397,8 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 	stringbuffer_t *sb;
 	char *ret;
 	int j;
+	const int use_transaction =
+	    state->config->plan.transaction == LOADER_TRANSACTION_ON && plan_has_transactional_work(&state->config->plan);
 
 	/* Create the stringbuffer containing the header; we use this API as it's easier
 	   for handling string resizing during append */
@@ -1317,67 +1415,44 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 	stringbuffer_aprintf(sb, "SET STANDARD_CONFORMING_STRINGS TO ON;\n");
 
 	/* Drop table if requested */
-	if (state->config->drop_table)
+	if (state->config->plan.drop_table)
 	{
-		/**
-		 * TODO: if the table has more then one geometry column
-		 * 	the DROP TABLE call will leave spurious records in
-		 * 	geometry_columns.
-		 *
-		 * If the geometry column in the table being dropped
-		 * does not match 'the_geom' or the name specified with
-		 * -g an error is returned by DropGeometryColumn.
-		 *
-		 * The table to be dropped might not exist.
-		 */
 		if (state->config->schema)
 		{
-			if (state->config->drop_geometry_column && state->config->readshape == 1 &&
-			    (!state->config->geography))
-			{
-				stringbuffer_aprintf(sb, "SELECT DropGeometryColumn('%s','%s','%s');\n",
-				                     state->config->schema, state->config->table, state->geo_col);
-			}
-
 			stringbuffer_aprintf(sb, "DROP TABLE IF EXISTS \"%s\".\"%s\";\n", state->config->schema,
 			                     state->config->table);
 		}
 		else
 		{
-			if (state->config->drop_geometry_column && state->config->readshape == 1 &&
-			    (!state->config->geography))
-			{
-				stringbuffer_aprintf(sb, "SELECT DropGeometryColumn('','%s','%s');\n",
-				                     state->config->table, state->geo_col);
-			}
-
 			stringbuffer_aprintf(sb, "DROP TABLE IF EXISTS \"%s\";\n", state->config->table);
 		}
 	}
 
 	/* Start of transaction if we are using one */
-	if (state->config->usetransaction)
+	if (use_transaction)
 	{
 		stringbuffer_aprintf(sb, "BEGIN;\n");
 	}
 
 	/* Create the spatial table when requested by the selected actions. */
-	if (state->config->create_table)
+	if (state->config->plan.create_table != LOADER_CREATE_NONE)
 	{
+		const int if_not_exists = state->config->plan.create_table == LOADER_CREATE_IF_NOT_EXISTS;
+
 		/*
-		* Create a table for inserting the shapes into with appropriate
-		* columns and types
-		*/
-		if (state->config->schema)
+		 * Create a table for inserting the shapes into with appropriate
+		 * columns and types
+		 */
+		stringbuffer_aprintf(sb,
+				     "CREATE %sTABLE %s",
+				     state->config->unlogged ? "UNLOGGED " : "",
+				     if_not_exists ? "IF NOT EXISTS " : "");
+		append_qualified_table(sb, state->config->schema, state->config->table);
+		stringbuffer_aprintf(sb, " (gid serial%s", if_not_exists ? " PRIMARY KEY" : "");
+
+		if (if_not_exists && state->config->idxtablespace != NULL)
 		{
-			stringbuffer_aprintf(sb, "CREATE %sTABLE \"%s\".\"%s\" (gid serial",
-			                     state->config->unlogged ? "UNLOGGED " : "",
-			                     state->config->schema, state->config->table);
-		}
-		else
-		{
-			stringbuffer_aprintf(sb, "CREATE %sTABLE \"%s\" (gid serial",
-			                     state->config->unlogged ? "UNLOGGED " : "", state->config->table);
+			stringbuffer_aprintf(sb, " USING INDEX TABLESPACE \"%s\"", state->config->idxtablespace);
 		}
 
 		/* Generate the field types based upon the shapefile information */
@@ -1401,22 +1476,22 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			}
 		}
 
-		/* Add the geography column directly to the table definition, we don't
-		   need to do an AddGeometryColumn() call. */
-		if (state->config->readshape == 1 && state->config->geography)
+		/*
+		 * geometry_columns is a view in current PostGIS, so typmod column
+		 * DDL is equivalent to the default AddGeometryColumn path.
+		 */
+		if (state->config->readshape == 1)
 		{
-			char *dimschar;
-
-			if (state->pgdims == 4)
-				dimschar = "ZM";
-			else
-				dimschar = "";
-
-			if (state->to_srid == SRID_UNKNOWN ){
+			const char *coltype = state->config->geography ? "geography" : "geometry";
+			char typmod_type[64];
+			if (state->config->geography && state->to_srid == SRID_UNKNOWN)
+			{
 				state->to_srid = 4326;
 			}
 
-			stringbuffer_aprintf(sb, ",\n\"%s\" geography(%s%s,%d)", state->geo_col, state->pgtype, dimschar, state->to_srid);
+			pgtype_typmod_name(state, typmod_type, sizeof(typmod_type));
+			stringbuffer_aprintf(
+			    sb, ",\n\"%s\" %s(%s,%d)", state->geo_col, coltype, typmod_type, state->to_srid);
 		}
 		stringbuffer_aprintf(sb, ")");
 
@@ -1427,61 +1502,8 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		}
 		stringbuffer_aprintf(sb, ";\n");
 
-		/* Create the primary key.  This is done separately because the index for the PK needs
-                 * to be in the correct tablespace. */
-
-		/* TODO: Currently PostgreSQL does not allow specifying an index to use for a PK (so you get
-                 *       a default one called table_pkey) and it does not provide a way to create a PK index
-                 *       in a specific tablespace.  So as a hacky solution we create the PK, then move the
-                 *       index to the correct tablespace.  Eventually this should be:
-		 *           CREATE INDEX table_pkey on table(gid) TABLESPACE tblspc;
-                 *           ALTER TABLE table ADD PRIMARY KEY (gid) USING INDEX table_pkey;
-		 *       A patch has apparently been submitted to PostgreSQL to enable this syntax, see this thread:
-		 *           http://archives.postgresql.org/pgsql-hackers/2011-01/msg01405.php */
-		stringbuffer_aprintf(sb, "ALTER TABLE ");
-
-		/* Schema is optional, include if present. */
-		if (state->config->schema)
-		{
-			stringbuffer_aprintf(sb, "\"%s\".",state->config->schema);
-		}
-		stringbuffer_aprintf(sb, "\"%s\" ADD PRIMARY KEY (gid);\n", state->config->table);
-
-		/* Tablespace is optional for the index. */
-		if (state->config->idxtablespace != NULL)
-		{
-			stringbuffer_aprintf(sb, "ALTER INDEX ");
-			if (state->config->schema)
-			{
-				stringbuffer_aprintf(sb, "\"%s\".",state->config->schema);
-			}
-
-			/* WARNING: We're assuming the default "table_pkey" name for the primary
-			 *          key index.  PostgreSQL may use "table_pkey1" or similar in the
-			 *          case of a name conflict, so you may need to edit the produced
-			 *          SQL in this rare case. */
-			stringbuffer_aprintf(sb, "\"%s_pkey\" SET TABLESPACE \"%s\";\n",
-						state->config->table, state->config->idxtablespace);
-		}
-
-		/* Create the geometry column with an addgeometry call */
-		if (state->config->readshape == 1 && (!state->config->geography))
-		{
-			/* If they didn't specify a target SRID, see if they specified a source SRID. */
-			int32_t srid = state->to_srid;
-			if (state->config->schema)
-			{
-				stringbuffer_aprintf(sb, "SELECT AddGeometryColumn('%s','%s','%s','%d',",
-				                     state->config->schema, state->config->table, state->geo_col, srid);
-			}
-			else
-			{
-				stringbuffer_aprintf(sb, "SELECT AddGeometryColumn('','%s','%s','%d',",
-				                     state->config->table, state->geo_col, srid);
-			}
-
-			stringbuffer_aprintf(sb, "'%s',%d);\n", state->pgtype, state->pgdims);
-		}
+		if (!if_not_exists)
+			append_primary_key_ddl(state, sb);
 	}
 
 	/**If we are in dump mode and a transform was asked for need to create a temp table to store original data
@@ -1900,6 +1922,8 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 {
 	stringbuffer_t *sb;
 	char *ret;
+	const int use_transaction =
+	    state->config->plan.transaction == LOADER_TRANSACTION_ON && plan_has_transactional_work(&state->config->plan);
 
 	/* Create the stringbuffer containing the header; we use this API as it's easier
 	   for handling string resizing during append */
@@ -1926,9 +1950,14 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	}
 
 	/* Create gist index if specified and not in "prepare" mode */
-	if (state->config->readshape && state->config->createindex)
+	if (state->config->readshape && state->config->plan.create_index != LOADER_CREATE_NONE)
 	{
-		stringbuffer_aprintf(sb, "CREATE INDEX ON ");
+		stringbuffer_aprintf(sb, "CREATE INDEX ");
+		if (state->config->plan.create_index == LOADER_CREATE_IF_NOT_EXISTS)
+		{
+			stringbuffer_aprintf(sb, "IF NOT EXISTS \"%s_%s_gist\" ", state->config->table, state->geo_col);
+		}
+		stringbuffer_aprintf(sb, "ON ");
 		/* Schema is optional, include if present. */
 		if (state->config->schema)
 		{
@@ -1944,13 +1973,12 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	}
 
 	/* End the transaction if there is one. */
-	if (state->config->usetransaction)
+	if (use_transaction)
 	{
 		stringbuffer_aprintf(sb, "COMMIT;\n");
 	}
 
-
-	if(state->config->analyze)
+	if (state->config->plan.analyze)
 	{
 		/* Always ANALYZE the resulting table, for better stats */
 		stringbuffer_aprintf(sb, "ANALYZE ");

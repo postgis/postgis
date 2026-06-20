@@ -49,8 +49,18 @@ OPTIONS
               rate the table creation and data loading steps.
 
        --drop-table
-              Emits  a  DROP  TABLE IF EXISTS statement before table creation.
-              This can be combined with -c or -p, but not with -a.
+              Drop the target table before the selected actions. With no mode
+              specified, the default create/load actions still apply.
+
+       --create-table
+              Create the target table. This can be combined with -a to build a
+              custom create-and-load action set.
+
+       --if-not-exists
+              Make active table and index creation actions use IF NOT EXISTS.
+
+       --load-data
+              Load Shape file rows into the target table.
 
        -D     Use the PostgreSQL "dump" format for the output data.  This  can
               be  combined  with -a, -c and -d. It is much faster to load than
@@ -67,6 +77,9 @@ OPTIONS
        -g <geometry_column>
               Specify the name of the geometry column (mostly useful in append
               mode).
+
+       --create-index
+              Create a spatial index on the geometry column.
 
        -k     Keep identifiers case (column, schema and attributes). Note that
               attributes in Shapefile are usually all UPPERCASE.
@@ -97,6 +110,15 @@ OPTIONS
               Default: insert.
 
        -?     Display version and usage information.
+
+       --analyze
+              Analyze the table after loading.
+
+       --no-analyze
+              Prevent tables from being analyzed.
+
+       --no-transaction
+              Execute each statement individually, without using a transaction.
 
 
 INSTALLATION

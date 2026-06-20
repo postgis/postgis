@@ -47,6 +47,7 @@ usage()
 	printf(_( "  -k  Keep postgresql identifiers case.\n" ));
 	printf(_( "  -i  Use int4 type for all integer dbf fields.\n" ));
 	printf(_( "  -I  Create a spatial index on the geocolumn.\n" ));
+	printf(_("  --create-index  Create a spatial index on the geocolumn.\n"));
 	printf(_( "  -u  Create the table as UNLOGGED.\n" ));
 	printf(_("  -m <filename>  Specify a file containing a set of mappings of (long) column\n"
 	         "     names to 10 character DBF column names. The content of the file is one or\n"
@@ -63,7 +64,10 @@ usage()
 	          "      attribute column. (default: \"UTF-8\")\n" ));
 	printf(_( "  -N <policy> NULL geometries handling policy (insert*,skip,abort).\n" ));
 	printf(_( "  -n  Only import DBF file.\n" ));
-	printf(_("  --drop-table  Emit DROP TABLE IF EXISTS before create or prepare output.\n"));
+	printf(_("  --drop-table  Drop the target table before the selected actions.\n"));
+	printf(_("  --create-table  Create the target table.\n"));
+	printf(_("  --if-not-exists  Make active creation actions use IF NOT EXISTS.\n"));
+	printf(_("  --load-data  Load shapefile rows into the target table.\n"));
 	printf(_( "  -T <tablespace> Specify the tablespace for the new table.\n"
                   "      Note that indexes will still use the default tablespace unless the\n"
                   "      -X flag is also used.\n"));
@@ -71,12 +75,14 @@ usage()
                   "      This applies to the primary key, and the spatial index if\n"
                   "      the -I flag is used.\n" ));
 	printf(_( "  -Z  Prevent tables from being analyzed.\n" ));
+	printf(_("  --analyze  Analyze the table after loading.\n"));
+	printf(_("  --no-analyze  Prevent tables from being analyzed.\n"));
+	printf(_("  --no-transaction  Execute each statement individually.\n"));
 	printf(_( "  -?  Display this help screen.\n" ));
 	printf( "\n" );
 	printf(_( "  An argument of `--' disables further option processing.\n" ));
 	printf(_( "  (useful for unusual file names starting with '-')\n" ));
 }
-
 
 int
 main (int argc, char **argv)
@@ -109,11 +115,78 @@ main (int argc, char **argv)
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
 	while (pgis_optind < argc)
 	{
+		if (strcmp(argv[pgis_optind], "--") == 0)
+		{
+			pgis_optind++;
+			break;
+		}
+
 		if (strcmp(argv[pgis_optind], "--drop-table") == 0)
 		{
-			config->drop_table = 1;
+			config->actions.drop_table = 1;
 			pgis_optind++;
 			continue;
+		}
+		if (strcmp(argv[pgis_optind], "--create-table") == 0)
+		{
+			if (!loader_action_set_create_mode(
+				&config->actions.create_table, &config->actions.create_table_set, LOADER_CREATE_ALWAYS))
+			{
+				fprintf(stderr,
+					"Invalid argument combination - conflicting table creation semantics\n");
+				exit(1);
+			}
+			pgis_optind++;
+			continue;
+		}
+		if (strcmp(argv[pgis_optind], "--load-data") == 0)
+		{
+			config->actions.load_data = 1;
+			config->actions.load_data_set = 1;
+			pgis_optind++;
+			continue;
+		}
+		if (strcmp(argv[pgis_optind], "--create-index") == 0)
+		{
+			if (!loader_action_set_create_mode(
+				&config->actions.create_index, &config->actions.create_index_set, LOADER_CREATE_ALWAYS))
+			{
+				fprintf(stderr,
+					"Invalid argument combination - conflicting index creation semantics\n");
+				exit(1);
+			}
+			pgis_optind++;
+			continue;
+		}
+		if (strcmp(argv[pgis_optind], "--if-not-exists") == 0)
+		{
+			config->actions.if_not_exists = 1;
+			pgis_optind++;
+			continue;
+		}
+		if (strcmp(argv[pgis_optind], "--analyze") == 0)
+		{
+			config->analyze = 1;
+			pgis_optind++;
+			continue;
+		}
+		if (strcmp(argv[pgis_optind], "--no-analyze") == 0)
+		{
+			config->analyze = 0;
+			pgis_optind++;
+			continue;
+		}
+		if (strcmp(argv[pgis_optind], "--no-transaction") == 0)
+		{
+			config->usetransaction = 0;
+			pgis_optind++;
+			continue;
+		}
+		if (strncmp(argv[pgis_optind], "--", 2) == 0)
+		{
+			fprintf(stderr, "Unknown option: %s\n", argv[pgis_optind]);
+			usage();
+			exit(1);
 		}
 
 		c = pgis_getopt(argc, argv, "-?acdeg:ikm:nps:t:uwDGIN:ST:W:X:Z");
@@ -130,7 +203,8 @@ main (int argc, char **argv)
 		case 'd':
 		case 'a':
 		case 'p':
-			config->opt = c;
+			config->actions.mode = c;
+			config->actions.mode_set = 1;
 			break;
 
 		case 'D':
@@ -188,7 +262,13 @@ main (int argc, char **argv)
 			break;
 
 		case 'I':
-			config->createindex = 1;
+			if (!loader_action_set_create_mode(
+				&config->actions.create_index, &config->actions.create_index_set, LOADER_CREATE_ALWAYS))
+			{
+				fprintf(stderr,
+					"Invalid argument combination - conflicting index creation semantics\n");
+				exit(1);
+			}
 			break;
 
 		case 'u':
@@ -279,10 +359,27 @@ main (int argc, char **argv)
 		exit(1);
 	}
 
-	if (config->drop_table && config->opt == 'a')
 	{
-		fprintf(stderr, "Invalid argument combination - cannot use both --drop-table and -a\n");
-		exit(1);
+		const int has_table_creation =
+		    config->actions.create_table_set
+			? config->actions.create_table != LOADER_CREATE_NONE
+			: config->actions.mode != 'a';
+		const int has_index_creation =
+		    config->actions.create_index_set && config->actions.create_index == LOADER_CREATE_ALWAYS;
+		const int has_load_data =
+		    config->actions.load_data_set ? config->actions.load_data : config->actions.mode != 'p';
+
+		if (config->actions.if_not_exists && !has_table_creation && !has_index_creation)
+		{
+			fprintf(stderr, "--if-not-exists requires an active creation action\n");
+			exit(1);
+		}
+
+		if (config->actions.drop_table && has_load_data && !has_table_creation)
+		{
+			fprintf(stderr, "Invalid argument combination - --drop-table with load data requires --create-table\n");
+			exit(1);
+		}
 	}
 
 	/* Determine the shapefile name from the next argument, if no shape file, exit. */
@@ -404,7 +501,7 @@ main (int argc, char **argv)
 	free(header);
 
 	/* If we are not in "prepare" mode, go ahead and write out the data. */
-	if (state->config->load_data)
+	if (state->config->plan.load_data)
 	{
 
 		/* If in COPY mode, output the COPY statement */

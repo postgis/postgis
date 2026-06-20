@@ -145,8 +145,28 @@ Available GDAL raster formats:
               <option>-c</option> and <option>-p</option> modes. When
               <option>-I</option> is also specified, use
               <literal>IF NOT EXISTS</literal> for index creation too. This
-              option cannot be used with <option>-a</option> or
-              <option>-d</option>.
+              option cannot be used with <option>-d</option>. Append mode
+              requires an explicit creation action.
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Atomic loader actions</term>
+          <listitem>
+            <para>
+              The short modes are presets over explicit actions. The equivalent
+              long options are <option>--drop-table</option>,
+              <option>--create-table</option>, <option>--load-data</option>,
+              <option>--create-index</option>,
+              <option>--add-constraints</option>, <option>--vacuum</option>,
+              <option>--analyze</option>, and <option>--no-transaction</option>.
+              Add <option>--if-not-exists</option>
+              to make active creation actions use <literal>IF NOT EXISTS</literal>.
+              <option>--drop-table</option> emits
+              <literal>DROP TABLE IF EXISTS</literal> before the selected
+              actions. With no mode specified, the default create/load actions
+              still apply.
             </para>
           </listitem>
         </varlistentry>

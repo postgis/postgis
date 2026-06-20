@@ -26,6 +26,7 @@
 #include "shapefil.h"
 #include "shpcommon.h"
 #include "getopt.h"
+#include "loader_actions.h"
 
 #include "../liblwgeom/stringbuffer.h"
 
@@ -111,23 +112,15 @@ typedef struct shp_loader_config
 	/* 0 = allow int8 fields, 1 = no int8 fields */
 	int forceint4;
 
-	/* 0 = no index, 1 = create index after load */
-	int createindex;
+	/* index creation action */
+	LoaderCreateMode createindex;
 
 	/* 0 = logged table, 1 = create as UNLOGGED table */
 	int unlogged;
 
-	/* action: emit DROP TABLE before create/prepare */
-	int drop_table;
-
-	/* action: remove geometry_columns entry before dropping the table */
-	int drop_geometry_column;
-
-	/* action: create the target table */
-	int create_table;
-
-	/* action: load rows from the input file */
-	int load_data;
+	/* raw action options and normalized execution plan */
+	LoaderActionOptions actions;
+	LoaderPlan plan;
 
 	/* 0 = don't analyze tables , 1 = analyze tables */
 	int analyze;

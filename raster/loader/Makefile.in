@@ -84,7 +84,7 @@ LDFLAGS = \
 
 all: $(RASTER2PGSQL)
 
-raster2pgsql.o: raster2pgsql.c
+raster2pgsql.o: raster2pgsql.c ../../loader/loader_actions.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $<
 
 $(RASTER2PGSQL): ../rt_core/librtcore.a raster2pgsql.o

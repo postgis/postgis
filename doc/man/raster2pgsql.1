@@ -57,7 +57,18 @@ Prepare mode. Only emit SQL to create the table.
 \fB\-\-if\-not\-exists\fR
 Use IF NOT EXISTS for table creation in \-c and \-p modes. When \-I is also
 specified, use IF NOT EXISTS for index creation too. This option cannot be used
-with \-a or \-d.
+with \-d. Append mode requires an explicit creation action.
+.TP
+\fB\-\-drop\-table\fR
+Drop the target table before other actions. With no mode specified, the default
+create/load actions still apply. In append mode this requires
+\-\-create\-table when data is loaded.
+.TP
+\fB\-\-create\-table\fR
+Create the target table.
+.TP
+\fB\-\-load\-data\fR
+Load raster data into the target table.
 .TP
 \fB\-f\fR <\fIcolumn\fR>
 Specify the name of the raster column.
@@ -79,13 +90,25 @@ Wrap PostgreSQL identifiers in quotes.
 \fB\-I\fR
 Create a GiST spatial index on the raster column.
 .TP
+\fB\-\-create\-index\fR
+Create a GiST spatial index on the raster column.
+.TP
 \fB\-M\fR
 Run VACUUM ANALYZE on the raster table. This is most useful when appending to an
 existing table with \-a.
 .TP
+\fB\-\-vacuum\fR
+Run VACUUM on the raster table.
+.TP
+\fB\-\-analyze\fR
+Run ANALYZE on the raster table.
+.TP
 \fB\-C\fR
 Set the standard raster constraints after the rasters are loaded. Some
 constraints may fail if one or more input rasters violate the constraint.
+.TP
+\fB\-\-add\-constraints\fR
+Set the standard raster constraints after the rasters are loaded.
 .TP
 \fB\-x\fR
 Disable setting the max extent constraint. Only applies with \-C.
@@ -117,6 +140,9 @@ Specify the output WKB format version. Only version 0 is currently supported.
 \fB\-e\fR
 Execute each statement individually instead of wrapping the load in a
 transaction.
+.TP
+\fB\-\-no\-transaction\fR
+Execute statements individually, without using a transaction.
 .TP
 \fB\-Y\fR [<\fImax_rows_per_copy\fR>]
 Use COPY statements instead of INSERT statements. If no row limit is provided,

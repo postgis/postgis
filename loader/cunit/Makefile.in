@@ -112,6 +112,8 @@ cu_tester: $(LOADER_OBJS) $(OBJS)
 $(OBJS): %.o: %.c
 	$(CC) $(CFLAGS) $(CUNIT_CPPFLAGS) $(GTK_CFLAGS) $(PGSQL_FE_CPPFLAGS) -c -o $@ $<
 
+cu_shp2pgsql.o: ../shp2pgsql-core.h ../loader_actions.h
+
 # Clean target
 clean:
 	rm -f $(OBJS)

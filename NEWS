@@ -25,6 +25,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #2935, shp2pgsql --drop-table can emit DROP TABLE before prepare output
           (Darafei Praliaskouski)
+ - raster2pgsql and shp2pgsql expose loader actions as long options
+          (Darafei Praliaskouski)
  - #4208, Add single-geometry variants of ST_MaxDistance and ST_LongestLine
           (Darafei Praliaskouski)
  - [topology] FindVertexSegmentPairsBelowDistance function (Sandro Santilli)
@@ -67,7 +69,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Sandro Santilli)
  - #3743, [raster] Document and test raster2pgsql -s FROM_SRID:SRID
           reprojection support (Darafei Praliaskouski)
- - #4659, [raster] Add raster2pgsql --if-not-exists creation modifier
+ - #4659, [raster] Add raster2pgsql and shp2pgsql long loader action options
           (Darafei Praliaskouski)
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections (Darafei Praliaskouski)

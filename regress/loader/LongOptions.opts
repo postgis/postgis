@@ -1,0 +1,3 @@
+# Exercise the public long action names as one loader invocation:
+# drop, create-if-missing, load, idempotent index, no transaction, and analyze.
+--drop-table --create-table --load-data --create-index --if-not-exists --no-transaction --no-analyze --analyze
