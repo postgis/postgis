@@ -61,6 +61,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Sandro Santilli)
  - #3743, [raster] Document and test raster2pgsql -s FROM_SRID:SRID
           reprojection support (Darafei Praliaskouski)
+ - #4659, [raster] Add raster2pgsql create-or-append mode
+          (Darafei Praliaskouski)
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections (Darafei Praliaskouski)
  - #5532, Validate the manual against DocBook XMLSchema in check-xml

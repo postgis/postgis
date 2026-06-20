@@ -371,16 +371,16 @@ usage() {
 		"  -R  Register the raster as an out-of-db (filesystem) raster. Provided\n"
 		"      raster should have absolute path to the file\n"
 	));
-	printf(_(
-		" (-d|a|c|p) These are mutually exclusive options:\n"
-		"     -d  Drops the table, then recreates it and populates\n"
-		"         it with current raster data.\n"
-		"     -a  Appends raster into current table, must be\n"
-		"         exactly the same table schema.\n"
-		"     -c  Creates a new table and populates it, this is the\n"
-		"         default if you do not specify any options.\n"
-		"     -p  Prepare mode, only creates the table.\n"
-	));
+	printf(
+	    _(" (-d|a|c|o|p) These are mutually exclusive options:\n"
+	      "     -d  Drops the table, then recreates it and populates\n"
+	      "         it with current raster data.\n"
+	      "     -a  Appends raster into current table, must be\n"
+	      "         exactly the same table schema.\n"
+	      "     -c  Creates a new table and populates it, this is the\n"
+	      "         default if you do not specify any options.\n"
+	      "     -o  Creates a new table if needed, then appends raster data.\n"
+	      "     -p  Prepare mode, only creates the table.\n"));
 	printf(_(
 		"  -f <column> Specify the name of the raster column\n"
 	));
@@ -1000,19 +1000,23 @@ drop_table(const char *schema, const char *table, STRINGBUFFER *buffer) {
 }
 
 static int
-create_table(
-	const char *schema, const char *table, const char *column,
-	const int file_column, const char *file_column_name,
-	const char *tablespace, const char *idx_tablespace,
-	STRINGBUFFER *buffer
-) {
+create_table(const char *schema,
+	     const char *table,
+	     const char *column,
+	     const int file_column,
+	     const char *file_column_name,
+	     const char *tablespace,
+	     const char *idx_tablespace,
+	     int if_not_exists,
+	     STRINGBUFFER *buffer)
+{
 	char *sql = NULL;
 	uint32_t len = 0;
 
 	assert(table != NULL);
 	assert(column != NULL);
 
-	len = strlen("CREATE TABLE  (\"rid\" serial PRIMARY KEY, raster);") + 1;
+	len = strlen("CREATE TABLE IF NOT EXISTS  (\"rid\" serial PRIMARY KEY, raster);") + 1;
 	if (schema != NULL)
 		len += strlen(schema);
 	len += strlen(table);
@@ -1029,7 +1033,9 @@ create_table(
 		rterror(_("create_table: Could not allocate memory for CREATE TABLE statement"));
 		return 0;
 	}
-	sprintf(sql, "CREATE TABLE %s%s (\"rid\" serial PRIMARY KEY%s%s,%s raster%s%s%s)%s%s;",
+	sprintf(sql,
+		"CREATE TABLE %s%s%s (\"rid\" serial PRIMARY KEY%s%s,%s raster%s%s%s)%s%s;",
+		(if_not_exists ? "IF NOT EXISTS " : ""),
 		(schema != NULL ? schema : ""),
 		table,
 		(idx_tablespace != NULL ? " USING INDEX TABLESPACE " : ""),
@@ -1039,8 +1045,7 @@ create_table(
 		(file_column ? file_column_name : ""),
 		(file_column ? " text" : ""),
 		(tablespace != NULL ? " TABLESPACE " : ""),
-		(tablespace != NULL ? tablespace : "")
-	);
+		(tablespace != NULL ? tablespace : ""));
 
 	append_sql_to_buffer(buffer, sql);
 
@@ -2027,24 +2032,32 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 	/* create table */
 	if (config->opt != 'a') {
-		if (!create_table(
-			config->schema, config->table, config->raster_column,
-			config->file_column, config->file_column_name,
-			config->tablespace, config->idx_tablespace,
-			buffer
-		)) {
+		if (!create_table(config->schema,
+				  config->table,
+				  config->raster_column,
+				  config->file_column,
+				  config->file_column_name,
+				  config->tablespace,
+				  config->idx_tablespace,
+				  config->opt == 'o',
+				  buffer))
+		{
 			rterror(_("process_rasters: Could not add CREATE TABLE statement to string buffer"));
 			return 0;
 		}
 
 		if (config->overview_count) {
 			for (i = 0; i < config->overview_count; i++) {
-				if (!create_table(
-					config->schema, config->overview_table[i], config->raster_column,
-					config->file_column, config->file_column_name,
-					config->tablespace, config->idx_tablespace,
-					buffer
-				)) {
+				if (!create_table(config->schema,
+						  config->overview_table[i],
+						  config->raster_column,
+						  config->file_column,
+						  config->file_column_name,
+						  config->tablespace,
+						  config->idx_tablespace,
+						  config->opt == 'o',
+						  buffer))
+				{
 					rterror(_("process_rasters: Could not add an overview's CREATE TABLE statement to string buffer"));
 					return 0;
 				}
@@ -2462,6 +2475,11 @@ main(int argc, char **argv) {
 		/* create new table */
 		else if (CSEQUAL(argv[argit], "-c")) {
 			config->opt = 'c';
+		}
+		/* create new table if needed and append */
+		else if (CSEQUAL(argv[argit], "-o"))
+		{
+			config->opt = 'o';
 		}
 		/* prepare only */
 		else if (CSEQUAL(argv[argit], "-p")) {

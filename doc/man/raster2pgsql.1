@@ -51,6 +51,10 @@ schema.
 \fB\-c\fR
 Create a new table and populate it. This is the default mode.
 .TP
+\fB\-o\fR
+Create a new table if needed, then append raster data. The target table must
+have the same schema when it already exists.
+.TP
 \fB\-p\fR
 Prepare mode. Only emit SQL to create the table.
 .TP

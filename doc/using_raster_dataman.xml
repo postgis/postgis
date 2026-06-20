@@ -93,7 +93,7 @@ Available GDAL raster formats:
         </varlistentry>
 
         <varlistentry>
-          <term>(c|a|d|p) These are mutually exclusive options:</term>
+          <term>(c|a|d|o|p) These are mutually exclusive options:</term>
           <listitem>
             <para>
               <variablelist>
@@ -120,6 +120,15 @@ Available GDAL raster formats:
                   <listitem>
                     <para>
                       Drop table, create new one and populate it with raster(s)
+                    </para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><option>-o</option></term>
+                  <listitem>
+                    <para>
+                      Create a new table if needed, then append raster(s). The target table must have the same schema when it already exists.
                     </para>
                   </listitem>
                 </varlistentry>
