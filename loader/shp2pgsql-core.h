@@ -117,7 +117,10 @@ typedef struct shp_loader_config
 	/* 0 = logged table, 1 = create as UNLOGGED table */
 	int unlogged;
 
-    /* 0 = don't analyze tables , 1 = analyze tables */
+	/* 0 = do not emit DROP TABLE, 1 = emit DROP TABLE before create/prepare */
+	int drop_table;
+
+	/* 0 = don't analyze tables , 1 = analyze tables */
 	int analyze;
 
 	/* 0 = load DBF file only, 1 = load everything */

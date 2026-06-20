@@ -48,6 +48,9 @@ OPTIONS
               actual  data.   This can be used if you need to completely sepa-
               rate the table creation and data loading steps.
 
+       -r     Emits  a  DROP  TABLE IF EXISTS statement before table creation.
+              This can be combined with -c or -p, but not with -a.
+
        -D     Use the PostgreSQL "dump" format for the output data.  This  can
               be  combined  with -a, -c and -d. It is much faster to load than
               the default "insert" SQL format. Use this for  very  large  data
