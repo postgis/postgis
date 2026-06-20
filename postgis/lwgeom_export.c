@@ -18,11 +18,10 @@
  *
  **********************************************************************
  *
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  * Copyright 2009-2011 Olivier Courtin <olivier.courtin@oslandia.com>
  *
  **********************************************************************/
-
-
 
 /** @file
  *  Commons functions for all export functions
@@ -32,7 +31,9 @@
 #include "catalog/pg_type.h" /* for INT4OID */
 #include "executor/spi.h"
 #include "utils/builtins.h"
+#include "utils/hsearch.h"
 #include "utils/jsonb.h"
+#include "utils/memutils.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_cache.h"
@@ -48,6 +49,124 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS);
 Datum geometry_to_json(PG_FUNCTION_ARGS);
 Datum geometry_to_jsonb(PG_FUNCTION_ARGS);
+
+typedef struct {
+	FmgrInfo *flinfo;
+	SRSDescCacheArgument arg;
+} ExportSRSCacheEntry;
+
+typedef struct {
+	FmgrInfo *flinfo;
+} ExportSRSCacheCallbackArg;
+
+static HTAB *ExportSRSCache = NULL;
+
+static void
+export_srs_cache_delete(void *ptr)
+{
+	ExportSRSCacheCallbackArg *arg = (ExportSRSCacheCallbackArg *)ptr;
+	FmgrInfo *flinfo = arg->flinfo;
+
+	if (ExportSRSCache)
+		hash_search(ExportSRSCache, &flinfo, HASH_REMOVE, NULL);
+}
+
+static ExportSRSCacheEntry *
+export_srs_cache_get(FunctionCallInfo fcinfo)
+{
+	HASHCTL ctl;
+	bool found;
+	FmgrInfo *flinfo;
+	MemoryContext context;
+	ExportSRSCacheEntry *entry;
+
+	if (!fcinfo || !fcinfo->flinfo)
+		elog(ERROR, "%s: Could not find upper context", __func__);
+
+	if (!ExportSRSCache)
+	{
+		memset(&ctl, 0, sizeof(ctl));
+		ctl.keysize = sizeof(FmgrInfo *);
+		ctl.entrysize = sizeof(ExportSRSCacheEntry);
+		ctl.hcxt = TopMemoryContext;
+		ExportSRSCache =
+		    hash_create("PostGIS exported SRS cache", 128, &ctl, HASH_ELEM | HASH_BLOBS | HASH_CONTEXT);
+	}
+
+	flinfo = fcinfo->flinfo;
+	entry = (ExportSRSCacheEntry *)hash_search(ExportSRSCache, &flinfo, HASH_FIND, NULL);
+	if (!entry)
+	{
+		MemoryContextCallback *callback;
+		ExportSRSCacheCallbackArg *callback_arg;
+
+		context = PostgisCacheContext(fcinfo);
+
+		/* Arm cleanup before publishing a TopMemoryContext hash entry. */
+		callback = MemoryContextAlloc(context, sizeof(MemoryContextCallback));
+		callback_arg = MemoryContextAlloc(context, sizeof(ExportSRSCacheCallbackArg));
+		callback_arg->flinfo = flinfo;
+		callback->arg = callback_arg;
+		callback->func = export_srs_cache_delete;
+		MemoryContextRegisterResetCallback(context, callback);
+
+		entry = (ExportSRSCacheEntry *)hash_search(ExportSRSCache, &flinfo, HASH_ENTER, &found);
+		if (!found)
+		{
+			entry->flinfo = flinfo;
+			memset(&(entry->arg), 0, sizeof(entry->arg));
+		}
+	}
+	return entry;
+}
+
+POSTGIS_HELPER_EXPORT const char *
+getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
+{
+	ExportSRSCacheEntry *entry = export_srs_cache_get(fcinfo);
+	SRSDescCacheArgument *arg = &(entry->arg);
+
+	/*
+	 * Downstream callers may already own fcinfo->flinfo->fn_extra. Keep this
+	 * exported API's cache separate from PostGIS' generic fn_extra cache.
+	 */
+	if (arg->srid != srid || arg->short_mode != short_crs || !arg->srs)
+	{
+		const char *srs = LookupSRSBySRID(fcinfo, srid, short_crs);
+		arg->srid = srid;
+		arg->short_mode = short_crs;
+		if (arg->srs)
+			pfree(arg->srs);
+		arg->srs = (char *)srs;
+	}
+	return arg->srs;
+}
+
+/*
+ * liblwgeom is linked into postgis-3.so as a static archive hidden by
+ * --exclude-libs,ALL. Publish strong module-local shims for the helper API so
+ * downstream extensions can resolve these names from the loaded PostGIS module
+ * without exposing the whole liblwgeom archive.
+ */
+#if defined(HAVE_LIBJSON)
+POSTGIS_HELPER_EXPORT LWGEOM *
+parse_geojson(struct json_object *geojson, int *hasz)
+{
+	return lwgeom_parse_geojson(geojson, hasz);
+}
+#endif
+
+POSTGIS_HELPER_EXPORT size_t
+lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
+{
+	return lwgeom_to_wkb_size_internal(geom, variant);
+}
+
+POSTGIS_HELPER_EXPORT uint8_t *
+lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant)
+{
+	return lwgeom_to_wkb_buf_internal(geom, buf, variant);
+}
 
 /**
  * Encode feature in GML

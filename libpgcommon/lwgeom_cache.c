@@ -4,6 +4,7 @@
  * http://postgis.net
  *
  * Copyright (C) 2012 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -262,8 +263,8 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
  * Could return SRS as short one (i.e EPSG:4326)
  * or as long one: (i.e urn:ogc:def:crs:EPSG::4326)
  */
-static char *
-getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
+const char *
+LookupSRSBySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
 {
 	static const uint16_t max_query_size = 512;
 	char query[512];
@@ -352,11 +353,12 @@ GetSRSCacheBySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
 
 	if (arg->srid != srid || arg->short_mode != short_crs || !arg->srs)
 	{
+		const char *srs = LookupSRSBySRID(fcinfo, srid, short_crs);
 		arg->srid = srid;
 		arg->short_mode = short_crs;
 		if (arg->srs)
 			pfree(arg->srs);
-		arg->srs = getSRSbySRID(fcinfo, srid, short_crs);
+		arg->srs = (char *)srs;
 	}
 	return arg->srs;
 }

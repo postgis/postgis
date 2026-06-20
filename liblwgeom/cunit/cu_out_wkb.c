@@ -3,6 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  * Copyright 2010 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -72,6 +73,31 @@ static void cu_wkb_empty_point_check(char *hex)
 	CU_ASSERT(g != NULL);
 	CU_ASSERT(lwgeom_is_empty(g));
 	CU_ASSERT(g->type == POINTTYPE);
+	lwgeom_free(g);
+}
+
+static void
+test_wkb_out_hex_size_matches_buf(void)
+{
+	const uint8_t variant = WKB_HEX | WKB_XDR | WKB_EXTENDED;
+	LWGEOM *g = lwgeom_from_wkt("SRID=4;POINT(1 2)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(g);
+	size_t hex_size = lwgeom_to_wkb_size(g, variant);
+	size_t binary_size = lwgeom_to_wkb_size(g, variant & ~WKB_HEX);
+	uint8_t *buf = lwalloc(hex_size);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(buf);
+	uint8_t *end = lwgeom_to_wkb_buf(g, buf, variant);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(end);
+	char *owned = (char *)lwgeom_to_wkb_buffer(g, variant);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(owned);
+
+	CU_ASSERT_EQUAL(end - buf, hex_size);
+	CU_ASSERT_EQUAL(hex_size, 2 * binary_size);
+	CU_ASSERT_EQUAL(strlen(owned), hex_size);
+	CU_ASSERT_EQUAL(strncmp((char *)buf, owned, hex_size), 0);
+
+	lwfree(owned);
+	lwfree(buf);
 	lwgeom_free(g);
 }
 
@@ -214,6 +240,7 @@ void wkb_out_suite_setup(void);
 void wkb_out_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("wkb_output", init_wkb_out_suite, clean_wkb_out_suite);
+	PG_ADD_TEST(suite, test_wkb_out_hex_size_matches_buf);
 	PG_ADD_TEST(suite, test_wkb_out_point);
 	PG_ADD_TEST(suite, test_wkb_out_linestring);
 	PG_ADD_TEST(suite, test_wkb_out_polygon);

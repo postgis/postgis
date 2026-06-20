@@ -19,9 +19,9 @@
  **********************************************************************
  *
  * Copyright (C) 2009 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
-
 
 #include <math.h>
 #include <stddef.h> // for ptrdiff_t
@@ -29,8 +29,8 @@
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 
-static uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
-static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant);
+uint8_t *lwgeom_to_wkb_buf_internal(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
+static size_t lwgeom_to_wkb_binary_size(const LWGEOM *geom, uint8_t variant);
 
 /*
 * Look-up table for hex writer
@@ -43,9 +43,11 @@ char* hexbytes_from_bytes(const uint8_t *bytes, size_t size)
 	uint32_t i;
 	if ( ! bytes || ! size )
 	{
-		lwerror("hexbutes_from_bytes: invalid input");
+		lwerror("%s: invalid input", __func__);
 		return NULL;
 	}
+	if (size > (SIZE_MAX - 1) / 2)
+		lwerror("%s: hex output size overflow", __func__);
 	hex = lwalloc(size * 2 + 1);
 	hex[2*size] = '\0';
 	for( i = 0; i < size; i++ )
@@ -724,7 +726,7 @@ static size_t lwcollection_to_wkb_size(const LWCOLLECTION *col, uint8_t variant)
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
 		/* size of subgeom */
-		size += lwgeom_to_wkb_size((LWGEOM*)col->geoms[i], variant | WKB_NO_SRID);
+		size += lwgeom_to_wkb_binary_size((LWGEOM *)col->geoms[i], variant | WKB_NO_SRID);
 	}
 
 	return size;
@@ -762,7 +764,7 @@ static uint8_t* lwcollection_to_wkb_buf(const LWCOLLECTION *col, uint8_t *buf, u
 	   inherit from their parents. */
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
-		buf = lwgeom_to_wkb_buf(col->geoms[i], buf, variant | WKB_NO_SRID);
+		buf = lwgeom_to_wkb_buf_internal(col->geoms[i], buf, variant | WKB_NO_SRID);
 	}
 
 	return buf;
@@ -945,7 +947,7 @@ static uint8_t* lwnurbscurve_to_wkb_buf(const LWNURBSCURVE *curve, uint8_t *buf,
  * @return Number of bytes required to encode `geom` under `variant`, or 0 on error.
  */
 static size_t
-lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
+lwgeom_to_wkb_binary_size(const LWGEOM *geom, uint8_t variant)
 {
 	size_t size = 0;
 
@@ -1008,6 +1010,19 @@ lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 	return size;
 }
 
+size_t
+lwgeom_to_wkb_size_internal(const LWGEOM *geom, uint8_t variant)
+{
+	size_t size = lwgeom_to_wkb_binary_size(geom, variant);
+	if (variant & WKB_HEX)
+	{
+		if (size > SIZE_MAX / 2)
+			lwerror("%s: WKB size overflow", __func__);
+		size *= 2;
+	}
+	return size;
+}
+
 /**
  * Serialize a LWGEOM into WKB format, writing into the provided buffer.
  *
@@ -1027,7 +1042,8 @@ lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
  *         success; NULL (0) on unsupported/unknown geometry type or other error.
  */
 
-static uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant)
+uint8_t *
+lwgeom_to_wkb_buf_internal(const LWGEOM *geom, uint8_t *buf, uint8_t variant)
 {
 
 	/* Do not simplify empties when outputting to canonical form */
@@ -1099,7 +1115,7 @@ lwgeom_to_wkb_write_buf(const LWGEOM *geom, uint8_t variant, uint8_t *buffer)
 	}
 
 	/* Write the WKB into the output buffer */
-	int written_bytes = (lwgeom_to_wkb_buf(geom, buffer, variant) - buffer);
+	ptrdiff_t written_bytes = (lwgeom_to_wkb_buf_internal(geom, buffer, variant) - buffer);
 
 	return written_bytes;
 }
@@ -1107,14 +1123,17 @@ lwgeom_to_wkb_write_buf(const LWGEOM *geom, uint8_t variant, uint8_t *buffer)
 uint8_t *
 lwgeom_to_wkb_buffer(const LWGEOM *geom, uint8_t variant)
 {
-	size_t b_size = lwgeom_to_wkb_size(geom, variant);
+	size_t b_size = lwgeom_to_wkb_size_internal(geom, variant);
+	size_t alloc_size = b_size;
 	/* Hex string takes twice as much space as binary + a null character */
 	if (variant & WKB_HEX)
 	{
-		b_size = 2 * b_size + 1;
+		if (alloc_size == SIZE_MAX)
+			lwerror("%s: WKB allocation size overflow", __func__);
+		alloc_size++;
 	}
 
-	uint8_t *buffer = (uint8_t *)lwalloc(b_size);
+	uint8_t *buffer = (uint8_t *)lwalloc(alloc_size);
 	ptrdiff_t written_size = lwgeom_to_wkb_write_buf(geom, variant, buffer);
 	if (variant & WKB_HEX)
 	{
@@ -1122,7 +1141,7 @@ lwgeom_to_wkb_buffer(const LWGEOM *geom, uint8_t variant)
 		written_size++;
 	}
 
-	if (written_size != (ptrdiff_t)b_size)
+	if (written_size != (ptrdiff_t)alloc_size)
 	{
 		char *wkt = lwgeom_to_wkt(geom, WKT_EXTENDED, 15, NULL);
 		lwerror("Output WKB is not the same size as the allocated buffer. Variant: %u, Geom: %s", variant, wkt);
@@ -1143,15 +1162,16 @@ lwgeom_to_hexwkb_buffer(const LWGEOM *geom, uint8_t variant)
 lwvarlena_t *
 lwgeom_to_wkb_varlena(const LWGEOM *geom, uint8_t variant)
 {
-	size_t b_size = lwgeom_to_wkb_size(geom, variant);
-	/* Hex string takes twice as much space as binary, but No NULL ending in varlena */
-	if (variant & WKB_HEX)
-	{
-		b_size = 2 * b_size;
-	}
+	size_t b_size = lwgeom_to_wkb_size_internal(geom, variant);
+	size_t varlena_size;
+	if (b_size > SIZE_MAX - LWVARHDRSZ)
+		lwerror("%s: WKB varlena size overflow", __func__);
+	varlena_size = b_size + LWVARHDRSZ;
+	if (varlena_size > 0x3FFFFFFF)
+		lwerror("%s: WKB varlena size overflow", __func__);
 
-	lwvarlena_t *buffer = (lwvarlena_t *)lwalloc(b_size + LWVARHDRSZ);
-	int written_size = lwgeom_to_wkb_write_buf(geom, variant, (uint8_t *)buffer->data);
+	lwvarlena_t *buffer = (lwvarlena_t *)lwalloc(varlena_size);
+	ptrdiff_t written_size = lwgeom_to_wkb_write_buf(geom, variant, (uint8_t *)buffer->data);
 	if (written_size != (ptrdiff_t)b_size)
 	{
 		char *wkt = lwgeom_to_wkt(geom, WKT_EXTENDED, 15, NULL);
@@ -1160,7 +1180,7 @@ lwgeom_to_wkb_varlena(const LWGEOM *geom, uint8_t variant)
 		lwfree(buffer);
 		return NULL;
 	}
-	LWSIZE_SET(buffer->size, written_size + LWVARHDRSZ);
+	LWSIZE_SET(buffer->size, varlena_size);
 	return buffer;
 }
 

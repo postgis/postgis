@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2019 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2019-2026 Darafei Praliaskouski <me@komzpa.net>
  * Copyright 2013 Sandro Santilli <strk@kbt.io>
  * Copyright 2011 Kashif Rasul <kashif.rasul@gmail.com>
  *
@@ -46,7 +46,7 @@
 #include <string.h>
 
 /* Prototype */
-static LWGEOM *parse_geojson(json_object *geojson, int *hasz);
+static LWGEOM *parse_geojson_internal(json_object *geojson, int *hasz);
 
 static inline json_object *
 findMemberByName(json_object *poObj, const char *pszName)
@@ -345,7 +345,7 @@ parse_geojson_geometrycollection(json_object *geojson, int *hasz)
 		for (int i = 0; i < nGeoms; ++i)
 		{
 			json_object *poObjGeom = json_object_array_get_idx(poObjGeoms, i);
-			LWGEOM *t = parse_geojson(poObjGeom, hasz);
+			LWGEOM *t = parse_geojson_internal(poObjGeom, hasz);
 			if (t)
 				geom = (LWGEOM *)lwcollection_add_lwgeom((LWCOLLECTION *)geom, t);
 			else
@@ -359,8 +359,8 @@ parse_geojson_geometrycollection(json_object *geojson, int *hasz)
 	return geom;
 }
 
-static inline LWGEOM *
-parse_geojson(json_object *geojson, int *hasz)
+static LWGEOM *
+parse_geojson_internal(json_object *geojson, int *hasz)
 {
 	json_object *type = NULL;
 	const char *name;
@@ -403,6 +403,27 @@ parse_geojson(json_object *geojson, int *hasz)
 
 	lwerror("invalid GeoJson representation");
 	return NULL; /* Never reach */
+}
+
+LWGEOM *
+lwgeom_parse_geojson(json_object *geojson, int *hasz)
+{
+	int local_hasz = LW_FALSE;
+	LWGEOM *geom;
+
+	if (hasz)
+		*hasz = LW_FALSE;
+
+	geom = parse_geojson_internal(geojson, hasz ? hasz : &local_hasz);
+
+	if (geom && !*(hasz ? hasz : &local_hasz))
+	{
+		LWGEOM *tmp = lwgeom_force_2d(geom);
+		lwgeom_free(geom);
+		geom = tmp;
+	}
+
+	return geom;
 }
 
 #endif /* HAVE_LIBJSON */
@@ -455,17 +476,11 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 	}
 
 	int hasz = LW_FALSE;
-	LWGEOM *lwgeom = parse_geojson(poObj, &hasz);
+	LWGEOM *lwgeom = lwgeom_parse_geojson(poObj, &hasz);
 	json_object_put(poObj);
 	if (!lwgeom)
 		return NULL;
 
-	if (!hasz)
-	{
-		LWGEOM *tmp = lwgeom_force_2d(lwgeom);
-		lwgeom_free(lwgeom);
-		lwgeom = tmp;
-	}
 	lwgeom_add_bbox(lwgeom);
 	return lwgeom;
 #endif /* HAVE_LIBJSON */

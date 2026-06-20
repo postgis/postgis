@@ -20,6 +20,7 @@
  *
  * Copyright 2011 Sandro Santilli <strk@kbt.io>
  * Copyright 2011 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  * Copyright 2007-2008 Mark Cave-Ayland
  * Copyright 2001-2006 Refractions Research Inc.
  *
@@ -28,6 +29,16 @@
 
 #ifndef _LIBLWGEOM_H
 #define _LIBLWGEOM_H 1
+
+#ifndef PGDLLEXPORT
+#  ifdef _WIN32
+#    define PGDLLEXPORT __declspec(dllexport)
+#  elif defined(__GNUC__) || defined(__clang__)
+#    define PGDLLEXPORT __attribute__ ((visibility("default")))
+#  else
+#    define PGDLLEXPORT
+#  endif
+#endif
 
 #include <stdarg.h>
 #include <stdint.h>
@@ -1777,6 +1788,12 @@ extern lwvarlena_t* lwgeom_to_encoded_polyline(const LWGEOM *geom, int precision
  */
 extern LWGEOM* lwgeom_from_geojson(const char *geojson, char **srs);
 
+#if defined(HAVE_LIBJSON)
+/* Forward-declare to avoid exposing json-c headers in a public API */
+struct json_object;
+PGDLLEXPORT LWGEOM *parse_geojson(struct json_object *geojson, int *hasz);
+#endif /* HAVE_LIBJSON */
+
 /**
  * Create an LWGEOM object from an Encoded Polyline representation
  *
@@ -2281,6 +2298,8 @@ extern lwvarlena_t* lwgeom_to_wkt_varlena(const LWGEOM *geom, uint8_t variant, i
 */
 extern uint8_t* lwgeom_to_wkb_buffer(const LWGEOM *geom, uint8_t variant);
 extern lwvarlena_t* lwgeom_to_wkb_varlena(const LWGEOM *geom, uint8_t variant);
+PGDLLEXPORT size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant);
+PGDLLEXPORT uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
 
 /**
 * @param geom geometry to convert to HEXWKB

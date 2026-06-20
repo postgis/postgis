@@ -18,6 +18,10 @@
 #include "liblwgeom_internal.h"
 #include "cu_tester.h"
 
+#if HAVE_LIBJSON
+#include <json.h>
+#endif
+
 static void do_geojson_test(const char * exp, char * in, char * exp_srs)
 {
 	LWGEOM *g;
@@ -235,6 +239,73 @@ static void in_geojson_test_geoms(void)
 	    NULL);
 }
 
+#if HAVE_LIBJSON
+static void
+in_geojson_test_parse_geojson_public_api(void)
+{
+	json_object *obj = json_tokener_parse("{\"type\":\"Point\",\"coordinates\":[1,2]}");
+	int hasz = LW_FALSE;
+	CU_ASSERT_PTR_NOT_NULL_FATAL(obj);
+	LWGEOM *geom = parse_geojson(obj, &hasz);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(geom);
+	char *wkt = lwgeom_to_wkt(geom, WKT_EXTENDED, 15, NULL);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(wkt);
+
+	ASSERT_STRING_EQUAL(wkt, "POINT(1 2)");
+	CU_ASSERT_EQUAL(hasz, LW_FALSE);
+	CU_ASSERT_FALSE(FLAGS_GET_Z(geom->flags));
+
+	lwfree(wkt);
+	lwgeom_free(geom);
+	json_object_put(obj);
+
+	obj = json_tokener_parse("{\"type\":\"Point\",\"coordinates\":[4,5]}");
+	hasz = LW_TRUE;
+	CU_ASSERT_PTR_NOT_NULL_FATAL(obj);
+	geom = parse_geojson(obj, &hasz);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(geom);
+	wkt = lwgeom_to_wkt(geom, WKT_EXTENDED, 15, NULL);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(wkt);
+
+	ASSERT_STRING_EQUAL(wkt, "POINT(4 5)");
+	CU_ASSERT_EQUAL(hasz, LW_FALSE);
+	CU_ASSERT_FALSE(FLAGS_GET_Z(geom->flags));
+
+	lwfree(wkt);
+	lwgeom_free(geom);
+	json_object_put(obj);
+
+	obj = json_tokener_parse("{\"type\":\"Point\",\"coordinates\":[1,2,3]}");
+	hasz = LW_FALSE;
+	CU_ASSERT_PTR_NOT_NULL_FATAL(obj);
+	geom = parse_geojson(obj, &hasz);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(geom);
+	wkt = lwgeom_to_wkt(geom, WKT_EXTENDED, 15, NULL);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(wkt);
+
+	ASSERT_STRING_EQUAL(wkt, "POINT(1 2 3)");
+	CU_ASSERT_EQUAL(hasz, LW_TRUE);
+	CU_ASSERT_TRUE(FLAGS_GET_Z(geom->flags));
+
+	lwfree(wkt);
+	lwgeom_free(geom);
+	json_object_put(obj);
+
+	obj = json_tokener_parse(
+	    "{\"type\":\"GeometryCollection\",\"geometries\":[{\"type\":\"Point\",\"coordinates\":[1,2,3]},{\"type\":\"Point\",\"coordinates\":[4,5]}]}");
+	hasz = LW_FALSE;
+	CU_ASSERT_PTR_NOT_NULL_FATAL(obj);
+	geom = parse_geojson(obj, &hasz);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(geom);
+
+	CU_ASSERT_EQUAL(hasz, LW_TRUE);
+	CU_ASSERT_TRUE(FLAGS_GET_Z(geom->flags));
+
+	lwgeom_free(geom);
+	json_object_put(obj);
+}
+#endif
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -245,4 +316,7 @@ void in_geojson_suite_setup(void)
 	PG_ADD_TEST(suite, in_geojson_test_srid);
 	PG_ADD_TEST(suite, in_geojson_test_bbox);
 	PG_ADD_TEST(suite, in_geojson_test_geoms);
+#if HAVE_LIBJSON
+	PG_ADD_TEST(suite, in_geojson_test_parse_geojson_public_api);
+#endif
 }

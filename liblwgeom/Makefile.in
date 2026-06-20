@@ -84,6 +84,7 @@ SA_OBJS = \
 	lwtin.o \
 	lwout_wkb.o \
 	lwin_geojson.o \
+	lwexports.o \
 	lwin_wkb.o \
 	lwin_twkb.o \
 	lwiterator.o \

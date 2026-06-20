@@ -68,6 +68,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           and pass callback call data as actual arguments (Darafei Praliaskouski)
  - #2898, Document SQL function cost tiers for contributors
           (Darafei Praliaskouski)
+ - GH-826, Export selected liblwgeom and libpgcommon helpers for MobilityDB
+          integration (Esteban Zimanyi, Darafei Praliaskouski)
  - #6062, [topology] Stop using recursive snapping, for improved robustness (Sandro Santilli)
  - #6065, Improved winding order computation robustness for rings having collapsed elements
           (Sandro Santilli)

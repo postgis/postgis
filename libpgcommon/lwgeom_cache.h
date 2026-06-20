@@ -4,6 +4,7 @@
  * http://postgis.net
  *
  * Copyright (C) 2012 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -18,6 +19,16 @@
 #include "liblwgeom.h"
 #include "lwgeodetic_tree.h"
 #include "lwgeom_pg.h"
+
+#ifndef POSTGIS_HELPER_EXPORT
+#ifdef _WIN32
+#define POSTGIS_HELPER_EXPORT __declspec(dllexport)
+#elif defined(__GNUC__) || defined(__clang__)
+#define POSTGIS_HELPER_EXPORT __attribute__((visibility("default")))
+#else
+#define POSTGIS_HELPER_EXPORT
+#endif
+#endif
 
 enum CacheEntryEnum {
 	TOAST_CACHE_ENTRY   = 0,
@@ -120,6 +131,7 @@ typedef struct {
 } SRSDescCache;
 
 const char *GetSRSCacheBySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs);
+const char *LookupSRSBySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs);
 
 /******************************************************************************/
 
@@ -136,3 +148,5 @@ typedef struct {
 
 int32_t GetSRIDCacheBySRS(FunctionCallInfo fcinfo, const char *srs);
 
+POSTGIS_HELPER_EXPORT
+const char *getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs);
