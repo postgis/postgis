@@ -207,6 +207,7 @@ maintainer-clean: clean
 	rm -f lwin_wkt_lex.c
 	rm -f lwin_wkt_parse.h
 	rm -f lwin_wkt_parse.c
+	rm -f lwin_wkt_parse.stamp
 
 clean:
 	$(MAKE) -C cunit clean
@@ -235,12 +236,19 @@ $(LT_SA_OBJS): %.lo: %.c
 $(LT_NM_OBJS): %.lo: %.c
 	$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
-lwin_wkt_parse.c lwin_wkt_parse.h: lwin_wkt_parse.y
+lwin_wkt_parse.stamp: lwin_wkt_parse.y
 	@test -n "$(YACC)" || { \
 			echo "No yacc found, cannot build parser" >&2; \
 			false; \
 	}
 	$(YACC) -p wkt_yy -o'lwin_wkt_parse.c' -d $<
+	touch $@
+
+lwin_wkt_parse.c lwin_wkt_parse.h: lwin_wkt_parse.stamp
+	@test -f lwin_wkt_parse.c -a -f lwin_wkt_parse.h || { \
+			rm -f lwin_wkt_parse.stamp; \
+			$(MAKE) lwin_wkt_parse.stamp; \
+	}
 
 lwin_wkt_lex.c: lwin_wkt_lex.l
 	@test -n "$(LEX)" || { \
