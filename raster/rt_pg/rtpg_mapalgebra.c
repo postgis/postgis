@@ -91,9 +91,10 @@ typedef struct {
 	/* copied from LOCAL_FCINFO in fmgr.h */
 	union {
 		FunctionCallInfoBaseData fcinfo;
-		char fcinfo_data[SizeForFunctionCallInfo(FUNC_MAX_ARGS)]; /* Could be optimized */
+		char fcinfo_data[SizeForFunctionCallInfo(3)];
 	} ufc_info_data;
 	FunctionCallInfo ufc_info;
+	ArrayType *empty_userargs;
 } rtpg_nmapalgebra_callback_arg;
 
 #if defined(__clang__)
@@ -157,6 +158,7 @@ static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init(void) {
 
 	arg->callback.ufc_noid = InvalidOid;
 	arg->callback.ufc_rettype = InvalidOid;
+	arg->callback.empty_userargs = NULL;
 
 	return arg;
 }
@@ -183,6 +185,8 @@ static void rtpg_nmapalgebra_arg_destroy(rtpg_nmapalgebra_arg arg) {
 		rt_raster_destroy(arg->cextent);
 	if( arg->mask != NULL )
 	  pfree(arg->mask);
+	if (arg->callback.empty_userargs != NULL)
+		pfree(arg->callback.empty_userargs);
 
 	pfree(arg);
 }
@@ -803,7 +807,8 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 			noerr = 1;
 		}
 		/* function should have correct # of args */
-		else if (arg->callback.ufl_info.fn_nargs != 3) {
+		else if (arg->callback.ufl_info.fn_nargs < 2 || arg->callback.ufl_info.fn_nargs > 3)
+		{
 			noerr = 2;
 		}
 
@@ -842,7 +847,9 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 					elog(ERROR, "RASTER_nMapAlgebra: Function provided must return scalar (double precision, float, int, smallint)");
 					break;
 				case 2:
-					elog(ERROR, "RASTER_nMapAlgebra: Function provided must have three input parameters");
+					elog(
+					    ERROR,
+					    "RASTER_nMapAlgebra: Function provided must have two or three input parameters");
 					break;
 				case 1:
 					elog(ERROR, "RASTER_nMapAlgebra: Function provided must return double precision, not resultset");
@@ -864,20 +871,26 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 
 		arg->callback.ufc_info->args[0].isnull = FALSE;
 		arg->callback.ufc_info->args[1].isnull = FALSE;
-		arg->callback.ufc_info->args[2].isnull = FALSE;
-		/* userargs (7) */
-		if (!PG_ARGISNULL(9))
-			arg->callback.ufc_info->args[2].value = PG_GETARG_DATUM(9);
-		else {
-      if (arg->callback.ufl_info.fn_strict) {
-				/* build and assign an empty TEXT array */
-				/* TODO: manually free the empty array? */
-				arg->callback.ufc_info->args[2].value = PointerGetDatum(construct_empty_array(TEXTOID));
-				arg->callback.ufc_info->args[2].isnull = FALSE;
-      }
-			else {
-				arg->callback.ufc_info->args[2].value = (Datum)NULL;
-				arg->callback.ufc_info->args[2].isnull = TRUE;
+		if (arg->callback.ufl_info.fn_nargs == 3)
+		{
+			arg->callback.ufc_info->args[2].isnull = FALSE;
+			/* userargs (7) */
+			if (!PG_ARGISNULL(9))
+				arg->callback.ufc_info->args[2].value = PG_GETARG_DATUM(9);
+			else
+			{
+				if (arg->callback.ufl_info.fn_strict)
+				{
+					arg->callback.empty_userargs = construct_empty_array(TEXTOID);
+					arg->callback.ufc_info->args[2].value =
+					    PointerGetDatum(arg->callback.empty_userargs);
+					arg->callback.ufc_info->args[2].isnull = FALSE;
+				}
+				else
+				{
+					arg->callback.ufc_info->args[2].value = (Datum)NULL;
+					arg->callback.ufc_info->args[2].isnull = TRUE;
+				}
 			}
 		}
 	}
@@ -5280,7 +5293,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
     int ret = -1;
     Oid oid;
     FmgrInfo cbinfo;
-    LOCAL_FCINFO(cbdata, FUNC_MAX_ARGS); /* Could be optimized */
+    LOCAL_FCINFO(cbdata, 3);
 
     Datum tmpnewval;
     char * strFromText = NULL;
@@ -5521,11 +5534,12 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
     }
 
     /* prep function call data */
-    InitFunctionCallInfoData(*cbdata, &cbinfo, 2, InvalidOid, NULL, NULL);
+    InitFunctionCallInfoData(*cbdata, &cbinfo, cbinfo.fn_nargs, InvalidOid, NULL, NULL);
 
     cbdata->args[0].isnull = FALSE;
     cbdata->args[1].isnull = FALSE;
-    cbdata->args[2].isnull = FALSE;
+    if (cbinfo.fn_nargs == 3)
+	    cbdata->args[2].isnull = FALSE;
 
     /* check that the function isn't strict if the args are null. */
     if (PG_ARGISNULL(4)) {
@@ -5706,7 +5720,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     int ret = -1;
     Oid oid;
     FmgrInfo cbinfo;
-    LOCAL_FCINFO(cbdata, FUNC_MAX_ARGS); /* Could be optimized */
+    LOCAL_FCINFO(cbdata, 3);
     Datum tmpnewval;
     ArrayType * neighborDatum;
     char * strFromText = NULL;
@@ -5953,7 +5967,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     }
 
     /* prep function call data */
-    InitFunctionCallInfoData(*cbdata, &cbinfo, 3, InvalidOid, NULL, NULL);
+    InitFunctionCallInfoData(*cbdata, &cbinfo, cbinfo.fn_nargs, InvalidOid, NULL, NULL);
     cbdata->args[0].isnull = FALSE;
     cbdata->args[1].isnull = FALSE;
     cbdata->args[2].isnull = FALSE;
@@ -6332,7 +6346,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 	Oid ufc_noid = InvalidOid;
 	FmgrInfo ufl_info;
-	LOCAL_FCINFO(ufc_info, FUNC_MAX_ARGS); /* Could be optimized */
+	LOCAL_FCINFO(ufc_info, 4);
 
 	int ufc_nullcount = 0;
 
