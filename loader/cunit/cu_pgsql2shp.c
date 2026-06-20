@@ -13,9 +13,13 @@
 #include "cu_tester.h"
 #include "../pgsql2shp-core.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 /* Test functions */
 void test_ShpDumperCreate(void);
 void test_ShpDumperDestroy(void);
+void test_ShpDumperConnectionStringPasswordEscaping(void);
 
 SHPDUMPERCONFIG *dumper_config;
 SHPDUMPERSTATE *dumper_state;
@@ -33,10 +37,11 @@ CU_pSuite register_pgsql2shp_suite(void)
 		return NULL;
 	}
 
-	if (
-	    (NULL == CU_add_test(pSuite, "test_ShpDumperCreate()", test_ShpDumperCreate)) ||
-	    (NULL == CU_add_test(pSuite, "test_ShpDumperDestroy()", test_ShpDumperDestroy))
-	)
+	if ((NULL == CU_add_test(pSuite, "test_ShpDumperCreate()", test_ShpDumperCreate)) ||
+	    (NULL == CU_add_test(pSuite, "test_ShpDumperDestroy()", test_ShpDumperDestroy)) ||
+	    (NULL == CU_add_test(pSuite,
+				 "test_ShpDumperConnectionStringPasswordEscaping()",
+				 test_ShpDumperConnectionStringPasswordEscaping)))
 	{
 		CU_cleanup_registry();
 		return NULL;
@@ -74,4 +79,22 @@ void test_ShpDumperCreate(void)
 void test_ShpDumperDestroy(void)
 {
 	ShpDumperDestroy(dumper_state);
+}
+
+void
+test_ShpDumperConnectionStringPasswordEscaping(void)
+{
+	SHPDUMPERCONFIG config;
+	char *connstring;
+
+	set_dumper_config_defaults(&config);
+	config.conn->database = "postgis";
+	config.conn->password = "pa'ss\\word";
+
+	connstring = ShpDumperGetConnectionStringFromConn(config.conn);
+	CU_ASSERT_PTR_NOT_NULL(connstring);
+	CU_ASSERT_PTR_NOT_NULL(strstr(connstring, " password='pa\\'ss\\\\word'"));
+
+	free(connstring);
+	free(config.conn);
 }
