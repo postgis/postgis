@@ -125,6 +125,7 @@ RASTER_TEST_BUGS = \
 
 RASTER_TEST_LOADER = \
 	$(topsrcdir)/raster/test/regress/loader/Basic \
+	$(topsrcdir)/raster/test/regress/loader/OverviewNoPadding \
 	$(topsrcdir)/raster/test/regress/loader/Projected \
 	$(topsrcdir)/raster/test/regress/loader/BasicCopy \
 	$(topsrcdir)/raster/test/regress/loader/BasicFilename \
