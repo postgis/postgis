@@ -138,6 +138,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #2804, #4315, [raster] Support two-argument ST_MapAlgebra callbacks
           and pass callback call data as actual arguments (Darafei Praliaskouski)
+ - #4584, Stop tracking generated WKT parser and lexer sources in git
+          (Darafei Praliaskouski)
  - #2898, Document SQL function cost tiers for contributors
  - #5638, Move and reorganize developer, maintainer, governance,
           website, internals, style, release-process, Trac wiki, and
