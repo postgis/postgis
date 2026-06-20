@@ -1,0 +1,9 @@
+flat|0.000000
+vertical|8.000000
+dump|(1,"{{0,6.32455539703369,6.32455539703369},{0,8,8},{0,6.32455539703369,6.32455539703369}}")
+horizontal|8.000000
+band2|10.000000
+customextent|2|2
+interpolate|t|8.000000
+center_nodata|t
+ERROR:  Unsupported edge detection method "Canny". Only Sobel is supported
