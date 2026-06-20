@@ -5,6 +5,8 @@ PostGIS 3.8.0dev
 
  - GT-811, Remove pointer addresses from error and notice messages
           (Andrew Kroh)
+ - #1558, GT-419, Document RETURNS TABLE signatures with returned columns
+          (Darafei Praliaskouski)
 
 
 PostGIS 3.7.0rc3
