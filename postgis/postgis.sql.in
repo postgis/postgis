@@ -3153,6 +3153,42 @@ CREATE OR REPLACE FUNCTION postgis_scripts_released() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION _postgis_scripts_version_cmp_key(ver text)
+	RETURNS int[]
+	AS $$
+	DECLARE
+		ver_match text[];
+	BEGIN
+		ver_match := pg_catalog.regexp_match(
+			pg_catalog.lower(ver),
+			'^([0-9]+)\.([0-9]+)\.([0-9]+)(dev|alpha|beta|rc)?([0-9]*)([^0-9a-z].*)?$'
+		);
+		IF ver_match IS NULL THEN
+			RETURN NULL;
+		END IF;
+
+		RETURN ARRAY[
+			ver_match[1]::int,
+			ver_match[2]::int,
+			ver_match[3]::int,
+			CASE coalesce(ver_match[4], '')
+				WHEN 'dev' THEN 0
+				WHEN 'alpha' THEN 1
+				WHEN 'beta' THEN 2
+				WHEN 'rc' THEN 3
+				ELSE 4
+			END,
+			CASE coalesce(ver_match[5], '')
+				WHEN '' THEN 0
+				ELSE ver_match[5]::int
+			END
+		];
+	EXCEPTION WHEN OTHERS THEN
+		RETURN NULL;
+	END
+	$$
+	LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
 CREATE OR REPLACE FUNCTION postgis_geos_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE;
@@ -3326,6 +3362,8 @@ DECLARE
 	rast_lib_ver text := NULL;
 	rast_scr_ver text := NULL;
 	topo_scr_ver text := NULL;
+	relproc_int int[];
+	scr_ver_int int[];
 	json_lib_ver text;
 	protobuf_lib_ver text;
 	wagyu_lib_ver text;
@@ -3368,6 +3406,7 @@ BEGIN
 	SELECT @extschema@.postgis_scripts_installed() INTO dbproc;
 	SELECT @extschema@.postgis_scripts_released() INTO relproc;
 	SELECT @extschema@.postgis_lib_revision() INTO librev;
+	SELECT @extschema@._postgis_scripts_version_cmp_key(relproc) INTO relproc_int;
 	BEGIN
 		SELECT topology.postgis_topology_scripts_installed() INTO topo_scr_ver;
 	EXCEPTION
@@ -3471,7 +3510,18 @@ BEGIN
 	IF topo_scr_ver IS NOT NULL THEN
 		fullver = fullver || ' TOPOLOGY';
 		IF topo_scr_ver != relproc THEN
-			fullver = fullver || ' (topology procs from "' || topo_scr_ver || '" need upgrade)';
+			SELECT @extschema@._postgis_scripts_version_cmp_key(topo_scr_ver) INTO scr_ver_int;
+
+			IF scr_ver_int IS NOT NULL AND relproc_int IS NOT NULL AND scr_ver_int > relproc_int THEN
+				fullver = pg_catalog.format(
+					'%s (topology procs from "%s" are newer than core procs from "%s")',
+					fullver,
+					topo_scr_ver,
+					relproc
+				);
+			ELSE
+				fullver = fullver || ' (topology procs from "' || topo_scr_ver || '" need upgrade)';
+			END IF;
 		END IF;
 		IF core_is_extension AND NOT EXISTS (
 			SELECT * FROM pg_catalog.pg_extension
@@ -3495,11 +3545,33 @@ BEGIN
 	END IF;
 
 	IF rast_scr_ver IS NOT NULL AND rast_scr_ver != relproc THEN
-		fullver = fullver || ' (raster procs from "' || rast_scr_ver || '" need upgrade)';
+		SELECT @extschema@._postgis_scripts_version_cmp_key(rast_scr_ver) INTO scr_ver_int;
+
+		IF scr_ver_int IS NOT NULL AND relproc_int IS NOT NULL AND scr_ver_int > relproc_int THEN
+			fullver = pg_catalog.format(
+				'%s (raster procs from "%s" are newer than core procs from "%s")',
+				fullver,
+				rast_scr_ver,
+				relproc
+			);
+		ELSE
+			fullver = fullver || ' (raster procs from "' || rast_scr_ver || '" need upgrade)';
+		END IF;
 	END IF;
 
 	IF sfcgal_scr_ver IS NOT NULL AND sfcgal_scr_ver != relproc THEN
-		fullver = fullver || ' (sfcgal procs from "' || sfcgal_scr_ver || '" need upgrade)';
+		SELECT @extschema@._postgis_scripts_version_cmp_key(sfcgal_scr_ver) INTO scr_ver_int;
+
+		IF scr_ver_int IS NOT NULL AND relproc_int IS NOT NULL AND scr_ver_int > relproc_int THEN
+			fullver = pg_catalog.format(
+				'%s (sfcgal procs from "%s" are newer than core procs from "%s")',
+				fullver,
+				sfcgal_scr_ver,
+				relproc
+			);
+		ELSE
+			fullver = fullver || ' (sfcgal procs from "' || sfcgal_scr_ver || '" need upgrade)';
+		END IF;
 	END IF;
 
 	-- Check for the presence of deprecated functions

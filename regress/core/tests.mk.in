@@ -91,6 +91,7 @@ TESTS += \
 	$(top_srcdir)/regress/core/point_coordinates \
 	$(top_srcdir)/regress/core/polygonize \
 	$(top_srcdir)/regress/core/polyhedralsurface \
+	$(top_srcdir)/regress/core/postgis_full_version \
 	$(top_srcdir)/regress/core/postgis_type_name \
 	$(top_srcdir)/regress/core/quantize_coordinates \
 	$(top_srcdir)/regress/core/regress \
