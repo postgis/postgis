@@ -1,0 +1,4 @@
+1|11|12
+1|14|t
+1|14|
+ERROR:  RASTER_setBandNoDataValues: band and nodatavalue arrays must have the same length
