@@ -4,6 +4,7 @@
  *
  * Copyright (C) 2012 Regents of the University of California
  *   <bkpark@ucdavis.edu>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -4774,6 +4775,40 @@ static void test_raster_same_alignment(void) {
 	CU_ASSERT_EQUAL(aligned, 0);
 	CU_ASSERT_STRING_EQUAL(reason, "The rasters (pixel corner coordinates) are not aligned");
 
+	rt_raster_set_srid(rast1, 4269);
+	rt_raster_set_scale(rast1, 9.259259252584582e-05, -9.259259252584056e-05);
+	rt_raster_set_skews(rast1, 0, 0);
+	rt_raster_set_offsets(rast1, -95.63944444404353, 41.78759259228624);
+	rt_raster_set_srid(rast2, 4269);
+	rt_raster_set_scale(rast2, 9.259259260902374e-05, -9.259259252584056e-05);
+	rt_raster_set_skews(rast2, 0, 0);
+	rt_raster_set_offsets(rast2, -96.76907407407123, 41.991296295843085);
+
+	rtn = rt_raster_same_alignment(rast1, rast2, &aligned, &reason);
+	CU_ASSERT_EQUAL(rtn, ES_NONE);
+	CU_ASSERT_EQUAL(aligned, 0);
+	CU_ASSERT_STRING_EQUAL(reason, "The rasters (pixel corner coordinates) are not aligned");
+	rtn = rt_raster_same_alignment(rast2, rast1, &aligned, &reason);
+	CU_ASSERT_EQUAL(rtn, ES_NONE);
+	CU_ASSERT_EQUAL(aligned, 0);
+	CU_ASSERT_STRING_EQUAL(reason, "The rasters (pixel corner coordinates) are not aligned");
+
+	rt_raster_set_srid(rast1, 0);
+	rt_raster_set_scale(rast1, 1, 1);
+	rt_raster_set_offsets(rast1, 0, 0);
+	rt_raster_set_srid(rast2, 0);
+	rt_raster_set_scale(rast2, 1 + 5e-8, 1);
+	rt_raster_set_offsets(rast2, 100, 0);
+
+	rtn = rt_raster_same_alignment(rast1, rast2, &aligned, &reason);
+	CU_ASSERT_EQUAL(rtn, ES_NONE);
+	CU_ASSERT_EQUAL(aligned, 0);
+	CU_ASSERT_STRING_EQUAL(reason, "The rasters (pixel corner coordinates) are not aligned");
+	rtn = rt_raster_same_alignment(rast2, rast1, &aligned, &reason);
+	CU_ASSERT_EQUAL(rtn, ES_NONE);
+	CU_ASSERT_EQUAL(aligned, 0);
+	CU_ASSERT_STRING_EQUAL(reason, "The rasters (pixel corner coordinates) are not aligned");
+
 	cu_free_raster(rast2);
 	cu_free_raster(rast1);
 }
@@ -4794,4 +4829,3 @@ void spatial_relationship_suite_setup(void)
 	PG_ADD_TEST(suite, test_raster_intersects);
 	PG_ADD_TEST(suite, test_raster_same_alignment);
 }
-
