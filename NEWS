@@ -98,6 +98,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - GH-888, [sfcgal] Avoid stale detoasted geometry access in
           CG_Visibility empty-input handling for SFCGAL < 2.2
           (Darafei Praliaskouski)
+ - #2808, Clarify postgis_full_version() output when installed topology
+          scripts are newer than core scripts (Darafei Praliaskouski)
  - #3179, Mark truncated libpgcommon PostgreSQL messages instead of silently
           dropping the tail (Darafei Praliaskouski)
  - #6003, Avoid size_t formats in liblwgeom logging/error wrappers for
