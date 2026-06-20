@@ -139,6 +139,11 @@ RASTER_TEST_LOADER = \
 	$(top_srcdir)/raster/test/regress/loader/BasicFilename \
 	$(top_srcdir)/raster/test/regress/loader/BasicOutDB \
 	$(top_srcdir)/raster/test/regress/loader/Tiled10x10 \
+	$(top_srcdir)/raster/test/regress/loader/Tiled256x8 \
+	$(top_srcdir)/raster/test/regress/loader/TiledOrigin \
+	$(top_srcdir)/raster/test/regress/loader/TiledOriginEquals \
+	$(top_srcdir)/raster/test/regress/loader/TiledOriginOverview \
+	$(top_srcdir)/raster/test/regress/loader/TiledOriginLarge \
 	$(top_srcdir)/raster/test/regress/loader/Tiled10x10Copy \
 	$(top_srcdir)/raster/test/regress/loader/Tiled8x8 \
 	$(top_srcdir)/raster/test/regress/loader/TiledAuto \
