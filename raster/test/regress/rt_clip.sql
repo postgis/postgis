@@ -230,3 +230,40 @@ FROM (
 	SELECT _ST_Clip(rast, ARRAY[3, 1], geom, ARRAY[253, 251], FALSE) AS rast
 	FROM test_rast, test_geom
 ) AS clipped;
+
+-- #4009 ST_Clip accepts a geometry array, unioned before clipping
+WITH test_rast AS (
+	SELECT ST_AddBand(
+		ST_SetSRID(
+			ST_MakeEmptyRaster(5, 5, 0, 5, 1, -1, 0, 0),
+			4326
+		),
+		'8BUI'::text, 7, 0
+	) AS rast
+), test_geom AS (
+	SELECT ARRAY[
+		ST_MakeEnvelope(1, 1, 3, 3, 4326),
+		ST_MakeEnvelope(3, 3, 5, 5, 4326)
+	]::geometry[] AS geom
+), clipped AS (
+	SELECT
+		ST_Clip(rast, geom) AS default_clip,
+		ST_Clip(rast, ST_Union(geom)) AS union_default_clip,
+		ST_Clip(rast, geom, ARRAY[99]::float8[], TRUE) AS array_nodata,
+		ST_Clip(rast, ST_Union(geom), ARRAY[99]::float8[], TRUE) AS union_nodata,
+		ST_Clip(rast, geom, 99.0, FALSE, TRUE) AS scalar_nodata,
+		ST_Clip(rast, ST_Union(geom), 99.0, FALSE, TRUE) AS union_scalar_nodata,
+		ST_Clip(rast, geom, FALSE, TRUE) AS crop_only,
+		ST_Clip(rast, ST_Union(geom), FALSE, TRUE) AS union_crop_only
+	FROM test_rast, test_geom
+)
+SELECT '#4009',
+	ST_AsBinary(default_clip, TRUE) = ST_AsBinary(union_default_clip, TRUE),
+	ST_AsBinary(array_nodata, TRUE) = ST_AsBinary(union_nodata, TRUE),
+	ST_AsBinary(scalar_nodata, TRUE) = ST_AsBinary(union_scalar_nodata, TRUE),
+	ST_AsBinary(crop_only, TRUE) = ST_AsBinary(union_crop_only, TRUE),
+	ST_Width(array_nodata),
+	ST_Height(array_nodata),
+	ST_Width(crop_only),
+	ST_Height(crop_only)
+FROM clipped;
