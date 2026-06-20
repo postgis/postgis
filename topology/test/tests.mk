@@ -38,6 +38,7 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/getnodebypoint.sql \
 	$(top_srcdir)/topology/test/regress/getnodeedges.sql \
 	$(top_srcdir)/topology/test/regress/getringedges.sql \
+	$(top_srcdir)/topology/test/regress/getrelatedtopogeom.sql \
 	$(top_srcdir)/topology/test/regress/gettopogeomelements.sql \
 	$(top_srcdir)/topology/test/regress/gettopogeomelements_large.sql \
 	$(top_srcdir)/topology/test/regress/gml.sql \
@@ -101,4 +102,3 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/verifylargeids.sql \
 	$(top_srcdir)/topology/test/regress/fix_topogeometry_columns.sql \
 	$(top_srcdir)/topology/test/regress/findvertexsegmentpairsbelowdistance.sql
-
