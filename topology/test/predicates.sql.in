@@ -8,6 +8,7 @@
 #define DO_POINT_POLYGON_INTERSECTS 1
 #define DO_LINE_POLYGON_INTERSECTS 1
 #define DO_POLYGON_POLYGON_INTERSECTS 1
+#define DO_INTERIORS_INTERSECT 1
 #define DO_POINT_POINT_EQUALS 1
 #define DO_LINE_LINE_EQUALS 1
 #define DO_POLYGON_POLYGON_EQUALS 1
@@ -82,6 +83,33 @@ SELECT a.feature_name, b.feature_name FROM
 	WHERE a.fid < b.fid AND @SCHEMA@intersects(a.@COLUMN@, b.@COLUMN@);
 #endif
 
+#if DO_INTERIORS_INTERSECT
+
+-- Detect interior intersections between topogeometries.
+
+SELECT 'INTERIORS INTERSECT' as operation;
+
+SELECT a.feature_name, b.feature_name FROM
+	features.traffic_signs a, features.land_parcels b
+	WHERE @SCHEMA@InteriorsIntersect(a.@COLUMN@, b.@COLUMN@)
+	ORDER BY a.feature_name, b.feature_name;
+
+SELECT a.feature_name, b.feature_name FROM
+	features.city_streets a, features.land_parcels b
+	WHERE @SCHEMA@InteriorsIntersect(a.@COLUMN@, b.@COLUMN@)
+	ORDER BY a.feature_name, b.feature_name;
+
+SELECT 'POLY/POLY TOUCH ONLY' as operation;
+
+SELECT a.feature_name, b.feature_name FROM
+	features.land_parcels a, features.land_parcels b
+	WHERE a.fid < b.fid
+	  AND @SCHEMA@intersects(a.@COLUMN@, b.@COLUMN@)
+	  AND NOT @SCHEMA@InteriorsIntersect(a.@COLUMN@, b.@COLUMN@)
+	ORDER BY a.feature_name, b.feature_name;
+
+#endif
+
 #if DO_POINT_POINT_EQUALS
 
 SELECT 'POINT/POINT EQUALS' as operation;
@@ -127,4 +155,3 @@ SELECT a.feature_name, b.feature_name
 	ORDER BY a.feature_name;
 
 END;
-

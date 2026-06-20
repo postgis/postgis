@@ -16,6 +16,7 @@
 --  Overloaded spatial predicates for TopoGeometry inputs
 --
 --   FUNCTION intersects(TopoGeometry, TopoGeometry)
+--   FUNCTION InteriorsIntersect(TopoGeometry, TopoGeometry)
 --   FUNCTION equals(TopoGeometry, TopoGeometry)
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -449,6 +450,24 @@ LANGUAGE 'plpgsql' STABLE STRICT;
 --} intersects(TopoGeometry, TopoGeometry)
 
 --{
+-- InteriorsIntersect(TopoGeometry, TopoGeometry)
+--
+CREATE OR REPLACE FUNCTION topology.InteriorsIntersect(tg1 topology.TopoGeometry, tg2 topology.TopoGeometry)
+  RETURNS bool
+AS
+$$
+BEGIN
+  IF tg1.topology_id != tg2.topology_id THEN
+    RAISE EXCEPTION 'Cannot compare TopoGeometries from different topologies';
+  END IF;
+
+  RETURN ST_Relate(tg1::geometry, tg2::geometry, 'T********');
+END
+$$
+LANGUAGE 'plpgsql' STABLE STRICT;
+--} InteriorsIntersect(TopoGeometry, TopoGeometry)
+
+--{
 --  equals(TopoGeometry, TopoGeometry)
 --
 CREATE OR REPLACE FUNCTION topology.equals(tg1 topology.TopoGeometry, tg2 topology.TopoGeometry)
@@ -510,4 +529,3 @@ END
 $$
 LANGUAGE 'plpgsql' STABLE STRICT;
 --} equals(TopoGeometry, TopoGeometry)
-
