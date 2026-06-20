@@ -92,6 +92,7 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/topologysummary.sql \
 	$(top_srcdir)/topology/test/regress/totaltopologysize.sql \
 	$(top_srcdir)/topology/test/regress/totopogeom.sql \
+	$(top_srcdir)/topology/test/regress/updatetopologysrid.sql \
 	$(top_srcdir)/topology/test/regress/upgradetopology.sql \
 	$(top_srcdir)/topology/test/regress/validatetopologyprecision.sql \
 	$(top_srcdir)/topology/test/regress/validatetopologyrelation.sql \

@@ -1,0 +1,200 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+--{
+-- UpdateTopologySRID(toponame, srid)
+--
+-- Relabels topology primitive geometries and the topology metadata SRID.
+--
+-- Availability: 3.7.0
+--
+CREATE OR REPLACE FUNCTION topology.UpdateTopologySRID(atopology name, srid integer)
+RETURNS text
+AS
+$BODY$
+DECLARE
+  rec RECORD;
+  topo topology.topology;
+  new_srid integer := srid;
+  unknown_srid integer;
+  zsuffix text := '';
+  sql text;
+  edge_owner name;
+  edge_grants text[];
+  edge_column_grants text[];
+BEGIN
+  topo := topology.FindTopology(atopology);
+  IF topo.id IS NULL THEN
+    RAISE EXCEPTION 'Could not find topology "%"', atopology;
+  END IF;
+
+  IF topo.hasz THEN
+    zsuffix := 'z';
+  END IF;
+
+  IF new_srid > 0 THEN
+    SELECT srs.srid
+    FROM spatial_ref_sys srs
+    WHERE srs.srid = new_srid
+    INTO rec;
+
+    IF rec.srid IS NULL THEN
+      RAISE EXCEPTION 'invalid SRID: % not found in spatial_ref_sys', new_srid;
+    END IF;
+  ELSE
+    unknown_srid := ST_SRID('POINT EMPTY'::geometry);
+    IF new_srid != unknown_srid THEN
+      new_srid := unknown_srid;
+      RAISE NOTICE 'SRID value % converted to the officially unknown SRID value %', srid, new_srid;
+    END IF;
+  END IF;
+
+  SELECT pg_get_userbyid(c.relowner)
+  FROM pg_class c
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  WHERE n.nspname = topo.name
+    AND c.relname = 'edge'
+  INTO edge_owner;
+
+  SELECT coalesce(array_agg(stmt ORDER BY stmt), ARRAY[]::text[])
+  FROM (
+    SELECT format(
+      'GRANT %s ON %I.edge TO %s%s',
+      string_agg(privilege_type, ', ' ORDER BY privilege_type),
+      topo.name,
+      CASE WHEN grantee = 0 THEN 'PUBLIC' ELSE format('%I', grantee_role.rolname) END,
+      CASE WHEN is_grantable THEN ' WITH GRANT OPTION' ELSE '' END
+    ) AS stmt
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    CROSS JOIN LATERAL aclexplode(c.relacl) acl
+    LEFT JOIN pg_roles grantee_role ON grantee_role.oid = acl.grantee
+    WHERE n.nspname = topo.name
+      AND c.relname = 'edge'
+      AND acl.grantee <> c.relowner
+    GROUP BY grantee, grantee_role.rolname, is_grantable
+  ) grants
+  INTO edge_grants;
+
+  SELECT coalesce(array_agg(stmt ORDER BY stmt), ARRAY[]::text[])
+  FROM (
+    SELECT format(
+      'GRANT %s (%I) ON %I.edge TO %s%s',
+      string_agg(privilege_type, ', ' ORDER BY privilege_type),
+      a.attname,
+      topo.name,
+      CASE WHEN grantee = 0 THEN 'PUBLIC' ELSE format('%I', grantee_role.rolname) END,
+      CASE WHEN is_grantable THEN ' WITH GRANT OPTION' ELSE '' END
+    ) AS stmt
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    JOIN pg_attribute a ON a.attrelid = c.oid
+    CROSS JOIN LATERAL aclexplode(a.attacl) acl
+    LEFT JOIN pg_roles grantee_role ON grantee_role.oid = acl.grantee
+    WHERE n.nspname = topo.name
+      AND c.relname = 'edge'
+      AND a.attnum > 0
+      AND NOT a.attisdropped
+      AND acl.grantee <> c.relowner
+    GROUP BY a.attnum, a.attname, grantee, grantee_role.rolname, is_grantable
+  ) grants
+  INTO edge_column_grants;
+
+  sql := format(
+    $$
+      -- PostgreSQL blocks ALTER COLUMN TYPE while the edge view rule
+      -- depends on edge_data.geom. Drop without CASCADE so external
+      -- dependents stop the change, then restore owner and grants below.
+      DROP VIEW %1$I.edge;
+
+      ALTER TABLE %1$I.face
+        ALTER COLUMN mbr TYPE geometry(polygon, %2$L)
+        USING ST_SetSRID(mbr, %2$L);
+
+      ALTER TABLE %1$I.node
+        ALTER COLUMN geom TYPE geometry(point%3$s, %2$L)
+        USING ST_SetSRID(geom, %2$L);
+
+      ALTER TABLE %1$I.edge_data
+        ALTER COLUMN geom TYPE geometry(linestring%3$s, %2$L)
+        USING ST_SetSRID(geom, %2$L);
+
+      CREATE VIEW %1$I.edge AS
+      SELECT
+        edge_id, start_node, end_node, next_left_edge,
+        next_right_edge, left_face, right_face, geom
+      FROM %1$I.edge_data;
+
+      COMMENT ON VIEW %1$I.edge IS
+      'Contains edge topology primitives';
+      COMMENT ON COLUMN %1$I.edge.edge_id IS
+      'Unique identifier of the edge';
+      COMMENT ON COLUMN %1$I.edge.start_node IS
+      'Unique identifier of the node at the start of the edge';
+      COMMENT ON COLUMN %1$I.edge.end_node IS
+      'Unique identifier of the node at the end of the edge';
+      COMMENT ON COLUMN %1$I.edge.next_left_edge IS
+      'Unique identifier of the next edge of the face on the left (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary';
+      COMMENT ON COLUMN %1$I.edge.next_right_edge IS
+      'Unique identifier of the next edge of the face on the right (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary';
+      COMMENT ON COLUMN %1$I.edge.left_face IS
+      'Unique identifier of the face on the left side of the edge when looking in the direction from START_NODE to END_NODE';
+      COMMENT ON COLUMN %1$I.edge.right_face IS
+      'Unique identifier of the face on the right side of the edge when looking in the direction from START_NODE to END_NODE';
+      COMMENT ON COLUMN %1$I.edge.geom IS
+      'The geometry of the edge';
+
+      CREATE RULE edge_insert_rule AS
+      ON INSERT TO %1$I.edge
+      DO INSTEAD INSERT into %1$I.edge_data
+      VALUES (
+        NEW.edge_id, NEW.start_node, NEW.end_node,
+        NEW.next_left_edge, abs(NEW.next_left_edge),
+        NEW.next_right_edge, abs(NEW.next_right_edge),
+        NEW.left_face, NEW.right_face, NEW.geom
+      );
+
+      UPDATE topology.topology
+      SET srid = %2$L
+      WHERE id = %4$L;
+    $$,
+    topo.name,
+    new_srid,
+    zsuffix,
+    topo.id
+  );
+
+  EXECUTE sql;
+
+  IF edge_owner IS NOT NULL THEN
+    EXECUTE format('ALTER VIEW %I.edge OWNER TO %I', topo.name, edge_owner);
+  END IF;
+
+  FOREACH sql IN ARRAY edge_grants
+  LOOP
+    EXECUTE sql;
+  END LOOP;
+
+  FOREACH sql IN ARRAY edge_column_grants
+  LOOP
+    EXECUTE sql;
+  END LOOP;
+
+  RETURN format(
+    'Topology %L SRID changed to %s',
+    topo.name,
+    new_srid
+  );
+END
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE STRICT;
+--} UpdateTopologySRID
