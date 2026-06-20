@@ -36,7 +36,7 @@ use strict;
 my $me = $0;
 
 my $usage = qq{
-Usage:	$me [-v] [-L TOC] [-s schema] <dumpfile>
+Usage:	$me [-v] [-L TOC] [-s schema] <dumpfile> [-- pg_restore-arg ...]
         Restore a custom dump (pg_dump -Fc) of a PostGIS-enabled database.
         First dump the old database: pg_dump -Fc MYDB > MYDB.dmp
         Then create a new database: createdb NEWDB
@@ -50,6 +50,7 @@ Usage:	$me [-v] [-L TOC] [-s schema] <dumpfile>
         The -v switch writes detailed report on stderr.
         Use -L to provide a TOC rather than extracting it from the dump.
         Use -s if you installed PostGIS in a custom schema.
+        Use -- after the dump file to pass the following arguments to pg_restore.
 
 };
 
@@ -84,7 +85,12 @@ while (@ARGV && $ARGV[0] =~ /^-/) {
 
 die $usage if (@ARGV < 1);
 
-my $dumpfile = $ARGV[0];
+my $dumpfile = shift(@ARGV);
+my @pg_restore_args;
+if ( @ARGV ) {
+  die $usage if shift(@ARGV) ne '--';
+  @pg_restore_args = @ARGV;
+}
 my $manifest = $dumpfile;
 $manifest =~ s/\/$//; # strip trailing slash
 $manifest .= ".lst";
@@ -123,7 +129,7 @@ if(!defined($POSTGIS_TOC)) {
   print STDERR "  Writing manifest of things to read from dump file...\n"
     if $DEBUG;
 
-  open( DUMP, "pg_restore -f - -l $dumpfile |" ) || die "$me:\tCannot open dump file '$dumpfile'\n";
+  open( DUMP, "-|", "pg_restore", "-f", "-", "-l", $dumpfile ) || die "$me:\tCannot open dump file '$dumpfile'\n";
 } else {
   open( DUMP, '<' . $POSTGIS_TOC) || die "$me:\tCannot open TOC file '$POSTGIS_TOC'\n";
 }
@@ -145,7 +151,7 @@ while( my $l = <DUMP> ) {
 
 	if ( not defined ($POSTGIS_SCHEMA) )
 	{
-		if ( $l =~ / TABLE DATA ([^ ]*) spatial_ref_sys / )
+		if ( $l =~ / TABLE (?:DATA )?([^ ]*) spatial_ref_sys / )
 		{
 			$POSTGIS_SCHEMA = $1;
 			print STDERR "  Setting postgis schema to $POSTGIS_SCHEMA, as found in the dump\n"
@@ -170,11 +176,10 @@ close(DUMP) || die "$me: pg_restore returned an error\n";
 #
 print STDERR "  Writing ASCII to stdout...\n"
   if $DEBUG;
-open( INPUT, "pg_restore -f - -L $manifest $dumpfile |") || die "$me:\tCan't run pg_restore\n";
+open( INPUT, "-|", "pg_restore", @pg_restore_args, "-f", "-", "-L", $manifest, $dumpfile ) || die "$me:\tCan't run pg_restore\n";
 
-if ( defined $POSTGIS_SCHEMA ) {
-  print STDOUT "SET search_path = \"" . $POSTGIS_SCHEMA . "\";\n";
-}
+my $postgis_schema = defined $POSTGIS_SCHEMA ? $POSTGIS_SCHEMA : "public";
+print STDOUT "SET search_path = \"" . $postgis_schema . "\";\n";
 
 #
 # Disable topology metadata tables triggers to allow for population
@@ -349,9 +354,7 @@ while( my $l = <INPUT> ) {
 
 }
 
-if ( defined $POSTGIS_SCHEMA ) {
-  print STDOUT "SET search_path = \"" . $POSTGIS_SCHEMA . "\";\n";
-}
+print STDOUT "SET search_path = \"" . $postgis_schema . "\";\n";
 
 if ( $hasTopology ) {
 
