@@ -67,6 +67,7 @@ TESTS += \
 	$(top_srcdir)/regress/core/in_geohash \
 	$(top_srcdir)/regress/core/in_gml \
 	$(top_srcdir)/regress/core/in_kml \
+	$(top_srcdir)/regress/core/in_latlon \
 	$(top_srcdir)/regress/core/in_marc21 \
 	$(top_srcdir)/regress/core/iscollection \
 	$(top_srcdir)/regress/core/isvaliddetail \

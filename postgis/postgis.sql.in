@@ -1792,6 +1792,20 @@ CREATE OR REPLACE FUNCTION ST_AsLatLonText(geom geometry, tmpl text DEFAULT '')
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_FromLatLonText(latlon text)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_from_latlon'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_FromLatLonText(lat text, lon text)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_from_latlon'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION GeomFromEWKB(bytea)
 	RETURNS geometry
