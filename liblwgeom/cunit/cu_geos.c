@@ -17,6 +17,7 @@
 
 #include "lwgeom_geos.h"
 #include "cu_tester.h"
+#include "cu_standard_geoms.h"
 
 #include "liblwgeom_internal.h"
 
@@ -24,28 +25,14 @@ static void
 test_geos_noop(void)
 {
 	size_t i;
-	char *in_ewkt;
+	const char *in_ewkt;
 	char *out_ewkt;
 	LWGEOM *geom_in;
 	LWGEOM *geom_out;
 
-	char *ewkt[] = {
-	    "POINT(0 0.2)",
-	    "LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
-	    "MULTIPOINT(0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9)",
-	    "SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
-	    "SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
-	    "POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-	    "SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-	    "SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))",
-	    "SRID=100000;POLYGON((-1 -1 3,-1 2.5 3,2 2 3,2 -1 3,-1 -1 3),(0 0 3,0 1 3,1 1 3,1 0 3,0 0 3),(-0.5 -0.5 3,-0.5 -0.4 3,-0.4 -0.4 3,-0.4 -0.5 3,-0.5 -0.5 3))",
-	    "SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
-	    "SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
-	};
-
-	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++)
+	for (i = 0; i < cu_standard_geoms_simple_count; i++)
 	{
-		in_ewkt = ewkt[i];
+		in_ewkt = cu_standard_geoms_simple[i];
 		geom_in = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 		geom_out = lwgeom_geos_noop(geom_in);
 		CU_ASSERT_PTR_NOT_NULL_FATAL(geom_out);
