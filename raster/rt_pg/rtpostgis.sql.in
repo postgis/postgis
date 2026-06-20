@@ -5060,6 +5060,133 @@ CREATE OR REPLACE FUNCTION ST_SetValues(
 	AS 'MODULE_PATHNAME', 'RASTER_setPixelValuesGeomval'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
+CREATE OR REPLACE FUNCTION ST_SetValues(
+	rast1 raster, nband1 integer,
+	x integer, y integer,
+	width integer, height integer,
+	rast2 raster, nband2 integer,
+	keepdestnodata boolean,
+	keepsourcenodata boolean
+)
+	RETURNS raster AS
+	$$
+	DECLARE
+		dest_x integer;
+		dest_y integer;
+		dest_x_end integer;
+		dest_y_end integer;
+		src_x integer;
+		src_y integer;
+		src_origin_x integer;
+		src_origin_y integer;
+		write_width integer;
+		write_height integer;
+		source_values double precision[][];
+		source_nodata double precision;
+	BEGIN
+		IF rast1 IS NULL THEN
+			RAISE NOTICE 'ST_SetValues: No destination raster provided. Returning NULL';
+			RETURN NULL;
+		END IF;
+
+		IF rast2 IS NULL THEN
+			RAISE NOTICE 'ST_SetValues: No source raster provided. Returning destination raster';
+			RETURN rast1;
+		END IF;
+
+		keepdestnodata := COALESCE(keepdestnodata, FALSE);
+		keepsourcenodata := COALESCE(keepsourcenodata, FALSE);
+
+		IF nband1 IS NULL OR nband1 < 1 THEN
+			RAISE NOTICE 'ST_SetValues: destination band out of range. Returning destination raster';
+			RETURN rast1;
+		END IF;
+
+		IF nband2 IS NULL OR nband2 < 1 THEN
+			RAISE NOTICE 'ST_SetValues: source band out of range. Returning destination raster';
+			RETURN rast1;
+		END IF;
+
+		IF @extschema@.ST_IsEmpty(rast1) OR @extschema@.ST_HasNoBand(rast1, nband1) THEN
+			RAISE NOTICE 'ST_SetValues: Empty or no band destination raster provided. Returning destination raster';
+			RETURN rast1;
+		END IF;
+
+		IF @extschema@.ST_IsEmpty(rast2) OR @extschema@.ST_HasNoBand(rast2, nband2) THEN
+			RAISE NOTICE 'ST_SetValues: Empty or no band source raster provided. Returning destination raster';
+			RETURN rast1;
+		END IF;
+
+		IF x IS NULL OR y IS NULL OR width IS NULL OR height IS NULL OR width <= 0 OR height <= 0 THEN
+			RAISE EXCEPTION 'Values for x, y, width, and height must be non-NULL, and width and height must be greater than zero';
+		END IF;
+
+		IF @extschema@.ST_SRID(rast1) != @extschema@.ST_SRID(rast2) THEN
+			RAISE EXCEPTION 'The two rasters do not have the same SRID';
+		END IF;
+
+		IF NOT @extschema@.ST_SameAlignment(rast1, rast2) THEN
+			RAISE EXCEPTION 'The two rasters do not have the same alignment';
+		END IF;
+
+		src_origin_x := @extschema@.ST_WorldToRasterCoordX(
+			rast1,
+			@extschema@.ST_RasterToWorldCoordX(rast2, 1, 1),
+			@extschema@.ST_RasterToWorldCoordY(rast2, 1, 1)
+		);
+		src_origin_y := @extschema@.ST_WorldToRasterCoordY(
+			rast1,
+			@extschema@.ST_RasterToWorldCoordX(rast2, 1, 1),
+			@extschema@.ST_RasterToWorldCoordY(rast2, 1, 1)
+		);
+
+		dest_x := GREATEST(x, 1, src_origin_x);
+		dest_y := GREATEST(y, 1, src_origin_y);
+		dest_x_end := LEAST(x + width - 1, @extschema@.ST_Width(rast1), src_origin_x + @extschema@.ST_Width(rast2) - 1);
+		dest_y_end := LEAST(y + height - 1, @extschema@.ST_Height(rast1), src_origin_y + @extschema@.ST_Height(rast2) - 1);
+
+		write_width := dest_x_end - dest_x + 1;
+		write_height := dest_y_end - dest_y + 1;
+
+		IF write_width < 1 OR write_height < 1 THEN
+			RETURN rast1;
+		END IF;
+
+		src_x := dest_x - src_origin_x + 1;
+		src_y := dest_y - src_origin_y + 1;
+		source_values := (@extschema@.ST_DumpValues(rast2, nband2, FALSE))[src_y:src_y + write_height - 1][src_x:src_x + write_width - 1];
+
+		IF keepsourcenodata THEN
+			source_nodata := @extschema@.ST_BandNoDataValue(rast2, nband2);
+			IF source_nodata IS NULL THEN
+				RAISE NOTICE 'ST_SetValues: keepsourcenodata was set to TRUE but source raster band does not have a nodata value. keepsourcenodata reset to FALSE';
+				keepsourcenodata := FALSE;
+			ELSIF @extschema@.ST_BandIsNoData(rast2, nband2) THEN
+				RETURN rast1;
+			END IF;
+		END IF;
+
+		IF keepsourcenodata THEN
+			RETURN @extschema@._ST_SetValues(rast1, nband1, dest_x, dest_y, source_values, NULL, TRUE, source_nodata, keepdestnodata);
+		END IF;
+
+		RETURN @extschema@._ST_SetValues(rast1, nband1, dest_x, dest_y, source_values, NULL, FALSE, NULL, keepdestnodata);
+	END;
+	$$
+	LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION ST_SetValues(
+	rast1 raster,
+	x integer, y integer,
+	width integer, height integer,
+	rast2 raster, nband2 integer,
+	keepdestnodata boolean,
+	keepsourcenodata boolean
+)
+	RETURNS raster
+	AS $$ SELECT @extschema@.ST_SetValues($1, 1, $2, $3, $4, $5, $6, $7, $8, $9) $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
 -----------------------------------------------------------------------
 -- ST_SetValue (set one or more pixels to a single value)
 -----------------------------------------------------------------------
