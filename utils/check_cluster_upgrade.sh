@@ -16,8 +16,15 @@ usage() {
 
 cleanup() {
   echo "-- Cleaning up --"
-  echo "Stopping postmaster on ${DATADIR} up"
-  ${BIN_OLD}/pg_ctl -D ${DATADIR} stop
+  if test -f "${DATADIR}/postmaster.pid"; then
+    if test -n "${BIN_NEW}"; then
+      echo "Stopping postmaster on ${DATADIR}"
+      ${BIN_NEW}/pg_ctl -D ${DATADIR} stop
+    else
+      echo "Stopping postmaster on ${DATADIR}"
+      ${BIN_OLD}/pg_ctl -D ${DATADIR} stop
+    fi
+  fi
   echo "Removing ${TMPDIR}"
   rm -rf ${TMPDIR}
 }
@@ -56,6 +63,11 @@ if test -z "$PG_CONFIG_NEW"; then
   exit 1
 fi
 
+if test "$(id -u)" = "0"; then
+  echo "This script must be run as an unprivileged PostgreSQL cluster owner, not root" >&2
+  exit 1
+fi
+
 if test "$PG_CONFIG_OLD" = "$PG_CONFIG_NEW"; then
   echo "Old and new pg_config paths need be different" >&2
   exit 1
@@ -63,6 +75,11 @@ fi
 
 BIN_OLD=$(${PG_CONFIG_OLD} --bindir)
 BIN_NEW=$(${PG_CONFIG_NEW} --bindir)
+
+INITDB_NEW_OPTS=
+if ${BIN_NEW}/initdb --help | grep -q -- "--no-data-checksums"; then
+  INITDB_NEW_OPTS=--no-data-checksums
+fi
 
 echo "Testing cluster upgrade"
 echo "FROM: $(${PG_CONFIG_OLD} --version)"
@@ -104,7 +121,7 @@ mv ${DATADIR} ${PGDATAOLD}
 export PGDATANEW=${DATADIR}
 
 echo "Creating TO cluster"
-${BIN_NEW}/initdb ${PGDATANEW} > ${LOGFILE} 2>&1 || {
+${BIN_NEW}/initdb ${INITDB_NEW_OPTS} ${PGDATANEW} > ${LOGFILE} 2>&1 || {
   cat ${LOGFILE} && exit 1
 }
 
