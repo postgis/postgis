@@ -1847,7 +1847,7 @@ SELECT ST_AsEWKT(ST_GeomFromGML('
 		  <refsection>
 			<title>Description</title>
 			<para>This function is an alias for <xref linkend="ST_GeomFromGML"/> and provides the same signatures.</para>
-			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support).</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50.</para>
 			<para role="availability" conformance="1.5">Availability: 1.5, requires libxml2 1.6+</para>
 		        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
 		        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 default srid optional parameter added.</para>
