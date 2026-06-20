@@ -833,10 +833,37 @@ CREATE OR REPLACE FUNCTION ST_Intersection(geography, geography)
 	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Intersection(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1, $2)), @extschema@.ST_Transform(@extschema@.geometry($2), @extschema@._ST_BestSRID($1, $2))), @extschema@.ST_SRID($1)))'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Availability: 3.7.0
+-- Empty shortcuts reference best_srid.srid so _ST_BestSRID validates non-finite operands.
+CREATE OR REPLACE FUNCTION ST_Difference(geography, geography)
+	RETURNS geography
+	AS 'WITH best_srid AS MATERIALIZED (SELECT COALESCE(@extschema@._ST_BestSRID($1, $2), @extschema@.ST_SRID($1)) AS srid) SELECT CASE WHEN @extschema@.ST_IsEmpty(@extschema@.geometry($1)) OR @extschema@.ST_IsEmpty(@extschema@.geometry($2)) THEN @extschema@.geography(@extschema@.ST_SetSRID(@extschema@.geometry($1), (ARRAY[@extschema@.ST_SRID($1), best_srid.srid])[1])) ELSE @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Difference(@extschema@.ST_Transform(@extschema@.geometry($1), best_srid.srid), @extschema@.ST_Transform(@extschema@.geometry($2), best_srid.srid)), @extschema@.ST_SRID($1))) END FROM best_srid'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_Union(geography, geography)
+	RETURNS geography
+	AS 'WITH best_srid AS MATERIALIZED (SELECT COALESCE(@extschema@._ST_BestSRID($1, $2), @extschema@.ST_SRID($1)) AS srid) SELECT CASE WHEN @extschema@.ST_IsEmpty(@extschema@.geometry($1)) THEN @extschema@.geography(@extschema@.ST_Transform(@extschema@.geometry($2), (ARRAY[@extschema@.ST_SRID($1), best_srid.srid])[1])) WHEN @extschema@.ST_IsEmpty(@extschema@.geometry($2)) THEN @extschema@.geography(@extschema@.ST_SetSRID(@extschema@.geometry($1), (ARRAY[@extschema@.ST_SRID($1), best_srid.srid])[1])) ELSE @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Union(@extschema@.ST_Transform(@extschema@.geometry($1), best_srid.srid), @extschema@.ST_Transform(@extschema@.geometry($2), best_srid.srid)), @extschema@.ST_SRID($1))) END FROM best_srid'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
 	RETURNS geometry AS
 	$$ SELECT @extschema@.ST_Intersection($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.7.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_Difference(text, text)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_Difference($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.7.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_Union(text, text)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_Union($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
