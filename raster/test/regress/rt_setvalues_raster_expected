@@ -1,0 +1,7 @@
+copy_aligned|{{1,1,1,1},{1,10,20,1},{1,30,40,1},{1,1,1,1}}
+skip_source_nodata|{{1,1,1,1},{1,10,1,1},{1,30,40,1},{1,1,1,1}}
+keep_dest_nodata|{{1,1,1,1},{1,0,20,1},{1,30,40,1},{1,1,1,1}}
+first_band_wrapper|{{1,1,1},{1,99,1},{1,1,1}}
+null_scalar_fill|{{0,0,1},{0,0,1},{1,1,1}}
+srid_mismatch|The two rasters do not have the same SRID
+alignment_mismatch|The two rasters do not have the same alignment
