@@ -196,6 +196,12 @@ static void out_x3d3_test_option(void)
 	    0,
 	    4);
 
+	do_x3d3_test(
+	    "LINESTRING(0 0,5e-13 1)",
+	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3'><Coordinate point='0 0 0 0 1 0 5e-13 1 0 5e-13 0 0 ' /></IndexedFaceSet>",
+	    15,
+	    4);
+
 	/* bounding box with flipped coordinates */
 	do_x3d3_test(
 	    "LINESTRING(2 8,3 7,10 11)",
