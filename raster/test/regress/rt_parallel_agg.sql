@@ -51,19 +51,14 @@ SELECT
 FROM generate_series(1, 2000) AS id;
 
 ALTER TABLE raster_parallel_agg_test SET (parallel_workers = 4);
-ANALYZE raster_parallel_agg_test;
+ANALYZE raster_parallel_agg_test (id);
 
 SELECT 'countagg_catalog',
 	count(*) FILTER (WHERE a.aggcombinefn <> 0::oid),
 	count(*)
 FROM pg_proc p
 JOIN pg_aggregate a ON a.aggfnoid = p.oid
-WHERE p.pronamespace = (
-		SELECT extnamespace
-		FROM pg_extension
-		WHERE extname = 'postgis_raster'
-	)
-	AND p.proname = 'st_countagg';
+WHERE p.proname = 'st_countagg';
 
 SELECT 'summarystatsagg_catalog',
 	count(*) FILTER (
@@ -74,12 +69,7 @@ SELECT 'summarystatsagg_catalog',
 	count(*)
 FROM pg_proc p
 JOIN pg_aggregate a ON a.aggfnoid = p.oid
-WHERE p.pronamespace = (
-		SELECT extnamespace
-		FROM pg_extension
-		WHERE extname = 'postgis_raster'
-	)
-	AND p.proname = 'st_summarystatsagg';
+WHERE p.proname = 'st_summarystatsagg';
 
 CALL p_force_parallel_mode('off');
 
