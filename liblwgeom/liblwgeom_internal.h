@@ -493,6 +493,13 @@ int lwgeom_contains_point(const LWGEOM *geom, const POINT2D *pt);
 * NOTE: the components pushed to the output vector have their SRID stripped
 */
 int lwline_split_by_point_to(const LWLINE* ln, const LWPOINT* pt, LWMLINE* to);
+int lwline_split_by_point_to_tolerance(const LWLINE* ln, const LWPOINT* pt, LWMLINE* to, double tolerance);
+
+/**
+* Split a geometry by a blade, allowing point and multipoint blades within
+* tolerance to split lineal input at their projected locations on the input.
+*/
+LWGEOM* lwgeom_split_with_tolerance(const LWGEOM* lwgeom_in, const LWGEOM* blade_in, double tolerance);
 
 /** Ensure the collection can hold at least up to ngeoms geometries */
 void lwcollection_reserve(LWCOLLECTION *col, uint32_t ngeoms);
