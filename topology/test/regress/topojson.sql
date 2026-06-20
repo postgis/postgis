@@ -17,6 +17,24 @@ SELECT 'L1-vanilla', feature_name, topology.AsTopoJSON(feature, NULL)
  WHERE feature_name IN ('R3', 'R4', 'R1', 'R2' )
  ORDER BY feature_name;
 
+SELECT 'L1-record-auto', feature_name, topology.AsTopoJSON(features.city_streets.*)
+ FROM features.city_streets
+ WHERE feature_name IN ('R3')
+ ORDER BY feature_name;
+
+SELECT 'L1-record-explicit', feature_name, topology.AsTopoJSON(features.city_streets.*, 'feature')
+ FROM features.city_streets
+ WHERE feature_name IN ('R3')
+ ORDER BY feature_name;
+
+SELECT 'L1-record-subquery-auto', feature_name, topology.AsTopoJSON(q)
+ FROM (
+  SELECT feature_name, feature
+  FROM features.city_streets
+  WHERE feature_name IN ('R3')
+ ) q
+ ORDER BY feature_name;
+
 --- Lineal hierarchical
 SELECT 'L2-vanilla', feature_name, topology.AsTopoJSON(feature, NULL)
  FROM features.big_streets
@@ -42,6 +60,15 @@ CREATE TEMP TABLE edgemap (arc_id bigserial, edge_id bigint unique);
 SELECT 'L1-edgemap', feature_name, topology.AsTopoJSON(feature, 'edgemap')
  FROM features.city_streets
  WHERE feature_name IN ('R3', 'R4', 'R1', 'R2' )
+ ORDER BY feature_name;
+
+TRUNCATE edgemap; SELECT NULLIF(setval('edgemap_arc_id_seq', 1, false), 1);
+SELECT 'L1-record-edgemap', feature_name, topology.AsTopoJSON(q, 'feature', 'edgemap')
+ FROM (
+  SELECT feature_name, feature
+  FROM features.city_streets
+  WHERE feature_name IN ('R3')
+ ) q
  ORDER BY feature_name;
 
 --- Lineal hierarchical

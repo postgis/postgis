@@ -4611,13 +4611,19 @@ SELECT topology.AsGML(topo,'') As rdgml
                         <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
                         <paramdef><type>regclass </type> <parameter>edgeMapTable</parameter></paramdef>
 					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsTopoJSON</function></funcdef>
+                        <paramdef><type>record </type> <parameter>feature</parameter></paramdef>
+                        <paramdef><type>text </type> <parameter>topogeom_column</parameter></paramdef>
+                        <paramdef><type>regclass </type> <parameter>edgeMapTable</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 
 			<refsection>
                 <title>Description</title>
 
-                <para>Returns the TopoJSON representation of a topogeometry. If <varname>edgeMapTable</varname> is not null, it will be used as a lookup/storage mapping of edge identifiers to arc indices. This is to be able to allow for a compact "arcs" array in the final document.
+                <para>Returns the TopoJSON representation of a topogeometry. The record variant finds a <varname>topogeometry</varname> column in the input record and returns the same TopoJSON representation for that column. If <varname>topogeom_column</varname> is an empty string or omitted, the first <varname>topogeometry</varname> column is used. If <varname>edgeMapTable</varname> is not null, it will be used as a lookup/storage mapping of edge identifiers to arc indices. This is to be able to allow for a compact "arcs" array in the final document.
 </para>
 
 <para>
@@ -4640,6 +4646,7 @@ the actual arcs plus some headers. See the <link xlink:href="http://github.com/m
                 <!-- use this format if new function -->
                 <para role="availability" conformance="2.1.0">Availability: 2.1.0 </para>
                 <para role="enhanced" conformance="2.2.1">Enhanced: 2.2.1 added support for puntal inputs</para>
+                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 added support for record inputs</para>
 			</refsection>
 
 

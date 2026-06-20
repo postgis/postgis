@@ -6,6 +6,9 @@ L1-vanilla|R1|{ "type": "MultiLineString", "arcs": [[9,-11]]}
 L1-vanilla|R2|{ "type": "MultiLineString", "arcs": [[4,-6]]}
 L1-vanilla|R3|{ "type": "MultiLineString", "arcs": [[25]]}
 L1-vanilla|R4|{ "type": "MultiLineString", "arcs": [[3]]}
+L1-record-auto|R3|{ "type": "MultiLineString", "arcs": [[25]]}
+L1-record-explicit|R3|{ "type": "MultiLineString", "arcs": [[25]]}
+L1-record-subquery-auto|R3|{ "type": "MultiLineString", "arcs": [[25]]}
 L2-vanilla|R1R2|{ "type": "MultiLineString", "arcs": [[9,-11],[4,-6]]}
 L2-vanilla|R4|{ "type": "MultiLineString", "arcs": [[3]]}
 A1-vanilla|P1|{ "type": "MultiPolygon", "arcs": [[[21,20,5,-19,-20,-12]]]}
@@ -19,6 +22,7 @@ L1-edgemap|R1|{ "type": "MultiLineString", "arcs": [[0,-2]]}
 L1-edgemap|R2|{ "type": "MultiLineString", "arcs": [[2,-4]]}
 L1-edgemap|R3|{ "type": "MultiLineString", "arcs": [[4]]}
 L1-edgemap|R4|{ "type": "MultiLineString", "arcs": [[5]]}
+L1-record-edgemap|R3|{ "type": "MultiLineString", "arcs": [[0]]}
 L2-edgemap|R1R2|{ "type": "MultiLineString", "arcs": [[0,-2],[2,-4]]}
 L2-edgemap|R4|{ "type": "MultiLineString", "arcs": [[4]]}
 A1-edgemap|P1|{ "type": "MultiPolygon", "arcs": [[[5,4,3,-3,-2,-1]]]}
