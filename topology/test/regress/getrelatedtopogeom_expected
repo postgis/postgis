@@ -1,0 +1,7 @@
+street R1 signs|2|1|1
+street R1 signs|2|2|1
+street R2 signs|2|3|1
+street R4 signs count|0
+sign S1 streets|3|1|2
+parcel P5 streets|3|3|2
+Topology 'city_data' dropped

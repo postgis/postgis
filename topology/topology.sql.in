@@ -79,6 +79,11 @@
 --    topological elements of the given TopoGeometry (primitive
 --    elements)
 --
+-- FUNCTION GetRelatedTopoGeom(toponame, layer_id, topogeom_id, target_layer_id)
+-- FUNCTION GetRelatedTopoGeom(TopoGeometry, target_layer_id)
+--    Returns a set of TopoGeometry objects from target_layer_id sharing
+--    at least one topology node with the given TopoGeometry.
+--
 -- FUNCTION ValidateTopology(toponame)
 --    Run validity checks on the topology, returning, for each
 --    detected error, a 3-columns row containing error string
@@ -1044,6 +1049,180 @@ $$
 LANGUAGE 'plpgsql' STABLE STRICT;
 
 --} GetTopoGeomElements()
+
+--{
+-- GetRelatedTopoGeom(toponame, layer_id, topogeom_id, target_layer_id)
+-- GetRelatedTopoGeom(TopoGeometry, target_layer_id)
+--
+-- Returns a set of TopoGeometry objects from target_layer_id sharing at least
+-- one topology node with the given TopoGeometry.
+--
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION topology.GetRelatedTopoGeom(toponame varchar, layerid integer, tgid bigint, target_layerid integer)
+  RETURNS SETOF topology.TopoGeometry
+AS
+$$
+DECLARE
+  topoid integer;
+  lyr topology.layer;
+  target_lyr topology.layer;
+  rec RECORD;
+  ret topology.TopoGeometry;
+  query text;
+BEGIN
+  SELECT id INTO topoid
+    FROM topology.topology WHERE name = toponame;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Topology % does not exist', quote_literal(toponame);
+  END IF;
+
+  SELECT * INTO lyr
+    FROM topology.layer
+    WHERE topology_id = topoid
+      AND layer_id = layerid;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Layer % does not exist', layerid;
+  END IF;
+
+  SELECT * INTO target_lyr
+    FROM topology.layer
+    WHERE topology_id = topoid
+      AND layer_id = target_layerid;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Layer % does not exist', target_layerid;
+  END IF;
+
+  query = format($fmt$
+    WITH source_nodes AS (
+      SELECT DISTINCT node_id
+      FROM (
+        SELECT elem[1] AS node_id
+        FROM topology.GetTopoGeomElements(%L, %s, %L) elem
+        WHERE elem[2] = 1
+
+        UNION ALL
+        SELECT e.start_node
+        FROM %I.edge_data e
+        JOIN topology.GetTopoGeomElements(%L, %s, %L) elem
+          ON elem[2] = 2
+         AND abs(e.edge_id) = elem[1]
+
+        UNION ALL
+        SELECT e.end_node
+        FROM %I.edge_data e
+        JOIN topology.GetTopoGeomElements(%L, %s, %L) elem
+          ON elem[2] = 2
+         AND abs(e.edge_id) = elem[1]
+
+        UNION ALL
+        SELECT e.start_node
+        FROM %I.edge_data e
+        JOIN topology.GetTopoGeomElements(%L, %s, %L) elem
+          ON elem[2] = 3
+         AND elem[1] != 0
+         AND (e.left_face = elem[1] OR e.right_face = elem[1])
+
+        UNION ALL
+        SELECT e.end_node
+        FROM %I.edge_data e
+        JOIN topology.GetTopoGeomElements(%L, %s, %L) elem
+          ON elem[2] = 3
+         AND elem[1] != 0
+         AND (e.left_face = elem[1] OR e.right_face = elem[1])
+      ) nodes
+    ),
+    target_topogeoms AS (
+      SELECT DISTINCT topogeo_id
+      FROM %I.relation
+      WHERE layer_id = %s
+    )
+    SELECT target_topogeoms.topogeo_id
+    FROM target_topogeoms
+    WHERE EXISTS (
+      SELECT 1
+      FROM source_nodes sn
+      JOIN LATERAL (
+        SELECT elem[1] AS node_id
+        FROM topology.GetTopoGeomElements(%L, %s, target_topogeoms.topogeo_id) elem
+        WHERE elem[2] = 1
+
+        UNION ALL
+        SELECT e.start_node
+        FROM %I.edge_data e
+        JOIN topology.GetTopoGeomElements(%L, %s, target_topogeoms.topogeo_id) elem
+          ON elem[2] = 2
+         AND abs(e.edge_id) = elem[1]
+
+        UNION ALL
+        SELECT e.end_node
+        FROM %I.edge_data e
+        JOIN topology.GetTopoGeomElements(%L, %s, target_topogeoms.topogeo_id) elem
+          ON elem[2] = 2
+         AND abs(e.edge_id) = elem[1]
+
+        UNION ALL
+        SELECT e.start_node
+        FROM %I.edge_data e
+        JOIN topology.GetTopoGeomElements(%L, %s, target_topogeoms.topogeo_id) elem
+          ON elem[2] = 3
+         AND elem[1] != 0
+         AND (e.left_face = elem[1] OR e.right_face = elem[1])
+
+        UNION ALL
+        SELECT e.end_node
+        FROM %I.edge_data e
+        JOIN topology.GetTopoGeomElements(%L, %s, target_topogeoms.topogeo_id) elem
+          ON elem[2] = 3
+         AND elem[1] != 0
+         AND (e.left_face = elem[1] OR e.right_face = elem[1])
+      ) tn USING (node_id)
+    )
+    ORDER BY target_topogeoms.topogeo_id
+    $fmt$,
+    toponame, layerid, tgid,
+    toponame, toponame, layerid, tgid,
+    toponame, toponame, layerid, tgid,
+    toponame, toponame, layerid, tgid,
+    toponame, toponame, layerid, tgid,
+    toponame, target_layerid,
+    toponame, target_layerid,
+    toponame, toponame, target_layerid,
+    toponame, toponame, target_layerid,
+    toponame, toponame, target_layerid,
+    toponame, toponame, target_layerid
+  );
+
+  FOR rec IN EXECUTE query
+  LOOP
+    ret.topology_id = topoid;
+    ret.layer_id = target_layerid;
+    ret.id = rec.topogeo_id;
+    ret.type = target_lyr.feature_type;
+    RETURN NEXT ret;
+  END LOOP;
+
+  RETURN;
+END;
+$$
+LANGUAGE 'plpgsql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION topology.GetRelatedTopoGeom(tg topology.TopoGeometry, target_layerid integer)
+  RETURNS SETOF topology.TopoGeometry
+AS
+$$
+DECLARE
+  toponame varchar;
+BEGIN
+  toponame = topology.GetTopologyName(tg.topology_id);
+  RETURN QUERY
+    SELECT * FROM topology.GetRelatedTopoGeom(toponame,
+      tg.layer_id, tg.id, target_layerid);
+  RETURN;
+END;
+$$
+LANGUAGE 'plpgsql' STABLE STRICT;
+
+--} GetRelatedTopoGeom()
 
 --{
 -- Geometry(TopoGeometry)
