@@ -19,6 +19,9 @@
 #include "pgsql2shp-core.h"
 #include "../postgis_config.h"
 
+#include <ctype.h>
+#include <strings.h>
+
 #define xstr(s) str(s)
 #define str(s) #s
 
@@ -53,6 +56,16 @@ usage(int status)
 	printf(_("  -q Quiet mode. No messages to stdout.\n" ));
 	printf(_("  -? Display this help screen.\n\n" ));
 	exit(status);
+}
+
+static int
+is_user_query_argument(const char *argument)
+{
+	while (isspace((unsigned char)*argument))
+		argument++;
+
+	return (!strncasecmp(argument, "SELECT", 6) && isspace((unsigned char)argument[6])) ||
+	       (!strncasecmp(argument, "WITH", 4) && isspace((unsigned char)argument[4]));
 }
 
 int
@@ -137,11 +150,7 @@ main(int argc, char **argv)
 	if (pgis_optind < argc)
 	{
 		/* User-defined queries begin with SELECT or WITH */
-		if ( !strncmp(argv[pgis_optind], "SELECT ", 7) ||
-			!strncmp(argv[pgis_optind], "select ", 7) ||
-			!strncmp(argv[pgis_optind], "WITH ", 5) ||
-			!strncmp(argv[pgis_optind], "with ", 5)
-		)
+		if (is_user_query_argument(argv[pgis_optind]))
 		{
 			config->usrquery = argv[pgis_optind];
 		}
