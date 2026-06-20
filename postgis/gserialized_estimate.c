@@ -72,6 +72,7 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include "catalog/pg_am.h"
 #include "miscadmin.h"
 #include "storage/lmgr.h"
+#include "lib/stringinfo.h"
 #include "catalog/namespace.h"
 #include "catalog/indexing.h"
 
@@ -2435,6 +2436,194 @@ get_attnum_attypid(Oid table_oid, const char *col, int16 *attnum, Oid *atttypid)
 	return true;
 }
 
+static bool
+is_topogeometry_type(Oid typid)
+{
+	HeapTuple type_tuple;
+	Form_pg_type type;
+	char *namespace_name;
+	bool result = false;
+
+	type_tuple = SearchSysCache1(TYPEOID, ObjectIdGetDatum(typid));
+	if (!HeapTupleIsValid(type_tuple))
+		return false;
+
+	type = (Form_pg_type)GETSTRUCT(type_tuple);
+	namespace_name = get_namespace_name(type->typnamespace);
+
+	if (namespace_name && strcmp(namespace_name, "topology") == 0 &&
+	    strcmp(NameStr(type->typname), "topogeometry") == 0)
+	{
+		result = true;
+	}
+
+	if (namespace_name)
+		pfree(namespace_name);
+	ReleaseSysCache(type_tuple);
+	return result;
+}
+
+static GBOX *
+topogeometry_estimated_extent(Oid table_oid, const char *col)
+{
+	const char *schema_name = get_namespace_name(get_rel_namespace(table_oid));
+	const char *table_name = get_rel_name(table_oid);
+	const char *layer_query =
+	    "SELECT t.name AS topology_name, l.layer_id, l.feature_type"
+	    "  FROM topology.layer l"
+	    "  JOIN topology.topology t ON t.id = l.topology_id"
+	    "  WHERE l.schema_name = $1"
+	    "    AND l.table_name = $2"
+	    "    AND l.feature_column = $3";
+	Oid layer_argtypes[3] = {TEXTOID, TEXTOID, TEXTOID};
+	Datum layer_values[3];
+	Oid extent_argtypes[2] = {INT4OID, INT4OID};
+	Datum extent_values[2];
+	int spi_result;
+	bool isnull;
+	Datum value;
+	char *topology_name;
+	int32 layer_id;
+	int32 feature_type;
+	double coords[4];
+	int i;
+	char *postgis_schema_name;
+	const char *postgis_schema;
+	const char *topology_schema;
+	StringInfoData extent_query;
+	GBOX *result;
+
+	if (!schema_name || !table_name)
+		return NULL;
+
+	layer_values[0] = CStringGetTextDatum(schema_name);
+	layer_values[1] = CStringGetTextDatum(table_name);
+	layer_values[2] = CStringGetTextDatum(col);
+
+	if (SPI_OK_CONNECT != SPI_connect())
+		elog(ERROR, "%s: could not connect to SPI manager", __func__);
+
+	spi_result = SPI_execute_with_args(layer_query, 3, layer_argtypes, layer_values, NULL, true, 1);
+	if (spi_result < 0)
+	{
+		SPI_finish();
+		elog(ERROR, "%s: error executing query %d", __func__, spi_result);
+	}
+
+	if (SPI_processed <= 0)
+	{
+		SPI_finish();
+		return NULL;
+	}
+
+	value = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
+	if (isnull)
+	{
+		SPI_finish();
+		return NULL;
+	}
+	topology_name = TextDatumGetCString(value);
+
+	value = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 2, &isnull);
+	if (isnull)
+	{
+		SPI_finish();
+		return NULL;
+	}
+	layer_id = DatumGetInt32(value);
+
+	value = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 3, &isnull);
+	if (isnull)
+	{
+		SPI_finish();
+		return NULL;
+	}
+	feature_type = DatumGetInt32(value);
+
+	postgis_schema_name = get_namespace_name(postgis_oid(POSTGISNSPOID));
+	if (!postgis_schema_name)
+	{
+		SPI_finish();
+		elog(ERROR, "%s: could not determine PostGIS schema", __func__);
+	}
+	postgis_schema = quote_identifier(postgis_schema_name);
+	topology_schema = quote_identifier(topology_name);
+
+	initStringInfo(&extent_query);
+	appendStringInfo(&extent_query,
+			 "WITH primitive_boxes AS ("
+			 "  SELECT %1$s.box3d(n.geom) AS box"
+			 "  FROM %2$s.node n"
+			 "  JOIN %2$s.relation r"
+			 "    ON r.layer_id = $1"
+			 "   AND r.element_type = 1"
+			 "   AND r.element_id = n.node_id"
+			 "  WHERE $2 IN (1, 4)"
+			 "  UNION ALL"
+			 "  SELECT %1$s.box3d(e.geom) AS box"
+			 "  FROM %2$s.edge_data e"
+			 "  JOIN %2$s.relation r"
+			 "    ON r.layer_id = $1"
+			 "   AND ("
+			 "     (r.element_type = 2 AND abs(r.element_id) = e.edge_id)"
+			 "     OR (r.element_type = 3 AND r.element_id IN (e.left_face, e.right_face))"
+			 "   )"
+			 "  WHERE $2 IN (2, 3, 4)"
+			 ")"
+			 "SELECT"
+			 "  min(%1$s.ST_XMin(box)),"
+			 "  min(%1$s.ST_YMin(box)),"
+			 "  max(%1$s.ST_XMax(box)),"
+			 "  max(%1$s.ST_YMax(box))"
+			 " FROM primitive_boxes"
+			 " WHERE box IS NOT NULL"
+			 " HAVING count(*) > 0",
+			 postgis_schema,
+			 topology_schema);
+
+	extent_values[0] = Int32GetDatum(layer_id);
+	extent_values[1] = Int32GetDatum(feature_type);
+
+	spi_result = SPI_execute_with_args(extent_query.data, 2, extent_argtypes, extent_values, NULL, true, 1);
+	pfree(extent_query.data);
+	if (spi_result < 0)
+	{
+		SPI_finish();
+		elog(ERROR, "%s: error executing query %d", __func__, spi_result);
+	}
+
+	if (SPI_processed <= 0)
+	{
+		SPI_finish();
+		return NULL;
+	}
+
+	for (i = 0; i < 4; i++)
+	{
+		value = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, i + 1, &isnull);
+		if (isnull)
+		{
+			SPI_finish();
+			return NULL;
+		}
+		coords[i] = DatumGetFloat8(value);
+		if (!isfinite(coords[i]))
+		{
+			SPI_finish();
+			return NULL;
+		}
+	}
+
+	result = SPI_palloc(sizeof(GBOX));
+	gbox_init(result);
+	result->xmin = coords[0];
+	result->ymin = coords[1];
+	result->xmax = coords[2];
+	result->ymax = coords[3];
+	SPI_finish();
+
+	return result;
+}
 
 /**
  * Return the estimated extent of the table
@@ -2487,16 +2676,27 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	if (!tbl_oid)
 		elog(ERROR, "cannot lookup table %s", nsp_tbl);
 
-    /* Get the attribute number and type from the column name */
-    col = text_to_cstring(coltxt);
-    if (!get_attnum_attypid(tbl_oid, col, &attnum, &atttypid))
-        elog(ERROR, "column %s.\"%s\" does not exist", nsp_tbl, col);
+	/* Get the attribute number and type from the column name */
+	col = text_to_cstring(coltxt);
+	if (!get_attnum_attypid(tbl_oid, col, &attnum, &atttypid))
+		elog(ERROR, "column %s.\"%s\" does not exist", nsp_tbl, col);
 
-    /* We can only do estimates on geograpy and geometry */
-    if ((atttypid != geographyOid) && (atttypid != geometryOid))
-    {
-        elog(ERROR, "column %s.\"%s\" must be a geometry or geography", nsp_tbl, col);
-    }
+	if (is_topogeometry_type(atttypid))
+	{
+		gbox = topogeometry_estimated_extent(tbl_oid, col);
+		if (!gbox)
+		{
+			elog(WARNING, "stats for \"%s.%s\" do not exist", tbl, col);
+			PG_RETURN_NULL();
+		}
+		PG_RETURN_POINTER(gbox);
+	}
+
+	/* We can only do estimates on geography, geometry, and TopoGeometry */
+	if ((atttypid != geographyOid) && (atttypid != geometryOid))
+	{
+		elog(ERROR, "column %s.\"%s\" must be a geometry, geography, or topogeometry", nsp_tbl, col);
+	}
 
 	/* Read the extent from the head of the spatial index */
 	/* works if there is a spatial index */

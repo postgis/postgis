@@ -1,0 +1,6 @@
+#2074.line_layer|1
+#2074.line_extent|LINESTRING(0 0,10 10)
+#2074.point_layer|2
+#2074.point_extent|LINESTRING(20 30,20 30)
+#2074.mixed_layer|3
+#2074.mixed_extent|LINESTRING(5 5,30 40)
