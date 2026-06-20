@@ -16,4 +16,5 @@ TESTS += \
 	$(top_srcdir)/regress/dumper/realtable \
 	$(top_srcdir)/regress/dumper/nullsintable \
 	$(top_srcdir)/regress/dumper/null3d \
+	$(top_srcdir)/regress/dumper/numeric \
 	$(top_srcdir)/regress/dumper/withclause
