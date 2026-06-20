@@ -4290,11 +4290,23 @@ Refer to <xref linkend="toTopoGeom"/>.
 					<paramdef><type>integer </type> <parameter>layer_id</parameter></paramdef>
 					<paramdef><type>bigint</type> <parameter>tg_id</parameter></paramdef>
 					</funcprototype>
+					<funcprototype>
+					<funcdef>topoelementarray <function>GetTopoGeomElementArray</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>layer_id</parameter></paramdef>
+					<paramdef><type>bigint</type> <parameter>tg_id</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>include_signed</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 				<funcsynopsis>
 					<funcprototype>
 					<funcdef>topoelementarray <function>GetTopoGeomElementArray</function></funcdef>
 					<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+					<funcdef>topoelementarray <function>GetTopoGeomElementArray</function></funcdef>
+					<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>include_signed</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -4305,9 +4317,11 @@ Refer to <xref linkend="toTopoGeom"/>.
                 <para>Returns a <xref linkend="topoelementarray"/> containing the topological elements and type of the given TopoGeometry (primitive elements).  This is similar to GetTopoGeomElements except it returns the elements as an array rather
                 than as a dataset.</para>
                 <para>tg_id is the topogeometry id of the topogeometry object in the topology in the layer denoted by <varname>layer_id</varname> in the topology.layer table.</para>
+                <para>When <varname>include_signed</varname> is true, the returned element identifiers preserve the sign stored in the topology relation table. This is useful for lineal TopoGeometries whose edge direction is encoded by signed edge identifiers.</para>
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="1.1">Availability: 1.1</para>
+                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 added the <varname>include_signed</varname> parameter</para>
 			</refsection>
 
 
@@ -4338,11 +4352,23 @@ Refer to <xref linkend="toTopoGeom"/>.
 					<paramdef><type>integer </type> <parameter>layer_id</parameter></paramdef>
 					<paramdef><type>bigint</type> <parameter>tg_id</parameter></paramdef>
 					</funcprototype>
+					<funcprototype>
+					<funcdef>setof topoelement <function>GetTopoGeomElements</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>layer_id</parameter></paramdef>
+					<paramdef><type>bigint</type> <parameter>tg_id</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>include_signed</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 				<funcsynopsis>
 					<funcprototype>
 					<funcdef>setof topoelement <function>GetTopoGeomElements</function></funcdef>
 					<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+					<funcdef>setof topoelement <function>GetTopoGeomElements</function></funcdef>
+					<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>include_signed</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -4352,9 +4378,11 @@ Refer to <xref linkend="toTopoGeom"/>.
 
                 <para>Returns a set of element_id,element_type (topoelements) corresponding to primitive topology elements <xref linkend="topoelement"/> (1: nodes, 2: edges, 3: faces) that a given topogeometry object in <varname>toponame</varname> schema is composed of.</para>
                 <para>tg_id is the topogeometry id of the topogeometry object in the topology in the layer denoted by <varname>layer_id</varname> in the topology.layer table.</para>
+                <para>When <varname>include_signed</varname> is true, the returned element identifiers preserve the sign stored in the topology relation table. This is useful for lineal TopoGeometries whose edge direction is encoded by signed edge identifiers.</para>
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 added the <varname>include_signed</varname> parameter</para>
 			</refsection>
 
 
