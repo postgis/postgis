@@ -1,0 +1,119 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+--{
+-- Drop TopoGeometry relation rows whose TopoGeometry object is no longer
+-- reachable from its registered layer table.
+--
+-- Availability: 3.7.0
+--
+CREATE OR REPLACE FUNCTION topology.DropOrphanedTopoGeometries(
+  topology_name text
+)
+RETURNS BIGINT AS
+$BODY$
+DECLARE
+  topo topology.topology;
+  layerrec RECORD;
+  layer_is_deployed BOOLEAN;
+  sql TEXT;
+  dropped BIGINT;
+  total_deleted BIGINT := 0;
+BEGIN
+  topo := topology.findTopology(topology_name);
+  IF topo.id IS NULL THEN
+    RAISE EXCEPTION 'Could not find topology "%"', topology_name;
+  END IF;
+
+  FOR layerrec IN
+    SELECT *
+    FROM topology.layer
+    WHERE topology_id = topo.id
+    ORDER BY level DESC, layer_id
+  LOOP
+    IF layerrec.feature_column = '' THEN
+      CONTINUE;
+    END IF;
+
+    SELECT EXISTS (
+      SELECT 1
+      FROM pg_catalog.pg_namespace n
+      JOIN pg_catalog.pg_class c ON c.relnamespace = n.oid
+      JOIN pg_catalog.pg_attribute a ON a.attrelid = c.oid
+      WHERE n.nspname = layerrec.schema_name
+        AND c.relname = layerrec.table_name
+        AND a.attname = layerrec.feature_column
+        AND a.atttypid = 'topology.topogeometry'::regtype
+        AND NOT a.attisdropped
+    )
+    INTO layer_is_deployed;
+
+    IF NOT layer_is_deployed THEN
+      CONTINUE;
+    END IF;
+
+    EXECUTE format(
+      'LOCK TABLE %I.relation IN SHARE ROW EXCLUSIVE MODE',
+      topo.name
+    );
+    EXECUTE format(
+      'LOCK TABLE %I.%I IN SHARE ROW EXCLUSIVE MODE',
+      layerrec.schema_name,
+      layerrec.table_name
+    );
+
+    sql := format(
+      $$
+      WITH orphan_topogeoms AS (
+        SELECT DISTINCT r.layer_id, r.topogeo_id
+        FROM %1$I.relation r
+        WHERE r.layer_id = $1
+        AND NOT EXISTS (
+          SELECT 1
+          FROM %2$I.%3$I f
+          WHERE id(f.%4$I) = r.topogeo_id
+          AND layer_id(f.%4$I) = r.layer_id
+          AND topology_id(f.%4$I) = $2
+        )
+        AND NOT EXISTS (
+          SELECT 1
+          FROM %1$I.relation pr
+          JOIN topology.layer pl ON pl.topology_id = $2
+            AND pl.layer_id = pr.layer_id
+          WHERE pl.child_id = r.layer_id
+          AND pr.element_id = r.topogeo_id
+          AND pr.element_type = r.layer_id
+        )
+      ), deleted_rows AS (
+        DELETE FROM %1$I.relation r
+        USING orphan_topogeoms o
+        WHERE r.layer_id = o.layer_id
+        AND r.topogeo_id = o.topogeo_id
+        RETURNING r.layer_id, r.topogeo_id
+      )
+      SELECT count(DISTINCT (layer_id, topogeo_id)) FROM deleted_rows
+      $$,
+      topo.name,
+      layerrec.schema_name,
+      layerrec.table_name,
+      layerrec.feature_column
+    );
+
+    EXECUTE sql USING layerrec.layer_id, topo.id INTO dropped;
+    total_deleted := total_deleted + dropped;
+  END LOOP;
+
+  RETURN total_deleted;
+END
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE STRICT;
+--} DropOrphanedTopoGeometries

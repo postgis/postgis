@@ -124,6 +124,7 @@ topology_upgrade.sql: ../postgis/common_before_upgrade.sql topology_before_upgra
 	echo "COMMIT;" >> $@
 
 topology.sql: \
+	sql/cleanup/DropOrphanedTopoGeometries.sql.in \
 	sql/cleanup/RemoveUnusedPrimitives.sql.in \
 	sql/sqlmm.sql.in \
 	sql/populate.sql.in \
