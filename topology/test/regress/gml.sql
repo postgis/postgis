@@ -3,6 +3,7 @@ set client_min_messages to WARNING;
 \i :top_builddir/topology/test/load_topology-4326.sql
 \i ../load_features.sql
 \i ../more_features.sql
+\i ../hierarchy.sql
 
 --- Puntual single element {
 
@@ -200,6 +201,79 @@ SELECT feature_name||'-visited-idprefix', topology.AsGML(feature,
 
 --- } Visited table bookkeeping
 
+--- { Collection TopoGeometry
+
+CREATE TABLE features.mixed_features (
+	feature_name varchar primary key
+);
+
+SELECT NULL FROM topology.AddTopoGeometryColumn(
+	'city_data',
+	'features',
+	'mixed_features',
+	'feature',
+	'COLLECTION'
+);
+
+INSERT INTO features.mixed_features(feature_name, feature)
+VALUES (
+	'N14E9',
+	topology.CreateTopoGeom(
+		'city_data',
+		4,
+		(SELECT layer_id FROM topology.layer WHERE table_name = 'mixed_features'),
+		'{{14,1},{9,2}}'
+	)
+);
+
+CREATE TABLE features.big_mixed_features (
+	feature_name varchar primary key
+);
+
+SELECT NULL FROM topology.AddTopoGeometryColumn(
+	'city_data',
+	'features',
+	'big_mixed_features',
+	'feature',
+	'COLLECTION',
+	(SELECT layer_id FROM topology.layer WHERE table_name = 'mixed_features')
+);
+
+INSERT INTO features.big_mixed_features(feature_name, feature)
+VALUES (
+	'N14E9-big',
+	topology.CreateTopoGeom(
+		'city_data',
+		4,
+		(SELECT layer_id FROM topology.layer WHERE table_name = 'big_mixed_features'),
+		(SELECT topoelementarray_agg(ARRAY[id(feature), layer_id(feature)])
+		 FROM features.mixed_features
+		 WHERE feature_name = 'N14E9')
+	)
+);
+
+SELECT feature_name||'-collection', topology.AsGML(feature, '', 15, 2, NULL, 'tc-')
+ FROM features.mixed_features
+ WHERE feature_name = 'N14E9';
+
+SELECT feature_name||'-hier-collection', topology.AsGML(feature, '', 15, 2, NULL, 'tc-')
+ FROM features.big_mixed_features
+ WHERE feature_name = 'N14E9-big';
+
+CREATE TABLE visited_collection (element_type int, element_id int);
+
+SELECT feature_name||'-collection-visited', topology.AsGML(
+	feature, '', 15, 2, 'visited_collection'::regclass, 'tc-')
+ FROM features.mixed_features
+ WHERE feature_name = 'N14E9';
+
+SELECT feature_name||'-collection-revisited', topology.AsGML(
+	feature, '', 15, 2, 'visited_collection'::regclass, 'tc-')
+ FROM features.mixed_features
+ WHERE feature_name = 'N14E9';
+
+--- } Collection TopoGeometry
+
 --- { GML2 output
 
 -- Output in GML2
@@ -217,3 +291,4 @@ ORDER BY name;
 SELECT topology.DropTopology('city_data');
 DROP SCHEMA features CASCADE;
 DROP TABLE visited;
+DROP TABLE visited_collection;

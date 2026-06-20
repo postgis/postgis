@@ -264,6 +264,133 @@ LANGUAGE 'plpgsql' VOLATILE; -- writes into visited table
 
 --{
 --
+-- INTERNAL FUNCTION
+-- text _AsGMLTopoComplex(TopoGeometry, toponame, visitedTable,
+--                        nsprefix, precision, options, idprefix, gmlVersion)
+--
+CREATE OR REPLACE FUNCTION topology._AsGMLTopoComplex(tg topology.TopoGeometry, toponame text, visitedTable regclass, nsprefix_in text, prec int, options int, idprefix text, gmlver int)
+  RETURNS text
+AS
+$$
+DECLARE
+  nsprefix text;
+  gml text;
+  member_gml text;
+  members_gml text := '';
+  complex_id text;
+  rec RECORD;
+  edgerec RECORD;
+  nodegeom geometry;
+  visited bool;
+  primitive_href text;
+BEGIN
+
+  nsprefix := 'gml:';
+  IF nsprefix_in IS NOT NULL THEN
+    IF nsprefix_in = '' THEN
+      nsprefix = nsprefix_in;
+    ELSE
+      nsprefix = nsprefix_in || ':';
+    END IF;
+  END IF;
+
+  complex_id := idprefix || 'TC' || tg.layer_id || '_' || tg.id;
+
+  gml := '<' || nsprefix || 'TopoComplex ' || nsprefix
+    || 'id="' || complex_id || '" isMaximal="true">'
+    || '<' || nsprefix || 'maximalComplex xlink:href="#'
+    || complex_id || '" />';
+
+  FOR rec IN
+    SELECT DISTINCT
+      (element)[1] AS element_id,
+      (element)[2] AS element_type
+    FROM topology.GetTopoGeomElements(tg) AS element
+    ORDER BY element_type, element_id
+  LOOP
+
+    primitive_href := CASE rec.element_type
+      WHEN 1 THEN idprefix || 'N' || rec.element_id
+      WHEN 2 THEN idprefix || 'E' || rec.element_id
+      WHEN 3 THEN idprefix || 'F' || rec.element_id
+    END;
+
+    IF primitive_href IS NULL THEN
+      CONTINUE;
+    END IF;
+
+    visited := NULL;
+    IF visitedTable IS NOT NULL THEN
+      EXECUTE 'SELECT true FROM '
+              || visitedTable::text
+              || ' WHERE element_type = '
+              || rec.element_type
+              || ' AND element_id = '
+              || rec.element_id LIMIT 1 INTO visited;
+      IF visited IS NOT NULL THEN
+        gml = gml || '<' || nsprefix
+          || 'topoPrimitiveMember xlink:href="#'
+          || primitive_href || '" />';
+        CONTINUE;
+      ELSE
+        EXECUTE 'INSERT INTO ' || visitedTable::text
+          || '(element_type, element_id) VALUES ('
+          || rec.element_type || ', '
+          || rec.element_id || ')';
+      END IF;
+    END IF;
+
+    IF rec.element_type = 1 THEN
+      EXECUTE format('SELECT geom FROM %I.node WHERE node_id = $1', toponame)
+        USING rec.element_id INTO nodegeom;
+      member_gml := topology._AsGMLNode(rec.element_id, nodegeom,
+                                        nsprefix_in, prec, options,
+                                        idprefix, gmlver);
+    ELSIF rec.element_type = 2 THEN
+      EXECUTE format(
+        'SELECT edge_id, start_node, end_node, geom FROM %I.edge_data WHERE edge_id = $1',
+        toponame
+      ) USING rec.element_id INTO STRICT edgerec;
+      member_gml := topology._AsGMLEdge(edgerec.edge_id,
+                                        edgerec.start_node,
+                                        edgerec.end_node,
+                                        edgerec.geom,
+                                        visitedTable,
+                                        nsprefix_in, prec, options,
+                                        idprefix, gmlver);
+    ELSIF rec.element_type = 3 THEN
+      member_gml := topology._AsGMLFace(toponame, rec.element_id,
+                                        visitedTable,
+                                        nsprefix_in, prec, options,
+                                        idprefix, gmlver);
+    END IF;
+
+    IF visitedTable IS NULL THEN
+      members_gml := members_gml || member_gml;
+    ELSE
+      gml = gml || '<' || nsprefix || 'topoPrimitiveMember>'
+        || member_gml
+        || '</' || nsprefix || 'topoPrimitiveMember>';
+    END IF;
+
+  END LOOP;
+
+  IF visitedTable IS NULL AND members_gml != '' THEN
+    gml = gml || '<' || nsprefix || 'topoPrimitiveMembers>'
+      || members_gml
+      || '</' || nsprefix || 'topoPrimitiveMembers>';
+  END IF;
+
+  gml := gml || '</' || nsprefix || 'TopoComplex>';
+
+  RETURN gml;
+END
+$$
+LANGUAGE 'plpgsql' VOLATILE; -- writes into visited table
+--} _AsGMLTopoComplex(tg, toponame, visitedTable, nsprefix, precision, options, idprefix, gmlver)
+
+--{
+--
 -- API FUNCTION
 --
 -- text AsGML(TopoGeometry, nsprefix, precision, options, visitedTable, idprefix, gmlver)
@@ -440,7 +567,9 @@ BEGIN
     RETURN gml;
 
   ELSIF tg.type = 4 THEN -- collection
-    RAISE EXCEPTION 'Collection TopoGeometries are not supported by AsGML';
+    RETURN topology._AsGMLTopoComplex(tg, toponame, visitedTable,
+                                      nsprefix_in, precision,
+                                      options, idprefix, gmlver);
 
   END IF;
 
@@ -551,4 +680,3 @@ $$
  SELECT topology.AsGML($1, 'gml');
 $$ LANGUAGE 'sql' STABLE; -- does NOT write into visited table
 -- } AsGML(TopoGeometry)
-
