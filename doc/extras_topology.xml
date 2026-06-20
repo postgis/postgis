@@ -3469,7 +3469,7 @@ nodeid
 			<refnamediv>
 				<refname>AddEdge</refname>
 
-				<refpurpose>Adds a linestring edge to the edge table and associated start and end points to the point nodes table of the specified topology schema using the specified linestring geometry and returns the edgeid of the new (or existing) edge.</refpurpose>
+				<refpurpose>Deprecated: adds a linestring edge to the edge table and associated start and end points to the point nodes table of the specified topology schema using the specified linestring geometry and returns the edgeid of the new (or existing) edge.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
