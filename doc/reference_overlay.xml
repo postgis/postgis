@@ -465,6 +465,12 @@ MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))
                 <paramdef><type>geometry</type> <parameter>input</parameter></paramdef>
                 <paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>
               </funcprototype>
+              <funcprototype>
+                <funcdef>geometry <function>ST_Split</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>input</parameter></paramdef>
+                <paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>
+                <paramdef><type>float8</type> <parameter>tolerance</parameter></paramdef>
+              </funcprototype>
             </funcsynopsis>
         </refsynopsisdiv>
 
@@ -476,6 +482,12 @@ MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))
             When a (Multi)Polygon is used as as the blade, its linear components
             (the boundary) are used for splitting the input.
             The result geometry is always a collection.
+            </para>
+
+            <para>
+            If a non-zero <varname>tolerance</varname> is supplied, point and multipoint blades can split line inputs
+            when they lie within the tolerance of the line.
+            The split point is projected onto the line, so the returned linework remains on the original input.
             </para>
 
             <para>
@@ -494,6 +506,7 @@ MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))
             <para role="availability" conformance="2.0.0">Availability: 2.0.0 requires GEOS</para>
             <para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0 support for splitting a line by a multiline, a multipoint or (multi)polygon boundary was introduced.</para>
             <para role="enhanced" conformance="2.5.0">Enhanced: 2.5.0 support for splitting a polygon by a multiline was introduced.</para>
+            <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 accepts an optional tolerance parameter.</para>
 
         </refsection>
         <refsection>
@@ -592,20 +605,20 @@ GEOMETRYCOLLECTION(
             </programlisting>
 
         <para>Split a LineString by a Point, where the point does not lie exactly on the line.
-        Shows using <xref linkend="ST_Snap"/> to snap the line to the point to allow it to be split.
+        Shows using a tolerance to split at the projected point on the line.
         </para>
         <programlisting>
 WITH data AS (SELECT
-  'LINESTRING(0 0, 100 100)'::geometry AS line,
-  'POINT(51 50)':: geometry AS point
+  'LINESTRING(0 0, 100 0)'::geometry AS line,
+  'POINT(51 0.5)':: geometry AS point
 )
-SELECT ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS snapped_split,
+SELECT ST_AsText( ST_Split(line, point, 1)) AS tolerant_split,
        ST_AsText( ST_Split(line, point)) AS not_snapped_not_split
        FROM data;
 
-                            snapped_split                            |            not_snapped_not_split
----------------------------------------------------------------------+---------------------------------------------
- GEOMETRYCOLLECTION(LINESTRING(0 0,51 50),LINESTRING(51 50,100 100)) | GEOMETRYCOLLECTION(LINESTRING(0 0,100 100))
+                     tolerant_split                      |           not_snapped_not_split
+---------------------------------------------------------+-------------------------------------------
+ GEOMETRYCOLLECTION(LINESTRING(0 0,51 0),LINESTRING(51 0,100 0)) | GEOMETRYCOLLECTION(LINESTRING(0 0,100 0))
 </programlisting>
         </refsection>
         <refsection>
