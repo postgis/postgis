@@ -1,0 +1,5 @@
+countagg_catalog|3|3
+summarystatsagg_catalog|3|3
+countagg_plan|Finalize Aggregate,Gather,Partial Aggregate,Parallel Seq Scan
+summarystatsagg_plan|Finalize Aggregate,Gather,Partial Aggregate,Parallel Seq Scan
+parallel_results|t|t|t|t|t|t|t|t|t
