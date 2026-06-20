@@ -89,6 +89,10 @@ typedef struct raster_loader_config {
 	int file_column;
 	char *file_column_name;
 
+	/* add column with raster GDAL metadata, 1 = yes, 0 = no (default) */
+	int metadata_column;
+	char *metadata_column_name;
+
 	/* overview factor */
 	uint32_t overview_count;
 	int *overview;
@@ -166,6 +170,9 @@ typedef struct rasterinfo_t {
 
 	/* srs of raster */
 	char *srs;
+
+	/* XML serialization of GDAL metadata */
+	char *metadata;
 
 	/* width, height */
 	uint32_t dim[2];
