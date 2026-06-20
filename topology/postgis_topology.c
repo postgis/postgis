@@ -26,6 +26,7 @@
 #include "inttypes.h" /* for PRId64 */
 #include "../postgis_config.h"
 
+#include "liblwgeom.h"
 #include "liblwgeom_internal.h" /* for gbox_clone */
 #include "topo/liblwgeom_topo.h"
 
@@ -4203,6 +4204,82 @@ Datum ST_GetFaceGeometry(PG_FUNCTION_ARGS)
   SPI_finish();
 
   PG_RETURN_POINTER(geom);
+}
+
+/* PointOnFace(atopology, aface) */
+Datum PointOnFace(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(PointOnFace);
+Datum
+PointOnFace(PG_FUNCTION_ARGS)
+{
+	text *toponame_text;
+	char *toponame;
+	LWT_ELEMID face_id;
+	LWGEOM *face_geom;
+	LWGEOM *point_geom;
+	LWT_TOPOLOGY *topo;
+	GSERIALIZED *geom;
+	MemoryContext old_context, spi_context;
+
+	if (PG_ARGISNULL(0) || PG_ARGISNULL(1))
+	{
+		lwpgerror("SQL/MM Spatial exception - null argument");
+		PG_RETURN_NULL();
+	}
+
+	toponame_text = PG_GETARG_TEXT_P(0);
+	toponame = text_to_cstring(toponame_text);
+	PG_FREE_IF_COPY(toponame_text, 0);
+
+	face_id = PG_GETARG_INT64(1);
+
+	old_context = CurrentMemoryContext;
+	if (SPI_OK_CONNECT != SPI_connect())
+	{
+		pfree(toponame);
+		lwpgerror("Could not connect to SPI");
+		PG_RETURN_NULL();
+	}
+
+	topo = lwt_LoadTopology(be_iface, toponame);
+	pfree(toponame);
+	if (!topo)
+	{
+		/* should never reach this point, as lwerror would raise an exception */
+		SPI_finish();
+		PG_RETURN_NULL();
+	}
+
+	POSTGIS_DEBUG(1, "Calling lwt_GetFaceGeometry");
+	face_geom = lwt_GetFaceGeometry(topo, face_id);
+	POSTGIS_DEBUG(1, "lwt_GetFaceGeometry returned");
+	lwt_FreeTopology(topo);
+
+	if (face_geom == NULL)
+	{
+		/* should never reach this point, as lwerror would raise an exception */
+		SPI_finish();
+		PG_RETURN_NULL();
+	}
+
+	point_geom = lwgeom_pointonsurface(face_geom);
+	if (point_geom == NULL)
+	{
+		/* should never reach this point, as lwerror would raise an exception */
+		SPI_finish();
+		PG_RETURN_NULL();
+	}
+
+	/* Serialize in upper memory context (outside of SPI) */
+	spi_context = MemoryContextSwitchTo(old_context);
+	geom = geometry_serialize(point_geom);
+	MemoryContextSwitchTo(spi_context);
+
+	/* No need to free LWGEOMs here because they will go away with the SPI context */
+
+	SPI_finish();
+
+	PG_RETURN_POINTER(geom);
 }
 
 typedef struct FACEEDGESSTATE

@@ -134,6 +134,7 @@ topology.sql: \
 	sql/query/getedgebypoint.sql.in \
 	sql/query/getfacebypoint.sql.in \
 	sql/query/GetFaceContainingPoint.sql.in \
+	sql/query/PointOnFace.sql.in \
 	sql/query/getnodebypoint.sql.in \
 	sql/query/GetNodeEdges.sql.in \
 	sql/query/GetRingEdges.sql.in \

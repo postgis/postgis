@@ -1,0 +1,24 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+--{
+--
+-- PointOnFace(atopology, aface)
+--
+-- Returns a point found on the interior of the given face.
+--
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION topology.PointOnFace(atopology varchar, aface bigint)
+	RETURNS geometry AS
+	'MODULE_PATHNAME', 'PointOnFace'
+	LANGUAGE 'c' STABLE;
+--} PointOnFace
