@@ -180,7 +180,8 @@
 --    Also updates the Relation table
 --
 --   ST_ValidateTopoGeo
---    Unimplemented (probably a wrapper around ValidateTopology)
+--    Complete
+--    Implemented as a wrapper around ValidateTopology
 --
 --
 
