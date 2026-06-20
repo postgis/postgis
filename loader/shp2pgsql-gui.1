@@ -13,8 +13,9 @@ This manual page documents briefly the
 .B shp2pgsql-gui 
 command.
 .PP
-.B shp2pgsql-gui 
+.B shp2pgsql-gui
 is a program that converts ESRI Shape files into SQL statements and imports these statements to a PostGIS/PostgreSQL database. The GUI allows the user to set the shape file to import, the PostGIS/PostgreSQL connection parameters and some options related to the table where the data will be imported to.
+The import options can set a target SRID used with the per-file source SRID for coordinate transformation.
 .PP
 .B shp2pgsql-gui
 can be called with some command line options that fill the PostGIS/PostgreSQL server connection parameters in.

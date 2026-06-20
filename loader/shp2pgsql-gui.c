@@ -16,6 +16,8 @@
 
 #include "../postgis_config.h"
 
+#include <errno.h>
+#include <limits.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -108,6 +110,7 @@ static GtkWidget *entry_pg_db = NULL;
 /* Loader options window */
 static GtkWidget *dialog_loader_options = NULL;
 static GtkWidget *entry_options_encoding = NULL;
+static GtkWidget *entry_options_srid = NULL;
 static GtkWidget *checkbutton_loader_options_preservecase = NULL;
 static GtkWidget *checkbutton_loader_options_forceint = NULL;
 static GtkWidget *checkbutton_loader_options_autoindex = NULL;
@@ -296,6 +299,28 @@ pgui_raise_error_dialogue(void)
 	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
 	return;
+}
+
+static int
+parse_srid_strict(const char *text, int *out_srid)
+{
+	char *endptr = NULL;
+	long srid;
+
+	if (text == NULL || text[0] == '\0')
+	{
+		*out_srid = SRID_UNKNOWN;
+		return 1;
+	}
+
+	errno = 0;
+	srid = strtol(text, &endptr, 10);
+	if (errno != 0 || endptr == text || *endptr != '\0' || srid < SRID_UNKNOWN || srid > SRID_MAXIMUM ||
+	    srid > INT_MAX)
+		return 0;
+
+	*out_srid = (int)srid;
+	return 1;
 }
 
 /*
@@ -532,10 +557,11 @@ pgui_action_progress_delete(GtkWidget *widget, GdkEvent *event, gpointer data)
 /* === Loader option Window functions === */
 
 /* Update the specified SHPLOADERCONFIG with the global settings from the Options dialog */
-static void
+static int
 update_loader_config_globals_from_options_ui(SHPLOADERCONFIG *config)
 {
 	const char *entry_encoding = gtk_entry_get_text(GTK_ENTRY(entry_options_encoding));
+	const char *entry_srid = gtk_entry_get_text(GTK_ENTRY(entry_options_srid));
 	gboolean preservecase = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_preservecase));
 	gboolean forceint = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_forceint));
 	gboolean createindex = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_autoindex));
@@ -571,6 +597,14 @@ update_loader_config_globals_from_options_ui(SHPLOADERCONFIG *config)
 			free(config->encoding);
 
 		config->encoding = strdup(entry_encoding);
+	}
+
+	/* Target SRID */
+	if (!parse_srid_strict(entry_srid, &config->sr_id))
+	{
+		pgui_seterr(_("Invalid target SRID: %s"), entry_srid ? entry_srid : "");
+		pgui_raise_error_dialogue();
+		return 0;
 	}
 
 	/* Preserve case */
@@ -620,14 +654,22 @@ update_loader_config_globals_from_options_ui(SHPLOADERCONFIG *config)
 	else
 		config->simple_geometries = 0;
 
-	return;
+	return 1;
 }
 
 /* Update the loader options dialog with the current values from the global config */
 static void
 update_options_ui_from_loader_config_globals(void)
 {
+	char srid[16 + 1];
+
 	gtk_entry_set_text(GTK_ENTRY(entry_options_encoding), global_loader_config->encoding);
+	if (global_loader_config->sr_id == SRID_UNKNOWN)
+		gtk_entry_set_text(GTK_ENTRY(entry_options_srid), "");
+	else if (16 + 1 <= snprintf(srid, 16 + 1, "%d", global_loader_config->sr_id))
+		gtk_entry_set_text(GTK_ENTRY(entry_options_srid), "");
+	else
+		gtk_entry_set_text(GTK_ENTRY(entry_options_srid), srid);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_preservecase), global_loader_config->quoteidentifiers ? TRUE : FALSE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_forceint), global_loader_config->forceint4 ? TRUE : FALSE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_autoindex), global_loader_config->createindex ? TRUE : FALSE);
@@ -641,7 +683,7 @@ update_options_ui_from_loader_config_globals(void)
 }
 
 /* Set the global config variables controlled by the options dialogue */
-static void
+static int
 pgui_set_loader_configs_from_options_ui()
 {
 	GtkTreeIter iter;
@@ -650,7 +692,8 @@ pgui_set_loader_configs_from_options_ui()
 	SHPLOADERCONFIG *loader_file_config;
 
 	/* First update the global (template) configuration */
-	update_loader_config_globals_from_options_ui(global_loader_config);
+	if (!update_loader_config_globals_from_options_ui(global_loader_config))
+		return 0;
 
 	/* Now also update the same settings for any existing files already added. We
 	   do this by looping through all entries and updating their config too. */
@@ -662,13 +705,14 @@ pgui_set_loader_configs_from_options_ui()
 		loader_file_config = (SHPLOADERCONFIG *)gptr;
 
 		/* Update it */
-		update_loader_config_globals_from_options_ui(loader_file_config);
+		if (!update_loader_config_globals_from_options_ui(loader_file_config))
+			return 0;
 
 		/* Get next entry */
 		is_valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(import_file_list_store), &iter);
 	}
 
-	return;
+	return 1;
 }
 
 
@@ -985,9 +1029,9 @@ add_loader_file_config_to_list(SHPLOADERCONFIG *loader_file_config)
 	char srid[MAXLEN+1];
 
 	/* Convert SRID into string */
-	if ( MAXLEN+1 <= snprintf(srid, MAXLEN+1, "%d", loader_file_config->sr_id) )
+	if (MAXLEN + 1 <= snprintf(srid, MAXLEN + 1, "%d", loader_file_config->shp_sr_id))
 	{
-		pgui_logf("Invalid SRID requiring more than %d digits: %d", MAXLEN, loader_file_config->sr_id);
+		pgui_logf("Invalid SRID requiring more than %d digits: %d", MAXLEN, loader_file_config->shp_sr_id);
 		pgui_raise_error_dialogue();
 		srid[MAXLEN] = '\0';
 	}
@@ -1311,7 +1355,10 @@ pgui_action_loader_options_close(GtkWidget *widget, gint response, gpointer data
 {
 	/* Only update the configuration if the user hit OK */
 	if (response == GTK_RESPONSE_OK)
-		pgui_set_loader_configs_from_options_ui();
+	{
+		if (!pgui_set_loader_configs_from_options_ui())
+			return;
+	}
 
 	/* Hide the dialog */
 	gtk_widget_hide(dialog_loader_options);
@@ -1541,7 +1588,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 
 		pgui_logf("\n==============================");
 		pgui_logf(
-		    "Importing with configuration: %s, %s, %s, %s, mode=%c, dump=%d, simple=%d, geography=%d, index=%d, shape=%d, srid=%d",
+		    "Importing with configuration: %s, %s, %s, %s, mode=%c, dump=%d, simple=%d, geography=%d, index=%d, shape=%d, from_srid=%d, to_srid=%d",
 		    loader_file_config->table,
 		    loader_file_config->schema,
 		    loader_file_config->geo_col,
@@ -1552,6 +1599,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		    loader_file_config->geography,
 		    loader_file_config->createindex,
 		    loader_file_config->readshape,
+		    loader_file_config->shp_sr_id,
 		    loader_file_config->sr_id);
 
 		/*
@@ -2078,10 +2126,11 @@ process_single_uri(char *uri)
 }
 
 /* Update the SHPLOADERCONFIG to the values currently contained within the iter  */
-static void
+static int
 update_loader_file_config_from_listview_iter(GtkTreeIter *iter, SHPLOADERCONFIG *loader_file_config)
 {
 	gchar *schema, *table, *geo_col, *srid;
+	int parsed_srid;
 
 	/* Grab the main values for this file */
 	gtk_tree_model_get(GTK_TREE_MODEL(import_file_list_store), iter,
@@ -2090,6 +2139,13 @@ update_loader_file_config_from_listview_iter(GtkTreeIter *iter, SHPLOADERCONFIG 
 		IMPORT_GEOMETRY_COLUMN, &geo_col,
 		IMPORT_SRID_COLUMN, &srid,
 		-1);
+
+	if (!parse_srid_strict(srid, &parsed_srid))
+	{
+		pgui_seterr(_("Invalid source SRID: %s"), srid ? srid : "");
+		pgui_raise_error_dialogue();
+		return 0;
+	}
 
 	/* Update the schema */
 	if (loader_file_config->schema)
@@ -2109,11 +2165,11 @@ update_loader_file_config_from_listview_iter(GtkTreeIter *iter, SHPLOADERCONFIG 
 
 	loader_file_config->geo_col = strdup(geo_col);
 
-	/* Update the SRID */
-	loader_file_config->sr_id = atoi(srid);
+	/* Update the source SRID. The target SRID is a global import option. */
+	loader_file_config->shp_sr_id = parsed_srid;
 
 	/* Free the values */
-	return;
+	return 1;
 }
 
 
@@ -2264,12 +2320,34 @@ pgui_action_handle_loader_edit(GtkCellRendererText *renderer,
 	loader_file_config = (SHPLOADERCONFIG *)gptr;
 
 	/* Update the configuration from the current UI data */
-	update_loader_file_config_from_listview_iter(&iter, loader_file_config);
+	if (!update_loader_file_config_from_listview_iter(&iter, loader_file_config))
+	{
+		if (MAXLEN + 1 <= snprintf(srid, MAXLEN + 1, "%d", loader_file_config->shp_sr_id))
+		{
+			pgui_logf(
+			    "Invalid SRID requiring more than %d digits: %d", MAXLEN, loader_file_config->shp_sr_id);
+			pgui_raise_error_dialogue();
+			srid[MAXLEN] = '\0';
+		}
+
+		gtk_list_store_set(import_file_list_store,
+				   &iter,
+				   IMPORT_SCHEMA_COLUMN,
+				   loader_file_config->schema,
+				   IMPORT_TABLE_COLUMN,
+				   loader_file_config->table,
+				   IMPORT_GEOMETRY_COLUMN,
+				   loader_file_config->geo_col,
+				   IMPORT_SRID_COLUMN,
+				   srid,
+				   -1);
+		return;
+	}
 
 	/* Now refresh the listview UI row with the new configuration */
-	if ( MAXLEN+1 <= snprintf(srid, MAXLEN+1, "%d", loader_file_config->sr_id) )
+	if (MAXLEN + 1 <= snprintf(srid, MAXLEN + 1, "%d", loader_file_config->shp_sr_id))
 	{
-		pgui_logf("Invalid SRID requiring more than %d digits: %d", MAXLEN, loader_file_config->sr_id);
+		pgui_logf("Invalid SRID requiring more than %d digits: %d", MAXLEN, loader_file_config->shp_sr_id);
 		pgui_raise_error_dialogue();
 		srid[MAXLEN] = '\0';
 	}
@@ -2751,7 +2829,7 @@ pgui_create_loader_options_dialog()
 	gtk_window_set_keep_above (GTK_WINDOW(dialog_loader_options), TRUE);
 	gtk_window_set_default_size (GTK_WINDOW(dialog_loader_options), 180, -1);
 
-	table_options = gtk_table_new(9, 3, TRUE);
+	table_options = gtk_table_new(10, 3, TRUE);
 	gtk_container_set_border_width (GTK_CONTAINER (table_options), 12);
 	gtk_table_set_row_spacings(GTK_TABLE(table_options), 5);
 	gtk_table_set_col_spacings(GTK_TABLE(table_options), 10);
@@ -2761,52 +2839,58 @@ pgui_create_loader_options_dialog()
 	gtk_entry_set_width_chars(GTK_ENTRY(entry_options_encoding), text_width);
 	gtk_table_attach_defaults(GTK_TABLE(table_options), entry_options_encoding, 0, 1, 0, 1 );
 
-	pgui_create_options_dialog_add_label(table_options, _("Preserve case of column names"), 0.0, 1);
+	pgui_create_options_dialog_add_label(table_options, _("Target SRID"), 0.0, 1);
+	entry_options_srid = gtk_entry_new();
+	gtk_entry_set_width_chars(GTK_ENTRY(entry_options_srid), text_width);
+	gtk_table_attach_defaults(GTK_TABLE(table_options), entry_options_srid, 0, 1, 1, 2);
+
+	pgui_create_options_dialog_add_label(table_options, _("Preserve case of column names"), 0.0, 2);
 	checkbutton_loader_options_preservecase = gtk_check_button_new();
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
-	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 1, 2 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 2, 3);
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_preservecase);
 
-	pgui_create_options_dialog_add_label(table_options, _("Do not create 'bigint' columns"), 0.0, 2);
+	pgui_create_options_dialog_add_label(table_options, _("Do not create 'bigint' columns"), 0.0, 3);
 	checkbutton_loader_options_forceint = gtk_check_button_new();
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
-	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 2, 3 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 3, 4);
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_forceint);
 
-	pgui_create_options_dialog_add_label(table_options, _("Create spatial index automatically after load"), 0.0, 3);
+	pgui_create_options_dialog_add_label(table_options, _("Create spatial index automatically after load"), 0.0, 4);
 	checkbutton_loader_options_autoindex = gtk_check_button_new();
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
-	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 3, 4 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 4, 5);
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_autoindex);
 
-	pgui_create_options_dialog_add_label(table_options, _("Load only attribute (dbf) data"), 0.0, 4);
+	pgui_create_options_dialog_add_label(table_options, _("Load only attribute (dbf) data"), 0.0, 5);
 	checkbutton_loader_options_dbfonly = gtk_check_button_new();
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
-	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 4, 5 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 5, 6);
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_dbfonly);
 
-	pgui_create_options_dialog_add_label(table_options, _("Load data using COPY rather than INSERT"), 0.0, 5);
+	pgui_create_options_dialog_add_label(table_options, _("Load data using COPY rather than INSERT"), 0.0, 6);
 	checkbutton_loader_options_dumpformat = gtk_check_button_new();
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 0.0 );
-	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 5, 6 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 6, 7);
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_dumpformat);
 
-	pgui_create_options_dialog_add_label(table_options, _("Create as UNLOGGED table"), 0.0, 6);
+	pgui_create_options_dialog_add_label(table_options, _("Create as UNLOGGED table"), 0.0, 7);
 	checkbutton_loader_options_unlogged = gtk_check_button_new();
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
-	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 6, 7 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 7, 8);
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_unlogged);
 
-	pgui_create_options_dialog_add_label(table_options, _("Load into GEOGRAPHY column"), 0.0, 7);
+	pgui_create_options_dialog_add_label(table_options, _("Load into GEOGRAPHY column"), 0.0, 8);
 	checkbutton_loader_options_geography = gtk_check_button_new();
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
-	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 7, 8 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 8, 9);
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_geography);
 
-	pgui_create_options_dialog_add_label(table_options, _("Generate simple geometries instead of MULTI geometries"), 0.0, 8);
+	pgui_create_options_dialog_add_label(
+	    table_options, _("Generate simple geometries instead of MULTI geometries"), 0.0, 9);
 	checkbutton_loader_options_simplegeoms = gtk_check_button_new();
 	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
-	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 8, 9 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 9, 10);
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_simplegeoms);
 
 	/* Catch the response from the dialog */
@@ -3061,11 +3145,8 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 	g_object_set(import_srid_renderer, "editable", TRUE, NULL);
 	column_indexes[IMPORT_SRID_COLUMN] = IMPORT_SRID_COLUMN;
 	g_signal_connect(G_OBJECT(import_srid_renderer), "edited", G_CALLBACK(pgui_action_handle_loader_edit), &column_indexes[IMPORT_SRID_COLUMN]);
-	import_srid_column = gtk_tree_view_column_new_with_attributes("SRID",
-	              import_srid_renderer,
-	              "text",
-	              IMPORT_SRID_COLUMN,
-	              NULL);
+	import_srid_column = gtk_tree_view_column_new_with_attributes(
+	    _("From SRID"), import_srid_renderer, "text", IMPORT_SRID_COLUMN, NULL);
 	g_object_set(import_srid_column, "resizable", TRUE, "expand", TRUE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(import_tree), import_srid_column);
 
