@@ -336,6 +336,39 @@ chartrim(const char *input, char *remove) {
 	return rtn;
 }
 
+static int
+option_matches(const char *arg, const char *shortopt, const char *longopt)
+{
+	size_t longopt_len;
+
+	if (CSEQUAL(arg, shortopt) || CSEQUAL(arg, longopt))
+		return 1;
+
+	longopt_len = strlen(longopt);
+	return strncmp(arg, longopt, longopt_len) == 0 && arg[longopt_len] == '=';
+}
+
+static int
+flag_matches(const char *arg, const char *shortopt, const char *longopt)
+{
+	return CSEQUAL(arg, shortopt) || CSEQUAL(arg, longopt);
+}
+
+static char *
+option_value(int argc, char **argv, int *argit, const char *longopt)
+{
+	const size_t longopt_len = strlen(longopt);
+	const char *arg = argv[*argit];
+
+	if (strncmp(arg, longopt, longopt_len) == 0 && arg[longopt_len] == '=')
+		return argv[*argit] + longopt_len + 1;
+
+	if (*argit < argc - 1)
+		return argv[++(*argit)];
+
+	return NULL;
+}
+
 static void
 usage() {
 	printf(_("RELEASE: %s GDAL_VERSION=%d (%s)\n"), POSTGIS_LIB_VERSION, POSTGIS_GDAL_VERSION, xstr(POSTGIS_REVISION));
@@ -344,119 +377,89 @@ usage() {
 	      "  Multiple rasters can also be specified using wildcards (*,?).\n"
 	      "\n"
 	      "OPTIONS:\n"));
-	printf(_("  -s [<from>:]<srid> Set the SRID field. Defaults to %d.\n"
+	printf(_("  -s, --srid [<from>:]<srid> Set the SRID field. Defaults to %d.\n"
 		 "     Optionally reprojects from given SRID (cannot be used with -Y).\n"
 		 "     Raster's metadata will be checked to determine an appropriate SRID.\n"
 		 "     Metadata lookup is also used when %d is provided as from or target.\n"),
 	       SRID_UNKNOWN,
 	       SRID_UNKNOWN);
-	printf(_(
-		"  -b <band> Index (1-based) of band to extract from raster. For more\n"
-		"      than one band index, separate with comma (,). Ranges can be\n"
-		"      defined by separating with dash (-). If unspecified, all bands\n"
-		"      of raster will be extracted.\n"
-	));
-	printf(_(
-		"  -t <tile size> Cut raster into tiles to be inserted one per\n"
-		"      table row. <tile size> is expressed as WIDTHxHEIGHT.\n"
-		"      <tile size> can also be \"auto\" to allow the loader to compute\n"
-		"      an appropriate tile size using the first raster and applied to\n"
-		"      all rasters.\n"
-	));
-	printf(_(
-		"  -P Pad right-most and bottom-most tiles to guarantee that all tiles\n"
-		"     have the same width and height.\n"
-	));
-	printf(_(
-		"  -R  Register the raster as an out-of-db (filesystem) raster. Provided\n"
-		"      raster should have absolute path to the file\n"
-	));
+	printf(
+	    _("  -b, --band <band> Index (1-based) of band to extract from raster. For more\n"
+	      "      than one band index, separate with comma (,). Ranges can be\n"
+	      "      defined by separating with dash (-). If unspecified, all bands\n"
+	      "      of raster will be extracted.\n"));
+	printf(
+	    _("  -t, --tile-size <tile size> Cut raster into tiles to be inserted one per\n"
+	      "      table row. <tile size> is expressed as WIDTHxHEIGHT.\n"
+	      "      <tile size> can also be \"auto\" to allow the loader to compute\n"
+	      "      an appropriate tile size using the first raster and applied to\n"
+	      "      all rasters.\n"));
+	printf(
+	    _("  -P, --pad Pad right-most and bottom-most tiles to guarantee that all tiles\n"
+	      "     have the same width and height.\n"));
+	printf(
+	    _("  -R, --register Register the raster as an out-of-db (filesystem) raster. Provided\n"
+	      "      raster should have absolute path to the file\n"));
 	printf(
 	    _(" (-d|a|c|p) These are mutually exclusive options:\n"
-	      "     -d  Drops the table, then recreates it and populates\n"
+	      "     -d, --drop  Drops the table, then recreates it and populates\n"
 	      "         it with current raster data.\n"
-	      "     -a  Appends raster into current table, must be\n"
+	      "     -a, --append  Appends raster into current table, must be\n"
 	      "         exactly the same table schema.\n"
-	      "     -c  Creates a new table and populates it, this is the\n"
+	      "     -c, --create  Creates a new table and populates it, this is the\n"
 	      "         default if you do not specify any options.\n"
-	      "     -p  Prepare mode, only creates the table.\n"));
+	      "     -p, --prepare  Prepare mode, only creates the table.\n"));
 	printf(
 	    _("  --if-not-exists  Use IF NOT EXISTS for table creation in -c and -p\n"
 	      "     modes. With -I, also use IF NOT EXISTS for index creation.\n"));
-	printf(_(
-		"  -f <column> Specify the name of the raster column\n"
-	));
-	printf(_(
-		"  -F  Add a column with the filename of the raster.\n"
-	));
-	printf(_(
-		"  -n <column> Specify the name of the filename column. Implies -F.\n"
-	));
-	printf(_(
-		"  -l <overview factor> Create overview of the raster. For more than\n"
-		"      one factor, separate with comma(,). Overview table name follows\n"
-		"      the pattern o_<overview factor>_<table>. Created overview is\n"
-		"      stored in the database and is not affected by -R.\n"
-	));
-	printf(_(
-		"  -q  Wrap PostgreSQL identifiers in quotes.\n"
-	));
-	printf(_(
-		"  -I  Create a GIST spatial index on the raster column. The ANALYZE\n"
-		"      command will automatically be issued for the created index.\n"
-	));
-	printf(_(
-		"  -M  Run VACUUM ANALYZE on the table of the raster column. Most\n"
-		"      useful when appending raster to existing table with -a.\n"
-	));
-	printf(_(
-		"  -C  Set the standard set of constraints on the raster\n"
-		"      column after the rasters are loaded. Some constraints may fail\n"
-		"      if one or more rasters violate the constraint.\n"
-		"  -x  Disable setting the max extent constraint. Only applied if\n"
-		"      -C flag is also used.\n"
-		"  -r  Set the constraints (spatially unique and coverage tile) for\n"
-		"      regular blocking. Only applied if -C flag is also used.\n"
-	));
-	printf(_(
-		"  -T <tablespace> Specify the tablespace for the new table.\n"
-		"      Note that indices (including the primary key) will still use\n"
-		"      the default tablespace unless the -X flag is also used.\n"
-	));
-	printf(_(
-		"  -X <tablespace> Specify the tablespace for the table's new index.\n"
-		"      This applies to the primary key and the spatial index if\n"
-		"      the -I flag is used.\n"
-	));
-	printf(_(
-		"  -N <nodata> NODATA value to use on bands without a NODATA value.\n"
-	));
-	printf(_(
-		"  -k  Keep empty tiles by skipping NODATA value checks for each raster band. \n"
-	));
-	printf(_(
-		"  -E <endian> Control endianness of generated binary output of\n"
-		"      raster. Use 0 for XDR and 1 for NDR (default). Only NDR\n"
-		"      is supported at this time.\n"
-	));
-	printf(_(
-		"  -V <version> Specify version of output WKB format. Default\n"
-		"      is 0. Only 0 is supported at this time.\n"
-	));
-	printf(_(
-		"  -e  Execute each statement individually, do not use a transaction.\n"
-	));
-	printf(_(
-		"  -Y <max_rows_per_copy> Use COPY statements instead of INSERT statements. \n"
-		"    Optionally specify <max_rows_per_copy>; default 50 when not specified. \n"
-	));
+	printf(_("  -f, --raster-column <column> Specify the name of the raster column\n"));
+	printf(_("  -F, --filename Add a column with the filename of the raster.\n"));
+	printf(_("  -n, --filename-column <column> Specify the name of the filename column. Implies -F.\n"));
+	printf(
+	    _("  -l, --overview-factor <overview factor> Create overview of the raster. For more than\n"
+	      "      one factor, separate with comma(,). Overview table name follows\n"
+	      "      the pattern o_<overview factor>_<table>. Created overview is\n"
+	      "      stored in the database and is not affected by -R.\n"));
+	printf(_("  -q, --quote Wrap PostgreSQL identifiers in quotes.\n"));
+	printf(
+	    _("  -I, --index Create a GIST spatial index on the raster column. The ANALYZE\n"
+	      "      command will automatically be issued for the created index.\n"));
+	printf(
+	    _("  -M, --vacuum Run VACUUM ANALYZE on the table of the raster column. Most\n"
+	      "      useful when appending raster to existing table with -a.\n"));
+	printf(
+	    _("  -C, --constraints Set the standard set of constraints on the raster\n"
+	      "      column after the rasters are loaded. Some constraints may fail\n"
+	      "      if one or more rasters violate the constraint.\n"
+	      "  -x, --no-extent Disable setting the max extent constraint. Only applied if\n"
+	      "      -C flag is also used.\n"
+	      "  -r, --regular-blocking Set the constraints (spatially unique and coverage tile) for\n"
+	      "      regular blocking. Only applied if -C flag is also used.\n"));
+	printf(
+	    _("  -T, --tablespace <tablespace> Specify the tablespace for the new table.\n"
+	      "      Note that indices (including the primary key) will still use\n"
+	      "      the default tablespace unless the -X flag is also used.\n"));
+	printf(
+	    _("  -X, --index-tablespace <tablespace> Specify the tablespace for the table's new index.\n"
+	      "      This applies to the primary key and the spatial index if\n"
+	      "      the -I flag is used.\n"));
+	printf(_("  -N, --nodata <nodata> NODATA value to use on bands without a NODATA value.\n"));
+	printf(
+	    _("  -k, --skip-nodata-check Keep empty tiles by skipping NODATA value checks for each raster band. \n"));
+	printf(
+	    _("  -E, --endian <endian> Control endianness of generated binary output of\n"
+	      "      raster. Use 0 for XDR and 1 for NDR (default). Only NDR\n"
+	      "      is supported at this time.\n"));
+	printf(
+	    _("  -V, --wkb-version <version> Specify version of output WKB format. Default\n"
+	      "      is 0. Only 0 is supported at this time.\n"));
+	printf(_("  -e, --no-transaction Execute each statement individually, do not use a transaction.\n"));
+	printf(
+	    _("  -Y, --copy [<max_rows_per_copy>] Use COPY statements instead of INSERT statements. \n"
+	      "    Optionally specify <max_rows_per_copy>; default 50 when not specified. \n"));
 
-	printf(_(
-		"  -G  Print the supported GDAL raster formats.\n"
-	));
-	printf(_(
-		"  -?  Display this help screen.\n"
-	));
+	printf(_("  -G, --gdal-formats Print the supported GDAL raster formats.\n"));
+	printf(_("  -?, --help Display this help screen.\n"));
 }
 
 static void
@@ -2394,8 +2397,9 @@ main(int argc, char **argv) {
 		char *optarg, *ptr;
 		/* srid */
 
-		if (CSEQUAL(argv[argit], "-s") && argit < argc - 1) {
-			optarg = argv[++argit];
+		if (option_matches(argv[argit], "-s", "--srid") &&
+		    (optarg = option_value(argc, argv, &argit, "--srid")) != NULL)
+		{
 			ptr = strchr(optarg, ':');
 			if (ptr) {
 				*ptr++ = '\0';
@@ -2406,8 +2410,10 @@ main(int argc, char **argv) {
 			}
 		}
 		/* band index */
-		else if (CSEQUAL(argv[argit], "-b") && argit < argc - 1) {
-			elements = strsplit(argv[++argit], ",", &n);
+		else if (option_matches(argv[argit], "-b", "--band") &&
+			 (optarg = option_value(argc, argv, &argit, "--band")) != NULL)
+		{
+			elements = strsplit(optarg, ",", &n);
 			if (n < 1) {
 				rterror(_("Could not process -b"));
 				rtdealloc_config(config);
@@ -2500,13 +2506,16 @@ main(int argc, char **argv) {
 			}
 		}
 		/* tile size */
-		else if (CSEQUAL(argv[argit], "-t") && argit < argc - 1) {
-			if (CSEQUAL(argv[++argit], "auto")) {
+		else if (option_matches(argv[argit], "-t", "--tile-size") &&
+			 (optarg = option_value(argc, argv, &argit, "--tile-size")) != NULL)
+		{
+			if (CSEQUAL(optarg, "auto"))
+			{
 				config->tile_size[0] = -1;
 				config->tile_size[1] = -1;
 			}
 			else {
-				elements = strsplit(argv[argit], "x", &n);
+				elements = strsplit(optarg, "x", &n);
 				if (n != 2) {
 					rterror(_("Could not process -t"));
 					rtdealloc_config(config);
@@ -2533,27 +2542,33 @@ main(int argc, char **argv) {
 			}
 		}
 		/* pad tiles */
-		else if (CSEQUAL(argv[argit], "-P")) {
+		else if (flag_matches(argv[argit], "-P", "--pad"))
+		{
 			config->pad_tile = 1;
 		}
 		/* out-of-db raster */
-		else if (CSEQUAL(argv[argit], "-R")) {
+		else if (flag_matches(argv[argit], "-R", "--register"))
+		{
 			config->outdb = 1;
 		}
 		/* drop table and recreate */
-		else if (CSEQUAL(argv[argit], "-d")) {
+		else if (flag_matches(argv[argit], "-d", "--drop"))
+		{
 			config->opt = 'd';
 		}
 		/* append to table */
-		else if (CSEQUAL(argv[argit], "-a")) {
+		else if (flag_matches(argv[argit], "-a", "--append"))
+		{
 			config->opt = 'a';
 		}
 		/* create new table */
-		else if (CSEQUAL(argv[argit], "-c")) {
+		else if (flag_matches(argv[argit], "-c", "--create"))
+		{
 			config->opt = 'c';
 		}
 		/* prepare only */
-		else if (CSEQUAL(argv[argit], "-p")) {
+		else if (flag_matches(argv[argit], "-p", "--prepare"))
+		{
 			config->opt = 'p';
 		}
 		/* make creation statements idempotent */
@@ -2562,35 +2577,42 @@ main(int argc, char **argv) {
 			config->if_not_exists = 1;
 		}
 		/* raster column name */
-		else if (CSEQUAL(argv[argit], "-f") && argit < argc - 1) {
-			const size_t len = (strlen(argv[++argit]) + 1);
+		else if (option_matches(argv[argit], "-f", "--raster-column") &&
+			 (optarg = option_value(argc, argv, &argit, "--raster-column")) != NULL)
+		{
+			const size_t len = (strlen(optarg) + 1);
 			config->raster_column = rtalloc(sizeof(char) * len);
 			if (config->raster_column == NULL) {
 				rterror(_("Could not allocate memory for storing raster column name"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			strncpy(config->raster_column, argv[argit], len);
+			strncpy(config->raster_column, optarg, len);
 		}
 		/* filename column */
-		else if (CSEQUAL(argv[argit], "-F")) {
+		else if (flag_matches(argv[argit], "-F", "--filename"))
+		{
 			config->file_column = 1;
 		}
 		/* filename column name */
-		else if (CSEQUAL(argv[argit], "-n") && argit < argc - 1) {
-			const size_t len = (strlen(argv[++argit]) + 1);
+		else if (option_matches(argv[argit], "-n", "--filename-column") &&
+			 (optarg = option_value(argc, argv, &argit, "--filename-column")) != NULL)
+		{
+			const size_t len = (strlen(optarg) + 1);
 			config->file_column_name = rtalloc(sizeof(char) * len);
 			if (config->file_column_name == NULL) {
 				rterror(_("Could not allocate memory for storing filename column name"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			strncpy(config->file_column_name, argv[argit], len);
+			strncpy(config->file_column_name, optarg, len);
 			config->file_column = 1;
 		}
 		/* overview factors */
-		else if (CSEQUAL(argv[argit], "-l") && argit < argc - 1) {
-			elements = strsplit(argv[++argit], ",", &n);
+		else if (option_matches(argv[argit], "-l", "--overview-factor") &&
+			 (optarg = option_value(argc, argv, &argit, "--overview-factor")) != NULL)
+		{
+			elements = strsplit(optarg, ",", &n);
 			if (n < 1) {
 				rterror(_("Could not process -l"));
 				rtdealloc_config(config);
@@ -2623,79 +2645,119 @@ main(int argc, char **argv) {
 			}
 		}
 		/* quote identifiers */
-		else if (CSEQUAL(argv[argit], "-q")) {
+		else if (flag_matches(argv[argit], "-q", "--quote"))
+		{
 			config->quoteident = 1;
 		}
 		/* create index */
-		else if (CSEQUAL(argv[argit], "-I")) {
+		else if (flag_matches(argv[argit], "-I", "--index"))
+		{
 			config->create_index = CREATE_INDEX_ALWAYS;
 		}
 		/* maintenance */
-		else if (CSEQUAL(argv[argit], "-M")) {
+		else if (flag_matches(argv[argit], "-M", "--vacuum"))
+		{
 			config->maintenance = 1;
 		}
 		/* set constraints */
-		else if (CSEQUAL(argv[argit], "-C")) {
+		else if (flag_matches(argv[argit], "-C", "--constraints"))
+		{
 			config->constraints = 1;
 		}
 		/* disable extent constraint */
-		else if (CSEQUAL(argv[argit], "-x")) {
+		else if (flag_matches(argv[argit], "-x", "--no-extent"))
+		{
 			config->max_extent = 0;
 		}
 		/* enable regular_blocking */
-		else if (CSEQUAL(argv[argit], "-r")) {
+		else if (flag_matches(argv[argit], "-r", "--regular-blocking"))
+		{
 			config->regular_blocking = 1;
 		}
 		/* tablespace of new table */
-		else if (CSEQUAL(argv[argit], "-T") && argit < argc - 1) {
-			const size_t len = (strlen(argv[++argit]) + 1);
+		else if (option_matches(argv[argit], "-T", "--tablespace") &&
+			 (optarg = option_value(argc, argv, &argit, "--tablespace")) != NULL)
+		{
+			const size_t len = (strlen(optarg) + 1);
 			config->tablespace = rtalloc(len);
 			if (config->tablespace == NULL) {
 				rterror(_("Could not allocate memory for storing tablespace of new table"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			strncpy(config->tablespace, argv[argit], len);
+			strncpy(config->tablespace, optarg, len);
 		}
 		/* tablespace of new index */
-		else if (CSEQUAL(argv[argit], "-X") && argit < argc - 1) {
-			const size_t len = (strlen(argv[++argit]) + 1);
+		else if (option_matches(argv[argit], "-X", "--index-tablespace") &&
+			 (optarg = option_value(argc, argv, &argit, "--index-tablespace")) != NULL)
+		{
+			const size_t len = (strlen(optarg) + 1);
 			config->idx_tablespace = rtalloc(len);
 			if (config->idx_tablespace == NULL) {
 				rterror(_("Could not allocate memory for storing tablespace of new indices"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			strncpy(config->idx_tablespace, argv[argit], len);
+			strncpy(config->idx_tablespace, optarg, len);
 		}
 		/* nodata value */
-		else if (CSEQUAL(argv[argit], "-N") && argit < argc - 1) {
+		else if (option_matches(argv[argit], "-N", "--nodata") &&
+			 (optarg = option_value(argc, argv, &argit, "--nodata")) != NULL)
+		{
 			config->hasnodata = 1;
-			config->nodataval = atof(argv[++argit]);
+			config->nodataval = atof(optarg);
 		}
 		/* skip NODATA value check for bands */
-		else if (CSEQUAL(argv[argit], "-k")) {
+		else if (flag_matches(argv[argit], "-k", "--skip-nodata-check"))
+		{
 			config->skip_nodataval_check = 1;
 		}
 		/* endianness */
-		else if (CSEQUAL(argv[argit], "-E") && argit < argc - 1) {
-			config->endian = atoi(argv[++argit]);
-			config->endian = 1;
+		else if (option_matches(argv[argit], "-E", "--endian") &&
+			 (optarg = option_value(argc, argv, &argit, "--endian")) != NULL)
+		{
+			char *endptr = NULL;
+			const long endian = strtol(optarg, &endptr, 10);
+			if (*optarg == '\0' || *endptr != '\0' || endian != 1)
+			{
+				rterror(_("Only endian value 1 (NDR) is supported at this time"));
+				rtdealloc_config(config);
+				exit(1);
+			}
+			config->endian = endian;
 		}
 		/* version */
-		else if (CSEQUAL(argv[argit], "-V") && argit < argc - 1) {
-			config->version = atoi(argv[++argit]);
-			config->version = 0;
+		else if (option_matches(argv[argit], "-V", "--wkb-version") &&
+			 (optarg = option_value(argc, argv, &argit, "--wkb-version")) != NULL)
+		{
+			char *endptr = NULL;
+			const long version = strtol(optarg, &endptr, 10);
+			if (*optarg == '\0' || *endptr != '\0' || version != 0)
+			{
+				rterror(_("Only WKB version 0 is supported at this time"));
+				rtdealloc_config(config);
+				exit(1);
+			}
+			config->version = version;
 		}
 		/* transaction */
-		else if (CSEQUAL(argv[argit], "-e")) {
+		else if (flag_matches(argv[argit], "-e", "--no-transaction"))
+		{
 			config->transaction = 0;
 		}
 		/* COPY statements */
-		else if (CSEQUAL(argv[argit], "-Y")) {
+		else if (flag_matches(argv[argit], "-Y", "--copy") || option_matches(argv[argit], "-Y", "--copy"))
+		{
 			config->copy_statements = 1;
+			if (strncmp(argv[argit], "--copy=", strlen("--copy=")) == 0)
+			{
+				const int max_tiles_per_copy = atoi(argv[argit] + strlen("--copy="));
+				if (max_tiles_per_copy > 0)
+					config->max_tiles_per_copy = max_tiles_per_copy;
+			}
 			/* max tiles per copy */
-			if ( argit < argc - 1) {
+			else if (argit < argc - 1)
+			{
 				optarg = argv[argit + 1];
 				if (atoi(optarg) > 0 ) {
 					config->max_tiles_per_copy = atoi(optarg);
@@ -2704,9 +2766,9 @@ main(int argc, char **argv) {
 			}
 		}
 
-
 		/* GDAL formats */
-		else if (CSEQUAL(argv[argit], "-G")) {
+		else if (flag_matches(argv[argit], "-G", "--gdal-formats"))
+		{
 			uint32_t drv_count = 0;
 			rt_gdaldriver drv_set = rt_raster_gdal_drivers(&drv_count, 0);
 			if (drv_set == NULL || !drv_count) {
@@ -2728,7 +2790,8 @@ main(int argc, char **argv) {
 			exit(0);
 		}
 		/* help */
-		else if (CSEQUAL(argv[argit], "-?")) {
+		else if (flag_matches(argv[argit], "-?", "--help"))
+		{
 			usage();
 			rtdealloc_config(config);
 			exit(0);

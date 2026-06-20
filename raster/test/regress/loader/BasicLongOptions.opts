@@ -1,0 +1,1 @@
+--constraints --copy=20 --srid=0 --band=1-3 --tile-size=90x50 --raster-column=rast

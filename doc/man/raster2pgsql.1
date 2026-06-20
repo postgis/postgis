@@ -18,40 +18,40 @@ files.
 .LP
 The commandline options are:
 .TP
-\fB\-s\fR [<\fIFROM_SRID\fR>:]<\fISRID\fR>
+\fB\-s\fR, \fB\-\-srid\fR [<\fIFROM_SRID\fR>:]<\fISRID\fR>
 Set the SRID field. If FROM_SRID is given, the input raster is treated as that
 source SRID before being transformed to SRID. If no SRID is provided, or if SRID
 is 0, raster metadata is used when possible.
 .TP
-\fB\-b\fR <\fIband\fR>
+\fB\-b\fR, \fB\-\-band\fR <\fIband\fR>
 Index, starting from 1, of the band to extract from the raster. Separate
 multiple band indexes with commas. Ranges can be written with a dash. If this
 option is omitted, all bands are extracted.
 .TP
-\fB\-t\fR <\fItile_size\fR>
+\fB\-t\fR, \fB\-\-tile-size\fR <\fItile_size\fR>
 Cut each raster into tiles inserted one per table row. The tile size is written
 as WIDTHxHEIGHT. Use "auto" to let the loader choose a tile size from the first
 raster and apply it to all rasters.
 .TP
-\fB\-P\fR
+\fB\-P\fR, \fB\-\-pad\fR
 Pad right-most and bottom-most tiles so all tiles have the same width and
 height.
 .TP
-\fB\-R\fR
+\fB\-R\fR, \fB\-\-register\fR
 Register the raster as an out-of-db filesystem raster. Input raster paths must
 be absolute.
 .TP
-\fB\-d\fR
+\fB\-d\fR, \fB\-\-drop\fR
 Drop the table, recreate it, and populate it with the raster data.
 .TP
-\fB\-a\fR
+\fB\-a\fR, \fB\-\-append\fR
 Append raster data into the existing table. The target table must have the same
 schema.
 .TP
-\fB\-c\fR
+\fB\-c\fR, \fB\-\-create\fR
 Create a new table and populate it. This is the default mode.
 .TP
-\fB\-p\fR
+\fB\-p\fR, \fB\-\-prepare\fR
 Prepare mode. Only emit SQL to create the table.
 .TP
 \fB\-\-if\-not\-exists\fR
@@ -59,73 +59,73 @@ Use IF NOT EXISTS for table creation in \-c and \-p modes. When \-I is also
 specified, use IF NOT EXISTS for index creation too. This option cannot be used
 with \-a or \-d.
 .TP
-\fB\-f\fR <\fIcolumn\fR>
+\fB\-f\fR, \fB\-\-raster-column\fR <\fIcolumn\fR>
 Specify the name of the raster column.
 .TP
-\fB\-F\fR
+\fB\-F\fR, \fB\-\-filename\fR
 Add a column containing the source raster filename.
 .TP
-\fB\-n\fR <\fIcolumn\fR>
+\fB\-n\fR, \fB\-\-filename-column\fR <\fIcolumn\fR>
 Specify the filename column name. This implies \-F.
 .TP
-\fB\-l\fR <\fIoverview_factor\fR>
+\fB\-l\fR, \fB\-\-overview-factor\fR <\fIoverview_factor\fR>
 Create overview tables for the raster. Separate multiple factors with commas.
 Overview table names follow the pattern o_<overview factor>_<table>. Created
 overviews are stored in the database and are not affected by \-R.
 .TP
-\fB\-q\fR
+\fB\-q\fR, \fB\-\-quote\fR
 Wrap PostgreSQL identifiers in quotes.
 .TP
-\fB\-I\fR
+\fB\-I\fR, \fB\-\-index\fR
 Create a GiST spatial index on the raster column.
 .TP
-\fB\-M\fR
+\fB\-M\fR, \fB\-\-vacuum\fR
 Run VACUUM ANALYZE on the raster table. This is most useful when appending to an
 existing table with \-a.
 .TP
-\fB\-C\fR
+\fB\-C\fR, \fB\-\-constraints\fR
 Set the standard raster constraints after the rasters are loaded. Some
 constraints may fail if one or more input rasters violate the constraint.
 .TP
-\fB\-x\fR
+\fB\-x\fR, \fB\-\-no-extent\fR
 Disable setting the max extent constraint. Only applies with \-C.
 .TP
-\fB\-r\fR
+\fB\-r\fR, \fB\-\-regular-blocking\fR
 Set spatially unique and coverage tile constraints for regular blocking. Only
 applies with \-C.
 .TP
-\fB\-T\fR <\fItablespace\fR>
+\fB\-T\fR, \fB\-\-tablespace\fR <\fItablespace\fR>
 Specify the tablespace for the new table.
 .TP
-\fB\-X\fR <\fItablespace\fR>
+\fB\-X\fR, \fB\-\-index-tablespace\fR <\fItablespace\fR>
 Specify the tablespace for the new table's indexes. This applies to the primary
 key and the spatial index when \-I is used.
 .TP
-\fB\-N\fR <\fInodata\fR>
+\fB\-N\fR, \fB\-\-nodata\fR <\fInodata\fR>
 NODATA value to use on bands without a NODATA value.
 .TP
-\fB\-k\fR
+\fB\-k\fR, \fB\-\-skip-nodata-check\fR
 Keep empty tiles by skipping NODATA value checks for each raster band.
 .TP
-\fB\-E\fR <\fIendian\fR>
+\fB\-E\fR, \fB\-\-endian\fR <\fIendian\fR>
 Control endianness of generated binary raster output. Use 0 for XDR and 1 for
 NDR. Only NDR is currently supported.
 .TP
-\fB\-V\fR <\fIversion\fR>
+\fB\-V\fR, \fB\-\-wkb-version\fR <\fIversion\fR>
 Specify the output WKB format version. Only version 0 is currently supported.
 .TP
-\fB\-e\fR
+\fB\-e\fR, \fB\-\-no-transaction\fR
 Execute each statement individually instead of wrapping the load in a
 transaction.
 .TP
-\fB\-Y\fR [<\fImax_rows_per_copy\fR>]
+\fB\-Y\fR, \fB\-\-copy\fR [<\fImax_rows_per_copy\fR>]
 Use COPY statements instead of INSERT statements. If no row limit is provided,
 50 rows are written per COPY.
 .TP
-\fB\-G\fR
+\fB\-G\fR, \fB\-\-gdal-formats\fR
 Print the supported GDAL raster formats.
 .TP
-\fB\-?\fR
+\fB\-?\fR, \fB\-\-help\fR
 Display version and usage information.
 
 .SH "EXAMPLES"
