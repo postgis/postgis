@@ -110,6 +110,10 @@ typedef struct raster_loader_config {
 	/* tile size */
 	int tile_size[2];
 
+	/* tile grid origin */
+	int tile_origin_set;
+	double tile_origin[2];
+
 	/* pad tiles */
 	int pad_tile;
 
