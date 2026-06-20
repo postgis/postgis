@@ -249,6 +249,18 @@ Available GDAL raster formats:
                 </varlistentry>
 
 
+                <varlistentry>
+                    <term><option>-A XxY</option></term>
+                    <term><option>--tile-origin XxY</option></term>
+                    <listitem>
+                        <para>
+                            Align the <option>-t</option> tile grid to the given map
+                            coordinate.  The coordinate must fall on the raster pixel grid.
+                            This option requires <option>-t</option>.  Edge tiles are padded
+                            as needed.  This option is not supported with <option>-R</option>.
+                        </para>
+                    </listitem>
+                </varlistentry>
 
                 <varlistentry>
                     <term><option>-R, --register</option></term>
