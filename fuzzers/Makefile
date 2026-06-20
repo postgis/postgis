@@ -32,8 +32,10 @@ check:
 	set -- $${cxx}; \
 	if [ "$$#" -eq 0 ] || ! command -v "$$1" >/dev/null 2>&1 || ! "$$@" --version >/dev/null 2>&1; then \
 		echo "C++ compiler '$${cxx}' not available; skipping fuzzer smoke check."; \
-	elif ! command -v pkg-config >/dev/null 2>&1 || ! pkg-config --exists json-c proj libxml-2.0; then \
+	elif ! command -v pkg-config >/dev/null 2>&1 || ! pkg-config --exists json-c proj; then \
 		echo "pkg-config metadata for fuzzer dependencies not found; skipping fuzzer smoke check."; \
+	elif ! command -v xml2-config >/dev/null 2>&1 && ! pkg-config --exists libxml-2.0; then \
+		echo "libxml2 fuzzer dependency helper not found; skipping fuzzer smoke check."; \
 	elif ! command -v geos-config >/dev/null 2>&1 || ! command -v gdal-config >/dev/null 2>&1; then \
 		echo "GEOS/GDAL fuzzer dependency helpers not found; skipping fuzzer smoke check."; \
 	else \
