@@ -6575,6 +6575,99 @@ LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE _COST_MEDIUM;
 -- Changed: 2.4.0 List also Parent partitioned tables
 -- Changed: 2.5.2 replace use of pg_constraint.consrc with pg_get_constraintdef, consrc removed pg12
 
+-- Extract base-column origin metadata only from a view rule's top-level target list.
+-- pg_node_tree text also contains nested Query target lists for subqueries; treating
+-- those as outer view columns would make expression outputs inherit constraints.
+CREATE OR REPLACE FUNCTION _postgis_geometry_columns_view_column_origin(
+    view_rule pg_node_tree,
+    view_attnum smallint)
+RETURNS TABLE(base_relid oid, base_attnum smallint)
+AS $$
+DECLARE
+    rule_text text := view_rule::text;
+    rule_len integer := length(rule_text);
+    i integer := 1;
+    token text := ':targetList (';
+    token_len integer := length(':targetList (');
+    ch text;
+    prev_ch text;
+    in_quote boolean := false;
+    paren_depth integer := 0;
+    brace_depth integer := 0;
+    in_top_targetlist boolean := false;
+    entry_start integer := 0;
+    entry_text text;
+    match text[];
+BEGIN
+    WHILE i <= rule_len LOOP
+        IF NOT in_quote AND NOT in_top_targetlist
+            AND paren_depth = 1
+            AND brace_depth = 1
+            AND substr(rule_text, i, token_len) = token
+        THEN
+            in_top_targetlist := true;
+            paren_depth := paren_depth + 1;
+            i := i + token_len;
+            CONTINUE;
+        END IF;
+
+        ch := substr(rule_text, i, 1);
+
+        IF ch = '"' AND prev_ch IS DISTINCT FROM chr(92) THEN
+            in_quote := NOT in_quote;
+        ELSIF NOT in_quote THEN
+            IF in_top_targetlist
+                AND entry_start = 0
+                AND paren_depth = 2
+                AND brace_depth = 1
+                AND substr(rule_text, i, 12) = '{TARGETENTRY'
+            THEN
+                entry_start := i;
+            END IF;
+
+            IF ch = '(' THEN
+                paren_depth := paren_depth + 1;
+            ELSIF ch = ')' THEN
+                paren_depth := paren_depth - 1;
+                IF in_top_targetlist AND paren_depth = 1 THEN
+                    RETURN;
+                END IF;
+            ELSIF ch = '{' THEN
+                brace_depth := brace_depth + 1;
+            ELSIF ch = '}' THEN
+                brace_depth := brace_depth - 1;
+                IF in_top_targetlist
+                    AND entry_start > 0
+                    AND brace_depth = 1
+                    AND paren_depth = 2
+                THEN
+                    entry_text := substr(rule_text, entry_start, i - entry_start + 1);
+                    entry_start := 0;
+                    match := regexp_match(
+                        entry_text,
+                        $re$^\{TARGETENTRY :expr \{VAR [^}]*\} :resno ([0-9]+) :resname [^:]+ :ressortgroupref [0-9]+ :resorigtbl ([0-9]+) :resorigcol ([0-9]+) :resjunk false\}$re$
+                    );
+                    IF match IS NOT NULL
+                        AND match[1]::smallint = view_attnum
+                        AND match[2] <> '0'
+                        AND match[3] <> '0'
+                    THEN
+                        base_relid := match[2]::oid;
+                        base_attnum := match[3]::smallint;
+                        RETURN NEXT;
+                        RETURN;
+                    END IF;
+                END IF;
+            END IF;
+        END IF;
+
+        prev_ch := ch;
+        i := i + 1;
+    END LOOP;
+END
+$$
+LANGUAGE 'plpgsql' STABLE STRICT PARALLEL SAFE;
+
 CREATE OR REPLACE VIEW geometry_columns AS
 WITH constraint_defs AS (
     -- Trim trailing NOT VALID so metadata inference works before constraint validation (#4828).
@@ -6595,6 +6688,17 @@ SELECT current_database()::character varying(256) AS f_table_catalog,
      JOIN pg_attribute a ON a.attrelid = c.oid AND NOT a.attisdropped
      JOIN pg_namespace n ON c.relnamespace = n.oid
      JOIN pg_type t ON a.atttypid = t.oid
+     -- Direct view columns have rewrite-rule target entries with origin metadata.
+     -- Use only top-level bare VAR target entries, so expressions keep needing explicit casts.
+     LEFT JOIN LATERAL (
+           SELECT origin.base_relid,
+                  origin.base_attnum
+             FROM pg_rewrite AS r
+             CROSS JOIN LATERAL _postgis_geometry_columns_view_column_origin(r.ev_action, a.attnum) AS origin
+            WHERE c.relkind = ANY (ARRAY['v'::"char", 'm'::"char"])
+              AND r.ev_class = c.oid
+              AND r.rulename = '_RETURN'
+     ) AS vco ON true
      LEFT JOIN (
            SELECT s.connamespace,
                   s.conrelid,
@@ -6602,7 +6706,7 @@ SELECT current_database()::character varying(256) AS f_table_catalog,
                   (regexp_match(s.consrc, $$geometrytype\(\w+\)\s*=\s*'(\w+)'$$, 'i'))[1]::text AS type
              FROM constraint_defs AS s
             WHERE s.consrc ~* $$geometrytype\(\w+\)\s*=\s*'\w+'$$::text
-     ) st ON st.connamespace = n.oid AND st.conrelid = c.oid AND (a.attnum = ANY (st.conkey))
+     ) st ON st.conrelid = COALESCE(vco.base_relid, c.oid) AND (COALESCE(vco.base_attnum, a.attnum) = ANY (st.conkey))
      LEFT JOIN (
            SELECT s.connamespace,
                   s.conrelid,
@@ -6610,7 +6714,7 @@ SELECT current_database()::character varying(256) AS f_table_catalog,
                   (regexp_match(s.consrc, $$ndims\(\w+\)\s*=\s*(\d+)$$, 'i'))[1]::integer AS ndims
              FROM constraint_defs AS s
             WHERE s.consrc ~* $$ndims\(\w+\)\s*=\s*\d+$$::text
-     ) sn ON sn.connamespace = n.oid AND sn.conrelid = c.oid AND (a.attnum = ANY (sn.conkey))
+     ) sn ON sn.conrelid = COALESCE(vco.base_relid, c.oid) AND (COALESCE(vco.base_attnum, a.attnum) = ANY (sn.conkey))
      LEFT JOIN (
            SELECT s.connamespace,
                   s.conrelid,
@@ -6618,7 +6722,7 @@ SELECT current_database()::character varying(256) AS f_table_catalog,
                   (regexp_match(s.consrc, $$srid\(\w+\)\s*=\s*(\d+)$$, 'i'))[1]::integer As srid
              FROM constraint_defs AS s
             WHERE s.consrc ~* $$srid\(\w+\)\s*=\s*\d+$$::text
-     ) sr ON sr.connamespace = n.oid AND sr.conrelid = c.oid AND (a.attnum = ANY (sr.conkey))
+     ) sr ON sr.conrelid = COALESCE(vco.base_relid, c.oid) AND (COALESCE(vco.base_attnum, a.attnum) = ANY (sr.conkey))
   WHERE (c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"]))
   AND NOT c.relname = 'raster_columns'::name AND t.typname = 'geometry'::name
   AND NOT pg_is_other_temp_schema(c.relnamespace)

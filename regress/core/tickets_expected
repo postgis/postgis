@@ -499,6 +499,17 @@ public.test5978.geometry SRID:4326 TYPE:POINT DIMS:2
 public|test5829|geom|2|4326|GEOMETRY
 public|test5978|geometry|2|4326|POINT
 public|test5978|shape|2|4326|POINT
+#1705|public|test1705|geom|2|4326|POINT
+#1705|public|test1705|geom_2160|2|2160|POINT
+#1705|public|test1705_alias_view|shape|2|2160|POINT
+#1705|public|test1705_buffer_view|geom_2160|2|0|GEOMETRY
+#1705|public|test1705_matview|geom_2160|2|2160|POINT
+#1705|public|test1705_mixed_view|buffered|2|0|GEOMETRY
+#1705|public|test1705_mixed_view|geom_2160|2|2160|POINT
+#1705|public|test1705_nested_buffer_view|geom_2160|2|0|GEOMETRY
+#1705|public|test1705_scalar_buffer_view|geom_2160|2|0|GEOMETRY
+#1705|public|test1705_view|geom|2|4326|POINT
+#1705|public|test1705_view|geom_2160|2|2160|POINT
 #3103.1|4326
 #3103.2|3857
 #3103.3|test3103b|3857

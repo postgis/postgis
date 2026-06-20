@@ -1654,6 +1654,49 @@ SELECT f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, t
  ORDER BY f_table_name, f_geometry_column;
 DROP TABLE IF EXISTS test5829, test5978;
 
+-- #1705, constraint-based geometry metadata for direct view columns
+CREATE TABLE test1705 (
+  gid integer,
+  geom geometry(Point, 4326),
+  geom_2160 geometry);
+ALTER TABLE test1705
+  ADD CONSTRAINT enforce_dims_geom_2160
+  CHECK (st_ndims(geom_2160) = 2);
+ALTER TABLE test1705
+  ADD CONSTRAINT enforce_srid_geom_2160
+  CHECK (st_srid(geom_2160) = 2160);
+ALTER TABLE test1705
+  ADD CONSTRAINT enforce_geotype_geom_2160
+  CHECK (geometrytype(geom_2160) = 'POINT'::text OR geom_2160 IS NULL);
+CREATE VIEW test1705_view AS
+  SELECT *
+    FROM test1705
+   WHERE gid > 0;
+CREATE VIEW test1705_alias_view AS
+  SELECT geom_2160 AS shape
+    FROM test1705;
+CREATE VIEW test1705_buffer_view AS
+  SELECT ST_Buffer(geom_2160, 1) AS geom_2160
+    FROM test1705;
+CREATE VIEW test1705_nested_buffer_view AS
+  SELECT ST_Buffer(geom_2160, 1) AS geom_2160
+    FROM (SELECT geom_2160 FROM test1705) AS nested;
+CREATE VIEW test1705_scalar_buffer_view AS
+  SELECT ST_Buffer((SELECT geom_2160 FROM test1705 LIMIT 1), 1) AS geom_2160;
+CREATE VIEW test1705_mixed_view AS
+  SELECT ST_Buffer(geom_2160, 1) AS buffered,
+         geom_2160
+    FROM test1705;
+CREATE MATERIALIZED VIEW test1705_matview AS
+  SELECT geom_2160
+    FROM test1705;
+SELECT '#1705', f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type
+ FROM geometry_columns WHERE f_table_name IN ('test1705', 'test1705_view', 'test1705_alias_view', 'test1705_buffer_view', 'test1705_nested_buffer_view', 'test1705_scalar_buffer_view', 'test1705_mixed_view', 'test1705_matview')
+ ORDER BY f_table_name, f_geometry_column;
+DROP MATERIALIZED VIEW test1705_matview;
+DROP VIEW test1705_alias_view, test1705_buffer_view, test1705_nested_buffer_view, test1705_scalar_buffer_view, test1705_mixed_view, test1705_view;
+DROP TABLE test1705;
+
 -- -------------------------------------------------------------------------------------
 -- #3103, geometry_columns/find_srid exact-match behavior
 CREATE SCHEMA test3103a;
