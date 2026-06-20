@@ -23,6 +23,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
  - #1124, shp2pgsql can create UNLOGGED tables for transient staging loads
           (Darafei Praliaskouski)
+ - #2935, shp2pgsql --drop-table can emit DROP TABLE before prepare output
+          (Darafei Praliaskouski)
  - #4208, Add single-geometry variants of ST_MaxDistance and ST_LongestLine
           (Darafei Praliaskouski)
  - [topology] FindVertexSegmentPairsBelowDistance function (Sandro Santilli)

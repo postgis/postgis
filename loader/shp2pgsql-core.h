@@ -81,7 +81,7 @@
  */
 typedef struct shp_loader_config
 {
-	/* load mode: c = create, d = delete, a = append, p = prepare */
+	/* load mode preset: c = create, d = drop/create, a = append, p = prepare */
 	char opt;
 
 	/* table to load into */
@@ -117,7 +117,19 @@ typedef struct shp_loader_config
 	/* 0 = logged table, 1 = create as UNLOGGED table */
 	int unlogged;
 
-    /* 0 = don't analyze tables , 1 = analyze tables */
+	/* action: emit DROP TABLE before create/prepare */
+	int drop_table;
+
+	/* action: remove geometry_columns entry before dropping the table */
+	int drop_geometry_column;
+
+	/* action: create the target table */
+	int create_table;
+
+	/* action: load rows from the input file */
+	int load_data;
+
+	/* 0 = don't analyze tables , 1 = analyze tables */
 	int analyze;
 
 	/* 0 = load DBF file only, 1 = load everything */

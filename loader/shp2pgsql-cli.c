@@ -63,6 +63,7 @@ usage()
 	          "      attribute column. (default: \"UTF-8\")\n" ));
 	printf(_( "  -N <policy> NULL geometries handling policy (insert*,skip,abort).\n" ));
 	printf(_( "  -n  Only import DBF file.\n" ));
+	printf(_("  --drop-table  Emit DROP TABLE IF EXISTS before create or prepare output.\n"));
 	printf(_( "  -T <tablespace> Specify the tablespace for the new table.\n"
                   "      Note that indexes will still use the default tablespace unless the\n"
                   "      -X flag is also used.\n"));
@@ -106,8 +107,19 @@ main (int argc, char **argv)
 	set_loader_config_defaults(config);
 
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
-	while ((c = pgis_getopt(argc, argv, "-?acdeg:ikm:nps:t:uwDGIN:ST:W:X:Z")) != EOF)
+	while (pgis_optind < argc)
 	{
+		if (strcmp(argv[pgis_optind], "--drop-table") == 0)
+		{
+			config->drop_table = 1;
+			pgis_optind++;
+			continue;
+		}
+
+		c = pgis_getopt(argc, argv, "-?acdeg:ikm:nps:t:uwDGIN:ST:W:X:Z");
+		if (c == EOF)
+			break;
+
 		// can not do this inside the switch case
 		if ('-' == c)
 			break;
@@ -267,6 +279,12 @@ main (int argc, char **argv)
 		exit(1);
 	}
 
+	if (config->drop_table && config->opt == 'a')
+	{
+		fprintf(stderr, "Invalid argument combination - cannot use both --drop-table and -a\n");
+		exit(1);
+	}
+
 	/* Determine the shapefile name from the next argument, if no shape file, exit. */
 	if (pgis_optind < argc)
 	{
@@ -386,7 +404,7 @@ main (int argc, char **argv)
 	free(header);
 
 	/* If we are not in "prepare" mode, go ahead and write out the data. */
-	if ( state->config->opt != 'p' )
+	if (state->config->load_data)
 	{
 
 		/* If in COPY mode, output the COPY statement */

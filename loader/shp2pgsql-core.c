@@ -771,6 +771,10 @@ set_loader_config_defaults(SHPLOADERCONFIG *config)
 	config->forceint4 = 0;
 	config->createindex = 0;
 	config->unlogged = 0;
+	config->drop_table = 0;
+	config->drop_geometry_column = 0;
+	config->create_table = 1;
+	config->load_data = 1;
 	config->analyze = 1;
 	config->readshape = 1;
 	config->force_output = FORCE_OUTPUT_DISABLE;
@@ -785,11 +789,24 @@ set_loader_config_defaults(SHPLOADERCONFIG *config)
 	config->column_map_filename = NULL;
 }
 
+static void
+set_loader_config_actions(SHPLOADERCONFIG *config)
+{
+	const int explicit_drop_table = config->drop_table;
+
+	config->drop_table = explicit_drop_table || config->opt == 'd';
+	config->drop_geometry_column = config->opt == 'd';
+	config->create_table = config->opt != 'a';
+	config->load_data = config->opt != 'p';
+}
+
 /* Create a new shapefile state object */
 SHPLOADERSTATE *
 ShpLoaderCreate(SHPLOADERCONFIG *config)
 {
 	SHPLOADERSTATE *state;
+
+	set_loader_config_actions(config);
 
 	/* Create a new state object and assign the config to it */
 	state = malloc(sizeof(SHPLOADERSTATE));
@@ -1300,7 +1317,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 	stringbuffer_aprintf(sb, "SET STANDARD_CONFORMING_STRINGS TO ON;\n");
 
 	/* Drop table if requested */
-	if (state->config->opt == 'd')
+	if (state->config->drop_table)
 	{
 		/**
 		 * TODO: if the table has more then one geometry column
@@ -1315,7 +1332,8 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		 */
 		if (state->config->schema)
 		{
-			if (state->config->readshape == 1 && (! state->config->geography) )
+			if (state->config->drop_geometry_column && state->config->readshape == 1 &&
+			    (!state->config->geography))
 			{
 				stringbuffer_aprintf(sb, "SELECT DropGeometryColumn('%s','%s','%s');\n",
 				                     state->config->schema, state->config->table, state->geo_col);
@@ -1326,7 +1344,8 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		}
 		else
 		{
-			if (state->config->readshape == 1  && (! state->config->geography) )
+			if (state->config->drop_geometry_column && state->config->readshape == 1 &&
+			    (!state->config->geography))
 			{
 				stringbuffer_aprintf(sb, "SELECT DropGeometryColumn('','%s','%s');\n",
 				                     state->config->table, state->geo_col);
@@ -1342,8 +1361,8 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		stringbuffer_aprintf(sb, "BEGIN;\n");
 	}
 
-	/* If not in 'append' mode create the spatial table */
-	if (state->config->opt != 'a')
+	/* Create the spatial table when requested by the selected actions. */
+	if (state->config->create_table)
 	{
 		/*
 		* Create a table for inserting the shapes into with appropriate

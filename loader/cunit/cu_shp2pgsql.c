@@ -12,10 +12,12 @@
 #include "cu_shp2pgsql.h"
 #include "cu_tester.h"
 #include "../shp2pgsql-core.h"
+#include <string.h>
 
 /* Test functions */
 void test_ShpLoaderCreate(void);
 void test_ShpLoaderDestroy(void);
+void test_ShpLoaderGetSQLHeader_drop_prepare(void);
 
 SHPLOADERCONFIG *loader_config;
 SHPLOADERSTATE *loader_state;
@@ -33,10 +35,10 @@ CU_pSuite register_shp2pgsql_suite(void)
 		return NULL;
 	}
 
-	if (
-	    (NULL == CU_add_test(pSuite, "test_ShpLoaderCreate()", test_ShpLoaderCreate)) ||
-	    (NULL == CU_add_test(pSuite, "test_ShpLoaderDestroy()", test_ShpLoaderDestroy))
-	)
+	if ((NULL == CU_add_test(pSuite, "test_ShpLoaderCreate()", test_ShpLoaderCreate)) ||
+	    (NULL == CU_add_test(pSuite, "test_ShpLoaderDestroy()", test_ShpLoaderDestroy)) ||
+	    (NULL ==
+	     CU_add_test(pSuite, "test_ShpLoaderGetSQLHeader_drop_prepare()", test_ShpLoaderGetSQLHeader_drop_prepare)))
 	{
 		CU_cleanup_registry();
 		return NULL;
@@ -73,5 +75,36 @@ void test_ShpLoaderCreate(void)
 
 void test_ShpLoaderDestroy(void)
 {
+	ShpLoaderDestroy(loader_state);
+}
+
+void
+test_ShpLoaderGetSQLHeader_drop_prepare(void)
+{
+	char *header = NULL;
+	const char *drop;
+	const char *create;
+
+	loader_config = (SHPLOADERCONFIG *)calloc(1, sizeof(SHPLOADERCONFIG));
+	set_loader_config_defaults(loader_config);
+	loader_config->opt = 'p';
+	loader_config->drop_table = 1;
+	/* This header-only test does not open a shapefile, so avoid geometry metadata. */
+	loader_config->readshape = 0;
+	loader_config->table = "loadedshp";
+	loader_config->geo_col = "the_geom";
+
+	loader_state = ShpLoaderCreate(loader_config);
+	CU_ASSERT_EQUAL(ShpLoaderGetSQLHeader(loader_state, &header), SHPLOADEROK);
+	CU_ASSERT_PTR_NOT_NULL(header);
+
+	drop = strstr(header, "DROP TABLE IF EXISTS \"loadedshp\";");
+	create = strstr(header, "CREATE TABLE \"loadedshp\"");
+	CU_ASSERT_PTR_NOT_NULL(drop);
+	CU_ASSERT_PTR_NOT_NULL(create);
+	CU_ASSERT_PTR_NULL(strstr(header, "DropGeometryColumn"));
+	CU_ASSERT(drop < create);
+
+	free(header);
 	ShpLoaderDestroy(loader_state);
 }

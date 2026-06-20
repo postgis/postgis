@@ -1609,8 +1609,8 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		if (!ret)
 			goto import_cleanup;
 
-		/* If we are in prepare mode, we need to skip the actual load. */
-		if (state->config->opt != 'p')
+		/* Load rows when requested by the selected actions. */
+		if (state->config->load_data)
 		{
             int numrecords = ShpLoaderGetRecordCount(state);
             int records_per_tick = (numrecords / 200) - 1;
@@ -1714,7 +1714,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 					goto import_cleanup;
 				}
 			}
-		} /* if (state->config->opt != 'p') */
+		} /* if (state->config->load_data) */
 
 		/* Only continue if we didn't abort part way through */
 		if (is_running)
@@ -1756,7 +1756,7 @@ import_cleanup:
 		pg_connection = NULL;
 
 		/* If we didn't finish inserting all of the items (and we expected to), an error occurred */
-		if ((state->config->opt != 'p' && i != ShpLoaderGetRecordCount(state)) || !ret)
+		if ((state->config->load_data && i != ShpLoaderGetRecordCount(state)) || !ret)
 			pgui_logf(_("Shapefile import failed."));
 		else
 			pgui_logf(_("Shapefile import completed."));
