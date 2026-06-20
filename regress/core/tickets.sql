@@ -1313,6 +1313,21 @@ SELECT '#4749.intersects',
 	ST_Intersects(poly, pts_outside)
 FROM g;
 
+WITH g AS (
+	SELECT
+		'POLYGON((0 0,0 10,10 10,10 0,0 0))'::geometry AS poly,
+		'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(5 5)),MULTIPOINT((7 7),(8 8)))'::geometry AS pts_inside,
+		'GEOMETRYCOLLECTION(POINT(5 5),POINT(0 0))'::geometry AS pts_boundary,
+		'GEOMETRYCOLLECTION(POINT(5 5),POINT(11 11))'::geometry AS pts_outside,
+		'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(-1 -1)),MULTIPOINT((11 11),(12 12)))'::geometry AS pts_disjoint
+)
+SELECT '#4749.disjoint',
+	ST_Disjoint(poly, pts_inside),
+	ST_Disjoint(pts_boundary, poly),
+	ST_Disjoint(poly, pts_outside),
+	ST_Disjoint(pts_disjoint, poly)
+FROM g;
+
 -- #4299
 SELECT '#4299', ST_Disjoint(ST_GeneratePoints(g, 1000), ST_GeneratePoints(g, 1000))
 FROM (SELECT 'POLYGON((0 0,1 0,1 1,0 1,0 0))'::geometry AS g) AS f;
