@@ -159,6 +159,137 @@ test_geos_makevalid(void)
 	lwgeom_free(geom3);
 }
 
+static void
+test_geos_intersection_rectangle_shortcut(void)
+{
+	LWGEOM *geom1;
+	LWGEOM *geom2;
+	LWGEOM *out;
+	char *out_ewkt;
+
+	geom1 = lwgeom_from_wkt("SRID=3857;LINESTRING ZM(1 1 5 7,2 2 6 8)", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("SRID=3857;POLYGON((0 0,0 3,3 3,3 0,0 0))", LW_PARSER_CHECK_NONE);
+	out = lwgeom_intersection(geom1, geom2);
+	out_ewkt = lwgeom_to_ewkt(out);
+	ASSERT_STRING_EQUAL(out_ewkt, "SRID=3857;LINESTRING(1 1 5,2 2 6)");
+	lwfree(out_ewkt);
+	lwgeom_free(out);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+
+	geom1 = lwgeom_from_wkt("POLYGON((0 0,4 0,4 4,0 4,0 0))", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("POLYGON((1 1,1 2,2 2,2 1,1 1))", LW_PARSER_CHECK_NONE);
+	out = lwgeom_intersection(geom1, geom2);
+	out_ewkt = lwgeom_to_ewkt(out);
+	ASSERT_STRING_EQUAL(out_ewkt, "POLYGON((1 1,1 2,2 2,2 1,1 1))");
+	lwfree(out_ewkt);
+	lwgeom_free(out);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+
+	geom1 = lwgeom_from_wkt("POLYGON((0 0,4 0,4 4,0 4,0 0))", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("MULTIPOINT((1 1),(2 2))", LW_PARSER_CHECK_NONE);
+	out = lwgeom_intersection(geom1, geom2);
+	out_ewkt = lwgeom_to_ewkt(out);
+	ASSERT_STRING_EQUAL(out_ewkt, "MULTIPOINT(1 1,2 2)");
+	lwfree(out_ewkt);
+	lwgeom_free(out);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+}
+
+static void
+test_geos_intersection_rectangle_shortcut_guards(void)
+{
+	LWGEOM *geom1;
+	LWGEOM *geom2;
+	LWGEOM *expected;
+	LWGEOM *out;
+	char *out_ewkt;
+
+	geom1 = lwgeom_from_wkt("CIRCULARSTRING(1 1,2 2,3 1)", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("POLYGON((0 0,0 4,4 4,4 0,0 0))", LW_PARSER_CHECK_NONE);
+	out = lwgeom_intersection(geom1, geom2);
+	out_ewkt = lwgeom_to_ewkt(out);
+	CU_ASSERT(strncmp(out_ewkt, "LINESTRING(", 11) == 0);
+	lwfree(out_ewkt);
+	lwgeom_free(out);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+
+	geom1 = lwgeom_from_wkt("GEOMETRYCOLLECTION(CIRCULARSTRING(1 1,2 2,3 1))", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("POLYGON((0 0,0 4,4 4,4 0,0 0))", LW_PARSER_CHECK_NONE);
+	out = lwgeom_intersection(geom1, geom2);
+	out_ewkt = lwgeom_to_ewkt(out);
+	CU_ASSERT_PTR_NULL(strstr(out_ewkt, "CIRCULARSTRING"));
+	lwfree(out_ewkt);
+	lwgeom_free(out);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+
+	geom1 = lwgeom_from_wkt("CURVEPOLYGON((1 1,1 2,2 2,2 1,1 1))", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("POLYGON((0 0,0 4,4 4,4 0,0 0))", LW_PARSER_CHECK_NONE);
+	out = lwgeom_intersection(geom1, geom2);
+	expected = lwgeom_from_wkt("POLYGON((1 2,2 2,2 1,1 1,1 2))", LW_PARSER_CHECK_NONE);
+	ASSERT_INT_EQUAL(out->type, POLYGONTYPE);
+	ASSERT_NORMALIZED_GEOM_SAME(out, expected);
+	lwgeom_free(expected);
+	lwgeom_free(out);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+
+	geom1 = lwgeom_from_wkt("TRIANGLE((1 1,2 1,1 2,1 1))", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("POLYGON((0 0,0 4,4 4,4 0,0 0))", LW_PARSER_CHECK_NONE);
+	out = lwgeom_intersection(geom1, geom2);
+	expected = lwgeom_from_wkt("POLYGON((1 2,2 1,1 1,1 2))", LW_PARSER_CHECK_NONE);
+	ASSERT_INT_EQUAL(out->type, POLYGONTYPE);
+	ASSERT_NORMALIZED_GEOM_SAME(out, expected);
+	lwgeom_free(expected);
+	lwgeom_free(out);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+
+	geom1 = lwgeom_from_wkt("TIN(((1 1,2 1,1 2,1 1)))", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("POLYGON((0 0,0 4,4 4,4 0,0 0))", LW_PARSER_CHECK_NONE);
+	out = lwgeom_intersection(geom1, geom2);
+	expected = lwgeom_from_wkt("POLYGON((1 2,2 1,1 1,1 2))", LW_PARSER_CHECK_NONE);
+	ASSERT_INT_EQUAL(out->type, POLYGONTYPE);
+	ASSERT_NORMALIZED_GEOM_SAME(out, expected);
+	lwgeom_free(expected);
+	lwgeom_free(out);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+
+	geom1 = lwgeom_from_wkt("LINESTRING(1 1,1 1)", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("POLYGON((0 0,0 4,4 4,4 0,0 0))", LW_PARSER_CHECK_NONE);
+	out = lwgeom_intersection(geom1, geom2);
+	expected = lwgeom_intersection_prec(geom1, geom2, 1);
+	ASSERT_NORMALIZED_GEOM_SAME(out, expected);
+	lwgeom_free(expected);
+	lwgeom_free(out);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+
+	geom1 = lwgeom_from_wkt("POINT(0 0.5)", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("POLYGON((0 0,0.0000000000001 1,1 1,1 0,0 0))", LW_PARSER_CHECK_NONE);
+	out = lwgeom_intersection(geom1, geom2);
+	out_ewkt = lwgeom_to_ewkt(out);
+	ASSERT_STRING_EQUAL(out_ewkt, "POINT EMPTY");
+	lwfree(out_ewkt);
+	lwgeom_free(out);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+
+	geom1 = lwgeom_from_wkt("LINESTRING(0.4 0.4,1.6 1.6)", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("POLYGON((0 0,0 2,2 2,2 0,0 0))", LW_PARSER_CHECK_NONE);
+	out = lwgeom_intersection_prec(geom1, geom2, 1);
+	out_ewkt = lwgeom_to_ewkt(out);
+	ASSERT_STRING_EQUAL(out_ewkt, "LINESTRING(0 0,2 2)");
+	lwfree(out_ewkt);
+	lwgeom_free(out);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+}
 
 static void test_geos_subdivide(void)
 {
@@ -199,4 +330,6 @@ void geos_suite_setup(void)
 	PG_ADD_TEST(suite, test_geos_offsetcurve);
 	PG_ADD_TEST(suite, test_geos_offsetcurve_crash);
 	PG_ADD_TEST(suite, test_geos_makevalid);
+	PG_ADD_TEST(suite, test_geos_intersection_rectangle_shortcut);
+	PG_ADD_TEST(suite, test_geos_intersection_rectangle_shortcut_guards);
 }
