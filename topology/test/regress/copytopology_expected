@@ -18,6 +18,7 @@ layers|6
 "CITY_data_UP_down".topogeo_s_1|9|t
 "CITY_data_UP_down".topogeo_s_2|8|t
 "CITY_data_UP_down".topogeo_s_3|8|t
+#5119|1001|1001|1001|LINESTRING(1 1,2 2)
 #5298|t
 #2184.1|t
 #2184.2|1

@@ -32,3 +32,16 @@ BEGIN
   END LOOP;
 END;
 $BODY$ LANGUAGE 'plpgsql';
+
+DO $BODY$
+DECLARE
+  rec RECORD;
+BEGIN
+  FOR rec IN
+    SELECT name
+    FROM topology.topology
+  LOOP
+    PERFORM topology._install_edge_insert_trigger(rec.name);
+  END LOOP;
+END;
+$BODY$ LANGUAGE 'plpgsql';

@@ -81,3 +81,68 @@ SET search_path = pg_catalog, pg_temp
 LANGUAGE 'plpgsql' VOLATILE STRICT
 ;
 
+CREATE OR REPLACE FUNCTION topology._edge_insert()
+RETURNS trigger
+AS
+$BODY$
+BEGIN
+  EXECUTE format(
+    'INSERT INTO %I.edge_data (
+      edge_id, start_node, end_node,
+      next_left_edge, abs_next_left_edge,
+      next_right_edge, abs_next_right_edge,
+      left_face, right_face, geom
+    ) VALUES ($1, $2, $3, $4, abs($4), $5, abs($5), $6, $7, $8)',
+    TG_TABLE_SCHEMA
+  )
+  USING
+    NEW.edge_id, NEW.start_node, NEW.end_node,
+    NEW.next_left_edge, NEW.next_right_edge,
+    NEW.left_face, NEW.right_face, NEW.geom;
+
+  RETURN NULL;
+END
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE
+;
+
+CREATE OR REPLACE FUNCTION topology._install_edge_insert_trigger(atopology name)
+RETURNS void
+AS
+$BODY$
+DECLARE
+  edge_view regclass;
+BEGIN
+  edge_view := to_regclass(format('%I.edge', atopology));
+
+  IF EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_rewrite
+    WHERE ev_class = edge_view
+      AND rulename = 'edge_insert_rule'
+  )
+  THEN
+    EXECUTE format('DROP RULE edge_insert_rule ON %I.edge', atopology);
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_trigger
+    WHERE tgrelid = edge_view
+      AND tgname = 'edge_insert'
+  )
+  THEN
+    EXECUTE format('DROP TRIGGER edge_insert ON %I.edge', atopology);
+  END IF;
+
+  EXECUTE format(
+    'CREATE TRIGGER edge_insert
+     INSTEAD OF INSERT ON %I.edge
+     FOR EACH ROW
+     EXECUTE FUNCTION topology._edge_insert()',
+    atopology
+  );
+END
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE STRICT
+;

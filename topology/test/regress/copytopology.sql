@@ -47,6 +47,14 @@ SELECT tableoid::regclass AS sequence_name, last_value,  is_called  from "CITY_d
 SELECT tableoid::regclass AS sequence_name, last_value,  is_called  from "CITY_data_UP_down".topogeo_s_2;
 SELECT tableoid::regclass AS sequence_name, last_value,  is_called  from "CITY_data_UP_down".topogeo_s_3;
 
+-- See https://trac.osgeo.org/postgis/ticket/5119
+COPY "CITY_data_UP_down".edge (edge_id, start_node, end_node, next_left_edge, next_right_edge, left_face, right_face, geom) FROM stdin;
+1001	1	2	1001	-1001	0	0	SRID=4326;LINESTRING(1 1,2 2)
+\.
+SELECT '#5119', edge_id, abs_next_left_edge, abs_next_right_edge, ST_AsText(geom)
+FROM "CITY_data_UP_down".edge_data
+WHERE edge_id = 1001;
+
 -- See https://trac.osgeo.org/postgis/ticket/5298
 BEGIN;
 UPDATE city_data.relation SEt layer_id = 1 WHERE layer_id = 1;
