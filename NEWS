@@ -6,6 +6,8 @@ PostGIS 3.8.0dev
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
+ - #2189, [raster] Add raster2pgsql GDAL metadata XML text column option
+          (Darafei Praliaskouski)
 
 * Enhancements *
 
