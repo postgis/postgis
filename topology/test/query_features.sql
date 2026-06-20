@@ -42,6 +42,35 @@ FROM features.big_streets;
 SELECT feature_name,ST_AsText(ST_Normalize(topology.geometry(feature)))
 FROM features.big_parcels;
 
+-- See https://trac.osgeo.org/postgis/ticket/4865
+WITH samples AS (
+  SELECT 'traffic_signs' AS source, feature_name, feature
+  FROM features.traffic_signs
+  WHERE feature_name = 'S1'
+  UNION ALL
+  SELECT 'city_streets', feature_name, feature
+  FROM features.city_streets
+  WHERE feature_name = 'R1'
+  UNION ALL
+  SELECT 'land_parcels', feature_name, feature
+  FROM features.land_parcels
+  WHERE feature_name = 'P1'
+  UNION ALL
+  SELECT 'big_parcels', feature_name, feature
+  FROM features.big_parcels
+  WHERE feature_name = 'P1P2'
+)
+SELECT '#4865',
+  source,
+  feature_name,
+  ST_AsEWKT(topology.PointOnSurface(feature)),
+  ST_Equals(
+    topology.PointOnSurface(feature),
+    ST_PointOnSurface(topology.Geometry(feature))
+  )
+FROM samples
+ORDER BY source, feature_name;
+
 --NOTYET--
 --NOTYET--/* Window is city_streets */
 --NOTYET--SELECT a.feature_name, b.feature_name
@@ -77,4 +106,3 @@ FROM features.big_parcels;
 --NOTYET--
 
 END;
-

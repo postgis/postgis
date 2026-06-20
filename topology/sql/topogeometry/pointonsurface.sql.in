@@ -1,0 +1,24 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+-- {
+--  Return a point guaranteed to lie on a TopoGeometry surface.
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology.PointOnSurface(tg topology.TopoGeometry)
+	RETURNS geometry
+AS
+$$
+	SELECT ST_PointOnSurface(topology.Geometry($1));
+$$
+LANGUAGE 'sql' VOLATILE STRICT;
+-- }
