@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - #2832, GH-995, [raster] Keep single-tile overviews unpadded (Darafei Praliaskouski)
   - Remove process addresses from public errors and notices (Andrew Kroh)
   - [topology] Correct the CreateTopoGeom INSERT example (Darafei Praliaskouski)
   - [raster] Correct the documented ST_BandIsNoData forceChecking default (Darafei Praliaskouski)
