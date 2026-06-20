@@ -928,6 +928,5 @@ Datum ST_IsPolygonCCW(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
-	geom = PG_GETARG_GSERIALIZED_P(0);
 	PG_RETURN_BOOL(lwgeom_has_orientation(lwgeom_from_gserialized(geom), LW_COUNTERCLOCKWISE));
 }
