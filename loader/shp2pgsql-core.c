@@ -771,6 +771,7 @@ set_loader_config_defaults(SHPLOADERCONFIG *config)
 	config->forceint4 = 0;
 	config->createindex = 0;
 	config->unlogged = 0;
+	config->drop_table = 0;
 	config->analyze = 1;
 	config->readshape = 1;
 	config->force_output = FORCE_OUTPUT_DISABLE;
@@ -1300,7 +1301,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 	stringbuffer_aprintf(sb, "SET STANDARD_CONFORMING_STRINGS TO ON;\n");
 
 	/* Drop table if requested */
-	if (state->config->opt == 'd')
+	if (state->config->opt == 'd' || state->config->drop_table)
 	{
 		/**
 		 * TODO: if the table has more then one geometry column
@@ -1315,7 +1316,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		 */
 		if (state->config->schema)
 		{
-			if (state->config->readshape == 1 && (! state->config->geography) )
+			if (state->config->opt == 'd' && state->config->readshape == 1 && (!state->config->geography))
 			{
 				stringbuffer_aprintf(sb, "SELECT DropGeometryColumn('%s','%s','%s');\n",
 				                     state->config->schema, state->config->table, state->geo_col);
@@ -1326,7 +1327,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		}
 		else
 		{
-			if (state->config->readshape == 1  && (! state->config->geography) )
+			if (state->config->opt == 'd' && state->config->readshape == 1 && (!state->config->geography))
 			{
 				stringbuffer_aprintf(sb, "SELECT DropGeometryColumn('','%s','%s');\n",
 				                     state->config->table, state->geo_col);

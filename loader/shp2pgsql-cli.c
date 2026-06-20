@@ -63,6 +63,7 @@ usage()
 	          "      attribute column. (default: \"UTF-8\")\n" ));
 	printf(_( "  -N <policy> NULL geometries handling policy (insert*,skip,abort).\n" ));
 	printf(_( "  -n  Only import DBF file.\n" ));
+	printf(_("  -r  Emit DROP TABLE IF EXISTS before create or prepare output.\n"));
 	printf(_( "  -T <tablespace> Specify the tablespace for the new table.\n"
                   "      Note that indexes will still use the default tablespace unless the\n"
                   "      -X flag is also used.\n"));
@@ -106,7 +107,7 @@ main (int argc, char **argv)
 	set_loader_config_defaults(config);
 
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
-	while ((c = pgis_getopt(argc, argv, "-?acdeg:ikm:nps:t:uwDGIN:ST:W:X:Z")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "-?acdeg:ikm:nprs:t:uwDGIN:ST:W:X:Z")) != EOF)
 	{
 		// can not do this inside the switch case
 		if ('-' == c)
@@ -191,6 +192,10 @@ main (int argc, char **argv)
 			config->readshape = 0;
 			break;
 
+		case 'r':
+			config->drop_table = 1;
+			break;
+
 		case 'W':
 			free(config->encoding);
 			config->encoding = strdup(pgis_optarg);
@@ -264,6 +269,12 @@ main (int argc, char **argv)
 	if (config->dump_format && !config->usetransaction)
 	{
 		fprintf(stderr, "Invalid argument combination - cannot use both -D and -e\n");
+		exit(1);
+	}
+
+	if (config->drop_table && config->opt == 'a')
+	{
+		fprintf(stderr, "Invalid argument combination - cannot use both -r and -a\n");
 		exit(1);
 	}
 
