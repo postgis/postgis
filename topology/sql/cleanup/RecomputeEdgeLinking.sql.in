@@ -1,0 +1,130 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+-- Recompute the next_left_edge and next_right_edge links of edges incident
+-- to nodes selected by the optional bounding box.
+--
+-- Returns number of updated edge rows.
+CREATE OR REPLACE FUNCTION topology.RecomputeEdgeLinking(
+  atopology text,
+  bbox GEOMETRY DEFAULT NULL
+)
+RETURNS BIGINT AS
+$BODY$
+DECLARE
+  topo topology.topology;
+  sql TEXT;
+  updatedEdges BIGINT;
+BEGIN
+
+  topo := topology.findTopology(atopology);
+  IF topo.id IS NULL THEN
+    RAISE EXCEPTION 'Could not find topology "%"', atopology;
+  END IF;
+
+  sql := format(
+    $$
+      WITH
+      nodes AS (
+        SELECT node_id
+        FROM %1$I.node
+        WHERE containing_face IS NULL
+        AND (
+          $1 IS NULL
+          OR geom && $1
+        )
+      ),
+      incident_edges AS (
+        SELECT
+          n.node_id,
+          e.edge_id,
+          e.start_node,
+          e.end_node,
+          ST_RemoveRepeatedPoints(e.geom) AS edge_geom
+        FROM %1$I.edge_data e, nodes n
+        WHERE e.start_node = n.node_id
+        OR e.end_node = n.node_id
+      ),
+      edge_star AS (
+        SELECT
+          node_id,
+          edge_id,
+          ST_Azimuth(ST_StartPoint(edge_geom), ST_PointN(edge_geom, 2)) AS az
+        FROM incident_edges
+        WHERE start_node = node_id
+          UNION ALL
+        SELECT
+          node_id,
+          -edge_id,
+          ST_Azimuth(ST_EndPoint(edge_geom), ST_PointN(edge_geom, ST_NumPoints(edge_geom)-1))
+        FROM incident_edges
+        WHERE end_node = node_id
+      ),
+      sequenced_edge_star AS (
+        SELECT
+          row_number() over (partition by node_id order by az, edge_id) AS seq,
+          count(*) over (partition by node_id) AS seq_count,
+          *
+        FROM edge_star
+      ),
+      links AS (
+        SELECT
+          COALESCE(
+            lag(edge_id) over (
+              partition by node_id
+              order by seq
+            ),
+            last_value(edge_id) over (
+              partition by node_id
+              order by seq
+              rows between unbounded preceding and unbounded following
+            )
+          ) AS edge_id,
+          edge_id AS next_edge
+        FROM sequenced_edge_star
+        WHERE seq_count > 0
+      ),
+      edge_links AS (
+        SELECT
+          abs(edge_id) AS edge_id,
+          max(next_edge) FILTER (WHERE edge_id < 0) AS next_left_edge,
+          max(next_edge) FILTER (WHERE edge_id > 0) AS next_right_edge
+        FROM links
+        GROUP BY abs(edge_id)
+      ),
+      updated AS (
+        UPDATE %1$I.edge_data e
+        SET
+          next_left_edge = COALESCE(el.next_left_edge, e.next_left_edge),
+          abs_next_left_edge = COALESCE(abs(el.next_left_edge), e.abs_next_left_edge),
+          next_right_edge = COALESCE(el.next_right_edge, e.next_right_edge),
+          abs_next_right_edge = COALESCE(abs(el.next_right_edge), e.abs_next_right_edge)
+        FROM edge_links el
+        WHERE e.edge_id = el.edge_id
+        AND (
+          e.next_left_edge IS DISTINCT FROM COALESCE(el.next_left_edge, e.next_left_edge)
+          OR e.abs_next_left_edge IS DISTINCT FROM COALESCE(abs(el.next_left_edge), e.abs_next_left_edge)
+          OR e.next_right_edge IS DISTINCT FROM COALESCE(el.next_right_edge, e.next_right_edge)
+          OR e.abs_next_right_edge IS DISTINCT FROM COALESCE(abs(el.next_right_edge), e.abs_next_right_edge)
+        )
+        RETURNING e.edge_id
+      )
+      SELECT count(*) FROM updated
+    $$,
+    topo.name
+  );
+
+  EXECUTE sql INTO updatedEdges USING bbox;
+  RETURN updatedEdges;
+END
+$BODY$
+LANGUAGE plpgsql VOLATILE;
