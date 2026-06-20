@@ -44,7 +44,7 @@
 
 /* Maximum DBF field width (according to ARCGIS) */
 #define MAX_DBF_FIELD_SIZE 254
-
+#define USERQUERY_SOURCE_ALIAS "__pgsql2shp_query"
 
 /* Prototypes */
 static int reverse_points(int num_points, double *x, double *y, double *z, double *m);
@@ -56,7 +56,7 @@ static SHPObject *create_multipolygon(SHPDUMPERSTATE *state, LWMPOLY *lwmultipol
 static SHPObject *create_linestring(SHPDUMPERSTATE *state, LWLINE *lwlinestring);
 static SHPObject *create_multilinestring(SHPDUMPERSTATE *state, LWMLINE *lwmultilinestring);
 static char *nullDBFValue(char fieldType);
-static int getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname);
+static int getMaxFieldSize(SHPDUMPERSTATE *state, char *fname);
 static int getTableInfo(SHPDUMPERSTATE *state);
 static int projFileCreate(SHPDUMPERSTATE *state);
 static int numeric_typmod_precision(int typmod);
@@ -566,45 +566,94 @@ is_clockwise(int num_points, double *x, double *y, double *z)
 	}
 }
 
+static char *
+trim_user_query(const char *usrquery)
+{
+	char *query = strdup(usrquery);
+	char *end;
+
+	if (!query)
+		return NULL;
+
+	end = query + strlen(query);
+
+	while (end > query && isspace((unsigned char)end[-1]))
+		end--;
+
+	while (end > query && end[-1] == ';')
+	{
+		end--;
+		while (end > query && isspace((unsigned char)end[-1]))
+			end--;
+	}
+
+	*end = '\0';
+	return query;
+}
+
+static char *
+ShpDumperGetDataSource(SHPDUMPERSTATE *state, const char *alias)
+{
+	char *source;
+
+	if (state->config->usrquery)
+	{
+		char *query = trim_user_query(state->config->usrquery);
+		if (!query)
+			return NULL;
+		source = core_asprintf("(%s) AS \"%s\"", query, alias ? alias : USERQUERY_SOURCE_ALIAS);
+		free(query);
+		return source;
+	}
+
+	if (state->schema)
+		source = core_asprintf(
+		    "\"%s\".\"%s\"%s%s", state->schema, state->table, alias ? " AS " : "", alias ? alias : "");
+	else
+		source = core_asprintf("\"%s\"%s%s", state->table, alias ? " AS " : "", alias ? alias : "");
+
+	return source;
+}
 
 /*
- * Return the maximum octet_length from given table.
+ * Return the maximum octet_length from the selected source.
  * Return -1 on error.
  */
 static int
-getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname)
+getMaxFieldSize(SHPDUMPERSTATE *state, char *fname)
 {
 	int size;
+	char *source;
+	char *quoted;
 	stringbuffer_t query;
-	PGresult *res;
+	PGresult *res = NULL;
 
 	/*( this is ugly: don't forget counting the length  */
 	/* when changing the fixed query strings ) */
 
+	source = ShpDumperGetDataSource(state, NULL);
+	quoted = quote_identifier(fname);
+	if (!source || !quoted)
+	{
+		free(source);
+		free(quoted);
+		return -1;
+	}
+
 	stringbuffer_init(&query);
-	if ( schema )
-	{
-		stringbuffer_aprintf(
-			&query,
-			"select max(octet_length(\"%s\"::text)) from \"%s\".\"%s\"",
-			fname, schema, table);
-	}
-	else
-	{
-		stringbuffer_aprintf(
-			&query,
-			"select max(octet_length(\"%s\"::text)) from \"%s\"",
-			fname, table);
-	}
+	stringbuffer_aprintf(&query, "select max(octet_length(%s::text)) from %s", quoted, source);
+	free(quoted);
+	free(source);
 
 	LWDEBUGF(4, "maxFieldLenQuery: %s\n", stringbuffer_getstring(&query));
 
-	res = PQexec(conn, stringbuffer_getstring(&query));
+	res = PQexec(state->conn, stringbuffer_getstring(&query));
 	stringbuffer_release(&query);
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK )
 	{
-		printf( _("Querying for maximum field length: %s"),
-		        PQerrorMessage(conn));
+		printf(_("Querying for maximum field length: %s"), PQerrorMessage(state->conn));
+		if (res)
+			PQclear(res);
 		return -1;
 	}
 
@@ -775,7 +824,26 @@ projFileCreate(SHPDUMPERSTATE *state)
 	 *	Escaping quotes in the schema and table in query may not be necessary except to prevent malicious attacks
 	 *	or should someone be crazy enough to have quotes or other weird character in their table, column or schema names
 	 **************************************************/
-	if (schema)
+	if (state->config->usrquery)
+	{
+		char *source = ShpDumperGetDataSource(state, "g");
+		char *quoted_geo_col_name = quote_identifier(geo_col_name);
+		if (!source || !quoted_geo_col_name)
+		{
+			free(source);
+			free(quoted_geo_col_name);
+			snprintf(state->message, SHPDUMPERMSGLEN, _("WARNING: Out of memory building prj query"));
+			return SHPDUMPERWARN;
+		}
+		query = core_asprintf(
+		    "SELECT COALESCE((SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END As srtext "
+		    " FROM %s INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID((g.%s)::geometry)) , ' ') As srtext ",
+		    source,
+		    quoted_geo_col_name);
+		free(quoted_geo_col_name);
+		free(source);
+	}
+	else if (schema)
 	{
 		PQescapeStringConn(state->conn, esc_schema, schema, strlen(schema), &error);
 		query = core_asprintf(
@@ -803,8 +871,12 @@ projFileCreate(SHPDUMPERSTATE *state)
 
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK )
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, _("WARNING: Could not execute prj query: %s"), PQresultErrorMessage(res));
-		PQclear(res);
+		snprintf(state->message,
+		         SHPDUMPERMSGLEN,
+		         _("WARNING: Could not execute prj query: %s"),
+		         res ? PQresultErrorMessage(res) : PQerrorMessage(state->conn));
+		if (res)
+			PQclear(res);
 		free(query);
 		return SHPDUMPERWARN;
 	}
@@ -905,8 +977,28 @@ getTableInfo(SHPDUMPERSTATE *state)
 
 	if (state->geo_col_name)
 	{
+		if (state->config->usrquery)
+		{
+			char *source = ShpDumperGetDataSource(state, NULL);
+			char *quoted_geo_col_name = quote_identifier(state->geo_col_name);
+			if (!source || !quoted_geo_col_name)
+			{
+				free(source);
+				free(quoted_geo_col_name);
+				snprintf(state->message, SHPDUMPERMSGLEN, _("ERROR: Out of memory building table metadata query"));
+				return SHPDUMPERERR;
+			}
+
+			query = core_asprintf(
+			    "SELECT count(1), max(ST_zmflag(%s::geometry)), geometrytype(%s::geometry) FROM %s GROUP BY 3",
+			    quoted_geo_col_name,
+			    quoted_geo_col_name,
+			    source);
+			free(quoted_geo_col_name);
+			free(source);
+		}
 		/* Include geometry information */
-		if (state->schema)
+		else if (state->schema)
 		{
 			query = core_asprintf(
 				"SELECT count(1), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\".\"%s\" GROUP BY 3",
@@ -922,7 +1014,18 @@ getTableInfo(SHPDUMPERSTATE *state)
 	else
 	{
 		/* Otherwise... just a row count will do */
-		if (state->schema)
+		if (state->config->usrquery)
+		{
+			char *source = ShpDumperGetDataSource(state, NULL);
+			if (!source)
+			{
+				snprintf(state->message, SHPDUMPERMSGLEN, _("ERROR: Out of memory building table metadata query"));
+				return SHPDUMPERERR;
+			}
+			query = core_asprintf("SELECT count(1) FROM %s", source);
+			free(source);
+		}
+		else if (state->schema)
 		{
 			query = core_asprintf(
 				"SELECT count(1) FROM \"%s\".\"%s\"",
@@ -941,10 +1044,14 @@ getTableInfo(SHPDUMPERSTATE *state)
 	res = PQexec(state->conn, query);
 	free(query);
 
-	if (PQresultStatus(res) != PGRES_TUPLES_OK)
+	if (!res || PQresultStatus(res) != PGRES_TUPLES_OK)
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, _("ERROR: Could not execute table metadata query: %s"), PQresultErrorMessage(res));
-		PQclear(res);
+		snprintf(state->message,
+		         SHPDUMPERMSGLEN,
+		         _("ERROR: Could not execute table metadata query: %s"),
+		         res ? PQresultErrorMessage(res) : PQerrorMessage(state->conn));
+		if (res)
+			PQclear(res);
 		return SHPDUMPERERR;
 	}
 
@@ -1338,11 +1445,12 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 int
 ShpDumperOpenTable(SHPDUMPERSTATE *state)
 {
-	PGresult *res;
+	PGresult *res = NULL;
 
 	char buf[256];
 	int gidfound = 0, i, j, status;
 	int ret = SHPDUMPEROK;
+	int fieldtuples;
 	stringbuffer_t sb;
 	char *quoted = NULL;
 
@@ -1355,25 +1463,39 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			return SHPDUMPERERR;
 	}
 
-	/* If a user-defined query has been specified, create and point the state to our new table */
+	/* If a user-defined query has been specified, describe its output columns
+	 * without materializing it. */
 	if (state->config->usrquery)
 	{
-		state->table = core_asprintf("__pgsql2shp%lu_tmp_table", (long)getpid());
-		stringbuffer_init(&sb);
-		stringbuffer_aprintf(&sb,
-			"CREATE TEMP TABLE \"%s\" AS %s",
-			state->table, state->config->usrquery);
-		res = PQexec(state->conn, stringbuffer_getstring(&sb));
-		stringbuffer_release(&sb);
-
-		/* Execute the code to create the table */
-		if (PQresultStatus(res) != PGRES_COMMAND_OK)
+		char *source = ShpDumperGetDataSource(state, NULL);
+		if (!source)
 		{
-			snprintf(state->message, SHPDUMPERMSGLEN, _("Error executing user query: %s"), PQresultErrorMessage(res));
-			PQclear(res);
+			snprintf(state->message, SHPDUMPERMSGLEN, _("Out of memory building user query"));
 			return SHPDUMPERERR;
 		}
-		PQclear(res);
+		state->table = strdup(USERQUERY_SOURCE_ALIAS);
+		if (!state->table)
+		{
+			free(source);
+			snprintf(state->message, SHPDUMPERMSGLEN, _("Out of memory building user query"));
+			return SHPDUMPERERR;
+		}
+		stringbuffer_init(&sb);
+		stringbuffer_aprintf(&sb, "SELECT * FROM %s LIMIT 0", source);
+		free(source);
+
+		res = PQexec(state->conn, stringbuffer_getstring(&sb));
+		stringbuffer_release(&sb);
+		if (!res || PQresultStatus(res) != PGRES_TUPLES_OK)
+		{
+			snprintf(state->message,
+			         SHPDUMPERMSGLEN,
+			         _("Error executing user query: %s"),
+			         res ? PQresultErrorMessage(res) : PQerrorMessage(state->conn));
+			if (res)
+				PQclear(res);
+			return SHPDUMPERERR;
+		}
 	}
 	else
 	{
@@ -1383,51 +1505,58 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			state->schema = strdup(state->config->schema);
 	}
 
-	stringbuffer_init(&sb);
-	/* Get the list of columns and their types for the selected table */
-	if (state->schema)
+	if (!state->config->usrquery)
 	{
-		stringbuffer_aprintf(&sb,
-			"SELECT a.attname, a.atttypid, "
-	        "a.atttypmod, a.attlen FROM "
-		    "pg_attribute a, pg_class c, pg_namespace n WHERE "
-		    "n.nspname = '%s' AND a.attrelid = c.oid AND "
-		    "n.oid = c.relnamespace AND "
-		    "a.atttypid != 0 AND "
-		    "a.attnum > 0 AND c.relname = '%s'",
-		    state->schema,
-		    state->table);
-	}
-	else
-	{
-		stringbuffer_aprintf(&sb,
-		    "SELECT a.attname, a.atttypid, "
-		    "a.atttypmod, a.attlen FROM "
-		    "pg_attribute a, pg_class c WHERE "
-		    "a.attrelid = c.oid and a.attnum > 0 AND "
-		    "a.atttypid != 0 AND "
-		    "c.relname = '%s' AND "
-		    "pg_catalog.pg_table_is_visible(c.oid)",
-		    state->table);
-	}
+		stringbuffer_init(&sb);
+		/* Get the list of columns and their types for the selected table */
+		if (state->schema)
+		{
+			stringbuffer_aprintf(&sb,
+					     "SELECT a.attname, a.atttypid, "
+					     "a.atttypmod, a.attlen FROM "
+					     "pg_attribute a, pg_class c, pg_namespace n WHERE "
+					     "n.nspname = '%s' AND a.attrelid = c.oid AND "
+					     "n.oid = c.relnamespace AND "
+					     "a.atttypid != 0 AND "
+					     "a.attnum > 0 AND c.relname = '%s'",
+					     state->schema,
+					     state->table);
+		}
+		else
+		{
+			stringbuffer_aprintf(&sb,
+					     "SELECT a.attname, a.atttypid, "
+					     "a.atttypmod, a.attlen FROM "
+					     "pg_attribute a, pg_class c WHERE "
+					     "a.attrelid = c.oid and a.attnum > 0 AND "
+					     "a.atttypid != 0 AND "
+					     "c.relname = '%s' AND "
+					     "pg_catalog.pg_table_is_visible(c.oid)",
+					     state->table);
+		}
 
-	LWDEBUGF(3, "query is: %s\n", stringbuffer_getstring(&sb));
+		LWDEBUGF(3, "query is: %s\n", stringbuffer_getstring(&sb));
 
-	res = PQexec(state->conn, stringbuffer_getstring(&sb));
-	stringbuffer_release(&sb);
+		res = PQexec(state->conn, stringbuffer_getstring(&sb));
+		stringbuffer_release(&sb);
 
-	if (PQresultStatus(res) != PGRES_TUPLES_OK)
-	{
-		snprintf(state->message, SHPDUMPERMSGLEN, _("Error querying for attributes: %s"), PQresultErrorMessage(res));
-		PQclear(res);
-		return SHPDUMPERERR;
-	}
+		if (!res || PQresultStatus(res) != PGRES_TUPLES_OK)
+		{
+			snprintf(state->message,
+				 SHPDUMPERMSGLEN,
+				 _("Error querying for attributes: %s"),
+				 res ? PQresultErrorMessage(res) : PQerrorMessage(state->conn));
+			if (res)
+				PQclear(res);
+			return SHPDUMPERERR;
+		}
 
-	if (!PQntuples(res))
-	{
-		snprintf(state->message, SHPDUMPERMSGLEN, _("Table %s does not exist"), state->table);
-		PQclear(res);
-		return SHPDUMPERERR;
+		if (!PQntuples(res))
+		{
+			snprintf(state->message, SHPDUMPERMSGLEN, _("Table %s does not exist"), state->table);
+			PQclear(res);
+			return SHPDUMPERERR;
+		}
 	}
 
 	/* If a shapefile name was specified, use it. Otherwise simply use the table name. */
@@ -1465,15 +1594,16 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	 * Scan the result setting fields to be returned in mainscan
 	 * query, filling the type_ary, and creating .dbf and .shp files.
 	 */
-	state->dbffieldnames = malloc(sizeof(char *) * PQntuples(res));
-	state->dbffieldtypes = malloc(sizeof(int) * PQntuples(res));
-	state->pgfieldnames = malloc(sizeof(char *) * PQntuples(res));
-	state->pgfieldlens = malloc(sizeof(int) * PQntuples(res));
-	state->pgfieldtypmods = malloc(sizeof(int) * PQntuples(res));
+	fieldtuples = state->config->usrquery ? PQnfields(res) : PQntuples(res);
+	state->dbffieldnames = malloc(sizeof(char *) * fieldtuples);
+	state->dbffieldtypes = malloc(sizeof(int) * fieldtuples);
+	state->pgfieldnames = malloc(sizeof(char *) * fieldtuples);
+	state->pgfieldlens = malloc(sizeof(int) * fieldtuples);
+	state->pgfieldtypmods = malloc(sizeof(int) * fieldtuples);
 	state->fieldcount = 0;
 	int tmpint = 1;
 
-	for (i = 0; i < PQntuples(res); i++)
+	for (i = 0; i < fieldtuples; i++)
 	{
 		char *ptr;
 
@@ -1483,10 +1613,20 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		int dbffieldtype, dbffieldsize, dbffielddecs;
 		char *dbffieldname;
 
-		pgfieldname = PQgetvalue(res, i, 0);
-		pgfieldtype = atoi(PQgetvalue(res, i, 1));
-		pgtypmod = atoi(PQgetvalue(res, i, 2));
-		pgfieldlen = atoi(PQgetvalue(res, i, 3));
+		if (state->config->usrquery)
+		{
+			pgfieldname = PQfname(res, i);
+			pgfieldtype = PQftype(res, i);
+			pgtypmod = PQfmod(res, i);
+			pgfieldlen = PQfsize(res, i);
+		}
+		else
+		{
+			pgfieldname = PQgetvalue(res, i, 0);
+			pgfieldtype = atoi(PQgetvalue(res, i, 1));
+			pgtypmod = atoi(PQgetvalue(res, i, 2));
+			pgfieldlen = atoi(PQgetvalue(res, i, 3));
+		}
 		dbffieldtype = -1;
 		dbffieldsize = 0;
 		dbffielddecs = 0;
@@ -1785,7 +1925,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			* we can do is query the table for the maximum field
 			* size.
 			*/
-			dbffieldsize = getMaxFieldSize(state->conn, state->schema, state->table, pgfieldname);
+			dbffieldsize = getMaxFieldSize(state, pgfieldname);
 			if (dbffieldsize == -1)
 			{
 				free(dbffieldname);
@@ -1921,7 +2061,17 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	if (state->config->binary)
 		stringbuffer_append(&sb, "BINARY ");
 
-	stringbuffer_append(&sb, "CURSOR FOR SELECT ");
+	if (state->config->usrquery)
+	{
+		/* A holdable cursor materializes the export rows at COMMIT, letting
+		 * us count and rewind the cursor without requiring CREATE TEMP
+		 * privileges or re-running the final user query. */
+		stringbuffer_append(&sb, "SCROLL CURSOR WITH HOLD FOR SELECT ");
+	}
+	else
+	{
+		stringbuffer_append(&sb, "CURSOR FOR SELECT ");
+	}
 
 	for (i = 0; i < state->fieldcount; i++)
 	{
@@ -1972,17 +2122,17 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		free(quoted);
 	}
 
-	if (state->schema)
 	{
-		stringbuffer_aprintf(&sb,
-		    " FROM \"%s\".\"%s\"",
-		    state->schema, state->table);
-	}
-	else
-	{
-		stringbuffer_aprintf(&sb,
-		    " FROM \"%s\"",
-		    state->table);
+		char *source = ShpDumperGetDataSource(state, NULL);
+		if (!source)
+		{
+			snprintf(state->message, SHPDUMPERMSGLEN, _("Out of memory building main scan query"));
+			PQclear(res);
+			stringbuffer_release(&sb);
+			return SHPDUMPERERR;
+		}
+		stringbuffer_aprintf(&sb, " FROM %s", source);
+		free(source);
 	}
 
 	/* Order by 'gid' (if found) */
@@ -2003,8 +2153,12 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	res = PQexec(state->conn, "BEGIN");
 	if (!res || PQresultStatus(res) != PGRES_COMMAND_OK)
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, _("Error starting transaction: %s"), PQresultErrorMessage(res));
-		PQclear(res);
+		snprintf(state->message,
+		         SHPDUMPERMSGLEN,
+		         _("Error starting transaction: %s"),
+		         res ? PQresultErrorMessage(res) : PQerrorMessage(state->conn));
+		if (res)
+			PQclear(res);
 		return SHPDUMPERERR;
 	}
 
@@ -2016,12 +2170,59 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	res = PQexec(state->conn, state->main_scan_query);
 	if (!res || PQresultStatus(res) != PGRES_COMMAND_OK)
 	{
-		snprintf(state->message, SHPDUMPERMSGLEN, _("Error executing main scan query: %s"), PQresultErrorMessage(res));
-		PQclear(res);
+		snprintf(state->message,
+		         SHPDUMPERMSGLEN,
+		         _("Error executing main scan query: %s"),
+		         res ? PQresultErrorMessage(res) : PQerrorMessage(state->conn));
+		if (res)
+			PQclear(res);
 		return SHPDUMPERERR;
 	}
 
 	PQclear(res);
+
+	if (state->config->usrquery)
+	{
+		res = PQexec(state->conn, "COMMIT");
+		if (!res || PQresultStatus(res) != PGRES_COMMAND_OK)
+		{
+			snprintf(state->message,
+			         SHPDUMPERMSGLEN,
+			         _("Error materializing main scan query: %s"),
+			         res ? PQresultErrorMessage(res) : PQerrorMessage(state->conn));
+			if (res)
+				PQclear(res);
+			return SHPDUMPERERR;
+		}
+		PQclear(res);
+
+		res = PQexec(state->conn, "MOVE FORWARD ALL FROM cur");
+		if (!res || PQresultStatus(res) != PGRES_COMMAND_OK)
+		{
+			snprintf(state->message,
+			         SHPDUMPERMSGLEN,
+			         _("Error counting main scan cursor: %s"),
+			         res ? PQresultErrorMessage(res) : PQerrorMessage(state->conn));
+			if (res)
+				PQclear(res);
+			return SHPDUMPERERR;
+		}
+		state->rowcount = atoi(PQcmdTuples(res));
+		PQclear(res);
+
+		res = PQexec(state->conn, "MOVE ABSOLUTE 0 FROM cur");
+		if (!res || PQresultStatus(res) != PGRES_COMMAND_OK)
+		{
+			snprintf(state->message,
+			         SHPDUMPERMSGLEN,
+			         _("Error rewinding main scan cursor: %s"),
+			         res ? PQresultErrorMessage(res) : PQerrorMessage(state->conn));
+			if (res)
+				PQclear(res);
+			return SHPDUMPERERR;
+		}
+		PQclear(res);
+	}
 
 	/* Setup initial scan state */
 	state->currow = 0;
@@ -2064,10 +2265,15 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 			PQclear(state->fetchres);
 
 		state->fetchres = PQexec(state->conn, state->fetch_query);
-		if (PQresultStatus(state->fetchres) != PGRES_TUPLES_OK)
+		if (!state->fetchres || PQresultStatus(state->fetchres) != PGRES_TUPLES_OK)
 		{
-			snprintf(state->message, SHPDUMPERMSGLEN, _("Error executing fetch query: %s"), PQresultErrorMessage(state->fetchres));
-			PQclear(state->fetchres);
+			snprintf(state->message,
+			         SHPDUMPERMSGLEN,
+			         _("Error executing fetch query: %s"),
+			         state->fetchres ? PQresultErrorMessage(state->fetchres) : PQerrorMessage(state->conn));
+			if (state->fetchres)
+				PQclear(state->fetchres);
+			state->fetchres = NULL;
 			return SHPDUMPERERR;
 		}
 
