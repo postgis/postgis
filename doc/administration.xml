@@ -291,6 +291,15 @@ string, and next time you'll need to drop the "next" suffix again:
 
 	  <programlisting language="bash">postgis_restore "/somepath/olddb.backup" | psql -h localhost -p 5432 -U postgres newdb 2&gt; errors.txt</programlisting>
 
+	  <para>
+		If the old database uses constraint-based geometry columns and
+		you want simple two-dimensional geometry columns converted to
+		typmod geometry columns during restore, add the
+		<command>--convert-to-typmod</command> switch:
+	  </para>
+
+	  <programlisting>postgis_restore --convert-to-typmod "/somepath/olddb.backup" | psql -h localhost -p 5432 -U postgres newdb 2&gt; errors.txt</programlisting>
+
 	</listitem>
 
 	</orderedlist>
