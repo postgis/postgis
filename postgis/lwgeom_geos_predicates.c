@@ -378,6 +378,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	int8_t result;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
+	bool pip_result;
 
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
@@ -396,6 +397,21 @@ Datum disjoint(PG_FUNCTION_ARGS)
 		{
 			PG_RETURN_BOOL(true);
 		}
+	}
+
+	/*
+	 * Short-circuit 2: if one geometry is polygonal and the other is a
+	 * point or point-only collection, use the IntervalTree PIP fast path.
+	 */
+	if (is_point_or_collection(geom1) && is_poly(geom2) &&
+	    try_itree_pointlike_pip(fcinfo, geom1, shared_geom2, itree_pip_intersects, &pip_result))
+	{
+		PG_RETURN_BOOL(!pip_result);
+	}
+	else if (is_point_or_collection(geom2) && is_poly(geom1) &&
+		 try_itree_pointlike_pip(fcinfo, geom2, shared_geom1, itree_pip_intersects, &pip_result))
+	{
+		PG_RETURN_BOOL(!pip_result);
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
