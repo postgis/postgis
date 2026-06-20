@@ -136,6 +136,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #2116, [raster] Add ST_Value nearest-neighbor boundary options
           (Darafei Praliaskouski)
+ - #3377, Add ST_Simplify support for geography
+          (Darafei Praliaskouski)
  - #2804, #4315, [raster] Support two-argument ST_MapAlgebra callbacks
           and pass callback call data as actual arguments (Darafei Praliaskouski)
  - #2898, Document SQL function cost tiers for contributors
