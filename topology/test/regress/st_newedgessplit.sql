@@ -141,6 +141,29 @@ WHERE n.node_id = t.node_id
 
 DROP TABLE t;
 
+-- ST_NewEdgesSplit honors non-zero topology precision (#785)
+SELECT '#785.start' FROM (SELECT topology.CreateTopology('t785', 26986, 0.5)) q;
+SELECT '#785.N' || topology.ST_AddIsoNode('t785', 0,
+  'SRID=26986;POINT(227575.8 893917.2)'::geometry);
+SELECT '#785.N' || topology.ST_AddIsoNode('t785', 0,
+  'SRID=26986;POINT(227591.9 893900.4)'::geometry);
+SELECT '#785.E' || topology.ST_AddIsoEdge('t785', 1, 2,
+  'SRID=26986;LINESTRING(227575.8 893917.2,227591.9 893900.4)'::geometry);
+SELECT '#785.N' || topology.ST_NewEdgesSplit('t785', 1,
+  'SRID=26986;POINT(227578.909683258 893913.955113122)'::geometry);
+SELECT '#785.node',
+       ST_AsText(ST_SnapToGrid(geom, 0.001))
+FROM t785.node
+WHERE node_id = 3;
+SELECT '#785.edge',
+       edge_id,
+       start_node,
+       end_node,
+       ST_AsText(ST_SnapToGrid(geom, 0.001))
+FROM t785.edge
+ORDER BY edge_id;
+SELECT '#785.drop' FROM (SELECT topology.DropTopology('t785')) q;
+
 DROP FUNCTION check_changes();
 SELECT DropTopology('city_data');
 

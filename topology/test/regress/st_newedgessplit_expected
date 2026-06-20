@@ -35,6 +35,15 @@ E|37|sn28|en18|nl8|nr-7|lf0|rf4
 seq_reset|1|1|1
 robust.1|E1|N3
 robust.2|t|t
+#785.start
+#785.N1
+#785.N2
+#785.E1
+#785.N3
+#785.node|POINT(227578.91 893913.955)
+#785.edge|2|1|3|LINESTRING(227575.8 893917.2,227578.91 893913.955)
+#785.edge|3|3|2|LINESTRING(227578.91 893913.955,227591.9 893900.4)
+#785.drop
 Topology 'city_data' dropped
 ---
 #5795|Regression test starting

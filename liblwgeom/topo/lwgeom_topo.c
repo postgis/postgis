@@ -1069,7 +1069,61 @@ lwt_AddIsoEdge( LWT_TOPOLOGY* topo, LWT_ELEMID startNode,
 }
 
 static LWCOLLECTION *
-_lwt_EdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, int skipISOChecks, LWT_ISO_EDGE** oldedge )
+_lwt_SplitLineByPointAtSegment(const LWLINE *line, LWPOINT *pt, uint32_t seg)
+{
+	POINT4D q, p1, p2, projected;
+	POINTARRAY *pa1;
+	POINTARRAY *pa2;
+	LWCOLLECTION *split_col;
+	uint32_t i, nsegs;
+
+	getPoint4d_p(pt->point, 0, &q);
+	getPoint4d_p(line->points, seg, &p1);
+	getPoint4d_p(line->points, seg + 1, &p2);
+	closest_point_on_segment(&q, &p1, &p2, &projected);
+
+	nsegs = line->points->npoints - 1;
+	if (((seg == 0) && (projected.x == p1.x) && (projected.y == p1.y)) ||
+	    ((seg == nsegs - 1) && (projected.x == p2.x) && (projected.y == p2.y)))
+	{
+		lwerror("SQL/MM Spatial exception - point not on edge");
+		return NULL;
+	}
+
+	ptarray_set_point4d(pt->point, 0, &projected);
+
+	pa1 = ptarray_construct_empty(FLAGS_GET_Z(line->points->flags), FLAGS_GET_M(line->points->flags), seg + 2);
+	for (i = 0; i <= seg; ++i)
+	{
+		getPoint4d_p(line->points, i, &p1);
+		ptarray_append_point(pa1, &p1, LW_FALSE);
+	}
+	ptarray_append_point(pa1, &projected, LW_FALSE);
+
+	pa2 = ptarray_construct_empty(
+	    FLAGS_GET_Z(line->points->flags), FLAGS_GET_M(line->points->flags), line->points->npoints - seg);
+	ptarray_append_point(pa2, &projected, LW_FALSE);
+	for (i = seg + 1; i < line->points->npoints; ++i)
+	{
+		getPoint4d_p(line->points, i, &p1);
+		ptarray_append_point(pa2, &p1, LW_FALSE);
+	}
+
+	split_col = lwcollection_construct_empty(
+	    COLLECTIONTYPE, line->srid, FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags));
+	lwcollection_add_lwgeom(split_col, (LWGEOM *)lwline_construct(line->srid, NULL, pa1));
+	lwcollection_add_lwgeom(split_col, (LWGEOM *)lwline_construct(line->srid, NULL, pa2));
+
+	return split_col;
+}
+
+static LWCOLLECTION *
+_lwt_EdgeSplit(LWT_TOPOLOGY *topo,
+	       LWT_ELEMID edge,
+	       LWPOINT *pt,
+	       int skipISOChecks,
+	       int snapToPrecision,
+	       LWT_ISO_EDGE **oldedge)
 {
   LWGEOM *split;
   LWCOLLECTION *split_col;
@@ -1120,6 +1174,37 @@ _lwt_EdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, int skipISOChe
     LWDEBUG(1, "lwt_be_ExistsCoincidentNode returned");
   }
 
+  /*
+   * When the topology has a precision tolerance, accept a split point that is
+   * within that tolerance of the edge by projecting it to the closest segment.
+   * lwgeom_split requires exact 2D incidence, while topology editing functions
+   * generally interpret a non-zero topology precision as snapping tolerance.
+   */
+  if (snapToPrecision && topo->precision > 0)
+  {
+	  POINT4D q;
+	  POINT2D q2d;
+	  double dist;
+	  uint32_t seg;
+
+	  if (getPoint4d_p(pt->point, 0, &q))
+	  {
+		  q2d.x = q.x;
+		  q2d.y = q.y;
+		  seg = ptarray_closest_segment_2d((*oldedge)->geom->points, &q2d, &dist);
+
+		  if (dist > 0 && dist <= topo->precision)
+		  {
+			  split_col = _lwt_SplitLineByPointAtSegment((*oldedge)->geom, pt, seg);
+			  if (!split_col)
+			  {
+				  _lwt_release_edges(*oldedge, 1);
+			  }
+			  return split_col;
+		  }
+	  }
+  }
+
   /* Split edge */
   split = lwgeom_split((LWGEOM*)(*oldedge)->geom, (LWGEOM*)pt);
   if ( ! split )
@@ -1167,7 +1252,7 @@ lwt_ModEdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   LWT_ISO_EDGE seledge = {0}, updedge = {0}, excedge = {0};
   int ret;
 
-  split_col = _lwt_EdgeSplit( topo, edge, pt, skipISOChecks, &oldedge );
+  split_col = _lwt_EdgeSplit(topo, edge, pt, skipISOChecks, 0, &oldedge);
   if ( ! split_col ) return -1; /* should have raised an exception */
   oldedge_geom = split_col->geoms[0];
   newedge_geom = split_col->geoms[1];
@@ -1324,7 +1409,7 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   LWT_ISO_EDGE seledge = {0}, updedge = {0};
   int ret;
 
-  split_col = _lwt_EdgeSplit( topo, edge, pt, skipISOChecks, &oldedge );
+  split_col = _lwt_EdgeSplit(topo, edge, pt, skipISOChecks, 1, &oldedge);
   if ( ! split_col ) return -1; /* should have raised an exception */
   oldedge_geom = split_col->geoms[0];
   newedge_geom = split_col->geoms[1];
