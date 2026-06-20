@@ -1768,9 +1768,10 @@ SELECT populate_geometry_columns('myschema.my_special_pois'::regclass);
 -- set optional use_typmod argument to false
 SELECT populate_geometry_columns('myschema.my_special_pois'::regclass, false); </programlisting>
 
-<para>Although the old-constraint based method is still supported, a constraint-based geometry column used directly
-in a view, will not register correctly in geometry_columns, as will a typmod one.
-In this example we define a column using typmod and another using constraints.</para>
+<para>Although the old constraint-based method is still supported, direct
+pass-through view columns register correctly in <varname>geometry_columns</varname>
+for both typmod-based and constraint-based source columns. In this example we
+define a column using typmod and another using constraints.</para>
 <programlisting>CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY, poi_name text, cat text, geom geometry(POINT,4326));
 SELECT AddGeometryColumn('pois_ny', 'geom_2160', 2160, 'POINT', 2, false);</programlisting>
 <para>If we run in psql</para>
@@ -1809,20 +1810,21 @@ SELECT *
 SELECT f_table_name, f_geometry_column, srid, type
 	FROM geometry_columns
 	WHERE f_table_name = 'vw_pois_ny_parks';</programlisting>
-<para>The typmod based geom view column registers correctly,
-but the constraint based one does not.</para>
+<para>Both the typmod based geom view column and the direct constraint based
+view column register correctly.</para>
 <screen>   f_table_name   | f_geometry_column | srid |   type
 ------------------+-------------------+------+----------
  vw_pois_ny_parks | geom              | 4326 | POINT
- vw_pois_ny_parks | geom_2160         |    0 | GEOMETRY</screen>
+ vw_pois_ny_parks | geom_2160         | 2160 | POINT</screen>
 
-<para>This may change in future versions of PostGIS, but for now
-to force the constraint-based view column to register correctly, you need to do this:</para>
+<para>If the view applies a spatial function to the geometry, such as
+<function>ST_Transform</function>, you still need to cast the transformed
+column explicitly so the view can expose the correct type and SRID:</para>
 <programlisting>DROP VIEW vw_pois_ny_parks;
 CREATE VIEW vw_pois_ny_parks AS
 SELECT gid, poi_name, cat,
   geom,
-  geom_2160::geometry(POINT,2160) As geom_2160
+  ST_Transform(geom, 2160)::geometry(POINT,2160) As geom_2160
   FROM pois_ny
   WHERE cat = 'park';
 SELECT f_table_name, f_geometry_column, srid, type
