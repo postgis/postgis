@@ -22,3 +22,4 @@ SELECT '13', ST_AsText(g) as geometry, postgis_getbbox(g) AS box from geom;
 
 SELECT '14', ST_AsText(ST_SetEffectiveArea('POLYGON((0 50,0 0,10 0,10 10,0 10,0 50))', 1::float8, 0));
 SELECT '15', ST_AsText(ST_SetEffectiveArea('POLYGON((0 50,0 0,10 0,10 10,0 10,0 50))', 1::float8, 0, false));
+SELECT '16', ST_AsText(ST_SetEffectiveArea('POLYGON((0 0,10 0,10 10,0 10,0 0),(1 1,1 2,2 2,2 1,1 1))', 10::float8, 0, false));
