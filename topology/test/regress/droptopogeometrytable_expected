@@ -1,0 +1,9 @@
+point_layer|1
+line_layer|2
+parent_layer|3
+parent-block|t
+parent-still-registered|t
+#1185.drop-parent-column|Layer 3 (public.t1185_parent.g_parent) dropped
+before|t|t
+#1185.drop|public.t1185f dropped.
+after|t|t|t

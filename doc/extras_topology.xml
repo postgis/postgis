@@ -549,7 +549,53 @@ Rename a topology from <varname>topo_stage</varname> to <varname>topo_prod</varn
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="AddTopoGeometryColumn"/></para>
+				<para><xref linkend="AddTopoGeometryColumn"/>, <xref linkend="DropTopoGeometryTable"/></para>
+			</refsection>
+		</refentry>
+
+		<refentry xml:id="DropTopoGeometryTable">
+			<refnamediv>
+				<refname>DropTopoGeometryTable</refname>
+
+				<refpurpose>Drops a table and unregisters all associated topogeometry columns from topology.layer.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>text <function>DropTopoGeometryTable</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>schema_name</parameter></paramdef>
+					<paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+					<funcdef>text <function>DropTopoGeometryTable</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Drops the table named <varname>table_name</varname> in schema <varname>schema_name</varname>, unregistering every associated topogeometry column from the <varname>topology.layer</varname> table and removing related records from the topology relation table.</para>
+
+                <para>If the schema is omitted, the current schema is used.</para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT topology.DropTopoGeometryTable('public', 'parcel_topo');</programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="DropTopoGeometryColumn"/>, <xref linkend="AddTopoGeometryColumn"/></para>
 			</refsection>
 		</refentry>
 

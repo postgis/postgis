@@ -28,6 +28,7 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/createtopogeom.sql \
 	$(top_srcdir)/topology/test/regress/createtopology.sql \
 	$(top_srcdir)/topology/test/regress/droptopogeometrycolumn.sql \
+	$(top_srcdir)/topology/test/regress/droptopogeometrytable.sql \
 	$(top_srcdir)/topology/test/regress/droptopology.sql \
 	$(top_srcdir)/topology/test/regress/findlayer.sql \
 	$(top_srcdir)/topology/test/regress/findtopology.sql \
@@ -101,4 +102,3 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/verifylargeids.sql \
 	$(top_srcdir)/topology/test/regress/fix_topogeometry_columns.sql \
 	$(top_srcdir)/topology/test/regress/findvertexsegmentpairsbelowdistance.sql
-
