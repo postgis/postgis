@@ -367,6 +367,57 @@ round(ST_Value(rast, 1, 'SRID=4326;POINT(0.5 0.5)'::geometry, resample => 'neare
 round(ST_Value(rast, 1, 'SRID=4326;POINT(1.0 1.0)'::geometry, resample => 'bilinear')) as nearest_10_10,
 round(ST_Value(rast, 1, 'SRID=4326;POINT(1.0 0.1)'::geometry, resample => 'bilinear')) as nearest_10_00,
 round(ST_Value(rast, 1, 'SRID=4326;POINT(1.0 1.9)'::geometry, resample => 'bilinear')) as nearest_10_20
-FROM r
+FROM r;
 
+WITH r AS (
+SELECT
+ST_SetValues(
+  ST_AddBand(
+    ST_MakeEmptyRaster(width => 2, height => 2,
+      upperleftx => 0, upperlefty => 2,
+      scalex => 1.0, scaley => -1.0,
+      skewx => 0, skewy => 0, srid => 4326),
+    index => 1, pixeltype => '16BSI',
+    initialvalue => 0,
+    nodataval => -999),
+  1,1,1,
+  newvalueset =>ARRAY[ARRAY[10.0::float8, 50.0::float8], ARRAY[40.0::float8, 20.0::float8]]) AS rast
+)
+SELECT
+'#2116',
+round(ST_Value(rast, 1, 'SRID=4326;POINT(1.0 1.0)'::geometry, resample => 'nearest-ul')) as nearest_ul,
+round(ST_Value(rast, 1, 'SRID=4326;POINT(1.0 1.0)'::geometry, resample => 'nearest-ur')) as nearest_ur,
+round(ST_Value(rast, 1, 'SRID=4326;POINT(1.0 1.0)'::geometry, resample => 'nearest-ll')) as nearest_ll,
+round(ST_Value(rast, 1, 'SRID=4326;POINT(1.0 1.0)'::geometry, resample => 'nearest-lr')) as nearest_lr,
+round(ST_Value(rast, 1, 'SRID=4326;POINT(1.0 1.0)'::geometry, resample => 'nearest')) as nearest_default
+FROM r;
 
+WITH r AS (
+SELECT
+ST_SetValues(
+  ST_AddBand(
+    ST_MakeEmptyRaster(width => 2, height => 2,
+      upperleftx => 0, upperlefty => 2,
+      scalex => 1.0, scaley => -1.0,
+      skewx => 0, skewy => 0, srid => 4326),
+    index => 1, pixeltype => '16BSI',
+    initialvalue => 0,
+    nodataval => -999),
+  1,1,1,
+  newvalueset =>ARRAY[ARRAY[10.0::float8, 50.0::float8], ARRAY[40.0::float8, 20.0::float8]]) AS rast
+)
+SELECT
+'#2116.snap',
+round(ST_Value(rast, 1, 'SRID=4326;POINT(1.0000000000000004 0.9999999999999996)'::geometry, resample => 'nearest-ul')) as nearest_ul,
+round(ST_Value(rast, 1, 'SRID=4326;POINT(0.9999999999999997 1.0000000000000002)'::geometry, resample => 'nearest-lr')) as nearest_lr
+FROM r;
+
+WITH r AS (
+SELECT ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 1, 1, -1, 0, 0, 4326), '16BSI'::text, 1, -999) AS rast
+)
+SELECT ST_Value(rast, 1, 'SRID=4326;POINT(0.5 0.5)'::geometry, resample => 'nearest-foo') FROM r;
+
+WITH r AS (
+SELECT ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 1, 1, -1, 0, 0, 4326), '16BSI'::text, 1, -999) AS rast
+)
+SELECT ST_Value(rast, 1, 'SRID=4326;POINT(0.5 0.5)'::geometry, resample => 'bilinearXYZ') FROM r;

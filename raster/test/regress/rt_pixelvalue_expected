@@ -11,3 +11,7 @@ NOTICE:  Raster do not have a nodata value defined. Set band nodata value first.
 NOTICE:  Raster do not have a nodata value defined. Set band nodata value first. Nodata value not set. Returning original raster
 NOTICE:  Raster do not have a nodata value defined. Set band nodata value first. Nodata value not set. Returning original raster
 Test 5|50|40|30|26|38
+#2116|10|50|40|20|20
+#2116.snap|10|20
+ERROR:  Unknown resample type 'nearest-foo' requested
+ERROR:  Unknown resample type 'bilinearxyz' requested

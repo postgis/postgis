@@ -141,16 +141,27 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
 
 static rt_resample_type resample_text_to_type(text *txt)
 {
+	rt_resample_type resample_type = RT_NEAREST;
 	char *resample = asc_tolower(VARDATA(txt), VARSIZE_ANY_EXHDR(txt));
-	if (strncmp(resample, "bilinear", 8) == 0)
-		return RT_BILINEAR;
-	else if (strncmp(resample, "nearest", 7) == 0)
-		return RT_NEAREST;
+
+	if (strcmp(resample, "bilinear") == 0)
+		resample_type = RT_BILINEAR;
+	else if (strcmp(resample, "nearest-ul") == 0)
+		resample_type = RT_NEAREST_UL;
+	else if (strcmp(resample, "nearest-ur") == 0)
+		resample_type = RT_NEAREST_UR;
+	else if (strcmp(resample, "nearest-ll") == 0)
+		resample_type = RT_NEAREST_LL;
+	else if (strcmp(resample, "nearest-lr") == 0)
+		resample_type = RT_NEAREST_LR;
+	else if (strcmp(resample, "nearest") == 0)
+		resample_type = RT_NEAREST;
 	else {
 		elog(ERROR, "Unknown resample type '%s' requested", resample);
 	}
+
 	pfree(resample);
-	return RT_NEAREST;
+	return resample_type;
 }
 
 /*
@@ -2506,4 +2517,3 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 
 	PG_RETURN_ARRAYTYPE_P(mdArray);
 }
-

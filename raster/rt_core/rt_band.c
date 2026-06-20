@@ -1386,6 +1386,18 @@ rt_errorstate rt_band_get_pixel_line(
 	return ES_NONE;
 }
 
+static double
+rt_band_snap_pixel_coordinate(double coordinate)
+{
+	double nearest = round(coordinate);
+	double tolerance = DBL_EPSILON * fmax(fabs(coordinate), 1.0) * 16.0;
+
+	if (fabs(coordinate - nearest) <= tolerance)
+		return nearest;
+
+	return coordinate;
+}
+
 /**
  * Retrieve a point value from the raster using a world coordinate
  * and selected interpolation.
@@ -1411,11 +1423,25 @@ rt_band_get_pixel_resample(
 			band, xr, yr, r_value, r_nodata
 			);
 	}
-	else if (resample == RT_NEAREST) {
-		return rt_band_get_pixel(
-			band, floor(xr), floor(yr),
-			r_value, r_nodata
-			);
+	else if (resample == RT_NEAREST || resample == RT_NEAREST_UL || resample == RT_NEAREST_UR ||
+		 resample == RT_NEAREST_LL || resample == RT_NEAREST_LR)
+	{
+		int x, y;
+
+		xr = rt_band_snap_pixel_coordinate(xr);
+		yr = rt_band_snap_pixel_coordinate(yr);
+
+		if (resample == RT_NEAREST_UL || resample == RT_NEAREST_LL)
+			x = ceil(xr) - 1;
+		else
+			x = floor(xr);
+
+		if (resample == RT_NEAREST_UL || resample == RT_NEAREST_UR)
+			y = ceil(yr) - 1;
+		else
+			y = floor(yr);
+
+		return rt_band_get_pixel(band, x, y, r_value, r_nodata);
 	}
 	else {
 		rtwarn("Invalid resample type requested %d", resample);
