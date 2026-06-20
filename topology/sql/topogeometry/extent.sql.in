@@ -1,0 +1,137 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+-- {
+-- Aggregate state function for ST_Extent() over topogeometry objects.
+--
+-- Availability: 3.7.0
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology._ST_Extent(state box3d, tg topology.TopoGeometry)
+	RETURNS box3d
+AS
+$$
+DECLARE
+	toponame name;
+	layer_info RECORD;
+	child_layer_id integer;
+	extent box3d;
+	sql text;
+BEGIN
+	IF tg IS NULL THEN
+		RETURN state;
+	END IF;
+
+	SELECT name FROM topology.topology
+	WHERE id = topology_id(tg)
+	INTO toponame;
+
+	IF toponame IS NULL THEN
+		RAISE EXCEPTION 'Invalid TopoGeometry (unexistent topology id %)', topology_id(tg);
+	END IF;
+
+	SELECT * FROM topology.layer
+	WHERE topology_id = topology_id(tg)
+	AND layer_id = layer_id(tg)
+	INTO layer_info;
+
+	IF layer_info IS NULL THEN
+		RAISE EXCEPTION 'Could not find TopoGeometry layer % in topology %',
+			layer_id(tg), topology_id(tg);
+	END IF;
+
+	IF layer_info.level > 0 THEN
+		child_layer_id := layer_info.child_id;
+
+		SELECT * FROM topology.layer
+		WHERE topology_id = topology_id(tg)
+		AND layer_id = child_layer_id
+		INTO layer_info;
+
+		IF layer_info IS NULL THEN
+			RAISE EXCEPTION 'Invalid layer % in topology % (unexistent child layer %)',
+				layer_id(tg), topology_id(tg), child_layer_id;
+		END IF;
+
+		sql := format(
+			$q$
+			SELECT topology.ST_Extent(child.%1$I)::box3d
+			FROM %2$I.%3$I child, %4$I.relation rel
+			WHERE rel.topogeo_id = id($1)
+			AND rel.layer_id = layer_id($1)
+			AND id(child.%1$I) = rel.element_id
+			AND layer_id(child.%1$I) = rel.element_type
+			$q$,
+			layer_info.feature_column,
+			layer_info.schema_name,
+			layer_info.table_name,
+			toponame
+		);
+	ELSE
+		sql := format(
+			$q$
+			WITH component_geoms AS (
+				SELECT n.geom
+				FROM %1$I.relation rel
+				JOIN %1$I.node n ON n.node_id = rel.element_id
+				WHERE rel.topogeo_id = id($1)
+				AND rel.layer_id = layer_id($1)
+				AND rel.element_type = 1
+				UNION ALL
+				SELECT e.geom
+				FROM %1$I.relation rel
+				JOIN %1$I.edge_data e ON e.edge_id = abs(rel.element_id)
+				WHERE rel.topogeo_id = id($1)
+				AND rel.layer_id = layer_id($1)
+				AND rel.element_type = 2
+				UNION ALL
+				SELECT f.mbr
+				FROM %1$I.relation rel
+				JOIN %1$I.face f ON f.face_id = rel.element_id
+				WHERE rel.topogeo_id = id($1)
+				AND rel.layer_id = layer_id($1)
+				AND rel.element_type = 3
+			)
+			SELECT ST_Extent(geom)::box3d
+			FROM component_geoms
+			$q$,
+			toponame
+		);
+	END IF;
+
+	EXECUTE sql USING tg INTO extent;
+
+	IF extent IS NULL THEN
+		RETURN state;
+	END IF;
+
+	IF state IS NULL THEN
+		RETURN extent;
+	END IF;
+
+	RETURN ST_CombineBBox(state, extent);
+END
+$$
+LANGUAGE 'plpgsql' VOLATILE;
+-- }
+
+-- {
+-- ST_Extent(TopoGeometry)
+--
+-- Availability: 3.7.0
+--
+CREATE AGGREGATE topology.ST_Extent(topology.TopoGeometry) (
+	sfunc = topology._ST_Extent,
+	stype = box3d,
+	finalfunc = box2d
+	);
+-- }

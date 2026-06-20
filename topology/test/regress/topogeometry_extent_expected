@@ -1,0 +1,9 @@
+traffic_signs|BOX(8 14,57 37)
+city_streets|BOX(9 6,62 42)
+land_parcels|BOX(3 6,47 40)
+big_signs|BOX(21 14,35 14)
+big_streets|BOX(9 14,62 42)
+big_parcels|BOX(9 6,47 40)
+empty_set|t
+empty_topogeom|t
+Topology 'city_data' dropped
