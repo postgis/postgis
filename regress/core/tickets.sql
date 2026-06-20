@@ -1770,6 +1770,56 @@ SELECT '#5987', ST_AsText(geom), ST_AsText(ST_GeometryN(geom, 1)) FROM test5987;
 DROP TABLE IF EXISTS test5987;
 
 -- -------------------------------------------------------------------------------------
+-- #926, ST_GeometryN/ST_PointN array forms
+SELECT '#926.geom', ord, ST_AsText(g)
+FROM ST_GeometryN(
+  'GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(0 0,1 1),POINT(2 2))'::geometry,
+  ARRAY[2,1,2,4,NULL]::integer[]
+) WITH ORDINALITY AS t(g, ord);
+SELECT '#926.geom.repeat', ord, ST_AsText(g)
+FROM ST_GeometryN(
+  'GEOMETRYCOLLECTION(POLYGON((0 0,1 0,1 1,0 0)),POLYGON((2 2,3 2,3 3,2 2)))'::geometry,
+  ARRAY[2,2]::integer[]
+) WITH ORDINALITY AS t(g, ord);
+SELECT '#926.point', ord, ST_AsText(g)
+FROM ST_PointN(
+  'LINESTRING(0 0,1 1,2 2)'::geometry,
+  ARRAY[1,3,-1,4,NULL,-4]::integer[]
+) WITH ORDINALITY AS t(g, ord);
+SELECT '#926.point.compound', ord, ST_AsText(g)
+FROM ST_PointN(
+  'COMPOUNDCURVE((0 0,1 1),CIRCULARSTRING(1 1,2 2,3 1))'::geometry,
+  ARRAY[1,99,NULL,0]::integer[]
+) WITH ORDINALITY AS t(g, ord);
+SELECT '#926.ring', ord, ST_AsText(g)
+FROM ST_InteriorRingN(
+  'POLYGON((0 0,10 0,10 10,0 10,0 0),(1 1,1 2,2 2,1 1),(3 3,3 4,4 4,3 3))'::geometry,
+  ARRAY[2,1,3,NULL,0]::integer[]
+) WITH ORDINALITY AS t(g, ord);
+SELECT '#926.ring.curve.repeat', ord, ST_AsText(g)
+FROM ST_InteriorRingN(
+  'CURVEPOLYGON(CIRCULARSTRING(0 0,5 5,10 0,5 -5,0 0),(1 1,1 2,2 1,1 1))'::geometry,
+  ARRAY[1,1]::integer[]
+) WITH ORDINALITY AS t(g, ord);
+SELECT '#926.geom.srid', ST_SRID(g), ST_AsEWKT(g)
+FROM ST_GeometryN(
+  'SRID=3857;GEOMETRYCOLLECTION Z(POINT Z(0 0 1),LINESTRING Z(0 0 1,1 1 2))'::geometry,
+  ARRAY[2]::integer[]
+) AS t(g);
+SELECT '#926.point.srid', ST_SRID(g), ST_AsEWKT(g)
+FROM ST_PointN(
+  'SRID=3857;LINESTRING Z(0 0 1,1 1 2)'::geometry,
+  ARRAY[2]::integer[]
+) AS t(g);
+SELECT '#926.ring.srid', ST_SRID(g), ST_AsEWKT(g)
+FROM ST_InteriorRingN(
+  'SRID=3857;POLYGON Z((0 0 0,10 0 0,10 10 0,0 10 0,0 0 0),(1 1 3,1 2 4,2 2 5,1 1 3))'::geometry,
+  ARRAY[1]::integer[]
+) AS t(g);
+SELECT '#926.empty', count(*)
+FROM ST_PointN('LINESTRING(0 0,1 1)'::geometry, ARRAY[]::integer[]);
+
+-- -------------------------------------------------------------------------------------
 -- #5962
 SELECT '#5962',
     ST_AsText(ST_ClipByBox2D(

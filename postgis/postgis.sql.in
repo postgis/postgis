@@ -5604,6 +5604,13 @@ CREATE OR REPLACE FUNCTION ST_GeometryN(geometry,integer)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_GeometryN(geometry,integer[])
+	RETURNS SETOF geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_geometryn_collection_array'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- PostGIS equivalent function: Dimension(geometry)
 CREATE OR REPLACE FUNCTION ST_Dimension(geometry)
 	RETURNS integer
@@ -5639,6 +5646,13 @@ CREATE OR REPLACE FUNCTION ST_InteriorRingN(geometry,integer)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_InteriorRingN(geometry,integer[])
+	RETURNS SETOF geometry
+	AS 'MODULE_PATHNAME','LWGEOM_interiorringn_polygon_array'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- Deprecation in 1.2.3 -- this should not be deprecated (2011-01-04 robe)
 CREATE OR REPLACE FUNCTION GeometryType(geometry)
 	RETURNS text
@@ -5657,6 +5671,13 @@ CREATE OR REPLACE FUNCTION ST_GeometryType(geometry)
 CREATE OR REPLACE FUNCTION ST_PointN(geometry,integer)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_pointn_linestring'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_PointN(geometry,integer[])
+	RETURNS SETOF geometry
+	AS 'MODULE_PATHNAME','LWGEOM_pointn_linestring_array'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 

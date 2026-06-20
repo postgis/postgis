@@ -120,8 +120,11 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #2863, Add ST_XSize, ST_YSize, ST_ZSize, and ST_MSize dimension helpers
           (Darafei Praliaskouski)
  - [fuzzers] Centralize OSS-Fuzz build/dependency logic in PostGIS scripts,
-          prefer requested CXX over pg_config --cc for internal C++ checks, and
-          make fuzzer linking/runtime dependency packaging portable
+         prefer requested CXX over pg_config --cc for internal C++ checks, and
+         make fuzzer linking/runtime dependency packaging portable
+         (Darafei Praliaskouski)
+ - #926, Add array overloads for ST_GeometryN, ST_InteriorRingN,
+          and ST_PointN
           (Darafei Praliaskouski)
 
 * Enhancements *
