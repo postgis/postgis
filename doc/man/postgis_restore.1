@@ -5,7 +5,7 @@ postgis_restore - restore a PostGIS database from an archive file created by pg_
 
 .SH "SYNTAX"
 .LP
-postgis_restore [\fI-v\fR] [\fI-L TOC\fR] [\fI-s schema\fR] \fIdumpfile\fR
+postgis_restore [\fI-v\fR] [\fI-L TOC\fR] [\fI-s schema\fR] [\fI--convert-to-typmod\fR] \fIdumpfile\fR
 
 .SH "DESCRIPTION"
 .LP
@@ -26,6 +26,10 @@ those created with \fIpg_dump -Fc\fR.
 Usage information is printed when the script is invoked with no
 arguments.
 
+Use \fI--convert-to-typmod\fR to convert simple 2D constraint-based geometry
+columns to typmod geometry columns while restoring. This is opt-in because
+some older constraint layouts cannot be represented as typmod columns.
+
 .SH "EXAMPLES"
 .LP
 
@@ -43,7 +47,12 @@ PostGIS-enable the new database:
 
 Restore your data:
 
-	postgis_restore.pl olddb.dump | psql newdb
+	postgis_restore olddb.dump | psql newdb
+
+Restore and convert simple 2D constraint-based geometry columns to typmod
+columns:
+
+	postgis_restore --convert-to-typmod olddb.dump | psql newdb
 
 .SH "AUTHORS"
 .LP
