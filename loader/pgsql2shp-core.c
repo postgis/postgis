@@ -1179,6 +1179,7 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 	state->pgfieldnames = NULL;
 	state->pgfieldlens = NULL;
 	state->pgfieldtypmods = NULL;
+	state->generate_dbf_id = 0;
 	state->message[0] = '\0';
 	colmap_init(&state->column_map);
 
@@ -1317,7 +1318,8 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	PGresult *res;
 
 	char buf[256];
-	int gidfound = 0, i, j, ret, status;
+	int gidfound = 0, i, j, status;
+	int ret = SHPDUMPEROK;
 	stringbuffer_t sb;
 	char *quoted = NULL;
 
@@ -1787,6 +1789,25 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		}
 	}
 
+	if (state->geo_col_name && !state->fieldcount)
+	{
+		if (DBFAddField(state->dbf, "GID", FTInteger, 11, 0) == -1)
+		{
+			snprintf(
+			    state->message, SHPDUMPERMSGLEN, _("Error: generated field GID could not be created."));
+			PQclear(res);
+			return SHPDUMPERERR;
+		}
+
+		state->generate_dbf_id = 1;
+		snprintf(buf,
+			 sizeof(buf),
+			 _("Warning: no DBF attributes found, generating a GID field for compatibility.\n"));
+		if (SHPDUMPERMSGLEN > (strlen(state->message) + 1))
+			strncat(state->message, buf, SHPDUMPERMSGLEN - (strlen(state->message) + 1));
+		ret = SHPDUMPERWARN;
+	}
+
 	/* Now we have generated the field lists, grab some info about the table */
 	status = getTableInfo(state);
 	if (status == SHPDUMPERERR)
@@ -2028,6 +2049,19 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 		if (!DBFWriteAttributeDirectly(state->dbf, state->currow, i, val))
 		{
 			snprintf(state->message, SHPDUMPERMSGLEN, _("Error: record %d could not be created"), state->currow);
+			PQclear(state->fetchres);
+			return SHPDUMPERERR;
+		}
+	}
+
+	if (state->generate_dbf_id)
+	{
+		if (!DBFWriteIntegerAttribute(state->dbf, state->currow, 0, state->currow + 1))
+		{
+			snprintf(state->message,
+				 SHPDUMPERMSGLEN,
+				 _("Error: generated GID for record %d could not be created"),
+				 state->currow);
 			PQclear(state->fetchres);
 			return SHPDUMPERERR;
 		}
