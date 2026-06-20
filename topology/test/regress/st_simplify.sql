@@ -49,3 +49,17 @@ SELECT 'HS2',
 FROM tt.bigareas WHERE id = 2;
 
 SELECT DropTopology('tt') IS NULL;
+
+-- See http://trac.osgeo.org/postgis/ticket/5093
+SELECT CreateTopology('tl') > 0;
+CREATE TABLE tl.lines(id serial, g geometry);
+INSERT INTO tl.lines(g) VALUES ('LINESTRING(0 0,10 0,10 10,0 0)');
+SELECT 'L' || AddTopoGeometryColumn('tl', 'tl', 'lines', 'tg', 'line');
+UPDATE tl.lines SET tg = toTopoGeom(g, 'tl', 1);
+
+SELECT 'S3',
+  ST_AsText(ST_Simplify(tg, 100)),
+  ST_Simplify(tg, 100) IS NULL
+FROM tl.lines WHERE id = 1;
+
+SELECT DropTopology('tl') IS NULL;

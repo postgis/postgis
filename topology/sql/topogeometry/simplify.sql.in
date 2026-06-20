@@ -101,7 +101,7 @@ BEGIN
 
     sql :=
       'SELECT st_multi(ST_LineMerge(ST_Node(ST_Collect(ST_Simplify(e.geom,'
-      || tolerance || '))))) as g FROM '
+      || tolerance || ', true))))) as g FROM '
       || quote_ident(topology_info.name) || '.edge e, '
       || quote_ident(topology_info.name) || '.relation r '
       || ' WHERE r.topogeo_id = ' || tg.id
@@ -130,7 +130,7 @@ BEGIN
       || ' AND element_type = 3 ), '
       || 'lines AS ( '
       || 'SELECT st_multi(ST_LineMerge(ST_Collect(ST_Simplify(e.geom,'
-      || tolerance || ')))) as g FROM '
+      || tolerance || ', true)))) as g FROM '
       || quote_ident(topology_info.name) || '.edge e, '
       || quote_ident(topology_info.name) || '.relation r '
       || ' WHERE r.topogeo_id = ' || tg.id
@@ -161,4 +161,3 @@ END
 $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 -- }
-
