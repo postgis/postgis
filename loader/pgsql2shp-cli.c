@@ -40,7 +40,9 @@ usage(int status)
 	printf(_("  -h <host>  Allows you to specify connection to a database on a\n"
 	         "     machine other than the default.\n" ));
 	printf(_("  -p <port>  Allows you to specify a database port other than the default.\n" ));
-	printf(_("  -P <password>  Connect to the database with the specified password.\n" ));
+	printf(
+	    _("  -P <password>  Connect to the database with the specified password.\n"
+	      "     If omitted, pgsql2shp prompts when a password is required and stdin is a terminal.\n"));
 	printf(_("  -u <user>  Connect to the database as the specified user.\n" ));
 	printf(_("  -g <geometry_column> Specify the geometry column to be exported.\n" ));
 	printf(_("  -b Use a binary cursor.\n" ));
