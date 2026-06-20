@@ -6,6 +6,9 @@ PostGIS 3.8.0dev
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
+ - #926, Add array overloads for ST_GeometryN, ST_InteriorRingN,
+          and ST_PointN
+          (Darafei Praliaskouski)
 
 * Enhancements *
 
