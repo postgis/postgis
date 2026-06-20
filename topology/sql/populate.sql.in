@@ -733,6 +733,11 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint g
 	RETURNS bigint AS
 	'MODULE_PATHNAME', 'TopoGeo_AddPoint'
   LANGUAGE 'c' VOLATILE;
+
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology topology.topology, apoint geometry, tolerance float8 DEFAULT -1)
+	RETURNS bigint AS
+	'MODULE_PATHNAME', 'TopoGeo_AddPointTopology'
+  LANGUAGE 'c' VOLATILE;
 --} TopoGeo_AddPoint
 
 --{
@@ -746,6 +751,11 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint g
 CREATE OR REPLACE FUNCTION topology.TopoGeo_AddLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT -1, max_edges int DEFAULT -1)
 	RETURNS SETOF bigint AS
 	'MODULE_PATHNAME', 'TopoGeo_AddLinestring'
+  LANGUAGE 'c' VOLATILE;
+
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddLinestring(atopology topology.topology, aline geometry, tolerance float8 DEFAULT -1, max_edges int DEFAULT -1)
+	RETURNS SETOF bigint AS
+	'MODULE_PATHNAME', 'TopoGeo_AddLinestringTopology'
   LANGUAGE 'c' VOLATILE;
 --} TopoGeo_addLinestring
 
@@ -761,6 +771,11 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology varchar, apoly 
 	RETURNS SETOF bigint AS
 	'MODULE_PATHNAME', 'TopoGeo_AddPolygon'
   LANGUAGE 'c' VOLATILE;
+
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology topology.topology, apoly geometry, tolerance float8 DEFAULT -1)
+	RETURNS SETOF bigint AS
+	'MODULE_PATHNAME', 'TopoGeo_AddPolygonTopology'
+  LANGUAGE 'c' VOLATILE;
 --} TopoGeo_AddPolygon
 
 --{
@@ -774,6 +789,11 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology varchar, apoly 
 CREATE OR REPLACE FUNCTION topology.TopoGeo_LoadGeometry(atopology varchar, ageom geometry, tolerance float8 DEFAULT -1)
 	RETURNS void AS
 	'MODULE_PATHNAME', 'TopoGeo_LoadGeometry'
+  LANGUAGE 'c' VOLATILE;
+
+CREATE OR REPLACE FUNCTION topology.TopoGeo_LoadGeometry(atopology topology.topology, ageom geometry, tolerance float8 DEFAULT -1)
+	RETURNS void AS
+	'MODULE_PATHNAME', 'TopoGeo_LoadGeometryTopology'
   LANGUAGE 'c' VOLATILE;
 --} TopoGeo_LoadGeometry
 

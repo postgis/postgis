@@ -1691,6 +1691,12 @@ Adds a point to an existing topology using a tolerance and possibly splitting an
 						<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
 					</funcprototype>
+					<funcprototype>
+						<funcdef>bigint <function>TopoGeo_AddPoint</function></funcdef>
+						<paramdef><type>topology.topology </type> <parameter>atopology</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 
@@ -1705,6 +1711,7 @@ An existing edge may be split by the snapped point.
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 added support for passing a topology record.</para>
 			</refsection>
 
 
@@ -1735,6 +1742,13 @@ Adds a linestring to an existing topology using a tolerance and possibly splitti
 					<funcprototype>
 						<funcdef>SETOF bigint <function>TopoGeo_AddLineString</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
+						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
+						<paramdef choice="opt"><type>int </type> <parameter>max_edges</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+						<funcdef>SETOF bigint <function>TopoGeo_AddLineString</function></funcdef>
+						<paramdef><type>topology.topology </type> <parameter>atopology</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
 						<paramdef choice="opt"><type>int </type> <parameter>max_edges</parameter></paramdef>
@@ -1776,6 +1790,7 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
                 <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
                 <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 added support for returning signed identifier.</para>
                 <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 added support for limiting the number of new edges created in the topology.</para>
+                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 added support for passing a topology record.</para>
 			</refsection>
 
 
@@ -1807,6 +1822,12 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
 						<paramdef><type>geometry </type> <parameter>apoly</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
 					</funcprototype>
+					<funcprototype>
+						<funcdef>SETOF bigint <function>TopoGeo_AddPolygon</function></funcdef>
+						<paramdef><type>topology.topology </type> <parameter>atopology</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>apoly</parameter></paramdef>
+						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 
@@ -1826,6 +1847,7 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 added support for passing a topology record.</para>
 			</refsection>
 
 
@@ -1857,6 +1879,12 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
 						<paramdef><type>geometry </type> <parameter>ageom</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
 					</funcprototype>
+					<funcprototype>
+						<funcdef>void <function>TopoGeo_LoadGeometry</function></funcdef>
+						<paramdef><type>topology.topology </type> <parameter>atopology</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>ageom</parameter></paramdef>
+						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 
@@ -1876,6 +1904,7 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 added support for passing a topology record.</para>
 			</refsection>
 
 

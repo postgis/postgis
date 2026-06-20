@@ -82,6 +82,7 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/topogeo_addpoint_merge_edges.sql \
 	$(top_srcdir)/topology/test/regress/topogeo_addpoint.sql \
 	$(top_srcdir)/topology/test/regress/topogeo_addpolygon.sql \
+	$(top_srcdir)/topology/test/regress/topogeo_record_population.sql \
 	$(top_srcdir)/topology/test/regress/topogeo_loadgeometry.sql \
 	$(top_srcdir)/topology/test/regress/topogeom_addtopogeom.sql \
 	$(top_srcdir)/topology/test/regress/topogeom_edit.sql \
@@ -101,4 +102,3 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/verifylargeids.sql \
 	$(top_srcdir)/topology/test/regress/fix_topogeometry_columns.sql \
 	$(top_srcdir)/topology/test/regress/findvertexsegmentpairsbelowdistance.sql
-
