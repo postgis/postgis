@@ -131,3 +131,11 @@ steps:
       - <<: *steps-start-postgresql
       - <<: *steps-pg-install
       - <<: *steps-pg-test-all-upgrades
+
+  cluster-upgradecheck-pg14-to-pg18:
+    image: *test-image
+    depends_on: [ installcheck-pg14, installcheck-pg18 ]
+    commands:
+      - make -C build/pg14 install
+      - make -C build/pg18 install
+      - su postgres -c 'utils/check_cluster_upgrade.sh -i regress/hooks/cluster-upgrade-geography.sql /usr/lib/postgresql/14/bin/pg_config /usr/lib/postgresql/18/bin/pg_config'
