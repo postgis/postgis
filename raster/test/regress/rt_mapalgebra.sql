@@ -567,6 +567,85 @@ SELECT
 FROM raster_nmapalgebra_in
 WHERE rid IN (2);
 
+-- Ticket #2807
+-- https://trac.osgeo.org/postgis/ticket/2807
+CREATE OR REPLACE FUNCTION raster_nmapalgebra_one(
+	value double precision[][][],
+	pos int[][],
+	VARIADIC userargs text[]
+)
+	RETURNS double precision
+	AS $$ SELECT 1::double precision $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION raster_nmapalgebra_null(
+	value double precision[][][],
+	pos int[][],
+	VARIADIC userargs text[]
+)
+	RETURNS double precision
+	AS $$ SELECT NULL::double precision $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+SET client_min_messages TO warning;
+
+WITH src AS (
+	SELECT ST_AddBand(
+		ST_MakeEmptyRaster(2, 2, 0, 0, 1),
+		'8BUI', 255.0
+	) AS rast
+)
+SELECT
+	'#2807.expr',
+	(ST_BandMetadata(ST_MapAlgebra(rast, 1, '8BUI', '0'), 1)),
+	ST_Value(ST_MapAlgebra(rast, 1, '8BUI', '0'), 1, 1)
+FROM src;
+
+WITH src AS (
+	SELECT ST_AddBand(
+		ST_MakeEmptyRaster(2, 2, 0, 0, 1),
+		'8BUI', 255.0
+	) AS rast
+)
+SELECT
+	'#2807.callback',
+	(ST_BandMetadata(ST_MapAlgebra(
+		rast, 1,
+		'raster_nmapalgebra_one(double precision[], int[], text[])'::regprocedure
+	), 1)),
+	ST_Value(ST_MapAlgebra(
+		rast, 1,
+		'raster_nmapalgebra_one(double precision[], int[], text[])'::regprocedure
+	), 1, 1)
+FROM src;
+
+WITH src AS (
+	SELECT ST_AddBand(
+		ST_MakeEmptyRaster(2, 2, 0, 0, 1),
+		'8BUI', 255.0
+	) AS rast
+)
+SELECT
+	'#2807.expr.null',
+	(ST_BandMetadata(ST_MapAlgebra(rast, 1, '8BUI', 'NULL'), 1))
+FROM src;
+
+WITH src AS (
+	SELECT ST_AddBand(
+		ST_MakeEmptyRaster(2, 2, 0, 0, 1),
+		'8BUI', 255.0
+	) AS rast
+)
+SELECT
+	'#2807.callback.null',
+	(ST_BandMetadata(ST_MapAlgebra(
+		rast, 1,
+		'raster_nmapalgebra_null(double precision[], int[], text[])'::regprocedure
+	), 1))
+FROM src;
+
+SET client_min_messages TO notice;
+
 -- Ticket #2802
 -- http://trac.osgeo.org/postgis/ticket/2802
 CREATE OR REPLACE FUNCTION raster_nmapalgebra_test_bad_return(
@@ -593,6 +672,8 @@ SELECT
 FROM raster_nmapalgebra_in
 WHERE rid IN (2);
 
+DROP FUNCTION IF EXISTS raster_nmapalgebra_one(double precision[], int[], text[]);
+DROP FUNCTION IF EXISTS raster_nmapalgebra_null(double precision[], int[], text[]);
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[], int[], text[]);
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test_bad_return(double precision[], int[], text[]);
 DROP TABLE IF EXISTS raster_nmapalgebra_in;

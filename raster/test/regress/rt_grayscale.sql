@@ -125,6 +125,41 @@ SELECT
 FROM raster_grayscale_out
 ORDER BY 1, 2, nband;
 
+-- #2807: ST_Grayscale is implemented through ST_MapAlgebra. Source rasters 1,
+-- 2, and 5 have no NODATA value, so zero-valued pixels in the dump above are
+-- real pixel values. Source rasters 3 and 4 have explicit NODATA values, so
+-- their matching output pixels remain NULL.
+SELECT
+	'#2807.grayscale',
+	testid,
+	rid,
+	(ST_BandMetadata(rast, 1)).nodatavalue
+FROM raster_grayscale_out
+WHERE rid IN (1, 3, 5)
+ORDER BY testid, rid;
+
+-- The first RGB band controls generic n-raster MapAlgebra output metadata.
+-- ST_Grayscale still needs to preserve NODATA from later RGB bands when the
+-- first band has no NODATA value.
+WITH mixed AS (
+	SELECT ST_Grayscale(ARRAY[
+		ROW(red.rast, 1)::rastbandarg,
+		ROW(green.rast, 1)::rastbandarg,
+		ROW(blue.rast, 1)::rastbandarg
+	]::rastbandarg[]) AS rast
+	FROM raster_grayscale_in red
+	CROSS JOIN raster_grayscale_in green
+	CROSS JOIN raster_grayscale_in blue
+	WHERE red.rid = 1
+	AND green.rid = 3
+	AND blue.rid = 3
+)
+SELECT
+	'#2807.grayscale.mixed',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM mixed;
+
 -- error because of insufficient bands
 BEGIN;
 SELECT

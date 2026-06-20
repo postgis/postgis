@@ -88,6 +88,7 @@ typedef struct {
 	Oid ufc_noid;
 	Oid ufc_rettype;
 	FmgrInfo ufl_info;
+	int hasnodata;
 	/* copied from LOCAL_FCINFO in fmgr.h */
 	union {
 		FunctionCallInfoBaseData fcinfo;
@@ -157,6 +158,7 @@ static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init(void) {
 
 	arg->callback.ufc_noid = InvalidOid;
 	arg->callback.ufc_rettype = InvalidOid;
+	arg->callback.hasnodata = 1;
 
 	return arg;
 }
@@ -514,8 +516,13 @@ static int rtpg_nmapalgebra_callback(
 				break;
 		}
 	}
-	else
+	else if (callback->hasnodata)
 		*nodata = 1;
+	else
+	{
+		elog(ERROR, "RASTER_nMapAlgebra: Callback returned NULL but output raster has no NODATA value");
+		return 0;
+	}
 
 	return 1;
 }
@@ -916,8 +923,9 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		arg->pixtype = rt_band_get_pixtype(band);
 
 	/* set hasnodata and nodataval */
-	arg->hasnodata = 1;
-	if (rt_band_get_hasnodata_flag(band))
+	arg->hasnodata = rt_band_get_hasnodata_flag(band);
+	arg->callback.hasnodata = arg->hasnodata;
+	if (arg->hasnodata)
 		rt_band_get_nodata(band, &(arg->nodataval));
 	else
 		arg->nodataval = rt_band_get_min_value(band);
@@ -996,6 +1004,8 @@ typedef struct {
 		double val;
 	} nodatanodata;
 
+	int hasnodata;
+
 	struct {
 		int count;
 		char **val;
@@ -1045,6 +1055,7 @@ static rtpg_nmapalgebraexpr_arg rtpg_nmapalgebraexpr_arg_init(int cnt, char **kw
 
 	arg->callback.nodatanodata.hasval = 0;
 	arg->callback.nodatanodata.val = 0;
+	arg->callback.hasnodata = 1;
 
 	return arg;
 }
@@ -1109,13 +1120,15 @@ static int rtpg_nmapalgebraexpr_callback(
 				*nodata = 1;
 		}
 		/* expression */
-		else {
+		else
+		{
 			id = 0;
 			if (callback->expr[id].hasval)
 				*value = callback->expr[id].val;
 			else if (callback->expr[id].spi_plan)
 				plan = callback->expr[id].spi_plan;
-			else {
+			else
+			{
 				if (callback->nodatanodata.hasval)
 					*value = callback->nodatanodata.val;
 				else
@@ -1286,6 +1299,12 @@ static int rtpg_nmapalgebraexpr_callback(
 		}
 
 		if (SPI_tuptable) SPI_freetuptable(tuptable);
+	}
+
+	if (*nodata && !callback->hasnodata)
+	{
+		elog(ERROR, "RASTER_nMapAlgebraExpr: Expression returned NULL but output raster has no NODATA value");
+		return 0;
 	}
 
 	POSTGIS_RT_DEBUGF(4, "(value, nodata) = (%f, %d)", *value, *nodata);
@@ -1609,8 +1628,9 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 		arg->bandarg->pixtype = rt_band_get_pixtype(band);
 
 	/* set hasnodata and nodataval */
-	arg->bandarg->hasnodata = 1;
-	if (rt_band_get_hasnodata_flag(band))
+	arg->bandarg->hasnodata = rt_band_get_hasnodata_flag(band);
+	arg->callback.hasnodata = arg->bandarg->hasnodata;
+	if (arg->bandarg->hasnodata)
 		rt_band_get_nodata(band, &(arg->bandarg->nodataval));
 	else
 		arg->bandarg->nodataval = rt_band_get_min_value(band);

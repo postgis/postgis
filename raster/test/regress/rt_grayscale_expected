@@ -5,21 +5,31 @@ WARNING:  Only the first three elements of 'rastbandargset' will be used
 WARNING:  Only the first three elements of 'rastbandargset' will be used
 WARNING:  Only the first three elements of 'rastbandargset' will be used
 WARNING:  Only the first three elements of 'rastbandargset' will be used
-1|1|1|{{NULL,128},{254,255}}
-1|2|1|{{NULL,128},{254,255}}
+1|1|1|{{0,128},{254,255}}
+1|2|1|{{0,128},{254,255}}
 1|3|1|{{NULL,0},{254,254}}
 1|4|1|{{NULL,0},{254,254}}
-1|5|1|{{NULL,NULL},{128,128},{255,255}}
-2|1|1|{{NULL,128},{254,255}}
-2|2|1|{{NULL,128},{254,255}}
+1|5|1|{{0,0},{128,128},{255,255}}
+2|1|1|{{0,128},{254,255}}
+2|2|1|{{0,128},{254,255}}
 2|3|1|{{NULL,0},{254,254}}
 2|4|1|{{NULL,0},{254,254}}
-2|5|1|{{NULL,NULL},{128,128},{255,255}}
-3|1|1|{{NULL,128},{254,255}}
-3|2|1|{{NULL,128},{254,255}}
+2|5|1|{{0,0},{128,128},{255,255}}
+3|1|1|{{0,128},{254,255}}
+3|2|1|{{0,128},{254,255}}
 3|3|1|{{NULL,0},{254,254}}
 3|4|1|{{NULL,0},{254,254}}
-3|5|1|{{NULL,NULL},{128,128},{255,255}}
+3|5|1|{{0,0},{128,128},{255,255}}
+#2807.grayscale|1|1|
+#2807.grayscale|1|3|255
+#2807.grayscale|1|5|
+#2807.grayscale|2|1|
+#2807.grayscale|2|3|255
+#2807.grayscale|2|5|
+#2807.grayscale|3|1|
+#2807.grayscale|3|3|255
+#2807.grayscale|3|5|
+#2807.grayscale.mixed|255|{{NULL,38},{254,254}}
 ERROR:  'rastbandargset' must have three bands for red, green and blue
 ERROR:  Band at index '2' not found for raster '2'
 ERROR:  Band at index '2' not found for raster '2'

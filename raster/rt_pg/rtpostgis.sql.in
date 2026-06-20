@@ -4429,6 +4429,13 @@ CREATE OR REPLACE FUNCTION _st_grayscale4ma(value double precision[][][], pos in
 		green := _value[2][1][1];
 		blue := _value[3][1][1];
 
+		-- ST_Grayscale uses 255 as its output NODATA sentinel. Returning the
+		-- sentinel here lets the wrapper mark it as NODATA only when one of
+		-- the source RGB bands has a NODATA value.
+		IF red IS NULL OR green IS NULL OR blue IS NULL THEN
+			RETURN 255;
+		END IF;
+
 		gray = round(0.2989 * red + 0.5870 * green + 0.1140 * blue);
 		RETURN gray;
 
@@ -4459,6 +4466,8 @@ CREATE OR REPLACE FUNCTION st_grayscale(
 		nodata double precision;
 		nodataval integer;
 		reclassexpr text;
+		hasnodata boolean DEFAULT FALSE;
+		grayscale @extschema@.raster;
 
 	BEGIN
 
@@ -4483,11 +4492,16 @@ CREATE OR REPLACE FUNCTION st_grayscale(
 
 				RAISE EXCEPTION 'Band at index ''%'' not found for raster ''%''', nband, idx;
 
-			-- check that each band is 8BUI. if not, reclassify to 8BUI
-			ELSIF @extschema@.ST_BandPixelType(rast, nband) != _PIXTYPE THEN
+			END IF;
 
+			nodata := @extschema@.ST_BandNoDataValue(rast, nband);
+			IF nodata IS NOT NULL THEN
+				hasnodata := TRUE;
+			END IF;
+
+			-- check that each band is 8BUI. if not, reclassify to 8BUI
+			IF @extschema@.ST_BandPixelType(rast, nband) != _PIXTYPE THEN
 				stats := @extschema@.ST_SummaryStats(rast, nband);
-				nodata := @extschema@.ST_BandNoDataValue(rast, nband);
 
 				IF nodata IS NOT NULL THEN
 					nodataval := _NODATA;
@@ -4513,12 +4527,18 @@ CREATE OR REPLACE FUNCTION st_grayscale(
 		END LOOP;
 
 		-- call map algebra with _st_grayscale4ma
-		RETURN @extschema@.ST_MapAlgebra(
+		grayscale := @extschema@.ST_MapAlgebra(
 			_set,
 			'@extschema@._ST_Grayscale4MA(double precision[][][], integer[][], text[])'::regprocedure,
 			'8BUI',
 			extenttype
 		);
+
+		IF hasnodata THEN
+			grayscale := @extschema@.ST_SetBandNoDataValue(grayscale, 1, _NODATA);
+		END IF;
+
+		RETURN grayscale;
 
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
