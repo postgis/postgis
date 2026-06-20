@@ -21,6 +21,7 @@ TESTS += \
 	$(top_srcdir)/regress/dumper/nullsintable \
 	$(top_srcdir)/regress/dumper/null3d \
 	$(top_srcdir)/regress/dumper/numeric \
+	$(top_srcdir)/regress/dumper/mixedcasequery \
 	$(top_srcdir)/regress/dumper/withclause
 
 ifeq ($(shell expr "$(POSTGIS_PGSQL_VERSION)" ">=" 150),1)
