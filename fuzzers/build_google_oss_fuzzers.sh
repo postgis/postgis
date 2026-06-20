@@ -27,10 +27,15 @@ POSTGIS_BUILD_DIR="${POSTGIS_BUILD_DIR:-$POSTGIS_SOURCE_DIR}"
 FUZZERS_DIR="$POSTGIS_SOURCE_DIR/fuzzers"
 JSON_C_LIBS=$(pkg-config --libs json-c)
 GEOS_LIBS=$(geos-config --clibs)
-PROJ_XML2_LIBS=$(pkg-config --libs proj libxml-2.0)
+PROJ_LIBS=$(pkg-config --libs proj)
+if command -v xml2-config >/dev/null 2>&1; then
+    XML2_LIBS=$(xml2-config --libs)
+else
+    XML2_LIBS=$(pkg-config --libs libxml-2.0)
+fi
 GDAL_CFLAGS=$(gdal-config --cflags)
 GDAL_LIBS=$(gdal-config --libs)
-POSTGIS_FUZZER_LIBS="$JSON_C_LIBS $GEOS_LIBS $PROJ_XML2_LIBS"
+POSTGIS_FUZZER_LIBS="$JSON_C_LIBS $GEOS_LIBS $PROJ_LIBS $XML2_LIBS"
 POSTGIS_PACKAGE_RUNTIME_LIBS="${POSTGIS_PACKAGE_RUNTIME_LIBS:-1}"
 
 target_local_cflags()
