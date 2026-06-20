@@ -54,6 +54,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 * Enhancements *
 
+ - #398, pgsql2shp prompts for a password when required
+          (Darafei Praliaskouski)
  - #2116, [raster] Add ST_Value nearest-neighbor boundary options
           (Darafei Praliaskouski)
  - #2804, #4315, [raster] Support two-argument ST_MapAlgebra callbacks
