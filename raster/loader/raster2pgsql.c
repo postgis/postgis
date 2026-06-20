@@ -1424,13 +1424,10 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 		tile_size[1] = config->tile_size[1];
 
 	/* number of tiles */
-	if (
-		tile_size[0] != dimOv[0] &&
-		tile_size[1] != dimOv[1]
-	) {
+	if (tile_size[0] != dimOv[0])
 		ntiles[0] = (dimOv[0] + tile_size[0] -  1) / tile_size[0];
-		ntiles[1] = (dimOv[1] + tile_size[1]  - 1) / tile_size[1];
-	}
+	if (tile_size[1] != dimOv[1])
+		ntiles[1] = (dimOv[1] + tile_size[1] - 1) / tile_size[1];
 
 	/* working copy of geotransform matrix */
 	memcpy(gt, gtOv, sizeof(double) * 6);
@@ -1440,7 +1437,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 	for (ytile = 0; ytile < ntiles[1]; ytile++) {
 
 		/* edge y tile */
-		if (!config->pad_tile && ntiles[1] > 1 && (ytile + 1) == ntiles[1])
+		if (!config->pad_tile && (ytile + 1) == ntiles[1])
 			_tile_size[1] = dimOv[1] - (ytile * tile_size[1]);
 		else
 			_tile_size[1] = tile_size[1];
@@ -1452,7 +1449,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 			*/
 
 			/* edge x tile */
-			if (!config->pad_tile && ntiles[0] > 1 && (xtile + 1) == ntiles[0])
+			if (!config->pad_tile && (xtile + 1) == ntiles[0])
 				_tile_size[0] = dimOv[0] - (xtile * tile_size[0]);
 			else
 				_tile_size[0] = tile_size[0];
