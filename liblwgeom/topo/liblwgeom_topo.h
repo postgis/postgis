@@ -962,6 +962,15 @@ LWT_TOPOLOGY *lwt_CreateTopology(LWT_BE_IFACE *iface, const char *name, int32_t 
 LWT_TOPOLOGY *lwt_LoadTopology(LWT_BE_IFACE *iface, const char *name);
 
 /**
+ * Return the SRID of a loaded topology.
+ *
+ * @param topo the topology to inspect
+ *
+ * @return topology SRID
+ */
+int32_t lwt_GetTopologySRID(const LWT_TOPOLOGY *topo);
+
+/**
  * Drop a topology and all its associated objects from the database
  *
  * @param topo the topology to drop

@@ -4,6 +4,7 @@ max|face|9
 ERROR:  Invalid geometry type (MULTILINESTRING) passed to TopoGeo_AddPolygon, expected POLYGON
 ERROR:  Invalid geometry type (POINT) passed to TopoGeo_AddPolygon, expected POLYGON
 ERROR:  No topology with name "invalid" in topology.topology
+ERROR:  Geometry SRID (4326) does not match topology SRID (0)
 iso_uni|10
 iso_uni|N|23||POINT(36 26)
 iso_uni|E|27|sn23|en23

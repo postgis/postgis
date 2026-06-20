@@ -59,6 +59,8 @@ SELECT 'invalid', TopoGeo_addLineString('city_data', 'SRID=4326;MULTILINESTRING(
 SELECT 'invalid', TopoGeo_addLineString('city_data', 'SRID=4326;POINT(36 26)');
 SELECT 'invalid', TopoGeo_addLineString('invalid', 'SRID=4326;LINESTRING(36 26, 0 0)');
 SELECT 'empty', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING EMPTY');
+SELECT 'empty_srid_mismatch', TopoGeo_addLineString('city_data', 'LINESTRING EMPTY');
+SELECT 'srid_mismatch', TopoGeo_addLineString('city_data', 'LINESTRING(36 26, 38 30)');
 
 -- Isolated edge in universal face
 SELECT 'iso_uni', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(36 26, 38 30)');

@@ -11,6 +11,7 @@ SELECT 'invalid', TopoGeo_addPoint('invalid', 'POINT(36 26)');
 SELECT 'invalid', TopoGeo_addPoint(null::varchar, null::geometry, null::float8);
 SELECT 'invalid', TopoGeo_addPoint(null::varchar, 'POINT(36 36)'::geometry, null::float8);
 SELECT 'invalid', TopoGeo_addPoint('city_data', null::geometry, null::float8);
+SELECT 'srid_mismatch', TopoGeo_addPoint('city_data', 'SRID=4326;POINT(36 26)');
 
 -- Save max node id
 select 'node'::text as what, max(node_id) INTO city_data.limits FROM city_data.node;
