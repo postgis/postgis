@@ -78,6 +78,9 @@ OPTIONS
               Specify the name of the geometry column (mostly useful in append
               mode).
 
+       -f, --feature-id-column <fid_column>
+              Specify the name of the feature id column. The default is gid.
+
        --create-index
               Create a spatial index on the geometry column.
 

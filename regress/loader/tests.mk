@@ -42,3 +42,4 @@ TESTS += \
 	$(top_srcdir)/regress/loader/TestSkipANALYZE \
 	$(top_srcdir)/regress/loader/TestANALYZE \
 	$(top_srcdir)/regress/loader/CharNoWidth \
+	$(top_srcdir)/regress/loader/FIDColumn \

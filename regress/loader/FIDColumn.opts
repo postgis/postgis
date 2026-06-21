@@ -1,0 +1,5 @@
+# Reuse the CharNoWidth DBF layout to verify that a custom feature id column
+# changes the loader primary key but still escapes a source DBF column mapped to
+# gid.  pgsql2shp treats gid as a loader id by default, so __gid preserves that
+# source attribute through default dump/load round trips.
+--feature-id-column fid -m {regdir}/loader/FIDColumn_mapping.txt

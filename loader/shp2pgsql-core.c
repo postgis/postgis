@@ -773,6 +773,78 @@ strtolower(char *s)
 		s[j] = tolower(s[j]);
 }
 
+static const char *
+ShpLoaderFIDColumn(const SHPLOADERSTATE *state)
+{
+	return state->config->fid_col ? state->config->fid_col : FID_DEFAULT;
+}
+
+static int
+ShpLoaderNameMatchesAny(const char *name, const char *const *names, size_t num_names, int case_sensitive)
+{
+	size_t i;
+
+	for (i = 0; i < num_names; i++)
+	{
+		if (case_sensitive ? !strcmp(name, names[i]) : !strcasecmp(name, names[i]))
+			return LW_TRUE;
+	}
+
+	return LW_FALSE;
+}
+
+static int
+ShpLoaderFIDColumnIsSystemColumn(const char *name)
+{
+	static const char *const names[] = {"tableoid", "cmin", "cmax", "xmin", "xmax", "oid", "ctid"};
+
+	return ShpLoaderNameMatchesAny(name, names, sizeof(names) / sizeof(names[0]), LW_FALSE);
+}
+
+static int
+ShpLoaderFIDColumnIsValid(const char *name)
+{
+	size_t i;
+
+	if (!name || !name[0] || ShpLoaderFIDColumnIsSystemColumn(name))
+		return LW_FALSE;
+
+	if (!isalpha((unsigned char)name[0]) && name[0] != '_')
+		return LW_FALSE;
+
+	for (i = 1; name[i]; i++)
+	{
+		if (!isalnum((unsigned char)name[i]) && name[i] != '_')
+			return LW_FALSE;
+	}
+
+	return LW_TRUE;
+}
+
+static int
+ShpLoaderValidateFIDColumn(SHPLOADERSTATE *state)
+{
+	const char *fid_col = ShpLoaderFIDColumn(state);
+
+	if (ShpLoaderFIDColumnIsValid(fid_col))
+		return SHPLOADEROK;
+
+	snprintf(state->message, SHPLOADERMSGLEN, _("Invalid feature id column name \"%s\""), fid_col ? fid_col : "");
+	return SHPLOADERERR;
+}
+
+static int
+ShpLoaderFieldNameNeedsEscape(const SHPLOADERSTATE *state, const char *name)
+{
+	static const char *const reserved_names[] = {
+	    FID_DEFAULT, "tableoid", "cmin", "cmax", "xmin", "xmax", "primary", "oid", "ctid"};
+	const char *fid_col = ShpLoaderFIDColumn(state);
+
+	return name[0] == '_' || !strcmp(name, fid_col) ||
+	       ShpLoaderNameMatchesAny(
+		   name, reserved_names, sizeof(reserved_names) / sizeof(reserved_names[0]), LW_TRUE);
+}
+
 static void
 pgtype_typmod_name(const SHPLOADERSTATE *state, char *buf, size_t len)
 {
@@ -803,9 +875,11 @@ append_qualified_table(stringbuffer_t *sb, const char *schema, const char *table
 static void
 append_primary_key_ddl(const SHPLOADERSTATE *state, stringbuffer_t *sb)
 {
+	const char *fid_col = ShpLoaderFIDColumn(state);
+
 	stringbuffer_aprintf(sb, "ALTER TABLE ");
 	append_qualified_table(sb, state->config->schema, state->config->table);
-	stringbuffer_aprintf(sb, " ADD PRIMARY KEY (gid);\n");
+	stringbuffer_aprintf(sb, " ADD PRIMARY KEY (\"%s\");\n", fid_col);
 
 	if (state->config->idxtablespace != NULL)
 	{
@@ -832,6 +906,7 @@ set_loader_config_defaults(SHPLOADERCONFIG *config)
 	config->table = NULL;
 	config->schema = NULL;
 	config->geo_col = NULL;
+	config->fid_col = NULL;
 	config->shp_file = NULL;
 	config->dump_format = 0;
 	config->simple_geometries = 0;
@@ -984,6 +1059,9 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	char name[MAXFIELDNAMELEN];
 	DBFFieldType type = FTInvalid;
 	char *utf8str;
+
+	if (ShpLoaderValidateFIDColumn(state) != SHPLOADEROK)
+		return SHPLOADERERR;
 
 	if (shp_loader_is_zip_archive(state->config->shp_file))
 	{
@@ -1305,20 +1383,12 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			strtolower(name);
 
 		/*
-		 * Escape names starting with the
-		 * escape char (_), those named 'gid'
-		 * or after pgsql reserved attribute names
+		 * Keep generated loader columns and PostgreSQL system columns out of
+		 * the DBF attribute namespace.  Always escape source "gid" columns too:
+		 * pgsql2shp treats gid as a loader id by default, so preserving the old
+		 * "__gid" mapping keeps default round trips lossless even with -f.
 		 */
-		if (name[0] == '_' ||
-		    ! strcmp(name, "gid") ||
-		    ! strcmp(name, "tableoid") ||
-		    ! strcmp(name, "cmin") ||
-		    ! strcmp(name, "cmax") ||
-		    ! strcmp(name, "xmin") ||
-		    ! strcmp(name, "xmax") ||
-		    ! strcmp(name, "primary") ||
-		    ! strcmp(name, "oid") ||
-		    ! strcmp(name, "ctid"))
+		if (ShpLoaderFieldNameNeedsEscape(state, name))
 		{
 			char tmp[MAXFIELDNAMELEN] = "__";
 			memcpy(tmp+2, name, MAXFIELDNAMELEN-2);
@@ -1425,8 +1495,14 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 	stringbuffer_t *sb;
 	char *ret;
 	int j;
+	const char *fid_col;
 	const int use_transaction =
 	    state->config->plan.transaction == LOADER_TRANSACTION_ON && plan_has_transactional_work(&state->config->plan);
+
+	if (ShpLoaderValidateFIDColumn(state) != SHPLOADEROK)
+		return SHPLOADERERR;
+
+	fid_col = ShpLoaderFIDColumn(state);
 
 	/* Create the stringbuffer containing the header; we use this API as it's easier
 	   for handling string resizing during append */
@@ -1476,7 +1552,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 				     state->config->unlogged ? "UNLOGGED " : "",
 				     if_not_exists ? "IF NOT EXISTS " : "");
 		append_qualified_table(sb, state->config->schema, state->config->table);
-		stringbuffer_aprintf(sb, " (gid serial%s", if_not_exists ? " PRIMARY KEY" : "");
+		stringbuffer_aprintf(sb, " (\"%s\" serial%s", fid_col, if_not_exists ? " PRIMARY KEY" : "");
 
 		if (if_not_exists && state->config->idxtablespace != NULL)
 		{

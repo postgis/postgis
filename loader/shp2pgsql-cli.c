@@ -33,6 +33,7 @@ static const ShpLoaderLongOption long_option_aliases[] = {
     {"dimensionality", 't', 1},
     {"dump-format", 'D', 0},
     {"encoding", 'W', 1},
+    {"feature-id-column", 'f', 1},
     {"force-int4", 'i', 0},
     {"geography", 'G', 0},
     {"geometry-column", 'g', 1},
@@ -125,6 +126,9 @@ usage()
 	printf(
 	    _("  -g, --geometry-column <geocolumn> Specify the name of the geometry/geography column\n"
 	      "      (mostly useful in append mode).\n"));
+	printf(
+	    _("  -f, --feature-id-column <fidcolumn> Specify the name of the feature id column\n"
+	      "      (default: \"" FID_DEFAULT "\").\n"));
 	printf(_("  -D, --dump-format  Use postgresql dump format (defaults to SQL insert statements).\n"));
 	printf(_( "  -e  Execute each statement individually, do not use a transaction.\n"
 	          "      Not compatible with -D.\n" ));
@@ -283,7 +287,7 @@ main (int argc, char **argv)
 		}
 		else
 		{
-			c = pgis_getopt(argc, argv, "-?acdeg:ikm:nps:t:uwDGIN:ST:W:X:Z");
+			c = pgis_getopt(argc, argv, "-?acdef:g:ikm:nps:t:uwDGIN:ST:W:X:Z");
 			if (c == EOF)
 				break;
 
@@ -343,6 +347,9 @@ main (int argc, char **argv)
 			break;
 		case 'g':
 			config->geo_col = pgis_optarg;
+			break;
+		case 'f':
+			config->fid_col = pgis_optarg;
 			break;
 		case 'm':
 			config->column_map_filename = pgis_optarg;

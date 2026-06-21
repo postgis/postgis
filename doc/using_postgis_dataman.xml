@@ -1967,6 +1967,18 @@ COMMIT;</programlisting>
     </varlistentry>
 
     <varlistentry>
+      <term><option>-f &lt;fid_column&gt;</option></term>
+      <term><option>--feature-id-column &lt;fid_column&gt;</option></term>
+      <listitem>
+        <para>
+          Specify the name of the feature id column. The default is <literal>gid</literal>.
+          The value must be a simple PostgreSQL identifier and cannot use a
+          PostgreSQL system column name.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
       <term><option>-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;</option></term>
       <listitem>
         <para>

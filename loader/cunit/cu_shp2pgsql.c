@@ -20,6 +20,8 @@ void test_ShpLoaderDestroy(void);
 void test_ShpLoaderGetSQLHeader_drop_prepare(void);
 void test_ShpLoaderGetSQLHeader_if_not_exists_table_modifier(void);
 void test_ShpLoaderGetSQLFooter_if_not_exists_index_modifier(void);
+void test_ShpLoaderFIDColumnSQL(void);
+void test_ShpLoaderRejectsInvalidFIDColumn(void);
 void test_ShpLoaderOpenShapeRejectsZip(void);
 
 SHPLOADERCONFIG *loader_config;
@@ -49,6 +51,9 @@ CU_pSuite register_shp2pgsql_suite(void)
 	    (NULL == CU_add_test(pSuite,
 				 "test_ShpLoaderGetSQLFooter_if_not_exists_index_modifier()",
 				 test_ShpLoaderGetSQLFooter_if_not_exists_index_modifier)) ||
+	    (NULL == CU_add_test(pSuite, "test_ShpLoaderFIDColumnSQL()", test_ShpLoaderFIDColumnSQL)) ||
+	    (NULL ==
+	     CU_add_test(pSuite, "test_ShpLoaderRejectsInvalidFIDColumn()", test_ShpLoaderRejectsInvalidFIDColumn)) ||
 	    (NULL == CU_add_test(pSuite, "test_ShpLoaderOpenShapeRejectsZip()", test_ShpLoaderOpenShapeRejectsZip)))
 	{
 		CU_cleanup_registry();
@@ -148,7 +153,7 @@ test_ShpLoaderGetSQLHeader_if_not_exists_table_modifier(void)
 	CU_ASSERT_PTR_NOT_NULL(header);
 	CU_ASSERT_PTR_NOT_NULL(strstr(header,
 				      "CREATE TABLE IF NOT EXISTS \"loadedshp\" "
-				      "(gid serial PRIMARY KEY,\n"
+				      "(\"gid\" serial PRIMARY KEY,\n"
 				      "\"the_geom\" geometry(POINT,0));"));
 	CU_ASSERT_PTR_NULL(strstr(header, "AddGeometryColumn"));
 	CU_ASSERT_PTR_NULL(strstr(header, "ALTER TABLE"));
@@ -176,6 +181,66 @@ test_ShpLoaderGetSQLFooter_if_not_exists_index_modifier(void)
 
 	free(footer);
 	ShpLoaderDestroy(loader_state);
+}
+
+void
+test_ShpLoaderFIDColumnSQL(void)
+{
+	SHPLOADERCONFIG config;
+	SHPLOADERSTATE *state;
+	char *header = NULL;
+
+	set_loader_config_defaults(&config);
+	config.table = "loadedshp";
+	config.readshape = 0;
+
+	state = ShpLoaderCreate(&config);
+	CU_ASSERT_EQUAL_FATAL(ShpLoaderGetSQLHeader(state, &header), SHPLOADEROK);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(header);
+	CU_ASSERT_PTR_NOT_NULL(strstr(header, "CREATE TABLE \"loadedshp\" (\"gid\" serial"));
+	CU_ASSERT_PTR_NOT_NULL(strstr(header, "ADD PRIMARY KEY (\"gid\")"));
+	free(header);
+	header = NULL;
+	ShpLoaderDestroy(state);
+
+	config.fid_col = "fid";
+	state = ShpLoaderCreate(&config);
+	CU_ASSERT_EQUAL_FATAL(ShpLoaderGetSQLHeader(state, &header), SHPLOADEROK);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(header);
+	CU_ASSERT_PTR_NOT_NULL(strstr(header, "CREATE TABLE \"loadedshp\" (\"fid\" serial"));
+	CU_ASSERT_PTR_NOT_NULL(strstr(header, "ADD PRIMARY KEY (\"fid\")"));
+	free(header);
+	ShpLoaderDestroy(state);
+
+	free(config.encoding);
+}
+
+void
+test_ShpLoaderRejectsInvalidFIDColumn(void)
+{
+	SHPLOADERCONFIG config;
+	SHPLOADERSTATE *state;
+	char *header = NULL;
+
+	set_loader_config_defaults(&config);
+	config.table = "loadedshp";
+	config.readshape = 0;
+	config.fid_col = "bad\"fid";
+
+	state = ShpLoaderCreate(&config);
+	CU_ASSERT_EQUAL(ShpLoaderGetSQLHeader(state, &header), SHPLOADERERR);
+	CU_ASSERT_PTR_NULL(header);
+	CU_ASSERT_PTR_NOT_NULL(strstr(state->message, "Invalid feature id column name"));
+	ShpLoaderDestroy(state);
+
+	config.fid_col = "ctid";
+	state = ShpLoaderCreate(&config);
+	CU_ASSERT_EQUAL(ShpLoaderGetSQLHeader(state, &header), SHPLOADERERR);
+	CU_ASSERT_PTR_NULL(header);
+	CU_ASSERT_PTR_NOT_NULL(strstr(state->message, "Invalid feature id column name"));
+	ShpLoaderDestroy(state);
+
+	free(config.encoding);
 }
 
 void
