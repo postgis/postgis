@@ -30,6 +30,8 @@ the geometry will be placed in the 'geo_value' column by default.
 .LP 
 The loader has several operating modes distinguished by command line flags:
 
+Long options that take values also accept the \fB\-\-option=value\fR spelling.
+
 (Note that \-a, \-c, \-d and \-p are mutually exclusive.)
 .TP 
 \fB\-d\fR
@@ -61,44 +63,41 @@ create-and-load action set.
 \fB\-\-load\-data\fR
 Load Shape file rows into the target table.
 .TP
-\fB\-D\fR
+\fB\-D\fR, \fB\-\-dump\-format\fR
 Use the PostgreSQL "dump" format for the output data. This can be combined 
 with \-a, \-c and \-d. It is much faster to load than the default "insert"
 SQL format. Use this for very large data sets.
 .TP 
-\fB\-w\fR
+\fB\-w\fR, \fB\-\-use\-wkt\fR
 Output WKT format, instead of WKB.  Note that this can
 introduce coordinate drifts due to loss of precision.
 .TP 
-\fB\-e\fR
+\fB\-e\fR, \fB\-\-no\-transaction\fR
 Execute each statement on its own, without using a transaction.
 This allows loading of the majority of good data when there are some bad
 geometries that generate errors.  Note that this cannot be used with the
 \-D flag as the "dump" format always uses a transaction.
 .TP
-\fB\-\-no\-transaction\fR
-Execute each statement individually, without using a transaction.
-.TP
-\fB\-s\fR [<\fIFROM_SRID\fR>:]<\fISRID\fR>
+\fB\-s\fR, \fB\-\-srid\fR [<\fIFROM_SRID\fR>:]<\fISRID\fR>
 Creates and populates the geometry tables with the specified SRID.
 If FROM_SRID is given, the geometries will be reprojected.
 Reprojection cannot be used with \-D.
 .TP 
-\fB\-G\fR
+\fB\-G\fR, \fB\-\-geography\fR
 Use the geography type instead of geometry.  Geography is used to store
 lat/lon data.  At the moment the only spatial reference supported is 4326.
 .TP 
-\fB\-g\fR <\fIgeometry_column\fR>
+\fB\-g\fR, \fB\-\-geometry\-column\fR <\fIgeometry_column\fR>
 Specify the name of the geometry column (mostly useful in append mode).
 .TP 
 \fB\-\-create\-index\fR
 Create a spatial index on the geometry column.
 .TP
-\fB\-k\fR
+\fB\-k\fR, \fB\-\-keep\-case\fR
 Keep identifiers case (column, schema and attributes). Note that attributes 
 in Shapefile are usually all UPPERCASE.
 .TP 
-\fB\-m\fR <\fIfilename\fR>
+\fB\-m\fR, \fB\-\-column\-map\fR <\fIfilename\fR>
 Specify a file containing a set of mappings of (long) column names to 10
 character DBF column names. The content of the file is one or more lines 
 of two names separated by white space and no trailing or leading space:
@@ -109,18 +108,21 @@ AVERYLONGCOLUMNNAME DBFFIELD2\\n
 
 etc.
 .TP 
-\fB\-i\fR
+\fB\-i\fR, \fB\-\-force\-int4\fR
 Coerce all integers to standard 32\-bit integers, do not create 64\-bit 
 bigints, even if the DBF header signature appears to warrant it.
 .TP 
-\fB\-S\fR
+\fB\-S\fR, \fB\-\-simple\-geometries\fR
 Generate simple Geometries instead of MULTIgeometries. Shape files don't 
 differ between LINESTRINGs and MULTILINESTRINGs, so shp2pgsql generates 
 MULTILINESTRINGs by default. This switch will produce LINESTRINGs instead, 
 but shp2pgsql will fail when it hits a real MULTILINESTRING. The same works
 for POLYGONs vs. MULTIPOLYGONs.
 .TP 
-\fB\-W\fR <\fIencoding\fR>
+\fB\-t\fR, \fB\-\-dimensionality\fR <\fIdimensionality\fR>
+Force geometry to be one of 2D, 3DZ, 3DM, or 4D.
+.TP
+\fB\-W\fR, \fB\-\-encoding\fR <\fIencoding\fR>
 Specify the character \fIencoding\fR of Shapefile's attributes.
 If this option is used the output will be encoded in UTF-8.
 .TP 
@@ -136,24 +138,27 @@ Analyze the table after loading.
 \fB\-\-no\-analyze\fR
 Prevent tables from being analyzed.
 .TP
-\fB\-u\fR
+\fB\-u\fR, \fB\-\-unlogged\fR
 Create the target table as UNLOGGED. This can speed up loading transient
 staging data, but PostgreSQL does not preserve unlogged table contents after
 a crash or unclean shutdown.
 .TP
-\fB\-N\fR <\fIpolicy\fR>
+\fB\-N\fR, \fB\-\-null\-policy\fR <\fIpolicy\fR>
 Specify NULL geometries handling policy (insert,skip,abort).
+.TP
+\fB\-n\fR, \fB\-\-dbf\-only\fR
+Only import the DBF file.
 .TP 
-\fB\-T\fR <\fItablespace\fR>
+\fB\-T\fR, \fB\-\-tablespace\fR <\fItablespace\fR>
 Specify the tablespace for the new table.  Indexes will still use the
 default tablespace unless the \-X parameter is also used.  The PostgreSQL
 documentation has a good description on when to use custom tablespaces.
 .TP 
-\fB\-X\fR <\fItablespace\fR>
+\fB\-X\fR, \fB\-\-index\-tablespace\fR <\fItablespace\fR>
 Specify the tablespace for the new table's indexes.  This applies to
 the primary key index, and the GIST spatial index if \-I is also used.
 .TP 
-\fB\-?\fR
+\fB\-?\fR, \fB\-\-help\fR
 Display version and usage information.
 
 .SH "INSTALLATION"

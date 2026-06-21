@@ -1,1 +1,1 @@
---drop-table --create-table --load-data --create-index --if-not-exists --no-transaction --analyze
+--drop-table --create-table --load-data --create-index --if-not-exists --no-transaction --analyze --srid=0 --geometry-column=the_geom --encoding=UTF-8 --null-policy=insert --dimensionality=2D --simple-geometries --force-int4

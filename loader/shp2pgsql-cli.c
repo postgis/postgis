@@ -20,16 +20,100 @@
 #define xstr(s) str(s)
 #define str(s) #s
 
+typedef struct {
+	const char *name;
+	int short_option;
+	int takes_value;
+} ShpLoaderLongOption;
+
+static const ShpLoaderLongOption long_option_aliases[] = {
+    {"column-map", 'm', 1},
+    {"create-index", 'I', 0},
+    {"dbf-only", 'n', 0},
+    {"dimensionality", 't', 1},
+    {"dump-format", 'D', 0},
+    {"encoding", 'W', 1},
+    {"force-int4", 'i', 0},
+    {"geography", 'G', 0},
+    {"geometry-column", 'g', 1},
+    {"help", '?', 0},
+    {"index-tablespace", 'X', 1},
+    {"keep-case", 'k', 0},
+    {"no-analyze", 'Z', 0},
+    {"no-transaction", 'e', 0},
+    {"null-policy", 'N', 1},
+    {"simple-geometries", 'S', 0},
+    {"srid", 's', 1},
+    {"tablespace", 'T', 1},
+    {"unlogged", 'u', 0},
+    {"use-wkt", 'w', 0},
+};
+
+static int
+consume_long_option(int argc, char **argv, int *option)
+{
+	char *arg = argv[pgis_optind];
+	char *equals = strchr(arg, '=');
+	size_t name_len = equals ? (size_t)(equals - arg - 2) : strlen(arg + 2);
+	size_t i;
+
+	if (strncmp(arg, "--", 2) != 0)
+		return 0;
+
+	for (i = 0; i < sizeof(long_option_aliases) / sizeof(long_option_aliases[0]); i++)
+	{
+		const ShpLoaderLongOption *alias = &long_option_aliases[i];
+		if (strlen(alias->name) != name_len || strncmp(arg + 2, alias->name, name_len) != 0)
+			continue;
+
+		if (alias->takes_value)
+		{
+			if (equals)
+			{
+				pgis_optarg = equals + 1;
+				pgis_optind++;
+			}
+			else if (pgis_optind + 1 < argc)
+			{
+				pgis_optarg = argv[pgis_optind + 1];
+				pgis_optind += 2;
+			}
+			else
+			{
+				fprintf(stderr, "Option requires an argument: --%s\n", alias->name);
+				exit(1);
+			}
+		}
+		else
+		{
+			if (equals)
+			{
+				fprintf(stderr, "Option does not take an argument: --%s\n", alias->name);
+				exit(1);
+			}
+			pgis_optarg = NULL;
+			pgis_optind++;
+		}
+
+		*option = alias->short_option;
+		return 1;
+	}
+
+	return 0;
+}
+
 static void
 usage()
 {
 	printf(_( "RELEASE: %s (%s)\n" ),
 		POSTGIS_LIB_VERSION, xstr(POSTGIS_REVISION));
-	printf(_( "USAGE: shp2pgsql [<options>] <shapefile> [[<schema>.]<table>]\n"
-	          "OPTIONS:\n" ));
-	printf(_( "  -s [<from>:]<srid> Set the SRID field. Defaults to %d.\n"
-	          "      Optionally reprojects from given SRID.\n"),
-	          SRID_UNKNOWN);
+	printf(
+	    _("USAGE: shp2pgsql [<options>] <shapefile> [[<schema>.]<table>]\n"
+	      "OPTIONS:\n"
+	      "  Long options with values also accept --option=value.\n"));
+	printf(_("  -s, --srid [<from>:]<srid> Set the SRID field. Defaults to %d.\n"
+		 "      Optionally reprojects from given SRID.\n"),
+	       SRID_UNKNOWN);
 	printf(_( " (-d|a|c|p) These are mutually exclusive options:\n"
 	          "     -d  Drops the table, then recreates it and populates\n"
 	          "         it with current shape file data.\n"
@@ -38,47 +122,53 @@ usage()
 	          "     -c  Creates a new table and populates it, this is the\n"
 	          "         default if you do not specify any options.\n"
 	          "     -p  Prepare mode, only creates the table.\n" ));
-	printf(_( "  -g <geocolumn> Specify the name of the geometry/geography column\n"
-	          "      (mostly useful in append mode).\n" ));
-	printf(_( "  -D  Use postgresql dump format (defaults to SQL insert statements).\n" ));
+	printf(
+	    _("  -g, --geometry-column <geocolumn> Specify the name of the geometry/geography column\n"
+	      "      (mostly useful in append mode).\n"));
+	printf(_("  -D, --dump-format  Use postgresql dump format (defaults to SQL insert statements).\n"));
 	printf(_( "  -e  Execute each statement individually, do not use a transaction.\n"
 	          "      Not compatible with -D.\n" ));
-	printf(_( "  -G  Use geography type (requires lon/lat data or -s to reproject).\n" ));
-	printf(_( "  -k  Keep postgresql identifiers case.\n" ));
-	printf(_( "  -i  Use int4 type for all integer dbf fields.\n" ));
+	printf(_("  -G, --geography  Use geography type (requires lon/lat data or -s to reproject).\n"));
+	printf(_("  -k, --keep-case  Keep postgresql identifiers case.\n"));
+	printf(_("  -i, --force-int4  Use int4 type for all integer dbf fields.\n"));
 	printf(_( "  -I  Create a spatial index on the geocolumn.\n" ));
 	printf(_("  --create-index  Create a spatial index on the geocolumn.\n"));
-	printf(_( "  -u  Create the table as UNLOGGED.\n" ));
-	printf(_("  -m <filename>  Specify a file containing a set of mappings of (long) column\n"
-	         "     names to 10 character DBF column names. The content of the file is one or\n"
-	         "     more lines of two names separated by white space and no trailing or\n"
-	         "     leading space. For example:\n"
-	         "         COLUMNNAME DBFFIELD1\n"
-	         "         AVERYLONGCOLUMNNAME DBFFIELD2\n" ));
-	printf(_( "  -S  Generate simple geometries instead of MULTI geometries.\n" ));
-	printf(_( "  -t <dimensionality> Force geometry to be one of '2D', '3DZ', '3DM', or '4D'\n" ));
+	printf(_("  -u, --unlogged  Create the table as UNLOGGED.\n"));
+	printf(
+	    _("  -m, --column-map <filename>  Specify a file containing a set of mappings of (long) column\n"
+	      "     names to 10 character DBF column names. The content of the file is one or\n"
+	      "     more lines of two names separated by white space and no trailing or\n"
+	      "     leading space. For example:\n"
+	      "         COLUMNNAME DBFFIELD1\n"
+	      "         AVERYLONGCOLUMNNAME DBFFIELD2\n"));
+	printf(_("  -S, --simple-geometries  Generate simple geometries instead of MULTI geometries.\n"));
+	printf(_("  -t, --dimensionality <dimensionality> Force geometry to be one of '2D', '3DZ', '3DM', or '4D'\n"));
 
-	printf(_( "  -w  Output WKT instead of WKB.  Note that this can result in\n"
-	          "      coordinate drift.\n" ));
-	printf(_( "  -W <encoding> Specify the character encoding of Shape's\n"
-	          "      attribute column. (default: \"UTF-8\")\n" ));
-	printf(_( "  -N <policy> NULL geometries handling policy (insert*,skip,abort).\n" ));
-	printf(_( "  -n  Only import DBF file.\n" ));
+	printf(
+	    _("  -w, --use-wkt  Output WKT instead of WKB.  Note that this can result in\n"
+	      "      coordinate drift.\n"));
+	printf(
+	    _("  -W, --encoding <encoding> Specify the character encoding of Shape's\n"
+	      "      attribute column. (default: \"UTF-8\")\n"));
+	printf(_("  -N, --null-policy <policy> NULL geometries handling policy (insert*,skip,abort).\n"));
+	printf(_("  -n, --dbf-only  Only import DBF file.\n"));
 	printf(_("  --drop-table  Drop the target table before the selected actions.\n"));
 	printf(_("  --create-table  Create the target table.\n"));
 	printf(_("  --if-not-exists  Make active creation actions use IF NOT EXISTS.\n"));
 	printf(_("  --load-data  Load shapefile rows into the target table.\n"));
-	printf(_( "  -T <tablespace> Specify the tablespace for the new table.\n"
-                  "      Note that indexes will still use the default tablespace unless the\n"
-                  "      -X flag is also used.\n"));
-	printf(_( "  -X <tablespace> Specify the tablespace for the table's indexes.\n"
-                  "      This applies to the primary key, and the spatial index if\n"
-                  "      the -I flag is used.\n" ));
+	printf(
+	    _("  -T, --tablespace <tablespace> Specify the tablespace for the new table.\n"
+	      "      Note that indexes will still use the default tablespace unless the\n"
+	      "      -X flag is also used.\n"));
+	printf(
+	    _("  -X, --index-tablespace <tablespace> Specify the tablespace for the table's indexes.\n"
+	      "      This applies to the primary key, and the spatial index if\n"
+	      "      the -I flag is used.\n"));
 	printf(_( "  -Z  Prevent tables from being analyzed.\n" ));
 	printf(_("  --analyze  Analyze the table after loading.\n"));
 	printf(_("  --no-analyze  Prevent tables from being analyzed.\n"));
 	printf(_("  --no-transaction  Execute each statement individually.\n"));
-	printf(_( "  -?  Display this help screen.\n" ));
+	printf(_("  -?, --help  Display this help screen.\n"));
 	printf( "\n" );
 	printf(_( "  An argument of `--' disables further option processing.\n" ));
 	printf(_( "  (useful for unusual file names starting with '-')\n" ));
@@ -184,18 +274,23 @@ main (int argc, char **argv)
 		}
 		if (strncmp(argv[pgis_optind], "--", 2) == 0)
 		{
-			fprintf(stderr, "Unknown option: %s\n", argv[pgis_optind]);
-			usage();
-			exit(1);
+			if (!consume_long_option(argc, argv, &c))
+			{
+				fprintf(stderr, "Unknown option: %s\n", argv[pgis_optind]);
+				usage();
+				exit(1);
+			}
 		}
+		else
+		{
+			c = pgis_getopt(argc, argv, "-?acdeg:ikm:nps:t:uwDGIN:ST:W:X:Z");
+			if (c == EOF)
+				break;
 
-		c = pgis_getopt(argc, argv, "-?acdeg:ikm:nps:t:uwDGIN:ST:W:X:Z");
-		if (c == EOF)
-			break;
-
-		// can not do this inside the switch case
-		if ('-' == c)
-			break;
+			// can not do this inside the switch case
+			if ('-' == c)
+				break;
+		}
 
 		switch (c)
 		{
