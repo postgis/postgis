@@ -78,5 +78,20 @@ SELECT
 FROM raster_value_arrays
 ORDER BY id;
 
+SELECT
+	'sum4ma.nodata',
+	st_sum4ma(ARRAY[[1::double precision, NULL, 3]], NULL, VARIADIC NULL::text[]) IS NULL,
+	st_sum4ma(ARRAY[[1::double precision, NULL, 3]], 'ignore', VARIADIC NULL::text[]),
+	st_sum4ma(ARRAY[[1::double precision, NULL, 3]], '-8', VARIADIC NULL::text[]);
+
+SELECT
+	'sum4ma.mode.no-null',
+	st_sum4ma(ARRAY[[1::double precision, 2, 3]], 'NULL', VARIADIC NULL::text[]),
+	st_sum4ma(ARRAY[[1::double precision, 2, 3]], 'value', VARIADIC NULL::text[]);
+
+SELECT
+	'sum4ma.runtime-3d',
+	st_sum4ma('{{{1,2,3},{4,5,6}}}'::double precision[][], NULL, VARIADIC NULL::text[]);
+
 DROP TABLE IF EXISTS raster_value_arrays;
 DROP FUNCTION IF EXISTS make_value_array(integer, integer, double precision, double precision, text);
