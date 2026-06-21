@@ -78,3 +78,11 @@ NOTICE:  Adding maximum extent constraint
 #4724.a|(0,,,,,)
 #4724.b|(0,,,,,)
 #5854|-0.983
+#2312|5
+#2311|12
+#2310|4
+#2310.zero-radius-rotated|1
+#2312.NULL-radius|t
+#2311.NULL-radius|t
+#2310.NULL-angle|t
+#2312.NULL-operation|t

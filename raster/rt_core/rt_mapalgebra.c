@@ -1352,7 +1352,7 @@ rt_raster_iterator(rt_iterator itrset,
 				/* neighborhood */
 				npixels = NULL;
 				status = 0;
-				if (distancex > 0 && distancey > 0)
+				if (distancex > 0 || distancey > 0)
 				{
 					RASTER_DEBUG(4, "getting neighborhood");
 
