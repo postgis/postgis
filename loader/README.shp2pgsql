@@ -75,8 +75,15 @@ OPTIONS
 
 
        -g <geometry_column>
-              Specify the name of the geometry column (mostly useful in append
-              mode).
+              Specify the name of the geometry, geography, or TopoGeometry
+              column (mostly useful in append mode).
+
+       --topology <topology>
+              Load shapes as TopoGeometry values in the named topology.  The
+              topology must already exist in the target database and the
+              postgis_topology extension must be installed. Use -g to set the
+              TopoGeometry column name. This mode is not compatible with -D,
+              -G, -I, or -n.
 
        -f, --feature-id-column <fid_column>
               Specify the name of the feature id column. The default is gid.

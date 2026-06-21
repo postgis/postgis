@@ -873,6 +873,133 @@ append_qualified_table(stringbuffer_t *sb, const char *schema, const char *table
 }
 
 static void
+append_sql_literal(stringbuffer_t *sb, char *str)
+{
+	char *escval = escape_insert_string(str);
+	stringbuffer_aprintf(sb, "'%s'", escval);
+	if (str != escval)
+		free(escval);
+}
+
+static void
+append_quoted_identifier_component(stringbuffer_t *sb, char *identifier)
+{
+	char *ptr = identifier;
+	stringbuffer_append(sb, "\"");
+	while (*ptr)
+	{
+		if (*ptr == '"')
+			stringbuffer_append(sb, "\"\"");
+		else
+			stringbuffer_append_len(sb, ptr, 1);
+		ptr++;
+	}
+	stringbuffer_append(sb, "\"");
+}
+
+static void
+append_table_identifier_literal(stringbuffer_t *sb, SHPLOADERSTATE *state)
+{
+	stringbuffer_t *identifier = stringbuffer_create();
+	if (state->config->schema)
+	{
+		append_quoted_identifier_component(identifier, state->config->schema);
+		stringbuffer_append(identifier, ".");
+	}
+	append_quoted_identifier_component(identifier, state->config->table);
+	append_sql_literal(sb, (char *)stringbuffer_getstring(identifier));
+	stringbuffer_destroy(identifier);
+}
+
+static void
+append_table_regclass(stringbuffer_t *sb, SHPLOADERSTATE *state)
+{
+	append_table_identifier_literal(sb, state);
+	stringbuffer_aprintf(sb, "::regclass");
+}
+
+static void
+append_topology_layer_id(stringbuffer_t *sb, SHPLOADERSTATE *state)
+{
+	stringbuffer_aprintf(sb, "pg_temp.shp2pgsql_topogeometry_layer_id(");
+	append_sql_literal(sb, state->config->topology);
+	stringbuffer_aprintf(sb, "::name, ");
+	append_table_regclass(sb, state);
+	stringbuffer_aprintf(sb, ", ");
+	append_sql_literal(sb, state->geo_col);
+	stringbuffer_aprintf(sb, "::name)");
+}
+
+static void
+append_validate_topology_layer(stringbuffer_t *sb, SHPLOADERSTATE *state)
+{
+	stringbuffer_aprintf(
+	    sb,
+	    "CREATE OR REPLACE FUNCTION pg_temp.shp2pgsql_topogeometry_layer_id(toponame name, tab regclass, col name)\n"
+	    "RETURNS integer AS $$\n"
+	    "DECLARE\n"
+	    "  lyr topology.layer;\n"
+	    "  topoid integer;\n"
+	    "BEGIN\n"
+	    "  topoid := topology.GetTopologyID(toponame::varchar);\n"
+	    "  lyr := topology.FindLayer(tab, col);\n"
+	    "  IF lyr IS NULL THEN\n"
+	    "    RAISE EXCEPTION ");
+	append_sql_literal(sb, "TopoGeometry column %.% is not registered in topology.layer");
+	stringbuffer_aprintf(sb,
+			     ", tab::text, col;\n"
+			     "  END IF;\n"
+			     "  IF lyr.topology_id != topoid THEN\n"
+			     "    RAISE EXCEPTION ");
+	append_sql_literal(sb, "TopoGeometry column %.% belongs to topology id %, not topology \"%\"");
+	stringbuffer_aprintf(sb,
+			     ", tab::text, col, lyr.topology_id, toponame;\n"
+			     "  END IF;\n"
+			     "  RETURN lyr.layer_id;\n"
+			     "END\n"
+			     "$$ LANGUAGE plpgsql STABLE;\n"
+			     "DO $$ BEGIN\n"
+			     "  PERFORM pg_temp.shp2pgsql_topogeometry_layer_id(");
+	append_sql_literal(sb, state->config->topology);
+	stringbuffer_aprintf(sb, "::name, ");
+	append_table_regclass(sb, state);
+	stringbuffer_aprintf(sb, ", ");
+	append_sql_literal(sb, state->geo_col);
+	stringbuffer_aprintf(sb,
+			     "::name);\n"
+			     "END $$;\n");
+}
+
+static void
+append_drop_topogeometry_column(stringbuffer_t *sb, SHPLOADERSTATE *state)
+{
+	stringbuffer_aprintf(sb,
+			     "DO $$ DECLARE\n"
+			     "  lyr record;\n"
+			     "  target_table regclass := to_regclass(");
+	append_table_identifier_literal(sb, state);
+	stringbuffer_aprintf(sb,
+			     ");\n"
+			     "  target_schema name;\n"
+			     "  target_name name;\n"
+			     "BEGIN\n"
+			     "  IF target_table IS NULL THEN\n"
+			     "    RETURN;\n"
+			     "  END IF;\n"
+			     "  SELECT n.nspname, c.relname INTO target_schema, target_name\n"
+			     "    FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace\n"
+			     "    WHERE c.oid = target_table;\n"
+			     "  FOR lyr IN SELECT feature_column FROM topology.layer\n"
+			     "    WHERE schema_name = target_schema AND table_name = target_name"
+			     " LOOP\n"
+			     "    PERFORM topology.DropTopoGeometryColumn(");
+	stringbuffer_aprintf(sb,
+			     "target_schema::varchar, target_name::varchar, lyr.feature_column);\n"
+			     "  END LOOP;\n"
+			     "END $$;\n");
+}
+
+static void
 append_primary_key_ddl(const SHPLOADERSTATE *state, stringbuffer_t *sb)
 {
 	const char *fid_col = ShpLoaderFIDColumn(state);
@@ -911,6 +1038,7 @@ set_loader_config_defaults(SHPLOADERCONFIG *config)
 	config->dump_format = 0;
 	config->simple_geometries = 0;
 	config->geography = 0;
+	config->topology = NULL;
 	config->quoteidentifiers = 0;
 	config->forceint4 = 0;
 	config->createindex = LOADER_CREATE_NONE;
@@ -1041,7 +1169,10 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 
 	if (!state->geo_col)
 	{
-		state->geo_col = config->geography ? GEOGRAPHY_DEFAULT : GEOMETRY_DEFAULT;
+		if (config->topology)
+			state->geo_col = TOPOGEOMETRY_DEFAULT;
+		else
+			state->geo_col = config->geography ? GEOGRAPHY_DEFAULT : GEOMETRY_DEFAULT;
 	}
 
 	colmap_init(&state->column_map);
@@ -1079,6 +1210,16 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 		if (state->hSHPHandle == NULL)
 		{
+			if (state->config->topology)
+			{
+				snprintf(
+				    state->message,
+				    SHPLOADERMSGLEN,
+				    _("%s: topology loading requires readable shape (.shp) and index files (.shx)."),
+				    state->config->shp_file);
+				return SHPLOADERERR;
+			}
+
 			snprintf(state->message, SHPLOADERMSGLEN, _("%s: shape (.shp) or index files (.shx) can not be opened, will just import attribute data."), state->config->shp_file);
 			state->config->readshape = 0;
 
@@ -1291,6 +1432,37 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		default:
 			/* Simply use the auto-detected values above */
 			break;
+		}
+
+		if (state->config->topology)
+		{
+			if (state->has_m && !state->has_z)
+			{
+				snprintf(
+				    state->message,
+				    SHPLOADERMSGLEN,
+				    _("Topology loading does not support M-only geometries; use -t 2D or -t 3DZ to drop the measure dimension."));
+				return SHPLOADERERR;
+			}
+
+			switch (geomtype)
+			{
+			case POINTTYPE:
+				state->pgtype = "POINT";
+				break;
+			case MULTIPOINTTYPE:
+				state->pgtype = "MULTIPOINT";
+				break;
+			case MULTILINETYPE:
+				state->pgtype = "MULTILINE";
+				break;
+			case MULTIPOLYGONTYPE:
+				state->pgtype = "MULTIPOLYGON";
+				break;
+			default:
+				state->pgtype = "GEOMETRY";
+				break;
+			}
 		}
 
 		/* If in simple geometry mode, alter names for CREATE TABLE by skipping MULTI */
@@ -1521,6 +1693,9 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 	/* Drop table if requested */
 	if (state->config->plan.drop_table)
 	{
+		if (state->config->readshape == 1 && state->config->topology)
+			append_drop_topogeometry_column(sb, state);
+
 		if (state->config->schema)
 		{
 			stringbuffer_aprintf(sb, "DROP TABLE IF EXISTS \"%s\".\"%s\";\n", state->config->schema,
@@ -1584,7 +1759,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		 * geometry_columns is a view in current PostGIS, so typmod column
 		 * DDL is equivalent to the default AddGeometryColumn path.
 		 */
-		if (state->config->readshape == 1)
+		if (state->config->readshape == 1 && !state->config->topology)
 		{
 			const char *coltype = state->config->geography ? "geography" : "geometry";
 			char typmod_type[64];
@@ -1608,6 +1783,40 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 
 		if (!if_not_exists)
 			append_primary_key_ddl(state, sb);
+
+		if (state->config->readshape == 1 && state->config->topology)
+		{
+			if (if_not_exists)
+			{
+				stringbuffer_aprintf(sb, "DO $$ BEGIN\n");
+				stringbuffer_aprintf(sb, "  IF topology.FindLayer(");
+				append_table_regclass(sb, state);
+				stringbuffer_aprintf(sb, ", ");
+				append_sql_literal(sb, state->geo_col);
+				stringbuffer_aprintf(
+				    sb, "::name) IS NULL THEN\n    PERFORM topology.AddTopoGeometryColumn(");
+			}
+			else
+			{
+				stringbuffer_aprintf(sb, "SELECT topology.AddTopoGeometryColumn(");
+			}
+			append_sql_literal(sb, state->config->topology);
+			stringbuffer_aprintf(sb, ", ");
+			append_table_regclass(sb, state);
+			stringbuffer_aprintf(sb, ", ");
+			append_sql_literal(sb, state->geo_col);
+			stringbuffer_aprintf(sb, ", NULL, ");
+			append_sql_literal(sb, state->pgtype);
+			if (if_not_exists)
+				stringbuffer_aprintf(sb, ");\n  END IF;\nEND $$;\n");
+			else
+				stringbuffer_aprintf(sb, ");\n");
+		}
+	}
+
+	if (state->config->plan.load_data && state->config->readshape == 1 && state->config->topology)
+	{
+		append_validate_topology_layer(sb, state);
 	}
 
 	/**If we are in dump mode and a transform was asked for need to create a temp table to store original data
@@ -1956,6 +2165,10 @@ done_cell:
 			/* Now generate the geometry string according to the current configuration */
 			if (!state->config->dump_format)
 			{
+				if (state->config->topology)
+				{
+					stringbuffer_aprintf(sb, "topology.toTopoGeom(");
+				}
 				if (state->to_srid != state->from_srid)
 				{
 					stringbuffer_aprintf(sb, "ST_Transform(");
@@ -1979,6 +2192,19 @@ done_cell:
 						stringbuffer_aprintf(sb, "::geometry, %d)::geography", state->to_srid);
 					else
 						stringbuffer_aprintf(sb, "::geometry, %d)", state->to_srid);
+				}
+				else if (state->config->topology)
+				{
+					stringbuffer_aprintf(sb, "::geometry");
+				}
+
+				if (state->config->topology)
+				{
+					stringbuffer_aprintf(sb, ", ");
+					append_sql_literal(sb, state->config->topology);
+					stringbuffer_aprintf(sb, ", ");
+					append_topology_layer_id(sb, state);
+					stringbuffer_aprintf(sb, ")");
 				}
 			}
 
@@ -2054,7 +2280,8 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	}
 
 	/* Create gist index if specified and not in "prepare" mode */
-	if (state->config->readshape && state->config->plan.create_index != LOADER_CREATE_NONE)
+	if (state->config->readshape && !state->config->topology &&
+	    state->config->plan.create_index != LOADER_CREATE_NONE)
 	{
 		stringbuffer_aprintf(sb, "CREATE INDEX ");
 		if (state->config->plan.create_index == LOADER_CREATE_IF_NOT_EXISTS)

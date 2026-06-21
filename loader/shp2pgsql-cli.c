@@ -133,6 +133,9 @@ usage()
 	printf(_( "  -e  Execute each statement individually, do not use a transaction.\n"
 	          "      Not compatible with -D.\n" ));
 	printf(_("  -G, --geography  Use geography type (requires lon/lat data or -s to reproject).\n"));
+	printf(
+	    _("  --topology <topology> Load shapes as TopoGeometry in the named topology.\n"
+	      "      Use -g to set the TopoGeometry column name.\n"));
 	printf(_("  -k, --keep-case  Keep postgresql identifiers case.\n"));
 	printf(_("  -i, --force-int4  Use int4 type for all integer dbf fields.\n"));
 	printf(_( "  -I  Create a spatial index on the geocolumn.\n" ));
@@ -273,6 +276,26 @@ main (int argc, char **argv)
 		if (strcmp(argv[pgis_optind], "--no-transaction") == 0)
 		{
 			config->usetransaction = 0;
+			pgis_optind++;
+			continue;
+		}
+		if (strcmp(argv[pgis_optind], "--topology") == 0)
+		{
+			pgis_optind++;
+			if (pgis_optind >= argc)
+			{
+				fprintf(stderr, "The --topology parameter requires a topology name\n");
+				exit(1);
+			}
+			free(config->topology);
+			config->topology = strdup(argv[pgis_optind]);
+			pgis_optind++;
+			continue;
+		}
+		if (strncmp(argv[pgis_optind], "--topology=", 11) == 0)
+		{
+			free(config->topology);
+			config->topology = strdup(argv[pgis_optind] + 11);
 			pgis_optind++;
 			continue;
 		}
@@ -459,6 +482,35 @@ main (int argc, char **argv)
 	{
 		fprintf(stderr, "Invalid argument combination - cannot use both -D and -e\n");
 		exit(1);
+	}
+
+	if (config->topology)
+	{
+		if (config->topology[0] == '\0')
+		{
+			fprintf(stderr, "The --topology parameter requires a non-empty topology name\n");
+			exit(1);
+		}
+		if (config->geography)
+		{
+			fprintf(stderr, "Invalid argument combination - cannot use both --topology and -G\n");
+			exit(1);
+		}
+		if (config->dump_format)
+		{
+			fprintf(stderr, "Invalid argument combination - cannot use both --topology and -D\n");
+			exit(1);
+		}
+		if (!config->readshape)
+		{
+			fprintf(stderr, "Invalid argument combination - cannot use both --topology and -n\n");
+			exit(1);
+		}
+		if (config->actions.create_index_set && config->actions.create_index != LOADER_CREATE_NONE)
+		{
+			fprintf(stderr, "Invalid argument combination - cannot use both --topology and -I\n");
+			exit(1);
+		}
 	}
 
 	{
@@ -685,6 +737,7 @@ main (int argc, char **argv)
 	free(config->schema);
 	free(config->table);
 	free(config->encoding);
+	free(config->topology);
 	free(config);
 
 	return 0;

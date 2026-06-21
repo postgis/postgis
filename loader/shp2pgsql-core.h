@@ -71,6 +71,7 @@
  */
 #define GEOMETRY_DEFAULT "geom"
 #define GEOGRAPHY_DEFAULT "geog"
+#define TOPOGEOMETRY_DEFAULT "topogeom"
 #define FID_DEFAULT "gid"
 
 /*
@@ -109,6 +110,9 @@ typedef struct shp_loader_config
 
 	/* 0 = geometry, 1 = geography */
 	int geography;
+
+	/* Topology name for loading directly into a TopoGeometry column, may be null. */
+	char *topology;
 
 	/* 0 = columnname, 1 = "columnName" */
 	int quoteidentifiers;
