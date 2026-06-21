@@ -14,6 +14,8 @@ PostGIS 3.4.7
   - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)
   - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
  - Avoid Inf loop in Geohash calculation (Paul Ramsey)
+  - #6046, Prefer GraphicsMagick for documentation image generation
+           (Darafei Praliaskouski)
 
 
 PostGIS 3.4.6
