@@ -3,6 +3,8 @@ PostGIS 3.6.5
 
 * Fixes *
 
+- #6046, Prefer GraphicsMagick for documentation image generation
+  (Darafei Praliaskouski)
 - #5989, CurvePolygon distance corner case (Paul Ramsey)
 - #5357, ST_LineFromEncodedPolyline dropping close points (Paul Ramsey)
 - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)
