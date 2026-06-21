@@ -76,6 +76,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #6062, [topology] Stop using recursive snapping, for improved robustness (Sandro Santilli)
  - #6065, Improved winding order computation robustness for rings having collapsed elements
           (Sandro Santilli)
+ - #5990, [topology] Avoid repeated line splitting in TopoGeo_AddLinestring
+          (Darafei Praliaskouski)
  - #3743, #4385, [raster loader] Document raster2pgsql -s FROM_SRID:SRID
           reprojection support and clarify index creation timing for append loads
           (Darafei Praliaskouski)

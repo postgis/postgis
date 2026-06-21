@@ -231,6 +231,25 @@ ERROR:  Adding line to topology requires creating more edges than the requested 
 ERROR:  Adding line to topology requires creating more edges than the requested limit of 1
 #5993.3|double-split-in-limit|1
 ERROR:  Adding line to topology requires creating more edges than the requested limit of 1
+#5990.0|nodes|20
+#5990.1|line-pieces|21|{21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41}
+#5990.2|valid|0
+#5990.3|edges|41
+#5990.4|node|1
+#5990.5|node|2
+#5990.6|closed-line-pieces|3|{1,2,3}
+#5990.7|closed-line-geoms|{"LINESTRING(0 0,1 0)","LINESTRING(1 0,2 0,2 1,1 1)","LINESTRING(1 1,0 1,0 0)"}
+#5990.8|valid|0
+#5990.9|snapped-start|1
+#5990.10|split-node|2
+#5990.11|snap-closed-pieces|2|{1,2}
+#5990.12|snap-closed-geoms|{"LINESTRING(0.1 0,1 0)","LINESTRING(1 0,2 0,2 1,0 1,0.1 0)"}
+#5990.13|valid|0
+#5990.14|snapped-start|1
+#5990.15|split-node|2
+#5990.16|snap-split-closed-pieces|3|{1,2,3}
+#5990.17|snap-split-closed-geoms|{"LINESTRING(0.1 0,1 1)","LINESTRING(1 1,2 2,0 2,1 1)","LINESTRING(1 1,2 0,0.1 0)"}
+#5990.18|valid|0
 t6023.1|errors|
 t6023.2|errors|
 t6062.edges|t
