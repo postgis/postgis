@@ -60,4 +60,93 @@ SELECT 'Done.';
 -- test #1869 ST_AsBinary is not unique --
 SELECT 1869 As ticket_id, ST_AsText(ST_AsBinary('POINT(1 2)'));
 
+CREATE SCHEMA legacy_shadow;
+
+CREATE FUNCTION legacy_shadow._postgis_deprecate(text, text, text)
+RETURNS void
+LANGUAGE plpgsql AS $$
+BEGIN
+	RAISE EXCEPTION 'legacy shadow _postgis_deprecate called';
+END;
+$$;
+
+CREATE FUNCTION legacy_shadow.st_asbinary(public.geometry)
+RETURNS bytea
+LANGUAGE plpgsql AS $$
+BEGIN
+	RAISE EXCEPTION 'legacy shadow ST_AsBinary called';
+END;
+$$;
+
+CREATE FUNCTION legacy_shadow.st_astext(public.geometry)
+RETURNS text
+LANGUAGE plpgsql AS $$
+BEGIN
+	RAISE EXCEPTION 'legacy shadow ST_AsText(geometry) called';
+END;
+$$;
+
+CREATE FUNCTION legacy_shadow.st_astext(bytea)
+RETURNS text
+LANGUAGE plpgsql AS $$
+BEGIN
+	RAISE EXCEPTION 'legacy shadow ST_AsText(bytea) called';
+END;
+$$;
+
+CREATE FUNCTION legacy_shadow.st_geomfromtext(text)
+RETURNS public.geometry
+LANGUAGE plpgsql AS $$
+BEGIN
+	RAISE EXCEPTION 'legacy shadow ST_GeomFromText(text) called';
+END;
+$$;
+
+CREATE FUNCTION legacy_shadow.st_geomfromtext(text, integer)
+RETURNS public.geometry
+LANGUAGE plpgsql AS $$
+BEGIN
+	RAISE EXCEPTION 'legacy shadow ST_GeomFromText(text, integer) called';
+END;
+$$;
+
+CREATE FUNCTION legacy_shadow.st_ndims(public.geometry)
+RETURNS smallint
+LANGUAGE plpgsql AS $$
+BEGIN
+	RAISE EXCEPTION 'legacy shadow ST_NDims called';
+END;
+$$;
+
+CREATE FUNCTION legacy_shadow.st_setsrid(public.geometry, integer)
+RETURNS public.geometry
+LANGUAGE plpgsql AS $$
+BEGIN
+	RAISE EXCEPTION 'legacy shadow ST_SetSRID called';
+END;
+$$;
+
+CREATE FUNCTION legacy_shadow.st_srid(public.geometry)
+RETURNS integer
+LANGUAGE plpgsql AS $$
+BEGIN
+	RAISE EXCEPTION 'legacy shadow ST_SRID called';
+END;
+$$;
+
+SET client_min_messages TO ERROR;
+SET search_path TO legacy_shadow, public;
+
+SELECT 'legacy_search_path', public.AsText(public.ST_Point(1, 2)) = 'POINT(1 2)'
+	AND octet_length(public.AsBinary(public.ST_Point(1, 2))) > 0
+	AND public.SRID(public.SetSRID(public.GeomFromText('POINT(1 2)'), 4326)) = 4326
+	AND public.SRID(public.GeomFromText('POINT(1 2)', 4326)) = 4326
+	AND public.ndims(public.ST_Point(1, 2)) = 2
+	AND octet_length(public.ST_AsBinary('POINT(1 2)')) > 0
+	AND public.ST_AsText(public.ST_AsBinary(public.ST_Point(1, 2))) = 'POINT(1 2)';
+
+SET search_path TO public;
+SET client_min_messages TO WARNING;
+DROP SCHEMA legacy_shadow CASCADE;
+
 \i uninstall_legacy.sql

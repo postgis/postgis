@@ -8,28 +8,28 @@
 CREATE OR REPLACE FUNCTION AsBinary(geometry)
 	RETURNS bytea
 	AS $$
-		SELECT _postgis_deprecate('AsBinary', 'ST_AsBinary', '1.2.3');
-		SELECT ST_AsBinary($1);
+		SELECT @extschema@._postgis_deprecate('AsBinary', 'ST_AsBinary', '1.2.3');
+		SELECT @extschema@.ST_AsBinary($1);
 	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT SET search_path FROM CURRENT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsBinary(geometry,text)
 	RETURNS bytea
 	AS $$
-		SELECT _postgis_deprecate('AsBinary', 'ST_AsBinary', '1.2.3');
-		SELECT ST_AsBinary($1, $2);
+		SELECT @extschema@._postgis_deprecate('AsBinary', 'ST_AsBinary', '1.2.3');
+		SELECT @extschema@.ST_AsBinary($1, $2);
 	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT SET search_path FROM CURRENT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsText(geometry)
 	RETURNS TEXT
 	AS $$
-		SELECT _postgis_deprecate('AsText', 'ST_AsText', '1.2.3');
-		SELECT ST_AsText($1);
+		SELECT @extschema@._postgis_deprecate('AsText', 'ST_AsText', '1.2.3');
+		SELECT @extschema@.ST_AsText($1);
 	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT SET search_path FROM CURRENT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Estimated_Extent(text,text,text) RETURNS box2d AS
@@ -44,45 +44,45 @@ CREATE OR REPLACE FUNCTION Estimated_Extent(text,text) RETURNS box2d AS
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION GeomFromText(text, int4)
 	RETURNS geometry AS $$
-		SELECT _postgis_deprecate('GeomFromText', 'ST_GeomFromText', '1.2.3');
-		SELECT ST_GeomFromText($1, $2);
+		SELECT @extschema@._postgis_deprecate('GeomFromText', 'ST_GeomFromText', '1.2.3');
+		SELECT @extschema@.ST_GeomFromText($1, $2);
 	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT SET search_path FROM CURRENT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION GeomFromText(text)
 	RETURNS geometry AS $$
-		SELECT _postgis_deprecate('GeomFromText', 'ST_GeomFromText', '1.2.3');
-		SELECT ST_GeomFromText($1);
+		SELECT @extschema@._postgis_deprecate('GeomFromText', 'ST_GeomFromText', '1.2.3');
+		SELECT @extschema@.ST_GeomFromText($1);
 	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT SET search_path FROM CURRENT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION ndims(geometry)
 	RETURNS smallint
 	AS $$
-		SELECT _postgis_deprecate('ndims', 'ST_NDims', '1.2.3');
-		SELECT ST_NDims($1);
+		SELECT @extschema@._postgis_deprecate('ndims', 'ST_NDims', '1.2.3');
+		SELECT @extschema@.ST_NDims($1);
 	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT SET search_path FROM CURRENT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION SetSRID(geometry,int4)
 	RETURNS geometry
 	AS $$
-		SELECT _postgis_deprecate('SetSRID', 'ST_SetSRID', '1.2.3');
-		SELECT ST_SetSRID($1, $2);
+		SELECT @extschema@._postgis_deprecate('SetSRID', 'ST_SetSRID', '1.2.3');
+		SELECT @extschema@.ST_SetSRID($1, $2);
 	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT SET search_path FROM CURRENT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION SRID(geometry)
 	RETURNS int4
 	AS $$
-		SELECT _postgis_deprecate('SRID', 'ST_SRID', '1.2.3');
-		SELECT ST_SRID($1);
+		SELECT @extschema@._postgis_deprecate('SRID', 'ST_SRID', '1.2.3');
+		SELECT @extschema@.ST_SRID($1);
 	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT SET search_path FROM CURRENT;
 
 -- Deprecation in 1.5.0
 -- hack to allow unknown to cast to geometry
@@ -91,10 +91,10 @@ CREATE OR REPLACE FUNCTION ST_AsBinary(text)
 	RETURNS bytea
 	AS
 	$$
-		SELECT _postgis_deprecate('ST_AsBinary(text)', 'ST_AsBinary(geometry)', '1.5.0');
-		SELECT ST_AsBinary($1::geometry);
+		SELECT @extschema@._postgis_deprecate('ST_AsBinary(text)', 'ST_AsBinary(geometry)', '1.5.0');
+		SELECT @extschema@.ST_AsBinary($1::@extschema@.geometry);
 	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT SET search_path FROM CURRENT;
 
 -- Deprecation in 1.5.0
 -- hack to allow unknown to cast to geometry
@@ -103,7 +103,7 @@ CREATE OR REPLACE FUNCTION ST_AsText(bytea)
 	RETURNS text
 	AS
 	$$
-		SELECT _postgis_deprecate('ST_AsText(bytea)', 'ST_AsText(geometry)', '1.5.0');
-		SELECT ST_AsText($1::geometry);
+		SELECT @extschema@._postgis_deprecate('ST_AsText(bytea)', 'ST_AsText(geometry)', '1.5.0');
+		SELECT @extschema@.ST_AsText($1::@extschema@.geometry);
 	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT SET search_path FROM CURRENT;

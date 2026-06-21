@@ -32,3 +32,4 @@ Done.
 WARNING:  ST_AsBinary(text) signature was deprecated in 1.5.0. Please use ST_AsBinary(geometry)
 WARNING:  ST_AsText(bytea) signature was deprecated in 1.5.0. Please use ST_AsText(geometry)
 1869|POINT(1 2)
+legacy_search_path|t
