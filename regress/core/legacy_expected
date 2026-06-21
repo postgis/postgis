@@ -1,3 +1,4 @@
+legacy_load_search_path|public, legacy_caller_path
 estimated_extent_properties|2
 legacy_wrapper_search_path|10
 Starting up MapServer/Geoserver tests...

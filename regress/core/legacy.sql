@@ -7,9 +7,13 @@
 --
 
 SET client_min_messages TO WARNING;
+CREATE SCHEMA legacy_caller_path;
+SET search_path TO public, legacy_caller_path;
 
 \cd :scriptdir
 \i legacy.sql
+
+SELECT 'legacy_load_search_path', pg_catalog.current_setting('search_path');
 
 SELECT 'estimated_extent_properties', count(*)
 FROM pg_catalog.pg_proc
@@ -34,7 +38,9 @@ WHERE oid IN (
 	'st_asbinary(text)'::regprocedure,
 	'st_astext(bytea)'::regprocedure
 )
-AND proconfig = ARRAY['search_path=pg_catalog, public'];
+AND proconfig = ARRAY[
+	'search_path=' || pg_catalog.quote_ident(pg_catalog.current_schema()) || ', pg_catalog'
+];
 
 SELECT 'Starting up MapServer/Geoserver tests...';
 -- Set up the data table
@@ -170,3 +176,5 @@ SET client_min_messages TO WARNING;
 DROP SCHEMA legacy_shadow CASCADE;
 
 \i uninstall_legacy.sql
+
+DROP SCHEMA legacy_caller_path;
