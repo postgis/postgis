@@ -3,9 +3,19 @@ simple_lineal_layer|2
 simple_areal_layer|3
 simple_collection_layer|4
 hierarchical_puntual_layer|5
+simple_puntual_child_layer|6
+hierarchical_puntual_child_layer|7
+hierarchical_puntual_child_collection_layer|8
 tg2tg.poi2poi|MULTIPOINT((0 0),(1 1))
 tg2tg.poi2mix|GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))
 tg2tg.lin2lin|MULTILINESTRING((0 0,2 0),(0 1,1 1,2 1))
 tg2tg.lin2mix|GEOMETRYCOLLECTION(LINESTRING(0 0,2 0),POINT(0 0))
+tg2tg.lin2lin.reversed|MULTILINESTRING((10 0,11 0))
+tg2tg.lin2lin.reversed.components|1|t
+tg2tg.lin2lin.source-reversed|MULTILINESTRING((12 0,13 0))
+tg2tg.lin2lin.source-reversed.components|1|t
 tg2tg.pol2pol|MULTIPOLYGON(((0 0,0 10,10 10,10 0,0 0)))
 tg2tg.pol2pol|GEOMETRYCOLLECTION(POLYGON((0 0,0 10,10 10,10 0,0 0)),POINT(0 0))
+tg2tg.hier.poi2poi.child-layer-type|1|MULTIPOINT((20 20),(21 21))
+tg2tg.hier.poi2coll.child-layer-type|1
+tg2tg.hier.coll2poi.child-layer-type|4

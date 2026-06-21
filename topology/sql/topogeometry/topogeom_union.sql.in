@@ -1,0 +1,55 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+-- {
+--  Aggregate union transition function for TopoGeometry values
+--
+-- }{
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION topology._ST_Union(state topology.TopoGeometry, src topology.TopoGeometry)
+  RETURNS topology.TopoGeometry
+AS
+$$
+DECLARE
+  topo_name TEXT;
+BEGIN
+  IF src IS NULL THEN
+    RETURN state;
+  END IF;
+
+  SELECT name
+  FROM topology.topology
+  WHERE id = topology_id(src)
+  INTO STRICT topo_name;
+
+  IF state IS NULL THEN
+    state := topology.CreateTopoGeom(
+      topo_name,
+      type(src),
+      layer_id(src)
+    );
+  END IF;
+
+  state := topology.TopoGeom_addTopoGeom(state, src);
+
+  RETURN state;
+END
+$$
+LANGUAGE 'plpgsql' VOLATILE;
+-- }
+
+-- Availability: 3.7.0
+CREATE AGGREGATE topology.ST_Union(topology.TopoGeometry) (
+  SFUNC = topology._ST_Union,
+  STYPE = topology.TopoGeometry,
+  PARALLEL = unsafe
+);
