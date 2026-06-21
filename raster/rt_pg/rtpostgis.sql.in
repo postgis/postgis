@@ -2783,6 +2783,91 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 	AS $$ SELECT @extschema@.ST_mapalgebra($1, 1, $2, 1, $3, $4, $5, $6, $7, $8) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
+CREATE OR REPLACE FUNCTION st_createindexraster(
+	rast raster,
+	pixeltype text DEFAULT '32BUI',
+	startvalue integer DEFAULT 0,
+	incwithx boolean DEFAULT true,
+	incwithy boolean DEFAULT true,
+	columnfirst boolean DEFAULT true,
+	rowscanorder boolean DEFAULT true,
+	falsecolinc integer DEFAULT NULL,
+	falserowinc integer DEFAULT NULL
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		newraster raster;
+		w integer;
+		h integer;
+		rowincx integer;
+		colincx integer;
+		rowincy integer;
+		colincy integer;
+		xdir integer;
+		ydir integer;
+		xdflag integer;
+		ydflag integer;
+		rsflag integer;
+		expr text;
+	BEGIN
+		IF rast IS NULL THEN
+			RETURN NULL;
+		END IF;
+
+		newraster := @extschema@.ST_AddBand(
+			@extschema@.ST_MakeEmptyRaster(rast),
+			COALESCE(pixeltype, '32BUI')
+		);
+
+		w := @extschema@.ST_Width(newraster);
+		h := @extschema@.ST_Height(newraster);
+		rowincx := COALESCE(falserowinc, w);
+		colincx := COALESCE(falsecolinc, h);
+		rowincy := COALESCE(falserowinc, 1);
+		colincy := COALESCE(falsecolinc, 1);
+		xdir := CASE WHEN COALESCE(incwithx, true) THEN 1 ELSE w END;
+		ydir := CASE WHEN COALESCE(incwithy, true) THEN 1 ELSE h END;
+		xdflag := COALESCE(incwithx::integer, 1);
+		ydflag := COALESCE(incwithy::integer, 1);
+		rsflag := COALESCE(rowscanorder::integer, 1);
+
+		IF falsecolinc IS NOT NULL AND falsecolinc <= 0 THEN
+			RAISE EXCEPTION 'Column increment must be greater than zero';
+		END IF;
+		IF falserowinc IS NOT NULL AND falserowinc <= 0 THEN
+			RAISE EXCEPTION 'Row increment must be greater than zero';
+		END IF;
+
+		IF COALESCE(columnfirst, true) THEN
+			IF colincx <= (h - 1) * rowincy THEN
+				RAISE EXCEPTION 'Column increment (now %) must be greater than the number of index on one column (now % pixel x % = %)',
+					colincx, h - 1, rowincy, (h - 1) * rowincy;
+			END IF;
+
+			expr := format(
+				'abs([rast.x] - %s)::numeric * %s::numeric + abs([rast.y] - (%s ^ ((abs([rast.x] - %s + 1) %% 2) | %s # %s))::int)::numeric * %s::numeric + %s::numeric',
+				xdir, colincx, h, xdir, rsflag, ydflag, rowincy, COALESCE(startvalue, 0)
+			);
+		ELSE
+			IF rowincx <= (w - 1) * colincy THEN
+				RAISE EXCEPTION 'Row increment (now %) must be greater than the number of index on one row (now % pixel x % = %)',
+					rowincx, w - 1, colincy, (w - 1) * colincy;
+			END IF;
+
+			expr := format(
+				'abs([rast.x] - (%s ^ ((abs([rast.y] - %s + 1) %% 2) | %s # %s))::int)::numeric * %s::numeric + abs([rast.y] - %s)::numeric * %s::numeric + %s::numeric',
+				w, ydir, rsflag, xdflag, colincy, ydir, rowincx, COALESCE(startvalue, 0)
+			);
+		END IF;
+
+		RETURN @extschema@.ST_SetBandNodataValue(
+			@extschema@.ST_MapAlgebra(newraster, COALESCE(pixeltype, '32BUI'), expr),
+			@extschema@.ST_BandNodataValue(newraster)
+		);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
+
 -----------------------------------------------------------------------
 -- ST_MapAlgebra callback functions
 -- Should be called with values for distancex and distancey
