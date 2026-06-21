@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - #2850, GH-1020, Preserve fixed numeric DBF widths and scale in pgsql2shp (Darafei Praliaskouski)
   - #6012, Free circular string constructor storage and preserve mixed Z/M coordinates (Paul Ramsey)
   - Return zero azimuth for a due-north geometry segment (Sandro Santilli)
   - GH-1173, GH-1174, guard raster OOM cleanup paths against NULL dereferences
