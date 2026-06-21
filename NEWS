@@ -134,6 +134,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - GH-894, [raster] Fix Float16 import, mixed nodata warping,
           band replacement cleanup, GDAL credential redaction, and Python
           GDAL compatibility (Darafei Praliaskouski)
+ - #5914, [raster] Add regression coverage for ST_Resample on skewed
+          rasters (Darafei Praliaskouski)
  - #5645, Docs: keep code operators ("=>") intact in translated manuals
           by enforcing verbatim CSS (Darafei Praliaskouski)
  - #5593, Docs: render manual images with GraphicsMagick without temporary files,
