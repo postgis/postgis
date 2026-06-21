@@ -38,6 +38,7 @@
 #include <utils/lsyscache.h> /* for get_typlenbyvalalign */
 #include <utils/array.h> /* for ArrayType */
 #include <utils/builtins.h> /* for cstring_to_text */
+#include <utils/float.h>    /* for float8in */
 #include <catalog/pg_type.h> /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
 #include <executor/executor.h> /* for GetAttributeByName */
 
@@ -71,6 +72,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS);
 
 /* one-raster neighborhood MapAlgebra */
 Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS);
+Datum RASTER_sum4ma(PG_FUNCTION_ARGS);
 
 /* two-raster MapAlgebra */
 Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS);
@@ -78,6 +80,76 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS);
 /* ---------------------------------------------------------------- */
 /*  n-raster MapAlgebra                                             */
 /* ---------------------------------------------------------------- */
+
+PG_FUNCTION_INFO_V1(RASTER_sum4ma);
+Datum
+RASTER_sum4ma(PG_FUNCTION_ARGS)
+{
+	ArrayType *matrix;
+	Datum *values;
+	bool *nulls;
+	int nitems;
+	int i;
+	double sum = 0;
+	char *nodatamode = NULL;
+	bool ignore_nodata = false;
+	bool has_nodata_replacement = false;
+	double nodata_replacement = 0;
+
+	if (PG_ARGISNULL(0))
+		ereport(
+		    ERROR,
+		    (errcode(ERRCODE_NULL_VALUE_NOT_ALLOWED), errmsg("st_sum4ma: matrix argument must not be NULL")));
+
+	if (!PG_ARGISNULL(1))
+	{
+		nodatamode = text_to_cstring(PG_GETARG_TEXT_PP(1));
+		if (strcmp(nodatamode, "ignore") == 0)
+			ignore_nodata = true;
+	}
+
+	matrix = PG_GETARG_ARRAYTYPE_P(0);
+	if (ARR_NDIM(matrix) < 2)
+		ereport(ERROR,
+			(errcode(ERRCODE_ARRAY_SUBSCRIPT_ERROR),
+			 errmsg("st_sum4ma: matrix argument must have at least 2 dimensions")));
+
+	deconstruct_array(matrix, FLOAT8OID, sizeof(float8), FLOAT8PASSBYVAL, 'd', &values, &nulls, &nitems);
+
+	for (i = 0; i < nitems; i++)
+	{
+		if (nulls[i])
+		{
+			if (ignore_nodata)
+				continue;
+			if (!nodatamode)
+			{
+				pfree(nulls);
+				pfree(values);
+				PG_FREE_IF_COPY(matrix, 0);
+				PG_RETURN_NULL();
+			}
+
+			if (!has_nodata_replacement)
+			{
+				nodata_replacement =
+				    DatumGetFloat8(DirectFunctionCall1(float8in, CStringGetDatum(nodatamode)));
+				has_nodata_replacement = true;
+			}
+			sum += nodata_replacement;
+		}
+		else
+			sum += DatumGetFloat8(values[i]);
+	}
+
+	if (nodatamode)
+		pfree(nodatamode);
+	pfree(nulls);
+	pfree(values);
+	PG_FREE_IF_COPY(matrix, 0);
+
+	PG_RETURN_FLOAT8(sum);
+}
 
 #if defined(__clang__)
 # pragma clang diagnostic push
