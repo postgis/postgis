@@ -1728,8 +1728,7 @@ FROM ST_BandMetaData(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0)
                     with <xref linkend="RT_ST_AsPNG"/> and other <xref linkend="RT_ST_AsGDALRaster"/> family of functions.</para>
                  <para role="availability" conformance="2.0.0">Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
 
-                 <note><para>Not yet capable of rendering complex geometry types such as curves, TINS, and PolyhedralSurfaces, but should be
-                 able too once GDAL can.</para></note>
+                 <para>Curved geometry inputs are linearized before rasterization. TIN and PolyhedralSurface inputs are not supported.</para>
             </refsection>
 
             <refsection>
