@@ -71,6 +71,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           GeometryCollections (Darafei Praliaskouski)
  - #5532, Validate the manual against DocBook XMLSchema in check-xml
           (Darafei Praliaskouski)
+ - #3319, [topology] Avoid full face reconstruction when a polygon covers
+          the candidate face MBR in TopoGeo_AddPolygon (Darafei Praliaskouski)
 
 * Bug Fixes *
 

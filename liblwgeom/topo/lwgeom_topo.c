@@ -7834,8 +7834,37 @@ lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
     {
       LWT_ISO_FACE *f = &(faces[j]);
       LWGEOM *fg;
-      GEOSGeometry *fgg, *sp;
+      GEOSGeometry *fgg, *sp, *fenv;
       int covers;
+
+      /*
+       * If the input polygon covers the whole face MBR, it necessarily
+       * covers the face itself. This avoids reconstructing full face
+       * geometry for interior faces while preserving the exact fallback
+       * path for boundary and degenerate boxes.
+       */
+      if ( f->mbr && f->mbr->xmin < f->mbr->xmax && f->mbr->ymin < f->mbr->ymax )
+      {
+        fenv = GBOX2GEOS(f->mbr);
+        if ( fenv )
+        {
+          covers = GEOSPreparedCovers( ppoly, fenv );
+          GEOSGeom_destroy(fenv);
+          if (covers == 2)
+          {
+            GEOSPreparedGeom_destroy(ppoly);
+            GEOSGeom_destroy(polyg);
+            _lwt_release_faces(faces, nfacesinbox);
+            lwerror("PreparedCovers error: %s", lwgeom_geos_errmsg);
+            return NULL;
+          }
+          if ( covers )
+          {
+            ids[num++] = f->face_id;
+            continue;
+          }
+        }
+      }
 
       /* check if a point on this face surface is covered by our polygon */
       fg = lwt_GetFaceGeometry( topo, f->face_id );
