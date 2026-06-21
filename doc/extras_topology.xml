@@ -151,9 +151,50 @@ and <varname>GetNodeEdges</varname> functions.
                 <para><xref linkend="ValidateTopology"/></para>
             </refsection>
 		</refentry>
-	</section>
+		</section>
 
-	<section xml:id="Topology_Domains">
+		<section xml:id="Topology_Metadata_Tables">
+		<title>Topology Metadata Tables</title><info>
+			<abstract>
+				<para>This section describes the catalog tables used by PostGIS Topology to register topology schemas and TopoGeometry layers.</para>
+			</abstract>
+		</info>
+
+			<para>PostGIS Topology keeps global metadata in the <varname>topology</varname> schema, and keeps primitive topology data in one schema per topology.  The global metadata tables identify which topology schemas exist, which feature-table columns store <xref linkend="topogeometry"/> values, and how those feature layers relate to primitive or child layers.</para>
+
+			<refentry xml:id="topology_topology">
+			  <refnamediv>
+				<refname>topology.topology</refname>
+				<refpurpose>A catalog table listing the topology schemas registered in the database.</refpurpose>
+			  </refnamediv>
+			  <refsection>
+				<title>Description</title>
+				<para>Each row represents one topology created by <xref linkend="CreateTopology"/>.  The <varname>id</varname> value is the stable identifier referenced by <varname>TopoGeometry.topology_id</varname> and by <varname>topology.layer.topology_id</varname>.  The <varname>name</varname> column is the name of the schema containing the topology primitive tables, including <varname>node</varname>, <varname>edge_data</varname>, <varname>edge</varname>, <varname>face</varname>, and <varname>relation</varname>.  The <varname>srid</varname>, <varname>precision</varname>, <varname>hasz</varname>, and <varname>useslargeids</varname> columns record the coordinate system, snapping precision, dimensionality, and identifier-size contract used by the topology.</para>
+			  </refsection>
+			  <refsection>
+				<title>See Also</title>
+				<para><xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/>, <xref linkend="FindTopology"/>, <xref linkend="TopologySummary"/>, <xref linkend="topology_layer"/></para>
+			  </refsection>
+			</refentry>
+
+			<refentry xml:id="topology_layer">
+			  <refnamediv>
+				<refname>topology.layer</refname>
+				<refpurpose>A catalog table listing the TopoGeometry layers registered for each topology.</refpurpose>
+			  </refnamediv>
+			  <refsection>
+				<title>Description</title>
+				<para>Each row describes one layer of <xref linkend="topogeometry"/> objects.  A layer usually corresponds to a feature-table column added by <xref linkend="AddTopoGeometryColumn"/>; the <varname>schema_name</varname>, <varname>table_name</varname>, and <varname>feature_column</varname> columns identify that table column.  The <varname>topology_id</varname> and <varname>layer_id</varname> columns form the layer key and are stored in every TopoGeometry value from the layer.</para>
+				<para>The <varname>feature_type</varname> column records the geometry family of the layer: 1 for point or multipoint, 2 for line or multiline, 3 for polygon or multipolygon, and 4 for collection.  The <varname>level</varname> and <varname>child_id</varname> columns describe layer hierarchy.  A simple layer has no child layer and stores primitive node, edge, or face references in the topology <varname>relation</varname> table.  A hierarchical layer has a <varname>child_id</varname> and its relation rows reference TopoGeometry objects from the child layer instead of referencing primitives directly.</para>
+			  </refsection>
+			  <refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddTopoGeometryColumn"/>, <xref linkend="DropTopoGeometryColumn"/>, <xref linkend="FindLayer"/>, <xref linkend="GetTopoGeomElements"/>, <xref linkend="topology_topology"/></para>
+			  </refsection>
+			</refentry>
+		</section>
+
+		<section xml:id="Topology_Domains">
         <title>Topology Domains</title><info>
             <abstract>
                 <para>This section lists the PostgreSQL domains installed by PostGIS Topology.  Domains can be used like object types as return objects of functions or table columns. The distinction between

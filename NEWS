@@ -69,6 +69,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections (Darafei Praliaskouski)
+ - #2578, Document topology metadata tables and data model
+          (Darafei Praliaskouski)
  - #5532, Validate the manual against DocBook XMLSchema in check-xml
           (Darafei Praliaskouski)
 
