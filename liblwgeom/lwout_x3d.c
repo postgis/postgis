@@ -68,6 +68,25 @@ lwgeom_to_x3d3_sb(const LWGEOM *geom, int precision, int opts, const char *defid
 {
 	int type = geom->type;
 
+	if (lwgeom_type_needs_stroke(type))
+	{
+		LWGEOM *linear = lwgeom_stroke(geom, 32);
+		int rv;
+
+		if (!linear)
+			return LW_FAILURE;
+
+		/* X3D has native curved nodes, but the existing ST_AsX3D contract
+		 * emits broadly supported line and face nodes. Linearize curved
+		 * inputs here so collections and single curved geometries share the
+		 * same serialization paths. Closed stroked curves rely on
+		 * asx3d3_line_sb retaining the duplicate endpoint because LineSet has
+		 * no coordinate index with which to close the path. */
+		rv = lwgeom_to_x3d3_sb(linear, precision, opts, defid, sb);
+		lwgeom_free(linear);
+		return rv;
+	}
+
 	switch (type)
 	{
 	case POINTTYPE:
@@ -82,9 +101,9 @@ lwgeom_to_x3d3_sb(const LWGEOM *geom, int precision, int opts, const char *defid
 		* seems like the simplest way to go so treat just like a mulitpolygon
 		*/
 		LWCOLLECTION *tmp = (LWCOLLECTION*)lwgeom_as_multi(geom);
-		asx3d3_multi_sb(tmp, precision, opts, defid, sb);
+		int rv = asx3d3_multi_sb(tmp, precision, opts, defid, sb);
 		lwcollection_free(tmp);
-		return LW_SUCCESS;
+		return rv;
 	}
 
 	case TRIANGLETYPE:
@@ -107,6 +126,23 @@ lwgeom_to_x3d3_sb(const LWGEOM *geom, int precision, int opts, const char *defid
 	default:
 		lwerror("lwgeom_to_x3d3: '%s' geometry type not supported", lwtype_name(type));
 		return LW_FAILURE;
+	}
+}
+
+static int
+lwgeom_type_needs_stroke(uint8_t type)
+{
+	switch (type)
+	{
+	case CIRCSTRINGTYPE:
+	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
+	case NURBSCURVETYPE:
+		return LW_TRUE;
+	default:
+		return LW_FALSE;
 	}
 }
 
@@ -229,17 +265,17 @@ asx3d3_line_sb(const LWLINE *line,
 	/* int dimension=2; */
 	POINTARRAY *pa;
 
-
 	/* if (FLAGS_GET_Z(line->flags)) dimension = 3; */
 
 	pa = line->points;
-	stringbuffer_aprintf(sb, "<LineSet %s vertexCount='%d'>", defid, pa->npoints);
+
+	stringbuffer_aprintf(sb, "<LineSet %s vertexCount='%u'>", defid, pa->npoints);
 
 	if ( X3D_USE_GEOCOORDS(opts) ) stringbuffer_aprintf(sb, "<GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ( (opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
 	else
 		stringbuffer_aprintf(sb, "<Coordinate point='");
 
-	ptarray_to_x3d3_sb(line->points, precision, opts, lwline_is_closed((LWLINE *)line), LW_TRUE, sb);
+	ptarray_to_x3d3_sb(line->points, precision, opts, LW_FALSE, LW_TRUE, sb);
 
 	stringbuffer_aprintf(sb, "' />");
 
@@ -476,39 +512,24 @@ asx3d3_collection_sb(const LWCOLLECTION *col, int precision, int opts, const cha
 	for (i=0; i<col->ngeoms; i++)
 	{
 		subgeom = col->geoms[i];
-		stringbuffer_aprintf(sb, "<Shape%s>", defid);
-		if ( subgeom->type == POINTTYPE )
+		if (subgeom->type == COLLECTIONTYPE)
 		{
-			asx3d3_point_sb((LWPOINT *)subgeom, precision, opts, defid, sb);
+			if (asx3d3_collection_sb((LWCOLLECTION *)subgeom, precision, opts, defid, sb) == LW_FAILURE)
+				return LW_FAILURE;
+			continue;
 		}
-		else if ( subgeom->type == LINETYPE )
-		{
-			asx3d3_line_sb((LWLINE *)subgeom, precision, opts, defid, sb);
-		}
-		else if ( subgeom->type == POLYGONTYPE )
-		{
-			LWCOLLECTION *tmp = (LWCOLLECTION *)lwgeom_as_multi(subgeom);
-			asx3d3_multi_sb(tmp, precision, opts, defid, sb);
-			lwcollection_free(tmp);
-		}
-		else if ( subgeom->type == TINTYPE )
-		{
-			asx3d3_tin_sb((LWTIN *)subgeom, precision, opts, defid, sb);
-		}
-		else if ( subgeom->type == POLYHEDRALSURFACETYPE )
-		{
-			asx3d3_psurface_sb((LWPSURFACE *)subgeom, precision, opts, defid, sb);
-		}
-		else if ( lwgeom_is_collection(subgeom) )
-		{
-			if ( subgeom->type == COLLECTIONTYPE )
-				asx3d3_collection_sb((LWCOLLECTION *)subgeom, precision, opts, defid, sb);
-			else
-				asx3d3_multi_sb((LWCOLLECTION *)subgeom, precision, opts, defid, sb);
-		}
-		else
-			lwerror("asx3d3_collection_buf: unknown geometry type");
 
+		stringbuffer_aprintf(sb, "<Shape%s>", defid);
+		if (subgeom->type == TRIANGLETYPE)
+		{
+			LWTIN *tmp = (LWTIN *)lwgeom_as_multi(subgeom);
+			int rv = asx3d3_tin_sb(tmp, precision, opts, defid, sb);
+			lwcollection_free((LWCOLLECTION *)tmp);
+			if (rv == LW_FAILURE)
+				return LW_FAILURE;
+		}
+		else if (lwgeom_to_x3d3_sb(subgeom, precision, opts, defid, sb) == LW_FAILURE)
+			return LW_FAILURE;
 		stringbuffer_aprintf(sb, "</Shape>");
 	}
 
