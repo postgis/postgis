@@ -54,6 +54,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 * Enhancements *
 
+ - #1577, [loader] Report unsupported .zip archive input before trying
+          to open shapefile sidecar files (Darafei Praliaskouski)
  - #2116, [raster] Add ST_Value nearest-neighbor boundary options
           (Darafei Praliaskouski)
  - #2804, #4315, [raster] Support two-argument ST_MapAlgebra callbacks

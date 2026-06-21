@@ -16,6 +16,7 @@
 /* Test functions */
 void test_ShpLoaderCreate(void);
 void test_ShpLoaderDestroy(void);
+void test_ShpLoaderOpenShapeRejectsZip(void);
 
 SHPLOADERCONFIG *loader_config;
 SHPLOADERSTATE *loader_state;
@@ -33,10 +34,9 @@ CU_pSuite register_shp2pgsql_suite(void)
 		return NULL;
 	}
 
-	if (
-	    (NULL == CU_add_test(pSuite, "test_ShpLoaderCreate()", test_ShpLoaderCreate)) ||
-	    (NULL == CU_add_test(pSuite, "test_ShpLoaderDestroy()", test_ShpLoaderDestroy))
-	)
+	if ((NULL == CU_add_test(pSuite, "test_ShpLoaderCreate()", test_ShpLoaderCreate)) ||
+	    (NULL == CU_add_test(pSuite, "test_ShpLoaderDestroy()", test_ShpLoaderDestroy)) ||
+	    (NULL == CU_add_test(pSuite, "test_ShpLoaderOpenShapeRejectsZip()", test_ShpLoaderOpenShapeRejectsZip)))
 	{
 		CU_cleanup_registry();
 		return NULL;
@@ -73,5 +73,30 @@ void test_ShpLoaderCreate(void)
 
 void test_ShpLoaderDestroy(void)
 {
+	ShpLoaderDestroy(loader_state);
+}
+
+void
+test_ShpLoaderOpenShapeRejectsZip(void)
+{
+	int ret;
+
+	loader_config = (SHPLOADERCONFIG *)calloc(1, sizeof(SHPLOADERCONFIG));
+	set_loader_config_defaults(loader_config);
+	loader_config->shp_file = "fixtures/parcel.ZIP";
+	loader_state = ShpLoaderCreate(loader_config);
+	ret = ShpLoaderOpenShape(loader_state);
+	CU_ASSERT_EQUAL(ret, SHPLOADERERR);
+	CU_ASSERT_PTR_NOT_NULL(strstr(loader_state->message, "does not read .zip archives"));
+	ShpLoaderDestroy(loader_state);
+
+	loader_config = (SHPLOADERCONFIG *)calloc(1, sizeof(SHPLOADERCONFIG));
+	set_loader_config_defaults(loader_config);
+	loader_config->shp_file = "fixtures.zip/parcel";
+	loader_config->readshape = 0;
+	loader_state = ShpLoaderCreate(loader_config);
+	ret = ShpLoaderOpenShape(loader_state);
+	CU_ASSERT_EQUAL(ret, SHPLOADERERR);
+	CU_ASSERT_PTR_NULL(strstr(loader_state->message, "does not read .zip archives"));
 	ShpLoaderDestroy(loader_state);
 }

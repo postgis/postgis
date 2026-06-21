@@ -1877,6 +1877,11 @@ COMMIT;</programlisting>
     insertion into a PostGIS/PostgreSQL database either in geometry or geography format.
     The loader has several operating modes selected by command line flags.
   </para>
+  <para>
+    The input must be an unpacked shapefile path. The loader does not read
+    <filename>.zip</filename> archives directly; unpack the <filename>.shp</filename>,
+    <filename>.shx</filename>, and <filename>.dbf</filename> files before loading.
+  </para>
   <para>There is also a <filename>shp2pgsql-gui</filename> graphical interface with most
 	of the options as the command-line loader.
     This may be easier to use for one-off non-scripted loading or if you are new to PostGIS.
