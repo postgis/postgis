@@ -1388,7 +1388,7 @@ ShpDumperPromptPassword(void)
 	}
 #endif
 
-	fprintf(stderr, _("Password: "));
+	fprintf(stderr, "%s", _("Password: "));
 	fflush(stderr);
 
 	if (!fgets(password, sizeof(password), stdin))
