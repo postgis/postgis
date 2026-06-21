@@ -1,5 +1,7 @@
+-- This test combines long action options with GNU-style long value options.
 -- --add-constraints should register the loaded raster in raster_columns
--- with the same metadata that the existing short -C test expects.
+-- with the same metadata that the existing short -C test expects, while the
+-- 90x50 tile and sampled band values prove that --tile-size and --band parsed.
 SELECT srid, scale_x::numeric(16, 10), scale_y::numeric(16, 10), blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values::numeric(16,10)[], out_db, ST_AsEWKT(extent) FROM raster_columns WHERE r_table_name = 'loadedrast' AND r_raster_column = 'rast';
 
 -- The raster data should survive the long maintenance path unchanged.
