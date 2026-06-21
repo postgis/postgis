@@ -143,10 +143,10 @@ Available GDAL raster formats:
             <para>
               Use <literal>IF NOT EXISTS</literal> for table creation in
               <option>-c</option> and <option>-p</option> modes. When
-              <option>-I</option> is also specified, use
-              <literal>IF NOT EXISTS</literal> for index creation too. This
-              option cannot be used with <option>-d</option>. Append mode
-              requires an explicit creation action.
+              <option>-I</option> or <option>--create-index</option> is also
+              specified, use <literal>IF NOT EXISTS</literal> for index
+              creation too. This option cannot be used with <option>-d</option>.
+              Append mode requires an explicit creation action.
             </para>
           </listitem>
         </varlistentry>
@@ -319,7 +319,20 @@ Available GDAL raster formats:
                   <term><option>-I</option></term>
                   <listitem>
                     <para>
-                      Create a GiST index on the raster column.
+                      Alias for <option>--create-index</option>.
+                    </para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><option>--create-index</option></term>
+                  <listitem>
+                    <para>
+                      Create a GiST index on the raster column at the end of this
+                      raster2pgsql run.  With repeated <option>-a</option> append
+                      runs, create the index on the final run or after loading;
+                      add <option>--if-not-exists</option> to make reruns tolerate
+                      an existing index.
                     </para>
                   </listitem>
                 </varlistentry>

@@ -382,14 +382,18 @@ usage() {
 	      "     -p  Prepare mode, only creates the table.\n"));
 	printf(
 	    _("  --if-not-exists  Use IF NOT EXISTS for table creation in -c and -p\n"
-	      "     modes. With -I, also use IF NOT EXISTS for index creation.\n"
+	      "     modes. With -I/--create-index, also use IF NOT EXISTS for index\n"
+	      "     creation.\n"
 	      "     Append mode requires an explicit creation action.\n"));
 	printf(
 	    _("  --drop-table  Drop the target table before other actions.\n"
 	      "      With no mode specified, the default create/load actions still apply.\n"
 	      "  --create-table  Create the target table.\n"
 	      "  --load-data  Load raster data into the target table.\n"
-	      "  --create-index  Create a GIST spatial index on the raster column.\n"));
+	      "  --create-index  Create a GIST spatial index on the raster column\n"
+	      "      at the end of this raster2pgsql run. With repeated -a append\n"
+	      "      runs, create the index on the final run or after loading; add\n"
+	      "      --if-not-exists to make reruns tolerate an existing index.\n"));
 	printf(_(
 		"  -f <column> Specify the name of the raster column\n"
 	));
@@ -408,10 +412,7 @@ usage() {
 	printf(_(
 		"  -q  Wrap PostgreSQL identifiers in quotes.\n"
 	));
-	printf(_(
-		"  -I  Create a GIST spatial index on the raster column. The ANALYZE\n"
-		"      command will automatically be issued for the created index.\n"
-	));
+	printf(_("  -I  Alias for --create-index.\n"));
 	printf(
 	    _("  --add-constraints  Set the standard set of constraints on the\n"
 	      "      raster column after the rasters are loaded.\n"
@@ -1152,7 +1153,7 @@ create_index(const char *schema,
 	     STRINGBUFFER *buffer)
 {
 	char *sql = NULL;
-	uint32_t len = 0;
+	size_t len = 0;
 	char *_table = NULL;
 	char *_column = NULL;
 
@@ -1182,25 +1183,27 @@ create_index(const char *schema,
 	}
 	if (if_not_exists)
 	{
-		sprintf(sql,
-			"CREATE INDEX IF NOT EXISTS \"%s_%s_gist\" ON %s%s USING gist (st_convexhull(%s))%s%s;",
-			_table,
-			_column,
-			(schema != NULL ? schema : ""),
-			table,
-			column,
-			(tablespace != NULL ? " TABLESPACE " : ""),
-			(tablespace != NULL ? tablespace : ""));
+		snprintf(sql,
+			 len,
+			 "CREATE INDEX IF NOT EXISTS \"%s_%s_gist\" ON %s%s USING gist (st_convexhull(%s))%s%s;",
+			 _table,
+			 _column,
+			 (schema != NULL ? schema : ""),
+			 table,
+			 column,
+			 (tablespace != NULL ? " TABLESPACE " : ""),
+			 (tablespace != NULL ? tablespace : ""));
 	}
 	else
 	{
-		sprintf(sql,
-			"CREATE INDEX ON %s%s USING gist (st_convexhull(%s))%s%s;",
-			(schema != NULL ? schema : ""),
-			table,
-			column,
-			(tablespace != NULL ? " TABLESPACE " : ""),
-			(tablespace != NULL ? tablespace : ""));
+		snprintf(sql,
+			 len,
+			 "CREATE INDEX ON %s%s USING gist (st_convexhull(%s))%s%s;",
+			 (schema != NULL ? schema : ""),
+			 table,
+			 column,
+			 (tablespace != NULL ? " TABLESPACE " : ""),
+			 (tablespace != NULL ? tablespace : ""));
 	}
 	rtdealloc(_table);
 	rtdealloc(_column);
