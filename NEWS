@@ -6,6 +6,9 @@ PostGIS 3.8.0dev
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
+ - #2596, [raster] Add ST_IsVisible for DEM line-of-sight checks
+          using GDAL >= 3.1.1
+          (Darafei Praliaskouski)
 
 * Enhancements *
 
