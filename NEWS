@@ -86,7 +86,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #6087, Add a repository-owned CI status checker and static dashboard
           generator (Darafei Praliaskouski)
- - #2689, Emit deprecation warnings from legacy_minimal.sql aliases
+ - #2689, Emit deprecation warnings from common legacy_minimal.sql aliases
           (Darafei Praliaskouski)
 
 * Bug Fixes *

@@ -18,7 +18,7 @@ WHERE oid IN (
 	'estimated_extent(text,text)'::regprocedure
 )
 AND prosecdef
-AND provolatile = 's';
+AND provolatile = 'i';
 
 SELECT 'Starting up MapServer/Geoserver tests...';
 -- Set up the data table
