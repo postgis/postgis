@@ -58,6 +58,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 * Enhancements *
 
+ - #4594, shp2pgsql emits geometry columns directly instead of using
+          AddGeometryColumn (Darafei Praliaskouski)
  - #1577, [loader] Report unsupported .zip archive input before trying
           to open shapefile sidecar files (Darafei Praliaskouski)
  - #3158, Move geometry and geography typmod bit helpers out of the
