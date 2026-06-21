@@ -17,6 +17,9 @@
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
 
+/* termios.h header */
+#undef HAVE_TERMIOS_H
+
 /* Define if the build is big endian */
 #undef WORDS_BIGENDIAN
 
