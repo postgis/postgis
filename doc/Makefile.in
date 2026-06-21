@@ -173,6 +173,7 @@ XML_INPUTS_POT = $(XML_SOURCES:%.xml=$(srcdir)/po/templates/%.xml.pot)
 VPATH = $(srcdir)
 
 .PHONY: $(XML_INPUTS_POT)
+CAN_CHECK_XML = yes
 ifeq ($(XML2POT),)
 $(XML_INPUTS_POT): requirements_not_met_xml2pot
 else
@@ -430,22 +431,36 @@ endif
 
 
 
+ifeq ($(XMLLINT),)
+check-xml: requirements_not_met_xmllint
+CAN_CHECK_XML = no
+endif
+
+ifeq ($(XSLBASE),)
+check-xml: requirements_not_met_xslbase
+CAN_CHECK_XML = no
+endif
+
+CHECK_UNIT_TARGET =
+
+ifeq ($(CAN_CHECK_XML),yes)
+CHECK_UNIT_TARGET = check-xml
+endif
+
+
+check-xml: $(XML_INPUTS)
+	$(XMLLINT) --loaddtd --path $(srcdir) --xinclude --valid postgis-out.xml --noout
+
 check: check-unit
 check-regress:
 
-ifeq ($(XMLLINT),)
-check-unit: requirements_not_met_xmllint
-else
-check-unit: $(XML_INPUTS)
-	$(XMLLINT) --loaddtd --path $(srcdir) --xinclude --valid postgis-out.xml --noout
-endif
+check-unit: $(CHECK_UNIT_TARGET)
 
 check-localized:
 	@for lang in $(translations); do \
     echo "Creating html for language $$lang..."; \
     $(MAKE) -C po/$$lang local-check || exit 1; \
   done
-
 
 requirements_not_met_xsltproc:
 	@echo
