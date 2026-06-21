@@ -1090,6 +1090,13 @@ SELECT
         </para></listitem>
         </orderedlist>
 
+      <para>
+        Consecutive repeated points in a polygon boundary ring are treated as
+        redundant vertices, and do not make the polygon invalid. Repeated points
+        that cause the boundary to self-intersect, self-touch, or collapse
+        still violate the validity rules.
+      </para>
+
 	  <informaltable frame="none">
 		<tgroup cols="1">
 		  <tbody>
