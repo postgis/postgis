@@ -17,14 +17,9 @@ WARNING:  GeomFromText signature was deprecated in 1.2.3. Please use ST_GeomFrom
 WARNING:  AsBinary signature was deprecated in 1.2.3. Please use ST_AsBinary
 Geoserver6|25|AAAAAAMAAAABAAA
 MapServer1|id
-WARNING:  GeomFromText signature was deprecated in 1.2.3. Please use ST_GeomFromText
-WARNING:  GeomFromText signature was deprecated in 1.2.3. Please use ST_GeomFromText
-WARNING:  AsBinary signature was deprecated in 1.2.3. Please use ST_AsBinary
-WARNING:  AsBinary signature was deprecated in 1.2.3. Please use ST_AsBinary
 MapServer2|-9465|AQcAAAABAAAAAQM|-9465
 MapServer2|-9460|AQcAAAABAAAAAQM|-9460
 MapServer3|id
-WARNING:  AsBinary signature was deprecated in 1.2.3. Please use ST_AsBinary
 MapServer4|-9465|010700000001000|-9465
 MapServer4|-9460|010700000001000|-9460
 Removing the data table...
