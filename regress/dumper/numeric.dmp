@@ -1,0 +1,1 @@
+SELECT 1.23::numeric(3,2) AS n32, 0.123456789012::numeric(12,12) AS n1212, 123::numeric(3,0) AS n30, (-123)::numeric(3,0) AS n30neg, 123.45::numeric(5,2) AS n52, 1.2345678901234::numeric AS nuntyped, ST_Point(0, 0) AS geom;
