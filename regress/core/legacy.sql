@@ -11,6 +11,15 @@ SET client_min_messages TO WARNING;
 \cd :scriptdir
 \i legacy.sql
 
+SELECT 'estimated_extent_properties', count(*)
+FROM pg_catalog.pg_proc
+WHERE oid IN (
+	'estimated_extent(text,text,text)'::regprocedure,
+	'estimated_extent(text,text)'::regprocedure
+)
+AND prosecdef
+AND provolatile = 's';
+
 SELECT 'Starting up MapServer/Geoserver tests...';
 -- Set up the data table
 SELECT 'Setting up the data table...';

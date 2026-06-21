@@ -37,7 +37,7 @@ CREATE OR REPLACE FUNCTION Estimated_Extent(text,text,text) RETURNS box2d AS
 		SELECT _postgis_deprecate('Estimated_Extent', 'ST_EstimatedExtent', '1.2.3');
 		SELECT ST_EstimatedExtent($1, $2, $3);
 	$$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT SECURITY DEFINER;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Estimated_Extent(text,text) RETURNS box2d AS
@@ -45,7 +45,7 @@ CREATE OR REPLACE FUNCTION Estimated_Extent(text,text) RETURNS box2d AS
 		SELECT _postgis_deprecate('Estimated_Extent', 'ST_EstimatedExtent', '1.2.3');
 		SELECT ST_EstimatedExtent($1, $2);
 	$$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT SECURITY DEFINER;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION GeomFromText(text, int4)
