@@ -16,6 +16,7 @@
 #include "../postgis_config.h"
 
 #include <math.h> /* for isnan */
+#include <strings.h>
 
 #include "shp2pgsql-core.h"
 #include "../liblwgeom/liblwgeom.h"
@@ -55,7 +56,25 @@ int PIP(Point P, Point *V, int n);
 int FindPolygons(SHPObject *obj, Ring ***Out);
 void ReleasePolygons(Ring **polys, int npolys);
 int GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry);
+static int shp_loader_is_zip_archive(const char *filename);
 
+static int
+shp_loader_is_zip_archive(const char *filename)
+{
+	const char *basename;
+	const char *ext;
+
+	if (!filename)
+		return 0;
+
+	basename = strrchr(filename, '/');
+	if (!basename)
+		basename = strrchr(filename, '\\');
+	basename = basename ? basename + 1 : filename;
+
+	ext = strrchr(basename, '.');
+	return ext && strcasecmp(ext, ".zip") == 0;
+}
 
 /* Return allocated string containing UTF8 string converted from encoding fromcode */
 static int
@@ -965,6 +984,15 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	char name[MAXFIELDNAMELEN];
 	DBFFieldType type = FTInvalid;
 	char *utf8str;
+
+	if (shp_loader_is_zip_archive(state->config->shp_file))
+	{
+		snprintf(state->message,
+			 SHPLOADERMSGLEN,
+			 _("%s: shp2pgsql does not read .zip archives; unpack the .shp, .shx, and .dbf files first."),
+			 state->config->shp_file);
+		return SHPLOADERERR;
+	}
 
 	/* If we are reading the entire shapefile, open it */
 	if (state->config->readshape == 1)

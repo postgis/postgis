@@ -20,6 +20,7 @@ void test_ShpLoaderDestroy(void);
 void test_ShpLoaderGetSQLHeader_drop_prepare(void);
 void test_ShpLoaderGetSQLHeader_if_not_exists_table_modifier(void);
 void test_ShpLoaderGetSQLFooter_if_not_exists_index_modifier(void);
+void test_ShpLoaderOpenShapeRejectsZip(void);
 
 SHPLOADERCONFIG *loader_config;
 SHPLOADERSTATE *loader_state;
@@ -47,7 +48,8 @@ CU_pSuite register_shp2pgsql_suite(void)
 				 test_ShpLoaderGetSQLHeader_if_not_exists_table_modifier)) ||
 	    (NULL == CU_add_test(pSuite,
 				 "test_ShpLoaderGetSQLFooter_if_not_exists_index_modifier()",
-				 test_ShpLoaderGetSQLFooter_if_not_exists_index_modifier)))
+				 test_ShpLoaderGetSQLFooter_if_not_exists_index_modifier)) ||
+	    (NULL == CU_add_test(pSuite, "test_ShpLoaderOpenShapeRejectsZip()", test_ShpLoaderOpenShapeRejectsZip)))
 	{
 		CU_cleanup_registry();
 		return NULL;
@@ -173,5 +175,30 @@ test_ShpLoaderGetSQLFooter_if_not_exists_index_modifier(void)
 	CU_ASSERT_PTR_NOT_NULL(strstr(footer, "CREATE INDEX IF NOT EXISTS \"loadedshp_the_geom_gist\""));
 
 	free(footer);
+	ShpLoaderDestroy(loader_state);
+}
+
+void
+test_ShpLoaderOpenShapeRejectsZip(void)
+{
+	int ret;
+
+	loader_config = (SHPLOADERCONFIG *)calloc(1, sizeof(SHPLOADERCONFIG));
+	set_loader_config_defaults(loader_config);
+	loader_config->shp_file = "fixtures/parcel.ZIP";
+	loader_state = ShpLoaderCreate(loader_config);
+	ret = ShpLoaderOpenShape(loader_state);
+	CU_ASSERT_EQUAL(ret, SHPLOADERERR);
+	CU_ASSERT_PTR_NOT_NULL(strstr(loader_state->message, "does not read .zip archives"));
+	ShpLoaderDestroy(loader_state);
+
+	loader_config = (SHPLOADERCONFIG *)calloc(1, sizeof(SHPLOADERCONFIG));
+	set_loader_config_defaults(loader_config);
+	loader_config->shp_file = "fixtures.zip/parcel";
+	loader_config->readshape = 0;
+	loader_state = ShpLoaderCreate(loader_config);
+	ret = ShpLoaderOpenShape(loader_state);
+	CU_ASSERT_EQUAL(ret, SHPLOADERERR);
+	CU_ASSERT_PTR_NULL(strstr(loader_state->message, "does not read .zip archives"));
 	ShpLoaderDestroy(loader_state);
 }
