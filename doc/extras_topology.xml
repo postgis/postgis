@@ -1717,6 +1717,15 @@ by the <varname>max_edges</varname> parameter.
                 </para>
 
                 <note><para>
+When adding many lines, the load order can have a large impact on
+performance because each call checks the line against topology elements
+already loaded. In bulk workflows, adding large closed or enclosing
+lines before smaller contained lines can avoid expensive later splits.
+For loading a collection in one call, see
+<xref linkend="TopoGeo_LoadGeometry"/>.
+                </para></note>
+
+                <note><para>
 Updating statistics about topologies being loaded via this function is
 up to caller, see <xref linkend="Topology_StatsManagement"/>.
                 </para></note>
