@@ -74,6 +74,11 @@ SELECT make_test_raster(2, 2, 2, 1, -1, 0, 0, 3);
 SELECT make_test_raster(3, 2, 2, 1, 1, 0, 0, 4);
 SELECT make_test_raster(4, 2, 2, 2, 2, 0, 0, 5);
 
+SET client_min_messages TO debug;
+SELECT AddRasterConstraints('test_raster_columns', 'rast'::name, 'srid'::text);
+SET client_min_messages TO warning;
+SELECT DropRasterConstraints('test_raster_columns', 'rast'::name, 'srid'::text);
+
 SELECT AddRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name);
 SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, ST_AsEWKT(extent) FROM raster_columns WHERE r_table_name = 'test_raster_columns';
 
