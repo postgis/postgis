@@ -32,6 +32,7 @@ SA_OBJS = \
 
 SA_HEADERS = \
 	lwgeom_pg.h \
+	lwgeom_pg_typmod.h \
 	lwgeom_transform.h \
 	lwgeom_cache.h \
 	gserialized_gist.h
@@ -68,4 +69,3 @@ $(SA_OBJS): %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(SA_OBJS): ../postgis_config.h
-
