@@ -1,0 +1,8 @@
+default|3|2|10|20|5|-5|4326|32BUI|{{0,2,4},{1,3,5}}
+reverse-column-boustrophedon|16BUI|{{15,12,11},{14,13,10}}
+row-first-custom-increments|16BUI|{{5,15,25},{35,45,55}}
+null-raster|t
+wide-32bui|32BUI|{{2147483647,2147483648}}
+ERROR:  Column increment (now 1) must be greater than the number of index on one column (now 1 pixel x 1 = 1)
+ERROR:  Row increment must be greater than zero
+ERROR:  Column increment must be greater than zero
