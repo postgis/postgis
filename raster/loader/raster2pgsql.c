@@ -1403,6 +1403,42 @@ add_overview_constraints(
 	return 1;
 }
 
+static GDALRasterBandH
+get_matching_overview_band(GDALRasterBandH hbandSrc, const int dimOv[2])
+{
+	int ovcount = GDALGetOverviewCount(hbandSrc);
+	int i = 0;
+
+	for (i = 0; i < ovcount; i++)
+	{
+		GDALRasterBandH hbandOv = GDALGetOverview(hbandSrc, i);
+
+		if (hbandOv != NULL && GDALGetRasterBandXSize(hbandOv) == dimOv[0] &&
+		    GDALGetRasterBandYSize(hbandOv) == dimOv[1])
+		{
+			return hbandOv;
+		}
+	}
+
+	return NULL;
+}
+
+static int
+source_has_matching_overviews(GDALDatasetH hdsSrc, RASTERINFO *info, const int dimOv[2])
+{
+	uint32_t j = 0;
+
+	for (j = 0; j < info->nband_count; j++)
+	{
+		GDALRasterBandH hbandSrc = GDALGetRasterBand(hdsSrc, info->nband[j]);
+
+		if (hbandSrc == NULL || get_matching_overview_band(hbandSrc, dimOv) == NULL)
+			return 0;
+	}
+
+	return 1;
+}
+
 static int
 build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STRINGBUFFER *tileset, STRINGBUFFER *buffer) {
 	GDALDatasetH hdsSrc;
@@ -1414,6 +1450,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 	uint32_t j = 0;
 	int factor;
 	const char *ovtable = NULL;
+	int use_source_overview = 0;
 
 	VRTDatasetH hdsDst;
 	VRTSourcedRasterBandH hbandDst;
@@ -1452,6 +1489,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 
 	dimOv[0] = (int) (info->dim[0] + (factor / 2)) / factor;
 	dimOv[1] = (int) (info->dim[1] + (factor / 2)) / factor;
+	use_source_overview = source_has_matching_overviews(hdsSrc, info, dimOv);
 
 	/* create VRT dataset */
 	hdsOv = VRTCreate(dimOv[0], dimOv[1]);
@@ -1468,20 +1506,34 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 
 	/* add bands as simple sources */
 	for (j = 0; j < info->nband_count; j++) {
+		GDALRasterBandH hbandSrc = GDALGetRasterBand(hdsSrc, info->nband[j]);
+		int sourceDim[2] = {info->dim[0], info->dim[1]};
+
+		if (use_source_overview)
+		{
+			hbandSrc = get_matching_overview_band(hbandSrc, dimOv);
+			sourceDim[0] = dimOv[0];
+			sourceDim[1] = dimOv[1];
+		}
+
 		GDALAddBand(hdsOv, info->gdalbandtype[j], NULL);
 		hbandOv = (VRTSourcedRasterBandH) GDALGetRasterBand(hdsOv, j + 1);
 
 		if (info->hasnodata[j])
 			GDALSetRasterNoDataValue(hbandOv, info->nodataval[j]);
 
-		VRTAddSimpleSource(
-			hbandOv, GDALGetRasterBand(hdsSrc, info->nband[j]),
-			0, 0,
-			info->dim[0], info->dim[1],
-			0, 0,
-			dimOv[0], dimOv[1],
-			"near", VRT_NODATA_UNSET
-		);
+		VRTAddSimpleSource(hbandOv,
+				   hbandSrc,
+				   0,
+				   0,
+				   sourceDim[0],
+				   sourceDim[1],
+				   0,
+				   0,
+				   dimOv[0],
+				   dimOv[1],
+				   "near",
+				   VRT_NODATA_UNSET);
 	}
 
 	/* make sure VRT reflects all changes */

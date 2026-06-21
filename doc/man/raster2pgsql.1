@@ -71,7 +71,8 @@ Specify the filename column name. This implies \-F.
 \fB\-l\fR <\fIoverview_factor\fR>
 Create overview tables for the raster. Separate multiple factors with commas.
 Overview table names follow the pattern o_<overview factor>_<table>. Created
-overviews are stored in the database and are not affected by \-R.
+overviews are stored in the database and are not affected by \-R. If a source
+raster already has an overview with matching dimensions, that overview is reused.
 .TP
 \fB\-q\fR
 Wrap PostgreSQL identifiers in quotes.
