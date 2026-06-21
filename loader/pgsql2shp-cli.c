@@ -178,6 +178,12 @@ main(int argc, char **argv)
 	}
 
 	state = ShpDumperCreate(config);
+	if (!state)
+	{
+		fprintf(stderr, "%s\n", _("Out of memory allocating dumper state"));
+		fflush(stderr);
+		exit(1);
+	}
 
 	ret = ShpDumperConnectDatabase(state);
 	if (ret != SHPDUMPEROK)

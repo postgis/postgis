@@ -1864,6 +1864,9 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 		/* Grab the SHPDUMPERCONFIG for this row */
 		gtk_tree_model_get(GTK_TREE_MODEL(export_table_list_store), &iter, EXPORT_POINTER_COLUMN, &gptr, -1);
 		dumper_table_config = (SHPDUMPERCONFIG *)gptr;
+		state = NULL;
+		output_shapefile = NULL;
+		orig_shapefile = dumper_table_config->shp_file;
 
 		pgui_logf("\n==============================");
 		pgui_logf("Exporting with configuration: %s, %s, %s", dumper_table_config->table, dumper_table_config->schema, dumper_table_config->shp_file);
@@ -1881,11 +1884,25 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 
 		/* Create the state for each configuration */
 		state = ShpDumperCreate(dumper_table_config);
+		if (!state)
+		{
+			pgui_seterr(_("Out of memory allocating dumper state"));
+			pgui_raise_error_dialogue();
+
+			break;
+		}
 		state->config->conn = conn;
 
 		/* Save the original shapefile name, then create a temporary version containing the full path */
-		orig_shapefile = dumper_table_config->shp_file;
 		output_shapefile = malloc(strlen(folder_path) + strlen(dumper_table_config->shp_file) + 2);
+		if (!output_shapefile)
+		{
+			pgui_seterr(_("Out of memory allocating output shapefile path"));
+			pgui_raise_error_dialogue();
+
+			ShpDumperDestroy(state);
+			break;
+		}
 		strcpy(output_shapefile, folder_path);
 		strcat(output_shapefile, G_DIR_SEPARATOR_S);
 		strcat(output_shapefile, dumper_table_config->shp_file);
@@ -1987,6 +2004,7 @@ export_cleanup:
 
 		/* Reset shapefile back to original form (without full path) */
 		dumper_table_config->shp_file = orig_shapefile;
+		free(output_shapefile);
 
 		/* Get next entry */
 		is_valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(export_table_list_store), &iter);

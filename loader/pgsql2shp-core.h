@@ -142,6 +142,9 @@ typedef struct shp_dumper_state
 	/* Number of non-spatial fields in DBF output file */
 	int fieldcount;
 
+	/* Generate a DBF id field when the source has no non-spatial fields */
+	int generate_dbf_id;
+
 	/* Number of rows in the database table */
 	int num_records;
 
