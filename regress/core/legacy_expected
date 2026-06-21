@@ -4,16 +4,30 @@ public.wmstest.pt SRID:4326 TYPE:POLYGON DIMS:2
 Running Geoserver 2.0 NG tests...
 Geoserver1|POLYGON
 Geoserver2|4326
+WARNING:  GeomFromText signature was deprecated in 1.2.3. Please use ST_GeomFromText
+WARNING:  AsBinary signature was deprecated in 1.2.3. Please use ST_AsBinary
 Geoserver3|-500|AAAAAAMAAAABAAA
+WARNING:  GeomFromText signature was deprecated in 1.2.3. Please use ST_GeomFromText
 Geoserver4|1
+WARNING:  GeomFromText signature was deprecated in 1.2.3. Please use ST_GeomFromText
+WARNING:  AsBinary signature was deprecated in 1.2.3. Please use ST_AsBinary
 Geoserver5|25|AAAAAAMAAAABAAA
+WARNING:  GeomFromText signature was deprecated in 1.2.3. Please use ST_GeomFromText
+WARNING:  AsBinary signature was deprecated in 1.2.3. Please use ST_AsBinary
 Geoserver6|25|AAAAAAMAAAABAAA
 MapServer1|id
+WARNING:  GeomFromText signature was deprecated in 1.2.3. Please use ST_GeomFromText
+WARNING:  GeomFromText signature was deprecated in 1.2.3. Please use ST_GeomFromText
+WARNING:  AsBinary signature was deprecated in 1.2.3. Please use ST_AsBinary
+WARNING:  AsBinary signature was deprecated in 1.2.3. Please use ST_AsBinary
 MapServer2|-9465|AQcAAAABAAAAAQM|-9465
 MapServer2|-9460|AQcAAAABAAAAAQM|-9460
 MapServer3|id
+WARNING:  AsBinary signature was deprecated in 1.2.3. Please use ST_AsBinary
 MapServer4|-9465|010700000001000|-9465
 MapServer4|-9460|010700000001000|-9460
 Removing the data table...
 Done.
+WARNING:  ST_AsBinary(text) signature was deprecated in 1.5.0. Please use ST_AsBinary(geometry)
+WARNING:  ST_AsText(bytea) signature was deprecated in 1.5.0. Please use ST_AsText(geometry)
 1869|POINT(1 2)
