@@ -3161,7 +3161,7 @@ CREATE OR REPLACE FUNCTION _postgis_scripts_version_cmp_key(ver text)
 	BEGIN
 		ver_match := pg_catalog.regexp_match(
 			pg_catalog.lower(ver),
-			'^([0-9]+)\.([0-9]+)\.([0-9]+)(dev|alpha|beta|rc)?([0-9]*)([^0-9a-z].*)?$'
+			E'^([0-9]+)\\.([0-9]+)\\.([0-9]+)(dev|alpha|beta|rc)?([0-9]*)([^0-9a-z].*)?$'
 		);
 		IF ver_match IS NULL THEN
 			RETURN NULL;

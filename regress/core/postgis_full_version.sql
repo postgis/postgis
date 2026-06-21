@@ -25,7 +25,7 @@ LANGUAGE 'sql' IMMUTABLE;
 -- Older component script versions still mean the installed procs need upgrade.
 SELECT 'topology_old_scripts',
 	postgis_full_version() ~
-		'TOPOLOGY \(topology procs from "1\.0\.0" need upgrade\)';
+		E'TOPOLOGY \\(topology procs from "1\\.0\\.0" need upgrade\\)';
 
 CREATE OR REPLACE FUNCTION topology.postgis_topology_scripts_installed()
 RETURNS text
@@ -52,17 +52,17 @@ LANGUAGE 'sql' IMMUTABLE;
 -- includes final releases newer than release candidates and later RCs.
 SELECT 'topology_newer_scripts',
 	postgis_full_version() ~
-		'TOPOLOGY \(topology procs from "3\.7\.0" are newer than core procs from "3\.7\.0rc1"\)';
+		E'TOPOLOGY \\(topology procs from "3\\.7\\.0" are newer than core procs from "3\\.7\\.0rc1"\\)';
 
 SELECT 'raster_newer_scripts',
 	postgis_full_version() ~
-		'\(raster procs from "3\.7\.0rc2" are newer than core procs from "3\.7\.0rc1"\)';
+		E'\\(raster procs from "3\\.7\\.0rc2" are newer than core procs from "3\\.7\\.0rc1"\\)';
 
 -- A prerelease older than the core prerelease is still reported as needing
 -- upgrade, even when its numeric major/minor/micro components match.
 SELECT 'sfcgal_older_prerelease',
 	postgis_full_version() ~
-		'\(sfcgal procs from "3\.7\.0beta1" need upgrade\)';
+		E'\\(sfcgal procs from "3\\.7\\.0beta1" need upgrade\\)';
 
 CREATE OR REPLACE FUNCTION postgis_sfcgal_scripts_installed()
 RETURNS text
@@ -71,6 +71,6 @@ LANGUAGE 'sql' IMMUTABLE;
 
 SELECT 'sfcgal_newer_scripts',
 	postgis_full_version() ~
-		'\(sfcgal procs from "3\.7\.0" are newer than core procs from "3\.7\.0rc1"\)';
+		E'\\(sfcgal procs from "3\\.7\\.0" are newer than core procs from "3\\.7\\.0rc1"\\)';
 
 ROLLBACK;
