@@ -85,7 +85,9 @@ To generate the html files and the comments:
  * xmllint - http://xmlsoft.org
 
 To generate the images:
- * ImageMagick - http://www.imagemagick.org/
+ * GraphicsMagick - http://www.graphicsmagick.org/ (preferred)
+ * ImageMagick - https://imagemagick.org/script/download.php ("convert" or
+   "magick convert" binaries)
 
 To generate the PDFs:
  * dblatex - http://dblatex.sourceforge.net

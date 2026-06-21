@@ -25,6 +25,8 @@ PostGIS 3.5.7
   - #5357, ST_LineFromEncodedPolyline dropping close points (Paul Ramsey)
   - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)   
   - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
+  - #6046, Prefer GraphicsMagick for documentation image generation
+           (Darafei Praliaskouski)
   - Avoid Inf loop in Geohash calculation (Paul Ramsey)
   - [address_standardizer] Avoid unsafe table-name handling and out-of-bounds
     rule parsing (Paul Ramsey)

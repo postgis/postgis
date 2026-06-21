@@ -253,10 +253,19 @@ fi
 
 CAN_BUILD_PDF=${CAN_BUILD_COMMENTS}
 
+AC_PATH_PROG([GM], [gm], [])
+AC_PATH_PROG([MAGICK], [magick], [])
 AC_PATH_PROG([CONVERT], [convert], [])
-if test "x$CONVERT" = "x"; then
-	AC_MSG_WARN([ImageMagick does not seem to be installed. Documentation cannot be built])
-  CAN_BUILD_PDF=no
+if test "x$GM" != "x"; then
+	DOC_IMAGE_CONVERTER="$GM convert"
+elif test "x$MAGICK" != "x"; then
+	DOC_IMAGE_CONVERTER="$MAGICK convert"
+else
+	DOC_IMAGE_CONVERTER="$CONVERT"
+fi
+if test "x$DOC_IMAGE_CONVERTER" = "x"; then
+	AC_MSG_WARN([GraphicsMagick or ImageMagick does not seem to be installed. Documentation cannot be built])
+	CAN_BUILD_PDF=no
 fi
 
 AC_PATH_PROG([DBLATEX], [dblatex], [])
@@ -2028,7 +2037,7 @@ AC_MSG_RESULT([ -------- Documentation Generation -------- ])
 AC_MSG_RESULT([  xsltproc:             ${XSLTPROC}])
 AC_MSG_RESULT([  docbook xsl base:     ${XSLBASE}])
 AC_MSG_RESULT([  dblatex:              ${DBLATEX}])
-AC_MSG_RESULT([  convert:              ${CONVERT}])
+AC_MSG_RESULT([  doc image converter:  ${DOC_IMAGE_CONVERTER}])
 AC_MSG_RESULT()
 
 if test "$POSTGIS_GEOS_VERSION" -lt 31200; then
