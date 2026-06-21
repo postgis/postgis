@@ -17,3 +17,9 @@ TESTS += \
 	$(topsrcdir)/regress/dumper/nullsintable \
 	$(topsrcdir)/regress/dumper/null3d \
 	$(topsrcdir)/regress/dumper/withclause
+
+TESTS += $(topsrcdir)/regress/dumper/numeric
+
+ifeq ($(shell expr "$(POSTGIS_PGSQL_VERSION)" ">=" 150),1)
+TESTS += $(topsrcdir)/regress/dumper/numeric_negative_scale
+endif
