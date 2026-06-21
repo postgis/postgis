@@ -74,6 +74,9 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 * Bug Fixes *
 
+ - #4680, [topology] Collect ST_GetFaceGeometry boundary edges from
+          next-edge links after using face labels only to find seed edges
+          (Darafei Praliaskouski)
  - #2807, [raster] Preserve missing NODATA values in ST_MapAlgebra outputs
           (Darafei Praliaskouski)
  - #2832, [raster] Avoid padding single-tile raster2pgsql overviews

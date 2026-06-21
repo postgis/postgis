@@ -53,6 +53,39 @@ _lwt_describe_point(const LWPOINT *pt, char *buf, size_t bufsize)
 	return true;
 }
 
+static int
+_lwt_compare_elemid(const void *a, const void *b)
+{
+	const LWT_ELEMID *ea = a;
+	const LWT_ELEMID *eb = b;
+
+	if (*ea < *eb)
+		return -1;
+	if (*ea > *eb)
+		return 1;
+	return 0;
+}
+
+static void
+_lwt_sort_unique_elemids(LWT_ELEMID *ids, uint64_t *num_ids)
+{
+	uint64_t i;
+	uint64_t unique_count;
+
+	if (*num_ids < 2)
+		return;
+
+	qsort(ids, *num_ids, sizeof(LWT_ELEMID), _lwt_compare_elemid);
+
+	unique_count = 1;
+	for (i = 1; i < *num_ids; ++i)
+	{
+		if (ids[i] != ids[unique_count - 1])
+			ids[unique_count++] = ids[i];
+	}
+	*num_ids = unique_count;
+}
+
 /*
  * Report a deterministic GEOS-derived location for topology errors.
  * Normalize the intersection geometry so PointOnSurface is stable
@@ -3046,8 +3079,14 @@ lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID faceid)
   LWT_ISO_FACE *face;
   LWPOLY *out;
   LWGEOM *outg;
-  uint64_t i, edgeid;
+  uint64_t i, j, edgeid;
   int fields;
+  LWT_ELEMID *boundary_edge_ids = NULL;
+  uint64_t boundary_edge_count = 0;
+  uint64_t boundary_edge_capacity = 0;
+  LWT_ELEMID *visited = NULL;
+  uint64_t visited_count = 0;
+  int construction_failed = LW_FALSE;
 
   if (faceid == 0)
   {
@@ -3098,7 +3137,139 @@ lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID faceid)
   }
   edgeid = edges[0].edge_id;
 
-  outg = _lwt_FaceByEdges( topo, edges, numfaceedges );
+  for (i = 0; i < numfaceedges; ++i)
+  {
+	  LWT_ELEMID seed_edges[2];
+	  int num_seed_edges = 0;
+
+	  if (edges[i].face_left == faceid)
+		  seed_edges[num_seed_edges++] = edges[i].edge_id;
+	  if (edges[i].face_right == faceid)
+		  seed_edges[num_seed_edges++] = -edges[i].edge_id;
+
+	  for (j = 0; j < (uint64_t)num_seed_edges; ++j)
+	  {
+		  LWT_ELEMID seed_edge = seed_edges[j];
+		  LWT_ELEMID seed_edge_abs = llabs(seed_edge);
+		  LWT_ELEMID *signed_edge_ids;
+		  uint64_t num_signed_edge_ids;
+		  uint64_t k;
+
+		  if (visited && bsearch(&seed_edge_abs, visited, visited_count, sizeof(LWT_ELEMID), _lwt_compare_elemid))
+			  continue;
+
+		  signed_edge_ids = lwt_be_getRingEdges(topo, seed_edge, &num_signed_edge_ids, 0);
+		  if (!signed_edge_ids || num_signed_edge_ids == UINT64_MAX)
+		  {
+			  const char *errmsg = lwt_be_lastErrorMessage(topo->be_iface);
+			  if (errmsg &&
+			      (strncmp(errmsg, "Corrupted topology:", 19) == 0 || strstr(errmsg, "NULL next_")))
+				  construction_failed = LW_TRUE;
+			  else
+			  {
+				  if (boundary_edge_ids)
+					  lwfree(boundary_edge_ids);
+				  if (visited)
+					  lwfree(visited);
+				  _lwt_release_edges(edges, numfaceedges);
+				  PGTOPO_BE_ERROR();
+				  return NULL;
+			  }
+			  break;
+		  }
+
+		  if (visited)
+			  visited = lwrealloc(visited, sizeof(LWT_ELEMID) * (visited_count + num_signed_edge_ids));
+		  else
+			  visited = lwalloc(sizeof(LWT_ELEMID) * num_signed_edge_ids);
+		  for (k = 0; k < num_signed_edge_ids; ++k)
+			  visited[visited_count++] = llabs(signed_edge_ids[k]);
+		  _lwt_sort_unique_elemids(visited, &visited_count);
+
+		  if (boundary_edge_capacity < boundary_edge_count + num_signed_edge_ids)
+		  {
+			  boundary_edge_capacity = boundary_edge_count + num_signed_edge_ids;
+			  if (boundary_edge_ids)
+				  boundary_edge_ids =
+				      lwrealloc(boundary_edge_ids, sizeof(LWT_ELEMID) * boundary_edge_capacity);
+			  else
+				  boundary_edge_ids = lwalloc(sizeof(LWT_ELEMID) * boundary_edge_capacity);
+		  }
+
+		  for (k = 0; k < num_signed_edge_ids; ++k)
+			  boundary_edge_ids[boundary_edge_count++] = llabs(signed_edge_ids[k]);
+
+		  lwfree(signed_edge_ids);
+	  }
+	  if (construction_failed)
+		  break;
+  }
+
+  if (construction_failed)
+  {
+	  if (boundary_edge_ids)
+		  lwfree(boundary_edge_ids);
+	  if (visited)
+		  lwfree(visited);
+	  outg = _lwt_FaceByEdges(topo, edges, numfaceedges);
+  }
+  else if (!boundary_edge_count)
+  {
+	  if (visited)
+		  lwfree(visited);
+	  outg = _lwt_FaceByEdges(topo, edges, numfaceedges);
+  }
+  else
+  {
+	  uint64_t num_boundary_edges = boundary_edge_count;
+	  LWT_ISO_EDGE *boundary_edges;
+	  LWCOLLECTION *bounds;
+	  LWGEOM **geoms;
+
+	  if (boundary_edge_count > 1)
+		  _lwt_sort_unique_elemids(boundary_edge_ids, &boundary_edge_count);
+	  num_boundary_edges = boundary_edge_count;
+
+	  boundary_edges = lwt_be_getEdgeById(
+	      topo, boundary_edge_ids, &num_boundary_edges, LWT_COL_EDGE_EDGE_ID | LWT_COL_EDGE_GEOM);
+	  lwfree(boundary_edge_ids);
+	  if (num_boundary_edges == UINT64_MAX)
+	  {
+		  if (visited)
+			  lwfree(visited);
+		  _lwt_release_edges(edges, numfaceedges);
+		  PGTOPO_BE_ERROR();
+		  return NULL;
+	  }
+	  if (num_boundary_edges != boundary_edge_count)
+	  {
+		  if (visited)
+			  lwfree(visited);
+		  _lwt_release_edges(boundary_edges, num_boundary_edges);
+		  _lwt_release_edges(edges, numfaceedges);
+		  lwerror("Unexpected error: %" PRIu64 " edges found when expecting %" PRIu64,
+			  num_boundary_edges,
+			  boundary_edge_count);
+		  return NULL;
+	  }
+
+	  geoms = lwalloc(sizeof(LWGEOM *) * num_boundary_edges);
+	  for (i = 0; i < num_boundary_edges; ++i)
+		  geoms[i] = lwline_as_lwgeom(boundary_edges[i].geom);
+
+	  bounds = lwcollection_construct(MULTILINETYPE, topo->srid, NULL, num_boundary_edges, geoms);
+	  outg = lwgeom_buildarea(lwcollection_as_lwgeom(bounds));
+	  lwcollection_release(bounds);
+	  lwfree(geoms);
+	  _lwt_release_edges(boundary_edges, num_boundary_edges);
+	  if (outg)
+		  lwgeom_force_clockwise(outg);
+	  else
+		  outg = _lwt_FaceByEdges(topo, edges, numfaceedges);
+	  if (visited)
+		  lwfree(visited);
+  }
+
   _lwt_release_edges(edges, numfaceedges);
 
   if ( ! outg )
