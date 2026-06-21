@@ -549,6 +549,35 @@ SELECT NULL FROM topology.TopoGeo_addLinestring('t5782',
 SELECT '#5782', 'valid_after', * FROM topology.ValidateTopology('t5782');
 ROLLBACK;
 
+-- See https://trac.osgeo.org/postgis/ticket/5848
+SELECT '#5848.invalid', topology.TopoGeo_AddLineStringDetails('invalid',
+  'LINESTRING(0 0,10 0)');
+SELECT NULL FROM topology.CreateTopology('t5848');
+SELECT '#5848.1', event, old_edge, edge, signed_edge
+FROM topology.TopoGeo_AddLineStringDetails('t5848',
+  'LINESTRING(0 0,10 0)');
+SELECT '#5848.2', event, old_edge, edge, signed_edge
+FROM topology.TopoGeo_AddLineStringDetails('t5848',
+  'LINESTRING(5 -5,5 5)');
+SELECT '#5848.3', 'valid', count(*) FROM topology.ValidateTopology('t5848');
+SELECT NULL FROM topology.DropTopology('t5848');
+SELECT NULL FROM topology.CreateTopology('t5848_endpoint');
+SELECT NULL FROM topology.TopoGeo_AddLineString('t5848_endpoint',
+  'LINESTRING(0 1e-15,10 1e-15)', 0);
+SELECT '#5848.endpoint', event, old_edge, edge, signed_edge
+FROM topology.TopoGeo_AddLineStringDetails('t5848_endpoint',
+  'LINESTRING(5 0,15 0)', 0);
+SELECT NULL FROM topology.DropTopology('t5848_endpoint');
+SELECT NULL FROM topology.CreateTopology('t5848_neighbor');
+SELECT NULL FROM topology.TopoGeo_AddLineString('t5848_neighbor',
+  'LINESTRING(0 0,10 0)', 0);
+SELECT NULL FROM topology.TopoGeo_AddLineString('t5848_neighbor',
+  'LINESTRING(8 0.2,9 0.2)', 0);
+SELECT '#5848.neighbor', event, old_edge, edge, signed_edge
+FROM topology.TopoGeo_AddLineStringDetails('t5848_neighbor',
+  'LINESTRING(1 -1,1 1)', 0.5);
+SELECT NULL FROM topology.DropTopology('t5848_neighbor');
+
 -- See https://trac.osgeo.org/postgis/ticket/5993
 SELECT NULL FROM topology.CreateTopology ('t5993');
 SELECT NULL FROM topology.TopoGeo_addLinestring('t5993',

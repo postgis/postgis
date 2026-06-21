@@ -1792,6 +1792,63 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
 			</refsection>
 		</refentry>
 
+		<refentry xml:id="TopoGeo_AddLineStringDetails">
+			<refnamediv>
+				<refname>TopoGeo_AddLineStringDetails</refname>
+
+				<refpurpose>
+Adds a linestring to an existing topology and reports inserted line edges
+and side-effect splits of pre-existing edges.
+				</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>TABLE(event text, old_edge bigint, edge bigint,
+							signed_edge bigint) <function>TopoGeo_AddLineStringDetails</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
+						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
+						<paramdef choice="opt"><type>int </type> <parameter>max_edges</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+Adds a linestring to an existing topology using <xref linkend="TopoGeo_AddLineString"/>
+and returns detail rows describing the affected edges. Rows with
+<varname>event</varname> set to <varname>input</varname> describe the signed
+edge identifiers forming the input line, in input order. Rows with
+<varname>event</varname> set to <varname>split</varname> describe pieces of a
+pre-existing edge that was split as a side effect; <varname>old_edge</varname>
+contains the edge identifier before the call and <varname>edge</varname>
+contains one of the edge identifiers covering that former edge after the call.
+				</para>
+
+				<para>
+This function is useful when loading multiple source datasets into one topology
+and keeping a source-to-edge mapping after later inserts split edges loaded
+from earlier sources.
+				</para>
+
+				<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+<xref linkend="TopoGeo_AddLineString"/>,
+<xref linkend="TopoGeo_AddPoint"/>,
+<xref linkend="TopoGeo_AddPolygon"/>,
+<xref linkend="CreateTopology"/>
+				</para>
+			</refsection>
+		</refentry>
+
 		<refentry xml:id="TopoGeo_AddPolygon">
 			<refnamediv>
 				<refname>TopoGeo_AddPolygon</refname>

@@ -36,6 +36,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - ST_MinimumSpanningTree, window function to calculate MST (Paul Ramsey)
  - #5993, [topology] Add max_edges parameter to TopoGeo_AddLinestring
           (Sandro Santilli)
+ - #5848, [topology] Add TopoGeo_AddLineStringDetails for reporting
+          side-effect edge splits while loading lines (Darafei Praliaskouski)
  - #6001, support MultiLineString in ST_MakeLine (Paul Ramsey)
  - #2858, ST_MMin and ST_MMax (Paul Ramsey)
  - #5941, [raster] Support GDT_Float16 pixel type (Darafei Praliaskouski)
