@@ -211,6 +211,10 @@ struct rtpg_nmapalgebra_arg_t {
 	rtpg_nmapalgebra_callback_arg	callback;
 };
 
+static int rtpg_nmapalgebra_missing_band_can_emit_nodata(uint8_t *hasband, int numraster);
+static int
+rtpg_nmapalgebra_source_has_nodata(rt_raster *rasters, uint8_t *hasband, int *nband, int numraster, double *nodataval);
+
 static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init(void) {
 	rtpg_nmapalgebra_arg arg = NULL;
 
@@ -276,6 +280,121 @@ static void rtpg_nmapalgebra_arg_destroy(rtpg_nmapalgebra_arg arg) {
 		pfree(arg->callback.empty_userargs);
 
 	pfree(arg);
+}
+
+static int
+rtpg_nmapalgebra_same_grid_extent(rt_raster rast1, rt_raster rast2)
+{
+	int aligned = 0;
+
+	if (rast1 == NULL || rast2 == NULL || rt_raster_is_empty(rast1) || rt_raster_is_empty(rast2))
+		return 0;
+
+	if (rt_raster_same_alignment(rast1, rast2, &aligned, NULL) != ES_NONE || !aligned)
+		return 0;
+
+	return (rt_raster_get_width(rast1) == rt_raster_get_width(rast2) &&
+		rt_raster_get_height(rast1) == rt_raster_get_height(rast2) &&
+		FLT_EQ(rt_raster_get_x_offset(rast1), rt_raster_get_x_offset(rast2)) &&
+		FLT_EQ(rt_raster_get_y_offset(rast1), rt_raster_get_y_offset(rast2)));
+}
+
+static int
+rtpg_nmapalgebra_covers_grid_extent(rt_raster rast, rt_raster extent)
+{
+	int aligned = 0;
+	int covers = 0;
+
+	if (rast == NULL || extent == NULL || rt_raster_is_empty(rast) || rt_raster_is_empty(extent))
+		return 0;
+
+	if (rt_raster_same_alignment(rast, extent, &aligned, NULL) != ES_NONE || !aligned)
+		return 0;
+
+	if (rt_raster_covers(rast, -1, extent, -1, &covers) != ES_NONE)
+		return 0;
+
+	return covers;
+}
+
+static int
+rtpg_nmapalgebra_extent_can_synthesize_gaps(rt_raster *rasters,
+					    uint8_t *hasband,
+					    int numraster,
+					    rt_extenttype extenttype,
+					    rt_raster customextent)
+{
+	rt_raster ref = NULL;
+	int i = 0;
+
+	if (numraster < 2 || extenttype == ET_INTERSECTION)
+		return 0;
+
+	switch (extenttype)
+	{
+	case ET_CUSTOM:
+		ref = customextent;
+		break;
+	case ET_SECOND:
+		ref = rasters[(numraster > 1) ? 1 : 0];
+		break;
+	case ET_LAST:
+		ref = rasters[numraster - 1];
+		break;
+	case ET_UNION:
+		for (i = 0; i < numraster; i++)
+		{
+			if (hasband[i])
+			{
+				ref = rasters[i];
+				break;
+			}
+		}
+		break;
+	default:
+		ref = rasters[0];
+		break;
+	}
+
+	if (ref == NULL)
+		return 0;
+
+	for (i = 0; i < numraster; i++)
+	{
+		if (!hasband[i])
+			continue;
+		if (extenttype == ET_UNION)
+		{
+			if (!rtpg_nmapalgebra_same_grid_extent(ref, rasters[i]))
+				return 1;
+		}
+		else if (!rtpg_nmapalgebra_covers_grid_extent(rasters[i], ref))
+			return 1;
+	}
+
+	return 0;
+}
+
+static int
+rtpg_nmapalgebra_source_has_nodata(rt_raster *rasters, uint8_t *hasband, int *nband, int numraster, double *nodataval)
+{
+	for (int i = 0; i < numraster; i++)
+	{
+		rt_band band;
+
+		if (!hasband[i])
+			continue;
+
+		band = rt_raster_get_band(rasters[i], nband[i]);
+		if (!rt_band_get_hasnodata_flag(band))
+			continue;
+
+		if (nodataval)
+			rt_band_get_nodata(band, nodataval);
+		return 1;
+	}
+
+	return 0;
 }
 
 static int rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg, ArrayType *array, int *allnull, int *allempty, int *noband) {
@@ -642,6 +761,8 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	int allnull = 0;
 	int allempty = 0;
 	int noband = 0;
+	int source_has_nodata = 0;
+	double source_nodataval = 0;
 
 	rt_raster raster = NULL;
 	rt_band band = NULL;
@@ -1020,11 +1141,20 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	if (arg->pixtype == PT_END)
 		arg->pixtype = rt_band_get_pixtype(band);
 
-	/* set hasnodata and nodataval */
-	arg->hasnodata = rt_band_get_hasnodata_flag(band);
+	/* set output hasnodata and nodataval */
+	source_has_nodata = rtpg_nmapalgebra_source_has_nodata(
+	    arg->raster, arg->hasband, arg->nband, arg->numraster, &source_nodataval);
+	arg->hasnodata = source_has_nodata;
+	if (!arg->hasnodata && rtpg_nmapalgebra_missing_band_can_emit_nodata(arg->hasband, arg->numraster))
+		arg->hasnodata = 1;
+	if (!arg->hasnodata && rtpg_nmapalgebra_extent_can_synthesize_gaps(
+				   arg->raster, arg->hasband, arg->numraster, arg->extenttype, arg->cextent))
+		arg->hasnodata = 1;
 	arg->callback.hasnodata = arg->hasnodata;
-	if (arg->hasnodata)
+	if (rt_band_get_hasnodata_flag(band))
 		rt_band_get_nodata(band, &(arg->nodataval));
+	else if (source_has_nodata)
+		arg->nodataval = source_nodataval;
 	else
 		arg->nodataval = rt_band_get_min_value(band);
 
@@ -1171,6 +1301,128 @@ static void rtpg_nmapalgebraexpr_arg_destroy(rtpg_nmapalgebraexpr_arg arg) {
 	}
 
 	pfree(arg);
+}
+
+static int
+rtpg_nmapalgebra_missing_band_can_emit_nodata(uint8_t *hasband, int numraster)
+{
+	/* Missing requested bands are passed to the iterator as NODATA sources,
+	 * even though no source band metadata can advertise that up front. */
+	for (int i = 0; i < numraster; i++)
+	{
+		if (!hasband[i])
+			return 1;
+	}
+
+	return 0;
+}
+
+static int
+rtpg_nmapalgebraexpr_nodata_flags_can_emit(rtpg_nmapalgebraexpr_callback_arg *callback,
+					   int *hasnodata,
+					   int numraster,
+					   int both_can_occur)
+{
+	if (numraster > 1)
+	{
+		if (both_can_occur && hasnodata[0] && hasnodata[1] && !callback->nodatanodata.hasval)
+			return 1;
+		if (hasnodata[0] && !callback->expr[1].hasval && !callback->expr[1].spi_plan)
+			return 1;
+		if (hasnodata[1] && !callback->expr[2].hasval && !callback->expr[2].spi_plan)
+			return 1;
+	}
+	else if (hasnodata[0] && !callback->expr[1].hasval && !callback->expr[1].spi_plan)
+		return 1;
+
+	return 0;
+}
+
+static int
+rtpg_nmapalgebraexpr_source_can_emit_nodata(rtpg_nmapalgebraexpr_callback_arg *callback,
+					    rt_raster *rasters,
+					    uint8_t *hasband,
+					    int *nband,
+					    int numraster)
+{
+	int hasnodata[2] = {0, 0};
+
+	for (int i = 0; i < numraster && i < 2; i++)
+	{
+		rt_band band;
+
+		if (!hasband[i])
+		{
+			hasnodata[i] = 1;
+			continue;
+		}
+
+		band = rt_raster_get_band(rasters[i], nband[i]);
+		hasnodata[i] = rt_band_get_hasnodata_flag(band);
+	}
+
+	return rtpg_nmapalgebraexpr_nodata_flags_can_emit(callback, hasnodata, numraster, 1);
+}
+
+static int
+rtpg_nmapalgebraexpr_extent_can_emit_nodata(rtpg_nmapalgebraexpr_callback_arg *callback,
+					    rt_raster *rasters,
+					    uint8_t *hasband,
+					    int numraster,
+					    rt_extenttype extenttype,
+					    rt_raster customextent)
+{
+	int gap[2] = {0, 0};
+	int both_can_occur = 0;
+	int refindex = 0;
+
+	if (numraster < 2 || extenttype == ET_INTERSECTION)
+		return 0;
+
+	switch (extenttype)
+	{
+	case ET_SECOND:
+		refindex = (numraster > 1) ? 1 : 0;
+		break;
+	case ET_LAST:
+		refindex = numraster - 1;
+		break;
+	default:
+		refindex = 0;
+		break;
+	}
+
+	for (int i = 0; i < numraster && i < 2; i++)
+	{
+		if (!hasband[i])
+			continue;
+
+		if (extenttype == ET_UNION)
+		{
+			for (int j = 0; j < numraster; j++)
+			{
+				if (i == j || !hasband[j])
+					continue;
+				if (!rtpg_nmapalgebra_covers_grid_extent(rasters[i], rasters[j]))
+				{
+					gap[i] = 1;
+					break;
+				}
+			}
+		}
+		else if (extenttype == ET_CUSTOM)
+		{
+			if (!rtpg_nmapalgebra_covers_grid_extent(rasters[i], customextent))
+				gap[i] = 1;
+		}
+		else if (i != refindex && !rtpg_nmapalgebra_covers_grid_extent(rasters[i], rasters[refindex]))
+			gap[i] = 1;
+	}
+
+	if (extenttype == ET_CUSTOM)
+		both_can_occur = 1;
+
+	return rtpg_nmapalgebraexpr_nodata_flags_can_emit(callback, gap, numraster, both_can_occur);
 }
 
 static int rtpg_nmapalgebraexpr_callback(
@@ -1427,6 +1679,9 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 	int allempty = 0;
 	int noband = 0;
 	int len = 0;
+	int source_can_emit_nodata = 0;
+	int source_has_nodata = 0;
+	double source_nodataval = 0;
 
 	TupleDesc tupdesc;
 	SPITupleTable *tuptable = NULL;
@@ -1725,11 +1980,24 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 	if (arg->bandarg->pixtype == PT_END)
 		arg->bandarg->pixtype = rt_band_get_pixtype(band);
 
-	/* set hasnodata and nodataval */
-	arg->bandarg->hasnodata = rt_band_get_hasnodata_flag(band);
+	/* set output hasnodata and nodataval */
+	source_has_nodata = rtpg_nmapalgebra_source_has_nodata(
+	    arg->bandarg->raster, arg->bandarg->hasband, arg->bandarg->nband, numraster, &source_nodataval);
+	source_can_emit_nodata = rtpg_nmapalgebraexpr_source_can_emit_nodata(
+	    &(arg->callback), arg->bandarg->raster, arg->bandarg->hasband, arg->bandarg->nband, numraster);
+	arg->bandarg->hasnodata = source_can_emit_nodata;
+	if (!arg->bandarg->hasnodata && rtpg_nmapalgebraexpr_extent_can_emit_nodata(&(arg->callback),
+										    arg->bandarg->raster,
+										    arg->bandarg->hasband,
+										    numraster,
+										    arg->bandarg->extenttype,
+										    arg->bandarg->cextent))
+		arg->bandarg->hasnodata = 1;
 	arg->callback.hasnodata = arg->bandarg->hasnodata;
-	if (arg->bandarg->hasnodata)
+	if (rt_band_get_hasnodata_flag(band))
 		rt_band_get_nodata(band, &(arg->bandarg->nodataval));
+	else if (source_can_emit_nodata && source_has_nodata)
+		arg->bandarg->nodataval = source_nodataval;
 	else
 		arg->bandarg->nodataval = rt_band_get_min_value(band);
 
