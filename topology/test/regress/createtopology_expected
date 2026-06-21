@@ -1,6 +1,12 @@
 t
 t
 t
+edge-insert-rule|0
+edge-view-insert|100|100|100|-100|100
+edge-data-insert|101|-101|101|101|101
+edge-data-update|101|-100|100|100|100
+Topology 'edgeTrigger' dropped
+t
 t
 t
 t

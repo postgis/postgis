@@ -85,6 +85,7 @@ BEGIN
 		-- Upgrade the edge_data table
   	-- Drop the edge view
     DROP VIEW IF EXISTS %1$I.edge;
+    DROP TRIGGER IF EXISTS edge_data_abs_next_edges ON %1$I.edge_data;
 
 		ALTER TABLE %1$I.edge_data
     	ALTER COLUMN edge_id TYPE BIGINT;
@@ -152,16 +153,11 @@ BEGIN
 		COMMENT ON COLUMN %1$I.edge.geom IS
 		'The geometry of the edge';
 
-		-- edge standard view (insert rule)
-		CREATE RULE edge_insert_rule AS
-		ON INSERT TO %1$I.edge
-		DO INSTEAD INSERT into %1$I.edge_data
-		VALUES (
-			NEW.edge_id, NEW.start_node, NEW.end_node,
-			NEW.next_left_edge, abs(NEW.next_left_edge),
-			NEW.next_right_edge, abs(NEW.next_right_edge),
-			NEW.left_face, NEW.right_face, NEW.geom
-		);
+		CREATE TRIGGER edge_data_abs_next_edges
+		BEFORE INSERT OR UPDATE OF next_left_edge, next_right_edge
+		ON %1$I.edge_data
+		FOR EACH ROW
+		EXECUTE FUNCTION topology._update_edge_data_abs_next_edges();
 
 		-- Upgrade the node table
 	  ALTER TABLE %1$I.node
@@ -205,4 +201,3 @@ BEGIN
   EXECUTE sql;
 END;
 $BODY$ LANGUAGE 'plpgsql' VOLATILE;
-
