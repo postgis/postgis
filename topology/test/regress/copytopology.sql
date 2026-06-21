@@ -38,6 +38,14 @@ FROM topology.layer l, topology.topology t
 WHERE l.topology_id = t.id and t.name = 'CITY_data_UP_down'
 ORDER BY l.layer_id;
 
+SELECT '#1195', topology.CopyTopology('city_data', 'city_data_primitives', false) > 0;
+SELECT '#1195.nodes', count(node_id) FROM "city_data_primitives".node;
+SELECT '#1195.edges', count(edge_id) FROM "city_data_primitives".edge_data;
+SELECT '#1195.faces', count(face_id) FROM "city_data_primitives".face;
+SELECT '#1195.relations', count(*) FROM "city_data_primitives".relation;
+SELECT '#1195.layers', count(l.*) FROM topology.layer l, topology.topology t
+WHERE l.topology_id = t.id and t.name = 'city_data_primitives';
+
 -- Check sequences
 SELECT tableoid::regclass AS sequence_name, last_value,  is_called from "CITY_data_UP_down".node_node_id_seq;
 SELECT tableoid::regclass AS sequence_name, last_value,  is_called from "CITY_data_UP_down".edge_data_edge_id_seq;
@@ -61,6 +69,7 @@ select '#2184.4', length(topology.dropTopology('t3d')) > 0, length(topology.drop
 
 -- Cleanup
 
+SELECT topology.DropTopology('city_data_primitives');
 SELECT topology.DropTopology('CITY_data_UP_down');
 SELECT topology.DropTopology('city_data');
 DROP SCHEMA features CASCADE;
