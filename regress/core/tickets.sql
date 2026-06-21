@@ -1399,6 +1399,9 @@ select '#4399', 'ST_GeoHash', ST_GeoHash(geom)::text from geom
 union all
 select '#4399', 'ST_AsGeoJSON', ST_AsGeoJSON(geom)::text from geom;
 
+SELECT '#2838-triangle-collection', ST_AsX3D('GEOMETRYCOLLECTION(TRIANGLE((0 0,1 1,0 1,0 0)))'::geometry);
+SELECT '#2838-closed-curve-x3d', strpos(ST_AsX3D('CIRCULARSTRING(0 0 1,1 1 1,2 0 1,1 -1 1,0 0 1)'::geometry), '<LineSet  vertexCount=''129''>') > 0 AND strpos(ST_AsX3D('CIRCULARSTRING(0 0 1,1 1 1,2 0 1,1 -1 1,0 0 1)'::geometry), '0 0 1'' /></LineSet>') > 0;
+
 SELECT '#4599-1', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3)));
 SELECT '#4599-2', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3), 0));
 SELECT '#4599-3', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3), -1));
