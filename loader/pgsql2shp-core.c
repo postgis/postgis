@@ -1663,6 +1663,10 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 				else
 					dbfsize = 1 + precision - scale;
 
+				/* PostgreSQL can return NaN even for numeric(1,0). */
+				if (dbfsize < 3)
+					dbfsize = 3;
+
 				if (dbfsize <= MAX_DBF_FIELD_SIZE)
 				{
 					dbffieldsize = dbfsize;
