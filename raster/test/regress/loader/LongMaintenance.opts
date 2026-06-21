@@ -1,2 +1,1 @@
-# Exercise raster-only long maintenance actions and constraint creation.
 --add-constraints --vacuum --analyze

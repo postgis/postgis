@@ -163,6 +163,12 @@ rt_raster rt_raster_gdal_warp(
 ) {
 	CPLErr cplerr;
 	char *dst_options[] = {"SUBCLASS=VRTWarpedDataset", NULL};
+	const char *init_dest_nodata_option = "INIT_DEST=NO_DATA";
+#if POSTGIS_GDAL_VERSION >= 30302
+	const char *unified_src_nodata_option = "UNIFIED_SRC_NODATA=PARTIAL";
+#else
+	const char *unified_src_nodata_option = "UNIFIED_SRC_NODATA=NO";
+#endif
 	_rti_warp_arg arg = NULL;
 
 	int nodata_count = 0;
@@ -197,6 +203,7 @@ rt_raster rt_raster_gdal_warp(
 	int numBands = 0;
 	int nodata_pos = 0;
 	int data_pos = 0;
+	int use_init_dest_nodata = 0;
 
 	int subspatial = 0;
 
@@ -865,17 +872,21 @@ rt_raster rt_raster_gdal_warp(
 	arg->wopts->hDstDS = arg->dst.ds;
 	arg->wopts->pfnTransformer = arg->transform.func;
 	arg->wopts->pTransformerArg = arg->transform.arg.transform;
-	arg->wopts->papszWarpOptions = (char **) CPLMalloc(sizeof(char *) * 3);
-	arg->wopts->papszWarpOptions[0] = (char *) CPLMalloc(sizeof(char) * (strlen("INIT_DEST=NO_DATA") + 1));
-	strcpy(arg->wopts->papszWarpOptions[0], "INIT_DEST=NO_DATA");
-#if POSTGIS_GDAL_VERSION >= 30302
-	arg->wopts->papszWarpOptions[1] = (char *) CPLMalloc(sizeof(char) * (strlen("UNIFIED_SRC_NODATA=PARTIAL") + 1));
-	strcpy(arg->wopts->papszWarpOptions[1], "UNIFIED_SRC_NODATA=PARTIAL");
-#else
-	arg->wopts->papszWarpOptions[1] = (char *) CPLMalloc(sizeof(char) * (strlen("UNIFIED_SRC_NODATA=NO") + 1));
-	strcpy(arg->wopts->papszWarpOptions[1], "UNIFIED_SRC_NODATA=NO");
-#endif
-	arg->wopts->papszWarpOptions[2] = NULL;
+	/*
+	 * GDAL 3.11 warns, and later treats as an error, when INIT_DEST=NO_DATA
+	 * is requested without destination nodata values for every band.
+	 */
+	use_init_dest_nodata = numBands > 0 && nodata_count == numBands;
+	arg->wopts->papszWarpOptions =
+	    (char **) CPLMalloc(sizeof(char *) * (use_init_dest_nodata ? 3 : 2));
+	i = 0;
+	if (use_init_dest_nodata) {
+		arg->wopts->papszWarpOptions[i] = (char *) CPLMalloc(sizeof(char) * (strlen(init_dest_nodata_option) + 1));
+		strcpy(arg->wopts->papszWarpOptions[i++], init_dest_nodata_option);
+	}
+	arg->wopts->papszWarpOptions[i] = (char *) CPLMalloc(sizeof(char) * (strlen(unified_src_nodata_option) + 1));
+	strcpy(arg->wopts->papszWarpOptions[i++], unified_src_nodata_option);
+	arg->wopts->papszWarpOptions[i] = NULL;
 
 	/* band mapping */
 	arg->wopts->nBandCount = numBands;
