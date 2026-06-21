@@ -34,10 +34,6 @@
 #include <unistd.h>
 #endif
 
-#if HAVE_TERMIOS_H
-#include <termios.h>
-#endif
-
 #ifdef __CYGWIN__
 #include <sys/param.h>
 #endif
@@ -45,6 +41,10 @@
 #include "../liblwgeom/stringbuffer.h"
 #include "../liblwgeom/liblwgeom.h" /* for LWGEOM struct and funx */
 #include "../liblwgeom/lwgeom_log.h" /* for LWDEBUG macros */
+
+#if HAVE_TERMIOS_H
+#include <termios.h>
+#endif
 
 /* Maximum DBF field width (according to ARCGIS) */
 #define MAX_DBF_FIELD_SIZE 254
@@ -84,13 +84,13 @@ core_asprintf(const char* format, ...)
 {
 	va_list ap;
 	char *value;
-    int err;
+	int err;
 	va_start(ap, format);
-    err = vasprintf(&value, format, ap);
-    if (err < 0)
-    	exit(-1);
-    va_end(ap);
-    return value;
+	err = vasprintf(&value, format, ap);
+	if (err < 0)
+		exit(-1);
+	va_end(ap);
+	return value;
 }
 
 static int
@@ -1388,7 +1388,7 @@ ShpDumperPromptPassword(void)
 	}
 #endif
 
-	fprintf(stderr, "Password: ");
+	fprintf(stderr, _("Password: "));
 	fflush(stderr);
 
 	if (!fgets(password, sizeof(password), stdin))
