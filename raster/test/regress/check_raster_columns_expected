@@ -1,4 +1,9 @@
 raster_columns
+NOTICE:  Adding SRID constraint
+DEBUG:  verifying table "test_raster_columns"
+DEBUG:  Finished raster constraint "srid" in <elapsed>
+t
+t
 t
 test_raster_columns|rast|0|1|1|2|2|t|f|1|{8BUI}|{0}|POLYGON((-2 -2,-2 4,4 4,4 -2,-2 -2))
 t
