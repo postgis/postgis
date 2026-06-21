@@ -113,6 +113,8 @@ Each ``.wkt`` file stores one drawing, optionally split into named layers by
 prefixing a line with ``StyleName;WKT``. The generator associates each layer
 with ``styles.conf`` and streams the resulting GraphicsMagick command without
 ever writing intermediate files, so building all figures in parallel is safe.
+Styles can set ``highlight = true`` or ``dropShadow = true`` to draw that
+effect underneath their layer.
 
 To regenerate the helper binary and PNG artwork:
 

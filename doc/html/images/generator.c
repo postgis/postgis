@@ -123,6 +123,8 @@ generator_job_reset(generator_job *job)
 
 typedef struct draw_context_t {
 	LAYERSTYLE *style;
+	double offset_x;
+	double offset_y;
 } GEOMETRY_DRAW_CONTEXT;
 
 static GEOMETRY_DRAW_CONTEXT
@@ -130,6 +132,8 @@ geometry_draw_context_init(void)
 {
 	GEOMETRY_DRAW_CONTEXT ctx;
 	ctx.style = NULL;
+	ctx.offset_x = 0;
+	ctx.offset_y = 0;
 	return ctx;
 }
 
@@ -339,7 +343,13 @@ append_coord_pair(stringbuffer_t *sb, double x, double y)
 }
 
 static void
-pointarrayToBuffer(stringbuffer_t *output, POINTARRAY *pa)
+append_context_coord_pair(stringbuffer_t *sb, double x, double y, const GEOMETRY_DRAW_CONTEXT *ctx)
+{
+	append_coord_pair(sb, x + ctx->offset_x, y + ctx->offset_y);
+}
+
+static void
+pointarrayToBuffer(stringbuffer_t *output, POINTARRAY *pa, const GEOMETRY_DRAW_CONTEXT *ctx)
 {
 	unsigned int i;
 
@@ -350,7 +360,7 @@ pointarrayToBuffer(stringbuffer_t *output, POINTARRAY *pa)
 
 		if (i)
 			stringbuffer_append_char(output, ' ');
-		append_coord_pair(output, pt.x, pt.y);
+		append_context_coord_pair(output, pt.x, pt.y, ctx);
 	}
 }
 
@@ -363,7 +373,12 @@ pointarrayToBuffer(stringbuffer_t *output, POINTARRAY *pa)
  * The drawing commands are appended directly to the supplied buffer.
  */
 static void
-drawPointSymbol(stringbuffer_t *output, POINTARRAY *pa, unsigned int index, int size, const char *color)
+drawPointSymbol(stringbuffer_t *output,
+		POINTARRAY *pa,
+		unsigned int index,
+		int size,
+		const char *color,
+		GEOMETRY_DRAW_CONTEXT *ctx)
 {
 	// short-circuit no-op
 	if (size <= 0)
@@ -374,9 +389,9 @@ drawPointSymbol(stringbuffer_t *output, POINTARRAY *pa, unsigned int index, int 
 
 	stringbuffer_aprintf(output, "-fill %s -strokewidth 0 ", color);
 	stringbuffer_append(output, "-draw \"circle ");
-	append_coord_pair(output, p.x, p.y);
+	append_context_coord_pair(output, p.x, p.y, ctx);
 	stringbuffer_append_char(output, ' ');
-	append_coord_pair(output, p.x, p.y + size);
+	append_context_coord_pair(output, p.x, p.y + size, ctx);
 	stringbuffer_append(output, "\" ");
 }
 
@@ -389,7 +404,12 @@ drawPointSymbol(stringbuffer_t *output, POINTARRAY *pa, unsigned int index, int 
  * The drawing commands are appended directly to the supplied buffer.
  */
 static void
-drawLineArrow(stringbuffer_t *output, POINTARRAY *pa, int size, int strokeWidth, const char *color)
+drawLineArrow(stringbuffer_t *output,
+	      POINTARRAY *pa,
+	      int size,
+	      int strokeWidth,
+	      const char *color,
+	      GEOMETRY_DRAW_CONTEXT *ctx)
 {
 	// short-circuit no-op
 	if (size <= 0)
@@ -419,13 +439,13 @@ drawLineArrow(stringbuffer_t *output, POINTARRAY *pa, int size, int strokeWidth,
 
 	stringbuffer_aprintf(output, "-fill %s -strokewidth %d ", color, 2);
 	stringbuffer_append(output, "-draw \"path 'M ");
-	append_coord_pair(output, pn.x, pn.y);
+	append_context_coord_pair(output, pn.x, pn.y, ctx);
 	stringbuffer_append_char(output, ' ');
-	append_coord_pair(output, p1x, p1y);
+	append_context_coord_pair(output, p1x, p1y, ctx);
 	stringbuffer_append_char(output, ' ');
-	append_coord_pair(output, p2x, p2y);
+	append_context_coord_pair(output, p2x, p2y, ctx);
 	stringbuffer_append_char(output, ' ');
-	append_coord_pair(output, pn.x, pn.y);
+	append_context_coord_pair(output, pn.x, pn.y, ctx);
 	stringbuffer_append(output, "'\" ");
 }
 
@@ -452,9 +472,9 @@ drawPoint(stringbuffer_t *output, LWPOINT *lwp, GEOMETRY_DRAW_CONTEXT *ctx)
 
 	stringbuffer_aprintf(output, "-fill %s -strokewidth 0 ", styles->pointColor);
 	stringbuffer_append(output, "-draw \"circle ");
-	append_coord_pair(output, p.x, p.y);
+	append_context_coord_pair(output, p.x, p.y, ctx);
 	stringbuffer_append_char(output, ' ');
-	append_coord_pair(output, p.x, p.y + styles->pointSize);
+	append_context_coord_pair(output, p.x, p.y + styles->pointSize, ctx);
 	stringbuffer_append(output, "\" ");
 }
 
@@ -480,7 +500,7 @@ drawLineString(stringbuffer_t *output, LWLINE *lwl, GEOMETRY_DRAW_CONTEXT *ctx)
 	stringbuffer_t path;
 	stringbuffer_init(&path);
 	stringbuffer_append(&path, "stroke-linecap round stroke-linejoin round path 'M ");
-	pointarrayToBuffer(&path, lwl->points);
+	pointarrayToBuffer(&path, lwl->points, ctx);
 	stringbuffer_append(&path, "'");
 
 	stringbuffer_append(output, "-draw \"");
@@ -489,9 +509,9 @@ drawLineString(stringbuffer_t *output, LWLINE *lwl, GEOMETRY_DRAW_CONTEXT *ctx)
 
 	stringbuffer_release(&path);
 
-	drawPointSymbol(output, lwl->points, 0, style->lineStartSize, style->lineColor);
-	drawPointSymbol(output, lwl->points, lwl->points->npoints - 1, style->lineEndSize, style->lineColor);
-	drawLineArrow(output, lwl->points, style->lineArrowSize, style->lineWidth, style->lineColor);
+	drawPointSymbol(output, lwl->points, 0, style->lineStartSize, style->lineColor, ctx);
+	drawPointSymbol(output, lwl->points, lwl->points->npoints - 1, style->lineEndSize, style->lineColor, ctx);
+	drawLineArrow(output, lwl->points, style->lineArrowSize, style->lineWidth, style->lineColor, ctx);
 }
 
 /**
@@ -525,7 +545,7 @@ drawPolygon(stringbuffer_t *output, LWPOLY *lwp, GEOMETRY_DRAW_CONTEXT *ctx)
 	for (i = 0; i < lwp->nrings; i++)
 	{
 		stringbuffer_append(&path, "M ");
-		pointarrayToBuffer(&path, lwp->rings[i]);
+		pointarrayToBuffer(&path, lwp->rings[i], ctx);
 		stringbuffer_append_char(&path, ' ');
 	}
 	stringbuffer_append(&path, "'");
@@ -575,6 +595,46 @@ drawGeometry(stringbuffer_t *output, const LWGEOM *lwgeom, GEOMETRY_DRAW_CONTEXT
 		}
 		break;
 	}
+}
+
+static void
+drawStyledGeometryEffect(stringbuffer_t *output, const LWGEOM *lwgeom, GEOMETRY_DRAW_CONTEXT *ctx, bool is_shadow)
+{
+	LAYERSTYLE effect = *ctx->style;
+	GEOMETRY_DRAW_CONTEXT effect_ctx = *ctx;
+
+	if (is_shadow)
+	{
+		effect.pointColor = "\"#00000050\"";
+		effect.lineColor = "\"#00000050\"";
+		effect.polygonFillColor = "\"#00000020\"";
+		effect.polygonStrokeColor = "\"#00000050\"";
+		effect_ctx.offset_x = 3;
+		effect_ctx.offset_y = -3;
+	}
+	else
+	{
+		effect.pointSize += 4;
+		effect.lineWidth += 4;
+		effect.polygonFillColor = "none";
+		effect.polygonStrokeWidth += 4;
+	}
+
+	effect.highlight = false;
+	effect.dropShadow = false;
+	effect_ctx.style = &effect;
+	drawGeometry(output, lwgeom, &effect_ctx);
+}
+
+static void
+drawStyledGeometry(stringbuffer_t *output, const LWGEOM *lwgeom, GEOMETRY_DRAW_CONTEXT *ctx)
+{
+	if (ctx->style->dropShadow)
+		drawStyledGeometryEffect(output, lwgeom, ctx, true);
+	if (ctx->style->highlight)
+		drawStyledGeometryEffect(output, lwgeom, ctx, false);
+
+	drawGeometry(output, lwgeom, ctx);
 }
 
 /**
@@ -674,7 +734,7 @@ append_layers(generator_job *job, FILE *source)
 			return -1;
 		}
 
-		drawGeometry(&job->command, lwgeom, &ctx);
+		drawStyledGeometry(&job->command, lwgeom, &ctx);
 
 		lwgeom_free(lwgeom);
 		lwfree(style_name);
