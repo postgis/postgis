@@ -4,11 +4,14 @@
 # * http://postgis.net
 # *
 # * Copyright (C) 2020 Sandro Santilli <strk@kbt.io>
+# * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
 # *
 # * This is free software; you can redistribute and/or modify it under
 # * the terms of the GNU General Public Licence. See the COPYING file.
 # *
 # **********************************************************************
+
+POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 
 TESTS += \
 	$(top_srcdir)/regress/dumper/mfiledmp \
@@ -16,4 +19,10 @@ TESTS += \
 	$(top_srcdir)/regress/dumper/realtable \
 	$(top_srcdir)/regress/dumper/nullsintable \
 	$(top_srcdir)/regress/dumper/null3d \
+	$(top_srcdir)/regress/dumper/numeric \
 	$(top_srcdir)/regress/dumper/withclause
+
+ifeq ($(shell expr "$(POSTGIS_PGSQL_VERSION)" ">=" 150),1)
+	TESTS += \
+		$(top_srcdir)/regress/dumper/numeric_negative_scale
+endif

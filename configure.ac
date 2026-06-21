@@ -1902,6 +1902,7 @@ AC_CONFIG_FILES([GNUmakefile
    regress/core/Makefile
    regress/core/tests.mk
    regress/dumper/Makefile
+   regress/dumper/tests.mk
    regress/loader/Makefile
    doc/Makefile
    doc/Makefile.comments

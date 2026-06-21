@@ -1,0 +1,1 @@
+SELECT 1200::numeric(4,-2) AS n4m2, ST_Point(0, 0) AS geom;

@@ -57,7 +57,7 @@ check-unit:
 
 include $(builddir)/core/tests.mk
 include $(srcdir)/loader/tests.mk
-include $(srcdir)/dumper/tests.mk
+include $(builddir)/dumper/tests.mk
 
 include $(srcdir)/runtest.mk
 
@@ -71,6 +71,7 @@ distclean: clean
 	rm -f core/tests.mk
 	rm -f loader/Makefile
 	rm -f dumper/Makefile
+	rm -f dumper/tests.mk
 
 staged-install-sfcgal:
 	@if test x"@SFCGAL@" != "x"; then \

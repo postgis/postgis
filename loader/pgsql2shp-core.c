@@ -59,6 +59,8 @@ static char *nullDBFValue(char fieldType);
 static int getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname);
 static int getTableInfo(SHPDUMPERSTATE *state);
 static int projFileCreate(SHPDUMPERSTATE *state);
+static int numeric_typmod_precision(int typmod);
+static int numeric_typmod_scale(int typmod);
 
 /**
  * @brief Make appropriate formatting of a DBF value based on type.
@@ -85,6 +87,24 @@ core_asprintf(const char* format, ...)
     	exit(-1);
     va_end(ap);
     return value;
+}
+
+static int
+numeric_typmod_precision(int typmod)
+{
+	return ((typmod - 4) >> 16) & 0xffff;
+}
+
+static int
+numeric_typmod_scale(int typmod)
+{
+	int scale = (typmod - 4) & 0x7ff;
+
+	/* PostgreSQL stores numeric scale as an 11-bit signed value. */
+	if (scale & 0x400)
+		scale |= ~0x7ff;
+
+	return scale;
 }
 
 static SHPObject *
@@ -1613,19 +1633,50 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		}
 
 		/*
-		 * double or numeric types:
+		 * double types:
 		 *    700: float4
 		 *    701: float8
-		 *   1700: numeric
-		 *
-		 *
-		 * TODO: stricter handling of sizes
 		 */
-		else if (pgfieldtype == 700 || pgfieldtype == 701 || pgfieldtype == 1700)
+		else if (pgfieldtype == 700 || pgfieldtype == 701)
 		{
 			dbffieldtype = FTDouble;
 			dbffieldsize = 32;
 			dbffielddecs = 10;
+		}
+
+		/*
+		 * Numeric type (1700). Preserve declared precision and scale
+		 * when PostgreSQL exposes a typmod and DBF can represent it.
+		 */
+		else if (pgfieldtype == 1700)
+		{
+			dbffieldtype = FTDouble;
+			dbffieldsize = 32;
+			dbffielddecs = 10;
+
+			if (pgtypmod >= 0)
+			{
+				int precision = numeric_typmod_precision(pgtypmod);
+				int scale = numeric_typmod_scale(pgtypmod);
+				int integral_digits = precision - scale;
+				int dbfsize;
+
+				if (integral_digits < 1)
+					integral_digits = 1;
+
+				if (scale > 0)
+					dbfsize = 1 + integral_digits + 1 + scale;
+				else
+					dbfsize = 1 + precision - scale;
+
+				if (dbfsize <= MAX_DBF_FIELD_SIZE)
+				{
+					dbffieldsize = dbfsize;
+					dbffielddecs = (scale > 0) ? scale : 0;
+					if (dbffielddecs == 0)
+						dbffieldtype = FTInteger;
+				}
+			}
 		}
 
 		/*

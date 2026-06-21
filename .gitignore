@@ -31,6 +31,7 @@ doc/html/images/Makefile
 regression.out
 raster/test/regress/tests.mk
 regress/core/tests.mk
+regress/dumper/tests.mk
 sfcgal/regress/tests.mk
 
 
@@ -177,6 +178,7 @@ regress/Makefile
 regress/core/Makefile
 regress/core/tests.mk
 regress/dumper/Makefile
+regress/dumper/tests.mk
 regress/loader/Makefile
 regress/real/download_data
 regress/real/Makefile
