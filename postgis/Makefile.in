@@ -237,6 +237,7 @@ endif
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
+# replace remaining @extschema@ tokens with public for non-extension SQL scripts
 #
 # TODO: create an intermediate product with @extschema@ in place, to reduce rules duplications
 #       in the extension/ folder
@@ -245,7 +246,8 @@ endif
 	$(SQLPP) -I@top_srcdir@/libpgcommon -I@builddir@ $< > $@.tmp
 	grep -v '^#' $@.tmp | \
 		$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" | \
-		$(PERL) -lpe "s'@extschema@\.''g" > $@
+		$(PERL) -lpe "s'@extschema@\.''g" | \
+		$(PERL) -lpe "s'@extschema@'public'g" > $@
 	rm -f $@.tmp
 
 #this is redundant but trying to fold in with extension just hangs

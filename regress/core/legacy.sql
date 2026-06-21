@@ -20,6 +20,22 @@ WHERE oid IN (
 AND prosecdef
 AND provolatile = 'i';
 
+SELECT 'legacy_wrapper_search_path', count(*)
+FROM pg_catalog.pg_proc
+WHERE oid IN (
+	'asbinary(geometry)'::regprocedure,
+	'asbinary(geometry,text)'::regprocedure,
+	'astext(geometry)'::regprocedure,
+	'geomfromtext(text,integer)'::regprocedure,
+	'geomfromtext(text)'::regprocedure,
+	'ndims(geometry)'::regprocedure,
+	'setsrid(geometry,integer)'::regprocedure,
+	'srid(geometry)'::regprocedure,
+	'st_asbinary(text)'::regprocedure,
+	'st_astext(bytea)'::regprocedure
+)
+AND proconfig = ARRAY['search_path=pg_catalog, public'];
+
 SELECT 'Starting up MapServer/Geoserver tests...';
 -- Set up the data table
 SELECT 'Setting up the data table...';
