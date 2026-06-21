@@ -4665,6 +4665,34 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, pt geometry, exclude_nodata_val
     AS $$ SELECT @extschema@.ST_value($1, 1::integer, $2, $3, 'nearest'::text) $$
     LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE _COST_MEDIUM;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_IsVisible(rast raster, band integer, pointa geometry, pointb geometry, curvature_coef double precision)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'RASTER_isVisible'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 10000;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_IsVisible(rast raster, pointa geometry, pointb geometry, curvature_coef double precision)
+	RETURNS boolean
+	AS $$ SELECT @extschema@.ST_IsVisible($1, 1::integer, $2, $3, $4) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	COST 10000;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_IsVisible(rast raster, band integer, pointa geometry, pointb geometry, curvature boolean DEFAULT false)
+	RETURNS boolean
+	AS $$ SELECT @extschema@.ST_IsVisible($1, $2, $3, $4, CASE WHEN $5 THEN 0.85714 ELSE 0.0 END::double precision) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	COST 10000;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_IsVisible(rast raster, pointa geometry, pointb geometry, curvature boolean DEFAULT false)
+	RETURNS boolean
+	AS $$ SELECT @extschema@.ST_IsVisible($1, 1::integer, $2, $3, $4) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	COST 10000;
+
 -- Availability: 3.2.0 added resample arg
 CREATE OR REPLACE FUNCTION st_setz(rast raster, geom geometry, resample text DEFAULT 'nearest', band integer default 1)
 	RETURNS geometry
