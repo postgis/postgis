@@ -7,58 +7,88 @@
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsBinary(geometry)
 	RETURNS bytea
-	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	AS $$
+		SELECT _postgis_deprecate('AsBinary', 'ST_AsBinary', '1.2.3');
+		SELECT ST_AsBinary($1);
+	$$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsBinary(geometry,text)
 	RETURNS bytea
-	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	AS $$
+		SELECT _postgis_deprecate('AsBinary', 'ST_AsBinary', '1.2.3');
+		SELECT ST_AsBinary($1, $2);
+	$$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsText(geometry)
 	RETURNS TEXT
-	AS 'MODULE_PATHNAME','LWGEOM_asText'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	AS $$
+		SELECT _postgis_deprecate('AsText', 'ST_AsText', '1.2.3');
+		SELECT ST_AsText($1);
+	$$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Estimated_Extent(text,text,text) RETURNS box2d AS
-	'MODULE_PATHNAME', 'geometry_estimated_extent'
-	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
+	$$
+		SELECT _postgis_deprecate('Estimated_Extent', 'ST_EstimatedExtent', '1.2.3');
+		SELECT ST_EstimatedExtent($1, $2, $3);
+	$$
+	LANGUAGE 'sql' STABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Estimated_Extent(text,text) RETURNS box2d AS
-	'MODULE_PATHNAME', 'geometry_estimated_extent'
-	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
+	$$
+		SELECT _postgis_deprecate('Estimated_Extent', 'ST_EstimatedExtent', '1.2.3');
+		SELECT ST_EstimatedExtent($1, $2);
+	$$
+	LANGUAGE 'sql' STABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION GeomFromText(text, int4)
-	RETURNS geometry AS 'SELECT ST_GeomFromText($1, $2)'
+	RETURNS geometry AS $$
+		SELECT _postgis_deprecate('GeomFromText', 'ST_GeomFromText', '1.2.3');
+		SELECT ST_GeomFromText($1, $2);
+	$$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION GeomFromText(text)
-	RETURNS geometry AS 'SELECT ST_GeomFromText($1)'
+	RETURNS geometry AS $$
+		SELECT _postgis_deprecate('GeomFromText', 'ST_GeomFromText', '1.2.3');
+		SELECT ST_GeomFromText($1);
+	$$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION ndims(geometry)
 	RETURNS smallint
-	AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	AS $$
+		SELECT _postgis_deprecate('ndims', 'ST_NDims', '1.2.3');
+		SELECT ST_NDims($1);
+	$$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION SetSRID(geometry,int4)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_set_srid'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	AS $$
+		SELECT _postgis_deprecate('SetSRID', 'ST_SetSRID', '1.2.3');
+		SELECT ST_SetSRID($1, $2);
+	$$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION SRID(geometry)
 	RETURNS int4
-	AS 'MODULE_PATHNAME','LWGEOM_get_srid'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	AS $$
+		SELECT _postgis_deprecate('SRID', 'ST_SRID', '1.2.3');
+		SELECT ST_SRID($1);
+	$$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.5.0
 -- hack to allow unknown to cast to geometry
@@ -66,7 +96,10 @@ CREATE OR REPLACE FUNCTION SRID(geometry)
 CREATE OR REPLACE FUNCTION ST_AsBinary(text)
 	RETURNS bytea
 	AS
-	$$ SELECT ST_AsBinary($1::geometry);$$
+	$$
+		SELECT _postgis_deprecate('ST_AsBinary(text)', 'ST_AsBinary(geometry)', '1.5.0');
+		SELECT ST_AsBinary($1::geometry);
+	$$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.5.0
@@ -75,5 +108,8 @@ CREATE OR REPLACE FUNCTION ST_AsBinary(text)
 CREATE OR REPLACE FUNCTION ST_AsText(bytea)
 	RETURNS text
 	AS
-	$$ SELECT ST_AsText($1::geometry);$$
+	$$
+		SELECT _postgis_deprecate('ST_AsText(bytea)', 'ST_AsText(geometry)', '1.5.0');
+		SELECT ST_AsText($1::geometry);
+	$$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
