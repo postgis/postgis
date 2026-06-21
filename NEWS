@@ -85,7 +85,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           GeometryCollections (Darafei Praliaskouski)
  - #5532, Validate the manual against DocBook XMLSchema in check-xml
           (Darafei Praliaskouski)
- - #2689, Emit deprecation warnings from legacy_minimal.sql aliases
+ - #2689, Emit deprecation warnings from common legacy_minimal.sql aliases
           (Darafei Praliaskouski)
 
 * Bug Fixes *
