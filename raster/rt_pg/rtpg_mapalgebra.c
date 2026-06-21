@@ -834,16 +834,16 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 			}
 		}
 
-		/*set mask dimensions*/
-		arg->mask->dimx = maskDims[0];
-		arg->mask->dimy = maskDims[1];
+		/* PostgreSQL arrays are row-major: first dimension is Y, second is X. */
+		arg->mask->dimx = maskDims[1];
+		arg->mask->dimy = maskDims[0];
 		if (maskDims[0] == 1 && maskDims[1] == 1) {
 			arg->distance[0] = 0;
 			arg->distance[1] = 0;
 		}
 		else {
-			arg->distance[0] = maskDims[0] % 2;
-			arg->distance[1] = maskDims[1] % 2;
+			arg->distance[0] = (maskDims[1] - 1) / 2;
+			arg->distance[1] = (maskDims[0] - 1) / 2;
 		}
 	}/*end if else argisnull*/
 
