@@ -41,10 +41,10 @@
 #include "catalog/pg_type.h" /* for CSTRINGOID */
 
 #include "liblwgeom.h"         /* For standard geometry types. */
-#include "lwgeom_pg.h"       /* For debugging macros. */
-#include "geography.h"	     /* For utility functions. */
-#include "lwgeom_transform.h" /* for srid_is_latlon */
-
+#include "lwgeom_pg.h"         /* For debugging macros. */
+#include "lwgeom_pg_typmod.h"  /* For typmod bit-field accessors. */
+#include "geography.h"         /* For utility functions. */
+#include "lwgeom_transform.h"  /* for srid_is_latlon */
 
 Datum geography_typmod_in(PG_FUNCTION_ARGS);
 Datum geometry_typmod_in(PG_FUNCTION_ARGS);
@@ -462,4 +462,3 @@ Datum postgis_typmod_srid(PG_FUNCTION_ARGS)
 		PG_RETURN_INT32(0);
 	PG_RETURN_INT32(TYPMOD_GET_SRID(typmod));
 }
-

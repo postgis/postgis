@@ -273,6 +273,7 @@ distclean: clean
 	if [ -e "cunit/Makefile" ]; then make -C cunit distclean; fi
 
 check-unit:
+	$(MAKE) -C cunit check
 
 check-regress:
 

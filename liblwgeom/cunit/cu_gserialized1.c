@@ -18,61 +18,6 @@
 #include "gserialized1.c" /* for gserialized_peek_gbox_p */
 #include "cu_tester.h"
 
-static void test_typmod_macros(void)
-{
-	int32_t typmod = 0;
-	int32_t srid = 4326;
-	int type = 6;
-	int z = 1;
-	int rv;
-
-	TYPMOD_SET_SRID(typmod,srid);
-	rv = TYPMOD_GET_SRID(typmod);
-	CU_ASSERT_EQUAL(rv, srid);
-
-	srid = -5005;
-	TYPMOD_SET_SRID(typmod,srid);
-	rv = TYPMOD_GET_SRID(typmod);
-	CU_ASSERT_EQUAL(rv, srid);
-
-        srid = 999999;
-        TYPMOD_SET_SRID(typmod,srid);
-        rv = TYPMOD_GET_SRID(typmod);
-        CU_ASSERT_EQUAL(rv, srid);
-
-        srid = -999999;
-        TYPMOD_SET_SRID(typmod,srid);
-        rv = TYPMOD_GET_SRID(typmod);
-        CU_ASSERT_EQUAL(rv, srid);
-
-	srid = SRID_UNKNOWN;
-	TYPMOD_SET_SRID(typmod,srid);
-	rv = TYPMOD_GET_SRID(typmod);
-	CU_ASSERT_EQUAL(rv, srid);
-
-	srid = 0;
-	TYPMOD_SET_SRID(typmod,srid);
-	rv = TYPMOD_GET_SRID(typmod);
-	CU_ASSERT_EQUAL(rv, srid);
-
-	srid = 1;
-	TYPMOD_SET_SRID(typmod,srid);
-	rv = TYPMOD_GET_SRID(typmod);
-	CU_ASSERT_EQUAL(rv, srid);
-
-	TYPMOD_SET_TYPE(typmod,type);
-	rv = TYPMOD_GET_TYPE(typmod);
-	CU_ASSERT_EQUAL(rv,type);
-
-	TYPMOD_SET_Z(typmod);
-	rv = TYPMOD_GET_Z(typmod);
-	CU_ASSERT_EQUAL(rv,z);
-
-	rv = TYPMOD_GET_M(typmod);
-	CU_ASSERT_EQUAL(rv,0);
-
-}
-
 static void test_flags_macros(void)
 {
 	uint8_t flags = 0;
@@ -1282,7 +1227,6 @@ void gserialized1_suite_setup(void);
 void gserialized1_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("serialization/deserialization v1", NULL, NULL);
-	PG_ADD_TEST(suite, test_typmod_macros);
 	PG_ADD_TEST(suite, test_flags_macros);
 	PG_ADD_TEST(suite, test_serialized1_srid);
 	PG_ADD_TEST(suite, test_gserialized1_from_lwgeom_size);

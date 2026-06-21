@@ -20,7 +20,7 @@
  *
  **********************************************************************
  *
- * Copyright 2025 (C) Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2025-2026 (C) Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -31,6 +31,8 @@
 #include <math.h>
 #include <string.h>
 
+#include "liblwgeom.h"
+#include "lwgeom_pg_typmod.h"
 #include "../gserialized_estimate_support.h"
 
 static ND_BOX
@@ -48,6 +50,65 @@ make_box(float minx, float miny, float minz, float minm, float maxx, float maxy,
 	box.max[2] = maxz;
 	box.max[3] = maxm;
 	return box;
+}
+
+static void
+typmod_bitfield_roundtrip(void)
+{
+	int32_t typmod = 0;
+	int32_t srid = 4326;
+	int type = 6;
+	int z = 1;
+	int rv;
+
+	TYPMOD_SET_SRID(typmod, srid);
+	rv = TYPMOD_GET_SRID(typmod);
+	CU_ASSERT_EQUAL(rv, srid);
+
+	srid = -5005;
+	TYPMOD_SET_SRID(typmod, srid);
+	rv = TYPMOD_GET_SRID(typmod);
+	CU_ASSERT_EQUAL(rv, srid);
+
+	srid = 999999;
+	TYPMOD_SET_SRID(typmod, srid);
+	rv = TYPMOD_GET_SRID(typmod);
+	CU_ASSERT_EQUAL(rv, srid);
+
+	srid = -999999;
+	TYPMOD_SET_SRID(typmod, srid);
+	rv = TYPMOD_GET_SRID(typmod);
+	CU_ASSERT_EQUAL(rv, srid);
+
+	srid = SRID_UNKNOWN;
+	TYPMOD_SET_SRID(typmod, srid);
+	rv = TYPMOD_GET_SRID(typmod);
+	CU_ASSERT_EQUAL(rv, srid);
+
+	srid = 0;
+	TYPMOD_SET_SRID(typmod, srid);
+	rv = TYPMOD_GET_SRID(typmod);
+	CU_ASSERT_EQUAL(rv, srid);
+
+	srid = 1;
+	TYPMOD_SET_SRID(typmod, srid);
+	rv = TYPMOD_GET_SRID(typmod);
+	CU_ASSERT_EQUAL(rv, srid);
+
+	TYPMOD_SET_TYPE(typmod, type);
+	rv = TYPMOD_GET_TYPE(typmod);
+	CU_ASSERT_EQUAL(rv, type);
+
+	TYPMOD_SET_Z(typmod);
+	rv = TYPMOD_GET_Z(typmod);
+	CU_ASSERT_EQUAL(rv, z);
+
+	rv = TYPMOD_GET_M(typmod);
+	CU_ASSERT_EQUAL(rv, 0);
+
+	TYPMOD_SET_M(typmod);
+	rv = TYPMOD_GET_M(typmod);
+	CU_ASSERT_EQUAL(rv, 1);
 }
 
 static void
@@ -151,11 +212,12 @@ main(void)
 	if (CU_initialize_registry() != CUE_SUCCESS)
 		return CU_get_error();
 
-	suite = CU_add_suite("gserialized_histogram_helpers", NULL, NULL);
+	suite = CU_add_suite("postgis_helpers", NULL, NULL);
 	if (!suite)
 		goto cleanup;
 
-	if (!CU_add_test(suite, "histogram budget clamps", histogram_budget_clamps) ||
+	if (!CU_add_test(suite, "typmod bitfield roundtrip", typmod_bitfield_roundtrip) ||
+	    !CU_add_test(suite, "histogram budget clamps", histogram_budget_clamps) ||
 	    !CU_add_test(suite, "histogram axis guards", histogram_axis_allocation_guards) ||
 	    !CU_add_test(suite, "nd_stats value index guards", nd_stats_indexing_behaviour) ||
 	    !CU_add_test(suite, "nd_box ratio edge cases", nd_box_ratio_cases))
