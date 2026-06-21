@@ -7849,6 +7849,7 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 		x int;
 		kw text;
 		rtn boolean;
+		constraint_start timestamp with time zone;
 	BEGIN
 		cnt := 0;
 		max := array_length(constraints, 1);
@@ -7891,6 +7892,7 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 		<<kwloop>>
 		FOR x in 1..max LOOP
 			kw := trim(both from lower(constraints[x]));
+			constraint_start := clock_timestamp();
 
 			BEGIN
 				CASE
@@ -7948,6 +7950,8 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 						RAISE NOTICE 'Unknown constraint: %.  Skipping', quote_literal(constraints[x]);
 						CONTINUE kwloop;
 				END CASE;
+
+				RAISE DEBUG 'Finished raster constraint "%" in %', constraints[x], clock_timestamp() - constraint_start;
 			END;
 
 			IF rtn IS FALSE THEN
