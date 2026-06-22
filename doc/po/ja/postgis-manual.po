@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-06-12 20:29+0000\n"
-"PO-Revision-Date: 2026-06-22 01:39+0000\n"
+"PO-Revision-Date: 2026-06-22 06:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -18099,6 +18099,11 @@ msgid ""
 "is Massachusetts State Plane Feet and transformed area is in square meters "
 "since EPSG:26986 is state plane Massachusetts meters."
 msgstr ""
+"平方フィートの面積を返し、平方メートルを得るためにメートル単位"
+"マサチューセッツ州平面 (EPSG:26986) に変換します。一つ目はEPSG:2249でフィート"
+"単位マサチューセッツ州平面なので平方フィートとなり、二つ目は変換後は"
+"EPSG:26986でメートル単位マサチューセッツ州平面なので平方メートルになるので、"
+"注意して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -19005,6 +19010,9 @@ msgid ""
 "length is desired without reprojection. The spheroid is specified by a text "
 "value as follows:"
 msgstr ""
+"回転楕円体面のジオメトリーの周囲長を計算します。ジオメトリーの座標が経度/緯度"
+"で、投影せずに周囲長を求めたい場合に使います。回転楕円体面は次のような"
+"テキスト値で指定します:"
 
 #. Tag: para
 #, no-c-format
@@ -22947,7 +22955,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Examples: 2.5D geometries"
-msgstr ""
+msgstr "例: 2.5次元ジオメトリー"
 
 #. Tag: para
 #, no-c-format
@@ -22956,6 +22964,9 @@ msgid ""
 "with Z ordinates, but where calculations are performed in 2D). Compare to "
 "the same example using <xref linkend=\"ST_3DIntersection\"/>."
 msgstr ""
+"本当の3次元で見てインターセクトした箇所ではないことに注意して下さい。2.5次元"
+"ジオメトリーを使っています (Z値を持つジオメトリですが計算は2次元で行います)"
+"。<xref linkend=\"ST_3DIntersection\"/>を使った同じ例と比較して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -23581,6 +23592,10 @@ msgid ""
 "linkend=\"ST_Difference\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
 "linkend=\"ST_LineMerge\"/>"
 msgstr ""
+", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Intersection\"/>, <xref "
+"linkend=\"ST_Difference\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
+"linkend=\"ST_LineMerge\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -24134,7 +24149,7 @@ msgstr ""
 msgid ""
 "Returns a smoothed version of a geometry, using the Catmull-Rom spline "
 "algorithm"
-msgstr ""
+msgstr "Catmull-Romスプライン曲線を用いて平滑化されたジオメトリーを返します。"
 
 #. Tag: para
 #, no-c-format
