@@ -8,6 +8,7 @@ PostGIS 3.6.5
 - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)
 - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
 - Avoid Inf loop in Geohash calculation (Paul Ramsey)
+- #6081, Fix SFCGAL 2.3 regression tests (Darafei Praliaskouski)
 
 
 PostGIS 3.6.4
@@ -3134,5 +3135,4 @@ PostGIS 0.1
 - truely_inside()
 - rtree index support functions
 - gist index support functions
-
 
