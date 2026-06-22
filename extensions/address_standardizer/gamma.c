@@ -122,7 +122,7 @@ RULES *rules_init( ERR_PARAM *err_p ) {
     rules->rule_number = 0;
     rules->last_node = EPSILON;
 
-    PAGC_ALLOC_STRUC(r_p,RULE_PARAM,err_p,NULL) ;
+    PAGC_CALLOC_STRUC(r_p,RULE_PARAM,1,err_p,NULL) ;
     rules->r_p = r_p;
 
     /* -- initialize the statistics record -- */
