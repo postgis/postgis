@@ -540,6 +540,8 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 
 static char *base32 = "0123456789bcdefghjkmnpqrstuvwxyz";
 
+#define GEOHASH_MAX_DOUBLE_PRECISION_CHARS 20
+
 /*
 ** Calculate the geohash, iterating downwards and gaining precision.
 ** From geohash-native.c, (c) 2008 David Troy <dave@roundhousetech.com>
@@ -732,7 +734,7 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 	{
 		/* It's a point. Doubles have 51 bits of precision.
 		** 2 * 51 / 5 == 20 */
-		return 20;
+		return GEOHASH_MAX_DOUBLE_PRECISION_CHARS;
 	}
 
 	lonmin = -180.0;
@@ -744,6 +746,11 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 	** bounds of our rectangle. */
 	while ( 1 )
 	{
+		double old_lonmin = lonmin;
+		double old_lonmax = lonmax;
+		double old_latmin = latmin;
+		double old_latmax = latmax;
+
 		lonwidth = lonmax - lonmin;
 		latwidth = latmax - latmin;
 		latmaxadjust = lonmaxadjust = latminadjust = lonminadjust = 0.0;
@@ -760,6 +767,9 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 		{
 			lonmin += lonminadjust;
 			lonmax += lonmaxadjust;
+			/* Stop before counting bits that no longer move the double bounds. */
+			if (lonmin == old_lonmin && lonmax == old_lonmax)
+				break;
 			/* Each adjustment cycle corresponds to 2 bits of storage in the
 			** geohash.	*/
 			precision++;
@@ -782,6 +792,9 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 		{
 			latmin += latminadjust;
 			latmax += latmaxadjust;
+			/* Stop before counting bits that no longer move the double bounds. */
+			if (latmin == old_latmin && latmax == old_latmax)
+				break;
 			/* Each adjustment cycle corresponds to 2 bits of storage in the
 			** geohash.	*/
 			precision++;
@@ -800,7 +813,8 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 
 	/* Each geohash character (base32) can contain 5 bits of information.
 	** We are returning the precision in characters, so here we divide. */
-	return precision / 5;
+	precision /= 5;
+	return precision > GEOHASH_MAX_DOUBLE_PRECISION_CHARS ? GEOHASH_MAX_DOUBLE_PRECISION_CHARS : precision;
 }
 
 
