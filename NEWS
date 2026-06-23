@@ -8,6 +8,7 @@ PostGIS 3.4.7
   - #5916, ST_Split hang with very large ordinates (Paul Ramsey)
   - #5989, CurvePolygon distance corner case (Paul Ramsey)
   - #5357, ST_LineFromEncodedPolyline dropping close points (Paul Ramsey)
+  - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)
 
 
 PostGIS 3.4.6
