@@ -7,6 +7,7 @@ PostGIS 3.3.11
  - #5899, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)
  - #5916, ST_Split hang with very large ordinates (Paul Ramsey)
  - #5989, CurvePolygon distance corner case (Paul Ramsey)
+ - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)
 
 
 PostGIS 3.3.10
