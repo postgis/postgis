@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  * Copyright 2008 Paul Ramsey
- * Copyright 2018 Darafei Praliaskouski, me@komzpa.net
+ * Copyright 2018, 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -998,6 +998,15 @@ static void test_geohash_precision(void)
 	//printf("precision %d\n",precision);
 	CU_ASSERT_EQUAL(precision, 7);
 
+	/* Tiny bbox near south pole: lon-halving loop hits IEEE 754 convergence
+	** before straddling the midpoint — old code hung here. */
+	bbox.xmin = -72.70493954792298;
+	bbox.xmax = -72.70493954792298;
+	bbox.ymin = -89.90561212126683;
+	bbox.ymax = -89.90561212126681;
+	precision = lwgeom_geohash_precision(bbox, &bounds);
+	CU_ASSERT(precision >= 0 && precision <= 20);
+
 }
 
 static void test_geohash_point(void)
@@ -1027,7 +1036,6 @@ static void test_geohash(void)
 	LWLINE *lwline = NULL;
 	LWMLINE *lwmline = NULL;
 	lwvarlena_t *geohash = NULL;
-
 	lwpoint = (LWPOINT*)lwgeom_from_wkt("POINT(23.0 25.2)", LW_PARSER_CHECK_NONE);
 	geohash = lwgeom_geohash((LWGEOM*)lwpoint,0);
 	//printf("\ngeohash %s\n",geohash);
