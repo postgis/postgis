@@ -8,13 +8,14 @@
 # Vincent Bre <vincent.bre@oslandia.com>, 2025.
 # Edouard Choiniere <echoix@users.noreply.weblate.osgeo.org>, 2025.
 # Weblate <noreply-mt-weblate@weblate.org>, 2025.
+# Arthur Bazin <ab-osgeo@bazmap.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-06-12 20:29+0000\n"
-"PO-Revision-Date: 2025-07-01 00:47+0000\n"
-"Last-Translator: Weblate <noreply-mt-weblate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-23 08:39+0000\n"
+"Last-Translator: Arthur Bazin <ab-osgeo@bazmap.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/fr/>\n"
 "Language: fr\n"
@@ -22,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.4.3\n"
+"X-Generator: Weblate 5.16.2\n"
 
 #. Tag: chapter
 #, no-c-format
@@ -58,6 +59,13 @@ msgid ""
 "You can also use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
+"Les rasters de système de fichiers (out-db) ainsi que les pilotes raster "
+"sont désactivés par défaut. Pour réactiver ceux-ci, vous devez définir les "
+"variables d'environnement suivantes <varname>POSTGIS_GDAL_ENABLED_DRIVERS</"
+"varname> et <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> dans "
+"l'environnement serveur. Vous pouvez également utiliser l'approche "
+"multiplateforme en définissant la <xref linkend=\"PostGIS_GUC\"/> "
+"correspondant."
 
 #. Tag: para
 #, no-c-format
@@ -105,6 +113,12 @@ msgid ""
 "<replaceable>CLUSTER</replaceable>/environment</filename> where the "
 "placeholders refer to the PostgreSQL major version and cluster name."
 msgstr ""
+"La définition de variables d'environnement varie en fonction du système "
+"d'exploitation. Pour PostgreSQL installé sur Ubuntu ou Debian via apt-"
+"postgresql, la meilleure façon est d'éditer <filename>/etc/postgresql/"
+"<replaceable>MAJOR</replaceable>/<replaceable>CLUSTER</replaceable>/"
+"environment</filename> où les espaces réservés se réfèrent à la version "
+"majeure de PostgreSQL et au nom du cluster."
 
 #. Tag: para
 #, no-c-format
@@ -312,7 +326,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Soft upgrade using extensions"
-msgstr ""
+msgstr "Mise à niveau progressive (Soft upgrade) utilisant des extensions"
 
 #. Tag: para
 #, no-c-format
@@ -321,6 +335,9 @@ msgid ""
 "upgrade using extensions as well. Doing a minor upgrade with extensions is "
 "fairly painless."
 msgstr ""
+"Si vous avez installé PostGIS à l'origine avec des extensions, vous devez "
+"également effectuer une mise à jour en utilisant des extensions. Faire une "
+"mise à jour mineure avec les extensions est assez facile."
 
 #. Tag: para
 #, no-c-format
@@ -328,6 +345,9 @@ msgid ""
 "Use the <xref linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade "
 "to the latest version you have installed."
 msgstr ""
+"Vous devez utiliser la fonction <xref "
+"linkend=\"PostGIS_Extensions_Upgrade\"/> pour passer à la dernière version "
+"que vous avez installée."
 
 #. Tag: para
 #, no-c-format
@@ -338,6 +358,11 @@ msgid ""
 "<varname>postgis_raster</varname> objects are folded back into the main "
 "extension."
 msgstr ""
+"Si vous mettez à jour une base de données reposant sur PostGIS 2.5, exécutez "
+"la commande <command>ALTER EXTENSION</command> suivi de <function>"
+"postgis_extensions_upgrade()</function> pour s'assurer que les objets "
+"<varname>postgis_raster</varname> hérités sont récupérés dans l'extension "
+"principale."
 
 #. Tag: para
 #, no-c-format
@@ -415,7 +440,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Soft upgrade without extensions"
-msgstr ""
+msgstr "Mise à niveau progressive (Soft Upgrade) sans extensions"
 
 #. Tag: para
 #, no-c-format
@@ -702,6 +727,9 @@ msgid ""
 "<code>postgresql.conf</code> or <code>postgresql.auto.conf</code> by using "
 "the <code>ALTER SYSTEM</code> command."
 msgstr ""
+"La configuration PostgreSQL peut être modifiée au niveau du serveur sans "
+"toucher à <code>postgresql.conf</code>, ni à <code>postgresql.auto.conf</"
+"code> en utilisant la commande <code>ALTER SYSTEM</code>."
 
 #. Tag: para
 #, no-c-format
@@ -740,6 +768,10 @@ msgid ""
 "they are in an inherited hierarchy and avoids paying the planner penalty "
 "otherwise."
 msgstr ""
+"Ceci est généralement utilisé pour le partitionnement de table. La valeur "
+"par défaut \"partition\" oblige le planificateur à analyser les tables en ne "
+"considérant les contraintes que si ells sont dans une hiérarchie héritée ce "
+"qui évite d'être pénaliser par le planificateur."
 
 #. Tag: link
 #, no-c-format
@@ -749,7 +781,7 @@ msgstr "shared_buffers"
 #. Tag: para
 #, no-c-format
 msgid "Default: ~128MB"
-msgstr ""
+msgstr "Défaut : ~128MB"
 
 #. Tag: para
 #, no-c-format
@@ -769,6 +801,11 @@ msgid ""
 "and therefore also bounds how many workers can participate in parallel "
 "queries."
 msgstr ""
+"<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
+"config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</link> "
+"contrôle le nombre maximum de processus d'arrière-plan disponibles pour le "
+"serveur et limite donc également le nombre de workers pouvant participer à "
+"des requêtes parallèles."
 
 #. Tag: para
 #, no-c-format
