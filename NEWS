@@ -10,6 +10,7 @@ PostGIS 3.5.7
   - #5357, ST_LineFromEncodedPolyline dropping close points (Paul Ramsey)
   - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)   
   - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
+ - Avoid Inf loop in Geohash calculation (Paul Ramsey)
 
 
 PostGIS 3.5.6
