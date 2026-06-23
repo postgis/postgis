@@ -29,6 +29,8 @@
 #include "varint.h"
 
 #define TWKB_IN_MAXCOORDS 4
+/** Max depth in a geometry. Matches the WKB parser recursion limit. */
+#define LW_PARSER_MAX_DEPTH 200
 
 /**
 * Used for passing the parse state between the parsing functions.
@@ -42,6 +44,7 @@ typedef struct
 
 	uint32_t check; /* Simple validity checks on geometries */
 	uint32_t lwtype; /* Current type we are handling */
+	uint8_t depth;   /* Current recursion level, to prevent stack overflows */
 
 	uint8_t has_bbox;
 	uint8_t has_size;
@@ -467,6 +470,7 @@ static LWCOLLECTION* lwcollection_from_twkb_state(twkb_parse_state *s)
 	int ngeoms, i;
 	LWGEOM *geom = NULL;
 	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype, SRID_UNKNOWN, s->has_z, s->has_m);
+	uint8_t start_depth = s->depth;
 
 	LWDEBUG(2,"Entering lwcollection_from_twkb_state");
 
@@ -485,16 +489,28 @@ static LWCOLLECTION* lwcollection_from_twkb_state(twkb_parse_state *s)
 			twkb_parse_state_varint_skip(s);
 	}
 
+	s->depth++;
+	if (s->depth >= LW_PARSER_MAX_DEPTH)
+	{
+		lwcollection_free(col);
+		lwerror("Geometry has too many chained collections");
+		s->depth = start_depth;
+		return NULL;
+	}
+
 	for ( i = 0; i < ngeoms; i++ )
 	{
 		geom = lwgeom_from_twkb_state(s);
-		if ( lwcollection_add_lwgeom(col, geom) == NULL )
+		if (!geom || lwcollection_add_lwgeom(col, geom) == NULL)
 		{
-			lwerror("Unable to add geometry (%p) to collection (%p)", (void *) geom, (void *) col);
+			lwgeom_free(geom);
+			lwcollection_free(col);
+			s->depth = start_depth;
 			return NULL;
 		}
 	}
 
+	s->depth--;
 
 	return col;
 }
@@ -648,7 +664,7 @@ LWGEOM* lwgeom_from_twkb_state(twkb_parse_state *s)
 			break;
 	}
 
-	if ( has_bbox )
+	if (has_bbox && geom)
 		geom->bbox = gbox_clone(&bbox);
 
 	return geom;

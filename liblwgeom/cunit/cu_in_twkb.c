@@ -255,9 +255,39 @@ test_twkb_in_coordinate_delta_overflow(void)
 	 */
 	ASSERT_STRING_EQUAL(cu_error_msg, "");
 	CU_ASSERT_PTR_NOT_NULL(geom);
-	if (geom != NULL)
-		lwgeom_free(geom);
+	lwgeom_free(geom);
+}
+
+
+static void
+test_twkb_in_deep_collection(void)
+{
+	const size_t ngeoms = 201;
+	const size_t twkb_size = ngeoms * 3 + 2;
+	uint8_t *twkb = lwalloc(twkb_size);
+	LWGEOM *geom;
+	size_t i;
+
+	for (i = 0; i < ngeoms; i++)
+	{
+		/* GEOMETRYCOLLECTION with default precision and one child. */
+		twkb[3 * i] = 0x07;
+		twkb[3 * i + 1] = 0x00;
+		twkb[3 * i + 2] = 0x01;
+	}
+	twkb[3 * ngeoms] = 0x01;     /* POINT with default precision. */
+	twkb[3 * ngeoms + 1] = 0x10; /* Empty geometry. */
+
 	cu_error_msg_reset();
+
+	geom = lwgeom_from_twkb(twkb, twkb_size, LW_PARSER_CHECK_NONE);
+
+	/* Recursive collection parsing must reject hostile nesting before the C
+	 * stack becomes the effective input validator.
+	 */
+	ASSERT_STRING_EQUAL(cu_error_msg, "Geometry has too many chained collections");
+	CU_ASSERT_PTR_NULL(geom);
+	lwfree(twkb);
 }
 
 /*
@@ -276,4 +306,5 @@ void twkb_in_suite_setup(void)
 	PG_ADD_TEST(suite, test_twkb_in_collection);
 	PG_ADD_TEST(suite, test_twkb_in_precision);
 	PG_ADD_TEST(suite, test_twkb_in_coordinate_delta_overflow);
+	PG_ADD_TEST(suite, test_twkb_in_deep_collection);
 }
