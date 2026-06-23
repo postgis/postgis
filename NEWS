@@ -8,6 +8,7 @@ PostGIS 3.3.11
  - #5916, ST_Split hang with very large ordinates (Paul Ramsey)
  - #5989, CurvePolygon distance corner case (Paul Ramsey)
  - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)
+ - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
 
 
 PostGIS 3.3.10
