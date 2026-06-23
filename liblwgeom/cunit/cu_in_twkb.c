@@ -224,6 +224,42 @@ static void test_twkb_in_precision(void)
 
 
 
+static void
+test_twkb_in_coordinate_delta_overflow(void)
+{
+	const uint8_t twkb[] = {0x02, /* LINESTRING with default precision. */
+				0x00,
+				0x02, /* Two points. */
+				0xfe,
+				0xff,
+				0xff,
+				0xff,
+				0xff,
+				0xff, /* X = INT64_MAX. */
+				0xff,
+				0xff,
+				0xff,
+				0x01,
+				0x00, /* Y = 0. */
+				0x02, /* X delta = 1. */
+				0x00};
+	LWGEOM *geom;
+
+	cu_error_msg_reset();
+
+	geom = lwgeom_from_twkb(twkb, sizeof(twkb), LW_PARSER_CHECK_NONE);
+
+	/* TWKB stores coordinate deltas as signed integers. Malformed or fuzzed
+	 * inputs can wrap the accumulated delta; the parser must make that wrap
+	 * explicit instead of relying on undefined signed-overflow behaviour.
+	 */
+	ASSERT_STRING_EQUAL(cu_error_msg, "");
+	CU_ASSERT_PTR_NOT_NULL(geom);
+	if (geom != NULL)
+		lwgeom_free(geom);
+	cu_error_msg_reset();
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -239,4 +275,5 @@ void twkb_in_suite_setup(void)
 	PG_ADD_TEST(suite, test_twkb_in_multipolygon);
 	PG_ADD_TEST(suite, test_twkb_in_collection);
 	PG_ADD_TEST(suite, test_twkb_in_precision);
+	PG_ADD_TEST(suite, test_twkb_in_coordinate_delta_overflow);
 }
