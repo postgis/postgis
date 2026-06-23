@@ -164,6 +164,19 @@ static uint8_t byte_from_twkb_state(twkb_parse_state *s)
 	return val;
 }
 
+/** Implements *pa += b in a sanitizer friendly way, using wrap around
+ * logic in case of overflow
+ */
+#if __clang_major__ >= 4
+__attribute__((no_sanitize("unsigned-integer-overflow")))
+#endif
+static inline void safe_add_int64(int64_t* pa, int64_t b)
+{
+	uint64_t u_a = (uint64_t)*pa;
+	uint64_t u_b = (uint64_t)b;
+	u_a += u_b;
+	memcpy(pa, &u_a, sizeof(int64_t));
+}
 
 /**
 * POINTARRAY
@@ -189,24 +202,24 @@ static POINTARRAY* ptarray_from_twkb_state(twkb_parse_state *s, uint32_t npoints
 	{
 		int j = 0;
 		/* X */
-		s->coords[j] += twkb_parse_state_varint(s);
+		safe_add_int64(&(s->coords[j]), twkb_parse_state_varint(s));
 		dlist[ndims*i + j] = s->coords[j] / s->factor;
 		j++;
 		/* Y */
-		s->coords[j] += twkb_parse_state_varint(s);
+		safe_add_int64(&(s->coords[j]), twkb_parse_state_varint(s));
 		dlist[ndims*i + j] = s->coords[j] / s->factor;
 		j++;
 		/* Z */
 		if ( s->has_z )
 		{
-			s->coords[j] += twkb_parse_state_varint(s);
+			safe_add_int64(&(s->coords[j]), twkb_parse_state_varint(s));
 			dlist[ndims*i + j] = s->coords[j] / s->factor_z;
 			j++;
 		}
 		/* M */
 		if ( s->has_m )
 		{
-			s->coords[j] += twkb_parse_state_varint(s);
+			safe_add_int64(&(s->coords[j]), twkb_parse_state_varint(s));
 			dlist[ndims*i + j] = s->coords[j] / s->factor_m;
 			j++;
 		}
