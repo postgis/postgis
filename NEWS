@@ -5,6 +5,7 @@ PostGIS 3.6.5
 
 - #5989, CurvePolygon distance corner case (Paul Ramsey)
 - #5357, ST_LineFromEncodedPolyline dropping close points (Paul Ramsey)
+- OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)
 
 
 PostGIS 3.6.4
