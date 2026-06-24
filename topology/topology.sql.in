@@ -696,6 +696,14 @@ BEGIN
     RAISE EXCEPTION 'Invalid Topogeo ID % (must be > 0)', tg_id;
   END IF;
 
+  IF array_ndims(tg_objs) = 1 THEN
+    IF array_length(tg_objs, 1) != 2 THEN
+      RAISE EXCEPTION 'Invalid TopoElementArray element: expected 2 values, got %',
+        array_length(tg_objs, 1);
+    END IF;
+    tg_objs := ARRAY[ARRAY[tg_objs[1], tg_objs[2]]]::topology.TopoElementArray;
+  END IF;
+
   IF tg_type < 1 OR tg_type > 4 THEN
     RAISE EXCEPTION 'Invalid TopoGeometry type % (must be in the range 1..4)', tg_type;
   END IF;
@@ -1265,6 +1273,20 @@ CREATE OR REPLACE FUNCTION topology.TopoElement(topo topology.TopoGeometry)
     IMMUTABLE PARALLEL SAFE
 AS  $$SELECT ARRAY[topo.id::bigint,topo.layer_id::bigint]::topology.topoelement;$$;
 --} TopoElement(TopoGeometry)
+
+--{
+-- TopoElementArray(TopoElement)
+--
+-- Construct a TopoElementArray from a single TopoElement.
+--
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION topology.TopoElementArray(element topology.TopoElement)
+    RETURNS topology.TopoElementArray
+    LANGUAGE sql
+    COST 1
+    IMMUTABLE PARALLEL SAFE
+AS  $$SELECT ARRAY[element::bigint[]]::topology.TopoElementArray;$$;
+--} TopoElementArray(TopoElement)
 
 --{
 -- TopoGeometry(bigint[])

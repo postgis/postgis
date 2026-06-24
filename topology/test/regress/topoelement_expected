@@ -2,5 +2,6 @@
 2|{101,2}
 3|{101,3}
 4|{1,104}
+5|{{101,2}}
 ERROR:  value for domain topoelement violates check constraint "lower_dimension"
 ERROR:  value for domain topoelement violates check constraint "type_range"

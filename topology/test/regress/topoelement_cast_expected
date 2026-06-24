@@ -2,3 +2,6 @@ t1|bycast:50|MULTIPOINT((50 70),(50 90))
 t1|bycast:60|MULTIPOINT((60 70),(60 90))
 t1|byfunc:70|MULTIPOINT((50 70),(60 70))
 t1|byfunc:90|MULTIPOINT((50 90),(60 90))
+t5933.explicit|5933
+t5933.implicit|MULTIPOINT((50 70))
+ERROR:  Invalid TopoElementArray element: expected 2 values, got 3

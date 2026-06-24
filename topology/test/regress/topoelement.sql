@@ -3,6 +3,7 @@ SELECT '1','{101,1}'::topology.TopoElement;
 SELECT '2','{101,2}'::topology.TopoElement;
 SELECT '3','{101,3}'::topology.TopoElement;
 SELECT '4','{1,104}'::topology.TopoElement; -- layer id has no higher limit
+SELECT '5',topology.TopoElementArray('{101,2}'::topology.TopoElement);
 -- Invalid: has 3 elements
 SELECT '[0:2]={1,2,3}'::topology.TopoElement;
 -- Invalid: 0 is both an invalid primitive element id and an invalid layer id
