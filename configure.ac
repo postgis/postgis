@@ -220,13 +220,29 @@ dnl
 dnl Search for xsltproc which is required for building documentation
 dnl
 
-CAN_BUILD_COMMENTS=yes
+AC_ARG_WITH([comments],
+	[AS_HELP_STRING([--without-comments],
+		[disable building and installing generated SQL comments])],
+	[],
+	[with_comments=yes])
 
+CAN_BUILD_DOCS=yes
+CAN_BUILD_COMMENTS=yes
+INSTALL_COMMENTS=yes
 AC_PATH_PROG([XSLTPROC], [xsltproc], [])
 if test "x$XSLTPROC" = "x"; then
 	AC_MSG_WARN([xsltproc is not installed so documentation cannot be built])
-  CAN_BUILD_COMMENTS=no
+	CAN_BUILD_DOCS=no
+	CAN_BUILD_COMMENTS=no
 fi
+AC_SUBST([XSLTPROC])
+
+if test "x$with_comments" = "xno"; then
+	AC_MSG_NOTICE([SQL comments generation disabled by --without-comments])
+	CAN_BUILD_COMMENTS=no
+	INSTALL_COMMENTS=no
+fi
+AC_SUBST([INSTALL_COMMENTS])
 
 AC_PATH_PROG([XMLCATALOG], [xmlcatalog], [])
 if test "x$XMLCATALOG" = "x"; then
@@ -236,9 +252,11 @@ fi
 AC_PATH_PROG([XMLLINT], [xmllint], [])
 if test "x$XMLLINT" = "x"; then
 	dnl AC_MSG_WARN([xmllint is not installed so documentation cannot be checked])
-	AC_MSG_WARN([xmlcatalog is not installed so documentation cannot be built])
+	AC_MSG_WARN([xmllint is not installed so documentation cannot be built])
+	CAN_BUILD_DOCS=no
 	CAN_BUILD_COMMENTS=no
 fi
+AC_SUBST([XMLLINT])
 
 
 
@@ -272,7 +290,7 @@ if test "x$MSGINIT" = "x"; then
 	AC_MSG_WARN([msginit is not installed so new translations cannot be initialized])
 fi
 
-CAN_BUILD_PDF=${CAN_BUILD_COMMENTS}
+CAN_BUILD_PDF=${CAN_BUILD_DOCS}
 
 AC_PATH_PROG([CONVERT], [convert], [])
 if test "x$CONVERT" = "x"; then
@@ -289,7 +307,7 @@ fi
 AC_SUBST(CAN_BUILD_COMMENTS)
 AC_SUBST(CAN_BUILD_PDF)
 
-CAN_BUILD_EPUB=${CAN_BUILD_COMMENTS}
+CAN_BUILD_EPUB=${CAN_BUILD_DOCS}
 AC_PATH_PROG([DBTOEPUB], [dbtoepub], [])
 if test "x$DBTOEPUB" = "x"; then
   AC_MSG_WARN([dbtoepub is not installed so EPUB documentation cannot be built])
