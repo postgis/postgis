@@ -1,2 +1,20 @@
 #5699|-checking-
 #5711|-checking-
+#5886|-checking-
+#5886-prec|-checking-
+#5886-totopogeom-zero|-checking-
+#5886-totopogeom-zero-multiline|1|0
+Topology 'topo' dropped
+ERROR:  Tolerance must be -1 or >=0
+ERROR:  Tolerance must be -1 or >=0
+ERROR:  Tolerance must be -1 or >=0
+Topology 'topo' dropped
+#5886-near-end|-checking-
+#5886-projection-not-endpoint|1|0
+Topology 'topo' dropped
+#5886-isolated-node|1|0
+Topology 'topo' dropped
+#5886-preserve-zm|POINT(5 0 99)
+Topology 'topo' dropped
+#5886-polygon-ring|1
+Topology 'topo' dropped

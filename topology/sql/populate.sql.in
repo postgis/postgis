@@ -735,6 +735,11 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint g
   LANGUAGE 'c' VOLATILE;
 --} TopoGeo_AddPoint
 
+CREATE OR REPLACE FUNCTION topology._TopoGeo_AddPoint(atopology varchar, apoint geometry, tolerance float8 DEFAULT -1)
+	RETURNS bigint AS
+	'MODULE_PATHNAME', 'TopoGeo_AddPoint_Private'
+  LANGUAGE 'c' VOLATILE;
+
 --{
 --  TopoGeo_addLinestring(toponame, linegeom, tolerance)
 --
@@ -749,6 +754,11 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddLinestring(atopology varchar, ali
   LANGUAGE 'c' VOLATILE;
 --} TopoGeo_addLinestring
 
+CREATE OR REPLACE FUNCTION topology._TopoGeo_AddLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT -1, max_edges int DEFAULT -1)
+	RETURNS SETOF bigint AS
+	'MODULE_PATHNAME', 'TopoGeo_AddLinestring_Private'
+  LANGUAGE 'c' VOLATILE;
+
 --{
 --  TopoGeo_AddPolygon(toponame, polygeom, tolerance)
 --
@@ -762,6 +772,11 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology varchar, apoly 
 	'MODULE_PATHNAME', 'TopoGeo_AddPolygon'
   LANGUAGE 'c' VOLATILE;
 --} TopoGeo_AddPolygon
+
+CREATE OR REPLACE FUNCTION topology._TopoGeo_AddPolygon(atopology varchar, apoly geometry, tolerance float8 DEFAULT -1)
+	RETURNS SETOF bigint AS
+	'MODULE_PATHNAME', 'TopoGeo_AddPolygon_Private'
+  LANGUAGE 'c' VOLATILE;
 
 --{
 --  TopoGeo_LoadGeometry(toponame, geom, tolerance)

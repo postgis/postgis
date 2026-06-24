@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2015-2026 Sandro Santilli <strk@kbt.io>
- * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright (C) 2025-2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -6956,9 +6956,15 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
   int flds;
   LWT_ELEMID id = 0;
 
-  /* Get tolerance, if 0 was given */
-  if ( tol == -1 )
-    tol = _LWT_MINTOLERANCE(topo, pt);
+  /*
+   * SQL toTopoGeom uses values below -1 as private precomputed automatic
+   * tolerances for dumped multi-geometries.  Decode them before using the
+   * tolerance for point snapping.
+   */
+  if (tol < -1)
+	  tol = -tol - 1;
+  else if (tol == -1)
+	  tol = _LWT_MINTOLERANCE(topo, pt);
 
   LWDEBUGG(1, pt, "Adding point");
 
@@ -7325,9 +7331,125 @@ _lwt_split_by_nodes(const LWGEOM *g, const LWGEOM *nodes)
   return bg;
 }
 
-static LWT_ELEMID*
-_lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
-            int handleFaceSplit, int maxNewEdges)
+static int
+_lwt_point_is_near_target_vertex(const POINT2D *point,
+				 LWT_ISO_EDGE *edges,
+				 uint64_t numedges,
+				 LWT_ISO_NODE *nodes,
+				 uint64_t numnodes,
+				 double tol)
+{
+	uint64_t i;
+
+	for (i = 0; i < numedges; ++i)
+	{
+		uint32_t j;
+		for (j = 0; j < edges[i].geom->points->npoints; ++j)
+		{
+			const POINT2D *vertex = getPoint2d_cp(edges[i].geom->points, j);
+			if (distance2d_pt_pt(point, vertex) < tol)
+				return 1;
+		}
+	}
+
+	for (i = 0; i < numnodes; ++i)
+	{
+		POINT2D node_point;
+		if (nodes[i].containing_face == -1)
+			continue; /* non-isolated nodes are already edge vertices */
+		getPoint2d_p(nodes[i].geom->point, 0, &node_point);
+		if (distance2d_pt_pt(point, &node_point) < tol)
+			return 1;
+	}
+
+	return 0;
+}
+
+static int
+_lwt_snap_line_vertices_to_edges(LWGEOM *geom,
+				 LWT_ISO_EDGE *edges,
+				 uint64_t numedges,
+				 LWT_ISO_NODE *nodes,
+				 uint64_t numnodes,
+				 double tol)
+{
+	LWPOINTITERATOR *it;
+	POINT4D point;
+
+	if (!tol || !numedges)
+		return 0;
+
+	it = lwpointiterator_create_rw(geom);
+	if (!it)
+		return -1;
+
+	while (lwpointiterator_has_next(it))
+	{
+		uint64_t i;
+		int found = 0;
+		double bestdist = tol;
+		POINT2D point2d;
+		POINT4D bestpoint;
+
+		if (lwpointiterator_peek(it, &point) == LW_FAILURE)
+		{
+			lwpointiterator_destroy(it);
+			return -1;
+		}
+
+		point2d.x = point.x;
+		point2d.y = point.y;
+		if (_lwt_point_is_near_target_vertex(&point2d, edges, numedges, nodes, numnodes, tol))
+		{
+			lwpointiterator_next(it, NULL);
+			continue;
+		}
+
+		for (i = 0; i < numedges; ++i)
+		{
+			double dist;
+			double loc;
+			POINT4D projected;
+
+			loc = ptarray_locate_point(edges[i].geom->points, &point, &dist, &projected);
+			if (loc > 0 && loc < 1 && dist && dist < bestdist)
+			{
+				found = 1;
+				bestdist = dist;
+				bestpoint = projected;
+				/* The snap is XY-only; keep the incoming line's ordinates. */
+				bestpoint.z = point.z;
+				bestpoint.m = point.m;
+			}
+		}
+
+		/*
+		 * GEOS Snap uses target vertices, so a line vertex close to an edge
+		 * interior can remain unsnapped and create a later impossible edge-node
+		 * crossing.  Snap those vertices to their segment projection while the
+		 * incoming line is still the only geometry being changed (#5886).  If
+		 * the original vertex can snap to any target vertex, including an
+		 * isolated node or a vertex on another edge, keep the result chosen by
+		 * the target-vertex snap.
+		 */
+		if (found)
+			lwpointiterator_modify_next(it, &bestpoint);
+		else
+			lwpointiterator_next(it, NULL);
+	}
+
+	lwpointiterator_destroy(it);
+	return 0;
+}
+
+static LWT_ELEMID *
+_lwt_AddLine(LWT_TOPOLOGY *topo,
+	     LWLINE *line,
+	     double tol,
+	     int *nedges,
+	     int handleFaceSplit,
+	     int maxNewEdges,
+	     int requested_min_tolerance)
 {
   LWGEOM *geomsbuf[1];
   LWGEOM **geoms;
@@ -7343,6 +7465,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   GBOX qbox;
   int forward;
   int input_was_closed = 0;
+  int using_min_tolerance = requested_min_tolerance || tol <= -1;
   POINT4D originalStartPoint;
 
   if ( lwline_is_empty(line) )
@@ -7360,8 +7483,15 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
 
   *nedges = -1; /* error condition, by default */
 
-  /* Get tolerance, if 0 was given */
-  if ( tol == -1 ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)line );
+  /*
+   * Values below -1 carry a whole-input automatic tolerance from SQL
+   * toTopoGeom while preserving the automatic-tolerance snap behavior for
+   * dumped multi-geometries.
+   */
+  if (tol < -1)
+	  tol = -tol - 1;
+  else if (tol == -1)
+	  tol = _LWT_MINTOLERANCE(topo, (LWGEOM *)line);
   LWDEBUGF(1, "Working tolerance:%.15g", tol);
   LWDEBUGF(1, "Input line has srid=%d", line->srid);
 
@@ -7491,6 +7621,26 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     lwgeom_free(noded);
     noded = tmp;
     LWDEBUGG(1, noded, "Elements-snapped");
+
+    /*
+     * GEOS Snap handles target vertices first.  Only then project the remaining
+     * vertices to edge interiors; otherwise the later target-vertex snap could
+     * drag a freshly projected interior point to an endpoint that was outside
+     * tolerance from the original input vertex (#5886).
+     */
+    if (using_min_tolerance && _lwt_snap_line_vertices_to_edges(noded, edges, numedges, nodes, numnodes, tol) == -1)
+    {
+	    lwgeom_free(noded);
+	    lwcollection_release(col);
+	    if (nearby)
+		    lwfree(nearby);
+	    if (nodes)
+		    _lwt_release_nodes(nodes, numnodes);
+	    if (edges)
+		    _lwt_release_edges(edges, numedges);
+	    lwerror("Could not snap line vertices to nearby edges");
+	    return NULL;
+    }
     if ( input_was_closed )
     {{
       /* Recompute start point in case it moved */
@@ -7732,13 +7882,13 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
 LWT_ELEMID*
 lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges, int max_new_edges)
 {
-  return _lwt_AddLine(topo, line, tol, nedges, 1, max_new_edges);
+	return _lwt_AddLine(topo, line, tol, nedges, 1, max_new_edges, tol == -1);
 }
 
 LWT_ELEMID*
 lwt_AddLineNoFace(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
 {
-  return _lwt_AddLine(topo, line, tol, nedges, 0, -1);
+	return _lwt_AddLine(topo, line, tol, nedges, 0, -1, tol == -1);
 }
 
 static void
@@ -7748,18 +7898,18 @@ lwt_LoadPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
 }
 
 static void
-lwt_LoadLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int max_new_edges)
+lwt_LoadLine(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int max_new_edges, int requested_min_tolerance)
 {
   LWT_ELEMID* ids;
   int nedges;
 
   /* TODO: avoid allocating edge ids */
-  ids = lwt_AddLine(topo, line, tol, &nedges, max_new_edges);
+  ids = _lwt_AddLine(topo, line, tol, &nedges, 1, max_new_edges, requested_min_tolerance);
   if ( nedges > 0 ) lwfree(ids);
 }
 
 static void
-lwt_LoadPolygon(LWT_TOPOLOGY* topo, const LWPOLY* poly, double tol)
+lwt_LoadPolygon(LWT_TOPOLOGY *topo, const LWPOLY *poly, double tol, int requested_min_tolerance)
 {
   uint32_t i;
 
@@ -7772,7 +7922,7 @@ lwt_LoadPolygon(LWT_TOPOLOGY* topo, const LWPOLY* poly, double tol)
     /* TODO: avoid the clone here */
     pa = ptarray_clone(poly->rings[i]);
     line = lwline_construct(topo->srid, NULL, pa);
-    lwt_LoadLine(topo, line, tol, -1);
+    lwt_LoadLine(topo, line, tol, -1, requested_min_tolerance);
     lwline_free(line);
   }
 }
@@ -7789,6 +7939,7 @@ lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
   GBOX qbox;
   const GEOSPreparedGeometry *ppoly;
   GEOSGeometry *polyg;
+  int using_min_tolerance = tol <= -1;
 
   /* Nothing to add, in an empty polygon */
   if ( lwpoly_is_empty(poly) )
@@ -7797,11 +7948,18 @@ lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
     return NULL;
   }
 
-  /* Get tolerance, if 0 was given */
-  if ( tol == -1 ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)poly );
+  /*
+   * Values below -1 carry a whole-input automatic tolerance from SQL
+   * toTopoGeom while preserving the automatic-tolerance snap behavior for
+   * dumped multi-geometries.
+   */
+  if (tol < -1)
+	  tol = -tol - 1;
+  else if (tol == -1)
+	  tol = _LWT_MINTOLERANCE(topo, (LWGEOM *)poly);
   LWDEBUGF(1, "Working tolerance:%.15g", tol);
 
-  lwt_LoadPolygon(topo, poly, tol);
+  lwt_LoadPolygon(topo, poly, tol, using_min_tolerance);
 
   /*
   -- Find faces covered by input polygon
@@ -8270,12 +8428,12 @@ _lwt_LoadGeometryRecursive(LWT_TOPOLOGY* topo, LWGEOM* geom, double tol)
       return;
 
     case LINETYPE:
-      lwt_LoadLine(topo, lwgeom_as_lwline(geom), tol, -1);
-      return;
+	    lwt_LoadLine(topo, lwgeom_as_lwline(geom), tol, -1, tol == -1);
+	    return;
 
     case POLYGONTYPE:
-      lwt_LoadPolygon(topo, lwgeom_as_lwpoly(geom), tol);
-      return;
+	    lwt_LoadPolygon(topo, lwgeom_as_lwpoly(geom), tol, tol == -1);
+	    return;
 
     case MULTILINETYPE:
     case MULTIPOLYGONTYPE:
