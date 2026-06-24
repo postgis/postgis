@@ -5,6 +5,8 @@ analyze t;
 select '#877.2', ST_EstimatedExtent('public', 't','g');
 SET client_min_messages TO NOTICE;
 insert into t(g) values ('LINESTRING(-10 -50, 20 30)');
+select '#1689.1', ST_FindExtent('t','g');
+select '#1689.2', ST_FindExtent('public','t','g');
 
 -- #877.3
 select '#877.3', round(st_xmin(e.e)::numeric, 5), round(st_xmax(e.e)::numeric, 5),
