@@ -2598,6 +2598,35 @@ $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 ----------------------------------------------------------------------------
+-- ADDGEOMETRYCOLUMN ( <table_regclass>, <column>, <srid>, <type>, <dim> )
+----------------------------------------------------------------------------
+--
+-- This is a wrapper to the real AddGeometryColumn, for use
+-- when the table is specified as regclass
+--
+----------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION AddGeometryColumn(table_name regclass,column_name varchar,new_srid integer,new_type varchar,new_dim integer, use_typmod boolean DEFAULT true) RETURNS text AS $$
+DECLARE
+	ret  text;
+	real_schema name;
+	real_table name;
+BEGIN
+	SELECT n.nspname, c.relname INTO real_schema, real_table
+	FROM pg_catalog.pg_class c
+	JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	WHERE c.oid = $1;
+
+	IF real_schema IS NULL THEN
+		RAISE EXCEPTION 'AddGeometryColumn() - table not found';
+	END IF;
+
+	SELECT @extschema@.AddGeometryColumn('',real_schema::varchar,real_table::varchar,$2,$3,$4,$5,$6) into ret;
+	RETURN ret;
+END;
+$$
+LANGUAGE 'plpgsql' VOLATILE STRICT;
+
+----------------------------------------------------------------------------
 -- ADDGEOMETRYCOLUMN ( <schema>, <table>, <column>, <srid>, <type>, <dim> )
 ----------------------------------------------------------------------------
 --

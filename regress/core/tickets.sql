@@ -1718,6 +1718,33 @@ DROP SCHEMA test3103a;
 DROP SCHEMA test3103b;
 
 -- -------------------------------------------------------------------------------------
+-- #2023, AddGeometryColumn accepting regclass table name
+CREATE TABLE public.test2023 (
+  id integer);
+SELECT '#2023', trim(trailing FROM AddGeometryColumn('public.test2023'::regclass, 'geom', 4326, 'POINT', 2));
+SELECT '#2023', f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type
+ FROM geometry_columns
+ WHERE f_table_schema = 'public'
+   AND f_table_name = 'test2023';
+DROP TABLE IF EXISTS public.test2023;
+
+CREATE SCHEMA test2023;
+CREATE TABLE test2023."MixedCase" (
+  id integer);
+DO $$
+BEGIN
+  PERFORM set_config('search_path', current_setting('search_path') || ',public', true);
+END
+$$;
+SELECT '#2023-search-path', trim(trailing FROM AddGeometryColumn('test2023."MixedCase"'::regclass, 'geom', 3857, 'LINESTRING', 2));
+SELECT '#2023-search-path', f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type
+ FROM geometry_columns
+ WHERE f_table_schema = 'test2023'
+   AND f_table_name = 'MixedCase';
+DROP TABLE IF EXISTS test2023."MixedCase";
+DROP SCHEMA test2023;
+
+-- -------------------------------------------------------------------------------------
 -- #4828, geometry_columns should ignore pending NOT VALID SRID checks
 CREATE TABLE test4828 (
   geom geometry

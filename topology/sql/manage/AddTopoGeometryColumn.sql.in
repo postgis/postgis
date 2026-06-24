@@ -207,6 +207,16 @@ $$
 LANGUAGE 'plpgsql' VOLATILE;
 --}{ AddTopoGeometryColumn
 
+-- Changed: 3.7.0 allows regclass table names without a user-defined layer id
+-- Replaces addtopogeometrycolumn(varchar, varchar, varchar, varchar, varchar, integer)
+CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(toponame name, tab regclass, col name, ltype varchar)
+  RETURNS integer
+AS
+$$
+  SELECT topology.AddTopoGeometryColumn($1, $2, $3, null, $4, null);
+$$
+LANGUAGE 'sql' VOLATILE;
+
 -- Changed: 3.6.0 allows user defined layer id
 -- Replaces addtopogeometrycolumn(varchar, varchar, varchar, varchar, varchar, integer) deprecated in 3.6.0
 CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(toponame name, schema name, tbl name, col name, ltype varchar, child integer default null)
@@ -216,4 +226,3 @@ $$
   SELECT topology.AddTopoGeometryColumn($1, format('%I.%I', $2, $3)::regclass, $4, null, $5, $6);
 $$
 LANGUAGE 'sql' VOLATILE;
-
