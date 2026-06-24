@@ -359,7 +359,7 @@ Datum LWGEOM_numpatches(PG_FUNCTION_ARGS)
 	{
 		lwgeom_free(lwgeom);
 		PG_FREE_IF_COPY(geom, 0);
-		elog(ERROR, "ST_NumPatches only supports TIN and PolyhedralSurface geometries");
+		PG_RETURN_NULL();
 	}
 
 	ret = lwgeom_count_geometries(lwgeom, true);
@@ -466,14 +466,18 @@ Datum LWGEOM_patchn(PG_FUNCTION_ARGS)
 	{
 		lwgeom_free(lwgeom);
 		PG_FREE_IF_COPY(geom, 0);
-		elog(ERROR, "ST_PatchN only supports TIN and PolyhedralSurface geometries");
+		PG_RETURN_NULL();
 	}
 
 	/* Access patches individually */
 	subgeom = lwgeom_extract_geometry_n(lwgeom, idx, true);
 
 	if (!subgeom)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
+	}
 
 	/* If returning the original geometry */
 	if (subgeom == lwgeom)
