@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright 2026 PostGIS contributors
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -188,6 +188,22 @@ do_test_catmull_rom_points(void)
 	do_test_catmull_rom("MULTIPOINT((1 2),(3 4))", "MULTIPOINT(1 2,3 4)", 5);
 }
 
+static void
+do_test_catmull_rom_nsegments_cap(void)
+{
+	LWGEOM *geom_in, *geom_out;
+
+	cu_error_msg_reset();
+	geom_in = lwgeom_from_wkt("LINESTRING(0 0,1 0,2 0,3 0)", LW_PARSER_CHECK_NONE);
+	geom_out = lwgeom_catmull_rom(geom_in, 101);
+
+	ASSERT_STRING_EQUAL(cu_error_msg, "lwgeom_catmull_rom: nSegments must be <= 100");
+
+	lwgeom_free(geom_in);
+	if (geom_out)
+		lwgeom_free(geom_out);
+	cu_error_msg_reset();
+}
 
 void catmullrom_suite_setup(void);
 void catmullrom_suite_setup(void)
@@ -198,4 +214,5 @@ void catmullrom_suite_setup(void)
 	PG_ADD_TEST(suite, do_test_catmull_rom_polygons);
 	PG_ADD_TEST(suite, do_test_catmull_rom_zm);
 	PG_ADD_TEST(suite, do_test_catmull_rom_points);
+	PG_ADD_TEST(suite, do_test_catmull_rom_nsegments_cap);
 }

@@ -178,8 +178,8 @@ Datum LWGEOM_CatmullRomSmoothing(PG_FUNCTION_ARGS)
 	if ((PG_NARGS() > 1) && (!PG_ARGISNULL(1)))
 		n_segments = PG_GETARG_INT32(1);
 
-	if (n_segments < 2)
-		elog(ERROR, "nSegments must be >= 2: %s", __func__);
+	if (n_segments < 2 || n_segments > 100)
+		elog(ERROR, "nSegments must be between 2 and 100: %s", __func__);
 
 	in = lwgeom_from_gserialized(geom);
 	out = lwgeom_catmull_rom(in, n_segments);

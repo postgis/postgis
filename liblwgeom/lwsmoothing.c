@@ -412,6 +412,11 @@ lwcollection_catmull_rom(const LWCOLLECTION *igeom, int n_segments)
 LWGEOM *
 lwgeom_catmull_rom(const LWGEOM *igeom, int n_segments)
 {
+	if (n_segments > 100)
+	{
+		lwerror("lwgeom_catmull_rom: nSegments must be <= 100");
+		return NULL;
+	}
 	switch (igeom->type)
 	{
 	case POINTTYPE:

@@ -37,3 +37,6 @@ SELECT '10', postgis_getbbox(g) AS box FROM geom;
 
 -- Triangle polygon ring has npoints-1=3 unique pts (<4), return original
 SELECT '11', ST_AsText(ST_CatmullRomSmoothing('POLYGON((0 0, 4 0, 2 4, 0 0))', 5));
+
+-- Maximum nSegments of 100 is accepted
+SELECT '12', ST_NPoints(ST_CatmullRomSmoothing('LINESTRING(0 0, 1 0, 2 0, 3 0)', 100));
