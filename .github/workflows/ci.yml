@@ -33,6 +33,7 @@ jobs:
         #- { tag: pg14-clang-geos39-gdal31-proj71, mode: usan_clang }
         # Run tests with different dependency combinations
         - { tag: latest, mode: tests }
+        - { tag: pg18-geosmain-gdal311-proj96, mode: standard_conforming_strings_off }
         - { tag: latest, mode: garden }
 
     runs-on: ubuntu-latest
@@ -66,5 +67,3 @@ jobs:
       if: ${{ success() }}
       run: |
         docker rm pgtest-${GITHUB_RUN_NUMBER}
-
-
